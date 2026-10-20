@@ -25,7 +25,7 @@ export const GLOSSARY_TERMS = [
     term: 'The City',
     kr: '도시 (Dosi)',
     lorVn: 'The City',
-    vi: 'The City là đại đô thị khổng lồ nơi toàn bộ nền văn minh nhân loại sinh sống, được chia thành 26 District (Quận A đến Z) dưới sự cai trị tối cao của The Head.',
+    vi: 'The City là nơi toàn bộ nền văn minh nhân loại còn sót lại sinh sống, được chia thành 26 District (District A đến Z) dưới sự cai trị tuyệt đối của The Head.',
     en: 'The colossal megacity housing human civilization, divided into 26 Districts (A through Z) under the absolute rule of The Head.'
   },
   {
@@ -51,7 +51,7 @@ export const GLOSSARY_TERMS = [
     category: 'geography',
     term: 'Backstreets & Rats',
     kr: '뒷골목 · 뒷골목 쥐 (Dwitgolmok)',
-    lorVn: 'Phố Ngầm / Khu Phố Sau & Chuột Phố Ngầm',
+    lorVn: 'Backstreets & Backstreet Rats',
     vi: 'Vùng ngoại vi hỗn loạn bao quanh Nest, nơi các Wing bỏ mặc không bảo vệ. Tầng lớp đáy cùng chuyên mổ cướp nội tạng qua ngày bị gọi là Backstreet Rats.',
     en: 'The lawless outer slums surrounding each Nest, unprotected by the Wings. Bottom-feeders who harvest organs to survive are called Backstreet Rats.'
   },
@@ -60,7 +60,7 @@ export const GLOSSARY_TERMS = [
     category: 'geography',
     term: 'Night in the Backstreets (3:13 – 4:34 AM)',
     kr: '뒷골목의 밤 (Dwitgolmog-ui Bam)',
-    lorVn: 'Đêm Phố Ngầm (81 Phút Tử Thần)',
+    lorVn: 'Night in the Backstreets (81 Phút Tử Thần)',
     vi: 'Khoảng thời gian 81 phút mỗi đêm khi các Sweepers tràn ngập đường phố xóa sổ mọi sinh vật ngoài trời. Mọi hành vi ghi âm/quay hình trong giờ này là Taboo cấp tử hình.',
     en: 'The 81-minute window every night when Sweepers flood the streets to liquefy anyone outside. Recording audio or video during this period is a capital Taboo.'
   },
@@ -69,7 +69,7 @@ export const GLOSSARY_TERMS = [
     category: 'geography',
     term: 'Outskirts & Ruins',
     kr: '외곽 · 유적 (Oegwak · Yujeok)',
-    lorVn: 'Ngoại Ô & Phế Tích',
+    lorVn: 'Outskirts & Ruins',
     vi: 'Vùng đất hoang vu bên ngoài bức tường The City, đầy rẫy quái vật phi nhân tính, những kẻ bị trục xuất và các hầm ngầm Ruins chứa cổ vật ma thuật cổ xưa.',
     en: 'The desolate wasteland beyond the City walls, teeming with non-human monsters, exiles, and ancient subterranean Ruins holding primordial relics.'
   },
@@ -87,7 +87,7 @@ export const GLOSSARY_TERMS = [
     category: 'geography',
     term: 'Taboo & Taboo Hunter',
     kr: '금기 · 금기 사냥꾼 (Geumgi)',
-    lorVn: 'Điều Cấm Kỵ & Thợ Săn Cấm Kỵ',
+    lorVn: 'Taboo & Taboo Hunter',
     vi: 'Các luật lệ bất khả xâm phạm của The Head (cấm AI có cảm xúc, cấm nhân bản quá 7 ngày, cấm đạn xuyên tường nhà ở, cấm trốn thuế) và luật riêng của từng Wing.',
     en: 'Inviolable laws enforced by The Head (no sentient AI, no clones past 7 days, strict gun/tax laws) and local Wing regulations enforced by Taboo Hunters.'
   },
@@ -255,7 +255,7 @@ export const GLOSSARY_TERMS = [
     category: 'supernatural',
     term: 'Singularity',
     kr: '특이점 (Teugijeom)',
-    lorVn: 'Điểm Dị Biệt',
+    lorVn: 'Singularity',
     vi: 'Công nghệ siêu nhiên phá vỡ các định luật vật lý thông thường, là nền tảng quyền lực của 26 Wing (như HP Ampoule của K Corp, WARP Train của W Corp, TimeTrack của T Corp).',
     en: 'Supernatural technologies defying conventional physics, forming the core monopoly of each Wing (e.g., K Corp HP Ampoules, W Corp WARP Trains, T Corp TimeTrack).'
   },
@@ -265,26 +265,26 @@ export const GLOSSARY_TERMS = [
     term: 'White Nights and Dark Days & The Voice',
     kr: '백야흑주 · 목소리 (Baekyaheukju)',
     lorVn: 'Bạch Dạ Hắc Trú & Giọng Nói Của Carmen',
-    vi: 'Sự kiện 3 ngày ánh sáng và 4 ngày bóng tối từ Lobotomy Corp đã gieo Hạt Giống Ánh Sáng vào mọi cư dân. Khi tuyệt vọng tột cùng, họ sẽ nghe thấy giọng nói dịu dàng hỏi: "Bạn có nghe thấy giọng nói của tôi không?"',
-    en: 'The 3 days of light and 4 days of darkness that planted the Seed of Light in all citizens. At the nadir of despair, a gentle voice asks: "Can you hear my voice?"'
+    vi: 'Sự kiện 3 ngày ánh sáng và 4 ngày bóng tối từ Lobotomy Corp đã gieo Hạt Giống Ánh Sáng vào mọi cư dân. Khi tuyệt vọng tột cùng, Carmen sẽ hiển linh từ một vầng thái dương chói lòa trong tâm thức với giọng nói dịu dàng: "Bạn có nghe thấy giọng nói của tôi không?"',
+    en: 'The 3 days of light and 4 days of darkness that planted the Seed of Light in all citizens. At the nadir of despair, Carmen manifests from a blinding sun within the psyche, asking: "Can you hear my voice?"'
   },
   {
     id: 'distortion',
     category: 'supernatural',
     term: 'Distortion',
     kr: '뒤틀림 (Dwiteullim)',
-    lorVn: 'Biến Dị / Sự Vặn Xoắn',
-    vi: 'Khi một người sụp đổ tâm lý và buông xuôi theo lời vỗ về của Carmen, khát vọng và nỗi đau của họ bóp méo cơ thể thành một thực thể quái dị mang sức mạnh siêu nhiên.',
-    en: 'When a person surrenders to despair and accepts the Voice in the Light, their obsession warps their physical form into a monstrous supernatural phenomenon.'
+    lorVn: 'Distortion',
+    vi: 'Khi một người sụp đổ tâm lý và buông xuôi theo lời vỗ về của Carmen dưới vầng thái dương, khát vọng và nỗi đau của họ bóp méo cơ thể thành một thực thể quái dị mang sức mạnh siêu nhiên.',
+    en: 'When a person surrenders to despair and accepts Carmen’s voice under the scorching sun, their obsession warps their physical form into a monstrous supernatural phenomenon.'
   },
   {
     id: 'ego',
     category: 'supernatural',
     term: 'Effloresced E.G.O',
     kr: '개화 E.G.O (Gaehwa E.G.O)',
-    lorVn: 'Khai Hoa E.G.O',
-    vi: 'Khi một người từ chối giọng nói dẫn dụ của Distortion, dám đối diện với vết sẹo tâm thức và tự bước đi bằng ý chí kiên định, họ kết tinh tâm hồn thành vũ khí và giáp trụ E.G.O của riêng mình.',
-    en: 'When a person rejects the Voice and confronts their trauma with unyielding resolve, their soul crystallizes into personal E.G.O armor and weaponry.'
+    lorVn: 'Effloresced E.G.O',
+    vi: 'Khi một người từ chối lời dẫn dụ của Carmen, dám đối diện với vết sẹo tâm thức và kiên định giữ vững bản ngã con người, họ kết tinh tâm hồn thành vũ khí và giáp trụ E.G.O của riêng mình.',
+    en: 'When a person rejects Carmen’s voice and confronts their trauma with unyielding human resolve, their soul crystallizes into personal E.G.O armor and weaponry.'
   },
   {
     id: 'shin_mang',
