@@ -2018,6 +2018,97 @@ p {
   color: var(--muted);
   font-size: 14px;
 }
+
+/* Disco Elysium Style Narrative Psyche Interjections & Checks */
+.disco-psyche-card {
+  margin: 12px 0 16px;
+  padding: 12px 16px;
+  background: rgba(18, 20, 29, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-left-width: 4px;
+  border-radius: 4px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(8px);
+}
+
+.disco-psyche-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  font-size: 12.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.disco-psyche-icon {
+  font-size: 15px;
+}
+
+.disco-psyche-faculty {
+  font-family: var(--font-mono, monospace);
+  font-size: 12.5px;
+  letter-spacing: 0.04em;
+}
+
+.disco-psyche-voice {
+  font-size: 15px;
+  font-style: italic;
+  line-height: 1.65;
+  color: #e2e8f0;
+  margin: 0;
+}
+
+.disco-check-pill {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  margin-bottom: 4px;
+}
+
+.disco-check-pill .check-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 3px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.disco-check-pill.is-red .check-tag {
+  background: rgba(229, 62, 62, 0.22);
+  border: 1px solid rgba(229, 62, 62, 0.55);
+  color: #feb2b2;
+}
+
+.disco-check-pill.is-white .check-tag {
+  background: rgba(49, 151, 149, 0.22);
+  border: 1px solid rgba(49, 151, 149, 0.55);
+  color: #81e6d9;
+}
+
+.disco-check-pill .check-mod {
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.disco-check-pill .check-mod.is-pos {
+  color: #9ae6b4;
+  border-color: rgba(104, 211, 145, 0.25);
+}
+
+.disco-check-pill .check-mod.is-neg {
+  color: #feb2b2;
+  border-color: rgba(252, 129, 129, 0.25);
+}
 .choice-meta .is-bad {
   color: var(--bad);
 }

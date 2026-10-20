@@ -10,6 +10,7 @@ import { audioEngine } from '../../../engine/audioEngine';
 import { gameFeel } from '../../../engine/gameFeel';
 import { useT } from '../../../i18n';
 import { Deltas, ChoicePreview } from './Deltas';
+import { getPsycheInterjection, evaluateDiscoChoiceCheck } from '../../../engine/discoPsyche';
 
 const ENTRY_KIND = {
   causal: { cls: 'k-causal', vi: 'Causal Echo', en: 'Causal Echo' },
@@ -163,6 +164,7 @@ const EventDock = ({ event, char, onPick }) => {
   const { t, lang, bilingual } = useT();
   const causal = event.isCausalCallback;
   const title = lang === 'en' ? event.titleEn || event.titleVi : event.titleVi;
+  const psyche = getPsycheInterjection(char, event, lang);
 
   return (
     <div className="dock" role="dialog" aria-label={t('Sự kiện cần quyết định', 'Decision')}>
@@ -188,9 +190,24 @@ const EventDock = ({ event, char, onPick }) => {
         <p className="dock-text">{lang === 'en' ? event.displayEn || event.displayVi : event.displayVi}</p>
         {bilingual && event.displayEn && <p className="entry-alt">{event.displayEn}</p>}
 
+        {psyche && (
+          <div className="disco-psyche-card" style={{ borderLeftColor: psyche.faculty.color }}>
+            <div className="disco-psyche-header">
+              <span className="disco-psyche-icon">{psyche.faculty.icon}</span>
+              <span className="disco-psyche-faculty" style={{ color: psyche.faculty.color }}>
+                {lang === 'en' ? psyche.faculty.nameEn : psyche.faculty.nameVi}
+              </span>
+            </div>
+            <p className="disco-psyche-voice">
+              {lang === 'en' ? psyche.textEn : psyche.textVi}
+            </p>
+          </div>
+        )}
+
         <div className="choices">
           {(event.choices || []).map((ch, idx) => {
             const label = splitTitle(lang === 'en' ? ch.labelEn || ch.labelVi : ch.labelVi).body;
+            const check = evaluateDiscoChoiceCheck(ch, char);
             const extra = [];
             if (Array.isArray(ch.scheduleConsequences) && ch.scheduleConsequences.length > 0) {
               extra.push(
@@ -214,6 +231,18 @@ const EventDock = ({ event, char, onPick }) => {
                 <span>
                   <span className="choice-label">{label}</span>
                   {bilingual && ch.labelEn && ch.labelEn !== ch.labelVi && <span className="choice-alt">{splitTitle(ch.labelEn).body}</span>}
+                  
+                  {check && (
+                    <div className={`disco-check-pill ${check.isRedCheck ? 'is-red' : 'is-white'}`}>
+                      <span className="check-tag">🎲 {lang === 'en' ? check.badgeEn : check.badgeVi}: <b>{check.successPct}%</b></span>
+                      {check.modifiers.map((m, mIdx) => (
+                        <span key={mIdx} className={`check-mod ${m.pos ? 'is-pos' : 'is-neg'}`}>
+                          {lang === 'en' ? m.labelEn : m.labelVi}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+
                   <ChoicePreview choice={ch} npcs={char.npcs} />
                   {extra.length > 0 && <span className="preview">{extra}</span>}
                 </span>
