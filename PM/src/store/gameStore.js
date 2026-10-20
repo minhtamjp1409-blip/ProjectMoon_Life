@@ -11,6 +11,7 @@ import {
 } from '../engine/gameEngine';
 import { planYear, syncPlanWithBackend, runDueItems, resolveMinor, endYear, nextPlanItem, diffStats, MINOR_WINDOW_MS } from '../engine/yearPlanner';
 import { CODEX_RECORDS } from '../data/worldData';
+import { getItemById } from '../data/itemsData';
 import { cityArchiveAPI } from '../services/api/cityArchiveAPI';
 
 const META_KEY = 'pm_city_chronicles_save_v3';
@@ -229,6 +230,67 @@ export const useGameStore = create((set, get) => ({
   exitToSetup: () => {
     get().saveRun(true);
     set({ inRun: false, speed: 1 });
+  },
+
+  buyItem: (itemId) => {
+    const state = get();
+    const char = state.char;
+    if (!char || !char.alive) return;
+    const item = getItemById(itemId);
+    if (!item) return;
+    const wealth = char.stats?.wealth ?? char.wealth ?? 0;
+    if (wealth < item.costAhn) return;
+
+    const nextChar = cloneChar(char);
+    if (!Array.isArray(nextChar.inventory)) nextChar.inventory = [];
+    nextChar.inventory.push(item);
+    nextChar.stats.wealth = wealth - item.costAhn;
+
+    if (!nextChar.equipped) nextChar.equipped = { weapon: null, armor: null, consumable: null };
+    if (item.type === 'weapon') nextChar.equipped.weapon = item;
+    if (item.type === 'armor') {
+      nextChar.equipped.armor = item;
+      if (item.stats?.health) nextChar.stats.health = Math.min(100, nextChar.stats.health + item.stats.health);
+    }
+    if (item.type === 'consumable') nextChar.equipped.consumable = item;
+    if (item.flagGranted && !nextChar.flags.includes(item.flagGranted)) {
+      nextChar.flags.push(item.flagGranted);
+    }
+
+    nextChar.logs.push({
+      id: `log_buy_${itemId}_${Date.now()}`,
+      age: nextChar.age,
+      season: SEASONS[nextChar.seasonIdx || 0],
+      type: 'major',
+      vi: `[Mua sắm Workshop] Bạn đã chi ${item.costAhn} Ahn để sở hữu 「${item.nameVi}」.`,
+      en: `[Workshop Purchase] You spent ${item.costAhn} Ahn to acquire "${item.nameEn}".`
+    });
+
+    set({ char: nextChar });
+    get().saveRun(true);
+  },
+
+  useConsumableItem: (itemId) => {
+    const state = get();
+    const char = state.char;
+    if (!char || !char.alive) return;
+    const inv = Array.isArray(char.inventory) ? char.inventory : [];
+    const idx = inv.findIndex(i => i.id === itemId);
+    if (idx === -1) return;
+
+    const item = inv[idx];
+    const nextChar = cloneChar(char);
+    nextChar.inventory.splice(idx, 1);
+
+    if (item.sanityRestore) {
+      nextChar.stats.sanity = Math.min(100, nextChar.stats.sanity + item.sanityRestore);
+    }
+    if (item.autoReviveHp) {
+      nextChar.stats.health = Math.min(100, nextChar.stats.health + item.autoReviveHp);
+    }
+
+    set({ char: nextChar });
+    get().saveRun(true);
   },
 
   // Throw the current run away and go back to the birth screen

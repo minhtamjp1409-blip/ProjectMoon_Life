@@ -16,6 +16,17 @@ import { CHILDHOOD_EVENTS, CONSEQUENCE_EVENTS } from '../data/eventsChildhood';
 import { composeBirth, makeNpc } from '../data/birthStories';
 import { FACTION_EVENTS } from '../data/eventsFactions';
 import { SUPERNATURAL_EVENTS, FIXER_REQUESTS } from '../data/eventsSupernatural';
+import { FIXER_PATH_EVENTS } from '../data/eventsFixerPath';
+import { DISTORTION_PATH_EVENTS } from '../data/eventsDistortionPath';
+import { WORKSHOP_ECONOMY_EVENTS } from '../data/eventsWorkshopEconomy';
+import { BEREAVEMENT_EVENTS } from '../data/eventsBereavementMemories';
+import {
+  getNextFixerPromotion,
+  checkColorFixerReadiness,
+  triggerDistortionTransformation,
+  tryItemAutoRevive,
+  determineSuccessorType
+} from './careerPipeline';
 import {
   FATE_OMENS,
   rollRandomFateOmen,
@@ -29,7 +40,11 @@ import { hasMemory, closeThreads } from './director';
 export const ALL_STORY_EVENTS = [
   ...CHILDHOOD_EVENTS,
   ...FACTION_EVENTS,
-  ...SUPERNATURAL_EVENTS
+  ...SUPERNATURAL_EVENTS,
+  ...FIXER_PATH_EVENTS,
+  ...DISTORTION_PATH_EVENTS,
+  ...WORKSHOP_ECONOMY_EVENTS,
+  ...BEREAVEMENT_EVENTS
 ];
 
 export const SEASONS = [
@@ -395,7 +410,7 @@ export function createNewCharacter({
     familyId: family.id,
     fateOmenId: fateOmen.id,
     job: actualAge >= 18 ? (parentLegacy?.job === 'Syndicate' ? 'Syndicate' : parentLegacy?.job === 'Wing Employee' ? 'Wing Employee' : 'Fixer') : 'Child',
-    fixerGrade: actualAge >= 18 ? 8 : 9,
+    fixerGrade: 9,
     merit: actualAge >= 18 ? 10 : 0,
     finger: actualAge >= 18 && parentLegacy?.job === 'Syndicate' ? parentLegacy?.finger : null,
     fingerRank: actualAge >= 18 && parentLegacy?.job === 'Syndicate' ? 1 : 0,
@@ -882,29 +897,26 @@ export function checkPromotions(char) {
   const logsToAdd = [];
   const curRep = (char.stats?.rep ?? char.rep) || 0;
 
+  // Distortions never participate in human promotions
+  if (char.flags.includes('Distorted')) return logsToAdd;
+
   if (char.job === 'Fixer') {
-    for (const t of FIXER_THRESHOLDS) {
-      if (char.fixerGrade > t.grade && char.merit >= t.merit && curRep >= (t.rep || 0)) {
-        char.fixerGrade = t.grade;
-        logsToAdd.push({
-          id: `log_promo_${char.age}_g${t.grade}`,
-          age: char.age,
-          season: SEASONS[char.seasonIdx],
-          type: 'promo',
-          vi: `[Thăng cấp] Hana Association xem lại hồ sơ của bạn và đóng dấu lên thẻ mới: Fixer Grade ${t.grade}.`,
-          en: `[Promotion] Hana Association reviewed your record and stamped a new license: Grade ${t.grade} Fixer.`
-        });
-      }
+    const nextPromo = getNextFixerPromotion(char);
+    if (nextPromo && nextPromo.isEligible && !char.flags.includes(`promo_ready_g${nextPromo.grade}`)) {
+      char.flags.push(`promo_ready_g${nextPromo.grade}`);
+      logsToAdd.push({
+        id: `log_promo_ready_${char.age}_g${nextPromo.grade}`,
+        age: char.age,
+        season: SEASONS[char.seasonIdx],
+        type: 'promo',
+        vi: `[Hana Association Thông Báo] Bạn đã tích lũy đủ chiến tích và danh tiếng để bước vào kỳ sát hạch thăng cấp Grade ${nextPromo.grade}!`,
+        en: `[Hana Association Notice] You have accumulated sufficient merits and reputation to challenge the Grade ${nextPromo.grade} qualification trial!`
+      });
     }
 
-    // Color Fixer Candidacy (Trial required: Must survive Star of the City Ordeal)
-    if (
-      char.fixerGrade === 1 &&
-      char.merit >= 150 &&
-      curRep >= 68 &&
-      !char.flags.includes('ColorFixer') &&
-      !char.flags.includes('ColorCandidate')
-    ) {
+    // Color Fixer Candidacy
+    const colorCheck = checkColorFixerReadiness(char);
+    if (colorCheck.ready && !char.flags.includes('ColorCandidate')) {
       char.flags.push('ColorCandidate');
       logsToAdd.push({
         id: `log_color_cand_${char.age}`,
@@ -1131,6 +1143,19 @@ export function woundDeath(char, vi, en) {
 }
 
 export function applyFatalOrCompanionSave(char, deathCauseVi, deathCauseEn) {
+  if (tryItemAutoRevive(char)) {
+    char.logs.push({
+      id: `log_ampoule_revive_${char.age}_${Date.now()}`,
+      age: char.age,
+      season: SEASONS[char.seasonIdx || 0],
+      type: 'miracle',
+      vi: '[Ống Tiêm K Corp Tự Động Kích Hoạt] Khi tim bạn vừa ngừng đập, dung dịch sinh học màu xanh lá của K Corp tự động bơm thẳng vào động mạch chủ. Mô tế bào và xương gãy tái tạo trong đau đớn dữ dội. Bạn sống sót qua vết thương chí mạng!',
+      en: '[K Corp Ampoule Auto-Activated] As your heart flatlined, green K Corp biomass auto-injected into your aorta. Flesh and shattered bone reconstituted amid agony. You survived a fatal blow!'
+    });
+    evaluateCharacterAchievements(char);
+    return;
+  }
+
   const saviorKey = ['partner', 'spouse', 'friend', 'mentor'].find(
     k => char.npcs?.[k] && !char.npcs[k].deceased && (char.npcs[k].bond || 0) >= (['partner', 'spouse'].includes(k) ? 65 : 75)
   );
@@ -1138,6 +1163,10 @@ export function applyFatalOrCompanionSave(char, deathCauseVi, deathCauseEn) {
   if (saviorKey) {
     const savior = char.npcs[saviorKey];
     char.npcs[saviorKey] = { ...savior, deceased: true };
+    if (saviorKey === 'spouse') {
+      char.flags = char.flags.filter(f => f !== 'Married');
+      if (!char.flags.includes('Widowed')) char.flags.push('Widowed');
+    }
     char.stats.health = 22;
     char.stats.sanity = clamp(char.stats.sanity - 24, 1, 100);
     char.resonance = clamp((char.resonance || 0) + 32, 0, 100);
@@ -1330,7 +1359,13 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
     ...(outcome.flags || [])
   ];
   flagsAdd.forEach(f => {
-    if (!char.flags.includes(f)) char.flags.push(f);
+    if (!char.flags.includes(f)) {
+      char.flags.push(f);
+      if (f === 'Distorted') {
+        const distortLogs = triggerDistortionTransformation(char);
+        char.logs.push(...distortLogs);
+      }
+    }
   });
 
   const scarsAdd = [
@@ -1508,7 +1543,8 @@ export function buildLifeSummaryAndLegacy(char) {
     (char.customTitle ? `Huy hiệu Color 「${char.customTitle}」` : null) ||
     (char.lineage?.relic ? char.lineage.relic : (char.age < 16 ? `Kỷ vật của ${char.name}` : `Di vật của ${char.name}`));
 
-  let successorRelation = 'child';
+  const succInfo = determineSuccessorType(char);
+  let successorRelation = succInfo.type;
   let childAgeWhenParentDied = 0;
   if (char.age < 14) {
     successorRelation = 'sibling';
@@ -1519,7 +1555,7 @@ export function buildLifeSummaryAndLegacy(char) {
     const parentChildBirthAge = Math.min(char.age - 1, Math.max(18, char.age - 18));
     childAgeWhenParentDied = Math.max(1, char.age - parentChildBirthAge);
   } else {
-    successorRelation = 'heir';
+    successorRelation = succInfo.type;
     childAgeWhenParentDied = Math.max(1, Math.min(18, char.age - 5));
   }
 
@@ -1543,6 +1579,7 @@ export function buildLifeSummaryAndLegacy(char) {
     scars: [...char.scars],
     relic: relicName,
     successorRelation,
+    successorInfo: succInfo,
     childAgeWhenParentDied,
     hasChild: Boolean(char.npcs?.child),
     childName: char.npcs?.child?.nameVi || '',

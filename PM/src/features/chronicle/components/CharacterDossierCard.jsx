@@ -1,6 +1,7 @@
 import React from 'react';
 import { Tooltip } from 'antd';
-import { ChevronDown, ChevronUp, User, Heart, Brain, Coins, Flame, Eye, Sparkles, X, ShieldAlert } from 'lucide-react';
+import { ChevronDown, ChevronUp, User, Heart, Brain, Coins, Flame, Eye, Sparkles, X, ShieldAlert, ShoppingBag } from 'lucide-react';
+import { WorkshopDepotModal } from './WorkshopDepotModal';
 import { useGameStore } from '../../../store/gameStore';
 import { useThemeStore } from '../../../store/themeStore';
 import { REGIONS, FINGER_RANKS } from '../../../data/worldData';
@@ -197,7 +198,7 @@ const People = ({ npcs, age, t, lang }) => {
   );
 };
 
-const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeTab = 'all' }) => {
+const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeTab = 'all', onOpenDepot }) => {
   const { health, sanity, wealth, network, rep } = char.stats;
 
   const showOverview = activeTab === 'all' || activeTab === 'overview';

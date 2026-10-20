@@ -6,6 +6,8 @@ import { useShallow } from 'zustand/react/shallow';
 import { useGameStore } from '../../../store/gameStore';
 import { useThemeStore } from '../../../store/themeStore';
 import { SEASONS, getNextCareerMilestone } from '../../../engine/gameEngine';
+import { WorkshopDepotModal } from './WorkshopDepotModal';
+import { ShoppingBag } from 'lucide-react';
 import { nextPlanItem } from '../../../engine/yearPlanner';
 import { DRAMA_PHASES } from '../../../engine/weaverAI';
 import { audioEngine } from '../../../engine/audioEngine';
@@ -234,6 +236,19 @@ export const PlayBar = () => {
       onClick: handleToggleAutoPlay
     },
     {
+      key: 'shop',
+      icon: <ShoppingBag size={16} color="var(--accent)" />,
+      label: (
+        <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 14 }}>
+          <span>{t('Xưởng Workshop & Chợ Đen', 'Workshop & Black Market')}</span>
+          <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--accent)' }}>
+            {char.stats?.wealth ?? char.wealth ?? 0} Ahn
+          </span>
+        </span>
+      ),
+      onClick: () => setShopOpen(true)
+    },
+    {
       key: 'audio',
       icon: audioMuted ? <VolumeX size={16} /> : <Volume2 size={16} />,
       label: (
@@ -397,6 +412,19 @@ export const PlayBar = () => {
 
         {/* Desktop secondary utilities (Bot, Mute, Save, Home, Restart) */}
         <div className="playbar-desktop-actions">
+        <Tooltip title={t('Mở Xưởng Workshop & Chợ Đen để mua vũ khí / vật phẩm', 'Open Workshop & Black Market to purchase gear')}>
+          <button
+            type="button"
+            className="btn btn-secondary btn-icon"
+            onClick={() => setShopOpen(true)}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '0 10px', height: 32, borderColor: 'rgba(212, 175, 55, 0.3)' }}
+          >
+            <ShoppingBag size={14} color="var(--accent)" />
+            <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--accent)' }}>
+              {char.stats?.wealth ?? char.wealth ?? 0} Ahn
+            </span>
+          </button>
+        </Tooltip>
           <button
             type="button"
             className={`icon-btn ${autoPlay ? 'is-on' : ''}`}

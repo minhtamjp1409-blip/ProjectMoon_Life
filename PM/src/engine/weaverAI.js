@@ -1,3 +1,4 @@
+import { getNextFixerPromotion, checkColorFixerReadiness } from './careerPipeline';
 // ============================================================================
 // THE PRESCRIPT LOOM: CAUSAL MEMORY GRAPH & RNG FATE OMEN ENGINE
 // Pure In-Universe Project Moon Causal Engine (Zero Meta/AI Text)
@@ -340,6 +341,29 @@ export function isEventEligible(event, char) {
       if (char.flags.includes(forbidFlag)) return false;
     }
   }
+
+  // Distortion Isolation: An active Distortion is an Urban Plague / Nightmare entity hunted by The City
+  if (char.flags.includes('Distorted')) {
+    const isDistortEvent = event.id.startsWith('distort_') ||
+      (Array.isArray(event.requires) && event.requires.includes('Distorted')) ||
+      (Array.isArray(event.jobs) && event.jobs.includes('Distortion'));
+    if (!isDistortEvent) return false;
+  } else {
+    // Non-distorted humans cannot trigger Distortion-exclusive progression
+    if (event.id.startsWith('distort_') || (Array.isArray(event.requires) && event.requires.includes('Distorted'))) {
+      return false;
+    }
+  }
+
+  // Need conditions (jobs, grade, flags, stats, etc.)
+  if (event.need) {
+    const need = event.need;
+    if (need.jobs && !need.jobs.includes(char.job)) return false;
+    if (need.grade && !(char.job === 'Fixer' && char.fixerGrade <= need.grade[0] && char.fixerGrade >= need.grade[1])) return false;
+    if (need.flags && !need.flags.every(f => char.flags.includes(f))) return false;
+    if (need.noFlags && need.noFlags.some(f => char.flags.includes(f))) return false;
+  }
+
   return true;
 }
 
@@ -478,6 +502,75 @@ export function selectEventWithWeaverAI({
     }
   }
 
+  // Prioritize sequential Fixer Grade Promotion exams
+  if (char.job === 'Fixer' && !char.flags.includes('Distorted')) {
+    const promoEvIds = {
+      9: 'fixer_promo_g8_exam',
+      8: 'fixer_promo_g7_exam',
+      7: 'fixer_promo_g6_exam',
+      6: 'fixer_promo_g5_exam',
+      5: 'fixer_promo_g4_exam',
+      4: 'fixer_promo_g3_exam',
+      3: 'fixer_promo_g2_exam',
+      2: 'fixer_promo_g1_exam'
+    };
+    const targetExamId = promoEvIds[char.fixerGrade];
+    if (targetExamId && !char.seenEvents.includes(targetExamId)) {
+      const examEv = allPools.find((e) => e.id === targetExamId);
+      if (examEv && isEventEligible(examEv, char)) {
+        const logEntry = {
+          age: char.age,
+          phase: 'CLIMAX',
+          selectedId: examEv.id,
+          utility: 975,
+          reasonVi: `Fixer Grade ${char.fixerGrade} đủ điều kiện: Hana Association triệu tập kỳ thi thăng cấp Grade ${char.fixerGrade - 1}`,
+          reasonEn: `Grade ${char.fixerGrade} Fixer eligible: Hana Association summons promotion exam to Grade ${char.fixerGrade - 1}`,
+          candidates: [{ eventId: examEv.id, totalUtility: 975 }]
+        };
+        return {
+          event: examEv,
+          weaver: {
+            ...updatedWeaver,
+            decisionLog: [logEntry, ...updatedWeaver.decisionLog].slice(0, 18)
+          }
+        };
+      }
+    }
+  }
+
+  // Prioritize Distortion progression when distorted
+  if (char.flags.includes('Distorted')) {
+    const distortStages = [
+      'distort_carmen_communion_1',
+      'distort_suppression_wave_1',
+      'distort_manifest_domain',
+      'distort_climax_color_faceoff'
+    ];
+    for (const dId of distortStages) {
+      if (!char.seenEvents.includes(dId)) {
+        const dEv = allPools.find((e) => e.id === dId);
+        if (dEv && isEventEligible(dEv, char)) {
+          const logEntry = {
+            age: char.age,
+            phase: 'CLIMAX',
+            selectedId: dEv.id,
+            utility: 990,
+            reasonVi: 'Tiến trình Biến dị Distortion dưới tiếng thì thầm của Carmen',
+            reasonEn: 'Distortion progression under Carmen’s siren whispers',
+            candidates: [{ eventId: dEv.id, totalUtility: 990 }]
+          };
+          return {
+            event: dEv,
+            weaver: {
+              ...updatedWeaver,
+              decisionLog: [logEntry, ...updatedWeaver.decisionLog].slice(0, 18)
+            }
+          };
+        }
+      }
+    }
+  }
+
   // Syndicate initiate choosing Finger allegiance
   const chooseFingerEv = allPools.find(e => e.id === 'syn_choose_finger_allegiance');
   if (
@@ -538,6 +631,7 @@ export function selectEventWithWeaverAI({
   if (
     colorEv &&
     char.job === 'Fixer' &&
+    !char.flags.includes('Distorted') &&
     char.fixerGrade === 1 &&
     (char.merit || 0) >= 150 &&
     ((char.stats?.rep ?? char.rep) || 0) >= 68 &&

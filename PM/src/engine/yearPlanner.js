@@ -1,3 +1,4 @@
+import { getNextFixerPromotion, checkColorFixerReadiness } from './careerPipeline';
 // ============================================================================
 // YEAR PLANNER: each year is a plan of 1–4 moments spread across the seasons.
 // The bar sweeps the year; when it passes a moment's time `t` (0–1) that moment
@@ -19,7 +20,7 @@ import {
   woundDeath,
   generateFixerContract
 } from './gameEngine';
-import { selectEventWithWeaverAI, updateDramaTension, FATE_OMENS } from './weaverAI';
+import { selectEventWithWeaverAI, updateDramaTension, FATE_OMENS, isEventEligible } from './weaverAI';
 import { CONSEQUENCE_EVENTS } from '../data/eventsChildhood';
 import { REGIONS } from '../data/worldData';
 import { LIFE_DAILIES as DAILIES_FIRST } from '../data/lifeDailies';
@@ -90,6 +91,8 @@ export function matchNeed(need, char) {
   if (need.flags && !need.flags.every((f) => char.flags.includes(f))) return false;
   if (need.noFlags && need.noFlags.some((f) => char.flags.includes(f))) return false;
   if (need.npc && !npcActive(char.npcs?.[need.npc])) return false;
+  // If character is distorted, block standard jobs
+  if (char.flags.includes('Distorted') && need.jobs && !need.jobs.includes('Distortion')) return false;
   if (need.mem && !hasMemory(char, need.mem)) return false;
   if (need.noMem && hasMemory(char, need.noMem)) return false;
   if (need.noNpc && char.npcs?.[need.noNpc]) return false;
@@ -193,12 +196,17 @@ const weightOf = (char) => (e) => directorWeight(e, char).w;
 function majorIsDue(char, rng) {
   const w = char.weaver || {};
   if (char.age <= 4) return false;
+  // If Fixer is eligible for next grade exam, schedule major
+  if (char.job === 'Fixer' && !char.flags.includes('Distorted')) {
+    const nextPromo = getNextFixerPromotion(char);
+    if (nextPromo && nextPromo.isEligible) return true;
+  }
   if ((char.age === 18 || (char.age > 18 && char.job === 'Child')) && !(char.seenEvents || []).includes('ad_career_crossroad_18')) return true;
   if (char.job === 'Syndicate' && !char.finger && !(char.seenEvents || []).includes('syn_choose_finger_allegiance')) return true;
   if ((char.taboo || 0) >= 3) return true;
   if ((w.pendingThreads || []).some((th) => th.kind !== 'minor' && !th.fulfilled && char.age >= th.triggerAge)) return true;
   if (char.age >= 18 && ((char.stats.sanity <= 5 && rng() < 0.12) || ((char.resonance || 0) >= 90 && rng() < 0.15)) && !(char.seenEvents || []).includes('ego_carmen_crossroad') && !char.flags.includes('EGOAwakened') && !char.flags.includes('Distorted')) return true;
-  if (char.job === 'Fixer' && char.fixerGrade === 1 && (char.merit || 0) >= 150 && ((char.stats?.rep ?? char.rep) || 0) >= 68 && !char.flags.includes('ColorFixer') && !(char.seenEvents || []).includes('hana_color_ascension_trial')) return true;
+  if (char.job === 'Fixer' && !char.flags.includes('Distorted') && char.fixerGrade === 1 && (char.merit || 0) >= 150 && ((char.stats?.rep ?? char.rep) || 0) >= 68 && !char.flags.includes('ColorFixer') && !(char.seenEvents || []).includes('hana_color_ascension_trial')) return true;
   if (char.job === 'Syndicate' && (char.fingerRank || 0) >= 2 && (char.merit || 0) >= 75) return true;
   if (char.job === 'Wing Employee' && (char.wingRank || 0) >= 1 && (char.merit || 0) >= 65 && !(char.seenEvents || []).includes('wing_singularity_classified_audit')) return true;
   if (char.job === 'Workshop Craftsman' && (char.workshopRank || 0) >= 1 && (char.merit || 0) >= 65 && !(char.seenEvents || []).includes('workshop_legendary_forge_trial')) return true;
@@ -268,7 +276,7 @@ export function planYear(charState, rng) {
   }
 
   // Fixer combat contract: tactical commission
-  if (char.job === 'Fixer' && age >= 19 && rng() < 0.42 && !scheduledKey.some((it) => it.kind === 'contract')) {
+  if (char.job === 'Fixer' && !char.flags.includes('Distorted') && age >= 19 && rng() < 0.42 && !scheduledKey.some((it) => it.kind === 'contract')) {
     scheduledKey.push({ kind: 'contract' });
   }
 
@@ -558,10 +566,13 @@ export function runPlanItem(charState, item, rng) {
     let event = null;
     let weaver = char.weaver;
     if (item.forcedEventId) {
-      event = CONSEQUENCE_EVENTS.find((e) => e.id === item.forcedEventId) ||
+      const candidate = CONSEQUENCE_EVENTS.find((e) => e.id === item.forcedEventId) ||
               ALL_STORY_EVENTS.find((e) => e.id === item.forcedEventId);
-      if (item.thread) {
-        closeThreads(char, item.forcedEventId);
+      if (candidate && isEventEligible(candidate, char)) {
+        event = candidate;
+        if (item.thread) {
+          closeThreads(char, item.forcedEventId);
+        }
       }
     }
     if (!event) {
@@ -596,7 +607,7 @@ export function runPlanItem(charState, item, rng) {
     return char;
   }
 
-  if (item.kind === 'contract' && char.job === 'Fixer') {
+  if (item.kind === 'contract' && char.job === 'Fixer' && !char.flags.includes('Distorted')) {
     char.pendingContract = { ...generateFixerContract(char, rng), t: item.t };
   }
   return char;

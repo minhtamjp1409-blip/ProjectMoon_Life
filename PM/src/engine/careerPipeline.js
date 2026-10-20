@@ -1,0 +1,230 @@
+/**
+ * Project Moon Universe - Career Progression, Distortion Lifecycle & Inheritance Engine
+ * Enforces strict, canonical milestones:
+ * - Fixer: Grade 9 -> 8 -> 7 -> 6 -> 5 -> 4 -> 3 -> 2 -> 1 -> Color Fixer (NO grade skipping!).
+ * - Distortion: Complete career decoupling, suppression waves, Carmen communion.
+ * - Succession: Biological child vs Apprentice vs Scavenger inheritor.
+ * - Inventory & Survival Tech (K Corp Ampoule auto-revive).
+ */
+
+import { SEASONS } from './gameEngine';
+import { getItemById } from '../data/itemsData';
+
+export const FIXER_LADDER = [
+  {
+    grade: 8,
+    meritReq: 10,
+    repReq: 8,
+    titleVi: 'Kỳ thi Thăng cấp Fixer Grade 8 (Hana Section 6)',
+    titleEn: 'Grade 8 Fixer Promotion Exam (Hana Section 6)',
+    descVi: 'Hana Association Section 6 gửi thông báo triệu tập: Bạn đã tích lũy đủ chiến tích ban đầu ở Backstreets. Hãy làm thủ tục kiểm tra năng lực để tháo bỏ tấm thẻ Grade 9 tập sự.',
+    descEn: 'Hana Association Section 6 issues your summons: You have accumulated sufficient Backstreet merits to sit for the Grade 8 competency evaluation.'
+  },
+  {
+    grade: 7,
+    meritReq: 22,
+    repReq: 16,
+    titleVi: 'Khảo sát Gia nhập Văn phòng (Fixer Grade 7)',
+    titleEn: 'Office Affiliation Certification (Grade 7 Fixer)',
+    descVi: 'Các Văn phòng Fixer độc lập và phân hội Zwei bắt đầu để mắt đến bạn. Hana yêu cầu bạn vượt qua bài thẩm định Grade 7 để nhận thù lao tiêu chuẩn.',
+    descEn: 'Independent Fixer Offices and Zwei sub-branches take note of your record. Complete the Grade 7 certification for standard commission rates.'
+  },
+  {
+    grade: 6,
+    meritReq: 38,
+    repReq: 26,
+    titleVi: 'Bổ nhiệm Fixer Thực chiến (Grade 6)',
+    titleEn: 'Field Combat Operative Commission (Grade 6)',
+    descVi: 'Vượt qua vô số vụ huyết chiến Backstreets và thanh trừng chuột cống, bạn được cấp chứng chỉ Fixer Grade 6, đủ tư cách chỉ huy đội nhỏ đối đầu hiểm họa Urban Legend.',
+    descEn: 'Surviving dozens of lethal clashes, you are granted Grade 6 status, authorized to lead tactical strike cells against Urban Legend threats.'
+  },
+  {
+    grade: 5,
+    meritReq: 56,
+    repReq: 38,
+    titleVi: 'Đại hội Thăng cấp Trung cấp (Fixer Grade 5)',
+    titleEn: 'Mid-Tier Rank Exam (Grade 5 Fixer)',
+    descVi: 'Tại ngưỡng Grade 5, bạn bước vào hàng ngũ Fixer kỳ cựu. Hana Association yêu cầu bài kiểm tra đối kháng thực địa với các Capo cấp thấp của Syndicate.',
+    descEn: 'Grade 5 marks entry into the veteran echelon. Hana requires verified field combat suppression against syndicate Capos.'
+  },
+  {
+    grade: 4,
+    meritReq: 78,
+    repReq: 52,
+    titleVi: 'Phó Chỉ Huy Section (Fixer Grade 4)',
+    titleEn: 'Section Vice-Captaincy (Grade 4 Fixer)',
+    descVi: 'Đạt Grade 4, tên tuổi bạn bắt đầu được các Hiệp hội lớn (Shi, Liu, Seven, Dieci) săn đón. Mức phí ủy thác tăng vọt, đối mặt trực diện hiểm họa Urban Plague.',
+    descEn: 'At Grade 4, major Associations scout your talent. Contract bounties surge as you deploy directly against Urban Plague threats.'
+  },
+  {
+    grade: 3,
+    meritReq: 105,
+    repReq: 68,
+    titleVi: 'Chuyên gia Cấp cao (Fixer Grade 3)',
+    titleEn: 'Senior Specialist Commission (Grade 3 Fixer)',
+    descVi: 'Chỉ 3% số Fixer ở The City đạt tới Grade 3. Bạn đủ thẩm quyền tiếp cận vũ khí Workshop cấp cao và điều tra các vụ án bí mật của Wing.',
+    descEn: 'Only the top 3% of Fixers reach Grade 3. You gain access to master-grade Workshop gear and classified Wing investigations.'
+  },
+  {
+    grade: 2,
+    meritReq: 135,
+    repReq: 82,
+    titleVi: 'Át Chủ Bài Section 1 (Fixer Grade 2)',
+    titleEn: 'Section 1 Ace Operative (Grade 2 Fixer)',
+    descVi: 'Bạn là cánh tay phải của các Đội trưởng Section 1. Mọi bước đi đều phải đối đầu với quái vật Urban Nightmare và những bản án tử hình của The Head.',
+    descEn: 'The right hand of Section 1 Directors. Your missions confront Urban Nightmare horrors and death warrants issued by The Head.'
+  },
+  {
+    grade: 1,
+    meritReq: 170,
+    repReq: 95,
+    titleVi: 'Đỉnh cao Fixer: Đại Khảo Hạch Grade 1 (Hana Supreme)',
+    titleEn: 'Apex of Fixers: Grade 1 Supreme Evaluation',
+    descVi: 'Bạn đứng trên đỉnh cao của giới Fixer toàn The City. Hội đồng Hana đích thân ký quyết định công nhận Grade 1 — bước đệm cuối cùng trước khi trở thành huyền thoại Color.',
+    descEn: 'You stand atop the entire City’s Fixer hierarchy. Hana’s Supreme Board signs your Grade 1 credential — the final threshold before Color designation.'
+  }
+];
+
+/**
+ * Checks and returns the NEXT available Fixer promotion exam.
+ * Guarantees NO skipping grades: must proceed strictly 9 -> 8 -> 7 -> ... -> 1.
+ */
+export function getNextFixerPromotion(char) {
+  if (char.job !== 'Fixer' || char.flags.includes('Distorted')) return null;
+  const curGrade = char.fixerGrade ?? 9;
+  if (curGrade <= 1) return null; // Grade 1 is evaluated separately for Color trial
+
+  const nextStep = FIXER_LADDER.find((step) => step.grade === curGrade - 1);
+  if (!nextStep) return null;
+
+  const curRep = (char.stats?.rep ?? char.rep) || 0;
+  const isEligible = (char.merit || 0) >= nextStep.meritReq && curRep >= nextStep.repReq;
+
+  return {
+    ...nextStep,
+    isEligible,
+    currentMerit: char.merit || 0,
+    currentRep: curRep
+  };
+}
+
+/**
+ * Evaluates whether Color Fixer trial can be initiated.
+ * Strictly requires Grade 1, Merit >= 210, Rep >= 100, E.G.O Awakening / Resonance >= 50,
+ * and surviving an Urban Nightmare / Star of the City ordeal.
+ */
+export function checkColorFixerReadiness(char) {
+  if (char.job !== 'Fixer' || char.flags.includes('Distorted') || char.flags.includes('ColorFixer')) {
+    return { ready: false, reason: 'Chưa đủ điều kiện' };
+  }
+  if (char.fixerGrade !== 1) {
+    return { ready: false, reason: 'Bắt buộc phải là Fixer Grade 1' };
+  }
+  const curRep = (char.stats?.rep ?? char.rep) || 0;
+  const meritOk = (char.merit || 0) >= 200;
+  const repOk = curRep >= 95;
+  const egoOrResonance = char.flags.includes('EGOAwakened') || (char.resonance || 0) >= 50;
+
+  return {
+    ready: meritOk && repOk && egoOrResonance,
+    meritOk,
+    repOk,
+    egoOrResonance,
+    targetMerit: 200,
+    targetRep: 95
+  };
+}
+
+/**
+ * Handles character Distortion transformation:
+ * - Changes job to 'Distortion'
+ * - Immediately severs Fixer contracts and official Wing appointments
+ * - Resets/locks sanity into distorted state
+ * - Logs the monumental fall into Carmen's void
+ */
+export function triggerDistortionTransformation(char) {
+  if (char.flags.includes('Distorted')) return [];
+  char.flags.push('Distorted');
+  char.job = 'Distortion';
+  char.stats.sanity = 0; // Absolute madness or inverted ego
+  char.resonance = Math.max(char.resonance || 0, 85);
+  char.heat = Math.max(char.heat || 0, 60);
+
+  const logs = [
+    {
+      id: `log_distort_transform_${char.age}`,
+      age: char.age,
+      season: SEASONS[char.seasonIdx || 0],
+      type: 'major',
+      vi: `[THỨC TỈNH BIẾN DỊ · DISTORTION] Giọng nói dịu dàng như mật ngọt của Carmen ôm trọn lấy tâm trí bạn trong vầng thái dương rực rỡ. Nỗi đau, áp lực và nhân tính tan rã, nhường chỗ cho hình thái chân thật nhất của bản ngã. Bạn không còn là một con người của The City nữa. Bạn là một Distortion.`,
+      en: `[DISTORTION METAMORPHOSIS] Carmen’s honeyed whispers cradled your shattered mind within the radiant sun. Humanity and agonizing pressure dissolved into the purest manifestation of your obsession. You are no longer human. You are a Distortion.`
+    }
+  ];
+
+  return logs;
+}
+
+/**
+ * Evaluates item effects upon fatal damage (K Corp HP Ampoule auto-revive).
+ * Returns true if saved, false otherwise.
+ */
+export function tryItemAutoRevive(char) {
+  if (!Array.isArray(char.inventory)) return false;
+  const ampouleIdx = char.inventory.findIndex((item) => item.id === 'con_kcorp_ampoule');
+  if (ampouleIdx === -1) return false;
+
+  // Consume the ampoule
+  char.inventory.splice(ampouleIdx, 1);
+  char.stats.health = 50;
+  char.stats.sanity = Math.max(20, char.stats.sanity);
+
+  char.logs.push({
+    id: `log_kcorp_save_${char.age}_${Date.now()}`,
+    age: char.age,
+    season: SEASONS[char.seasonIdx || 0],
+    type: 'major',
+    vi: `[Ống tiêm K Corp kích hoạt!] Ống tiêm chứa dịch màu lục bảo K Corp vỡ tung, chất lỏng sinh học thần kỳ thấm sâu vào từng tế bào bị hủy hoại, kéo bạn tức thì trở về từ cõi chết! (+50 HP)`,
+    en: `[K Corp Ampoule Triggered!] The emerald vial shattered, miraculous biogel flooding your ruined tissues and pulling you back from the brink of oblivion! (+50 HP)`
+  });
+
+  return true;
+}
+
+/**
+ * Calculates biological inheritance vs protégé vs scavenger successor.
+ */
+export function determineSuccessorType(char) {
+  const aliveChild = char.npcs?.child && !char.npcs.child.deceased && char.npcs.child.status !== 'dead';
+  if (aliveChild || char.flags.includes('HasChild')) {
+    return {
+      type: 'child',
+      titleVi: 'Huyết tử Thừa kế',
+      titleEn: 'Biological Heir',
+      introVi: `Bạn là con của ${char.name}, mang trong mình dòng máu và ký ức về một tiền nhân đã sống kiên cường giữa lòng The City.`,
+      introEn: `You are the child of ${char.name}, carrying their bloodline and memory across The City.`
+    };
+  }
+
+  const activeProtégé =
+    (char.npcs?.partner && !char.npcs.partner.deceased && char.npcs.partner.status !== 'dead') ||
+    (char.npcs?.mentor && !char.npcs.mentor.deceased && char.npcs.mentor.status !== 'dead');
+
+  if (activeProtégé) {
+    return {
+      type: 'apprentice',
+      titleVi: 'Học trò Kế thừa Di nguyện',
+      titleEn: 'Successor Apprentice',
+      introVi: `Bạn là đệ tử được ${char.name} dìu dắt, nắm chặt thanh vũ khí và những lời dặn dò cuối cùng trước khi người ấy ngã xuống.`,
+      introEn: `You are the chosen protégé of ${char.name}, gripping their parting teachings and weapon.`
+    };
+  }
+
+  // Solitary death: scavenger in the Backstreets
+  return {
+    type: 'scavenger',
+    titleVi: 'Kẻ nhặt tàn dư Backstreets',
+    titleEn: 'Backstreet Scavenger Inheritor',
+    introVi: `Bạn là một kẻ sống sót vô danh ở Backstreets, tình cờ đào bới được chiếc ba lô cũ và cuốn nhật ký vấy máu của ${char.name} từ đống gạch vụn.`,
+    introEn: `You are an unnamed Backstreet survivor who uncovered the battered pack and bloodstained journal of ${char.name} amidst the rubble.`
+  };
+}
