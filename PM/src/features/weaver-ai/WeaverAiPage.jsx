@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Modal } from 'antd';
-import { Plus } from 'lucide-react';
+import { Plus, Cpu, Sparkles, Settings } from 'lucide-react';
+import ExternalDirectorModal from './components/ExternalDirectorModal';
+import { loadAIConfig } from '../../services/ai/externalModelDirector';
 import { useGameStore } from '../../store/gameStore';
 import { FATE_OMENS, DRAMA_PHASES } from '../../engine/weaverAI';
 import { useT } from '../../i18n';
@@ -18,6 +20,8 @@ export const WeaverAiPage = () => {
   const [minAge, setMinAge] = useState(18);
   const [maxAge, setMaxAge] = useState(60);
   const [showAllNodes, setShowAllNodes] = useState(false);
+  const [aiModalOpen, setAiModalOpen] = useState(false);
+  const [aiConfig, setAiConfig] = useState(loadAIConfig());
 
   const weaver = char.weaver || {};
   const omen = FATE_OMENS.find((o) => o.id === (char.fateOmenId || weaver.mode)) || FATE_OMENS[0];

@@ -1,3 +1,5 @@
+import { evaluateEventConsiderations } from './utilityCurves';
+import { createCityBlackboard } from './cityBlackboard';
 import { getNextFixerPromotion, checkColorFixerReadiness } from './careerPipeline';
 // ============================================================================
 // THE PRESCRIPT LOOM: CAUSAL MEMORY GRAPH & RNG FATE OMEN ENGINE
@@ -429,8 +431,16 @@ export function scoreEventUtility(event, char, weaver) {
     reasonsEn.push('Mandatory Age 18 career crossroad milestone');
   }
 
+  // Advanced Non-Linear Response Curves & City Blackboard Considerations
+  const blackboard = createCityBlackboard(char);
+  const consideration = evaluateEventConsiderations(event, char, blackboard);
+  const considerationMult = consideration.scoreMultiplier;
+  if (consideration.considerationLogs?.length > 0) {
+    reasonsVi.push(...consideration.considerationLogs);
+  }
+
   const customMult = weaver.customWeights?.[event.id] ?? 1;
-  const rawTotal = (baseWeight + causalScore + loreScore + npcScore + pacingScore) * customMult;
+  const rawTotal = (baseWeight + causalScore + loreScore + npcScore + pacingScore) * considerationMult * customMult;
   const totalUtility = Math.round(rawTotal * 10) / 10;
 
   return {
