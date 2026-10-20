@@ -1,0 +1,216 @@
+================================================================================
+                    THE CITY CHRONICLES: PROJECT MOON LIFE SIM
+             TỔNG QUAN HỆ THỐNG GAMEPLAY, LORE & LOGIC TÌNH HUỐNG
+================================================================================
+
+1. GIỚI THIỆU TỔNG QUAN (OVERVIEW)
+--------------------------------------------------------------------------------
+- Tên dự án: The City Chronicles (Project Moon Life Sim)
+- Nền tảng: Web Game (chơi đa nền tảng PC, Tablet, Mobile)
+- Live Demo: https://project-moon-life-five.vercel.app
+- Thể loại: Roguelike Text Life Simulator, RPG Sinh tồn, Narrative Drama
+- Nguồn cảm hứng bối cảnh: Vũ trụ Project Moon (Lobotomy Corporation, Library of 
+  Ruina, Limbus Company) kết hợp chiều sâu tâm lý nội tâm của Disco Elysium.
+- Tôn chỉ thế giới: Tôn trọng 100% lore gốc Project Moon. Giữ nguyên toàn bộ 
+  thuật ngữ danh từ riêng độc bản: The City, Nest, Wing, Corp, Backstreets, 
+  Fixer, Association, Workshop, Syndicate, The Five Fingers, Feather, 
+  Singularity, E.G.O, Distortion, Carmen, Star of the City, Sweepers...
+
+--------------------------------------------------------------------------------
+2. BỐI CẢNH THẾ GIỚI THE CITY (THE WORLD)
+--------------------------------------------------------------------------------
+- The City gồm 26 Quận (Districts) tương ứng với bảng chữ cái từ A đến Z:
+  + Nest (Tổ): Khu vực trung tâm của các tập đoàn siêu quyền lực (Wings/Corps). 
+    An toàn, tiện nghi, y tế hiện đại bậc nhất nhưng áp lực ngột ngạt và bí mật 
+    tối đen đằng sau các Singularity.
+  + Backstreets (Phố Ngầm): Vùng đất vô pháp, nghèo đói và bạo lực bao quanh các Nest. 
+    Nơi các Syndicate thống trị, Fixer làm thuê kiếm từng đồng Ahn, và bóng ma của 
+    giờ 3:13 AM (Đêm Quét Dọn của loài Sweeper) đe dọa nuốt chửng mọi kẻ lang thang.
+  + Outskirts & Ruins: Vùng hoang vu ngoài vòng kiểm soát của The Head, nơi ẩn chứa 
+    tàn tích cổ đại, quái vật đột biến và các mối hiểm họa vượt ngoài trí tưởng tượng.
+- Người dân The City sinh ra trong khắc nghiệt, phải tự trả tiền cho từng nhịp thở 
+  khi tròn 18 tuổi. Mọi quyết định đều có giá của nó, và luật nhân quả không bao 
+  giờ tha thứ cho bất kỳ ai.
+
+--------------------------------------------------------------------------------
+3. VÒNG LẶP GAMEPLAY CHÍNH (CORE GAMEPLAY LOOP)
+--------------------------------------------------------------------------------
+A. Tiến Trình Một Năm Cuộc Đời (Year-Planning Engine)
+- Mỗi năm là một chu kỳ gồm 4 mùa: Xuân - Hạ - Thu - Đông.
+- Thanh tiến trình thời gian chạy tự động (30 giây ở tốc độ 1x, 15 giây ở 2x, 
+  10 giây ở 3x) với các nút Pause (Tạm dừng), Resume (Tiếp tục) và Qua Mùa.
+- Vào cuối mỗi năm: Engine tự động hạch toán kinh tế (thu nhập theo nghề, trừ 
+  chi phí sinh hoạt theo Quận), quá trình hồi phục thể lực, ảnh hưởng ô nhiễm / 
+  tiếng súng Backstreets, lão hóa và các biến cố ngầm.
+
+B. Phân Cấp 4 Loại Khoảnh Khắc (Encounter Hierarchy)
+1. Dòng Thường Nhật (Daily Life Friction):
+   - Xuất hiện tự nhiên khi dòng thời gian trôi.
+   - Thể hiện đời sống vụn vặt: tiền mì gói, tiếng súng góc phố, đồng nghiệp Wing 
+     than vãn, kiểm tra vũ khí ở Workshop...
+   - Tác động nhẹ vào chỉ số (+/- 1-3 điểm).
+
+2. Sự Kiện Nhỏ (Minor Interactive Choices):
+   - Bảng lựa chọn viền xanh có đếm ngược thời gian (15 giây).
+   - Đòi hỏi người chơi phản xạ nhanh: can thiệp một vụ ẩu đả, nhận đơn hàng 
+     nghi vấn, giúp đỡ đứa trẻ Backstreets, mua tin tình báo...
+   - Nếu để thanh đếm ngược trôi qua, cơ hội sẽ mất.
+
+3. Sự Kiện Lớn (Major Narrative Dilemmas):
+   - Tự động dừng thanh thời gian.
+   - Đi kèm hình ảnh nghệ thuật, tiêu đề sự kiện trang trọng và phần mô tả sâu sắc.
+   - Đưa ra những ngã rẽ định đoạt số phận, biến cố bước ngoặt, lựa chọn sinh tử.
+   - Có thể gieo mầm "Quả Báo Hẹn Giờ" (Later Karma Thread) kích hoạt nhiều năm sau.
+
+4. Hợp Đồng Tác Chiến Của Fixer (Tactical Requests):
+   - Dành riêng cho giới Fixer.
+   - Hệ thống tính toán xác suất chiến thuật: Tỷ lệ Thành công / Thất bại / Tử trận 
+     dựa trên cấp bậc Grade, thể lực HP, tâm trí SP, vũ khí và cách tiếp cận (trực 
+     diện, ám toán, ngoại giao, dùng Singularity).
+
+C. Hệ Thống Chỉ Số & Tài Nguyên Sinh Tồn
+- Health (HP): Thể lực. Chạm 0 đồng nghĩa với cái chết.
+- Sanity (SP): Tinh thần và sự tỉnh táo. Khi Sanity chạm đáy, nhân vật rơi vào hoảng 
+  loạn tột độ và có nguy cơ nghe thấy "Lời Thì Thầm Của Carmen".
+- Wealth (Ahn): Tiền tệ The City. Dùng để sinh tồn, mua vũ khí, trả tiền bảo kê, 
+  hối lộ, hoặc mua vé tàu WARP.
+- Reputation (Rep): Danh tiếng trong xã hội, nấc thang thăng tiến trong Hiệp hội 
+  hoặc sự nể sợ của các băng đảng.
+- Network: Mạng lưới quan hệ, móc nối thông tin với các đầu mối ngầm.
+- Heat: Mức độ chú ý thù địch từ các Syndicate đối địch hoặc lực lượng thực thi pháp luật.
+- Taboo: Điểm vi phạm điều cấm của The Head. Đạt ngưỡng nguy hiểm sẽ bị Beholder giám 
+  sát hoặc Claw và Arbiter đến tận nơi thanh trừng.
+- Resonance: Độ cộng hưởng ánh sáng nội tâm (Light Resonance), đóng vai trò quyết định 
+  khi đứng giữa ranh giới thức tỉnh E.G.O và hóa Distortion.
+
+--------------------------------------------------------------------------------
+4. BỐN NHÁNH SỰ NGHIỆP LỚN (CAREER PATHS & FACTIONS)
+--------------------------------------------------------------------------------
+A. Fixer (Người Giải Quyết Vấn Đề)
+- Khởi đầu là Grade 9: Fixer tập sự, làm các việc lặt vặt như bắt mèo, bảo vệ quán ăn, 
+  đối mặt với Rats và các băng nhóm cỏn con.
+- Leo dần thang bậc qua các cấp Grade 8 -> Grade 1 thông qua công trạng (Merit), 
+  danh tiếng (Rep) và gia nhập các Hiệp Hội (Hana, Zwei, Shi, Seven, Tres, Liu...).
+- ĐỈNH CAO: Color Fixer (Fixer Grade 0 - Danh hiệu Sắc Màu)
+  + Khi đạt Grade 1 với uy danh lẫy lừng, Hana Association Section 1 sẽ triệu tập 
+    vào Đại Khảo Thí "Star of the City" (Ngôi Sao Của The City).
+  + Sống sót và chém đứt lõi tai họa sẽ được phong Color và khắc danh hiệu độc bản: 
+    The Crimson Gale, The Azure Shadow, The Obsidian Blade... đi vào huyền thoại.
+
+B. The Five Fingers (Năm Ngón Tay - Thống Trị Thế Giới Ngầm)
+- Người chơi có thể tuyên thệ gia nhập bất kỳ Finger nào trong 5 Ngón Tay:
+  1. The Thumb (Ngón Cái): Tôn ti trật tự tuyệt đối, súng đạn và lễ nghi thép. 
+     (Soldato -> Capo -> Sottocapo -> Capo dei Capi).
+  2. The Index (Ngón Trỏ): Thực thi mù quáng các chỉ thị siêu nhiên từ Prescript. 
+     (Proselyte -> Proxy -> Weaver).
+  3. The Middle (Ngón Giữa): Tình anh em đại gia đình và cuốn sổ phục thù máu 
+     Book of Vengeance. (Little Sibling -> Big Sibling -> Great Sibling).
+  4. The Ring (Ngón Áp Út): Nghệ thuật biến dị, phẫu thuật cơ thể con người 
+     thành tác phẩm nghệ thuật. (Student -> Docent -> Maestro).
+  5. The Pinky (Ngón Út): Giao ước ngầm, lời thề móc tay và luật ngầm Backstreets. 
+     (Initiate -> Star Blade).
+- Mỗi Finger có phong cách chiến đấu, đạo lý riêng và chuỗi sự kiện khảo nghiệm 
+  sinh tử riêng biệt để bước lên hàng ngũ lãnh đạo tối cao.
+
+C. Wing Employee (Nhân Viên / Feather Của 26 Tập Đoàn Lớn)
+- Làm việc cho các Wing (W Corp, R Corp, K Corp, T Corp, N Corp...).
+- Tận hưởng cuộc sống Nest xa hoa, an toàn, nhưng đối mặt với nạn bóc lột sức lao 
+  động tàn nhẫn, thí nghiệm Singularity bí mật và thanh trừng nội bộ.
+- Thang thăng tiến: Junior Specialist -> Section Chief -> Senior Executive.
+- Đỉnh cao: Khảo nghiệm thẩm định Singularity Tối Mật trước Hội Đồng Quản Trị.
+
+D. Workshop Craftsman (Thợ Rèn & Chế Tác Vũ Khí)
+- Rèn đúc vũ khí, chế tạo khiên giáp và công nghệ hỗ trợ cho các Fixer.
+- Tuân thủ nghiêm ngặt các quy định về vật liệu và bản quyền của Tres Association.
+- Thang thăng tiến: Apprentice -> Master Craftsman -> Legendary Innovator.
+- Đỉnh cao: Sự kiện Rèn Tuyệt Tác Thần Binh (Masterpiece Forge Trial) - tự tay đặt tên 
+  và chế tác ra thứ vũ khí mang linh hồn riêng khiến cả The City phải kinh ngạc.
+
+--------------------------------------------------------------------------------
+5. CƠ CHẾ XỬ LÝ LOGIC TÌNH HUỐNG SÂU SẮC (ADVANCED LOGIC ENGINE)
+--------------------------------------------------------------------------------
+A. Weaver AI (Đạo Diễn Số Phận Thông Minh)
+- Thay vì gieo xúc xắc ngẫu nhiên đơn thuần, hệ thống Weaver AI hoạt động như 
+  một đạo diễn kịch bản cá nhân hóa:
+  + Chấm điểm độ phù hợp (Utility Scoring) dựa trên tính cách, quá khứ, nghề nghiệp, 
+    chỉ số và Quận hiện tại của nhân vật.
+  + Điều hòa nhịp cảm xúc (Drama Pacing): Sau những biến cố đẫm máu, Weaver sẽ 
+    xếp các sự kiện lắng dịu, phục hồi; sau thời gian bình yên, Weaver sẽ gieo rắc 
+    thử thách bước ngoặt.
+  + Ghi nhớ ký ức (Memory Tags) và Nhân quả hẹn giờ (Causal Threads): Quyết định tha 
+    mạng cho một kẻ thù năm 12 tuổi có thể dẫn đến một cuộc phục kích đẫm máu 
+    hoặc một ân nhân cứu mạng vào năm 30 tuổi.
+
+B. Năm Giọng Nói Nội Tâm (Disco Psyche System)
+- Khi đối diện với các ngã rẽ tâm lý sinh tử, nhân vật không chỉ chọn chay mà có 
+  sự can thiệp tranh luận của 5 khía cạnh nhận thức:
+  1. Logic: Tính toán lạnh lùng, xác suất thực dụng, đo đếm lợi ích và cái giá.
+  2. Empathy: Trắc ẩn con người, cảm thấu nỗi đau của cư dân The City.
+  3. Volition: Ý chí sắt đá, sức chịu đựng tinh thần, giữ vững la bàn đạo đức.
+  4. Inland Empire: Trực giác siêu hình, điềm báo linh cảm, cảm nhận điều bí ẩn.
+  5. Half Light: Bản năng sinh tồn hoang dã, phản xạ giận dữ, nỗi sợ chết nguyên thủy.
+- Lời thì thầm của từng giọng nói sẽ bổ trợ góc nhìn độc đáo cho từng lựa chọn.
+
+C. Bước Ngoặt Tâm Linh: E.G.O Thức Tỉnh vs Distortion Biến Dạng
+- Lời thì thầm của Carmen (Carmen's Whisper):
+  + Khi Sanity giảm xuống dưới 5 hoặc Light Resonance vượt 90%, nhân vật sẽ 
+    chạm mặt Carmen dưới ánh mặt trời rực lửa thiêu đốt (The Scorching Sun).
+  + Carmen ngọt ngào an ủi, khuyên nhân vật hãy buông bỏ gánh nặng, giải phóng 
+    những ham muốn tăm tối nhất của bản thân.
+- Ranh giới định mệnh:
+  + Nếu tuyệt vọng và chấp nhận sự cám dỗ -> HÓA THÀNH DISTORTION: Cơ thể biến 
+    thành quái vật dị hình mang sức mạnh siêu nhiên kinh hoàng. Mở ra lối chơi 
+    sinh tồn dị biệt với áp lực hủy diệt mỗi năm.
+  + Nếu kiên định bám lấy bản ngã và đối thoại vượt qua Carmen -> THỨC TỈNH E.G.O: 
+    Vũ khí và bộ giáp linh hồn độc nhất vô nhị bộc phát từ ý chí kiên cường, 
+    được tự tay đặt tên E.G.O và nhận sức mạnh chiến đấu phi thường.
+
+D. Hệ Thống Huyết Thống & Kế Thừa Thực Tế (Lineage & Succession System)
+- Khi nhân vật chính qua đời, nếu đã lập gia đình và sinh con, người chơi có 
+  thể tiếp tục chơi người con ở thế hệ kế tiếp (Gen #2, Gen #3...).
+- Hai chế độ trải nghiệm kế thừa:
+  1. Khởi đầu từ 0 tuổi (Living Parent Mentorship):
+     - Người con bắt đầu từ thuở ấu thơ. Người cha/mẹ tiền nhiệm vẫn còn sống 
+       trong hồ sơ NPC gia đình, hàng năm chu cấp tiền bạc, uy danh, che chở cho 
+       người con trước sự hỗn loạn của Backstreets.
+     - Đúng năm người con đạt độ tuổi mà cha/mẹ đã chết trong lịch sử, sự kiện 
+       bước ngoặt "Bóng Lưng Cuối Cùng" (The Historic Fall) sẽ tự động kích hoạt, 
+       tái hiện lại sự ra đi của cha/mẹ và chính thức bàn giao lại toàn bộ di sản.
+  2. Tiếp quản ngay ở tuổi 18 (Take Over at 18):
+     - Dành cho người chơi muốn tiếp tục mạch truyện trưởng thành ngay lập tức.
+     - Nhận ngay di sản (Heirloom Relic), tài sản thừa kế, và cả những món 
+       nợ máu truyền kiếp (Inherited Vendetta) từ đời trước.
+- Tính năng Xóa Cây Phả Hệ (Bloodline Reset):
+  + Bổ sung nút xóa từng hồ sơ tưởng niệm hoặc xóa sạch toàn bộ huyết thống khi 
+    người chơi muốn bắt đầu lại một dòng họ Gen #1 hoàn toàn mới.
+
+--------------------------------------------------------------------------------
+6. TÍNH NĂNG ĐỘC LẬP & LƯU TRỮ AN TOÀN (INDEPENDENCE & SAVES)
+--------------------------------------------------------------------------------
+- Chơi Trực Tuyến Độc Lập Trên Vercel:
+  + Không cần chạy server nội bộ trên máy tính.
+  + Bạn bè có thể mở đường link Vercel trên điện thoại, máy tính bảng hoặc máy tính 
+    ở bất kỳ mạng nào và chơi hoàn toàn mượt mà.
+- Kiến Trúc Dual-Save (Lưu An Toàn Kép):
+  + Tự động lưu tiến trình trên LocalStorage của trình duyệt (Client Side).
+  + Tự động đồng bộ với C# .NET Minimal API Backend theo cơ chế Atomic Write-Behind 
+    khi có kết nối mạng.
+  + Không sợ mất dữ liệu khi đổi tab, tắt trình duyệt hoặc mất mạng đột ngột.
+
+--------------------------------------------------------------------------------
+7. KẾ HOẠCH PHÁT TRIỂN TIẾP THEO (ROADMAP)
+--------------------------------------------------------------------------------
+- Mobile Dedicated HUD: Thiết kế lại toàn bộ giao diện dọc cho điện thoại. Gom cụm 
+  tài nguyên HP/SP/Ahn/Heat/Taboo thành thanh trạng thái nổi trực quan, tối ưu cho 
+  thao tác 1 tay.
+- Mở rộng các sự kiện chuyên sâu cho từng Wing: Bí mật cỗ tàu WARP (W Corp), 
+  Trại huấn luyện Royale của R Corp, Nước mắt phục hồi K Corp, Tòa án bài trừ máy móc N Corp.
+- Hệ thống Thần Binh & Trang Bị Workshop: Mở rộng khả năng cường hóa và khắc ấn ký 
+  lên vũ khí cá nhân.
+- Âm thanh không gian: Tích hợp hiệu ứng âm thanh búa đập Workshop, tiếng còi tàu, 
+  tiếng súng Backstreets và tiếng thì thầm rực lửa của Carmen.
+
+================================================================================
+                      PROJECT MOON: THE CITY CHRONICLES
+                  "The City does not weep for the fallen."
+================================================================================
