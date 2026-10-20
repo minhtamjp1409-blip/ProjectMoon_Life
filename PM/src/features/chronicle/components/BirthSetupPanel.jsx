@@ -110,7 +110,7 @@ export const BirthSetupPanel = () => {
         <div className="hero-copy">
           <span className="hero-kicker">Project Moon · {t('Mô phỏng một đời người', 'A life simulation')}</span>
           <h1 id="home-title">
-            {t('Sinh ra ở', 'Born in')} <span>The City</span>
+            Born in <span>The City</span>
           </h1>
           <p className="hero-lead">
             {t(
@@ -205,7 +205,7 @@ export const BirthSetupPanel = () => {
                   </p>
                 )}
               </div>
-              <button type="button" className="btn" disabled={spinning} onClick={() => launch(true)}>
+              <button type="button" className="btn btn-block" disabled={spinning} onClick={() => launch(true)}>
                 <GitBranch size={16} />
                 {t(`Chơi đời con của ${pendingLegacy.name}`, `Play as ${pendingLegacy.name}'s heir`)}
               </button>
