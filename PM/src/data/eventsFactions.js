@@ -35,7 +35,7 @@ export const FACTION_EVENTS = [
         setOrg: { type: 'assoc', name: 'Shi Association' },
         flagsAdd: ['HasAffiliation', 'ShiOverdrive'],
         recordsAdd: ['assoc_joined'],
-        effects: { health: -18, sanity: -10, rep: +18, wealth: +16 },
+        effects: { health: -14, sanity: -8, rep: +14, wealth: +10 },
         scarsAdd: ['Dấu của Shi Association'],
         meritAdd: 18
       },
@@ -47,7 +47,7 @@ export const FACTION_EVENTS = [
         setOrg: { type: 'assoc', name: 'Öufi Association' },
         flagsAdd: ['HasAffiliation'],
         recordsAdd: ['assoc_joined'],
-        effects: { wealth: +16, network: +16, sanity: -8 },
+        effects: { wealth: +12, network: +12, sanity: -6 },
         meritAdd: 14
       }
     ]
@@ -70,15 +70,15 @@ export const FACTION_EVENTS = [
             w: 50,
             resultVi: 'Bạn không nhớ mình đã rút kiếm. Bạn chỉ nhớ rằng sau đó hắn nằm thành hai phần, và cả căn phòng im lặng đến mức nghe được tiếng máu nhỏ xuống sàn.',
             resultEn: 'You don’t remember drawing. You only remember that afterward he lay in two pieces, and the room was so quiet you could hear the blood dripping on the floor.',
-            effects: { health: -28, rep: +32, wealth: +28, resonance: +22 },
+            effects: { health: -20, rep: +22, wealth: +18, resonance: +16 },
             scarsAdd: ['Nhát chém ở ranh giới'],
-            meritAdd: 35
+            meritAdd: 25
           },
           {
             w: 50,
             resultVi: 'Gân vai bạn đứt ngay giữa nhát chém. Hắn ghim bạn vào tường bằng chính lưỡi dao của hắn. Người của Shi đến kịp, nhưng chỉ vừa kịp.',
             resultEn: 'The tendon in your shoulder tore mid-swing. He pinned you to the wall with his own blade. Shi’s people arrived in time, but only just.',
-            effects: { health: -48, sanity: -22, resonance: +25 },
+            effects: { health: -32, sanity: -16, resonance: +18 },
             scarsAdd: ['Gân vai đứt']
           }
         ]
@@ -88,7 +88,7 @@ export const FACTION_EVENTS = [
         labelEn: 'Inject a coagulant and pull back',
         resultVi: 'Bạn còn sống. Hợp đồng thất bại, và Shi trừ toàn bộ tiền thưởng của bạn như thể đó là cái giá rẻ nhất có thể.',
         resultEn: 'You lived. The contract failed, and Shi docked your entire fee as if it were the cheapest price possible.',
-        effects: { health: -12, wealth: -15, rep: -10 }
+        effects: { health: -8, wealth: -10, rep: -6 }
       }
     ]
   },
@@ -282,7 +282,7 @@ export const FACTION_EVENTS = [
         labelEn: 'Do a Cleanup Agent’s job: cut them apart, put them back in their seats',
         resultVi: 'Mất bốn tiếng. Khi W Corp bật công tắc phục hồi, từng hành khách đứng dậy, chỉnh lại áo, và bước xuống sân ga như chưa có gì. Chỉ bạn là nhớ.',
         resultEn: 'It took four hours. When W Corp flipped the restoration switch, each passenger stood, straightened their coat, and stepped onto the platform as if nothing had happened. Only you remember.',
-        effects: { sanity: -34, wealth: +30, rep: +18, resonance: +32 },
+        effects: { sanity: -22, wealth: +18, rep: +14, resonance: +20 },
         recordsAdd: ['warp_cleanup'],
         scarsAdd: ['Hai nghìn năm trong toa cuối'],
         meritAdd: 24
@@ -290,9 +290,9 @@ export const FACTION_EVENTS = [
       {
         labelVi: 'Giữ lại một mẩu thịt còn sống để bán ra chợ đen',
         labelEn: 'Keep a piece that is still alive to sell on the black market',
-        resultVi: 'Mẩu thịt trong lọ thủy tinh vẫn cử động, và người mua trả cho nó một gia tài. Nhưng đây là Taboo, và giờ thì có những con mắt đang tìm bạn.',
-        resultEn: 'The piece in the glass jar still moved, and the buyer paid a fortune for it. But this is a Taboo, and now there are eyes looking for you.',
-        effects: { wealth: +48, sanity: -26, taboo: +2, heat: +25, resonance: +24 },
+        resultVi: 'Mẩu thịt trong lọ thủy tinh vẫn cử động, và người mua trả cho nó một món tiền hời. Nhưng đây là Taboo, và giờ thì có những con mắt đang tìm bạn.',
+        resultEn: 'The piece in the glass jar still moved, and the buyer paid a handsome sum. But this is a Taboo, and now there are eyes looking for you.',
+        effects: { wealth: +25, sanity: -18, taboo: +1, heat: +18, resonance: +18 },
         recordsAdd: ['warp_cleanup'],
         scarsAdd: ['Cái lọ thủy tinh'],
         scheduleConsequences: [
@@ -322,16 +322,16 @@ export const FACTION_EVENTS = [
             w: 58,
             resultVi: 'Đến ngày thứ bảy, bạn bước ra trên những khuôn mặt của chính mình. R Corp trao cho bạn bộ giáp của Fourth Pack. Từ đó, mỗi lần soi gương, bạn đều tự hỏi mình là bản sao thứ mấy.',
             resultEn: 'On the seventh day you walked out over your own faces. R Corp gave you Fourth Pack armor. Since then, every time you look in a mirror you wonder which copy you are.',
-            effects: { health: +15, sanity: -38, rep: +32, wealth: +28, resonance: +35 },
+            effects: { health: +10, sanity: -25, rep: +22, wealth: +18, resonance: +24 },
             recordsAdd: ['rcorp_hatchery'],
             scarsAdd: ['3.999 khuôn mặt của bạn'],
-            meritAdd: 36
+            meritAdd: 30
           },
           {
             w: 42,
             resultVi: 'Bản sao cuối cùng đánh như bạn, nghĩ như bạn, và gần như thắng. Nó lấy đi một bên tai và đâm thủng phổi bạn. Bạn bò ra ngoài, không chắc người bò ra có phải là bạn không.',
             resultEn: 'The last copy fought like you, thought like you, and nearly won. It took one of your ears and punctured your lung. You crawled out, not sure the one crawling was you.',
-            effects: { health: -48, sanity: -42, rep: +20, resonance: +38 },
+            effects: { health: -30, sanity: -26, rep: +14, resonance: +25 },
             recordsAdd: ['rcorp_hatchery'],
             scarsAdd: ['Bản sao cuối cùng'],
             meritAdd: 24

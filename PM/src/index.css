@@ -1636,6 +1636,44 @@ p {
   font-size: 13px;
   font-weight: 600;
 }
+.stat-flag.is-warn {
+  background: rgba(226, 112, 95, 0.25);
+  border: 1px solid rgba(226, 112, 95, 0.5);
+  color: #ff6e6e;
+  font-size: 10px;
+  padding: 1px 4px;
+  border-radius: 3px;
+  letter-spacing: 0.05em;
+}
+.stat.is-critical .bar i {
+  animation: pulse-critical 1.2s infinite ease-in-out;
+  box-shadow: 0 0 10px rgba(226, 112, 95, 0.6);
+}
+.val-crit {
+  color: #ff5e5e !important;
+  text-shadow: 0 0 8px rgba(255, 94, 94, 0.5);
+  animation: text-pulse-critical 1.2s infinite ease-in-out;
+}
+
+@keyframes pulse-critical {
+  0%, 100% {
+    opacity: 0.7;
+    filter: brightness(0.9);
+  }
+  50% {
+    opacity: 1;
+    filter: brightness(1.3) drop-shadow(0 0 6px var(--bad));
+  }
+}
+
+@keyframes text-pulse-critical {
+  0%, 100% {
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 1;
+  }
+}
 
 .taboo {
   display: flex;

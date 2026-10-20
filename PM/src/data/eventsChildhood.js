@@ -36,9 +36,9 @@ export const CHILDHOOD_EVENTS = [
       {
         labelVi: 'Mang ra chợ đen bán lấy tiền ăn',
         labelEn: 'Sell it at the black market for food money',
-        resultVi: 'Gã thu mua lật món đồ, nhìn vết máu, rồi nhìn bạn. "Của cha mẹ mày à?" Gã trả 26 Ahn và không hỏi thêm. Tối đó bạn ăn no, và không ngủ được.',
-        resultEn: 'The buyer turned it over, looked at the blood, then at you. “Your parent’s?” He paid 26 Ahn and asked nothing more. You ate well that night, and couldn’t sleep.',
-        effects: { wealth: +26, sanity: -15, rep: -10 },
+        resultVi: 'Gã thu mua lật món đồ, nhìn vết máu, rồi nhìn bạn. "Của cha mẹ mày à?" Gã trả 12 Ahn và không hỏi thêm. Tối đó bạn ăn no, và không ngủ được.',
+        resultEn: 'The buyer turned it over, looked at the blood, then at you. “Your parent’s?” He paid 12 Ahn and asked nothing more. You ate well that night, and couldn’t sleep.',
+        effects: { wealth: +12, sanity: -8, rep: -4 },
         scarsAdd: ['Món di vật đã bán']
       }
     ]
@@ -57,7 +57,7 @@ export const CHILDHOOD_EVENTS = [
         labelEn: 'Hand over every Ahn you have, and let them take the rest with a knife',
         resultVi: 'Tên lớn tuổi hơn đâm một nhát qua đùi bạn, gọn và không vội, như đóng dấu. Hắn lấy máu của bạn gạch dòng tên {parentName} rồi gập sổ lại. "Xong."',
         resultEn: 'The older one put a knife through your thigh, neat and unhurried, like stamping a form. He used your blood to strike out {parentName}’s line and closed the book. “Settled.”',
-        effects: { health: -32, wealth: -25, sanity: -18, heat: -25, resonance: +15 },
+        effects: { health: -20, wealth: -12, sanity: -10, heat: -20, resonance: +12 },
         scarsAdd: ['Vết dao trả nợ']
       },
       {
@@ -65,7 +65,7 @@ export const CHILDHOOD_EVENTS = [
         labelEn: 'Throw the boiling pot from the stove in their faces and jump out the window',
         resultVi: 'Bạn nghe tiếng hét sau lưng khi rơi xuống mái tôn tầng dưới, gãy một xương sườn. Đến tối, tên bạn đã được viết vào Book of Vengeance bằng mực đỏ, ngay dưới tên {parentName}.',
         resultEn: 'You heard screaming behind you as you dropped onto the tin roof below and cracked a rib. By nightfall your name was written in the Book of Vengeance in red ink, right under {parentName}’s.',
-        effects: { health: -28, sanity: -14, rep: +14, heat: +40, resonance: +18 },
+        effects: { health: -18, sanity: -10, rep: +10, heat: +25, resonance: +14 },
         flagsAdd: ['MiddleVendetta'],
         scarsAdd: ['Tên viết bằng mực đỏ'],
         scheduleConsequences: [
@@ -126,7 +126,7 @@ export const CHILDHOOD_EVENTS = [
             w: 65,
             resultVi: 'Bạn kéo được ông Kang vào trong. Một cái móc sắt lướt qua khe cửa trước khi bạn kịp đóng lại, và để lại một đường rách sâu trên vai bạn. Ông Kang mất một cánh tay. Bạn giữ lại được phần còn lại của ông.',
             resultEn: 'You got Kang inside. A metal hook slid through the gap before you could shut it, and left a deep tear across your shoulder. Kang lost an arm. You kept the rest of him.',
-            effects: { health: -20, sanity: -10, rep: +8, resonance: +12 },
+            effects: { health: -14, sanity: -6, rep: +6, resonance: +10 },
             recordsAdd: ['survive_night'],
             scarsAdd: ['Vết móc đêm 3:13'],
             scheduleConsequences: [
@@ -142,7 +142,7 @@ export const CHILDHOOD_EVENTS = [
             w: 35,
             resultVi: 'Khi cánh cửa vừa hé, một vòi phun thò vào. Thứ chất lỏng đó làm da cánh tay bạn bong ra như giấy ướt. Bạn vẫn kéo được ông Kang vào, rồi cả hai nằm trên sàn đến sáng.',
             resultEn: 'The moment the door opened a nozzle pushed through. Whatever it sprayed peeled the skin off your forearm like wet paper. You still dragged Kang in, and the two of you lay on the floor until morning.',
-            effects: { health: -38, sanity: -22, resonance: +20 },
+            effects: { health: -22, sanity: -14, resonance: +15 },
             recordsAdd: ['survive_night'],
             scarsAdd: ['Cánh tay bỏng đêm 3:13'],
             scheduleConsequences: [
@@ -161,7 +161,7 @@ export const CHILDHOOD_EVENTS = [
         labelEn: 'Hold the bolt shut and cover your ears',
         resultVi: 'Tiếng đập cửa ngừng lại sau một phút. Có thứ gì đó ấm chảy qua khe cửa, chạm vào đầu ngón chân bạn. Đến 4 giờ sáng, bậc thềm sạch bong, như chưa từng có ai đứng đó.',
         resultEn: 'The pounding stopped after a minute. Something warm ran under the door and touched your toes. By 4 AM the step was spotless, as if no one had ever stood there.',
-        effects: { sanity: -25, resonance: +22 },
+        effects: { sanity: -15, resonance: +14 },
         recordsAdd: ['survive_night'],
         scarsAdd: ['Thứ chảy qua khe cửa']
       }
@@ -185,7 +185,7 @@ export const CHILDHOOD_EVENTS = [
             w: 55,
             resultVi: 'Bạn đâm trúng cổ hắn trước khi hắn kịp giơ dao. Tên còn lại ôm thùng đá bỏ chạy. Đứa trẻ trên bàn đã chết. Bạn lấy túi tiền của tên Rat, và con dao của hắn, và về nhà mà không kể với ai.',
             resultEn: 'You caught him in the throat before he could raise the knife. The other one ran off with the cooler. The child on the table was already dead. You took the Rat’s purse, and his knife, and went home and told no one.',
-            effects: { health: -16, sanity: -18, wealth: +18, rep: +8, resonance: +16 },
+            effects: { health: -10, sanity: -10, wealth: +8, rep: +6, resonance: +10 },
             flagsAdd: ['해결사동경'],
             scarsAdd: ['Lần đầu giết người']
           },
@@ -193,7 +193,7 @@ export const CHILDHOOD_EVENTS = [
             w: 45,
             resultVi: 'Hắn nhanh hơn. Lưỡi dao rạch một đường từ vai xuống ngực bạn. Bạn bò vào thùng rác và nằm im giữa đống rác thối suốt bốn tiếng, cho đến khi chúng bỏ đi.',
             resultEn: 'He was faster. The blade opened a line from your shoulder to your chest. You crawled into a dumpster and lay still in the rot for four hours, until they left.',
-            effects: { health: -36, sanity: -24, resonance: +22 },
+            effects: { health: -20, sanity: -14, resonance: +14 },
             scarsAdd: ['Vết dao dọc ngực']
           }
         ]
@@ -201,9 +201,9 @@ export const CHILDHOOD_EVENTS = [
       {
         labelVi: '"Tôi biết chỗ lũ trẻ khác hay ngủ." Đổi mạng mình lấy chỗ trốn của chúng',
         labelEn: '“I know where the other kids sleep.” Trade their hiding place for your life',
-        resultVi: 'Chúng cho bạn 15 Ahn và để bạn đi. Đêm đó có tiếng la từ đường cống nơi lũ trẻ mồ côi trú. Một trong số chúng từng chia cho bạn nửa ổ bánh mì.',
-        resultEn: 'They gave you 15 Ahn and let you go. That night there was screaming from the drain where the orphans slept. One of them had once shared half a loaf with you.',
-        effects: { wealth: +16, sanity: -28, heat: +18, resonance: +25 },
+        resultVi: 'Chúng cho bạn 8 Ahn và để bạn đi. Đêm đó có tiếng la từ đường cống nơi lũ trẻ mồ côi trú. Một trong số chúng từng chia cho bạn nửa ổ bánh mì.',
+        resultEn: 'They gave you 8 Ahn and let you go. That night there was screaming from the drain where the orphans slept. One of them had once shared half a loaf with you.',
+        effects: { wealth: +8, sanity: -18, heat: +10, resonance: +18 },
         scarsAdd: ['Chỗ trốn đã bán'],
         scheduleConsequences: [
           {
@@ -451,7 +451,7 @@ export const CONSEQUENCE_EVENTS = [
         labelEn: 'Take them, and stay with him to the end',
         resultVi: '"Ít ra tao chết trên giường," ông nói. Ông mất trước khi trời sáng. Cuốn sổ có những cái tên mà sau này mở ra cho bạn nhiều cánh cửa.',
         resultEn: '“At least I die in a bed,” he said. He was gone before dawn. The notebook held names that would open a lot of doors for you.',
-        effects: { health: +10, sanity: -6, wealth: +18, network: +18, rep: +14, resonance: +10 },
+        effects: { health: +6, sanity: -4, wealth: +12, network: +12, rep: +10, resonance: +8 },
         flagsAdd: ['고급장비'],
         meritAdd: 16
       }
@@ -472,7 +472,7 @@ export const CONSEQUENCE_EVENTS = [
             w: 55,
             resultVi: 'Sợi dây cắt sâu vào cổ bạn, nhưng bạn vẫn với tới được. Khi mọi chuyện xong, bạn ngồi bên cạnh cái xác rất lâu. Hai người từng ngủ chung một đường cống.',
             resultEn: 'The wire cut deep into your neck, but you still reached them. When it was over you sat beside the body a long time. The two of you had once slept in the same drain.',
-            effects: { health: -32, sanity: -18, rep: +16, resonance: +18 },
+            effects: { health: -20, sanity: -10, rep: +12, resonance: +14 },
             scarsAdd: ['Vết dây thép quanh cổ'],
             meritAdd: 14
           },
@@ -480,17 +480,17 @@ export const CONSEQUENCE_EVENTS = [
             w: 45,
             resultVi: 'Họ đè bạn xuống. Họ lấy đi một con mắt của bạn, chậm rãi, rồi lấy hết tiền của bạn, rồi bỏ đi. "Giờ thì mình giống nhau."',
             resultEn: 'They held you down. They took one of your eyes, slowly, then all your money, then left. “Now we match.”',
-            effects: { health: -52, wealth: -35, sanity: -32, resonance: +28 },
+            effects: { health: -32, wealth: -18, sanity: -20, resonance: +20 },
             scarsAdd: ['Con mắt trả cho đêm ấy']
           }
         ]
       },
       {
-        labelVi: 'Đưa họ 40 Ahn và một ngón tay của bạn',
-        labelEn: 'Give them 40 Ahn and one of your fingers',
+        labelVi: 'Đưa họ 18 Ahn và một ngón tay của bạn',
+        labelEn: 'Give them 18 Ahn and one of your fingers',
         resultVi: 'Họ nhận cả hai. Trước khi đi, họ nói: "Thế này chưa đủ. Nhưng tao mệt rồi."',
         resultEn: 'They took both. Before leaving they said: “It isn’t enough. But I’m tired.”',
-        effects: { health: -22, wealth: -40, sanity: -16, heat: -15 },
+        effects: { health: -16, wealth: -18, sanity: -10, heat: -10 },
         scarsAdd: ['Ngón tay trả nợ']
       }
     ]
@@ -582,7 +582,7 @@ export const CONSEQUENCE_EVENTS = [
             w: 50,
             resultVi: 'Hắn đánh gãy ba xương sườn của bạn ngay cú đầu tiên. Bạn vẫn đứng. Khi sợi xích của hắn đứt, những Little Brother lùi lại. Từ hôm đó, cả khu biết tên bạn.',
             resultEn: 'He broke three of your ribs with the first blow. You stayed up. When his chain snapped, the Little Brothers stepped back. From that day, the whole district knew your name.',
-            effects: { health: -38, sanity: -14, rep: +28, heat: -30, resonance: +24 },
+            effects: { health: -24, sanity: -10, rep: +22, heat: -20, resonance: +18 },
             scarsAdd: ['Người làm đứt xích của The Middle'],
             meritAdd: 30
           },
@@ -590,7 +590,7 @@ export const CONSEQUENCE_EVENTS = [
             w: 50,
             resultVi: 'Cú đấm thứ hai làm vỡ xương vai bạn. Chúng bẻ chân bạn, lấy hết những gì bạn có, và bỏ đi khi nghĩ bạn đã chết. Chúng nghĩ sai, nhưng chỉ suýt soát.',
             resultEn: 'The second blow shattered your shoulder. They broke your leg, took everything you had, and left when they thought you were dead. They were wrong, but only just.',
-            effects: { health: -58, sanity: -30, wealth: -30, resonance: +32 },
+            effects: { health: -38, sanity: -20, wealth: -18, resonance: +24 },
             scarsAdd: ['Bả vai vỡ dưới nắm đấm']
           }
         ]
@@ -609,7 +609,7 @@ export const CONSEQUENCE_EVENTS = [
         labelEn: 'Pin it on the subordinate who trusts you most',
         resultVi: 'Người đó nhìn bạn, không hiểu chuyện gì đang xảy ra, cho đến khi Öufi đọc tên họ. Thanh tra đóng dấu "Đã giải quyết" và rời đi. Bạn giữ được chức. Bạn không còn nhìn vào gương lâu được nữa.',
         resultEn: 'They looked at you, not understanding, until Öufi read their name. The auditor stamped “Resolved” and left. You kept your post. You can no longer look in a mirror for long.',
-        effects: { wealth: -25, sanity: -32, rep: +5, resonance: +30 },
+        effects: { wealth: -18, sanity: -22, rep: +5, resonance: +22 },
         scarsAdd: ['Người cấp dưới đã chết thay']
       },
       {
@@ -617,7 +617,7 @@ export const CONSEQUENCE_EVENTS = [
         labelEn: 'Break the window and run',
         resultVi: 'Lưỡi kích của Öufi rạch ngang lưng bạn khi bạn nhảy xuống nóc một đoàn tàu đang chạy qua. Bạn sống. Từ giờ bạn là kẻ bị truy nã.',
         resultEn: 'An Öufi halberd opened your back as you jumped onto the roof of a passing train. You lived. From now on you are wanted.',
-        effects: { health: -42, wealth: -30, rep: -25, heat: +35, resonance: +20 },
+        effects: { health: -28, wealth: -18, rep: -18, heat: +25, resonance: +16 },
         scarsAdd: ['Vết kích của Öufi'],
         meritAdd: -25
       }
@@ -638,7 +638,7 @@ export const CONSEQUENCE_EVENTS = [
             w: 32,
             resultVi: 'Một nửa mạn sườn của bạn biến mất trong vết cắt màu xanh. Nhưng đòn của bạn làm vỡ ống huyết thanh K trên tay hắn, và vụ nổ hất bạn xuống một khe sâu dưới Ruins, nơi hắn không theo xuống.',
             resultEn: 'Half your side vanished into the blue cut. But your strike shattered the K vial on his arm, and the blast threw you down a crevice into the Ruins, where he did not follow.',
-            effects: { health: -55, sanity: -28, rep: +40, taboo: -3, resonance: +35 },
+            effects: { health: -38, sanity: -20, rep: +30, taboo: -3, resonance: +25 },
             recordsAdd: ['defied_the_claw'],
             scarsAdd: ['Nửa mạn sườn mất trong vết cắt xanh'],
             meritAdd: 45
@@ -658,7 +658,7 @@ export const CONSEQUENCE_EVENTS = [
         resultVi: 'Hắn lấy đi tất cả những gì bạn sở hữu. Rồi hắn đặt bạn xuống một bãi rác ngoài bức tường, trong The Outskirts, và biến mất mà không nói thêm một lời.',
         resultEn: 'He took everything you owned. Then he set you down on a garbage heap beyond the wall, in The Outskirts, and vanished without another word.',
         setRegion: 'OUTSKIRTS',
-        effects: { health: -48, sanity: -25, wealth: -90, rep: -35, taboo: -3, resonance: +25 },
+        effects: { health: -26, sanity: -16, wealth: -30, rep: -20, taboo: -3, resonance: +18 },
         scarsAdd: ['Bị trục xuất ra The Outskirts']
       }
     ]

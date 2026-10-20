@@ -482,32 +482,56 @@ export function endYear(charState, rng) {
     }
   }
 
-  if (char.stats.health < 65) {
-    const heal = char.flags.includes('KCorpAmpoule') ? 3 : nest ? 2 : 1;
-    add('health', heal);
-    vi.push('vết thương cũ lành dần');
-    en.push('old wounds healed a little');
+  // Healthcare & Wounds recovery vs Street clinic expenses
+  if (char.stats.health < 60) {
+    if (char.flags.includes('KCorpAmpoule')) {
+      add('health', 4);
+      vi.push('huyết thanh K Corp tái tạo cơ thể');
+      en.push('K Corp serum regenerates your flesh');
+    } else if (char.stats.wealth >= 3 && char.age >= 18) {
+      add('wealth', -2);
+      add('health', 4);
+      vi.push('chi 2 Ahn cho phòng khám Backstreets để khâu vết thương');
+      en.push('spent 2 Ahn at a back-alley clinic to patch wounds');
+    } else if (nest) {
+      add('health', 2);
+      vi.push('chế độ y tế của Nest chăm sóc vết thương');
+      en.push('Nest medical benefits tended your wounds');
+    } else {
+      add('health', 1);
+      vi.push('vết thương tự lành thành sẹo');
+      en.push('wounds slowly scarred over');
+    }
   }
 
-  const bond = ['spouse', 'partner', 'child'].some((k) => char.npcs?.[k] && !char.npcs[k].deceased);
-  if (char.stats.sanity < 55 && bond) {
-    add('sanity', 2);
-    vi.push('có người ở bên giúp bạn trụ vững');
-    en.push('someone at your side kept you steady');
-  } else if (char.stats.sanity < 40) {
-    add('sanity', 1);
+  // Mental Sanity recovery vs Tavern comfort
+  const bond = ['spouse', 'partner', 'friend', 'mentor', 'child'].some((k) => char.npcs?.[k] && !char.npcs[k].deceased && (char.npcs[k].bond || 0) >= 50);
+  if (char.stats.sanity < 55) {
+    if (bond) {
+      add('sanity', 3);
+      vi.push('sự hiện diện của người thân giữ cho tâm trí bạn không sụp đổ');
+      en.push('the presence of loved ones kept your mind steady');
+    } else if (char.stats.wealth >= 3 && char.age >= 18) {
+      add('wealth', -1);
+      add('sanity', 3);
+      vi.push('chi 1 Ahn uống rượu giải tỏa căng thẳng trong hẻm');
+      en.push('spent 1 Ahn on tavern drinks to unwind the City’s pressure');
+    } else if (char.stats.sanity < 40) {
+      add('sanity', 1);
+    }
   }
 
+  // City environmental hazards (Smog in polluted districts, Crime in dangerous districts)
   if (!nest && char.age >= 4) {
-    if (region.pollution >= 5 && rng() < 0.45) {
-      add('health', -2);
+    if (region.pollution >= 5 && rng() < 0.35) {
+      add('health', -1);
       vi.push('khói bụi khu này bám vào phổi');
       en.push('the district’s smog settled in your lungs');
     }
-    if (region.safety <= 4 && rng() < 0.4) {
-      add('sanity', -2);
-      vi.push('những đêm mất ngủ vì tiếng súng');
-      en.push('nights lost to gunfire');
+    if (region.safety <= 4 && rng() < 0.35) {
+      add('sanity', -1);
+      vi.push('những đêm mất ngủ vì tiếng còi và đạn nổ');
+      en.push('nights lost to sirens and gunfire');
     }
   }
 

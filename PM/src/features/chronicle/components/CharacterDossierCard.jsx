@@ -47,6 +47,7 @@ const Stat = ({ label, value, unit = '/100', color, flag, riseIsBad = false }) =
   const change = useChange(value);
   const good = change && (riseIsBad ? change.d < 0 : change.d > 0);
   const flashClass = change ? (good ? 'is-flash-up' : 'is-flash-down') : '';
+  const isCritical = value <= 20 && !riseIsBad;
 
   React.useEffect(() => {
     if (!change) return;
@@ -59,13 +60,20 @@ const Stat = ({ label, value, unit = '/100', color, flag, riseIsBad = false }) =
     }
   }, [change?.at]);
 
+  React.useEffect(() => {
+    if (isCritical && change && !good) {
+      audioEngine.playDanger();
+    }
+  }, [isCritical, change?.at]);
+
   return (
-    <div className={`stat ${flashClass}`}>
+    <div className={`stat ${flashClass} ${isCritical ? 'is-critical' : ''}`}>
       <div className="stat-head">
         <span className="label">
-          <i className="dot" style={{ background: color }} />
+          <i className="dot" style={{ background: isCritical ? 'var(--bad)' : color }} />
           {label}
           {flag && <span className="stat-flag">{flag}</span>}
+          {isCritical && <span className="stat-flag is-warn">CRIT</span>}
         </span>
         <div className="stat-num-box">
           {change && (
@@ -73,7 +81,7 @@ const Stat = ({ label, value, unit = '/100', color, flag, riseIsBad = false }) =
               {good ? '▲' : '▼'} {change.d > 0 ? `+${change.d}` : change.d}
             </span>
           )}
-          <b className={change ? (good ? 'val-up' : 'val-down') : ''}>
+          <b className={`${change ? (good ? 'val-up' : 'val-down') : ''} ${isCritical ? 'val-crit' : ''}`}>
             {value}
             {unit && <small> {unit}</small>}
           </b>
@@ -82,7 +90,7 @@ const Stat = ({ label, value, unit = '/100', color, flag, riseIsBad = false }) =
       <div className={`bar ${flashClass}`}>
         <i
           key={change ? `bar_${change.at}` : 'steady'}
-          style={{ width: `${Math.max(0, Math.min(100, value))}%`, '--c': flag ? 'var(--bad)' : color }}
+          style={{ width: `${Math.max(0, Math.min(100, value))}%`, '--c': flag || isCritical ? 'var(--bad)' : color }}
         />
       </div>
     </div>

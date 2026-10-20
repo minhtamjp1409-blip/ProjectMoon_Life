@@ -21,7 +21,7 @@ export const SUPERNATURAL_EVENTS = [
         resultVi: 'Khi lưỡi thép chạm vào máu bạn, hơi nước bốc lên màu đỏ và có mùi sắt. Thanh kiếm không nứt. Lúc bạn cầm nó lên, nó ấm, như thể có mạch đập.',
         resultEn: 'When the blade met your blood the steam rose red and smelled of iron. It did not crack. When you lifted it, it was warm, as if it had a pulse.',
         openCraftModal: true,
-        effects: { health: -22, wealth: +30, rep: +24, network: +16, resonance: +18 },
+        effects: { health: -15, wealth: +18, rep: +16, network: +12, resonance: +14 },
         flagsAdd: ['유물'],
         recordsAdd: ['workshop_masterpiece'],
         scarsAdd: ['Thanh kiếm tôi bằng máu mình'],
@@ -32,7 +32,7 @@ export const SUPERNATURAL_EVENTS = [
         labelEn: 'Also build a wall-piercing gun for a higher bidder (a Taboo violation)',
         resultVi: 'Viên đạn thử xuyên qua bốn bức tường bê tông. Người mua trả gấp đôi, không hỏi gì. Ba ngày sau, có người mặc đồng phục B Corp đứng đối diện xưởng của bạn, không làm gì cả, chỉ nhìn.',
         resultEn: 'The test round went through four concrete walls. The buyer paid double and asked nothing. Three days later someone in a B Corp uniform stood across from your workshop, doing nothing, only watching.',
-        effects: { wealth: +48, rep: +18, taboo: +2, sanity: -14, resonance: +16 },
+        effects: { wealth: +28, rep: +14, taboo: +1, sanity: -10, resonance: +14 },
         flagsAdd: ['유물'],
         recordsAdd: ['workshop_masterpiece'],
         scarsAdd: ['Khẩu súng phạm Taboo'],
@@ -65,7 +65,7 @@ export const SUPERNATURAL_EVENTS = [
         resultVi: 'Máu của bà ta nóng như kim loại chảy. Răng của bạn dài ra, xương của bạn gãy rồi tự liền lại theo một hình dạng khác. Bạn sẽ sống rất lâu. Và đêm nào bạn cũng khát.',
         resultEn: 'Her blood burned like molten metal. Your teeth lengthened; your bones broke and set themselves into a different shape. You will live a very long time. And every night you will thirst.',
         flagsAdd: ['Bloodfiend'],
-        effects: { health: +35, sanity: -30, rep: +18, resonance: +30 },
+        effects: { health: +22, sanity: -20, rep: +14, resonance: +22 },
         scarsAdd: ['Cơn khát không bao giờ hết'],
         meritAdd: 24,
         scheduleConsequences: [
@@ -82,7 +82,7 @@ export const SUPERNATURAL_EVENTS = [
         labelEn: 'Smash the incendiary flask on yourself',
         resultVi: 'Lửa bắt vào lưng bạn và vào tay bà ta cùng lúc. Bà ta buông ra. Đúng lúc đó, người của Fanghunt Office phá cửa với những cây cọc gỗ. Họ chia cho bạn tiền thưởng.',
         resultEn: 'The fire caught your back and her arm at the same moment. She let go. Right then, Fanghunt Office broke down the door with their stakes. They split the bounty with you.',
-        effects: { health: -34, sanity: +8, wealth: +28, rep: +24, network: +16 },
+        effects: { health: -22, sanity: +6, wealth: +18, rep: +18, network: +12 },
         scarsAdd: ['Lưng bỏng đêm ấy'],
         meritAdd: 26
       }
@@ -106,16 +106,16 @@ export const SUPERNATURAL_EVENTS = [
             w: 56,
             resultVi: 'Mũi lao đi vào mắt nó. Con Cá Voi chìm xuống, kéo theo một dòng xoáy trắng. Ở District 21, người ta kể chuyện này trong các quán rượu, và mỗi lần kể con Cá Voi lại to thêm một chút.',
             resultEn: 'The harpoon went into its eye. The Whale sank, dragging a white whirlpool down with it. In District 21 they tell this story in the bars, and every time the Whale gets a little bigger.',
-            effects: { health: -32, sanity: -16, wealth: +38, rep: +34, resonance: +24 },
+            effects: { health: -22, sanity: -12, wealth: +24, rep: +24, resonance: +18 },
             recordsAdd: ['lake_whale_slayer'],
             scarsAdd: ['Vết trắng trên vai'],
-            meritAdd: 36
+            meritAdd: 30
           },
           {
             w: 44,
             resultVi: 'Đuôi nó đập vỡ thân tàu. Một mảng trắng bám lên vai bạn và bắt đầu lan. Bạn nung dao trên đèn dầu và tự cắt bỏ mảng thịt đó trước khi nó lan xuống tim.',
             resultEn: 'Its tail broke the hull apart. A white patch landed on your shoulder and began to spread. You heated a knife over the oil lamp and cut that flesh out yourself before it reached your heart.',
-            effects: { health: -50, sanity: -30, resonance: +30 },
+            effects: { health: -34, sanity: -20, resonance: +22 },
             scarsAdd: ['Mảng thịt tự cắt bỏ']
           }
         ]
