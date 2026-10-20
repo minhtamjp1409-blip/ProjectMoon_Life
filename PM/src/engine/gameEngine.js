@@ -605,26 +605,28 @@ export function getNextCareerMilestone(char) {
     }
 
     if (char.fixerGrade === 1) {
-      const targetMerit = 175;
-      const targetRep = 72;
+      const targetMerit = 150;
+      const targetRep = 68;
       const hasEgo = char.flags.includes('ColorFixer') || char.flags.includes('EGOAwakened') || (char.resonance || 0) >= 40;
+      const hasDefeatedCalamity = char.flags.includes('ColorFixer');
       const p1 = Math.min(100, ((char.merit || 0) / targetMerit) * 100);
       const p2 = Math.min(100, (((char.stats?.rep ?? char.rep) || 0) / targetRep) * 100);
       const p3 = hasEgo ? 100 : Math.min(100, ((char.resonance || 0) / 40) * 100);
       const progressPct = Math.round((p1 + p2 + p3) / 3);
 
       return {
-        category: 'HANA EVALUATION',
-        titleVi: 'Thăng cấp: Color Fixer',
-        titleEn: 'Ascension: Color Fixer',
+        category: 'STAR OF THE CITY ORDEAL',
+        titleVi: 'Đại Khảo Thí Phong Color (Hana Council)',
+        titleEn: 'Hana Star of the City: Color Investiture',
         progressPct,
         requirements: [
-          { labelVi: 'Chiến công (Merit)', labelEn: 'Merit', current: char.merit || 0, target: targetMerit, met: (char.merit || 0) >= targetMerit },
-          { labelVi: 'Danh tiếng (Rep)', labelEn: 'Reputation', current: (char.stats?.rep ?? char.rep) || 0, target: targetRep, met: ((char.stats?.rep ?? char.rep) || 0) >= targetRep },
-          { labelVi: 'Thức tỉnh E.G.O / Resonance', labelEn: 'E.G.O Awakening / Reso', current: char.resonance || 0, target: 40, met: hasEgo }
+          { labelVi: 'Chiến công (Merit >= 150)', labelEn: 'Merit (>= 150)', current: char.merit || 0, target: targetMerit, met: (char.merit || 0) >= targetMerit },
+          { labelVi: 'Danh tiếng (Rep >= 68)', labelEn: 'Reputation (>= 68)', current: (char.stats?.rep ?? char.rep) || 0, target: targetRep, met: ((char.stats?.rep ?? char.rep) || 0) >= targetRep },
+          { labelVi: 'Thức tỉnh E.G.O / Resonance 40%', labelEn: 'E.G.O / 40% Resonance', current: char.resonance || 0, target: 40, met: hasEgo },
+          { labelVi: 'Vượt qua mối họa Star of the City', labelEn: 'Overcome Star of the City Calamity', current: hasDefeatedCalamity ? 1 : 0, target: 1, met: hasDefeatedCalamity }
         ],
-        tipVi: 'Hana Association chỉ phong Color cho Fixer Grade 1 có sức mạnh dị thường và tiếng vang khắp The City.',
-        tipEn: 'Hana grants Colors only to Grade 1 Fixers of extraordinary renown and resonance.'
+        tipVi: 'Hana Association chỉ triệu tập đại khảo thí phong Color cho Fixer Grade 1 đã thức tỉnh E.G.O hoặc có cộng hưởng dị thường để đối đầu hiểm họa Star of the City.',
+        tipEn: 'Hana convenes the Color Investiture trial only for Grade 1 Fixers who manifested E.G.O or extraordinary resonance against Star of the City threats.'
       };
     }
 
@@ -809,31 +811,30 @@ export function checkPromotions(char) {
       }
     }
 
-    // Color Fixer Ascension!
+    // Color Fixer Candidacy (Trial required: Must survive Star of the City Ordeal)
     if (
       char.fixerGrade === 1 &&
-      char.merit >= 175 &&
-      curRep >= 72 &&
-      !char.flags.includes('ColorFixer')
+      char.merit >= 150 &&
+      curRep >= 68 &&
+      !char.flags.includes('ColorFixer') &&
+      !char.flags.includes('ColorCandidate')
     ) {
-      char.fixerGrade = 0; // 0 represents Color Fixer
-      char.flags.push('ColorFixer');
-      char.pendingModal = 'color_title';
+      char.flags.push('ColorCandidate');
       logsToAdd.push({
-        id: `log_color_ascend_${char.age}`,
+        id: `log_color_cand_${char.age}`,
         age: char.age,
         season: SEASONS[char.seasonIdx],
-        type: 'miracle',
-        vi: `[Color Fixer] Hana Association mời bạn đến trụ sở. Họ nói bạn sẽ được trao một Color, như Red Mist, Black Silence, Purple Tear. Từ nay cả The City sẽ gọi bạn bằng nó.`,
-        en: `[Color Fixer] Hana Association called you to headquarters. You are to be given a Color, like the Red Mist, the Black Silence, the Purple Tear. From now on the whole City will call you by it.`
+        type: 'promo',
+        vi: `[Hana Association] Hồ sơ của bạn đã đủ tiêu chuẩn để Hội đồng Tối cao triệu tập đại khảo thí Star of the City nhằm phong Color.`,
+        en: `[Hana Association] Your achievements qualify you for the Supreme Council's Star of the City trial for a Color designation.`
       });
     }
   }
 
-  // Syndicate / Five Fingers Rank Promotions
+  // Syndicate / Five Fingers Rank Promotions (Ranks 1-2 by merit, Pinnacle ranks 3+ require Finger Trials)
   if (char.job === 'Syndicate' && char.finger && FINGER_RANKS[char.finger]) {
     const ladder = FINGER_RANKS[char.finger];
-    const targetRank = Math.min(ladder.length - 1, Math.floor(char.merit / 26));
+    const targetRank = Math.min(2, Math.floor(char.merit / 26));
     if (targetRank > (char.fingerRank || 0)) {
       char.fingerRank = targetRank;
       const rankTitle = ladder[targetRank];
@@ -848,12 +849,12 @@ export function checkPromotions(char) {
     }
   }
 
-  // Wing Employee Promotions
+  // Wing Employee Promotions (Ranks 0-1 by merit, Pinnacle ranks 2+ require Singularity Audit)
   if (char.job === 'Wing Employee') {
     const curRank = char.wingRank || 0;
     const curWealth = (char.stats?.wealth ?? char.wealth) || 0;
     const curNet = (char.stats?.network ?? char.network) || 0;
-    for (let r = WING_RANKS.length - 1; r > curRank; r--) {
+    for (let r = Math.min(1, WING_RANKS.length - 1); r > curRank; r--) {
       const req = WING_RANKS[r];
       if (char.merit >= req.merit && curWealth >= req.wealth && curNet >= req.network) {
         char.wingRank = r;
@@ -870,12 +871,12 @@ export function checkPromotions(char) {
     }
   }
 
-  // Workshop Craftsman Promotions
+  // Workshop Craftsman Promotions (Ranks 0-1 by merit, Pinnacle ranks 2+ require Masterpiece Forge)
   if (char.job === 'Workshop Craftsman') {
     const curRank = char.workshopRank || 0;
     const curWealth = (char.stats?.wealth ?? char.wealth) || 0;
     const curReso = char.resonance || 0;
-    for (let r = WORKSHOP_RANKS.length - 1; r > curRank; r--) {
+    for (let r = Math.min(1, WORKSHOP_RANKS.length - 1); r > curRank; r--) {
       const req = WORKSHOP_RANKS[r];
       if (char.merit >= req.merit && curWealth >= req.wealth && curReso >= req.resonance) {
         char.workshopRank = r;
@@ -1157,6 +1158,9 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
   const setWingRank = outcome.setWingRank ?? choice.setWingRank;
   if (setWingRank !== undefined) char.wingRank = setWingRank;
 
+  const setWorkshopRank = outcome.setWorkshopRank ?? choice.setWorkshopRank;
+  if (setWorkshopRank !== undefined) char.workshopRank = setWorkshopRank;
+
   const setOrg = outcome.setOrg || choice.setOrg;
   if (setOrg) char.org = setOrg;
 
@@ -1240,12 +1244,17 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
     }
   }
 
-  // Interactive Modals (Workshop Crafting / Naming E.G.O)
+  // Interactive Modals (Workshop Crafting / Naming E.G.O / Color Title)
   if (choice.openCraftModal || outcome.openCraftModal) {
     char.pendingModal = 'craft_weapon';
   }
   if (choice.openEgoModal || outcome.openEgoModal) {
     char.pendingModal = 'ego_name';
+  }
+  if (choice.openColorModal || outcome.openColorModal) {
+    char.pendingModal = 'color_title';
+    char.fixerGrade = 0;
+    if (!char.flags.includes('ColorFixer')) char.flags.push('ColorFixer');
   }
 
   const textVi = interpolateText(outcome.resultVi || choice.resultVi || '', char);

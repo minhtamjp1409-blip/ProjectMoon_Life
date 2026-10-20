@@ -183,7 +183,7 @@ export const SUPERNATURAL_EVENTS = [
     ]
   },
 
-  // ------------------------------------------------------------------ Carmen
+  // ------------------------------------------------------------------ Carmen / E.G.O & Distortion
   {
     id: 'ego_carmen_crossroad',
     age: [18, 99],
@@ -194,27 +194,158 @@ export const SUPERNATURAL_EVENTS = [
     en: '[Can you hear my voice?] Everything you ever lost came back at once ({scars}). The room melted into a warm light, too warm. A gentle woman’s voice spoke from inside your head:\n“It hurts so much, doesn’t it? In this City, holding on to a human shape only gets you torn apart piece by piece. You can let go. You can become what you truly want.”',
     choices: [
       {
-        labelVi: '"Nỗi đau này là của tôi. Tôi sẽ giữ nó."',
-        labelEn: '“This pain is mine. I’m keeping it.”',
-        resultVi: 'Bạn giữ chặt từng ký ức, kể cả những cái làm bạn muốn chết. Ánh sáng vỡ ra. Khi bạn mở mắt, có một thứ mới đang bao quanh bạn, làm từ chính những gì bạn đã chịu đựng. Nó nghe lời bạn.',
-        resultEn: 'You held on to every memory, even the ones that made you want to die. The light broke. When you opened your eyes something new surrounded you, made of everything you had endured. It answers to you.',
+        labelVi: '"Nỗi đau này là của tôi. Tôi sẽ đứng trên đôi chân của mình."',
+        labelEn: '“This pain is mine. I will stand on my own two feet.”',
+        out: [
+          {
+            w: 65,
+            openEgoModal: true,
+            flagsAdd: ['EGOAwakened', 'ShinAwakened'],
+            recordsAdd: ['ego_effloresced'],
+            effects: { health: +35, sanity: +50, rep: +38, resonance: +25 },
+            scarsAdd: ['Người đã không buông tay'],
+            meritAdd: 45,
+            rvi: 'Bạn giữ chặt từng ký ức và vết sẹo, không lùi bước trước sự quyến rũ của hư vô. Ánh sáng ấm áp của Carmen nứt toác trước ý chí của bạn. Từ sâu thẳm tâm thức, một bộ giáp và vũ khí kết tinh từ chính nỗi đau của bạn hiện hình. Đó là E.G.O của riêng bạn.',
+            ren: 'You held firm to every memory and scar, refusing the warm seduction of oblivion. Carmen’s soothing light fractured against your resolve. From the depths of your psyche, armor and a weapon forged from your agony manifested. It is your E.G.O.'
+          },
+          {
+            w: 35,
+            flagsAdd: ['IncompleteEGO'],
+            effects: { health: -22, sanity: -15, rep: +20, resonance: +18 },
+            scarsAdd: ['Vết rạn khung cửi tự ngã'],
+            meritAdd: 25,
+            scheduleConsequences: [
+              {
+                eventId: 'ego_second_efflorescence_trial',
+                delayYears: 2,
+                reasonVi: 'E.G.O chưa hoàn chỉnh đang tìm kiếm khoảnh khắc bộc phát trọn vẹn',
+                reasonEn: 'Your incomplete E.G.O seeks its true efflorescence'
+              }
+            ],
+            rvi: 'Bạn gầm lên kháng cự, nhưng triết lý trong lòng chưa đủ tôi luyện để gánh vác trọn vẹn ánh sáng. E.G.O chỉ hiện hình một nửa rồi nứt toác, ngọn lửa cảm xúc đốt cháy da thịt bạn. Bạn chưa gục ngã, nhưng tâm thức mang một vết rạn lớn: E.G.O Chưa Hoàn Chỉnh.',
+            ren: 'You roared in resistance, but your inner philosophy was not yet forged enough to bear the full weight of the light. The E.G.O half-manifested then cracked, emotion scorch marks searing your flesh. You did not break, but your soul bears a fissure: an Incomplete E.G.O.'
+          }
+        ]
+      },
+      {
+        labelVi: 'Đốt cháy những vết sẹo quá khứ làm mồi lửa bộc phát',
+        labelEn: 'Burn every past scar as living fuel for breakthrough',
         openEgoModal: true,
         flagsAdd: ['EGOAwakened', 'ShinAwakened'],
         recordsAdd: ['ego_effloresced'],
-        effects: { health: +30, sanity: +55, rep: +38, resonance: +25 },
-        scarsAdd: ['Người đã không buông tay'],
-        meritAdd: 45
+        effects: { health: -28, sanity: +45, rep: +42, resonance: +35 },
+        scarsAdd: ['Tro Tàn Tự Ngã'],
+        meritAdd: 50,
+        resultVi: 'Bạn biến chính những vết sẹo rỉ máu thành mồi lửa, thiêu rụi sự cám dỗ dịu dàng của Carmen. Cơ thể bạn chằng chịt vết rách, nhưng từ trong biển lửa tro tàn, E.G.O hoàn chỉnh xuất hiện với uy lực chấn áp tất cả.',
+        resultEn: 'Turning your bleeding scars into kindling, you incinerated Carmen’s gentle whispers. Your body tore with wounds, but from the ashes, complete E.G.O emerged with overwhelming might.'
       },
       {
-        labelVi: 'Nhắm mắt lại, và để giọng nói ấy dẫn bạn đi',
-        labelEn: 'Close your eyes, and let the voice lead you',
-        resultVi: 'Không còn đau nữa. Đó là điều đầu tiên bạn nhận ra. Điều thứ hai là cơ thể bạn đang đổi hình, và bạn không muốn nó dừng lại. Sáng hôm sau, Hana Association mở một hồ sơ mới: Distortion, chưa xếp hạng.',
-        resultEn: 'It no longer hurt. That was the first thing you noticed. The second was that your body was changing shape, and you didn’t want it to stop. The next morning Hana Association opened a new file: Distortion, unrated.',
+        labelVi: 'Nhắm mắt lại, và để giọng nói ấy dẫn bạn đi (Distortion)',
+        labelEn: 'Close your eyes, and let the voice lead you (Distort)',
         flagsAdd: ['Distorted'],
         recordsAdd: ['distortion_awaken'],
-        effects: { health: +45, sanity: -60, rep: +32, heat: +50, resonance: +50 },
+        effects: { health: +55, sanity: -65, rep: +35, heat: +55, resonance: +60 },
         scarsAdd: ['Distortion'],
-        meritAdd: 35
+        meritAdd: 35,
+        resultVi: 'Không còn đau nữa. Đó là điều đầu tiên bạn nhận ra. Cảm giác ấm áp lan tỏa khi cơ thể bạn biến đổi thành hình dạng của nỗi ám ảnh sâu kín nhất. Sáng hôm sau, Hana Association phát lệnh phong tỏa khu vực: Một Distortion cấp độ cao đã xuất hiện.',
+        resultEn: 'It no longer hurt. That was the first thing you noticed. A soothing warmth spread as your flesh morphed into the shape of your deepest obsession. The next morning Hana Association opened a new file: Distortion, unrated.'
+      }
+    ]
+  },
+
+  // ------------------------------------------------------------------ Second Efflorescence Trial
+  {
+    id: 'ego_second_efflorescence_trial',
+    age: [19, 99],
+    major: true,
+    weight: 950,
+    isCausalCallback: true,
+    causalReasonVi: 'Vết rạn E.G.O năm xưa đang tìm kiếm sự hoàn thiện',
+    causalReasonEn: 'The fissure in your past E.G.O seeks complete efflorescence',
+    vi: '[True Efflorescence · Khai Hoa Trọn Vẹn] Ngọn lửa E.G.O chưa hoàn chỉnh trong lồng ngực bạn lại cháy bùng khi một cơn nguy biến Backstreets ập đến. Lần này, bạn không còn bỡ ngỡ. Trước mắt bạn là con đường bạn đã đi qua và cái giá bạn đã trả.',
+    en: '[True Efflorescence · Complete Blooming] The incomplete E.G.O flame in your chest flared again as a Backstreets crisis struck. This time, you did not waver. Before your eyes lay every path you had walked and every price you had paid.',
+    choices: [
+      {
+        labelVi: 'Hàn gắn vết rạn tâm thức: Khai hoa E.G.O hoàn chỉnh',
+        labelEn: 'Mend the soul fissure: Effloresce True E.G.O',
+        openEgoModal: true,
+        flagsAdd: ['EGOAwakened', 'ShinAwakened'],
+        recordsAdd: ['ego_effloresced'],
+        effects: { health: +40, sanity: +50, rep: +35, resonance: +25 },
+        scarsAdd: ['Bản Ngã Tái Sinh'],
+        meritAdd: 50,
+        resultVi: 'Vết nứt trên linh hồn liền lại thành một lớp giáp hoàng kim. E.G.O hoàn chỉnh bao bọc lấy bạn, tĩnh lặng và uy nghiêm. Cả khu phố nín thở trước luồng ánh sáng thuần khiết.',
+        resultEn: 'The fracture in your soul welded into golden armor. Complete E.G.O enveloped you, serene and sovereign. The entire street held its breath before the pure light.'
+      },
+      {
+        labelVi: 'Kìm nén ngọn lửa: Bảo toàn sức lực cho ngày sau',
+        labelEn: 'Contain the flame: Conserve strength for another day',
+        effects: { sanity: +15, health: +10, rep: +10 },
+        resultVi: 'Bạn hít sâu và nén ngọn lửa vào tận đáy tim. E.G.O lắng xuống, chờ đợi một ngày khác xứng đáng hơn.',
+        resultEn: 'Drawing a deep breath, you compressed the flame to the depths of your heart. The E.G.O subsided, awaiting a more fitting crucible.'
+      }
+    ]
+  },
+
+  // ------------------------------------------------------------------ Hana Color Fixer Supreme Trial
+  {
+    id: 'hana_color_ascension_trial',
+    age: [20, 95],
+    major: true,
+    weight: 980,
+    jobs: ['Fixer'],
+    forbids: ['ColorFixer'],
+    vi: '[Star of the City · Hana Color Investiture] Hana Association Section 1 triệu tập bạn đến đài vinh danh tối cao. Một mối họa cấp độ Star of the City (Ngôi Sao Đô Thị) vừa bùng phát tại khu vực biên giới. Các Director của Hana nhìn thẳng vào mắt bạn:\n"Cả The City chỉ có chưa đầy mười Color. Chúng tôi không ban phát danh hiệu này cho kẻ chỉ biết làm hợp đồng thông thường. Hãy dập tắt mối họa này, hoặc chết trong đống đổ nát. Khi bạn trở về, chiếc thẻ Color sẽ mang tên bạn."',
+    en: '[Star of the City · Hana Color Investiture] Hana Association Section 1 summoned you to the supreme dais. A Star of the City calamity has erupted on the border. The Hana Directors stare straight into your eyes:\n“The entire City holds fewer than ten Colors. We do not bestow this title upon those who merely file routine contracts. Extinguish this calamity, or perish in its wake. When you return, the Color license shall bear your name.”',
+    choices: [
+      {
+        labelVi: 'Tiên phong độc hành: Trực diện đồ sát Calamity',
+        labelEn: 'Solo vanguard: Confront and annihilate the Calamity directly',
+        out: [
+          {
+            w: 60,
+            need: { stat: { health: [35, 100] } },
+            openColorModal: true,
+            flagsAdd: ['ColorFixer'],
+            recordsAdd: ['color_fixer'],
+            effects: { health: -30, sanity: -15, rep: +45, wealth: +60 },
+            scarsAdd: ['Vết sẹo của Star of the City'],
+            meritAdd: 60,
+            rvi: 'Trận chiến kéo dài mười sáu giờ không ngừng nghỉ. Vũ khí của bạn chém đứt lõi của mối họa Star of the City trước sự bàng hoàng của các chấp hành viên Hana. Máu và tro tàn nhuộm kín chiến trường. Hội đồng Hana đồng loạt đứng dậy cúi đầu: "The City cúi đầu trước Color mới." Họ mời bạn bước lên đài để khắc danh hiệu.',
+            ren: 'The battle raged sixteen unceasing hours. Your weapon severed the core of the Star of the City before stunned Hana enforcers. Blood and ash coated the battlefield. The Hana Council stood and bowed in unison: “The City honors its new Color.” They invited you to the dais to engrave your title.'
+          },
+          {
+            w: 40,
+            effects: { health: -45, sanity: -35, rep: +25, heat: +20 },
+            scarsAdd: ['Thương tật từ Star of the City'],
+            meritAdd: 30,
+            rvi: 'Sức mạnh của mối họa vượt xa dự tính. Bạn chém đứt được một chi của nó nhưng bị đánh văng qua ba dãy tường bê tông, nát vụn xương sườn. Bạn sống sót nhưng bất tỉnh ba tuần. Hana Association ghi nhận chiến công nhưng hoãn kỳ phong Color cho đến khi bạn bình phục.',
+            ren: 'The calamity’s might exceeded all projections. You severed one of its limbs but were hurled through three concrete walls, ribs splintered. You survived but lay comatose three weeks. Hana credited your valor but postponed the Color ceremony until your recovery.'
+          }
+        ]
+      },
+      {
+        labelVi: 'Bày trận khắc chế cùng Seven Association (Chiến thuật & Tình báo)',
+        labelEn: 'Coordinate tactical dissection with Seven Association',
+        need: { stat: { wealth: [15, 100], sanity: [30, 100] } },
+        openColorModal: true,
+        flagsAdd: ['ColorFixer'],
+        recordsAdd: ['color_fixer'],
+        effects: { health: -18, sanity: -15, wealth: -15, rep: +40 },
+        scarsAdd: ['Bản đồ giải phẫu Star of the City'],
+        meritAdd: 45,
+        rvi: 'Chi trả ngân sách lớn cho Seven Association để phân tích cấu trúc Singularity và sơ hở của mối họa. Bạn đánh trúng tim của nó bằng một nhát duy nhất. Nest được bảo toàn. Hana Association đóng dấu phê chuẩn tuyệt đối: Một Color mới ra đời bằng trí tuệ và sự chuẩn xác.',
+        ren: 'Expending a substantial purse for Seven Association intel on the singularity weakness, you struck its core in a single fatal blow. The Nest was saved. Hana Association stamped absolute approval: A new Color born of intellect and lethal precision.'
+      },
+      {
+        labelVi: 'Từ chối chiếc vòng kim cô: Tiếp tục là Fixer Grade 1 tự do',
+        labelEn: 'Refuse the Color crown: Remain a free Grade 1 Senior Fixer',
+        flagsAdd: ['ColorRefused'],
+        effects: { sanity: +20, rep: +22, wealth: +25 },
+        scarsAdd: ['Người từ chối làm Color'],
+        meritAdd: 20,
+        rvi: 'Bạn đặt bản ủy thác xuống bàn và mỉm cười quay lưng: "Làm Color chỉ biến tôi thành công cụ để The Head và các Wing dòm ngó. Tôi thích tự do ở Grade 1 hơn." Cả hội trường chết lặng. Danh tiếng về người Fixer từ chối Color lan truyền khắp Backstreets.',
+        ren: 'Setting the contract down, you smiled and turned away: “Becoming a Color only makes me a target for The Head and a puppet for the Wings. I prefer my freedom at Grade 1.” The hall fell dead silent. Whispers of the Fixer who refused a Color swept the Backstreets.'
       }
     ]
   }

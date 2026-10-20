@@ -95,6 +95,12 @@ export function directorWeight(entry, char) {
     reason = reason || { vi: 'Thành phố đáp lại con người bạn đã trở thành', en: 'The City answers who you have become' };
   }
 
+  // Crucible of Pinnacle Ascensions (E.G.O, Color Fixer, Five Fingers, Workshop Masterpiece)
+  if (entry.id?.includes('ascension_trial') || entry.id?.includes('pinnacle') || entry.id?.includes('efflorescence') || entry.id?.includes('carmen_crossroad')) {
+    w *= 4.5;
+    reason = { vi: 'Thời khắc khảo thí đỉnh cao', en: 'A crucible of pinnacle ascension' };
+  }
+
   // Career Goal-Seeking Utility AI: weights events according to active promotion goals
   try {
     const milestone = getNextCareerMilestone(char);

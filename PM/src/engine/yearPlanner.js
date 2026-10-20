@@ -186,7 +186,11 @@ function majorIsDue(char, rng) {
   if (char.age === 18 && !(char.seenEvents || []).includes('ad_career_crossroad_18')) return true;
   if ((char.taboo || 0) >= 3) return true;
   if ((w.pendingThreads || []).some((th) => th.kind !== 'minor' && !th.fulfilled && char.age >= th.triggerAge)) return true;
-  if (char.age >= 18 && char.stats.sanity <= 16 && !(char.seenEvents || []).includes('ego_carmen_crossroad')) return true;
+  if (char.age >= 18 && (char.stats.sanity <= 16 || (char.resonance || 0) >= 55) && !(char.seenEvents || []).includes('ego_carmen_crossroad') && !char.flags.includes('EGOAwakened') && !char.flags.includes('Distorted')) return true;
+  if (char.job === 'Fixer' && char.fixerGrade === 1 && (char.merit || 0) >= 150 && ((char.stats?.rep ?? char.rep) || 0) >= 68 && !char.flags.includes('ColorFixer') && !(char.seenEvents || []).includes('hana_color_ascension_trial')) return true;
+  if (char.job === 'Syndicate' && (char.fingerRank || 0) >= 2 && (char.merit || 0) >= 75) return true;
+  if (char.job === 'Wing Employee' && (char.wingRank || 0) >= 1 && (char.merit || 0) >= 65 && !(char.seenEvents || []).includes('wing_singularity_classified_audit')) return true;
+  if (char.job === 'Workshop Craftsman' && (char.workshopRank || 0) >= 1 && (char.merit || 0) >= 65 && !(char.seenEvents || []).includes('workshop_legendary_forge_trial')) return true;
   const gap = w.yearsSinceLastMajor || 0;
   if (gap >= 5) return true;
   return gap >= 2 && rng() < 0.32;

@@ -34,12 +34,21 @@ Each year of your life passes in real time (configurable 10s–30s). You are bor
   * Wing Executive / Noble Lineages
   * Outskirts wasteland nomads
 
-### 2. Deep Career Paths & Life Choices
-* **Fixer Associations & Offices:** Climb from Grade 9 novice to Grade 1 elite, receive requests from Hana, Shi, Zwei, Cinq, or Tres Associations, and earn a legendary Color title (*The Red Mist*, *The Black Silence*, *The Purple Tear*).
-* **The Five Fingers Syndicates:** Swear fealty to The Thumb (strict hierarchy & etiquette), The Index (inscrutable Prescripts), The Middle (unforgiving Book of Vengeance), or The Ring (grotesque artistic anatomy).
-* **Wing Employment:** Work inside corporate Nests with access to Singularities, balancing quotas against company purges.
-* **Workshop Craftsman:** Forge custom weapons, tune Workshop traits (*Mook Workshop*, *Wheels Industry*, *Atelier Logic*, *Stigma*), and pass weapons down across generations.
-* **The Voice of Carmen · Distortion & E.G.O:** When sanity collapses, choose between submitting to Distortion or overcoming your scars to manifest your own E.G.O.
+### 2. Deep Career Paths & Pinnacle Crucibles (Thử Thách Đỉnh Cao Lore-Accurate)
+* **Color Fixer Ascension (Đại Khảo Thí Star of the City):** In Project Moon lore, reaching Color is never an automatic stat promotion. Grade 1 Fixers with $\ge 150$ Merit and $\ge 68$ Rep must survive the *Hana Star of the City Calamity Commission* against lethal Urban Nightmares or ancient threats before the Hana Council grants an official Color title (*The Red Mist*, *The Black Silence*, *The Purple Tear*).
+* **The Voice of Carmen · Distortion & E.G.O Blooming:**
+  * When emotional despair peaks (Sanity $\le 16$, Resonance $\ge 35$), Carmen whispers into the soul, offering release through Distortion.
+  * *True E.G.O Efflorescence:* Refusing Carmen requires iron conviction and life scars. Succeeding manifests True E.G.O with an interactive naming modal.
+  * *Incomplete E.G.O (E.G.O Chưa Hoàn Chỉnh):* Faltering resolve fractures the soul, leaving an emotional scar and scheduling a second efflorescence trial years later.
+  * *Distortion (Biến Dị):* Surrendering to Carmen shatters human shape into a monstrous classified Distortion with immense destructive fury and a City-wide bounty.
+* **The Five Fingers Pinnacle Trials:**
+  * **The Thumb (Underboss / Capo dei Capi):** Endure the Grand Etiquette Purge where a single misspoken word brings execution.
+  * **The Index (Weaver of Prescripts):** Execute the Golden Prescript without question to unseal the Proxy blade.
+  * **The Middle (Great Brother / Sister):** Settle the 20-year Master Blood Debt in the Book of Vengeance against fortified syndicates.
+  * **The Ring (Maestro of the Gallery):** Present an "Art of Suffering" graded A+ by Ring Docents.
+  * **The Pinky (Star of the Sky / Thiên Tinh):** Climb the Outskirts bell tower and forge a soul-bound Star Blade.
+* **Workshop Masterpiece (Tuyệt Tác Thần Binh Tres Association):** Temper unstable Singularity alloys to forge generational heirloom weapons.
+* **Wing Senior Executive (Thẩm Định Singularity Tối Mật):** Gaze into the horrific secret powering the Megacorporation (WARP cleanup, R Corp Hatchery, K Corp Weeping chamber) without collapsing into madness.
 
 ### 3. Generational Dynasty & Bloodlines
 * **Heir Succession:** Continue playing as your child or apprentice across generations.

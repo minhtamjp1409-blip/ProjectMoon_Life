@@ -468,6 +468,35 @@ export function selectEventWithWeaverAI({
     };
   }
 
+  // Hana Color Fixer Supreme Trial (Star of the City Calamity)
+  const colorEv = allPools.find(e => e.id === 'hana_color_ascension_trial');
+  if (
+    colorEv &&
+    char.job === 'Fixer' &&
+    char.fixerGrade === 1 &&
+    (char.merit || 0) >= 150 &&
+    ((char.stats?.rep ?? char.rep) || 0) >= 68 &&
+    !char.flags.includes('ColorFixer') &&
+    !char.seenEvents.includes('hana_color_ascension_trial')
+  ) {
+    const logEntry = {
+      age: char.age,
+      phase: 'CLIMAX',
+      selectedId: colorEv.id,
+      utility: 980,
+      reasonVi: `Fixer Grade 1 đạt ${char.merit} Merit & ${(char.stats?.rep ?? char.rep)} Rep: Hana Association triệu tập đại khảo thí Star of the City để xét phong Color`,
+      reasonEn: `Grade 1 Fixer with ${char.merit} Merit & ${(char.stats?.rep ?? char.rep)} Rep: Hana summons Star of the City trial for Color investiture`,
+      candidates: [{ eventId: colorEv.id, totalUtility: 980 }]
+    };
+    return {
+      event: colorEv,
+      weaver: {
+        ...updatedWeaver,
+        decisionLog: [logEntry, ...updatedWeaver.decisionLog].slice(0, 18)
+      }
+    };
+  }
+
   const dueThread = updatedWeaver.pendingThreads.find(
     t => !t.fulfilled && char.age >= t.triggerAge && !char.seenEvents.includes(t.eventId)
   );

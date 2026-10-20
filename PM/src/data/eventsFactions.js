@@ -520,5 +520,202 @@ export const FACTION_EVENTS = [
         effects: { health: -12, sanity: +6, wealth: -12 }
       }
     ]
+  },
+
+  // ============================================================================
+  // PINNACLE ASCENSION TRIALS (THE FIVE FINGERS · WORKSHOP · WING EXECUTIVES)
+  // ============================================================================
+
+  // ------------------------------------------------------------------ The Thumb
+  {
+    id: 'syn_thumb_underboss_purge',
+    age: [24, 70],
+    major: true,
+    weight: 920,
+    jobs: ['Syndicate'],
+    vi: '[The Thumb · Grand Etiquette Purge] Capo dei Capi triệu tập bạn đến phòng yến tiệc mạ vàng của The Thumb. Một Sottocapo tiền nhiệm đã có lời nói thiếu tôn kính và bị xử tử. Trước mặt bạn là khẩu súng lục mạ bạc và danh sách các chi nhánh cần thanh trừng.\n"Lòng trung thành không đo bằng lời nói. Đo bằng việc mày có bóp cò mà không chớp mắt hay không."',
+    en: '[The Thumb · Grand Etiquette Purge] The Capo dei Capi summoned you to the gilded banquet hall of The Thumb. A former Sottocapo uttered a single disrespectful phrase and was executed. Before you lay a silver pistol and the list of branches to be purged.\n“Loyalty is not measured in speech. It is measured by whether your finger pulls the trigger without a flicker in your eyes.”',
+    choices: [
+      {
+        labelVi: 'Thi hành thanh trừng với lễ nghi tuyệt đối: Trở thành Underboss',
+        labelEn: 'Execute the purge with flawless etiquette: Become Underboss',
+        setFingerRank: 3,
+        recordsAdd: ['thumb_underboss'],
+        effects: { health: -28, sanity: -22, rep: +42, wealth: +50 },
+        scarsAdd: ['Sự tuân phục tuyệt đối của The Thumb'],
+        meritAdd: 50,
+        resultVi: 'Suốt ba đêm, tiếng súng nổ theo đúng nhịp điệu lễ nghi của The Thumb. Bạn không nói thừa một từ, không bắn trượt một viên. Capo dei Capi tự tay trao cho bạn chiếc áo choàng Sottocapo / Underboss: "Từ nay, lời của mày là lễ nghi."',
+        resultEn: 'For three nights, gunfire rang out in exact accordance with Thumb etiquette. You uttered not a single wasted word, missed not a single shot. The Capo dei Capi personally draped the Underboss mantle across your shoulders: “From now, your word is etiquette.”'
+      },
+      {
+        labelVi: 'Chĩa súng vào chính bàn yến tiệc: Bẻ gãy xiềng xích của The Thumb',
+        labelEn: 'Turn the gun on the banquet table: Shatter the Thumb’s chains',
+        flagsAdd: ['ThumbTraitor'],
+        effects: { health: -45, sanity: +15, rep: +30, heat: +70 },
+        scarsAdd: ['Kẻ đào tẩu vĩ đại của The Thumb'],
+        meritAdd: 30,
+        resultVi: 'Bạn bắn nổ ngọn đèn chùm pha lê và mở đường máu thoát khỏi sảnh tiệc giữa cơn mưa đạn. Bạn đã tự do, nhưng The Thumb sẽ săn bạn đến tận cùng thế giới.',
+        resultEn: 'Shattering the crystal chandelier with gunfire, you carved a bloody path out under a tempest of lead. You are free, but The Thumb will hunt you to the edge of the world.'
+      }
+    ]
+  },
+
+  // ------------------------------------------------------------------ The Index
+  {
+    id: 'syn_index_weaver_prescript',
+    age: [22, 70],
+    major: true,
+    weight: 920,
+    jobs: ['Syndicate'],
+    vi: '[The Index · The Golden Prescript] Một lá Prescript dát vàng từ Yan Vismod rơi xuống trước mặt bạn. Nét chữ sắc lẻm như dao khắc:\n"Đi đến District 11 lúc 2 giờ 45 sáng. Chặt đứt cánh tay cầm vũ khí của người Fixer đang ngồi uống trà, và nuốt một đồng xu rỉ sét. Sau đó, bước lên bậc thềm Proxy."',
+    en: '[The Index · The Golden Prescript] A gilded Prescript from Yan Vismod fluttered down before you. The calligraphy cut like a blade:\n“Walk to District 11 at 2:45 AM. Sever the weapon-arm of the Fixer sipping tea, and swallow a rusted coin. Thereafter, ascend the Proxy steps.”',
+    choices: [
+      {
+        labelVi: 'Tuyệt đối phục tùng Ý Chỉ: Khai mở kiếm Proxy & Weaver',
+        labelEn: 'Absolute obedience to the Prescript: Unlock Proxy blade & Weaver rank',
+        setFingerRank: 3,
+        recordsAdd: ['index_proxy'],
+        effects: { health: -24, sanity: -28, rep: +40, resonance: +35 },
+        scarsAdd: ['Người thi hành Ý Chỉ tối cao'],
+        meritAdd: 50,
+        resultVi: 'Bạn làm chính xác từng chữ trong Prescript không một giây do dự. Khi nhát chém hoàn tất và đồng xu trôi qua cuống họng, một Proxy áo trắng bước ra từ bóng tối, trao cho bạn thanh kiếm của The Index. "Ý Chỉ đã dệt xong vị trí của bạn."',
+        resultEn: 'You executed every word of the Prescript without a moment’s hesitation. As the cut completed and the rusted coin cleared your throat, a white-robed Proxy emerged from the fog, handing you the Index blade: “The Prescripts have woven your seat.”'
+      },
+      {
+        labelVi: 'Xé toạc lá Prescript dát vàng trước mặt sứ giả',
+        labelEn: 'Tear the gilded Prescript to shreds before the Messenger',
+        flagsAdd: ['IndexHeretic'],
+        effects: { health: -38, sanity: +20, rep: +25, heat: +65 },
+        scarsAdd: ['Kẻ xé Prescript'],
+        meritAdd: 20,
+        resultVi: 'Những mảnh giấy vàng rơi lả tả xuống vũng nước bẩn. Sứ giả nghiêng đầu nhìn bạn: "Sự phản bội của bạn cũng đã nằm trong Prescript tiếp theo." Bạn quay gót bỏ đi, chuẩn bị cho những cuộc ám sát không hồi kết.',
+        ren: 'Golden paper scraps scattered across the dirty puddle. The Messenger tilted their head: “Your treason was also written in the subsequent Prescript.” You turned and walked away, bracing for endless Proxy assassinations.'
+      }
+    ]
+  },
+
+  // ------------------------------------------------------------------ The Middle
+  {
+    id: 'syn_middle_great_brother_vendetta',
+    age: [24, 70],
+    major: true,
+    weight: 920,
+    jobs: ['Syndicate'],
+    vi: '[The Middle · The Master Vendetta] Cuốn Book of Vengeance (Sách Phục Thù) mở ra trước mặt bạn. Một dòng chữ đỏ rực từ hai mươi năm trước: Kẻ thù cũ từng làm một người em trong gia đình nhỏ lệ đang ẩn náu trong một pháo đài ngầm ở District 14 cùng năm mươi tay súng.\n"Đại gia đình không bao giờ quên. Hôm nay, mày sẽ viết chữ HẾT cho món nợ này."',
+    en: '[The Middle · The Master Vendetta] The Book of Vengeance opened before you. A crimson inscription from twenty years ago: The old adversary who once brought tears to a younger sibling hides in an underground fortress in District 14 with fifty gunners.\n“The Great Family never forgets. Today, you write END to this debt.”',
+    choices: [
+      {
+        labelVi: 'Dẫn đầu gia tộc đồ sát pháo đài: Trở thành Great Brother / Sister',
+        labelEn: 'Lead the Family to breach the fortress: Become Great Sibling',
+        setFingerRank: 3,
+        recordsAdd: ['middle_big_sibling'],
+        effects: { health: -35, sanity: -15, rep: +45, wealth: +40 },
+        scarsAdd: ['Nắm đấm sắt của The Middle'],
+        meritAdd: 55,
+        resultVi: 'Bạn đấm vỡ toang cánh cửa sắt kiên cố và càn quét toàn bộ pháo đài bằng chuỗi xích nhuốm máu. Tên của kẻ thù bị gạch một đường đỏ đậm trong Sách Phục Thù. Hàng trăm anh em The Middle đồng thanh gầm vang: "Chào Great Sibling!"',
+        resultEn: 'Shattering the reinforced vault gates with bare fists, you cleared the fortress with blood-soaked chains. The adversary’s name was struck out with a thick crimson line in the Book. Hundreds of Middle siblings roared in chorus: “Hail our Great Sibling!”'
+      },
+      {
+        labelVi: 'Thương lượng nhận tiền bồi thường thay vì tắm máu',
+        labelEn: 'Negotiate blood-money settlement instead of slaughter',
+        effects: { wealth: +75, rep: -20, sanity: +10 },
+        resultVi: 'Kẻ thù nộp nửa gia sản để đổi lấy mạng sống. Nhưng các bô lão The Middle nhìn bạn bằng ánh mắt khinh bỉ: "Gia đình không bán nỗi đau lấy tiền." Bạn bị tước quyền lên Đại huynh.',
+        resultEn: 'The enemy surrendered half their fortune for their life. But the Middle elders looked upon you with contempt: “The Family does not sell grief for coins.” You were barred from the Great Sibling seat.'
+      }
+    ]
+  },
+
+  // ------------------------------------------------------------------ The Pinky
+  {
+    id: 'syn_pinky_star_blade_pinnacle',
+    age: [22, 65],
+    major: true,
+    weight: 920,
+    jobs: ['Syndicate'],
+    vi: '[The Pinky · Star of the Sky Ascent] Giữa đêm tĩnh mịch, bạn leo lên đỉnh tháp chuông đổ nát ở rìa Outskirts của The Pinky. Gió lạnh rít qua từng khe đá. Người canh gác của The Pinky thắp ngọn đuốc xanh:\n"Chỉ có kẻ dám trói buộc sinh mệnh của mình với lưỡi kiếm mới có thể trở thành Thiên Tinh (Star of the Sky). Mày có dám nhỏ máu vào đe rèn không?"',
+    en: '[The Pinky · Star of the Sky Ascent] In the dead of night, you ascended the ruined bell tower on the Outskirts border of The Pinky. Cold wind screamed through stone gaps. The Pinky guardian lit a cyan torch:\n“Only those willing to bind their lifeforce to the blade may become a Star of the Sky. Do you dare spill your blood upon the anvil?”',
+    choices: [
+      {
+        labelVi: 'Nhỏ máu lập thệ: Đoạt danh hiệu Star of the Sky',
+        labelEn: 'Spill blood and swear the vow: Claim Star of the Sky',
+        setFingerRank: 2,
+        recordsAdd: ['pinky_star'],
+        effects: { health: -22, sanity: +20, rep: +42, resonance: +40 },
+        scarsAdd: ['Lời thề Thiên Tinh The Pinky'],
+        meritAdd: 50,
+        resultVi: 'Máu bạn ngấm vào thanh kiếm cổ xưa. Lưỡi kiếm phát ra ánh sáng lam ngọc rực rỡ như một ngôi sao rực cháy trên bầu trời đêm. Bạn trở thành Thiên Tinh (Star of the Sky) của The Pinky, người bảo vệ biên cương Đô Thành.',
+        resultEn: 'Your blood sank into the ancestral blade. It ignited in brilliant sapphire light like a burning star against the night sky. You became a Star of the Sky of The Pinky, sentinel of the City’s border.'
+      },
+      {
+        labelVi: 'Rút tay lại: Giữ lấy sinh mạng cho chính mình',
+        labelEn: 'Pull your hand back: Preserve your life for yourself',
+        effects: { sanity: +10, health: +15 },
+        resultVi: 'Ngọn đuốc xanh tắt ngấm. Bạn bước xuống tháp chuông trong im lặng, sống sót như một lưỡi kiếm tự do.',
+        resultEn: 'The cyan torch guttered out. You descended the bell tower in silence, surviving as a free blade.'
+      }
+    ]
+  },
+
+  // ------------------------------------------------------------------ Workshop Masterpiece
+  {
+    id: 'workshop_legendary_forge_trial',
+    age: [25, 75],
+    major: true,
+    weight: 930,
+    jobs: ['Workshop Craftsman'],
+    vi: '[Workshop Masterpiece · Tres Certification] Một vị khách bí ẩn mang đến xưởng của bạn một khối tinh thể Singularity kết tinh từ Abnormality của L Corp cũ. Tres Association phái hai giám định viên cao cấp túc trực bên lò rèn:\n"Nếu bạn tôi luyện thành công thứ này, Tres Association sẽ cấp chứng chỉ Tuyệt tác Thần binh (Masterpiece) và lưu tên xưởng rèn của bạn vào biên niên sử Đô Thành. Nếu thất bại, lò rèn sẽ nổ tung."',
+    en: '[Workshop Masterpiece · Tres Certification] A shadowy client brought a singularity ingot crystallized from an old L Corp Abnormality to your workshop. Tres Association dispatched two senior appraisers to oversee the furnace:\n“If you successfully temper this alloy, Tres will certify it as a Masterpiece and engrave your workshop’s name into the annals of The City. If you fail, the furnace will explode.”',
+    choices: [
+      {
+        labelVi: 'Dồn toàn bộ tâm thức và tài hoa rèn thần binh tuyệt tác',
+        labelEn: 'Pour entire soul and craftsmanship into the Masterpiece forge',
+        openCraftModal: true,
+        setWorkshopRank: 3,
+        recordsAdd: ['workshop_masterpiece'],
+        effects: { health: -24, sanity: -18, wealth: +55, rep: +45, resonance: +35 },
+        scarsAdd: ['Đại sư rèn thần binh'],
+        meritAdd: 60,
+        resultVi: 'Tiếng búa đập vang rền suốt bốn mươi tám giờ. Lưỡi kiếm hoàn tất tỏa ra áp lực áp đảo mọi vũ khí thông thường. Giám định viên Tres Association run rẩy đóng con dấu sáp vàng: "Một kiệt tác để đời." Tên tuổi xưởng rèn của bạn vang danh khắp The City.',
+        resultEn: 'The hammer rang forty-eight unceasing hours. The finished blade emanated a presence that eclipsed all standard armaments. The Tres appraiser tremblingly pressed the golden wax seal: “A masterpiece for the ages.” Your workshop’s name echoed across The City.'
+      },
+      {
+        labelVi: 'Gia công an toàn: Làm thành vũ khí thương mại cao cấp',
+        labelEn: 'Safe refinement: Produce a premium commercial weapon batch',
+        effects: { wealth: +35, rep: +18, sanity: +10 },
+        resultVi: 'Bạn chọn phương án an toàn, tránh được hiểm họa nổ lò và bán được một khoản Ahn kếch xù cho một văn phòng Fixer giàu có.',
+        resultEn: 'Choosing safety, you averted the explosion risk and sold the batch for a tidy sum of Ahn to a wealthy Fixer office.'
+      }
+    ]
+  },
+
+  // ------------------------------------------------------------------ Wing Executive Singularity Audit
+  {
+    id: 'wing_singularity_classified_audit',
+    age: [26, 75],
+    major: true,
+    weight: 930,
+    jobs: ['Wing Employee'],
+    vi: '[Wing Board · Singularity Classified Audit] Ban giám đốc tập đoàn triệu tập bạn vào căn hầm ngầm sâu nhất dưới lòng Nest. Cánh cửa thép Singularity mở ra, để lộ bí mật kinh hoàng giúp tập đoàn vận hành (máu của thứ biết khóc, hay những toa tàu WARP). Một Senior Executive nhìn bạn:\n"Mọi Feather muốn bước vào ban điều hành đều phải nhìn thẳng vào sự thật này mà không phát điên. Nếu bạn chịu đựng được, bạn là Giám đốc cấp cao. Nếu không, bộ nhớ của bạn sẽ bị thanh tẩy."',
+    en: '[Wing Board · Singularity Classified Audit] The Board summoned you to the deepest vault beneath the Nest. The singularity blast doors opened, revealing the grotesque truth powering the corporation. A Senior Executive looked upon you:\n“Every Feather seeking a seat on the executive board must gaze upon this truth without losing their mind. If you endure, you are a Senior Executive. If you falter, your memory will be purged.”',
+    choices: [
+      {
+        labelVi: 'Nhìn thẳng vào vực thẳm Singularity: Đứng vững và bước vào ban điều hành',
+        labelEn: 'Gaze into the Singularity abyss: Stand firm and claim Senior Executive seat',
+        setWingRank: 3,
+        recordsAdd: ['nest_migration'],
+        effects: { health: -15, sanity: -32, wealth: +85, rep: +42 },
+        scarsAdd: ['Bí mật đen tối của Wing'],
+        meritAdd: 55,
+        resultVi: 'Bạn nhìn thẳng vào cỗ máy kinh hoàng của Singularity. Mắt bạn rỉ máu, nhưng nụ cười của bạn vẫn giữ nguyên vẻ điềm tĩnh của một kẻ lọc lõi. Ban giám đốc vỗ tay chào đón: "Chào mừng Giám đốc cấp cao mới của tập đoàn."',
+        resultEn: 'You stared into the monstrosity of the Singularity. Your eyes bled, yet your expression retained the cold composure of an apex corporate survivor. The Board applauded: “Welcome, our newest Senior Executive.”'
+      },
+      {
+        labelVi: 'Nhắm mắt quay đầu: Chấp nhận ở lại cấp bậc an toàn',
+        labelEn: 'Avert your eyes: Accept safety at a subordinate rank',
+        effects: { sanity: +15, rep: -10 },
+        resultVi: 'Bạn lùi lại một bước. Bạn không phát điên, nhưng chiếc ghế trong ban điều hành đã khép lại vĩnh viễn.',
+        resultEn: 'Stepping back, you kept your sanity, but the door to the executive boardroom closed forever.'
+      }
+    ]
   }
 ];
