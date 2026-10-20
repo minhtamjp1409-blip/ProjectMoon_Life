@@ -411,8 +411,8 @@ export const SUPERNATURAL_EVENTS = [
             scarsAdd: ['Kẻ chém đứt xiềng xích Erlking'],
             recordsAdd: ['wild_hunt_vanquisher'],
             meritAdd: 35,
-            resultVi: 'Bạn lao thẳng vào lưỡi kiếm khổng lồ của Erlking. Một nhát chém rực sáng xé toạc ảo ảnh của chiếc quan tài thời gian. Đàn ngựa ma tan biến vào màn sương. T Corp ghi nhận chiến công và miễn trừ thuế thời gian cho bạn suốt ba năm.',
-            resultEn: 'Charging directly into Erlking’s titanic greatsword, your radiant strike shattered the temporal coffin’s phantoms. The ghost steeds dissolved into mist. T Corp logged your valor and waived your Time Tax for three years.'
+            resultVi: 'Bạn lao vào lưỡi kiếm của Erlking, chấp nhận để mảnh thép cứa rách vai trái để đổi lấy một đường chém thẳng vào khớp cổ con ngựa xương. Chiếc quan tài xích sắt nứt toác. Màn sương T Corp tan dần trong tiếng rên rỉ của những bản thể vỡ vụn. Nhân viên T Corp đến hiện trường chỉ kịp ghi chép: "Đã thanh toán một mối nguy thời gian."',
+            resultEn: 'Throwing yourself past Erlking’s blade, you took a gash across your shoulder to sever the spectral steed’s neck joint. The chained coffin cracked open. T Corp’s temporal fog cleared amidst dying groans of shattered counterparts. A T Corp clerk arrived only to stamp the log: “Temporal hazard resolved.”'
           },
           {
             w: 45,
@@ -455,8 +455,8 @@ export const SUPERNATURAL_EVENTS = [
             scarsAdd: ['Hiệp sĩ của Giấc Mơ Hoang'],
             recordsAdd: ['lamancha_dreamer'],
             meritAdd: 30,
-            resultVi: 'Bạn rút vũ khí, giơ cao cùng ngọn giáo của hiệp sĩ. Tiếng cười của trẻ thơ và những Bloodfiend thiện lương vang vọng khắp vòng quay. Cơn khát máu dịu lại trong giây lát trước ánh sáng của một lý tưởng bất diệt.',
-            resultEn: 'Drawing your weapon in salute with the lance, joyous laughter of children and kindred echoed across the carousel. The bloodthirst subsided for a precious moment before the brilliance of an undying dream.'
+            resultVi: 'Bạn đứng cạnh hiệp sĩ già trên bục gỗ rỉ sét. Cây thương của ông rung bần bật trong gió, mùi máu từ những chiếc bánh churros bốc lên tanh nồng. Đám Bloodfiend bên dưới ngước nhìn, đôi mắt đỏ ngầu chớp chớp trong ánh đèn màu chập chờn. Không ai cười. Nhưng ít nhất trong đêm nay, tiếng gào xé thịt đã không vang lên.',
+            resultEn: 'You stood beside the rusted knight upon the creaking dais. His lance trembled in the wind; the reek of blood from the churros rose thick and heavy. The kindred below looked up, crimson eyes blinking beneath stuttering neon. No one smiled. Yet for this single night, no flesh was torn in the dark.'
           },
           {
             w: 40,
@@ -500,8 +500,8 @@ export const SUPERNATURAL_EVENTS = [
             scarsAdd: ['Nét kiếm của Tuyệt Tác'],
             recordsAdd: ['ring_master_curator'],
             meritAdd: 40,
-            resultVi: 'Đường kiếm của bạn chém đứt bức tượng thịt nhưng lại xếp các mảnh vụn thành một bông hoa mẫu đơn hoàn hảo. Nữ kiếm sĩ bật cười sảng khoái và gật đầu: "K.K.T.H — Khá khen cho kẻ có tài." The Ring trao cho bạn huy hiệu Thẩm Định Viên Danh Dự.',
-            resultEn: 'Your slash cleaved the flesh sculpture, arranging the falling pieces into a perfect crimson peony. The swordswoman laughed aloud and nodded: “N.B.T. — Not bad at all.” The Ring bestowed upon you the rank of Honorary Curator.'
+            resultVi: 'Bạn vung kiếm. Ba nhát gọn gàng chém đứt các thớ gân đang co giật, để máu phun thành một vệt đối xứng trên bức tường trắng. Người phụ nữ đứng cạnh nhả một làn khói xám, ngón tay gõ nhẹ lên chuôi kiếm: "K.K.T.H — Khá khen cho kẻ biết vung dao." The Ring đóng dấu thông hành cho bạn qua khu trưng bày.',
+            resultEn: 'You swung your steel. Three surgical strokes severed the twitching tendons, letting the crimson spray form an immaculate bilateral arc against the plaster. The woman beside you exhaled a thread of gray smoke and tapped her sheath: “N.B.T. — Not bad at all.” The Ring stamped your safe-conduct pass.'
           },
           {
             w: 45,
@@ -589,8 +589,8 @@ export const SUPERNATURAL_EVENTS = [
             recordsAdd: ['gesellschaft_illumination'],
             scarsAdd: ['Con mắt nhìn thấu Đa Vũ Trụ'],
             meritAdd: 50,
-            resultVi: 'Hàng triệu luồng ký ức từ vô số thế giới tràn ngập não bộ bạn. Bạn nhìn thấy bản thiết kế tối mật của 26 Wings, công thức điều chế Singularity và ánh sáng của những Ngôi Sao xa xôi. Bạn không còn nhìn The City như một người bình thường nữa.',
-            resultEn: 'Millions of memory streams from infinite branches inundated your mind. You perceived the blueprinted secrets of all 26 Wings, Singularity synthesis, and the distant light of The Stars. You will never view The City through mortal eyes again.'
+            resultVi: 'Hàng vạn đường dây ý thức lạnh ngắt cắm thẳng vào thùy trán bạn. Bạn không nhìn thấy phép màu; bạn nhìn thấy các bản tính toán chi phí, lượng máu cần thiết để duy trì mỗi Singularity, và chiếc lồng kính khổng lồ mà The Head dựng lên bao quanh The City. Khi rút dây ra, mắt bạn rỉ máu, và thế giới này vĩnh viễn mất đi màu sắc của sự ngây thơ.',
+            resultEn: 'Tens of thousands of icy data feeds pierced your frontal lobe. You saw no miracles; you perceived cold casualty ledgers, the exact liters of blood demanded by each Singularity, and the colossal glass cage erected by The Head around The City. When you tore the cables free, blood seeped from your eyelids, and the world lost all naive warmth forever.'
           },
           {
             w: 48,

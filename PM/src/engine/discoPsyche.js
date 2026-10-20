@@ -11,8 +11,8 @@ export const PSYCHE_FACULTIES = {
     nameEn: 'Stoic Volition · Ayin',
     color: '#63b3ed', // Cobalt ice blue
     icon: '🛡️',
-    mottoVi: 'Giữ chặt nhân tính, không lùi bước trước hư vô',
-    mottoEn: 'Anchor your humanity, yield not to oblivion'
+    mottoVi: 'Nghiến răng mà đứng. Đừng để vầng dương hay bóng đêm nuốt chửng',
+    mottoEn: 'Grit your teeth. Yield not to the blinding sun nor the abyss'
   },
   CARMEN: {
     id: 'carmen',
@@ -20,8 +20,8 @@ export const PSYCHE_FACULTIES = {
     nameEn: 'Carmen’s Blinding Sun · Inland Empire',
     color: '#ecc94b', // Blinding golden sun
     icon: '☀️',
-    mottoVi: 'Yêu lấy chính mình, buông tay để bộc phát',
-    mottoEn: 'Love thyself, let go and effloresce'
+    mottoVi: 'Buông tay ra. Bạn không cần làm người tử tế cho ai xem',
+    mottoEn: 'Let go. You owe nobody a hollow human shape'
   },
   SURVIVAL: {
     id: 'survival',
@@ -29,8 +29,8 @@ export const PSYCHE_FACULTIES = {
     nameEn: 'Backstreets Instinct · Half-Light',
     color: '#f56565', // Danger crimson
     icon: '⚡',
-    mottoVi: 'Ra đòn trước để sống sót, chớ tin kẻ mỉm cười',
-    mottoEn: 'Strike first to survive, trust no smiling face'
+    mottoVi: 'Tay trong túi áo. Kẻ chớp mắt trước là kẻ nằm xuống',
+    mottoEn: 'Hand on your blade. The first to blink goes down'
   },
   LOGIC: {
     id: 'logic',
@@ -38,17 +38,17 @@ export const PSYCHE_FACULTIES = {
     nameEn: 'City Calculus · Logic & Taboo',
     color: '#4fd1c5', // Cold teal
     icon: '⚖️',
-    mottoVi: 'Đo lường giá máu, Ahn và ánh mắt của Beholder',
-    mottoEn: 'Weigh blood, Ahn, and the Beholder’s gaze'
+    mottoVi: 'Mỗi hơi thở đều tính bằng Ahn, mỗi lỗi lầm đều trả bằng đầu',
+    mottoEn: 'Every breath costs Ahn; every slip pays with blood'
   },
   DRAMA: {
     id: 'drama',
-    nameVi: 'Khí Phách Hiệp Sĩ & Nghệ Thuật · Drama',
+    nameVi: 'Khí Phách Nghệ Thuật & Hiệp Sĩ · Drama',
     nameEn: 'Poetic Passion · Drama & Savoir Faire',
     color: '#b794f4', // Royal purple / La Mancha
     icon: '🎭',
-    mottoVi: 'Một màn kịch vĩ đại cần những nét cọ chấn động',
-    mottoEn: 'A grand performance demands strokes that shake the sky'
+    mottoVi: 'Nếu phải ngã xuống, hãy để lũ khán giả phía dưới phải nín thở',
+    mottoEn: 'If fall you must, leave the gallery breathless'
   }
 };
 
@@ -70,8 +70,8 @@ export function getPsycheInterjection(char, event, lang = 'vi') {
   if (event.id.includes('carmen') || resonance >= 50 || sanity <= 18) {
     return {
       faculty: PSYCHE_FACULTIES.CARMEN,
-      textVi: 'Một luồng nhiệt chói lòa từ vầng thái dương của The Light phả vào gáy bạn: "Sao phải chịu đựng đau đớn vì luật lệ của người khác? Hãy yêu lấy bản ngã của mình. Bạn có thể biến tất cả vết sẹo này thành sức mạnh tuyệt đối..."',
-      textEn: 'A scorching radiance from The Light’s blinding sun breathes upon your neck: “Why endure agony for the sake of another’s rules? Love yourself. You can forge every scar into absolute power...”'
+      textVi: 'Hơi ấm từ vầng thái dương của The Light phả vào sau gáy bạn, vừa dịu dàng vừa ngột ngạt: "Này. Sao phải gượng gạo chịu đau đến thế? Ở The City này, ai cũng tự cứu lấy mình cả thôi. Bạn không cần làm một con người tử tế cho ai xem nữa. Cứ buông tay ra. Hãy trở thành điều bạn muốn."',
+      textEn: 'A suffocating warmth from The Light’s sun breaths on your neck, soft and intimate: “Hey. Why strain so hard to endure? In this City, everyone only saves themselves. You don’t need to play the decent human for anyone. Just let go. Become what you want.”'
     };
   }
 
@@ -79,8 +79,8 @@ export function getPsycheInterjection(char, event, lang = 'vi') {
   if (event.id.includes('crossroad_18') || sanity >= 55 && (event.major || scars.length >= 2)) {
     return {
       faculty: PSYCHE_FACULTIES.VOLITION,
-      textVi: 'Một khoảng lặng tĩnh mịch giữa tâm bão The City: "Giữ chặt đôi chân trên mặt đất. Đau đớn và những vết thương này là bằng chứng bạn vẫn đang sống như một con người. Đừng cúi đầu."',
-      textEn: 'A resolute quiet anchors your chest amidst The City’s tempest: “Plant your feet firm upon the stone. This agony and these scars are proof you still walk as human. Bow to nothing.”'
+      textVi: 'Một giọng nói lạnh và trầm vang lên từ lồng ngực: "Đứng vững. Đau thì nghiến răng lại. Máu chảy hay sẹo rạch đều là chứng tích bạn vẫn là một con người. Một khi buông tay, bạn sẽ không bao giờ tìm lại được hình dáng của chính mình."',
+      textEn: 'A cold, steady murmur echoes in your ribs: “Stand firm. When it hurts, grit your teeth. Bleeding flesh and jagged scars are proof you are still human. Once you let go, you will never reclaim your own shape.”'
     };
   }
 
@@ -88,8 +88,8 @@ export function getPsycheInterjection(char, event, lang = 'vi') {
   if (eventText.includes('sweeper') || eventText.includes('máu') || eventText.includes('giết') || health <= 35 || event.id.includes('req_')) {
     return {
       faculty: PSYCHE_FACULTIES.SURVIVAL,
-      textVi: 'Thú tính sinh tồn trong huyết quản gầm gừ báo động: "Mùi rỉ sắt và chết chóc rất gần. Ở Backstreets, kẻ do dự là kẻ nằm xuống trước khi đồng hồ điểm 3 giờ 13."',
-      textEn: 'Predatory survival instinct snarls through your veins: “The stench of rust and death is near. In the Backstreets, the one who hesitates goes down before the clock strikes 3:13.”'
+      textVi: 'Cơn co giật quen thuộc dưới khớp ngón tay: "Tay trong túi áo. Rút dao ra trước khi gã kia kịp chớp mắt. Ở cái hẻm này, đứa nào mở miệng phân bua trước thường là đứa nằm xuống trước khi đồng hồ điểm 3 giờ 13."',
+      textEn: 'A familiar twitch tightens your knuckles: “Hand inside the coat. Draw your steel before they blink. In these alleys, the first one to start explaining is the one on the pavement before 3:13.”'
     };
   }
 
@@ -97,8 +97,8 @@ export function getPsycheInterjection(char, event, lang = 'vi') {
   if (eventText.includes('lamancha') || eventText.includes('bloodfiend') || eventText.includes('ring') || flags.includes('WildHuntRider')) {
     return {
       faculty: PSYCHE_FACULTIES.DRAMA,
-      textVi: 'Nhịp đập hoang dại giục giã trong lồng ngực: "Dù là La Mancha Land rực rỡ hay vũ đài đẫm máu của The Ring, The City không dành chỗ cho những kẻ tầm thường. Hãy biến khoảnh khắc này thành một tuyệt tác bất hủ!"',
-      textEn: 'A wild pulse quickens in your ribs: “Be it radiant La Mancha Land or The Ring’s sanguine dais, The City holds no place for the mundane. Make this moment an unforgettable masterpiece!”'
+      textVi: 'Cơn rùng mình chạy dọc sống lưng: "Một nụ cười méo mó sau tấm mặt nạ rỉ sét. Một đường kiếm sắc lẹm không thừa một giọt máu. Nếu phải gục ngã ở cái xó này, ít nhất hãy để lũ người đứng xem phía dưới phải nín thở."',
+      textEn: 'A shudder ripples down your spine: “A twisted grin behind a rusted visor. A stroke of steel that spills not an idle drop. If fall you must in this gutter, at least leave the spectators breathless.”'
     };
   }
 
@@ -106,16 +106,16 @@ export function getPsycheInterjection(char, event, lang = 'vi') {
   if (taboo >= 1 || char.job === 'Fixer' || char.job === 'Wing Employee' || (char.stats?.wealth || 0) >= 45) {
     return {
       faculty: PSYCHE_FACULTIES.LOGIC,
-      textVi: 'Toan tính sắc bén rà soát tình hình: "Mọi hơi thở tại The City đều có hóa đơn tính tiền. Cân nhắc kỹ cái giá phải trả; nếu chạm vào Taboo của The Head, ngay cả các Wing cũng không bảo vệ được bạn."',
-      textEn: 'Keen calculus scans the room: “Every breath in The City carries an invoice. Weigh the price carefully; touch the Taboos of The Head, and not even the Wings can shield you.”'
+      textVi: 'Đầu óc bạn tự động nhảy số: "Tính lại tiền trong túi đi. Một băng đạn xưởng rèn có giá ba ngày lương. Còn nếu vi phạm luật của The Head, đến tiền làm đám ma cũng chẳng còn ai đứng ra mà thu."',
+      textEn: 'Your mind tallies the ledger without blinking: “Count the coins in your pocket. A box of workshop ammo costs three days of labor. Step over the Taboo, and there won’t even be anyone left to collect your burial fee.”'
     };
   }
 
   // Default Stoic Insight
   return {
     faculty: PSYCHE_FACULTIES.VOLITION,
-    textVi: 'Nội tâm bạn lắng lại trước ngã rẽ: "Một bước đi lúc này sẽ định hình vết sẹo của ngày mai."',
-    textEn: 'Your inner focus steadies before the crossroads: “A single step taken now will etch the scars of tomorrow.”'
+    textVi: 'Bạn chững lại nửa nhịp: "Ở The City, bước chân sau luôn phải trả tiền cho vết máu của bước chân trước."',
+    textEn: 'You pause half a beat: “In The City, your next step always pays for the blood of the last.”'
   };
 }
 
