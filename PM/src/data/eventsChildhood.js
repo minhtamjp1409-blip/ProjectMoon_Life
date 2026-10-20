@@ -499,8 +499,8 @@ export const CONSEQUENCE_EVENTS = [
     id: 'csq_parent_old_comrade',
     major: true,
     isCausalCallback: true,
-    vi: '[Người từng đi cùng {parentName}] Trong một quán rượu dưới hầm, một Fixer cụt chân ngồi xe lăn túm lấy cổ tay bạn khi thấy 「{relic}」.\n"Cái này... mày là con của {parentName}." Ông ta kể: năm đó, {parentName} đã đứng chắn trước một băng đạn của Thumb để ông ta bò ra được.',
-    en: '[Someone who rode with {parentName}] In a basement bar, a legless Fixer in a wheelchair grabbed your wrist when he saw 「{relic}」.\n“This... you’re {parentName}’s child.” He told you: that night, {parentName} stood in front of a Thumb magazine so he could crawl out.',
+    vi: '[Người từng đi cùng {parentName}] Trong một quán rượu dưới hầm, một Fixer cụt chân ngồi xe lăn túm lấy cổ tay bạn khi thấy 「{relic}」.\n"Cái này... mày mang kỷ vật của {parentName}." Ông ta kể: năm đó, {parentName} đã đứng chắn trước một băng đạn của Thumb để ông ta bò ra được.',
+    en: '[Someone who rode with {parentName}] In a basement bar, a legless Fixer in a wheelchair grabbed your wrist when he saw 「{relic}」.\n“This... you carry {parentName}’s keepsake.” He told you: that night, {parentName} stood in front of a Thumb magazine so he could crawl out.',
     choices: [
       {
         labelVi: 'Nhờ ông dạy bạn những gì {parentName} từng biết',

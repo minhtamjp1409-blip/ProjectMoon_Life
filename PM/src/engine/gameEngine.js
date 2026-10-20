@@ -241,12 +241,14 @@ export function createNewCharacter({
     lineageInfo = {
       generation,
       parentName: parentLegacy.name,
+      parentAge: parentLegacy.age || 0,
       parentTitle: parentLegacy.epitaphTitleVi,
       parentJob: parentLegacy.job,
       parentDeathVi: parentLegacy.deathCauseVi,
       parentDeathEn: parentLegacy.deathCauseEn,
-      relic: parentLegacy.relic || 'Huy hiệu cũ của người đi trước',
-      inheritedDebt: Boolean(parentLegacy.hasVendetta)
+      relic: parentLegacy.relic || (parentLegacy.age < 16 ? `Kỷ vật của ${parentLegacy.name}` : `Di vật của ${parentLegacy.name}`),
+      inheritedDebt: Boolean(parentLegacy.hasVendetta),
+      successorRelation: parentLegacy.successorRelation || (parentLegacy.age < 14 ? 'sibling' : parentLegacy.age < 18 ? 'companion' : parentLegacy.hasChild ? 'child' : 'heir')
     };
 
     inheritedEchoes.push({
@@ -289,13 +291,27 @@ export function createNewCharacter({
   }));
 
   if (lineageInfo) {
+    let legacyVi = `Bạn là con của ${lineageInfo.parentName}. Thứ duy nhất người ấy để lại là 「${lineageInfo.relic}」${lineageInfo.inheritedDebt ? ', và một món nợ máu với Syndicate.' : '.'}`;
+    let legacyEn = `You are the child of ${lineageInfo.parentName}. All they left you was 「${lineageInfo.relic}」${lineageInfo.inheritedDebt ? ', and a blood debt to a Syndicate.' : '.'}`;
+
+    if (lineageInfo.successorRelation === 'sibling' || (lineageInfo.parentAge > 0 && lineageInfo.parentAge < 14)) {
+      legacyVi = `${lineageInfo.parentName} mất năm ${lineageInfo.parentAge} tuổi khi chưa kịp lớn. Bạn là em ruột (hoặc đứa trẻ cùng xóm) nhặt lại 「${lineageInfo.relic}」${lineageInfo.inheritedDebt ? ', cùng món nợ máu dở dang với Syndicate.' : '.'}`;
+      legacyEn = `${lineageInfo.parentName} died young at age ${lineageInfo.parentAge}. You are a younger sibling (or local child) who found their 「${lineageInfo.relic}」${lineageInfo.inheritedDebt ? ', along with an unsettled Syndicate blood debt.' : '.'}`;
+    } else if (lineageInfo.successorRelation === 'companion' || (lineageInfo.parentAge >= 14 && lineageInfo.parentAge < 18)) {
+      legacyVi = `${lineageInfo.parentName} ngã xuống năm ${lineageInfo.parentAge} tuổi. Bạn là người tiếp bước mang theo 「${lineageInfo.relic}」${lineageInfo.inheritedDebt ? ', cùng món nợ máu dở dang với Syndicate.' : '.'}`;
+      legacyEn = `${lineageInfo.parentName} fell at age ${lineageInfo.parentAge}. You are the one who took up their 「${lineageInfo.relic}」${lineageInfo.inheritedDebt ? ', along with an unsettled Syndicate blood debt.' : '.'}`;
+    } else if (lineageInfo.successorRelation === 'heir') {
+      legacyVi = `${lineageInfo.parentName} qua đời năm ${lineageInfo.parentAge} tuổi mà không có con cái. Bạn là hậu bối tiếp nhận 「${lineageInfo.relic}」${lineageInfo.inheritedDebt ? ', và món nợ máu của người ấy.' : '.'}`;
+      legacyEn = `${lineageInfo.parentName} passed away at age ${lineageInfo.parentAge} without an heir. You are the successor taking up 「${lineageInfo.relic}」${lineageInfo.inheritedDebt ? ', and their Syndicate blood debt.' : '.'}`;
+    }
+
     initialLogs.push({
       id: 'log_legacy_0',
       age: 0,
       season: SEASONS[1],
       type: 'causal',
-      vi: `Bạn là con của ${lineageInfo.parentName}. Thứ duy nhất người ấy để lại là 「${lineageInfo.relic}」${lineageInfo.inheritedDebt ? ', và một món nợ máu với Syndicate.' : '.'}`,
-      en: `You are the child of ${lineageInfo.parentName}. All they left you was 「${lineageInfo.relic}」${lineageInfo.inheritedDebt ? ', and a blood debt to a Syndicate.' : '.'}`
+      vi: legacyVi,
+      en: legacyEn
     });
   }
 
@@ -1407,7 +1423,18 @@ export function buildLifeSummaryAndLegacy(char) {
     char.craftWeapon?.name ||
     (char.egoName ? `Mảnh E.G.O 「${char.egoName}」` : null) ||
     (char.customTitle ? `Huy hiệu Color 「${char.customTitle}」` : null) ||
-    (char.lineage?.relic ? char.lineage.relic : `Đồ của ${char.name}`);
+    (char.lineage?.relic ? char.lineage.relic : (char.age < 16 ? `Kỷ vật của ${char.name}` : `Di vật của ${char.name}`));
+
+  let successorRelation = 'child';
+  if (char.age < 14) {
+    successorRelation = 'sibling';
+  } else if (char.age < 18) {
+    successorRelation = 'companion';
+  } else if (char.npcs?.child) {
+    successorRelation = 'child';
+  } else {
+    successorRelation = 'heir';
+  }
 
   return {
     generation: char.generation,
@@ -1428,6 +1455,7 @@ export function buildLifeSummaryAndLegacy(char) {
     network: char.stats.network,
     scars: [...char.scars],
     relic: relicName,
+    successorRelation,
     hasChild: Boolean(char.npcs?.child),
     childName: char.npcs?.child?.nameVi || '',
     hasVendetta: (char.heat || 0) >= 40 || char.flags.includes('MiddleVendetta')

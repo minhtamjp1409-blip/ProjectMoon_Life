@@ -189,30 +189,60 @@ export const BirthSetupPanel = () => {
             </div>
           )}
 
-          {pendingLegacy && (
-            <div className="legacy">
-              <div>
-                <p style={{ fontWeight: 600 }}>
-                  {t('Tiếp nối huyết thống', 'Continue the bloodline')} · {t('thế hệ', 'generation')} #{pendingLegacy.generation + 1}
-                </p>
-                <p className="muted" style={{ fontSize: 14, marginTop: 4 }}>
-                  {t(
-                    `Con của ${pendingLegacy.name}, mất năm ${pendingLegacy.age} tuổi. Thừa kế 「${pendingLegacy.relic}」.`,
-                    `Heir of ${pendingLegacy.name}, who died at ${pendingLegacy.age}. Inherits 「${pendingLegacy.relic}」.`
-                  )}
-                </p>
-                {pendingLegacy.hasVendetta && (
-                  <p style={{ fontSize: 14, marginTop: 4, color: 'var(--bad)' }}>
-                    {t('Món nợ trong Book of Vengeance cũng được truyền lại.', 'The debt in the Book of Vengeance passes down too.')}
+          {pendingLegacy && (() => {
+            const rel = pendingLegacy.successorRelation || (pendingLegacy.age < 14 ? 'sibling' : pendingLegacy.age < 18 ? 'companion' : pendingLegacy.hasChild ? 'child' : 'heir');
+            let headerVi = 'Tiếp nối huyết thống';
+            let headerEn = 'Continue the bloodline';
+            let descVi = `Con của ${pendingLegacy.name}, mất năm ${pendingLegacy.age} tuổi. Thừa kế 「${pendingLegacy.relic}」.`;
+            let descEn = `Child of ${pendingLegacy.name}, who died at ${pendingLegacy.age}. Inherits 「${pendingLegacy.relic}」.`;
+            let btnVi = `Chơi đời con của ${pendingLegacy.name}`;
+            let btnEn = `Play as ${pendingLegacy.name}'s child`;
+
+            if (rel === 'sibling') {
+              headerVi = 'Tiếp bước người thân';
+              headerEn = 'Carry the torch';
+              descVi = `${pendingLegacy.name} mất khi mới ${pendingLegacy.age} tuổi. Bạn là em ruột (hoặc đứa trẻ cùng xóm) nhặt lại 「${pendingLegacy.relic}」.`;
+              descEn = `${pendingLegacy.name} died young at age ${pendingLegacy.age}. You are a younger sibling (or local child) who found 「${pendingLegacy.relic}」.`;
+              btnVi = `Chơi đời em của ${pendingLegacy.name}`;
+              btnEn = `Play as ${pendingLegacy.name}'s sibling`;
+            } else if (rel === 'companion') {
+              headerVi = 'Kế thừa di vật';
+              headerEn = 'Inherit the legacy';
+              descVi = `${pendingLegacy.name} ngã xuống năm ${pendingLegacy.age} tuổi khi chưa kịp lập gia đình. Bạn tiếp bước mang theo 「${pendingLegacy.relic}」.`;
+              descEn = `${pendingLegacy.name} fell at age ${pendingLegacy.age} without a family. You carry on their 「${pendingLegacy.relic}」.`;
+              btnVi = `Kế thừa ý chí của ${pendingLegacy.name}`;
+              btnEn = `Carry on ${pendingLegacy.name}'s legacy`;
+            } else if (rel === 'heir') {
+              headerVi = 'Kế thừa di vật';
+              headerEn = 'Inherit the relic';
+              descVi = `${pendingLegacy.name} qua đời năm ${pendingLegacy.age} tuổi mà không có con. Bạn là hậu bối tiếp nhận 「${pendingLegacy.relic}」.`;
+              descEn = `${pendingLegacy.name} died at age ${pendingLegacy.age} with no heir. You are the successor taking up 「${pendingLegacy.relic}」.`;
+              btnVi = `Chơi người kế thừa của ${pendingLegacy.name}`;
+              btnEn = `Play as ${pendingLegacy.name}'s successor`;
+            }
+
+            return (
+              <div className="legacy">
+                <div>
+                  <p style={{ fontWeight: 600 }}>
+                    {t(headerVi, headerEn)} · {t('thế hệ', 'generation')} #{pendingLegacy.generation + 1}
                   </p>
-                )}
+                  <p className="muted" style={{ fontSize: 14, marginTop: 4 }}>
+                    {t(descVi, descEn)}
+                  </p>
+                  {pendingLegacy.hasVendetta && (
+                    <p style={{ fontSize: 14, marginTop: 4, color: 'var(--bad)' }}>
+                      {t('Món nợ trong Book of Vengeance cũng được truyền lại.', 'The debt in the Book of Vengeance passes down too.')}
+                    </p>
+                  )}
+                </div>
+                <button type="button" className="btn btn-block" disabled={spinning} onClick={() => launch(true)}>
+                  <GitBranch size={16} />
+                  {t(btnVi, btnEn)}
+                </button>
               </div>
-              <button type="button" className="btn btn-block" disabled={spinning} onClick={() => launch(true)}>
-                <GitBranch size={16} />
-                {t(`Chơi đời con của ${pendingLegacy.name}`, `Play as ${pendingLegacy.name}'s heir`)}
-              </button>
-            </div>
-          )}
+            );
+          })()}
 
           <div className="field">
             <label htmlFor="birth-name">{t('Tên nhân vật', 'Name')}</label>

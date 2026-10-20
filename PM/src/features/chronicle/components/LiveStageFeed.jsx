@@ -346,7 +346,11 @@ const Epitaph = ({ summary, onInherit, onRestart }) => {
         <div className="epitaph-actions">
           <button type="button" className="btn btn-primary btn-lg" onClick={onInherit}>
             <GitBranch size={16} />
-            {t(`Chơi đời con · thế hệ #${summary.generation + 1}`, `Play the heir · generation #${summary.generation + 1}`)}
+            {summary.age < 14
+              ? t(`Chơi đời em · thế hệ #${summary.generation + 1}`, `Play as sibling · gen #${summary.generation + 1}`)
+              : summary.age < 18 || !summary.hasChild
+                ? t(`Kế thừa di vật · thế hệ #${summary.generation + 1}`, `Inherit legacy · gen #${summary.generation + 1}`)
+                : t(`Chơi đời con · thế hệ #${summary.generation + 1}`, `Play the heir · gen #${summary.generation + 1}`)}
           </button>
           <button type="button" className="btn btn-lg" onClick={() => exportDossierCardPNG(summary)}>
             <Download size={16} />
