@@ -365,6 +365,35 @@ class AudioEngine {
     osc.start(t);
     osc.stop(t + 0.025);
   }
+  /**
+   * Dramatic time-stop decision cue: Resonant harmonic chime.
+   */
+  playDecision() {
+    if (this.isMuted) return;
+    this.init();
+    if (!this.ctx) return;
+
+    const t = this.ctx.currentTime;
+    // Resonant time-stop chime: A4 (440) + E5 (659.25) + low sub (110)
+    [440, 659.25, 110].forEach((freq, idx) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = idx === 2 ? 'sine' : 'triangle';
+      osc.frequency.setValueAtTime(freq, t);
+      if (idx !== 2) {
+        osc.frequency.exponentialRampToValueAtTime(freq * 0.98, t + 0.35);
+      }
+      const initialAmp = idx === 2 ? 0.16 : 0.12;
+      gain.gain.setValueAtTime(0.001, t);
+      gain.gain.linearRampToValueAtTime(initialAmp, t + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.45);
+
+      osc.connect(gain);
+      gain.connect(this.uiGain);
+      osc.start(t);
+      osc.stop(t + 0.5);
+    });
+  }
 }
 
 export const audioEngine = new AudioEngine();

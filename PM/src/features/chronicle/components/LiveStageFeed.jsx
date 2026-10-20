@@ -130,44 +130,33 @@ const AmbientScene = ({ char }) => {
 
 /* ---------- Decision docks ---------- */
 
-const DockNavigation = () => {
-  const { t } = useT();
-  const showChoices = (e) => {
-    const dock = e.currentTarget.closest('.dock');
-    const choices = dock.querySelector('.choices');
-    const navigation = e.currentTarget.parentElement;
-    if (!choices) return;
-    dock.scrollTo({
-      top: dock.scrollTop + choices.getBoundingClientRect().top - dock.getBoundingClientRect().top - navigation.offsetHeight - parseFloat(getComputedStyle(dock).paddingTop) - 16,
-      behavior: 'instant'
-    });
-  };
-  return (
-    <div className="dock-navigation">
-      <span>{t('Quyết định của bạn', 'Your decision')}</span>
-      <button type="button" onClick={showChoices}>
-        {t('Xem lựa chọn', 'Show choices')}<ChevronDown size={15} aria-hidden="true" />
-      </button>
-    </div>
-  );
-};
+const DockNavigation = () => null;
 
 const MinorDock = ({ prompt, npcs, paused, onPick }) => {
   const { t, lang, bilingual } = useT();
   const raw = lang === 'en' ? prompt.en : prompt.vi;
   const { title, body } = splitTitle(raw);
   return (
-    <div className="dock is-minor" role="dialog" aria-label={t('Một lựa chọn nhỏ', 'A small choice')}>
-      <DockNavigation />
+    <div className="dock is-minor" role="document">
       <div className="dock-inner">
-        <div className="dock-mobile-handle" />
         <div className="countdown-wrap">
           <div className="countdown" aria-hidden="true">
             <i key={prompt.id} style={{ animationDuration: `${MINOR_WINDOW_MS}ms`, animationPlayState: paused ? 'paused' : 'running' }} />
           </div>
-          <span className="countdown-badge">15 s</span>
+          <span className="countdown-badge">15s</span>
         </div>
-        {title && <h4 className="dock-title" style={{ marginBottom: 8, fontSize: 18 }}>{title}</h4>}
+        <div className="dock-banner">
+          <div className="dock-banner-text">
+            <div className="dock-kicker-row">
+              <p className="dock-kicker">
+                <span className="dock-kicker-icon">⚡</span>
+                <span>{t('Gặp gỡ bất chợt · Backstreets', 'Encounter · Backstreets')}</span>
+              </p>
+              <span className="dock-hotkey-hint">{t('0 / Esc: bỏ qua', '0 / Esc: pass')}</span>
+            </div>
+            {title && <h3 className="dock-title">{title}</h3>}
+          </div>
+        </div>
         <p className="dock-text">{body}</p>
         {bilingual && <p className="entry-alt">{splitTitle(prompt.en).body}</p>}
         <div className="choices">
@@ -197,16 +186,18 @@ const EventDock = ({ event, char, onPick }) => {
   const psyche = getPsycheInterjection(char, event, lang);
 
   return (
-    <div className="dock" role="dialog" aria-label={t('Sự kiện cần quyết định', 'Decision')}>
-      <DockNavigation />
+    <div className={`dock ${causal ? 'is-causal' : ''}`} role="document">
       <div className="dock-inner">
-        <div className="dock-mobile-handle" />
         <div className="dock-banner">
           <div className="dock-banner-text">
-            <p className={`dock-kicker ${causal ? 'is-causal' : ''}`}>
-              {causal ? 'Causal Echo · Time stops' : t(`Tuổi ${char.age} · thời gian dừng lại`, `Age ${char.age} · time stops`)}
-            </p>
-            <p className="dock-title">{title || t('Bạn sẽ làm gì?', 'What will you do?')}</p>
+            <div className="dock-kicker-row">
+              <p className={`dock-kicker ${causal ? 'is-causal' : ''}`}>
+                <span className="dock-kicker-icon">{causal ? '⟲' : '⏳'}</span>
+                <span>{causal ? 'Causal Echo · Time stops' : t(`Tuổi ${char.age} · thời gian dừng lại`, `Age ${char.age} · time stops`)}</span>
+              </p>
+              <span className="dock-hotkey-hint">{t('Phím 1-9 để chọn', 'Keys 1-9')}</span>
+            </div>
+            <h3 className="dock-title">{title || t('Bạn sẽ làm gì?', 'What will you do?')}</h3>
           </div>
         </div>
 
@@ -290,17 +281,21 @@ const ContractDock = ({ contract, wealth, onPick }) => {
   const { t, lang } = useT();
 
   return (
-    <div className="dock" role="dialog" aria-label={t('Request của Fixer', 'Fixer request')}>
-      <DockNavigation />
+    <div className="dock is-contract" role="document">
       <div className="dock-inner">
-        <div className="dock-mobile-handle" />
         <div className="dock-banner">
           <div className="dock-banner-text">
-            <p className="dock-kicker">
-              {t('Request · ', 'Request · ')}
-              {lang === 'en' ? contract.tierInfo.nameEn : contract.tierInfo.nameVi}
-            </p>
-            <p className="dock-title">{lang === 'en' ? contract.template.typeEn : contract.template.typeVi}</p>
+            <div className="dock-kicker-row">
+              <p className="dock-kicker">
+                <span className="dock-kicker-icon">📜</span>
+                <span>
+                  {t('Request · ', 'Request · ')}
+                  {lang === 'en' ? contract.tierInfo.nameEn : contract.tierInfo.nameVi}
+                </span>
+              </p>
+              <span className="dock-hotkey-hint">{t('Phím 1-9 để chọn', 'Keys 1-9')}</span>
+            </div>
+            <h3 className="dock-title">{lang === 'en' ? contract.template.typeEn : contract.template.typeVi}</h3>
           </div>
         </div>
 
@@ -491,7 +486,7 @@ export const LiveStageFeed = () => {
   useEffect(() => {
     const onKeyDown = (e) => {
       if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) return;
-      if (document.activeElement?.closest('button, a, summary, [role="dialog"][aria-modal="true"]')) return;
+      if (char.pendingModal) return;
       if (e.code === 'Space') {
         if (!char.alive) return;
         e.preventDefault();
@@ -560,6 +555,16 @@ export const LiveStageFeed = () => {
     setStrikes((prev) => [...prev, dist <= 10 ? 100 : dist <= 22 ? 85 : 68]);
   };
 
+  // Sound cues when an event or contract decision stops time
+  useEffect(() => {
+    if (char.pendingEvent) {
+      if (char.pendingEvent.isCausalCallback) audioEngine.playDanger();
+      else if (typeof audioEngine.playDecision === 'function') audioEngine.playDecision();
+    } else if (char.pendingContract) {
+      if (typeof audioEngine.playDecision === 'function') audioEngine.playDecision();
+    }
+  }, [char.pendingEvent?.id, char.pendingContract?.id]);
+
   const forgeQuality = strikes.length ? Math.round(strikes.reduce((a, b) => a + b, 0) / strikes.length) : 0;
   const lifeSummary = !char.alive ? buildLifeSummaryAndLegacy(char) : null;
   const hasDock = Boolean(char.pendingEvent || char.pendingContract || char.pendingMinor);
@@ -576,10 +581,14 @@ export const LiveStageFeed = () => {
         </div>
       </div>
 
-      {char.pendingEvent && <EventDock event={char.pendingEvent} char={char} onPick={handleSelectEvent} />}
-      {!char.pendingEvent && char.pendingContract && <ContractDock contract={char.pendingContract} wealth={char.stats.wealth} onPick={handleSelectContract} />}
-      {!char.pendingEvent && !char.pendingContract && char.pendingMinor && (
-        <MinorDock prompt={char.pendingMinor} npcs={char.npcs} paused={speed === 0} onPick={handleChooseMinor} />
+      {hasDock && (
+        <div className="event-modal-backdrop" role="dialog" aria-modal="true" aria-label={t('Sự kiện cần quyết định', 'Decision Event')}>
+          {char.pendingEvent && <EventDock event={char.pendingEvent} char={char} onPick={handleSelectEvent} />}
+          {!char.pendingEvent && char.pendingContract && <ContractDock contract={char.pendingContract} wealth={char.stats.wealth} onPick={handleSelectContract} />}
+          {!char.pendingEvent && !char.pendingContract && char.pendingMinor && (
+            <MinorDock prompt={char.pendingMinor} npcs={char.npcs} paused={speed === 0} onPick={handleChooseMinor} />
+          )}
+        </div>
       )}
 
       <Modal open={char.pendingModal === 'color_title'} footer={null} closable={false} centered title={t('Hana Association trao Color', 'Hana Association grants a Color')}>
