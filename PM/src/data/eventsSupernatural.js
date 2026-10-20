@@ -190,12 +190,12 @@ export const SUPERNATURAL_EVENTS = [
     major: true,
     weight: 999,
     forbids: ['EGOAwakened', 'Distorted'],
-    vi: '[Can you hear my voice?] Mọi thứ bạn từng mất quay về cùng một lúc ({scars}). Căn phòng tan ra thành một thứ ánh sáng ấm, quá ấm. Một giọng phụ nữ dịu dàng vang lên ngay bên trong đầu bạn:\n"Đau lắm, phải không? Ở The City này, cố giữ hình người chỉ khiến bạn bị xé ra từng mảnh. Bạn có thể buông tay. Bạn có thể trở thành điều bạn thật sự muốn."',
-    en: '[Can you hear my voice?] Everything you ever lost came back at once ({scars}). The room melted into a warm light, too warm. A gentle woman’s voice spoke from inside your head:\n“It hurts so much, doesn’t it? In this City, holding on to a human shape only gets you torn apart piece by piece. You can let go. You can become what you truly want.”',
+    vi: '[Can you hear my voice? · Vầng Thái Dương Của Ánh Sáng] Mọi thứ bạn từng mất quay về cùng một lúc ({scars}). Không gian xung quanh tan biến thành một vầng thái dương chói lòa — một biển ánh sáng ấm áp, rực rỡ đến mức thiêu đốt. Từ tâm điểm vầng dương, một người phụ nữ với đôi mắt thấu suốt và nụ cười dịu dàng nghiêng đầu nhìn bạn:\n"Đau lắm, phải không? Ở The City này, cố giữ hình người chỉ khiến bạn bị xé ra từng mảnh. Hãy yêu lấy chính mình. Bạn có thể buông tay, và trở thành điều bạn thật sự khao khát."',
+    en: '[Can you hear my voice? · The Scorching Sun of The Light] Everything you ever lost returned at once ({scars}). The surrounding room dissolved into a blinding white sun — an ocean of radiant, scorching light. From the center of the brilliant sun, a woman with piercing eyes and a gentle smile tilted her head:\n“It hurts so much, doesn’t it? In this City, clinging to a human shape only gets you torn apart. Love yourself. You can let go, and become what you truly desire.”',
     choices: [
       {
-        labelVi: '"Nỗi đau này là của tôi. Tôi sẽ đứng trên đôi chân của mình."',
-        labelEn: '“This pain is mine. I will stand on my own two feet.”',
+        labelVi: '"Nỗi đau này là của tôi. Tôi sẽ không khuất phục trước vầng thái dương của người."',
+        labelEn: '“This pain is mine. I will not yield before your sun.”',
         outcomes: [
           {
             w: 48,
@@ -203,10 +203,10 @@ export const SUPERNATURAL_EVENTS = [
             flagsAdd: ['EGOAwakened', 'ShinAwakened'],
             recordsAdd: ['ego_effloresced'],
             effects: { health: +35, sanity: +50, rep: +38, resonance: +25 },
-            scarsAdd: ['Người đã không buông tay'],
+            scarsAdd: ['Người không cúi đầu trước Carmen'],
             meritAdd: 45,
-            resultVi: 'Bạn giữ chặt từng ký ức và vết sẹo, không lùi bước trước sự quyến rũ của hư vô. Ánh sáng ấm áp của Carmen nứt toác trước ý chí của bạn. Từ sâu thẳm tâm thức, một bộ giáp và vũ khí kết tinh từ chính nỗi đau của bạn hiện hình. Đó là E.G.O của riêng bạn.',
-            resultEn: 'You held firm to every memory and scar, refusing the warm seduction of oblivion. Carmen’s soothing light fractured against your resolve. From the depths of your psyche, armor and a weapon forged from your agony manifested. It is your E.G.O.'
+            resultVi: 'Bạn giữ chặt từng ký ức và vết sẹo, không lùi bước trước vầng thái dương ấm áp của Carmen. Biển ánh sáng chói lòa nứt toác trước ý chí bất khuất của bạn. Từ sâu thẳm tâm thức, một bộ giáp và vũ khí kết tinh từ chính nỗi đau của bạn hiện hình. Đó là E.G.O của riêng bạn.',
+            resultEn: 'You held firm to every memory and scar, refusing to yield before Carmen’s radiant sun. The blinding light fractured against your unbending resolve. From the depths of your psyche, armor and a weapon forged from your agony manifested. It is your E.G.O.'
           },
           {
             w: 37,
@@ -232,8 +232,8 @@ export const SUPERNATURAL_EVENTS = [
             effects: { health: +40, sanity: -60, rep: +30, heat: +45, resonance: +55 },
             scarsAdd: ['Ý chí gãy đổ'],
             meritAdd: 20,
-            resultVi: 'Lời thì thầm của Carmen quá ngọt ngào. Trong khoảnh khắc ngập ngừng cuối cùng, ý chí của bạn nứt toác. Cơ thể bạn biến dạng thành hình thù của nỗi đau u uất. Hana Association cập nhật hồ sơ: Bạn đã Biến dạng (Distorted).',
-            resultEn: 'Carmen’s murmur was too sweet. In that final hesitation, your resolve shattered. Your flesh morphed into the shape of your sorrow. Hana Association updated its file: Distorted.'
+            resultVi: 'Lời thì thầm từ vầng thái dương của Carmen quá ngọt ngào. Trong khoảnh khắc ngập ngừng cuối cùng, ý chí của bạn nứt toác. Cơ thể bạn biến dạng thành hình thù của nỗi đau u uất. Hana Association cập nhật hồ sơ: Bạn đã Biến dạng (Distorted).',
+            resultEn: 'Carmen’s murmur from the radiant sun was too sweet. In that final hesitation, your resolve shattered. Your flesh morphed into the shape of your sorrow. Hana Association updated its file: Distorted.'
           }
         ]
       },
@@ -282,15 +282,15 @@ export const SUPERNATURAL_EVENTS = [
         ]
       },
       {
-        labelVi: 'Nhắm mắt lại, và để giọng nói ấy dẫn bạn đi (Distortion)',
-        labelEn: 'Close your eyes, and let the voice lead you (Distort)',
+        labelVi: 'Nhắm mắt lại, đắm chìm vào vầng thái dương ấm áp (Distortion)',
+        labelEn: 'Close your eyes, immerse into the warm sun (Distort)',
         flagsAdd: ['Distorted'],
         recordsAdd: ['distortion_awaken'],
         effects: { health: +55, sanity: -65, rep: +35, heat: +55, resonance: +60 },
         scarsAdd: ['Distortion'],
         meritAdd: 35,
-        resultVi: 'Không còn đau nữa. Đó là điều đầu tiên bạn nhận ra. Cảm giác ấm áp lan tỏa khi cơ thể bạn biến đổi thành hình dạng của nỗi ám ảnh sâu kín nhất. Sáng hôm sau, Hana Association phát lệnh phong tỏa khu vực: Một Distortion cấp độ cao đã xuất hiện.',
-        resultEn: 'It no longer hurt. That was the first thing you noticed. A soothing warmth spread as your flesh morphed into the shape of your deepest obsession. The next morning Hana Association opened a new file: Distortion, unrated.'
+        resultVi: 'Không còn đau nữa. Đó là điều đầu tiên bạn nhận ra. Vầng thái dương của Carmen bao trùm lấy bạn, cảm giác ấm áp lan tỏa khi cơ thể bạn biến đổi thành hình dạng của nỗi ám ảnh sâu kín nhất. Sáng hôm sau, Hana Association phát lệnh phong tỏa khu vực: Một Distortion cấp độ cao đã xuất hiện.',
+        resultEn: 'It no longer hurt. That was the first thing you noticed. Carmen’s blazing sun enveloped you; a soothing warmth spread as your flesh morphed into the shape of your deepest obsession. The next morning Hana Association opened a new file: Distortion, unrated.'
       }
     ]
   },
@@ -386,8 +386,229 @@ export const SUPERNATURAL_EVENTS = [
         effects: { sanity: +20, rep: +22, wealth: +25 },
         scarsAdd: ['Người từ chối làm Color'],
         meritAdd: 20,
-        rvi: 'Bạn đặt bản ủy thác xuống bàn và mỉm cười quay lưng: "Làm Color chỉ biến tôi thành công cụ để The Head và các Wing dòm ngó. Tôi thích tự do ở Grade 1 hơn." Cả hội trường chết lặng. Danh tiếng về người Fixer từ chối Color lan truyền khắp Backstreets.',
-        ren: 'Setting the contract down, you smiled and turned away: “Becoming a Color only makes me a target for The Head and a puppet for the Wings. I prefer my freedom at Grade 1.” The hall fell dead silent. Whispers of the Fixer who refused a Color swept the Backstreets.'
+        resultVi: 'Bạn đặt bản ủy thác xuống bàn và mỉm cười quay lưng: "Làm Color chỉ biến tôi thành công cụ để The Head và các Wing dòm ngó. Tôi thích tự do ở Grade 1 hơn." Cả hội trường chết lặng. Danh tiếng về người Fixer từ chối Color lan truyền khắp Backstreets.',
+        resultEn: 'Setting the contract down, you smiled and turned away: “Becoming a Color only makes me a target for The Head and a puppet for the Wings. I prefer my freedom at Grade 1.” The hall fell dead silent. Whispers of the Fixer who refused a Color swept the Backstreets.'
+      }
+    ]
+  },
+
+  // ------------------------------------------------------------------ Canto VI: Wuthering Heights & Wild Hunt
+  {
+    id: 'canto_wuthering_wild_hunt',
+    age: [21, 65],
+    major: true,
+    weight: 8,
+    vi: '[Canto VI · Cuộc Săn Hoang Dã của Erlking] Tại vùng đồi sương mù của District 20 · T Corp, một cơn bão thời gian nứt toác. Một kỵ sĩ trên lưng con ngựa xương trắng dẫn đầu đoàn quân bóng ma The Wild Hunt tràn qua các hẻm vắng. Kỵ sĩ gầm lên qua chiếc quan tài xích sắt: "Mọi bản thể trong vô số Thế Giới Gương (Mirror Worlds) đều phải chịu chung nỗi thống khổ này!"',
+    en: '[Canto VI · The Wild Hunt of Erlking] On the foggy moors of District 20 · T Corp, a temporal storm ruptured. A knight astride a skeletal steed led the phantoms of The Wild Hunt through the alleys. From atop a chained coffin, the knight roared: “Every counterpart across the Mirror Worlds must suffer this exact despair!”',
+    choices: [
+      {
+        labelVi: 'Chém đứt xiềng xích của chiếc quan tài: Khẳng định bản ngã độc nhất',
+        labelEn: 'Sever the coffin chains: Affirm your singular unyielding self',
+        outcomes: [
+          {
+            w: 55,
+            effects: { health: -25, sanity: +35, rep: +30, resonance: +25 },
+            scarsAdd: ['Kẻ chém đứt xiềng xích Erlking'],
+            recordsAdd: ['wild_hunt_vanquisher'],
+            meritAdd: 35,
+            resultVi: 'Bạn lao thẳng vào lưỡi kiếm khổng lồ của Erlking. Một nhát chém rực sáng xé toạc ảo ảnh của chiếc quan tài thời gian. Đàn ngựa ma tan biến vào màn sương. T Corp ghi nhận chiến công và miễn trừ thuế thời gian cho bạn suốt ba năm.',
+            resultEn: 'Charging directly into Erlking’s titanic greatsword, your radiant strike shattered the temporal coffin’s phantoms. The ghost steeds dissolved into mist. T Corp logged your valor and waived your Time Tax for three years.'
+          },
+          {
+            w: 45,
+            effects: { health: -40, sanity: -25, resonance: +30 },
+            scarsAdd: ['Tiếng hú của Cuộc Săn Hoang Dã'],
+            resultVi: 'Sức nặng của ngàn linh hồn từ các Thế Giới Gương đè bẹp vũ khí của bạn. Bạn bị đánh văng xuống sườn đồi đầy đá nhọn. Đêm nào trong giấc ngủ bạn cũng nghe thấy tiếng vó ngựa của Erlking rầm rập qua đầu.',
+            resultEn: 'The weight of a thousand mirror souls crushed your weapon. Hurled down the rocky crags, you survived, yet every night in sleep you hear Erlking’s ghostly hooves thundering above.'
+          }
+        ]
+      },
+      {
+        labelVi: 'Giao ước với The Wild Hunt: Nhận lấy cỗ xe linh hồn',
+        labelEn: 'Pact with The Wild Hunt: Claim the spectral chariot',
+        effects: { sanity: -30, rep: +40, heat: +35, resonance: +40 },
+        flagsAdd: ['WildHuntRider'],
+        scarsAdd: ['Kỵ sĩ của The Wild Hunt'],
+        meritAdd: 40,
+        resultVi: 'Bạn nhận lấy thanh đại đao và tấm áo choàng rách rưới. Erlking trao cho bạn dây cương của một con ngựa tử linh. Khi bạn giẫm chân, mặt đất T Corp rung chuyển theo tiếng gọi của cõi chết.',
+        resultEn: 'Accepting the jagged blade and tattered mantle, Erlking handed you the reins of a spectral steed. With every step you take, T Corp’s stone quakes to the call of the fallen.'
+      }
+    ]
+  },
+
+  // ------------------------------------------------------------------ Canto VII: La Mancha Land & Don Quixote's Dream
+  {
+    id: 'canto_lamancha_carnival',
+    age: [20, 60],
+    major: true,
+    weight: 8,
+    vi: '[Canto VII · Lễ Hội La Mancha Land] Trong lòng District 16 · P Corp, một công viên giải trí rực rỡ nhưng ma quái mở cửa giữa đêm khuya. Tiếng nhạc đu quay vang vọng cùng mùi bánh churros làm từ máu. Một hiệp sĩ với áo giáp rỉ sét và ngọn giáo dài đứng trước vòng quay ngựa gỗ, đôi mắt sáng rực niềm tin ngây thơ:\n"Hỡi lữ khách! Bạn có muốn cùng chúng ta cưỡi ngựa gỗ, hướng đến một thế giới nơi Bloodfiend và loài người cùng chung một nụ cười?"',
+    en: '[Canto VII · The Carnival of La Mancha Land] In District 16 · P Corp, a brilliant yet eerie amusement park awakened in the dead of night. Carousel organ tunes mingled with the scent of blood churros. A knight in rusted plate with a gleaming lance stood before the carousel, eyes blazing with naive conviction:\n“Hail, traveler! Wilt thou mount a steed beside us, riding toward a world where Bloodfiend and mankind share a single smile?”',
+    choices: [
+      {
+        labelVi: 'Đồng hành cùng lý tưởng hiệp sĩ: "Công lý và giấc mơ thuần khiết"',
+        labelEn: 'Champion the knight’s chivalric dream: “Justice and pure idealism”',
+        outcomes: [
+          {
+            w: 60,
+            effects: { health: +15, sanity: +45, rep: +25, resonance: +20 },
+            scarsAdd: ['Hiệp sĩ của Giấc Mơ Hoang'],
+            recordsAdd: ['lamancha_dreamer'],
+            meritAdd: 30,
+            resultVi: 'Bạn rút vũ khí, giơ cao cùng ngọn giáo của hiệp sĩ. Tiếng cười của trẻ thơ và những Bloodfiend thiện lương vang vọng khắp vòng quay. Cơn khát máu dịu lại trong giây lát trước ánh sáng của một lý tưởng bất diệt.',
+            resultEn: 'Drawing your weapon in salute with the lance, joyous laughter of children and kindred echoed across the carousel. The bloodthirst subsided for a precious moment before the brilliance of an undying dream.'
+          },
+          {
+            w: 40,
+            effects: { health: -30, sanity: -20, resonance: +25 },
+            scarsAdd: ['Chiếc mặt nạ đẫm máu của La Mancha'],
+            resultVi: 'Ảo mộng sụp đổ quá nhanh. Vòng quay ngựa gỗ biến thành máy nghiền thịt khi cơn khát của những Bloodfiend cấp dưới bùng phát. Bạn và hiệp sĩ phải chém gục hàng chục người trong nước mắt.',
+            resultEn: 'The reverie collapsed all too soon. The carousel twisted into a slaughter wheel as starved lesser kindred lost control. You and the knight had to cut down dozens amidst tears.'
+          }
+        ]
+      },
+      {
+        labelVi: 'Vạch trần trò lừa dối: Giẫm nát bánh churros và thanh tẩy khu vui chơi',
+        labelEn: 'Expose the delusion: Crush the blood churros and purge the park',
+        effects: { health: -20, sanity: -15, wealth: +35, rep: +30 },
+        recordsAdd: ['fanghunt_honorary'],
+        scarsAdd: ['Kẻ phá hủy công viên La Mancha'],
+        meritAdd: 35,
+        resultVi: 'Bạn phóng hỏa thiêu rụi vòng đu quay và đập nát nguồn cung cấp máu của P Corp. Fanghunt Office gửi thư khen ngợi kèm theo số tiền thưởng kếch xù. Hiệp sĩ nhìn bạn bằng đôi mắt vụn vỡ.',
+        resultEn: 'Setting the carousel ablaze and severing the blood supply lines, Fanghunt Office wired an immense bounty with commendations. The rusted knight stared at you with shattered eyes.'
+      }
+    ]
+  },
+
+  // ------------------------------------------------------------------ Canto VIII: The Ring's Gallery of Carnage (Ryoshu)
+  {
+    id: 'canto_ring_carnage_gallery',
+    age: [22, 65],
+    major: true,
+    weight: 7.5,
+    jobs: ['Syndicate', 'Fixer', 'Workshop Craftsman'],
+    vi: '[Canto VIII · Triển Lãm Tuyệt Tác The Ring] Tại một phòng trưng bày ngầm ở District 8, một Docent của The Ring đón bạn với một bức tượng điêu khắc từ cơ thể sống của 12 kẻ phản bội. Một nữ kiếm sĩ với điếu thuốc đỏ trên môi và bao kiếm quấn vải liệm bước ra:\n"N.T.T.M — Nghệ thuật thật sự đòi hỏi sự hủy diệt tuyệt đối. Ngươi muốn trở thành một nét cọ trong bức tranh này, hay một kẻ thưởng lãm có mắt nhìn?"',
+    en: '[Canto VIII · The Ring’s Masterpiece Gallery] In a subterranean gallery of District 8, a Docent of The Ring greeted you before a sculpture twisted from the living flesh of 12 traitors. A swordswoman with a burning cigarette and a cloth-wrapped sheath stepped forward:\n“A.R.T. — Absolute Ruin Transcends. Dost thou wish to be a brushstroke in this canvas, or a connoisseur with discerning eyes?”',
+    choices: [
+      {
+        labelVi: 'Rút kiếm phác họa một tuyệt tác kiếm thuật đối lập (I.M.P.A.C.T)',
+        labelEn: 'Draw your blade and slash an opposing masterpiece (I.M.P.A.C.T)',
+        outcomes: [
+          {
+            w: 55,
+            effects: { health: -20, sanity: +20, rep: +40, resonance: +30 },
+            scarsAdd: ['Nét kiếm của Tuyệt Tác'],
+            recordsAdd: ['ring_master_curator'],
+            meritAdd: 40,
+            resultVi: 'Đường kiếm của bạn chém đứt bức tượng thịt nhưng lại xếp các mảnh vụn thành một bông hoa mẫu đơn hoàn hảo. Nữ kiếm sĩ bật cười sảng khoái và gật đầu: "K.K.T.H — Khá khen cho kẻ có tài." The Ring trao cho bạn huy hiệu Thẩm Định Viên Danh Dự.',
+            resultEn: 'Your slash cleaved the flesh sculpture, arranging the falling pieces into a perfect crimson peony. The swordswoman laughed aloud and nodded: “N.B.T. — Not bad at all.” The Ring bestowed upon you the rank of Honorary Curator.'
+          },
+          {
+            w: 45,
+            effects: { health: -35, sanity: -25, resonance: +25 },
+            scarsAdd: ['Vết rạch từ nét cọ của The Ring'],
+            resultVi: 'Ý đồ kiếm thuật của bạn bị Docent bắt bài. Một vết rạch ngọt xớt cắt đứt gân tay phải của bạn. Bạn phải rút lui trong khi tiếng cười chế giễu vang vọng khắp khán phòng.',
+            resultEn: 'Your sword intent was read and countered by the Docent. A clean cut severed the tendon of your right wrist. You withdrew as mocking applause echoed through the hall.'
+          }
+        ]
+      },
+      {
+        labelVi: 'Chê bai thứ nghệ thuật bệnh hoạn và đập phá phòng triển lãm',
+        labelEn: 'Denounce the sick display and trash the exhibition hall',
+        effects: { health: -30, rep: +25, heat: +45, sanity: +15 },
+        scarsAdd: ['Kẻ thù của The Ring'],
+        meritAdd: 30,
+        resultVi: 'Bạn ném lựu đạn khói, đạp đổ các giá trưng bày và giải thoát những nạn nhân còn thở. The Ring phát lệnh truy nã bạn trên toàn bộ mạng lưới ngầm của năm ngón tay.',
+        resultEn: 'Tossing smoke canisters, you toppled the pedestals and freed surviving captives. The Ring issued an all-District bounty on your head across the Five Fingers.'
+      }
+    ]
+  },
+
+  // ------------------------------------------------------------------ Canto IX: N Corp Inquisition (Meursault & Nagel und Hammer)
+  {
+    id: 'canto_ncorp_grip_inquisition',
+    age: [20, 60],
+    major: true,
+    weight: 7.5,
+    vi: '[Canto IX · Đại Thanh Trừng Nagel und Hammer] Đội quân Cuồng Tín của N Corp (The One Who Grips) phong tỏa toàn bộ con phố. Những chiếc búa tạ và đinh sắt rực lửa đập nát bất kỳ ai gắn tay chân máy hoặc thiết bị cơ khí:\n"Thịt và máu là món quà duy nhất của đấng tạo hóa! Mọi linh kiện kim loại cắm vào da thịt đều là ô uế! Ngươi đứng về phía thân xác thuần khiết, hay lũ máy móc tà giáo?"',
+    en: '[Canto IX · The Nagel und Hammer Inquisition] The Zealots of N Corp (The One Who Grips) cordoned off the entire avenue. Sledgehammers and scorched nails hammered into anyone bearing mechanical prosthetics or augments:\n“Flesh and bone are the creator’s sole blessings! All machinery pierced into human skin is an abomination! Dost thou stand with Pure Flesh, or the mechanical heretics?”',
+    choices: [
+      {
+        labelVi: 'Đứng lên bảo vệ những người mang bộ phận máy móc (Chống lại N Corp)',
+        labelEn: 'Shield the augmented citizens (Stand against N Corp)',
+        outcomes: [
+          {
+            w: 55,
+            effects: { health: -30, sanity: +30, network: +35, rep: +35 },
+            scarsAdd: ['Tấm khiên của kẻ bị săn đuổi'],
+            recordsAdd: ['prosthetic_liberator'],
+            meritAdd: 40,
+            resultVi: 'Bạn dựng rào chắn, dùng vũ khí đánh gãy hàng chục cây búa của N Corp và đưa những người mang chi máy chạy thoát qua đường cống ngầm. Nghiệp đoàn cơ khí Backstreets vinh danh bạn như một vị cứu tinh.',
+            resultEn: 'Forming a barricade, your strikes shattered dozens of N Corp hammers, funneling augmented refugees into the drainage tunnels. The Backstreets machinist guild honored you as a savior.'
+          },
+          {
+            w: 45,
+            effects: { health: -45, sanity: -30, resonance: +25 },
+            scarsAdd: ['Cây đinh nung đỏ của N Corp'],
+            resultVi: 'Một cây đinh sắt nung đỏ bị đóng xuyên qua đùi bạn trước khi bạn kịp rút lui. N Corp để lại vết sẹo nung lửa như một lời cảnh cáo dành cho kẻ dám thách thức giáo điều.',
+            resultEn: 'A red-hot nail drove through your thigh before you managed to escape. N Corp left a scorched brand as a grim warning to any who challenge their dogma.'
+          }
+        ]
+      },
+      {
+        labelVi: 'Tuyên thệ phụng sự Giáo phái Búa và Đinh: Thanh trừng ô uế',
+        labelEn: 'Swear allegiance to Nagel und Hammer: Purge the heretical metal',
+        forbids: ['FullBodyProsthetic'],
+        effects: { health: +20, sanity: -35, rep: +30, heat: +30 },
+        flagsAdd: ['InquisitorOfFlesh'],
+        scarsAdd: ['Chiếc Búa của N Corp'],
+        meritAdd: 35,
+        resultVi: 'Bạn nhận lấy chiếc búa tạ đóng dấu N Corp. Tiếng gào thét của những kẻ bị đập nát chân tay cơ khí vang vọng dưới mưa. Bạn trở thành một Inquisitor gieo rắc nỗi khiếp sợ.',
+        resultEn: 'Taking up the heavy hammer bearing N Corp’s seal, the screams of crushed machinists echoed under the rain. You became an Inquisitor feared throughout the sector.'
+      }
+    ]
+  },
+
+  // ------------------------------------------------------------------ Canto X: The Gesellschaft & The Stars (Faust)
+  {
+    id: 'canto_gesellschaft_star_convergence',
+    age: [25, 75],
+    major: true,
+    weight: 8,
+    vi: '[Canto X · Hội Đồng Đa Vũ Trụ Gesellschaft] Một kết cấu hình học lơ lửng bằng thủy tinh khúc xạ mở ra trên đỉnh bầu trời. Vô số phiên bản của Faust từ các Thế Giới Gương đồng loạt cất tiếng nói bằng âm điệu thuần khiết:\n"Faust biết tất cả. Điểm hội tụ của The City và những Ngôi Sao ngoài The Outskirts đã đến. Bạn có muốn nhìn thấy bức màn đằng sau bản hợp đồng của The Head và nguồn cội của Singularity?"',
+    en: '[Canto X · The Multiverse Gesellschaft] A geometric refraction of floating glass uncoiled across the sky. Countless incarnations of Faust from across the Mirror Worlds spoke in harmonious unison:\n“Faust knows all. The convergence of The City and The Stars beyond the Outskirts has arrived. Dost thou wish to witness the veil behind The Head’s covenants and the origin of Singularities?”',
+    choices: [
+      {
+        labelVi: 'Kết nối tâm trí vào mạng lưới Gesellschaft: Tiếp nhận toàn tri',
+        labelEn: 'Interface your mind with the Gesellschaft network: Attain Omniscience',
+        outcomes: [
+          {
+            w: 52,
+            effects: { sanity: -35, resonance: +50, rep: +45, network: +40 },
+            flagsAdd: ['GesellschaftObserver'],
+            recordsAdd: ['gesellschaft_illumination'],
+            scarsAdd: ['Con mắt nhìn thấu Đa Vũ Trụ'],
+            meritAdd: 50,
+            resultVi: 'Hàng triệu luồng ký ức từ vô số thế giới tràn ngập não bộ bạn. Bạn nhìn thấy bản thiết kế tối mật của 26 Wings, công thức điều chế Singularity và ánh sáng của những Ngôi Sao xa xôi. Bạn không còn nhìn The City như một người bình thường nữa.',
+            resultEn: 'Millions of memory streams from infinite branches inundated your mind. You perceived the blueprinted secrets of all 26 Wings, Singularity synthesis, and the distant light of The Stars. You will never view The City through mortal eyes again.'
+          },
+          {
+            w: 48,
+            effects: { health: -20, sanity: -50, resonance: +40 },
+            scarsAdd: ['Tâm trí quá tải trước Đa Vũ Trụ'],
+            resultVi: 'Lượng dữ liệu vô tận thiêu rụi các rãnh não của bạn. Bạn ngã quỵ, máu mũi chảy ròng ròng. Bạn chỉ kịp nhớ được một điều duy nhất: The City là một cái lồng được bảo vệ nghiêm ngặt.',
+            resultEn: 'The sheer magnitude of infinite data scorched your neural synapses. Collapsing with bleeding nostrils, a single conviction burned into memory: The City is a strictly guarded cage.'
+          }
+        ]
+      },
+      {
+        labelVi: 'Cắt đứt kết nối gương: Giữ vững hiện thực duy nhất của bản thân',
+        labelEn: 'Sever the mirror connection: Anchor to your singular reality',
+        effects: { sanity: +35, health: +20, rep: +25 },
+        scarsAdd: ['Kẻ từ chối chiếc gương toàn tri'],
+        meritAdd: 30,
+        resultVi: 'Bạn vung vũ khí đập vỡ tấm gương khúc xạ. Hội đồng Faust gật đầu mỉm cười tán thưởng trước ý chí độc lập của bạn: "Lựa chọn đáng chú ý." Bầu trời The City trở lại bình yên.',
+        resultEn: 'Swinging your weapon to shatter the refractive glass, the Faust assembly smiled in subtle praise of your independence: “A noteworthy decision.” The City sky returned to silent peace.'
       }
     ]
   }

@@ -643,7 +643,7 @@ export const FACTION_EVENTS = [
         effects: { health: -22, sanity: +20, rep: +42, resonance: +40 },
         scarsAdd: ['Lời thề Thiên Tinh The Pinky'],
         meritAdd: 50,
-        resultVi: 'Máu bạn ngấm vào thanh kiếm cổ xưa. Lưỡi kiếm phát ra ánh sáng lam ngọc rực rỡ như một ngôi sao rực cháy trên bầu trời đêm. Bạn trở thành Thiên Tinh (Star of the Sky) của The Pinky, người bảo vệ biên cương Đô Thành.',
+        resultVi: 'Máu bạn ngấm vào thanh kiếm cổ xưa. Lưỡi kiếm phát ra ánh sáng lam ngọc rực rỡ như một ngôi sao rực cháy trên bầu trời đêm. Bạn trở thành Thiên Tinh (Star of the Sky) của The Pinky, người bảo vệ biên cương The City.',
         resultEn: 'Your blood sank into the ancestral blade. It ignited in brilliant sapphire light like a burning star against the night sky. You became a Star of the Sky of The Pinky, sentinel of the City’s border.'
       },
       {
@@ -663,7 +663,7 @@ export const FACTION_EVENTS = [
     major: true,
     weight: 930,
     jobs: ['Workshop Craftsman'],
-    vi: '[Workshop Masterpiece · Tres Certification] Một vị khách bí ẩn mang đến xưởng của bạn một khối tinh thể Singularity kết tinh từ Abnormality của L Corp cũ. Tres Association phái hai giám định viên cao cấp túc trực bên lò rèn:\n"Nếu bạn tôi luyện thành công thứ này, Tres Association sẽ cấp chứng chỉ Tuyệt tác Thần binh (Masterpiece) và lưu tên xưởng rèn của bạn vào biên niên sử Đô Thành. Nếu thất bại, lò rèn sẽ nổ tung."',
+    vi: '[Workshop Masterpiece · Tres Certification] Một vị khách bí ẩn mang đến xưởng của bạn một khối tinh thể Singularity kết tinh từ Abnormality của L Corp cũ. Tres Association phái hai giám định viên cao cấp túc trực bên lò rèn:\n"Nếu bạn tôi luyện thành công thứ này, Tres Association sẽ cấp chứng chỉ Tuyệt tác Thần binh (Masterpiece) và lưu tên xưởng rèn của bạn vào biên niên sử The City. Nếu thất bại, lò rèn sẽ nổ tung."',
     en: '[Workshop Masterpiece · Tres Certification] A shadowy client brought a singularity ingot crystallized from an old L Corp Abnormality to your workshop. Tres Association dispatched two senior appraisers to oversee the furnace:\n“If you successfully temper this alloy, Tres will certify it as a Masterpiece and engrave your workshop’s name into the annals of The City. If you fail, the furnace will explode.”',
     choices: [
       {

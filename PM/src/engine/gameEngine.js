@@ -596,7 +596,7 @@ export function getNextCareerMilestone(char) {
 
       return {
         category: 'COLOR FIXER ASCENSION',
-        titleVi: 'Huyền thoại Đô Thành (City Legend)',
+        titleVi: 'Huyền thoại The City (City Legend)',
         titleEn: 'Sovereign Legend of The City',
         progressPct,
         requirements: [
@@ -752,7 +752,7 @@ export function getNextCareerMilestone(char) {
         titleEn: 'Legendary Workshop Innovator',
         progressPct: 100,
         requirements: [],
-        tipVi: 'Vũ khí do bạn rèn được các Fixer Grade 1 và Color săn lùng khắp Đô Thành.',
+        tipVi: 'Vũ khí do bạn rèn được các Fixer Grade 1 và Color săn lùng khắp The City.',
         tipEn: 'Weapons forged by your hands are coveted by Grade 1 Fixers and Colors across the City.'
       };
     }
