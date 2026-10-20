@@ -309,16 +309,17 @@ export const useGameStore = create((set, get) => ({
 
   /* ---------- life ---------- */
 
-  startLife: (useLegacy = false) => {
+  startLife: (useLegacy = false, startAge = 0) => {
     const state = get();
     const legacyPkg = useLegacy ? state.pendingLegacy : null;
     const nextChar = createNewCharacter({
       customName: state.customName,
       seed: state.customSeed,
       preferredRegionId: state.selectedRegion,
-      parentLegacy: legacyPkg
+      parentLegacy: legacyPkg,
+      startAge
     });
-    lifeRng = createRNG(`${nextChar.seed}:life`);
+    lifeRng = createRNG(`${nextChar.seed}:life:${nextChar.age}`);
     planYear(nextChar, lifeRng);
     const metaUpdates = get().syncMetaFromChar(nextChar);
     set({ char: nextChar, inRun: true, speed: 1, yearProgress: 0, stageFx: null, ...metaUpdates });

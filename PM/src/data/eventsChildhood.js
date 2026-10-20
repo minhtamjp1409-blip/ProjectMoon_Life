@@ -496,6 +496,34 @@ export const CONSEQUENCE_EVENTS = [
     ]
   },
   {
+    id: 'csq_parent_historic_passing',
+    age: [1, 99],
+    major: true,
+    isCausalCallback: true,
+    vi: '[Ngày {parentName} ngã xuống] Năm bạn {age} tuổi, người bảo hộ lớn nhất đời bạn đã không trở về. {parentName} qua đời vì {parentDeath}. Trước khi trút hơi thở cuối, người ấy gửi lại cho bạn 「{relic}」.\nBạn đứng trong căn phòng vắng lặng, nhận ra từ nay bạn phải tự mình bước đi giữa The City.',
+    en: '[The Fall of {parentName}] When you reached age {age}, your greatest protector never returned. {parentName} fell due to {parentDeath}. With their last breath, they entrusted you with 「{relic}」.\nYou stand in the empty room, realizing from this day forward, you walk The City alone.',
+    choices: [
+      {
+        labelVi: 'Nắm chặt di vật, thề tiếp nối con đường của {parentName}',
+        labelEn: 'Grip the relic, swearing to carry on {parentName}’s path',
+        resultVi: 'Bạn lau khô nước mắt, quấn chặt di vật vào người. Danh tiếng và sự kiên cường của {parentName} hòa vào dòng máu bạn.',
+        resultEn: 'You wiped away your tears and bound the relic close. {parentName}’s name and resolve became one with your blood.',
+        effects: { sanity: +15, rep: +15, network: +10 },
+        scarsAdd: ['Người tiếp bước {parentName}'],
+        meritAdd: 15
+      },
+      {
+        labelVi: 'Khắc cốt ghi tâm mối thù, thề bắt kẻ thủ ác phải trả giá',
+        labelEn: 'Inscribe the vengeance in your marrow, swearing retribution',
+        resultVi: 'Đôi mắt bạn ánh lên ngọn lửa căm hờn. Ký ức về {parentName} hóa thành động lực sinh tồn tàn nhẫn nhất.',
+        resultEn: 'A bitter fire ignited behind your eyes. Memories of {parentName} became your most ruthless weapon for survival.',
+        effects: { sanity: -10, heat: +20, resonance: +18 },
+        scarsAdd: ['Mối Thù Của {parentName}'],
+        meritAdd: 15
+      }
+    ]
+  },
+  {
     id: 'csq_parent_old_comrade',
     major: true,
     isCausalCallback: true,

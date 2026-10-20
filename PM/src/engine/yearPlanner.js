@@ -244,6 +244,19 @@ export function planYear(charState, rng) {
     }
   }
 
+  // Living Parent Support & Historic Fall Milestone
+  if (char.npcs?.parent?.alive) {
+    if (char.age < char.npcs.parent.deathAgeInChildLife) {
+      char.stats.wealth = Math.min(100, (char.stats.wealth || 0) + 2);
+      char.stats.rep = Math.min(100, (char.stats.rep || 0) + 1);
+    } else if (char.age >= char.npcs.parent.deathAgeInChildLife && !(char.seenEvents || []).includes('csq_parent_historic_passing')) {
+      if (!scheduledKey.some((it) => it.forcedEventId === 'csq_parent_historic_passing')) {
+        scheduledKey.unshift({ kind: 'major', forcedEventId: 'csq_parent_historic_passing' });
+      }
+      char.npcs.parent.alive = false;
+    }
+  }
+
   // Mandatory Age 18 Milestone or unassigned adult must select career immediately
   if ((char.age === 18 || (char.age > 18 && char.job === 'Child')) && !(char.seenEvents || []).includes('ad_career_crossroad_18')) {
     if (!scheduledKey.some((it) => it.forcedEventId === 'ad_career_crossroad_18')) {

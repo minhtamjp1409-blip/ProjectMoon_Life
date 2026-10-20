@@ -71,13 +71,13 @@ export const BirthSetupPanel = () => {
     return () => clearInterval(timer);
   }, [spinning]);
 
-  const launch = (useLegacy = false) => {
+  const launch = (useLegacy = false, startAge = 0) => {
     if (spinning) return;
     setSpinning(true);
     setTimeout(() => {
       setSpinning(false);
       setLitIdx(-1);
-      startLife(useLegacy);
+      startLife(useLegacy, startAge);
     }, 1000);
   };
 
@@ -173,43 +173,69 @@ export const BirthSetupPanel = () => {
 
           {pendingLegacy && (() => {
             const rel = pendingLegacy.successorRelation || (pendingLegacy.age < 14 ? 'sibling' : pendingLegacy.age < 18 ? 'companion' : pendingLegacy.hasChild ? 'child' : 'heir');
+            const heirAge = pendingLegacy.childAgeWhenParentDied || Math.max(1, Math.min(18, pendingLegacy.age - 22));
+
             let header = `Bloodline Succession · Generation #${pendingLegacy.generation + 1}`;
             let desc = `Direct heir of ${pendingLegacy.name}, who died at age ${pendingLegacy.age}. Inherits 「${pendingLegacy.relic}」.`;
-            let btn = `Play as ${pendingLegacy.name}'s Heir`;
+            const canFastForward = rel === 'child' && heirAge >= 14;
 
             if (rel === 'sibling') {
               header = `Legacy Heirloom · Generation #${pendingLegacy.generation + 1}`;
               desc = `${pendingLegacy.name} died young at age ${pendingLegacy.age}. You are a younger sibling (or local child) who found 「${pendingLegacy.relic}」.`;
-              btn = `Play as ${pendingLegacy.name}'s Sibling`;
             } else if (rel === 'companion') {
               header = `Inherited Will · Generation #${pendingLegacy.generation + 1}`;
               desc = `${pendingLegacy.name} fell at age ${pendingLegacy.age} before starting a family. You carry on their will and 「${pendingLegacy.relic}」.`;
-              btn = `Carry on ${pendingLegacy.name}'s Legacy`;
             } else if (rel === 'heir') {
               header = `Legacy Succession · Generation #${pendingLegacy.generation + 1}`;
               desc = `${pendingLegacy.name} passed away at age ${pendingLegacy.age} with no children. You inherit their 「${pendingLegacy.relic}」.`;
-              btn = `Play as ${pendingLegacy.name}'s Successor`;
             }
 
             return (
               <div className="legacy">
                 <div>
-                  <p style={{ fontWeight: 600 }}>
-                    {header}
-                  </p>
+                  <p style={{ fontWeight: 600 }}>{header}</p>
                   <p className="muted" style={{ fontSize: 14, marginTop: 4 }}>
                     {desc}
                   </p>
+                  {rel === 'child' && (
+                    <p style={{ fontSize: 13, marginTop: 4, color: '#e5b85c' }}>
+                      {lang === 'en'
+                        ? `At ${pendingLegacy.name}'s death, this heir had reached age ${heirAge}.`
+                        : `Vào thời điểm ${pendingLegacy.name} qua đời, đứa con đã được ${heirAge} tuổi.`}
+                    </p>
+                  )}
                   {pendingLegacy.hasVendetta && (
                     <p style={{ fontSize: 14, marginTop: 4, color: 'var(--bad)' }}>
                       The blood debt in the Book of Vengeance passes down as well.
                     </p>
                   )}
                 </div>
-                <button type="button" className="btn btn-block" disabled={spinning} onClick={() => launch(true)}>
-                  <GitBranch size={16} />
-                  {btn}
-                </button>
+
+                {canFastForward ? (
+                  <div style={{ display: 'grid', gap: 8 }}>
+                    <button type="button" className="btn btn-block btn-light" disabled={spinning} onClick={() => launch(true, 0)}>
+                      <GitBranch size={16} />
+                      {lang === 'en'
+                        ? `Start at Age 0 (Protected by ${pendingLegacy.name})`
+                        : `Chơi từ 0 tuổi (Có ${pendingLegacy.name} che chở)`}
+                    </button>
+                    <button type="button" className="btn btn-block btn-primary" disabled={spinning} onClick={() => launch(true, heirAge)}>
+                      <Play size={16} />
+                      {lang === 'en'
+                        ? `Take Over at Age ${heirAge} (Immediate Succession)`
+                        : `Tiếp quản ngay tuổi ${heirAge} (Kế thừa di vật)`}
+                    </button>
+                  </div>
+                ) : (
+                  <button type="button" className="btn btn-block" disabled={spinning} onClick={() => launch(true, 0)}>
+                    <GitBranch size={16} />
+                    {rel === 'sibling'
+                      ? `Play as ${pendingLegacy.name}'s Sibling`
+                      : rel === 'companion'
+                        ? `Carry on ${pendingLegacy.name}'s Legacy`
+                        : `Play as ${pendingLegacy.name}'s Heir`}
+                  </button>
+                )}
               </div>
             );
           })()}
