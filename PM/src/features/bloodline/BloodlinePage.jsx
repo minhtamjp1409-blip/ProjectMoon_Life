@@ -23,6 +23,7 @@ export const BloodlinePage = () => {
   return (
     <div className="page">
       <PageBanner
+        tag="HANA_ARCHIVE // LINEAGE_DYNASTY"
         title={t('Gia phả', 'Bloodline')}
         sub={
           pastLives.length === 0

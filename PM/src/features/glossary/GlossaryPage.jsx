@@ -168,6 +168,7 @@ export const GlossaryPage = () => {
   return (
     <div className="page">
       <PageBanner
+        tag="THE_CITY // 26_DISTRICTS_SINGULARITY"
         title={t('Từ điển & khu vực', 'Lore & districts')}
         sub={t('Thuật ngữ gốc kèm bản dịch Library of Ruina, và hồ sơ từng District.', 'Original terms with the Library of Ruina translation, and a file on every District.')}
       />

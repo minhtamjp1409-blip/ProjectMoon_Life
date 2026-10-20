@@ -3,9 +3,71 @@ import React from 'react';
 /**
  * CityBackdrop - Architectural & Geometric Dystopian Wireframe
  * Pure SVG & CSS procedural backdrop inspired by Project Moon (Library of Ruina / Limbus Company).
- * Zero raster images, ultra lightweight, hardware accelerated.
+ * Supports variants:
+ * - 'hero': Full-screen hero section with multi-tier rotating wheels, blueprint tech boxes, and laser scanline.
+ * - 'banner': Sleek horizontal terminal header backdrop for secondary archive pages.
+ * - 'compact': Minimalist grid & glow.
  */
-export const CityBackdrop = () => {
+export const CityBackdrop = ({ variant = 'hero', tag = 'ARCHIVE // 0x7E3' }) => {
+  if (variant === 'banner') {
+    return (
+      <div className="city-backdrop banner-backdrop" aria-hidden="true">
+        <div className="city-glow banner-glow-gold" />
+        <div className="city-glow banner-glow-indigo" />
+
+        <svg className="city-svg-grid" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="bannerGridMinor" width="24" height="24" patternUnits="userSpaceOnUse">
+              <path d="M 24 0 L 0 0 0 24" fill="none" stroke="rgba(208, 169, 79, 0.04)" strokeWidth="1" />
+            </pattern>
+            <pattern id="bannerGridMajor" width="120" height="120" patternUnits="userSpaceOnUse">
+              <path d="M 120 0 L 0 0 0 120" fill="none" stroke="rgba(208, 169, 79, 0.08)" strokeWidth="1.2" />
+              <path d="M -6 0 L 6 0 M 0 -6 L 0 6" fill="none" stroke="rgba(208, 169, 79, 0.25)" strokeWidth="1" />
+            </pattern>
+            <linearGradient id="bannerScanGrad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stopColor="transparent" />
+              <stop offset="50%" stopColor="rgba(208, 169, 79, 0.2)" />
+              <stop offset="100%" stopColor="transparent" />
+            </linearGradient>
+          </defs>
+
+          <rect width="100%" height="100%" fill="url(#bannerGridMinor)" />
+          <rect width="100%" height="100%" fill="url(#bannerGridMajor)" />
+
+          {/* Right-aligned Radar Compass Dial */}
+          <g className="banner-radar-group" transform="translate(900, 60)">
+            <circle cx="0" cy="0" r="110" fill="none" stroke="rgba(208, 169, 79, 0.12)" strokeWidth="1" strokeDasharray="4 8" />
+            <circle cx="0" cy="0" r="85" fill="none" stroke="rgba(208, 169, 79, 0.18)" strokeWidth="1.2" />
+            <polygon
+              points="0,-65 46,-46 65,0 46,46 0,65 -46,46 -65,0 -46,-46"
+              fill="none"
+              stroke="rgba(208, 169, 79, 0.1)"
+              strokeWidth="1"
+            />
+            <line x1="-125" y1="0" x2="125" y2="0" stroke="rgba(208, 169, 79, 0.2)" strokeWidth="1" />
+            <line x1="0" y1="-80" x2="0" y2="80" stroke="rgba(208, 169, 79, 0.2)" strokeWidth="1" />
+          </g>
+
+          {/* Sweeping scanline */}
+          <line className="banner-scan-line" x1="0" y1="0" x2="0" y2="100%" stroke="url(#bannerScanGrad)" strokeWidth="3" />
+        </svg>
+
+        {/* Technical Watermark Tag */}
+        <div className="banner-tech-tag">
+          <span className="banner-tech-pulse" />
+          <code>{tag}</code>
+        </div>
+
+        {/* Reticles */}
+        <span className="banner-reticle reticle-tl">+</span>
+        <span className="banner-reticle reticle-tr">+</span>
+        <span className="banner-reticle reticle-bl">+</span>
+        <span className="banner-reticle reticle-br">+</span>
+      </div>
+    );
+  }
+
+  // Default: 'hero' variant
   return (
     <div className="city-backdrop" aria-hidden="true">
       {/* Ambient Atmospheric Radial Gradients */}
@@ -25,9 +87,7 @@ export const CityBackdrop = () => {
           {/* 200px Major Grid Pattern with Crosshairs */}
           <pattern id="techGridMajor" width="200" height="200" patternUnits="userSpaceOnUse">
             <path d="M 200 0 L 0 0 0 200" fill="none" stroke="rgba(208, 169, 79, 0.08)" strokeWidth="1.5" />
-            {/* Crosshair at corner */}
             <path d="M -8 0 L 8 0 M 0 -8 L 0 8" fill="none" stroke="rgba(208, 169, 79, 0.28)" strokeWidth="1" />
-            {/* Small corner tick */}
             <path d="M 194 0 L 200 0 200 6" fill="none" stroke="rgba(208, 169, 79, 0.2)" strokeWidth="1" />
           </pattern>
 
@@ -46,17 +106,14 @@ export const CityBackdrop = () => {
           </linearGradient>
         </defs>
 
-        {/* Fill the grids with radial mask so it gently fades towards the edges */}
         <rect width="100%" height="100%" fill="url(#techGridMinor)" />
         <rect width="100%" height="100%" fill="url(#techGridMajor)" />
 
         {/* Rotating Architectural Wheels & City Mandalas */}
         <g className="city-ring-group city-ring-slow" transform="translate(380, 320)">
-          {/* Outermost Dashed Ring */}
           <circle cx="0" cy="0" r="280" fill="none" stroke="url(#ringGrad)" strokeWidth="1.5" strokeDasharray="6 14" />
           <circle cx="0" cy="0" r="255" fill="none" stroke="rgba(208, 169, 79, 0.08)" strokeWidth="1" />
           
-          {/* Octagon Wireframe */}
           <polygon
             points="0,-220 155,-155 220,0 155,155 0,220 -155,155 -220,0 -155,-155"
             fill="none"
@@ -64,7 +121,6 @@ export const CityBackdrop = () => {
             strokeWidth="1.2"
           />
 
-          {/* Concentric Inner Orbit */}
           <circle cx="0" cy="0" r="160" fill="none" stroke="rgba(208, 169, 79, 0.18)" strokeWidth="1" strokeDasharray="3 9" />
           <circle cx="0" cy="0" r="120" fill="none" stroke="rgba(208, 169, 79, 0.08)" strokeWidth="1.5" />
           <polygon
@@ -74,7 +130,6 @@ export const CityBackdrop = () => {
             strokeWidth="1"
           />
 
-          {/* Compass Axis Marks */}
           <line x1="-300" y1="0" x2="-260" y2="0" stroke="rgba(208, 169, 79, 0.3)" strokeWidth="1.5" />
           <line x1="260" y1="0" x2="300" y2="0" stroke="rgba(208, 169, 79, 0.3)" strokeWidth="1.5" />
           <line x1="0" y1="-300" x2="0" y2="-260" stroke="rgba(208, 169, 79, 0.3)" strokeWidth="1.5" />
@@ -84,7 +139,6 @@ export const CityBackdrop = () => {
         {/* Counter-rotating Secondary Tech Wheel */}
         <g className="city-ring-group city-ring-reverse" transform="translate(380, 320)">
           <circle cx="0" cy="0" r="195" fill="none" stroke="rgba(208, 169, 79, 0.1)" strokeWidth="1" strokeDasharray="12 24" />
-          {/* Radial Angle Ticks */}
           {[0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330].map((deg) => (
             <line
               key={deg}

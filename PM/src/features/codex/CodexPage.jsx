@@ -38,6 +38,7 @@ export const CodexPage = () => {
   return (
     <div className="page">
       <PageBanner
+        tag="LOBOTOMY_CORP // CODEX_CLASSIFICATION"
         title={t('Thành tựu', 'Codex')}
         sub={t(`Đã mở ${unlockedCount} / ${total} cột mốc`, `${unlockedCount} of ${total} milestones unlocked`)}
       />

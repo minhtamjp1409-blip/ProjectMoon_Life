@@ -74,6 +74,7 @@ export const WeaverAiPage = () => {
   return (
     <div className="page">
       <PageBanner
+        tag="WEAVER_CORE // NARRATIVE_DIRECTOR"
         title={t('Khung cửi chỉ lệnh', 'Prescript loom')}
         sub={finding}
         action={
