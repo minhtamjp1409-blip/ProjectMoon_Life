@@ -60,7 +60,6 @@ export const MainLayout = ({ children }) => {
 
   // The play screen manages its own scrolling regions; other screens scroll as a page
   const isPlay = location.pathname === '/' && inRun;
-  const homeLanguage = location.pathname === '/' && !inRun ? 'en' : undefined;
   const hasDock = isPlay && Boolean(pendingEvent || pendingContract || pendingMinor);
   const { sidebarCollapsed, toggleSidebar } = useThemeStore();
   const isNavCollapsed = sidebarCollapsed !== null ? sidebarCollapsed : isPlay;
@@ -68,10 +67,10 @@ export const MainLayout = ({ children }) => {
   return (
     <div className={`shell interface-v2 ${isNavCollapsed ? 'is-nav-collapsed' : ''} ${isPlay ? 'is-in-play' : ''} ${hasDock ? 'has-dock' : ''}`}>
       <CityBackdrop variant="ambient" />
-      <Sidebar isCollapsed={isNavCollapsed} onToggleCollapse={() => toggleSidebar(isNavCollapsed)} isPlay={isPlay} languageOverride={homeLanguage} />
-      <Header languageOverride={homeLanguage} />
+      <Sidebar isCollapsed={isNavCollapsed} onToggleCollapse={() => toggleSidebar(isNavCollapsed)} isPlay={isPlay} />
+      <Header />
       <main className="main" id="main-content">{isPlay ? children : <div className="main-scroll">{children}</div>}</main>
-      <BottomNav languageOverride={homeLanguage} />
+      <BottomNav />
     </div>
   );
 };

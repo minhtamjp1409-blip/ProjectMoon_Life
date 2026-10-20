@@ -39,16 +39,18 @@ function DistrictDial({ selected, onSelect, t }) {
   return (
     <div className="district-dial">
       <svg viewBox="0 0 360 360" aria-label={t('Chọn một District', 'Choose a District')}>
+        <circle cx="180" cy="180" r="172" className="dial-outer-ring" />
+        <circle cx="180" cy="180" r="122" className="dial-mid-ring" />
         {sectors.map((r, i) => {
           const a = (i * Math.PI * 2) / sectors.length - Math.PI / 2;
           const b = ((i + 1) * Math.PI * 2) / sectors.length - Math.PI / 2;
           const p = [
-            point(132, a + 0.012),
+            point(130, a + 0.012),
             point(164, a + 0.012),
             point(164, b - 0.012),
-            point(132, b - 0.012)
+            point(130, b - 0.012)
           ];
-          const label = point(148, (a + b) / 2);
+          const label = point(147, (a + b) / 2);
           return (
             <g
               key={r.id}
@@ -65,7 +67,7 @@ function DistrictDial({ selected, onSelect, t }) {
                 }
               }}
             >
-              <path d={`M ${p[0]} L ${p[1]} A 164 164 0 0 1 ${p[2]} L ${p[3]} A 132 132 0 0 0 ${p[0]} Z`} />
+              <path d={`M ${p[0]} L ${p[1]} A 164 164 0 0 1 ${p[2]} L ${p[3]} A 130 130 0 0 0 ${p[0]} Z`} />
               <text x={label[0]} y={label[1]} textAnchor="middle" dominantBaseline="middle">
                 {r.id}
               </text>
@@ -73,11 +75,11 @@ function DistrictDial({ selected, onSelect, t }) {
             </g>
           );
         })}
-        <circle cx="180" cy="180" r="112" className="dial-inner" />
-        <text x="180" y="164" className="dial-name" textAnchor="middle">
+        <circle cx="180" cy="180" r="110" className="dial-inner" />
+        <text x="180" y="162" className="dial-name" textAnchor="middle">
           {region ? (region.id === 'OUTSKIRTS' ? 'Outskirts' : `${region.id} Corp`) : 'The City'}
         </text>
-        <text x="180" y="195" className="dial-caption" textAnchor="middle">
+        <text x="180" y="192" className="dial-caption" textAnchor="middle">
           {region
             ? region.ward
               ? `District ${region.ward}`
@@ -93,7 +95,7 @@ function DistrictDial({ selected, onSelect, t }) {
 }
 
 export const BirthSetupPanel = () => {
-  const { t } = useT('en');
+  const { t, lang } = useT();
   const navigate = useNavigate();
   const customName = useGameStore((s) => s.customName);
   const customSeed = useGameStore((s) => s.customSeed);
@@ -147,7 +149,7 @@ export const BirthSetupPanel = () => {
     });
 
   return (
-    <div className="city-home" lang="en">
+    <div className="city-home" lang={lang === 'bi' ? 'vi' : lang}>
       <section className="home-opening" aria-labelledby="home-title">
         <div className="opening-story">
           <p className="opening-context">
@@ -156,7 +158,7 @@ export const BirthSetupPanel = () => {
           <h1 id="home-title">
             {t('Một đời giữa', 'A life in')}{' '}
             <br />
-            The City.
+            <span className="the-city-title">The City.</span>
           </h1>
           <p className="opening-lead">
             {t(

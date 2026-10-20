@@ -2,6 +2,7 @@ import React from 'react';
 import { Tooltip } from 'antd';
 import { ChevronDown, ChevronUp, User, Heart, Brain, Coins, Flame, Eye, Sparkles, X, ShieldAlert } from 'lucide-react';
 import { useGameStore } from '../../../store/gameStore';
+import { useThemeStore } from '../../../store/themeStore';
 import { REGIONS, FINGER_RANKS } from '../../../data/worldData';
 import { FATE_OMENS } from '../../../engine/weaverAI';
 import { getNextCareerMilestone } from '../../../engine/gameEngine';
@@ -324,7 +325,7 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeT
 export const CharacterDossierCard = () => {
   const { t, lang } = useT();
   const char = useGameStore((s) => s.char);
-  const [drawerOpen, setDrawerOpen] = React.useState(false);
+  const { mobileDossierOpen: drawerOpen, setMobileDossierOpen: setDrawerOpen } = useThemeStore();
   const [mobileTab, setMobileTab] = React.useState('overview');
   const sheetRef = React.useRef(null);
   React.useEffect(() => {
@@ -362,22 +363,60 @@ export const CharacterDossierCard = () => {
 
   return (
     <>
-      {/* 1. Dedicated Mobile Resource HUD (Visible only on mobile <= 820px) */}
+      {/* 1. Dedicated Mobile Compact Status Bar (Visible only on mobile <= 820px) */}
       <div 
         className="mobile-resource-hud" 
         onClick={() => setDrawerOpen(true)}
         role="button"
         tabIndex={0}
         onKeyDown={event => { if (event.target === event.currentTarget && (event.key === 'Enter' || event.key === ' ')) { event.preventDefault(); event.stopPropagation(); setDrawerOpen(true); } }}
-        aria-label={t('Chỉ số nhân vật và tài nguyên', 'Character stats and resources')}
+        aria-label={t('Chỉ số nhân vật và tài nguyên - Bấm để mở hồ sơ chi tiết', 'Character stats and resources - Tap to open dossier')}
       >
-        {/* Row 1: Character identity & quick job badge */}
-        <div className="m-hud-row-identity">
+        <div className="m-hud-compact-inner">
           <div className="m-hud-name-group">
             <span className="m-hud-name">{char.name}</span>
-            <span className="m-hud-gen">Gen #{char.generation}</span>
-            <span className="m-hud-job">{jobDesc}</span>
+            <span className="m-hud-gen">#{char.generation}</span>
           </div>
+
+          <div className="m-hud-vitals-group">
+            {/* HP micro gauge */}
+            <div className={`m-micro-gauge m-gauge-hp ${isHpCritical ? 'is-critical' : ''}`} title={`HP: ${health}/100`}>
+              <Heart size={11} className="m-icon-hp" />
+              <span className="m-micro-val num"><b>{health}</b></span>
+              <div className="m-micro-track">
+                <div className="m-micro-fill" style={{ width: `${Math.max(0, Math.min(100, health))}%` }} />
+              </div>
+            </div>
+
+            {/* SP micro gauge */}
+            <div className={`m-micro-gauge m-gauge-sp ${isSpCritical ? 'is-critical' : ''}`} title={`SP: ${sanity}/100`}>
+              <Brain size={11} className="m-icon-sp" />
+              <span className="m-micro-val num"><b>{sanity}</b></span>
+              <div className="m-micro-track">
+                <div className="m-micro-fill" style={{ width: `${Math.max(0, Math.min(100, sanity))}%` }} />
+              </div>
+            </div>
+          </div>
+
+          <div className="m-hud-resources-group">
+            <div className="m-micro-pill m-pill-wealth" title={t('Tiền mặt Ahn', 'Ahn Wealth')}>
+              <Coins size={11} className="m-icon-gold" />
+              <span className="num"><b>{wealth}</b></span>
+            </div>
+            {tabooLevel > 0 && (
+              <div className={`m-micro-pill m-pill-taboo ${tabooLevel >= 2 ? 'is-critical' : ''}`} title={t('Ánh nhìn Taboo', 'Taboo Gaze')}>
+                <Eye size={11} className="m-icon-taboo" />
+                <span className="num"><b>{tabooLevel}</b>/3</span>
+              </div>
+            )}
+            {char.heat > 0 && (
+              <div className="m-micro-pill m-pill-heat" title={t('Mức độ truy nã', 'Heat Level')}>
+                <Flame size={11} className="m-icon-heat" />
+                <span className="num"><b>{char.heat}</b></span>
+              </div>
+            )}
+          </div>
+
           <button 
             type="button" 
             className="m-hud-open-btn"
@@ -388,80 +427,8 @@ export const CharacterDossierCard = () => {
             aria-label={t('Xem hồ sơ chi tiết', 'Open full dossier')}
           >
             <span>{t('Hồ sơ', 'Dossier')}</span>
-            <ChevronDown size={14} />
+            <ChevronDown size={12} />
           </button>
-        </div>
-
-        {/* Row 2: Vitals Twin Gauges (HP & SP) */}
-        <div className="m-hud-row-vitals">
-          {/* HP Gauge */}
-          <div className={`m-gauge m-gauge-hp ${isHpCritical ? 'is-critical' : ''}`}>
-            <div className="m-gauge-head">
-              <span className="m-gauge-label">
-                <Heart size={12} className="m-icon-hp" />
-                <b>HP</b>
-              </span>
-              <span className="m-gauge-val num">
-                <b>{health}</b><small>/100</small>
-              </span>
-            </div>
-            <div className="m-gauge-track">
-              <div 
-                className="m-gauge-fill" 
-                style={{ width: `${Math.max(0, Math.min(100, health))}%` }} 
-              />
-            </div>
-          </div>
-
-          {/* SP Gauge */}
-          <div className={`m-gauge m-gauge-sp ${isSpCritical ? 'is-critical' : ''}`}>
-            <div className="m-gauge-head">
-              <span className="m-gauge-label">
-                <Brain size={12} className="m-icon-sp" />
-                <b>SP</b>
-              </span>
-              <span className="m-gauge-val num">
-                <b>{sanity}</b><small>/100</small>
-              </span>
-            </div>
-            <div className="m-gauge-track">
-              <div 
-                className="m-gauge-fill" 
-                style={{ width: `${Math.max(0, Math.min(100, sanity))}%` }} 
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Row 3: Secondary Assets & Threats */}
-        <div className="m-hud-row-pills">
-          <div className="m-pill m-pill-wealth" title={t('Tiền mặt Ahn', 'Ahn Wealth')}>
-            <Coins size={12} className="m-icon-gold" />
-            <b className="num">{wealth}</b> <small>Ahn</small>
-          </div>
-          <div className="m-pill m-pill-rep" title={t('Danh tiếng', 'Reputation')}>
-            <span className="m-pill-dot" style={{ background: 'var(--s-rep)' }} />
-            <span>Rep</span> <b className="num">{rep}</b>
-          </div>
-          <div className="m-pill m-pill-net" title={t('Mạng lưới quan hệ', 'Network')}>
-            <span className="m-pill-dot" style={{ background: 'var(--s-network)' }} />
-            <span>Net</span> <b className="num">{network}</b>
-          </div>
-          {char.heat > 0 && (
-            <div className="m-pill m-pill-heat" title={t('Mức độ truy nã', 'Heat Level')}>
-              <Flame size={12} className="m-icon-heat" />
-              <b className="num">{char.heat}</b>
-            </div>
-          )}
-          <div className={`m-pill m-pill-taboo ${tabooLevel >= 2 ? 'is-critical' : ''}`} title={t('Ánh nhìn Taboo', 'Taboo Gaze')}>
-            <Eye size={12} className="m-icon-taboo" />
-            <span>Taboo</span> <b className="num">{tabooLevel}/3</b>
-          </div>
-          {milestone && milestone.progressPct < 100 && (
-            <div className="m-pill m-pill-milestone" title={lang === 'en' ? milestone.titleEn : milestone.titleVi}>
-              <span>{t('Mốc', 'Goal')}</span> <b className="num">{milestone.progressPct}%</b>
-            </div>
-          )}
         </div>
       </div>
 

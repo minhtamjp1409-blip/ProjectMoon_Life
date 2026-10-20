@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Tooltip, Modal, Dropdown } from 'antd';
-import { Play, Pause, SkipForward, Bot, RotateCcw, House, Save, Check, Volume2, VolumeX, MoreHorizontal } from 'lucide-react';
+import { User, Play, Pause, SkipForward, Bot, RotateCcw, House, Save, Check, Volume2, VolumeX, MoreHorizontal, BookOpen, GitFork, Trophy, Compass, Sun, Moon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 import { useGameStore } from '../../../store/gameStore';
+import { useThemeStore } from '../../../store/themeStore';
 import { SEASONS, getNextCareerMilestone } from '../../../engine/gameEngine';
 import { nextPlanItem } from '../../../engine/yearPlanner';
 import { DRAMA_PHASES } from '../../../engine/weaverAI';
@@ -100,6 +101,7 @@ const YearStatus = () => {
 export const PlayBar = () => {
   const { t, lang } = useT();
   const navigate = useNavigate();
+  const { themeMode, toggleTheme, setMobileDossierOpen } = useThemeStore();
   const char = useGameStore((s) => s.char);
   const milestone = getNextCareerMilestone(char);
   const { age, seasonIdx, yearProgress, dramaPhase, alive, waiting, speed, autoPlay, setSpeed, toggleAutoPlay, stepYear, exitToSetup, abandonRun, saveRun, lastSavedAt } =
@@ -163,6 +165,12 @@ export const PlayBar = () => {
     audioEngine.playClick();
     exitToSetup();
     navigate('/');
+  };
+
+  const openArchive = (path) => {
+    audioEngine.playClick();
+    if (alive) saveRun(true);
+    navigate(path);
   };
 
   const newLife = () => {
@@ -237,6 +245,48 @@ export const PlayBar = () => {
         </span>
       ),
       onClick: handleToggleAudio
+    },
+    {
+      key: 'theme',
+      icon: themeMode === 'dark' ? <Sun size={16} /> : <Moon size={16} />,
+      label: themeMode === 'dark' ? t('Giao diện Sáng', 'Light Theme') : t('Giao diện Tối', 'Dark Theme'),
+      onClick: toggleTheme
+    },
+    {
+      type: 'divider'
+    },
+    {
+      key: 'world',
+      icon: <Compass size={16} />,
+      label: t('Hồ sơ thế giới', 'World Archive'),
+      onClick: () => openArchive('/glossary')
+    },
+    {
+      key: 'bloodline',
+      icon: <GitFork size={16} />,
+      label: t('Gia phả & Di sản', 'Bloodline & Legacy'),
+      onClick: () => openArchive('/bloodline')
+    },
+    {
+      key: 'codex',
+      icon: <Trophy size={16} />,
+      label: t('Thành tựu & Điềm báo', 'Codex & Achievements'),
+      onClick: () => openArchive('/codex')
+    },
+    {
+      key: 'weaver',
+      icon: <BookOpen size={16} />,
+      label: t('Khung cửi số phận', 'Fate Loom (Weaver AI)'),
+      onClick: () => openArchive('/weaver-ai')
+    },
+    {
+      type: 'divider'
+    },
+    {
+      key: 'dossier',
+      icon: <User size={16} />,
+      label: t('Hồ sơ nhân vật chi tiết', 'Character Dossier'),
+      onClick: () => setMobileDossierOpen(true)
     },
     {
       type: 'divider'

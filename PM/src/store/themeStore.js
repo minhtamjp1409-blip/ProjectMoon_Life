@@ -14,6 +14,8 @@ export const useThemeStore = create((set) => {
     themeMode: initialMode,
     lang: initialLang, // 'vi' | 'bi' | 'en'
     sidebarCollapsed: null, // null = auto (collapses during active chronicle play), true/false = user override
+    mobileDossierOpen: false,
+    setMobileDossierOpen: (open) => set({ mobileDossierOpen: open }),
     toggleSidebar: (currentEffective) =>
       set(() => ({
         sidebarCollapsed: !currentEffective

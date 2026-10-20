@@ -557,6 +557,7 @@ export const useGameStore = create((set, get) => ({
 
 // Keep the run if the tab closes mid-year
 if (typeof window !== 'undefined') {
+  window.useGameStore = useGameStore;
   window.addEventListener('beforeunload', () => useGameStore.getState().saveRun(true));
 }
 
