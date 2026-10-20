@@ -1979,15 +1979,273 @@ p {
   gap: 40px;
   padding: 48px clamp(20px, 4vw, 64px);
   overflow: hidden;
-  background: #0b0c10;
+  background: #090a0e;
   color: #f1f1ee;
   box-sizing: border-box;
 }
 
-
-
 .hero-copy {
+  position: relative;
+  z-index: 2;
   max-width: 640px;
+}
+
+/* ==========================================================================
+   CITY BACKDROP: Dystopian Architectural & Geometric Wireframe
+   ========================================================================== */
+.city-backdrop {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+  user-select: none;
+}
+
+/* Atmospheric Ambient Radial Glows */
+.city-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.65;
+  pointer-events: none;
+}
+.glow-gold {
+  top: -10%;
+  left: 10%;
+  width: 550px;
+  height: 550px;
+  background: radial-gradient(circle, rgba(208, 169, 79, 0.16) 0%, rgba(208, 169, 79, 0.02) 65%, transparent 75%);
+}
+.glow-purple {
+  bottom: -15%;
+  right: 5%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(138, 43, 226, 0.12) 0%, rgba(75, 0, 130, 0.02) 65%, transparent 75%);
+}
+.glow-crimson {
+  top: 35%;
+  right: 32%;
+  width: 420px;
+  height: 420px;
+  background: radial-gradient(circle, rgba(231, 76, 60, 0.08) 0%, transparent 70%);
+}
+
+/* Primary SVG Grid */
+.city-svg-grid {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  mask-image: radial-gradient(ellipse 95% 85% at 50% 50%, black 45%, transparent 95%);
+  -webkit-mask-image: radial-gradient(ellipse 95% 85% at 50% 50%, black 45%, transparent 95%);
+}
+
+/* Rotating City Rings */
+.city-ring-group {
+  transform-origin: 380px 320px;
+}
+.city-ring-slow {
+  animation: rotate-slow 90s linear infinite;
+}
+.city-ring-reverse {
+  animation: rotate-reverse 60s linear infinite;
+}
+@keyframes rotate-slow {
+  from { transform: translate(380px, 320px) rotate(0deg); }
+  to { transform: translate(380px, 320px) rotate(360deg); }
+}
+@keyframes rotate-reverse {
+  from { transform: translate(380px, 320px) rotate(360deg); }
+  to { transform: translate(380px, 320px) rotate(0deg); }
+}
+
+/* Scanning Light Beam */
+.city-scan-beam {
+  animation: scan-beam 12s ease-in-out infinite;
+}
+@keyframes scan-beam {
+  0% { transform: translateY(-80px); opacity: 0; }
+  10% { opacity: 0.8; }
+  90% { opacity: 0.8; }
+  100% { transform: translateY(800px); opacity: 0; }
+}
+
+/* Floating Geometric Blueprint Boxes */
+.tech-box {
+  position: absolute;
+  padding: 10px 14px;
+  background: rgba(13, 15, 20, 0.55);
+  border: 1px solid rgba(208, 169, 79, 0.2);
+  border-radius: 4px;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  font-family: var(--font-mono, monospace);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+  transition: border-color 0.3s;
+  z-index: 1;
+}
+
+/* Technical Corner Ticks on Tech Boxes */
+.tech-box::before,
+.tech-box::after {
+  content: "";
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-color: rgba(208, 169, 79, 0.6);
+  pointer-events: none;
+}
+.tech-box::before {
+  top: -1px;
+  left: -1px;
+  border-top: 2px solid;
+  border-left: 2px solid;
+}
+.tech-box::after {
+  bottom: -1px;
+  right: -1px;
+  border-bottom: 2px solid;
+  border-right: 2px solid;
+}
+
+.tech-box-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid rgba(208, 169, 79, 0.12);
+  padding-bottom: 4px;
+}
+.tech-box-tag {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #d0a94f;
+}
+.tech-box-status {
+  font-size: 9px;
+  font-weight: 800;
+  padding: 1px 4px;
+  border-radius: 2px;
+  background: rgba(46, 204, 113, 0.15);
+  color: #2ecc71;
+  border: 1px solid rgba(46, 204, 113, 0.4);
+}
+.tech-box-status.is-warn {
+  background: rgba(231, 76, 60, 0.15);
+  color: #e74c3c;
+  border-color: rgba(231, 76, 60, 0.4);
+}
+.tech-box-pulse {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #2ecc71;
+  box-shadow: 0 0 8px #2ecc71;
+  animation: tech-pulse 2s ease-in-out infinite;
+}
+@keyframes tech-pulse {
+  0%, 100% { opacity: 0.4; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+.tech-box-code {
+  font-size: 11px;
+  color: rgba(241, 241, 238, 0.85);
+  margin: 0;
+  letter-spacing: 0.03em;
+}
+.tech-box-label {
+  font-size: 9.5px;
+  color: var(--muted, #9ba3af);
+  margin: 2px 0 0 0;
+  letter-spacing: 0.05em;
+}
+.tech-box-ruler {
+  display: flex;
+  gap: 4px;
+  margin-top: 6px;
+}
+.tech-box-ruler span {
+  flex: 1;
+  height: 2px;
+  background: rgba(208, 169, 79, 0.25);
+  border-radius: 1px;
+}
+.tech-box-ruler span:nth-child(even) {
+  background: rgba(208, 169, 79, 0.45);
+}
+
+.tech-box-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-top: 6px;
+}
+.tech-box-bars i {
+  display: block;
+  height: 2px;
+  background: linear-gradient(90deg, #d0a94f, transparent);
+  border-radius: 1px;
+}
+
+/* Placements */
+.tech-box-top-left {
+  top: 24px;
+  left: clamp(20px, 4vw, 54px);
+  width: 250px;
+}
+.tech-box-bottom-left {
+  bottom: 28px;
+  left: clamp(20px, 4vw, 54px);
+  width: 260px;
+}
+.tech-box-top-right {
+  top: 28px;
+  right: clamp(20px, 4vw, 54px);
+  width: 230px;
+}
+
+/* Screen Corner Reticles */
+.city-reticle {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono, monospace);
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(208, 169, 79, 0.45);
+  letter-spacing: 0.06em;
+  z-index: 1;
+}
+.city-reticle span {
+  font-size: 14px;
+  line-height: 1;
+  color: #d0a94f;
+}
+.reticle-tl { top: 12px; left: 16px; }
+.reticle-tr { top: 12px; right: 16px; }
+.reticle-bl { bottom: 12px; left: 16px; }
+.reticle-br { bottom: 12px; right: 16px; }
+
+@media (max-width: 1200px) {
+  .tech-box-top-right {
+    display: none;
+  }
+}
+@media (max-width: 1024px) {
+  .tech-box-bottom-left {
+    display: none;
+  }
+}
+@media (max-width: 768px) {
+  .tech-box {
+    display: none;
+  }
 }
 .hero-kicker {
   display: inline-flex;
@@ -2100,6 +2358,8 @@ p {
 
 /* Character creation card */
 .create {
+  position: relative;
+  z-index: 2;
   display: grid;
   gap: 16px;
   padding: 24px;
@@ -2107,7 +2367,7 @@ p {
   border-radius: 14px;
   background: var(--surface);
   color: var(--text);
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.22);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45);
   min-width: 0;
   width: 100%;
   box-sizing: border-box;

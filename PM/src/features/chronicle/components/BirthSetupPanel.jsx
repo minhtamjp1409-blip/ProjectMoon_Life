@@ -9,6 +9,7 @@ import { REGIONS, CODEX_RECORDS } from '../../../data/worldData';
 import { FATE_OMENS } from '../../../engine/weaverAI';
 import { useT } from '../../../i18n';
 import { RegionMark } from '../../../components/RegionMark';
+import { CityBackdrop } from '../../../components/CityBackdrop';
 
 const PATHS = [
   {
@@ -107,6 +108,7 @@ export const BirthSetupPanel = () => {
     <div className="home">
       {/* ---------- Hero: clean typography + character creation card ---------- */}
       <section className="hero" aria-labelledby="home-title">
+        <CityBackdrop />
         <div className="hero-copy">
           <span className="hero-kicker">Project Moon · {t('Mô phỏng một đời người', 'A life simulation')}</span>
           <h1 id="home-title">
