@@ -1,8 +1,9 @@
 # The City Chronicles: tiến trình dự án
 
-Cập nhật: 20/10/2026, đợt 5 (xem [mục 8](#8-nhật-ký-thay-đổi))
+Cập nhật: 20/10/2026, đợt 6 (xem [mục 8](#8-nhật-ký-thay-đổi))
 
 - Live Demo Vercel: [https://project-moon-life-five.vercel.app](https://project-moon-life-five.vercel.app)
+- Tài liệu PDF chính thức: [THE_CITY_CHRONICLES_DOCUMENTATION.pdf](https://project-moon-life-five.vercel.app/THE_CITY_CHRONICLES_DOCUMENTATION.pdf)
 - Frontend: `D:\School\PM` (React 18, Vite 6, Zustand 5, Ant Design 6 cho modal/tooltip/thông báo, CSS thuần trong `src/index.css`)
 - Backend: `D:\School\PM_BE` (.NET 8 Minimal API, cổng 5080)
 - Tài liệu thế giới và hướng đi: [`UNIVERSE.md`](UNIVERSE.md)
@@ -221,6 +222,19 @@ Trong chữ: `{name}`, `{friend}`, `{mentor}`, `{rival}`, `{lover}`, `{partner}`
 ---
 
 ## 8. Nhật ký thay đổi
+
+### 20/10/2026, đợt 6
+
+- **Thiết kế chuyên biệt cho Mobile (Dedicated Mobile HUD & Dossier Drawer)**:
+  - Thay thế hoàn toàn thanh tóm tắt text đơn điệu bằng **Mobile Resource HUD**:
+    - Hiển thị thanh máu đôi (HP & SP Twin Gauges) trực quan với thanh đo phần trăm đổi màu và nhấp nháy khi nguy kịch (CRIT).
+    - Hiển thị đầy đủ tài nguyên: Tiền mặt Ahn (vàng kim), Reputation (sao), Network (kết nối), Syndicate Heat (lửa đỏ), Taboo Gaze (con mắt đỏ vi phạm).
+    - Nhãn danh tính nhân vật và chức vụ thu gọn gọn gàng.
+  - Tích hợp **Ngăn kéo hồ sơ trượt từ dưới lên (Bottom Sheet Drawer)**: Khi bấm vào thanh tài nguyên, hồ sơ chi tiết (Milestone sự nghiệp, đầy đủ chỉ số, trang bị, NPC, vết sẹo) mở lên dạng modal mượt mà, không làm đẩy xô lệch luồng truyện.
+  - Tối ưu thanh điều khiển `PlayBar` trên di động: Rút gọn các nút tiện ích (Tự chọn, Mute, Lưu, Trang chủ, Bỏ kiếp) vào Dropdown Menu dấu 3 chấm (`···`), tạo không gian rộng rãi cho các nút chính (Play/Pause, Đổi tốc độ 1x/2x/3x, Qua mùa).
+- **Xuất tài liệu PDF toàn diện (Full PDF Export)**:
+  - Biên soạn và xuất file PDF chuyên nghiệp: `THE_CITY_CHRONICLES_DOCUMENTATION.pdf` (gồm toàn bộ bối cảnh thế giới, gameplay, 4 nhánh sự nghiệp, hệ thống tâm lý Disco Psyche, Carmen E.G.O/Distortion và sơ đồ kiến trúc xử lý sự kiện).
+  - Tích hợp vào thư mục `public/` để người chơi và bạn bè có thể tải trực tiếp qua link Vercel: `https://project-moon-life-five.vercel.app/THE_CITY_CHRONICLES_DOCUMENTATION.pdf`.
 
 ### 20/10/2026, đợt 5
 

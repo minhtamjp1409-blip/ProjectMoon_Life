@@ -1,6 +1,6 @@
 import React from 'react';
 import { Tooltip } from 'antd';
-import { ChevronDown, ChevronUp, User } from 'lucide-react';
+import { ChevronDown, ChevronUp, User, Heart, Brain, Coins, Flame, Eye, Sparkles, X, ShieldAlert } from 'lucide-react';
 import { useGameStore } from '../../../store/gameStore';
 import { REGIONS, FINGER_RANKS } from '../../../data/worldData';
 import { FATE_OMENS } from '../../../engine/weaverAI';
@@ -196,32 +196,11 @@ const People = ({ npcs, age, t, lang }) => {
   );
 };
 
-export const CharacterDossierCard = () => {
-  const { t, lang } = useT();
-  const char = useGameStore((s) => s.char);
-  const [folded, setFolded] = React.useState(true);
-
-  const region = REGIONS.find((r) => r.id === char.regionId) || REGIONS[0];
-  const omen = FATE_OMENS.find((o) => o.id === (char.fateOmenId || char.weaver?.mode)) || FATE_OMENS[0];
+const DossierContent = ({ char, milestone, region, omen, items, t, lang }) => {
   const { health, sanity, wealth, network, rep } = char.stats;
-  const milestone = getNextCareerMilestone(char);
-  const items = [
-    char.egoName && { k: 'E.G.O', v: char.egoName },
-    char.craftWeapon && { k: t('Thần binh', 'Weapon'), v: char.craftWeapon.name },
-    char.lineage?.relic && !char.craftWeapon && { k: t('Di vật', 'Relic'), v: char.lineage.relic }
-  ].filter(Boolean);
 
   return (
-    <aside className={`side ${folded ? 'is-folded' : ''}`} aria-label={t('Hồ sơ nhân vật', 'Character')}>
-      {/* Phone: one summary line that opens the full record */}
-      <button type="button" className="side-summary" onClick={() => setFolded(!folded)} aria-expanded={!folded}>
-        <span className="name">{char.name}</span>
-        <span>HP {health}</span>
-        <span>SP {sanity}</span>
-        <span>{wealth} Ahn</span>
-        {folded ? <ChevronDown size={17} /> : <ChevronUp size={17} />}
-      </button>
-
+    <>
       <div className="dossier-head">
         <span className="dossier-gen num">
           {t('Thế hệ', 'Gen')} #{char.generation}
@@ -326,7 +305,189 @@ export const CharacterDossierCard = () => {
           </div>
         </section>
       )}
-    </aside>
+    </>
+  );
+};
+
+export const CharacterDossierCard = () => {
+  const { t, lang } = useT();
+  const char = useGameStore((s) => s.char);
+  const [drawerOpen, setDrawerOpen] = React.useState(false);
+
+  const region = REGIONS.find((r) => r.id === char.regionId) || REGIONS[0];
+  const omen = FATE_OMENS.find((o) => o.id === (char.fateOmenId || char.weaver?.mode)) || FATE_OMENS[0];
+  const { health, sanity, wealth, network, rep } = char.stats;
+  const milestone = getNextCareerMilestone(char);
+  const items = [
+    char.egoName && { k: 'E.G.O', v: char.egoName },
+    char.craftWeapon && { k: t('Thần binh', 'Weapon'), v: char.craftWeapon.name },
+    char.lineage?.relic && !char.craftWeapon && { k: t('Di vật', 'Relic'), v: char.lineage.relic }
+  ].filter(Boolean);
+
+  const jobDesc = describeJob(char, t);
+  const isHpCritical = health <= 20;
+  const isSpCritical = sanity <= 20;
+  const tabooLevel = char.taboo || 0;
+
+  return (
+    <>
+      {/* 1. Dedicated Mobile Resource HUD (Visible only on mobile <= 820px) */}
+      <div 
+        className="mobile-resource-hud" 
+        onClick={() => setDrawerOpen(true)}
+        role="button"
+        tabIndex={0}
+        aria-label={t('Chỉ số nhân vật và tài nguyên', 'Character stats and resources')}
+      >
+        {/* Row 1: Character identity & quick job badge */}
+        <div className="m-hud-row-identity">
+          <div className="m-hud-name-group">
+            <span className="m-hud-name">{char.name}</span>
+            <span className="m-hud-gen">Gen #{char.generation}</span>
+            <span className="m-hud-job">{jobDesc}</span>
+          </div>
+          <button 
+            type="button" 
+            className="m-hud-open-btn"
+            onClick={(e) => { 
+              e.stopPropagation(); 
+              setDrawerOpen(true); 
+            }}
+            aria-label={t('Xem hồ sơ chi tiết', 'Open full dossier')}
+          >
+            <span>{t('Hồ sơ', 'Dossier')}</span>
+            <ChevronDown size={14} />
+          </button>
+        </div>
+
+        {/* Row 2: Vitals Twin Gauges (HP & SP) */}
+        <div className="m-hud-row-vitals">
+          {/* HP Gauge */}
+          <div className={`m-gauge m-gauge-hp ${isHpCritical ? 'is-critical' : ''}`}>
+            <div className="m-gauge-head">
+              <span className="m-gauge-label">
+                <Heart size={12} className="m-icon-hp" />
+                <b>HP</b>
+              </span>
+              <span className="m-gauge-val num">
+                <b>{health}</b><small>/100</small>
+              </span>
+            </div>
+            <div className="m-gauge-track">
+              <div 
+                className="m-gauge-fill" 
+                style={{ width: `${Math.max(0, Math.min(100, health))}%` }} 
+              />
+            </div>
+          </div>
+
+          {/* SP Gauge */}
+          <div className={`m-gauge m-gauge-sp ${isSpCritical ? 'is-critical' : ''}`}>
+            <div className="m-gauge-head">
+              <span className="m-gauge-label">
+                <Brain size={12} className="m-icon-sp" />
+                <b>SP</b>
+              </span>
+              <span className="m-gauge-val num">
+                <b>{sanity}</b><small>/100</small>
+              </span>
+            </div>
+            <div className="m-gauge-track">
+              <div 
+                className="m-gauge-fill" 
+                style={{ width: `${Math.max(0, Math.min(100, sanity))}%` }} 
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Row 3: Secondary Assets & Threats */}
+        <div className="m-hud-row-pills">
+          <div className="m-pill m-pill-wealth" title={t('Tiền mặt Ahn', 'Ahn Wealth')}>
+            <Coins size={12} className="m-icon-gold" />
+            <b className="num">{wealth}</b> <small>Ahn</small>
+          </div>
+          <div className="m-pill m-pill-rep" title={t('Danh tiếng', 'Reputation')}>
+            <span className="m-pill-dot" style={{ background: 'var(--s-rep)' }} />
+            <span>Rep</span> <b className="num">{rep}</b>
+          </div>
+          <div className="m-pill m-pill-net" title={t('Mạng lưới quan hệ', 'Network')}>
+            <span className="m-pill-dot" style={{ background: 'var(--s-network)' }} />
+            <span>Net</span> <b className="num">{network}</b>
+          </div>
+          {char.heat > 0 && (
+            <div className="m-pill m-pill-heat" title={t('Mức độ truy nã', 'Heat Level')}>
+              <Flame size={12} className="m-icon-heat" />
+              <b className="num">{char.heat}</b>
+            </div>
+          )}
+          <div className={`m-pill m-pill-taboo ${tabooLevel >= 2 ? 'is-critical' : ''}`} title={t('Ánh nhìn Taboo', 'Taboo Gaze')}>
+            <Eye size={12} className="m-icon-taboo" />
+            <span>Taboo</span> <b className="num">{tabooLevel}/3</b>
+          </div>
+          {milestone && milestone.progressPct < 100 && (
+            <div className="m-pill m-pill-milestone" title={lang === 'en' ? milestone.titleEn : milestone.titleVi}>
+              <span>🎯</span> <b className="num">{milestone.progressPct}%</b>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* 2. Mobile Dossier Drawer (Slides up when drawerOpen is true on mobile) */}
+      {drawerOpen && (
+        <div 
+          className="mobile-dossier-overlay" 
+          onClick={() => setDrawerOpen(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-label={t('Hồ sơ nhân vật chi tiết', 'Full Character Dossier')}
+        >
+          <div className="mobile-dossier-sheet" onClick={(e) => e.stopPropagation()}>
+            <div className="mobile-dossier-sheet-head">
+              <div className="sheet-drag-handle" />
+              <div className="sheet-title-row">
+                <div className="sheet-title-info">
+                  <b>{char.name}</b>
+                  <span>Gen #{char.generation} · {jobDesc}</span>
+                </div>
+                <button
+                  type="button"
+                  className="icon-btn sheet-close-btn"
+                  onClick={() => setDrawerOpen(false)}
+                  aria-label={t('Đóng hồ sơ', 'Close dossier')}
+                >
+                  <X size={18} />
+                </button>
+              </div>
+            </div>
+            <div className="mobile-dossier-sheet-body">
+              <DossierContent
+                char={char}
+                milestone={milestone}
+                region={region}
+                omen={omen}
+                items={items}
+                t={t}
+                lang={lang}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 3. Desktop Sidebar (Visible only on > 820px) */}
+      <aside className="side desktop-dossier-side" aria-label={t('Hồ sơ nhân vật', 'Character')}>
+        <DossierContent
+          char={char}
+          milestone={milestone}
+          region={region}
+          omen={omen}
+          items={items}
+          t={t}
+          lang={lang}
+        />
+      </aside>
+    </>
   );
 };
 

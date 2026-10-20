@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Tooltip, Modal } from 'antd';
-import { Play, Pause, SkipForward, Bot, RotateCcw, House, Save, Check, Volume2, VolumeX } from 'lucide-react';
+import { Tooltip, Modal, Dropdown } from 'antd';
+import { Play, Pause, SkipForward, Bot, RotateCcw, House, Save, Check, Volume2, VolumeX, MoreHorizontal } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 import { useGameStore } from '../../../store/gameStore';
@@ -205,6 +205,64 @@ export const PlayBar = () => {
     ? t('Hoàn tất năm hiện tại và bước sang năm mới', 'Conclude year and enter next year')
     : t(`Chuyển sang ${nextSeasonObj?.vi || 'mùa tiếp'}`, `Skip to ${nextSeasonObj?.en || 'next season'}`);
 
+  const cycleSpeed = () => {
+    audioEngine.playClick();
+    const next = speed === 1 ? 2 : (speed === 2 ? 3 : 1);
+    handleSetSpeed(next);
+  };
+
+  const menuItems = [
+    {
+      key: 'autoplay',
+      icon: <Bot size={16} />,
+      label: (
+        <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 14 }}>
+          <span>{autoPlay ? t('Tắt tự động chọn', 'Disable auto-pick') : t('Bật tự động chọn', 'Enable auto-pick')}</span>
+          <span style={{ fontSize: 11, fontWeight: 700, color: autoPlay ? 'var(--good)' : 'var(--muted)' }}>
+            {autoPlay ? t('BẬT', 'ON') : t('TẮT', 'OFF')}
+          </span>
+        </span>
+      ),
+      onClick: handleToggleAutoPlay
+    },
+    {
+      key: 'audio',
+      icon: audioMuted ? <VolumeX size={16} /> : <Volume2 size={16} />,
+      label: (
+        <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 14 }}>
+          <span>{audioMuted ? t('Bật âm thanh', 'Unmute audio') : t('Tắt âm thanh', 'Mute audio')}</span>
+          <span style={{ fontSize: 11, fontWeight: 700, color: !audioMuted ? 'var(--good)' : 'var(--muted)' }}>
+            {!audioMuted ? t('BẬT', 'ON') : t('TẮT', 'OFF')}
+          </span>
+        </span>
+      ),
+      onClick: handleToggleAudio
+    },
+    {
+      type: 'divider'
+    },
+    {
+      key: 'save',
+      icon: justSaved ? <Check size={16} style={{ color: 'var(--good)' }} /> : <Save size={16} />,
+      label: justSaved ? t('Đã lưu thành công!', 'Saved!') : t('Lưu tiến trình', 'Save game'),
+      disabled: !alive,
+      onClick: () => saveRun(true)
+    },
+    {
+      key: 'home',
+      icon: <House size={16} />,
+      label: t('Về trang chủ', 'Go Home'),
+      onClick: goHome
+    },
+    {
+      key: 'restart',
+      danger: true,
+      icon: <RotateCcw size={16} />,
+      label: t('Bỏ kiếp này', 'Abandon life'),
+      onClick: newLife
+    }
+  ];
+
   return (
     <div className="playbar">
       <div className="playbar-age">
@@ -238,7 +296,7 @@ export const PlayBar = () => {
       <div className="playbar-controls">
         <button
           type="button"
-          className={`icon-btn ${speed === 0 && alive ? 'is-on' : ''}`}
+          className={`icon-btn play-pause-btn ${speed === 0 && alive ? 'is-on' : ''}`}
           disabled={!alive}
           onClick={() => handleSetSpeed(speed === 0 ? 1 : 0)}
           aria-label={speed === 0 ? t('Tiếp tục (Space)', 'Resume (Space)') : t('Tạm dừng (Space)', 'Pause (Space)')}
@@ -247,7 +305,8 @@ export const PlayBar = () => {
           {speed === 0 ? <Play size={18} /> : <Pause size={18} />}
         </button>
 
-        <div className="speeds" role="group" aria-label={t('Tốc độ', 'Speed')}>
+        {/* Speed button group on desktop */}
+        <div className="speeds playbar-desktop-speeds" role="group" aria-label={t('Tốc độ', 'Speed')}>
           {SPEEDS.map((s) => (
             <button
               key={s.spd}
@@ -263,49 +322,76 @@ export const PlayBar = () => {
           ))}
         </div>
 
+        {/* Single speed cycle button on mobile */}
+        <button
+          type="button"
+          className="btn-speed-mobile"
+          disabled={!alive}
+          onClick={cycleSpeed}
+          title={t('Bấm để đổi tốc độ (1x/2x/3x)', 'Tap to cycle speed (1x/2x/3x)')}
+        >
+          {speed || 1}×
+        </button>
+
         <span className="divider" />
 
         <button
           type="button"
-          className="btn"
+          className="btn btn-step-season"
           disabled={!alive || waiting}
           onClick={handleStepYear}
           title={stepTitle}
         >
           <SkipForward size={16} />
-          {stepLabel}
+          <span>{stepLabel}</span>
         </button>
 
-        <button
-          type="button"
-          className={`icon-btn ${autoPlay ? 'is-on' : ''}`}
-          aria-pressed={autoPlay}
-          aria-label={t('Tự động chọn', 'Auto-pick')}
-          title={t('Tự chọn phương án đầu khi có sự kiện', 'Pick the first option automatically')}
-          onClick={handleToggleAutoPlay}
-        >
-          <Bot size={18} />
-        </button>
+        {/* Desktop secondary utilities (Bot, Mute, Save, Home, Restart) */}
+        <div className="playbar-desktop-actions">
+          <button
+            type="button"
+            className={`icon-btn ${autoPlay ? 'is-on' : ''}`}
+            aria-pressed={autoPlay}
+            aria-label={t('Tự động chọn', 'Auto-pick')}
+            title={t('Tự chọn phương án đầu khi có sự kiện', 'Pick the first option automatically')}
+            onClick={handleToggleAutoPlay}
+          >
+            <Bot size={18} />
+          </button>
 
-        <button
-          type="button"
-          className={`icon-btn ${audioMuted ? '' : 'is-on'}`}
-          onClick={handleToggleAudio}
-          aria-label={audioMuted ? t('Bật âm thanh (phím M)', 'Unmute audio (M key)') : t('Tắt âm thanh (phím M)', 'Mute audio (M key)')}
-          title={audioMuted ? t('Bật âm thanh (M)', 'Unmute audio (M)') : t('Tắt âm thanh (M)', 'Mute audio (M)')}
-        >
-          {audioMuted ? <VolumeX size={17} /> : <Volume2 size={17} />}
-        </button>
+          <button
+            type="button"
+            className={`icon-btn ${audioMuted ? '' : 'is-on'}`}
+            onClick={handleToggleAudio}
+            aria-label={audioMuted ? t('Bật âm thanh (phím M)', 'Unmute audio (M key)') : t('Tắt âm thanh (phím M)', 'Mute audio (M key)')}
+            title={audioMuted ? t('Bật âm thanh (M)', 'Unmute audio (M)') : t('Tắt âm thanh (M)', 'Mute audio (M)')}
+          >
+            {audioMuted ? <VolumeX size={17} /> : <Volume2 size={17} />}
+          </button>
 
-        <button type="button" className="icon-btn" onClick={() => saveRun(true)} disabled={!alive} aria-label={t('Lưu tiến trình', 'Save progress')} title={t('Lưu tiến trình (game cũng tự lưu)', 'Save progress (the game also autosaves)')}>
-          {justSaved ? <Check size={17} style={{ color: 'var(--good)' }} /> : <Save size={17} />}
-        </button>
-        <button type="button" className="icon-btn" onClick={goHome} aria-label={t('Về trang chủ', 'Home')} title={t('Về trang chủ (tiến trình được giữ lại)', 'Home (progress is kept)')}>
-          <House size={17} />
-        </button>
-        <button type="button" className="icon-btn" onClick={newLife} aria-label={t('Kiếp sống mới', 'New life')} title={t('Bỏ kiếp này, bắt đầu kiếp mới', 'Abandon this life and start anew')}>
-          <RotateCcw size={16} />
-        </button>
+          <button type="button" className="icon-btn" onClick={() => saveRun(true)} disabled={!alive} aria-label={t('Lưu tiến trình', 'Save progress')} title={t('Lưu tiến trình (game cũng tự lưu)', 'Save progress (the game also autosaves)')}>
+            {justSaved ? <Check size={17} style={{ color: 'var(--good)' }} /> : <Save size={17} />}
+          </button>
+          <button type="button" className="icon-btn" onClick={goHome} aria-label={t('Về trang chủ', 'Home')} title={t('Về trang chủ (tiến trình được giữ lại)', 'Home (progress is kept)')}>
+            <House size={17} />
+          </button>
+          <button type="button" className="icon-btn" onClick={newLife} aria-label={t('Kiếp sống mới', 'New life')} title={t('Bỏ kiếp này, bắt đầu kiếp mới', 'Abandon this life and start anew')}>
+            <RotateCcw size={16} />
+          </button>
+        </div>
+
+        {/* Mobile More dropdown menu */}
+        <div className="playbar-mobile-more">
+          <Dropdown menu={{ items: menuItems }} placement="bottomRight" trigger={['click']}>
+            <button 
+              type="button" 
+              className="icon-btn" 
+              aria-label={t('Thao tác khác', 'More options')}
+            >
+              <MoreHorizontal size={18} />
+            </button>
+          </Dropdown>
+        </div>
       </div>
     </div>
   );
