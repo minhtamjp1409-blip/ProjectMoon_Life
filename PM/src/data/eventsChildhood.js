@@ -414,7 +414,7 @@ export const CHILDHOOD_EVENTS = [
       {
         labelVi: 'Nộp đơn vào làm cho một Wing',
         labelEn: 'Apply to work for a Wing',
-        resultVi: 'Bạn nhận bộ đồng phục Feather và một mã nhân viên. Bản hợp đồng dài 40 trang, và trang 31 nói rằng công ty có quyền với cơ thể bạn "trong trường hợp cần thiết".',
+        resultVi: 'Bạn nhận bộ đồng phục Feather và một mã nhân viên. Bản hợp đồng dài 40 trang, và trang 31 nói rằng Wing có quyền với cơ thể bạn "trong trường hợp cần thiết".',
         resultEn: 'You received a Feather uniform and an employee number. The contract ran 40 pages, and page 31 said the company has rights to your body “where necessary.”',
         setJob: 'Wing Employee',
         setWingRank: 1,

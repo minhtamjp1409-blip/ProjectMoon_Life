@@ -130,7 +130,7 @@ export const LIFE_DAILIES = [
   D('m_any_back', MID, {}, 'Lưng bạn bắt đầu đau mỗi sáng. Bác sĩ chợ đen nói đó là cái giá của việc sống sót quá lâu.', 'Your back started aching every morning. The back-alley doctor said it was the price of surviving too long.', { health: -2 }),
   D('m_any_young', MID, {}, 'Bạn nhận ra những đứa trẻ trong hẻm giờ gọi bạn là "ông/bà". Bạn không biết mình đã già từ lúc nào.', 'You noticed the kids in the alley now call you “old timer.” You don’t know when you got old.', { sanity: -1, rep: 1 }),
   D('m_any_photo', MID, {}, 'Bạn tìm thấy một bức ảnh cũ của chính mình lúc 18 tuổi. Ánh mắt trong đó như của một người lạ còn dám hy vọng.', 'You found an old photo of yourself at 18. The eyes in it belonged to a stranger who still dared to hope.', { sanity: 1, resonance: 1 }),
-  D('o_any_tea', OLD, {}, 'Bạn ngồi uống trà ở hiên nhà mỗi chiều. Thành phố vẫn ồn ào như vậy. Chỉ có bạn chậm lại.', 'You drink tea on the porch every afternoon. The City is as loud as ever. Only you have slowed down.', { sanity: 3 }),
+  D('o_any_tea', OLD, {}, 'Bạn ngồi uống trà ở hiên nhà mỗi chiều. The City vẫn ồn ào như vậy. Chỉ có bạn chậm lại.', 'You drink tea on the porch every afternoon. The City is as loud as ever. Only you have slowed down.', { sanity: 3 }),
   D('o_any_names', OLD, {}, 'Bạn đếm lại những người quen đã chết. Danh sách dài hơn danh sách người còn sống.', 'You counted the people you knew who are dead. The list is longer than the living.', { sanity: -2 }),
   D('o_any_hands', OLD, {}, 'Tay bạn run khi cầm cốc. Những năm trước, chính đôi tay này đã làm những việc mà giờ bạn không muốn nhớ.', 'Your hands shake holding a cup. Years ago, these same hands did things you’d rather not remember.', { health: -2, sanity: -1 })
 ];

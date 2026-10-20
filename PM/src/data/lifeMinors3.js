@@ -93,7 +93,7 @@ export const LIFE_MINORS_3 = [
     ] })
   ], I('Bạn không chọn. Hợp đồng chọn giúp bạn: ngón trỏ tay phải.', 'You didn’t choose. The contract chose for you: the right index finger.', { health: -10, sanity: -6 }, { scar: 'Mất ngón trỏ tay phải', bond: { friend: -6 } }), { once: true, tags: ['callback', 'npc'] }),
 
-  M('m3_o_fine_print', [16, 70], O15, 'Một công ty tuyển người trả lương gấp đôi, hợp đồng ký bằng mực O Corp. Ở trang 30 có một dòng chữ nhỏ đến mức bạn đọc không ra.', 'A company is hiring at double pay, contract in O Corp ink. On page 30 there is a line so small you can’t read it.', [
+  M('m3_o_fine_print', [16, 70], O15, 'Một Corp tuyển người trả lương gấp đôi, hợp đồng ký bằng mực O Corp. Ở trang 30 có một dòng chữ nhỏ đến mức bạn đọc không ra.', 'A company is hiring at double pay, contract in O Corp ink. On page 30 there is a line so small you can’t read it.', [
     C('Ký luôn', 'Sign it', null, null, { wealth: 6 }, { out: [
       O(60, 'Không có gì xảy ra. Bạn làm hết năm và nhận đủ lương. Bạn vẫn không biết dòng chữ đó viết gì.', 'Nothing happened. You worked the year and were paid in full. You still don’t know what that line said.', { wealth: 4 }),
       O(40, 'Dòng chữ đó là "bên lao động nhượng lại một năm ký ức". Cuối năm bạn tỉnh dậy, và cả năm vừa qua là một khoảng trắng.', 'The line read “the worker cedes one year of memory.” At year’s end you woke up, and the whole year was blank.', { sanity: -8, resonance: 3 }, { mem: 'lost_year' })

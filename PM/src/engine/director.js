@@ -92,7 +92,7 @@ export function directorWeight(entry, char) {
   const motif = dominantMotif(char);
   if (motif && tags.includes(MOTIF_TAGS[motif])) {
     w *= 1.5;
-    reason = reason || { vi: 'Thành phố đáp lại con người bạn đã trở thành', en: 'The City answers who you have become' };
+    reason = reason || { vi: 'The City đáp lại con người bạn đã trở thành', en: 'The City answers who you have become' };
   }
 
   // Crucible of Pinnacle Ascensions (E.G.O, Color Fixer, Five Fingers, Workshop Masterpiece)

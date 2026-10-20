@@ -695,7 +695,7 @@ export const FACTION_EVENTS = [
     major: true,
     weight: 930,
     jobs: ['Wing Employee'],
-    vi: '[Wing Board · Singularity Classified Audit] Ban giám đốc tập đoàn triệu tập bạn vào căn hầm ngầm sâu nhất dưới lòng Nest. Cánh cửa thép Singularity mở ra, để lộ bí mật kinh hoàng giúp tập đoàn vận hành (máu của thứ biết khóc, hay những toa tàu WARP). Một Senior Executive nhìn bạn:\n"Mọi Feather muốn bước vào ban điều hành đều phải nhìn thẳng vào sự thật này mà không phát điên. Nếu bạn chịu đựng được, bạn là Giám đốc cấp cao. Nếu không, bộ nhớ của bạn sẽ bị thanh tẩy."',
+    vi: '[Wing Board · Singularity Classified Audit] Ban giám đốc Wing triệu tập bạn vào căn hầm ngầm sâu nhất dưới lòng Nest. Cánh cửa thép Singularity mở ra, để lộ bí mật kinh hoàng giúp Wing vận hành (máu của thứ biết khóc, hay những toa tàu WARP). Một Senior Executive nhìn bạn:\n"Mọi Feather muốn bước vào ban điều hành đều phải nhìn thẳng vào sự thật này mà không phát điên. Nếu bạn chịu đựng được, bạn là Giám đốc cấp cao. Nếu không, bộ nhớ của bạn sẽ bị thanh tẩy."',
     en: '[Wing Board · Singularity Classified Audit] The Board summoned you to the deepest vault beneath the Nest. The singularity blast doors opened, revealing the grotesque truth powering the corporation. A Senior Executive looked upon you:\n“Every Feather seeking a seat on the executive board must gaze upon this truth without losing their mind. If you endure, you are a Senior Executive. If you falter, your memory will be purged.”',
     choices: [
       {
@@ -706,7 +706,7 @@ export const FACTION_EVENTS = [
         effects: { health: -15, sanity: -32, wealth: +85, rep: +42 },
         scarsAdd: ['Bí mật đen tối của Wing'],
         meritAdd: 55,
-        resultVi: 'Bạn nhìn thẳng vào cỗ máy kinh hoàng của Singularity. Mắt bạn rỉ máu, nhưng nụ cười của bạn vẫn giữ nguyên vẻ điềm tĩnh của một kẻ lọc lõi. Ban giám đốc vỗ tay chào đón: "Chào mừng Giám đốc cấp cao mới của tập đoàn."',
+        resultVi: 'Bạn nhìn thẳng vào cỗ máy kinh hoàng của Singularity. Mắt bạn rỉ máu, nhưng nụ cười của bạn vẫn giữ nguyên vẻ điềm tĩnh của một kẻ lọc lõi. Ban giám đốc vỗ tay chào đón: "Chào mừng Giám đốc cấp cao mới của Wing."',
         resultEn: 'You stared into the monstrosity of the Singularity. Your eyes bled, yet your expression retained the cold composure of an apex corporate survivor. The Board applauded: “Welcome, our newest Senior Executive.”'
       },
       {

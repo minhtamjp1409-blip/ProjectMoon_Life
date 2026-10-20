@@ -24,8 +24,8 @@ export const GLOSSARY_TERMS = [
     category: 'geography',
     term: 'The City',
     kr: '도시 (Dosi)',
-    lorVn: 'Thành Phố',
-    vi: 'Siêu đô thị khổng lồ nơi toàn bộ nền văn minh nhân loại sinh sống, được chia thành 26 District (Quận A đến Z) dưới sự cai trị tối cao của The Head.',
+    lorVn: 'The City',
+    vi: 'The City là đại đô thị khổng lồ nơi toàn bộ nền văn minh nhân loại sinh sống, được chia thành 26 District (Quận A đến Z) dưới sự cai trị tối cao của The Head.',
     en: 'The colossal megacity housing human civilization, divided into 26 Districts (A through Z) under the absolute rule of The Head.'
   },
   {
@@ -33,8 +33,8 @@ export const GLOSSARY_TERMS = [
     category: 'geography',
     term: 'Wing (A–Z Corp)',
     kr: '날개 (Nalgae)',
-    lorVn: 'Cánh / Cánh Quạt',
-    vi: '26 siêu tập đoàn độc quyền nắm giữ các công nghệ siêu nhiên gọi là Singularity, mỗi Wing trực tiếp cai quản một District và bảo vệ vùng Nest của mình.',
+    lorVn: 'Wing (A–Z Corp)',
+    vi: '26 Wing độc quyền nắm giữ các công nghệ siêu nhiên gọi là Singularity, mỗi Wing trực tiếp cai quản một District và bảo vệ vùng Nest của mình.',
     en: '26 mega-corporations monopolizing supernatural technologies called Singularities, each governing a District and protecting its Nest.'
   },
   {
@@ -42,8 +42,8 @@ export const GLOSSARY_TERMS = [
     category: 'geography',
     term: 'Nest & Feather',
     kr: '둥지 · 깃털 (Dungji · Gitteol)',
-    lorVn: 'Tổ Ấm / Vùng Tổ & Lông Vũ',
-    vi: 'Khu vực trung tâm an toàn, giàu có của mỗi District do Wing bảo hộ. Cư dân hợp pháp trong Nest được gọi là Feather (Lông Vũ) và là giấc mơ của mọi người dân Backstreets.',
+    lorVn: 'Nest & Feather',
+    vi: 'Khu vực trung tâm an toàn, giàu có của mỗi District do Wing bảo hộ. Cư dân hợp pháp trong Nest được gọi là Feather (Lông Vũ) và là mục tiêu phấn đấu của cư dân Backstreets.',
     en: 'The safe, affluent core of each District protected by its Wing. Legal residents are called Feathers, a status coveted by everyone in the Backstreets.'
   },
   {
@@ -78,7 +78,7 @@ export const GLOSSARY_TERMS = [
     category: 'geography',
     term: 'The Head (A Corp · B Corp · C Corp)',
     kr: '머리 · 눈 · 발톱 (Meori · Nun · Baltop)',
-    lorVn: 'Cái Đầu (Điều Phối Viên · Quan Sát Viên · Vuốt)',
+    lorVn: 'The Head (Arbiters · Beholders · Claws)',
     vi: 'Thực thể tối cao cai trị The City, gồm A Corp (Arbiters / Điều Phối Viên), B Corp (Beholders / Quan Sát Viên giám sát toàn tri) và C Corp (Claws / Đao Phủ tiêm Serum).',
     en: 'The supreme ruling triad of the City: A Corp (Arbiters), B Corp (omniscient Beholders), and C Corp (Serum-wielding Executioner Claws).'
   },
@@ -107,7 +107,7 @@ export const GLOSSARY_TERMS = [
     category: 'fixer',
     term: 'Fixer (Grade 9 → Grade 1)',
     kr: '해결사 (Haegyeolsa)',
-    lorVn: 'Thợ Sửa Đồ (Cấp 9 → Cấp 1)',
+    lorVn: 'Fixer (Grade 9 → Grade 1)',
     vi: 'Những người hành nghề tự do hợp pháp giải quyết mọi ủy thác bằng vũ lực hoặc nghiệp vụ, được Hana Association phân hạng từ Grade 9 (thấp nhất) đến Grade 1 (cao nhất).',
     en: 'Licensed mercenaries and problem-solvers who handle contracts across the City, ranked by Hana Association from Grade 9 (lowest) to Grade 1 (highest).'
   },
@@ -116,7 +116,7 @@ export const GLOSSARY_TERMS = [
     category: 'fixer',
     term: 'Color Fixer',
     kr: '특색 해결사 (Teuksaek Haegyeolsa)',
-    lorVn: 'Thợ Sửa Đồ Đặc Sắc (Sắc Hiệu)',
+    lorVn: 'Color Fixer (Sắc Hiệu)',
     vi: 'Đỉnh cao tuyệt đối của giới Fixer. Những Grade 1 sở hữu sức mạnh và triết lý độc nhất được Hana Association ban tặng một danh hiệu gắn với Màu Sắc (như Red Mist, Black Silence, Red Gaze).',
     en: 'The absolute pinnacle of Fixers. Grade 1s of unmatched power and identity granted a unique Color title by Hana Association (e.g., Red Mist, Black Silence, Red Gaze).'
   },
@@ -144,7 +144,7 @@ export const GLOSSARY_TERMS = [
     term: 'Hana Association (1)',
     kr: '하나 협회 (Hana Hyeophoe)',
     lorVn: 'Hiệp Hội Hana (Tổng Quản)',
-    vi: 'Hiệp hội số 1 đứng đầu toàn bộ 12 Associations. Cấp giấy phép Fixer, phân loại Cấp độ Đe dọa Đô thị, chỉ định Color Fixer và sử dụng võ thuật Bát Quái.',
+    vi: 'Hiệp hội số 1 đứng đầu toàn bộ 12 Associations. Cấp giấy phép Fixer, phân loại Cấp độ Đe dọa Urban Threat Levels, chỉ định Color Fixer và sử dụng võ thuật Bát Quái.',
     en: 'The 1st and supreme Association overseeing all Fixers, Office licenses, Urban Threat ratings, and Color designations.'
   },
   {
@@ -318,7 +318,7 @@ export const GLOSSARY_TERMS = [
     category: 'supernatural',
     term: 'Threat Levels (Canard → Impuritas Civitatis)',
     kr: '뜬소문 → 도시의 별 → 불순물',
-    lorVn: 'Thang Đe Dọa (Tin Đồn → Ngôi Sao Đô Thị → Tạp Chất)',
+    lorVn: 'Thang Đe Dọa (Canard → Star of the City → Impuritas Civitatis)',
     vi: '7 bậc phân loại mối đe dọa của Hana Association: 1. Canard → 2. Urban Myth → 3. Urban Legend → 4. Urban Plague → 5. Urban Nightmare → 6. Star of the City → 7. Impuritas Civitatis.',
     en: 'The 7 threat tiers assigned by Hana Association: Canard → Urban Myth → Urban Legend → Urban Plague → Urban Nightmare → Star of the City → Impuritas Civitatis.'
   }

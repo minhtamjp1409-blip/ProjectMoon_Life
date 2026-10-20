@@ -28,7 +28,7 @@ Mỗi District có ba lớp sống, và game theo dõi bạn ở lớp nào:
 - **District 14 (N Corp)**: Nagel und Hammer săn người có chân tay giả.
 - **District 16 (P Corp)**: những căn phòng to hơn bên ngoài, và các Bloodfiend.
 - **District 19 (S Corp)**: quê của Blade Lineage.
-- **District 20 (T Corp)**: thành phố màu sepia, thời gian bị vay, bán, đánh thuế; Time Ripper.
+- **District 20 (T Corp)**: District màu sepia, thời gian bị vay, bán, đánh thuế; Time Ripper.
 - **District 21 (U Corp)**: The Great Lake, những luật của mặt hồ, Cá Voi và người hóa trắng.
 - **District 23 (W Corp)**: WARP Train mười giây, toa cuối dài hai nghìn năm, và phố ẩm thực.
 - **District 5 (E Corp), phóng tác**: trời sáng hai mươi tư giờ; bóng tối là hàng hóa, thuê theo giờ hoặc mua theo lọ. Ruộng trong nhà thu hoạch quanh năm.
@@ -42,7 +42,7 @@ E và O mang nhãn "Phóng tác", Z mang nhãn "Không có trên bản đồ", �
 - **Fixer**: làm thuê bằng Request. Office nhỏ (Hook, Yun's, Streetlight, Molar, Full-Stop...) và 11 Association (Hana, Zwei, Tres, Shi, Cinq, Liu, Seven, Eight, Devyat', Dieci, Öufi). Grade 9 lên Grade 1, rồi Color nếu Hana trao.
 - **The Five Fingers**: Thumb (tôn ti, lễ nghi), Index (Prescript), Middle (anh em, Book of Vengeance), Ring (nghệ thuật trên thịt người), Pinky (lời thề).
 - **Kurokumo Clan** và **Blade Lineage**: chiến tranh của những người dùng kiếm.
-- **Wing**: làm Feather cho một Singularity. An toàn hơn cho đến khi công ty cần bạn biến mất.
+- **Wing**: làm Feather cho một Singularity. An toàn hơn cho đến khi Wing cần bạn biến mất.
 - **Workshop**: rèn vũ khí, đăng ký với Tres Association; có mini-game rèn.
 - **Các thế lực ngoài con người**: Sweeper lúc 3 giờ 10, Bloodfiend, Distortion, Abnormality, The Library.
 

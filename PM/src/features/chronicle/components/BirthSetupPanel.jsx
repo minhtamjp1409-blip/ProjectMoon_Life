@@ -33,7 +33,7 @@ const PATHS = [
     kickerEn: 'A Wing’s Feather',
     titleVi: 'Nhân viên Wing',
     titleEn: 'Wing employee',
-    descVi: 'Sống trong Nest, làm việc cho một Singularity. An toàn hơn, cho tới khi công ty cần bạn biến mất.',
+    descVi: 'Sống trong Nest, làm việc cho một Singularity. An toàn hơn, cho tới khi Wing cần bạn biến mất.',
     descEn: 'Live in a Nest and work for a Singularity. Safer, until the company needs you gone.'
   },
   {
@@ -41,7 +41,7 @@ const PATHS = [
     kickerEn: 'Tres Association',
     titleVi: 'Workshop',
     titleEn: 'Workshop',
-    descVi: 'Rèn vũ khí cho Fixer cả thành phố, đặt tên cho tác phẩm của mình và để nó lại cho đời sau.',
+    descVi: 'Rèn vũ khí cho Fixer khắp The City, đặt tên cho tác phẩm của mình và để nó lại cho đời sau.',
     descEn: 'Forge weapons for the City’s Fixers, name your masterpiece and leave it to the next generation.'
   },
   {

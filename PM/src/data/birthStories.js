@@ -64,7 +64,7 @@ const THAT_NIGHT = [
   { vi: 'Đêm ấy trời mưa, và mưa ở The City luôn có vị kim loại.', en: 'It rained that night, and rain in the City always tastes of metal.' },
   { vi: 'Đêm ấy có pháo hoa: một Wing vừa công bố Singularity mới.', en: 'There were fireworks that night: a Wing had just announced a new Singularity.' },
   { vi: 'Đêm ấy yên tĩnh lạ thường. Người già trong khu bảo đó là điềm xấu.', en: 'That night was strangely quiet. The old people on the block called it a bad sign.' },
-  { vi: 'Đêm ấy, ở đâu đó trong thành phố, một Thư viện mọc lên giữa khoảng đất trống.', en: 'That night, somewhere in the City, a Library rose out of an empty lot.' },
+  { vi: 'Đêm ấy, ở đâu đó trong The City, một Thư viện mọc lên giữa khoảng đất trống.', en: 'That night, somewhere in the City, a Library rose out of an empty lot.' },
   { vi: 'Đêm ấy mất điện cả khu. Bạn chào đời dưới ánh nến.', en: 'The whole block lost power that night. You were born by candlelight.' },
   { vi: 'Đêm ấy, Thumb và Middle bắn nhau ở ba con phố về phía bắc. Không ai ngủ được, nên ai cũng nghe thấy tiếng bạn khóc.', en: 'That night the Thumb and the Middle traded fire three streets north. No one could sleep, so everyone heard you cry.' },
   { vi: 'Đêm ấy có tuyết, tuyết thật, lần đầu sau mười năm.', en: 'It snowed that night, real snow, the first in ten years.' },

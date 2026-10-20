@@ -94,7 +94,7 @@ export const WeaverAiPage = () => {
             </div>
           </div>
           <div className="kpi">
-            <div className="kpi-label">{t('Áp lực đô thị', 'City tension')}</div>
+            <div className="kpi-label">{t('Áp lực The City', 'City tension')}</div>
             <div className="kpi-value">
               {weaver.tensionScore ?? 0}
               <small>%</small>

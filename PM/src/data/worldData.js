@@ -301,7 +301,7 @@ export const REGIONS = [
     pollution: 7,
     descVi: 'Sau sự kiện White Nights and Dark Days và sự biến mất của The Library, Nest của L Corp chìm trong sương mù dày đặc. The Thumb, The Index và vô số Syndicate đang tắm máu tranh giành mảnh đất vô chủ này.',
     descEn: 'Following White Nights and Dark Days, the former Lobotomy Corp Nest lies in dense fog as The Thumb, The Index, and rival Syndicates wage war over its ruins.',
-    birthVi: 'District 12, giữa màn sương mù không bao giờ tan của Tổ L Corp đã sụp đổ. Tiếng súng của The Thumb và tiếng kiếm của The Index vang vọng từ xa.',
+    birthVi: 'District 12, giữa màn sương mù không bao giờ tan của Nest L Corp đã sụp đổ. Tiếng súng của The Thumb và tiếng kiếm của The Index vang vọng từ xa.',
     birthEn: 'District 12, amidst the unrelenting fog of the fallen L Corp Nest. Gunfire from The Thumb and clashing blades of The Index echoed in the distance.'
   },
   {
@@ -475,7 +475,7 @@ export const REGIONS = [
     orgPressure: 7,
     fantasm: 3,
     pollution: 4,
-    descVi: 'Một xã hội phong kiến mục nát núp bóng tập đoàn nông nghiệp, nơi thuế lương thực đẩy dân lành vào cảnh chết đói và sản sinh ra những kiếm khách lưu lạc của Blade Lineage.',
+    descVi: 'Một xã hội phong kiến mục nát núp bóng Wing nông nghiệp, nơi thuế lương thực đẩy dân lành vào cảnh chết đói và sản sinh ra những kiếm khách lưu lạc của Blade Lineage.',
     descEn: 'A decaying feudal bureaucracy disguised as an agricultural Wing, birthing the wandering swordsmen of the Blade Lineage.',
     birthVi: 'District 19, S Corp. Mùi rơm ẩm và tiếng mài kiếm lạnh lẽo vọng lại từ bên kia bờ tường đất.',
     birthEn: 'District 19, S Corp. The smell of damp straw and the cold rasp of a whetstone against steel drifted over the mud wall.'
@@ -485,7 +485,7 @@ export const REGIONS = [
     ward: 20,
     nameVi: 'District 20 · T Corp (TimeTrack)',
     nameEn: 'District 20 · T Corp (TimeTrack)',
-    aliasVi: 'Thành phố màu sepia, thuế bằng thời gian',
+    aliasVi: 'District màu sepia, thuế bằng thời gian',
     aliasEn: 'Colorless Industrial Nest',
     singularityVi: 'TimeTrack: vay, bán và đánh thuế thời gian',
     singularityEn: 'TimeTrack (Time Extraction & Hourly Taxation)',
@@ -537,7 +537,7 @@ export const REGIONS = [
     nameEn: 'District 22 · V Corp',
     aliasVi: 'Phố Office phía nam',
     aliasEn: 'Southern Commercial Hub',
-    singularityVi: 'Truyền năng lượng cho cả thành phố',
+    singularityVi: 'Truyền năng lượng cho toàn The City',
     singularityEn: 'Urban Grid Transmission',
     industryVi: 'Thương mại, Văn phòng Fixer & Dịch vụ',
     industryEn: 'Commerce, Fixer Offices & Urban Services',
@@ -715,7 +715,7 @@ export const FAMILIES = [
     id: 'nest_feather',
     nameVi: 'Gia đình Feather trong Nest',
     nameEn: 'Nest Feather Household',
-    descVi: 'Có hộ khẩu hợp pháp trong vùng Nest an toàn, được tập đoàn Wing bảo hộ nhưng luôn chịu áp lực giữ vững chỉ tiêu.',
+    descVi: 'Có hộ khẩu hợp pháp trong vùng Nest an toàn, được Wing bảo hộ nhưng luôn chịu áp lực giữ vững chỉ tiêu.',
     descEn: 'Legal Nest citizens protected by the Wing, living under constant corporate quota pressure.',
     statMod: { health: +4, sanity: +3, wealth: +10, network: +5, rep: +3 },
     flags: ['Feather', 'Nest']
@@ -789,13 +789,13 @@ export const FINGER_RANKS = {
 };
 
 export const THREAT_TIERS = [
-  { level: 0, id: 'canard', nameVi: 'Canard (Tin Đồn)', nameEn: 'Canard', reqGrade: 9, basePay: 6, baseMerit: 2 },
-  { level: 1, id: 'urban_myth', nameVi: 'Urban Myth (Đô Thị Quái Đàm)', nameEn: 'Urban Myth', reqGrade: 8, basePay: 10, baseMerit: 4 },
-  { level: 2, id: 'urban_legend', nameVi: 'Urban Legend (Đô Thị Truyền Thuyết)', nameEn: 'Urban Legend', reqGrade: 6, basePay: 16, baseMerit: 7 },
-  { level: 3, id: 'urban_plague', nameVi: 'Urban Plague (Đô Thị Dịch Bệnh)', nameEn: 'Urban Plague', reqGrade: 5, basePay: 25, baseMerit: 12 },
-  { level: 4, id: 'urban_nightmare', nameVi: 'Urban Nightmare (Đô Thị Ác Mộng)', nameEn: 'Urban Nightmare', reqGrade: 3, basePay: 38, baseMerit: 20 },
-  { level: 5, id: 'star_of_the_city', nameVi: 'Star of the City (Ngôi Sao Đô Thị)', nameEn: 'Star of the City', reqGrade: 1, basePay: 58, baseMerit: 35 },
-  { level: 6, id: 'impuritas', nameVi: 'Impuritas Civitatis (Tạp Chất Đô Thị)', nameEn: 'Impuritas Civitatis', reqGrade: 1, basePay: 85, baseMerit: 60 }
+  { level: 0, id: 'canard', nameVi: 'Canard', nameEn: 'Canard', reqGrade: 9, basePay: 6, baseMerit: 2 },
+  { level: 1, id: 'urban_myth', nameVi: 'Urban Myth', nameEn: 'Urban Myth', reqGrade: 8, basePay: 10, baseMerit: 4 },
+  { level: 2, id: 'urban_legend', nameVi: 'Urban Legend', nameEn: 'Urban Legend', reqGrade: 6, basePay: 16, baseMerit: 7 },
+  { level: 3, id: 'urban_plague', nameVi: 'Urban Plague', nameEn: 'Urban Plague', reqGrade: 5, basePay: 25, baseMerit: 12 },
+  { level: 4, id: 'urban_nightmare', nameVi: 'Urban Nightmare', nameEn: 'Urban Nightmare', reqGrade: 3, basePay: 38, baseMerit: 20 },
+  { level: 5, id: 'star_of_the_city', nameVi: 'Star of the City', nameEn: 'Star of the City', reqGrade: 1, basePay: 58, baseMerit: 35 },
+  { level: 6, id: 'impuritas', nameVi: 'Impuritas Civitatis', nameEn: 'Impuritas Civitatis', reqGrade: 1, basePay: 85, baseMerit: 60 }
 ];
 
 export const CODEX_CATEGORIES = [
