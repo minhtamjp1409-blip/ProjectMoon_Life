@@ -46,6 +46,7 @@
   --scrim: rgba(10, 10, 12, 0.62);
 
   --font: "Be Vietnam Pro", "Segoe UI", system-ui, sans-serif;
+  --serif: "Cinzel", "Song Myung", Georgia, serif;
 
   --radius: 10px;
   --radius-sm: 7px;
@@ -128,7 +129,7 @@ body,
 }
 
 body {
-  background: var(--ground);
+  background: radial-gradient(1200px 600px at 50% -10%, #171a26 0%, var(--ground) 65%) fixed;
   color: var(--text);
   font-family: var(--font);
   font-size: 16px;
@@ -1336,7 +1337,7 @@ p {
   font-size: 12px;
 }
 
-/* Stage container */
+/* Stage container & Animated pure CSS scenes */
 .stage {
   position: relative;
   isolation: isolate;
@@ -1347,6 +1348,71 @@ p {
   flex-direction: column;
   overflow: hidden;
   background: var(--ground);
+}
+
+.scene {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1.8s ease;
+}
+.scene.on {
+  opacity: 1;
+}
+.scene-hatch {
+  background: radial-gradient(900px 520px at 50% 30%, #3a1212, #1c0909 55%, var(--ground));
+}
+.scene-hatch::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, transparent 40%, rgba(0, 0, 0, 0.65) 100%);
+  animation: scene-pulse 3.2s ease-in-out infinite;
+}
+.scene-hatch.red::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(184, 56, 44, 0.3) 0%, transparent 70%);
+  animation: scene-pulse 1.8s ease-in-out infinite;
+}
+.scene-warp {
+  background: linear-gradient(180deg, #03070f, #0a2448 30%, #0f3566, #0a2448 70%, #03070f);
+}
+.scene-warp::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(3, 7, 15, 0.8), transparent 20%, transparent 80%, rgba(3, 7, 15, 0.8));
+}
+.scene-blade {
+  background: radial-gradient(1100px 640px at 50% 18%, #141a24, #0a0d13 52%, var(--ground));
+}
+.scene-blade::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, transparent 38%, rgba(0, 0, 0, 0.65) 100%);
+}
+.scene-star {
+  background: radial-gradient(1200px 700px at 50% 0%, #121a33, #0a0e1c 55%, var(--ground));
+}
+.scene-kong {
+  background: radial-gradient(1000px 620px at 50% 35%, #2a1a1b, #170e10 55%, var(--ground));
+}
+.scene-kong::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 45%, transparent 35%, rgba(0, 0, 0, 0.6) 100%);
+  animation: scene-pulse 5s ease-in-out infinite;
+}
+
+@keyframes scene-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
 }
 
 .choice kbd {
@@ -1484,10 +1550,14 @@ p {
 
 
 .log {
+  position: relative;
+  z-index: 1;
   flex: 1;
   min-height: 0;
   overflow-y: auto;
   padding: 32px clamp(16px, 4vw, 56px) 56px;
+  background: transparent;
+  scroll-behavior: smooth;
 }
 
 .log-col {
@@ -1528,8 +1598,19 @@ p {
 
 .entry {
   margin: 0 0 18px;
-  padding: 2px 0 2px 18px;
+  padding: 4px 0 4px 18px;
   border-left: 3px solid var(--border);
+  animation: rise 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes rise {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 .entry-text {
   color: var(--story);
@@ -1913,14 +1994,52 @@ p {
   background: #d0a94f;
 }
 .hero h1 {
+  font-family: var(--serif);
   margin-top: 16px;
-  font-size: clamp(40px, 5.2vw, 68px);
-  font-weight: 700;
+  font-size: clamp(42px, 5.5vw, 72px);
+  font-weight: 900;
   line-height: 1.05;
-  letter-spacing: -0.025em;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #f7f6f0;
+  text-shadow: 0 0 35px rgba(208, 169, 79, 0.25);
 }
 .hero h1 span {
-  color: #d0a94f;
+  background: linear-gradient(135deg, #fceec5 0%, #d0a94f 55%, #a87920 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+  filter: drop-shadow(0 0 25px rgba(208, 169, 79, 0.45));
+}
+
+.hero-start-btn {
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(208, 169, 79, 0.35);
+  transition: all 0.2s ease;
+}
+.hero-start-btn:hover:not(:disabled) {
+  box-shadow: 0 0 30px rgba(208, 169, 79, 0.6);
+  transform: translateY(-2px);
+}
+.hero-start-btn::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(60deg, transparent 30%, rgba(255, 255, 255, 0.4) 50%, transparent 70%);
+  transform: rotate(30deg) translateY(-100%);
+  animation: btn-shine 4s ease-in-out infinite;
+}
+@keyframes btn-shine {
+  0%, 65% {
+    transform: rotate(30deg) translateY(-100%);
+  }
+  100% {
+    transform: rotate(30deg) translateY(100%);
+  }
 }
 .hero-lead {
   margin-top: 20px;

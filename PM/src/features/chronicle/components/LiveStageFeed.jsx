@@ -92,6 +92,22 @@ const StageFx = () => {
   );
 };
 
+const AmbientScene = ({ char }) => {
+  let sceneClass = 'scene-blade';
+  if (!char.alive) {
+    sceneClass = 'scene-hatch red';
+  } else if ((char.heat || 0) >= 50 || (char.taboo || 0) >= 2) {
+    sceneClass = 'scene-hatch';
+  } else if ((char.resonance || 0) >= 40 || char.fateOmenId?.includes('star')) {
+    sceneClass = 'scene-star';
+  } else if (char.regionId === '11' || char.regionId === '23') {
+    sceneClass = 'scene-warp';
+  } else if (char.job === 'Syndicate') {
+    sceneClass = 'scene-kong';
+  }
+  return <div className={`scene on ${sceneClass}`} aria-hidden="true" />;
+};
+
 /* ---------- Decision docks ---------- */
 
 const MinorDock = ({ prompt, npcs, paused, onPick }) => {
@@ -392,6 +408,7 @@ export const LiveStageFeed = () => {
 
   return (
     <div className="stage">
+      <AmbientScene char={char} />
       <StageFx />
       <div className="log" ref={logRef}>
         <div className="log-col">

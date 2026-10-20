@@ -257,7 +257,7 @@ export const BirthSetupPanel = () => {
             </div>
           </details>
 
-          <button type="button" className="btn btn-primary btn-lg btn-block" disabled={spinning} onClick={() => launch(false)}>
+          <button type="button" className="btn btn-primary btn-lg btn-block hero-start-btn" disabled={spinning} onClick={() => launch(false)}>
             <Play size={17} />
             {spinning ? t('Đang quay thiên mệnh…', 'Rolling your omen…') : t('Quay thiên mệnh & chào đời', 'Roll your omen & be born')}
           </button>
