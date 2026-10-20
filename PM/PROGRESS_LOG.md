@@ -2,6 +2,7 @@
 
 Cập nhật: 20/10/2026, đợt 4 (xem [mục 8](#8-nhật-ký-thay-đổi))
 
+- Live Demo Vercel: [https://project-moon-life-five.vercel.app](https://project-moon-life-five.vercel.app)
 - Frontend: `D:\School\PM` (React 18, Vite 6, Zustand 5, Ant Design 6 cho modal/tooltip/thông báo, CSS thuần trong `src/index.css`)
 - Backend: `D:\School\PM_BE` (.NET 8 Minimal API, cổng 5080)
 - Tài liệu thế giới và hướng đi: [`UNIVERSE.md`](UNIVERSE.md)

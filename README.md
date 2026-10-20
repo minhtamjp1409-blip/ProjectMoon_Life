@@ -6,11 +6,20 @@
 </p>
 
 <p align="center">
+  <a href="https://project-moon-life-five.vercel.app" target="_blank">
+    <img src="https://img.shields.io/badge/Live%20Demo-project--moon--life--five.vercel.app-d4af37?style=for-the-badge&logo=vercel&logoColor=white" alt="Live Demo on Vercel" />
+  </a>
+</p>
+
+<p align="center">
   <img src="https://img.shields.io/badge/Frontend-React%2018%20%7C%20Vite%206-61dafb?style=flat-square" alt="React 18" />
   <img src="https://img.shields.io/badge/Backend-.NET%208%20Minimal%20API-512bd4?style=flat-square" alt=".NET 8" />
   <img src="https://img.shields.io/badge/Audio-Web%20Audio%20Synthesis-f59e0b?style=flat-square" alt="Web Audio" />
   <img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" alt="License" />
 </p>
+
+> 🌐 **Chơi trực tuyến ngay (Online Live Demo):** [https://project-moon-life-five.vercel.app](https://project-moon-life-five.vercel.app)  
+> *(Hỗ trợ đầy đủ PC và Mobile, tự động lưu trữ, không cần cài đặt phức tạp)*
 
 ---
 
