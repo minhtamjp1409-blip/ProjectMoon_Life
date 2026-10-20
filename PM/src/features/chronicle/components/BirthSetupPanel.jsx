@@ -13,44 +13,29 @@ import { CityBackdrop } from '../../../components/CityBackdrop';
 
 const PATHS = [
   {
-    kickerVi: 'Grade 9 → Color',
-    kickerEn: 'Grade 9 → Color',
-    titleVi: 'Fixer',
-    titleEn: 'Fixer',
-    descVi: 'Nhận request từ Office và Association, leo từng Grade, và nếu sống đủ lâu, được Hana trao một Color.',
-    descEn: 'Take requests from Offices and Associations, climb the Grades, and if you live long enough, earn a Color from Hana.'
+    kicker: 'Grade 9 → Color',
+    title: 'Fixer',
+    desc: 'Take contracts from Offices and Associations, climb the Grades, and if you live long enough, earn a Color from Hana.'
   },
   {
-    kickerVi: 'Thumb · Index · Middle · Ring',
-    kickerEn: 'Thumb · Index · Middle · Ring',
-    titleVi: 'The Five Fingers',
-    titleEn: 'The Five Fingers',
-    descVi: 'Lễ nghi của Thumb, Prescript của Index, Book of Vengeance của Middle. Mỗi Finger một luật chơi riêng.',
-    descEn: 'The Thumb’s etiquette, the Index’s Prescripts, the Middle’s Book of Vengeance. Every Finger plays by its own rules.'
+    kicker: 'Thumb · Index · Middle · Ring · Pinky',
+    title: 'The Five Fingers',
+    desc: 'The Thumb’s etiquette, the Index’s Prescripts, the Middle’s Book of Vengeance. Every Finger plays by its own rules.'
   },
   {
-    kickerVi: 'Feather của Wing',
-    kickerEn: 'A Wing’s Feather',
-    titleVi: 'Nhân viên Wing',
-    titleEn: 'Wing employee',
-    descVi: 'Sống trong Nest, làm việc cho một Singularity. An toàn hơn, cho tới khi Wing cần bạn biến mất.',
-    descEn: 'Live in a Nest and work for a Singularity. Safer, until the company needs you gone.'
+    kicker: 'A Wing’s Feather',
+    title: 'Wing Employee',
+    desc: 'Live in a Nest and work for a Singularity. Far safer than the streets, until the company decides you are expendable.'
   },
   {
-    kickerVi: 'Tres Association',
-    kickerEn: 'Tres Association',
-    titleVi: 'Workshop',
-    titleEn: 'Workshop',
-    descVi: 'Rèn vũ khí cho Fixer khắp The City, đặt tên cho tác phẩm của mình và để nó lại cho đời sau.',
-    descEn: 'Forge weapons for the City’s Fixers, name your masterpiece and leave it to the next generation.'
+    kicker: 'Tres Association',
+    title: 'Workshop Craftsman',
+    desc: 'Forge weapons and prosthetics for the City’s Fixers, patent your creations, and pass your masterpiece down.'
   },
   {
-    kickerVi: 'Giọng nói của Carmen',
-    kickerEn: 'Carmen’s voice',
-    titleVi: 'E.G.O hay Distortion',
-    titleEn: 'E.G.O or Distortion',
-    descVi: 'Khi tâm trí chạm đáy, bạn sẽ nghe thấy nó. Vượt qua để Effloresce, hoặc buông tay.',
-    descEn: 'When your mind hits bottom, you will hear it. Overcome it to Effloresce, or let go.'
+    kicker: 'Carmen’s Voice',
+    title: 'E.G.O or Distortion',
+    desc: 'When your psyche collapses, the Voice in the blinding sun calls. Stand firm to Effloresce, or surrender to Distortion.'
   }
 ];
 
@@ -110,80 +95,77 @@ export const BirthSetupPanel = () => {
       <section className="hero" aria-labelledby="home-title">
         <CityBackdrop />
         <div className="hero-copy">
-          <span className="hero-kicker">Project Moon · {t('Mô phỏng một đời người', 'A life simulation')}</span>
+          <span className="hero-kicker">PROJECT MOON // LIFE CHRONICLES</span>
           <h1 id="home-title">
             Born in <span>The City</span>
           </h1>
           <p className="hero-lead">
-            {t(
-              'Mỗi năm trôi qua trong 30 giây. Bạn lớn lên ở Nest hay Backstreets, thành Fixer, người của Syndicate hay Feather của Wing. Rồi bạn chết, và đời con tiếp nối.',
-              'Each year passes in 30 seconds. You grow up in a Nest or the Backstreets, become a Fixer, a Syndicate member or a Wing’s Feather. Then you die, and your heir carries on.'
-            )}
+            Each year passes in 30 seconds. Carve your destiny across the Nest or the Backstreets—rise as a Fixer, a Syndicate enforcer, or a Wing’s Feather. Perish, and pass down your legacy to the next generation.
           </p>
           <div className="hero-actions">
             <button type="button" className="btn btn-light" onClick={() => mapRef.current?.scrollIntoView({ behavior: 'smooth' })}>
               <MapPin size={17} />
-              {t('Chọn nơi sinh trên bản đồ', 'Pick a birthplace on the map')}
+              Pick Birthplace on Map
             </button>
             <button type="button" className="btn btn-light" onClick={() => navigate('/bloodline')}>
               <ScrollText size={17} />
-              {t('Xem gia phả', 'Open the bloodline')}
+              View Bloodline Archives
             </button>
           </div>
           <div className="hero-stats">
             <div>
               <b>{livesLived}</b>
-              <span>{t('kiếp đã sống', 'lives lived')}</span>
+              <span>Lives Lived</span>
             </div>
             <div>
               <b>#{highestGen}</b>
-              <span>{t('thế hệ xa nhất', 'furthest generation')}</span>
+              <span>Deepest Gen</span>
             </div>
             <div>
               <b>
                 {globalCodex.length}/{CODEX_RECORDS.length}
               </b>
-              <span>{t('thành tựu', 'milestones')}</span>
+              <span>Codex Milestones</span>
             </div>
           </div>
         </div>
 
         <div className="create">
           <div>
-            <h2>{t('Hồ sơ khai sinh', 'Birth record')}</h2>
-            <p className="create-sub">{t('Ô nào để trống, The City tự quyết.', 'Leave any field empty and The City decides.')}</p>
+            <h2>Birth Record // Identity Dossier</h2>
+            <p className="create-sub">Leave any field empty and The City decides.</p>
           </div>
 
           {savedRun && (
             <div className="resume">
               <div>
                 <b>
-                  {t('Kiếp đang dở', 'Life in progress')}: {savedRun.char.name}, {savedRun.char.age} {t('tuổi', 'yrs')}
+                  Life in progress: {savedRun.char.name}, {savedRun.char.age} yrs
                 </b>
                 <p className="muted" style={{ fontSize: 14, marginTop: 2 }}>
-                  {t('Lưu lúc', 'Saved')} {savedRun.savedAt ? new Date(savedRun.savedAt).toLocaleString(lang === 'en' ? 'en-GB' : 'vi-VN') : '?'}
+                  Saved {savedRun.savedAt ? new Date(savedRun.savedAt).toLocaleString('en-GB') : '?'}
                 </p>
               </div>
               <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                 <button type="button" className="btn btn-primary" onClick={resumeRun}>
                   <Play size={16} />
-                  {t('Chơi tiếp', 'Continue')}
+                  Resume Run
                 </button>
                 <button
                   type="button"
                   className="btn btn-ghost"
                   onClick={() =>
                     Modal.confirm({
-                      title: t(`Bỏ kiếp của ${savedRun.char.name}?`, `Abandon ${savedRun.char.name}'s life?`),
-                      content: t('Tiến trình này sẽ bị xóa và không lấy lại được.', 'This progress will be deleted for good.'),
-                      okText: t('Xóa', 'Delete'),
-                      cancelText: t('Giữ lại', 'Keep it'),
+                      title: `Abandon ${savedRun.char.name}'s life?`,
+                      content: 'This progress will be deleted for good and cannot be recovered.',
+                      okText: 'Delete',
+                      cancelText: 'Keep it',
                       okButtonProps: { danger: true },
                       onOk: abandonRun
                     })
                   }
                 >
-                  {t('Bỏ kiếp này', 'Abandon')}
+                  Abandon
                 </button>
               </div>
             </div>
@@ -191,61 +173,49 @@ export const BirthSetupPanel = () => {
 
           {pendingLegacy && (() => {
             const rel = pendingLegacy.successorRelation || (pendingLegacy.age < 14 ? 'sibling' : pendingLegacy.age < 18 ? 'companion' : pendingLegacy.hasChild ? 'child' : 'heir');
-            let headerVi = 'Tiếp nối huyết thống';
-            let headerEn = 'Continue the bloodline';
-            let descVi = `Con của ${pendingLegacy.name}, mất năm ${pendingLegacy.age} tuổi. Thừa kế 「${pendingLegacy.relic}」.`;
-            let descEn = `Child of ${pendingLegacy.name}, who died at ${pendingLegacy.age}. Inherits 「${pendingLegacy.relic}」.`;
-            let btnVi = `Chơi đời con của ${pendingLegacy.name}`;
-            let btnEn = `Play as ${pendingLegacy.name}'s child`;
+            let header = `Bloodline Succession · Generation #${pendingLegacy.generation + 1}`;
+            let desc = `Direct heir of ${pendingLegacy.name}, who died at age ${pendingLegacy.age}. Inherits 「${pendingLegacy.relic}」.`;
+            let btn = `Play as ${pendingLegacy.name}'s Heir`;
 
             if (rel === 'sibling') {
-              headerVi = 'Tiếp bước người thân';
-              headerEn = 'Carry the torch';
-              descVi = `${pendingLegacy.name} mất khi mới ${pendingLegacy.age} tuổi. Bạn là em ruột (hoặc đứa trẻ cùng xóm) nhặt lại 「${pendingLegacy.relic}」.`;
-              descEn = `${pendingLegacy.name} died young at age ${pendingLegacy.age}. You are a younger sibling (or local child) who found 「${pendingLegacy.relic}」.`;
-              btnVi = `Chơi đời em của ${pendingLegacy.name}`;
-              btnEn = `Play as ${pendingLegacy.name}'s sibling`;
+              header = `Legacy Heirloom · Generation #${pendingLegacy.generation + 1}`;
+              desc = `${pendingLegacy.name} died young at age ${pendingLegacy.age}. You are a younger sibling (or local child) who found 「${pendingLegacy.relic}」.`;
+              btn = `Play as ${pendingLegacy.name}'s Sibling`;
             } else if (rel === 'companion') {
-              headerVi = 'Kế thừa di vật';
-              headerEn = 'Inherit the legacy';
-              descVi = `${pendingLegacy.name} ngã xuống năm ${pendingLegacy.age} tuổi khi chưa kịp lập gia đình. Bạn tiếp bước mang theo 「${pendingLegacy.relic}」.`;
-              descEn = `${pendingLegacy.name} fell at age ${pendingLegacy.age} without a family. You carry on their 「${pendingLegacy.relic}」.`;
-              btnVi = `Kế thừa ý chí của ${pendingLegacy.name}`;
-              btnEn = `Carry on ${pendingLegacy.name}'s legacy`;
+              header = `Inherited Will · Generation #${pendingLegacy.generation + 1}`;
+              desc = `${pendingLegacy.name} fell at age ${pendingLegacy.age} before starting a family. You carry on their will and 「${pendingLegacy.relic}」.`;
+              btn = `Carry on ${pendingLegacy.name}'s Legacy`;
             } else if (rel === 'heir') {
-              headerVi = 'Kế thừa di vật';
-              headerEn = 'Inherit the relic';
-              descVi = `${pendingLegacy.name} qua đời năm ${pendingLegacy.age} tuổi mà không có con. Bạn là hậu bối tiếp nhận 「${pendingLegacy.relic}」.`;
-              descEn = `${pendingLegacy.name} died at age ${pendingLegacy.age} with no heir. You are the successor taking up 「${pendingLegacy.relic}」.`;
-              btnVi = `Chơi người kế thừa của ${pendingLegacy.name}`;
-              btnEn = `Play as ${pendingLegacy.name}'s successor`;
+              header = `Legacy Succession · Generation #${pendingLegacy.generation + 1}`;
+              desc = `${pendingLegacy.name} passed away at age ${pendingLegacy.age} with no children. You inherit their 「${pendingLegacy.relic}」.`;
+              btn = `Play as ${pendingLegacy.name}'s Successor`;
             }
 
             return (
               <div className="legacy">
                 <div>
                   <p style={{ fontWeight: 600 }}>
-                    {t(headerVi, headerEn)} · {t('thế hệ', 'generation')} #{pendingLegacy.generation + 1}
+                    {header}
                   </p>
                   <p className="muted" style={{ fontSize: 14, marginTop: 4 }}>
-                    {t(descVi, descEn)}
+                    {desc}
                   </p>
                   {pendingLegacy.hasVendetta && (
                     <p style={{ fontSize: 14, marginTop: 4, color: 'var(--bad)' }}>
-                      {t('Món nợ trong Book of Vengeance cũng được truyền lại.', 'The debt in the Book of Vengeance passes down too.')}
+                      The blood debt in the Book of Vengeance passes down as well.
                     </p>
                   )}
                 </div>
                 <button type="button" className="btn btn-block" disabled={spinning} onClick={() => launch(true)}>
                   <GitBranch size={16} />
-                  {t(btnVi, btnEn)}
+                  {btn}
                 </button>
               </div>
             );
           })()}
 
           <div className="field">
-            <label htmlFor="birth-name">{t('Tên nhân vật', 'Name')}</label>
+            <label htmlFor="birth-name">Identity / Name</label>
             <input
               id="birth-name"
               className="input"
@@ -256,24 +226,24 @@ export const BirthSetupPanel = () => {
           </div>
 
           <div className="field">
-            <label htmlFor="birth-region">{t('Nơi sinh', 'Birthplace')}</label>
+            <label htmlFor="birth-region">Birthplace / District</label>
             <select id="birth-region" className="select" value={selectedRegion} onChange={(e) => setConfigField('selectedRegion', e.target.value)}>
-              <option value="RANDOM">{t('Ngẫu nhiên theo dân số', 'Random, by population')}</option>
+              <option value="RANDOM">Random, weighted by population</option>
               {REGIONS.map((r) => (
                 <option key={r.id} value={r.id}>
-                  {regionLabel(r)} · {lang === 'en' ? r.aliasEn : r.aliasVi}
+                  {r.nameEn} · {r.aliasEn}
                 </option>
               ))}
             </select>
           </div>
 
           <details className="disclosure">
-            <summary>{t('Seed', 'Seed')}</summary>
+            <summary>+ Custom World Seed</summary>
             <div style={{ display: 'flex', gap: 8 }}>
               <input
                 className="input num"
                 aria-label="Seed"
-                placeholder={t('Tự sinh nếu để trống', 'Generated if empty')}
+                placeholder="Generated if empty"
                 value={customSeed}
                 onChange={(e) => setConfigField('customSeed', e.target.value)}
               />
@@ -282,7 +252,7 @@ export const BirthSetupPanel = () => {
                 className="btn"
                 style={{ height: 44 }}
                 onClick={() => setConfigField('customSeed', freshSeed())}
-                aria-label={t('Seed ngẫu nhiên', 'Random seed')}
+                aria-label="Random seed"
               >
                 <Dices size={16} />
               </button>
@@ -291,7 +261,7 @@ export const BirthSetupPanel = () => {
 
           <button type="button" className="btn btn-primary btn-lg btn-block hero-start-btn" disabled={spinning} onClick={() => launch(false)}>
             <Play size={17} />
-            {spinning ? t('Đang quay thiên mệnh…', 'Rolling your omen…') : t('Quay thiên mệnh & chào đời', 'Roll your omen & be born')}
+            {spinning ? 'Rolling Destiny…' : 'Roll Destiny & Enter The City'}
           </button>
         </div>
       </section>
@@ -300,17 +270,17 @@ export const BirthSetupPanel = () => {
       <section className="home-section" aria-labelledby="paths-title">
         <div className="home-section-head">
           <div>
-            <h2 id="paths-title">{t('Những con đường trong The City', 'Paths through The City')}</h2>
-            <p>{t('Bạn không chọn trước. Tuổi 18, cuộc đời sẽ đưa bạn tới ngã rẽ.', 'You don’t pick in advance. At 18, life brings you to the crossroads.')}</p>
+            <h2 id="paths-title">Paths Across The City</h2>
+            <p>You do not choose in advance. At age 18, life brings you to the crossroads.</p>
           </div>
         </div>
         <div className="paths">
           {PATHS.map((p) => (
-            <article className="path" key={p.titleEn}>
+            <article className="path" key={p.title}>
               <div className="path-text">
-                <small>{t(p.kickerVi, p.kickerEn)}</small>
-                <b>{t(p.titleVi, p.titleEn)}</b>
-                <p>{t(p.descVi, p.descEn)}</p>
+                <small>{p.kicker}</small>
+                <b>{p.title}</b>
+                <p>{p.desc}</p>
               </div>
             </article>
           ))}
@@ -321,17 +291,14 @@ export const BirthSetupPanel = () => {
       <section className="home-section" aria-labelledby="map-title" ref={mapRef}>
         <div className="home-section-head">
           <div>
-            <h2 id="map-title">{t('Nơi bạn cất tiếng khóc', 'Where you are born')}</h2>
+            <h2 id="map-title">Where You Are Born // District Matrix</h2>
             <p>
-              {t(
-                'Nơi sinh quyết định bạn lớn lên trong Nest hay Backstreets, bạn sống được bao lâu và ai sẽ để mắt tới bạn.',
-                'Your birthplace decides whether you grow up in a Nest or the Backstreets, how long you live and who notices you.'
-              )}
+              Your birthplace decides whether you grow up in a Nest or the Backstreets, your life expectancy, and who notices you.
             </p>
           </div>
           <button type="button" className={`btn ${selectedRegion === 'RANDOM' ? 'btn-primary' : ''}`} onClick={() => setConfigField('selectedRegion', 'RANDOM')}>
             <Dices size={16} />
-            {t('Để ngẫu nhiên', 'Leave it to chance')}
+            Random District
           </button>
         </div>
         <div className="birthplace">
@@ -340,24 +307,21 @@ export const BirthSetupPanel = () => {
               {region ? (
                 <>
                   <b>
-                    {regionLabel(region)} · {lang === 'en' ? region.aliasEn : region.aliasVi}
+                    {region.nameEn} · {region.aliasEn}
                   </b>
-                  <span>{lang === 'en' ? region.descEn : region.descVi}</span>
+                  <span>{region.descEn}</span>
                 </>
               ) : (
                 <>
-                  <b>{t('Ngẫu nhiên', 'Random')}</b>
+                  <b>Random District</b>
                   <span>
-                    {t(
-                      'Phần lớn người ta sinh ra ở Backstreets. Rất ít người được sinh trong Nest của The Head.',
-                      'Most people are born in the Backstreets. Very few are born in the Nests of The Head.'
-                    )}
+                    Most people are born in the Backstreets. Very few are born in the Nests of The Head.
                   </span>
                 </>
               )}
             </figcaption>
           </div>
-          <div className="districts" role="listbox" aria-label={t('Chọn nơi sinh', 'Choose a birthplace')}>
+          <div className="districts" role="listbox" aria-label="Choose a birthplace">
             {districts.map((r) => (
               <button
                 key={r.id}
@@ -368,19 +332,19 @@ export const BirthSetupPanel = () => {
                 onClick={() => setConfigField('selectedRegion', r.id)}
               >
                 <b>
-                  {regionLabel(r)}
+                  {r.nameEn}
                   <RegionMark r={r} t={t} />
                 </b>
-                <span>{lang === 'en' ? r.aliasEn : r.aliasVi}</span>
+                <span>{r.aliasEn}</span>
                 <div className="meters">
-                  <span title={t('An ninh', 'Safety')}>
-                    {t('An ninh', 'Safety')} {r.unmapped ? '?' : r.safety}
+                  <span title="Safety">
+                    Safety {r.unmapped ? '?' : r.safety}
                     <div className="bar">
                       <i style={{ width: r.unmapped ? 0 : `${r.safety * 10}%`, '--c': 'var(--s-health)' }} />
                     </div>
                   </span>
-                  <span title={t('Giàu có', 'Wealth')}>
-                    {t('Giàu có', 'Wealth')} {r.unmapped ? '?' : r.wealth}
+                  <span title="Wealth">
+                    Wealth {r.unmapped ? '?' : r.wealth}
                     <div className="bar">
                       <i style={{ width: r.unmapped ? 0 : `${r.wealth * 10}%`, '--c': 'var(--s-wealth)' }} />
                     </div>
@@ -396,8 +360,8 @@ export const BirthSetupPanel = () => {
       <section className="home-section" aria-labelledby="omens-title">
         <div className="home-section-head">
           <div>
-            <h2 id="omens-title">{t('Thiên mệnh lúc chào đời', 'The omen at your birth')}</h2>
-            <p>{t('Một trong sáu điềm sẽ được quay khi bạn chào đời. Nó đổi chỉ số khởi đầu và loại chuyện tìm đến bạn.', 'One of six omens is rolled at birth. It shifts your starting stats and the kind of trouble that finds you.')}</p>
+            <h2 id="omens-title">Natal Fate Omens</h2>
+            <p>One of six omens is rolled upon birth. It shifts your initial stats, karma threads, and the troubles that find you.</p>
           </div>
         </div>
         <div className="omens">
@@ -408,9 +372,9 @@ export const BirthSetupPanel = () => {
                 <span>{Math.round((o.chanceWeight / omenTotal) * 100)}%</span>
               </div>
               <span className="muted" style={{ fontSize: 14, fontWeight: 500 }}>
-                {lang === 'en' ? `${o.rarityEn} · ${o.tagEn}` : `${o.rarityVi} · ${o.tagVi}`}
+                {`${o.rarityEn} · ${o.tagEn}`}
               </span>
-              <p>{lang === 'en' ? o.descEn : o.descVi}</p>
+              <p>{o.descEn}</p>
             </article>
           ))}
         </div>
@@ -420,29 +384,29 @@ export const BirthSetupPanel = () => {
       <section className="home-section" aria-labelledby="memorial-title">
         <div className="home-section-head">
           <div>
-            <h2 id="memorial-title">{t('Đài tưởng niệm', 'Memorial')}</h2>
-            <p>{t('Những người đã sống trước bạn.', 'Those who lived before you.')}</p>
+            <h2 id="memorial-title">Memorial of Fallen Lives</h2>
+            <p>Those who walked before you in The City.</p>
           </div>
           {pastLives.length > 0 && (
             <button type="button" className="btn" onClick={() => navigate('/bloodline')}>
-              {t(`Xem cả ${pastLives.length} kiếp`, `View all ${pastLives.length}`)}
+              {`View All ${pastLives.length} Lives`}
             </button>
           )}
         </div>
         {pastLives.length === 0 ? (
-          <p className="empty">{t('Chưa ai nằm lại đây. Kiếp sống đầu tiên của bạn sẽ là người đầu tiên.', 'No one rests here yet. Your first life will be the first.')}</p>
+          <p className="empty">No one rests here yet. Your first life will be the first inscription.</p>
         ) : (
           <div className="memorial">
             {pastLives.slice(0, 6).map((life, idx) => (
               <article className="tomb" key={`${life.seed}_${idx}`}>
                 <span className="tomb-age">
                   {life.age}
-                  <small>{t('tuổi', 'yrs')}</small>
+                  <small>yrs</small>
                 </span>
                 <b>
                   {life.name} <span className="muted num" style={{ fontWeight: 400, fontSize: 14 }}>· #{life.generation}</span>
                 </b>
-                <p>{lang === 'en' ? life.deathCauseEn || life.deathCauseVi : life.deathCauseVi}</p>
+                <p>{life.deathCauseEn || life.deathCauseVi}</p>
               </article>
             ))}
           </div>
