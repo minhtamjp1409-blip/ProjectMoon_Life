@@ -26,6 +26,9 @@ export default defineConfig({
     host: true,
     headers: {
       'Cache-Control': 'no-store'
+    },
+    watch: {
+      ignored: ['**/Data/**', '**/scratch/**', '**/*.md', '**/*.log']
     }
   }
 });
