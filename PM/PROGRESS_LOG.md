@@ -1,6 +1,6 @@
 # The City Chronicles: tiến trình dự án
 
-Cập nhật: 20/10/2026, đợt 3 (xem [mục 8](#8-nhật-ký-thay-đổi))
+Cập nhật: 20/10/2026, đợt 4 (xem [mục 8](#8-nhật-ký-thay-đổi))
 
 - Frontend: `D:\School\PM` (React 18, Vite 6, Zustand 5, Ant Design 6 cho modal/tooltip/thông báo, CSS thuần trong `src/index.css`)
 - Backend: `D:\School\PM_BE` (.NET 8 Minimal API, cổng 5080)
@@ -62,9 +62,15 @@ Cuối năm, engine tính thu nhập trừ chi tiêu theo nghề và nơi ở, v
 - **Theo hoàn cảnh**: chuyện riêng của District được ưu tiên ×2,6; sau khi biến dạng thành Distortion, chuyện của Distortion được ưu tiên ×6 để kiếp đó không trôi về chuyện thường ngày.
 - Mỗi lựa chọn của director được ghi vào Bản ghi chỉ lệnh kèm lý do bằng lời.
 
-### 2.4. Người trong đời bạn
+### 2.4. Người trong đời bạn và kế thừa huyết thống
 
-Bạn thuở nhỏ (tạo lúc sinh), người thầy, đối thủ, người thương, bạn đời, cộng sự, con. Mỗi người có tên, nét tính cách, độ gắn bó, và trạng thái (sống, chết, mất tích, đã rời bỏ bạn). Họ hiện trong hồ sơ nhân vật. Người thương có thể trở thành bạn đời; khi sự kiện cưới diễn ra, chính người đó là người bạn cưới.
+Bạn thuở nhỏ (tạo lúc sinh), người thầy, đối thủ, người thương, bạn đời, cộng sự, con, cha/mẹ bảo hộ. Mỗi người có tên, nét tính cách, độ gắn bó, và trạng thái (sống, chết, mất tích, đã rời bỏ bạn). Họ hiện trong hồ sơ nhân vật. Người thương có thể trở thành bạn đời; khi sự kiện cưới diễn ra, chính người đó là người bạn cưới.
+
+**Phụ huynh bảo hộ & Kế thừa thế hệ sau (Succession System)**:
+- **Ngữ cảnh sinh nở hợp lý**: Nhân vật chết non (dưới 16 tuổi) không thể có con.
+- **Tiếp quản khi cha mẹ mất**: Khi chuyển giao sang nhân vật con đời kế tiếp, khắc phục triệt để nghịch lý "cha mẹ 40 tuổi qua đời để lại con 18 tuổi nhưng con lại bắt đầu chơi từ 0 tuổi với cha mẹ đã chết". Cung cấp 2 lựa chọn trải nghiệm tại `BirthSetupPanel.jsx`:
+  1. *Khởi đầu từ 0 tuổi (Living Parent Mentorship)*: Người cha/mẹ quá cố vẫn còn sống trong hồ sơ (`npcs.parent`), che chở, chu cấp chi phí sinh hoạt, tăng sức đề kháng và giảm tỉ lệ tử vong tuổi ấu thơ. Đến đúng năm người con đạt số tuổi mà cha mẹ qua đời trong lịch sử (`char.age === deathAgeInChildLife`), sự kiện bước ngoặt lịch sử `csq_parent_historic_passing` ("Bóng Lưng Cuối Cùng") sẽ kích hoạt, tái hiện lại sự ra đi của bậc tiền bối và chính thức chuyển giao toàn bộ di sản/vết sẹo/Ahn.
+  2. *Tiếp quản ở tuổi 18 (Take Over at Age 18)*: Bỏ qua giai đoạn thơ ấu được bảo bọc, lập tức bước vào The City với tư cách Fixer/Cư dân trưởng thành độc lập, kế thừa trọn vẹn di sản.
 
 ### 2.5. Hiển thị thay đổi
 
@@ -73,12 +79,13 @@ Bạn thuở nhỏ (tạo lúc sinh), người thầy, đối thủ, người th
 - Thanh chỉ số trong hồ sơ nhấp sáng và nổi số khi thay đổi.
 - Hiệu ứng toàn sân khấu cho cái chết, E.G.O, Distortion, mất người thân, bước ngoặt, hiểm họa, tiếng vọng nhân quả. Tất cả tôn trọng `prefers-reduced-motion`.
 
-### 2.6. Lưu và chơi tiếp
+### 2.6. Lưu và chơi tiếp (Kiến trúc Dual-Save)
 
 - Tự lưu sau mỗi thay đổi (gộp trong 1,2 giây), khi đóng tab, và khi bấm Lưu.
 - Nút Về trang chủ giữ tiến trình; trang chủ hiện thẻ "Kiếp đang dở" với nút Chơi tiếp.
 - Bắt đầu kiếp mới khi đang chơi thì phải xác nhận.
 - Tiến trình lưu ở `localStorage` và ở backend (`/api/state/main`) nếu backend đang chạy.
+- **Không cần cơ sở dữ liệu SQL bên ngoài**: Hệ thống tự động ghi nhớ toàn diện qua kiến trúc Dual-Save: Client lưu trữ tức thì bằng trình duyệt (`localStorage`), Backend .NET 8 ghi nền nguyên tử xuống file JSON (`city_archive.json` và `run_state.json`) với cơ chế đổi tên file tạm `.tmp` và bản backup snapshot `.bad`. Dữ liệu an toàn tuyệt đối chống sập nguồn hay tắt đột ngột mà không đòi hỏi người dùng phải cài đặt bất kỳ hệ quản trị SQL (MySQL, Postgres, SQL Server) phức tạp nào.
 
 ### 2.7. District và tuyến có chuyện riêng
 
@@ -93,6 +100,27 @@ Bạn thuở nhỏ (tạo lúc sinh), người thầy, đối thủ, người th
 E và O mang nhãn "Phóng tác", Z mang nhãn "Không có trên bản đồ" (`src/components/RegionMark.jsx`), ở bản đồ chọn nơi sinh và trong Từ điển.
 
 **Sau Distortion**: khi buông theo Carmen, mỗi năm Heat +6 (Hana giữ hồ sơ mở) và Network −2. Có 5 dòng thường ngày và 5 sự kiện riêng: người bạn tìm đến, hai Fixer nhận request về bạn, căn nhà cũ, cơn đói, giọng nói quay lại. Phục kích khi Heat cao là một đội Fixer của Hana; chết vì vết thương thì được ghi là bị xử lý như một Distortion (`woundDeath` trong `gameEngine.js`). Trong mô phỏng, kiếp biến dạng ở tuổi 20 sống thêm trung vị 12 năm.
+
+### 2.8. Cơ chế chống trùng lặp sự kiện và LRU Fallback
+
+- **Rút ngắn bộ đệm cấm lặp**: Giảm `RECENT_LIMIT` từ 40 xuống 16 giúp giải phóng tài nguyên sự kiện cho các giai đoạn tuổi hẹp (nhất là 0–5 tuổi), ngăn chặn hiện tượng nghẽn pool.
+- **Vòng xoay cứu nguy LRU (Least-Recently-Used)**: Khi pool ứng viên đủ điều kiện bị cạn do bộ đệm cấm lặp, engine không chọn ngẫu nhiên thiếu kiểm soát mà tự động tìm sự kiện xuất hiện xa nhất trong quá khứ (`lastIndexOf` nhỏ nhất) để đưa trở lại luồng chơi.
+- **Deduplication đơn năm tuyệt đối**: Tại `planYear` và `syncPlanWithBackend`, mọi sự kiện (daily, minor, request) trong 4 mùa của cùng một năm phải có ID độc nhất; không bao giờ xảy ra tình trạng 2 mùa cùng năm trùng sự kiện.
+- **Bổ sung kho sự kiện tuổi thơ**: Thêm 15 dòng thường ngày ấu thơ mới (`src/data/lifeDailies.js`) bám sát đời sống The City.
+- **Kiểm thử quy mô lớn**: Chạy mô phỏng stress-test qua 100 kiếp nhân vật liên tiếp (6.000 năm đời sống, 24.000 slot mùa) $\implies$ **0 trùng lặp nội năm** (0 intra-year duplicates) và phân bổ sự kiện cân bằng, tự nhiên.
+
+### 2.9. Logo & Bộ nhận diện thương hiệu Project Moon
+
+- **Logo & Favicon Vector Bespoke**: Biểu tượng thương hiệu độc quyền phản ánh bản chất của thế giới Project Moon: Vầng trăng khuyết vàng kim uy nghiêm (`#d4af37`), tháp kiến trúc District 1 vươn thẳng sắc lạnh, và tâm điểm Singularity đỏ thẫm rực cháy (`#ef4444`).
+- Tích hợp biểu tượng vector sắc nét tại `public/favicon.svg` và component `BrandMark` đồng bộ tại `src/layouts/Sidebar.jsx` và `src/layouts/Header.jsx`.
+- **Trang chủ chuẩn thẩm mỹ Project Moon**: Tái cấu trúc giao diện trang chủ (`BirthSetupPanel.jsx`) với tông tiếng Anh quân sự, tối giản và lạnh lùng (Hero Dossier, Sector Records, Legacy Ledger), giữ trọn vẹn phong thái đặc trưng của series game.
+
+### 2.10. Quy chuẩn Lore & Ngữ thái (Anti-Slop)
+
+- **Cấm dịch gượng gạo danh xưng thế giới**: Luôn giữ nguyên thuật ngữ gốc của vũ trụ Project Moon (`The City`, `Nest`, `Wing`, `Corp`, `Backstreets`, `Fixer`, `Association`, `Workshop`, `Syndicate`, `Ahn`, `Outskirts`, `Ruins`, `Singularity`, `Distortion`, `E.G.O`); tuyệt đối không dùng "Đô Thành", "đại đô thị", "phố ngầm".
+- **Sự kiện Canto**: Các mốc sự kiện Canto đóng vai trò làm giàu bối cảnh thế giới (công nghệ cánh, biến cố khói bụi, tàn dư chiến tranh), không gò ép tuyến tính hay bắt buộc nhân vật phải tham gia trực tiếp.
+- **Hình tượng Carmen chuẩn xác**: Carmen luôn xuất hiện dưới ánh mặt trời rực rỡ, thiêu đốt và ấm áp huyền ảo (The Scorching Sun), không phải ánh trăng đêm.
+- **Cân bằng biến dị**: E.G.O và Distortion giữ độ hiếm cao tột bậc; tích hợp hệ thống 5 năng lực tâm trí Disco Psyche (Logic, Empathy, Volition, Inland Empire, Half Light) thể hiện sự giằng xé nội tâm khi đối diện Carmen.
 
 ---
 
@@ -175,6 +203,8 @@ Trong chữ: `{name}`, `{friend}`, `{mentor}`, `{rival}`, `{lover}`, `{partner}`
 
 - Build production (`vite build`) và backend (`dotnet build -c Release`): không lỗi.
 - Mô phỏng không giao diện: 200 kiếp ngẫu nhiên 0 lỗi, 200 mở đầu khác nhau, 89 sự kiện nhỏ được chạm tới. 150 kiếp ép sinh ở E, O, Z: 0 lỗi, cả 9 sự kiện riêng đều xuất hiện. 150 kiếp ép Distortion ở tuổi 20: 0 lỗi, sống thêm trung vị 12 năm, cả 5 sự kiện Distortion đều xuất hiện.
+- Kiểm tra chống trùng lặp sự kiện: 100 kiếp nhân vật liên tiếp (6.000 năm đời sống, 24.000 slot mùa) đạt 0 trùng lặp nội năm (`scratch/check_duplication.js`).
+- Kiểm tra kế thừa huyết thống: Cả 2 chế độ kế thừa (bắt đầu tuổi 0 với phụ huynh bảo hộ và nhảy cóc tuổi 18 tiếp quản ngay) đều chạy trơn tru, logic quan hệ và biến cố `csq_parent_historic_passing` kích hoạt đúng năm (`scratch/test_succession_modes.js`).
 - Bấm thử tự động trong Chrome, theme tối và sáng, 1440px và 390px: 184 PASS, 0 FAIL (từng nút, nhãn của District 5, 15, 26, phím tắt, lưu, chơi tiếp, điều hướng, tìm kiếm, lọc, ngôn ngữ, đổi theme, không cuộn ngang, không lỗi console).
 - Gọi thử mọi endpoint backend, kể cả slot sai (400), slot không có (404), payload thiếu trường, JSON hỏng (400); kiểm tra file trên đĩa sau khi ghi sau 1 giây.
 - Bundle chia thành: phần chung khoảng 122 KB, React 182 KB, antd 365 KB, dữ liệu truyện 300 KB, mỗi trang phụ 3 đến 9 KB tải khi mở. Không còn chunk nào quá 500 KB.
@@ -190,6 +220,34 @@ Trong chữ: `{name}`, `{friend}`, `{mentor}`, `{rival}`, `{lover}`, `{partner}`
 ---
 
 ## 8. Nhật ký thay đổi
+
+### 20/10/2026, đợt 4
+
+- **Khắc phục triệt để lặp sự kiện (Anti-Duplication Engine)**:
+  - Giảm bộ đệm cấm lặp `RECENT_LIMIT` từ 40 xuống 16 để tránh cạn kiệt pool sự kiện ở các lứa tuổi có tập sự kiện hẹp (đặc biệt giai đoạn 0–5 tuổi).
+  - Bổ sung cơ chế chọn lùi LRU (`lastIndexOf` nhỏ nhất trong lịch sử khi cạn pool) cho cả `eligibleDailies` và `eligibleMinors` trong `src/engine/yearPlanner.js`, chấm dứt việc rơi vào fallback ngẫu nhiên không kiểm soát.
+  - Áp dụng kiểm tra deduplication đơn năm tuyệt đối tại `planYear` và `syncPlanWithBackend`: Mỗi event ID chỉ xuất hiện tối đa 1 lần trong 4 mùa của cùng một năm.
+  - Mở rộng pool sự kiện tuổi thơ thêm 15 dòng thường ngày mới (`src/data/lifeDailies.js`).
+  - Kiểm thử mô phỏng stress-test qua 100 kiếp nhân vật (6.000 năm đời sống, 24.000 slot mùa): Đạt **0 trùng lặp nội năm** (0 intra-year duplicates) và phân bổ sự kiện tự nhiên.
+- **Logo & Favicon Vector Bespoke Project Moon**:
+  - Tạo biểu tượng thương hiệu vector độc quyền: Vầng trăng khuyết vàng kim (`#d4af37`), ngọn tháp nhọn District 1 và tâm điểm Singularity đỏ thẫm (`#ef4444`).
+  - Thêm `public/favicon.svg` và tích hợp `BrandMark` đồng bộ tại `src/layouts/Sidebar.jsx`, `src/layouts/Header.jsx`.
+- **Rà soát Lore & Chuẩn hóa Thuật ngữ (Anti-Slop & Lore Audit)**:
+  - Tuyệt đối giữ nguyên thuật ngữ gốc thế giới trong toàn bộ codebase: Cấm dịch gượng gạo sang tiếng Hán-Việt lai căng ("Đô Thành", "đại đô thị", "phố ngầm", "điểm dị biệt"). Giữ nguyên `The City`, `Nest`, `Wing`, `Corp`, `Backstreets`, `Fixer`, `Association`, `Workshop`, `Syndicate`, `Ahn`, `Outskirts`, `Ruins`, `Singularity`, `Distortion`, `E.G.O`.
+  - Cập nhật hình tượng Carmen: Luôn xuất hiện dưới ánh mặt trời rực lửa thiêu đốt và ấm áp huyền ảo (The Scorching Sun), sửa các đoạn nhầm lẫn với ánh trăng đêm.
+  - Tích hợp 5 năng lực tâm trí Disco Psyche (Logic, Empathy, Volition, Inland Empire, Half Light) phản ánh nội tâm khi đối diện biến dị. Cân bằng E.G.O và Distortion ở độ hiếm tột bậc.
+  - Các mốc sự kiện Canto được xác định là chất liệu bối cảnh làm giàu thế giới, không áp đặt tuyến tính lên mạch chơi.
+- **Hệ thống Phụ huynh bảo hộ & Kế thừa thời gian thực (Living Parent Mentorship & Succession)**:
+  - Khắc phục ngữ cảnh sinh nở: Nhân vật chết non (dưới 16 tuổi) không thể có con.
+  - Khắc phục nghịch lý kế thừa: Khi cha mẹ qua đời lúc 40 tuổi có con 18 tuổi, người chơi khi chọn chơi nhân vật con có 2 tùy chọn trải nghiệm:
+    1. *Khởi đầu từ 0 tuổi (Living Parent Mentorship)*: Cha mẹ tiền nhiệm còn sống trong hồ sơ (`npcs.parent`), che chở, chu cấp chi phí sinh hoạt, tăng sức đề kháng ấu thơ. Đúng năm người con đạt độ tuổi cha mẹ qua đời trong lịch sử (`char.age === deathAgeInChildLife`), kích hoạt biến cố bước ngoặt `csq_parent_historic_passing` ("Bóng Lưng Cuối Cùng") tái hiện sự ra đi của cha mẹ và chuyển giao di sản.
+    2. *Tiếp quản ở tuổi 18 (Take Over at Age 18)*: Lập tức bắt đầu ở tuổi trưởng thành với toàn bộ di sản được kế thừa.
+- **Giao diện Trang chủ (Home Screen UI Overhaul)**:
+  - Chuyển đổi ngôn ngữ chính của trang chủ (`src/components/BirthSetupPanel.jsx`) sang tiếng Anh Project Moon phong cách tối giản, lạnh lùng (Hero Dossier, Sector Records, Legacy Ledger), đồng bộ thẩm mỹ với các tựa game gốc của Project Moon.
+- **Những điều cốt lõi đáng lưu ý (Architecture Notes & Caveats)**:
+  1. *Không cần SQL bên ngoài*: Hệ thống sử dụng kiến trúc Dual-Save (Client `localStorage` + Backend Atomic JSON Write-Behind) đã hoàn chỉnh và an toàn tuyệt đối, không cần cài đặt SQL Server/MySQL/PostgreSQL.
+  2. *Bộ đệm LRU sự kiện*: Không bao giờ làm nghẽn pool nhờ cơ chế chọn lùi theo lịch sử xuất hiện.
+  3. *Quy tắc thuật ngữ*: Bất kỳ bổ sung nội dung nào trong tương lai phải bảo tồn nguyên vẹn các danh từ thế giới của Project Moon.
 
 ### 20/10/2026, đợt 3
 
