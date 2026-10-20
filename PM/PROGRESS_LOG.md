@@ -1,6 +1,6 @@
 # The City Chronicles: tiến trình dự án
 
-Cập nhật: 20/10/2026, đợt 8 (xem [mục 8](#8-nhật-ký-thay-đổi))
+Cập nhật: 20/10/2026, đợt 9 (xem [mục 8](#8-nhật-ký-thay-đổi))
 
 - Live Demo Vercel: [https://project-moon-life-five.vercel.app](https://project-moon-life-five.vercel.app)
 - Tài liệu PDF chính thức: [THE_CITY_CHRONICLES_DOCUMENTATION.pdf](https://project-moon-life-five.vercel.app/THE_CITY_CHRONICLES_DOCUMENTATION.pdf)
@@ -222,6 +222,13 @@ Trong chữ: `{name}`, `{friend}`, `{mentor}`, `{rival}`, `{lover}`, `{partner}`
 ---
 
 ## 8. Nhật ký thay đổi
+
+### 20/10/2026, đợt 9
+
+- Chuyển màn Home sang tiếng Anh theo yêu cầu, gồm tiêu đề, khai sinh, bản lưu, xác nhận bỏ tiến trình/di sản, thông tin District, điềm báo và điều hướng desktop/mobile.
+- Home dùng ngôn ngữ giao diện riêng, vì vậy vẫn hiện tiếng Anh khi trình duyệt đã lưu VI hoặc VI+EN. Bộ chọn ngôn ngữ tiếp tục điều khiển phần truyện và các trang lưu trữ.
+- Bổ sung thuộc tính `lang` cho Home và điều hướng; sửa khoảng trắng trong tiêu đề mobile và số ít/số nhiều của các nhãn thống kê tiếng Anh.
+- Kiểm tra: build thành công; 80 bản ghi CDP gồm 12 trường hợp Home theo 3 lựa chọn ngôn ngữ, 2 theme, 2 kích thước. Lượt kiểm tra Home riêng sau chỉnh câu chữ cũng đạt 12/12. Inspector 0 FAIL, 3 WARN đã giải thích trong [báo cáo](UI_REDESIGN_REPORT.md).
 
 ### 20/10/2026, đợt 8
 

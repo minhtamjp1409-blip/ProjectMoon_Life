@@ -93,7 +93,7 @@ function DistrictDial({ selected, onSelect, t }) {
 }
 
 export const BirthSetupPanel = () => {
-  const { t, lang } = useT();
+  const { t } = useT('en');
   const navigate = useNavigate();
   const customName = useGameStore((s) => s.customName);
   const customSeed = useGameStore((s) => s.customSeed);
@@ -122,6 +122,7 @@ export const BirthSetupPanel = () => {
     `${r.nameEn} ${r.aliasEn} ${r.aliasVi}`.toLowerCase().includes(search.toLowerCase().trim())
   );
   const omenTotal = FATE_OMENS.reduce((sum, o) => sum + o.chanceWeight, 0);
+  const highestGeneration = Math.max(1, ...pastLives.map((life) => life.generation || 1));
   const relation =
     pendingLegacy?.successorRelation ||
     (pendingLegacy?.age < 14
@@ -146,14 +147,14 @@ export const BirthSetupPanel = () => {
     });
 
   return (
-    <div className="city-home">
+    <div className="city-home" lang="en">
       <section className="home-opening" aria-labelledby="home-title">
         <div className="opening-story">
           <p className="opening-context">
             {t('Một câu chuyện trong vũ trụ Project Moon', 'A life in the Project Moon universe')}
           </p>
           <h1 id="home-title">
-            {t('Một đời giữa', 'A life in')}
+            {t('Một đời giữa', 'A life in')}{' '}
             <br />
             The City.
           </h1>
@@ -343,18 +344,18 @@ export const BirthSetupPanel = () => {
       <div className="archive-strip" aria-label={t('Dấu chân của bạn', 'Your record')}>
         <div>
           <b>{pastLives.length}</b>
-          <span>{t('kiếp đã sống', 'lives remembered')}</span>
+          <span>{t('kiếp đã sống', pastLives.length === 1 ? 'life remembered' : 'lives remembered')}</span>
         </div>
         <div>
-          <b>{Math.max(1, ...pastLives.map((l) => l.generation || 1))}</b>
-          <span>{t('thế hệ', 'generations')}</span>
+          <b>{highestGeneration}</b>
+          <span>{t('thế hệ', highestGeneration === 1 ? 'generation' : 'generations')}</span>
         </div>
         <div>
           <b>
             {globalCodex.length}
             <small> / {CODEX_RECORDS.length}</small>
           </b>
-          <span>{t('thành tựu', 'codex records')}</span>
+          <span>{t('thành tựu', globalCodex.length === 1 ? 'codex record' : 'codex records')}</span>
         </div>
         <button onClick={() => navigate('/bloodline')}>
           {t('Mở huyết thống', 'Open bloodline')}

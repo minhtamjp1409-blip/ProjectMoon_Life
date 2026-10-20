@@ -10,6 +10,8 @@ Hướng thiết kế: **True-black flat**, seed **375464302**, không rút lạ
 
 Điểm riêng là vòng chọn 26 District nối trực tiếp với cấu hình nơi sinh. Đây là chỉ mục, không phải bản đồ địa lý. Logo SVG cũ, tài liệu PDF và dữ liệu game thật được giữ làm nguồn. Không tạo ảnh, nhân vật quảng cáo, lời chứng thực hay số liệu người dùng.
 
+Home dùng tiếng Anh theo yêu cầu bổ sung của người dùng, gồm điều hướng, form, thông tin nơi sinh, điềm báo và hộp xác nhận. Trường hợp đã lưu VI hoặc VI+EN vẫn mở Home bằng tiếng Anh. Ngôn ngữ truyện do người chơi chọn được giữ riêng.
+
 | Màn hình | Câu hỏi chính | Cách thể hiện |
 | --- | --- | --- |
 | Khai sinh | Bắt đầu hoặc tiếp tục cuộc đời nào? | Tên, nơi sinh, seed và hành động chính trong hồ sơ; tiếp tục bản lưu khi có |
@@ -33,7 +35,8 @@ Hướng thiết kế: **True-black flat**, seed **375464302**, không rút lạ
 ## Kiểm tra đã chạy
 
 - `npm run build`: thành công, 3507 module; mọi JS chunk dưới 500 kB trước gzip.
-- Chrome headless qua CDP: **68 bản ghi kiểm tra, 0 lỗi assertion, 0 ngoại lệ JavaScript ngoài dự kiến**. Chi tiết: [kết quả kiểm tra](anti-slop/ui-redesign-checks-2026-10-20.json).
+- Chrome headless qua CDP: **80 bản ghi kiểm tra, 0 lỗi assertion, 0 ngoại lệ JavaScript ngoài dự kiến**. Chi tiết: [kết quả kiểm tra](anti-slop/ui-redesign-checks-2026-10-20.json).
+- 12 trường hợp Home tiếng Anh: lựa chọn ngôn ngữ truyện VI/VI+EN/EN, hai theme và hai chiều rộng desktop/phone. Kiểm tra tiêu đề, form, điều hướng, nội dung tiếng Anh và không tràn ngang. Chạy lại riêng 12 trường hợp này sau chỉnh số ít/số nhiều và khoảng trắng.
 - Kiểm tra trang chủ ở 1440, 768, 390, 320, 844 ngang và 1024px; các trang phụ ở desktop/phone và hai theme. Không có cuộn ngang toàn trang trong các tình huống đã chạy.
 - Chọn 26 sector District, chọn Outskirts, tìm District, tạo seed, mở điềm báo, bắt đầu chơi, lưu, về trang chủ và tiếp tục cùng seed.
 - Điều hướng cả năm route qua nút thật, đổi English, lọc thành tựu, mở chi tiết District bằng Enter, mở/đóng trình biên tập.
@@ -88,7 +91,7 @@ Phạm vi gate là giao diện và nội dung sửa trong đợt này. PASS dư�
 - R-32 PASS: focus-visible trong CSS; District dùng Enter/Space, sheet bắt Escape và phục hồi focus, tab dossier có phím mũi tên.
 - R-33 PASS: thay đổi nằm trong React/CSS source; script CDP chỉ phục vụ kiểm tra.
 - R-34 PASS: ảnh và kiểm tra route trên hai theme; token của modal, tooltip và notification cùng hệ màu.
-- R-35 PASS: đã build và ghi lại click-through các nhóm tương tác được sửa, 68 bản ghi kiểm tra; không bàn giao chỉ từ source tĩnh.
+- R-35 PASS: đã build và ghi lại click-through các nhóm tương tác được sửa, 80 bản ghi kiểm tra; không bàn giao chỉ từ source tĩnh.
 - R-36 PASS: không viết tuyên bố mới về bảo mật, khách hàng hay hiệu năng sản phẩm.
 - R-37 PASS: hướng thiết kế và ENERGY 2 / RHYTHM 2 / MOTION 1 được khai báo trong DESIGN.md.
 - R-38 PASS: không thêm dữ liệu thương mại giả; dữ liệu mô phỏng QA chỉ nằm trong profile thử.
@@ -126,7 +129,7 @@ Phạm vi gate là giao diện và nội dung sửa trong đợt này. PASS dư�
 - C-5 PASS: số liệu hiển thị lấy từ game, không bịa lời nhận xét hay thành tích người dùng.
 - R-05 PASS: bố cục là hồ sơ game với dữ liệu và điều khiển thật, không có pricing/logo bar/how-it-works mẫu.
 - R-11 PASS: button/input radius nhỏ; vòng District chỉ dùng vì chọn sector; badge có góc riêng.
-- R-15 PASS: CTA nêu việc cụ thể, như Bước vào The City, Viết tiếp câu chuyện và Bỏ di sản.
+- R-15 PASS: CTA nêu việc cụ thể, như Enter The City, Continue this life và Discard heirloom.
 - R-16 PASS: không thêm quảng cáo AI hoặc buzzword vào copy.
 - R-20 PASS: District A-Z, dấu trăng, hồ sơ một đời và lựa chọn hậu quả tạo đặc điểm gắn với game.
 - R-21 PASS: giữ lựa chọn theme của sản phẩm; cả sáng và tối đều hoàn thiện.

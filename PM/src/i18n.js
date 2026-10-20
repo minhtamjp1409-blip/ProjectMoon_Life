@@ -6,8 +6,9 @@ export function pick(lang, vi, en) {
   return vi || en;
 }
 
-export function useT() {
-  const lang = useThemeStore((s) => s.lang);
+export function useT(languageOverride) {
+  const preferredLang = useThemeStore((s) => s.lang);
+  const lang = languageOverride || preferredLang;
   const t = (vi, en) => pick(lang, vi, en);
   return { t, lang, bilingual: lang === 'bi' };
 }

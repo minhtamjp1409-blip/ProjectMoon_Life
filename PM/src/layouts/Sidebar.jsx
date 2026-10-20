@@ -79,16 +79,17 @@ export const LangMenu = ({ children, placement = 'topLeft' }) => {
   );
 };
 
-export const Sidebar = ({ isCollapsed, onToggleCollapse, isPlay }) => {
+export const Sidebar = ({ isCollapsed, onToggleCollapse, isPlay, languageOverride }) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const { lang, themeMode, toggleTheme } = useThemeStore();
+  const { lang: preferredLang, themeMode, toggleTheme } = useThemeStore();
+  const lang = languageOverride || preferredLang;
   const online = useGameStore((s) => s.backendOnline);
   const inRun = useGameStore((s) => s.inRun);
   const name = useGameStore((s) => s.char.name);
   const age = useGameStore((s) => s.char.age);
   return (
-    <aside className={`app-navigation ${isCollapsed ? 'is-compact' : ''}`}>
+    <aside className={`app-navigation ${isCollapsed ? 'is-compact' : ''}`} lang={lang === 'bi' ? 'vi' : lang}>
       <div className="app-brand-row">
         <button className="app-brand" onClick={() => navigate('/')} aria-label="The City Chronicles">
           <BrandMark />
@@ -139,9 +140,9 @@ export const Sidebar = ({ isCollapsed, onToggleCollapse, isPlay }) => {
         )}
         <div className="app-nav-tools">
           <LangMenu>
-            <button className="app-tool" aria-label={pick(lang, 'Chọn ngôn ngữ', 'Choose language')}>
+            <button className="app-tool" aria-label={languageOverride ? 'Choose story language' : pick(lang, 'Chọn ngôn ngữ', 'Choose language')}>
               <Languages size={17} aria-hidden="true" />
-              <span>{LANG_OPTIONS.find((o) => o.key === lang)?.short}</span>
+              <span>{LANG_OPTIONS.find((o) => o.key === preferredLang)?.short}</span>
             </button>
           </LangMenu>
           <button

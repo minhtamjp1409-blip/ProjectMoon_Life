@@ -5,20 +5,21 @@ import { useThemeStore } from '../store/themeStore';
 import { pick } from '../i18n';
 import { NAV_ITEMS, LANG_OPTIONS, BrandMark, LangMenu } from './Sidebar';
 
-export const Header = () => {
-  const { themeMode, toggleTheme, lang } = useThemeStore();
+export const Header = ({ languageOverride }) => {
+  const { themeMode, toggleTheme, lang: preferredLang } = useThemeStore();
+  const lang = languageOverride || preferredLang;
   const { pathname } = useLocation();
   const current = NAV_ITEMS.find((i) => i.key === pathname) || NAV_ITEMS[0];
   return (
-    <header className="app-mobile-header">
+    <header className="app-mobile-header" lang={lang === 'bi' ? 'vi' : lang}>
       <BrandMark size={29} />
       <div>
         <strong>The City</strong>
         <span>{pick(lang, current.vi, current.en)}</span>
       </div>
       <LangMenu placement="bottomRight">
-        <button className="app-tool" aria-label={pick(lang, 'Chọn ngôn ngữ', 'Choose language')}>
-          {LANG_OPTIONS.find((o) => o.key === lang)?.short}
+        <button className="app-tool" aria-label={languageOverride ? 'Choose story language' : pick(lang, 'Chọn ngôn ngữ', 'Choose language')}>
+          {LANG_OPTIONS.find((o) => o.key === preferredLang)?.short}
         </button>
       </LangMenu>
       <button
@@ -32,12 +33,13 @@ export const Header = () => {
     </header>
   );
 };
-export const BottomNav = () => {
+export const BottomNav = ({ languageOverride }) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const lang = useThemeStore((s) => s.lang);
+  const preferredLang = useThemeStore((s) => s.lang);
+  const lang = languageOverride || preferredLang;
   return (
-    <nav className="app-bottom-nav" aria-label={pick(lang, 'Điều hướng chính', 'Main navigation')}>
+    <nav className="app-bottom-nav" aria-label={pick(lang, 'Điều hướng chính', 'Main navigation')} lang={lang === 'bi' ? 'vi' : lang}>
       {NAV_ITEMS.map((item) => {
         const Icon = item.icon;
         return (
