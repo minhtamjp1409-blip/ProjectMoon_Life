@@ -13,6 +13,12 @@ export const useThemeStore = create((set) => {
   return {
     themeMode: initialMode,
     lang: initialLang, // 'vi' | 'bi' | 'en'
+    sidebarCollapsed: null, // null = auto (collapses during active chronicle play), true/false = user override
+    toggleSidebar: (currentEffective) =>
+      set(() => ({
+        sidebarCollapsed: !currentEffective
+      })),
+    setSidebarCollapsed: (val) => set({ sidebarCollapsed: val }),
     toggleTheme: () =>
       set((state) => {
         const nextMode = state.themeMode === 'light' ? 'dark' : 'light';

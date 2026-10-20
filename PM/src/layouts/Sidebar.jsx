@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Tooltip, Dropdown } from 'antd';
-import { ScrollText, GitMerge, BookOpen, GitBranch, Trophy, Sun, Moon, Languages } from 'lucide-react';
+import { ScrollText, GitMerge, BookOpen, GitBranch, Trophy, Sun, Moon, Languages, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 import { useThemeStore } from '../store/themeStore';
@@ -79,8 +79,12 @@ const LifeBar = ({ k, v, c }) => {
   );
 };
 
-// A mini record of the life in progress, so it stays in view on every screen
-const LifeCard = ({ lang }) => {
+// A mini record of the life in progress, so it stays in view on other screens
+const LifeCard = ({ lang, isPlay, isCollapsed }) => {
+  // Never show in-run mini card on Chronicle page (where Dossier is already visible)
+  // or when the sidebar is collapsed into rail mode
+  if (isPlay || isCollapsed) return null;
+
   const { inRun, name, age, alive, health, sanity } = useGameStore(
     useShallow((s) => ({
       inRun: s.inRun,
@@ -121,8 +125,9 @@ function useIsRail() {
   return rail;
 }
 
-export const Sidebar = () => {
+export const Sidebar = ({ isCollapsed = false, onToggleCollapse, isPlay = false }) => {
   const isRail = useIsRail();
+  const effectiveRail = isRail || isCollapsed;
   const navigate = useNavigate();
   const location = useLocation();
   const { themeMode, toggleTheme, lang } = useThemeStore();
@@ -136,16 +141,35 @@ export const Sidebar = () => {
   const langShort = LANG_OPTIONS.find((o) => o.key === lang)?.short || 'VI';
 
   return (
-    <nav className="nav" aria-label={pick(lang, 'Điều hướng chính', 'Main navigation')}>
-      <button type="button" className="nav-brand" onClick={() => navigate('/')} aria-label="The City Chronicles">
-        <span className="nav-mark">
-          <BrandMark />
-        </span>
-        <div>
-          <b>THE CITY</b>
-          <span>Chronicles</span>
-        </div>
-      </button>
+    <nav className={`nav ${isCollapsed ? 'is-collapsed' : ''}`} aria-label={pick(lang, 'Điều hướng chính', 'Main navigation')}>
+      <div className="nav-head">
+        <button type="button" className="nav-brand" onClick={() => navigate('/')} aria-label="The City Chronicles">
+          <span className="nav-mark">
+            <BrandMark />
+          </span>
+          {!isCollapsed && (
+            <div className="nav-brand-title">
+              <b>THE CITY</b>
+              <span>Chronicles</span>
+            </div>
+          )}
+        </button>
+        {onToggleCollapse && (
+          <Tooltip
+            title={isCollapsed ? pick(lang, 'Mở rộng menu', 'Expand sidebar') : pick(lang, 'Thu gọn menu', 'Collapse sidebar')}
+            placement="right"
+          >
+            <button
+              type="button"
+              className="icon-btn nav-toggle-btn"
+              onClick={onToggleCollapse}
+              aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            >
+              {isCollapsed ? <PanelLeftOpen size={16} /> : <PanelLeftClose size={16} />}
+            </button>
+          </Tooltip>
+        )}
+      </div>
 
       <div className="nav-list">
         {NAV_ITEMS.map((item) => {
@@ -153,7 +177,7 @@ export const Sidebar = () => {
           const label = pick(lang, item.vi, item.en);
           const active = location.pathname === item.key;
           return (
-            <Tooltip key={item.key} title={isRail ? label : null} placement="right">
+            <Tooltip key={item.key} title={effectiveRail ? label : null} placement="right">
               <button
                 type="button"
                 aria-label={label}
@@ -162,8 +186,8 @@ export const Sidebar = () => {
                 onClick={() => navigate(item.key)}
               >
                 <Icon size={19} strokeWidth={1.7} />
-                <span className="label">{label}</span>
-                {counts[item.key] && <span className="count">{counts[item.key]}</span>}
+                {!isCollapsed && <span className="label">{label}</span>}
+                {!isCollapsed && counts[item.key] && <span className="count">{counts[item.key]}</span>}
               </button>
             </Tooltip>
           );
@@ -172,13 +196,13 @@ export const Sidebar = () => {
 
       <div className="nav-spacer" />
 
-      <LifeCard lang={lang} />
+      <LifeCard lang={lang} isPlay={isPlay} isCollapsed={isCollapsed} />
 
       <div className="nav-utils">
         <LangMenu>
-          <button type="button" className="btn btn-ghost" style={{ padding: '0 10px', gap: 6 }} aria-label={pick(lang, 'Ngôn ngữ', 'Language')}>
+          <button type="button" className="btn btn-ghost" style={{ padding: isCollapsed ? '0 6px' : '0 10px', gap: 6 }} aria-label={pick(lang, 'Ngôn ngữ', 'Language')}>
             <Languages size={16} />
-            {langShort}
+            {!isCollapsed && langShort}
           </button>
         </LangMenu>
         <button
@@ -196,10 +220,11 @@ export const Sidebar = () => {
               ? pick(lang, 'Đã kết nối kho lưu trữ (.NET, cổng 5080)', 'Archive server connected (.NET, port 5080)')
               : pick(lang, 'Chưa kết nối máy chủ, đang lưu trên trình duyệt này', 'Server offline, saving in this browser')
           }
+          placement="right"
         >
           <span className="server" role="status">
             <span className={`status-dot ${backendOnline ? 'is-on' : ''}`} />
-            <span>{backendOnline ? 'Online' : 'Offline'}</span>
+            {!isCollapsed && <span>{backendOnline ? 'Online' : 'Offline'}</span>}
           </span>
         </Tooltip>
       </div>

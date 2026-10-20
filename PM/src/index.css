@@ -691,6 +691,11 @@ p {
   display: grid;
   grid-template-columns: var(--nav) minmax(0, 1fr);
   grid-template-rows: minmax(0, 1fr);
+  transition: grid-template-columns 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.shell.is-nav-collapsed {
+  --nav: 68px;
 }
 
 .nav {
@@ -700,13 +705,81 @@ p {
   padding: 18px 14px 14px;
   border-right: 1px solid var(--border);
   background: var(--surface);
+  transition: width 0.22s cubic-bezier(0.16, 1, 0.3, 1), padding 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nav-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.nav-toggle-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  color: var(--muted);
+  flex: none;
+}
+.nav-toggle-btn:hover {
+  color: var(--text);
+  background: var(--raised);
+}
+
+.nav.is-collapsed {
+  padding: 16px 10px;
+  align-items: center;
+}
+
+.nav.is-collapsed .nav-head {
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+  align-items: center;
+}
+
+.nav.is-collapsed .nav-brand {
+  padding: 0;
+  justify-content: center;
+}
+
+.nav.is-collapsed .nav-brand-title,
+.nav.is-collapsed .nav-item .label,
+.nav.is-collapsed .nav-item .count,
+.nav.is-collapsed .nav-life {
+  display: none !important;
+}
+
+.nav.is-collapsed .nav-item {
+  width: 44px;
+  height: 44px;
+  justify-content: center;
+  padding: 0;
+}
+
+.nav.is-collapsed .nav-item.is-active::before {
+  left: -10px;
+}
+
+.nav.is-collapsed .nav-utils {
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  border-top: 0;
+  padding-top: 8px;
+}
+
+.nav.is-collapsed .nav-utils .server {
+  margin: 4px 0 0;
+  justify-content: center;
 }
 
 .nav-brand {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 2px 8px 20px;
+  padding: 2px 4px 6px;
   border: 0;
   background: transparent;
   text-align: left;

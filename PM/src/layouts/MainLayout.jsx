@@ -4,6 +4,7 @@ import Sidebar from './Sidebar';
 import Header, { BottomNav } from './Header';
 import { useShallow } from 'zustand/react/shallow';
 import { useGameStore } from '../store/gameStore';
+import { useThemeStore } from '../store/themeStore';
 
 const TICK_MS = 100;
 
@@ -57,10 +58,12 @@ export const MainLayout = ({ children }) => {
 
   // The play screen manages its own scrolling regions; other screens scroll as a page
   const isPlay = location.pathname === '/' && inRun;
+  const { sidebarCollapsed, toggleSidebar } = useThemeStore();
+  const isNavCollapsed = sidebarCollapsed !== null ? sidebarCollapsed : isPlay;
 
   return (
-    <div className="shell">
-      <Sidebar />
+    <div className={`shell ${isNavCollapsed ? 'is-nav-collapsed' : ''}`}>
+      <Sidebar isCollapsed={isNavCollapsed} onToggleCollapse={() => toggleSidebar(isNavCollapsed)} isPlay={isPlay} />
       <Header />
       <main className="main">{isPlay ? children : <div className="main-scroll">{children}</div>}</main>
       <BottomNav />
