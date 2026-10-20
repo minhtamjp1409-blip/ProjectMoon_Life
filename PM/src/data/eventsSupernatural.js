@@ -196,22 +196,22 @@ export const SUPERNATURAL_EVENTS = [
       {
         labelVi: '"Nỗi đau này là của tôi. Tôi sẽ đứng trên đôi chân của mình."',
         labelEn: '“This pain is mine. I will stand on my own two feet.”',
-        out: [
+        outcomes: [
           {
-            w: 65,
+            w: 48,
             openEgoModal: true,
             flagsAdd: ['EGOAwakened', 'ShinAwakened'],
             recordsAdd: ['ego_effloresced'],
             effects: { health: +35, sanity: +50, rep: +38, resonance: +25 },
             scarsAdd: ['Người đã không buông tay'],
             meritAdd: 45,
-            rvi: 'Bạn giữ chặt từng ký ức và vết sẹo, không lùi bước trước sự quyến rũ của hư vô. Ánh sáng ấm áp của Carmen nứt toác trước ý chí của bạn. Từ sâu thẳm tâm thức, một bộ giáp và vũ khí kết tinh từ chính nỗi đau của bạn hiện hình. Đó là E.G.O của riêng bạn.',
-            ren: 'You held firm to every memory and scar, refusing the warm seduction of oblivion. Carmen’s soothing light fractured against your resolve. From the depths of your psyche, armor and a weapon forged from your agony manifested. It is your E.G.O.'
+            resultVi: 'Bạn giữ chặt từng ký ức và vết sẹo, không lùi bước trước sự quyến rũ của hư vô. Ánh sáng ấm áp của Carmen nứt toác trước ý chí của bạn. Từ sâu thẳm tâm thức, một bộ giáp và vũ khí kết tinh từ chính nỗi đau của bạn hiện hình. Đó là E.G.O của riêng bạn.',
+            resultEn: 'You held firm to every memory and scar, refusing the warm seduction of oblivion. Carmen’s soothing light fractured against your resolve. From the depths of your psyche, armor and a weapon forged from your agony manifested. It is your E.G.O.'
           },
           {
-            w: 35,
+            w: 37,
             flagsAdd: ['IncompleteEGO'],
-            effects: { health: -22, sanity: -15, rep: +20, resonance: +18 },
+            effects: { health: -18, sanity: -12, rep: +20, resonance: +18 },
             scarsAdd: ['Vết rạn khung cửi tự ngã'],
             meritAdd: 25,
             scheduleConsequences: [
@@ -222,22 +222,64 @@ export const SUPERNATURAL_EVENTS = [
                 reasonEn: 'Your incomplete E.G.O seeks its true efflorescence'
               }
             ],
-            rvi: 'Bạn gầm lên kháng cự, nhưng triết lý trong lòng chưa đủ tôi luyện để gánh vác trọn vẹn ánh sáng. E.G.O chỉ hiện hình một nửa rồi nứt toác, ngọn lửa cảm xúc đốt cháy da thịt bạn. Bạn chưa gục ngã, nhưng tâm thức mang một vết rạn lớn: E.G.O Chưa Hoàn Chỉnh.',
-            ren: 'You roared in resistance, but your inner philosophy was not yet forged enough to bear the full weight of the light. The E.G.O half-manifested then cracked, emotion scorch marks searing your flesh. You did not break, but your soul bears a fissure: an Incomplete E.G.O.'
+            resultVi: 'Bạn gầm lên kháng cự, nhưng triết lý trong lòng chưa đủ tôi luyện để gánh vác trọn vẹn ánh sáng. E.G.O chỉ hiện hình một nửa rồi nứt toác, ngọn lửa cảm xúc đốt cháy da thịt bạn. Bạn chưa gục ngã, nhưng tâm thức mang một vết rạn lớn: E.G.O Chưa Hoàn Chỉnh.',
+            resultEn: 'You roared in resistance, but your inner philosophy was not yet forged enough to bear the full weight of the light. The E.G.O half-manifested then cracked, emotion scorch marks searing your flesh. You did not break, but your soul bears a fissure: an Incomplete E.G.O.'
+          },
+          {
+            w: 15,
+            flagsAdd: ['Distorted'],
+            recordsAdd: ['distortion_awaken'],
+            effects: { health: +40, sanity: -60, rep: +30, heat: +45, resonance: +55 },
+            scarsAdd: ['Ý chí gãy đổ'],
+            meritAdd: 20,
+            resultVi: 'Lời thì thầm của Carmen quá ngọt ngào. Trong khoảnh khắc ngập ngừng cuối cùng, ý chí của bạn nứt toác. Cơ thể bạn biến dạng thành hình thù của nỗi đau u uất. Hana Association cập nhật hồ sơ: Bạn đã Biến dạng (Distorted).',
+            resultEn: 'Carmen’s murmur was too sweet. In that final hesitation, your resolve shattered. Your flesh morphed into the shape of your sorrow. Hana Association updated its file: Distorted.'
           }
         ]
       },
       {
         labelVi: 'Đốt cháy những vết sẹo quá khứ làm mồi lửa bộc phát',
         labelEn: 'Burn every past scar as living fuel for breakthrough',
-        openEgoModal: true,
-        flagsAdd: ['EGOAwakened', 'ShinAwakened'],
-        recordsAdd: ['ego_effloresced'],
-        effects: { health: -28, sanity: +45, rep: +42, resonance: +35 },
-        scarsAdd: ['Tro Tàn Tự Ngã'],
-        meritAdd: 50,
-        resultVi: 'Bạn biến chính những vết sẹo rỉ máu thành mồi lửa, thiêu rụi sự cám dỗ dịu dàng của Carmen. Cơ thể bạn chằng chịt vết rách, nhưng từ trong biển lửa tro tàn, E.G.O hoàn chỉnh xuất hiện với uy lực chấn áp tất cả.',
-        resultEn: 'Turning your bleeding scars into kindling, you incinerated Carmen’s gentle whispers. Your body tore with wounds, but from the ashes, complete E.G.O emerged with overwhelming might.'
+        outcomes: [
+          {
+            w: 45,
+            openEgoModal: true,
+            flagsAdd: ['EGOAwakened', 'ShinAwakened'],
+            recordsAdd: ['ego_effloresced'],
+            effects: { health: -28, sanity: +45, rep: +42, resonance: +35 },
+            scarsAdd: ['Tro Tàn Tự Ngã'],
+            meritAdd: 50,
+            resultVi: 'Bạn biến chính những vết sẹo rỉ máu thành mồi lửa, thiêu rụi sự cám dỗ dịu dàng của Carmen. Cơ thể bạn chằng chịt vết rách, nhưng từ trong biển lửa tro tàn, E.G.O hoàn chỉnh xuất hiện với uy lực chấn áp tất cả.',
+            resultEn: 'Turning your bleeding scars into kindling, you incinerated Carmen’s gentle whispers. Your body tore with wounds, but from the ashes, complete E.G.O emerged with overwhelming might.'
+          },
+          {
+            w: 35,
+            flagsAdd: ['Distorted'],
+            recordsAdd: ['distortion_awaken'],
+            effects: { health: +50, sanity: -65, rep: +35, heat: +50, resonance: +60 },
+            scarsAdd: ['Ngọn Lửa Cuồng Loạn'],
+            meritAdd: 30,
+            resultVi: 'Ngọn lửa cảm xúc bốc cháy vượt quá tầm kiểm soát của cơ thể bạn. Sức nóng thiêu rụi lý trí; thay vì E.G.O, bạn sụp đổ hoàn toàn vào nỗi ám ảnh tột cùng. Một con quái vật Distortion sinh ra từ tro tàn.',
+            resultEn: 'The emotional blaze flared beyond mortal endurance. The heat consumed your sanity; instead of E.G.O, you collapsed entirely into obsession. A ravenous Distortion arose from the ashes.'
+          },
+          {
+            w: 20,
+            flagsAdd: ['IncompleteEGO'],
+            effects: { health: -35, sanity: -20, rep: +22, resonance: +25 },
+            scarsAdd: ['Vết Bỏng Linh Hồn'],
+            meritAdd: 25,
+            scheduleConsequences: [
+              {
+                eventId: 'ego_second_efflorescence_trial',
+                delayYears: 2,
+                reasonVi: 'E.G.O tàn lửa đang chờ tôi luyện lại',
+                reasonEn: 'Smoldering incomplete E.G.O awaiting rekindling'
+              }
+            ],
+            resultVi: 'Ngọn lửa đốt cháy da thịt bạn nhưng lụi tàn giữa chừng. Bạn ngã quỵ trên vũng máu, một mảnh giáp E.G.O vỡ vụn dính chặt vào xương ngực: E.G.O Chưa Hoàn Chỉnh.',
+            resultEn: 'The inferno scorched your flesh but petered out midway. You collapsed bleeding, a shattered shard of E.G.O armor fused to your breastbone: Incomplete E.G.O.'
+          }
+        ]
       },
       {
         labelVi: 'Nhắm mắt lại, và để giọng nói ấy dẫn bạn đi (Distortion)',
@@ -301,7 +343,7 @@ export const SUPERNATURAL_EVENTS = [
       {
         labelVi: 'Tiên phong độc hành: Trực diện đồ sát Calamity',
         labelEn: 'Solo vanguard: Confront and annihilate the Calamity directly',
-        out: [
+        outcomes: [
           {
             w: 60,
             need: { stat: { health: [35, 100] } },
@@ -311,16 +353,16 @@ export const SUPERNATURAL_EVENTS = [
             effects: { health: -30, sanity: -15, rep: +45, wealth: +60 },
             scarsAdd: ['Vết sẹo của Star of the City'],
             meritAdd: 60,
-            rvi: 'Trận chiến kéo dài mười sáu giờ không ngừng nghỉ. Vũ khí của bạn chém đứt lõi của mối họa Star of the City trước sự bàng hoàng của các chấp hành viên Hana. Máu và tro tàn nhuộm kín chiến trường. Hội đồng Hana đồng loạt đứng dậy cúi đầu: "The City cúi đầu trước Color mới." Họ mời bạn bước lên đài để khắc danh hiệu.',
-            ren: 'The battle raged sixteen unceasing hours. Your weapon severed the core of the Star of the City before stunned Hana enforcers. Blood and ash coated the battlefield. The Hana Council stood and bowed in unison: “The City honors its new Color.” They invited you to the dais to engrave your title.'
+            resultVi: 'Trận chiến kéo dài mười sáu giờ không ngừng nghỉ. Vũ khí của bạn chém đứt lõi của mối họa Star of the City trước sự bàng hoàng của các chấp hành viên Hana. Máu và tro tàn nhuộm kín chiến trường. Hội đồng Hana đồng loạt đứng dậy cúi đầu: "The City cúi đầu trước Color mới." Họ mời bạn bước lên đài để khắc danh hiệu.',
+            resultEn: 'The battle raged sixteen unceasing hours. Your weapon severed the core of the Star of the City before stunned Hana enforcers. Blood and ash coated the battlefield. The Hana Council stood and bowed in unison: “The City honors its new Color.” They invited you to the dais to engrave your title.'
           },
           {
             w: 40,
             effects: { health: -45, sanity: -35, rep: +25, heat: +20 },
             scarsAdd: ['Thương tật từ Star of the City'],
             meritAdd: 30,
-            rvi: 'Sức mạnh của mối họa vượt xa dự tính. Bạn chém đứt được một chi của nó nhưng bị đánh văng qua ba dãy tường bê tông, nát vụn xương sườn. Bạn sống sót nhưng bất tỉnh ba tuần. Hana Association ghi nhận chiến công nhưng hoãn kỳ phong Color cho đến khi bạn bình phục.',
-            ren: 'The calamity’s might exceeded all projections. You severed one of its limbs but were hurled through three concrete walls, ribs splintered. You survived but lay comatose three weeks. Hana credited your valor but postponed the Color ceremony until your recovery.'
+            resultVi: 'Sức mạnh của mối họa vượt xa dự tính. Bạn chém đứt được một chi của nó nhưng bị đánh văng qua ba dãy tường bê tông, nát vụn xương sườn. Bạn sống sót nhưng bất tỉnh ba tuần. Hana Association ghi nhận chiến công nhưng hoãn kỳ phong Color cho đến khi bạn bình phục.',
+            resultEn: 'The calamity’s might exceeded all projections. You severed one of its limbs but were hurled through three concrete walls, ribs splintered. You survived but lay comatose three weeks. Hana credited your valor but postponed the Color ceremony until your recovery.'
           }
         ]
       },
@@ -334,8 +376,8 @@ export const SUPERNATURAL_EVENTS = [
         effects: { health: -18, sanity: -15, wealth: -15, rep: +40 },
         scarsAdd: ['Bản đồ giải phẫu Star of the City'],
         meritAdd: 45,
-        rvi: 'Chi trả ngân sách lớn cho Seven Association để phân tích cấu trúc Singularity và sơ hở của mối họa. Bạn đánh trúng tim của nó bằng một nhát duy nhất. Nest được bảo toàn. Hana Association đóng dấu phê chuẩn tuyệt đối: Một Color mới ra đời bằng trí tuệ và sự chuẩn xác.',
-        ren: 'Expending a substantial purse for Seven Association intel on the singularity weakness, you struck its core in a single fatal blow. The Nest was saved. Hana Association stamped absolute approval: A new Color born of intellect and lethal precision.'
+        resultVi: 'Chi trả ngân sách lớn cho Seven Association để phân tích cấu trúc Singularity và sơ hở của mối họa. Bạn đánh trúng tim của nó bằng một nhát duy nhất. Nest được bảo toàn. Hana Association đóng dấu phê chuẩn tuyệt đối: Một Color mới ra đời bằng trí tuệ và sự chuẩn xác.',
+        resultEn: 'Expending a substantial purse for Seven Association intel on the singularity weakness, you struck its core in a single fatal blow. The Nest was saved. Hana Association stamped absolute approval: A new Color born of intellect and lethal precision.'
       },
       {
         labelVi: 'Từ chối chiếc vòng kim cô: Tiếp tục là Fixer Grade 1 tự do',

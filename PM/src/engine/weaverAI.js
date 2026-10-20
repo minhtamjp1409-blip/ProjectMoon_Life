@@ -441,6 +441,29 @@ export function selectEventWithWeaverAI({
     }
   }
 
+  // Mandatory Age 18 Adult Career Crossroad (BitLife / PM Canon Milestone)
+  if ((char.age === 18 || (char.age > 18 && char.job === 'Child')) && !char.seenEvents.includes('ad_career_crossroad_18')) {
+    const crossroadEv = allPools.find(e => e.id === 'ad_career_crossroad_18');
+    if (crossroadEv) {
+      const logEntry = {
+        age: char.age,
+        phase: 'CLIMAX',
+        selectedId: crossroadEv.id,
+        utility: 995,
+        reasonVi: 'Tuổi 18: Ngã rẽ trưởng thành bắt buộc — tự nuôi sống bản thân tại The City',
+        reasonEn: 'Age 18: Mandatory career crossroad — surviving on your own in The City',
+        candidates: [{ eventId: crossroadEv.id, totalUtility: 995 }]
+      };
+      return {
+        event: crossroadEv,
+        weaver: {
+          ...updatedWeaver,
+          decisionLog: [logEntry, ...updatedWeaver.decisionLog].slice(0, 18)
+        }
+      };
+    }
+  }
+
   const carmenEv = allPools.find(e => e.id === 'ego_carmen_crossroad');
   if (
     carmenEv &&

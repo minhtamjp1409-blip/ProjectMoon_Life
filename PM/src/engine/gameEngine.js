@@ -1109,16 +1109,18 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
 
   // Determine outcome (direct choice or weighted outcome roll)
   let outcome = choice;
-  if (Array.isArray(choice.outcomes) && choice.outcomes.length > 0) {
+  const rawOutcomes = choice.outcomes || choice.out;
+  if (Array.isArray(rawOutcomes) && rawOutcomes.length > 0) {
     // Project Moon RNG: Karma & Past Deeds tilt the odds!
-    const evaluatedOutcomes = choice.outcomes.map(o => {
+    const evaluatedOutcomes = rawOutcomes.map(o => {
       let weight = o.w || 50;
+      const resText = o.resultVi || o.rvi || '';
       // If player has awakened Shin or martial mastery, combat odds tilt favorably
-      if (char.flags.includes('ShinAwakened') && (o.resultVi?.includes('đứng') || o.resultVi?.includes('thắng') || o.resultVi?.includes('sống') || !o.deathCauseVi)) {
+      if (char.flags.includes('ShinAwakened') && (resText.includes('đứng') || resText.includes('thắng') || resText.includes('sống') || !o.deathCauseVi)) {
         weight = Math.round(weight * 1.35);
       }
       // If player is distorted and outcome is violent/destructive
-      if (char.flags.includes('Distorted') && (o.effects?.sanity < 0 || o.effects?.rep > 0)) {
+      if (char.flags.includes('Distorted') && ((o.effects?.sanity || 0) < 0 || (o.effects?.rep || 0) > 0)) {
         weight = Math.round(weight * 1.4);
       }
       return { ...o, effectiveW: Math.max(5, weight) };
@@ -1261,8 +1263,8 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
     if (!char.flags.includes('ColorFixer')) char.flags.push('ColorFixer');
   }
 
-  const textVi = interpolateText(outcome.resultVi || choice.resultVi || '', char);
-  const textEn = interpolateText(outcome.resultEn || choice.resultEn || '', char);
+  const textVi = interpolateText(outcome.resultVi || outcome.rvi || choice.resultVi || choice.rvi || '', char);
+  const textEn = interpolateText(outcome.resultEn || outcome.ren || choice.resultEn || choice.ren || '', char);
 
   char.logs.push({
     id: `log_ev_${char.age}_${event.id}`,

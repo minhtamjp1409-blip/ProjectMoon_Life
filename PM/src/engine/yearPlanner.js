@@ -184,7 +184,7 @@ const weightOf = (char) => (e) => directorWeight(e, char).w;
 function majorIsDue(char, rng) {
   const w = char.weaver || {};
   if (char.age < 4) return false;
-  if (char.age === 18 && !(char.seenEvents || []).includes('ad_career_crossroad_18')) return true;
+  if ((char.age === 18 || (char.age > 18 && char.job === 'Child')) && !(char.seenEvents || []).includes('ad_career_crossroad_18')) return true;
   if ((char.taboo || 0) >= 3) return true;
   if ((w.pendingThreads || []).some((th) => th.kind !== 'minor' && !th.fulfilled && char.age >= th.triggerAge)) return true;
   if (char.age >= 18 && (char.stats.sanity <= 16 || (char.resonance || 0) >= 55) && !(char.seenEvents || []).includes('ego_carmen_crossroad') && !char.flags.includes('EGOAwakened') && !char.flags.includes('Distorted')) return true;
@@ -235,8 +235,12 @@ export function planYear(charState, rng) {
     }
   }
 
-  // Major event if due and not already scheduled
-  if (!scheduledKey.some((it) => it.kind === 'major') && majorIsDue(char, rng)) {
+  // Mandatory Age 18 Milestone or unassigned adult must select career immediately
+  if ((char.age === 18 || (char.age > 18 && char.job === 'Child')) && !(char.seenEvents || []).includes('ad_career_crossroad_18')) {
+    if (!scheduledKey.some((it) => it.forcedEventId === 'ad_career_crossroad_18')) {
+      scheduledKey.push({ kind: 'major', forcedEventId: 'ad_career_crossroad_18' });
+    }
+  } else if (!scheduledKey.some((it) => it.kind === 'major') && majorIsDue(char, rng)) {
     scheduledKey.push({ kind: 'major' });
   }
 

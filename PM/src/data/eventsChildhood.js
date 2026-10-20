@@ -384,7 +384,7 @@ export const CHILDHOOD_EVENTS = [
   // --- eighteen ---
   {
     id: 'ad_career_crossroad_18',
-    age: [18, 18],
+    age: [18, 99],
     major: true,
     weight: 999,
     vi: '[Mười tám tuổi] Mười tám tuổi, bạn bắt đầu phải tự trả tiền cho mọi thứ ở The City, kể cả hơi thở. Không ai nuôi bạn nữa. Bạn sẽ kiếm sống bằng cách nào?',

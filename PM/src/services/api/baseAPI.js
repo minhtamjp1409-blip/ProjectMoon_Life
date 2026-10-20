@@ -1,4 +1,4 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5080/api';
+const API_BASE_URL = (typeof import.meta !== 'undefined' && import.meta?.env?.VITE_API_URL) || 'http://localhost:5080/api';
 
 // When the archive server is down, stop knocking for a while instead of failing every call
 let offlineUntil = 0;
