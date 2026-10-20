@@ -1,6 +1,6 @@
 # The City Chronicles: tiến trình dự án
 
-Cập nhật: 20/10/2026, đợt 4 (xem [mục 8](#8-nhật-ký-thay-đổi))
+Cập nhật: 20/10/2026, đợt 5 (xem [mục 8](#8-nhật-ký-thay-đổi))
 
 - Live Demo Vercel: [https://project-moon-life-five.vercel.app](https://project-moon-life-five.vercel.app)
 - Frontend: `D:\School\PM` (React 18, Vite 6, Zustand 5, Ant Design 6 cho modal/tooltip/thông báo, CSS thuần trong `src/index.css`)
@@ -221,6 +221,28 @@ Trong chữ: `{name}`, `{friend}`, `{mentor}`, `{rival}`, `{lover}`, `{partner}`
 ---
 
 ## 8. Nhật ký thay đổi
+
+### 20/10/2026, đợt 5
+
+- **Kiểm định toàn diện các tình huống & nhánh sự nghiệp (Situational Audit & Narrative Climax Fixes)**:
+  - *Khắc phục cơ chế thăng cấp Color Fixer & danh hiệu bespoke*: Sửa lỗi nhận diện thuộc tính hiệu ứng khi chọn sự kiện (`.fx` vs `.effects`), bảo đảm khi vượt qua khảo nghiệm Star of the City (`hana_color_ascension_trial`), nhân vật chắc chắn được phong Color Fixer (Fixer Grade 0) và tự động nhận danh hiệu màu sắc tương ứng (`customTitle`).
+  - *Đồng bộ hóa 5 Syndicate Fingers (The Five Fingers Alignment)*: Mở rộng sự kiện chọn Syndicate (`syn_choose_finger_allegiance`) đầy đủ cả 5 Finger (Thumb, Index, Middle, Ring, Pinky). Sửa lỗi sự kiện đỉnh cao của Ring (`syn_ring_maestro_gallery`) trước đây thiếu điều kiện lọc ngón tay khiến các Finger khác nhận nhầm; đồng thời thiết lập cơ chế weaverAI tự động kích hoạt khảo nghiệm đỉnh cao tương ứng cho từng ngón tay (Underboss, Proxy, Great Brother, Maestro, Star Blade).
+  - *Mở khóa bậc thăng tiến cấp cao (Uncapped Apex Careers)*: Nâng trần thăng tiến tự động thường niên cho Wing Employee và Workshop Craftsman lên Rank 2 (Section Chief / Master Craftsman), và thiết lập các sự kiện thử thách đỉnh cao (`wing_singularity_classified_audit` và `workshop_legendary_forge_trial`) để bước lên Rank 3 (Senior Executive / Legendary Innovator).
+  - *Cơ chế Weaver AI Climax Milestones*: Tích hợp logic dẫn dắt kịch tính trong `weaverAI.js` giúp nhân vật chạm đến các đỉnh cao sự nghiệp ngay khi đủ điều kiện danh tiếng và công trạng, thay vì phụ thuộc hoàn toàn vào tỷ lệ ngẫu nhiên.
+  - *Mô phỏng Deep Stress-Test 200 kiếp nhân vật*:
+    - Fixer: 52% đạt Color Fixer / Grade 1, tuổi thọ trung bình 52.1 tuổi.
+    - Syndicate: Tuổi thọ trung bình 34.3 tuổi (đúng chuẩn bạo lực ngầm Backstreets), 66% đạt hàng Trưởng bối (Rank 2+), tỷ lệ Distortion cao phản ánh tuyệt vọng.
+    - Wing Employee: Tuổi thọ trung bình 71.1 tuổi (an toàn cao trong Nest, y tế tân tiến), 92% thăng tiến lên Trưởng phòng / Giám đốc cấp cao.
+    - Workshop Craftsman: Tuổi thọ trung bình 49.4 tuổi, 96% đạt Thợ bậc thầy / Thần binh huyền thoại.
+    - 0 lỗi template (`{...}`) trên toàn bộ 200 kiếp đời.
+- **Tính năng Xóa phả hệ / Reset huyết thống (Bloodline Deletion & Clear)**:
+  - Cho phép người chơi xóa bỏ từng hồ sơ tưởng niệm hoặc xóa sạch toàn bộ cây huyết thống tại màn hình `BloodlinePage.jsx` khi muốn bắt đầu lại hoàn toàn từ Thế hệ 1 (Gen #1).
+  - Tích hợp endpoint RESTful `DELETE /archive/memorial` và `DELETE /archive/memorials` tại backend.
+  - Tích hợp nút "Discard Heirloom / Start Fresh Gen #1" trực tiếp trên màn hình khởi tạo tân sinh (`BirthSetupPanel.jsx`).
+- **Deploy Vercel & Chơi độc lập không phụ thuộc mạng LAN**:
+  - Triển khai thành công lên Vercel: `https://project-moon-life-five.vercel.app`
+  - Bổ sung cấu hình SPA routing `vercel.json`.
+  - Cơ chế Dual-Save cho phép người chơi tắt máy, đổi mạng, hoặc chơi ngoại tuyến trên điện thoại/máy tính bảng mọi lúc mọi nơi nhờ cơ chế lưu an toàn trên trình duyệt (`localStorage`).
 
 ### 20/10/2026, đợt 4
 

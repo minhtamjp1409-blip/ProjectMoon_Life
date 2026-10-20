@@ -935,12 +935,12 @@ export function checkPromotions(char) {
     }
   }
 
-  // Wing Employee Promotions (Ranks 0-1 by merit, Pinnacle ranks 2+ require Singularity Audit)
+  // Wing Employee Promotions (Ranks 0-2 by merit/wealth/network, Pinnacle rank 3 requires Singularity Audit)
   if (char.job === 'Wing Employee') {
     const curRank = char.wingRank || 0;
     const curWealth = (char.stats?.wealth ?? char.wealth) || 0;
     const curNet = (char.stats?.network ?? char.network) || 0;
-    for (let r = Math.min(1, WING_RANKS.length - 1); r > curRank; r--) {
+    for (let r = Math.min(2, WING_RANKS.length - 2); r > curRank; r--) {
       const req = WING_RANKS[r];
       if (char.merit >= req.merit && curWealth >= req.wealth && curNet >= req.network) {
         char.wingRank = r;
@@ -957,12 +957,12 @@ export function checkPromotions(char) {
     }
   }
 
-  // Workshop Craftsman Promotions (Ranks 0-1 by merit, Pinnacle ranks 2+ require Masterpiece Forge)
+  // Workshop Craftsman Promotions (Ranks 0-2 by merit/wealth/resonance, Pinnacle rank 3 requires Masterpiece Forge)
   if (char.job === 'Workshop Craftsman') {
     const curRank = char.workshopRank || 0;
     const curWealth = (char.stats?.wealth ?? char.wealth) || 0;
     const curReso = char.resonance || 0;
-    for (let r = Math.min(1, WORKSHOP_RANKS.length - 1); r > curRank; r--) {
+    for (let r = Math.min(2, WORKSHOP_RANKS.length - 2); r > curRank; r--) {
       const req = WORKSHOP_RANKS[r];
       if (char.merit >= req.merit && curWealth >= req.wealth && curReso >= req.resonance) {
         char.workshopRank = r;
@@ -1266,8 +1266,8 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
     }
   }
 
-  // Merge effects from both choice and rolled outcome
-  const effects = { ...(choice.effects || {}), ...(outcome.effects || {}) };
+  // Merge effects from both choice and rolled outcome (supports both .effects and .fx formats)
+  const effects = { ...(choice.effects || choice.fx || {}), ...(outcome.effects || outcome.fx || {}) };
   if (effects.health) char.stats.health = clamp(char.stats.health + effects.health, 0, 100);
   if (effects.sanity) char.stats.sanity = clamp(char.stats.sanity + effects.sanity, 0, 100);
   if (effects.wealth) char.stats.wealth = clamp(char.stats.wealth + effects.wealth, 0, 100);
@@ -1283,6 +1283,23 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
 
   const setFixerGrade = outcome.setFixerGrade ?? choice.setFixerGrade;
   if (setFixerGrade !== undefined) char.fixerGrade = setFixerGrade;
+
+  // Color Fixer Promotion & Title Assignment
+  const isColorPromote = choice.promote === 'ColorFixer' || outcome.promote === 'ColorFixer' ||
+    choice.flagsAdd?.includes('ColorFixer') || outcome.flagsAdd?.includes('ColorFixer') ||
+    choice.flags?.includes('ColorFixer') || outcome.flags?.includes('ColorFixer') ||
+    choice.openColorModal || outcome.openColorModal;
+  if (isColorPromote) {
+    char.fixerGrade = 0;
+    if (!char.flags.includes('ColorFixer')) char.flags.push('ColorFixer');
+  }
+
+  const assignedTitle = outcome.customTitle || choice.customTitle ||
+    outcome.customTitleVi || choice.customTitleVi ||
+    outcome.customTitleEn || choice.customTitleEn;
+  if (assignedTitle) {
+    char.customTitle = assignedTitle;
+  }
 
   const setFinger = outcome.setFinger || choice.setFinger;
   if (setFinger) char.finger = setFinger;

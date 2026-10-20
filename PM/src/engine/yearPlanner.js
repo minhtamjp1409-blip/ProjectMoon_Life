@@ -194,6 +194,7 @@ function majorIsDue(char, rng) {
   const w = char.weaver || {};
   if (char.age < 4) return false;
   if ((char.age === 18 || (char.age > 18 && char.job === 'Child')) && !(char.seenEvents || []).includes('ad_career_crossroad_18')) return true;
+  if (char.job === 'Syndicate' && !char.finger && !(char.seenEvents || []).includes('syn_choose_finger_allegiance')) return true;
   if ((char.taboo || 0) >= 3) return true;
   if ((w.pendingThreads || []).some((th) => th.kind !== 'minor' && !th.fulfilled && char.age >= th.triggerAge)) return true;
   if (char.age >= 18 && ((char.stats.sanity <= 5 && rng() < 0.12) || ((char.resonance || 0) >= 90 && rng() < 0.15)) && !(char.seenEvents || []).includes('ego_carmen_crossroad') && !char.flags.includes('EGOAwakened') && !char.flags.includes('Distorted')) return true;
@@ -621,7 +622,10 @@ export function resolveMinor(charState, idx, rng) {
   if (Array.isArray(choice.out) && choice.out.length) {
     outcome = pickWeighted(choice.out, (o) => o.w ?? 1, rng) || choice;
   }
-  const deltas = applyFx(char, { ...(choice.fx || {}), ...(outcome === choice ? {} : outcome.fx || {}) });
+  const deltas = applyFx(char, {
+    ...(choice.fx || choice.effects || {}),
+    ...(outcome === choice ? {} : (outcome.fx || outcome.effects || {}))
+  });
   [...(choice.flags || []), ...(outcome === choice ? [] : outcome.flags || [])].forEach((f) => {
     if (!char.flags.includes(f)) char.flags.push(f);
   });

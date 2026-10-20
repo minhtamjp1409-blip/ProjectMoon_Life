@@ -327,6 +327,9 @@ export function isEventEligible(event, char) {
   if (Array.isArray(event.jobs) && !event.jobs.includes(char.job)) {
     return false;
   }
+  if (event.finger && char.finger !== event.finger) {
+    return false;
+  }
   if (Array.isArray(event.requires)) {
     for (const reqFlag of event.requires) {
       if (!char.flags.includes(reqFlag)) return false;
@@ -475,6 +478,32 @@ export function selectEventWithWeaverAI({
     }
   }
 
+  // Syndicate initiate choosing Finger allegiance
+  const chooseFingerEv = allPools.find(e => e.id === 'syn_choose_finger_allegiance');
+  if (
+    chooseFingerEv &&
+    char.job === 'Syndicate' &&
+    !char.finger &&
+    !char.seenEvents.includes('syn_choose_finger_allegiance')
+  ) {
+    const logEntry = {
+      age: char.age,
+      phase: 'CLIMAX',
+      selectedId: chooseFingerEv.id,
+      utility: 980,
+      reasonVi: 'Gia nhập Syndicate: Tuyên thệ trung thành với một trong Năm Ngón Tay (Five Fingers)',
+      reasonEn: 'Joined Syndicate: Swear allegiance to one of the Five Fingers',
+      candidates: [{ eventId: chooseFingerEv.id, totalUtility: 980 }]
+    };
+    return {
+      event: chooseFingerEv,
+      weaver: {
+        ...updatedWeaver,
+        decisionLog: [logEntry, ...updatedWeaver.decisionLog].slice(0, 18)
+      }
+    };
+  }
+
   const carmenEv = allPools.find(e => e.id === 'ego_carmen_crossroad');
   const meetsCarmenPrereq = char.age >= 18 &&
     ((char.sanity <= 5 && rng() < 0.12) || ((char.resonance || 0) >= 90 && rng() < 0.15));
@@ -526,6 +555,97 @@ export function selectEventWithWeaverAI({
     };
     return {
       event: colorEv,
+      weaver: {
+        ...updatedWeaver,
+        decisionLog: [logEntry, ...updatedWeaver.decisionLog].slice(0, 18)
+      }
+    };
+  }
+
+  // Syndicate Pinnacle Ascension Trial (Underboss / Proxy / Great Sibling / Maestro / Star of the Sky)
+  if (
+    char.job === 'Syndicate' &&
+    char.finger &&
+    (char.fingerRank || 0) >= 2 &&
+    (char.merit || 0) >= 100 &&
+    ((char.stats?.rep ?? char.rep) || 0) >= 45
+  ) {
+    const fingerTrialIds = {
+      Thumb: 'syn_thumb_underboss_purge',
+      Index: 'syn_index_weaver_prescript',
+      Middle: 'syn_middle_great_brother_vendetta',
+      Pinky: 'syn_pinky_star_blade_pinnacle',
+      Ring: 'syn_ring_maestro_gallery'
+    };
+    const targetTrialId = fingerTrialIds[char.finger];
+    const fingerEv = targetTrialId && allPools.find(e => e.id === targetTrialId);
+    if (fingerEv && !char.seenEvents.includes(targetTrialId)) {
+      const logEntry = {
+        age: char.age,
+        phase: 'CLIMAX',
+        selectedId: fingerEv.id,
+        utility: 975,
+        reasonVi: `Thành viên The ${char.finger} đạt Rank ${char.fingerRank} & ${char.merit} Merit: Khảo nghiệm sinh tử bước lên hàng Trưởng Bối`,
+        reasonEn: `The ${char.finger} member reached Rank ${char.fingerRank} & ${char.merit} Merit: Pinnacle Ascension trial to apex leadership`,
+        candidates: [{ eventId: fingerEv.id, totalUtility: 975 }]
+      };
+      return {
+        event: fingerEv,
+        weaver: {
+          ...updatedWeaver,
+          decisionLog: [logEntry, ...updatedWeaver.decisionLog].slice(0, 18)
+        }
+      };
+    }
+  }
+
+  // Wing Senior Executive Singularity Audit
+  const wingEv = allPools.find(e => e.id === 'wing_singularity_classified_audit');
+  if (
+    wingEv &&
+    char.job === 'Wing Employee' &&
+    (char.wingRank || 0) >= 2 &&
+    (char.merit || 0) >= 90 &&
+    !char.seenEvents.includes('wing_singularity_classified_audit')
+  ) {
+    const logEntry = {
+      age: char.age,
+      phase: 'CLIMAX',
+      selectedId: wingEv.id,
+      utility: 970,
+      reasonVi: `Nhân viên Wing đạt Rank ${char.wingRank} & ${char.merit} Merit: Ban giám đốc triệu tập thẩm định Singularity tối mật`,
+      reasonEn: `Wing Employee with Rank ${char.wingRank} & ${char.merit} Merit: Summoned to classified Singularity Board appraisal`,
+      candidates: [{ eventId: wingEv.id, totalUtility: 970 }]
+    };
+    return {
+      event: wingEv,
+      weaver: {
+        ...updatedWeaver,
+        decisionLog: [logEntry, ...updatedWeaver.decisionLog].slice(0, 18)
+      }
+    };
+  }
+
+  // Workshop Masterpiece Forge Trial (Tres Certification)
+  const workshopEv = allPools.find(e => e.id === 'workshop_legendary_forge_trial');
+  if (
+    workshopEv &&
+    char.job === 'Workshop Craftsman' &&
+    (char.workshopRank || 0) >= 2 &&
+    (char.merit || 0) >= 90 &&
+    !char.seenEvents.includes('workshop_legendary_forge_trial')
+  ) {
+    const logEntry = {
+      age: char.age,
+      phase: 'CLIMAX',
+      selectedId: workshopEv.id,
+      utility: 970,
+      reasonVi: `Thợ rèn Workshop đạt Rank ${char.workshopRank} & ${char.merit} Merit: Cơ hội rèn Tuyệt tác Thần binh trước giám định viên Tres`,
+      reasonEn: `Workshop Craftsman with Rank ${char.workshopRank} & ${char.merit} Merit: Opportunity to forge a Masterpiece under Tres appraisers`,
+      candidates: [{ eventId: workshopEv.id, totalUtility: 970 }]
+    };
+    return {
+      event: workshopEv,
       weaver: {
         ...updatedWeaver,
         decisionLog: [logEntry, ...updatedWeaver.decisionLog].slice(0, 18)

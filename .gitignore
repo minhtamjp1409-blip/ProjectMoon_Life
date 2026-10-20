@@ -31,3 +31,7 @@ lerna-debug.log*
 *.swo
 .DS_Store
 Thumbs.db
+
+# Test & Scratch
+scratch/
+Data/

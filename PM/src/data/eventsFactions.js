@@ -101,8 +101,8 @@ export const FACTION_EVENTS = [
     weight: 10,
     jobs: ['Syndicate'],
     forbids: ['SwornFinger'],
-    vi: '[Chọn một Finger] Trong một tầng hầm dưới Backstreets, người của ba Finger đang tuyển. Ai đã vào thì không ra được nữa, và mỗi nơi có luật riêng của nó.',
-    en: '[Choosing a Finger] In a basement under the Backstreets, three of the Fingers are recruiting. Once you are in, you do not get out, and each has its own rules.',
+    vi: '[Chọn một Finger] Trong một tầng hầm dưới Backstreets, sứ giả của các Finger đang tuyển mộ. Ai đã vào thì không ra được nữa, và mỗi Finger có luật lệ thép riêng của nó.',
+    en: '[Choosing a Finger] In a basement under the Backstreets, emissaries of the Fingers are recruiting. Once you are in, you never leave, and each Finger enforces its own iron law.',
     choices: [
       {
         labelVi: 'The Thumb: kỷ luật và tôn ti',
@@ -114,6 +114,18 @@ export const FACTION_EVENTS = [
         flagsAdd: ['SwornFinger'],
         recordsAdd: ['finger_initiate'],
         effects: { wealth: +18, rep: +12, sanity: -14 },
+        meritAdd: 12
+      },
+      {
+        labelVi: 'The Index: thực thi Prescript tuyệt đối',
+        labelEn: 'The Index: absolute Prescript execution',
+        resultVi: 'Một người đưa tin mặc áo choàng trắng trao cho bạn một mảnh giấy gấp kín. "Đừng hỏi tại sao. Cứ làm theo những gì lá chỉ thị viết." Bạn tra thanh kiếm ngắn vào thắt lưng.',
+        resultEn: 'A white-robed messenger handed you a folded paper slip. “Never ask why. Simply obey what the Prescript decrees.” You strapped a short blade to your hip.',
+        setFinger: 'Index',
+        setFingerRank: 0,
+        flagsAdd: ['SwornFinger'],
+        recordsAdd: ['finger_initiate'],
+        effects: { rep: +14, network: +12, sanity: -12 },
         meritAdd: 12
       },
       {
@@ -129,8 +141,8 @@ export const FACTION_EVENTS = [
         meritAdd: 12
       },
       {
-        labelVi: 'The Ring: nghệ thuật',
-        labelEn: 'The Ring: art',
+        labelVi: 'The Ring: nghệ thuật và giải phẫu',
+        labelEn: 'The Ring: art and anatomy',
         resultVi: 'Họ đưa bạn một chiếc tạp dề và cho xem tác phẩm của các Student năm nay. Bạn nôn ở góc phòng. Một Docent gật đầu: "Ai cũng thế lúc đầu. Rồi sẽ đẹp."',
         resultEn: 'They gave you an apron and showed you this year’s Student works. You threw up in the corner. A Docent nodded: “Everyone does at first. Then it becomes beautiful.”',
         setFinger: 'Ring',
@@ -140,6 +152,18 @@ export const FACTION_EVENTS = [
         effects: { sanity: -22, rep: +14, wealth: +16, resonance: +20 },
         scarsAdd: ['Con mắt của The Ring'],
         meritAdd: 14
+      },
+      {
+        labelVi: 'The Pinky: hợp đồng ngầm và lời thề ngón út',
+        labelEn: 'The Pinky: shadow pacts and pinky oaths',
+        resultVi: 'Trong góc tối nhất của con hẻm, người phụ nữ đeo găng nhung siết nhẹ ngón út của bạn. "Ở The Pinky, một lời thề nặng hơn mạng sống. Thất hứa là mất tất cả." Một lưỡi dao mỏng được trao cho bạn.',
+        resultEn: 'In the deepest alley shadow, a velvet-gloved figure gripped your pinky finger. “In the Pinky, an oath is heavier than life. Break it, and you forfeit all.” A slender dagger was pressed into your grasp.',
+        setFinger: 'Pinky',
+        setFingerRank: 0,
+        flagsAdd: ['SwornFinger'],
+        recordsAdd: ['finger_initiate'],
+        effects: { wealth: +16, heat: +10, sanity: -8 },
+        meritAdd: 12
       }
     ]
   },
@@ -198,6 +222,7 @@ export const FACTION_EVENTS = [
     major: true,
     weight: 8.5,
     jobs: ['Syndicate'],
+    finger: 'Ring',
     vi: '[Buổi chấm điểm của The Ring] Kỳ xét lên Maestro đã đến. Chất liệu của bạn là một Fixer còn sống, bị đóng vào khung. Các Docent cầm bảng điểm chờ.\nTác phẩm dưới điểm B thì chính tác giả sẽ trở thành chất liệu cho buổi hòa nhạc tối nay.',
     en: '[The Ring’s grading] The Maestro examination has come. Your material is a living Fixer, fixed to a frame. The Docents wait with their scorecards.\nA work below a B and its artist becomes the material for tonight’s concert.',
     choices: [
@@ -207,7 +232,7 @@ export const FACTION_EVENTS = [
         resultVi: 'Bạn làm việc suốt bốn tiếng. Bạn cố không nghe những âm thanh từ khung tranh. Khi xong, các Docent đứng dậy vỗ tay. "A cộng." Bạn là Maestro. Bạn không ngủ được một tuần.',
         resultEn: 'You worked for four hours. You tried not to hear the sounds from the frame. When you were done, the Docents stood and applauded. “A plus.” You are a Maestro. You did not sleep for a week.',
         setFinger: 'Ring',
-        setFingerRank: 2,
+        setFingerRank: 3,
         recordsAdd: ['ring_maestro'],
         effects: { sanity: -32, rep: +34, wealth: +32, resonance: +30 },
         scarsAdd: ['Tác phẩm được điểm A cộng'],
@@ -533,6 +558,7 @@ export const FACTION_EVENTS = [
     major: true,
     weight: 920,
     jobs: ['Syndicate'],
+    finger: 'Thumb',
     vi: '[The Thumb · Grand Etiquette Purge] Capo dei Capi triệu tập bạn đến phòng yến tiệc mạ vàng của The Thumb. Một Sottocapo tiền nhiệm đã có lời nói thiếu tôn kính và bị xử tử. Trước mặt bạn là khẩu súng lục mạ bạc và danh sách các chi nhánh cần thanh trừng.\n"Lòng trung thành không đo bằng lời nói. Đo bằng việc mày có bóp cò mà không chớp mắt hay không."',
     en: '[The Thumb · Grand Etiquette Purge] The Capo dei Capi summoned you to the gilded banquet hall of The Thumb. A former Sottocapo uttered a single disrespectful phrase and was executed. Before you lay a silver pistol and the list of branches to be purged.\n“Loyalty is not measured in speech. It is measured by whether your finger pulls the trigger without a flicker in your eyes.”',
     choices: [
@@ -567,6 +593,7 @@ export const FACTION_EVENTS = [
     major: true,
     weight: 920,
     jobs: ['Syndicate'],
+    finger: 'Index',
     vi: '[The Index · The Golden Prescript] Một lá Prescript dát vàng từ Yan Vismod rơi xuống trước mặt bạn. Nét chữ sắc lẻm như dao khắc:\n"Đi đến District 11 lúc 2 giờ 45 sáng. Chặt đứt cánh tay cầm vũ khí của người Fixer đang ngồi uống trà, và nuốt một đồng xu rỉ sét. Sau đó, bước lên bậc thềm Proxy."',
     en: '[The Index · The Golden Prescript] A gilded Prescript from Yan Vismod fluttered down before you. The calligraphy cut like a blade:\n“Walk to District 11 at 2:45 AM. Sever the weapon-arm of the Fixer sipping tea, and swallow a rusted coin. Thereafter, ascend the Proxy steps.”',
     choices: [
@@ -601,6 +628,7 @@ export const FACTION_EVENTS = [
     major: true,
     weight: 920,
     jobs: ['Syndicate'],
+    finger: 'Middle',
     vi: '[The Middle · The Master Vendetta] Cuốn Book of Vengeance (Sách Phục Thù) mở ra trước mặt bạn. Một dòng chữ đỏ rực từ hai mươi năm trước: Kẻ thù cũ từng làm một người em trong gia đình nhỏ lệ đang ẩn náu trong một pháo đài ngầm ở District 14 cùng năm mươi tay súng.\n"Đại gia đình không bao giờ quên. Hôm nay, mày sẽ viết chữ HẾT cho món nợ này."',
     en: '[The Middle · The Master Vendetta] The Book of Vengeance opened before you. A crimson inscription from twenty years ago: The old adversary who once brought tears to a younger sibling hides in an underground fortress in District 14 with fifty gunners.\n“The Great Family never forgets. Today, you write END to this debt.”',
     choices: [
@@ -632,6 +660,7 @@ export const FACTION_EVENTS = [
     major: true,
     weight: 920,
     jobs: ['Syndicate'],
+    finger: 'Pinky',
     vi: '[The Pinky · Star of the Sky Ascent] Giữa đêm tĩnh mịch, bạn leo lên đỉnh tháp chuông đổ nát ở rìa Outskirts của The Pinky. Gió lạnh rít qua từng khe đá. Người canh gác của The Pinky thắp ngọn đuốc xanh:\n"Chỉ có kẻ dám trói buộc sinh mệnh của mình với lưỡi kiếm mới có thể trở thành Thiên Tinh (Star of the Sky). Mày có dám nhỏ máu vào đe rèn không?"',
     en: '[The Pinky · Star of the Sky Ascent] In the dead of night, you ascended the ruined bell tower on the Outskirts border of The Pinky. Cold wind screamed through stone gaps. The Pinky guardian lit a cyan torch:\n“Only those willing to bind their lifeforce to the blade may become a Star of the Sky. Do you dare spill your blood upon the anvil?”',
     choices: [
