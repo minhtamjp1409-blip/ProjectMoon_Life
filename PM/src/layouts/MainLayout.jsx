@@ -11,7 +11,7 @@ const TICK_MS = 100;
 export const MainLayout = ({ children }) => {
   const location = useLocation();
   // Only the fields the loop needs; yearProgress is left out so the layout doesn't re-render each tick
-  const { inRun, alive, pendingEvent, pendingContract, pendingModal, speed, autoPlay, tick, selectEventChoice, selectContractApproach, hydrateFromBackend } =
+  const { inRun, alive, pendingEvent, pendingContract, pendingMinor, pendingModal, speed, autoPlay, tick, selectEventChoice, selectContractApproach, hydrateFromBackend } =
     useGameStore(
       useShallow((s) => ({
         inRun: s.inRun,

@@ -4,6 +4,7 @@ import { ConfigProvider, App as AntdApp, theme as AntdThemeLib } from 'antd';
 import viVN from 'antd/locale/vi_VN';
 import enUS from 'antd/locale/en_US';
 import AppRouter from './routes';
+import ErrorBoundary from './components/ErrorBoundary';
 import { useThemeStore } from './store/themeStore';
 
 // Ant Design is kept for modals, tooltips and notifications only; its tokens
@@ -49,7 +50,9 @@ export const App = () => {
     <ConfigProvider theme={antTheme} locale={lang === 'en' ? enUS : viVN}>
       <AntdApp>
         <BrowserRouter>
-          <AppRouter />
+          <ErrorBoundary>
+            <AppRouter />
+          </ErrorBoundary>
         </BrowserRouter>
       </AntdApp>
     </ConfigProvider>

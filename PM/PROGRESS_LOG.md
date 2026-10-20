@@ -225,6 +225,13 @@ Trong chữ: `{name}`, `{friend}`, `{mentor}`, `{rival}`, `{lover}`, `{partner}`
 
 ### 20/10/2026, đợt 6
 
+- **Khắc phục lỗi màn hình đen khi bấm Chơi trên Mobile (Mobile Black Screen Crash Fix)**:
+  - *Nguyên nhân cốt lõi*: Tại [`src/layouts/MainLayout.jsx`](src/layouts/MainLayout.jsx), câu lệnh bóc tách biến (destructuring) từ hook `useGameStore` trả về `pendingMinor` nhưng lại bị sót khai báo biến ở vế trái (`const { ... } = useGameStore(...)`). Khi ở trang chủ (`isPlay = false`), toán tử `isPlay && Boolean(...)` dừng sớm nên không phát sinh lỗi. Ngay khi bấm "Chơi" (`inRun = true` $\implies$ `isPlay = true`), JavaScript cố đọc biến chưa khai báo $\implies$ ném lỗi runtime `ReferenceError: pendingMinor is not defined`.
+  - *Hệ quả*: Do React thiếu cơ chế bẫy lỗi (Error Boundary), toàn bộ cây DOM gốc (`#root`) bị tháo dỡ hoàn toàn, nền trang đen của `body` (`#0d0e12`) bao trùm toàn bộ màn hình điện thoại.
+  - *Giải pháp triệt để*:
+    1. Bổ sung đầy đủ biến `pendingMinor` vào danh sách destructuring trong [`MainLayout.jsx`](src/layouts/MainLayout.jsx).
+    2. Xây dựng component [`ErrorBoundary.jsx`](src/components/ErrorBoundary.jsx) chuyên dụng bọc ngoài `AppRouter` trong [`App.jsx`](src/App.jsx). Nếu có bất kỳ lỗi không lường trước nào xảy ra, giao diện Project Moon sang trọng ("Gián Đoạn Kết Nối Tâm Thức") sẽ hiển thị kèm nút Tải lại / Về trang chủ thay vì sập toàn bộ giao diện thành màn đen.
+    3. Kiểm thử tự động trên Chrome DevTools Protocol giả lập Mobile: Xác nhận nút Roll Destiny & Enter The City chuyển sang màn chơi mượt mà 100%, Mobile Resource HUD và Feed hiển thị sắc nét.
 - **Thiết kế chuyên biệt cho Mobile (Dedicated Mobile HUD & Dossier Drawer)**:
   - Thay thế hoàn toàn thanh tóm tắt text đơn điệu bằng **Mobile Resource HUD**:
     - Hiển thị thanh máu đôi (HP & SP Twin Gauges) trực quan với thanh đo phần trăm đổi màu và nhấp nháy khi nguy kịch (CRIT).
