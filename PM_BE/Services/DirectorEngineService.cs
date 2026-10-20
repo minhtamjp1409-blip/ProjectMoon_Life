@@ -438,7 +438,7 @@ public sealed class DirectorEngineService
         string majorTitleVi = "";
         string majorTitleEn = "";
 
-        if (c.Age == 18 && !seen.Contains("ad_career_crossroad_18"))
+        if ((c.Age == 18 || (c.Age > 18 && c.Job.Equals("Child", StringComparison.OrdinalIgnoreCase))) && !seen.Contains("ad_career_crossroad_18"))
         {
             majorDue = true;
             majorId = "ad_career_crossroad_18";
