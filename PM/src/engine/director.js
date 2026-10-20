@@ -58,7 +58,7 @@ export function directorWeight(entry, char) {
   }
   if (n.nest || n.back || n.out) w *= 1.4;
   if (n.mem || tags.includes('callback')) {
-    w *= 3.2;
+    w *= 5.5;
     reason = { vi: 'Một lựa chọn cũ quay lại', en: 'An old choice comes back' };
   }
 
@@ -119,9 +119,14 @@ export function logDecision(char, entry, reason, kind) {
   char.weaver = { ...char.weaver, decisionLog: [item, ...(char.weaver?.decisionLog || [])].slice(0, 24) };
 }
 
+/** All threads scheduled by earlier choices that are due this year and unfulfilled. */
+export function dueThreads(char) {
+  return (char.weaver?.pendingThreads || []).filter((th) => !th.fulfilled && char.age >= th.triggerAge);
+}
+
 /** Minor events scheduled by earlier choices that are due this year. */
 export function dueMinorThreads(char) {
-  return (char.weaver?.pendingThreads || []).filter((th) => th.kind === 'minor' && !th.fulfilled && char.age >= th.triggerAge);
+  return (char.weaver?.pendingThreads || []).filter((th) => (th.kind === 'minor' || !th.kind) && !th.fulfilled && char.age >= th.triggerAge);
 }
 
 export function closeThreads(char, eventId) {

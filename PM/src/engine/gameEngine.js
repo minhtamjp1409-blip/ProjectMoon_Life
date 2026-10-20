@@ -24,6 +24,7 @@ import {
   recordChoiceInGraph,
   updateDramaTension
 } from './weaverAI';
+import { hasMemory, closeThreads } from './director';
 
 export const ALL_STORY_EVENTS = [
   ...CHILDHOOD_EVENTS,
@@ -680,8 +681,8 @@ export function woundDeath(char, vi, en) {
 }
 
 export function applyFatalOrCompanionSave(char, deathCauseVi, deathCauseEn) {
-  const saviorKey = ['partner', 'spouse'].find(
-    k => char.npcs?.[k] && !char.npcs[k].deceased && (char.npcs[k].bond || 0) >= 65
+  const saviorKey = ['partner', 'spouse', 'friend', 'mentor'].find(
+    k => char.npcs?.[k] && !char.npcs[k].deceased && (char.npcs[k].bond || 0) >= (['partner', 'spouse'].includes(k) ? 65 : 75)
   );
 
   if (saviorKey) {
@@ -741,10 +742,24 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
   // Determine outcome (direct choice or weighted outcome roll)
   let outcome = choice;
   if (Array.isArray(choice.outcomes) && choice.outcomes.length > 0) {
-    const totalW = choice.outcomes.reduce((s, o) => s + (o.w || 50), 0);
+    // Project Moon RNG: Karma & Past Deeds tilt the odds!
+    const evaluatedOutcomes = choice.outcomes.map(o => {
+      let weight = o.w || 50;
+      // If player has awakened Shin or martial mastery, combat odds tilt favorably
+      if (char.flags.includes('ShinAwakened') && (o.resultVi?.includes('đứng') || o.resultVi?.includes('thắng') || o.resultVi?.includes('sống') || !o.deathCauseVi)) {
+        weight = Math.round(weight * 1.35);
+      }
+      // If player is distorted and outcome is violent/destructive
+      if (char.flags.includes('Distorted') && (o.effects?.sanity < 0 || o.effects?.rep > 0)) {
+        weight = Math.round(weight * 1.4);
+      }
+      return { ...o, effectiveW: Math.max(5, weight) };
+    });
+
+    const totalW = evaluatedOutcomes.reduce((s, o) => s + o.effectiveW, 0);
     let roll = rng() * totalW;
-    for (const o of choice.outcomes) {
-      roll -= o.w || 50;
+    for (const o of evaluatedOutcomes) {
+      roll -= o.effectiveW;
       if (roll <= 0) {
         outcome = o;
         break;
@@ -788,17 +803,45 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
   const meritAdd = (choice.meritAdd || 0) + (outcome.meritAdd || 0);
   if (meritAdd) char.merit = Math.max(0, char.merit + meritAdd);
 
-  // Flags, Scars, Codex Records, NPCs
-  const flagsAdd = [...(choice.flagsAdd || []), ...(outcome.flagsAdd || [])];
+  // Flags, Scars, Codex Records, NPCs, Memories (Persistent Causality)
+  const flagsAdd = [
+    ...(choice.flagsAdd || []),
+    ...(choice.flags || []),
+    ...(outcome.flagsAdd || []),
+    ...(outcome.flags || [])
+  ];
   flagsAdd.forEach(f => {
     if (!char.flags.includes(f)) char.flags.push(f);
   });
 
-  const scarsAdd = [...(choice.scarsAdd || []), ...(outcome.scarsAdd || [])];
+  const scarsAdd = [
+    ...(choice.scarsAdd || []),
+    ...(choice.scars || []),
+    ...(choice.scar ? [choice.scar] : []),
+    ...(outcome.scarsAdd || []),
+    ...(outcome.scars || []),
+    ...(outcome.scar ? [outcome.scar] : [])
+  ];
   scarsAdd.forEach(s => {
-    if (!char.scars.includes(s)) {
-      char.scars.push(s);
+    const interpolated = interpolateText(s, char);
+    if (!char.scars.includes(interpolated)) {
+      char.scars.push(interpolated);
       char.resonance = clamp((char.resonance || 0) + 10, 0, 100);
+    }
+  });
+
+  // Persistent Memories: Choices remain etched into character's past
+  const memList = [
+    choice.mem,
+    outcome.mem,
+    choice.memory,
+    outcome.memory,
+    ...(choice.memories || []),
+    ...(outcome.memories || [])
+  ].filter(Boolean);
+  memList.forEach(m => {
+    if (!hasMemory(char, m)) {
+      char.memory = [...(char.memory || []), { key: m, age: char.age }];
     }
   });
 
@@ -811,7 +854,6 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
   if (npcAdd && npcAdd.role) {
     const lover = char.npcs?.lover;
     if (npcAdd.role === 'spouse' && lover && !lover.deceased && lover.status !== 'dead') {
-      // The person you were already seeing is the one you marry
       char.npcs.spouse = { ...lover, role: 'spouse', bond: Math.max(lover.bond || 0, npcAdd.bond || 0), lastSeen: char.age };
       char.npcs.lover = null;
     } else if (!char.npcs[npcAdd.role] || char.npcs[npcAdd.role].deceased) {
@@ -858,7 +900,22 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
   });
 
   // Record in the Weaver AI Causal Memory Graph & schedule any delayed consequences!
-  char.weaver = recordChoiceInGraph(char.weaver, char, event, choice, textVi, textEn);
+  const allConsequences = [
+    ...(choice.scheduleConsequences || []),
+    ...(outcome.scheduleConsequences || []),
+    ...(choice.later || []).map(l => ({ eventId: l.id, delayYears: l.years, reasonVi: l.reasonVi, reasonEn: l.reasonEn })),
+    ...(outcome.later || []).map(l => ({ eventId: l.id, delayYears: l.years, reasonVi: l.reasonVi, reasonEn: l.reasonEn }))
+  ];
+  const effectiveChoice = {
+    ...choice,
+    ...outcome,
+    scheduleConsequences: allConsequences,
+    scarsAdd
+  };
+  char.weaver = recordChoiceInGraph(char.weaver, char, event, effectiveChoice, textVi, textEn);
+
+  // Mark any thread targeting this event as fulfilled
+  closeThreads(char, event.id);
 
   // Check if outcome caused immediate death or health <= 0
   if (outcome.deathCauseVi || char.stats.health <= 0) {

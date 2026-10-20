@@ -159,6 +159,15 @@ const EventDock = ({ event, char, onPick }) => {
           </div>
         </div>
 
+        {causal && (event.causalReasonVi || event.causalReasonEn) && (
+          <div className="causal-echo-badge">
+            <span className="causal-icon">⟲</span>
+            <span className="causal-text">
+              {lang === 'en' ? (event.causalReasonEn || event.causalReasonVi) : (event.causalReasonVi || event.causalReasonEn)}
+            </span>
+          </div>
+        )}
+
         <p className="dock-text">{lang === 'en' ? event.displayEn || event.displayVi : event.displayVi}</p>
         {bilingual && event.displayEn && <p className="entry-alt">{event.displayEn}</p>}
 

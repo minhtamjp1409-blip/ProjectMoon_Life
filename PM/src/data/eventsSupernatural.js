@@ -36,7 +36,15 @@ export const SUPERNATURAL_EVENTS = [
         flagsAdd: ['유물'],
         recordsAdd: ['workshop_masterpiece'],
         scarsAdd: ['Khẩu súng phạm Taboo'],
-        meritAdd: 22
+        meritAdd: 22,
+        scheduleConsequences: [
+          {
+            eventId: 'csq_taboo_workshop_raid',
+            delayYears: 4,
+            reasonVi: 'Khẩu súng phạm Taboo bị Tres và B Corp phát hiện',
+            reasonEn: 'The Taboo firearm was traced by Tres and B Corp'
+          }
+        ]
       }
     ]
   },
@@ -59,7 +67,15 @@ export const SUPERNATURAL_EVENTS = [
         flagsAdd: ['Bloodfiend'],
         effects: { health: +35, sanity: -30, rep: +18, resonance: +30 },
         scarsAdd: ['Cơn khát không bao giờ hết'],
-        meritAdd: 24
+        meritAdd: 24,
+        scheduleConsequences: [
+          {
+            eventId: 'csq_bloodfiend_banquet_call',
+            delayYears: 5,
+            reasonVi: 'Elder triệu tập bạn dự đêm tiệc máu',
+            reasonEn: 'The Elder summons you to the blood banquet'
+          }
+        ]
       },
       {
         labelVi: 'Đập vỡ chai dầu cháy trên người mình',

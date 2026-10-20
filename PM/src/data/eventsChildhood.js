@@ -662,5 +662,176 @@ export const CONSEQUENCE_EVENTS = [
         scarsAdd: ['Bị trục xuất ra The Outskirts']
       }
     ]
+  },
+  {
+    id: 'csq_warp_survivor_debt',
+    major: true,
+    isCausalCallback: true,
+    vi: '[Bí mật từ toa cuối] Một thanh tra cấp cao của W Corp và điều tra viên T Corp phong tỏa chỗ ở của bạn. Trên bàn là chiếc lọ thủy tinh bạn từng giấu mẩu thịt của toa cuối năm ấy.\n"Tàu WARP không làm mất hành khách. Mẩu thịt này đã vi phạm hợp đồng độc quyền của W Corp. Trả 42 Ahn tiền phạt bí mật, hoặc làm người dọn dẹp không công cho chuyến tàu tiếp theo."',
+    en: '[Secret of the last car] A high-ranking W Corp inspector and a T Corp auditor cordoned off your quarters. On the table was the glass jar you once held from the last car.\n“WARP trains do not lose passengers. This tissue violates W Corp’s exclusive patent. Pay 42 Ahn in confidential fines, or serve as an uncompensated cleaner on the next departure.”',
+    choices: [
+      {
+        labelVi: 'Nộp 42 Ahn để khép lại vụ việc',
+        labelEn: 'Pay 42 Ahn to close the case',
+        resultVi: 'Viên thanh tra đóng dấu đỏ lên hồ sơ rồi tiêu hủy cái lọ. Bạn mất sạch tiền dành dụm, nhưng không phải bước lên toa tàu đó lần thứ hai.',
+        resultEn: 'The inspector stamped the file in red and incinerated the jar. Your savings were cleared out, but you won’t have to step onto that car a second time.',
+        effects: { wealth: -42, sanity: +5, taboo: -2 }
+      },
+      {
+        labelVi: 'Rút vũ khí, phá vòng vây tẩu thoát vào đường ngầm',
+        labelEn: 'Draw your weapon, breach the perimeter, and flee into the underground',
+        resultVi: 'Lưỡi cưa của W Corp Cleaner xé toạc bả vai bạn trước khi bạn lao xuống nắp cống. Bạn sống sót giữa bóng tối Backstreets, với một vết thương không bao giờ ngừng đau khi trời lạnh.',
+        resultEn: 'A W Corp Cleaner’s rip-saw tore your shoulder before you dropped through the sewer grate. You survived in the dark Backstreets, carrying a wound that aches whenever the cold sets in.',
+        effects: { health: -38, rep: +20, heat: +35, resonance: +20 },
+        scarsAdd: ['Vết cưa của W Corp Cleaner'],
+        meritAdd: 18
+      }
+    ]
+  },
+  {
+    id: 'csq_ncorp_heretic_hunt',
+    major: true,
+    isCausalCallback: true,
+    vi: '[Đứa trẻ mang mắt nhân tạo trở lại] Ba Inquisitor của N Corp dồn bạn vào hẻm cụt, búa và đinh sáng loáng trong đêm. Khi mũi đinh đầu tiên sắp đóng vào vai bạn, một bóng người từ mái nhà lao xuống cùng thanh cưa xích Workshop khổng lồ—đó là đứa trẻ mồ côi bạn từng cắt dây cứu năm nào, nay đã là Fixer Grade 3 với đôi mắt và cánh tay mạ crôm sáng rực!\n"Lần này, đến lượt tôi nhổ đinh cho anh/chị!"',
+    en: '[The child with the prosthetic eye returns] Three N Corp Inquisitors backed you into a dead end, hammers and nails gleaming in the dark. As the first nail neared your shoulder, a figure dropped from the rooftops with a massive Workshop chainsaw blade—the orphan you cut loose years ago, now a Grade 3 Fixer with gleaming chrome eyes and arms!\n“This time, it’s my turn to pull the nails for you!”',
+    choices: [
+      {
+        labelVi: 'Kề vai chiến đấu, cùng nhau đập tan toán Inquisitor',
+        labelEn: 'Fight shoulder to shoulder and shatter the Inquisitor squad',
+        resultVi: 'Hai lưỡi vũ khí phối hợp hoàn hảo. Ba Inquisitor ngã gục. Người ấy lau máu trên lưỡi cưa, cười lớn và đưa cho bạn một khẩu súng ngắn Workshop đặc chế. "Chúng ta là gia đình."',
+        resultEn: 'Your weapons moved in perfect rhythm. The three Inquisitors fell. They wiped the blood from the saw, laughed aloud, and handed you a custom Workshop sidearm. “We are family now.”',
+        effects: { health: -14, sanity: +18, rep: +28, network: +24, resonance: +15 },
+        flagsAdd: ['고급장비'],
+        npcAdd: { role: 'partner', bond: 85, traitVi: 'Đứa trẻ mang mắt nhân tạo bạn từng cứu, nay là Fixer thiện chiến' },
+        meritAdd: 28
+      }
+    ]
+  },
+  {
+    id: 'csq_bloodfiend_banquet_call',
+    major: true,
+    isCausalCallback: true,
+    vi: '[Bữa tiệc của Bloodfiend] Một phong thư sáp đỏ đặt trên gối bạn lúc nửa đêm. Elder Bloodfiend từng cho bạn uống máu năm ấy triệu tập bạn đến một hầm rượu cổ dưới District 23.\n"Cơn khát của ngươi đã chín muồi. Đêm nay, ngươi phải dâng lên bàn tiệc một người sống, hoặc chính máu của ngươi sẽ lấp đầy chiếc ly này."',
+    en: '[The Bloodfiend’s Banquet] A red wax envelope lay on your pillow at midnight. The Elder Bloodfiend who fed you her blood summoned you to an ancient cellar in District 23.\n“Your thirst has ripened. Tonight, you must present a living soul to the table, or your own blood will fill this chalice.”',
+    choices: [
+      {
+        labelVi: 'Mang một kẻ săn tiền thưởng bất lương đến thế chỗ',
+        labelEn: 'Deliver a corrupt bounty hunter in your place',
+        resultVi: 'Các Bloodfiend vỗ tay khen ngợi sự tàn nhẫn của bạn. Bạn được ban thêm huyết thanh cổ xưa, làm cơ thể bạn bền bỉ như đá, nhưng đêm nào bạn cũng nghe tiếng gào của nạn nhân.',
+        resultEn: 'The Bloodfiends applauded your ruthlessness. You were granted ancient blood serum, hardening your flesh like stone, but every night you hear the victim’s screams.',
+        effects: { health: +20, sanity: -25, rep: +22, resonance: +25 },
+        scarsAdd: ['Kẻ dự tiệc của Bloodfiend'],
+        meritAdd: 22
+      },
+      {
+        labelVi: 'Tẩm dầu cháy lên lưỡi kiếm và chém nát bàn tiệc',
+        labelEn: 'Coat your blade in oil, set it ablaze, and shatter the banquet table',
+        resultVi: 'Lửa bùng lên thiêu rụi hầm rượu. Elder thét lên khi ngọn lửa liếm vào váy bà ta. Bạn thoát ra với cơ thể đầy vết cắn và bỏng nặng, nhưng linh hồn bạn đã tự do khỏi sự kìm kẹp của dòng máu quỷ.',
+        resultEn: 'Fire engulfed the cellar. The Elder shrieked as flames consumed her gown. You tore away with severe bites and burns, but your soul broke free from the demon blood’s grip.',
+        effects: { health: -38, sanity: +22, rep: +32, resonance: +18 },
+        scarsAdd: ['Lửa thiêu đêm tiệc máu'],
+        meritAdd: 34
+      }
+    ]
+  },
+  {
+    id: 'csq_blade_lineage_duel',
+    major: true,
+    isCausalCallback: true,
+    vi: '[To Claim Their Bones: Trả lại thanh kiếm] Trên cây cầu gỗ ngập nước mưa, Kim—Sasu của Blade Lineage với chiếc nón lá và áo tơi rách—đứng chắn đường bạn. Thanh katana của ông hạ xuống ngang ngực.\n"Ngươi là người đã nhận thịt và bẻ xương đệ tử ta năm ấy. Rút kiếm ra. Hãy cho ta thấy xương của ngươi có xứng đáng đứng trong mưa."',
+    en: '[To Claim Their Bones: Returning the Blade] On a rain-soaked bridge, Kim—the Sasu of the Blade Lineage with his straw hat and tattered bamboo coat—stood across your path. His katana leveled at your chest.\n“You are the one who yielded flesh and claimed my disciple’s bones that year. Draw your sword. Show me if your bones are worthy of standing in this rain.”',
+    choices: [
+      {
+        labelVi: 'Dồn hết ý chí vào thế thủ To Claim Their Bones',
+        labelEn: 'Channel all your will into the stance To Claim Their Bones',
+        outcomes: [
+          {
+            w: 55,
+            resultVi: 'Nhát chém của Kim cắt toạc ngực bạn, nhưng bạn không lùi nửa bước; mũi kiếm của bạn dừng lại ngay yết hầu ông. Kim mỉm cười, tra kiếm vào vỏ: "Xương rất tốt." Ông truyền lại cho bạn bí kíp thất truyền của Blade Lineage.',
+            resultEn: 'Kim’s slash opened your chest, but you did not give half a step; your blade halted right at his throat. Kim smiled, sheathing his sword: “Good bones.” He bestowed upon you the lost lineage manuscript.',
+            effects: { health: -28, sanity: +12, rep: +38, resonance: +26 },
+            flagsAdd: ['BladeLineageMastery'],
+            scarsAdd: ['Vết kiếm của Kim'],
+            meritAdd: 40
+          },
+          {
+            w: 45,
+            resultVi: 'Kiếm khí hất văng vũ khí của bạn xuống sông. Kim nhìn bạn nằm trong bùn, thở dài: "Chưa đủ." Ông tha mạng cho bạn, nhưng lấy đi một ngón tay cầm kiếm.',
+            resultEn: 'His sword wind knocked your blade into the river. Kim looked down at you in the mud and sighed: “Not enough.” He spared your life, but took one sword finger.',
+            effects: { health: -45, sanity: -20, rep: -10, resonance: +20 },
+            scarsAdd: ['Ngón tay rơi trên cầu gỗ']
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'csq_taboo_workshop_raid',
+    major: true,
+    isCausalCallback: true,
+    vi: '[Tres và Thợ săn Taboo] Ba Workshop Sweeper của Tres Association phong tỏa xưởng của bạn cùng một Beholder của B Corp. Khẩu súng bắn xuyên tường bạn lén chế tạo năm ấy vừa được dùng để ám sát một Giám đốc Wing.\n"Giao nộp toàn bộ bản vẽ và chịu 40 Ahn tiền phạt, hoặc xưởng này sẽ thành đống tro cùng với ngươi."',
+    en: '[Tres and the Taboo Hunters] Three Tres Association Workshop Sweepers sealed off your workshop alongside a B Corp Beholder. The wall-piercing firearm you secretly crafted years ago was just used to assassinate a Wing Director.\n“Surrender all schematics and pay a 40 Ahn penalty, or this workshop burns to ash with you inside.”',
+    choices: [
+      {
+        labelVi: 'Nộp 40 Ahn và đốt toàn bộ bản thiết kế trước mặt họ',
+        labelEn: 'Pay 40 Ahn and burn all blueprints in front of them',
+        resultVi: 'Ngọn lửa lò rèn nuốt trọn tác phẩm tâm huyết của bạn. Tres đóng dấu "Đã giải quyết" và rời đi. Bạn mất hết tiền, nhưng giữ lại được mạng sống và giấy phép mở xưởng.',
+        resultEn: 'The forge flames consumed your life’s masterpiece. Tres stamped “Resolved” and departed. You lost all your wealth, but kept your life and forge license.',
+        effects: { wealth: -40, sanity: -15, taboo: -2 }
+      },
+      {
+        labelVi: 'Kích nổ lò rèn, dùng bom khói Workshop phá đường chạy',
+        labelEn: 'Overload the forge, deploy smoke bombs, and break out',
+        resultVi: 'Vụ nổ thổi bay cả góc phố. Bạn thoát được vào cống ngầm với vài vết bỏng sâu. Từ nay xưởng của bạn là tàn tích, và bạn trở thành một Thợ rèn giang hồ bị truy nã.',
+        resultEn: 'The blast blew apart half the block. You escaped through the drains with severe burns. From now on your shop is rubble, and you are a rogue wandering craftsman with a bounty.',
+        effects: { health: -32, wealth: -20, rep: +24, heat: +35, resonance: +22 },
+        scarsAdd: ['Thợ rèn phạm Taboo'],
+        meritAdd: 25
+      }
+    ]
+  },
+  {
+    id: 'csq_thumb_capo_trial',
+    major: true,
+    isCausalCallback: true,
+    vi: '[Lệnh của Sottocapo] Hai Unterkapo của The Thumb đứng trước cửa phòng bạn, tay cầm tráp gấm chứa một khẩu súng ngắn mạ vàng và một danh sách mục tiêu.\n"Sottocapo nhớ lòng trung thành của ngươi năm xưa. Hôm nay, hãy đích thân trừ khử một băng nhóm Syndicate dám vi phạm lễ nghi ở District 8. Không được để sót một kẻ nào."',
+    en: '[The Sottocapo’s Mandate] Two Thumb Unterkapos stood at your door, bearing a brocade case with a gilded firearm and a target list.\n“The Sottocapo remembers your loyalty that year. Today, you personally purge a syndicate crew that dared violate etiquette in District 8. Leave none breathing.”',
+    choices: [
+      {
+        labelVi: 'Chấp hành mệnh lệnh với kỷ luật sắt thép của The Thumb',
+        labelEn: 'Execute the order with iron Thumb discipline',
+        resultVi: 'Tiếng đạn nổ đều đặn như nhịp đồng hồ. Cả băng nhóm bị thanh trừng gọn gàng. Sottocapo ban tặng bạn huy hiệu Capo danh dự cùng một túi tiền thưởng lớn.',
+        resultEn: 'Gunfire rang out methodical as a clock. The entire crew was cleanly purged. The Sottocapo bestowed upon you an honorary Capo insignia and a heavy purse.',
+        setFingerRank: 3,
+        effects: { wealth: +38, rep: +28, sanity: -18, resonance: +18 },
+        scarsAdd: ['Kẻ thi hành lễ nghi của The Thumb'],
+        meritAdd: 30
+      }
+    ]
+  },
+  {
+    id: 'csq_kcorp_ampule_blackmail',
+    major: true,
+    isCausalCallback: true,
+    vi: '[Bí mật thứ biết khóc] Một kẻ môi giới chợ đen ném lên bàn bạn bức ảnh chụp vũng dịch xanh của người đồng nghiệp năm ấy.\n"Chúng tao biết những ống HP Ampoule thật của mày từ đâu ra. Cung cấp 35 Ahn hoặc mỗi tháng giao 2 ống thuốc, nếu không ngày mai Wing sẽ nhận được cuộn phim này."',
+    en: '[Secret of the Weeping Eye] A black-market broker slammed a photo on your table showing the green puddle of your colleague years ago.\n“We know where your genuine HP Ampoules came from. Hand over 35 Ahn or deliver 2 ampoules every month, or tomorrow the Wing gets this film.”',
+    choices: [
+      {
+        labelVi: 'Trả 35 Ahn để mua lại cuộn phim và sự im lặng',
+        labelEn: 'Pay 35 Ahn to buy the film and their silence',
+        resultVi: 'Bạn châm lửa đốt tấm ảnh ngay trước mặt hắn. Hắn cười khẩy nhận tiền rồi biến mất. Bạn tạm thời an toàn, dù biết bí mật ở The City không bao giờ chôn sâu mãi.',
+        resultEn: 'You burned the photo right before his eyes. He smirked, took the Ahn, and vanished. You are safe for now, though secrets in the City never stay buried forever.',
+        effects: { wealth: -35, sanity: -8 }
+      },
+      {
+        labelVi: 'Giết kẻ tống tiền ngay trong đêm và phi tang xác',
+        labelEn: 'Kill the blackmailer that night and dispose of the body',
+        resultVi: 'Lưỡi dao của bạn không để lại dấu vết. Bạn mất nửa đêm để lau dọn căn phòng. Không ai tìm thấy cuộn phim nữa, nhưng ánh mắt của hắn lúc hấp hối sẽ theo bạn suốt đời.',
+        resultEn: 'Your blade left no trace. You spent half the night scrubbing the room. No one will ever find the film, but his dying gaze will follow you for life.',
+        effects: { health: -12, sanity: -22, rep: +18, heat: +20, resonance: +20 },
+        scarsAdd: ['Xác kẻ tống tiền trong đêm'],
+        meritAdd: 20
+      }
+    ]
   }
 ];

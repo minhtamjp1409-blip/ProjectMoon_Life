@@ -162,16 +162,33 @@ export const FACTION_EVENTS = [
         recordsAdd: ['thumb_underboss'],
         effects: { health: -34, sanity: -18, rep: +28, wealth: +26, resonance: +18 },
         scarsAdd: ['Vết rạch trên má'],
-        meritAdd: 28
+        meritAdd: 28,
+        scheduleConsequences: [
+          {
+            eventId: 'csq_thumb_capo_trial',
+            delayYears: 4,
+            reasonVi: 'Lòng trung thành với The Thumb được Sottocapo ghi nhận',
+            reasonEn: 'Your loyalty to the Thumb was noted by the Sottocapo'
+          }
+        ]
       },
       {
         labelVi: 'Chộp con dao trước Capo',
         labelEn: 'Grab the knife before the Capo does',
         resultVi: 'Bạn giết Capo và hai người gác cửa, rồi nhảy qua cửa sổ giữa tiếng súng. Dãy nhà được cứu. Từ đêm đó, The Thumb treo thưởng cho cái đầu của bạn.',
         resultEn: 'You killed the Capo and the two at the door, then went out the window under fire. The houses were saved. From that night, the Thumb put a price on your head.',
+        flagsAdd: ['ThumbTraitor'],
         effects: { health: -42, sanity: -10, rep: +20, heat: +45, resonance: +22 },
         scarsAdd: ['Kẻ phản bội của The Thumb'],
-        meritAdd: 18
+        meritAdd: 18,
+        scheduleConsequences: [
+          {
+            eventId: 'csq_middle_ambush_adult',
+            delayYears: 3,
+            reasonVi: 'Kẻ bị treo thưởng luôn bị săn lùng',
+            reasonEn: 'Those with a bounty on their head are hunted'
+          }
+        ]
       }
     ]
   },
@@ -229,7 +246,15 @@ export const FACTION_EVENTS = [
             effects: { health: -34, sanity: -10, rep: +30, wealth: +24, resonance: +24 },
             recordsAdd: ['claim_their_bones'],
             scarsAdd: ['Xương đòn đổi lấy xương hắn'],
-            meritAdd: 32
+            meritAdd: 32,
+            scheduleConsequences: [
+              {
+                eventId: 'csq_blade_lineage_duel',
+                delayYears: 5,
+                reasonVi: 'Sasu của Blade Lineage tìm kẻ đã đoạt xương đệ tử mình',
+                reasonEn: 'The Sasu of Blade Lineage seeks the one who claimed his disciple’s bones'
+              }
+            ]
           },
           {
             w: 38,
@@ -269,7 +294,15 @@ export const FACTION_EVENTS = [
         resultEn: 'The piece in the glass jar still moved, and the buyer paid a fortune for it. But this is a Taboo, and now there are eyes looking for you.',
         effects: { wealth: +48, sanity: -26, taboo: +2, heat: +25, resonance: +24 },
         recordsAdd: ['warp_cleanup'],
-        scarsAdd: ['Cái lọ thủy tinh']
+        scarsAdd: ['Cái lọ thủy tinh'],
+        scheduleConsequences: [
+          {
+            eventId: 'csq_warp_survivor_debt',
+            delayYears: 3,
+            reasonVi: 'Mẩu thịt của toa cuối bị W Corp và T Corp lần ra',
+            reasonEn: 'The flesh from the last car was tracked by W Corp and T Corp'
+          }
+        ]
       }
     ]
   },
@@ -324,7 +357,15 @@ export const FACTION_EVENTS = [
         recordsAdd: ['kcorp_tearful'],
         effects: { health: +25, wealth: +28, sanity: -26, resonance: +22 },
         scarsAdd: ['Vũng xanh trên sàn'],
-        meritAdd: 22
+        meritAdd: 22,
+        scheduleConsequences: [
+          {
+            eventId: 'csq_kcorp_ampule_blackmail',
+            delayYears: 4,
+            reasonVi: 'Kẻ môi giới phát hiện bí mật về người đồng nghiệp',
+            reasonEn: 'A broker discovered the secret of your melted colleague'
+          }
+        ]
       },
       {
         labelVi: 'Tiêm năm ống ampoule một lúc và phá đường thoát ra',
@@ -354,7 +395,15 @@ export const FACTION_EVENTS = [
         resultEn: 'His hammer grazed your ribs and you coughed blood. But your blade found the gap in his helm. When he fell the rest of the Inquisitors withdrew, and you cut the child loose.',
         effects: { health: -32, sanity: +8, rep: +26, network: +18, resonance: +18 },
         scarsAdd: ['Vết búa của Nagel und Hammer'],
-        meritAdd: 26
+        meritAdd: 26,
+        scheduleConsequences: [
+          {
+            eventId: 'csq_ncorp_heretic_hunt',
+            delayYears: 5,
+            reasonVi: 'Đứa trẻ mang mắt nhân tạo ngày nào nay tìm về bạn',
+            reasonEn: 'The orphan with the prosthetic eye seeks you out'
+          }
+        ]
       },
       {
         labelVi: 'Mặc giáp trắng, cầm búa, và nhận tiền thưởng của N Corp',

@@ -198,14 +198,34 @@ export function planYear(charState, rng) {
   const items = [];
   const age = char.age;
 
-  // Consequences scheduled by earlier choices come first
-  for (const th of dueMinorThreads(char)) {
-    const def = LIFE_MINORS.find((m) => m.id === th.eventId);
-    const ok = def && ageOk(def, age) && matchNeed(def.need, char) && !(def.once && (char.seenEvents || []).includes(def.id));
-    if (ok && !items.some((it) => it.id === def.id)) {
-      items.push({ kind: 'minor', id: def.id, thread: th.id });
-      logDecision(char, def, { vi: th.reasonVi || 'Hậu quả đến hạn', en: th.reasonEn || 'A consequence comes due', w: 99 }, 'minor');
-    } else if (!def || age > th.triggerAge + 6) {
+  // Consequences scheduled by earlier choices come first (Minor & Major causality)
+  const pending = char.weaver?.pendingThreads || [];
+  for (const th of pending) {
+    if (th.fulfilled || char.age < th.triggerAge) continue;
+
+    // Check if it matches a minor event
+    const minorDef = LIFE_MINORS.find((m) => m.id === th.eventId);
+    if (minorDef) {
+      const ok = ageOk(minorDef, age) && matchNeed(minorDef.need, char) && !(minorDef.once && (char.seenEvents || []).includes(minorDef.id));
+      if (ok && !items.some((it) => it.id === minorDef.id)) {
+        items.push({ kind: 'minor', id: minorDef.id, thread: th.id, isCausal: true });
+        logDecision(char, minorDef, { vi: th.reasonVi || 'Hậu quả đến hạn', en: th.reasonEn || 'A consequence comes due', w: 99 }, 'minor');
+        continue;
+      }
+    }
+
+    // Check if it matches a major story consequence
+    const storyDef = CONSEQUENCE_EVENTS.find((e) => e.id === th.eventId) || ALL_STORY_EVENTS.find((e) => e.id === th.eventId);
+    if (storyDef) {
+      if (!items.some((it) => it.forcedEventId === storyDef.id)) {
+        items.push({ kind: 'major', forcedEventId: storyDef.id, thread: th.id, isCausal: true });
+        logDecision(char, storyDef, { vi: th.reasonVi || 'Quả báo đến hạn', en: th.reasonEn || 'Karma comes due', w: 99 }, 'major');
+        continue;
+      }
+    }
+
+    // Drop if far overdue and cannot be resolved
+    if (age > th.triggerAge + 8) {
       closeThreads(char, th.eventId);
     }
   }
@@ -236,7 +256,7 @@ export function planYear(charState, rng) {
     }
   }
 
-  if (majorIsDue(char, rng)) items.push({ kind: 'major' });
+  if (!items.some((it) => it.kind === 'major') && majorIsDue(char, rng)) items.push({ kind: 'major' });
   if (char.job === 'Fixer' && age >= 19 && rng() < 0.42) items.push({ kind: 'contract' });
 
   const ordered = shuffle(items, rng);
@@ -282,19 +302,43 @@ export function runPlanItem(charState, item, rng) {
   }
 
   if (item.kind === 'major') {
-    const { event, weaver } = selectEventWithWeaverAI({
-      weaver: char.weaver,
-      char,
-      allPools: ALL_STORY_EVENTS,
-      consequencePool: CONSEQUENCE_EVENTS,
-      rng
-    });
+    let event = null;
+    let weaver = char.weaver;
+    if (item.forcedEventId) {
+      event = CONSEQUENCE_EVENTS.find((e) => e.id === item.forcedEventId) ||
+              ALL_STORY_EVENTS.find((e) => e.id === item.forcedEventId);
+      if (item.thread) {
+        closeThreads(char, item.forcedEventId);
+      }
+    }
+    if (!event) {
+      const res = selectEventWithWeaverAI({
+        weaver: char.weaver,
+        char,
+        allPools: ALL_STORY_EVENTS,
+        consequencePool: CONSEQUENCE_EVENTS,
+        rng
+      });
+      event = res.event;
+      weaver = res.weaver;
+    }
     char.weaver = weaver;
     if (event) {
       markTheme(char, event);
       const vi = splitTitle(interpolateText(event.vi, char));
       const en = splitTitle(interpolateText(event.en, char));
-      char.pendingEvent = { ...event, titleVi: vi.title, titleEn: en.title, displayVi: vi.body, displayEn: en.body, t: item.t };
+      const threadObj = item.thread ? char.weaver?.pendingThreads?.find((t) => t.id === item.thread) : null;
+      char.pendingEvent = {
+        ...event,
+        titleVi: vi.title,
+        titleEn: en.title,
+        displayVi: vi.body,
+        displayEn: en.body,
+        t: item.t,
+        isCausalCallback: Boolean(item.isCausal || event.isCausalCallback),
+        causalReasonVi: threadObj?.reasonVi || null,
+        causalReasonEn: threadObj?.reasonEn || null
+      };
     }
     return char;
   }
@@ -329,6 +373,7 @@ export function resolveMinor(charState, idx, rng) {
   if (!prompt) return char;
   char.pendingMinor = null;
   char.seenEvents = [...char.seenEvents, prompt.id];
+  closeThreads(char, prompt.id);
 
   const def = LIFE_MINORS.find((m) => m.id === prompt.id);
   const ignore = def?.ignore || { vi: 'Để nó trôi qua', en: 'Let it pass', rvi: 'Bạn không làm gì cả. Chuyện cũng qua.', ren: 'You did nothing. It passed.' };
