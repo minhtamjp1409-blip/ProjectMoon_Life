@@ -30,6 +30,7 @@ builder.Services.AddCors(o => o.AddPolicy("Frontend", p => p
 builder.Services.AddSingleton<ArchiveStoreService>();
 builder.Services.AddHostedService<ArchiveFlushService>();
 builder.Services.AddSingleton<WeaverAiEngineService>();
+builder.Services.AddSingleton<DirectorEngineService>();
 
 var app = builder.Build();
 
@@ -71,5 +72,10 @@ api.MapDelete("/state/{slot}", (string slot, ArchiveStoreService store) =>
     !slotPattern.IsMatch(slot) ? Results.BadRequest() : store.DeleteRun(slot) ? Results.NoContent() : Results.NotFound());
 
 api.MapPost("/weaver/evaluate", (WeaverEvaluationRequest req, WeaverAiEngineService weaver) => Results.Ok(weaver.Evaluate(req)));
+
+// Director Engine: offloaded server-side year planning, milestone checks & crucible trials
+api.MapPost("/director/plan-year", (PlanYearRequestDto req, DirectorEngineService director) => Results.Ok(director.PlanYear(req)));
+api.MapPost("/director/milestone", (CharacterSnapshotDto req, DirectorEngineService director) => Results.Ok(director.EvaluateMilestone(req)));
+api.MapPost("/director/resolve-crucible", (CrucibleTrialRequestDto req, DirectorEngineService director) => Results.Ok(director.ResolveCrucible(req)));
 
 app.Run();

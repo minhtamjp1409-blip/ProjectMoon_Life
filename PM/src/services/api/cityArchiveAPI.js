@@ -32,7 +32,32 @@ export const cityArchiveAPI = {
       body: JSON.stringify(payload)
     }),
 
-  clearRunState: (slot = 'main') => apiRequest(`/state/${slot}`, { method: 'DELETE', allow404: true })
+  clearRunState: (slot = 'main') => apiRequest(`/state/${slot}`, { method: 'DELETE', allow404: true }),
+
+  // Director Engine: Offloaded server-side computation
+  planYear: (payload) =>
+    apiRequest('/director/plan-year', {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    }),
+
+  getCareerMilestone: (charSnapshot) =>
+    apiRequest('/director/milestone', {
+      method: 'POST',
+      body: JSON.stringify(charSnapshot)
+    }),
+
+  resolveCrucible: (payload) =>
+    apiRequest('/director/resolve-crucible', {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    }),
+
+  evaluateWeaver: (payload) =>
+    apiRequest('/weaver/evaluate', {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    })
 };
 
 export default cityArchiveAPI;

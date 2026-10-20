@@ -486,6 +486,10 @@ export const FIXER_THRESHOLDS = [
  * Calculates the player's active career milestone and required checklist objectives
  */
 export function getNextCareerMilestone(char) {
+  if (char?.serverMilestone) {
+    return char.serverMilestone;
+  }
+
   if (!char || !char.alive) {
     return {
       category: 'MEMORIAL',

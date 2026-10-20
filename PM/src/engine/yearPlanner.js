@@ -25,6 +25,7 @@ import { LIFE_DAILIES as DAILIES_FIRST } from '../data/lifeDailies';
 import { LIFE_MINORS as MINORS_FIRST } from '../data/lifeMinors';
 import { LIFE_MINORS_2 } from '../data/lifeMinors2';
 import { LIFE_DAILIES_3, LIFE_MINORS_3 } from '../data/lifeMinors3';
+import { cityArchiveAPI } from '../services/api/cityArchiveAPI';
 
 const LIFE_MINORS = [...MINORS_FIRST, ...LIFE_MINORS_2, ...LIFE_MINORS_3];
 const LIFE_DAILIES = [...DAILIES_FIRST, ...LIFE_DAILIES_3];
@@ -330,6 +331,136 @@ export function planYear(charState, rng) {
   char.plan = planItems;
   char.planCursor = 0;
   return char;
+}
+
+/**
+ * Offloads year planning & career milestone computation to the .NET 8 Director API.
+ * Hydrates server-validated 4-season time coordinates and tension scores with full client content.
+ */
+export async function syncPlanWithBackend(charState, rng) {
+  if (!charState || !charState.alive) return charState;
+  try {
+    const snap = {
+      age: charState.age || 0,
+      job: charState.job || 'Child',
+      regionId: charState.regionId || '1',
+      health: charState.stats?.health ?? charState.health ?? 50,
+      sanity: charState.stats?.sanity ?? charState.sanity ?? 50,
+      wealth: charState.stats?.wealth ?? charState.wealth ?? 0,
+      network: charState.stats?.network ?? charState.network ?? 0,
+      rep: (charState.stats?.rep ?? charState.rep) || 0,
+      merit: charState.merit || 0,
+      heat: charState.heat || 0,
+      taboo: charState.taboo || 0,
+      resonance: charState.resonance || 0,
+      fixerGrade: charState.fixerGrade ?? 9,
+      finger: charState.finger || 'Thumb',
+      fingerRank: charState.fingerRank || 0,
+      wingRank: charState.wingRank || 0,
+      workshopRank: charState.workshopRank || 0,
+      flags: charState.flags || [],
+      seenEvents: charState.seenEvents || [],
+      recent: charState.recent || [],
+      fateOmenId: charState.fateOmenId || '',
+      yearsSinceLastMajor: charState.weaver?.yearsSinceLastMajor || 0,
+      activeNpcsCount: Object.values(charState.npcs || {}).filter((n) => n && !n.deceased && n.status !== 'dead').length,
+      pendingThreads: (charState.weaver?.pendingThreads || []).map((th) => ({
+        id: th.id || '',
+        eventId: th.eventId || '',
+        triggerAge: th.triggerAge || 0,
+        fulfilled: Boolean(th.fulfilled),
+        kind: th.kind || '',
+        reasonVi: th.reasonVi || '',
+        reasonEn: th.reasonEn || ''
+      }))
+    };
+
+    const [planRes, milestoneRes] = await Promise.allSettled([
+      cityArchiveAPI.planYear({ seed: `${charState.seed}:${charState.age}`, char: snap }),
+      cityArchiveAPI.getCareerMilestone(snap)
+    ]);
+
+    if (milestoneRes.status === 'fulfilled' && milestoneRes.value) {
+      charState.serverMilestone = milestoneRes.value;
+    }
+
+    if (planRes.status === 'fulfilled' && planRes.value?.moments?.length > 0) {
+      const serverMoments = planRes.value.moments;
+      const poolDailies = eligibleDailies(charState);
+      const poolMinors = eligibleMinors(charState);
+      const hydrated = [];
+
+      for (const sm of serverMoments) {
+        if (sm.kind === 'daily') {
+          let dailyId = sm.id;
+          if (!dailyId || !LIFE_DAILIES.some((d) => d.id === dailyId)) {
+            const pick = pickWeighted(
+              poolDailies.filter((d) => !hydrated.some((h) => h.id === d.id)),
+              weightOf(charState),
+              rng
+            );
+            dailyId = pick ? pick.id : poolDailies[0]?.id || 'daily_city_dawn';
+          }
+          remember(charState, dailyId);
+          hydrated.push({
+            kind: 'daily',
+            id: dailyId,
+            t: sm.t,
+            season: sm.season,
+            seasonIdx: sm.seasonIdx
+          });
+        } else if (sm.kind === 'minor') {
+          let minorId = sm.id;
+          if (!minorId || !LIFE_MINORS.some((m) => m.id === minorId)) {
+            const pick = pickWeighted(
+              poolMinors.filter((m) => !hydrated.some((h) => h.id === m.id)),
+              weightOf(charState),
+              rng
+            );
+            minorId = pick ? pick.id : poolMinors[0]?.id || 'minor_alley_crossroad';
+          }
+          remember(charState, minorId);
+          hydrated.push({
+            kind: 'minor',
+            id: minorId,
+            t: sm.t,
+            season: sm.season,
+            seasonIdx: sm.seasonIdx,
+            thread: sm.thread || '',
+            isCausal: sm.isCausal || false
+          });
+        } else if (sm.kind === 'major') {
+          hydrated.push({
+            kind: 'major',
+            forcedEventId: sm.forcedEventId || sm.id || '',
+            t: sm.t,
+            season: sm.season,
+            seasonIdx: sm.seasonIdx,
+            thread: sm.thread || '',
+            isCausal: sm.isCausal || false
+          });
+        } else if (sm.kind === 'contract') {
+          hydrated.push({
+            kind: 'contract',
+            t: sm.t,
+            season: sm.season,
+            seasonIdx: sm.seasonIdx
+          });
+        }
+      }
+
+      hydrated.sort((a, b) => a.t - b.t);
+      charState.plan = hydrated;
+      charState.planCursor = 0;
+      if (charState.weaver) {
+        charState.weaver.tensionScore = planRes.value.tensionScore ?? charState.weaver.tensionScore;
+        charState.weaver.dramaPhase = planRes.value.dramaPhase ?? charState.weaver.dramaPhase;
+      }
+    }
+  } catch {
+    // Fail gracefully to local deterministic plan
+  }
+  return charState;
 }
 
 /* ---------- running a moment ---------- */

@@ -138,6 +138,114 @@ public sealed record WeaverEvaluationResponse(
     double ExecutionTimeMs
 );
 
+public sealed record PendingThreadDto(
+    string Id = "",
+    string EventId = "",
+    int TriggerAge = 0,
+    bool Fulfilled = false,
+    string Kind = "",
+    string ReasonVi = "",
+    string ReasonEn = ""
+);
+
+public sealed record CharacterSnapshotDto(
+    int Age = 0,
+    string Job = "Child",
+    string RegionId = "1",
+    int Health = 50,
+    int Sanity = 50,
+    int Wealth = 0,
+    int Network = 0,
+    int Rep = 0,
+    int Merit = 0,
+    int Heat = 0,
+    int Taboo = 0,
+    int Resonance = 0,
+    int FixerGrade = 9,
+    string Finger = "Thumb",
+    int FingerRank = 0,
+    int WingRank = 0,
+    int WorkshopRank = 0,
+    List<string>? Flags = null,
+    List<string>? SeenEvents = null,
+    List<string>? Recent = null,
+    string FateOmenId = "",
+    int YearsSinceLastMajor = 0,
+    int ActiveNpcsCount = 0,
+    List<PendingThreadDto>? PendingThreads = null
+);
+
+public sealed record MilestoneRequirementDto(
+    string LabelVi,
+    string LabelEn,
+    int Current,
+    int Target,
+    bool Met
+);
+
+public sealed record CareerMilestoneDto(
+    string Category,
+    string TitleVi,
+    string TitleEn,
+    int ProgressPct,
+    List<MilestoneRequirementDto> Requirements,
+    string TipVi,
+    string TipEn,
+    bool CanPromote = false,
+    string NextRankTitleVi = "",
+    string NextRankTitleEn = ""
+);
+
+public sealed record PlanMomentDto(
+    double T,
+    string Kind,
+    string Id = "",
+    string ForcedEventId = "",
+    string Thread = "",
+    string Season = "Spring",
+    int SeasonIdx = 0,
+    bool IsCausal = false,
+    string TitleVi = "",
+    string TitleEn = ""
+);
+
+public sealed record PlanYearRequestDto(
+    CharacterSnapshotDto Char,
+    string Seed = ""
+);
+
+public sealed record PlanYearResponseDto(
+    List<PlanMomentDto> Moments,
+    string DramaPhase,
+    int TensionScore,
+    double ExecutionTimeMs
+);
+
+public sealed record CrucibleTrialRequestDto(
+    string TrialType,
+    CharacterSnapshotDto Char,
+    string ChoiceId = "",
+    int Resonance = 0,
+    int Sanity = 0
+);
+
+public sealed record CrucibleTrialResponseDto(
+    bool Success,
+    string OutcomeType,
+    string TitleVi,
+    string TitleEn,
+    string DescriptionVi,
+    string DescriptionEn,
+    List<string> FlagsToAdd,
+    List<string> FlagsToRemove,
+    int MeritDelta,
+    int SanityDelta,
+    int HealthDelta,
+    int RepDelta,
+    string EpitaphVi,
+    string EpitaphEn
+);
+
 /// <summary>Compile-time JSON metadata: no reflection on the request path.</summary>
 [JsonSourceGenerationOptions(PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase)]
 [JsonSerializable(typeof(ArchiveSnapshotDto))]
@@ -153,4 +261,13 @@ public sealed record WeaverEvaluationResponse(
 [JsonSerializable(typeof(HealthDto))]
 [JsonSerializable(typeof(WeaverEvaluationRequest))]
 [JsonSerializable(typeof(WeaverEvaluationResponse))]
+[JsonSerializable(typeof(PendingThreadDto))]
+[JsonSerializable(typeof(CharacterSnapshotDto))]
+[JsonSerializable(typeof(MilestoneRequirementDto))]
+[JsonSerializable(typeof(CareerMilestoneDto))]
+[JsonSerializable(typeof(PlanMomentDto))]
+[JsonSerializable(typeof(PlanYearRequestDto))]
+[JsonSerializable(typeof(PlanYearResponseDto))]
+[JsonSerializable(typeof(CrucibleTrialRequestDto))]
+[JsonSerializable(typeof(CrucibleTrialResponseDto))]
 public sealed partial class AppJsonContext : JsonSerializerContext;

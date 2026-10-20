@@ -9,7 +9,7 @@ import {
   buildLifeSummaryAndLegacy,
   cloneChar
 } from '../engine/gameEngine';
-import { planYear, runDueItems, resolveMinor, endYear, nextPlanItem, diffStats, MINOR_WINDOW_MS } from '../engine/yearPlanner';
+import { planYear, syncPlanWithBackend, runDueItems, resolveMinor, endYear, nextPlanItem, diffStats, MINOR_WINDOW_MS } from '../engine/yearPlanner';
 import { CODEX_RECORDS } from '../data/worldData';
 import { cityArchiveAPI } from '../services/api/cityArchiveAPI';
 
@@ -17,6 +17,44 @@ const META_KEY = 'pm_city_chronicles_save_v3';
 const RUN_KEY = 'pm_city_chronicles_run_v1';
 const YEAR_MS = 30000;
 const AUTO_MINOR_MS = 2500;
+
+export function buildCharSnapshot(char) {
+  if (!char) return null;
+  return {
+    age: char.age || 0,
+    job: char.job || 'Child',
+    regionId: char.regionId || '1',
+    health: char.stats?.health ?? char.health ?? 50,
+    sanity: char.stats?.sanity ?? char.sanity ?? 50,
+    wealth: char.stats?.wealth ?? char.wealth ?? 0,
+    network: char.stats?.network ?? char.network ?? 0,
+    rep: (char.stats?.rep ?? char.rep) || 0,
+    merit: char.merit || 0,
+    heat: char.heat || 0,
+    taboo: char.taboo || 0,
+    resonance: char.resonance || 0,
+    fixerGrade: char.fixerGrade ?? 9,
+    finger: char.finger || 'Thumb',
+    fingerRank: char.fingerRank || 0,
+    wingRank: char.wingRank || 0,
+    workshopRank: char.workshopRank || 0,
+    flags: char.flags || [],
+    seenEvents: char.seenEvents || [],
+    recent: char.recent || [],
+    fateOmenId: char.fateOmenId || '',
+    yearsSinceLastMajor: char.weaver?.yearsSinceLastMajor || 0,
+    activeNpcsCount: Object.values(char.npcs || {}).filter((n) => n && !n.deceased && n.status !== 'dead').length,
+    pendingThreads: (char.weaver?.pendingThreads || []).map((th) => ({
+      id: th.id || '',
+      eventId: th.eventId || '',
+      triggerAge: th.triggerAge || 0,
+      fulfilled: Boolean(th.fulfilled),
+      kind: th.kind || '',
+      reasonVi: th.reasonVi || '',
+      reasonEn: th.reasonEn || ''
+    }))
+  };
+}
 
 /* ---------- persistence ---------- */
 
@@ -285,6 +323,13 @@ export const useGameStore = create((set, get) => ({
     const metaUpdates = get().syncMetaFromChar(nextChar);
     set({ char: nextChar, inRun: true, speed: 1, yearProgress: 0, stageFx: null, ...metaUpdates });
     get().saveRun(true);
+
+    // Offload to .NET 8 Director backend for authoritative verification
+    syncPlanWithBackend(nextChar, lifeRng).then((synced) => {
+      if (get().inRun && get().char?.age === synced.age) {
+        set({ char: cloneChar(synced) });
+      }
+    });
   },
 
   /** Advances the year by real elapsed time. Called by the layout's loop. */
@@ -321,7 +366,13 @@ export const useGameStore = create((set, get) => ({
     }
     const cur = get().char;
     if (progress >= 100 && cur.alive && !nextPlanItem(cur)) {
-      get().commit(cur, endYear(cur, lifeRng), { yearProgress: 0 });
+      const nextChar = endYear(cur, lifeRng);
+      get().commit(cur, nextChar, { yearProgress: 0 });
+      syncPlanWithBackend(nextChar, lifeRng).then((synced) => {
+        if (get().char?.age === synced.age) {
+          get().commit(get().char, synced);
+        }
+      });
     } else if (!changed) {
       const liveSeason = Math.min(3, Math.floor(progress / 25));
       if (cur.seasonIdx !== liveSeason) {
@@ -344,7 +395,13 @@ export const useGameStore = create((set, get) => ({
       return;
     }
     const base = changed ? char : c;
-    get().commit(c, endYear(base, lifeRng), { yearProgress: 0 });
+    const nextChar = endYear(base, lifeRng);
+    get().commit(c, nextChar, { yearProgress: 0 });
+    syncPlanWithBackend(nextChar, lifeRng).then((synced) => {
+      if (get().char?.age === synced.age) {
+        get().commit(get().char, synced);
+      }
+    });
   },
 
   chooseMinor: (idx) => {
@@ -356,7 +413,18 @@ export const useGameStore = create((set, get) => ({
   selectEventChoice: (choiceIdx) => {
     const prev = get().char;
     if (!prev.pendingEvent) return;
-    get().commit(prev, resolveEventChoice(prev, choiceIdx, lifeRng));
+    const nextChar = resolveEventChoice(prev, choiceIdx, lifeRng);
+    get().commit(prev, nextChar);
+
+    // Refresh career milestone from backend after event decision
+    const snap = buildCharSnapshot(nextChar);
+    if (snap) {
+      cityArchiveAPI.getCareerMilestone(snap).then((ms) => {
+        if (ms && get().char?.age === nextChar.age) {
+          set({ char: { ...get().char, serverMilestone: ms } });
+        }
+      }).catch(() => {});
+    }
   },
 
   selectContractApproach: (approachId) => {
