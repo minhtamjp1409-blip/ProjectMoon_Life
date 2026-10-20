@@ -4,6 +4,8 @@ import { ChevronDown, ChevronUp, User } from 'lucide-react';
 import { useGameStore } from '../../../store/gameStore';
 import { REGIONS, FINGER_RANKS } from '../../../data/worldData';
 import { FATE_OMENS } from '../../../engine/weaverAI';
+import { audioEngine } from '../../../engine/audioEngine';
+import { gameFeel } from '../../../engine/gameFeel';
 import { useT } from '../../../i18n';
 
 const JOB_LABELS = {
@@ -46,6 +48,17 @@ const Stat = ({ label, value, unit = '/100', color, flag, riseIsBad = false }) =
   const good = change && (riseIsBad ? change.d < 0 : change.d > 0);
   const flashClass = change ? (good ? 'is-flash-up' : 'is-flash-down') : '';
 
+  React.useEffect(() => {
+    if (!change) return;
+    if (good) {
+      audioEngine.playBuff();
+    } else {
+      const delta = Math.abs(change.d);
+      audioEngine.playDamage(Math.min(1.8, Math.max(0.6, delta / 7)));
+      gameFeel.addTrauma(Math.min(0.65, 0.2 + delta * 0.025));
+    }
+  }, [change?.at]);
+
   return (
     <div className={`stat ${flashClass}`}>
       <div className="stat-head">
@@ -80,6 +93,15 @@ const TabooStat = ({ value }) => {
   const change = useChange(value);
   const good = change && change.d < 0;
   const flashClass = change ? (good ? 'is-flash-up' : 'is-flash-down') : '';
+
+  React.useEffect(() => {
+    if (!change) return;
+    if (!good) {
+      audioEngine.playDanger();
+      gameFeel.addTrauma(0.5);
+    }
+  }, [change?.at]);
+
   return (
     <div className={`stat ${flashClass}`}>
       <div className="stat-head">

@@ -6,6 +6,8 @@ import { useGameStore } from '../../../store/gameStore';
 import { buildLifeSummaryAndLegacy } from '../../../engine/gameEngine';
 import { MINOR_WINDOW_MS, splitTitle } from '../../../engine/yearPlanner';
 import { exportDossierCardPNG } from '../../../utils/exportDossierCard';
+import { audioEngine } from '../../../engine/audioEngine';
+import { gameFeel } from '../../../engine/gameFeel';
 import { useT } from '../../../i18n';
 import { Deltas, ChoicePreview } from './Deltas';
 
@@ -327,6 +329,8 @@ export const LiveStageFeed = () => {
     );
 
   const logRef = useRef(null);
+  const stageRef = useRef(null);
+  const prevAliveRef = useRef(char.alive);
   const [titleInput, setTitleInput] = useState('The Crimson Dusk');
   const [egoInput, setEgoInput] = useState('Penitence of Ash');
   const [weaponName, setWeaponName] = useState('Atelier Crimson Edge');
@@ -334,6 +338,28 @@ export const LiveStageFeed = () => {
   const [cursorPos, setCursorPos] = useState(50);
   const [strikes, setStrikes] = useState([]);
   const dirRef = useRef(1);
+
+  // Trauma-based screen shake on stage element (following game-feel skill)
+  useEffect(() => {
+    return gameFeel.subscribe(({ x, y, rot, isShaking }) => {
+      if (!stageRef.current) return;
+      if (isShaking) {
+        stageRef.current.style.transform = `translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, 0) rotate(${rot.toFixed(4)}rad)`;
+      } else {
+        stageRef.current.style.transform = '';
+      }
+    });
+  }, []);
+
+  // Death audio & traumatic hit-stop
+  useEffect(() => {
+    if (prevAliveRef.current && !char.alive) {
+      audioEngine.playDeath();
+      gameFeel.addTrauma(0.85);
+      gameFeel.triggerHitStop(220);
+    }
+    prevAliveRef.current = char.alive;
+  }, [char.alive]);
 
   useEffect(() => {
     const el = logRef.current;
@@ -344,34 +370,71 @@ export const LiveStageFeed = () => {
     else el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
   }, [char.logs.length, char.alive, char.pendingEvent, char.pendingContract, char.pendingMinor]);
 
-  // Keys: 1–4 pick, 0 / Esc lets a small moment pass, Space pauses
+  const handleChooseMinor = (idx) => {
+    audioEngine.playClick();
+    chooseMinor(idx);
+  };
+
+  const handleSelectEvent = (idx) => {
+    audioEngine.playClick();
+    selectEventChoice(idx);
+  };
+
+  const handleSelectContract = (id) => {
+    audioEngine.playClick();
+    selectContractApproach(id);
+  };
+
+  const handleConfirmColorTitle = (title) => {
+    audioEngine.playEgo();
+    confirmColorTitle(title);
+  };
+
+  const handleConfirmEgoName = (name) => {
+    audioEngine.playEgo();
+    confirmEgoName(name);
+  };
+
+  // Keys: 1–9 pick, 0 / Esc lets a small moment pass, Space pauses, M toggles mute, S saves
   useEffect(() => {
     const onKeyDown = (e) => {
       if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) return;
       if (e.code === 'Space') {
         if (!char.alive) return;
         e.preventDefault();
+        audioEngine.playClick();
         setSpeed(speed === 0 ? 1 : 0);
+        return;
+      }
+      if (e.key === 'm' || e.key === 'M') {
+        e.preventDefault();
+        audioEngine.toggleMute();
+        return;
+      }
+      if (e.key === 's' || e.key === 'S') {
+        e.preventDefault();
+        audioEngine.playClick();
+        useGameStore.getState().saveRun(true);
         return;
       }
       if (char.pendingMinor && (e.key === '0' || e.key === 'Escape')) {
         e.preventDefault();
-        chooseMinor(-1);
+        handleChooseMinor(-1);
         return;
       }
       const idx = parseInt(e.key, 10) - 1;
       if (Number.isNaN(idx) || idx < 0) return;
       if (char.pendingEvent && idx < (char.pendingEvent.choices?.length || 0)) {
         e.preventDefault();
-        selectEventChoice(idx);
+        handleSelectEvent(idx);
       } else if (char.pendingContract && idx < (char.pendingContract.approaches?.length || 0)) {
         const app = char.pendingContract.approaches[idx];
         if (app.costAhn > char.stats.wealth) return;
         e.preventDefault();
-        selectContractApproach(app.id);
+        handleSelectContract(app.id);
       } else if (char.pendingMinor && idx < char.pendingMinor.choices.length) {
         e.preventDefault();
-        chooseMinor(idx);
+        handleChooseMinor(idx);
       }
     };
     window.addEventListener('keydown', onKeyDown);
@@ -400,6 +463,7 @@ export const LiveStageFeed = () => {
   const handleForgeStrike = () => {
     if (strikes.length >= 3) return;
     const dist = Math.abs(cursorPos - 52);
+    audioEngine.playClick();
     setStrikes((prev) => [...prev, dist <= 10 ? 100 : dist <= 22 ? 85 : 68]);
   };
 
@@ -407,7 +471,7 @@ export const LiveStageFeed = () => {
   const lifeSummary = !char.alive ? buildLifeSummaryAndLegacy(char) : null;
 
   return (
-    <div className="stage">
+    <div className="stage" ref={stageRef}>
       <AmbientScene char={char} />
       <StageFx />
       <div className="log" ref={logRef}>
@@ -417,10 +481,10 @@ export const LiveStageFeed = () => {
         </div>
       </div>
 
-      {char.pendingEvent && <EventDock event={char.pendingEvent} char={char} onPick={selectEventChoice} />}
-      {!char.pendingEvent && char.pendingContract && <ContractDock contract={char.pendingContract} wealth={char.stats.wealth} onPick={selectContractApproach} />}
+      {char.pendingEvent && <EventDock event={char.pendingEvent} char={char} onPick={handleSelectEvent} />}
+      {!char.pendingEvent && char.pendingContract && <ContractDock contract={char.pendingContract} wealth={char.stats.wealth} onPick={handleSelectContract} />}
       {!char.pendingEvent && !char.pendingContract && char.pendingMinor && (
-        <MinorDock prompt={char.pendingMinor} npcs={char.npcs} paused={speed === 0} onPick={chooseMinor} />
+        <MinorDock prompt={char.pendingMinor} npcs={char.npcs} paused={speed === 0} onPick={handleChooseMinor} />
       )}
 
       <Modal open={char.pendingModal === 'color_title'} footer={null} closable={false} centered title={t('Hana Association trao Color', 'Hana Association grants a Color')}>

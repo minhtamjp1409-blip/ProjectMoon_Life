@@ -1,11 +1,12 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Tooltip, Modal } from 'antd';
-import { Play, Pause, SkipForward, Bot, RotateCcw, House, Save, Check } from 'lucide-react';
+import { Play, Pause, SkipForward, Bot, RotateCcw, House, Save, Check, Volume2, VolumeX } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 import { useGameStore } from '../../../store/gameStore';
 import { SEASONS } from '../../../engine/gameEngine';
 import { DRAMA_PHASES } from '../../../engine/weaverAI';
+import { audioEngine } from '../../../engine/audioEngine';
 import { useT } from '../../../i18n';
 
 const SPEEDS = [
@@ -114,6 +115,19 @@ export const PlayBar = () => {
     );
 
   const [justSaved, setJustSaved] = React.useState(false);
+  const [audioMuted, setAudioMuted] = React.useState(audioEngine.isMuted);
+
+  React.useEffect(() => {
+    return audioEngine.subscribe(({ isMuted }) => {
+      setAudioMuted(isMuted);
+    });
+  }, []);
+
+  const handleToggleAudio = () => {
+    const next = audioEngine.toggleMute();
+    setAudioMuted(next);
+  };
+
   React.useEffect(() => {
     if (!lastSavedAt) return undefined;
     setJustSaved(true);
@@ -121,12 +135,29 @@ export const PlayBar = () => {
     return () => clearTimeout(timer);
   }, [lastSavedAt]);
 
+  const handleSetSpeed = (newSpeed) => {
+    audioEngine.playClick();
+    setSpeed(newSpeed);
+  };
+
+  const handleStepYear = () => {
+    audioEngine.playYearTick();
+    stepYear();
+  };
+
+  const handleToggleAutoPlay = () => {
+    audioEngine.playClick();
+    toggleAutoPlay();
+  };
+
   const goHome = () => {
+    audioEngine.playClick();
     exitToSetup();
     navigate('/');
   };
 
   const newLife = () => {
+    audioEngine.playClick();
     if (!alive) {
       abandonRun();
       return;
@@ -168,9 +199,9 @@ export const PlayBar = () => {
           type="button"
           className={`icon-btn ${speed === 0 && alive ? 'is-on' : ''}`}
           disabled={!alive}
-          onClick={() => setSpeed(speed === 0 ? 1 : 0)}
-          aria-label={speed === 0 ? t('Tiếp tục', 'Resume') : t('Tạm dừng', 'Pause')}
-          title={speed === 0 ? t('Tiếp tục', 'Resume') : t('Tạm dừng', 'Pause')}
+          onClick={() => handleSetSpeed(speed === 0 ? 1 : 0)}
+          aria-label={speed === 0 ? t('Tiếp tục (Space)', 'Resume (Space)') : t('Tạm dừng (Space)', 'Pause (Space)')}
+          title={speed === 0 ? t('Tiếp tục (Space)', 'Resume (Space)') : t('Tạm dừng (Space)', 'Pause (Space)')}
         >
           {speed === 0 ? <Play size={18} /> : <Pause size={18} />}
         </button>
@@ -183,7 +214,7 @@ export const PlayBar = () => {
               className={speed === s.spd ? 'is-on' : ''}
               aria-pressed={speed === s.spd}
               disabled={!alive}
-              onClick={() => setSpeed(s.spd)}
+              onClick={() => handleSetSpeed(s.spd)}
               title={t(`${s.secs} giây mỗi năm`, `${s.secs}s per year`)}
             >
               {s.spd}×
@@ -197,7 +228,7 @@ export const PlayBar = () => {
           type="button"
           className="btn"
           disabled={!alive || waiting}
-          onClick={stepYear}
+          onClick={handleStepYear}
           title={t('Sang năm tiếp theo ngay', 'Skip to next year')}
         >
           <SkipForward size={16} />
@@ -210,9 +241,19 @@ export const PlayBar = () => {
           aria-pressed={autoPlay}
           aria-label={t('Tự động chọn', 'Auto-pick')}
           title={t('Tự chọn phương án đầu khi có sự kiện', 'Pick the first option automatically')}
-          onClick={toggleAutoPlay}
+          onClick={handleToggleAutoPlay}
         >
           <Bot size={18} />
+        </button>
+
+        <button
+          type="button"
+          className={`icon-btn ${audioMuted ? '' : 'is-on'}`}
+          onClick={handleToggleAudio}
+          aria-label={audioMuted ? t('Bật âm thanh (phím M)', 'Unmute audio (M key)') : t('Tắt âm thanh (phím M)', 'Mute audio (M key)')}
+          title={audioMuted ? t('Bật âm thanh (M)', 'Unmute audio (M)') : t('Tắt âm thanh (M)', 'Mute audio (M)')}
+        >
+          {audioMuted ? <VolumeX size={17} /> : <Volume2 size={17} />}
         </button>
 
         <button type="button" className="icon-btn" onClick={() => saveRun(true)} disabled={!alive} aria-label={t('Lưu tiến trình', 'Save progress')} title={t('Lưu tiến trình (game cũng tự lưu)', 'Save progress (the game also autosaves)')}>

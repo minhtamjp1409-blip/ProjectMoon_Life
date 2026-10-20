@@ -1732,11 +1732,20 @@ p {
   border-radius: var(--radius-sm);
   background: var(--ground);
   text-align: left;
-  transition: border-color 0.15s, background-color 0.15s;
+  transition: border-color 0.15s, background-color 0.15s, transform 0.08s ease, box-shadow 0.15s;
+  cursor: pointer;
 }
 .choice:hover:not(:disabled) {
   border-color: var(--accent);
   background: var(--raised);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+}
+.choice:active:not(:disabled) {
+  transform: scale(0.985);
+}
+.choice:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 .choice:hover:not(:disabled) kbd {
   border-color: var(--accent);
@@ -1744,6 +1753,7 @@ p {
 }
 .choice:disabled {
   opacity: 0.5;
+  cursor: not-allowed;
 }
 .choice-label {
   display: block;
@@ -2991,6 +3001,15 @@ p {
     box-shadow: none;
     transform: scale(1);
   }
+}
+
+/* Hit-stop & traumatic freeze frame */
+body.is-hit-stop {
+  filter: contrast(1.15) brightness(1.08);
+}
+body.is-hit-stop .stage {
+  filter: drop-shadow(0 0 24px rgba(231, 76, 60, 0.75));
+  transition: none !important;
 }
 
 /* People in your life */
