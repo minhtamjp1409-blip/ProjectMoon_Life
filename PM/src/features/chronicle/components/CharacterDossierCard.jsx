@@ -196,8 +196,12 @@ const People = ({ npcs, age, t, lang }) => {
   );
 };
 
-const DossierContent = ({ char, milestone, region, omen, items, t, lang }) => {
+const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeTab = 'all' }) => {
   const { health, sanity, wealth, network, rep } = char.stats;
+
+  const showOverview = activeTab === 'all' || activeTab === 'overview';
+  const showCareer = activeTab === 'all' || activeTab === 'career';
+  const showRelations = activeTab === 'all' || activeTab === 'relations';
 
   return (
     <>
@@ -211,8 +215,8 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang }) => {
         </div>
       </div>
 
-      {/* Active Career Milestone & Goals Checklist */}
-      {milestone && (
+      {/* Tab: Career & Equipment */}
+      {showCareer && milestone && (
         <section className="career-objective-card">
           <div className="career-obj-header">
             <span className="career-obj-tag">{milestone.category}</span>
@@ -235,65 +239,73 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang }) => {
         </section>
       )}
 
-      <section>
-        <div className="kv">
-          <span>{t('Khu vực', 'District')}</span>
-          <span title={lang === 'en' ? region.nameEn : region.nameVi}>{lang === 'en' ? region.nameEn : region.nameVi}</span>
-        </div>
-        <div className="kv">
-          <span>{t('Tổ chức', 'Faction')}</span>
-          <span>{char.org?.name || (char.finger ? `The ${char.finger}` : t('Tự do', 'Unaffiliated'))}</span>
-        </div>
-        <div className="kv">
-          <span>Merit</span>
-          <span className="num">{char.merit}</span>
-        </div>
-        <Tooltip title={lang === 'en' ? omen.descEn : omen.descVi} placement="right">
-          <div className="kv" style={{ cursor: 'help' }}>
-            <span>Fate Omen</span>
-            <span style={{ color: 'var(--accent)' }}>{(lang === 'en' ? omen.nameEn : omen.nameVi).split(' · ')[0]}</span>
-          </div>
-        </Tooltip>
-      </section>
-
-      <section>
-        <h3 className="section-title">Vitals</h3>
-        <Stat label="HP" value={health} color="var(--s-health)" flag={health <= 25 ? 'CRITICAL' : null} />
-        <Stat label="SP" value={sanity} color="var(--s-sanity)" flag={sanity <= 22 ? 'Carmen Calls' : null} />
-        <Stat label="Wealth" value={wealth} unit="Ahn" color="var(--s-wealth)" flag={wealth <= 5 ? 'Near Ruin' : null} />
-        <Stat label="Network" value={network} color="var(--s-network)" />
-        <Stat label="Reputation" value={rep} color="var(--s-rep)" />
-      </section>
-
-      <section>
-        <h3 className="section-title">Causal Pressure</h3>
-        <Stat
-          label="Syndicate Heat"
-          value={char.heat || 0}
-          unit="%"
-          color="var(--s-heat)"
-          flag={(char.heat || 0) >= 70 ? 'Hunted' : null}
-          riseIsBad
-        />
-        <Stat label="E.G.O Resonance" value={char.resonance || 0} unit="%" color="var(--s-reso)" />
-        <TabooStat value={char.taboo || 0} />
-      </section>
-
-      {items.length > 0 && (
+      {showCareer && items.length > 0 && (
         <section>
-          <h3 className="section-title">{t('Vật mang theo', 'Carried')}</h3>
+          <h3 className="section-title">{t('Trang bị & Vũ khí', 'Equipment & Relics')}</h3>
           {items.map((it) => (
             <div className="kv" key={it.k}>
               <span>{it.k}</span>
-              <span style={{ color: 'var(--accent)' }}>{it.v}</span>
+              <span style={{ color: 'var(--accent)', fontWeight: 600 }}>{it.v}</span>
             </div>
           ))}
         </section>
       )}
 
-      <People npcs={char.npcs} age={char.age} t={t} lang={lang} />
+      {/* Tab: Overview & Stats */}
+      {showOverview && (
+        <section>
+          <div className="kv">
+            <span>{t('Khu vực', 'District')}</span>
+            <span title={lang === 'en' ? region.nameEn : region.nameVi}>{lang === 'en' ? region.nameEn : region.nameVi}</span>
+          </div>
+          <div className="kv">
+            <span>{t('Tổ chức', 'Faction')}</span>
+            <span>{char.org?.name || (char.finger ? `The ${char.finger}` : t('Tự do', 'Unaffiliated'))}</span>
+          </div>
+          <div className="kv">
+            <span>Merit</span>
+            <span className="num">{char.merit}</span>
+          </div>
+          <Tooltip title={lang === 'en' ? omen.descEn : omen.descVi} placement="right">
+            <div className="kv" style={{ cursor: 'help' }}>
+              <span>Fate Omen</span>
+              <span style={{ color: 'var(--accent)' }}>{(lang === 'en' ? omen.nameEn : omen.nameVi).split(' · ')[0]}</span>
+            </div>
+          </Tooltip>
+        </section>
+      )}
 
-      {char.scars.length > 0 && (
+      {showOverview && (
+        <section>
+          <h3 className="section-title">Vitals</h3>
+          <Stat label="HP" value={health} color="var(--s-health)" flag={health <= 25 ? 'CRITICAL' : null} />
+          <Stat label="SP" value={sanity} color="var(--s-sanity)" flag={sanity <= 22 ? 'Carmen Calls' : null} />
+          <Stat label="Wealth" value={wealth} unit="Ahn" color="var(--s-wealth)" flag={wealth <= 5 ? 'Near Ruin' : null} />
+          <Stat label="Network" value={network} color="var(--s-network)" />
+          <Stat label="Reputation" value={rep} color="var(--s-rep)" />
+        </section>
+      )}
+
+      {showOverview && (
+        <section>
+          <h3 className="section-title">Causal Pressure</h3>
+          <Stat
+            label="Syndicate Heat"
+            value={char.heat || 0}
+            unit="%"
+            color="var(--s-heat)"
+            flag={(char.heat || 0) >= 70 ? 'Hunted' : null}
+            riseIsBad
+          />
+          <Stat label="E.G.O Resonance" value={char.resonance || 0} unit="%" color="var(--s-reso)" />
+          <TabooStat value={char.taboo || 0} />
+        </section>
+      )}
+
+      {/* Tab: Relations & Scars */}
+      {showRelations && <People npcs={char.npcs} age={char.age} t={t} lang={lang} />}
+
+      {showRelations && char.scars.length > 0 && (
         <section>
           <h3 className="section-title">{t('Vết sẹo tâm thức', 'Psyche scars')}</h3>
           <div className="chips">
@@ -313,6 +325,7 @@ export const CharacterDossierCard = () => {
   const { t, lang } = useT();
   const char = useGameStore((s) => s.char);
   const [drawerOpen, setDrawerOpen] = React.useState(false);
+  const [mobileTab, setMobileTab] = React.useState('overview');
 
   const region = REGIONS.find((r) => r.id === char.regionId) || REGIONS[0];
   const omen = FATE_OMENS.find((o) => o.id === (char.fateOmenId || char.weaver?.mode)) || FATE_OMENS[0];
@@ -459,6 +472,37 @@ export const CharacterDossierCard = () => {
                   <X size={18} />
                 </button>
               </div>
+
+              {/* Mobile Dossier Segmented Tabs */}
+              <div className="m-sheet-tabs" role="tablist">
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={mobileTab === 'overview'}
+                  className={`m-sheet-tab ${mobileTab === 'overview' ? 'is-active' : ''}`}
+                  onClick={() => setMobileTab('overview')}
+                >
+                  {t('📊 Chỉ số', '📊 Vitals')}
+                </button>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={mobileTab === 'career'}
+                  className={`m-sheet-tab ${mobileTab === 'career' ? 'is-active' : ''}`}
+                  onClick={() => setMobileTab('career')}
+                >
+                  {t('🎯 Sự nghiệp', '🎯 Career')}
+                </button>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={mobileTab === 'relations'}
+                  className={`m-sheet-tab ${mobileTab === 'relations' ? 'is-active' : ''}`}
+                  onClick={() => setMobileTab('relations')}
+                >
+                  {t('👥 Nhân mạch', '👥 Bonds')}
+                </button>
+              </div>
             </div>
             <div className="mobile-dossier-sheet-body">
               <DossierContent
@@ -469,6 +513,7 @@ export const CharacterDossierCard = () => {
                 items={items}
                 t={t}
                 lang={lang}
+                activeTab={mobileTab}
               />
             </div>
           </div>

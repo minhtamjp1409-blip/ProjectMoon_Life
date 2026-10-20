@@ -135,15 +135,19 @@ const MinorDock = ({ prompt, npcs, paused, onPick }) => {
   return (
     <div className="dock is-minor" role="dialog" aria-label={t('Một lựa chọn nhỏ', 'A small choice')}>
       <div className="dock-inner">
-        <div className="countdown" aria-hidden="true">
-          <i key={prompt.id} style={{ animationDuration: `${MINOR_WINDOW_MS}ms`, animationPlayState: paused ? 'paused' : 'running' }} />
+        <div className="dock-mobile-handle" />
+        <div className="countdown-wrap">
+          <div className="countdown" aria-hidden="true">
+            <i key={prompt.id} style={{ animationDuration: `${MINOR_WINDOW_MS}ms`, animationPlayState: paused ? 'paused' : 'running' }} />
+          </div>
+          <span className="countdown-badge">⚡ 15s</span>
         </div>
         <p className="dock-text">{lang === 'en' ? prompt.en : prompt.vi}</p>
         {bilingual && <p className="entry-alt">{prompt.en}</p>}
         <div className="choices">
           {prompt.choices.map((ch, idx) => (
             <button type="button" key={idx} className="choice" onClick={() => onPick(idx)}>
-              <kbd>{idx + 1}</kbd>
+              <span className="choice-badge">{idx + 1}</span>
               <span>
                 <span className="choice-label">{lang === 'en' ? ch.en : ch.vi}</span>
                 <ChoicePreview choice={ch} npcs={npcs} />
@@ -151,7 +155,7 @@ const MinorDock = ({ prompt, npcs, paused, onPick }) => {
             </button>
           ))}
           <button type="button" className="choice is-ghost" onClick={() => onPick(-1)}>
-            <kbd>0</kbd>
+            <span className="choice-badge is-ghost">0</span>
             <span className="choice-label">{t(prompt.ignore?.vi || 'Để nó trôi qua', prompt.ignore?.en || 'Let it pass')}</span>
           </button>
         </div>
@@ -169,6 +173,7 @@ const EventDock = ({ event, char, onPick }) => {
   return (
     <div className="dock" role="dialog" aria-label={t('Sự kiện cần quyết định', 'Decision')}>
       <div className="dock-inner">
+        <div className="dock-mobile-handle" />
         <div className="dock-banner">
           <div className="dock-banner-text">
             <p className={`dock-kicker ${causal ? 'is-causal' : ''}`}>
@@ -227,7 +232,7 @@ const EventDock = ({ event, char, onPick }) => {
             if (ch.setJob) extra.push(<span className="delta is-bond is-static" key="j">{t('Con đường: ', 'Path: ')}{ch.setJob}</span>);
             return (
               <button type="button" key={idx} className="choice" onClick={() => onPick(idx)}>
-                <kbd>{idx + 1}</kbd>
+                <span className="choice-badge">{idx + 1}</span>
                 <span>
                   <span className="choice-label">{label}</span>
                   {bilingual && ch.labelEn && ch.labelEn !== ch.labelVi && <span className="choice-alt">{splitTitle(ch.labelEn).body}</span>}
@@ -261,6 +266,7 @@ const ContractDock = ({ contract, wealth, onPick }) => {
   return (
     <div className="dock" role="dialog" aria-label={t('Request của Fixer', 'Fixer request')}>
       <div className="dock-inner">
+        <div className="dock-mobile-handle" />
         <div className="dock-banner">
           <div className="dock-banner-text">
             <p className="dock-kicker">
@@ -278,7 +284,7 @@ const ContractDock = ({ contract, wealth, onPick }) => {
             const short = app.costAhn > wealth;
             return (
               <button type="button" key={app.id} className="choice" disabled={short} onClick={() => onPick(app.id)}>
-                <kbd>{idx + 1}</kbd>
+                <span className="choice-badge">{idx + 1}</span>
                 <span>
                   <span style={{ display: 'flex', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
                     <span className="choice-label">{lang === 'en' ? app.labelEn : app.labelVi}</span>
