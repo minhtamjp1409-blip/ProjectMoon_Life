@@ -15,6 +15,7 @@ import {
   checkPromotions,
   evaluateCharacterAchievements,
   applyFatalOrCompanionSave,
+  handleSanityBreakdown,
   woundDeath,
   generateFixerContract
 } from './gameEngine';
@@ -187,7 +188,7 @@ function majorIsDue(char, rng) {
   if ((char.age === 18 || (char.age > 18 && char.job === 'Child')) && !(char.seenEvents || []).includes('ad_career_crossroad_18')) return true;
   if ((char.taboo || 0) >= 3) return true;
   if ((w.pendingThreads || []).some((th) => th.kind !== 'minor' && !th.fulfilled && char.age >= th.triggerAge)) return true;
-  if (char.age >= 18 && (char.stats.sanity <= 16 || (char.resonance || 0) >= 55) && !(char.seenEvents || []).includes('ego_carmen_crossroad') && !char.flags.includes('EGOAwakened') && !char.flags.includes('Distorted')) return true;
+  if (char.age >= 18 && ((char.stats.sanity <= 5 && rng() < 0.12) || ((char.resonance || 0) >= 90 && rng() < 0.15)) && !(char.seenEvents || []).includes('ego_carmen_crossroad') && !char.flags.includes('EGOAwakened') && !char.flags.includes('Distorted')) return true;
   if (char.job === 'Fixer' && char.fixerGrade === 1 && (char.merit || 0) >= 150 && ((char.stats?.rep ?? char.rep) || 0) >= 68 && !char.flags.includes('ColorFixer') && !(char.seenEvents || []).includes('hana_color_ascension_trial')) return true;
   if (char.job === 'Syndicate' && (char.fingerRank || 0) >= 2 && (char.merit || 0) >= 75) return true;
   if (char.job === 'Wing Employee' && (char.wingRank || 0) >= 1 && (char.merit || 0) >= 65 && !(char.seenEvents || []).includes('wing_singularity_classified_audit')) return true;
@@ -553,13 +554,16 @@ export function runPlanItem(charState, item, rng) {
 }
 
 /** Checks death and promotions after anything changed the character. */
-function settle(char, t) {
+function settle(char, t, rng = Math.random) {
   if (char.alive && char.stats.health <= 0) {
     applyFatalOrCompanionSave(
       char,
       'Gục xuống vì vết thương và kiệt sức',
       'Collapsed from wounds and exhaustion'
     );
+  }
+  if (char.alive && char.stats.sanity <= 0) {
+    handleSanityBreakdown(char, rng);
   }
   if (char.alive) {
     const promo = checkPromotions(char);
@@ -618,7 +622,7 @@ export function resolveMinor(charState, idx, rng) {
     prompt.t
   );
   char.weaver = updateDramaTension(char.weaver, char);
-  return settle(char, prompt.t);
+  return settle(char, prompt.t, rng);
 }
 
 /* ---------- the turn of the year ---------- */
@@ -815,6 +819,10 @@ export function endYear(charState, rng) {
     );
     return char;
   }
+  if (char.stats.sanity <= 0) {
+    handleSanityBreakdown(char, rng);
+    if (!char.alive) return char;
+  }
 
   // Birthday
   char.age += 1;
@@ -825,7 +833,7 @@ export function endYear(charState, rng) {
     yearsSinceLastCrisis: (char.weaver?.yearsSinceLastCrisis || 0) + 1
   };
   if (char.age >= 18 && (char.job === 'Fixer' || char.job === 'Syndicate')) applyFx(char, { merit: 2 });
-  settle(char, 0);
+  settle(char, 0, rng);
   char.weaver = updateDramaTension(char.weaver, char);
   if (char.alive) planYear(char, rng);
   return char;

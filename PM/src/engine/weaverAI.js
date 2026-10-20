@@ -304,6 +304,17 @@ export function recordChoiceInGraph(weaver, char, event, choice, outcomeTextVi, 
 
 export function isEventEligible(event, char) {
   if (!event) return false;
+  // Scripted milestones / climax trials must only trigger via their dedicated checks or causal threads
+  const SCRIPTED_MILESTONES = [
+    'ad_career_crossroad_18',
+    'ego_carmen_crossroad',
+    'ego_second_efflorescence_trial',
+    'hana_color_ascension_trial',
+    'csq_claw_taboo_visitation'
+  ];
+  if (SCRIPTED_MILESTONES.includes(event.id)) {
+    return false;
+  }
   if (char.seenEvents && char.seenEvents.includes(event.id) && !event.repeatable) {
     return false;
   }
@@ -465,10 +476,12 @@ export function selectEventWithWeaverAI({
   }
 
   const carmenEv = allPools.find(e => e.id === 'ego_carmen_crossroad');
+  const meetsCarmenPrereq = char.age >= 18 &&
+    ((char.sanity <= 5 && rng() < 0.12) || ((char.resonance || 0) >= 90 && rng() < 0.15));
+
   if (
     carmenEv &&
-    char.age >= 18 &&
-    (char.sanity <= 16 || (char.resonance || 0) >= 55) &&
+    meetsCarmenPrereq &&
     !char.flags.includes('EGOAwakened') &&
     !char.flags.includes('Distorted') &&
     !char.seenEvents.includes('ego_carmen_crossroad')

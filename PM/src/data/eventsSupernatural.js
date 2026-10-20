@@ -198,18 +198,18 @@ export const SUPERNATURAL_EVENTS = [
         labelEn: '“This pain is mine. I will not yield before your sun.”',
         outcomes: [
           {
-            w: 48,
+            w: 16,
             openEgoModal: true,
             flagsAdd: ['EGOAwakened', 'ShinAwakened'],
             recordsAdd: ['ego_effloresced'],
             effects: { health: +35, sanity: +50, rep: +38, resonance: +25 },
             scarsAdd: ['Người không cúi đầu trước Carmen'],
             meritAdd: 45,
-            resultVi: 'Bạn giữ chặt từng ký ức và vết sẹo, không lùi bước trước vầng thái dương ấm áp của Carmen. Biển ánh sáng chói lòa nứt toác trước ý chí bất khuất của bạn. Từ sâu thẳm tâm thức, một bộ giáp và vũ khí kết tinh từ chính nỗi đau của bạn hiện hình. Đó là E.G.O của riêng bạn.',
+            resultVi: 'Bạn giữ chặt từng ký ức và vết sẹo, không lùi bước trước vầng thái dương của Carmen. Biển ánh sáng chói lòa nứt toác trước ý chí bất khuất của bạn. Từ sâu thẳm tâm thức, một bộ giáp và vũ khí kết tinh từ chính nỗi đau của bạn hiện hình. Đó là E.G.O của riêng bạn.',
             resultEn: 'You held firm to every memory and scar, refusing to yield before Carmen’s radiant sun. The blinding light fractured against your unbending resolve. From the depths of your psyche, armor and a weapon forged from your agony manifested. It is your E.G.O.'
           },
           {
-            w: 37,
+            w: 52,
             flagsAdd: ['IncompleteEGO'],
             effects: { health: -18, sanity: -12, rep: +20, resonance: +18 },
             scarsAdd: ['Vết rạn khung cửi tự ngã'],
@@ -226,7 +226,7 @@ export const SUPERNATURAL_EVENTS = [
             resultEn: 'You roared in resistance, but your inner philosophy was not yet forged enough to bear the full weight of the light. The E.G.O half-manifested then cracked, emotion scorch marks searing your flesh. You did not break, but your soul bears a fissure: an Incomplete E.G.O.'
           },
           {
-            w: 15,
+            w: 32,
             flagsAdd: ['Distorted'],
             recordsAdd: ['distortion_awaken'],
             effects: { health: +40, sanity: -60, rep: +30, heat: +45, resonance: +55 },
@@ -242,7 +242,7 @@ export const SUPERNATURAL_EVENTS = [
         labelEn: 'Burn every past scar as living fuel for breakthrough',
         outcomes: [
           {
-            w: 45,
+            w: 12,
             openEgoModal: true,
             flagsAdd: ['EGOAwakened', 'ShinAwakened'],
             recordsAdd: ['ego_effloresced'],
@@ -253,7 +253,7 @@ export const SUPERNATURAL_EVENTS = [
             resultEn: 'Turning your bleeding scars into kindling, you incinerated Carmen’s gentle whispers. Your body tore with wounds, but from the ashes, complete E.G.O emerged with overwhelming might.'
           },
           {
-            w: 35,
+            w: 58,
             flagsAdd: ['Distorted'],
             recordsAdd: ['distortion_awaken'],
             effects: { health: +50, sanity: -65, rep: +35, heat: +50, resonance: +60 },
@@ -263,7 +263,7 @@ export const SUPERNATURAL_EVENTS = [
             resultEn: 'The emotional blaze flared beyond mortal endurance. The heat consumed your sanity; instead of E.G.O, you collapsed entirely into obsession. A ravenous Distortion arose from the ashes.'
           },
           {
-            w: 20,
+            w: 30,
             flagsAdd: ['IncompleteEGO'],
             effects: { health: -35, sanity: -20, rep: +22, resonance: +25 },
             scarsAdd: ['Vết Bỏng Linh Hồn'],
@@ -286,11 +286,20 @@ export const SUPERNATURAL_EVENTS = [
         labelEn: 'Close your eyes, immerse into the warm sun (Distort)',
         flagsAdd: ['Distorted'],
         recordsAdd: ['distortion_awaken'],
-        effects: { health: +55, sanity: -65, rep: +35, heat: +55, resonance: +60 },
+        effects: { health: -15, sanity: -70, rep: -25, heat: +60, resonance: +50 },
         scarsAdd: ['Distortion'],
-        meritAdd: 35,
+        meritAdd: 25,
         resultVi: 'Không còn đau nữa. Đó là điều đầu tiên bạn nhận ra. Vầng thái dương của Carmen bao trùm lấy bạn, cảm giác ấm áp lan tỏa khi cơ thể bạn biến đổi thành hình dạng của nỗi ám ảnh sâu kín nhất. Sáng hôm sau, Hana Association phát lệnh phong tỏa khu vực: Một Distortion cấp độ cao đã xuất hiện.',
         resultEn: 'It no longer hurt. That was the first thing you noticed. Carmen’s blazing sun enveloped you; a soothing warmth spread as your flesh morphed into the shape of your deepest obsession. The next morning Hana Association opened a new file: Distortion, unrated.'
+      },
+      {
+        labelVi: 'Cắn chặt răng quay lưng, níu lấy sự tỉnh táo phàm trần',
+        labelEn: 'Grit your teeth and turn away, clinging to mortal sanity',
+        effects: { sanity: +35, health: -15, rep: +10 },
+        scarsAdd: ['Kẻ từ chối tiếng gọi thái dương'],
+        meritAdd: 20,
+        resultVi: 'Bạn nhắm mắt, bịt tai, khước từ mọi cám dỗ từ vầng thái dương của Carmen. Bạn ho ra một búng máu vì xung đột tinh thần dữ dội, nhưng khi mở mắt ra, bạn vẫn là bạn: một con người trần thế, tiếp tục bước đi trên mặt đất The City.',
+        resultEn: 'You shut your eyes and closed your ears, refusing every whisper from Carmen’s blazing sun. You coughed blood from the sheer psychic shock, but when you opened your eyes, you remained yourself: an ordinary human walking the ground of The City.'
       }
     ]
   },
@@ -308,16 +317,41 @@ export const SUPERNATURAL_EVENTS = [
     en: '[True Efflorescence · Complete Blooming] The incomplete E.G.O flame in your chest flared again as a Backstreets crisis struck. This time, you did not waver. Before your eyes lay every path you had walked and every price you had paid.',
     choices: [
       {
-        labelVi: 'Hàn gắn vết rạn tâm thức: Khai hoa E.G.O hoàn chỉnh',
-        labelEn: 'Mend the soul fissure: Effloresce True E.G.O',
-        openEgoModal: true,
-        flagsAdd: ['EGOAwakened', 'ShinAwakened'],
-        recordsAdd: ['ego_effloresced'],
-        effects: { health: +40, sanity: +50, rep: +35, resonance: +25 },
-        scarsAdd: ['Bản Ngã Tái Sinh'],
-        meritAdd: 50,
-        resultVi: 'Vết nứt trên linh hồn liền lại thành một lớp giáp hoàng kim. E.G.O hoàn chỉnh bao bọc lấy bạn, tĩnh lặng và uy nghiêm. Cả khu phố nín thở trước luồng ánh sáng thuần khiết.',
-        resultEn: 'The fracture in your soul welded into golden armor. Complete E.G.O enveloped you, serene and sovereign. The entire street held its breath before the pure light.'
+        labelVi: 'Hàn gắn vết rạn tâm thức: Đánh cược tôi luyện để Khai hoa E.G.O',
+        labelEn: 'Mend the soul fissure: Forge through trial to Effloresce True E.G.O',
+        outcomes: [
+          {
+            w: 30,
+            openEgoModal: true,
+            flagsAdd: ['EGOAwakened', 'ShinAwakened'],
+            flagsRemove: ['IncompleteEGO'],
+            recordsAdd: ['ego_effloresced'],
+            effects: { health: +40, sanity: +50, rep: +35, resonance: +25 },
+            scarsAdd: ['Bản Ngã Tái Sinh'],
+            meritAdd: 50,
+            resultVi: 'Vết nứt trên linh hồn liền lại thành một lớp giáp hoàng kim. E.G.O hoàn chỉnh bao bọc lấy bạn, tĩnh lặng và uy nghiêm. Cả khu phố nín thở trước luồng ánh sáng thuần khiết.',
+            resultEn: 'The fracture in your soul welded into golden armor. Complete E.G.O enveloped you, serene and sovereign. The entire street held its breath before the pure light.'
+          },
+          {
+            w: 45,
+            flagsAdd: ['Distorted'],
+            flagsRemove: ['IncompleteEGO'],
+            recordsAdd: ['distortion_awaken'],
+            effects: { health: +35, sanity: -60, rep: +20, resonance: +40 },
+            scarsAdd: ['Lửa Tràn Phá Vỡ'],
+            meritAdd: 30,
+            resultVi: 'Sức ép từ mảnh E.G.O dang dở quá lớn so với giới hạn chịu đựng. Thay vì khai hoa, vết nứt vỡ toác thành một vụ nổ biến dạng tâm thần. Bạn sụp đổ thành một Distortion tàn bạo.',
+            resultEn: 'The strain of the incomplete E.G.O exceeded mortal limits. Instead of blooming, the fissure ruptured into a violent psychic collapse. You distorted into a monstrous entity.'
+          },
+          {
+            w: 25,
+            effects: { health: -20, sanity: -15, rep: +10 },
+            scarsAdd: ['Vết Nứt Chưa Liền'],
+            meritAdd: 15,
+            resultVi: 'Mảnh E.G.O rung chuyển dữ dội nhưng vẫn chưa thể nở rộ. Vết rạn vẫn ở đó, nhức nhối nhưng vẫn giữ bạn đứng vững ở lằn ranh phàm nhân.',
+            resultEn: 'The E.G.O shard trembled violently but refused to bloom. The fissure remained, aching yet keeping you anchored on the mortal shore.'
+          }
+        ]
       },
       {
         labelVi: 'Kìm nén ngọn lửa: Bảo toàn sức lực cho ngày sau',

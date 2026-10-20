@@ -1093,6 +1093,53 @@ export function applyFatalOrCompanionSave(char, deathCauseVi, deathCauseEn) {
   evaluateCharacterAchievements(char);
 }
 
+export function handleSanityBreakdown(char, rng = Math.random) {
+  if (!char.alive || char.stats.sanity > 0) return;
+  if (char.flags.includes('Distorted') || char.flags.includes('EGOAwakened')) return;
+
+  const saviorKey = ['partner', 'spouse', 'friend', 'mentor'].find(
+    k => char.npcs?.[k] && !char.npcs[k].deceased && (char.npcs[k].bond || 0) >= (['partner', 'spouse'].includes(k) ? 60 : 70)
+  );
+
+  if (saviorKey) {
+    const savior = char.npcs[saviorKey];
+    char.stats.sanity = 25;
+    char.stats.health = Math.max(15, char.stats.health);
+    char.logs.push({
+      id: `log_sanity_save_${char.age}_${saviorKey}`,
+      age: char.age,
+      season: SEASONS[char.seasonIdx],
+      type: 'miracle',
+      vi: `[${savior.nameVi}] Khi bạn gục xuống trong cơn hoảng loạn tột cùng, ${savior.nameVi} đã ôm chặt lấy bạn, thức trắng nhiều đêm để gọi bạn trở về từ bờ vực điên loạn.`,
+      en: `[${savior.nameEn}] When you collapsed in total panic, ${savior.nameEn} held you tight, staying awake through the nights to call you back from the abyss of madness.`
+    });
+    return;
+  }
+
+  // Without a close companion: 40% fatal panic, 60% survive with lasting psychological trauma & physical toll
+  if (rng() < 0.40) {
+    applyFatalOrCompanionSave(
+      char,
+      'Tâm thần sụp đổ hoàn toàn trong hoảng loạn',
+      'Succumbed to catastrophic psychic breakdown'
+    );
+  } else {
+    char.stats.sanity = 22;
+    char.stats.health = clamp(char.stats.health - 16, 1, 100);
+    if (!char.scars.includes('Di chứng sụp đổ tinh thần')) {
+      char.scars.push('Di chứng sụp đổ tinh thần');
+    }
+    char.logs.push({
+      id: `log_panic_survive_${char.age}_${Date.now()}`,
+      age: char.age,
+      season: SEASONS[char.seasonIdx],
+      type: 'danger',
+      vi: 'Bạn trải qua những tuần lễ sống trong hoảng loạn tột cùng, gào thét trong bóng tối trước khi hồi tỉnh với những vết thương tâm lý vĩnh viễn.',
+      en: 'You endured weeks of sheer terror, screaming into the darkness before regaining composure, forever bearing deep psychological scars.'
+    });
+  }
+}
+
 /**
  * Resolves a player's choice on a Story / Causal Event
  */
@@ -1299,9 +1346,8 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
   if (outcome.deathCauseVi || char.stats.health <= 0) {
     const [woundVi, woundEn] = woundDeath(char, 'Gục ngã vì vết thương quá nặng', 'Succumbed to fatal wounds');
     applyFatalOrCompanionSave(char, outcome.deathCauseVi || woundVi, outcome.deathCauseEn || woundEn);
-  } else if (char.stats.sanity <= 0 && !char.flags.includes('Distorted') && !char.flags.includes('EGOAwakened')) {
-    // Sanity hit 0 -> Trigger Carmen Crossroad next or immediate Distortion breakdown
-    char.resonance = 100;
+  } else if (char.stats.sanity <= 0) {
+    handleSanityBreakdown(char, rng);
   }
 
   const promoLogs = checkPromotions(char);
