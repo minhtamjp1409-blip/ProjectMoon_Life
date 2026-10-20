@@ -43,7 +43,7 @@ import {
 } from './director';
 
 export const MINOR_WINDOW_MS = 15000;
-const RECENT_LIMIT = 40;
+const RECENT_LIMIT = 16;
 
 export const STAT_KEYS = ['health', 'sanity', 'wealth', 'network', 'rep'];
 const EXTRA_KEYS = ['heat', 'resonance', 'taboo', 'merit'];
@@ -168,16 +168,24 @@ export function splitTitle(text) {
 /* ---------- choosing what happens this year ---------- */
 
 function eligibleDailies(char) {
-  return LIFE_DAILIES.filter((d) => ageOk(d, char.age) && matchNeed(d.need, char) && !(char.recent || []).includes(d.id));
+  const base = LIFE_DAILIES.filter((d) => ageOk(d, char.age) && matchNeed(d.need, char));
+  const unpicked = base.filter((d) => !(char.recent || []).includes(d.id));
+  if (unpicked.length >= 4) return unpicked;
+  // Fallback: sort all matching by least recently seen to cycle smoothly
+  const recent = char.recent || [];
+  return [...base].sort((a, b) => recent.lastIndexOf(a.id) - recent.lastIndexOf(b.id));
 }
 
 function eligibleMinors(char) {
-  return LIFE_MINORS.filter((m) => {
+  const base = LIFE_MINORS.filter((m) => {
     if (!ageOk(m, char.age) || !matchNeed(m.need, char)) return false;
-    if ((char.recent || []).includes(m.id)) return false;
     if (m.once && (char.seenEvents || []).includes(m.id)) return false;
     return true;
   });
+  const unpicked = base.filter((m) => !(char.recent || []).includes(m.id));
+  if (unpicked.length >= 2) return unpicked;
+  const recent = char.recent || [];
+  return [...base].sort((a, b) => recent.lastIndexOf(a.id) - recent.lastIndexOf(b.id));
 }
 
 const weightOf = (char) => (e) => directorWeight(e, char).w;
@@ -306,8 +314,13 @@ export function planYear(charState, rng) {
   const poolDailies = eligibleDailies(char);
   for (let s = 0; s < 4; s++) {
     if (slots[s] === null) {
-      const available = poolDailies.filter((d) => !slots.some((sl) => sl && sl.id === d.id));
-      const pick = pickWeighted(available, weightOf(char), rng);
+      const alreadyPickedIds = slots.filter(Boolean).map((sl) => sl.id);
+      let available = poolDailies.filter((d) => !alreadyPickedIds.includes(d.id));
+      if (available.length === 0) {
+        const allAgeDailies = LIFE_DAILIES.filter((d) => ageOk(d, char.age) && matchNeed(d.need, char));
+        available = allAgeDailies.filter((d) => !alreadyPickedIds.includes(d.id));
+      }
+      const pick = pickWeighted(available, weightOf(char), rng) || available[0];
       if (pick) {
         slots[s] = { kind: 'daily', id: pick.id };
         remember(char, pick.id);
@@ -399,12 +412,14 @@ export async function syncPlanWithBackend(charState, rng) {
         if (sm.kind === 'daily') {
           let dailyId = sm.id;
           if (!dailyId || !LIFE_DAILIES.some((d) => d.id === dailyId)) {
-            const pick = pickWeighted(
-              poolDailies.filter((d) => !hydrated.some((h) => h.id === d.id)),
-              weightOf(charState),
-              rng
-            );
-            dailyId = pick ? pick.id : poolDailies[0]?.id || 'daily_city_dawn';
+            const alreadyPickedIds = hydrated.map((h) => h.id);
+            let available = poolDailies.filter((d) => !alreadyPickedIds.includes(d.id));
+            if (available.length === 0) {
+              const allAgeDailies = LIFE_DAILIES.filter((d) => ageOk(d, charState.age) && matchNeed(d.need, charState));
+              available = allAgeDailies.filter((d) => !alreadyPickedIds.includes(d.id));
+            }
+            const pick = pickWeighted(available, weightOf(charState), rng) || available[0];
+            dailyId = pick ? pick.id : (available[0]?.id || poolDailies[0]?.id || 'daily_city_dawn');
           }
           remember(charState, dailyId);
           hydrated.push({
@@ -417,12 +432,14 @@ export async function syncPlanWithBackend(charState, rng) {
         } else if (sm.kind === 'minor') {
           let minorId = sm.id;
           if (!minorId || !LIFE_MINORS.some((m) => m.id === minorId)) {
-            const pick = pickWeighted(
-              poolMinors.filter((m) => !hydrated.some((h) => h.id === m.id)),
-              weightOf(charState),
-              rng
-            );
-            minorId = pick ? pick.id : poolMinors[0]?.id || 'minor_alley_crossroad';
+            const alreadyPickedIds = hydrated.map((h) => h.id);
+            let available = poolMinors.filter((m) => !alreadyPickedIds.includes(m.id));
+            if (available.length === 0) {
+              const allAgeMinors = LIFE_MINORS.filter((m) => ageOk(m, charState.age) && matchNeed(m.need, charState) && !(m.once && (charState.seenEvents || []).includes(m.id)));
+              available = allAgeMinors.filter((m) => !alreadyPickedIds.includes(m.id));
+            }
+            const pick = pickWeighted(available, weightOf(charState), rng) || available[0];
+            minorId = pick ? pick.id : (available[0]?.id || poolMinors[0]?.id || 'minor_alley_crossroad');
           }
           remember(charState, minorId);
           hydrated.push({
