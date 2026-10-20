@@ -220,15 +220,14 @@ const EventDock = ({ event, char, onPick }) => {
             if (Array.isArray(ch.scheduleConsequences) && ch.scheduleConsequences.length > 0) {
               extra.push(
                 <span className="delta is-rare is-static" key="c">
-                  {t(`Hậu quả sau ${ch.scheduleConsequences[0].delayYears} năm`, `Consequence in ${ch.scheduleConsequences[0].delayYears} yrs`)}
+                  {t('Sẽ có hậu quả', 'Has consequences')}
                 </span>
               );
             }
             if (Array.isArray(ch.scarsAdd) && ch.scarsAdd.length > 0) {
               extra.push(
                 <span className="delta is-down is-static" key="s">
-                  {t('Sẹo: ', 'Scar: ')}
-                  {ch.scarsAdd[0]}
+                  {t('Để lại sẹo', 'Leaves a scar')}
                 </span>
               );
             }
@@ -537,9 +536,10 @@ export const LiveStageFeed = () => {
 
   const forgeQuality = strikes.length ? Math.round(strikes.reduce((a, b) => a + b, 0) / strikes.length) : 0;
   const lifeSummary = !char.alive ? buildLifeSummaryAndLegacy(char) : null;
+  const hasDock = Boolean(char.pendingEvent || char.pendingContract || char.pendingMinor);
 
   return (
-    <div className="stage" ref={stageRef}>
+    <div className={`stage ${hasDock ? 'has-dock' : ''}`} ref={stageRef}>
       <AmbientScene char={char} />
       <StageFx />
       <div className="log" ref={logRef}>

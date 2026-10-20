@@ -13,6 +13,18 @@ const LABELS = {
   merit: ['Merit', 'Merit']
 };
 
+const STAT_ICONS = {
+  health: '♥',
+  sanity: '✦',
+  wealth: '◆',
+  network: '❖',
+  rep: '★',
+  heat: '▲',
+  resonance: '◎',
+  taboo: '✖',
+  merit: '◈'
+};
+
 // Stats whose rise is bad news
 const RISE_IS_BAD = new Set(['heat', 'taboo']);
 const NEUTRAL = new Set(['resonance']);
@@ -101,35 +113,39 @@ const fxOf = (x) => x?.fx || x?.effects || {};
 const outsOf = (c) => c?.out || c?.outcomes || null;
 
 /**
- * What a choice will do: fixed changes, or for a gamble each stat's range across
- * outcomes plus the odds.
+ * What a choice will do: list of affected resources (without exact numbers to maintain
+ * suspense and gamble), plus odds when multiple outcomes exist.
  */
 export function previewChoice(choice) {
   const base = fxOf(choice);
   const outs = outsOf(choice);
   if (!outs?.length) {
-    return { fixed: STAT_ORDER.filter((k) => base[k]).map((k) => ({ k, v: base[k] })), ranges: [], odds: null };
+    const affected = STAT_ORDER.filter((k) => Boolean(base[k]));
+    const fixed = STAT_ORDER.filter((k) => base[k]).map((k) => ({ k, v: base[k] }));
+    return { affected, fixed, ranges: [], odds: null };
   }
   const total = outs.reduce((s, o) => s + (o.w ?? 50), 0);
+  const affected = [];
   const ranges = [];
   for (const k of STAT_ORDER) {
     const values = outs.map((o) => (base[k] || 0) + (fxOf(o)[k] || 0));
     const lo = Math.min(...values);
     const hi = Math.max(...values);
-    if (lo === 0 && hi === 0) continue;
-    if (lo === hi) ranges.push({ k, lo, hi });
-    else ranges.push({ k, lo, hi });
+    if (lo === 0 && hi === 0 && !base[k]) continue;
+    affected.push(k);
+    ranges.push({ k, lo, hi });
   }
-  return { fixed: [], ranges, odds: outs.map((o) => Math.round(((o.w ?? 50) / total) * 100)) };
+  const odds = outs.map((o) => Math.round(((o.w ?? 50) / total) * 100));
+  return { affected, fixed: [], ranges, odds };
 }
 
 export const ChoicePreview = ({ choice, npcs }) => {
   const { t } = useT();
-  const { fixed, ranges, odds } = previewChoice(choice);
+  const { affected, odds } = previewChoice(choice);
   const bonds = Object.entries(choice.bond || {})
-    .map(([role, v]) => ({ name: npcs?.[role]?.nameVi || npcs?.spouse?.nameVi, v }))
+    .map(([role]) => ({ name: npcs?.[role]?.nameVi || npcs?.spouse?.nameVi }))
     .filter((b) => b.name);
-  if (!fixed.length && !ranges.length && !bonds.length && !choice.later && !choice.scar && !choice.npcFate) return null;
+  if (!affected?.length && !bonds.length && !choice.later && !choice.scar && !choice.npcFate) return null;
 
   return (
     <span className="preview">
@@ -138,20 +154,15 @@ export const ChoicePreview = ({ choice, npcs }) => {
           {t('May rủi', 'A gamble')} {odds.join(' / ')}%
         </span>
       )}
-      {fixed.map((d) => (
-        <span key={d.k} className={`delta is-${toneOf(d.k, d.v)} is-static`}>
-          {t(...LABELS[d.k])} <b className="num">{sign(d.v)}</b>
-        </span>
-      ))}
-      {ranges.map((r) => (
-        <span key={r.k} className={`delta is-${r.lo === r.hi ? toneOf(r.k, r.lo) : r.hi <= 0 ? toneOf(r.k, -1) : r.lo >= 0 ? toneOf(r.k, 1) : 'mixed'} is-static`}>
-          {t(...LABELS[r.k])}{' '}
-          <b className="num">{r.lo === r.hi ? sign(r.lo) : `${sign(r.lo)} ~ ${sign(r.hi)}`}</b>
+      {affected.map((k) => (
+        <span key={k} className={`delta is-affected is-affected-${k} is-static`}>
+          <span className="delta-stat-icon">{STAT_ICONS[k] || '⚡'}</span>
+          {t(...LABELS[k])}
         </span>
       ))}
       {bonds.map((b) => (
-        <span key={b.name} className={`delta is-${b.v > 0 ? 'bond' : 'down'} is-static`}>
-          {b.name} <b className="num">{sign(b.v)}</b>
+        <span key={b.name} className="delta is-bond is-static">
+          {t('Quan hệ', 'Bond')} · {b.name}
         </span>
       ))}
       {choice.later && <span className="delta is-rare is-static">{t('Sẽ có hậu quả', 'Has consequences')}</span>}

@@ -18,6 +18,7 @@ export const MainLayout = ({ children }) => {
         alive: s.char.alive,
         pendingEvent: s.char.pendingEvent,
         pendingContract: s.char.pendingContract,
+        pendingMinor: s.char.pendingMinor,
         pendingModal: s.char.pendingModal,
         speed: s.speed,
         autoPlay: s.autoPlay,
@@ -58,11 +59,12 @@ export const MainLayout = ({ children }) => {
 
   // The play screen manages its own scrolling regions; other screens scroll as a page
   const isPlay = location.pathname === '/' && inRun;
+  const hasDock = isPlay && Boolean(pendingEvent || pendingContract || pendingMinor);
   const { sidebarCollapsed, toggleSidebar } = useThemeStore();
   const isNavCollapsed = sidebarCollapsed !== null ? sidebarCollapsed : isPlay;
 
   return (
-    <div className={`shell ${isNavCollapsed ? 'is-nav-collapsed' : ''} ${isPlay ? 'is-in-play' : ''}`}>
+    <div className={`shell ${isNavCollapsed ? 'is-nav-collapsed' : ''} ${isPlay ? 'is-in-play' : ''} ${hasDock ? 'has-dock' : ''}`}>
       <Sidebar isCollapsed={isNavCollapsed} onToggleCollapse={() => toggleSidebar(isNavCollapsed)} isPlay={isPlay} />
       <Header />
       <main className="main">{isPlay ? children : <div className="main-scroll">{children}</div>}</main>
