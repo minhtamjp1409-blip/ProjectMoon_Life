@@ -1,0 +1,30 @@
+{
+  "name": "cityborn-project-moon",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@ant-design/icons": "^6.3.4",
+    "@tailwindcss/vite": "^4.3.3",
+    "antd": "^6.6.6",
+    "clsx": "^2.1.1",
+    "dayjs": "^1.11.23",
+    "lucide-react": "^1.59.0",
+    "motion": "^14.4.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^7.18.4",
+    "tailwind-merge": "^3.7.0",
+    "tailwindcss": "^4.3.3",
+    "zustand": "^5.0.15"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^6.0.5"
+  }
+}
