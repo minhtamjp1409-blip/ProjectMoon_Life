@@ -62,7 +62,7 @@ export const MainLayout = ({ children }) => {
   const isNavCollapsed = sidebarCollapsed !== null ? sidebarCollapsed : isPlay;
 
   return (
-    <div className={`shell ${isNavCollapsed ? 'is-nav-collapsed' : ''}`}>
+    <div className={`shell ${isNavCollapsed ? 'is-nav-collapsed' : ''} ${isPlay ? 'is-in-play' : ''}`}>
       <Sidebar isCollapsed={isNavCollapsed} onToggleCollapse={() => toggleSidebar(isNavCollapsed)} isPlay={isPlay} />
       <Header />
       <main className="main">{isPlay ? children : <div className="main-scroll">{children}</div>}</main>
