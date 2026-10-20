@@ -12,10 +12,10 @@ import { useT } from '../../../i18n';
 import { Deltas, ChoicePreview } from './Deltas';
 
 const ENTRY_KIND = {
-  causal: { cls: 'k-causal', vi: 'Tiếng vọng nhân quả', en: 'Causal Echo' },
-  miracle: { cls: 'k-good', vi: 'Bước ngoặt', en: 'Turning Point' },
-  promo: { cls: 'k-good', vi: 'Thăng tiến', en: 'Promotion' },
-  danger: { cls: 'k-bad', vi: 'Hiểm họa', en: 'Danger' },
+  causal: { cls: 'k-causal', vi: 'Causal Echo', en: 'Causal Echo' },
+  miracle: { cls: 'k-good', vi: 'Turning Point', en: 'Turning Point' },
+  promo: { cls: 'k-good', vi: 'Promotion', en: 'Promotion' },
+  danger: { cls: 'k-bad', vi: 'Danger', en: 'Danger' },
   death: { cls: 'k-death', vi: null, en: null },
   summary: { cls: 'k-summary', vi: null, en: null },
   choice: { cls: 'k-choice', vi: null, en: null }
@@ -153,7 +153,7 @@ const EventDock = ({ event, char, onPick }) => {
         <div className="dock-banner">
           <div className="dock-banner-text">
             <p className={`dock-kicker ${causal ? 'is-causal' : ''}`}>
-              {causal ? t('Tiếng vọng nhân quả · Thời gian dừng lại', 'Causal Echo · Time stops') : t(`Tuổi ${char.age} · thời gian dừng lại`, `Age ${char.age} · time stops`)}
+              {causal ? 'Causal Echo · Time stops' : t(`Tuổi ${char.age} · thời gian dừng lại`, `Age ${char.age} · time stops`)}
             </p>
             <p className="dock-title">{title || t('Bạn sẽ làm gì?', 'What will you do?')}</p>
           </div>
