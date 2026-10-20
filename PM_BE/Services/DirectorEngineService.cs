@@ -154,7 +154,7 @@ public sealed class DirectorEngineService
 
                 return new CareerMilestoneDto(
                     Category: "COLOR FIXER ASCENSION",
-                    TitleVi: "Huyền thoại Đô Thành (City Legend)",
+                    TitleVi: "Huyền thoại The City (City Legend)",
                     TitleEn: "Sovereign Legend of The City",
                     ProgressPct: progress,
                     Requirements:
@@ -193,7 +193,7 @@ public sealed class DirectorEngineService
                     TipVi: "Hana Association chỉ triệu tập đại khảo thí phong Color cho Fixer Grade 1 đã thức tỉnh E.G.O hoặc có cộng hưởng dị thường.",
                     TipEn: "Hana convenes the Color Investiture trial only for Grade 1 Fixers who manifested E.G.O or extraordinary resonance.",
                     CanPromote: canPromote,
-                    NextRankTitleVi: "Color Fixer (Huyền Thoại Đô Thành)",
+                    NextRankTitleVi: "Color Fixer (Huyền Thoại The City)",
                     NextRankTitleEn: "Color Fixer (City Legend)"
                 );
             }
@@ -331,7 +331,7 @@ public sealed class DirectorEngineService
                     TitleEn: "Legendary Workshop Innovator",
                     ProgressPct: 100,
                     Requirements: [],
-                    TipVi: "Vũ khí do bạn rèn được các Fixer Grade 1 và Color săn lùng khắp Đô Thành.",
+                    TipVi: "Vũ khí do bạn rèn được các Fixer Grade 1 và Color săn lùng khắp The City.",
                     TipEn: "Weapons forged by your hands are coveted by Grade 1 Fixers and Colors across the City."
                 );
             }
@@ -442,7 +442,7 @@ public sealed class DirectorEngineService
         {
             majorDue = true;
             majorId = "ad_career_crossroad_18";
-            majorTitleVi = "Bước Ngoặt Đô Thành (Tuổi 18)";
+            majorTitleVi = "Bước Ngoặt The City (Tuổi 18)";
             majorTitleEn = "Age 18 Career Crossroads";
         }
         else if (c.Taboo >= 3)
@@ -456,8 +456,8 @@ public sealed class DirectorEngineService
         {
             majorDue = true;
             majorId = "ego_carmen_crossroad";
-            majorTitleVi = "Tiếng Gọi Dưới Ánh Trăng (Carmen's Voice)";
-            majorTitleEn = "Voices in the Monolith";
+            majorTitleVi = "Tiếng Gọi Giữa Vầng Thái Dương (Carmen's Voice)";
+            majorTitleEn = "Voices in the Blinding Sun (Carmen)";
         }
         else if (c.Job.Equals("Fixer", StringComparison.OrdinalIgnoreCase) && c.FixerGrade == 1 && c.Merit >= 150 && c.Rep >= 68 && !flags.Contains("ColorFixer") && !seen.Contains("hana_color_ascension_trial"))
         {
@@ -546,7 +546,7 @@ public sealed class DirectorEngineService
                 slots[s] = new PlanMomentDto(
                     T: 0,
                     Kind: isMinor ? "minor" : "daily",
-                    TitleVi: isMinor ? "Lựa chọn thời khắc" : "Nhịp sống Đô Thành",
+                    TitleVi: isMinor ? "Lựa chọn thời khắc" : "Nhịp sống The City",
                     TitleEn: isMinor ? "Crucial Moment" : "City Living Echo"
                 );
             }
@@ -607,7 +607,7 @@ public sealed class DirectorEngineService
                     SanityDelta: 25,
                     HealthDelta: 10,
                     RepDelta: 20,
-                    EpitaphVi: "Kẻ thức tỉnh E.G.O thuần khiết giữa màn đêm Đô Thành",
+                    EpitaphVi: "Kẻ thức tỉnh E.G.O thuần khiết giữa The City",
                     EpitaphEn: "One who manifested pure E.G.O amidst the City's endless night"
                 );
             }
@@ -658,7 +658,7 @@ public sealed class DirectorEngineService
             if (hasPrereqs)
             {
                 // Generate majestic Color Fixer Title based on affinity
-                string colorTitleVi = "Huyết Nhẫn Đô Thành (The Crimson Brand)";
+                string colorTitleVi = "Huyết Nhẫn The City (The Crimson Brand)";
                 string colorTitleEn = "The Crimson Brand";
 
                 if (c.Sanity >= 60 && c.Resonance >= 50)
@@ -682,7 +682,7 @@ public sealed class DirectorEngineService
                     OutcomeType: "COLOR_ASCENSION",
                     TitleVi: $"Phong Sắc Color Fixer: {colorTitleVi}",
                     TitleEn: $"Color Fixer Investiture: {colorTitleEn}",
-                    DescriptionVi: "Hana Association Đại Hội Đồng nhất trí phê chuẩn phong sắc. Tên của bạn được khắc lên Bia Ký Vĩnh Cửu của Đô Thành.",
+                    DescriptionVi: "Hana Association Đại Hội Đồng nhất trí phê chuẩn phong sắc. Tên của bạn được khắc lên Bia Ký Vĩnh Cửu của The City.",
                     DescriptionEn: "The Hana Grand Council unanimously ratified your investiture. Your name is etched into the Eternal Stele of the City.",
                     FlagsToAdd: ["ColorFixer", "StarOfCityOvercome"],
                     FlagsToRemove: [],
