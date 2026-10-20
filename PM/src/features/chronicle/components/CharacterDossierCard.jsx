@@ -48,7 +48,7 @@ const Stat = ({ label, value, unit = '/100', color, flag, riseIsBad = false }) =
   const change = useChange(value);
   const good = change && (riseIsBad ? change.d < 0 : change.d > 0);
   const flashClass = change ? (good ? 'is-flash-up' : 'is-flash-down') : '';
-  const isCritical = value <= 20 && !riseIsBad;
+  const isCritical = ['HP', 'SP'].includes(label) && value <= 20;
 
   React.useEffect(() => {
     if (!change) return;
@@ -268,7 +268,7 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeT
           </div>
           <Tooltip title={lang === 'en' ? omen.descEn : omen.descVi} placement="right">
             <div className="kv" style={{ cursor: 'help' }}>
-              <span>Fate Omen</span>
+              <span>{t('Điềm báo', 'Fate omen')}</span>
               <span style={{ color: 'var(--accent)' }}>{(lang === 'en' ? omen.nameEn : omen.nameVi).split(' · ')[0]}</span>
             </div>
           </Tooltip>
@@ -277,18 +277,18 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeT
 
       {showOverview && (
         <section>
-          <h3 className="section-title">Vitals</h3>
+          <h3 className="section-title">{t('Chỉ số', 'Vitals')}</h3>
           <Stat label="HP" value={health} color="var(--s-health)" flag={health <= 25 ? 'CRITICAL' : null} />
           <Stat label="SP" value={sanity} color="var(--s-sanity)" flag={sanity <= 22 ? 'Carmen Calls' : null} />
-          <Stat label="Wealth" value={wealth} unit="Ahn" color="var(--s-wealth)" flag={wealth <= 5 ? 'Near Ruin' : null} />
-          <Stat label="Network" value={network} color="var(--s-network)" />
-          <Stat label="Reputation" value={rep} color="var(--s-rep)" />
+          <Stat label={t('Tiền mặt', 'Wealth')} value={wealth} unit="Ahn" color="var(--s-wealth)" flag={wealth <= 5 ? t('Cạn tiền', 'Near ruin') : null} />
+          <Stat label={t('Quan hệ', 'Network')} value={network} color="var(--s-network)" />
+          <Stat label={t('Danh tiếng', 'Reputation')} value={rep} color="var(--s-rep)" />
         </section>
       )}
 
       {showOverview && (
         <section>
-          <h3 className="section-title">Causal Pressure</h3>
+          <h3 className="section-title">{t('Áp lực', 'Causal pressure')}</h3>
           <Stat
             label="Syndicate Heat"
             value={char.heat || 0}
@@ -326,6 +326,24 @@ export const CharacterDossierCard = () => {
   const char = useGameStore((s) => s.char);
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const [mobileTab, setMobileTab] = React.useState('overview');
+  const sheetRef = React.useRef(null);
+  React.useEffect(() => {
+    if (!drawerOpen) return;
+    const previous = document.activeElement;
+    const sheet = sheetRef.current;
+    sheet?.querySelector('button')?.focus();
+    const handleKey = (event) => {
+      if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); setDrawerOpen(false); return; }
+      if (event.key !== 'Tab') return;
+      const controls = [...sheet.querySelectorAll('button:not(:disabled), a[href], input, select, [tabindex="0"]')].filter(el => el.getClientRects().length);
+      const first = controls[0];
+      const last = controls[controls.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+    };
+    document.addEventListener('keydown', handleKey, true);
+    return () => { document.removeEventListener('keydown', handleKey, true); previous?.focus(); };
+  }, [drawerOpen]);
 
   const region = REGIONS.find((r) => r.id === char.regionId) || REGIONS[0];
   const omen = FATE_OMENS.find((o) => o.id === (char.fateOmenId || char.weaver?.mode)) || FATE_OMENS[0];
@@ -350,6 +368,7 @@ export const CharacterDossierCard = () => {
         onClick={() => setDrawerOpen(true)}
         role="button"
         tabIndex={0}
+        onKeyDown={event => { if (event.target === event.currentTarget && (event.key === 'Enter' || event.key === ' ')) { event.preventDefault(); event.stopPropagation(); setDrawerOpen(true); } }}
         aria-label={t('Chỉ số nhân vật và tài nguyên', 'Character stats and resources')}
       >
         {/* Row 1: Character identity & quick job badge */}
@@ -440,7 +459,7 @@ export const CharacterDossierCard = () => {
           </div>
           {milestone && milestone.progressPct < 100 && (
             <div className="m-pill m-pill-milestone" title={lang === 'en' ? milestone.titleEn : milestone.titleVi}>
-              <span>🎯</span> <b className="num">{milestone.progressPct}%</b>
+              <span>{t('Mốc', 'Goal')}</span> <b className="num">{milestone.progressPct}%</b>
             </div>
           )}
         </div>
@@ -455,7 +474,7 @@ export const CharacterDossierCard = () => {
           aria-modal="true"
           aria-label={t('Hồ sơ nhân vật chi tiết', 'Full Character Dossier')}
         >
-          <div className="mobile-dossier-sheet" onClick={(e) => e.stopPropagation()}>
+          <div className="mobile-dossier-sheet" ref={sheetRef} onClick={(e) => e.stopPropagation()}>
             <div className="mobile-dossier-sheet-head">
               <div className="sheet-drag-handle" />
               <div className="sheet-title-row">
@@ -474,7 +493,13 @@ export const CharacterDossierCard = () => {
               </div>
 
               {/* Mobile Dossier Segmented Tabs */}
-              <div className="m-sheet-tabs" role="tablist">
+              <div className="m-sheet-tabs" role="tablist" onKeyDown={event => {
+                if (!['ArrowLeft', 'ArrowRight'].includes(event.key)) return;
+                event.preventDefault();
+                const tabs = [...event.currentTarget.querySelectorAll('[role="tab"]')];
+                const next = tabs[(tabs.indexOf(document.activeElement) + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length];
+                next?.click(); next?.focus();
+              }}>
                 <button
                   type="button"
                   role="tab"
@@ -482,7 +507,7 @@ export const CharacterDossierCard = () => {
                   className={`m-sheet-tab ${mobileTab === 'overview' ? 'is-active' : ''}`}
                   onClick={() => setMobileTab('overview')}
                 >
-                  {t('📊 Chỉ số', '📊 Vitals')}
+                  {t('Chỉ số', 'Vitals')}
                 </button>
                 <button
                   type="button"
@@ -491,7 +516,7 @@ export const CharacterDossierCard = () => {
                   className={`m-sheet-tab ${mobileTab === 'career' ? 'is-active' : ''}`}
                   onClick={() => setMobileTab('career')}
                 >
-                  {t('🎯 Sự nghiệp', '🎯 Career')}
+                  {t('Sự nghiệp', 'Career')}
                 </button>
                 <button
                   type="button"
@@ -500,7 +525,7 @@ export const CharacterDossierCard = () => {
                   className={`m-sheet-tab ${mobileTab === 'relations' ? 'is-active' : ''}`}
                   onClick={() => setMobileTab('relations')}
                 >
-                  {t('👥 Nhân mạch', '👥 Bonds')}
+                  {t('Nhân mạch', 'Bonds')}
                 </button>
               </div>
             </div>

@@ -111,7 +111,7 @@ export const CodexPage = () => {
                       {lang === 'en' ? rec.hintEn || rec.hintVi : rec.hintVi}
                     </div>
                   </div>
-                  <div style={{ display: 'grid', justifyItems: 'end', gap: 6 }}>
+                  <div className="record-status" style={{ display: 'grid', justifyItems: 'end', gap: 6 }}>
                     <span className="pill">{TIER_LABELS[rec.tier] || rec.tier}</span>
                     <span style={{ fontSize: 13, color: unlocked ? 'var(--good)' : 'var(--faint)' }}>
                       {unlocked ? t('Đã đạt', 'Unlocked') : t('Chưa mở', 'Locked')}

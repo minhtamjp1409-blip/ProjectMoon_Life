@@ -1,6 +1,6 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { BrowserRouter } from 'react-router-dom';
-import { ConfigProvider, App as AntdApp, theme as AntdThemeLib } from 'antd';
+import { ConfigProvider, App as AntdApp, theme as AntdThemeLib, notification } from 'antd';
 import viVN from 'antd/locale/vi_VN';
 import enUS from 'antd/locale/en_US';
 import AppRouter from './routes';
@@ -10,12 +10,13 @@ import { useThemeStore } from './store/themeStore';
 // Ant Design is kept for modals, tooltips and notifications only; its tokens
 // mirror the CSS variables in index.css so those surfaces match the screens.
 const PALETTE = {
-  dark: { primary: '#c9a24b', bg: '#121419', elevated: '#191c23', border: '#252832', text: '#eeede9' },
-  light: { primary: '#a87f22', bg: '#ffffff', elevated: '#ffffff', border: '#e4e1d9', text: '#17171a' }
+  dark: { primary: '#cbbb90', bg: '#191a18', elevated: '#232420', border: '#717367', text: '#eeeee6' },
+  light: { primary: '#795d28', bg: '#ffffff', elevated: '#f3f2ef', border: '#868279', text: '#252521' }
 };
 
 export const App = () => {
   const { themeMode, lang } = useThemeStore();
+  useEffect(() => { notification.config({ maxCount: 1, duration: 3 }); }, []);
 
   const antTheme = useMemo(() => {
     const p = PALETTE[themeMode] || PALETTE.dark;
@@ -28,11 +29,11 @@ export const App = () => {
         colorBorder: p.border,
         colorBorderSecondary: p.border,
         colorText: p.text,
-        borderRadius: 6,
+        borderRadius: 5,
         borderRadiusLG: 8,
         fontSize: 16,
         fontFamily: '"Be Vietnam Pro", system-ui, "Segoe UI", sans-serif',
-        boxShadow: '0 12px 28px rgba(0,0,0,.28)'
+        boxShadow: '0 12px 32px rgba(0,0,0,.18)'
       },
       components: {
         Modal: { titleFontSize: 17, contentBg: p.bg, headerBg: p.bg },

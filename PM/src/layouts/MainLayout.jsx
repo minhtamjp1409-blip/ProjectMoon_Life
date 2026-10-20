@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import Header, { BottomNav } from './Header';
+import { CityBackdrop } from '../components/CityBackdrop';
 import { useShallow } from 'zustand/react/shallow';
 import { useGameStore } from '../store/gameStore';
 import { useThemeStore } from '../store/themeStore';
@@ -64,10 +65,11 @@ export const MainLayout = ({ children }) => {
   const isNavCollapsed = sidebarCollapsed !== null ? sidebarCollapsed : isPlay;
 
   return (
-    <div className={`shell ${isNavCollapsed ? 'is-nav-collapsed' : ''} ${isPlay ? 'is-in-play' : ''} ${hasDock ? 'has-dock' : ''}`}>
+    <div className={`shell interface-v2 ${isNavCollapsed ? 'is-nav-collapsed' : ''} ${isPlay ? 'is-in-play' : ''} ${hasDock ? 'has-dock' : ''}`}>
+      <CityBackdrop variant="ambient" />
       <Sidebar isCollapsed={isNavCollapsed} onToggleCollapse={() => toggleSidebar(isNavCollapsed)} isPlay={isPlay} />
       <Header />
-      <main className="main">{isPlay ? children : <div className="main-scroll">{children}</div>}</main>
+      <main className="main" id="main-content">{isPlay ? children : <div className="main-scroll">{children}</div>}</main>
       <BottomNav />
     </div>
   );

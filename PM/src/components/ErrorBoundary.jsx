@@ -1,119 +1,52 @@
 import React from 'react';
+import { AlertCircle, RotateCcw, House } from 'lucide-react';
 
 export class ErrorBoundary extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { hasError: false, error: null };
-  }
-
+  state = { error: null };
   static getDerivedStateFromError(error) {
-    return { hasError: true, error };
+    return { error };
   }
-
-  componentDidCatch(error, errorInfo) {
-    console.error('City Chronicles ErrorBoundary caught an error:', error, errorInfo);
+  componentDidCatch(error, info) {
+    console.error('Chronicle rendering error:', error, info);
   }
-
-  handleReload = () => {
-    window.location.reload();
-  };
-
-  handleReset = () => {
-    try {
-      localStorage.removeItem('pm_city_chronicles_run_v1');
-    } catch (e) {
-      // ignore
-    }
-    window.location.href = '/';
-  };
-
   render() {
-    if (this.state.hasError) {
-      return (
-        <div style={{
-          minHeight: '100vh',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: '24px',
-          background: '#0d0e12',
-          color: '#eeede9',
-          fontFamily: '"Be Vietnam Pro", system-ui, sans-serif',
-          textAlign: 'center'
-        }}>
-          <div style={{
-            maxWidth: 420,
-            padding: '28px 24px',
-            background: '#14161c',
-            border: '1px solid #c9a24b',
-            borderRadius: 8,
-            boxShadow: '0 8px 32px rgba(0,0,0,0.6)'
-          }}>
-            <div style={{ fontSize: 32, marginBottom: 12 }}>⚠️</div>
-            <h2 style={{ fontSize: 18, fontWeight: 700, color: '#c9a24b', marginBottom: 8 }}>
-              Gián Đoạn Kết Nối Tâm Thức
-            </h2>
-            <p style={{ fontSize: 14, color: '#9aa0a6', lineHeight: 1.6, marginBottom: 20 }}>
-              Một biến cố bất ngờ làm gián đoạn dòng thời gian trong The City. Hãy tải lại trang hoặc khôi phục về trang chủ.
-            </p>
-            <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
-              <button
-                type="button"
-                onClick={this.handleReload}
-                style={{
-                  padding: '8px 18px',
-                  background: '#c9a24b',
-                  color: '#0d0e12',
-                  border: 'none',
-                  borderRadius: 6,
-                  fontWeight: 600,
-                  fontSize: 14,
-                  cursor: 'pointer'
-                }}
-              >
-                Tải lại trang
-              </button>
-              <button
-                type="button"
-                onClick={this.handleReset}
-                style={{
-                  padding: '8px 18px',
-                  background: 'transparent',
-                  color: '#eeede9',
-                  border: '1px solid #333a4d',
-                  borderRadius: 6,
-                  fontWeight: 500,
-                  fontSize: 14,
-                  cursor: 'pointer'
-                }}
-              >
-                Về trang chủ
-              </button>
-            </div>
-            {this.state.error && (
-              <pre style={{
-                marginTop: 20,
-                padding: 10,
-                background: '#08090d',
-                borderRadius: 4,
-                color: '#f56565',
-                fontSize: 11,
-                textAlign: 'left',
-                overflowX: 'auto',
-                whiteSpace: 'pre-wrap',
-                wordBreak: 'break-word'
-              }}>
-                {this.state.error.message || String(this.state.error)}
-              </pre>
-            )}
-          </div>
-        </div>
-      );
+    if (!this.state.error) return this.props.children;
+    let en = false;
+    try {
+      en = localStorage.getItem('pm-lang-mode') === 'en';
+    } catch {
+      // The recovery screen must also render when browser storage is unavailable.
     }
-
-    return this.props.children;
+    return (
+      <div className="app-error" role="alert">
+        <AlertCircle size={30} strokeWidth={1.5} aria-hidden="true" />
+        <h1>{en ? 'The record could not open' : 'Không thể mở hồ sơ'}</h1>
+        <p>
+          {en
+            ? 'An unexpected error interrupted this page. Reload it, or return to the beginning. Your saved progress is kept.'
+            : 'Trang gặp lỗi trong lúc hiển thị. Bạn có thể tải lại hoặc về trang chủ. Tiến trình đã lưu vẫn được giữ.'}
+        </p>
+        <div>
+          <button className="btn btn-primary" onClick={() => window.location.reload()}>
+            <RotateCcw size={16} />
+            {en ? 'Reload page' : 'Tải lại trang'}
+          </button>
+          <button
+            className="btn"
+            onClick={() => {
+              window.location.href = '/';
+            }}
+          >
+            <House size={16} />
+            {en ? 'Return home' : 'Về trang chủ'}
+          </button>
+        </div>
+        <details>
+          <summary>{en ? 'Error details' : 'Chi tiết lỗi'}</summary>
+          <pre>{String(this.state.error.message || this.state.error)}</pre>
+        </details>
+      </div>
+    );
   }
 }
-
 export default ErrorBoundary;

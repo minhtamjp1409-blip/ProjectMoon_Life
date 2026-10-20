@@ -14,7 +14,6 @@ export const ChroniclePage = () => {
 
   return (
     <div className="play">
-      <h1 className="sr-only">The City Chronicles</h1>
       <PlayBar />
       <div className="play-body">
         <CharacterDossierCard />

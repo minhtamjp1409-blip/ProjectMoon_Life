@@ -5,56 +5,54 @@ import { useThemeStore } from '../store/themeStore';
 import { pick } from '../i18n';
 import { NAV_ITEMS, LANG_OPTIONS, BrandMark, LangMenu } from './Sidebar';
 
-// Phone only: the rail folds into this top bar and the bottom navigation below.
 export const Header = () => {
   const { themeMode, toggleTheme, lang } = useThemeStore();
-  const location = useLocation();
-  const current = NAV_ITEMS.find((i) => i.key === location.pathname) || NAV_ITEMS[0];
-  const langShort = LANG_OPTIONS.find((o) => o.key === lang)?.short || 'VI';
-
+  const { pathname } = useLocation();
+  const current = NAV_ITEMS.find((i) => i.key === pathname) || NAV_ITEMS[0];
   return (
-    <header className="mobile-top">
-      <span style={{ color: 'var(--accent)', display: 'inline-flex' }}>
-        <BrandMark size={22} />
-      </span>
-      <span className="brand">{pick(lang, current.vi, current.en)}</span>
-      <LangMenu>
-        <button type="button" className="btn btn-ghost" style={{ padding: '0 8px' }}>
-          {langShort}
+    <header className="app-mobile-header">
+      <BrandMark size={29} />
+      <div>
+        <strong>The City</strong>
+        <span>{pick(lang, current.vi, current.en)}</span>
+      </div>
+      <LangMenu placement="bottomRight">
+        <button className="app-tool" aria-label={pick(lang, 'Chọn ngôn ngữ', 'Choose language')}>
+          {LANG_OPTIONS.find((o) => o.key === lang)?.short}
         </button>
       </LangMenu>
-      <button type="button" className="icon-btn" onClick={toggleTheme} aria-label={pick(lang, 'Đổi giao diện', 'Toggle theme')}>
+      <button
+        className="app-tool"
+        onClick={toggleTheme}
+        aria-label={pick(lang, 'Đổi giao diện sáng / tối', 'Toggle theme')}
+        aria-pressed={themeMode === 'dark'}
+      >
         {themeMode === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
       </button>
     </header>
   );
 };
-
 export const BottomNav = () => {
   const navigate = useNavigate();
-  const location = useLocation();
+  const { pathname } = useLocation();
   const lang = useThemeStore((s) => s.lang);
-
   return (
-    <nav className="bottom-nav" aria-label={pick(lang, 'Điều hướng chính', 'Main navigation')}>
+    <nav className="app-bottom-nav" aria-label={pick(lang, 'Điều hướng chính', 'Main navigation')}>
       {NAV_ITEMS.map((item) => {
         const Icon = item.icon;
-        const active = location.pathname === item.key;
         return (
           <button
             key={item.key}
-            type="button"
-            className={active ? 'is-active' : ''}
-            aria-current={active ? 'page' : undefined}
+            className={pathname === item.key ? 'is-current' : ''}
+            aria-current={pathname === item.key ? 'page' : undefined}
             onClick={() => navigate(item.key)}
           >
-            <Icon size={18} strokeWidth={1.6} />
-            {pick(lang, item.shortVi, item.shortEn)}
+            <Icon size={19} strokeWidth={1.6} aria-hidden="true" />
+            <span>{pick(lang, item.shortVi, item.shortEn)}</span>
           </button>
         );
       })}
     </nav>
   );
 };
-
 export default Header;

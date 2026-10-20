@@ -1,6 +1,6 @@
 # The City Chronicles: tiến trình dự án
 
-Cập nhật: 20/10/2026, đợt 6 (xem [mục 8](#8-nhật-ký-thay-đổi))
+Cập nhật: 20/10/2026, đợt 8 (xem [mục 8](#8-nhật-ký-thay-đổi))
 
 - Live Demo Vercel: [https://project-moon-life-five.vercel.app](https://project-moon-life-five.vercel.app)
 - Tài liệu PDF chính thức: [THE_CITY_CHRONICLES_DOCUMENTATION.pdf](https://project-moon-life-five.vercel.app/THE_CITY_CHRONICLES_DOCUMENTATION.pdf)
@@ -26,7 +26,7 @@ npm install
 npm run dev
 ```
 
-Thanh bên trái hiện `Online` khi frontend gọi được backend, `Offline` khi không. Vite mặc định chạy cổng 5173; nếu cổng đó đang bận, Vite tự chuyển sang cổng kế tiếp và in địa chỉ trong terminal.
+Thanh bên trái hiện `Đã kết nối archive` khi frontend gọi được backend, `Lưu trên thiết bị` khi không. Vite mặc định chạy cổng 5173; nếu cổng đó đang bận, Vite tự chuyển sang cổng kế tiếp và in địa chỉ trong terminal. Bản Git đồng bộ và đợt thiết kế mới nằm tại `D:\School\ProjectMoon_Life`; dùng hai thư mục con `PM` và `PM_BE` của repo này khi tiếp tục phát triển.
 
 ---
 
@@ -222,6 +222,24 @@ Trong chữ: `{name}`, `{friend}`, `{mentor}`, `{rival}`, `{lover}`, `{partner}`
 ---
 
 ## 8. Nhật ký thay đổi
+
+### 20/10/2026, đợt 8
+
+- Theo xác nhận của người dùng, tiếp tục sửa bản thiết kế mới tại cổng 5193. Bản cũ ở `D:\School\PM`, cổng 5173, được giữ nguyên.
+- Đưa wireframe The City vào lớp bao toàn viewport ứng dụng, thay vì giới hạn trong hero. Không có bảng trạng thái hoặc chữ trang trí nằm dưới khung khai sinh.
+- Màn chơi từ 1360px có cột lựa chọn cạnh cột truyện. Màn hình hẹp chia truyện và lựa chọn thành hai hàng grid, có cuộn riêng; không dùng lớp phủ để che truyện.
+- Thêm nút Xem lựa chọn để tới ngay các phương án khi nội dung sự kiện dài; xử lý nền header khi cuộn. Chỉnh màu chữ rare ở theme sáng để đạt độ tương phản trên chip.
+- Kiểm tra: build thành công; 68 bản ghi CDP, đo không giao nhau ở 1440/1200/768/390/320px, kiểm tra phương án cuối và nút nhảy lựa chọn. Inspector 0 FAIL, 3 WARN có giải thích trong [báo cáo](UI_REDESIGN_REPORT.md). Chưa push/deploy.
+
+### 20/10/2026, đợt 7
+
+- Thiết kế lại toàn bộ shell, màn khai sinh, màn chơi và bốn trang lưu trữ theo hướng hồ sơ The City: nền than trung tính, chữ Be Vietnam Pro, vàng tiết chế và theme sáng tương ứng.
+- Khai sinh có vòng chọn 26 District nối với dữ liệu thật, chọn Outskirts, tìm District, tên/seed và tiếp tục bản lưu. Trên phone ưu tiên biểu mẫu, giữ danh mục đầy đủ bên dưới.
+- Desktop có sidebar và cột hồ sơ riêng; mobile có điều hướng dưới màn hình, HUD, sheet hồ sơ có focus/Escape. Dock lựa chọn cuộn riêng và giữ vùng truyện phía trên.
+- Sửa tab dài, nút Workshop dài, màu mốc sự nghiệp ở theme sáng, trạng thái HP/SP nguy kịch và reduced motion. Giới hạn notification một chiếc, không chồng thông báo lên lựa chọn.
+- Bổ sung hướng thiết kế [DESIGN.md](DESIGN.md) và [báo cáo giao diện](UI_REDESIGN_REPORT.md) có Delivery Gate, ảnh và giới hạn kiểm tra.
+- Kiểm tra: production build thành công; 57 bản ghi Chrome CDP không lỗi assertion hoặc runtime; các route ở desktop/mobile, hai theme, lưu/chơi tiếp, major/minor/contract và ba modal nghề nghiệp. Inspector 0 FAIL, 4 WARN có giải thích trong báo cáo.
+- Đợt này chỉ thay đổi FE. Bản làm việc nằm trong `D:\School\ProjectMoon_Life\PM`, xem thử ở `http://127.0.0.1:5193/`; chưa push/deploy đợt redesign.
 
 ### 20/10/2026, đợt 6
 

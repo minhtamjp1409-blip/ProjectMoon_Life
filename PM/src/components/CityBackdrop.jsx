@@ -9,6 +9,29 @@ import React from 'react';
  * - 'compact': Minimalist grid & glow.
  */
 export const CityBackdrop = ({ variant = 'hero', tag = 'ARCHIVE // 0x7E3' }) => {
+  if (variant === 'ambient') {
+    return (
+      <div className="city-backdrop city-backdrop-ambient" aria-hidden="true">
+        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="appCityGrid" width="64" height="64" patternUnits="userSpaceOnUse">
+              <path d="M 64 0 L 0 0 0 64" fill="none" stroke="currentColor" strokeOpacity="0.2" />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#appCityGrid)" />
+          <svg className="ambient-city-ring" x="64%" y="-140" width="640" height="640" viewBox="0 0 640 640">
+            <g transform="translate(320 320)" fill="none" stroke="currentColor">
+              <circle r="280" strokeOpacity="0.35" strokeDasharray="6 14" />
+              <circle r="255" strokeOpacity="0.2" />
+              <circle r="160" strokeOpacity="0.3" strokeDasharray="3 9" />
+              <polygon points="0,-220 155,-155 220,0 155,155 0,220 -155,155 -220,0 -155,-155" strokeOpacity="0.25" />
+            </g>
+          </svg>
+        </svg>
+      </div>
+    );
+  }
+
   if (variant === 'banner') {
     return (
       <div className="city-backdrop banner-backdrop" aria-hidden="true">

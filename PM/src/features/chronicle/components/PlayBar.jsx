@@ -281,7 +281,6 @@ export const PlayBar = () => {
               title={`${lang === 'en' ? milestone.titleEn : milestone.titleVi} (${milestone.progressPct}%) · ${lang === 'en' ? milestone.tipEn : milestone.tipVi}`}
             >
               <span className="career-obj-pill">
-                <span className="obj-icon">🎯</span>
                 <span className="obj-text">{lang === 'en' ? milestone.titleEn : milestone.titleVi}</span>
                 <b className="obj-pct">{milestone.progressPct}%</b>
               </span>

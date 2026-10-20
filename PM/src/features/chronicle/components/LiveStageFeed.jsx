@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Modal } from 'antd';
-import { GitBranch, Download, RotateCcw, Hammer } from 'lucide-react';
+import { GitBranch, Download, RotateCcw, Hammer, ChevronDown } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
 import { useGameStore } from '../../../store/gameStore';
 import { buildLifeSummaryAndLegacy } from '../../../engine/gameEngine';
@@ -130,19 +130,42 @@ const AmbientScene = ({ char }) => {
 
 /* ---------- Decision docks ---------- */
 
+const DockNavigation = () => {
+  const { t } = useT();
+  const showChoices = (e) => {
+    const dock = e.currentTarget.closest('.dock');
+    const choices = dock.querySelector('.choices');
+    const navigation = e.currentTarget.parentElement;
+    if (!choices) return;
+    dock.scrollTo({
+      top: dock.scrollTop + choices.getBoundingClientRect().top - dock.getBoundingClientRect().top - navigation.offsetHeight - parseFloat(getComputedStyle(dock).paddingTop) - 16,
+      behavior: 'instant'
+    });
+  };
+  return (
+    <div className="dock-navigation">
+      <span>{t('Quyết định của bạn', 'Your decision')}</span>
+      <button type="button" onClick={showChoices}>
+        {t('Xem lựa chọn', 'Show choices')}<ChevronDown size={15} aria-hidden="true" />
+      </button>
+    </div>
+  );
+};
+
 const MinorDock = ({ prompt, npcs, paused, onPick }) => {
   const { t, lang, bilingual } = useT();
   const raw = lang === 'en' ? prompt.en : prompt.vi;
   const { title, body } = splitTitle(raw);
   return (
     <div className="dock is-minor" role="dialog" aria-label={t('Một lựa chọn nhỏ', 'A small choice')}>
+      <DockNavigation />
       <div className="dock-inner">
         <div className="dock-mobile-handle" />
         <div className="countdown-wrap">
           <div className="countdown" aria-hidden="true">
             <i key={prompt.id} style={{ animationDuration: `${MINOR_WINDOW_MS}ms`, animationPlayState: paused ? 'paused' : 'running' }} />
           </div>
-          <span className="countdown-badge">⚡ 15s</span>
+          <span className="countdown-badge">15 s</span>
         </div>
         {title && <h4 className="dock-title" style={{ marginBottom: 8, fontSize: 18 }}>{title}</h4>}
         <p className="dock-text">{body}</p>
@@ -175,6 +198,7 @@ const EventDock = ({ event, char, onPick }) => {
 
   return (
     <div className="dock" role="dialog" aria-label={t('Sự kiện cần quyết định', 'Decision')}>
+      <DockNavigation />
       <div className="dock-inner">
         <div className="dock-mobile-handle" />
         <div className="dock-banner">
@@ -199,17 +223,17 @@ const EventDock = ({ event, char, onPick }) => {
         {bilingual && event.displayEn && <p className="entry-alt">{event.displayEn}</p>}
 
         {psyche && (
-          <div className="disco-psyche-card" style={{ borderLeftColor: psyche.faculty.color }}>
-            <div className="disco-psyche-header">
-              <span className="disco-psyche-icon">{psyche.faculty.icon}</span>
-              <span className="disco-psyche-faculty" style={{ color: psyche.faculty.color }}>
+          <details className="disco-psyche-card">
+            <summary className="disco-psyche-header">
+              <span className="disco-psyche-faculty">
                 {lang === 'en' ? psyche.faculty.nameEn : psyche.faculty.nameVi}
               </span>
-            </div>
+              <span>{t('Tiếng nói nội tâm', 'Inner voice')}</span>
+            </summary>
             <p className="disco-psyche-voice">
               {lang === 'en' ? psyche.textEn : psyche.textVi}
             </p>
-          </div>
+          </details>
         )}
 
         <div className="choices">
@@ -241,7 +265,7 @@ const EventDock = ({ event, char, onPick }) => {
                   
                   {check && (
                     <div className={`disco-check-pill ${check.isRedCheck ? 'is-red' : 'is-white'}`}>
-                      <span className="check-tag">🎲 {lang === 'en' ? check.badgeEn : check.badgeVi}: <b>{check.successPct}%</b></span>
+                      <span className="check-tag">{lang === 'en' ? check.badgeEn : check.badgeVi}: <b>{check.successPct}%</b></span>
                       {check.modifiers.map((m, mIdx) => (
                         <span key={mIdx} className={`check-mod ${m.pos ? 'is-pos' : 'is-neg'}`}>
                           {lang === 'en' ? m.labelEn : m.labelVi}
@@ -267,6 +291,7 @@ const ContractDock = ({ contract, wealth, onPick }) => {
 
   return (
     <div className="dock" role="dialog" aria-label={t('Request của Fixer', 'Fixer request')}>
+      <DockNavigation />
       <div className="dock-inner">
         <div className="dock-mobile-handle" />
         <div className="dock-banner">
@@ -466,6 +491,7 @@ export const LiveStageFeed = () => {
   useEffect(() => {
     const onKeyDown = (e) => {
       if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) return;
+      if (document.activeElement?.closest('button, a, summary, [role="dialog"][aria-modal="true"]')) return;
       if (e.code === 'Space') {
         if (!char.alive) return;
         e.preventDefault();
@@ -542,6 +568,7 @@ export const LiveStageFeed = () => {
     <div className={`stage ${hasDock ? 'has-dock' : ''}`} ref={stageRef}>
       <AmbientScene char={char} />
       <StageFx />
+      <div className="chronicle-heading"><h1>{t('Biên niên', 'Chronicle')}</h1><span>{char.name}</span></div>
       <div className="log" ref={logRef}>
         <div className="log-col">
           <LogEntries logs={char.logs} />

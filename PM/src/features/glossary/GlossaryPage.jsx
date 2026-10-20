@@ -114,7 +114,7 @@ const DistrictsView = () => {
               const open = openId === r.id;
               return (
                 <React.Fragment key={r.id}>
-                  <tr className="is-click" onClick={() => setOpenId(open ? null : r.id)} aria-expanded={open}>
+                  <tr className="is-click" tabIndex={0} onKeyDown={event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); setOpenId(open ? null : r.id); } }} onClick={() => setOpenId(open ? null : r.id)} aria-expanded={open}>
                     <td>
                       <div style={{ fontWeight: 500 }}>
                         {lang === 'en' ? r.nameEn : r.nameVi}
