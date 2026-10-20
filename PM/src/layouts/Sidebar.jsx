@@ -22,11 +22,35 @@ export const LANG_OPTIONS = [
   { key: 'en', short: 'EN', label: 'English' }
 ];
 
-// The product's mark: a crescent over the City's horizon line.
-export const BrandMark = ({ size = 22 }) => (
-  <svg width={size} height={size} viewBox="0 0 32 32" aria-hidden="true">
-    <path d="M20.5 5.5a10.5 10.5 0 1 0 6 18.6A9 9 0 0 1 20.5 5.5Z" fill="currentColor" />
-    <rect x="3" y="27" width="26" height="2" rx="1" fill="currentColor" />
+// The product's mark: Project Moon crescent over District 1 brutalist monolith with Carmen's singularity core
+export const BrandMark = ({ size = 32 }) => (
+  <svg width={size} height={size} viewBox="0 0 64 64" fill="none" aria-hidden="true" className="brand-logo-svg">
+    <defs>
+      <linearGradient id="bmBg" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#141722"/>
+        <stop offset="100%" stopColor="#08090d"/>
+      </linearGradient>
+      <linearGradient id="bmGold" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#f5d77f"/>
+        <stop offset="60%" stopColor="#c59f4e"/>
+        <stop offset="100%" stopColor="#8c6a23"/>
+      </linearGradient>
+      <linearGradient id="bmRed" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#ff4d4d"/>
+        <stop offset="100%" stopColor="#990000"/>
+      </linearGradient>
+    </defs>
+    <rect width="64" height="64" rx="14" fill="url(#bmBg)"/>
+    <rect x="2" y="2" width="60" height="60" rx="12" fill="none" stroke="url(#bmGold)" strokeWidth="1.8" opacity="0.85"/>
+    <circle cx="32" cy="32" r="23" fill="none" stroke="#252a3a" strokeWidth="1" strokeDasharray="3 3"/>
+    <path d="M42 12 A 20 20 0 0 0 20 44 A 20 20 0 1 1 42 12 Z" fill="url(#bmGold)" />
+    <polygon points="16,36 23,33 23,50 16,50" fill="#181c28" stroke="#333a4d" strokeWidth="1"/>
+    <polygon points="41,33 48,36 48,50 41,50" fill="#181c28" stroke="#333a4d" strokeWidth="1"/>
+    <polygon points="32,15 39,23 39,50 25,50 25,23" fill="#10131d" stroke="url(#bmGold)" strokeWidth="1.6"/>
+    <polygon points="32,20 35,25 32,30 29,25" fill="url(#bmRed)"/>
+    <line x1="32" y1="33" x2="32" y2="46" stroke="url(#bmRed)" strokeWidth="1.8" strokeLinecap="round"/>
+    <line x1="12" y1="50" x2="52" y2="50" stroke="url(#bmGold)" strokeWidth="2" strokeLinecap="round"/>
+    <circle cx="32" cy="54" r="1.5" fill="#f5d77f"/>
   </svg>
 );
 
