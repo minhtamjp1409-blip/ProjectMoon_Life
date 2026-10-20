@@ -94,9 +94,10 @@ export const SUPERNATURAL_EVENTS = [
     id: 'lake_calamity_whale_hunt',
     age: [19, 55],
     major: true,
-    weight: 8.5,
-    vi: '[Cá Voi trên The Great Lake] Giữa cơn bão, một con Cá Voi trồi lên và nuốt nửa đoàn tàu. Những thủy thủ dính phải thứ dịch trắng của nó bắt đầu cứng lại như sáp, chân dính vào nhau thành đuôi cá. Rồi họ quay lại cắn những người còn sống.\nNgười đứng cạnh bạn đã trắng lên đến tận cổ.',
-    en: '[The Whale on the Great Lake] In the middle of the storm a Whale surfaced and swallowed half the fleet. Sailors splashed with its white fluid began to harden like wax, their legs fusing into tails. Then they turned and bit the living.\nThe person beside you had turned white up to the neck.',
+    regions: ['21'],
+    weight: 5.5,
+    vi: '[Cá Voi trên The Great Lake] Giữa cơn bão của District 21 · U Corp, một con Cá Voi trồi lên và nuốt nửa đoàn tàu. Những thủy thủ dính phải thứ dịch trắng của nó bắt đầu cứng lại như sáp, chân dính vào nhau thành đuôi cá. Rồi họ quay lại cắn những người còn sống.\nNgười đứng cạnh bạn đã trắng lên đến tận cổ.',
+    en: '[The Whale on the Great Lake] In the middle of the storm on District 21’s Great Lake, a Whale surfaced and swallowed half the fleet. Sailors splashed with its white fluid began to harden like wax, their legs fusing into tails. Then they turned and bit the living.\nThe person beside you had turned white up to the neck.',
     choices: [
       {
         labelVi: 'Cắt cánh tay đang hóa trắng của người ấy, rồi buộc mình vào dây lao và phóng thẳng vào mắt con Cá Voi',
@@ -426,14 +427,15 @@ export const SUPERNATURAL_EVENTS = [
     ]
   },
 
-  // ------------------------------------------------------------------ Canto VI: Wuthering Heights & Wild Hunt
+  // ------------------------------------------------------------------ Wuthering Heights & Wild Hunt (T Corp)
   {
     id: 'canto_wuthering_wild_hunt',
     age: [21, 65],
     major: true,
-    weight: 8,
-    vi: '[Canto VI · Cuộc Săn Hoang Dã của Erlking] Tại vùng đồi sương mù của District 20 · T Corp, một cơn bão thời gian nứt toác. Một kỵ sĩ trên lưng con ngựa xương trắng dẫn đầu đoàn quân bóng ma The Wild Hunt tràn qua các hẻm vắng. Kỵ sĩ gầm lên qua chiếc quan tài xích sắt: "Mọi bản thể trong vô số Thế Giới Gương (Mirror Worlds) đều phải chịu chung nỗi thống khổ này!"',
-    en: '[Canto VI · The Wild Hunt of Erlking] On the foggy moors of District 20 · T Corp, a temporal storm ruptured. A knight astride a skeletal steed led the phantoms of The Wild Hunt through the alleys. From atop a chained coffin, the knight roared: “Every counterpart across the Mirror Worlds must suffer this exact despair!”',
+    regions: ['20'],
+    weight: 5.5,
+    vi: '[Bão Thời Gian T Corp · Tiếng Hú Của Cuộc Săn Hoang Dã] Tại vùng đồi sương mù của District 20 · T Corp, một cơn bão thời gian nứt toác. Một kỵ sĩ trên lưng con ngựa xương trắng dẫn đầu đoàn quân bóng ma The Wild Hunt tràn qua các hẻm vắng. Kỵ sĩ gầm lên qua chiếc quan tài xích sắt: "Mọi bản thể trong vô số Thế Giới Gương (Mirror Worlds) đều phải chịu chung nỗi thống khổ này!"',
+    en: '[Temporal Tempest · Echoes of the Wild Hunt] On the foggy moors of District 20 · T Corp, a temporal storm ruptured. A knight astride a skeletal steed led the phantoms of The Wild Hunt through the alleys. From atop a chained coffin, the knight roared: “Every counterpart across the Mirror Worlds must suffer this exact despair!”',
     choices: [
       {
         labelVi: 'Chém đứt xiềng xích của chiếc quan tài: Khẳng định bản ngã độc nhất',
@@ -470,14 +472,15 @@ export const SUPERNATURAL_EVENTS = [
     ]
   },
 
-  // ------------------------------------------------------------------ Canto VII: La Mancha Land & Don Quixote's Dream
+  // ------------------------------------------------------------------ La Mancha Land (P Corp)
   {
     id: 'canto_lamancha_carnival',
     age: [20, 60],
     major: true,
-    weight: 8,
-    vi: '[Canto VII · Lễ Hội La Mancha Land] Trong lòng District 16 · P Corp, một công viên giải trí rực rỡ nhưng ma quái mở cửa giữa đêm khuya. Tiếng nhạc đu quay vang vọng cùng mùi bánh churros làm từ máu. Một hiệp sĩ với áo giáp rỉ sét và ngọn giáo dài đứng trước vòng quay ngựa gỗ, đôi mắt sáng rực niềm tin ngây thơ:\n"Hỡi lữ khách! Bạn có muốn cùng chúng ta cưỡi ngựa gỗ, hướng đến một thế giới nơi Bloodfiend và loài người cùng chung một nụ cười?"',
-    en: '[Canto VII · The Carnival of La Mancha Land] In District 16 · P Corp, a brilliant yet eerie amusement park awakened in the dead of night. Carousel organ tunes mingled with the scent of blood churros. A knight in rusted plate with a gleaming lance stood before the carousel, eyes blazing with naive conviction:\n“Hail, traveler! Wilt thou mount a steed beside us, riding toward a world where Bloodfiend and mankind share a single smile?”',
+    regions: ['16'],
+    weight: 5.0,
+    vi: '[Hầm Ngầm P Corp · Vòng Quay La Mancha Rỉ Sét] Trong lòng District 16 · P Corp, một công viên giải trí rực rỡ nhưng ma quái mở cửa giữa đêm khuya. Tiếng nhạc đu quay vang vọng cùng mùi bánh churros làm từ máu. Một hiệp sĩ với áo giáp rỉ sét và ngọn giáo dài đứng trước vòng quay ngựa gỗ, đôi mắt sáng rực niềm tin ngây thơ:\n"Hỡi lữ khách! Bạn có muốn cùng chúng ta cưỡi ngựa gỗ, hướng đến một thế giới nơi Bloodfiend và loài người cùng chung một nụ cười?"',
+    en: '[Beneath P Corp · The Rusted Carousel of La Mancha] In District 16 · P Corp, a brilliant yet eerie amusement park awakened in the dead of night. Carousel organ tunes mingled with the scent of blood churros. A knight in rusted plate with a gleaming lance stood before the carousel, eyes blazing with naive conviction:\n“Hail, traveler! Wilt thou mount a steed beside us, riding toward a world where Bloodfiend and mankind share a single smile?”',
     choices: [
       {
         labelVi: 'Đồng hành cùng lý tưởng hiệp sĩ: "Công lý và giấc mơ thuần khiết"',
@@ -514,15 +517,16 @@ export const SUPERNATURAL_EVENTS = [
     ]
   },
 
-  // ------------------------------------------------------------------ Canto VIII: The Ring's Gallery of Carnage (Ryoshu)
+  // ------------------------------------------------------------------ The Ring's Gallery (District 8)
   {
     id: 'canto_ring_carnage_gallery',
     age: [22, 65],
     major: true,
-    weight: 7.5,
+    regions: ['8'],
+    weight: 4.5,
     jobs: ['Syndicate', 'Fixer', 'Workshop Craftsman'],
-    vi: '[Canto VIII · Triển Lãm Tuyệt Tác The Ring] Tại một phòng trưng bày ngầm ở District 8, một Docent của The Ring đón bạn với một bức tượng điêu khắc từ cơ thể sống của 12 kẻ phản bội. Một nữ kiếm sĩ với điếu thuốc đỏ trên môi và bao kiếm quấn vải liệm bước ra:\n"N.T.T.M — Nghệ thuật thật sự đòi hỏi sự hủy diệt tuyệt đối. Ngươi muốn trở thành một nét cọ trong bức tranh này, hay một kẻ thưởng lãm có mắt nhìn?"',
-    en: '[Canto VIII · The Ring’s Masterpiece Gallery] In a subterranean gallery of District 8, a Docent of The Ring greeted you before a sculpture twisted from the living flesh of 12 traitors. A swordswoman with a burning cigarette and a cloth-wrapped sheath stepped forward:\n“A.R.T. — Absolute Ruin Transcends. Dost thou wish to be a brushstroke in this canvas, or a connoisseur with discerning eyes?”',
+    vi: '[Phòng Trưng Bày The Ring · Nét Cọ Tuyệt Tác] Tại một phòng trưng bày ngầm ở District 8, một Docent của The Ring đón bạn với một bức tượng điêu khắc từ cơ thể sống của 12 kẻ phản bội. Một nữ kiếm sĩ với điếu thuốc đỏ trên môi và bao kiếm quấn vải liệm bước ra:\n"N.T.T.M — Nghệ thuật thật sự đòi hỏi sự hủy diệt tuyệt đối. Ngươi muốn trở thành một nét cọ trong bức tranh này, hay một kẻ thưởng lãm có mắt nhìn?"',
+    en: '[The Ring’s Gallery · Brushstroke of Carnage] In a subterranean gallery of District 8, a Docent of The Ring greeted you before a sculpture twisted from the living flesh of 12 traitors. A swordswoman with a burning cigarette and a cloth-wrapped sheath stepped forward:\n“A.R.T. — Absolute Ruin Transcends. Dost thou wish to be a brushstroke in this canvas, or a connoisseur with discerning eyes?”',
     choices: [
       {
         labelVi: 'Rút kiếm phác họa một tuyệt tác kiếm thuật đối lập (I.M.P.A.C.T)',
@@ -558,14 +562,15 @@ export const SUPERNATURAL_EVENTS = [
     ]
   },
 
-  // ------------------------------------------------------------------ Canto IX: N Corp Inquisition (Meursault & Nagel und Hammer)
+  // ------------------------------------------------------------------ Nagel und Hammer Inquisition (N Corp)
   {
     id: 'canto_ncorp_grip_inquisition',
     age: [20, 60],
     major: true,
-    weight: 7.5,
-    vi: '[Canto IX · Đại Thanh Trừng Nagel und Hammer] Đội quân Cuồng Tín của N Corp (The One Who Grips) phong tỏa toàn bộ con phố. Những chiếc búa tạ và đinh sắt rực lửa đập nát bất kỳ ai gắn tay chân máy hoặc thiết bị cơ khí:\n"Thịt và máu là món quà duy nhất của đấng tạo hóa! Mọi linh kiện kim loại cắm vào da thịt đều là ô uế! Ngươi đứng về phía thân xác thuần khiết, hay lũ máy móc tà giáo?"',
-    en: '[Canto IX · The Nagel und Hammer Inquisition] The Zealots of N Corp (The One Who Grips) cordoned off the entire avenue. Sledgehammers and scorched nails hammered into anyone bearing mechanical prosthetics or augments:\n“Flesh and bone are the creator’s sole blessings! All machinery pierced into human skin is an abomination! Dost thou stand with Pure Flesh, or the mechanical heretics?”',
+    regions: ['14'],
+    weight: 5.0,
+    vi: '[Thanh Trừng Nagel und Hammer · Tiếng Búa Và Đinh] Tại các con phố District 14, đội quân Cuồng Tín của N Corp (The One Who Grips) phong tỏa toàn bộ khu vực. Những chiếc búa tạ và đinh sắt rực lửa đập nát bất kỳ ai gắn tay chân máy hoặc thiết bị cơ khí:\n"Thịt và máu là món quà duy nhất của đấng tạo hóa! Mọi linh kiện kim loại cắm vào da thịt đều là ô uế! Ngươi đứng về phía thân xác thuần khiết, hay lũ máy móc tà giáo?"',
+    en: '[Nagel und Hammer · Purge of the Pure Flesh] Across the avenues of District 14, the Zealots of N Corp (The One Who Grips) cordoned off the entire sector. Sledgehammers and scorched nails hammered into anyone bearing mechanical prosthetics or augments:\n“Flesh and bone are the creator’s sole blessings! All machinery pierced into human skin is an abomination! Dost thou stand with Pure Flesh, or the mechanical heretics?”',
     choices: [
       {
         labelVi: 'Đứng lên bảo vệ những người mang bộ phận máy móc (Chống lại N Corp)',
@@ -603,14 +608,14 @@ export const SUPERNATURAL_EVENTS = [
     ]
   },
 
-  // ------------------------------------------------------------------ Canto X: The Gesellschaft & The Stars (Faust)
+  // ------------------------------------------------------------------ The Gesellschaft & The Stars (Cosmic Mirror Lore)
   {
     id: 'canto_gesellschaft_star_convergence',
     age: [25, 75],
     major: true,
-    weight: 8,
-    vi: '[Canto X · Hội Đồng Đa Vũ Trụ Gesellschaft] Một kết cấu hình học lơ lửng bằng thủy tinh khúc xạ mở ra trên đỉnh bầu trời. Vô số phiên bản của Faust từ các Thế Giới Gương đồng loạt cất tiếng nói bằng âm điệu thuần khiết:\n"Faust biết tất cả. Điểm hội tụ của The City và những Ngôi Sao ngoài The Outskirts đã đến. Bạn có muốn nhìn thấy bức màn đằng sau bản hợp đồng của The Head và nguồn cội của Singularity?"',
-    en: '[Canto X · The Multiverse Gesellschaft] A geometric refraction of floating glass uncoiled across the sky. Countless incarnations of Faust from across the Mirror Worlds spoke in harmonious unison:\n“Faust knows all. The convergence of The City and The Stars beyond the Outskirts has arrived. Dost thou wish to witness the veil behind The Head’s covenants and the origin of Singularities?”',
+    weight: 3.5,
+    vi: '[Khúc Xạ Thủy Tinh · Tiếng Vọng Đa Chiều Gesellschaft] Một kết cấu hình học lơ lửng bằng thủy tinh khúc xạ mở ra trên đỉnh bầu trời. Vô số phiên bản của Faust từ các Thế Giới Gương đồng loạt cất tiếng nói bằng âm điệu thuần khiết:\n"Faust biết tất cả. Điểm hội tụ của The City và những Ngôi Sao ngoài The Outskirts đã đến. Bạn có muốn nhìn thấy bức màn đằng sau bản hợp đồng của The Head và nguồn cội của Singularity?"',
+    en: '[Refraction of Mirrors · Voices of the Gesellschaft] A geometric refraction of floating glass uncoiled across the sky. Countless incarnations of Faust from across the Mirror Worlds spoke in harmonious unison:\n“Faust knows all. The convergence of The City and The Stars beyond the Outskirts has arrived. Dost thou wish to witness the veil behind The Head’s covenants and the origin of Singularities?”',
     choices: [
       {
         labelVi: 'Kết nối tâm trí vào mạng lưới Gesellschaft: Tiếp nhận toàn tri',
