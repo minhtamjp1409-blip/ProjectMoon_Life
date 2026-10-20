@@ -382,27 +382,58 @@ export const useGameStore = create((set, get) => ({
     }
   },
 
-  /** Skips to the next moment that needs you, or to the next birthday. */
+  /**
+   * Advances time to either the next scheduled event in the current season,
+   * or to the boundary of the next season, whichever comes first.
+   * If at the end of the year, advances to the next year.
+   */
   stepYear: () => {
     const s = get();
     const c = s.char;
     if (!c.alive || c.pendingEvent || c.pendingContract || c.pendingModal || c.pendingMinor) return;
-    const { char, changed } = runDueItems(c, 100, lifeRng);
+
+    const curP = s.yearProgress;
+    const nextItem = nextPlanItem(c);
+    const curSeasonIdx = Math.min(3, Math.floor((curP + 0.1) / 25));
+    const nextSeasonBoundary = Math.min(100, (curSeasonIdx + 1) * 25);
+    const itemP = nextItem ? nextItem.t * 100 : null;
+
+    let targetP;
+    if (itemP !== null && itemP > curP + 0.2 && itemP <= nextSeasonBoundary) {
+      targetP = itemP;
+    } else {
+      targetP = nextSeasonBoundary;
+    }
+
+    const { char, changed } = runDueItems(c, targetP, lifeRng);
     const waiting = char.pendingMinor || char.pendingEvent || char.pendingContract || char.pendingModal;
     if (waiting || !char.alive) {
       const item = char.plan?.[(char.planCursor || 1) - 1];
-      get().commit(c, char, { yearProgress: item ? item.t * 100 : s.yearProgress });
+      get().commit(c, char, { yearProgress: item ? item.t * 100 : targetP });
       return;
     }
+
+    if (targetP >= 100 && !nextPlanItem(char)) {
+      const base = changed ? char : c;
+      const nextChar = endYear(base, lifeRng);
+      get().commit(c, nextChar, { yearProgress: 0 });
+      syncPlanWithBackend(nextChar, lifeRng).then((synced) => {
+        if (get().char?.age === synced.age) {
+          get().commit(get().char, synced);
+        }
+      });
+      return;
+    }
+
+    const nextSeasonIdx = Math.min(3, Math.floor(targetP / 25));
+    if (char.seasonIdx !== nextSeasonIdx) {
+      char.seasonIdx = nextSeasonIdx;
+    }
     const base = changed ? char : c;
-    const nextChar = endYear(base, lifeRng);
-    get().commit(c, nextChar, { yearProgress: 0 });
-    syncPlanWithBackend(nextChar, lifeRng).then((synced) => {
-      if (get().char?.age === synced.age) {
-        get().commit(get().char, synced);
-      }
-    });
+    get().commit(c, base, { yearProgress: targetP });
   },
+
+  stepSeasonOrEvent: () => get().stepYear(),
 
   chooseMinor: (idx) => {
     const prev = get().char;

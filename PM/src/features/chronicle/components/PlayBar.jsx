@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 import { useGameStore } from '../../../store/gameStore';
 import { SEASONS, getNextCareerMilestone } from '../../../engine/gameEngine';
+import { nextPlanItem } from '../../../engine/yearPlanner';
 import { DRAMA_PHASES } from '../../../engine/weaverAI';
 import { audioEngine } from '../../../engine/audioEngine';
 import { useT } from '../../../i18n';
@@ -101,11 +102,12 @@ export const PlayBar = () => {
   const navigate = useNavigate();
   const char = useGameStore((s) => s.char);
   const milestone = getNextCareerMilestone(char);
-  const { age, seasonIdx, dramaPhase, alive, waiting, speed, autoPlay, setSpeed, toggleAutoPlay, stepYear, exitToSetup, abandonRun, saveRun, lastSavedAt } =
+  const { age, seasonIdx, yearProgress, dramaPhase, alive, waiting, speed, autoPlay, setSpeed, toggleAutoPlay, stepYear, exitToSetup, abandonRun, saveRun, lastSavedAt } =
     useGameStore(
       useShallow((s) => ({
         age: s.char.age,
         seasonIdx: s.char.seasonIdx,
+        yearProgress: s.yearProgress,
         dramaPhase: s.char.weaver?.dramaPhase,
         alive: s.char.alive,
         waiting: isWaiting(s.char) || Boolean(s.char.pendingMinor),
@@ -182,6 +184,27 @@ export const PlayBar = () => {
   const season = SEASONS[seasonIdx];
   const phase = DRAMA_PHASES[dramaPhase] || DRAMA_PHASES.INCUBATION;
 
+  // Determine whether the next click advances to an upcoming event, the next season, or the new year
+  const nextItem = nextPlanItem(char);
+  const curSeasonIdx = Math.min(3, Math.floor(((yearProgress || 0) + 0.1) / 25));
+  const nextSeasonBoundary = Math.min(100, (curSeasonIdx + 1) * 25);
+  const itemP = nextItem ? nextItem.t * 100 : null;
+  const isNextEvent = itemP !== null && itemP > (yearProgress || 0) + 0.2 && itemP <= nextSeasonBoundary;
+  const isNextYear = !isNextEvent && nextSeasonBoundary >= 100;
+
+  const nextSeasonObj = SEASONS[Math.min(3, curSeasonIdx + 1)];
+  const stepLabel = isNextEvent
+    ? t('Sự kiện tiếp', 'Next Event')
+    : isNextYear
+    ? t('Qua năm', 'Next Year')
+    : t('Qua mùa', 'Next Season');
+
+  const stepTitle = isNextEvent
+    ? t('Chuyển đến sự kiện tiếp theo trong mùa', 'Skip to next scheduled event in this season')
+    : isNextYear
+    ? t('Hoàn tất năm hiện tại và bước sang năm mới', 'Conclude year and enter next year')
+    : t(`Chuyển sang ${nextSeasonObj?.vi || 'mùa tiếp'}`, `Skip to ${nextSeasonObj?.en || 'next season'}`);
+
   return (
     <div className="playbar">
       <div className="playbar-age">
@@ -247,10 +270,10 @@ export const PlayBar = () => {
           className="btn"
           disabled={!alive || waiting}
           onClick={handleStepYear}
-          title={t('Sang năm tiếp theo ngay', 'Skip to next year')}
+          title={stepTitle}
         >
           <SkipForward size={16} />
-          {t('+1 năm', '+1 year')}
+          {stepLabel}
         </button>
 
         <button
