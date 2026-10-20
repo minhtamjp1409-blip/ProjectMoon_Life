@@ -20,6 +20,7 @@ import { FIXER_PATH_EVENTS } from '../data/eventsFixerPath';
 import { DISTORTION_PATH_EVENTS } from '../data/eventsDistortionPath';
 import { WORKSHOP_ECONOMY_EVENTS } from '../data/eventsWorkshopEconomy';
 import { BEREAVEMENT_EVENTS } from '../data/eventsBereavementMemories';
+import { DERIVATIVE_LORE_EVENTS } from '../data/eventsDerivativeLore';
 import {
   getNextFixerPromotion,
   checkColorFixerReadiness,
@@ -44,7 +45,8 @@ export const ALL_STORY_EVENTS = [
   ...FIXER_PATH_EVENTS,
   ...DISTORTION_PATH_EVENTS,
   ...WORKSHOP_ECONOMY_EVENTS,
-  ...BEREAVEMENT_EVENTS
+  ...BEREAVEMENT_EVENTS,
+  ...DERIVATIVE_LORE_EVENTS
 ];
 
 export const SEASONS = [

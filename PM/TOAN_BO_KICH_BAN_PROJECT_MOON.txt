@@ -2,7 +2,7 @@
    BẢN GHI TOÀN BỘ KỊCH BẢN, SỰ KIỆN VÀ VĂN TRẢI NGHIỆM - THE CITY CHRONICLES
             (PROJECT MOON CANONICAL NARRATIVE & SCRIPT DATABASE)
 ================================================================================
-Ngày xuất bản: 01:10:28 21/10/2026
+Ngày xuất bản: 01:13:17 21/10/2026
 Phiên bản: 2.0 (Overhaul: Hệ thống Sát hạch Hana, Cách ly Distortion & Kinh tế Công xưởng)
 Định dạng: Toàn bộ Kịch bản chi tiết, Lựa chọn, Kết quả trần thuật và Hệ quả cơ chế
 
@@ -21,7 +21,8 @@ PHẦN IX:   KINH TẾ CÔNG XƯỞNG, CHỢ ĐEN & THỊ THỰC NEST (WORKSHOP 
 PHẦN X:    QUYẾT ĐỊNH TÌNH HUỐNG TỨC THỜI (LIFE MINORS - BỘ 1, 2, 3)
 PHẦN XI:   NHỊP SỐNG SINH HOẠT THƯỜNG NHẬT (LIFE DAILIES - BỘ 1, 2, 3)
 PHẦN XII:  HỆ QUẢ NHÂN QUẢ KÉO DÀI (CONSEQUENCE & KARMA THREADS)
-PHẦN XIII: TỪ ĐIỂN THUẬT NGỮ CHUẨN NGUYÊN TÁC PROJECT MOON (CANONICAL GLOSSARY)
+PHẦN XIII: TÁC PHẨM PHÁI SINH & GIAI THOẠI CỘNG ĐỒNG (DERIVATIVE & FAN-FAVORITE LORE)
+PHẦN XIV:  TỪ ĐIỂN THUẬT NGỮ CHUẨN NGUYÊN TÁC PROJECT MOON (CANONICAL GLOSSARY)
 ================================================================================
 
 
@@ -4102,7 +4103,315 @@ PHẦN XII: HỆ QUẢ NHÂN QUẢ KÉO DÀI (CONSEQUENCE & KARMA THREADS)
 --------------------------------------------------------------------------------
 
 ================================================================================
-PHẦN XIII: TỪ ĐIỂN THUẬT NGỮ CHUẨN NGUYÊN TÁC PROJECT MOON (CANONICAL GLOSSARY)
+PHẦN XIII: TÁC PHẨM PHÁI SINH & GIAI THOẠI CỘNG ĐỒNG (DERIVATIVE & FAN-FAVORITE LORE)
+================================================================================
+Lấy cảm hứng từ Distortion Detective, Leviathan, WonderLab, Bloodfiends of La Manchaland, Blade Lineage & Kurokumo feuds.
+
+[DERIVATIVE & COMMUNITY LORE #1] ID: dd_pipe_smoke_investigation
+- Độ tuổi kích hoạt: từ 19 đến 65 tuổi
+- Cờ cấm kỵ (Forbids): [Distorted, dd_investigation_done]
+
+* NỘI DUNG DẪN CHUYỆN (TIẾNG VIỆT):
+  [Văn phòng Thám tử Distortion] Tiếng gõ cửa khô khốc vang lên lúc nửa đêm. Bước vào là một phụ nữ trung niên mù cả hai mắt, ngậm một chiếc ống tẩu tỏa ra làn khói bạc lạnh buốt (Moses), theo sau là một cô trợ lý đeo kính bảo hộ to bản, vác cây đại chùy cơ khí khổng lồ trên vai (Ezra). Moses gõ nhẹ ống tẩu xuống bàn: "Khu phố này có mùi méo mó của bản ngã. Làn khói của tôi chỉ thẳng vào vách tường sau lưng bạn. Bạn đã nghe thấy điều gì?"
+
+* SCENARIO PROSE (ENGLISH):
+  [Distortion Detective Agency] A dry rap at the door at midnight. An older woman with clouded blind eyes steps inside, smoking a silver pipe exhaling bone-chilling smoke (Moses), shadowed by a burly young assistant with heavy goggles carrying a colossal workshop hammer (Ezra). Moses taps her pipe: "This alley stinks of twisted egos. My smoke drifts straight behind your walls. Tell me, what voice have you been hearing?"
+
+* CÁC NHÁNH LỰA CHỌN (CHOICES):
+  ------------------------------------------------------------------------
+  [Lựa chọn 1]: Thành thật mô tả âm thanh đàn piano và vầng thái dương của Carmen (Describe the broken piano notes and Carmen’s solar whispers honestly)
+  > Kết quả (VI): Moses nhả một ngụm khói dày bao bọc lấy bạn, làm dịu đi những vết nứt trong tâm trí. Ezra dúi vào tay bạn một lọ thuốc an thần của xưởng YuRia: "Uống đi bạn tôi! Lần sau nghe thấy tiếng đàn bà thầm thì thì bịt tai lại ngay!" Bạn lấy lại được sự tỉnh táo và kết giao với Văn phòng Thám tử.
+  > Outcome (EN): Moses exhaled a thick cloud that wrapped around you, calming the fissures in your psyche. Ezra shoved a YuRia Workshop sedative phial into your coat: "Drink up, pal! Next time a lady whispers from the sun, plug your ears!" You stabilized your sanity and gained a rare connection.
+  > Thay đổi chỉ số: Tinh thần (Sanity): +35 | Cộng hưởng E.G.O (Resonance): +15 | Mối quan hệ (Network): +18
+  > Thưởng Merit: +10
+  > Gắn cờ trạng thái: [dd_investigation_done, MosesSmokeBlessing]
+  > Ghi danh Codex thành tựu: [distortion_detective_ally]
+  ------------------------------------------------------------------------
+  [Lựa chọn 2]: Cảnh giác rút vũ khí, từ chối chia sẻ bí mật của bản thân (Draw your weapon warily, refusing to divulge inner vulnerabilities)
+  > Kết quả (VI): Cây chùy của Ezra nện xuống sàn nhà làm rung chuyển cả gian phòng trong tích tắc. Moses xua tay ngăn trợ lý: "Một kẻ tự ôm lấy sự tha hóa của chính mình. Khi bạn vỡ vụn thành quái vật, đừng trách chúng tôi không báo trước." Họ rời đi, để lại bạn trong sự cô lập rợn ngợp.
+  > Outcome (EN): Ezra’s hammer slammed the floorboards, shaking the room in a microsecond. Moses waved her off: "Another fool cradling their own corrosion. When you shatter into an aberration, don’t say we didn’t warn you." They departed, leaving you in chilling isolation.
+  > Thay đổi chỉ số: Tinh thần (Sanity): -15 | Độ chú ý ngầm (Heat): +12 | Danh tiếng (Reputation): +10
+  > Thưởng Merit: +8
+  > Gắn cờ trạng thái: [dd_investigation_done]
+  > Ghi danh Codex thành tựu: [distortion_detective_clash]
+
+--------------------------------------------------------------------------------
+
+[DERIVATIVE & COMMUNITY LORE #2] ID: bl_claim_their_bones_oath
+- Độ tuổi kích hoạt: từ 18 đến 60 tuổi
+- Điều kiện chi tiết (Need): {"jobs":["Fixer","Syndicate"]}
+- Cờ cấm kỵ (Forbids): [Distorted, blade_lineage_sworn]
+
+* NỘI DUNG DẪN CHUYỆN (TIẾNG VIỆT):
+  [Kiếm Pháp Cốt Nhục Tương Tàn · Blade Lineage] Giữa một bãi tha ma Backstreets sặc mùi máu tươi, một kiếm sĩ đơn độc đội nón tre rách rưới (Bamboo-hatted Kim) đang lau lưỡi đao dính đầy vết chém của Hắc Vân Phái (Kurokumo). Thấy bạn bước tới, ông ta không quay đầu lại: "Chém người thì dễ, nhưng nhận trọn lưỡi kiếm vào xương thịt để đoạt mạng đối thủ mới là đạo của kiếm khách. Ngươi có dám để da thịt mình nát bấy để bẻ gãy xương kẻ thù không?"
+
+* SCENARIO PROSE (ENGLISH):
+  [To Claim Their Bones · Blade Lineage] Amid a blood-soaked Backstreet alley, a lone swordsman in a frayed bamboo hat (Bamboo-hatted Kim) wipes a curved blade stained with Kurokumo ichor. Without turning, he speaks: "Cutting flesh is simple. But yielding your flesh so you may crush their bone is the swordsman’s true path. Dare you let your skin tear to sever their marrow?"
+
+* CÁC NHÁNH LỰA CHỌN (CHOICES):
+  ------------------------------------------------------------------------
+  [Lựa chọn 1]: Quỳ xuống xin lĩnh hội tuyệt kỹ "To Claim Their Bones" (Kneel and swear fealty to master "To Claim Their Bones")
+  > Kết quả (VI): Lưỡi đao của vị đại kiếm sư vung lên như tia chớp, rạch một vết sâu trên ngực bạn làm minh chứng nhập môn. Cơn đau thấu xương đánh thức ngọn lửa kiếm đạo kiên định. Bạn trở thành môn đồ Blade Lineage, nhận kiếm bản mệnh.
+  > Outcome (EN): The swordsman’s blade flashed like lightning, carving a deep initiation furrow across your chest. The searing agony ignited an unyielding martial clarity. You became an initiate of the Blade Lineage, receiving their ceremonial blade.
+  > Thay đổi chỉ số: Sinh lực (Health): -18 | Tinh thần (Sanity): +20 | Danh tiếng (Reputation): +22 | Cộng hưởng E.G.O (Resonance): +18
+  > Thưởng Merit: +25
+  > Gắn cờ trạng thái: [blade_lineage_sworn, SwordMastery]
+  > Khắc vết sẹo tâm hồn: [Vết kiếm khắc Cốt Nhục Tương Tàn]
+  > Ghi danh Codex thành tựu: [blade_lineage_initiate]
+  ------------------------------------------------------------------------
+  [Lựa chọn 2]: Cảnh báo ông ta về quân tiếp viện của Kurokumo rồi rút lui (Warn him of incoming Kurokumo reinforcements and withdraw)
+  > Kết quả (VI): Kiếm sĩ nón tre gật đầu nhẹ, ném cho bạn một túi Ahn chiến lợi phẩm thu từ tay chân Kurokumo: "Khôn ngoan để sống sót cũng là một cách sinh tồn ở The City." Ông ta xoay người biến mất vào màn mưa.
+  > Outcome (EN): The swordsman gave a slight nod, tossing you a pouch of Ahn stripped from Kurokumo ronin: "Prudence to live another dawn is its own survival in this City." He turned and dissolved into the rain.
+  > Thay đổi chỉ số: Tiền Ahn (Wealth): +35 | Danh tiếng (Reputation): +10 | Tinh thần (Sanity): +5
+  > Thưởng Merit: +12
+  > Gắn cờ trạng thái: [blade_lineage_sworn]
+
+--------------------------------------------------------------------------------
+
+[DERIVATIVE & COMMUNITY LORE #3] ID: kurokumo_ink_slash_vendetta
+- Độ tuổi kích hoạt: từ 18 đến 58 tuổi
+- Điều kiện chi tiết (Need): {"jobs":["Syndicate","Fixer"]}
+- Cờ cấm kỵ (Forbids): [Distorted, kurokumo_tattooed]
+
+* NỘI DUNG DẪN CHUYỆN (TIẾNG VIỆT):
+  [Mực Máu Hắc Vân Bang · Kurokumo Clan] Một căn phòng lợp chiếu tatami nồng nặc mùi mực tàu và thuốc sát trùng. Vị phó bang chủ Kurokumo (Sayo) với những hình xăm mây đen cuồn cuộn trên cánh tay nhìn bạn bằng ánh mắt sắc lạnh: "Lưỡi kiếm của Kurokumo không chỉ chém đứt cơ bắp, nó để lại vết thương rỉ máu không bao giờ khép miệng. Xăm mực Hắc Vân lên lưng, và ngươi sẽ là thợ săn của chúng ta."
+
+* SCENARIO PROSE (ENGLISH):
+  [Kurokumo Clan Blood Ink] A tatami den reeking of sumi ink and antiseptic. Vice-Captain Sayo, ink-black storm clouds sprawling across bare shoulders, pins you with a predator’s stare: "A Kurokumo blade does not merely sever muscle. It carves wounds that bleed until the victim is hollow. Inscribe our dark clouds upon your flesh, and hunt under our banner."
+
+* CÁC NHÁNH LỰA CHỌN (CHOICES):
+  ------------------------------------------------------------------------
+  [Lựa chọn 1]: Chấp nhận nghi thức xăm mực Hắc Vân đầy đau đớn (Endure the agonizing Kurokumo ink tattooing ritual)
+  > Kết quả (VI): Kim xăm đâm sâu suốt mười hai canh giờ, đưa độc dược và mực đen thấm vào kinh mạch. Bạn mở mắt với làn da mang hình rồng mây đen, lưỡi đao vung ra mang theo hiệu ứng rỉ máu tàn khốc.
+  > Outcome (EN): For twelve relentless hours, bone needles pounded venom and sumi ink into your veins. You arose with dark storm dragons undulating across your skin, your blade strikes weeping arterial venom.
+  > Thay đổi chỉ số: Sinh lực (Health): -15 | Tinh thần (Sanity): -10 | Danh tiếng (Reputation): +20 | Độ chú ý ngầm (Heat): +22
+  > Thưởng Merit: +20
+  > Gắn cờ trạng thái: [kurokumo_tattooed, BleedMastery]
+  > Khắc vết sẹo tâm hồn: [Hình xăm Hắc Vân triền miên]
+  > Ghi danh Codex thành tựu: [kurokumo_lieutenant]
+  ------------------------------------------------------------------------
+  [Lựa chọn 2]: Từ chối dính líu đến tranh chấp giang hồ của các gia tộc (Refuse entanglements in syndicate clan feuds)
+  > Kết quả (VI): Sayo hạ mi mắt lạnh lùng: "Một con chuột Backstreets nhát gan. Hãy cầu nguyện đừng bao giờ chạm trán đao thủ Kurokumo trong hẻm tối." Bạn rời khỏi trà quán an toàn nhưng mang theo sự dè chừng.
+  > Outcome (EN): Sayo’s gaze turned icy: "A craven Backstreet rat. Pray you never cross our blade paths in the dark." You stepped into the rain unscathed, yet watched by shadowed eyes.
+  > Thay đổi chỉ số: Danh tiếng (Reputation): -5 | Tinh thần (Sanity): +10
+  > Thưởng Merit: +5
+
+--------------------------------------------------------------------------------
+
+[DERIVATIVE & COMMUNITY LORE #4] ID: sweeper_mother_soup_night
+- Độ tuổi kích hoạt: từ 14 đến 75 tuổi
+- Cờ cấm kỵ (Forbids): [Distorted]
+
+* NỘI DUNG DẪN CHUYỆN (TIẾNG VIỆT):
+  [3:13 AM · Nồi Súp Của Người Mẹ Sweeper] Tiếng còi báo động xé toạc màn đêm: Night in the Backstreets đã bắt đầu. Cửa hầm trú ẩn của bạn bị kẹt cứng. Từ hai đầu con hẻm, hàng chục bóng đen mặc đồ bảo hộ trùm kín, phát ra tiếng thở rít ken két qua ống lọc (Sweepers) xuất hiện. Họ vác theo thùng thu gom chất lỏng và móc câu sắc nhọn. Một Sweeper đầu đàn gõ chiếc móc sắt nhịp nhàng, phát ra thứ ngôn ngữ méo mó: "Chúng... ta... nấu... súp... cho... gia... đình..."
+
+* SCENARIO PROSE (ENGLISH):
+  [3:13 AM · Mother’s Sweeper Cauldron] Sirens shriek through the fog: Night in the Backstreets has commenced. Your tenement bulkhead jammed shut. From both ends of the alley, dozens of faceless figures in airtight rubber hazmat suits exhaling rattling hiss through filters (Sweepers) emerge, dragging fluid barrels and butchering hooks. A matriarch Sweeper clinks her hook rhythmically, clicking in synthesized static: "We... brew... soup... for... the... children..."
+
+* CÁC NHÁNH LỰA CHỌN (CHOICES):
+  ------------------------------------------------------------------------
+  [Lựa chọn 1]: Dốc toàn lực chiến đấu phá vỡ vòng vây trước 4:34 AM (Fight with ferocious desperation to break out before 4:34 AM)
+  > Kết quả (VI): Máu tanh và chất lỏng màu nâu sẫm của Sweeper bắn tung tóe. Bạn cắn răng chịu nhiều vết đâm xuyên giáp, đạp qua đống phế liệu và lao ra đại lộ đúng lúc ánh đèn đường bật sáng trở lại báo hiệu bình minh. Bạn sống sót qua đêm ác mộng.
+  > Outcome (EN): Sweeper fuel and dark tea-colored fluid splattered the walls. Enduring punctured armor and jagged slashes, you scrambled through wreckage onto the main avenue just as streetlights flared back on at 4:34 AM. You survived the legendary nightmare.
+  > Thay đổi chỉ số: Sinh lực (Health): -32 | Tinh thần (Sanity): -18 | Danh tiếng (Reputation): +25 | Độ chú ý ngầm (Heat): -10
+  > Thưởng Merit: +30
+  > Gắn cờ trạng thái: [SweeperSurvivor]
+  > Khắc vết sẹo tâm hồn: [Vết móc câu Sweeper 3:13 AM]
+  > Ghi danh Codex thành tựu: [sweeper_night_veteran]
+  ------------------------------------------------------------------------
+  [Lựa chọn 2]: Dùng lựu đạn khói nhiệt và hy sinh một phần hành lý để tẩu thoát (Deploy thermal smoke canisters and sacrifice gear to flee)
+  > Kết quả (VI): Bạn kích nổ hộp cứu hỏa và ném toàn bộ tiền của cùng đồ tiếp tế để đánh lạc hướng bầy Sweeper. Chúng tập trung thu gom các bọc dinh dưỡng, cho phép bạn trèo qua đường ống thông gió trốn thoát.
+  > Outcome (EN): You detonated a pressurized conduit and flung your rations and purse into the dark. The pack swarmed the organic matter, granting you precious seconds to scale a grease-slick chimney pipe.
+  > Thay đổi chỉ số: Tiền Ahn (Wealth): -30 | Sinh lực (Health): -10 | Tinh thần (Sanity): -8
+  > Thưởng Merit: +15
+  > Gắn cờ trạng thái: [SweeperSurvivor]
+
+--------------------------------------------------------------------------------
+
+[DERIVATIVE & COMMUNITY LORE #5] ID: bloodfiend_carnival_pcorp
+- Độ tuổi kích hoạt: từ 20 đến 70 tuổi
+- Cờ cấm kỵ (Forbids): [Distorted, bloodfiend_met]
+
+* NỘI DUNG DẪN CHUYỆN (TIẾNG VIỆT):
+  [Dạ Tiệc Bloodfiend · Công Viên Máu La Manchaland] Lần theo dấu vết một đoàn người mất tích, bạn lạc vào một tầng hầm sâu hoắm dưới lòng District 16 (P Corp). Trước mắt bạn là một công viên giải trí rực rỡ đèn hoa đăng nhưng hoàn toàn vắng lặng. Một quý tộc mang áo choàng nhung đỏ thẫm, làn da trắng bệch như tử thi với đôi mắt đỏ ngọc bích (Bloodfiend Kindred) mỉm cười nâng ly rượu chứa máu tươi: "Chào mừng lữ khách. Ở đây, chúng ta chia sẻ dòng máu ấm để quên đi cơn đói vĩnh hằng."
+
+* SCENARIO PROSE (ENGLISH):
+  [Bloodfiend Carnival · La Manchaland] Tracking a missing carriage convoy, you descend into a subterranean cavern beneath District 16 (P Corp). A carnival of neon Ferris wheels spins in utter silence. A nobleman draped in crimson velvet, skin porcelain-dead with carmine pupils (Bloodfiend Kindred), lifts a chalice of fresh blood: "Welcome, pilgrim. Here, we share warm blood so we may forget our endless thirst."
+
+* CÁC NHÁNH LỰA CHỌN (CHOICES):
+  ------------------------------------------------------------------------
+  [Lựa chọn 1]: Vung vũ khí chém nát ly rượu, kiên quyết diệt trừ dị chủng (Strike the chalice down, resolving to purge the bloodfiend)
+  > Kết quả (VI): Cơn thịnh nộ bùng phát. Tốc độ của Bloodfiend xé rách không khí như bóng ma. Trận chiến kết thúc khi bạn đâm mũi kiếm xuyên qua trái tim đóng băng của con quái vật. Bạn thu được tinh chất Máu Cổ Xưa cực kỳ quý hiếm.
+  > Outcome (EN): Furious carnage erupted. The Bloodfiend moved like a sonic ghost. You drove your steel clean through its frozen heart after taking savage claw gouges. You harvested a phial of Primordial Blood Essence.
+  > Thay đổi chỉ số: Sinh lực (Health): -28 | Tinh thần (Sanity): -12 | Danh tiếng (Reputation): +30 | Tiền Ahn (Wealth): +45
+  > Thưởng Merit: +35
+  > Gắn cờ trạng thái: [bloodfiend_met, BloodfiendSlayer]
+  > Ghi danh Codex thành tựu: [la_manchaland_slayer]
+  ------------------------------------------------------------------------
+  [Lựa chọn 2]: Kín đáo ký kết hiệp ước ngầm cung cấp máu đổi lấy Singularity (Discreetly negotiate a pact: supply plasma for Singularity tech)
+  > Kết quả (VI): Vị quý tộc Bloodfiend hài lòng cúi đầu lịch thiệp. Hắn trao cho bạn một tấm bùa phòng hộ bằng huyết thạch có khả năng hồi phục cơ thể thần kỳ, đổi lại việc bạn giữ kín địa điểm của công viên ngầm.
+  > Outcome (EN): The Bloodfiend bowed with aristocratic grace. He bestowed a Bloodstone Talisman capable of miraculous cellular coagulation, in exchange for your vow of silence regarding the catacombs.
+  > Thay đổi chỉ số: Tiền Ahn (Wealth): +50 | Tinh thần (Sanity): -15 | Vi phạm Taboo: +1 | Cộng hưởng E.G.O (Resonance): +15
+  > Thưởng Merit: +20
+  > Gắn cờ trạng thái: [bloodfiend_met, BloodfiendContract]
+  > Ghi danh Codex thành tựu: [bloodfiend_pact]
+
+--------------------------------------------------------------------------------
+
+[DERIVATIVE & COMMUNITY LORE #6] ID: smoke_war_veteran_chimeric_rage
+- Độ tuổi kích hoạt: từ 21 đến 65 tuổi
+- Cờ cấm kỵ (Forbids): [Distorted, gcorp_veteran_helped]
+
+* NỘI DUNG DẪN CHUYỆN (TIẾNG VIỆT):
+  [Tiếng Khóc Chiến Tranh Khói · Cựu Binh Old G Corp] Trong một khu phế liệu rỉ sét ở Backstreets, bạn tìm thấy một nhóm cựu binh mang cánh bọ hung và râu côn trùng biến dị của G Corp cũ thời Chiến Tranh Khói (Smoke War). Họ đang bị một đội săn tiền thưởng của G Corp mới dồn vào chân tường để tiêu hủy "chứng cứ ô nhục". Người chỉ huy cựu binh gãy một cánh, quỳ ôm lấy đứa con nhỏ dị tật cầu xin bạn can thiệp.
+
+* SCENARIO PROSE (ENGLISH):
+  [Echoes of Smoke War · Old G Corp Veterans] In a rusted scrapyard, you discover mutated veterans bearing beetle carapaces and insect antennae from the Old G Corp Smoke War. A mercenary kill-team from New G Corp has cornered them to incinerate "defective wartime bio-assets." The veteran sergeant with a sheared chitin wing shields a deformed child, pleading for aid.
+
+* CÁC NHÁNH LỰA CHỌN (CHOICES):
+  ------------------------------------------------------------------------
+  [Lựa chọn 1]: Rút vũ khí nghênh chiến, bảo vệ các cựu binh bị phản bội (Draw your weapon and stand with the betrayed war veterans)
+  > Kết quả (VI): Đạn súng và giáp động năng va chạm dữ dội. Bạn tiêu diệt toán lính đánh thuê. Người cựu binh già run rẩy tháo một cánh tay cơ học cường hóa trọng lực trao tặng bạn trước khi đưa gia đình lẩn trốn vào Outskirts.
+  > Outcome (EN): Gunfire and kinetic wards shattered the alley. You wiped out the corporate hit-squad. The weeping veteran sergeant unbolted a heavy Gravitational Prosthetic Arm and gifted it to you before fleeing toward the Outskirts.
+  > Thay đổi chỉ số: Sinh lực (Health): -20 | Tinh thần (Sanity): +15 | Danh tiếng (Reputation): +18 | Độ chú ý ngầm (Heat): +20
+  > Thưởng Merit: +25
+  > Gắn cờ trạng thái: [gcorp_veteran_helped, ChimeraSympathizer]
+  > Ghi danh Codex thành tựu: [smoke_war_savior]
+  ------------------------------------------------------------------------
+  [Lựa chọn 2]: Đứng ngoài cuộc, không can thiệp vào công việc dọn dẹp của Wing (Stand aside, refusing to interfere with Wing cleanups)
+  > Kết quả (VI): Súng phun lửa của toán lính rực sáng trong tiếng gào thét bi thương. Khi mọi thứ chỉ còn là tro tàn xám ngắt, viên chỉ huy ném cho bạn một xấp tiền bịt miệng: "Biết điều đấy, đồ chuột cống."
+  > Outcome (EN): Flamethrowers roared amidst agonizing shrieks. When only gray ash remained, the corporate officer tossed you a bloodstained bounty envelope: "Smart choice keeping your snout clean, rat."
+  > Thay đổi chỉ số: Tiền Ahn (Wealth): +25 | Tinh thần (Sanity): -20 | Danh tiếng (Reputation): -8
+  > Thưởng Merit: +5
+
+--------------------------------------------------------------------------------
+
+[DERIVATIVE & COMMUNITY LORE #7] ID: tcorp_stolen_color_contraband
+- Độ tuổi kích hoạt: từ 18 đến 70 tuổi
+- Điều kiện chi tiết (Need): {"regions":["T","Backstreets","Nest"]}
+- Cờ cấm kỵ (Forbids): [Distorted, color_contraband_done]
+
+* NỘI DUNG DẪN CHUYỆN (TIẾNG VIỆT):
+  [Thương Vụ Sắc Màu Bị Đánh Cắp · T Corp] Bạn bước vào một góc chợ đen bí mật tại District 20 (T Corp), nơi toàn bộ thế giới bị tước đoạt màu sắc chỉ còn hai màu xám nâu sepia. Một tay buôn lậu lén mở chiếc rương chì, để lộ một lọ thủy tinh phát ra ánh sáng ngũ sắc rực rỡ – màu sắc tự nhiên nguyên bản bị cấm tuyệt đối theo luật của T Corp. "Chỉ một giọt thôi, bạn sẽ thấy thế giới như thuở hồng hoang. Mua chứ?"
+
+* SCENARIO PROSE (ENGLISH):
+  [The Stolen Colors of T Corp] You enter a covert black-market cellar in District 20 (T Corp), where the entire world has been drained of hue into dreary sepia-gray. A contrabandist cracks a lead coffer, revealing a glass flask swirling with vibrant, incandescent iridescent pigment—natural color forbidden under T Corp time-patents. "One drop, and you will see the world in divine brilliance. Interested?"
+
+* CÁC NHÁNH LỰA CHỌN (CHOICES):
+  ------------------------------------------------------------------------
+  [Lựa chọn 1]: Chi 40 Ahn mua lọ sắc màu và uống trọn để giải thoát tâm thức (Spend 40 Ahn to purchase and ingest the forbidden iridescent pigment)
+  > Kết quả (VI): Thế giới bùng nổ trong sắc đỏ rực rỡ, sắc xanh biếc và ánh vàng chói lọi. Tâm trí bạn như được tái sinh khỏi sự ngột ngạt ngàn cân của The City, giải phóng toàn bộ áp lực tinh thần.
+  > Outcome (EN): The sepia veil detonated into vivid scarlet, sapphire, and radiant emerald. Your senses rejuvenated from decades of dreary monochromatic oppression, purging mental rot instantly.
+  > Thay đổi chỉ số: Tinh thần (Sanity): +40 | Cộng hưởng E.G.O (Resonance): +25 | Độ chú ý ngầm (Heat): +15 | Vi phạm Taboo: +1
+  > Tiêu tốn Ahn: -40 Ahn
+  > Thưởng Merit: +18
+  > Gắn cờ trạng thái: [color_contraband_done, ColorAwakened]
+  > Ghi danh Codex thành tựu: [tcorp_color_rebel]
+  ------------------------------------------------------------------------
+  [Lựa chọn 2]: Báo cáo vị trí ổ buôn lậu cho Time Track Collectors của T Corp (Report the smuggler’s vault to T Corp Time Track Collectors)
+  > Kết quả (VI): Các chấp pháp viên T Corp vác máy hút thời gian ập vào phong tỏa hiện trường. Tên buôn lậu bị đóng băng thành tượng đá vĩnh cửu. Bạn được T Corp thưởng một phiếu bù 20 giờ sinh hoạt chất lượng cao.
+  > Outcome (EN): T Corp Collectors in trenchcoats and vacuum rigs breached the room, instantly siphoning the smuggler’s time into stone stasis. You received a requisition voucher for 20 hours of prime Nest living time.
+  > Thay đổi chỉ số: Tiền Ahn (Wealth): +30 | Danh tiếng (Reputation): +15 | Tinh thần (Sanity): -8 | Mối quan hệ (Network): +10
+  > Thưởng Merit: +15
+  > Gắn cờ trạng thái: [color_contraband_done]
+  > Ghi danh Codex thành tựu: [tcorp_loyalist]
+
+--------------------------------------------------------------------------------
+
+[DERIVATIVE & COMMUNITY LORE #8] ID: wcorp_cleaning_crew_amnesia
+- Độ tuổi kích hoạt: từ 20 đến 60 tuổi
+- Cờ cấm kỵ (Forbids): [Distorted, wcorp_cleaned]
+
+* NỘI DUNG DẪN CHUYỆN (TIẾNG VIỆT):
+  [Hợp Đồng Đặc Biệt: Dọn Dẹp Tàu WARP] W Corp gửi tới văn phòng bạn một hợp đồng ngắn hạn với mức lương khổng lồ: 70 Ahn cho đúng 1 giờ làm việc. Bạn được phát một bộ đồ bảo hộ kín mít, vũ khí áp chế và thuốc xóa trí nhớ cấp cao. Khi cánh cửa khoang Tàu WARP vừa mở ra, mùi máu tanh và những khối thịt sống còn quằn quại của hàng ngàn hành khách bị giam cầm suốt hàng triệu năm đập vào mắt bạn. Nhiệm vụ: Xếp các khối thịt về đúng ghế ngồi trước khi Singularity khôi phục cơ thể họ.
+
+* SCENARIO PROSE (ENGLISH):
+  [Special Commission: WARP Train Cleanup Crew] W Corp issues a high-security emergency dispatch offering an astronomical bounty: 70 Ahn for one hour of work. Clad in airtight hazmat gear, you are armed with suppression staves and grade-A amnestics. As the WARP train bulkhead hisses open, the sickening stench of warm gore and writhing heaps of conscious passenger flesh trapped for millennia hits your face. Objective: Shovel the screaming meat onto passenger seats before the Singularity resets their biology.
+
+* CÁC NHÁNH LỰA CHỌN (CHOICES):
+  ------------------------------------------------------------------------
+  [Lựa chọn 1]: Cắn răng dọn dẹp hiện trường địa ngục, nhận thù lao và uống thuốc xóa nhớ (Grit your teeth, clean the charnel house, take the bounty and memory wipe)
+  > Kết quả (VI): Bạn làm việc điên cuồng giữa những tiếng gào thét của các khối thịt còn nhận thức. Khi cỗ máy phục hồi bấm nút, những hành khách bước ra ngoài ga như thể chỉ vừa trải qua 10 giây. Bạn cầm bọc tiền 70 Ahn, uống viên thuốc xóa nhớ để quên đi cơn ác mộng.
+  > Outcome (EN): You worked like a demon amidst shrieking tangles of sentient flesh. When the temporal restoration chime rang, passengers walked off at the station believing only 10 seconds had elapsed. Clutching 70 Ahn, you took the amnestic pill to drown the nightmare.
+  > Thay đổi chỉ số: Tiền Ahn (Wealth): +70 | Tinh thần (Sanity): -25 | Danh tiếng (Reputation): +15
+  > Thưởng Merit: +28
+  > Gắn cờ trạng thái: [wcorp_cleaned]
+  > Ghi danh Codex thành tựu: [wcorp_cleaner_survivor]
+  ------------------------------------------------------------------------
+  [Lựa chọn 2]: Từ chối xóa trí nhớ, lưu giữ bản ghi bằng chứng Singularity của W Corp (Refuse the memory wipe and smuggle out photographic evidence)
+  > Kết quả (VI): Bạn bí mật giấu một mẫu mô và cuốn băng ghi hình vào lớp giáp rồi bỏ trốn. Hiệp hội Seven lập tức trả một khoản tiền khổng lồ để mua tài liệu này, nhưng bạn vĩnh viễn bị W Corp đưa vào danh sách đen thanh trừng.
+  > Outcome (EN): You concealed a passenger bio-sample and encrypted micro-tape inside your breastplate and fled into the crowd. Seven Association paid a king’s ransom for the leak, but W Corp marked your file for permanent execution.
+  > Thay đổi chỉ số: Tiền Ahn (Wealth): +120 | Tinh thần (Sanity): -35 | Độ chú ý ngầm (Heat): +50 | Vi phạm Taboo: +2
+  > Thưởng Merit: +40
+  > Gắn cờ trạng thái: [wcorp_cleaned, WCorpWhistleblower]
+  > Khắc vết sẹo tâm hồn: [Ký ức địa ngục tàu WARP]
+  > Ghi danh Codex thành tựu: [singularity_whistleblower]
+
+--------------------------------------------------------------------------------
+
+[DERIVATIVE & COMMUNITY LORE #9] ID: wonderlab_aberrant_specimen
+- Độ tuổi kích hoạt: từ 18 đến 65 tuổi
+- Cờ cấm kỵ (Forbids): [Distorted, aberration_encountered]
+
+* NỘI DUNG DẪN CHUYỆN (TIẾNG VIỆT):
+  [Phòng Thí Nghiệm WonderLab · Dị Thể Đột Biến] Một nhà nghiên cứu áo blouse trắng rách tả tơi chạy vào nơi bạn ẩn náu, ôm theo chiếc lồng thủy tinh cách ly Singularity. Bên trong là một dị thể sinh vật đột biến (*Aberration*) có hình dạng một nụ hoa bằng thủy tinh rỉ máu, liên tục phát ra những giai điệu ru ngủ ngọt ngào: "Nó đã giết chết cả phân viện WonderLab... xin hãy giúp tôi phong ấn nó, hoặc đưa nó ra Outskirts!"
+
+* SCENARIO PROSE (ENGLISH):
+  [WonderLab · The Aberrant Specimen] A researcher in a torn white lab coat bursts into your sanctuary, clutching a containment capsule. Inside writhes an Aberration—a glass blossom weeping crimson nectar, harmonizing a siren lullaby: "It breached the entire WonderLab branch... please, help me seal it, or smuggle it past the City walls!"
+
+* CÁC NHÁNH LỰA CHỌN (CHOICES):
+  ------------------------------------------------------------------------
+  [Lựa chọn 1]: Sử dụng sóng tâm thức và ý chí kiên định để áp chế phong ấn Dị thể (Exert iron mental focus and resonance to force-contain the Aberration)
+  > Kết quả (VI): Giai điệu ru ngủ cào xé màng nhĩ của bạn. Bằng ý chí sắt đá, bạn kích hoạt van áp suất của lồng chứa, khóa chặt thực thể. Bạn nhận được vũ khí E.G.O sơ khai từ tinh chất của nó.
+  > Outcome (EN): The siren melody scraped your sanity like broken glass. Gritting your teeth, you slammed the hydraulic pressure locks shut. The researcher rewarded you with a nascent E.G.O prototype weapon harvested from its core.
+  > Thay đổi chỉ số: Tinh thần (Sanity): -18 | Cộng hưởng E.G.O (Resonance): +25 | Danh tiếng (Reputation): +15
+  > Thưởng Merit: +22
+  > Gắn cờ trạng thái: [aberration_encountered, EGOSeedAcquired]
+  > Ghi danh Codex thành tựu: [wonderlab_containment_hero]
+  ------------------------------------------------------------------------
+  [Lựa chọn 2]: Tiêu diệt nhà khoa học và bán chiếc lồng cho Chợ Đen The Ring (Eliminate the researcher and auction the capsule to The Ring)
+  > Kết quả (VI): The Ring trả giá cực cao cho mẫu vật nghệ thuật sống động này. Bạn kiếm được một món hời lớn nhưng để lại một mối họa kinh hoàng tiềm ẩn cho toàn bộ Backstreets.
+  > Outcome (EN): The Ring Maestro paid an exorbitant sum for the living artistic atrocity. You walked away wealthy, having unleashed a catastrophic biohazard upon the lower alleys.
+  > Thay đổi chỉ số: Tiền Ahn (Wealth): +85 | Tinh thần (Sanity): -25 | Độ chú ý ngầm (Heat): +25 | Vi phạm Taboo: +1
+  > Thưởng Merit: +20
+  > Gắn cờ trạng thái: [aberration_encountered]
+  > Ghi danh Codex thành tựu: [black_market_specimen_dealer]
+
+--------------------------------------------------------------------------------
+
+[DERIVATIVE & COMMUNITY LORE #10] ID: seven_dossier_singularity_leak
+- Độ tuổi kích hoạt: từ 25 đến 75 tuổi
+- Điều kiện chi tiết (Need): {"jobs":["Fixer","Wing Employee"]}
+- Cờ cấm kỵ (Forbids): [Distorted, seven_dossier_read]
+
+* NỘI DUNG DẪN CHUYỆN (TIẾNG VIỆT):
+  [Hiệp Hội Seven · Hồ Sơ Tuyệt Mật Số 0] Một chuyên viên phân tích cấp cao của Hiệp hội Seven Section 1 hẹn gặp bạn trên nóc một tòa tháp Nest lúc mưa bão. Người này mở chiếc cặp tài liệu bằng titan: "Trong này chứa sự thật về cách các Cánh vận hành Singularity: Nước mắt của K Corp, xác thịt của W Corp, cỗ máy sinh tử của R Corp. Hana sắp phong tỏa nơi này. Bạn muốn đọc nó để hiểu bản chất của The City, hay đốt nó đi để bảo toàn tính mạng?"
+
+* SCENARIO PROSE (ENGLISH):
+  [Seven Association · Dossier Zero] A senior intelligence officer from Seven Section 1 meets you atop a Nest spire amidst a howling storm. He unlocks a titanium briefcase: "Inside lies the truth of how the Wings sustain their Singularities: K Corp’s tears, W Corp’s eternal butchery, R Corp’s cloning charnel house. Hana is sealing the perimeter. Will you read it to understand the City’s marrow, or burn it to preserve your life?"
+
+* CÁC NHÁNH LỰA CHỌN (CHOICES):
+  ------------------------------------------------------------------------
+  [Lựa chọn 1]: Đọc trọn tập tài liệu, thấu suốt toàn bộ bản chất đen tối của The City (Read the dossier in full, gazing directly into the City’s grim foundation)
+  > Kết quả (VI): Sự thật trần trụi làm sụp đổ mọi ảo tưởng bạn từng có về thế giới. Bạn không còn sợ hãi bất kỳ Cánh hay thế lực nào nữa. Ý chí của bạn đạt đến sự giác ngộ tối thượng.
+  > Outcome (EN): The raw, unfiltered horror shattered every illusion you held of civilization. You no longer fear Wings, Syndicates, or death. Your soul attained supreme existential awakening.
+  > Thay đổi chỉ số: Tinh thần (Sanity): -30 | Cộng hưởng E.G.O (Resonance): +35 | Danh tiếng (Reputation): +20
+  > Thưởng Merit: +30
+  > Gắn cờ trạng thái: [seven_dossier_read, EnlightenedMind]
+  > Khắc vết sẹo tâm hồn: [Vết rách nhận thức: Chân tướng The City]
+  > Ghi danh Codex thành tựu: [reader_of_dossier_zero]
+  ------------------------------------------------------------------------
+  [Lựa chọn 2]: Châm lửa thiêu rụi tập hồ sơ ngay trước mặt viên thanh tra (Set the briefcase ablaze immediately before the inspector)
+  > Kết quả (VI): Ngọn lửa nuốt chửng những trang giấy tử thần trong màn mưa. Viên thanh tra Seven thở phào nhẹ nhõm: "Đôi khi, ngu ngơ là ân huệ duy nhất để sống thọ ở nơi này." Hiệp hội Seven gửi lời cảm ơn và bảo đảm cho bạn sự nghiệp bình yên.
+  > Outcome (EN): Flames consumed the fatal parchment in the rain. The Seven inspector exhaled in profound relief: "Sometimes, ignorance is the only mercy allowing an operative to grow old here." Seven Association guaranteed your safety.
+  > Thay đổi chỉ số: Tinh thần (Sanity): +20 | Mối quan hệ (Network): +25 | Danh tiếng (Reputation): +15
+  > Thưởng Merit: +20
+  > Gắn cờ trạng thái: [seven_dossier_read]
+
+--------------------------------------------------------------------------------
+
+================================================================================
+PHẦN XIV: TỪ ĐIỂN THUẬT NGỮ CHUẨN NGUYÊN TÁC PROJECT MOON (CANONICAL GLOSSARY)
 ================================================================================
 [Thuật ngữ #1] undefined (undefined)
   Phân loại: geography
