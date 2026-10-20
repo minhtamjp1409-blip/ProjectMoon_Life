@@ -161,12 +161,25 @@ export function composeBirth({ kind, familyId, omenId, regionVi, regionEn, name,
     lines: [
       {
         type: 'milestone',
-        vi: `${fill(place.vi, { region: regionVi })} ${head.vi}`,
-        en: `${fill(place.en, { region: regionEn })} ${head.en}`
+        vi: `[Chào đời] ${fill(place.vi, { region: regionVi })} ${head.vi}`,
+        en: `[Birth] ${fill(place.en, { region: regionEn })} ${head.en}`
       },
-      { type: 'daily', vi: `${fam.vi} ${night.vi}`, en: `${fam.en} ${night.en}` },
-      { type: omenId === 'index_equilibrium' ? 'daily' : 'causal', vi: omen.vi, en: omen.en, omen: true },
-      { type: 'daily', vi: fill(fl.vi, { friend: friend.nameVi, trait: friend.traitVi }), en: fill(fl.en, { friend: friend.nameEn, trait: friend.traitEn }) }
+      {
+        type: 'daily',
+        vi: `[Gia cảnh & Đêm sinh] ${fam.vi} ${night.vi}`,
+        en: `[Family & Birth Night] ${fam.en} ${night.en}`
+      },
+      {
+        type: omenId === 'index_equilibrium' ? 'daily' : 'causal',
+        vi: omen.vi.startsWith('[') ? omen.vi : `[Điềm định mệnh] ${omen.vi}`,
+        en: omen.en.startsWith('[') ? omen.en : `[Fate Omen] ${omen.en}`,
+        omen: true
+      },
+      {
+        type: 'daily',
+        vi: `[Bạn thời thơ ấu] ${fill(fl.vi, { friend: friend.nameVi, trait: friend.traitVi })}`,
+        en: `[Childhood Companion] ${fill(fl.en, { friend: friend.nameEn, trait: friend.traitEn })}`
+      }
     ]
   };
 }

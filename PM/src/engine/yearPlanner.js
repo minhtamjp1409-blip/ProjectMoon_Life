@@ -716,11 +716,11 @@ export function endYear(charState, rng) {
     const net = JOB_INCOME(char) - cost + Math.round(rng() * 2 - 1);
     add('wealth', net);
     if (net > 0) {
-      vi.push('làm ra nhiều hơn số tiêu');
-      en.push('earned more than you spent');
+      vi.push('Thu nhập năm nay vượt mức chi tiêu, bạn tích lũy thêm được chút vốn liếng.');
+      en.push('Your earnings exceeded living expenses this year, allowing you to save a modest sum.');
     } else if (net < 0) {
-      vi.push('tiền trọ và tiền ăn ăn mòn túi');
-      en.push('rent and food ate into your savings');
+      vi.push('Tiền thuê trọ đắt đỏ và chi phí ăn uống leo thang đã ăn mòn phần lớn tiền tiết kiệm.');
+      en.push('Steep tenement rent and rising food costs ate heavily into your savings.');
     }
   } else {
     // Childhood living friction: survival is harsh, money gets spent on family necessities
@@ -728,15 +728,15 @@ export function endYear(charState, rng) {
       if (char.stats.wealth > 4 && rng() < 0.4) {
         const drain = Math.min(2, Math.max(1, Math.floor(char.stats.wealth * 0.15)));
         add('wealth', -drain);
-        vi.push('chi phí cơm áo và tiền nộp bảo kê của gia đình');
-        en.push('family food rations and syndicate protection money');
+        vi.push('Gia đình phải chắt bóp từng đồng Ahn để trang trải bữa ăn đạm bạc và nộp tiền bảo kê cho băng đảng đầu ngõ.');
+        en.push('The family pinched every Ahn to cover meager meals and local syndicate protection quotas.');
       }
     } else {
       if (char.stats.wealth > 14 && rng() < 0.35) {
         const drain = Math.min(3, Math.max(1, Math.floor(char.stats.wealth * 0.12)));
         add('wealth', -drain);
-        vi.push('chi phí học tập và tiền duy trì hộ khẩu Nest');
-        en.push('Nest tuition and citizen quota maintenance fees');
+        vi.push('Học phí đào tạo ưu tú và lệ phí duy trì hạn ngạch công dân Nest trở thành gánh nặng kinh tế đáng kể.');
+        en.push('Elite tutoring costs and Nest citizen quota upkeep fees placed a noticeable burden on the household.');
       }
     }
   }
@@ -745,21 +745,21 @@ export function endYear(charState, rng) {
   if (char.stats.health < 60) {
     if (char.flags.includes('KCorpAmpoule')) {
       add('health', 4);
-      vi.push('huyết thanh K Corp tái tạo cơ thể');
-      en.push('K Corp serum regenerates your flesh');
+      vi.push('Dược chất huyết thanh K Corp liên tục tuần hoàn, phục hồi nhanh chóng các mô thịt bị rách nát.');
+      en.push('K Corp restorative serum continuously circulated, stitching torn flesh back together.');
     } else if (char.stats.wealth >= 3 && char.age >= 18) {
       add('wealth', -2);
       add('health', 4);
-      vi.push('chi 2 Ahn cho phòng khám Backstreets để khâu vết thương');
-      en.push('spent 2 Ahn at a back-alley clinic to patch wounds');
+      vi.push('Bạn tốn 2 Ahn tại một phòng khám chui nơi hẻm tối để khâu lại các vết chém và khử trùng vết thương.');
+      en.push('You paid 2 Ahn at a backstreet backroom clinic to stitch and sanitize deep lacerations.');
     } else if (nest) {
       add('health', 2);
-      vi.push('chế độ y tế của Nest chăm sóc vết thương');
-      en.push('Nest medical benefits tended your wounds');
+      vi.push('Gói bảo hiểm y tế nội bộ của Nest hỗ trợ khử trùng và điều trị chu đáo các chấn thương thể chất.');
+      en.push('Nest residential medical coverage attended to your physical injuries with clinical care.');
     } else {
       add('health', 1);
-      vi.push('vết thương tự lành thành sẹo');
-      en.push('wounds slowly scarred over');
+      vi.push('Không có tiền viện phí, những vết rách trên cơ thể bạn chỉ có thể tự khép miệng thành những vết sẹo thô ráp.');
+      en.push('With no coin for doctors, your wounds simply scabbed over into rugged survival scars.');
     }
   }
 
@@ -768,13 +768,13 @@ export function endYear(charState, rng) {
   if (char.stats.sanity < 55) {
     if (bond) {
       add('sanity', 3);
-      vi.push('sự hiện diện của người thân giữ cho tâm trí bạn không sụp đổ');
-      en.push('the presence of loved ones kept your mind steady');
+      vi.push('Sự kề cận và sẻ chia của người thân yêu giúp tâm trí bạn giữ được sự tỉnh táo trước áp lực điên cuồng của Thành Phố.');
+      en.push('The steady presence of a loved one anchored your sanity against the City’s madness.');
     } else if (char.stats.wealth >= 3 && char.age >= 18) {
       add('wealth', -1);
       add('sanity', 3);
-      vi.push('chi 1 Ahn uống rượu giải tỏa căng thẳng trong hẻm');
-      en.push('spent 1 Ahn on tavern drinks to unwind the City’s pressure');
+      vi.push('Bạn bỏ 1 Ahn vào quán rượu bình dân cuối phố, mượn men cay để xoa dịu những cơn đau đầu dai dẳng.');
+      en.push('You spent 1 Ahn at a gritty dive tavern, dulling persistent headaches with cheap liquor.');
     } else if (char.stats.sanity < 40) {
       add('sanity', 1);
     }
@@ -784,13 +784,13 @@ export function endYear(charState, rng) {
   if (!nest && char.age >= 4) {
     if (region.pollution >= 5 && rng() < 0.35) {
       add('health', -1);
-      vi.push('khói bụi khu này bám vào phổi');
-      en.push('the district’s smog settled in your lungs');
+      vi.push('Màn khói bụi công nghiệp nồng nặc của khu vực này dần ngấm sâu vào phế quản, gây ra những cơn ho khan.');
+      en.push('The district’s acrid industrial smog settled deep into your lungs, leaving a dry cough.');
     }
     if (region.safety <= 4 && rng() < 0.35) {
       add('sanity', -1);
-      vi.push('những đêm mất ngủ vì tiếng còi và đạn nổ');
-      en.push('nights lost to sirens and gunfire');
+      vi.push('Những đêm trằn trọc mất ngủ vì tiếng còi báo động rít gào và tiếng nổ đì đùng của các cuộc thanh trừng băng đảng.');
+      en.push('Restless nights were pierced by shrieking sirens and gunfire from nearby syndicate turf wars.');
     }
   }
 
@@ -799,27 +799,29 @@ export function endYear(charState, rng) {
   if (char.flags.includes('Distorted')) {
     add('heat', 6);
     add('network', -2);
-    vi.push('hồ sơ Distortion của bạn ở Hana vẫn mở');
-    en.push('your Distortion file at Hana stayed open');
+    vi.push('Hồ sơ theo dõi cá thể Distortion của bạn tại trụ sở Hana Association vẫn giữ nguyên trạng thái truy vết.');
+    en.push('Your active Distortion dossier at Hana Association remained open under high-priority watch.');
   }
   driftBonds(char);
 
   const oldAge = char.flags.includes('Bloodfiend') ? 135 : char.flags.includes('FullBodyProsthetic') ? 85 : 58;
   if (char.age > oldAge) {
     add('health', -Math.ceil((char.age - oldAge) * 0.45));
-    vi.push('cơ thể già đi');
-    en.push('your body grew older');
+    vi.push('Cơ thể bạn bắt đầu xuất hiện những dấu hiệu rệu rã rõ rệt của sự già nua và suy kiệt.');
+    en.push('Your aging body showed undeniable signs of wear, fatigue, and declining vitality.');
   }
 
   const deltas = applyFx(char, fx);
   if (deltas.some((d) => d.k !== 'heat')) {
+    const textVi = vi.length ? vi.join(' ') : 'Một năm nữa lặng lẽ trôi qua dưới màn đêm không bao giờ tắt của The City.';
+    const textEn = en.length ? en.join(' ') : 'Another year quietly drifted by beneath the never-dimming lights of the City.';
     pushLog(
       char,
       {
         key: 'year_end',
         type: 'summary',
-        vi: vi.length ? `Cuối năm: ${vi.join(', ')}.` : 'Một năm nữa trôi qua.',
-        en: en.length ? `Year's end: ${en.join(', ')}.` : 'Another year went by.',
+        vi: `[Lắng đọng cuối năm] ${textVi}`,
+        en: `[Year-End Reckoning] ${textEn}`,
         deltas
       },
       0.99

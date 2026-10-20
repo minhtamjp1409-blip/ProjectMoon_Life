@@ -132,6 +132,8 @@ const AmbientScene = ({ char }) => {
 
 const MinorDock = ({ prompt, npcs, paused, onPick }) => {
   const { t, lang, bilingual } = useT();
+  const raw = lang === 'en' ? prompt.en : prompt.vi;
+  const { title, body } = splitTitle(raw);
   return (
     <div className="dock is-minor" role="dialog" aria-label={t('Một lựa chọn nhỏ', 'A small choice')}>
       <div className="dock-inner">
@@ -142,8 +144,9 @@ const MinorDock = ({ prompt, npcs, paused, onPick }) => {
           </div>
           <span className="countdown-badge">⚡ 15s</span>
         </div>
-        <p className="dock-text">{lang === 'en' ? prompt.en : prompt.vi}</p>
-        {bilingual && <p className="entry-alt">{prompt.en}</p>}
+        {title && <h4 className="dock-title" style={{ marginBottom: 8, fontSize: 18 }}>{title}</h4>}
+        <p className="dock-text">{body}</p>
+        {bilingual && <p className="entry-alt">{splitTitle(prompt.en).body}</p>}
         <div className="choices">
           {prompt.choices.map((ch, idx) => (
             <button type="button" key={idx} className="choice" onClick={() => onPick(idx)}>
