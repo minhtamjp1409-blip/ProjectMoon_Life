@@ -97,6 +97,29 @@ public sealed class ArchiveStoreService
         }
     }
 
+    public ArchiveSnapshotDto DeleteMemorial(string seed, int age)
+    {
+        lock (_gate)
+        {
+            var current = _snapshot;
+            var pastLives = current.PastLives.Where(p => !(p.Seed == seed && p.Age == age)).ToList();
+            _snapshot = current with { PastLives = pastLives };
+            Interlocked.Exchange(ref _archiveDirty, 1);
+            return _snapshot;
+        }
+    }
+
+    public ArchiveSnapshotDto ClearMemorials()
+    {
+        lock (_gate)
+        {
+            var current = _snapshot;
+            _snapshot = current with { PastLives = new List<BloodlineMemorialDto>() };
+            Interlocked.Exchange(ref _archiveDirty, 1);
+            return _snapshot;
+        }
+    }
+
     public List<string> SyncCodex(IEnumerable<string>? keys)
     {
         if (keys == null) return _snapshot.GlobalCodex;

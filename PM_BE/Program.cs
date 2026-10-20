@@ -51,6 +51,8 @@ api.MapGet("/health", (ArchiveStoreService store) => Results.Ok(new HealthDto(
 // Archive: past lives, the codex, events written in the Loom
 api.MapGet("/archive", (ArchiveStoreService store) => Results.Ok(store.GetSnapshot()));
 api.MapPost("/archive/memorial", (BloodlineMemorialDto memorial, ArchiveStoreService store) => Results.Ok(store.AddMemorial(memorial)));
+api.MapDelete("/archive/memorial", (string seed, int age, ArchiveStoreService store) => Results.Ok(store.DeleteMemorial(seed, age)));
+api.MapDelete("/archive/memorials", (ArchiveStoreService store) => Results.Ok(store.ClearMemorials()));
 api.MapPost("/archive/codex", (CodexSyncRequest req, ArchiveStoreService store) => Results.Ok(new CodexResponse(store.SyncCodex(req.Keys))));
 api.MapPost("/archive/custom-event", (CustomEventDto customEvent, ArchiveStoreService store) =>
     string.IsNullOrWhiteSpace(customEvent.Id) || string.IsNullOrWhiteSpace(customEvent.Vi)
