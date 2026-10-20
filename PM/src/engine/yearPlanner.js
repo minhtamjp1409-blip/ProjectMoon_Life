@@ -418,21 +418,38 @@ export function endYear(charState, rng) {
       vi.push('tiền trọ và tiền ăn ăn mòn túi');
       en.push('rent and food ate into your savings');
     }
+  } else {
+    // Childhood living friction: survival is harsh, money gets spent on family necessities
+    if (!nest) {
+      if (char.stats.wealth > 4 && rng() < 0.4) {
+        const drain = Math.min(2, Math.max(1, Math.floor(char.stats.wealth * 0.15)));
+        add('wealth', -drain);
+        vi.push('chi phí cơm áo và tiền nộp bảo kê của gia đình');
+        en.push('family food rations and syndicate protection money');
+      }
+    } else {
+      if (char.stats.wealth > 14 && rng() < 0.35) {
+        const drain = Math.min(3, Math.max(1, Math.floor(char.stats.wealth * 0.12)));
+        add('wealth', -drain);
+        vi.push('chi phí học tập và tiền duy trì hộ khẩu Nest');
+        en.push('Nest tuition and citizen quota maintenance fees');
+      }
+    }
   }
 
-  if (char.stats.health < 70) {
-    const heal = char.flags.includes('KCorpAmpoule') ? 4 : nest ? 3 : 2;
+  if (char.stats.health < 65) {
+    const heal = char.flags.includes('KCorpAmpoule') ? 3 : nest ? 2 : 1;
     add('health', heal);
     vi.push('vết thương cũ lành dần');
     en.push('old wounds healed a little');
   }
 
   const bond = ['spouse', 'partner', 'child'].some((k) => char.npcs?.[k] && !char.npcs[k].deceased);
-  if (char.stats.sanity < 60 && bond) {
-    add('sanity', 3);
+  if (char.stats.sanity < 55 && bond) {
+    add('sanity', 2);
     vi.push('có người ở bên giúp bạn trụ vững');
     en.push('someone at your side kept you steady');
-  } else if (char.stats.sanity < 45) {
+  } else if (char.stats.sanity < 40) {
     add('sanity', 1);
   }
 

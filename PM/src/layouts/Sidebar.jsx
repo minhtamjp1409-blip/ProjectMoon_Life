@@ -48,6 +48,37 @@ export const LangMenu = ({ children, placement = 'topLeft' }) => {
   );
 };
 
+function useChange(value) {
+  const prev = React.useRef(value);
+  const [change, setChange] = React.useState(null);
+  React.useEffect(() => {
+    const d = value - prev.current;
+    prev.current = value;
+    if (!d) return undefined;
+    setChange({ d, at: Date.now() });
+    const timer = setTimeout(() => setChange(null), 1400);
+    return () => clearTimeout(timer);
+  }, [value]);
+  return change;
+}
+
+const LifeBar = ({ k, v, c }) => {
+  const change = useChange(v);
+  const isUp = change && change.d > 0;
+  const flashClass = change ? (isUp ? 'is-flash-up' : 'is-flash-down') : '';
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: '24px 1fr 28px', alignItems: 'center', gap: 8, fontSize: 13 }}>
+      <span className="muted">{k}</span>
+      <div className={`bar ${flashClass}`} style={{ height: 5 }}>
+        <i key={change ? `lb_${change.at}` : 'steady'} style={{ width: `${v}%`, '--c': c }} />
+      </div>
+      <span className={`num ${change ? (isUp ? 'val-up' : 'val-down') : ''}`} style={{ textAlign: 'right' }}>
+        {v}
+      </span>
+    </div>
+  );
+};
+
 // A mini record of the life in progress, so it stays in view on every screen
 const LifeCard = ({ lang }) => {
   const { inRun, name, age, alive, health, sanity } = useGameStore(
@@ -71,15 +102,7 @@ const LifeCard = ({ lang }) => {
         { k: 'HP', v: health, c: 'var(--s-health)' },
         { k: 'SP', v: sanity, c: 'var(--s-sanity)' }
       ].map((s) => (
-        <div key={s.k} style={{ display: 'grid', gridTemplateColumns: '24px 1fr 28px', alignItems: 'center', gap: 8, fontSize: 13 }}>
-          <span className="muted">{s.k}</span>
-          <div className="bar" style={{ height: 5 }}>
-            <i style={{ width: `${s.v}%`, '--c': s.c }} />
-          </div>
-          <span className="num" style={{ textAlign: 'right' }}>
-            {s.v}
-          </span>
-        </div>
+        <LifeBar key={s.k} k={s.k} v={s.v} c={s.c} />
       ))}
     </div>
   );

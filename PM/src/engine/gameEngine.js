@@ -204,12 +204,13 @@ export function createNewCharacter({
 
   const generation = parentLegacy ? (parentLegacy.generation || 1) + 1 : 1;
 
-  // Base Stats (0 - 100) + RNG Fate Omen modifiers
-  let health = clamp(65 + (family.statMod.health || 0) + (omenMod.health || 0) + Math.floor(rng() * 14 - 5), 25, 95);
-  let sanity = clamp(65 + (family.statMod.sanity || 0) + (omenMod.sanity || 0) + Math.floor(rng() * 14 - 5), 25, 95);
-  let wealth = clamp(28 + (family.statMod.wealth || 0) + (omenMod.wealth || 0) + Math.floor(rng() * 12 - 4), 5, 95);
-  let network = clamp(18 + (family.statMod.network || 0) + Math.floor(rng() * 10 - 3), 0, 95);
-  let rep = clamp(10 + (family.statMod.rep || 0) + Math.floor(rng() * 8), 0, 95);
+  // Base Stats (0 - 100) + RNG Fate Omen modifiers - Balanced for Project Moon lore
+  // In The City, children start with modest vitality, scarce currency, and build connections over time.
+  let health = clamp(52 + (family.statMod.health || 0) + (omenMod.health || 0) + Math.floor(rng() * 10 - 4), 20, 80);
+  let sanity = clamp(52 + (family.statMod.sanity || 0) + (omenMod.sanity || 0) + Math.floor(rng() * 10 - 4), 20, 80);
+  let wealth = clamp(6 + (family.statMod.wealth || 0) + (omenMod.wealth || 0) + Math.floor(rng() * 4 - 1), 1, 60);
+  let network = clamp(2 + (family.statMod.network || 0) + Math.floor(rng() * 3), 0, 40);
+  let rep = clamp(0 + (family.statMod.rep || 0) + Math.floor(rng() * 2), 0, 40);
 
   const flags = [...(family.flags || [])];
   const scars = [];
@@ -232,9 +233,9 @@ export function createNewCharacter({
   if (parentLegacy) {
     flags.push('HuyếtThốngKếThừa');
     if (!unlockedRecords.includes('lineage_heir')) unlockedRecords.push('lineage_heir');
-    wealth = clamp(wealth + Math.round((parentLegacy.wealth || 0) * 0.38), 10, 100);
-    rep = clamp(rep + Math.round((parentLegacy.rep || 0) * 0.25), 5, 100);
-    network = clamp(network + Math.round((parentLegacy.network || 0) * 0.3), 5, 100);
+    wealth = clamp(wealth + Math.round((parentLegacy.wealth || 0) * 0.22), 2, 75);
+    rep = clamp(rep + Math.round((parentLegacy.rep || 0) * 0.15), 1, 50);
+    network = clamp(network + Math.round((parentLegacy.network || 0) * 0.18), 1, 50);
 
     lineageInfo = {
       generation,

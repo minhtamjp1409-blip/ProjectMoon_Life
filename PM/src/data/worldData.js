@@ -690,7 +690,7 @@ export const FAMILIES = [
     nameEn: 'Backstreets Orphan',
     descVi: 'Không cha mẹ. Lớn lên nhờ nhặt nhạnh trong hẻm và tự học cách trốn Sweeper.',
     descEn: 'No parents. Raised by the alleys, dodging Sweepers every night at 3:13 AM.',
-    statMod: { health: -6, sanity: -5, wealth: -18, network: -10, rep: 0 },
+    statMod: { health: -5, sanity: -5, wealth: -5, network: -2, rep: 0 },
     flags: ['고아', 'Backstreets']
   },
   {
@@ -699,7 +699,7 @@ export const FAMILIES = [
     nameEn: 'Backstreets Working Family',
     descVi: 'Cha mẹ làm thuê trong xưởng nhỏ khu Backstreets, chật vật đóng tiền bảo kê cho Syndicate địa phương.',
     descEn: 'Parents toiling in Backstreets sweatshops, scraping by to pay Syndicate protection fees.',
-    statMod: { health: 0, sanity: 0, wealth: -8, network: -2, rep: 0 },
+    statMod: { health: 0, sanity: 0, wealth: -2, network: 0, rep: 0 },
     flags: ['Backstreets']
   },
   {
@@ -708,7 +708,7 @@ export const FAMILIES = [
     nameEn: 'Child of a Former Fixer',
     descVi: 'Trong ngăn kéo cũ ở nhà vẫn còn một tấm huy hiệu Fixer dính máu và cuốn sổ ghi chép chiến đấu.',
     descEn: 'In a locked drawer rests a bloodstained Fixer badge and a worn combat manual.',
-    statMod: { health: +5, sanity: 0, wealth: 0, network: +6, rep: +4 },
+    statMod: { health: +3, sanity: 0, wealth: +3, network: +3, rep: +2 },
     flags: ['해결사동경', 'Backstreets']
   },
   {
@@ -717,7 +717,7 @@ export const FAMILIES = [
     nameEn: 'Nest Feather Household',
     descVi: 'Có hộ khẩu hợp pháp trong vùng Nest an toàn, được tập đoàn Wing bảo hộ nhưng luôn chịu áp lực giữ vững chỉ tiêu.',
     descEn: 'Legal Nest citizens protected by the Wing, living under constant corporate quota pressure.',
-    statMod: { health: +6, sanity: +4, wealth: +14, network: +8, rep: +4 },
+    statMod: { health: +4, sanity: +3, wealth: +10, network: +5, rep: +3 },
     flags: ['Feather', 'Nest']
   },
   {
@@ -726,7 +726,7 @@ export const FAMILIES = [
     nameEn: 'Wing Executive / Noble Lineage',
     descVi: 'Sinh ra ở tầng lớp thượng lưu của Nest với đội ngũ y tế riêng, tài sản dồi dào và những âm mưu thừa kế khốc liệt.',
     descEn: 'Born in the upper echelons of a Nest with private tutors, deep coffers, and ruthless succession politics.',
-    statMod: { health: +8, sanity: +2, wealth: +26, network: +16, rep: +10 },
+    statMod: { health: +6, sanity: +2, wealth: +22, network: +8, rep: +6 },
     flags: ['Feather', 'Nest', 'ThượngLưu']
   },
   {
@@ -735,7 +735,7 @@ export const FAMILIES = [
     nameEn: 'Outskirts Wasteland Child',
     descVi: 'Chào đời bên ngoài bức tường The City, giữa những tàn tích cổ đại, bão cát độc và tiếng gầm của quái vật phi nhân.',
     descEn: 'Born beyond the City walls amidst freezing winds, ancient Ruins, and non-human monstrosities.',
-    statMod: { health: +4, sanity: -6, wealth: -20, network: -12, rep: 0 },
+    statMod: { health: +3, sanity: -6, wealth: -5, network: -2, rep: 0 },
     flags: ['Outskirts']
   }
 ];

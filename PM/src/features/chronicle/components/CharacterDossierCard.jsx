@@ -44,26 +44,65 @@ function useChange(value) {
 const Stat = ({ label, value, unit = '/100', color, flag, riseIsBad = false }) => {
   const change = useChange(value);
   const good = change && (riseIsBad ? change.d < 0 : change.d > 0);
+  const flashClass = change ? (good ? 'is-flash-up' : 'is-flash-down') : '';
+
   return (
-    <div className={`stat ${change ? 'is-flash' : ''}`}>
-      {change && (
-        <span key={change.at} className={`stat-float ${good ? 'is-up' : 'is-down'}`} aria-hidden="true">
-          {change.d > 0 ? `+${change.d}` : change.d}
-        </span>
-      )}
+    <div className={`stat ${flashClass}`}>
       <div className="stat-head">
         <span className="label">
           <i className="dot" style={{ background: color }} />
           {label}
           {flag && <span className="stat-flag">{flag}</span>}
         </span>
-        <b>
-          {value}
-          {unit && <small> {unit}</small>}
-        </b>
+        <div className="stat-num-box">
+          {change && (
+            <span key={change.at} className={`stat-delta-badge ${good ? 'is-up' : 'is-down'}`} aria-hidden="true">
+              {good ? '▲' : '▼'} {change.d > 0 ? `+${change.d}` : change.d}
+            </span>
+          )}
+          <b className={change ? (good ? 'val-up' : 'val-down') : ''}>
+            {value}
+            {unit && <small> {unit}</small>}
+          </b>
+        </div>
       </div>
-      <div className="bar">
-        <i style={{ width: `${Math.max(0, Math.min(100, value))}%`, '--c': flag ? 'var(--bad)' : color }} />
+      <div className={`bar ${flashClass}`}>
+        <i
+          key={change ? `bar_${change.at}` : 'steady'}
+          style={{ width: `${Math.max(0, Math.min(100, value))}%`, '--c': flag ? 'var(--bad)' : color }}
+        />
+      </div>
+    </div>
+  );
+};
+
+const TabooStat = ({ value }) => {
+  const change = useChange(value);
+  const good = change && change.d < 0;
+  const flashClass = change ? (good ? 'is-flash-up' : 'is-flash-down') : '';
+  return (
+    <div className={`stat ${flashClass}`}>
+      <div className="stat-head">
+        <span className="label">
+          <i className="dot" style={{ background: 'var(--bad)' }} />
+          Taboo Gaze
+        </span>
+        <div className="stat-num-box">
+          {change && (
+            <span key={change.at} className={`stat-delta-badge ${good ? 'is-up' : 'is-down'}`} aria-hidden="true">
+              {good ? '▲' : '▼'} {change.d > 0 ? `+${change.d}` : change.d}
+            </span>
+          )}
+          <b className={change ? (good ? 'val-up' : 'val-down') : ''}>
+            {value}
+            <small> /3</small>
+          </b>
+        </div>
+      </div>
+      <div className={`taboo ${flashClass}`} aria-hidden="true">
+        {[1, 2, 3].map((n) => (
+          <i key={n} className={value >= n ? 'is-on' : ''} />
+        ))}
       </div>
     </div>
   );
@@ -202,23 +241,7 @@ export const CharacterDossierCard = () => {
           riseIsBad
         />
         <Stat label={t('Cộng hưởng E.G.O', 'E.G.O resonance')} value={char.resonance || 0} unit="%" color="var(--s-reso)" />
-        <div className="stat">
-          <div className="stat-head">
-            <span className="label">
-              <i className="dot" style={{ background: 'var(--bad)' }} />
-              Taboo Gaze
-            </span>
-            <b>
-              {char.taboo || 0}
-              <small> /3</small>
-            </b>
-          </div>
-          <div className="taboo" aria-hidden="true">
-            {[1, 2, 3].map((n) => (
-              <i key={n} className={(char.taboo || 0) >= n ? 'is-on' : ''} />
-            ))}
-          </div>
-        </div>
+        <TabooStat value={char.taboo || 0} />
       </section>
 
       {items.length > 0 && (
