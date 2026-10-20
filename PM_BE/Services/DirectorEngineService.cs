@@ -452,7 +452,7 @@ public sealed class DirectorEngineService
             majorTitleVi = "Móng Vuốt Phạt Tội (A Corp Claw)";
             majorTitleEn = "Head Taboo Enforcement Claw";
         }
-        else if (c.Age >= 18 && (c.Sanity <= 16 || c.Resonance >= 55) && !seen.Contains("ego_carmen_crossroad") && !flags.Contains("EGOAwakened") && !flags.Contains("Distorted"))
+        else if (c.Age >= 18 && ((c.Sanity <= 5 && random.NextDouble() < 0.12) || (c.Resonance >= 90 && random.NextDouble() < 0.15)) && !seen.Contains("ego_carmen_crossroad") && !flags.Contains("EGOAwakened") && !flags.Contains("Distorted"))
         {
             majorDue = true;
             majorId = "ego_carmen_crossroad";
