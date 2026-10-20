@@ -237,32 +237,32 @@ export const CharacterDossierCard = () => {
         </div>
         <Tooltip title={lang === 'en' ? omen.descEn : omen.descVi} placement="right">
           <div className="kv" style={{ cursor: 'help' }}>
-            <span>{t('Thiên mệnh', 'Fate omen')}</span>
+            <span>Fate Omen</span>
             <span style={{ color: 'var(--accent)' }}>{(lang === 'en' ? omen.nameEn : omen.nameVi).split(' · ')[0]}</span>
           </div>
         </Tooltip>
       </section>
 
       <section>
-        <h3 className="section-title">{t('Chỉ số sinh tồn', 'Vitals')}</h3>
-        <Stat label={t('Sinh lực', 'Health')} value={health} color="var(--s-health)" flag={health <= 25 ? t('nguy kịch', 'critical') : null} />
-        <Stat label={t('Tâm trí', 'Sanity')} value={sanity} color="var(--s-sanity)" flag={sanity <= 22 ? t('Carmen gọi', 'Carmen calls') : null} />
-        <Stat label={t('Tài sản', 'Wealth')} value={wealth} unit="Ahn" color="var(--s-wealth)" flag={wealth <= 5 ? t('sắp vỡ nợ', 'near ruin') : null} />
-        <Stat label={t('Mạng lưới', 'Network')} value={network} color="var(--s-network)" />
-        <Stat label={t('Danh vọng', 'Reputation')} value={rep} color="var(--s-rep)" />
+        <h3 className="section-title">Vitals</h3>
+        <Stat label="HP" value={health} color="var(--s-health)" flag={health <= 25 ? 'CRITICAL' : null} />
+        <Stat label="SP" value={sanity} color="var(--s-sanity)" flag={sanity <= 22 ? 'Carmen Calls' : null} />
+        <Stat label="Wealth" value={wealth} unit="Ahn" color="var(--s-wealth)" flag={wealth <= 5 ? 'Near Ruin' : null} />
+        <Stat label="Network" value={network} color="var(--s-network)" />
+        <Stat label="Reputation" value={rep} color="var(--s-rep)" />
       </section>
 
       <section>
-        <h3 className="section-title">{t('Áp lực nhân quả', 'Causal pressure')}</h3>
+        <h3 className="section-title">Causal Pressure</h3>
         <Stat
-          label={t('Truy sát Syndicate', 'Syndicate heat')}
+          label="Syndicate Heat"
           value={char.heat || 0}
           unit="%"
           color="var(--s-heat)"
-          flag={(char.heat || 0) >= 70 ? t('bị săn', 'hunted') : null}
+          flag={(char.heat || 0) >= 70 ? 'Hunted' : null}
           riseIsBad
         />
-        <Stat label={t('Cộng hưởng E.G.O', 'E.G.O resonance')} value={char.resonance || 0} unit="%" color="var(--s-reso)" />
+        <Stat label="E.G.O Resonance" value={char.resonance || 0} unit="%" color="var(--s-reso)" />
         <TabooStat value={char.taboo || 0} />
       </section>
 

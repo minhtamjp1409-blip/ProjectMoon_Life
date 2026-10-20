@@ -189,7 +189,7 @@ export const PlayBar = () => {
         <div className="yearbar-meta">
           <YearStatus />
           <Tooltip title={phase.descVi}>
-            <span className="phase">{t(phase.labelVi.split(' (')[0], phase.labelEn)}</span>
+            <span className="phase">{phase.labelEn || phase.labelVi}</span>
           </Tooltip>
         </div>
       </div>

@@ -2,11 +2,11 @@ import React from 'react';
 import { useT } from '../../../i18n';
 
 const LABELS = {
-  health: ['Sinh lực', 'Health'],
-  sanity: ['Tâm trí', 'Sanity'],
+  health: ['HP', 'HP'],
+  sanity: ['SP', 'SP'],
   wealth: ['Ahn', 'Ahn'],
-  network: ['Mạng lưới', 'Network'],
-  rep: ['Danh vọng', 'Reputation'],
+  network: ['Network', 'Network'],
+  rep: ['Rep', 'Rep'],
   heat: ['Heat', 'Heat'],
   resonance: ['Resonance', 'Resonance'],
   taboo: ['Taboo', 'Taboo'],

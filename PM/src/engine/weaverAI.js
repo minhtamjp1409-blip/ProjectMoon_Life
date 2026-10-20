@@ -131,28 +131,28 @@ export function rollRandomFateOmen(rng = Math.random, hasParentLegacy = false) {
 export const DRAMA_PHASES = {
   INCUBATION: {
     id: 'INCUBATION',
-    labelVi: 'Âm ỉ (Incubation)',
-    labelEn: 'Simmering',
+    labelVi: 'Incubation',
+    labelEn: 'Incubation',
     color: 'var(--state-info)',
     descVi: 'Chưa có gì xảy ra. Những lựa chọn bây giờ sẽ quay lại về sau.'
   },
   RISING_TENSION: {
     id: 'RISING_TENSION',
-    labelVi: 'Căng dần (Rising Tension)',
-    labelEn: 'Rising tension',
+    labelVi: 'Rising Tension',
+    labelEn: 'Rising Tension',
     color: 'var(--accent-gold)',
     descVi: 'Có người đang để ý đến bạn, hoặc có chuyện cũ chưa xong.'
   },
   CLIMAX: {
     id: 'CLIMAX',
-    labelVi: 'Cao trào (Climax)',
+    labelVi: 'Climax',
     labelEn: 'Climax',
     color: 'var(--state-danger)',
     descVi: 'Một món nợ đến hạn, một bước lên, hoặc giọng nói của Carmen. Chuyện lớn sắp xảy ra.'
   },
   AFTERMATH: {
     id: 'AFTERMATH',
-    labelVi: 'Dư chấn (Aftermath)',
+    labelVi: 'Aftermath',
     labelEn: 'Aftermath',
     color: 'var(--state-Chill)',
     descVi: 'Sau một chuyện lớn. Thời gian để băng bó và sống tiếp.'

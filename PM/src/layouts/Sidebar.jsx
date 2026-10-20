@@ -9,11 +9,11 @@ import { CODEX_RECORDS } from '../data/worldData';
 import { pick } from '../i18n';
 
 export const NAV_ITEMS = [
-  { key: '/', icon: ScrollText, vi: 'Biên niên sinh mệnh', en: 'Life chronicle', shortVi: 'Đời sống', shortEn: 'Life' },
-  { key: '/weaver-ai', icon: GitMerge, vi: 'Khung cửi chỉ lệnh', en: 'Prescript loom', shortVi: 'Khung cửi', shortEn: 'Loom' },
-  { key: '/glossary', icon: BookOpen, vi: 'Từ điển & khu vực', en: 'Lore & districts', shortVi: 'Từ điển', shortEn: 'Lore' },
-  { key: '/bloodline', icon: GitBranch, vi: 'Gia phả', en: 'Bloodline', shortVi: 'Gia phả', shortEn: 'Bloodline' },
-  { key: '/codex', icon: Trophy, vi: 'Thành tựu', en: 'Codex', shortVi: 'Thành tựu', shortEn: 'Codex' }
+  { key: '/', icon: ScrollText, vi: 'Chronicle', en: 'Chronicle', shortVi: 'Chronicle', shortEn: 'Chronicle' },
+  { key: '/weaver-ai', icon: GitMerge, vi: 'Weaver AI', en: 'Weaver AI', shortVi: 'Weaver', shortEn: 'Weaver' },
+  { key: '/glossary', icon: BookOpen, vi: 'Lore & Districts', en: 'Lore & Districts', shortVi: 'Lore', shortEn: 'Lore' },
+  { key: '/bloodline', icon: GitBranch, vi: 'Bloodline', en: 'Bloodline', shortVi: 'Bloodline', shortEn: 'Bloodline' },
+  { key: '/codex', icon: Trophy, vi: 'Codex', en: 'Codex', shortVi: 'Codex', shortEn: 'Codex' }
 ];
 
 export const LANG_OPTIONS = [
