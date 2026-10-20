@@ -43,7 +43,7 @@ import {
 } from './director';
 
 export const MINOR_WINDOW_MS = 15000;
-const RECENT_LIMIT = 16;
+const RECENT_LIMIT = 36;
 
 export const STAT_KEYS = ['health', 'sanity', 'wealth', 'network', 'rep'];
 const EXTRA_KEYS = ['heat', 'resonance', 'taboo', 'merit'];
@@ -170,7 +170,7 @@ export function splitTitle(text) {
 function eligibleDailies(char) {
   const base = LIFE_DAILIES.filter((d) => ageOk(d, char.age) && matchNeed(d.need, char));
   const unpicked = base.filter((d) => !(char.recent || []).includes(d.id));
-  if (unpicked.length >= 4) return unpicked;
+  if (unpicked.length > 0) return unpicked;
   // Fallback: sort all matching by least recently seen to cycle smoothly
   const recent = char.recent || [];
   return [...base].sort((a, b) => recent.lastIndexOf(a.id) - recent.lastIndexOf(b.id));
@@ -183,7 +183,7 @@ function eligibleMinors(char) {
     return true;
   });
   const unpicked = base.filter((m) => !(char.recent || []).includes(m.id));
-  if (unpicked.length >= 2) return unpicked;
+  if (unpicked.length > 0) return unpicked;
   const recent = char.recent || [];
   return [...base].sort((a, b) => recent.lastIndexOf(a.id) - recent.lastIndexOf(b.id));
 }
@@ -192,7 +192,7 @@ const weightOf = (char) => (e) => directorWeight(e, char).w;
 
 function majorIsDue(char, rng) {
   const w = char.weaver || {};
-  if (char.age < 4) return false;
+  if (char.age <= 4) return false;
   if ((char.age === 18 || (char.age > 18 && char.job === 'Child')) && !(char.seenEvents || []).includes('ad_career_crossroad_18')) return true;
   if (char.job === 'Syndicate' && !char.finger && !(char.seenEvents || []).includes('syn_choose_finger_allegiance')) return true;
   if ((char.taboo || 0) >= 3) return true;
@@ -274,7 +274,7 @@ export function planYear(charState, rng) {
 
   // Collect Minor choices: small interactive decisions with time limit
   const roll = rng();
-  const targetMinorCount = age < 3 ? 0 : age < 7 ? (roll < 0.45 ? 1 : 0) : roll < 0.25 ? 0 : roll < 0.75 ? 1 : 2;
+  const targetMinorCount = age <= 4 ? 0 : age < 7 ? (roll < 0.45 ? 1 : 0) : roll < 0.25 ? 0 : roll < 0.75 ? 1 : 2;
   const scheduledMinors = scheduledKey.filter((it) => it.kind === 'minor').length;
   const pickedMinors = [];
   for (let i = scheduledMinors; i < targetMinorCount; i++) {
@@ -326,18 +326,33 @@ export function planYear(charState, rng) {
 
   // Fill remaining slots with Dailies (Storytelling lore slices or resource living events)
   const poolDailies = eligibleDailies(char);
-  for (let s = 0; s < 4; s++) {
-    if (slots[s] === null) {
-      const alreadyPickedIds = slots.filter(Boolean).map((sl) => sl.id);
-      let available = poolDailies.filter((d) => !alreadyPickedIds.includes(d.id));
-      if (available.length === 0) {
-        const allAgeDailies = LIFE_DAILIES.filter((d) => ageOk(d, char.age) && matchNeed(d.need, char));
-        available = allAgeDailies.filter((d) => !alreadyPickedIds.includes(d.id));
-      }
-      const pick = pickWeighted(available, weightOf(char), rng) || available[0];
+  if (char.age <= 4) {
+    // In early childhood (ages 0-4), exactly ONE passive daily event is scheduled per year
+    // This allows young life to feel atmospheric without repetitive text spamming
+    const existingCount = slots.filter(Boolean).length;
+    if (existingCount === 0) {
+      // Rotate natural seasons: age 0 -> slot 1 (Summer), age 1 -> slot 2 (Autumn), age 2 -> slot 3 (Winter), etc.
+      const targetSlot = (char.age + 1) % 4;
+      const pick = pickWeighted(poolDailies, weightOf(char), rng) || poolDailies[0];
       if (pick) {
-        slots[s] = { kind: 'daily', id: pick.id };
+        slots[targetSlot] = { kind: 'daily', id: pick.id };
         remember(char, pick.id);
+      }
+    }
+  } else {
+    for (let s = 0; s < 4; s++) {
+      if (slots[s] === null) {
+        const alreadyPickedIds = slots.filter(Boolean).map((sl) => sl.id);
+        let available = poolDailies.filter((d) => !alreadyPickedIds.includes(d.id));
+        if (available.length === 0) {
+          const allAgeDailies = LIFE_DAILIES.filter((d) => ageOk(d, char.age) && matchNeed(d.need, char));
+          available = allAgeDailies.filter((d) => !alreadyPickedIds.includes(d.id));
+        }
+        const pick = pickWeighted(available, weightOf(char), rng) || available[0];
+        if (pick) {
+          slots[s] = { kind: 'daily', id: pick.id };
+          remember(char, pick.id);
+        }
       }
     }
   }
@@ -417,7 +432,10 @@ export async function syncPlanWithBackend(charState, rng) {
     }
 
     if (planRes.status === 'fulfilled' && planRes.value?.moments?.length > 0) {
-      const serverMoments = planRes.value.moments;
+      let serverMoments = planRes.value.moments;
+      if (charState.age <= 4 && serverMoments.length > 1) {
+        serverMoments = [serverMoments[0]];
+      }
       const poolDailies = eligibleDailies(charState);
       const poolMinors = eligibleMinors(charState);
       const hydrated = [];

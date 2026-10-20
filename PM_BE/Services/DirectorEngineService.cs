@@ -538,17 +538,34 @@ public sealed class DirectorEngineService
         }
 
         // Fill remaining slots with minors and dailies
-        for (int s = 0; s < 4; s++)
+        if (c.Age <= 4)
         {
-            if (slots[s] is null)
+            // Early childhood (age 0-4): exactly 1 passive event per year to prevent repetitive spam
+            int targetSeason = (c.Age + 1) % 4;
+            if (slots[targetSeason] is null && !slots.Any(s => s is not null))
             {
-                bool isMinor = (s == 1 || s == 2) && random.NextDouble() < 0.55 && c.Age >= 4;
-                slots[s] = new PlanMomentDto(
+                slots[targetSeason] = new PlanMomentDto(
                     T: 0,
-                    Kind: isMinor ? "minor" : "daily",
-                    TitleVi: isMinor ? "Lựa chọn thời khắc" : "Nhịp sống The City",
-                    TitleEn: isMinor ? "Crucial Moment" : "City Living Echo"
+                    Kind: "daily",
+                    TitleVi: "Nhịp sống thơ ấu",
+                    TitleEn: "Childhood Living Echo"
                 );
+            }
+        }
+        else
+        {
+            for (int s = 0; s < 4; s++)
+            {
+                if (slots[s] is null)
+                {
+                    bool isMinor = (s == 1 || s == 2) && random.NextDouble() < 0.55 && c.Age >= 4;
+                    slots[s] = new PlanMomentDto(
+                        T: 0,
+                        Kind: isMinor ? "minor" : "daily",
+                        TitleVi: isMinor ? "Lựa chọn thời khắc" : "Nhịp sống The City",
+                        TitleEn: isMinor ? "Crucial Moment" : "City Living Echo"
+                    );
+                }
             }
         }
 
