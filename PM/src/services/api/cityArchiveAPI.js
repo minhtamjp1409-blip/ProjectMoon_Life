@@ -11,6 +11,16 @@ export const cityArchiveAPI = {
       body: JSON.stringify(memorial)
     }),
 
+  deleteMemorial: (seed, age) =>
+    apiRequest(`/archive/memorial?seed=${encodeURIComponent(seed)}&age=${age}`, {
+      method: 'DELETE'
+    }),
+
+  clearMemorials: () =>
+    apiRequest('/archive/memorials', {
+      method: 'DELETE'
+    }),
+
   syncCodex: (keys) =>
     apiRequest('/archive/codex', {
       method: 'POST',

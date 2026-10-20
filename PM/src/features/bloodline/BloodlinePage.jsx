@@ -1,5 +1,6 @@
 import React from 'react';
-import { Download, Play } from 'lucide-react';
+import { Download, Play, Trash2 } from 'lucide-react';
+import { Modal } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useGameStore } from '../../store/gameStore';
 import { exportDossierCardPNG } from '../../utils/exportDossierCard';
@@ -9,7 +10,7 @@ import PageBanner from '../../components/PageBanner';
 export const BloodlinePage = () => {
   const { t, lang } = useT();
   const navigate = useNavigate();
-  const { pastLives, setPendingLegacy, exitToSetup } = useGameStore();
+  const { pastLives, setPendingLegacy, deletePastLife, clearBloodline, exitToSetup } = useGameStore();
 
   const handleInherit = (life) => {
     setPendingLegacy(life);
@@ -50,6 +51,31 @@ export const BloodlinePage = () => {
         </div>
       ) : (
         <section className="panel" style={{ overflowX: 'auto' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px', borderBottom: '1px solid var(--border)' }}>
+            <span className="muted" style={{ fontSize: 14 }}>
+              {t('Danh sách các thế hệ đã qua', 'List of past generations in this dynasty')}
+            </span>
+            <button
+              type="button"
+              className="btn btn-ghost"
+              style={{ color: 'var(--bad)', display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13, height: 32 }}
+              onClick={() => {
+                Modal.confirm({
+                  title: lang === 'en' ? 'Clear Entire Bloodline Dynasty?' : 'Xóa toàn bộ cây gia phả?',
+                  content: lang === 'en'
+                    ? `All ${pastLives.length} past lives, epitaphs, and inherited heirlooms will be permanently removed.`
+                    : `Toàn bộ ${pastLives.length} kiếp sống, bia mộ và di vật gia truyền sẽ bị xóa vĩnh viễn khỏi gia phả.`,
+                  okText: lang === 'en' ? 'Delete All' : 'Xóa toàn bộ',
+                  cancelText: lang === 'en' ? 'Cancel' : 'Hủy',
+                  okButtonProps: { danger: true },
+                  onOk: () => clearBloodline()
+                });
+              }}
+            >
+              <Trash2 size={14} />
+              {t('Xóa toàn bộ gia phả', 'Clear Entire Bloodline')}
+            </button>
+          </div>
           <table className="table stack-sm" style={{ minWidth: 820 }}>
             <thead>
               <tr>
@@ -58,7 +84,7 @@ export const BloodlinePage = () => {
                 <th className="num">{t('Thọ', 'Age')}</th>
                 <th>{t('Kết cục', 'Fate')}</th>
                 <th>{t('Di vật', 'Relic')}</th>
-                <th style={{ width: 200 }} />
+                <th style={{ width: 220 }} />
               </tr>
             </thead>
             <tbody>
@@ -90,6 +116,27 @@ export const BloodlinePage = () => {
                         title={t('Tải thẻ PNG', 'Download PNG')}
                       >
                         <Download size={15} />
+                      </button>
+                      <button
+                        type="button"
+                        className="icon-btn"
+                        style={{ width: 30, height: 30, color: 'var(--bad)' }}
+                        onClick={() => {
+                          Modal.confirm({
+                            title: lang === 'en' ? `Delete ${life.name} from Bloodline?` : `Xóa ${life.name} khỏi gia phả?`,
+                            content: lang === 'en'
+                              ? `Epitaph of Generation #${life.generation} (${life.name}, age ${life.age}) will be removed from this dynasty archive.`
+                              : `Bia mộ của Thế hệ #${life.generation} (${life.name}, thọ ${life.age} tuổi) sẽ bị xóa vĩnh viễn khỏi hồ sơ gia phả.`,
+                            okText: lang === 'en' ? 'Delete' : 'Xóa',
+                            cancelText: lang === 'en' ? 'Cancel' : 'Hủy',
+                            okButtonProps: { danger: true },
+                            onOk: () => deletePastLife(life.seed, life.age)
+                          });
+                        }}
+                        aria-label={t('Xóa khỏi gia phả', 'Delete from bloodline')}
+                        title={t('Xóa khỏi gia phả', 'Delete from bloodline')}
+                      >
+                        <Trash2 size={15} />
                       </button>
                     </div>
                   </td>

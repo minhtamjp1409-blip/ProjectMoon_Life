@@ -161,6 +161,36 @@ export const useGameStore = create((set, get) => ({
   toggleAutoPlay: () => set((s) => ({ autoPlay: !s.autoPlay })),
   setPendingLegacy: (legacy) => set({ pendingLegacy: legacy }),
 
+  discardPendingLegacy: (deleteFromArchive = false) => {
+    const state = get();
+    const legacy = state.pendingLegacy;
+    if (!legacy) return;
+    let nextPastLives = state.pastLives;
+    if (deleteFromArchive) {
+      nextPastLives = state.pastLives.filter((l) => !(l.seed === legacy.seed && l.age === legacy.age));
+      cityArchiveAPI.deleteMemorial(legacy.seed, legacy.age).catch(() => {});
+    }
+    saveMeta(nextPastLives, state.globalCodex);
+    set({ pendingLegacy: null, pastLives: nextPastLives });
+  },
+
+  deletePastLife: (seed, age) => {
+    const state = get();
+    const nextPastLives = state.pastLives.filter((l) => !(l.seed === seed && l.age === age));
+    const isCurrentLegacy = state.pendingLegacy?.seed === seed && state.pendingLegacy?.age === age;
+    const nextLegacy = isCurrentLegacy ? (nextPastLives[0] || null) : state.pendingLegacy;
+    saveMeta(nextPastLives, state.globalCodex);
+    set({ pastLives: nextPastLives, pendingLegacy: nextLegacy });
+    cityArchiveAPI.deleteMemorial(seed, age).catch(() => {});
+  },
+
+  clearBloodline: () => {
+    const state = get();
+    saveMeta([], state.globalCodex);
+    set({ pastLives: [], pendingLegacy: null });
+    cityArchiveAPI.clearMemorials().catch(() => {});
+  },
+
   /* ---------- save / resume ---------- */
 
   saveRun: (immediate = false) => {

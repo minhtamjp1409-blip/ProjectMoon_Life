@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Dices, GitBranch, Play, MapPin, ScrollText } from 'lucide-react';
+import { Dices, GitBranch, Play, MapPin, ScrollText, Trash2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Modal } from 'antd';
 import { useShallow } from 'zustand/react/shallow';
@@ -42,7 +42,7 @@ const PATHS = [
 export const BirthSetupPanel = () => {
   const { t, lang } = useT();
   const navigate = useNavigate();
-  const { customName, customSeed, selectedRegion, pendingLegacy, pastLives, globalCodex, telemetry, savedRun, setConfigField, startLife, resumeRun, abandonRun } =
+  const { customName, customSeed, selectedRegion, pendingLegacy, pastLives, globalCodex, telemetry, savedRun, setConfigField, startLife, resumeRun, abandonRun, discardPendingLegacy } =
     useGameStore(
       useShallow((s) => ({
         customName: s.customName,
@@ -56,7 +56,8 @@ export const BirthSetupPanel = () => {
         setConfigField: s.setConfigField,
         startLife: s.startLife,
         resumeRun: s.resumeRun,
-        abandonRun: s.abandonRun
+        abandonRun: s.abandonRun,
+        discardPendingLegacy: s.discardPendingLegacy
       }))
     );
 
@@ -192,23 +193,55 @@ export const BirthSetupPanel = () => {
 
             return (
               <div className="legacy">
-                <div>
-                  <p style={{ fontWeight: 600 }}>{header}</p>
-                  <p className="muted" style={{ fontSize: 14, marginTop: 4 }}>
-                    {desc}
-                  </p>
-                  {rel === 'child' && (
-                    <p style={{ fontSize: 13, marginTop: 4, color: '#e5b85c' }}>
-                      {lang === 'en'
-                        ? `At ${pendingLegacy.name}'s death, this heir had reached age ${heirAge}.`
-                        : `Vào thời điểm ${pendingLegacy.name} qua đời, đứa con đã được ${heirAge} tuổi.`}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 }}>
+                  <div>
+                    <p style={{ fontWeight: 600 }}>{header}</p>
+                    <p className="muted" style={{ fontSize: 14, marginTop: 4 }}>
+                      {desc}
                     </p>
-                  )}
-                  {pendingLegacy.hasVendetta && (
-                    <p style={{ fontSize: 14, marginTop: 4, color: 'var(--bad)' }}>
-                      The blood debt in the Book of Vengeance passes down as well.
-                    </p>
-                  )}
+                    {rel === 'child' && (
+                      <p style={{ fontSize: 13, marginTop: 4, color: '#e5b85c' }}>
+                        {lang === 'en'
+                          ? `At ${pendingLegacy.name}'s death, this heir had reached age ${heirAge}.`
+                          : `Vào thời điểm ${pendingLegacy.name} qua đời, đứa con đã được ${heirAge} tuổi.`}
+                      </p>
+                    )}
+                    {pendingLegacy.hasVendetta && (
+                      <p style={{ fontSize: 14, marginTop: 4, color: 'var(--bad)' }}>
+                        The blood debt in the Book of Vengeance passes down as well.
+                      </p>
+                    )}
+                  </div>
+                  <button
+                    type="button"
+                    className="btn btn-ghost"
+                    style={{
+                      height: 28,
+                      padding: '0 8px',
+                      color: 'var(--bad)',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: 4,
+                      fontSize: 12,
+                      whiteSpace: 'nowrap'
+                    }}
+                    onClick={() => {
+                      Modal.confirm({
+                        title: lang === 'en' ? `Discard Legacy of ${pendingLegacy.name}?` : `Bỏ qua di sản của ${pendingLegacy.name}?`,
+                        content: lang === 'en'
+                          ? 'You will start a fresh independent life (Generation #1) with no inherited relics or syndicate debts.'
+                          : 'Bạn sẽ bắt đầu một kiếp sống độc lập hoàn toàn (Thế hệ #1), không nhận di vật và không chịu nợ máu của đời trước.',
+                        okText: lang === 'en' ? 'Start Fresh Gen #1' : 'Bỏ di sản & Chơi Gen 1',
+                        cancelText: lang === 'en' ? 'Cancel' : 'Hủy',
+                        okButtonProps: { danger: true },
+                        onOk: () => discardPendingLegacy(false)
+                      });
+                    }}
+                    title={lang === 'en' ? 'Discard this heirloom and start fresh Gen #1' : 'Bỏ qua di sản này để chơi kiếp sống mới'}
+                  >
+                    <Trash2 size={13} />
+                    {lang === 'en' ? 'Discard' : 'Bỏ qua'}
+                  </button>
                 </div>
 
                 {canFastForward ? (
@@ -236,6 +269,27 @@ export const BirthSetupPanel = () => {
                         : `Play as ${pendingLegacy.name}'s Heir`}
                   </button>
                 )}
+
+                <button
+                  type="button"
+                  className="btn btn-block btn-ghost"
+                  style={{ marginTop: 8, fontSize: 13, color: 'var(--muted)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}
+                  onClick={() => {
+                    Modal.confirm({
+                      title: lang === 'en' ? `Discard Legacy of ${pendingLegacy.name}?` : `Bỏ qua di sản của ${pendingLegacy.name}?`,
+                      content: lang === 'en'
+                        ? 'Do you want to discard this heirloom and start a fresh independent life at Generation #1? (Past lives remain saved in the Bloodline archives).'
+                        : 'Bạn có muốn bỏ di sản này để bắt đầu một kiếp sống mới ở Thế hệ #1 không? (Lịch sử các kiếp trước vẫn được lưu trong Gia phả).',
+                      okText: lang === 'en' ? 'Start Fresh Gen #1' : 'Bỏ di sản & Chơi Gen 1',
+                      cancelText: lang === 'en' ? 'Cancel' : 'Hủy',
+                      okButtonProps: { danger: true },
+                      onOk: () => discardPendingLegacy(false)
+                    });
+                  }}
+                >
+                  <Trash2 size={13} />
+                  {lang === 'en' ? 'Discard Heirloom · Start Fresh Gen #1' : 'Bỏ di sản này · Chơi Thế hệ #1 độc lập'}
+                </button>
               </div>
             );
           })()}
