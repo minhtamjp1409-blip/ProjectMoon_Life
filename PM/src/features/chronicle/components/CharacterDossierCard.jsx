@@ -4,6 +4,7 @@ import { ChevronDown, ChevronUp, User } from 'lucide-react';
 import { useGameStore } from '../../../store/gameStore';
 import { REGIONS, FINGER_RANKS } from '../../../data/worldData';
 import { FATE_OMENS } from '../../../engine/weaverAI';
+import { getNextCareerMilestone } from '../../../engine/gameEngine';
 import { audioEngine } from '../../../engine/audioEngine';
 import { gameFeel } from '../../../engine/gameFeel';
 import { useT } from '../../../i18n';
@@ -203,6 +204,7 @@ export const CharacterDossierCard = () => {
   const region = REGIONS.find((r) => r.id === char.regionId) || REGIONS[0];
   const omen = FATE_OMENS.find((o) => o.id === (char.fateOmenId || char.weaver?.mode)) || FATE_OMENS[0];
   const { health, sanity, wealth, network, rep } = char.stats;
+  const milestone = getNextCareerMilestone(char);
   const items = [
     char.egoName && { k: 'E.G.O', v: char.egoName },
     char.craftWeapon && { k: t('Thần binh', 'Weapon'), v: char.craftWeapon.name },
@@ -229,6 +231,30 @@ export const CharacterDossierCard = () => {
           <p>{describeJob(char, t)}</p>
         </div>
       </div>
+
+      {/* Active Career Milestone & Goals Checklist */}
+      {milestone && (
+        <section className="career-objective-card">
+          <div className="career-obj-header">
+            <span className="career-obj-tag">{milestone.category}</span>
+            <span className="career-obj-pct num">{milestone.progressPct}%</span>
+          </div>
+          <h4 className="career-obj-title">{lang === 'en' ? milestone.titleEn : milestone.titleVi}</h4>
+          <div className="career-obj-bar">
+            <i style={{ width: `${milestone.progressPct}%` }} />
+          </div>
+          <div className="career-obj-reqs">
+            {milestone.requirements.map((req, idx) => (
+              <div key={idx} className={`career-req-item ${req.met ? 'is-met' : ''}`}>
+                <span className="req-status">{req.met ? '✓' : '○'}</span>
+                <span className="req-label">{lang === 'en' ? req.labelEn : req.labelVi}</span>
+                <span className="req-val num">{req.current}/{req.target}</span>
+              </div>
+            ))}
+          </div>
+          <p className="career-obj-tip">{lang === 'en' ? milestone.tipEn : milestone.tipVi}</p>
+        </section>
+      )}
 
       <section>
         <div className="kv">

@@ -61,9 +61,22 @@ Each year of your life passes in real time (configurable 10s–30s). You are bor
 * **Pure CSS/SVG Geometric Wireframe Backdrop:** Concentric rotating City rings, technical blueprint grids, coordinate crosshairs, and animated sweeping laser beams.
 * **Dynamic Ambient Scenes:** Contextual ambient backdrops reflecting current life states (Warp space, Blade alleyways, Smoke war hatch, Star of the City).
 
-### 7. Weaver AI Narrative Director
-* **Dynamic Tension Curve:** Regulates pacing across 5 narrative phases (Incubation, Rising Conflict, Climax, Aftermath, Resolution).
-* **Causal Echoes:** Choices plant delayed consequence threads that mature and return years later.
+### 7. Weaver AI Narrative Director & Four-Season Architecture
+* **Four-Season Seasonal Pacing (Xuân · Hạ · Thu · Đông):**
+  * **Spring (Mùa Xuân):** Season of beginnings, Association commissions, entrance examinations, and awakening.
+  * **Summer (Mùa Hạ):** Season of street commerce, backstreet brawls, heatwaves, and tactical choices.
+  * **Autumn (Mùa Thu):** Season of Hana reviews, debt collections, audits, and cold rains.
+  * **Winter (Mùa Đông):** Season of Sweeper hours, bitter frost, crisis trials, and year-end reckonings.
+* **Distinct Event Kinds:**
+  * **Chronicle Lore (Kể chuyện):** Deep slice-of-life observations and atmospheric worldbuilding.
+  * **Life Friction (Tài nguyên):** Backstreet economic drains, medical patch-ups, tavern drinks, and Syndicate taxes.
+  * **Minor Decisions (Sự kiện ngắn):** Time-pressured tactical choices with lasting memory tags.
+  * **Key Turning Points (Sự kiện then chốt):** Pivotal crossroads, Association contracts, E.G.O manifestations, and karmic retribution.
+* **Persistent Causality (Nhân quả bền vững - Không bị reset khi qua năm):** Unlike typical life sims where choices reset annually, every decision leaves persistent memory echoes (`char.memory`), trauma scars, and scheduled causal threads (`pendingThreads`) that return years later.
+* **Career Objectives & Milestone Tracker:**
+  * Dedicated HUD goal tracker displaying promotion criteria (e.g., Fixer Grade 9 -> 8: required Merit & Rep; Syndicate ranks: Thumb Capo, Index Proxy, Middle Big Brother; Wing Executive levels; Workshop Masteries).
+  * Checklists with live progress bars, checkable conditions, and strategy tips.
+* **Goal-Seeking Utility AI:** The Director calculates player ambitions and weights opportunities to gain missing Merit, Rep, or Ahn while balancing drama tension (Tension ⇄ Relief oscillation).
 
 ---
 

@@ -323,6 +323,10 @@ export const useGameStore = create((set, get) => ({
     if (progress >= 100 && cur.alive && !nextPlanItem(cur)) {
       get().commit(cur, endYear(cur, lifeRng), { yearProgress: 0 });
     } else if (!changed) {
+      const liveSeason = Math.min(3, Math.floor(progress / 25));
+      if (cur.seasonIdx !== liveSeason) {
+        cur.seasonIdx = liveSeason;
+      }
       set({ yearProgress: progress });
     }
   },

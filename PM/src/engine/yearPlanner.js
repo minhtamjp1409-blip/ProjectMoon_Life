@@ -148,7 +148,7 @@ function pushLog(char, entry, t) {
   char.logs.push({
     id: `log_${char.age}_${char.logs.length}_${entry.key || 'x'}`,
     age: char.age,
-    season: SEASONS[idx],
+    season: entry.season || SEASONS[idx],
     ...entry
   });
 }
@@ -195,10 +195,10 @@ function majorIsDue(char, rng) {
 /** Builds this year's plan. Called at birth and after every birthday. */
 export function planYear(charState, rng) {
   const char = charState;
-  const items = [];
   const age = char.age;
 
-  // Consequences scheduled by earlier choices come first (Minor & Major causality)
+  // 1. Collect Key / Causal items (Consequences scheduled by earlier choices come first)
+  const scheduledKey = [];
   const pending = char.weaver?.pendingThreads || [];
   for (const th of pending) {
     if (th.fulfilled || char.age < th.triggerAge) continue;
@@ -207,8 +207,8 @@ export function planYear(charState, rng) {
     const minorDef = LIFE_MINORS.find((m) => m.id === th.eventId);
     if (minorDef) {
       const ok = ageOk(minorDef, age) && matchNeed(minorDef.need, char) && !(minorDef.once && (char.seenEvents || []).includes(minorDef.id));
-      if (ok && !items.some((it) => it.id === minorDef.id)) {
-        items.push({ kind: 'minor', id: minorDef.id, thread: th.id, isCausal: true });
+      if (ok && !scheduledKey.some((it) => it.id === minorDef.id)) {
+        scheduledKey.push({ kind: 'minor', id: minorDef.id, thread: th.id, isCausal: true });
         logDecision(char, minorDef, { vi: th.reasonVi || 'Hậu quả đến hạn', en: th.reasonEn || 'A consequence comes due', w: 99 }, 'minor');
         continue;
       }
@@ -217,8 +217,8 @@ export function planYear(charState, rng) {
     // Check if it matches a major story consequence
     const storyDef = CONSEQUENCE_EVENTS.find((e) => e.id === th.eventId) || ALL_STORY_EVENTS.find((e) => e.id === th.eventId);
     if (storyDef) {
-      if (!items.some((it) => it.forcedEventId === storyDef.id)) {
-        items.push({ kind: 'major', forcedEventId: storyDef.id, thread: th.id, isCausal: true });
+      if (!scheduledKey.some((it) => it.forcedEventId === storyDef.id)) {
+        scheduledKey.push({ kind: 'major', forcedEventId: storyDef.id, thread: th.id, isCausal: true });
         logDecision(char, storyDef, { vi: th.reasonVi || 'Quả báo đến hạn', en: th.reasonEn || 'Karma comes due', w: 99 }, 'major');
         continue;
       }
@@ -230,40 +230,100 @@ export function planYear(charState, rng) {
     }
   }
 
-  // Daily lines: always at least one, often two
-  const dailyCount = age <= 3 ? 1 + (rng() < 0.5 ? 1 : 0) : 1 + (rng() < 0.55 ? 1 : 0) + (rng() < 0.12 ? 1 : 0);
-  for (let i = 0; i < dailyCount; i++) {
-    const pool = eligibleDailies(char).filter((d) => !items.some((it) => it.id === d.id));
-    const pick = pickWeighted(pool, weightOf(char), rng);
-    if (pick) {
-      items.push({ kind: 'daily', id: pick.id });
-      remember(char, pick.id);
-    }
+  // Major event if due and not already scheduled
+  if (!scheduledKey.some((it) => it.kind === 'major') && majorIsDue(char, rng)) {
+    scheduledKey.push({ kind: 'major' });
   }
 
-  // Minor choices: small decisions while time keeps moving
+  // Fixer combat contract: tactical commission
+  if (char.job === 'Fixer' && age >= 19 && rng() < 0.42 && !scheduledKey.some((it) => it.kind === 'contract')) {
+    scheduledKey.push({ kind: 'contract' });
+  }
+
+  // Collect Minor choices: small interactive decisions with time limit
   const roll = rng();
-  const minorCount = age < 3 ? 0 : age < 7 ? (roll < 0.45 ? 1 : 0) : roll < 0.22 ? 0 : roll < 0.74 ? 1 : 2;
-  const scheduled = items.filter((it) => it.kind === 'minor').length;
-  for (let i = scheduled; i < minorCount; i++) {
-    const pool = eligibleMinors(char).filter((m) => !items.some((it) => it.id === m.id));
+  const targetMinorCount = age < 3 ? 0 : age < 7 ? (roll < 0.45 ? 1 : 0) : roll < 0.25 ? 0 : roll < 0.75 ? 1 : 2;
+  const scheduledMinors = scheduledKey.filter((it) => it.kind === 'minor').length;
+  const pickedMinors = [];
+  for (let i = scheduledMinors; i < targetMinorCount; i++) {
+    const pool = eligibleMinors(char).filter((m) => !scheduledKey.some((it) => it.id === m.id) && !pickedMinors.some((it) => it.id === m.id));
     const pick = pickWeighted(pool, weightOf(char), rng);
     if (pick) {
-      items.push({ kind: 'minor', id: pick.id });
+      pickedMinors.push({ kind: 'minor', id: pick.id });
       remember(char, pick.id);
       const r = directorWeight(pick, char);
       logDecision(char, pick, { ...r.reason, w: r.w }, 'minor');
     }
   }
 
-  if (!items.some((it) => it.kind === 'major') && majorIsDue(char, rng)) items.push({ kind: 'major' });
-  if (char.job === 'Fixer' && age >= 19 && rng() < 0.42) items.push({ kind: 'contract' });
+  // 2. Seasonal slot orchestration across the 4 seasons:
+  // Slot 0: Spring (t ~ 0.08 - 0.20)
+  // Slot 1: Summer (t ~ 0.32 - 0.44)
+  // Slot 2: Autumn (t ~ 0.56 - 0.68)
+  // Slot 3: Winter (t ~ 0.80 - 0.92)
+  const SEASON_BANDS = [
+    { idx: 0, minT: 0.08, maxT: 0.20, season: SEASONS[0] }, // Spring
+    { idx: 1, minT: 0.32, maxT: 0.44, season: SEASONS[1] }, // Summer
+    { idx: 2, minT: 0.56, maxT: 0.68, season: SEASONS[2] }, // Autumn
+    { idx: 3, minT: 0.80, maxT: 0.92, season: SEASONS[3] }  // Winter
+  ];
 
-  const ordered = shuffle(items, rng);
-  char.plan = ordered.map((it, i) => ({
-    ...it,
-    t: Math.round(clamp((i + 0.5 + (rng() - 0.5) * 0.5) / ordered.length, 0.06, 0.94) * 1000) / 1000
-  }));
+  const slots = [null, null, null, null];
+
+  // Distribute key moments to appropriate dramatic seasons:
+  for (const it of scheduledKey) {
+    if (it.kind === 'major') {
+      // Majors feel climactic in Autumn (2) or Winter (3)
+      const s = slots[3] === null ? 3 : (slots[2] === null ? 2 : (slots[1] === null ? 1 : 0));
+      slots[s] = it;
+    } else if (it.kind === 'contract') {
+      // Fixer contracts open in Spring (0) or Summer (1)
+      const s = slots[0] === null ? 0 : (slots[1] === null ? 1 : (slots[2] === null ? 2 : 3));
+      slots[s] = it;
+    } else if (it.kind === 'minor') {
+      const s = slots.findIndex((sl) => sl === null);
+      if (s >= 0) slots[s] = it;
+    }
+  }
+
+  // Distribute minors to remaining empty slots
+  for (const it of pickedMinors) {
+    const s = slots.findIndex((sl) => sl === null);
+    if (s >= 0) slots[s] = it;
+  }
+
+  // Fill remaining slots with Dailies (Storytelling lore slices or resource living events)
+  const poolDailies = eligibleDailies(char);
+  for (let s = 0; s < 4; s++) {
+    if (slots[s] === null) {
+      const available = poolDailies.filter((d) => !slots.some((sl) => sl && sl.id === d.id));
+      const pick = pickWeighted(available, weightOf(char), rng);
+      if (pick) {
+        slots[s] = { kind: 'daily', id: pick.id };
+        remember(char, pick.id);
+      }
+    }
+  }
+
+  // Build the final chronological plan with precise seasonal coordinates
+  const planItems = [];
+  for (let s = 0; s < 4; s++) {
+    const it = slots[s];
+    if (it) {
+      const band = SEASON_BANDS[s];
+      const t = Math.round((band.minT + rng() * (band.maxT - band.minT)) * 1000) / 1000;
+      planItems.push({
+        ...it,
+        t,
+        seasonIdx: s,
+        season: band.season
+      });
+    }
+  }
+
+  planItems.sort((a, b) => a.t - b.t);
+
+  char.plan = planItems;
   char.planCursor = 0;
   return char;
 }
@@ -272,7 +332,9 @@ export function planYear(charState, rng) {
 
 export function runPlanItem(charState, item, rng) {
   const char = charState;
-  char.seasonIdx = seasonIdxAt(item.t);
+  const sIdx = item.seasonIdx ?? seasonIdxAt(item.t);
+  char.seasonIdx = sIdx;
+  const seasonObj = SEASONS[sIdx];
 
   if (item.kind === 'daily') {
     const def = LIFE_DAILIES.find((d) => d.id === item.id);
@@ -280,7 +342,9 @@ export function runPlanItem(charState, item, rng) {
     const deltas = applyFx(char, def.fx);
     applyChoiceExtras(char, [def], deltas, rng);
     markTheme(char, def);
-    pushLog(char, { key: def.id, type: def.tone || 'daily', vi: interpolateText(def.vi, char), en: interpolateText(def.en, char), deltas }, item.t);
+    const isPureLore = !def.fx || Object.keys(def.fx).length === 0;
+    const logType = def.tone || (isPureLore ? 'lore' : 'daily');
+    pushLog(char, { key: def.id, type: logType, vi: interpolateText(def.vi, char), en: interpolateText(def.en, char), deltas, season: seasonObj }, item.t);
     return settle(char, item.t);
   }
 

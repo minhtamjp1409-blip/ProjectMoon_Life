@@ -4,7 +4,7 @@ import { Play, Pause, SkipForward, Bot, RotateCcw, House, Save, Check, Volume2, 
 import { useNavigate } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 import { useGameStore } from '../../../store/gameStore';
-import { SEASONS } from '../../../engine/gameEngine';
+import { SEASONS, getNextCareerMilestone } from '../../../engine/gameEngine';
 import { DRAMA_PHASES } from '../../../engine/weaverAI';
 import { audioEngine } from '../../../engine/audioEngine';
 import { useT } from '../../../i18n';
@@ -70,6 +70,11 @@ const YearTrack = () => {
   return (
     <div className={`yearbar-track ${paused ? 'is-paused' : ''}`}>
       <div className="yearbar-fill" ref={fillRef} />
+      <div className="yearbar-quarter-ticks" aria-hidden="true">
+        <span className="tick tick-25" title="Summer (25%)" />
+        <span className="tick tick-50" title="Autumn (50%)" />
+        <span className="tick tick-75" title="Winter (75%)" />
+      </div>
     </div>
   );
 };
@@ -92,8 +97,10 @@ const YearStatus = () => {
 };
 
 export const PlayBar = () => {
-  const { t } = useT();
+  const { t, lang } = useT();
   const navigate = useNavigate();
+  const char = useGameStore((s) => s.char);
+  const milestone = getNextCareerMilestone(char);
   const { age, seasonIdx, dramaPhase, alive, waiting, speed, autoPlay, setSpeed, toggleAutoPlay, stepYear, exitToSetup, abandonRun, saveRun, lastSavedAt } =
     useGameStore(
       useShallow((s) => ({
@@ -188,6 +195,17 @@ export const PlayBar = () => {
         <YearTrack />
         <div className="yearbar-meta">
           <YearStatus />
+          {milestone && milestone.progressPct < 100 && (
+            <Tooltip
+              title={`${lang === 'en' ? milestone.titleEn : milestone.titleVi} (${milestone.progressPct}%) · ${lang === 'en' ? milestone.tipEn : milestone.tipVi}`}
+            >
+              <span className="career-obj-pill">
+                <span className="obj-icon">🎯</span>
+                <span className="obj-text">{lang === 'en' ? milestone.titleEn : milestone.titleVi}</span>
+                <b className="obj-pct">{milestone.progressPct}%</b>
+              </span>
+            </Tooltip>
+          )}
           <Tooltip title={phase.descVi}>
             <span className="phase">{phase.labelEn || phase.labelVi}</span>
           </Tooltip>

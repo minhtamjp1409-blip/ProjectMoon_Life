@@ -3572,3 +3572,232 @@ body.is-hit-stop .stage {
 .page-loading {
   min-height: 60vh;
 }
+
+/* ==========================================================================
+   CAREER OBJECTIVES & FOUR-SEASONS ARCHITECTURE (PROJECT MOON STYLE)
+   ========================================================================== */
+
+.career-objective-card {
+  margin-top: 10px;
+  padding: 10px 12px;
+  background: rgba(22, 26, 33, 0.7);
+  border: 1px solid rgba(208, 169, 79, 0.25);
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: border-color 0.2s ease;
+}
+
+.career-objective-card:hover {
+  border-color: rgba(208, 169, 79, 0.45);
+}
+
+.career-obj-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.career-obj-tag {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.career-obj-pct {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.career-obj-title {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0;
+  line-height: 1.35;
+}
+
+.career-obj-bar {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 2px;
+  overflow: hidden;
+  margin: 2px 0 4px;
+}
+
+.career-obj-bar i {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #d0a94f, #f1c40f);
+  border-radius: 2px;
+  transition: width 0.35s ease;
+}
+
+.career-obj-reqs {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.career-req-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.career-req-item.is-met {
+  color: #2ecc71;
+}
+
+.career-req-item .req-status {
+  font-weight: 800;
+  font-size: 11px;
+  width: 12px;
+}
+
+.career-req-item .req-label {
+  flex: 1;
+}
+
+.career-req-item .req-val {
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.career-req-item.is-met .req-val {
+  color: #2ecc71;
+}
+
+.career-obj-tip {
+  font-size: 10.5px;
+  color: rgba(241, 241, 238, 0.55);
+  font-style: italic;
+  margin: 2px 0 0 0;
+  line-height: 1.4;
+  border-top: 1px dashed rgba(255, 255, 255, 0.08);
+  padding-top: 5px;
+}
+
+/* PlayBar Target Objective Pill */
+.career-obj-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 1px 7px;
+  border-radius: 3px;
+  background: rgba(208, 169, 79, 0.12);
+  border: 1px solid rgba(208, 169, 79, 0.3);
+  font-size: 11px;
+  color: var(--text);
+  cursor: help;
+  transition: background 0.15s ease;
+}
+
+.career-obj-pill:hover {
+  background: rgba(208, 169, 79, 0.22);
+}
+
+.career-obj-pill .obj-icon {
+  font-size: 10px;
+}
+
+.career-obj-pill .obj-text {
+  max-width: 170px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.career-obj-pill .obj-pct {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* Yearbar Quarter Ticks for 4 Seasons */
+.yearbar-track {
+  position: relative;
+}
+
+.yearbar-quarter-ticks {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.yearbar-quarter-ticks .tick {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1.5px;
+  background: rgba(255, 255, 255, 0.3);
+  z-index: 2;
+}
+
+.yearbar-quarter-ticks .tick-25 { left: 25%; }
+.yearbar-quarter-ticks .tick-50 { left: 50%; }
+.yearbar-quarter-ticks .tick-75 { left: 75%; }
+
+/* LiveStageFeed Season Dividers & Badges */
+.season-divider {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 14px 0 6px;
+  opacity: 0.9;
+}
+
+.season-divider-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(208, 169, 79, 0.35), transparent);
+}
+
+.season-divider-badge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  padding: 1px 7px;
+  background: rgba(22, 26, 33, 0.85);
+  border: 1px solid rgba(208, 169, 79, 0.25);
+  border-radius: 2px;
+}
+
+.entry-header-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 3px;
+  flex-wrap: wrap;
+}
+
+.entry-season-badge {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 1px 5px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--muted);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.entry.k-lore {
+  border-left-color: #5dade2;
+}
+
+.entry.k-daily {
+  border-left-color: rgba(255, 255, 255, 0.18);
+}
+
+.entry.k-contract {
+  border-left-color: #e67e22;
+}

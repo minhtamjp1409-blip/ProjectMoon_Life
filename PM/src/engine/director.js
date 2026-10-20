@@ -12,7 +12,7 @@
 // Every pick is written to the decision log with a plain reason.
 // ============================================================================
 
-import { clamp, interpolateText } from './gameEngine';
+import { clamp, interpolateText, getNextCareerMilestone } from './gameEngine';
 import { makeNpc } from '../data/birthStories';
 
 const THEME_REST_YEARS = 4;
@@ -93,6 +93,30 @@ export function directorWeight(entry, char) {
   if (motif && tags.includes(MOTIF_TAGS[motif])) {
     w *= 1.5;
     reason = reason || { vi: 'Thành phố đáp lại con người bạn đã trở thành', en: 'The City answers who you have become' };
+  }
+
+  // Career Goal-Seeking Utility AI: weights events according to active promotion goals
+  try {
+    const milestone = getNextCareerMilestone(char);
+    if (milestone && milestone.progressPct < 100) {
+      const unmet = milestone.requirements.filter((r) => !r.met);
+      const needsMerit = unmet.some((r) => r.labelEn?.includes('Merit'));
+      const needsRep = unmet.some((r) => r.labelEn?.includes('Rep'));
+      const needsWealth = unmet.some((r) => r.labelEn?.includes('Wealth') || r.labelEn?.includes('Ahn'));
+
+      if (needsMerit && (tags.includes('combat') || tags.includes('contract') || tags.includes('merit') || entry.id?.includes('contract') || entry.id?.includes('brawl'))) {
+        w *= 2.3;
+        reason = reason || { vi: 'Cơ hội lập công thăng tiến', en: 'Opportunity to earn promotion merit' };
+      } else if (needsRep && (tags.includes('rep') || tags.includes('public') || tags.includes('heroic') || tags.includes('fame'))) {
+        w *= 2.1;
+        reason = reason || { vi: 'Tạo dựng danh tiếng trong khu vực', en: 'Building reputation across the District' };
+      } else if (needsWealth && (tags.includes('money') || tags.includes('deal') || tags.includes('lucrative') || tags.includes('work'))) {
+        w *= 1.9;
+        reason = reason || { vi: 'Kiếm Ahn cho mục tiêu tiếp theo', en: 'Scraping Ahn for your next ambition' };
+      }
+    }
+  } catch (err) {
+    // Ignore if during early initialization
   }
 
   return { w, reason: reason || { vi: 'Ngẫu nhiên', en: 'Chance' } };

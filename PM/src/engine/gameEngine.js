@@ -457,27 +457,346 @@ export function evaluateCharacterAchievements(char) {
   }
 }
 
+export const WING_RANKS = [
+  { rank: 0, titleVi: 'Nhân viên tập sự (Contract Intern)', titleEn: 'Contract Intern', merit: 0, wealth: 0, network: 0 },
+  { rank: 1, titleVi: 'Feather chính thức (Feather Agent)', titleEn: 'Feather Agent', merit: 25, wealth: 18, network: 14 },
+  { rank: 2, titleVi: 'Trưởng phòng ban (Section Chief)', titleEn: 'Section Chief', merit: 65, wealth: 45, network: 32 },
+  { rank: 3, titleVi: 'Giám đốc cấp cao (Senior Executive)', titleEn: 'Senior Executive', merit: 125, wealth: 85, network: 60 }
+];
+
+export const WORKSHOP_RANKS = [
+  { rank: 0, titleVi: 'Học việc Workshop (Apprentice)', titleEn: 'Apprentice', merit: 0, wealth: 0, resonance: 0 },
+  { rank: 1, titleVi: 'Thợ rèn chính thức (Certified Artisan)', titleEn: 'Certified Artisan', merit: 25, wealth: 16, resonance: 10 },
+  { rank: 2, titleVi: 'Đại sư rèn đúc (Master Craftsman)', titleEn: 'Master Craftsman', merit: 65, wealth: 40, resonance: 24 },
+  { rank: 3, titleVi: 'Kỳ tài sáng chế (Legendary Innovator)', titleEn: 'Legendary Innovator', merit: 125, wealth: 75, resonance: 40 }
+];
+
+export const FIXER_THRESHOLDS = [
+  { grade: 8, merit: 8, rep: 6, titleVi: 'Fixer Grade 8', titleEn: 'Grade 8 Fixer' },
+  { grade: 7, merit: 18, rep: 14, titleVi: 'Fixer Grade 7', titleEn: 'Grade 7 Fixer' },
+  { grade: 6, merit: 30, rep: 22, titleVi: 'Fixer Grade 6', titleEn: 'Grade 6 Fixer' },
+  { grade: 5, merit: 45, rep: 32, titleVi: 'Fixer Grade 5', titleEn: 'Grade 5 Fixer' },
+  { grade: 4, merit: 64, rep: 44, titleVi: 'Fixer Grade 4', titleEn: 'Grade 4 Fixer' },
+  { grade: 3, merit: 86, rep: 58, titleVi: 'Fixer Grade 3', titleEn: 'Grade 3 Fixer' },
+  { grade: 2, merit: 112, rep: 72, titleVi: 'Fixer Grade 2', titleEn: 'Grade 2 Fixer' },
+  { grade: 1, merit: 142, rep: 85, titleVi: 'Fixer Grade 1', titleEn: 'Grade 1 Fixer' }
+];
+
 /**
- * Evaluates Fixer Grade / Syndicate Rank promotions based on accumulated Merit & Reputation
+ * Calculates the player's active career milestone and required checklist objectives
+ */
+export function getNextCareerMilestone(char) {
+  if (!char || !char.alive) {
+    return {
+      category: 'MEMORIAL',
+      titleVi: 'Kiếp sống đã khép lại',
+      titleEn: 'Life Concluded',
+      progressPct: 100,
+      requirements: [],
+      tipVi: 'Xem bia ký tưởng niệm và ghi chép gia phả.',
+      tipEn: 'Review the epitaph and legacy records.'
+    };
+  }
+
+  // 1. Childhood (Age < 18)
+  if (char.age < 18 || char.job === 'Child') {
+    if (char.age < 7) {
+      const curAge = char.age;
+      const targetAge = 7;
+      const curHp = char.stats?.health ?? char.health ?? 0;
+      const targetHp = 30;
+      const curSp = char.stats?.sanity ?? char.sanity ?? 0;
+      const targetSp = 30;
+
+      const p1 = Math.min(100, (curAge / targetAge) * 100);
+      const p2 = Math.min(100, (curHp / targetHp) * 100);
+      const p3 = Math.min(100, (curSp / targetSp) * 100);
+      const progressPct = Math.round((p1 + p2 + p3) / 3);
+
+      return {
+        category: 'CHILDHOOD SURVIVAL',
+        titleVi: 'Sinh tồn thơ ấu tại The City',
+        titleEn: 'Childhood Survival in The City',
+        progressPct,
+        requirements: [
+          { labelVi: 'Đạt tuổi 7', labelEn: 'Reach Age 7', current: curAge, target: targetAge, met: curAge >= targetAge },
+          { labelVi: 'Sinh lực an toàn (HP)', labelEn: 'Safe Health (HP)', current: curHp, target: targetHp, met: curHp >= targetHp },
+          { labelVi: 'Tỉnh táo an toàn (SP)', labelEn: 'Safe Sanity (SP)', current: curSp, target: targetSp, met: curSp >= targetSp }
+        ],
+        tipVi: 'Bảo toàn mạng sống và giữ tâm trí ổn định trước những nguy hiểm đầu đời.',
+        tipEn: 'Stay alive and keep your mind sound amidst early city perils.'
+      };
+    }
+
+    if (char.age < 14) {
+      const curAge = char.age;
+      const targetAge = 14;
+      const curNet = char.stats?.network ?? char.network ?? 0;
+      const targetNet = 15;
+      const activeNpcs = Object.values(char.npcs || {}).filter(n => n && !n.deceased && n.status !== 'dead').length;
+      const targetNpcs = 1;
+
+      const p1 = Math.min(100, (curAge / targetAge) * 100);
+      const p2 = Math.min(100, (curNet / targetNet) * 100);
+      const p3 = activeNpcs >= 1 ? 100 : 0;
+      const progressPct = Math.round((p1 + p2 + p3) / 3);
+
+      return {
+        category: 'STREET APPRENTICESHIP',
+        titleVi: 'Xây dựng quan hệ & Nền tảng đường phố',
+        titleEn: 'Street Aptitude & Bonds',
+        progressPct,
+        requirements: [
+          { labelVi: 'Đạt tuổi 14', labelEn: 'Reach Age 14', current: curAge, target: targetAge, met: curAge >= targetAge },
+          { labelVi: 'Mối quan hệ (Network)', labelEn: 'Network', current: curNet, target: targetNet, met: curNet >= targetNet },
+          { labelVi: 'Bạn bè / Người thân đồng hành', labelEn: 'Companions', current: activeNpcs, target: targetNpcs, met: activeNpcs >= targetNpcs }
+        ],
+        tipVi: 'Kết thân với bạn bè hoặc người thầy, học hỏi quy tắc sinh tồn ở Backstreets hoặc Nest.',
+        tipEn: 'Befriend companions or mentors, learning the survival codes of the City.'
+      };
+    }
+
+    // Age 14 - 17: Preparing for Age 18 Crossroads
+    const curAge = char.age;
+    const targetAge = 18;
+    const curMerit = char.merit || 0;
+    const curWealth = char.stats?.wealth ?? char.wealth ?? 0;
+    const curRep = char.stats?.rep ?? char.rep ?? 0;
+
+    const pAge = Math.min(100, (curAge / targetAge) * 100);
+    const pStat = Math.min(100, Math.max((curMerit / 8) * 100, (curWealth / 12) * 100, (curRep / 10) * 100));
+    const progressPct = Math.round((pAge * 0.6) + (pStat * 0.4));
+
+    return {
+      category: 'CAREER CROSSROADS (AGE 18)',
+      titleVi: 'Chuẩn bị bước ngoặt cuộc đời (Tuổi 18)',
+      titleEn: 'Preparation for Age 18 Crossroads',
+      progressPct,
+      requirements: [
+        { labelVi: 'Đạt tuổi trưởng thành (18)', labelEn: 'Reach Adulthood (18)', current: curAge, target: targetAge, met: curAge >= targetAge },
+        { labelVi: 'Tích lũy nền tảng (Merit, Ahn hoặc Rep)', labelEn: 'Merit, Ahn or Rep', current: Math.max(curMerit, curWealth, curRep), target: 10, met: Math.max(curMerit, curWealth, curRep) >= 10 }
+      ],
+      tipVi: 'Tại tuổi 18, bạn sẽ quyết định con đường: Hana Fixer, Syndicate, Wing Feather hay Workshop.',
+      tipEn: 'At age 18, you will choose your path: Hana Fixer, Syndicate, Wing Feather, or Workshop.'
+    };
+  }
+
+  // 2. Fixer Career
+  if (char.job === 'Fixer') {
+    if (char.fixerGrade === 0) {
+      const targetMerit = 250;
+      const targetRep = 90;
+      const p1 = Math.min(100, ((char.merit || 0) / targetMerit) * 100);
+      const p2 = Math.min(100, (((char.stats?.rep ?? char.rep) || 0) / targetRep) * 100);
+      const progressPct = Math.round((p1 + p2) / 2);
+
+      return {
+        category: 'COLOR FIXER ASCENSION',
+        titleVi: 'Huyền thoại Đô Thành (City Legend)',
+        titleEn: 'Sovereign Legend of The City',
+        progressPct,
+        requirements: [
+          { labelVi: 'Chiến công tối thượng (Merit)', labelEn: 'Merit', current: char.merit || 0, target: targetMerit, met: (char.merit || 0) >= targetMerit },
+          { labelVi: 'Danh tiếng vang dội (Rep)', labelEn: 'Reputation', current: (char.stats?.rep ?? char.rep) || 0, target: targetRep, met: ((char.stats?.rep ?? char.rep) || 0) >= targetRep }
+        ],
+        tipVi: 'Bạn là một Color. Tên tuổi bạn sánh ngang Red Mist hay Black Silence, ghi dấu vào lịch sử.',
+        tipEn: 'You are a Color. Your name stands alongside the Red Mist and Black Silence.'
+      };
+    }
+
+    if (char.fixerGrade === 1) {
+      const targetMerit = 175;
+      const targetRep = 72;
+      const hasEgo = char.flags.includes('ColorFixer') || char.flags.includes('EGOAwakened') || (char.resonance || 0) >= 40;
+      const p1 = Math.min(100, ((char.merit || 0) / targetMerit) * 100);
+      const p2 = Math.min(100, (((char.stats?.rep ?? char.rep) || 0) / targetRep) * 100);
+      const p3 = hasEgo ? 100 : Math.min(100, ((char.resonance || 0) / 40) * 100);
+      const progressPct = Math.round((p1 + p2 + p3) / 3);
+
+      return {
+        category: 'HANA EVALUATION',
+        titleVi: 'Thăng cấp: Color Fixer',
+        titleEn: 'Ascension: Color Fixer',
+        progressPct,
+        requirements: [
+          { labelVi: 'Chiến công (Merit)', labelEn: 'Merit', current: char.merit || 0, target: targetMerit, met: (char.merit || 0) >= targetMerit },
+          { labelVi: 'Danh tiếng (Rep)', labelEn: 'Reputation', current: (char.stats?.rep ?? char.rep) || 0, target: targetRep, met: ((char.stats?.rep ?? char.rep) || 0) >= targetRep },
+          { labelVi: 'Thức tỉnh E.G.O / Resonance', labelEn: 'E.G.O Awakening / Reso', current: char.resonance || 0, target: 40, met: hasEgo }
+        ],
+        tipVi: 'Hana Association chỉ phong Color cho Fixer Grade 1 có sức mạnh dị thường và tiếng vang khắp The City.',
+        tipEn: 'Hana grants Colors only to Grade 1 Fixers of extraordinary renown and resonance.'
+      };
+    }
+
+    const targetThreshold = FIXER_THRESHOLDS.find(t => t.grade === char.fixerGrade - 1) || FIXER_THRESHOLDS[0];
+    const targetMerit = targetThreshold.merit;
+    const targetRep = targetThreshold.rep;
+    const curRep = (char.stats?.rep ?? char.rep) || 0;
+    const p1 = Math.min(100, ((char.merit || 0) / targetMerit) * 100);
+    const p2 = Math.min(100, (curRep / targetRep) * 100);
+    const progressPct = Math.round((p1 + p2) / 2);
+
+    return {
+      category: 'HANA EVALUATION',
+      titleVi: `Thăng cấp: ${targetThreshold.titleVi}`,
+      titleEn: `Promotion: ${targetThreshold.titleEn}`,
+      progressPct,
+      requirements: [
+        { labelVi: 'Chiến công (Merit)', labelEn: 'Merit', current: char.merit || 0, target: targetMerit, met: (char.merit || 0) >= targetMerit },
+        { labelVi: 'Danh tiếng (Rep)', labelEn: 'Reputation', current: curRep, target: targetRep, met: curRep >= targetRep }
+      ],
+      tipVi: 'Nhận hợp đồng Fixer, giải quyết ủy thác từ Association hoặc can thiệp bạo lực để tích lũy Merit và Rep.',
+      tipEn: 'Accept Fixer contracts, resolve Association requests, or survive clashes to earn Merit and Rep.'
+    };
+  }
+
+  // 3. Syndicate Career
+  if (char.job === 'Syndicate') {
+    const finger = char.finger || 'Thumb';
+    const ladder = FINGER_RANKS[finger] || FINGER_RANKS.Thumb;
+    const currentRank = char.fingerRank || 0;
+
+    if (currentRank >= ladder.length - 1) {
+      return {
+        category: `THE ${finger.toUpperCase()} SOVEREIGNTY`,
+        titleVi: `Đỉnh cao quyền lực: ${ladder[currentRank]}`,
+        titleEn: `Peak Authority: ${ladder[currentRank]}`,
+        progressPct: 100,
+        requirements: [
+          { labelVi: 'Chiến công (Merit)', labelEn: 'Merit', current: char.merit || 0, target: (currentRank + 1) * 26, met: true }
+        ],
+        tipVi: 'Bạn đã là người đứng đầu một nhánh của Ngón. Mệnh lệnh của bạn là luật trong hẻm.',
+        tipEn: 'You hold supreme authority within your Finger branch. Your word is alley law.'
+      };
+    }
+
+    const nextRank = currentRank + 1;
+    const nextTitle = ladder[nextRank];
+    const targetMerit = nextRank * 26;
+    const targetRep = nextRank * 16;
+    const curRep = (char.stats?.rep ?? char.rep) || 0;
+    const p1 = Math.min(100, ((char.merit || 0) / targetMerit) * 100);
+    const p2 = Math.min(100, (curRep / targetRep) * 100);
+    const progressPct = Math.round((p1 + p2) / 2);
+
+    return {
+      category: `THE ${finger.toUpperCase()} TRIAL`,
+      titleVi: `Thăng bậc: ${nextTitle}`,
+      titleEn: `Syndicate Rank: ${nextTitle}`,
+      progressPct,
+      requirements: [
+        { labelVi: 'Công trạng với Ngón (Merit)', labelEn: 'Syndicate Merit', current: char.merit || 0, target: targetMerit, met: (char.merit || 0) >= targetMerit },
+        { labelVi: 'Uy danh giang hồ (Rep)', labelEn: 'Reputation', current: curRep, target: targetRep, met: curRep >= targetRep }
+      ],
+      tipVi: 'Thực thi mệnh lệnh của Ngón, thu hồi nợ máu và chứng minh lòng trung thành.',
+      tipEn: 'Execute Finger orders, claim vengeance debts, and prove unquestioned loyalty.'
+    };
+  }
+
+  // 4. Wing Employee Career
+  if (char.job === 'Wing Employee') {
+    const currentRank = char.wingRank || 0;
+    const nextRank = Math.min(WING_RANKS.length - 1, currentRank + 1);
+    const target = WING_RANKS[nextRank];
+
+    if (currentRank >= WING_RANKS.length - 1) {
+      return {
+        category: 'WING EXECUTIVE',
+        titleVi: 'Giám đốc cấp cao (Wing Executive)',
+        titleEn: 'Senior Wing Executive',
+        progressPct: 100,
+        requirements: [],
+        tipVi: 'Bạn ngồi trong ban điều hành Wing, nắm giữ bí mật Singularity.',
+        tipEn: 'You sit on the executive board, guarding the secrets of the Singularity.'
+      };
+    }
+
+    const curWealth = (char.stats?.wealth ?? char.wealth) || 0;
+    const curNet = (char.stats?.network ?? char.network) || 0;
+    const p1 = Math.min(100, ((char.merit || 0) / target.merit) * 100);
+    const p2 = Math.min(100, (curWealth / target.wealth) * 100);
+    const p3 = Math.min(100, (curNet / target.network) * 100);
+    const progressPct = Math.round((p1 + p2 + p3) / 3);
+
+    return {
+      category: 'WING ADVANCEMENT',
+      titleVi: `Thăng chức: ${target.titleVi}`,
+      titleEn: `Promotion: ${target.titleEn}`,
+      progressPct,
+      requirements: [
+        { labelVi: 'Hiệu suất công việc (Merit)', labelEn: 'Merit', current: char.merit || 0, target: target.merit, met: (char.merit || 0) >= target.merit },
+        { labelVi: 'Cổ phần & Ahn (Wealth)', labelEn: 'Wealth (Ahn)', current: curWealth, target: target.wealth, met: curWealth >= target.wealth },
+        { labelVi: 'Mối quan hệ nội bộ (Network)', labelEn: 'Network', current: curNet, target: target.network, met: curNet >= target.network }
+      ],
+      tipVi: 'Hoàn thành các dự án nghiên cứu của Wing, giữ quan hệ với ban quản trị và tích lũy Ahn.',
+      tipEn: 'Deliver Wing research quotas, cultivate corporate ties, and amass Ahn.'
+    };
+  }
+
+  // 5. Workshop Craftsman Career
+  if (char.job === 'Workshop Craftsman') {
+    const currentRank = char.workshopRank || 0;
+    const nextRank = Math.min(WORKSHOP_RANKS.length - 1, currentRank + 1);
+    const target = WORKSHOP_RANKS[nextRank];
+
+    if (currentRank >= WORKSHOP_RANKS.length - 1) {
+      return {
+        category: 'WORKSHOP MASTER',
+        titleVi: 'Kỳ tài sáng chế (Legendary Innovator)',
+        titleEn: 'Legendary Workshop Innovator',
+        progressPct: 100,
+        requirements: [],
+        tipVi: 'Vũ khí do bạn rèn được các Fixer Grade 1 và Color săn lùng khắp Đô Thành.',
+        tipEn: 'Weapons forged by your hands are coveted by Grade 1 Fixers and Colors across the City.'
+      };
+    }
+
+    const curWealth = (char.stats?.wealth ?? char.wealth) || 0;
+    const curReso = char.resonance || 0;
+    const p1 = Math.min(100, ((char.merit || 0) / target.merit) * 100);
+    const p2 = Math.min(100, (curWealth / target.wealth) * 100);
+    const p3 = Math.min(100, (curReso / target.resonance) * 100);
+    const progressPct = Math.round((p1 + p2 + p3) / 3);
+
+    return {
+      category: 'WORKSHOP MASTERY',
+      titleVi: `Bậc nghệ nhân: ${target.titleVi}`,
+      titleEn: `Workshop Rank: ${target.titleEn}`,
+      progressPct,
+      requirements: [
+        { labelVi: 'Kinh nghiệm chế tác (Merit)', labelEn: 'Craft Merit', current: char.merit || 0, target: target.merit, met: (char.merit || 0) >= target.merit },
+        { labelVi: 'Vốn mua nguyên liệu (Wealth)', labelEn: 'Wealth (Ahn)', current: curWealth, target: target.wealth, met: curWealth >= target.wealth },
+        { labelVi: 'Cộng hưởng tâm thức (Resonance)', labelEn: 'E.G.O Resonance', current: curReso, target: target.resonance, met: curReso >= target.resonance }
+      ],
+      tipVi: 'Rèn luyện vũ khí mới, đăng ký bản quyền sáng chế với Tres Association và tích lũy nguyên liệu quý.',
+      tipEn: 'Forge new weapon prototypes, register patents with Tres Association, and gather rare materials.'
+    };
+  }
+
+  // Fallback
+  return {
+    category: 'SURVIVAL',
+    titleVi: 'Sống sót và khẳng định vị thế',
+    titleEn: 'Survival & Renown',
+    progressPct: Math.min(100, (char.merit || 0) * 2),
+    requirements: [
+      { labelVi: 'Chiến công (Merit)', labelEn: 'Merit', current: char.merit || 0, target: 50, met: (char.merit || 0) >= 50 }
+    ],
+    tipVi: 'Gia tăng tài nguyên và tạo dựng danh tiếng trong khu vực.',
+    tipEn: 'Build your wealth and cement your reputation across the District.'
+  };
+}
+
+/**
+ * Evaluates Fixer Grade / Syndicate Rank / Wing Rank / Workshop Rank promotions
  */
 export function checkPromotions(char) {
   const logsToAdd = [];
-  const omenObj = FATE_OMENS.find((o) => o.id === char.fateOmenId);
+  const curRep = (char.stats?.rep ?? char.rep) || 0;
 
   if (char.job === 'Fixer') {
-    const thresholds = [
-      { grade: 8, merit: 8 },
-      { grade: 7, merit: 18 },
-      { grade: 6, merit: 30 },
-      { grade: 5, merit: 45 },
-      { grade: 4, merit: 64 },
-      { grade: 3, merit: 86 },
-      { grade: 2, merit: 112 },
-      { grade: 1, merit: 142 }
-    ];
-
-    for (const t of thresholds) {
-      if (char.fixerGrade > t.grade && char.merit >= t.merit) {
+    for (const t of FIXER_THRESHOLDS) {
+      if (char.fixerGrade > t.grade && char.merit >= t.merit && curRep >= (t.rep || 0)) {
         char.fixerGrade = t.grade;
         logsToAdd.push({
           id: `log_promo_${char.age}_g${t.grade}`,
@@ -494,7 +813,7 @@ export function checkPromotions(char) {
     if (
       char.fixerGrade === 1 &&
       char.merit >= 175 &&
-      char.stats.rep >= 72 &&
+      curRep >= 72 &&
       !char.flags.includes('ColorFixer')
     ) {
       char.fixerGrade = 0; // 0 represents Color Fixer
@@ -526,6 +845,50 @@ export function checkPromotions(char) {
         vi: `[The ${char.finger}] Những người trên bạn đã để ý. Từ hôm nay bạn là ${rankTitle}.`,
         en: `[The ${char.finger}] Those above you have noticed. From today you are ${rankTitle}.`
       });
+    }
+  }
+
+  // Wing Employee Promotions
+  if (char.job === 'Wing Employee') {
+    const curRank = char.wingRank || 0;
+    const curWealth = (char.stats?.wealth ?? char.wealth) || 0;
+    const curNet = (char.stats?.network ?? char.network) || 0;
+    for (let r = WING_RANKS.length - 1; r > curRank; r--) {
+      const req = WING_RANKS[r];
+      if (char.merit >= req.merit && curWealth >= req.wealth && curNet >= req.network) {
+        char.wingRank = r;
+        logsToAdd.push({
+          id: `log_wing_promo_${char.age}_${r}`,
+          age: char.age,
+          season: SEASONS[char.seasonIdx],
+          type: 'promo',
+          vi: `[Thăng chức] Ban điều hành Wing thông qua quyết định bổ nhiệm: Bạn đã trở thành ${req.titleVi}.`,
+          en: `[Promotion] The Wing executive board approved your appointment: You are now ${req.titleEn}.`
+        });
+        break;
+      }
+    }
+  }
+
+  // Workshop Craftsman Promotions
+  if (char.job === 'Workshop Craftsman') {
+    const curRank = char.workshopRank || 0;
+    const curWealth = (char.stats?.wealth ?? char.wealth) || 0;
+    const curReso = char.resonance || 0;
+    for (let r = WORKSHOP_RANKS.length - 1; r > curRank; r--) {
+      const req = WORKSHOP_RANKS[r];
+      if (char.merit >= req.merit && curWealth >= req.wealth && curReso >= req.resonance) {
+        char.workshopRank = r;
+        logsToAdd.push({
+          id: `log_ws_promo_${char.age}_${r}`,
+          age: char.age,
+          season: SEASONS[char.seasonIdx],
+          type: 'promo',
+          vi: `[Workshop] Tres Association cấp chứng chỉ thẩm định mới: Bạn đã đạt danh vị ${req.titleVi}.`,
+          en: `[Workshop] Tres Association issued a new appraisal certificate: You are now ${req.titleEn}.`
+        });
+        break;
+      }
     }
   }
 

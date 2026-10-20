@@ -16,9 +16,12 @@ const ENTRY_KIND = {
   miracle: { cls: 'k-good', vi: 'Turning Point', en: 'Turning Point' },
   promo: { cls: 'k-good', vi: 'Promotion', en: 'Promotion' },
   danger: { cls: 'k-bad', vi: 'Danger', en: 'Danger' },
-  death: { cls: 'k-death', vi: null, en: null },
-  summary: { cls: 'k-summary', vi: null, en: null },
-  choice: { cls: 'k-choice', vi: null, en: null }
+  death: { cls: 'k-death', vi: 'Death', en: 'Death' },
+  summary: { cls: 'k-summary', vi: 'Year-End Reckoning', en: 'Year-End Reckoning' },
+  choice: { cls: 'k-choice', vi: 'Decision', en: 'Decision' },
+  lore: { cls: 'k-lore', vi: 'Chronicle Lore', en: 'Chronicle Lore' },
+  daily: { cls: 'k-daily', vi: 'Life Friction', en: 'Life Friction' },
+  contract: { cls: 'k-contract', vi: 'Fixer Contract', en: 'Fixer Contract' }
 };
 
 const WORKSHOP_STYLES = [
@@ -44,16 +47,27 @@ const LogEntries = React.memo(function LogEntries({ logs }) {
   const { t, lang, bilingual } = useT();
   const out = [];
   let lastAge = null;
+  let lastSeasonId = null;
 
   logs.forEach((entry) => {
     if (entry.age !== lastAge) {
       lastAge = entry.age;
+      lastSeasonId = entry.season?.id || null;
       out.push(
         <div className="yearline" key={`y_${entry.id}`}>
           <span>
             <b>{t(`Tuổi ${entry.age}`, `Age ${entry.age}`)}</b>
             {entry.season ? ` · ${t(entry.season.vi, entry.season.en)}` : ''}
           </span>
+        </div>
+      );
+    } else if (entry.season && entry.season.id !== lastSeasonId) {
+      lastSeasonId = entry.season.id;
+      out.push(
+        <div className="season-divider" key={`s_${entry.id}`}>
+          <span className="season-divider-line" />
+          <span className="season-divider-badge">{t(entry.season.vi, entry.season.en)}</span>
+          <span className="season-divider-line" />
         </div>
       );
     }
@@ -64,7 +78,10 @@ const LogEntries = React.memo(function LogEntries({ logs }) {
     const tag = entry.omen ? t('Điềm lúc chào đời', 'Omen at birth') : title || (kind?.vi ? t(kind.vi, kind.en) : null);
     out.push(
       <article className={`entry ${kind?.cls || ''}`} key={entry.id}>
-        {tag && <p className="entry-tag">{tag}</p>}
+        <div className="entry-header-row">
+          {entry.season && <span className="entry-season-badge">{t(entry.season.vi, entry.season.en)}</span>}
+          {tag && <p className="entry-tag">{tag}</p>}
+        </div>
         {entry.choiceVi && (
           <p className="entry-choice">
             {t('Bạn chọn: ', 'You chose: ')}
