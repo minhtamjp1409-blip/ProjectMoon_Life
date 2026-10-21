@@ -479,6 +479,11 @@ public sealed class DirectorEngineService
             majorTitleVi = "Đại Khảo Thí Phong Color (Hana Council)";
             majorTitleEn = "Hana Color Investiture Trial";
         }
+        else if (c.Job.Equals("Fixer", StringComparison.OrdinalIgnoreCase) && !flags.Contains("Distorted") &&
+            FixerThresholds.Any(t => t.Grade == c.FixerGrade - 1 && c.Merit >= t.Merit && c.Rep >= t.Rep))
+        {
+            majorDue = true;
+        }
         else if (c.Job.Equals("Syndicate", StringComparison.OrdinalIgnoreCase) && !flags.Contains("Distorted"))
         {
             string finger = string.IsNullOrEmpty(c.Finger) ? "Thumb" : c.Finger;

@@ -10,7 +10,7 @@ export const FIXER_PATH_EVENTS = [
   // =========================================================================
   {
     id: 'fixer_promo_g8_exam',
-    age: [18, 55],
+    age: [18, 140],
     major: true,
     weight: 90,
     requires: [],
@@ -54,7 +54,7 @@ export const FIXER_PATH_EVENTS = [
   // =========================================================================
   {
     id: 'fixer_promo_g7_exam',
-    age: [19, 60],
+    age: [19, 140],
     major: true,
     weight: 85,
     need: { jobs: ['Fixer'], grade: [8, 8] },
@@ -97,7 +97,7 @@ export const FIXER_PATH_EVENTS = [
   // =========================================================================
   {
     id: 'fixer_promo_g6_exam',
-    age: [20, 65],
+    age: [20, 140],
     major: true,
     weight: 80,
     need: { jobs: ['Fixer'], grade: [7, 7] },
@@ -140,7 +140,7 @@ export const FIXER_PATH_EVENTS = [
   // =========================================================================
   {
     id: 'fixer_promo_g5_exam',
-    age: [21, 68],
+    age: [21, 140],
     major: true,
     weight: 75,
     need: { jobs: ['Fixer'], grade: [6, 6] },
@@ -183,7 +183,7 @@ export const FIXER_PATH_EVENTS = [
   // =========================================================================
   {
     id: 'fixer_promo_g4_exam',
-    age: [22, 70],
+    age: [22, 140],
     major: true,
     weight: 70,
     need: { jobs: ['Fixer'], grade: [5, 5] },
@@ -226,7 +226,7 @@ export const FIXER_PATH_EVENTS = [
   // =========================================================================
   {
     id: 'fixer_promo_g3_exam',
-    age: [24, 72],
+    age: [24, 140],
     major: true,
     weight: 65,
     need: { jobs: ['Fixer'], grade: [4, 4] },
@@ -270,7 +270,7 @@ export const FIXER_PATH_EVENTS = [
   // =========================================================================
   {
     id: 'fixer_promo_g2_exam',
-    age: [26, 75],
+    age: [26, 140],
     major: true,
     weight: 60,
     need: { jobs: ['Fixer'], grade: [3, 3] },
@@ -313,7 +313,7 @@ export const FIXER_PATH_EVENTS = [
   // =========================================================================
   {
     id: 'fixer_promo_g1_exam',
-    age: [28, 80],
+    age: [28, 140],
     major: true,
     weight: 55,
     need: { jobs: ['Fixer'], grade: [2, 2] },
@@ -517,7 +517,7 @@ export const FIXER_PATH_EVENTS = [
   // --- GRADE 9 -> 8 ALTERNATIVES ---
   {
     id: 'fixer_promo_g8_seven',
-    age: [18, 55],
+    age: [18, 140],
     major: true,
     weight: 90,
     need: { jobs: ['Fixer'], grade: [9, 9] },
@@ -556,7 +556,7 @@ export const FIXER_PATH_EVENTS = [
   },
   {
     id: 'fixer_promo_g8_zwei',
-    age: [18, 55],
+    age: [18, 140],
     major: true,
     weight: 90,
     need: { jobs: ['Fixer'], grade: [9, 9] },
@@ -597,7 +597,7 @@ export const FIXER_PATH_EVENTS = [
   // --- GRADE 8 -> 7 ALTERNATIVES ---
   {
     id: 'fixer_promo_g7_shi',
-    age: [19, 60],
+    age: [19, 140],
     major: true,
     weight: 85,
     need: { jobs: ['Fixer'], grade: [8, 8] },
@@ -636,7 +636,7 @@ export const FIXER_PATH_EVENTS = [
   },
   {
     id: 'fixer_promo_g7_tres',
-    age: [19, 60],
+    age: [19, 140],
     major: true,
     weight: 85,
     need: { jobs: ['Fixer'], grade: [8, 8] },
@@ -677,7 +677,7 @@ export const FIXER_PATH_EVENTS = [
   // --- GRADE 7 -> 6 ALTERNATIVES ---
   {
     id: 'fixer_promo_g6_cinq',
-    age: [20, 65],
+    age: [20, 140],
     major: true,
     weight: 80,
     need: { jobs: ['Fixer'], grade: [7, 7] },
@@ -716,7 +716,7 @@ export const FIXER_PATH_EVENTS = [
   },
   {
     id: 'fixer_promo_g6_oufi',
-    age: [20, 65],
+    age: [20, 140],
     major: true,
     weight: 80,
     need: { jobs: ['Fixer'], grade: [7, 7] },
@@ -757,7 +757,7 @@ export const FIXER_PATH_EVENTS = [
   // --- GRADE 6 -> 5 ALTERNATIVES ---
   {
     id: 'fixer_promo_g5_dieci',
-    age: [21, 68],
+    age: [21, 140],
     major: true,
     weight: 75,
     need: { jobs: ['Fixer'], grade: [6, 6] },
@@ -796,7 +796,7 @@ export const FIXER_PATH_EVENTS = [
   },
   {
     id: 'fixer_promo_g5_molar',
-    age: [21, 68],
+    age: [21, 140],
     major: true,
     weight: 75,
     need: { jobs: ['Fixer'], grade: [6, 6] },
@@ -837,7 +837,7 @@ export const FIXER_PATH_EVENTS = [
   // --- GRADE 5 -> 4 ALTERNATIVES ---
   {
     id: 'fixer_promo_g4_devzat',
-    age: [22, 70],
+    age: [22, 140],
     major: true,
     weight: 70,
     need: { jobs: ['Fixer'], grade: [5, 5] },
@@ -876,7 +876,7 @@ export const FIXER_PATH_EVENTS = [
   },
   {
     id: 'fixer_promo_g4_rhino',
-    age: [22, 70],
+    age: [22, 140],
     major: true,
     weight: 70,
     need: { jobs: ['Fixer'], grade: [5, 5] },
@@ -917,7 +917,7 @@ export const FIXER_PATH_EVENTS = [
   // --- GRADE 4 -> 3 ALTERNATIVES ---
   {
     id: 'fixer_promo_g3_warp',
-    age: [24, 72],
+    age: [24, 140],
     major: true,
     weight: 65,
     need: { jobs: ['Fixer'], grade: [4, 4] },
@@ -956,7 +956,7 @@ export const FIXER_PATH_EVENTS = [
   },
   {
     id: 'fixer_promo_g3_reindeer',
-    age: [24, 72],
+    age: [24, 140],
     major: true,
     weight: 65,
     need: { jobs: ['Fixer'], grade: [4, 4] },
@@ -997,7 +997,7 @@ export const FIXER_PATH_EVENTS = [
   // --- GRADE 3 -> 2 ALTERNATIVES ---
   {
     id: 'fixer_promo_g2_black_silence',
-    age: [26, 75],
+    age: [26, 140],
     major: true,
     weight: 60,
     need: { jobs: ['Fixer'], grade: [3, 3] },
@@ -1036,7 +1036,7 @@ export const FIXER_PATH_EVENTS = [
   },
   {
     id: 'fixer_promo_g2_district_defense',
-    age: [26, 75],
+    age: [26, 140],
     major: true,
     weight: 60,
     need: { jobs: ['Fixer'], grade: [3, 3] },
@@ -1077,7 +1077,7 @@ export const FIXER_PATH_EVENTS = [
   // --- GRADE 2 -> 1 ALTERNATIVES ---
   {
     id: 'fixer_promo_g1_hana_apex',
-    age: [28, 80],
+    age: [28, 140],
     major: true,
     weight: 55,
     need: { jobs: ['Fixer'], grade: [2, 2] },
@@ -1116,7 +1116,7 @@ export const FIXER_PATH_EVENTS = [
   },
   {
     id: 'fixer_promo_g1_calamity',
-    age: [28, 80],
+    age: [28, 140],
     major: true,
     weight: 55,
     need: { jobs: ['Fixer'], grade: [2, 2] },

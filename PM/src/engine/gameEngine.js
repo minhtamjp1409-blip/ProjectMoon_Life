@@ -33,6 +33,9 @@ import { COMPANION_QUEST_EVENTS } from '../data/eventsCompanionQuests.js';
 import {
   FIXER_LADDER,
   getNextFixerPromotion,
+  fixerPromotionOfferChance,
+  fixerPromotionSuccessChance,
+  fixerPromotionFailureEffects,
   checkColorFixerReadiness,
   getNextFingerPromotion,
   getNextWingPromotion,
@@ -504,6 +507,8 @@ export function createNewCharacter({
     traits: rollTraits(createRNG(`${actualSeed}:traits`)),
     job: actualAge >= 18 ? (parentLegacy?.job === 'Syndicate' ? 'Syndicate' : parentLegacy?.job === 'Wing Employee' ? 'Wing Employee' : 'Fixer') : 'Child',
     fixerGrade: 9,
+    lastFixerExamAge: null,
+    fixerTrialRetryGrade: null,
     merit: actualAge >= 18 ? 10 : 0,
     finger: actualAge >= 18 && parentLegacy?.job === 'Syndicate' ? parentLegacy?.finger : null,
     fingerRank: actualAge >= 18 && parentLegacy?.job === 'Syndicate' ? 1 : 0,
@@ -997,13 +1002,14 @@ export function checkPromotions(char) {
     const nextPromo = getNextFixerPromotion(char);
     if (nextPromo && nextPromo.isEligible && !char.flags.includes(`promo_ready_g${nextPromo.grade}`)) {
       char.flags.push(`promo_ready_g${nextPromo.grade}`);
+      const offerChance = Math.round(fixerPromotionOfferChance(char, nextPromo) * 100);
       logsToAdd.push({
         id: `log_promo_ready_${char.age}_g${nextPromo.grade}`,
         age: char.age,
         season: SEASONS[char.seasonIdx],
         type: 'promo',
-        vi: `[Hana Association Thông Báo] Bạn đã tích lũy đủ chiến tích và danh tiếng để bước vào kỳ sát hạch thăng cấp Grade ${nextPromo.grade}!`,
-        en: `[Hana Association Notice] You have accumulated sufficient merits and reputation to challenge the Grade ${nextPromo.grade} qualification trial!`
+        vi: `[Hana Association Thông Báo] Hồ sơ của bạn đủ ngưỡng dự tuyển Grade ${nextPromo.grade}. Mỗi năm, cơ hội được triệu tập hiện là ${offerChance}% và tăng khi điểm dư cao hơn. Nếu trượt hoặc hoãn mà vẫn đủ điều kiện, Hana sẽ gọi lại vào năm sau.`,
+        en: `[Hana Association Notice] Your record qualifies for the Grade ${nextPromo.grade} candidate pool. Your current annual summons chance is ${offerChance}% and rises with surplus points. If you fail or defer and still qualify, Hana will call you back next year.`
       });
     }
 
@@ -1388,6 +1394,42 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
   char.pendingEvent = null;
   if (!char.seenEvents.includes(event.id)) {
     char.seenEvents.push(event.id);
+  }
+  if (event.id.startsWith('fixer_promo_')) {
+    char.lastFixerExamAge = char.age;
+    const trialGrade = event.choices?.find((entry) => entry.setFixerGrade != null)?.setFixerGrade;
+    char.fixerTrialRetryGrade = trialGrade ?? null;
+    if (choice.setFixerGrade != null && rng() >= fixerPromotionSuccessChance(char, choice.setFixerGrade)) {
+      const loss = fixerPromotionFailureEffects(choice.setFixerGrade);
+      const before = { ...char.stats };
+      char.stats.health = clamp(char.stats.health + loss.health, 0, 100);
+      char.stats.wealth = clamp(char.stats.wealth + loss.wealth, 0, 100);
+      char.stats.sanity = clamp(char.stats.sanity + loss.sanity, 0, 100);
+      const vi = `Hana không công nhận kết quả sát hạch Grade ${choice.setFixerGrade}. Bạn trở về với thương tích, phí điều trị và bồi hoàn; có thể xin thi lại từ năm sau nếu vẫn đủ điều kiện.`;
+      const en = `Hana did not certify your Grade ${choice.setFixerGrade} trial. You returned injured, with treatment and compensation costs; you may try again next year if you still qualify.`;
+      char.logs.push({
+        id: `log_ev_${char.age}_${event.id}_failed`,
+        age: char.age,
+        season: SEASONS[char.seasonIdx],
+        type: 'major',
+        choiceVi: choice.labelVi,
+        choiceEn: choice.labelEn,
+        vi,
+        en,
+        deltas: Object.keys(loss).map((k) => ({ k, v: char.stats[k] - before[k] })).filter((delta) => delta.v)
+      });
+      char.weaver = recordChoiceInGraph(char.weaver, char, event, { effects: loss }, vi, en);
+      closeThreads(char, event.id);
+      if (char.stats.health <= 0) {
+        const [woundVi, woundEn] = woundDeath(char, 'Gục ngã trong kỳ sát hạch của Hana', 'Succumbed during a Hana qualification trial');
+        applyFatalOrCompanionSave(char, woundVi, woundEn);
+      } else if (char.stats.sanity <= 0) {
+        handleSanityBreakdown(char, rng);
+      }
+      char.weaver = updateDramaTension(char.weaver, char);
+      return char;
+    }
+    if (choice.setFixerGrade != null) char.fixerTrialRetryGrade = null;
   }
   advanceActiveNarrativeArcs(char, event.id);
 

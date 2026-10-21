@@ -109,6 +109,27 @@ export function getNextFixerPromotion(char) {
   };
 }
 
+export function fixerPromotionOfferChance(char, step = getNextFixerPromotion(char)) {
+  if (!step?.isEligible) return 0;
+  const extraRep = Math.max(0, step.currentRep - step.repReq);
+  const extraMerit = Math.max(0, step.currentMerit - step.meritReq);
+  return Math.min(0.9, 0.55 + Math.min(0.35, extraRep * 0.01 + extraMerit * 0.003));
+}
+
+export function fixerPromotionSuccessChance(char, targetGrade) {
+  const step = FIXER_LADDER.find((entry) => entry.grade === targetGrade);
+  if (!step) return 0;
+  const extraRep = Math.max(0, char.stats.rep - step.repReq);
+  const extraMerit = Math.max(0, (char.merit || 0) - step.meritReq);
+  const healthBonus = Math.max(-0.08, Math.min(0.08, (char.stats.health - 55) * 0.002));
+  return Math.min(0.85, Math.max(0.2, 0.8 - (8 - targetGrade) * 0.065 + extraRep * 0.003 + extraMerit * 0.0008 + healthBonus));
+}
+
+export function fixerPromotionFailureEffects(targetGrade) {
+  const difficulty = 9 - targetGrade;
+  return { health: -(3 + difficulty * 2), wealth: -(1 + difficulty * 4), sanity: -(1 + difficulty) };
+}
+
 /**
  * Evaluates whether Color Fixer trial can be initiated.
  * Strictly requires Grade 1, Merit >= 210, Rep >= 100, E.G.O Awakening / Resonance >= 50,

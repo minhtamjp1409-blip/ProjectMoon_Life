@@ -103,7 +103,7 @@ export function hasEstablishedStanding(char) {
  * Resonance sinks toward what the character's scars keep alive, network and rep toward
  * what their work and people keep up.
  */
-export function driftOf(char, bonded = 0) {
+export function driftOf(char, bonded = 0, protectedThresholds = {}) {
   const d = BALANCE.drift;
   const flags = char.flags || [];
   const out = {};
@@ -130,12 +130,16 @@ export function driftOf(char, bonded = 0) {
   else if (char.job === 'Syndicate' && (char.fingerRank || 0) >= 2) repAnchor += d.rep.syndicateBonus;
   const repExcess = char.stats.rep - repAnchor;
   if (char.age < 60 && !hasEstablishedStanding(char) && repExcess > 0) {
-    out.rep = -Math.max(1, Math.round(repExcess * d.rep.rate));
+    const available = char.stats.rep - (protectedThresholds.rep ?? 0);
+    if (available > 0) out.rep = -Math.min(available, 2, Math.max(1, Math.round(repExcess * d.rep.rate)));
   }
 
   // Old deeds count for less each year, so the top of a ladder needs a career that keeps earning
   const mer = d.merit;
-  if ((char.merit || 0) > mer.anchor) out.merit = -Math.max(1, Math.round((char.merit - mer.anchor) * mer.rate));
+  if ((char.merit || 0) > mer.anchor) {
+    const available = char.merit - (protectedThresholds.merit ?? 0);
+    if (available > 0) out.merit = -Math.min(available, 5, Math.max(3, Math.round((char.merit - mer.anchor) * mer.rate)));
+  }
 
   return out;
 }

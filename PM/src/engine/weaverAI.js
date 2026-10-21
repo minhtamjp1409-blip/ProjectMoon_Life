@@ -4,6 +4,7 @@ import { evaluateEventConsiderations } from './utilityCurves.js';
 import { createCityBlackboard } from './cityBlackboard.js';
 import {
   getNextFixerPromotion,
+  fixerPromotionOfferChance,
   checkColorFixerReadiness,
   getNextFingerPromotion,
   FINGER_LADDERS,
@@ -316,9 +317,10 @@ export function recordChoiceInGraph(weaver, char, event, choice, outcomeTextVi, 
 
 export function isEventEligible(event, char, { scripted = false } = {}) {
   if (!matchesEventContext(event, char)) return false;
-  if (char.seenEvents?.includes(event.id) && !event.repeatable) return false;
+  const fixerExam = event.id.startsWith('fixer_promo_');
+  if (char.seenEvents?.includes(event.id) && !event.repeatable && !fixerExam) return false;
   if (event.causalOnly && !char.weaver?.pendingThreads?.some(t => t.eventId === event.id && !t.fulfilled && t.triggerAge <= char.age)) return false;
-  if (event.id.startsWith('fixer_promo_') && !getNextFixerPromotion(char)?.isEligible) return false;
+  if (fixerExam && (!getNextFixerPromotion(char)?.isEligible || char.lastFixerExamAge === char.age)) return false;
   if (event.id === 'hana_color_ascension_trial' && !checkColorFixerReadiness(char).ready) return false;
   const fingerTrialRank = event.id.startsWith('syn_')
     ? Object.values(FINGER_LADDERS).flat().find((step) => (step.eventIds || [step.eventId]).includes(event.id))?.rank
@@ -501,11 +503,15 @@ export function selectEventWithWeaverAI({
       2: ['fixer_promo_g1_exam', 'fixer_promo_g1_hana_apex', 'fixer_promo_g1_calamity']
     };
     const candidateIds = FIXER_PROMOTION_POOLS[char.fixerGrade] || [];
-    const availableIds = candidateIds.filter((id) => !char.seenEvents.includes(id));
-    if (availableIds.length > 0 && (char.stats?.health || 0) >= 45) {
-      // Pick randomly with rng() from eligible candidates for true promotion diversity
-      const shuffled = [...availableIds].sort(() => rng() - 0.5);
-      const chosenId = shuffled[0];
+    const nextPromo = getNextFixerPromotion(char);
+    const availableIds = candidateIds.filter((id) => {
+      const event = allPools.find((entry) => entry.id === id);
+      return event && isEventEligible(event, char);
+    });
+    const retryDue = nextPromo?.isEligible && char.fixerTrialRetryGrade === nextPromo.grade &&
+      char.lastFixerExamAge != null && char.age > char.lastFixerExamAge;
+    if (availableIds.length > 0 && char.lastFixerExamAge !== char.age && (retryDue || rng() < fixerPromotionOfferChance(char, nextPromo))) {
+      const chosenId = availableIds[Math.floor(rng() * availableIds.length)];
       const examEv = allPools.find((e) => e.id === chosenId);
       if (examEv && isEventEligible(examEv, char)) {
         const logEntry = {
@@ -855,7 +861,7 @@ export function selectEventWithWeaverAI({
   }
 
   const combinedPool = [...(updatedWeaver.customEvents || []), ...allPools];
-  const eligible = combinedPool.filter(ev => isEventEligible(ev, char));
+  const eligible = combinedPool.filter(ev => !ev.id.startsWith('fixer_promo_') && isEventEligible(ev, char));
 
   if (eligible.length === 0) {
     return { event: null, weaver: updatedWeaver };

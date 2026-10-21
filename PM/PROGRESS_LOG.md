@@ -1,5 +1,12 @@
 # The City Chronicles: tiến trình dự án
 
+### 21/10/2026, BUG-26: sát hạch thăng cấp Fixer
+
+- Giới hạn hao hụt tự nhiên cuối năm ở 1–2 Rep và 3–5 Merit; khi đã đủ ngưỡng dự tuyển, hao hụt này không kéo nhân vật xuống dưới ngưỡng ngay trước kỳ sát hạch.
+- Mỗi năm đủ điều kiện có cơ hội được Hana triệu tập, tăng từ 55% đến tối đa 90% theo Rep và Merit dư. Thi trượt hoặc hoãn thì kỳ thi được xếp lại vào năm sau nếu vẫn đủ điều kiện; các biến thể sát hạch có thể xuất hiện lại, kể cả ở tuổi cao.
+- Lựa chọn thi có tỉ lệ đỗ theo Grade, sức khỏe và điểm dư. Thi trượt mất HP, Ahn và SP; mức phạt tăng ở Grade cao. Nội dung sát hạch công bố tỉ lệ đỗ và mức mất trước khi chọn. Client và Director API cùng xếp lịch cho Fixer đủ điều kiện.
+- Kiểm thử hồi quy bao phủ hao hụt, triệu tập, trượt/hoãn/thi lại, giới hạn một lần mỗi năm, chi phí theo Grade và tuổi cao.
+
 ### 21/10/2026, hao mòn thể chất khi về già
 
 - Giữ danh tiếng đã gây dựng, nhưng tuổi tác trừ HP theo từng năm. Đường suy giảm thể lực tăng dần thay vì tăng đột ngột; khi đã lớn tuổi, nghỉ ngơi không thuốc hồi HP kém hơn. Phòng khám, ampoule K Corp và cơ thể thay thế giữ cơ chế riêng.

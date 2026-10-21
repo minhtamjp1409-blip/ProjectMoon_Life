@@ -2,6 +2,8 @@ import { simulateNpcAutonomousLife } from './narrativeArcEngine.js';
 import { matchesNeed, matchesEventContext, choiceIsAvailable, mergeEffects, isNestResident, isOutsideCity } from './eventConditions.js';
 import {
   getNextFixerPromotion,
+  fixerPromotionSuccessChance,
+  fixerPromotionFailureEffects,
   checkColorFixerReadiness,
   getNextFingerPromotion,
   getNextWingPromotion,
@@ -294,6 +296,13 @@ export function planYear(charState, rng) {
     scheduledKey.push({ kind: 'major' });
   }
 
+  const nextFixerTrial = getNextFixerPromotion(char);
+  if (nextFixerTrial?.isEligible && char.fixerTrialRetryGrade === nextFixerTrial.grade &&
+      char.lastFixerExamAge != null && char.age > char.lastFixerExamAge &&
+      !scheduledKey.some((it) => it.kind === 'major' && !it.forcedEventId)) {
+    scheduledKey.unshift({ kind: 'major' });
+  }
+
   // Fixer combat contract: tactical commission
   if (char.job === 'Fixer' && !char.flags.includes('Distorted') && age >= 19 && rng() < 0.42 && !scheduledKey.some((it) => it.kind === 'contract')) {
     scheduledKey.push({ kind: 'contract' });
@@ -582,6 +591,16 @@ export async function syncPlanWithBackend(charState, rng) {
         }
       }
 
+      const nextFixerTrial = getNextFixerPromotion(charState);
+      const retryDue = nextFixerTrial?.isEligible && charState.fixerTrialRetryGrade === nextFixerTrial.grade &&
+        charState.lastFixerExamAge != null && charState.age > charState.lastFixerExamAge;
+      if (retryDue && !hydrated.some((item) => item.kind === 'major' && !item.forcedEventId)) {
+        const localTrial = localPlan.find((item) => item.kind === 'major' && !item.forcedEventId);
+        const replaceAt = hydrated.findIndex((item) => item.kind === 'daily');
+        if (localTrial && replaceAt >= 0) hydrated[replaceAt] = localTrial;
+        else if (localTrial) hydrated.push(localTrial);
+      }
+
       // The server only knows daily/minor/major/contract. The mishap and medical-care
       // moments the client rolled would be lost, so they take over a plain slot.
       const isLocalOnly = (it) => it.kind === 'mishap' || it.extra || (it.kind === 'minor' && /^m_(med|wellness)_/.test(String(it.id)));
@@ -719,6 +738,13 @@ export function runPlanItem(charState, item, rng) {
       markTheme(char, event);
       const vi = splitTitle(interpolateText(event.vi, char));
       const en = splitTitle(interpolateText(event.en, char));
+      const targetGrade = event.id.startsWith('fixer_promo_')
+        ? event.choices?.find((choice) => choice.setFixerGrade != null)?.setFixerGrade
+        : null;
+      const examChance = targetGrade == null ? null : Math.round(fixerPromotionSuccessChance(char, targetGrade) * 100);
+      const examLoss = targetGrade == null ? null : fixerPromotionFailureEffects(targetGrade);
+      const examNoteVi = examChance == null ? '' : ` Tỉ lệ đỗ hiện tại: ${examChance}%. Nếu trượt: ${examLoss.health} HP, ${examLoss.wealth} Ahn, ${examLoss.sanity} SP. Có thể thi lại từ năm sau nếu còn đủ điều kiện.`;
+      const examNoteEn = examChance == null ? '' : ` Current pass chance: ${examChance}%. On failure: ${examLoss.health} HP, ${examLoss.wealth} Ahn, ${examLoss.sanity} SP. You may retry next year if still eligible.`;
       const threadObj = item.thread ? char.weaver?.pendingThreads?.find((t) => t.id === item.thread) : null;
       char.pendingEvent = {
         ...event,
@@ -726,8 +752,8 @@ export function runPlanItem(charState, item, rng) {
         choices: (event.choices || []).map((c) => ({ ...c, labelVi: interpolateText(c.labelVi, char), labelEn: interpolateText(c.labelEn, char) })),
         titleVi: vi.title,
         titleEn: en.title,
-        displayVi: vi.body,
-        displayEn: en.body,
+        displayVi: vi.body + examNoteVi,
+        displayEn: en.body + examNoteEn,
         t: item.t,
         isCausalCallback: Boolean(item.isCausal || event.isCausalCallback),
         causalReasonVi: threadObj?.reasonVi || null,
@@ -1009,7 +1035,11 @@ export function endYear(charState, rng) {
   driftBonds(char);
 
   // What events keep raising also wears off: resonance, fame and connections need feeding
-  const drift = driftOf(char, bond ? 2 : 0);
+  const nextFixerExam = getNextFixerPromotion(char);
+  const protectedThresholds = nextFixerExam?.isEligible
+    ? { rep: nextFixerExam.repReq, merit: nextFixerExam.meritReq }
+    : {};
+  const drift = driftOf(char, bond ? 2 : 0, protectedThresholds);
   for (const [k, v] of Object.entries(drift)) add(k, v);
   if (drift.network) {
     line(hasEstablishedStanding(char) || (char.age >= 60 && char.stats.rep >= 70) ? 'drift_network_established' : 'drift_network');
