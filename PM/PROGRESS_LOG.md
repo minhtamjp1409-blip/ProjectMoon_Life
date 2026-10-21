@@ -10,7 +10,7 @@
 
 ---
 
-Cập nhật: 21/10/2026, đợt 13 (xem [mục 8](#8-nhật-ký-thay-đổi))
+Cập nhật: 21/10/2026, đợt 14 (xem [mục 8](#8-nhật-ký-thay-đổi))
 
 - Live Demo Vercel: [https://project-moon-life-five.vercel.app](https://project-moon-life-five.vercel.app)
 - Tài liệu PDF chính thức: [THE_CITY_CHRONICLES_DOCUMENTATION.pdf](https://project-moon-life-five.vercel.app/THE_CITY_CHRONICLES_DOCUMENTATION.pdf)
@@ -254,6 +254,22 @@ Trong chữ: `{name}`, `{friend}`, `{mentor}`, `{rival}`, `{lover}`, `{partner}`
 ---
 
 ## 8. Nhật ký thay đổi
+
+### 21/10/2026, đợt 14: Triển khai kiểm thử 5 tầng, loại bỏ simulate1000, đồng bộ FE/BE và deploy Vercel
+
+- **Gỡ bỏ bộ mô phỏng cũ**: Đã xóa hoàn toàn `simulate1000.mjs` (`git rm simulate1000.mjs`). Quy trình kiểm thử chất lượng và tính cân bằng chính thức chuyển sang bộ công cụ kiểm định 5 tầng độc lập (`lint_story.mjs`, `scripts/test_causal_threads.mjs`, `check_be_parity.mjs`, `story_logic_audit.mjs`, `balance_sim.mjs` và `run_million_audit.mjs`).
+- **Nghiệm thu kiến trúc mới**:
+  - Mô hình kinh tế & sinh học `src/engine/economyModel.js` (`frailty` theo `avgLife` từng District, chi phí chữa bệnh động, lão hóa lũy tiến theo tuổi).
+  - Phương sai hữu cơ `src/engine/variance.js` (5 chỉ số ẩn theo seed: luck, vigor, nerve, hustle, drama; rung chấn `jitterEffects` ±30% không lệch mean; `freshness` ưu tiên sự kiện chưa gặp).
+  - 18 mạch nhân quả hồi đáp sau 2 năm `src/data/narrative/causalThreads.js`.
+  - Bộ công cụ builder kịch bản `src/data/storyKit.js` (`M`, `C`, `O`, `I`, `D`, `AGE`).
+- **Kiểm định & Đồng bộ Frontend / Backend**:
+  - `check_be_parity.mjs`: Đồng bộ bảng bậc Fixer, mốc Color Fixer (Merit 300 / Rep 95, không bắt buộc E.G.O), 4 bậc Finger giữa C# và JS đạt 100%.
+  - Thuật toán băm tất định `StableHash` (FNV-1a 32-bit) trong `DirectorEngineService.cs` thay thế `GetHashCode` ngẫu nhiên của .NET, bảo đảm cùng seed thì kết quả giữa client và server luôn thống nhất.
+  - `balance_sim.mjs`: Mô phỏng 1.500 kiếp đời hoàn chỉnh (85.092 năm), tuổi thọ trung bình 55.7 năm (khớp 105.3% lore `avgLife`), các chỉ số tài nguyên vận động tự nhiên, không kẹt trần/sàn.
+- **Commit & Deploy Live**:
+  - Push commit `78700d5` lên nhánh `main` của repo `minhtamjp1409-blip/ProjectMoon_Life`.
+  - Vercel CI/CD tự động build và deploy thành công lên production [https://project-moon-life-five.vercel.app](https://project-moon-life-five.vercel.app) (HTTP 200 OK, khớp 100% hash asset build).
 
 ### 21/10/2026, đợt 13
 
