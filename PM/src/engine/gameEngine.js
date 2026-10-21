@@ -561,11 +561,13 @@ export function createNewCharacter({
  * Helper to clone and normalize character object so getters stay intact
  */
 export function cloneChar(char) {
+  const scars = char.scars || [];
   const copy = {
     ...char,
     stats: { ...char.stats },
     flags: [...char.flags],
-    scars: [...char.scars],
+    scars: scars.slice(-4),
+    scarHistory: [...(char.scarHistory || []), ...scars.slice(0, -4)],
     npcs: structuredClone(char.npcs || {}),
     weaver: structuredClone(char.weaver),
     inventory: structuredClone(char.inventory || []),

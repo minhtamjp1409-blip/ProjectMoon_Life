@@ -42,6 +42,7 @@ export function matchesNeed(need, char) {
   if (need.grade && !(char.job === 'Fixer' && char.fixerGrade <= need.grade[0] && char.fixerGrade >= need.grade[1])) return false;
   if (need.fingerRank != null && (char.fingerRank || 0) !== need.fingerRank) return false;
   if (need.fingerRankAtLeast != null && (char.fingerRank || 0) < need.fingerRankAtLeast) return false;
+  if (need.fingerRankAtMost != null && (char.fingerRank || 0) > need.fingerRankAtMost) return false;
   if (need.wingRank != null && (char.wingRank || 0) !== need.wingRank) return false;
   if (need.workshopRank != null && (char.workshopRank || 0) !== need.workshopRank) return false;
   for (const [key, [lo, hi]] of Object.entries(need.stat || {})) {

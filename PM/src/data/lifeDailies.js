@@ -605,8 +605,8 @@ export const LIFE_DAILIES = [
   ),
   D(
     't_back_workshop',
-    TEEN,
-    { back: true },
+    [18, 25],
+    { back: true, jobs: ['Workshop Craftsman'] },
     '[Thợ phụ Workshop mài đao] Bạn làm thợ phụ việc tại một xưởng vũ khí Workshop nhỏ, nhận mài bén những lưỡi trường đao cho các Fixer Grade 8. Một tay kiếm sĩ hài lòng vì độ bén ngọt của lưỡi kiếm đã hào phóng thưởng thêm cho bạn cả chục đồng Ahn tiền boa.',
     '[Workshop Blade Grinding] You worked as an apprentice at a humble weapon Workshop, honing edges for Grade 8 Fixers. An experienced duelist was so impressed with your meticulous grinding that he tossed you a generous ten-Ahn tip.',
     { wealth: 3, network: 1 }

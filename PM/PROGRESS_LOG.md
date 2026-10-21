@@ -1,5 +1,15 @@
 # The City Chronicles: tiến trình dự án
 
+### 21/10/2026, sửa BUG-17 đến BUG-22 từ log người chơi
+
+- BUG-17: nhiệm vụ nhận lệnh thanh trừng chỉ dành cho cấp dưới Syndicate. Người đạt bậc chỉ huy có một tình huống riêng về lệnh thu tiền bảo vệ.
+- BUG-18: NPC có tuổi tại lúc gặp, già đi cùng nhân vật và có thể qua đời vì tuổi già. Cái chết cập nhật trạng thái quan hệ, để các event sau không gọi họ như người còn sống. Cha/mẹ trong tuyến kế thừa tiếp tục theo mốc truyện riêng.
+- BUG-19: lựa chọn chữa trị giữ `costAhn` khi chuyển sang bảng quyết định; lựa chọn thiếu Ahn bị khóa cả ở chuột, bàn phím và autoplay. Kiếp lưu từ bản cũ cũng đối chiếu giá từ dữ liệu gốc.
+- BUG-20: tối đa bốn sẹo đang tác động. Sẹo dư trong save cũ chuyển vào lịch sử có thể mở xem; sẹo đang mang gây giảm HP/SP ở cuối năm. Resonance rất cao cùng nhiều sẹo đưa nhân vật trưởng thành đến ngã rẽ Carmen; tuổi 100–140 không còn bị chặn bởi giới hạn tuổi sự kiện.
+- BUG-21: sự kiện sốt của người bạn ở Backstreets chỉ xuất hiện với cư dân Backstreets.
+- BUG-22: các dòng kể về ca làm, lương và việc tại Workshop chỉ xuất hiện khi nhân vật đã trưởng thành và có nghề; tuổi 15 vẫn có thể tìm hiểu hoặc nộp đơn học việc.
+- Kiểm tra: có kiểm thử hồi quy riêng cho sáu lỗi; build FE thành công, lint kịch bản 0 lỗi/0 cảnh báo, mô phỏng 50.224 khoảnh khắc không vi phạm năm nhóm quy tắc và 120 cuộc đời không phát hiện lỗi logic.
+
 ### 21/10/2026, rà soát kịch bản và logic
 
 - Đối chiếu bản gốc lưu trong `docs/narrative/baseline.json` với dữ liệu đang chạy: từ 366 lên 752 mục (212 biến cố chính, 36 hệ quả, 178 tình huống ngắn, 302 dòng thường ngày, 24 ủy thác Fixer). Số ủy thác giữ nguyên; bốn nhóm còn lại đều đạt ít nhất gấp đôi.

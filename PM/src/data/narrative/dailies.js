@@ -1,6 +1,10 @@
 // Original scenes set in the City; these do not establish new Wing Singularities.
+const FIRST_WORK_IDS = new Set(['gloves', 'lunch', 'wages', 'tool', 'signature', 'uniform', 'schedule', 'counterfeit', 'splinter', 'door', 'birthday']);
 const group = (prefix, age, need, rows) => rows.map(([id, vi, en, fx = {}]) => ({
-  id: `daily_${prefix}_${id}`, age, need, vi, en, fx
+  id: `daily_${prefix}_${id}`,
+  age: prefix === 'adolescence' && FIRST_WORK_IDS.has(id) ? [18, 25] : age,
+  need: prefix === 'adolescence' && FIRST_WORK_IDS.has(id) ? { jobs: ['Fixer', 'Syndicate', 'Wing Employee', 'Workshop Craftsman'] } : need,
+  vi, en, fx
 }));
 
 export const EXPANDED_DAILIES = [

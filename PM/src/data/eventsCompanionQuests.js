@@ -57,7 +57,7 @@ export const COMPANION_QUEST_EVENTS = [
     age: [14, 80],
     major: true,
     weight: 25,
-    need: { npcTag: ['friend', 'sickly'], noQuest: { role: 'friend', max: 1 } },
+    need: { back: true, npcTag: ['friend', 'sickly'], noQuest: { role: 'friend', max: 1 } },
     forbids: ['Distorted'],
     vi: '[Cơn Sốt Mùa Đông Backstreets] Căn gác xép dột nát rung bần bật trong cơn gió đông buốt giá nồng nặc khói than. Tiếng ho khan của {friend} giờ đây đã lẫn những cục máu đông sẫm màu. Người bạn nằm co ro dưới ba lớp chăn rách bốc mùi ẩm mốc, lồng ngực phập phồng yếu ớt từng nhịp ngắt quãng. Một gã lang băm ở phòng khám chui Backstreets cho biết hắn có một ống huyết thanh lọc tạp chất từ tế bào K Corp, giá đúng 12 Ahn, có thể giữ lại mạng sống này.',
     en: '[The Backstreet Winter Fever] The drafty attic shivers under howling winter gales reeking of coal smoke. {friend}’s dry hacking now coughs dark clotted blood onto floorboards. They lie curled beneath three damp, moldy blankets, chest rattling with shallow breaths. An underground apothecary offers a filtered sediment vial extracted from K Corp regenerative culture for twelve Ahn.',

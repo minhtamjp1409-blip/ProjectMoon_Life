@@ -55,12 +55,13 @@ import {
   closeThreads,
   applyChoiceExtras,
   driftBonds,
+  ageNpcCompanions,
   npcActive,
   hasMemory
 } from './director.js';
 import { freshness, varyEffects, traitsOf, tiltWeight, PRINTED_NUMBERS } from './variance.js';
 import { BALANCE, healAmount, calmAmount, agingLoss, driftOf } from './economyModel.js';
-import { addScar } from './scarModel.js';
+import { activeScarCount, addScar } from './scarModel.js';
 
 export const MINOR_WINDOW_MS = 15000;
 // How many recent moments freshness looks back over (see variance.js)
@@ -212,7 +213,10 @@ function majorIsDue(char, rng) {
   if (char.job === 'Syndicate' && !char.finger && !(char.seenEvents || []).includes('syn_choose_finger_allegiance')) return true;
   if ((char.taboo || 0) >= 3) return true;
   if ((w.pendingThreads || []).some((th) => th.kind !== 'minor' && !th.fulfilled && char.age >= th.triggerAge)) return true;
-  if (char.age >= 18 && ((char.stats.sanity <= 5 && rng() < 0.12) || ((char.resonance || 0) >= 90 && rng() < 0.15)) && !(char.seenEvents || []).includes('ego_carmen_crossroad') && !char.flags.includes('EGOAwakened') && !char.flags.includes('Distorted')) return true;
+  const carmenPressure = char.age >= 18 && (((char.resonance || 0) >= 95 && activeScarCount(char) >= 3)
+    || (char.stats.sanity <= 5 && rng() < 0.12)
+    || ((char.resonance || 0) >= 90 && rng() < 0.15));
+  if (carmenPressure && !(char.seenEvents || []).includes('ego_carmen_crossroad') && !char.flags.includes('EGOAwakened') && !char.flags.includes('Distorted')) return true;
   if (char.job === 'Fixer' && !char.flags.includes('Distorted') && checkColorFixerReadiness(char).ready && !char.flags.includes('ColorFixer') && !(char.seenEvents || []).includes('hana_color_ascension_trial')) return true;
   if ((char.job === 'Syndicate' || (char.flags.includes('Distorted') && char.finger)) && (char.fingerRank || 0) >= 2 && (char.merit || 0) >= 75) return true;
   if (char.job === 'Wing Employee' && (char.wingRank || 0) >= 1 && (char.merit || 0) >= 65 && !(char.seenEvents || []).includes('wing_singularity_classified_audit')) return true;
@@ -646,7 +650,7 @@ export function runPlanItem(charState, item, rng) {
           t: item.t,
           vi: interpolateText(care.vi, char),
           en: interpolateText(care.en, char),
-          choices: care.choices.map((choice) => ({ vi: interpolateText(choice.vi, char), en: interpolateText(choice.en, char), fx: choice.fx, out: choice.out, need: choice.need })),
+          choices: care.choices.map((choice) => ({ vi: interpolateText(choice.vi, char), en: interpolateText(choice.en, char), fx: choice.fx, out: choice.out, need: choice.need, costAhn: choice.costAhn })),
           ignore: care.ignore || null,
           remainingMs: MINOR_WINDOW_MS
         };
@@ -678,7 +682,7 @@ export function runPlanItem(charState, item, rng) {
       t: item.t,
       vi: interpolateText(def.vi, char),
       en: interpolateText(def.en, char),
-      choices: def.choices.map((c) => ({ vi: interpolateText(c.vi, char), en: interpolateText(c.en, char), fx: c.fx, out: c.out, need: c.need })),
+      choices: def.choices.map((c) => ({ vi: interpolateText(c.vi, char), en: interpolateText(c.en, char), fx: c.fx, out: c.out, need: c.need, costAhn: c.costAhn })),
       ignore: def.ignore || null,
       remainingMs: MINOR_WINDOW_MS
     };
@@ -962,6 +966,19 @@ export function endYear(charState, rng) {
     }
   }
 
+  const scarCount = activeScarCount(char);
+  if (scarCount >= 2 && !char.flags.includes('Distorted')) {
+    add('sanity', -(scarCount - 1));
+    if (scarCount >= 3) add('health', -1);
+    vi.push('Những di chứng cũ làm giấc ngủ chập chờn và cơ thể chậm hồi phục.');
+    en.push('Old scars disturbed your sleep and slowed your recovery.');
+  }
+  if ((char.resonance || 0) >= 90 && !char.flags.includes('Distorted') && !char.flags.includes('EGOAwakened')) {
+    add('sanity', -2);
+    vi.push('Cộng hưởng quá cao khiến tiếng nói của Carmen khó lắng xuống.');
+    en.push('High resonance made Carmen’s voice harder to quiet.');
+  }
+
   if (char.age >= 18 && ['Fixer', 'Syndicate', 'Wing Employee', 'Workshop Craftsman'].includes(char.job) && !char.flags.includes('Distorted')) {
     const wear = char.job === 'Fixer' || char.job === 'Syndicate' ? 2 : 1;
     add('health', -wear);
@@ -1012,27 +1029,24 @@ export function endYear(charState, rng) {
   }
 
   const deltas = applyFx(char, fx);
+  const npcAutonomyLogs = [...ageNpcCompanions(char, rng), ...simulateNpcAutonomousLife(char, rng)];
+  for (const nlog of npcAutonomyLogs) {
+    pushLog(
+      char,
+      {
+        key: 'npc_autonomy',
+        type: 'story',
+        vi: nlog.vi,
+        en: nlog.en
+      },
+      0.98
+    );
+  }
+
   if (deltas.some((d) => d.k !== 'heat')) {
     const textVi = vi.length ? vi.join(' ') : 'Một năm nữa lặng lẽ trôi qua dưới màn đêm không bao giờ tắt của The City.';
     const textEn = en.length ? en.join(' ') : 'Another year quietly drifted by beneath the never-dimming lights of the City.';
-    // Autonomous Living Companions Drama
-  const npcAutonomyLogs = simulateNpcAutonomousLife(char, rng);
-  if (npcAutonomyLogs && npcAutonomyLogs.length > 0) {
-    for (const nlog of npcAutonomyLogs) {
-      pushLog(
-        char,
-        {
-          key: 'npc_autonomy',
-          type: 'story',
-          vi: nlog.vi,
-          en: nlog.en
-        },
-        0.98
-      );
-    }
-  }
-
-  pushLog(
+    pushLog(
       char,
       {
         key: 'year_end',

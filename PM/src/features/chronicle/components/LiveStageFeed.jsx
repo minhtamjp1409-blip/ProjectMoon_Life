@@ -4,7 +4,7 @@ import { GitBranch, Download, RotateCcw, Hammer, ChevronDown, Eye, EyeOff } from
 import { useShallow } from 'zustand/react/shallow';
 import { useGameStore } from '../../../store/gameStore';
 import { buildLifeSummaryAndLegacy } from '../../../engine/gameEngine';
-import { MINOR_WINDOW_MS, splitTitle } from '../../../engine/yearPlanner';
+import { LIFE_MINORS, MINOR_WINDOW_MS, splitTitle } from '../../../engine/yearPlanner';
 import { exportDossierCardPNG } from '../../../utils/exportDossierCard';
 import { audioEngine } from '../../../engine/audioEngine';
 import { gameFeel } from '../../../engine/gameFeel';
@@ -142,6 +142,7 @@ const MinorDock = ({ prompt, npcs, wealth = 0, paused, onPick, place = 'Backstre
   const { t, lang, bilingual } = useT();
   const raw = lang === 'en' ? prompt.en : prompt.vi;
   const { title, body } = splitTitle(raw);
+  const sourceChoices = LIFE_MINORS.find((entry) => entry.id === prompt.id)?.choices || [];
   return (
     <div className="dock is-minor" role="document">
       <div className="dock-inner">
@@ -167,7 +168,8 @@ const MinorDock = ({ prompt, npcs, wealth = 0, paused, onPick, place = 'Backstre
         {bilingual && <p className="entry-alt">{splitTitle(prompt.en).body}</p>}
         <div className="choices">
           {prompt.choices.map((ch, idx) => {
-            const isShortAhn = Boolean(ch.costAhn && ch.costAhn > wealth);
+            const costAhn = ch.costAhn ?? sourceChoices[idx]?.costAhn;
+            const isShortAhn = Boolean(costAhn && costAhn > wealth);
             return (
               <button
                 type="button"
@@ -180,9 +182,9 @@ const MinorDock = ({ prompt, npcs, wealth = 0, paused, onPick, place = 'Backstre
                 <span className="choice-badge">{idx + 1}</span>
                 <span>
                   <span className="choice-label">{lang === 'en' ? ch.en : ch.vi}</span>
-                  {ch.costAhn && (
+                  {costAhn && (
                     <span className={`delta ${isShortAhn ? 'is-down' : 'is-static'}`} style={{ marginLeft: 6 }}>
-                      {isShortAhn ? t(`Thiếu Ahn (Cần ${ch.costAhn})`, `Short Ahn (Needs ${ch.costAhn})`) : t(`Tốn ${ch.costAhn} Ahn`, `Cost: ${ch.costAhn} Ahn`)}
+                      {isShortAhn ? t(`Thiếu Ahn (Cần ${costAhn})`, `Short Ahn (Needs ${costAhn})`) : t(`Tốn ${costAhn} Ahn`, `Cost: ${costAhn} Ahn`)}
                     </span>
                   )}
                   <ChoicePreview choice={ch} npcs={npcs} />
@@ -714,6 +716,8 @@ export const LiveStageFeed = () => {
         e.preventDefault();
         handleSelectContract(app.id);
       } else if (char.pendingMinor && idx < char.pendingMinor.choices.length) {
+        const choice = LIFE_MINORS.find((event) => event.id === char.pendingMinor.id)?.choices[idx];
+        if (choice?.costAhn > char.stats.wealth) return;
         e.preventDefault();
         handleChooseMinor(idx);
       }

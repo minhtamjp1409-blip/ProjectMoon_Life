@@ -1265,7 +1265,7 @@ export const LIFE_MINORS = [
   M(
     'm_syn_order',
     GROWN,
-    { jobs: ['Syndicate'] },
+    { jobs: ['Syndicate'], fingerRankAtMost: 2 },
     '[Mệnh lệnh thanh trừng đứa trẻ] Thủ lĩnh băng đảng giao cho bạn một nhiệm vụ tàn nhẫn: "xử lý sạch sẽ" một đứa trẻ vô tình nhìn thấy mặt mũi của nhóm các bạn trong một vụ thanh trừng.',
     '[The Syndicate Execution Order] The captain handed down a grim decree: “silence” an innocent child who caught sight of your crew’s faces during a hit.',
     [
@@ -1293,6 +1293,20 @@ export const LIFE_MINORS = [
     ],
     I('Bạn do dự chần chừ. Một tên tay sai khác lập tức ra tay thay và báo cáo thái độ của bạn lên cấp trên.', 'You hesitated. Another enforcer did the deed and logged your wavering disloyalty.'),
     { rep: -4, sanity: -6, once: true, tags: ['danger'] }
+  ),
+
+  M(
+    'm_syn_officer_protection_order',
+    GROWN,
+    { jobs: ['Syndicate'], fingerRankAtLeast: 3 },
+    '[Lệnh bảo vệ khu phố] Người phụ trách tuyến phố đưa bạn danh sách các hộ đã nộp tiền bảo vệ. Một tổ dưới quyền muốn thu thêm lần nữa trước khi trời tối. Lệnh cuối cùng thuộc về bạn.',
+    '[Protection Order] The block steward brought you a list of households that had already paid for protection. A crew under your command wanted to collect again before nightfall. The final order was yours.',
+    [
+      C('Giữ đúng sổ thu', 'Honour the ledger', 'Bạn gạch tên những hộ đã nộp. Đám lính tỏ vẻ thất vọng, nhưng sáng hôm sau không ai phải giấu cửa hàng sau tấm ván.', 'You struck the paid households from the collection list. Your crew grumbled, but no shop had to board its door by morning.', { rep: 2, network: 2 }, { motif: { loyalty: 1 } }),
+      C('Cho phép thu thêm', 'Allow another collection', 'Tiền được đưa lên bàn bạn trước nửa đêm. Hôm sau, khu phố im lặng khi người của bạn đi qua.', 'The money reached your desk before midnight. The block fell silent whenever your crew passed the next day.', { wealth: 3, sanity: -3, heat: 3 }, { motif: { greed: 1 } })
+    ],
+    I('Bạn trả lại danh sách và không ra lệnh. Tổ dưới quyền tự chọn cách làm, rồi ghi tên bạn ở cuối báo cáo.', 'You returned the list without an order. Your crew chose for itself and put your name at the foot of the report.', { rep: -2 }),
+    { tags: ['syndicate'] }
   ),
 
   M(

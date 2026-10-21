@@ -675,7 +675,9 @@ export function selectEventWithWeaverAI({
 
   const carmenEv = allPools.find(e => e.id === 'ego_carmen_crossroad');
   const meetsCarmenPrereq = char.age >= 18 &&
-    ((char.sanity <= 5 && rng() < 0.12) || ((char.resonance || 0) >= 90 && rng() < 0.15));
+    (((char.resonance || 0) >= 95 && Math.min(4, (char.scars || []).length) >= 3) ||
+      (char.sanity <= 5 && rng() < 0.12) ||
+      ((char.resonance || 0) >= 90 && rng() < 0.15));
 
   if (
     carmenEv &&

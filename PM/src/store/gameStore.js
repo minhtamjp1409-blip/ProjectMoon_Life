@@ -14,6 +14,7 @@ import { planYear, syncPlanWithBackend, runDueItems, resolveMinor, endYear, next
 import { CODEX_RECORDS } from '../data/worldData.js';
 import { getItemById } from '../data/itemsData.js';
 import { cityArchiveAPI } from '../services/api/cityArchiveAPI.js';
+import { choiceIsAvailable } from '../engine/eventConditions.js';
 
 const META_KEY = 'pm_city_chronicles_save_v3';
 const RUN_KEY = 'pm_city_chronicles_run_v1';
@@ -607,7 +608,9 @@ export const useGameStore = create((set, get) => ({
     if (c.pendingMinor) {
       const remaining = s.minorRemainingMs - dtMs;
       if (s.autoPlay && MINOR_WINDOW_MS - remaining >= AUTO_MINOR_MS) {
-        get().chooseMinor(Math.floor(lifeRng() * c.pendingMinor.choices.length));
+        const def = LIFE_MINORS.find((event) => event.id === c.pendingMinor.id);
+        const available = (def?.choices || []).map((choice, index) => choiceIsAvailable(choice, c) ? index : -1).filter((index) => index >= 0);
+        get().chooseMinor(available.length ? available[Math.floor(lifeRng() * available.length)] : -1);
         return;
       }
       if (remaining <= 0) {

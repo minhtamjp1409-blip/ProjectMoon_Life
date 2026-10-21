@@ -315,6 +315,24 @@ export function applyNpcFate(char, role, status, age = char.age) {
   return true;
 }
 
+export function ageNpcCompanions(char, rng = Math.random) {
+  const logs = [];
+  for (const [role, npc] of Object.entries(char.npcs || {})) {
+    if (role === 'parent' || !npcActive(npc)) continue;
+    const metAge = npc.metAge || 0;
+    const ageAtMeet = npc.ageAtMeet ?? (role === 'mentor' ? metAge + 20 : role === 'child' ? 0 : metAge);
+    const currentAge = ageAtMeet + Math.max(0, char.age - metAge);
+    if (currentAge < 75) continue;
+    const deathChance = Math.min(1, (currentAge - 74) * 0.025);
+    if (rng() >= deathChance || !applyNpcFate(char, role, 'dead')) continue;
+    logs.push({
+      vi: `[Tin từ người thân] ${npc.nameVi} qua đời ở tuổi ${currentAge}. Tên của họ vẫn ở lại trong hồ sơ đời bạn.`,
+      en: `[News from home] ${npc.nameEn || npc.nameVi} died at ${currentAge}. Their name remains in your life's record.`
+    });
+  }
+  return logs;
+}
+
 /** People drift apart when you stop seeing them. */
 export function driftBonds(char) {
   const next = { ...char.npcs };

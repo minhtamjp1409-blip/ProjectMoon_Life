@@ -374,7 +374,7 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeT
       {/* Tab: Relations & Scars */}
       {showRelations && <People npcs={char.npcs} age={char.age} t={t} lang={lang} />}
 
-      {showRelations && char.scars.length > 0 && (
+      {showRelations && (char.scars.length > 0 || char.scarHistory?.length > 0) && (
         <section>
           <h3 className="section-title">{t('Di chứng còn mang', 'Lasting scars')} <small>{t('Tối đa 4 di chứng tác động: mỗi sẹo giảm năng lực làm ủy thác và giữ dư âm cộng hưởng.', 'Up to 4 active scars: each hinders contracts and sustains resonance.')}</small></h3>
           <div className="chips">
@@ -384,7 +384,7 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeT
               </span>
             ))}
           </div>
-          {char.scars.length > 4 && <details><summary>{t(`${char.scars.length - 4} dấu tích cũ`, `${char.scars.length - 4} older marks`)}</summary><div className="chips">{char.scars.slice(0, -4).map((scar, index) => <span className="chip" key={`${scar}_${index}`}>{scar}</span>)}</div></details>}
+          {(char.scarHistory?.length || 0) > 0 && <details><summary>{t(`${char.scarHistory.length} dấu tích cũ`, `${char.scarHistory.length} older marks`)}</summary><div className="chips">{char.scarHistory.map((scar, index) => <span className="chip" key={`${scar}_${index}`}>{scar}</span>)}</div></details>}
         </section>
       )}
     </>

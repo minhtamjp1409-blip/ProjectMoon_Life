@@ -187,7 +187,7 @@ export const SUPERNATURAL_EVENTS = [
   // ------------------------------------------------------------------ Carmen / E.G.O & Distortion
   {
     id: 'ego_carmen_crossroad',
-    age: [18, 99],
+    age: [18, 140],
     major: true,
     weight: 999,
     forbids: ['EGOAwakened', 'Distorted'],
