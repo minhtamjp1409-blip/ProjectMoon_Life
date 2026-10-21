@@ -294,13 +294,13 @@ export const SUPERNATURAL_EVENTS = [
         resultEn: 'It no longer hurt. That was the first thing you noticed. Carmen’s blazing sun enveloped you; a soothing warmth spread as your flesh morphed into the shape of your deepest obsession. The next morning Hana Association opened a new file: Distortion, unrated.'
       },
       {
-        labelVi: 'Cắn chặt răng quay lưng, níu lấy sự tỉnh táo phàm trần',
-        labelEn: 'Grit your teeth and turn away, clinging to mortal sanity',
-        effects: { sanity: +35, health: -15, rep: +10 },
+        labelVi: 'Cắn chặt răng quay lưng, dùng ý chí sắt đá và lời thề níu lấy sự tỉnh táo phàm trần',
+        labelEn: 'Grit your teeth and turn away, clinging to iron will, creed and mortal sanity',
+        effects: { sanity: +45, health: +10, rep: +25, resonance: -25 },
         scarsAdd: ['Kẻ từ chối tiếng gọi thái dương'],
-        meritAdd: 20,
-        resultVi: 'Bạn nhắm mắt, bịt tai, khước từ mọi cám dỗ từ vầng thái dương của Carmen. Bạn ho ra một búng máu vì xung đột tinh thần dữ dội, nhưng khi mở mắt ra, bạn vẫn là bạn: một con người trần thế, tiếp tục bước đi trên mặt đất The City.',
-        resultEn: 'You shut your eyes and closed your ears, refusing every whisper from Carmen’s blazing sun. You coughed blood from the sheer psychic shock, but when you opened your eyes, you remained yourself: an ordinary human walking the ground of The City.'
+        meritAdd: 25,
+        resultVi: 'Bạn nhắm mắt, bịt tai, dùng lời thề với các huynh đệ và tổ chức khước từ mọi cám dỗ từ vầng thái dương của Carmen. Biển ánh sáng tan biến; bạn trở về thực tại: một con người trần thế kiên cường tiếp tục bước đi trên mặt đất The City (+45 SP, +10 HP, -25 Resonance).',
+        resultEn: 'You shut your eyes and closed your ears, clinging to oaths and brotherhood to refuse every whisper from Carmen. The blinding sun dissolved; you remained yourself: an ordinary human walking the ground of The City (+45 SP, +10 HP, -25 Resonance).'
       }
     ]
   },

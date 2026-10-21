@@ -9,7 +9,11 @@ export function matchesNeed(need, char) {
   if (need.notNest && isNestResident(char)) return false;
   if (need.back && (isNestResident(char) || isOutsideCity(char))) return false;
   if (need.out && !isOutsideCity(char)) return false;
-  if (need.jobs && !need.jobs.includes(char.job)) return false;
+  if (need.jobs) {
+    const jobAllowed = need.jobs.includes(char.job) ||
+      (char.flags?.includes('Distorted') && char.finger && need.jobs.includes('Syndicate'));
+    if (!jobAllowed) return false;
+  }
   if (need.regions && !need.regions.includes(char.regionId)) return false;
   if (need.finger && need.finger !== char.finger) return false;
   if (need.flags && !need.flags.every((f) => flags.includes(f))) return false;
@@ -62,13 +66,18 @@ export function matchesEventContext(entry, char) {
   if (!entry || !char.alive) return false;
   if (entry.age && (char.age < entry.age[0] || char.age > entry.age[1])) return false;
   if (entry.regions && !entry.regions.includes(char.regionId)) return false;
-  if (entry.jobs && !entry.jobs.includes(char.job)) return false;
+  if (entry.jobs) {
+    const jobMatches = entry.jobs.includes(char.job) ||
+      (char.flags?.includes('Distorted') && char.finger && entry.jobs.includes('Syndicate'));
+    if (!jobMatches) return false;
+  }
   if (entry.finger && entry.finger !== char.finger) return false;
   if (entry.requires && !entry.requires.every((f) => char.flags.includes(f))) return false;
   if (entry.forbids?.some((f) => char.flags.includes(f))) return false;
   const distortionEntry = entry.requires?.includes('Distorted') || entry.need?.flags?.includes('Distorted') ||
-    entry.jobs?.includes('Distortion') || entry.need?.jobs?.includes('Distortion');
-  if (char.flags.includes('Distorted') && !distortionEntry && !entry.allowDistorted) return false;
+    entry.jobs?.includes('Distortion') || entry.need?.jobs?.includes('Distortion') ||
+    entry.allowDistorted || (char.finger && entry.finger === char.finger);
+  if (char.flags.includes('Distorted') && !distortionEntry) return false;
   return matchesNeed(entry.need, char) && hasNarrativeContext(entry, char);
 }
 

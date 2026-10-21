@@ -1016,8 +1016,8 @@ export function checkPromotions(char) {
     }
   }
 
-  // Syndicate / Five Fingers Rank Promotions: emit notifications when ready for next trial
-  if (char.job === 'Syndicate' && char.finger) {
+  // Syndicate / Five Fingers Rank Promotions: emit notifications when ready for next trial (Unblocked for Distorted)
+  if ((char.job === 'Syndicate' || (char.flags.includes('Distorted') && char.finger)) && char.finger) {
     const nextPromo = getNextFingerPromotion(char);
     if (nextPromo && nextPromo.isEligible && !char.flags.includes(`finger_promo_ready_r${nextPromo.rank}`)) {
       char.flags.push(`finger_promo_ready_r${nextPromo.rank}`);

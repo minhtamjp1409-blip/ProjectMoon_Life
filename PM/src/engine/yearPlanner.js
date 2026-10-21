@@ -188,8 +188,8 @@ function majorIsDue(char, rng) {
     const nextPromo = getNextFixerPromotion(char);
     if (nextPromo && nextPromo.isEligible) return true;
   }
-  // If Syndicate is eligible for next finger promotion, schedule major
-  if (char.job === 'Syndicate' && !char.flags.includes('Distorted')) {
+  // If Syndicate is eligible for next finger promotion, schedule major (Unblocked for Distorted)
+  if ((char.job === 'Syndicate' || (char.flags.includes('Distorted') && char.finger)) && char.finger) {
     const nextPromo = getNextFingerPromotion(char);
     if (nextPromo && nextPromo.isEligible) return true;
   }
@@ -209,7 +209,7 @@ function majorIsDue(char, rng) {
   if ((w.pendingThreads || []).some((th) => th.kind !== 'minor' && !th.fulfilled && char.age >= th.triggerAge)) return true;
   if (char.age >= 18 && ((char.stats.sanity <= 5 && rng() < 0.12) || ((char.resonance || 0) >= 90 && rng() < 0.15)) && !(char.seenEvents || []).includes('ego_carmen_crossroad') && !char.flags.includes('EGOAwakened') && !char.flags.includes('Distorted')) return true;
   if (char.job === 'Fixer' && !char.flags.includes('Distorted') && checkColorFixerReadiness(char).ready && !char.flags.includes('ColorFixer') && !(char.seenEvents || []).includes('hana_color_ascension_trial')) return true;
-  if (char.job === 'Syndicate' && (char.fingerRank || 0) >= 2 && (char.merit || 0) >= 75) return true;
+  if ((char.job === 'Syndicate' || (char.flags.includes('Distorted') && char.finger)) && (char.fingerRank || 0) >= 2 && (char.merit || 0) >= 75) return true;
   if (char.job === 'Wing Employee' && (char.wingRank || 0) >= 1 && (char.merit || 0) >= 65 && !(char.seenEvents || []).includes('wing_singularity_classified_audit')) return true;
   if (char.job === 'Workshop Craftsman' && (char.workshopRank || 0) >= 1 && (char.merit || 0) >= 65 && !(char.seenEvents || []).includes('workshop_legendary_forge_trial')) return true;
   const gap = w.yearsSinceLastMajor || 0;

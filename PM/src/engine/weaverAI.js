@@ -484,21 +484,25 @@ export function selectEventWithWeaverAI({
     }
   }
 
-  // Prioritize sequential Fixer Grade Promotion exams
+  // Prioritize sequential Fixer Grade Promotion exams (Multi-track Association trials)
   if (char.job === 'Fixer' && !char.flags.includes('Distorted')) {
-    const promoEvIds = {
-      9: 'fixer_promo_g8_exam',
-      8: 'fixer_promo_g7_exam',
-      7: 'fixer_promo_g6_exam',
-      6: 'fixer_promo_g5_exam',
-      5: 'fixer_promo_g4_exam',
-      4: 'fixer_promo_g3_exam',
-      3: 'fixer_promo_g2_exam',
-      2: 'fixer_promo_g1_exam'
+    const FIXER_PROMOTION_POOLS = {
+      9: ['fixer_promo_g8_exam', 'fixer_promo_g8_seven', 'fixer_promo_g8_zwei'],
+      8: ['fixer_promo_g7_exam', 'fixer_promo_g7_shi', 'fixer_promo_g7_tres'],
+      7: ['fixer_promo_g6_exam', 'fixer_promo_g6_cinq', 'fixer_promo_g6_oufi'],
+      6: ['fixer_promo_g5_exam', 'fixer_promo_g5_dieci', 'fixer_promo_g5_molar'],
+      5: ['fixer_promo_g4_exam', 'fixer_promo_g4_devzat', 'fixer_promo_g4_rhino'],
+      4: ['fixer_promo_g3_exam', 'fixer_promo_g3_warp', 'fixer_promo_g3_reindeer'],
+      3: ['fixer_promo_g2_exam', 'fixer_promo_g2_black_silence', 'fixer_promo_g2_district_defense'],
+      2: ['fixer_promo_g1_exam', 'fixer_promo_g1_hana_apex', 'fixer_promo_g1_calamity']
     };
-    const targetExamId = promoEvIds[char.fixerGrade];
-    if (targetExamId && !char.seenEvents.includes(targetExamId) && (char.stats?.health || 0) >= 45) {
-      const examEv = allPools.find((e) => e.id === targetExamId);
+    const candidateIds = FIXER_PROMOTION_POOLS[char.fixerGrade] || [];
+    const availableIds = candidateIds.filter((id) => !char.seenEvents.includes(id));
+    if (availableIds.length > 0 && (char.stats?.health || 0) >= 45) {
+      // Pick randomly with rng() from eligible candidates for true promotion diversity
+      const shuffled = [...availableIds].sort(() => rng() - 0.5);
+      const chosenId = shuffled[0];
+      const examEv = allPools.find((e) => e.id === chosenId);
       if (examEv && isEventEligible(examEv, char)) {
         const logEntry = {
           age: char.age,
@@ -507,7 +511,7 @@ export function selectEventWithWeaverAI({
           utility: 975,
           reasonVi: `Fixer Grade ${char.fixerGrade} đủ điều kiện: Hana Association triệu tập kỳ thi thăng cấp Grade ${char.fixerGrade - 1}`,
           reasonEn: `Grade ${char.fixerGrade} Fixer eligible: Hana Association summons promotion exam to Grade ${char.fixerGrade - 1}`,
-          candidates: [{ eventId: examEv.id, totalUtility: 975 }]
+          candidates: availableIds.map(id => ({ eventId: id, totalUtility: 975 }))
         };
         return {
           event: examEv,
@@ -520,28 +524,36 @@ export function selectEventWithWeaverAI({
     }
   }
 
-  // Prioritize sequential Syndicate / Finger Promotion trials
-  if (char.job === 'Syndicate' && char.finger && !char.flags.includes('Distorted')) {
+  // Prioritize sequential Syndicate / Finger Promotion trials (Unblocked for Distorted Finger Operatives)
+  const isFingerOperative = (char.job === 'Syndicate' || (char.flags.includes('Distorted') && char.finger)) && char.finger;
+  if (isFingerOperative) {
     const nextFingerPromo = getNextFingerPromotion(char);
-    if (nextFingerPromo && nextFingerPromo.isEligible && !char.seenEvents.includes(nextFingerPromo.eventId)) {
-      const promoEv = allPools.find((e) => e.id === nextFingerPromo.eventId);
-      if (promoEv && isEventEligible(promoEv, char)) {
-        const logEntry = {
-          age: char.age,
-          phase: 'CLIMAX',
-          selectedId: promoEv.id,
-          utility: 975,
-          reasonVi: `Thành viên The ${char.finger} đủ điều kiện: Đại lễ thăng bậc ${nextFingerPromo.titleVi}`,
-          reasonEn: `The ${char.finger} operative eligible: Promotion trial ${nextFingerPromo.titleEn}`,
-          candidates: [{ eventId: promoEv.id, totalUtility: 975 }]
-        };
-        return {
-          event: promoEv,
-          weaver: {
-            ...updatedWeaver,
-            decisionLog: [logEntry, ...updatedWeaver.decisionLog].slice(0, 18)
-          }
-        };
+    if (nextFingerPromo && nextFingerPromo.isEligible) {
+      const candidateIds = nextFingerPromo.eventIds || [nextFingerPromo.eventId];
+      const availableIds = candidateIds.filter((id) => !char.seenEvents.includes(id));
+      if (availableIds.length > 0) {
+        // Shuffle candidates with rng() for true promotion diversity
+        const shuffled = [...availableIds].sort(() => rng() - 0.5);
+        const chosenId = shuffled[0];
+        const promoEv = allPools.find((e) => e.id === chosenId);
+        if (promoEv && isEventEligible(promoEv, char)) {
+          const logEntry = {
+            age: char.age,
+            phase: 'CLIMAX',
+            selectedId: promoEv.id,
+            utility: 975,
+            reasonVi: `Thành viên The ${char.finger}${char.flags.includes('Distorted') ? ' (Distorted)' : ''} đủ điều kiện: Đại lễ thăng bậc ${nextFingerPromo.titleVi}`,
+            reasonEn: `The ${char.finger} operative${char.flags.includes('Distorted') ? ' (Distorted)' : ''} eligible: Promotion trial ${nextFingerPromo.titleEn}`,
+            candidates: availableIds.map(id => ({ eventId: id, totalUtility: 975 }))
+          };
+          return {
+            event: promoEv,
+            weaver: {
+              ...updatedWeaver,
+              decisionLog: [logEntry, ...updatedWeaver.decisionLog].slice(0, 18)
+            }
+          };
+        }
       }
     }
   }
@@ -716,40 +728,44 @@ export function selectEventWithWeaverAI({
     };
   }
 
-  // Syndicate Pinnacle Ascension Trial (Underboss / Proxy / Great Sibling / Maestro / Star of the Sky)
+  // Syndicate Pinnacle Ascension Trial (Underboss / Weaver / Great Sibling / Curator / Sovereign)
   if (
-    char.job === 'Syndicate' &&
+    (char.job === 'Syndicate' || (char.flags.includes('Distorted') && char.finger)) &&
     char.finger &&
     (char.fingerRank || 0) >= 2 &&
-    (char.merit || 0) >= 100 &&
+    (char.merit || 0) >= 78 &&
     ((char.stats?.rep ?? char.rep) || 0) >= 45
   ) {
-    const fingerTrialIds = {
-      Thumb: 'syn_thumb_underboss_purge',
-      Index: 'syn_index_weaver_prescript',
-      Middle: 'syn_middle_great_brother_vendetta',
-      Pinky: 'syn_pinky_star_blade_pinnacle',
-      Ring: 'syn_ring_maestro_gallery'
+    const fingerTrialPools = {
+      Thumb: ['syn_thumb_underboss_purge', 'syn_thumb_apex_godfather'],
+      Index: ['syn_index_weaver_prescript', 'syn_index_grand_proxy_flow'],
+      Middle: ['syn_middle_great_brother_vendetta', 'syn_middle_apex_patriarch'],
+      Pinky: ['syn_pinky_promo_sovereign', 'syn_pinky_apex_monarch'],
+      Ring: ['syn_ring_curator_monument', 'syn_ring_apex_grand_master']
     };
-    const targetTrialId = fingerTrialIds[char.finger];
-    const fingerEv = targetTrialId && allPools.find(e => e.id === targetTrialId);
-    if (fingerEv && isEventEligible(fingerEv, char, { scripted: true })) {
-      const logEntry = {
-        age: char.age,
-        phase: 'CLIMAX',
-        selectedId: fingerEv.id,
-        utility: 975,
-        reasonVi: `Thành viên The ${char.finger} đạt Rank ${char.fingerRank} & ${char.merit} Merit: Khảo nghiệm sinh tử bước lên hàng Trưởng Bối`,
-        reasonEn: `The ${char.finger} member reached Rank ${char.fingerRank} & ${char.merit} Merit: Pinnacle Ascension trial to apex leadership`,
-        candidates: [{ eventId: fingerEv.id, totalUtility: 975 }]
-      };
-      return {
-        event: fingerEv,
-        weaver: {
-          ...updatedWeaver,
-          decisionLog: [logEntry, ...updatedWeaver.decisionLog].slice(0, 18)
-        }
-      };
+    const candidateIds = fingerTrialPools[char.finger] || [];
+    const available = candidateIds.filter((id) => !char.seenEvents.includes(id));
+    if (available.length > 0) {
+      const chosenId = [...available].sort(() => rng() - 0.5)[0];
+      const fingerEv = allPools.find((e) => e.id === chosenId);
+      if (fingerEv && isEventEligible(fingerEv, char, { scripted: true })) {
+        const logEntry = {
+          age: char.age,
+          phase: 'CLIMAX',
+          selectedId: fingerEv.id,
+          utility: 975,
+          reasonVi: `Thành viên The ${char.finger}${char.flags.includes('Distorted') ? ' (Distorted)' : ''} đạt Rank ${char.fingerRank} & ${char.merit} Merit: Khảo nghiệm sinh tử bước lên đỉnh cao Quyền Lực`,
+          reasonEn: `The ${char.finger} member reached Rank ${char.fingerRank} & ${char.merit} Merit: Pinnacle Ascension trial to apex leadership`,
+          candidates: available.map((id) => ({ eventId: id, totalUtility: 975 }))
+        };
+        return {
+          event: fingerEv,
+          weaver: {
+            ...updatedWeaver,
+            decisionLog: [logEntry, ...updatedWeaver.decisionLog].slice(0, 18)
+          }
+        };
+      }
     }
   }
 
