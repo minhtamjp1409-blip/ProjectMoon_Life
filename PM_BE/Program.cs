@@ -7,7 +7,10 @@ using ProjectMoon.Api.Services;
 
 var builder = WebApplication.CreateSlimBuilder(args);
 
-builder.WebHost.UseUrls(builder.Configuration["Urls"] ?? "http://localhost:5080");
+var defaultUrl = Environment.GetEnvironmentVariable("PORT") is { Length: > 0 } port
+    ? $"http://0.0.0.0:{port}"
+    : "http://localhost:5080";
+builder.WebHost.UseUrls(builder.Configuration["Urls"] ?? defaultUrl);
 // A saved life with a long log reaches a few hundred KB; anything far bigger is not ours
 builder.WebHost.ConfigureKestrel(o => o.Limits.MaxRequestBodySize = 4 * 1024 * 1024);
 
@@ -21,9 +24,14 @@ builder.Services.AddResponseCompression(o =>
 });
 builder.Services.Configure<BrotliCompressionProviderOptions>(o => o.Level = CompressionLevel.Fastest);
 
-// The Vite dev server on this machine or the LAN is the only caller
+// The Vite dev server on this machine, LAN, or Vercel production frontend
 builder.Services.AddCors(o => o.AddPolicy("Frontend", p => p
-    .SetIsOriginAllowed(origin => Uri.TryCreate(origin, UriKind.Absolute, out var uri) && (uri.IsLoopback || uri.Host.StartsWith("192.168.")))
+    .SetIsOriginAllowed(origin =>
+        string.IsNullOrEmpty(origin) ||
+        origin.Contains("localhost") ||
+        origin.StartsWith("http://192.168.") ||
+        origin.EndsWith(".vercel.app") ||
+        origin == "https://project-moon-life-five.vercel.app")
     .AllowAnyHeader()
     .AllowAnyMethod()));
 
