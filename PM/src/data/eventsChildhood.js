@@ -112,7 +112,7 @@ export const CHILDHOOD_EVENTS = [
     id: 'ch_sweeper_night_313',
     age: [5, 10],
     major: true,
-    weight: 6,
+    weight: 3, // was 6; with the larger childhood pool it no longer needs to carry the Backstreets alone
     requires: ['Backstreets'],
     forbids: ['Nest', 'Outskirts'],
     vi: '[Đêm 3:13 AM · Tiếng Cào Của Lưỡi Móc Sắt] Tiếng còi báo động toàn thành phố réo lên ba hồi chói óc rồi tắt phụt, kéo theo toàn bộ ánh đèn neon của Backstreets vụt tắt. Night in the Backstreets bắt đầu. Dưới gầm giường, bạn nín thở nghe tiếng rít ken két từ van lọc khí và tiếng móc sắt lê loẹt xoẹt trên đường nhựa của bầy Sweeper đang lùng sục kiếm "súp dinh dưỡng". Bất thình lình, cánh cửa phòng trọ bị đập dồn dập. Tiếng ông Kang hàng xóm khản đặc, nghẹn ngào trong máu: "Mở... mở cửa với cháu ơi! Cánh tay chú bị móc kẹt rồi... chúng nó đang đến đằng sau..."',

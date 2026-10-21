@@ -573,6 +573,17 @@ public sealed class DirectorEngineService
                 majorTitleEn = "Legendary Forge Trial";
             }
         }
+        else if (c.Age <= 4)
+        {
+            // No major events in early childhood (matches the client's majorIsDue)
+        }
+        else if (c.Age < 12)
+        {
+            // The gap counts from birth, so the adult rule below would put every first major
+            // event at exactly age 5. Spread it over 5-9, same as the client.
+            majorDue = c.YearsSinceLastMajor >= 9 ||
+                (c.YearsSinceLastMajor >= 3 && random.NextDouble() < (c.Age <= 6 ? 0.3 : 0.4));
+        }
         else if (c.YearsSinceLastMajor >= 5 || (c.YearsSinceLastMajor >= 2 && random.NextDouble() < 0.35))
         {
             majorDue = true;

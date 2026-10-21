@@ -18,6 +18,7 @@ import {
   THREAT_TIERS
 } from '../data/worldData.js';
 import { CHILDHOOD_EVENTS, CONSEQUENCE_EVENTS } from '../data/eventsChildhood.js';
+import { CHILDHOOD_EVENTS_2 } from '../data/eventsChildhood2.js';
 import { composeBirth, makeNpc } from '../data/birthStories.js';
 import { generatePersonName } from '../data/nameGenerator.js';
 import { FACTION_EVENTS } from '../data/eventsFactions.js';
@@ -54,6 +55,7 @@ import { activeScarCount, addScar } from './scarModel.js';
 
 export const ALL_STORY_EVENTS = [
   ...CHILDHOOD_EVENTS,
+  ...CHILDHOOD_EVENTS_2,
   ...FACTION_EVENTS,
   ...SUPERNATURAL_EVENTS,
   ...FIXER_PATH_EVENTS,
@@ -217,6 +219,25 @@ export function interpolateText(text, char) {
  * Creates a new character (Generation 1 or Generational Heir of Generation N)
  * The newborn is also given a random fate omen.
  */
+/**
+ * A birthplace left to chance: weighted by population, with a 65% pull back to
+ * the previous generation's District. The home screen's wheel spins to this
+ * result, so it must stay the only place the roll happens.
+ */
+export function rollBirthRegion(rng = Math.random, parentLegacy = null) {
+  if (parentLegacy?.regionId && rng() < 0.65) {
+    const inherited = REGIONS.find(r => r.id === parentLegacy.regionId);
+    if (inherited) return inherited;
+  }
+  const totalWeight = REGIONS.reduce((s, r) => s + (r.birthWeight || 1), 0);
+  let pick = rng() * totalWeight;
+  for (const r of REGIONS) {
+    pick -= r.birthWeight || 1;
+    if (pick <= 0) return r;
+  }
+  return REGIONS[0];
+}
+
 export function createNewCharacter({
   customName = '',
   seed = '',
@@ -233,21 +254,7 @@ export function createNewCharacter({
   if (preferredRegionId && preferredRegionId !== 'RANDOM') {
     region = REGIONS.find(r => r.id === preferredRegionId);
   }
-  if (!region && parentLegacy?.regionId && rng() < 0.65) {
-    region = REGIONS.find(r => r.id === parentLegacy.regionId);
-  }
-  if (!region) {
-    const totalWeight = REGIONS.reduce((s, r) => s + (r.birthWeight || 1), 0);
-    let pick = rng() * totalWeight;
-    for (const r of REGIONS) {
-      pick -= r.birthWeight || 1;
-      if (pick <= 0) {
-        region = r;
-        break;
-      }
-    }
-    if (!region) region = REGIONS[0];
-  }
+  if (!region) region = rollBirthRegion(rng, parentLegacy);
 
   // Pick Family Background strictly consistent with the birthplace Region
   const cityFamilies = FAMILIES.filter(f => f.id !== 'outskirts_nomad');

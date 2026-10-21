@@ -3,13 +3,15 @@ import { Dices, GitBranch, Play, ChevronDown, ArrowUpRight, Search, BookOpen, Ma
 import { useNavigate } from 'react-router-dom';
 import { Modal } from 'antd';
 import { useGameStore } from '../../../store/gameStore';
-import { freshSeed } from '../../../engine/gameEngine';
+import { freshSeed, createRNG, rollBirthRegion } from '../../../engine/gameEngine';
 import { REGIONS, CODEX_RECORDS } from '../../../data/worldData';
 import { FATE_OMENS } from '../../../engine/weaverAI';
 import { useT } from '../../../i18n';
 import { RegionMark } from '../../../components/RegionMark';
 import { audioEngine } from '../../../engine/audioEngine';
 import CityLoadingOverlay from './CityLoadingOverlay';
+import { reducedMotion } from '../../../utils/motion';
+import { useThemeStore } from '../../../store/themeStore';
 
 const CAREERS = [
   [
@@ -34,8 +36,16 @@ const CAREERS = [
   ]
 ];
 
-function DistrictDial({ selected, onSelect, isSpinning, rotation, displayRegion, onTriggerSpin, t }) {
-  const sectors = REGIONS.filter((r) => r.id !== 'OUTSKIRTS');
+const WHEEL_SECTORS = REGIONS.filter((r) => r.id !== 'OUTSKIRTS');
+const SECTOR_DEG = 360 / WHEEL_SECTORS.length;
+const hubName = (r) => (r ? (r.id === 'OUTSKIRTS' ? 'Outskirts' : `${r.id} Corp`) : 'The City');
+const hubCaption = (r, t) =>
+  r ? (r.ward ? `District ${r.ward}` : t('Ngoài bức tường', 'Beyond the wall')) : t('26 District · một kiếp sống', '26 Districts · one life');
+// Which sector sits under the needle at 12 o'clock for a given wheel rotation
+const sectorUnderNeedle = (deg) => WHEEL_SECTORS[Math.floor((((-deg % 360) + 360) % 360) / SECTOR_DEG) % WHEEL_SECTORS.length];
+
+function DistrictDial({ selected, onSelect, isSpinning, rotation, displayRegion, onTriggerSpin, spinnerRef, nameRef, captionRef, t }) {
+  const sectors = WHEEL_SECTORS;
   const point = (radius, angle) => [180 + radius * Math.cos(angle), 180 + radius * Math.sin(angle)];
   const region = displayRegion || REGIONS.find((r) => r.id === selected);
 
@@ -57,15 +67,12 @@ function DistrictDial({ selected, onSelect, isSpinning, rotation, displayRegion,
           <circle cx="180" cy="180" r="122" className="dial-mid-ring" />
 
           {/* Rotating wheel group */}
+          {/* Turned frame by frame from BirthSetupPanel (requestAnimationFrame), not by a CSS
+              transition, so the spin still plays where transitions are globally shortened */}
           <g
+            ref={spinnerRef}
             className="dial-spinner-group"
-            style={{
-              transform: `rotate(${rotation}deg)`,
-              transformOrigin: '180px 180px',
-              transition: isSpinning
-                ? 'transform 2.2s cubic-bezier(0.12, 0.8, 0.32, 1)'
-                : 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)'
-            }}
+            style={{ transform: `rotate(${rotation}deg)`, transformOrigin: '180px 180px' }}
           >
             {sectors.map((r, i) => {
               const a = (i * Math.PI * 2) / sectors.length - Math.PI / 2;
@@ -118,15 +125,11 @@ function DistrictDial({ selected, onSelect, isSpinning, rotation, displayRegion,
           </g>
 
           {/* Center District Status */}
-          <text x="180" y="162" className="dial-name" textAnchor="middle">
-            {region ? (region.id === 'OUTSKIRTS' ? 'Outskirts' : `${region.id} Corp`) : 'The City'}
+          <text ref={nameRef} x="180" y="162" className="dial-name" textAnchor="middle">
+            {hubName(region)}
           </text>
-          <text x="180" y="192" className="dial-caption" textAnchor="middle">
-            {region
-              ? region.ward
-                ? `District ${region.ward}`
-                : 'Outskirts'
-              : t('26 District · một kiếp sống', '26 Districts · one life')}
+          <text ref={captionRef} x="180" y="192" className="dial-caption" textAnchor="middle">
+            {hubCaption(region, t)}
           </text>
         </svg>
 
@@ -147,7 +150,27 @@ function DistrictDial({ selected, onSelect, isSpinning, rotation, displayRegion,
         <Dices size={16} className={isSpinning ? 'animate-spin' : ''} />
         <span>{t('Quay ngẫu nhiên District', 'Spin random District')}</span>
       </button>
+      <MotionHint t={t} />
     </div>
+  );
+}
+
+// Shown only while the OS asks for reduced motion and the player has not chosen a setting
+function MotionHint({ t }) {
+  const motionMode = useThemeStore((s) => s.motionMode);
+  const cycleMotion = useThemeStore((s) => s.cycleMotion);
+  const osReduced = typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  if (motionMode !== 'system' || !osReduced) return null;
+  return (
+    <p className="dial-motion-hint">
+      {t(
+        'Máy của bạn đang tắt hiệu ứng chuyển động, nên vòng quay được rút ngắn.',
+        'Your device has animations turned off, so the wheel spin is shortened.'
+      )}{' '}
+      <button type="button" onClick={cycleMotion}>
+        {t('Bật đầy đủ', 'Turn on full motion')}
+      </button>
+    </p>
   );
 }
 
@@ -171,109 +194,95 @@ export const BirthSetupPanel = () => {
   const [targetLaunchParams, setTargetLaunchParams] = useState(null);
 
   const mapRef = useRef(null);
-  const launchTimer = useRef(null);
-  const spinIntervalTimer = useRef(null);
-  const spinTimeoutTimer = useRef(null);
+  const spinnerRef = useRef(null);
+  const hubNameRef = useRef(null);
+  const hubCaptionRef = useRef(null);
+  const rotationRef = useRef(0);
+  const rafRef = useRef(0);
+  const lastTickRef = useRef(0);
 
-  useEffect(() => () => {
-    clearTimeout(launchTimer.current);
-    clearTimeout(spinTimeoutTimer.current);
-    clearInterval(spinIntervalTimer.current);
-  }, []);
+  useEffect(() => () => cancelAnimationFrame(rafRef.current), []);
 
-  const sectors = REGIONS.filter((r) => r.id !== 'OUTSKIRTS');
+  const sectors = WHEEL_SECTORS;
 
-  // Interactive Roulette Spin Mechanism
-  const spinWheel = (targetRegionId = null, onFinishCallback = null) => {
-    if (isWheelSpinning) return;
-    setIsWheelSpinning(true);
+  /**
+   * Turns the wheel so `target` stops under the needle, `turns` full turns first.
+   * Writes the transform and the hub text straight to the DOM each frame; React
+   * state is only set at the end. A region off the wheel (the Outskirts) stops
+   * on the seam between Z and A.
+   */
+  const spinTo = (target, { turns = 5, duration = 2600 } = {}) =>
+    new Promise((resolve) => {
+      cancelAnimationFrame(rafRef.current);
+      const reduce = reducedMotion();
+      const spins = reduce ? 1 : turns;
+      const time = reduce ? Math.min(duration, 1100) : duration;
+      const idx = sectors.findIndex((r) => r.id === target?.id);
+      const stopAt = idx >= 0 ? -(idx + 0.5) * SECTOR_DEG : 0;
+      const from = rotationRef.current;
+      const forward = (((stopAt - from) % 360) + 360) % 360;
+      const to = from + spins * 360 + forward;
+      const start = performance.now();
+      let lastSector = null;
+      setIsWheelSpinning(true);
 
-    let targetIdx = -1;
-    if (targetRegionId && targetRegionId !== 'RANDOM') {
-      targetIdx = sectors.findIndex((r) => r.id === targetRegionId);
-    }
-    if (targetIdx === -1) {
-      targetIdx = Math.floor(Math.random() * sectors.length);
-    }
-    const chosen = sectors[targetIdx] || sectors[0];
-
-    // Angular calculation to align target sector with top pointer (270 deg)
-    const targetAngle = 360 * 5 - (targetIdx + 0.5) * (360 / sectors.length);
-    const delta = ((targetAngle - (wheelRotation % 360)) % 360 + 360) % 360;
-    const newRotation = wheelRotation + 1800 + delta;
-    setWheelRotation(newRotation);
-
-    // Audio clicks that decelerate as the wheel slows down
-    const tickDelays = [40, 50, 60, 75, 95, 120, 150, 190, 240, 310, 400, 530, 700, 950, 1300];
-    let cumulative = 0;
-    tickDelays.forEach((delay) => {
-      cumulative += delay;
-      if (cumulative < 2100) {
-        setTimeout(() => {
-          try {
-            audioEngine.playClick();
-          } catch {}
-          const randomSector = sectors[Math.floor(Math.random() * sectors.length)];
-          setDisplayRegion(randomSector);
-        }, cumulative);
-      }
-    });
-
-    spinTimeoutTimer.current = setTimeout(() => {
-      setIsWheelSpinning(false);
-      setDisplayRegion(chosen);
-      setRegion(chosen.id);
-      try {
-        audioEngine.playBuff();
-      } catch {}
-
-      if (onFinishCallback) {
-        setTimeout(() => {
-          onFinishCallback(chosen);
-        }, 300);
-      }
-    }, 2200);
-  };
-
-  const handleManualSpin = () => {
-    spinWheel();
-  };
-
-  const launch = (inherit = false, age = 0) => {
-    if (spinning || isWheelSpinning) return;
-    setTargetLaunchParams({ inherit, age });
-
-    // If district is not selected or RANDOM, spin the wheel to decide it first!
-    if (!selectedRegion || selectedRegion === 'RANDOM') {
-      spinWheel(null, (chosen) => {
-        setLoadingActive(true);
-      });
-    } else {
-      // User selected a specific district: do a quick lock-in spin (0.5s)
-      const targetIdx = sectors.findIndex((r) => r.id === selectedRegion);
-      if (targetIdx >= 0) {
-        const targetAngle = 360 * 2 - (targetIdx + 0.5) * (360 / sectors.length);
-        const delta = ((targetAngle - (wheelRotation % 360)) % 360 + 360) % 360;
-        setWheelRotation(wheelRotation + 720 + delta);
-      }
-      try {
-        audioEngine.playClick();
-      } catch {}
-
-      setTimeout(() => {
+      const frame = (now) => {
+        const p = Math.min(1, (now - start) / time);
+        const eased = 1 - Math.pow(1 - p, 4);
+        const deg = from + (to - from) * eased;
+        rotationRef.current = deg;
+        if (spinnerRef.current) spinnerRef.current.style.transform = `rotate(${deg}deg)`;
+        const under = p < 1 ? sectorUnderNeedle(deg) : target;
+        if (under && under !== lastSector) {
+          lastSector = under;
+          if (hubNameRef.current) hubNameRef.current.textContent = hubName(under);
+          if (hubCaptionRef.current) hubCaptionRef.current.textContent = hubCaption(under, t);
+          if (p < 1 && now - lastTickRef.current > 45) {
+            lastTickRef.current = now;
+            try {
+              audioEngine.playClick();
+            } catch {}
+          }
+        }
+        if (p < 1) {
+          rafRef.current = requestAnimationFrame(frame);
+          return;
+        }
+        setWheelRotation(deg);
+        setDisplayRegion(target);
+        setIsWheelSpinning(false);
         try {
           audioEngine.playBuff();
         } catch {}
-        setLoadingActive(true);
-      }, 550);
-    }
+        resolve(target);
+      };
+      rafRef.current = requestAnimationFrame(frame);
+    });
+
+  // The dice button picks a birthplace and keeps it selected
+  const handleManualSpin = () => {
+    if (isWheelSpinning) return;
+    const chosen = rollBirthRegion(Math.random);
+    spinTo(chosen).then(() => setRegion(chosen.id));
+  };
+
+  // Every start spins. "Random" stays random for the next life; only this birth is decided.
+  const launch = (inherit = false, age = 0) => {
+    if (spinning || isWheelSpinning) return;
+    const fixed = selectedRegion && selectedRegion !== 'RANDOM' ? REGIONS.find((r) => r.id === selectedRegion) : null;
+    const seed = customSeed?.trim();
+    const chosen = fixed || rollBirthRegion(seed ? createRNG(seed) : Math.random, inherit ? pendingLegacy : null);
+    setTargetLaunchParams({ inherit, age, region: chosen, regionId: fixed ? null : chosen.id });
+    spinTo(chosen, fixed ? { turns: 3, duration: 1900 } : {}).then(() => {
+      setTimeout(() => setLoadingActive(true), 350);
+    });
   };
 
   const handleLoadingComplete = () => {
     setLoadingActive(false);
     const inherit = targetLaunchParams?.inherit ?? false;
     const age = targetLaunchParams?.age ?? 0;
-    startLife(inherit, age);
+    startLife(inherit, age, targetLaunchParams?.regionId || null);
   };
   const setRegion = (id) => setConfigField('selectedRegion', id);
   const region = REGIONS.find((r) => r.id === selectedRegion);
@@ -309,7 +318,7 @@ export const BirthSetupPanel = () => {
     <div className="city-home" lang={lang === 'bi' ? 'vi' : lang}>
       <CityLoadingOverlay
         active={loadingActive}
-        region={region}
+        region={targetLaunchParams?.region || region}
         charName={customName || t('Cư dân The City', 'City Citizen')}
         seed={customSeed}
         onComplete={handleLoadingComplete}
@@ -334,15 +343,15 @@ export const BirthSetupPanel = () => {
             <DistrictDial
               selected={selectedRegion}
               onSelect={(id) => {
-                const targetIdx = sectors.findIndex((r) => r.id === id);
-                if (targetIdx >= 0) {
-                  const targetAngle = 360 - (targetIdx + 0.5) * (360 / sectors.length);
-                  setWheelRotation(wheelRotation + 360 + ((targetAngle - (wheelRotation % 360) + 360) % 360));
-                }
+                const picked = REGIONS.find((r) => r.id === id);
                 setRegion(id);
+                if (picked) spinTo(picked, { turns: 0, duration: 520 });
               }}
               isSpinning={isWheelSpinning}
               rotation={wheelRotation}
+              spinnerRef={spinnerRef}
+              nameRef={hubNameRef}
+              captionRef={hubCaptionRef}
               displayRegion={displayRegion}
               onTriggerSpin={handleManualSpin}
               t={t}
@@ -362,7 +371,7 @@ export const BirthSetupPanel = () => {
                 <button
                   onClick={() =>
                     mapRef.current?.scrollIntoView({
-                      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches
+                      behavior: reducedMotion()
                         ? 'instant'
                         : 'smooth'
                     })

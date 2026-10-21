@@ -10,7 +10,10 @@ import {
   Moon,
   Languages,
   PanelLeftClose,
-  PanelLeftOpen
+  PanelLeftOpen,
+  Monitor,
+  Sparkles,
+  Pause
 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useThemeStore } from '../store/themeStore';
@@ -78,6 +81,28 @@ export const LangMenu = ({ children, placement = 'topLeft' }) => {
     </Dropdown>
   );
 };
+
+const MOTION_LABELS = {
+  system: ['Chuyển động: theo hệ thống', 'Motion: follow system'],
+  full: ['Chuyển động: đầy đủ', 'Motion: full'],
+  reduced: ['Chuyển động: giảm', 'Motion: reduced']
+};
+const MOTION_ICONS = { system: Monitor, full: Sparkles, reduced: Pause };
+
+/** Cycles system → full → reduced. Full overrides an OS that has animations turned off. */
+export function MotionToggle({ lang, placement = 'top' }) {
+  const motionMode = useThemeStore((s) => s.motionMode);
+  const cycleMotion = useThemeStore((s) => s.cycleMotion);
+  const label = pick(lang, ...MOTION_LABELS[motionMode]);
+  const Icon = MOTION_ICONS[motionMode] || Monitor;
+  return (
+    <Tooltip title={`${label}. ${pick(lang, 'Bấm để đổi.', 'Click to change.')}`} placement={placement}>
+      <button className="app-tool" onClick={cycleMotion} aria-label={label}>
+        <Icon size={17} aria-hidden="true" />
+      </button>
+    </Tooltip>
+  );
+}
 
 export const Sidebar = ({ isCollapsed, onToggleCollapse, isPlay, languageOverride }) => {
   const navigate = useNavigate();
@@ -153,6 +178,7 @@ export const Sidebar = ({ isCollapsed, onToggleCollapse, isPlay, languageOverrid
           >
             {themeMode === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
           </button>
+          <MotionToggle lang={lang} />
         </div>
         <span className="app-connection">
           <i className={online ? 'is-online' : ''} />

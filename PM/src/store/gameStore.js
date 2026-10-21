@@ -544,13 +544,14 @@ export const useGameStore = create((set, get) => ({
     get().saveRun(true);
   },
 
-  startLife: (useLegacy = false, startAge = 0) => {
+  // regionId: where the home screen's wheel landed, when the birthplace was left to chance
+  startLife: (useLegacy = false, startAge = 0, regionId = null) => {
     const state = get();
     const legacyPkg = useLegacy ? state.pendingLegacy : null;
     const nextChar = createNewCharacter({
       customName: state.customName,
       seed: state.customSeed,
-      preferredRegionId: state.selectedRegion,
+      preferredRegionId: regionId || state.selectedRegion,
       parentLegacy: legacyPkg,
       startAge
     });

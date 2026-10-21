@@ -255,6 +255,24 @@ Trong chữ: `{name}`, `{friend}`, `{mentor}`, `{rival}`, `{lover}`, `{partner}`
 
 ## 8. Nhật ký thay đổi
 
+### 21/10/2026, đợt 15: mở đầu lặp, 3:13 và vòng quay District
+
+Người chơi báo: đời nào cũng mở bằng 3:13, dòng "Lắng đọng cuối năm" giống hệt nhau mỗi năm, và vòng quay District lúc bắt đầu không còn.
+
+- **Nguyên nhân 3:13**: ở tuổi 5, trẻ Backstreets chỉ có đúng một sự kiện lớn hợp lệ (3:13), và luật "5 năm không có sự kiện lớn thì đến hạn" tính từ lúc sinh nên luôn rơi vào năm 5 tuổi. Đo trên 150 kiếp: 50% số kiếp có sự kiện lớn đầu tiên là 3:13 lúc 5 tuổi.
+  - Dưới 12 tuổi, sự kiện lớn đến hạn ngẫu nhiên trong khoảng 5 đến 9 tuổi (`majorIsDue` ở FE, cùng luật ở `DirectorEngineService.cs`). BE đo được: 5 tuổi 33%, 6 tuổi 25%, 7 đến 8 tuổi khoảng 43%, từ 9 tuổi 100%.
+  - 13 sự kiện lớn mới cho tuổi 4 đến 12 và 1 hậu quả (`src/data/eventsChildhood2.js`): Backstreets, Nest, Outskirts và loại nơi nào cũng có. Trọng số 3:13 hạ từ 6 xuống 3.
+  - Kết quả 300 kiếp: 3:13 là sự kiện lớn đầu tiên ở khoảng 10% số kiếp.
+- **Lựa chọn đầu đời giống nhau**: tuổi 4 đến 6 chỉ có 2 đến 3 sự kiện nhỏ hợp lệ, nên "Đồng Ahn dưới gầm ghế" là lựa chọn đầu tiên ở 5/10 kiếp chơi thật. Thêm 24 sự kiện nhỏ cho tuổi 4 đến 11 (`src/data/lifeMinorsKids.js`). Kho tuổi 4 đến 6 tăng lên 7 đến 9 sự kiện, tuổi 7 tăng lên 6 đến 13. Chơi thật 10 kiếp: lựa chọn đầu tiên khác nhau ở 8/10.
+- **Dòng cuối năm**: mỗi lý do (hồi phục, tiền thuê, khói bụi...) có 2 đến 3 câu theo độ tuổi (sơ sinh, trẻ em, người lớn), không lặp câu của năm trước (`src/data/yearEndLines.js`, `yearLine` trong `yearPlanner.js`). Nhãn đổi thành "[Cuối năm]". Số câu cuối năm khác nhau trong 300 kiếp tăng từ 44 lên 914. Trẻ 0 tuổi không còn nhận câu về vết thương kéo da non.
+- **Vòng quay District**:
+  - Trước đây vòng quay chạy bằng transition CSS. Máy tắt "Animation effects" trong Windows thì trình duyệt báo `prefers-reduced-motion`, luật `!important` rút mọi transition về 0,01ms, và bánh xe nhảy thẳng tới đích.
+  - Sau lần quay đầu, District vừa quay trúng bị ghi đè vào lựa chọn, nên các lần bắt đầu sau chỉ còn một cú khóa 0,4 giây và mọi kiếp sinh cùng một nơi.
+  - Giờ vòng quay chạy bằng `requestAnimationFrame` (`spinTo` trong `BirthSetupPanel.jsx`), lần bắt đầu nào cũng quay (5 vòng khi ngẫu nhiên, 3 vòng khi đã chọn District), và ô giữa hiện District đang nằm dưới kim.
+  - "Ngẫu nhiên" giữ nguyên là ngẫu nhiên cho kiếp sau. Kết quả lấy từ `rollBirthRegion` trong `gameEngine.js`, cùng trọng số dân số với engine, có cả Outskirts (kim dừng ở khe giữa Z và A) và 65% sinh lại nơi của đời trước khi kế thừa.
+- **Tùy chọn chuyển động**: nút ở thanh bên và thanh trên điện thoại, xoay vòng giữa theo hệ thống, đầy đủ và giảm (`themeStore.motionMode`, `html[data-motion]`, `src/utils/motion.js`). Các khối CSS `prefers-reduced-motion` chỉ áp dụng khi không chọn "đầy đủ". Khi máy tắt hiệu ứng mà người chơi chưa chọn gì, dưới vòng quay hiện một dòng giải thích và nút "Bật đầy đủ". Đo trong Chrome: đầy đủ 5,8 vòng trong 2,5 giây; theo hệ thống trên máy tắt hiệu ứng 1,2 vòng trong 1,1 giây.
+- **Kiểm tra**: build FE và BE sạch; mô phỏng 300 kiếp 0 lỗi, 284 mở đầu khác nhau, 200 sự kiện nhỏ được chạm tới; chơi thật 10 kiếp với backend chạy.
+
 ### 21/10/2026, đợt 14: Triển khai kiểm thử 5 tầng, loại bỏ simulate1000, đồng bộ FE/BE và deploy Vercel
 
 - **Gỡ bỏ bộ mô phỏng cũ**: Đã xóa hoàn toàn `simulate1000.mjs` (`git rm simulate1000.mjs`). Quy trình kiểm thử chất lượng và tính cân bằng chính thức chuyển sang bộ công cụ kiểm định 5 tầng độc lập (`lint_story.mjs`, `scripts/test_causal_threads.mjs`, `check_be_parity.mjs`, `story_logic_audit.mjs`, `balance_sim.mjs` và `run_million_audit.mjs`).

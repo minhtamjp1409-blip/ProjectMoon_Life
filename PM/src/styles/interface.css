@@ -1815,10 +1815,13 @@ input:focus-visible, select:focus-visible, textarea:focus-visible {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
-  .interface-v2 .entry, .interface-v2 .stage-fx, .interface-v2 .is-critical { animation: none !important; }
-  .interface-v2 .stage-fx { display: none; }
+  :root:not([data-motion='full']) *, :root:not([data-motion='full']) *::before, :root:not([data-motion='full']) *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+  :root:not([data-motion='full']) .interface-v2 :is(.entry, .stage-fx, .is-critical) { animation: none !important; }
+  :root:not([data-motion='full']) .interface-v2 .stage-fx { display: none; }
 }
+:root[data-motion='reduced'] *, :root[data-motion='reduced'] *::before, :root[data-motion='reduced'] *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+:root[data-motion='reduced'] .interface-v2 :is(.entry, .stage-fx, .is-critical) { animation: none !important; }
+:root[data-motion='reduced'] .interface-v2 .stage-fx { display: none; }
 
 /* ==========================================================================
    THE CITY CHRONICLES - ENHANCED USER EXPERIENCE & CINEMATIC SUITE
@@ -1848,8 +1851,10 @@ input:focus-visible, select:focus-visible, textarea:focus-visible {
   overflow: visible;
 }
 
-.dial-spinner-group {
+/* Rotated per frame by script; a transition here would make the wheel lag behind */
+.district-dial .dial-spinner-group {
   will-change: transform;
+  transition: none;
 }
 
 .district-dial .dial-sector {
@@ -2283,4 +2288,25 @@ input:focus-visible, select:focus-visible, textarea:focus-visible {
 .btn-prologue-skip:hover {
   border-color: var(--accent);
   color: var(--text);
+}
+
+/* One line under the wheel when the OS has animations off */
+.dial-motion-hint {
+  max-width: 300px;
+  margin: 10px auto 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+  text-align: center;
+}
+.dial-motion-hint button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
 }

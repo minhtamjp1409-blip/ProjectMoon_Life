@@ -36,14 +36,16 @@ import { LIFE_DAILIES as DAILIES_FIRST } from '../data/lifeDailies.js';
 import { LIFE_MINORS as MINORS_FIRST } from '../data/lifeMinors.js';
 import { LIFE_MINORS_2 } from '../data/lifeMinors2.js';
 import { LIFE_DAILIES_3, LIFE_MINORS_3 } from '../data/lifeMinors3.js';
+import { YEAR_END_LINES } from '../data/yearEndLines.js';
 import { LIFE_MINORS_4 } from '../data/lifeMinors4.js';
 import { LIFE_MINORS_5 } from '../data/lifeMinors5.js';
+import { LIFE_MINORS_KIDS } from '../data/lifeMinorsKids.js';
 import { THREAD_MINORS } from '../data/narrative/causalThreads.js';
 import { EXPANDED_DAILIES } from '../data/narrative/dailies.js';
 import { DAILIES_2 } from '../data/narrative/dailies2.js';
 import { cityArchiveAPI } from '../services/api/cityArchiveAPI.js';
 
-export const LIFE_MINORS = [...MINORS_FIRST, ...LIFE_MINORS_2, ...LIFE_MINORS_3, ...LIFE_MINORS_4, ...LIFE_MINORS_5, ...THREAD_MINORS];
+export const LIFE_MINORS = [...MINORS_FIRST, ...LIFE_MINORS_2, ...LIFE_MINORS_3, ...LIFE_MINORS_4, ...LIFE_MINORS_5, ...LIFE_MINORS_KIDS, ...THREAD_MINORS];
 export const LIFE_DAILIES = [...DAILIES_FIRST, ...LIFE_DAILIES_3, ...EXPANDED_DAILIES, ...DAILIES_2];
 import {
   directorWeight,
@@ -216,6 +218,12 @@ function majorIsDue(char, rng) {
   if (char.job === 'Wing Employee' && (char.wingRank || 0) >= 1 && (char.merit || 0) >= 65 && !(char.seenEvents || []).includes('wing_singularity_classified_audit')) return true;
   if (char.job === 'Workshop Craftsman' && (char.workshopRank || 0) >= 1 && (char.merit || 0) >= 65 && !(char.seenEvents || []).includes('workshop_legendary_forge_trial')) return true;
   const gap = w.yearsSinceLastMajor || 0;
+  // Childhood: the gap counts from birth, so "every 5 years" used to put the first
+  // major event at exactly 5 for everyone. Spread it over 5-9 instead.
+  if (char.age < 12) {
+    if (gap >= 9) return true;
+    return gap >= 3 && rng() < (char.age <= 6 ? 0.3 : 0.4);
+  }
   if (gap >= 5) return true;
   return gap >= 2 && rng() < 0.32;
 }
@@ -834,6 +842,22 @@ const JOB_INCOME = (char) => {
  * wear, ageing (each written into one plain line with its deltas), then the
  * birthday and the next year's plan.
  */
+/**
+ * One sentence for a year-end reason, fitted to the life stage, and never the
+ * variant this character got last time for the same reason.
+ */
+function yearLine(char, rng, key, n) {
+  const set = YEAR_END_LINES[key];
+  const stage = char.age < 4 ? 'baby' : char.age < 13 ? 'kid' : 'adult';
+  const pool = set[stage] || set.kid || set.adult;
+  const last = char.yearEndLast?.[key];
+  let idx = Math.floor(rng() * pool.length);
+  if (pool.length > 1 && idx === last) idx = (idx + 1) % pool.length;
+  char.yearEndLast = { ...(char.yearEndLast || {}), [key]: idx };
+  const fill = (s) => (n == null ? s : s.replace('{n}', n));
+  return [fill(pool[idx][0]), fill(pool[idx][1])];
+}
+
 export function endYear(charState, rng) {
   const char = cloneChar(charState);
   if (!char.alive) return char;
@@ -845,6 +869,11 @@ export function endYear(charState, rng) {
   const add = (k, v) => {
     if (v) fx[k] = (fx[k] || 0) + v;
   };
+  const line = (key, n) => {
+    const [lv, le] = yearLine(char, rng, key, n);
+    vi.push(lv);
+    en.push(le);
+  };
 
   if (char.age >= 18 && !char.flags.includes('Distorted')) {
     let livingCost = nest ? 5 : isOutskirts(char) ? 2 : 3;
@@ -853,40 +882,34 @@ export function endYear(charState, rng) {
     const hasFirearms = (char.inventory || []).some(i => i.id?.includes('revolver') || i.id?.includes('logic')) || char.flags.includes('Firearms');
     if (hasFirearms) {
       livingCost += 3;
-      vi.push('Thuế đạn dược và phí đăng ký vũ khí nóng của The Head khấu trừ 3 Ahn ngân quỹ.');
-      en.push('The Head’s firearms ammunition excise and verification fee drained 3 Ahn.');
+      line('firearms_tax');
     }
 
     // Workshop Master Weapon Maintenance
     const hasWorkshopGear = (char.inventory || []).some(i => i.id?.startsWith('wpn_') || i.id?.startsWith('arm_')) || char.craftWeapon;
     if (hasWorkshopGear && rng() < 0.6) {
       livingCost += 2;
-      vi.push('Phí bảo trì mài bén lưỡi đao và thay dầu cơ khí tại Workshop tiêu tốn 2 Ahn.');
-      en.push('Workshop sharpening and lubrication maintenance costs took 2 Ahn.');
+      line('gear_upkeep');
     }
 
     // Full-Body Cybernetic Maintenance
     if (char.flags.includes('FullBodyProsthetic')) {
       livingCost += 3;
-      vi.push('Dung dịch làm mát tủy máy và linh kiện thay thế Full-Body Prosthetic ngốn 3 Ahn.');
-      en.push('Full-Body Prosthetic coolant flushes and servo maintenance consumed 3 Ahn.');
+      line('prosthetic_upkeep');
     }
 
     const assetCost = Math.min(4, Math.max(0, Math.floor((char.stats.wealth - 45) / 15) + 1));
     if (assetCost > 0) {
       livingCost += assetCost;
-      vi.push(`Tiền tích lũy kéo theo ${assetCost} Ahn phí bảo quản, giấy phép và an ninh.`);
-      en.push(`Holding your savings cost ${assetCost} Ahn in storage, permits and protection.`);
+      line('asset_cost', assetCost);
     }
 
     const net = JOB_INCOME(char) - livingCost + Math.round(rng() * 2 - 1);
     add('wealth', net);
     if (net > 0) {
-      vi.push('Thu nhập năm nay vượt mức chi tiêu, bạn tích lũy thêm được chút vốn liếng.');
-      en.push('Your earnings exceeded living expenses this year, allowing you to save a modest sum.');
+      line('income_up');
     } else if (net < 0) {
-      vi.push('Sau tiền thuê, ăn uống và các khoản phải giữ để tiếp tục làm việc, số Ahn còn lại ít đi.');
-      en.push('Rent, food and the costs of staying employed left fewer Ahn in your hands.');
+      line('income_down');
     }
   } else {
     // Childhood living friction: survival is harsh, money gets spent on family necessities
@@ -894,15 +917,13 @@ export function endYear(charState, rng) {
       if (char.stats.wealth > 4 && rng() < 0.4) {
         const drain = Math.min(2, Math.max(1, Math.floor(char.stats.wealth * 0.15)));
         add('wealth', -drain);
-        vi.push('Gia đình phải chắt bóp từng đồng Ahn để trang trải bữa ăn đạm bạc và nộp tiền bảo kê cho băng đảng đầu ngõ.');
-        en.push('The family pinched every Ahn to cover meager meals and local syndicate protection quotas.');
+        line('child_friction');
       }
     } else {
       if (char.stats.wealth > 14 && rng() < 0.35) {
         const drain = Math.min(3, Math.max(1, Math.floor(char.stats.wealth * 0.12)));
         add('wealth', -drain);
-        vi.push('Học phí đào tạo ưu tú và lệ phí duy trì hạn ngạch công dân Nest trở thành gánh nặng kinh tế đáng kể.');
-        en.push('Elite tutoring costs and Nest citizen quota upkeep fees placed a noticeable burden on the household.');
+        line('nest_tuition');
       }
     }
   }
@@ -911,21 +932,17 @@ export function endYear(charState, rng) {
   if (char.stats.health < BALANCE.heal.below && !char.flags.includes('Distorted')) {
     if (char.flags.includes('KCorpAmpoule')) {
       add('health', healAmount(char, 'ampoule'));
-      vi.push('Dược chất huyết thanh K Corp liên tục tuần hoàn, tái tạo thần tốc các mô thịt bị rách nát.');
-      en.push('K Corp restorative serum continuously circulated, rapidly regenerating damaged tissues.');
+      line('heal_ampoule');
     } else if (nest) {
       add('health', healAmount(char, 'nest'));
-      vi.push('Gói bảo hiểm y tế nội bộ của Nest hỗ trợ khử trùng và điều trị chu đáo các tổn thương thể chất.');
-      en.push('Nest residential medical coverage attended to your physical injuries with clinical care.');
+      line('heal_nest');
     } else if (char.stats.wealth >= 3 && char.age >= 18) {
       add('wealth', -2);
       add('health', healAmount(char, 'clinic'));
-      vi.push('Bạn tốn 2 Ahn tại phòng khám chui nơi hẻm tối để khâu lại vết chém, khử trùng và phục hồi thể lực.');
-      en.push('You paid 2 Ahn at a backstreet clinic to stitch wounds, sanitize, and restore vigor.');
+      line('heal_clinic');
     } else {
       add('health', healAmount(char, 'natural'));
-      vi.push('Nhờ sức đề kháng tự nhiên và thời gian tĩnh dưỡng, những vết rách trên cơ thể bạn dần kéo da non.');
-      en.push('Through natural resilience and quiet rest, your physical wounds gradually healed over.');
+      line('heal_natural');
     }
   }
 
@@ -934,17 +951,14 @@ export function endYear(charState, rng) {
   if (char.stats.sanity < BALANCE.calm.below && !char.flags.includes('Distorted')) {
     if (bond) {
       add('sanity', calmAmount(char, 'bond'));
-      vi.push('Sự kề cận và sẻ chia của người thân yêu giúp tâm trí bạn giữ được sự tỉnh táo và xua tan ám ảnh.');
-      en.push('The steady presence of a loved one anchored your sanity and cleared lingering horrors.');
+      line('calm_bond');
     } else if (char.stats.wealth >= 2 && char.age >= 18) {
       add('wealth', -1);
       add('sanity', calmAmount(char, 'tavern'));
-      vi.push('Bạn bỏ 1 Ahn vào quán rượu bình dân cuối phố, mượn men cay để xoa dịu những cơn đau đầu dai dẳng.');
-      en.push('You spent 1 Ahn at a gritty dive tavern, dulling persistent headaches with cheap liquor.');
+      line('calm_tavern');
     } else {
       add('sanity', calmAmount(char, 'natural'));
-      vi.push('Những khoảnh khắc tĩnh lặng hiếm hoi trong đêm giúp tâm trí bạn lắng đọng và hồi phục tinh thần.');
-      en.push('Rare quiet moments in the night allowed your mind to settle and regain mental composure.');
+      line('calm_natural');
     }
   }
 
@@ -952,21 +966,18 @@ export function endYear(charState, rng) {
     const wear = char.job === 'Fixer' || char.job === 'Syndicate' ? 2 : 1;
     add('health', -wear);
     add('sanity', -(char.job === 'Wing Employee' || char.job === 'Syndicate' ? 3 : 2));
-    vi.push('Ca làm kéo dài rút bớt sức lực và sự tỉnh táo; nghỉ ngơi ngắn không xóa hết phần hao mòn ấy.');
-    en.push('Long shifts cost strength and composure; a short rest did not erase the accumulated strain.');
+    line('job_wear');
   }
 
   // City environmental hazards (Smog in polluted districts, Crime in dangerous districts)
   if (!nest && char.age >= 4) {
     if (region.pollution >= 5 && rng() < 0.35) {
       add('health', -2);
-      vi.push('Màn khói bụi công nghiệp nồng nặc của khu vực này dần ngấm sâu vào phế quản, gây ra những cơn ho khan.');
-      en.push('The district’s acrid industrial smog settled deep into your lungs, leaving a dry cough.');
+      line('smog');
     }
     if (region.safety <= 4 && rng() < 0.35) {
       add('sanity', -2);
-      vi.push('Những đêm trằn trọc mất ngủ vì tiếng còi báo động rít gào và tiếng nổ đì đùng của các cuộc thanh trừng băng đảng.');
-      en.push('Restless nights were pierced by shrieking sirens and gunfire from nearby syndicate turf wars.');
+      line('gunfire');
     }
   }
 
@@ -984,24 +995,20 @@ export function endYear(charState, rng) {
   const drift = driftOf(char, bond ? 2 : 0);
   for (const [k, v] of Object.entries(drift)) add(k, v);
   if (drift.network) {
-    vi.push('Những mối quen lâu không gặp bớt sẵn lòng giúp bạn.');
-    en.push('Contacts you had not seen in a while were less willing to help.');
+    line('drift_network');
   }
   if (drift.rep) {
-    vi.push('Thành tích cũ dần chìm dưới những cái tên mới.');
-    en.push('New names gradually pushed your old accomplishments out of notice.');
+    line('drift_rep');
   }
   if (drift.resonance) {
-    vi.push('Cơn xao động trong tâm trí lắng bớt khi đời sống thường ngày trở lại.');
-    en.push('The unrest in your mind eased as ordinary life resumed.');
+    line('drift_resonance');
   }
 
   const wear = agingLoss(char);
   const oldAge = wear > 0;
   if (wear > 0) {
     add('health', -wear);
-    vi.push('Cơ thể bạn bắt đầu xuất hiện những dấu hiệu rệu rã rõ rệt của sự già nua và suy kiệt.');
-    en.push('Your aging body showed undeniable signs of wear, fatigue, and declining vitality.');
+    line('aging');
   }
 
   const deltas = applyFx(char, fx);
@@ -1030,8 +1037,8 @@ export function endYear(charState, rng) {
       {
         key: 'year_end',
         type: 'summary',
-        vi: `[Lắng đọng cuối năm] ${textVi}`,
-        en: `[Year-End Reckoning] ${textEn}`,
+        vi: `[Cuối năm] ${textVi}`,
+        en: `[Year's end] ${textEn}`,
         deltas
       },
       0.99

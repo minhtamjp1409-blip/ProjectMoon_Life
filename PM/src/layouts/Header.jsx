@@ -3,7 +3,7 @@ import { Sun, Moon } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useThemeStore } from '../store/themeStore';
 import { pick } from '../i18n';
-import { NAV_ITEMS, LANG_OPTIONS, BrandMark, LangMenu } from './Sidebar';
+import { NAV_ITEMS, LANG_OPTIONS, BrandMark, LangMenu, MotionToggle } from './Sidebar';
 
 export const Header = ({ languageOverride }) => {
   const { themeMode, toggleTheme, lang: preferredLang } = useThemeStore();
@@ -30,6 +30,7 @@ export const Header = ({ languageOverride }) => {
       >
         {themeMode === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
       </button>
+      <MotionToggle lang={lang} placement="bottomRight" />
     </header>
   );
 };

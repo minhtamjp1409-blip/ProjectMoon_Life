@@ -3758,14 +3758,22 @@ p {
   border: 1px solid var(--border);
 }
 
+/* Reduced motion: follows the OS unless the in-game setting (html[data-motion]) says otherwise */
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  :root:not([data-motion='full']) *,
+  :root:not([data-motion='full']) *::before,
+  :root:not([data-motion='full']) *::after {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+:root[data-motion='reduced'] *,
+:root[data-motion='reduced'] *::before,
+:root[data-motion='reduced'] *::after {
+  transition-duration: 0.01ms !important;
+  animation-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
 }
 
 .banner-action {
@@ -4420,13 +4428,12 @@ body.is-hit-stop .stage {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .delta,
-  .stage-fx,
-  .stage-fx-word,
-  .stat-float,
-  .countdown i {
+  :root:not([data-motion='full']) :is(.delta, .stage-fx, .stage-fx-word, .stat-float, .countdown i) {
     animation-duration: 0.01ms !important;
   }
+}
+:root[data-motion='reduced'] :is(.delta, .stage-fx, .stage-fx-word, .stat-float, .countdown i) {
+  animation-duration: 0.01ms !important;
 }
 
 .home-credits {
