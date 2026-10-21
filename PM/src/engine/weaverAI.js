@@ -497,7 +497,7 @@ export function selectEventWithWeaverAI({
       2: 'fixer_promo_g1_exam'
     };
     const targetExamId = promoEvIds[char.fixerGrade];
-    if (targetExamId && !char.seenEvents.includes(targetExamId)) {
+    if (targetExamId && !char.seenEvents.includes(targetExamId) && (char.stats?.health || 0) >= 45) {
       const examEv = allPools.find((e) => e.id === targetExamId);
       if (examEv && isEventEligible(examEv, char)) {
         const logEntry = {

@@ -1380,6 +1380,108 @@ export const LIFE_MINORS = [
     ],
     I('Bạn ngập ngừng bảo sẽ cân nhắc; vị khách ấy không bao giờ quay trở lại nữa.', 'You stalled, and the masked patron never crossed your threshold again.'),
     { theme: 'taboo' }
+  ),
+
+  // =========================================================================
+  // ACTIVE MEDICAL & WOUND RECOVERY (BACKSTREET CLINIC / NEST / CHILDHOOD)
+  // =========================================================================
+  M(
+    'm_med_backstreet_clinic',
+    GROWN,
+    { back: true },
+    '[Phòng khám chui Backstreets] Vết thương chém xé và cơn sốt sau chuỗi ngày lăn lộn khiến bước chân bạn nặng trĩu. Trước mặt bạn là ánh đèn neon nhấp nháy của một phòng khám ngầm do một cựu y sĩ Nest đào thoát mở.',
+    '[Backstreet Backroom Clinic] Lacerations and infection fever weigh heavily on your steps. Ahead flickers the neon sign of an illicit subterranean clinic run by an exiled Nest surgeon.',
+    [
+      C(
+        'Chi 4 Ahn tiêm dung dịch huyết thanh K Corp pha loãng',
+        'Pay 4 Ahn for diluted K Corp regenerative ampoule serum',
+        'Dung dịch màu ngọc bích rát bỏng chảy dọc tĩnh mạch; các thớ thịt rách nát và miệng vết thương kéo da non với tốc độ thần kỳ.',
+        'Emerald fluid burned along your veins; torn muscle tissue and lacerations knitted closed with miraculous speed.',
+        { health: 30, wealth: -4 }
+      ),
+      C(
+        'Chi 1 Ahn mua cồn khử trùng, thuốc giảm đau và cuộn băng vải thô',
+        'Pay 1 Ahn for disinfectant, crude painkillers and coarse bandages',
+        'Bạn tự khử trùng vết rách và quấn chặt băng gạc. Dù vẫn còn đau âm ỉ, tình trạng nhiễm trùng đã được chặn đứng hoàn toàn.',
+        'You sanitized the wounds and wrapped tight bandages. Though pain lingered, the creeping sepsis was firmly halted.',
+        { health: 16, wealth: -1 }
+      ),
+      C(
+        'Cắn răng tự khử trùng bằng lửa và kiên trì chịu đau để tiết kiệm Ahn',
+        'Cauterize wounds with fire and endure the searing pain to save Ahn',
+        'Mùi thịt khét và cơn đau thấu xương khiến bạn ngất lịm đi vài phút. Khi tỉnh dậy, vết rách đã cầm máu dù tinh thần kiệt quệ.',
+        'The smell of charred flesh and blinding agony made you black out briefly. Wounds ceased bleeding, though mind was battered.',
+        { health: 8, sanity: -3 }
+      )
+    ],
+    I('Lảo đảo bước qua phòng khám, phó mặc vết thương cho sức đề kháng tự nhiên.', 'Stagger past the clinic, leaving wounds to natural resilience.', { health: 4 }),
+    { theme: 'health' }
+  ),
+
+  M(
+    'm_med_nest_infirmary',
+    GROWN,
+    { nest: true },
+    '[Trạm Điều Trị Tự Động Feather] Vòng đeo tay sinh trắc học của bạn nhấp nháy đèn đỏ báo động chấn thương mô mềm. Bạn bước vào buồng điều dưỡng y tế tự động của Cánh.',
+    '[Feather Automated Med-Bay] Your biometric bracelet pulses amber, warning of severe tissue trauma. You enter the Wing’s automated residential restorative module.',
+    [
+      C(
+        'Kích hoạt buồng sinh học hồi phục cao cấp (-5 Ahn)',
+        'Activate high-grade biostasis rejuvenation chamber (-5 Ahn)',
+        'Hỗn hợp tế bào gốc và oxy cao áp thẩm thấu toàn thân. Cả cơ thể và tâm trí bạn được làm mới hoàn toàn chỉ sau một giấc ngủ ngắn.',
+        'Stem cell broth and hyperbaric oxygen saturated your tissues. Both body and psyche revitalized across a brief rest.',
+        { health: 36, sanity: 12, wealth: -5 }
+      ),
+      C(
+        'Sử dụng gói y tế cơ bản theo hạn ngạch cư dân (-1 Ahn)',
+        'Use standard resident quota treatment (-1 Ahn)',
+        'Hệ thống phun thuốc khử trùng và băng dán nano xử lý chuẩn xác mọi vết rách thể chất.',
+        'Automated mist sprays and nano-bandages cleanly addressed your physical injuries.',
+        { health: 22, wealth: -1 }
+      ),
+      C(
+        'Chỉ nhận viên sủi dinh dưỡng tăng lực và tiếp tục làm việc',
+        'Collect energy vitamin fizz and return to work',
+        'Viên vitamin giúp cơ thể bạn bớt mệt mỏi và duy trì thể lực qua ca làm việc dài.',
+        'The nutrient tablet eased exhaustion, sustaining your vitality through long shifts.',
+        { health: 12 }
+      )
+    ],
+    I('Bỏ qua cảnh báo y tế để không bị trừ điểm chuyên cần.', 'Ignore health warnings to preserve attendance rating.', { health: 6 }),
+    { theme: 'health' }
+  ),
+
+  M(
+    'm_med_child_remedy',
+    YOUNG,
+    {},
+    '[Cơn sốt Backstreets] Nước bẩn và không khí ô nhiễm của khu phố khiến bạn lên cơn sốt rét mê man trên chiếc nệm rách. Trong cơn mơ hồ, bạn cần tìm cách vượt qua đêm lạnh.',
+    '[Backstreet Fever] Tainted water and noxious district smog plunge you into a shivering fever atop a ragged mattress. In delirious haze, you fight the night.',
+    [
+      C(
+        'Dùng chút tiền ít ỏi nhờ người mua liều thuốc hạ sốt từ tiệm tạp hóa (-1 Ahn)',
+        'Spend scarce coin to fetch fever medicine from the street kiosk (-1 Ahn)',
+        'Vị thuốc đắng nghét nơi đầu lưỡi nhưng giúp cơn sốt nhanh chóng hạ nhiệt. Bạn ngủ một giấc say sưa và dần hồi phục.',
+        'The bitter tonic chilled the fever swiftly. You fell into deep sleep and woke revitalized.',
+        { health: 24, sanity: 6, wealth: -1 }
+      ),
+      C(
+        'Trùm kín mọi lớp chăn rách, uống nước ấm đun sôi và kiên trì chịu đựng',
+        'Bundle under every frayed blanket, drink hot boiled water and endure',
+        'Mồ hôi vã ra ướt đẫm tấm chăn. Đến sáng hôm sau, sức trẻ giúp bạn vượt qua cơn sốt an toàn.',
+        'Sweat soaked through the layers. By morning, youthful stamina broke the fever safely.',
+        { health: 15 }
+      ),
+      C(
+        'Cắn răng gượng dậy đi nhặt ve chai kiếm Ahn bất chấp cơn đau đầu',
+        'Force yourself up to scavenge scrap despite the pounding headache',
+        'Bạn nhặt được vài món kim loại có giá trị đem bán, dù cơ thể rã rời và mắt hoa đi vì sốt.',
+        'You salvaged several valuable scrap pieces to sell, though body ached and vision blurred.',
+        { health: 6, wealth: 2, sanity: -4 }
+      )
+    ],
+    I('Mê man thiếp đi suốt ba ngày ba đêm cho đến khi cơ thể tự hạ sốt.', 'Drifted semi-conscious for three days until the fever finally broke.', { health: 8 }),
+    { theme: 'health' }
   )
 ];
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Tooltip } from 'antd';
-import { ChevronDown, ChevronUp, User, Heart, Brain, Coins, Flame, Eye, Sparkles, X, ShieldAlert, ShoppingBag } from 'lucide-react';
+import { ChevronDown, ChevronUp, User, Heart, Brain, Coins, Flame, Eye, Sparkles, X, ShieldAlert, ShoppingBag, HelpCircle } from 'lucide-react';
 import { WorkshopDepotModal } from './WorkshopDepotModal';
 import { useGameStore } from '../../../store/gameStore';
 import { useThemeStore } from '../../../store/themeStore';
@@ -46,7 +46,7 @@ function useChange(value) {
 }
 
 // One stat: its own hue on the bar; a critical level turns the bar red and names it
-const Stat = ({ label, value, unit = '/100', color, flag, riseIsBad = false }) => {
+const Stat = ({ label, value, unit = '/100', color, flag, riseIsBad = false, tooltip = null }) => {
   const change = useChange(value);
   const good = change && (riseIsBad ? change.d < 0 : change.d > 0);
   const flashClass = change ? (good ? 'is-flash-up' : 'is-flash-down') : '';
@@ -72,9 +72,28 @@ const Stat = ({ label, value, unit = '/100', color, flag, riseIsBad = false }) =
   return (
     <div className={`stat ${flashClass} ${isCritical ? 'is-critical' : ''}`}>
       <div className="stat-head">
-        <span className="label">
+        <span className="label" style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
           <i className="dot" style={{ background: isCritical ? 'var(--bad)' : color }} />
-          {label}
+          <span>{label}</span>
+          {tooltip && (
+            <Tooltip title={tooltip} placement="top">
+              <span
+                role="button"
+                tabIndex={0}
+                aria-label="Thông tin chỉ số"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  cursor: 'help',
+                  color: 'var(--ink-muted)',
+                  marginLeft: 2,
+                  opacity: 0.85
+                }}
+              >
+                <HelpCircle size={12} />
+              </span>
+            </Tooltip>
+          )}
           {flag && <span className="stat-flag">{flag}</span>}
           {isCritical && <span className="stat-flag is-warn">CRIT</span>}
         </span>
@@ -100,7 +119,7 @@ const Stat = ({ label, value, unit = '/100', color, flag, riseIsBad = false }) =
   );
 };
 
-const TabooStat = ({ value }) => {
+const TabooStat = ({ value, tooltip = null }) => {
   const change = useChange(value);
   const good = change && change.d < 0;
   const flashClass = change ? (good ? 'is-flash-up' : 'is-flash-down') : '';
@@ -116,9 +135,28 @@ const TabooStat = ({ value }) => {
   return (
     <div className={`stat ${flashClass}`}>
       <div className="stat-head">
-        <span className="label">
+        <span className="label" style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
           <i className="dot" style={{ background: 'var(--bad)' }} />
-          Taboo Gaze
+          <span>Taboo Gaze</span>
+          {tooltip && (
+            <Tooltip title={tooltip} placement="top">
+              <span
+                role="button"
+                tabIndex={0}
+                aria-label="Thông tin chỉ số"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  cursor: 'help',
+                  color: 'var(--ink-muted)',
+                  marginLeft: 2,
+                  opacity: 0.85
+                }}
+              >
+                <HelpCircle size={12} />
+              </span>
+            </Tooltip>
+          )}
         </span>
         <div className="stat-num-box">
           {change && (
@@ -161,7 +199,16 @@ const STATUS_LABELS = {
 // The people in this life, each with what they are like and how close you are
 const People = ({ npcs, age, t, lang }) => {
   const list = Object.entries(npcs || {}).filter(([, n]) => Boolean(n));
-  if (!list.length) return null;
+  if (!list.length) {
+    return (
+      <section>
+        <h3 className="section-title">{t('Những người trong đời bạn', 'The people in your life')}</h3>
+        <p className="muted" style={{ fontSize: 13, fontStyle: 'italic', padding: '8px 0' }}>
+          {t('Hiện tại bạn sống cô độc giữa The City, chưa có mối liên hệ thân thiết nào.', 'You currently walk alone in The City, holding no close bonds.')}
+        </p>
+      </section>
+    );
+  }
   const gone = (n) => n.deceased || ['dead', 'missing', 'estranged'].includes(n.status);
   list.sort(([, a], [, b]) => Number(gone(a)) - Number(gone(b)));
   return (
@@ -298,9 +345,28 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeT
             color="var(--s-heat)"
             flag={(char.heat || 0) >= 70 ? 'Hunted' : null}
             riseIsBad
+            tooltip={t(
+              'Syndicate Heat: Mức độ truy nã và căm phẫn từ các băng đảng Backstreets. Khi vượt quá 70%, sát thủ và thợ săn tiền thưởng sẽ liên tục phục kích bạn.',
+              'Syndicate Heat: Backstreet Syndicate hostility and bounty level. Above 70%, hitmen and bounty hunters will relentlessly ambush you.'
+            )}
           />
-          <Stat label="E.G.O Resonance" value={char.resonance || 0} unit="%" color="var(--s-reso)" />
-          <TabooStat value={char.taboo || 0} />
+          <Stat
+            label="E.G.O Resonance"
+            value={char.resonance || 0}
+            unit="%"
+            color="var(--s-reso)"
+            tooltip={t(
+              'E.G.O Resonance: Tần số cộng hưởng tâm thức với Ánh Sáng (The Light). Chỉ số càng cao càng dễ Thức tỉnh vũ khí E.G.O riêng, nhưng nếu Sanity sụp đổ sẽ bị dẫn dụ thành Biến dị (Distortion).',
+              'E.G.O Resonance: Mental frequency alignment with The Light. High values unlock E.G.O awakening potential, but catastrophic sanity loss leads to Distortion.'
+            )}
+          />
+          <TabooStat
+            value={char.taboo || 0}
+            tooltip={t(
+              'Taboo Gaze: Mức độ vi phạm Điều Cấm Kỵ tối cao của The Head (A Corp). Đạt 3/3 Điều Cấm sẽ kích hoạt Án Thanh Trừng từ Móng Vuốt (The Claw) và Điều Tra Viên (Arbiter) không thể né tránh.',
+              'Taboo Gaze: Infringement of The Head’s supreme Taboos. Reaching 3/3 triggers an unavoidable Purge Execution by an Arbiter and Claw.'
+            )}
+          />
         </section>
       )}
 

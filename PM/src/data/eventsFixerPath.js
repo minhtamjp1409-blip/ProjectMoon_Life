@@ -38,6 +38,13 @@ export const FIXER_PATH_EVENTS = [
         flagsAdd: ['promo_g8_done'],
         meritAdd: 14,
         effects: { rep: +12, network: +10, sanity: +8 }
+      },
+      {
+        labelVi: 'Chưa vội sát hạch, dành thêm một mùa tích lũy thể lực và trang bị',
+        labelEn: 'Defer evaluation: Take another season to prepare gear and stamina',
+        resultVi: 'Bạn gửi đơn xin hoãn khảo thí lên Hana Section 6 để luyện tập thêm. Viên thanh tra ghi nhận đơn; bạn dành trọn mùa này tĩnh dưỡng (+16 HP, +12 SP).',
+        resultEn: 'You filed a formal deferral with Hana Section 6 to train further. The proctor accepted; you spent the season recovering (+16 HP, +12 SP).',
+        effects: { health: +16, sanity: +12 }
       }
     ]
   },
@@ -63,7 +70,7 @@ export const FIXER_PATH_EVENTS = [
         setFixerGrade: 7,
         flagsAdd: ['promo_g7_done'],
         meritAdd: 18,
-        effects: { health: -14, rep: +15, wealth: +30 }
+        effects: { health: -8, rep: +15, wealth: +30 }
       },
       {
         labelVi: 'Phối hợp nhịp nhàng với Fixer đồng minh bao vây',
@@ -74,6 +81,13 @@ export const FIXER_PATH_EVENTS = [
         flagsAdd: ['promo_g7_done'],
         meritAdd: 20,
         effects: { network: +16, rep: +12, sanity: +10 }
+      },
+      {
+        labelVi: 'Hoãn nhận chiến dịch nguy hiểm, tập trung dưỡng thương và chuẩn bị',
+        labelEn: 'Defer dangerous raid: Focus on healing wounds and preparation',
+        resultVi: 'Bạn xin phép Hana lùi thời hạn nhận chiến dịch trấn áp để dưỡng thương. Bạn dành thời gian nghỉ ngơi tĩnh dưỡng (+16 HP, +12 SP).',
+        resultEn: 'You requested Hana defer the raid window to heal wounds. You spent the season resting (+16 HP, +12 SP).',
+        effects: { health: +16, sanity: +12 }
       }
     ]
   },
@@ -99,7 +113,7 @@ export const FIXER_PATH_EVENTS = [
         setFixerGrade: 6,
         flagsAdd: ['promo_g6_done'],
         meritAdd: 24,
-        effects: { health: -22, rep: +20, wealth: +45 }
+        effects: { health: -10, rep: +20, wealth: +45 }
       },
       {
         labelVi: 'Khai thác địa hình hiểm trở, dẫn dụ kẻ địch vào bẫy kinetic',
@@ -110,6 +124,13 @@ export const FIXER_PATH_EVENTS = [
         flagsAdd: ['promo_g6_done'],
         meritAdd: 26,
         effects: { rep: +18, network: +18, wealth: +40 }
+      },
+      {
+        labelVi: 'Hoãn tham gia vùng chiến sự, tập trung nghỉ ngơi hồi phục thể lực',
+        labelEn: 'Defer frontline deployment: Focus on physical rest and recuperation',
+        resultVi: 'Nhận thấy chiến trường hai phe quá hỗn loạn, bạn gửi thông báo lùi thời hạn tham chiến để củng cố thể trạng (+16 HP, +12 SP).',
+        resultEn: 'Deeming the turf war too chaotic, you notified Hana of a tactical postponement to recover (+16 HP, +12 SP).',
+        effects: { health: +16, sanity: +12 }
       }
     ]
   },
@@ -135,7 +156,7 @@ export const FIXER_PATH_EVENTS = [
         setFixerGrade: 5,
         flagsAdd: ['promo_g5_done', 'OfficeEligible'],
         meritAdd: 30,
-        effects: { health: -16, rep: +25, wealth: +60 }
+        effects: { health: -9, rep: +25, wealth: +60 }
       },
       {
         labelVi: 'Dàn trận phối hợp cùng Fixer đồng minh và đặt bẫy kinetic',
@@ -145,7 +166,14 @@ export const FIXER_PATH_EVENTS = [
         setFixerGrade: 5,
         flagsAdd: ['promo_g5_done', 'OfficeEligible'],
         meritAdd: 28,
-        effects: { health: -10, sanity: -4, rep: +20, wealth: +45, network: +10 }
+        effects: { health: -5, sanity: -2, rep: +20, wealth: +45, network: +10 }
+      },
+      {
+        labelVi: 'Chưa nhận nhiệm vụ Sweeper, tạm thời nghỉ ngơi hồi phục thể trạng',
+        labelEn: 'Postpone Sweeper assignment: Temporarily rest and restore physical condition',
+        resultVi: 'Bạn xin hoãn lệnh triệu tập săn Sweeper để dưỡng thương. Ban quản lý Hana chấp thuận lưu hồ sơ của bạn cho đợt khảo thí sau (+16 HP, +12 SP).',
+        resultEn: 'You deferred the Sweeper hunt summons to heal. Hana proctors archived your eligibility for the next cycle (+16 HP, +12 SP).',
+        effects: { health: +16, sanity: +12 }
       }
     ]
   },
@@ -171,7 +199,7 @@ export const FIXER_PATH_EVENTS = [
         setFixerGrade: 4,
         flagsAdd: ['promo_g4_done'],
         meritAdd: 36,
-        effects: { health: -18, rep: +32, wealth: +85 }
+        effects: { health: -10, rep: +32, wealth: +85 }
       },
       {
         labelVi: 'Khai thác tài liệu tình báo của Seven Association để đón lõng điểm hẹn',
@@ -181,7 +209,14 @@ export const FIXER_PATH_EVENTS = [
         setFixerGrade: 4,
         flagsAdd: ['promo_g4_done'],
         meritAdd: 34,
-        effects: { health: -10, rep: +26, wealth: +65, network: +14 }
+        effects: { health: -5, rep: +26, wealth: +65, network: +14 }
+      },
+      {
+        labelVi: 'Từ chối làm mũi nhọn đột kích lúc này, dành thời gian điều dưỡng',
+        labelEn: 'Decline spearheading right now: Dedicate season to medical recuperation',
+        resultVi: 'Bạn thông báo cho phân hội Shi và Liu rằng bản thân cần thêm thời gian tĩnh dưỡng vết thương trước khi chỉ huy đột kích (+16 HP, +12 SP).',
+        resultEn: 'You notified Shi and Liu Associations that physical recovery takes priority before leading assaults (+16 HP, +12 SP).',
+        effects: { health: +16, sanity: +12 }
       }
     ]
   },
@@ -207,7 +242,7 @@ export const FIXER_PATH_EVENTS = [
         setFixerGrade: 3,
         flagsAdd: ['promo_g3_done'],
         meritAdd: 45,
-        effects: { health: -20, sanity: -10, rep: +40, wealth: +120, resonance: +15 }
+        effects: { health: -12, sanity: -6, rep: +40, wealth: +120, resonance: +15 }
       },
       {
         labelVi: 'Sử dụng neo không gian và khiên phân giải của Workshop để cô lập dị thể',
@@ -218,7 +253,14 @@ export const FIXER_PATH_EVENTS = [
         flagsAdd: ['promo_g3_done'],
         meritAdd: 42,
         costAhn: 25,
-        effects: { health: -12, sanity: -6, rep: +35, wealth: +80, network: +12 }
+        effects: { health: -6, sanity: -3, rep: +35, wealth: +80, network: +12 }
+      },
+      {
+        labelVi: 'Chưa tiến vào vùng cấm không gian, ưu tiên bảo toàn tính mạng và hồi phục',
+        labelEn: 'Hold off entering the exclusion zone: Prioritize life preservation and recovery',
+        resultVi: 'Bạn xin phép Hana dời ngày thâm nhập dị thể không gian để củng cố tâm trí và thể chất. Bạn dành thời gian nghỉ ngơi (+16 HP, +12 SP).',
+        resultEn: 'You requested Hana postpone spatial anomaly infiltration to consolidate mind and body (+16 HP, +12 SP).',
+        effects: { health: +16, sanity: +12 }
       }
     ]
   },
@@ -244,7 +286,7 @@ export const FIXER_PATH_EVENTS = [
         setFixerGrade: 2,
         flagsAdd: ['promo_g2_done'],
         meritAdd: 55,
-        effects: { health: -22, sanity: -12, rep: +50, wealth: +180, resonance: +20 }
+        effects: { health: -12, sanity: -6, rep: +50, wealth: +180, resonance: +20 }
       },
       {
         labelVi: 'Phối hợp cùng hộ vệ Zwei Association lập phòng tuyến kiên cố',
@@ -254,7 +296,14 @@ export const FIXER_PATH_EVENTS = [
         setFixerGrade: 2,
         flagsAdd: ['promo_g2_done'],
         meritAdd: 50,
-        effects: { health: -14, sanity: -8, rep: +42, wealth: +130, network: +18 }
+        effects: { health: -7, sanity: -4, rep: +42, wealth: +130, network: +18 }
+      },
+      {
+        labelVi: 'Lùi hạn nhận hợp đồng hộ tống sinh tử, tập trung tĩnh dưỡng',
+        labelEn: 'Defer life-or-death escort contract: Focus on resting and recuperating',
+        resultVi: 'Bạn gửi thư thoái thác nhiệm vụ hộ tống giám đốc vì lý do chấn thương chưa lành. Section 1 ghi nhận và cho phép bạn bảo lưu tư cách (+16 HP, +12 SP).',
+        resultEn: 'You sent word declining the escort due to unhealed trauma. Section 1 noted the medical deferral (+16 HP, +12 SP).',
+        effects: { health: +16, sanity: +12 }
       }
     ]
   },
@@ -280,7 +329,7 @@ export const FIXER_PATH_EVENTS = [
         setFixerGrade: 1,
         flagsAdd: ['promo_g1_done'],
         meritAdd: 70,
-        effects: { health: -24, sanity: -14, rep: +65, wealth: +280, resonance: +25 }
+        effects: { health: -14, sanity: -8, rep: +65, wealth: +280, resonance: +25 }
       },
       {
         labelVi: 'Hiệu triệu liên minh các Văn phòng uy tín mở chiến dịch vây quét tổng lực',
@@ -290,7 +339,14 @@ export const FIXER_PATH_EVENTS = [
         setFixerGrade: 1,
         flagsAdd: ['promo_g1_done'],
         meritAdd: 65,
-        effects: { health: -16, sanity: -10, rep: +55, wealth: +190, network: +25 }
+        effects: { health: -8, sanity: -5, rep: +55, wealth: +190, network: +25 }
+      },
+      {
+        labelVi: 'Bảo lưu quyền khảo thí Star of the City, dành một mùa hồi phục phong độ đỉnh cao',
+        labelEn: 'Preserve Star of the City trial rights: Spend a season regaining peak form',
+        resultVi: 'Hội đồng Trung ương Hana đồng ý cho bạn dời ngày viễn chinh để đạt trạng thái thể lực sung mãn nhất (+16 HP, +12 SP).',
+        resultEn: 'Hana Grand Council agreed to reschedule the expedition so you may achieve peak physical prowess (+16 HP, +12 SP).',
+        effects: { health: +16, sanity: +12 }
       }
     ]
   },

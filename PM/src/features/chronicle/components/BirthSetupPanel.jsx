@@ -435,7 +435,7 @@ export const BirthSetupPanel = () => {
               />
             </div>
             <div className="field">
-              <label htmlFor="birth-region">{t('Nơi chào đời', 'Birthplace')}</label>
+              <label htmlFor="birth-region">{t('Khu vực sinh ra', 'Birthplace')}</label>
               <select
                 id="birth-region"
                 className="select"

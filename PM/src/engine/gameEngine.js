@@ -517,7 +517,7 @@ export function createNewCharacter({
     activeArcs: [],
     scars,
     npcs: {
-      friend: { ...birth.friend, metAge: 0 },
+      friend: birth.friend ? { ...birth.friend, metAge: 0 } : null,
       parent: parentNpc,
       mentor: null,
       partner: null,
@@ -1133,6 +1133,18 @@ export function generateFixerContract(char, rng) {
         payAhn: tierInfo.basePay,
         meritGain: tierInfo.baseMerit + 3,
         costAhn: 8
+      },
+      {
+        id: 'decline',
+        labelVi: 'Từ chối ủy thác (Nghỉ ngơi dưỡng thương, bảo toàn tính mạng)',
+        labelEn: 'Decline contract (Rest and recover, preserve your life)',
+        successPct: 100,
+        failPct: 0,
+        deathPct: 0,
+        payAhn: 0,
+        meritGain: -2,
+        costAhn: 0,
+        isRest: true
       }
     ]
   };
@@ -1153,6 +1165,24 @@ export function resolveFixerContract(charState, approachId, rng = Math.random) {
 
   if (approach.costAhn > 0) {
     char.stats.wealth = clamp(char.stats.wealth - approach.costAhn, 0, 100);
+  }
+
+  if (approach.id === 'decline') {
+    const healHp = 18;
+    const healSp = 12;
+    char.stats.health = clamp(char.stats.health + healHp, 0, 100);
+    char.stats.sanity = clamp(char.stats.sanity + healSp, 0, 100);
+    char.merit = Math.max(0, char.merit - 2);
+    char.logs.push({
+      id: `log_req_decline_${char.age}`,
+      age: char.age,
+      season: SEASONS[char.seasonIdx || 0],
+      type: 'story',
+      vi: `[Từ chối ủy thác] Nhận thấy vết thương trên người chưa lành và rủi ro quá lớn, bạn quyết định trả lại ủy thác ${template.nameVi || ''} cho Hiệp hội Hana. Bạn dành trọn mùa này tĩnh dưỡng tại nơi ở an toàn (+18 HP, +12 SP, -2 Merit).`,
+      en: `[Contract Declined] Recognizing your lingering wounds and high risk, you returned the contract for ${template.nameEn || 'this assignment'} to Hana Association. You spent the season resting in a quiet safehouse (+18 HP, +12 SP, -2 Merit).`
+    });
+    char.weaver = updateDramaTension(char.weaver, char);
+    return char;
   }
 
   const omenObj = FATE_OMENS.find((o) => o.id === char.fateOmenId);

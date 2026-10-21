@@ -311,7 +311,7 @@ const ContractDock = ({ contract, wealth, onPick }) => {
                   <span style={{ display: 'flex', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
                     <span className="choice-label">{lang === 'en' ? app.labelEn : app.labelVi}</span>
                     <span className="num muted" style={{ fontSize: 14, whiteSpace: 'nowrap' }}>
-                      +{app.payAhn} Ahn · +{app.meritGain} Merit
+                      {app.isRest ? t('+18 HP · +12 SP', '+18 HP · +12 SP') : `+${app.payAhn} Ahn · +${app.meritGain} Merit`}
                     </span>
                   </span>
                   <span className="odds">
@@ -321,9 +321,15 @@ const ContractDock = ({ contract, wealth, onPick }) => {
                       <i style={{ width: `${app.deathPct}%`, background: 'var(--bad)' }} />
                     </span>
                     <span className="odds-legend">
-                      <span><i className="dot" style={{ background: 'var(--good)' }} />{t('Thành công', 'Success')} {app.successPct}%</span>
-                      <span><i className="dot" style={{ background: 'var(--warn)' }} />{t('Thất bại', 'Fail')} {app.failPct}%</span>
-                      <span><i className="dot" style={{ background: 'var(--bad)' }} />{t('Tử trận', 'Death')} {app.deathPct}%</span>
+                      {app.isRest ? (
+                        <span><i className="dot" style={{ background: 'var(--good)' }} />{t('An toàn 100% · Dưỡng sức', '100% Safe · Recuperate')}</span>
+                      ) : (
+                        <>
+                          <span><i className="dot" style={{ background: 'var(--good)' }} />{t('Thành công', 'Success')} {app.successPct}%</span>
+                          <span><i className="dot" style={{ background: 'var(--warn)' }} />{t('Thất bại', 'Fail')} {app.failPct}%</span>
+                          <span><i className="dot" style={{ background: 'var(--bad)' }} />{t('Tử trận', 'Death')} {app.deathPct}%</span>
+                        </>
+                      )}
                     </span>
                   </span>
                   {short && (

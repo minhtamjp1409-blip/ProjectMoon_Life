@@ -221,6 +221,7 @@ function majorIsDue(char, rng) {
 export function planYear(charState, rng) {
   const char = charState;
   const age = char.age;
+  const nest = isNest(char);
 
   // 1. Collect Key / Causal items (Consequences scheduled by earlier choices come first)
   const scheduledKey = [];
@@ -281,6 +282,14 @@ export function planYear(charState, rng) {
   // Fixer combat contract: tactical commission
   if (char.job === 'Fixer' && !char.flags.includes('Distorted') && age >= 19 && rng() < 0.42 && !scheduledKey.some((it) => it.kind === 'contract')) {
     scheduledKey.push({ kind: 'contract' });
+  }
+
+  // Active Medical Recovery minor choice when injured or sick
+  if (char.stats.health < 65 && !char.flags.includes('Distorted') && rng() < 0.75) {
+    const medId = nest ? 'm_med_nest_infirmary' : (age < 18 ? 'm_med_child_remedy' : 'm_med_backstreet_clinic');
+    if (!scheduledKey.some((it) => it.id === medId)) {
+      scheduledKey.push({ kind: 'minor', id: medId });
+    }
   }
 
   // Collect Minor choices: small interactive decisions with time limit
@@ -808,41 +817,43 @@ export function endYear(charState, rng) {
   }
 
   // Healthcare & Wounds recovery vs Street clinic expenses
-  if (char.stats.health < 60 && !char.flags.includes('Distorted')) {
+  if (char.stats.health < 85 && !char.flags.includes('Distorted')) {
     if (char.flags.includes('KCorpAmpoule')) {
-      add('health', 4);
-      vi.push('Dược chất huyết thanh K Corp liên tục tuần hoàn, phục hồi nhanh chóng các mô thịt bị rách nát.');
-      en.push('K Corp restorative serum continuously circulated, stitching torn flesh back together.');
+      add('health', 25);
+      vi.push('Dược chất huyết thanh K Corp liên tục tuần hoàn, tái tạo thần tốc các mô thịt bị rách nát (+25 HP).');
+      en.push('K Corp restorative serum continuously circulated, rapidly regenerating damaged tissues (+25 HP).');
     } else if (char.stats.wealth >= 3 && char.age >= 18) {
       add('wealth', -2);
-      add('health', 4);
-      vi.push('Bạn tốn 2 Ahn tại một phòng khám chui nơi hẻm tối để khâu lại các vết chém và khử trùng vết thương.');
-      en.push('You paid 2 Ahn at a backstreet backroom clinic to stitch and sanitize deep lacerations.');
+      add('health', 18);
+      vi.push('Bạn tốn 2 Ahn tại phòng khám chui nơi hẻm tối để khâu lại vết chém, khử trùng và phục hồi thể lực (+18 HP, -2 Ahn).');
+      en.push('You paid 2 Ahn at a backstreet clinic to stitch wounds, sanitize, and restore vigor (+18 HP, -2 Ahn).');
     } else if (nest) {
-      add('health', 2);
-      vi.push('Gói bảo hiểm y tế nội bộ của Nest hỗ trợ khử trùng và điều trị chu đáo các chấn thương thể chất.');
-      en.push('Nest residential medical coverage attended to your physical injuries with clinical care.');
+      add('health', 16);
+      vi.push('Gói bảo hiểm y tế nội bộ của Nest hỗ trợ khử trùng và điều trị chu đáo các tổn thương thể chất (+16 HP).');
+      en.push('Nest residential medical coverage attended to your physical injuries with clinical care (+16 HP).');
     } else {
-      add('health', 1);
-      vi.push('Không có tiền viện phí, những vết rách trên cơ thể bạn chỉ có thể tự khép miệng thành những vết sẹo thô ráp.');
-      en.push('With no coin for doctors, your wounds simply scabbed over into rugged survival scars.');
+      add('health', 10);
+      vi.push('Nhờ sức đề kháng tự nhiên và thời gian tĩnh dưỡng, những vết rách trên cơ thể bạn dần kéo da non (+10 HP).');
+      en.push('Through natural resilience and quiet rest, your physical wounds gradually healed over (+10 HP).');
     }
   }
 
   // Mental Sanity recovery vs Tavern comfort
   const bond = ['spouse', 'partner', 'friend', 'mentor', 'child'].some((k) => char.npcs?.[k] && !char.npcs[k].deceased && (char.npcs[k].bond || 0) >= 50);
-  if (char.stats.sanity < 55 && !char.flags.includes('Distorted')) {
+  if (char.stats.sanity < 85 && !char.flags.includes('Distorted')) {
     if (bond) {
-      add('sanity', 3);
-      vi.push('Sự kề cận và sẻ chia của người thân yêu giúp tâm trí bạn giữ được sự tỉnh táo trước áp lực điên cuồng của Thành Phố.');
-      en.push('The steady presence of a loved one anchored your sanity against the City’s madness.');
-    } else if (char.stats.wealth >= 3 && char.age >= 18) {
+      add('sanity', 16);
+      vi.push('Sự kề cận và sẻ chia của người thân yêu giúp tâm trí bạn giữ được sự tỉnh táo và xua tan ám ảnh (+16 SP).');
+      en.push('The steady presence of a loved one anchored your sanity and cleared lingering horrors (+16 SP).');
+    } else if (char.stats.wealth >= 2 && char.age >= 18) {
       add('wealth', -1);
-      add('sanity', 3);
-      vi.push('Bạn bỏ 1 Ahn vào quán rượu bình dân cuối phố, mượn men cay để xoa dịu những cơn đau đầu dai dẳng.');
-      en.push('You spent 1 Ahn at a gritty dive tavern, dulling persistent headaches with cheap liquor.');
-    } else if (char.stats.sanity < 40) {
-      add('sanity', 1);
+      add('sanity', 12);
+      vi.push('Bạn bỏ 1 Ahn vào quán rượu bình dân cuối phố, mượn men cay để xoa dịu những cơn đau đầu dai dẳng (+12 SP, -1 Ahn).');
+      en.push('You spent 1 Ahn at a gritty dive tavern, dulling persistent headaches with cheap liquor (+12 SP, -1 Ahn).');
+    } else {
+      add('sanity', 8);
+      vi.push('Những khoảnh khắc tĩnh lặng hiếm hoi trong đêm giúp tâm trí bạn lắng đọng và hồi phục tinh thần (+8 SP).');
+      en.push('Rare quiet moments in the night allowed your mind to settle and regain mental composure (+8 SP).');
     }
   }
 

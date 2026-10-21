@@ -147,8 +147,9 @@ export function composeBirth({ kind, familyId, omenId, regionVi, regionEn, regio
   const fam = pick(FAMILY[familyId] || FAMILY.backstreet_worker, rng);
   const night = pick(THAT_NIGHT, rng);
   const omen = pick(OMEN_LINE[omenId] || OMEN_LINE.index_equilibrium, rng);
-  const friend = makeNpc('friend', rng, { regionId, nest: kind === 'nest' });
-  const fl = pick(FRIEND_LINE, rng);
+  const hasFriend = rng ? rng() < 0.50 : Math.random() < 0.50;
+  const friend = hasFriend ? makeNpc('friend', rng, { regionId, nest: kind === 'nest' }) : null;
+  const fl = hasFriend ? pick(FRIEND_LINE, rng) : null;
 
   const head = generation > 1
     ? { vi: `Thế hệ #${generation}. Bạn được đặt tên là ${name}.`, en: `Generation #${generation}. You were named ${name}.` }
@@ -159,8 +160,8 @@ export function composeBirth({ kind, familyId, omenId, regionVi, regionEn, regio
     lines: [
       {
         type: 'milestone',
-        vi: `[Chào đời] ${fill(place.vi, { region: regionVi })} ${head.vi}`,
-        en: `[Birth] ${fill(place.en, { region: regionEn })} ${head.en}`
+        vi: `[Khu vực sinh ra] ${fill(place.vi, { region: regionVi })} ${head.vi}`,
+        en: `[Birthplace] ${fill(place.en, { region: regionEn })} ${head.en}`
       },
       {
         type: 'daily',
@@ -168,15 +169,19 @@ export function composeBirth({ kind, familyId, omenId, regionVi, regionEn, regio
         en: `[Family & Birth Night] ${fam.en} ${night.en}`
       },
       {
-        type: omenId === 'index_equilibrium' ? 'daily' : 'causal',
+        type: 'daily',
         vi: omen.vi.startsWith('[') ? omen.vi : `[Điềm định mệnh] ${omen.vi}`,
         en: omen.en.startsWith('[') ? omen.en : `[Fate Omen] ${omen.en}`,
         omen: true
       },
-      {
+      hasFriend ? {
         type: 'daily',
         vi: `[Bạn thời thơ ấu] ${fill(fl.vi, { friend: friend.nameVi, trait: friend.traitVi })}`,
         en: `[Childhood Companion] ${fill(fl.en, { friend: friend.nameEn, trait: friend.traitEn })}`
+      } : {
+        type: 'daily',
+        vi: `[Tuổi thơ đơn độc] Bạn lớn lên giữa những bức tường xám của ${regionVi} mà không có lấy một người bạn cùng trang lứa. Bạn sớm học cách tự sinh tồn và cảnh giác với tất cả những ai tiến lại gần.`,
+        en: `[Solitary Childhood] You grew up amid the grey walls of ${regionEn} without a companion your age. You early learned to survive on your own and stay wary of anyone approaching.`
       }
     ]
   };
