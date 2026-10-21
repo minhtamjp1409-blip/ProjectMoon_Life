@@ -459,9 +459,20 @@ export const PlayBar = () => {
           </button>
         </div>
 
-        {/* Mobile More dropdown menu */}
+        {/* Mobile Shop quick button */}
+        <button
+          type="button"
+          className="btn-shop-mobile"
+          onClick={() => setShopOpen(true)}
+          title={t('Xưởng Workshop & Chợ Đen', 'Workshop & Market')}
+          aria-label={t('Xưởng Workshop & Chợ Đen', 'Workshop & Market')}
+        >
+          <ShoppingBag size={18} color="var(--accent)" />
+        </button>
+
+        {/* Mobile More dropdown menu (pops up from bottom bar) */}
         <div className="playbar-mobile-more">
-          <Dropdown menu={{ items: menuItems }} placement="bottomRight" trigger={['click']}>
+          <Dropdown menu={{ items: menuItems }} placement="topRight" trigger={['click']}>
             <button 
               type="button" 
               className="icon-btn" 

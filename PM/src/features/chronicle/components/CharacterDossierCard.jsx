@@ -6,7 +6,7 @@ import { useGameStore } from '../../../store/gameStore';
 import { useThemeStore } from '../../../store/themeStore';
 import { REGIONS, FINGER_RANKS } from '../../../data/worldData';
 import { FATE_OMENS } from '../../../engine/weaverAI';
-import { getNextCareerMilestone } from '../../../engine/gameEngine';
+import { SEASONS, getNextCareerMilestone } from '../../../engine/gameEngine';
 import { audioEngine } from '../../../engine/audioEngine';
 import { gameFeel } from '../../../engine/gameFeel';
 import { useT } from '../../../i18n';
@@ -351,6 +351,8 @@ export const CharacterDossierCard = () => {
   const omen = FATE_OMENS.find((o) => o.id === (char.fateOmenId || char.weaver?.mode)) || FATE_OMENS[0];
   const { health, sanity, wealth, network, rep } = char.stats;
   const milestone = getNextCareerMilestone(char);
+  const yearProgress = useGameStore((s) => s.yearProgress);
+  const currentSeason = SEASONS[char.seasonIdx] || SEASONS[0];
   const items = [
     char.egoName && { k: 'E.G.O', v: char.egoName },
     char.craftWeapon && { k: t('Thần binh', 'Weapon'), v: char.craftWeapon.name },
@@ -364,7 +366,7 @@ export const CharacterDossierCard = () => {
 
   return (
     <>
-      {/* 1. Dedicated Mobile Compact Status Bar (Visible only on mobile <= 820px) */}
+      {/* 1. Dedicated Mobile Status Header (Safe-Area Protected, All Vitals + Timeline in View) */}
       <div 
         className="mobile-resource-hud" 
         onClick={() => setDrawerOpen(true)}
@@ -377,12 +379,13 @@ export const CharacterDossierCard = () => {
           <div className="m-hud-name-group">
             <span className="m-hud-name">{char.name}</span>
             <span className="m-hud-gen">#{char.generation}</span>
+            <span className="m-hud-job-pill">{jobDesc.split(' · ')[0]}</span>
           </div>
 
           <div className="m-hud-vitals-group">
             {/* HP micro gauge */}
             <div className={`m-micro-gauge m-gauge-hp ${isHpCritical ? 'is-critical' : ''}`} title={`HP: ${health}/100`}>
-              <Heart size={11} className="m-icon-hp" />
+              <Heart size={12} className="m-icon-hp" />
               <span className="m-micro-val num"><b>{health}</b></span>
               <div className="m-micro-track">
                 <div className="m-micro-fill" style={{ width: `${Math.max(0, Math.min(100, health))}%` }} />
@@ -391,7 +394,7 @@ export const CharacterDossierCard = () => {
 
             {/* SP micro gauge */}
             <div className={`m-micro-gauge m-gauge-sp ${isSpCritical ? 'is-critical' : ''}`} title={`SP: ${sanity}/100`}>
-              <Brain size={11} className="m-icon-sp" />
+              <Brain size={12} className="m-icon-sp" />
               <span className="m-micro-val num"><b>{sanity}</b></span>
               <div className="m-micro-track">
                 <div className="m-micro-fill" style={{ width: `${Math.max(0, Math.min(100, sanity))}%` }} />
@@ -401,18 +404,18 @@ export const CharacterDossierCard = () => {
 
           <div className="m-hud-resources-group">
             <div className="m-micro-pill m-pill-wealth" title={t('Tiền mặt Ahn', 'Ahn Wealth')}>
-              <Coins size={11} className="m-icon-gold" />
+              <Coins size={12} className="m-icon-gold" />
               <span className="num"><b>{wealth}</b></span>
             </div>
             {tabooLevel > 0 && (
               <div className={`m-micro-pill m-pill-taboo ${tabooLevel >= 2 ? 'is-critical' : ''}`} title={t('Ánh nhìn Taboo', 'Taboo Gaze')}>
-                <Eye size={11} className="m-icon-taboo" />
+                <Eye size={12} className="m-icon-taboo" />
                 <span className="num"><b>{tabooLevel}</b>/3</span>
               </div>
             )}
             {char.heat > 0 && (
               <div className="m-micro-pill m-pill-heat" title={t('Mức độ truy nã', 'Heat Level')}>
-                <Flame size={11} className="m-icon-heat" />
+                <Flame size={12} className="m-icon-heat" />
                 <span className="num"><b>{char.heat}</b></span>
               </div>
             )}
@@ -430,6 +433,25 @@ export const CharacterDossierCard = () => {
             <span>{t('Hồ sơ', 'Dossier')}</span>
             <ChevronDown size={12} />
           </button>
+        </div>
+
+        {/* Row 2: Season & Year Progress timeline sub-strip */}
+        <div className="m-hud-subline">
+          <div className="m-hud-season-pill">
+            <b>{t(`Tuổi ${char.age}`, `Age ${char.age}`)}</b>
+            <span>· {t(currentSeason?.vi, currentSeason?.en)}</span>
+          </div>
+          <div className="m-hud-timeline-track">
+            <div className="m-hud-timeline-fill" style={{ width: `${Math.max(0, Math.min(100, yearProgress || 0))}%` }} />
+          </div>
+          {milestone && milestone.progressPct < 100 ? (
+            <span className="m-hud-goal-pill" title={lang === 'en' ? milestone.titleEn : milestone.titleVi}>
+              <span className="m-hud-goal-text">{lang === 'en' ? milestone.titleEn : milestone.titleVi}</span>
+              <b>{milestone.progressPct}%</b>
+            </span>
+          ) : (
+            <span className="m-hud-region-pill">{region ? (lang === 'en' ? region.nameEn : region.nameVi) : ''}</span>
+          )}
         </div>
       </div>
 

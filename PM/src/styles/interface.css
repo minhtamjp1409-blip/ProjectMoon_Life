@@ -1036,7 +1036,7 @@ input:focus-visible, select:focus-visible, textarea:focus-visible {
 .interface-v2 .delta { border-radius: 4px; box-shadow: none; font-weight: 500; font-size: 11px; }
 
 .interface-v2 .mobile-resource-hud, .playbar-mobile-vitals { display: none; }
-.interface-v2 .btn-speed-mobile, .interface-v2 .playbar-mobile-more { display: none; }
+.interface-v2 .btn-speed-mobile, .interface-v2 .btn-shop-mobile, .interface-v2 .playbar-mobile-more { display: none; }
 
 /* Responsive Media Queries */
 @media (min-width: 1360px) {
@@ -1162,7 +1162,7 @@ input:focus-visible, select:focus-visible, textarea:focus-visible {
   .district-index { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .fate-grid { grid-template-columns: 1fr 1fr; gap: 24px; }
   
-  /* --- Mobile In-Play Ultra-Compact Tactical HUD (Only 68px Total: 36px + 32px!) --- */
+  /* --- Mobile In-Play Ergonomic Layout (Top Status HUD + Bottom Thumb PlayBar) --- */
   .interface-v2 .play {
     height: 100dvh;
     max-height: 100dvh;
@@ -1171,119 +1171,410 @@ input:focus-visible, select:focus-visible, textarea:focus-visible {
     overflow: hidden;
   }
 
-  /* Row 1: PlayBar (36px) - Time, Progress & Controls */
-  .interface-v2 .playbar {
+  /* Story Body (Fills all center height, sits between Top HUD and Bottom PlayBar) */
+  .interface-v2 .play-body {
+    order: 1 !important;
+    flex: 1 1 0 !important;
+    min-height: 0 !important;
     display: flex !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    height: 36px !important;
-    min-height: 36px !important;
-    max-height: 36px !important;
-    padding: 0 8px !important;
-    gap: 6px !important;
-    background: var(--surface) !important;
-    border-bottom: 1px solid var(--border) !important;
-    flex-shrink: 0 !important;
-    z-index: 25 !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+    margin: 0 !important;
   }
-  .interface-v2 .playbar-age {
+  .interface-v2 .desktop-dossier-side { display: none !important; }
+  .interface-v2 .chronicle-heading { display: none !important; }
+
+  /* 1. Top HUD: Status & Vitals (Notch / Dynamic Island Protected) */
+  .interface-v2 .mobile-resource-hud {
+    order: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 4px !important;
+    padding: calc(8px + env(safe-area-inset-top)) 12px 6px !important;
+    margin: 0 !important;
+    border: 0 !important;
+    border-bottom: 1px solid var(--border) !important;
+    border-radius: 0 !important;
+    background: #0d1117 !important;
+    background: linear-gradient(180deg, #141923 0%, #0a0d12 100%) !important;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5) !important;
+    flex-shrink: 0 !important;
+    cursor: pointer !important;
+    z-index: 30 !important;
+  }
+
+  .interface-v2 .m-hud-compact-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .interface-v2 .m-hud-name-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    flex-shrink: 0;
+  }
+
+  .interface-v2 .m-hud-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    max-width: 90px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .interface-v2 .m-hud-gen {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--accent);
+    background: rgba(212, 175, 55, 0.12);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    border-radius: 3px;
+    padding: 1px 4px;
+    line-height: 1;
+  }
+
+  .interface-v2 .m-hud-job-pill {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--muted);
+    background: var(--raised);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 1px 5px;
+    white-space: nowrap;
+    max-width: 75px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .interface-v2 .m-hud-vitals-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
     min-width: 0;
+    justify-content: center;
+  }
+
+  .interface-v2 .m-micro-gauge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  .interface-v2 .m-micro-val {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .interface-v2 .m-micro-track {
+    width: 28px;
+    height: 5px;
+    border-radius: 3px;
+    background: #090c10;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    overflow: hidden;
+  }
+
+  .interface-v2 .m-micro-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.3s ease;
+  }
+
+  .interface-v2 .m-gauge-hp .m-micro-fill {
+    background: var(--s-health);
+    box-shadow: 0 0 6px rgba(34, 197, 94, 0.6);
+  }
+  .interface-v2 .m-gauge-sp .m-micro-fill {
+    background: var(--s-sanity);
+    box-shadow: 0 0 6px rgba(96, 165, 250, 0.6);
+  }
+  .interface-v2 .m-icon-hp { color: var(--s-health); }
+  .interface-v2 .m-icon-sp { color: var(--s-sanity); }
+
+  .interface-v2 .m-hud-resources-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    flex-shrink: 0;
+  }
+
+  .interface-v2 .m-micro-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .interface-v2 .m-icon-gold { color: var(--accent); }
+  .interface-v2 .m-icon-taboo { color: var(--s-taboo, #f87171); }
+  .interface-v2 .m-icon-heat { color: var(--s-heat, #fb923c); }
+
+  .interface-v2 .m-hud-open-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 3px 8px;
+    height: 24px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+    background: rgba(212, 175, 55, 0.1);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    border-radius: 4px;
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+
+  /* Subline: Age, Season, and Timeline */
+  .interface-v2 .m-hud-subline {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
+    font-size: 11px;
+    padding-top: 2px;
+  }
+
+  .interface-v2 .m-hud-season-pill {
     display: inline-flex;
     align-items: baseline;
     gap: 3px;
-    padding: 2px 6px;
-    background: var(--raised);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    flex-shrink: 0;
-    line-height: 1;
+    font-size: 11px;
+    white-space: nowrap;
+    color: var(--muted);
   }
-  .interface-v2 .playbar-age b { font-size: 13px; font-weight: 700; color: var(--accent); }
-  .interface-v2 .playbar-age span { font-size: 10px; white-space: nowrap; line-height: 1; color: var(--text); }
-  
-  .interface-v2 .yearbar {
+  .interface-v2 .m-hud-season-pill b {
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  .interface-v2 .m-hud-timeline-track {
     flex: 1;
-    min-width: 40px;
-    margin: 0 4px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-  .interface-v2 .yearbar-track {
+    min-width: 50px;
     height: 4px;
     border-radius: 2px;
-    background: rgba(0, 0, 0, 0.45);
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    overflow: hidden;
   }
-  .interface-v2 .yearbar-fill {
-    background: var(--accent);
-    box-shadow: 0 0 6px rgba(212, 175, 55, 0.6);
-  }
-  .interface-v2 .yearbar-meta { display: none !important; }
 
-  .interface-v2 .playbar-controls {
-    display: inline-flex !important;
+  .interface-v2 .m-hud-timeline-fill {
+    height: 100%;
+    background: var(--accent);
+    box-shadow: 0 0 6px rgba(212, 175, 55, 0.7);
+    border-radius: 2px;
+  }
+
+  .interface-v2 .m-hud-goal-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10.5px;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 1px 5px;
+    white-space: nowrap;
+    max-width: 110px;
+  }
+  .interface-v2 .m-hud-goal-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .interface-v2 .m-hud-goal-pill b {
+    color: var(--good);
+  }
+
+  .interface-v2 .m-hud-region-pill {
+    font-size: 10px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  /* 2. Story Canvas Feed */
+  .interface-v2 .stage {
+    order: 2 !important;
+    flex: 1 1 0 !important;
+    min-height: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    border-radius: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+  }
+
+  .interface-v2 .log {
+    flex: 1 1 0 !important;
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding: 14px 14px 24px !important;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+  }
+  .interface-v2 .log::-webkit-scrollbar,
+  .interface-v2 .dock::-webkit-scrollbar,
+  .interface-v2 .play::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  .interface-v2 .entry {
+    margin-bottom: 12px;
+    padding: 14px 14px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  }
+  .interface-v2 .entry-text {
+    font-size: 15px;
+    line-height: 1.75;
+  }
+  .interface-v2 .yearline {
+    margin: 18px 0 10px;
+    font-size: 12px;
+  }
+
+  /* 3. Bottom PlayBar (Thumb Zone Ergonomics!) */
+  .interface-v2 .playbar {
+    order: 2 !important;
+    display: flex !important;
     align-items: center !important;
-    gap: 3px !important;
-    margin: 0 !important;
+    justify-content: space-between !important;
+    min-height: 52px !important;
+    height: auto !important;
+    padding: 8px 12px calc(8px + env(safe-area-inset-bottom)) !important;
+    gap: 8px !important;
+    background: rgba(14, 18, 24, 0.96) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    border: 0 !important;
+    border-top: 1px solid rgba(212, 175, 55, 0.25) !important;
+    box-shadow: 0 -8px 28px rgba(0, 0, 0, 0.65) !important;
     flex-shrink: 0 !important;
+    z-index: 25 !important;
   }
-  .interface-v2 .play-pause-btn {
-    min-width: 28px !important;
-    width: 28px !important;
-    height: 28px !important;
-    border-radius: 4px !important;
-    padding: 0 !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    background: var(--raised) !important;
-    border: 1px solid var(--border) !important;
-    color: var(--text) !important;
-  }
+
+  .interface-v2 .playbar-age,
+  .interface-v2 .yearbar,
   .interface-v2 .playbar-desktop-speeds,
   .interface-v2 .playbar-desktop-actions,
   .interface-v2 .playbar-controls .divider {
     display: none !important;
   }
+
+  .interface-v2 .playbar-controls {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+    gap: 8px !important;
+    margin: 0 !important;
+  }
+
+  .interface-v2 .play-pause-btn {
+    min-width: 44px !important;
+    width: 44px !important;
+    height: 44px !important;
+    border-radius: 8px !important;
+    padding: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: var(--raised) !important;
+    border: 1px solid var(--border) !important;
+    color: var(--text) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+  }
+  .interface-v2 .play-pause-btn:active {
+    transform: scale(0.95);
+  }
+
   .interface-v2 .btn-speed-mobile {
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-    min-width: 28px !important;
-    width: 28px !important;
-    height: 28px !important;
+    min-width: 44px !important;
+    width: 44px !important;
+    height: 44px !important;
     color: var(--accent) !important;
     background: var(--raised) !important;
-    border: 1px solid var(--border) !important;
-    border-radius: 4px !important;
-    font-size: 11px !important;
+    border: 1px solid rgba(212, 175, 55, 0.3) !important;
+    border-radius: 8px !important;
+    font-size: 13px !important;
     font-weight: 700 !important;
     padding: 0 !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
   }
+  .interface-v2 .btn-speed-mobile:active {
+    transform: scale(0.95);
+  }
+
   .interface-v2 .playbar-controls .btn-step-season {
-    height: 28px !important;
-    padding: 0 6px !important;
-    font-size: 10px !important;
-    font-weight: 600 !important;
+    flex: 1 !important;
+    min-height: 44px !important;
+    height: 44px !important;
+    padding: 0 14px !important;
+    font-size: 13.5px !important;
+    font-weight: 700 !important;
     display: inline-flex !important;
     align-items: center !important;
-    gap: 3px !important;
-    border-radius: 4px !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    border-radius: 8px !important;
     background: var(--raised) !important;
     border: 1px solid var(--border) !important;
     color: var(--text) !important;
     white-space: nowrap !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
   }
+  .interface-v2 .playbar-controls .btn-step-season:active {
+    transform: scale(0.98);
+  }
+
+  .interface-v2 .btn-shop-mobile {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-width: 44px !important;
+    width: 44px !important;
+    height: 44px !important;
+    border-radius: 8px !important;
+    background: var(--raised) !important;
+    border: 1px solid rgba(212, 175, 55, 0.3) !important;
+    cursor: pointer !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+  }
+  .interface-v2 .btn-shop-mobile:active {
+    transform: scale(0.95);
+  }
+
   .interface-v2 .playbar-mobile-more {
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
   }
   .interface-v2 .playbar-mobile-more button {
-    min-width: 28px !important;
-    width: 28px !important;
-    height: 28px !important;
-    border-radius: 4px !important;
+    min-width: 44px !important;
+    width: 44px !important;
+    height: 44px !important;
+    border-radius: 8px !important;
     padding: 0 !important;
     display: inline-flex !important;
     align-items: center !important;
@@ -1291,255 +1582,156 @@ input:focus-visible, select:focus-visible, textarea:focus-visible {
     background: var(--raised) !important;
     border: 1px solid var(--border) !important;
     color: var(--text) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+  }
+  .interface-v2 .playbar-mobile-more button:active {
+    transform: scale(0.95);
   }
 
-  /* Row 2: Tactical Compact Resource HUD (32px) - Character Status & Dossier trigger */
-  .interface-v2 .mobile-resource-hud {
-    display: block !important;
-    height: 32px !important;
-    min-height: 32px !important;
-    max-height: 32px !important;
-    padding: 0 8px !important;
-    margin: 0 !important;
-    border: 0 !important;
-    border-bottom: 1px solid var(--border) !important;
-    border-radius: 0 !important;
-    background: var(--raised) !important;
-    box-shadow: none !important;
-    flex-shrink: 0 !important;
-    cursor: pointer !important;
-    z-index: 20 !important;
-  }
-  .interface-v2 .m-hud-compact-inner {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 100%;
-    gap: 5px;
-    width: 100%;
-  }
-  .interface-v2 .m-hud-name-group {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    flex-shrink: 0;
-  }
-  .interface-v2 .m-hud-name {
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--text);
-    max-width: 85px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .interface-v2 .m-hud-gen {
-    font-size: 9px;
-    font-weight: 600;
-    color: var(--accent);
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 3px;
-    padding: 1px 3px;
-    line-height: 1;
-  }
-  .interface-v2 .m-hud-vitals-group {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    flex: 1;
-    min-width: 0;
-    justify-content: center;
-  }
-  .interface-v2 .m-micro-gauge {
-    display: inline-flex;
-    align-items: center;
-    gap: 3px;
-    flex-shrink: 0;
-  }
-  .interface-v2 .m-micro-val {
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--text);
-  }
-  .interface-v2 .m-micro-track {
-    width: 22px;
-    height: 4px;
-    border-radius: 2px;
-    background: #0d0f12;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    overflow: hidden;
-  }
-  .interface-v2 .m-micro-fill {
-    height: 100%;
-    border-radius: 2px;
-  }
-  .interface-v2 .m-gauge-hp .m-micro-fill {
-    background: var(--s-health);
-    box-shadow: 0 0 4px rgba(34, 197, 94, 0.5);
-  }
-  .interface-v2 .m-gauge-sp .m-micro-fill {
-    background: var(--s-sanity);
-    box-shadow: 0 0 4px rgba(96, 165, 250, 0.5);
-  }
-  .interface-v2 .m-icon-hp { color: var(--s-health); }
-  .interface-v2 .m-icon-sp { color: var(--s-sanity); }
-  .interface-v2 .m-hud-resources-group {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    flex-shrink: 0;
-  }
-  .interface-v2 .m-micro-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 2px;
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--text);
-  }
-  .interface-v2 .m-icon-gold { color: var(--accent); }
-  .interface-v2 .m-icon-taboo { color: var(--s-taboo, #f87171); }
-  .interface-v2 .m-icon-heat { color: var(--s-heat, #fb923c); }
-  .interface-v2 .m-hud-open-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 2px;
-    padding: 2px 6px;
-    height: 22px;
-    font-size: 10px;
-    font-weight: 600;
-    color: var(--accent);
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    flex-shrink: 0;
-    cursor: pointer;
-  }
-
-  /* Story Canvas & Clean Feed (Takes > 91% of the screen!) */
-  .interface-v2 .play-body {
-    flex: 1 1 0;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    padding: 0;
-    margin: 0;
-  }
-  .interface-v2 .desktop-dossier-side { display: none !important; }
-  .interface-v2 .chronicle-heading { display: none !important; }
-
-  .interface-v2 .stage {
-    flex: 1 1 0;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    border-radius: 0;
-    border: 0;
-    background: transparent;
-  }
-  
-  .interface-v2 .log {
-    flex: 1 1 0;
-    min-height: 0;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    padding: 14px 12px 20px;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-  }
-  .interface-v2 .log::-webkit-scrollbar,
-  .interface-v2 .dock::-webkit-scrollbar,
-  .interface-v2 .play::-webkit-scrollbar {
-    display: none;
-  }
-  
-  .interface-v2 .entry {
-    margin-bottom: 12px;
-    padding: 14px 14px 12px;
-    border-radius: 6px;
-    border: 1px solid var(--border);
-    background: var(--surface);
-  }
-  .interface-v2 .entry-text {
-    font-size: 15px;
-    line-height: 1.8;
-  }
-  .interface-v2 .yearline {
-    margin: 16px 0 10px;
-    font-size: 12px;
-  }
-
-  /* Decision Modal Popup on Mobile (Centered, max 84dvh) */
+  /* 4. Decision Docks as Native Mobile Bottom Sheet! */
   .event-modal-backdrop {
-    padding: 16px 14px calc(16px + env(safe-area-inset-bottom)) !important;
-    align-items: center !important;
+    position: fixed !important;
+    inset: 0 !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: flex-end !important;
     justify-content: center !important;
+    background: rgba(0, 0, 0, 0.8) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    z-index: 100 !important;
   }
+
   .interface-v2 .dock {
     position: relative !important;
     width: 100% !important;
     max-width: 100% !important;
     max-height: 84dvh !important;
-    border-radius: 14px !important;
-    border: 1px solid var(--border) !important;
+    border-radius: 20px 20px 0 0 !important;
+    border: 1px solid rgba(255, 255, 255, 0.14) !important;
+    border-bottom: 0 !important;
     border-top: 3px solid var(--accent) !important;
-    padding: 20px 16px calc(18px + env(safe-area-inset-bottom)) !important;
-    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.95), 0 0 0 1px rgba(212, 175, 55, 0.2) !important;
-    margin: auto !important;
+    padding: 18px 18px calc(24px + env(safe-area-inset-bottom)) !important;
+    box-shadow: 0 -16px 48px rgba(0, 0, 0, 0.95), 0 0 0 1px rgba(212, 175, 55, 0.25) !important;
+    margin: 0 !important;
     overflow-y: auto !important;
+    animation: mobileSheetSlideUp 0.28s cubic-bezier(0.16, 1, 0.3, 1) !important;
   }
-  .interface-v2 .dock-inner { padding-bottom: 0; }
-  .interface-v2 .dock-title { font-size: 17px !important; margin-bottom: 6px; }
-  .interface-v2 .dock-text { font-size: 14px !important; line-height: 1.65 !important; margin-bottom: 12px; }
-  .interface-v2 .dock-hotkey-hint { display: none; }
-  .interface-v2 .choice {
-    padding: 12px 14px !important;
-    min-height: 48px !important;
-    gap: 10px !important;
-    border-radius: 6px !important;
-  }
-  .interface-v2 .choice-label { font-size: 13.5px !important; line-height: 1.45 !important; }
 
-  /* Full Character Sheet Drawer */
+  .interface-v2 .dock-inner {
+    padding-bottom: 0;
+    gap: 14px;
+  }
+
+  .interface-v2 .dock-title {
+    font-size: 18px !important;
+    line-height: 1.35 !important;
+    margin-bottom: 4px;
+    color: #fff;
+  }
+
+  .interface-v2 .dock-text {
+    font-size: 14.5px !important;
+    line-height: 1.7 !important;
+    margin-bottom: 12px;
+  }
+
+  .interface-v2 .dock-hotkey-hint { display: none; }
+
+  .interface-v2 .choice {
+    padding: 14px 16px !important;
+    min-height: 52px !important;
+    gap: 12px !important;
+    border-radius: 8px !important;
+    border: 1px solid var(--border) !important;
+    background: var(--surface) !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3) !important;
+  }
+  .interface-v2 .choice:active {
+    transform: scale(0.98);
+    background: var(--raised-hover) !important;
+  }
+  .interface-v2 .choice-label {
+    font-size: 14px !important;
+    line-height: 1.45 !important;
+    font-weight: 600;
+  }
+
+  /* Resolution card in bottom sheet */
+  .interface-v2 .dock.is-resolution {
+    border-top-color: var(--accent) !important;
+  }
+  .interface-v2 .dock.is-resolution.is-dead {
+    border-top-color: var(--bad) !important;
+  }
+  .interface-v2 .resolution-btn {
+    min-height: 52px !important;
+    font-size: 16px !important;
+    border-radius: 8px !important;
+  }
+
+  /* 5. Full Character Sheet Drawer */
   .interface-v2 .mobile-dossier-overlay {
-    background: rgba(0, 0, 0, 0.75);
-    backdrop-filter: blur(4px);
+    background: rgba(0, 0, 0, 0.78);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     z-index: 200;
   }
   .interface-v2 .mobile-dossier-sheet {
     max-height: 88dvh;
-    background: var(--surface);
+    background: #0e1218;
     color: var(--text);
-    border: 1px solid var(--border);
-    border-radius: 16px 16px 0 0;
-    box-shadow: 0 -16px 60px rgba(0, 0, 0, 0.6);
-    padding-bottom: env(safe-area-inset-bottom);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-bottom: 0;
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -16px 60px rgba(0, 0, 0, 0.8);
+    padding-bottom: calc(14px + env(safe-area-inset-bottom));
+    animation: mobileSheetSlideUp 0.28s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .interface-v2 .mobile-dossier-sheet-head {
-    background: var(--surface);
-    border-color: var(--border);
+    background: #121720;
+    border-color: rgba(255, 255, 255, 0.1);
+    border-radius: 20px 20px 0 0;
+    padding: 12px 18px;
+  }
+  .interface-v2 .sheet-drag-handle {
+    width: 40px;
+    height: 4px;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.25);
+    margin: 0 auto 10px;
   }
   .interface-v2 .mobile-dossier-sheet-body { padding: 18px; }
   .interface-v2 .m-sheet-tabs {
     background: var(--raised);
     border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 2px;
+    border-radius: 8px;
+    padding: 3px;
+    gap: 4px;
   }
   .interface-v2 .m-sheet-tab {
     min-height: 44px;
-    font-size: 12px;
-    font-weight: 500;
-    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 6px;
+    transition: all 0.15s ease;
   }
   .interface-v2 .m-sheet-tab.is-active {
     background: var(--surface);
     color: var(--accent);
-    font-weight: 600;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    font-weight: 700;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  }
+}
+
+@keyframes mobileSheetSlideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0.5;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
   }
 }
 
