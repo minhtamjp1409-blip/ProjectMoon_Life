@@ -341,6 +341,82 @@ const ContractDock = ({ contract, wealth, onPick }) => {
   );
 };
 
+const ResultDock = ({ resolution, onDismiss }) => {
+  const { t, lang, bilingual } = useT();
+
+  const title = lang === 'en' ? resolution.titleEn || resolution.titleVi : resolution.titleVi;
+  const choiceLabel = lang === 'en' ? resolution.choiceLabelEn || resolution.choiceLabelVi : resolution.choiceLabelVi;
+  const narrativeBody = lang === 'en' ? resolution.narrativeEn || resolution.narrativeVi : resolution.narrativeVi;
+  const narrativeAlt = lang === 'en' ? resolution.narrativeVi : resolution.narrativeEn;
+
+  return (
+    <div className={`dock is-resolution ${resolution.isDead ? 'is-dead' : ''} ${resolution.isCausal ? 'is-causal' : ''}`} role="document">
+      <div className="dock-inner">
+        <div className="dock-banner">
+          <div className="dock-banner-text">
+            <div className="dock-kicker-row">
+              <p className={`dock-kicker is-outcome ${resolution.isDead ? 'is-dead' : ''}`}>
+                <span className="dock-kicker-icon">{resolution.isDead ? '☠' : resolution.isCausal ? '⟲' : '✓'}</span>
+                <span>
+                  {resolution.isDead
+                    ? t('Tử trận · Số mệnh khép lại', 'Fallen · Fate Sealed')
+                    : resolution.isCausal
+                    ? t('Causal Echo · Nhân quả khắc ghi', 'Causal Echo · Causality Imprinted')
+                    : t(`Kết quả quyết định · Tuổi ${resolution.age}`, `Decision Outcome · Age ${resolution.age}`)}
+                </span>
+              </p>
+              <span className="dock-hotkey-hint">{t('Phím Space / Enter để tiếp tục', 'Space / Enter to continue')}</span>
+            </div>
+            <h3 className="dock-title">{title}</h3>
+          </div>
+        </div>
+
+        {choiceLabel && (
+          <div className="resolution-choice-pill">
+            <span className="choice-pill-label">{t('Bạn đã chọn:', 'You chose:')}</span>
+            <span className="choice-pill-text">{choiceLabel}</span>
+          </div>
+        )}
+
+        <div className="resolution-narrative">
+          <p className="dock-text">{narrativeBody}</p>
+          {bilingual && narrativeAlt && narrativeAlt !== narrativeBody && (
+            <p className="entry-alt" style={{ marginTop: 8 }}>{narrativeAlt}</p>
+          )}
+        </div>
+
+        <div className="resolution-deltas-section">
+          <span className="deltas-title">{t('Ảnh hưởng & Thay đổi:', 'Impact & Consequences:')}</span>
+          {resolution.deltas && resolution.deltas.length > 0 ? (
+            <Deltas deltas={resolution.deltas} />
+          ) : (
+            <span className="deltas-empty">{t('Không có biến động thể trạng', 'No major stat shifts')}</span>
+          )}
+        </div>
+
+        {resolution.isDead && (
+          <div className="resolution-death-banner">
+            <span className="death-icon">☠</span>
+            <span>{t('Quyết định này đã đưa bạn đến cái chết giữa The City lạnh lùng.', 'This choice led you to death in the cold expanse of The City.')}</span>
+          </div>
+        )}
+
+        <div className="resolution-actions">
+          <button
+            type="button"
+            className={`btn ${resolution.isDead ? 'btn-danger' : 'btn-primary'} btn-lg btn-block resolution-btn`}
+            onClick={onDismiss}
+            autoFocus
+          >
+            <span>{resolution.isDead ? t('Xem Bia Mộ ➔', 'View Epitaph ➔') : t('Tiếp tục hành trình ➔', 'Continue Journey ➔')}</span>
+            <span className="key-badge">Space / Enter</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 /* ---------- End of a life ---------- */
 
 const Epitaph = ({ summary, onInherit, onRestart }) => {
@@ -396,9 +472,17 @@ const Epitaph = ({ summary, onInherit, onRestart }) => {
 
 /* ---------- Stage ---------- */
 
+function getPrologueButtonText(step, total, t) {
+  if (step === 1) return t('Tiếp tục: Xem gia cảnh & đêm sinh ▾', 'Continue: Read family & birth night ▾');
+  if (step === 2) return t('Tiếp tục: Xem điềm báo lúc chào đời ▾', 'Continue: Read birth omen ▾');
+  if (step === 3) return t('Tiếp tục: Gặp gỡ bạn thuở ấu thơ ▾', 'Continue: Meet childhood companion ▾');
+  if (step < total) return t('Tiếp tục câu chuyện ▾', 'Continue story ▾');
+  return t('Bắt đầu hành trình tại The City ➔', 'Begin journey in The City ➔');
+}
+
 export const LiveStageFeed = () => {
   const { t } = useT();
-  const { char, speed, setSpeed, chooseMinor, selectEventChoice, selectContractApproach, confirmColorTitle, confirmEgoName, completeWorkshopCraft, startLife, abandonRun } =
+  const { char, speed, setSpeed, chooseMinor, selectEventChoice, selectContractApproach, confirmColorTitle, confirmEgoName, completeWorkshopCraft, startLife, abandonRun, activeResolution, dismissResolution } =
     useGameStore(
       useShallow((s) => ({
         char: s.char,
@@ -411,7 +495,9 @@ export const LiveStageFeed = () => {
         confirmEgoName: s.confirmEgoName,
         completeWorkshopCraft: s.completeWorkshopCraft,
         startLife: s.startLife,
-        abandonRun: s.abandonRun
+        abandonRun: s.abandonRun,
+        activeResolution: s.activeResolution,
+        dismissResolution: s.dismissResolution
       }))
     );
 
@@ -455,7 +541,7 @@ export const LiveStageFeed = () => {
     // At death, bring the epitaph's top into view rather than its last button
     if (epitaph) el.scrollTo({ top: Math.min(el.scrollHeight, epitaph.offsetTop - 24), behavior: 'smooth' });
     else el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
-  }, [char.logs.length, char.alive, char.pendingEvent, char.pendingContract, char.pendingMinor]);
+  }, [char.logs.length, char.alive, char.pendingEvent, char.pendingContract, char.pendingMinor, activeResolution]);
 
   const handleChooseMinor = (idx) => {
     audioEngine.playClick();
@@ -482,11 +568,21 @@ export const LiveStageFeed = () => {
     confirmEgoName(name);
   };
 
-  // Keys: 1–9 pick, 0 / Esc lets a small moment pass, Space pauses, M toggles mute, S saves
+  // Keys: Space / Enter / Esc dismisses resolution when active; otherwise 1–9 pick, Space pauses, M toggles mute, S saves
   useEffect(() => {
     const onKeyDown = (e) => {
       if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) return;
       if (char.pendingModal) return;
+
+      if (activeResolution) {
+        if (e.code === 'Space' || e.key === 'Enter' || e.key === 'Escape') {
+          e.preventDefault();
+          audioEngine.playClick();
+          dismissResolution();
+        }
+        return;
+      }
+
       if (e.code === 'Space') {
         if (!char.alive) return;
         e.preventDefault();
@@ -527,7 +623,7 @@ export const LiveStageFeed = () => {
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [char.alive, char.pendingEvent, char.pendingContract, char.pendingMinor, char.stats.wealth, speed, setSpeed, chooseMinor, selectEventChoice, selectContractApproach]);
+  }, [char.alive, char.pendingEvent, char.pendingContract, char.pendingMinor, char.stats.wealth, activeResolution, dismissResolution, speed, setSpeed, chooseMinor, selectEventChoice, selectContractApproach]);
 
   // Forge mini-game: the cursor sweeps while the craft modal is open
   useEffect(() => {
@@ -567,7 +663,7 @@ export const LiveStageFeed = () => {
 
   const forgeQuality = strikes.length ? Math.round(strikes.reduce((a, b) => a + b, 0) / strikes.length) : 0;
   const lifeSummary = !char.alive ? buildLifeSummaryAndLegacy(char) : null;
-  const hasDock = Boolean(char.pendingEvent || char.pendingContract || char.pendingMinor);
+  const hasDock = Boolean(char.pendingEvent || char.pendingContract || char.pendingMinor || activeResolution);
 
   return (
     <div className={`stage ${hasDock ? 'has-dock' : ''}`} ref={stageRef}>
@@ -582,11 +678,23 @@ export const LiveStageFeed = () => {
       </div>
 
       {hasDock && (
-        <div className="event-modal-backdrop" role="dialog" aria-modal="true" aria-label={t('Sự kiện cần quyết định', 'Decision Event')}>
-          {char.pendingEvent && <EventDock event={char.pendingEvent} char={char} onPick={handleSelectEvent} />}
-          {!char.pendingEvent && char.pendingContract && <ContractDock contract={char.pendingContract} wealth={char.stats.wealth} onPick={handleSelectContract} />}
-          {!char.pendingEvent && !char.pendingContract && char.pendingMinor && (
-            <MinorDock prompt={char.pendingMinor} npcs={char.npcs} paused={speed === 0} onPick={handleChooseMinor} />
+        <div className="event-modal-backdrop" role="dialog" aria-modal="true" aria-label={t('Sự kiện & Kết quả', 'Event & Outcome')}>
+          {activeResolution ? (
+            <ResultDock
+              resolution={activeResolution}
+              onDismiss={() => {
+                audioEngine.playClick();
+                dismissResolution();
+              }}
+            />
+          ) : (
+            <>
+              {char.pendingEvent && <EventDock event={char.pendingEvent} char={char} onPick={handleSelectEvent} />}
+              {!char.pendingEvent && char.pendingContract && <ContractDock contract={char.pendingContract} wealth={char.stats.wealth} onPick={handleSelectContract} />}
+              {!char.pendingEvent && !char.pendingContract && char.pendingMinor && (
+                <MinorDock prompt={char.pendingMinor} npcs={char.npcs} paused={speed === 0} onPick={handleChooseMinor} />
+              )}
+            </>
           )}
         </div>
       )}

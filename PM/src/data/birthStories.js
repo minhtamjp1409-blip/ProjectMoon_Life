@@ -3,6 +3,8 @@
 // (where, who raised you, what was happening that night, the omen, the first
 // person you'll grow up with) so that no two starts read alike.
 // ============================================================================
+import { generatePersonName } from './nameGenerator.js';
+import { rollArchetype } from './npcPersonality.js';
 
 const pick = (arr, rng) => arr[Math.floor(rng() * arr.length) % arr.length];
 
@@ -95,40 +97,36 @@ const OMEN_LINE = {
 
 /* ---------- the childhood friend: the first named person in your life ---------- */
 
-const NAMES = [
-  'Mirae', 'Hyun', 'Oswald', 'Liesel', 'Kael', 'Jun', 'Sora', 'Tobias', 'Yeon', 'Marta', 'Ivo', 'Rin', 'Dae-ho', 'Nell',
-  'Pavel', 'Ahri', 'Cas', 'Ilsa', 'Min', 'Teo', 'Bora', 'Viktor', 'Hana', 'Felix', 'Seo', 'Greta', 'Lio', 'Yuri', 'Odile',
-  'Jae', 'Noor', 'Emil', 'Su-ah', 'Rook', 'Petra', 'Kang', 'Ezra', 'Wren', 'Doyun', 'Lark'
-];
-
-const TRAITS = [
-  { vi: 'hay cười, cười cả khi sợ', en: 'laughs often, even when scared' },
-  { vi: 'ít nói, luôn mang theo một con dao gấp', en: 'quiet, always carries a folding knife' },
-  { vi: 'mơ ước được vào Nest', en: 'dreams of living in a Nest' },
-  { vi: 'giỏi nói dối đến mức chính nó cũng tin', en: 'lies so well they believe it themselves' },
-  { vi: 'nhặt mọi con vật bị bỏ rơi', en: 'takes in every stray animal' },
-  { vi: 'thần tượng Color Fixer, thuộc lòng tên từng người', en: 'idolizes the Color Fixers, knows every name' },
-  { vi: 'nóng tính, hay gây sự với đám lớn hơn', en: 'hot-headed, picks fights with bigger kids' },
-  { vi: 'đọc sách nhiều hơn ăn', en: 'reads more than they eat' },
-  { vi: 'trung thành đến mức ngu ngốc', en: 'loyal to the point of foolishness' },
-  { vi: 'luôn có cách kiếm ra vài Ahn', en: 'always finds a way to make a few Ahn' }
-];
-
+/**
+ * Builds a person. Names come from the name generator (district-flavoured), and the
+ * personality is an archetype with a want, a fear and tags that quests hook into.
+ * `regionId` and `nest` only steer the name; they are not stored on the NPC.
+ */
 export function makeNpc(role, rng, extra = {}) {
-  const name = pick(NAMES, rng);
-  const trait = pick(TRAITS, rng);
+  const { regionId = null, nest = false, ...rest } = extra;
+  const id = generatePersonName(rng, { regionId, nest });
+  const arch = rollArchetype(rng);
   return {
     role,
-    nameVi: name,
-    nameEn: name,
-    traitVi: trait.vi,
-    traitEn: trait.en,
-    bond: 40 + Math.floor(rng() * 25),
+    nameVi: id.name,
+    nameEn: id.name,
+    fullName: id.full,
+    alias: id.alias,
+    archetype: arch.id,
+    tags: [...arch.tags],
+    traitVi: arch.vi,
+    traitEn: arch.en,
+    wantVi: arch.wantVi,
+    wantEn: arch.wantEn,
+    fearVi: arch.fearVi,
+    fearEn: arch.fearEn,
+    bond: 12 + Math.floor(rng() * 13), // strangers start cold: 12 to 24
+    questsDone: 0,
     deceased: false,
     status: 'alive',
     metAge: 0,
     memories: [],
-    ...extra
+    ...rest
   };
 }
 
@@ -144,12 +142,12 @@ const fill = (s, map) => Object.entries(map).reduce((acc, [k, v]) => acc.replace
  * Returns the opening log lines and the childhood friend for a newborn.
  * `kind` is 'nest' | 'back' | 'out'.
  */
-export function composeBirth({ kind, familyId, omenId, regionVi, regionEn, name, generation, rng }) {
+export function composeBirth({ kind, familyId, omenId, regionVi, regionEn, regionId = null, name, generation, rng }) {
   const place = pick(PLACE[kind] || PLACE.back, rng);
   const fam = pick(FAMILY[familyId] || FAMILY.backstreet_worker, rng);
   const night = pick(THAT_NIGHT, rng);
   const omen = pick(OMEN_LINE[omenId] || OMEN_LINE.index_equilibrium, rng);
-  const friend = makeNpc('friend', rng);
+  const friend = makeNpc('friend', rng, { regionId, nest: kind === 'nest' });
   const fl = pick(FRIEND_LINE, rng);
 
   const head = generation > 1

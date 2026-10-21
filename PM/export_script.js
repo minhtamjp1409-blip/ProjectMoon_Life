@@ -9,6 +9,8 @@ import { DISTORTION_PATH_EVENTS } from './src/data/eventsDistortionPath.js';
 import { WORKSHOP_ECONOMY_EVENTS } from './src/data/eventsWorkshopEconomy.js';
 import { BEREAVEMENT_EVENTS } from './src/data/eventsBereavementMemories.js';
 import { DERIVATIVE_LORE_EVENTS } from './src/data/eventsDerivativeLore.js';
+import { COMPANION_QUEST_EVENTS } from './src/data/eventsCompanionQuests.js';
+import { EXPANDED_DAILIES } from './src/data/narrative/dailies.js';
 import { LIFE_MINORS } from './src/data/lifeMinors.js';
 import { LIFE_MINORS_2 } from './src/data/lifeMinors2.js';
 import { LIFE_MINORS_3, LIFE_DAILIES_3 } from './src/data/lifeMinors3.js';
@@ -241,7 +243,7 @@ log('\n\n');
 log(sep1);
 log('PHẦN XI: NHỊP SỐNG SINH HOẠT THƯỜNG NHẬT (LIFE DAILIES - BỘ 1, 3)');
 log(sep1);
-const allDailies = [...LIFE_DAILIES, ...LIFE_DAILIES_3];
+const allDailies = [...LIFE_DAILIES, ...LIFE_DAILIES_3, ...EXPANDED_DAILIES];
 log(`Tổng cộng: ${allDailies.length} nhịp sống ngẫu nhiên theo mùa và khu vực.\n`);
 allDailies.forEach((d, i) => {
   log(`[Daily #${i + 1}] ID: ${d.id} | Yêu cầu: ${JSON.stringify(d.need || {})}`);
@@ -264,6 +266,14 @@ log('PHẦN XIII: TÁC PHẨM PHÁI SINH & GIAI THOẠI CỘNG ĐỒNG (DERIVATI
 log(sep1);
 log('Lấy cảm hứng từ Distortion Detective, Leviathan, WonderLab, Bloodfiends of La Manchaland, Blade Lineage & Kurokumo feuds.\n');
 DERIVATIVE_LORE_EVENTS.forEach((ev, i) => dumpEvent(ev, i, 'DERIVATIVE & COMMUNITY LORE'));
+
+
+// SECTION XV: COMPANION PERSONALITY QUERIES & ARCHETYPES
+log(sep1);
+log('PHẦN XV: NHIỆM VỤ ĐỒNG ĐỘI & GẮN KẾT NPC (NPC COMPANION QUESTS & ARCS)');
+log(sep1);
+log('Gắn kết chiều sâu tính cách từng NPC (Gambler, Sickly, Proud, Ambitious, Secretive, Partner, Spouse...)\n');
+COMPANION_QUEST_EVENTS.forEach((ev, i) => dumpEvent(ev, i, 'COMPANION QUEST'));
 
 // SECTION XIV
 log(sep1);

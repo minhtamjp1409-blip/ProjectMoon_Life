@@ -1,3 +1,7 @@
+import { advanceActiveNarrativeArcs } from './narrativeArcEngine.js';
+import { choiceIsAvailable, matchesNeed, mergeEffects, npcIsActive } from './eventConditions.js';
+import { ITEMS_CATALOG } from '../data/itemsData.js';
+import { rollPerinatalFate } from './fateEngine.js';
 // ============================================================================
 // CORE LIFE-SIMULATION & GENERATIONAL BLOODLINE ENGINE
 // Connects World Data, Event Pools, Persistent NPCs, Tension Clocks & Weaver AI
@@ -11,23 +15,27 @@ import {
   WORKSHOPS,
   FINGER_RANKS,
   THREAT_TIERS
-} from '../data/worldData';
-import { CHILDHOOD_EVENTS, CONSEQUENCE_EVENTS } from '../data/eventsChildhood';
-import { composeBirth, makeNpc } from '../data/birthStories';
-import { FACTION_EVENTS } from '../data/eventsFactions';
-import { SUPERNATURAL_EVENTS, FIXER_REQUESTS } from '../data/eventsSupernatural';
-import { FIXER_PATH_EVENTS } from '../data/eventsFixerPath';
-import { DISTORTION_PATH_EVENTS } from '../data/eventsDistortionPath';
-import { WORKSHOP_ECONOMY_EVENTS } from '../data/eventsWorkshopEconomy';
-import { BEREAVEMENT_EVENTS } from '../data/eventsBereavementMemories';
-import { DERIVATIVE_LORE_EVENTS } from '../data/eventsDerivativeLore';
+} from '../data/worldData.js';
+import { CHILDHOOD_EVENTS, CONSEQUENCE_EVENTS } from '../data/eventsChildhood.js';
+import { composeBirth, makeNpc } from '../data/birthStories.js';
+import { FACTION_EVENTS } from '../data/eventsFactions.js';
+import { SUPERNATURAL_EVENTS, FIXER_REQUESTS } from '../data/eventsSupernatural.js';
+import { FIXER_PATH_EVENTS } from '../data/eventsFixerPath.js';
+import { DISTORTION_PATH_EVENTS } from '../data/eventsDistortionPath.js';
+import { WORKSHOP_ECONOMY_EVENTS } from '../data/eventsWorkshopEconomy.js';
+import { BEREAVEMENT_EVENTS } from '../data/eventsBereavementMemories.js';
+import { DERIVATIVE_LORE_EVENTS } from '../data/eventsDerivativeLore.js';
+import { COMPANION_QUEST_EVENTS } from '../data/eventsCompanionQuests.js';
 import {
   getNextFixerPromotion,
   checkColorFixerReadiness,
+  getNextFingerPromotion,
+  getNextWingPromotion,
+  getNextWorkshopPromotion,
   triggerDistortionTransformation,
   tryItemAutoRevive,
   determineSuccessorType
-} from './careerPipeline';
+} from './careerPipeline.js';
 import {
   FATE_OMENS,
   rollRandomFateOmen,
@@ -35,8 +43,8 @@ import {
   selectEventWithWeaverAI,
   recordChoiceInGraph,
   updateDramaTension
-} from './weaverAI';
-import { hasMemory, closeThreads } from './director';
+} from './weaverAI.js';
+import { hasMemory, closeThreads } from './director.js';
 
 export const ALL_STORY_EVENTS = [
   ...CHILDHOOD_EVENTS,
@@ -46,7 +54,8 @@ export const ALL_STORY_EVENTS = [
   ...DISTORTION_PATH_EVENTS,
   ...WORKSHOP_ECONOMY_EVENTS,
   ...BEREAVEMENT_EVENTS,
-  ...DERIVATIVE_LORE_EVENTS
+  ...DERIVATIVE_LORE_EVENTS,
+  ...COMPANION_QUEST_EVENTS
 ];
 
 export const SEASONS = [
@@ -327,13 +336,40 @@ export function createNewCharacter({
     omenId: fateOmen.id,
     regionVi: region.nameVi,
     regionEn: region.nameEn,
+    regionId: region.id,
     name: defaultName,
     generation,
     rng
   });
 
+  // Check Pre-Birth / Perinatal Mortality (District medicine, pollution, safety, poverty)
+  const perinatal = actualAge === 0 ? rollPerinatalFate({
+    region,
+    familyId: family.id,
+    omenId: fateOmen.id,
+    flags,
+    wealth
+  }, rng) : null;
+
   let initialLogs = [];
-  if (actualAge > 0) {
+  if (perinatal) {
+    initialLogs.push({
+      id: 'log_birth_perinatal_0',
+      age: 0,
+      season: SEASONS[0],
+      type: 'danger',
+      vi: perinatal.preludeVi(region.nameVi),
+      en: perinatal.preludeEn(region.nameEn)
+    });
+    initialLogs.push({
+      id: 'log_birth_perinatal_1',
+      age: 0,
+      season: SEASONS[0],
+      type: 'death',
+      vi: `[Mất trước khi cất tiếng khóc] ${perinatal.deathVi}. Một sinh linh nữa rời The City khi ánh đèn neon ngoài cửa sổ còn chưa kịp đổi màu.`,
+      en: `[Perished before drawing breath] ${perinatal.deathEn}. Another life slipped from The City before neon lights outside could change color.`
+    });
+  } else if (actualAge > 0) {
     initialLogs.push({
       id: 'log_adult_start_0',
       age: actualAge,
@@ -405,9 +441,9 @@ export function createNewCharacter({
     name: defaultName,
     age: actualAge,
     seasonIdx: 0,
-    alive: true,
-    deathCauseVi: null,
-    deathCauseEn: null,
+    alive: !perinatal,
+    deathCauseVi: perinatal ? perinatal.deathVi : null,
+    deathCauseEn: perinatal ? perinatal.deathEn : null,
     regionId: region.id,
     familyId: family.id,
     fateOmenId: fateOmen.id,
@@ -422,8 +458,8 @@ export function createNewCharacter({
     egoName: null,
     craftWeapon: null,
     stats: {
-      health,
-      sanity,
+      health: perinatal ? 0 : health,
+      sanity: perinatal ? 0 : sanity,
       wealth,
       network,
       rep
@@ -437,6 +473,7 @@ export function createNewCharacter({
     taboo,
     resonance,
     flags,
+    activeArcs: [],
     scars,
     npcs: {
       friend: { ...birth.friend, metAge: 0 },
@@ -473,9 +510,14 @@ export function cloneChar(char) {
     stats: { ...char.stats },
     flags: [...char.flags],
     scars: [...char.scars],
-    npcs: { ...char.npcs },
+    npcs: structuredClone(char.npcs || {}),
+    weaver: structuredClone(char.weaver),
+    inventory: structuredClone(char.inventory || []),
+    themes: { ...(char.themes || {}) },
+    plan: structuredClone(char.plan || []),
     seenEvents: [...char.seenEvents],
     recent: [...(char.recent || [])],
+    recentMishaps: [...(char.recentMishaps || [])],
     memory: [...(char.memory || [])],
     motifs: { ...(char.motifs || {}) },
     unlockedRecords: [...char.unlockedRecords],
@@ -931,65 +973,51 @@ export function checkPromotions(char) {
     }
   }
 
-  // Syndicate / Five Fingers Rank Promotions (Ranks 1-2 by merit, Pinnacle ranks 3+ require Finger Trials)
-  if (char.job === 'Syndicate' && char.finger && FINGER_RANKS[char.finger]) {
-    const ladder = FINGER_RANKS[char.finger];
-    const targetRank = Math.min(2, Math.floor(char.merit / 26));
-    if (targetRank > (char.fingerRank || 0)) {
-      char.fingerRank = targetRank;
-      const rankTitle = ladder[targetRank];
+  // Syndicate / Five Fingers Rank Promotions: emit notifications when ready for next trial
+  if (char.job === 'Syndicate' && char.finger) {
+    const nextPromo = getNextFingerPromotion(char);
+    if (nextPromo && nextPromo.isEligible && !char.flags.includes(`finger_promo_ready_r${nextPromo.rank}`)) {
+      char.flags.push(`finger_promo_ready_r${nextPromo.rank}`);
       logsToAdd.push({
-        id: `log_finger_promo_${char.age}_${targetRank}`,
+        id: `log_finger_ready_${char.age}_r${nextPromo.rank}`,
         age: char.age,
         season: SEASONS[char.seasonIdx],
         type: 'promo',
-        vi: `[The ${char.finger}] Những người trên bạn đã để ý. Từ hôm nay bạn là ${rankTitle}.`,
-        en: `[The ${char.finger}] Those above you have noticed. From today you are ${rankTitle}.`
+        vi: `[The ${char.finger} Thông Báo] Bạn đã tích lũy đủ công trạng và uy danh để bước vào đại lễ thăng bậc: ${nextPromo.titleVi}!`,
+        en: `[The ${char.finger} Notice] Your merits and renown qualify you for the advancement trial: ${nextPromo.titleEn}!`
       });
     }
   }
 
-  // Wing Employee Promotions (Ranks 0-2 by merit/wealth/network, Pinnacle rank 3 requires Singularity Audit)
+  // Wing Employee Promotions: emit notifications when ready for next corporate appointment
   if (char.job === 'Wing Employee') {
-    const curRank = char.wingRank || 0;
-    const curWealth = (char.stats?.wealth ?? char.wealth) || 0;
-    const curNet = (char.stats?.network ?? char.network) || 0;
-    for (let r = Math.min(2, WING_RANKS.length - 2); r > curRank; r--) {
-      const req = WING_RANKS[r];
-      if (char.merit >= req.merit && curWealth >= req.wealth && curNet >= req.network) {
-        char.wingRank = r;
-        logsToAdd.push({
-          id: `log_wing_promo_${char.age}_${r}`,
-          age: char.age,
-          season: SEASONS[char.seasonIdx],
-          type: 'promo',
-          vi: `[Thăng chức] Ban điều hành Wing thông qua quyết định bổ nhiệm: Bạn đã trở thành ${req.titleVi}.`,
-          en: `[Promotion] The Wing executive board approved your appointment: You are now ${req.titleEn}.`
-        });
-        break;
-      }
+    const nextPromo = getNextWingPromotion(char);
+    if (nextPromo && nextPromo.isEligible && !char.flags.includes(`wing_promo_ready_r${nextPromo.rank}`)) {
+      char.flags.push(`wing_promo_ready_r${nextPromo.rank}`);
+      logsToAdd.push({
+        id: `log_wing_ready_${char.age}_r${nextPromo.rank}`,
+        age: char.age,
+        season: SEASONS[char.seasonIdx],
+        type: 'promo',
+        vi: `[Ban Giám Đốc Wing] Bạn đã đạt đủ chỉ tiêu hiệu suất và quan hệ để được xét duyệt thăng chức: ${nextPromo.titleVi}!`,
+        en: `[Wing Directorate] You have fulfilled corporate quotas and are eligible for promotion: ${nextPromo.titleEn}!`
+      });
     }
   }
 
-  // Workshop Craftsman Promotions (Ranks 0-2 by merit/wealth/resonance, Pinnacle rank 3 requires Masterpiece Forge)
+  // Workshop Craftsman Promotions: emit notifications when ready for next appraisal trial
   if (char.job === 'Workshop Craftsman') {
-    const curRank = char.workshopRank || 0;
-    const curWealth = (char.stats?.wealth ?? char.wealth) || 0;
-    const curReso = char.resonance || 0;
-    for (let r = Math.min(2, WORKSHOP_RANKS.length - 2); r > curRank; r--) {
-      const req = WORKSHOP_RANKS[r];
-      if (char.merit >= req.merit && curWealth >= req.wealth && curReso >= req.resonance) {
-        char.workshopRank = r;
-        logsToAdd.push({
-          id: `log_ws_promo_${char.age}_${r}`,
-          age: char.age,
-          season: SEASONS[char.seasonIdx],
-          type: 'promo',
-          vi: `[Workshop] Tres Association cấp chứng chỉ thẩm định mới: Bạn đã đạt danh vị ${req.titleVi}.`,
-          en: `[Workshop] Tres Association issued a new appraisal certificate: You are now ${req.titleEn}.`
-        });
-        break;
-      }
+    const nextPromo = getNextWorkshopPromotion(char);
+    if (nextPromo && nextPromo.isEligible && !char.flags.includes(`ws_promo_ready_r${nextPromo.rank}`)) {
+      char.flags.push(`ws_promo_ready_r${nextPromo.rank}`);
+      logsToAdd.push({
+        id: `log_ws_ready_${char.age}_r${nextPromo.rank}`,
+        age: char.age,
+        season: SEASONS[char.seasonIdx],
+        type: 'promo',
+        vi: `[Tres Association] Tay nghề rèn và độ cộng hưởng của bạn đã đủ chuẩn để bước vào khảo thí: ${nextPromo.titleVi}!`,
+        en: `[Tres Association] Your craftsmanship qualifies you for the appraisal trial: ${nextPromo.titleEn}!`
+      });
     }
   }
 
@@ -1075,7 +1103,8 @@ export function resolveFixerContract(charState, approachId, rng = Math.random) {
   const contract = char.pendingContract;
   if (!contract) return char;
 
-  const approach = contract.approaches.find(a => a.id === approachId) || contract.approaches[0];
+  const approach = contract.approaches.find(a => a.id === approachId);
+  if (!approach || char.stats.wealth < approach.costAhn) return char;
   const { template, tierInfo } = contract;
   char.pendingContract = null;
 
@@ -1158,20 +1187,33 @@ export function applyFatalOrCompanionSave(char, deathCauseVi, deathCauseEn) {
     return;
   }
 
-  const saviorKey = ['partner', 'spouse', 'friend', 'mentor'].find(
-    k => char.npcs?.[k] && !char.npcs[k].deceased && (char.npcs[k].bond || 0) >= (['partner', 'spouse'].includes(k) ? 65 : 75)
-  );
+  // Companion Sacrifice (Death Save): Strictly ONCE per lifetime, requires supreme Bond (>= 90)
+  const saviorKey = !char.usedDeathSave
+    ? ['spouse', 'partner', 'friend', 'mentor'].find(
+        k => char.npcs?.[k] &&
+             !char.npcs[k].deceased &&
+             char.npcs[k].status === 'alive' &&
+             (char.npcs[k].bond || 0) >= (['spouse', 'partner'].includes(k) ? 90 : 95)
+      )
+    : null;
 
   if (saviorKey) {
+    char.usedDeathSave = true; // Exceeded lifetime quota - no infinite lives!
     const savior = char.npcs[saviorKey];
-    char.npcs[saviorKey] = { ...savior, deceased: true };
+    char.npcs[saviorKey] = { ...savior, deceased: true, status: 'dead', fateAge: char.age };
     if (saviorKey === 'spouse') {
       char.flags = char.flags.filter(f => f !== 'Married');
       if (!char.flags.includes('Widowed')) char.flags.push('Widowed');
+    } else if (saviorKey === 'partner') {
+      if (!char.flags.includes('PartnerLost')) char.flags.push('PartnerLost');
+    } else if (saviorKey === 'friend') {
+      if (!char.flags.includes('FriendLost')) char.flags.push('FriendLost');
+    } else if (saviorKey === 'mentor') {
+      if (!char.flags.includes('MentorLost')) char.flags.push('MentorLost');
     }
-    char.stats.health = 22;
-    char.stats.sanity = clamp(char.stats.sanity - 24, 1, 100);
-    char.resonance = clamp((char.resonance || 0) + 32, 0, 100);
+    char.stats.health = 20;
+    char.stats.sanity = clamp(char.stats.sanity - 45, 1, 100);
+    char.resonance = clamp((char.resonance || 0) + 40, 0, 100);
     if (!char.unlockedRecords.includes('savior_sacrifice')) {
       char.unlockedRecords.push('savior_sacrifice');
     }
@@ -1184,8 +1226,8 @@ export function applyFatalOrCompanionSave(char, deathCauseVi, deathCauseEn) {
       age: char.age,
       season: SEASONS[char.seasonIdx],
       type: 'miracle',
-      vi: `[${savior.nameVi}] Đòn đó lẽ ra đã giết bạn. ${savior.nameVi} bước vào giữa, và nhận nó thay bạn. Người ấy chết trong tay bạn, vẫn còn cố nói điều gì đó mà bạn không nghe kịp.`,
-      en: `[${savior.nameEn}] That blow should have killed you. ${savior.nameEn} stepped between, and took it instead. They died in your arms, still trying to say something you didn’t catch.`
+      vi: `[${savior.nameVi}] Đòn đó lẽ ra đã giết bạn. ${savior.nameVi} bước vào giữa, và nhận trọn nhát chém thay bạn. Người ấy chết trong tay bạn, máu tuôn xối xả mà bạn không thể làm gì để cứu vãn.`,
+      en: `[${savior.nameEn}] That blow should have killed you. ${savior.nameEn} stepped between, taking the fatal strike instead. They died in your trembling arms amidst pooling gore.`
     });
     evaluateCharacterAchievements(char);
     return;
@@ -1210,13 +1252,20 @@ export function handleSanityBreakdown(char, rng = Math.random) {
   if (!char.alive || char.stats.sanity > 0) return;
   if (char.flags.includes('Distorted') || char.flags.includes('EGOAwakened')) return;
 
-  const saviorKey = ['partner', 'spouse', 'friend', 'mentor'].find(
-    k => char.npcs?.[k] && !char.npcs[k].deceased && (char.npcs[k].bond || 0) >= (['partner', 'spouse'].includes(k) ? 60 : 70)
-  );
+  // Mental Anchor Save: Strictly ONCE per lifetime, requires Bond >= 85
+  const saviorKey = !char.usedSanitySave
+    ? ['spouse', 'partner', 'friend', 'mentor'].find(
+        k => char.npcs?.[k] &&
+             !char.npcs[k].deceased &&
+             char.npcs[k].status === 'alive' &&
+             (char.npcs[k].bond || 0) >= 85
+      )
+    : null;
 
   if (saviorKey) {
+    char.usedSanitySave = true;
     const savior = char.npcs[saviorKey];
-    char.stats.sanity = 25;
+    char.stats.sanity = 22;
     char.stats.health = Math.max(15, char.stats.health);
     char.logs.push({
       id: `log_sanity_save_${char.age}_${saviorKey}`,
@@ -1261,19 +1310,21 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
   const event = char.pendingEvent;
   if (!event) return char;
 
-  const choice = event.choices?.[choiceIdx] || event.choices?.[0];
+  const choice = event.choices?.[choiceIdx];
+  if (!choiceIsAvailable(choice, char)) return char;
   char.pendingEvent = null;
   if (!char.seenEvents.includes(event.id)) {
     char.seenEvents.push(event.id);
   }
+  advanceActiveNarrativeArcs(char, event.id);
 
   // Determine outcome (direct choice or weighted outcome roll)
   let outcome = choice;
   const rawOutcomes = choice.outcomes || choice.out;
   if (Array.isArray(rawOutcomes) && rawOutcomes.length > 0) {
     // Project Moon RNG: Karma & Past Deeds tilt the odds!
-    const evaluatedOutcomes = rawOutcomes.map(o => {
-      let weight = o.w || 50;
+    const evaluatedOutcomes = rawOutcomes.filter(o => matchesNeed(o.need, char) && (o.w ?? 50) > 0).map(o => {
+      let weight = o.w ?? 50;
       const resText = o.resultVi || o.rvi || '';
       // If player has awakened Shin or martial mastery, combat odds tilt favorably
       if (char.flags.includes('ShinAwakened') && (resText.includes('đứng') || resText.includes('thắng') || resText.includes('sống') || !o.deathCauseVi)) {
@@ -1283,7 +1334,7 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
       if (char.flags.includes('Distorted') && ((o.effects?.sanity || 0) < 0 || (o.effects?.rep || 0) > 0)) {
         weight = Math.round(weight * 1.4);
       }
-      return { ...o, effectiveW: Math.max(5, weight) };
+      return { ...o, effectiveW: Math.max(0, weight) };
     });
 
     const totalW = evaluatedOutcomes.reduce((s, o) => s + o.effectiveW, 0);
@@ -1298,7 +1349,11 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
   }
 
   // Merge effects from both choice and rolled outcome (supports both .effects and .fx formats)
-  const effects = { ...(choice.effects || choice.fx || {}), ...(outcome.effects || outcome.fx || {}) };
+  const effects = mergeEffects(choice, outcome);
+  if (choice.costAhn) effects.wealth = (effects.wealth || 0) - Math.max(0, choice.costAhn + Math.min(0, effects.wealth || 0));
+  const itemId = outcome.itemAdd || choice.itemAdd;
+  const purchasedItem = ITEMS_CATALOG.find(i => i.id === itemId);
+  if (purchasedItem) char.inventory.push({ ...purchasedItem });
   if (effects.health) char.stats.health = clamp(char.stats.health + effects.health, 0, 100);
   if (effects.sanity) char.stats.sanity = clamp(char.stats.sanity + effects.sanity, 0, 100);
   if (effects.wealth) char.stats.wealth = clamp(char.stats.wealth + effects.wealth, 0, 100);
@@ -1333,7 +1388,11 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
   }
 
   const setFinger = outcome.setFinger || choice.setFinger;
-  if (setFinger) char.finger = setFinger;
+  if (setFinger) {
+    char.finger = setFinger;
+    char.flags = char.flags.filter(f => !/^Finger(Thumb|Index|Middle|Ring|Pinky)$/.test(f));
+    char.flags.push(`Finger${setFinger}`);
+  }
 
   const setFingerRank = outcome.setFingerRank ?? choice.setFingerRank;
   if (setFingerRank !== undefined) char.fingerRank = setFingerRank;
@@ -1350,7 +1409,7 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
   const setRegion = outcome.setRegion || choice.setRegion;
   if (setRegion) char.regionId = setRegion;
 
-  const meritAdd = (choice.meritAdd || 0) + (outcome.meritAdd || 0);
+  const meritAdd = (choice.meritAdd || 0) + (outcome === choice ? 0 : outcome.meritAdd || 0);
   if (meritAdd) char.merit = Math.max(0, char.merit + meritAdd);
 
   // Flags, Scars, Codex Records, NPCs, Memories (Persistent Causality)
@@ -1369,6 +1428,14 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
       }
     }
   });
+
+  const flagsRemove = [
+    ...(choice.flagsRemove || []),
+    ...(outcome.flagsRemove || [])
+  ];
+  if (flagsRemove.length > 0) {
+    char.flags = char.flags.filter(f => !flagsRemove.includes(f));
+  }
 
   const scarsAdd = [
     ...(choice.scarsAdd || []),
@@ -1413,7 +1480,7 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
       char.npcs.spouse = { ...lover, role: 'spouse', bond: Math.max(lover.bond || 0, npcAdd.bond || 0), lastSeen: char.age };
       char.npcs.lover = null;
     } else if (!char.npcs[npcAdd.role] || char.npcs[npcAdd.role].deceased) {
-      const base = makeNpc(npcAdd.role, Math.random, { metAge: char.age, lastSeen: char.age });
+      const base = makeNpc(npcAdd.role, rng, { metAge: char.age, lastSeen: char.age });
       char.npcs[npcAdd.role] = {
         ...base,
         ...(npcAdd.nameVi ? { nameVi: npcAdd.nameVi, nameEn: npcAdd.nameEn || npcAdd.nameVi } : {}),
@@ -1429,6 +1496,24 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
       const target = char.npcs?.[role];
       if (target && !target.deceased) {
         char.npcs[role] = { ...target, status, deceased: status === 'dead', fateAge: char.age };
+        if (status === 'dead') {
+          if (role === 'spouse') {
+            char.flags = (char.flags || []).filter(f => f !== 'Married');
+            if (!char.flags.includes('Widowed')) char.flags.push('Widowed');
+          } else if (role === 'lover') {
+            char.flags = (char.flags || []).filter(f => f !== 'InLove');
+            if (!char.flags.includes('LoverLost')) char.flags.push('LoverLost');
+          } else if (role === 'child') {
+            char.flags = (char.flags || []).filter(f => f !== 'HasChild');
+            if (!char.flags.includes('ChildLost')) char.flags.push('ChildLost');
+          } else if (role === 'partner') {
+            if (!char.flags.includes('PartnerLost')) char.flags.push('PartnerLost');
+          } else if (role === 'friend') {
+            if (!char.flags.includes('FriendLost')) char.flags.push('FriendLost');
+          } else if (role === 'mentor') {
+            if (!char.flags.includes('MentorLost')) char.flags.push('MentorLost');
+          }
+        }
       }
     }
   }
@@ -1463,9 +1548,9 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
   // Record in the Weaver AI Causal Memory Graph & schedule any delayed consequences!
   const allConsequences = [
     ...(choice.scheduleConsequences || []),
-    ...(outcome.scheduleConsequences || []),
+    ...(outcome === choice ? [] : outcome.scheduleConsequences || []),
     ...(choice.later || []).map(l => ({ eventId: l.id, delayYears: l.years, reasonVi: l.reasonVi, reasonEn: l.reasonEn })),
-    ...(outcome.later || []).map(l => ({ eventId: l.id, delayYears: l.years, reasonVi: l.reasonVi, reasonEn: l.reasonEn }))
+    ...(outcome === choice ? [] : outcome.later || []).map(l => ({ eventId: l.id, delayYears: l.years, reasonVi: l.reasonVi, reasonEn: l.reasonEn }))
   ];
   const effectiveChoice = {
     ...choice,
@@ -1505,7 +1590,11 @@ export function buildLifeSummaryAndLegacy(char) {
   let epitaphTitleEn = 'An ordinary citizen of the City';
   let rankTier = 'Canard';
 
-  if (char.flags.includes('ColorFixer')) {
+  if (char.age === 0 && char.deathCauseVi) {
+    epitaphTitleVi = 'Sinh linh chưa kịp thấy ánh mặt trời';
+    epitaphTitleEn = 'A life lost before the first dawn';
+    rankTier = 'Canard';
+  } else if (char.flags.includes('ColorFixer')) {
     epitaphTitleVi = char.customTitle || 'Color Fixer';
     epitaphTitleEn = char.customTitle || 'Color Fixer';
     rankTier = 'Star of the City';
@@ -1552,7 +1641,7 @@ export function buildLifeSummaryAndLegacy(char) {
     successorRelation = 'sibling';
   } else if (char.age < 18) {
     successorRelation = 'companion';
-  } else if (char.npcs?.child) {
+  } else if (npcIsActive(char.npcs?.child)) {
     successorRelation = 'child';
     const parentChildBirthAge = Math.min(char.age - 1, Math.max(18, char.age - 18));
     childAgeWhenParentDied = Math.max(1, char.age - parentChildBirthAge);
@@ -1583,7 +1672,7 @@ export function buildLifeSummaryAndLegacy(char) {
     successorRelation,
     successorInfo: succInfo,
     childAgeWhenParentDied,
-    hasChild: Boolean(char.npcs?.child),
+    hasChild: npcIsActive(char.npcs?.child),
     childName: char.npcs?.child?.nameVi || '',
     hasVendetta: (char.heat || 0) >= 40 || char.flags.includes('MiddleVendetta')
   };

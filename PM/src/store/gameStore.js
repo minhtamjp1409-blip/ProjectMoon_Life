@@ -7,12 +7,13 @@ import {
   resolveEventChoice,
   resolveFixerContract,
   buildLifeSummaryAndLegacy,
-  cloneChar
-} from '../engine/gameEngine';
-import { planYear, syncPlanWithBackend, runDueItems, resolveMinor, endYear, nextPlanItem, diffStats, MINOR_WINDOW_MS } from '../engine/yearPlanner';
-import { CODEX_RECORDS } from '../data/worldData';
-import { getItemById } from '../data/itemsData';
-import { cityArchiveAPI } from '../services/api/cityArchiveAPI';
+  cloneChar,
+  interpolateText
+} from '../engine/gameEngine.js';
+import { planYear, syncPlanWithBackend, runDueItems, resolveMinor, endYear, nextPlanItem, diffStats, MINOR_WINDOW_MS, splitTitle, LIFE_MINORS } from '../engine/yearPlanner.js';
+import { CODEX_RECORDS } from '../data/worldData.js';
+import { getItemById } from '../data/itemsData.js';
+import { cityArchiveAPI } from '../services/api/cityArchiveAPI.js';
 
 const META_KEY = 'pm_city_chronicles_save_v3';
 const RUN_KEY = 'pm_city_chronicles_run_v1';
@@ -129,6 +130,103 @@ function stageFxFor(prev, next) {
   return null;
 }
 
+export function buildResolutionPayload({
+  prevChar,
+  nextChar,
+  kind,
+  titleVi,
+  titleEn,
+  choiceLabelVi,
+  choiceLabelEn
+}) {
+  if (!prevChar || !nextChar) return null;
+
+  // Fresh logs added in this step
+  const freshLogs = nextChar.logs.slice(prevChar.logs.length);
+  const mainLog = freshLogs[0] || nextChar.logs[nextChar.logs.length - 1];
+
+  // Deltas
+  const deltas = [...(mainLog?.deltas || diffStats(prevChar, nextChar))];
+
+  // Scars
+  const newScars = (nextChar.scars || []).filter((s) => !(prevChar.scars || []).includes(s));
+  newScars.forEach((s) => {
+    if (!deltas.some((d) => d.k === 'scar' && d.name === s)) {
+      deltas.push({ k: 'scar', name: s });
+    }
+  });
+
+  // Job / Path
+  if (nextChar.job && nextChar.job !== prevChar.job) {
+    deltas.push({ k: 'job', v: nextChar.job });
+  }
+
+  // Fixer Grade
+  if (nextChar.fixerGrade !== undefined && nextChar.fixerGrade !== prevChar.fixerGrade) {
+    deltas.push({ k: 'fixerGrade', v: nextChar.fixerGrade });
+  }
+
+  // Faction Ranks
+  if ((nextChar.fingerRank || 0) > (prevChar.fingerRank || 0)) {
+    deltas.push({ k: 'fingerRank', v: nextChar.fingerRank });
+  }
+  if ((nextChar.wingRank || 0) > (prevChar.wingRank || 0)) {
+    deltas.push({ k: 'wingRank', v: nextChar.wingRank });
+  }
+  if ((nextChar.workshopRank || 0) > (prevChar.workshopRank || 0)) {
+    deltas.push({ k: 'workshopRank', v: nextChar.workshopRank });
+  }
+
+  // NPC relationships
+  const prevNpcs = prevChar.npcs || {};
+  const nextNpcs = nextChar.npcs || {};
+  for (const role of Object.keys(nextNpcs)) {
+    const pNpc = prevNpcs[role];
+    const nNpc = nextNpcs[role];
+    if (nNpc && !pNpc) {
+      const name = nNpc.nameVi || nNpc.nameEn || role;
+      if (!deltas.some((d) => d.k === 'meet' && d.name === name)) {
+        deltas.push({ k: 'meet', name });
+      }
+    } else if (nNpc && pNpc) {
+      const name = nNpc.nameVi || nNpc.nameEn || role;
+      if (nNpc.status === 'dead' && pNpc.status !== 'dead') {
+        if (!deltas.some((d) => d.k === 'fate' && d.v === 'dead' && d.name === name)) {
+          deltas.push({ k: 'fate', v: 'dead', name });
+        }
+      } else if (nNpc.bond !== pNpc.bond) {
+        if (!deltas.some((d) => d.k === 'bond' && d.name === name)) {
+          deltas.push({ k: 'bond', v: nNpc.bond - pNpc.bond, name });
+        }
+      }
+    }
+  }
+
+  const rawVi = mainLog?.vi || '';
+  const rawEn = mainLog?.en || '';
+  const splitVi = splitTitle(rawVi);
+  const splitEn = splitTitle(rawEn);
+
+  const cleanTitleVi = interpolateText(titleVi || splitVi.title || 'Kết quả biến cố', nextChar);
+  const cleanTitleEn = interpolateText(titleEn || splitEn.title || 'Decision Outcome', nextChar);
+
+  return {
+    id: `res_${nextChar.age}_${Date.now()}`,
+    kind,
+    age: nextChar.age,
+    seasonIdx: nextChar.seasonIdx,
+    titleVi: cleanTitleVi,
+    titleEn: cleanTitleEn,
+    choiceLabelVi: interpolateText(choiceLabelVi || mainLog?.choiceVi || '', nextChar),
+    choiceLabelEn: interpolateText(choiceLabelEn || mainLog?.choiceEn || '', nextChar),
+    narrativeVi: interpolateText(splitVi.body || rawVi, nextChar),
+    narrativeEn: interpolateText(splitEn.body || rawEn, nextChar),
+    deltas,
+    isDead: !nextChar.alive,
+    isCausal: Boolean(prevChar.pendingEvent?.isCausalCallback)
+  };
+}
+
 const savedMeta = loadSavedMeta();
 const initialChar = createNewCharacter({});
 let lifeRng = createRNG(initialChar.seed);
@@ -142,6 +240,7 @@ export const useGameStore = create((set, get) => ({
   yearProgress: 0,
   minorRemainingMs: 0,
   stageFx: null,
+  activeResolution: null,
   backendOnline: false,
   telemetry: null,
   savedRun: loadSavedRun(),
@@ -160,6 +259,7 @@ export const useGameStore = create((set, get) => ({
   setConfigField: (field, value) => set({ [field]: value }),
   setSpeed: (speed) => set({ speed }),
   toggleAutoPlay: () => set((s) => ({ autoPlay: !s.autoPlay })),
+  dismissResolution: () => set({ activeResolution: null }),
   setPendingLegacy: (legacy) => set({ pendingLegacy: legacy }),
 
   discardPendingLegacy: (deleteFromArchive = false) => {
@@ -223,13 +323,13 @@ export const useGameStore = create((set, get) => ({
     if (!run) return;
     const char = cloneChar(run.char);
     lifeRng = lifeRngFor(char);
-    set({ char, inRun: true, yearProgress: run.yearProgress || 0, speed: 1, stageFx: null, minorRemainingMs: MINOR_WINDOW_MS });
+    set({ char, inRun: true, yearProgress: run.yearProgress || 0, speed: 1, stageFx: null, activeResolution: null, minorRemainingMs: MINOR_WINDOW_MS });
   },
 
   // Leave the run without losing it
   exitToSetup: () => {
     get().saveRun(true);
-    set({ inRun: false, speed: 1 });
+    set({ inRun: false, speed: 1, activeResolution: null });
   },
 
   buyItem: (itemId) => {
@@ -297,7 +397,7 @@ export const useGameStore = create((set, get) => ({
   abandonRun: () => {
     clearTimeout(saveTimer);
     clearSavedRun();
-    set({ inRun: false, speed: 1, yearProgress: 0, savedRun: null });
+    set({ inRun: false, speed: 1, yearProgress: 0, savedRun: null, activeResolution: null });
   },
 
   /* ---------- archive ---------- */
@@ -349,12 +449,16 @@ export const useGameStore = create((set, get) => ({
       newlyUnlocked.forEach((key) => {
         const rec = CODEX_RECORDS.find((r) => r.key === key);
         if (rec) {
-          notification.open({
-            message: `Mở khóa thành tựu · ${rec.vi}`,
-            description: rec.hintVi,
-            placement: 'bottomLeft',
-            duration: 3.5
-          });
+          try {
+            notification.open({
+              message: `Mở khóa thành tựu · ${rec.vi}`,
+              description: rec.hintVi,
+              placement: 'bottomLeft',
+              duration: 3.5
+            });
+          } catch {
+            // ignore in headless / test environment
+          }
         }
       });
       cityArchiveAPI.syncCodex(mergedCodex).catch(() => {});
@@ -414,7 +518,7 @@ export const useGameStore = create((set, get) => ({
     lifeRng = createRNG(`${nextChar.seed}:life:${nextChar.age}`);
     planYear(nextChar, lifeRng);
     const metaUpdates = get().syncMetaFromChar(nextChar);
-    set({ char: nextChar, inRun: true, speed: 1, yearProgress: 0, stageFx: null, ...metaUpdates });
+    set({ char: nextChar, inRun: true, speed: 1, yearProgress: 0, stageFx: null, activeResolution: null, ...metaUpdates });
     get().saveRun(true);
 
     // Offload to .NET 8 Director backend for authoritative verification
@@ -430,6 +534,7 @@ export const useGameStore = create((set, get) => ({
     const s = get();
     const c = s.char;
     if (!s.inRun || !c.alive || s.speed === 0) return;
+    if (s.activeResolution) return;
     if (c.pendingEvent || c.pendingContract || c.pendingModal) return;
 
     if (c.pendingMinor) {
@@ -483,7 +588,7 @@ export const useGameStore = create((set, get) => ({
   stepYear: () => {
     const s = get();
     const c = s.char;
-    if (!c.alive || c.pendingEvent || c.pendingContract || c.pendingModal || c.pendingMinor) return;
+    if (!c.alive || c.pendingEvent || c.pendingContract || c.pendingModal || c.pendingMinor || s.activeResolution) return;
 
     const curP = s.yearProgress;
     const nextItem = nextPlanItem(c);
@@ -531,14 +636,46 @@ export const useGameStore = create((set, get) => ({
   chooseMinor: (idx) => {
     const prev = get().char;
     if (!prev.pendingMinor) return;
-    get().commit(prev, resolveMinor(prev, idx, lifeRng));
+    const prompt = prev.pendingMinor;
+    const def = LIFE_MINORS.find((m) => m.id === prompt.id);
+    const ignore = def?.ignore || { vi: 'Để nó trôi qua', en: 'Let it pass' };
+    const choice = idx >= 0 ? def?.choices?.[idx] : ignore;
+    const nextChar = resolveMinor(prev, idx, lifeRng);
+
+    const promptTitle = splitTitle(prompt.vi || '').title || 'Gặp gỡ bất chợt';
+    const promptTitleEn = splitTitle(prompt.en || '').title || 'Encounter';
+
+    const resolution = nextChar.pendingModal ? null : buildResolutionPayload({
+      prevChar: prev,
+      nextChar,
+      kind: 'minor',
+      titleVi: promptTitle,
+      titleEn: promptTitleEn,
+      choiceLabelVi: idx >= 0 ? (choice?.vi || choice?.labelVi || '') : (ignore.vi || 'Bỏ qua'),
+      choiceLabelEn: idx >= 0 ? (choice?.en || choice?.labelEn || '') : (ignore.en || 'Let it pass')
+    });
+
+    get().commit(prev, nextChar, { activeResolution: resolution });
   },
 
   selectEventChoice: (choiceIdx) => {
     const prev = get().char;
     if (!prev.pendingEvent) return;
+    const event = prev.pendingEvent;
+    const choice = event.choices?.[choiceIdx];
     const nextChar = resolveEventChoice(prev, choiceIdx, lifeRng);
-    get().commit(prev, nextChar);
+
+    const resolution = nextChar.pendingModal ? null : buildResolutionPayload({
+      prevChar: prev,
+      nextChar,
+      kind: 'event',
+      titleVi: event.titleVi || (event.isCausalCallback ? 'Causal Echo' : 'Biến cố cuộc đời'),
+      titleEn: event.titleEn || (event.isCausalCallback ? 'Causal Echo' : 'Life Event'),
+      choiceLabelVi: choice?.labelVi || '',
+      choiceLabelEn: choice?.labelEn || ''
+    });
+
+    get().commit(prev, nextChar, { activeResolution: resolution });
 
     // Refresh career milestone from backend after event decision
     const snap = buildCharSnapshot(nextChar);
@@ -554,7 +691,21 @@ export const useGameStore = create((set, get) => ({
   selectContractApproach: (approachId) => {
     const prev = get().char;
     if (!prev.pendingContract) return;
-    get().commit(prev, resolveFixerContract(prev, approachId, lifeRng));
+    const contract = prev.pendingContract;
+    const approach = contract.approaches.find((a) => a.id === approachId);
+    const nextChar = resolveFixerContract(prev, approachId, lifeRng);
+
+    const resolution = nextChar.pendingModal ? null : buildResolutionPayload({
+      prevChar: prev,
+      nextChar,
+      kind: 'contract',
+      titleVi: `Ủy thác: ${contract.template?.typeVi || 'Yêu cầu'}`,
+      titleEn: `Request: ${contract.template?.typeEn || 'Request'}`,
+      choiceLabelVi: approach ? `${approach.labelVi} (${approach.payAhn} Ahn)` : '',
+      choiceLabelEn: approach ? `${approach.labelEn} (${approach.payAhn} Ahn)` : ''
+    });
+
+    get().commit(prev, nextChar, { activeResolution: resolution });
   },
 
   confirmColorTitle: (titleText) => {

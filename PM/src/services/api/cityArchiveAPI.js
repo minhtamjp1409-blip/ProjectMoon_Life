@@ -1,4 +1,4 @@
-import { apiRequest } from './baseAPI';
+import { apiRequest } from './baseAPI.js';
 
 export const cityArchiveAPI = {
   checkHealth: () => apiRequest('/health'),

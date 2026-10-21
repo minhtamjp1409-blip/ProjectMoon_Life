@@ -466,26 +466,99 @@ public sealed class DirectorEngineService
             majorTitleVi = "Đại Khảo Thí Phong Color (Hana Council)";
             majorTitleEn = "Hana Color Investiture Trial";
         }
-        else if (c.Job.Equals("Syndicate", StringComparison.OrdinalIgnoreCase) && c.FingerRank >= 2 && c.Merit >= 75 && !seen.Contains("syndicate_capo_trial"))
+        else if (c.Job.Equals("Syndicate", StringComparison.OrdinalIgnoreCase) && !flags.Contains("Distorted"))
         {
-            majorDue = true;
-            majorId = "syndicate_capo_trial";
-            majorTitleVi = "Đại Lễ Tuyên Thệ Capo";
-            majorTitleEn = "Capo Blood Oath Trial";
+            string finger = string.IsNullOrEmpty(c.Finger) ? "Thumb" : c.Finger;
+            if (c.FingerRank == 0 && c.Merit >= 26 && c.Rep >= 16)
+            {
+                majorDue = true;
+                majorId = finger.ToLowerInvariant() switch
+                {
+                    "thumb" => "syn_thumb_promo_capo",
+                    "index" => "syn_index_promo_messenger",
+                    "middle" => "syn_middle_promo_big_sibling",
+                    "ring" => "syn_ring_promo_docent",
+                    _ => "syn_pinky_promo_blade"
+                };
+                majorTitleVi = $"Khảo thí thăng bậc The {finger} (Rank 1)";
+                majorTitleEn = $"The {finger} Promotion Trial (Rank 1)";
+            }
+            else if (c.FingerRank == 1 && c.Merit >= 52 && c.Rep >= 32)
+            {
+                majorDue = true;
+                majorId = finger.ToLowerInvariant() switch
+                {
+                    "thumb" => "syn_thumb_promo_sottocapo",
+                    "index" => "syn_index_promo_proxy",
+                    "middle" => "syn_middle_promo_great_elder",
+                    "ring" => "syn_ring_promo_maestro",
+                    _ => "syn_pinky_star_blade_pinnacle"
+                };
+                majorTitleVi = $"Khảo thí thăng bậc The {finger} (Rank 2)";
+                majorTitleEn = $"The {finger} Promotion Trial (Rank 2)";
+            }
+            else if (c.FingerRank >= 2 && c.Merit >= 78 && c.Rep >= 48)
+            {
+                majorDue = true;
+                majorId = finger.ToLowerInvariant() switch
+                {
+                    "thumb" => "syn_thumb_underboss_purge",
+                    "index" => "syn_index_weaver_prescript",
+                    "middle" => "syn_middle_great_brother_vendetta",
+                    "ring" => "syn_ring_curator_monument",
+                    _ => "syn_pinky_promo_sovereign"
+                };
+                majorTitleVi = $"Đại Lễ Tuyên Thệ Đỉnh Cao The {finger} (Rank 3)";
+                majorTitleEn = $"The {finger} Pinnacle Sovereign Trial (Rank 3)";
+            }
         }
-        else if (c.Job.Equals("Wing Employee", StringComparison.OrdinalIgnoreCase) && c.WingRank >= 1 && c.Merit >= 65 && !seen.Contains("wing_singularity_classified_audit"))
+        else if (c.Job.Equals("Wing Employee", StringComparison.OrdinalIgnoreCase) && !flags.Contains("Distorted"))
         {
-            majorDue = true;
-            majorId = "wing_singularity_classified_audit";
-            majorTitleVi = "Thanh Tra Dự Án Tối Mật Singularity";
-            majorTitleEn = "Classified Singularity Audit";
+            if (c.WingRank == 0 && c.Merit >= 25 && c.Wealth >= 18 && c.Network >= 14 && !seen.Contains("wing_promo_feather_r1"))
+            {
+                majorDue = true;
+                majorId = "wing_promo_feather_r1";
+                majorTitleVi = "Bổ Nhiệm Feather Chính Thức (Nest Feather)";
+                majorTitleEn = "Official Feather Commission";
+            }
+            else if (c.WingRank == 1 && c.Merit >= 65 && c.Wealth >= 45 && c.Network >= 32 && !seen.Contains("wing_promo_specialist_r2"))
+            {
+                majorDue = true;
+                majorId = "wing_promo_specialist_r2";
+                majorTitleVi = "Trưởng Phòng Ban Singularity (Section Chief)";
+                majorTitleEn = "Section Chief / Singularity Specialist";
+            }
+            else if (c.WingRank >= 2 && c.Merit >= 125 && c.Wealth >= 85 && c.Network >= 60 && !seen.Contains("wing_singularity_classified_audit"))
+            {
+                majorDue = true;
+                majorId = "wing_singularity_classified_audit";
+                majorTitleVi = "Thanh Tra Dự Án Tối Mật Singularity";
+                majorTitleEn = "Classified Singularity Audit";
+            }
         }
-        else if (c.Job.Equals("Workshop Craftsman", StringComparison.OrdinalIgnoreCase) && c.WorkshopRank >= 1 && c.Merit >= 65 && !seen.Contains("workshop_legendary_forge_trial"))
+        else if (c.Job.Equals("Workshop Craftsman", StringComparison.OrdinalIgnoreCase) && !flags.Contains("Distorted"))
         {
-            majorDue = true;
-            majorId = "workshop_legendary_forge_trial";
-            majorTitleVi = "Đại Lò Rèn Huyền Thoại (Workshop Trial)";
-            majorTitleEn = "Legendary Forge Trial";
+            if (c.WorkshopRank == 0 && c.Merit >= 25 && c.Wealth >= 16 && c.Resonance >= 10 && !seen.Contains("ws_promo_journeyman_r1"))
+            {
+                majorDue = true;
+                majorId = "ws_promo_journeyman_r1";
+                majorTitleVi = "Khảo Hạch Thợ Chính Tres (Certified Artisan)";
+                majorTitleEn = "Tres Certified Artisan Proofmark Trial";
+            }
+            else if (c.WorkshopRank == 1 && c.Merit >= 65 && c.Wealth >= 40 && c.Resonance >= 24 && !seen.Contains("ws_promo_master_r2"))
+            {
+                majorDue = true;
+                majorId = "ws_promo_master_r2";
+                majorTitleVi = "Khai Mở Xưởng Độc Quyền (Master Craftsman)";
+                majorTitleEn = "Atelier Founder / Master Craftsman Trial";
+            }
+            else if (c.WorkshopRank >= 2 && c.Merit >= 125 && c.Wealth >= 75 && c.Resonance >= 40 && !seen.Contains("workshop_legendary_forge_trial"))
+            {
+                majorDue = true;
+                majorId = "workshop_legendary_forge_trial";
+                majorTitleVi = "Đại Lò Rèn Huyền Thoại (Workshop Trial)";
+                majorTitleEn = "Legendary Forge Trial";
+            }
         }
         else if (c.YearsSinceLastMajor >= 5 || (c.YearsSinceLastMajor >= 2 && random.NextDouble() < 0.35))
         {

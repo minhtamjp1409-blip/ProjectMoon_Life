@@ -19,8 +19,8 @@ const SPEEDS = [
   { spd: 3, secs: 10 }
 ];
 
-const isWaiting = (c) => Boolean(c.pendingEvent || c.pendingContract || c.pendingModal);
-const isRunning = (s) => s.inRun && s.char.alive && s.speed > 0 && !isWaiting(s.char);
+const isWaiting = (s) => Boolean(s?.char?.pendingEvent || s?.char?.pendingContract || s?.char?.pendingModal || s?.activeResolution);
+const isRunning = (s) => s.inRun && s.char?.alive && s.speed > 0 && !isWaiting(s);
 
 /*
  * The store advances yearProgress in 200ms steps. Drawing those steps makes the bar
@@ -87,13 +87,15 @@ const YearTrack = () => {
 const YearStatus = () => {
   const { t } = useT();
   const status = useGameStore((s) => {
-    if (!s.char.alive) return 'dead';
-    if (isWaiting(s.char)) return 'wait';
+    if (!s.char?.alive) return 'dead';
+    if (s.activeResolution) return 'resolution';
+    if (isWaiting(s)) return 'wait';
     if (s.char.pendingMinor) return 'minor';
     if (s.speed === 0) return 'pause';
     return Math.max(0, Math.ceil(((100 - s.yearProgress) / 100) * (30 / s.speed)));
   });
   if (status === 'dead') return <span>{t('Kiếp sống đã khép lại', 'This life has ended')}</span>;
+  if (status === 'resolution') return <span style={{ color: 'var(--good)' }}>{t('Đang xem kết quả quyết định', 'Reviewing outcome')}</span>;
   if (status === 'wait') return <span style={{ color: 'var(--accent)' }}>{t('Đang chờ bạn quyết định', 'Waiting for your decision')}</span>;
   if (status === 'minor') return <span style={{ color: 'var(--accent)' }}>{t('Một lựa chọn đang chờ', 'A choice is waiting')}</span>;
   if (status === 'pause') return <span>{t('Tạm dừng', 'Paused')}</span>;
@@ -114,7 +116,7 @@ export const PlayBar = () => {
         yearProgress: s.yearProgress,
         dramaPhase: s.char.weaver?.dramaPhase,
         alive: s.char.alive,
-        waiting: isWaiting(s.char) || Boolean(s.char.pendingMinor),
+        waiting: isWaiting(s) || Boolean(s.char.pendingMinor),
         speed: s.speed,
         autoPlay: s.autoPlay,
         setSpeed: s.setSpeed,

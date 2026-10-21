@@ -1,3 +1,4 @@
+import { npcIsActive } from './eventConditions.js';
 // ============================================================================
 // THE DIRECTOR: decides which small stories a year tells, and remembers.
 //
@@ -12,12 +13,13 @@
 // Every pick is written to the decision log with a plain reason.
 // ============================================================================
 
-import { clamp, interpolateText, getNextCareerMilestone } from './gameEngine';
-import { makeNpc } from '../data/birthStories';
+import { clamp, interpolateText, getNextCareerMilestone } from './gameEngine.js';
+import { makeNpc } from '../data/birthStories.js';
+import { bondCapFor } from '../data/npcPersonality.js';
 
 const THEME_REST_YEARS = 4;
 
-export const npcActive = (npc) => Boolean(npc) && !npc.deceased && !['dead', 'missing', 'estranged'].includes(npc.status);
+export const npcActive = npcIsActive;
 
 export const hasMemory = (char, key) => (char.memory || []).some((m) => m.key === key);
 
@@ -180,7 +182,13 @@ export function applyChoiceExtras(char, sources, deltas, rng) {
   // New people
   for (const npc of pickField('npc')) {
     if (char.npcs?.[npc.role]) continue;
-    const fresh = makeNpc(npc.role, rng, { bond: npc.bond ?? 50, metAge: char.age, lastSeen: char.age });
+    const fresh = makeNpc(npc.role, rng, {
+      bond: npc.bond ?? 22,
+      metAge: char.age,
+      lastSeen: char.age,
+      regionId: char.regionId,
+      nest: (char.flags || []).some((f) => ['Nest', 'NestResident', 'Feather'].includes(f))
+    });
     if (npc.nameVi) Object.assign(fresh, { nameVi: npc.nameVi, nameEn: npc.nameEn || npc.nameVi });
     char.npcs = { ...char.npcs, [npc.role]: fresh };
     deltas.push({ k: 'meet', role: npc.role, name: fresh.nameVi });
@@ -203,10 +211,26 @@ export function applyChoiceExtras(char, sources, deltas, rng) {
       const key = char.npcs?.[role] ? role : role === 'lover' && char.npcs?.spouse ? 'spouse' : null;
       if (!key || !npcActive(target)) continue;
       const before = target.bond || 0;
-      const after = clamp(before + v, 0, 100);
+      // Trust is capped until the person's own quest is done, and warmth is slow to give.
+      const cap = bondCapFor(target);
+      const gain = v > 0 ? Math.max(1, Math.round(v * 0.7)) : v;
+      const after = v > 0 ? Math.max(before, Math.min(cap, clamp(before + gain, 0, 100))) : clamp(before + gain, 0, 100);
       char.npcs = { ...char.npcs, [key]: { ...target, bond: after, lastSeen: char.age } };
       if (after !== before) deltas.push({ k: 'bond', role: key, name: target.nameVi, v: after - before });
     }
+  }
+
+  // A person's own quest finished: this is what actually opens the door to deeper trust
+  for (const role of pickField('npcQuest')) {
+    const key = char.npcs?.[role] ? role : role === 'lover' && char.npcs?.spouse ? 'spouse' : null;
+    const target = key && char.npcs[key];
+    if (!target || !npcActive(target)) continue;
+    const questsDone = (target.questsDone || 0) + 1;
+    const lifted = { ...target, questsDone, lastSeen: char.age };
+    const bondNow = Math.min(bondCapFor(lifted), (lifted.bond || 0) + 8);
+    char.npcs = { ...char.npcs, [key]: { ...lifted, bond: Math.max(lifted.bond || 0, bondNow) } };
+    deltas.push({ k: 'bond', role: key, name: target.nameVi, v: Math.max(0, bondNow - (target.bond || 0)) });
+    char.memory = [...(char.memory || []), { key: `quest_${key}_${questsDone}`, age: char.age }];
   }
 
   // Fates
@@ -218,6 +242,24 @@ export function applyChoiceExtras(char, sources, deltas, rng) {
       char.npcs = { ...char.npcs, [key]: { ...target, status, deceased: status === 'dead', fateAge: char.age } };
       deltas.push({ k: 'fate', role: key, name: target.nameVi, v: status });
       char.memory = [...(char.memory || []), { key: `lost_${key}`, age: char.age }];
+      if (status === 'dead') {
+        if (key === 'spouse') {
+          char.flags = (char.flags || []).filter(f => f !== 'Married');
+          if (!char.flags.includes('Widowed')) char.flags.push('Widowed');
+        } else if (key === 'lover') {
+          char.flags = (char.flags || []).filter(f => f !== 'InLove');
+          if (!char.flags.includes('LoverLost')) char.flags.push('LoverLost');
+        } else if (key === 'child') {
+          char.flags = (char.flags || []).filter(f => f !== 'HasChild');
+          if (!char.flags.includes('ChildLost')) char.flags.push('ChildLost');
+        } else if (key === 'partner') {
+          if (!char.flags.includes('PartnerLost')) char.flags.push('PartnerLost');
+        } else if (key === 'friend') {
+          if (!char.flags.includes('FriendLost')) char.flags.push('FriendLost');
+        } else if (key === 'mentor') {
+          if (!char.flags.includes('MentorLost')) char.flags.push('MentorLost');
+        }
+      }
     }
   }
 
@@ -252,8 +294,10 @@ export function driftBonds(char) {
   let changed = false;
   for (const [role, npc] of Object.entries(char.npcs || {})) {
     if (!npcActive(npc) || role === 'child') continue;
-    if (char.age - (npc.lastSeen ?? npc.metAge ?? 0) >= 3 && (npc.bond || 0) > 15) {
-      next[role] = { ...npc, bond: npc.bond - 1 };
+    const yearsApart = char.age - (npc.lastSeen ?? npc.metAge ?? 0);
+    if (yearsApart >= 2 && (npc.bond || 0) > 10) {
+      const drop = yearsApart >= 5 ? 3 : 2;
+      next[role] = { ...npc, bond: Math.max(10, (npc.bond || 0) - drop) };
       changed = true;
     }
   }

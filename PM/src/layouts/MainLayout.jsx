@@ -12,7 +12,7 @@ const TICK_MS = 100;
 export const MainLayout = ({ children }) => {
   const location = useLocation();
   // Only the fields the loop needs; yearProgress is left out so the layout doesn't re-render each tick
-  const { inRun, alive, pendingEvent, pendingContract, pendingMinor, pendingModal, speed, autoPlay, tick, selectEventChoice, selectContractApproach, hydrateFromBackend } =
+  const { inRun, alive, pendingEvent, pendingContract, pendingMinor, pendingModal, activeResolution, speed, autoPlay, tick, selectEventChoice, selectContractApproach, dismissResolution, hydrateFromBackend } =
     useGameStore(
       useShallow((s) => ({
         inRun: s.inRun,
@@ -21,11 +21,13 @@ export const MainLayout = ({ children }) => {
         pendingContract: s.char.pendingContract,
         pendingMinor: s.char.pendingMinor,
         pendingModal: s.char.pendingModal,
+        activeResolution: s.activeResolution,
         speed: s.speed,
         autoPlay: s.autoPlay,
         tick: s.tick,
         selectEventChoice: s.selectEventChoice,
         selectContractApproach: s.selectContractApproach,
+        dismissResolution: s.dismissResolution,
         hydrateFromBackend: s.hydrateFromBackend
       }))
     );
@@ -37,6 +39,15 @@ export const MainLayout = ({ children }) => {
   // The year's clock: real elapsed time, capped so a background tab doesn't skip a decade
   useEffect(() => {
     if (!inRun || !alive || speed === 0 || pendingModal) return undefined;
+
+    if (activeResolution) {
+      if (!autoPlay) return undefined;
+      const autoDelay = speed === 3 ? 3000 : speed === 2 ? 4500 : 7000;
+      const timer = setTimeout(() => {
+        dismissResolution();
+      }, autoDelay);
+      return () => clearTimeout(timer);
+    }
 
     if (pendingEvent || pendingContract) {
       if (!autoPlay) return undefined;
@@ -56,11 +67,11 @@ export const MainLayout = ({ children }) => {
       tick(dt);
     }, TICK_MS);
     return () => clearInterval(timer);
-  }, [inRun, alive, pendingEvent, pendingContract, pendingModal, speed, autoPlay, tick, selectEventChoice, selectContractApproach]);
+  }, [inRun, alive, pendingEvent, pendingContract, pendingModal, activeResolution, speed, autoPlay, tick, selectEventChoice, selectContractApproach, dismissResolution]);
 
   // The play screen manages its own scrolling regions; other screens scroll as a page
   const isPlay = location.pathname === '/' && inRun;
-  const hasDock = isPlay && Boolean(pendingEvent || pendingContract || pendingMinor);
+  const hasDock = isPlay && Boolean(pendingEvent || pendingContract || pendingMinor || activeResolution);
   const { sidebarCollapsed, toggleSidebar } = useThemeStore();
   const isNavCollapsed = sidebarCollapsed !== null ? sidebarCollapsed : isPlay;
 

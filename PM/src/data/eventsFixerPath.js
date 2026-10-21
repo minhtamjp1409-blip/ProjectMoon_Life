@@ -135,7 +135,17 @@ export const FIXER_PATH_EVENTS = [
         setFixerGrade: 5,
         flagsAdd: ['promo_g5_done', 'OfficeEligible'],
         meritAdd: 30,
-        effects: { health: -26, rep: +25, wealth: +60 }
+        effects: { health: -16, rep: +25, wealth: +60 }
+      },
+      {
+        labelVi: 'Dàn trận phối hợp cùng Fixer đồng minh và đặt bẫy kinetic',
+        labelEn: 'Coordinate a defensive perimeter with allied Fixers and deploy kinetic snares',
+        resultVi: 'Bẫy nổ kích hoạt xé tan đội hình Sweeper, hạn chế tối đa thương vong. Bạn giao nộp mẫu mô an toàn. Hana Association cấp phép mở Văn phòng riêng cho Fixer Grade 5.',
+        resultEn: 'Kinetic snares detonated, scattering the Sweeper pack with controlled damage. You submitted clean samples. Hana certifies your Grade 5 license and Office rights.',
+        setFixerGrade: 5,
+        flagsAdd: ['promo_g5_done', 'OfficeEligible'],
+        meritAdd: 28,
+        effects: { health: -10, sanity: -4, rep: +20, wealth: +45, network: +10 }
       }
     ]
   },
@@ -161,7 +171,17 @@ export const FIXER_PATH_EVENTS = [
         setFixerGrade: 4,
         flagsAdd: ['promo_g4_done'],
         meritAdd: 36,
-        effects: { health: -30, rep: +32, wealth: +85 }
+        effects: { health: -18, rep: +32, wealth: +85 }
+      },
+      {
+        labelVi: 'Khai thác tài liệu tình báo của Seven Association để đón lõng điểm hẹn',
+        labelEn: 'Use Seven Association intelligence dossiers to ambush their clandestine rendezvous',
+        resultVi: 'Đòn mai phục chính xác tóm gọn toán đầu não trước khi chúng kịp phản kháng. Phân hội Shi và Liu trao bạn huy hiệu Fixer Grade 4 kèm lời khen ngợi tác chiến xuất sắc.',
+        resultEn: 'A surgical ambush neutralized their commanders before blades were drawn. Shi and Liu Associations award you the Grade 4 crest for exemplary tactical prowess.',
+        setFixerGrade: 4,
+        flagsAdd: ['promo_g4_done'],
+        meritAdd: 34,
+        effects: { health: -10, rep: +26, wealth: +65, network: +14 }
       }
     ]
   },
@@ -187,7 +207,18 @@ export const FIXER_PATH_EVENTS = [
         setFixerGrade: 3,
         flagsAdd: ['promo_g3_done'],
         meritAdd: 45,
-        effects: { health: -35, sanity: -18, rep: +40, wealth: +120, resonance: +15 }
+        effects: { health: -20, sanity: -10, rep: +40, wealth: +120, resonance: +15 }
+      },
+      {
+        labelVi: 'Sử dụng neo không gian và khiên phân giải của Workshop để cô lập dị thể',
+        labelEn: 'Deploy Workshop dimensional anchors and dispersion barriers to isolate the anomaly',
+        resultVi: 'Trận pháp công nghệ Workshop giữ chặt lõi không gian trước khi bạn tung nhát chém kết liễu. Hội đồng Hana chính thức phê duyệt danh xưng Fixer Grade 3.',
+        resultEn: 'Workshop barrier wards locked the spatial anomaly in stasis before you delivered the severing blow. Hana Council ratifies your Grade 3 ascension.',
+        setFixerGrade: 3,
+        flagsAdd: ['promo_g3_done'],
+        meritAdd: 42,
+        costAhn: 25,
+        effects: { health: -12, sanity: -6, rep: +35, wealth: +80, network: +12 }
       }
     ]
   },
@@ -213,7 +244,17 @@ export const FIXER_PATH_EVENTS = [
         setFixerGrade: 2,
         flagsAdd: ['promo_g2_done'],
         meritAdd: 55,
-        effects: { health: -40, sanity: -20, rep: +50, wealth: +180, resonance: +20 }
+        effects: { health: -22, sanity: -12, rep: +50, wealth: +180, resonance: +20 }
+      },
+      {
+        labelVi: 'Phối hợp cùng hộ vệ Zwei Association lập phòng tuyến kiên cố',
+        labelEn: 'Form a resilient defensive phalanx with Zwei Association bodyguards',
+        resultVi: 'Khiên chắn Zwei chặn đứng làn mưa ám khí, tạo điều kiện cho bạn phản công hạ gục các sát thủ then chốt. Viên giám đốc Wing bình an vô sự. Bạn nhận huy chương Grade 2.',
+        resultEn: 'Zwei kinetic shields deflected the assassination salvo, allowing you to counter and neutralize key strikers. The executive survived unharmed. You gain the Grade 2 cross.',
+        setFixerGrade: 2,
+        flagsAdd: ['promo_g2_done'],
+        meritAdd: 50,
+        effects: { health: -14, sanity: -8, rep: +42, wealth: +130, network: +18 }
       }
     ]
   },
@@ -239,7 +280,17 @@ export const FIXER_PATH_EVENTS = [
         setFixerGrade: 1,
         flagsAdd: ['promo_g1_done'],
         meritAdd: 70,
-        effects: { health: -45, sanity: -25, rep: +65, wealth: +280, resonance: +25 }
+        effects: { health: -24, sanity: -14, rep: +65, wealth: +280, resonance: +25 }
+      },
+      {
+        labelVi: 'Hiệu triệu liên minh các Văn phòng uy tín mở chiến dịch vây quét tổng lực',
+        labelEn: 'Summon an allied coalition of elite Offices to conduct a coordinated grand raid',
+        resultVi: 'Chiến dịch hiệp đồng quy mô lớn san phẳng hang ổ hiểm họa mà vẫn bảo toàn mạng sống các chỉ huy. Hội đồng Tối cao Hana đứng dậy cúi đầu: "Chúc mừng, Fixer Grade 1."',
+        resultEn: 'A magnificent combined assault leveled the catastrophic stronghold while keeping command casualties low. Hana Grand Council stands in reverence: "Welcome, Grade 1 Fixer."',
+        setFixerGrade: 1,
+        flagsAdd: ['promo_g1_done'],
+        meritAdd: 65,
+        effects: { health: -16, sanity: -10, rep: +55, wealth: +190, network: +25 }
       }
     ]
   },
@@ -268,5 +319,160 @@ export const FIXER_PATH_EVENTS = [
         effects: { rep: +100, wealth: +500, resonance: +50 }
       }
     ]
-  }
+  },
+
+  // =========================================================================
+  // FIXER INTERMEDIATE INVESTIGATIVE & CRISIS ARCS (GRADE 9 TO 1)
+  // =========================================================================
+  {
+    id: 'fixer_g8_rookie_investigation',
+    age: [18, 56],
+    major: true,
+    weight: 65,
+    need: { jobs: ['Fixer'], grade: [8, 8] },
+    forbids: ['Distorted', 'fixer_g8_investigation_done'],
+    vi: '[Vụ án Mất tích Khu phố Grade 8] Một dãy nhà trọ ở Backstreets bỗng nhiên trống rỗng sau một đêm mưa. Không có vết máu, nhưng trên cửa sổ dán những dải ruy băng màu xanh lam kỳ lạ. Người quản lý khu phố thuê bạn vào điều tra bên trong.',
+    en: '[Tenement Vanishing Case · Grade 8] An entire Backstreet rowhouse sat vacant overnight after rain. No gore, but strange indigo ribbons fluttered on the sills. The landlord hires you to inspect the silent corridors.',
+    choices: [
+      {
+        labelVi: 'Dùng kinh nghiệm lần theo dấu vết bột huỳnh quang',
+        labelEn: 'Track luminescent powder trails across floorboards',
+        resultVi: 'Bạn phát hiện đường hầm bí mật dẫn xuống một phòng thí nghiệm cấy ghép lậu của một Workshop vô danh. Bạn giải cứu được 4 người còn sống và giao bằng chứng cho Seven Association. Tên tuổi bạn được ngợi khen.',
+        resultEn: 'You uncovered a hidden bulkhead leading to an illicit Workshop grafting den. Rescuing four living captives, you passed the files to Seven Association, earning acclaim.',
+        meritAdd: 16,
+        effects: { rep: +14, network: +12, wealth: +25 },
+        flagsAdd: ['fixer_g8_investigation_done']
+      },
+      {
+        labelVi: 'Cảnh giác báo cáo ngay cho Zwei Association trước khi vào',
+        labelEn: 'Report the anomaly immediately to Zwei prior to breach',
+        resultVi: 'Biệt đội Zwei mang khiên hạng nặng tiến vào dọn dẹp hiện trường. Họ chia lại cho bạn một phần tiền công và khen ngợi tính cẩn trọng chuẩn mực của bạn.',
+        resultEn: 'Heavy Zwei shield units sanitized the facility. They credited you with an intelligence bounty and praised your textbook vigilance.',
+        meritAdd: 12,
+        effects: { rep: +10, wealth: +18, sanity: +5 },
+        flagsAdd: ['fixer_g8_investigation_done']
+      }
+    ]
+  },
+  {
+    id: 'fixer_g7_zwei_escort_mission',
+    age: [19, 60],
+    major: true,
+    weight: 60,
+    need: { jobs: ['Fixer'], grade: [7, 7] },
+    forbids: ['Distorted', 'fixer_g7_escort_done'],
+    vi: '[Chiến dịch Bảo an Zwei Section 5] Đại diện Zwei Section 5 mời bạn tham gia đội cận vệ bảo vệ đoàn xe chở thuốc hồi sinh của K Corp đi qua vùng tranh chấp giữa hai Syndicate. Mùi thuốc súng khét lẹt bốc lên từ hai bên hẻm.',
+    en: '[Zwei Section 5 Convoy Escort] Zwei Section 5 contracts you to reinforce an armed convoy hauling K Corp regenerative ampoules through contested syndicate turf. Gunpowder stings the air.',
+    choices: [
+      {
+        labelVi: 'Cầm khiên phòng hộ đứng ở vị trí mũi xe, hứng trọn đợt tập kích đầu tiên',
+        labelEn: 'Stand vanguard with kinetic shield, taking the initial volley',
+        resultVi: 'Đạn bắn xối xả vào khiên của bạn tóe lửa. Bạn đứng vững như bàn thạch cho đến khi pháo Zwei phản kích quét sạch kẻ phục kích. Bạn được Zwei tặng một huy hiệu danh dự.',
+        resultEn: 'Rounds sparked furiously against your ward. Unshaken, you anchored the line until Zwei artillery neutralized the attackers. Zwei awarded you an honorary cross.',
+        meritAdd: 20,
+        effects: { health: -18, rep: +18, wealth: +35 },
+        flagsAdd: ['fixer_g7_escort_done', 'ZweiCommendation']
+      },
+      {
+        labelVi: 'Dẫn đội thọc sườn đánh úp sào huyệt bắn tỉa của địch',
+        labelEn: 'Flank and eliminate enemy sniper perches above the alley',
+        resultVi: 'Bạn leo lên mái nhà bằng móc sắt, tiêu diệt gọn ba tay súng bắn tỉa của Syndicate. Đoàn xe đi qua an toàn tuyệt đối.',
+        resultEn: 'Grappling to the rooftops, you eliminated three syndicate marksmen in close combat. The convoy rolled through without a scratch.',
+        meritAdd: 22,
+        effects: { rep: +16, network: +14, wealth: +40 },
+        flagsAdd: ['fixer_g7_escort_done']
+      }
+    ]
+  },
+  {
+    id: 'fixer_g6_blackstreet_hostage_crisis',
+    age: [20, 65],
+    major: true,
+    weight: 60,
+    need: { jobs: ['Fixer'], grade: [6, 6] },
+    forbids: ['Distorted', 'fixer_g6_hostage_done'],
+    vi: '[Bắt cóc Con tin tại Nhà băng J Corp] Một nhóm lính đánh thuê dạt từ Smoke War trang bị súng tự động đã chiếm giữ chi nhánh ngân hàng cầm đồ của J Corp, bắt 20 cư dân làm bia đỡ đạn. Hana Association yêu cầu giải quyết nhanh trước giờ đóng cửa.',
+    en: '[J Corp Pawn Vault Hostage Crisis] Deserters from the Smoke War armed with automatic weapons seized a J Corp pawn branch, holding twenty civilians as human shields. Hana demands resolution before close of business.',
+    choices: [
+      {
+        labelVi: 'Đột nhập qua đường ống thông gió, vô hiệu hóa ngòi nổ chất dẻo',
+        labelEn: 'Infiltrate via ventilation shafts, disarming plastic charges',
+        resultVi: 'Bạn bò qua ống thông gió đầy bụi than, cắt dây ngòi nổ chỉ 3 giây trước khi phát nổ rồi đạp cửa xông vào chém gục tên đầu sỏ. Toàn bộ con tin được giải cứu.',
+        resultEn: 'Crawling through soot-lined vents, you clipped the detonation wire with three seconds left, bursting into the vault to cleave the ringleader. All hostages lived.',
+        meritAdd: 28,
+        effects: { health: -20, rep: +24, wealth: +55, sanity: +10 },
+        flagsAdd: ['fixer_g6_hostage_done']
+      },
+      {
+        labelVi: 'Đàm phán trả một phần tiền cọc để đổi lấy tự do cho trẻ em và phụ nữ',
+        labelEn: 'Negotiate partial ransom to extract women and children first',
+        resultVi: 'Bạn giữ chân bọn cướp bằng sự điềm tĩnh phi thường trong khi phân đội Liu bí mật triển khai hỏa trận phía sau. Khi đòn hỏa tiễn nổ ra, thương vong được giảm thiểu tối đa.',
+        resultEn: 'You held the bandits’ attention with ice-cold poise while Liu shock teams deployed behind. When the flame volley cracked, civilian losses were minimized.',
+        meritAdd: 25,
+        effects: { rep: +20, network: +18, wealth: +45 },
+        flagsAdd: ['fixer_g6_hostage_done']
+      }
+    ]
+  },
+  {
+    id: 'fixer_g4_shi_assassination_moral_crossroad',
+    age: [23, 70],
+    major: true,
+    weight: 55,
+    need: { jobs: ['Fixer'], grade: [4, 4] },
+    forbids: ['Distorted', 'fixer_g4_crossroad_done'],
+    vi: '[Lệnh Ám Sát Tranh Cãi của Hiệp hội Shi] Phân hội Shi trao cho bạn một cuộn giấy đỏ: Mục tiêu là một bác sĩ phòng khám từ thiện ở Backstreets, người bị một Wing tố cáo là ăn cắp công thức thuốc chống độc để phát miễn phí cho người nghèo. Phần thưởng cực lớn.',
+    en: '[Controversial Shi Execution Writ] Shi Association tenders a crimson writ: The target is a philanthropic alley medic accused by a Wing of leaking antitoxin formulas to the poor. The bounty is immense.',
+    choices: [
+      {
+        labelVi: 'Thực thi đúng bản hợp đồng lạnh lùng của The City: Chém đầu mục tiêu',
+        labelEn: 'Execute the cold mandate of The City: Decapitate the target',
+        resultVi: 'Lưỡi kiếm hạ xuống trong đêm tối. Bạn mang thủ cấp về nộp cho Shi và nhận trọn vẹn số tiền thưởng kếch xù cùng huy hiệu thâm niên, dù ánh mắt tuyệt vọng của vị bác sĩ sẽ mãi ám ảnh bạn.',
+        resultEn: 'Steel cleaved the dark. You delivered the head to Shi, pocketing the fortune and senior credentials, though the medic’s forgiving gaze would haunt your dreams.',
+        meritAdd: 35,
+        effects: { sanity: -22, rep: +30, wealth: +120 },
+        flagsAdd: ['fixer_g4_crossroad_done'],
+        scarsAdd: ['Ánh mắt vị bác sĩ đêm mưa']
+      },
+      {
+        labelVi: 'Cảnh báo cho bác sĩ trốn sang Outskirts, ngụy tạo một cái xác giả giao nộp',
+        labelEn: 'Warn the medic to flee to the Outskirts, faking a corpse for Shi',
+        resultVi: 'Bạn dùng thi thể của một tên cướp chết trôi làm giả hiện trường và đưa vị bác sĩ vượt tường an toàn. Shi chấp nhận hồ sơ, còn lòng bạn giữ lại được một chút ánh sáng nhân tính hiếm hoi.',
+        resultEn: 'Using a drowned bandit’s corpse, you staged the kill and guided the doctor beyond the walls. Shi closed the file; you preserved a fragile ember of humanity.',
+        meritAdd: 30,
+        effects: { sanity: +15, resonance: +18, network: +20, wealth: +40 },
+        flagsAdd: ['fixer_g4_crossroad_done', 'MedicSavior']
+      }
+    ]
+  },
+  {
+    id: 'fixer_g2_wing_conspiracy',
+    age: [26, 75],
+    major: true,
+    weight: 50,
+    need: { jobs: ['Fixer'], grade: [2, 2] },
+    forbids: ['Distorted', 'fixer_g2_conspiracy_done'],
+    vi: '[Mưu đồ Tối Mật của Wing Cấp Cao · Grade 2] Một giám đốc cấp cao của T Corp thuê bạn điều tra vụ rò rỉ công nghệ lưu trữ thời gian. Manh mối dẫn thẳng tới một văn phòng thanh trừng bí mật của chính Wing đó: Họ dự định hiến tế cả một khu phố Backstreets để sạc đầy cỗ máy thời gian.',
+    en: '[Classified Wing Conspiracy · Grade 2] A senior T Corp executive hires you to probe temporal energy leaks. Clues lead directly to an internal Wing black-ops unit: They plan to harvest an entire Backstreet ward to recharge chronotanks.',
+    choices: [
+      {
+        labelVi: 'Tung toàn bộ bằng chứng mật lên mạng thông tin của Seven Association',
+        labelEn: 'Leak the classified archive onto Seven Association’s global network',
+        resultVi: 'Cơn bão truyền thông làm rung chuyển The City. The Head buộc phải vào cuộc cảnh cáo T Corp, chiến dịch hiến tế bị hủy bỏ. Bạn trở thành anh hùng ngầm của giới Fixer, dù các sát thủ T Corp sẽ không bao giờ tha cho bạn.',
+        resultEn: 'The disclosure rattled the City. The Head issued a formal censure, aborting the harvest. You became an underground legend, marked by T Corp assassins for life.',
+        meritAdd: 50,
+        effects: { rep: +60, network: +40, heat: +35, resonance: +25 },
+        flagsAdd: ['fixer_g2_conspiracy_done', 'WhistleblowerHero']
+      },
+      {
+        labelVi: 'Chấp nhận nhận một thỏi vàng thời gian của T Corp để chôn vùi hồ sơ',
+        labelEn: 'Accept a dense temporal bullion bar from T Corp to burn the records',
+        resultVi: 'Bạn châm lửa đốt tập tài liệu trước mặt viên giám đốc. Đổi lại, tài khoản của bạn nhận một số Ahn khổng lồ và quyền tiếp cận phòng thí nghiệm thời gian cao cấp của T Corp.',
+        resultEn: 'You burned the dossier before the executive. In exchange, an astronomical sum of Ahn and classified T Corp chronotank privileges were wired to your name.',
+        meritAdd: 40,
+        effects: { sanity: -18, wealth: +250, rep: +35 },
+        flagsAdd: ['fixer_g2_conspiracy_done']
+      }
+    ]
+  },
 ];

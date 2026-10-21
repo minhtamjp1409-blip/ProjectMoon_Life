@@ -1,4 +1,13 @@
-import { getNextFixerPromotion, checkColorFixerReadiness } from './careerPipeline';
+import { simulateNpcAutonomousLife } from './narrativeArcEngine.js';
+import { matchesNeed, matchesEventContext, choiceIsAvailable, mergeEffects, isNestResident, isOutsideCity } from './eventConditions.js';
+import {
+  getNextFixerPromotion,
+  checkColorFixerReadiness,
+  getNextFingerPromotion,
+  getNextWingPromotion,
+  getNextWorkshopPromotion
+} from './careerPipeline.js';
+import { rollSeasonMishap } from './fateEngine.js';
 // ============================================================================
 // YEAR PLANNER: each year is a plan of 1–4 moments spread across the seasons.
 // The bar sweeps the year; when it passes a moment's time `t` (0–1) that moment
@@ -19,18 +28,19 @@ import {
   handleSanityBreakdown,
   woundDeath,
   generateFixerContract
-} from './gameEngine';
-import { selectEventWithWeaverAI, updateDramaTension, FATE_OMENS, isEventEligible } from './weaverAI';
-import { CONSEQUENCE_EVENTS } from '../data/eventsChildhood';
-import { REGIONS } from '../data/worldData';
-import { LIFE_DAILIES as DAILIES_FIRST } from '../data/lifeDailies';
-import { LIFE_MINORS as MINORS_FIRST } from '../data/lifeMinors';
-import { LIFE_MINORS_2 } from '../data/lifeMinors2';
-import { LIFE_DAILIES_3, LIFE_MINORS_3 } from '../data/lifeMinors3';
-import { cityArchiveAPI } from '../services/api/cityArchiveAPI';
+} from './gameEngine.js';
+import { selectEventWithWeaverAI, updateDramaTension, FATE_OMENS, isEventEligible } from './weaverAI.js';
+import { CONSEQUENCE_EVENTS } from '../data/eventsChildhood.js';
+import { REGIONS } from '../data/worldData.js';
+import { LIFE_DAILIES as DAILIES_FIRST } from '../data/lifeDailies.js';
+import { LIFE_MINORS as MINORS_FIRST } from '../data/lifeMinors.js';
+import { LIFE_MINORS_2 } from '../data/lifeMinors2.js';
+import { LIFE_DAILIES_3, LIFE_MINORS_3 } from '../data/lifeMinors3.js';
+import { EXPANDED_DAILIES } from '../data/narrative/dailies.js';
+import { cityArchiveAPI } from '../services/api/cityArchiveAPI.js';
 
-const LIFE_MINORS = [...MINORS_FIRST, ...LIFE_MINORS_2, ...LIFE_MINORS_3];
-const LIFE_DAILIES = [...DAILIES_FIRST, ...LIFE_DAILIES_3];
+export const LIFE_MINORS = [...MINORS_FIRST, ...LIFE_MINORS_2, ...LIFE_MINORS_3];
+export const LIFE_DAILIES = [...DAILIES_FIRST, ...LIFE_DAILIES_3, ...EXPANDED_DAILIES];
 import {
   directorWeight,
   markTheme,
@@ -41,7 +51,7 @@ import {
   driftBonds,
   npcActive,
   hasMemory
-} from './director';
+} from './director.js';
 
 export const MINOR_WINDOW_MS = 15000;
 const RECENT_LIMIT = 36;
@@ -56,6 +66,7 @@ const seasonAt = (t) => SEASONS[Math.min(3, Math.floor((t || 0) * 4))];
 const seasonIdxAt = (t) => Math.min(3, Math.floor((t || 0) * 4));
 
 function pickWeighted(list, weightOf, rng) {
+  list = list.filter(x => weightOf(x) > 0);
   const total = list.reduce((s, x) => s + Math.max(0, weightOf(x)), 0);
   if (total <= 0) return null;
   let roll = rng() * total;
@@ -75,36 +86,12 @@ function shuffle(arr, rng) {
   return a;
 }
 
-export const isNest = (char) => char.flags.includes('Nest') || char.flags.includes('Feather');
-export const isOutskirts = (char) => char.flags.includes('Outskirts') || char.regionId === 'OUTSKIRTS';
+export const isNest = isNestResident;
+export const isOutskirts = isOutsideCity;
 export const isBackstreets = (char) => !isNest(char) && !isOutskirts(char);
 
 /** Does an entry's `need` filter match this character right now? */
-export function matchNeed(need, char) {
-  if (!need) return true;
-  if (need.nest && !isNest(char)) return false;
-  if (need.back && !isBackstreets(char)) return false;
-  if (need.out && !isOutskirts(char)) return false;
-  if (need.notNest && isNest(char)) return false;
-  if (need.jobs && !need.jobs.includes(char.job)) return false;
-  if (need.regions && !need.regions.includes(char.regionId)) return false;
-  if (need.flags && !need.flags.every((f) => char.flags.includes(f))) return false;
-  if (need.noFlags && need.noFlags.some((f) => char.flags.includes(f))) return false;
-  if (need.npc && !npcActive(char.npcs?.[need.npc])) return false;
-  // If character is distorted, block standard jobs
-  if (char.flags.includes('Distorted') && need.jobs && !need.jobs.includes('Distortion')) return false;
-  if (need.mem && !hasMemory(char, need.mem)) return false;
-  if (need.noMem && hasMemory(char, need.noMem)) return false;
-  if (need.noNpc && char.npcs?.[need.noNpc]) return false;
-  if (need.grade && !(char.job === 'Fixer' && char.fixerGrade <= need.grade[0] && char.fixerGrade >= need.grade[1])) return false;
-  if (need.stat) {
-    for (const [k, [lo, hi]] of Object.entries(need.stat)) {
-      const v = STAT_KEYS.includes(k) ? char.stats[k] : char[k] || 0;
-      if (v < lo || v > hi) return false;
-    }
-  }
-  return true;
-}
+export const matchNeed = matchesNeed;
 
 const ageOk = (entry, age) => !entry.age || (age >= entry.age[0] && age <= entry.age[1]);
 
@@ -171,7 +158,7 @@ export function splitTitle(text) {
 /* ---------- choosing what happens this year ---------- */
 
 function eligibleDailies(char) {
-  const base = LIFE_DAILIES.filter((d) => ageOk(d, char.age) && matchNeed(d.need, char));
+  const base = LIFE_DAILIES.filter((d) => matchesEventContext(d, char));
   const unpicked = base.filter((d) => !(char.recent || []).includes(d.id));
   if (unpicked.length > 0) return unpicked;
   // Fallback: sort all matching by least recently seen to cycle smoothly
@@ -181,7 +168,7 @@ function eligibleDailies(char) {
 
 function eligibleMinors(char) {
   const base = LIFE_MINORS.filter((m) => {
-    if (!ageOk(m, char.age) || !matchNeed(m.need, char)) return false;
+    if (!matchesEventContext(m, char)) return false;
     if (m.once && (char.seenEvents || []).includes(m.id)) return false;
     return true;
   });
@@ -201,12 +188,27 @@ function majorIsDue(char, rng) {
     const nextPromo = getNextFixerPromotion(char);
     if (nextPromo && nextPromo.isEligible) return true;
   }
-  if ((char.age === 18 || (char.age > 18 && char.job === 'Child')) && !(char.seenEvents || []).includes('ad_career_crossroad_18')) return true;
+  // If Syndicate is eligible for next finger promotion, schedule major
+  if (char.job === 'Syndicate' && !char.flags.includes('Distorted')) {
+    const nextPromo = getNextFingerPromotion(char);
+    if (nextPromo && nextPromo.isEligible) return true;
+  }
+  // If Wing Employee is eligible for next wing promotion, schedule major
+  if (char.job === 'Wing Employee' && !char.flags.includes('Distorted')) {
+    const nextPromo = getNextWingPromotion(char);
+    if (nextPromo && nextPromo.isEligible) return true;
+  }
+  // If Workshop Craftsman is eligible for next workshop promotion, schedule major
+  if (char.job === 'Workshop Craftsman' && !char.flags.includes('Distorted')) {
+    const nextPromo = getNextWorkshopPromotion(char);
+    if (nextPromo && nextPromo.isEligible) return true;
+  }
+  if ((char.age >= 18 && char.job === 'Child') && !(char.seenEvents || []).includes('ad_career_crossroad_18')) return true;
   if (char.job === 'Syndicate' && !char.finger && !(char.seenEvents || []).includes('syn_choose_finger_allegiance')) return true;
   if ((char.taboo || 0) >= 3) return true;
   if ((w.pendingThreads || []).some((th) => th.kind !== 'minor' && !th.fulfilled && char.age >= th.triggerAge)) return true;
   if (char.age >= 18 && ((char.stats.sanity <= 5 && rng() < 0.12) || ((char.resonance || 0) >= 90 && rng() < 0.15)) && !(char.seenEvents || []).includes('ego_carmen_crossroad') && !char.flags.includes('EGOAwakened') && !char.flags.includes('Distorted')) return true;
-  if (char.job === 'Fixer' && !char.flags.includes('Distorted') && char.fixerGrade === 1 && (char.merit || 0) >= 150 && ((char.stats?.rep ?? char.rep) || 0) >= 68 && !char.flags.includes('ColorFixer') && !(char.seenEvents || []).includes('hana_color_ascension_trial')) return true;
+  if (char.job === 'Fixer' && !char.flags.includes('Distorted') && checkColorFixerReadiness(char).ready && !char.flags.includes('ColorFixer') && !(char.seenEvents || []).includes('hana_color_ascension_trial')) return true;
   if (char.job === 'Syndicate' && (char.fingerRank || 0) >= 2 && (char.merit || 0) >= 75) return true;
   if (char.job === 'Wing Employee' && (char.wingRank || 0) >= 1 && (char.merit || 0) >= 65 && !(char.seenEvents || []).includes('wing_singularity_classified_audit')) return true;
   if (char.job === 'Workshop Craftsman' && (char.workshopRank || 0) >= 1 && (char.merit || 0) >= 65 && !(char.seenEvents || []).includes('workshop_legendary_forge_trial')) return true;
@@ -229,7 +231,7 @@ export function planYear(charState, rng) {
     // Check if it matches a minor event
     const minorDef = LIFE_MINORS.find((m) => m.id === th.eventId);
     if (minorDef) {
-      const ok = ageOk(minorDef, age) && matchNeed(minorDef.need, char) && !(minorDef.once && (char.seenEvents || []).includes(minorDef.id));
+      const ok = matchesEventContext(minorDef, char) && !(minorDef.once && (char.seenEvents || []).includes(minorDef.id));
       if (ok && !scheduledKey.some((it) => it.id === minorDef.id)) {
         scheduledKey.push({ kind: 'minor', id: minorDef.id, thread: th.id, isCausal: true });
         logDecision(char, minorDef, { vi: th.reasonVi || 'Hậu quả đến hạn', en: th.reasonEn || 'A consequence comes due', w: 99 }, 'minor');
@@ -239,7 +241,7 @@ export function planYear(charState, rng) {
 
     // Check if it matches a major story consequence
     const storyDef = CONSEQUENCE_EVENTS.find((e) => e.id === th.eventId) || ALL_STORY_EVENTS.find((e) => e.id === th.eventId);
-    if (storyDef) {
+    if (storyDef && isEventEligible(storyDef, char, { scripted: true })) {
       if (!scheduledKey.some((it) => it.forcedEventId === storyDef.id)) {
         scheduledKey.push({ kind: 'major', forcedEventId: storyDef.id, thread: th.id, isCausal: true });
         logDecision(char, storyDef, { vi: th.reasonVi || 'Quả báo đến hạn', en: th.reasonEn || 'Karma comes due', w: 99 }, 'major');
@@ -255,19 +257,20 @@ export function planYear(charState, rng) {
 
   // Living Parent Support & Historic Fall Milestone
   if (char.npcs?.parent?.alive) {
-    if (char.age < char.npcs.parent.deathAgeInChildLife) {
+    if (char.age < char.npcs.parent.deathAgeInChildLife && char.parentSupportAge !== char.age) {
+      char.parentSupportAge = char.age;
       char.stats.wealth = Math.min(100, (char.stats.wealth || 0) + 2);
       char.stats.rep = Math.min(100, (char.stats.rep || 0) + 1);
     } else if (char.age >= char.npcs.parent.deathAgeInChildLife && !(char.seenEvents || []).includes('csq_parent_historic_passing')) {
       if (!scheduledKey.some((it) => it.forcedEventId === 'csq_parent_historic_passing')) {
         scheduledKey.unshift({ kind: 'major', forcedEventId: 'csq_parent_historic_passing' });
       }
-      char.npcs.parent.alive = false;
+
     }
   }
 
   // Mandatory Age 18 Milestone or unassigned adult must select career immediately
-  if ((char.age === 18 || (char.age > 18 && char.job === 'Child')) && !(char.seenEvents || []).includes('ad_career_crossroad_18')) {
+  if ((char.age >= 18 && char.job === 'Child') && !(char.seenEvents || []).includes('ad_career_crossroad_18')) {
     if (!scheduledKey.some((it) => it.forcedEventId === 'ad_career_crossroad_18')) {
       scheduledKey.push({ kind: 'major', forcedEventId: 'ad_career_crossroad_18' });
     }
@@ -312,6 +315,7 @@ export function planYear(charState, rng) {
 
   // Distribute key moments to appropriate dramatic seasons:
   for (const it of scheduledKey) {
+    if (slots.every(Boolean)) break;
     if (it.kind === 'major') {
       // Majors feel climactic in Autumn (2) or Winter (3)
       const s = slots[3] === null ? 3 : (slots[2] === null ? 2 : (slots[1] === null ? 1 : 0));
@@ -330,6 +334,17 @@ export function planYear(charState, rng) {
   for (const it of pickedMinors) {
     const s = slots.findIndex((sl) => sl === null);
     if (s >= 0) slots[s] = it;
+  }
+
+  // Seasonal Mishap check (Fate Engine: accidental hazard, illness, violence, wear)
+  if (char.age >= 1) {
+    const mishap = rollSeasonMishap(char, rng);
+    if (mishap) {
+      const targetSlot = slots[3] === null ? 3 : (slots[2] === null ? 2 : slots.findIndex((sl) => sl === null));
+      if (targetSlot >= 0) {
+        slots[targetSlot] = { kind: 'mishap', mishap };
+      }
+    }
   }
 
   // Fill remaining slots with Dailies (Storytelling lore slices or resource living events)
@@ -353,7 +368,7 @@ export function planYear(charState, rng) {
         const alreadyPickedIds = slots.filter(Boolean).map((sl) => sl.id);
         let available = poolDailies.filter((d) => !alreadyPickedIds.includes(d.id));
         if (available.length === 0) {
-          const allAgeDailies = LIFE_DAILIES.filter((d) => ageOk(d, char.age) && matchNeed(d.need, char));
+          const allAgeDailies = LIFE_DAILIES.filter((d) => matchesEventContext(d, char));
           available = allAgeDailies.filter((d) => !alreadyPickedIds.includes(d.id));
         }
         const pick = pickWeighted(available, weightOf(char), rng) || available[0];
@@ -533,23 +548,40 @@ export function runPlanItem(charState, item, rng) {
   char.seasonIdx = sIdx;
   const seasonObj = SEASONS[sIdx];
 
+  if (item.kind === 'mishap') {
+    const m = item.mishap;
+    if (!m) return char;
+    char.recentMishaps = [...(char.recentMishaps || []).slice(-4), m.id];
+    const fx = {};
+    if (m.dmg) fx.health = -m.dmg;
+    if (m.san) fx.sanity = -m.san;
+    if (m.ahn) fx.wealth = -m.ahn;
+    const deltas = applyFx(char, fx);
+    pushLog(char, { key: m.id, type: 'danger', vi: interpolateText(m.vi, char), en: interpolateText(m.en, char), deltas, season: seasonObj }, item.t);
+
+    if (m.fatal) {
+      applyFatalOrCompanionSave(char, m.deathVi, m.deathEn, rng);
+    }
+    return settle(char, item.t, rng);
+  }
+
   if (item.kind === 'daily') {
     const def = LIFE_DAILIES.find((d) => d.id === item.id);
-    if (!def) return char;
+    if (!def || !matchesEventContext(def, char)) return char;
     const deltas = applyFx(char, def.fx);
     applyChoiceExtras(char, [def], deltas, rng);
     markTheme(char, def);
     const isPureLore = !def.fx || Object.keys(def.fx).length === 0;
     const logType = def.tone || (isPureLore ? 'lore' : 'daily');
     pushLog(char, { key: def.id, type: logType, vi: interpolateText(def.vi, char), en: interpolateText(def.en, char), deltas, season: seasonObj }, item.t);
-    return settle(char, item.t);
+    return settle(char, item.t, rng);
   }
 
   if (item.kind === 'minor') {
     const def = LIFE_MINORS.find((m) => m.id === item.id);
-    if (!def) return char;
+    if (!def || !matchesEventContext(def, char)) return char;
     markTheme(char, def);
-    closeThreads(char, def.id);
+
     char.pendingMinor = {
       id: def.id,
       t: item.t,
@@ -568,7 +600,7 @@ export function runPlanItem(charState, item, rng) {
     if (item.forcedEventId) {
       const candidate = CONSEQUENCE_EVENTS.find((e) => e.id === item.forcedEventId) ||
               ALL_STORY_EVENTS.find((e) => e.id === item.forcedEventId);
-      if (candidate && isEventEligible(candidate, char)) {
+      if (candidate && isEventEligible(candidate, char, { scripted: true })) {
         event = candidate;
         if (item.thread) {
           closeThreads(char, item.forcedEventId);
@@ -638,6 +670,8 @@ export function resolveMinor(charState, idx, rng) {
   const char = cloneChar(charState);
   const prompt = char.pendingMinor;
   if (!prompt) return char;
+  const currentDef = LIFE_MINORS.find(m => m.id === prompt.id);
+  if (!matchesEventContext(currentDef, char)) { char.pendingMinor = null; return char; }
   char.pendingMinor = null;
   char.seenEvents = [...char.seenEvents, prompt.id];
   closeThreads(char, prompt.id);
@@ -645,16 +679,13 @@ export function resolveMinor(charState, idx, rng) {
   const def = LIFE_MINORS.find((m) => m.id === prompt.id);
   const ignore = def?.ignore || { vi: 'Để nó trôi qua', en: 'Let it pass', rvi: 'Bạn không làm gì cả. Chuyện cũng qua.', ren: 'You did nothing. It passed.' };
   const choice = idx >= 0 ? def?.choices[idx] : ignore;
-  if (!choice) return char;
+  if (!choiceIsAvailable(choice, char)) return cloneChar(charState);
 
   let outcome = choice;
   if (Array.isArray(choice.out) && choice.out.length) {
     outcome = pickWeighted(choice.out, (o) => o.w ?? 1, rng) || choice;
   }
-  const deltas = applyFx(char, {
-    ...(choice.fx || choice.effects || {}),
-    ...(outcome === choice ? {} : (outcome.fx || outcome.effects || {}))
-  });
+  const deltas = applyFx(char, mergeEffects(choice, outcome));
   [...(choice.flags || []), ...(outcome === choice ? [] : outcome.flags || [])].forEach((f) => {
     if (!char.flags.includes(f)) char.flags.push(f);
   });
@@ -722,9 +753,33 @@ export function endYear(charState, rng) {
     if (v) fx[k] = (fx[k] || 0) + v;
   };
 
-  if (char.age >= 18) {
-    const cost = nest ? 4 : isOutskirts(char) ? 1 : 2;
-    const net = JOB_INCOME(char) - cost + Math.round(rng() * 2 - 1);
+  if (char.age >= 18 && !char.flags.includes('Distorted')) {
+    let livingCost = nest ? 5 : isOutskirts(char) ? 2 : 3;
+
+    // Head Weapons & Firearms Tax: Strictly enforced by The Head & Tres Association
+    const hasFirearms = (char.inventory || []).some(i => i.id?.includes('revolver') || i.id?.includes('logic')) || char.flags.includes('Firearms');
+    if (hasFirearms) {
+      livingCost += 3;
+      vi.push('Thuế đạn dược và phí đăng ký vũ khí nóng của The Head khấu trừ 3 Ahn ngân quỹ.');
+      en.push('The Head’s firearms ammunition excise and verification fee drained 3 Ahn.');
+    }
+
+    // Workshop Master Weapon Maintenance
+    const hasWorkshopGear = (char.inventory || []).some(i => i.id?.startsWith('wpn_') || i.id?.startsWith('arm_')) || char.craftWeapon;
+    if (hasWorkshopGear && rng() < 0.6) {
+      livingCost += 2;
+      vi.push('Phí bảo trì mài bén lưỡi đao và thay dầu cơ khí tại Workshop tiêu tốn 2 Ahn.');
+      en.push('Workshop sharpening and lubrication maintenance costs took 2 Ahn.');
+    }
+
+    // Full-Body Cybernetic Maintenance
+    if (char.flags.includes('FullBodyProsthetic')) {
+      livingCost += 3;
+      vi.push('Dung dịch làm mát tủy máy và linh kiện thay thế Full-Body Prosthetic ngốn 3 Ahn.');
+      en.push('Full-Body Prosthetic coolant flushes and servo maintenance consumed 3 Ahn.');
+    }
+
+    const net = JOB_INCOME(char) - livingCost + Math.round(rng() * 2 - 1);
     add('wealth', net);
     if (net > 0) {
       vi.push('Thu nhập năm nay vượt mức chi tiêu, bạn tích lũy thêm được chút vốn liếng.');
@@ -753,7 +808,7 @@ export function endYear(charState, rng) {
   }
 
   // Healthcare & Wounds recovery vs Street clinic expenses
-  if (char.stats.health < 60) {
+  if (char.stats.health < 60 && !char.flags.includes('Distorted')) {
     if (char.flags.includes('KCorpAmpoule')) {
       add('health', 4);
       vi.push('Dược chất huyết thanh K Corp liên tục tuần hoàn, phục hồi nhanh chóng các mô thịt bị rách nát.');
@@ -776,7 +831,7 @@ export function endYear(charState, rng) {
 
   // Mental Sanity recovery vs Tavern comfort
   const bond = ['spouse', 'partner', 'friend', 'mentor', 'child'].some((k) => char.npcs?.[k] && !char.npcs[k].deceased && (char.npcs[k].bond || 0) >= 50);
-  if (char.stats.sanity < 55) {
+  if (char.stats.sanity < 55 && !char.flags.includes('Distorted')) {
     if (bond) {
       add('sanity', 3);
       vi.push('Sự kề cận và sẻ chia của người thân yêu giúp tâm trí bạn giữ được sự tỉnh táo trước áp lực điên cuồng của Thành Phố.');
@@ -826,7 +881,24 @@ export function endYear(charState, rng) {
   if (deltas.some((d) => d.k !== 'heat')) {
     const textVi = vi.length ? vi.join(' ') : 'Một năm nữa lặng lẽ trôi qua dưới màn đêm không bao giờ tắt của The City.';
     const textEn = en.length ? en.join(' ') : 'Another year quietly drifted by beneath the never-dimming lights of the City.';
-    pushLog(
+    // Autonomous Living Companions Drama
+  const npcAutonomyLogs = simulateNpcAutonomousLife(char, rng);
+  if (npcAutonomyLogs && npcAutonomyLogs.length > 0) {
+    for (const nlog of npcAutonomyLogs) {
+      pushLog(
+        char,
+        {
+          key: 'npc_autonomy',
+          type: 'story',
+          vi: nlog.vi,
+          en: nlog.en
+        },
+        0.98
+      );
+    }
+  }
+
+  pushLog(
       char,
       {
         key: 'year_end',
@@ -840,7 +912,7 @@ export function endYear(charState, rng) {
   }
 
   // Hard knocks the City deals on its own
-  if (char.age >= 18 && char.stats.wealth <= 0 && !nest) {
+  if (char.age >= 18 && char.stats.wealth <= 0 && !nest && !char.flags.includes('Distorted')) {
     const d = applyFx(char, { health: -20, sanity: -12, wealth: 14, resonance: 10 });
     if (!char.scars.includes('Vết mổ trả nợ')) char.scars.push('Vết mổ trả nợ');
     pushLog(

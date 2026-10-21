@@ -84,13 +84,136 @@ export const DISTORTION_PATH_EVENTS = [
     en: '[Apex Cataclysm: Descent of the Color Fixer] A solitary cloaked figure strides through your domain’s mist. The radiating aura is so chilling and absolute that warped space freezes solid. A Color Fixer, dispatched in person by the Hana Directorate, arrives to terminate your existence.',
     choices: [
       {
-        labelVi: 'Bùng nổ toàn bộ sức mạnh dị thể trong trận huyết chiến sinh tử',
-        labelEn: 'Unleash your entire distorted essence in a cataclysmic last stand',
-        resultVi: 'Trận chiến xé toạc bầu trời đêm The City. Bạn đánh gãy một phần vũ khí của Color Fixer trước khi trái tim dị thể của bạn ngừng đập. Tên tuổi của bạn sẽ mãi mãi được ghi vào hồ sơ tuyệt mật của Hana Association như một Ngôi sao Đen tối.',
-        resultEn: 'The duel tore open the nocturnal firmament. You shattered part of the Color’s relic before your warped core finally shattered. Your name is etched into Hana’s classified archives as a Sovereign Dark Star.',
+        labelVi: 'Bùng nổ khúc ca diệt vong: Chiến đấu đến hơi thở cuối cùng vì sự tự do của bản ngã',
+        labelEn: 'Unleash your apocalyptic dirge: Fight to your dying breath for sovereign ego',
+        resultVi: 'Trận chiến xé toạc bầu trời đêm The City. Bạn đánh gãy một phần vũ khí của Color Fixer trước khi trái tim dị thể của bạn ngừng đập. Tên tuổi của bạn sẽ mãi mãi được ghi vào hồ sơ tuyệt mật của Hana Association như một Ngôi sao Đen tối bất tử.',
+        resultEn: 'The duel tore open the nocturnal firmament. You shattered part of the Color’s relic before your warped core finally shattered. Your name is etched into Hana’s classified archives as an immortal Sovereign Dark Star.',
         flagsAdd: ['distort_color_clash_done'],
-        effects: { health: -100 } // Heroic tragic climax death
+        effects: { health: -100 } // Tragic heroic climax death
+      },
+      {
+        labelVi: 'Cộng hưởng nghịch đảo cực hạn: Giáng một đòn xé rách không gian rồi thoái lui vào bóng tối',
+        labelEn: 'Extreme inverted resonance: Unleash a void-rending blow and withdraw into the abyss',
+        resultVi: 'Sóng xung kích dị thể va chạm với tuyệt kỹ của Color Fixer, tạo ra một hố đen nuốt chửng cả quảng trường. Bị thương nặng nhưng bạn đẩy lùi được Color Fixer và biến mất vào cõi mộng của Carmen. Bạn trở thành một Huyền thoại Dị thể Sống sót (Apex Calamity) mà toàn The City phải khiếp sợ.',
+        resultEn: 'Distorted shockwaves clashed with the Color’s apex art, carving a spatial sinkhole through the plaza. Gravely wounded yet triumphant, you repelled the Color Fixer and dissolved into Carmen’s dreamscape as a living Apex Calamity.',
+        flagsAdd: ['distort_color_clash_done', 'ApexDistortionSurvivor', 'StarOfTheCityEntity'],
+        meritAdd: 60,
+        effects: { health: -55, rep: +100, resonance: +50, heat: +80 }
       }
     ]
-  }
+  },
+  {
+    id: 'distort_gathering_twisted_flock',
+    age: [21, 95],
+    major: true,
+    weight: 65,
+    requires: ['Distorted', 'DistortionStage2'],
+    forbids: ['distort_flock_done'],
+    vi: '[Tín Đồ Của Nỗi Thống Khổ · Giáo Phái Biến Dị] Xung quanh lãnh địa của bạn, hàng trăm con người tuyệt vọng từ Backstreets — những kẻ bị Wing ruồng bỏ, bị Syndicate siết nợ — quỳ rạp dưới chân bạn. Họ tôn sùng cơ thể biến dị và tiếng gầm của bạn như thánh ca của một vị thần mới.',
+    en: '[Disciples of Anguish · Cult of the Warped] Around your domain, hundreds of destitute alley dwellers — cast out by Wings, hounded by Syndicates — prostrate themselves before you. They worship your warped form and tortured shrieks as the gospel of a new messiah.',
+    choices: [
+      {
+        labelVi: 'Thu nhận họ vào vòng tay biến dị, ban phát một phần sức mạnh của Carmen',
+        labelEn: 'Embrace them into your fold, imparting a fraction of Carmen’s sovereign flame',
+        resultVi: 'Cả giáo phái đồng loạt thức tỉnh những biến đổi kỳ dị trên da thịt. Họ trở thành những người hầu cận cuồng nhiệt bảo vệ lãnh địa của bạn trước mọi đợt thanh trừng từ các Văn phòng Fixer.',
+        resultEn: 'The entire congregation sprouted aberrant bio-armature. They became ferocious zealots safeguarding your sanctum against encroaching Fixer squads.',
+        meritAdd: 30,
+        flagsAdd: ['distort_flock_done', 'DistortionCultLeader'],
+        effects: { rep: +45, resonance: +35, sanity: -15, network: +30 }
+      },
+      {
+        labelVi: 'Gào thét xua đuổi họ: "Hãy giữ lấy nhân tính của các ngươi, đừng đi vào con đường này!"',
+        labelEn: 'Howl to drive them away: "Cling to your humanity, do not tread this path of ruin!"',
+        resultVi: 'Tiếng thét dữ dội của bạn làm đám đông hoảng sợ bỏ chạy. Bạn chấp nhận cô độc tuyệt đối trong bóng tối để bảo vệ họ khỏi sự tha hóa. Trái tim bạn vẫn còn lại một đóa hoa nhân tính ấm áp.',
+        resultEn: 'Your terrifying shriek scattered the flock in panic. You chose utter solitude to shield them from the fall. In the deepest chamber of your aberration, a warm flower of human conscience bloomed.',
+        meritAdd: 25,
+        flagsAdd: ['distort_flock_done'],
+        effects: { sanity: +20, resonance: +25, heat: -10 }
+      }
+    ]
+  },
+  {
+    id: 'distort_head_claw_interception',
+    age: [24, 99],
+    major: true,
+    weight: 75,
+    requires: ['Distorted', 'DistortionNightmare'],
+    forbids: ['distort_claw_clash_done'],
+    vi: '[Móng Vuốt Phán Quyết Của The Head · Serum W Enforcer] Một vết rách không gian màu lục thẫm xé toạc bầu trời đêm: Một Claw (Móng Vuốt của A Corp) giáng xuống lãnh địa của bạn. Với ba ống tiêm Serum K, R, và W lấp lánh trên găng tay móng vuốt kim loại, sinh vật chấp pháp tối thượng này cất giọng trầm đục: "Sinh vật biến dị, ngươi đã làm nhiễu loạn trật tự The City. Lệnh thanh tẩy bắt đầu."',
+    en: '[Claw of The Head · Serum W Enforcer] An emerald spatial tear cleaves the night sky: A Claw of A Corp touches down within your domain. Wielding tri-colored injectors of Serum K, R, and W upon colossal talons, the apex enforcer rumbles: "Aberrant creature, you have disrupted City balance. Liquidation commences."',
+    choices: [
+      {
+        labelVi: 'Vung móng vuốt dị thể nghênh chiến Serum W trong một trận quyết đấu long trời',
+        labelEn: 'Clash talons against Serum W in a titan duel that shatters the earth',
+        resultVi: 'Móng vuốt của bạn xé rách lớp giáp của Claw ngay khi mũi tiêm Serum R đâm xuyên qua vai bạn. Hai bên lùi lại sau một đòn va chạm hủy diệt. Nhận thấy sự ngoan cường phi thường của bạn, Claw kích hoạt dịch chuyển thoái lui để báo cáo cho A Corp.',
+        resultEn: 'Your talons gouged the Claw’s plating just as his Serum R injector impaled your shoulder. Both retreated from the cataclysmic impact. Recognizing your terrifying resilience, the Claw warped back to file an A Corp report.',
+        flagsAdd: ['distort_claw_clash_done', 'ClawSurvivor'],
+        meritAdd: 55,
+        effects: { health: -45, rep: +80, resonance: +45, heat: +50 }
+      },
+      {
+        labelVi: 'Dẫn dụ Claw vào mê cung lãnh địa, kích nổ bẫy không gian để tẩu thoát',
+        labelEn: 'Bait the Claw into your spatial labyrinth, detonating terrain traps to slip away',
+        resultVi: 'Mê cung biến dị sụp đổ chôn vùi lối đi của Claw trong vài giây quý giá. Bạn biến mất vào dòng chảy ngầm của The City, chứng minh trí tuệ vượt trội ngay cả trong hình hài quái vật.',
+        resultEn: 'Your warped domain collapsed, entombing the Claw’s vector for precious seconds. You melted into the City’s subterranean currents, proving cunning intellect even in monstrous flesh.',
+        flagsAdd: ['distort_claw_clash_done'],
+        meritAdd: 40,
+        effects: { sanity: +15, rep: +50, heat: +30, resonance: +30 }
+      }
+    ]
+  },
+
+  {
+    id: 'distort_former_companion_encounter',
+    age: [20, 80],
+    major: true,
+    weight: 65,
+    need: { jobs: ['Distortion'] },
+    forbids: ['distort_companion_done'],
+    vi: '[Cuộc Gặp Gỡ Đẫm Lệ Dưới Lốt Quái Vật] Trong một con hẻm hoang tàn, một bóng người quen thuộc chặn trước mặt bạn: Đó là người bạn cũ từ thuở nhỏ. Nhìn thấy cơ thể quái dị đầy gai nhọn và đôi mắt biến đổi của bạn, người ấy run rẩy giơ thanh kiếm cùn lên, nước mắt lưng tròng: "Có phải bạn không? Tại sao bạn lại trở thành thứ quái vật gớm ghiếc này?"',
+    en: '[Tearful Encounter in Aberrant Flesh] In a derelict alley, a familiar silhouette blocks your path: Your childhood friend. Beholding your thorned carapace and dilated eyes, they raise a trembling blade, weeping: "Is that really you? Why did you let yourself become this horror?"',
+    choices: [
+      {
+        labelVi: 'Kìm nén cơn khát máu, quay lưng bỏ chạy vào màn đêm để bảo vệ bạn mình',
+        labelEn: 'Suppress predatory thirst, fleeing into the dark to spare them',
+        resultVi: 'Bạn rít lên một tiếng đau đớn, cào móng vuốt vào vách tường đá rồi lẩn sâu vào bóng tối Backstreets. Một giọt nước mắt nóng hổi lăn trên khuôn mặt méo mó của bạn. Bạn vẫn giữ được một mảnh hồn người.',
+        resultEn: 'Howling in anguish, you raked your talons across the masonry and dissolved into the pitch. A single warm tear rolled down your chitinous cheek. A fragment of your soul remained human.',
+        effects: { sanity: +12, resonance: +20, heat: +15 },
+        meritAdd: 20,
+        flagsAdd: ['distort_companion_done'],
+        recordsAdd: ['distortion_spared_companion']
+      },
+      {
+        labelVi: 'Buông thả bản năng săn mồi cuồng nộ, lao tới nuốt chửng ký ức quá khứ',
+        labelEn: 'Unleash feral predatory fury, devouring the past without mercy',
+        resultVi: 'Máu tươi nhuộm đỏ bức tường hẻm. Khi cơn cuồng sát đi qua, bạn đứng trên thi thể người bạn cũ. Không còn ai trên đời này nhớ bạn từng là ai. Sức mạnh của bạn tăng vọt tột cùng.',
+        resultEn: 'Crimson washed the alley walls. When the frenzy abated, you stood over their carcass. None remained alive who recalled your mortal name. Your monstrous calamity peaked.',
+        effects: { health: +35, sanity: -35, rep: +50, heat: +40 },
+        meritAdd: 30,
+        flagsAdd: ['distort_companion_done'],
+        scarsAdd: ['Bàn tay vấy máu người bạn cũ']
+      }
+    ]
+  },
+  {
+    id: 'distort_star_of_city_rampage',
+    age: [22, 90],
+    major: true,
+    weight: 70,
+    need: { jobs: ['Distortion'] },
+    forbids: ['distort_star_rampage_done'],
+    vi: '[Cơn Thịnh Nộ Star of the City · Biến Dị Tối Thượng] Sự méo mó trong tâm trí bạn đạt tới đỉnh điểm. Cả một khu phố xung quanh biến đổi thành sân khấu của riêng bạn: Đất đá uốn lượn, bầu trời rực đỏ như mắt Carmen. Ba đội Fixer Grade 1 cùng dàn pháo kích của Hana bao vây phong tỏa toàn bộ khu vực.',
+    en: '[Star of the City Calamity · Apex Distortion] Your psychic corrosion reaches singularity. The entire ward warps into your personal theatre: Pavement bends, skies scorch crimson like Carmen’s gaze. Three Grade 1 strike cells and Hana artillery quarantine the perimeter.',
+    choices: [
+      {
+        labelVi: 'Gầm vang tiếng thét hủy diệt, nghênh chiến toàn bộ Fixer của Hana',
+        labelEn: 'Roar in cataclysmic fury, waging war against the entire City',
+        resultVi: 'Trận chiến long trời lở đất san phẳng năm dãy nhà. Bạn chém gãy hàng chục vũ khí Workshop và đẩy lùi đợt vây hãm của Hana. Tên quái vật của bạn chính thức được khắc lên danh sách Star of the City.',
+        resultEn: 'A titanic clash flattened five city blocks. Snapping dozens of Workshop arms, you broke Hana’s containment grid. Your moniker was etched into the Star of the City archives.',
+        effects: { health: -30, rep: +100, heat: +50, resonance: +40 },
+        meritAdd: 50,
+        flagsAdd: ['distort_star_rampage_done', 'StarOfTheCityEntity']
+      }
+    ]
+  },
 ];

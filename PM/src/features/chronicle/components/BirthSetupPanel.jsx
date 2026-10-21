@@ -1,5 +1,5 @@
-import React, { useRef, useState } from 'react';
-import { Dices, GitBranch, Play, ChevronDown, ArrowUpRight, Search, BookOpen, MapPin } from 'lucide-react';
+import React, { useRef, useState, useEffect } from 'react';
+import { Dices, GitBranch, Play, ChevronDown, ArrowUpRight, Search, BookOpen, MapPin, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Modal } from 'antd';
 import { useGameStore } from '../../../store/gameStore';
@@ -8,6 +8,8 @@ import { REGIONS, CODEX_RECORDS } from '../../../data/worldData';
 import { FATE_OMENS } from '../../../engine/weaverAI';
 import { useT } from '../../../i18n';
 import { RegionMark } from '../../../components/RegionMark';
+import { audioEngine } from '../../../engine/audioEngine';
+import CityLoadingOverlay from './CityLoadingOverlay';
 
 const CAREERS = [
   [
@@ -32,64 +34,119 @@ const CAREERS = [
   ]
 ];
 
-function DistrictDial({ selected, onSelect, t }) {
+function DistrictDial({ selected, onSelect, isSpinning, rotation, displayRegion, onTriggerSpin, t }) {
   const sectors = REGIONS.filter((r) => r.id !== 'OUTSKIRTS');
   const point = (radius, angle) => [180 + radius * Math.cos(angle), 180 + radius * Math.sin(angle)];
-  const region = REGIONS.find((r) => r.id === selected);
+  const region = displayRegion || REGIONS.find((r) => r.id === selected);
+
   return (
-    <div className="district-dial">
-      <svg viewBox="0 0 360 360" aria-label={t('Chọn một District', 'Choose a District')}>
-        <circle cx="180" cy="180" r="172" className="dial-outer-ring" />
-        <circle cx="180" cy="180" r="122" className="dial-mid-ring" />
-        {sectors.map((r, i) => {
-          const a = (i * Math.PI * 2) / sectors.length - Math.PI / 2;
-          const b = ((i + 1) * Math.PI * 2) / sectors.length - Math.PI / 2;
-          const p = [
-            point(130, a + 0.012),
-            point(164, a + 0.012),
-            point(164, b - 0.012),
-            point(130, b - 0.012)
-          ];
-          const label = point(147, (a + b) / 2);
-          return (
-            <g
-              key={r.id}
-              className={selected === r.id ? 'is-selected' : ''}
-              role="button"
-              tabIndex={0}
-              aria-label={r.nameEn}
-              aria-pressed={selected === r.id}
-              onClick={() => onSelect(r.id)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  onSelect(r.id);
-                }
-              }}
-            >
-              <path d={`M ${p[0]} L ${p[1]} A 164 164 0 0 1 ${p[2]} L ${p[3]} A 130 130 0 0 0 ${p[0]} Z`} />
-              <text x={label[0]} y={label[1]} textAnchor="middle" dominantBaseline="middle">
-                {r.id}
-              </text>
-              <title>{r.nameEn}</title>
-            </g>
-          );
-        })}
-        <circle cx="180" cy="180" r="110" className="dial-inner" />
-        <text x="180" y="162" className="dial-name" textAnchor="middle">
-          {region ? (region.id === 'OUTSKIRTS' ? 'Outskirts' : `${region.id} Corp`) : 'The City'}
-        </text>
-        <text x="180" y="192" className="dial-caption" textAnchor="middle">
-          {region
-            ? region.ward
-              ? `District ${region.ward}`
-              : 'Outskirts'
-            : t('26 District · một kiếp sống', '26 Districts · one life')}
-        </text>
-      </svg>
-      <span className="dial-instruction">
-        {t('Chọn một ký tự để đặt nơi sinh', 'Choose a letter to set your birthplace')}
-      </span>
+    <div className="district-dial-container">
+      <div className={`district-dial ${isSpinning ? 'is-spinning' : ''}`}>
+        <svg viewBox="0 0 360 360" aria-label={t('Chọn một District', 'Choose a District')}>
+          <defs>
+            <filter id="dialNeedleGlow" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="#ffd700" floodOpacity="0.6" />
+            </filter>
+            <filter id="sectorGlow" x="-30%" y="-30%" width="160%" height="160%">
+              <feDropShadow dx="0" dy="0" stdDeviation="5" floodColor="#ffd700" floodOpacity="0.8" />
+            </filter>
+          </defs>
+
+          {/* Static outer ring & mid ring */}
+          <circle cx="180" cy="180" r="172" className="dial-outer-ring" />
+          <circle cx="180" cy="180" r="122" className="dial-mid-ring" />
+
+          {/* Rotating wheel group */}
+          <g
+            className="dial-spinner-group"
+            style={{
+              transform: `rotate(${rotation}deg)`,
+              transformOrigin: '180px 180px',
+              transition: isSpinning
+                ? 'transform 2.2s cubic-bezier(0.12, 0.8, 0.32, 1)'
+                : 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)'
+            }}
+          >
+            {sectors.map((r, i) => {
+              const a = (i * Math.PI * 2) / sectors.length - Math.PI / 2;
+              const b = ((i + 1) * Math.PI * 2) / sectors.length - Math.PI / 2;
+              const p = [
+                point(130, a + 0.012),
+                point(164, a + 0.012),
+                point(164, b - 0.012),
+                point(130, b - 0.012)
+              ];
+              const label = point(147, (a + b) / 2);
+              const isSelected = selected === r.id;
+
+              return (
+                <g
+                  key={r.id}
+                  className={`dial-sector ${isSelected ? 'is-selected' : ''}`}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={r.nameEn}
+                  aria-pressed={isSelected}
+                  onClick={() => !isSpinning && onSelect(r.id)}
+                  onKeyDown={(e) => {
+                    if (!isSpinning && (e.key === 'Enter' || e.key === ' ')) {
+                      e.preventDefault();
+                      onSelect(r.id);
+                    }
+                  }}
+                >
+                  <path
+                    d={`M ${p[0]} L ${p[1]} A 164 164 0 0 1 ${p[2]} L ${p[3]} A 130 130 0 0 0 ${p[0]} Z`}
+                    filter={isSelected ? 'url(#sectorGlow)' : undefined}
+                  />
+                  <text x={label[0]} y={label[1]} textAnchor="middle" dominantBaseline="middle">
+                    {r.id}
+                  </text>
+                  <title>{r.nameEn}</title>
+                </g>
+              );
+            })}
+          </g>
+
+          {/* Inner Static Hub */}
+          <circle cx="180" cy="180" r="110" className="dial-inner" />
+
+          {/* Golden Pointer Needle at 12 o'clock */}
+          <g className="dial-pointer-needle" filter="url(#dialNeedleGlow)">
+            <polygon points="180,24 172,6 188,6" fill="#ffd700" stroke="#b8860b" strokeWidth="1" />
+            <circle cx="180" cy="8" r="2.5" fill="#fff" />
+          </g>
+
+          {/* Center District Status */}
+          <text x="180" y="162" className="dial-name" textAnchor="middle">
+            {region ? (region.id === 'OUTSKIRTS' ? 'Outskirts' : `${region.id} Corp`) : 'The City'}
+          </text>
+          <text x="180" y="192" className="dial-caption" textAnchor="middle">
+            {region
+              ? region.ward
+                ? `District ${region.ward}`
+                : 'Outskirts'
+              : t('26 District · một kiếp sống', '26 Districts · one life')}
+          </text>
+        </svg>
+
+        <span className="dial-instruction">
+          {isSpinning
+            ? t('Vận mệnh The City đang xoay vần…', 'The City wheel is turning…')
+            : t('Chọn ký tự hoặc quay ngẫu nhiên nơi sinh', 'Choose a letter or spin random birthplace')}
+        </span>
+      </div>
+
+      <button
+        type="button"
+        className="dial-spin-btn"
+        disabled={isSpinning}
+        onClick={onTriggerSpin}
+        title={t('Quay ngẫu nhiên District', 'Spin random district')}
+      >
+        <Dices size={16} className={isSpinning ? 'animate-spin' : ''} />
+        <span>{t('Quay ngẫu nhiên District', 'Spin random District')}</span>
+      </button>
     </div>
   );
 }
@@ -105,18 +162,118 @@ export const BirthSetupPanel = () => {
   const globalCodex = useGameStore((s) => s.globalCodex);
   const savedRun = useGameStore((s) => s.savedRun);
   const { setConfigField, startLife, resumeRun, abandonRun, discardPendingLegacy } = useGameStore.getState();
-  const [spinning, setSpinning] = useState(false);
+    const [spinning, setSpinning] = useState(false);
   const [search, setSearch] = useState('');
+  const [wheelRotation, setWheelRotation] = useState(0);
+  const [isWheelSpinning, setIsWheelSpinning] = useState(false);
+  const [displayRegion, setDisplayRegion] = useState(null);
+  const [loadingActive, setLoadingActive] = useState(false);
+  const [targetLaunchParams, setTargetLaunchParams] = useState(null);
+
   const mapRef = useRef(null);
   const launchTimer = useRef(null);
-  React.useEffect(() => () => clearTimeout(launchTimer.current), []);
+  const spinIntervalTimer = useRef(null);
+  const spinTimeoutTimer = useRef(null);
+
+  useEffect(() => () => {
+    clearTimeout(launchTimer.current);
+    clearTimeout(spinTimeoutTimer.current);
+    clearInterval(spinIntervalTimer.current);
+  }, []);
+
+  const sectors = REGIONS.filter((r) => r.id !== 'OUTSKIRTS');
+
+  // Interactive Roulette Spin Mechanism
+  const spinWheel = (targetRegionId = null, onFinishCallback = null) => {
+    if (isWheelSpinning) return;
+    setIsWheelSpinning(true);
+
+    let targetIdx = -1;
+    if (targetRegionId && targetRegionId !== 'RANDOM') {
+      targetIdx = sectors.findIndex((r) => r.id === targetRegionId);
+    }
+    if (targetIdx === -1) {
+      targetIdx = Math.floor(Math.random() * sectors.length);
+    }
+    const chosen = sectors[targetIdx] || sectors[0];
+
+    // Angular calculation to align target sector with top pointer (270 deg)
+    const targetAngle = 360 * 5 - (targetIdx + 0.5) * (360 / sectors.length);
+    const delta = ((targetAngle - (wheelRotation % 360)) % 360 + 360) % 360;
+    const newRotation = wheelRotation + 1800 + delta;
+    setWheelRotation(newRotation);
+
+    // Audio clicks that decelerate as the wheel slows down
+    const tickDelays = [40, 50, 60, 75, 95, 120, 150, 190, 240, 310, 400, 530, 700, 950, 1300];
+    let cumulative = 0;
+    tickDelays.forEach((delay) => {
+      cumulative += delay;
+      if (cumulative < 2100) {
+        setTimeout(() => {
+          try {
+            audioEngine.playClick();
+          } catch {}
+          const randomSector = sectors[Math.floor(Math.random() * sectors.length)];
+          setDisplayRegion(randomSector);
+        }, cumulative);
+      }
+    });
+
+    spinTimeoutTimer.current = setTimeout(() => {
+      setIsWheelSpinning(false);
+      setDisplayRegion(chosen);
+      setRegion(chosen.id);
+      try {
+        audioEngine.playBuff();
+      } catch {}
+
+      if (onFinishCallback) {
+        setTimeout(() => {
+          onFinishCallback(chosen);
+        }, 300);
+      }
+    }, 2200);
+  };
+
+  const handleManualSpin = () => {
+    spinWheel();
+  };
+
   const launch = (inherit = false, age = 0) => {
-    if (spinning) return;
-    setSpinning(true);
-    launchTimer.current = setTimeout(() => {
-      setSpinning(false);
-      startLife(inherit, age);
-    }, 650);
+    if (spinning || isWheelSpinning) return;
+    setTargetLaunchParams({ inherit, age });
+
+    // If district is not selected or RANDOM, spin the wheel to decide it first!
+    if (!selectedRegion || selectedRegion === 'RANDOM') {
+      spinWheel(null, (chosen) => {
+        setLoadingActive(true);
+      });
+    } else {
+      // User selected a specific district: do a quick lock-in spin (0.5s)
+      const targetIdx = sectors.findIndex((r) => r.id === selectedRegion);
+      if (targetIdx >= 0) {
+        const targetAngle = 360 * 2 - (targetIdx + 0.5) * (360 / sectors.length);
+        const delta = ((targetAngle - (wheelRotation % 360)) % 360 + 360) % 360;
+        setWheelRotation(wheelRotation + 720 + delta);
+      }
+      try {
+        audioEngine.playClick();
+      } catch {}
+
+      setTimeout(() => {
+        try {
+          audioEngine.playBuff();
+        } catch {}
+        setLoadingActive(true);
+      }, 550);
+    }
+  };
+
+  const handleLoadingComplete = () => {
+    setLoadingActive(false);
+    const inherit = targetLaunchParams?.inherit ?? false;
+    const age = targetLaunchParams?.age ?? 0;
+    startLife(inherit, age);
   };
   const setRegion = (id) => setConfigField('selectedRegion', id);
   const region = REGIONS.find((r) => r.id === selectedRegion);
@@ -150,6 +307,13 @@ export const BirthSetupPanel = () => {
 
   return (
     <div className="city-home" lang={lang === 'bi' ? 'vi' : lang}>
+      <CityLoadingOverlay
+        active={loadingActive}
+        region={region}
+        charName={customName || t('Cư dân The City', 'City Citizen')}
+        seed={customSeed}
+        onComplete={handleLoadingComplete}
+      />
       <section className="home-opening" aria-labelledby="home-title">
         <div className="opening-story">
           <p className="opening-context">
@@ -167,7 +331,22 @@ export const BirthSetupPanel = () => {
             )}
           </p>
           <div className="opening-atlas">
-            <DistrictDial selected={selectedRegion} onSelect={setRegion} t={t} />
+            <DistrictDial
+              selected={selectedRegion}
+              onSelect={(id) => {
+                const targetIdx = sectors.findIndex((r) => r.id === id);
+                if (targetIdx >= 0) {
+                  const targetAngle = 360 - (targetIdx + 0.5) * (360 / sectors.length);
+                  setWheelRotation(wheelRotation + 360 + ((targetAngle - (wheelRotation % 360) + 360) % 360));
+                }
+                setRegion(id);
+              }}
+              isSpinning={isWheelSpinning}
+              rotation={wheelRotation}
+              displayRegion={displayRegion}
+              onTriggerSpin={handleManualSpin}
+              t={t}
+            />
             <div className="atlas-note">
               <MapPin size={16} aria-hidden="true" />
               <div>

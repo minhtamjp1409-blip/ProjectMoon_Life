@@ -1,3 +1,4 @@
+import { npcIsActive } from './eventConditions.js';
 /**
  * Project Moon Universe - Career Progression, Distortion Lifecycle & Inheritance Engine
  * Enforces strict, canonical milestones:
@@ -7,8 +8,8 @@
  * - Inventory & Survival Tech (K Corp Ampoule auto-revive).
  */
 
-import { SEASONS } from './gameEngine';
-import { getItemById } from '../data/itemsData';
+import { SEASONS } from './gameEngine.js';
+import { getItemById } from '../data/itemsData.js';
 
 export const FIXER_LADDER = [
   {
@@ -123,7 +124,7 @@ export function checkColorFixerReadiness(char) {
   const curRep = (char.stats?.rep ?? char.rep) || 0;
   const meritOk = (char.merit || 0) >= 200;
   const repOk = curRep >= 95;
-  const egoOrResonance = char.flags.includes('EGOAwakened') || (char.resonance || 0) >= 50;
+  const egoOrResonance = true; // E.G.O is not a prerequisite for a Color designation.
 
   return {
     ready: meritOk && repOk && egoOrResonance,
@@ -132,6 +133,110 @@ export function checkColorFixerReadiness(char) {
     egoOrResonance,
     targetMerit: 200,
     targetRep: 95
+  };
+}
+
+export const FINGER_LADDERS = {
+  Thumb: [
+    { rank: 1, meritReq: 26, repReq: 16, eventId: 'syn_thumb_promo_capo', titleVi: 'Thăng cấp Capo (The Thumb)', titleEn: 'Thumb Capo Promotion Trial' },
+    { rank: 2, meritReq: 52, repReq: 32, eventId: 'syn_thumb_promo_sottocapo', titleVi: 'Khảo thí Sottocapo (The Thumb)', titleEn: 'Thumb Sottocapo Promotion Trial' },
+    { rank: 3, meritReq: 78, repReq: 48, eventId: 'syn_thumb_underboss_purge', titleVi: 'Đại Lễ Tuyên Thệ Underboss (The Thumb)', titleEn: 'Thumb Underboss Pinnacle Trial' }
+  ],
+  Index: [
+    { rank: 1, meritReq: 26, repReq: 16, eventId: 'syn_index_promo_messenger', titleVi: 'Sứ Giả Chỉ Lệnh (Index Messenger Trial)', titleEn: 'Index Messenger Promotion Trial' },
+    { rank: 2, meritReq: 52, repReq: 32, eventId: 'syn_index_promo_proxy', titleVi: 'Đại Kiếm Proxy (Index Proxy Trial)', titleEn: 'Index Proxy Promotion Trial' },
+    { rank: 3, meritReq: 78, repReq: 48, eventId: 'syn_index_weaver_prescript', titleVi: 'Ý Chỉ Thần Dệt (Index Weaver Pinnacle)', titleEn: 'Index Weaver Pinnacle Trial' }
+  ],
+  Middle: [
+    { rank: 1, meritReq: 26, repReq: 16, eventId: 'syn_middle_promo_big_sibling', titleVi: 'Lễ Khắc Xích Vàng: Big Sibling (The Middle)', titleEn: 'Middle Big Sibling Promotion Trial' },
+    { rank: 2, meritReq: 52, repReq: 32, eventId: 'syn_middle_promo_great_elder', titleVi: 'Đại Trưởng Lão (Middle Great Elder)', titleEn: 'Middle Great Elder Promotion Trial' },
+    { rank: 3, meritReq: 78, repReq: 48, eventId: 'syn_middle_great_brother_vendetta', titleVi: 'Đại Huyết Nợ: Great Brother/Sister (The Middle)', titleEn: 'Middle Great Sibling Pinnacle Trial' }
+  ],
+  Ring: [
+    { rank: 1, meritReq: 26, repReq: 16, eventId: 'syn_ring_promo_docent', titleVi: 'Triển Lãm Giải Phẫu: Docent (The Ring)', titleEn: 'Ring Docent Promotion Trial' },
+    { rank: 2, meritReq: 52, repReq: 32, eventId: 'syn_ring_promo_maestro', titleVi: 'Đại Nhạc Trưởng: Maestro (The Ring)', titleEn: 'Ring Maestro Promotion Trial' },
+    { rank: 3, meritReq: 78, repReq: 48, eventId: 'syn_ring_curator_monument', titleVi: 'Đại Quản Trưởng: Grand Curator (The Ring)', titleEn: 'Ring Grand Curator Pinnacle Trial' }
+  ],
+  Pinky: [
+    { rank: 1, meritReq: 26, repReq: 16, eventId: 'syn_pinky_promo_blade', titleVi: 'Lưỡi Đao Lập Thệ: Sworn Blade (The Pinky)', titleEn: 'Pinky Sworn Blade Promotion Trial' },
+    { rank: 2, meritReq: 52, repReq: 32, eventId: 'syn_pinky_star_blade_pinnacle', titleVi: 'Thiên Tinh: Star of the Sky (The Pinky)', titleEn: 'Pinky Star of the Sky Promotion Trial' },
+    { rank: 3, meritReq: 78, repReq: 48, eventId: 'syn_pinky_promo_sovereign', titleVi: 'Chúa Tể Ngón Út: Sovereign (The Pinky)', titleEn: 'Pinky Sovereign Pinnacle Trial' }
+  ]
+};
+
+export function getNextFingerPromotion(char) {
+  if (char.job !== 'Syndicate' || char.flags.includes('Distorted') || !char.finger) return null;
+  const ladder = FINGER_LADDERS[char.finger];
+  if (!ladder) return null;
+  const curRank = char.fingerRank || 0;
+  if (curRank >= 3) return null;
+
+  const nextStep = ladder.find((step) => step.rank === curRank + 1);
+  if (!nextStep) return null;
+
+  const curRep = (char.stats?.rep ?? char.rep) || 0;
+  const isEligible = (char.merit || 0) >= nextStep.meritReq && curRep >= nextStep.repReq;
+
+  return {
+    ...nextStep,
+    finger: char.finger,
+    isEligible,
+    currentMerit: char.merit || 0,
+    currentRep: curRep
+  };
+}
+
+export const WING_LADDER_PROMOTIONS = [
+  { rank: 1, meritReq: 25, wealthReq: 18, networkReq: 14, eventId: 'wing_promo_feather_r1', titleVi: 'Bổ Nhiệm Feather Chính Thức (Nest Feather)', titleEn: 'Official Feather Commission' },
+  { rank: 2, meritReq: 65, wealthReq: 45, networkReq: 32, eventId: 'wing_promo_specialist_r2', titleVi: 'Trưởng Phòng Ban Singularity (Section Chief)', titleEn: 'Section Chief / Singularity Specialist' },
+  { rank: 3, meritReq: 125, wealthReq: 85, networkReq: 60, eventId: 'wing_singularity_classified_audit', titleVi: 'Đại Hội Đồng Quản Trị (Senior Executive Audit)', titleEn: 'Senior Executive Board Audit' }
+];
+
+export function getNextWingPromotion(char) {
+  if (char.job !== 'Wing Employee' || char.flags.includes('Distorted')) return null;
+  const curRank = char.wingRank || 0;
+  if (curRank >= 3) return null;
+
+  const nextStep = WING_LADDER_PROMOTIONS.find((step) => step.rank === curRank + 1);
+  if (!nextStep) return null;
+
+  const curWealth = (char.stats?.wealth ?? char.wealth) || 0;
+  const curNet = (char.stats?.network ?? char.network) || 0;
+  const isEligible = (char.merit || 0) >= nextStep.meritReq && curWealth >= nextStep.wealthReq && curNet >= nextStep.networkReq;
+
+  return {
+    ...nextStep,
+    isEligible,
+    currentMerit: char.merit || 0,
+    currentWealth: curWealth,
+    currentNetwork: curNet
+  };
+}
+
+export const WORKSHOP_LADDER_PROMOTIONS = [
+  { rank: 1, meritReq: 25, wealthReq: 16, resoReq: 10, eventId: 'ws_promo_journeyman_r1', titleVi: 'Khảo Hạch Thợ Chính Tres (Certified Artisan)', titleEn: 'Tres Certified Artisan Proofmark Trial' },
+  { rank: 2, meritReq: 65, wealthReq: 40, resoReq: 24, eventId: 'ws_promo_master_r2', titleVi: 'Khai Mở Xưởng Độc Quyền: Master Craftsman', titleEn: 'Atelier Founder / Master Craftsman Trial' },
+  { rank: 3, meritReq: 125, wealthReq: 75, resoReq: 40, eventId: 'workshop_legendary_forge_trial', titleVi: 'Đại Lò Rèn Thần Binh (Legendary Innovator)', titleEn: 'Legendary Innovator Masterpiece Trial' }
+];
+
+export function getNextWorkshopPromotion(char) {
+  if (char.job !== 'Workshop Craftsman' || char.flags.includes('Distorted')) return null;
+  const curRank = char.workshopRank || 0;
+  if (curRank >= 3) return null;
+
+  const nextStep = WORKSHOP_LADDER_PROMOTIONS.find((step) => step.rank === curRank + 1);
+  if (!nextStep) return null;
+
+  const curWealth = (char.stats?.wealth ?? char.wealth) || 0;
+  const curReso = char.resonance || 0;
+  const isEligible = (char.merit || 0) >= nextStep.meritReq && curWealth >= nextStep.wealthReq && curReso >= nextStep.resoReq;
+
+  return {
+    ...nextStep,
+    isEligible,
+    currentMerit: char.merit || 0,
+    currentWealth: curWealth,
+    currentResonance: curReso
   };
 }
 
@@ -194,8 +299,8 @@ export function tryItemAutoRevive(char) {
  * Calculates biological inheritance vs protégé vs scavenger successor.
  */
 export function determineSuccessorType(char) {
-  const aliveChild = char.npcs?.child && !char.npcs.child.deceased && char.npcs.child.status !== 'dead';
-  if (aliveChild || char.flags.includes('HasChild')) {
+  const aliveChild = npcIsActive(char.npcs?.child);
+  if (aliveChild) {
     return {
       type: 'child',
       titleVi: 'Huyết tử Thừa kế',
@@ -205,9 +310,7 @@ export function determineSuccessorType(char) {
     };
   }
 
-  const activeProtégé =
-    (char.npcs?.partner && !char.npcs.partner.deceased && char.npcs.partner.status !== 'dead') ||
-    (char.npcs?.mentor && !char.npcs.mentor.deceased && char.npcs.mentor.status !== 'dead');
+  const activeProtégé = npcIsActive(char.npcs?.apprentice);
 
   if (activeProtégé) {
     return {

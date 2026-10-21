@@ -85,6 +85,41 @@ export function DeltaChip({ d, i = 0 }) {
       </span>
     );
   }
+  if (d.k === 'job') {
+    return (
+      <span className="delta is-bond" style={style}>
+        {t('Con đường: ', 'Path: ')} {d.v}
+      </span>
+    );
+  }
+  if (d.k === 'fixerGrade') {
+    return (
+      <span className="delta is-rare" style={style}>
+        {d.v === 0 ? t('Thăng cấp: Color Fixer', 'Promoted: Color Fixer') : t(`Thăng cấp: Fixer Grade ${d.v}`, `Promoted: Fixer Grade ${d.v}`)}
+      </span>
+    );
+  }
+  if (d.k === 'fingerRank') {
+    return (
+      <span className="delta is-rare" style={style}>
+        {t(`Cấp bậc Ngón Tay: Bậc ${d.v}`, `Finger Rank: Tier ${d.v}`)}
+      </span>
+    );
+  }
+  if (d.k === 'wingRank') {
+    return (
+      <span className="delta is-rare" style={style}>
+        {t(`Cấp bậc Tập đoàn: Bậc ${d.v}`, `Wing Rank: Tier ${d.v}`)}
+      </span>
+    );
+  }
+  if (d.k === 'workshopRank') {
+    return (
+      <span className="delta is-rare" style={style}>
+        {t(`Cấp bậc Xưởng Workshop: Bậc ${d.v}`, `Workshop Rank: Tier ${d.v}`)}
+      </span>
+    );
+  }
   if (d.k === 'seed') {
     return (
       <span className="delta is-rare" style={style}>
