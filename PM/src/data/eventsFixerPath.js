@@ -1176,5 +1176,207 @@ export const FIXER_PATH_EVENTS = [
         effects: { health: +16, sanity: +12 }
       }
     ]
+  },
+
+  // =========================================================================
+  // FIXER CAREER DIVERSITY: ASSOCIATIONS, DIPLOMACY & INDEPENDENT OFFICES
+  // =========================================================================
+  {
+    id: 'fixer_cinq_duel_of_honor',
+    age: [19, 75],
+    major: true,
+    weight: 48,
+    need: { jobs: ['Fixer'] },
+    forbids: ['Distorted'],
+    vi: '[Quyết Đấu Danh Dự Cinq Association · Hiệp Hội Đấu Kiếm Số 5] Hai gia tộc thương nhân quý tộc Nest tranh chấp một hợp đồng triệu Ahn và thuê Cinq Association phân xử bằng một trận giác đấu danh dự. Vị kiếm sĩ Cinq Section 4 đề nghị bạn bước lên võ đài làm Đấu Sĩ Đại Diện hoặc hỗ trợ giám định quy tắc thi đấu.',
+    en: '[Cinq Association Duel of Honor · The Fifth Association] Two Nest merchant dynasties dispute a million-Ahn contract, commissioning Cinq Association to arbitrate via a duel of honor. A Section 4 duelist invites you to step onto the dueling strip as a Champion or serve as adjudicating Second.',
+    choices: [
+      {
+        labelVi: 'Rút liễu kiếm bước lên võ đài, thi triển kiếm kỹ tốc độ cao',
+        labelEn: 'Draw your rapier and step onto the strip, matching blinding thrusts',
+        resultVi: 'Lưỡi kiếm của bạn lướt đi tựa gió thoảng, đâm thủng bao kiếm đối phương chỉ trong ba hiệp mà không gây tổn hại tính mạng. Trưởng đoàn Cinq cúi chào tán thưởng kỹ năng quý phái của bạn, thanh toán khoản thù lao khổng lồ.',
+        resultEn: 'Your rapier moved like whistling wind, disarming the challenger in three flawless passes. The Cinq Captain bowed to your aristocratic precision, paying a lavish bounty.',
+        meritAdd: 22,
+        effects: { rep: +24, wealth: +45, sanity: +8, resonance: +12 }
+      },
+      {
+        labelVi: 'Đảm nhiệm vai trò Trọng tài Giám định, đảm bảo trận đấu tuân thủ nghiêm ngặt quy tắc',
+        labelEn: 'Act as the Adjudicating Second, enforcing strict dueling treaties',
+        resultVi: 'Sự am hiểu luật lệ và con mắt quan sát sắc bén của bạn giúp hóa giải một âm mưu dùng độc gian lận. Cả hai gia tộc đều kính nể và tặng bạn huy hiệu danh dự.',
+        resultEn: 'Your sharp gaze unmasked a covert poisoning attempt before blood was drawn. Both factions commended your impartiality and presented an honorary crest.',
+        meritAdd: 18,
+        effects: { rep: +18, wealth: +30, network: +15 }
+      }
+    ]
+  },
+  {
+    id: 'fixer_oufi_underworld_pact',
+    age: [20, 75],
+    major: true,
+    weight: 46,
+    need: { jobs: ['Fixer'] },
+    forbids: ['Distorted'],
+    vi: '[Hiệp Hội Oufi · Hòa Giải Khế Ước Máu Backstreets] Hiệp hội Oufi — tổ chức chuyên giám sát hợp đồng và công chứng các hiệp ước sinh tử tại District 19 — cử bạn đi thẩm định một bản khế ước giữa một xưởng rèn lớn và một băng đảng Syndicate. Bất kỳ bên nào vi phạm sẽ phải trả giá bằng cả mạng sống.',
+    en: '[Oufi Association · Backstreet Blood Oath Inquest] The Oufi Association — custodians of binding treaties and lethal contracts in District 19 — dispatches you to verify a pact between a major workshop and a syndicate family. Any breach triggers absolute execution.',
+    choices: [
+      {
+        labelVi: 'Dùng uy tín và đao pháp răn đe, buộc cả hai bên ký cam kết hòa bình vĩnh viễn',
+        labelEn: 'Use martial leverage to force both parties into a binding non-aggression seal',
+        resultVi: 'Trước khí thế áp đảo của bạn, cả ông chủ xưởng rèn lẫn đại diện syndicate đều đặt tay lên dấu mộc Oufi. Khế ước hoàn tất êm thấm, đem lại phần thưởng hoa hồng hậu hĩnh.',
+        resultEn: 'Intimidated by your composure, both smith master and syndicate captain pressed blood upon the Oufi seal. Peace held, netting you an opulent commission.',
+        meritAdd: 20,
+        effects: { rep: +22, wealth: +40, network: +18 }
+      },
+      {
+        labelVi: 'Vạch trần điều khoản ngầm mờ ám có hại cho xưởng rèn, bảo vệ người lao động',
+        labelEn: 'Expose the syndicate’s predatory loophole, shielding the craftsmen',
+        resultVi: 'Bạn xé toạc mưu đồ lừa đảo của đám côn đồ ngay tại chỗ. Xưởng rèn biết ơn bạn vô cùng, tặng bạn những bộ phận giáp chống đạn tốt nhất.',
+        resultEn: 'You ripped their fraudulent clauses to shreds on the spot. Indebted, the forge fitted your gear with their finest kinetic composite plates.',
+        meritAdd: 16,
+        effects: { rep: +16, health: +15, wealth: +20, heat: +8 }
+      }
+    ]
+  },
+  {
+    id: 'fixer_dieci_monastery_archive',
+    age: [20, 75],
+    major: true,
+    weight: 46,
+    need: { jobs: ['Fixer'] },
+    forbids: ['Distorted'],
+    vi: '[Hiệp Hội Dieci · Khai Quật Hầm Sách Cổ District 4] Các học giả mang đại kinh thư của Hiệp hội Dieci Section 4 mời bạn cùng khám phá một kho lưu trữ bí mật thời tiền Chiến Tranh Khói (Smoke War) nằm sâu dưới lòng đất. Những tri thức nặng nề nơi đây đòi hỏi thể chất và tinh thần thép để chịu tải.',
+    en: '[Dieci Association · Sunken Archive Excavation] Heavy-tome scholars from Dieci Association Section 4 hire you to delve into a pre-Smoke War subterranean vault in District 4. The dense knowledge buried here exerts staggering mental and physical gravity.',
+    choices: [
+      {
+        labelVi: 'Hộ tống các học sĩ Dieci qua bãi sụp đổ, cùng lĩnh hội tri thức cổ xưa',
+        labelEn: 'Escort Dieci scholars across subterranean cave-ins, assimilating ancient lore',
+        resultVi: 'Đỡ những khối đá đổ và giải mã các cuộn giấy da cổ, bạn mở rộng tầm hiểu biết về các hiện tượng dị thường của The City. Dieci trao thưởng cho bạn một văn bằng nghiên cứu cùng số Ahn hậu hĩnh.',
+        resultEn: 'Holding off debris and deciphering parchment, your comprehension of City singularities broadened immensely. Dieci rewarded you with certified scholar honors and generous coin.',
+        meritAdd: 24,
+        effects: { sanity: +22, rep: +20, wealth: +38, resonance: +16 }
+      },
+      {
+        labelVi: 'Thu thập riêng các cuộn bản đồ hầm ngục quý giá để bán cho Seven Association',
+        labelEn: 'Pocket rare subterranean survey maps to broker with Seven Association',
+        resultVi: 'Các thám tử Seven trả một số tiền lớn cho các sơ đồ bí mật này, giúp túi tiền của bạn dày lên trông thấy.',
+        resultEn: 'Seven intelligence brokers paid handsomely for the classified blueprints, substantially padding your coffers.',
+        meritAdd: 14,
+        effects: { wealth: +58, rep: +12, sanity: -4 }
+      }
+    ]
+  },
+  {
+    id: 'fixer_molar_amphibious_salvage',
+    age: [20, 72],
+    major: true,
+    weight: 44,
+    need: { jobs: ['Fixer'] },
+    forbids: ['Distorted'],
+    vi: '[Molar Boatworks · Trục Vớt Phế Liệu Kênh Độc District 21] Xưởng tàu Molar Boatworks nhận hợp đồng nạo vét một xà lan chở hàng chìm tại kênh rạch ô nhiễm của District 21. Bùn lầy axit đặc quánh và lũ cá đột biến rình rập dưới mặt nước tối đen.',
+    en: '[Molar Boatworks · Toxic Canal Salvage] Molar Boatworks takes on a salvage contract for a sunken barge in District 21’s foul industrial canal. Caustic sludge and mutant aquatic fauna lurk beneath the opaque surface.',
+    choices: [
+      {
+        labelVi: 'Mặc đồ lặn áp lực, cầm móc sắt nhảy xuống đáy kênh chiến đấu mở đường',
+        labelEn: 'Don pressurized diving gear and leap into the sludge, cleaving mutants',
+        resultVi: 'Lưỡi đao của bạn chém tan tác bầy thủy quái đột biến trong làn nước đục ngầu, đưa dây cáp tời vào vị trí an toàn. Thợ thuyền Molar vỗ vai bạn khen ngợi hết lời và chia phần chiến lợi phẩm trục vớt.',
+        resultEn: 'Your blade carved through toxic beasts in pitch darkness, securing the winch cables. Molar shipwrights cheered your grit and split a rich cut of the salvaged cargo.',
+        meritAdd: 22,
+        effects: { health: -14, wealth: +50, rep: +18, sanity: +6 }
+      },
+      {
+        labelVi: 'Điều khiển súng lao móc trên boong tàu yểm trợ từ xa',
+        labelEn: 'Man the deck harpoon batteries, providing ranged defensive fire',
+        resultVi: 'Những mũi lao thép bắn chính xác găm chặt lũ quái vật vào bờ kè. Toàn bộ hàng hóa được trục vớt nguyên vẹn, đảm bảo an toàn tuyệt đối cho bạn.',
+        resultEn: 'Accurate harpoon volleys pinned encroaching abominations to the seawall. The haul was recovered without a scratch on you.',
+        meritAdd: 18,
+        effects: { wealth: +35, rep: +14, sanity: +4 }
+      }
+    ]
+  },
+  {
+    id: 'fixer_devzat_railway_convoy',
+    age: [20, 75],
+    major: true,
+    weight: 45,
+    need: { jobs: ['Fixer'] },
+    forbids: ['Distorted'],
+    vi: '[Hiệp Hội Devzat · Hộ Tống Đoàn Tàu Thiết Giáp Vượt Hẻm] Hiệp hội Devzat — bậc thầy súng hỏa mai và nỏ nặng — thuê bạn cùng hộ tống một đoàn tàu thiết giáp chở quặng nhiên liệu cao cấp chạy qua ranh giới Backstreets đang bị Syndicate vây hãm.',
+    en: '[Devzat Association · Armored Rail Escort] The Devzat Association — masters of heavy arbalests and kinetic firearms — hires you to escort an armored locomotive hauling hyper-refined fuel across syndicate-besieged Backstreets.',
+    choices: [
+      {
+        labelVi: 'Leo lên nóc toa tàu, dùng hỏa lực và vũ khí cận chiến đẩy lùi từng đợt tập kích',
+        labelEn: 'Climb atop the railcars, repelling boarding skirmishers hand-to-hand',
+        resultVi: 'Tiếng súng nổ rền trời hòa cùng tia lửa cơ khí. Bạn quét sạch toán cướp nhảy tàu, giữ đoàn tàu lao vút an toàn về ga đích. Devzat tặng bạn một khẩu súng hỏa mai gia cố thượng hạng.',
+        resultEn: 'Deafening gunfire met sparking blades. You threw every raider off the rushing carriages, pulling into the terminal in triumph. Devzat rewarded you with an arbalest sidearm.',
+        meritAdd: 25,
+        effects: { health: -15, rep: +28, wealth: +55, resonance: +14 }
+      },
+      {
+        labelVi: 'Cố thủ trong toa máy điều phối, sửa chữa kịp thời các đoạn phanh bị bắn hỏng',
+        labelEn: 'Hold the engine cabin, emergency-patching sabotaged brake conduits',
+        resultVi: 'Sự nhanh trí cơ học của bạn ngăn chặn một vụ trật bánh thảm khốc. Đoàn tàu cập bến an toàn và công ty đường sắt trả thêm tiền thưởng cho bạn.',
+        resultEn: 'Your rapid kinematic repairs averted a catastrophic derailment. The rail authority awarded a substantial safety bonus.',
+        meritAdd: 20,
+        effects: { wealth: +42, rep: +18, sanity: +5 }
+      }
+    ]
+  },
+  {
+    id: 'fixer_independent_office_founding',
+    age: [23, 75],
+    major: true,
+    weight: 55,
+    need: { jobs: ['Fixer'] },
+    forbids: ['Distorted', 'OwnFixerOffice'],
+    vi: '[Khai Mở Văn Phòng Fixer Độc Lập] Sau nhiều năm tích lũy danh tiếng và tiền bạc, bạn đứng trước cơ hội treo tấm biển hiệu Văn Phòng Fixer của riêng mình tại một góc phố sầm uất. Có văn phòng riêng đồng nghĩa với việc trực tiếp nhận hợp đồng lớn và thu nhận Fixer cấp dưới, nhưng cũng phải tự chịu trách nhiệm trước Hana Association.',
+    en: '[Chartering an Independent Fixer Office] Amassing hard-won reputation and Ahn, you stand ready to hang your own brass office plaque upon a bustling district boulevard. An independent Office unlocks lucrative direct contracts and apprentices, but answers directly to Hana scrutiny.',
+    choices: [
+      {
+        labelVi: 'Chi 35 Ahn thuê mặt bằng và xin giấy phép Hana thành lập Văn Phòng Độc Lập',
+        labelEn: 'Spend 35 Ahn to lease premises and charter your independent Office from Hana',
+        resultVi: 'Tấm biển đồng khắc tên bạn sáng lấp lánh dưới ánh đèn neon. Các thân chủ nườm nượp tìm đến đặt hợp đồng, danh tiếng nghề nghiệp của bạn bước lên một tầm cao mới!',
+        resultEn: 'The polished brass plaque bearing your name gleamed under neon lights. High-paying clients flooded your parlor; your career prestige reached unprecedented heights!',
+        costAhn: 35,
+        meritAdd: 35,
+        flagsAdd: ['OwnFixerOffice'],
+        recordsAdd: ['founded_own_office'],
+        effects: { wealth: -35, rep: +40, network: +25, sanity: +15 }
+      },
+      {
+        labelVi: 'Tiếp tục làm Fixer tự do cơ động, không bị ràng buộc bởi văn phòng và giấy phép',
+        labelEn: 'Remain a nomadic freelance Fixer, unbound by paperwork and leasehold taxes',
+        resultVi: 'Bạn giữ lại số tiền dành dụm. Tự do tung hoành giữa các quận mà không sợ bị đối thủ đánh bom trụ sở cũng là một lựa chọn sáng suốt.',
+        resultEn: 'You retained your Ahn. Unfettered mobility across districts without fear of office bombings was its own tactical wisdom.',
+        effects: { sanity: +8, wealth: +15 }
+      }
+    ]
+  },
+  {
+    id: 'fixer_client_betrayal_ambush',
+    age: [22, 72],
+    major: true,
+    weight: 42,
+    need: { jobs: ['Fixer'] },
+    forbids: ['Distorted'],
+    vi: '[Bẫy Phản Bội Của Thân Chủ] Sau khi bạn hoàn thành nhiệm vụ thu hồi một chiếc vali bí mật, vị thân chủ giàu có không những không trả tiền mà còn thuê một toán sát thủ bịt mặt phục kích bạn tại nhà kho bỏ hoang hòng diệt khẩu.',
+    en: '[The Client’s Venomous Ambush] Having retrieved a classified lockbox, your affluent client refuses payment, dispatching a hit squad of masked mercenaries to silence you in an abandoned warehouse.',
+    choices: [
+      {
+        labelVi: 'Tung toàn lực hạ gục toàn bộ toán sát thủ, truy lùng kẻ phản bội bắt bồi thường gấp ba',
+        labelEn: 'Decimate the hit squad and hunt down the traitorous client for triple recompense',
+        resultVi: 'Không một tên sát thủ nào còn đứng vững. Bạn đạp tung cửa biệt thự của tên thân chủ gian ác, kề đao vào cổ buộc hắn giao nộp toàn bộ két sắt Ahn và van xin tha mạng.',
+        resultEn: 'Not a single assassin remained upright. Kicking open the client’s manor doors, your blade at his throat extracted the entire vault in triple damages.',
+        meritAdd: 28,
+        effects: { health: -16, rep: +30, wealth: +75, resonance: +18 }
+      },
+      {
+        labelVi: 'Nộp vali cho Hiệp hội Seven, công khai bằng chứng phạm tội của hắn lên báo chí',
+        labelEn: 'Turn the lockbox to Seven Association, broadcasting his crimes across public presses',
+        resultVi: 'Tên thân chủ bị cảnh sát Zwei và thanh tra thuế gông cổ ngay trong đêm. Bạn nhận tiền thưởng truy nã hợp pháp và được người dân ca tụng vì sự liêm chính.',
+        resultEn: 'Zwei enforcers arrested the patron before dawn. You collected a certified bounty and public acclaim for righteous integrity.',
+        meritAdd: 22,
+        effects: { rep: +26, wealth: +38, network: +18, sanity: +8 }
+      }
+    ]
   }
 ];

@@ -556,5 +556,172 @@ export const WORKSHOP_ECONOMY_EVENTS = [
         effects: { sanity: +5 }
       }
     ]
+  },
+
+  // =========================================================================
+  // WORKSHOP ARTISAN DIVERSITY: COMMISSIONS, ATELIER PATENTS & GUILD RIVALRIES
+  // =========================================================================
+  {
+    id: 'ws_zelkova_telescopic_quarterstaff',
+    age: [20, 75],
+    major: true,
+    weight: 48,
+    need: { jobs: ['Workshop Craftsman'] },
+    vi: '[Chế Tác Trượng Cơ Khí Đa Năng · Phong Cách Zelkova Workshop] Một Fixer kỳ cựu mang đến bản vẽ trượng khớp thu phóng của xưởng Zelkova huyền thoại. Họ yêu cầu bạn tích hợp cơ chế thủy lực nén khí để biến thanh trượng gỗ bọc thép thành một món vũ khí vừa có thể đập tan khiên nặng, vừa có thể vươn dài 4 mét chỉ trong một cái búng tay.',
+    en: '[Zelkova Telescopic Staff Commission] A veteran Fixer brings blueprints for a Zelkova-style collapsible kinetic quarterstaff. They commission you to integrate pressurized hydraulic servos, allowing the iron-banded staff to crush shields at close quarters or extend four meters in a microsecond.',
+    choices: [
+      {
+        labelVi: 'Gia công khớp nối vi cơ khí chuẩn xác, tối ưu hóa tốc độ vươn dài tức thì',
+        labelEn: 'Mill micro-kinematic joint couplings, optimizing instant deployment velocity',
+        resultVi: 'Cú vung thử của vị Fixer đập vỡ nát tảng đá thử tải trong chớp mắt. Vị khách vô cùng kinh ngạc trước độ chuẩn xác của bạn, thanh toán toàn bộ hợp đồng kèm theo tiền thưởng lớn!',
+        resultEn: 'The Fixer’s test swing pulverized a granite block in the blink of an eye. Astounded by your mechanical precision, they paid the bounty in full plus a handsome tip!',
+        meritAdd: 22,
+        effects: { rep: +24, wealth: +48, resonance: +12, sanity: +6 }
+      },
+      {
+        labelVi: 'Tăng cường vỏ bọc chống sốc bằng hợp kim nặng, đảm bảo trượng không bao giờ cong vênh',
+        labelEn: 'Reinforce the outer casing with dense shock alloy, guaranteeing absolute unbendability',
+        resultVi: 'Thanh trượng trở nên chắc nịch như một cột thép nguyên khối. Khách hàng tấm tắc khen ngợi độ bền vĩnh cửu của sản phẩm xưởng bạn.',
+        resultEn: 'The staff felt as solid as an unyielding steel pillar. The client commended the eternal durability of your handiwork.',
+        meritAdd: 18,
+        effects: { rep: +18, wealth: +36, sanity: +5 }
+      }
+    ]
+  },
+  {
+    id: 'ws_tres_singularity_infringement_audit',
+    age: [22, 75],
+    major: true,
+    weight: 46,
+    need: { jobs: ['Workshop Craftsman'] },
+    vi: '[Thanh Tra Bằng Sáng Chế Lò Rèn · Hiệp Hội Tres] Hai viên thanh tra áo khoác xám của Hiệp hội Tres bất ngờ ập vào lò rèn của bạn lúc nửa đêm. Họ nghi ngờ cuộn dây nhiệt độ siêu cao trên lò nấu thép của bạn vi phạm công nghệ Singularity được cấp bằng sáng chế độc quyền của R Corp.',
+    en: '[Tres Association Furnace Patent Inquest] Two grey-coated Tres inspectors raid your forge at midnight. They allege your super-thermal smelting coils unlawfully infringe upon R Corp’s patented kinetic metallurgy singularities.',
+    choices: [
+      {
+        labelVi: 'Mở buồng máy chứng minh nguyên lý phản ứng nhiệt cơ học hoàn toàn độc lập',
+        labelEn: 'Disassemble the furnace to prove independent thermodynamic mechanics',
+        resultVi: 'Các phép tính áp suất và lưu nhiệt của bạn đập tan mọi nghi ngờ của thanh tra Tres. Họ phải cúi đầu xin lỗi và cấp Dấu Mộc Độc Lập cho lò rèn của bạn!',
+        resultEn: 'Your thermodynamic calculations completely dispelled their allegations. The inspectors apologized and awarded an official Independent Maker’s Mark to your forge!',
+        meritAdd: 24,
+        effects: { rep: +26, wealth: +40, network: +18, sanity: +8 }
+      },
+      {
+        labelVi: 'Kín đáo đút lót 20 Ahn để đẩy nhanh thủ tục kiểm định và tiễn thanh tra ra cửa',
+        labelEn: 'Discreetly slip 20 Ahn to expedite the inspection ledger and see them off',
+        resultVi: 'Chiếc phong bì giúp lò rèn của bạn tiếp tục đỏ lửa mà không bị niêm phong điều tra, bảo toàn tiến độ các đơn hàng gấp.',
+        resultEn: 'The grease expedited the paperwork, keeping your forges roaring without downtime and preserving client delivery schedules.',
+        costAhn: 20,
+        effects: { wealth: -20, rep: +15, sanity: -3 }
+      }
+    ]
+  },
+  {
+    id: 'ws_workshop_turf_sabotage',
+    age: [20, 72],
+    major: true,
+    weight: 44,
+    need: { jobs: ['Workshop Craftsman'] },
+    vi: '[Phục Kích Phá Hoại Lò Rèn Lúc 2 Giờ Sáng] Tiếng kính vỡ lách cách ở tầng hầm đánh thức bạn dậy. Hai kẻ phá hoại do một xưởng rèn đối thủ thuê đang định đổ axit ăn mòn vào bồn dầu tôi thép và các pít-tông thủy lực của bạn.',
+    en: '[2:00 AM Workshop Sabotage] The crunch of shattered glass in your cellar wakes you. Two hired saboteurs from a rival atelier are poised to pour corrosive acid into your quenching vats and hydraulic rams.',
+    choices: [
+      {
+        labelVi: 'Cầm cây búa rèn đang nóng đỏ lao xuống tầng hầm đánh gục cả hai tên phá hoại',
+        labelEn: 'Charge into the cellar wielding a glowing-red hammer, subduing both saboteurs',
+        resultVi: 'Sức mạnh và độ hung bạo của bạn khiến hai tên phá hoại ngã gục rên rỉ xin tha mạng. Bạn trói nghiến chúng lại, buộc xưởng đối thủ phải nộp một khoản tiền chuộc khổng lồ!',
+        resultEn: 'Your ferocious counter-attack flattened both saboteurs. Tying them up, you forced their sponsoring atelier to pay exorbitant restitution!',
+        meritAdd: 22,
+        effects: { health: -10, rep: +25, wealth: +55, sanity: +6 }
+      },
+      {
+        labelVi: 'Kích hoạt hệ thống phun hơi nước áp lực cao, giam giữ chúng đợi hiệp hội xử lý',
+        labelEn: 'Trigger the high-pressure steam venting grid, trapping them for Association arrest',
+        resultVi: 'Hơi nước nóng rát phong tỏa tầng hầm khiến chúng không kịp trở tay. Hiệp hội Tres đến tiếp quản hiện trường và xử phạt nặng xưởng rèn đối thủ.',
+        resultEn: 'Scalding steam trapped the intruders instantly. Tres Association enforcers took custody, penalizing the rival forge with heavy fines.',
+        meritAdd: 20,
+        effects: { rep: +20, wealth: +32, sanity: +8 }
+      }
+    ]
+  },
+  {
+    id: 'ws_ego_casing_resonance_craft',
+    age: [24, 75],
+    major: true,
+    weight: 48,
+    need: { jobs: ['Workshop Craftsman'] },
+    vi: '[Gia Công Chuôi Kiếm Cộng Hưởng E.G.O] Một Fixer Grade 1 mang đến một mảnh vỡ tinh thể hữu cơ phát quang nhặt từ tàn tích của Lobotomy Corp. Khối tinh thể đập từng nhịp như một trái tim sống; họ yêu cầu bạn rèn một bộ vỏ kim loại cách nhiệt tâm lý để kìm hãm sự méo mó khi sử dụng.',
+    en: '[E.G.O Resonance Hilt Metallurgy] A Grade 1 Fixer brings an organic crystal shard salvaged from Lobotomy Corp ruins. The crystal pulses with a living heartbeat; they commission an insulated hilt assembly to contain psychological bleed-through during combat.',
+    choices: [
+      {
+        labelVi: 'Dùng hợp kim nén ba lớp và vòng đệm nano để khóa chặt sóng cộng hưởng tinh thần',
+        labelEn: 'Forge triple-layer compressed alloy with nano-dampers to stabilize mental resonance',
+        resultVi: 'Khi thanh kiếm được lắp ráp hoàn chỉnh, ánh sáng dị thường bị kìm nén hoàn hảo trong chuôi kiếm. Vị Fixer vung thử và reo lên kinh ngạc trước sự ổn định phi thường của vũ khí, thưởng bạn một khoản tiền lớn!',
+        resultEn: 'Assembled flawlessly, the aberrant luminescence was perfectly contained within the grip. Testing the balance, the Fixer marveled at the stability and showered you in coin!',
+        meritAdd: 28,
+        effects: { rep: +30, wealth: +70, resonance: +18, sanity: +8 }
+      },
+      {
+        labelVi: 'Hòa quyện một phần máu của chính bạn vào khuôn đúc để tăng tính liên kết tâm linh',
+        labelEn: 'Temper the casting mold with a drop of your own blood for psychic attunement',
+        resultVi: 'Lò rèn bùng lên ngọn lửa màu lam ma mị. Lưỡi kiếm rèn ra đạt độ sắc bén thần thoại và có khả năng tương tác sâu sắc với cảm xúc người cầm.',
+        resultEn: 'Flames flared phantom sapphire. The blade attained mythic sharpness, resonating in uncanny harmony with its bearer’s soul.',
+        meritAdd: 25,
+        effects: { health: -15, rep: +28, wealth: +55, resonance: +25 }
+      }
+    ]
+  },
+  {
+    id: 'ws_allonge_rapier_molecular_grind',
+    age: [21, 72],
+    major: true,
+    weight: 45,
+    need: { jobs: ['Workshop Craftsman'] },
+    vi: '[Mài Lưỡi Kiếm Liễu Độ Dày Phân Tử · Cinq Allonge Rapier] Một quý cô kiếm sĩ Cinq Section 3 đặt hàng một thanh liễu kiếm Allonge siêu mảnh, nhẹ dưới 300 gram nhưng phải chịu được va đập trực diện với đại chùy bọc thép mà không gãy. Bài toán đòi hỏi kỹ thuật mài dũa phân tử tinh xảo nhất của nghề rèn.',
+    en: '[Cinq Allonge Rapier Molecular Grind] A Cinq Section 3 swordswoman commissions an ultra-slender Allonge rapier: weighing under 300 grams yet capable of parrying heavy kinetic mauls without fracturing. A challenge demanding peak molecular grinding craftsmanship.',
+    choices: [
+      {
+        labelVi: 'Sử dụng bột kim cương nano mài thủ công suốt 48 giờ liên tục',
+        labelEn: 'Grind the edge with nano-diamond slurry across 48 continuous hours',
+        resultVi: 'Lưỡi kiếm khi hoàn thành mỏng đến mức gần như vô hình dưới ánh sáng, nhẹ bẫng và sắc ngọt đến rợn người. Nữ kiếm sĩ Cinq cúi chào bạn với lòng biết ơn sâu sắc, giới thiệu cả phân hội Cinq đến xưởng bạn.',
+        resultEn: 'The finished rapier was so slender it was nearly invisible in daylight, terrifyingly razor-sharp. The Cinq duelist bowed deeply, directing her entire Section to your shop.',
+        meritAdd: 24,
+        effects: { rep: +26, wealth: +52, sanity: +8, resonance: +10 }
+      },
+      {
+        labelVi: 'Lắp thêm lò xo giảm chấn vi mô bên trong chuôi kiếm để hấp thụ phản lực',
+        labelEn: 'Install micro-damper springs within the hilt to absorb heavy recoil',
+        resultVi: 'Thanh kiếm vừa giữ được trọng lượng nhẹ vừa bảo vệ cổ tay kiếm sĩ trước các đòn đánh nặng nề. Khách hàng vô cùng hài lòng với thiết kế thông minh của bạn.',
+        resultEn: 'The rapier retained featherweight agility while shielding the duelist’s wrist against blunt shocks. Highly pleased, the client praised your ingenuity.',
+        meritAdd: 20,
+        effects: { rep: +20, wealth: +38, sanity: +6 }
+      }
+    ]
+  },
+  {
+    id: 'ws_workshop_apprentice_legacy',
+    age: [26, 80],
+    major: true,
+    weight: 50,
+    need: { jobs: ['Workshop Craftsman'] },
+    forbids: ['HasWorkshopApprentice'],
+    vi: '[Người Kế Thừa Lò Rèn · Đứa Trẻ Backstreets] Một đứa trẻ mồ côi Backstreets với đôi bàn tay đầy vết bỏng và đôi mắt sáng ngời quỳ trước cửa lò rèn của bạn trong màn mưa. Nó xin được quét dọn tro than và gánh nước không công, chỉ để được học nghệ thuật rèn thép và cơ khí của bạn.',
+    en: '[The Forge Apprentice · Child of the Alleys] A scarred Backstreet orphan with blistered hands and burning eyes kneels before your forge in the rain. The child begs to sweep ashes and haul water for free, merely to learn your craft of steel and kinematics.',
+    choices: [
+      {
+        labelVi: 'Nhận đứa trẻ vào xưởng làm Đồ Đệ Kế Thừa, truyền dạy bí quyết luyện kim',
+        labelEn: 'Take the child in as your Sworn Apprentice, passing down your metallurgy',
+        resultVi: 'Đứa trẻ học việc chăm chỉ ngày đêm, giúp lò rèn vận hành trơn tru hơn và luôn tràn ngập sức sống mới. Bạn không còn đơn độc trên con đường của một người thợ rèn giữa The City lạnh lẽo!',
+        resultEn: 'The apprentice labored tirelessly, bringing warmth and vital momentum to your smithy. You were no longer alone on the craftsman’s arduous journey!',
+        meritAdd: 30,
+        flagsAdd: ['HasWorkshopApprentice'],
+        effects: { rep: +25, sanity: +20, wealth: +15, network: +18 }
+      },
+      {
+        labelVi: 'Cho đứa trẻ một túi tiền Ahn và chiếc áo khoác ấm rồi khuyên nó tìm công việc an toàn hơn',
+        labelEn: 'Give the child a pouch of Ahn and a warm coat, advising a safer path',
+        resultVi: 'Nghề thợ rèn đầy khói bụi, độc hại và nguy hiểm đến tính mạng. Bạn giúp đứa trẻ có bữa ăn no ấm mà không phải chịu khổ cực như bạn thuở ban đầu.',
+        resultEn: 'The forge is toxic and peril-laden. You spared the child the grueling hardships you endured, giving them means to survive the winter.',
+        effects: { sanity: +12, wealth: -8 }
+      }
+    ]
   }
 ];

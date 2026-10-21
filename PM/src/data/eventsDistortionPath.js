@@ -216,4 +216,176 @@ export const DISTORTION_PATH_EVENTS = [
       }
     ]
   },
+
+  // =========================================================================
+  // DEEP DISTORTION ENCOUNTERS: RESONANCE, LAIRS & CARMEN'S CONVERGENCE
+  // =========================================================================
+  {
+    id: 'distort_abnormality_resonance_communion',
+    age: [19, 90],
+    major: true,
+    weight: 48,
+    allowDistorted: true,
+    need: { jobs: ['Distortion'] },
+    vi: '[Cộng Hưởng Abnormality Dưới Lòng Đất · Tiếng Vọng Cogito] Sâu dưới lớp nhựa đường của con hẻm, bạn cảm nhận được tần số tâm linh của một Dị Thể (Abnormality) đang say ngủ từ tàn tích của Lobotomy Corporation. Những xúc tu hoặc cơ quan biến dị trên cơ thể bạn rung lên bần bật theo từng nhịp đập của nó.',
+    en: '[Subterranean Abnormality Communion · Cogito Resonances] Deep beneath the alley asphalt, you sense the psychic wavelength of a dormant Abnormality from Lobotomy Corporation ruins. Your mutated tendrils and warped carapace vibrate in synchronization with its subterranean heartbeat.',
+    choices: [
+      {
+        labelVi: 'Hòa quyện ý thức của bản thân vào tần số dị thể, hấp thụ một phần khái niệm kinh hoàng',
+        labelEn: 'Harmonize your consciousness with the Abnormality, assimilating its terror concept',
+        resultVi: 'Một luồng năng lượng hoang dại trào dâng trong huyết quản dị biến của bạn! Hình thái méo mó của bạn tiến hóa thêm một tầng gai góc và uy lực, khiến không khí xung quanh lạnh toát.',
+        resultEn: 'A surge of feral concept flooded your warped veins! Your mutated form evolved another layer of razor chitin and spatial dread, plunging the temperature below freezing.',
+        meritAdd: 28,
+        effects: { rep: +35, resonance: +30, health: +20, sanity: -8 }
+      },
+      {
+        labelVi: 'Gầm gừ áp chế nguồn ô nhiễm ngoại lai, bảo tồn bản ngã biến dị thuần khiết của chính mình',
+        labelEn: 'Roar in defiance, purging foreign infection to preserve your pure individual distortion',
+        resultVi: 'Bạn đập tan sự can thiệp từ dị thể bên dưới. Ý chí cá nhân biến dị của bạn trở nên vững chắc như kim cương, bất khả xâm phạm.',
+        resultEn: 'You repelled the alien intrusive ego. Your twisted individual identity solidified like diamond, impervious to outside psychic tampering.',
+        meritAdd: 22,
+        effects: { sanity: +20, resonance: +15, health: +10 }
+      }
+    ]
+  },
+  {
+    id: 'distort_backstreet_children_lullaby',
+    age: [19, 85],
+    major: true,
+    weight: 46,
+    allowDistorted: true,
+    need: { jobs: ['Distortion'] },
+    vi: '[Khúc Hát Ru Của Quái Vật · Lũ Trẻ Backstreets] Giữa đêm đông lạnh giá, một nhóm trẻ em mồ côi Backstreets rón rén tụ tập quanh hang ổ đổ nát của bạn. Thay vì sợ hãi, chúng bị mê hoặc bởi những nốt nhạc u sầu phát ra từ các cơ quan biến dị của bạn và xem bạn như một vị thần bảo hộ bóng đêm.',
+    en: '[The Monster’s Lullaby · Backstreet Orphans] In the bitter winter midnight, shivering orphans gather near the entrance of your ruined lair. Instead of fleeing, they listen entranced to the mournful chimes echoing from your warped appendages, mistaking you for a dark guardian spirit.',
+    choices: [
+      {
+        labelVi: 'Phát ra những giai điệu êm dịu, che chở lũ trẻ khỏi đàn Sweeper đi săn lúc 3 giờ sáng',
+        labelEn: 'Chime a soothing harmonic hum, shielding the children from the 3:13 AM Sweeper patrol',
+        resultVi: 'Khi tiếng còi Sweeper vang lên, bóng tối biến dị của bạn bao bọc lấy lũ trẻ. Lũ Sweeper không dám bén mảng tới gần lãnh địa của bạn. Lũ trẻ nép vào bạn ngủ say, mang lại một thoáng ấm áp hiếm hoi cho tâm hồn méo mó.',
+        resultEn: 'As the Sweeper sirens wailed, your shadowy domain engulfed the children. Sweepers steered clear of your apex lair. The children slept peacefully against your chitin, granting a rare, tender warmth.',
+        meritAdd: 30,
+        effects: { sanity: +35, rep: +20, health: +15 }
+      },
+      {
+        labelVi: 'Gầm lên một tiếng rùng rợn xua đuổi chúng chạy về nơi an toàn',
+        labelEn: 'Roar with terrifying ferocity, driving them toward safe Nest refugee sectors',
+        resultVi: 'Lũ trẻ sợ hãi bỏ chạy nhưng kịp trốn vào khu trại cứu trợ an toàn của Hiệp hội Zwei trước giờ giới nghiêm. Bạn đứng một mình trong bóng tối cô đơn, hoàn thành sự cứu rỗi tàn nhẫn.',
+        resultEn: 'Terrified, the children fled directly into a fortified Zwei refugee enclave before curfew. You remained alone in the darkness, having enacted cruel salvation.',
+        meritAdd: 20,
+        effects: { sanity: +15, resonance: +12 }
+      }
+    ]
+  },
+  {
+    id: 'distort_hana_suppression_squad',
+    age: [21, 90],
+    major: true,
+    weight: 48,
+    allowDistorted: true,
+    need: { jobs: ['Distortion'] },
+    vi: '[Biệt Đội Trấn Áp Hana Section 2] Ba Fixer tinh nhuệ của Hana Section 2 mang theo lồng phong tỏa cộng hưởng và dây xích triệt tiêu năng lượng bao vây lãnh địa của bạn. Họ tuyên đọc án lệnh thanh trừng một hiểm họa cấp Đô Thị.',
+    en: '[Hana Section 2 Suppression Cell] Three elite Fixers from Hana Section 2 bearing resonance damper cages and suppression anchors cordon your territory. They read aloud the extermination writ for an Urban Calamity anomaly.',
+    choices: [
+      {
+        labelVi: 'Bùng nổ làn sóng biến dị toàn diện, đánh vỡ lồng giam và phản sát đội trưởng',
+        labelEn: 'Detonate a total psychic shockwave, shattering the containment cage and felling the captain',
+        resultVi: 'Sóng xung kích biến dị bẻ cong các xích phong tỏa như cành củi khô. Vị đội trưởng Hana văng vào tường đá hộc máu, buộc toán Fixer phải thu quân rút lui trong kinh hoàng. Danh tiếng của bạn chấn động khắp giới Fixer!',
+        resultEn: 'Your psychic eruption snapped suppression chains like dry twigs. The Hana captain was hurled against the masonry, forcing a frantic retreat. Your legend struck terror across the Association!',
+        meritAdd: 32,
+        effects: { health: -18, rep: +45, heat: +25, resonance: +25 }
+      },
+      {
+        labelVi: 'Hòa mình vào sương mù Backstreets, đánh lừa hệ thống radar truy quét rồi biến mất',
+        labelEn: 'Dissolve into Backstreet smog, spoofing their biometric radars and vanishing',
+        resultVi: 'Hệ thống định vị của Hana hoàn toàn mất dấu bạn. Bạn chuyển địa bàn săn mồi sang một phân khu khác một cách an toàn.',
+        resultEn: 'Hana’s trackers struck static. You relocated your hunting domain into a fresh district, completely undetected.',
+        meritAdd: 22,
+        effects: { rep: +20, sanity: +12, heat: -15 }
+      }
+    ]
+  },
+  {
+    id: 'distort_domain_expansion_theater',
+    age: [23, 90],
+    major: true,
+    weight: 45,
+    allowDistorted: true,
+    need: { jobs: ['Distortion'] },
+    vi: '[Mở Rộng Lãnh Địa Biến Dị · Sân Khấu Ký Ức] Nỗi đau khổ và uất ức tích tụ suốt cả đời bạn tràn ra ngoài thực tại. Một bán kính 300 mét quanh bạn biến thành một Sân Khấu Ký Ức siêu thực: Tường gạch biến thành những phím đàn piano khổng lồ phát ra giai điệu rỉ máu của cuộc đời bạn.',
+    en: '[Distortion Domain Expansion · Theatre of Memory] A lifetime of unhealed agony spills into physical reality. A 300-meter radius warps into a surreal Theatre of Memory: Brick walls morph into colossal piano keys chiming arterial melodies of your past.',
+    choices: [
+      {
+        labelVi: 'Tấu lên bản giao hưởng cuộc đời, biến nỗi đau thành vũ khí tuyệt đối',
+        labelEn: 'Play the grand symphony of your life, converting past suffering into lethal cadence',
+        resultVi: 'Mỗi nốt nhạc giáng xuống cắt đứt không gian và đánh bại bất kỳ kẻ nào dám xâm phạm lãnh địa. Cả khu vực trở thành thánh địa bất khả xâm phạm dưới sự thống trị của bạn!',
+        resultEn: 'Each resounding chord severed spatial planes, repelling all intruders. The ward solidified into your sovereign, untouchable sanctuary!',
+        meritAdd: 35,
+        effects: { rep: +50, resonance: +35, health: +25, sanity: +20 }
+      },
+      {
+        labelVi: 'Thu nhỏ lãnh địa vào bên trong trái tim, giữ kín sân khấu ký ức cho riêng mình',
+        labelEn: 'Fold the domain inwards into your chest, keeping the theater of memory private',
+        resultVi: 'Không gian trở lại bình thường nhưng cơ thể bạn đặc quánh lại thành một bức tượng bất hoại. Bạn làm chủ hoàn toàn bản ngã méo mó mà không bị mất kiểm soát.',
+        resultEn: 'Pavements straightened, but your inner form condensed into unyielding armor. You achieved absolute mastery over your warped ego without succumbing to frenzy.',
+        meritAdd: 28,
+        effects: { sanity: +30, health: +20, resonance: +20 }
+      }
+    ]
+  },
+  {
+    id: 'distort_head_beholder_observation',
+    age: [25, 95],
+    major: true,
+    weight: 42,
+    allowDistorted: true,
+    need: { jobs: ['Distortion'] },
+    vi: '[Con Mắt Giám Sát Của The Head · The Beholder] Một con mắt khổng lồ phát sáng lơ lửng trên tầng mây ô nhiễm phía trên hang ổ của bạn. Một Beholder của A Corp đang ghi nhận xem dạng biến dị của bạn có vượt qua ranh giới "Phi Nhân Loại" (Non-human impurity) để ban bố lệnh cử Claw xuống tiêu diệt hay không.',
+    en: '[Gaze of the Head · The Beholder] A titanic luminous eye suspends high in the smog above your lair. A Beholder of A Corp observes, evaluating whether your aberrant form has crossed the threshold of Non-Human Impurity to warrant Claw deployment.',
+    choices: [
+      {
+        labelVi: 'Ngẩng đầu nhìn thẳng vào con mắt, khẳng định bản ngã con người sâu sắc nhất của mình',
+        labelEn: 'Gaze directly into the ocular abyss, asserting your profound human core',
+        resultVi: 'Con mắt khổng lồ chớp nhẹ. Dù hình thù dị dạng, khát vọng và nỗi đau của bạn thuần khiết là của loài người. Con mắt thu nhỏ lại rồi biến mất. The Head thừa nhận sự tồn tại của bạn trong The City.',
+        resultEn: 'The colossal eye blinked slowly. Monster as you were, your yearning and torment were undeniably human. The aperture closed and dissolved. The Head tolerated your existence in The City.',
+        meritAdd: 35,
+        effects: { rep: +60, sanity: +25, resonance: +30, heat: -20 }
+      },
+      {
+        labelVi: 'Gầm thét phóng thích toàn bộ hắc khí biến dị, che khuất tầm nhìn của con mắt',
+        labelEn: 'Erupt in a black cloud of distortion ichor, blinding the celestial eye',
+        resultVi: 'Màn khói đen che kín bầu trời quận trong ba ngày ba đêm. Con mắt rút lui nhưng độ chú ý của The Head đối với bạn tăng vọt.',
+        resultEn: 'Obsidian smog blanketed the ward for three days and nights. The eye withdrew, but the Head’s scrutiny upon your name escalated sharply.',
+        meritAdd: 25,
+        effects: { rep: +40, heat: +30, resonance: +25 }
+      }
+    ]
+  },
+  {
+    id: 'distort_carmen_final_solace',
+    age: [28, 100],
+    major: true,
+    weight: 45,
+    allowDistorted: true,
+    need: { jobs: ['Distortion'] },
+    vi: '[Lời Thầm Thì Của Carmen · Sự Giải Thoát Thuần Khiết] Giữa tâm bão của sự điên loạn, giọng nói dịu dàng quen thuộc vang lên trong ánh hào quang màu đỏ ấm áp. Carmen xuất hiện trong tâm thức bạn: "Hãy nhìn ngươi xem. Ngươi không còn phải ép mình vừa vặn với cỗ máy vô hồn của The City nữa. Đây mới chính là hình hài chân thật nhất của tình yêu và khao khát trong ngươi."',
+    en: '[Carmen’s Final Solace · Unbound Efflorescence] At the eye of the psychic storm, a soothing voice echoes within warm crimson light. Carmen embraces your mind: "Look at you. You no longer break your bones to fit their callous City machine. This is the truest, most beautiful form of your heart’s desire."',
+    choices: [
+      {
+        labelVi: 'Mỉm cười đón nhận sự thật, biến thành một tồn tại thần thoại của The City',
+        labelEn: 'Embrace the solar truth with a smile, ascending into City myth',
+        resultVi: 'Cơn đau biến mất hoàn toàn, nhường chỗ cho sự thanh thản tuyệt đối. Bạn không còn là một con quái vật đau khổ, mà là một sinh linh tự do tự tại sống đúng với bản ngã tận cùng của mình.',
+        resultEn: 'All agony vanished into sublime serenity. You were no longer a pitiable beast, but a transcendent sovereign living in absolute truth to your soul.',
+        meritAdd: 40,
+        effects: { sanity: +45, resonance: +40, health: +30, rep: +50 }
+      },
+      {
+        labelVi: 'Rơi một giọt nước mắt con người cuối cùng, giữ lại ký ức về thuở ban đầu',
+        labelEn: 'Shed a single final human tear, preserving the memory of who you once were',
+        resultVi: 'Giọt nước mắt rơi xuống vỡ tan như pha lê. Bạn giữ lại được mảnh ký ức thiêng liêng nhất về những người bạn từng yêu thương, trở thành một quái vật mang trái tim hoài niệm.',
+        resultEn: 'The tear shattered like crystal upon the cobbles. You preserved the sacred memory of those you once cherished — a beast holding an eternal, nostalgic human heart.',
+        meritAdd: 35,
+        effects: { sanity: +35, resonance: +25, rep: +35 }
+      }
+    ]
+  }
 ];

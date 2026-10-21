@@ -2301,5 +2301,397 @@ export const FACTION_EVENTS = [
         flagsAdd: ['ucorp_dive_done']
       }
     ]
+  },
+
+  // =========================================================================
+  // SYNDICATE LIFE & UNDERWORLD DIVERSITY (FIVE FINGERS)
+  // =========================================================================
+  {
+    id: 'syn_thumb_ammunition_quota',
+    age: [19, 72],
+    major: true,
+    weight: 48,
+    need: { jobs: ['Syndicate'], flags: ['FingerThumb'] },
+    vi: '[Kiểm Kê Đạn Dược The Thumb · Kỷ Luật Quân Sự] Mỗi viên đạn của The Thumb đều được xem là thánh vật. Capo Boris triệu tập bạn vào kho súng ngầm để giải trình về 200 viên đạn xuyên giáp đã bắn trong tháng qua. Từng vỏ đạn rỗng phải khớp với một tên địch ngã xuống.',
+    en: '[Thumb Ammunition Ledger · Iron Discipline] Every round of Thumb ammunition is sacred ordnance. Capo Boris summons you to the munitions depot to account for 200 kinetic rounds discharged this month. Every spent brass casing must match a confirmed casualty.',
+    choices: [
+      {
+        labelVi: 'Trình sổ tay chiến thuật ghi rõ từng phát bắn và nộp đủ 200 vỏ đạn đồng',
+        labelEn: 'Present the tactical firing log and surrender all 200 brass casings flawlessly',
+        resultVi: 'Sự tỉ mỉ và lòng trung thành chuẩn mực của bạn khiến Capo vô cùng hài lòng. Ông ta đích thân thăng thưởng thêm đạn dược cao cấp và giao thêm quyền quản lý cho bạn.',
+        resultEn: 'Your textbook discipline and meticulous loyalty deeply impressed the Capo. He commended your conduct, issuing surplus high-grade munitions and operational trust.',
+        meritAdd: 20,
+        effects: { rep: +22, wealth: +35, network: +15, sanity: +5 }
+      },
+      {
+        labelVi: 'Nhận lỗi về 3 vỏ đạn thất lạc, tự chịu phạt 20 hèo gậy sắt theo lễ tiết',
+        labelEn: 'Acknowledge 3 lost casings, accepting 20 iron rod strikes per Thumb etiquette',
+        resultVi: 'Bạn cắn răng chịu phạt trong tư thế thẳng tắp mà không kêu nửa lời. Sự kiên cường và tôn trọng lễ tiết tuyệt đối của bạn khiến các Soldato xung quanh vô cùng kính phục.',
+        resultEn: 'You endured the brutal punishment at full attention without a whimper. Your unwavering adherence to hierarchy earned reverence across the barracks.',
+        meritAdd: 18,
+        effects: { health: -14, rep: +25, sanity: +6 }
+      }
+    ]
+  },
+  {
+    id: 'syn_thumb_boris_brawler_drill',
+    age: [20, 70],
+    major: true,
+    weight: 45,
+    need: { jobs: ['Syndicate'], flags: ['FingerThumb'] },
+    vi: '[Võ Đài Cận Chiến The Thumb · Bàn Cân Sức Mạnh] Trong gian hầm tập luyện ngầm, những tay búa thép khổng lồ của The Thumb đang so găng tay đôi. Boris yêu cầu bạn bước lên võ đài để kiểm tra sức chịu đòn và phản xạ cận chiến trước khi giao nhiệm vụ thanh trừng mới.',
+    en: '[Thumb Heavy Brawler Sparring · Forge of Obedience] In the subterranean sparring grounds, towering Thumb enforcers clash with brass knuckles. Boris commands you into the ring to test your shock tolerance and kinetic reflex before the next deployment.',
+    choices: [
+      {
+        labelVi: 'Tung cú đấm bộc phá trực diện, so găng ngang ngửa với đại hán hộ vệ',
+        labelEn: 'Deliver a concussive counter-blow, matching the heavy brawler blow for blow',
+        resultVi: 'Tiếng xương thịt va chạm như tiếng búa nện thép. Dù người đầy bầm tím, bạn trụ vững đến tiếng chuông cuối cùng. Các huynh đệ The Thumb gật đầu công nhận bản lĩnh thép của bạn.',
+        resultEn: 'Impacts boomed like hydraulic hammers. Bruised but unyielding, you stood tall until the final bell. Thumb brethren roared in respect for your iron spine.',
+        meritAdd: 22,
+        effects: { health: -15, rep: +24, wealth: +30, resonance: +12 }
+      },
+      {
+        labelVi: 'Sử dụng bộ pháp di chuyển khéo léo, luồn lách né tránh và quật ngã đối thủ',
+        labelEn: 'Employ elusive footwork, slipping heavy blows and leveraging a clean takedown',
+        resultVi: 'Đòn quật ngã bất ngờ khiến gã khổng lồ ngã uỳnh xuống sàn đấu. Boris vỗ tay tán thưởng: "Nhanh nhẹn và chuẩn xác. The Thumb cần những cái đầu lạnh như ngươi."',
+        resultEn: 'A fluid sweep slammed the giant to the canvas. Boris nodded in approval: "Agile and precise. The Thumb values calculating minds like yours."',
+        meritAdd: 20,
+        effects: { rep: +20, wealth: +28, sanity: +6 }
+      }
+    ]
+  },
+  {
+    id: 'syn_index_spinning_top_prescript',
+    age: [19, 75],
+    major: true,
+    weight: 48,
+    need: { jobs: ['Syndicate'], flags: ['FingerIndex'] },
+    vi: '[Mệnh Lệnh Kỳ Quái Của Chỉ Lệnh · The Index] Chim cơ khí thả xuống trước mặt bạn một cuộn Chỉ Lệnh (Prescript) viết bằng mực đỏ: "Vào đúng 12 giờ trưa, hãy xoay một con quay đồng trên bậc thang thứ ba của Cây Cầu Phía Đông suốt 15 phút mà không chớp mắt."',
+    en: '[The Bizarre Prescript · The Index] A clockwork bird drops a crimson-inked Prescript before your boots: "At precisely 12:00 PM, spin a brass top upon the third step of the Eastern Bridge for fifteen minutes without blinking."',
+    choices: [
+      {
+        labelVi: 'Tuân thủ tuyệt đối không thắc mắc, ngồi xoay con quay đúng 15 phút',
+        labelEn: 'Obey without question, spinning the brass top for precisely 15 minutes',
+        resultVi: 'Bạn ngồi xoay con quay giữa ánh nhìn ngơ ngác của người qua đường. Đúng 12:14, một quả bom của phe địch phát nổ ở góc phố đối diện — chính hành động xoay con quay đã khiến toán ám sát bị chậm lại và tự hủy diệt! Dòng chảy nhân quả của The Index là tuyệt đối!',
+        resultEn: 'You spun the top under baffled civilian stares. At 12:14, an ambush bomb detonated across the boulevard — your trivial delay caused the rival hit squad to mistime and destroy themselves! The causal flow of the Index is omniscient!',
+        meritAdd: 25,
+        effects: { sanity: +18, rep: +22, network: +18, resonance: +16 }
+      },
+      {
+        labelVi: 'Bỏ qua mệnh lệnh ngớ ngẩn này và đi làm việc khác',
+        labelEn: 'Disregard the absurd command and attend to worldly business',
+        resultVi: 'Nửa giờ sau, những sợi tơ đỏ bí ẩn quấn chặt lấy chân bạn, kéo bạn ngã nhào xuống cống nước thải. Một người đưa tin Index lạnh lùng liếc nhìn bạn rồi biến mất: Không ai có thể trốn tránh Chỉ Lệnh.',
+        resultEn: 'Thirty minutes later, phantom crimson threads ensnared your shins, dumping you face-first into sewage. An Index Messenger glared chillingly from the fog: None defy the Prescript.',
+        effects: { health: -10, sanity: -12, rep: -10 }
+      }
+    ]
+  },
+  {
+    id: 'syn_index_crimson_thread_execution',
+    age: [21, 72],
+    major: true,
+    weight: 45,
+    need: { jobs: ['Syndicate'], flags: ['FingerIndex'] },
+    vi: '[Thanh Trừng Kẻ Giả Mạo Chỉ Lệnh · The Index] Proxy Yan phát hiện một nhóm gian thương chế tạo máy in giả để làm giả Chỉ Lệnh nhằm trục lợi cá nhân tại District 20. Bạn được giao nhiệm vụ lần theo những sợi tơ đỏ nhân quả để xử trảm kẻ phản bội.',
+    en: '[Purge of the Counterfeit Weavers · The Index] Proxy Yan identifies a cabal of counterfeiters forging bogus Prescripts for illicit profit in District 20. You are dispatched to trace the synthetic crimson threads and sever their destiny.',
+    choices: [
+      {
+        labelVi: 'Dùng kiếm tơ chém đứt máy in giả và xử tử toàn bộ toán gian thương',
+        labelEn: 'Use thread-blades to dismantle the counterfeit press and execute the forgers',
+        resultVi: 'Những đường kiếm tơ mảnh như sợi tóc cắt đứt gân tay và máy móc của kẻ phạm tội trong im lặng. Proxy mỉm cười tán thưởng, trao thưởng cho bạn một cuộn tơ kiếm Index cao cấp.',
+        resultEn: 'Microscopic razor threads sheared through joints and counterfeit presses in utter silence. The Proxy nodded in quiet approval, gifting you a spool of refined Index thread.',
+        meritAdd: 26,
+        effects: { rep: +28, wealth: +48, resonance: +18, health: -8 }
+      },
+      {
+        labelVi: 'Thu giữ toàn bộ kho Ahn và tang vật giao nộp về trụ sở The Index',
+        labelEn: 'Confiscate the hoarded Ahn and illicit ledgers, surrendering all to Index custody',
+        resultVi: 'Bạn giao nộp toàn bộ tài sản bất chính về kho gia tộc. Lòng trung thành của bạn được ghi nhận và bạn được nhận một phần hoa hồng xứng đáng.',
+        resultEn: 'You surrendered every seized coin to the family vaults. Your integrity earned recognition and a legitimate commission cut.',
+        meritAdd: 22,
+        effects: { wealth: +38, rep: +20, network: +15 }
+      }
+    ]
+  },
+  {
+    id: 'syn_middle_cousin_retaliation',
+    age: [19, 70],
+    major: true,
+    weight: 48,
+    need: { jobs: ['Syndicate'], flags: ['FingerMiddle'] },
+    vi: '[Nợ Máu Đòi Máu · Sách Phục Thù The Middle] Một Little Sister của gia tộc đi giao hàng bị một tên quản đốc xưởng rèn tát vào mặt và cướp mất áo khoác. Tên của hắn lập tức được ghi vào Sách Phục Thù (Book of Vengeance). Cả gia đình trông đợi bạn đi thi hành công lý.',
+    en: '[Blood for Blood · Middle Book of Vengeance] A Little Sister was struck and stripped of her coat by a drunken workshop foreman. His name was instantly inscribed in the Book of Vengeance. The entire family looks to you for retribution.',
+    choices: [
+      {
+        labelVi: 'Dẫn mười anh em đập nát xưởng rèn, bẻ gãy tay kẻ xúc phạm và lấy lại áo khoác',
+        labelEn: 'Lead ten siblings to smash the forge, breaking the culprit’s arm and reclaiming the coat',
+        resultVi: 'Tiếng xích sắt quất rầm rập! Tên quản đốc quỳ rạp cầu xin tha mạng. Bạn khoác lại chiếc áo cho người em gái trong tiếng reo hò của cả gia tộc. Tên của hắn được gạch bỏ trong Sách Phục Thù.',
+        resultEn: 'Purple chains roared through the forge! The foreman groveled in terror. You draped the coat back over your Little Sister’s shoulders as siblings cheered. His name was struck from the Book.',
+        meritAdd: 24,
+        effects: { rep: +30, wealth: +40, sanity: +12, health: -8 }
+      },
+      {
+        labelVi: 'Bắt xưởng rèn bồi thường 50 Ahn viện trợ cho người em và ký cam kết tôn trọng',
+        labelEn: 'Force the workshop to pay 50 Ahn in restitution and sign a respectful non-aggression oath',
+        resultVi: 'Trước uy lực của bạn, xưởng rèn lập tức nộp phạt toàn bộ số tiền. Người em gái cảm động rơi nước mắt, và gia tộc The Middle ca tụng sự khôn ngoan của bạn.',
+        resultEn: 'Bowing before your intimidation, the forge liquidated the indemnity on the spot. The Little Sister wept in gratitude; the Middle praised your calculated strength.',
+        meritAdd: 20,
+        effects: { wealth: +50, rep: +22, network: +18, sanity: +8 }
+      }
+    ]
+  },
+  {
+    id: 'syn_middle_hair_coupon_brawl',
+    age: [20, 68],
+    major: true,
+    weight: 44,
+    need: { jobs: ['Syndicate'], flags: ['FingerMiddle'] },
+    vi: '[Cuộc Chiến Phiếu Giảm Giá Tiệm Tóc · The Middle] Một tiệm làm tóc cao cấp tại ranh giới quận phát hành tập phiếu giảm giá đặc biệt — thứ mà Big Brother Ricardo vô cùng yêu thích để chăm sóc mái tóc bóng mượt. Một nhóm côn đồ đường phố dám cướp giật xấp phiếu này ngay trước cửa tiệm.',
+    en: '[The Hair Salon Coupon Brawl · The Middle] A luxury salon issues exclusive discount vouchers — prized by Big Brother Ricardo for keeping his hair flawless. A rowdy street gang snatches the voucher bundle right outside the parlor.',
+    choices: [
+      {
+        labelVi: 'Vung đại xích tím quét sạch đám cướp giật, mang trọn vẹn xấp phiếu về dâng đại ca',
+        labelEn: 'Unleash purple chains to flatten the thieves, retrieving the vouchers for Big Brother',
+        resultVi: 'Bạn đập cho đám côn đồ tơi tả không còn manh giáp. Khi mang xấp phiếu về nộp, Big Brother cười lớn xoa đầu bạn: "Tốt lắm em trai! Mái tóc của gia tộc đã được cứu rỗi!" Bạn nhận được thưởng lớn!',
+        resultEn: 'You pulverized the gang into submission. Presenting the vouchers, Big Brother roared in delight, ruffling your hair: "Glorious work! Our family’s locks remain immaculate!" You were richly rewarded!',
+        meritAdd: 22,
+        effects: { rep: +28, wealth: +38, sanity: +14, health: -6 }
+      },
+      {
+        labelVi: 'Giữ lại một nửa phiếu cho bản thân và các anh em trong nhóm đi tút tát dung nhan',
+        labelEn: 'Pocket half the vouchers for your crew to treat yourselves at the salon',
+        resultVi: 'Mái tóc và diện mạo của cả nhóm được chăm chút sáng láng, phong thái giang hồ tăng vọt, tinh thần phấn chấn lên hẳn.',
+        resultEn: 'Your crew emerged from the parlor freshly groomed and imposing. Morale and underworld charisma surged.',
+        meritAdd: 16,
+        effects: { sanity: +18, rep: +15, wealth: +10 }
+      }
+    ]
+  },
+  {
+    id: 'syn_ring_corridor_human_statue',
+    age: [20, 72],
+    major: true,
+    weight: 45,
+    need: { jobs: ['Syndicate'], flags: ['FingerRing'] },
+    vi: '[Bảo Tàng Nghệ Thuật Sống · The Ring] Một Maestro của The Ring mở buổi dạ tiệc triển lãm nghệ thuật cơ thể. Họ yêu cầu bạn mặc bộ giáp sơn màu đá cẩm thạch và đứng bất động làm một bức tượng sống giữa sảnh tiệc, sẵn sàng ám sát bất kỳ vị khách quý nào dám xúc phạm tác phẩm nghệ thuật.',
+    en: '[Living Statue Gala · The Ring] A Ring Maestro hosts an avant-garde biological art gala. You are instructed to don marble-lacquered armor and pose as a silent living statue amidst the ballroom, poised to execute any patron who dares critique the art.',
+    choices: [
+      {
+        labelVi: 'Đứng bất động 6 tiếng liền, chém đôi kẻ phản động dám buông lời chê bai tranh',
+        labelEn: 'Stand motionless for six hours, cleaving a critic who dared insult the canvas',
+        resultVi: 'Nhát chém bất ngờ từ bức tượng khiến máu bắn thành vệt trừu tượng lên tường. Vị Maestro reo lên thích thú: "Một kiệt tác trình diễn hoàn hảo!" Bạn được thăng hàm trong The Ring.',
+        resultEn: 'A sudden strike from the marble statue sprayed scarlet ribbons across the gallery wall. The Maestro gasped in ecstasy: “A sublime performance piece!” You advanced in the Ring.',
+        meritAdd: 26,
+        effects: { rep: +32, wealth: +50, sanity: -6, resonance: +18 }
+      },
+      {
+        labelVi: 'Dùng con mắt nghệ thuật hướng dẫn quan khách thưởng thức tranh một cách tinh tế',
+        labelEn: 'Subtly guide bewildered patrons into appreciating the grotesque aesthetics',
+        resultVi: 'Quan khách trầm trồ trước sự am hiểu hội họa và phong thái tao nhã của bạn. Buổi triển lãm thành công rực rỡ, mang về bộn tiền bán vé cho viện bảo tàng.',
+        resultEn: 'Patrons marveled at your refined critique and cultured aura. The gala triumphed commercially, yielding hefty ticket royalties.',
+        meritAdd: 20,
+        effects: { rep: +22, wealth: +42, sanity: +8, network: +16 }
+      }
+    ]
+  },
+  {
+    id: 'syn_pinky_whispering_underground_broker',
+    age: [19, 72],
+    major: true,
+    weight: 45,
+    need: { jobs: ['Syndicate'], flags: ['FingerPinky'] },
+    vi: '[Mạng Lưới Ám Hiệu Ngầm · The Pinky] Dưới đường cống ngầm ẩm ướt của District 25, một sứ giả đeo mặt nạ chim cú của The Pinky trao cho bạn một dải lụa thêu mật mã. Nhiệm vụ của bạn là chuyển dải lụa này tới tay một điệp viên Wing mà không để thám tử Seven phát hiện.',
+    en: '[Subterranean Whisper Network · The Pinky] In the dank sewers of District 25, an owl-masked Pinky envoy passes you an embroidered ribbon cipher. Your directive: deliver it to a rogue Wing spy without alerting Seven Association surveillants.',
+    choices: [
+      {
+        labelVi: 'Luồn lách qua các đường ống thông khí tối tăm, hoàn tất giao liên an toàn',
+        labelEn: 'Slip through ventilation shafts in darkness, completing covert delivery',
+        resultVi: 'Bản mật mã được trao tận tay điệp viên. Một túi tiền Ahn bóng loáng được nhét vào tay bạn kèm theo cái gật đầu của hội đồng bóng tối The Pinky.',
+        resultEn: 'The cipher reached the operative’s hands unseen. A velvet pouch of Ahn was pressed into your palm with the silent nod of the Pinky sovereign council.',
+        meritAdd: 22,
+        effects: { rep: +22, wealth: +45, network: +20, sanity: +5 }
+      },
+      {
+        labelVi: 'Giải mã dải lụa để nắm bắt tin tức cơ mật trước khi bàn giao',
+        labelEn: 'Decipher the cipher ribbon yourself to harvest leverage before handoff',
+        resultVi: 'Bạn phát hiện một bí mật chấn động về một vụ bê bối độc quyền của Wing. Tri thức này biến bạn thành kẻ môi giới thông tin đầy quyền lực trong thế giới ngầm.',
+        resultEn: 'You uncovered a scandalous Singularity monopoly conspiracy. This leverage cemented your status as a formidable underworld broker.',
+        meritAdd: 24,
+        effects: { network: +28, rep: +20, sanity: -4, resonance: +12 }
+      }
+    ]
+  },
+
+  // =========================================================================
+  // WING CORPORATE INTRIGUE, EXPERIMENTS & CRISES (26 WINGS)
+  // =========================================================================
+  {
+    id: 'wing_tcorp_monocle_time_collection',
+    age: [20, 70],
+    major: true,
+    weight: 46,
+    need: { jobs: ['Wing Employee'] },
+    forbids: ['Distorted'],
+    vi: '[Thu Thuế Thời Gian T Corp · District 4] Đeo chiếc kính một tròng đo thời gian đặc chế của T Corp, bạn dẫn đầu đội thanh tra đến kiểm toán một xưởng rèn bị nghi ngờ ăn cắp 1,200 giờ thời gian chủ quan của công nhân để đẩy nhanh tiến độ sản xuất.',
+    en: '[T Corp Time Tax Foreclosure · District 4] Adjusting your brass time-measuring monocle, you lead a T Corp audit squad to seize 1,200 hours of stolen subjective time from a rogue forge that exploited overtime workers.',
+    choices: [
+      {
+        labelVi: 'Kích hoạt hộp hấp thụ thời gian, tịch thu toàn bộ thời gian đánh cắp về kho T Corp',
+        labelEn: 'Activate the chronometer condenser, confiscating all stolen hours for the Wing',
+        resultVi: 'Chiếc hộp phát ra ánh sáng vàng hổ phách hút cạn các bình chứa thời gian. Giám đốc T Corp khen ngợi báo cáo chuẩn xác của bạn và thưởng lớn bằng cổ phiếu thời gian.',
+        resultEn: 'The condenser flared sepia, vacuuming the illicit time vials clean. The T Corp Board praised your audit, rewarding you with certified Time dividends.',
+        meritAdd: 22,
+        effects: { rep: +24, wealth: +48, sanity: +6 }
+      },
+      {
+        labelVi: 'Trả lại một nửa số giờ thời gian bị đánh cắp cho các công nhân kiệt sức',
+        labelEn: 'Quietly return half the reclaimed hours to the haggard factory laborers',
+        resultVi: 'Những công nhân già nua trẻ lại trông thấy trong ánh mắt biết ơn vô bờ. Bạn báo cáo là bình chứa bị rò rỉ, giữ trọn vẹn sự thanh thản trong tâm hồn.',
+        resultEn: 'Haggard laborers regained lost years, weeping in profound gratitude. You logged a minor gasket leakage, preserving moral solace in a ruthless City.',
+        meritAdd: 18,
+        effects: { sanity: +18, rep: +14, network: +16 }
+      }
+    ]
+  },
+  {
+    id: 'wing_wcorp_warp_dimension_anomaly',
+    age: [21, 70],
+    major: true,
+    weight: 46,
+    need: { jobs: ['Wing Employee'] },
+    forbids: ['Distorted'],
+    vi: '[Sự Cố Buồng Khoang WARP Train W Corp] Một chuyến tàu WARP vừa cập bến District 23 nhưng hệ thống tẩy não hành khách khoang hạng Nhất bị chập mạch. Một nhóm hành khách đột biến thành quái vật thịt vặn vẹo đang đập phá cửa toa tàu trước giờ công bố ga.',
+    en: '[W Corp WARP Train Containment Breach] A WARP train docks in District 23, but the First-Class memory erasure manifold short-circuits. Mutated passenger horrors are battering the compartment bulkhead minutes before the public station doors open.',
+    choices: [
+      {
+        labelVi: 'Cầm vũ khí W Corp xông vào toa xe, tiêu diệt dị thể và kích hoạt khôi phục hình thể',
+        labelEn: 'Breach the carriage with W Corp cleavers, executing mutates and forcing cellular reset',
+        resultVi: 'Máu thịt văng tung tóe trong khoang tàu. Bạn kích hoạt công tắc khôi phục thời gian Singularity đúng 3 giây trước giờ mở cửa. Hành khách bước ra tươi cười như vừa ngủ một giấc 10 giây. Ban điều hành thưởng nóng cho bạn.',
+        resultEn: 'Gore painted the bulkheads. You slapped the Singularity reset relay three seconds before public boarding. Passengers stepped onto the platform smiling after a "ten-second trip". You received a massive hazard bonus.',
+        meritAdd: 26,
+        effects: { health: -16, sanity: -8, rep: +30, wealth: +60, resonance: +16 }
+      },
+      {
+        labelVi: 'Cô lập toa tàu bằng vách ngăn chân không, bơm khí gây mê diện rộng',
+        labelEn: 'Seal the carriage in a vacuum bulkhead, flooding it with neural anesthetics',
+        resultVi: 'Toán hành khách đột biến lịm đi an toàn. Đội kỹ thuật xử lý êm thấm sự cố mà bạn không phải đối mặt với nguy hiểm thể xác.',
+        resultEn: 'The abominations slumped into comas safely. Technical crews resolved the glitch cleanly without physical peril to yourself.',
+        meritAdd: 20,
+        effects: { rep: +20, wealth: +38, sanity: +5 }
+      }
+    ]
+  },
+  {
+    id: 'wing_kcorp_ampoule_contamination',
+    age: [20, 72],
+    major: true,
+    weight: 45,
+    need: { jobs: ['Wing Employee'] },
+    forbids: ['Distorted'],
+    vi: '[Kiểm Định Huyết Thanh K Corp · Nước Mắt Singularity] Một lô hàng Ống Tiêm K Corp cao cấp chuẩn bị xuất xưởng bị phát hiện có bọt khí bất thường. Bạn nhận nhiệm vụ kiểm tra buồng chứa Singularity Nước Mắt để tìm nguyên nhân rò rỉ.',
+    en: '[K Corp Ampoule Quality Audit · Singularity Tears] A flagship crate of K Corp HP Ampoules exhibits erratic froth. You are dispatched into the subterranean tear-well chamber to diagnose the Singularity contamination.',
+    choices: [
+      {
+        labelVi: 'Hiệu chỉnh lại màng lọc sinh học và thay thế bộ lọc nano đúng quy trình',
+        labelEn: 'Recalibrate the biological filtration baffles and swap the nano-filters',
+        resultVi: 'Dòng dịch ngọc bích trở lại trạng thái trong vắt hoàn mỹ. Lô hàng được xuất xưởng đúng hạn, và bạn được thưởng một ống tiêm hồi phục K Corp nguyên bản phòng thân.',
+        resultEn: 'The emerald tears returned to pristine clarity. The batch cleared customs on schedule; the Board gifted you a genuine sealed K Corp ampoule.',
+        meritAdd: 24,
+        itemAdd: 'con_kcorp_ampoule',
+        effects: { rep: +24, wealth: +42, sanity: +8 }
+      },
+      {
+        labelVi: 'Phát hiện một nhóm nhân viên đang lén bòn rút dịch Singularity để bán chợ đen',
+        labelEn: 'Uncover rogue technicians embezzling raw Singularity serum for the black market',
+        resultVi: 'Bạn bắt quả tang và bàn giao toàn bộ đường dây cho an ninh K Corp. Bạn được thăng chức quản đốc kiểm định với mức lương hậu hĩnh.',
+        resultEn: 'You caught the embezzlement ring red-handed and delivered them to security. The Wing elevated you to Chief Auditor with a salary spike.',
+        meritAdd: 22,
+        effects: { rep: +26, wealth: +50, network: +18 }
+      }
+    ]
+  },
+  {
+    id: 'wing_rcorp_cloning_selection_drill',
+    age: [21, 68],
+    major: true,
+    weight: 44,
+    need: { jobs: ['Wing Employee'] },
+    forbids: ['Distorted'],
+    vi: '[Lò Ấp Nhân Bản R Corp · Tuyển Chọn Pack Thứ 4] Bạn được cử đến cơ sở huấn luyện R Corp để giám sát buồng đấu sinh tử của 5 bản sao nhân bản (Clones). Theo luật của R Corp, chỉ có 1 bản sao mạnh mẽ nhất được phép sống sót bước ra làm lính đánh thuê.',
+    en: '[R Corp 4th Pack Hatchery · Clone Survival Protocol] Dispatched to an R Corp facility, you supervise the lethal battle arena between five identical genetic clones. By R Corp charter, only the single surviving apex clone may deploy into active service.',
+    choices: [
+      {
+        labelVi: 'Ghi nhận và ký giấy chứng nhận cho cá thể bản sao chiến thắng xuất sắc nhất',
+        labelEn: 'Certify the victorious apex clone and process survival credentials cleanly',
+        resultVi: 'Cá thể sống sót bước ra từ vũng máu với ánh mắt lạnh như băng. Bạn đóng dấu phê chuẩn điều động. R Corp thanh toán khoản thù lao giám sát nguy hiểm hậu hĩnh.',
+        resultEn: 'The lone victor stepped from the bloodied arena with eyes of cold obsidian. You stamped the authorization; R Corp wired an opulent hazard appraisal bounty.',
+        meritAdd: 24,
+        effects: { rep: +24, wealth: +52, sanity: -6 }
+      },
+      {
+        labelVi: 'Bí mật lưu trữ mẫu DNA ưu tú để bán cho xưởng rèn công nghệ sinh học',
+        labelEn: 'Secretly duplicate elite genetic telemetry to broker with biotech ateliers',
+        resultVi: 'Một xưởng rèn cơ thể ngầm trả giá cao chót vót cho dữ liệu thần kinh phản xạ của R Corp, đem lại tài sản lớn cho bạn.',
+        resultEn: 'An underground cybernetics forge paid a fortune for R Corp reflex telemetry, vastly enriching your bank account.',
+        meritAdd: 18,
+        effects: { wealth: +68, rep: +12, sanity: -4, heat: +10 }
+      }
+    ]
+  },
+  {
+    id: 'wing_ncorp_prosthetic_purge_tribunal',
+    age: [20, 70],
+    major: true,
+    weight: 44,
+    need: { jobs: ['Wing Employee'] },
+    forbids: ['Distorted'],
+    vi: '[Tòa Án Giáo Hội N Corp · Thanh Trừng Cơ Khí] Các Thẩm Phán và Kẻ Hành Quyết (Inquisitors) của N Corp ghé thăm phân khu làm việc của bạn để thanh tra sự thuần khiết thể xác. Bất kỳ ai mang linh kiện cơ khí hay khớp kim loại đều bị quy là dị giáo.',
+    en: '[N Corp Inquisition Tribunal · Prosthetic Purge] Hammer Inquisitors and Nailsmiths of N Corp inspect your administrative sector for bodily purity. Anyone bearing biomechanical augmentations is branded a heretic.',
+    choices: [
+      {
+        labelVi: 'Tuyên bố lòng trung thành với thể xác thuần khiết, giúp đồng nghiệp cất giấu đồ giả',
+        labelEn: 'Proclaim devotion to unmarred flesh while secretly hiding colleagues’ implants',
+        resultVi: 'Sự khéo léo của bạn giúp phân khu vượt qua cuộc thanh tra mà không ai bị đóng đinh. Các đồng nghiệp mang ơn cứu mạng của bạn suốt đời.',
+        resultEn: 'Your quick-witted composure guided the entire division past the Inquisition unscathed. Colleagues pledged lifelong loyalty to you.',
+        meritAdd: 22,
+        effects: { rep: +20, network: +30, sanity: +10 }
+      },
+      {
+        labelVi: 'Dẫn đầu lực lượng đối chất với Inquisitor bằng quy chế pháp lý liên Wing',
+        labelEn: 'Confront the Inquisitors with inter-Wing jurisdictional immunity treaties',
+        resultVi: 'Lập luận sắc bén của bạn buộc toán Inquisitor hung hãn phải thu đinh búa rút lui. Danh tiếng bản lĩnh của bạn lan khắp tập đoàn.',
+        resultEn: 'Your razor-sharp legal mastery forced the inquisitors to withdraw their hammers. Your organizational reputation surged across the Wing.',
+        meritAdd: 24,
+        effects: { rep: +28, wealth: +35, sanity: +8 }
+      }
+    ]
+  },
+  {
+    id: 'wing_lobotomy_ruin_cogito_salvage',
+    age: [22, 75],
+    major: true,
+    weight: 46,
+    need: { jobs: ['Wing Employee'] },
+    forbids: ['Distorted'],
+    vi: '[Khai Quật Tàn Tích L Corp · Tinh Thể Cogito] Bạn được cử làm trưởng đoàn thám hiểm bước xuống tàn tích chi nhánh Lobotomy Corporation đổ nát dưới lòng đất. Trong bóng tối, các bình chứa Cogito và Enkephalin phát quang màu xanh lục kỳ ảo giữa những xác vỏ Abnormality bất động.',
+    en: '[Lobotomy Corp Branch Ruins · Cogito Salvage Expedition] Appointed expedition leader, you descend into a collapsed Lobotomy Corporation subterranean branch. Amidst dormant Abnormality casings, crystalline Enkephalin and Cogito canisters hum with phantom viridian light.',
+    choices: [
+      {
+        labelVi: 'Thu hồi các bình Enkephalin nguyên vẹn và mảnh phế liệu E.G.O mang về tập đoàn',
+        labelEn: 'Salvage intact Enkephalin canisters and fractured E.G.O plating for the Wing',
+        resultVi: 'Đoàn thám hiểm an toàn mang về nguồn năng lượng vô giá. Các nhà khoa học Wing trầm trồ thán phục; bạn nhận tiền thưởng lớn cùng huân chương cống hiến đặc biệt.',
+        resultEn: 'The team safely extracted invaluable energy reserves. Wing scientists marveled at the haul; you received a massive merit bonus and honorary commendations.',
+        meritAdd: 28,
+        effects: { rep: +32, wealth: +65, resonance: +18, sanity: +6 }
+      },
+      {
+        labelVi: 'Lắng nghe tiếng thì thầm phát ra từ tàn tích, hấp thụ một tia cộng hưởng Ánh Sáng',
+        labelEn: 'Listen to the ancient whispers echoing in the ruins, absorbing a spark of Light',
+        resultVi: 'Một luồng sáng ấm áp rực rỡ truyền vào tâm thức bạn. Bạn cảm nhận sâu sắc hơn về bản ngã và sức mạnh tiềm ẩn của chính mình.',
+        resultEn: 'A warm luminescent spark flooded your psyche. Your comprehension of the soul and latent E.G.O resonance deepened profoundly.',
+        meritAdd: 24,
+        effects: { sanity: +25, resonance: +25, rep: +15, health: +10 }
+      }
+    ]
   }
 ];
