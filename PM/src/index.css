@@ -3815,6 +3815,24 @@ p {
   .table.stack-sm .num {
     text-align: left;
   }
+  .bloodline-action-td {
+    margin-top: 8px;
+    padding-top: 8px !important;
+    border-top: 1px dashed rgba(255, 255, 255, 0.08) !important;
+  }
+  .bloodline-action-td > div {
+    justify-content: flex-start !important;
+    gap: 8px !important;
+  }
+}
+
+.table-bloodline {
+  min-width: 780px;
+}
+@media (max-width: 640px) {
+  .table-bloodline {
+    min-width: 0 !important;
+  }
 }
 
 /* ==========================================================================

@@ -76,7 +76,7 @@ export const BloodlinePage = () => {
               {t('Xóa toàn bộ gia phả', 'Clear Entire Bloodline')}
             </button>
           </div>
-          <table className="table stack-sm" style={{ minWidth: 820 }}>
+          <table className="table stack-sm table-bloodline">
             <thead>
               <tr>
                 <th className="num" style={{ width: 64 }}>{t('Đời', 'Gen')}</th>
@@ -90,27 +90,27 @@ export const BloodlinePage = () => {
             <tbody>
               {pastLives.map((life, idx) => (
                 <tr key={`${life.seed}_${idx}`}>
-                  <td className="num">#{life.generation}</td>
-                  <td>
+                  <td className="num" data-label={t('Đời', 'Gen')}>#{life.generation}</td>
+                  <td data-label={t('Nhân vật', 'Character')}>
                     <div style={{ fontWeight: 500 }}>{life.name}</div>
                     <div className="cell-sub">
                       {lang === 'en' ? life.epitaphTitleEn || life.epitaphTitleVi : life.epitaphTitleVi} · {life.rankTier}
                     </div>
                     <div className="cell-sub">{lang === 'en' ? life.regionNameEn || life.regionNameVi : life.regionNameVi}</div>
                   </td>
-                  <td className="num">{life.age}</td>
-                  <td style={{ maxWidth: 260 }}>{lang === 'en' ? life.deathCauseEn || life.deathCauseVi : life.deathCauseVi}</td>
-                  <td className="muted" style={{ maxWidth: 200 }}>{life.relic}</td>
-                  <td>
-                    <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end' }}>
-                      <button type="button" className="btn" style={{ height: 30 }} onClick={() => handleInherit(life)}>
+                  <td className="num" data-label={t('Tuổi thọ', 'Age')}>{life.age} {t('tuổi', 'yrs')}</td>
+                  <td style={{ maxWidth: 260 }} data-label={t('Kết cục', 'Fate')}>{lang === 'en' ? life.deathCauseEn || life.deathCauseVi : life.deathCauseVi}</td>
+                  <td className="muted" style={{ maxWidth: 200 }} data-label={t('Di vật', 'Relic')}>{life.relic}</td>
+                  <td className="bloodline-action-td">
+                    <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end', flexWrap: 'wrap' }}>
+                      <button type="button" className="btn btn-primary" style={{ height: 32 }} onClick={() => handleInherit(life)}>
                         <Play size={14} />
                         {t('Chơi đời con', 'Play heir')}
                       </button>
                       <button
                         type="button"
                         className="icon-btn"
-                        style={{ width: 30, height: 30 }}
+                        style={{ width: 32, height: 32 }}
                         onClick={() => exportDossierCardPNG(life)}
                         aria-label={t('Tải thẻ PNG', 'Download PNG')}
                         title={t('Tải thẻ PNG', 'Download PNG')}
@@ -120,7 +120,7 @@ export const BloodlinePage = () => {
                       <button
                         type="button"
                         className="icon-btn"
-                        style={{ width: 30, height: 30, color: 'var(--bad)' }}
+                        style={{ width: 32, height: 32, color: 'var(--bad)' }}
                         onClick={() => {
                           Modal.confirm({
                             title: lang === 'en' ? `Delete ${life.name} from Bloodline?` : `Xóa ${life.name} khỏi gia phả?`,

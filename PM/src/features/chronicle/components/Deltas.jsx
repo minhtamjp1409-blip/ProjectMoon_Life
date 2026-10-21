@@ -5,12 +5,12 @@ const LABELS = {
   health: ['HP', 'HP'],
   sanity: ['SP', 'SP'],
   wealth: ['Ahn', 'Ahn'],
-  network: ['Network', 'Network'],
-  rep: ['Rep', 'Rep'],
-  heat: ['Heat', 'Heat'],
-  resonance: ['Resonance', 'Resonance'],
-  taboo: ['Taboo', 'Taboo'],
-  merit: ['Merit', 'Merit']
+  network: ['Quan hệ', 'Network'],
+  rep: ['Danh tiếng', 'Rep'],
+  heat: ['Truy nã', 'Heat'],
+  resonance: ['Cộng hưởng', 'Resonance'],
+  taboo: ['Điều cấm', 'Taboo'],
+  merit: ['Công trạng', 'Merit']
 };
 
 const STAT_ICONS = {

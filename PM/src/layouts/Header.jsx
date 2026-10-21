@@ -11,9 +11,9 @@ export const Header = ({ languageOverride }) => {
   const { pathname } = useLocation();
   const current = NAV_ITEMS.find((i) => i.key === pathname) || NAV_ITEMS[0];
   return (
-    <header className="app-mobile-header" lang={lang === 'bi' ? 'vi' : lang}>
+    <header className="mobile-top app-mobile-header" lang={lang === 'bi' ? 'vi' : lang}>
       <BrandMark size={29} />
-      <div>
+      <div className="brand">
         <strong>The City</strong>
         <span>{pick(lang, current.vi, current.en)}</span>
       </div>
@@ -33,20 +33,22 @@ export const Header = ({ languageOverride }) => {
     </header>
   );
 };
+
 export const BottomNav = ({ languageOverride }) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const preferredLang = useThemeStore((s) => s.lang);
   const lang = languageOverride || preferredLang;
   return (
-    <nav className="app-bottom-nav" aria-label={pick(lang, 'Điều hướng chính', 'Main navigation')} lang={lang === 'bi' ? 'vi' : lang}>
+    <nav className="bottom-nav app-bottom-nav" aria-label={pick(lang, 'Điều hướng chính', 'Main navigation')} lang={lang === 'bi' ? 'vi' : lang}>
       {NAV_ITEMS.map((item) => {
         const Icon = item.icon;
+        const isActive = pathname === item.key;
         return (
           <button
             key={item.key}
-            className={pathname === item.key ? 'is-current' : ''}
-            aria-current={pathname === item.key ? 'page' : undefined}
+            className={isActive ? 'is-active is-current' : ''}
+            aria-current={isActive ? 'page' : undefined}
             onClick={() => navigate(item.key)}
           >
             <Icon size={19} strokeWidth={1.6} aria-hidden="true" />
@@ -57,4 +59,5 @@ export const BottomNav = ({ languageOverride }) => {
     </nav>
   );
 };
+
 export default Header;
