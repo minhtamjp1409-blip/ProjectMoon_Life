@@ -684,6 +684,14 @@ export const LIFE_MINORS = [
     '[The Azure Invitation of Angela] An ornate azure envelope rested neatly upon your bed pillow. It was a formal invitation to the mysterious Library, signed by “Angela.”',
     [
       C(
+        'Nhận lời mời và bước qua cánh cửa Thư Viện',
+        'Accept the invitation and enter the Library',
+        'Bạn ký tên dưới lời mời. Cánh cửa hiện ra nơi cuối hành lang; phía sau là tiếng lật sách và một cuộc tiếp đón mà bạn chưa biết giá phải trả.',
+        'You signed the invitation. A door appeared at the end of the hall; beyond it came turning pages and a reception whose price you did not yet know.',
+        { sanity: -6, resonance: 8 },
+        { mem: 'library_invite_accepted', motif: { curiosity: 1 } }
+      ),
+      C(
         'Xé nát bức thư vứt đi',
         'Tear the letter to shreds',
         'Phong bì thư tự bốc cháy thành tro tàn trước khi ngón tay bạn kịp chạm vào xé rách. Suốt cả tháng trời sau đó, bạn luôn gặp ác mộng trong từng giấc ngủ.',

@@ -58,6 +58,11 @@ export const isFixerCareerEvent = (event) =>
 
 export const effectiveAge = (char) => char.age * frailty(char);
 
+export function reputationGain(current, gain) {
+  if (gain <= 0 || current < 60) return gain;
+  return Math.max(0, Math.round(gain * Math.max(0, 100 - current) / 40));
+}
+
 /** HP lost to age this year (0 before the body gives). */
 export function agingLoss(char) {
   const a = BALANCE.aging;

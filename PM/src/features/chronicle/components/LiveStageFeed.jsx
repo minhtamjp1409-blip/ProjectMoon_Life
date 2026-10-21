@@ -138,7 +138,7 @@ const DockNavigation = () => null;
 const placeOf = (char) =>
   char.flags?.includes('Nest') || char.flags?.includes('Feather') ? 'Nest' : char.flags?.includes('Outskirts') || char.regionId === 'OUTSKIRTS' ? 'Outskirts' : 'Backstreets';
 
-const MinorDock = ({ prompt, npcs, wealth = 0, paused, onPick, place = 'Backstreets' }) => {
+const MinorDock = ({ prompt, char, npcs, wealth = 0, paused, onPick, place = 'Backstreets' }) => {
   const { t, lang, bilingual } = useT();
   const raw = lang === 'en' ? prompt.en : prompt.vi;
   const { title, body } = splitTitle(raw);
@@ -187,7 +187,7 @@ const MinorDock = ({ prompt, npcs, wealth = 0, paused, onPick, place = 'Backstre
                       {isShortAhn ? t(`Thiếu Ahn (Cần ${costAhn})`, `Short Ahn (Needs ${costAhn})`) : t(`Tốn ${costAhn} Ahn`, `Cost: ${costAhn} Ahn`)}
                     </span>
                   )}
-                  <ChoicePreview choice={ch} npcs={npcs} />
+                  <ChoicePreview choice={ch} npcs={npcs} char={char} kind="minor" />
                 </span>
               </button>
             );
@@ -304,7 +304,7 @@ const EventDock = ({ event, char, onPick }) => {
                     </div>
                   )}
 
-                  <ChoicePreview choice={ch} npcs={char.npcs} />
+                  <ChoicePreview choice={ch} npcs={char.npcs} char={char} />
                   {extra.length > 0 && <span className="preview">{extra}</span>}
                 </span>
               </button>
@@ -817,7 +817,7 @@ export const LiveStageFeed = () => {
               {char.pendingEvent && <EventDock event={char.pendingEvent} char={char} onPick={handleSelectEvent} />}
               {!char.pendingEvent && char.pendingContract && <ContractDock contract={char.pendingContract} wealth={char.stats.wealth} onPick={handleSelectContract} />}
               {!char.pendingEvent && !char.pendingContract && char.pendingMinor && (
-                <MinorDock prompt={char.pendingMinor} npcs={char.npcs} wealth={char.stats.wealth} place={placeOf(char)} paused={speed === 0} onPick={handleChooseMinor} />
+                <MinorDock prompt={char.pendingMinor} char={char} npcs={char.npcs} wealth={char.stats.wealth} place={placeOf(char)} paused={speed === 0} onPick={handleChooseMinor} />
               )}
             </>
           )}

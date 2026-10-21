@@ -1,8 +1,8 @@
 import { advanceActiveNarrativeArcs } from './narrativeArcEngine.js';
-import { choiceIsAvailable, matchesNeed, mergeEffects, npcIsActive } from './eventConditions.js';
+import { choiceIsAvailable, matchesEventContext, mergeEffects, npcIsActive } from './eventConditions.js';
 import { ITEMS_CATALOG } from '../data/itemsData.js';
 import { rollPerinatalFate } from './fateEngine.js';
-import { rollTraits, traitsOf, varyEffects, tiltWeight, PRINTED_NUMBERS } from './variance.js';
+import { rollTraits, traitsOf, varyEffects, PRINTED_NUMBERS } from './variance.js';
 // ============================================================================
 // CORE LIFE-SIMULATION & GENERATIONAL BLOODLINE ENGINE
 // Connects World Data, Event Pools, Persistent NPCs, Tension Clocks & Weaver AI
@@ -32,6 +32,7 @@ import { DERIVATIVE_LORE_EVENTS } from '../data/eventsDerivativeLore.js';
 import { COMPANION_QUEST_EVENTS } from '../data/eventsCompanionQuests.js';
 import {
   FIXER_LADDER,
+  COLOR_FIXER_REQ,
   getNextFixerPromotion,
   fixerPromotionOfferChance,
   fixerPromotionSuccessChance,
@@ -53,8 +54,9 @@ import {
   updateDramaTension
 } from './weaverAI.js';
 import { hasMemory, closeThreads, applyNpcFate, namesInUse, applyBonds } from './director.js';
-import { BALANCE, isFixerCareerEvent } from './economyModel.js';
+import { BALANCE, isFixerCareerEvent, reputationGain } from './economyModel.js';
 import { activeScarCount, addScar } from './scarModel.js';
+import { weightedOutcomes } from './outcomeOdds.js';
 
 export const ALL_STORY_EVENTS = [
   ...CHILDHOOD_EVENTS,
@@ -728,7 +730,7 @@ export function getNextCareerMilestone(char) {
       const targetAge = 14;
       const curNet = char.stats?.network ?? char.network ?? 0;
       const targetNet = 15;
-      const activeNpcs = Object.values(char.npcs || {}).filter(n => n && !n.deceased && n.status !== 'dead').length;
+      const activeNpcs = Object.values(char.npcs || {}).filter(npcIsActive).length;
       const targetNpcs = 1;
 
       const p1 = Math.min(100, (curAge / targetAge) * 100);
@@ -1102,7 +1104,7 @@ export function generateFixerContract(char, rng) {
   power -= activeScarCount(char) * 2;
   if (char.flags.includes('고급장비') || char.flags.includes('유물') || char.craftWeapon) power += 12;
   if (char.flags.includes('EGOAwakened') || char.flags.includes('ShinAwakened')) power += 18;
-  if (char.npcs?.partner && !char.npcs.partner.deceased) power += 9;
+  if (npcIsActive(char.npcs?.partner)) power += 9;
 
   const difficulty = 32 + template.tier * 16;
   const baseSuccess = clamp(Math.round(55 + (power - difficulty) * 1.1), 18, 94);
@@ -1205,7 +1207,7 @@ export function resolveFixerContract(charState, approachId, rng = Math.random) {
     }
     const gainedMerit = Math.round(approach.meritGain * meritMult);
     char.stats.wealth = clamp(char.stats.wealth + approach.payAhn, 0, 100);
-    char.stats.rep = clamp(char.stats.rep + Math.max(2, template.tier + 2), 0, 100);
+    char.stats.rep = clamp(char.stats.rep + reputationGain(char.stats.rep, Math.max(2, template.tier + 2)), 0, 100);
     char.merit += gainedMerit;
     char.logs.push({
       id: `log_req_ok_${char.age}`,
@@ -1392,6 +1394,22 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
   const choice = event.choices?.[choiceIdx];
   if (!choiceIsAvailable(choice, char)) return char;
   char.pendingEvent = null;
+  if (event.id.startsWith('fixer_promo_')) {
+    const requiredGrade = event.choices?.find((entry) => entry.setFixerGrade != null)?.setFixerGrade;
+    const nextGrade = getNextFixerPromotion(char);
+    if (!nextGrade?.isEligible || requiredGrade !== nextGrade.grade || !matchesEventContext(event, char)) {
+      char.fixerTrialRetryGrade = null;
+      char.logs.push({
+        id: `log_ev_${char.age}_${event.id}_invalid`,
+        age: char.age,
+        season: SEASONS[char.seasonIdx],
+        type: 'promo',
+        vi: 'Hana hủy giấy triệu tập cũ vì Grade hoặc hồ sơ hiện tại không còn khớp. Không có thay đổi chỉ số.',
+        en: 'Hana withdrew an outdated summons because your current Grade or record no longer matches. No resources changed.'
+      });
+      return char;
+    }
+  }
   if (!char.seenEvents.includes(event.id)) {
     char.seenEvents.push(event.id);
   }
@@ -1437,27 +1455,13 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
   let outcome = choice;
   const rawOutcomes = choice.outcomes || choice.out;
   if (Array.isArray(rawOutcomes) && rawOutcomes.length > 0) {
-    // Project Moon RNG: Karma & Past Deeds tilt the odds!
-    const evaluatedOutcomes = rawOutcomes.filter(o => matchesNeed(o.need, char) && (o.w ?? 50) > 0).map(o => {
-      let weight = o.w ?? 50;
-      const resText = o.resultVi || o.rvi || '';
-      // If player has awakened Shin or martial mastery, combat odds tilt favorably
-      if (char.flags.includes('ShinAwakened') && (resText.includes('đứng') || resText.includes('thắng') || resText.includes('sống') || !o.deathCauseVi)) {
-        weight = Math.round(weight * 1.35);
-      }
-      // If player is distorted and outcome is violent/destructive
-      if (char.flags.includes('Distorted') && ((o.effects?.sanity || 0) < 0 || (o.effects?.rep || 0) > 0)) {
-        weight = Math.round(weight * 1.4);
-      }
-      return { ...o, effectiveW: Math.max(0, tiltWeight(weight, o.effects || o.fx, traitsOf(char))) };
-    });
-
-    const totalW = evaluatedOutcomes.reduce((s, o) => s + o.effectiveW, 0);
+    const evaluatedOutcomes = weightedOutcomes(choice, char);
+    const totalW = evaluatedOutcomes.reduce((s, entry) => s + entry.weight, 0);
     let roll = rng() * totalW;
-    for (const o of evaluatedOutcomes) {
-      roll -= o.effectiveW;
+    for (const { outcome: candidate, weight } of evaluatedOutcomes) {
+      roll -= weight;
       if (roll <= 0) {
-        outcome = o;
+        outcome = candidate;
         break;
       }
     }
@@ -1476,13 +1480,14 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
   if (effects.sanity) char.stats.sanity = clamp(char.stats.sanity + effects.sanity, 0, 100);
   if (effects.wealth) char.stats.wealth = clamp(char.stats.wealth + effects.wealth, 0, 100);
   if (effects.network) char.stats.network = clamp(char.stats.network + effects.network, 0, 100);
-  if (effects.rep) char.stats.rep = clamp(char.stats.rep + effects.rep, 0, 100);
+  if (effects.rep) char.stats.rep = clamp(char.stats.rep + (printsNumbers ? effects.rep : reputationGain(char.stats.rep, effects.rep)), 0, 100);
   if (effects.heat) char.heat = clamp((char.heat || 0) + effects.heat, 0, 100);
   if (effects.taboo) char.taboo = clamp((char.taboo || 0) + effects.taboo, 0, 3);
   if (effects.resonance) char.resonance = clamp((char.resonance || 0) + effects.resonance, 0, 100);
 
   // Career / Faction / Region mutations
   const setJob = outcome.setJob || choice.setJob;
+  if (char.job === 'Child' && setJob && setJob !== 'Child') char.merit = 0;
   if (setJob) char.job = setJob;
   if (choice.clearFinger || outcome.clearFinger) {
     char.finger = null;
@@ -1490,7 +1495,10 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
   }
 
   const setFixerGrade = outcome.setFixerGrade ?? choice.setFixerGrade;
-  if (setFixerGrade !== undefined) char.fixerGrade = setFixerGrade;
+  const previousFixerGrade = char.fixerGrade;
+  if (setFixerGrade !== undefined) {
+    char.fixerGrade = setFixerGrade;
+  }
 
   // Color Fixer Promotion & Title Assignment
   const isColorPromote = choice.promote === 'ColorFixer' || outcome.promote === 'ColorFixer' ||
@@ -1537,6 +1545,12 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
   const listedMerit = (choice.meritAdd || 0) + (outcome === choice ? 0 : outcome.meritAdd || 0);
   const meritAdd = isFixerCareerEvent(event) ? Math.round(listedMerit * BALANCE.fixerMeritScale) : listedMerit;
   if (meritAdd) char.merit = Math.max(0, char.merit + meritAdd);
+  if (event.id.startsWith('fixer_promo_') && char.fixerGrade < previousFixerGrade) {
+    const earnedAtGrade = FIXER_LADDER.find((step) => step.grade === char.fixerGrade)?.meritReq || 0;
+    const nextRequirement = FIXER_LADDER.find((step) => step.grade === char.fixerGrade - 1)?.meritReq || COLOR_FIXER_REQ.merit;
+    char.merit = Math.min(nextRequirement - 10,
+      earnedAtGrade + Math.floor(Math.max(0, char.merit - earnedAtGrade) * 0.25));
+  }
 
   // Flags, Scars, Codex Records, NPCs, Memories (Persistent Causality)
   const flagsAdd = [

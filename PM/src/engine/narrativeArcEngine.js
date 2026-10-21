@@ -7,6 +7,7 @@
  */
 
 import { normalize, ResponseCurves } from './utilityCurves.js';
+import { npcIsActive } from './eventConditions.js';
 
 /**
  * Canonical Multi-Stage Narrative Arcs:
@@ -212,7 +213,7 @@ export function simulateNpcAutonomousLife(char, rng = Math.random) {
 
   // 1. Childhood Friend Autonomous Life
   const friend = char.npcs.friend;
-  if (friend && !friend.deceased && friend.status === 'alive') {
+  if (npcIsActive(friend)) {
     const friendAge = (char.age || 0);
     if (friendAge >= 18 && rng() < 0.12) {
       const roll = rng();
@@ -238,7 +239,7 @@ export function simulateNpcAutonomousLife(char, rng = Math.random) {
 
   // 2. Living Mentor Autonomous Life
   const mentor = char.npcs.mentor;
-  if (mentor && !mentor.deceased && mentor.status === 'alive') {
+  if (npcIsActive(mentor)) {
     if (char.age >= 25 && rng() < 0.14) {
       logs.push({
         vi: `[Chỉ dạy của Sư Phụ] ${mentor.nameVi} gọi bạn tới uống trà lúc hoàng hôn, ngắm nhìn vết chém cũ trên tay và truyền thụ kinh nghiệm đối đầu sát thủ Shi.`,
@@ -250,7 +251,7 @@ export function simulateNpcAutonomousLife(char, rng = Math.random) {
 
   // 3. Living Spouse Autonomous Life
   const spouse = char.npcs.spouse;
-  if (spouse && !spouse.deceased && spouse.status === 'alive' && char.flags.includes('Married')) {
+  if (npcIsActive(spouse) && char.flags.includes('Married')) {
     if (rng() < 0.15) {
       logs.push({
         vi: `[Tổ ấm Backstreets] ${spouse.nameVi} thắp một ngọn nến thơm tự chế bên bàn ăn, chuẩn bị bữa tối nóng hổi xua tan giá lạnh sau một ca làm việc dài.`,

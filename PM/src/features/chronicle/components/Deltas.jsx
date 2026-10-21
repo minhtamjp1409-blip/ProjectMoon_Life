@@ -1,5 +1,7 @@
 import React from 'react';
 import { useT } from '../../../i18n';
+import { weightedOutcomes } from '../../../engine/outcomeOdds.js';
+import { fixerPromotionSuccessChance } from '../../../engine/careerPipeline.js';
 
 const LABELS = {
   health: ['HP', 'HP'],
@@ -151,15 +153,21 @@ const outsOf = (c) => c?.out || c?.outcomes || null;
  * What a choice will do: list of affected resources (without exact numbers to maintain
  * suspense and gamble), plus odds when multiple outcomes exist.
  */
-export function previewChoice(choice) {
+export function previewChoice(choice, char, kind = 'major') {
   const base = fxOf(choice);
-  const outs = outsOf(choice);
+  if (char && choice.setFixerGrade != null) {
+    const pass = Math.round(fixerPromotionSuccessChance(char, choice.setFixerGrade) * 100);
+    return { affected: [...new Set([...STAT_ORDER.filter((key) => Boolean(base[key])), 'health', 'wealth', 'sanity'])],
+      fixed: [], ranges: [], odds: null, examOdds: { pass, fail: 100 - pass } };
+  }
+  const weighted = char ? weightedOutcomes(choice, char, kind) : (outsOf(choice) || []).map((outcome) => ({ outcome, weight: outcome.w ?? 1 }));
+  const outs = weighted.map((entry) => entry.outcome);
   if (!outs?.length) {
     const affected = STAT_ORDER.filter((k) => Boolean(base[k]) || (k === 'wealth' && Boolean(choice.costAhn)));
     const fixed = STAT_ORDER.filter((k) => base[k] || (k === 'wealth' && choice.costAhn)).map((k) => ({ k, v: base[k] || -choice.costAhn }));
     return { affected, fixed, ranges: [], odds: null };
   }
-  const total = outs.reduce((s, o) => s + (o.w ?? 50), 0);
+  const total = weighted.reduce((sum, entry) => sum + entry.weight, 0);
   const affected = [];
   const ranges = [];
   for (const k of STAT_ORDER) {
@@ -170,13 +178,13 @@ export function previewChoice(choice) {
     affected.push(k);
     ranges.push({ k, lo, hi });
   }
-  const odds = outs.map((o) => Math.round(((o.w ?? 50) / total) * 100));
+  const odds = weighted.map((entry) => Math.round((entry.weight / total) * 100));
   return { affected, fixed: [], ranges, odds };
 }
 
-export const ChoicePreview = ({ choice, npcs }) => {
+export const ChoicePreview = ({ choice, npcs, char, kind = 'major' }) => {
   const { t } = useT();
-  const { affected, odds } = previewChoice(choice);
+  const { affected, odds, examOdds } = previewChoice(choice, char, kind);
   const bonds = Object.entries(choice.bond || {})
     .map(([role]) => ({ name: npcs?.[role]?.nameVi || npcs?.spouse?.nameVi }))
     .filter((b) => b.name);
@@ -187,6 +195,11 @@ export const ChoicePreview = ({ choice, npcs }) => {
       {odds && (
         <span className="preview-odds">
           {t('May rủi', 'A gamble')} {odds.join(' / ')}%
+        </span>
+      )}
+      {examOdds && (
+        <span className="preview-odds">
+          {t('Đỗ', 'Pass')} {examOdds.pass}% · {t('Trượt', 'Fail')} {examOdds.fail}%
         </span>
       )}
       {affected.map((k) => (

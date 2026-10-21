@@ -320,7 +320,11 @@ export function isEventEligible(event, char, { scripted = false } = {}) {
   const fixerExam = event.id.startsWith('fixer_promo_');
   if (char.seenEvents?.includes(event.id) && !event.repeatable && !fixerExam) return false;
   if (event.causalOnly && !char.weaver?.pendingThreads?.some(t => t.eventId === event.id && !t.fulfilled && t.triggerAge <= char.age)) return false;
-  if (fixerExam && (!getNextFixerPromotion(char)?.isEligible || char.lastFixerExamAge === char.age)) return false;
+  if (fixerExam) {
+    const next = getNextFixerPromotion(char);
+    const eventGrade = event.choices?.find((choice) => choice.setFixerGrade != null)?.setFixerGrade;
+    if (!next?.isEligible || eventGrade !== next.grade || char.lastFixerExamAge === char.age) return false;
+  }
   if (event.id === 'hana_color_ascension_trial' && !checkColorFixerReadiness(char).ready) return false;
   const fingerTrialRank = event.id.startsWith('syn_')
     ? Object.values(FINGER_LADDERS).flat().find((step) => (step.eventIds || [step.eventId]).includes(event.id))?.rank

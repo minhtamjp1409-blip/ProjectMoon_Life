@@ -54,7 +54,10 @@ export function matchesNeed(need, char) {
 
 const roles = ['friend', 'partner', 'mentor', 'lover', 'spouse', 'child', 'parent', 'rival'];
 export function hasNarrativeContext(entry, char) {
-  const text = `${entry.vi || ''} ${entry.en || ''}`;
+  const text = [entry.vi, entry.en, entry.ignore?.rvi, entry.ignore?.ren,
+    ...(entry.choices || []).flatMap((choice) => [choice.vi, choice.en, choice.rvi, choice.ren,
+      choice.resultVi, choice.resultEn, ...(choice.out || choice.outcomes || []).flatMap((outcome) =>
+        [outcome.rvi, outcome.ren, outcome.resultVi, outcome.resultEn])])].filter(Boolean).join(' ');
   for (const role of roles) {
     if (!text.includes(`{${role}}`)) continue;
     const npc = char.npcs?.[role] || (role === 'lover' ? char.npcs?.spouse : null);

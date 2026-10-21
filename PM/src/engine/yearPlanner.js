@@ -1,5 +1,5 @@
 import { simulateNpcAutonomousLife } from './narrativeArcEngine.js';
-import { matchesNeed, matchesEventContext, choiceIsAvailable, mergeEffects, isNestResident, isOutsideCity } from './eventConditions.js';
+import { matchesNeed, matchesEventContext, choiceIsAvailable, mergeEffects, isNestResident, isOutsideCity, npcIsActive } from './eventConditions.js';
 import {
   getNextFixerPromotion,
   fixerPromotionSuccessChance,
@@ -61,9 +61,10 @@ import {
   npcActive,
   hasMemory
 } from './director.js';
-import { freshness, varyEffects, traitsOf, tiltWeight, PRINTED_NUMBERS } from './variance.js';
-import { BALANCE, healAmount, calmAmount, agingLoss, effectiveAge, driftOf, hasEstablishedStanding } from './economyModel.js';
+import { freshness, varyEffects, traitsOf, PRINTED_NUMBERS } from './variance.js';
+import { BALANCE, healAmount, calmAmount, agingLoss, effectiveAge, driftOf, hasEstablishedStanding, reputationGain } from './economyModel.js';
 import { activeScarCount, addScar } from './scarModel.js';
+import { weightedOutcomes } from './outcomeOdds.js';
 
 export const MINOR_WINDOW_MS = 15000;
 // How many recent moments freshness looks back over (see variance.js)
@@ -112,13 +113,14 @@ const ageOk = (entry, age) => !entry.age || (age >= entry.age[0] && age <= entry
  * Applies an effect map and returns the deltas that actually landed after clamping,
  * in a fixed order so the UI always lists them the same way.
  */
-export function applyFx(char, fx = {}) {
+export function applyFx(char, fx = {}, { exactRep = false } = {}) {
   const deltas = [];
   const omen = FATE_OMENS.find((o) => o.id === char.fateOmenId);
   for (const k of STAT_KEYS) {
     if (!fx[k]) continue;
     const before = char.stats[k];
-    char.stats[k] = clamp(before + fx[k], 0, 100);
+    const amount = k === 'rep' && fx[k] > 0 && !exactRep ? reputationGain(before, fx[k]) : fx[k];
+    char.stats[k] = clamp(before + amount, 0, 100);
     const d = char.stats[k] - before;
     if (d) deltas.push({ k, v: d });
   }
@@ -499,7 +501,7 @@ export async function syncPlanWithBackend(charState, rng) {
       recent: charState.recent || [],
       fateOmenId: charState.fateOmenId || '',
       yearsSinceLastMajor: charState.weaver?.yearsSinceLastMajor || 0,
-      activeNpcsCount: Object.values(charState.npcs || {}).filter((n) => n && !n.deceased && n.status !== 'dead').length,
+      activeNpcsCount: Object.values(charState.npcs || {}).filter(npcIsActive).length,
       pendingThreads: (charState.weaver?.pendingThreads || []).map((th) => ({
         id: th.id || '',
         eventId: th.eventId || '',
@@ -808,7 +810,8 @@ export function resolveMinor(charState, idx, rng) {
   let outcome = choice;
   const traits = traitsOf(char);
   if (Array.isArray(choice.out) && choice.out.length) {
-    outcome = pickWeighted(choice.out, (o) => tiltWeight(o.w ?? 1, o.fx || o.effects, traits), rng) || choice;
+    const weighted = weightedOutcomes(choice, char, 'minor');
+    outcome = pickWeighted(weighted, (entry) => entry.weight, rng)?.outcome || choice;
   }
   const resultText = `${outcome.rvi || ''}${choice.rvi || ''}`;
   const baseEffects = mergeEffects(choice, outcome);
@@ -817,7 +820,7 @@ export function resolveMinor(charState, idx, rng) {
   if (choice.costAhn && !(mergedEffects.wealth < 0)) {
     mergedEffects.wealth = -choice.costAhn;
   }
-  const deltas = applyFx(char, mergedEffects);
+  const deltas = applyFx(char, mergedEffects, { exactRep: PRINTED_NUMBERS.test(resultText) });
   [...(choice.flags || []), ...(outcome === choice ? [] : outcome.flags || [])].forEach((f) => {
     if (!char.flags.includes(f)) char.flags.push(f);
   });
@@ -977,7 +980,7 @@ export function endYear(charState, rng) {
   }
 
   // Mental Sanity recovery vs Tavern comfort
-  const bond = ['spouse', 'partner', 'friend', 'mentor', 'child'].some((k) => char.npcs?.[k] && !char.npcs[k].deceased && (char.npcs[k].bond || 0) >= 50);
+  const bond = ['spouse', 'partner', 'friend', 'mentor', 'child'].some((k) => npcIsActive(char.npcs?.[k]) && (char.npcs[k].bond || 0) >= 50);
   if (char.stats.sanity < BALANCE.calm.below && !char.flags.includes('Distorted')) {
     if (bond) {
       add('sanity', calmAmount(char, 'bond'));

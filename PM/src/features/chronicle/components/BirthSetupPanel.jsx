@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Dices, GitBranch, Play, ChevronDown, ArrowUpRight, Search, BookOpen, MapPin, Sparkles } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Modal } from 'antd';
 import { useGameStore } from '../../../store/gameStore';
 import { freshSeed, createRNG, rollBirthRegion } from '../../../engine/gameEngine';
@@ -682,10 +682,10 @@ export const BirthSetupPanel = () => {
             'A non-commercial fan project. World and lore by Project Moon.'
           )}
         </p>
-        <a href="/THE_CITY_CHRONICLES_DOCUMENTATION.pdf" target="_blank" rel="noreferrer">
-          {t('Tài liệu gameplay', 'Gameplay guide')}
+        <Link to="/glossary">
+          {t('Thuật ngữ thế giới', 'World Glossary')}
           <ArrowUpRight size={14} />
-        </a>
+        </Link>
       </footer>
     </div>
   );
