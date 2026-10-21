@@ -9,6 +9,7 @@ export function matchesNeed(need, char) {
   if (need.notNest && isNestResident(char)) return false;
   if (need.back && (isNestResident(char) || isOutsideCity(char))) return false;
   if (need.out && !isOutsideCity(char)) return false;
+  if (need.notOut && isOutsideCity(char)) return false;
   if (need.jobs) {
     const jobAllowed = need.jobs.includes(char.job) ||
       (char.flags?.includes('Distorted') && char.finger && need.jobs.includes('Syndicate'));
@@ -40,6 +41,7 @@ export function matchesNeed(need, char) {
   if (need.noMem && remembers(need.noMem)) return false;
   if (need.grade && !(char.job === 'Fixer' && char.fixerGrade <= need.grade[0] && char.fixerGrade >= need.grade[1])) return false;
   if (need.fingerRank != null && (char.fingerRank || 0) !== need.fingerRank) return false;
+  if (need.fingerRankAtLeast != null && (char.fingerRank || 0) < need.fingerRankAtLeast) return false;
   if (need.wingRank != null && (char.wingRank || 0) !== need.wingRank) return false;
   if (need.workshopRank != null && (char.workshopRank || 0) !== need.workshopRank) return false;
   for (const [key, [lo, hi]] of Object.entries(need.stat || {})) {

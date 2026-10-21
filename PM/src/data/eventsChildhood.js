@@ -849,12 +849,10 @@ export const CONSEQUENCE_EVENTS = [
       {
         labelVi: 'Chấp hành mệnh lệnh với kỷ luật sắt thép của The Thumb',
         labelEn: 'Execute the order with iron Thumb discipline',
-        resultVi: 'Tiếng đạn nổ đều đặn như nhịp đồng hồ. Cả băng nhóm bị thanh trừng gọn gàng. Sottocapo ban tặng bạn huy hiệu Capo danh dự cùng một túi tiền thưởng lớn.',
-        resultEn: 'Gunfire rang out methodical as a clock. The entire crew was cleanly purged. The Sottocapo bestowed upon you an honorary Capo insignia and a heavy purse.',
-        setFingerRank: 3,
-        effects: { wealth: +38, rep: +28, sanity: -18, resonance: +18 },
-        scarsAdd: ['Kẻ thi hành lễ nghi của The Thumb'],
-        meritAdd: 30
+        resultVi: 'Bạn nộp báo cáo cùng số vỏ đạn khớp sổ cấp phát. Sottocapo trả tiền công và giữ bản ghi về cách bạn chấp hành. Chuyện thăng cấp vẫn phải qua khảo hạch riêng.',
+        resultEn: 'You filed your report with the spent casings accounted for. The Sottocapo paid you and kept the record of your discipline. Promotion still required its own trial.',
+        effects: { wealth: +12, rep: +8, sanity: -5 },
+        meritAdd: 6
       }
     ]
   },

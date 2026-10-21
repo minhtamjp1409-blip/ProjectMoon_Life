@@ -173,20 +173,19 @@ export const FACTION_EVENTS = [
     major: true,
     weight: 8.5,
     jobs: ['Syndicate'],
+    need: { finger: 'Thumb', fingerRank: 0 },
+    forbids: ['ThumbTraitor'],
     vi: '[Lễ Nghi Bất Khả Xâm Phạm Của The Thumb] Trong buổi tiệc chia địa bàn tại sảnh đường lộng lẫy, vị Sottocapo uy nghiêm ra lệnh phóng hỏa san phẳng toàn bộ dãy nhà trọ nơi người anh em kết nghĩa của bạn đang sinh sống. Bạn vừa vô thức cau mày bước lên một bước, một Capo bên cạnh liền rút con dao găm mạ vàng đặt cạch xuống bàn tiệc: "Ngươi định biểu lộ sự phản đối trước mặt Sottocapo sao? Đó là hành vi bất kính tột cùng. Tự rạch mặt tạ tội đúng lễ nghi, hoặc ta sẽ hạ lệnh cho đội Soldato bắn nát đầu toàn bộ tổ đội của ngươi."',
     en: '[The Thumb’s etiquette] At the turf meeting, a Sottocapo ordered a whole row of houses burned, your closest brother’s among them. You had barely opened your mouth when a Capo set a gilded knife on the table.\n“Were you about to question a Sottocapo? Do it yourself, or I shoot your whole crew.”',
     choices: [
       {
         labelVi: 'Cầm dao, tự rạch má mình, và cúi đầu đúng phép',
         labelEn: 'Take the knife, cut your own cheek, and bow exactly as required',
-        resultVi: 'Bạn cầm dao găm, rạch một đường dài từ thái dương xuống gò má mà không hề chớp mắt, rồi quỳ rạp cúi đầu góc 45 độ chuẩn xác theo quy chuẩn The Thumb. Máu nhỏ tong tòng xuống sàn cẩm thạch. Sottocapo mỉm cười gật đầu tán thưởng: "Một kẻ thấu hiểu tôn ti trật tự." Ông ta thăng cấp bạn lên Capo ngay trong đêm, trong khi dãy nhà phía xa bốc cháy rực trời.',
-        resultEn: 'Blood dripped on the floorboards while you bowed. The Sottocapo applauded. “Perfect manners.” He made you a Capo on the spot. The houses still burned that night.',
-        setFinger: 'Thumb',
-        setFingerRank: 2,
-        recordsAdd: ['thumb_underboss'],
-        effects: { health: -34, sanity: -18, rep: +28, wealth: +26, resonance: +18 },
+        resultVi: 'Bạn cúi đầu, dùng lưỡi dao rạch má. Sottocapo gật một lần rồi tiếp tục bàn chuyện đạn dược. Không ai nhắc đến dãy nhà đang cháy. Sáng hôm sau bạn vẫn là Soldato; người của ông ta chỉ ghi vào sổ rằng bạn biết giữ đúng chỗ đứng.',
+        resultEn: 'You bowed and drew the blade across your cheek. The Sottocapo nodded once and resumed discussing ammunition. By morning you were still a Soldato; his people had merely written down that you knew your place.',
+        effects: { health: -10, sanity: -9, rep: +7, resonance: +5 },
         scarsAdd: ['Vết rạch trên má'],
-        meritAdd: 28,
+        meritAdd: 4,
         scheduleConsequences: [
           {
             eventId: 'csq_thumb_capo_trial',
@@ -199,21 +198,37 @@ export const FACTION_EVENTS = [
       {
         labelVi: 'Chộp con dao trước Capo',
         labelEn: 'Grab the knife before the Capo does',
-        resultVi: 'Bạn giết Capo và hai người gác cửa, rồi nhảy qua cửa sổ giữa tiếng súng. Dãy nhà được cứu. Từ đêm đó, The Thumb treo thưởng cho cái đầu của bạn.',
-        resultEn: 'You killed the Capo and the two at the door, then went out the window under fire. The houses were saved. From that night, the Thumb put a price on your head.',
+        resultVi: 'Bạn chộp dao. Capo kịp bóp cò trước khi bạn chạm tới cổ hắn. Bạn lao qua cửa sổ, mang theo vết đạn và lệnh truy sát của The Thumb. Dãy nhà vẫn cháy.',
+        resultEn: 'You grabbed the knife. The Capo fired before you reached his throat. You escaped through the window with a bullet wound and a Thumb bounty. The houses still burned.',
         flagsAdd: ['ThumbTraitor'],
-        effects: { health: -42, sanity: -10, rep: +20, heat: +45, resonance: +22 },
-        scarsAdd: ['Kẻ phản bội của The Thumb'],
-        meritAdd: 18,
+        setJob: 'Outcast',
+        clearFinger: true,
+        effects: { health: -42, sanity: -10, rep: -15, heat: +55 },
+        meritAdd: 0,
         scheduleConsequences: [
           {
-            eventId: 'csq_middle_ambush_adult',
+            eventId: 'csq_thumb_etiquette_hunt',
             delayYears: 3,
             reasonVi: 'Kẻ bị treo thưởng luôn bị săn lùng',
             reasonEn: 'Those with a bounty on their head are hunted'
           }
         ]
       }
+    ]
+  },
+  {
+    id: 'syn_thumb_etiquette_officer',
+    age: [24, 70],
+    major: true,
+    weight: 7,
+    need: { jobs: ['Syndicate'], finger: 'Thumb', fingerRankAtLeast: 1 },
+    forbids: ['ThumbTraitor'],
+    vi: '[Bản lệnh của cấp trên] Trong buổi kiểm sổ của The Thumb, một cấp trên ra lệnh dọn sạch dãy nhà mà người quen của bạn đang ở. Ở cấp bậc này, bạn được phép trình bày tổn thất đạn dược và nhân lực; bạn không được phép cãi lệnh vì thương người.',
+    en: '[A superior’s order] During a Thumb ledger review, a superior ordered the row of houses where someone you knew lived cleared out. Your rank permitted an objection about ammunition and manpower, not one made out of pity.',
+    choices: [
+      { labelVi: 'Trình bày thiệt hại dự tính, xin đổi mục tiêu', labelEn: 'Present the projected cost and request a different target', resultVi: 'Cấp trên xem con số rồi hoãn lệnh một ngày để kiểm lại. Bạn tranh thủ báo cho dãy nhà sơ tán. Sổ sách không ghi phần đó.', resultEn: 'The superior checked your figures and delayed the order by a day. You warned the residents to leave. That part did not enter the ledger.', effects: { sanity: 3, rep: -3, network: 3 } },
+      { labelVi: 'Thi hành lệnh đúng phạm vi đã giao', labelEn: 'Carry out the assigned order', resultVi: 'Bạn kiểm đủ người và đạn khi trở về. Cấp trên ký vào sổ, không hỏi điều gì nằm dưới lớp tro.', resultEn: 'You accounted for every operative and round on return. The superior signed the ledger without asking what lay beneath the ash.', effects: { sanity: -9, rep: 6, merit: 4 } },
+      { labelVi: 'Công khai chống lệnh và bỏ đi', labelEn: 'Defy the order in public and leave', resultVi: 'Bạn đặt phù hiệu xuống bàn. Không ai ngăn ở cửa, nhưng tiếng mở khóa súng theo bạn suốt cầu thang.', resultEn: 'You left your insignia on the table. No one stopped you at the door, but the sound of firearms being readied followed you down the stairs.', effects: { health: -12, heat: 35, rep: -12 }, flagsAdd: ['ThumbTraitor'], setJob: 'Outcast', clearFinger: true, scheduleConsequences: [{ eventId: 'csq_thumb_etiquette_hunt', delayYears: 2, reasonVi: 'The Thumb tìm người chống lệnh', reasonEn: 'The Thumb hunts a defector' }] }
     ]
   },
   {

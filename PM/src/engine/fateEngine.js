@@ -154,7 +154,7 @@ const MISHAPS = [
     en: 'The bite was so small you forgot it. Three days later it turned a color the adults did not want to name.',
     deathVi: 'Vết cắn của chuột cống nhiễm trùng', deathEn: 'A rat bite that turned septic' },
   // ---- anyone
-  { id: 'mi_flu_season', age: ANY, w: () => 1.3, dmg: [5, 12], san: 0, ahn: 2, lethal: 0.009,
+  { id: 'mi_flu_season', age: ANY, w: () => 1.3, dmg: [5, 8], san: 0, ahn: 2, lethal: 0.009,
     vi: 'Mùa cúm đi qua The City như mọi năm. Mỗi cửa hàng treo một tấm biển nghỉ, và bạn mất ba tuần để nhớ lại cách đi hết cầu thang.',
     en: 'Flu season went through the City as it does every year. Every shop hung a closed sign, and it took you three weeks to remember how to climb a flight of stairs.',
     deathVi: 'Một trận cúm mùa đông mà cơ thể không đủ sức qua', deathEn: 'A winter flu the body was too worn to survive' },

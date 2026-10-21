@@ -125,6 +125,7 @@ export function checkColorFixerReadiness(char) {
   if (char.fixerGrade !== 1) {
     return { ready: false, reason: 'Bắt buộc phải là Fixer Grade 1', targetMerit, targetRep };
   }
+  if (char.age < 30) return { ready: false, reason: 'Hana yêu cầu hồ sơ hành nghề lâu năm (từ 30 tuổi)', targetMerit, targetRep };
   const curRep = (char.stats?.rep ?? char.rep) || 0;
   const meritOk = (char.merit || 0) >= targetMerit;
   const repOk = curRep >= targetRep;
@@ -170,7 +171,7 @@ export const FINGER_LADDERS = {
 
 export function getNextFingerPromotion(char) {
   const isSyndicate = char.job === 'Syndicate' || (char.flags.includes('Distorted') && char.finger);
-  if (!isSyndicate || !char.finger) return null;
+  if (!isSyndicate || !char.finger || char.flags.includes('ThumbTraitor')) return null;
   const ladder = FINGER_LADDERS[char.finger];
   if (!ladder) return null;
   const curRank = char.fingerRank || 0;
@@ -180,7 +181,10 @@ export function getNextFingerPromotion(char) {
   if (!nextStep) return null;
 
   const curRep = (char.stats?.rep ?? char.rep) || 0;
-  const isEligible = (char.merit || 0) >= nextStep.meritReq && curRep >= nextStep.repReq;
+  const earliestAge = [0, 22, 28, 35][nextStep.rank];
+  const tenureOk = curRank === 0 || char.lastFingerPromotionAge == null || char.age - char.lastFingerPromotionAge >= 4;
+  const thumbPacingOk = char.finger !== 'Thumb' || (char.age >= earliestAge && tenureOk);
+  const isEligible = (char.merit || 0) >= nextStep.meritReq && curRep >= nextStep.repReq && thumbPacingOk;
 
   return {
     ...nextStep,

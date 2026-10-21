@@ -972,7 +972,7 @@ export const LIFE_MINORS = [
         'Bow and accept apprenticeship',
         'Ông rèn giũa bạn bằng những đòn gậy gỗ chuẩn xác mỗi sáng sớm lúc 5 giờ. Mỗi lần bạn ngã dập mặt, ông lão lại cười sảng khoái.',
         'He drilled you with heavy wooden staves every dawn at five. Every time you kissed the cobbles, he roared with hearty laughter.',
-        { health: 3, merit: 4 },
+        { sanity: 5, merit: 4 },
         { npc: { role: 'mentor', bond: 50 }, flags: ['해결사동경'] }
       ),
       C(
@@ -1292,7 +1292,7 @@ export const LIFE_MINORS = [
       )
     ],
     I('Bạn do dự chần chừ. Một tên tay sai khác lập tức ra tay thay và báo cáo thái độ của bạn lên cấp trên.', 'You hesitated. Another enforcer did the deed and logged your wavering disloyalty.'),
-    { rep: -4, sanity: -6, tags: ['danger'] }
+    { rep: -4, sanity: -6, once: true, tags: ['danger'] }
   ),
 
   M(
@@ -1388,16 +1388,16 @@ export const LIFE_MINORS = [
   M(
     'm_med_backstreet_clinic',
     GROWN,
-    { back: true },
+    { back: true, stat: { health: [0, 71] } },
     '[Phòng khám chui Backstreets] Vết thương chém xé và cơn sốt sau chuỗi ngày lăn lộn khiến bước chân bạn nặng trĩu. Trước mặt bạn là ánh đèn neon nhấp nháy của một phòng khám ngầm do một cựu y sĩ Nest đào thoát mở.',
     '[Backstreet Backroom Clinic] Lacerations and infection fever weigh heavily on your steps. Ahead flickers the neon sign of an illicit subterranean clinic run by an exiled Nest surgeon.',
     [
       C(
         'Chi 20 Ahn tiêm ống K Corp Ampoule chính hãng nguyên tem',
         'Pay 20 Ahn for genuine factory-sealed K Corp HP Ampoule',
-        'Dung dịch xanh lục bảo tinh khiết thẩm thấu cực nhanh; các vết chém sâu liền lại ngay tức khắc, sinh lực và tinh thần phục hồi vượt bậc.',
-        'Pure emerald Singularity fluid flooded your veins; deep flesh wounds fused instantly, returning vital stamina and mental focus.',
-        { health: 55, sanity: 15, wealth: -20 },
+        'Dung dịch xanh lục khép miệng những vết chém sâu. Cơn đau dịu đi, nhưng cơ thể vẫn cần thời gian để phục sức.',
+        'The green solution closed the deepest cuts. The pain eased, though your strength would take time to return.',
+        { health: 32, sanity: 5, wealth: -20 },
         { costAhn: 20 }
       ),
       C(
@@ -1405,7 +1405,7 @@ export const LIFE_MINORS = [
         'Pay 6 Ahn for diluted K Corp regenerative ampoule serum',
         'Dung dịch màu ngọc bích rát bỏng chảy dọc tĩnh mạch; các thớ thịt rách nát và miệng vết thương kéo da non với tốc độ thần kỳ.',
         'Emerald fluid burned along your veins; torn muscle tissue and lacerations knitted closed with miraculous speed.',
-        { health: 30, wealth: -6 },
+        { health: 15, wealth: -6 },
         { costAhn: 6 }
       ),
       C(
@@ -1413,7 +1413,7 @@ export const LIFE_MINORS = [
         'Pay 1 Ahn for disinfectant, crude painkillers and coarse bandages',
         'Bạn tự khử trùng vết rách và quấn chặt băng gạc. Dù vẫn còn đau âm ỉ, tình trạng nhiễm trùng đã được chặn đứng hoàn toàn.',
         'You sanitized the wounds and wrapped tight bandages. Though pain lingered, the creeping sepsis was firmly halted.',
-        { health: 16, wealth: -1 },
+        { health: 10, wealth: -1 },
         { costAhn: 1 }
       ),
       C(
@@ -1421,42 +1421,42 @@ export const LIFE_MINORS = [
         'Cauterize wounds with fire and endure the searing pain to save Ahn',
         'Mùi thịt khét và cơn đau thấu xương khiến bạn ngất lịm đi vài phút. Khi tỉnh dậy, vết rách đã cầm máu dù tinh thần kiệt quệ.',
         'The smell of charred flesh and blinding agony made you black out briefly. Wounds ceased bleeding, though mind was battered.',
-        { health: 8, sanity: -3 }
+        { health: 4, sanity: -6 }
       )
     ],
-    I('Lảo đảo bước qua phòng khám, phó mặc vết thương cho sức đề kháng tự nhiên.', 'Stagger past the clinic, leaving wounds to natural resilience.', { health: 4 }),
+    I('Lảo đảo bước qua phòng khám, phó mặc vết thương cho sức đề kháng tự nhiên.', 'Stagger past the clinic, leaving wounds to natural resilience.', { sanity: -2 }),
     { theme: 'health' }
   ),
 
   M(
     'm_med_nest_infirmary',
     GROWN,
-    { nest: true },
+    { nest: true, stat: { health: [0, 71] } },
     '[Trạm Điều Trị Tự Động Feather] Vòng đeo tay sinh trắc học của bạn nhấp nháy đèn đỏ báo động chấn thương mô mềm. Bạn bước vào buồng điều dưỡng y tế tự động của Cánh.',
     '[Feather Automated Med-Bay] Your biometric bracelet pulses amber, warning of severe tissue trauma. You enter the Wing’s automated residential restorative module.',
     [
       C(
         'Kích hoạt buồng sinh học hồi phục cao cấp K-Tier (-25 Ahn)',
         'Activate high-grade K-Tier biostasis rejuvenation chamber (-25 Ahn)',
-        'Dịch Singularity tinh khiết và oxy cao áp thẩm thấu toàn bộ tế bào. Mọi vi chấn thương, mệt mỏi tinh thần và vết cắt biến mất không dấu vết.',
-        'Pure Singularity solution and hyperbaric oxygen saturated every cell. Cellular trauma and psychological fatigue vanished without a trace.',
-        { health: 58, sanity: 24, wealth: -25 },
+        'Dịch phục hồi khép các vết thương nặng nhất. Bạn ra khỏi buồng điều trị với lịch tái khám còn nằm trên vòng tay.',
+        'The treatment closed the worst wounds. You left the chamber with a follow-up appointment on your wristband.',
+        { health: 35, sanity: 8, wealth: -25 },
         { costAhn: 25 }
       ),
       C(
         'Kích hoạt buồng sinh học hồi phục tiêu chuẩn (-8 Ahn)',
         'Activate standard biostasis rejuvenation chamber (-8 Ahn)',
-        'Hỗn hợp tế bào gốc và oxy cao áp thẩm thấu toàn thân. Cả cơ thể và tâm trí bạn được làm mới hoàn toàn chỉ sau một giấc ngủ ngắn.',
-        'Stem cell broth and hyperbaric oxygen saturated your tissues. Both body and psyche revitalized across a brief rest.',
-        { health: 36, sanity: 12, wealth: -8 },
+        'Buồng điều trị xử lý phần mô rách và cho bạn một đêm ngủ không bị đánh thức bởi báo động.',
+        'The chamber treated torn tissue and gave you a night without alarms.',
+        { health: 19, sanity: 4, wealth: -8 },
         { costAhn: 8 }
       ),
       C(
         'Sử dụng gói y tế cơ bản theo hạn ngạch cư dân (-2 Ahn)',
         'Use standard resident quota treatment (-2 Ahn)',
-        'Hệ thống phun thuốc khử trùng và băng dán nano xử lý chuẩn xác mọi vết rách thể chất.',
-        'Automated mist sprays and nano-bandages cleanly addressed your physical injuries.',
-        { health: 22, wealth: -2 },
+        'Hệ thống rửa vết thương và dán băng nano. Phần mô dập sâu vẫn cần theo dõi.',
+        'The system cleaned the wounds and applied nano-bandages. Deeper tissue damage still needed monitoring.',
+        { health: 12, wealth: -2 },
         { costAhn: 2 }
       ),
       C(
@@ -1464,26 +1464,26 @@ export const LIFE_MINORS = [
         'Collect energy vitamin fizz and return to work',
         'Viên vitamin giúp cơ thể bạn bớt mệt mỏi và duy trì thể lực qua ca làm việc dài.',
         'The nutrient tablet eased exhaustion, sustaining your vitality through long shifts.',
-        { health: 12 }
+        { health: 4 }
       )
     ],
-    I('Bỏ qua cảnh báo y tế để không bị trừ điểm chuyên cần.', 'Ignore health warnings to preserve attendance rating.', { health: 6 }),
+    I('Bỏ qua cảnh báo y tế để không bị trừ điểm chuyên cần.', 'Ignore health warnings to preserve attendance rating.', { sanity: -2 }),
     { theme: 'health' }
   ),
 
   M(
     'm_wellness_hamham_lunch',
     GROWN,
-    {},
+    { notOut: true, stat: { sanity: [0, 69] } },
     '[Bữa Trưa Ở HamHamPangPang] Mùi bánh mì nướng bơ tỏi thơm lừng phảng phất từ tiệm HamHamPangPang nức tiếng góc phố. Sau những giờ phút căng thẳng tột cùng giữa thành phố lạnh lùng, một bữa ăn nóng hổi có thể xoa dịu tâm trí bạn.',
     '[HamHamPangPang Lunch] The irresistible aroma of toasted garlic butter wafts from the renowned HamHamPangPang parlor down the block. After grueling stress in this callous city, a piping hot sandwich can soothe a frayed mind.',
     [
       C(
         'Gọi Combo Sandwich Đặc Biệt và trà hoa hồng ấm (-10 Ahn)',
         'Order Grand Toast Combo & warm rose tea (-10 Ahn)',
-        'Lớp bánh giòn rụm, thịt hun khói đẫm sốt và ngụm trà ấm xua tan toàn bộ căng thẳng tích tụ. Tinh thần bạn bình an lạ kỳ.',
-        'Crispy toasted crust, tender smoked meats, and fragrant tea melted away your deep exhaustion. A profound calm washed over your soul.',
-        { sanity: 28, health: 10, wealth: -10, resonance: -8 },
+        'Bữa ăn nóng giúp bạn lấy lại hơi sức. Những điều chờ ngoài cửa tiệm vẫn còn đó.',
+        'A hot meal helped you catch your breath. What waited outside the shop had not gone away.',
+        { sanity: 15, health: 3, wealth: -10, resonance: -4 },
         { costAhn: 10 }
       ),
       C(
@@ -1491,7 +1491,7 @@ export const LIFE_MINORS = [
         'Order classic egg-salad toast sandwich (-3 Ahn)',
         'Vị béo ngậy ngọt dịu tiếp thêm năng lượng và nụ cười hiếm hoi trong ngày làm việc.',
         'Rich egg salad and golden crust offered comforting warmth and a rare, peaceful smile.',
-        { sanity: 14, health: 5, wealth: -3 },
+        { sanity: 7, health: 1, wealth: -3 },
         { costAhn: 3 }
       )
     ],
@@ -1502,16 +1502,16 @@ export const LIFE_MINORS = [
   M(
     'm_med_blackstreet_doctor_organ',
     GROWN,
-    { back: true },
+    { back: true, stat: { health: [0, 64] } },
     '[Chợ Đen Y Tế · Phẫu Thuật Thay Tạng] Phổi và nội tạng của bạn bị tổn thương nặng nề bởi khói độc Backstreets và những trận giao tranh đẫm máu. Một bác sĩ ngầm đề xuất can thiệp phẫu thuật để cứu vãn tuổi thọ.',
     '[Black Market Clinic · Organ Reconstruction] Acidic smog and deep kinetic trauma take a heavy toll on your lungs and viscera. An underground surgeon offers surgical intervention.',
     [
       C(
         'Cấy ghép phổi sinh học lọc độc vi mô tân tiến (-28 Ahn)',
         'Install advanced biomimetic detox lung graft (-28 Ahn)',
-        'Sau ca mổ đau đớn, lồng ngực bạn nhẹ bẫng. Không khí độc hại của Backstreets giờ đây bị màng lọc nano hóa giải hoàn toàn!',
-        'Following agonizing surgery, your chest expanded with effortless clarity. The toxic smog was thoroughly neutralized by nano-membranes!',
-        { health: 48, sanity: 12, wealth: -28 },
+        'Sau ca mổ, bạn thở dễ hơn. Bác sĩ nhắc rằng màng lọc phải được thay định kỳ.',
+        'Breathing came easier after surgery. The doctor reminded you that the filter would need regular replacement.',
+        { health: 34, sanity: 4, wealth: -28 },
         { costAhn: 28 }
       ),
       C(
@@ -1519,7 +1519,7 @@ export const LIFE_MINORS = [
         'Inject specialized visceral detox serum (-12 Ahn)',
         'Cơn ho ra máu dịu hẳn xuống sau khi liều huyết thanh đậm đặc ngấm vào cơ thể.',
         'The racking bloody cough subsided steadily as the concentrated antitoxin took effect.',
-        { health: 26, sanity: 6, wealth: -12 },
+        { health: 18, sanity: 2, wealth: -12 },
         { costAhn: 12 }
       ),
       C(
@@ -1527,7 +1527,7 @@ export const LIFE_MINORS = [
         'Buy cheap cough suppressants and generic alcohol (-2 Ahn)',
         'Thuốc làm tê liệt cổ họng tạm thời, đủ để bạn gượng dậy tiếp tục bước đi.',
         'The coarse pills numbed your throat temporarily, just enough to keep you on your feet.',
-        { health: 10, wealth: -2 },
+        { health: 8, wealth: -2 },
         { costAhn: 2 }
       )
     ],
@@ -1538,61 +1538,61 @@ export const LIFE_MINORS = [
   M(
     'm_wellness_workshop_tuneup',
     GROWN,
-    {},
+    { notOut: true, jobs: ['Fixer', 'Syndicate', 'Workshop Craftsman'] },
     '[Bảo Trì Trang Bị Tại Workshop] Áo khoác chống đạn rách tơi tả, các khớp trợ lực kêu cọt kẹt và lưỡi kiếm mẻ cạnh sau chuỗi giao tranh khốc liệt. Một xưởng rèn uy tín chào mời gói bảo trì toàn diện.',
     '[Workshop Gear Overhaul & Maintenance] Shredded ballistic fabric, creaking pneumatic joints, and notched weapon edges. A reputable workshop offers complete tuning.',
     [
       C(
         'Đại tu toàn diện giáp nano và mài sắc lưỡi cắt phân tử (-22 Ahn)',
         'Commission full armor nano-reinforcement & molecular hone (-22 Ahn)',
-        'Bộ trang bị được gia cố sáng bóng như mới, khớp trợ lực vận hành trơn tru tăng cường khả năng sống sót của bạn!',
-        'Your gear gleamed like new, actuators recalibrated to peak response, drastically bolstering your battle survivability!',
-        { health: 25, rep: 8, wealth: -22 },
+        'Bộ giáp được vá kín, lưỡi kiếm mài lại. Chủ xưởng giới thiệu tay nghề của bạn với vài khách quen.',
+        'The armor was patched and the blade honed. The proprietor mentioned your work to a few regular clients.',
+        { rep: 8, network: 5, wealth: -22 },
         { costAhn: 22 }
       ),
       C(
         'Tra dầu giảm chấn và tán lại đinh chốt chịu lực (-6 Ahn)',
         'Lubricate shock absorbers and re-rivet kinetic plates (-6 Ahn)',
-        'Tiếng kêu cót két biến mất, tấm giáp chắc chắn hơn giúp bạn an tâm trước ca làm việc tới.',
-        'The grating noises ceased; reinforced rivets gave reassuring sturdiness for coming shifts.',
-        { health: 12, wealth: -6 },
+        'Tiếng kêu cót két biến mất. Người thợ nhận ra dấu hiệu xưởng cũ trên bộ giáp và nhớ tên bạn.',
+        'The creaking stopped. The mechanic recognized an old workshop mark on your armor and remembered your name.',
+        { rep: 3, wealth: -6 },
         { costAhn: 6 }
       )
     ],
-    I('Tiếc tiền không bảo dưỡng, mặc kệ trang bị xuống cấp.', 'Spare the coin, leaving worn gear to slowly degrade.', { health: -3 }),
+    I('Tiếc tiền không bảo dưỡng, mặc kệ trang bị xuống cấp.', 'Spare the coin, leaving worn gear to slowly degrade.', { rep: -2 }),
     { theme: 'wealth' }
   ),
 
   M(
     'm_med_child_remedy',
     YOUNG,
-    {},
-    '[Cơn sốt Backstreets] Nước bẩn và không khí ô nhiễm của khu phố khiến bạn lên cơn sốt rét mê man trên chiếc nệm rách. Trong cơn mơ hồ, bạn cần tìm cách vượt qua đêm lạnh.',
-    '[Backstreet Fever] Tainted water and noxious district smog plunge you into a shivering fever atop a ragged mattress. In delirious haze, you fight the night.',
+    { notOut: true, stat: { health: [0, 71] } },
+    '[Tiệm thuốc đầu ngõ] Người lớn nhận ra bạn không đủ sức đi hết bậc thang: có thể do cơn sốt, cũng có thể do vết thương chưa được rửa. Tiệm thuốc vẫn sáng đèn; trên bàn nhà còn một ít nước đã đun.',
+    '[The corner pharmacy] The adults noticed you could barely climb the stairs, whether from fever or an untreated wound. The pharmacy was still open; a little boiled water remained at home.',
     [
       C(
-        'Dùng chút tiền ít ỏi nhờ người mua liều thuốc hạ sốt từ tiệm tạp hóa (-1 Ahn)',
-        'Spend scarce coin to fetch fever medicine from the street kiosk (-1 Ahn)',
-        'Vị thuốc đắng nghét nơi đầu lưỡi nhưng giúp cơn sốt nhanh chóng hạ nhiệt. Bạn ngủ một giấc say sưa và dần hồi phục.',
-        'The bitter tonic chilled the fever swiftly. You fell into deep sleep and woke revitalized.',
-        { health: 24, sanity: 6, wealth: -1 }
+        'Nhờ người mua thuốc và băng sạch (-1 Ahn)',
+        'Ask someone to buy medicine and clean bandages (-1 Ahn)',
+        'Người lớn rửa vết đau, cho bạn uống thuốc rồi thay băng. Đêm ấy bạn ngủ được một giấc trọn.',
+        'An adult cleaned the sore place, gave you medicine and changed the bandage. You slept through the night.',
+        { health: 12, sanity: 3, wealth: -1 }
       ),
       C(
-        'Trùm kín mọi lớp chăn rách, uống nước ấm đun sôi và kiên trì chịu đựng',
-        'Bundle under every frayed blanket, drink hot boiled water and endure',
-        'Mồ hôi vã ra ướt đẫm tấm chăn. Đến sáng hôm sau, sức trẻ giúp bạn vượt qua cơn sốt an toàn.',
-        'Sweat soaked through the layers. By morning, youthful stamina broke the fever safely.',
-        { health: 15 }
+        'Ở nhà, uống nước đun sôi và để cơ thể nghỉ',
+        'Stay home, drink boiled water and rest',
+        'Bạn nằm yên hai ngày. Khi đứng dậy, chân vẫn hơi run nhưng đã chịu nổi sức nặng của mình.',
+        'You lay still for two days. Your legs shook when you rose, but they held your weight.',
+        { health: 8 }
       ),
       C(
-        'Cắn răng gượng dậy đi nhặt ve chai kiếm Ahn bất chấp cơn đau đầu',
-        'Force yourself up to scavenge scrap despite the pounding headache',
-        'Bạn nhặt được vài món kim loại có giá trị đem bán, dù cơ thể rã rời và mắt hoa đi vì sốt.',
-        'You salvaged several valuable scrap pieces to sell, though body ached and vision blurred.',
-        { health: 6, wealth: 2, sanity: -4 }
+        'Gượng dậy nhặt ve chai dù chưa khỏe',
+        'Go scavenging before you have recovered',
+        'Bạn bán được ít kim loại. Trên đường về, bạn phải ngồi lại hai lần để thở.',
+        'You sold a little scrap. On the way home, you stopped twice to catch your breath.',
+        { health: -3, wealth: 2, sanity: -4 }
       )
     ],
-    I('Mê man thiếp đi suốt ba ngày ba đêm cho đến khi cơ thể tự hạ sốt.', 'Drifted semi-conscious for three days until the fever finally broke.', { health: 8 }),
+    I('Bạn bỏ qua tiệm thuốc và nằm nghỉ ở nhà.', 'You passed the pharmacy and stayed home to rest.', { health: 4 }),
     { theme: 'health' }
   )
 ];

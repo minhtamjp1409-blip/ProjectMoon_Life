@@ -14,7 +14,8 @@ import { useT } from '../../../i18n';
 const JOB_LABELS = {
   Child: { vi: 'Trẻ em', en: 'Child' },
   'Wing Employee': { vi: 'Nhân viên Wing', en: 'Wing Employee' },
-  'Workshop Craftsman': { vi: 'Thợ rèn Workshop', en: 'Workshop Craftsman' }
+  'Workshop Craftsman': { vi: 'Thợ rèn Workshop', en: 'Workshop Craftsman' },
+  Outcast: { vi: 'Kẻ đào tẩu', en: 'Outcast' }
 };
 
 export function describeJob(char, t) {
@@ -327,9 +328,9 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeT
       {showOverview && (
         <section>
           <h3 className="section-title">{t('Chỉ số', 'Vitals')}</h3>
-          <Stat label="HP" value={health} color="var(--s-health)" flag={health <= 25 ? 'CRITICAL' : null} />
-          <Stat label="SP" value={sanity} color="var(--s-sanity)" flag={sanity <= 22 ? 'Carmen Calls' : null} />
-          <Stat label={t('Tiền mặt', 'Wealth')} value={wealth} unit="Ahn" color="var(--s-wealth)" flag={wealth <= 5 ? t('Cạn tiền', 'Near ruin') : null} />
+          <Stat label="HP" value={health} color="var(--s-health)" flag={health <= 25 ? 'CRITICAL' : null} tooltip={t('Sinh lực. Về 0 có thể chết vì thương tích; được hồi bằng điều trị và nghỉ cuối năm.', 'Vitality. Reaching 0 can be fatal; treatment and year-end rest restore it.')} />
+          <Stat label="SP" value={sanity} color="var(--s-sanity)" flag={sanity <= 22 ? 'Carmen Calls' : null} tooltip={t('Tinh thần. Về 0 dẫn tới khủng hoảng; chỗ dựa và nghỉ ngơi giúp hồi phục.', 'Sanity. Reaching 0 triggers a crisis; support and rest help restore it.')} />
+          <Stat label={t('Tiền mặt', 'Wealth')} value={wealth} unit="Ahn" color="var(--s-wealth)" flag={wealth <= 5 ? t('Cạn tiền', 'Near ruin') : null} tooltip={t('Ahn dùng cho sinh hoạt, mua tin và điều trị.', 'Ahn pays for living costs, intelligence, and treatment.')} />
           <Stat label={t('Quan hệ', 'Network')} value={network} color="var(--s-network)" />
           <Stat label={t('Danh tiếng', 'Reputation')} value={rep} color="var(--s-rep)" />
         </section>
@@ -375,14 +376,15 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeT
 
       {showRelations && char.scars.length > 0 && (
         <section>
-          <h3 className="section-title">{t('Vết sẹo tâm thức', 'Psyche scars')}</h3>
+          <h3 className="section-title">{t('Di chứng còn mang', 'Lasting scars')} <small>{t('Tối đa 4 di chứng tác động: mỗi sẹo giảm năng lực làm ủy thác và giữ dư âm cộng hưởng.', 'Up to 4 active scars: each hinders contracts and sustains resonance.')}</small></h3>
           <div className="chips">
-            {char.scars.map((s, i) => (
+            {char.scars.slice(-4).map((s, i) => (
               <span className="chip" key={`${s}_${i}`}>
                 {s}
               </span>
             ))}
           </div>
+          {char.scars.length > 4 && <details><summary>{t(`${char.scars.length - 4} dấu tích cũ`, `${char.scars.length - 4} older marks`)}</summary><div className="chips">{char.scars.slice(0, -4).map((scar, index) => <span className="chip" key={`${scar}_${index}`}>{scar}</span>)}</div></details>}
         </section>
       )}
     </>

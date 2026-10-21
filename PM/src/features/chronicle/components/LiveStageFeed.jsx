@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Modal } from 'antd';
-import { GitBranch, Download, RotateCcw, Hammer, ChevronDown } from 'lucide-react';
+import { GitBranch, Download, RotateCcw, Hammer, ChevronDown, Eye, EyeOff } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
 import { useGameStore } from '../../../store/gameStore';
 import { buildLifeSummaryAndLegacy } from '../../../engine/gameEngine';
@@ -342,7 +342,7 @@ const ContractDock = ({ contract, wealth, onPick }) => {
                   <span style={{ display: 'flex', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
                     <span className="choice-label">{lang === 'en' ? app.labelEn : app.labelVi}</span>
                     <span className="num muted" style={{ fontSize: 14, whiteSpace: 'nowrap' }}>
-                      {app.isRest ? t('+18 HP · +12 SP', '+18 HP · +12 SP') : `+${app.payAhn} Ahn · +${app.meritGain} Merit`}
+                      {app.isDecline ? t('Không nhận việc', 'No commission') : `+${app.payAhn} Ahn · +${app.meritGain} Merit`}
                     </span>
                   </span>
                   <span className="odds">
@@ -352,8 +352,8 @@ const ContractDock = ({ contract, wealth, onPick }) => {
                       <i style={{ width: `${app.deathPct}%`, background: 'var(--bad)' }} />
                     </span>
                     <span className="odds-legend">
-                      {app.isRest ? (
-                        <span><i className="dot" style={{ background: 'var(--good)' }} />{t('An toàn 100% · Dưỡng sức', '100% Safe · Recuperate')}</span>
+                      {app.isDecline ? (
+                        <span>{t('Bỏ qua · Không hồi phục', 'Skip · No recovery')}</span>
                       ) : (
                         <>
                           <span><i className="dot" style={{ background: 'var(--good)' }} />{t('Thành công', 'Success')} {app.successPct}%</span>
@@ -509,15 +509,6 @@ const Epitaph = ({ summary, onInherit, onRestart }) => {
 
 /* ---------- Stage ---------- */
 
-function getPrologueButtonText(step, total, t) {
-  if (step === 0) return t('Bắt đầu: Xem khoảnh khắc chào đời ▾', 'Begin: Witness birth moment ▾');
-  if (step === 1) return t('Tiếp tục: Xem gia cảnh & đêm sinh ▾', 'Continue: Read family & birth night ▾');
-  if (step === 2) return t('Tiếp tục: Xem điềm báo lúc chào đời ▾', 'Continue: Read birth omen ▾');
-  if (step === 3) return t('Tiếp tục: Gặp gỡ bạn thuở ấu thơ ▾', 'Continue: Meet childhood companion ▾');
-  if (step < total) return t('Tiếp tục câu chuyện ▾', 'Continue story ▾');
-  return t('Bắt đầu hành trình tại The City ➔', 'Begin journey in The City ➔');
-}
-
 export const LiveStageFeed = () => {
   const { t } = useT();
   const {
@@ -558,7 +549,6 @@ export const LiveStageFeed = () => {
 
   const pendingBirthLogs = char.pendingBirthLogs || [];
   const isPrologueActive = pendingBirthLogs.length > 0;
-  const totalBirthCount = (char.logs?.length || 0) + pendingBirthLogs.length;
 
   const logRef = useRef(null);
   const stageRef = useRef(null);
@@ -569,6 +559,7 @@ export const LiveStageFeed = () => {
   const [weaponStyle, setWeaponStyle] = useState(WORKSHOP_STYLES[0]);
   const [cursorPos, setCursorPos] = useState(50);
   const [strikes, setStrikes] = useState([]);
+  const [peekBehind, setPeekBehind] = useState(false);
   const dirRef = useRef(1);
 
   // Auto-reveal birth prologue events sequentially with cinematic pacing
@@ -647,6 +638,10 @@ export const LiveStageFeed = () => {
     const onKeyDown = (e) => {
       if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) return;
       if (char.pendingModal) return;
+      if (peekBehind) {
+        if (e.key === 'Escape') { e.preventDefault(); setPeekBehind(false); }
+        return;
+      }
 
       if (activeResolution) {
         if (e.code === 'Space' || e.key === 'Enter' || e.key === 'Escape') {
@@ -706,7 +701,7 @@ export const LiveStageFeed = () => {
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [char.alive, char.pendingEvent, char.pendingContract, char.pendingMinor, char.stats.wealth, activeResolution, dismissResolution, speed, setSpeed, chooseMinor, selectEventChoice, selectContractApproach, isPrologueActive, revealNextBirthLog]);
+  }, [char.alive, char.pendingEvent, char.pendingContract, char.pendingMinor, char.stats.wealth, activeResolution, dismissResolution, speed, setSpeed, chooseMinor, selectEventChoice, selectContractApproach, isPrologueActive, revealNextBirthLog, peekBehind]);
 
   // Forge mini-game: the cursor sweeps while the craft modal is open
   useEffect(() => {
@@ -747,6 +742,8 @@ export const LiveStageFeed = () => {
   const forgeQuality = strikes.length ? Math.round(strikes.reduce((a, b) => a + b, 0) / strikes.length) : 0;
   const lifeSummary = !char.alive ? buildLifeSummaryAndLegacy(char) : null;
   const hasDock = Boolean(char.pendingEvent || char.pendingContract || char.pendingMinor || activeResolution);
+  const canPeek = Boolean(char.pendingEvent || char.pendingContract || activeResolution);
+  useEffect(() => setPeekBehind(false), [char.pendingEvent?.id, char.pendingContract?.id, activeResolution?.titleVi]);
 
   return (
     <div className={`stage ${hasDock ? 'has-dock' : ''}`} ref={stageRef}>
@@ -758,17 +755,6 @@ export const LiveStageFeed = () => {
           <LogEntries logs={char.logs} />
           {isPrologueActive && (
             <div className="prologue-dock">
-              <button
-                type="button"
-                className="btn btn-primary prologue-btn"
-                onClick={() => {
-                  try { audioEngine.playClick(); } catch {}
-                  revealNextBirthLog();
-                }}
-              >
-                <span>{getPrologueButtonText(char.logs?.length || 0, totalBirthCount, t)}</span>
-                <span className="key-badge">Space / Enter</span>
-              </button>
               <button
                 type="button"
                 className="btn btn-ghost btn-sm prologue-skip-btn"
@@ -787,7 +773,13 @@ export const LiveStageFeed = () => {
         </div>
       </div>
 
-      {hasDock && (
+      {hasDock && canPeek && (
+        <button type="button" className="event-peek-toggle" onClick={() => setPeekBehind((value) => !value)} aria-label={peekBehind ? t('Hiện quyết định', 'Show decision') : t('Ẩn quyết định để xem biên niên', 'Hide decision to read chronicle')} aria-pressed={peekBehind}>
+          {peekBehind ? <Eye size={17} /> : <EyeOff size={17} />}
+          <span>{peekBehind ? t('Hiện quyết định', 'Show decision') : t('Xem phía sau', 'See behind')}</span>
+        </button>
+      )}
+      {hasDock && !peekBehind && (
         <div className="event-modal-backdrop" role="dialog" aria-modal="true" aria-label={t('Sự kiện & Kết quả', 'Event & Outcome')}>
           {activeResolution ? (
             <ResultDock

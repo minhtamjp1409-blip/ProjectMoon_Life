@@ -50,6 +50,7 @@ import {
 } from './weaverAI.js';
 import { hasMemory, closeThreads, applyNpcFate, namesInUse, applyBonds } from './director.js';
 import { BALANCE, isFixerCareerEvent } from './economyModel.js';
+import { activeScarCount, addScar } from './scarModel.js';
 
 export const ALL_STORY_EVENTS = [
   ...CHILDHOOD_EVENTS,
@@ -789,7 +790,6 @@ export function getNextCareerMilestone(char) {
       const targetMerit = readiness.targetMerit;
       const targetRep = readiness.targetRep;
       const curRep = (char.stats?.rep ?? char.rep) || 0;
-      const hasDefeatedCalamity = char.flags.includes('ColorFixer');
       const p1 = Math.min(100, ((char.merit || 0) / targetMerit) * 100);
       const p2 = Math.min(100, (curRep / targetRep) * 100);
       const progressPct = Math.round((p1 + p2) / 2);
@@ -802,7 +802,7 @@ export function getNextCareerMilestone(char) {
         requirements: [
           { labelVi: `Chiến công (Merit >= ${targetMerit})`, labelEn: `Merit (>= ${targetMerit})`, current: char.merit || 0, target: targetMerit, met: (char.merit || 0) >= targetMerit },
           { labelVi: `Danh tiếng (Rep >= ${targetRep})`, labelEn: `Reputation (>= ${targetRep})`, current: curRep, target: targetRep, met: curRep >= targetRep },
-          { labelVi: 'Vượt qua mối họa Star of the City', labelEn: 'Overcome Star of the City Calamity', current: hasDefeatedCalamity ? 1 : 0, target: 1, met: hasDefeatedCalamity }
+          { labelVi: 'Tuổi để Hana xét hồ sơ', labelEn: 'Age for Hana review', current: char.age, target: 30, met: char.age >= 30 }
         ],
         tipVi: 'Đủ Merit và Rep thì Hana Association triệu tập đại khảo thí phong Color. E.G.O không phải điều kiện bắt buộc.',
         tipEn: 'With enough Merit and Rep, Hana Association convenes the Color Investiture trial. E.G.O is not a prerequisite.'
@@ -853,6 +853,8 @@ export function getNextCareerMilestone(char) {
 
     const nextRank = currentRank + 1;
     const nextTitle = ladder[nextRank];
+    const minAge = [0, 22, 28, 35][nextRank];
+    const yearsInRank = currentRank === 0 || char.lastFingerPromotionAge == null ? 4 : Math.max(0, char.age - char.lastFingerPromotionAge);
     const targetMerit = nextRank * 26;
     const targetRep = nextRank * 16;
     const curRep = (char.stats?.rep ?? char.rep) || 0;
@@ -867,7 +869,11 @@ export function getNextCareerMilestone(char) {
       progressPct,
       requirements: [
         { labelVi: 'Công trạng với Ngón (Merit)', labelEn: 'Syndicate Merit', current: char.merit || 0, target: targetMerit, met: (char.merit || 0) >= targetMerit },
-        { labelVi: 'Uy danh giang hồ (Rep)', labelEn: 'Reputation', current: curRep, target: targetRep, met: curRep >= targetRep }
+        { labelVi: 'Uy danh giang hồ (Rep)', labelEn: 'Reputation', current: curRep, target: targetRep, met: curRep >= targetRep },
+        ...(finger === 'Thumb' ? [
+          { labelVi: 'Tuổi tối thiểu', labelEn: 'Minimum age', current: char.age, target: minAge, met: char.age >= minAge },
+          { labelVi: 'Năm giữ bậc hiện tại', labelEn: 'Years at current rank', current: yearsInRank, target: 4, met: yearsInRank >= 4 }
+        ] : [])
       ],
       tipVi: 'Thực thi mệnh lệnh của Ngón, thu hồi nợ máu và chứng minh lòng trung thành.',
       tipEn: 'Execute Finger orders, claim vengeance debts, and prove unquestioned loyalty.'
@@ -1078,6 +1084,7 @@ export function generateFixerContract(char, rng) {
   let power = 48 + (9 - effGrade) * 7.5;
   power += (char.stats.health - 50) * 0.25;
   power += (char.stats.sanity - 50) * 0.2;
+  power -= activeScarCount(char) * 2;
   if (char.flags.includes('고급장비') || char.flags.includes('유물') || char.craftWeapon) power += 12;
   if (char.flags.includes('EGOAwakened') || char.flags.includes('ShinAwakened')) power += 18;
   if (char.npcs?.partner && !char.npcs.partner.deceased) power += 9;
@@ -1127,15 +1134,15 @@ export function generateFixerContract(char, rng) {
       },
       {
         id: 'decline',
-        labelVi: 'Từ chối ủy thác (Nghỉ ngơi dưỡng thương, bảo toàn tính mạng)',
-        labelEn: 'Decline contract (Rest and recover, preserve your life)',
-        successPct: 100,
+        labelVi: 'Trả lại ủy thác',
+        labelEn: 'Return the contract',
+        successPct: 0,
         failPct: 0,
         deathPct: 0,
         payAhn: 0,
-        meritGain: -2,
+        meritGain: 0,
         costAhn: 0,
-        isRest: true
+        isDecline: true
       }
     ]
   };
@@ -1159,18 +1166,15 @@ export function resolveFixerContract(charState, approachId, rng = Math.random) {
   }
 
   if (approach.id === 'decline') {
-    const healHp = 18;
-    const healSp = 12;
-    char.stats.health = clamp(char.stats.health + healHp, 0, 100);
-    char.stats.sanity = clamp(char.stats.sanity + healSp, 0, 100);
-    char.merit = Math.max(0, char.merit - 2);
+    const isHanaDispatch = template.tier >= 3;
+    if (isHanaDispatch) char.stats.rep = clamp(char.stats.rep - 2, 0, 100);
     char.logs.push({
       id: `log_req_decline_${char.age}`,
       age: char.age,
       season: SEASONS[char.seasonIdx || 0],
       type: 'story',
-      vi: `[Từ chối ủy thác] Nhận thấy vết thương trên người chưa lành và rủi ro quá lớn, bạn quyết định trả lại ủy thác ${template.nameVi || ''} cho Hiệp hội Hana. Bạn dành trọn mùa này tĩnh dưỡng tại nơi ở an toàn (+18 HP, +12 SP, -2 Merit).`,
-      en: `[Contract Declined] Recognizing your lingering wounds and high risk, you returned the contract for ${template.nameEn || 'this assignment'} to Hana Association. You spent the season resting in a quiet safehouse (+18 HP, +12 SP, -2 Merit).`
+      vi: `[Từ chối ủy thác] Bạn trả lại hồ sơ ${template.nameVi || ''} trước khi nhận việc.${isHanaDispatch ? ' Hana ghi nhận một lần từ chối điều động; uy tín giảm 2.' : ' Không có thù lao hay công trạng.'}`,
+      en: `[Contract Declined] You returned the file for ${template.nameEn || 'this assignment'} before accepting it.${isHanaDispatch ? ' Hana recorded a refused dispatch; reputation fell by 2.' : ' There is no pay or merit.'}`
     });
     char.weaver = updateDramaTension(char.weaver, char);
     return char;
@@ -1282,9 +1286,7 @@ export function applyFatalOrCompanionSave(char, deathCauseVi, deathCauseEn) {
       char.unlockedRecords.push('savior_sacrifice');
     }
     const scarName = `${savior.nameVi} đã chết thay bạn`;
-    if (!char.scars.includes(scarName)) {
-      char.scars.push(scarName);
-    }
+    addScar(char, scarName);
     char.logs.push({
       id: `log_savior_${char.age}_${saviorKey}`,
       age: char.age,
@@ -1352,9 +1354,7 @@ export function handleSanityBreakdown(char, rng = Math.random) {
   } else {
     char.stats.sanity = 22;
     char.stats.health = clamp(char.stats.health - 16, 1, 100);
-    if (!char.scars.includes('Di chứng sụp đổ tinh thần')) {
-      char.scars.push('Di chứng sụp đổ tinh thần');
-    }
+    addScar(char, 'Di chứng sụp đổ tinh thần');
     char.logs.push({
       id: `log_panic_survive_${char.age}_${Date.now()}`,
       age: char.age,
@@ -1416,6 +1416,7 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
   const printsNumbers = PRINTED_NUMBERS.test(`${outcome.resultVi || outcome.rvi || ''}${choice.resultVi || choice.rvi || ''}`);
   const rolled = mergeEffects(choice, outcome);
   const effects = printsNumbers ? rolled : varyEffects(rolled, rng, traitsOf(char));
+  if (/^fixer_promo_/.test(event.id) && effects.health < 0) effects.health = Math.ceil(effects.health * 0.65);
   if (choice.costAhn) effects.wealth = (effects.wealth || 0) - Math.max(0, choice.costAhn + Math.min(0, effects.wealth || 0));
   const itemId = outcome.itemAdd || choice.itemAdd;
   const purchasedItem = ITEMS_CATALOG.find(i => i.id === itemId);
@@ -1432,6 +1433,10 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
   // Career / Faction / Region mutations
   const setJob = outcome.setJob || choice.setJob;
   if (setJob) char.job = setJob;
+  if (choice.clearFinger || outcome.clearFinger) {
+    char.finger = null;
+    char.fingerRank = 0;
+  }
 
   const setFixerGrade = outcome.setFixerGrade ?? choice.setFixerGrade;
   if (setFixerGrade !== undefined) char.fixerGrade = setFixerGrade;
@@ -1461,7 +1466,10 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
   }
 
   const setFingerRank = outcome.setFingerRank ?? choice.setFingerRank;
-  if (setFingerRank !== undefined) char.fingerRank = setFingerRank;
+  if (setFingerRank !== undefined) {
+    if (setFingerRank > (char.fingerRank || 0)) char.lastFingerPromotionAge = char.age;
+    char.fingerRank = setFingerRank;
+  }
 
   const setWingRank = outcome.setWingRank ?? choice.setWingRank;
   if (setWingRank !== undefined) char.wingRank = setWingRank;
@@ -1515,8 +1523,7 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
   ];
   scarsAdd.forEach(s => {
     const interpolated = interpolateText(s, char);
-    if (!char.scars.includes(interpolated)) {
-      char.scars.push(interpolated);
+    if (addScar(char, interpolated)) {
       char.resonance = clamp((char.resonance || 0) + 10, 0, 100);
     }
   });

@@ -58,6 +58,7 @@ import {
 } from './director.js';
 import { freshness, varyEffects, traitsOf, tiltWeight, PRINTED_NUMBERS } from './variance.js';
 import { BALANCE, healAmount, calmAmount, agingLoss, driftOf } from './economyModel.js';
+import { addScar } from './scarModel.js';
 
 export const MINOR_WINDOW_MS = 15000;
 // How many recent moments freshness looks back over (see variance.js)
@@ -286,7 +287,7 @@ export function planYear(charState, rng) {
     scheduledKey.push({ kind: 'contract' });
   }
 
-  // Active Medical Recovery / Wellness / Comfort minor choice when injured, distressed or wealthy
+  // Offer care when injured or distressed, and gear maintenance for equipped careers.
   // Need decides whether one is due; how recently and how often it played decides how likely.
   if (!char.flags.includes('Distorted')) {
     const careDue = (id, p) => !scheduledKey.some((it) => it.id === id) && rng() < p * Math.max(0.2, freshness(id, char.recent, char.seenCount));
@@ -294,14 +295,13 @@ export function planYear(charState, rng) {
       scheduledKey.push({ kind: 'minor', id });
       remember(char, id);
     };
-    if (char.stats.health < 72) {
-      const medId = nest ? 'm_med_nest_infirmary' : (age < 18 ? 'm_med_child_remedy' : (char.stats.wealth >= 20 && rng() < 0.45 ? 'm_med_blackstreet_doctor_organ' : 'm_med_backstreet_clinic'));
+    if (char.stats.health < 72 && !isOutskirts(char)) {
+      const medId = age < 18 ? 'm_med_child_remedy' : nest ? 'm_med_nest_infirmary' : (char.stats.health <= 64 && char.stats.wealth >= 20 && rng() < 0.45 ? 'm_med_blackstreet_doctor_organ' : 'm_med_backstreet_clinic');
       if (careDue(medId, 0.75)) scheduleCare(medId);
-    } else if (char.stats.sanity < 70 && age >= 16) {
+    } else if (char.stats.sanity < 70 && age >= 16 && !isOutskirts(char)) {
       if (careDue('m_wellness_hamham_lunch', 0.65)) scheduleCare('m_wellness_hamham_lunch');
-    } else if (char.stats.wealth >= 35 && age >= 18) {
-      const sinkId = rng() < 0.5 ? 'm_wellness_workshop_tuneup' : 'm_wellness_hamham_lunch';
-      if (careDue(sinkId, 0.40)) scheduleCare(sinkId);
+    } else if (char.stats.wealth >= 35 && age >= 18 && !isOutskirts(char) && ['Fixer', 'Syndicate', 'Workshop Craftsman'].includes(char.job)) {
+      if (careDue('m_wellness_workshop_tuneup', 0.25)) scheduleCare('m_wellness_workshop_tuneup');
     }
   }
 
@@ -628,7 +628,23 @@ export function runPlanItem(charState, item, rng) {
     if (m.fatal) {
       applyFatalOrCompanionSave(char, m.deathVi, m.deathEn, rng);
     }
-    return settle(char, item.t, rng);
+    settle(char, item.t, rng);
+    if (char.alive && !char.pendingMinor && !char.flags.includes('Distorted') && char.stats.health <= 65 && rng() < 0.7) {
+      const careId = char.age < 18 ? 'm_med_child_remedy' : isNest(char) ? 'm_med_nest_infirmary' : 'm_med_backstreet_clinic';
+      const care = LIFE_MINORS.find((entry) => entry.id === careId);
+      if (care && matchesEventContext(care, char)) {
+        char.pendingMinor = {
+          id: care.id,
+          t: item.t,
+          vi: interpolateText(care.vi, char),
+          en: interpolateText(care.en, char),
+          choices: care.choices.map((choice) => ({ vi: interpolateText(choice.vi, char), en: interpolateText(choice.en, char), fx: choice.fx, out: choice.out, need: choice.need })),
+          ignore: care.ignore || null,
+          remainingMs: MINOR_WINDOW_MS
+        };
+      }
+    }
+    return char;
   }
 
   if (item.kind === 'daily') {
@@ -771,8 +787,7 @@ export function resolveMinor(charState, idx, rng) {
   const resultVi = interpolateText(outcome.rvi || choice.rvi || '', char);
   const resultEn = interpolateText(outcome.ren || choice.ren || '', char);
   const scar = interpolateText(outcome.scar || choice.scar || '', char);
-  if (scar && !char.scars.includes(scar)) {
-    char.scars.push(scar);
+  if (addScar(char, scar)) {
     deltas.push(...applyFx(char, { resonance: 6 }));
     deltas.push({ k: 'scar', name: scar });
   }
@@ -857,14 +872,21 @@ export function endYear(charState, rng) {
       en.push('Full-Body Prosthetic coolant flushes and servo maintenance consumed 3 Ahn.');
     }
 
+    const assetCost = Math.min(4, Math.max(0, Math.floor((char.stats.wealth - 45) / 15) + 1));
+    if (assetCost > 0) {
+      livingCost += assetCost;
+      vi.push(`Tiền tích lũy kéo theo ${assetCost} Ahn phí bảo quản, giấy phép và an ninh.`);
+      en.push(`Holding your savings cost ${assetCost} Ahn in storage, permits and protection.`);
+    }
+
     const net = JOB_INCOME(char) - livingCost + Math.round(rng() * 2 - 1);
     add('wealth', net);
     if (net > 0) {
       vi.push('Thu nhập năm nay vượt mức chi tiêu, bạn tích lũy thêm được chút vốn liếng.');
       en.push('Your earnings exceeded living expenses this year, allowing you to save a modest sum.');
     } else if (net < 0) {
-      vi.push('Tiền thuê trọ đắt đỏ và chi phí ăn uống leo thang đã ăn mòn phần lớn tiền tiết kiệm.');
-      en.push('Steep tenement rent and rising food costs ate heavily into your savings.');
+      vi.push('Sau tiền thuê, ăn uống và các khoản phải giữ để tiếp tục làm việc, số Ahn còn lại ít đi.');
+      en.push('Rent, food and the costs of staying employed left fewer Ahn in your hands.');
     }
   } else {
     // Childhood living friction: survival is harsh, money gets spent on family necessities
@@ -891,15 +913,15 @@ export function endYear(charState, rng) {
       add('health', healAmount(char, 'ampoule'));
       vi.push('Dược chất huyết thanh K Corp liên tục tuần hoàn, tái tạo thần tốc các mô thịt bị rách nát.');
       en.push('K Corp restorative serum continuously circulated, rapidly regenerating damaged tissues.');
+    } else if (nest) {
+      add('health', healAmount(char, 'nest'));
+      vi.push('Gói bảo hiểm y tế nội bộ của Nest hỗ trợ khử trùng và điều trị chu đáo các tổn thương thể chất.');
+      en.push('Nest residential medical coverage attended to your physical injuries with clinical care.');
     } else if (char.stats.wealth >= 3 && char.age >= 18) {
       add('wealth', -2);
       add('health', healAmount(char, 'clinic'));
       vi.push('Bạn tốn 2 Ahn tại phòng khám chui nơi hẻm tối để khâu lại vết chém, khử trùng và phục hồi thể lực.');
       en.push('You paid 2 Ahn at a backstreet clinic to stitch wounds, sanitize, and restore vigor.');
-    } else if (nest) {
-      add('health', healAmount(char, 'nest'));
-      vi.push('Gói bảo hiểm y tế nội bộ của Nest hỗ trợ khử trùng và điều trị chu đáo các tổn thương thể chất.');
-      en.push('Nest residential medical coverage attended to your physical injuries with clinical care.');
     } else {
       add('health', healAmount(char, 'natural'));
       vi.push('Nhờ sức đề kháng tự nhiên và thời gian tĩnh dưỡng, những vết rách trên cơ thể bạn dần kéo da non.');
@@ -926,21 +948,29 @@ export function endYear(charState, rng) {
     }
   }
 
+  if (char.age >= 18 && ['Fixer', 'Syndicate', 'Wing Employee', 'Workshop Craftsman'].includes(char.job) && !char.flags.includes('Distorted')) {
+    const wear = char.job === 'Fixer' || char.job === 'Syndicate' ? 2 : 1;
+    add('health', -wear);
+    add('sanity', -(char.job === 'Wing Employee' || char.job === 'Syndicate' ? 3 : 2));
+    vi.push('Ca làm kéo dài rút bớt sức lực và sự tỉnh táo; nghỉ ngơi ngắn không xóa hết phần hao mòn ấy.');
+    en.push('Long shifts cost strength and composure; a short rest did not erase the accumulated strain.');
+  }
+
   // City environmental hazards (Smog in polluted districts, Crime in dangerous districts)
   if (!nest && char.age >= 4) {
     if (region.pollution >= 5 && rng() < 0.35) {
-      add('health', -1);
+      add('health', -2);
       vi.push('Màn khói bụi công nghiệp nồng nặc của khu vực này dần ngấm sâu vào phế quản, gây ra những cơn ho khan.');
       en.push('The district’s acrid industrial smog settled deep into your lungs, leaving a dry cough.');
     }
     if (region.safety <= 4 && rng() < 0.35) {
-      add('sanity', -1);
+      add('sanity', -2);
       vi.push('Những đêm trằn trọc mất ngủ vì tiếng còi báo động rít gào và tiếng nổ đì đùng của các cuộc thanh trừng băng đảng.');
       en.push('Restless nights were pierced by shrieking sirens and gunfire from nearby syndicate turf wars.');
     }
   }
 
-  if ((char.heat || 0) > 0) add('heat', -3);
+  if ((char.heat || 0) > 0) add('heat', -1);
   // A Distortion is never off Hana's books, and people stop recognizing you
   if (char.flags.includes('Distorted')) {
     add('heat', 6);
@@ -951,7 +981,20 @@ export function endYear(charState, rng) {
   driftBonds(char);
 
   // What events keep raising also wears off: resonance, fame and connections need feeding
-  for (const [k, v] of Object.entries(driftOf(char, bond ? 2 : 0))) add(k, v);
+  const drift = driftOf(char, bond ? 2 : 0);
+  for (const [k, v] of Object.entries(drift)) add(k, v);
+  if (drift.network) {
+    vi.push('Những mối quen lâu không gặp bớt sẵn lòng giúp bạn.');
+    en.push('Contacts you had not seen in a while were less willing to help.');
+  }
+  if (drift.rep) {
+    vi.push('Thành tích cũ dần chìm dưới những cái tên mới.');
+    en.push('New names gradually pushed your old accomplishments out of notice.');
+  }
+  if (drift.resonance) {
+    vi.push('Cơn xao động trong tâm trí lắng bớt khi đời sống thường ngày trở lại.');
+    en.push('The unrest in your mind eased as ordinary life resumed.');
+  }
 
   const wear = agingLoss(char);
   const oldAge = wear > 0;
@@ -998,7 +1041,7 @@ export function endYear(charState, rng) {
   // Hard knocks the City deals on its own
   if (char.age >= 18 && char.stats.wealth <= 0 && !nest && !char.flags.includes('Distorted')) {
     const d = applyFx(char, { health: -20, sanity: -12, wealth: 14, resonance: 10 });
-    if (!char.scars.includes('Vết mổ trả nợ')) char.scars.push('Vết mổ trả nợ');
+    addScar(char, 'Vết mổ trả nợ');
     pushLog(
       char,
       {

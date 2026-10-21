@@ -51,7 +51,7 @@ export const DERIVATIVE_LORE_EVENTS = [
     major: true,
     weight: 11,
     need: { jobs: ['Fixer', 'Syndicate'] },
-    forbids: ['Distorted', 'blade_lineage_sworn'],
+    forbids: ['Distorted', 'blade_lineage_sworn', 'kurokumo_tattooed'],
     vi: '[Kiếm Pháp Cốt Nhục Tương Tàn · Blade Lineage] Giữa một bãi tha ma Backstreets sặc mùi máu tươi, một kiếm sĩ đơn độc đội nón tre rách rưới (Bamboo-hatted Kim) đang lau lưỡi đao dính đầy vết chém của Hắc Vân Phái (Kurokumo). Thấy bạn bước tới, ông ta không quay đầu lại: "Chém người thì dễ, nhưng nhận trọn lưỡi kiếm vào xương thịt để đoạt mạng đối thủ mới là đạo của kiếm khách. Ngươi có dám để da thịt mình nát bấy để bẻ gãy xương kẻ thù không?"',
     en: '[To Claim Their Bones · Blade Lineage] Amid a blood-soaked Backstreet alley, a lone swordsman in a frayed bamboo hat (Bamboo-hatted Kim) wipes a curved blade stained with Kurokumo ichor. Without turning, he speaks: "Cutting flesh is simple. But yielding your flesh so you may crush their bone is the swordsman’s true path. Dare you let your skin tear to sever their marrow?"',
     choices: [
@@ -64,7 +64,8 @@ export const DERIVATIVE_LORE_EVENTS = [
         flagsAdd: ['blade_lineage_sworn', 'SwordMastery'],
         scarsAdd: ['Vết kiếm khắc Cốt Nhục Tương Tàn'],
         recordsAdd: ['blade_lineage_initiate'],
-        meritAdd: 25
+        meritAdd: 12,
+        scheduleConsequences: [{ eventId: 'csq_kurokumo_retribution', delayYears: 3, reasonVi: 'Kurokumo nhận ra môn đồ Blade Lineage', reasonEn: 'Kurokumo recognized a Blade Lineage disciple' }]
       },
       {
         labelVi: 'Cảnh báo ông ta về quân tiếp viện của Kurokumo rồi rút lui',
@@ -72,8 +73,7 @@ export const DERIVATIVE_LORE_EVENTS = [
         resultVi: 'Kiếm sĩ nón tre gật đầu nhẹ, ném cho bạn một túi Ahn chiến lợi phẩm thu từ tay chân Kurokumo: "Khôn ngoan để sống sót cũng là một cách sinh tồn ở The City." Ông ta xoay người biến mất vào màn mưa.',
         resultEn: 'The swordsman gave a slight nod, tossing you a pouch of Ahn stripped from Kurokumo ronin: "Prudence to live another dawn is its own survival in this City." He turned and dissolved into the rain.',
         effects: { wealth: +35, rep: +10, sanity: +5 },
-        flagsAdd: ['blade_lineage_sworn'],
-        meritAdd: 12
+        meritAdd: 2
       }
     ]
   },
@@ -87,7 +87,7 @@ export const DERIVATIVE_LORE_EVENTS = [
     major: true,
     weight: 11,
     need: { jobs: ['Syndicate', 'Fixer'] },
-    forbids: ['Distorted', 'kurokumo_tattooed'],
+    forbids: ['Distorted', 'kurokumo_tattooed', 'blade_lineage_sworn'],
     vi: '[Mực Máu Hắc Vân Bang · Kurokumo Clan] Một căn phòng lợp chiếu tatami nồng nặc mùi mực tàu và thuốc sát trùng. Vị phó bang chủ Kurokumo (Sayo) với những hình xăm mây đen cuồn cuộn trên cánh tay nhìn bạn bằng ánh mắt sắc lạnh: "Lưỡi kiếm của Kurokumo không chỉ chém đứt cơ bắp, nó để lại vết thương rỉ máu không bao giờ khép miệng. Xăm mực Hắc Vân lên lưng, và ngươi sẽ là thợ săn của chúng ta."',
     en: '[Kurokumo Clan Blood Ink] A tatami den reeking of sumi ink and antiseptic. Vice-Captain Sayo, ink-black storm clouds sprawling across bare shoulders, pins you with a predator’s stare: "A Kurokumo blade does not merely sever muscle. It carves wounds that bleed until the victim is hollow. Inscribe our dark clouds upon your flesh, and hunt under our banner."',
     choices: [
@@ -100,7 +100,8 @@ export const DERIVATIVE_LORE_EVENTS = [
         flagsAdd: ['kurokumo_tattooed', 'BleedMastery'],
         scarsAdd: ['Hình xăm Hắc Vân triền miên'],
         recordsAdd: ['kurokumo_lieutenant'],
-        meritAdd: 20
+        meritAdd: 10,
+        scheduleConsequences: [{ eventId: 'csq_blade_lineage_retribution', delayYears: 3, reasonVi: 'Blade Lineage nhận ra hình xăm Hắc Vân', reasonEn: 'Blade Lineage recognized the dark-cloud tattoo' }]
       },
       {
         labelVi: 'Từ chối dính líu đến tranh chấp giang hồ của các gia tộc',
@@ -357,6 +358,45 @@ export const DERIVATIVE_LORE_EVENTS = [
         flagsAdd: ['seven_dossier_read'],
         meritAdd: 20
       }
+    ]
+  },
+  {
+    id: 'csq_kurokumo_retribution',
+    major: true,
+    isCausalCallback: true,
+    causalOnly: true,
+    need: { flags: ['blade_lineage_sworn'] },
+    vi: '[Mực trên danh sách truy sát] Một người của Kurokumo chặn bạn bên sạp sửa kiếm. Hắn mở cuốn sổ bảo kê, chỉ vào tên bạn được khoanh bằng mực đen. “Kiếm của Blade Lineage không được đi qua địa bàn này mà không trả giá.”',
+    en: '[Ink on the bounty ledger] A Kurokumo collector stopped you by a sword repair stall. Your name was circled in black ink in his protection ledger. “Blade Lineage steel does not cross our ground for free.”',
+    choices: [
+      { labelVi: 'Bỏ lại kiếm, thoát qua cửa sau', labelEn: 'Leave the sword and slip through the rear door', resultVi: 'Bạn thoát được, nhưng thanh kiếm bản mệnh nằm lại trên quầy. Lần sau họ sẽ tìm bằng tên thay vì bằng kiếm.', resultEn: 'You escaped, leaving your sworn sword on the counter. Next time they would search for your name instead.', effects: { sanity: -6, wealth: -5, heat: 8 } },
+      { labelVi: 'Giữ kiếm, mở đường qua toán thu nợ', labelEn: 'Keep the sword and fight through the collectors', resultVi: 'Bạn chém đứt cuốn sổ, còn bọn họ kịp ghi nhớ mặt bạn. Đường về nhà từ nay dài hơn.', resultEn: 'You cut through the ledger, but they had already learned your face. The way home grew longer.', effects: { health: -12, heat: 16, rep: 5 } }
+    ]
+  },
+  {
+    id: 'csq_blade_lineage_retribution',
+    major: true,
+    isCausalCallback: true,
+    causalOnly: true,
+    need: { flags: ['kurokumo_tattooed'] },
+    vi: '[Kiếm khách dưới mái hiên] Một kiếm khách Blade Lineage nhận ra hình xăm Hắc Vân trên cổ tay bạn. Người ấy đặt bát trà xuống, nhích ghế chắn lối ra. “Người mang dấu của Kurokumo còn nợ chúng ta một câu trả lời.”',
+    en: '[Swordsman beneath the eaves] A Blade Lineage swordsman recognized the dark-cloud tattoo on your wrist. They set down their tea and blocked the exit. “Someone carrying Kurokumo ink still owes us an answer.”',
+    choices: [
+      { labelVi: 'Thừa nhận mình đã chọn phe, rút đao', labelEn: 'Own your allegiance and draw', resultVi: 'Hai lưỡi đao chạm nhau dưới mái hiên. Bạn rời đi với vết rách trên tay áo và cái tên bị truyền sang người kế tiếp.', resultEn: 'Steel met beneath the eaves. You left with a torn sleeve and a name passed to the next swordsman.', effects: { health: -10, heat: 12, rep: 4 } },
+      { labelVi: 'Để vũ khí lại làm vật thế chấp rồi đi', labelEn: 'Leave your weapon as collateral and go', resultVi: 'Kiếm khách để bạn đi sau khi nhận vũ khí. Kurokumo sẽ hỏi vì sao bạn trở về tay không.', resultEn: 'The swordsman let you go after taking your weapon. Kurokumo would ask why you returned empty-handed.', effects: { wealth: -6, sanity: -5, rep: -3 } }
+    ]
+  },
+  {
+    id: 'csq_thumb_etiquette_hunt',
+    major: true,
+    isCausalCallback: true,
+    causalOnly: true,
+    need: { flags: ['ThumbTraitor'] },
+    vi: '[Sổ đạn chưa khép] Ba Soldato của The Thumb tìm đến chỗ bạn ngủ. Họ mang cùng một danh sách truy nã, nhưng mỗi người đã nhận một lệnh khác nhau về cách đưa bạn về.',
+    en: '[An open ammunition ledger] Three Thumb Soldato found your sleeping place. They carried the same bounty notice, but each had been given different instructions on how to bring you back.',
+    choices: [
+      { labelVi: 'Bỏ lại đồ đạc, chạy qua mái nhà', labelEn: 'Leave your belongings and flee across the roofs', resultVi: 'Bạn thoát trước khi họ khép vòng vây. Quần áo và tiền bạc nằm lại trong căn phòng.', resultEn: 'You escaped before they closed the cordon. Your clothes and money remained in the room.', effects: { wealth: -12, sanity: -5, heat: 8 } },
+      { labelVi: 'Đánh thủng vòng vây', labelEn: 'Fight through the cordon', resultVi: 'Bạn bước ra khỏi con hẻm còn sống; sau lưng là tiếng súng gọi thêm người.', resultEn: 'You came out of the alley alive. Behind you, gunfire called for reinforcements.', effects: { health: -18, heat: 20, rep: 5 } }
     ]
   }
 ];

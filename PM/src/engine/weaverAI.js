@@ -6,6 +6,7 @@ import {
   getNextFixerPromotion,
   checkColorFixerReadiness,
   getNextFingerPromotion,
+  FINGER_LADDERS,
   getNextWingPromotion,
   getNextWorkshopPromotion
 } from './careerPipeline.js';
@@ -319,7 +320,10 @@ export function isEventEligible(event, char, { scripted = false } = {}) {
   if (event.causalOnly && !char.weaver?.pendingThreads?.some(t => t.eventId === event.id && !t.fulfilled && t.triggerAge <= char.age)) return false;
   if (event.id.startsWith('fixer_promo_') && !getNextFixerPromotion(char)?.isEligible) return false;
   if (event.id === 'hana_color_ascension_trial' && !checkColorFixerReadiness(char).ready) return false;
-  if (event.id.startsWith('syn_') && event.id.includes('_promo_') && !getNextFingerPromotion(char)?.isEligible) return false;
+  const fingerTrialRank = event.id.startsWith('syn_')
+    ? Object.values(FINGER_LADDERS).flat().find((step) => (step.eventIds || [step.eventId]).includes(event.id))?.rank
+    : null;
+  if (fingerTrialRank && (!getNextFingerPromotion(char)?.isEligible || getNextFingerPromotion(char)?.rank !== fingerTrialRank)) return false;
   if (event.id.startsWith('wing_promo_') && !getNextWingPromotion(char)?.isEligible) return false;
   if (event.id.startsWith('ws_promo_') && !getNextWorkshopPromotion(char)?.isEligible) return false;
   if (event.id === 'ad_career_crossroad_18' && (char.age < 18 || char.job !== 'Child')) return false;

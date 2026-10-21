@@ -21,13 +21,13 @@ export const BALANCE = {
   fixerMeritScale: 0.4,
   heal: {
     below: 76,                    // above this HP, nothing needs mending
-    base: { natural: 1, nest: 3, clinic: 4, ampoule: 7 },
-    deficitRate: 0.06             // plus this share of the missing HP
+    base: { natural: 3, nest: 4, clinic: 4, ampoule: 5 },
+    deficitRate: 0.02
   },
   calm: {
     below: 68,
-    base: { natural: 1, bond: 3, tavern: 3 },
-    deficitRate: 0.05
+    base: { natural: 3, bond: 4, tavern: 4 },
+    deficitRate: 0.02
   },
   aging: {
     start: 50,                    // effective age where the body starts to give
@@ -36,10 +36,10 @@ export const BALANCE = {
     floor: 1
   },
   drift: {
-    resonance: { rate: 0.10, calmBonus: 1, scarFloor: 3, baseFloor: 4 },
-    network: { rate: 0.06, anchor: 35, careerBonus: 15, bondBonus: 10 },
+    resonance: { rate: 0.18, calmBonus: 1, scarFloor: 3, baseFloor: 4 },
+    network: { rate: 0.16, anchor: 30, careerBonus: 12, bondBonus: 8 },
     merit: { rate: 0.07, anchor: 40 },
-    rep: { rate: 0.09, anchor: 25, fixerBonus: 20, seniorBonus: 35, colorAnchor: 80, syndicateBonus: 15 }
+    rep: { rate: 0.18, anchor: 20, fixerBonus: 20, seniorBonus: 35, colorAnchor: 75, syndicateBonus: 15 }
   }
 };
 
@@ -74,7 +74,7 @@ export function healAmount(char, kind) {
   const hp = char.stats.health;
   if (hp >= h.below) return 0;
   const deficit = 100 - hp;
-  return Math.round((h.base[kind] + h.deficitRate * deficit) * traitsOf(char).vigor);
+  return Math.min(5, Math.max(3, Math.round((h.base[kind] + h.deficitRate * deficit) * traitsOf(char).vigor)));
 }
 
 /** SP settled over a year; `kind` is natural | bond | tavern. */
@@ -83,7 +83,7 @@ export function calmAmount(char, kind) {
   const sp = char.stats.sanity;
   if (sp >= c.below) return 0;
   const deficit = 100 - sp;
-  return Math.round((c.base[kind] + c.deficitRate * deficit) * traitsOf(char).nerve);
+  return Math.min(5, Math.max(3, Math.round((c.base[kind] + c.deficitRate * deficit) * traitsOf(char).nerve)));
 }
 
 /**
@@ -96,12 +96,13 @@ export function driftOf(char, bonded = 0) {
   const flags = char.flags || [];
   const out = {};
 
-  if (!flags.includes('Distorted') && !flags.includes('EGOAwakened')) {
-    const floor = Math.min(60, d.resonance.baseFloor + (char.scars || []).length * d.resonance.scarFloor);
+  if (!flags.includes('Distorted')) {
+    const floor = Math.min(60, d.resonance.baseFloor + Math.min(4, (char.scars || []).length) * d.resonance.scarFloor);
     const excess = (char.resonance || 0) - floor;
     if (excess > 0) {
       const calm = char.stats.sanity >= 60 ? d.resonance.calmBonus : 0;
-      out.resonance = -(Math.round(excess * d.resonance.rate) + calm);
+      const rate = flags.includes('EGOAwakened') ? d.resonance.rate / 2 : d.resonance.rate;
+      out.resonance = -(Math.round(excess * rate) + calm);
     }
   }
 

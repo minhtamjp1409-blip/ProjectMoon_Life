@@ -6,7 +6,7 @@
   "homepage": "https://project-moon-life-five.vercel.app",
   "scripts": {
     "dev": "vite",
-    "test": "node check_be_parity.mjs && node lint_story.mjs && node scripts/test_causal_threads.mjs && node run_million_audit.mjs 50000 && node story_logic_audit.mjs 120",
+    "test": "node check_be_parity.mjs && node lint_story.mjs && node scripts/test_causal_threads.mjs && node scripts/test_balance_regressions.mjs && node run_million_audit.mjs 50000 && node story_logic_audit.mjs 120",
     "lint:story": "node lint_story.mjs",
     "audit": "node run_million_audit.mjs",
     "audit:story": "node story_logic_audit.mjs",
