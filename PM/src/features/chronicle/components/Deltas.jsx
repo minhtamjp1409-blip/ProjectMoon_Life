@@ -155,18 +155,18 @@ export function previewChoice(choice) {
   const base = fxOf(choice);
   const outs = outsOf(choice);
   if (!outs?.length) {
-    const affected = STAT_ORDER.filter((k) => Boolean(base[k]));
-    const fixed = STAT_ORDER.filter((k) => base[k]).map((k) => ({ k, v: base[k] }));
+    const affected = STAT_ORDER.filter((k) => Boolean(base[k]) || (k === 'wealth' && Boolean(choice.costAhn)));
+    const fixed = STAT_ORDER.filter((k) => base[k] || (k === 'wealth' && choice.costAhn)).map((k) => ({ k, v: base[k] || -choice.costAhn }));
     return { affected, fixed, ranges: [], odds: null };
   }
   const total = outs.reduce((s, o) => s + (o.w ?? 50), 0);
   const affected = [];
   const ranges = [];
   for (const k of STAT_ORDER) {
-    const values = outs.map((o) => (base[k] || 0) + (fxOf(o)[k] || 0));
+    const values = outs.map((o) => (base[k] || 0) + (fxOf(o)[k] || 0) - (k === 'wealth' && choice.costAhn ? choice.costAhn : 0));
     const lo = Math.min(...values);
     const hi = Math.max(...values);
-    if (lo === 0 && hi === 0 && !base[k]) continue;
+    if (lo === 0 && hi === 0 && !base[k] && !(k === 'wealth' && choice.costAhn)) continue;
     affected.push(k);
     ranges.push({ k, lo, hi });
   }

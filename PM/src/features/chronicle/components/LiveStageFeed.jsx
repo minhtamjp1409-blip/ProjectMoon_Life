@@ -132,7 +132,7 @@ const AmbientScene = ({ char }) => {
 
 const DockNavigation = () => null;
 
-const MinorDock = ({ prompt, npcs, paused, onPick }) => {
+const MinorDock = ({ prompt, npcs, wealth = 0, paused, onPick }) => {
   const { t, lang, bilingual } = useT();
   const raw = lang === 'en' ? prompt.en : prompt.vi;
   const { title, body } = splitTitle(raw);
@@ -160,15 +160,30 @@ const MinorDock = ({ prompt, npcs, paused, onPick }) => {
         <p className="dock-text">{body}</p>
         {bilingual && <p className="entry-alt">{splitTitle(prompt.en).body}</p>}
         <div className="choices">
-          {prompt.choices.map((ch, idx) => (
-            <button type="button" key={idx} className="choice" onClick={() => onPick(idx)}>
-              <span className="choice-badge">{idx + 1}</span>
-              <span>
-                <span className="choice-label">{lang === 'en' ? ch.en : ch.vi}</span>
-                <ChoicePreview choice={ch} npcs={npcs} />
-              </span>
-            </button>
-          ))}
+          {prompt.choices.map((ch, idx) => {
+            const isShortAhn = Boolean(ch.costAhn && ch.costAhn > wealth);
+            return (
+              <button
+                type="button"
+                key={idx}
+                className={`choice ${isShortAhn ? 'is-disabled' : ''}`}
+                disabled={isShortAhn}
+                style={isShortAhn ? { opacity: 0.55, cursor: 'not-allowed' } : undefined}
+                onClick={() => !isShortAhn && onPick(idx)}
+              >
+                <span className="choice-badge">{idx + 1}</span>
+                <span>
+                  <span className="choice-label">{lang === 'en' ? ch.en : ch.vi}</span>
+                  {ch.costAhn && (
+                    <span className={`delta ${isShortAhn ? 'is-down' : 'is-static'}`} style={{ marginLeft: 6 }}>
+                      {isShortAhn ? t(`Thiếu Ahn (Cần ${ch.costAhn})`, `Short Ahn (Needs ${ch.costAhn})`) : t(`Tốn ${ch.costAhn} Ahn`, `Cost: ${ch.costAhn} Ahn`)}
+                    </span>
+                  )}
+                  <ChoicePreview choice={ch} npcs={npcs} />
+                </span>
+              </button>
+            );
+          })}
           <button type="button" className="choice is-ghost" onClick={() => onPick(-1)}>
             <span className="choice-badge is-ghost">0</span>
             <span className="choice-label">{t(prompt.ignore?.vi || 'Để nó trôi qua', prompt.ignore?.en || 'Let it pass')}</span>
@@ -231,7 +246,16 @@ const EventDock = ({ event, char, onPick }) => {
           {(event.choices || []).map((ch, idx) => {
             const label = splitTitle(lang === 'en' ? ch.labelEn || ch.labelVi : ch.labelVi).body;
             const check = evaluateDiscoChoiceCheck(ch, char);
+            const playerWealth = char.stats?.wealth ?? char.wealth ?? 0;
+            const isShortAhn = Boolean(ch.costAhn && ch.costAhn > playerWealth);
             const extra = [];
+            if (ch.costAhn) {
+              extra.push(
+                <span className={`delta ${isShortAhn ? 'is-down' : 'is-static'}`} key="costAhn" style={isShortAhn ? { borderColor: 'rgba(239,68,68,0.5)', color: '#f87171' } : { borderColor: 'rgba(234,179,8,0.4)', color: '#facc15' }}>
+                  {isShortAhn ? t(`Thiếu Ahn (Cần ${ch.costAhn})`, `Short Ahn (Needs ${ch.costAhn})`) : t(`Tốn ${ch.costAhn} Ahn`, `Cost: ${ch.costAhn} Ahn`)}
+                </span>
+              );
+            }
             if (Array.isArray(ch.scheduleConsequences) && ch.scheduleConsequences.length > 0) {
               extra.push(
                 <span className="delta is-rare is-static" key="c">
@@ -248,7 +272,14 @@ const EventDock = ({ event, char, onPick }) => {
             }
             if (ch.setJob) extra.push(<span className="delta is-bond is-static" key="j">{t('Con đường: ', 'Path: ')}{ch.setJob}</span>);
             return (
-              <button type="button" key={idx} className="choice" onClick={() => onPick(idx)}>
+              <button
+                type="button"
+                key={idx}
+                className={`choice ${isShortAhn ? 'is-disabled' : ''}`}
+                disabled={isShortAhn}
+                style={isShortAhn ? { opacity: 0.55, cursor: 'not-allowed' } : undefined}
+                onClick={() => !isShortAhn && onPick(idx)}
+              >
                 <span className="choice-badge">{idx + 1}</span>
                 <span>
                   <span className="choice-label">{label}</span>
@@ -771,7 +802,7 @@ export const LiveStageFeed = () => {
               {char.pendingEvent && <EventDock event={char.pendingEvent} char={char} onPick={handleSelectEvent} />}
               {!char.pendingEvent && char.pendingContract && <ContractDock contract={char.pendingContract} wealth={char.stats.wealth} onPick={handleSelectContract} />}
               {!char.pendingEvent && !char.pendingContract && char.pendingMinor && (
-                <MinorDock prompt={char.pendingMinor} npcs={char.npcs} paused={speed === 0} onPick={handleChooseMinor} />
+                <MinorDock prompt={char.pendingMinor} npcs={char.npcs} wealth={char.stats.wealth} paused={speed === 0} onPick={handleChooseMinor} />
               )}
             </>
           )}

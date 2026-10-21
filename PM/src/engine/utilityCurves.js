@@ -131,6 +131,26 @@ export function evaluateEventConsiderations(event, char, blackboard = {}) {
     multiplier *= (0.7 + dramaSweetSpot * 0.8);
   }
 
+  // 6. Wealth Sink & Rejuvenation Opportunity (When player is wealthy or in acute physical/mental exhaustion)
+  const wealthNorm = normalize(char.stats?.wealth ?? 0, 0, 100);
+  const healthNorm = normalize(char.stats?.health ?? 50, 0, 100);
+  const isEconOrClinic = event.id.startsWith('econ_') || event.id.startsWith('m_med_') || event.id.startsWith('m_wellness_');
+  if (isEconOrClinic) {
+    if (wealthNorm >= 0.35) {
+      const wealthAffluence = ResponseCurves.exponential(wealthNorm, 1.8);
+      const boost = 1 + wealthAffluence * 2.2;
+      multiplier *= boost;
+      considerationLogs.push(`Tích lũy Ahn dồi dào thu hút dịch vụ cao cấp (x${boost.toFixed(2)})`);
+    }
+    if (healthNorm <= 0.65 || sanityDistress >= 0.35) {
+      const needHeal = Math.max(1 - healthNorm, sanityDistress);
+      const healUrgency = ResponseCurves.sigmoid(needHeal, 0.5, 6);
+      const boost = 1 + healUrgency * 1.9;
+      multiplier *= boost;
+      considerationLogs.push(`Nhu cầu điều trị sinh mệnh cấp thiết (x${boost.toFixed(2)})`);
+    }
+  }
+
   return {
     scoreMultiplier: Math.max(0.05, Math.min(5.0, multiplier)),
     considerationLogs

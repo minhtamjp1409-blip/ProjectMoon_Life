@@ -284,11 +284,23 @@ export function planYear(charState, rng) {
     scheduledKey.push({ kind: 'contract' });
   }
 
-  // Active Medical Recovery minor choice when injured or sick
-  if (char.stats.health < 65 && !char.flags.includes('Distorted') && rng() < 0.75) {
-    const medId = nest ? 'm_med_nest_infirmary' : (age < 18 ? 'm_med_child_remedy' : 'm_med_backstreet_clinic');
-    if (!scheduledKey.some((it) => it.id === medId)) {
-      scheduledKey.push({ kind: 'minor', id: medId });
+  // Active Medical Recovery / Wellness / Comfort minor choice when injured, distressed or wealthy
+  if (!char.flags.includes('Distorted')) {
+    if (char.stats.health < 72 && rng() < 0.75) {
+      const medId = nest ? 'm_med_nest_infirmary' : (age < 18 ? 'm_med_child_remedy' : (char.stats.wealth >= 20 && rng() < 0.45 ? 'm_med_blackstreet_doctor_organ' : 'm_med_backstreet_clinic'));
+      if (!scheduledKey.some((it) => it.id === medId)) {
+        scheduledKey.push({ kind: 'minor', id: medId });
+      }
+    } else if (char.stats.sanity < 70 && age >= 16 && rng() < 0.65) {
+      const comfortId = 'm_wellness_hamham_lunch';
+      if (!scheduledKey.some((it) => it.id === comfortId)) {
+        scheduledKey.push({ kind: 'minor', id: comfortId });
+      }
+    } else if (char.stats.wealth >= 35 && age >= 18 && rng() < 0.40) {
+      const sinkId = rng() < 0.5 ? 'm_wellness_workshop_tuneup' : 'm_wellness_hamham_lunch';
+      if (!scheduledKey.some((it) => it.id === sinkId)) {
+        scheduledKey.push({ kind: 'minor', id: sinkId });
+      }
     }
   }
 
@@ -694,7 +706,11 @@ export function resolveMinor(charState, idx, rng) {
   if (Array.isArray(choice.out) && choice.out.length) {
     outcome = pickWeighted(choice.out, (o) => o.w ?? 1, rng) || choice;
   }
-  const deltas = applyFx(char, mergeEffects(choice, outcome));
+  const mergedEffects = mergeEffects(choice, outcome);
+  if (choice.costAhn && !(mergedEffects.wealth < 0)) {
+    mergedEffects.wealth = -choice.costAhn;
+  }
+  const deltas = applyFx(char, mergedEffects);
   [...(choice.flags || []), ...(outcome === choice ? [] : outcome.flags || [])].forEach((f) => {
     if (!char.flags.includes(f)) char.flags.push(f);
   });
