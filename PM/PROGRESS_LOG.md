@@ -1,5 +1,11 @@
 # The City Chronicles: tiến trình dự án
 
+### 21/10/2026, hao mòn thể chất khi về già
+
+- Giữ danh tiếng đã gây dựng, nhưng tuổi tác trừ HP theo từng năm. Đường suy giảm thể lực tăng dần thay vì tăng đột ngột; khi đã lớn tuổi, nghỉ ngơi không thuốc hồi HP kém hơn. Phòng khám, ampoule K Corp và cơ thể thay thế giữ cơ chế riêng.
+- Dòng tổng kết cuối năm nói rõ số HP mất do tuổi tác; riêng cơ thể thay thế dùng lời kể về hao mòn khớp máy. Hồi quy xác nhận tuổi càng cao mất HP nhiều hơn, hồi phục tự nhiên yếu hơn, còn điều trị vẫn giữ hiệu lực.
+- Kiểm tra: build và lint kịch bản đạt; 50.027 khoảnh khắc không vi phạm năm nhóm quy tắc, 120 cuộc đời không phát hiện lỗi logic. Mẫu 50.027 khoảnh khắc có tuổi thọ trung bình 46,9 và cao nhất 96 tuổi.
+
 ### 21/10/2026, địa vị và sự kiện tuổi già
 
 - Danh tiếng không còn tự giảm vào mỗi cuối năm từ tuổi 60 trở đi, hoặc khi nhân vật đang giữ vị trí cao: Fixer Grade 3 trở lên, Color Fixer, chỉ huy Syndicate, quản lý Wing hay thợ cả Workshop. Mạng lưới quan hệ, chiến tích và thể lực vẫn biến động theo bối cảnh; lời tổng kết của người có địa vị nói rõ các đầu mối liên lạc thay đổi, không nói mọi người quên tên họ.

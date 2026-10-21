@@ -60,7 +60,7 @@ import {
   hasMemory
 } from './director.js';
 import { freshness, varyEffects, traitsOf, tiltWeight, PRINTED_NUMBERS } from './variance.js';
-import { BALANCE, healAmount, calmAmount, agingLoss, driftOf, hasEstablishedStanding } from './economyModel.js';
+import { BALANCE, healAmount, calmAmount, agingLoss, effectiveAge, driftOf, hasEstablishedStanding } from './economyModel.js';
 import { activeScarCount, addScar } from './scarModel.js';
 
 export const MINOR_WINDOW_MS = 15000;
@@ -1025,7 +1025,7 @@ export function endYear(charState, rng) {
   const oldAge = wear > 0;
   if (wear > 0) {
     add('health', -wear);
-    line('aging');
+    line(char.flags.includes('FullBodyProsthetic') ? 'aging_prosthetic' : effectiveAge(char) >= 65 ? 'aging_late' : 'aging_early', wear);
   }
 
   const deltas = applyFx(char, fx);

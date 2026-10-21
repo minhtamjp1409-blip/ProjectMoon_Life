@@ -31,8 +31,8 @@ export const BALANCE = {
   },
   aging: {
     start: 50,                    // effective age where the body starts to give
-    step: 0.5,
-    power: 1.2,
+    step: 0.32,
+    power: 1.08,
     floor: 1
   },
   drift: {
@@ -74,7 +74,10 @@ export function healAmount(char, kind) {
   const hp = char.stats.health;
   if (hp >= h.below) return 0;
   const deficit = 100 - hp;
-  return Math.min(5, Math.max(3, Math.round((h.base[kind] + h.deficitRate * deficit) * traitsOf(char).vigor)));
+  const naturalAgePenalty = kind === 'natural' && !char.flags?.includes('FullBodyProsthetic') && !char.flags?.includes('Bloodfiend')
+    ? Math.min(2, Math.floor(Math.max(0, effectiveAge(char) - 60) / 12))
+    : 0;
+  return Math.min(5, Math.max(1, Math.round((h.base[kind] + h.deficitRate * deficit) * traitsOf(char).vigor) - naturalAgePenalty));
 }
 
 /** SP settled over a year; `kind` is natural | bond | tavern. */

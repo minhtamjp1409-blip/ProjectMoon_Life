@@ -166,11 +166,22 @@ export const YEAR_END_LINES = {
       ['Tiếng súng ngoài phố gần hơn năm ngoái. Bạn ngủ với đôi giày bên cạnh gối.', 'The gunfire outside was closer than last year. You slept with your shoes beside the pillow.']
     ]
   },
-  aging: {
+  aging_early: {
     adult: [
-      ['Cơ thể bạn bắt đầu chậm lại. Cầu thang dài hơn trước.', 'Your body began to slow down. The stairs grew longer.'],
-      ['Tay bạn run khi trời lạnh, và vết thương lâu lành hơn.', 'Your hands shook in the cold, and wounds took longer to heal.'],
-      ['Mỗi sáng bạn cần thêm một chút thời gian mới đứng dậy được.', 'Each morning it took you a little longer to get up.']
+      ['Sau những ngày dài, cơ thể bạn cần thêm thời gian hồi sức. Tuổi tác lấy đi {n} HP.', 'Your body needed more time to recover after long days. Age cost you {n} HP.'],
+      ['Vết đau cũ trở lại mỗi khi trời lạnh. Sức khỏe giảm {n} HP vì tuổi tác.', 'Old aches returned in the cold. Age reduced your health by {n} HP.']
+    ]
+  },
+  aging_late: {
+    adult: [
+      ['Đi hết cầu thang giờ phải dừng giữa chừng. Thể lực giảm {n} HP trong năm này.', 'You had to pause halfway up the stairs. Your physical health fell by {n} HP this year.'],
+      ['Một đợt mệt kéo dài hơn trước dù bạn đã nghỉ. Tuổi già lấy đi {n} HP.', 'A spell of fatigue lasted longer despite the rest you took. Old age cost you {n} HP.']
+    ]
+  },
+  aging_prosthetic: {
+    adult: [
+      ['Các khớp máy phải cân chỉnh lâu hơn sau mỗi lần vận động. Sức khỏe giảm {n} HP.', 'The prosthetic joints needed longer recalibration after exertion. Your health fell by {n} HP.'],
+      ['Bộ điều khiển vẫn hoạt động, nhưng các khớp cũ phản hồi chậm hơn. Hao mòn lấy đi {n} HP.', 'The control system still worked, but older joints responded more slowly. Wear cost you {n} HP.']
     ]
   },
   firearms_tax: {
