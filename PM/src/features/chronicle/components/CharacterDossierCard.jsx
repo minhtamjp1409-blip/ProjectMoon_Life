@@ -515,7 +515,7 @@ export const CharacterDossierCard = () => {
                   className={`m-sheet-tab ${mobileTab === 'relations' ? 'is-active' : ''}`}
                   onClick={() => setMobileTab('relations')}
                 >
-                  {t('Nhân mạch', 'Bonds')}
+                  {t('Mối quan hệ', 'Bonds')}
                 </button>
               </div>
             </div>

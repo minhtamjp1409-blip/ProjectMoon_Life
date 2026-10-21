@@ -18,6 +18,7 @@ import {
 } from '../data/worldData.js';
 import { CHILDHOOD_EVENTS, CONSEQUENCE_EVENTS } from '../data/eventsChildhood.js';
 import { composeBirth, makeNpc } from '../data/birthStories.js';
+import { generatePersonName } from '../data/nameGenerator.js';
 import { FACTION_EVENTS } from '../data/eventsFactions.js';
 import { SUPERNATURAL_EVENTS, FIXER_REQUESTS } from '../data/eventsSupernatural.js';
 import { FIXER_PATH_EVENTS } from '../data/eventsFixerPath.js';
@@ -65,12 +66,52 @@ export const SEASONS = [
   { id: 'winter', vi: 'Mùa Đông', en: 'Winter' }
 ];
 
-const FIRST_NAMES_VI = [
-  'roland', 'angela', 'kali', 'garion', 'binah', 'chesed', 'gebura', 'hokma',
+export const CANON_NAMES_BLACKLIST = new Set([
+  // 12 Sinners of Limbus Company
+  'yi sang', 'faust', 'don quixote', 'ryoshu', 'meursault', 'hong lu', 'honglu',
+  'heathcliff', 'ishmael', 'rodion', 'rodya', 'sinclair', 'outis', 'gregor',
+  // Key Cast & Protagonists
+  'dante', 'vergilius', 'vergil', 'charon', 'roland', 'angela', 'ayin', 'carmen',
+  // Sephirah & Librarians
+  'malkuth', 'yesod', 'hod', 'netzach', 'tiphereth', 'chesed', 'gebura', 'hokma', 'binah',
+  // Historical / Red Mist
+  'kali', 'garion',
+  // Notable Fixers / Syndicate / Reverberation Ensemble
   'xiao', 'lowell', 'miris', 'philip', 'salvador', 'yuna', 'yujin', 'valentin',
-  'tenma', 'olga', 'rain', 'mika', 'argalia', 'iori', 'vergil', 'faust',
-  'yi sang', 'don quixote', 'ryoshu', 'meursault', 'hong lu', 'heathcliff',
-  'ishmael', 'rodion', 'sinclair', 'outis', 'gregor', 'bamboo-hatted kim', 'kromer'
+  'tenma', 'olga', 'rain', 'mika', 'argalia', 'iori', 'kromer', 'bamboo-hatted kim',
+  'tanya', 'oswald', 'jae-heon', 'elena', 'pluto', 'greta', 'bremen', 'baral',
+  'zena', 'luda', 'demian', 'rimbaud', 'sonya', 'aschenbach', 'samjo', 'shrenne',
+  'dongbaek', 'dongrang', 'ran', 'marile', 'smee', 'alyssa', 'saude', 'effie', 'hopkins'
+]);
+
+/**
+ * Generates an original citizen name suited to the character's district culture,
+ * strictly guaranteed never to clash with existing canon protagonists/sinners (Hong Lu, Dante, etc.)
+ */
+export function rollOriginalCityName(rng, { regionId = null, nest = false } = {}) {
+  for (let attempt = 0; attempt < 30; attempt++) {
+    const id = generatePersonName(rng, { regionId, nest, forceAlias: false });
+    // Newborns at birth receive a proper given name or full name, never a street alias
+    const candidate = nest ? id.full : (rng() < 0.65 ? id.given : id.full);
+    const lower = candidate.toLowerCase();
+    const isCanon = CANON_NAMES_BLACKLIST.has(lower) ||
+      Array.from(CANON_NAMES_BLACKLIST).some(c => lower === c || lower.startsWith(c + ' ') || lower.endsWith(' ' + c));
+    if (!isCanon) {
+      return candidate;
+    }
+  }
+  return 'Julian';
+}
+
+// Retained for backward-compatibility with external mocks/tests
+export const FIRST_NAMES_VI = [
+  'julian', 'nathan', 'silas', 'clara', 'vivienne', 'cedric', 'arthur', 'diana',
+  'marcus', 'caleb', 'felix', 'valerie', 'corwin', 'beatrice', 'edmund', 'hazel',
+  'min-jae', 'do-yun', 'ji-ho', 'yeon-woo', 'tae-oh', 'hyun-seok', 'jun-seo',
+  'wen hao', 'bo yan', 'jian yu', 'chen xi', 'ming zhe', 'lan yin', 'mei ling',
+  'haruka', 'ren', 'sora', 'kaito', 'daichi', 'shun', 'takumi', 'kenji',
+  'matthias', 'ansgar', 'konrad', 'rainer', 'dieter', 'lorenz', 'jonas', 'falk',
+  'ilya', 'pavel', 'dmitri', 'lev', 'oleg', 'vadim', 'roman', 'anya', 'zoya'
 ];
 
 export function formatName(str) {
@@ -232,7 +273,7 @@ export function createNewCharacter({
     customName.trim() ||
     (parentLegacy?.childName
       ? parentLegacy.childName
-      : formatName(FIRST_NAMES_VI[Math.floor(rng() * FIRST_NAMES_VI.length)]));
+      : rollOriginalCityName(rng, { regionId: region.id, nest: family.id === 'nest_feather' }));
 
   const generation = parentLegacy ? (parentLegacy.generation || 1) + 1 : 1;
 

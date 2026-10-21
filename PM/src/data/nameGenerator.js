@@ -23,11 +23,11 @@ const CULTURES = {
     family: ['Mori', 'Kurose', 'Tachibana', 'Sakai', 'Ogawa', 'Ishida', 'Hayashi', 'Fujiwara', 'Kagami', 'Nomura', 'Yamabe', 'Kuroki']
   },
   german: {
-    given: ['Matthias', 'Liesel', 'Ansgar', 'Greta', 'Konrad', 'Ilse', 'Rainer', 'Wilhelmina', 'Dieter', 'Hanne', 'Lorenz', 'Margit', 'Jonas', 'Elke', 'Falk', 'Brigitte'],
+    given: ['Matthias', 'Liesel', 'Ansgar', 'Katrin', 'Konrad', 'Ilse', 'Rainer', 'Wilhelmina', 'Dieter', 'Hanne', 'Lorenz', 'Margit', 'Jonas', 'Elke', 'Falk', 'Brigitte'],
     family: ['Reiner', 'Brandt', 'Kessler', 'Vogt', 'Hartmann', 'Lenz', 'Weiss', 'Adler', 'Roth', 'Faber', 'Keller', 'Sommer']
   },
   russian: {
-    given: ['Ilya', 'Katya', 'Pavel', 'Zoya', 'Dmitri', 'Anya', 'Lev', 'Nadia', 'Oleg', 'Vera', 'Misha', 'Tamara', 'Yuri', 'Svetlana', 'Roman', 'Galina'],
+    given: ['Ilya', 'Katya', 'Pavel', 'Zoya', 'Dmitri', 'Anya', 'Lev', 'Nadia', 'Oleg', 'Vera', 'Misha', 'Tamara', 'Vadim', 'Svetlana', 'Roman', 'Galina'],
     family: ['Volkov', 'Morozov', 'Orlova', 'Sokolov', 'Zaitsev', 'Belova', 'Kuznetsov', 'Lebedev', 'Petrenko', 'Smirnova', 'Fedorov', 'Gromov']
   },
   french: {
@@ -35,7 +35,7 @@ const CULTURES = {
     family: ['Roux', 'Delacroix', 'Marchand', 'Fontaine', 'Lemaire', 'Girard', 'Vasseur', 'Brun', 'Moreau', 'Dubois', 'Laurent', 'Perrin']
   },
   hispanic: {
-    given: ['Mateo', 'Lucía', 'Rafael', 'Inés', 'Joaquín', 'Marisol', 'Tomás', 'Esperanza', 'Diego', 'Pilar', 'Emilio', 'Catalina', 'Santiago', 'Rosario', 'Bruno', 'Elena'],
+    given: ['Mateo', 'Lucía', 'Rafael', 'Inés', 'Joaquín', 'Marisol', 'Tomás', 'Esperanza', 'Diego', 'Pilar', 'Emilio', 'Catalina', 'Santiago', 'Rosario', 'Bruno', 'Valeria'],
     family: ['Vidal', 'Ortega', 'Navarro', 'Castillo', 'Herrera', 'Mendoza', 'Salinas', 'Cordero', 'Paredes', 'Rivas', 'Ibarra', 'Luna']
   },
   english: {
