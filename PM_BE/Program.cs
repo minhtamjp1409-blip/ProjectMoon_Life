@@ -24,14 +24,9 @@ builder.Services.AddResponseCompression(o =>
 });
 builder.Services.Configure<BrotliCompressionProviderOptions>(o => o.Level = CompressionLevel.Fastest);
 
-// The Vite dev server on this machine, LAN, or Vercel production frontend
+// Public game API: allow calls from any frontend origin (local, LAN, Vercel, mobile webviews)
 builder.Services.AddCors(o => o.AddPolicy("Frontend", p => p
-    .SetIsOriginAllowed(origin =>
-        string.IsNullOrEmpty(origin) ||
-        origin.Contains("localhost") ||
-        origin.StartsWith("http://192.168.") ||
-        origin.EndsWith(".vercel.app") ||
-        origin == "https://project-moon-life-five.vercel.app")
+    .AllowAnyOrigin()
     .AllowAnyHeader()
     .AllowAnyMethod()));
 
