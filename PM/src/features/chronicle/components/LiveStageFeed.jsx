@@ -79,10 +79,12 @@ const LogEntries = React.memo(function LogEntries({ logs }) {
     const tag = entry.omen ? t('Điềm lúc chào đời', 'Omen at birth') : title || (kind?.vi ? t(kind.vi, kind.en) : null);
     out.push(
       <article className={`entry ${kind?.cls || ''}`} key={entry.id}>
-        <div className="entry-header-row">
-          {entry.season && <span className="entry-season-badge">{t(entry.season.vi, entry.season.en)}</span>}
-          {tag && <p className="entry-tag">{tag}</p>}
-        </div>
+        {/* The yearline and season dividers above already say when; the card only says what */}
+        {tag && (
+          <div className="entry-header-row">
+            <p className="entry-tag">{tag}</p>
+          </div>
+        )}
         {entry.choiceVi && (
           <p className="entry-choice">
             {t('Bạn chọn: ', 'You chose: ')}

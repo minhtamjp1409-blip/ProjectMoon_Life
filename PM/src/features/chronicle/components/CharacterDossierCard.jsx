@@ -443,82 +443,69 @@ export const CharacterDossierCard = () => {
         onKeyDown={event => { if (event.target === event.currentTarget && (event.key === 'Enter' || event.key === ' ')) { event.preventDefault(); event.stopPropagation(); setDrawerOpen(true); } }}
         aria-label={t('Chỉ số nhân vật và tài nguyên - Bấm để mở hồ sơ chi tiết', 'Character stats and resources - Tap to open dossier')}
       >
-        <div className="m-hud-compact-inner">
-          <div className="m-hud-name-group">
-            <span className="m-hud-name">{char.name}</span>
-            <span className="m-hud-gen">#{char.generation}</span>
-            <span className="m-hud-job-pill">{jobDesc.split(' · ')[0]}</span>
+        {/* Row 1: who, when, and the dossier button */}
+        <div className="hud2-top">
+          <div className="hud2-who">
+            <span className="hud2-name">{char.name}</span>
+            <span className="hud2-gen">#{char.generation}</span>
+            <span className="hud2-when">
+              {jobDesc.split(' · ')[0]} · <b>{t(`Tuổi ${char.age}`, `Age ${char.age}`)}</b> · {t(currentSeason?.vi, currentSeason?.en)}
+            </span>
           </div>
-
-          <div className="m-hud-vitals-group">
-            {/* HP micro gauge */}
-            <div className={`m-micro-gauge m-gauge-hp ${isHpCritical ? 'is-critical' : ''}`} title={`HP: ${health}/100`}>
-              <Heart size={12} className="m-icon-hp" />
-              <span className="m-micro-val num"><b>{health}</b></span>
-              <div className="m-micro-track">
-                <div className="m-micro-fill" style={{ width: `${Math.max(0, Math.min(100, health))}%` }} />
-              </div>
-            </div>
-
-            {/* SP micro gauge */}
-            <div className={`m-micro-gauge m-gauge-sp ${isSpCritical ? 'is-critical' : ''}`} title={`SP: ${sanity}/100`}>
-              <Brain size={12} className="m-icon-sp" />
-              <span className="m-micro-val num"><b>{sanity}</b></span>
-              <div className="m-micro-track">
-                <div className="m-micro-fill" style={{ width: `${Math.max(0, Math.min(100, sanity))}%` }} />
-              </div>
-            </div>
-          </div>
-
-          <div className="m-hud-resources-group">
-            <div className="m-micro-pill m-pill-wealth" title={t('Tiền mặt Ahn', 'Ahn Wealth')}>
-              <Coins size={12} className="m-icon-gold" />
-              <span className="num"><b>{wealth}</b></span>
-            </div>
-            {tabooLevel > 0 && (
-              <div className={`m-micro-pill m-pill-taboo ${tabooLevel >= 2 ? 'is-critical' : ''}`} title={t('Ánh nhìn Taboo', 'Taboo Gaze')}>
-                <Eye size={12} className="m-icon-taboo" />
-                <span className="num"><b>{tabooLevel}</b>/3</span>
-              </div>
-            )}
-            {char.heat > 0 && (
-              <div className="m-micro-pill m-pill-heat" title={t('Mức độ truy nã', 'Heat Level')}>
-                <Flame size={12} className="m-icon-heat" />
-                <span className="num"><b>{char.heat}</b></span>
-              </div>
-            )}
-          </div>
-
-          <button 
-            type="button" 
-            className="m-hud-open-btn"
-            onClick={(e) => { 
-              e.stopPropagation(); 
-              setDrawerOpen(true); 
+          <button
+            type="button"
+            className="m-hud-open-btn hud2-open"
+            onClick={(e) => {
+              e.stopPropagation();
+              setDrawerOpen(true);
             }}
             aria-label={t('Xem hồ sơ chi tiết', 'Open full dossier')}
           >
             <span>{t('Hồ sơ', 'Dossier')}</span>
-            <ChevronDown size={12} />
+            <ChevronDown size={14} />
           </button>
         </div>
 
-        {/* Row 2: Season & Year Progress timeline sub-strip */}
-        <div className="m-hud-subline">
-          <div className="m-hud-season-pill">
-            <b>{t(`Tuổi ${char.age}`, `Age ${char.age}`)}</b>
-            <span>· {t(currentSeason?.vi, currentSeason?.en)}</span>
+        {/* Row 2: equal cells, so a long number can never push into its neighbour */}
+        <div className="hud2-stats" style={{ '--cells': 3 + (char.heat > 0 ? 1 : 0) + (tabooLevel > 0 ? 1 : 0) }}>
+          <div className={`hud2-stat is-hp ${isHpCritical ? 'is-critical' : ''}`} title={`HP: ${health}/100`}>
+            <span className="hud2-k"><Heart size={13} aria-hidden="true" />HP</span>
+            <b className="hud2-v num">{health}</b>
+            <i className="hud2-bar"><i style={{ width: `${Math.max(0, Math.min(100, health))}%` }} /></i>
           </div>
-          <div className="m-hud-timeline-track">
-            <div className="m-hud-timeline-fill" style={{ width: `${Math.max(0, Math.min(100, yearProgress || 0))}%` }} />
+          <div className={`hud2-stat is-sp ${isSpCritical ? 'is-critical' : ''}`} title={`SP: ${sanity}/100`}>
+            <span className="hud2-k"><Brain size={13} aria-hidden="true" />SP</span>
+            <b className="hud2-v num">{sanity}</b>
+            <i className="hud2-bar"><i style={{ width: `${Math.max(0, Math.min(100, sanity))}%` }} /></i>
           </div>
+          <div className="hud2-stat is-ahn" title={t('Tiền mặt Ahn', 'Ahn Wealth')}>
+            <span className="hud2-k"><Coins size={13} aria-hidden="true" />Ahn</span>
+            <b className="hud2-v num">{wealth}</b>
+          </div>
+          {char.heat > 0 && (
+            <div className={`hud2-stat is-heat ${char.heat >= 65 ? 'is-critical' : ''}`} title={t('Mức độ truy nã', 'Heat Level')}>
+              <span className="hud2-k"><Flame size={13} aria-hidden="true" />Heat</span>
+              <b className="hud2-v num">{char.heat}</b>
+            </div>
+          )}
+          {tabooLevel > 0 && (
+            <div className={`hud2-stat is-taboo ${tabooLevel >= 2 ? 'is-critical' : ''}`} title={t('Ánh nhìn Taboo', 'Taboo Gaze')}>
+              <span className="hud2-k"><Eye size={13} aria-hidden="true" />Taboo</span>
+              <b className="hud2-v num">{tabooLevel}<small>/3</small></b>
+            </div>
+          )}
+        </div>
+
+        {/* Row 3: the year, and the next career goal */}
+        <div className="hud2-year">
+          <i className="hud2-year-track"><i style={{ width: `${Math.max(0, Math.min(100, yearProgress || 0))}%` }} /></i>
           {milestone && milestone.progressPct < 100 ? (
-            <span className="m-hud-goal-pill" title={lang === 'en' ? milestone.titleEn : milestone.titleVi}>
-              <span className="m-hud-goal-text">{lang === 'en' ? milestone.titleEn : milestone.titleVi}</span>
+            <span className="hud2-goal" title={lang === 'en' ? milestone.titleEn : milestone.titleVi}>
+              <span>{lang === 'en' ? milestone.titleEn : milestone.titleVi}</span>
               <b>{milestone.progressPct}%</b>
             </span>
           ) : (
-            <span className="m-hud-region-pill">{region ? (lang === 'en' ? region.nameEn : region.nameVi) : ''}</span>
+            <span className="hud2-goal is-place">{region ? (lang === 'en' ? region.nameEn : region.nameVi) : ''}</span>
           )}
         </div>
       </div>
