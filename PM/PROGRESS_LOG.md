@@ -1,6 +1,6 @@
 # The City Chronicles: tiến trình dự án
 
-Cập nhật: 20/10/2026, đợt 9 (xem [mục 8](#8-nhật-ký-thay-đổi))
+Cập nhật: 21/10/2026, đợt 12 (xem [mục 8](#8-nhật-ký-thay-đổi))
 
 - Live Demo Vercel: [https://project-moon-life-five.vercel.app](https://project-moon-life-five.vercel.app)
 - Tài liệu PDF chính thức: [THE_CITY_CHRONICLES_DOCUMENTATION.pdf](https://project-moon-life-five.vercel.app/THE_CITY_CHRONICLES_DOCUMENTATION.pdf)
@@ -49,9 +49,11 @@ Cuối năm, engine tính thu nhập trừ chi tiêu theo nghề và nơi ở, v
 
 - **Seed**: hash cyrb128 + bộ sinh sfc32 (`createRNG` trong `gameEngine.js`). Seed mới lấy từ `crypto.getRandomValues`. Đời sống dùng một luồng ngẫu nhiên riêng với lúc khai sinh, nên hai seed gần giống nhau vẫn ra hai đời khác nhau.
 - **Khai sinh** ghép từ các mảnh độc lập (`src/data/birthStories.js`): nơi sinh theo xuất thân, gia đình, chuyện xảy ra đêm đó, điềm lúc sinh, và một người bạn thuở nhỏ có tên và tính cách ngẫu nhiên.
-- **Sự kiện lớn** được rút có trọng số trong 10 ứng viên tốt nhất (trước đây là 3, nên các kiếp hay giống nhau).
-- **Kho nội dung**: 120 dòng thường ngày, 89 sự kiện nhỏ, 34 loại ký ức mà lựa chọn có thể để lại.
-- **Mô phỏng 200 kiếp** (không giao diện): 0 lỗi, 200/200 đoạn mở đầu khác nhau, cả 89 sự kiện nhỏ đều được chạm tới ít nhất một lần, khoảng 21 đến 27% số kiếp gặp chuyện 3:13 trước 11 tuổi.
+- **Bộ tạo tên & Blacklist Canon**: Bộ sinh tên tự do (`nameGenerator.js`) tích hợp danh sách cấm `CANON_NAMES_BLACKLIST` (12 Sinner Limbus Company, Dante, Vergilius, Roland, Angela, Carmen, các Sephirah, Color Fixers và nhân vật quan trọng) nhằm ngăn chặn việc trùng tên gây hiểu lầm bối cảnh.
+- **Sự kiện lớn**: Rút có trọng số trong 10 ứng viên tốt nhất thông qua Weaver AI.
+- **Kho nội dung phong phú**: **193 sự kiện lớn** độc lập phân bố đều qua 5 nhánh nghề nghiệp chính (Fixer, Syndicate 5 Ngón Tay, Wing Employee, Workshop Craftsman, Distortion), 120 dòng thường ngày, 92 sự kiện nhỏ, 34 loại ký ức nhân quả.
+- **Tối ưu nhịp sống ấu thơ (0–4 tuổi)**: Mỗi năm chỉ kích hoạt đúng 1 sự kiện thụ động (daily) luân phiên theo 4 mùa (Xuân, Hạ, Thu, Đông) thay vì dồn dập 4 sự kiện/năm, giúp câu chuyện thở tự nhiên và hoàn toàn không bị trùng lặp câu chữ.
+- **Mô phỏng 1,000 kiếp** (`simulate1000.mjs`): 0 lỗi runtime, 100% canonical integrity, 0 lỗi NPC ma, 0 vi phạm logic/lore, 6,745 lượt tương tác kinh tế / sự kiện nhánh.
 
 ### 2.3. AI director (`src/engine/director.js`)
 
@@ -123,6 +125,27 @@ E và O mang nhãn "Phóng tác", Z mang nhãn "Không có trên bản đồ" (`
 - **Sự kiện Canto**: Các mốc sự kiện Canto đóng vai trò làm giàu bối cảnh thế giới (công nghệ cánh, biến cố khói bụi, tàn dư chiến tranh), không gò ép tuyến tính hay bắt buộc nhân vật phải tham gia trực tiếp.
 - **Hình tượng Carmen chuẩn xác**: Carmen luôn xuất hiện dưới ánh mặt trời rực rỡ, thiêu đốt và ấm áp huyền ảo (The Scorching Sun), không phải ánh trăng đêm.
 - **Cân bằng biến dị**: E.G.O và Distortion giữ độ hiếm cao tột bậc; tích hợp hệ thống 5 năng lực tâm trí Disco Psyche (Logic, Empathy, Volition, Inland Empire, Half Light) thể hiện sự giằng xé nội tâm khi đối diện Carmen.
+
+### 2.11. Kinh tế The City, Tiêu tiền Ahn & Hồi phục theo Lore
+
+- **Các điểm tiêu tiền (Ahn Sinks) bám sát Canon**: Giải quyết tình trạng dư thừa Ahn và thiếu hụt dịch vụ hồi phục khi nhân vật bị trọng thương hoặc chấn thương tâm lý. Tích hợp 7 sự kiện lớn tại `src/data/eventsWorkshopEconomy.js`:
+  1. *Viện Tái Sinh Sinh Học K Corp (`econ_kcorp_regeneration_pavilion`)*: Dòng dịch ngọc bích từ Singularity của K Corp giúp nối liền xương thịt đứt lìa và hồi phục lượng HP khổng lồ (26–48 Ahn).
+  2. *Buồng Tua Ngược Thời Gian T Corp (`econ_tcorp_chrono_restoration`)*: Singularity Thời Gian của District 4 tua ngược đồng hồ sinh học về 2 tuần trước khi chịu chấn thương mà không cần phẫu thuật (28–52 Ahn).
+  3. *Đại Tiệc HamHamPangPang (`econ_hamhampangpang_feast`)*: Tiệm bánh mì nướng bơ tỏi và trà thảo mộc huyền thoại của Roland, xoa dịu tâm trí, hồi phục Sanity và làm giảm đáng kể Distortion Resonance (10–24 Ahn).
+  4. *Sảnh Spa Khoáng Nóng & Jazz Club J Corp (`econ_jcorp_luxury_spa_lounge`)*: Suối nước nóng sulfur và nhạc jazz District 10 giúp gột rửa stress, giảm nguy cơ Biến dị và hạ nhiệt độ truy nã Faction Heat (18–42 Ahn).
+  5. *Đại Tu Giáp Trụ & Vũ Khí Atelier Độc Quyền (`econ_atelier_armor_overhaul`)*: Xưởng rèn chứng nhận Tres (Zelkova, Wheels Industry, Mook) gia cố giáp nano và mài sắc vũ khí tăng khả năng sống sót (18–45 Ahn).
+  6. *Trú Ẩn Bí Mật Safehouse Seven Association (`econ_seven_safehouse_diplomacy`)*: Mua quyền bảo hộ ngoại giao, chữa trị vết thương kín và tẩy sạch hồ sơ truy nã từ các điều tra viên Hiệp hội Seven (22–55 Ahn).
+  7. *Ẩm Thực Đen Tối District 23 (`econ_district23_gourmet_pie`)*: Bánh thịt nghệ nhân đặc biệt phong cách Pierre bộc phát sinh lực thể chất cực hạn (12–25 Ahn).
+  8. *Điều chỉnh Thị thực Nest Visa (`econ_nest_visa_opportunity`)*: Hạ chi phí từ 180 Ahn xuống 85 Ahn để phù hợp với mức trần tối đa 100 Ahn của game.
+- **Nâng cấp sự kiện ngắn & Y tế cơ sở**: Thêm các lựa chọn chi trả K Corp Ampoule nguyên tem tại phòng khám Backstreet & Nest (`src/data/lifeMinors.js`), cùng 3 sự kiện ngắn mới: ăn trưa HamHamPangPang (`m_wellness_hamham_lunch`), phẫu thuật cấy phổi lọc độc chợ đen (`m_med_blackstreet_doctor_organ`), và bảo dưỡng trang bị workshop (`m_wellness_workshop_tuneup`).
+- **Utility Consideration 6 (Cơ chế thu hút dịch vụ & cấp cứu)**: Trong `utilityCurves.js`, khi nhân vật tích lũy nhiều tiền (`wealth >= 35`), thuật toán tự động tăng điểm ưu tiên cho các sự kiện nhà hàng, spa, workshop cao cấp. Ngược lại, khi Health (`< 72`) hoặc Sanity (`< 70`) giảm sút, hệ thống tự động ưu tiên lên lịch sự kiện phòng khám và phục hồi.
+- **Rõ ràng chi phí & vô hiệu hóa nút bấm thiếu tiền**: Cả `EventDock` và `MinorDock` đều hiển thị chip chi phí (`Tốn X Ahn` hoặc `Thiếu Ahn (Cần X)`). Nếu không đủ Ahn, nút lựa chọn tự động bị làm mờ và vô hiệu hóa (`disabled={true}`).
+
+### 2.12. Thăng cấp ngẫu nhiên đa nhánh (Multi-Track Promotion Pools)
+
+- **Xóa bỏ chuỗi thăng cấp tuyến tính cố định**: Trước đây, các kỳ khảo hạch Fixer từ Grade 8 đến Grade 1 diễn ra theo một kịch bản đơn nhất. Hệ thống mới phân bổ mỗi Grade thành các pool khảo hạch ngẫu nhiên đa dạng (kết hợp các Hiệp hội chuyên trách: Zwei, Seven, Shi, Tres, Cinq, Oufi, Dieci, Molar, Devzat, Warp, Reindeer, Black Silence, Calamity...).
+- **Chọn ngẫu nhiên qua seed**: Mỗi lần đủ điều kiện thăng cấp, Weaver AI sẽ bốc thăm ngẫu nhiên bằng `rng()` từ pool ứng viên đủ điều kiện, tạo ra hàng chục lộ trình sự nghiệp Fixer độc nhất vô nhị.
+- **Mở khóa tiến trình thăng hoa Syndicate khi Distorted**: Khắc phục lỗi kẹt tiến trình khi thành viên Syndicate biến dị thành Distortion; cho phép nhân vật tiếp tục khảo nghiệm đỉnh cao quyền lực của The Five Fingers.
 
 ---
 
@@ -222,6 +245,40 @@ Trong chữ: `{name}`, `{friend}`, `{mentor}`, `{rival}`, `{lover}`, `{partner}`
 ---
 
 ## 8. Nhật ký thay đổi
+
+### 21/10/2026, đợt 12
+
+- **Mở rộng Pool sự kiện nhánh quy mô lớn (33 sự kiện lớn mới, nâng tổng số lên 193 sự kiện lớn)**:
+  - Khắc phục triệt để tình trạng thiếu hụt và lặp sự kiện khi nhân vật bước vào các nhánh nghề nghiệp/cuộc đời sau tuổi 18.
+  - *Nhánh Fixer & Hiệp hội (7 sự kiện mới)*: Cinq rapier duel (`fixer_cinq_duel_of_honor`), Oufi blood pact mediation (`fixer_oufi_underworld_pact`), Dieci monastery archive excavation (`fixer_dieci_monastery_archive`), Molar canal toxic salvage (`fixer_molar_amphibious_salvage`), Devzat heavy arbalest convoy (`fixer_devzat_railway_convoy`), thành lập Văn Phòng Fixer riêng (`fixer_independent_office_founding`), bẫy phản bội của thân chủ giàu có (`fixer_client_betrayal_ambush`).
+  - *Nhánh Syndicate 5 Ngón Tay (8 sự kiện mới)*: Thumb kiểm kê đạn dược & võ đài brawler Boris (`syn_thumb_ammunition_quota`, `syn_thumb_boris_brawler_drill`), Index con quay nhân quả & tơ kiếm thanh trừng máy in giả (`syn_index_spinning_top_prescript`, `syn_index_crimson_thread_execution`), Middle Sách Phục Thù & hỗn chiến phiếu tiệm tóc Ricardo (`syn_middle_cousin_retaliation`, `syn_middle_hair_coupon_brawl`), Ring tượng sống triển lãm nghệ thuật (`syn_ring_corridor_human_statue`), Pinky mật mã lụa cống ngầm District 25 (`syn_pinky_whispering_underground_broker`).
+  - *Nhánh Nhân viên Cánh 26 Wings (6 sự kiện mới)*: T Corp thu thuế thời gian bằng kính monocle (`wing_tcorp_monocle_time_collection`), W Corp dọn dẹp khoang tàu WARP đột biến trước giờ mở ga (`wing_wcorp_warp_dimension_anomaly`), K Corp kiểm định bòn rút nước mắt Singularity (`wing_kcorp_ampoule_contamination`), R Corp lò ấp nhân bản Pack 4 (`wing_rcorp_cloning_selection_drill`), N Corp tòa án thanh trừng khớp cơ khí (`wing_ncorp_prosthetic_purge_tribunal`), tàn tích L Corp thu hồi tinh thể Cogito (`wing_lobotomy_ruin_cogito_salvage`).
+  - *Nhánh Thợ rèn Workshop Craftsman (6 sự kiện mới)*: Trượng khớp thu phóng Zelkova (`ws_zelkova_telescopic_quarterstaff`), thanh tra bằng sáng chế Tres Association (`ws_tres_singularity_infringement_audit`), phục kích phá hoại lò rèn lúc 2 AM (`ws_workshop_turf_sabotage`), chuôi kiếm cách nhiệt tâm lý E.G.O (`ws_ego_casing_resonance_craft`), mài liễu kiếm phân tử Cinq Allonge (`ws_allonge_rapier_molecular_grind`), thu nhận đồ đệ mồ côi kế thừa lò rèn (`ws_workshop_apprentice_legacy`).
+  - *Nhánh Biến dị Distortion (6 sự kiện mới)*: Cộng hưởng Abnormality dưới lòng đất (`distort_abnormality_resonance_communion`), khúc hát ru bảo vệ lũ trẻ khỏi Sweeper 3:13 AM (`distort_backstreet_children_lullaby`), phá vỡ lồng giam Hana Section 2 (`distort_hana_suppression_squad`), lãnh địa Sân Khấu Ký Ức (`distort_domain_expansion_theater`), con mắt Beholder của The Head (`distort_head_beholder_observation`), lời thầm thì giải thoát của Carmen (`distort_carmen_final_solace`).
+- **Kiểm thử mô phỏng toàn diện 1,000 vòng đời**: Chạy harness `simulate1000.mjs` đạt 1,000/1,000 kiếp sống thành công 100%, 0 vi phạm logic/lore, 0 lỗi NPC ma, phân bổ sự kiện tự nhiên và độc đáo qua từng kiếp.
+
+### 21/10/2026, đợt 11
+
+- **Cơ chế Tiêu tiền Ahn & Sự kiện Hồi phục (Health & Sanity Sinks) theo Lore Canon**:
+  - Thêm 7 sự kiện lớn tiêu Ahn tại `src/data/eventsWorkshopEconomy.js`: K Corp HP Ampoule Pavilion, T Corp Chrono-Restorative Pod, HamHamPangPang Bistro, J Corp Luxury Jazz & Spa Lounge, Atelier Master Armor Overhaul, Seven Association Diplomatic Safehouse, District 23 Gourmet Gastronomy.
+  - Điều chỉnh phí Nest Visa từ 180 Ahn xuống 85 Ahn tương thích với trần 100 Ahn của người chơi.
+  - Nâng cấp minor events y tế tại phòng khám Backstreet & Nest, bổ sung 3 sự kiện ngắn: `m_wellness_hamham_lunch`, `m_med_blackstreet_doctor_organ`, `m_wellness_workshop_tuneup`.
+  - Tích hợp Consideration 6 trong `utilityCurves.js`: Ưu tiên xuất hiện sự kiện dịch vụ/tiêu tiền khi `wealth >= 35`, và tự động xuất hiện phòng khám khi `health < 72` hoặc `sanity < 70`.
+  - Giao diện chip chi phí `Tốn X Ahn` / `Thiếu Ahn (Cần X)` và tự động vô hiệu hóa nút (`disabled={true}`) khi người chơi không đủ tiền.
+- **Hệ thống Thăng cấp ngẫu nhiên đa nhánh (Multi-Track Promotion Pools)**:
+  - Thay thế chuỗi khảo hạch tuyến tính cố định bằng các pool ngẫu nhiên đa dạng qua các Hiệp hội chuyên biệt (Zwei, Seven, Shi, Tres, Cinq, Oufi, Dieci, Molar, Devzat, Warp, Reindeer, Black Silence, Calamity...).
+  - Bốc thăm ngẫu nhiên bằng `rng()` từ pool ứng viên đủ điều kiện tại mỗi mốc thăng cấp.
+  - Sửa lỗi kẹt tiến trình biến dị của Syndicate khi Distorted.
+
+### 21/10/2026, đợt 10
+
+- **Tối ưu nhịp sống ấu thơ (0–4 tuổi)**: Giới hạn đúng 1 sự kiện thụ động (daily) mỗi năm luân phiên 4 mùa, chấm dứt việc spam dồn dập 4 sự kiện/năm làm loãng mạch văn.
+- **Tách bạch cấu trúc văn bản**: Chuẩn hóa các câu văn trong toàn bộ sự kiện thành từng khoảnh khắc độc lập, mạch lạc, không chia cắt một câu đơn thành nhiều đoạn rời rạc.
+- **Thiết kế Fog of War cho Deltas (Tăng tính may rủi roguelike)**: Lựa chọn sự kiện chuyển sang hiển thị các chip tài nguyên bị tác động (Resource Chips) kèm icon và chiều hướng biến động (tăng/giảm/tĩnh) thay vì lộ rõ số lượng cụ thể, tạo cảm giác hồi hộp, liều lĩnh khi đưa ra quyết định.
+- **Sửa lỗi giao diện Mobile**: Khắc phục hiện tượng các lựa chọn ở chân màn hình bị che khuất lẹm hoặc không thể bấm trên thiết bị di động do thanh Dock và safe-area padding; đảm bảo 100% lựa chọn luôn hiển thị rõ và click được.
+- **Chuẩn hóa Thuật ngữ Nhân Mạng / Nhân Mạch & Blacklist Canon**:
+  - Chuẩn hóa ranh giới khái niệm giữa "Nhân Mạng" (sinh mạng con người) và "Nhân Mạch" (quan hệ xã hội / Network).
+  - Tích hợp danh sách đen `CANON_NAMES_BLACKLIST` trong `nameGenerator.js`: cấm tạo tên ngẫu nhiên trùng với 12 Sinner Limbus Company, Dante, Vergilius, Roland, Angela, Carmen, các Sephirah, Color Fixers để bảo tồn tính toàn vẹn của lore.
 
 ### 20/10/2026, đợt 9
 
