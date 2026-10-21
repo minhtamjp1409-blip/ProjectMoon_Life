@@ -119,7 +119,7 @@ export const FACTION_EVENTS = [
       {
         labelVi: 'The Index: thực thi Prescript tuyệt đối',
         labelEn: 'The Index: absolute Prescript execution',
-        resultVi: 'Sứ Giả của The Index (Ngón Trỏ) với dải băng lụa trắng bịt mắt trao vào tay bạn cuộn chỉ vàng và thanh kiếm ngắn: "Không được nghi vấn Dòng Chảy. Chỉ Lệnh là ý chí của Thành Phố." Bạn chính thức trở thành một Giáo Đồ (Proselyte), sẵn sàng hành quyết bất cứ ai cản đường nhân quả.',
+        resultVi: 'Sứ Giả của The Index (Ngón Trỏ) với dải băng lụa trắng bịt mắt trao vào tay bạn cuộn chỉ vàng và thanh kiếm ngắn: "Không được nghi vấn Dòng Chảy. Chỉ Lệnh là ý chí của The City." Bạn chính thức trở thành một Giáo Đồ (Proselyte), sẵn sàng hành quyết bất cứ ai cản đường nhân quả.',
         resultEn: 'A white-robed messenger handed you a folded paper slip. “Never ask why. Simply obey what the Prescript decrees.” You strapped a short blade to your hip.',
         setFinger: 'Index',
         setFingerRank: 0,
@@ -2047,7 +2047,7 @@ export const FACTION_EVENTS = [
         flagsAdd: ['index_prescript_bizarre_done', 'IndexDevotee']
       },
       {
-        labelVi: 'Xé bỏ tờ Prescript, từ chối tuân theo sự phi lý trí của Thành Phố',
+        labelVi: 'Xé bỏ tờ Prescript, từ chối tuân theo sự phi lý trí của The City',
         labelEn: 'Tear up the Prescript, defying the City’s irrational mandate',
         resultVi: 'Mảnh giấy bốc cháy thành tàn tro đen kịt. Bạn giữ lại được tiền bạc, nhưng khắp các ngõ hẻm xung quanh, tiếng bước chân lạnh lẽo của các Proselyte bắt đầu bám theo sau lưng bạn.',
         resultEn: 'The parchment combusted into black soot. You saved your coins, but in surrounding alleys, the synchronized footfalls of stalking Proselytes locked onto your shadow.',

@@ -780,12 +780,13 @@ export const WORKSHOPS = [
   { id: 'stigma', nameVi: 'Stigma Workshop', nameEn: 'Stigma Workshop', fieldVi: 'Vũ Khí Khắc Lửa (Burn)', fieldEn: 'Ignited Stigma Weapons', cls: 2 }
 ];
 
+// Four names per Finger, one for each rank 0 to 3, in the order of the promotion events in careerPipeline
 export const FINGER_RANKS = {
-  Thumb: ['Soldato', 'Capo', 'Sottocapo', 'Underboss', 'Capo dei Capi'],
+  Thumb: ['Soldato', 'Capo', 'Sottocapo', 'Underboss'],
   Index: ['Proselyte', 'Messenger', 'Proxy', 'Weaver'],
-  Middle: ['Little Sibling', 'Younger Sibling', 'Big Brother / Sister', 'Great Brother / Sister'],
-  Ring: ['Student', 'Docent', 'Maestro'],
-  Pinky: ['Initiate', 'Sworn Blade', 'Star of the Sky (Thiên Tinh)']
+  Middle: ['Little Sibling', 'Big Sibling', 'Great Elder', 'Great Sibling'],
+  Ring: ['Student', 'Docent', 'Maestro', 'Grand Curator'],
+  Pinky: ['Initiate', 'Sworn Blade', 'Star of the Sky', 'Sovereign']
 };
 
 export const THREAT_TIERS = [

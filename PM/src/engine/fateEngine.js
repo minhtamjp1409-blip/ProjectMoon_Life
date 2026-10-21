@@ -14,6 +14,8 @@
 // ============================================================================
 
 import { REGIONS } from '../data/worldData.js';
+import { traitsOf } from './variance.js';
+import { frailty } from './economyModel.js';
 
 const regionOf = (char) => REGIONS.find((r) => r.id === char.regionId) || REGIONS[0];
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
@@ -247,8 +249,11 @@ export function rollSeasonMishap(char, rng) {
   const outside = isOutsideFlags(char.flags, char.regionId);
   const ageNow = char.age;
   // Gentle middle of life: baseline 4.5 percent per season, scaled by exposure.
-  const ageCurve = ageNow < 5 ? 1.5 : ageNow < 18 ? 0.9 : ageNow < 45 ? 1 : ageNow < 60 ? 1.3 : 1.3 + (ageNow - 60) * 0.06;
-  const chance = clamp(0.045 * exposureIndex(char) * ageCurve, 0.01, 0.45);
+  const ageCurve = ageNow < 5 ? 1.5 : ageNow < 18 ? 2.0 : ageNow < 45 ? 1.45 : ageNow < 60 ? 1.3 : 1.3 + (ageNow - 60) * 0.06;
+  const traits = traitsOf(char);
+  // A District that cuts lives short (low avgLife in worldData) is more dangerous in every season
+  const harshness = Math.pow(frailty(char), 1.4);
+  const chance = clamp(0.045 * exposureIndex(char) * ageCurve * traits.drama * harshness, 0.01, 0.5);
   if (rng() >= chance) return null;
 
   const ctx = { region, nest, outside, wealth: char.stats?.wealth ?? 5, job: char.job, scarCount: (char.scars || []).length };
@@ -270,7 +275,7 @@ export function rollSeasonMishap(char, rng) {
   const hp = char.stats?.health ?? 50;
   const shield = hp < 25 ? 2.5 : hp < 50 ? 1.4 : hp > 75 ? 0.5 : 1;
   const agePenalty = ageNow >= 75 ? 3 : ageNow >= 60 ? 1.8 : 1;
-  const fatalChance = clamp(m.lethal * shield * agePenalty, 0, 0.6);
+  const fatalChance = clamp(m.lethal * shield * agePenalty * (2 - traits.vigor), 0, 0.6);
   return {
     id: m.id, vi: m.vi, en: m.en, dmg, san: m.san, ahn: m.ahn,
     fatal: m.lethal > 0 && rng() < fatalChance,

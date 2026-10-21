@@ -121,7 +121,7 @@ export const LIFE_DAILIES_3 = [
     'r_z_map',
     CHILD,
     Z,
-    '[Vùng đất không có trên bản đồ] Thầy giáo treo một tấm bản đồ đại đô thị The City khổ lớn lên bảng lớp học. Bạn căng mắt tìm kiếm mải miết nhưng tuyệt nhiên không thấy bóng dáng quê hương mình đâu; thầy giáo khẽ đặt tay lên vai bạn và thở dài: "Đừng tìm nữa em à."',
+    '[Vùng đất không có trên bản đồ] Thầy giáo treo một tấm bản đồ The City khổ lớn lên bảng lớp học. Bạn căng mắt tìm kiếm mải miết nhưng tuyệt nhiên không thấy bóng dáng quê hương mình đâu; thầy giáo khẽ đặt tay lên vai bạn và thở dài: "Đừng tìm nữa em à."',
     '[The Ghost Map] The schoolmaster unfolded a massive cartographic atlas of the City across the classroom wall. You searched in vain for your neighborhood’s district letter; the teacher rested a solemn hand upon your shoulder and whispered: “Cease searching, child.”',
     { sanity: -1, resonance: 1 }
   ),

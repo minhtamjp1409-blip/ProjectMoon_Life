@@ -68,7 +68,7 @@ export const FIXER_LADDER = [
   },
   {
     grade: 2,
-    meritReq: 135,
+    meritReq: 150,
     repReq: 82,
     titleVi: 'Át Chủ Bài Section 1 (Fixer Grade 2)',
     titleEn: 'Section 1 Ace Operative (Grade 2 Fixer)',
@@ -77,7 +77,7 @@ export const FIXER_LADDER = [
   },
   {
     grade: 1,
-    meritReq: 170,
+    meritReq: 200,
     repReq: 95,
     titleVi: 'Đỉnh cao Fixer: Đại Khảo Hạch Grade 1 (Hana Supreme)',
     titleEn: 'Apex of Fixers: Grade 1 Supreme Evaluation',
@@ -114,16 +114,20 @@ export function getNextFixerPromotion(char) {
  * Strictly requires Grade 1, Merit >= 210, Rep >= 100, E.G.O Awakening / Resonance >= 50,
  * and surviving an Urban Nightmare / Star of the City ordeal.
  */
+export const COLOR_FIXER_REQ = { merit: 300, rep: 95 };
+
 export function checkColorFixerReadiness(char) {
+  const targetMerit = COLOR_FIXER_REQ.merit;
+  const targetRep = COLOR_FIXER_REQ.rep;
   if (char.job !== 'Fixer' || char.flags.includes('Distorted') || char.flags.includes('ColorFixer')) {
-    return { ready: false, reason: 'Chưa đủ điều kiện' };
+    return { ready: false, reason: 'Chưa đủ điều kiện', targetMerit, targetRep };
   }
   if (char.fixerGrade !== 1) {
-    return { ready: false, reason: 'Bắt buộc phải là Fixer Grade 1' };
+    return { ready: false, reason: 'Bắt buộc phải là Fixer Grade 1', targetMerit, targetRep };
   }
   const curRep = (char.stats?.rep ?? char.rep) || 0;
-  const meritOk = (char.merit || 0) >= 200;
-  const repOk = curRep >= 95;
+  const meritOk = (char.merit || 0) >= targetMerit;
+  const repOk = curRep >= targetRep;
   const egoOrResonance = true; // E.G.O is not a prerequisite for a Color designation.
 
   return {
@@ -131,8 +135,8 @@ export function checkColorFixerReadiness(char) {
     meritOk,
     repOk,
     egoOrResonance,
-    targetMerit: 200,
-    targetRep: 95
+    targetMerit,
+    targetRep
   };
 }
 
@@ -249,8 +253,8 @@ export function getNextWorkshopPromotion(char) {
  * - Logs the monumental fall into Carmen's void
  */
 export function triggerDistortionTransformation(char) {
-  if (char.flags.includes('Distorted')) return [];
-  char.flags.push('Distorted');
+  if (char.job === 'Distortion') return [];
+  if (!char.flags.includes('Distorted')) char.flags.push('Distorted');
   char.job = 'Distortion';
   char.stats.sanity = 0; // Absolute madness or inverted ego
   char.resonance = Math.max(char.resonance || 0, 85);

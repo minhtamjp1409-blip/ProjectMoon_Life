@@ -103,8 +103,20 @@ const OMEN_LINE = {
  * `regionId` and `nest` only steer the name; they are not stored on the NPC.
  */
 export function makeNpc(role, rng, extra = {}) {
-  const { regionId = null, nest = false, ...rest } = extra;
-  const id = generatePersonName(rng, { regionId, nest });
+  const { regionId = null, nest = false, avoidNames = [], ...rest } = extra;
+  // Two people in one life must not share a name, or a later scene reads as the wrong person
+  // (a first name alone counts too: "Seo-yeon" and "Seo-yeon Kim" read as one person)
+  const taken = new Set();
+  for (const n of avoidNames.filter(Boolean)) {
+    const lower = String(n).toLowerCase();
+    taken.add(lower);
+    taken.add(lower.split(' ')[0]);
+  }
+  const clashes = (nm) => taken.has(nm.toLowerCase()) || taken.has(nm.toLowerCase().split(' ')[0]);
+  let id = generatePersonName(rng, { regionId, nest });
+  for (let tries = 0; tries < 16 && clashes(id.name); tries++) {
+    id = generatePersonName(rng, { regionId, nest });
+  }
   const arch = rollArchetype(rng);
   return {
     role,
@@ -148,7 +160,7 @@ export function composeBirth({ kind, familyId, omenId, regionVi, regionEn, regio
   const night = pick(THAT_NIGHT, rng);
   const omen = pick(OMEN_LINE[omenId] || OMEN_LINE.index_equilibrium, rng);
   const hasFriend = rng ? rng() < 0.50 : Math.random() < 0.50;
-  const friend = hasFriend ? makeNpc('friend', rng, { regionId, nest: kind === 'nest' }) : null;
+  const friend = hasFriend ? makeNpc('friend', rng, { regionId, nest: kind === 'nest', avoidNames: [name] }) : null;
   const fl = hasFriend ? pick(FRIEND_LINE, rng) : null;
 
   const head = generation > 1

@@ -23,6 +23,9 @@ export const npcActive = npcIsActive;
 
 export const hasMemory = (char, key) => (char.memory || []).some((m) => m.key === key);
 
+/** Every name already taken in this life, the living and the dead, the player included. */
+export const namesInUse = (char) => [char.name, ...Object.values(char.npcs || {}).filter(Boolean).flatMap((n) => [n.nameVi, n.alias])];
+
 // Lines that mention the Night in the Backstreets share one theme automatically
 export function themeOf(entry) {
   if (entry.theme) return entry.theme;
@@ -172,6 +175,27 @@ export function closeThreads(char, eventId) {
 }
 
 /**
+ * Moves the closeness of the people a choice names. Used for minors and for major events
+ * alike. Trust is capped until a person's own quest is done, and warmth is slow to give.
+ */
+export function applyBonds(char, sources, deltas = []) {
+  for (const src of sources.filter(Boolean)) {
+    if (!src.bond) continue;
+    for (const [role, v] of Object.entries(src.bond)) {
+      const target = char.npcs?.[role] || (role === 'lover' ? char.npcs?.spouse : null);
+      const key = char.npcs?.[role] ? role : role === 'lover' && char.npcs?.spouse ? 'spouse' : null;
+      if (!key || !npcActive(target)) continue;
+      const before = target.bond || 0;
+      const cap = bondCapFor(target);
+      const gain = v > 0 ? Math.max(1, Math.round(v * 0.7)) : v;
+      const after = v > 0 ? Math.max(before, Math.min(cap, clamp(before + gain, 0, 100))) : clamp(before + gain, 0, 100);
+      char.npcs = { ...char.npcs, [key]: { ...target, bond: after, lastSeen: char.age } };
+      if (after !== before) deltas.push({ k: 'bond', role: key, name: target.nameVi, v: after - before });
+    }
+  }
+}
+
+/**
  * Applies everything a choice does besides plain stats. Pushes readable deltas
  * (bonds, meetings, fates) next to the stat deltas.
  */
@@ -187,7 +211,8 @@ export function applyChoiceExtras(char, sources, deltas, rng) {
       metAge: char.age,
       lastSeen: char.age,
       regionId: char.regionId,
-      nest: (char.flags || []).some((f) => ['Nest', 'NestResident', 'Feather'].includes(f))
+      nest: (char.flags || []).some((f) => ['Nest', 'NestResident', 'Feather'].includes(f)),
+      avoidNames: namesInUse(char)
     });
     if (npc.nameVi) Object.assign(fresh, { nameVi: npc.nameVi, nameEn: npc.nameEn || npc.nameVi });
     char.npcs = { ...char.npcs, [npc.role]: fresh };
@@ -198,27 +223,15 @@ export function applyChoiceExtras(char, sources, deltas, rng) {
   // Lover becomes spouse, and so on
   for (const p of pickField('promote')) {
     const from = char.npcs?.[p.from];
-    if (!from || char.npcs?.[p.to]) continue;
+    if (!npcActive(from) || npcActive(char.npcs?.[p.to])) continue;
     char.npcs = { ...char.npcs, [p.to]: { ...from, role: p.to, lastSeen: char.age }, [p.from]: null };
     deltas.push({ k: 'promote', role: p.to, name: from.nameVi });
-    if (p.to === 'spouse' && !char.flags.includes('Married')) char.flags.push('Married');
-  }
-
-  // Bonds
-  for (const bond of pickField('bond')) {
-    for (const [role, v] of Object.entries(bond)) {
-      const target = char.npcs?.[role] || (role === 'lover' ? char.npcs?.spouse : null);
-      const key = char.npcs?.[role] ? role : role === 'lover' && char.npcs?.spouse ? 'spouse' : null;
-      if (!key || !npcActive(target)) continue;
-      const before = target.bond || 0;
-      // Trust is capped until the person's own quest is done, and warmth is slow to give.
-      const cap = bondCapFor(target);
-      const gain = v > 0 ? Math.max(1, Math.round(v * 0.7)) : v;
-      const after = v > 0 ? Math.max(before, Math.min(cap, clamp(before + gain, 0, 100))) : clamp(before + gain, 0, 100);
-      char.npcs = { ...char.npcs, [key]: { ...target, bond: after, lastSeen: char.age } };
-      if (after !== before) deltas.push({ k: 'bond', role: key, name: target.nameVi, v: after - before });
+    if (p.to === 'spouse') {
+      char.flags = [...(char.flags || []).filter((x) => x !== 'Widowed' && x !== 'Separated'), ...(char.flags.includes('Married') ? [] : ['Married'])];
     }
   }
+
+  applyBonds(char, all, deltas);
 
   // A person's own quest finished: this is what actually opens the door to deeper trust
   for (const role of pickField('npcQuest')) {
@@ -239,27 +252,10 @@ export function applyChoiceExtras(char, sources, deltas, rng) {
       const key = char.npcs?.[role] ? role : role === 'lover' && char.npcs?.spouse ? 'spouse' : null;
       const target = key && char.npcs[key];
       if (!target || !npcActive(target)) continue;
-      char.npcs = { ...char.npcs, [key]: { ...target, status, deceased: status === 'dead', fateAge: char.age } };
-      deltas.push({ k: 'fate', role: key, name: target.nameVi, v: status });
+      const name = target.nameVi;
+      applyNpcFate(char, key, status);
+      deltas.push({ k: 'fate', role: key, name, v: status });
       char.memory = [...(char.memory || []), { key: `lost_${key}`, age: char.age }];
-      if (status === 'dead') {
-        if (key === 'spouse') {
-          char.flags = (char.flags || []).filter(f => f !== 'Married');
-          if (!char.flags.includes('Widowed')) char.flags.push('Widowed');
-        } else if (key === 'lover') {
-          char.flags = (char.flags || []).filter(f => f !== 'InLove');
-          if (!char.flags.includes('LoverLost')) char.flags.push('LoverLost');
-        } else if (key === 'child') {
-          char.flags = (char.flags || []).filter(f => f !== 'HasChild');
-          if (!char.flags.includes('ChildLost')) char.flags.push('ChildLost');
-        } else if (key === 'partner') {
-          if (!char.flags.includes('PartnerLost')) char.flags.push('PartnerLost');
-        } else if (key === 'friend') {
-          if (!char.flags.includes('FriendLost')) char.flags.push('FriendLost');
-        } else if (key === 'mentor') {
-          if (!char.flags.includes('MentorLost')) char.flags.push('MentorLost');
-        }
-      }
     }
   }
 
@@ -286,6 +282,37 @@ export function applyChoiceExtras(char, sources, deltas, rng) {
     for (const [k, v] of Object.entries(motif)) next[k] = (next[k] || 0) + v;
     char.motifs = next;
   }
+}
+
+/**
+ * Records what became of a person and keeps the relationship flags in step with it.
+ * Anyone who is no longer around (dead, missing, estranged) stops counting as a spouse, lover…
+ */
+export function applyNpcFate(char, role, status, age = char.age) {
+  const target = char.npcs?.[role];
+  if (!target || !npcActive(target)) return false;
+  char.npcs = { ...char.npcs, [role]: { ...target, status, deceased: status === 'dead', fateAge: age } };
+
+  const flags = new Set(char.flags || []);
+  const dead = status === 'dead';
+  if (role === 'spouse') {
+    flags.delete('Married');
+    flags.add(dead ? 'Widowed' : 'Separated');
+  } else if (role === 'lover') {
+    flags.delete('InLove');
+    flags.add('LoverLost');
+  } else if (role === 'child' && dead) {
+    flags.delete('HasChild');
+    flags.add('ChildLost');
+  } else if (role === 'partner') {
+    flags.add('PartnerLost');
+  } else if (role === 'friend') {
+    flags.add('FriendLost');
+  } else if (role === 'mentor') {
+    flags.add('MentorLost');
+  }
+  char.flags = [...flags];
+  return true;
 }
 
 /** People drift apart when you stop seeing them. */

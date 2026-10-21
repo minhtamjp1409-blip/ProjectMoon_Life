@@ -1,59 +1,66 @@
 ================================================================================
-          BÁO CÁO KIỂM ĐỊNH TOÀN VẸN 1,000,000+ KỊCH BẢN (1 MILLION AUDIT)
+          BÁO CÁO KIỂM ĐỊNH TOÀN VẸN 1,000,032 KHOẢNH KHẮC
                      PROJECT MOON LIFE SIMULATOR ENGINE
 ================================================================================
-Thời gian kiểm thử: 01:18:46 21/10/2026
-Thời lượng thực thi: 85.0 giây
-Tổng số kịch bản / khoảnh khắc đã xử lý: 1,000,010 kịch bản
-Tổng số vòng đời mô phỏng hoàn chỉnh: 8,785 sinh mệnh
-Tuổi thọ bình quân: 32.3 tuổi (Sinh mệnh thọ nhất: 119 tuổi)
+Thời gian kiểm thử: 15:31:18 21/10/2026
+Thời lượng thực thi: 316.3 giây
+Một "kịch bản" ở đây là một khoảnh khắc trong kế hoạch năm (kể cả dòng thường ngày),
+chạy trực tiếp qua engine, không qua giao diện, store hay backend.
+Tổng số khoảnh khắc đã xử lý: 1,000,032
+Tổng số vòng đời mô phỏng hoàn chỉnh: 4,227 sinh mệnh
+Tuổi thọ bình quân: 56.8 tuổi (Sinh mệnh thọ nhất: 119 tuổi)
 
 --------------------------------------------------------------------------------
 1. PHÂN BỔ NGHỀ NGHIỆP CUỐI ĐỜI (CAREER DISTRIBUTION):
-  - Wing Employee: 1,145 người (13.03%)
-  - Syndicate: 1,579 người (17.97%)
-  - Distortion: 1,553 người (17.68%)
-  - Fixer: 1,736 người (19.76%)
-  - Child: 180 người (2.05%)
-  - ChildDeath: 1,283 người (14.60%)
-  - Workshop Craftsman: 1,309 người (14.90%)
+  - Syndicate: 817 người (19.33%)
+  - Fixer: 866 người (20.49%)
+  - Wing Employee: 892 người (21.10%)
+  - Distortion: 272 người (6.43%)
+  - Workshop Craftsman: 845 người (19.99%)
+  - ChildDeath: 527 người (12.47%)
+  - Child: 8 người (0.19%)
 
 2. PHÂN TẦNG ĐẲNG CẤP FIXER ĐẠT ĐƯỢC (TUÂN THỦ TUẦN TỰ SÁT HẠCH HANA):
-  - Fixer Grade 9: 159 người
-  - Fixer Grade 8: 16 người
-  - Fixer Grade 7: 73 người
-  - Fixer Grade 6: 120 người
-  - Fixer Grade 5 (Office Eligible): 323 người
-  - Fixer Grade 4: 419 người
-  - Fixer Grade 3: 369 người
-  - Fixer Grade 2: 159 người
-  - Fixer Grade 1: 110 người
-  - Color Fixer Huyền Thoại: 63 người
+  - Fixer Grade 9: 75 người
+  - Fixer Grade 8: 41 người
+  - Fixer Grade 7: 44 người
+  - Fixer Grade 6: 35 người
+  - Fixer Grade 5 (Office Eligible): 44 người
+  - Fixer Grade 4: 55 người
+  - Fixer Grade 3: 149 người
+  - Fixer Grade 2: 253 người
+  - Fixer Grade 1: 161 người
+  - Color Fixer Huyền Thoại: 9 người
+  - Năm đậu từ 2 kỳ thăng cấp trở lên (vẫn từng bước một): 0
 
 3. CƠ CHẾ SIÊU NHIÊN & KINH TẾ WORKSHOP:
-  - Thức tỉnh E.G.O Huyền Thoại: 311 người
-  - Biến dị sa ngã (Distortion): 1,553 thực thể
-  - Vật phẩm Công xưởng & Chợ đen tiêu thụ: 23,775 vật phẩm
+  - Thức tỉnh E.G.O Huyền Thoại: 59 người
+  - Biến dị sa ngã (Distortion): 272 thực thể
+  - Lựa chọn sự kiện có phí Ahn: 10,632 lượt
 
 --------------------------------------------------------------------------------
-4. KIỂM ĐỊNH 4 NHÓM QUY TẮC TOÀN VẸN LOGIC CỐT LÕI (INTEGRITY AUDIT):
+4. KIỂM ĐỊNH 5 NHÓM QUY TẮC TOÀN VẸN LOGIC CỐT LÕI (INTEGRITY AUDIT):
 --------------------------------------------------------------------------------
 [CHECK 1] Ghost NPC Event Violations:
-  > Kết quả: 0 LỖI / 1,000,010 kịch bản (ĐẠT 100%)
-  > Đánh giá: Không có bất kỳ bạn đời/sư phụ/bạn bè đã khuất nào xuất hiện như còn sống.
+  > Kết quả: 0 LỖI / 1,000,032 khoảnh khắc (ĐẠT)
+  > Đánh giá: Không có bạn đời/sư phụ/bạn bè đã khuất nào xuất hiện như còn sống.
 
 [CHECK 2] Distortion Doing Human Fixer Events:
-  > Kết quả: 0 LỖI / 1,000,010 kịch bản (ĐẠT 100%)
-  > Đánh giá: Thực thể biến dị bị cô lập tuyệt đối khỏi hợp đồng Fixer và đời sống con người.
+  > Kết quả: 0 LỖI / 1,000,032 khoảnh khắc (ĐẠT)
+  > Đánh giá: Thực thể biến dị bị cô lập khỏi hợp đồng Fixer và đời sống con người.
 
 [CHECK 3] Fixer Grade Skipping Violations:
-  > Kết quả: 0 LỖI / 1,000,010 kịch bản (ĐẠT 100%)
-  > Đánh giá: Tiến trình Fixer thăng tiến tuần tự từng bậc một thông qua đại sát hạch Hana.
+  > Kết quả: 0 LỖI / 1,000,032 khoảnh khắc (ĐẠT)
+  > Đánh giá: Fixer thăng tiến từng bậc một qua sát hạch Hana.
 
 [CHECK 4] Biological Child without Offspring Violations:
-  > Kết quả: 0 LỖI / 1,000,010 kịch bản (ĐẠT 100%)
-  > Đánh giá: Phân biệt chính xác giữa con ruột, bạn đồng hành, đệ tử và kẻ nhặt rác Backstreets.
+  > Kết quả: 0 LỖI / 1,000,032 khoảnh khắc (ĐẠT)
+  > Đánh giá: Phân biệt đúng con ruột, đệ tử và kẻ nhặt tàn dư Backstreets.
+
+[CHECK 5] Career Checklist vs Exam Gate Mismatches:
+  > Kết quả: 0 LỖI / 1,000,032 khoảnh khắc (ĐẠT)
+  > Đánh giá: Danh sách điều kiện hiển thị cho người chơi khớp với cổng mở kỳ sát hạch.
 
 ================================================================================
->>> KẾT LUẬN: TOÀN BỘ 1 TRIỆU+ KỊCH BẢN ĐÃ VƯỢT QUA KIỂM THỬ VỚI ĐỘ TOÀN VẸN 100%! <<<
+>>> KẾT LUẬN: ĐẠT CẢ 5 NHÓM KIỂM TRA TRÊN 1,000,032 KHOẢNH KHẮC <<<
 ================================================================================

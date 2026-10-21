@@ -3,10 +3,14 @@ import {
   createNewCharacter,
   createRNG,
   resolveEventChoice,
+  resolveFixerContract,
   checkPromotions,
   ALL_STORY_EVENTS,
-  buildLifeSummaryAndLegacy
+  buildLifeSummaryAndLegacy,
+  getNextCareerMilestone
 } from './src/engine/gameEngine.js';
+
+import { getNextFixerPromotion, checkColorFixerReadiness } from './src/engine/careerPipeline.js';
 
 import {
   planYear,
@@ -15,16 +19,18 @@ import {
   resolveMinor
 } from './src/engine/yearPlanner.js';
 
-import { ITEMS_CATALOG } from './src/data/itemsData.js';
+import { choiceIsAvailable } from './src/engine/eventConditions.js';
 
 console.log('================================================================');
-console.log('   BẮT ĐẦU KIỂM THỬ TỰ ĐỘNG QUY MÔ LỚN: 1,000,000+ KỊCH BẢN');
+console.log('   BẮT ĐẦU KIỂM THỬ TỰ ĐỘNG QUY MÔ LỚN: 1,000,000+ KHOẢNH KHẮC');
 console.log('         (THE CITY CHRONICLES - 1 MILLION SCENARIO AUDIT)');
 console.log('================================================================');
 console.log(`Số lượng sự kiện cốt truyện lớn trong Database: ${ALL_STORY_EVENTS.length}`);
 
-const TARGET_SCENARIOS = 1000000;
-console.log(`Mục tiêu kiểm thử: Vượt mốc ${TARGET_SCENARIOS.toLocaleString()} kịch bản...\n`);
+// Usage: node run_million_audit.mjs [scenarios]. Only a full run rewrites the report file.
+const FULL_RUN = 1000000;
+const TARGET_SCENARIOS = Number(process.argv[2]) || FULL_RUN;
+console.log(`Mục tiêu kiểm thử: Vượt mốc ${TARGET_SCENARIOS.toLocaleString()} khoảnh khắc...\n`);
 
 const STATS = {
   targetScenarios: TARGET_SCENARIOS,
@@ -43,7 +49,11 @@ const STATS = {
   ghostNpcViolations: 0,
   distortionFixerContractViolations: 0,
   fixerGradeSkipViolations: 0,
-  biologicalChildWithoutOffspringViolations: 0
+  biologicalChildWithoutOffspringViolations: 0,
+  milestoneGateMismatches: 0,
+  multiGradeYears: 0,
+  noAvailableMajorChoices: 0,
+  noAvailableContractApproaches: 0
 };
 
 const startTime = Date.now();
@@ -63,24 +73,36 @@ while (STATS.totalScenariosExecuted < TARGET_SCENARIOS) {
 
   let previousGrade = 9;
 
+  // Check 3 runs after every step that can change the grade, so two exams passed in one
+  // year count as two single steps, not as one skip
+  const noteGrade = () => {
+    if (char.job === 'Fixer' && char.fixerGrade != null) {
+      if (previousGrade - char.fixerGrade > 1) STATS.fixerGradeSkipViolations++;
+      previousGrade = char.fixerGrade;
+    }
+  };
+
   while (char.alive && char.age < 120) {
     STATS.totalYearsLived++;
     if (char.age > STATS.maxAge) STATS.maxAge = char.age;
+    const yearStartGrade = char.job === 'Fixer' ? char.fixerGrade : null;
 
-    // Check 3: Fixer grade skipping
-    if (char.job === 'Fixer' && char.fixerGrade != null) {
-      if (previousGrade - char.fixerGrade > 1) {
-        STATS.fixerGradeSkipViolations++;
-      }
-      previousGrade = char.fixerGrade;
+    // Check 5: the checklist shown to the player must agree with the gate that opens the exam
+    if (char.job === 'Fixer' && !char.flags.includes('Distorted') && !char.flags.includes('ColorFixer') && char.fixerGrade >= 1) {
+      const ms = getNextCareerMilestone(char);
+      const promo = getNextFixerPromotion(char);
+      const gate = promo ? promo.isEligible : checkColorFixerReadiness(char).ready;
+      const shown = (promo ? ms.requirements : ms.requirements.slice(0, 2)).every((r) => r.met);
+      if (shown !== gate) STATS.milestoneGateMismatches++;
     }
 
-    planYear(char, lifeRng);
+    if (!char.plan?.length) planYear(char, lifeRng);
     const plan = char.plan || [];
 
     for (const item of plan) {
       if (!char.alive) break;
       char = runPlanItem(char, item, lifeRng);
+      noteGrade();
       STATS.totalScenariosExecuted++;
 
       // Major Event Resolution
@@ -106,12 +128,18 @@ while (STATS.totalScenariosExecuted < TARGET_SCENARIOS) {
         }
 
         const choices = ev.choices || [];
-        const pickIdx = Math.floor(lifeRng() * Math.max(1, choices.length));
+        const available = choices.map((_, index) => index).filter((index) => choiceIsAvailable(choices[index], char));
+        if (!available.length) {
+          STATS.noAvailableMajorChoices++;
+          throw new Error(`No available choice in ${ev.id} at age ${char.age}, seed ${seed}`);
+        }
+        const pickIdx = available[Math.floor(lifeRng() * available.length)];
         const chosen = choices[pickIdx];
         if (chosen?.costAhn && char.stats.wealth >= chosen.costAhn) {
           STATS.itemsBought++;
         }
         char = resolveEventChoice(char, pickIdx, lifeRng);
+        noteGrade();
       }
 
       // Tactical Contract Resolution
@@ -119,32 +147,34 @@ while (STATS.totalScenariosExecuted < TARGET_SCENARIOS) {
         if (char.flags.includes('Distorted')) {
           STATS.distortionFixerContractViolations++;
         }
-        char.pendingContract = null;
+        const approaches = char.pendingContract.approaches.filter((approach) => char.stats.wealth >= (approach.costAhn || 0));
+        if (!approaches.length) {
+          STATS.noAvailableContractApproaches++;
+          throw new Error(`No affordable contract approach at age ${char.age}, seed ${seed}`);
+        }
+        const chosen = approaches[Math.floor(lifeRng() * approaches.length)];
+        char = resolveFixerContract(char, chosen.id, lifeRng);
+        noteGrade();
       }
 
       // Minor Choice Resolution
       if (char.pendingMinor) {
         const prompt = char.pendingMinor;
         const choices = prompt.choices || [];
-        const pickIdx = choices.length > 0 ? Math.floor(lifeRng() * choices.length) : -1;
+        const available = choices.map((_, index) => index).filter((index) => choiceIsAvailable(choices[index], char));
+        const pickIdx = available.length ? available[Math.floor(lifeRng() * available.length)] : -1;
         char = resolveMinor(char, pickIdx, lifeRng);
+        noteGrade();
       }
 
-      // Workshop Shopping Simulation if character has Ahn
-      if (char.alive && char.stats.wealth >= 35 && lifeRng() < 0.25) {
-        const affordable = ITEMS_CATALOG.filter((it) => it.costAhn <= char.stats.wealth);
-        if (affordable.length > 0) {
-          const bought = affordable[Math.floor(lifeRng() * affordable.length)];
-          char.stats.wealth -= bought.costAhn;
-          char.inventory = char.inventory || [];
-          char.inventory.push(bought);
-          STATS.itemsBought++;
-        }
-      }
     }
 
     if (char.alive) {
       char = endYear(char, lifeRng);
+      noteGrade();
+    }
+    if (yearStartGrade != null && char.job === 'Fixer' && yearStartGrade - char.fixerGrade > 1) {
+      STATS.multiGradeYears++;
     }
   }
 
@@ -183,13 +213,57 @@ while (STATS.totalScenariosExecuted < TARGET_SCENARIOS) {
 const totalDurationSec = ((Date.now() - startTime) / 1000).toFixed(1);
 const avgLifespan = (STATS.totalYearsLived / STATS.totalLivesSimulated).toFixed(1);
 
+const checks = [
+  {
+    name: 'Ghost NPC Event Violations',
+    count: STATS.ghostNpcViolations,
+    pass: 'Không có bạn đời/sư phụ/bạn bè đã khuất nào xuất hiện như còn sống.',
+    fail: 'Có sự kiện nhắc tới người đã khuất như thể còn sống.'
+  },
+  {
+    name: 'Distortion Doing Human Fixer Events',
+    count: STATS.distortionFixerContractViolations,
+    pass: 'Thực thể biến dị bị cô lập khỏi hợp đồng Fixer và đời sống con người.',
+    fail: 'Một Distortion vẫn nhận sự kiện hoặc hợp đồng của Fixer.'
+  },
+  {
+    name: 'Fixer Grade Skipping Violations',
+    count: STATS.fixerGradeSkipViolations,
+    pass: 'Fixer thăng tiến từng bậc một qua sát hạch Hana.',
+    fail: 'Có Fixer nhảy qua một Grade.'
+  },
+  {
+    name: 'Biological Child without Offspring Violations',
+    count: STATS.biologicalChildWithoutOffspringViolations,
+    pass: 'Phân biệt đúng con ruột, đệ tử và kẻ nhặt tàn dư Backstreets.',
+    fail: 'Người kế thừa được ghi là con ruột dù không có con.'
+  },
+  {
+    name: 'Career Checklist vs Exam Gate Mismatches',
+    count: STATS.milestoneGateMismatches,
+    pass: 'Danh sách điều kiện hiển thị cho người chơi khớp với cổng mở kỳ sát hạch.',
+    fail: 'Danh sách điều kiện hiển thị lệch với cổng mở kỳ sát hạch.'
+  }
+];
+const failedChecks = checks.filter((c) => c.count > 0);
+const checkBlock = checks
+  .map((c, i) => `[CHECK ${i + 1}] ${c.name}:
+  > Kết quả: ${c.count} LỖI / ${STATS.totalScenariosExecuted.toLocaleString()} khoảnh khắc (${c.count === 0 ? 'ĐẠT' : 'KHÔNG ĐẠT'})
+  > Đánh giá: ${c.count === 0 ? c.pass : c.fail}`)
+  .join('\n\n');
+const conclusion = failedChecks.length === 0
+  ? `>>> KẾT LUẬN: ĐẠT CẢ ${checks.length} NHÓM KIỂM TRA TRÊN ${STATS.totalScenariosExecuted.toLocaleString()} KHOẢNH KHẮC <<<`
+  : `>>> KẾT LUẬN: KHÔNG ĐẠT ${failedChecks.length}/${checks.length} NHÓM: ${failedChecks.map((c) => c.name).join('; ')} <<<`;
+
 const report = `================================================================================
-          BÁO CÁO KIỂM ĐỊNH TOÀN VẸN 1,000,000+ KỊCH BẢN (1 MILLION AUDIT)
+          BÁO CÁO KIỂM ĐỊNH TOÀN VẸN ${STATS.totalScenariosExecuted.toLocaleString()} KHOẢNH KHẮC
                      PROJECT MOON LIFE SIMULATOR ENGINE
 ================================================================================
 Thời gian kiểm thử: ${new Date().toLocaleString('vi-VN')}
 Thời lượng thực thi: ${totalDurationSec} giây
-Tổng số kịch bản / khoảnh khắc đã xử lý: ${STATS.totalScenariosExecuted.toLocaleString()} kịch bản
+Một "kịch bản" ở đây là một khoảnh khắc trong kế hoạch năm (kể cả dòng thường ngày),
+chạy trực tiếp qua engine, không qua giao diện, store hay backend.
+Tổng số khoảnh khắc đã xử lý: ${STATS.totalScenariosExecuted.toLocaleString()}
 Tổng số vòng đời mô phỏng hoàn chỉnh: ${STATS.totalLivesSimulated.toLocaleString()} sinh mệnh
 Tuổi thọ bình quân: ${avgLifespan} tuổi (Sinh mệnh thọ nhất: ${STATS.maxAge} tuổi)
 
@@ -208,36 +282,28 @@ ${Object.entries(STATS.careers).map(([k, v]) => `  - ${k}: ${v.toLocaleString()}
   - Fixer Grade 2: ${STATS.fixerGradesReached.g2.toLocaleString()} người
   - Fixer Grade 1: ${STATS.fixerGradesReached.g1.toLocaleString()} người
   - Color Fixer Huyền Thoại: ${STATS.fixerGradesReached.color.toLocaleString()} người
+  - Năm đậu từ 2 kỳ thăng cấp trở lên (vẫn từng bước một): ${STATS.multiGradeYears.toLocaleString()}
 
 3. CƠ CHẾ SIÊU NHIÊN & KINH TẾ WORKSHOP:
   - Thức tỉnh E.G.O Huyền Thoại: ${STATS.egoAwakenedCount.toLocaleString()} người
   - Biến dị sa ngã (Distortion): ${STATS.distortionsCount.toLocaleString()} thực thể
-  - Vật phẩm Công xưởng & Chợ đen tiêu thụ: ${STATS.itemsBought.toLocaleString()} vật phẩm
+  - Lựa chọn sự kiện có phí Ahn: ${STATS.itemsBought.toLocaleString()} lượt
 
 --------------------------------------------------------------------------------
-4. KIỂM ĐỊNH 4 NHÓM QUY TẮC TOÀN VẸN LOGIC CỐT LÕI (INTEGRITY AUDIT):
+4. KIỂM ĐỊNH ${checks.length} NHÓM QUY TẮC TOÀN VẸN LOGIC CỐT LÕI (INTEGRITY AUDIT):
 --------------------------------------------------------------------------------
-[CHECK 1] Ghost NPC Event Violations:
-  > Kết quả: ${STATS.ghostNpcViolations} LỖI / ${STATS.totalScenariosExecuted.toLocaleString()} kịch bản (ĐẠT 100%)
-  > Đánh giá: Không có bất kỳ bạn đời/sư phụ/bạn bè đã khuất nào xuất hiện như còn sống.
-
-[CHECK 2] Distortion Doing Human Fixer Events:
-  > Kết quả: ${STATS.distortionFixerContractViolations} LỖI / ${STATS.totalScenariosExecuted.toLocaleString()} kịch bản (ĐẠT 100%)
-  > Đánh giá: Thực thể biến dị bị cô lập tuyệt đối khỏi hợp đồng Fixer và đời sống con người.
-
-[CHECK 3] Fixer Grade Skipping Violations:
-  > Kết quả: ${STATS.fixerGradeSkipViolations} LỖI / ${STATS.totalScenariosExecuted.toLocaleString()} kịch bản (ĐẠT 100%)
-  > Đánh giá: Tiến trình Fixer thăng tiến tuần tự từng bậc một thông qua đại sát hạch Hana.
-
-[CHECK 4] Biological Child without Offspring Violations:
-  > Kết quả: ${STATS.biologicalChildWithoutOffspringViolations} LỖI / ${STATS.totalScenariosExecuted.toLocaleString()} kịch bản (ĐẠT 100%)
-  > Đánh giá: Phân biệt chính xác giữa con ruột, bạn đồng hành, đệ tử và kẻ nhặt rác Backstreets.
+${checkBlock}
 
 ================================================================================
->>> KẾT LUẬN: TOÀN BỘ 1 TRIỆU+ KỊCH BẢN ĐÃ VƯỢT QUA KIỂM THỬ VỚI ĐỘ TOÀN VẸN 100%! <<<
+${conclusion}
 ================================================================================
 `;
 
-fs.writeFileSync('BAO_CAO_KIEM_THU_1_TRIEU_KICH_BAN.txt', report, 'utf8');
 console.log(report);
-console.log('Đã lưu báo cáo thành công ra tệp: BAO_CAO_KIEM_THU_1_TRIEU_KICH_BAN.txt');
+if (TARGET_SCENARIOS >= FULL_RUN) {
+  fs.writeFileSync('BAO_CAO_KIEM_THU_1_TRIEU_KICH_BAN.txt', report, 'utf8');
+  console.log('Đã lưu báo cáo ra tệp: BAO_CAO_KIEM_THU_1_TRIEU_KICH_BAN.txt');
+} else {
+  console.log('Lượt chạy rút gọn: không ghi đè tệp báo cáo.');
+}
+process.exitCode = failedChecks.length === 0 ? 0 : 1;

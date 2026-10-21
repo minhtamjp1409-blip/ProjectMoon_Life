@@ -10,6 +10,9 @@ const chunkFor = (id) => {
     if (/[\/]node_modules[\/](react|react-dom|react-router|react-router-dom|scheduler)[\/]/.test(id)) return 'react';
     return 'vendor';
   }
+  // Event text, everyday scenes and world data change separately, so each keeps its own cache entry
+  if (/[\/]src[\/]data[\/]events/.test(id)) return 'story-events';
+  if (/[\/]src[\/]data[\/](lifeMinors|lifeDailies|narrative)/.test(id)) return 'story-life';
   if (/[\/]src[\/]data[\/]/.test(id)) return 'story';
   return undefined;
 };
@@ -17,6 +20,8 @@ const chunkFor = (id) => {
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   build: {
+    // The story chunks hold all event text and are cached separately, so the default 500 kB warning does not apply to them
+    chunkSizeWarningLimit: 1200,
     rollupOptions: {
       output: { manualChunks: chunkFor }
     }

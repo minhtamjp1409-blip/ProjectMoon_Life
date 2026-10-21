@@ -732,16 +732,6 @@ export const useGameStore = create((set, get) => ({
     });
 
     get().commit(prev, nextChar, { activeResolution: resolution });
-
-    // Refresh career milestone from backend after event decision
-    const snap = buildCharSnapshot(nextChar);
-    if (snap) {
-      cityArchiveAPI.getCareerMilestone(snap).then((ms) => {
-        if (ms && get().char?.age === nextChar.age) {
-          set({ char: { ...get().char, serverMilestone: ms } });
-        }
-      }).catch(() => {});
-    }
   },
 
   selectContractApproach: (approachId) => {

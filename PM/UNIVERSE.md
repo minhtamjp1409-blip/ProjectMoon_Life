@@ -120,7 +120,7 @@ Xếp theo mức đáng làm, bám cấu trúc trong `implementation_plan.md`.
 
 ### 5.1. Nội dung (dễ, tác động lớn)
 
-- Thêm sự kiện nhỏ cho các District chưa có chuyện riêng (D, F, I, M, Q, V, X, Y).
+- Thêm sự kiện nhỏ cho hai District còn thiếu chuyện riêng: R (The Fourth Pack và các Hatchery) và S (Nest nông nghiệp mục ruỗng). Các District khác đã có ít nhất hai sự kiện nhỏ.
 - Thêm chuỗi cho từng Association: Devyat' và chiếc rương Poludnitsa, Dieci đốt tri thức, Liu và lửa, Cinq và quyết đấu.
 - Thêm chuỗi cho Middle (thăng Big Brother theo Book of Vengeance) và Index (Prescript định kỳ, Proxy).
 

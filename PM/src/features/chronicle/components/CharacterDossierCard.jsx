@@ -356,8 +356,8 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeT
             unit="%"
             color="var(--s-reso)"
             tooltip={t(
-              'E.G.O Resonance: Tần số cộng hưởng tâm thức với Ánh Sáng (The Light). Chỉ số càng cao càng dễ Thức tỉnh vũ khí E.G.O riêng, nhưng nếu Sanity sụp đổ sẽ bị dẫn dụ thành Biến dị (Distortion).',
-              'E.G.O Resonance: Mental frequency alignment with The Light. High values unlock E.G.O awakening potential, but catastrophic sanity loss leads to Distortion.'
+              'E.G.O Resonance: Mức cộng hưởng với Ánh Sáng (The Light). Chỉ số cao mở ra khả năng thức tỉnh E.G.O. Khi tinh thần suy sụp, nhân vật cũng có thể đứng trước ngã rẽ Distortion; E.G.O không tự biến thành Distortion theo thời gian.',
+              'E.G.O Resonance: Affinity with the Light. A high value can open a path to E.G.O. A severe mental crisis may also bring a Distortion crossroads; E.G.O does not inevitably become a Distortion over time.'
             )}
           />
           <TabooStat

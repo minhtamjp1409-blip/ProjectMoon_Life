@@ -10,6 +10,11 @@ import { WORKSHOP_ECONOMY_EVENTS } from './src/data/eventsWorkshopEconomy.js';
 import { BEREAVEMENT_EVENTS } from './src/data/eventsBereavementMemories.js';
 import { DERIVATIVE_LORE_EVENTS } from './src/data/eventsDerivativeLore.js';
 import { COMPANION_QUEST_EVENTS } from './src/data/eventsCompanionQuests.js';
+import { EXPANSION_EVENTS } from './src/data/eventsExpansion.js';
+import { LIFE_MINORS_4 } from './src/data/lifeMinors4.js';
+import { LIFE_MINORS_5 } from './src/data/lifeMinors5.js';
+import { THREAD_MINORS } from './src/data/narrative/causalThreads.js';
+import { DAILIES_2 } from './src/data/narrative/dailies2.js';
 import { EXPANDED_DAILIES } from './src/data/narrative/dailies.js';
 import { LIFE_MINORS } from './src/data/lifeMinors.js';
 import { LIFE_MINORS_2 } from './src/data/lifeMinors2.js';
@@ -30,7 +35,7 @@ function log(str = '') {
 
 log(sep1);
 log('   BẢN GHI TOÀN BỘ KỊCH BẢN, SỰ KIỆN VÀ VĂN TRẢI NGHIỆM - THE CITY CHRONICLES');
-log('            (PROJECT MOON CANONICAL NARRATIVE & SCRIPT DATABASE)');
+log('             (TRUYỆN PHÁI SINH LẤY CẢM HỨNG TỪ PROJECT MOON)');
 log(sep1);
 log(`Ngày xuất bản: ${new Date().toLocaleString('vi-VN')}`);
 log('Phiên bản: 2.0 (Overhaul: Hệ thống Sát hạch Hana, Cách ly Distortion & Kinh tế Công xưởng)');
@@ -52,6 +57,8 @@ log('PHẦN XI:   NHỊP SỐNG SINH HOẠT THƯỜNG NHẬT (LIFE DAILIES - B�
 log('PHẦN XII:  HỆ QUẢ NHÂN QUẢ KÉO DÀI (CONSEQUENCE & KARMA THREADS)');
 log('PHẦN XIII: TÁC PHẨM PHÁI SINH & GIAI THOẠI CỘNG ĐỒNG (DERIVATIVE & FAN-FAVORITE LORE)');
 log('PHẦN XIV:  TỪ ĐIỂN THUẬT NGỮ CHUẨN NGUYÊN TÁC PROJECT MOON (CANONICAL GLOSSARY)');
+log('PHẦN XV:   NHIỆM VỤ ĐỒNG ĐỘI & GẮN KẾT NPC (COMPANION QUESTS)');
+log('PHẦN XVI:  CHUYỆN RIÊNG THEO QUẬN, NGHỀ, QUAN HỆ VÀ TUỔI GIÀ (EXPANSION EVENTS)');
 log(sep1 + '\n\n');
 
 function formatFx(fx) {
@@ -95,6 +102,7 @@ function dumpEvent(ev, idx, categoryName) {
     ev.choices.forEach((c, cIdx) => {
       log(`  ------------------------------------------------------------------------`);
       log(`  [Lựa chọn ${cIdx + 1}]: ${c.labelVi || c.vi || 'Hành động'} (${c.labelEn || c.en || 'Action'})`);
+      if (c.need) log(`  > Điều kiện lựa chọn: ${JSON.stringify(c.need)}`);
       if (c.resultVi || c.rvi) {
         log(`  > Kết quả (VI): ${c.resultVi || c.rvi}`);
       }
@@ -111,14 +119,30 @@ function dumpEvent(ev, idx, categoryName) {
       if (c.scarsAdd && c.scarsAdd.length) log(`  > Khắc vết sẹo tâm hồn: [${c.scarsAdd.join(', ')}]`);
       if (c.recordsAdd && c.recordsAdd.length) log(`  > Ghi danh Codex thành tựu: [${c.recordsAdd.join(', ')}]`);
       if (c.mem) log(`  > Ký ức khắc sâu: [${c.mem}]`);
-      if (c.out && c.out.length) {
+      if (c.itemAdd) log(`  > Nhận vật phẩm: ${c.itemAdd}`);
+      if (c.npcFate) log(`  > Số phận NPC: ${JSON.stringify(c.npcFate)}`);
+      if (c.later?.length) log(`  > Hệ quả hẹn giờ: ${JSON.stringify(c.later)}`);
+      if (c.scheduleConsequences?.length) log(`  > Hệ quả hẹn giờ: ${JSON.stringify(c.scheduleConsequences)}`);
+      const outcomes = c.outcomes || c.out;
+      if (outcomes?.length) {
         log(`  > Các nhánh xác suất ngẫu nhiên (Outcomes):`);
-        c.out.forEach((o, oIdx) => {
-          log(`    - Nhánh ${oIdx + 1} (Tỷ trọng: ${o.w || 1}): ${o.rvi || o.vi || ''}`);
-          log(`      Chỉ số: ${formatFx(o.fx || o.effects)} | Cờ: [${(o.flagsAdd || []).join(', ')}]`);
+        outcomes.forEach((o, oIdx) => {
+          log(`    - Nhánh ${oIdx + 1} (Tỷ trọng: ${o.w ?? 1}): ${o.resultVi || o.rvi || o.vi || ''}`);
+          log(`      EN: ${o.resultEn || o.ren || o.en || ''}`);
+          log(`      Chỉ số: ${formatFx(o.fx || o.effects)} | Cờ: [${(o.flagsAdd || o.flags || []).join(', ')}]`);
+          if (o.need) log(`      Điều kiện: ${JSON.stringify(o.need)}`);
+          if (o.later?.length) log(`      Hệ quả hẹn giờ: ${JSON.stringify(o.later)}`);
         });
       }
     });
+  }
+  if (ev.okVi) {
+    log(`* Hoàn thành (VI): ${ev.okVi}`);
+    log(`* Completed (EN): ${ev.okEn}`);
+    log(`* Thất bại (VI): ${ev.failVi}`);
+    log(`* Failed (EN): ${ev.failEn}`);
+    log(`* Tử vong (VI): ${ev.deathVi}`);
+    log(`* Fatal (EN): ${ev.deathEn}`);
   }
   log('\n' + sep2 + '\n');
 }
@@ -129,11 +153,11 @@ log('PHẦN I: THIẾT LẬP THẾ GIỚI & GIA CẢNH KHỞI ĐẦU (WORLD DATA
 log(sep1);
 log('1. CÁC QUẬN CỦA THE CITY (DISTRICTS 1-26):');
 REGIONS.forEach(r => {
-  log(`- District ${r.id}: ${r.nameVi} (${r.nameEn}) | Thuộc tính: ${r.type} | Văn hóa: ${r.descVi}`);
+  log(`- ${r.nameVi} | Đặc trưng: ${(r.tags || []).join(', ')} | Bối cảnh: ${r.descVi}`);
 });
 log('\n2. TẦNG LỚP GIA ĐÌNH XUẤT THÂN:');
 FAMILIES.forEach(f => {
-  log(`- ${f.nameVi} (${f.nameEn}): Tài sản khởi điểm: ${f.wealth} Ahn | Mô tả: ${f.descVi}`);
+  log(`- ${f.nameVi} (${f.nameEn}): Điều chỉnh tài sản đầu đời: ${f.statMod?.wealth ?? 0} Ahn | Mô tả: ${f.descVi}`);
 });
 log('\n3. CÁC HIỆP HỘI FIXER HÀNG ĐẦU (ASSOCIATIONS):');
 ASSOCIATIONS.forEach(a => {
@@ -203,9 +227,9 @@ log('Nơi tiêu Ahn chiến lược: Mua sắm vũ khí Công xưởng, cấy gh
 WORKSHOP_ECONOMY_EVENTS.forEach((ev, i) => dumpEvent(ev, i, 'WORKSHOP ECONOMY'));
 log('DANH MỤC VẬT PHẨM WORKSHOP TIÊU BIỂU (ITEMS CATALOG):');
 ITEMS_CATALOG.forEach((it, i) => {
-  log(`[Vật phẩm #${i + 1}] ${it.nameVi} (${it.nameEn}) | Loại: ${it.type} | Giá: ${it.costAhn} Ahn | Độ hiếm: ${it.rarity}`);
+  log(`[Vật phẩm #${i + 1}] ${it.nameVi} (${it.nameEn}) | Loại: ${it.type} | Giá: ${it.costAhn} Ahn | Cấp: ${it.tier}`);
   log(`  Mô tả: ${it.descVi}`);
-  log(`  Hiệu ứng: ${JSON.stringify(it.effects)} | Kỹ năng đặc biệt: ${it.specialAction || 'Không'}`);
+  log(`  Chỉ số: ${JSON.stringify(it.stats || {})} | Sức chiến đấu: ${it.combatPower || 0} | Kỹ năng: ${JSON.stringify(it.skillBonus || {})}`);
   log('  ------------------------------------------------------------------------');
 });
 log('\n\n');
@@ -214,20 +238,27 @@ log('\n\n');
 log(sep1);
 log('PHẦN X: QUYẾT ĐỊNH TÌNH HUỐNG TỨC THỜI (LIFE MINORS - BỘ 1, 2, 3)');
 log(sep1);
-const allMinors = [...LIFE_MINORS, ...LIFE_MINORS_2, ...LIFE_MINORS_3];
+const allMinors = [...LIFE_MINORS, ...LIFE_MINORS_2, ...LIFE_MINORS_3, ...LIFE_MINORS_4, ...LIFE_MINORS_5, ...THREAD_MINORS];
 log(`Tổng cộng: ${allMinors.length} sự kiện tương tác ngắn đa dạng trong đời sống.\n`);
 allMinors.forEach((ev, i) => {
   log(`[Minor #${i + 1}] ID: ${ev.id}`);
+  if (ev.age) log(`* Độ tuổi: ${ev.age[0]}-${ev.age[1]}`);
+  if (ev.need) log(`* Điều kiện: ${JSON.stringify(ev.need)}`);
   log(`* Tình huống (VI): ${ev.vi}`);
   log(`* Situation (EN): ${ev.en}`);
   if (ev.choices && ev.choices.length) {
     log(`* Lựa chọn:`);
     ev.choices.forEach((c, ci) => {
       log(`  - [${ci + 1}]: ${c.vi} (${c.en})`);
+      if (c.need) log(`    Điều kiện lựa chọn: ${JSON.stringify(c.need)}`);
+      if (c.costAhn) log(`    Chi phí: ${c.costAhn} Ahn`);
+      if (c.rvi || c.ren) log(`    Kết quả: ${c.rvi || ''} / ${c.ren || ''}`);
+      if (c.mem) log(`    Ký ức: ${c.mem}`);
+      if (c.later?.length) log(`    Hệ quả hẹn giờ: ${JSON.stringify(c.later)}`);
       log(`    Thay đổi chỉ số: ${formatFx(c.fx || c.effects)}`);
       if (c.out && c.out.length) {
         c.out.forEach((o, oi) => {
-          log(`      + Biến thể ${oi + 1}: ${o.rvi || o.vi} | Chỉ số: ${formatFx(o.fx)}`);
+          log(`      + Biến thể ${oi + 1}: ${o.rvi || o.vi} / ${o.ren || o.en || ''} | Chỉ số: ${formatFx(o.fx || o.effects)}`);
         });
       }
     });
@@ -243,7 +274,7 @@ log('\n\n');
 log(sep1);
 log('PHẦN XI: NHỊP SỐNG SINH HOẠT THƯỜNG NHẬT (LIFE DAILIES - BỘ 1, 3)');
 log(sep1);
-const allDailies = [...LIFE_DAILIES, ...LIFE_DAILIES_3, ...EXPANDED_DAILIES];
+const allDailies = [...LIFE_DAILIES, ...LIFE_DAILIES_3, ...EXPANDED_DAILIES, ...DAILIES_2];
 log(`Tổng cộng: ${allDailies.length} nhịp sống ngẫu nhiên theo mùa và khu vực.\n`);
 allDailies.forEach((d, i) => {
   log(`[Daily #${i + 1}] ID: ${d.id} | Yêu cầu: ${JSON.stringify(d.need || {})}`);
@@ -267,6 +298,17 @@ log(sep1);
 log('Lấy cảm hứng từ Distortion Detective, Leviathan, WonderLab, Bloodfiends of La Manchaland, Blade Lineage & Kurokumo feuds.\n');
 DERIVATIVE_LORE_EVENTS.forEach((ev, i) => dumpEvent(ev, i, 'DERIVATIVE & COMMUNITY LORE'));
 
+// SECTION XIV
+log(sep1);
+log('PHẦN XIV: TỪ ĐIỂN THUẬT NGỮ CHUẨN NGUYÊN TÁC PROJECT MOON (CANONICAL GLOSSARY)');
+log(sep1);
+GLOSSARY_TERMS.forEach((t, i) => {
+  log(`[Thuật ngữ #${i + 1}] ${t.lorVn || t.term} (${t.term})`);
+  log(`  Phân loại: ${t.category}`);
+  log(`  Giải nghĩa: ${t.vi}`);
+  log('  ------------------------------------------------------------------------');
+});
+
 
 // SECTION XV: COMPANION PERSONALITY QUERIES & ARCHETYPES
 log(sep1);
@@ -275,18 +317,15 @@ log(sep1);
 log('Gắn kết chiều sâu tính cách từng NPC (Gambler, Sickly, Proud, Ambitious, Secretive, Partner, Spouse...)\n');
 COMPANION_QUEST_EVENTS.forEach((ev, i) => dumpEvent(ev, i, 'COMPANION QUEST'));
 
-// SECTION XIV
+// SECTION XVI
 log(sep1);
-log('PHẦN XIV: TỪ ĐIỂN THUẬT NGỮ CHUẨN NGUYÊN TÁC PROJECT MOON (CANONICAL GLOSSARY)');
+log('PHẦN XVI: CHUYỆN RIÊNG CỦA TỪNG QUẬN, NGƯỜI THÂN, NGHỀ VÀ TUỔI GIÀ (DISTRICT, PEOPLE, CAREER & OLD-AGE EVENTS)');
 log(sep1);
-GLOSSARY_TERMS.forEach((t, i) => {
-  log(`[Thuật ngữ #${i + 1}] ${t.titleVi} (${t.titleEn})`);
-  log(`  Phân loại: ${t.category}`);
-  log(`  Giải nghĩa: ${t.descVi}`);
-  log('  ------------------------------------------------------------------------');
-});
+log('Sự kiện lớn cho các quận chưa có chuyện riêng, bốn mối quan hệ, Distortion, hai nghề và tuổi già.\n');
+EXPANSION_EVENTS.forEach((ev, i) => dumpEvent(ev, i, 'DISTRICT, PEOPLE & CAREER'));
 
 const outputPath = path.resolve('TOAN_BO_KICH_BAN_PROJECT_MOON.txt');
-fs.writeFileSync(outputPath, lines.join('\r\n'), 'utf8');
+const outputText = lines.join('\r\n').replace(/[ \t]+(?=\r?\n|$)/g, '').trimEnd() + '\r\n';
+fs.writeFileSync(outputPath, outputText, 'utf8');
 console.log(`Đã xuất thành công toàn bộ kịch bản ra tệp: ${outputPath}`);
-console.log(`Tổng số dòng văn bản: ${lines.length} dòng`);
+console.log(`Tổng số dòng văn bản: ${outputText.trimEnd().split(/\r?\n/).length} dòng`);

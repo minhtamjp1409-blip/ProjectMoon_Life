@@ -34,8 +34,8 @@ export const NARRATIVE_ARCS = [
     triggerNeed: { jobs: ['Syndicate'], flags: ['FingerIndex'] },
     stages: [
       { stage: 1, eventId: 'syn_index_prescript_bizarre', titleVi: 'Khởi điểm: Chỉ lệnh đi lùi ngã tư' },
-      { stage: 2, eventId: 'syn_index_sanctuary_deliverance', titleVi: 'Leo thang: Nhiệm vụ giao phong bì đỏ' },
-      { stage: 3, eventId: 'syn_index_proxy_ascension', titleVi: 'Đỉnh điểm: Đại khảo nghiệm phong hàm Proxy' }
+      { stage: 2, eventId: 'syn_index_spinning_top_prescript', titleVi: 'Leo thang: Nhiệm vụ giao phong bì đỏ' },
+      { stage: 3, eventId: 'syn_index_promo_proxy', titleVi: 'Đỉnh điểm: Đại khảo nghiệm phong hàm Proxy' }
     ]
   },
 
@@ -47,8 +47,8 @@ export const NARRATIVE_ARCS = [
     triggerNeed: { jobs: ['Syndicate'], flags: ['FingerMiddle'] },
     stages: [
       { stage: 1, eventId: 'syn_middle_book_of_vengeance', titleVi: 'Khởi điểm: Món nợ máu đầu tiên' },
-      { stage: 2, eventId: 'syn_middle_brother_rescue_heist', titleVi: 'Leo thang: Đột kích nhà lao cứu anh em' },
-      { stage: 3, eventId: 'syn_middle_great_brother_trial', titleVi: 'Đỉnh điểm: Đại khảo thí phong Big Brother' }
+      { stage: 2, eventId: 'syn_middle_promo_big_sibling_rescue', titleVi: 'Leo thang: Đột kích nhà lao cứu anh em' },
+      { stage: 3, eventId: 'syn_middle_promo_big_sibling', titleVi: 'Đỉnh điểm: Đại khảo thí phong Big Brother' }
     ]
   },
 

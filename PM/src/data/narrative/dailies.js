@@ -1,6 +1,6 @@
 // Original scenes set in the City; these do not establish new Wing Singularities.
 const group = (prefix, age, need, rows) => rows.map(([id, vi, en, fx = {}]) => ({
-  id: `daily_${prefix}_${id}`, age, need, vi, en, fx, theme: prefix
+  id: `daily_${prefix}_${id}`, age, need, vi, en, fx
 }));
 
 export const EXPANDED_DAILIES = [
@@ -20,7 +20,7 @@ export const EXPANDED_DAILIES = [
   ]),
   ...group('childhood', [5, 12], {}, [
     ['eraser', 'Bạn dùng tẩy đến khi không còn chỗ cầm. Người bán văn phòng phẩm đổi cho bạn một mẩu mới lấy chồng giấy vụn đã buộc gọn.', 'You wear an eraser down until you cannot hold it. The stationer trades a new scrap for your neatly tied wastepaper.', { wealth: 1 }],
-    ['map', 'Tấm bản đồ trong lớp chia Thành Phố thành hai mươi sáu quận. Bạn tìm nhà mình trên đó, nhưng nét in quá dày để thấy một con hẻm.', 'The classroom map divides the City into twenty-six districts. Its thick print cannot show your alley.', { network: 1 }],
+    ['map', 'Tấm bản đồ trong lớp chia The City thành hai mươi sáu quận. Bạn tìm nhà mình trên đó, nhưng nét in quá dày để thấy một con hẻm.', 'The classroom map divides the City into twenty-six districts. Its thick print cannot show your alley.', { network: 1 }],
     ['hem', 'Ống quần vừa được nới gấu vẫn còn một vệt màu đậm. Bạn đo nó với chiều cao mình trên tường và vui cả buổi.', 'Your newly let-down trousers retain a dark fold. You compare it with your height mark on the wall, pleased for the whole morning.', { sanity: 2 }],
     ['alphabet', 'Bạn viết tên các Association vào vở tập chữ. Chữ Zwei dễ nhớ hơn những từ khác vì nét cuối giống móc áo.', 'You copy Association names into your exercise book. Zwei is easiest to remember because your final stroke resembles a coat hook.', { network: 1 }],
     ['marble', 'Viên bi lăn vào khe sàn. Bạn nằm sấp dùng một sợi dây câu nó ra, rồi nhận ra mình đã bỏ lỡ bữa ăn.', 'A marble rolls into a floorboard gap. Fishing it out with string takes you past mealtime.', { sanity: 1 }],

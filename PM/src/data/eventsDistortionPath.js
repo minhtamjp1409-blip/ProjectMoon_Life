@@ -168,7 +168,7 @@ export const DISTORTION_PATH_EVENTS = [
     age: [20, 80],
     major: true,
     weight: 65,
-    need: { jobs: ['Distortion'] },
+    need: { jobs: ['Distortion'], npc: 'friend' },
     forbids: ['distort_companion_done'],
     vi: '[Cuộc Gặp Gỡ Đẫm Lệ Dưới Lốt Quái Vật] Trong một con hẻm hoang tàn, một bóng người quen thuộc chặn trước mặt bạn: Đó là người bạn cũ từ thuở nhỏ. Nhìn thấy cơ thể quái dị đầy gai nhọn và đôi mắt biến đổi của bạn, người ấy run rẩy giơ thanh kiếm cùn lên, nước mắt lưng tròng: "Có phải bạn không? Tại sao bạn lại trở thành thứ quái vật gớm ghiếc này?"',
     en: '[Tearful Encounter in Aberrant Flesh] In a derelict alley, a familiar silhouette blocks your path: Your childhood friend. Beholding your thorned carapace and dilated eyes, they raise a trembling blade, weeping: "Is that really you? Why did you let yourself become this horror?"',

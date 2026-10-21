@@ -96,6 +96,13 @@ export const WORKSHOP_ECONOMY_EVENTS = [
         costAhn: 35,
         itemAdd: 'con_enkephalin_inhaler',
         effects: { wealth: -35, sanity: +15 }
+      },
+      {
+        labelVi: 'Gấp danh mục lại và rời phòng khám',
+        labelEn: 'Close the catalogue and leave the clinic',
+        resultVi: 'Bác sĩ không giữ bạn lại. Ngoài cửa, tiếng máy khoan vẫn chạy; bạn kiểm tra túi tiền rồi đi tiếp.',
+        resultEn: 'The doctor does not stop you. The drill keeps running behind the door; you check your purse and walk on.',
+        effects: { sanity: -1 }
       }
     ]
   },

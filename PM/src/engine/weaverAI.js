@@ -704,10 +704,7 @@ export function selectEventWithWeaverAI({
     colorEv &&
     char.job === 'Fixer' &&
     !char.flags.includes('Distorted') &&
-    char.fixerGrade === 1 &&
-    (char.merit || 0) >= 150 &&
-    ((char.stats?.rep ?? char.rep) || 0) >= 68 &&
-    !char.flags.includes('ColorFixer') &&
+    checkColorFixerReadiness(char).ready &&
     !char.seenEvents.includes('hana_color_ascension_trial')
   ) {
     const logEntry = {
@@ -876,13 +873,15 @@ export function selectEventWithWeaverAI({
 
   // Draw from a wide field so two lives with the same start still diverge;
   // a forced milestone (utility far above the rest) still wins almost every time.
-  const topCandidates = scored.slice(0, Math.min(10, scored.length));
-  const totalWeight = topCandidates.reduce((sum, item) => sum + Math.max(1, item.score.totalUtility), 0);
+  // The 0.85 power keeps the order but gives the lower half of the field a real chance.
+  const drawWeight = (item) => Math.pow(Math.max(1, item.score.totalUtility), 0.85);
+  const topCandidates = scored.slice(0, Math.min(14, scored.length));
+  const totalWeight = topCandidates.reduce((sum, item) => sum + drawWeight(item), 0);
   let pickRoll = rng() * totalWeight;
   let chosen = topCandidates[0];
 
   for (const item of topCandidates) {
-    pickRoll -= Math.max(1, item.score.totalUtility);
+    pickRoll -= drawWeight(item);
     if (pickRoll <= 0) {
       chosen = item;
       break;

@@ -36,11 +36,15 @@ import { LIFE_DAILIES as DAILIES_FIRST } from '../data/lifeDailies.js';
 import { LIFE_MINORS as MINORS_FIRST } from '../data/lifeMinors.js';
 import { LIFE_MINORS_2 } from '../data/lifeMinors2.js';
 import { LIFE_DAILIES_3, LIFE_MINORS_3 } from '../data/lifeMinors3.js';
+import { LIFE_MINORS_4 } from '../data/lifeMinors4.js';
+import { LIFE_MINORS_5 } from '../data/lifeMinors5.js';
+import { THREAD_MINORS } from '../data/narrative/causalThreads.js';
 import { EXPANDED_DAILIES } from '../data/narrative/dailies.js';
+import { DAILIES_2 } from '../data/narrative/dailies2.js';
 import { cityArchiveAPI } from '../services/api/cityArchiveAPI.js';
 
-export const LIFE_MINORS = [...MINORS_FIRST, ...LIFE_MINORS_2, ...LIFE_MINORS_3];
-export const LIFE_DAILIES = [...DAILIES_FIRST, ...LIFE_DAILIES_3, ...EXPANDED_DAILIES];
+export const LIFE_MINORS = [...MINORS_FIRST, ...LIFE_MINORS_2, ...LIFE_MINORS_3, ...LIFE_MINORS_4, ...LIFE_MINORS_5, ...THREAD_MINORS];
+export const LIFE_DAILIES = [...DAILIES_FIRST, ...LIFE_DAILIES_3, ...EXPANDED_DAILIES, ...DAILIES_2];
 import {
   directorWeight,
   markTheme,
@@ -52,9 +56,12 @@ import {
   npcActive,
   hasMemory
 } from './director.js';
+import { freshness, varyEffects, traitsOf, tiltWeight, PRINTED_NUMBERS } from './variance.js';
+import { BALANCE, healAmount, calmAmount, agingLoss, driftOf } from './economyModel.js';
 
 export const MINOR_WINDOW_MS = 15000;
-const RECENT_LIMIT = 36;
+// How many recent moments freshness looks back over (see variance.js)
+const RECENT_LIMIT = 120;
 
 export const STAT_KEYS = ['health', 'sanity', 'wealth', 'network', 'rep'];
 const EXTRA_KEYS = ['heat', 'resonance', 'taboo', 'merit'];
@@ -147,6 +154,7 @@ function pushLog(char, entry, t) {
 
 function remember(char, id) {
   char.recent = [...(char.recent || []), id].slice(-RECENT_LIMIT);
+  char.seenCount = { ...(char.seenCount || {}), [id]: ((char.seenCount || {})[id] || 0) + 1 };
 }
 
 // Split a "[Title] body" event text into its title and body.
@@ -157,28 +165,22 @@ export function splitTitle(text) {
 
 /* ---------- choosing what happens this year ---------- */
 
+// Everything that fits the character. Repeats are discouraged by weight (see weightOf), not forbidden,
+// so a small pool still draws at random instead of cycling in a fixed order.
 function eligibleDailies(char) {
-  const base = LIFE_DAILIES.filter((d) => matchesEventContext(d, char));
-  const unpicked = base.filter((d) => !(char.recent || []).includes(d.id));
-  if (unpicked.length > 0) return unpicked;
-  // Fallback: sort all matching by least recently seen to cycle smoothly
-  const recent = char.recent || [];
-  return [...base].sort((a, b) => recent.lastIndexOf(a.id) - recent.lastIndexOf(b.id));
+  return LIFE_DAILIES.filter((d) => matchesEventContext(d, char));
 }
 
 function eligibleMinors(char) {
-  const base = LIFE_MINORS.filter((m) => {
+  return LIFE_MINORS.filter((m) => {
     if (!matchesEventContext(m, char)) return false;
     if (m.once && (char.seenEvents || []).includes(m.id)) return false;
     return true;
   });
-  const unpicked = base.filter((m) => !(char.recent || []).includes(m.id));
-  if (unpicked.length > 0) return unpicked;
-  const recent = char.recent || [];
-  return [...base].sort((a, b) => recent.lastIndexOf(a.id) - recent.lastIndexOf(b.id));
 }
 
-const weightOf = (char) => (e) => directorWeight(e, char).w;
+// Director weights reach x6; the 0.8 power keeps their order but lets weaker entries through
+const weightOf = (char) => (e) => Math.pow(directorWeight(e, char).w, 0.8) * freshness(e.id, char.recent, char.seenCount);
 
 function majorIsDue(char, rng) {
   const w = char.weaver || {};
@@ -285,28 +287,31 @@ export function planYear(charState, rng) {
   }
 
   // Active Medical Recovery / Wellness / Comfort minor choice when injured, distressed or wealthy
+  // Need decides whether one is due; how recently and how often it played decides how likely.
   if (!char.flags.includes('Distorted')) {
-    if (char.stats.health < 72 && rng() < 0.75) {
+    const careDue = (id, p) => !scheduledKey.some((it) => it.id === id) && rng() < p * Math.max(0.2, freshness(id, char.recent, char.seenCount));
+    const scheduleCare = (id) => {
+      scheduledKey.push({ kind: 'minor', id });
+      remember(char, id);
+    };
+    if (char.stats.health < 72) {
       const medId = nest ? 'm_med_nest_infirmary' : (age < 18 ? 'm_med_child_remedy' : (char.stats.wealth >= 20 && rng() < 0.45 ? 'm_med_blackstreet_doctor_organ' : 'm_med_backstreet_clinic'));
-      if (!scheduledKey.some((it) => it.id === medId)) {
-        scheduledKey.push({ kind: 'minor', id: medId });
-      }
-    } else if (char.stats.sanity < 70 && age >= 16 && rng() < 0.65) {
-      const comfortId = 'm_wellness_hamham_lunch';
-      if (!scheduledKey.some((it) => it.id === comfortId)) {
-        scheduledKey.push({ kind: 'minor', id: comfortId });
-      }
-    } else if (char.stats.wealth >= 35 && age >= 18 && rng() < 0.40) {
+      if (careDue(medId, 0.75)) scheduleCare(medId);
+    } else if (char.stats.sanity < 70 && age >= 16) {
+      if (careDue('m_wellness_hamham_lunch', 0.65)) scheduleCare('m_wellness_hamham_lunch');
+    } else if (char.stats.wealth >= 35 && age >= 18) {
       const sinkId = rng() < 0.5 ? 'm_wellness_workshop_tuneup' : 'm_wellness_hamham_lunch';
-      if (!scheduledKey.some((it) => it.id === sinkId)) {
-        scheduledKey.push({ kind: 'minor', id: sinkId });
-      }
+      if (careDue(sinkId, 0.40)) scheduleCare(sinkId);
     }
   }
 
   // Collect Minor choices: small interactive decisions with time limit
+  // A calm temperament runs quiet years, a dramatic one busy years
+  const drama = traitsOf(char).drama;
   const roll = rng();
-  const targetMinorCount = age <= 4 ? 0 : age < 7 ? (roll < 0.45 ? 1 : 0) : roll < 0.25 ? 0 : roll < 0.75 ? 1 : 2;
+  const noneP = Math.min(0.45, Math.max(0.08, 0.25 / drama));
+  const twoP = Math.min(0.45, Math.max(0.12, 0.25 * drama));
+  const targetMinorCount = age <= 4 ? 0 : age < 7 ? (roll < 0.45 * drama ? 1 : 0) : roll < noneP ? 0 : roll < 1 - twoP ? 1 : 2;
   const scheduledMinors = scheduledKey.filter((it) => it.kind === 'minor').length;
   const pickedMinors = [];
   for (let i = scheduledMinors; i < targetMinorCount; i++) {
@@ -401,20 +406,39 @@ export function planYear(charState, rng) {
     }
   }
 
+  // A quiet year may leave one plain slot empty; a busy one adds a second small moment to a season
+  const isPlain = (it) => it && (it.kind === 'daily');
+  const extras = {};
+  if (age > 4) {
+    const plainSlots = [0, 1, 2, 3].filter((s) => isPlain(slots[s]));
+    if (plainSlots.length > 1 && rng() < 0.10 / drama) {
+      slots[plainSlots[Math.floor(rng() * plainSlots.length)]] = null;
+    }
+    for (let s = 0; s < 4; s++) {
+      if (!slots[s] || rng() >= 0.14 * drama) continue;
+      const taken = new Set([...slots.filter(Boolean).map((sl) => sl.id), ...Object.values(extras).map((e) => e.id)]);
+      const useMinor = rng() < 0.3;
+      const pool = (useMinor ? eligibleMinors(char) : poolDailies).filter((e) => !taken.has(e.id));
+      const pick = pickWeighted(pool, weightOf(char), rng);
+      if (pick) {
+        extras[s] = { kind: useMinor ? 'minor' : 'daily', id: pick.id, extra: true };
+        remember(char, pick.id);
+      }
+    }
+  }
+
   // Build the final chronological plan with precise seasonal coordinates
   const planItems = [];
   for (let s = 0; s < 4; s++) {
+    const band = SEASON_BANDS[s];
     const it = slots[s];
-    if (it) {
-      const band = SEASON_BANDS[s];
-      const t = Math.round((band.minT + rng() * (band.maxT - band.minT)) * 1000) / 1000;
-      planItems.push({
-        ...it,
-        t,
-        seasonIdx: s,
-        season: band.season
-      });
-    }
+    const extra = extras[s];
+    if (!it && !extra) continue;
+    const mid = (band.minT + band.maxT) / 2;
+    const at = (lo, hi) => Math.round((lo + rng() * (hi - lo)) * 1000) / 1000;
+    // Two moments in one season share the band's halves so they never land on top of each other
+    if (it) planItems.push({ ...it, t: extra ? at(band.minT, mid) : at(band.minT, band.maxT), seasonIdx: s, season: band.season });
+    if (extra) planItems.push({ ...extra, t: it ? at(mid, band.maxT) : at(band.minT, band.maxT), seasonIdx: s, season: band.season });
   }
 
   planItems.sort((a, b) => a.t - b.t);
@@ -466,14 +490,13 @@ export async function syncPlanWithBackend(charState, rng) {
       }))
     };
 
-    const [planRes, milestoneRes] = await Promise.allSettled([
-      cityArchiveAPI.planYear({ seed: `${charState.seed}:${charState.age}`, char: snap }),
-      cityArchiveAPI.getCareerMilestone(snap)
-    ]);
+    // Saves from before the milestone was computed locally still carry a stale copy
+    delete charState.serverMilestone;
+    const localPlan = charState.plan || [];
 
-    if (milestoneRes.status === 'fulfilled' && milestoneRes.value) {
-      charState.serverMilestone = milestoneRes.value;
-    }
+    const [planRes] = await Promise.allSettled([
+      cityArchiveAPI.planYear({ seed: `${charState.seed}:${charState.age}`, char: snap })
+    ]);
 
     if (planRes.status === 'fulfilled' && planRes.value?.moments?.length > 0) {
       let serverMoments = planRes.value.moments;
@@ -547,6 +570,28 @@ export async function syncPlanWithBackend(charState, rng) {
         }
       }
 
+      // The server only knows daily/minor/major/contract. The mishap and medical-care
+      // moments the client rolled would be lost, so they take over a plain slot.
+      const isLocalOnly = (it) => it.kind === 'mishap' || it.extra || (it.kind === 'minor' && /^m_(med|wellness)_/.test(String(it.id)));
+      const isReplaceable = (it) => it.kind === 'daily' || (it.kind === 'minor' && !it.isCausal);
+      for (const keep of localPlan.filter(isLocalOnly)) {
+        if (hydrated.some((h) => h.id === keep.id && h.kind === keep.kind)) continue;
+        if (keep.extra) {
+          // An extra moment rides along with the server's four; keep it clear of their times
+          let t = keep.t;
+          while (hydrated.some((h) => Math.abs(h.t - t) < 0.03) && t < 0.97) t = Math.round((t + 0.04) * 1000) / 1000;
+          hydrated.push({ ...keep, t });
+          continue;
+        }
+        const sameSeason = hydrated.findIndex((h) => h.seasonIdx === keep.seasonIdx);
+        if (sameSeason < 0) hydrated.push(keep);
+        else if (isReplaceable(hydrated[sameSeason])) hydrated[sameSeason] = keep;
+        else if (keep.kind === 'mishap') {
+          const free = hydrated.findIndex(isReplaceable);
+          if (free >= 0) hydrated[free] = keep;
+        }
+      }
+
       hydrated.sort((a, b) => a.t - b.t);
       charState.plan = hydrated;
       charState.planCursor = 0;
@@ -589,7 +634,8 @@ export function runPlanItem(charState, item, rng) {
   if (item.kind === 'daily') {
     const def = LIFE_DAILIES.find((d) => d.id === item.id);
     if (!def || !matchesEventContext(def, char)) return char;
-    const deltas = applyFx(char, def.fx);
+    const dailyFx = PRINTED_NUMBERS.test(def.vi || '') ? def.fx : varyEffects(def.fx, rng, traitsOf(char));
+    const deltas = applyFx(char, dailyFx);
     applyChoiceExtras(char, [def], deltas, rng);
     markTheme(char, def);
     const isPureLore = !def.fx || Object.keys(def.fx).length === 0;
@@ -625,6 +671,7 @@ export function runPlanItem(charState, item, rng) {
         event = candidate;
         if (item.thread) {
           closeThreads(char, item.forcedEventId);
+          weaver = char.weaver;
         }
       }
     }
@@ -647,6 +694,8 @@ export function runPlanItem(charState, item, rng) {
       const threadObj = item.thread ? char.weaver?.pendingThreads?.find((t) => t.id === item.thread) : null;
       char.pendingEvent = {
         ...event,
+        // Choice labels name people too ({spouse}, {parentName}), so they get the same treatment as the text
+        choices: (event.choices || []).map((c) => ({ ...c, labelVi: interpolateText(c.labelVi, char), labelEn: interpolateText(c.labelEn, char) })),
         titleVi: vi.title,
         titleEn: en.title,
         displayVi: vi.body,
@@ -703,10 +752,14 @@ export function resolveMinor(charState, idx, rng) {
   if (!choiceIsAvailable(choice, char)) return cloneChar(charState);
 
   let outcome = choice;
+  const traits = traitsOf(char);
   if (Array.isArray(choice.out) && choice.out.length) {
-    outcome = pickWeighted(choice.out, (o) => o.w ?? 1, rng) || choice;
+    outcome = pickWeighted(choice.out, (o) => tiltWeight(o.w ?? 1, o.fx || o.effects, traits), rng) || choice;
   }
-  const mergedEffects = mergeEffects(choice, outcome);
+  const resultText = `${outcome.rvi || ''}${choice.rvi || ''}`;
+  const baseEffects = mergeEffects(choice, outcome);
+  // A result that prints its own numbers must land on exactly those numbers
+  const mergedEffects = PRINTED_NUMBERS.test(resultText) ? baseEffects : varyEffects(baseEffects, rng, traits);
   if (choice.costAhn && !(mergedEffects.wealth < 0)) {
     mergedEffects.wealth = -choice.costAhn;
   }
@@ -833,43 +886,43 @@ export function endYear(charState, rng) {
   }
 
   // Healthcare & Wounds recovery vs Street clinic expenses
-  if (char.stats.health < 85 && !char.flags.includes('Distorted')) {
+  if (char.stats.health < BALANCE.heal.below && !char.flags.includes('Distorted')) {
     if (char.flags.includes('KCorpAmpoule')) {
-      add('health', 25);
-      vi.push('Dược chất huyết thanh K Corp liên tục tuần hoàn, tái tạo thần tốc các mô thịt bị rách nát (+25 HP).');
-      en.push('K Corp restorative serum continuously circulated, rapidly regenerating damaged tissues (+25 HP).');
+      add('health', healAmount(char, 'ampoule'));
+      vi.push('Dược chất huyết thanh K Corp liên tục tuần hoàn, tái tạo thần tốc các mô thịt bị rách nát.');
+      en.push('K Corp restorative serum continuously circulated, rapidly regenerating damaged tissues.');
     } else if (char.stats.wealth >= 3 && char.age >= 18) {
       add('wealth', -2);
-      add('health', 18);
-      vi.push('Bạn tốn 2 Ahn tại phòng khám chui nơi hẻm tối để khâu lại vết chém, khử trùng và phục hồi thể lực (+18 HP, -2 Ahn).');
-      en.push('You paid 2 Ahn at a backstreet clinic to stitch wounds, sanitize, and restore vigor (+18 HP, -2 Ahn).');
+      add('health', healAmount(char, 'clinic'));
+      vi.push('Bạn tốn 2 Ahn tại phòng khám chui nơi hẻm tối để khâu lại vết chém, khử trùng và phục hồi thể lực.');
+      en.push('You paid 2 Ahn at a backstreet clinic to stitch wounds, sanitize, and restore vigor.');
     } else if (nest) {
-      add('health', 16);
-      vi.push('Gói bảo hiểm y tế nội bộ của Nest hỗ trợ khử trùng và điều trị chu đáo các tổn thương thể chất (+16 HP).');
-      en.push('Nest residential medical coverage attended to your physical injuries with clinical care (+16 HP).');
+      add('health', healAmount(char, 'nest'));
+      vi.push('Gói bảo hiểm y tế nội bộ của Nest hỗ trợ khử trùng và điều trị chu đáo các tổn thương thể chất.');
+      en.push('Nest residential medical coverage attended to your physical injuries with clinical care.');
     } else {
-      add('health', 10);
-      vi.push('Nhờ sức đề kháng tự nhiên và thời gian tĩnh dưỡng, những vết rách trên cơ thể bạn dần kéo da non (+10 HP).');
-      en.push('Through natural resilience and quiet rest, your physical wounds gradually healed over (+10 HP).');
+      add('health', healAmount(char, 'natural'));
+      vi.push('Nhờ sức đề kháng tự nhiên và thời gian tĩnh dưỡng, những vết rách trên cơ thể bạn dần kéo da non.');
+      en.push('Through natural resilience and quiet rest, your physical wounds gradually healed over.');
     }
   }
 
   // Mental Sanity recovery vs Tavern comfort
   const bond = ['spouse', 'partner', 'friend', 'mentor', 'child'].some((k) => char.npcs?.[k] && !char.npcs[k].deceased && (char.npcs[k].bond || 0) >= 50);
-  if (char.stats.sanity < 85 && !char.flags.includes('Distorted')) {
+  if (char.stats.sanity < BALANCE.calm.below && !char.flags.includes('Distorted')) {
     if (bond) {
-      add('sanity', 16);
-      vi.push('Sự kề cận và sẻ chia của người thân yêu giúp tâm trí bạn giữ được sự tỉnh táo và xua tan ám ảnh (+16 SP).');
-      en.push('The steady presence of a loved one anchored your sanity and cleared lingering horrors (+16 SP).');
+      add('sanity', calmAmount(char, 'bond'));
+      vi.push('Sự kề cận và sẻ chia của người thân yêu giúp tâm trí bạn giữ được sự tỉnh táo và xua tan ám ảnh.');
+      en.push('The steady presence of a loved one anchored your sanity and cleared lingering horrors.');
     } else if (char.stats.wealth >= 2 && char.age >= 18) {
       add('wealth', -1);
-      add('sanity', 12);
-      vi.push('Bạn bỏ 1 Ahn vào quán rượu bình dân cuối phố, mượn men cay để xoa dịu những cơn đau đầu dai dẳng (+12 SP, -1 Ahn).');
-      en.push('You spent 1 Ahn at a gritty dive tavern, dulling persistent headaches with cheap liquor (+12 SP, -1 Ahn).');
+      add('sanity', calmAmount(char, 'tavern'));
+      vi.push('Bạn bỏ 1 Ahn vào quán rượu bình dân cuối phố, mượn men cay để xoa dịu những cơn đau đầu dai dẳng.');
+      en.push('You spent 1 Ahn at a gritty dive tavern, dulling persistent headaches with cheap liquor.');
     } else {
-      add('sanity', 8);
-      vi.push('Những khoảnh khắc tĩnh lặng hiếm hoi trong đêm giúp tâm trí bạn lắng đọng và hồi phục tinh thần (+8 SP).');
-      en.push('Rare quiet moments in the night allowed your mind to settle and regain mental composure (+8 SP).');
+      add('sanity', calmAmount(char, 'natural'));
+      vi.push('Những khoảnh khắc tĩnh lặng hiếm hoi trong đêm giúp tâm trí bạn lắng đọng và hồi phục tinh thần.');
+      en.push('Rare quiet moments in the night allowed your mind to settle and regain mental composure.');
     }
   }
 
@@ -897,9 +950,13 @@ export function endYear(charState, rng) {
   }
   driftBonds(char);
 
-  const oldAge = char.flags.includes('Bloodfiend') ? 135 : char.flags.includes('FullBodyProsthetic') ? 85 : 58;
-  if (char.age > oldAge) {
-    add('health', -Math.ceil((char.age - oldAge) * 0.45));
+  // What events keep raising also wears off: resonance, fame and connections need feeding
+  for (const [k, v] of Object.entries(driftOf(char, bond ? 2 : 0))) add(k, v);
+
+  const wear = agingLoss(char);
+  const oldAge = wear > 0;
+  if (wear > 0) {
+    add('health', -wear);
     vi.push('Cơ thể bạn bắt đầu xuất hiện những dấu hiệu rệu rã rõ rệt của sự già nua và suy kiệt.');
     en.push('Your aging body showed undeniable signs of wear, fatigue, and declining vitality.');
   }
@@ -978,8 +1035,8 @@ export function endYear(charState, rng) {
     const [woundVi, woundEn] = woundDeath(char, 'Gục xuống vì vết thương và kiệt sức', 'Collapsed from wounds and exhaustion');
     applyFatalOrCompanionSave(
       char,
-      char.age > oldAge ? 'Ra đi vì tuổi già, dưới ánh đèn không bao giờ tắt của The City' : woundVi,
-      char.age > oldAge ? 'Passed of old age beneath the City’s never-dimming lights' : woundEn
+      oldAge ? 'Ra đi vì tuổi già, dưới ánh đèn không bao giờ tắt của The City' : woundVi,
+      oldAge ? 'Passed of old age beneath the City’s never-dimming lights' : woundEn
     );
     return char;
   }

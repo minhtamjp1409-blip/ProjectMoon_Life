@@ -28,24 +28,29 @@ public sealed class DirectorEngineService
 
     private static readonly FixerThreshold[] FixerThresholds =
     [
-        new(8, 8, 6, "Fixer Grade 8", "Grade 8 Fixer"),
-        new(7, 18, 14, "Fixer Grade 7", "Grade 7 Fixer"),
-        new(6, 30, 22, "Fixer Grade 6", "Grade 6 Fixer"),
-        new(5, 45, 32, "Fixer Grade 5", "Grade 5 Fixer"),
-        new(4, 64, 44, "Fixer Grade 4", "Grade 4 Fixer"),
-        new(3, 86, 58, "Fixer Grade 3", "Grade 3 Fixer"),
-        new(2, 112, 72, "Fixer Grade 2", "Grade 2 Fixer"),
-        new(1, 142, 85, "Fixer Grade 1", "Grade 1 Fixer")
+        new(8, 10, 8, "Fixer Grade 8", "Grade 8 Fixer"),
+        new(7, 22, 16, "Fixer Grade 7", "Grade 7 Fixer"),
+        new(6, 38, 26, "Fixer Grade 6", "Grade 6 Fixer"),
+        new(5, 56, 38, "Fixer Grade 5", "Grade 5 Fixer"),
+        new(4, 78, 52, "Fixer Grade 4", "Grade 4 Fixer"),
+        new(3, 105, 68, "Fixer Grade 3", "Grade 3 Fixer"),
+        new(2, 150, 82, "Fixer Grade 2", "Grade 2 Fixer"),
+        new(1, 200, 95, "Fixer Grade 1", "Grade 1 Fixer")
     ];
+
+    // Both tables mirror careerPipeline.js (FIXER_LADDER, COLOR_FIXER_REQ), which gates the exams
+    private const int ColorMerit = 300;
+    private const int ColorRep = 95;
 
     private static readonly FrozenDictionary<string, string[]> FingerLadders =
         new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase)
         {
-            ["Thumb"] = ["Binh nhì (Soldier)", "Tiểu đội trưởng (Underboss)", "Đại đội trưởng (Capo)", "Chủ sự (Sotto Capo)"],
-            ["Index"] = ["Người đưa tin (Messenger)", "Môn đồ (Proselyte)", "Hành quyết sứ (Proxy)", "Chỉ Dụ sư (Grand Weaver)"],
-            ["Middle"] = ["Tiểu đệ (Little Brother)", "Đại huynh (Big Brother)", "Đại tỷ (Big Sister)", "Lão đại (Patriarch)"],
-            ["Ring"] = ["Học trò (Docent)", "Nghệ sĩ phụ tá (Associate)", "Đại sư tạo tác (Maestro)", "Bậc thầy khúc ca (Grand Artisan)"],
-            ["Pinky"] = ["Người giữ lời (Pledger)", "Chấp pháp (Enforcer)", "Thủ khố bí mật (Custodian)", "Lãnh chúa bóng tối (Shadow Sovereign)"]
+            // Same names and order as FINGER_RANKS in PM/src/data/worldData.js
+            ["Thumb"] = ["Soldato", "Capo", "Sottocapo", "Underboss"],
+            ["Index"] = ["Proselyte", "Messenger", "Proxy", "Weaver"],
+            ["Middle"] = ["Little Sibling", "Big Sibling", "Great Elder", "Great Sibling"],
+            ["Ring"] = ["Student", "Docent", "Maestro", "Grand Curator"],
+            ["Pinky"] = ["Initiate", "Sworn Blade", "Star of the Sky", "Sovereign"]
         }.ToFrozenDictionary(StringComparer.OrdinalIgnoreCase);
 
     private readonly record struct WingRankDef(int Rank, string TitleVi, string TitleEn, int Merit, int Wealth, int Network);
@@ -169,14 +174,12 @@ public sealed class DirectorEngineService
 
             if (c.FixerGrade == 1)
             {
-                bool hasEgo = flags.Contains("EGOAwakened") || c.Resonance >= 40;
                 bool defeatedCalamity = flags.Contains("StarOfCityOvercome") || flags.Contains("ColorFixer");
 
-                int p1 = Math.Min(100, (c.Merit * 100) / 150);
-                int p2 = Math.Min(100, (c.Rep * 100) / 68);
-                int p3 = hasEgo ? 100 : Math.Min(100, (c.Resonance * 100) / 40);
-                int progress = (p1 + p2 + p3) / 3;
-                bool canPromote = c.Merit >= 150 && c.Rep >= 68 && hasEgo;
+                int p1 = Math.Min(100, (c.Merit * 100) / ColorMerit);
+                int p2 = Math.Min(100, (c.Rep * 100) / ColorRep);
+                int progress = (p1 + p2) / 2;
+                bool canPromote = c.Merit >= ColorMerit && c.Rep >= ColorRep;
 
                 return new CareerMilestoneDto(
                     Category: "STAR OF THE CITY ORDEAL",
@@ -185,13 +188,12 @@ public sealed class DirectorEngineService
                     ProgressPct: progress,
                     Requirements:
                     [
-                        new("Chiến công (Merit >= 150)", "Merit (>= 150)", c.Merit, 150, c.Merit >= 150),
-                        new("Danh tiếng (Rep >= 68)", "Reputation (>= 68)", c.Rep, 68, c.Rep >= 68),
-                        new("Thức tỉnh E.G.O / Resonance 40%", "E.G.O / 40% Resonance", c.Resonance, 40, hasEgo),
+                        new($"Chiến công (Merit >= {ColorMerit})", $"Merit (>= {ColorMerit})", c.Merit, ColorMerit, c.Merit >= ColorMerit),
+                        new($"Danh tiếng (Rep >= {ColorRep})", $"Reputation (>= {ColorRep})", c.Rep, ColorRep, c.Rep >= ColorRep),
                         new("Vượt qua mối họa Star of the City", "Overcome Star of the City Calamity", defeatedCalamity ? 1 : 0, 1, defeatedCalamity)
                     ],
-                    TipVi: "Hana Association chỉ triệu tập đại khảo thí phong Color cho Fixer Grade 1 đã thức tỉnh E.G.O hoặc có cộng hưởng dị thường.",
-                    TipEn: "Hana convenes the Color Investiture trial only for Grade 1 Fixers who manifested E.G.O or extraordinary resonance.",
+                    TipVi: "Đủ Merit và Rep thì Hana Association triệu tập đại khảo thí phong Color. E.G.O không phải điều kiện bắt buộc.",
+                    TipEn: "With enough Merit and Rep, Hana Association convenes the Color Investiture trial. E.G.O is not a prerequisite.",
                     CanPromote: canPromote,
                     NextRankTitleVi: "Color Fixer (Huyền Thoại The City)",
                     NextRankTitleEn: "Color Fixer (City Legend)"
@@ -377,6 +379,17 @@ public sealed class DirectorEngineService
         );
     }
 
+    // string.GetHashCode is randomized per process, so a seed would plan a different year after a restart
+    private static int StableHash(string text)
+    {
+        uint hash = 2166136261;
+        foreach (char ch in text)
+        {
+            hash = (hash ^ ch) * 16777619;
+        }
+        return (int)(hash & 0x7FFFFFFF);
+    }
+
     /// <summary>
     /// Plans 4-season dramatic timeline with server-side drama tension & causal threads.
     /// </summary>
@@ -390,7 +403,7 @@ public sealed class DirectorEngineService
         // Simple deterministic PRNG seeded with input seed + age
         int seedVal = string.IsNullOrWhiteSpace(req.Seed)
             ? (int)(DateTime.UtcNow.Ticks & 0x7FFFFFFF)
-            : req.Seed.GetHashCode(StringComparison.Ordinal) ^ (c.Age * 397);
+            : StableHash(req.Seed) ^ (c.Age * 397);
 
         var random = new Random(seedVal);
 
@@ -459,7 +472,7 @@ public sealed class DirectorEngineService
             majorTitleVi = "Tiếng Gọi Giữa Vầng Thái Dương (Carmen's Voice)";
             majorTitleEn = "Voices in the Blinding Sun (Carmen)";
         }
-        else if (c.Job.Equals("Fixer", StringComparison.OrdinalIgnoreCase) && c.FixerGrade == 1 && c.Merit >= 150 && c.Rep >= 68 && !flags.Contains("ColorFixer") && !seen.Contains("hana_color_ascension_trial"))
+        else if (c.Job.Equals("Fixer", StringComparison.OrdinalIgnoreCase) && c.FixerGrade == 1 && c.Merit >= ColorMerit && c.Rep >= ColorRep && !flags.Contains("ColorFixer") && !seen.Contains("hana_color_ascension_trial"))
         {
             majorDue = true;
             majorId = "hana_color_ascension_trial";
@@ -743,7 +756,7 @@ public sealed class DirectorEngineService
 
         if (req.TrialType.Equals("COLOR_FIXER", StringComparison.OrdinalIgnoreCase))
         {
-            bool hasPrereqs = c.FixerGrade <= 1 && c.Merit >= 140 && c.Rep >= 65 && (flags.Contains("EGOAwakened") || c.Resonance >= 38);
+            bool hasPrereqs = c.FixerGrade <= 1 && c.Merit >= ColorMerit && c.Rep >= ColorRep;
 
             if (hasPrereqs)
             {

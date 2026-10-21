@@ -1,6 +1,16 @@
 # The City Chronicles: tiến trình dự án
 
-Cập nhật: 21/10/2026, đợt 12 (xem [mục 8](#8-nhật-ký-thay-đổi))
+### 21/10/2026, rà soát kịch bản và logic
+
+- Đối chiếu bản gốc lưu trong `docs/narrative/baseline.json` với dữ liệu đang chạy: từ 366 lên 752 mục (212 biến cố chính, 36 hệ quả, 178 tình huống ngắn, 302 dòng thường ngày, 24 ủy thác Fixer). Số ủy thác giữ nguyên; bốn nhóm còn lại đều đạt ít nhất gấp đôi.
+- Thêm 18 cặp lựa chọn và hồi đáp sau hai năm, 3 tình huống độc lập, cùng 18 ủy thác Fixer có kết quả thành công, thất bại và tử trận riêng. Các chi tiết nhỏ được giữ ở cấp đời sống, không mặc định đẩy mọi mạch truyện lên quy mô thảm họa.
+- Giữ E.G.O và Distortion là những ngã rẽ riêng. E.G.O không tự hao Sanity mỗi năm để bắt buộc thành Distortion. Ý tưởng truy săn Distortion và nhiều kết cục vẫn hiện diện trong các tuyến tương ứng.
+- Sửa lời hẹn nhân quả bị gọi lặp, thêm lối rời phòng khám khi không đủ Ahn, và cho mô phỏng chọn đúng phương án khả dụng. Bản xuất `TOAN_BO_KICH_BAN_PROJECT_MOON.txt` và `DANH_SACH_TAT_CA_EVENTS.txt` được tạo lại từ dữ liệu hiện hành; quy tắc riêng của game được ghi rõ là sáng tác phái sinh.
+- Kiểm tra: `node lint_story.mjs` không có lỗi/cảnh báo; 18 cặp nhân quả có kiểm thử đi hết hai nhánh; 120 cuộc đời ngẫu nhiên và 300 cuộc đời chọn phương án có lợi không phát hiện vi phạm; production build thành công. `run_million_audit.mjs` đã xử lý 1.000.032 khoảnh khắc trong 4.227 cuộc đời và ghi báo cáo vào `BAO_CAO_KIEM_THU_1_TRIEU_KICH_BAN.txt`. Đây là kiểm tra mô phỏng theo mẫu, không phải chứng minh mọi nhánh truyện đều được chơi; lượt 120 cuộc đời ngẫu nhiên đã gặp 658/728 sự kiện chính, hệ quả, ngắn và thường ngày.
+
+---
+
+Cập nhật: 21/10/2026, đợt 13 (xem [mục 8](#8-nhật-ký-thay-đổi))
 
 - Live Demo Vercel: [https://project-moon-life-five.vercel.app](https://project-moon-life-five.vercel.app)
 - Tài liệu PDF chính thức: [THE_CITY_CHRONICLES_DOCUMENTATION.pdf](https://project-moon-life-five.vercel.app/THE_CITY_CHRONICLES_DOCUMENTATION.pdf)
@@ -105,13 +115,12 @@ E và O mang nhãn "Phóng tác", Z mang nhãn "Không có trên bản đồ" (`
 
 **Sau Distortion**: khi buông theo Carmen, mỗi năm Heat +6 (Hana giữ hồ sơ mở) và Network −2. Có 5 dòng thường ngày và 5 sự kiện riêng: người bạn tìm đến, hai Fixer nhận request về bạn, căn nhà cũ, cơn đói, giọng nói quay lại. Phục kích khi Heat cao là một đội Fixer của Hana; chết vì vết thương thì được ghi là bị xử lý như một Distortion (`woundDeath` trong `gameEngine.js`). Trong mô phỏng, kiếp biến dạng ở tuổi 20 sống thêm trung vị 12 năm.
 
-### 2.8. Cơ chế chống trùng lặp sự kiện và LRU Fallback
+### 2.8. Chọn sự kiện, độ mới và chất riêng của mỗi đời
 
-- **Rút ngắn bộ đệm cấm lặp**: Giảm `RECENT_LIMIT` từ 40 xuống 16 giúp giải phóng tài nguyên sự kiện cho các giai đoạn tuổi hẹp (nhất là 0–5 tuổi), ngăn chặn hiện tượng nghẽn pool.
-- **Vòng xoay cứu nguy LRU (Least-Recently-Used)**: Khi pool ứng viên đủ điều kiện bị cạn do bộ đệm cấm lặp, engine không chọn ngẫu nhiên thiếu kiểm soát mà tự động tìm sự kiện xuất hiện xa nhất trong quá khứ (`lastIndexOf` nhỏ nhất) để đưa trở lại luồng chơi.
-- **Deduplication đơn năm tuyệt đối**: Tại `planYear` và `syncPlanWithBackend`, mọi sự kiện (daily, minor, request) trong 4 mùa của cùng một năm phải có ID độc nhất; không bao giờ xảy ra tình trạng 2 mùa cùng năm trùng sự kiện.
-- **Bổ sung kho sự kiện tuổi thơ**: Thêm 15 dòng thường ngày ấu thơ mới (`src/data/lifeDailies.js`) bám sát đời sống The City.
-- **Kiểm thử quy mô lớn**: Chạy mô phỏng stress-test qua 100 kiếp nhân vật liên tiếp (6.000 năm đời sống, 24.000 slot mùa) $\implies$ **0 trùng lặp nội năm** (0 intra-year duplicates) và phân bổ sự kiện cân bằng, tự nhiên.
+- **Không còn cấm cứng**: bộ đệm cấm lặp và vòng LRU cũ được thay bằng trọng số theo độ mới (`freshness` trong `yearPlanner.js`). Mục vừa xuất hiện bị giảm mạnh, mục đã lâu không gặp được kéo lên, nên pool không bao giờ cạn mà vẫn ít lặp. `RECENT_LIMIT` là 120 và có thêm `seenCount`.
+- **Chất riêng của mỗi đời** (`src/engine/variance.js`): mỗi kiếp tung năm đặc tính từ seed (`luck`, `vigor`, `nerve`, `hustle`, `drama`). Chúng nghiêng kết quả may rủi, tần suất tai nạn, số khoảnh khắc mỗi năm và độ lệch của hiệu ứng (±30%). Những sự kiện in số cụ thể trong lời kể (`PRINTED_NUMBERS`) thì không bị lệch để chữ và con số luôn khớp.
+- **Deduplication trong năm**: mọi sự kiện trong 4 mùa của một năm vẫn phải có ID độc nhất.
+- **Kiểm thử**: `node story_logic_audit.mjs` đo độ trùng trong một đời và giữa các đời (xem đợt 13).
 
 ### 2.9. Logo & Bộ nhận diện thương hiệu Project Moon
 
@@ -245,6 +254,22 @@ Trong chữ: `{name}`, `{friend}`, `{mentor}`, `{rival}`, `{lover}`, `{partner}`
 ---
 
 ## 8. Nhật ký thay đổi
+
+### 21/10/2026, đợt 13
+
+- **Bắt lỗi logic cốt truyện** (`src/engine/storyInvariants.js`, `story_logic_audit.mjs`, `lint_story.mjs`): bộ kiểm tra chạy hàng trăm kiếp và báo mọi cảnh nhắc tới người đã mất, đã bỏ đi hoặc chưa từng có. Đã sửa các lỗi thật tìm được:
+  - Cờ `Married` còn sót khi vợ/chồng đã rời đi; người yêu đã xa vẫn được thăng thành vợ/chồng. Nay `applyNpcFate` (`director.js`) đặt đúng bộ cờ Married, Widowed, Separated, LoverLost, ChildLost, PartnerLost, FriendLost, MentorLost, và mọi sự kiện có `need.npc` chỉ chạy khi người đó còn hiện diện.
+  - Hai người thân trùng tên khiến cảnh người đã mất như xuất hiện lại. `makeNpc` nay tránh tên đã dùng (`avoidNames`).
+  - Distortion không bao giờ đổi `job` (điều kiện chặn sai trong `careerPipeline.js`).
+  - Sự kiện lớn có `bond:` không bao giờ áp dụng; nhãn lựa chọn còn sót `{placeholder}`; sự kiện Color Fixer trùng id; bốn id chặng arc trỏ vào sự kiện không tồn tại; nhiều dòng thường ngày cùng một chủ đề khiến cả bốn năm chỉ nghỉ ngơi.
+- **Nâng tính ngẫu nhiên**: xem mục 2.8. Trùng lặp trong một đời giảm từ 51% xuống 39% số khoảnh khắc, trong 5 năm từ 27% xuống 13%; độ giống nhau giữa hai đời (Jaccard) từ 0.25 xuống 0.21.
+- **Nội dung mới, 152 mục**: 20 sự kiện lớn (`eventsExpansion.js`, có `need.npc` và `regions`/`jobs`), 63 sự kiện nhỏ (`lifeMinors4.js`, `lifeMinors5.js`) phủ District, vợ/chồng, con, người thầy, người yêu, đối thủ, bạn, Syndicate, Wing, Workshop, Distortion, tuổi trẻ và tuổi già, kèm 70 dòng thường ngày (`narrative/dailies2.js`). Tổng nay là 212 lớn, 18 hệ quả, 157 nhỏ, 302 thường ngày (689 mục).
+- **Cân bằng mọi tài nguyên** (`src/engine/economyModel.js`, hằng `BALANCE`): hồi máu và hồi trí theo phần thiếu hụt, già đi tính theo tuổi hiệu dụng so với `avgLife` của District, Resonance/Network/Rep/Merit có mức trôi về nền để không kẹt ở trần. Merit trong chuỗi Fixer nhân `fixerMeritScale`. Bảng thăng bậc Fixer nâng: Grade 2 cần 150/82, Grade 1 cần 200/95, Color Fixer cần 300/95 (`COLOR_FIXER_REQ`).
+- **FE và BE dùng một bảng**: `DirectorEngineService.cs` bỏ cột mốc riêng, dùng cùng bảng Fixer, ngưỡng Color và tên bậc Finger với FE; `check_be_parity.mjs` đối chiếu và thử âm tính. Mốc Fixer không còn lấy từ BE sau mỗi lựa chọn (`gameStore.js`). `FINGER_RANKS` có 4 tên mỗi Finger, khớp tên sự kiện thăng cấp.
+- **Bundle**: `chunkSizeWarningLimit` 1200; dữ liệu truyện tách thành `story-events`, `story-life`, `story`.
+- **Công cụ**: `npm test` chạy parity, lint, audit 50000 khoảnh khắc và audit logic 120 kiếp. Thêm `npm run balance` (`balance_sim.mjs`).
+- **Số đo cuối** (bot ngẫu nhiên): 600 kiếp, sống trung bình 57 tuổi, bằng 108% `avgLife` của lore. Distorted 3.8%, E.G.O 0.8%, Color 0.5% số kiếp (2.5% số Fixer). Fixer đạt Grade 1 trở lên 25% (trước đó 44%). Không tài nguyên nào kẹt trần quá 8% lúc chết. Audit logic: 500 kiếp ngẫu nhiên và 300 kiếp chọn an toàn đều 0 vi phạm; 661/689 mục từng xuất hiện.
+- **Chưa làm**: luật Carmen, Distortion (thanh nguy hiểm) và E.G.O trong bản PDF đánh dấu "new change"; tên bậc Finger trong PDF; District R và S vẫn chưa có truyện riêng. Backend đang chạy cần khởi động lại (`dotnet run`) để nhận mã mới.
 
 ### 21/10/2026, đợt 12
 

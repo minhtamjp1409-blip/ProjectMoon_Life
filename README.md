@@ -131,9 +131,10 @@ ProjectMoon_Life/
 │   └── package.json
 │
 └── PM_BE/                      # Backend Service (.NET 8 Minimal API)
-    ├── Program.cs              # API endpoints, JSON compression, Weaver AI proxy
-    ├── Data/                   # High-performance write-behind JSON archive store
-    └── PM_BE.csproj
+    ├── Program.cs              # API endpoints, JSON compression
+    ├── Services/               # Archive store (write-behind JSON), Director and Weaver scorers
+    ├── Data/                   # Archive and run-state files (git-ignored)
+    └── ProjectMoon.Api.csproj
 ```
 
 ---
@@ -168,9 +169,18 @@ Default API port: `http://localhost:5080`.
 cd PM
 npm run build
 
-# Run tests
+# Story lint, 50k-moment integrity audit and a 120-life logic audit (non-zero exit on any failure)
 npm run test
 ```
+
+Separate tools, all run against the real engine with fixed seeds:
+
+| Command | What it does |
+| :--- | :--- |
+| `npm run lint:story` | Duplicate ids, references to missing events, unknown effect keys, relationship words without a gate |
+| `npm run audit` | 1,000,000-moment integrity audit; rewrites `BAO_CAO_KIEM_THU_1_TRIEU_KICH_BAN.txt` |
+| `npm run audit:story` | Logic violations (a dead person in a scene, Married with no spouse…) and variety across lives |
+| `npm run balance` | Lifespan against each District's `avgLife`, every resource by age, and what moves each resource |
 
 ---
 

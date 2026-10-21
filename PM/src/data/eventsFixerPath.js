@@ -351,31 +351,7 @@ export const FIXER_PATH_EVENTS = [
     ]
   },
 
-  // =========================================================================
-  // GRADE 1 -> COLOR FIXER SUPREME INVESTITURE (THE LEGEND)
-  // =========================================================================
-  {
-    id: 'hana_color_ascension_trial',
-    age: [30, 90],
-    major: true,
-    weight: 120,
-    need: { jobs: ['Fixer'], grade: [1, 1] },
-    forbids: ['ColorFixer', 'Distorted'],
-    vi: '[Đại Khảo Thí Phong Color · Hana Supreme] Chuông vàng của Hiệp hội Hana ngân vang trên toàn bộ 26 District. Đã nhiều thập kỷ trôi qua kể từ khi một cá nhân chạm tới danh xưng huyền thoại sánh ngang Red Mist, Black Silence hay Vermilion Cross. Bạn bước lên bục phong danh trước mặt 12 Viện trưởng Hiệp hội.',
-    en: '[The Color Fixer Investiture · Hana Supreme] Golden chimes of Hana Association resound across all 26 Districts. Decades have passed since an operative achieved legendary stature alongside the Red Mist, Black Silence, and Vermilion Cross. You ascend the dais before the 12 Association Directors.',
-    choices: [
-      {
-        labelVi: 'Khắc danh hiệu Color của riêng bạn vào bia đá vĩnh hằng',
-        labelEn: 'Engrave your own Color title upon the eternal monument',
-        resultVi: 'Cả khán phòng nín thở. Ánh sáng vàng kim bùng phát rực rỡ quanh lưỡi đao và linh hồn bạn. Kể từ hôm nay, The City gọi bạn bằng Danh hiệu Color.',
-        resultEn: 'The grand hall held its breath. Incandescent golden brilliance erupted around your soul and steel. From this day forth, The City shall revere you as a Color Fixer.',
-        setFixerGrade: 0,
-        flagsAdd: ['ColorFixer', 'EGOAwakened'],
-        meritAdd: 100,
-        effects: { rep: +100, wealth: +500, resonance: +50 }
-      }
-    ]
-  },
+  // The Grade 1 -> Color trial lives in eventsSupernatural.js (hana_color_ascension_trial)
 
   // =========================================================================
   // FIXER INTERMEDIATE INVESTIGATIVE & CRISIS ARCS (GRADE 9 TO 1)

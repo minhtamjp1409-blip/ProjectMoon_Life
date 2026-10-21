@@ -457,6 +457,8 @@ export const CHILDHOOD_EVENTS = [
 // WHAT COMES BACK, consequences planted by earlier choices, run by the Loom
 // ============================================================================
 
+import { THREAD_CONSEQUENCES } from './narrative/causalThreads.js';
+
 export const CONSEQUENCE_EVENTS = [
   {
     id: 'csq_saved_neighbor_gift',
@@ -939,4 +941,5 @@ export const CONSEQUENCE_EVENTS = [
       }
     ]
   },
+  ...THREAD_CONSEQUENCES
 ];

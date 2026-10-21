@@ -657,6 +657,8 @@ export const SUPERNATURAL_EVENTS = [
 // FIXER REQUEST TEMPLATES, by threat tier (Canard → Star of the City)
 // ============================================================================
 
+import { EXPANDED_FIXER_REQUESTS } from './narrative/fixerRequests.js';
+
 export const FIXER_REQUESTS = [
   {
     id: 'req_rats_organ',
@@ -741,7 +743,8 @@ export const FIXER_REQUESTS = [
     failEn: 'It looked at you once. The blood vessels under your skin burst. You made it back, and no one understands how.',
     deathVi: 'Nó thêm bạn vào bài hát của nó.',
     deathEn: 'It added you to its song.'
-  }
+  },
+  ...EXPANDED_FIXER_REQUESTS
 ];
 
 

@@ -2,6 +2,7 @@ import { advanceActiveNarrativeArcs } from './narrativeArcEngine.js';
 import { choiceIsAvailable, matchesNeed, mergeEffects, npcIsActive } from './eventConditions.js';
 import { ITEMS_CATALOG } from '../data/itemsData.js';
 import { rollPerinatalFate } from './fateEngine.js';
+import { rollTraits, traitsOf, varyEffects, tiltWeight, PRINTED_NUMBERS } from './variance.js';
 // ============================================================================
 // CORE LIFE-SIMULATION & GENERATIONAL BLOODLINE ENGINE
 // Connects World Data, Event Pools, Persistent NPCs, Tension Clocks & Weaver AI
@@ -20,6 +21,7 @@ import { CHILDHOOD_EVENTS, CONSEQUENCE_EVENTS } from '../data/eventsChildhood.js
 import { composeBirth, makeNpc } from '../data/birthStories.js';
 import { generatePersonName } from '../data/nameGenerator.js';
 import { FACTION_EVENTS } from '../data/eventsFactions.js';
+import { EXPANSION_EVENTS } from '../data/eventsExpansion.js';
 import { SUPERNATURAL_EVENTS, FIXER_REQUESTS } from '../data/eventsSupernatural.js';
 import { FIXER_PATH_EVENTS } from '../data/eventsFixerPath.js';
 import { DISTORTION_PATH_EVENTS } from '../data/eventsDistortionPath.js';
@@ -28,6 +30,7 @@ import { BEREAVEMENT_EVENTS } from '../data/eventsBereavementMemories.js';
 import { DERIVATIVE_LORE_EVENTS } from '../data/eventsDerivativeLore.js';
 import { COMPANION_QUEST_EVENTS } from '../data/eventsCompanionQuests.js';
 import {
+  FIXER_LADDER,
   getNextFixerPromotion,
   checkColorFixerReadiness,
   getNextFingerPromotion,
@@ -45,7 +48,8 @@ import {
   recordChoiceInGraph,
   updateDramaTension
 } from './weaverAI.js';
-import { hasMemory, closeThreads } from './director.js';
+import { hasMemory, closeThreads, applyNpcFate, namesInUse, applyBonds } from './director.js';
+import { BALANCE, isFixerCareerEvent } from './economyModel.js';
 
 export const ALL_STORY_EVENTS = [
   ...CHILDHOOD_EVENTS,
@@ -56,7 +60,8 @@ export const ALL_STORY_EVENTS = [
   ...WORKSHOP_ECONOMY_EVENTS,
   ...BEREAVEMENT_EVENTS,
   ...DERIVATIVE_LORE_EVENTS,
-  ...COMPANION_QUEST_EVENTS
+  ...COMPANION_QUEST_EVENTS,
+  ...EXPANSION_EVENTS
 ];
 
 export const SEASONS = [
@@ -488,6 +493,7 @@ export function createNewCharacter({
     regionId: region.id,
     familyId: family.id,
     fateOmenId: fateOmen.id,
+    traits: rollTraits(createRNG(`${actualSeed}:traits`)),
     job: actualAge >= 18 ? (parentLegacy?.job === 'Syndicate' ? 'Syndicate' : parentLegacy?.job === 'Wing Employee' ? 'Wing Employee' : 'Fixer') : 'Child',
     fixerGrade: 9,
     merit: actualAge >= 18 ? 10 : 0,
@@ -655,25 +661,11 @@ export const WORKSHOP_RANKS = [
   { rank: 3, titleVi: 'Kỳ tài sáng chế (Legendary Innovator)', titleEn: 'Legendary Innovator', merit: 125, wealth: 75, resonance: 40 }
 ];
 
-export const FIXER_THRESHOLDS = [
-  { grade: 8, merit: 8, rep: 6, titleVi: 'Fixer Grade 8', titleEn: 'Grade 8 Fixer' },
-  { grade: 7, merit: 18, rep: 14, titleVi: 'Fixer Grade 7', titleEn: 'Grade 7 Fixer' },
-  { grade: 6, merit: 30, rep: 22, titleVi: 'Fixer Grade 6', titleEn: 'Grade 6 Fixer' },
-  { grade: 5, merit: 45, rep: 32, titleVi: 'Fixer Grade 5', titleEn: 'Grade 5 Fixer' },
-  { grade: 4, merit: 64, rep: 44, titleVi: 'Fixer Grade 4', titleEn: 'Grade 4 Fixer' },
-  { grade: 3, merit: 86, rep: 58, titleVi: 'Fixer Grade 3', titleEn: 'Grade 3 Fixer' },
-  { grade: 2, merit: 112, rep: 72, titleVi: 'Fixer Grade 2', titleEn: 'Grade 2 Fixer' },
-  { grade: 1, merit: 142, rep: 85, titleVi: 'Fixer Grade 1', titleEn: 'Grade 1 Fixer' }
-];
-
 /**
- * Calculates the player's active career milestone and required checklist objectives
+ * Calculates the player's active career milestone and required checklist objectives.
+ * Fixer thresholds are read from careerPipeline, the same table that gates the exams.
  */
 export function getNextCareerMilestone(char) {
-  if (char?.serverMilestone) {
-    return char.serverMilestone;
-  }
-
   if (!char || !char.alive) {
     return {
       category: 'MEMORIAL',
@@ -793,14 +785,14 @@ export function getNextCareerMilestone(char) {
     }
 
     if (char.fixerGrade === 1) {
-      const targetMerit = 150;
-      const targetRep = 68;
-      const hasEgo = char.flags.includes('ColorFixer') || char.flags.includes('EGOAwakened') || (char.resonance || 0) >= 40;
+      const readiness = checkColorFixerReadiness(char);
+      const targetMerit = readiness.targetMerit;
+      const targetRep = readiness.targetRep;
+      const curRep = (char.stats?.rep ?? char.rep) || 0;
       const hasDefeatedCalamity = char.flags.includes('ColorFixer');
       const p1 = Math.min(100, ((char.merit || 0) / targetMerit) * 100);
-      const p2 = Math.min(100, (((char.stats?.rep ?? char.rep) || 0) / targetRep) * 100);
-      const p3 = hasEgo ? 100 : Math.min(100, ((char.resonance || 0) / 40) * 100);
-      const progressPct = Math.round((p1 + p2 + p3) / 3);
+      const p2 = Math.min(100, (curRep / targetRep) * 100);
+      const progressPct = Math.round((p1 + p2) / 2);
 
       return {
         category: 'STAR OF THE CITY ORDEAL',
@@ -808,19 +800,18 @@ export function getNextCareerMilestone(char) {
         titleEn: 'Hana Star of the City: Color Investiture',
         progressPct,
         requirements: [
-          { labelVi: 'Chiến công (Merit >= 150)', labelEn: 'Merit (>= 150)', current: char.merit || 0, target: targetMerit, met: (char.merit || 0) >= targetMerit },
-          { labelVi: 'Danh tiếng (Rep >= 68)', labelEn: 'Reputation (>= 68)', current: (char.stats?.rep ?? char.rep) || 0, target: targetRep, met: ((char.stats?.rep ?? char.rep) || 0) >= targetRep },
-          { labelVi: 'Thức tỉnh E.G.O / Resonance 40%', labelEn: 'E.G.O / 40% Resonance', current: char.resonance || 0, target: 40, met: hasEgo },
+          { labelVi: `Chiến công (Merit >= ${targetMerit})`, labelEn: `Merit (>= ${targetMerit})`, current: char.merit || 0, target: targetMerit, met: (char.merit || 0) >= targetMerit },
+          { labelVi: `Danh tiếng (Rep >= ${targetRep})`, labelEn: `Reputation (>= ${targetRep})`, current: curRep, target: targetRep, met: curRep >= targetRep },
           { labelVi: 'Vượt qua mối họa Star of the City', labelEn: 'Overcome Star of the City Calamity', current: hasDefeatedCalamity ? 1 : 0, target: 1, met: hasDefeatedCalamity }
         ],
-        tipVi: 'Hana Association chỉ triệu tập đại khảo thí phong Color cho Fixer Grade 1 đã thức tỉnh E.G.O hoặc có cộng hưởng dị thường để đối đầu hiểm họa Star of the City.',
-        tipEn: 'Hana convenes the Color Investiture trial only for Grade 1 Fixers who manifested E.G.O or extraordinary resonance against Star of the City threats.'
+        tipVi: 'Đủ Merit và Rep thì Hana Association triệu tập đại khảo thí phong Color. E.G.O không phải điều kiện bắt buộc.',
+        tipEn: 'With enough Merit and Rep, Hana Association convenes the Color Investiture trial. E.G.O is not a prerequisite.'
       };
     }
 
-    const targetThreshold = FIXER_THRESHOLDS.find(t => t.grade === char.fixerGrade - 1) || FIXER_THRESHOLDS[0];
-    const targetMerit = targetThreshold.merit;
-    const targetRep = targetThreshold.rep;
+    const targetThreshold = FIXER_LADDER.find((step) => step.grade === char.fixerGrade - 1) || FIXER_LADDER[0];
+    const targetMerit = targetThreshold.meritReq;
+    const targetRep = targetThreshold.repReq;
     const curRep = (char.stats?.rep ?? char.rep) || 0;
     const p1 = Math.min(100, ((char.merit || 0) / targetMerit) * 100);
     const p2 = Math.min(100, (curRep / targetRep) * 100);
@@ -828,8 +819,8 @@ export function getNextCareerMilestone(char) {
 
     return {
       category: 'HANA EVALUATION',
-      titleVi: `Thăng cấp: ${targetThreshold.titleVi}`,
-      titleEn: `Promotion: ${targetThreshold.titleEn}`,
+      titleVi: `Thăng cấp: Fixer Grade ${targetThreshold.grade}`,
+      titleEn: `Promotion: Grade ${targetThreshold.grade} Fixer`,
       progressPct,
       requirements: [
         { labelVi: 'Chiến công (Merit)', labelEn: 'Merit', current: char.merit || 0, target: targetMerit, met: (char.merit || 0) >= targetMerit },
@@ -1407,7 +1398,7 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
       if (char.flags.includes('Distorted') && ((o.effects?.sanity || 0) < 0 || (o.effects?.rep || 0) > 0)) {
         weight = Math.round(weight * 1.4);
       }
-      return { ...o, effectiveW: Math.max(0, weight) };
+      return { ...o, effectiveW: Math.max(0, tiltWeight(weight, o.effects || o.fx, traitsOf(char))) };
     });
 
     const totalW = evaluatedOutcomes.reduce((s, o) => s + o.effectiveW, 0);
@@ -1422,7 +1413,9 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
   }
 
   // Merge effects from both choice and rolled outcome (supports both .effects and .fx formats)
-  const effects = mergeEffects(choice, outcome);
+  const printsNumbers = PRINTED_NUMBERS.test(`${outcome.resultVi || outcome.rvi || ''}${choice.resultVi || choice.rvi || ''}`);
+  const rolled = mergeEffects(choice, outcome);
+  const effects = printsNumbers ? rolled : varyEffects(rolled, rng, traitsOf(char));
   if (choice.costAhn) effects.wealth = (effects.wealth || 0) - Math.max(0, choice.costAhn + Math.min(0, effects.wealth || 0));
   const itemId = outcome.itemAdd || choice.itemAdd;
   const purchasedItem = ITEMS_CATALOG.find(i => i.id === itemId);
@@ -1482,7 +1475,8 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
   const setRegion = outcome.setRegion || choice.setRegion;
   if (setRegion) char.regionId = setRegion;
 
-  const meritAdd = (choice.meritAdd || 0) + (outcome === choice ? 0 : outcome.meritAdd || 0);
+  const listedMerit = (choice.meritAdd || 0) + (outcome === choice ? 0 : outcome.meritAdd || 0);
+  const meritAdd = isFixerCareerEvent(event) ? Math.round(listedMerit * BALANCE.fixerMeritScale) : listedMerit;
   if (meritAdd) char.merit = Math.max(0, char.merit + meritAdd);
 
   // Flags, Scars, Codex Records, NPCs, Memories (Persistent Causality)
@@ -1495,6 +1489,7 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
   flagsAdd.forEach(f => {
     if (!char.flags.includes(f)) {
       char.flags.push(f);
+      if (f === 'Married') char.flags = char.flags.filter((x) => x !== 'Widowed' && x !== 'Separated');
       if (f === 'Distorted') {
         const distortLogs = triggerDistortionTransformation(char);
         char.logs.push(...distortLogs);
@@ -1546,48 +1541,32 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
     if (!char.unlockedRecords.includes(r)) char.unlockedRecords.push(r);
   });
 
+  applyBonds(char, outcome === choice ? [choice] : [choice, outcome]);
+
   const npcAdd = outcome.npcAdd || choice.npcAdd;
   if (npcAdd && npcAdd.role) {
     const lover = char.npcs?.lover;
-    if (npcAdd.role === 'spouse' && lover && !lover.deceased && lover.status !== 'dead') {
+    if (npcAdd.role === 'spouse' && npcIsActive(lover)) {
       char.npcs.spouse = { ...lover, role: 'spouse', bond: Math.max(lover.bond || 0, npcAdd.bond || 0), lastSeen: char.age };
       char.npcs.lover = null;
     } else if (!char.npcs[npcAdd.role] || char.npcs[npcAdd.role].deceased) {
-      const base = makeNpc(npcAdd.role, rng, { metAge: char.age, lastSeen: char.age });
+      const base = makeNpc(npcAdd.role, rng, { metAge: char.age, lastSeen: char.age, avoidNames: namesInUse(char) });
       char.npcs[npcAdd.role] = {
         ...base,
         ...(npcAdd.nameVi ? { nameVi: npcAdd.nameVi, nameEn: npcAdd.nameEn || npcAdd.nameVi } : {}),
         ...(npcAdd.traitVi ? { traitVi: npcAdd.traitVi, traitEn: npcAdd.traitEn || npcAdd.traitVi } : {}),
         bond: Math.abs(npcAdd.bond || 70)
       };
+      // Someone new in a role that was lost ends that loss flag
+      const lostFlag = { friend: 'FriendLost', partner: 'PartnerLost', mentor: 'MentorLost', child: 'ChildLost' }[npcAdd.role];
+      if (lostFlag) char.flags = char.flags.filter((f) => f !== lostFlag);
     }
   }
 
   const npcFate = outcome.npcFate || choice.npcFate;
   if (npcFate) {
     for (const [role, status] of Object.entries(npcFate)) {
-      const target = char.npcs?.[role];
-      if (target && !target.deceased) {
-        char.npcs[role] = { ...target, status, deceased: status === 'dead', fateAge: char.age };
-        if (status === 'dead') {
-          if (role === 'spouse') {
-            char.flags = (char.flags || []).filter(f => f !== 'Married');
-            if (!char.flags.includes('Widowed')) char.flags.push('Widowed');
-          } else if (role === 'lover') {
-            char.flags = (char.flags || []).filter(f => f !== 'InLove');
-            if (!char.flags.includes('LoverLost')) char.flags.push('LoverLost');
-          } else if (role === 'child') {
-            char.flags = (char.flags || []).filter(f => f !== 'HasChild');
-            if (!char.flags.includes('ChildLost')) char.flags.push('ChildLost');
-          } else if (role === 'partner') {
-            if (!char.flags.includes('PartnerLost')) char.flags.push('PartnerLost');
-          } else if (role === 'friend') {
-            if (!char.flags.includes('FriendLost')) char.flags.push('FriendLost');
-          } else if (role === 'mentor') {
-            if (!char.flags.includes('MentorLost')) char.flags.push('MentorLost');
-          }
-        }
-      }
+      applyNpcFate(char, role, status);
     }
   }
 
