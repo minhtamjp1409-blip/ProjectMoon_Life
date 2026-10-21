@@ -19,7 +19,7 @@ const SPEEDS = [
   { spd: 3, secs: 10 }
 ];
 
-const isWaiting = (s) => Boolean(s?.char?.pendingEvent || s?.char?.pendingContract || s?.char?.pendingModal || s?.activeResolution);
+const isWaiting = (s) => Boolean(s?.char?.pendingEvent || s?.char?.pendingContract || s?.char?.pendingModal || s?.activeResolution || (s?.postChoicePauseMs > 0));
 const isRunning = (s) => s.inRun && s.char?.alive && s.speed > 0 && !isWaiting(s);
 
 /*
@@ -88,6 +88,7 @@ const YearStatus = () => {
   const { t } = useT();
   const status = useGameStore((s) => {
     if (!s.char?.alive) return 'dead';
+    if (s.postChoicePauseMs > 0) return `reading_${Math.ceil(s.postChoicePauseMs / 1000)}`;
     if (s.activeResolution) return 'resolution';
     if (isWaiting(s)) return 'wait';
     if (s.char.pendingMinor) return 'minor';
@@ -95,6 +96,10 @@ const YearStatus = () => {
     return Math.max(0, Math.ceil(((100 - s.yearProgress) / 100) * (30 / s.speed)));
   });
   if (status === 'dead') return <span>{t('Kiếp sống đã khép lại', 'This life has ended')}</span>;
+  if (typeof status === 'string' && status.startsWith('reading_')) {
+    const sec = status.split('_')[1];
+    return <span style={{ color: 'var(--good)' }}>{t(`Kết quả vừa lưu · Tiếp tục sau ${sec}s`, `Result logged · Resuming in ${sec}s`)}</span>;
+  }
   if (status === 'resolution') return <span style={{ color: 'var(--good)' }}>{t('Đang xem kết quả quyết định', 'Reviewing outcome')}</span>;
   if (status === 'wait') return <span style={{ color: 'var(--accent)' }}>{t('Đang chờ bạn quyết định', 'Waiting for your decision')}</span>;
   if (status === 'minor') return <span style={{ color: 'var(--accent)' }}>{t('Một lựa chọn đang chờ', 'A choice is waiting')}</span>;
@@ -364,7 +369,12 @@ export const PlayBar = () => {
           type="button"
           className={`icon-btn play-pause-btn ${speed === 0 && alive ? 'is-on' : ''}`}
           disabled={!alive}
-          onClick={() => handleSetSpeed(speed === 0 ? 1 : 0)}
+          onClick={() => {
+            if (useGameStore.getState().postChoicePauseMs > 0) {
+              useGameStore.getState().clearPostChoicePause();
+            }
+            handleSetSpeed(speed === 0 ? 1 : 0);
+          }}
           aria-label={speed === 0 ? t('Tiếp tục (Space)', 'Resume (Space)') : t('Tạm dừng (Space)', 'Pause (Space)')}
           title={speed === 0 ? t('Tiếp tục (Space)', 'Resume (Space)') : t('Tạm dừng (Space)', 'Pause (Space)')}
         >

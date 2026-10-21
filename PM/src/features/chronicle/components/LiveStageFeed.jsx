@@ -132,7 +132,11 @@ const AmbientScene = ({ char }) => {
 
 const DockNavigation = () => null;
 
-const MinorDock = ({ prompt, npcs, wealth = 0, paused, onPick }) => {
+// Where the moment happens, for the dock kicker
+const placeOf = (char) =>
+  char.flags?.includes('Nest') || char.flags?.includes('Feather') ? 'Nest' : char.flags?.includes('Outskirts') || char.regionId === 'OUTSKIRTS' ? 'Outskirts' : 'Backstreets';
+
+const MinorDock = ({ prompt, npcs, wealth = 0, paused, onPick, place = 'Backstreets' }) => {
   const { t, lang, bilingual } = useT();
   const raw = lang === 'en' ? prompt.en : prompt.vi;
   const { title, body } = splitTitle(raw);
@@ -150,7 +154,7 @@ const MinorDock = ({ prompt, npcs, wealth = 0, paused, onPick }) => {
             <div className="dock-kicker-row">
               <p className="dock-kicker">
                 <span className="dock-kicker-icon">⚡</span>
-                <span>{t('Gặp gỡ bất chợt · Backstreets', 'Encounter · Backstreets')}</span>
+                <span>{t(`Gặp gỡ bất chợt · ${place}`, `Encounter · ${place}`)}</span>
               </p>
               <span className="dock-hotkey-hint">{t('0 / Esc: bỏ qua', '0 / Esc: pass')}</span>
             </div>
@@ -525,6 +529,8 @@ export const LiveStageFeed = () => {
     abandonRun,
     activeResolution,
     dismissResolution,
+    postChoicePauseMs,
+    clearPostChoicePause,
     revealNextBirthLog,
     skipAllBirthLogs
   } = useGameStore(
@@ -542,6 +548,8 @@ export const LiveStageFeed = () => {
       abandonRun: s.abandonRun,
       activeResolution: s.activeResolution,
       dismissResolution: s.dismissResolution,
+      postChoicePauseMs: s.postChoicePauseMs,
+      clearPostChoicePause: s.clearPostChoicePause,
       revealNextBirthLog: s.revealNextBirthLog,
       skipAllBirthLogs: s.skipAllBirthLogs
     }))
@@ -643,6 +651,15 @@ export const LiveStageFeed = () => {
         return;
       }
 
+      if (postChoicePauseMs > 0) {
+        if (e.code === 'Space' || e.key === 'Enter') {
+          e.preventDefault();
+          audioEngine.playClick();
+          clearPostChoicePause();
+          return;
+        }
+      }
+
       if (activeResolution) {
         if (e.code === 'Space' || e.key === 'Enter' || e.key === 'Escape') {
           e.preventDefault();
@@ -701,7 +718,7 @@ export const LiveStageFeed = () => {
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [char.alive, char.pendingEvent, char.pendingContract, char.pendingMinor, char.stats.wealth, activeResolution, dismissResolution, speed, setSpeed, chooseMinor, selectEventChoice, selectContractApproach, isPrologueActive, revealNextBirthLog, peekBehind]);
+  }, [char.alive, char.pendingEvent, char.pendingContract, char.pendingMinor, char.stats.wealth, activeResolution, dismissResolution, postChoicePauseMs, clearPostChoicePause, speed, setSpeed, chooseMinor, selectEventChoice, selectContractApproach, isPrologueActive, revealNextBirthLog, peekBehind]);
 
   // Forge mini-game: the cursor sweeps while the craft modal is open
   useEffect(() => {
@@ -794,7 +811,7 @@ export const LiveStageFeed = () => {
               {char.pendingEvent && <EventDock event={char.pendingEvent} char={char} onPick={handleSelectEvent} />}
               {!char.pendingEvent && char.pendingContract && <ContractDock contract={char.pendingContract} wealth={char.stats.wealth} onPick={handleSelectContract} />}
               {!char.pendingEvent && !char.pendingContract && char.pendingMinor && (
-                <MinorDock prompt={char.pendingMinor} npcs={char.npcs} wealth={char.stats.wealth} paused={speed === 0} onPick={handleChooseMinor} />
+                <MinorDock prompt={char.pendingMinor} npcs={char.npcs} wealth={char.stats.wealth} place={placeOf(char)} paused={speed === 0} onPick={handleChooseMinor} />
               )}
             </>
           )}

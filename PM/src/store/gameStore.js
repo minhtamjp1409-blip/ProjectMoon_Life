@@ -241,6 +241,7 @@ export const useGameStore = create((set, get) => ({
   minorRemainingMs: 0,
   stageFx: null,
   activeResolution: null,
+  postChoicePauseMs: 0,
   backendOnline: false,
   telemetry: null,
   savedRun: loadSavedRun(),
@@ -259,7 +260,8 @@ export const useGameStore = create((set, get) => ({
   setConfigField: (field, value) => set({ [field]: value }),
   setSpeed: (speed) => set({ speed }),
   toggleAutoPlay: () => set((s) => ({ autoPlay: !s.autoPlay })),
-  dismissResolution: () => set({ activeResolution: null }),
+  dismissResolution: () => set({ activeResolution: null, postChoicePauseMs: 0 }),
+  clearPostChoicePause: () => set({ postChoicePauseMs: 0 }),
   setPendingLegacy: (legacy) => set({ pendingLegacy: legacy }),
 
   discardPendingLegacy: (deleteFromArchive = false) => {
@@ -323,13 +325,13 @@ export const useGameStore = create((set, get) => ({
     if (!run) return;
     const char = cloneChar(run.char);
     lifeRng = lifeRngFor(char);
-    set({ char, inRun: true, yearProgress: run.yearProgress || 0, speed: 1, stageFx: null, activeResolution: null, minorRemainingMs: MINOR_WINDOW_MS });
+    set({ char, inRun: true, yearProgress: run.yearProgress || 0, speed: 1, stageFx: null, activeResolution: null, postChoicePauseMs: 0, minorRemainingMs: MINOR_WINDOW_MS });
   },
 
   // Leave the run without losing it
   exitToSetup: () => {
     get().saveRun(true);
-    set({ inRun: false, speed: 1, activeResolution: null });
+    set({ inRun: false, speed: 1, activeResolution: null, postChoicePauseMs: 0 });
   },
 
   buyItem: (itemId) => {
@@ -397,7 +399,7 @@ export const useGameStore = create((set, get) => ({
   abandonRun: () => {
     clearTimeout(saveTimer);
     clearSavedRun();
-    set({ inRun: false, speed: 1, yearProgress: 0, savedRun: null, activeResolution: null });
+    set({ inRun: false, speed: 1, yearProgress: 0, savedRun: null, activeResolution: null, postChoicePauseMs: 0 });
   },
 
   /* ---------- archive ---------- */
@@ -566,6 +568,7 @@ export const useGameStore = create((set, get) => ({
       yearProgress: 0,
       stageFx: null,
       activeResolution: null,
+      postChoicePauseMs: 0,
       ...metaUpdates
     });
     if (!hasBirthLogs) {
@@ -593,6 +596,13 @@ export const useGameStore = create((set, get) => ({
     if (!s.inRun || !c.alive || s.speed === 0) return;
     if (s.activeResolution) return;
     if (c.pendingEvent || c.pendingContract || c.pendingModal) return;
+
+    // Post-choice reading pause: gives ~3 seconds on outer screen before timeline flows
+    if (s.postChoicePauseMs > 0) {
+      const nextPause = Math.max(0, s.postChoicePauseMs - dtMs);
+      set({ postChoicePauseMs: nextPause });
+      return;
+    }
 
     if (c.pendingMinor) {
       const remaining = s.minorRemainingMs - dtMs;
@@ -699,20 +709,7 @@ export const useGameStore = create((set, get) => ({
     const choice = idx >= 0 ? def?.choices?.[idx] : ignore;
     const nextChar = resolveMinor(prev, idx, lifeRng);
 
-    const promptTitle = splitTitle(prompt.vi || '').title || 'Gặp gỡ bất chợt';
-    const promptTitleEn = splitTitle(prompt.en || '').title || 'Encounter';
-
-    const resolution = nextChar.pendingModal ? null : buildResolutionPayload({
-      prevChar: prev,
-      nextChar,
-      kind: 'minor',
-      titleVi: promptTitle,
-      titleEn: promptTitleEn,
-      choiceLabelVi: idx >= 0 ? (choice?.vi || choice?.labelVi || '') : (ignore.vi || 'Bỏ qua'),
-      choiceLabelEn: idx >= 0 ? (choice?.en || choice?.labelEn || '') : (ignore.en || 'Let it pass')
-    });
-
-    get().commit(prev, nextChar, { activeResolution: resolution });
+    get().commit(prev, nextChar, { activeResolution: null, postChoicePauseMs: nextChar.pendingModal ? 0 : 3000 });
   },
 
   selectEventChoice: (choiceIdx) => {
@@ -722,17 +719,7 @@ export const useGameStore = create((set, get) => ({
     const choice = event.choices?.[choiceIdx];
     const nextChar = resolveEventChoice(prev, choiceIdx, lifeRng);
 
-    const resolution = nextChar.pendingModal ? null : buildResolutionPayload({
-      prevChar: prev,
-      nextChar,
-      kind: 'event',
-      titleVi: event.titleVi || (event.isCausalCallback ? 'Causal Echo' : 'Biến cố cuộc đời'),
-      titleEn: event.titleEn || (event.isCausalCallback ? 'Causal Echo' : 'Life Event'),
-      choiceLabelVi: choice?.labelVi || '',
-      choiceLabelEn: choice?.labelEn || ''
-    });
-
-    get().commit(prev, nextChar, { activeResolution: resolution });
+    get().commit(prev, nextChar, { activeResolution: null, postChoicePauseMs: nextChar.pendingModal ? 0 : 3000 });
   },
 
   selectContractApproach: (approachId) => {
@@ -742,17 +729,7 @@ export const useGameStore = create((set, get) => ({
     const approach = contract.approaches.find((a) => a.id === approachId);
     const nextChar = resolveFixerContract(prev, approachId, lifeRng);
 
-    const resolution = nextChar.pendingModal ? null : buildResolutionPayload({
-      prevChar: prev,
-      nextChar,
-      kind: 'contract',
-      titleVi: `Ủy thác: ${contract.template?.typeVi || 'Yêu cầu'}`,
-      titleEn: `Request: ${contract.template?.typeEn || 'Request'}`,
-      choiceLabelVi: approach ? `${approach.labelVi} (${approach.payAhn} Ahn)` : '',
-      choiceLabelEn: approach ? `${approach.labelEn} (${approach.payAhn} Ahn)` : ''
-    });
-
-    get().commit(prev, nextChar, { activeResolution: resolution });
+    get().commit(prev, nextChar, { activeResolution: null, postChoicePauseMs: nextChar.pendingModal ? 0 : 3000 });
   },
 
   confirmColorTitle: (titleText) => {
