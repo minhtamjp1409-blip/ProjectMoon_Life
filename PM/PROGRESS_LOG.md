@@ -345,6 +345,43 @@ Kiểm thử tự động trên **50.134 khoảnh khắc** và **243 vòng đờ
 
 ## 10. Nhật ký phát triển chi tiết (Changelog từ Đợt 1 đến Đợt 16)
 
+### Đợt 18 (22/10/2026): Hệ thống 14 Xuất Thân Đa Dạng (Backgrounds), Sự Kiện Mở Đầu Tuổi Thơ & Trait Đặc Quyền Sinh Tồn
+* **Mở rộng 14 Xuất Thân & Gia Cảnh chuẩn Lore The City (`FAMILIES` trong `worldData.js`):**
+  * Xóa bỏ tình trạng 90% nhân vật chỉ sinh ra trong Backstreets nghèo khổ đơn điệu; phân hóa sâu sắc thành 14 giai tầng xã hội:
+    * `nest_feather`: Con nhân viên Wing trong Nest (+24 Ahn, +8 Network, thẻ Feather Nest, trait `NestSilverSpoon`).
+    * `wing_executive`: Dòng dõi quản lý cấp cao / Quý tộc Nest (+48 Ahn, +16 Network, +10 Rep, 1 Taboo, trait `WingPatronage`).
+    * `smoke_war_veteran`: Con cựu binh Chiến tranh Khói (+16 HP, +4 Rep, di vật khói, trait `SmokeWarInstinct`).
+    * `outskirts_nomad`: Đứa trẻ ngoại ô hoang tàn (1 Ahn, 0 Network, trait `OutskirtsAdaptability`).
+    * `workshop_apprentice`: Hậu duệ Xưởng chế tác (+12 Ahn, +6 Network, trait `WorkshopTinkerer`).
+    * `syndicate_soldato`: Gia quyến Ngón Tay (+8 Rep, +18 Heat, trait `SyndicateStreetCred`).
+    * `fixer_lineage`: Hậu duệ Fixer giải nghệ (+6 HP, +6 Ahn, trait `CombatPedigree`).
+    * `dieci_orphan`: Trẻ cơ nhỡ Tu viện Dieci (+16 Sanity, +6 Network, trait `DieciScholastic`).
+    * `great_lake_mariner`: Con thủy thủ Great Lake U Corp (+10 HP, +6 Sanity, trait `GreatLakeHardened`).
+    * `warp_cleaner_offspring`: Con nhân viên dọn dẹp W Corp (+16 Ahn, 1 Taboo, trait `GoreDesensitized`).
+    * `backstreet_bistro`: Con quán ăn Backstreets (+12 Network, +6 Ahn, trait `NeighborhoodEar`).
+    * `prosthetic_tinkerer`: Con xưởng cơ khí chân tay giả (+8 Ahn, +6 Network, trait `MechanicSavvy`).
+    * `backstreet_worker`: Gia đình làm thuê Backstreets (trait `CautiousSurvivor`).
+    * `orphan`: Trẻ mồ côi Backstreets (trait `StreetRatInstinct`).
+* **Cơ chế Gameplay & Trait Tác động Thực Tế (`outcomeOdds.js`, `gameEngine.js`):**
+  * Mỗi xuất thân tác động trực tiếp đến chỉ số cơ sở (HP, Sanity, Ahn, Rep, Network, Heat, Taboo).
+  * Tích hợp hiệu ứng cơ chế cho các trait:
+    * `OutskirtsAdaptability`: Tăng +35% tỷ lệ sống sót/thành công khi HP hoặc SP $\le 40$, giảm 60% nguy cơ tử vong trong tình huống hiểm nghèo.
+    * `SmokeWarInstinct`: Tăng +25% tỷ lệ thắng trong mọi xung đột giáp lá cà hoặc cận chiến.
+    * `WorkshopTinkerer`: Tăng +30% tỷ lệ thành công khi thẩm định công nghệ/vũ khí, giảm 25% chi phí xưởng.
+    * `SyndicateStreetCred`: Tăng +30% tỷ lệ thành công trong đe dọa, giao thiệp thế giới ngầm.
+    * `DieciScholastic`: Tăng +30% tỷ lệ thành công khi nghiên cứu tri thức, kháng tiếng thì thầm Distortion.
+    * `StreetRatInstinct`: Tăng +25% khả năng trốn chạy thành công khỏi các mối nguy Backstreets.
+* **Kho Sự Kiện Mở Đầu Tuổi Thơ (`eventsBackgroundOpening.js`):**
+  * 12 sự kiện lớn mở đầu (tuổi 2–7) phản ánh chân thực dấu ấn tuổi thơ theo từng xuất thân (Cơn ác mộng khói của cha, Bão quái thú ngoài cồn cát, Kiểm tra sinh trắc học Nest, Tiếng đập cửa của Capo, Kẽ hở toa tàu WARP, v.v.).
+* **Đại tu Kho Câu Chào Đời (`birthStories.js`):**
+  * Mở rộng gấp 4-5 lần kho câu văn cho `PLACE.back` (16 câu), `PLACE.nest` (8 câu), `PLACE.out` (6 câu).
+  * Mở rộng đầy đủ câu văn gia cảnh cho cả 14 xuất thân.
+  * Mở rộng `OMEN_LINE` để mỗi điềm mệnh có ít nhất 4 biến thể văn phong khác nhau, xóa sổ hoàn toàn hiện tượng lặp lại 1 câu duy nhất.
+  * Mở rộng `THAT_NIGHT` lên 16 biến cố The City kỳ dị.
+* **Giao diện Khởi Tạo Nhân Vật Mới (`BirthSetupPanel.jsx` & `CharacterDossierCard.jsx`):**
+  * Thêm dropdown chọn Xuất thân (mặc định `🎲 Ngẫu nhiên theo số phận`) kèm thẻ preview hiển thị phân tầng (Nest/Backstreets/Outskirts), mô tả và hiệu ứng Trait.
+  * Thẻ hồ sơ `CharacterDossierCard.jsx` hiển thị rõ ràng Xuất thân và Trait đặc quyền của nhân vật.
+
 ### Đợt 17 (21/10/2026): Giải quyết dứt điểm BUG-23 đến 28 & Cân bằng tài nguyên Roguelike toàn diện (Fair Hardcore)
 * **BUG-23 (Khống chế Merit tuổi thơ & Vệ sinh hiển thị):**
   * Chặn tuyệt đối việc trẻ em (`char.job === 'Child'`) nhận điểm Merit chuyên nghiệp từ sự kiện tuổi thơ (`gameEngine.js`). Mọi điểm thưởng được chuyển hóa thành Rep danh tiếng lứa tuổi phù hợp.

@@ -308,6 +308,22 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeT
             <span>{t('Khu vực', 'District')}</span>
             <span title={lang === 'en' ? region.nameEn : region.nameVi}>{lang === 'en' ? region.nameEn : region.nameVi}</span>
           </div>
+          {char.family && (
+            <div className="kv">
+              <span>{t('Xuất thân', 'Background')}</span>
+              <span title={lang === 'en' ? char.family.descEn : char.family.descVi} style={{ color: 'var(--accent-gold, #ffd700)', fontWeight: 500 }}>
+                {lang === 'en' ? char.family.nameEn : char.family.nameVi}
+              </span>
+            </div>
+          )}
+          {char.backgroundTrait && (
+            <div className="kv" style={{ alignItems: 'flex-start' }}>
+              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{t('Đặc quyền', 'Trait')}</span>
+              <span title={lang === 'en' ? char.backgroundTrait.descEn : char.backgroundTrait.descVi} style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+                {lang === 'en' ? char.backgroundTrait.nameEn : char.backgroundTrait.nameVi}
+              </span>
+            </div>
+          )}
           <div className="kv">
             <span>{t('Tổ chức', 'Faction')}</span>
             <span>{char.org?.name || (char.finger ? `The ${char.finger}` : t('Tự do', 'Unaffiliated'))}</span>

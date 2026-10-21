@@ -4,7 +4,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { Modal } from 'antd';
 import { useGameStore } from '../../../store/gameStore';
 import { freshSeed, createRNG, rollBirthRegion } from '../../../engine/gameEngine';
-import { REGIONS, CODEX_RECORDS } from '../../../data/worldData';
+import { REGIONS, CODEX_RECORDS, FAMILIES } from '../../../data/worldData';
 import { FATE_OMENS } from '../../../engine/weaverAI';
 import { useT } from '../../../i18n';
 import { RegionMark } from '../../../components/RegionMark';
@@ -180,6 +180,7 @@ export const BirthSetupPanel = () => {
   const customName = useGameStore((s) => s.customName);
   const customSeed = useGameStore((s) => s.customSeed);
   const selectedRegion = useGameStore((s) => s.selectedRegion);
+  const selectedFamily = useGameStore((s) => s.selectedFamily || 'RANDOM');
   const pendingLegacy = useGameStore((s) => s.pendingLegacy);
   const pastLives = useGameStore((s) => s.pastLives);
   const globalCodex = useGameStore((s) => s.globalCodex);
@@ -460,6 +461,60 @@ export const BirthSetupPanel = () => {
                   </option>
                 ))}
               </select>
+            </div>
+            <div className="field">
+              <label htmlFor="birth-family">{t('Xuất thân & Gia cảnh', 'City Background')}</label>
+              <select
+                id="birth-family"
+                className="select"
+                value={selectedFamily}
+                onChange={(e) => setConfigField('selectedFamily', e.target.value)}
+              >
+                <option value="RANDOM">
+                  {t('🎲 Ngẫu nhiên theo số phận (Khuyên dùng)', '🎲 Random Destiny (Recommended)')}
+                </option>
+                {FAMILIES.map((f) => (
+                  <option key={f.id} value={f.id}>
+                    {lang === 'en' ? f.nameEn : f.nameVi} · {f.tier === 'nest' ? 'Nest' : f.tier === 'out' ? 'Outskirts' : 'Backstreets'}
+                  </option>
+                ))}
+              </select>
+              {selectedFamily !== 'RANDOM' && (() => {
+                const curFam = FAMILIES.find((f) => f.id === selectedFamily);
+                if (!curFam) return null;
+                return (
+                  <div className="birth-family-preview" style={{ marginTop: '0.45rem', padding: '0.6rem 0.75rem', background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border-subtle, #333)', borderRadius: '4px', fontSize: '0.82rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.2rem' }}>
+                      <strong style={{ color: 'var(--accent-gold, #ffd700)' }}>
+                        {lang === 'en' ? curFam.nameEn : curFam.nameVi}
+                      </strong>
+                      <span style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--text-muted, #888)', border: '1px solid currentColor', padding: '1px 5px', borderRadius: '3px' }}>
+                        {curFam.tier === 'nest' ? 'Nest Citizen' : curFam.tier === 'out' ? 'Outskirts' : 'Backstreets'}
+                      </span>
+                    </div>
+                    <p style={{ margin: '0 0 0.35rem 0', color: 'var(--text-secondary, #bbb)', fontSize: '0.78rem', lineHeight: '1.35' }}>
+                      {lang === 'en' ? curFam.descEn : curFam.descVi}
+                    </p>
+                    {curFam.trait && (
+                      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.35rem', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '0.3rem', fontSize: '0.75rem', color: 'var(--accent-silver, #b0c4de)' }}>
+                        <Sparkles size={12} style={{ flexShrink: 0, marginTop: '2px', color: 'var(--accent-gold, #ffd700)' }} />
+                        <span>
+                          <strong style={{ color: '#fff' }}>{lang === 'en' ? curFam.trait.nameEn : curFam.trait.nameVi}: </strong>
+                          {lang === 'en' ? curFam.trait.descEn : curFam.trait.descVi}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
+              {selectedFamily === 'RANDOM' && (
+                <p className="field-hint" style={{ fontSize: '0.74rem', color: 'var(--text-muted, #777)', margin: '0.25rem 0 0 0' }}>
+                  {t(
+                    'Xuất thân sẽ được quyết định ngẫu nhiên theo đặc thù của từng District sinh ra.',
+                    'Background is procedurally determined by the unique culture of your birthplace.'
+                  )}
+                </p>
+              )}
             </div>
             <details className="birth-seed">
               <summary>

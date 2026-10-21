@@ -688,55 +688,239 @@ export const FAMILIES = [
     id: 'orphan',
     nameVi: 'Trẻ mồ côi ở Backstreets',
     nameEn: 'Backstreets Orphan',
-    descVi: 'Không cha mẹ. Lớn lên nhờ nhặt nhạnh trong hẻm và tự học cách trốn Sweeper.',
-    descEn: 'No parents. Raised by the alleys, dodging Sweepers every night at 3:13 AM.',
-    statMod: { health: -5, sanity: -5, wealth: -5, network: -2, rep: 0 },
-    flags: ['고아', 'Backstreets']
+    tier: 'back',
+    descVi: 'Không cha mẹ. Lớn lên nhờ nhặt nhạnh trong hẻm tối, học cách né tránh Sweeper lúc 3:13 AM từ khi biết bò.',
+    descEn: 'No parents. Raised by alleyways, dodging Sweepers every night at 3:13 AM since infancy.',
+    statMod: { health: -4, sanity: -4, wealth: -5, network: -2, rep: 0, heat: 4, taboo: 0, resonance: 6 },
+    flags: ['고아', 'Backstreets', 'StreetUrchin', 'StreetRatInstinct'],
+    trait: {
+      id: 'StreetRatInstinct',
+      nameVi: 'Bản năng Chuột Cống',
+      nameEn: 'Street Rat Instinct',
+      descVi: 'Quen với cảnh cơ cực cùng cực: Giảm 20% sát thương khi chạy trốn trong Backstreets.',
+      descEn: 'Hardened by squalor: 20% reduced damage taken when fleeing in the Backstreets.'
+    }
   },
   {
     id: 'backstreet_worker',
     nameVi: 'Gia đình làm thuê ở Backstreets',
     nameEn: 'Backstreets Working Family',
-    descVi: 'Cha mẹ làm thuê trong xưởng nhỏ khu Backstreets, chật vật đóng tiền bảo kê cho Syndicate địa phương.',
-    descEn: 'Parents toiling in Backstreets sweatshops, scraping by to pay Syndicate protection fees.',
-    statMod: { health: 0, sanity: 0, wealth: -2, network: 0, rep: 0 },
-    flags: ['Backstreets']
+    tier: 'back',
+    descVi: 'Cha mẹ làm việc quần quật 14 tiếng mỗi ngày trong các xưởng ngầm, chắt bóp từng đồng trả bảo kê và mua ổ khóa mới.',
+    descEn: 'Parents toiling 14-hour shifts in underground workshops, scraping by to pay protection money and replace locks.',
+    statMod: { health: 0, sanity: 0, wealth: 0, network: +2, rep: 0, heat: 0, taboo: 0, resonance: 0 },
+    flags: ['Backstreets', 'BackstreetCommoner', 'CautiousSurvivor'],
+    trait: {
+      id: 'CautiousSurvivor',
+      nameVi: 'Sinh tồn Thận trọng',
+      nameEn: 'Cautious Survivor',
+      descVi: 'Thói quen né tránh rắc rối: Giảm nguy cơ bị kéo vào các cuộc thanh trừng băng đảng ngẫu nhiên.',
+      descEn: 'A habit of keeping low: Lower risk of getting dragged into random gang turf wars.'
+    }
+  },
+  {
+    id: 'smoke_war_veteran',
+    nameVi: 'Con của cựu binh Chiến tranh Khói',
+    nameEn: 'Child of a Smoke War Veteran',
+    tier: 'back',
+    descVi: 'Cha mẹ từng chiến đấu trong thảm kịch Smoke War tại L Corp cũ. Họ mang theo lá phổi nám đen, huân chương hoen gỉ và sự căm phẫn tột cùng.',
+    descEn: 'Parents fought in the harrowing Smoke War of fallen L Corp. Left with blackened lungs, rusted medals, and searing trauma.',
+    statMod: { health: +16, sanity: -8, wealth: +4, network: +4, rep: +4, heat: 6, taboo: 0, resonance: 8 },
+    flags: ['Backstreets', 'SmokeWarLineage', 'SmokeWarInstinct'],
+    trait: {
+      id: 'SmokeWarInstinct',
+      nameVi: 'Khí chất Chiến tranh Khói',
+      nameEn: 'Smoke War Instinct',
+      descVi: 'Thể lực phi thường (+16 HP) và kỹ năng cận chiến bặm trợn; tăng 25% tỷ lệ thắng trong các trận xung đột thể xác.',
+      descEn: 'Exceptional starting vigor (+16 HP) and gritty combat prowess; +25% success odds in violent confrontations.'
+    }
   },
   {
     id: 'fixer_lineage',
-    nameVi: 'Con của một Fixer đã giải nghệ',
+    nameVi: 'Con của Fixer đã giải nghệ',
     nameEn: 'Child of a Former Fixer',
-    descVi: 'Trong ngăn kéo cũ ở nhà vẫn còn một tấm huy hiệu Fixer dính máu và cuốn sổ ghi chép chiến đấu.',
-    descEn: 'In a locked drawer rests a bloodstained Fixer badge and a worn combat manual.',
-    statMod: { health: +3, sanity: 0, wealth: +3, network: +3, rep: +2 },
-    flags: ['해결사동경', 'Backstreets']
+    tier: 'back',
+    descVi: 'Trong ngăn kéo bị khóa vẫn còn một tấm thẻ Fixer dính máu khô và cuốn sổ tay ghi chép cấm kỵ của các Hiệp hội.',
+    descEn: 'In a locked drawer rests a blood-crusted Fixer license and a worn notebook of Association taboos.',
+    statMod: { health: +6, sanity: 0, wealth: +6, network: +6, rep: +4, heat: 2, taboo: 0, resonance: 4 },
+    flags: ['해결사동경', 'Backstreets', 'FixerLineage', 'CombatPedigree'],
+    trait: {
+      id: 'CombatPedigree',
+      nameVi: 'Dòng dõi Giải Quyết Giả',
+      nameEn: 'Fixer Pedigree',
+      descVi: 'Được dạy cách cầm kiếm và đọc điều khoản hợp đồng từ nhỏ; tăng 20% Merit khi hoàn thành Request.',
+      descEn: 'Taught swordplay and contract clauses young; earns 20% bonus Merit on completed Requests.'
+    }
+  },
+  {
+    id: 'workshop_apprentice',
+    nameVi: 'Hậu duệ Xưởng chế tác (Workshop)',
+    nameEn: 'Workshop Artisan Lineage',
+    tier: 'back',
+    descVi: 'Lớn lên giữa mùi dầu tôi kim loại, tia lửa hàn và bản vẽ chi tiết vũ khí được cấp phép bởi Tres Association.',
+    descEn: 'Raised amid the scent of quench oil, welding sparks, and weapon schematics patented by Tres Association.',
+    statMod: { health: +4, sanity: +2, wealth: +12, network: +6, rep: +4, heat: 0, taboo: 0, resonance: 4 },
+    flags: ['Backstreets', 'WorkshopBlood', 'WorkshopApprentice', 'WorkshopTinkerer'],
+    trait: {
+      id: 'WorkshopTinkerer',
+      nameVi: 'Bàn tay Cơ khí Workshop',
+      nameEn: 'Workshop Tinkerer',
+      descVi: 'Khởi đầu rủng rỉnh Ahn (+12); giảm 25% chi phí mua/sửa vũ khí và tăng 30% tỷ lệ thành công khi thẩm định công nghệ.',
+      descEn: 'Starts with comfortable Ahn (+12); 25% discount on weapon repair and +30% odds when appraising tech.'
+    }
+  },
+  {
+    id: 'syndicate_soldato',
+    nameVi: 'Gia quyến Ngón Tay Syndicate',
+    nameEn: 'Syndicate Enforcer Household',
+    tier: 'back',
+    descVi: 'Gia đình gắn chặt mạng sống với một trong Năm Ngón Tay. Trong nhà luôn có súng đạn của Thumb, hình xăm Middle hoặc mật lệnh Index.',
+    descEn: 'Family sworn to one of the Five Fingers. The house smells of Thumb ammunition, Middle ink, or Index prescripts.',
+    statMod: { health: +8, sanity: -2, wealth: +6, network: +8, rep: +8, heat: +18, taboo: 0, resonance: 6 },
+    flags: ['Backstreets', 'SyndicateFamily', 'SyndicateBloodline', 'SyndicateStreetCred'],
+    trait: {
+      id: 'SyndicateStreetCred',
+      nameVi: 'Uy thế Thế giới Ngầm',
+      nameEn: 'Syndicate Street Cred',
+      descVi: 'Có tiếng nói giang hồ (+8 Rep) và dễ đe dọa kẻ khác; nhưng bắt đầu với +18 Heat và dễ bị kẻ thù truy sát.',
+      descEn: 'Heavy underworld clout (+8 Rep) and intimidating aura; but starts with +18 Heat and rival vendettas.'
+    }
   },
   {
     id: 'nest_feather',
     nameVi: 'Gia đình Feather trong Nest',
     nameEn: 'Nest Feather Household',
-    descVi: 'Có hộ khẩu hợp pháp trong vùng Nest an toàn, được Wing bảo hộ nhưng luôn chịu áp lực giữ vững chỉ tiêu.',
-    descEn: 'Legal Nest citizens protected by the Wing, living under constant corporate quota pressure.',
-    statMod: { health: +4, sanity: +3, wealth: +10, network: +5, rep: +3 },
-    flags: ['Feather', 'Nest']
+    tier: 'nest',
+    descVi: 'Cư dân hợp pháp có mã định danh trong vùng Nest tiện nghi, được Wing che chở trước bão cát và Sweeper nhưng chịu áp lực hạn ngạch nặng nề.',
+    descEn: 'Legal citizens registered within a safe Nest, shielded from Sweepers and storms but weighed down by ruthless quotas.',
+    statMod: { health: +6, sanity: +4, wealth: +24, network: +8, rep: +4, heat: 0, taboo: 0, resonance: 2 },
+    flags: ['Feather', 'Nest', 'NestSilverSpoon'],
+    trait: {
+      id: 'NestSilverSpoon',
+      nameVi: 'Đặc quyền Vùng Nest',
+      nameEn: 'Nest Silver Spoon',
+      descVi: 'Bắt đầu với nhiều Ahn (+24) và mạng lưới ổn định; nhưng mất thêm Sanity khi buộc phải tiếp xúc sự dơ bẩn Backstreets.',
+      descEn: 'Generous starting wealth (+24) and stable network; but suffers increased Sanity loss from Backstreets squalor.'
+    }
   },
   {
     id: 'wing_executive',
-    nameVi: 'Gia đình quản lý cấp cao của Wing',
-    nameEn: 'Wing Executive / Noble Lineage',
-    descVi: 'Sinh ra ở tầng lớp thượng lưu của Nest với đội ngũ y tế riêng, tài sản dồi dào và những âm mưu thừa kế khốc liệt.',
-    descEn: 'Born in the upper echelons of a Nest with private tutors, deep coffers, and ruthless succession politics.',
-    statMod: { health: +6, sanity: +2, wealth: +22, network: +8, rep: +6 },
-    flags: ['Feather', 'Nest', 'ThượngLưu']
+    nameVi: 'Dòng dõi Tinh hoa Quản lý Wing',
+    nameEn: 'Wing Executive / Corporate Elite',
+    tier: 'nest',
+    descVi: 'Sinh ra ở tầng thứ 50 tòa cao ốc trung tâm Nest. Đội ngũ y tế riêng túc trực, tài khoản triệu Ahn và những âm mưu gia tộc tàn khốc.',
+    descEn: 'Born on the 50th floor of a central Nest spire. Personal physicians on call, deep corporate vaults, and cutthroat succession politics.',
+    statMod: { health: +10, sanity: +4, wealth: +48, network: +16, rep: +10, heat: 0, taboo: 1, resonance: 4 },
+    flags: ['Feather', 'Nest', 'ThượngLưu', 'WingElite', 'WingPatronage'],
+    trait: {
+      id: 'WingPatronage',
+      nameVi: 'Bảo hộ của Hội đồng Wing',
+      nameEn: 'Wing Patronage',
+      descVi: 'Tài sản khổng lồ (+48 Ahn) và danh vọng lớn; nhưng bắt đầu với 1 Taboo Gaze do bí mật Singularity của tập đoàn.',
+      descEn: 'Immense starting wealth (+48 Ahn) and prestige; but carries 1 Taboo Gaze from corporate Singularity secrets.'
+    }
+  },
+  {
+    id: 'dieci_orphan',
+    nameVi: 'Trẻ cơ nhỡ Tu viện Dieci',
+    nameEn: 'Dieci Monastery Ward',
+    tier: 'back',
+    descVi: 'Được nuôi dưỡng trong các học viện tế bần của Dieci Association. Dạy đọc sách cổ, triết học và quyền pháp nặng nề trước khi biết nói.',
+    descEn: 'Raised in Dieci Association charity orphanages. Schooled in dusty tomes, philosophy, and crushing fist arts before speech.',
+    statMod: { health: +4, sanity: +16, wealth: -4, network: +6, rep: +2, heat: 0, taboo: 0, resonance: 10 },
+    flags: ['DieciWard', 'DieciScholastic'],
+    trait: {
+      id: 'DieciScholastic',
+      nameVi: 'Học giả Khắc kỷ Dieci',
+      nameEn: 'Dieci Scholastic',
+      descVi: 'Tâm lý vững vàng tuyệt đối (+16 Sanity); hồi phục tinh thần nhanh hơn khi đọc sách và kháng lại tiếng thì thầm Distortion.',
+      descEn: 'Ironclad mental fortitude (+16 Sanity); recovers Sanity faster during study and resists Distortion whispers.'
+    }
+  },
+  {
+    id: 'great_lake_mariner',
+    nameVi: 'Con của Thủy thủ Great Lake (U Corp)',
+    nameEn: 'Great Lake Mariner Lineage',
+    tier: 'back',
+    descVi: 'Chào đời bên bến tàu District 21, giữa mùi muối hắc, tiếng còi tàu cộng hưởng và bóng những con Whale khổng lồ lượn dưới đáy nước đen.',
+    descEn: 'Born at District 21 docks amid bitter brine, tuning-fork resonance sirens, and colossal Whale shadows in the deep.',
+    statMod: { health: +10, sanity: +6, wealth: +4, network: +4, rep: +2, heat: 0, taboo: 0, resonance: 6 },
+    flags: ['Backstreets', 'LakeMariner', 'GreatLakeHardened'],
+    trait: {
+      id: 'GreatLakeHardened',
+      nameVi: 'Ý chí Sóng Đen Great Lake',
+      nameEn: 'Great Lake Tenacity',
+      descVi: 'Sức chịu đựng dẻo dai (+10 HP); tinh thần trơ lì trước các ảo cảnh dị thường và quái vật biển sâu.',
+      descEn: 'Hardened physical grit (+10 HP); immune to panic from cosmic water anomalies and sea horrors.'
+    }
+  },
+  {
+    id: 'warp_cleaner_offspring',
+    nameVi: 'Con nhân viên dọn dẹp W Corp',
+    nameEn: 'WARP Cleanup Crew Offspring',
+    tier: 'nest',
+    descVi: 'Cha mẹ mang đồng phục dọn dẹp WARP Train sau mỗi chuyến đi "10 giây". Cả nhà sống trong căn hộ được tài trợ nhưng bị cấm tiết lộ mọi điều.',
+    descEn: 'Parents wore WARP Train cleanup gear after each "10-second" trip. Living in subsidized flats under strict secrecy oaths.',
+    statMod: { health: +4, sanity: -6, wealth: +16, network: +2, rep: +2, heat: 0, taboo: 1, resonance: 8 },
+    flags: ['Feather', 'Nest', 'WarpCleanupCrew', 'GoreDesensitized'],
+    trait: {
+      id: 'GoreDesensitized',
+      nameVi: 'Chai sạn Cảnh Tượng Kinh Hoàng',
+      nameEn: 'Gore Desensitized',
+      descVi: 'Không bao giờ mất Sanity khi chứng kiến xác thịt biến dạng; nhưng chịu 1 Taboo Gaze vì nắm giữ bí mật cấm của Tàu WARP.',
+      descEn: 'Immune to Sanity damage from grotesque gore; but bears 1 Taboo Gaze from knowing the WARP Train secret.'
+    }
+  },
+  {
+    id: 'backstreet_bistro',
+    nameVi: 'Gia đình Quán ăn Backstreets',
+    nameEn: 'Backstreets Bistro Lineage',
+    tier: 'back',
+    descVi: 'Lớn lên sau quầy bếp một quán mì đêm tấp nập. Nơi Fixer, giang hồ và nhân viên Wing lén lút ghé vào đổi tin tức lấy một bát súp nóng.',
+    descEn: 'Raised behind the counter of a busy night noodle bar, where Fixers, thugs, and feathers trade whispers over hot broth.',
+    statMod: { health: +2, sanity: +4, wealth: +6, network: +12, rep: +4, heat: 2, taboo: 0, resonance: 2 },
+    flags: ['Backstreets', 'BistroHeir', 'NeighborhoodEar'],
+    trait: {
+      id: 'NeighborhoodEar',
+      nameVi: 'Tai mắt Ngõ hẻm',
+      nameEn: 'Alley Ear',
+      descVi: 'Mạng lưới quan hệ xóm giềng sâu rộng (+12 Network); dễ dàng dò la tin tức bí mật và kết thân với NPC.',
+      descEn: 'Broad neighborhood rapport (+12 Network); excels at ferreting out rumors and befriending NPCs.'
+    }
+  },
+  {
+    id: 'prosthetic_tinkerer',
+    nameVi: 'Gia đình Phòng khám Cơ khí',
+    nameEn: 'Prosthetics Clinic Lineage',
+    tier: 'back',
+    descVi: 'Sinh ra giữa tiếng cưa xương, van áp suất và dầu máy của một phòng khám lắp chân tay giả không giấy phép trong hẻm tối.',
+    descEn: 'Born amid bone-saws, pressure valves, and motor grease in an unlicensed Backstreets prosthetics workshop.',
+    statMod: { health: +4, sanity: +2, wealth: +8, network: +6, rep: +4, heat: 2, taboo: 0, resonance: 4 },
+    flags: ['Backstreets', 'ProstheticClinic', 'MechanicSavvy'],
+    trait: {
+      id: 'MechanicSavvy',
+      nameVi: 'Thông tuệ Cơ thể Cơ khí',
+      nameEn: 'Prosthetic Savvy',
+      descVi: 'Hiểu cặn kẽ cấu trúc cơ thể và bộ phận giả; giảm 50% chi phí điều trị phục hồi sau chấn thương nặng.',
+      descEn: 'Deep grasp of cybernetics and anatomy; halves treatment costs after sustaining severe injuries.'
+    }
   },
   {
     id: 'outskirts_nomad',
     nameVi: 'Đứa trẻ của The Outskirts',
     nameEn: 'Outskirts Wasteland Child',
+    tier: 'out',
     descVi: 'Chào đời bên ngoài bức tường The City, giữa những tàn tích cổ đại, bão cát độc và tiếng gầm của quái vật phi nhân.',
     descEn: 'Born beyond the City walls amidst freezing winds, ancient Ruins, and non-human monstrosities.',
-    statMod: { health: +3, sanity: -6, wealth: -5, network: -2, rep: 0 },
-    flags: ['Outskirts']
+    statMod: { health: -2, sanity: -6, wealth: -5, network: -2, rep: 0, heat: 0, taboo: 0, resonance: 8 },
+    flags: ['Outskirts', 'OutskirtsAdaptability'],
+    trait: {
+      id: 'OutskirtsAdaptability',
+      nameVi: 'Bản năng Thích nghi Hoang dã',
+      nameEn: 'Outskirts Adaptability',
+      descVi: 'Khởi đầu thiếu thốn mọi thứ; nhưng khi HP hoặc SP dưới 40, tăng 35% tỷ lệ thành công trong mọi biến cố hiểm nguy.',
+      descEn: 'Starts with scarce resources; but gains +35% success odds in perilous events when HP or SP drops below 40.'
+    }
   }
 ];
 

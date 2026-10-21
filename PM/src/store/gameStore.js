@@ -252,6 +252,7 @@ export const useGameStore = create((set, get) => ({
   customName: '',
   customSeed: '',
   selectedRegion: 'RANDOM',
+  selectedFamily: 'RANDOM',
 
   // Meta progression
   pastLives: savedMeta.pastLives,
@@ -555,6 +556,7 @@ export const useGameStore = create((set, get) => ({
       customName: state.customName,
       seed: state.customSeed,
       preferredRegionId: regionId || state.selectedRegion,
+      preferredFamilyId: state.selectedFamily || 'RANDOM',
       parentLegacy: legacyPkg,
       startAge
     });

@@ -19,6 +19,7 @@ import {
 } from '../data/worldData.js';
 import { CHILDHOOD_EVENTS, CONSEQUENCE_EVENTS } from '../data/eventsChildhood.js';
 import { CHILDHOOD_EVENTS_2 } from '../data/eventsChildhood2.js';
+import { BACKGROUND_OPENING_EVENTS } from '../data/eventsBackgroundOpening.js';
 import { composeBirth, makeNpc } from '../data/birthStories.js';
 import { generatePersonName } from '../data/nameGenerator.js';
 import { FACTION_EVENTS } from '../data/eventsFactions.js';
@@ -61,6 +62,7 @@ import { weightedOutcomes } from './outcomeOdds.js';
 export const ALL_STORY_EVENTS = [
   ...CHILDHOOD_EVENTS,
   ...CHILDHOOD_EVENTS_2,
+  ...BACKGROUND_OPENING_EVENTS,
   ...FACTION_EVENTS,
   ...SUPERNATURAL_EVENTS,
   ...FIXER_PATH_EVENTS,
@@ -243,10 +245,65 @@ export function rollBirthRegion(rng = Math.random, parentLegacy = null) {
   return REGIONS[0];
 }
 
+export function rollBirthFamily(region, rng, parentLegacy = null, preferredFamilyId = 'RANDOM') {
+  if (preferredFamilyId && preferredFamilyId !== 'RANDOM') {
+    const selected = FAMILIES.find((f) => f.id === preferredFamilyId);
+    if (selected) return selected;
+  }
+
+  if (region.id === 'OUTSKIRTS') {
+    return FAMILIES.find((f) => f.id === 'outskirts_nomad') || FAMILIES[0];
+  }
+  if (region.tags?.includes('head')) {
+    const headFamilies = FAMILIES.filter((f) => ['nest_feather', 'wing_executive'].includes(f.id));
+    return headFamilies[Math.floor(rng() * headFamilies.length)] || FAMILIES[0];
+  }
+  if (region.tags?.includes('fallen_wing')) {
+    const fallenFamilies = FAMILIES.filter((f) => ['smoke_war_veteran', 'orphan', 'backstreet_worker', 'fixer_lineage', 'workshop_apprentice'].includes(f.id));
+    return fallenFamilies[Math.floor(rng() * fallenFamilies.length)] || FAMILIES[0];
+  }
+  if (parentLegacy) {
+    if (parentLegacy.wealth >= 60) {
+      const nestFam = FAMILIES.find((f) => f.id === 'nest_feather' || f.id === 'wing_executive');
+      if (nestFam) return nestFam;
+    } else if (parentLegacy.job === 'Fixer') {
+      const fixerFam = FAMILIES.find((f) => f.id === 'fixer_lineage');
+      if (fixerFam) return fixerFam;
+    }
+  }
+
+  const weights = {
+    orphan: 14,
+    backstreet_worker: 18,
+    smoke_war_veteran: region.ward === 4 || region.id === 'D' || region.id === 'G' ? 24 : 8,
+    fixer_lineage: 12,
+    workshop_apprentice: region.id === 'T' || region.ward === 20 || region.id === 'J' ? 18 : 10,
+    syndicate_soldato: region.id === 'J' || region.id === 'K' || region.id === 'N' ? 18 : 12,
+    nest_feather: region.wealth >= 8 ? 24 : 8,
+    wing_executive: region.wealth >= 9 ? 12 : 2,
+    dieci_orphan: region.ward === 11 || region.id === 'K' ? 18 : 8,
+    great_lake_mariner: region.id === 'U' || region.ward === 21 ? 30 : 2,
+    warp_cleaner_offspring: region.id === 'W' || region.ward === 23 ? 24 : 4,
+    backstreet_bistro: region.ward === 23 || region.id === 'H' ? 18 : 10,
+    prosthetic_tinkerer: region.id === 'T' || region.id === 'V' || region.id === 'G' ? 18 : 10,
+    outskirts_nomad: 3
+  };
+
+  const pool = FAMILIES.filter((f) => f.id !== 'outskirts_nomad' || region.id === 'OUTSKIRTS' || (weights[f.id] || 0) > 0);
+  const total = pool.reduce((sum, f) => sum + (weights[f.id] || 10), 0);
+  let pick = rng() * total;
+  for (const f of pool) {
+    pick -= (weights[f.id] || 10);
+    if (pick <= 0) return f;
+  }
+  return pool[0] || FAMILIES[0];
+}
+
 export function createNewCharacter({
   customName = '',
   seed = '',
   preferredRegionId = 'RANDOM',
+  preferredFamilyId = 'RANDOM',
   parentLegacy = null,
   startAge = 0
 } = {}) {
@@ -261,27 +318,8 @@ export function createNewCharacter({
   }
   if (!region) region = rollBirthRegion(rng, parentLegacy);
 
-  // Pick Family Background strictly consistent with the birthplace Region
-  const cityFamilies = FAMILIES.filter(f => f.id !== 'outskirts_nomad');
-  let family = cityFamilies[Math.floor(rng() * cityFamilies.length)];
-
-  if (region.id === 'OUTSKIRTS') {
-    family = FAMILIES.find(f => f.id === 'outskirts_nomad') || FAMILIES[0];
-  } else if (region.tags?.includes('head')) {
-    // Districts A, B, C (The Head / Eye / Claw): strictly Nest Feather or Wing Executive households
-    const headFamilies = cityFamilies.filter(f => ['nest_feather', 'wing_executive'].includes(f.id));
-    family = headFamilies[Math.floor(rng() * headFamilies.length)] || family;
-  } else if (region.tags?.includes('fallen_wing')) {
-    // District 12 (Fallen L Corp): Nest collapsed into fog & Syndicate warzone, no active Wing Executives
-    const fallenFamilies = cityFamilies.filter(f => ['orphan', 'backstreet_worker', 'fixer_lineage'].includes(f.id));
-    family = fallenFamilies[Math.floor(rng() * fallenFamilies.length)] || family;
-  } else if (parentLegacy) {
-    if (parentLegacy.wealth >= 60) {
-      family = FAMILIES.find(f => f.id === 'nest_feather') || family;
-    } else if (parentLegacy.job === 'Fixer') {
-      family = FAMILIES.find(f => f.id === 'fixer_lineage') || family;
-    }
-  }
+  // Pick Family Background
+  const family = rollBirthFamily(region, rng, parentLegacy, preferredFamilyId);
 
   // Roll RNG Fate Omen at birth!
   const fateOmen = rollRandomFateOmen(rng, Boolean(parentLegacy));
@@ -291,24 +329,26 @@ export function createNewCharacter({
     customName.trim() ||
     (parentLegacy?.childName
       ? parentLegacy.childName
-      : rollOriginalCityName(rng, { regionId: region.id, nest: family.id === 'nest_feather' }));
+      : rollOriginalCityName(rng, { regionId: region.id, nest: family.tier === 'nest' || family.id === 'nest_feather' }));
 
   const generation = parentLegacy ? (parentLegacy.generation || 1) + 1 : 1;
 
-  // Base Stats (0 - 100) + RNG Fate Omen modifiers - Balanced for Project Moon lore
-  // In The City, children start with modest vitality, scarce currency, and build connections over time.
-  let health = clamp(52 + (family.statMod.health || 0) + (omenMod.health || 0) + Math.floor(rng() * 10 - 4), 20, 80);
-  let sanity = clamp(52 + (family.statMod.sanity || 0) + (omenMod.sanity || 0) + Math.floor(rng() * 10 - 4), 20, 80);
-  let wealth = clamp(6 + (family.statMod.wealth || 0) + (omenMod.wealth || 0) + Math.floor(rng() * 4 - 1), 1, 60);
-  let network = clamp(2 + (family.statMod.network || 0) + Math.floor(rng() * 3), 0, 40);
-  let rep = clamp(0 + (family.statMod.rep || 0) + Math.floor(rng() * 2), 0, 40);
+  // Base Stats (0 - 100) + Family Background + RNG Fate Omen modifiers - Balanced for Project Moon lore
+  let health = clamp(52 + (family.statMod.health || 0) + (omenMod.health || 0) + Math.floor(rng() * 10 - 4), 20, 95);
+  let sanity = clamp(52 + (family.statMod.sanity || 0) + (omenMod.sanity || 0) + Math.floor(rng() * 10 - 4), 20, 95);
+  let wealth = clamp(6 + (family.statMod.wealth || 0) + (omenMod.wealth || 0) + Math.floor(rng() * 4 - 1), 1, 95);
+  let network = clamp(2 + (family.statMod.network || 0) + Math.floor(rng() * 3), 0, 50);
+  let rep = clamp(0 + (family.statMod.rep || 0) + Math.floor(rng() * 2), 0, 50);
 
   const flags = [...(family.flags || [])];
+  if (family.trait?.id && !flags.includes(family.trait.id)) {
+    flags.push(family.trait.id);
+  }
   const scars = [];
   const unlockedRecords = ['born_city'];
-  let heat = clamp(omenMod.heat || 0, 0, 100);
-  let taboo = clamp(omenMod.taboo || 0, 0, 2);
-  let resonance = clamp(5 + (omenMod.resonance || 0), 0, 100);
+  let heat = clamp((family.statMod.heat || 0) + (omenMod.heat || 0), 0, 100);
+  let taboo = clamp((family.statMod.taboo || 0) + (omenMod.taboo || 0), 0, 2);
+  let resonance = clamp(5 + (family.statMod.resonance || 0) + (omenMod.resonance || 0), 0, 100);
 
   if (['merciless_head', 'carmen_whisper', 'crimson_sweeper_star'].includes(fateOmen.id)) {
     unlockedRecords.push('omen_cursed_birth');
@@ -505,6 +545,15 @@ export function createNewCharacter({
     deathCauseEn: perinatal ? perinatal.deathEn : null,
     regionId: region.id,
     familyId: family.id,
+    family: {
+      id: family.id,
+      nameVi: family.nameVi,
+      nameEn: family.nameEn,
+      descVi: family.descVi,
+      descEn: family.descEn,
+      trait: family.trait || null
+    },
+    backgroundTrait: family.trait || null,
     fateOmenId: fateOmen.id,
     traits: rollTraits(createRNG(`${actualSeed}:traits`)),
     job: actualAge >= 18 ? (parentLegacy?.job === 'Syndicate' ? 'Syndicate' : parentLegacy?.job === 'Wing Employee' ? 'Wing Employee' : 'Fixer') : 'Child',
