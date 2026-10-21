@@ -6,6 +6,7 @@ import { addScar } from '../src/engine/scarModel.js';
 import { isEventEligible } from '../src/engine/weaverAI.js';
 import { FACTION_EVENTS } from '../src/data/eventsFactions.js';
 import { DERIVATIVE_LORE_EVENTS } from '../src/data/eventsDerivativeLore.js';
+import { EXPANSION_EVENTS } from '../src/data/eventsExpansion.js';
 import { LIFE_MINORS, endYear } from '../src/engine/yearPlanner.js';
 import { matchesEventContext } from '../src/engine/eventConditions.js';
 
@@ -122,4 +123,49 @@ outskirtsChild.regionId = 'OUTSKIRTS';
 outskirtsChild.stats.health = 50;
 assert.equal(matchesEventContext(LIFE_MINORS.find((event) => event.id === 'm_med_child_remedy'), outskirtsChild), false);
 
-console.log('Balance regressions: rank gates, etiquette, Color age, decline, recovery, scars, rival clans, one-time order, resource upkeep and care context passed.');
+const elder = born(72);
+elder.stats.rep = 95;
+elder.stats.network = 85;
+elder.stats.health = 85;
+elder.stats.sanity = 85;
+elder.job = 'Fixer';
+elder.fixerGrade = 2;
+assert.equal(driftOf(elder).rep, undefined);
+assert.ok(driftOf(elder).network < 0);
+const elderEnd = endYear(elder, () => 0.5);
+assert.ok(elderEnd.stats.health < elder.stats.health);
+assert.equal(elderEnd.stats.rep, elder.stats.rep);
+const juniorRequest = EXPANSION_EVENTS.find((event) => event.id === 'ev4_elder_last_request');
+const fixerSuccessor = EXPANSION_EVENTS.find((event) => event.id === 'ev4_elder_fixer_successor');
+assert.equal(matchesEventContext(juniorRequest, elder), false);
+assert.equal(matchesEventContext(fixerSuccessor, elder), true);
+assert.equal(isEventEligible(fixerSuccessor, elder), true);
+assert.ok(new Set(fixerSuccessor.choices.flatMap((choice) => Object.keys(choice.effects).filter((key) => choice.effects[key] < 0))).size >= 3);
+elder.fixerGrade = 6;
+assert.equal(matchesEventContext(juniorRequest, elder), true);
+assert.equal(matchesEventContext(fixerSuccessor, elder), false);
+assert.equal(driftOf(elder).rep, undefined);
+elder.age = 55;
+assert.ok(driftOf(elder).rep < 0);
+
+const seniorEvents = [
+  ['Syndicate', 'fingerRank', 3, 'ev4_elder_syndicate_succession'],
+  ['Wing Employee', 'wingRank', 2, 'ev4_elder_wing_handover'],
+  ['Workshop Craftsman', 'workshopRank', 2, 'ev4_elder_workshop_mark']
+];
+for (const [job, rankKey, rank, id] of seniorEvents) {
+  const figure = born(72);
+  figure.job = job;
+  figure[rankKey] = rank;
+  figure.stats.rep = 95;
+  const event = EXPANSION_EVENTS.find((entry) => entry.id === id);
+  assert.ok(new Set(event.choices.flatMap((choice) => Object.keys(choice.effects).filter((key) => choice.effects[key] < 0))).size >= 3, `${id} varied costs`);
+  assert.equal(driftOf(figure).rep, undefined, job);
+  assert.equal(matchesEventContext(event, figure), true, id);
+  assert.equal(isEventEligible(event, figure), true, `${id} director gate`);
+  figure[rankKey] = rank - 1;
+  assert.equal(matchesEventContext(event, figure), false, `${id} rank gate`);
+  assert.equal(driftOf(figure).rep, undefined, `${job} still old`);
+}
+
+console.log('Balance regressions: rank gates, etiquette, Color age, decline, recovery, scars, elder standing and event context, resource upkeep and care context passed.');

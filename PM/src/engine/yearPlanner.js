@@ -60,7 +60,7 @@ import {
   hasMemory
 } from './director.js';
 import { freshness, varyEffects, traitsOf, tiltWeight, PRINTED_NUMBERS } from './variance.js';
-import { BALANCE, healAmount, calmAmount, agingLoss, driftOf } from './economyModel.js';
+import { BALANCE, healAmount, calmAmount, agingLoss, driftOf, hasEstablishedStanding } from './economyModel.js';
 import { activeScarCount, addScar } from './scarModel.js';
 
 export const MINOR_WINDOW_MS = 15000;
@@ -1012,7 +1012,7 @@ export function endYear(charState, rng) {
   const drift = driftOf(char, bond ? 2 : 0);
   for (const [k, v] of Object.entries(drift)) add(k, v);
   if (drift.network) {
-    line('drift_network');
+    line(hasEstablishedStanding(char) || (char.age >= 60 && char.stats.rep >= 70) ? 'drift_network_established' : 'drift_network');
   }
   if (drift.rep) {
     line('drift_rep');

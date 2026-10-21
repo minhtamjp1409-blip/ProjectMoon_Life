@@ -97,6 +97,12 @@ export const YEAR_END_LINES = {
       ['Vài người quen chuyển đi, vài người không còn nhớ tên bạn.', 'A few acquaintances moved away; a few no longer remembered your name.']
     ]
   },
+  drift_network_established: {
+    adult: [
+      ['Người trung gian cũ rời vị trí; danh tiếng của bạn còn đó, nhưng vài đường liên lạc phải gây dựng lại.', 'Old intermediaries left their posts. Your standing held, but a few channels had to be rebuilt.'],
+      ['Những người từng làm việc trực tiếp với bạn nay chuyển sang vai trò khác. Cấp dưới cần thời gian nối lại đầu mối.', 'People who dealt with you directly moved on. Your staff needed time to rebuild those contacts.']
+    ]
+  },
   drift_rep: {
     adult: [
       ['Thành tích cũ dần chìm dưới những cái tên mới.', 'New names pushed your old accomplishments out of notice.'],

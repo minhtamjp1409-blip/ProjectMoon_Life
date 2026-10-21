@@ -86,6 +86,15 @@ export function calmAmount(char, kind) {
   return Math.min(5, Math.max(3, Math.round((c.base[kind] + c.deficitRate * deficit) * traitsOf(char).nerve)));
 }
 
+export function hasEstablishedStanding(char) {
+  if ((char.flags || []).includes('ColorFixer')) return true;
+  if (char.job === 'Fixer') return (char.fixerGrade || 9) <= 3;
+  if (char.job === 'Syndicate') return (char.fingerRank || 0) >= 3;
+  if (char.job === 'Wing Employee') return (char.wingRank || 0) >= 2;
+  if (char.job === 'Workshop Craftsman') return (char.workshopRank || 0) >= 2;
+  return false;
+}
+
 /**
  * Slow pull of the resources events keep raising. Returns a (negative or zero) change per key.
  * Resonance sinks toward what the character's scars keep alive, network and rep toward
@@ -117,7 +126,9 @@ export function driftOf(char, bonded = 0) {
   else if (char.job === 'Fixer') repAnchor += char.fixerGrade <= 3 ? d.rep.seniorBonus : char.fixerGrade <= 5 ? d.rep.fixerBonus : 0;
   else if (char.job === 'Syndicate' && (char.fingerRank || 0) >= 2) repAnchor += d.rep.syndicateBonus;
   const repExcess = char.stats.rep - repAnchor;
-  if (repExcess > 0) out.rep = -Math.max(1, Math.round(repExcess * d.rep.rate));
+  if (char.age < 60 && !hasEstablishedStanding(char) && repExcess > 0) {
+    out.rep = -Math.max(1, Math.round(repExcess * d.rep.rate));
+  }
 
   // Old deeds count for less each year, so the top of a ladder needs a career that keeps earning
   const mer = d.merit;

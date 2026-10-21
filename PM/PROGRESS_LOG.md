@@ -1,5 +1,11 @@
 # The City Chronicles: tiến trình dự án
 
+### 21/10/2026, địa vị và sự kiện tuổi già
+
+- Danh tiếng không còn tự giảm vào mỗi cuối năm từ tuổi 60 trở đi, hoặc khi nhân vật đang giữ vị trí cao: Fixer Grade 3 trở lên, Color Fixer, chỉ huy Syndicate, quản lý Wing hay thợ cả Workshop. Mạng lưới quan hệ, chiến tích và thể lực vẫn biến động theo bối cảnh; lời tổng kết của người có địa vị nói rõ các đầu mối liên lạc thay đổi, không nói mọi người quên tên họ.
+- Request hướng dẫn người mới chỉ còn dành cho Fixer Grade 4–9. Thêm bốn biến cố tuổi già riêng cho Fixer cấp cao, lãnh đạo Syndicate, quản lý Wing và thợ cả Workshop. Lựa chọn đánh đổi tiền, sức khỏe, tinh thần, mạng lưới, Merit hoặc Heat theo hậu quả kể ra, không trừ Rep vô cớ.
+- Kiểm tra: hồi quy cấp bậc và chỉ số đạt; 234 biến cố lớn, lint 0 lỗi/0 cảnh báo, build FE thành công; mô phỏng 50.048 khoảnh khắc không vi phạm năm nhóm quy tắc và 120 cuộc đời không phát hiện lỗi logic.
+
 ### 21/10/2026, sửa BUG-17 đến BUG-22 từ log người chơi
 
 - BUG-17: nhiệm vụ nhận lệnh thanh trừng chỉ dành cho cấp dưới Syndicate. Người đạt bậc chỉ huy có một tình huống riêng về lệnh thu tiền bảo vệ.

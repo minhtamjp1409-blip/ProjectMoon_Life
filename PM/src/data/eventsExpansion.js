@@ -846,6 +846,7 @@ export const EXPANSION_EVENTS = [
     major: true,
     weight: 9,
     jobs: ['Fixer'],
+    need: { grade: [9, 4] },
     vi: '[Request cuối cùng] Office cũ của bạn gửi đến một Request đơn giản: dẫn một người mới đi qua ba con phố và giới thiệu họ với chủ quán ở góc ngoài. Công thấp, và ai cũng biết nó có nghĩa gì.',
     en: '[The Last Request] Your old Office sends a simple Request: walk a newcomer through three streets and introduce them to the owner of the corner stall. The pay is low, and everyone knows what it means.',
     choices: [
@@ -866,9 +867,145 @@ export const EXPANSION_EVENTS = [
       {
         labelVi: 'Từ chối và bảo Office tìm người khác',
         labelEn: 'Refuse and tell the Office to find someone else',
-        effects: { rep: -2, sanity: -3, network: -2 },
+        effects: { sanity: -2, network: -2 },
         resultVi: 'Văn phòng ghi nhận mà không phản đối. Tuần sau không có Request nào gửi đến nữa, và bạn nhận ra mình vừa nghe tiếng một cánh cửa khép lại.',
         resultEn: 'The Office notes it without objection. The following week no Request arrives, and you realise you have just heard a door close.'
+      }
+    ]
+  },
+
+  {
+    id: 'ev4_elder_fixer_successor',
+    age: [62, 140],
+    major: true,
+    weight: 12,
+    jobs: ['Fixer'],
+    need: { grade: [3, 1] },
+    vi: '[Người ký Request thay bạn] Một Office trẻ xin bạn bảo chứng cho người sẽ phụ trách tuyến đường mà bạn từng giữ. Hana Association không xét tuổi của bạn; họ cần biết ai sẽ chịu trách nhiệm khi một Request hỏng. Tên bạn vẫn trên hồ sơ, còn quyết định giao việc là của bạn.',
+    en: '[The Name on the Request] A young Office asks you to endorse the person taking over a route you once held. Hana Association is not questioning your age; it needs someone accountable when a Request fails. Your name remains on the record, and the handover is yours to decide.',
+    choices: [
+      {
+        labelVi: 'Huấn luyện người kế nhiệm và ký bảo chứng',
+        labelEn: 'Train the successor and endorse them',
+        effects: { wealth: -4, health: -2, network: 4, merit: 3 },
+        resultVi: 'Bạn dành nhiều tuần đối chiếu từng tuyến thoát và từng thân chủ. Người mới ký Request đầu tiên dưới tên mình; bạn trả phí huấn luyện, nhưng từ nay có người đủ sức nhận cuộc gọi lúc đêm.',
+        resultEn: 'You spent weeks checking escape routes and clients. The newcomer signed their first Request under their own name. Training cost you, but someone else can now answer the midnight calls.'
+      },
+      {
+        labelVi: 'Giữ quyền ký, giao việc hiện trường cho Office',
+        labelEn: 'Keep the signature and delegate fieldwork',
+        effects: { wealth: 2, network: -3, sanity: -2 },
+        resultVi: 'Bạn vẫn duyệt từng hồ sơ. Công việc chạy đúng hạn, nhưng vài người liên lạc trực tiếp với Office trẻ thay vì gọi cho bạn. Quyền ký còn nguyên; mạng lưới riêng mỏng đi.',
+        resultEn: 'You still approved every file. Work arrived on time, but a few contacts began calling the younger Office directly. Your authority remained; your personal network thinned.'
+      },
+      {
+        labelVi: 'Tự nhận Request khó nhất để kiểm tra tuyến',
+        labelEn: 'Take the hardest Request to test the route',
+        effects: { health: -8, sanity: -3, merit: 5 },
+        resultVi: 'Bạn hoàn tất Request và ghi lại chỗ phục kích mới trên bản đồ Hana. Cái giá nằm ở khớp gối và những đêm mất ngủ, không phải ở danh tiếng.',
+        resultEn: 'You completed the Request and marked a new ambush point on Hana’s map. The cost settled in your knee and sleepless nights, not in your reputation.'
+      }
+    ]
+  },
+
+  {
+    id: 'ev4_elder_syndicate_succession',
+    age: [62, 140],
+    major: true,
+    weight: 12,
+    jobs: ['Syndicate'],
+    need: { fingerRankAtLeast: 3 },
+    vi: '[Sổ thu của đời sau] Hai đội dưới quyền mang đến hai bản sổ thu khác nhau cho cùng một dãy phố. Họ chờ bạn xác nhận bản nào có hiệu lực trước khi người thu tiền đi. Chức vị của bạn không bị chất vấn; nếu bỏ qua, tranh chấp sẽ rơi xuống dân khu phố.',
+    en: '[The Next Crew’s Ledger] Two crews under your command bring different collection ledgers for the same block. They wait for you to decide which one stands before anyone is sent to collect. Your position is not in question; if you leave it unresolved, the dispute falls on the residents.',
+    choices: [
+      {
+        labelVi: 'Đối chiếu biên lai, hoàn tiền thu trùng',
+        labelEn: 'Check receipts and refund double payments',
+        effects: { wealth: -5, network: 4, sanity: 2 },
+        resultVi: 'Bạn trả lại tiền cho các hộ bị thu hai lần và buộc hai đội dùng chung một sổ. Ngân quỹ hụt đi, nhưng không còn ai phải đóng tiền cho cùng một đêm hai lần.',
+        resultEn: 'You refunded the households charged twice and put both crews on one ledger. The treasury shrank, but no one had to pay twice for the same night.'
+      },
+      {
+        labelVi: 'Giao một đội trưởng xử lý và chỉ nhận báo cáo',
+        labelEn: 'Delegate the dispute and read the report',
+        effects: { network: -3, sanity: 2 },
+        resultVi: 'Đội trưởng giải quyết xong trước tối. Dãy phố yên, nhưng từ nay mọi lời cầu cứu đi qua bàn của anh ta trước khi tới bạn.',
+        resultEn: 'The captain settled it before dusk. The block stayed quiet, though every appeal now passes through his desk before reaching yours.'
+      },
+      {
+        labelVi: 'Cho hai đội tự chia địa bàn',
+        labelEn: 'Let the crews divide the block',
+        effects: { wealth: 3, heat: 5, sanity: -4 },
+        resultVi: 'Tiền về đủ, nhưng một cuộc đụng độ nổ ra ở ranh giới mới. Người tuần tra bắt đầu ghi lại tên các đội của bạn.',
+        resultEn: 'The money came in, but a fight broke out at the new boundary. Patrols began recording the names of your crews.'
+      }
+    ]
+  },
+
+  {
+    id: 'ev4_elder_wing_handover',
+    age: [62, 140],
+    major: true,
+    weight: 12,
+    jobs: ['Wing Employee'],
+    need: { stat: { wingRank: [2, 9] } },
+    vi: '[Quyền duyệt ca đêm] Wing gửi lên hai lịch trực cho cùng một dây chuyền. Cả hai đều có chữ ký của bạn; một bản thiếu kỹ thuật viên an toàn. Nhân viên chờ quyết định trước khi máy khởi động, chứ không phải chờ bạn chứng minh mình còn giữ chức.',
+    en: '[Night Shift Approval] The Wing sends up two rosters for the same production line. Both bear your signature; one omits the safety technician. Staff wait for your decision before starting the machines, not for proof that you still hold office.',
+    choices: [
+      {
+        labelVi: 'Dừng dây chuyền để đối chiếu bản gốc',
+        labelEn: 'Stop the line and check the original',
+        effects: { wealth: -4, network: 3, sanity: -2 },
+        resultVi: 'Ca đêm chậm một giờ và phòng tài chính gửi giấy hỏi. Kỹ thuật viên được gọi đến; bản lịch thiếu tên bị thu hồi trước khi ai bước vào vùng máy.',
+        resultEn: 'The night shift started an hour late, and finance sent a query. The technician arrived; the incomplete roster was withdrawn before anyone entered the machine zone.'
+      },
+      {
+        labelVi: 'Giao trưởng ca xác minh rồi ký lại',
+        labelEn: 'Have the shift lead verify and countersign',
+        effects: { network: -2, sanity: 2 },
+        resultVi: 'Trưởng ca tìm ra lỗi nhập liệu và sửa ngay. Anh ta được mọi người tìm đến trước bạn trong các ca sau; quyền duyệt của bạn vẫn nguyên.',
+        resultEn: 'The shift lead found and corrected the entry error. Workers went to him first on later shifts; your approval authority stayed intact.'
+      },
+      {
+        labelVi: 'Cho máy chạy theo bản đã ký',
+        labelEn: 'Run the line under the signed roster',
+        effects: { wealth: 3, health: -5, sanity: -4, heat: 3 },
+        resultVi: 'Chỉ tiêu được giao đúng giờ. Đến sáng bạn xuống xưởng tự kéo chốt dừng máy khi một trục lệch nhịp, bị thương ở vai và phải ký báo cáo sự cố.',
+        resultEn: 'The quota was met on time. By morning you had to pull the emergency stop when a shaft slipped out of time, injuring your shoulder and leaving you to sign the incident report.'
+      }
+    ]
+  },
+
+  {
+    id: 'ev4_elder_workshop_mark',
+    age: [62, 140],
+    major: true,
+    weight: 12,
+    jobs: ['Workshop Craftsman'],
+    need: { stat: { workshopRank: [2, 9] } },
+    vi: '[Dấu xưởng trên lưỡi mới] Một thợ trẻ mang đến thanh kiếm vừa xuất lò để xin đóng dấu xưởng của bạn. Lưỡi kiếm đẹp, nhưng mối hàn bên trong chưa được thử tải. Khách đang chờ, còn tên xưởng sẽ nằm trên món hàng lâu hơn cả ca làm hôm nay.',
+    en: '[The Workshop Mark] A young craftsperson brings a fresh blade for your Workshop seal. It looks fine, but the inner weld has not been stress-tested. The client is waiting, and the Workshop name will outlast today’s shift.',
+    choices: [
+      {
+        labelVi: 'Thử tải và rèn lại mối hàn',
+        labelEn: 'Stress-test and reforge the weld',
+        effects: { wealth: -4, health: -3, merit: 4 },
+        resultVi: 'Mối hàn nứt đúng lần thử thứ ba. Bạn cùng thợ trẻ làm lại tới khuya; đơn hàng trễ, nhưng thanh kiếm mới chịu được tải ghi trên hợp đồng.',
+        resultEn: 'The weld cracked on the third test. You and the young smith worked until late. Delivery slipped, but the new blade met the load written in the contract.'
+      },
+      {
+        labelVi: 'Giao thợ cả kiểm tra và chịu trách nhiệm',
+        labelEn: 'Put the master smith in charge of inspection',
+        effects: { network: -2, sanity: 2 },
+        resultVi: 'Thợ cả giữ món hàng lại để kiểm tra. Từ nay khách hỏi ý ông ấy trước khi tìm bạn; dấu xưởng vẫn do bạn quyết.',
+        resultEn: 'The master smith held the order for inspection. Clients began asking for his opinion before yours; the Workshop seal remained your call.'
+      },
+      {
+        labelVi: 'Đóng dấu và giao đúng hạn',
+        labelEn: 'Seal it and deliver on schedule',
+        effects: { wealth: 3, sanity: -4, heat: 3 },
+        resultVi: 'Khách trả đủ tiền, nhưng thanh tra Tres ghi nhận rằng lưỡi kiếm chưa qua thử tải. Bạn giữ lại bản vẽ mối hàn và dặn xưởng không nhận thêm đơn cùng kiểu.',
+        resultEn: 'The client paid in full, but a Tres inspector recorded that the blade had not been load-tested. You kept the weld drawing and barred another order of this pattern.'
       }
     ]
   },
