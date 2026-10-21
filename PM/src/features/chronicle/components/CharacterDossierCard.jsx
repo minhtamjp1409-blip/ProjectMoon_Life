@@ -312,10 +312,12 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeT
             <span>{t('Tổ chức', 'Faction')}</span>
             <span>{char.org?.name || (char.finger ? `The ${char.finger}` : t('Tự do', 'Unaffiliated'))}</span>
           </div>
-          <div className="kv">
-            <span>Merit</span>
-            <span className="num">{char.merit}</span>
-          </div>
+          {char.job !== 'Child' && (
+            <div className="kv">
+              <span>Merit</span>
+              <span className="num">{char.merit}</span>
+            </div>
+          )}
           <Tooltip title={lang === 'en' ? omen.descEn : omen.descVi} placement="right">
             <div className="kv" style={{ cursor: 'help' }}>
               <span>{t('Điềm báo', 'Fate omen')}</span>

@@ -1531,10 +1531,16 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
   }
 
   const setWingRank = outcome.setWingRank ?? choice.setWingRank;
-  if (setWingRank !== undefined) char.wingRank = setWingRank;
+  if (setWingRank !== undefined) {
+    if (setWingRank > (char.wingRank || 0)) char.lastWingPromotionAge = char.age;
+    char.wingRank = setWingRank;
+  }
 
   const setWorkshopRank = outcome.setWorkshopRank ?? choice.setWorkshopRank;
-  if (setWorkshopRank !== undefined) char.workshopRank = setWorkshopRank;
+  if (setWorkshopRank !== undefined) {
+    if (setWorkshopRank > (char.workshopRank || 0)) char.lastWorkshopPromotionAge = char.age;
+    char.workshopRank = setWorkshopRank;
+  }
 
   const setOrg = outcome.setOrg || choice.setOrg;
   if (setOrg) char.org = setOrg;
@@ -1544,7 +1550,13 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
 
   const listedMerit = (choice.meritAdd || 0) + (outcome === choice ? 0 : outcome.meritAdd || 0);
   const meritAdd = isFixerCareerEvent(event) ? Math.round(listedMerit * BALANCE.fixerMeritScale) : listedMerit;
-  if (meritAdd) char.merit = Math.max(0, char.merit + meritAdd);
+  if (meritAdd) {
+    if (char.job === 'Child') {
+      char.stats.rep = clamp((char.stats.rep || 0) + Math.round(meritAdd * 0.5), 0, 100);
+    } else {
+      char.merit = Math.max(0, char.merit + meritAdd);
+    }
+  }
   if (event.id.startsWith('fixer_promo_') && char.fixerGrade < previousFixerGrade) {
     const earnedAtGrade = FIXER_LADDER.find((step) => step.grade === char.fixerGrade)?.meritReq || 0;
     const nextRequirement = FIXER_LADDER.find((step) => step.grade === char.fixerGrade - 1)?.meritReq || COLOR_FIXER_REQ.merit;

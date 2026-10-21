@@ -39,7 +39,12 @@ export function matchesNeed(need, char) {
   const remembers = (key) => (char.memory || []).some((m) => m.key === key);
   if (need.mem && !remembers(need.mem)) return false;
   if (need.noMem && remembers(need.noMem)) return false;
-  if (need.grade && !(char.job === 'Fixer' && char.fixerGrade <= need.grade[0] && char.fixerGrade >= need.grade[1])) return false;
+  if (need.grade) {
+    if (char.job !== 'Fixer' || char.fixerGrade == null) return false;
+    const min = Math.min(need.grade[0], need.grade[1]);
+    const max = Math.max(need.grade[0], need.grade[1]);
+    if (char.fixerGrade < min || char.fixerGrade > max) return false;
+  }
   if (need.fingerRank != null && (char.fingerRank || 0) !== need.fingerRank) return false;
   if (need.fingerRankAtLeast != null && (char.fingerRank || 0) < need.fingerRankAtLeast) return false;
   if (need.fingerRankAtMost != null && (char.fingerRank || 0) > need.fingerRankAtMost) return false;
@@ -65,6 +70,7 @@ export function hasNarrativeContext(entry, char) {
       ((entry.id?.startsWith('mourn_') || entry.id?.startsWith('avenge_')) && ['spouse', 'partner'].includes(role));
     if (remembrance ? !npc : !npcIsActive(npc)) return false;
   }
+  if (text.includes('{parentName}') && !char.lineage?.parentName && !char.npcs?.parent) return false;
   return true;
 }
 

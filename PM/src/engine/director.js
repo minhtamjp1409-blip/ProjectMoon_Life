@@ -130,6 +130,25 @@ export function directorWeight(entry, char) {
     // Ignore if during early initialization
   }
 
+  // Emergency Triage & Psychological Relief (Fair Roguelike Survival Mechanic)
+  const healthLow = (char.stats?.health ?? 100) <= 25;
+  const sanityLow = (char.stats?.sanity ?? 100) <= 25;
+  if (healthLow) {
+    if (tags.includes('medical') || tags.includes('healing') || entry.id?.includes('clinic') || entry.id?.includes('ampoule') || entry.id?.includes('remedy') || entry.id?.includes('doctor')) {
+      w *= 3.2;
+      reason = reason || { vi: 'Cơ hội tìm thầy thuốc cứu mạng', en: 'Desperate search for medical triage' };
+    }
+    if (tags.includes('lethal') || (tags.includes('danger') && tension >= 50)) {
+      w *= 0.35;
+    }
+  }
+  if (sanityLow) {
+    if (tags.includes('rest') || tags.includes('comfort') || tags.includes('relief') || entry.id?.includes('hamham') || entry.id?.includes('bistro') || entry.id?.includes('spa')) {
+      w *= 3.0;
+      reason = reason || { vi: 'Nhu cầu xoa dịu tâm trí đang lung lay', en: 'Urgent need for psychic stabilization' };
+    }
+  }
+
   return { w, reason: reason || { vi: 'Ngẫu nhiên', en: 'Chance' } };
 }
 

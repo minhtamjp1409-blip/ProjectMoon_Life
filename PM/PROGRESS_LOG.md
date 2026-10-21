@@ -345,6 +345,29 @@ Kiểm thử tự động trên **50.134 khoảnh khắc** và **243 vòng đờ
 
 ## 10. Nhật ký phát triển chi tiết (Changelog từ Đợt 1 đến Đợt 16)
 
+### Đợt 17 (21/10/2026): Giải quyết dứt điểm BUG-23 đến 28 & Cân bằng tài nguyên Roguelike toàn diện (Fair Hardcore)
+* **BUG-23 (Khống chế Merit tuổi thơ & Vệ sinh hiển thị):**
+  * Chặn tuyệt đối việc trẻ em (`char.job === 'Child'`) nhận điểm Merit chuyên nghiệp từ sự kiện tuổi thơ (`gameEngine.js`). Mọi điểm thưởng được chuyển hóa thành Rep danh tiếng lứa tuổi phù hợp.
+  * Khi tròn 18 tuổi chọn nghề Fixer, cấp bậc khởi đầu Grade 9 với Merit = 5 tiêu chuẩn.
+  * Ẩn hoàn toàn trường hiển thị Merit trên thẻ hồ sơ `CharacterDossierCard.jsx` khi nhân vật còn là trẻ em, tránh gây hiểu lầm cho người chơi.
+* **BUG-24 & 25 (Điều tiết nhịp độ thăng tiến & Khống chế thặng dư Merit):**
+  * Fixer: Sau khi vượt qua kỳ khảo hạch của Hiệp hội Hana, điểm Merit thặng dư chỉ được bảo lưu tối đa 25% và có trần khống chế thấp hơn ngưỡng bậc kế tiếp ít nhất 10 điểm, triệt tiêu hiện tượng đỗ 1 kỳ sát hạch rồi nhảy liền 2 bậc.
+  * Syndicate (5 Ngón tay), Wing Employee, Workshop Craftsman: Đồng bộ cơ chế yêu cầu thời gian giữ bậc tối thiểu 3 năm (`tenure >= 3`) trong `careerPipeline.js` trước khi được xét duyệt thăng cấp, chấm dứt tình trạng thăng tiến liên tục 3 năm liền.
+* **BUG-26 (Chuẩn hóa dải cấp bậc & Điều kiện ngữ cảnh thân nhân):**
+  * Sửa lỗi so sánh khoảng bậc `need.grade` trong `eventConditions.js`: chuẩn hóa `Math.min` và `Math.max` giúp cả hai cú pháp `[9, 4]` và `[4, 9]` đều được hiểu chuẩn xác.
+  * Nâng cấp bộ lọc `hasNarrativeContext`: Kiểm tra bổ sung thẻ `{parentName}`, bảo đảm các sự kiện nhắc đến di vật hay quan hệ cha mẹ không bị kích hoạt nhầm cho nhân vật Thế hệ 1 (Gen #1) mồ côi.
+* **BUG-27 (Cứu nạn khẩn cấp & Giải tỏa tâm lý - Emergency Triage & Psychological Relief):**
+  * Tích hợp cơ chế hỗ trợ sinh tồn công bằng (Fair Roguelike lấy cảm hứng từ *FTL* và *Disco Elysium*) vào `director.js`:
+    * Khi HP $\le 25$: Tăng trọng số $\times 3.2$ cho các sự kiện phòng khám, thầy thuốc Backstreets, ampoule K Corp và giảm $\times 0.35$ các sự kiện chiến đấu tử địa.
+    * Khi SP $\le 25$: Tăng trọng số $\times 3.0$ cho các sự kiện ăn uống HamHamPangPang, quán trà, nghỉ ngơi phục hồi tinh thần.
+  * Kết quả mô phỏng 300 đời (50.000+ khoảnh khắc): Tỷ lệ tử vong thể xác (HP = 0: 62 người) và suy sụp tinh thần (SP = 0: 66 người) đạt tỷ lệ cân bằng lý tưởng xấp xỉ $50:50$.
+* **BUG-28 (Minh bạch xác suất lựa chọn Angela / Thư Viện):**
+  * Chuẩn hóa tính toán tỷ lệ thành công / thất bại qua `outcomeOdds.js` cho mọi nhánh lựa chọn siêu nhiên.
+* **Kiểm định toàn vẹn 100%:**
+  * `npm test` chạy kiểm thử tự động 50.145 khoảnh khắc với 0 lỗi / 0 cảnh báo.
+  * Bộ kiểm định logic cốt truyện 120 vòng đời (`story_logic_audit.mjs`) đạt 0 vi phạm (0 logic violations).
+  * Bản build Vite production đạt 100% thành công trong 12.56s.
+
 ### Đợt 16 (21/10/2026): Tinh gọn tài nguyên & Trải nghiệm đọc kết quả trực tiếp
 * **Loại bỏ popup modal kết quả:** Xóa bỏ màn hình `ResultDock` ("KẾT QUẢ QUYẾT ĐỊNH" có nút "Tiếp tục hành trình ➔") che khuất giao diện sau mỗi lựa chọn sự kiện lớn, hợp đồng hay gặp gỡ bất chợt.
 * **Hiển thị trực tiếp trên dòng thời gian ngoài (Chronicle Feed):** Toàn bộ kết quả lựa chọn, diễn biến cốt truyện, biến động chỉ số (HP, SP, Rep, Ahn, Sẹo...) hiển thị mượt mà trên thẻ sự kiện ở feed chính.

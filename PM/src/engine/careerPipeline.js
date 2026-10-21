@@ -203,9 +203,9 @@ export function getNextFingerPromotion(char) {
 
   const curRep = (char.stats?.rep ?? char.rep) || 0;
   const earliestAge = [0, 22, 28, 35][nextStep.rank];
-  const tenureOk = curRank === 0 || char.lastFingerPromotionAge == null || char.age - char.lastFingerPromotionAge >= 4;
-  const thumbPacingOk = char.finger !== 'Thumb' || (char.age >= earliestAge && tenureOk);
-  const isEligible = (char.merit || 0) >= nextStep.meritReq && curRep >= nextStep.repReq && thumbPacingOk;
+  const tenureOk = curRank === 0 || char.lastFingerPromotionAge == null || char.age - char.lastFingerPromotionAge >= 3;
+  const fingerPacingOk = tenureOk && (char.finger !== 'Thumb' || char.age >= earliestAge);
+  const isEligible = (char.merit || 0) >= nextStep.meritReq && curRep >= nextStep.repReq && fingerPacingOk;
 
   return {
     ...nextStep,
@@ -232,7 +232,8 @@ export function getNextWingPromotion(char) {
 
   const curWealth = (char.stats?.wealth ?? char.wealth) || 0;
   const curNet = (char.stats?.network ?? char.network) || 0;
-  const isEligible = (char.merit || 0) >= nextStep.meritReq && curWealth >= nextStep.wealthReq && curNet >= nextStep.networkReq;
+  const tenureOk = curRank === 0 || char.lastWingPromotionAge == null || char.age - char.lastWingPromotionAge >= 3;
+  const isEligible = (char.merit || 0) >= nextStep.meritReq && curWealth >= nextStep.wealthReq && curNet >= nextStep.networkReq && tenureOk;
 
   return {
     ...nextStep,
@@ -259,7 +260,8 @@ export function getNextWorkshopPromotion(char) {
 
   const curWealth = (char.stats?.wealth ?? char.wealth) || 0;
   const curReso = char.resonance || 0;
-  const isEligible = (char.merit || 0) >= nextStep.meritReq && curWealth >= nextStep.wealthReq && curReso >= nextStep.resoReq;
+  const tenureOk = curRank === 0 || char.lastWorkshopPromotionAge == null || char.age - char.lastWorkshopPromotionAge >= 3;
+  const isEligible = (char.merit || 0) >= nextStep.meritReq && curWealth >= nextStep.wealthReq && curReso >= nextStep.resoReq && tenureOk;
 
   return {
     ...nextStep,
