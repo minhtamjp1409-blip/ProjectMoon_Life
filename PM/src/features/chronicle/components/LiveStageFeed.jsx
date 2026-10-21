@@ -473,6 +473,7 @@ const Epitaph = ({ summary, onInherit, onRestart }) => {
 /* ---------- Stage ---------- */
 
 function getPrologueButtonText(step, total, t) {
+  if (step === 0) return t('Bắt đầu: Xem khoảnh khắc chào đời ▾', 'Begin: Witness birth moment ▾');
   if (step === 1) return t('Tiếp tục: Xem gia cảnh & đêm sinh ▾', 'Continue: Read family & birth night ▾');
   if (step === 2) return t('Tiếp tục: Xem điềm báo lúc chào đời ▾', 'Continue: Read birth omen ▾');
   if (step === 3) return t('Tiếp tục: Gặp gỡ bạn thuở ấu thơ ▾', 'Continue: Meet childhood companion ▾');
@@ -482,24 +483,45 @@ function getPrologueButtonText(step, total, t) {
 
 export const LiveStageFeed = () => {
   const { t } = useT();
-  const { char, speed, setSpeed, chooseMinor, selectEventChoice, selectContractApproach, confirmColorTitle, confirmEgoName, completeWorkshopCraft, startLife, abandonRun, activeResolution, dismissResolution } =
-    useGameStore(
-      useShallow((s) => ({
-        char: s.char,
-        speed: s.speed,
-        setSpeed: s.setSpeed,
-        chooseMinor: s.chooseMinor,
-        selectEventChoice: s.selectEventChoice,
-        selectContractApproach: s.selectContractApproach,
-        confirmColorTitle: s.confirmColorTitle,
-        confirmEgoName: s.confirmEgoName,
-        completeWorkshopCraft: s.completeWorkshopCraft,
-        startLife: s.startLife,
-        abandonRun: s.abandonRun,
-        activeResolution: s.activeResolution,
-        dismissResolution: s.dismissResolution
-      }))
-    );
+  const {
+    char,
+    speed,
+    setSpeed,
+    chooseMinor,
+    selectEventChoice,
+    selectContractApproach,
+    confirmColorTitle,
+    confirmEgoName,
+    completeWorkshopCraft,
+    startLife,
+    abandonRun,
+    activeResolution,
+    dismissResolution,
+    revealNextBirthLog,
+    skipAllBirthLogs
+  } = useGameStore(
+    useShallow((s) => ({
+      char: s.char,
+      speed: s.speed,
+      setSpeed: s.setSpeed,
+      chooseMinor: s.chooseMinor,
+      selectEventChoice: s.selectEventChoice,
+      selectContractApproach: s.selectContractApproach,
+      confirmColorTitle: s.confirmColorTitle,
+      confirmEgoName: s.confirmEgoName,
+      completeWorkshopCraft: s.completeWorkshopCraft,
+      startLife: s.startLife,
+      abandonRun: s.abandonRun,
+      activeResolution: s.activeResolution,
+      dismissResolution: s.dismissResolution,
+      revealNextBirthLog: s.revealNextBirthLog,
+      skipAllBirthLogs: s.skipAllBirthLogs
+    }))
+  );
+
+  const pendingBirthLogs = char.pendingBirthLogs || [];
+  const isPrologueActive = pendingBirthLogs.length > 0;
+  const totalBirthCount = (char.logs?.length || 0) + pendingBirthLogs.length;
 
   const logRef = useRef(null);
   const stageRef = useRef(null);
@@ -511,6 +533,21 @@ export const LiveStageFeed = () => {
   const [cursorPos, setCursorPos] = useState(50);
   const [strikes, setStrikes] = useState([]);
   const dirRef = useRef(1);
+
+  // Auto-reveal birth prologue events sequentially with cinematic pacing
+  useEffect(() => {
+    if (!isPrologueActive) return;
+
+    const delay = (char.logs?.length || 0) === 0 ? 550 : 1250;
+    const timer = setTimeout(() => {
+      revealNextBirthLog();
+      try {
+        audioEngine.playYearTick();
+      } catch {}
+    }, delay);
+
+    return () => clearTimeout(timer);
+  }, [isPrologueActive, char.logs?.length, revealNextBirthLog]);
 
   // Trauma-based screen shake on stage element (following game-feel skill)
   useEffect(() => {
@@ -583,6 +620,15 @@ export const LiveStageFeed = () => {
         return;
       }
 
+      if (isPrologueActive) {
+        if (e.code === 'Space' || e.key === 'Enter') {
+          e.preventDefault();
+          audioEngine.playClick();
+          revealNextBirthLog();
+          return;
+        }
+      }
+
       if (e.code === 'Space') {
         if (!char.alive) return;
         e.preventDefault();
@@ -623,7 +669,7 @@ export const LiveStageFeed = () => {
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [char.alive, char.pendingEvent, char.pendingContract, char.pendingMinor, char.stats.wealth, activeResolution, dismissResolution, speed, setSpeed, chooseMinor, selectEventChoice, selectContractApproach]);
+  }, [char.alive, char.pendingEvent, char.pendingContract, char.pendingMinor, char.stats.wealth, activeResolution, dismissResolution, speed, setSpeed, chooseMinor, selectEventChoice, selectContractApproach, isPrologueActive, revealNextBirthLog]);
 
   // Forge mini-game: the cursor sweeps while the craft modal is open
   useEffect(() => {
@@ -673,7 +719,34 @@ export const LiveStageFeed = () => {
       <div className="log" ref={logRef}>
         <div className="log-col">
           <LogEntries logs={char.logs} />
-          {lifeSummary && <Epitaph summary={lifeSummary} onInherit={() => startLife(true)} onRestart={abandonRun} />}
+          {isPrologueActive && (
+            <div className="prologue-dock">
+              <button
+                type="button"
+                className="btn btn-primary prologue-btn"
+                onClick={() => {
+                  try { audioEngine.playClick(); } catch {}
+                  revealNextBirthLog();
+                }}
+              >
+                <span>{getPrologueButtonText(char.logs?.length || 0, totalBirthCount, t)}</span>
+                <span className="key-badge">Space / Enter</span>
+              </button>
+              <button
+                type="button"
+                className="btn btn-ghost btn-sm prologue-skip-btn"
+                onClick={() => {
+                  try { audioEngine.playClick(); } catch {}
+                  skipAllBirthLogs();
+                }}
+              >
+                {t('Bỏ qua ⏭', 'Skip ⏭')}
+              </button>
+            </div>
+          )}
+          {lifeSummary && !isPrologueActive && (
+            <Epitaph summary={lifeSummary} onInherit={() => startLife(true)} onRestart={abandonRun} />
+          )}
         </div>
       </div>
 

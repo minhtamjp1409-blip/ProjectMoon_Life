@@ -1035,6 +1035,60 @@ input:focus-visible, select:focus-visible, textarea:focus-visible {
 .interface-v2 .epitaph-quote { font-size: 16px; color: var(--accent); font-style: italic; }
 .interface-v2 .delta { border-radius: 4px; box-shadow: none; font-weight: 500; font-size: 11px; }
 
+/* Prologue sequential reveal dock */
+.interface-v2 .prologue-dock {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 18px 0 28px;
+  animation: entrySlideUpFade 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.interface-v2 .prologue-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 10px 22px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 8px;
+  box-shadow: 0 4px 18px rgba(212, 175, 55, 0.25);
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.22), rgba(212, 175, 55, 0.08));
+  border: 1px solid var(--accent);
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.interface-v2 .prologue-btn:hover {
+  background: var(--accent);
+  color: #000;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 24px rgba(212, 175, 55, 0.45);
+}
+
+.interface-v2 .prologue-btn:active {
+  transform: scale(0.98);
+}
+
+.interface-v2 .prologue-skip-btn {
+  color: var(--muted);
+  border: 1px solid var(--border);
+  background: var(--raised);
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.interface-v2 .prologue-skip-btn:hover {
+  color: var(--text);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
 .interface-v2 .mobile-resource-hud, .playbar-mobile-vitals { display: none; }
 .interface-v2 .btn-speed-mobile, .interface-v2 .btn-shop-mobile, .interface-v2 .playbar-mobile-more { display: none; }
 
@@ -1449,6 +1503,24 @@ input:focus-visible, select:focus-visible, textarea:focus-visible {
   .interface-v2 .yearline {
     margin: 18px 0 10px;
     font-size: 12px;
+  }
+
+  .interface-v2 .prologue-dock {
+    flex-direction: column;
+    width: 100%;
+    gap: 8px;
+    margin: 14px 0 22px;
+  }
+  .interface-v2 .prologue-btn {
+    width: 100%;
+    justify-content: center;
+    min-height: 50px;
+    font-size: 14px;
+  }
+  .interface-v2 .prologue-skip-btn {
+    width: 100%;
+    justify-content: center;
+    min-height: 40px;
   }
 
   /* 3. Bottom PlayBar (Thumb Zone Ergonomics!) */

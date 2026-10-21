@@ -493,7 +493,8 @@ export function createNewCharacter({
     memory: [],
     motifs: {},
     unlockedRecords,
-    logs: initialLogs,
+    logs: [],
+    pendingBirthLogs: initialLogs,
     weaver,
     pendingEvent: null,
     pendingContract: null,
@@ -521,7 +522,8 @@ export function cloneChar(char) {
     memory: [...(char.memory || [])],
     motifs: { ...(char.motifs || {}) },
     unlockedRecords: [...char.unlockedRecords],
-    logs: [...char.logs]
+    logs: [...char.logs],
+    pendingBirthLogs: char.pendingBirthLogs ? [...char.pendingBirthLogs] : undefined
   };
   Object.defineProperties(copy, {
     health: { get() { return this.stats.health; }, enumerable: true },

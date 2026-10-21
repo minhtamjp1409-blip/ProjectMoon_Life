@@ -505,6 +505,45 @@ export const useGameStore = create((set, get) => ({
 
   /* ---------- life ---------- */
 
+  revealNextBirthLog: () => {
+    const s = get();
+    const c = s.char;
+    if (!c || !c.pendingBirthLogs || c.pendingBirthLogs.length === 0) return false;
+    const [nextLog, ...remaining] = c.pendingBirthLogs;
+    const nextLogs = [...(c.logs || []), nextLog];
+    const isDone = remaining.length === 0;
+    const nextChar = cloneChar({
+      ...c,
+      logs: nextLogs,
+      pendingBirthLogs: remaining
+    });
+    set({
+      char: nextChar,
+      speed: isDone && nextChar.alive ? 1 : 0
+    });
+    if (isDone) {
+      get().saveRun(true);
+    }
+    return true;
+  },
+
+  skipAllBirthLogs: () => {
+    const s = get();
+    const c = s.char;
+    if (!c || !c.pendingBirthLogs || c.pendingBirthLogs.length === 0) return;
+    const nextLogs = [...(c.logs || []), ...c.pendingBirthLogs];
+    const nextChar = cloneChar({
+      ...c,
+      logs: nextLogs,
+      pendingBirthLogs: []
+    });
+    set({
+      char: nextChar,
+      speed: nextChar.alive ? 1 : 0
+    });
+    get().saveRun(true);
+  },
+
   startLife: (useLegacy = false, startAge = 0) => {
     const state = get();
     const legacyPkg = useLegacy ? state.pendingLegacy : null;
@@ -518,13 +557,30 @@ export const useGameStore = create((set, get) => ({
     lifeRng = createRNG(`${nextChar.seed}:life:${nextChar.age}`);
     planYear(nextChar, lifeRng);
     const metaUpdates = get().syncMetaFromChar(nextChar);
-    set({ char: nextChar, inRun: true, speed: 1, yearProgress: 0, stageFx: null, activeResolution: null, ...metaUpdates });
-    get().saveRun(true);
+    const hasBirthLogs = Boolean(nextChar.pendingBirthLogs && nextChar.pendingBirthLogs.length > 0);
+    set({
+      char: nextChar,
+      inRun: true,
+      speed: hasBirthLogs ? 0 : 1,
+      yearProgress: 0,
+      stageFx: null,
+      activeResolution: null,
+      ...metaUpdates
+    });
+    if (!hasBirthLogs) {
+      get().saveRun(true);
+    }
 
     // Offload to .NET 8 Director backend for authoritative verification
     syncPlanWithBackend(nextChar, lifeRng).then((synced) => {
       if (get().inRun && get().char?.age === synced.age) {
-        set({ char: cloneChar(synced) });
+        const curChar = get().char;
+        const merged = cloneChar(synced);
+        if (curChar?.pendingBirthLogs) {
+          merged.pendingBirthLogs = [...curChar.pendingBirthLogs];
+          merged.logs = [...(curChar.logs || [])];
+        }
+        set({ char: merged });
       }
     });
   },
