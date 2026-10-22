@@ -3,8 +3,9 @@ import { Modal } from 'antd';
 import { GitBranch, Download, RotateCcw, Hammer, ChevronDown, Eye, EyeOff } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
 import { useGameStore } from '../../../store/gameStore';
-import { buildLifeSummaryAndLegacy, getDungeonCurrentStage, isDungeonChoiceAvailable } from '../../../engine/gameEngine';
+import { buildLifeSummaryAndLegacy, getDungeonCurrentStage, isDungeonChoiceAvailable, DUNGEON_DEFINITIONS } from '../../../engine/gameEngine';
 import { DungeonDock } from './DungeonDock';
+import { DungeonBackdrop } from './DungeonBackdrop';
 import { LIFE_MINORS, MINOR_WINDOW_MS, splitTitle } from '../../../engine/yearPlanner';
 import { exportDossierCardPNG } from '../../../utils/exportDossierCard';
 import { audioEngine } from '../../../engine/audioEngine';
@@ -781,10 +782,11 @@ export const LiveStageFeed = () => {
     setStrikes((prev) => [...prev, dist <= 10 ? 100 : dist <= 22 ? 85 : 68]);
   };
 
-  // Sound cues when an event, contract, or dungeon delve stops time
+  // Sound cues and camera trauma when an event, contract, or dungeon delve stops time
   useEffect(() => {
     if (char.pendingDungeon) {
       audioEngine.playDanger();
+      gameFeel.addTrauma(0.32);
     } else if (char.pendingEvent) {
       if (char.pendingEvent.isCausalCallback) audioEngine.playDanger();
       else if (typeof audioEngine.playDecision === 'function') audioEngine.playDecision();
@@ -799,8 +801,14 @@ export const LiveStageFeed = () => {
   const canPeek = Boolean(char.pendingDungeon || char.pendingEvent || char.pendingContract || activeResolution);
   useEffect(() => setPeekBehind(false), [char.pendingDungeon?.id, char.pendingEvent?.id, char.pendingContract?.id, activeResolution?.titleVi]);
 
+  const dungeonTheme = char.pendingDungeon ? DUNGEON_DEFINITIONS[char.pendingDungeon.id]?.theme || 'warp' : null;
+
   return (
-    <div className={`stage ${hasDock ? 'has-dock' : ''}`} ref={stageRef}>
+    <div
+      className={`stage ${hasDock ? 'has-dock' : ''} ${dungeonTheme ? `is-dungeon-stage is-dungeon-${dungeonTheme}` : ''}`}
+      ref={stageRef}
+    >
+      <DungeonBackdrop session={char.pendingDungeon} />
       <AmbientScene char={char} />
       <StageFx />
       <div className="chronicle-heading"><h1>{t('Biên niên', 'Chronicle')}</h1><span>{char.name}</span></div>
