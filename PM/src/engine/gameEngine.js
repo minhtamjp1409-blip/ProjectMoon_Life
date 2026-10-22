@@ -31,8 +31,10 @@ import { WORKSHOP_ECONOMY_EVENTS } from '../data/eventsWorkshopEconomy.js';
 import { BEREAVEMENT_EVENTS } from '../data/eventsBereavementMemories.js';
 import { DERIVATIVE_LORE_EVENTS } from '../data/eventsDerivativeLore.js';
 import { COMPANION_QUEST_EVENTS } from '../data/eventsCompanionQuests.js';
+import { CAREER_DRAMA_EVENTS } from '../data/eventsCareerDrama.js';
 import {
   FIXER_LADDER,
+  FINGER_LADDERS,
   COLOR_FIXER_REQ,
   getNextFixerPromotion,
   fixerPromotionOfferChance,
@@ -41,11 +43,11 @@ import {
   checkColorFixerReadiness,
   getNextFingerPromotion,
   getNextWingPromotion,
-  getNextWorkshopPromotion,
   getOtherCareerPromotion,
   careerTrialForEvent,
   careerPromotionSuccessChance,
   careerPromotionFailureEffects,
+  RETIRED_WORKSHOP_TRIAL_IDS,
   triggerDistortionTransformation,
   tryItemAutoRevive,
   determineSuccessorType
@@ -83,6 +85,7 @@ export const ALL_STORY_EVENTS = [
   ...BEREAVEMENT_EVENTS,
   ...DERIVATIVE_LORE_EVENTS,
   ...COMPANION_QUEST_EVENTS,
+  ...CAREER_DRAMA_EVENTS,
   ...EXPANSION_EVENTS
 ];
 
@@ -230,6 +233,7 @@ export function interpolateText(text, char) {
     .replace(/\{partner\}/g, partner)
     .replace(/\{spouse\}/g, spouse)
     .replace(/\{child\}/g, child)
+    .replace(/\{ward\}/g, npcName('ward', 'đứa trẻ'))
     .replace(/\{mentor\}/g, mentor)
     .replace(/\{scars\}/g, scars);
 }
@@ -746,13 +750,6 @@ export const WING_RANKS = [
   { rank: 3, titleVi: 'Giám đốc cấp cao (Senior Executive)', titleEn: 'Senior Executive', merit: 125, wealth: 85, network: 60 }
 ];
 
-export const WORKSHOP_RANKS = [
-  { rank: 0, titleVi: 'Học việc Workshop (Apprentice)', titleEn: 'Apprentice', merit: 0, wealth: 0, resonance: 0 },
-  { rank: 1, titleVi: 'Thợ rèn chính thức (Certified Artisan)', titleEn: 'Certified Artisan', merit: 25, wealth: 16, resonance: 10 },
-  { rank: 2, titleVi: 'Đại sư rèn đúc (Master Craftsman)', titleEn: 'Master Craftsman', merit: 65, wealth: 40, resonance: 24 },
-  { rank: 3, titleVi: 'Kỳ tài sáng chế (Legendary Innovator)', titleEn: 'Legendary Innovator', merit: 125, wealth: 75, resonance: 40 }
-];
-
 /**
  * Calculates the player's active career milestone and required checklist objectives.
  * Fixer thresholds are read from careerPipeline, the same table that gates the exams.
@@ -935,7 +932,7 @@ export function getNextCareerMilestone(char) {
         titleEn: `Peak Authority: ${ladder[currentRank]}`,
         progressPct: 100,
         requirements: [
-          { labelVi: 'Chiến công (Merit)', labelEn: 'Merit', current: char.merit || 0, target: (currentRank + 1) * 26, met: true }
+          { labelVi: 'Chiến công (Merit)', labelEn: 'Merit', current: char.merit || 0, target: FINGER_LADDERS[finger]?.[2]?.meritReq || 115, met: true }
         ],
         tipVi: 'Bạn đã là người đứng đầu một nhánh của Ngón. Mệnh lệnh của bạn là luật trong hẻm.',
         tipEn: 'You hold supreme authority within your Finger branch. Your word is alley law.'
@@ -946,8 +943,9 @@ export function getNextCareerMilestone(char) {
     const nextTitle = ladder[nextRank];
     const minAge = [0, 22, 28, 35][nextRank];
     const yearsInRank = currentRank === 0 || char.lastFingerPromotionAge == null ? 3 : Math.max(0, char.age - char.lastFingerPromotionAge);
-    const targetMerit = nextRank * 26;
-    const targetRep = nextRank * 16;
+    const nextStep = FINGER_LADDERS[finger]?.[nextRank - 1];
+    const targetMerit = nextStep?.meritReq || nextRank * 26;
+    const targetRep = nextStep?.repReq || nextRank * 16;
     const curRep = (char.stats?.rep ?? char.rep) || 0;
     const p1 = Math.min(100, ((char.merit || 0) / targetMerit) * 100);
     const p2 = Math.min(100, (curRep / targetRep) * 100);
@@ -996,7 +994,7 @@ export function getNextCareerMilestone(char) {
     const p3 = Math.min(100, (curNet / target.network) * 100);
     const yearsInRank = currentRank === 0 || char.lastWingPromotionAge == null ? 3 : Math.max(0, char.age - char.lastWingPromotionAge);
     const p4 = Math.min(100, (yearsInRank / 3) * 100);
-    const progressPct = Math.min(Math.round((p1 + p2 + p3) / 3), p4);
+    const progressPct = Math.round(Math.min(p1, p2, p3, p4));
 
     return {
       category: 'WING ADVANCEMENT',
@@ -1014,46 +1012,15 @@ export function getNextCareerMilestone(char) {
     };
   }
 
-  // 5. Workshop Craftsman Career
   if (char.job === 'Workshop Craftsman') {
-    const currentRank = char.workshopRank || 0;
-    const nextRank = Math.min(WORKSHOP_RANKS.length - 1, currentRank + 1);
-    const target = WORKSHOP_RANKS[nextRank];
-
-    if (currentRank >= WORKSHOP_RANKS.length - 1) {
-      return {
-        category: 'WORKSHOP MASTER',
-        titleVi: 'Kỳ tài sáng chế (Legendary Innovator)',
-        titleEn: 'Legendary Workshop Innovator',
-        progressPct: 100,
-        requirements: [],
-        tipVi: 'Vũ khí do bạn rèn được các Fixer Grade 1 và Color săn lùng khắp The City.',
-        tipEn: 'Weapons forged by your hands are coveted by Grade 1 Fixers and Colors across the City.'
-      };
-    }
-
-    const curWealth = (char.stats?.wealth ?? char.wealth) || 0;
-    const curReso = char.resonance || 0;
-    const p1 = Math.min(100, ((char.merit || 0) / target.merit) * 100);
-    const p2 = Math.min(100, (curWealth / target.wealth) * 100);
-    const p3 = Math.min(100, (curReso / target.resonance) * 100);
-    const yearsInRank = currentRank === 0 || char.lastWorkshopPromotionAge == null ? 3 : Math.max(0, char.age - char.lastWorkshopPromotionAge);
-    const p4 = Math.min(100, (yearsInRank / 3) * 100);
-    const progressPct = Math.min(Math.round((p1 + p2 + p3) / 3), p4);
-
     return {
-      category: 'WORKSHOP MASTERY',
-      titleVi: `Bậc nghệ nhân: ${target.titleVi}`,
-      titleEn: `Workshop Rank: ${target.titleEn}`,
-      progressPct,
-      requirements: [
-        { labelVi: 'Kinh nghiệm chế tác (Merit)', labelEn: 'Craft Merit', current: char.merit || 0, target: target.merit, met: (char.merit || 0) >= target.merit },
-        { labelVi: 'Vốn mua nguyên liệu (Wealth)', labelEn: 'Wealth (Ahn)', current: curWealth, target: target.wealth, met: curWealth >= target.wealth },
-        { labelVi: 'Dư âm vật liệu thử (Resonance)', labelEn: 'Prototype resonance', current: curReso, target: target.resonance, met: curReso >= target.resonance },
-        ...(currentRank > 0 ? [{ labelVi: 'Năm giữ bậc hiện tại', labelEn: 'Years at current rank', current: yearsInRank, target: 3, met: yearsInRank >= 3 }] : [])
-      ],
-      tipVi: 'Rèn luyện vũ khí mới, đăng ký bản quyền sáng chế với Tres Association và tích lũy nguyên liệu quý.',
-      tipEn: 'Forge new weapon prototypes, register patents with Tres Association, and gather rare materials.'
+      category: 'WORKSHOP',
+      titleVi: 'M?t ng?y ? x??ng',
+      titleEn: 'A Day at the Workshop',
+      progressPct: 0,
+      requirements: [],
+      tipVi: 'Nh?n ??n ??t h?ng, gi? l? ho?t ??ng v? ch?n ng??i ???c c?m v? kh? b?n r?n.',
+      tipEn: 'Take commissions, keep the forge running, and decide who receives your weapons.'
     };
   }
 
@@ -1072,7 +1039,7 @@ export function getNextCareerMilestone(char) {
 }
 
 /**
- * Evaluates Fixer Grade / Syndicate Rank / Wing Rank / Workshop Rank promotions
+ * Evaluates Fixer Grade / Syndicate Rank / Wing Rank promotions
  */
 export function checkPromotions(char) {
   const logsToAdd = [];
@@ -1143,22 +1110,6 @@ export function checkPromotions(char) {
     }
   }
 
-  // Workshop Craftsman Promotions: emit notifications when ready for next appraisal trial
-  if (char.job === 'Workshop Craftsman') {
-    const nextPromo = getNextWorkshopPromotion(char);
-    if (nextPromo && nextPromo.isEligible && !char.flags.includes(`ws_promo_ready_r${nextPromo.rank}`)) {
-      char.flags.push(`ws_promo_ready_r${nextPromo.rank}`);
-      logsToAdd.push({
-        id: `log_ws_ready_${char.age}_r${nextPromo.rank}`,
-        age: char.age,
-        season: SEASONS[char.seasonIdx],
-        type: 'promo',
-        vi: `[Tres Association] Tay nghề rèn và độ cộng hưởng của bạn đã đủ chuẩn để bước vào khảo thí: ${nextPromo.titleVi}!`,
-        en: `[Tres Association] Your craftsmanship qualifies you for the appraisal trial: ${nextPromo.titleEn}!`
-      });
-    }
-  }
-
   evaluateCharacterAchievements(char);
   return logsToAdd;
 }
@@ -1190,7 +1141,10 @@ export function generateFixerContract(char, rng) {
   const difficulty = 32 + template.tier * 16;
   const baseSuccess = clamp(Math.round(55 + (power - difficulty) * 1.1), 18, 94);
   const baseDeath = clamp(Math.round((100 - baseSuccess) * (0.12 + template.tier * 0.05)), 2, 42);
-  const baseFail = Math.max(0, 100 - baseSuccess - baseDeath);
+  const approachOdds = (successPct, wantedDeathPct) => {
+    const deathPct = clamp(wantedDeathPct, 1, 100 - successPct);
+    return { successPct, failPct: 100 - successPct - deathPct, deathPct };
+  };
 
   return {
     id: `${template.id}_${char.age}`,
@@ -1201,9 +1155,7 @@ export function generateFixerContract(char, rng) {
         id: 'careful',
         labelVi: 'Làm chậm mà chắc',
         labelEn: 'Slow and careful',
-        successPct: clamp(baseSuccess + 8, 25, 96),
-        failPct: clamp(baseFail, 3, 70),
-        deathPct: Math.max(1, Math.round(baseDeath * 0.55)),
+        ...approachOdds(clamp(baseSuccess + 8, 25, 96), Math.max(1, Math.round(baseDeath * 0.55))),
         payAhn: tierInfo.basePay,
         meritGain: tierInfo.baseMerit,
         costAhn: 0
@@ -1212,9 +1164,7 @@ export function generateFixerContract(char, rng) {
         id: 'bold',
         labelVi: 'Xông vào, xong sớm (thêm 50% Ahn và Merit)',
         labelEn: 'Go in hard, finish fast (50% more Ahn and Merit)',
-        successPct: clamp(baseSuccess - 8, 15, 90),
-        failPct: clamp(baseFail, 5, 70),
-        deathPct: clamp(Math.round(baseDeath * 1.45), 4, 55),
+        ...approachOdds(clamp(baseSuccess - 8, 15, 90), clamp(Math.round(baseDeath * 1.45), 4, 55)),
         payAhn: Math.round(tierInfo.basePay * 1.5),
         meritGain: Math.round(tierInfo.baseMerit * 1.5),
         costAhn: 0
@@ -1223,9 +1173,7 @@ export function generateFixerContract(char, rng) {
         id: 'intel',
         labelVi: 'Mua hồ sơ mục tiêu của Seven Association (8 Ahn)',
         labelEn: 'Buy the target file from Seven Association (8 Ahn)',
-        successPct: clamp(baseSuccess + 18, 35, 98),
-        failPct: Math.max(1, 99 - clamp(baseSuccess + 18, 35, 98)),
-        deathPct: 1,
+        ...approachOdds(clamp(baseSuccess + 18, 35, 98), 1),
         payAhn: tierInfo.basePay,
         meritGain: tierInfo.baseMerit + 3,
         costAhn: 8
@@ -1471,9 +1419,22 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
   const char = cloneChar(charState);
   const event = char.pendingEvent;
   if (!event) return char;
+  if (RETIRED_WORKSHOP_TRIAL_IDS.has(event.id)) {
+    char.pendingEvent = null;
+    return char;
+  }
 
   const choice = event.choices?.[choiceIdx];
   if (!choiceIsAvailable(choice, char)) return char;
+  const review = {
+    vi: event.displayVi || interpolateText(event.vi || '', char),
+    en: event.displayEn || interpolateText(event.en || '', char),
+    choices: (event.choices || []).map((entry) => ({
+      vi: interpolateText(entry.labelVi || '', char),
+      en: interpolateText(entry.labelEn || '', char)
+    })),
+    selected: choiceIdx
+  };
   char.pendingEvent = null;
   if (event.id.startsWith('fixer_promo_')) {
     const requiredGrade = event.choices?.find((entry) => entry.setFixerGrade != null)?.setFixerGrade;
@@ -1508,7 +1469,7 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
     char.seenEvents.push(event.id);
   }
   if (otherTrial) {
-    const prefix = otherTrial.route === 'finger' ? 'Finger' : otherTrial.route === 'wing' ? 'Wing' : 'Workshop';
+    const prefix = otherTrial.route === 'finger' ? 'Finger' : 'Wing';
     const retryKey = `${prefix.toLowerCase()}TrialRetryRank`;
     char[`last${prefix}TrialAge`] = char.age;
     char[retryKey] = otherTrial.rank;
@@ -1536,7 +1497,7 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
           : 'The Tres representative withheld the proofmark. You must replace the materials before presenting another sample next year.';
       char.logs.push({
         id: `log_ev_${char.age}_${event.id}_failed`, age: char.age, season: SEASONS[char.seasonIdx], type: 'major',
-        choiceVi: choice.labelVi, choiceEn: choice.labelEn, vi: verdict, en: verdictEn, deltas
+        choiceVi: choice.labelVi, choiceEn: choice.labelEn, vi: verdict, en: verdictEn, deltas, review
       });
       char.weaver = recordChoiceInGraph(char.weaver, char, event, { effects: loss }, verdict, verdictEn);
       closeThreads(char, event.id);
@@ -1568,6 +1529,7 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
         type: 'major',
         choiceVi: choice.labelVi,
         choiceEn: choice.labelEn,
+        review,
         vi,
         en,
         deltas: Object.keys(loss).map((k) => ({ k, v: char.stats[k] - before[k] })).filter((delta) => delta.v)
@@ -1672,12 +1634,6 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
     char.wingRank = setWingRank;
   }
 
-  const setWorkshopRank = outcome.setWorkshopRank ?? choice.setWorkshopRank;
-  if (setWorkshopRank !== undefined) {
-    if (setWorkshopRank > (char.workshopRank || 0)) char.lastWorkshopPromotionAge = char.age;
-    char.workshopRank = setWorkshopRank;
-  }
-
   const setOrg = outcome.setOrg || choice.setOrg;
   if (setOrg) char.org = setOrg;
 
@@ -1774,7 +1730,7 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
       char.npcs.spouse = { ...lover, role: 'spouse', bond: Math.max(lover.bond || 0, npcAdd.bond || 0), lastSeen: char.age };
       char.npcs.lover = null;
     } else if (!char.npcs[npcAdd.role] || char.npcs[npcAdd.role].deceased) {
-      const base = makeNpc(npcAdd.role, rng, { metAge: char.age, lastSeen: char.age, avoidNames: namesInUse(char) });
+      const base = makeNpc(npcAdd.role, rng, { metAge: char.age, lastSeen: char.age, ...(npcAdd.ageAtMeet == null ? {} : { ageAtMeet: npcAdd.ageAtMeet }), avoidNames: namesInUse(char) });
       char.npcs[npcAdd.role] = {
         ...base,
         ...(npcAdd.nameVi ? { nameVi: npcAdd.nameVi, nameEn: npcAdd.nameEn || npcAdd.nameVi } : {}),
@@ -1823,6 +1779,7 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
     type: event.isCausalCallback ? 'causal' : (event.major ? 'major' : 'choice'),
     choiceVi: choice.labelVi,
     choiceEn: choice.labelEn,
+    review,
     vi: textVi,
     en: textEn
   });
@@ -1906,7 +1863,7 @@ export function buildLifeSummaryAndLegacy(char) {
     rankTier = 'Urban Legend';
   } else if (char.job === 'Workshop Craftsman') {
     epitaphTitleVi = `Thợ rèn Workshop`;
-    epitaphTitleEn = `Master Workshop Craftsman`;
+    epitaphTitleEn = `Workshop Craftsman`;
     rankTier = char.craftWeapon ? 'Urban Nightmare' : 'Urban Legend';
   }
 

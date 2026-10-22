@@ -6,7 +6,7 @@
   "homepage": "https://project-moon-life-five.vercel.app",
   "scripts": {
     "dev": "vite",
-    "test": "node check_be_parity.mjs && node lint_story.mjs && node scripts/test_causal_threads.mjs && node scripts/test_balance_regressions.mjs && node scripts/test_reported_event_bugs.mjs && node scripts/test_reported_balance_bugs.mjs && node scripts/test_fixer_promotion_retry.mjs && node scripts/test_other_career_promotion.mjs && node scripts/test_outskirts_journey.mjs && node scripts/test_scar_system.mjs && node scripts/test_dungeon_mechanics.mjs && node run_million_audit.mjs 500",
+    "test": "node check_be_parity.mjs && node lint_story.mjs && node scripts/test_causal_threads.mjs && node scripts/test_balance_regressions.mjs && node scripts/test_reported_event_bugs.mjs && node scripts/test_reported_balance_bugs.mjs && node scripts/test_fixer_promotion_retry.mjs && node scripts/test_other_career_promotion.mjs && node scripts/test_career_drama.mjs && node scripts/test_outskirts_journey.mjs && node scripts/test_scar_system.mjs && node scripts/test_dungeon_mechanics.mjs && node run_million_audit.mjs 500",
     "lint:story": "node lint_story.mjs",
     "audit": "node run_million_audit.mjs 500",
     "audit:story": "node story_logic_audit.mjs 500",

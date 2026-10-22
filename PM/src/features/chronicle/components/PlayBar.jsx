@@ -348,7 +348,7 @@ export const PlayBar = () => {
         <YearTrack />
         <div className="yearbar-meta">
           <YearStatus />
-          {milestone && milestone.progressPct < 100 && (
+          {milestone && milestone.category !== 'WORKSHOP' && milestone.progressPct < 100 && (
             <Tooltip
               title={`${lang === 'en' ? milestone.titleEn : milestone.titleVi} (${milestone.progressPct}%) · ${lang === 'en' ? milestone.tipEn : milestone.tipVi}`}
             >

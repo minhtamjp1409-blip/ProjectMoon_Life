@@ -176,9 +176,6 @@ export function buildResolutionPayload({
   if ((nextChar.wingRank || 0) > (prevChar.wingRank || 0)) {
     deltas.push({ k: 'wingRank', v: nextChar.wingRank });
   }
-  if ((nextChar.workshopRank || 0) > (prevChar.workshopRank || 0)) {
-    deltas.push({ k: 'workshopRank', v: nextChar.workshopRank });
-  }
 
   // NPC relationships
   const prevNpcs = prevChar.npcs || {};

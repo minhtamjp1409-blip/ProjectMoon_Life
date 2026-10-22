@@ -271,13 +271,13 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeT
         <section className="career-objective-card">
           <div className="career-obj-header">
             <span className="career-obj-tag">{milestone.category}</span>
-            <span className="career-obj-pct num">{milestone.progressPct}%</span>
+            {milestone.category !== 'WORKSHOP' && <span className="career-obj-pct num">{milestone.progressPct}%</span>}
           </div>
           <h4 className="career-obj-title">{lang === 'en' ? milestone.titleEn : milestone.titleVi}</h4>
-          <div className="career-obj-bar">
+          {milestone.category !== 'WORKSHOP' && <div className="career-obj-bar">
             <i style={{ width: `${milestone.progressPct}%` }} />
-          </div>
-          <div className="career-obj-reqs">
+          </div>}
+          {milestone.category !== 'WORKSHOP' && <div className="career-obj-reqs">
             {milestone.requirements.map((req, idx) => (
               <div key={idx} className={`career-req-item ${req.met ? 'is-met' : ''}`}>
                 <span className="req-status">{req.met ? '✓' : '○'}</span>
@@ -285,7 +285,7 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeT
                 <span className="req-val num">{req.current}/{req.target}</span>
               </div>
             ))}
-          </div>
+          </div>}
           <p className="career-obj-tip">{lang === 'en' ? milestone.tipEn : milestone.tipVi}</p>
         </section>
       )}
@@ -522,7 +522,7 @@ export const CharacterDossierCard = () => {
         {/* Row 3: the year, and the next career goal */}
         <div className="hud2-year">
           <i className="hud2-year-track"><i style={{ width: `${Math.max(0, Math.min(100, yearProgress || 0))}%` }} /></i>
-          {milestone && milestone.progressPct < 100 ? (
+          {milestone && milestone.category !== 'WORKSHOP' && milestone.progressPct < 100 ? (
             <span className="hud2-goal" title={lang === 'en' ? milestone.titleEn : milestone.titleVi}>
               <span>{lang === 'en' ? milestone.titleEn : milestone.titleVi}</span>
               <b>{milestone.progressPct}%</b>

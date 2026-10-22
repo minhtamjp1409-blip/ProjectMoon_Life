@@ -96,6 +96,20 @@ const LogEntries = React.memo(function LogEntries({ logs }) {
         {entry.passed && <p className="entry-choice is-muted">{t('Bạn để nó trôi qua.', 'You let it pass.')}</p>}
         <p className="entry-text">{body}</p>
         {bilingual && entry.en && entry.en !== entry.vi && <p className="entry-alt">{splitTitle(entry.en).body}</p>}
+        {entry.review && (
+          <details className="entry-review">
+            <summary>{t('Xem lại sự kiện và lựa chọn', 'Review event and choices')}</summary>
+            <p>{splitTitle(lang === 'en' ? entry.review.en || entry.review.vi : entry.review.vi).body}</p>
+            <ol>
+              {entry.review.choices.map((option, index) => (
+                <li key={index} className={index === entry.review.selected ? 'is-selected' : ''}>
+                  {lang === 'en' ? option.en || option.vi : option.vi}
+                  {index === entry.review.selected && ` ${t('· Đã chọn', '· Chosen')}`}
+                </li>
+              ))}
+            </ol>
+          </details>
+        )}
         <Deltas deltas={entry.deltas} />
       </article>
     );

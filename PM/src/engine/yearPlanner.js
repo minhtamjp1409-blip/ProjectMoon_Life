@@ -8,7 +8,6 @@ import {
   checkColorFixerReadiness,
   getNextFingerPromotion,
   getNextWingPromotion,
-  getNextWorkshopPromotion,
   getOtherCareerPromotion,
   careerTrialRetryDue,
   careerOpportunity,
@@ -206,7 +205,7 @@ const weightOf = (char) => (e) => {
     }
   }
   const opportunity = careerOpportunity(char);
-  if (opportunity?.id === e.id) weight *= 1.5 + opportunity.shortage;
+  if (opportunity?.ids?.includes(e.id)) weight *= 1.5 + opportunity.shortage;
   return weight;
 };
 
@@ -228,11 +227,6 @@ function majorIsDue(char, rng) {
     const nextPromo = getNextWingPromotion(char);
     if (nextPromo && nextPromo.isEligible) return true;
   }
-  // If Workshop Craftsman is eligible for next workshop promotion, schedule major
-  if (char.job === 'Workshop Craftsman' && !char.flags.includes('Distorted')) {
-    const nextPromo = getNextWorkshopPromotion(char);
-    if (nextPromo && nextPromo.isEligible) return true;
-  }
   if ((char.age >= 18 && char.job === 'Child') && !(char.seenEvents || []).includes('ad_career_crossroad_18')) return true;
   if (char.job === 'Syndicate' && !char.finger && !(char.seenEvents || []).includes('syn_choose_finger_allegiance')) return true;
   if ((char.taboo || 0) >= 3) return true;
@@ -242,9 +236,6 @@ function majorIsDue(char, rng) {
     || ((char.resonance || 0) >= 90 && rng() < 0.15));
   if (carmenPressure && !(char.seenEvents || []).includes('ego_carmen_crossroad') && !char.flags.includes('EGOAwakened') && !char.flags.includes('Distorted')) return true;
   if (char.job === 'Fixer' && !char.flags.includes('Distorted') && checkColorFixerReadiness(char).ready && !char.flags.includes('ColorFixer') && !(char.seenEvents || []).includes('hana_color_ascension_trial')) return true;
-  if ((char.job === 'Syndicate' || (char.flags.includes('Distorted') && char.finger)) && (char.fingerRank || 0) >= 2 && (char.merit || 0) >= 75) return true;
-  if (char.job === 'Wing Employee' && (char.wingRank || 0) >= 1 && (char.merit || 0) >= 65 && !(char.seenEvents || []).includes('wing_singularity_classified_audit')) return true;
-  if (char.job === 'Workshop Craftsman' && (char.workshopRank || 0) >= 1 && (char.merit || 0) >= 65 && !(char.seenEvents || []).includes('workshop_legendary_forge_trial')) return true;
   const gap = w.yearsSinceLastMajor || 0;
   // Childhood: the gap counts from birth, so "every 5 years" used to put the first
   // major event at exactly 5 for everyone. Spread it over 5-9 instead.
@@ -337,12 +328,13 @@ export function planYear(charState, rng) {
   }
 
   const opportunity = careerOpportunity(char);
-  if (opportunity && rng() < opportunity.chance &&
-      scheduledKey.length < 4 && !scheduledKey.some((item) => item.id === opportunity.id)) {
-    const event = LIFE_MINORS.find((item) => item.id === opportunity.id);
+  if (opportunity && rng() < opportunity.chance && scheduledKey.length < 4 &&
+      !scheduledKey.some((item) => opportunity.ids.includes(item.id))) {
+    const id = opportunity.ids[Math.floor(rng() * opportunity.ids.length)];
+    const event = LIFE_MINORS.find((item) => item.id === id);
     if (event && matchesEventContext(event, char)) {
-      scheduledKey.push({ kind: 'minor', id: opportunity.id });
-      remember(char, opportunity.id);
+      scheduledKey.push({ kind: 'minor', id });
+      remember(char, id);
       logDecision(char, event, { vi: 'Thiếu thành tích cho bậc kế tiếp', en: 'A chance to close the next rank gap', w: opportunity.chance }, 'minor');
     }
   }
@@ -891,11 +883,12 @@ export function resolveMinor(charState, idx, rng) {
   }
   const resultText = `${outcome.rvi || ''}${choice.rvi || ''}`;
   const baseEffects = mergeEffects(choice, outcome);
+  if (choice.costAhn && (choice.fx?.wealth ?? choice.effects?.wealth) === -choice.costAhn) {
+    baseEffects.wealth = (baseEffects.wealth || 0) + choice.costAhn;
+  }
   // A result that prints its own numbers must land on exactly those numbers
   const mergedEffects = PRINTED_NUMBERS.test(resultText) ? baseEffects : varyEffects(baseEffects, rng, traits);
-  if (choice.costAhn && !(mergedEffects.wealth < 0)) {
-    mergedEffects.wealth = -choice.costAhn;
-  }
+  if (choice.costAhn) mergedEffects.wealth = (mergedEffects.wealth || 0) - choice.costAhn;
   const deltas = applyFx(char, mergedEffects, { exactRep: PRINTED_NUMBERS.test(resultText) });
   [...(choice.flags || []), ...(outcome === choice ? [] : outcome.flags || [])].forEach((f) => {
     if (!char.flags.includes(f)) char.flags.push(f);
@@ -917,6 +910,12 @@ export function resolveMinor(charState, idx, rng) {
       type: idx < 0 ? 'daily' : 'choice',
       choiceVi: idx < 0 ? null : interpolateText(choice.vi, char),
       choiceEn: idx < 0 ? null : interpolateText(choice.en, char),
+      review: {
+        vi: prompt.vi,
+        en: prompt.en,
+        choices: (prompt.choices || []).map((entry) => ({ vi: entry.vi, en: entry.en })),
+        selected: idx
+      },
       vi: `${prompt.vi}\n${resultVi}`.trim(),
       en: `${prompt.en}\n${resultEn}`.trim(),
       deltas,
@@ -1117,7 +1116,7 @@ export function endYear(charState, rng) {
   const protectedThresholds = nextFixerExam?.isEligible
     ? { rep: nextFixerExam.repReq, merit: nextFixerExam.meritReq }
     : nextOtherExam?.isEligible
-      ? { merit: nextOtherExam.meritReq, rep: nextOtherExam.repReq, network: nextOtherExam.networkReq, resonance: nextOtherExam.resoReq }
+      ? { merit: nextOtherExam.meritReq, rep: nextOtherExam.repReq, network: nextOtherExam.networkReq }
       : {};
   const drift = driftOf(char, bond ? 2 : 0, protectedThresholds);
   for (const [k, v] of Object.entries(drift)) add(k, v);

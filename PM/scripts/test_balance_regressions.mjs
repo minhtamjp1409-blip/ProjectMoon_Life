@@ -168,7 +168,7 @@ assert.ok(driftOf(elder).rep < 0);
 const seniorEvents = [
   ['Syndicate', 'fingerRank', 3, 'ev4_elder_syndicate_succession'],
   ['Wing Employee', 'wingRank', 2, 'ev4_elder_wing_handover'],
-  ['Workshop Craftsman', 'workshopRank', 2, 'ev4_elder_workshop_mark']
+  ['Workshop Craftsman', 'merit', 45, 'ev4_elder_workshop_mark']
 ];
 for (const [job, rankKey, rank, id] of seniorEvents) {
   const figure = born(72);

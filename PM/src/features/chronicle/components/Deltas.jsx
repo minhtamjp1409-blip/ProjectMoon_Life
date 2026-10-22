@@ -115,13 +115,6 @@ export function DeltaChip({ d, i = 0 }) {
       </span>
     );
   }
-  if (d.k === 'workshopRank') {
-    return (
-      <span className="delta is-rare" style={style}>
-        {t(`Cấp bậc Xưởng Workshop: Bậc ${d.v}`, `Workshop Rank: Tier ${d.v}`)}
-      </span>
-    );
-  }
   if (d.k === 'seed') {
     return (
       <span className="delta is-rare" style={style}>
@@ -155,6 +148,7 @@ const outsOf = (c) => c?.out || c?.outcomes || null;
  */
 export function previewChoice(choice, char, kind = 'major') {
   const base = fxOf(choice);
+  const costOutsideEffects = choice.costAhn && base.wealth !== -choice.costAhn ? choice.costAhn : 0;
   if (char && choice.setFixerGrade != null) {
     const pass = Math.round(fixerPromotionSuccessChance(char, choice.setFixerGrade) * 100);
     return { affected: [...new Set([...STAT_ORDER.filter((key) => Boolean(base[key])), 'health', 'wealth', 'sanity'])],
@@ -171,7 +165,7 @@ export function previewChoice(choice, char, kind = 'major') {
   const affected = [];
   const ranges = [];
   for (const k of STAT_ORDER) {
-    const values = outs.map((o) => (base[k] || 0) + (fxOf(o)[k] || 0) - (k === 'wealth' && choice.costAhn ? choice.costAhn : 0));
+    const values = outs.map((o) => (base[k] || 0) + (fxOf(o)[k] || 0) - (k === 'wealth' ? costOutsideEffects : 0));
     const lo = Math.min(...values);
     const hi = Math.max(...values);
     if (lo === 0 && hi === 0 && !base[k] && !(k === 'wealth' && choice.costAhn)) continue;

@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { ALL_STORY_EVENTS, createNewCharacter, createRNG, resolveEventChoice } from '../src/engine/gameEngine.js';
+import { ALL_STORY_EVENTS, createNewCharacter, createRNG, getNextCareerMilestone, resolveEventChoice } from '../src/engine/gameEngine.js';
 import {
   careerOpportunity, careerPromotionOfferChance, careerPromotionSuccessChance,
   careerTrialForEvent, getOtherCareerPromotion
@@ -8,17 +8,26 @@ import { isEventEligible, selectEventWithWeaverAI } from '../src/engine/weaverAI
 import { CONSEQUENCE_EVENTS } from '../src/data/eventsChildhood.js';
 import { LIFE_MINORS, planYear, runPlanItem, syncPlanWithBackend } from '../src/engine/yearPlanner.js';
 import { cityArchiveAPI } from '../src/services/api/cityArchiveAPI.js';
+import { choiceIsAvailable } from '../src/engine/eventConditions.js';
 
 const cases = [
   ['Thumb', 'm_career_thumb_ledger'], ['Index', 'm_career_index_prescript'],
   ['Middle', 'm_career_middle_vengeance'], ['Ring', 'm_career_ring_commission'],
-  ['Pinky', 'm_career_pinky_oath'], ['Wing Employee', 'm_career_wing_review'],
-  ['Workshop Craftsman', 'm_career_workshop_proof']
+  ['Pinky', 'm_career_pinky_oath'], ['Wing Employee', 'm_career_wing_review']
 ];
+
+const careerCrossroad = ALL_STORY_EVENTS.find((event) => event.id === 'ad_career_crossroad_18');
+const wingEntryChoice = careerCrossroad.choices.findIndex((choice) => choice.setJob === 'Wing Employee');
+const wingEntrant = createNewCharacter({ seed: 'wing-probation', startAge: 18 });
+wingEntrant.regionId = 'A';
+wingEntrant.pendingEvent = careerCrossroad;
+const hired = resolveEventChoice(wingEntrant, wingEntryChoice, () => 0);
+assert.equal(hired.job, 'Wing Employee');
+assert.equal(hired.wingRank, 0, 'Wing hiring must not skip the first appointment');
 
 function candidate(route, seed = route) {
   const char = createNewCharacter({ seed: `career-${seed}`, startAge: 40 });
-  char.job = ['Wing Employee', 'Workshop Craftsman'].includes(route) ? route : 'Syndicate';
+  char.job = route === 'Wing Employee' ? route : 'Syndicate';
   char.finger = char.job === 'Syndicate' ? route : null;
   char.fingerRank = 0;
   char.wingRank = 0;
@@ -51,13 +60,13 @@ for (const [route, opportunityId] of cases) {
   assert.equal(careerTrialForEvent(notOffered.event?.id), null, route);
 
   const promotionChoice = event.choices.findIndex((choice) =>
-    choice.setFingerRank === 1 || choice.setWingRank === 1 || choice.setWorkshopRank === 1);
+    choice.setFingerRank === 1 || choice.setWingRank === 1);
   assert.ok(promotionChoice >= 0, route);
   ready.pendingEvent = event;
   const failed = resolveEventChoice(ready, promotionChoice, () => 0.99);
   assert.equal(getOtherCareerPromotion(failed)?.rank, 1, route);
   assert.equal(isEventEligible(event, failed), false, route);
-  const prefix = step.route === 'finger' ? 'Finger' : step.route === 'wing' ? 'Wing' : 'Workshop';
+  const prefix = step.route === 'finger' ? 'Finger' : 'Wing';
   assert.equal(failed[`last${prefix}TrialAge`], 40, route);
   assert.equal(failed[`${prefix.toLowerCase()}TrialRetryRank`], 1, route);
   failed.age = 41;
@@ -73,7 +82,7 @@ for (const [route, opportunityId] of cases) {
   assert.equal(careerTrialForEvent(retry.event?.id)?.route, step.route, route);
   failed.pendingEvent = event;
   const passed = resolveEventChoice(failed, promotionChoice, () => 0);
-  assert.equal(passed[`${step.route === 'finger' ? 'finger' : step.route === 'wing' ? 'wing' : 'workshop'}Rank`], 1, route);
+  assert.equal(passed[`${step.route === 'finger' ? 'finger' : 'wing'}Rank`], 1, route);
   assert.equal(passed[`${prefix.toLowerCase()}TrialRetryRank`], null, route);
 
   const short = candidate(route, `${route}-short`);
@@ -96,9 +105,49 @@ for (const [route, opportunityId] of cases) {
     copy.stats.network = short.stats.network;
     copy.resonance = short.resonance;
     planYear(copy, createRNG(`career-opportunity-${route}-${i}`));
-    offers += Number(copy.plan.some((item) => item.id === opportunityId));
+    offers += Number(copy.plan.some((item) => opportunity.ids.includes(item.id)));
   }
   assert.ok(offers >= 20 && offers <= 70, `${route}: ${offers}/80`);
+}
+
+for (const [route] of cases) {
+  const premature = candidate(route, `${route}-premature-apex`);
+  premature.fingerRank = premature.wingRank = 2;
+  premature.lastFingerPromotionAge = premature.lastWingPromotionAge = premature.lastWorkshopPromotionAge = 35;
+  premature.merit = 100;
+  assert.equal(getOtherCareerPromotion(premature)?.isEligible, false, route);
+  const blocked = selectEventWithWeaverAI({ weaver: premature.weaver, char: premature, allPools: ALL_STORY_EVENTS, consequencePool: CONSEQUENCE_EVENTS, rng: () => 0 });
+  assert.equal(careerTrialForEvent(blocked.event?.id), null, `${route}: no premature apex trial`);
+
+  for (const rank of [2, 3]) {
+    const ready = candidate(route, `${route}-rank-${rank}`);
+    ready.fingerRank = ready.wingRank = rank - 1;
+    ready.lastFingerPromotionAge = ready.lastWingPromotionAge = ready.lastWorkshopPromotionAge = 35;
+    ready.merit = 200;
+    ready.stats.rep = ready.stats.wealth = ready.stats.network = 95;
+    ready.resonance = 70;
+    const step = getOtherCareerPromotion(ready);
+    assert.equal(step.rank, rank, route);
+    assert.equal(step.isEligible, true, route);
+    if (step.route === 'finger') {
+      const requirements = getNextCareerMilestone(ready).requirements;
+      assert.equal(requirements.find((item) => item.labelEn === 'Syndicate Merit')?.target, step.meritReq, route);
+      assert.equal(requirements.find((item) => item.labelEn === 'Reputation')?.target, step.repReq, route);
+    }
+    const rankKey = step.route === 'finger' ? 'fingerRank' : 'wingRank';
+    const choiceKey = step.route === 'finger' ? 'setFingerRank' : 'setWingRank';
+    for (const id of step.eventIds || [step.eventId]) {
+      const event = ALL_STORY_EVENTS.find((entry) => entry.id === id);
+      assert.ok(event && isEventEligible(event, ready), `${route} rank ${rank}: ${id}`);
+      const choiceIndex = event.choices.findIndex((choice) => choice[choiceKey] === rank && choiceIsAvailable(choice, ready));
+      assert.ok(choiceIndex >= 0, `${route} rank ${rank}: ${id}`);
+      const copy = structuredClone(ready);
+      copy.pendingEvent = event;
+      const passed = resolveEventChoice(copy, choiceIndex, () => 0);
+      assert.equal(passed[rankKey], rank, `${route} rank ${rank}: ${id}`);
+      assert.equal(getOtherCareerPromotion(passed)?.rank ?? null, rank === 3 ? null : rank + 1, `${route} rank ${rank}: ${id}`);
+    }
+  }
 }
 
 const originalPlanYear = cityArchiveAPI.planYear;
@@ -111,7 +160,7 @@ try {
     copy.stats.network = 0;
     copy.stats.wealth = 0;
     planYear(copy, createRNG(`backend-wing-${i}`));
-    if (copy.plan.some((item) => item.id === 'm_career_wing_review')) {
+    if (copy.plan.some((item) => careerOpportunity(copy).ids.includes(item.id))) {
       wing = copy;
       found = true;
       break;
@@ -120,7 +169,7 @@ try {
   assert.ok(found);
   cityArchiveAPI.planYear = async () => ({ moments: ['Spring', 'Summer', 'Autumn', 'Winter'].map((season, seasonIdx) => ({ kind: 'daily', t: 0.1 + seasonIdx * 0.25, season, seasonIdx })) });
   await syncPlanWithBackend(wing, createRNG('career-wing-sync'));
-  assert.ok(wing.plan.some((item) => item.id === 'm_career_wing_review'));
+  assert.ok(wing.plan.some((item) => careerOpportunity(wing).ids.includes(item.id)));
 
   const readyWing = candidate('Wing Employee', 'backend-trial');
   planYear(readyWing, createRNG('backend-trial-local'));

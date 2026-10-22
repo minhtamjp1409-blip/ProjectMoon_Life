@@ -478,10 +478,10 @@ export const CHILDHOOD_EVENTS = [
       {
         labelVi: 'Nộp đơn vào làm cho một Wing',
         labelEn: 'Apply to work for a Wing',
-        resultVi: "Bạn qua các vòng tuyển dụng và nhận đồng phục Feather. Hợp đồng Wing cho phép điều động cơ thể nhân viên khi Singularity gặp sự cố. Chữ ký của bạn nằm ngay dưới điều khoản đó.",
-        resultEn: 'You received a Feather uniform and an employee number. The contract ran 40 pages, and page 31 said the company has rights to your body “where necessary.”',
+        resultVi: "Bạn qua vòng tuyển dụng, nhận thẻ thử việc và đồng phục Feather. Hợp đồng cho phép Wing điều động cơ thể nhân viên khi Singularity gặp sự cố. Chữ ký của bạn nằm ngay dưới điều khoản đó.",
+        resultEn: 'You received a probationary badge and a Feather uniform. Page 31 of the contract gave the Wing rights to your body “where necessary.”',
         setJob: 'Wing Employee',
-        setWingRank: 1,
+        setWingRank: 0,
         effects: { wealth: +18, network: +12, sanity: -8 },
         flagsAdd: ['Feather', 'Nest'],
         recordsAdd: ['nest_migration']

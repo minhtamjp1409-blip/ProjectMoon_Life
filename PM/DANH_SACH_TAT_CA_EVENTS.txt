@@ -1,15 +1,15 @@
 THE CITY CHRONICLES — DANH SÁCH SỰ KIỆN VÀ CÁC NHÁNH
 Tác phẩm phái sinh lấy cảm hứng từ vũ trụ Project Moon; các quy tắc riêng của trò chơi không phải lore chính thức.
-Xuất ngày: 09:33:11 22/10/2026
-Tổng cộng: 819 mục
-Biến cố chính: 247
+Xuất ngày: 14:17:52 22/10/2026
+Tổng cộng: 840 mục
+Biến cố chính: 259
 Hệ quả của lựa chọn trước: 36
-Tình huống ngắn có lựa chọn: 210
+Tình huống ngắn có lựa chọn: 219
 Nhịp sống thường ngày: 302
 Ủy thác Fixer: 24
 
 ================================================================================
-BIẾN CỐ CHÍNH — 247
+BIẾN CỐ CHÍNH — 259
 ================================================================================
 
 [1] leg_inherited_relic
@@ -265,12 +265,12 @@ English: [Eighteen] At eighteen you start paying for everything in the City your
     setJob: Syndicate
   Lựa chọn 3: Nộp đơn vào làm cho một Wing
     English: Apply to work for a Wing
-    Kết quả: Bạn qua các vòng tuyển dụng và nhận đồng phục Feather. Hợp đồng Wing cho phép điều động cơ thể nhân viên khi Singularity gặp sự cố. Chữ ký của bạn nằm ngay dưới điều khoản đó.
-    Outcome: You received a Feather uniform and an employee number. The contract ran 40 pages, and page 31 said the company has rights to your body “where necessary.”
+    Kết quả: Bạn qua vòng tuyển dụng, nhận thẻ thử việc và đồng phục Feather. Hợp đồng cho phép Wing điều động cơ thể nhân viên khi Singularity gặp sự cố. Chữ ký của bạn nằm ngay dưới điều khoản đó.
+    Outcome: You received a probationary badge and a Feather uniform. Page 31 of the contract gave the Wing rights to your body “where necessary.”
     Chỉ số: {"wealth":18,"network":12,"sanity":-8}
     flagsAdd: ["Feather","Nest"]
     setJob: Wing Employee
-    setWingRank: 1
+    setWingRank: 0
   Lựa chọn 4: Học nghề ở một Workshop
     English: Apprentice at a Workshop
     Kết quả: Người thợ cả đặt búa vào tay bạn, chỉ về lò rèn. "Hỏng một trăm phôi cũng được. Đừng để phôi thứ một trăm lẻ một hỏng vì bạn không chịu học."
@@ -2007,25 +2007,7 @@ English: [Shadow Arbiter · Pinky Star of the Sky Crucible] An ancient blood pac
     Outcome: You took time to scout from the shadows, maintaining steady breathing and resting your body.
     Chỉ số: {"health":16,"sanity":14,"wealth":6}
 
-[86] workshop_legendary_forge_trial
-Tuổi: [25,75]
-Nghề: ["Workshop Craftsman"]
-Nội dung: [Bài giám định của Tres] Khách mang tới tinh thể lấy từ Abnormality. Hai giám định viên Tres đứng bên lò: rèn thành công, xưởng được cấp chứng chỉ Masterpiece; thất bại, lò có thể nổ. Họ chờ bạn nhóm lửa.
-English: [Workshop Masterpiece · Tres Certification] A shadowy client brought a singularity ingot crystallized from an old L Corp Abnormality to your workshop. Tres Association dispatched two senior appraisers to oversee the furnace:
-“If you successfully temper this alloy, Tres will certify it as a Masterpiece and engrave your workshop’s name into the annals of The City. If you fail, the furnace will explode.”
-  Lựa chọn 1: Dồn toàn bộ tâm thức và tài hoa rèn thần binh tuyệt tác
-    English: Pour entire soul and craftsmanship into the Masterpiece forge
-    Kết quả: Tiếng búa đập vang rền suốt bốn mươi tám giờ. Lưỡi kiếm hoàn tất tỏa ra áp lực áp đảo mọi vũ khí thông thường. Giám định viên Tres Association run rẩy đóng con dấu sáp vàng: "Một kiệt tác để đời." Tên tuổi xưởng rèn của bạn vang danh khắp The City.
-    Outcome: The hammer rang forty-eight unceasing hours. The finished blade emanated a presence that eclipsed all standard armaments. The Tres appraiser tremblingly pressed the golden wax seal: “A masterpiece for the ages.” Your workshop’s name echoed across The City.
-    Chỉ số: {"health":-24,"sanity":-18,"wealth":55,"rep":45,"resonance":35}
-    setWorkshopRank: 3
-  Lựa chọn 2: Gia công an toàn: Làm thành vũ khí thương mại cao cấp
-    English: Safe refinement: Produce a premium commercial weapon batch
-    Kết quả: Bạn chọn phương án an toàn, tránh được hiểm họa nổ lò và bán được một khoản Ahn kếch xù cho một văn phòng Fixer giàu có.
-    Outcome: Choosing safety, you averted the explosion risk and sold the batch for a tidy sum of Ahn to a wealthy Fixer office.
-    Chỉ số: {"wealth":35,"rep":18,"sanity":10}
-
-[87] wing_singularity_classified_audit
+[86] wing_singularity_classified_audit
 Tuổi: [26,75]
 Nghề: ["Wing Employee"]
 Nội dung: [Cửa hầm của Wing] Ban giám đốc cho bạn xem bí mật vận hành Singularity. Muốn vào ban điều hành, bạn phải chứng kiến nó mà vẫn giữ được bình tĩnh. Nếu không, Wing sẽ xóa ký ức buổi hôm nay.
@@ -2043,7 +2025,7 @@ English: [Wing Board · Singularity Classified Audit] The Board summoned you to 
     Outcome: Stepping back, you kept your sanity, but the door to the executive boardroom closed forever.
     Chỉ số: {"sanity":15,"rep":-10}
 
-[88] syn_thumb_etiquette_execution
+[87] syn_thumb_etiquette_execution
 Tuổi: [19,65]
 Điều kiện: {"jobs":["Syndicate"],"flags":["FingerThumb"]}
 Cờ cấm: ["Distorted","thumb_etiquette_done"]
@@ -2062,7 +2044,7 @@ English: [The Thumb’s Iron Etiquette] During a Thumb banquet, an initiate spea
     Chỉ số: {"sanity":10,"resonance":12,"rep":18,"health":-15}
     flagsAdd: ["thumb_etiquette_done"]
 
-[89] syn_index_prescript_bizarre
+[88] syn_index_prescript_bizarre
 Tuổi: [19,68]
 Điều kiện: {"jobs":["Syndicate"],"flags":["FingerIndex"]}
 Cờ cấm: ["Distorted","index_prescript_bizarre_done"]
@@ -2081,7 +2063,7 @@ English: [The Index’s Absurd Prescript] A white-masked Proselyte delivers a Pr
     Chỉ số: {"sanity":-12,"heat":35,"resonance":20}
     flagsAdd: ["index_prescript_bizarre_done","IndexApostate"]
 
-[90] syn_middle_book_of_vengeance
+[89] syn_middle_book_of_vengeance
 Tuổi: [19,65]
 Điều kiện: {"jobs":["Syndicate"],"flags":["FingerMiddle"]}
 Cờ cấm: ["Distorted","middle_vengeance_done"]
@@ -2100,7 +2082,7 @@ English: [The Middle’s Book of Vengeance] A Big Brother with iron-chain tattoo
     Chỉ số: {"wealth":70,"rep":25,"network":20}
     flagsAdd: ["middle_vengeance_done"]
 
-[91] syn_ring_atelier_exhibition
+[90] syn_ring_atelier_exhibition
 Tuổi: [20,68]
 Điều kiện: {"jobs":["Syndicate"],"flags":["FingerRing"]}
 Cờ cấm: ["Distorted","ring_exhibition_done"]
@@ -2119,7 +2101,7 @@ English: [The Ring’s Sanguine Gallery] A Ring Maestro guides you into an under
     Chỉ số: {"sanity":10,"resonance":15,"rep":25,"wealth":35}
     flagsAdd: ["ring_exhibition_done"]
 
-[92] wing_singularity_leak_crisis
+[91] wing_singularity_leak_crisis
 Tuổi: [21,65]
 Điều kiện: {"jobs":["Wing Employee"]}
 Cờ cấm: ["Distorted","wing_leak_done"]
@@ -2138,7 +2120,7 @@ English: [Wing Singularity Rupture Alert] Red klaxons scream through the subterr
     Chỉ số: {"health":-22,"sanity":10,"network":30,"rep":25,"wealth":45}
     flagsAdd: ["wing_leak_done","HeroOfLab"]
 
-[93] wing_corporate_espionage_bribe
+[92] wing_corporate_espionage_bribe
 Tuổi: [23,70]
 Điều kiện: {"jobs":["Wing Employee"]}
 Cờ cấm: ["Distorted","wing_bribe_done"]
@@ -2157,7 +2139,7 @@ English: [Bribe from a Rival Wing] An operative from a rival Megacorp corners yo
     Chỉ số: {"sanity":-15,"wealth":200,"heat":20}
     flagsAdd: ["wing_bribe_done","CorporateMole"]
 
-[94] wing_tcorp_time_tax_collection
+[93] wing_tcorp_time_tax_collection
 Tuổi: [20,65]
 Điều kiện: {"jobs":["Wing Employee"]}
 Cờ cấm: ["Distorted","tcorp_tax_done"]
@@ -2176,7 +2158,7 @@ English: [Time Tax Enforcement · T Corp District 20] Ash-grey skies hang over D
     Chỉ số: {"sanity":15,"network":25,"rep":15,"wealth":-10}
     flagsAdd: ["tcorp_tax_done"]
 
-[95] wing_wcorp_first_class_cleanup
+[94] wing_wcorp_first_class_cleanup
 Tuổi: [21,65]
 Điều kiện: {"jobs":["Wing Employee"]}
 Cờ cấm: ["Distorted","wcorp_cleanup_done"]
@@ -2195,7 +2177,7 @@ English: [First-Class Bio-Cleanup · WARP Train Arrival] The WARP train docks at
     Chỉ số: {"sanity":-15,"wealth":140,"heat":25}
     flagsAdd: ["wcorp_cleanup_done"]
 
-[96] wing_kcorp_tears_harvest
+[95] wing_kcorp_tears_harvest
 Tuổi: [21,65]
 Điều kiện: {"jobs":["Wing Employee"]}
 Cờ cấm: ["Distorted","kcorp_harvest_done"]
@@ -2214,7 +2196,7 @@ English: [Biogel Extraction Chamber · K Corp Tears District 11] You are assigne
     Chỉ số: {"sanity":12,"resonance":25,"wealth":30,"rep":15}
     flagsAdd: ["kcorp_harvest_done"]
 
-[97] wing_ucorp_great_lake_diving
+[96] wing_ucorp_great_lake_diving
 Tuổi: [22,68]
 Điều kiện: {"jobs":["Wing Employee"]}
 Cờ cấm: ["Distorted","ucorp_dive_done"]
@@ -2233,7 +2215,7 @@ English: [Great Lake Expedition · U Corp Leviathan Hunt] U Corp’s reinforced 
     Chỉ số: {"sanity":15,"network":35,"rep":25,"wealth":40}
     flagsAdd: ["ucorp_dive_done"]
 
-[98] syn_thumb_ammunition_quota
+[97] syn_thumb_ammunition_quota
 Tuổi: [19,72]
 Điều kiện: {"jobs":["Syndicate"],"flags":["FingerThumb"]}
 Nội dung: [Kiểm Kê Đạn Dược The Thumb · Kỷ Luật Quân Sự] Mỗi viên đạn của The Thumb đều được xem là thánh vật. Capo Boris triệu tập bạn vào kho súng ngầm để giải trình về 200 viên đạn xuyên giáp đã bắn trong tháng qua. Từng vỏ đạn rỗng phải khớp với một tên địch ngã xuống.
@@ -2249,7 +2231,7 @@ English: [Thumb Ammunition Ledger · Iron Discipline] Every round of Thumb ammun
     Outcome: You endured the brutal punishment at full attention without a whimper. Your unwavering adherence to hierarchy earned reverence across the barracks.
     Chỉ số: {"health":-14,"rep":25,"sanity":6}
 
-[99] syn_thumb_boris_brawler_drill
+[98] syn_thumb_boris_brawler_drill
 Tuổi: [20,70]
 Điều kiện: {"jobs":["Syndicate"],"flags":["FingerThumb"]}
 Nội dung: [Võ Đài Cận Chiến The Thumb · Bàn Cân Sức Mạnh] Trong gian hầm tập luyện ngầm, những tay búa thép khổng lồ của The Thumb đang so găng tay đôi. Boris yêu cầu bạn bước lên võ đài để kiểm tra sức chịu đòn và phản xạ cận chiến trước khi giao nhiệm vụ thanh trừng mới.
@@ -2265,7 +2247,7 @@ English: [Thumb Heavy Brawler Sparring · Forge of Obedience] In the subterranea
     Outcome: A fluid sweep slammed the giant to the canvas. Boris nodded in approval: "Agile and precise. The Thumb values calculating minds like yours."
     Chỉ số: {"rep":20,"wealth":28,"sanity":6}
 
-[100] syn_index_spinning_top_prescript
+[99] syn_index_spinning_top_prescript
 Tuổi: [19,75]
 Điều kiện: {"jobs":["Syndicate"],"flags":["FingerIndex"]}
 Nội dung: [Mệnh Lệnh Kỳ Quái Của Chỉ Lệnh · The Index] Chim cơ khí thả xuống trước mặt bạn một cuộn Chỉ Lệnh (Prescript) viết bằng mực đỏ: "Vào đúng 12 giờ trưa, hãy xoay một con quay đồng trên bậc thang thứ ba của Cây Cầu Phía Đông suốt 15 phút mà không chớp mắt."
@@ -2281,7 +2263,7 @@ English: [The Bizarre Prescript · The Index] A clockwork bird drops a crimson-i
     Outcome: Thirty minutes later, phantom crimson threads ensnared your shins, dumping you face-first into sewage. An Index Messenger glared chillingly from the fog: None defy the Prescript.
     Chỉ số: {"health":-10,"sanity":-12,"rep":-10}
 
-[101] syn_index_crimson_thread_execution
+[100] syn_index_crimson_thread_execution
 Tuổi: [21,72]
 Điều kiện: {"jobs":["Syndicate"],"flags":["FingerIndex"]}
 Nội dung: [Thanh Trừng Kẻ Giả Mạo Chỉ Lệnh · The Index] Proxy Yan phát hiện một nhóm gian thương chế tạo máy in giả để làm giả Chỉ Lệnh nhằm trục lợi cá nhân tại District 20. Bạn được giao nhiệm vụ lần theo những sợi tơ đỏ nhân quả để xử trảm kẻ phản bội.
@@ -2297,7 +2279,7 @@ English: [Purge of the Counterfeit Weavers · The Index] Proxy Yan identifies a 
     Outcome: You surrendered every seized coin to the family vaults. Your integrity earned recognition and a legitimate commission cut.
     Chỉ số: {"wealth":38,"rep":20,"network":15}
 
-[102] syn_middle_cousin_retaliation
+[101] syn_middle_cousin_retaliation
 Tuổi: [19,70]
 Điều kiện: {"jobs":["Syndicate"],"flags":["FingerMiddle"]}
 Nội dung: [Nợ Máu Đòi Máu · Sách Phục Thù The Middle] Một Little Sister của gia tộc đi giao hàng bị một tên quản đốc xưởng rèn tát vào mặt và cướp mất áo khoác. Tên của hắn lập tức được ghi vào Sách Phục Thù (Book of Vengeance). Cả gia đình trông đợi bạn đi thi hành công lý.
@@ -2313,7 +2295,7 @@ English: [Blood for Blood · Middle Book of Vengeance] A Little Sister was struc
     Outcome: Bowing before your intimidation, the forge liquidated the indemnity on the spot. The Little Sister wept in gratitude; the Middle praised your calculated strength.
     Chỉ số: {"wealth":50,"rep":22,"network":18,"sanity":8}
 
-[103] syn_middle_hair_coupon_brawl
+[102] syn_middle_hair_coupon_brawl
 Tuổi: [20,68]
 Điều kiện: {"jobs":["Syndicate"],"flags":["FingerMiddle"]}
 Nội dung: [Cuộc Chiến Phiếu Giảm Giá Tiệm Tóc · The Middle] Một tiệm làm tóc cao cấp tại ranh giới quận phát hành tập phiếu giảm giá đặc biệt — thứ mà Big Brother Ricardo vô cùng yêu thích để chăm sóc mái tóc bóng mượt. Một nhóm côn đồ đường phố dám cướp giật xấp phiếu này ngay trước cửa tiệm.
@@ -2329,7 +2311,7 @@ English: [The Hair Salon Coupon Brawl · The Middle] A luxury salon issues exclu
     Outcome: Your crew emerged from the parlor freshly groomed and imposing. Morale and underworld charisma surged.
     Chỉ số: {"sanity":18,"rep":15,"wealth":10}
 
-[104] syn_ring_corridor_human_statue
+[103] syn_ring_corridor_human_statue
 Tuổi: [20,72]
 Điều kiện: {"jobs":["Syndicate"],"flags":["FingerRing"]}
 Nội dung: [Bảo Tàng Nghệ Thuật Sống · The Ring] Một Maestro của The Ring mở buổi dạ tiệc triển lãm nghệ thuật cơ thể. Họ yêu cầu bạn mặc bộ giáp sơn màu đá cẩm thạch và đứng bất động làm một bức tượng sống giữa sảnh tiệc, sẵn sàng ám sát bất kỳ vị khách quý nào dám xúc phạm tác phẩm nghệ thuật.
@@ -2345,7 +2327,7 @@ English: [Living Statue Gala · The Ring] A Ring Maestro hosts an avant-garde bi
     Outcome: Patrons marveled at your refined critique and cultured aura. The gala triumphed commercially, yielding hefty ticket royalties.
     Chỉ số: {"rep":22,"wealth":42,"sanity":8,"network":16}
 
-[105] syn_pinky_whispering_underground_broker
+[104] syn_pinky_whispering_underground_broker
 Tuổi: [19,72]
 Điều kiện: {"jobs":["Syndicate"],"flags":["FingerPinky"]}
 Nội dung: [Mạng Lưới Ám Hiệu Ngầm · The Pinky] Dưới đường cống ngầm ẩm ướt của District 25, một sứ giả đeo mặt nạ chim cú của The Pinky trao cho bạn một dải lụa thêu mật mã. Nhiệm vụ của bạn là chuyển dải lụa này tới tay một điệp viên Wing mà không để thám tử Seven phát hiện.
@@ -2361,7 +2343,7 @@ English: [Subterranean Whisper Network · The Pinky] In the dank sewers of Distr
     Outcome: You uncovered a scandalous Singularity monopoly conspiracy. This leverage cemented your status as a formidable underworld broker.
     Chỉ số: {"network":28,"rep":20,"sanity":-4,"resonance":12}
 
-[106] wing_tcorp_monocle_time_collection
+[105] wing_tcorp_monocle_time_collection
 Tuổi: [20,70]
 Điều kiện: {"jobs":["Wing Employee"]}
 Cờ cấm: ["Distorted"]
@@ -2378,7 +2360,7 @@ English: [T Corp Time Tax Foreclosure · District 4] Adjusting your brass time-m
     Outcome: Haggard laborers regained lost years, weeping in profound gratitude. You logged a minor gasket leakage, preserving moral solace in a ruthless City.
     Chỉ số: {"sanity":18,"rep":14,"network":16}
 
-[107] wing_wcorp_warp_dimension_anomaly
+[106] wing_wcorp_warp_dimension_anomaly
 Tuổi: [21,70]
 Điều kiện: {"jobs":["Wing Employee"]}
 Cờ cấm: ["Distorted"]
@@ -2395,7 +2377,7 @@ English: [W Corp WARP Train Containment Breach] A WARP train docks in District 2
     Outcome: The abominations slumped into comas safely. Technical crews resolved the glitch cleanly without physical peril to yourself.
     Chỉ số: {"rep":20,"wealth":38,"sanity":5}
 
-[108] wing_kcorp_ampoule_contamination
+[107] wing_kcorp_ampoule_contamination
 Tuổi: [20,72]
 Điều kiện: {"jobs":["Wing Employee"]}
 Cờ cấm: ["Distorted"]
@@ -2413,7 +2395,7 @@ English: [K Corp Ampoule Quality Audit · Singularity Tears] A flagship crate of
     Outcome: You caught the embezzlement ring red-handed and delivered them to security. The Wing elevated you to Chief Auditor with a salary spike.
     Chỉ số: {"rep":26,"wealth":50,"network":18}
 
-[109] wing_rcorp_cloning_selection_drill
+[108] wing_rcorp_cloning_selection_drill
 Tuổi: [21,68]
 Điều kiện: {"jobs":["Wing Employee"]}
 Cờ cấm: ["Distorted"]
@@ -2430,7 +2412,7 @@ English: [R Corp 4th Pack Hatchery · Clone Survival Protocol] Dispatched to an 
     Outcome: An underground cybernetics forge paid a fortune for R Corp reflex telemetry, vastly enriching your bank account.
     Chỉ số: {"wealth":68,"rep":12,"sanity":-4,"heat":10}
 
-[110] wing_ncorp_prosthetic_purge_tribunal
+[109] wing_ncorp_prosthetic_purge_tribunal
 Tuổi: [20,70]
 Điều kiện: {"jobs":["Wing Employee"]}
 Cờ cấm: ["Distorted"]
@@ -2447,7 +2429,7 @@ English: [N Corp Inquisition Tribunal · Prosthetic Purge] Hammer Inquisitors an
     Outcome: Your razor-sharp legal mastery forced the inquisitors to withdraw their hammers. Your organizational reputation surged across the Wing.
     Chỉ số: {"rep":28,"wealth":35,"sanity":8}
 
-[111] wing_lobotomy_ruin_cogito_salvage
+[110] wing_lobotomy_ruin_cogito_salvage
 Tuổi: [22,75]
 Điều kiện: {"jobs":["Wing Employee"]}
 Cờ cấm: ["Distorted"]
@@ -2464,7 +2446,7 @@ English: [Lobotomy Corp Branch Ruins · Cogito Salvage Expedition] Appointed exp
     Outcome: A warm luminescent spark flooded your psyche. Your comprehension of the soul and latent E.G.O resonance deepened profoundly.
     Chỉ số: {"sanity":25,"resonance":25,"rep":15,"health":10}
 
-[112] ws_forge_masterpiece_event
+[111] ws_forge_masterpiece_event
 Tuổi: [20,65]
 Nghề: ["Workshop Craftsman"]
 Nội dung: [Khối hợp kim còn nhịp đập] Một Fixer Grade 1 đặt lên đe của bạn lõi kim loại lấy từ Abnormality. Nó rỉ dịch đen và làm mặt đe lạnh buốt. "Rèn thành kiếm." Nước tôi thường sẽ làm nó nứt; bạn phải chọn cách khác.
@@ -2483,7 +2465,7 @@ English: [The metal that still bleeds] A Grade 1 Fixer set a lump of alloy on yo
     scheduleConsequences: [{"eventId":"csq_taboo_workshop_raid","delayYears":4,"reasonVi":"Khẩu súng phạm Taboo bị Tres và B Corp phát hiện","reasonEn":"The Taboo firearm was traced by Tres and B Corp"}]
     flagsAdd: ["유물"]
 
-[113] bf_crimson_awakening
+[112] bf_crimson_awakening
 Tuổi: [19,48]
 Cờ cấm: ["Bloodfiend"]
 Nội dung: [Lời mời dưới hầm] Đồng đội của bạn nằm bất động trong tầng hầm District 16. Một Trưởng Lão Bloodfiend nhấc bạn khỏi sàn. Bà ta cho bạn chọn: sống làm Bloodbag trong hầm, hoặc nhận máu của bà và mang theo cơn khát ấy.
@@ -2502,7 +2484,7 @@ English: [A Bloodfiend’s offer] Your whole squad died in the underground manor
     Outcome: The fire caught your back and her arm at the same moment. She let go. Right then, Fanghunt Office broke down the door with their stakes. They split the bounty with you.
     Chỉ số: {"health":-22,"sanity":6,"wealth":18,"rep":18,"network":12}
 
-[114] lake_calamity_whale_hunt
+[113] lake_calamity_whale_hunt
 Tuổi: [19,55]
 Vùng: ["21"]
 Nội dung: [Pallid Whale] Bão quật con thuyền trên Great Lake. Pallid Whale trồi lên, nuốt mất nửa đoàn. Dịch trắng bắn lên boong, làm thủy thủ hóa cứng. Người vừa chia thuốc lá với bạn đã trắng tới cằm và đang quay sang cắn bạn.
@@ -2517,7 +2499,7 @@ The person beside you had turned white up to the neck.
       English: Its tail broke the hull apart. A white patch landed on your shoulder and began to spread. You heated a knife over the oil lamp and cut that flesh out yourself before it reached your heart.
       Chỉ số: {"health":-34,"sanity":-20,"resonance":22}
 
-[115] hy_hierarch_evaluation
+[114] hy_hierarch_evaluation
 Tuổi: [20,50]
 Nội dung: [Kỳ sát hạch Hongyuan] Trưởng lão ngồi uống trà trên lầu; dưới sân, người của các nhánh gia tộc chém giết để chọn kẻ thắng. Trước bài vị tổ tiên là viên Huyết Đan luyện từ máu người bại trận. Muốn giành ghế Gia chủ, bạn phải nuốt nó và sống qua đêm.
 English: [Choosing a Hierarch in Hongyuan] In District 8 the heirs of the great families sit drinking tea and smiling while their servants kill each other in the courtyard below.
@@ -2531,7 +2513,7 @@ To become Hierarch you must swallow a Bolus refined from the blood of those who 
       English: The Bolus burst your blood vessels from within. You had to cut yourself open to let the poison out, then crawl from the courtyard while the other heirs went on drinking their tea.
       Chỉ số: {"health":-46,"sanity":-28,"resonance":28}
 
-[116] pinky_star_blade_oath
+[115] pinky_star_blade_oath
 Tuổi: [22,55]
 Nghề: ["Syndicate","Fixer"]
 Nội dung: [Lời thề The Pinky] Trên tháp chuông, một đao thủ đặt thanh kiếm của kẻ phản bội dưới chân bạn. "Muốn dẫn đường cho chúng ta, hãy khảm một mẩu xương của chính mình vào đốc kiếm." Con dao nhỏ nằm cạnh đó, còn người của The Pinky đang chờ.
@@ -2544,7 +2526,7 @@ English: [The Pinky’s oath] On top of a bell tower in the rain, someone of the
     Chỉ số: {"health":-28,"sanity":-15,"rep":36,"wealth":28,"resonance":28}
     setFingerRank: 2
 
-[117] ego_carmen_crossroad
+[116] ego_carmen_crossroad
 Tuổi: [18,140]
 Cờ cấm: ["EGOAwakened","Distorted"]
 Nội dung: [Giọng nói trong ánh sáng] Những vết sẹo cũ ({scars}) đau trở lại. The City mờ đi; một giọng phụ nữ cất lên trong ánh sáng: "Bạn đã chịu đủ rồi. Đừng ép mình mang hình dạng người khác mong muốn." Bàn tay bạn run. Bạn có thể nghe theo, hoặc tự chọn mình sẽ là ai.
@@ -2584,7 +2566,7 @@ English: [Can you hear my voice? · The Scorching Sun of The Light] Everything y
     Outcome: You shut your eyes and closed your ears, clinging to oaths and brotherhood to refuse every whisper from Carmen. The blinding sun dissolved; you remained yourself: an ordinary human walking the ground of The City (+45 SP, +10 HP, -25 Resonance).
     Chỉ số: {"sanity":45,"health":10,"rep":25,"resonance":-25}
 
-[118] ego_second_efflorescence_trial
+[117] ego_second_efflorescence_trial
 Tuổi: [19,99]
 Nội dung: [True Efflorescence · Khai Hoa Trọn Vẹn] Ngọn lửa E.G.O chưa hoàn chỉnh trong lồng ngực bạn lại cháy bùng khi một cơn nguy biến Backstreets ập đến. Lần này, bạn không còn bỡ ngỡ. Trước mắt bạn là con đường bạn đã đi qua và cái giá bạn đã trả.
 English: [True Efflorescence · Complete Blooming] The incomplete E.G.O flame in your chest flared again as a Backstreets crisis struck. This time, you did not waver. Before your eyes lay every path you had walked and every price you had paid.
@@ -2605,7 +2587,7 @@ English: [True Efflorescence · Complete Blooming] The incomplete E.G.O flame in
     Outcome: Drawing a deep breath, you compressed the flame to the depths of your heart. The E.G.O subsided, awaiting a more fitting crucible.
     Chỉ số: {"sanity":15,"health":10,"rep":10}
 
-[119] hana_color_ascension_trial
+[118] hana_color_ascension_trial
 Tuổi: [20,95]
 Nghề: ["Fixer"]
 Cờ cấm: ["ColorFixer","Distorted"]
@@ -2635,7 +2617,7 @@ English: [Star of the City · Hana Color Investiture] Hana Association Section 1
     Chỉ số: {"sanity":20,"rep":22,"wealth":25}
     flagsAdd: ["ColorRefused"]
 
-[120] canto_wuthering_wild_hunt
+[119] canto_wuthering_wild_hunt
 Tuổi: [21,65]
 Vùng: ["20"]
 Nội dung: [Cuộc Săn Hoang Dã] Sương phủ District 20 khi một kỵ sĩ cưỡi ngựa xương dẫn đoàn The Wild Hunt qua hẻm. Quan tài xích sau lưng hắn kéo lê trên đá. Đường rút của bạn đã bị đội hình bóng ma chặn.
@@ -2655,7 +2637,7 @@ English: [Temporal Tempest · Echoes of the Wild Hunt] On the foggy moors of Dis
     Chỉ số: {"sanity":-30,"rep":40,"heat":35,"resonance":40}
     flagsAdd: ["WildHuntRider"]
 
-[121] canto_lamancha_carnival
+[120] canto_lamancha_carnival
 Tuổi: [20,60]
 Vùng: ["16"]
 Nội dung: [Vòng quay La Mancha] Công viên dưới District 16 mở cửa lúc đêm muộn. Máu dính trên quầy bánh; nhạc đu quay vẫn phát. Một hiệp sĩ áo giáp gỉ hỏi bạn có muốn giúp ông giữ nơi này cho cả người và Bloodfiend.
@@ -2675,7 +2657,7 @@ English: [Beneath P Corp · The Rusted Carousel of La Mancha] In District 16 · 
     Outcome: Setting the carousel ablaze and severing the blood supply lines, Fanghunt Office wired an immense bounty with commendations. The rusted knight stared at you with shattered eyes.
     Chỉ số: {"health":-20,"sanity":-15,"wealth":35,"rep":30}
 
-[122] canto_ring_carnage_gallery
+[121] canto_ring_carnage_gallery
 Tuổi: [22,65]
 Nghề: ["Syndicate","Fixer","Workshop Craftsman"]
 Vùng: ["8"]
@@ -2696,7 +2678,7 @@ English: [The Ring’s Gallery · Brushstroke of Carnage] In a subterranean gall
     Outcome: Tossing smoke canisters, you toppled the pedestals and freed surviving captives. The Ring issued an all-District bounty on your head across the Five Fingers.
     Chỉ số: {"health":-30,"rep":25,"heat":45,"sanity":15}
 
-[123] canto_ncorp_grip_inquisition
+[122] canto_ncorp_grip_inquisition
 Tuổi: [20,60]
 Vùng: ["14"]
 Nội dung: [Búa và đinh] Đội N Corp phong tỏa đường ở District 14, lùng người mang bộ phận giả. Họ chặn một người trước mặt bạn, rồi quay sang hỏi bạn đứng về phía nào. Chiếc búa vẫn ở trong tay lính gác.
@@ -2717,7 +2699,7 @@ English: [Nagel und Hammer · Purge of the Pure Flesh] Across the avenues of Dis
     Chỉ số: {"health":20,"sanity":-35,"rep":30,"heat":30}
     flagsAdd: ["InquisitorOfFlesh"]
 
-[124] canto_gesellschaft_star_convergence
+[123] canto_gesellschaft_star_convergence
 Tuổi: [25,75]
 Nội dung: [Tiếng vọng Gesellschaft] Trên cao, kết cấu thủy tinh hiện ra cùng nhiều giọng Faust từ Mirror Worlds. Họ mời bạn nhìn vào những tính toán phía sau Singularity và hợp đồng của The Head. Các đường nối đang hạ xuống trước mặt bạn.
 English: [Refraction of Mirrors · Voices of the Gesellschaft] A geometric refraction of floating glass uncoiled across the sky. Countless incarnations of Faust from across the Mirror Worlds spoke in harmonious unison:
@@ -2736,7 +2718,7 @@ English: [Refraction of Mirrors · Voices of the Gesellschaft] A geometric refra
     Outcome: Swinging your weapon to shatter the refractive glass, the Faust assembly smiled in subtle praise of your independence: “A noteworthy decision.” The City sky returned to silent peace.
     Chỉ số: {"sanity":35,"health":20,"rep":25}
 
-[125] fixer_promo_g8_exam
+[124] fixer_promo_g8_exam
 Tuổi: [18,140]
 Điều kiện: {"jobs":["Fixer"],"grade":[9,9]}
 Cờ yêu cầu: []
@@ -2763,7 +2745,7 @@ English: [Hana Section 6 Evaluation] A wax-sealed summons arrives from Hana Asso
     Outcome: You filed a formal deferral with Hana Section 6 to train further. The proctor accepted; you spent the season recovering (+16 HP, +12 SP).
     Chỉ số: {"health":16,"sanity":12}
 
-[126] fixer_promo_g7_exam
+[125] fixer_promo_g7_exam
 Tuổi: [19,140]
 Điều kiện: {"jobs":["Fixer"],"grade":[8,8]}
 Cờ cấm: ["Distorted","promo_g7_done"]
@@ -2789,7 +2771,7 @@ English: [Grade 7 Office Certification] Contract volumes surge. Hana assigns you
     Outcome: You requested Hana defer the raid window to heal wounds. You spent the season resting (+16 HP, +12 SP).
     Chỉ số: {"health":16,"sanity":12}
 
-[127] fixer_promo_g6_exam
+[126] fixer_promo_g6_exam
 Tuổi: [20,140]
 Điều kiện: {"jobs":["Fixer"],"grade":[7,7]}
 Cờ cấm: ["Distorted","promo_g6_done"]
@@ -2815,7 +2797,7 @@ English: [Grade 6 Field Commission] An Urban Legend outbreak erupts: Stray Dogs 
     Outcome: Deeming the turf war too chaotic, you notified Hana of a tactical postponement to recover (+16 HP, +12 SP).
     Chỉ số: {"health":16,"sanity":12}
 
-[128] fixer_promo_g5_exam
+[127] fixer_promo_g5_exam
 Tuổi: [21,140]
 Điều kiện: {"jobs":["Fixer"],"grade":[6,6]}
 Cờ cấm: ["Distorted","promo_g5_done"]
@@ -2841,7 +2823,7 @@ English: [Grade 5 Veteran Examination] Crossing into Grade 5 divides rookies fro
     Outcome: You deferred the Sweeper hunt summons to heal. Hana proctors archived your eligibility for the next cycle (+16 HP, +12 SP).
     Chỉ số: {"health":16,"sanity":12}
 
-[129] fixer_promo_g4_exam
+[128] fixer_promo_g4_exam
 Tuổi: [22,140]
 Điều kiện: {"jobs":["Fixer"],"grade":[5,5]}
 Cờ cấm: ["Distorted","promo_g4_done"]
@@ -2867,7 +2849,7 @@ English: [Section 4 Officer Advancement] A truce between Fingers collapses, plun
     Outcome: You notified Shi and Liu Associations that physical recovery takes priority before leading assaults (+16 HP, +12 SP).
     Chỉ số: {"health":16,"sanity":12}
 
-[130] fixer_promo_g3_exam
+[129] fixer_promo_g3_exam
 Tuổi: [24,140]
 Điều kiện: {"jobs":["Fixer"],"grade":[4,4]}
 Cờ cấm: ["Distorted","promo_g3_done"]
@@ -2894,7 +2876,7 @@ English: [Senior Specialist Commission Grade 3] Only 3% of all Fixers reach Grad
     Outcome: You requested Hana postpone spatial anomaly infiltration to consolidate mind and body (+16 HP, +12 SP).
     Chỉ số: {"health":16,"sanity":12}
 
-[131] fixer_promo_g2_exam
+[130] fixer_promo_g2_exam
 Tuổi: [26,140]
 Điều kiện: {"jobs":["Fixer"],"grade":[3,3]}
 Cờ cấm: ["Distorted","promo_g2_done"]
@@ -2920,7 +2902,7 @@ English: [Section 1 Ace Grade 2] A silver-inscribed missive from Hana Section 1.
     Outcome: You sent word declining the escort due to unhealed trauma. Section 1 noted the medical deferral (+16 HP, +12 SP).
     Chỉ số: {"health":16,"sanity":12}
 
-[132] fixer_promo_g1_exam
+[131] fixer_promo_g1_exam
 Tuổi: [28,140]
 Điều kiện: {"jobs":["Fixer"],"grade":[2,2]}
 Cờ cấm: ["Distorted","promo_g1_done"]
@@ -2946,7 +2928,7 @@ English: [Hana Supreme Grade 1 Evaluation] The summit of Fixer hierarchy. Summon
     Outcome: Hana Grand Council agreed to reschedule the expedition so you may achieve peak physical prowess (+16 HP, +12 SP).
     Chỉ số: {"health":16,"sanity":12}
 
-[133] fixer_g8_rookie_investigation
+[132] fixer_g8_rookie_investigation
 Tuổi: [18,56]
 Điều kiện: {"jobs":["Fixer"],"grade":[8,8]}
 Cờ cấm: ["Distorted","fixer_g8_investigation_done"]
@@ -2965,7 +2947,7 @@ English: [Tenement Vanishing Case · Grade 8] An entire Backstreet rowhouse sat 
     Chỉ số: {"rep":10,"wealth":18,"sanity":5}
     flagsAdd: ["fixer_g8_investigation_done"]
 
-[134] fixer_g7_zwei_escort_mission
+[133] fixer_g7_zwei_escort_mission
 Tuổi: [19,60]
 Điều kiện: {"jobs":["Fixer"],"grade":[7,7]}
 Cờ cấm: ["Distorted","fixer_g7_escort_done"]
@@ -2984,7 +2966,7 @@ English: [Zwei Section 5 Convoy Escort] Zwei Section 5 contracts you to reinforc
     Chỉ số: {"rep":16,"network":14,"wealth":40}
     flagsAdd: ["fixer_g7_escort_done"]
 
-[135] fixer_g6_blackstreet_hostage_crisis
+[134] fixer_g6_blackstreet_hostage_crisis
 Tuổi: [20,65]
 Điều kiện: {"jobs":["Fixer"],"grade":[6,6]}
 Cờ cấm: ["Distorted","fixer_g6_hostage_done"]
@@ -3003,7 +2985,7 @@ English: [J Corp Pawn Vault Hostage Crisis] Deserters from the Smoke War armed w
     Chỉ số: {"rep":20,"network":18,"wealth":45}
     flagsAdd: ["fixer_g6_hostage_done"]
 
-[136] fixer_g4_shi_assassination_moral_crossroad
+[135] fixer_g4_shi_assassination_moral_crossroad
 Tuổi: [23,70]
 Điều kiện: {"jobs":["Fixer"],"grade":[4,4]}
 Cờ cấm: ["Distorted","fixer_g4_crossroad_done"]
@@ -3022,7 +3004,7 @@ English: [Controversial Shi Execution Writ] Shi Association tenders a crimson wr
     Chỉ số: {"sanity":15,"resonance":18,"network":20,"wealth":40}
     flagsAdd: ["fixer_g4_crossroad_done","MedicSavior"]
 
-[137] fixer_g2_wing_conspiracy
+[136] fixer_g2_wing_conspiracy
 Tuổi: [26,75]
 Điều kiện: {"jobs":["Fixer"],"grade":[2,2]}
 Cờ cấm: ["Distorted","fixer_g2_conspiracy_done"]
@@ -3041,7 +3023,7 @@ English: [Classified Wing Conspiracy · Grade 2] A senior T Corp executive hires
     Chỉ số: {"sanity":-18,"wealth":250,"rep":35}
     flagsAdd: ["fixer_g2_conspiracy_done"]
 
-[138] fixer_promo_g8_seven
+[137] fixer_promo_g8_seven
 Tuổi: [18,140]
 Điều kiện: {"jobs":["Fixer"],"grade":[9,9]}
 Cờ cấm: ["Distorted","promo_g8_done"]
@@ -3067,7 +3049,7 @@ English: [Seven Section 6 Investigative Trial · Grade 8] Seven Association Sect
     Outcome: You postponed the evaluation window to heal wounds and prepare (+16 HP, +12 SP).
     Chỉ số: {"health":16,"sanity":12}
 
-[139] fixer_promo_g8_zwei
+[138] fixer_promo_g8_zwei
 Tuổi: [18,140]
 Điều kiện: {"jobs":["Fixer"],"grade":[9,9]}
 Cờ cấm: ["Distorted","promo_g8_done"]
@@ -3093,7 +3075,7 @@ English: [Zwei Section 6 Patrol Escort Trial · Grade 8] Zwei Section 6 opens a 
     Outcome: You deferred the patrol trial to rest and recuperate (+16 HP, +12 SP).
     Chỉ số: {"health":16,"sanity":12}
 
-[140] fixer_promo_g7_shi
+[139] fixer_promo_g7_shi
 Tuổi: [19,140]
 Điều kiện: {"jobs":["Fixer"],"grade":[8,8]}
 Cờ cấm: ["Distorted","promo_g7_done"]
@@ -3119,7 +3101,7 @@ English: [Shi Section 5 Night Infiltration Raid · Grade 7] A crimson parchment 
     Outcome: You requested a deferral to heal your wounds (+16 HP, +12 SP).
     Chỉ số: {"health":16,"sanity":12}
 
-[141] fixer_promo_g7_tres
+[140] fixer_promo_g7_tres
 Tuổi: [19,140]
 Điều kiện: {"jobs":["Fixer"],"grade":[8,8]}
 Cờ cấm: ["Distorted","promo_g7_done"]
@@ -3145,7 +3127,7 @@ English: [Tres Contraband Seizure Operation · Grade 7] Tres Association inspect
     Outcome: You deferred the raid to rest and heal (+16 HP, +12 SP).
     Chỉ số: {"health":16,"sanity":12}
 
-[142] fixer_promo_g6_cinq
+[141] fixer_promo_g6_cinq
 Tuổi: [20,140]
 Điều kiện: {"jobs":["Fixer"],"grade":[7,7]}
 Cờ cấm: ["Distorted","promo_g6_done"]
@@ -3171,7 +3153,7 @@ English: [Cinq Association Duel of Honor Trial · Grade 6] Cinq Association host
     Outcome: You withdrew temporarily from the tournament to heal (+16 HP, +12 SP).
     Chỉ số: {"health":16,"sanity":12}
 
-[143] fixer_promo_g6_oufi
+[142] fixer_promo_g6_oufi
 Tuổi: [20,140]
 Điều kiện: {"jobs":["Fixer"],"grade":[7,7]}
 Cờ cấm: ["Distorted","promo_g6_done"]
@@ -3197,7 +3179,7 @@ English: [Oufi Contract Enforcement Trial · Grade 6] Oufi Association charges y
     Outcome: You postponed the enforcement action to recuperate (+16 HP, +12 SP).
     Chỉ số: {"health":16,"sanity":12}
 
-[144] fixer_promo_g5_dieci
+[143] fixer_promo_g5_dieci
 Tuổi: [21,140]
 Điều kiện: {"jobs":["Fixer"],"grade":[6,6]}
 Cờ cấm: ["Distorted","promo_g5_done"]
@@ -3223,7 +3205,7 @@ English: [Dieci Subterranean Archives Expedition · Grade 5] Dieci Association o
     Outcome: You deferred the expedition to gather strength (+16 HP, +12 SP).
     Chỉ số: {"health":16,"sanity":12}
 
-[145] fixer_promo_g5_molar
+[144] fixer_promo_g5_molar
 Tuổi: [21,140]
 Điều kiện: {"jobs":["Fixer"],"grade":[6,6]}
 Cờ cấm: ["Distorted","promo_g5_done"]
@@ -3249,7 +3231,7 @@ English: [Molar Office High-Torque Salvage · Grade 5] Molar Office contracts yo
     Outcome: You deferred the salvage operation to rest (+16 HP, +12 SP).
     Chỉ số: {"health":16,"sanity":12}
 
-[146] fixer_promo_g4_devzat
+[145] fixer_promo_g4_devzat
 Tuổi: [22,140]
 Điều kiện: {"jobs":["Fixer"],"grade":[5,5]}
 Cờ cấm: ["Distorted","promo_g4_done"]
@@ -3275,7 +3257,7 @@ English: [Devzat Volatile Singularity Express · Grade 4] Devzat Association see
     Outcome: You deferred the dangerous transit to heal wounds (+16 HP, +12 SP).
     Chỉ số: {"health":16,"sanity":12}
 
-[147] fixer_promo_g4_rhino
+[146] fixer_promo_g4_rhino
 Tuổi: [22,140]
 Điều kiện: {"jobs":["Fixer"],"grade":[5,5]}
 Cờ cấm: ["Distorted","promo_g4_done"]
@@ -3301,7 +3283,7 @@ English: [R Corp Rhino Team Fortification Assault · Grade 4] R Corp 4th Pack Rh
     Outcome: You postponed the assault to recover (+16 HP, +12 SP).
     Chỉ số: {"health":16,"sanity":12}
 
-[148] fixer_promo_g3_warp
+[147] fixer_promo_g3_warp
 Tuổi: [24,140]
 Điều kiện: {"jobs":["Fixer"],"grade":[4,4]}
 Cờ cấm: ["Distorted","promo_g3_done"]
@@ -3327,7 +3309,7 @@ English: [W Corp WARP Train Containment Protocol · Grade 3] A WARP Train arrive
     Outcome: You deferred the containment run to recuperate (+16 HP, +12 SP).
     Chỉ số: {"health":16,"sanity":12}
 
-[149] fixer_promo_g3_reindeer
+[148] fixer_promo_g3_reindeer
 Tuổi: [24,140]
 Điều kiện: {"jobs":["Fixer"],"grade":[4,4]}
 Cờ cấm: ["Distorted","promo_g3_done"]
@@ -3353,7 +3335,7 @@ English: [Reindeer Team Mindbreak Suppression · Grade 3] R Corp Reindeer Team s
     Outcome: You requested a deferral to regain stamina (+16 HP, +12 SP).
     Chỉ số: {"health":16,"sanity":12}
 
-[150] fixer_promo_g2_black_silence
+[149] fixer_promo_g2_black_silence
 Tuổi: [26,140]
 Điều kiện: {"jobs":["Fixer"],"grade":[3,3]}
 Cờ cấm: ["Distorted","promo_g2_done"]
@@ -3379,7 +3361,7 @@ English: [Black Silence Aftermath Containment · Grade 2] A syndicate fortress w
     Outcome: You postponed the mission to recuperate (+16 HP, +12 SP).
     Chỉ số: {"health":16,"sanity":12}
 
-[151] fixer_promo_g2_district_defense
+[150] fixer_promo_g2_district_defense
 Tuổi: [26,140]
 Điều kiện: {"jobs":["Fixer"],"grade":[3,3]}
 Cờ cấm: ["Distorted","promo_g2_done"]
@@ -3405,7 +3387,7 @@ English: [District-Wide Purge Defense Command · Grade 2] A coalition of three s
     Outcome: You deferred command duties to heal wounds (+16 HP, +12 SP).
     Chỉ số: {"health":16,"sanity":12}
 
-[152] fixer_promo_g1_hana_apex
+[151] fixer_promo_g1_hana_apex
 Tuổi: [28,140]
 Điều kiện: {"jobs":["Fixer"],"grade":[2,2]}
 Cờ cấm: ["Distorted","promo_g1_done"]
@@ -3431,7 +3413,7 @@ English: [Hana Apex Martial Summit · Grade 1] To cross into the summit of Grade
     Outcome: Hana Council agreed to reschedule so you may achieve peak physical prowess (+16 HP, +12 SP).
     Chỉ số: {"health":16,"sanity":12}
 
-[153] fixer_promo_g1_calamity
+[152] fixer_promo_g1_calamity
 Tuổi: [28,140]
 Điều kiện: {"jobs":["Fixer"],"grade":[2,2]}
 Cờ cấm: ["Distorted","promo_g1_done"]
@@ -3457,7 +3439,7 @@ English: [Apex Calamity Distortion Extermination · Grade 1] A Star of the City 
     Outcome: You postponed the raid to achieve peak physical condition (+16 HP, +12 SP).
     Chỉ số: {"health":16,"sanity":12}
 
-[154] fixer_cinq_duel_of_honor
+[153] fixer_cinq_duel_of_honor
 Tuổi: [19,75]
 Điều kiện: {"jobs":["Fixer"]}
 Cờ cấm: ["Distorted"]
@@ -3474,7 +3456,7 @@ English: [Cinq Association Duel of Honor · The Fifth Association] Two Nest merc
     Outcome: Your sharp gaze unmasked a covert poisoning attempt before blood was drawn. Both factions commended your impartiality and presented an honorary crest.
     Chỉ số: {"rep":18,"wealth":30,"network":15}
 
-[155] fixer_oufi_underworld_pact
+[154] fixer_oufi_underworld_pact
 Tuổi: [20,75]
 Điều kiện: {"jobs":["Fixer"]}
 Cờ cấm: ["Distorted"]
@@ -3491,7 +3473,7 @@ English: [Oufi Association · Backstreet Blood Oath Inquest] The Oufi Associatio
     Outcome: You ripped their fraudulent clauses to shreds on the spot. Indebted, the forge fitted your gear with their finest kinetic composite plates.
     Chỉ số: {"rep":16,"health":15,"wealth":20,"heat":8}
 
-[156] fixer_dieci_monastery_archive
+[155] fixer_dieci_monastery_archive
 Tuổi: [20,75]
 Điều kiện: {"jobs":["Fixer"]}
 Cờ cấm: ["Distorted"]
@@ -3508,7 +3490,7 @@ English: [Dieci Association · Sunken Archive Excavation] Heavy-tome scholars fr
     Outcome: Seven intelligence brokers paid handsomely for the classified blueprints, substantially padding your coffers.
     Chỉ số: {"wealth":58,"rep":12,"sanity":-4}
 
-[157] fixer_molar_amphibious_salvage
+[156] fixer_molar_amphibious_salvage
 Tuổi: [20,72]
 Điều kiện: {"jobs":["Fixer"]}
 Cờ cấm: ["Distorted"]
@@ -3525,7 +3507,7 @@ English: [Molar Boatworks · Toxic Canal Salvage] Molar Boatworks takes on a sal
     Outcome: Accurate harpoon volleys pinned encroaching abominations to the seawall. The haul was recovered without a scratch on you.
     Chỉ số: {"wealth":35,"rep":14,"sanity":4}
 
-[158] fixer_devzat_railway_convoy
+[157] fixer_devzat_railway_convoy
 Tuổi: [20,75]
 Điều kiện: {"jobs":["Fixer"]}
 Cờ cấm: ["Distorted"]
@@ -3542,7 +3524,7 @@ English: [Devzat Association · Armored Rail Escort] The Devzat Association — 
     Outcome: Your rapid kinematic repairs averted a catastrophic derailment. The rail authority awarded a substantial safety bonus.
     Chỉ số: {"wealth":42,"rep":18,"sanity":5}
 
-[159] fixer_independent_office_founding
+[158] fixer_independent_office_founding
 Tuổi: [23,75]
 Điều kiện: {"jobs":["Fixer"]}
 Cờ cấm: ["Distorted","OwnFixerOffice"]
@@ -3561,7 +3543,7 @@ English: [Chartering an Independent Fixer Office] Amassing hard-won reputation a
     Outcome: You retained your Ahn. Unfettered mobility across districts without fear of office bombings was its own tactical wisdom.
     Chỉ số: {"sanity":8,"wealth":15}
 
-[160] fixer_client_betrayal_ambush
+[159] fixer_client_betrayal_ambush
 Tuổi: [22,72]
 Điều kiện: {"jobs":["Fixer"]}
 Cờ cấm: ["Distorted"]
@@ -3578,7 +3560,7 @@ English: [The Client’s Venomous Ambush] Having retrieved a classified lockbox,
     Outcome: Zwei enforcers arrested the patron before dawn. You collected a certified bounty and public acclaim for righteous integrity.
     Chỉ số: {"rep":26,"wealth":38,"network":18,"sanity":8}
 
-[161] distort_carmen_communion_1
+[160] distort_carmen_communion_1
 Tuổi: [18,99]
 Cờ yêu cầu: ["Distorted"]
 Cờ cấm: ["carmen_dialogue_done"]
@@ -3597,7 +3579,7 @@ English: [Carmen’s Radiant Sun] You no longer feel the biting chill of the Bac
     Chỉ số: {"health":40,"sanity":-20,"heat":50,"resonance":35}
     flagsAdd: ["carmen_dialogue_done","DistortionStage2"]
 
-[162] distort_suppression_wave_1
+[161] distort_suppression_wave_1
 Tuổi: [19,99]
 Cờ yêu cầu: ["Distorted","DistortionStage2"]
 Cờ cấm: ["wave1_survived"]
@@ -3610,7 +3592,7 @@ English: [Suppression Order: Grade 4 Strike Team] Sirens scream across the secto
     Chỉ số: {"health":-25,"heat":60,"rep":50,"resonance":30}
     flagsAdd: ["wave1_survived","DistortionNightmare"]
 
-[163] distort_manifest_domain
+[162] distort_manifest_domain
 Tuổi: [20,99]
 Cờ yêu cầu: ["Distorted","DistortionNightmare"]
 Cờ cấm: ["domain_manifested"]
@@ -3623,7 +3605,7 @@ English: [The Infinite Labyrinth: Distortion Domain] Your presence permanently w
     Chỉ số: {"health":60,"sanity":-40,"rep":60,"resonance":45}
     flagsAdd: ["domain_manifested","DistortionStar"]
 
-[164] distort_climax_color_faceoff
+[163] distort_climax_color_faceoff
 Tuổi: [22,99]
 Cờ yêu cầu: ["Distorted","DistortionStar"]
 Cờ cấm: ["distort_color_clash_done"]
@@ -3642,7 +3624,7 @@ English: [Apex Cataclysm: Descent of the Color Fixer] A solitary cloaked figure 
     Chỉ số: {"health":-55,"rep":100,"resonance":50,"heat":80}
     flagsAdd: ["distort_color_clash_done","ApexDistortionSurvivor","StarOfTheCityEntity"]
 
-[165] distort_gathering_twisted_flock
+[164] distort_gathering_twisted_flock
 Tuổi: [21,95]
 Cờ yêu cầu: ["Distorted","DistortionStage2"]
 Cờ cấm: ["distort_flock_done"]
@@ -3661,7 +3643,7 @@ English: [Disciples of Anguish · Cult of the Warped] Around your domain, hundre
     Chỉ số: {"sanity":20,"resonance":25,"heat":-10}
     flagsAdd: ["distort_flock_done"]
 
-[166] distort_head_claw_interception
+[165] distort_head_claw_interception
 Tuổi: [24,99]
 Cờ yêu cầu: ["Distorted","DistortionNightmare"]
 Cờ cấm: ["distort_claw_clash_done"]
@@ -3680,7 +3662,7 @@ English: [Claw of The Head · Serum W Enforcer] An emerald spatial tear cleaves 
     Chỉ số: {"sanity":15,"rep":50,"heat":30,"resonance":30}
     flagsAdd: ["distort_claw_clash_done"]
 
-[167] distort_former_companion_encounter
+[166] distort_former_companion_encounter
 Tuổi: [20,80]
 Điều kiện: {"jobs":["Distortion"],"npc":"friend"}
 Cờ cấm: ["distort_companion_done"]
@@ -3699,7 +3681,7 @@ English: [Tearful Encounter in Aberrant Flesh] In a derelict alley, a familiar s
     Chỉ số: {"health":35,"sanity":-35,"rep":50,"heat":40}
     flagsAdd: ["distort_companion_done"]
 
-[168] distort_star_of_city_rampage
+[167] distort_star_of_city_rampage
 Tuổi: [22,90]
 Điều kiện: {"jobs":["Distortion"]}
 Cờ cấm: ["distort_star_rampage_done"]
@@ -3712,7 +3694,7 @@ English: [Star of the City Calamity · Apex Distortion] Your psychic corrosion r
     Chỉ số: {"health":-30,"rep":100,"heat":50,"resonance":40}
     flagsAdd: ["distort_star_rampage_done","StarOfTheCityEntity"]
 
-[169] distort_abnormality_resonance_communion
+[168] distort_abnormality_resonance_communion
 Tuổi: [19,90]
 Điều kiện: {"jobs":["Distortion"]}
 Nội dung: [Tiếng vọng dưới đường] Một Abnormality ngủ trong tàn tích Lobotomy Corporation bên dưới con hẻm. Cơ thể biến dạng của bạn rung theo nhịp đập của nó. Nắp cống dưới chân bắt đầu chuyển động.
@@ -3728,7 +3710,7 @@ English: [Subterranean Abnormality Communion · Cogito Resonances] Deep beneath 
     Outcome: You repelled the alien intrusive ego. Your twisted individual identity solidified like diamond, impervious to outside psychic tampering.
     Chỉ số: {"sanity":20,"resonance":15,"health":10}
 
-[170] distort_backstreet_children_lullaby
+[169] distort_backstreet_children_lullaby
 Tuổi: [19,85]
 Điều kiện: {"jobs":["Distortion"]}
 Nội dung: [Khúc Hát Ru Của Quái Vật · Lũ Trẻ Backstreets] Giữa đêm đông lạnh giá, một nhóm trẻ em mồ côi Backstreets rón rén tụ tập quanh hang ổ đổ nát của bạn. Thay vì sợ hãi, chúng bị mê hoặc bởi những nốt nhạc u sầu phát ra từ các cơ quan biến dị của bạn và xem bạn như một vị thần bảo hộ bóng đêm.
@@ -3744,7 +3726,7 @@ English: [The Monster’s Lullaby · Backstreet Orphans] In the bitter winter mi
     Outcome: Terrified, the children fled directly into a fortified Zwei refugee enclave before curfew. You remained alone in the darkness, having enacted cruel salvation.
     Chỉ số: {"sanity":15,"resonance":12}
 
-[171] distort_hana_suppression_squad
+[170] distort_hana_suppression_squad
 Tuổi: [21,90]
 Điều kiện: {"jobs":["Distortion"]}
 Nội dung: [Biệt Đội Trấn Áp Hana Section 2] Ba Fixer tinh nhuệ của Hana Section 2 mang theo lồng phong tỏa cộng hưởng và dây xích triệt tiêu năng lượng bao vây lãnh địa của bạn. Họ tuyên đọc án lệnh thanh trừng một hiểm họa cấp Đô Thị.
@@ -3760,7 +3742,7 @@ English: [Hana Section 2 Suppression Cell] Three elite Fixers from Hana Section 
     Outcome: Hana’s trackers struck static. You relocated your hunting domain into a fresh district, completely undetected.
     Chỉ số: {"rep":20,"sanity":12,"heat":-15}
 
-[172] distort_domain_expansion_theater
+[171] distort_domain_expansion_theater
 Tuổi: [23,90]
 Điều kiện: {"jobs":["Distortion"]}
 Nội dung: [Mở Rộng Lãnh Địa Biến Dị · Sân Khấu Ký Ức] Nỗi đau khổ và uất ức tích tụ suốt cả đời bạn tràn ra ngoài thực tại. Một bán kính 300 mét quanh bạn biến thành một Sân Khấu Ký Ức siêu thực: Tường gạch biến thành những phím đàn piano khổng lồ phát ra giai điệu rỉ máu của cuộc đời bạn.
@@ -3776,7 +3758,7 @@ English: [Distortion Domain Expansion · Theatre of Memory] A lifetime of unheal
     Outcome: Pavements straightened, but your inner form condensed into unyielding armor. You achieved absolute mastery over your warped ego without succumbing to frenzy.
     Chỉ số: {"sanity":30,"health":20,"resonance":20}
 
-[173] distort_head_beholder_observation
+[172] distort_head_beholder_observation
 Tuổi: [25,95]
 Điều kiện: {"jobs":["Distortion"]}
 Nội dung: [Beholder quan sát] Ánh mắt của Beholder quét qua hang ổ bạn. Dạng biến dị này đã lọt vào hồ sơ của The Head; một lệnh xử lý có thể theo sau. Tia sáng dừng lại ngay trên người bạn.
@@ -3792,7 +3774,7 @@ English: [Gaze of the Head · The Beholder] A titanic luminous eye suspends high
     Outcome: Obsidian smog blanketed the ward for three days and nights. The eye withdrew, but the Head’s scrutiny upon your name escalated sharply.
     Chỉ số: {"rep":40,"heat":30,"resonance":25}
 
-[174] distort_carmen_final_solace
+[173] distort_carmen_final_solace
 Tuổi: [28,100]
 Điều kiện: {"jobs":["Distortion"]}
 Nội dung: [Lời Carmen] Giữa cơn hỗn loạn, Carmen cất tiếng trong đầu bạn: "Ngươi đã mệt vì phải giữ một hình hài vừa mắt The City. Buông tay đi." Giọng nói dịu xuống, chờ câu trả lời.
@@ -3808,7 +3790,7 @@ English: [Carmen’s Final Solace · Unbound Efflorescence] At the eye of the ps
     Outcome: The tear shattered like crystal upon the cobbles. You preserved the sacred memory of those you once cherished — a beast holding an eternal, nostalgic human heart.
     Chỉ số: {"sanity":35,"resonance":25,"rep":35}
 
-[175] econ_stigma_atelier_merchant
+[174] econ_stigma_atelier_merchant
 Tuổi: [18,75]
 Cờ cấm: ["Distorted"]
 Nội dung: [Thương nhân Stigma Atelier] Một tay buôn vũ khí lưu động của Stigma Atelier mở hòm kim loại chống nhiệt giữa một con hẻm Backstreets được canh gác nghiêm ngặt. Những lưỡi kiếm hỏa nhiệt rực đỏ phát ra tiếng xèo xèo đầy quyến rũ.
@@ -3833,7 +3815,7 @@ English: [Stigma Atelier Arms Dealer] An itinerant arms merchant from Stigma Ate
     Outcome: The dealer shrugged, relocking the case: "Hope the next time I see you, you aren’t a cold corpse on the cobbles."
     Chỉ số: {"sanity":-2}
 
-[176] econ_nest_visa_opportunity
+[175] econ_nest_visa_opportunity
 Tuổi: [21,80]
 Điều kiện: {"notNest":true}
 Cờ cấm: ["NestResident","Distorted"]
@@ -3852,7 +3834,7 @@ English: [Once in a Lifetime: Nest Migration Visa] A corrupt Wing official quiet
     Outcome: You turned back into the dimly lit alley. The Backstreets remain your home — where you belong.
     Chỉ số: {"sanity":-5}
 
-[177] econ_cybernetic_clinic
+[176] econ_cybernetic_clinic
 Tuổi: [20,75]
 Cờ cấm: ["Distorted"]
 Nội dung: [Phòng khám Cấy ghép Cơ thể Backstreets] Mùi cồn sát trùng rẻ tiền và tiếng máy khoan xương réo rắt. Bác sĩ ngầm đưa cho bạn bản danh mục các bộ phận cường hóa sinh học và khung xương trợ lực.
@@ -3877,7 +3859,7 @@ English: [Backstreet Cybernetic Clinic] The stench of cheap disinfectant and shr
     Outcome: The doctor does not stop you. The drill keeps running behind the door; you check your purse and walk on.
     Chỉ số: {"sanity":-1}
 
-[178] econ_kcorp_regeneration_pavilion
+[177] econ_kcorp_regeneration_pavilion
 Tuổi: [18,85]
 Cờ cấm: ["Distorted"]
 Nội dung: [Trạm chữa trị K Corp] Trạm K Corp nhận khách có tiền ngay sát ranh Nest. Dịch xanh chạy trong ống thủy tinh; bảng giá ghi cả chi phí nối lại xương thịt. Nhân viên hỏi bạn cần chữa đến mức nào.
@@ -3901,7 +3883,7 @@ English: [K Corp Bio-Regeneration Pavilion · Singularity Tears] At the border b
     Outcome: Clutching your wounds, you turned away. K Corp only saves the affluent — the eternal iron law of The City.
     Chỉ số: {"sanity":-2}
 
-[179] econ_tcorp_chrono_restoration
+[178] econ_tcorp_chrono_restoration
 Tuổi: [20,85]
 Cờ cấm: ["Distorted"]
 Nội dung: [Buồng phục hồi T Corp] Chi nhánh T Corp đề nghị tua cơ thể bạn về trước lúc bị thương. Đồng hồ trên buồng chạy ngược; hợp đồng tính phí theo thời gian thu hồi. Nhân viên đưa bút cho bạn.
@@ -3925,7 +3907,7 @@ English: [T Corp Chrono-Restorative Pod · District 4 Tech] You pause before a l
     Outcome: You returned to the cobbles. T Corp’s temporal debts are perilous to toy with.
     Chỉ số: {"sanity":2}
 
-[180] econ_hamhampangpang_feast
+[179] econ_hamhampangpang_feast
 Tuổi: [18,90]
 Nội dung: [Đại Tiệc Hương Vị HamHamPangPang] Mùi bánh mì nướng bơ tỏi vàng giòn, thịt hun khói nướng than hồng và sốt mayonnaise thượng hạng dẫn lối bạn đến cửa tiệm bánh mì HamHamPangPang huyền thoại. Nơi đây từng là chốn dừng chân bình yên nhất của những bậc thầy Fixer giữa lòng đô thị khắc nghiệt.
 English: [HamHamPangPang Grand Tasting Feast] The aroma of golden butter toast, charcoal-smoked tender pork, and velvety house mayonnaise leads you straight into the legendary HamHamPangPang bistro. A fabled sanctuary where even world-weary Color Fixers found solace amidst the City’s merciless grind.
@@ -3947,7 +3929,7 @@ English: [HamHamPangPang Grand Tasting Feast] The aroma of golden butter toast, 
     Outcome: Though your wallet stayed shut, the hearty aroma alone lifted the chill from an otherwise solitary afternoon.
     Chỉ số: {"sanity":3}
 
-[181] econ_jcorp_luxury_spa_lounge
+[180] econ_jcorp_luxury_spa_lounge
 Tuổi: [21,85]
 Cờ cấm: ["Distorted"]
 Nội dung: [Sảnh nghỉ J Corp] Sau cánh cửa là nước nóng, nhạc jazz và một quầy tiếp tân kín đáo. Dịch vụ hứa giúp bạn nghỉ ngơi, đồng thời sắp xếp lại dấu vết của phi vụ gần đây. Giá niêm yết không rẻ.
@@ -3970,7 +3952,7 @@ English: [J Corp Luxury Jazz & Thermal Spa Lounge · District 10] Silky saxophon
     Outcome: You promised yourself a visit once your coffers were even more bountiful.
     Chỉ số: {"sanity":-2}
 
-[182] econ_atelier_armor_overhaul
+[181] econ_atelier_armor_overhaul
 Tuổi: [19,80]
 Cờ cấm: ["Distorted"]
 Nội dung: [Đại Tu Giáp Trụ & Vũ Khí Tại Atelier Độc Quyền] Bạn bước vào một xưởng rèn Atelier được Tres Association cấp phép (như Zelkova hay Wheels Industry). Những người thợ rèn bậc thầy chào đón bạn với bản nâng cấp khung xương động lực, phủ lớp men nano chống đạn và tôi luyện lại lưỡi vũ khí.
@@ -3994,7 +3976,7 @@ English: [Atelier Master Armor & Kinematics Overhaul] You enter a prestigious Tr
     Outcome: A worn whetstone gave an uneven edge, but your coin remained unspent.
     Chỉ số: {"sanity":-2}
 
-[183] econ_seven_safehouse_diplomacy
+[182] econ_seven_safehouse_diplomacy
 Tuổi: [20,80]
 Cờ cấm: ["Distorted"]
 Nội dung: [Chỗ trú của Seven] Bạn tìm đến cửa mật mã của Seven Association. Bên trong có giường bệnh, hồ sơ và người biết cách thương lượng với kẻ đang săn bạn. Nhân viên chỉ mở cửa sau khi nghe tên bạn.
@@ -4017,7 +3999,7 @@ English: [Sanctuary at Seven Association Safehouse] Hunted by adversaries or exh
     Outcome: You stayed on the run, nerves frayed as assassins prowled the shadows.
     Chỉ số: {"sanity":-8,"heat":5}
 
-[184] econ_district23_gourmet_pie
+[183] econ_district23_gourmet_pie
 Tuổi: [20,80]
 Nội dung: [Bánh thịt District 23] Quán của Pierre thơm mùi bơ nướng. Người bán đặt một lát bánh thịt trước mặt bạn, không nói nguyên liệu lấy từ đâu. Bạn đói đến mức tay đã chạm đĩa.
 English: [District 23 Underground Gastronomy · Pierre’s Savory Pie] In an alley bordering District 23, an illicit bistro radiates the intoxicating scent of spiced pastry and rich caramelized broth. The artisan meat pie here boasts legendary regenerative potency, rekindling near-fatal exhaustion within minutes.
@@ -4039,7 +4021,7 @@ English: [District 23 Underground Gastronomy · Pierre’s Savory Pie] In an all
     Outcome: You swallowed hard and walked away. Famished as you were, some truths were better left uneaten.
     Chỉ số: {"sanity":4}
 
-[185] workshop_tres_patent_dispute
+[184] workshop_tres_patent_dispute
 Tuổi: [19,70]
 Điều kiện: {"jobs":["Workshop Craftsman"]}
 Cờ cấm: ["Distorted","workshop_tres_done"]
@@ -4058,7 +4040,7 @@ English: [Tres Association Patent Inquest] Two white-gloved Tres inspectors ente
     Chỉ số: {"wealth":-25,"rep":12,"sanity":-5}
     flagsAdd: ["workshop_tres_done"]
 
-[186] workshop_color_fixer_custom_order
+[185] workshop_color_fixer_custom_order
 Tuổi: [25,75]
 Điều kiện: {"jobs":["Workshop Craftsman"]}
 Cờ cấm: ["Distorted","workshop_color_order_done"]
@@ -4071,49 +4053,7 @@ English: [Commission from a Legendary Color Fixer] A cloaked figure enters your 
     Chỉ số: {"health":-20,"rep":60,"wealth":220,"resonance":25}
     flagsAdd: ["workshop_color_order_done","LegendarySmith"]
 
-[187] ws_promo_journeyman_r1
-Tuổi: [19,58]
-Điều kiện: {"jobs":["Workshop Craftsman"],"workshopRank":0}
-Cờ cấm: ["Distorted","promo_ws_journeyman_done"]
-Nội dung: [Khảo hạch Tres] Hai giám định viên Tres Association đến lò rèn. Muốn khắc dấu xưởng lên vũ khí, bạn phải rèn một lưỡi chém qua thép tôi mà không mẻ. Khối thép đã đặt sẵn trước đe.
-English: [Tres Association Proofmark Audit · Journeyman Commission] Two Tres appraisers wielding micrometers and kinetic resonators enter your forge. To cast off the Apprentice label and earn the right to strike your personal maker’s mark, you must forge a weapon that shears through pressurized test steel without a micro-fracture.
-  Lựa chọn 1: Rèn đại đao dao động cao tần từ hợp kim siêu nhẹ, chém đứt đôi khối thép mẫu
-    English: Forge a high-frequency vibration blade from ultra-light alloy, bisecting the test ingot
-    Kết quả: Tiếng rít xé gió chói tai vang lên! Lưỡi đao cắt khối thép dày như cắt bơ. Thanh tra Tres cúi đầu kính cẩn, dùng búa đồng dập dấu mộc Tres Proofmark lên chuôi kiếm của bạn: Bạn chính thức là Thợ Rèn Được Cấp Phép (Certified Artisan)!
-    Outcome: A piercing sonic hum tore the air! The blade cleaved the thick test block like warm butter. The Tres appraiser bowed in respect, stamping the official Tres Proofmark upon your hilt: You are an ordained Certified Artisan!
-    Chỉ số: {"rep":20,"wealth":25,"resonance":15}
-    flagsAdd: ["promo_ws_journeyman_done"]
-    setWorkshopRank: 1
-  Lựa chọn 2: Đúc chiếc khiên hấp thụ nhiệt động cơ học, chịu đựng ba phát đạn đại bác của Tres
-    English: Cast a thermo-kinetic absorbing buckler, withstanding three direct cannon discharges
-    Kết quả: Tiếng nổ đinh tai nhức óc làm rung chuyển lò rèn. Lớp khiên của bạn hấp thụ trọn vẹn xung lực và tỏa nhiệt qua các rãnh đồng tinh tế mà không suy xuyển. Tres Association cấp chứng chỉ Thợ Chính chuyên phòng hộ cho bạn.
-    Outcome: Deafening concussions rattled the workshop walls. Your buckler absorbed the violent kinetic payload, venting heat through brass heat-sinks without warping. Tres certified you as a defensive Journeyman artisan.
-    Chỉ số: {"rep":22,"wealth":30,"resonance":12,"sanity":5}
-    flagsAdd: ["promo_ws_journeyman_done"]
-    setWorkshopRank: 1
-
-[188] ws_promo_master_r2
-Tuổi: [21,65]
-Điều kiện: {"jobs":["Workshop Craftsman"],"workshopRank":1}
-Cờ cấm: ["Distorted","promo_ws_master_done"]
-Nội dung: [Mở Atelier] Bạn nộp đơn mở Atelier riêng tại District 11. Xưởng đối thủ kiện về bản quyền rồi thuê Fixer đe dọa thợ của bạn. Đơn đăng ký vẫn chờ chữ ký cuối cùng.
-English: [Founding an Independent Atelier: Master Craftsman Trial] Your renown echoes across the alleys. You have amassed sufficient Ahn to charter an independent Atelier in District 11. Rival workshops immediately lodge predatory patent injunctions and hire rogue Fixers to smash your hydraulic hammers.
-  Lựa chọn 1: Cầm chính vũ khí khắc lửa vừa rèn, một mình đánh lui toàn bộ toán côn đồ phá xưởng
-    English: Wield your newly forged flame-brand blade, driving off the saboteurs single-handedly
-    Kết quả: Ngọn lửa rực cháy trên lưỡi kiếm thiêu rụi giáp sắt của đám cướp. Trận chiến được các Fixer xung quanh chứng kiến và tán thưởng nồng nhiệt. Tres Association chính thức trao biển hiệu Atelier Độc Quyền cho bạn, thăng phong bạn lên Master Craftsman.
-    Outcome: White flames danced along the edge, incinerating the intruders’ armor. Witnessing the spectacle, neighboring Fixers roared in approval. Tres awarded you your official Atelier Charter, elevating you to Master Craftsman.
-    Chỉ số: {"health":-15,"rep":35,"wealth":60,"resonance":25}
-    flagsAdd: ["promo_ws_master_done"]
-    setWorkshopRank: 2
-  Lựa chọn 2: Trình bản vẽ cơ khí vi mô trước Tòa Trọng Tài Tres, buộc đối thủ bồi thường phá sản
-    English: Present micro-kinematic blueprints before the Tres Tribunal, bankrupting the litigious rivals
-    Kết quả: Từng lập luận và phép tính cơ học của bạn đập tan mọi luận điệu vu khống. Tòa án Tres phán quyết xưởng đối thủ phải bồi thường toàn bộ gia sản cho bạn. Bạn tiếp quản xưởng rèn của chúng và bước lên ghế Master Craftsman lẫy lừng.
-    Outcome: Your elegant mechanical calculations demolished their fraudulent claims. The Tres Tribunal awarded you their entire estate in damages. Absorbing their assets, you ascended to Master Craftsman with undisputed authority.
-    Chỉ số: {"rep":32,"wealth":90,"network":30,"sanity":10}
-    flagsAdd: ["promo_ws_master_done"]
-    setWorkshopRank: 2
-
-[189] ws_mook_spatial_edge_experiment
+[186] ws_mook_spatial_edge_experiment
 Tuổi: [20,68]
 Điều kiện: {"jobs":["Workshop Craftsman"]}
 Cờ cấm: ["Distorted","ws_mook_done"]
@@ -4132,7 +4072,7 @@ English: [Dimensional Slicing Resonance · Mook Workshop Tech] You acquire a los
     Chỉ số: {"wealth":55,"rep":18,"sanity":5}
     flagsAdd: ["ws_mook_done"]
 
-[190] ws_wheels_industry_colossus
+[187] ws_wheels_industry_colossus
 Tuổi: [21,70]
 Điều kiện: {"jobs":["Workshop Craftsman"]}
 Cờ cấm: ["Distorted","ws_wheels_done"]
@@ -4151,7 +4091,7 @@ English: [The 180kg Colossus Maul · Wheels Industry Commission] A towering Grad
     Chỉ số: {"rep":25,"wealth":70,"sanity":5}
     flagsAdd: ["ws_wheels_done"]
 
-[191] ws_outskirts_ruins_alloy
+[188] ws_outskirts_ruins_alloy
 Tuổi: [22,75]
 Điều kiện: {"jobs":["Workshop Craftsman"]}
 Cờ cấm: ["Distorted","ws_ruins_done"]
@@ -4170,7 +4110,7 @@ English: [Ancient Ruins Alloy from The Outskirts] A squad of Outskirts scavenger
     Outcome: The scavengers wrapped their goods and vanished into the fog. You remained safely beneath the Head’s radar, albeit with lingering curiosity.
     Chỉ số: {"sanity":5}
 
-[192] ws_zelkova_telescopic_quarterstaff
+[189] ws_zelkova_telescopic_quarterstaff
 Tuổi: [20,75]
 Điều kiện: {"jobs":["Workshop Craftsman"]}
 Nội dung: [Trượng thu phóng] Một Fixer đưa bản vẽ trượng Zelkova cho bạn. Cơ cấu khí nén phải kéo dài thân trượng trong một nhịp, nhưng vẫn chịu nổi cú đập vào khiên. Khớp nối là phần khó nhất.
@@ -4186,7 +4126,7 @@ English: [Zelkova Telescopic Staff Commission] A veteran Fixer brings blueprints
     Outcome: The staff felt as solid as an unyielding steel pillar. The client commended the eternal durability of your handiwork.
     Chỉ số: {"rep":18,"wealth":36,"sanity":5}
 
-[193] ws_tres_singularity_infringement_audit
+[190] ws_tres_singularity_infringement_audit
 Tuổi: [22,75]
 Điều kiện: {"jobs":["Workshop Craftsman"]}
 Nội dung: [Thanh Tra Bằng Sáng Chế Lò Rèn · Hiệp Hội Tres] Hai viên thanh tra áo khoác xám của Hiệp hội Tres bất ngờ ập vào lò rèn của bạn lúc nửa đêm. Họ nghi ngờ cuộn dây nhiệt độ siêu cao trên lò nấu thép của bạn vi phạm công nghệ Singularity được cấp bằng sáng chế độc quyền của R Corp.
@@ -4203,7 +4143,7 @@ English: [Tres Association Furnace Patent Inquest] Two grey-coated Tres inspecto
     Outcome: The grease expedited the paperwork, keeping your forges roaring without downtime and preserving client delivery schedules.
     Chỉ số: {"wealth":-20,"rep":15,"sanity":-3}
 
-[194] ws_workshop_turf_sabotage
+[191] ws_workshop_turf_sabotage
 Tuổi: [20,72]
 Điều kiện: {"jobs":["Workshop Craftsman"]}
 Nội dung: [Phục Kích Phá Hoại Lò Rèn Lúc 2 Giờ Sáng] Tiếng kính vỡ lách cách ở tầng hầm đánh thức bạn dậy. Hai kẻ phá hoại do một xưởng rèn đối thủ thuê đang định đổ axit ăn mòn vào bồn dầu tôi thép và các pít-tông thủy lực của bạn.
@@ -4219,7 +4159,7 @@ English: [2:00 AM Workshop Sabotage] The crunch of shattered glass in your cella
     Outcome: Scalding steam trapped the intruders instantly. Tres Association enforcers took custody, penalizing the rival forge with heavy fines.
     Chỉ số: {"rep":20,"wealth":32,"sanity":8}
 
-[195] ws_ego_casing_resonance_craft
+[192] ws_ego_casing_resonance_craft
 Tuổi: [24,75]
 Điều kiện: {"jobs":["Workshop Craftsman"]}
 Nội dung: [Gia Công Chuôi Kiếm Cộng Hưởng E.G.O] Một Fixer Grade 1 mang đến một mảnh vỡ tinh thể hữu cơ phát quang nhặt từ tàn tích của Lobotomy Corp. Khối tinh thể đập từng nhịp như một trái tim sống; họ yêu cầu bạn rèn một bộ vỏ kim loại cách nhiệt tâm lý để kìm hãm sự méo mó khi sử dụng.
@@ -4235,7 +4175,7 @@ English: [E.G.O Resonance Hilt Metallurgy] A Grade 1 Fixer brings an organic cry
     Outcome: Flames flared phantom sapphire. The blade attained mythic sharpness, resonating in uncanny harmony with its bearer’s soul.
     Chỉ số: {"health":-15,"rep":28,"wealth":55,"resonance":25}
 
-[196] ws_allonge_rapier_molecular_grind
+[193] ws_allonge_rapier_molecular_grind
 Tuổi: [21,72]
 Điều kiện: {"jobs":["Workshop Craftsman"]}
 Nội dung: [Đơn hàng Cinq] Kiếm sĩ Cinq đặt một thanh Allonge nhẹ và mảnh, đủ sức chống đỡ đại chùy. Bạn thử lưỡi mẫu trên đe: mép kiếm cong đi. Cô ấy chờ một cách mài khác.
@@ -4251,7 +4191,7 @@ English: [Cinq Allonge Rapier Molecular Grind] A Cinq Section 3 swordswoman comm
     Outcome: The rapier retained featherweight agility while shielding the duelist’s wrist against blunt shocks. Highly pleased, the client praised your ingenuity.
     Chỉ số: {"rep":20,"wealth":38,"sanity":6}
 
-[197] ws_workshop_apprentice_legacy
+[194] ws_workshop_apprentice_legacy
 Tuổi: [26,80]
 Điều kiện: {"jobs":["Workshop Craftsman"]}
 Cờ cấm: ["HasWorkshopApprentice"]
@@ -4269,7 +4209,7 @@ English: [The Forge Apprentice · Child of the Alleys] A scarred Backstreet orph
     Outcome: The forge is toxic and peril-laden. You spared the child the grueling hardships you endured, giving them means to survive the winter.
     Chỉ số: {"sanity":12,"wealth":-8}
 
-[198] mourn_fallen_spouse_anniversary
+[195] mourn_fallen_spouse_anniversary
 Tuổi: [25,80]
 Cờ yêu cầu: ["Widowed"]
 Cờ cấm: ["Distorted"]
@@ -4286,7 +4226,7 @@ English: [A Year Since {spouse} Fell] The apartment sits frozen in dead silence.
     Outcome: Cheap synthetic liquor burned your throat. In your stupor, you almost heard those familiar footsteps returning home...
     Chỉ số: {"health":-8,"sanity":6,"wealth":-6}
 
-[199] avenge_fallen_spouse_intel
+[196] avenge_fallen_spouse_intel
 Tuổi: [26,80]
 Cờ yêu cầu: ["Widowed"]
 Cờ cấm: ["spouse_avenged","Distorted"]
@@ -4299,7 +4239,7 @@ English: [Lead on {spouse}’s Murderer] A Seven Association informant slips you
     Chỉ số: {"health":-20,"sanity":25,"rep":30,"heat":20}
     flagsAdd: ["spouse_avenged"]
 
-[200] mourn_fallen_partner_legacy
+[197] mourn_fallen_partner_legacy
 Tuổi: [22,75]
 Điều kiện: {"mem":"lost_partner"}
 Cờ yêu cầu: []
@@ -4312,7 +4252,7 @@ English: [Relic of {partner}] Sifting through an old locker, you uncover the wor
     Outcome: Every time you draw steel, you feel {partner}’s phantom hand upon your shoulder. Your resolve becomes unbreakable.
     Chỉ số: {"sanity":15,"rep":10}
 
-[201] dd_pipe_smoke_investigation
+[198] dd_pipe_smoke_investigation
 Tuổi: [19,65]
 Cờ yêu cầu: []
 Cờ cấm: ["Distorted","dd_investigation_done"]
@@ -4331,7 +4271,7 @@ English: [Distortion Detective Agency] A dry rap at the door at midnight. An old
     Chỉ số: {"sanity":-15,"heat":12,"rep":10}
     flagsAdd: ["dd_investigation_done"]
 
-[202] bl_claim_their_bones_oath
+[199] bl_claim_their_bones_oath
 Tuổi: [18,60]
 Điều kiện: {"jobs":["Fixer","Syndicate"]}
 Cờ cấm: ["Distorted","blade_lineage_sworn","kurokumo_tattooed"]
@@ -4350,7 +4290,7 @@ English: [To Claim Their Bones · Blade Lineage] Amid a blood-soaked Backstreet 
     Outcome: The swordsman gave a slight nod, tossing you a pouch of Ahn stripped from Kurokumo ronin: "Prudence to live another dawn is its own survival in this City." He turned and dissolved into the rain.
     Chỉ số: {"wealth":35,"rep":10,"sanity":5}
 
-[203] kurokumo_ink_slash_vendetta
+[200] kurokumo_ink_slash_vendetta
 Tuổi: [18,58]
 Điều kiện: {"jobs":["Syndicate","Fixer"]}
 Cờ cấm: ["Distorted","kurokumo_tattooed","blade_lineage_sworn"]
@@ -4369,7 +4309,7 @@ English: [Kurokumo Clan Blood Ink] A tatami den reeking of sumi ink and antisept
     Outcome: Sayo’s gaze turned icy: "A craven Backstreet rat. Pray you never cross our blade paths in the dark." You stepped into the rain unscathed, yet watched by shadowed eyes.
     Chỉ số: {"rep":-5,"sanity":10}
 
-[204] sweeper_mother_soup_night
+[201] sweeper_mother_soup_night
 Tuổi: [14,75]
 Cờ cấm: ["Distorted"]
 Nội dung: [Đêm của Sweepers] Cửa hầm trú kẹt cứng. Sweepers tiến tới từ hai đầu hẻm, móc sắt gõ vào thùng chứa. Kẻ đi đầu dừng trước bạn, lặp từng tiếng: "Súp... cho gia đình."
@@ -4387,7 +4327,7 @@ English: [3:13 AM · Mother’s Sweeper Cauldron] Sirens shriek through the fog:
     Chỉ số: {"wealth":-15,"health":-6,"sanity":-4}
     flagsAdd: ["SweeperSurvivor"]
 
-[205] bloodfiend_carnival_pcorp
+[202] bloodfiend_carnival_pcorp
 Tuổi: [20,70]
 Cờ cấm: ["Distorted","bloodfiend_met"]
 Nội dung: [Công viên dưới lòng đất] Bạn lần theo người mất tích vào công viên ngầm District 16. Đu quay vẫn sáng dù các quầy đều vắng. Một Bloodfiend nâng ly đỏ thẫm: "Khách mới. Ở lại dùng bữa chứ?"
@@ -4405,7 +4345,7 @@ English: [Bloodfiend Carnival · La Manchaland] Tracking a missing carriage conv
     Chỉ số: {"wealth":50,"sanity":-15,"taboo":1,"resonance":15}
     flagsAdd: ["bloodfiend_met","BloodfiendContract"]
 
-[206] smoke_war_veteran_chimeric_rage
+[203] smoke_war_veteran_chimeric_rage
 Tuổi: [21,65]
 Cờ cấm: ["Distorted","gcorp_veteran_helped"]
 Nội dung: [Cựu binh Smoke War] Một nhóm cựu binh G Corp cũ bị đội săn tiền thưởng dồn vào bãi phế liệu. Người chỉ huy gãy cánh, ôm đứa con nhỏ sau lưng. Ông nhận ra bạn và xin một đường thoát.
@@ -4422,7 +4362,7 @@ English: [Echoes of Smoke War · Old G Corp Veterans] In a rusted scrapyard, you
     Outcome: Flamethrowers roared amidst agonizing shrieks. When only gray ash remained, the corporate officer tossed you a bloodstained bounty envelope: "Smart choice keeping your snout clean, rat."
     Chỉ số: {"wealth":25,"sanity":-20,"rep":-8}
 
-[207] tcorp_stolen_color_contraband
+[204] tcorp_stolen_color_contraband
 Tuổi: [18,70]
 Điều kiện: {"regions":["T","Backstreets","Nest"]}
 Cờ cấm: ["Distorted","color_contraband_done"]
@@ -4442,7 +4382,7 @@ English: [The Stolen Colors of T Corp] You enter a covert black-market cellar in
     Chỉ số: {"wealth":30,"rep":15,"sanity":-8,"network":10}
     flagsAdd: ["color_contraband_done"]
 
-[208] wcorp_cleaning_crew_amnesia
+[205] wcorp_cleaning_crew_amnesia
 Tuổi: [20,60]
 Cờ cấm: ["Distorted","wcorp_cleaned"]
 Nội dung: [Ca dọn tàu WARP] W Corp trả hậu hĩnh cho một ca dọn tàu và phát thuốc xóa trí nhớ. Cửa toa mở ra: hành khách không còn ngồi đúng hình dạng của mình. Bạn phải đưa họ về ghế trước khi hệ thống khôi phục khởi động.
@@ -4460,7 +4400,7 @@ English: [Special Commission: WARP Train Cleanup Crew] W Corp issues a high-secu
     Chỉ số: {"wealth":90,"sanity":-18,"heat":30,"taboo":1}
     flagsAdd: ["wcorp_cleaned","WCorpWhistleblower"]
 
-[209] wonderlab_aberrant_specimen
+[206] wonderlab_aberrant_specimen
 Tuổi: [18,65]
 Cờ cấm: ["Distorted","aberration_encountered"]
 Nội dung: [Mẫu vật WonderLab] Một nhà nghiên cứu chạy vào chỗ trú của bạn, ôm lồng kính chứa bông hoa thủy tinh đang hát. "Nó thoát khỏi phân viện. Giúp tôi phong ấn, hoặc mang nó ra Outskirts." Chốt lồng đã lỏng.
@@ -4478,7 +4418,7 @@ English: [WonderLab · The Aberrant Specimen] A researcher in a torn white lab c
     Chỉ số: {"wealth":65,"sanity":-14,"heat":20,"taboo":1}
     flagsAdd: ["aberration_encountered"]
 
-[210] seven_dossier_singularity_leak
+[207] seven_dossier_singularity_leak
 Tuổi: [25,75]
 Điều kiện: {"jobs":["Fixer","Wing Employee"]}
 Cờ cấm: ["Distorted","seven_dossier_read"]
@@ -4497,7 +4437,7 @@ English: [Seven Association · Dossier Zero] A senior intelligence officer from 
     Chỉ số: {"sanity":20,"network":25,"rep":15}
     flagsAdd: ["seven_dossier_read"]
 
-[211] csq_kurokumo_retribution
+[208] csq_kurokumo_retribution
 Điều kiện: {"flags":["blade_lineage_sworn"]}
 Chỉ dành cho nhân quả: true
 Nội dung: [Mực trên danh sách truy sát] Một người của Kurokumo chặn bạn bên sạp sửa kiếm. Hắn mở cuốn sổ bảo kê, chỉ vào tên bạn được khoanh bằng mực đen. “Kiếm của Blade Lineage không được đi qua địa bàn này mà không trả giá.”
@@ -4513,7 +4453,7 @@ English: [Ink on the bounty ledger] A Kurokumo collector stopped you by a sword 
     Outcome: You cut through the ledger, but they had already learned your face. The way home grew longer.
     Chỉ số: {"health":-12,"heat":16,"rep":5}
 
-[212] csq_blade_lineage_retribution
+[209] csq_blade_lineage_retribution
 Điều kiện: {"flags":["kurokumo_tattooed"]}
 Chỉ dành cho nhân quả: true
 Nội dung: [Kiếm khách dưới mái hiên] Một kiếm khách Blade Lineage nhận ra hình xăm Hắc Vân trên cổ tay bạn. Người ấy đặt bát trà xuống, nhích ghế chắn lối ra. “Người mang dấu của Kurokumo còn nợ chúng ta một câu trả lời.”
@@ -4529,7 +4469,7 @@ English: [Swordsman beneath the eaves] A Blade Lineage swordsman recognized the 
     Outcome: The swordsman let you go after taking your weapon. Kurokumo would ask why you returned empty-handed.
     Chỉ số: {"wealth":-6,"sanity":-5,"rep":-3}
 
-[213] csq_thumb_etiquette_hunt
+[210] csq_thumb_etiquette_hunt
 Điều kiện: {"flags":["ThumbTraitor"]}
 Chỉ dành cho nhân quả: true
 Nội dung: [Sổ đạn chưa khép] Ba Soldato của The Thumb tìm đến chỗ bạn ngủ. Họ mang cùng một danh sách truy nã, nhưng mỗi người đã nhận một lệnh khác nhau về cách đưa bạn về.
@@ -4545,7 +4485,7 @@ English: [An open ammunition ledger] Three Thumb Soldato found your sleeping pla
     Outcome: You came out of the alley alive. Behind you, gunfire called for reinforcements.
     Chỉ số: {"health":-18,"heat":20,"rep":5}
 
-[214] quest_gambler_debt_call
+[211] quest_gambler_debt_call
 Tuổi: [16,75]
 Điều kiện: {"npcTag":["friend","gambler"],"noQuest":{"role":"friend","max":1}}
 Cờ cấm: ["Distorted"]
@@ -4569,7 +4509,7 @@ English: [The Gambler’s Reckoning] Down a slime-slick alley behind District 9�
     Outcome: A sharp, sickening snap of shattered knuckles echoed off the brick cul-de-sac. The enforcers dispersed. {friend} dragged their ruined hand through the muck, head bowed, refusing to meet your eyes. The unspoken bond between you withered into ash.
     Chỉ số: {"sanity":-8,"rep":-4}
 
-[215] quest_sickly_medicine_hunt
+[212] quest_sickly_medicine_hunt
 Tuổi: [14,80]
 Điều kiện: {"back":true,"npcTag":["friend","sickly"],"noQuest":{"role":"friend","max":1}}
 Cờ cấm: ["Distorted"]
@@ -4592,7 +4532,7 @@ English: [The Backstreet Winter Fever] The drafty attic shivers under howling wi
     Outcome: {friend} survived by pure bitter grit, yet the warmth in their eyes died. They understood that in your ledgers, their breath was not worth twelve Ahn.
     Chỉ số: {"sanity":-4}
 
-[216] quest_proud_honor_duel
+[213] quest_proud_honor_duel
 Tuổi: [17,70]
 Điều kiện: {"npcTag":["friend","proud"],"noQuest":{"role":"friend","max":1}}
 Cờ cấm: ["Distorted"]
@@ -4615,7 +4555,7 @@ English: [The Duel for Pride] In the crowded morning market smelling of frying g
     Outcome: {friend} collapsed in the dirt beneath steel-toed boots. The bitter humiliation burned deeper than broken ribs, shattering the trust between you forever.
     Chỉ số: {"sanity":-6,"rep":-8}
 
-[217] quest_secretive_past_caught
+[214] quest_secretive_past_caught
 Tuổi: [18,70]
 Điều kiện: {"npcTag":["friend","secretive"],"noQuest":{"role":"friend","max":1}}
 Cờ cấm: ["Distorted"]
@@ -4638,7 +4578,7 @@ English: [Shadow of Yesterday] Cold drizzle coats the alleyway. A trench-coated 
     Outcome: {friend} packed their threadbare satchel in silence and dissolved into the fog. You never crossed paths again.
     npcFate: {"friend":"estranged"}
 
-[218] quest_ambitious_recommendation
+[215] quest_ambitious_recommendation
 Tuổi: [18,65]
 Điều kiện: {"npcTag":["friend","ambitious"],"noQuest":{"role":"friend","max":1}}
 Cờ cấm: ["Distorted"]
@@ -4661,7 +4601,7 @@ English: [The Career Milestone] {friend} secured an interview seat at a prestigi
     Outcome: {friend} bit their lip in bitter silence. The crushed ambition left a permanent fissure across your bond.
     Chỉ số: {"sanity":-4}
 
-[219] quest_partner_combat_synergy
+[216] quest_partner_combat_synergy
 Tuổi: [18,75]
 Điều kiện: {"npc":"partner","noQuest":{"role":"partner","max":1}}
 Cờ cấm: ["Distorted"]
@@ -4678,7 +4618,7 @@ English: [Back-to-Back in the Rain] Inside an abandoned factory floor amidst a t
     Outcome: Blinding smoke engulfed the kill squad. Wrapping an arm around {partner}’s waist, you plunged together into the drainage conduits. In the subterranean gloom, your fingers intertwined, pulses beating in unbreakable rhythm.
     Chỉ số: {"sanity":10,"rep":10}
 
-[220] quest_spouse_family_shelter
+[217] quest_spouse_family_shelter
 Tuổi: [18,85]
 Điều kiện: {"npc":"spouse","noQuest":{"role":"spouse","max":1}}
 Cờ cấm: ["Distorted"]
@@ -4696,7 +4636,7 @@ English: [Shelter in the Grey Blizzard] A freezing ash storm slams the City, plu
     Outcome: Sleet howled against bare skin, yet the warmth of two beating hearts triumphed over the bitter freeze. The devotion forged through that vigil became an impenetrable spiritual fortress.
     Chỉ số: {"health":-4,"sanity":12}
 
-[221] quest_cynical_informant_crisis
+[218] quest_cynical_informant_crisis
 Tuổi: [18,70]
 Điều kiện: {"npcTag":["friend","cynical"],"noQuest":{"role":"friend","max":1}}
 Cờ cấm: ["Distorted"]
@@ -4719,7 +4659,7 @@ English: [The Informant’s Trap] {friend}, the cynical rumor-broker who never t
     Outcome: Gunfire rattled inside the booth. The drive was retrieved, and {friend} never walked the information stalls again.
     Chỉ số: {"sanity":-6}
 
-[222] quest_loyal_guardian_stand
+[219] quest_loyal_guardian_stand
 Tuổi: [18,75]
 Điều kiện: {"npcTag":["friend","loyal"],"noQuest":{"role":"friend","max":1}}
 Cờ cấm: ["Distorted"]
@@ -4737,7 +4677,7 @@ English: [The Living Shield’s Wound] During an ambush by alley Scavengers, {fr
     Outcome: Beneath the lantern light, your steady hands extracted every splinter from torn muscle. The searing agony was met with silent endurance. Brotherhood was forged anew through blood and fire.
     Chỉ số: {"health":-4,"rep":10,"sanity":8}
 
-[223] quest_mentor_last_lesson
+[220] quest_mentor_last_lesson
 Tuổi: [20,85]
 Điều kiện: {"npcTag":["friend","mentor"],"noQuest":{"role":"friend","max":1}}
 Cờ cấm: ["Distorted"]
@@ -4757,7 +4697,273 @@ English: [The Old Master’s Final Lesson] The veteran Fixer who guided your roo
     Outcome: You spent the night flushing valves and lubricating the old mentor’s prosthetics. His pneumatic joints moved smooth as silk once more. Laughing heartily, he poured two cups of liquor: “You stubborn pup... still finding ways to surprise me.”
     Chỉ số: {"rep":14,"network":15,"sanity":14}
 
-[224] ev4_d_ninth_floor
+[221] drama_index_name_on_prescript
+Tuổi: [20,60]
+Điều kiện: {"jobs":["Syndicate"],"finger":"Index","npc":"friend","fingerRankAtLeast":1}
+Nội dung: [Tên trong Sắc lệnh] Messenger đưa bạn một Prescript niêm sáp. Trước lúc chuông khu phố điểm mười hai tiếng, bạn phải giết {friend}. Không có dòng giải thích.
+English: [A name on the Prescript] A Messenger hands you a sealed Prescript. Before the district bell strikes twelve, you must kill {friend}. No reason is given.
+  Lựa chọn 1: Thi hành đúng giờ
+    English: Carry it out on time
+    Kết quả: Bạn lau con dao ở bậc thềm nhà {friend}. Messenger chỉ kiểm tra giờ ghi trên đồng hồ rồi nhận tờ biên nhận.
+    Outcome: You wipe the knife on {friend}’s doorstep. The Messenger checks the time, then takes your receipt.
+    Chỉ số: {"sanity":-22,"rep":5,"heat":4}
+    mem: index_obeyed_friend_prescript
+    npcFate: {"friend":"dead"}
+  Lựa chọn 2: Đưa {friend} ra khỏi khu phố
+    English: Get {friend} out of the district
+    Kết quả: Chuyến xe rời bến trước tiếng chuông cuối. Prescript vẫn nằm trong tay bạn; tên người nhận tiếp theo đã được viết ở mặt sau.
+    Outcome: The coach leaves before the final bell. The Prescript remains in your hand; another recipient’s name is written on its back.
+    Chỉ số: {"wealth":-12,"sanity":-7,"heat":15,"rep":-5}
+    mem: index_defied_friend_prescript
+    scheduleConsequences: [{"eventId":"drama_index_unanswered_prescript","delayYears":2,"reasonVi":"Prescript chưa được hoàn thành","reasonEn":"The Prescript remains unfulfilled"}]
+
+[222] drama_index_unanswered_prescript
+Tuổi: [21,70]
+Điều kiện: {"mem":"index_defied_friend_prescript"}
+Chỉ dành cho nhân quả: true
+Nội dung: [Phong bì thứ hai] Một phong bì nằm dưới cửa xưởng. Bên trong là vé xe cũ của {friend} và một Prescript mới: giao lại tấm vé cho Messenger trước bình minh.
+English: [The second envelope] Beneath your door lies {friend}’s old ticket. A new Prescript orders you to return it to the Messenger before dawn.
+  Lựa chọn 1: Giao vé, giữ kín nơi ở của họ
+    English: Return the ticket and conceal their whereabouts
+    Kết quả: Messenger nhận vé, không hỏi ga đến. Bạn không biết đó là lòng khoan dung hay một phép thử khác.
+    Outcome: The Messenger takes the ticket without asking for the destination. You cannot tell whether this is mercy or another test.
+    Chỉ số: {"sanity":-5,"heat":-8}
+  Lựa chọn 2: Đốt vé, cắt đứt dấu vết
+    English: Burn the ticket and sever the trail
+    Kết quả: Tro bám vào đầu ngón tay. Đến trưa, hai người gõ cửa hỏi vì sao bạn không giao món đồ được chỉ định.
+    Outcome: Ash clings to your fingers. By noon, two people knock and ask why the assigned delivery never arrived.
+    Chỉ số: {"health":-12,"heat":17,"rep":-8}
+    mem: index_twice_defied
+
+[223] drama_middle_book_entry
+Tuổi: [20,62]
+Điều kiện: {"jobs":["Syndicate"],"finger":"Middle","npc":"friend"}
+Nội dung: [Trang sổ thù] Trong Book of Vengeance của một Big Sibling, bạn thấy tên {friend}. Dòng bên cạnh ghi món nợ của một người khác; nét mực sửa tên còn chưa khô.
+English: [A page in the Book] A Big Sibling’s Book of Vengeance lists {friend}. The debt beside it belongs to someone else; the amended ink is still wet.
+  Lựa chọn 1: Báo cho {friend} rồi tìm người sửa sổ
+    English: Warn {friend} and find who altered the entry
+    Kết quả: {friend} trốn ngay trong đêm. Người giữ sổ giao bạn hai ngày để đưa ra bằng chứng, không thêm một giờ.
+    Outcome: {friend} flees that night. The keeper gives you two days to produce proof, not an hour more.
+    Chỉ số: {"wealth":-7,"heat":10,"network":-4}
+    mem: middle_disputed_entry
+    scheduleConsequences: [{"eventId":"drama_middle_ink_witness","delayYears":1,"reasonVi":"The Middle đòi chứng cứ về dòng tên bị sửa","reasonEn":"The Middle demands proof about the altered name"}]
+  Lựa chọn 2: Làm theo sổ
+    English: Follow the Book
+    Kết quả: Bạn tìm thấy {friend} trước đội thu nợ. Khi gạch tên xong, bạn nhận ra người sửa sổ đứng ngay trong hàng người chứng kiến.
+    Outcome: You reach {friend} before the collectors. Once the name is crossed out, you spot the one who changed it among the witnesses.
+    Chỉ số: {"sanity":-19,"rep":5}
+    mem: middle_obeyed_false_entry
+    npcFate: {"friend":"dead"}
+
+[224] drama_middle_ink_witness
+Tuổi: [21,68]
+Điều kiện: {"mem":"middle_disputed_entry"}
+Chỉ dành cho nhân quả: true
+Nội dung: [Nét mực không khớp] Người giữ sổ đặt hai trang dưới đèn. Mực trên tên {friend} khác màu. Kẻ sửa sổ chỉ đứng cách bạn một cái bàn.
+English: [The mismatched ink] The keeper sets two pages under a lamp. The ink on {friend}’s name differs. The forger stands across the table.
+  Lựa chọn 1: Chỉ ra nét mực trước mặt Big Sibling
+    English: Show the ink to the Big Sibling
+    Kết quả: Trang giấy được sửa lại. Kẻ giả mạo phải trả món nợ của chính mình; bạn mất người từng che lưng cho mình trong tổ.
+    Outcome: The page is corrected. The forger must settle their own debt; you lose an ally who once watched your back.
+    Chỉ số: {"network":-8,"heat":8,"rep":4}
+  Lựa chọn 2: Nhận lỗi chép nhầm về mình
+    English: Take the blame for the altered entry
+    Kết quả: Tên {friend} được xóa. Tên bạn chuyển sang mục người phải bồi thường.
+    Outcome: {friend}’s name is removed. Yours moves to the restitution column.
+    Chỉ số: {"wealth":-18,"health":-9,"sanity":-5}
+
+[225] drama_ring_ward
+Tuổi: [20,55]
+Điều kiện: {"jobs":["Syndicate"],"finger":"Ring","noNpc":"ward"}
+Nội dung: [Đứa trẻ ở cửa sau] Một đứa bé ngủ dưới mái che phòng tranh, ôm khung tranh rỗng. Docent bảo bạn có thể cho nó vào; danh sách học việc tháng tới vẫn còn chỗ.
+English: [A child at the back door] A child sleeps beneath the gallery awning, clutching an empty frame. A Docent says the next apprentice list has room.
+  Lựa chọn 1: Cho đứa trẻ ở cùng, không ghi tên vào danh sách
+    English: Take the child in without enrolling them
+    Kết quả: Bạn mua thêm một chiếc bát. Docent nhìn thấy nó trên bàn và không nói gì; vài tháng sau, ông ta hỏi tên đứa trẻ.
+    Outcome: You buy another bowl. The Docent notices it and says nothing. Months later, he asks the child’s name.
+    Chỉ số: {"wealth":-10,"sanity":4}
+    mem: ring_hid_ward
+    scheduleConsequences: [{"eventId":"drama_ring_exhibition","delayYears":3,"reasonVi":"Docent vẫn nhớ tên đứa trẻ","reasonEn":"The Docent remembers the child’s name"}]
+  Lựa chọn 2: Đưa nó đến khu cư trú khác
+    English: Send the child to another district
+    Kết quả: Bạn trả tiền chuyến xe. Khi quay lại, khung tranh rỗng vẫn tựa cạnh cửa phòng tranh.
+    Outcome: You pay for the coach. When you return, the empty frame still leans beside the gallery door.
+    Chỉ số: {"wealth":-7,"sanity":-3}
+
+[226] drama_ring_exhibition
+Tuổi: [23,65]
+Điều kiện: {"mem":"ring_hid_ward","npc":"ward"}
+Chỉ dành cho nhân quả: true
+Nội dung: [Tác phẩm số mười bảy] Khách xem đứng kín hành lang. Sau tấm kính cuối phòng, {ward} còn cử động. Tấm nhãn ghi tên nghệ sĩ là Docent đã hỏi bạn ba năm trước.
+English: [Work Seventeen] Visitors crowd the corridor. Beyond the last pane, {ward} still moves. The label credits the Docent who asked their name three years ago.
+  Lựa chọn 1: Đập kính, đưa {ward} đi
+    English: Break the glass and take {ward} away
+    Kết quả: Kính vỡ, còi báo động nổi lên. {ward} bám chặt cổ tay bạn trên đường chạy; hai người không thể trở lại phòng tranh.
+    Outcome: Glass breaks and the alarm sounds. {ward} grips your wrist as you run; neither of you can return to the gallery.
+    Chỉ số: {"health":-22,"wealth":-12,"heat":28,"rep":-10,"sanity":5}
+    mem: ring_ward_escaped
+  Lựa chọn 2: Đứng xem đến khi phòng đóng cửa
+    English: Stay until the gallery closes
+    Kết quả: Đèn tắt từng dãy. Bạn nhận tiền công bảo vệ, còn tấm nhãn dưới kính được phủ vải.
+    Outcome: The lights go out row by row. You collect the guard’s pay; a cloth covers the label beneath the glass.
+    Chỉ số: {"wealth":14,"sanity":-24,"rep":4}
+    mem: ring_ward_exhibited
+    npcFate: {"ward":"dead"}
+
+[227] drama_thumb_missing_seal
+Tuổi: [21,62]
+Điều kiện: {"jobs":["Syndicate"],"finger":"Thumb","fingerRankAtLeast":1}
+Nội dung: [Con dấu thất lạc] Một phong bì mang dấu của Capo đến kho đạn, nhưng niêm phong đã bị bóc. Lính gác cúi đầu xin bạn xác nhận; cấp trên chưa đến.
+English: [The broken seal] An envelope bearing a Capo’s seal reaches the ammunition store already opened. The guard bows and asks for your confirmation; the superior has yet to arrive.
+  Lựa chọn 1: Đợi Capo xác nhận, để hàng giao chậm
+    English: Wait for the Capo and delay the shipment
+    Kết quả: Lô hàng đến muộn. Capo kiểm lại dấu, rồi bắt người đã mở phong bì trước khi nó vào kho.
+    Outcome: The shipment runs late. The Capo checks the seal and catches whoever opened the envelope before it reached the store.
+    Chỉ số: {"wealth":-6,"rep":3}
+  Lựa chọn 2: Ký nhận thay để giữ đúng giờ
+    English: Sign for it to keep the schedule
+    Kết quả: Xe rời kho đúng giờ. Khi Capo tới, chữ ký của bạn nằm cạnh con dấu đã rách.
+    Outcome: The truck leaves on time. When the Capo arrives, your signature sits beside the broken seal.
+    Chỉ số: {"rep":-7,"heat":9,"sanity":-4}
+
+[228] drama_pinky_oath_witness
+Tuổi: [21,62]
+Điều kiện: {"jobs":["Syndicate"],"finger":"Pinky","fingerRankAtLeast":1}
+Nội dung: [Người chứng lời thề] Một người cùng tổ phá lời hẹn giao hàng để cứu em mình. Chủ nợ muốn bạn làm chứng rằng giao kèo đã bị bẻ gãy.
+English: [Witness to an oath] A crewmate broke a delivery oath to save their sibling. The creditor asks you to attest that the contract was broken.
+  Lựa chọn 1: Làm chứng theo đúng giao kèo
+    English: Testify to the breach
+    Kết quả: Chủ nợ thu hồi hàng và ghi tên người ấy vào sổ. Đến lượt trực sau, chỗ của họ vẫn để trống.
+    Outcome: The creditor reclaims the goods and records the crewmate’s name. Their post stays empty on the next watch.
+    Chỉ số: {"rep":5,"sanity":-8,"network":-7}
+  Lựa chọn 2: Nhận khoản thiếu về mình
+    English: Assume the missing debt
+    Kết quả: Bạn ký dưới số tiền còn thiếu. Người cùng tổ trở lại làm việc, còn chủ nợ biết phải tìm bạn ở đâu.
+    Outcome: You sign beneath the missing sum. Your crewmate returns to work, and the creditor now knows where to find you.
+    Chỉ số: {"wealth":-17,"network":5,"heat":5}
+
+[229] drama_fixer_unpaid_request
+Tuổi: [19,63]
+Điều kiện: {"jobs":["Fixer"],"grade":[2,9],"npc":"partner"}
+Nội dung: [Ủy thác không người trả] Office nhận tiền đưa một người ra khỏi Backstreets. Đến điểm hẹn, khách hàng đã chết; {partner} hỏi bạn có tiếp tục hộ tống không.
+English: [The unpaid request] Your Office was paid to escort someone out of the Backstreets. At the rendezvous, the client is dead; {partner} asks whether the escort continues.
+  Lựa chọn 1: Đưa người đó đi, tự gánh phí
+    English: Finish the escort and cover the cost
+    Kết quả: Hai người đến cổng trước giờ khóa. Office trừ khoản đạn và thuốc khỏi phần công của bạn.
+    Outcome: You reach the gate before it closes. The Office deducts ammunition and medicine from your pay.
+    Chỉ số: {"wealth":-12,"health":-11,"rep":5}
+    mem: fixer_escorted_unpaid
+    scheduleConsequences: [{"eventId":"drama_fixer_receipt","delayYears":2,"reasonVi":"Người được hộ tống tìm lại Office","reasonEn":"The escorted person returns to the Office"}]
+  Lựa chọn 2: Khép hồ sơ khi người thuê chết
+    English: Close the file when the client dies
+    Kết quả: Bạn ký dòng cuối báo cáo. {partner} cất chìa khóa xe; người cần hộ tống vẫn đứng ngoài cổng.
+    Outcome: You sign the final line of the report. {partner} pockets the van key; the person to be escorted remains outside the gate.
+    Chỉ số: {"sanity":-7,"wealth":4,"rep":-4}
+
+[230] drama_fixer_receipt
+Tuổi: [21,68]
+Điều kiện: {"mem":"fixer_escorted_unpaid"}
+Chỉ dành cho nhân quả: true
+Nội dung: [Biên nhận cũ] Người bạn từng hộ tống trở lại Office với biên nhận nhàu nát. Họ tìm được việc, muốn trả món nợ bằng tiền mặt hoặc một đầu mối ủy thác.
+English: [The old receipt] The person you escorted returns with a crumpled receipt. They found work and offer cash or a lead on a new request.
+  Lựa chọn 1: Nhận lại tiền
+    English: Take the money
+    Kết quả: Bạn gạch món nợ khỏi sổ Office. Khoản này đủ trả tiền thuốc còn treo.
+    Outcome: You strike the debt from the Office ledger. It covers the medicine bill still outstanding.
+    Chỉ số: {"wealth":12,"sanity":3}
+  Lựa chọn 2: Nhận đầu mối ủy thác
+    English: Take the lead
+    Kết quả: Địa chỉ viết ở mặt sau biên nhận. Bạn phải bỏ một ca trực để kiểm tra nó, nhưng Office đã có khách mới.
+    Outcome: The address is on the back of the receipt. You miss a shift to verify it, but the Office has a new client.
+    Chỉ số: {"health":-5,"network":5}
+
+[231] drama_fixer_association_report
+Tuổi: [23,68]
+Điều kiện: {"jobs":["Fixer"],"grade":[1,6]}
+Nội dung: [Bản báo cáo gửi Hana] Một Office khác nhận công cho vụ bạn đã giải quyết. Bản khai của họ chỉ sai một chi tiết: tên người sống sót bị thay bằng tên người đã chết.
+English: [The report to Hana] Another Office claims credit for your case. Their statement changes one detail: the survivor’s name has been replaced by the dead person’s.
+  Lựa chọn 1: Nộp chứng cứ sửa hồ sơ
+    English: Submit evidence to correct the file
+    Kết quả: Hana mở lại hồ sơ. Bạn mất ba ngày chờ đối chiếu, nhưng tên người sống sót được trả về đúng chỗ.
+    Outcome: Hana reopens the file. You lose three days to verification, but the survivor’s name returns to its proper place.
+    Chỉ số: {"wealth":-7,"rep":5,"network":-3}
+  Lựa chọn 2: Bỏ qua, nhận việc mới
+    English: Leave it and take another job
+    Kết quả: Hồ sơ đóng dấu. Người sống sót hỏi vì sao giấy tờ của mình ghi đã chết; bạn không có câu trả lời.
+    Outcome: The file is stamped. The survivor asks why their papers say they died; you have no answer.
+    Chỉ số: {"sanity":-6,"wealth":5}
+
+[232] drama_fixer_office_payroll
+Tuổi: [20,62]
+Điều kiện: {"jobs":["Fixer"],"grade":[3,9],"npc":"partner"}
+Nội dung: [Bảng lương của Office] Trong sổ lương, tên {partner} nằm ở cột nhân viên đã nghỉ. Họ vẫn đi cùng bạn mỗi ca; người quản lý nói đó là lỗi kế toán.
+English: [The Office payroll] The ledger lists {partner} among departed staff. They still work beside you every shift; the manager calls it an accounting error.
+  Lựa chọn 1: Đối chiếu hợp đồng trước mặt cả Office
+    English: Compare the contract before the whole Office
+    Kết quả: Người quản lý sửa sổ. Cuối tuần, phần chia của bạn giảm; {partner} lần đầu cầm đủ tiền công.
+    Outcome: The manager corrects the ledger. Your share shrinks that week; {partner} receives their full wage for the first time.
+    Chỉ số: {"wealth":-9,"network":-5,"rep":3}
+  Lựa chọn 2: Nhận phần chênh lệch và im lặng
+    English: Take the difference and stay quiet
+    Kết quả: Tiền đến đều mỗi tuần. {partner} phải mượn Ahn mua băng thuốc sau ca trực.
+    Outcome: The money arrives each week. {partner} has to borrow Ahn for bandages after the next job.
+    Chỉ số: {"wealth":14,"sanity":-8}
+
+[233] drama_wing_quota_sheet
+Tuổi: [19,62]
+Điều kiện: {"jobs":["Wing Employee"]}
+Nội dung: [Chỉ tiêu cuối quý] Bảng sản lượng của Wing đạt chỉ tiêu nhờ bỏ trống cột tai nạn. Người phụ trách nhờ bạn ký xác nhận trước khi đoàn kiểm tra đến.
+English: [Quarter-end quota] The Wing meets its target because the accident column is blank. Your supervisor asks for your signature before inspection.
+  Lựa chọn 1: Ký vào bảng đã sửa
+    English: Sign the altered sheet
+    Kết quả: Đoàn kiểm tra đi qua trong mười phút. Tiền thưởng được chuyển; tủ đồ của một nhân viên không còn ai mở.
+    Outcome: The inspectors pass through in ten minutes. Your bonus arrives; one employee’s locker remains unopened.
+    Chỉ số: {"wealth":12,"sanity":-12,"rep":4}
+    mem: wing_signed_quota
+  Lựa chọn 2: Điền số tai nạn còn thiếu
+    English: Restore the missing accident count
+    Kết quả: Chỉ tiêu không đạt. Bạn giữ bản sao trước khi phòng nhân sự thu lại hồ sơ gốc.
+    Outcome: The quota fails. You keep a copy before personnel retrieves the original.
+    Chỉ số: {"wealth":-9,"network":-8,"heat":7,"sanity":3}
+    mem: wing_kept_quota_copy
+    scheduleConsequences: [{"eventId":"drama_wing_copy_audit","delayYears":2,"reasonVi":"Bản sao bảng sản lượng bị phát hiện","reasonEn":"The copied quota sheet is discovered"}]
+
+[234] drama_wing_copy_audit
+Tuổi: [21,68]
+Điều kiện: {"mem":"wing_kept_quota_copy"}
+Chỉ dành cho nhân quả: true
+Nội dung: [Bản sao trong ngăn kéo] Bộ phận pháp chế biết bạn giữ bảng sản lượng gốc. Họ đề nghị mua lại bản sao, kèm một tờ cam kết không nhắc đến tai nạn.
+English: [The copy in your drawer] Legal knows you kept the original production sheet. They offer to buy it back with a promise never to mention the accidents.
+  Lựa chọn 1: Giao bản sao và ký cam kết
+    English: Return the copy and sign
+    Kết quả: Bạn nhận tiền trước khi đặt bút. Cuộc kiểm tra khép lại, còn những cái tên bị bỏ trống không trở vào sổ.
+    Outcome: You receive the money before signing. The inquiry closes; the missing names never return to the ledger.
+    Chỉ số: {"wealth":17,"sanity":-11,"heat":-5}
+  Lựa chọn 2: Đưa bản sao cho người bị ảnh hưởng
+    English: Give the copy to the affected families
+    Kết quả: Họ có chứng cứ để đòi tiền bồi thường. Thẻ ra vào của bạn bị khóa ngay buổi chiều.
+    Outcome: They have proof for a claim. Your access card is disabled that afternoon.
+    Chỉ số: {"wealth":-10,"heat":15,"network":-12,"rep":7}
+    mem: wing_broke_silence
+    setJob: Outcast
+
+[235] drama_wing_sealed_room
+Tuổi: [23,62]
+Điều kiện: {"jobs":["Wing Employee"],"wingRank":1}
+Nội dung: [Phòng khóa niêm] Ca trực bàn giao thiếu một nhân viên. Cửa phòng thử nghiệm đã khóa từ bên trong; lệnh của quản lý là niêm kín đến sáng.
+English: [The sealed room] One employee is missing at shift change. The test room is locked from within; management orders it sealed until morning.
+  Lựa chọn 1: Mở cửa, gọi đội cứu hộ
+    English: Open the door and call rescue
+    Kết quả: Người bên trong còn thở. Báo cáo ghi bạn tự ý phá niêm; người ấy ký tên làm chứng.
+    Outcome: The person inside is breathing. The report says you broke the seal; they sign as witness.
+    Chỉ số: {"health":-12,"network":-7,"rep":5}
+  Lựa chọn 2: Giữ niêm phong đến sáng
+    English: Keep the seal until morning
+    Kết quả: Bạn bàn giao chìa khóa đúng giờ. Khi cửa mở, đội y tế chỉ còn việc ghi thời điểm tử vong.
+    Outcome: You hand over the key on time. When the door opens, the medics only record the time of death.
+    Chỉ số: {"sanity":-14,"wealth":5}
+
+[236] ev4_d_ninth_floor
 Tuổi: [22,70]
 Vùng: ["D"]
 Nội dung: [Tầng hầm thứ chín] Đội trưởng khu quận D triệu tập những người đủ sức khỏe xuống tầng hầm thứ chín của chi nhánh L Corp cũ. Dây leo phát sáng ở đó đã mọc xuyên qua cả những cánh cửa hàn kín, và cần người cắt chúng trước khi chúng chạm đến móng nhà.
@@ -4781,7 +4987,7 @@ English: [The Ninth Cellar] The captain of District 4 summons everyone fit enoug
     Outcome: The captain hears you out, then says he has sealed it three times and each time someone has opened it again. He does not ask who.
     Chỉ số: {"rep":2,"network":-2,"sanity":1}
 
-[225] ev4_f_vault_commission
+[237] ev4_f_vault_commission
 Tuổi: [22,70]
 Vùng: ["F"]
 Nội dung: [Chiếc két của người đã chết] Một chủ tiệm cầm đồ ở quận F thuê bạn mở một chiếc két mà chủ của nó đã chết ba năm trước, không để lại chìa lẫn người thừa kế. Ông hứa chia cho bạn một phần, nếu bên trong có gì đáng chia.
@@ -4805,7 +5011,7 @@ English: [The Dead Man’s Safe] A pawnbroker in District 6 hires you to open a 
     Outcome: He finds someone else, and a week later you hear it was opened. No one says what was inside, and the locksmith no longer works the trade.
     Chỉ số: {"sanity":1,"network":-1}
 
-[226] ev4_i_silent_concert
+[238] ev4_i_silent_concert
 Tuổi: [20,70]
 Vùng: ["I"]
 Nội dung: [Buổi hòa nhạc không nhạc cụ] Hội đồng khu phố nhạc tổ chức một buổi hòa nhạc không nhạc cụ nhân ngày giỗ của bản nhạc kia. Mỗi người đến ngồi im và đếm nhịp bằng hơi thở, và người ta bảo bạn nên có mặt.
@@ -4832,7 +5038,7 @@ English: [The Concert Without Instruments] The District 9 council holds a concer
     Outcome: You watch them breathe together from beyond the threshold. When the concert ends, an old woman walks past and tells you that, too, is a way of attending.
     Chỉ số: {"sanity":-1,"rep":-1}
 
-[227] ev4_q_curse_witness
+[239] ev4_q_curse_witness
 Tuổi: [22,70]
 Vùng: ["Q"]
 Nội dung: [Lá bùa trên cánh tay người chết] Người ta tìm thấy một lá bùa nguyền dán trên cánh tay một người hàng xóm đã mất. Người của Q Corp mời bạn đứng làm chứng rằng lá bùa không phải do bạn dán, và họ hỏi rất nhẹ nhàng.
@@ -4856,7 +5062,7 @@ English: [A Talisman on a Dead Arm] A curse talisman is found stuck to the arm o
     Outcome: You describe someone who never existed, and they note every detail. From then on you catch yourself studying strangers’ faces on the street, wondering which one you just invented.
     Chỉ số: {"network":-3,"rep":1,"sanity":-2}
 
-[228] ev4_v_office_merger
+[240] ev4_v_office_merger
 Tuổi: [22,65]
 Nghề: ["Fixer"]
 Vùng: ["V"]
@@ -4881,7 +5087,7 @@ English: [Two Offices, One Wall] Two rival Offices in District 22 are about to m
       English: Your sign is covered from the second week, and no one admits to covering it. You sit in an empty Office counting how long the rent will last.
       Chỉ số: {"wealth":-8,"rep":-2,"sanity":-3}
 
-[229] ev4_x_deep_shaft
+[241] ev4_x_deep_shaft
 Tuổi: [22,60]
 Vùng: ["X"]
 Nội dung: [Hầm sâu số năm] Hầm sâu số năm mở thêm một tầng, và đội khai thác cần thêm người xuống kiểm tra cột chống. Công cao gấp ba ca thường, và không ai trong đội nói tầng mới sâu bao nhiêu.
@@ -4908,7 +5114,7 @@ English: [Deep Shaft Five] Deep shaft five opens another level, and the mining c
     Outcome: The crew chief looks at you a long time and nods. "Someone will go in your place," he says, and you hear that he does not say it in blame.
     Chỉ số: {"rep":-2,"sanity":2,"network":-2}
 
-[230] ev4_y_coal_march
+[242] ev4_y_coal_march
 Tuổi: [18,60]
 Vùng: ["Y"]
 Nội dung: [Cuộc đi bộ đến kho than] Những người tự gọi mình là Yurodiviye kêu gọi một cuộc đi bộ đến cổng kho than của Wing để đòi chia lại than theo số người trong nhà. Hàng xóm gõ cửa từng nhà, và họ hỏi bạn có đi không.
@@ -4932,7 +5138,7 @@ English: [The March to the Coal Depot] People calling themselves Yurodiviye call
     Outcome: All day you feed the common stove for those who stayed behind. When the marchers return no one says anything to you, but the stove is warm exactly when they need it.
     Chỉ số: {"sanity":1,"network":1,"rep":-1}
 
-[231] ev4_p_extra_floor
+[243] ev4_p_extra_floor
 Tuổi: [22,70]
 Vùng: ["P"]
 Nội dung: [Tầng không ai nhớ đã xây] Tòa nhà bạn ở quận P có thêm một tầng, và không ai nhớ đã xây nó. Nút bấm thang máy của tầng ấy vẫn sáng, và có tiếng bước chân đi lại ở trên đầu bạn mỗi tối.
@@ -4956,7 +5162,7 @@ English: [A Floor No One Remembers Building] The building you live in, in Distri
     Outcome: You manage to sleep, and wake feeling more rested than usual. That worries you more than any footstep.
     Chỉ số: {"sanity":1,"health":-2}
 
-[232] ev4_o_caravan_split
+[244] ev4_o_caravan_split
 Tuổi: [18,60]
 Vùng: ["OUTSKIRTS"]
 Nội dung: [Đoàn chia làm hai] Sau một cuộc tranh cãi về nước, đoàn người của bạn chia làm hai hướng. Một nhóm đi về phía bức tường, nơi có chợ và có Backstreets. Nhóm kia đi sâu vào Outskirts, nơi có giếng và có những thứ không ai gọi tên.
@@ -4986,7 +5192,7 @@ English: [The Caravan Splits] After an argument over water, your caravan divides
     Outcome: Both groups disappear in opposite directions. You watch the smoke from the fire thin out, then wonder why you are the one who stayed.
     Chỉ số: {"health":-6,"sanity":-3,"rep":-1}
 
-[233] ev4_dist_hunter_letter
+[245] ev4_dist_hunter_letter
 Tuổi: [20,80]
 Nghề: ["Distortion"]
 Nội dung: [Lá thư không đề tên] Một lá thư không đề tên được luồn qua khe cửa nơi bạn trú. Một Fixer của Hana mời bạn đến gặp, chỉ một mình và ở nơi bạn chọn, và viết rằng họ sẽ không mang vũ khí. Bạn không biết lời ấy đáng tin đến đâu.
@@ -5010,7 +5216,7 @@ English: [The Unsigned Letter] An unsigned letter is slipped under the door of y
     Outcome: They arrive on the third day. You hear boots from afar and let them stand at the door a long while, until their leader calls your old name.
     Chỉ số: {"heat":8,"resonance":4,"rep":2,"health":-5}
 
-[234] ev4_dist_old_street
+[246] ev4_dist_old_street
 Tuổi: [20,80]
 Nghề: ["Distortion"]
 Nội dung: [Con phố cũ] Bạn đi trở lại con phố bạn từng sống. Người ta nhận ra bạn, và không ai chạy. Một người bán rau đặt mớ rau xuống và chờ, như thể đang đợi bạn nói trước.
@@ -5034,7 +5240,7 @@ English: [The Old Street] You walk back to the street where you once lived. Peop
       English: Someone in the house calls for help, and boots appear at the end of the street before you can turn away. You run, and the street parts to let you pass, in silence.
       Chỉ số: {"heat":10,"health":-8}
 
-[235] ev4_dist_fading_voice
+[247] ev4_dist_fading_voice
 Tuổi: [24,80]
 Nghề: ["Distortion"]
 Nội dung: [Giọng nói nhỏ dần] Giọng nói trong đầu bạn đã nhỏ đi qua nhiều tháng, và hôm nay bạn nhận ra mình đang nói thay nó, to tiếng, giữa một con hẻm vắng. Bạn không chắc đó là tự do hay là bị bỏ rơi.
@@ -5058,7 +5264,7 @@ English: [The Fading Voice] The voice in your head has been growing quieter for 
     Outcome: You walk out of the alley in silence. Beyond it you notice your mouth is still moving faintly, as if reciting something by heart.
     Chỉ số: {"heat":-1,"resonance":2}
 
-[236] ev4_spouse_long_fever
+[248] ev4_spouse_long_fever
 Tuổi: [25,70]
 Điều kiện: {"npc":"spouse"}
 Nội dung: [Cơn sốt tuần thứ ba] Cơn sốt của {spouse} kéo sang tuần thứ ba. Thuốc ở phòng khám đầu phố không còn tác dụng, và bác sĩ nói chỉ còn một cách, đắt hơn mọi thứ bạn đang có.
@@ -5086,7 +5292,7 @@ English: [The Third Week of Fever] {spouse}’s fever runs into its third week. 
     Outcome: {spouse} recovers, and asks where you found the money. You lie, and realise this is the first time you have lied to them.
     Chỉ số: {"wealth":2,"heat":8,"sanity":-3}
 
-[237] ev4_child_wants_to_leave
+[249] ev4_child_wants_to_leave
 Tuổi: [30,75]
 Điều kiện: {"npc":"child"}
 Nội dung: [{child} muốn đi xa] {child} nói với bạn rằng một Wing ở khu xa nhận họ vào làm. Chỗ làm tốt hơn bất cứ thứ gì bạn có thể cho họ ở đây, và họ nói điều đó rất nhỏ, như đang xin lỗi.
@@ -5110,7 +5316,7 @@ English: [{child} Wants to Go Far] {child} tells you that a Wing in a distant Di
     Outcome: The trip takes three days. At the Wing gate the guard looks at you, then at {child}, and lets you both through without asking. You sit an afternoon in the waiting room, then go home alone.
     Chỉ số: {"wealth":-3,"health":-2,"network":3,"sanity":2}
 
-[238] ev4_mentor_closes_shop
+[250] ev4_mentor_closes_shop
 Tuổi: [28,80]
 Điều kiện: {"npc":"mentor"}
 Nội dung: [{mentor} đóng cửa] {mentor} thông báo sẽ đóng cửa nơi ông đã làm việc ba mươi năm. Ông giao lại cho bạn một chiếc chìa khóa, một cuốn sổ ghi tay, và một câu hỏi mà ông không bao giờ dám hỏi người khác.
@@ -5134,7 +5340,7 @@ English: [{mentor} Closes Up] {mentor} announces they will close the place they 
       English: You answer honestly, and they nod many times, too many times. "You are right," they say, in a voice without a trace of relief.
       Chỉ số: {"sanity":-4,"resonance":3}
 
-[239] ev4_friend_wants_to_leave
+[251] ev4_friend_wants_to_leave
 Tuổi: [20,60]
 Điều kiện: {"npc":"friend"}
 Nội dung: [{friend} muốn rời khu] {friend} nói với bạn rằng họ muốn rời khu này và không quay lại. Họ đã tiết kiệm được gần đủ tiền, và chỉ còn thiếu một thứ: một người để nói với rằng họ không điên.
@@ -5159,7 +5365,7 @@ English: [{friend} Wants Out] {friend} tells you they want to leave this distric
     Outcome: {friend} hears you out, nods, and does not show up at the next meeting. They are still there, you hear, but never again take your road.
     Chỉ số: {"sanity":-2}
 
-[240] ev4_elder_unsent_letters
+[252] ev4_elder_unsent_letters
 Tuổi: [62,95]
 Nội dung: [Bó thư chưa gửi] Khi dọn một ngăn tủ cũ, bạn tìm thấy một bó thư viết cho nhiều người và chưa bao giờ gửi. Giấy đã ngả vàng, và nét chữ trên đó là nét chữ của một người trẻ hơn bạn nhiều.
 English: [The Bundle of Unsent Letters] Clearing out an old cabinet, you find a bundle of letters written to many people and never sent. The paper has yellowed, and the handwriting belongs to someone much younger than you.
@@ -5182,7 +5388,7 @@ English: [The Bundle of Unsent Letters] Clearing out an old cabinet, you find a 
     Outcome: The paper burns faster than you thought. The ash rises with the smoke, and you watch until it falls, far enough to belong to no one.
     Chỉ số: {"sanity":1,"resonance":-3}
 
-[241] ev4_elder_last_request
+[253] ev4_elder_last_request
 Tuổi: [62,90]
 Nghề: ["Fixer"]
 Điều kiện: {"grade":[9,4]}
@@ -5204,7 +5410,7 @@ English: [The Last Request] Your old Office sends a simple Request: walk a newco
     Outcome: The Office notes it without objection. The following week no Request arrives, and you realise you have just heard a door close.
     Chỉ số: {"sanity":-2,"network":-2}
 
-[242] ev4_elder_fixer_successor
+[254] ev4_elder_fixer_successor
 Tuổi: [62,140]
 Nghề: ["Fixer"]
 Điều kiện: {"grade":[3,1]}
@@ -5226,7 +5432,7 @@ English: [The Name on the Request] A young Office asks you to endorse the person
     Outcome: You completed the Request and marked a new ambush point on Hana’s map. The cost settled in your knee and sleepless nights, not in your reputation.
     Chỉ số: {"health":-8,"sanity":-3,"merit":5}
 
-[243] ev4_elder_syndicate_succession
+[255] ev4_elder_syndicate_succession
 Tuổi: [62,140]
 Nghề: ["Syndicate"]
 Điều kiện: {"fingerRankAtLeast":3}
@@ -5248,7 +5454,7 @@ English: [The Next Crew’s Ledger] Two crews under your command bring different
     Outcome: The money came in, but a fight broke out at the new boundary. Patrols began recording the names of your crews.
     Chỉ số: {"wealth":3,"heat":5,"sanity":-4}
 
-[244] ev4_elder_wing_handover
+[256] ev4_elder_wing_handover
 Tuổi: [62,140]
 Nghề: ["Wing Employee"]
 Điều kiện: {"stat":{"wingRank":[2,9]}}
@@ -5270,10 +5476,10 @@ English: [Night Shift Approval] The Wing sends up two rosters for the same produ
     Outcome: The quota was met on time. By morning you had to pull the emergency stop when a shaft slipped out of time, injuring your shoulder and leaving you to sign the incident report.
     Chỉ số: {"wealth":3,"health":-5,"sanity":-4,"heat":3}
 
-[245] ev4_elder_workshop_mark
+[257] ev4_elder_workshop_mark
 Tuổi: [62,140]
 Nghề: ["Workshop Craftsman"]
-Điều kiện: {"stat":{"workshopRank":[2,9]}}
+Điều kiện: {"stat":{"merit":[45,9999]}}
 Nội dung: [Dấu xưởng trên lưỡi mới] Một thợ trẻ mang đến thanh kiếm vừa xuất lò để xin đóng dấu xưởng của bạn. Lưỡi kiếm đẹp, nhưng mối hàn bên trong chưa được thử tải. Khách đang chờ, còn tên xưởng sẽ nằm trên món hàng lâu hơn cả ca làm hôm nay.
 English: [The Workshop Mark] A young craftsperson brings a fresh blade for your Workshop seal. It looks fine, but the inner weld has not been stress-tested. The client is waiting, and the Workshop name will outlast today’s shift.
   Lựa chọn 1: Thử tải và rèn lại mối hàn
@@ -5292,7 +5498,7 @@ English: [The Workshop Mark] A young craftsperson brings a fresh blade for your 
     Outcome: The client paid in full, but a Tres inspector recorded that the blade had not been load-tested. You kept the weld drawing and barred another order of this pattern.
     Chỉ số: {"wealth":3,"sanity":-4,"heat":3}
 
-[246] ev4_syn_loyalty_errand
+[258] ev4_syn_loyalty_errand
 Tuổi: [22,60]
 Nghề: ["Syndicate"]
 Nội dung: [Việc nhỏ và bẩn] Cấp trên giao cho bạn một việc nhỏ để chứng tỏ lòng trung thành: đến một căn hộ cuối phố và lấy đi một chiếc hộp mà không để lại dấu vết. Ông không nói trong hộp có gì, và không nói chủ căn hộ là ai.
@@ -5317,7 +5523,7 @@ English: [A Small, Dirty Job] Your superior assigns you a small task to prove lo
     Outcome: Your superior is not angry, only writes something in a ledger and passes the job to someone else. The next day you see two strangers waiting at the head of your street.
     Chỉ số: {"rep":-4,"heat":6,"health":-6,"sanity":3}
 
-[247] ev4_wing_audit_file
+[259] ev4_wing_audit_file
 Tuổi: [24,60]
 Nghề: ["Wing Employee"]
 Nội dung: [Tệp kiểm toán không dành cho bạn] Bạn vô tình mở một tệp kiểm toán không dành cho mình trên máy chung. Trong đó, tên một người cùng bộ phận được ghi cạnh một con số mà không ai nên biết, và ngày cập nhật cuối cùng là hôm qua.
@@ -5955,7 +6161,7 @@ English: [The Clock Runs Fast] Two years later it runs four minutes ahead. A sho
     flagsAdd: ["thread_street_clock_broken"]
 
 ================================================================================
-TÌNH HUỐNG NGẮN CÓ LỰA CHỌN — 210
+TÌNH HUỐNG NGẮN CÓ LỰA CHỌN — 219
 ================================================================================
 
 [1] m_k_candy
@@ -6192,7 +6398,7 @@ Ignore: You looked straight ahead as if they did not exist, walking through the 
 Chỉ số khi bỏ qua: {}
 
 [12] m_t_friend_fixer
-Tuổi: [12,17]
+Tuổi: [18,25]
 Điều kiện: {"npc":"friend","notNest":true}
 Nội dung: [Lời rủ rê của {friend}] {friend} vừa xin được một chân chạy việc vặt cho một Văn phòng Fixer địa phương. Người bạn ấy hào hứng rủ bạn cùng tham gia kiếm tiền.
 English: [The Office Errand Offer] {friend} landed an odd-job gig at a local Fixer Office, excitedly inviting you to tag along for coin.
@@ -6213,7 +6419,7 @@ Ignore: You hesitated, and {friend} ventured into the dark alone.
 Chỉ số khi bỏ qua: {}
 
 [13] m_friend_injured
-Tuổi: [13,22]
+Tuổi: [20,30]
 Điều kiện: {"npc":"friend"}
 Nội dung: [Chiếc chân nát của {friend}] {friend} được người ta khiêng về nhà trong tình trạng một bên chân bị nghiền nát bấy sau một nhiệm vụ. Văn phòng lạnh lùng bảo đó là "tai nạn nghề nghiệp" và từ chối bồi thường viện phí.
 English: [Crushed Leg of {friend}] Comrades carried {friend} home with one leg pulverized during a contract. The Office dismissed it as an “occupational risk” and refused all clinic coverage.
@@ -7078,9 +7284,10 @@ Nội dung: [Tiệm thuốc đầu ngõ] Người lớn nhận ra bạn không �
 English: [The corner pharmacy] The adults noticed you could barely climb the stairs, whether from fever or an untreated wound. The pharmacy was still open; a little boiled water remained at home.
   Lựa chọn 1: Nhờ người mua thuốc và băng sạch (-1 Ahn)
     English: Ask someone to buy medicine and clean bandages (-1 Ahn)
+    Phí Ahn: 1
     Kết quả: Người lớn rửa vết đau, cho bạn uống thuốc rồi thay băng. Đêm ấy bạn ngủ được một giấc trọn.
     Outcome: An adult cleaned the sore place, gave you medicine and changed the bandage. You slept through the night.
-    Chỉ số: {"health":12,"sanity":3,"wealth":-1}
+    Chỉ số: {"health":12,"sanity":3}
   Lựa chọn 2: Ở nhà, uống nước đun sôi và để cơ thể nghỉ
     English: Stay home, drink boiled water and rest
     Kết quả: Bạn nằm yên hai ngày. Khi đứng dậy, chân vẫn hơi run nhưng đã chịu nổi sức nặng của mình.
@@ -7361,7 +7568,8 @@ Nội dung: [Kỳ sát hạch thăng hạng Hana] Hiệp hội Hana chính thứ
 English: [Hana Grade Advancement Exam] Hana Association announced the open assessment for Fixer promotion. A seasoned colleague quietly offered to sell you “insider test materials” for ten Ahn.
   Lựa chọn 1: Bỏ 10 Ahn mua đề thi nội bộ
     English: Purchase the leaked materials
-    Chỉ số: {"wealth":-10}
+    Phí Ahn: 10
+    Chỉ số: {}
     Nhánh ngẫu nhiên 1 (trọng số 60): Thông tin mua được hoàn toàn chính xác. Bạn vượt qua các bài thi thực chiến một cách vô cùng dễ dàng và thuận lợi.
       English: The intel was flawless. You sailed through the grueling combat evaluations with effortless precision.
       Chỉ số: {"merit":10,"rep":2}
@@ -10723,6 +10931,213 @@ English: [The empty seat] A familiar voice stops you in the street. The speaker 
     Chỉ số: {"sanity":2,"resonance":2}
 Bỏ qua: Bạn đi tiếp trước khi người lạ kịp nhìn sang.
 Ignore: You left before the stranger could look your way.
+
+[211] m_career_thumb_ledger
+Tuổi: [18,140]
+Điều kiện: {"jobs":["Syndicate"],"finger":"Thumb"}
+Nội dung: [Sổ đạn của The Thumb] Kho đạn thiếu ba hộp. Capo bảo bạn kiểm lại sổ trước khi Sottocapo đến.
+English: [The Thumb ammunition ledger] Three boxes are missing. The Capo asks you to check the ledger before the Sottocapo arrives.
+  Lựa chọn 1: Đối chiếu từng chữ ký
+    English: Check every signature
+    Kết quả: Bạn tìm ra người nhận nhầm. Capo giữ lại bản kiểm kê có tên bạn.
+    Outcome: You found the mistaken recipient. The Capo kept the inventory under your name.
+    Chỉ số: {"merit":4,"rep":2,"sanity":-2}
+  Lựa chọn 2: Nhận lỗi thay người giữ kho
+    English: Take the blame for the quartermaster
+    Chỉ số: {}
+    Nhánh ngẫu nhiên 1 (trọng số 60): Người giữ kho trả đạn trước hạn. Capo ghi nhận rằng bạn biết giữ kỷ luật trong đội.
+      English: The quartermaster returned the boxes in time. The Capo noted that you kept order in the unit.
+      Chỉ số: {"merit":6,"rep":3,"health":-3}
+    Nhánh ngẫu nhiên 2 (trọng số 40): Đạn không trở lại. Bạn chịu phạt thay người giữ kho.
+      English: The boxes never came back. You took the punishment meant for the quartermaster.
+      Chỉ số: {"health":-8,"rep":-3,"merit":-2}
+Bỏ qua: Bạn để Capo tự kiểm sổ. Tên bạn không có trong báo cáo.
+Ignore: The Capo checked the ledger himself. Your name did not appear in the report.
+Chỉ số khi bỏ qua: {}
+
+[212] m_career_index_prescript
+Tuổi: [18,140]
+Điều kiện: {"jobs":["Syndicate"],"finger":"Index"}
+Nội dung: [Phong thư chưa mở] Một Prescript cần được giao trước khi chuông nhà máy điểm ca mới. Tên người nhận bị nước làm nhòe.
+English: [The sealed envelope] A Prescript must arrive before the factory bell marks the next shift. Water has blurred the recipient’s name.
+  Lựa chọn 1: Lần theo địa chỉ, không mở thư
+    English: Follow the address without opening it
+    Kết quả: Bạn giao nguyên dấu niêm. Người nhận xác nhận địa chỉ bằng một cái gật đầu.
+    Outcome: You delivered the seal intact. The recipient confirmed the address with a nod.
+    Chỉ số: {"merit":4,"rep":2,"health":-2}
+  Lựa chọn 2: Nhờ Proselyte khác xác nhận
+    English: Ask another Proselyte to confirm
+    Chỉ số: {}
+    Nhánh ngẫu nhiên 1 (trọng số 55): Hai người tìm đúng cửa trước hồi chuông. Người kia làm chứng cho bạn.
+      English: Together you found the right door before the bell. The other Proselyte vouched for you.
+      Chỉ số: {"merit":5,"network":2,"rep":2}
+    Nhánh ngẫu nhiên 2 (trọng số 45): Bạn đến muộn một nhịp chuông. Người giao việc ghi lại giờ đến, không nói thêm.
+      English: You arrived one bell late. The courier recorded the time without another word.
+      Chỉ số: {"merit":-3,"sanity":-5}
+Bỏ qua: Bạn trả lại phong thư. Nó được trao cho người khác.
+Ignore: You returned the envelope. Someone else carried it.
+Chỉ số khi bỏ qua: {}
+
+[213] m_career_middle_vengeance
+Tuổi: [18,140]
+Điều kiện: {"jobs":["Syndicate"],"finger":"Middle"}
+Nội dung: [Một dòng trong Book of Vengeance] Tên kẻ đánh người nhà của bạn vừa được ghi vào sổ. Hắn đang nấp trong một Office bỏ trống.
+English: [A line in the Book of Vengeance] The one who hurt your family has been entered in the book. He is hiding in an abandoned Office.
+  Lựa chọn 1: Dẫn cả nhóm đi lấy người
+    English: Bring the family to retrieve him
+    Kết quả: Bạn giữ cửa sau. Không ai trong nhóm bị bỏ lại.
+    Outcome: You held the back door. No one in your group was left behind.
+    Chỉ số: {"merit":5,"rep":2,"health":-4,"heat":4}
+  Lựa chọn 2: Vào trước để tránh phục kích
+    English: Enter first to catch the ambush
+    Chỉ số: {}
+    Nhánh ngẫu nhiên 1 (trọng số 55): Bạn phát hiện dây bẫy và gọi người nhà lùi lại. Tên bạn được ghi bên cạnh món nợ đã trả.
+      English: You spotted the tripwire and called the family back. Your name went beside the settled debt.
+      Chỉ số: {"merit":7,"rep":3,"heat":6}
+    Nhánh ngẫu nhiên 2 (trọng số 45): Dây bẫy quật bạn xuống sàn. Người nhà kéo bạn ra, còn món nợ vẫn mở.
+      English: The wire threw you to the floor. Your family pulled you out; the debt remained open.
+      Chỉ số: {"health":-12,"sanity":-4,"heat":3}
+Bỏ qua: Người khác nhận món nợ trong sổ.
+Ignore: Someone else took the debt recorded in the book.
+Chỉ số khi bỏ qua: {}
+
+[214] m_career_ring_commission
+Tuổi: [18,140]
+Điều kiện: {"jobs":["Syndicate"],"finger":"Ring"}
+Nội dung: [Khung tranh còn trống] Docent đưa bạn một phòng triển lãm bỏ không và một buổi chiều để sắp đặt tác phẩm.
+English: [The empty frame] A Docent gives you an unused gallery room and one afternoon to arrange a work.
+  Lựa chọn 1: Dùng những vật bỏ lại trong phòng
+    English: Use what was left in the room
+    Kết quả: Docent dừng trước khung tranh lâu hơn những phòng khác. Ông ghi tên bạn vào danh sách phụ tá.
+    Outcome: The Docent lingered at your frame. He wrote your name on the assistants’ list.
+    Chỉ số: {"merit":4,"rep":2,"sanity":-2}
+  Lựa chọn 2: Đòi một phần ngân sách của buổi trưng bày
+    English: Ask for part of the exhibition budget
+    Chỉ số: {}
+    Nhánh ngẫu nhiên 1 (trọng số 55): Bạn dựng xong trước khi cửa mở. Khách trả tiền để được xem thêm một lượt.
+      English: You finished before the doors opened. Visitors paid for another viewing.
+      Chỉ số: {"merit":5,"rep":3,"wealth":3}
+    Nhánh ngẫu nhiên 2 (trọng số 45): Docent xem hóa đơn rồi đóng cửa phòng bạn trước giờ khai mạc.
+      English: The Docent read the invoice and closed your room before the opening.
+      Chỉ số: {"wealth":-5,"rep":-3,"sanity":-4}
+Bỏ qua: Căn phòng được giao cho người khác.
+Ignore: The room went to another artist.
+Chỉ số khi bỏ qua: {}
+
+[215] m_career_pinky_oath
+Tuổi: [18,140]
+Điều kiện: {"jobs":["Syndicate"],"finger":"Pinky"}
+Nội dung: [Người giữ lời] Một người cùng The Pinky đã hứa đưa hàng qua biên giới District. Đến giờ hẹn, anh ta vẫn chưa đến.
+English: [The one who gave his word] A Pinky member promised to carry a parcel across the District line. He has not arrived.
+  Lựa chọn 1: Giữ điểm hẹn và báo đúng sự thật
+    English: Hold the meeting point and report the truth
+    Kết quả: Bạn đứng đó đến hết ca. Cấp trên ghi nhận bạn không rời vị trí.
+    Outcome: You stayed until your shift ended. Your superior recorded that you had not left your post.
+    Chỉ số: {"merit":4,"rep":2,"sanity":-2}
+  Lựa chọn 2: Mang hàng đi thay anh ta
+    English: Carry the parcel in his place
+    Chỉ số: {}
+    Nhánh ngẫu nhiên 1 (trọng số 55): Bạn giao hàng đúng hạn. Người kia trở về và xác nhận bạn đã giữ lời thay mình.
+      English: You delivered on time. He returned and confirmed that you kept his word for him.
+      Chỉ số: {"merit":6,"rep":3,"health":-4}
+    Nhánh ngẫu nhiên 2 (trọng số 45): Bạn bị chặn ở trạm kiểm soát. Hàng bị giữ, tên bạn bị ghi vào sổ.
+      English: The checkpoint stopped you. They kept the parcel and wrote down your name.
+      Chỉ số: {"health":-6,"heat":8,"rep":-3}
+Bỏ qua: Bạn rời điểm hẹn. Hàng được chuyển vào ngày khác.
+Ignore: You left the meeting point. The parcel moved another day.
+Chỉ số khi bỏ qua: {}
+
+[216] m_career_wing_review
+Tuổi: [18,140]
+Điều kiện: {"jobs":["Wing Employee"]}
+Nội dung: [Bản đánh giá quý] Trưởng bộ phận để lại hai tập hồ sơ trên bàn: chỉ tiêu đã hoàn thành và yêu cầu bổ sung từ cấp trên.
+English: [Quarterly review] Your section head leaves two files on the desk: completed quotas and a new request from above.
+  Lựa chọn 1: Gửi bản kết quả đúng số liệu
+    English: Submit the figures as recorded
+    Kết quả: Bản đánh giá được ký. Một đồng nghiệp chuyển bạn bản sao trước khi phòng nhân sự cất hồ sơ.
+    Outcome: The review was signed. A colleague passed you a copy before personnel filed it.
+    Chỉ số: {"merit":4,"network":3,"sanity":-2}
+  Lựa chọn 2: Nhận thêm ca để được người quản lý bảo trợ
+    English: Take another shift to earn a manager’s backing
+    Chỉ số: {}
+    Nhánh ngẫu nhiên 1 (trọng số 60): Bạn đạt chỉ tiêu và được đưa vào danh sách thưởng. Tên người quản lý nằm bên cạnh tên bạn.
+      English: You met the quota and made the bonus list. Your manager’s name appeared beside yours.
+      Chỉ số: {"merit":6,"wealth":5,"network":3,"health":-4}
+    Nhánh ngẫu nhiên 2 (trọng số 40): Ca thêm bị hủy vào phút cuối. Phòng nhân sự vẫn ghi bạn đã nhận trách nhiệm.
+      English: The extra shift was cancelled at the last minute. Personnel still marked you responsible for it.
+      Chỉ số: {"network":-4,"sanity":-6,"wealth":-2}
+Bỏ qua: Bạn để hồ sơ trên bàn đến hết ngày. Kỳ đánh giá khép lại.
+Ignore: You left the files untouched. The review closed without you.
+Chỉ số khi bỏ qua: {}
+
+[217] m_career_wing_quota
+Tuổi: [18,140]
+Điều kiện: {"jobs":["Wing Employee"]}
+Nội dung: [Ca kiểm định cuối quý] Dây chuyền thiếu một người ký nghiệm thu. Nếu bạn ở lại, chỉ tiêu sẽ được ghi vào hồ sơ của bạn; máy vẫn đang chạy quá tải.
+English: [Quarter-end inspection] The line needs one more signature. Stay and the quota enters your record; the machinery is still running above its limit.
+  Lựa chọn 1: Ở lại kiểm tra từng lô
+    English: Stay and inspect each batch
+    Chỉ số: {}
+    Nhánh ngẫu nhiên 1 (trọng số 65): Bạn phát hiện một lô lỗi trước khi niêm phong. Quản lý ký xác nhận phần việc của bạn; ca đêm lấy đi sức lực còn lại.
+      English: You caught a defective batch before sealing. The manager signed your record. The night shift took the rest of your strength.
+      Chỉ số: {"merit":7,"network":2,"health":-5,"sanity":-3}
+    Nhánh ngẫu nhiên 2 (trọng số 35): Máy dừng giữa ca. Hồ sơ ghi bạn đã ở lại xử lý, nhưng chỉ tiêu quý vẫn hụt.
+      English: The line stopped mid-shift. The file records your work, but the quarter still misses its quota.
+      Chỉ số: {"merit":2,"wealth":-3,"sanity":-5}
+  Lựa chọn 2: Bàn giao ca đúng giờ
+    English: Hand over at the end of your shift
+    Kết quả: Bạn ghi lại thông số cuối cùng và giao chìa khóa cho ca sau. Không ai cộng thêm chỉ tiêu vào tên bạn.
+    Outcome: You recorded the final readings and handed over the key. No extra quota went under your name.
+    Chỉ số: {"sanity":3}
+Bỏ qua: Đèn kiểm định tắt khi bạn rời xưởng.
+Ignore: The inspection lamps went dark as you left.
+Chỉ số khi bỏ qua: {}
+
+[218] m_career_wing_incident
+Tuổi: [18,140]
+Điều kiện: {"jobs":["Wing Employee"]}
+Nội dung: [Biên bản sự cố] Một thùng linh kiện bị niêm phong sai. Trưởng bộ phận đưa bạn bản biên bản trắng; ca trực của bạn sẽ phải giải trình nếu không tìm ra lô hàng.
+English: [Incident report] A crate of components bears the wrong seal. Your section head hands you a blank report. Your shift will answer for it unless the batch is found.
+  Lựa chọn 1: Lần theo sổ giao nhận và báo đúng sự việc
+    English: Trace the transfer ledger and report the facts
+    Chỉ số: {}
+    Nhánh ngẫu nhiên 1 (trọng số 60): Bạn tìm thấy lô hàng trong kho phụ. Biên bản được đóng dấu, còn tên bạn được ghi vào kỳ đánh giá.
+      English: You found the batch in an auxiliary store. The report was stamped, and your name entered the review.
+      Chỉ số: {"merit":6,"network":3,"sanity":-3}
+    Nhánh ngẫu nhiên 2 (trọng số 40): Sổ giao nhận thiếu một trang. Bạn nộp phần còn lại, nhận trách nhiệm về ca trực và giữ lại bản sao.
+      English: A page was missing from the ledger. You filed what remained, took responsibility for your shift, and kept a copy.
+      Chỉ số: {"merit":2,"network":-3,"sanity":-4}
+  Lựa chọn 2: Ký theo bản tường trình của cấp trên
+    English: Sign the account prepared by your superior
+    Kết quả: Hồ sơ khép lại trước giờ tan ca. Bạn nhận phụ cấp, nhưng biên bản không ghi ai đã đổi dấu niêm phong.
+    Outcome: The file closed before the shift ended. You received an allowance. It says nothing about who changed the seal.
+    Chỉ số: {"wealth":4,"network":1,"sanity":-4}
+Bỏ qua: Ca sau nhận thùng hàng và bản biên bản còn trống.
+Ignore: The next shift inherited the crate and the blank report.
+Chỉ số khi bỏ qua: {}
+
+[219] m_career_workshop_proof
+Tuổi: [18,140]
+Điều kiện: {"jobs":["Workshop Craftsman"]}
+Nội dung: [Mẫu thử cho Tres] Một đại diện Tres đến xem lô vũ khí mới. Ông đặt lên bàn mẫu đã hỏng và hỏi bạn có thể sửa đến đâu.
+English: [A sample for Tres] A Tres representative inspects the new batch. He sets a broken sample on your bench and asks how far you can repair it.
+  Lựa chọn 1: Thay phần hỏng bằng vật liệu có sẵn
+    English: Replace the damaged part with stock material
+    Kết quả: Lưỡi thép chịu được bài thử. Đại diện Tres đóng dấu vào biên bản của bạn.
+    Outcome: The blade passed the test. The Tres representative stamped your report.
+    Chỉ số: {"merit":4,"wealth":2,"resonance":3}
+  Lựa chọn 2: Thử lại lõi vật liệu bất thường
+    English: Retest the unusual core
+    Chỉ số: {}
+    Nhánh ngẫu nhiên 1 (trọng số 55): Lõi giữ được hình dưới tải nặng. Bạn ghi đủ số đo trước khi nó nguội.
+      English: The core held its shape under load. You recorded the readings before it cooled.
+      Chỉ số: {"merit":6,"resonance":6,"wealth":3,"sanity":-3}
+    Nhánh ngẫu nhiên 2 (trọng số 45): Lõi nứt. Bạn dập lò trước khi lửa lan sang bàn bên cạnh.
+      English: The core cracked. You shut down the forge before fire reached the next bench.
+      Chỉ số: {"wealth":-6,"health":-7,"resonance":2}
+Bỏ qua: Đại diện Tres mang mẫu hỏng đi. Buổi kiểm tra kết thúc.
+Ignore: The Tres representative took the broken sample away. The inspection ended.
+Chỉ số khi bỏ qua: {}
 
 ================================================================================
 NHỊP SỐNG THƯỜNG NGÀY — 302

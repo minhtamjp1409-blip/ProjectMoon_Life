@@ -381,8 +381,9 @@ export const LIFE_MINORS_2 = [
         'Purchase the leaked materials',
         null,
         null,
-        { wealth: -10 },
+        {},
         {
+          costAhn: 10,
           out: [
             O(60, 'Thông tin mua được hoàn toàn chính xác. Bạn vượt qua các bài thi thực chiến một cách vô cùng dễ dàng và thuận lợi.', 'The intel was flawless. You sailed through the grueling combat evaluations with effortless precision.', { merit: 10, rep: 2 }),
             O(40, 'Đó thực chất là một cái bẫy giăng sẵn của Hana để thanh lọc những kẻ gian lận. Bạn bị lập biên bản kỷ luật và ghi vết nhơ vào hồ sơ hành nghề.', 'It was an internal sting operation orchestrated by Hana inspectors. You were caught red-handed and blacklisted with a disciplinary citation.', { rep: -8, merit: -4 })

@@ -984,7 +984,7 @@ export const EXPANSION_EVENTS = [
     major: true,
     weight: 12,
     jobs: ['Workshop Craftsman'],
-    need: { stat: { workshopRank: [2, 9] } },
+    need: { stat: { merit: [45, 9999] } },
     vi: '[Dấu xưởng trên lưỡi mới] Một thợ trẻ mang đến thanh kiếm vừa xuất lò để xin đóng dấu xưởng của bạn. Lưỡi kiếm đẹp, nhưng mối hàn bên trong chưa được thử tải. Khách đang chờ, còn tên xưởng sẽ nằm trên món hàng lâu hơn cả ca làm hôm nay.',
     en: '[The Workshop Mark] A young craftsperson brings a fresh blade for your Workshop seal. It looks fine, but the inner weld has not been stress-tested. The client is waiting, and the Workshop name will outlast today’s shift.',
     choices: [

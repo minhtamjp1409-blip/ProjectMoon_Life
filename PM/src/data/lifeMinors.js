@@ -351,7 +351,7 @@ export const LIFE_MINORS = [
   // ============================================================ teenage years
   M(
     'm_t_friend_fixer',
-    TEEN,
+    [18, 25],
     { npc: 'friend', notNest: true },
     '[Lời rủ rê của {friend}] {friend} vừa xin được một chân chạy việc vặt cho một Văn phòng Fixer địa phương. Người bạn ấy hào hứng rủ bạn cùng tham gia kiếm tiền.',
     '[The Office Errand Offer] {friend} landed an odd-job gig at a local Fixer Office, excitedly inviting you to tag along for coin.',
@@ -385,7 +385,7 @@ export const LIFE_MINORS = [
 
   M(
     'm_friend_injured',
-    [13, 22],
+    [20, 30],
     { npc: 'friend' },
     '[Chiếc chân nát của {friend}] {friend} được người ta khiêng về nhà trong tình trạng một bên chân bị nghiền nát bấy sau một nhiệm vụ. Văn phòng lạnh lùng bảo đó là "tai nạn nghề nghiệp" và từ chối bồi thường viện phí.',
     '[Crushed Leg of {friend}] Comrades carried {friend} home with one leg pulverized during a contract. The Office dismissed it as an “occupational risk” and refused all clinic coverage.',
@@ -1597,7 +1597,8 @@ export const LIFE_MINORS = [
         'Ask someone to buy medicine and clean bandages (-1 Ahn)',
         'Người lớn rửa vết đau, cho bạn uống thuốc rồi thay băng. Đêm ấy bạn ngủ được một giấc trọn.',
         'An adult cleaned the sore place, gave you medicine and changed the bandage. You slept through the night.',
-        { health: 12, sanity: 3, wealth: -1 }
+        { health: 12, sanity: 3 },
+        { costAhn: 1 }
       ),
       C(
         'Ở nhà, uống nước đun sôi và để cơ thể nghỉ',

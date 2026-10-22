@@ -11,7 +11,7 @@ import { LIFE_MINORS, LIFE_DAILIES } from './src/engine/yearPlanner.js';
 import { CONSEQUENCE_EVENTS } from './src/data/eventsChildhood.js';
 import { FIXER_REQUESTS } from './src/data/eventsSupernatural.js';
 import { ROLE_WORDS, entryGatesRole } from './src/engine/storyInvariants.js';
-import { FINGER_LADDERS, WING_LADDER_PROMOTIONS, WORKSHOP_LADDER_PROMOTIONS, FIXER_LADDER } from './src/engine/careerPipeline.js';
+import { FINGER_LADDERS, WING_LADDER_PROMOTIONS, FIXER_LADDER } from './src/engine/careerPipeline.js';
 import { NARRATIVE_ARCS } from './src/engine/narrativeArcEngine.js';
 import { FINGER_RANKS } from './src/data/worldData.js';
 
@@ -92,7 +92,7 @@ for (const file of walk(srcDir).filter((f) => /\.(js|jsx)$/.test(f))) {
   for (const m of code.matchAll(/flags(?:\.push)?\(\s*['"`]([A-Za-z0-9_À-ỹ]+)['"`]/g)) producedFlags.add(m[1]);
   for (const m of code.matchAll(/flags:\s*\[([^\]]*)\]/g)) for (const f of m[1].matchAll(/['"`]([^'"`]+)['"`]/g)) producedFlags.add(f[1]);
   for (const m of code.matchAll(/flagGranted:\s*['"`]([^'"`]+)['"`]/g)) producedFlags.add(m[1]);
-  for (const m of code.matchAll(/`(Finger|promo_ready_g|finger_promo_ready_r|wing_promo_ready_r|ws_promo_ready_r)\$\{/g)) producedFlags.add(`${m[1]}*`);
+  for (const m of code.matchAll(/`(Finger|promo_ready_g|finger_promo_ready_r|wing_promo_ready_r)\$\{/g)) producedFlags.add(`${m[1]}*`);
 }
 const flagKnown = (f) => producedFlags.has(f) || [...producedFlags].some((p) => p.endsWith('*') && f.startsWith(p.slice(0, -1)));
 // Memories the director writes by itself
@@ -135,7 +135,6 @@ for (const id of targetIds) if (!idKinds.has(id)) err(`reference to missing even
 const engineRefs = [
   ...Object.entries(FINGER_LADDERS).flatMap(([f, l]) => l.map((s) => [s.eventId, `Finger ${f} rank ${s.rank}`])),
   ...WING_LADDER_PROMOTIONS.map((s) => [s.eventId, `Wing rank ${s.rank}`]),
-  ...WORKSHOP_LADDER_PROMOTIONS.map((s) => [s.eventId, `Workshop rank ${s.rank}`]),
   ...FIXER_LADDER.map((s) => [`fixer_promo_g${s.grade}_exam`, `Fixer grade ${s.grade}`]),
   ...NARRATIVE_ARCS.flatMap((a) => a.stages.map((s) => [s.eventId, `arc ${a.id} stage ${s.stage}`]))
 ];

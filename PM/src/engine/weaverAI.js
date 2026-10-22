@@ -9,10 +9,10 @@ import {
   checkColorFixerReadiness,
   getNextFingerPromotion,
   getNextWingPromotion,
-  getNextWorkshopPromotion,
   getOtherCareerPromotion,
   careerTrialForEvent,
-  careerPromotionOfferChance
+  careerPromotionOfferChance,
+  RETIRED_WORKSHOP_TRIAL_IDS
 } from './careerPipeline.js';
 // ============================================================================
 // THE PRESCRIPT LOOM: CAUSAL MEMORY GRAPH & RNG FATE OMEN ENGINE
@@ -319,6 +319,7 @@ export function recordChoiceInGraph(weaver, char, event, choice, outcomeTextVi, 
 }
 
 export function isEventEligible(event, char, { scripted = false } = {}) {
+  if (RETIRED_WORKSHOP_TRIAL_IDS.has(event.id)) return false;
   const otherTrial = careerTrialForEvent(event.id);
   const contextEvent = otherTrial && event.age ? { ...event, age: [event.age[0], 140] } : event;
   if (!matchesEventContext(contextEvent, char)) return false;
@@ -335,7 +336,7 @@ export function isEventEligible(event, char, { scripted = false } = {}) {
     const next = getOtherCareerPromotion(char);
     if (!next?.isEligible || next.route !== otherTrial.route || next.rank !== otherTrial.rank ||
         (next.route === 'finger' && next.finger !== otherTrial.finger)) return false;
-    const prefix = next.route === 'finger' ? 'Finger' : next.route === 'wing' ? 'Wing' : 'Workshop';
+    const prefix = next.route === 'finger' ? 'Finger' : 'Wing';
     if (char[`last${prefix}TrialAge`] === char.age) return false;
   }
   if (event.id === 'ad_career_crossroad_18' && (char.age < 18 || char.job !== 'Child' || char.regionId === 'OUTSKIRTS')) return false;
@@ -609,32 +610,6 @@ export function selectEventWithWeaverAI({
     }
   }
 
-  // Prioritize sequential Workshop Craftsman Promotion appraisals
-  if (char.job === 'Workshop Craftsman' && !char.flags.includes('Distorted')) {
-    const nextWsPromo = getNextWorkshopPromotion(char);
-    if (nextWsPromo?.isEligible && char.lastWorkshopTrialAge !== char.age && rng() < careerPromotionOfferChance(char)) {
-      const promoEv = allPools.find((e) => e.id === nextWsPromo.eventId);
-      if (promoEv && isEventEligible(promoEv, char)) {
-        const logEntry = {
-          age: char.age,
-          phase: 'CLIMAX',
-          selectedId: promoEv.id,
-          utility: 975,
-          reasonVi: `Thợ rèn Workshop đủ điều kiện: Khảo hạch nghệ nhân ${nextWsPromo.titleVi}`,
-          reasonEn: `Workshop craftsman eligible: Artisan appraisal ${nextWsPromo.titleEn}`,
-          candidates: [{ eventId: promoEv.id, totalUtility: 975 }]
-        };
-        return {
-          event: promoEv,
-          weaver: {
-            ...updatedWeaver,
-            decisionLog: [logEntry, ...updatedWeaver.decisionLog].slice(0, 18)
-          }
-        };
-      }
-    }
-  }
-
   // Prioritize Distortion progression when distorted
   if (char.flags.includes('Distorted')) {
     const distortStages = [
@@ -752,101 +727,6 @@ export function selectEventWithWeaverAI({
     };
   }
 
-  // Syndicate Pinnacle Ascension Trial (Underboss / Weaver / Great Sibling / Curator / Sovereign)
-  if (
-    (char.job === 'Syndicate' || (char.flags.includes('Distorted') && char.finger)) &&
-    char.finger &&
-    (char.fingerRank || 0) >= 2 &&
-    (char.merit || 0) >= 78 &&
-    ((char.stats?.rep ?? char.rep) || 0) >= 45
-  ) {
-    const fingerTrialPools = {
-      Thumb: ['syn_thumb_underboss_purge', 'syn_thumb_apex_godfather'],
-      Index: ['syn_index_weaver_prescript', 'syn_index_grand_proxy_flow'],
-      Middle: ['syn_middle_great_brother_vendetta', 'syn_middle_apex_patriarch'],
-      Pinky: ['syn_pinky_promo_sovereign', 'syn_pinky_apex_monarch'],
-      Ring: ['syn_ring_curator_monument', 'syn_ring_apex_grand_master']
-    };
-    const candidateIds = fingerTrialPools[char.finger] || [];
-    const available = candidateIds.filter((id) => !char.seenEvents.includes(id));
-    if (available.length > 0) {
-      const chosenId = [...available].sort(() => rng() - 0.5)[0];
-      const fingerEv = allPools.find((e) => e.id === chosenId);
-      if (fingerEv && isEventEligible(fingerEv, char, { scripted: true })) {
-        const logEntry = {
-          age: char.age,
-          phase: 'CLIMAX',
-          selectedId: fingerEv.id,
-          utility: 975,
-          reasonVi: `Thành viên The ${char.finger}${char.flags.includes('Distorted') ? ' (Distorted)' : ''} đạt Rank ${char.fingerRank} & ${char.merit} Merit: Khảo nghiệm sinh tử bước lên đỉnh cao Quyền Lực`,
-          reasonEn: `The ${char.finger} member reached Rank ${char.fingerRank} & ${char.merit} Merit: Pinnacle Ascension trial to apex leadership`,
-          candidates: available.map((id) => ({ eventId: id, totalUtility: 975 }))
-        };
-        return {
-          event: fingerEv,
-          weaver: {
-            ...updatedWeaver,
-            decisionLog: [logEntry, ...updatedWeaver.decisionLog].slice(0, 18)
-          }
-        };
-      }
-    }
-  }
-
-  // Wing Senior Executive Singularity Audit
-  const wingEv = allPools.find(e => e.id === 'wing_singularity_classified_audit');
-  if (
-    wingEv &&
-    char.job === 'Wing Employee' &&
-    (char.wingRank || 0) >= 2 &&
-    (char.merit || 0) >= 90 &&
-    !char.seenEvents.includes('wing_singularity_classified_audit')
-  ) {
-    const logEntry = {
-      age: char.age,
-      phase: 'CLIMAX',
-      selectedId: wingEv.id,
-      utility: 970,
-      reasonVi: `Nhân viên Wing đạt Rank ${char.wingRank} & ${char.merit} Merit: Ban giám đốc triệu tập thẩm định Singularity tối mật`,
-      reasonEn: `Wing Employee with Rank ${char.wingRank} & ${char.merit} Merit: Summoned to classified Singularity Board appraisal`,
-      candidates: [{ eventId: wingEv.id, totalUtility: 970 }]
-    };
-    return {
-      event: wingEv,
-      weaver: {
-        ...updatedWeaver,
-        decisionLog: [logEntry, ...updatedWeaver.decisionLog].slice(0, 18)
-      }
-    };
-  }
-
-  // Workshop Masterpiece Forge Trial (Tres Certification)
-  const workshopEv = allPools.find(e => e.id === 'workshop_legendary_forge_trial');
-  if (
-    workshopEv &&
-    char.job === 'Workshop Craftsman' &&
-    (char.workshopRank || 0) >= 2 &&
-    (char.merit || 0) >= 90 &&
-    !char.seenEvents.includes('workshop_legendary_forge_trial')
-  ) {
-    const logEntry = {
-      age: char.age,
-      phase: 'CLIMAX',
-      selectedId: workshopEv.id,
-      utility: 970,
-      reasonVi: `Thợ rèn Workshop đạt Rank ${char.workshopRank} & ${char.merit} Merit: Cơ hội rèn Tuyệt tác Thần binh trước giám định viên Tres`,
-      reasonEn: `Workshop Craftsman with Rank ${char.workshopRank} & ${char.merit} Merit: Opportunity to forge a Masterpiece under Tres appraisers`,
-      candidates: [{ eventId: workshopEv.id, totalUtility: 970 }]
-    };
-    return {
-      event: workshopEv,
-      weaver: {
-        ...updatedWeaver,
-        decisionLog: [logEntry, ...updatedWeaver.decisionLog].slice(0, 18)
-      }
-    };
-  }
-
   const dueThread = updatedWeaver.pendingThreads.find(
     t => !t.fulfilled && char.age >= t.triggerAge && !char.seenEvents.includes(t.eventId)
   );
@@ -902,7 +782,7 @@ export function selectEventWithWeaverAI({
   // a forced milestone (utility far above the rest) still wins almost every time.
   // The 0.85 power keeps the order but gives the lower half of the field a real chance.
   const drawWeight = (item) => Math.pow(Math.max(1, item.score.totalUtility), 0.85);
-  const topCandidates = scored.slice(0, Math.min(14, scored.length));
+  const topCandidates = scored.slice(0, Math.min(24, scored.length));
   const totalWeight = topCandidates.reduce((sum, item) => sum + drawWeight(item), 0);
   let pickRoll = rng() * totalWeight;
   let chosen = topCandidates[0];

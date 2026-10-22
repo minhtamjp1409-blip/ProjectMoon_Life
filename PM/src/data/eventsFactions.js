@@ -1946,38 +1946,6 @@ export const FACTION_EVENTS = [
     ]
   },
 
-  // ------------------------------------------------------------------ Workshop Masterpiece
-  {
-    id: 'workshop_legendary_forge_trial',
-    age: [25, 75],
-    major: true,
-    weight: 930,
-    jobs: ['Workshop Craftsman'],
-    vi: "[Bài giám định của Tres] Khách mang tới tinh thể lấy từ Abnormality. Hai giám định viên Tres đứng bên lò: rèn thành công, xưởng được cấp chứng chỉ Masterpiece; thất bại, lò có thể nổ. Họ chờ bạn nhóm lửa.",
-    en: '[Workshop Masterpiece · Tres Certification] A shadowy client brought a singularity ingot crystallized from an old L Corp Abnormality to your workshop. Tres Association dispatched two senior appraisers to oversee the furnace:\n“If you successfully temper this alloy, Tres will certify it as a Masterpiece and engrave your workshop’s name into the annals of The City. If you fail, the furnace will explode.”',
-    choices: [
-      {
-        labelVi: 'Dồn toàn bộ tâm thức và tài hoa rèn thần binh tuyệt tác',
-        labelEn: 'Pour entire soul and craftsmanship into the Masterpiece forge',
-        openCraftModal: true,
-        setWorkshopRank: 3,
-        recordsAdd: ['workshop_masterpiece'],
-        effects: { health: -24, sanity: -18, wealth: +55, rep: +45, resonance: +35 },
-        scarsAdd: ['Đại sư rèn thần binh'],
-        meritAdd: 60,
-        resultVi: 'Tiếng búa đập vang rền suốt bốn mươi tám giờ. Lưỡi kiếm hoàn tất tỏa ra áp lực áp đảo mọi vũ khí thông thường. Giám định viên Tres Association run rẩy đóng con dấu sáp vàng: "Một kiệt tác để đời." Tên tuổi xưởng rèn của bạn vang danh khắp The City.',
-        resultEn: 'The hammer rang forty-eight unceasing hours. The finished blade emanated a presence that eclipsed all standard armaments. The Tres appraiser tremblingly pressed the golden wax seal: “A masterpiece for the ages.” Your workshop’s name echoed across The City.'
-      },
-      {
-        labelVi: 'Gia công an toàn: Làm thành vũ khí thương mại cao cấp',
-        labelEn: 'Safe refinement: Produce a premium commercial weapon batch',
-        effects: { wealth: +35, rep: +18, sanity: +10 },
-        resultVi: 'Bạn chọn phương án an toàn, tránh được hiểm họa nổ lò và bán được một khoản Ahn kếch xù cho một văn phòng Fixer giàu có.',
-        resultEn: 'Choosing safety, you averted the explosion risk and sold the batch for a tidy sum of Ahn to a wealthy Fixer office.'
-      }
-    ]
-  },
-
   // ------------------------------------------------------------------ Wing Executive Singularity Audit
   {
     id: 'wing_singularity_classified_audit',

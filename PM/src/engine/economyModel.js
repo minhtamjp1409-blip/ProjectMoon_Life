@@ -100,7 +100,7 @@ export function hasEstablishedStanding(char) {
   if (char.job === 'Fixer') return (char.fixerGrade || 9) <= 3;
   if (char.job === 'Syndicate') return (char.fingerRank || 0) >= 3;
   if (char.job === 'Wing Employee') return (char.wingRank || 0) >= 2;
-  if (char.job === 'Workshop Craftsman') return (char.workshopRank || 0) >= 2;
+  if (char.job === 'Workshop Craftsman') return Boolean(char.craftWeapon) || (char.merit || 0) >= 80;
   return false;
 }
 

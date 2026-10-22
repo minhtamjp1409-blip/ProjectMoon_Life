@@ -51,6 +51,14 @@ assert.equal(matchesEventContext(sicklyQuest, companion), false);
 companion.flags = companion.flags.filter((flag) => flag !== 'Nest');
 assert.equal(matchesEventContext(sicklyQuest, companion), true);
 
+const backFever = LIFE_DAILIES.find((event) => event.id === 'i_back_fever');
+const nestInfant = createNewCharacter({ seed: 'nest-fever-gate', preferredFamilyId: 'nest_feather', startAge: 1 });
+assert.ok(nestInfant.flags.includes('Nest'));
+assert.equal(matchesEventContext(backFever, nestInfant), false);
+nestInfant.flags = nestInfant.flags.filter((flag) => !['Nest', 'NestResident', 'Feather'].includes(flag));
+nestInfant.flags.push('Backstreets');
+assert.equal(matchesEventContext(backFever, nestInfant), true);
+
 const teen = born(15);
 teen.job = 'Child';
 const workIds = ['t_back_workshop', 'daily_adolescence_gloves', 'daily_adolescence_wages', 'daily_adolescence_birthday'];
@@ -58,6 +66,9 @@ for (const id of workIds) {
   const event = LIFE_DAILIES.find((item) => item.id === id);
   assert.equal(matchesEventContext(event, teen), false, id);
 }
+teen.npcs.friend = { nameVi: 'Friend', nameEn: 'Friend', status: 'alive' };
+assert.equal(matchesEventContext(LIFE_MINORS.find((item) => item.id === 'm_t_friend_fixer'), teen), false);
+assert.equal(matchesEventContext(LIFE_MINORS.find((item) => item.id === 'm_friend_injured'), teen), false);
 teen.age = 20;
 teen.job = 'Workshop Craftsman';
 assert.equal(matchesEventContext(LIFE_DAILIES.find((item) => item.id === 'daily_adolescence_wages'), teen), true);

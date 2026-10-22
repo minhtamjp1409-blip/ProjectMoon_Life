@@ -1,7 +1,8 @@
 # The City Chronicles: Tài Liệu Tiến Trình & Kiến Trúc Kỹ Thuật Toàn Diện
 
-> **Bản cập nhật chính thức: 21/10/2026 (Đợt 16)**
-> **Trạng thái:** Hoàn thiện toàn diện · 0 Lỗi Kiểm định · Frontend & Backend Live 100%
+> **Cập nhật ghi chép: 22/10/2026 (Đợt 19)**
+> **Trạng thái xác minh tại máy:** `npm test` và `npm run build` đạt. Các thay đổi trong working tree chưa được xác minh trên bản triển khai trực tuyến.
+> **Cách đọc số liệu:** Các kết quả mô phỏng ở Đợt 1–18 là ảnh chụp lịch sử tại thời điểm ghi; xem Đợt 19 và mục 9.3 cho cấu hình kiểm thử hiện hành.
 
 ---
 
@@ -16,7 +17,7 @@
 7. [Kho dữ liệu tình huống & Cơ chế nhân quả (Story Pools & Causal Engine)](#7-kho-dữ-liệu-tình-huống--cơ-chế-nhân-quả-story-pools--causal-engine)
 8. [Các tính năng & Trang phụ mở rộng (Sub-pages & Advanced Features)](#8-các-tính-năng--trang-phụ-mở-rộng-sub-pages--advanced-features)
 9. [Bộ quy tắc kiểm định toàn vẹn & Kiểm thử (Integrity Audits & Quality)](#9-bộ-quy-tắc-kiểm-định-toàn-vẹn--kiểm-thử-integrity-audits--quality)
-10. [Nhật ký phát triển chi tiết (Changelog từ Đợt 1 đến Đợt 16)](#10-nhật-ký-phát-triển-chi-tiết-changelog-từ-đợt-1-đến-đợt-16)
+10. [Nhật ký phát triển chi tiết (Changelog từ Đợt 1 đến Đợt 19)](#10-nhật-ký-phát-triển-chi-tiết-changelog-từ-đợt-1-đến-đợt-19)
 
 ---
 
@@ -29,8 +30,9 @@
 * **Live Backend (Render Web Service):** [https://projectmoon-life.onrender.com/api](https://projectmoon-life.onrender.com/api)
 * **Mã nguồn Git Repository:** [https://github.com/minhtamjp1409-blip/ProjectMoon_Life](https://github.com/minhtamjp1409-blip/ProjectMoon_Life)
 * **Thư mục cục bộ:**
-  * Frontend Workspace: `D:\School\PM` (local dev) và `D:\School\ProjectMoon_Life\PM` (git sync).
-  * Backend Workspace: `D:\School\PM_BE` (local dev) và `D:\School\ProjectMoon_Life\PM_BE` (git sync).
+  * Workspace được kiểm tra ngày 22/10/2026: `C:\Users\nguyenhuynhminhtam\Downloads\TestPM\TestPM\PM`.
+  * Backend cùng cây dự án: `C:\Users\nguyenhuynhminhtam\Downloads\TestPM\TestPM\PM_BE`.
+  * Các đường dẫn `D:\School\...` ở các ghi chép cũ là đường dẫn lịch sử, không phải workspace của lần kiểm tra này.
 
 ---
 
@@ -273,10 +275,10 @@ Sau mốc 18 tuổi, nhân vật rời khỏi thân phận Trẻ con (Child) đ�
 
 ## 7. Kho dữ liệu tình huống & Cơ chế nhân quả (Story Pools & Causal Engine)
 
-### 7.1. Thống Kê Tổng Thể Kho Nội Dung (794 Khoảnh Khắc)
-* **230 Sự Kiện Lớn (Major Narrative Dilemmas):** Bao gồm tuổi thơ, biến cố trưởng thành, sự kiện 4 nhánh nghề nghiệp, khủng hoảng 26 Quận, sự kiện tuổi già và ngã rẽ siêu nhiên.
+### 7.1. Thống Kê Tổng Thể Kho Nội Dung (840 mục, xuất ngày 22/10/2026)
+* **259 Sự Kiện Lớn (Major Narrative Dilemmas):** Bao gồm tuổi thơ, biến cố trưởng thành, các nhánh nghề nghiệp, khủng hoảng 26 Quận, sự kiện tuổi già và ngã rẽ siêu nhiên.
 * **36 Hệ Quả Nhân Quả (Causal Consequences):** Các sự kiện trừng phạt hoặc đền đáp quay trở lại sau các quyết định trong quá khứ.
-* **202 Gặp Gỡ Bất Chợt (Minor Encounters):** Tình huống phản xạ 15 giây rải khắp các khu vực Backstreets, Nest, Outskirts và cuộc sống thường nhật.
+* **219 Gặp Gỡ Bất Chợt (Minor Encounters):** Tình huống phản xạ 15 giây rải khắp các khu vực Backstreets, Nest, Outskirts và cuộc sống thường nhật.
 * **302 Dòng Thường Nhật (Daily Life Moments):** Các lát cắt đời sống bình dị và chân thực, tạo nên nhịp điệu sinh hoạt đô thị.
 * **24 Ủy Thác Tác Chiến Fixer (Tactical Requests):** Hợp đồng nhận việc có phân định rủi ro và xác suất chiến thuật.
 
@@ -321,7 +323,7 @@ Hệ thống tích hợp 18 mạch truyện nhân quả độc lập (`src/data/
 
 ## 9. Bộ quy tắc kiểm định toàn vẹn & Kiểm thử (Integrity Audits & Quality)
 
-Dự án áp dụng hệ thống kiểm định tự động 5 tầng quy mô lớn nhằm bảo đảm tính toàn vẹn 100% của logic cốt truyện và độ ổn định của hệ thống:
+Dự án áp dụng hệ thống kiểm định tự động cho 5 nhóm bất biến logic. Kết quả đạt trong một mẫu chạy chỉ xác nhận những trường hợp mẫu đó đã đi qua, không phải bảo đảm toàn bộ nhánh truyện:
 
 ```bash
 # Lệnh chạy toàn bộ bộ kiểm tra chất lượng:
@@ -329,21 +331,46 @@ npm test
 ```
 
 ### 9.1. Năm Nhóm Quy Tắc Toàn Vẹn Cốt Lõi (5 Integrity Audit Checks)
-Kiểm thử tự động trên **50.134 khoảnh khắc** và **243 vòng đời** liên tục đạt **0 LỖI**:
+Kết quả lịch sử từng ghi trên **50.134 khoảnh khắc** và **243 vòng đời** là **0 lỗi trong 5 nhóm được đo**. Đây không phải cấu hình mặc định của `npm test` hiện nay:
 1. **[CHECK 1] Ghost NPC Event Violations (0 LỖI):** Tuyệt đối không có NPC đã khuất (vợ/chồng, bạn bè, đệ tử, cha mẹ đã mất) xuất hiện hay đối thoại như người đang sống.
 2. **[CHECK 2] Distortion Doing Human Fixer Events (0 LỖI):** Nhân vật đã biến dị thành Distortion bị cô lập hoàn toàn khỏi các hợp đồng làm việc và hoạt động xã hội của loài người.
 3. **[CHECK 3] Fixer Grade Skipping Violations (0 LỖI):** Mọi Fixer thăng tiến tuần tự từng bậc một qua kỳ sát hạch của Hana, không nhảy cóc cấp bậc.
 4. **[CHECK 4] Biological Child without Offspring Violations (0 LỖI):** Phân biệt chính xác giữa con ruột hợp pháp, đệ tử truyền thừa và trẻ lang thang nhặt từ Backstreets.
 5. **[CHECK 5] Career Checklist vs Exam Gate Mismatches (0 LỖI):** Danh sách điều kiện hiển thị trên giao diện người chơi khớp chính xác 100% với logic cổng mở kỳ thi của engine.
 
-### 9.2. Kiểm Định Logic Cốt Truyện 120 Sinh Mệnh (`story_logic_audit.mjs`)
+### 9.2. Kết quả lịch sử của kiểm định 120 sinh mệnh (`story_logic_audit.mjs`)
 * Mô phỏng ngẫu nhiên 120 cuộc đời hoàn chỉnh (hơn 24.000 khoảnh khắc): **0 VI PHẠM LOGIC**.
 * Độ che phủ sự kiện: 654 / 770 sự kiện từng xuất hiện trong các lượt chạy mẫu.
 * Chỉ số chồng lấn Jaccard giữa hai cuộc đời ngẫu nhiên đạt 0.210 (chứng minh độ đa dạng và khác biệt rất cao giữa các ván chơi).
 
+### 9.3. Cấu hình và kết quả kiểm thử hiện hành (22/10/2026)
+* `npm test` chạy kiểm tra tương hợp FE/BE, lint nội dung, các bộ regression, cơ chế dungeon và `run_million_audit.mjs 500`. Con số **500 là khoảnh khắc trong kế hoạch năm**, không phải 500 cuộc đời. Lượt gần nhất xử lý 500 khoảnh khắc thuộc 4 sinh mệnh và báo 0 lỗi ở 5 nhóm bất biến đang kiểm tra. Mẫu này không chứng minh mọi nhánh hiếm đều đã được bao phủ.
+* Các ca kiểm thử trực tiếp cho BUG-30–33 nằm trong `scripts/test_reported_balance_bugs.mjs` và `scripts/test_other_career_promotion.mjs`: snapshot lựa chọn, phí 10 Ahn và 1 Ahn, dịch vụ 20 Ahn không bị trừ hai lần, tiến độ Wing khi Merit là nút thắt, kết quả hai event Wing mới và xác suất được lên lịch. Các nhánh thăng cấp khác vẫn qua regression.
+* `npm run build` hoàn tất với Vite 6.4.4. `node lint_story.mjs` báo 0 lỗi và 0 cảnh báo. `node scripts/export_all_events.mjs` ghi lại `DANH_SACH_TAT_CA_EVENTS.txt` và `.json` với 840 mục. `git diff --check` không phát hiện lỗi khoảng trắng.
+* Chưa có lượt click-through trực tiếp trong trình duyệt cho UI mở lại thẻ sự kiện: kết nối trình duyệt trong phiên kiểm tra không khả dụng. Cần kiểm tra bằng tay trên màn hình rộng và điện thoại, bằng chuột và bàn phím, trước khi coi phần UI này đã được xác minh trực quan.
+
 ---
 
-## 10. Nhật ký phát triển chi tiết (Changelog từ Đợt 1 đến Đợt 16)
+## 10. Nhật ký phát triển chi tiết (Changelog từ Đợt 1 đến Đợt 19)
+
+### Đợt 19 (22/10/2026): Sửa BUG-30–33, mở đường kiếm Merit cho Wing và lưu nội dung sự kiện để xem lại
+
+* **BUG-30, thẻ “sự kiện” không xem lại được đề bài và các phương án:** `resolveEventChoice` và `resolveMinor` nay lưu `review` trong log của lựa chọn: văn bản Việt/Anh lúc sự kiện xảy ra, danh sách nhãn lựa chọn và chỉ số phương án người chơi đã chọn. `LiveStageFeed.jsx` hiển thị mục gấp/mở “Xem lại sự kiện và lựa chọn” ngay trên thẻ biên niên; phương án đã chọn được đánh dấu. `src/index.css` bổ sung khoảng cách, màu liên kết và viền focus khi dùng bàn phím. Kết quả được giữ lại dưới dạng dữ liệu trong log, không tái chạy sự kiện và không thay đổi chỉ số khi mở mục xem lại.
+* **Lưu ý về save cũ:** Log tạo trước Đợt 19 không có trường `review`, nên không thể dựng lại nguyên vẹn các phương án từ ảnh chụp thời điểm đó. UI chỉ hiện mục xem lại khi log thực sự chứa snapshot; không gán dữ liệu hiện tại của kho sự kiện cho log cũ vì nội dung hoặc điều kiện có thể đã thay đổi.
+* **BUG-31, đề thi nội bộ Hana ghi 10 Ahn nhưng chỉ mất 9:** `m2_fx_grade_exam` chuyển phí khỏi `fx.wealth` dễ bị `varyEffects` làm lệch sang `costAhn: 10`. `choiceIsAvailable` chặn khi Ahn dưới 10. `resolveMinor` tách phần phí cố định khỏi phần hiệu ứng biến thiên rồi trừ đúng một lần, kể cả với các lựa chọn cũ vốn khai báo đồng thời `fx.wealth` và `costAhn`. Bài test xác nhận 10 Ahn thành 0, 9 Ahn không mua được, dịch vụ phòng khám giá 20 Ahn không bị trừ 40.
+* **BUG-32, nhân viên Wing khó đạt điều kiện thăng chức vì thiếu cơ hội Merit:** Giữ nguyên các mốc bậc của `WING_LADDER_PROMOTIONS` (bậc 1: Merit 25 / Wealth 18 / Network 14; bậc 2: 65 / 45 / 32; bậc 3: 125 / 85 / 60). Bổ sung hai tình huống nghề nghiệp `m_career_wing_quota` (ca kiểm định cuối quý) và `m_career_wing_incident` (biên bản sự cố), mỗi tình huống có lối kiếm Merit và cái giá về sức khỏe, tinh thần, tiền hoặc quan hệ tùy kết quả. Khi Wing còn thiếu điều kiện, `careerOpportunity` có thể gọi một trong ba event Wing, gồm `m_career_wing_review` cũ; xác suất cơ hội theo mức thiếu tăng tối đa 78%, không bảo đảm mỗi năm đều xuất hiện. Không tự cộng Merit và không tự thăng bậc: người chơi vẫn phải chọn, chịu RNG, đủ điều kiện và qua event xét bậc.
+* **Tiến độ Wing trên hồ sơ:** `getNextCareerMilestone` nay lấy **tỷ lệ hoàn thành thấp nhất** trong Merit, Wealth, Network và thời gian giữ bậc, thay vì lấy trung bình ba tài nguyên. Ví dụ Merit 18/65, Wealth 45/45, Network 32/32 và đủ nhiệm kỳ hiển thị 28%, làm rõ điểm nghẽn thật; phần điều kiện chi tiết vẫn cho biết từng số hiện tại và mốc cần đạt.
+* **BUG-33, mua thuốc khi không có tiền:** `m_med_child_remedy` khai báo `costAhn: 1` thay cho riêng `fx.wealth: -1`. Nút chọn và phím số bị chặn khi Ahn bằng 0; engine cũng từ chối lệnh chọn thiếu tiền. Lựa chọn nghỉ tại nhà miễn phí vẫn dùng được.
+* **Kiểm tra liên quan:** `ChoicePreview` không tính phí Ahn hai lần khi hiển thị nhánh nhiều kết quả. Đã chạy `npm test`, build production, lint nội dung và xuất lại danh sách event. Chưa triển khai lên production trong đợt này.
+
+#### Cần lưu ý khi tiếp tục phát triển
+
+1. Sau khi thêm hoặc sửa event, cập nhật `DANH_SACH_TAT_CA_EVENTS.txt` và `.json` bằng `node scripts/export_all_events.mjs`; số đếm hiện tại là 259 major + 36 consequence + 219 minor + 302 daily + 24 contract = 840.
+2. Với lựa chọn có giá cố định, dùng `costAhn` để khóa UI và engine, rồi kiểm tra số Ahn thực trừ trên cả đường có và không có `fx.wealth`. Không chỉ ghi giá trong nhãn. Phần thưởng hoặc mất tiền ngẫu nhiên ngoài phí được tính riêng.
+3. Bất kỳ đường tạo log lựa chọn mới nào muốn hỗ trợ xem lại phải lưu snapshot `review` (đề bài, nhãn phương án song ngữ, phương án đã chọn); log cũ không được tự suy diễn từ dữ liệu event mới.
+4. Bảng tiến độ Wing và cổng thăng cấp phải đọc cùng các mốc bậc. Khi thay đổi ngưỡng, kiểm tra cả `gameEngine.js`, `careerPipeline.js`, bản tương ứng trong `PM_BE/Services/DirectorEngineService.cs` và `check_be_parity.mjs`.
+5. Bộ 500 khoảnh khắc là phép dò nhanh, không phải kiểm thử phân phối dài hạn. Trước khi chốt cân bằng Wing, nên đo nhiều seed cho thời gian đạt bậc, số lần event cơ hội xuất hiện, tỷ lệ trượt và chết; không diễn giải 0 vi phạm trong mẫu ngắn thành bảo đảm tuyệt đối.
+6. Trước khi phát hành giao diện xem lại, kiểm tra trực tiếp các trạng thái mở/đóng, tiếng Việt/Anh, save mới/save cũ, màn hình hẹp và bàn phím. Lượt build hiện tại chỉ xác nhận biên dịch, chưa xác nhận cách hiển thị trong trình duyệt.
 
 ### Đợt 18 (22/10/2026): Hệ thống 14 Xuất Thân Đa Dạng (Backgrounds), Sự Kiện Mở Đầu Tuổi Thơ & Trait Đặc Quyền Sinh Tồn
 * **Mở rộng 14 Xuất Thân & Gia Cảnh chuẩn Lore The City (`FAMILIES` trong `worldData.js`):**

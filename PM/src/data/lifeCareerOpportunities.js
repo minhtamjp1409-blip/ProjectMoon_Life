@@ -67,6 +67,26 @@ export const LIFE_CAREER_OPPORTUNITIES = [
       ] })
     ], I('Bạn để hồ sơ trên bàn đến hết ngày. Kỳ đánh giá khép lại.', 'You left the files untouched. The review closed without you.'), { tags: ['career', 'wing', 'quota'] }),
 
+  M('m_career_wing_quota', { jobs: ['Wing Employee'] },
+    '[Ca kiểm định cuối quý] Dây chuyền thiếu một người ký nghiệm thu. Nếu bạn ở lại, chỉ tiêu sẽ được ghi vào hồ sơ của bạn; máy vẫn đang chạy quá tải.',
+    '[Quarter-end inspection] The line needs one more signature. Stay and the quota enters your record; the machinery is still running above its limit.', [
+      C('Ở lại kiểm tra từng lô', 'Stay and inspect each batch', null, null, {}, { out: [
+        O(65, 'Bạn phát hiện một lô lỗi trước khi niêm phong. Quản lý ký xác nhận phần việc của bạn; ca đêm lấy đi sức lực còn lại.', 'You caught a defective batch before sealing. The manager signed your record. The night shift took the rest of your strength.', { merit: 7, network: 2, health: -5, sanity: -3 }),
+        O(35, 'Máy dừng giữa ca. Hồ sơ ghi bạn đã ở lại xử lý, nhưng chỉ tiêu quý vẫn hụt.', 'The line stopped mid-shift. The file records your work, but the quarter still misses its quota.', { merit: 2, wealth: -3, sanity: -5 })
+      ] }),
+      C('Bàn giao ca đúng giờ', 'Hand over at the end of your shift', 'Bạn ghi lại thông số cuối cùng và giao chìa khóa cho ca sau. Không ai cộng thêm chỉ tiêu vào tên bạn.', 'You recorded the final readings and handed over the key. No extra quota went under your name.', { sanity: 3 })
+    ], I('Đèn kiểm định tắt khi bạn rời xưởng.', 'The inspection lamps went dark as you left.'), { tags: ['career', 'wing', 'quota'] }),
+
+  M('m_career_wing_incident', { jobs: ['Wing Employee'] },
+    '[Biên bản sự cố] Một thùng linh kiện bị niêm phong sai. Trưởng bộ phận đưa bạn bản biên bản trắng; ca trực của bạn sẽ phải giải trình nếu không tìm ra lô hàng.',
+    '[Incident report] A crate of components bears the wrong seal. Your section head hands you a blank report. Your shift will answer for it unless the batch is found.', [
+      C('Lần theo sổ giao nhận và báo đúng sự việc', 'Trace the transfer ledger and report the facts', null, null, {}, { out: [
+        O(60, 'Bạn tìm thấy lô hàng trong kho phụ. Biên bản được đóng dấu, còn tên bạn được ghi vào kỳ đánh giá.', 'You found the batch in an auxiliary store. The report was stamped, and your name entered the review.', { merit: 6, network: 3, sanity: -3 }),
+        O(40, 'Sổ giao nhận thiếu một trang. Bạn nộp phần còn lại, nhận trách nhiệm về ca trực và giữ lại bản sao.', 'A page was missing from the ledger. You filed what remained, took responsibility for your shift, and kept a copy.', { merit: 2, network: -3, sanity: -4 })
+      ] }),
+      C('Ký theo bản tường trình của cấp trên', 'Sign the account prepared by your superior', 'Hồ sơ khép lại trước giờ tan ca. Bạn nhận phụ cấp, nhưng biên bản không ghi ai đã đổi dấu niêm phong.', 'The file closed before the shift ended. You received an allowance. It says nothing about who changed the seal.', { wealth: 4, network: 1, sanity: -4 })
+    ], I('Ca sau nhận thùng hàng và bản biên bản còn trống.', 'The next shift inherited the crate and the blank report.'), { tags: ['career', 'wing', 'report'] }),
+
   M('m_career_workshop_proof', { jobs: ['Workshop Craftsman'] },
     '[Mẫu thử cho Tres] Một đại diện Tres đến xem lô vũ khí mới. Ông đặt lên bàn mẫu đã hỏng và hỏi bạn có thể sửa đến đâu.',
     '[A sample for Tres] A Tres representative inspects the new batch. He sets a broken sample on your bench and asks how far you can repair it.', [

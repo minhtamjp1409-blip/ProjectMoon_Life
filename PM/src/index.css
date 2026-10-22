@@ -1870,6 +1870,13 @@ p {
   font-size: 15px;
   font-weight: 600;
 }
+.entry-review { margin: 10px 0; color: var(--story); font-size: 14px; }
+.entry-review summary { width: fit-content; cursor: pointer; color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.entry-review summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.entry-review p { margin: 8px 0; white-space: pre-line; }
+.entry-review ol { margin: 0; padding-left: 22px; }
+.entry-review li { margin: 4px 0; }
+.entry-review li.is-selected { font-weight: 700; }
 
 /* Turning points and dangers sit on a card so they stand out from daily life */
 .entry.k-good,

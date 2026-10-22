@@ -11,6 +11,7 @@ import { planYear, runDueItems, resolveMinor, endYear, LIFE_MINORS, LIFE_DAILIES
 import { CONSEQUENCE_EVENTS } from './src/data/eventsChildhood.js';
 import { choiceIsAvailable } from './src/engine/eventConditions.js';
 import { checkState, checkScenes, logEntryId } from './src/engine/storyInvariants.js';
+import { careerTrialForEvent, getOtherCareerPromotion } from './src/engine/careerPipeline.js';
 
 const LIVES = Number(process.argv[2]) || 500;
 const POLICY = process.argv[3] === 'greedy' ? 'greedy' : 'random';
@@ -30,6 +31,13 @@ let repeatInLife = 0;
 let totalMoments = 0;
 let closeRepeats = 0;
 const ages = [];
+const careerAudit = {};
+const stalledCareerTrials = {};
+const careerKey = (char) => char.job === 'Syndicate' && char.finger ? char.finger
+  : char.job === 'Wing Employee' ? 'Wing' : null;
+const careerRank = (char) => char.job === 'Syndicate' ? (char.fingerRank || 0)
+  : char.job === 'Wing Employee' ? (char.wingRank || 0) : 0;
+const careerRow = (key) => (careerAudit[key] ||= { lives: 0, years: 0, readyYears: 0, trials: 0, maxRanks: [0, 0, 0, 0] });
 
 const remembersIndex = new Map();
 for (const e of [...ALL_STORY_EVENTS, ...CONSEQUENCE_EVENTS, ...LIFE_MINORS, ...LIFE_DAILIES]) {
@@ -57,6 +65,9 @@ for (let i = 0; i < LIVES; i++) {
   const lastAt = {};
   const seenPrompt = new Set();
   const seenState = new Set();
+  const playedCareers = new Set();
+  const bestCareerRank = {};
+  const seenTrialYear = new Set();
   let guard = 0;
   const where = () => `[${seed} @${char.age}]`;
 
@@ -64,7 +75,10 @@ for (let i = 0; i < LIVES; i++) {
     const scenes = char.logs.slice(prevLen).map((l) => ({ id: logEntryId(l), vi: l.vi, age: l.age, type: l.type }));
     // Anything the player reads must have its {placeholders} filled in
     const braces = (text, id, what) => { if (/{[a-zA-Z]+}/.test(text || '')) note('unresolved-placeholder', where(), `${id} ${what}: ${String(text).match(/{[a-zA-Z]+}/)[0]}`); };
-    for (const l of char.logs.slice(prevLen)) braces(l.vi, logEntryId(l), 'log');
+    for (const l of char.logs.slice(prevLen)) {
+      braces(l.vi, logEntryId(l), 'log');
+      if (l.type === 'promo' && l.id?.endsWith('_invalid')) note('invalid-career-trial', where(), l.id);
+    }
     if (char.pendingEvent) {
       const key = 'ph:' + char.pendingEvent.id + '@' + char.age;
       if (!seenPrompt.has(key)) {
@@ -109,6 +123,14 @@ for (let i = 0; i < LIVES; i++) {
   };
 
   while (char.alive && char.age < 120 && guard++ < 200) {
+    const route = careerKey(char);
+    if (route) {
+      const row = careerRow(route);
+      row.years++;
+      if (getOtherCareerPromotion(char)?.isEligible) row.readyYears++;
+      playedCareers.add(route);
+      bestCareerRank[route] = Math.max(bestCareerRank[route] || 0, careerRank(char));
+    }
     if (!char.plan?.length) planYear(char, rng);
     for (let t = 0; t <= 100 && char.alive; t += 2) {
       let prev = char.logs.length;
@@ -118,7 +140,15 @@ for (let i = 0; i < LIVES; i++) {
       while (char.alive && (char.pendingEvent || char.pendingMinor || char.pendingContract || char.pendingDungeon || char.pendingModal) && spin++ < 8) {
         prev = char.logs.length;
         if (char.pendingEvent) {
+          const trial = careerTrialForEvent(char.pendingEvent.id);
+          const trialKey = `${char.age}:${char.pendingEvent.id}`;
+          if (trial && !seenTrialYear.has(trialKey)) {
+            seenTrialYear.add(trialKey);
+            careerRow(trial.route === 'finger' ? trial.finger : trial.route === 'wing' ? 'Wing' : 'Workshop').trials++;
+          }
+          const eventId = char.pendingEvent.id;
           char = resolveEventChoice(char, Math.max(0, pick(char.pendingEvent.choices, rng, char)), rng);
+          if (trial && char.pendingEvent?.id === eventId) stalledCareerTrials[eventId] = (stalledCareerTrials[eventId] || 0) + 1;
         } else if (char.pendingDungeon) {
           char = resolveDungeonChoice(char, 0, rng).char;
         } else if (char.pendingMinor) {
@@ -140,6 +170,11 @@ for (let i = 0; i < LIVES; i++) {
     }
   }
   lifeSets.push(new Set(seq));
+  for (const route of playedCareers) {
+    const row = careerRow(route);
+    row.lives++;
+    row.maxRanks[bestCareerRank[route] || 0]++;
+  }
   lifeSeqs.push(seq);
   ages.push(char.age);
 }
@@ -148,6 +183,11 @@ for (let i = 0; i < LIVES; i++) {
 const total = Object.values(violations).reduce((s, v) => s + v.n, 0);
 console.log(`\n=== STORY LOGIC AUDIT, ${LIVES} lives, policy=${POLICY} ===`);
 console.log(`Moments seen: ${totalMoments.toLocaleString()}  Mean lifespan ${(ages.reduce((a, b) => a + b, 0) / ages.length).toFixed(1)}`);
+console.log('\nCAREER ROUTES (lives / years / eligible years / trials / highest rank reached)');
+for (const [route, row] of Object.entries(careerAudit).sort(([a], [b]) => a.localeCompare(b))) {
+  console.log(`  ${route}: ${row.lives} lives, ${row.years} years, ${row.readyYears} ready years, ${row.trials} trials, ranks ${row.maxRanks.join('/')}`);
+}
+if (Object.keys(stalledCareerTrials).length) console.log(`  Stalled career choices: ${JSON.stringify(stalledCareerTrials)}`);
 console.log(`\nLOGIC VIOLATIONS: ${total}`);
 for (const [code, v] of Object.entries(violations).sort((a, b) => b[1].n - a[1].n)) {
   console.log(`  ${code.padEnd(24)} ${String(v.n).padStart(6)}`);

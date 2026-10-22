@@ -76,16 +76,6 @@ public sealed class DirectorEngineService
         new(3, "Giám đốc cấp cao (Senior Executive)", "Senior Executive", 125, 85, 60)
     ];
 
-    private readonly record struct WorkshopRankDef(int Rank, string TitleVi, string TitleEn, int Merit, int Wealth, int Resonance);
-
-    private static readonly WorkshopRankDef[] WorkshopRanks =
-    [
-        new(0, "Học việc Workshop (Apprentice)", "Apprentice", 0, 0, 0),
-        new(1, "Thợ rèn chính thức (Certified Artisan)", "Certified Artisan", 25, 16, 10),
-        new(2, "Đại sư rèn đúc (Master Craftsman)", "Master Craftsman", 65, 40, 24),
-        new(3, "Kỳ tài sáng chế (Legendary Innovator)", "Legendary Innovator", 125, 75, 40)
-    ];
-
     /// <summary>
     /// Evaluates current character career milestone, requirements, progress, and promotion state.
     /// </summary>
@@ -266,8 +256,8 @@ public sealed class DirectorEngineService
 
             int nextRank = curRank + 1;
             string nextTitle = ladder[nextRank];
-            int reqMerit = nextRank * 26;
-            int reqRep = nextRank * 16;
+            int reqMerit = nextRank == 3 ? 115 : nextRank * 26;
+            int reqRep = nextRank == 3 ? 65 : nextRank * 16;
             int pM = Math.Min(100, (c.Merit * 100) / reqMerit);
             int pR = Math.Min(100, (c.Rep * 100) / reqRep);
             int progress = (pM + pR) / 2;
@@ -334,46 +324,16 @@ public sealed class DirectorEngineService
             );
         }
 
-        // 5. Workshop Craftsman Career
         if (c.Job.Equals("Workshop Craftsman", StringComparison.OrdinalIgnoreCase))
         {
-            int curRank = Math.Clamp(c.WorkshopRank, 0, WorkshopRanks.Length - 1);
-            if (curRank >= WorkshopRanks.Length - 1)
-            {
-                return new CareerMilestoneDto(
-                    Category: "WORKSHOP MASTER",
-                    TitleVi: "Kỳ tài sáng chế (Legendary Innovator)",
-                    TitleEn: "Legendary Workshop Innovator",
-                    ProgressPct: 100,
-                    Requirements: [],
-                    TipVi: "Vũ khí do bạn rèn được các Fixer Grade 1 và Color săn lùng khắp The City.",
-                    TipEn: "Weapons forged by your hands are coveted by Grade 1 Fixers and Colors across the City."
-                );
-            }
-
-            var nextDef = WorkshopRanks[curRank + 1];
-            int p1 = Math.Min(100, (c.Merit * 100) / nextDef.Merit);
-            int p2 = Math.Min(100, (c.Wealth * 100) / nextDef.Wealth);
-            int p3 = Math.Min(100, (c.Resonance * 100) / nextDef.Resonance);
-            int progress = (p1 + p2 + p3) / 3;
-            bool canUp = c.Merit >= nextDef.Merit && c.Wealth >= nextDef.Wealth && c.Resonance >= nextDef.Resonance;
-
             return new CareerMilestoneDto(
-                Category: "WORKSHOP MASTERY",
-                TitleVi: $"Bậc nghệ nhân: {nextDef.TitleVi}",
-                TitleEn: $"Workshop Rank: {nextDef.TitleEn}",
-                ProgressPct: progress,
-                Requirements:
-                [
-                    new("Kinh nghiệm chế tác (Merit)", "Craft Merit", c.Merit, nextDef.Merit, c.Merit >= nextDef.Merit),
-                    new("Vốn mua nguyên liệu (Wealth)", "Wealth (Ahn)", c.Wealth, nextDef.Wealth, c.Wealth >= nextDef.Wealth),
-                    new("Cộng hưởng tâm thức (Resonance)", "E.G.O Resonance", c.Resonance, nextDef.Resonance, c.Resonance >= nextDef.Resonance)
-                ],
-                TipVi: "Rèn luyện vũ khí mới, đăng ký bản quyền sáng chế với Tres Association và tích lũy nguyên liệu quý.",
-                TipEn: "Forge new weapon prototypes, register patents with Tres Association, and gather rare materials.",
-                CanPromote: canUp,
-                NextRankTitleVi: nextDef.TitleVi,
-                NextRankTitleEn: nextDef.TitleEn
+                Category: "WORKSHOP",
+                TitleVi: "M?t ng?y ? x??ng",
+                TitleEn: "A day at the Workshop",
+                ProgressPct: 0,
+                Requirements: [],
+                TipVi: "Nh?n ??n, l?m ra m?n ??, v? gi? x??ng m? c?a.",
+                TipEn: "Take commissions, finish the work, and keep the Workshop open."
             );
         }
 
@@ -528,7 +488,7 @@ public sealed class DirectorEngineService
                 majorTitleVi = $"Khảo thí thăng bậc The {finger} (Rank 2)";
                 majorTitleEn = $"The {finger} Promotion Trial (Rank 2)";
             }
-            else if (c.FingerRank >= 2 && c.Merit >= 78 && c.Rep >= 48)
+            else if (c.FingerRank == 2 && c.Merit >= 115 && c.Rep >= 65)
             {
                 majorDue = true;
                 majorId = finger.ToLowerInvariant() switch
@@ -559,36 +519,12 @@ public sealed class DirectorEngineService
                 majorTitleVi = "Trưởng Phòng Ban Singularity (Section Chief)";
                 majorTitleEn = "Section Chief / Singularity Specialist";
             }
-            else if (c.WingRank >= 2 && c.Merit >= 125 && c.Wealth >= 85 && c.Network >= 60 && !seen.Contains("wing_singularity_classified_audit"))
+            else if (c.WingRank == 2 && c.Merit >= 125 && c.Wealth >= 85 && c.Network >= 60 && !seen.Contains("wing_singularity_classified_audit"))
             {
                 majorDue = true;
                 majorId = "wing_singularity_classified_audit";
                 majorTitleVi = "Thanh Tra Dự Án Tối Mật Singularity";
                 majorTitleEn = "Classified Singularity Audit";
-            }
-        }
-        else if (c.Job.Equals("Workshop Craftsman", StringComparison.OrdinalIgnoreCase) && !flags.Contains("Distorted"))
-        {
-            if (c.WorkshopRank == 0 && c.Merit >= 25 && c.Wealth >= 16 && c.Resonance >= 10 && !seen.Contains("ws_promo_journeyman_r1"))
-            {
-                majorDue = true;
-                majorId = "ws_promo_journeyman_r1";
-                majorTitleVi = "Khảo Hạch Thợ Chính Tres (Certified Artisan)";
-                majorTitleEn = "Tres Certified Artisan Proofmark Trial";
-            }
-            else if (c.WorkshopRank == 1 && c.Merit >= 65 && c.Wealth >= 40 && c.Resonance >= 24 && !seen.Contains("ws_promo_master_r2"))
-            {
-                majorDue = true;
-                majorId = "ws_promo_master_r2";
-                majorTitleVi = "Khai Mở Xưởng Độc Quyền (Master Craftsman)";
-                majorTitleEn = "Atelier Founder / Master Craftsman Trial";
-            }
-            else if (c.WorkshopRank >= 2 && c.Merit >= 125 && c.Wealth >= 75 && c.Resonance >= 40 && !seen.Contains("workshop_legendary_forge_trial"))
-            {
-                majorDue = true;
-                majorId = "workshop_legendary_forge_trial";
-                majorTitleVi = "Đại Lò Rèn Huyền Thoại (Workshop Trial)";
-                majorTitleEn = "Legendary Forge Trial";
             }
         }
         else if (c.Age <= 4)

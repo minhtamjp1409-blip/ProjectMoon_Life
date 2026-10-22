@@ -179,27 +179,27 @@ export const FINGER_LADDERS = {
   Thumb: [
     { rank: 1, meritReq: 26, repReq: 16, eventId: 'syn_thumb_promo_capo', eventIds: ['syn_thumb_promo_capo', 'syn_thumb_promo_capo_convoy'], titleVi: 'Thăng cấp Capo (The Thumb)', titleEn: 'Thumb Capo Promotion Trial' },
     { rank: 2, meritReq: 52, repReq: 32, eventId: 'syn_thumb_promo_sottocapo', eventIds: ['syn_thumb_promo_sottocapo', 'syn_thumb_promo_sottocapo_armory'], titleVi: 'Khảo thí Sottocapo (The Thumb)', titleEn: 'Thumb Sottocapo Promotion Trial' },
-    { rank: 3, meritReq: 78, repReq: 48, eventId: 'syn_thumb_underboss_purge', eventIds: ['syn_thumb_underboss_purge', 'syn_thumb_apex_godfather'], titleVi: 'Đại Lễ Tuyên Thệ Underboss (The Thumb)', titleEn: 'Thumb Underboss Pinnacle Trial' }
+    { rank: 3, meritReq: 115, repReq: 65, eventId: 'syn_thumb_underboss_purge', eventIds: ['syn_thumb_underboss_purge', 'syn_thumb_apex_godfather'], titleVi: 'Đại Lễ Tuyên Thệ Underboss (The Thumb)', titleEn: 'Thumb Underboss Pinnacle Trial' }
   ],
   Index: [
     { rank: 1, meritReq: 26, repReq: 16, eventId: 'syn_index_promo_messenger', eventIds: ['syn_index_promo_messenger', 'syn_index_promo_messenger_conduit'], titleVi: 'Sứ Giả Chỉ Lệnh (Index Messenger Trial)', titleEn: 'Index Messenger Promotion Trial' },
     { rank: 2, meritReq: 52, repReq: 32, eventId: 'syn_index_promo_proxy', eventIds: ['syn_index_promo_proxy', 'syn_index_promo_proxy_sword'], titleVi: 'Đại Kiếm Proxy (Index Proxy Trial)', titleEn: 'Index Proxy Promotion Trial' },
-    { rank: 3, meritReq: 78, repReq: 48, eventId: 'syn_index_weaver_prescript', eventIds: ['syn_index_weaver_prescript', 'syn_index_grand_proxy_flow'], titleVi: 'Ý Chỉ Thần Dệt (Index Weaver Pinnacle)', titleEn: 'Index Weaver Pinnacle Trial' }
+    { rank: 3, meritReq: 115, repReq: 65, eventId: 'syn_index_weaver_prescript', eventIds: ['syn_index_weaver_prescript', 'syn_index_grand_proxy_flow'], titleVi: 'Ý Chỉ Thần Dệt (Index Weaver Pinnacle)', titleEn: 'Index Weaver Pinnacle Trial' }
   ],
   Middle: [
     { rank: 1, meritReq: 26, repReq: 16, eventId: 'syn_middle_promo_big_sibling', eventIds: ['syn_middle_promo_big_sibling', 'syn_middle_promo_big_sibling_rescue'], titleVi: 'Lễ Khắc Xích Vàng: Big Sibling (The Middle)', titleEn: 'Middle Big Sibling Promotion Trial' },
     { rank: 2, meritReq: 52, repReq: 32, eventId: 'syn_middle_promo_great_elder', eventIds: ['syn_middle_promo_great_elder', 'syn_middle_promo_great_elder_clan'], titleVi: 'Đại Trưởng Lão (Middle Great Elder)', titleEn: 'Middle Great Elder Promotion Trial' },
-    { rank: 3, meritReq: 78, repReq: 48, eventId: 'syn_middle_great_brother_vendetta', eventIds: ['syn_middle_great_brother_vendetta', 'syn_middle_apex_patriarch'], titleVi: 'Đại Huyết Nợ: Great Brother/Sister (The Middle)', titleEn: 'Middle Great Sibling Pinnacle Trial' }
+    { rank: 3, meritReq: 115, repReq: 65, eventId: 'syn_middle_great_brother_vendetta', eventIds: ['syn_middle_great_brother_vendetta', 'syn_middle_apex_patriarch'], titleVi: 'Đại Huyết Nợ: Great Brother/Sister (The Middle)', titleEn: 'Middle Great Sibling Pinnacle Trial' }
   ],
   Ring: [
     { rank: 1, meritReq: 26, repReq: 16, eventId: 'syn_ring_promo_docent', eventIds: ['syn_ring_promo_docent', 'syn_ring_promo_docent_gallery'], titleVi: 'Triển Lãm Giải Phẫu: Docent (The Ring)', titleEn: 'Ring Docent Promotion Trial' },
     { rank: 2, meritReq: 52, repReq: 32, eventId: 'syn_ring_promo_maestro', eventIds: ['syn_ring_promo_maestro', 'syn_ring_promo_maestro_symphony'], titleVi: 'Đại Nhạc Trưởng: Maestro (The Ring)', titleEn: 'Ring Maestro Promotion Trial' },
-    { rank: 3, meritReq: 78, repReq: 48, eventId: 'syn_ring_curator_monument', eventIds: ['syn_ring_curator_monument', 'syn_ring_apex_grand_master'], titleVi: 'Đại Quản Trưởng: Grand Curator (The Ring)', titleEn: 'Ring Grand Curator Pinnacle Trial' }
+    { rank: 3, meritReq: 115, repReq: 65, eventId: 'syn_ring_curator_monument', eventIds: ['syn_ring_curator_monument', 'syn_ring_apex_grand_master'], titleVi: 'Đại Quản Trưởng: Grand Curator (The Ring)', titleEn: 'Ring Grand Curator Pinnacle Trial' }
   ],
   Pinky: [
     { rank: 1, meritReq: 26, repReq: 16, eventId: 'syn_pinky_promo_blade', eventIds: ['syn_pinky_promo_blade', 'syn_pinky_promo_blade_oath'], titleVi: 'Lưỡi Đao Lập Thệ: Sworn Blade (The Pinky)', titleEn: 'Pinky Sworn Blade Promotion Trial' },
     { rank: 2, meritReq: 52, repReq: 32, eventId: 'syn_pinky_star_blade_pinnacle', eventIds: ['syn_pinky_star_blade_pinnacle', 'syn_pinky_promo_shadow_arbiter'], titleVi: 'Thiên Tinh: Star of the Sky (The Pinky)', titleEn: 'Pinky Star of the Sky Promotion Trial' },
-    { rank: 3, meritReq: 78, repReq: 48, eventId: 'syn_pinky_promo_sovereign', eventIds: ['syn_pinky_promo_sovereign', 'syn_pinky_apex_monarch'], titleVi: 'Chúa Tể Ngón Út: Sovereign (The Pinky)', titleEn: 'Pinky Sovereign Pinnacle Trial' }
+    { rank: 3, meritReq: 115, repReq: 65, eventId: 'syn_pinky_promo_sovereign', eventIds: ['syn_pinky_promo_sovereign', 'syn_pinky_apex_monarch'], titleVi: 'Chúa Tể Ngón Út: Sovereign (The Pinky)', titleEn: 'Pinky Sovereign Pinnacle Trial' }
   ]
 };
 
@@ -257,33 +257,9 @@ export function getNextWingPromotion(char) {
   };
 }
 
-export const WORKSHOP_LADDER_PROMOTIONS = [
-  { rank: 1, meritReq: 25, wealthReq: 16, resoReq: 10, eventId: 'ws_promo_journeyman_r1', titleVi: 'Khảo Hạch Thợ Chính Tres (Certified Artisan)', titleEn: 'Tres Certified Artisan Proofmark Trial' },
-  { rank: 2, meritReq: 65, wealthReq: 40, resoReq: 24, eventId: 'ws_promo_master_r2', titleVi: 'Khai Mở Xưởng Độc Quyền: Master Craftsman', titleEn: 'Atelier Founder / Master Craftsman Trial' },
-  { rank: 3, meritReq: 125, wealthReq: 75, resoReq: 40, eventId: 'workshop_legendary_forge_trial', titleVi: 'Đại Lò Rèn Thần Binh (Legendary Innovator)', titleEn: 'Legendary Innovator Masterpiece Trial' }
-];
-
-export function getNextWorkshopPromotion(char) {
-  if (char.job !== 'Workshop Craftsman' || char.flags.includes('Distorted')) return null;
-  const curRank = char.workshopRank || 0;
-  if (curRank >= 3) return null;
-
-  const nextStep = WORKSHOP_LADDER_PROMOTIONS.find((step) => step.rank === curRank + 1);
-  if (!nextStep) return null;
-
-  const curWealth = (char.stats?.wealth ?? char.wealth) || 0;
-  const curReso = char.resonance || 0;
-  const tenureOk = curRank === 0 || char.lastWorkshopPromotionAge == null || char.age - char.lastWorkshopPromotionAge >= 3;
-  const isEligible = (char.merit || 0) >= nextStep.meritReq && curWealth >= nextStep.wealthReq && curReso >= nextStep.resoReq && tenureOk;
-
-  return {
-    ...nextStep,
-    isEligible,
-    currentMerit: char.merit || 0,
-    currentWealth: curWealth,
-    currentResonance: curReso
-  };
-}
+export const RETIRED_WORKSHOP_TRIAL_IDS = new Set([
+  'ws_promo_journeyman_r1', 'ws_promo_master_r2', 'workshop_legendary_forge_trial'
+]);
 
 const FINGER_OPPORTUNITIES = {
   Thumb: 'm_career_thumb_ledger', Index: 'm_career_index_prescript',
@@ -300,10 +276,6 @@ export function getOtherCareerPromotion(char) {
     const step = getNextWingPromotion(char);
     return step && { ...step, route: 'wing' };
   }
-  if (char.job === 'Workshop Craftsman') {
-    const step = getNextWorkshopPromotion(char);
-    return step && { ...step, route: 'workshop' };
-  }
   return null;
 }
 
@@ -314,8 +286,7 @@ export function careerTrialForEvent(id) {
   }
   const wing = WING_LADDER_PROMOTIONS.find((step) => step.eventId === id);
   if (wing) return { route: 'wing', ...wing };
-  const workshop = WORKSHOP_LADDER_PROMOTIONS.find((step) => step.eventId === id);
-  return workshop ? { route: 'workshop', ...workshop } : null;
+  return null;
 }
 
 export function careerPromotionOfferChance(char, step = getOtherCareerPromotion(char)) {
@@ -324,22 +295,18 @@ export function careerPromotionOfferChance(char, step = getOtherCareerPromotion(
   const extraMerit = Math.max(0, step.currentMerit - step.meritReq);
   const extraStanding = step.route === 'finger'
     ? Math.max(0, step.currentRep - step.repReq)
-    : step.route === 'wing'
-      ? Math.max(0, step.currentNetwork - step.networkReq) + Math.max(0, step.currentWealth - step.wealthReq) * 0.5
-      : Math.max(0, step.currentWealth - step.wealthReq) + Math.max(0, step.currentResonance - step.resoReq) * 0.5;
-  const base = step.route === 'finger' ? 0.56 : step.route === 'wing' ? 0.52 : 0.54;
+    : Math.max(0, step.currentNetwork - step.networkReq) + Math.max(0, step.currentWealth - step.wealthReq) * 0.5;
+  const base = step.route === 'finger' ? 0.56 : 0.52;
   return Math.min(0.86, base + (retry ? 0.16 : 0) + Math.min(0.18, extraMerit * 0.002 + extraStanding * 0.006));
 }
 
 export function careerPromotionSuccessChance(char, step) {
   const rank = step.rank;
-  const base = { finger: 0.74, wing: 0.77, workshop: 0.79 }[step.route] - (rank - 1) * 0.12;
+  const base = { finger: 0.74, wing: 0.77 }[step.route] - (rank - 1) * 0.12;
   const extraMerit = Math.max(0, (char.merit || 0) - step.meritReq);
   const standingBonus = step.route === 'finger'
     ? Math.max(0, char.stats.rep - step.repReq) * 0.002
-    : step.route === 'wing'
-      ? Math.max(0, char.stats.network - step.networkReq) * 0.002 + Math.max(0, char.stats.wealth - step.wealthReq) * 0.001
-      : Math.max(0, char.stats.wealth - step.wealthReq) * 0.0015 + Math.max(0, (char.resonance || 0) - step.resoReq) * 0.003;
+    : Math.max(0, char.stats.network - step.networkReq) * 0.002 + Math.max(0, char.stats.wealth - step.wealthReq) * 0.001;
   const readiness = step.route === 'wing' ? (char.stats.sanity - 50) * 0.0015 : (char.stats.health - 50) * 0.0015;
   return Math.max(0.25, Math.min(0.88, base + Math.min(0.14, extraMerit * 0.001 + standingBonus) + readiness));
 }
@@ -356,13 +323,12 @@ export function careerPromotionFailureEffects(step) {
     };
     return Object.fromEntries(Object.entries(byFinger[step.finger] || byFinger.Thumb).map(([key, value]) => [key, value > 0 ? value + rank - 1 : value - (rank - 1) * 2]));
   }
-  if (step.route === 'wing') return { network: -(4 + rank * 2), wealth: -(2 + rank * 2), merit: -rank * 2, sanity: -rank * 2 };
-  return { wealth: -(3 + rank * 3), health: -(2 + rank * 3), merit: -rank * 2 };
+  return { network: -(4 + rank * 2), wealth: -(2 + rank * 2), merit: -rank * 2, sanity: -rank * 2 };
 }
 
 export function careerTrialRetryDue(char, step = getOtherCareerPromotion(char)) {
   if (!step?.isEligible) return false;
-  const prefix = step.route === 'finger' ? 'Finger' : step.route === 'wing' ? 'Wing' : 'Workshop';
+  const prefix = step.route === 'finger' ? 'Finger' : 'Wing';
   return char[`${prefix.toLowerCase()}TrialRetryRank`] === step.rank &&
     char[`last${prefix}TrialAge`] != null && char.age > char[`last${prefix}TrialAge`];
 }
@@ -373,11 +339,12 @@ export function careerOpportunity(char) {
   const gaps = [Math.max(0, step.meritReq - step.currentMerit) / step.meritReq];
   if (step.route === 'finger') gaps.push(Math.max(0, step.repReq - step.currentRep) / step.repReq);
   if (step.route === 'wing') gaps.push(Math.max(0, step.wealthReq - step.currentWealth) / step.wealthReq, Math.max(0, step.networkReq - step.currentNetwork) / step.networkReq);
-  if (step.route === 'workshop') gaps.push(Math.max(0, step.wealthReq - step.currentWealth) / step.wealthReq, Math.max(0, step.resoReq - step.currentResonance) / step.resoReq);
   const shortage = Math.max(...gaps);
   if (shortage <= 0) return null;
-  const id = step.route === 'finger' ? FINGER_OPPORTUNITIES[step.finger] : step.route === 'wing' ? 'm_career_wing_review' : 'm_career_workshop_proof';
-  return { id, chance: Math.min(0.68, 0.34 + shortage * 0.34), shortage, route: step.route };
+  const ids = step.route === 'finger'
+    ? [FINGER_OPPORTUNITIES[step.finger]]
+    : ['m_career_wing_review', 'm_career_wing_quota', 'm_career_wing_incident'];
+  return { id: ids[0], ids, chance: Math.min(step.route === 'wing' ? 0.78 : 0.68, 0.34 + shortage * (step.route === 'wing' ? 0.44 : 0.34)), shortage, route: step.route };
 }
 
 /**

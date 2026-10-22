@@ -61,7 +61,7 @@ export function matchesNeed(need, char) {
   return true;
 }
 
-const roles = ['friend', 'partner', 'mentor', 'lover', 'spouse', 'child', 'parent', 'rival'];
+const roles = ['friend', 'partner', 'mentor', 'lover', 'spouse', 'child', 'ward', 'parent', 'rival'];
 export function hasNarrativeContext(entry, char) {
   const text = [entry.vi, entry.en, entry.ignore?.rvi, entry.ignore?.ren,
     ...(entry.choices || []).flatMap((choice) => [choice.vi, choice.en, choice.rvi, choice.ren,

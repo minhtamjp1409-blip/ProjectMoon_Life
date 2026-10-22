@@ -1,4 +1,5 @@
 import { hasScarTag } from './scarModel.js';
+import { weightedOutcomes } from './outcomeOdds.js';
 
 // ============================================================================
 // DISCO PSYCHE ENGINE: Project Moon x Disco Elysium Narrative Intelligence
@@ -126,8 +127,14 @@ export function getPsycheInterjection(char, event, lang = 'vi') {
 export function evaluateDiscoChoiceCheck(choice, char) {
   const rawOutcomes = choice.outcomes || choice.out;
   if (!Array.isArray(rawOutcomes) || rawOutcomes.length <= 1) {
-    return null; // Deterministic choice
+    return null;
   }
+
+  const available = weightedOutcomes(choice, char);
+  const first = available.find((entry) => entry.outcome === rawOutcomes[0]);
+  if (!first || available.length <= 1) return null;
+  const totalWeight = available.reduce((sum, entry) => sum + entry.weight, 0);
+  if (totalWeight <= 0) return null;
 
   const isRedCheck = Boolean(
     choice.openEgoModal ||
@@ -139,56 +146,12 @@ export function evaluateDiscoChoiceCheck(choice, char) {
     rawOutcomes.some(o => o.flagsAdd?.includes('ColorFixer') || o.flagsAdd?.includes('EGOAwakened') || o.flagsAdd?.includes('Distorted') || o.deathCauseVi)
   );
 
-  // Compute Base Success Percentage from prime outcome weight
-  const primeOutcome = rawOutcomes[0];
-  const totalW = rawOutcomes.reduce((s, o) => s + (o.w || 50), 0);
-  let basePct = Math.round(((primeOutcome.w || 50) / totalW) * 100);
-
-  const modifiers = [];
-
-  // 1. Shin / E.G.O Awakening mastery
-  if (char.flags?.includes('ShinAwakened') || char.flags?.includes('EGOAwakened')) {
-    basePct += 14;
-    modifiers.push({ labelVi: '+14% Thức Tỉnh Shin & Bản Ngã', labelEn: '+14% Shin / E.G.O Mastery', pos: true });
-  }
-
-  // 2. Survival experience
-  if (hasScarTag(char, 'survivor')) {
-    basePct += 6;
-    modifiers.push({ labelVi: '+6% Bản năng sống sót', labelEn: '+6% Survival Instinct', pos: true });
-  }
-
-  // 3. High Sanity / Mental Fortitude
-  const sanity = char.stats?.sanity ?? 50;
-  if (sanity >= 65) {
-    basePct += 8;
-    modifiers.push({ labelVi: '+8% Tâm Trí Vững Vàng', labelEn: '+8% High Sanity Focus', pos: true });
-  } else if (sanity <= 18) {
-    basePct -= 15;
-    modifiers.push({ labelVi: '-15% Tâm Trí Rối Loạn', labelEn: '-15% Critical Sanity Collapse', pos: false });
-  }
-
-  // 4. Physical Wounds & Exhaustion
-  const health = char.stats?.health ?? 50;
-  if (health <= 25) {
-    basePct -= 12;
-    modifiers.push({ labelVi: '-12% Thương Tật Nặng', labelEn: '-12% Severe Physical Trauma', pos: false });
-  }
-
-  // 5. Fixer Seniority & Merit
-  if (char.job === 'Fixer' && (char.fixerGrade || 9) <= 3) {
-    basePct += 8;
-    modifiers.push({ labelVi: `+8% Fixer Grade ${char.fixerGrade}`, labelEn: `+8% Grade ${char.fixerGrade} Experience`, pos: true });
-  }
-
-  const finalPct = Math.max(8, Math.min(94, basePct));
-
   return {
     isRedCheck,
     checkType: isRedCheck ? 'RED CHECK' : 'WHITE CHECK',
-    badgeVi: isRedCheck ? 'THỬ THÁCH ĐỎ (Sinh Tử)' : 'KIỂM ĐỊNH (Kỹ Năng)',
-    badgeEn: isRedCheck ? 'RED CHECK (Crucial)' : 'WHITE CHECK (Tactical)',
-    successPct: finalPct,
-    modifiers: modifiers.slice(0, 3)
+    badgeVi: isRedCheck ? 'THỬ THÁCH ĐỎ · Nhánh đầu' : 'TỶ LỆ NHÁNH ĐẦU',
+    badgeEn: isRedCheck ? 'RED CHECK · First outcome' : 'FIRST OUTCOME CHANCE',
+    successPct: Math.round(first.weight / totalWeight * 100),
+    modifiers: []
   };
 }
