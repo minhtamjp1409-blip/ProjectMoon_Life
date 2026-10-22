@@ -164,6 +164,7 @@ export const DERIVATIVE_LORE_EVENTS = [
       {
         labelVi: 'Vung vũ khí chém nát ly rượu, kiên quyết diệt trừ dị chủng',
         labelEn: 'Strike the chalice down, resolving to purge the bloodfiend',
+        startDungeon: 'dungeon_bloodfiend_carnival',
         resultVi: 'Cơn thịnh nộ bùng phát. Tốc độ của Bloodfiend xé rách không khí như bóng ma. Trận chiến kết thúc khi bạn đâm mũi kiếm xuyên qua trái tim đóng băng của con quái vật. Bạn thu được tinh chất Máu Cổ Xưa cực kỳ quý hiếm.',
         resultEn: 'Furious carnage erupted. The Bloodfiend moved like a sonic ghost. You drove your steel clean through its frozen heart after taking savage claw gouges. You harvested a phial of Primordial Blood Essence.',
         effects: { health: -16, sanity: -8, rep: +25, wealth: +35 },
@@ -269,6 +270,7 @@ export const DERIVATIVE_LORE_EVENTS = [
       {
         labelVi: 'Cắn răng dọn dẹp hiện trường địa ngục, nhận thù lao và uống thuốc xóa nhớ',
         labelEn: 'Grit your teeth, clean the charnel house, take the bounty and memory wipe',
+        startDungeon: 'dungeon_warp_train',
         resultVi: 'Bạn làm việc điên cuồng giữa những tiếng gào thét của các khối thịt còn nhận thức. Khi cỗ máy phục hồi bấm nút, những hành khách bước ra ngoài ga như thể chỉ vừa trải qua 10 giây. Bạn cầm bọc tiền 70 Ahn, uống viên thuốc xóa nhớ để quên đi cơn ác mộng.',
         resultEn: 'You worked like a demon amidst shrieking tangles of sentient flesh. When the temporal restoration chime rang, passengers walked off at the station believing only 10 seconds had elapsed. Clutching 70 Ahn, you took the amnestic pill to drown the nightmare.',
         effects: { wealth: +60, sanity: -12, rep: +15 },

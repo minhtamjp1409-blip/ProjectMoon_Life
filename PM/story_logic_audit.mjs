@@ -6,7 +6,7 @@
  * Usage: node story_logic_audit.mjs [lives=500] [policy=random|greedy]
  * Exit code 1 when any logic violation is found.
  */
-import { createNewCharacter, resolveEventChoice, createRNG, resolveFixerContract, ALL_STORY_EVENTS } from './src/engine/gameEngine.js';
+import { createNewCharacter, resolveEventChoice, resolveDungeonChoice, createRNG, resolveFixerContract, ALL_STORY_EVENTS } from './src/engine/gameEngine.js';
 import { planYear, runDueItems, resolveMinor, endYear, LIFE_MINORS, LIFE_DAILIES } from './src/engine/yearPlanner.js';
 import { CONSEQUENCE_EVENTS } from './src/data/eventsChildhood.js';
 import { choiceIsAvailable } from './src/engine/eventConditions.js';
@@ -115,10 +115,12 @@ for (let i = 0; i < LIVES; i++) {
       char = runDueItems(char, t, rng).char;
       inspect(prev);
       let spin = 0;
-      while (char.alive && (char.pendingEvent || char.pendingMinor || char.pendingContract || char.pendingModal) && spin++ < 8) {
+      while (char.alive && (char.pendingEvent || char.pendingMinor || char.pendingContract || char.pendingDungeon || char.pendingModal) && spin++ < 8) {
         prev = char.logs.length;
         if (char.pendingEvent) {
           char = resolveEventChoice(char, Math.max(0, pick(char.pendingEvent.choices, rng, char)), rng);
+        } else if (char.pendingDungeon) {
+          char = resolveDungeonChoice(char, 0, rng).char;
         } else if (char.pendingMinor) {
           const def = LIFE_MINORS.find((m) => m.id === char.pendingMinor.id);
           char = resolveMinor(char, pick(def?.choices, rng, char), rng); // -1 lets the moment pass

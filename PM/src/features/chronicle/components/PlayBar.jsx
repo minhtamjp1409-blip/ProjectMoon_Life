@@ -19,7 +19,7 @@ const SPEEDS = [
   { spd: 3, secs: 10 }
 ];
 
-const isWaiting = (s) => Boolean(s?.char?.pendingEvent || s?.char?.pendingContract || s?.char?.pendingModal || s?.activeResolution || (s?.postChoicePauseMs > 0));
+const isWaiting = (s) => Boolean(s?.char?.pendingEvent || s?.char?.pendingContract || s?.char?.pendingDungeon || s?.char?.pendingModal || s?.activeResolution || (s?.postChoicePauseMs > 0));
 const isRunning = (s) => s.inRun && s.char?.alive && s.speed > 0 && !isWaiting(s);
 
 /*

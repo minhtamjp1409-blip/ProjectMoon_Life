@@ -256,6 +256,7 @@ export const CHILDHOOD_EVENTS = [
       {
         labelVi: 'Trát bùn lên người cho mất mùi, bò vào lấy chiếc hộp',
         labelEn: 'Smear yourself with mud to hide your scent and crawl in for the case',
+        startDungeon: 'dungeon_outskirts_ruins',
         outcomes: [
           {
             w: 60,

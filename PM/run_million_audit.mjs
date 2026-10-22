@@ -4,6 +4,9 @@ import {
   createRNG,
   resolveEventChoice,
   resolveFixerContract,
+  resolveDungeonChoice,
+  getDungeonCurrentStage,
+  isDungeonChoiceAvailable,
   checkPromotions,
   ALL_STORY_EVENTS,
   buildLifeSummaryAndLegacy,
@@ -163,6 +166,20 @@ while (STATS.totalScenariosExecuted < TARGET_SCENARIOS) {
         const available = choices.map((_, index) => index).filter((index) => choiceIsAvailable(choices[index], char));
         const pickIdx = available.length ? available[Math.floor(lifeRng() * available.length)] : -1;
         char = resolveMinor(char, pickIdx, lifeRng);
+        noteGrade();
+      }
+
+      // Micro-Dungeon Delve Resolution
+      let dungeonSteps = 0;
+      while (char.pendingDungeon && char.alive && dungeonSteps++ < 10) {
+        const stage = getDungeonCurrentStage(char.pendingDungeon);
+        if (!stage) break;
+        const available = stage.choices
+          .map((c, idx) => ({ c, idx }))
+          .filter(({ c }) => isDungeonChoiceAvailable(c, char));
+        const pickIdx = available.length > 0 ? available[Math.floor(lifeRng() * available.length)].idx : 0;
+        const res = resolveDungeonChoice(char, pickIdx, lifeRng);
+        char = res.char;
         noteGrade();
       }
 

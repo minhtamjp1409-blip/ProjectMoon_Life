@@ -6,6 +6,8 @@ import {
   createNewCharacter,
   resolveEventChoice,
   resolveFixerContract,
+  resolveDungeonChoice,
+  fleeDungeon,
   buildLifeSummaryAndLegacy,
   cloneChar,
   interpolateText
@@ -598,7 +600,7 @@ export const useGameStore = create((set, get) => ({
     const c = s.char;
     if (!s.inRun || !c.alive || s.speed === 0) return;
     if (s.activeResolution) return;
-    if (c.pendingEvent || c.pendingContract || c.pendingModal) return;
+    if (c.pendingEvent || c.pendingContract || c.pendingDungeon || c.pendingModal) return;
 
     // Post-choice reading pause: gives ~3 seconds on outer screen before timeline flows
     if (s.postChoicePauseMs > 0) {
@@ -629,7 +631,7 @@ export const useGameStore = create((set, get) => ({
     const progress = Math.min(100, s.yearProgress + (dtMs / YEAR_MS) * 100 * s.speed);
     const { char, changed } = runDueItems(c, progress, lifeRng);
     if (changed) {
-      const waiting = char.pendingMinor || char.pendingEvent || char.pendingContract || char.pendingModal;
+      const waiting = char.pendingMinor || char.pendingEvent || char.pendingContract || char.pendingDungeon || char.pendingModal;
       const item = char.plan?.[(char.planCursor || 1) - 1];
       get().commit(c, char, { yearProgress: waiting && item ? Math.max(s.yearProgress, item.t * 100) : progress });
       if (waiting || !char.alive) return;
@@ -660,7 +662,7 @@ export const useGameStore = create((set, get) => ({
   stepYear: () => {
     const s = get();
     const c = s.char;
-    if (!c.alive || c.pendingEvent || c.pendingContract || c.pendingModal || c.pendingMinor || s.activeResolution) return;
+    if (!c.alive || c.pendingEvent || c.pendingContract || c.pendingDungeon || c.pendingModal || c.pendingMinor || s.activeResolution) return;
 
     const curP = s.yearProgress;
     const nextItem = nextPlanItem(c);
@@ -676,7 +678,7 @@ export const useGameStore = create((set, get) => ({
     }
 
     const { char, changed } = runDueItems(c, targetP, lifeRng);
-    const waiting = char.pendingMinor || char.pendingEvent || char.pendingContract || char.pendingModal;
+    const waiting = char.pendingMinor || char.pendingEvent || char.pendingContract || char.pendingDungeon || char.pendingModal;
     if (waiting || !char.alive) {
       const item = char.plan?.[(char.planCursor || 1) - 1];
       get().commit(c, char, { yearProgress: item ? item.t * 100 : targetP });
@@ -735,6 +737,56 @@ export const useGameStore = create((set, get) => ({
     const nextChar = resolveFixerContract(prev, approachId, lifeRng);
 
     get().commit(prev, nextChar, { activeResolution: null, postChoicePauseMs: nextChar.pendingModal ? 0 : 3000 });
+  },
+
+  chooseDungeonAction: (choiceIdx) => {
+    const prev = get().char;
+    if (!prev.pendingDungeon) return;
+    const { char: nextChar, isFinished, resolution } = resolveDungeonChoice(prev, choiceIdx, lifeRng);
+
+    get().commit(prev, nextChar, {
+      activeResolution: resolution ? {
+        id: `res_dungeon_${Date.now()}`,
+        kind: 'dungeon',
+        age: nextChar.age,
+        seasonIdx: nextChar.seasonIdx,
+        titleVi: resolution.titleVi,
+        titleEn: resolution.titleEn,
+        choiceLabelVi: '',
+        choiceLabelEn: '',
+        narrativeVi: resolution.resultVi,
+        narrativeEn: resolution.resultEn,
+        deltas: [],
+        isDead: Boolean(resolution.isDead),
+        isCausal: false
+      } : null,
+      postChoicePauseMs: isFinished ? 3000 : 0
+    });
+  },
+
+  fleeDungeon: () => {
+    const prev = get().char;
+    if (!prev.pendingDungeon) return;
+    const { char: nextChar, resolution } = fleeDungeon(prev);
+
+    get().commit(prev, nextChar, {
+      activeResolution: resolution ? {
+        id: `res_dungeon_${Date.now()}`,
+        kind: 'dungeon',
+        age: nextChar.age,
+        seasonIdx: nextChar.seasonIdx,
+        titleVi: resolution.titleVi,
+        titleEn: resolution.titleEn,
+        choiceLabelVi: '',
+        choiceLabelEn: '',
+        narrativeVi: resolution.resultVi,
+        narrativeEn: resolution.resultEn,
+        deltas: [],
+        isDead: false,
+        isCausal: false
+      } : null,
+      postChoicePauseMs: 3000
+    });
   },
 
   confirmColorTitle: (titleText) => {

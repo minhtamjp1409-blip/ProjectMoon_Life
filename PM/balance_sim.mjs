@@ -6,7 +6,7 @@
  * Reports lifespan against each District's avgLife, every resource by age, how often a
  * resource sits on its floor or cap, and which kind of moment moves each resource.
  */
-import { createNewCharacter, resolveEventChoice, createRNG, resolveFixerContract } from './src/engine/gameEngine.js';
+import { createNewCharacter, resolveEventChoice, resolveDungeonChoice, createRNG, resolveFixerContract } from './src/engine/gameEngine.js';
 import { planYear, runDueItems, resolveMinor, endYear, LIFE_MINORS } from './src/engine/yearPlanner.js';
 import { REGIONS } from './src/data/worldData.js';
 import { choiceIsAvailable } from './src/engine/eventConditions.js';
@@ -82,10 +82,13 @@ for (let i = 0; i < LIVES; i++) {
       char = res.char;
       if (res.changed) { addFlow(planned?.kind || 'plan', before, snap(char)); }
       let spin = 0;
-      while (char.alive && (char.pendingEvent || char.pendingMinor || char.pendingContract || char.pendingModal) && spin++ < 8) {
+      while (char.alive && (char.pendingEvent || char.pendingMinor || char.pendingContract || char.pendingDungeon || char.pendingModal) && spin++ < 8) {
         before = snap(char);
         if (char.pendingEvent) {
           char = resolveEventChoice(char, Math.max(0, pickIndex(char.pendingEvent.choices, rng, char)), rng);
+          addFlow('major', before, snap(char));
+        } else if (char.pendingDungeon) {
+          char = resolveDungeonChoice(char, 0, rng).char;
           addFlow('major', before, snap(char));
         } else if (char.pendingMinor) {
           const def = LIFE_MINORS.find((m) => m.id === char.pendingMinor.id);

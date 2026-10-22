@@ -62,6 +62,14 @@ import { hasMemory, closeThreads, applyNpcFate, namesInUse, applyBonds } from '.
 import { BALANCE, isFixerCareerEvent, reputationGain } from './economyModel.js';
 import { activeScarCount, addScar, normalizeScars, scarContractPower } from './scarModel.js';
 import { weightedOutcomes } from './outcomeOdds.js';
+import {
+  DUNGEON_DEFINITIONS,
+  createDungeonSession,
+  getDungeonCurrentStage,
+  isDungeonChoiceAvailable,
+  resolveDungeonChoice,
+  fleeDungeon
+} from './dungeonEngine.js';
 
 export const ALL_STORY_EVENTS = [
   ...CHILDHOOD_EVENTS,
@@ -626,6 +634,7 @@ export function createNewCharacter({
     weaver,
     pendingEvent: null,
     pendingContract: null,
+    pendingDungeon: null,
     pendingModal: null
   };
 }
@@ -1798,6 +1807,12 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
     if (!char.flags.includes('ColorFixer')) char.flags.push('ColorFixer');
   }
 
+  // Micro-Dungeon Delve trigger
+  const startDungeonId = outcome.startDungeon || choice.startDungeon;
+  if (startDungeonId && char.alive) {
+    char.pendingDungeon = createDungeonSession(startDungeonId, char, rng);
+  }
+
   const textVi = interpolateText(outcome.resultVi || outcome.rvi || choice.resultVi || choice.rvi || '', char);
   const textEn = interpolateText(outcome.resultEn || outcome.ren || choice.resultEn || choice.ren || '', char);
 
@@ -1944,3 +1959,12 @@ export function buildLifeSummaryAndLegacy(char) {
     hasVendetta: (char.heat || 0) >= 40 || char.flags.includes('MiddleVendetta')
   };
 }
+
+export {
+  DUNGEON_DEFINITIONS,
+  createDungeonSession,
+  getDungeonCurrentStage,
+  isDungeonChoiceAvailable,
+  resolveDungeonChoice,
+  fleeDungeon
+} from './dungeonEngine.js';

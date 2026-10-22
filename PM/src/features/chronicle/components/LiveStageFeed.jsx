@@ -3,7 +3,8 @@ import { Modal } from 'antd';
 import { GitBranch, Download, RotateCcw, Hammer, ChevronDown, Eye, EyeOff } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
 import { useGameStore } from '../../../store/gameStore';
-import { buildLifeSummaryAndLegacy } from '../../../engine/gameEngine';
+import { buildLifeSummaryAndLegacy, getDungeonCurrentStage, isDungeonChoiceAvailable } from '../../../engine/gameEngine';
+import { DungeonDock } from './DungeonDock';
 import { LIFE_MINORS, MINOR_WINDOW_MS, splitTitle } from '../../../engine/yearPlanner';
 import { exportDossierCardPNG } from '../../../utils/exportDossierCard';
 import { audioEngine } from '../../../engine/audioEngine';
@@ -526,6 +527,8 @@ export const LiveStageFeed = () => {
     chooseMinor,
     selectEventChoice,
     selectContractApproach,
+    chooseDungeonAction,
+    fleeDungeon,
     confirmColorTitle,
     confirmEgoName,
     completeWorkshopCraft,
@@ -545,6 +548,8 @@ export const LiveStageFeed = () => {
       chooseMinor: s.chooseMinor,
       selectEventChoice: s.selectEventChoice,
       selectContractApproach: s.selectContractApproach,
+      chooseDungeonAction: s.chooseDungeonAction,
+      fleeDungeon: s.fleeDungeon,
       confirmColorTitle: s.confirmColorTitle,
       confirmEgoName: s.confirmEgoName,
       completeWorkshopCraft: s.completeWorkshopCraft,
@@ -618,7 +623,7 @@ export const LiveStageFeed = () => {
     // At death, bring the epitaph's top into view rather than its last button
     if (epitaph) el.scrollTo({ top: Math.min(el.scrollHeight, epitaph.offsetTop - 24), behavior: 'smooth' });
     else el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
-  }, [char.logs.length, char.alive, char.pendingEvent, char.pendingContract, char.pendingMinor, activeResolution]);
+  }, [char.logs.length, char.alive, char.pendingDungeon, char.pendingEvent, char.pendingContract, char.pendingMinor, activeResolution]);
 
   const handleChooseMinor = (idx) => {
     audioEngine.playClick();
@@ -633,6 +638,16 @@ export const LiveStageFeed = () => {
   const handleSelectContract = (id) => {
     audioEngine.playClick();
     selectContractApproach(id);
+  };
+
+  const handleSelectDungeon = (idx) => {
+    audioEngine.playClick();
+    chooseDungeonAction(idx);
+  };
+
+  const handleFleeDungeon = () => {
+    audioEngine.playClick();
+    fleeDungeon();
   };
 
   const handleConfirmColorTitle = (title) => {
@@ -705,9 +720,23 @@ export const LiveStageFeed = () => {
         handleChooseMinor(-1);
         return;
       }
+      if (char.pendingDungeon && (e.key === 'f' || e.key === 'F' || e.key === 'Escape')) {
+        e.preventDefault();
+        handleFleeDungeon();
+        return;
+      }
       const idx = parseInt(e.key, 10) - 1;
       if (Number.isNaN(idx) || idx < 0) return;
-      if (char.pendingEvent && idx < (char.pendingEvent.choices?.length || 0)) {
+      if (char.pendingDungeon) {
+        const stage = getDungeonCurrentStage(char.pendingDungeon);
+        if (stage && idx < (stage.choices?.length || 0)) {
+          const ch = stage.choices[idx];
+          if (isDungeonChoiceAvailable(ch, char)) {
+            e.preventDefault();
+            handleSelectDungeon(idx);
+          }
+        }
+      } else if (char.pendingEvent && idx < (char.pendingEvent.choices?.length || 0)) {
         e.preventDefault();
         handleSelectEvent(idx);
       } else if (char.pendingContract && idx < (char.pendingContract.approaches?.length || 0)) {
@@ -724,7 +753,7 @@ export const LiveStageFeed = () => {
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [char.alive, char.pendingEvent, char.pendingContract, char.pendingMinor, char.stats.wealth, activeResolution, dismissResolution, postChoicePauseMs, clearPostChoicePause, speed, setSpeed, chooseMinor, selectEventChoice, selectContractApproach, isPrologueActive, revealNextBirthLog, peekBehind]);
+  }, [char.alive, char.pendingDungeon, char.pendingEvent, char.pendingContract, char.pendingMinor, char.stats.wealth, activeResolution, dismissResolution, postChoicePauseMs, clearPostChoicePause, speed, setSpeed, chooseMinor, selectEventChoice, selectContractApproach, chooseDungeonAction, fleeDungeon, isPrologueActive, revealNextBirthLog, peekBehind]);
 
   // Forge mini-game: the cursor sweeps while the craft modal is open
   useEffect(() => {
@@ -752,21 +781,23 @@ export const LiveStageFeed = () => {
     setStrikes((prev) => [...prev, dist <= 10 ? 100 : dist <= 22 ? 85 : 68]);
   };
 
-  // Sound cues when an event or contract decision stops time
+  // Sound cues when an event, contract, or dungeon delve stops time
   useEffect(() => {
-    if (char.pendingEvent) {
+    if (char.pendingDungeon) {
+      audioEngine.playDanger();
+    } else if (char.pendingEvent) {
       if (char.pendingEvent.isCausalCallback) audioEngine.playDanger();
       else if (typeof audioEngine.playDecision === 'function') audioEngine.playDecision();
     } else if (char.pendingContract) {
       if (typeof audioEngine.playDecision === 'function') audioEngine.playDecision();
     }
-  }, [char.pendingEvent?.id, char.pendingContract?.id]);
+  }, [char.pendingDungeon?.id, char.pendingDungeon?.currentStageIndex, char.pendingEvent?.id, char.pendingContract?.id]);
 
   const forgeQuality = strikes.length ? Math.round(strikes.reduce((a, b) => a + b, 0) / strikes.length) : 0;
   const lifeSummary = !char.alive ? buildLifeSummaryAndLegacy(char) : null;
-  const hasDock = Boolean(char.pendingEvent || char.pendingContract || char.pendingMinor || activeResolution);
-  const canPeek = Boolean(char.pendingEvent || char.pendingContract || activeResolution);
-  useEffect(() => setPeekBehind(false), [char.pendingEvent?.id, char.pendingContract?.id, activeResolution?.titleVi]);
+  const hasDock = Boolean(char.pendingDungeon || char.pendingEvent || char.pendingContract || char.pendingMinor || activeResolution);
+  const canPeek = Boolean(char.pendingDungeon || char.pendingEvent || char.pendingContract || activeResolution);
+  useEffect(() => setPeekBehind(false), [char.pendingDungeon?.id, char.pendingEvent?.id, char.pendingContract?.id, activeResolution?.titleVi]);
 
   return (
     <div className={`stage ${hasDock ? 'has-dock' : ''}`} ref={stageRef}>
@@ -814,9 +845,17 @@ export const LiveStageFeed = () => {
             />
           ) : (
             <>
-              {char.pendingEvent && <EventDock event={char.pendingEvent} char={char} onPick={handleSelectEvent} />}
-              {!char.pendingEvent && char.pendingContract && <ContractDock contract={char.pendingContract} wealth={char.stats.wealth} onPick={handleSelectContract} />}
-              {!char.pendingEvent && !char.pendingContract && char.pendingMinor && (
+              {char.pendingDungeon && (
+                <DungeonDock
+                  session={char.pendingDungeon}
+                  char={char}
+                  onPick={handleSelectDungeon}
+                  onFlee={handleFleeDungeon}
+                />
+              )}
+              {!char.pendingDungeon && char.pendingEvent && <EventDock event={char.pendingEvent} char={char} onPick={handleSelectEvent} />}
+              {!char.pendingDungeon && !char.pendingEvent && char.pendingContract && <ContractDock contract={char.pendingContract} wealth={char.stats.wealth} onPick={handleSelectContract} />}
+              {!char.pendingDungeon && !char.pendingEvent && !char.pendingContract && char.pendingMinor && (
                 <MinorDock prompt={char.pendingMinor} char={char} npcs={char.npcs} wealth={char.stats.wealth} place={placeOf(char)} paused={speed === 0} onPick={handleChooseMinor} />
               )}
             </>

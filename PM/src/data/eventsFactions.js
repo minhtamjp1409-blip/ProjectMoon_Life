@@ -2694,6 +2694,7 @@ export const FACTION_EVENTS = [
       {
         labelVi: 'Thu hồi các bình Enkephalin nguyên vẹn và mảnh phế liệu E.G.O mang về tập đoàn',
         labelEn: 'Salvage intact Enkephalin canisters and fractured E.G.O plating for the Wing',
+        startDungeon: 'dungeon_lobotomy_ruin',
         resultVi: 'Đoàn thám hiểm an toàn mang về nguồn năng lượng vô giá. Các nhà khoa học Wing trầm trồ thán phục; bạn nhận tiền thưởng lớn cùng huân chương cống hiến đặc biệt.',
         resultEn: 'The team safely extracted invaluable energy reserves. Wing scientists marveled at the haul; you received a massive merit bonus and honorary commendations.',
         meritAdd: 28,
