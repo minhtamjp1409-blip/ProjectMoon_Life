@@ -2,14 +2,17 @@ import { evaluateNarrativeArcProgression, computeEmotionalWaveConsideration } fr
 import { matchesEventContext } from './eventConditions.js';
 import { evaluateEventConsiderations } from './utilityCurves.js';
 import { createCityBlackboard } from './cityBlackboard.js';
+import { activeScarCount } from './scarModel.js';
 import {
   getNextFixerPromotion,
   fixerPromotionOfferChance,
   checkColorFixerReadiness,
   getNextFingerPromotion,
-  FINGER_LADDERS,
   getNextWingPromotion,
-  getNextWorkshopPromotion
+  getNextWorkshopPromotion,
+  getOtherCareerPromotion,
+  careerTrialForEvent,
+  careerPromotionOfferChance
 } from './careerPipeline.js';
 // ============================================================================
 // THE PRESCRIPT LOOM: CAUSAL MEMORY GRAPH & RNG FATE OMEN ENGINE
@@ -291,16 +294,16 @@ export function recordChoiceInGraph(weaver, char, event, choice, outcomeTextVi, 
         id: scarNodeId,
         type: 'scar',
         age: char.age,
-        labelVi: `Vết sẹo: ${scar}`,
-        labelEn: `Scar: ${scar}`,
+        labelVi: `Dấu tích: ${scar}`,
+        labelEn: `Mark: ${scar}`,
         outcomeVi: 'Ở lại với bạn, và làm Resonance tăng lên',
         outcomeEn: 'Stays with you, and raises Resonance'
       });
       nextEdges.push({
         from: nodeId,
         to: scarNodeId,
-        labelVi: 'Để lại sẹo',
-        labelEn: 'Etched Scar'
+        labelVi: 'Để lại dấu tích',
+        labelEn: 'Left a mark'
       });
     });
   }
@@ -316,9 +319,11 @@ export function recordChoiceInGraph(weaver, char, event, choice, outcomeTextVi, 
 }
 
 export function isEventEligible(event, char, { scripted = false } = {}) {
-  if (!matchesEventContext(event, char)) return false;
+  const otherTrial = careerTrialForEvent(event.id);
+  const contextEvent = otherTrial && event.age ? { ...event, age: [event.age[0], 140] } : event;
+  if (!matchesEventContext(contextEvent, char)) return false;
   const fixerExam = event.id.startsWith('fixer_promo_');
-  if (char.seenEvents?.includes(event.id) && !event.repeatable && !fixerExam) return false;
+  if (char.seenEvents?.includes(event.id) && !event.repeatable && !fixerExam && !otherTrial) return false;
   if (event.causalOnly && !char.weaver?.pendingThreads?.some(t => t.eventId === event.id && !t.fulfilled && t.triggerAge <= char.age)) return false;
   if (fixerExam) {
     const next = getNextFixerPromotion(char);
@@ -326,16 +331,18 @@ export function isEventEligible(event, char, { scripted = false } = {}) {
     if (!next?.isEligible || eventGrade !== next.grade || char.lastFixerExamAge === char.age) return false;
   }
   if (event.id === 'hana_color_ascension_trial' && !checkColorFixerReadiness(char).ready) return false;
-  const fingerTrialRank = event.id.startsWith('syn_')
-    ? Object.values(FINGER_LADDERS).flat().find((step) => (step.eventIds || [step.eventId]).includes(event.id))?.rank
-    : null;
-  if (fingerTrialRank && (!getNextFingerPromotion(char)?.isEligible || getNextFingerPromotion(char)?.rank !== fingerTrialRank)) return false;
-  if (event.id.startsWith('wing_promo_') && !getNextWingPromotion(char)?.isEligible) return false;
-  if (event.id.startsWith('ws_promo_') && !getNextWorkshopPromotion(char)?.isEligible) return false;
-  if (event.id === 'ad_career_crossroad_18' && (char.age < 18 || char.job !== 'Child')) return false;
+  if (otherTrial) {
+    const next = getOtherCareerPromotion(char);
+    if (!next?.isEligible || next.route !== otherTrial.route || next.rank !== otherTrial.rank ||
+        (next.route === 'finger' && next.finger !== otherTrial.finger)) return false;
+    const prefix = next.route === 'finger' ? 'Finger' : next.route === 'wing' ? 'Wing' : 'Workshop';
+    if (char[`last${prefix}TrialAge`] === char.age) return false;
+  }
+  if (event.id === 'ad_career_crossroad_18' && (char.age < 18 || char.job !== 'Child' || char.regionId === 'OUTSKIRTS')) return false;
+  if (event.id === 'ad_outskirts_crossroad_18' && (char.age < 18 || char.job !== 'Child')) return false;
   if (event.id === 'ego_carmen_crossroad' && !(char.age >= 18 && (char.stats.sanity <= 5 || char.resonance >= 90))) return false;
   if (event.id === 'csq_claw_taboo_visitation' && char.taboo < 3) return false;
-  const milestones = ['ad_career_crossroad_18', 'ego_carmen_crossroad', 'ego_second_efflorescence_trial', 'hana_color_ascension_trial', 'csq_claw_taboo_visitation'];
+  const milestones = ['ad_career_crossroad_18', 'ad_outskirts_crossroad_18', 'ego_carmen_crossroad', 'ego_second_efflorescence_trial', 'hana_color_ascension_trial', 'csq_claw_taboo_visitation'];
   return scripted || !milestones.includes(event.id);
 }
 
@@ -472,8 +479,9 @@ export function selectEventWithWeaverAI({
   }
 
   // Mandatory Age 18 Adult Career Crossroad (BitLife / PM Canon Milestone)
-  if ((char.age >= 18 && char.job === 'Child') && !char.seenEvents.includes('ad_career_crossroad_18')) {
-    const crossroadEv = allPools.find(e => e.id === 'ad_career_crossroad_18');
+  if (char.age >= 18 && char.job === 'Child') {
+    const crossroadId = char.regionId === 'OUTSKIRTS' ? 'ad_outskirts_crossroad_18' : 'ad_career_crossroad_18';
+    const crossroadEv = allPools.find(e => e.id === crossroadId);
     if (crossroadEv && isEventEligible(crossroadEv, char, { scripted: true })) {
       const logEntry = {
         age: char.age,
@@ -542,13 +550,16 @@ export function selectEventWithWeaverAI({
   const isFingerOperative = (char.job === 'Syndicate' || (char.flags.includes('Distorted') && char.finger)) && char.finger;
   if (isFingerOperative) {
     const nextFingerPromo = getNextFingerPromotion(char);
-    if (nextFingerPromo && nextFingerPromo.isEligible) {
+    const step = getOtherCareerPromotion(char);
+    if (nextFingerPromo?.isEligible && char.lastFingerTrialAge !== char.age && rng() < careerPromotionOfferChance(char, step)) {
       const candidateIds = nextFingerPromo.eventIds || [nextFingerPromo.eventId];
-      const availableIds = candidateIds.filter((id) => !char.seenEvents.includes(id));
+      const availableIds = candidateIds.filter((id) => {
+        const event = allPools.find((entry) => entry.id === id);
+        return event && isEventEligible(event, char);
+      });
       if (availableIds.length > 0) {
         // Shuffle candidates with rng() for true promotion diversity
-        const shuffled = [...availableIds].sort(() => rng() - 0.5);
-        const chosenId = shuffled[0];
+        const chosenId = availableIds[Math.floor(rng() * availableIds.length)];
         const promoEv = allPools.find((e) => e.id === chosenId);
         if (promoEv && isEventEligible(promoEv, char)) {
           const logEntry = {
@@ -575,7 +586,7 @@ export function selectEventWithWeaverAI({
   // Prioritize sequential Wing Employee Promotion appointments
   if (char.job === 'Wing Employee' && !char.flags.includes('Distorted')) {
     const nextWingPromo = getNextWingPromotion(char);
-    if (nextWingPromo && nextWingPromo.isEligible && !char.seenEvents.includes(nextWingPromo.eventId)) {
+    if (nextWingPromo?.isEligible && char.lastWingTrialAge !== char.age && rng() < careerPromotionOfferChance(char)) {
       const promoEv = allPools.find((e) => e.id === nextWingPromo.eventId);
       if (promoEv && isEventEligible(promoEv, char)) {
         const logEntry = {
@@ -601,7 +612,7 @@ export function selectEventWithWeaverAI({
   // Prioritize sequential Workshop Craftsman Promotion appraisals
   if (char.job === 'Workshop Craftsman' && !char.flags.includes('Distorted')) {
     const nextWsPromo = getNextWorkshopPromotion(char);
-    if (nextWsPromo && nextWsPromo.isEligible && !char.seenEvents.includes(nextWsPromo.eventId)) {
+    if (nextWsPromo?.isEligible && char.lastWorkshopTrialAge !== char.age && rng() < careerPromotionOfferChance(char)) {
       const promoEv = allPools.find((e) => e.id === nextWsPromo.eventId);
       if (promoEv && isEventEligible(promoEv, char)) {
         const logEntry = {
@@ -685,7 +696,7 @@ export function selectEventWithWeaverAI({
 
   const carmenEv = allPools.find(e => e.id === 'ego_carmen_crossroad');
   const meetsCarmenPrereq = char.age >= 18 &&
-    (((char.resonance || 0) >= 95 && Math.min(4, (char.scars || []).length) >= 3) ||
+    (((char.resonance || 0) >= 95 && activeScarCount(char) >= 3) ||
       (char.sanity <= 5 && rng() < 0.12) ||
       ((char.resonance || 0) >= 90 && rng() < 0.15));
 
@@ -865,7 +876,7 @@ export function selectEventWithWeaverAI({
   }
 
   const combinedPool = [...(updatedWeaver.customEvents || []), ...allPools];
-  const eligible = combinedPool.filter(ev => !ev.id.startsWith('fixer_promo_') && isEventEligible(ev, char));
+  const eligible = combinedPool.filter(ev => !ev.id.startsWith('fixer_promo_') && !careerTrialForEvent(ev.id) && isEventEligible(ev, char));
 
   if (eligible.length === 0) {
     return { event: null, weaver: updatedWeaver };

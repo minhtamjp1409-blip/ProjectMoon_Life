@@ -13,7 +13,7 @@ export const CHILDHOOD_EVENTS = [
     major: true,
     weight: 12,
     requires: ['HuyếtThốngKếThừa'],
-    vi: '[Căn Gác Xép Và Di Vật Của {parentName}] Mưa đêm xối xả đập vào mái tôn rỉ sét của dãy trọ Backstreets, kéo theo mùi mỡ máy và than cháy khét lẹt của khu ổ chuột. Khi chủ trọ đã lấy đi mọi thứ có thể bán được để trừ nợ, căn phòng áp mái chỉ còn lại một tấm ván sàn mục kêu kẽo kẹt dưới chân bạn. Dưới lớp bụi than dày đặc, bạn tìm thấy chiếc hộp thiếc méo mó — thứ duy nhất mà {parentName} không bao giờ mang ra hiệu cầm đồ. Bên trong, 「{relic}」 nằm im lìm dưới tấm áo rách, những vệt máu cũ đã ngả màu nâu gỉ sắt. Không có thư từ hay lời trăn trối nào; ở The City, sự im lặng của kim loại lạnh ngắt chính là lời di ngôn chân thật nhất.',
+    vi: "[Di vật của {parentName}] Chủ trọ đã lấy sạch đồ để trừ nợ. Dưới tấm ván sàn còn một hộp thiếc của {parentName}. Bên trong, 「{relic}」 nằm dưới chiếc áo cũ; máu trên mép đã khô. Không có thư để lại.",
     en: '[The box under the floor] Beneath a loose board you found {parentName}’s iron box. Inside was 「{relic}」, wrapped in an old shirt. The blood on the edge had dried brown, and no one had wiped it off.',
     choices: [
       {
@@ -36,7 +36,7 @@ export const CHILDHOOD_EVENTS = [
       {
         labelVi: 'Mang ra chợ đen bán lấy tiền ăn',
         labelEn: 'Sell it at the black market for food money',
-        resultVi: 'Gã thợ cầm đồ đưa mắt nhìn vết máu trên 「{relic}」 rồi nhìn vào đôi mắt trũng sâu vì đói của bạn. Gã không hỏi một lời, chỉ ném xuống quầy một xấp Ahn sứt mẻ: "Cầm lấy mà sống thêm vài tuần. Đừng quay lại đây tìm nó nữa." Đêm đó bạn ăn một bữa bánh mì nóng sốt, nhưng vị kim loại tanh nồng vẫn đọng mãi nơi cuống họng.',
+        resultVi: "Gã thợ cầm đồ thấy máu trên 「{relic}」, rồi đặt một xấp Ahn xuống quầy. \"Cầm lấy mà sống. Đừng quay lại tìm nó.\" Tối ấy bạn có bánh mì nóng, nhưng chiếc hộp thiếc ở nhà đã trống.",
         resultEn: 'The buyer turned it over, looked at the blood, then at you. “Your parent’s?” He paid 12 Ahn and asked nothing more. You ate well that night, and couldn’t sleep.',
         effects: { wealth: +12, sanity: -8, rep: -4 },
         scarsAdd: ['Món di vật đã bán']
@@ -49,7 +49,7 @@ export const CHILDHOOD_EVENTS = [
     major: true,
     weight: 16,
     requires: ['NợMáuĐờiTrước'],
-    vi: '[Nợ Máu Đời Trước · Bản Án Từ The Middle] Khi bạn đẩy cánh cửa phòng trọ sau buổi mót rác, hai bóng người to lớn mặc áo choàng tím viền vàng thêu hoa văn xích sắt đã ngồi đợi sẵn trong bóng tối — thành viên của The Middle (Ngón Giữa). Trên chiếc bàn gỗ mục nát, một gã mở sẵn cuốn Sổ Báo Thù (Book of Vengeance) dày cộm đóng gáy bằng da thuộc, lật đúng trang giấy ố vàng có khắc tên {parentName}. Giọng gã trầm đục và lạnh buốt: "Kẻ này nợ gia đình chúng tao một mạng và sáu ngón tay. Người chết không xóa được dòng mực này. Ở The Middle, nợ của cha mẹ thì con cái trả thay. Hôm nay, mày muốn trả bằng máu hay bằng xương?"',
+    vi: "[Món nợ của {parentName}] Hai người của The Middle ngồi đợi trong phòng bạn. Một kẻ mở Book of Vengeance đến trang tên {parentName}: một mạng người và sáu ngón tay còn nợ. \"Người chết rồi, dòng này vẫn còn. Bạn trả thế nào?\"",
     en: '[{parentName}’s debt] Two members of the Middle were standing in your room when you came home from school. One held the Book of Vengeance, open to the page with {parentName}’s name.\n“They still owe us. When the debtor dies, the child pays. What are you paying with today?”',
     choices: [
       {
@@ -63,7 +63,7 @@ export const CHILDHOOD_EVENTS = [
       {
         labelVi: 'Hất nồi nước sôi trên bếp vào mặt chúng rồi nhảy qua cửa sổ',
         labelEn: 'Throw the boiling pot from the stove in their faces and jump out the window',
-        resultVi: 'Tiếng gào rú man dại xé toạc màn đêm Backstreets khi dầu sôi thiêu rụi da mặt tên gác cửa. Bạn đập người xuống mái tôn tầng dưới trong cơn đau thấu xương từ dải sườn gãy, lăn vào ống cống tẩu thoát. Đến rạng sáng, tin tức truyền tới: The Middle đã viết tên bạn vào Book of Vengeance bằng nét mực đỏ tươi — một bản án báo thù vĩnh viễn không bao giờ phai nhạt.',
+        resultVi: "Bạn hất dầu sôi vào tên gác cửa rồi lao qua mái tôn xuống cống. Đến sáng, The Middle đã ghi tên bạn bằng mực đỏ vào Book of Vengeance. Món nợ cũ chưa trả; một món mới vừa được thêm vào.",
         resultEn: 'You heard screaming behind you as you dropped onto the tin roof below and cracked a rib. By nightfall your name was written in the Book of Vengeance in red ink, right under {parentName}’s.',
         effects: { health: -18, sanity: -10, rep: +10, heat: +25, resonance: +14 },
         flagsAdd: ['MiddleVendetta'],
@@ -87,13 +87,13 @@ export const CHILDHOOD_EVENTS = [
     major: true,
     weight: 9,
     requires: ['Nest'],
-    vi: '[Phòng Trắng Của Wing · Kiểm Tra Tương Thích Singularity] Năm lên năm tuổi, mọi đứa trẻ thuộc tầng lớp Feather trong Nest đều phải trải qua buổi sát hạch bắt buộc tại Viện Nghiên cứu Trung ương. Căn phòng vô trùng trắng toát không một hạt bụi, nồng nặc mùi dung môi hóa học và tiếng rè rè của cỗ máy quét sinh học. Người bác sĩ trong bộ đồ bảo hộ kín mít cầm một ống tiêm phát ra ánh sáng huỳnh quang lấp lánh, nhìn cha mẹ bạn với nụ cười thương mại: "Một liều chất kích hoạt thần kinh tủy sống sẽ giúp điểm số của cháu lọt vào top 5% ưu tú của Wing. Dĩ nhiên, có khoảng 10% rủi ro thoái hóa vận động nhẹ. Hoặc các vị có thể để cháu làm bài tự nhiên, và chấp nhận nguy cơ cả gia đình bị giáng cấp xuống cư dân Backstreets vào đợt rà soát tới."',
+    vi: "[Buổi kiểm tra của Wing] Trong phòng khám Nest, bác sĩ đặt trước mặt bạn một ống thuốc sáng màu. Nó có thể đẩy điểm tương thích Singularity vào nhóm đầu, nhưng cũng có nguy cơ làm hỏng khả năng vận động. Nếu điểm thấp, gia đình bạn có thể mất suất ở Nest. Cha mẹ chờ bạn trả lời.",
     en: '[The Wing’s screening] At five, every Feather child in the Nest was taken into a white room to measure their “Singularity compatibility.”\nThe doctor gave your parents two options: an injection into the spine for a better score, or let you sit the test as you are and accept the result.',
     choices: [
       {
         labelVi: 'Nhận mũi tiêm',
         labelEn: 'Take the injection',
-        resultVi: 'Cây kim dài cắm sâu vào đốt sống thắt lưng mang theo cơn đau buốt tựa như dòng điện cao thế chạy thẳng lên vỏ não. Bạn sốt li bì suốt ba ngày đêm, nhưng bảng kết quả dán trước cổng Viện ghi danh bạn ở hạng "Đặc Biệt Ưu Tú". Cha bạn run rẩy đóng khung vàng tấm chứng chỉ treo giữa phòng khách, trong khi bạn bắt đầu học cách che giấu những cơn co giật ngón tay.',
+        resultVi: "Mũi kim chạm đốt sống. Bạn sốt ba ngày, rồi tên mình xuất hiện trong nhóm điểm cao nhất. Cha đóng khung chứng chỉ; bạn giấu bàn tay đang co giật dưới bàn.",
         resultEn: 'You don’t remember the pain, only that you shook for three days afterward. The result read “Excellent.” Your father framed it in the living room.',
         effects: { health: -10, sanity: -8, rep: +10, network: +12, resonance: +8 },
         flagsAdd: ['ThượngLưu'],
@@ -115,7 +115,7 @@ export const CHILDHOOD_EVENTS = [
     weight: 3, // was 6; with the larger childhood pool it no longer needs to carry the Backstreets alone
     requires: ['Backstreets'],
     forbids: ['Nest', 'Outskirts'],
-    vi: '[Đêm 3:13 AM · Tiếng Cào Của Lưỡi Móc Sắt] Tiếng còi báo động toàn thành phố réo lên ba hồi chói óc rồi tắt phụt, kéo theo toàn bộ ánh đèn neon của Backstreets vụt tắt. Night in the Backstreets bắt đầu. Dưới gầm giường, bạn nín thở nghe tiếng rít ken két từ van lọc khí và tiếng móc sắt lê loẹt xoẹt trên đường nhựa của bầy Sweeper đang lùng sục kiếm "súp dinh dưỡng". Bất thình lình, cánh cửa phòng trọ bị đập dồn dập. Tiếng ông Kang hàng xóm khản đặc, nghẹn ngào trong máu: "Mở... mở cửa với cháu ơi! Cánh tay chú bị móc kẹt rồi... chúng nó đang đến đằng sau..."',
+    vi: "[Đêm 3:13] Đèn Backstreets tắt sau hồi còi. Từ dưới gầm giường, bạn nghe móc sắt của Sweeper cào trên mặt đường. Ông Kang đập cửa phòng trọ, giọng đứt quãng: \"Mở cửa. Tay chú mắc vào cửa rồi. Chúng đang tới.\"",
     en: '[3:13] The siren had stopped. Out in the street the Sweepers were doing their work, and there were sounds you would never forget.\nThen someone pounded on the door. Old Kang from next door, hoarse and desperate: “Open up! Please, my arm...”',
     choices: [
       {
@@ -124,7 +124,7 @@ export const CHILDHOOD_EVENTS = [
         outcomes: [
           {
             w: 65,
-            resultVi: 'Bạn giật mạnh then cài, tóm lấy vạt áo ông Kang kéo vào trong. Một mũi móc câu sắc lẹm xé gió lướt qua khe cửa hẹp ngay trước khi cánh cửa dập lại, rạch một đường dài tóe máu trên bả vai bạn. Cánh tay trái của ông Kang đã bị bầy Sweeper cắt ngọt ngoài bậc thềm, nhưng bạn đã giật lại được mạng sống của ông từ tay thần chết.',
+            resultVi: "Bạn kéo ông Kang qua ngưỡng cửa đúng lúc móc sắt quét tới. Vai bạn bị rạch; cánh tay trái của ông đã mất ngoài bậc thềm. Ông còn sống. Hai người giữ chặt then cửa đến sáng.",
             resultEn: 'You got Kang inside. A metal hook slid through the gap before you could shut it, and left a deep tear across your shoulder. Kang lost an arm. You kept the rest of him.',
             effects: { health: -14, sanity: -6, rep: +6, resonance: +10 },
             recordsAdd: ['survive_night'],
@@ -140,7 +140,7 @@ export const CHILDHOOD_EVENTS = [
           },
           {
             w: 35,
-            resultVi: 'Khi cánh cửa vừa hé, một vòi phun áp lực của Sweeper thò qua khe hở xịt thẳng thứ axit phân hủy sinh học vào cánh tay bạn. Cơn đau thiêu đốt khiến da thịt bạn bong tróc, nhưng bạn vẫn cắn răng gạt chốt kéo ông Kang vào. Hai người nằm co quắp trên sàn nhà đẫm máu cho đến khi ánh bình minh 4:34 AM rọi qua khe cửa.',
+            resultVi: "Một vòi của Sweeper luồn qua khe cửa, phun axit lên tay bạn. Bạn vẫn kéo được ông Kang vào rồi cài then. Hai người nằm trên sàn đến khi trời sáng, không ai dám nhìn vết thương của người kia.",
             resultEn: 'The moment the door opened a nozzle pushed through. Whatever it sprayed peeled the skin off your forearm like wet paper. You still dragged Kang in, and the two of you lay on the floor until morning.',
             effects: { health: -22, sanity: -14, resonance: +15 },
             recordsAdd: ['survive_night'],
@@ -159,7 +159,7 @@ export const CHILDHOOD_EVENTS = [
       {
         labelVi: 'Giữ chặt chốt cửa, bịt tai lại',
         labelEn: 'Hold the bolt shut and cover your ears',
-        resultVi: 'Tiếng đập cửa chuyển thành tiếng cào cấu tuyệt vọng, rồi một âm thanh ục ục ghê rợn vang lên trước khi mọi thứ chìm vào im lặng. Một dòng chất lỏng ấm nóng tanh nồng từ từ rỉ qua khe cửa gỗ, chạm vào đầu ngón chân trần của bạn. Đến 4 giờ 34 sáng, khi còi báo hết giờ giới nghiêm vang lên, bậc thềm trước cửa đã được cọ rửa sạch bóng không còn một dấu vết thịt vụn.',
+        resultVi: "Tiếng đập cửa yếu dần rồi tắt. Chất lỏng rỉ qua khe gỗ, chạm chân bạn. Khi còi báo hết Night in the Backstreets vang lên, bậc thềm đã được quét sạch.",
         resultEn: 'The pounding stopped after a minute. Something warm ran under the door and touched your toes. By 4 AM the step was spotless, as if no one had ever stood there.',
         effects: { sanity: -15, resonance: +14 },
         recordsAdd: ['survive_night'],
@@ -174,7 +174,7 @@ export const CHILDHOOD_EVENTS = [
     weight: 8.5,
     requires: ['Backstreets'],
     forbids: ['Nest', 'Outskirts'],
-    vi: '[Lò Mổ Phế Liệu · Lũ Chuột Cống Của Ngõ Cụt] Trong một buổi chiều luồn lách qua các bãi rác công nghiệp để nhặt nhạnh linh kiện hỏng, bạn vô tình rẽ vào một con hẻm cụt ngập ngụa mùi hóa chất ôi thiu và máu tanh. Dưới ánh đèn pin vàng vọt, hai tên Chuột Cống (Rats) — những kẻ dưới đáy chuỗi sinh tồn chuyên mổ cắp nội tạng thô — đang đè nghiến một đứa trẻ lên mặt bàn sắt gỉ. Một tên cầm dao mổ cùn, tên kia giữ chiếc thùng xốp đựng đá lạnh bốc khói mờ mờ. Đứa trẻ trạc tuổi bạn đã kiệt sức không còn kêu la nổi. Nghe tiếng bước chân giẫm lên mảnh kính vỡ, tên cầm dao quay ngoắt lại, ánh mắt đục ngầu gườm gườm nhìn bạn như nhìn một món hàng béo bở khác.',
+    vi: "[Ngõ cụt của lũ Rat] Bạn đi nhặt linh kiện và bắt gặp hai Rat đè một đứa trẻ lên bàn sắt. Một tên cầm dao mổ, tên kia giữ thùng đá. Đứa trẻ không còn sức kêu. Mảnh kính dưới chân bạn vỡ; cả hai quay lại.",
     en: '[The table in the dead end] Scavenging for scrap, you turned into the wrong alley. Two Rats held a child down on a metal table, one with a knife, the other with a cooler. The child was about your age, and had stopped screaming.\nThe one with the knife turned to look at you.',
     choices: [
       {
@@ -183,7 +183,7 @@ export const CHILDHOOD_EVENTS = [
         outcomes: [
           {
             w: 55,
-            resultVi: 'Bạn vung thanh xà beng với toàn bộ sự liều lĩnh của một con thú bị dồn vào chân tường, đâm trúng cổ họng tên cầm dao trước khi hắn kịp vung tay. Tên còn lại hoảng hốt ôm thùng đá tháo chạy. Đứa trẻ trên bàn đã ngừng thở từ trước, đôi mắt mở trừng trừng nhìn lên bức tường rêu mốc. Bạn lục túi lấy đi số Ahn của tên Rat cùng con dao rỉ, bước ra khỏi hẻm và thề sẽ không bao giờ để mình rơi vào vị trí của kẻ nằm trên bàn sắt.',
+            resultVi: "Bạn đâm xà beng vào cổ tên cầm dao. Tên kia ôm thùng đá bỏ chạy. Đứa trẻ trên bàn đã chết từ trước. Bạn lấy số Ahn và con dao của Rat, rồi bước ra khỏi ngõ.",
             resultEn: 'You caught him in the throat before he could raise the knife. The other one ran off with the cooler. The child on the table was already dead. You took the Rat’s purse, and his knife, and went home and told no one.',
             effects: { health: -10, sanity: -10, wealth: +8, rep: +6, resonance: +10 },
             flagsAdd: ['해결사동경'],
@@ -222,7 +222,7 @@ export const CHILDHOOD_EVENTS = [
     major: true,
     weight: 9,
     requires: ['Nest'],
-    vi: '[Cuộc Đua Sinh Tồn Trong Nest · Đào Thải Không Khoan Nhượng] Tại học viện tinh hoa của Nest, bảng xếp hạng học lực hàng tháng chính là bản án sinh tử. Sáng nay, học sinh xếp chót bảng bị bảo an Wing còng tay áp giải ra khỏi lớp ngay giữa tiết học; cả gia đình bạn ấy bị tước quyền công dân và trục xuất ra Backstreets trước giờ cơm tối. Chiều hôm sau, người giáo viên chủ nhiệm với khuôn mặt vô cảm đặt lên bàn bạn một lọ dung dịch hóa dược không nhãn mác: "Uống nó trước giờ thi chuyển cấp ngày mai. Trừ việc niêm mạc mũi chảy máu đôi chút, nó sẽ ép não bộ của em hoạt động vượt công suất 200%. Đừng để tên mình rơi xuống đáy danh sách."',
+    vi: "[Cuối bảng điểm] Học sinh xếp chót bị bảo an Wing đưa khỏi lớp. Gia đình họ mất quyền ở Nest. Trước kỳ thi ngày mai, giáo viên đặt một lọ thuốc không nhãn lên bàn bạn: điểm sẽ tăng, nhưng cơ thể phải trả giá. Tên bạn đang ở gần cuối danh sách.",
     en: '[The bottom of the class] This month, the student ranked last lost their residency in the middle of a lesson. Wing security walked the whole family to the Nest gate before dinner.\nThe next day the teacher set an unlabeled vial on your desk. “Take it before the exam. A little nosebleed, that’s all.”',
     choices: [
       {
@@ -250,7 +250,7 @@ export const CHILDHOOD_EVENTS = [
     major: true,
     weight: 9.5,
     requires: ['Outskirts'],
-    vi: '[Hầm Ngầm Dưới Phế Tích Ruins · Di Vật Của Hiệp Hội Eight] Trong chuyến đi mót nước ngọt ngoài biên giới Outskirts, một trận sạt lở cát đã làm lộ ra lối vào đường hầm tăm tối dẫn xuống Phế Tích Cổ (The Ruins) — vùng đất cấm chứa những tàn tích công nghệ từ thời kỳ trước The City. Dưới đáy vực, xác một Fixer thuộc Eight Association nằm bất động trong bộ giáp rách nát, hai tay vẫn siết chặt một chiếc hộp hợp kim bảo mật. Trong bóng tối sâu thẳm của đường hầm, một thực thể quái dị đầy vảy cứng đang rúc rỉa phần chi dưới của cái xác.',
+    vi: "[Lối xuống Ruins] Một trận sạt cát mở ra đường hầm dưới Outskirts. Ở đáy hầm, một Fixer của Eight Association nằm chết, tay vẫn giữ hộp hợp kim khóa kín. Có thứ đang ăn xác họ trong bóng tối. Bạn cần quyết định trước khi nó ngẩng đầu.",
     en: '[The shaft under the Ruins] Looking for water, you found a way down into the Ruins, opened up by a landslide. Down there lay a dead Eight Association Fixer, still clutching a metal case. Something was eating the lower half of the body.',
     choices: [
       {
@@ -291,7 +291,7 @@ export const CHILDHOOD_EVENTS = [
     major: true,
     weight: 9.5,
     requires: ['Nest'],
-    vi: '[Đấu Đá Gia Tộc Nest · Suất Thực Tập Sinh Đẫm Máu] Gia tộc bạn chỉ được cấp duy nhất một suất đề cử thực tập sinh tại trụ sở chính của Wing trong năm nay. Để loại bỏ bạn, người anh họ đã ngấm ngầm vu khống bạn bán bí mật phòng thí nghiệm cho gián điệp công nghiệp, khiến các bậc trưởng bối quay lưng ghẻ lạnh bạn. Nhưng trong tay bạn đang nắm giữ một đoạn băng ghi âm tuyệt mật: chính anh ta đã chi tiền thuê sát thủ Shi Association ám sát viên giám khảo tuyển dụng tuần trước.',
+    vi: "[Suất thực tập duy nhất] Gia tộc chỉ được đề cử một người vào Wing. Anh họ vu bạn bán bí mật phòng thí nghiệm; trưởng bối đã tin. Bạn lại có băng ghi âm anh ta thuê sát thủ Shi giết giám khảo tuần trước. Cả nhà đang chờ lời giải thích.",
     en: '[The family’s one nomination] The family has only one Wing internship nomination this year. Your cousin accused you of leaking lab documents, and the adults believed him.\nBut you have a recording: he hired someone from Shi Association to threaten an examiner.',
     choices: [
       {
@@ -319,7 +319,7 @@ export const CHILDHOOD_EVENTS = [
     weight: 8,
     requires: ['Backstreets'],
     forbids: ['Nest', 'Outskirts'],
-    vi: '[Chỉ Lệnh Của The Index · Mảnh Giấy Da Buộc Chỉ Vàng] Giữa một buổi chiều Backstreets đông đúc, cả con phố bỗng chìm vào sự im lặng nghẹt thở khi một Sứ Giả (Messenger) của The Index xuất hiện. Đôi mắt người ấy bịt dải lụa trắng thêu hoa văn tinh xảo, từng bước chân gõ nhịp đều đặn như quả lắc đồng hồ. Không một ai dám ngẩng đầu nhìn, bởi ở The City, chống đối Chỉ Lệnh đồng nghĩa với việc bị xóa sổ toàn bộ dòng họ. Người Sứ Giả dừng lại trước mặt bạn, nhẹ nhàng đặt vào lòng bàn tay bạn một cuộn giấy da nhỏ đóng sáp đỏ.\n\nBên trong là dòng chữ in bằng cơ khí vô cảm:\n「Trước nửa đêm hôm nay, cắt rời ngón áp út bàn tay trái của người đầu tiên mỉm cười với ngươi vào buổi sáng. Ngâm nó trong một cốc cồn ấm. Đặt lên bậu cửa sổ tầng ba của khu nhà đổ nát.」\n\nKý ức ùa về làm bạn run rẩy. Sáng nay, khi bạn bị đám du đãng đánh ngã rách toạc đầu gối trước bậc thềm tiệm giặt, người duy nhất mỉm cười xoa đầu và đưa cho bạn một cuộn băng gạc sạch mà không đòi một xu... chính là bà Hwa.',
+    vi: "[Prescript của The Index] Messenger đặt một cuộn giấy vào tay bạn. Prescript yêu cầu trước nửa đêm cắt ngón áp út tay trái của người đầu tiên mỉm cười với bạn sáng nay, ngâm trong cồn ấm rồi đặt ở cửa sổ tầng ba khu nhà đổ nát. Người ấy là bà Hwa, người vừa băng vết thương cho bạn mà không lấy tiền.",
     en: '[Prescript] An Index Messenger, eyes bound in white, pressed a slip of paper into your hand:\n「Before midnight, cut off the left ring finger of the first person who smiled at you today. Steep it in warm liquor. Leave it on a third-floor windowsill.」\nThe first person who smiled at you this morning was Mrs. Hwa, who once bandaged your wounds and took no money for it.',
     choices: [
       {
@@ -364,7 +364,7 @@ export const CHILDHOOD_EVENTS = [
     weight: 9,
     requires: ['Backstreets'],
     forbids: ['Nest'],
-    vi: '[Lò Luyện Của Cựu Binh · Bài Sát Hạch Sắt Máu Của Salvador] Salvador — một Fixer Grade 4 lão luyện đã giải nghệ với nửa khuôn mặt bị axit ăn mòn thành những mảng sẹo sần sùi — đứng khoanh tay giữa căn hầm ẩm thấp của Văn phòng cũ. Dưới chân ông là một chiếc lồng sắt kiên cố nhốt một con chó săn chiến đấu bị bỏ đói suốt năm ngày, đôi mắt nó đỏ ngầu gầm gừ nhỏ dãi nhớt nhát. Ông ném xuống chân bạn một đoạn ống thép đặc rỉ sét, giọng khàn đặc đượm mùi thuốc lá: "Ở The City, kẻ do dự sẽ chết trước khi kịp nhận ra đối thủ đã rút kiếm. Bước vào trong đó. Sống sót bước ra được thì tao mới dạy tiếp cách cầm đao."',
+    vi: "[Bài thử của Salvador] Salvador, cựu Fixer Grade 4, dẫn bạn xuống hầm Office cũ. Trong lồng là một con chó săn chiến đấu bị bỏ đói. Ông ném cho bạn ống thép gỉ: \"Bước vào. Ra được thì ta dạy tiếp.\"",
     en: '[The last test] Salvador, a retired Grade 4 Fixer with half his face ruined by acid, agreed to train you. His final test was an iron cage, a hound starved for five days, and a length of steel pipe.\n“Get out, and I keep teaching you.”',
     choices: [
       {
@@ -402,17 +402,61 @@ export const CHILDHOOD_EVENTS = [
 
   // --- eighteen ---
   {
+    id: 'ad_outskirts_crossroad_18',
+    age: [18, 99],
+    jobs: ['Child'],
+    regions: ['OUTSKIRTS'],
+    major: true,
+    weight: 999,
+    vi: "[Bên kia bức tường] Mười tám tuổi, bạn theo đoàn phế liệu tới cổng kiểm hàng. Ánh đèn The City đã ở rất gần, nhưng bạn vẫn đứng ngoài tường. Người dẫn đường chỉ ba người đang cần thêm tay chân. Mỗi người có một đường đưa bạn vào Backstreets.",
+    en: '[Across the wall] At eighteen you leave camp with a scrap caravan. From the Outskirts you could see the City lights; reaching the wall is not the same as entering. The caravan stops at a cargo checkpoint. Your guide points out three people who need workers. Each has a way through the gate. None promises a way back.',
+    choices: [
+      {
+        labelVi: 'Theo người chở hàng vào xưởng',
+        labelEn: 'Follow the freight crew to a workshop',
+        resultVi: 'Bạn phụ đẩy xe phế liệu qua cổng. Bên trong, người thợ ở District T giữ lại đôi tay còn nguyên của bạn và ghi tên vào sổ học việc. Đêm đầu tiên trong Backstreets, bạn ngủ cạnh lò rèn đã tắt.',
+        resultEn: 'You push the scrap cart through the gate. Inside, a District T smith sees your uninjured hands and enters your name in the apprentice ledger. Your first night in the Backstreets is spent beside a cold forge.',
+        setRegion: 'T',
+        setJob: 'Workshop Craftsman',
+        effects: { health: -5, wealth: 5, network: 4 },
+        flagsAdd: ['EnteredCity']
+      },
+      {
+        labelVi: 'Nhận lời người tuyển việc cho một Office',
+        labelEn: 'Take an offer from an Office recruiter',
+        resultVi: 'Người tuyển việc ghi bạn vào danh sách khuân vác có người bảo lãnh. Qua cổng District J, hắn đưa bạn đến quầy đăng ký Fixer. Lệ phí lấy gần hết tiền công ứng trước; tấm thẻ Grade 9 có tên bạn, nhưng không ghi bạn sinh ở đâu.',
+        resultEn: 'The recruiter puts you on a sponsored labor list. Beyond the District J gate, he takes you to a Fixer registration desk. The fee consumes most of your advance pay. Your Grade 9 card bears your name, but says nothing about your birthplace.',
+        setRegion: 'J',
+        setJob: 'Fixer',
+        setFixerGrade: 9,
+        effects: { wealth: -5, network: 5, rep: 3 },
+        flagsAdd: ['EnteredCity'],
+        recordsAdd: ['fixer_license']
+      },
+      {
+        labelVi: 'Đi theo kẻ buôn lậu qua lối khuất',
+        labelEn: 'Follow a smuggler through a hidden route',
+        resultVi: 'Bạn bỏ lại xe hàng và đi theo hắn qua một lối dịch vụ dưới chân tường. Khi lên đến Backstreets của District K, hắn đưa bạn một con dao và bảo khoản tiền dẫn đường sẽ được trừ vào việc đầu tiên. Bạn chưa hỏi việc ấy là gì.',
+        resultEn: 'You leave the caravan and follow him through a service passage beneath the wall. In District K’s Backstreets he hands you a knife and says the passage fee will come out of your first job. You have not asked what the job is.',
+        setRegion: 'K',
+        setJob: 'Syndicate',
+        effects: { wealth: 6, heat: 10, sanity: -6 },
+        flagsAdd: ['EnteredCity']
+      }
+    ]
+  },
+  {
     id: 'ad_career_crossroad_18',
     age: [18, 99],
     major: true,
     weight: 999,
-    vi: '[Cột Mốc Mười Tám Tuổi · Cỗ Máy The City Bắt Đầu Thu Thuế] Đúng 0 giờ đêm ngày bạn tròn mười tám tuổi, tiếng còi tan ca của các Cánh rền rĩ vọng qua bức tường ngăn cách giữa Nest và Backstreets. Từ khoảnh khắc này, theo luật định của The Head và Hiệp hội Tres, mọi khoản miễn trừ vị thành niên đều bốc hơi. Tiền thuê từng mét vuông phòng trọ dột nát, tiền nước ngọt lọc tạp chất, phí khí thải công nghiệp, và thậm chí từng hơi thở của bạn đều bắt đầu bị tính thuế Ahn.\n\nKhông còn cha mẹ chở che, không còn mái hiên nào miễn phí cho một kẻ trưởng thành hai bàn tay trắng. Bạn đứng ở ngã tư rực rỡ ánh đèn neon quảng cáo chập chờn, mưa xối ướt đẫm tấm áo rách. Bốn con đường sinh tồn mở ra trước mắt — mỗi con đường đều là một bản giao kèo đánh đổi sinh mạng.',
+    vi: "[Mười tám tuổi] Tiền ăn, tiền ở và những khoản nợ giờ đến tên bạn. Dưới mái hiên Backstreets, bạn nhìn bốn nơi còn nhận người: quầy cấp thẻ Fixer, một Syndicate, cổng tuyển dụng Wing và xưởng học nghề. Bạn chỉ đủ thời gian nộp một đơn.",
     en: '[Eighteen] At eighteen you start paying for everything in the City yourself, breathing included. No one feeds you anymore. How will you make a living?',
     choices: [
       {
         labelVi: 'Đăng ký làm Fixer Grade 9 với Hana Association',
         labelEn: 'Register with Hana Association as a Grade 9 Fixer',
-        resultVi: 'Bước vào văn phòng cấp phép của Hana chi nhánh phụ, mùi mực in sáp đỏ và mùi thuốc lá cháy dở của những kẻ cùng đường xộc vào mũi. Bạn đặt số Ahn lệ phí cuối cùng lên quầy để nhận tấm thẻ Grade 9 bằng nhôm mỏng dính. Viên thư ký không thèm ngẩng đầu lên, giọng đều đều như máy tụng kinh: "Phần lớn những kẻ nhận thẻ cùng đợt với ngươi sẽ nằm dưới đáy cống hoặc trong thùng súp Sweeper trước sinh nhật mười chín. Chúc may mắn, Fixer mới vào nghề."',
+        resultVi: "Bạn nộp lệ phí ở quầy Hana và nhận thẻ Fixer Grade 9. Người thư ký không ngẩng đầu: \"Giữ thẻ cho khô. Nếu còn sống qua năm đầu, bạn sẽ cần nó.\"",
         resultEn: 'The Grade 9 license was lighter than you expected. The clerk said, in a flat voice, that most people licensed the same day as you won’t see next year.',
         setJob: 'Fixer',
         setFixerGrade: 9,
@@ -423,7 +467,7 @@ export const CHILDHOOD_EVENTS = [
       {
         labelVi: 'Theo một Syndicate trong khu',
         labelEn: 'Join a local Syndicate',
-        resultVi: 'Bạn bước qua tấm rèm rách bước vào căn hầm nồng nặc mùi rượu rẻ tiền và dầu súng. Gã Capo cơ bắp chằng chịt hình xăm nhổ toẹt một bãi nước bọt xuống sàn, ném cho bạn một con dao rựa bọc băng vải cùng một danh sách những hộ gia đình nợ tiền bảo kê trong khu: "Ở Backstreets, kẻ không cầm dao đâm người thì chỉ có nước nằm ngửa để người khác mổ bụng. Đi thu đủ số Ahn này về đây trước bình minh, rồi tính tiếp."',
+        resultVi: "Capo đưa bạn một con dao và danh sách các hộ nợ tiền bảo kê. \"Thu đủ trước bình minh.\" Không ai hỏi bạn từng cầm dao chưa.",
         resultEn: 'They handed you a gun and a list of households behind on their payments. No one asked if you wanted to.',
         setJob: 'Syndicate',
         effects: { wealth: +14, rep: +8, heat: +18, sanity: -12 },
@@ -433,7 +477,7 @@ export const CHILDHOOD_EVENTS = [
       {
         labelVi: 'Nộp đơn vào làm cho một Wing',
         labelEn: 'Apply to work for a Wing',
-        resultVi: 'Bạn vượt qua ba vòng kiểm tra thể lực và trắc nghiệm tâm lý để bước chân qua cánh cổng mạ crom sáng lóa của Nest. Bạn nhận bộ đồng phục Feather phẳng phiu và một mã số định danh 8 chữ số. Bản hợp đồng lao động dày cộm 40 trang giấy nến lấp lánh; tại điều khoản phụ 31, dòng chữ in nhỏ ghi rõ: *"Trong trường hợp xảy ra sự cố Singularity hoặc thảm họa cấp Cánh, nhân viên tự nguyện chuyển giao toàn quyền giải phẫu và điều động sinh học cơ thể mình cho tập đoàn."*',
+        resultVi: "Bạn qua các vòng tuyển dụng và nhận đồng phục Feather. Hợp đồng Wing cho phép điều động cơ thể nhân viên khi Singularity gặp sự cố. Chữ ký của bạn nằm ngay dưới điều khoản đó.",
         resultEn: 'You received a Feather uniform and an employee number. The contract ran 40 pages, and page 31 said the company has rights to your body “where necessary.”',
         setJob: 'Wing Employee',
         setWingRank: 1,
@@ -444,7 +488,7 @@ export const CHILDHOOD_EVENTS = [
       {
         labelVi: 'Học nghề ở một Workshop',
         labelEn: 'Apprentice at a Workshop',
-        resultVi: 'Mùi mạt sắt nóng rực và tiếng búa nện chát chúa rung chuyển gian hầm xưởng vũ khí. Người thợ cả với đôi bàn tay chai sạn đen kịt dầu máy dúi vào tay bạn một chiếc búa tạ và chỉ về phía lò than rực đỏ: "Muốn học cách rèn ra những lưỡi dao chém đứt khiên phòng hộ? Ở xưởng này không có chỗ cho kẻ sợ bỏng. Đập hỏng một trăm phôi thép thì mới mong giữ được mạng khi cầm phôi thứ một trăm lẻ một."',
+        resultVi: "Người thợ cả đặt búa vào tay bạn, chỉ về lò rèn. \"Hỏng một trăm phôi cũng được. Đừng để phôi thứ một trăm lẻ một hỏng vì bạn không chịu học.\"",
         resultEn: 'The workshop owner handed you a hammer and pointed at the forge. “Ruin a hundred and you’ll make your first.” He meant it.',
         setJob: 'Workshop Craftsman',
         effects: { wealth: +12, network: +10, sanity: -4 }
@@ -464,7 +508,7 @@ export const CONSEQUENCE_EVENTS = [
     id: 'csq_saved_neighbor_gift',
     major: true,
     isCausalCallback: true,
-    vi: '[Ân Huệ Của Đêm 3:13 · Lưỡi Đao Răng Cưa Của Ông Kang] Bảy năm sau đêm kinh hoàng 3:13 năm ấy, tiếng gõ cửa chậm rãi vang lên giữa mùa đông rét buốt. Đứng ngoài hiên là ông Kang — người hàng xóm cụt tay mà bạn từng giật mạng về từ tay Sweeper. Khuôn mặt ông hốc hác, từng cơn ho rũ rượi bật ra những vệt máu đen sẫm. Ông biết mình không thể chống chọi qua đợt rét này. Đặt lên bàn một thanh đao răng cưa được chế tác từ hợp kim Workshop cũ cùng một cuốn sổ tay sờn gáy ghi tên các mối quen trong giới Fixer, ông nhìn bạn mỉm cười thanh thản: "Ít ra nhờ có cháu năm ấy, lão già này được chết trên giường đàng hoàng như một con người, chứ không phải kết thúc trong nồi súp của Sweeper. Cầm lấy nó, nó sẽ giúp cháu sống sót."',
+    vi: "[Ông Kang trở lại] Bảy năm sau đêm 3:13, ông Kang gõ cửa nhà bạn. Cánh tay đã mất; cơn ho cũng nặng hơn trước. Ông đặt xuống bàn lưỡi đao răng cưa và cuốn sổ liên lạc Fixer. \"Năm ấy cháu cho chú thêm thời gian. Giờ chú đưa lại thứ còn dùng được.\"",
     en: '[Old Kang returns] Old Kang, the one-armed neighbor you dragged inside that 3:13 night, knocked on your door. He was coughing blood and knew he wouldn’t see the winter out. He brought his serrated blade, and a notebook of names he used to work with.',
     choices: [
       {
@@ -482,7 +526,7 @@ export const CONSEQUENCE_EVENTS = [
     id: 'csq_bread_victim_revenge',
     major: true,
     isCausalCallback: true,
-    vi: '[Mối Nợ Máu Dưới Đường Cống · Đứa Trẻ Sống Sót Trở Lại] Trong một đêm mưa tầm tã, một sợi dây thép siết chặt lấy khí quản của bạn từ phía sau, kéo giật bạn vào bóng tối của một kho hàng hoang. Kẻ bước ra trước mặt bạn có một bên hốc mắt trống rỗng và một vết sẹo mổ tạng dài ngoằng chạy dọc từ xương sườn xuống hông. Bạn chết lặng khi nhận ra gương mặt ấy: đứa trẻ duy nhất sống sót trong vụ thảm sát đường cống năm nào. Bàn tay bọc da siết mạnh sợi dây thép, giọng nói rít qua kẽ răng run rẩy trong thù hận: "Mày còn nhớ tám đồng Ahn mày nhận từ lũ Rat năm ấy không? Mày bán mạng bọn tao để mua bánh mì. Tao đã bò từ vũng máu ấy lên để tìm mày."',
+    vi: "[Đứa trẻ ở cống] Một sợi dây thép siết cổ bạn trong kho hàng tối. Kẻ cầm dây chỉ còn một mắt; vết sẹo mổ chạy dọc sườn. Bạn nhận ra đứa trẻ sống sót ở đường cống năm ấy. \"Tám Ahn từ lũ Rat có đáng không?\"",
     en: '[The one who survived] A steel wire tightened around your throat from behind. The person who stepped in front of you had one empty eye socket and a long scar along their side. You knew them: the only child who survived that night in the drain.\n“Remember me? I remember you.”',
     choices: [
       {
@@ -716,7 +760,7 @@ export const CONSEQUENCE_EVENTS = [
     id: 'csq_warp_survivor_debt',
     major: true,
     isCausalCallback: true,
-    vi: '[Bí mật từ toa cuối] Một thanh tra cấp cao của W Corp và điều tra viên T Corp phong tỏa chỗ ở của bạn. Trên bàn là chiếc lọ thủy tinh bạn từng giấu mẩu thịt của toa cuối năm ấy.\n"Tàu WARP không làm mất hành khách. Mẩu thịt này đã vi phạm hợp đồng độc quyền của W Corp. Trả 42 Ahn tiền phạt bí mật, hoặc làm người dọn dẹp không công cho chuyến tàu tiếp theo."',
+    vi: "[Mẩu thịt toa cuối] Thanh tra W Corp tìm thấy thứ bạn mang khỏi tàu WARP. Họ đặt chiếc lọ lên bàn: \"Trả phí vi phạm, hoặc đi dọn chuyến tàu sau.\" Cửa đã có người canh.",
     en: '[Secret of the last car] A high-ranking W Corp inspector and a T Corp auditor cordoned off your quarters. On the table was the glass jar you once held from the last car.\n“WARP trains do not lose passengers. This tissue violates W Corp’s exclusive patent. Pay 42 Ahn in confidential fines, or serve as an uncompensated cleaner on the next departure.”',
     choices: [
       {
@@ -741,7 +785,7 @@ export const CONSEQUENCE_EVENTS = [
     id: 'csq_ncorp_heretic_hunt',
     major: true,
     isCausalCallback: true,
-    vi: '[Đứa trẻ mang mắt nhân tạo trở lại] Ba Inquisitor của N Corp dồn bạn vào hẻm cụt, búa và đinh sáng loáng trong đêm. Khi mũi đinh đầu tiên sắp đóng vào vai bạn, một bóng người từ mái nhà lao xuống cùng thanh cưa xích Workshop khổng lồ—đó là đứa trẻ mồ côi bạn từng cắt dây cứu năm nào, nay đã là Fixer Grade 3 với đôi mắt và cánh tay mạ crôm sáng rực!\n"Lần này, đến lượt tôi nhổ đinh cho anh/chị!"',
+    vi: "[Đứa trẻ trở lại] Inquisitor N Corp dồn bạn vào hẻm. Đứa trẻ bạn từng cứu nhảy xuống giữa hai bên, giờ là Fixer mang mắt và tay máy. Người ấy nâng cưa xích: \"Lần này để tôi nhổ đinh cho bạn.\"",
     en: '[The child with the prosthetic eye returns] Three N Corp Inquisitors backed you into a dead end, hammers and nails gleaming in the dark. As the first nail neared your shoulder, a figure dropped from the rooftops with a massive Workshop chainsaw blade—the orphan you cut loose years ago, now a Grade 3 Fixer with gleaming chrome eyes and arms!\n“This time, it’s my turn to pull the nails for you!”',
     choices: [
       {
@@ -760,7 +804,7 @@ export const CONSEQUENCE_EVENTS = [
     id: 'csq_bloodfiend_banquet_call',
     major: true,
     isCausalCallback: true,
-    vi: '[Bữa tiệc của Bloodfiend] Một phong thư sáp đỏ đặt trên gối bạn lúc nửa đêm. Elder Bloodfiend từng cho bạn uống máu năm ấy triệu tập bạn đến một hầm rượu cổ dưới District 23.\n"Cơn khát của ngươi đã chín muồi. Đêm nay, ngươi phải dâng lên bàn tiệc một người sống, hoặc chính máu của ngươi sẽ lấp đầy chiếc ly này."',
+    vi: "[Lời mời Bloodfiend] Lá thư sáp đỏ của Elder Bloodfiend nằm trên gối bạn. Đêm nay, hắn đòi bạn mang một người sống đến hầm rượu District 23. Nếu không, chiếc ly trên bàn tiệc sẽ nhận máu bạn.",
     en: '[The Bloodfiend’s Banquet] A red wax envelope lay on your pillow at midnight. The Elder Bloodfiend who fed you her blood summoned you to an ancient cellar in District 23.\n“Your thirst has ripened. Tonight, you must present a living soul to the table, or your own blood will fill this chalice.”',
     choices: [
       {
@@ -787,7 +831,7 @@ export const CONSEQUENCE_EVENTS = [
     id: 'csq_blade_lineage_duel',
     major: true,
     isCausalCallback: true,
-    vi: '[To Claim Their Bones: Trả lại thanh kiếm] Trên cây cầu gỗ ngập nước mưa, Kim—Sasu của Blade Lineage với chiếc nón lá và áo tơi rách—đứng chắn đường bạn. Thanh katana của ông hạ xuống ngang ngực.\n"Ngươi là người đã nhận thịt và bẻ xương đệ tử ta năm ấy. Rút kiếm ra. Hãy cho ta thấy xương của ngươi có xứng đáng đứng trong mưa."',
+    vi: "[Kiếm dưới mưa] Bamboo-hatted Kim chặn bạn trên cầu. Ông nhớ lần bạn đánh bại đệ tử mình. \"Rút kiếm. Ta muốn xem ngươi đã học được gì từ trận ấy.\" Nước mưa chảy dọc sống đao.",
     en: '[To Claim Their Bones: Returning the Blade] On a rain-soaked bridge, Kim—the Sasu of the Blade Lineage with his straw hat and tattered bamboo coat—stood across your path. His katana leveled at your chest.\n“You are the one who yielded flesh and claimed my disciple’s bones that year. Draw your sword. Show me if your bones are worthy of standing in this rain.”',
     choices: [
       {
@@ -818,7 +862,7 @@ export const CONSEQUENCE_EVENTS = [
     id: 'csq_taboo_workshop_raid',
     major: true,
     isCausalCallback: true,
-    vi: '[Tres và Thợ săn Taboo] Ba Workshop Sweeper của Tres Association phong tỏa xưởng của bạn cùng một Beholder của B Corp. Khẩu súng bắn xuyên tường bạn lén chế tạo năm ấy vừa được dùng để ám sát một Giám đốc Wing.\n"Giao nộp toàn bộ bản vẽ và chịu 40 Ahn tiền phạt, hoặc xưởng này sẽ thành đống tro cùng với ngươi."',
+    vi: "[Tres phong tỏa xưởng] Tres Association đến cùng một Beholder. Khẩu súng xuyên tường bạn từng chế tạo đã xuất hiện trong vụ ám sát Giám đốc Wing. Họ đòi bản vẽ, tiền phạt và câu trả lời ngay tại cửa.",
     en: '[Tres and the Taboo Hunters] Three Tres Association Workshop Sweepers sealed off your workshop alongside a B Corp Beholder. The wall-piercing firearm you secretly crafted years ago was just used to assassinate a Wing Director.\n“Surrender all schematics and pay a 40 Ahn penalty, or this workshop burns to ash with you inside.”',
     choices: [
       {
@@ -843,7 +887,7 @@ export const CONSEQUENCE_EVENTS = [
     id: 'csq_thumb_capo_trial',
     major: true,
     isCausalCallback: true,
-    vi: '[Lệnh của Sottocapo] Hai Unterkapo của The Thumb đứng trước cửa phòng bạn, tay cầm tráp gấm chứa một khẩu súng ngắn mạ vàng và một danh sách mục tiêu.\n"Sottocapo nhớ lòng trung thành của ngươi năm xưa. Hôm nay, hãy đích thân trừ khử một băng nhóm Syndicate dám vi phạm lễ nghi ở District 8. Không được để sót một kẻ nào."',
+    vi: "[Lệnh của Sottocapo] The Thumb đưa bạn khẩu súng mạ vàng và danh sách một băng Syndicate phạm lễ nghi. \"Xử lý toàn bộ. Sottocapo sẽ biết ngươi có làm đúng không.\" Hai Unterkapo đứng đợi bên ngoài.",
     en: '[The Sottocapo’s Mandate] Two Thumb Unterkapos stood at your door, bearing a brocade case with a gilded firearm and a target list.\n“The Sottocapo remembers your loyalty that year. Today, you personally purge a syndicate crew that dared violate etiquette in District 8. Leave none breathing.”',
     choices: [
       {
@@ -917,7 +961,7 @@ export const CONSEQUENCE_EVENTS = [
     major: true,
     weight: 55,
     forbids: ['child_middle_favor_done'],
-    vi: '[Bóng Lưng Của Đại Ca Middle] Khi bạn bị một đám cướp đường vây đánh hòng cướp đôi giày mới, một người đàn ông mặc áo khoác tím thêu xích sắt bước tới. Chỉ với một cú đấm bạt tai, ông ta đánh văng tên cầm đầu vào thùng rác. Người đàn ông nhìn bạn: "Đứng dậy nhóc. Ở khu này, muốn không bị ăn hiếp thì phải biết đấm trả."',
+    vi: "[Người của Middle] Đám cướp giật giày bạn. Một người áo tím thêu xích bước tới, đánh ngã tên cầm đầu. \"Đứng dậy, nhóc. Ở đây phải biết đấm trả.\" Ông nhìn bạn chờ phản ứng.",
     en: '[Shadow of a Middle Big Brother] When muggers corner you for your shoes, a man in a purple chained coat strolls up. With a single backhand, he sends the ringleader flying into the bin. He glares at you: "Stand up, kid. In this alley, if you don’t hit back, you get eaten."',
     choices: [
       {

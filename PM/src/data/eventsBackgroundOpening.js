@@ -11,7 +11,7 @@ export const BACKGROUND_OPENING_EVENTS = [
     major: true,
     weight: 35,
     need: { flags: ['SmokeWarLineage'] },
-    vi: '[Cơn Ác Mộng Khói Đen Của Cha] Giữa đêm mưa rỉ sét của Backstreets, cha bạn thức giấc trong cơn co giật tím tái, lồng ngực rít lên từng hồi như đường ống dẫn khí bị vỡ vụn. Đôi mắt ông trợn trừng, hoảng loạn cào cấu lên tường tìm kiếm chiếc mặt nạ phòng độc cũ — di vật sống sót từ chiến trường Smoke War ở L Corp cũ. Trong cơn mê sảng, ông hét lên những cái tên của đồng đội đã tan thành tro bụi trong biển khói đen năm nào.',
+    vi: "[Cơn ho của cha] Giữa đêm, cha bạn bật dậy tìm chiếc mặt nạ phòng độc cũ. Ông không nhận ra căn phòng, chỉ gọi tên những đồng đội đã chết trong Smoke War. Bạn đứng cạnh giường; cơn ho vẫn chưa dứt.",
     en: '[The Smoke War Nightmare] In the dead of night, your father woke convulsing, chest wheezing like a shattered exhaust duct. Eyes wild with phantom horrors of the fallen L Corp Smoke War, he clawed at floorboards searching for his dented respirator.',
     choices: [
       {
@@ -46,7 +46,7 @@ export const BACKGROUND_OPENING_EVENTS = [
     major: true,
     weight: 35,
     need: { flags: ['OutskirtsAdaptability'] },
-    vi: '[Bóng Thú Săn Mồi Ngoài Cồn Cát] Bão cát độc nổi lên dữ dội ngoài The Outskirts, thổi bay một góc tấm bạt che trại tạm của bạn. Trong ánh chớp tím rạch ngang bầu trời hoang dã, bóng một sinh vật phi nhân khổng lồ lướt qua cồn cát, móng vuốt cào rách đất đá tạo nên những vệt sáng lân tinh kỳ dị. Mùi máu tươi và thịt sống phảng phất ngay trước kẽ lều rách nát.',
+    vi: "[Bóng ngoài cồn cát] Bão xé rách bạt trại. Qua khe hở, bạn thấy một bóng thú lớn lướt trên cồn cát, để lại những vệt sáng nơi móng chạm đất. Nó dừng ngay ngoài lều.",
     en: '[The Stalker Beyond the Dunes] A venomous gale tore through your Outskirts camp. In violet lightning flashes, the silhouette of a towering non-human horror stalked past, talons carving phosphorescent furrows into the sand.',
     choices: [
       {
@@ -81,7 +81,7 @@ export const BACKGROUND_OPENING_EVENTS = [
     major: true,
     weight: 35,
     need: { flags: ['NestSilverSpoon'] },
-    vi: '[Kỳ Kiểm Tra Chỉ Số Sinh Trắc Nest] Đoàn thanh tra y tế và quản lý nhân sự của Wing bấm chuông căn hộ tiện nghi của gia đình bạn tại Nest. Họ mang theo máy quét đồng tử và kim tiêm vi mạch để đánh giá "chỉ số giá trị tiềm năng" của bạn. Điểm số bài kiểm tra này sẽ quyết định gia đình bạn được gia hạn cư trú hay bị đẩy xuống Backstreets.',
+    vi: "[Bài kiểm tra cư trú] Thanh tra Wing đến Nest với máy quét đồng tử và kim tiêm vi mạch. Điểm của bạn sẽ quyết định gia đình được gia hạn quyền ở lại hay phải xuống Backstreets. Họ đặt phiếu đồng ý trước mặt cha mẹ.",
     en: '[The Nest Biometric Audit] Wing evaluators in spotless coats arrive at your Nest flat with retinal scanners and micro-needles to assess your "Potential Asset Index" determining your citizenship renewal.',
     choices: [
       {
@@ -116,7 +116,7 @@ export const BACKGROUND_OPENING_EVENTS = [
     major: true,
     weight: 35,
     need: { flags: ['WingElite'] },
-    vi: '[Bài Học Thao Túng Đầu Đời] Người cha quyền lực của bạn đứng bên cửa kính sát đất tầng thứ 50, nhìn xuống biển đèn của The City. Bên cạnh ông, một gia nhân phục vụ đang quỳ rạp dưới sàn, run rẩy vì lỡ làm đổ ly rượu vang thượng hạng lên thảm len dệt tay. Cha đưa cho bạn một cây bút ký và hỏi: "Con sẽ định đoạt số phận của kẻ vô dụng này thế nào?"',
+    vi: "[Bài học đầu đời] Gia nhân làm đổ rượu lên thảm và quỳ trước cha bạn. Ông đưa bạn cây bút ký: \"Con sẽ xử lý người này thế nào?\" Người gia nhân vẫn cúi đầu, chờ chữ ký.",
     en: '[The Highborn Lesson] High atop the 50th floor spire, your father stands over a trembling servant who spilled vintage wine onto imported rug. Handing you an executive stylus, he asks: "How do you dispose of broken tools?"',
     choices: [
       {
@@ -186,7 +186,7 @@ export const BACKGROUND_OPENING_EVENTS = [
     major: true,
     weight: 35,
     need: { flags: ['SyndicateBloodline'] },
-    vi: '[Tiếng Đập Cửa Của Capo] Đúng 2 giờ sáng, ba tiếng gõ cửa vang lên khô khốc theo nhịp mã hiệu của Syndicate. Người bước vào là một Capo quyền uy khoác áo măng-tô đen, sau lưng là hai tay súng Soldato sặc mùi thuốc súng. Ánh mắt lạnh băng của ông ta lướt qua bạn như thể đang định giá một tân binh tương lai của tổ chức.',
+    vi: "[Ba tiếng gõ cửa] Lúc hai giờ sáng, Capo đến cùng hai Soldato. Ông ta nhìn quanh phòng rồi nhìn bạn, như đang tính xem bạn làm được việc gì cho Syndicate.",
     en: '[The Capo’s Midnight Knock] At 2 AM sharp, three heavy knocks sound the syndicate code. A trenchcoated Capo enters trailing gunsmoke, his dead eyes auditing you like fresh recruits.',
     choices: [
       {
@@ -221,7 +221,7 @@ export const BACKGROUND_OPENING_EVENTS = [
     major: true,
     weight: 35,
     need: { flags: ['DieciScholastic'] },
-    vi: '[Trang Sách Cấm Trong Tu Viện Dieci] Trong lúc lau chùi bụi bặm ở tầng gác tàng thư của Dieci Association, bạn phát hiện một trang giấy da cổ rơi ra từ cuốn sách bị xích sắt khóa chặt. Những dòng ký tự trên trang giấy dường như tự động sắp xếp lại mỗi khi ánh mắt bạn lướt qua, chứa đựng những định lý toán học bí ẩn về tâm trí và quyền pháp.',
+    vi: "[Trang sách rời] Khi dọn kho sách Dieci, bạn nhặt được trang giấy rơi từ một cuốn bị xích khóa. Các ký tự đổi chỗ mỗi lần bạn đọc lại. Cuốn sách vẫn ở trên giá, nhưng ổ khóa đã mở.",
     en: '[The Torn Dieci Folio] Dusting the high rafters of the Dieci monastery archive, a loose parchment slips from a chained codex. Its arcane geometry rearranges itself as you read, detailing forbidden mental theorems.',
     choices: [
       {
@@ -256,7 +256,7 @@ export const BACKGROUND_OPENING_EVENTS = [
     major: true,
     weight: 35,
     need: { flags: ['GreatLakeHardened'] },
-    vi: '[Tiếng Thở Của Cá Voi Đêm Triều Cường] Đêm triều cường dâng cao tại bến cảng U Corp, mặt nước Great Lake sủi bọt đen đặc quánh. Từ vực sâu hun hút, tiếng gầm vang vọng như tiếng kèn đồng của một con Whale khổng lồ dội lên làm rung chuyển các cột mốc neo đậu. Nước biển đen tràn lên sàn nhà bè, mang theo những bóng hình u uẩn chập chờn.',
+    vi: "[Tiếng dưới mặt hồ] Nước Great Lake tràn lên sàn nhà bè. Từ xa, tiếng Whale vọng tới làm cọc neo rung bần bật. Dưới lớp nước đen, một bóng lớn lướt qua chân bạn.",
     en: '[The Great Lake Whale Breathing] Night tide surges over District 21 docks, churning oily black foam. From fathomless depths, the brass trumpet call of a colossal Whale rattles mooring pilings and washes eerie shadows across your barge floor.',
     choices: [
       {

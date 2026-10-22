@@ -407,8 +407,10 @@ export const EXPANSION_EVENTS = [
           {
             w: 60,
             effects: { wealth: 5, rep: 1, health: -4, network: 2 },
-            resultVi: 'Chợ ven tường đông hơn bạn nhớ và đắt hơn bạn nghĩ. Bạn bán được vài thứ mang theo và ngủ trong một nhà kho, nghe tiếng The City qua lớp tường dày.',
-            resultEn: 'The market along the wall is busier than you remembered and dearer than you thought. You sell what you carried and sleep in a storehouse, hearing The City through the thick wall.'
+            resultVi: 'Ở chợ ven tường, bạn bán số phế liệu đủ để trả chỗ trên một xe hàng. Người đánh xe khai thêm tên bạn vào sổ phụ rồi đưa cả xe qua cổng kiểm. Bạn xuống xe ở Backstreets của District T; đêm ấy, bức tường đã ở sau lưng.',
+            resultEn: 'At the wall market you sell enough scrap to pay for a place on a freight cart. The driver adds your name to his manifest and takes the cart through inspection. You climb down in District T’s Backstreets. That night, the wall is behind you.',
+            setRegion: 'T',
+            flagsAdd: ['EnteredCity']
           },
           {
             w: 40,

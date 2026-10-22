@@ -1,3 +1,5 @@
+import { hasScarTag } from './scarModel.js';
+
 // ============================================================================
 // DISCO PSYCHE ENGINE: Project Moon x Disco Elysium Narrative Intelligence
 // Generates internal psyche voice interjections, dynamic skill checks (Red/White),
@@ -59,7 +61,6 @@ export function getPsycheInterjection(char, event, lang = 'vi') {
   if (!char || !event) return null;
 
   const eventText = `${event.vi || ''} ${event.en || ''}`.toLowerCase();
-  const scars = char.scars || [];
   const flags = char.flags || [];
   const sanity = char.stats?.sanity ?? 50;
   const health = char.stats?.health ?? 50;
@@ -76,7 +77,7 @@ export function getPsycheInterjection(char, event, lang = 'vi') {
   }
 
   // 2. Ayin's Stoic Volition (Holding onto humanity)
-  if (event.id.includes('crossroad_18') || sanity >= 55 && (event.major || scars.length >= 2)) {
+  if (event.id.includes('crossroad_18') || sanity >= 55 && (event.major || hasScarTag(char, 'injury') || hasScarTag(char, 'trauma'))) {
     return {
       faculty: PSYCHE_FACULTIES.VOLITION,
       textVi: 'Một giọng nói lạnh và trầm vang lên từ lồng ngực: "Đứng vững. Đau thì nghiến răng lại. Máu chảy hay sẹo rạch đều là chứng tích bạn vẫn là một con người. Một khi buông tay, bạn sẽ không bao giờ tìm lại được hình dáng của chính mình."',
@@ -151,10 +152,10 @@ export function evaluateDiscoChoiceCheck(choice, char) {
     modifiers.push({ labelVi: '+14% Thức Tỉnh Shin & Bản Ngã', labelEn: '+14% Shin / E.G.O Mastery', pos: true });
   }
 
-  // 2. Battle Scars & Calamity Experience
-  if (char.scars?.some(s => s.includes('Star of the City') || s.includes('Calamity') || s.includes('Vết sẹo'))) {
-    basePct += 10;
-    modifiers.push({ labelVi: '+10% Tôi Luyện Từ Vết Sẹo', labelEn: '+10% Calamity Scar Hardening', pos: true });
+  // 2. Survival experience
+  if (hasScarTag(char, 'survivor')) {
+    basePct += 6;
+    modifiers.push({ labelVi: '+6% Bản năng sống sót', labelEn: '+6% Survival Instinct', pos: true });
   }
 
   // 3. High Sanity / Mental Fortitude

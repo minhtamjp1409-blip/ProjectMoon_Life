@@ -10,6 +10,7 @@ import { SEASONS, getNextCareerMilestone } from '../../../engine/gameEngine';
 import { audioEngine } from '../../../engine/audioEngine';
 import { gameFeel } from '../../../engine/gameFeel';
 import { useT } from '../../../i18n';
+import { getScarProfile, MAX_ACTIVE_SCARS } from '../../../engine/scarModel';
 
 const JOB_LABELS = {
   Child: { vi: 'Trẻ em', en: 'Child' },
@@ -394,13 +395,17 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeT
 
       {showRelations && (char.scars.length > 0 || char.scarHistory?.length > 0) && (
         <section>
-          <h3 className="section-title">{t('Di chứng còn mang', 'Lasting scars')} <small>{t('Tối đa 4 di chứng tác động: mỗi sẹo giảm năng lực làm ủy thác và giữ dư âm cộng hưởng.', 'Up to 4 active scars: each hinders contracts and sustains resonance.')}</small></h3>
-          <div className="chips">
-            {char.scars.slice(-4).map((s, i) => (
-              <span className="chip" key={`${s}_${i}`}>
-                {s}
-              </span>
-            ))}
+          <h3 className="section-title">{t('Dấu tích còn mang', 'Active marks')} <small>{t(`Tối đa ${MAX_ACTIVE_SCARS} dấu tích có tác động. Dấu cũ được giữ trong tiểu sử.`, `Up to ${MAX_ACTIVE_SCARS} active marks. Older marks remain in your history.`)}</small></h3>
+          <div className="scar-list">
+            {char.scars.map((s, i) => {
+              const profile = getScarProfile(s);
+              if (!profile) return null;
+              return <article className="scar-card" key={`${s}_${i}`}>
+                <div className="scar-card-heading"><strong>{s}</strong><span>{t(profile.labelVi, profile.labelEn)}</span></div>
+                <p className="scar-boon">+ {t(profile.boonVi, profile.boonEn)}</p>
+                <p className="scar-cost">− {t(profile.costVi, profile.costEn)}</p>
+              </article>;
+            })}
           </div>
           {(char.scarHistory?.length || 0) > 0 && <details><summary>{t(`${char.scarHistory.length} dấu tích cũ`, `${char.scarHistory.length} older marks`)}</summary><div className="chips">{char.scarHistory.map((scar, index) => <span className="chip" key={`${scar}_${index}`}>{scar}</span>)}</div></details>}
         </section>

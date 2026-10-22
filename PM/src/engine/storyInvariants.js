@@ -87,7 +87,7 @@ const stripTitle = (t) => String(t || '').replace(/^\s*\[[^\]]{2,80}\]\s*/, '');
 export function checkScenes(char, scenes, { remembers = () => false } = {}) {
   const out = [];
   const npcs = char.npcs || {};
-  const scars = (char.scars || []).join(' ');
+  const scars = [...(char.scars || []), ...(char.scarHistory || [])].join(' ');
   const dead = Object.entries(npcs).filter(([, n]) => n && isDead(n) && n.nameVi && n.nameVi.length >= 3);
 
   for (const s of scenes) {

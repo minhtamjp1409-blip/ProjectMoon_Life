@@ -1410,6 +1410,14 @@ p {
   font-size: 12px;
 }
 
+.scar-list { display: grid; gap: 8px; }
+.scar-card { padding: 10px 12px; border: 1px solid var(--border); border-radius: 6px; background: var(--ground); }
+.scar-card-heading { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 12px; color: var(--text); font-size: 12px; }
+.scar-card-heading span { color: var(--muted); font-size: 11px; }
+.scar-card p { margin: 5px 0 0; font-size: 11px; line-height: 1.45; }
+.scar-boon { color: var(--good); }
+.scar-cost { color: var(--bad); }
+
 /* Stage container & Animated pure CSS scenes */
 .stage {
   position: relative;

@@ -42,6 +42,19 @@ public sealed class DirectorEngineService
     private const int ColorMerit = 300;
     private const int ColorRep = 95;
 
+    private static double FixerContractOfferChance(CharacterSnapshotDto c)
+    {
+        var step = FixerThresholds.FirstOrDefault(t => t.Grade == c.FixerGrade - 1);
+        int repReq = step.Grade > 0 ? step.Rep : c.FixerGrade == 1 && !(c.Flags?.Contains("ColorFixer") ?? false) ? ColorRep : 0;
+        int meritReq = step.Grade > 0 ? step.Merit : c.FixerGrade == 1 && !(c.Flags?.Contains("ColorFixer") ?? false) ? ColorMerit : 0;
+        if (repReq == 0) return 0.42;
+        int repGap = Math.Max(0, repReq - c.Rep);
+        int meritGap = Math.Max(0, meritReq - c.Merit);
+        double repChance = repGap > 0 ? 0.54 + 0.18 * Math.Min(1, repGap / Math.Max(10, repReq * 0.25)) : 0.42;
+        double meritChance = meritGap > 0 ? 0.50 + 0.10 * Math.Min(1, meritGap / Math.Max(15, meritReq * 0.25)) : 0.42;
+        return Math.Max(repChance, meritChance);
+    }
+
     private static readonly FrozenDictionary<string, string[]> FingerLadders =
         new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase)
         {
@@ -607,7 +620,7 @@ public sealed class DirectorEngineService
         }
 
         // 3. Fixer Tactical Contract
-        if (c.Job.Equals("Fixer", StringComparison.OrdinalIgnoreCase) && c.Age >= 19 && random.NextDouble() < 0.42 && !scheduledKey.Any(k => k.Kind == "contract"))
+        if (c.Job.Equals("Fixer", StringComparison.OrdinalIgnoreCase) && c.Age >= 19 && random.NextDouble() < FixerContractOfferChance(c) && !scheduledKey.Any(k => k.Kind == "contract"))
         {
             scheduledKey.Add(new PlanMomentDto(
                 T: 0,

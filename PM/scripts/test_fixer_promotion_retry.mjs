@@ -1,10 +1,11 @@
 import assert from 'node:assert/strict';
-import { ALL_STORY_EVENTS, createNewCharacter, resolveEventChoice } from '../src/engine/gameEngine.js';
-import { FIXER_LADDER, fixerPromotionOfferChance, fixerPromotionSuccessChance, fixerPromotionFailureEffects, getNextFixerPromotion } from '../src/engine/careerPipeline.js';
+import { ALL_STORY_EVENTS, createNewCharacter, createRNG, resolveEventChoice } from '../src/engine/gameEngine.js';
+import { FIXER_LADDER, fixerContractOfferChance, fixerPromotionOfferChance, fixerPromotionSuccessChance, fixerPromotionFailureEffects, getNextFixerPromotion } from '../src/engine/careerPipeline.js';
 import { driftOf } from '../src/engine/economyModel.js';
 import { isEventEligible, selectEventWithWeaverAI } from '../src/engine/weaverAI.js';
 import { CONSEQUENCE_EVENTS } from '../src/data/eventsChildhood.js';
-import { endYear, planYear, runPlanItem } from '../src/engine/yearPlanner.js';
+import { endYear, planYear, runPlanItem, syncPlanWithBackend } from '../src/engine/yearPlanner.js';
+import { cityArchiveAPI } from '../src/services/api/cityArchiveAPI.js';
 
 const fixer = createNewCharacter({ seed: 'fixer-exam-retry', startAge: 45 });
 fixer.job = 'Fixer';
@@ -24,6 +25,9 @@ assert.ok(fixerPromotionSuccessChance(fixer, 2) < fixerPromotionSuccessChance({ 
 const surplus = { ...fixer, merit: 180, stats: { ...fixer.stats, rep: 96 } };
 assert.ok(fixerPromotionOfferChance(surplus) > fixerPromotionOfferChance(fixer));
 assert.ok(fixerPromotionSuccessChance(surplus, 2) > fixerPromotionSuccessChance(fixer, 2));
+assert.equal(fixerContractOfferChance(fixer), 0.42);
+assert.ok(fixerContractOfferChance({ ...fixer, stats: { ...fixer.stats, rep: 81 } }) > 0.54);
+assert.ok(fixerContractOfferChance({ ...fixer, stats: { ...fixer.stats, rep: 50 } }) <= 0.72);
 assert.ok(Math.abs(fixerPromotionFailureEffects(1).health) > Math.abs(fixerPromotionFailureEffects(8).health));
 assert.ok(Math.abs(fixerPromotionFailureEffects(1).wealth) > Math.abs(fixerPromotionFailureEffects(8).wealth));
 
@@ -87,6 +91,66 @@ for (const step of FIXER_LADDER) {
   const variants = ALL_STORY_EVENTS.filter((entry) => entry.id.startsWith(`fixer_promo_g${step.grade}_`));
   assert.equal(variants.length, 3);
   assert.ok(variants.every((entry) => entry.age[1] === 140));
+}
+
+const offers = { ready: { contract: 0, office: 0 }, short: { contract: 0, office: 0 } };
+for (let i = 0; i < 400; i++) {
+  for (const [state, rep] of [['ready', 52], ['short', 40]]) {
+    const candidate = createNewCharacter({ seed: `fixer-work-${i}`, startAge: 35 });
+    candidate.job = 'Fixer';
+    candidate.fixerGrade = 5;
+    candidate.merit = 78;
+    candidate.stats.rep = rep;
+    candidate.weaver.pendingThreads = [];
+    planYear(candidate, createRNG(`work-plan-${i}`));
+    offers[state].contract += Number(candidate.plan.some((item) => item.kind === 'contract'));
+    offers[state].office += Number(candidate.plan.some((item) => item.id === 'm_fx_request_choice'));
+  }
+}
+assert.ok(offers.ready.contract > 140 && offers.ready.contract < 210);
+assert.ok(offers.short.contract > offers.ready.contract + 75);
+assert.ok(offers.short.office > offers.ready.office * 2);
+
+const serverMoments = ['Spring', 'Summer', 'Autumn', 'Winter'].map((season, seasonIdx) => ({
+  kind: 'daily', t: 0.12 + seasonIdx * 0.24, season, seasonIdx
+}));
+const originalPlanYear = cityArchiveAPI.planYear;
+cityArchiveAPI.planYear = async () => ({ moments: serverMoments });
+try {
+  for (const expected of [true, false]) {
+    let candidate;
+    for (let i = 0; i < 100; i++) {
+      candidate = createNewCharacter({ seed: `fixer-sync-${i}`, startAge: 35 });
+      candidate.job = 'Fixer';
+      candidate.fixerGrade = 5;
+      candidate.merit = 78;
+      candidate.stats.rep = 40;
+      planYear(candidate, createRNG(`sync-plan-${i}`));
+      if (candidate.plan.some((item) => item.kind === 'contract') === expected) break;
+    }
+    assert.equal(candidate.plan.some((item) => item.kind === 'contract'), expected);
+    cityArchiveAPI.planYear = async () => ({ moments: expected ? serverMoments : [
+      { ...serverMoments[0], kind: 'contract' }, ...serverMoments.slice(1)
+    ] });
+    await syncPlanWithBackend(candidate, createRNG(`sync-hydrate-${expected}`));
+    assert.equal(candidate.plan.some((item) => item.kind === 'contract'), expected);
+  }
+  let officeCandidate;
+  for (let i = 0; i < 100; i++) {
+    officeCandidate = createNewCharacter({ seed: `office-sync-${i}`, startAge: 35 });
+    officeCandidate.job = 'Fixer';
+    officeCandidate.fixerGrade = 5;
+    officeCandidate.merit = 78;
+    officeCandidate.stats.rep = 40;
+    planYear(officeCandidate, createRNG(`office-plan-${i}`));
+    if (officeCandidate.plan.some((item) => item.id === 'm_fx_request_choice')) break;
+  }
+  assert.ok(officeCandidate.plan.some((item) => item.id === 'm_fx_request_choice'));
+  cityArchiveAPI.planYear = async () => ({ moments: serverMoments });
+  await syncPlanWithBackend(officeCandidate, createRNG('office-hydrate'));
+  assert.ok(officeCandidate.plan.some((item) => item.id === 'm_fx_request_choice'));
+} finally {
+  cityArchiveAPI.planYear = originalPlanYear;
 }
 
 console.log('Fixer promotion regressions: score-weighted offers, safe threshold drift, failed/deferred retries, rank-scaled penalties, cooldown and age gates passed.');

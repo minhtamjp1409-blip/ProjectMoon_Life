@@ -762,7 +762,7 @@ export const FIXER_PATH_EVENTS = [
     weight: 75,
     need: { jobs: ['Fixer'], grade: [6, 6] },
     forbids: ['Distorted', 'promo_g5_done'],
-    vi: '[Khai Quật Tàng Thư Cổ Dieci Association · Grade 5] Hiệp hội Dieci tổ chức đoàn khảo sát tiến vào tàn tích một thư viện ngầm bị chôn vùi từ Smoke War. Những cuốn sách phủ bụi chứa đầy tri thức Singularity đang bị lũ quái dị săn đuổi. Dieci tuyển chọn bạn làm cận vệ tiên phong để nhận chứng nhận Grade 5.',
+    vi: "[Kho sách Dieci] Dieci tuyển bạn bảo vệ đoàn vào thư viện ngầm từ thời Smoke War. Sách về Singularity vẫn nằm trong đó, cùng những thứ săn người giữa các kệ. Hoàn thành Request này, bạn được xét Grade 5.",
     en: '[Dieci Subterranean Archives Expedition · Grade 5] Dieci Association organizes an expedition into a buried library from the Smoke War. Anomaly scavengers stalk the ruins. Dieci enlists you as vanguard for Grade 5 certification.',
     choices: [
       {
@@ -1002,7 +1002,7 @@ export const FIXER_PATH_EVENTS = [
     weight: 60,
     need: { jobs: ['Fixer'], grade: [3, 3] },
     forbids: ['Distorted', 'promo_g2_done'],
-    vi: '[Tác Chiến Phong Tỏa Hậu Biến Cố Black Silence · Grade 2] Một tàn tích sào huyệt Syndicate vừa bị cơn thịnh nộ của Black Silence san phẳng thành bình địa. Tàn dư quái vật và các tay súng liều chết đang cướp bóc vũ khí tối mật còn sót lại. Hana Section 1 cử bạn tới phong tỏa khu vực và thanh trừng toàn bộ.',
+    vi: "[Phong tỏa tàn tích] Black Silence đã phá một sào huyệt Syndicate. Kẻ sống sót đang cướp vũ khí trong đống đổ nát. Hana Section 1 giao bạn giữ vòng phong tỏa và đưa những món đó ra ngoài.",
     en: '[Black Silence Aftermath Containment · Grade 2] A syndicate fortress was pulverized by the Black Silence’s grief rampage. Anomaly scavengers and rogue gunmen loot classified armaments. Hana Section 1 assigns you to quarantine and cleanse the sector.',
     choices: [
       {
@@ -1164,7 +1164,7 @@ export const FIXER_PATH_EVENTS = [
     weight: 48,
     need: { jobs: ['Fixer'] },
     forbids: ['Distorted'],
-    vi: '[Quyết Đấu Danh Dự Cinq Association · Hiệp Hội Đấu Kiếm Số 5] Hai gia tộc thương nhân quý tộc Nest tranh chấp một hợp đồng triệu Ahn và thuê Cinq Association phân xử bằng một trận giác đấu danh dự. Vị kiếm sĩ Cinq Section 4 đề nghị bạn bước lên võ đài làm Đấu Sĩ Đại Diện hoặc hỗ trợ giám định quy tắc thi đấu.',
+    vi: "[Trận đấu của Cinq] Hai gia tộc Nest thuê Cinq phân xử tranh chấp hợp đồng bằng đấu kiếm. Kiếm sĩ Section 4 mời bạn làm đại diện trên võ đài hoặc đứng ngoài giám định luật đấu.",
     en: '[Cinq Association Duel of Honor · The Fifth Association] Two Nest merchant dynasties dispute a million-Ahn contract, commissioning Cinq Association to arbitrate via a duel of honor. A Section 4 duelist invites you to step onto the dueling strip as a Champion or serve as adjudicating Second.',
     choices: [
       {
@@ -1304,7 +1304,7 @@ export const FIXER_PATH_EVENTS = [
     weight: 55,
     need: { jobs: ['Fixer'] },
     forbids: ['Distorted', 'OwnFixerOffice'],
-    vi: '[Khai Mở Văn Phòng Fixer Độc Lập] Sau nhiều năm tích lũy danh tiếng và tiền bạc, bạn đứng trước cơ hội treo tấm biển hiệu Văn Phòng Fixer của riêng mình tại một góc phố sầm uất. Có văn phòng riêng đồng nghĩa với việc trực tiếp nhận hợp đồng lớn và thu nhận Fixer cấp dưới, nhưng cũng phải tự chịu trách nhiệm trước Hana Association.',
+    vi: "[Tấm biển Office] Bạn có đủ tiền và tiếng tăm để mở Office riêng. Hợp đồng lớn hơn sẽ đến trực tiếp, cùng trách nhiệm với Fixer bạn tuyển và hồ sơ trước Hana. Tấm biển mới còn nằm dưới chân bàn.",
     en: '[Chartering an Independent Fixer Office] Amassing hard-won reputation and Ahn, you stand ready to hang your own brass office plaque upon a bustling district boulevard. An independent Office unlocks lucrative direct contracts and apprentices, but answers directly to Hana scrutiny.',
     choices: [
       {

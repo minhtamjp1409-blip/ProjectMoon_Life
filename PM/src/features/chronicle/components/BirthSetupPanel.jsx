@@ -263,7 +263,7 @@ export const BirthSetupPanel = () => {
   // The dice button picks a birthplace and keeps it selected
   const handleManualSpin = () => {
     if (isWheelSpinning) return;
-    const chosen = rollBirthRegion(Math.random);
+    const chosen = rollBirthRegion(Math.random, null, selectedFamily);
     spinTo(chosen).then(() => setRegion(chosen.id));
   };
 
@@ -272,7 +272,7 @@ export const BirthSetupPanel = () => {
     if (spinning || isWheelSpinning) return;
     const fixed = selectedRegion && selectedRegion !== 'RANDOM' ? REGIONS.find((r) => r.id === selectedRegion) : null;
     const seed = customSeed?.trim();
-    const chosen = fixed || rollBirthRegion(seed ? createRNG(seed) : Math.random, inherit ? pendingLegacy : null);
+    const chosen = fixed || rollBirthRegion(seed ? createRNG(seed) : Math.random, inherit ? pendingLegacy : null, selectedFamily);
     setTargetLaunchParams({ inherit, age, region: chosen, regionId: fixed ? null : chosen.id });
     spinTo(chosen, fixed ? { turns: 3, duration: 1900 } : {}).then(() => {
       setTimeout(() => setLoadingActive(true), 350);
@@ -285,7 +285,18 @@ export const BirthSetupPanel = () => {
     const age = targetLaunchParams?.age ?? 0;
     startLife(inherit, age, targetLaunchParams?.regionId || null);
   };
-  const setRegion = (id) => setConfigField('selectedRegion', id);
+  const setRegion = (id) => {
+    setConfigField('selectedRegion', id);
+    if (id === 'OUTSKIRTS' && selectedFamily !== 'RANDOM' && selectedFamily !== 'outskirts_nomad') {
+      setConfigField('selectedFamily', 'RANDOM');
+    } else if (id !== 'OUTSKIRTS' && id !== 'RANDOM' && selectedFamily === 'outskirts_nomad') {
+      setConfigField('selectedFamily', 'RANDOM');
+    }
+  };
+  const setFamily = (id) => {
+    setConfigField('selectedFamily', id);
+    if (id === 'outskirts_nomad') setConfigField('selectedRegion', 'OUTSKIRTS');
+  };
   const region = REGIONS.find((r) => r.id === selectedRegion);
   const districts = REGIONS.filter((r) =>
     `${r.nameEn} ${r.aliasEn} ${r.aliasVi}`.toLowerCase().includes(search.toLowerCase().trim())
@@ -463,22 +474,27 @@ export const BirthSetupPanel = () => {
               </select>
             </div>
             <div className="field">
-              <label htmlFor="birth-family">{t('Xuất thân & Gia cảnh', 'City Background')}</label>
+              <label htmlFor="birth-family">{t('Xuất thân & Gia cảnh', 'Family background')}</label>
               <select
                 id="birth-family"
                 className="select"
                 value={selectedFamily}
-                onChange={(e) => setConfigField('selectedFamily', e.target.value)}
+                onChange={(e) => setFamily(e.target.value)}
               >
                 <option value="RANDOM">
                   {t('🎲 Ngẫu nhiên theo số phận (Khuyên dùng)', '🎲 Random Destiny (Recommended)')}
                 </option>
-                {FAMILIES.map((f) => (
+                {FAMILIES.filter((f) => selectedRegion === 'RANDOM' || (selectedRegion === 'OUTSKIRTS') === (f.tier === 'out')).map((f) => (
                   <option key={f.id} value={f.id}>
                     {lang === 'en' ? f.nameEn : f.nameVi} · {f.tier === 'nest' ? 'Nest' : f.tier === 'out' ? 'Outskirts' : 'Backstreets'}
                   </option>
                 ))}
               </select>
+              <p className="field-hint">
+                {selectedRegion === 'OUTSKIRTS'
+                  ? t('Sinh ngoài tường. Đến tuổi trưởng thành, bạn sẽ chọn đường vào The City.', 'Born beyond the wall. At adulthood, you will choose a route into the City.')
+                  : t('Gia cảnh phải thuộc khu vực sinh ra; Outskirts nằm ngoài 26 District.', 'Your background must match your birthplace. The Outskirts lie beyond the 26 Districts.')}
+              </p>
               {selectedFamily !== 'RANDOM' && (() => {
                 const curFam = FAMILIES.find((f) => f.id === selectedFamily);
                 if (!curFam) return null;

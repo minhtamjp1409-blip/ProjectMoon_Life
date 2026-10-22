@@ -12,7 +12,7 @@ export const DISTORTION_PATH_EVENTS = [
     weight: 95,
     requires: ['Distorted'],
     forbids: ['carmen_dialogue_done'],
-    vi: '[Vầng Thái Dương của Carmen] Bạn không còn cảm thấy cái lạnh thấu xương của Backstreets hay mùi khói nồng nặc của The City nữa. Bạn đang đứng giữa một biển hoa trắng ngút ngàn, dưới vầng thái dương ấm áp. Người phụ nữ tóc nâu Carmen khẽ chạm vào má bạn: "Hãy để mọi cảm xúc bùng cháy đi, đừng kìm nén nữa..."',
+    vi: "[Carmen gọi] Mùi khói Backstreets biến mất. Bạn đứng giữa hoa trắng, nghe Carmen nói: \"Đừng kìm cảm xúc nữa.\" Khi cúi nhìn, chân bạn vẫn chạm nền đường cũ.",
     en: '[Carmen’s Radiant Sun] You no longer feel the biting chill of the Backstreets or the stench of urban smog. You stand amidst an endless field of white blossoms beneath a warm sun. Carmen gently touches your cheek: "Let your emotions burn freely, do not hold them back..."',
     choices: [
       {
@@ -139,7 +139,7 @@ export const DISTORTION_PATH_EVENTS = [
     weight: 75,
     requires: ['Distorted', 'DistortionNightmare'],
     forbids: ['distort_claw_clash_done'],
-    vi: '[Móng Vuốt Phán Quyết Của The Head · Serum W Enforcer] Một vết rách không gian màu lục thẫm xé toạc bầu trời đêm: Một Claw (Móng Vuốt của A Corp) giáng xuống lãnh địa của bạn. Với ba ống tiêm Serum K, R, và W lấp lánh trên găng tay móng vuốt kim loại, sinh vật chấp pháp tối thượng này cất giọng trầm đục: "Sinh vật biến dị, ngươi đã làm nhiễu loạn trật tự The City. Lệnh thanh tẩy bắt đầu."',
+    vi: "[The Claw đến] Một Claw của C Corp đáp xuống gần bạn, ba ống Serum trên găng tay đã sáng. \"Distortion. Lệnh xử lý bắt đầu.\" Con đường sau lưng trống, nhưng hắn đứng chắn lối về.",
     en: '[Claw of The Head · Serum W Enforcer] An emerald spatial tear cleaves the night sky: A Claw of A Corp touches down within your domain. Wielding tri-colored injectors of Serum K, R, and W upon colossal talons, the apex enforcer rumbles: "Aberrant creature, you have disrupted City balance. Liquidation commences."',
     choices: [
       {
@@ -170,7 +170,7 @@ export const DISTORTION_PATH_EVENTS = [
     weight: 65,
     need: { jobs: ['Distortion'], npc: 'friend' },
     forbids: ['distort_companion_done'],
-    vi: '[Cuộc Gặp Gỡ Đẫm Lệ Dưới Lốt Quái Vật] Trong một con hẻm hoang tàn, một bóng người quen thuộc chặn trước mặt bạn: Đó là người bạn cũ từ thuở nhỏ. Nhìn thấy cơ thể quái dị đầy gai nhọn và đôi mắt biến đổi của bạn, người ấy run rẩy giơ thanh kiếm cùn lên, nước mắt lưng tròng: "Có phải bạn không? Tại sao bạn lại trở thành thứ quái vật gớm ghiếc này?"',
+    vi: "[Người quen cũ] Bạn thuở nhỏ chặn đầu hẻm, tay cầm thanh kiếm cùn. Người ấy nhìn những chiếc gai trên người bạn, hỏi: \"Có thật là cậu không?\" Lưỡi kiếm run, nhưng chưa hạ xuống.",
     en: '[Tearful Encounter in Aberrant Flesh] In a derelict alley, a familiar silhouette blocks your path: Your childhood friend. Beholding your thorned carapace and dilated eyes, they raise a trembling blade, weeping: "Is that really you? Why did you let yourself become this horror?"',
     choices: [
       {
@@ -227,7 +227,7 @@ export const DISTORTION_PATH_EVENTS = [
     weight: 48,
     allowDistorted: true,
     need: { jobs: ['Distortion'] },
-    vi: '[Cộng Hưởng Abnormality Dưới Lòng Đất · Tiếng Vọng Cogito] Sâu dưới lớp nhựa đường của con hẻm, bạn cảm nhận được tần số tâm linh của một Dị Thể (Abnormality) đang say ngủ từ tàn tích của Lobotomy Corporation. Những xúc tu hoặc cơ quan biến dị trên cơ thể bạn rung lên bần bật theo từng nhịp đập của nó.',
+    vi: "[Tiếng vọng dưới đường] Một Abnormality ngủ trong tàn tích Lobotomy Corporation bên dưới con hẻm. Cơ thể biến dạng của bạn rung theo nhịp đập của nó. Nắp cống dưới chân bắt đầu chuyển động.",
     en: '[Subterranean Abnormality Communion · Cogito Resonances] Deep beneath the alley asphalt, you sense the psychic wavelength of a dormant Abnormality from Lobotomy Corporation ruins. Your mutated tendrils and warped carapace vibrate in synchronization with its subterranean heartbeat.',
     choices: [
       {
@@ -339,7 +339,7 @@ export const DISTORTION_PATH_EVENTS = [
     weight: 42,
     allowDistorted: true,
     need: { jobs: ['Distortion'] },
-    vi: '[Con Mắt Giám Sát Của The Head · The Beholder] Một con mắt khổng lồ phát sáng lơ lửng trên tầng mây ô nhiễm phía trên hang ổ của bạn. Một Beholder của A Corp đang ghi nhận xem dạng biến dị của bạn có vượt qua ranh giới "Phi Nhân Loại" (Non-human impurity) để ban bố lệnh cử Claw xuống tiêu diệt hay không.',
+    vi: "[Beholder quan sát] Ánh mắt của Beholder quét qua hang ổ bạn. Dạng biến dị này đã lọt vào hồ sơ của The Head; một lệnh xử lý có thể theo sau. Tia sáng dừng lại ngay trên người bạn.",
     en: '[Gaze of the Head · The Beholder] A titanic luminous eye suspends high in the smog above your lair. A Beholder of A Corp observes, evaluating whether your aberrant form has crossed the threshold of Non-Human Impurity to warrant Claw deployment.',
     choices: [
       {
@@ -367,7 +367,7 @@ export const DISTORTION_PATH_EVENTS = [
     weight: 45,
     allowDistorted: true,
     need: { jobs: ['Distortion'] },
-    vi: '[Lời Thầm Thì Của Carmen · Sự Giải Thoát Thuần Khiết] Giữa tâm bão của sự điên loạn, giọng nói dịu dàng quen thuộc vang lên trong ánh hào quang màu đỏ ấm áp. Carmen xuất hiện trong tâm thức bạn: "Hãy nhìn ngươi xem. Ngươi không còn phải ép mình vừa vặn với cỗ máy vô hồn của The City nữa. Đây mới chính là hình hài chân thật nhất của tình yêu và khao khát trong ngươi."',
+    vi: "[Lời Carmen] Giữa cơn hỗn loạn, Carmen cất tiếng trong đầu bạn: \"Ngươi đã mệt vì phải giữ một hình hài vừa mắt The City. Buông tay đi.\" Giọng nói dịu xuống, chờ câu trả lời.",
     en: '[Carmen’s Final Solace · Unbound Efflorescence] At the eye of the psychic storm, a soothing voice echoes within warm crimson light. Carmen embraces your mind: "Look at you. You no longer break your bones to fit their callous City machine. This is the truest, most beautiful form of your heart’s desire."',
     choices: [
       {

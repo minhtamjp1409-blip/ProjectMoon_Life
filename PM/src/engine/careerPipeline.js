@@ -116,6 +116,19 @@ export function fixerPromotionOfferChance(char, step = getNextFixerPromotion(cha
   return Math.min(0.9, 0.55 + Math.min(0.35, extraRep * 0.01 + extraMerit * 0.003));
 }
 
+export function fixerContractOfferChance(char) {
+  if (char.job !== 'Fixer' || char.flags?.includes('Distorted')) return 0;
+  const step = getNextFixerPromotion(char) || (char.fixerGrade === 1 && !char.flags?.includes('ColorFixer')
+    ? { repReq: COLOR_FIXER_REQ.rep, meritReq: COLOR_FIXER_REQ.merit }
+    : null);
+  if (!step) return 0.42;
+  const repGap = Math.max(0, step.repReq - (char.stats?.rep ?? char.rep ?? 0));
+  const meritGap = Math.max(0, step.meritReq - (char.merit || 0));
+  const repChance = repGap > 0 ? 0.54 + 0.18 * Math.min(1, repGap / Math.max(10, step.repReq * 0.25)) : 0.42;
+  const meritChance = meritGap > 0 ? 0.5 + 0.1 * Math.min(1, meritGap / Math.max(15, step.meritReq * 0.25)) : 0.42;
+  return Math.max(repChance, meritChance);
+}
+
 export function fixerPromotionSuccessChance(char, targetGrade) {
   const step = FIXER_LADDER.find((entry) => entry.grade === targetGrade);
   if (!step) return 0;
@@ -270,6 +283,101 @@ export function getNextWorkshopPromotion(char) {
     currentWealth: curWealth,
     currentResonance: curReso
   };
+}
+
+const FINGER_OPPORTUNITIES = {
+  Thumb: 'm_career_thumb_ledger', Index: 'm_career_index_prescript',
+  Middle: 'm_career_middle_vengeance', Ring: 'm_career_ring_commission',
+  Pinky: 'm_career_pinky_oath'
+};
+
+export function getOtherCareerPromotion(char) {
+  if (char.job === 'Syndicate' || (char.flags?.includes('Distorted') && char.finger)) {
+    const step = getNextFingerPromotion(char);
+    return step && { ...step, route: 'finger' };
+  }
+  if (char.job === 'Wing Employee') {
+    const step = getNextWingPromotion(char);
+    return step && { ...step, route: 'wing' };
+  }
+  if (char.job === 'Workshop Craftsman') {
+    const step = getNextWorkshopPromotion(char);
+    return step && { ...step, route: 'workshop' };
+  }
+  return null;
+}
+
+export function careerTrialForEvent(id) {
+  for (const [finger, ladder] of Object.entries(FINGER_LADDERS)) {
+    const step = ladder.find((entry) => (entry.eventIds || [entry.eventId]).includes(id));
+    if (step) return { route: 'finger', finger, ...step };
+  }
+  const wing = WING_LADDER_PROMOTIONS.find((step) => step.eventId === id);
+  if (wing) return { route: 'wing', ...wing };
+  const workshop = WORKSHOP_LADDER_PROMOTIONS.find((step) => step.eventId === id);
+  return workshop ? { route: 'workshop', ...workshop } : null;
+}
+
+export function careerPromotionOfferChance(char, step = getOtherCareerPromotion(char)) {
+  if (!step?.isEligible) return 0;
+  const retry = careerTrialRetryDue(char, step);
+  const extraMerit = Math.max(0, step.currentMerit - step.meritReq);
+  const extraStanding = step.route === 'finger'
+    ? Math.max(0, step.currentRep - step.repReq)
+    : step.route === 'wing'
+      ? Math.max(0, step.currentNetwork - step.networkReq) + Math.max(0, step.currentWealth - step.wealthReq) * 0.5
+      : Math.max(0, step.currentWealth - step.wealthReq) + Math.max(0, step.currentResonance - step.resoReq) * 0.5;
+  const base = step.route === 'finger' ? 0.56 : step.route === 'wing' ? 0.52 : 0.54;
+  return Math.min(0.86, base + (retry ? 0.16 : 0) + Math.min(0.18, extraMerit * 0.002 + extraStanding * 0.006));
+}
+
+export function careerPromotionSuccessChance(char, step) {
+  const rank = step.rank;
+  const base = { finger: 0.74, wing: 0.77, workshop: 0.79 }[step.route] - (rank - 1) * 0.12;
+  const extraMerit = Math.max(0, (char.merit || 0) - step.meritReq);
+  const standingBonus = step.route === 'finger'
+    ? Math.max(0, char.stats.rep - step.repReq) * 0.002
+    : step.route === 'wing'
+      ? Math.max(0, char.stats.network - step.networkReq) * 0.002 + Math.max(0, char.stats.wealth - step.wealthReq) * 0.001
+      : Math.max(0, char.stats.wealth - step.wealthReq) * 0.0015 + Math.max(0, (char.resonance || 0) - step.resoReq) * 0.003;
+  const readiness = step.route === 'wing' ? (char.stats.sanity - 50) * 0.0015 : (char.stats.health - 50) * 0.0015;
+  return Math.max(0.25, Math.min(0.88, base + Math.min(0.14, extraMerit * 0.001 + standingBonus) + readiness));
+}
+
+export function careerPromotionFailureEffects(step) {
+  const rank = step.rank;
+  if (step.route === 'finger') {
+    const byFinger = {
+      Thumb: { health: -4, rep: -4, heat: 5 },
+      Index: { sanity: -8, merit: -4, heat: 3 },
+      Middle: { health: -10, heat: 6, sanity: -2 },
+      Ring: { sanity: -7, wealth: -4, rep: -2 },
+      Pinky: { health: -7, sanity: -5, merit: -2 }
+    };
+    return Object.fromEntries(Object.entries(byFinger[step.finger] || byFinger.Thumb).map(([key, value]) => [key, value > 0 ? value + rank - 1 : value - (rank - 1) * 2]));
+  }
+  if (step.route === 'wing') return { network: -(4 + rank * 2), wealth: -(2 + rank * 2), merit: -rank * 2, sanity: -rank * 2 };
+  return { wealth: -(3 + rank * 3), health: -(2 + rank * 3), merit: -rank * 2 };
+}
+
+export function careerTrialRetryDue(char, step = getOtherCareerPromotion(char)) {
+  if (!step?.isEligible) return false;
+  const prefix = step.route === 'finger' ? 'Finger' : step.route === 'wing' ? 'Wing' : 'Workshop';
+  return char[`${prefix.toLowerCase()}TrialRetryRank`] === step.rank &&
+    char[`last${prefix}TrialAge`] != null && char.age > char[`last${prefix}TrialAge`];
+}
+
+export function careerOpportunity(char) {
+  const step = getOtherCareerPromotion(char);
+  if (!step || step.isEligible) return null;
+  const gaps = [Math.max(0, step.meritReq - step.currentMerit) / step.meritReq];
+  if (step.route === 'finger') gaps.push(Math.max(0, step.repReq - step.currentRep) / step.repReq);
+  if (step.route === 'wing') gaps.push(Math.max(0, step.wealthReq - step.currentWealth) / step.wealthReq, Math.max(0, step.networkReq - step.currentNetwork) / step.networkReq);
+  if (step.route === 'workshop') gaps.push(Math.max(0, step.wealthReq - step.currentWealth) / step.wealthReq, Math.max(0, step.resoReq - step.currentResonance) / step.resoReq);
+  const shortage = Math.max(...gaps);
+  if (shortage <= 0) return null;
+  const id = step.route === 'finger' ? FINGER_OPPORTUNITIES[step.finger] : step.route === 'wing' ? 'm_career_wing_review' : 'm_career_workshop_proof';
+  return { id, chance: Math.min(0.68, 0.34 + shortage * 0.34), shortage, route: step.route };
 }
 
 /**

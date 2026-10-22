@@ -9,12 +9,19 @@ export const CityLoadingOverlay = ({ active, region, charName, seed, onComplete 
   const [stageIndex, setStageIndex] = useState(0);
   const timerRef = useRef(null);
 
-  const telemetryLines = [
-    t('Khởi tạo hồ sơ sinh mệnh mới tại The City Archive...', 'Initializing new life record in The City Archive...'),
-    t('Đồng bộ tọa độ Singularity & Khu vực trực thuộc...', 'Synchronizing Singularity coordinates & District perimeter...'),
-    t('Hana Association Section 1 cấp phát mã định danh...', 'Hana Association Section 1 issuing identity license...'),
-    t('Ánh nhìn của The Head (Gaze of The Head) đã ghi nhận.', 'The Gaze of The Head acknowledges your inception.')
-  ];
+  const telemetryLines = region?.id === 'OUTSKIRTS'
+    ? [
+        t('Ghi lại một ca sinh ngoài bức tường...', 'Recording a birth beyond the wall...'),
+        t('Không có District nào ghi tên vào sổ cư trú.', 'No District lists this child as a resident.'),
+        t('Đoàn người dựng trại trước khi trời tối.', 'The caravan makes camp before dark.'),
+        t('Ánh đèn The City vẫn ở phía bên kia tường.', 'The City lights remain on the other side of the wall.')
+      ]
+    : [
+        t('Ghi lại một ca sinh trong The City...', 'Recording a birth in the City...'),
+        t('Xác định District và khu cư trú.', 'Identifying District and residential quarter.'),
+        t('Tên mới được ghi vào hồ sơ.', 'A new name enters the record.'),
+        t('Cuộc đời bắt đầu.', 'A life begins.')
+      ];
 
   useEffect(() => {
     if (!active) {

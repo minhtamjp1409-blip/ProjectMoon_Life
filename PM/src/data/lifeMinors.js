@@ -855,7 +855,7 @@ export const LIFE_MINORS = [
       C(
         'Quỳ sụp xuống nói lời xin lỗi',
         'Kneel and offer humble repentance',
-        '{rival} từ từ hạ nòng súng xuống: "Tao không cần những lời xin lỗi rẻ mạt của mày." Nhưng người ấy đã không bóp cò.',
+        '{rival} từ từ hạ nòng súng xuống: "Lời xin lỗi rẻ mạt ấy, giữ lấy." Nhưng người ấy đã không bóp cò.',
         '{rival} slowly lowered the barrel: “I have no use for your cheap repentance.” Yet they did not fire.',
         { sanity: -4, rep: -4 },
         { bond: { rival: 20 }, motif: { mercy: 1 } }
@@ -1198,7 +1198,7 @@ export const LIFE_MINORS = [
       )
     ],
     I('Bạn chần chừ nhường lại cả hai bản hợp đồng cho các đồng nghiệp khác trong văn phòng.', 'You hesitated, letting fellow agents claim both commissions.'),
-    { merit: -2 }
+    { merit: -2, tags: ['contract', 'rep'] }
   ),
 
   M(

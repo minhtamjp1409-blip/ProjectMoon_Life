@@ -116,7 +116,7 @@ export const WORKSHOP_ECONOMY_EVENTS = [
     major: true,
     weight: 55,
     forbids: ['Distorted'],
-    vi: '[Viện Tái Sinh Sinh Học K Corp · Singularity Tears] Giữa khu phố ranh giới rực rỡ đèn thủy tinh, một trạm cấp cứu đặc biệt của K Corp mở cửa phục vụ cư dân và Fixer có đủ khả năng chi trả. Trong các ống trụ thủy tinh, dòng dịch lỏng màu ngọc bích từ Singularity của K Corp xoay tròn mê hoặc, có khả năng nối liền xương thịt đứt lìa trong chớp mắt.',
+    vi: "[Trạm chữa trị K Corp] Trạm K Corp nhận khách có tiền ngay sát ranh Nest. Dịch xanh chạy trong ống thủy tinh; bảng giá ghi cả chi phí nối lại xương thịt. Nhân viên hỏi bạn cần chữa đến mức nào.",
     en: '[K Corp Bio-Regeneration Pavilion · Singularity Tears] At the border boulevard gleaming under crystal lamps, a licensed K Corp emergency station caters to Fixers and citizens with deep pockets. Within cylindrical stasis vats, swirling emerald Singularity fluid promises instantaneous flesh and nerve reconstitution.',
     choices: [
       {
@@ -151,7 +151,7 @@ export const WORKSHOP_ECONOMY_EVENTS = [
     major: true,
     weight: 50,
     forbids: ['Distorted'],
-    vi: '[Buồng Tua Ngược Thời Gian Tế Bào T Corp · District 4] Bạn dừng chân trước chi nhánh dịch vụ phục hồi sinh học sử dụng Singularity Thời Gian của T Corp. Thay vì phẫu thuật dao kéo đau đớn, cỗ máy Chrono-Pod tua ngược đồng hồ sinh học của cơ thể bạn về hai tuần trước — thời điểm trước khi bạn chịu những vết thương chí mạng.',
+    vi: "[Buồng phục hồi T Corp] Chi nhánh T Corp đề nghị tua cơ thể bạn về trước lúc bị thương. Đồng hồ trên buồng chạy ngược; hợp đồng tính phí theo thời gian thu hồi. Nhân viên đưa bút cho bạn.",
     en: '[T Corp Chrono-Restorative Pod · District 4 Tech] You pause before a licensed temporal restoration outpost harnessing T Corp’s Time Singularity. Forgoing scalpels and stitches, the Chrono-Pod rewinds your biological clock by two subjective weeks — restoring tissues to their state before catastrophic trauma.',
     choices: [
       {
@@ -219,7 +219,7 @@ export const WORKSHOP_ECONOMY_EVENTS = [
     major: true,
     weight: 50,
     forbids: ['Distorted'],
-    vi: '[Sảnh Spa Khoáng Nóng & Jazz Club J Corp · District 10] Tiếng kèn saxophone êm dịu hòa cùng tiếng nước khoáng nóng lưu huỳnh róc rách trong một tổ hợp thư giãn xa hoa của J Corp. Nơi đây là thánh địa rửa sạch stress, giảm thiểu nguy cơ Biến dị (Distortion) và làm nguội độ truy nã (Heat) sau các phi vụ đẫm máu.',
+    vi: "[Sảnh nghỉ J Corp] Sau cánh cửa là nước nóng, nhạc jazz và một quầy tiếp tân kín đáo. Dịch vụ hứa giúp bạn nghỉ ngơi, đồng thời sắp xếp lại dấu vết của phi vụ gần đây. Giá niêm yết không rẻ.",
     en: '[J Corp Luxury Jazz & Thermal Spa Lounge · District 10] Silky saxophone melodies blend with bubbling sulfur mineral baths inside J Corp’s opulent relaxation haven. A sanctuary designed to melt away City trauma, suppress Distortion resonance, and cool down faction Heat.',
     choices: [
       {
@@ -288,7 +288,7 @@ export const WORKSHOP_ECONOMY_EVENTS = [
     major: true,
     weight: 45,
     forbids: ['Distorted'],
-    vi: '[Trú Ẩn Bí Mật Tại Safehouse Seven Association] Bị săn đuổi bởi kẻ thù hoặc kiệt quệ sau những vụ thanh trừng, bạn gõ cánh cửa mật mã của Hiệp hội Seven — tổ chức môi giới thông tin và điều tra hàng đầu The City. Nơi đây cung cấp dịch vụ bảo hộ ngoại giao, chữa trị vết thương kín và tẩy trắng hồ sơ truy nã.',
+    vi: "[Chỗ trú của Seven] Bạn tìm đến cửa mật mã của Seven Association. Bên trong có giường bệnh, hồ sơ và người biết cách thương lượng với kẻ đang săn bạn. Nhân viên chỉ mở cửa sau khi nghe tên bạn.",
     en: '[Sanctuary at Seven Association Safehouse] Hunted by adversaries or exhausted from syndicate turf wars, you signal the coded door of Seven Association — The City’s apex information brokers. Behind reinforced blast doors lies diplomatic immunity, confidential surgery, and record laundering.',
     choices: [
       {
@@ -321,7 +321,7 @@ export const WORKSHOP_ECONOMY_EVENTS = [
     age: [20, 80],
     major: true,
     weight: 45,
-    vi: '[Ẩm Thực Đen Tối District 23 · Bánh Thịt Pierre] Tại con hẻm ranh giới District 23, một quán ăn ngầm tỏa ra mùi bơ nướng và gia vị thơm nồng đến rỏ dãi. Món bánh nướng thịt của nghệ nhân nơi đây nổi tiếng với hương vị bùng nổ và hàm lượng dưỡng chất kỳ lạ có thể phục hồi sinh lực sắp cạn kiệt chỉ sau vài miếng cắn.',
+    vi: "[Bánh thịt District 23] Quán của Pierre thơm mùi bơ nướng. Người bán đặt một lát bánh thịt trước mặt bạn, không nói nguyên liệu lấy từ đâu. Bạn đói đến mức tay đã chạm đĩa.",
     en: '[District 23 Underground Gastronomy · Pierre’s Savory Pie] In an alley bordering District 23, an illicit bistro radiates the intoxicating scent of spiced pastry and rich caramelized broth. The artisan meat pie here boasts legendary regenerative potency, rekindling near-fatal exhaustion within minutes.',
     choices: [
       {
@@ -387,7 +387,7 @@ export const WORKSHOP_ECONOMY_EVENTS = [
     weight: 55,
     need: { jobs: ['Workshop Craftsman'] },
     forbids: ['Distorted', 'workshop_color_order_done'],
-    vi: '[Đơn Đặt Hàng của một Color Fixer Huyền Thoại] Một nhân vật trùm áo choàng kín mít bước vào xưởng lúc 1 giờ sáng. Khi chiếc mũ trùm hạ xuống, bạn nhận ra đó là một Color Fixer danh trấn thiên hạ. Họ đặt lên đe rèn một khối thiên thạch nhặt từ Outskirts: "Hãy rèn cho tôi một thanh kiếm có thể chém đứt không gian."',
+    vi: "[Đơn hàng của Color] Một Color Fixer đến xưởng lúc khuya, đặt khối đá từ Outskirts lên đe. \"Rèn cho tôi thanh kiếm chém qua khoảng cách.\" Người ấy để lại tiền cọc và chờ bạn trả lời.",
     en: '[Commission from a Legendary Color Fixer] A cloaked figure enters your forge at 1:00 AM. Lowering their hood reveals an internationally renowned Color Fixer. They place a meteorite upon your anvil: "Forge me a steel that cleaves through space."',
     choices: [
       {
@@ -414,7 +414,7 @@ export const WORKSHOP_ECONOMY_EVENTS = [
     weight: 95,
     need: { jobs: ['Workshop Craftsman'], workshopRank: 0 },
     forbids: ['Distorted', 'promo_ws_journeyman_done'],
-    vi: '[Khảo Hạch Thợ Chính Tres Association · Chứng Chỉ Dấu Thép] Hai thanh tra giám định Tres Association cầm thước kẹp và máy đo cộng hưởng động năng bước vào lò rèn của bạn. Để tháo bỏ danh xưng Học Việc (Apprentice) và được phép khắc dấu ấn thương hiệu riêng lên vũ khí, bạn phải tự tay rèn một món vũ khí vượt qua bài kiểm tra chém nát khối thép tôi áp lực mà lưỡi không mẻ.',
+    vi: "[Khảo hạch Tres] Hai giám định viên Tres Association đến lò rèn. Muốn khắc dấu xưởng lên vũ khí, bạn phải rèn một lưỡi chém qua thép tôi mà không mẻ. Khối thép đã đặt sẵn trước đe.",
     en: '[Tres Association Proofmark Audit · Journeyman Commission] Two Tres appraisers wielding micrometers and kinetic resonators enter your forge. To cast off the Apprentice label and earn the right to strike your personal maker’s mark, you must forge a weapon that shears through pressurized test steel without a micro-fracture.',
     choices: [
       {
@@ -448,7 +448,7 @@ export const WORKSHOP_ECONOMY_EVENTS = [
     weight: 95,
     need: { jobs: ['Workshop Craftsman'], workshopRank: 1 },
     forbids: ['Distorted', 'promo_ws_master_done'],
-    vi: '[Khai Mở Xưởng Độc Quyền: Đại Sư Rèn Đúc · Master Craftsman] Danh tiếng của bạn vang dội khắp Backstreets. Bạn đã đủ tích lũy để nộp đơn xin thành lập một Atelier độc lập tại District 11. Các xưởng đối thủ lập tức khởi kiện bạn vi phạm bằng sáng chế và thuê các Fixer cướp đường đến đập phá lò rèn. Bạn sẽ làm gì để khẳng định vị thế Đại Sư?',
+    vi: "[Mở Atelier] Bạn nộp đơn mở Atelier riêng tại District 11. Xưởng đối thủ kiện về bản quyền rồi thuê Fixer đe dọa thợ của bạn. Đơn đăng ký vẫn chờ chữ ký cuối cùng.",
     en: '[Founding an Independent Atelier: Master Craftsman Trial] Your renown echoes across the alleys. You have amassed sufficient Ahn to charter an independent Atelier in District 11. Rival workshops immediately lodge predatory patent injunctions and hire rogue Fixers to smash your hydraulic hammers.',
     choices: [
       {
@@ -574,7 +574,7 @@ export const WORKSHOP_ECONOMY_EVENTS = [
     major: true,
     weight: 48,
     need: { jobs: ['Workshop Craftsman'] },
-    vi: '[Chế Tác Trượng Cơ Khí Đa Năng · Phong Cách Zelkova Workshop] Một Fixer kỳ cựu mang đến bản vẽ trượng khớp thu phóng của xưởng Zelkova huyền thoại. Họ yêu cầu bạn tích hợp cơ chế thủy lực nén khí để biến thanh trượng gỗ bọc thép thành một món vũ khí vừa có thể đập tan khiên nặng, vừa có thể vươn dài 4 mét chỉ trong một cái búng tay.',
+    vi: "[Trượng thu phóng] Một Fixer đưa bản vẽ trượng Zelkova cho bạn. Cơ cấu khí nén phải kéo dài thân trượng trong một nhịp, nhưng vẫn chịu nổi cú đập vào khiên. Khớp nối là phần khó nhất.",
     en: '[Zelkova Telescopic Staff Commission] A veteran Fixer brings blueprints for a Zelkova-style collapsible kinetic quarterstaff. They commission you to integrate pressurized hydraulic servos, allowing the iron-banded staff to crush shields at close quarters or extend four meters in a microsecond.',
     choices: [
       {
@@ -682,7 +682,7 @@ export const WORKSHOP_ECONOMY_EVENTS = [
     major: true,
     weight: 45,
     need: { jobs: ['Workshop Craftsman'] },
-    vi: '[Mài Lưỡi Kiếm Liễu Độ Dày Phân Tử · Cinq Allonge Rapier] Một quý cô kiếm sĩ Cinq Section 3 đặt hàng một thanh liễu kiếm Allonge siêu mảnh, nhẹ dưới 300 gram nhưng phải chịu được va đập trực diện với đại chùy bọc thép mà không gãy. Bài toán đòi hỏi kỹ thuật mài dũa phân tử tinh xảo nhất của nghề rèn.',
+    vi: "[Đơn hàng Cinq] Kiếm sĩ Cinq đặt một thanh Allonge nhẹ và mảnh, đủ sức chống đỡ đại chùy. Bạn thử lưỡi mẫu trên đe: mép kiếm cong đi. Cô ấy chờ một cách mài khác.",
     en: '[Cinq Allonge Rapier Molecular Grind] A Cinq Section 3 swordswoman commissions an ultra-slender Allonge rapier: weighing under 300 grams yet capable of parrying heavy kinetic mauls without fracturing. A challenge demanding peak molecular grinding craftsmanship.',
     choices: [
       {

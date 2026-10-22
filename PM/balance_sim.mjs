@@ -1,6 +1,6 @@
 /**
  * Balance harness: plays N lives with fixed seeds so two runs differ only by what changed in the game.
- * Usage: node balance_sim.mjs [lives=1500] [policy=random|greedy] [--regions]
+ * Usage: node balance_sim.mjs [lives=1500] [policy=random|greedy] [--regions] [--fixers]
  *   random: picks any choice (a naive player)
  *   greedy: picks the choice with the best summed visible effect (a careful player)
  * Reports lifespan against each District's avgLife, every resource by age, how often a
@@ -14,6 +14,7 @@ import { choiceIsAvailable } from './src/engine/eventConditions.js';
 const LIVES = Number(process.argv[2]) || 1500;
 const POLICY = process.argv[3] === 'greedy' ? 'greedy' : 'random';
 const SHOW_REGIONS = process.argv.includes('--regions');
+const FORCE_FIXER = process.argv.includes('--fixers');
 
 const KEYS = ['health', 'sanity', 'wealth', 'network', 'rep', 'heat', 'taboo', 'resonance', 'merit'];
 const AGES = [10, 18, 25, 35, 50, 65];
@@ -67,6 +68,10 @@ for (let i = 0; i < LIVES; i++) {
   const seenG = new Set();
   let wasFixer = false;
   while (char.alive && char.age < 120 && guard++ < 200) {
+    if (FORCE_FIXER && char.age >= 18 && !wasFixer) {
+      char.job = 'Fixer';
+      char.fixerGrade = 9;
+    }
     if (char.job === 'Fixer') wasFixer = true;
     years++;
     planYear(char, rng);

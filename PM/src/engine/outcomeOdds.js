@@ -1,5 +1,6 @@
 import { matchesNeed } from './eventConditions.js';
 import { tiltWeight, traitsOf } from './variance.js';
+import { hasScarTag } from './scarModel.js';
 
 export function weightedOutcomes(choice, char, kind = 'major') {
   const outcomes = choice?.outcomes || choice?.out || [];
@@ -24,6 +25,12 @@ export function weightedOutcomes(choice, char, kind = 'major') {
         } else if (outcome.deathCauseVi) {
           weight = Math.max(1, Math.round(weight * 0.4));
         }
+      }
+      const outcomeEffects = outcome.effects || outcome.fx || {};
+      if (hasScarTag(char, 'survivor') &&
+          ((char.stats?.health ?? char.health ?? 50) <= 40 || (char.stats?.sanity ?? char.sanity ?? 50) <= 40) &&
+          !outcome.deathCauseVi && ((outcomeEffects.health || 0) > 0 || (outcomeEffects.sanity || 0) > 0 || outcome.survival)) {
+        weight = Math.round(weight * 1.15);
       }
       if (char.flags?.includes('SmokeWarInstinct') &&
           (result.includes('chiến') || result.includes('thắng') || result.includes('đánh') || result.includes('chém') || result.includes('súng'))) {

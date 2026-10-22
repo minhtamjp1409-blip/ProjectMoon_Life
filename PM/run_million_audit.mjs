@@ -21,16 +21,15 @@ import {
 
 import { choiceIsAvailable } from './src/engine/eventConditions.js';
 
-console.log('================================================================');
-console.log('   BẮT ĐẦU KIỂM THỬ TỰ ĐỘNG QUY MÔ LỚN: 1,000,000+ KHOẢNH KHẮC');
-console.log('         (THE CITY CHRONICLES - 1 MILLION SCENARIO AUDIT)');
-console.log('================================================================');
-console.log(`Số lượng sự kiện cốt truyện lớn trong Database: ${ALL_STORY_EVENTS.length}`);
-
 // Usage: node run_million_audit.mjs [scenarios]. Only a full run rewrites the report file.
 const FULL_RUN = 1000000;
-const TARGET_SCENARIOS = Number(process.argv[2]) || FULL_RUN;
-console.log(`Mục tiêu kiểm thử: Vượt mốc ${TARGET_SCENARIOS.toLocaleString()} khoảnh khắc...\n`);
+const TARGET_SCENARIOS = Number(process.argv[2]) || 500;
+console.log('================================================================');
+console.log(`   KIỂM THỬ TỰ ĐỘNG: ${TARGET_SCENARIOS.toLocaleString()} KHOẢNH KHẮC`);
+console.log('              THE CITY CHRONICLES');
+console.log('================================================================');
+console.log(`Số lượng sự kiện cốt truyện lớn trong Database: ${ALL_STORY_EVENTS.length}`);
+console.log(`Mục tiêu kiểm thử: ${TARGET_SCENARIOS.toLocaleString()} khoảnh khắc...\n`);
 
 const STATS = {
   targetScenarios: TARGET_SCENARIOS,
@@ -82,7 +81,7 @@ while (STATS.totalScenariosExecuted < TARGET_SCENARIOS) {
     }
   };
 
-  while (char.alive && char.age < 120) {
+  while (char.alive && char.age < 120 && STATS.totalScenariosExecuted < TARGET_SCENARIOS) {
     STATS.totalYearsLived++;
     if (char.age > STATS.maxAge) STATS.maxAge = char.age;
     const yearStartGrade = char.job === 'Fixer' ? char.fixerGrade : null;
@@ -100,7 +99,7 @@ while (STATS.totalScenariosExecuted < TARGET_SCENARIOS) {
     const plan = char.plan || [];
 
     for (const item of plan) {
-      if (!char.alive) break;
+      if (!char.alive || STATS.totalScenariosExecuted >= TARGET_SCENARIOS) break;
       char = runPlanItem(char, item, lifeRng);
       noteGrade();
       STATS.totalScenariosExecuted++;
@@ -169,7 +168,7 @@ while (STATS.totalScenariosExecuted < TARGET_SCENARIOS) {
 
     }
 
-    if (char.alive) {
+    if (char.alive && STATS.totalScenariosExecuted < TARGET_SCENARIOS) {
       char = endYear(char, lifeRng);
       noteGrade();
     }
@@ -182,7 +181,7 @@ while (STATS.totalScenariosExecuted < TARGET_SCENARIOS) {
   const finalCareer = char.flags.includes('Distorted')
     ? 'Distortion'
     : char.age < 18
-    ? 'ChildDeath'
+    ? (char.alive ? 'Child' : 'ChildDeath')
     : char.job;
   STATS.careers[finalCareer] = (STATS.careers[finalCareer] || 0) + 1;
 
@@ -264,11 +263,11 @@ Thời lượng thực thi: ${totalDurationSec} giây
 Một "kịch bản" ở đây là một khoảnh khắc trong kế hoạch năm (kể cả dòng thường ngày),
 chạy trực tiếp qua engine, không qua giao diện, store hay backend.
 Tổng số khoảnh khắc đã xử lý: ${STATS.totalScenariosExecuted.toLocaleString()}
-Tổng số vòng đời mô phỏng hoàn chỉnh: ${STATS.totalLivesSimulated.toLocaleString()} sinh mệnh
-Tuổi thọ bình quân: ${avgLifespan} tuổi (Sinh mệnh thọ nhất: ${STATS.maxAge} tuổi)
+Số sinh mệnh đã bắt đầu mô phỏng: ${STATS.totalLivesSimulated.toLocaleString()}
+Số năm mô phỏng trung bình mỗi sinh mệnh: ${avgLifespan} (Tuổi cao nhất đã đạt: ${STATS.maxAge})
 
 --------------------------------------------------------------------------------
-1. PHÂN BỔ NGHỀ NGHIỆP CUỐI ĐỜI (CAREER DISTRIBUTION):
+1. NGHỀ NGHIỆP TẠI THỜI ĐIỂM DỪNG MÔ PHỎNG (CAREER DISTRIBUTION):
 ${Object.entries(STATS.careers).map(([k, v]) => `  - ${k}: ${v.toLocaleString()} người (${((v / STATS.totalLivesSimulated) * 100).toFixed(2)}%)`).join('\n')}
 
 2. PHÂN TẦNG ĐẲNG CẤP FIXER ĐẠT ĐƯỢC (TUÂN THỦ TUẦN TỰ SÁT HẠCH HANA):

@@ -16,7 +16,7 @@ export const DERIVATIVE_LORE_EVENTS = [
     weight: 12,
     requires: [],
     forbids: ['Distorted', 'dd_investigation_done'],
-    vi: '[Văn phòng Thám tử Distortion] Tiếng gõ cửa khô khốc vang lên lúc nửa đêm. Bước vào là một phụ nữ trung niên mù cả hai mắt, ngậm một chiếc ống tẩu tỏa ra làn khói bạc lạnh buốt (Moses), theo sau là một cô trợ lý đeo kính bảo hộ to bản, vác cây đại chùy cơ khí khổng lồ trên vai (Ezra). Moses gõ nhẹ ống tẩu xuống bàn: "Khu phố này có mùi méo mó của bản ngã. Làn khói của tôi chỉ thẳng vào vách tường sau lưng bạn. Bạn đã nghe thấy điều gì?"',
+    vi: "[Ống tẩu chỉ đường] Moses đến cùng Ezra, gõ tẩu lên bàn bạn. Khói bạc không bay lên mà trườn về bức tường phía sau. \"Ở đây có thứ gì đang méo đi,\" Moses nói. \"Bạn nghe thấy nó chưa?\"",
     en: '[Distortion Detective Agency] A dry rap at the door at midnight. An older woman with clouded blind eyes steps inside, smoking a silver pipe exhaling bone-chilling smoke (Moses), shadowed by a burly young assistant with heavy goggles carrying a colossal workshop hammer (Ezra). Moses taps her pipe: "This alley stinks of twisted egos. My smoke drifts straight behind your walls. Tell me, what voice have you been hearing?"',
     choices: [
       {
@@ -52,7 +52,7 @@ export const DERIVATIVE_LORE_EVENTS = [
     weight: 11,
     need: { jobs: ['Fixer', 'Syndicate'] },
     forbids: ['Distorted', 'blade_lineage_sworn', 'kurokumo_tattooed'],
-    vi: '[Kiếm Pháp Cốt Nhục Tương Tàn · Blade Lineage] Giữa một bãi tha ma Backstreets sặc mùi máu tươi, một kiếm sĩ đơn độc đội nón tre rách rưới (Bamboo-hatted Kim) đang lau lưỡi đao dính đầy vết chém của Hắc Vân Phái (Kurokumo). Thấy bạn bước tới, ông ta không quay đầu lại: "Chém người thì dễ, nhưng nhận trọn lưỡi kiếm vào xương thịt để đoạt mạng đối thủ mới là đạo của kiếm khách. Ngươi có dám để da thịt mình nát bấy để bẻ gãy xương kẻ thù không?"',
+    vi: "[Bài học của Kim] Bamboo-hatted Kim lau máu khỏi đao, bên cạnh là xác người Kurokumo. \"Muốn lấy xương đối thủ, trước hết phải dám nhận lưỡi kiếm của hắn.\" Ông đưa bạn một thanh đao tập.",
     en: '[To Claim Their Bones · Blade Lineage] Amid a blood-soaked Backstreet alley, a lone swordsman in a frayed bamboo hat (Bamboo-hatted Kim) wipes a curved blade stained with Kurokumo ichor. Without turning, he speaks: "Cutting flesh is simple. But yielding your flesh so you may crush their bone is the swordsman’s true path. Dare you let your skin tear to sever their marrow?"',
     choices: [
       {
@@ -88,7 +88,7 @@ export const DERIVATIVE_LORE_EVENTS = [
     weight: 11,
     need: { jobs: ['Syndicate', 'Fixer'] },
     forbids: ['Distorted', 'kurokumo_tattooed', 'blade_lineage_sworn'],
-    vi: '[Mực Máu Hắc Vân Bang · Kurokumo Clan] Một căn phòng lợp chiếu tatami nồng nặc mùi mực tàu và thuốc sát trùng. Vị phó bang chủ Kurokumo (Sayo) với những hình xăm mây đen cuồn cuộn trên cánh tay nhìn bạn bằng ánh mắt sắc lạnh: "Lưỡi kiếm của Kurokumo không chỉ chém đứt cơ bắp, nó để lại vết thương rỉ máu không bao giờ khép miệng. Xăm mực Hắc Vân lên lưng, và ngươi sẽ là thợ săn của chúng ta."',
+    vi: "[Mực Hắc Vân] Sayo đặt kim xăm và một lưỡi kiếm trước mặt bạn. \"Gia nhập Kurokumo, ngươi sẽ học cách để vết chém không khép miệng.\" Mực đã pha xong; bà chờ bạn chọn.",
     en: '[Kurokumo Clan Blood Ink] A tatami den reeking of sumi ink and antiseptic. Vice-Captain Sayo, ink-black storm clouds sprawling across bare shoulders, pins you with a predator’s stare: "A Kurokumo blade does not merely sever muscle. It carves wounds that bleed until the victim is hollow. Inscribe our dark clouds upon your flesh, and hunt under our banner."',
     choices: [
       {
@@ -123,7 +123,7 @@ export const DERIVATIVE_LORE_EVENTS = [
     major: true,
     weight: 10,
     forbids: ['Distorted'],
-    vi: '[3:13 AM · Nồi Súp Của Người Mẹ Sweeper] Tiếng còi báo động xé toạc màn đêm: Night in the Backstreets đã bắt đầu. Cửa hầm trú ẩn của bạn bị kẹt cứng. Từ hai đầu con hẻm, hàng chục bóng đen mặc đồ bảo hộ trùm kín, phát ra tiếng thở rít ken két qua ống lọc (Sweepers) xuất hiện. Họ vác theo thùng thu gom chất lỏng và móc câu sắc nhọn. Một Sweeper đầu đàn gõ chiếc móc sắt nhịp nhàng, phát ra thứ ngôn ngữ méo mó: "Chúng... ta... nấu... súp... cho... gia... đình..."',
+    vi: "[Đêm của Sweepers] Cửa hầm trú kẹt cứng. Sweepers tiến tới từ hai đầu hẻm, móc sắt gõ vào thùng chứa. Kẻ đi đầu dừng trước bạn, lặp từng tiếng: \"Súp... cho gia đình.\"",
     en: '[3:13 AM · Mother’s Sweeper Cauldron] Sirens shriek through the fog: Night in the Backstreets has commenced. Your tenement bulkhead jammed shut. From both ends of the alley, dozens of faceless figures in airtight rubber hazmat suits exhaling rattling hiss through filters (Sweepers) emerge, dragging fluid barrels and butchering hooks. A matriarch Sweeper clinks her hook rhythmically, clicking in synthesized static: "We... brew... soup... for... the... children..."',
     choices: [
       {
@@ -158,7 +158,7 @@ export const DERIVATIVE_LORE_EVENTS = [
     major: true,
     weight: 10,
     forbids: ['Distorted', 'bloodfiend_met'],
-    vi: '[Dạ Tiệc Bloodfiend · Công Viên Máu La Manchaland] Lần theo dấu vết một đoàn người mất tích, bạn lạc vào một tầng hầm sâu hoắm dưới lòng District 16 (P Corp). Trước mắt bạn là một công viên giải trí rực rỡ đèn hoa đăng nhưng hoàn toàn vắng lặng. Một quý tộc mang áo choàng nhung đỏ thẫm, làn da trắng bệch như tử thi với đôi mắt đỏ ngọc bích (Bloodfiend Kindred) mỉm cười nâng ly rượu chứa máu tươi: "Chào mừng lữ khách. Ở đây, chúng ta chia sẻ dòng máu ấm để quên đi cơn đói vĩnh hằng."',
+    vi: "[Công viên dưới lòng đất] Bạn lần theo người mất tích vào công viên ngầm District 16. Đu quay vẫn sáng dù các quầy đều vắng. Một Bloodfiend nâng ly đỏ thẫm: \"Khách mới. Ở lại dùng bữa chứ?\"",
     en: '[Bloodfiend Carnival · La Manchaland] Tracking a missing carriage convoy, you descend into a subterranean cavern beneath District 16 (P Corp). A carnival of neon Ferris wheels spins in utter silence. A nobleman draped in crimson velvet, skin porcelain-dead with carmine pupils (Bloodfiend Kindred), lifts a chalice of fresh blood: "Welcome, pilgrim. Here, we share warm blood so we may forget our endless thirst."',
     choices: [
       {
@@ -193,7 +193,7 @@ export const DERIVATIVE_LORE_EVENTS = [
     major: true,
     weight: 10,
     forbids: ['Distorted', 'gcorp_veteran_helped'],
-    vi: '[Tiếng Khóc Chiến Tranh Khói · Cựu Binh Old G Corp] Trong một khu phế liệu rỉ sét ở Backstreets, bạn tìm thấy một nhóm cựu binh mang cánh bọ hung và râu côn trùng biến dị của G Corp cũ thời Chiến Tranh Khói (Smoke War). Họ đang bị một đội săn tiền thưởng của G Corp mới dồn vào chân tường để tiêu hủy "chứng cứ ô nhục". Người chỉ huy cựu binh gãy một cánh, quỳ ôm lấy đứa con nhỏ dị tật cầu xin bạn can thiệp.',
+    vi: "[Cựu binh Smoke War] Một nhóm cựu binh G Corp cũ bị đội săn tiền thưởng dồn vào bãi phế liệu. Người chỉ huy gãy cánh, ôm đứa con nhỏ sau lưng. Ông nhận ra bạn và xin một đường thoát.",
     en: '[Echoes of Smoke War · Old G Corp Veterans] In a rusted scrapyard, you discover mutated veterans bearing beetle carapaces and insect antennae from the Old G Corp Smoke War. A mercenary kill-team from New G Corp has cornered them to incinerate "defective wartime bio-assets." The veteran sergeant with a sheared chitin wing shields a deformed child, pleading for aid.',
     choices: [
       {
@@ -227,7 +227,7 @@ export const DERIVATIVE_LORE_EVENTS = [
     weight: 11,
     need: { regions: ['T', 'Backstreets', 'Nest'] },
     forbids: ['Distorted', 'color_contraband_done'],
-    vi: '[Thương Vụ Sắc Màu Bị Đánh Cắp · T Corp] Bạn bước vào một góc chợ đen bí mật tại District 20 (T Corp), nơi toàn bộ thế giới bị tước đoạt màu sắc chỉ còn hai màu xám nâu sepia. Một tay buôn lậu lén mở chiếc rương chì, để lộ một lọ thủy tinh phát ra ánh sáng ngũ sắc rực rỡ – màu sắc tự nhiên nguyên bản bị cấm tuyệt đối theo luật của T Corp. "Chỉ một giọt thôi, bạn sẽ thấy thế giới như thuở hồng hoang. Mua chứ?"',
+    vi: "[Lọ màu lậu] Giữa District 20 xám màu, tay buôn mở rương chì cho bạn xem một lọ màu sắc bị giấu kín. \"Một giọt thôi, mọi thứ sẽ khác.\" Tiếng giày tuần tra vang lên ngoài ngõ.",
     en: '[The Stolen Colors of T Corp] You enter a covert black-market cellar in District 20 (T Corp), where the entire world has been drained of hue into dreary sepia-gray. A contrabandist cracks a lead coffer, revealing a glass flask swirling with vibrant, incandescent iridescent pigment—natural color forbidden under T Corp time-patents. "One drop, and you will see the world in divine brilliance. Interested?"',
     choices: [
       {
@@ -263,7 +263,7 @@ export const DERIVATIVE_LORE_EVENTS = [
     major: true,
     weight: 10,
     forbids: ['Distorted', 'wcorp_cleaned'],
-    vi: '[Hợp Đồng Đặc Biệt: Dọn Dẹp Tàu WARP] W Corp gửi tới văn phòng bạn một hợp đồng ngắn hạn với mức lương khổng lồ: 70 Ahn cho đúng 1 giờ làm việc. Bạn được phát một bộ đồ bảo hộ kín mít, vũ khí áp chế và thuốc xóa trí nhớ cấp cao. Khi cánh cửa khoang Tàu WARP vừa mở ra, mùi máu tanh và những khối thịt sống còn quằn quại của hàng ngàn hành khách bị giam cầm suốt hàng triệu năm đập vào mắt bạn. Nhiệm vụ: Xếp các khối thịt về đúng ghế ngồi trước khi Singularity khôi phục cơ thể họ.',
+    vi: "[Ca dọn tàu WARP] W Corp trả hậu hĩnh cho một ca dọn tàu và phát thuốc xóa trí nhớ. Cửa toa mở ra: hành khách không còn ngồi đúng hình dạng của mình. Bạn phải đưa họ về ghế trước khi hệ thống khôi phục khởi động.",
     en: '[Special Commission: WARP Train Cleanup Crew] W Corp issues a high-security emergency dispatch offering an astronomical bounty: 70 Ahn for one hour of work. Clad in airtight hazmat gear, you are armed with suppression staves and grade-A amnestics. As the WARP train bulkhead hisses open, the sickening stench of warm gore and writhing heaps of conscious passenger flesh trapped for millennia hits your face. Objective: Shovel the screaming meat onto passenger seats before the Singularity resets their biology.',
     choices: [
       {
@@ -299,7 +299,7 @@ export const DERIVATIVE_LORE_EVENTS = [
     major: true,
     weight: 10,
     forbids: ['Distorted', 'aberration_encountered'],
-    vi: '[Phòng Thí Nghiệm WonderLab · Dị Thể Đột Biến] Một nhà nghiên cứu áo blouse trắng rách tả tơi chạy vào nơi bạn ẩn náu, ôm theo chiếc lồng thủy tinh cách ly Singularity. Bên trong là một dị thể sinh vật đột biến (*Aberration*) có hình dạng một nụ hoa bằng thủy tinh rỉ máu, liên tục phát ra những giai điệu ru ngủ ngọt ngào: "Nó đã giết chết cả phân viện WonderLab... xin hãy giúp tôi phong ấn nó, hoặc đưa nó ra Outskirts!"',
+    vi: "[Mẫu vật WonderLab] Một nhà nghiên cứu chạy vào chỗ trú của bạn, ôm lồng kính chứa bông hoa thủy tinh đang hát. \"Nó thoát khỏi phân viện. Giúp tôi phong ấn, hoặc mang nó ra Outskirts.\" Chốt lồng đã lỏng.",
     en: '[WonderLab · The Aberrant Specimen] A researcher in a torn white lab coat bursts into your sanctuary, clutching a containment capsule. Inside writhes an Aberration—a glass blossom weeping crimson nectar, harmonizing a siren lullaby: "It breached the entire WonderLab branch... please, help me seal it, or smuggle it past the City walls!"',
     choices: [
       {
@@ -335,7 +335,7 @@ export const DERIVATIVE_LORE_EVENTS = [
     weight: 9,
     need: { jobs: ['Fixer', 'Wing Employee'] },
     forbids: ['Distorted', 'seven_dossier_read'],
-    vi: '[Hiệp Hội Seven · Hồ Sơ Tuyệt Mật Số 0] Một chuyên viên phân tích cấp cao của Hiệp hội Seven Section 1 hẹn gặp bạn trên nóc một tòa tháp Nest lúc mưa bão. Người này mở chiếc cặp tài liệu bằng titan: "Trong này chứa sự thật về cách các Cánh vận hành Singularity: Nước mắt của K Corp, xác thịt của W Corp, cỗ máy sinh tử của R Corp. Hana sắp phong tỏa nơi này. Bạn muốn đọc nó để hiểu bản chất của The City, hay đốt nó đi để bảo toàn tính mạng?"',
+    vi: "[Hồ sơ của Seven] Trên mái nhà giữa cơn mưa, chuyên viên Seven đưa bạn cặp tài liệu về những Singularity của các Wing. Hana đang tới phong tỏa khu này. \"Đọc ngay, hoặc đốt nó cùng tôi.\"",
     en: '[Seven Association · Dossier Zero] A senior intelligence officer from Seven Section 1 meets you atop a Nest spire amidst a howling storm. He unlocks a titanium briefcase: "Inside lies the truth of how the Wings sustain their Singularities: K Corp’s tears, W Corp’s eternal butchery, R Corp’s cloning charnel house. Hana is sealing the perimeter. Will you read it to understand the City’s marrow, or burn it to preserve your life?"',
     choices: [
       {

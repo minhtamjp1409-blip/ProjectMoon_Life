@@ -13,6 +13,7 @@
 
 import { REGIONS } from '../data/worldData.js';
 import { traitsOf } from './variance.js';
+import { scarResonanceFloor } from './scarModel.js';
 
 export const BALANCE = {
   refLife: 55,                    // the avgLife a District needs to age at the base rate
@@ -36,7 +37,7 @@ export const BALANCE = {
     floor: 1
   },
   drift: {
-    resonance: { rate: 0.18, calmBonus: 1, scarFloor: 3, baseFloor: 4 },
+    resonance: { rate: 0.18, calmBonus: 1, baseFloor: 4 },
     network: { rate: 0.16, anchor: 30, careerBonus: 12, bondBonus: 8 },
     merit: { rate: 0.07, anchor: 40 },
     rep: { rate: 0.18, anchor: 20, fixerBonus: 20, seniorBonus: 35, colorAnchor: 75, syndicateBonus: 15 }
@@ -114,19 +115,23 @@ export function driftOf(char, bonded = 0, protectedThresholds = {}) {
   const out = {};
 
   if (!flags.includes('Distorted')) {
-    const floor = Math.min(60, d.resonance.baseFloor + Math.min(4, (char.scars || []).length) * d.resonance.scarFloor);
+    const floor = Math.min(60, d.resonance.baseFloor + scarResonanceFloor(char));
     const excess = (char.resonance || 0) - floor;
     if (excess > 0) {
       const calm = char.stats.sanity >= 60 ? d.resonance.calmBonus : 0;
       const rate = flags.includes('EGOAwakened') ? d.resonance.rate / 2 : d.resonance.rate;
-      out.resonance = -(Math.round(excess * rate) + calm);
+      const available = (char.resonance || 0) - (protectedThresholds.resonance ?? 0);
+      if (available > 0) out.resonance = -Math.min(available, Math.round(excess * rate) + calm);
     }
   }
 
   const career = ['Fixer', 'Syndicate', 'Wing Employee'].includes(char.job);
   const netAnchor = d.network.anchor + (career ? d.network.careerBonus : 0) + (bonded >= 2 ? d.network.bondBonus : 0);
   const netExcess = char.stats.network - netAnchor;
-  if (netExcess > 0) out.network = -Math.max(1, Math.round(netExcess * d.network.rate));
+  if (netExcess > 0) {
+    const available = char.stats.network - (protectedThresholds.network ?? 0);
+    if (available > 0) out.network = -Math.min(available, Math.max(1, Math.round(netExcess * d.network.rate)));
+  }
 
   // Fame holds where the work needs it: a Fixer of high Grade, a Syndicate officer, a Color
   let repAnchor = d.rep.anchor;

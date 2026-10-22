@@ -69,8 +69,9 @@ wounded.stats.health = 25;
 wounded.stats.sanity = 25;
 assert.ok(healAmount(wounded, 'natural') >= 3 && healAmount(wounded, 'natural') <= 5);
 assert.ok(calmAmount(wounded, 'bond') >= 3 && calmAmount(wounded, 'bond') <= 5);
-for (let i = 0; i < 8; i += 1) addScar(wounded, `Di chứng ${i}`);
-assert.equal(wounded.scars.length, 4);
+for (const name of ['Vết móc câu Sweeper 3:13 AM', 'Vết dao trả nợ', 'Ký ức địa ngục tàu WARP', 'Thanh kiếm tôi bằng máu mình']) addScar(wounded, name);
+assert.equal(wounded.scars.length, 3);
+assert.equal(wounded.scarHistory.length, 1);
 
 const blade = DERIVATIVE_LORE_EVENTS.find((event) => event.id === 'bl_claim_their_bones_oath');
 const kurokumo = DERIVATIVE_LORE_EVENTS.find((event) => event.id === 'kurokumo_ink_slash_vendetta');

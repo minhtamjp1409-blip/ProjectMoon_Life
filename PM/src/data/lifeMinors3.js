@@ -61,7 +61,7 @@ export const LIFE_DAILIES_3 = [
     'r_e_flicker',
     ANY,
     E,
-    '[Bốn phút chớp tắt trên bầu trời] Nguồn năng lượng cực quang trên bầu trời District 5 bất ngờ chập chờn vụt tắt trong đúng bốn phút do sự cố kỹ thuật. Cả con phố đang ồn ào bỗng đứng sững lại trong bóng tối hoang mang; có người hoảng loạn khóc ròng, có kẻ chửi rủa, và một đứa bé vỗ tay cười thích thú.',
+    '[Bốn phút mất điện] Ánh sáng trên bầu trời District 5 tắt phụt. Cả phố đứng im; một đứa trẻ vỗ tay, còn người lớn nhìn đồng hồ. Bốn phút sau, nguồn điện mới trở lại.',
     '[Four Minutes of Dark Sky] The perpetual ceiling radiance over District 5 abruptly sputtered and died for four long minutes. The entire street froze in chaotic bewilderment; some wept in terror, thugs cursed the dark, and an innocent child clapped in awe.',
     { sanity: -1, resonance: 2 }
   ),
@@ -179,7 +179,7 @@ export const LIFE_DAILIES_3 = [
     'd_dist_hour',
     ANY,
     DIST,
-    '[Khoảnh khắc trở lại hình người] Có những giờ khắc ngắn ngủi khi cơ thể bạn tạm thời lấy lại nhân hình nguyên vẹn, thường là vào lúc rạng sáng tĩnh mịch. Bạn vội vã dùng chút thời gian quý giá ấy nắn nót viết lại tên những người thân quen mà mình còn nhớ; nhưng bản danh sách ấy cứ ngắn dần sau mỗi tháng.',
+    '[Một giờ làm người] Trước bình minh, cơ thể bạn tạm trở lại hình người. Bạn viết tên những người thân còn nhớ lên giấy. So với lần trước, danh sách ngắn đi một dòng.',
     '[The Fleeting Human Dawn] There are rare, quiet hours near daybreak when your human silhouette briefly reasserts itself. You frantically spend them scribbling down the names of loved ones you still remember; yet the ledger dwindles with every cycle.',
     { sanity: 2, network: -1 }
   )

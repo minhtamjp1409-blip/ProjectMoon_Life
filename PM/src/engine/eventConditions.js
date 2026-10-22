@@ -1,3 +1,5 @@
+import { hasScarTag } from './scarModel.js';
+
 export const npcIsActive = (npc) => Boolean(npc) && npc.alive !== false && !npc.deceased && !['dead', 'missing', 'estranged'].includes(npc.status);
 export const isNestResident = (char) => ['Nest', 'NestResident', 'Feather'].some((f) => char.flags?.includes(f));
 export const isOutsideCity = (char) => char.regionId === 'OUTSKIRTS' || char.flags?.includes('Outskirts');
@@ -19,6 +21,8 @@ export function matchesNeed(need, char) {
   if (need.finger && need.finger !== char.finger) return false;
   if (need.flags && !need.flags.every((f) => flags.includes(f))) return false;
   if (need.noFlags?.some((f) => flags.includes(f))) return false;
+  if (need.scarTag && !hasScarTag(char, need.scarTag)) return false;
+  if (need.noScarTag && hasScarTag(char, need.noScarTag)) return false;
   if (need.npc && !npcIsActive(char.npcs?.[need.npc])) return false;
   if (need.noNpc && npcIsActive(char.npcs?.[need.noNpc])) return false;
   if (need.npcTag) {

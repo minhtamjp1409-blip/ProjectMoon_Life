@@ -80,5 +80,12 @@ for (const [name, entries] of pools) {
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const output = path.join(root, 'DANH_SACH_TAT_CA_EVENTS.txt');
+const jsonOutput = path.join(root, 'DANH_SACH_TAT_CA_EVENTS.json');
+const total = pools.reduce((sum, [, entries]) => sum + entries.length, 0);
 fs.writeFileSync(output, `${lines.join('\n').trimEnd()}\n`, 'utf8');
-console.log(`Đã xuất ${pools.reduce((sum, [, entries]) => sum + entries.length, 0)} mục vào ${output}`);
+fs.writeFileSync(jsonOutput, `${JSON.stringify({
+  generatedAt: new Date().toISOString(),
+  total,
+  pools: pools.map(([name, events]) => ({ name, count: events.length, events }))
+}, null, 2)}\n`, 'utf8');
+console.log(`Đã xuất ${total} mục vào ${output} và ${jsonOutput}`);

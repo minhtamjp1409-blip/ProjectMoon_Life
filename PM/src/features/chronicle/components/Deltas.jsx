@@ -83,7 +83,7 @@ export function DeltaChip({ d, i = 0 }) {
   if (d.k === 'scar') {
     return (
       <span className="delta is-rare" style={style}>
-        {t('Vết sẹo', 'Scar')} · {d.name}
+        {t('Dấu tích', 'Mark')} · {d.name}
       </span>
     );
   }
@@ -214,7 +214,7 @@ export const ChoicePreview = ({ choice, npcs, char, kind = 'major' }) => {
         </span>
       ))}
       {choice.later && <span className="delta is-rare is-static">{t('Sẽ có hậu quả', 'Has consequences')}</span>}
-      {choice.scar && <span className="delta is-rare is-static">{t('Để lại sẹo', 'Leaves a scar')}</span>}
+      {choice.scar && <span className="delta is-rare is-static">{t('Để lại dấu tích', 'Leaves a mark')}</span>}
     </span>
   );
 };

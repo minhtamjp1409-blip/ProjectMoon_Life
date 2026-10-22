@@ -16,13 +16,13 @@ export const COMPANION_QUEST_EVENTS = [
     weight: 25,
     need: { npcTag: ['friend', 'gambler'], noQuest: { role: 'friend', max: 1 } },
     forbids: ['Distorted'],
-    vi: '[Khoản Nợ Sòng Bạc Ngầm] Trong một con hẻm lầy lội rỉ nước cống phía sau sòng bạc ngầm của District 9, ánh đèn neon vỡ chập chờn rọi xuống vũng nước đen ngòm. {friend} bị ba tên bảo kê mặc áo khoác da nhờn dính ép chặt vào thùng rác rỉ sét, khóe miệng rách toác đang chảy máu. Tên đầu sỏ vung cuốn sổ nợ đã bị chuột gặm nham nhở:\n"Bạn của mày cược cả tiền ăn tháng sau của xưởng rồi thua sạch bách vào tay nhà cái. Mười lăm Ahn trước nửa đêm, hoặc bọn tao lấy lại bằng hai bàn tay của nó."',
+    vi: "[Nợ sòng bạc] Bảo kê ép {friend} vào thùng rác sau sòng bạc. Tên cầm đầu giơ sổ nợ: \"Tiền cược đã mất. Trả trước nửa đêm, hoặc bọn tao lấy hai bàn tay.\" {friend} không dám nhìn bạn.",
     en: '[The Gambler’s Reckoning] Down a slime-slick alley behind District 9’s subterranean dice den, flickering neon fractures across oily puddles. Three greasy syndicate enforcers have {friend} pinned against a rusted dumpster, blood dripping from split lips. The boss brandishes a rodent-chewed ledger:\n“Your pal staked next month’s tenement rations and lost clean to the house. Fifteen Ahn before midnight, or we take it in severed hands.”',
     choices: [
       {
         labelVi: 'Đặt 15 Ahn lên mặt thùng phi, chuộc người bạn ra',
         labelEn: 'Slap fifteen Ahn onto the drum to settle the debt',
-        resultVi: 'Bạn đặt 15 Ahn kêu "keng" đanh gọn lên nắp thùng phi rỉ sét. Đám bảo kê nhe hàm răng ố vàng, nhặt tiền rồi đạp {friend} ngã nhào về phía bạn. {friend} quỳ sụp xuống vũng bùn, hai bàn tay run rẩy bấu chặt lấy gấu áo bạn, nước mắt hòa lẫn bùn đất: "Tao thề... tao sẽ không bao giờ chạm vào con súc sắc hay cỗ bài đó nữa..."',
+        resultVi: "Bạn trả tiền. Bọn bảo kê gạch nợ rồi đẩy {friend} về phía bạn. Hai bàn tay người ấy vẫn còn nguyên. {friend} nói sẽ không quay lại sòng bạc.",
         resultEn: 'You slapped fifteen Ahn with a sharp metallic clatter onto the drum lid. The enforcers bared yellowed teeth, scooped the coin, and shoved {friend} into the mud at your feet. {friend} knelt shivering, bloody fingers clutching your hem: “I swear... I’ll never touch the dice or cards again...”',
         costAhn: 15,
         effects: { rep: +8, sanity: +6 },
@@ -32,7 +32,7 @@ export const COMPANION_QUEST_EVENTS = [
       {
         labelVi: 'Tuốt vũ khí rạch gió, dùng sát khí đè bẹp đám chủ nợ',
         labelEn: 'Draw steel and break their perimeter through lethal intent',
-        resultVi: 'Lưỡi đao xé toạc màn mưa đêm, chém đứt đôi thanh xà beng của tên cầm đầu trong một tiếng "xoảng" rợn người, mũi đao dừng lại cách yết hầu hắn đúng một milimét. Bị áp đảo bởi sát khí lạnh buốt của một kẻ đã nếm trải quá nhiều máu tươi, đám bảo kê nuốt nước bọt, chửi thề rồi lùi dần vào bóng tối. {friend} ngước nhìn bạn với ánh mắt kính phục và sùng kính vô bờ bến.',
+        resultVi: "Bạn chém gãy xà beng của tên cầm đầu. Đám bảo kê lùi khỏi {friend}, nhưng cuốn sổ nợ vẫn nằm trong tay chúng. {friend} theo bạn ra khỏi ngõ, im lặng suốt đường về.",
         resultEn: 'Your blade parted the rain, shearing clean through the leader’s prybar with a bone-chilling shriek, the razor tip halting a millimeter from his jugular. Overwhelmed by the icy aura of a killer who had breathed too much slaughter, the thugs cursed and melted into shadows. {friend} stared up at you with awe and reverence.',
         effects: { health: -8, rep: +12, heat: +10 },
         npcQuest: ['friend'],
@@ -59,7 +59,7 @@ export const COMPANION_QUEST_EVENTS = [
     weight: 25,
     need: { back: true, npcTag: ['friend', 'sickly'], noQuest: { role: 'friend', max: 1 } },
     forbids: ['Distorted'],
-    vi: '[Cơn Sốt Mùa Đông Backstreets] Căn gác xép dột nát rung bần bật trong cơn gió đông buốt giá nồng nặc khói than. Tiếng ho khan của {friend} giờ đây đã lẫn những cục máu đông sẫm màu. Người bạn nằm co ro dưới ba lớp chăn rách bốc mùi ẩm mốc, lồng ngực phập phồng yếu ớt từng nhịp ngắt quãng. Một gã lang băm ở phòng khám chui Backstreets cho biết hắn có một ống huyết thanh lọc tạp chất từ tế bào K Corp, giá đúng 12 Ahn, có thể giữ lại mạng sống này.',
+    vi: "[Thuốc giữa mùa đông] {friend} ho ra máu trong căn gác lạnh. Một phòng khám chui có ống huyết thanh K Corp đủ giữ người ấy qua đêm, nhưng đòi trả tiền trước. Bạn nghe tiếng ho phía sau cánh cửa.",
     en: '[The Backstreet Winter Fever] The drafty attic shivers under howling winter gales reeking of coal smoke. {friend}’s dry hacking now coughs dark clotted blood onto floorboards. They lie curled beneath three damp, moldy blankets, chest rattling with shallow breaths. An underground apothecary offers a filtered sediment vial extracted from K Corp regenerative culture for twelve Ahn.',
     choices: [
       {
@@ -102,7 +102,7 @@ export const COMPANION_QUEST_EVENTS = [
     weight: 22,
     need: { npcTag: ['friend', 'proud'], noQuest: { role: 'friend', max: 1 } },
     forbids: ['Distorted'],
-    vi: '[Danh Dự Của Kẻ Ngẩng Đầu] Giữa khu chợ sáng nhộn nhịp mùi dầu chiên và rác thải Backstreets, một tên đao phủ to xác của Syndicate cố tình hắt bát canh mỡ nóng vào chiếc áo khoác rách của {friend} rồi tát mạnh vào mặt người bạn để mua vui cho đám đàn em. Bị sỉ nhục trước đám đông, {friend} nghiến răng bật máu, rút con dao gấp rỉ sét, ánh mắt rực lửa quyết tử dù đối phương cao hơn một cái đầu và mang giáp kim loại đầy mình.',
+    vi: "[Lời thách ở chợ] Một tay Syndicate hất canh lên áo {friend}, rồi tát người ấy trước đám đông. {friend} rút dao gấp; đối thủ mặc giáp và đã gọi đàn em lại. Bạn đứng đủ gần để ngăn trận đấu.",
     en: '[The Duel for Pride] In the crowded morning market smelling of frying grease and sewage, a towering syndicate bouncer purposely hurls hot grease across {friend}’s ragged coat, then backhands them into the muck to entertain his cronies. Humiliated before the jeering crowd, {friend} spits blood and snaps open a rusted folding knife, eyes ablaze with suicidal defiance against an armored brute twice their size.',
     choices: [
       {
@@ -145,7 +145,7 @@ export const COMPANION_QUEST_EVENTS = [
     weight: 22,
     need: { npcTag: ['friend', 'secretive'], noQuest: { role: 'friend', max: 1 } },
     forbids: ['Distorted'],
-    vi: '[Bóng Ma Quá Khứ Từ Wing Cũ] Mưa rơi rả rích đầu con hẻm. Một thám tử mặc áo măng tô xám của Hiệp hội Seven Section 4 đứng dưới cột đèn chập chờn, tay cầm bản phác thảo chân dung của {friend} cùng tập hồ sơ đóng dấu niêm phong của một Wing đã sụp đổ. {friend} tái mặt, lùi sâu vào góc tối sau cánh cửa gỗ, ngón tay run rẩy cầm chuôi dao găm: "Họ đánh hơi ra tao rồi... Bọn thanh trừng sẽ không để tao sống nếu bị dẫn độ."',
+    vi: "[Hồ sơ cũ] Thám tử Seven giơ chân dung {friend} cùng hồ sơ của một Wing đã sụp đổ. {friend} lùi sau lưng bạn, tay đặt lên dao găm. \"Nếu họ dẫn tao đi, đội thanh trừng sẽ tới trước khi trời sáng.\"",
     en: '[Shadow of Yesterday] Cold drizzle coats the alleyway. A trench-coated investigator from Seven Association Section 4 lingers under a flickering streetlamp, holding a charcoal sketch of {friend} and a sealed docket from a fallen Wing. {friend} turns porcelain-white, retreating behind the door with white-knuckled grip on a dagger: “They traced my scent... The Wing’s purge cells won’t leave me breathing if dragged back.”',
     choices: [
       {
@@ -187,7 +187,7 @@ export const COMPANION_QUEST_EVENTS = [
     weight: 22,
     need: { npcTag: ['friend', 'ambitious'], noQuest: { role: 'friend', max: 1 } },
     forbids: ['Distorted'],
-    vi: '[Cơ Hội Tiến Thân Lên Đài Danh Vọng] {friend} tìm được một chỉ tiêu phỏng vấn gia nhập Văn phòng Fixer cấp cao tại ranh giới Nest, nhưng hội đồng tuyển dụng đòi hỏi một thư bảo lãnh có trọng lượng từ một Fixer uy tín hoặc một khoản tiền ký quỹ 16 Ahn. {friend} tìm đến bạn dưới ánh đèn dầu leo lét, đôi mắt bùng cháy khát vọng vươn lên mãnh liệt.',
+    vi: "[Thư bảo lãnh] {friend} được mời phỏng vấn vào một Office gần Nest. Hội đồng đòi thư bảo lãnh từ Fixer có tên tuổi, hoặc tiền ký quỹ. {friend} mang mẫu đơn đến, nhờ bạn giúp một trong hai.",
     en: '[The Career Milestone] {friend} secured an interview seat at a prestigious Fixer Office on the Nest perimeter, but the board demands a signed sponsorship from a reputable operative or a sixteen-Ahn indemnity deposit. They seek you out beneath the dim oil lamp, eyes burning with relentless ambition.',
     choices: [
       {
@@ -230,7 +230,7 @@ export const COMPANION_QUEST_EVENTS = [
     weight: 30,
     need: { npc: 'partner', noQuest: { role: 'partner', max: 1 } },
     forbids: ['Distorted'],
-    vi: '[Lưng Kề Lưng Giữa Hẻm Máu] Trong một khu nhà xưởng bỏ hoang giữa đêm mưa giông, bạn và {partner} bị bao vây bởi một toán sát thủ Syndicate trang bị súng tự động và dao rựa sắc lẹm. Tia lửa điện nổ tanh tách từ những cỗ máy gỉ sét; {partner} bị thương ở đùi, nhưng vẫn nắm chặt vũ khí đứng tựa lưng vào bạn, hơi thở dồn dập trong tiếng sấm rền.',
+    vi: "[Lưng kề lưng] Syndicate vây bạn và {partner} trong xưởng bỏ hoang. {partner} bị thương ở đùi nhưng vẫn chặn lối sau. Đạn đã lên nòng; hai người chỉ còn một đường phá vây.",
     en: '[Back-to-Back in the Rain] Inside an abandoned factory floor amidst a thundering storm, you and {partner} are cornered by a syndicate kill-squad armed with automatic subguns and machetes. Sparks shower from derelict conduits; {partner} bleeds from the thigh yet locks their back firmly against yours, breaths ragged beneath the thunder.',
     choices: [
       {
@@ -264,7 +264,7 @@ export const COMPANION_QUEST_EVENTS = [
     weight: 30,
     need: { npc: 'spouse', noQuest: { role: 'spouse', max: 1 } },
     forbids: ['Distorted'],
-    vi: '[Mái Ấm Mùa Rét Buốt] Cơn bão tro xám ập xuống The City làm nhiệt độ hạ xuống dưới mức đóng băng. Mái tôn phòng trọ bị gió giật tung một mảng lớn, nước mưa đen ngòm rỉ rích nhỏ giọt xuống sàn gỗ. {spouse} ôm chiếc chăn mỏng run rẩy trong góc nhà, đôi môi tím tái nhưng vẫn cố gắng thổi lửa vào bếp than vụn để nấu cho bạn bát cháo nóng hổi.',
+    vi: "[Mái nhà thủng] Bão tro giật bật mái tôn phòng trọ. Mưa đen rơi xuống chỗ ngủ, còn {spouse} đang cố nhóm bếp bằng than vụn. Bạn phải tìm nơi trú trước khi căn phòng ngập nước.",
     en: '[Shelter in the Grey Blizzard] A freezing ash storm slams the City, plunging temperatures below zero. Roof sheets tore loose, black freezing rain dripping onto floorboards. {spouse} shivers in the corner beneath patched quilts, pale lips blowing life into coal embers to keep a meager broth warm for your return.',
     choices: [
       {
@@ -299,7 +299,7 @@ export const COMPANION_QUEST_EVENTS = [
     weight: 22,
     need: { npcTag: ['friend', 'cynical'], noQuest: { role: 'friend', max: 1 } },
     forbids: ['Distorted'],
-    vi: '[Cái Bẫy Của Kẻ Bán Tin] {friend}, kẻ buôn tin hoài nghi vốn không bao giờ tin tưởng bất kỳ ai ở The City, đang bị dồn vào một bốt điện thoại công cộng vỡ kính. Đôi bàn tay ranh ma thường ngày giờ run lẩy bẩy khi ôm chặt chiếc ổ cứng chứa danh sách giao dịch đen của một băng đảng lớn. Hai đầu ngõ đã bị các tay súng của Middle bao vây.',
+    vi: "[Ổ cứng của {friend}] {friend} ôm ổ cứng ghi các giao dịch đen của Syndicate, mắc kẹt trong bốt điện thoại vỡ kính. Tay súng của Middle đã chặn hai đầu ngõ. Lần này, người bán tin phải nhờ bạn.",
     en: '[The Informant’s Trap] {friend}, the cynical rumor-broker who never trusted a living soul in the City, is trapped inside a shattered phone booth. Their nimble fingers now tremble violently around a hard drive listing illicit syndicate transactions. Both ends of the alley are sealed by Middle enforcers.',
     choices: [
       {
@@ -342,7 +342,7 @@ export const COMPANION_QUEST_EVENTS = [
     weight: 22,
     need: { npcTag: ['friend', 'loyal'], noQuest: { role: 'friend', max: 1 } },
     forbids: ['Distorted'],
-    vi: '[Vết Thương Của Tấm Khiên Sống] Trong một vụ tập kích bất ngờ của bầy chuột cống Scavenger, {friend} đã lao mình ra che chắn cho bạn trước một quả lựu đạn mảnh tự chế. Những mảnh thép găm sâu vào bả vai và mạng sườn người bạn. {friend} cắn răng chịu đau, lén dùng vải rách tự băng bó để bạn không phải lo lắng hay tốn tiền chạy chữa.',
+    vi: "[Người chắn lựu đạn] {friend} đỡ quả lựu đạn thay bạn. Mảnh thép găm ở vai; người ấy chỉ quấn vội mảnh vải rồi bảo mình ổn. Máu đã thấm qua lớp băng.",
     en: '[The Living Shield’s Wound] During an ambush by alley Scavengers, {friend} hurled their body forward to smother a shrapnel grenade meant for you. Jagged steel embedded deep into their shoulder and ribs. {friend} bites through the agony, trying to bind it secretly with rags so as not to burden your purse.',
     choices: [
       {
@@ -377,7 +377,7 @@ export const COMPANION_QUEST_EVENTS = [
     weight: 22,
     need: { npcTag: ['friend', 'mentor'], noQuest: { role: 'friend', max: 1 } },
     forbids: ['Distorted'],
-    vi: '[Bài Học Cuối Cùng Của Người Thầy Già] Vị tiền bối Fixer từng chỉ dẫn bạn những ngày đầu chập chững vào nghề giờ đây ngồi cô độc trên chiếc hòm gỗ trong xưởng nhỏ. Các khớp tay giả của ông rít lên ken két vì rỉ sét van thủy lực, tiếng ho sù sụ nồng nặc tro bụi chiến tranh khói Smoke War. Ông mở chiếc rương khóa bằng đồng, để lộ thanh đao Workshop đã mòn vẹt nhưng sáng quắc:\n"Ta sắp không cầm nổi vũ khí nữa rồi. Ở The City này, di sản quý nhất không phải là tiền tài, mà là lưỡi kiếm truyền lại cho kẻ xứng đáng."',
+    vi: "[Bài học cuối của người thầy] Người thầy Fixer ngồi trong xưởng, các khớp tay giả kêu rít. Ông mở rương, lấy ra thanh đao Workshop đã mòn: \"Ta sắp không cầm nổi nó. Nếu muốn nhận, hãy cho ta thấy bạn dùng nó thế nào.\"",
     en: '[The Old Master’s Final Lesson] The veteran Fixer who guided your rookie steps sits alone on a wooden crate in his dim forge. His prosthetic valves hiss with rusted friction; his rasping cough reeks of Smoke War fallout. Unlocking a brass coffer, he reveals a weathered yet razor-sharp Workshop blade:\n“My grip is failing me, kid. In this City, the truest legacy isn’t Ahn—it’s passing your steel to hands that won’t waver.”',
     choices: [
       {

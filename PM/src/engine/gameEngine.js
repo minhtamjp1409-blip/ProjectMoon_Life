@@ -42,6 +42,10 @@ import {
   getNextFingerPromotion,
   getNextWingPromotion,
   getNextWorkshopPromotion,
+  getOtherCareerPromotion,
+  careerTrialForEvent,
+  careerPromotionSuccessChance,
+  careerPromotionFailureEffects,
   triggerDistortionTransformation,
   tryItemAutoRevive,
   determineSuccessorType
@@ -56,7 +60,7 @@ import {
 } from './weaverAI.js';
 import { hasMemory, closeThreads, applyNpcFate, namesInUse, applyBonds } from './director.js';
 import { BALANCE, isFixerCareerEvent, reputationGain } from './economyModel.js';
-import { activeScarCount, addScar } from './scarModel.js';
+import { activeScarCount, addScar, normalizeScars, scarContractPower } from './scarModel.js';
 import { weightedOutcomes } from './outcomeOdds.js';
 
 export const ALL_STORY_EVENTS = [
@@ -231,28 +235,31 @@ export function interpolateText(text, char) {
  * the previous generation's District. The home screen's wheel spins to this
  * result, so it must stay the only place the roll happens.
  */
-export function rollBirthRegion(rng = Math.random, parentLegacy = null) {
+export function rollBirthRegion(rng = Math.random, parentLegacy = null, preferredFamilyId = 'RANDOM') {
+  if (preferredFamilyId === 'outskirts_nomad') return REGIONS.find(r => r.id === 'OUTSKIRTS');
+  const regions = preferredFamilyId && preferredFamilyId !== 'RANDOM'
+    ? REGIONS.filter(r => r.id !== 'OUTSKIRTS')
+    : REGIONS;
   if (parentLegacy?.regionId && rng() < 0.65) {
     const inherited = REGIONS.find(r => r.id === parentLegacy.regionId);
-    if (inherited) return inherited;
+    if (inherited && regions.includes(inherited)) return inherited;
   }
-  const totalWeight = REGIONS.reduce((s, r) => s + (r.birthWeight || 1), 0);
+  const totalWeight = regions.reduce((s, r) => s + (r.birthWeight || 1), 0);
   let pick = rng() * totalWeight;
-  for (const r of REGIONS) {
+  for (const r of regions) {
     pick -= r.birthWeight || 1;
     if (pick <= 0) return r;
   }
-  return REGIONS[0];
+  return regions[0];
 }
 
 export function rollBirthFamily(region, rng, parentLegacy = null, preferredFamilyId = 'RANDOM') {
+  if (region.id === 'OUTSKIRTS') {
+    return FAMILIES.find((f) => f.id === 'outskirts_nomad');
+  }
   if (preferredFamilyId && preferredFamilyId !== 'RANDOM') {
     const selected = FAMILIES.find((f) => f.id === preferredFamilyId);
-    if (selected) return selected;
-  }
-
-  if (region.id === 'OUTSKIRTS') {
-    return FAMILIES.find((f) => f.id === 'outskirts_nomad') || FAMILIES[0];
+    if (selected && selected.id !== 'outskirts_nomad') return selected;
   }
   if (region.tags?.includes('head')) {
     const headFamilies = FAMILIES.filter((f) => ['nest_feather', 'wing_executive'].includes(f.id));
@@ -285,11 +292,10 @@ export function rollBirthFamily(region, rng, parentLegacy = null, preferredFamil
     great_lake_mariner: region.id === 'U' || region.ward === 21 ? 30 : 2,
     warp_cleaner_offspring: region.id === 'W' || region.ward === 23 ? 24 : 4,
     backstreet_bistro: region.ward === 23 || region.id === 'H' ? 18 : 10,
-    prosthetic_tinkerer: region.id === 'T' || region.id === 'V' || region.id === 'G' ? 18 : 10,
-    outskirts_nomad: 3
+    prosthetic_tinkerer: region.id === 'T' || region.id === 'V' || region.id === 'G' ? 18 : 10
   };
 
-  const pool = FAMILIES.filter((f) => f.id !== 'outskirts_nomad' || region.id === 'OUTSKIRTS' || (weights[f.id] || 0) > 0);
+  const pool = FAMILIES.filter((f) => f.id !== 'outskirts_nomad');
   const total = pool.reduce((sum, f) => sum + (weights[f.id] || 10), 0);
   let pick = rng() * total;
   for (const f of pool) {
@@ -316,7 +322,7 @@ export function createNewCharacter({
   if (preferredRegionId && preferredRegionId !== 'RANDOM') {
     region = REGIONS.find(r => r.id === preferredRegionId);
   }
-  if (!region) region = rollBirthRegion(rng, parentLegacy);
+  if (!region) region = rollBirthRegion(rng, parentLegacy, preferredFamilyId);
 
   // Pick Family Background
   const family = rollBirthFamily(region, rng, parentLegacy, preferredFamilyId);
@@ -345,7 +351,7 @@ export function createNewCharacter({
     flags.push(family.trait.id);
   }
   const scars = [];
-  const unlockedRecords = ['born_city'];
+  const unlockedRecords = [region.id === 'OUTSKIRTS' ? 'born_outskirts' : 'born_city'];
   let heat = clamp((family.statMod.heat || 0) + (omenMod.heat || 0), 0, 100);
   let taboo = clamp((family.statMod.taboo || 0) + (omenMod.taboo || 0), 0, 2);
   let resonance = clamp(5 + (family.statMod.resonance || 0) + (omenMod.resonance || 0), 0, 100);
@@ -465,8 +471,12 @@ export function createNewCharacter({
       age: 0,
       season: SEASONS[0],
       type: 'death',
-      vi: `[Mất trước khi cất tiếng khóc] ${perinatal.deathVi}. Một sinh linh nữa rời The City khi ánh đèn neon ngoài cửa sổ còn chưa kịp đổi màu.`,
-      en: `[Perished before drawing breath] ${perinatal.deathEn}. Another life slipped from The City before neon lights outside could change color.`
+      vi: region.id === 'OUTSKIRTS'
+        ? `[Mất trước khi cất tiếng khóc] ${perinatal.deathVi}. Đoàn xe chôn bạn ở nơi họ dừng chân đêm ấy.`
+        : `[Mất trước khi cất tiếng khóc] ${perinatal.deathVi}. Một sinh linh nữa rời The City khi ánh đèn neon ngoài cửa sổ còn chưa kịp đổi màu.`,
+      en: region.id === 'OUTSKIRTS'
+        ? `[Perished before drawing breath] ${perinatal.deathEn}. The caravan buried you where it stopped that night.`
+        : `[Perished before drawing breath] ${perinatal.deathEn}. Another life slipped from The City before neon lights outside could change color.`
     });
   } else if (actualAge > 0) {
     initialLogs.push({
@@ -474,8 +484,12 @@ export function createNewCharacter({
       age: actualAge,
       season: SEASONS[0],
       type: 'story',
-      vi: `Năm bạn ${actualAge} tuổi, ${parentLegacy ? parentLegacy.name : 'người đi trước'} đã ngã xuống trong biến cố The City. Bạn tiếp nhận di vật 「${lineageInfo?.relic || 'Kỷ vật cũ'}」 và chính thức bắt đầu hành trình của riêng mình.`,
-      en: `At age ${actualAge}, ${parentLegacy ? parentLegacy.name : 'your predecessor'} fell in the perils of The City. You take up 「${lineageInfo?.relic || 'Relic'}」 and begin your own path.`
+      vi: region.id === 'OUTSKIRTS'
+        ? `Năm bạn ${actualAge} tuổi, đoàn xe dừng bên ngoài bức tường The City. Bạn mang theo 「${lineageInfo?.relic || 'kỷ vật cũ'}」 của ${parentLegacy?.name || 'người đi trước'} và tự chọn đường đi tiếp.`
+        : `Năm bạn ${actualAge} tuổi, ${parentLegacy ? parentLegacy.name : 'người đi trước'} đã ngã xuống trong biến cố The City. Bạn tiếp nhận di vật 「${lineageInfo?.relic || 'Kỷ vật cũ'}」 và chính thức bắt đầu hành trình của riêng mình.`,
+      en: region.id === 'OUTSKIRTS'
+        ? `At age ${actualAge}, the caravan stops beyond the City wall. You carry 「${lineageInfo?.relic || 'an old keepsake'}」 from ${parentLegacy?.name || 'the one before you'} and choose your next road.`
+        : `At age ${actualAge}, ${parentLegacy ? parentLegacy.name : 'your predecessor'} fell in the perils of The City. You take up 「${lineageInfo?.relic || 'Relic'}」 and begin your own path.`
     });
   } else {
     initialLogs = birth.lines.map((line, i) => ({
@@ -544,6 +558,7 @@ export function createNewCharacter({
     deathCauseVi: perinatal ? perinatal.deathVi : null,
     deathCauseEn: perinatal ? perinatal.deathEn : null,
     regionId: region.id,
+    birthRegionId: region.id,
     familyId: family.id,
     family: {
       id: family.id,
@@ -556,7 +571,9 @@ export function createNewCharacter({
     backgroundTrait: family.trait || null,
     fateOmenId: fateOmen.id,
     traits: rollTraits(createRNG(`${actualSeed}:traits`)),
-    job: actualAge >= 18 ? (parentLegacy?.job === 'Syndicate' ? 'Syndicate' : parentLegacy?.job === 'Wing Employee' ? 'Wing Employee' : 'Fixer') : 'Child',
+    job: actualAge >= 18 && region.id !== 'OUTSKIRTS'
+      ? (parentLegacy?.job === 'Syndicate' ? 'Syndicate' : parentLegacy?.job === 'Wing Employee' ? 'Wing Employee' : 'Fixer')
+      : 'Child',
     fixerGrade: 9,
     lastFixerExamAge: null,
     fixerTrialRetryGrade: null,
@@ -617,13 +634,13 @@ export function createNewCharacter({
  * Helper to clone and normalize character object so getters stay intact
  */
 export function cloneChar(char) {
-  const scars = char.scars || [];
+  const scarState = normalizeScars(char);
   const copy = {
     ...char,
     stats: { ...char.stats },
     flags: [...char.flags],
-    scars: scars.slice(-4),
-    scarHistory: [...(char.scarHistory || []), ...scars.slice(0, -4)],
+    scars: scarState.scars,
+    scarHistory: scarState.scarHistory,
     npcs: structuredClone(char.npcs || {}),
     weaver: structuredClone(char.weaver),
     inventory: structuredClone(char.inventory || []),
@@ -683,8 +700,8 @@ export function evaluateCharacterAchievements(char) {
 
   if ((char.heat || 0) >= 80 && char.alive) unlock('max_heat_outlaw');
   if (char.regionId === 'T') unlock('tcorp_time_debtor');
-  if (char.scars.length >= 4 && char.alive) unlock('scarred_psyche_4');
-  if (char.scars.includes('Vết Mổ Cưỡng Chế Thuế Nội Tạng')) unlock('organ_harvest_victim');
+  if (activeScarCount(char) >= 3 && char.alive) unlock('scarred_psyche_4');
+  if ([...char.scars, ...(char.scarHistory || [])].includes('Vết Mổ Cưỡng Chế Thuế Nội Tạng')) unlock('organ_harvest_victim');
   if (char.flags.includes('Distorted')) unlock('distortion_awaken');
   if (char.flags.includes('EGOAwakened') || char.egoName) unlock('ego_effloresced');
 
@@ -919,13 +936,15 @@ export function getNextCareerMilestone(char) {
     const nextRank = currentRank + 1;
     const nextTitle = ladder[nextRank];
     const minAge = [0, 22, 28, 35][nextRank];
-    const yearsInRank = currentRank === 0 || char.lastFingerPromotionAge == null ? 4 : Math.max(0, char.age - char.lastFingerPromotionAge);
+    const yearsInRank = currentRank === 0 || char.lastFingerPromotionAge == null ? 3 : Math.max(0, char.age - char.lastFingerPromotionAge);
     const targetMerit = nextRank * 26;
     const targetRep = nextRank * 16;
     const curRep = (char.stats?.rep ?? char.rep) || 0;
     const p1 = Math.min(100, ((char.merit || 0) / targetMerit) * 100);
     const p2 = Math.min(100, (curRep / targetRep) * 100);
-    const progressPct = Math.round((p1 + p2) / 2);
+    const p3 = Math.min(100, (yearsInRank / 3) * 100);
+    const p4 = finger === 'Thumb' ? Math.min(100, (char.age / minAge) * 100) : 100;
+    const progressPct = Math.min(Math.round((p1 + p2) / 2), p3, p4);
 
     return {
       category: `THE ${finger.toUpperCase()} TRIAL`,
@@ -935,10 +954,8 @@ export function getNextCareerMilestone(char) {
       requirements: [
         { labelVi: 'Công trạng với Ngón (Merit)', labelEn: 'Syndicate Merit', current: char.merit || 0, target: targetMerit, met: (char.merit || 0) >= targetMerit },
         { labelVi: 'Uy danh giang hồ (Rep)', labelEn: 'Reputation', current: curRep, target: targetRep, met: curRep >= targetRep },
-        ...(finger === 'Thumb' ? [
-          { labelVi: 'Tuổi tối thiểu', labelEn: 'Minimum age', current: char.age, target: minAge, met: char.age >= minAge },
-          { labelVi: 'Năm giữ bậc hiện tại', labelEn: 'Years at current rank', current: yearsInRank, target: 4, met: yearsInRank >= 4 }
-        ] : [])
+        ...(finger === 'Thumb' ? [{ labelVi: 'Tuổi tối thiểu', labelEn: 'Minimum age', current: char.age, target: minAge, met: char.age >= minAge }] : []),
+        ...(currentRank > 0 ? [{ labelVi: 'Năm giữ bậc hiện tại', labelEn: 'Years at current rank', current: yearsInRank, target: 3, met: yearsInRank >= 3 }] : [])
       ],
       tipVi: 'Thực thi mệnh lệnh của Ngón, thu hồi nợ máu và chứng minh lòng trung thành.',
       tipEn: 'Execute Finger orders, claim vengeance debts, and prove unquestioned loyalty.'
@@ -968,7 +985,9 @@ export function getNextCareerMilestone(char) {
     const p1 = Math.min(100, ((char.merit || 0) / target.merit) * 100);
     const p2 = Math.min(100, (curWealth / target.wealth) * 100);
     const p3 = Math.min(100, (curNet / target.network) * 100);
-    const progressPct = Math.round((p1 + p2 + p3) / 3);
+    const yearsInRank = currentRank === 0 || char.lastWingPromotionAge == null ? 3 : Math.max(0, char.age - char.lastWingPromotionAge);
+    const p4 = Math.min(100, (yearsInRank / 3) * 100);
+    const progressPct = Math.min(Math.round((p1 + p2 + p3) / 3), p4);
 
     return {
       category: 'WING ADVANCEMENT',
@@ -978,7 +997,8 @@ export function getNextCareerMilestone(char) {
       requirements: [
         { labelVi: 'Hiệu suất công việc (Merit)', labelEn: 'Merit', current: char.merit || 0, target: target.merit, met: (char.merit || 0) >= target.merit },
         { labelVi: 'Cổ phần & Ahn (Wealth)', labelEn: 'Wealth (Ahn)', current: curWealth, target: target.wealth, met: curWealth >= target.wealth },
-        { labelVi: 'Mối quan hệ nội bộ (Network)', labelEn: 'Network', current: curNet, target: target.network, met: curNet >= target.network }
+        { labelVi: 'Mối quan hệ nội bộ (Network)', labelEn: 'Network', current: curNet, target: target.network, met: curNet >= target.network },
+        ...(currentRank > 0 ? [{ labelVi: 'Năm giữ chức hiện tại', labelEn: 'Years in current post', current: yearsInRank, target: 3, met: yearsInRank >= 3 }] : [])
       ],
       tipVi: 'Hoàn thành các dự án nghiên cứu của Wing, giữ quan hệ với ban quản trị và tích lũy Ahn.',
       tipEn: 'Deliver Wing research quotas, cultivate corporate ties, and amass Ahn.'
@@ -1008,7 +1028,9 @@ export function getNextCareerMilestone(char) {
     const p1 = Math.min(100, ((char.merit || 0) / target.merit) * 100);
     const p2 = Math.min(100, (curWealth / target.wealth) * 100);
     const p3 = Math.min(100, (curReso / target.resonance) * 100);
-    const progressPct = Math.round((p1 + p2 + p3) / 3);
+    const yearsInRank = currentRank === 0 || char.lastWorkshopPromotionAge == null ? 3 : Math.max(0, char.age - char.lastWorkshopPromotionAge);
+    const p4 = Math.min(100, (yearsInRank / 3) * 100);
+    const progressPct = Math.min(Math.round((p1 + p2 + p3) / 3), p4);
 
     return {
       category: 'WORKSHOP MASTERY',
@@ -1018,7 +1040,8 @@ export function getNextCareerMilestone(char) {
       requirements: [
         { labelVi: 'Kinh nghiệm chế tác (Merit)', labelEn: 'Craft Merit', current: char.merit || 0, target: target.merit, met: (char.merit || 0) >= target.merit },
         { labelVi: 'Vốn mua nguyên liệu (Wealth)', labelEn: 'Wealth (Ahn)', current: curWealth, target: target.wealth, met: curWealth >= target.wealth },
-        { labelVi: 'Cộng hưởng tâm thức (Resonance)', labelEn: 'E.G.O Resonance', current: curReso, target: target.resonance, met: curReso >= target.resonance }
+        { labelVi: 'Dư âm vật liệu thử (Resonance)', labelEn: 'Prototype resonance', current: curReso, target: target.resonance, met: curReso >= target.resonance },
+        ...(currentRank > 0 ? [{ labelVi: 'Năm giữ bậc hiện tại', labelEn: 'Years at current rank', current: yearsInRank, target: 3, met: yearsInRank >= 3 }] : [])
       ],
       tipVi: 'Rèn luyện vũ khí mới, đăng ký bản quyền sáng chế với Tres Association và tích lũy nguyên liệu quý.',
       tipEn: 'Forge new weapon prototypes, register patents with Tres Association, and gather rare materials.'
@@ -1150,7 +1173,7 @@ export function generateFixerContract(char, rng) {
   let power = 48 + (9 - effGrade) * 7.5;
   power += (char.stats.health - 50) * 0.25;
   power += (char.stats.sanity - 50) * 0.2;
-  power -= activeScarCount(char) * 2;
+  power += scarContractPower(char);
   if (char.flags.includes('고급장비') || char.flags.includes('유물') || char.craftWeapon) power += 12;
   if (char.flags.includes('EGOAwakened') || char.flags.includes('ShinAwakened')) power += 18;
   if (npcIsActive(char.npcs?.partner)) power += 9;
@@ -1459,8 +1482,63 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
       return char;
     }
   }
+  const otherTrial = careerTrialForEvent(event.id);
+  if (otherTrial) {
+    const next = getOtherCareerPromotion(char);
+    if (!next?.isEligible || next.route !== otherTrial.route || next.rank !== otherTrial.rank ||
+        (next.route === 'finger' && next.finger !== otherTrial.finger)) {
+      char.logs.push({
+        id: `log_ev_${char.age}_${event.id}_invalid`, age: char.age, season: SEASONS[char.seasonIdx], type: 'promo',
+        vi: 'Giấy gọi xét bậc không còn khớp với hồ sơ hiện tại. Không có chỉ số nào thay đổi.',
+        en: 'The promotion summons no longer matches your record. No resources changed.'
+      });
+      return char;
+    }
+  }
   if (!char.seenEvents.includes(event.id)) {
     char.seenEvents.push(event.id);
+  }
+  if (otherTrial) {
+    const prefix = otherTrial.route === 'finger' ? 'Finger' : otherTrial.route === 'wing' ? 'Wing' : 'Workshop';
+    const retryKey = `${prefix.toLowerCase()}TrialRetryRank`;
+    char[`last${prefix}TrialAge`] = char.age;
+    char[retryKey] = otherTrial.rank;
+    const promotionChoice = choice[`set${prefix}Rank`] === otherTrial.rank;
+    if (promotionChoice && rng() >= careerPromotionSuccessChance(char, otherTrial)) {
+      const loss = careerPromotionFailureEffects(otherTrial);
+      const deltas = [];
+      for (const [key, amount] of Object.entries(loss)) {
+        const statsKey = ['health', 'sanity', 'wealth', 'network', 'rep'].includes(key);
+        const before = statsKey ? char.stats[key] : char[key] || 0;
+        const after = clamp(before + amount, 0, key === 'merit' ? 9999 : 100);
+        if (statsKey) char.stats[key] = after;
+        else char[key] = after;
+        if (after !== before) deltas.push({ k: key, v: after - before });
+      }
+      const verdict = otherTrial.route === 'finger'
+        ? `The ${otherTrial.finger} chưa trao bậc mới. Tổ chức giữ lại hồ sơ; bạn có thể trở lại từ năm sau nếu còn đủ điều kiện.`
+        : otherTrial.route === 'wing'
+          ? 'Hội đồng Wing gạch tên bạn khỏi đợt bổ nhiệm. Hồ sơ được giữ lại cho kỳ sau nếu bạn đáp ứng lại chỉ tiêu.'
+          : 'Đại diện Tres không đóng dấu kiểm định. Bạn phải bù lại vật liệu và có thể trình mẫu mới từ năm sau.';
+      const verdictEn = otherTrial.route === 'finger'
+        ? `The ${otherTrial.finger} withheld the new rank. Your record remains open; you may return next year if you qualify.`
+        : otherTrial.route === 'wing'
+          ? 'The Wing board passed over your appointment. Your file remains open for a later review if you meet the quotas again.'
+          : 'The Tres representative withheld the proofmark. You must replace the materials before presenting another sample next year.';
+      char.logs.push({
+        id: `log_ev_${char.age}_${event.id}_failed`, age: char.age, season: SEASONS[char.seasonIdx], type: 'major',
+        choiceVi: choice.labelVi, choiceEn: choice.labelEn, vi: verdict, en: verdictEn, deltas
+      });
+      char.weaver = recordChoiceInGraph(char.weaver, char, event, { effects: loss }, verdict, verdictEn);
+      closeThreads(char, event.id);
+      if (char.stats.health <= 0) {
+        const [woundVi, woundEn] = woundDeath(char, 'Gục ngã trong kỳ xét bậc', 'Succumbed during a promotion trial');
+        applyFatalOrCompanionSave(char, woundVi, woundEn);
+      } else if (char.stats.sanity <= 0) handleSanityBreakdown(char, rng);
+      char.weaver = updateDramaTension(char.weaver, char);
+      return char;
+    }
+    if (promotionChoice) char[retryKey] = null;
   }
   if (event.id.startsWith('fixer_promo_')) {
     char.lastFixerExamAge = char.age;
@@ -1638,6 +1716,12 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
   if (flagsRemove.length > 0) {
     char.flags = char.flags.filter(f => !flagsRemove.includes(f));
   }
+  if (setRegion === 'OUTSKIRTS') {
+    char.flags = char.flags.filter(f => f !== 'Nest' && f !== 'Feather');
+    if (!char.flags.includes('Outskirts')) char.flags.push('Outskirts');
+  } else if (setRegion) {
+    char.flags = char.flags.filter(f => f !== 'Outskirts');
+  }
 
   const scarsAdd = [
     ...(choice.scarsAdd || []),
@@ -1649,9 +1733,7 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
   ];
   scarsAdd.forEach(s => {
     const interpolated = interpolateText(s, char);
-    if (addScar(char, interpolated)) {
-      char.resonance = clamp((char.resonance || 0) + 10, 0, 100);
-    }
+    addScar(char, interpolated);
   });
 
   // Persistent Memories: Choices remain etched into character's past

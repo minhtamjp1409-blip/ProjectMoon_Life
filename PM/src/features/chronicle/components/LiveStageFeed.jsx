@@ -273,8 +273,8 @@ const EventDock = ({ event, char, onPick }) => {
             }
             if (Array.isArray(ch.scarsAdd) && ch.scarsAdd.length > 0) {
               extra.push(
-                <span className="delta is-down is-static" key="s">
-                  {t('Để lại sẹo', 'Leaves a scar')}
+                <span className="delta is-rare is-static" key="s">
+                  {t('Để lại dấu tích', 'Leaves a mark')}
                 </span>
               );
             }

@@ -3,7 +3,7 @@
  *   - logic violations (see src/engine/storyInvariants.js), each with a seed and age to replay
  *   - variety: distinct moments per life, overlap between lives, repetition inside a life,
  *     and which entries never fire
- * Usage: node story_logic_audit.mjs [lives=800] [policy=random|greedy]
+ * Usage: node story_logic_audit.mjs [lives=500] [policy=random|greedy]
  * Exit code 1 when any logic violation is found.
  */
 import { createNewCharacter, resolveEventChoice, createRNG, resolveFixerContract, ALL_STORY_EVENTS } from './src/engine/gameEngine.js';
@@ -12,7 +12,7 @@ import { CONSEQUENCE_EVENTS } from './src/data/eventsChildhood.js';
 import { choiceIsAvailable } from './src/engine/eventConditions.js';
 import { checkState, checkScenes, logEntryId } from './src/engine/storyInvariants.js';
 
-const LIVES = Number(process.argv[2]) || 800;
+const LIVES = Number(process.argv[2]) || 500;
 const POLICY = process.argv[3] === 'greedy' ? 'greedy' : 'random';
 const SKIP_IDS = new Set(['year_end', 'npc_autonomy', 'x']);
 

@@ -639,7 +639,7 @@ export const LIFE_DAILIES = [
     't_back_friend_dream',
     TEEN,
     { back: true, npc: 'friend' },
-    '[Giấc mơ Nest trên mái tôn] {friend} thổ lộ ước mơ trở thành một Fixer tiếng tăm để tích góp đủ tiền mua tấm vé thường trú chuyển cả nhà vào sống trong Nest. Hai đứa ngồi vắt vẻo trên mái tôn tính toán số năm cần làm lụng; con số quá khổng lồ và xa vời khiến cả hai chỉ biết nhìn nhau bật cười chua chát.',
+    '[Giấc mơ Nest] {friend} muốn làm Fixer, dành tiền đưa cả nhà vào Nest. Hai người ngồi trên mái tôn tính số năm phải làm việc. Khi ra con số, {friend} gấp tờ giấy lại.',
     '[Rooftop Nest Ambition] {friend} confided their dream of becoming a renowned Fixer to buy a permanent residence visa into a Nest. Sitting on the tin roof calculating the required centuries of work, the astronomical sum made you both laugh in bitter irony.',
     { sanity: 3 },
     { bond: { friend: 5 } }
@@ -951,7 +951,7 @@ export const LIFE_DAILIES = [
     'r_k_ampoule',
     [6, 140],
     { regions: ['K'] },
-    '[Huyết thanh K Corp District 11] Ở District 11, hầu như người dân nào cũng thủ sẵn một ống tiêm huyết thanh phục hồi K Corp trong túi áo. Người ta tiêm thứ dung dịch xanh biếc ấy để chữa lành cơ thể dễ dàng như uống nước, và tuyệt đối không một ai dám hỏi xem K Corp chiết xuất nó từ nguồn gốc kinh hoàng nào.',
+    '[Ống tiêm K Corp] Ở District 11, người ta mang theo huyết thanh K Corp như mang chìa khóa. Một người tiêm thuốc ngay trước mặt bạn; vết thương khép lại. Không ai trong hàng chờ hỏi dịch xanh ấy lấy từ đâu.',
     '[District 11 Green Vials] In District 11, nearly every citizen carried a spare K Corp HP ampoule in their coat pocket. People injected the luminescent green fluid as casually as drinking water, never daring to question what horrific source K Corp distilled it from.',
     { health: 3 }
   ),

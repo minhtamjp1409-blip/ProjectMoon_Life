@@ -66,10 +66,10 @@ function loadSavedMeta() {
     const raw = JSON.parse(localStorage.getItem(META_KEY) || '{}');
     return {
       pastLives: Array.isArray(raw.pastLives) ? raw.pastLives : [],
-      globalCodex: Array.isArray(raw.globalCodex) ? raw.globalCodex : ['born_city']
+      globalCodex: Array.isArray(raw.globalCodex) ? raw.globalCodex : []
     };
   } catch {
-    return { pastLives: [], globalCodex: ['born_city'] };
+    return { pastLives: [], globalCodex: [] };
   }
 }
 

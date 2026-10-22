@@ -226,6 +226,26 @@ const FRIEND_LINE = [
   { vi: '{friend}, đứa trẻ cùng dãy nhà, {trait}. Sau này bạn sẽ gọi nó là bạn thân nhất.', en: '{friend}, the kid from your row, {trait}. One day you would call them your best friend.' }
 ];
 
+const OUTSKIRTS_NIGHT = [
+  { vi: 'Đêm ấy, người gác trại đếm đủ từng chiếc xe trước khi dập lửa. Ngoài tường thành, không có ai đến khi nghe tiếng trẻ khóc.', en: 'That night the camp watch counted every cart before putting out the fire. Beyond the wall, no one came at the sound of a newborn crying.' },
+  { vi: 'Đêm ấy gió lùa qua tấm bạt che. Mẹ bạn lấy hai chiếc áo cũ chèn vào khe hở, rồi thức đến sáng để giữ chúng khỏi bay.', en: 'Wind pulled at the camp tarp that night. Your mother stuffed two old coats into the gap and stayed awake to keep them there.' },
+  { vi: 'Đêm ấy, ánh đèn The City hiện trên đường chân trời. Đoàn xe không đi về phía ấy; người dẫn đường bảo phải chờ đủ hàng mới đến được chân tường.', en: 'The City lights showed on the horizon that night. The caravan did not head toward them; the guide said they needed a full load before approaching the wall.' }
+];
+
+const OUTSKIRTS_OMEN = {
+  index_equilibrium: { vi: 'Người đỡ đẻ nghe nhịp thở đều của bạn rồi gật đầu. Bà ghi một dấu than nhỏ lên thành xe, cạnh tên những đứa trẻ đã qua được đêm đầu.', en: 'The midwife listened to your steady breathing and nodded. She marked the cart beside the names of children who survived their first night.' },
+  merciless_head: { vi: 'Sáng hôm sau, một người từ đoàn xe qua cổng mang về mảnh giấy ghi tên bạn. Không ai trong trại biết ai đã hỏi đến một đứa trẻ sinh ngoài tường.', en: 'The next morning someone returning from the gate brought a slip bearing your name. No one in camp knew who had asked about a child born beyond the wall.' },
+  carmen_whisper: { vi: 'Bạn ngừng khóc khi cả trại đã ngủ. Người ôm bạn nghe bạn khe khẽ đáp lại một giọng nói mà họ không nghe thấy.', en: 'You stopped crying after the camp fell asleep. The person holding you heard you answer a voice they could not hear.' },
+  crimson_sweeper_star: { vi: 'Người gác trại nhìn về phía tường khi bạn ra đời. Còi từ bên trong vọng ra rất xa; ông ta chờ nó tắt rồi mới nhóm lại lửa.', en: 'The camp watch looked toward the wall as you were born. A siren carried from inside the City; he waited for it to stop before relighting the fire.' },
+  jcorp_rigged_dice: { vi: 'Một người trong đoàn tung đồng xu để đoán sáng mai có đi tiếp được không. Đồng xu rơi xuống cạnh nôi bạn, đứng nghiêng giữa hai viên đá.', en: 'Someone in the caravan flipped a coin to decide whether they could travel at dawn. It landed beside your cot, balanced between two stones.' },
+  bloodline_echo: { vi: 'Người thân đặt một chiếc thẻ cũ cạnh chăn bạn. Số trên thẻ đã bị cạo đi trước khi cả nhà rời The City.', en: 'A relative set an old identity plate beside your blanket. Its number had been scraped off before the family left the City.' }
+};
+
+const OUTSKIRTS_FRIEND = [
+  { vi: '{friend} sinh cùng mùa trong đoàn xe, {trait}. Hai đứa học cách nhận ra tiếng chân nhau giữa những buổi chuyển trại.', en: '{friend} was born in the caravan that season, {trait}. You learned to recognize each other’s footsteps whenever camp moved.' },
+  { vi: 'Người bạn đầu tiên của bạn là {friend}, {trait}. Hai đứa chia nhau chỗ ngồi sau xe chở hàng.', en: 'Your first friend was {friend}, {trait}. You shared a place at the back of the freight cart.' }
+];
+
 const fill = (s, map) => Object.entries(map).reduce((acc, [k, v]) => acc.replaceAll(`{${k}}`, v), s);
 
 /**
@@ -235,11 +255,13 @@ const fill = (s, map) => Object.entries(map).reduce((acc, [k, v]) => acc.replace
 export function composeBirth({ kind, familyId, omenId, regionVi, regionEn, regionId = null, name, generation, rng }) {
   const place = pick(PLACE[kind] || PLACE.back, rng);
   const fam = pick(FAMILY[familyId] || FAMILY.backstreet_worker, rng);
-  const night = pick(THAT_NIGHT, rng);
-  const omen = pick(OMEN_LINE[omenId] || OMEN_LINE.index_equilibrium, rng);
+  const night = pick(kind === 'out' ? OUTSKIRTS_NIGHT : THAT_NIGHT, rng);
+  const omen = kind === 'out'
+    ? OUTSKIRTS_OMEN[omenId] || OUTSKIRTS_OMEN.index_equilibrium
+    : pick(OMEN_LINE[omenId] || OMEN_LINE.index_equilibrium, rng);
   const hasFriend = rng ? rng() < 0.50 : Math.random() < 0.50;
   const friend = hasFriend ? makeNpc('friend', rng, { regionId, nest: kind === 'nest', avoidNames: [name] }) : null;
-  const fl = hasFriend ? pick(FRIEND_LINE, rng) : null;
+  const fl = hasFriend ? pick(kind === 'out' ? OUTSKIRTS_FRIEND : FRIEND_LINE, rng) : null;
 
   const head = generation > 1
     ? { vi: `Thế hệ #${generation}. Bạn được đặt tên là ${name}.`, en: `Generation #${generation}. You were named ${name}.` }
@@ -270,8 +292,12 @@ export function composeBirth({ kind, familyId, omenId, regionVi, regionEn, regio
         en: `[Childhood Companion] ${fill(fl.en, { friend: friend.nameEn, trait: friend.traitEn })}`
       } : {
         type: 'daily',
-        vi: `[Tuổi thơ đơn độc] Bạn lớn lên giữa những bức tường xám của ${regionVi} mà không có lấy một người bạn cùng trang lứa. Bạn sớm học cách tự sinh tồn và cảnh giác với tất cả những ai tiến lại gần.`,
-        en: `[Solitary Childhood] You grew up amid the grey walls of ${regionEn} without a companion your age. You early learned to survive on your own and stay wary of anyone approaching.`
+        vi: kind === 'out'
+          ? '[Tuổi thơ đơn độc] Đoàn xe có nhiều người, nhưng không có đứa trẻ nào bằng tuổi bạn. Mỗi lần chuyển trại, bạn tự buộc hành lý của mình lên xe.'
+          : `[Tuổi thơ đơn độc] Bạn lớn lên giữa những bức tường xám của ${regionVi} mà không có lấy một người bạn cùng trang lứa. Bạn sớm học cách tự sinh tồn và cảnh giác với tất cả những ai tiến lại gần.`,
+        en: kind === 'out'
+          ? '[Solitary Childhood] The caravan held many people, but no child your age. Each time camp moved, you tied your own bundle to the cart.'
+          : `[Solitary Childhood] You grew up amid the grey walls of ${regionEn} without a companion your age. You early learned to survive on your own and stay wary of anyone approaching.`
       }
     ]
   };

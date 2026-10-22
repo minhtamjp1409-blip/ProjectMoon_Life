@@ -16,6 +16,7 @@ import { npcIsActive } from './eventConditions.js';
 import { clamp, interpolateText, getNextCareerMilestone } from './gameEngine.js';
 import { makeNpc } from '../data/birthStories.js';
 import { bondCapFor } from '../data/npcPersonality.js';
+import { getScarProfile, normalizeScars } from './scarModel.js';
 
 const THEME_REST_YEARS = 4;
 
@@ -51,6 +52,25 @@ export function directorWeight(entry, char) {
   let reason = null;
   const tags = entry.tags || [];
   const tension = char.weaver?.tensionScore ?? 20;
+  const scarTags = new Set(normalizeScars(char).scars.map((name) => getScarProfile(name).tag));
+
+  const affinities = {
+    survivor: ['survival', 'escape'], injury: ['medical', 'healing'],
+    weapon: ['combat', 'contract'], craft: ['workshop', 'repair'],
+    faction: ['syndicate', 'faction'], trauma: ['relief', 'memory'],
+    witness: ['investigation', 'secret']
+  };
+  for (const [scarTag, eventTags] of Object.entries(affinities)) {
+    if (scarTags.has(scarTag) && eventTags.some((tag) => tags.includes(tag))) {
+      w *= 1.35;
+      reason = reason || { vi: 'Dấu tích cũ khiến chuyện này gần hơn', en: 'An old mark brings this story closer' };
+    }
+  }
+
+  if (entry.scarAffinity && scarTags.has(entry.scarAffinity)) {
+    w *= 2.4;
+    reason = { vi: 'Dấu tích cũ đưa bạn trở lại chuyện này', en: 'An old mark draws you back' };
+  }
 
   if (n.regions) {
     w *= 2.6;

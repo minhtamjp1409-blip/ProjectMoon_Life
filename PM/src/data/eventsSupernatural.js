@@ -12,13 +12,13 @@ export const SUPERNATURAL_EVENTS = [
     major: true,
     weight: 7,
     jobs: ['Workshop Craftsman'],
-    vi: '[Khối Hợp Kim Còn Nhịp Đập] Mùi lưu huỳnh, bồ hóng và dầu máy nguội ngắt bao trùm gian xưởng nhỏ của bạn. Trong màn sương axit của Backstreets, một Fixer Grade 1 mang áo măng tô chống đạn rách bươm, con mắt cơ khí xoay tít cọt kẹt, bước vào và thả một khối hợp kim nặng trịch xuống đe sắt. Khối kim loại được cắt ra từ lõi của một Abnormality vừa bị triệt hạ — nó rỉ ra thứ dịch đen nhờn nhợt và tỏa ra nhiệt lượng âm độ làm đóng băng mặt đe.\n"Rèn cho tôi một lưỡi kiếm từ thứ này." Những người thợ già ở Zelkova Workshop từng cảnh báo: Nước tôi thép bình thường sẽ làm nứt vỡ cấu trúc dị thể Singularity. Chỉ có máu nóng của một người thợ mang ý chí sắt đá mới thuần hóa được nó.',
+    vi: "[Khối hợp kim còn nhịp đập] Một Fixer Grade 1 đặt lên đe của bạn lõi kim loại lấy từ Abnormality. Nó rỉ dịch đen và làm mặt đe lạnh buốt. \"Rèn thành kiếm.\" Nước tôi thường sẽ làm nó nứt; bạn phải chọn cách khác.",
     en: '[The metal that still bleeds] A Grade 1 Fixer set a lump of alloy on your anvil, cut from the core of an Abnormality. It was still seeping something black. “Make me a sword from this.” Ordinary quenching water would crack it. The old smiths say only blood will hold it.',
     choices: [
       {
         labelVi: 'Tôi thép bằng máu của chính bạn',
         labelEn: 'Quench it in your own blood',
-        resultVi: 'Bạn rạch sâu lòng bàn tay, để dòng máu ấm xối thẳng lên rãnh thép đang đỏ rực trong thùng tôi. Hơi nước bốc lên đỏ quạch, sặc mùi sắt nung và điện tích ozone. Khối kim loại gầm lên một tiếng rền rĩ kỳ dị rồi nguội lại thành một lưỡi đao đen bóng, không hề có một vết nứt vi mô. Khi ngón tay bạn chạm vào chuôi kiếm, nó ấm nóng và truyền lại từng nhịp đập thình thịch đồng điệu với tim bạn. Một kiệt tác Workshop sinh ra từ máu thịt.',
+        resultVi: "Bạn rạch lòng bàn tay và dùng máu tôi khối hợp kim. Nó nguội lại thành lưỡi kiếm đen không nứt. Khi bạn cầm chuôi, nhịp đập trong kim loại khớp với tim mình. Fixer nhận kiếm và trả tiền.",
         resultEn: 'When the blade met your blood the steam rose red and smelled of iron. It did not crack. When you lifted it, it was warm, as if it had a pulse.',
         openCraftModal: true,
         effects: { health: -15, wealth: +18, rep: +16, network: +12, resonance: +14 },
@@ -30,7 +30,7 @@ export const SUPERNATURAL_EVENTS = [
       {
         labelVi: 'Làm thêm một khẩu súng bắn xuyên tường cho người trả giá cao hơn (vi phạm Taboo)',
         labelEn: 'Also build a wall-piercing gun for a higher bidder (a Taboo violation)',
-        resultVi: 'Viên đạn thử nghiệm từ khẩu súng nén gia tốc xé toạc bốn bức tường bê tông cốt thép dày nửa mét, biến hình nhân thử nghiệm phía sau thành bụi mịn. Gã khách hàng che kín mặt thả xuống bàn một bọc Ahn nặng trịch, không nói một lời rồi biến mất vào bóng đêm. Ba ngày sau, một chấp hành viên mặc vest đen cài huy hiệu của B Corp đứng bất động đối diện cửa xưởng bạn dưới ánh đèn đường vàng vọt. Người đó không bắt giữ bạn ngay, chỉ lặng lẽ ghi chép vào một cuốn sổ kẹp tài liệu và nhìn chằm chằm.',
+        resultVi: "Viên đạn thử xé qua các vách bê tông. Khách hàng trả Ahn rồi đi. Ba ngày sau, một chấp hành viên B Corp đứng trước xưởng, ghi chép vào sổ mà không gõ cửa.",
         resultEn: 'The test round went through four concrete walls. The buyer paid double and asked nothing. Three days later someone in a B Corp uniform stood across from your workshop, doing nothing, only watching.',
         effects: { wealth: +28, rep: +14, taboo: +1, sanity: -10, resonance: +14 },
         flagsAdd: ['유물'],
@@ -56,13 +56,13 @@ export const SUPERNATURAL_EVENTS = [
     major: true,
     weight: 7,
     forbids: ['Bloodfiend'],
-    vi: '[Dạ Khúc Máu Dưới Hầm Ngầm] Đáy sâu tầng hầm của một dinh thự cổ kiểu Baroque tại District 16. Mùi rượu vang mốc meo hòa lẫn với mùi máu tanh nồng nặc. Toàn bộ tiểu đội của bạn nằm la liệt trên sàn gỗ mục nát, xác họ trắng bệch như thạch cao vì bị rút cạn máu. Từ trong bóng tối của những tấm rèm nhung rách tả tơi, một Trưởng Lão Bloodfiend (Kindred thế hệ thứ hai) với làn da trắng sứ không một tì vết, móng tay dài như kim sơn đỏ, một tay nhấc bổng bạn lên không trung mà không cần tốn chút sức lực. Đôi mắt đỏ rực như đá ruby của bà ta nhìn xoáy vào đồng tử bạn:\n"Ngươi có thể làm một chiếc Bloodbag ngoan ngoãn trong hầm ủ, để ta uống dần từng ngụm ấm áp qua năm tháng... Hoặc mở miệng ra, đón lấy dòng máu cấm kỵ của ta, chia sẻ bóng tối và cơn khát vĩnh hằng này."',
+    vi: "[Lời mời dưới hầm] Đồng đội của bạn nằm bất động trong tầng hầm District 16. Một Trưởng Lão Bloodfiend nhấc bạn khỏi sàn. Bà ta cho bạn chọn: sống làm Bloodbag trong hầm, hoặc nhận máu của bà và mang theo cơn khát ấy.",
     en: '[A Bloodfiend’s offer] Your whole squad died in the underground manor. An Elder Bloodfiend held you by the throat with one hand, without effort.\n“You can be a Bloodbag, and I will drink you slowly. Or you can drink from me, and live forever with the thirst.”',
     choices: [
       {
         labelVi: 'Uống máu từ cổ tay bà ta',
         labelEn: 'Drink from her wrist',
-        resultVi: 'Dòng máu từ vết cắn nơi cổ tay bà ta tràn vào cổ họng bạn, nóng bỏng như chì nấu chảy và nồng nặc vị hoa hồng mục ruỗng. Từng thớ cơ bắp của bạn co giật dữ dội; răng nanh dài ra đâm rách môi dưới, các khớp xương tự bẻ gãy rồi ráp lại thành một hình thể dẻo dai phi nhân loại. Cơn đau thấu tận linh hồn tan đi, nhường chỗ cho một sức mạnh bóng tối kinh hoàng. Bạn sẽ sống thêm hàng trăm năm nữa. Nhưng kể từ đêm nay, mỗi khi ánh đèn đường Backstreets vụt tắt, một cơn khát rực lửa sẽ cào xé lồng ngực bạn đến phát điên.',
+        resultVi: "Bạn uống máu từ cổ tay bà ta. Cơn đau chạy qua xương rồi lắng xuống; răng nanh cạ vào môi dưới. Bạn sống sót và trở thành Bloodfiend. Khi đêm xuống, cơn khát bắt đầu trở lại.",
         resultEn: 'Her blood burned like molten metal. Your teeth lengthened; your bones broke and set themselves into a different shape. You will live a very long time. And every night you will thirst.',
         flagsAdd: ['Bloodfiend'],
         effects: { health: +22, sanity: -20, rep: +14, resonance: +22 },
@@ -80,7 +80,7 @@ export const SUPERNATURAL_EVENTS = [
       {
         labelVi: 'Đập vỡ chai dầu cháy trên người mình',
         labelEn: 'Smash the incendiary flask on yourself',
-        resultVi: 'Bạn giấu tay sau lưng, đập vỡ bình dầu hỏa cháy dự phòng rồi kích nổ kíp mồi lửa ngay trên ngực mình. Ngọn lửa bùng lên dữ dội giữa hai người, thiêu rụi tấm áo nhung của bà ta và đốt cháy một mảng lưng bạn. Tiếng thét the thé xé tai của vị Trưởng Lão vang lên khi bà ta buông tay lùi lại. Đúng lúc ấy, cánh cửa sồi nặng nề bị phá tung; các thợ săn của Fanghunt Office trong bộ áo mưa đen xông vào với cọc gỗ và máy bắn đinh hơi. Họ bao vây căn phòng, giải cứu bạn và chia cho bạn một phần tiền thưởng kếch xù.',
+        resultVi: "Bạn đập bình dầu và châm lửa giữa hai người. Bà ta buông tay; lửa bén vào lưng bạn. Fanghunt Office phá cửa xông vào, khống chế Trưởng Lão và đưa bạn ra ngoài. Họ chia cho bạn một phần tiền thưởng.",
         resultEn: 'The fire caught your back and her arm at the same moment. She let go. Right then, Fanghunt Office broke down the door with their stakes. They split the bounty with you.',
         effects: { health: -22, sanity: +6, wealth: +18, rep: +18, network: +12 },
         scarsAdd: ['Lưng bỏng đêm ấy'],
@@ -96,7 +96,7 @@ export const SUPERNATURAL_EVENTS = [
     major: true,
     regions: ['21'],
     weight: 5.5,
-    vi: '[Đại Họa Cá Voi Giữa Biển Sáp U Corp] Giữa tâm bão mù mịt của District 21 · The Great Lake, những con sóng đen như dầu nhớt đập rầm rầm vào mạn thuyền săn. Màn sương nứt toác khi một thực thể Calamity khổng lồ — Pallid Whale — trồi lên từ đáy vực như một ngọn núi đá vôi di động. Mùi hôi thối của vôi rữa và sáp trắng bốc lên nồng nặc. Cú đớp kinh hoàng của nó nuốt chửng phân nửa đoàn thuyền cơ giới vào họng vực sâu. Thứ dịch nhầy màu trắng nhớt bắn tung tóe khắp boong tàu; bất cứ thủy thủ nào chạm phải đều bắt đầu cứng đờ lại như thạch cao, hai chân dính chặt vào nhau biến thành đuôi cá sáp dính bệt. Người bạn đồng hành vừa cùng bạn chia nửa điếu thuốc lúc nãy giờ đã hóa trắng bệch đến tận cằm, đôi mắt đục ngầu vô hồn đang quay sang cắn xé bạn.',
+    vi: "[Pallid Whale] Bão quật con thuyền trên Great Lake. Pallid Whale trồi lên, nuốt mất nửa đoàn. Dịch trắng bắn lên boong, làm thủy thủ hóa cứng. Người vừa chia thuốc lá với bạn đã trắng tới cằm và đang quay sang cắn bạn.",
     en: '[The Whale on the Great Lake] In the middle of the storm on District 21’s Great Lake, a Whale surfaced and swallowed half the fleet. Sailors splashed with its white fluid began to harden like wax, their legs fusing into tails. Then they turned and bit the living.\nThe person beside you had turned white up to the neck.',
     choices: [
       {
@@ -105,7 +105,7 @@ export const SUPERNATURAL_EVENTS = [
         outcomes: [
           {
             w: 56,
-            resultVi: 'Lưỡi dao Workshop của bạn chém đứt lìa cánh tay đang hóa sáp của người đồng đội trước khi chất độc lan vào ngực anh ta. Bạn lấy dây cáp tời buộc chặt mình vào bệ phóng lao, nạp khối bộc phá áp lực cao và bắn thẳng mũi lao sắt xuyên thủng con ngươi mờ đục của con Cá Voi. Khối thuốc nổ kích hoạt xé toạc hốc mắt nó trong tiếng gầm hạ âm làm rung chuyển cả đại dương. Con quái vật gầm rú chìm sâu xuống đáy biển, cuốn theo một dòng xoáy sáp trắng xoay tròn cuồng loạn. Tại các quán rượu bến cảng District 21, câu chuyện về người săn cá voi mù mắt được kể lại như một huyền thoại sống.',
+            resultVi: "Bạn cắt phần tay đã hóa trắng của đồng đội, rồi buộc mình vào bệ phóng lao. Mũi lao mang thuốc nổ xuyên vào mắt Pallid Whale. Nó lặn xuống, kéo theo một xoáy nước trắng. Ở bến cảng, người ta nhắc tên bạn mỗi khi kể về chuyến săn ấy.",
             resultEn: 'The harpoon went into its eye. The Whale sank, dragging a white whirlpool down with it. In District 21 they tell this story in the bars, and every time the Whale gets a little bigger.',
             effects: { health: -22, sanity: -12, wealth: +24, rep: +24, resonance: +18 },
             recordsAdd: ['lake_whale_slayer'],
@@ -114,7 +114,7 @@ export const SUPERNATURAL_EVENTS = [
           },
           {
             w: 44,
-            resultVi: 'Cái đuôi khổng lồ quất ngang boong tàu như một tòa cao ốc sụp đổ, nghiền nát bệ phóng lao thành sắt vụn. Một mảng chất nhờn trắng bám chặt vào bả vai bạn và bắt đầu ăn mòn da thịt, biến các sợi cơ thành sáp đá lạnh ngắt. Giữa cơn bão dữ, bạn ghì chặt vết thương vào ngọn đèn dầu đang cháy rừng rực, tự tay dùng dao gọt bỏ từng mảng thịt trắng đang hoại tử trước khi chất sáp bò đến tim. Bạn sống sót, nhưng vết sẹo sáp trắng trên vai vĩnh viễn không bao giờ lành lặn.',
+            resultVi: "Đuôi Pallid Whale phá nát bệ phóng lao. Dịch trắng bám vào vai bạn, làm da hóa cứng. Bạn đốt rồi cắt bỏ phần nhiễm trước khi nó lan sâu hơn. Vết sáp trên vai không mất đi.",
             resultEn: 'Its tail broke the hull apart. A white patch landed on your shoulder and began to spread. You heated a knife over the oil lamp and cut that flesh out yourself before it reached your heart.',
             effects: { health: -34, sanity: -20, resonance: +22 },
             scarsAdd: ['Mảng thịt tự cắt bỏ']
@@ -130,7 +130,7 @@ export const SUPERNATURAL_EVENTS = [
     age: [20, 50],
     major: true,
     weight: 8,
-    vi: '[Kỳ Sát Hạch Gia Chủ Hongyuan] District 8, bên trong những dinh phủ nguy nga của đại gia tộc Hongyuan. Tiếng mưa rơi thanh tao trên những mái ngói ngọc bích uốn lượn. Trên lầu cao thanh tịnh, các trưởng lão và những người thừa kế khoác áo lụa là ngồi thưởng trà ô long, mỉm cười đàm đạo tao nhã trong khi ở sân đá bên dưới, hàng trăm thuộc hạ và đao phủ chém giết nhau không một tiếng la hét, để máu nhuộm đỏ lòm các rãnh thoát nước. Để bước lên vị trí Gia chủ tối cao, bạn phải tiến lên trước bài vị tổ tiên và nuốt trọn viên Huyết Đan (Crimson Bolus) — thứ tinh hoa luyện từ máu tủy và sinh lực chưng cất của những kẻ bại trận. Nếu kinh mạch và ý chí của bạn không đủ thâm sâu, viên đan dược sẽ thiêu rụi nội tạng bạn từ bên trong thành vũng tro tàn.',
+    vi: "[Kỳ sát hạch Hongyuan] Trưởng lão ngồi uống trà trên lầu; dưới sân, người của các nhánh gia tộc chém giết để chọn kẻ thắng. Trước bài vị tổ tiên là viên Huyết Đan luyện từ máu người bại trận. Muốn giành ghế Gia chủ, bạn phải nuốt nó và sống qua đêm.",
     en: '[Choosing a Hierarch in Hongyuan] In District 8 the heirs of the great families sit drinking tea and smiling while their servants kill each other in the courtyard below.\nTo become Hierarch you must swallow a Bolus refined from the blood of those who lost. If your body cannot bear it, it will eat you from the inside.',
     choices: [
       {
@@ -139,7 +139,7 @@ export const SUPERNATURAL_EVENTS = [
         outcomes: [
           {
             w: 58,
-            resultVi: 'Viên Huyết Đan trôi xuống cuống họng nóng rực như dung nham sôi. Suốt một đêm dài trong mật thất, máu đen rỉ ra từ khóe mắt, lỗ tai và mười đầu ngón tay bạn, từng thớ cơ bị xé toạc rồi tái sinh dưới uy lực của Singularity cổ xưa. Khi tia nắng ban mai đầu tiên rọi qua khung cửa sổ gấm hoa, bạn bước ra sân viện với khí thế áp đảo của một bậc đế vương, ánh mắt thấu suốt tâm can khiến ba người anh em họ đang nâng chén trà bỗng run rẩy đánh rơi tách sứ xuống sàn. Gia tộc Hongyuan chính thức phủ phục dưới chân Gia chủ mới.',
+            resultVi: "Viên Huyết Đan đốt nóng cổ họng. Bạn ở trong mật thất suốt đêm, máu đen thấm qua tay áo. Sáng ra, bạn bước tới trước các trưởng lão. Không ai ngăn bạn ngồi vào ghế Gia chủ.",
             resultEn: 'Black blood ran from your eyes and nose all night. By morning you stood, and your body was not what it had been. Three cousins had not yet set down their teacups.',
             flagsAdd: ['HongyuanHierarch'],
             recordsAdd: ['hongyuan_lord'],
@@ -149,7 +149,7 @@ export const SUPERNATURAL_EVENTS = [
           },
           {
             w: 42,
-            resultVi: 'Dược lực tàn bạo của viên Huyết Đan vượt quá giới hạn chịu đựng của thể xác bạn. Từng mạch máu dưới da nứt toác, máu độc trào ra xé rách lồng ngực. Bạn phải dùng đoản đao tự rạch ba đường dài trên cánh tay và bụng để máu độc thoát ra ngoài, lê lết từng bước rời khỏi sân viện đẫm máu trong khi tiếng cười khẩy của những kẻ thừa kế khác vẫn lanh lảnh bên chén trà bốc khói.',
+            resultVi: "Huyết Đan làm máu độc trào lên dưới da. Bạn rạch tay để thoát bớt độc rồi rời sân viện. Những người thừa kế khác vẫn uống trà; ghế Gia chủ không dành cho bạn hôm nay.",
             resultEn: 'The Bolus burst your blood vessels from within. You had to cut yourself open to let the poison out, then crawl from the courtyard while the other heirs went on drinking their tea.',
             effects: { health: -46, sanity: -28, resonance: +28 },
             scarsAdd: ['Viên Bolus không chịu nổi']
@@ -166,13 +166,13 @@ export const SUPERNATURAL_EVENTS = [
     major: true,
     weight: 7.5,
     jobs: ['Syndicate', 'Fixer'],
-    vi: '[Lời Thề Cốt Nhục Của The Pinky] Đỉnh một tháp chuông rỉ sét chơ vơ giữa cơn mưa rào của Backstreets. Tiếng chuông đồng ngân vang từng nhịp trầm đục trong màn đêm. Một đao thủ của Ngón Út (The Pinky) mặc áo choàng vải lanh xám rút thanh kiếm hẹp hình tam giác ra khỏi lồng ngực một kẻ phản bội, rồi quỳ một chân đặt lưỡi thép sáng loáng xuống dưới chân bạn. Không một giọt máu hay hạt mưa nào bám được trên thân kiếm. Người đó ngước nhìn bạn qua tấm mạng che:\n"The Pinky không có những tờ giấy Prescript vô tri như Index, cũng không có cuốn sổ nợ thù hằn của Middle. Ở đây, thứ duy nhất gắn kết chúng ta là lời thề khắc vào xương cốt. Nếu muốn trở thành một Ngôi Sao dẫn đường của chúng ta, hãy dùng con dao này, rạch thịt và bẻ một mẩu xương sườn của chính ngươi khảm vào đốc kiếm."',
+    vi: "[Lời thề The Pinky] Trên tháp chuông, một đao thủ đặt thanh kiếm của kẻ phản bội dưới chân bạn. \"Muốn dẫn đường cho chúng ta, hãy khảm một mẩu xương của chính mình vào đốc kiếm.\" Con dao nhỏ nằm cạnh đó, còn người của The Pinky đang chờ.",
     en: '[The Pinky’s oath] On top of a bell tower in the rain, someone of the Pinky drew a sword from a traitor’s chest and laid it at your feet.\n“In the Pinky there are no ranks, only oaths. Take a piece of your own rib and set it into this hilt.”',
     choices: [
       {
         labelVi: 'Làm theo',
         labelEn: 'Do it',
-        resultVi: 'Không một tiếng rên rỉ, bạn nhận lấy con dao găm nhỏ, rạch một đường dứt khoát dưới xương sườn thứ tư và dùng ngón tay bẻ rời một mẩu xương còn vương máu ấm. Người đao thủ đứng bất động quan sát từng cử chỉ với ánh mắt kính nể tuyệt đối. Mẩu xương vừa khít vào hốc trống trên chuôi kiếm như thể nó đã chờ đợi bạn từ hàng thập kỷ. Kim loại đen và tủy xương hợp nhất trong một tiếng "tách" đanh gọn. Kể từ đêm nay dưới sự chứng giám của tháp chuông, bạn chính thức là một Star của The Pinky.',
+        resultVi: "Bạn dùng con dao lấy một mẩu xương sườn, đặt vào hốc trên đốc kiếm. Người đao thủ khóa nó lại, trao kiếm cho bạn. The Pinky ghi nhận lời thề; vết thương sẽ nhắc bạn về nó.",
         resultEn: 'You did it yourself, with a small knife, while the other watched in silence. The piece of bone fit the hilt exactly, as if it had been waiting there. From tonight you are a Star of the Pinky.',
         setFinger: 'Pinky',
         setFingerRank: 2,
@@ -191,7 +191,7 @@ export const SUPERNATURAL_EVENTS = [
     major: true,
     weight: 999,
     forbids: ['EGOAwakened', 'Distorted'],
-    vi: '[Can you hear my voice? · Vầng Thái Dương Của Ánh Sáng] Mọi vết thương, nỗi mất mát và những vết sẹo chằng chịt trong cuộc đời bạn ({scars}) bỗng ùa về cùng một lúc, dâng lên thành một cơn bão cảm xúc nghẹn ứ nơi cổ họng. Không gian mục nát của The City tan biến; xung quanh bạn chỉ còn lại một biển ánh sáng ấm áp, rực rỡ và thiêu đốt — một vầng thái dương trắng muốt bao la vô tận. Từ trung tâm của ánh sáng, một người phụ nữ với mái tóc nâu buông xõa, đôi mắt thấu suốt mọi ngóc ngách tâm can và nụ cười dịu dàng vô bờ bến nghiêng đầu nhìn bạn:\n"Đau đớn lắm, phải không con người nhỏ bé? Ở cái thành phố lạnh lẽo này, cố bám víu lấy hình người chỉ khiến bạn bị từng bánh răng nghiền nát từng ngày một mà thôi. Hãy yêu lấy chính bản thân mình đi. Đừng cố gồng gánh nữa. Bạn hoàn toàn có thể buông tay, trút bỏ tấm mặt nạ rách nát này, và trở thành điều mà bạn thật sự khao khát..."',
+    vi: "[Giọng nói trong ánh sáng] Những vết sẹo cũ ({scars}) đau trở lại. The City mờ đi; một giọng phụ nữ cất lên trong ánh sáng: \"Bạn đã chịu đủ rồi. Đừng ép mình mang hình dạng người khác mong muốn.\" Bàn tay bạn run. Bạn có thể nghe theo, hoặc tự chọn mình sẽ là ai.",
     en: '[Can you hear my voice? · The Scorching Sun of The Light] Everything you ever lost returned at once ({scars}). The surrounding room dissolved into a blinding white sun — an ocean of radiant, scorching light. From the center of the brilliant sun, a woman with piercing eyes and a gentle smile tilted her head:\n“It hurts so much, doesn’t it? In this City, clinging to a human shape only gets you torn apart. Love yourself. You can let go, and become what you truly desire.”',
     choices: [
       {
@@ -206,7 +206,7 @@ export const SUPERNATURAL_EVENTS = [
             effects: { health: +35, sanity: +50, rep: +38, resonance: +25 },
             scarsAdd: ['Người không cúi đầu trước Carmen'],
             meritAdd: 45,
-            resultVi: 'Bạn cắn chặt răng đến bật máu, giữ chặt từng mảnh ký ức cay đắng và từng vết sẹo vào tận đáy tim, kiên quyết không lùi bước trước ánh thái dương mê hoặc của Carmen. Biển ánh sáng chói lòa nứt toác ra từng mảng trước ý chí bất khuất của bạn. Từ sâu thẳm tâm thức, ngọn lửa cảm xúc kết tinh thành một bộ giáp vững chắc và vũ khí uy mãnh bao bọc lấy thể xác bạn. Đó không phải là món quà vay mượn từ ai khác — đó là E.G.O thuần khiết của riêng bạn, nở rộ giữa lòng The City.',
+            resultVi: "Bạn giữ lấy ký ức của mình, cả phần đau đớn. Ánh sáng lùi lại; E.G.O thành hình quanh cơ thể bạn như giáp và vũ khí. Nó mang hình dạng do chính bạn chọn.",
             resultEn: 'You held firm to every memory and scar, refusing to yield before Carmen’s radiant sun. The blinding light fractured against your unbending resolve. From the depths of your psyche, armor and a weapon forged from your agony manifested. It is your E.G.O.'
           },
           {
@@ -223,7 +223,7 @@ export const SUPERNATURAL_EVENTS = [
                 reasonEn: 'Your incomplete E.G.O seeks its true efflorescence'
               }
             ],
-            resultVi: 'Bạn gầm lên kháng cự, nhưng triết lý sống trong lòng chưa đủ tôi luyện để gánh vác trọn vẹn sức nặng của ánh sáng. Bộ giáp E.G.O chỉ vừa kịp hiện hình một nửa đã nứt toác thành từng mảnh, ngọn lửa cảm xúc đốt cháy da thịt bạn thành những vết bỏng rát. Bạn không gục ngã, nhưng tâm thức mang theo một vết rạn nứt sâu hoắm: E.G.O Chưa Hoàn Chỉnh (Incomplete E.G.O), chờ đợi một ngày được khai hoa trọn vẹn.',
+            resultVi: "E.G.O vừa hiện ra đã nứt. Mảnh giáp rơi xuống, để lại vết bỏng trên tay bạn. Bạn vẫn tỉnh táo, nhưng sức mạnh ấy chưa ổn định; một ngày khác bạn sẽ phải đối diện nó lần nữa.",
             resultEn: 'You roared in resistance, but your inner philosophy was not yet forged enough to bear the full weight of the light. The E.G.O half-manifested then cracked, emotion scorch marks searing your flesh. You did not break, but your soul bears a fissure: an Incomplete E.G.O.'
           },
           {
@@ -233,7 +233,7 @@ export const SUPERNATURAL_EVENTS = [
             effects: { health: +40, sanity: -60, rep: +30, heat: +45, resonance: +55 },
             scarsAdd: ['Ý chí gãy đổ'],
             meritAdd: 20,
-            resultVi: 'Lời thì thầm từ vầng thái dương của Carmen quá ngọt ngào, như vòng tay người mẹ vỗ về một đứa trẻ kiệt sức giữa đêm đông. Trong khoảnh khắc ngập ngừng buông xuôi, ý chí của bạn vỡ vụn. Cơ thể bạn tan chảy rồi biến dạng thành hình thù quái dị của nỗi ám ảnh và đau khổ sâu kín nhất. Hana Association lập tức cập nhật hồ sơ cảnh báo thảm họa: Một cá thể Biến Dạng (Distorted) vừa xuất hiện.',
+            resultVi: "Bạn nghe theo giọng nói và buông ý chí đang giữ mình lại. Cơ thể biến đổi theo nỗi đau bạn không còn kìm được. Khi Hana cập nhật hồ sơ, họ ghi một Distortion mới xuất hiện.",
             resultEn: 'Carmen’s murmur from the radiant sun was too sweet. In that final hesitation, your resolve shattered. Your flesh morphed into the shape of your sorrow. Hana Association updated its file: Distorted.'
           }
         ]
@@ -372,7 +372,7 @@ export const SUPERNATURAL_EVENTS = [
     weight: 980,
     jobs: ['Fixer'],
     forbids: ['ColorFixer', 'Distorted'],
-    vi: '[Star of the City · Hana Color Investiture] Hana Association Section 1 triệu tập bạn đến đài vinh danh tối cao. Một mối họa cấp độ Star of the City vừa bùng phát tại khu vực biên giới. Các Director của Hana nhìn thẳng vào mắt bạn:\n"Cả The City chỉ có chưa đầy mười Color. Chúng tôi không ban phát danh hiệu này cho kẻ chỉ biết làm hợp đồng thông thường. Hãy dập tắt mối họa này, hoặc chết trong đống đổ nát. Khi bạn trở về, chiếc thẻ Color sẽ mang tên bạn."',
+    vi: "[Bài thử Color] Hana giao bạn xử lý một mối họa cấp Star of the City. Các Director đặt tấm thẻ chưa ghi tên lên bàn: \"Trở về sau nhiệm vụ, chúng tôi sẽ khắc Color của bạn lên đây.\"",
     en: '[Star of the City · Hana Color Investiture] Hana Association Section 1 summoned you to the supreme dais. A Star of the City calamity has erupted on the border. The Hana Directors stare straight into your eyes:\n“The entire City holds fewer than ten Colors. We do not bestow this title upon those who merely file routine contracts. Extinguish this calamity, or perish in its wake. When you return, the Color license shall bear your name.”',
     choices: [
       {
@@ -388,7 +388,7 @@ export const SUPERNATURAL_EVENTS = [
             effects: { health: -30, sanity: -15, rep: +45, wealth: +60 },
             scarsAdd: ['Vết sẹo của Star of the City'],
             meritAdd: 60,
-            resultVi: 'Trận chiến kéo dài mười sáu giờ không ngừng nghỉ. Vũ khí của bạn chém đứt lõi của mối họa Star of the City trước sự bàng hoàng của các chấp hành viên Hana. Máu và tro tàn nhuộm kín chiến trường. Hội đồng Hana đồng loạt đứng dậy cúi đầu: "The City cúi đầu trước Color mới." Họ mời bạn bước lên đài để khắc danh hiệu.',
+            resultVi: "Bạn phá lõi của mối họa sau một trận chiến dài. Khi trở về, hội đồng Hana mời bạn đến trước tấm thẻ còn để trống. Tên Color mới được khắc ngay tại đó.",
             resultEn: 'The battle raged sixteen unceasing hours. Your weapon severed the core of the Star of the City before stunned Hana enforcers. Blood and ash coated the battlefield. The Hana Council stood and bowed in unison: “The City honors its new Color.” They invited you to the dais to engrave your title.'
           },
           {
@@ -434,7 +434,7 @@ export const SUPERNATURAL_EVENTS = [
     major: true,
     regions: ['20'],
     weight: 5.5,
-    vi: '[Bão Thời Gian T Corp · Tiếng Hú Của Cuộc Săn Hoang Dã] Tại vùng đồi sương mù của District 20 · T Corp, một cơn bão thời gian nứt toác. Một kỵ sĩ trên lưng con ngựa xương trắng dẫn đầu đoàn quân bóng ma The Wild Hunt tràn qua các hẻm vắng. Kỵ sĩ gầm lên qua chiếc quan tài xích sắt: "Mọi bản thể trong vô số Thế Giới Gương (Mirror Worlds) đều phải chịu chung nỗi thống khổ này!"',
+    vi: "[Cuộc Săn Hoang Dã] Sương phủ District 20 khi một kỵ sĩ cưỡi ngựa xương dẫn đoàn The Wild Hunt qua hẻm. Quan tài xích sau lưng hắn kéo lê trên đá. Đường rút của bạn đã bị đội hình bóng ma chặn.",
     en: '[Temporal Tempest · Echoes of the Wild Hunt] On the foggy moors of District 20 · T Corp, a temporal storm ruptured. A knight astride a skeletal steed led the phantoms of The Wild Hunt through the alleys. From atop a chained coffin, the knight roared: “Every counterpart across the Mirror Worlds must suffer this exact despair!”',
     choices: [
       {
@@ -447,7 +447,7 @@ export const SUPERNATURAL_EVENTS = [
             scarsAdd: ['Kẻ chém đứt xiềng xích Erlking'],
             recordsAdd: ['wild_hunt_vanquisher'],
             meritAdd: 35,
-            resultVi: 'Bạn lao vào lưỡi kiếm của Erlking, chấp nhận để mảnh thép cứa rách vai trái để đổi lấy một đường chém thẳng vào khớp cổ con ngựa xương. Chiếc quan tài xích sắt nứt toác. Màn sương T Corp tan dần trong tiếng rên rỉ của những bản thể vỡ vụn. Nhân viên T Corp đến hiện trường chỉ kịp ghi chép: "Đã thanh toán một mối nguy thời gian."',
+            resultVi: "Bạn để lưỡi kiếm Erlking sượt vai, đổi lấy nhát chém vào khớp cổ ngựa. Quan tài nứt, đoàn săn tan trong sương. Nhân viên T Corp đến ghi nhận hiện trường; bạn vẫn còn phải băng vai.",
             resultEn: 'Throwing yourself past Erlking’s blade, you took a gash across your shoulder to sever the spectral steed’s neck joint. The chained coffin cracked open. T Corp’s temporal fog cleared amidst dying groans of shattered counterparts. A T Corp clerk arrived only to stamp the log: “Temporal hazard resolved.”'
           },
           {
@@ -479,7 +479,7 @@ export const SUPERNATURAL_EVENTS = [
     major: true,
     regions: ['16'],
     weight: 5.0,
-    vi: '[Hầm Ngầm P Corp · Vòng Quay La Mancha Rỉ Sét] Trong lòng District 16 · P Corp, một công viên giải trí rực rỡ nhưng ma quái mở cửa giữa đêm khuya. Tiếng nhạc đu quay vang vọng cùng mùi bánh churros làm từ máu. Một hiệp sĩ với áo giáp rỉ sét và ngọn giáo dài đứng trước vòng quay ngựa gỗ, đôi mắt sáng rực niềm tin ngây thơ:\n"Hỡi lữ khách! Bạn có muốn cùng chúng ta cưỡi ngựa gỗ, hướng đến một thế giới nơi Bloodfiend và loài người cùng chung một nụ cười?"',
+    vi: "[Vòng quay La Mancha] Công viên dưới District 16 mở cửa lúc đêm muộn. Máu dính trên quầy bánh; nhạc đu quay vẫn phát. Một hiệp sĩ áo giáp gỉ hỏi bạn có muốn giúp ông giữ nơi này cho cả người và Bloodfiend.",
     en: '[Beneath P Corp · The Rusted Carousel of La Mancha] In District 16 · P Corp, a brilliant yet eerie amusement park awakened in the dead of night. Carousel organ tunes mingled with the scent of blood churros. A knight in rusted plate with a gleaming lance stood before the carousel, eyes blazing with naive conviction:\n“Hail, traveler! Wilt thou mount a steed beside us, riding toward a world where Bloodfiend and mankind share a single smile?”',
     choices: [
       {
@@ -492,7 +492,7 @@ export const SUPERNATURAL_EVENTS = [
             scarsAdd: ['Hiệp sĩ của Giấc Mơ Hoang'],
             recordsAdd: ['lamancha_dreamer'],
             meritAdd: 30,
-            resultVi: 'Bạn đứng cạnh hiệp sĩ già trên bục gỗ rỉ sét. Cây thương của ông rung bần bật trong gió, mùi máu từ những chiếc bánh churros bốc lên tanh nồng. Đám Bloodfiend bên dưới ngước nhìn, đôi mắt đỏ ngầu chớp chớp trong ánh đèn màu chập chờn. Không ai cười. Nhưng ít nhất trong đêm nay, tiếng gào xé thịt đã không vang lên.',
+            resultVi: "Bạn đứng cùng hiệp sĩ trên bục gỗ. Bloodfiend phía dưới nhìn lên, chưa ai hạ vũ khí. Buổi tối trôi qua mà không có tiếng kêu từ khu đu quay.",
             resultEn: 'You stood beside the rusted knight upon the creaking dais. His lance trembled in the wind; the reek of blood from the churros rose thick and heavy. The kindred below looked up, crimson eyes blinking beneath stuttering neon. No one smiled. Yet for this single night, no flesh was torn in the dark.'
           },
           {
@@ -525,7 +525,7 @@ export const SUPERNATURAL_EVENTS = [
     regions: ['8'],
     weight: 4.5,
     jobs: ['Syndicate', 'Fixer', 'Workshop Craftsman'],
-    vi: '[Phòng Trưng Bày The Ring · Nét Cọ Tuyệt Tác] Tại một phòng trưng bày ngầm ở District 8, một Docent của The Ring đón bạn với một bức tượng điêu khắc từ cơ thể sống của 12 kẻ phản bội. Một nữ kiếm sĩ với điếu thuốc đỏ trên môi và bao kiếm quấn vải liệm bước ra:\n"N.T.T.M — Nghệ thuật thật sự đòi hỏi sự hủy diệt tuyệt đối. Ngươi muốn trở thành một nét cọ trong bức tranh này, hay một kẻ thưởng lãm có mắt nhìn?"',
+    vi: "[Phòng tranh của The Ring] Docent chỉ bức tượng ghép từ mười hai kẻ phản bội. Một kiếm sĩ ngậm điếu thuốc đỏ hỏi bạn muốn đứng trong khung tranh hay nhìn từ ngoài. Cửa phòng sau lưng vừa khép.",
     en: '[The Ring’s Gallery · Brushstroke of Carnage] In a subterranean gallery of District 8, a Docent of The Ring greeted you before a sculpture twisted from the living flesh of 12 traitors. A swordswoman with a burning cigarette and a cloth-wrapped sheath stepped forward:\n“A.R.T. — Absolute Ruin Transcends. Dost thou wish to be a brushstroke in this canvas, or a connoisseur with discerning eyes?”',
     choices: [
       {
@@ -569,7 +569,7 @@ export const SUPERNATURAL_EVENTS = [
     major: true,
     regions: ['14'],
     weight: 5.0,
-    vi: '[Thanh Trừng Nagel und Hammer · Tiếng Búa Và Đinh] Tại các con phố District 14, đội quân Cuồng Tín của N Corp (The One Who Grips) phong tỏa toàn bộ khu vực. Những chiếc búa tạ và đinh sắt rực lửa đập nát bất kỳ ai gắn tay chân máy hoặc thiết bị cơ khí:\n"Thịt và máu là món quà duy nhất của đấng tạo hóa! Mọi linh kiện kim loại cắm vào da thịt đều là ô uế! Ngươi đứng về phía thân xác thuần khiết, hay lũ máy móc tà giáo?"',
+    vi: "[Búa và đinh] Đội N Corp phong tỏa đường ở District 14, lùng người mang bộ phận giả. Họ chặn một người trước mặt bạn, rồi quay sang hỏi bạn đứng về phía nào. Chiếc búa vẫn ở trong tay lính gác.",
     en: '[Nagel und Hammer · Purge of the Pure Flesh] Across the avenues of District 14, the Zealots of N Corp (The One Who Grips) cordoned off the entire sector. Sledgehammers and scorched nails hammered into anyone bearing mechanical prosthetics or augments:\n“Flesh and bone are the creator’s sole blessings! All machinery pierced into human skin is an abomination! Dost thou stand with Pure Flesh, or the mechanical heretics?”',
     choices: [
       {
@@ -614,7 +614,7 @@ export const SUPERNATURAL_EVENTS = [
     age: [25, 75],
     major: true,
     weight: 3.5,
-    vi: '[Khúc Xạ Thủy Tinh · Tiếng Vọng Đa Chiều Gesellschaft] Một kết cấu hình học lơ lửng bằng thủy tinh khúc xạ mở ra trên đỉnh bầu trời. Vô số phiên bản của Faust từ các Thế Giới Gương đồng loạt cất tiếng nói bằng âm điệu thuần khiết:\n"Faust biết tất cả. Điểm hội tụ của The City và những Ngôi Sao ngoài The Outskirts đã đến. Bạn có muốn nhìn thấy bức màn đằng sau bản hợp đồng của The Head và nguồn cội của Singularity?"',
+    vi: "[Tiếng vọng Gesellschaft] Trên cao, kết cấu thủy tinh hiện ra cùng nhiều giọng Faust từ Mirror Worlds. Họ mời bạn nhìn vào những tính toán phía sau Singularity và hợp đồng của The Head. Các đường nối đang hạ xuống trước mặt bạn.",
     en: '[Refraction of Mirrors · Voices of the Gesellschaft] A geometric refraction of floating glass uncoiled across the sky. Countless incarnations of Faust from across the Mirror Worlds spoke in harmonious unison:\n“Faust knows all. The convergence of The City and The Stars beyond the Outskirts has arrived. Dost thou wish to witness the veil behind The Head’s covenants and the origin of Singularities?”',
     choices: [
       {
@@ -628,7 +628,7 @@ export const SUPERNATURAL_EVENTS = [
             recordsAdd: ['gesellschaft_illumination'],
             scarsAdd: ['Con mắt nhìn thấu Đa Vũ Trụ'],
             meritAdd: 50,
-            resultVi: 'Hàng vạn đường dây ý thức lạnh ngắt cắm thẳng vào thùy trán bạn. Bạn không nhìn thấy phép màu; bạn nhìn thấy các bản tính toán chi phí, lượng máu cần thiết để duy trì mỗi Singularity, và chiếc lồng kính khổng lồ mà The Head dựng lên bao quanh The City. Khi rút dây ra, mắt bạn rỉ máu, và thế giới này vĩnh viễn mất đi màu sắc của sự ngây thơ.',
+            resultVi: "Các đường nối chạm vào trán. Bạn thấy những bảng tính chi phí và số người phải trả giá để Singularity vận hành. Khi rút ra, mắt bạn chảy máu; những con số vẫn ở lại trong đầu.",
             resultEn: 'Tens of thousands of icy data feeds pierced your frontal lobe. You saw no miracles; you perceived cold casualty ledgers, the exact liters of blood demanded by each Singularity, and the colossal glass cage erected by The Head around The City. When you tore the cables free, blood seeped from your eyelids, and the world lost all naive warmth forever.'
           },
           {

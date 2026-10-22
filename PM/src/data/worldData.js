@@ -996,6 +996,7 @@ export const CODEX_CATEGORIES = [
 export const CODEX_RECORDS = [
   // ================= SURVIVAL & BLOODLINE =================
   { key: 'born_city', category: 'survival', tier: 'common', vi: 'Sinh ra ở The City', en: 'Born in the City', hintVi: 'Bắt đầu kiếp sống đầu tiên.', hintEn: 'Begin your first life in The City.' },
+  { key: 'born_outskirts', category: 'survival', tier: 'common', vi: 'Sinh ra ngoài tường', en: 'Born beyond the wall', hintVi: 'Chào đời ở Outskirts, bên ngoài The City.', hintEn: 'Be born in the Outskirts, beyond the City wall.' },
   { key: 'survive_night', category: 'survival', tier: 'uncommon', vi: 'Qua được 3:13', en: 'Through the Night at 3:13', hintVi: 'Sống sót qua một đêm Night in the Backstreets.', hintEn: 'Survive an encounter during Night in the Backstreets.' },
   { key: 'nest_migration', category: 'survival', tier: 'uncommon', vi: 'Tấm vé vào Nest', en: 'A Feather of the Nest', hintVi: 'Trở thành Feather, cư dân hợp pháp của một Nest.', hintEn: 'Become a legal Feather residing in a Nest.' },
   { key: 'family_built', category: 'survival', tier: 'uncommon', vi: 'Mái nhà cho hai người', en: 'A Roof for Two', hintVi: 'Cưới, hoặc dọn về sống cùng người thương.', hintEn: 'Build a family with a partner.' },
@@ -1041,7 +1042,7 @@ export const CODEX_RECORDS = [
   { key: 'ego_effloresced', category: 'supernatural', tier: 'miracle', vi: 'E.G.O khai hoa', en: 'Effloresced E.G.O', hintVi: 'Khước từ giọng nói của Carmen và thức tỉnh E.G.O.', hintEn: 'Reject the Voice, overcome your Karma Scars, and awaken your own Effloresced E.G.O.' },
   { key: 'defied_the_claw', category: 'supernatural', tier: 'miracle', vi: 'Sống sót trước The Claw', en: 'Survived the Claw', hintVi: 'Gặp một Claw khi Taboo đủ 3/3 và vẫn sống.', hintEn: 'Face an Executioner Claw of The Head and survive.' },
   { key: 'omen_cursed_birth', category: 'supernatural', tier: 'rare', vi: 'Sinh dưới điềm dữ', en: 'Born Under a Bad Omen', hintVi: 'Chào đời với Gaze of The Head, 3:13 AM Blood Star hoặc Bleeding Seed of Light.', hintEn: 'Roll a dangerous RNG Fate Omen at birth.' },
-  { key: 'scarred_psyche_4', category: 'supernatural', tier: 'epic', vi: 'Bốn vết sẹo', en: 'Four Scars', hintVi: 'Mang từ 4 vết sẹo tâm thức trở lên mà vẫn sống.', hintEn: 'Carry 4 or more Karma Scars simultaneously while alive.' },
+  { key: 'scarred_psyche_4', category: 'supernatural', tier: 'epic', vi: 'Ba dấu tích', en: 'Three Marks', hintVi: 'Mang 3 dấu tích có tác động mà vẫn sống.', hintEn: 'Carry 3 active marks while alive.' },
 
   // ================= GRIMDARK 18+ TRAGEDIES & BRUTAL DEATHS =================
   { key: 'organ_harvest_victim', category: 'grimdark', tier: 'rare', vi: 'Trả nợ bằng thận', en: 'Paid in Kidneys', hintVi: 'Hết sạch Ahn và bị đòi nợ bằng nội tạng.', hintEn: 'Run out of Ahn and suffer forced black-market organ harvesting.' },

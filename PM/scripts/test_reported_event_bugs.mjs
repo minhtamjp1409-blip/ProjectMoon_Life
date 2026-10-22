@@ -6,6 +6,7 @@ import { LIFE_DAILIES, LIFE_MINORS, runDueItems, resolveMinor, planYear, endYear
 import { COMPANION_QUEST_EVENTS } from '../src/data/eventsCompanionQuests.js';
 import { CONSEQUENCE_EVENTS } from '../src/data/eventsChildhood.js';
 import { selectEventWithWeaverAI } from '../src/engine/weaverAI.js';
+import { addScar } from '../src/engine/scarModel.js';
 
 const born = (age = 24) => createNewCharacter({ seed: `reported-event-${age}`, startAge: age });
 
@@ -64,12 +65,13 @@ assert.equal(matchesEventContext(LIFE_DAILIES.find((item) => item.id === 'daily_
 const legacy = born(117);
 legacy.scars = Array.from({ length: 24 }, (_, index) => `Scar ${index}`);
 const normalized = cloneChar(legacy);
-assert.equal(normalized.scars.length, 4);
-assert.equal(normalized.scarHistory.length, 20);
-assert.equal(cloneChar(normalized).scarHistory.length, 20);
+assert.equal(normalized.scars.length, 0);
+assert.equal(normalized.scarHistory.length, 24);
+assert.equal(cloneChar(normalized).scarHistory.length, 24);
 normalized.job = 'Outcast';
 normalized.resonance = 100;
 normalized.stats.sanity = 60;
+for (const mark of ['Vết móc câu Sweeper 3:13 AM', 'Ký ức địa ngục tàu WARP', 'Vết mổ trả nợ']) addScar(normalized, mark);
 assert.equal(ALL_STORY_EVENTS.find((event) => event.id === 'ego_carmen_crossroad').age[1], 140);
 const selected = selectEventWithWeaverAI({ weaver: normalized.weaver, char: normalized, allPools: ALL_STORY_EVENTS, consequencePool: CONSEQUENCE_EVENTS, rng: () => 0.5 });
 assert.equal(selected.event.id, 'ego_carmen_crossroad');
@@ -83,7 +85,7 @@ base.resonance = 10;
 base.stats.health = 85;
 base.stats.sanity = 85;
 const scarred = cloneChar(base);
-scarred.scars = ['A', 'B', 'C'];
+scarred.scars = ['Vết mổ trả nợ', 'Ký ức địa ngục tàu WARP'];
 const plainYear = endYear(base, () => 0.5);
 const scarYear = endYear(scarred, () => 0.5);
 assert.ok(scarYear.stats.health < plainYear.stats.health);

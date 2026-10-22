@@ -2,12 +2,19 @@ import { simulateNpcAutonomousLife } from './narrativeArcEngine.js';
 import { matchesNeed, matchesEventContext, choiceIsAvailable, mergeEffects, isNestResident, isOutsideCity, npcIsActive } from './eventConditions.js';
 import {
   getNextFixerPromotion,
+  fixerContractOfferChance,
   fixerPromotionSuccessChance,
   fixerPromotionFailureEffects,
   checkColorFixerReadiness,
   getNextFingerPromotion,
   getNextWingPromotion,
-  getNextWorkshopPromotion
+  getNextWorkshopPromotion,
+  getOtherCareerPromotion,
+  careerTrialRetryDue,
+  careerOpportunity,
+  careerTrialForEvent,
+  careerPromotionSuccessChance,
+  careerPromotionFailureEffects
 } from './careerPipeline.js';
 import { rollSeasonMishap } from './fateEngine.js';
 // ============================================================================
@@ -43,11 +50,13 @@ import { LIFE_MINORS_4 } from '../data/lifeMinors4.js';
 import { LIFE_MINORS_5 } from '../data/lifeMinors5.js';
 import { LIFE_MINORS_KIDS } from '../data/lifeMinorsKids.js';
 import { THREAD_MINORS } from '../data/narrative/causalThreads.js';
+import { SCAR_CALLBACKS } from '../data/lifeScarCallbacks.js';
+import { LIFE_CAREER_OPPORTUNITIES } from '../data/lifeCareerOpportunities.js';
 import { EXPANDED_DAILIES } from '../data/narrative/dailies.js';
 import { DAILIES_2 } from '../data/narrative/dailies2.js';
 import { cityArchiveAPI } from '../services/api/cityArchiveAPI.js';
 
-export const LIFE_MINORS = [...MINORS_FIRST, ...LIFE_MINORS_2, ...LIFE_MINORS_3, ...LIFE_MINORS_4, ...LIFE_MINORS_5, ...LIFE_MINORS_KIDS, ...THREAD_MINORS];
+export const LIFE_MINORS = [...MINORS_FIRST, ...LIFE_MINORS_2, ...LIFE_MINORS_3, ...LIFE_MINORS_4, ...LIFE_MINORS_5, ...LIFE_MINORS_KIDS, ...THREAD_MINORS, ...SCAR_CALLBACKS, ...LIFE_CAREER_OPPORTUNITIES];
 export const LIFE_DAILIES = [...DAILIES_FIRST, ...LIFE_DAILIES_3, ...EXPANDED_DAILIES, ...DAILIES_2];
 import {
   directorWeight,
@@ -63,7 +72,7 @@ import {
 } from './director.js';
 import { freshness, varyEffects, traitsOf, PRINTED_NUMBERS } from './variance.js';
 import { BALANCE, healAmount, calmAmount, agingLoss, effectiveAge, driftOf, hasEstablishedStanding, reputationGain } from './economyModel.js';
-import { activeScarCount, addScar } from './scarModel.js';
+import { activeScarCount, addScar, scarAnnualEffects } from './scarModel.js';
 import { weightedOutcomes } from './outcomeOdds.js';
 
 export const MINOR_WINDOW_MS = 15000;
@@ -188,7 +197,18 @@ function eligibleMinors(char) {
 }
 
 // Director weights reach x6; the 0.8 power keeps their order but lets weaker entries through
-const weightOf = (char) => (e) => Math.pow(directorWeight(e, char).w, 0.8) * freshness(e.id, char.recent, char.seenCount);
+const weightOf = (char) => (e) => {
+  let weight = Math.pow(directorWeight(e, char).w, 0.8) * freshness(e.id, char.recent, char.seenCount);
+  if (e.id === 'm_fx_request_choice') {
+    const next = getNextFixerPromotion(char);
+    if (next && next.currentRep < next.repReq) {
+      weight *= Math.min(3, 1.5 + (next.repReq - next.currentRep) / 8);
+    }
+  }
+  const opportunity = careerOpportunity(char);
+  if (opportunity?.id === e.id) weight *= 1.5 + opportunity.shortage;
+  return weight;
+};
 
 function majorIsDue(char, rng) {
   const w = char.weaver || {};
@@ -290,9 +310,10 @@ export function planYear(charState, rng) {
   }
 
   // Mandatory Age 18 Milestone or unassigned adult must select career immediately
-  if ((char.age >= 18 && char.job === 'Child') && !(char.seenEvents || []).includes('ad_career_crossroad_18')) {
-    if (!scheduledKey.some((it) => it.forcedEventId === 'ad_career_crossroad_18')) {
-      scheduledKey.push({ kind: 'major', forcedEventId: 'ad_career_crossroad_18' });
+  if (char.age >= 18 && char.job === 'Child') {
+    const careerEventId = isOutskirts(char) ? 'ad_outskirts_crossroad_18' : 'ad_career_crossroad_18';
+    if (!(char.seenEvents || []).includes(careerEventId) && !scheduledKey.some((it) => it.forcedEventId === careerEventId)) {
+      scheduledKey.push({ kind: 'major', forcedEventId: careerEventId });
     }
   } else if (!scheduledKey.some((it) => it.kind === 'major') && majorIsDue(char, rng)) {
     scheduledKey.push({ kind: 'major' });
@@ -304,10 +325,26 @@ export function planYear(charState, rng) {
       !scheduledKey.some((it) => it.kind === 'major' && !it.forcedEventId)) {
     scheduledKey.unshift({ kind: 'major' });
   }
+  const nextOtherTrial = getOtherCareerPromotion(char);
+  if (careerTrialRetryDue(char, nextOtherTrial) &&
+      !scheduledKey.some((it) => it.kind === 'major' && !it.forcedEventId)) {
+    scheduledKey.unshift({ kind: 'major' });
+  }
 
   // Fixer combat contract: tactical commission
-  if (char.job === 'Fixer' && !char.flags.includes('Distorted') && age >= 19 && rng() < 0.42 && !scheduledKey.some((it) => it.kind === 'contract')) {
+  if (char.job === 'Fixer' && !char.flags.includes('Distorted') && age >= 19 && rng() < fixerContractOfferChance(char) && !scheduledKey.some((it) => it.kind === 'contract')) {
     scheduledKey.push({ kind: 'contract' });
+  }
+
+  const opportunity = careerOpportunity(char);
+  if (opportunity && rng() < opportunity.chance &&
+      scheduledKey.length < 4 && !scheduledKey.some((item) => item.id === opportunity.id)) {
+    const event = LIFE_MINORS.find((item) => item.id === opportunity.id);
+    if (event && matchesEventContext(event, char)) {
+      scheduledKey.push({ kind: 'minor', id: opportunity.id });
+      remember(char, opportunity.id);
+      logDecision(char, event, { vi: 'Thiếu thành tích cho bậc kế tiếp', en: 'A chance to close the next rank gap', w: opportunity.chance }, 'minor');
+    }
   }
 
   // Offer care when injured or distressed, and gear maintenance for equipped careers.
@@ -574,9 +611,10 @@ export async function syncPlanWithBackend(charState, rng) {
             isCausal: sm.isCausal || false
           });
         } else if (sm.kind === 'major') {
+          const serverId = sm.forcedEventId || sm.id || '';
           hydrated.push({
             kind: 'major',
-            forcedEventId: sm.forcedEventId || sm.id || '',
+            forcedEventId: careerTrialForEvent(serverId) ? '' : serverId,
             t: sm.t,
             season: sm.season,
             seasonIdx: sm.seasonIdx,
@@ -593,9 +631,39 @@ export async function syncPlanWithBackend(charState, rng) {
         }
       }
 
+      if (charState.job === 'Fixer') {
+        const localContract = localPlan.find((item) => item.kind === 'contract');
+        const serverContractAt = hydrated.findIndex((item) => item.kind === 'contract');
+        if (localContract && serverContractAt < 0) {
+          let replaceAt = hydrated.findIndex((item) => item.kind === 'daily');
+          if (replaceAt < 0) replaceAt = hydrated.findIndex((item) => item.kind === 'minor' && !item.isCausal);
+          if (replaceAt >= 0) hydrated[replaceAt] = localContract;
+          else if (hydrated.length < 4) hydrated.push(localContract);
+        } else if (!localContract && serverContractAt >= 0) {
+          const old = hydrated[serverContractAt];
+          const usedIds = new Set(hydrated.map((item) => item.id));
+          const available = poolDailies.filter((item) => !usedIds.has(item.id));
+          const pick = pickWeighted(available, weightOf(charState), rng) || available[0] || poolDailies[0];
+          if (pick) {
+            hydrated[serverContractAt] = { kind: 'daily', id: pick.id, t: old.t, season: old.season, seasonIdx: old.seasonIdx };
+            remember(charState, pick.id);
+          }
+        }
+        const next = getNextFixerPromotion(charState);
+        if (next && next.currentRep < next.repReq) {
+          const localOffice = localPlan.find((item) => item.id === 'm_fx_request_choice');
+          if (localOffice && !hydrated.some((item) => item.id === localOffice.id)) {
+            let replaceAt = hydrated.findIndex((item) => item.kind === 'daily');
+            if (replaceAt < 0) replaceAt = hydrated.findIndex((item) => item.kind === 'minor' && !item.isCausal);
+            if (replaceAt >= 0) hydrated[replaceAt] = localOffice;
+          }
+        }
+      }
+
       const nextFixerTrial = getNextFixerPromotion(charState);
-      const retryDue = nextFixerTrial?.isEligible && charState.fixerTrialRetryGrade === nextFixerTrial.grade &&
-        charState.lastFixerExamAge != null && charState.age > charState.lastFixerExamAge;
+      const retryDue = (nextFixerTrial?.isEligible && charState.fixerTrialRetryGrade === nextFixerTrial.grade &&
+        charState.lastFixerExamAge != null && charState.age > charState.lastFixerExamAge) ||
+        careerTrialRetryDue(charState);
       if (retryDue && !hydrated.some((item) => item.kind === 'major' && !item.forcedEventId)) {
         const localTrial = localPlan.find((item) => item.kind === 'major' && !item.forcedEventId);
         const replaceAt = hydrated.findIndex((item) => item.kind === 'daily');
@@ -605,7 +673,7 @@ export async function syncPlanWithBackend(charState, rng) {
 
       // The server only knows daily/minor/major/contract. The mishap and medical-care
       // moments the client rolled would be lost, so they take over a plain slot.
-      const isLocalOnly = (it) => it.kind === 'mishap' || it.extra || (it.kind === 'minor' && /^m_(med|wellness)_/.test(String(it.id)));
+      const isLocalOnly = (it) => it.kind === 'mishap' || it.extra || (it.kind === 'minor' && (/^m_(med|wellness)_/.test(String(it.id)) || LIFE_CAREER_OPPORTUNITIES.some((event) => event.id === it.id)));
       const isReplaceable = (it) => it.kind === 'daily' || (it.kind === 'minor' && !it.isCausal);
       for (const keep of localPlan.filter(isLocalOnly)) {
         if (hydrated.some((h) => h.id === keep.id && h.kind === keep.kind)) continue;
@@ -745,8 +813,16 @@ export function runPlanItem(charState, item, rng) {
         : null;
       const examChance = targetGrade == null ? null : Math.round(fixerPromotionSuccessChance(char, targetGrade) * 100);
       const examLoss = targetGrade == null ? null : fixerPromotionFailureEffects(targetGrade);
-      const examNoteVi = examChance == null ? '' : ` Tỉ lệ đỗ hiện tại: ${examChance}%. Nếu trượt: ${examLoss.health} HP, ${examLoss.wealth} Ahn, ${examLoss.sanity} SP. Có thể thi lại từ năm sau nếu còn đủ điều kiện.`;
-      const examNoteEn = examChance == null ? '' : ` Current pass chance: ${examChance}%. On failure: ${examLoss.health} HP, ${examLoss.wealth} Ahn, ${examLoss.sanity} SP. You may retry next year if still eligible.`;
+      const otherTrial = careerTrialForEvent(event.id);
+      const otherChance = otherTrial ? Math.round(careerPromotionSuccessChance(char, otherTrial) * 100) : null;
+      const otherLoss = otherTrial ? careerPromotionFailureEffects(otherTrial) : null;
+      const lossText = otherLoss ? Object.entries(otherLoss).map(([key, value]) => `${value} ${key}`).join(', ') : '';
+      const examNoteVi = examChance != null
+        ? ` Tỉ lệ đỗ hiện tại: ${examChance}%. Nếu trượt: ${examLoss.health} HP, ${examLoss.wealth} Ahn, ${examLoss.sanity} SP. Có thể thi lại từ năm sau nếu còn đủ điều kiện.`
+        : otherChance != null ? ` Tỉ lệ được công nhận: ${otherChance}%. Nếu trượt: ${lossText}. Có thể trở lại từ năm sau nếu còn đủ điều kiện.` : '';
+      const examNoteEn = examChance != null
+        ? ` Current pass chance: ${examChance}%. On failure: ${examLoss.health} HP, ${examLoss.wealth} Ahn, ${examLoss.sanity} SP. You may retry next year if still eligible.`
+        : otherChance != null ? ` Recognition chance: ${otherChance}%. On failure: ${lossText}. You may return next year if still eligible.` : '';
       const threadObj = item.thread ? char.weaver?.pendingThreads?.find((t) => t.id === item.thread) : null;
       char.pendingEvent = {
         ...event,
@@ -829,7 +905,6 @@ export function resolveMinor(charState, idx, rng) {
   const resultEn = interpolateText(outcome.ren || choice.ren || '', char);
   const scar = interpolateText(outcome.scar || choice.scar || '', char);
   if (addScar(char, scar)) {
-    deltas.push(...applyFx(char, { resonance: 6 }));
     deltas.push({ k: 'scar', name: scar });
   }
   applyChoiceExtras(char, outcome === choice ? [choice] : [choice, outcome], deltas, rng);
@@ -995,12 +1070,11 @@ export function endYear(charState, rng) {
     }
   }
 
-  const scarCount = activeScarCount(char);
-  if (scarCount >= 2 && !char.flags.includes('Distorted')) {
-    add('sanity', -(scarCount - 1));
-    if (scarCount >= 3) add('health', -1);
-    vi.push('Những di chứng cũ làm giấc ngủ chập chờn và cơ thể chậm hồi phục.');
-    en.push('Old scars disturbed your sleep and slowed your recovery.');
+  const scarEffects = scarAnnualEffects(char);
+  if (Object.keys(scarEffects).length) {
+    for (const [key, value] of Object.entries(scarEffects)) add(key, value);
+    vi.push('Những dấu tích còn mang đã đòi phần của chúng.');
+    en.push('The marks you carry took their toll.');
   }
   if ((char.resonance || 0) >= 90 && !char.flags.includes('Distorted') && !char.flags.includes('EGOAwakened')) {
     add('sanity', -2);
@@ -1039,9 +1113,12 @@ export function endYear(charState, rng) {
 
   // What events keep raising also wears off: resonance, fame and connections need feeding
   const nextFixerExam = getNextFixerPromotion(char);
+  const nextOtherExam = getOtherCareerPromotion(char);
   const protectedThresholds = nextFixerExam?.isEligible
     ? { rep: nextFixerExam.repReq, merit: nextFixerExam.meritReq }
-    : {};
+    : nextOtherExam?.isEligible
+      ? { merit: nextOtherExam.meritReq, rep: nextOtherExam.repReq, network: nextOtherExam.networkReq, resonance: nextOtherExam.resoReq }
+      : {};
   const drift = driftOf(char, bond ? 2 : 0, protectedThresholds);
   for (const [k, v] of Object.entries(drift)) add(k, v);
   if (drift.network) {

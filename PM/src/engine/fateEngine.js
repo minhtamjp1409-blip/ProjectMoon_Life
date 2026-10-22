@@ -16,6 +16,7 @@
 import { REGIONS } from '../data/worldData.js';
 import { traitsOf } from './variance.js';
 import { frailty } from './economyModel.js';
+import { hasScarTag } from './scarModel.js';
 
 const regionOf = (char) => REGIONS.find((r) => r.id === char.regionId) || REGIONS[0];
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
@@ -182,7 +183,7 @@ const MISHAPS = [
     vi: 'Bạn về muộn hơn giờ giới nghiêm có mười phút. Hẻm tắt đèn trước bạn, và bạn nghe thấy thứ gì đó đi chậm hơn nhịp tim của mình.',
     en: 'You were ten minutes past curfew. The alley turned its lights off ahead of you, and you heard something walking slower than your own heartbeat.',
     deathVi: 'Về muộn mười phút trong đêm 3 giờ 10', deathEn: 'Ten minutes late on the 3:10 night' },
-  { id: 'mi_old_wound', age: [30, 140], w: (c) => (c.scarCount >= 2 ? 1.4 : 0.15), dmg: [6, 14], san: 2, ahn: 3, lethal: 0.018,
+  { id: 'mi_old_wound', age: [30, 140], w: (c) => (c.oldInjury ? 1.4 : 0), dmg: [6, 14], san: 2, ahn: 3, lethal: 0.018,
     vi: 'Vết thương cũ lại mở ra vào ngày đầu tiên của mùa lạnh, như thể nó nhớ ngày. Bác sĩ chỉ hỏi bạn đã bỏ qua nó bao nhiêu năm.',
     en: 'The old wound opened again on the first day of the cold season, as if it remembered the date. The doctor only asked how many years you had ignored it.',
     deathVi: 'Vết thương cũ mở lại vào một mùa lạnh', deathEn: 'An old wound that reopened in a cold season' },
@@ -256,7 +257,7 @@ export function rollSeasonMishap(char, rng) {
   const chance = clamp(0.045 * exposureIndex(char) * ageCurve * traits.drama * harshness, 0.01, 0.5);
   if (rng() >= chance) return null;
 
-  const ctx = { region, nest, outside, wealth: char.stats?.wealth ?? 5, job: char.job, scarCount: (char.scars || []).length };
+  const ctx = { region, nest, outside, wealth: char.stats?.wealth ?? 5, job: char.job, oldInjury: hasScarTag(char, 'injury') };
   const recent = char.recentMishaps || [];
   const pool = MISHAPS
     .filter((m) => ageNow >= m.age[0] && ageNow <= m.age[1] && !recent.includes(m.id))

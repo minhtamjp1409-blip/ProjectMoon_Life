@@ -1,3 +1,5 @@
+import { scarResonanceFloor } from './scarModel.js';
+
 /**
  * Project Moon - City Blackboard Runtime System
  * Acts as the centralized shared memory for the AI Director, tracking global city states,
@@ -41,6 +43,6 @@ export function createCityBlackboard(char) {
     districtChaos,
     isSweeperCurfew: false, // 3:13 AM to 4:34 AM active during specific ticks
     activeSyndicateWar: (char.motifs?.violence || 0) >= 3,
-    causalKarmaDebt: Math.min(4, (char.scars || []).length) * 15 + (char.flags || []).filter(f => f.includes('Debt') || f.includes('Kurokumo') || f.includes('Vengeance')).length * 25
+    causalKarmaDebt: Math.min(60, scarResonanceFloor(char) * 5) + (char.flags || []).filter(f => f.includes('Debt') || f.includes('Kurokumo') || f.includes('Vengeance')).length * 25
   };
 }
