@@ -88,7 +88,7 @@
   background: var(--surface);
   box-shadow: 0 -12px 16px -12px rgba(0, 0, 0, 0.6);
 }
-.dg-stances { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.dg-stances { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
 .dg-stance,
 .dg-supply {
   display: inline-flex;
@@ -195,6 +195,15 @@
   .dg-scene-title { font-size: 16px; }
   .dg-tools { gap: 6px; padding-top: 8px; padding-bottom: 10px; }
   .dg-stance span { white-space: nowrap; }
+}
+
+@media (max-width: 360px) {
+  .interface-v2 .dock.is-dungeon { --dg-pad-x: 14px; }
+  .dg-stances { gap: 4px; }
+  .dg-stance { min-width: 0; padding-inline: 4px; font-size: 12px; }
+  .dg-stance svg { display: none; }
+  .dg-supply { padding-inline: 7px; font-size: 12px; }
+  .dg-supply-count { margin-left: 0; }
 }
 
 @media (pointer: coarse) {
