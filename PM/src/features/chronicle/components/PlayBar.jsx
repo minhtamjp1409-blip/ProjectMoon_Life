@@ -146,16 +146,27 @@ export const PlayBar = () => {
     );
 
   const [justSaved, setJustSaved] = React.useState(false);
-  const [audioMuted, setAudioMuted] = React.useState(audioEngine.isMuted);
+  const [audioState, setAudioState] = React.useState({
+    isMuted: audioEngine.isMuted,
+    volume: audioEngine.volume,
+    isAmbienceMuted: audioEngine.isAmbienceMuted,
+    ambienceVolume: audioEngine.ambienceVolume,
+    currentAmbienceType: audioEngine.currentAmbienceType
+  });
   React.useEffect(() => {
-    return audioEngine.subscribe(({ isMuted }) => {
-      setAudioMuted(isMuted);
+    return audioEngine.subscribe((st) => {
+      setAudioState({ ...st });
     });
   }, []);
 
   const handleToggleAudio = () => {
     const next = audioEngine.toggleMute();
-    setAudioMuted(next);
+    setAudioState((prev) => ({ ...prev, isMuted: next }));
+  };
+
+  const handleToggleAmbience = () => {
+    const next = audioEngine.toggleAmbience();
+    setAudioState((prev) => ({ ...prev, isAmbienceMuted: !next }));
   };
 
   React.useEffect(() => {
@@ -315,6 +326,22 @@ export const PlayBar = () => {
       type: 'divider'
     },
     {
+      key: 'audio',
+      icon: audioState.isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />,
+      label: audioState.isMuted ? t('Bật âm thanh & Tiếng nền', 'Unmute Audio & Ambience') : t('Tắt âm thanh (phím M)', 'Mute Audio (M)'),
+      onClick: handleToggleAudio
+    },
+    {
+      key: 'ambience',
+      icon: <Volume2 size={16} style={{ opacity: audioState.isAmbienceMuted ? 0.35 : 1 }} />,
+      label: audioState.isAmbienceMuted ? t('Bật tiếng nền thế giới', 'Enable World Ambience') : t('Tắt tiếng nền thế giới', 'Mute World Ambience'),
+      disabled: audioState.isMuted,
+      onClick: handleToggleAmbience
+    },
+    {
+      type: 'divider'
+    },
+    {
       key: 'dossier',
       icon: <User size={16} />,
       label: t('Hồ sơ nhân vật chi tiết', 'Character Dossier'),
@@ -342,6 +369,42 @@ export const PlayBar = () => {
       icon: <RotateCcw size={16} />,
       label: t('Bỏ kiếp này', 'Abandon life'),
       onClick: newLife
+    }
+  ];
+
+  const audioMenuItems = [
+    {
+      key: 'mute',
+      icon: audioState.isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />,
+      label: audioState.isMuted ? t('Bật âm thanh (phím M)', 'Unmute All (M)') : t('Tắt âm thanh (phím M)', 'Mute All (M)'),
+      onClick: handleToggleAudio
+    },
+    {
+      key: 'ambience_toggle',
+      icon: <Volume2 size={16} style={{ opacity: audioState.isAmbienceMuted ? 0.35 : 1 }} />,
+      label: audioState.isAmbienceMuted ? t('Bật tiếng nền thế giới', 'Enable World Ambience') : t('Tắt tiếng nền thế giới', 'Mute World Ambience'),
+      disabled: audioState.isMuted,
+      onClick: handleToggleAmbience
+    },
+    { type: 'divider' },
+    {
+      key: 'vol_group',
+      label: `${t('Âm lượng', 'Master')}: ${Math.round(audioState.volume * 100)}%`,
+      children: [
+        { key: 'v_100', label: '100%', onClick: () => audioEngine.setVolume(1.0) },
+        { key: 'v_70', label: t('70% (Chuẩn)', '70% (Standard)'), onClick: () => audioEngine.setVolume(0.7) },
+        { key: 'v_40', label: t('40% (Nhẹ)', '40% (Low)'), onClick: () => audioEngine.setVolume(0.4) }
+      ]
+    },
+    {
+      key: 'amb_group',
+      label: `${t('Tiếng nền', 'Ambience')}: ${Math.round(audioState.ambienceVolume * 100)}%`,
+      disabled: audioState.isAmbienceMuted || audioState.isMuted,
+      children: [
+        { key: 'av_100', label: '100%', onClick: () => audioEngine.setAmbienceVolume(1.0) },
+        { key: 'av_60', label: t('60% (Chuẩn)', '60% (Standard)'), onClick: () => audioEngine.setAmbienceVolume(0.6) },
+        { key: 'av_30', label: t('30% (Thì thầm)', '30% (Whisper)'), onClick: () => audioEngine.setAmbienceVolume(0.3) }
+      ]
     }
   ];
 
@@ -456,15 +519,17 @@ export const PlayBar = () => {
             <Bot size={18} />
           </button>
 
-          <button
-            type="button"
-            className={`icon-btn ${audioMuted ? '' : 'is-on'}`}
-            onClick={handleToggleAudio}
-            aria-label={audioMuted ? t('Bật âm thanh (phím M)', 'Unmute audio (M key)') : t('Tắt âm thanh (phím M)', 'Mute audio (M key)')}
-            title={audioMuted ? t('Bật âm thanh (M)', 'Unmute audio (M)') : t('Tắt âm thanh (M)', 'Mute audio (M)')}
-          >
-            {audioMuted ? <VolumeX size={17} /> : <Volume2 size={17} />}
-          </button>
+          <Dropdown menu={{ items: audioMenuItems }} placement="top" trigger={['hover', 'click']}>
+            <button
+              type="button"
+              className={`icon-btn ${audioState.isMuted ? '' : 'is-on'}`}
+              onClick={handleToggleAudio}
+              aria-label={audioState.isMuted ? t('Bật âm thanh (phím M)', 'Unmute audio (M key)') : t('Tắt âm thanh (phím M)', 'Mute audio (M key)')}
+              title={audioState.isMuted ? t('Bật âm thanh (M)', 'Unmute audio (M)') : t('Tắt âm thanh (M)', 'Mute audio (M)')}
+            >
+              {audioState.isMuted ? <VolumeX size={17} /> : <Volume2 size={17} />}
+            </button>
+          </Dropdown>
 
           <button type="button" className="icon-btn" onClick={() => saveRun(true)} disabled={!alive} aria-label={t('Lưu tiến trình', 'Save progress')} title={t('Lưu tiến trình (game cũng tự lưu)', 'Save progress (the game also autosaves)')}>
             {justSaved ? <Check size={17} style={{ color: 'var(--good)' }} /> : <Save size={17} />}

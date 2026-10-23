@@ -28,7 +28,7 @@ export const WorkshopDepotModal = ({ open, onClose }) => {
 
   const handleBuy = (item) => {
     if (playerAhn < item.costAhn) return;
-    audioEngine.playBuff();
+    audioEngine.playCoinChime();
     buyItem(item.id);
   };
 

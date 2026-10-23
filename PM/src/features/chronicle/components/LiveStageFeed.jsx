@@ -1108,12 +1108,33 @@ export const LiveStageFeed = () => {
       audioEngine.playDanger();
       gameFeel.addTrauma(0.32);
     } else if (char.pendingEvent) {
-      if (char.pendingEvent.isCausalCallback) audioEngine.playDanger();
-      else if (typeof audioEngine.playDecision === 'function') audioEngine.playDecision();
+      const ev = char.pendingEvent;
+      if (ev.isCausalCallback) {
+        audioEngine.playDanger();
+      } else if (ev.finger === 'index' || ev.id?.includes('finger_index') || ev.titleVi?.includes('Chỉ Thị')) {
+        audioEngine.playPrescriptTick();
+      } else if (ev.finger === 'middle' || ev.id?.includes('finger_middle') || ev.titleVi?.includes('Sổ Thù Hận')) {
+        audioEngine.playPageFlip();
+      } else if (ev.finger === 'thumb' || ev.id?.includes('finger_thumb') || ev.titleVi?.includes('Kỷ Luật')) {
+        audioEngine.playThumbSnap();
+      } else if (ev.isDistortion || ev.distortionPoints > 0) {
+        audioEngine.playDanger();
+      } else if (typeof audioEngine.playDecision === 'function') {
+        audioEngine.playDecision();
+      }
     } else if (char.pendingContract) {
       if (typeof audioEngine.playDecision === 'function') audioEngine.playDecision();
     }
   }, [char.pendingDungeon?.id, char.pendingDungeon?.currentStageIndex, char.pendingEvent?.id, char.pendingContract?.id]);
+
+  // Dynamic Contextual Ambience: smoothly adjusts as character travels or enters states
+  useEffect(() => {
+    audioEngine.updateContextualAmbience(
+      char,
+      Boolean(char.pendingDungeon),
+      char.pendingDungeon ? (DUNGEON_DEFINITIONS[char.pendingDungeon.id]?.theme || 'warp') : null
+    );
+  }, [char.alive, char.pendingDungeon?.id, char.career, char.district, char.distortionPoints]);
 
   const lastDungeonResult = char.pendingDungeon?.lastStageResult;
   useEffect(() => {

@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ShieldAlert, LogOut, Shield, Scale, Flame, HeartPulse, Radar, Package, Award, Sparkles, Zap } from 'lucide-react';
 import { useT } from '../../../i18n';
+import { audioEngine } from '../../../engine/audioEngine.js';
 import {
   DUNGEON_DEFINITIONS,
   DUNGEON_BALANCE,
@@ -116,6 +117,35 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
   const pick = (vi, en) => (lang === 'en' ? en : vi);
   const ambient = AMBIENT[def.theme] || AMBIENT.warp;
 
+  // Contextual Ambience for Dungeons
+  useEffect(() => {
+    if (!def) return;
+    const theme = def.theme;
+    if (theme === 'warp') {
+      audioEngine.setAmbience('warp_train');
+    } else if (theme === 'greatlake' || theme === 'outskirts') {
+      audioEngine.setAmbience('outskirts_lake');
+    } else if (theme === 'lobotomy' || theme === 'bloodfiend') {
+      audioEngine.setAmbience('warp_train');
+    } else {
+      audioEngine.setAmbience('backstreets');
+    }
+
+    return () => {
+      audioEngine.updateContextualAmbience(char, false, null);
+    };
+  }, [def?.theme]);
+
+  // Audio cue when stage resolution completes
+  useEffect(() => {
+    if (!result) return;
+    if (result.type === 'fail' || result.type === 'defeat') {
+      audioEngine.playDamage(1.3);
+    } else if (result.type === 'pass' || result.type === 'critical') {
+      audioEngine.playBuff();
+    }
+  }, [result]);
+
   return (
     <div className={`dock is-dungeon theme-${def.theme}`} style={{ '--dg': def.accentColor }} role="document">
       <div className="dock-inner dg">
@@ -184,7 +214,21 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
                   type="button"
                   className={`choice dg-choice ${ch.isFlee ? 'is-leave' : ''}`}
                   disabled={!avail}
-                  onClick={() => avail && onPick(idx)}
+                  onClick={() => {
+                    if (!avail) return;
+                    if (ch.isFlee) {
+                      audioEngine.playClick();
+                    } else if (ch.costHp || ch.checkTrait === 'vigor') {
+                      audioEngine.playBladeClash();
+                    } else if (def.theme === 'warp') {
+                      audioEngine.playWarpSurge();
+                    } else if (ch.checkTrait) {
+                      audioEngine.playDiceRoll();
+                    } else {
+                      audioEngine.playClick();
+                    }
+                    onPick(idx);
+                  }}
                 >
                   <span className="choice-badge">{idx + 1}</span>
                   <span className="choice-content">
@@ -224,7 +268,14 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
 
         {stage.canFlee && (
           <div className="dg-leave">
-            <button type="button" className="btn btn-ghost btn-sm dg-leave-btn" onClick={onFlee}>
+            <button
+              type="button"
+              className="btn btn-ghost btn-sm dg-leave-btn"
+              onClick={() => {
+                audioEngine.playClick();
+                onFlee?.();
+              }}
+            >
               <LogOut size={14} aria-hidden="true" />
               <span>{t(`Rút lui và giữ ${session.accumulatedLootAhn || 0} Ahn đã gom`, `Leave and keep the ${session.accumulatedLootAhn || 0} Ahn you hold`)}</span>
               <kbd>F</kbd>
@@ -244,7 +295,10 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
                   role="radio"
                   aria-checked={on}
                   className={`dg-stance stance-${st.id} ${on ? 'is-on' : ''}`}
-                  onClick={() => onSetStance?.(st.id)}
+                  onClick={() => {
+                    audioEngine.playClick();
+                    onSetStance?.(st.id);
+                  }}
                   title={pick(st.noteVi, st.noteEn)}
                 >
                   <Icon size={14} aria-hidden="true" />
@@ -258,7 +312,10 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
               type="button"
               className="dg-supply"
               disabled={!breather.ok}
-              onClick={() => onUseSupply?.('breather')}
+              onClick={() => {
+                audioEngine.playBuff();
+                onUseSupply?.('breather');
+              }}
               title={t(`Nghỉ thở: hồi máu và tinh thần, giảm áp lực. Tốn ${DUNGEON_BALANCE.breather.cost} Ahn và một lần tiếp tế.`, `Catch breath: restores HP and SP, eases strain. Costs ${DUNGEON_BALANCE.breather.cost} Ahn and one supply.`)}
             >
               <HeartPulse size={14} aria-hidden="true" />
@@ -270,7 +327,10 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
               type="button"
               className={`dg-supply ${scan.reason === 'scanned' ? 'is-used' : ''}`}
               disabled={!scan.ok}
-              onClick={() => onUseSupply?.('scan')}
+              onClick={() => {
+                audioEngine.playPrescriptTick();
+                onUseSupply?.('scan');
+              }}
               title={t('Dò đường: đọc quy luật của chặng này. Dễ qua kiểm định hơn, nhận ít thương tổn hơn, tìm thêm được chút hàng.', 'Read the stage: better check odds, less damage, a little extra haul.')}
             >
               <Radar size={14} aria-hidden="true" />
@@ -282,7 +342,10 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
                 type="button"
                 className={`dg-supply dg-supply--ego ${ego.reason === 'active' ? 'is-used' : ''}`}
                 disabled={!ego.ok}
-                onClick={() => onUseEgo?.()}
+                onClick={() => {
+                  audioEngine.playEgo();
+                  onUseEgo?.();
+                }}
                 title={t('Kích hoạt E.G.O: chặng này dễ qua kiểm định hơn nhiều và nhận ít thương tổn hơn. Đổi lại áp lực, tinh thần và Resonance đều tăng. Mỗi lần vào hầm có số lần giới hạn.', 'Awaken the E.G.O: this stage is far easier and hurts less. In exchange strain, sanity and Resonance all take a hit. Limited uses per run.')}
               >
                 <Zap size={14} aria-hidden="true" />
