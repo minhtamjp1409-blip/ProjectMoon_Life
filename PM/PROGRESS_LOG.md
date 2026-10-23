@@ -373,6 +373,13 @@ Mô phỏng 1.000 sinh mệnh độc lập (tuổi thọ trung bình 52.0 tuổi
 
 ## 10. Nhật ký phát triển chi tiết (Changelog từ Đợt 1 đến Đợt 23)
 
+### Đợt 32 (23/10/2026): Bond với người thân không còn tụt âm thầm
+* **Đo trước khi sửa** (mô phỏng 120 Fixer, một friend bond 60 và một partner bond 55 từ lúc 22 tuổi): bond trung bình 47 ở tuổi 30, 36 ở tuổi 40, 30 ở tuổi 50; chỉ 8% còn từ 50 trở lên ở tuổi 50. Nguyên nhân: `driftBonds` trừ 2 mỗi năm từ năm thứ 2 không gặp (4 từ năm thứ 5), mà mốc "gặp" chỉ được cập nhật khi một event chọn đúng người đó; Fixer ngập hợp đồng và thi Hana nên mốc ấy đứng yên.
+* **Trừ chậm lại** (`director.js`): chỉ bắt đầu sau 4 năm không gặp, trừ 1 mỗi năm (2 nếu từ 7 năm và bond dưới 60), bond từ 60 trở lên chỉ trừ 1; sàn vẫn là 6.
+* **Gặp lại không cần event** (`keepInTouch`, gọi mỗi cuối năm): mỗi năm spouse 60%, partner và lover 40%, friend 35%, mentee 30%, mentor 25% có một buổi gặp nhỏ, bond tăng 1 (không vượt trần hiện tại của quan hệ) và mốc "gặp" được đặt lại; thỉnh thoảng có một dòng nhật ký. Bond dưới 12 không được cứu miễn phí. Các cảnh nền tốt của friend, partner, mentor (`narrativeArcEngine.js`) cũng đặt lại mốc.
+* **12 minor "giữ liên lạc"** (`lifeMinorsBonds.js`, id `mk_*`): friend 5, partner 3, spouse 2, mentor 1, mentee 1. Là minor nên không giành suất major với event Fixer; để trôi qua không trừ bond. Người nào lâu chưa gặp thì minor của họ nặng hơn tới 4 lần trong lần rút. Test: `tests/test_bonds.mjs`.
+* **Kết quả** (cùng mô phỏng): bond trung bình 57 / 55 / 52 ở tuổi 30 / 40 / 50; 68% còn từ 50 trở lên ở tuổi 50. Mỗi đời có khoảng 5 minor loại này tới tuổi 50. Merit và cân bằng thăng cấp không đổi.
+
 ### Đợt 31 (23/10/2026): Association và Office không còn là cái tên
 * **Ba lối đi cho Fixer** (`src/engine/affiliation.js`, dữ liệu ở `src/data/associations.js`): tự do, Office (Hook, Yun's, Molar), hoặc associate Fixer của một trong chín Association (Zwei, Shi, Cinq, Liu, Seven, Tres, Devyat', Dieci, Öufi). Mặc định là tự do từ Grade 9; từ Grade 8 trở đi, mỗi năm có xác suất được mời, nơi nào mời do hạt giống và tuổi quyết định (nơi nào hợp chỉ số thì mới mời). Hồ sơ cũ có `org` Hook, Shi hoặc Öufi được tự nhận làm thành viên.
 * **Mỗi nơi có kho Request riêng:** 7 đến 8 mẫu mỗi Association (`careerContractsAssocA/B/C.js`), 6 mẫu cho Office, gọi tên bậc đe dọa theo chuyên môn của nơi ấy, nhãn ba cách tiếp cận riêng. Fixer tự do dùng kho chung cũ. Lore: yêu cầu được xếp loại rồi gửi cho Association hợp, Association giao lại cho Office hoặc associate Fixer; associate nhận lương ổn định và phải nhận việc được giao.

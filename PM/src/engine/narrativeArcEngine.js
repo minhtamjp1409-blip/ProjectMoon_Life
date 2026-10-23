@@ -279,6 +279,7 @@ export function simulateNpcAutonomousLife(char, rng = Math.random) {
           if (char.stats) char.stats.rep = Math.max(0, (char.stats.rep || 0) - 3);
         }
       } else {
+        friend.lastSeen = char.age;
         const roll = rng();
         if (roll < 0.4) {
           logs.push({
@@ -317,6 +318,7 @@ export function simulateNpcAutonomousLife(char, rng = Math.random) {
           vi: `[Đồng đội ăn ý] ${partner.nameVi} thức trắng đêm mài chỉnh lại vũ khí và bọc lại giáp vai cho bạn trước mùa hợp đồng mới.`,
           en: `[Trusted Wingman] ${partner.nameEn} stayed up all night recalibrating your weapon balance and reinforcing your pauldron straps ahead of the new contract season.`
         });
+        partner.lastSeen = char.age;
         if (char.stats) char.stats.health = Math.min(100, (char.stats.health || 50) + 3);
       }
     }
@@ -339,6 +341,7 @@ export function simulateNpcAutonomousLife(char, rng = Math.random) {
           en: `[Mentor’s Teachings] ${mentor.nameEn} summoned you for twilight tea, reflecting on old battle scars and sharing tactical poise against Shi assassins.`
         });
         mentor.bond = Math.min(100, mBond + 2);
+        mentor.lastSeen = char.age;
       }
     }
   }

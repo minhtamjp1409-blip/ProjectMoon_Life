@@ -397,18 +397,47 @@ export function ageNpcCompanions(char, rng = Math.random) {
   return logs;
 }
 
-/** People drift apart when you stop seeing them; prolonged neglect can sour trust into friction. */
+/**
+ * People drift apart when you stop seeing them, but slowly: nothing happens for the first
+ * years, close bonds cool one point a year at most, and nothing falls below a faint acquaintance.
+ */
 export function driftBonds(char) {
   const next = { ...char.npcs };
   let changed = false;
   for (const [role, npc] of Object.entries(char.npcs || {})) {
     if (!npcActive(npc) || role === 'child' || role === 'nemesis') continue;
     const yearsApart = char.age - (npc.lastSeen ?? npc.metAge ?? 0);
-    if (yearsApart >= 2 && (npc.bond || 0) > 6) {
-      const drop = yearsApart >= 5 ? 4 : 2;
+    if (yearsApart >= 4 && (npc.bond || 0) > 6) {
+      const drop = (npc.bond || 0) >= 60 || yearsApart < 7 ? 1 : 2;
       next[role] = { ...npc, bond: Math.max(6, (npc.bond || 0) - drop) };
       changed = true;
     }
   }
   if (changed) char.npcs = next;
+}
+
+const KEEP_ROLES = { spouse: 0.6, partner: 0.4, friend: 0.35, lover: 0.4, mentor: 0.25, mentee: 0.3 };
+
+/**
+ * A year with no crisis is still a year of small meetings: a meal, a message, a walk. The people
+ * you already keep close are seen now and then without an event being spent on it, and the bond
+ * edges up by one while it is below what the relationship currently allows.
+ */
+export function keepInTouch(char, rng = Math.random) {
+  const logs = [];
+  if (char.age < 15) return logs;
+  for (const [role, chance] of Object.entries(KEEP_ROLES)) {
+    const npc = char.npcs?.[role];
+    if (!npcActive(npc) || (npc.bond || 0) < 12 || rng() >= chance) continue;
+    const before = npc.bond || 0;
+    const after = Math.max(before, Math.min(bondCapFor(npc), before + 1));
+    char.npcs = { ...char.npcs, [role]: { ...npc, bond: after, lastSeen: char.age } };
+    if (after !== before && rng() < 0.2) {
+      logs.push({
+        vi: `[Gặp lại] Bạn và ${npc.nameVi} dành một buổi chiều chẳng có việc gì lớn, chỉ ngồi cạnh nhau.`,
+        en: `[Seen again] You and ${npc.nameEn || npc.nameVi} spend an afternoon with nothing much to do, only sitting side by side.`
+      });
+    }
+  }
+  return logs;
 }

@@ -48,6 +48,7 @@ import { CONSEQUENCE_EVENTS } from '../data/eventsChildhood.js';
 import { REGIONS } from '../data/worldData.js';
 import { LIFE_DAILIES as DAILIES_FIRST } from '../data/lifeDailies.js';
 import { LIFE_MINORS as MINORS_FIRST } from '../data/lifeMinors.js';
+import { LIFE_MINORS_BONDS } from '../data/lifeMinorsBonds.js';
 import { LIFE_MINORS_2 } from '../data/lifeMinors2.js';
 import { LIFE_DAILIES_3, LIFE_MINORS_3 } from '../data/lifeMinors3.js';
 import { YEAR_END_LINES } from '../data/yearEndLines.js';
@@ -68,7 +69,7 @@ import { cityArchiveAPI } from '../services/api/cityArchiveAPI.js';
 
 const FINGER_MISSION_CHANCE = 0.4;
 
-export const LIFE_MINORS = [...MINORS_FIRST, ...LIFE_MINORS_2, ...LIFE_MINORS_3, ...LIFE_MINORS_4, ...LIFE_MINORS_5, ...LIFE_MINORS_SEEDS, ...WORKSHOP_VISIT_MINORS, ...FINGER_MINORS, ...LIFE_MINORS_KIDS, ...LIFE_MINORS_CONTRACTS, ...THREAD_MINORS, ...SCAR_CALLBACKS, ...LIFE_CAREER_OPPORTUNITIES, ...EXPANSION_LIFE_MINORS];
+export const LIFE_MINORS = [...MINORS_FIRST, ...LIFE_MINORS_2, ...LIFE_MINORS_3, ...LIFE_MINORS_4, ...LIFE_MINORS_5, ...LIFE_MINORS_SEEDS, ...WORKSHOP_VISIT_MINORS, ...FINGER_MINORS, ...LIFE_MINORS_KIDS, ...LIFE_MINORS_CONTRACTS, ...LIFE_MINORS_BONDS, ...THREAD_MINORS, ...SCAR_CALLBACKS, ...LIFE_CAREER_OPPORTUNITIES, ...EXPANSION_LIFE_MINORS];
 export const LIFE_DAILIES = [...DAILIES_FIRST, ...LIFE_DAILIES_3, ...EXPANDED_DAILIES, ...DAILIES_2, ...EXPANSION_LIFE_DAILIES, ...WORKSHOP_VISIT_DAILIES, ...FINGER_DAILIES];
 import {
   directorWeight,
@@ -78,6 +79,7 @@ import {
   closeThreads,
   applyChoiceExtras,
   driftBonds,
+  keepInTouch,
   ageNpcCompanions,
   npcActive,
   hasMemory
@@ -217,6 +219,12 @@ const weightOf = (char) => (e) => {
     if (next && next.currentRep < next.repReq) {
       weight *= Math.min(3, 1.5 + (next.repReq - next.currentRep) / 8);
     }
+  }
+  // The longer you have not seen someone, the more likely a quiet moment with them comes up
+  if (e.keepRole) {
+    const npc = char.npcs?.[e.keepRole];
+    const apart = npc ? Math.max(0, char.age - (npc.lastSeen ?? npc.metAge ?? char.age)) : 0;
+    weight *= 1 + Math.min(3, apart * 0.75);
   }
   const opportunity = careerOpportunity(char);
   if (opportunity?.ids?.includes(e.id)) weight *= 1.5 + opportunity.shortage;
@@ -1160,6 +1168,7 @@ export function endYear(charState, rng) {
     vi.push('Hồ sơ theo dõi cá thể Distortion của bạn tại trụ sở Hana Association vẫn giữ nguyên trạng thái truy vết.');
     en.push('Your active Distortion dossier at Hana Association remained open under high-priority watch.');
   }
+  for (const meet of keepInTouch(char, rng)) pushLog(char, { key: 'keep_in_touch', type: 'story', ...meet }, 0.97);
   driftBonds(char);
 
   // What events keep raising also wears off: resonance, fame and connections need feeding
