@@ -10,6 +10,7 @@ import { CONSEQUENCE_EVENTS } from '../../src/data/eventsChildhood.js';
 import { FIXER_REQUESTS } from '../../src/data/eventsSupernatural.js';
 import { DUNGEON_DEFINITIONS } from '../../src/engine/dungeonEngine.js';
 import { ASSOCIATIONS, OFFICE_REQUESTS } from '../../src/data/associations.js';
+import { GAUNTLETS, REST_TEXT } from '../../src/data/dungeonGauntlets.js';
 
 const arg = (name, dflt) => (process.argv.find((a) => a.startsWith(`--${name}=`)) || '').split('=')[1] ?? dflt;
 const EXAMPLES = Number(arg('examples', 0));
@@ -43,12 +44,14 @@ const push = (pool, id, field, s) => { if (typeof s === 'string' && s) strings.p
 const walk = (pool, id, field, v) => {
   if (typeof v === 'string') return push(pool, id, field, v);
   if (Array.isArray(v)) return v.forEach((x, i) => walk(pool, id, `${field}[${i}]`, x));
-  if (v && typeof v === 'object') for (const [k, x] of Object.entries(v)) if (/^(vi|en|titleVi|titleEn|labelVi|labelEn|resultVi|resultEn|descVi|descEn|nameVi|nameEn|kickerVi|kickerEn|rvi|ren|textVi|textEn)$/.test(k) || typeof x === 'object') walk(pool, id, `${field}.${k}`, x);
+  if (v && typeof v === 'object') for (const [k, x] of Object.entries(v)) if (/^(vi|en|titleVi|titleEn|labelVi|labelEn|resultVi|resultEn|descVi|descEn|nameVi|nameEn|kickerVi|kickerEn|rvi|ren|textVi|textEn|introVi|introEn|tellVi|tellEn|phaseVi|phaseEn|judgmentVi|judgmentEn|failVi|failEn)$/.test(k) || typeof x === 'object') walk(pool, id, `${field}.${k}`, x);
 };
 const assocRequests = [...Object.values(ASSOCIATIONS).flatMap((a) => a.requests), ...OFFICE_REQUESTS];
 const poolOf = [['major', ALL_STORY_EVENTS], ['consequence', CONSEQUENCE_EVENTS], ['minor', LIFE_MINORS], ['daily', LIFE_DAILIES], ['request', FIXER_REQUESTS], ['request', assocRequests]];
 for (const [pool, list] of poolOf) for (const e of list) walk(pool, e.id, '', e);
 for (const d of Object.values(DUNGEON_DEFINITIONS)) walk('dungeon', d.id, '', d);
+for (const [id, g] of Object.entries(GAUNTLETS)) walk('dungeon', id, '.gauntlet', g);
+walk('dungeon', 'rest', '', REST_TEXT);
 
 const tally = {};
 const shown = {};

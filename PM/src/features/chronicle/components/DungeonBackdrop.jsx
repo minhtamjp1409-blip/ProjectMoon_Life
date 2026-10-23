@@ -8,10 +8,13 @@ export const DungeonBackdrop = ({ session }) => {
   const strain = session.sanityStrain || 0;
   const isHighStrain = strain >= 60;
   const isCriticalStrain = strain >= 85;
+  const fight = session.combat && !session.combat.done ? session.combat : null;
+  const floorKind = fight ? fight.plan[fight.floor]?.kind : null;
+  const fx = session.lastStageResult?.fx;
 
   return (
     <div
-      className={`dungeon-backdrop theme-${theme} is-stage-${session.currentStageIndex || 0} ${isHighStrain ? 'is-high-strain' : ''} ${isCriticalStrain ? 'is-crit-strain' : ''}`}
+      className={`dungeon-backdrop theme-${theme} is-stage-${session.currentStageIndex || 0} ${fight ? `is-floor-${fight.floor} is-${floorKind}` : ''} ${fight?.phase === 2 ? 'is-phase-2' : ''} ${isHighStrain ? 'is-high-strain' : ''} ${isCriticalStrain ? 'is-crit-strain' : ''}`}
       aria-hidden="true"
     >
       {/* 1. WARP Train: Dimensional scanlines, speedlines & spatial tear */}
@@ -70,6 +73,23 @@ export const DungeonBackdrop = ({ session }) => {
           <div className="pallid-spore-mote spore-3" />
         </div>
       )}
+
+      {/* 6. Night in the Backstreets: shut doors, a flickering lamp, ink seeping from the drains, suits in the dark */}
+      {theme === 'night' && (
+        <div className="night-alley-scene">
+          <div className="night-lamp" />
+          <div className="night-clock">3:13</div>
+          <div className="night-windows" />
+          <div className="night-ink ink-1" />
+          <div className="night-ink ink-2" />
+          <div className="night-suit suit-1" />
+          <div className="night-suit suit-2" />
+          <div className="night-suit suit-3" />
+        </div>
+      )}
+
+      {/* A hit, a block or a fallen enemy ripples through the whole scene once */}
+      {fx && <span key={session.lastStageResult?.nonce || 0} className={`dgb-flash fx-${fx}`} />}
 
       {theme === 'claw' && (
         <div className="claw-judgment-scene">

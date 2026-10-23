@@ -21,6 +21,49 @@ const NIGHT = 'dungeon_backstreets_night';
 const PREP_NIGHT = ['Chi 12 Ahn mua thuốc giữ tỉnh và một chiếc đèn bọc vải', 'Spend 12 Ahn on stay-awake tablets and a cloth-hooded lamp'];
 
 export const DUNGEON_GATE_EVENTS_2 = [
+  // ---- the last empty cells: the WARP train for a Finger or an Outcast, the Outskirts for a Wing ----
+  gate({
+    id: 'gate_syndicate_warp_chase', done: 'gate_syndicate_warp_chase_done', age: [20, 65], weight: 34,
+    need: { jobs: ['Syndicate'] },
+    vi: '[Kẻ chạy lên tàu WARP] Một người nợ máu với Finger của bạn đã mua vé tàu WARP, tin rằng mười giây là đủ để biến mất ở bờ bên kia của The City. Toa cuối còn một chỗ trống. Người giữ sổ đặt vé ấy lên bàn.',
+    en: '[The one who ran for the WARP train] Someone who owes your Finger a blood debt has bought a WARP ticket, sure that ten seconds is enough to vanish on the far side of the City. The last car has one empty seat. The keeper of the ledger sets that ticket on the table.',
+    choices: [
+      enter('dungeon_warp_train', 'gate_syndicate_warp_chase_done', 'Cầm vé và lên toa cuối', 'Take the ticket and board the last car',
+        'Cửa toa khép lại sau lưng bạn. Người kia ngồi ở đầu toa, chưa nhận ra bạn. Đồng hồ T Corp trên tường bắt đầu đếm, và bạn biết mười giây trong này không phải mười giây.', 'The car door closes behind you. Your quarry sits at the front, not yet aware of you. The T Corp clock on the wall begins to count, and you know ten seconds in here are not ten seconds.'),
+      prepare('dungeon_warp_train', 'gate_syndicate_warp_chase_done', 'Chi 12 Ahn mua bình dưỡng khí và thuốc kích thích trước khi lên', 'Spend 12 Ahn on a rebreather and stimulants before boarding',
+        'Người bán ở sạp cạnh ga nhìn vé của bạn rồi nhìn bạn, và bỏ thêm một ống thuốc vào túi mà không tính tiền.', 'The stall vendor by the station looks at your ticket, then at you, and drops an extra vial into the bag without charging for it.'),
+      decline('gate_syndicate_warp_chase_done', 'Để người ấy đi, ghi tên lại cho lần sau', 'Let them go and note the name for next time',
+        'Bạn trả vé lại cho người giữ sổ. Tên ấy vẫn nằm trong sổ, và lần sau người đi đòi sẽ không phải bạn.', 'You hand the ticket back to the keeper. The name stays in the ledger, and next time the one who collects will not be you.', { rep: -3, sanity: 2 })
+    ]
+  }),
+  gate({
+    id: 'gate_outcast_warp_cleanup', done: 'gate_outcast_warp_cleanup_done', age: [18, 65], weight: 36,
+    need: { jobs: ['Outcast'] },
+    vi: '[Ca dọn tàu trả công ngày] W Corp thiếu người cho đội dọn toa cuối và dán thông báo ở chợ việc làm: trả công theo ngày, không hỏi giấy tờ, phát mặt nạ khí tại ga. Hàng người xếp lại ngắn hơn bạn nghĩ.',
+    en: '[A day-wage cleanup shift] W Corp is short of hands for the last-car cleanup crew and posts a notice at the labor market: paid by the day, no papers asked, rebreathers issued at the station. The line is shorter than you expected.',
+    choices: [
+      enter('dungeon_warp_train', 'gate_outcast_warp_cleanup_done', 'Xếp hàng nhận mặt nạ và ra ga', 'Join the line, take a mask and go to the platform',
+        'Người phát mặt nạ không nhìn mặt bạn. Bạn đứng cạnh những người khác trên sân ga, không ai nói chuyện, cho tới khi cửa toa mở.', 'The one handing out masks never looks at your face. You stand on the platform with the others, no one speaking, until the car door opens.'),
+      prepare('dungeon_warp_train', 'gate_outcast_warp_cleanup_done', 'Chi 12 Ahn mua thêm bình dưỡng khí từ một người vừa đi ca trước', 'Spend 12 Ahn on a spare rebreather from someone off the last shift',
+        'Người bán đếm tiền rồi dặn bạn đừng nhìn vào mắt những khuôn mặt trên trần toa. Bạn hỏi vì sao. Người ấy không trả lời.', 'The seller counts the coins and tells you not to look into the eyes of the faces on the ceiling. You ask why. They do not answer.'),
+      decline('gate_outcast_warp_cleanup_done', 'Bỏ hàng, tìm việc khác trong ngày', 'Leave the line and look for other work today',
+        'Bạn tìm được một ca bốc vác trả nửa tiền. Tối đó bạn đọc thấy ca dọn tàu thiếu hai người lúc trở về.', 'You find a loading shift at half the pay. That evening you read that the cleanup shift came back two short.', { wealth: -2, sanity: 2 })
+    ]
+  }),
+  gate({
+    id: 'gate_wing_outskirts_survey', done: 'gate_wing_outskirts_survey_done', age: [20, 65], weight: 34,
+    need: { jobs: ['Wing Employee'] },
+    vi: '[Đoàn khảo sát ngoài tường] Phòng nghiên cứu của Wing gửi một đoàn ra Outskirts để lấy mẫu kim loại cổ và cần một nhân viên nội bộ đi cùng để ký biên bản. Tờ điều động ghi tên bạn bằng mực đỏ.',
+    en: '[A survey beyond the wall] Your Wing’s research office is sending a team into the Outskirts to sample ancient metal and needs an in-house employee along to sign the records. The transfer slip lists your name in red ink.',
+    choices: [
+      enter('dungeon_outskirts_ruins', 'gate_wing_outskirts_survey_done', 'Ký nhận lệnh và lên xe đoàn khảo sát', 'Sign the order and board the survey truck',
+        'Xe đoàn khảo sát chạy qua cổng tường lúc rạng sáng. Đây là lần đầu bạn thấy The City từ bên ngoài, và nó nhỏ hơn bạn nghĩ.', 'The survey truck passes the wall gate at dawn. It is the first time you have seen the City from outside, and it is smaller than you thought.'),
+      prepare('dungeon_outskirts_ruins', 'gate_wing_outskirts_survey_done', 'Chi 12 Ahn mua thêm nước, dây và đèn', 'Spend 12 Ahn on extra water, rope and a lamp',
+        'Thủ kho của phòng nghiên cứu bán cho bạn đồ dự phòng bằng giá nội bộ, rồi nói khẽ rằng lần trước đoàn không mang đủ nước.', 'The research storekeeper sells you spares at the staff price, then mentions quietly that the last team did not bring enough water.'),
+      decline('gate_wing_outskirts_survey_done', 'Xin đổi người, chịu một vết trong hồ sơ đánh giá', 'Ask for a substitute and take a mark on your review',
+        'Phòng nhân sự đổi tên bạn sang người khác. Hồ sơ đánh giá năm đó của bạn có thêm một dòng "không sẵn sàng điều động".', 'Personnel swaps your name for someone else’s. Your review that year gains a line: “unavailable for transfer.”', { rep: -2, sanity: 1 })
+    ]
+  }),
   gate({
     id: 'gate_wing_lcorp_research', done: 'gate_wing_lcorp_research_done', age: [20, 65], weight: 38,
     need: { jobs: ['Wing Employee'] },

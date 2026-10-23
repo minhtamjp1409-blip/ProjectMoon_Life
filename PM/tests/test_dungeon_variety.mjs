@@ -32,22 +32,25 @@ for (const id of ids) {
   assert.ok(def.variants?.[2]?.choices?.length >= 2, `${id} variant`);
 }
 
+// Exploration stages (side room, shortcut, variant, companion sent ahead) are the Outskirts' own now;
+// the fighting dungeons have their own versions in test_dungeon_gauntlet.mjs.
 // The side room is one extra stage, then the route resumes where it would have gone
-const side = start(delver('dg-side'), 'dungeon_warp_train');
+const side = start(delver('dg-side'), 'dungeon_outskirts_ruins');
+side.pendingDungeon.currentStageIndex = 1;
 const door = pickWhere(side, (c) => c.side);
 let step = resolveDungeonChoice(side, door, always);
-assert.equal(step.session.inSide.id, 'warp_luggage');
+assert.equal(step.session.inSide.id, 'outskirts_camp');
 assert.equal(getDungeonCurrentStage(step.session).isSide, true);
 step = resolveDungeonChoice(step.char, 1, always);
 assert.equal(step.session.inSide, null);
-assert.equal(step.session.currentStageIndex, 1, 'back on the main route at the next stage');
+assert.equal(step.session.currentStageIndex, 2, 'back on the main route at the next stage');
 
 // The shortcut skips to the last stage on success and only moves one stage on failure
-const fast = start(delver('dg-fast'), 'dungeon_lobotomy_ruin');
+const fast = start(delver('dg-fast'), 'dungeon_outskirts_ruins');
 fast.pendingDungeon.currentStageIndex = 1;
 const cut = pickWhere(fast, (c) => c.goto === 3);
 assert.equal(resolveDungeonChoice(fast, cut, always).session.currentStageIndex, 3);
-const slow = start(delver('dg-fast'), 'dungeon_lobotomy_ruin');
+const slow = start(delver('dg-fast'), 'dungeon_outskirts_ruins');
 slow.pendingDungeon.currentStageIndex = 1;
 const failed = resolveDungeonChoice(slow, cut, () => 0.999);
 assert.equal(failed.session.currentStageIndex, 2);
@@ -56,11 +59,11 @@ assert.equal(failed.session.currentStageIndex, 2);
 let variants = 0;
 for (let i = 0; i < 40; i++) {
   const c = delver(`dg-var-${i}`);
-  const a = createDungeonSession('dungeon_great_lake', c).variant;
-  assert.equal(createDungeonSession('dungeon_great_lake', c).variant, a);
+  const a = createDungeonSession('dungeon_outskirts_ruins', c).variant;
+  assert.equal(createDungeonSession('dungeon_outskirts_ruins', c).variant, a);
   if (a === 2) {
     variants++;
-    const s = { ...createDungeonSession('dungeon_great_lake', c), currentStageIndex: 2 };
+    const s = { ...createDungeonSession('dungeon_outskirts_ruins', c), currentStageIndex: 2 };
     assert.equal(getDungeonCurrentStage(s).isVariant, true);
   }
 }
@@ -70,7 +73,7 @@ assert.ok(variants > 8 && variants < 32, `variant share ${variants}/40`);
 const withPartner = (seed, bond) => {
   const c = delver(seed);
   c.npcs.partner = { role: 'partner', nameVi: 'Hạ', nameEn: 'Ha', bond, status: 'alive', metAge: 20, lastSeen: 30 };
-  return start(c, 'dungeon_bloodfiend_carnival');
+  return start(c, 'dungeon_outskirts_ruins');
 };
 const team = withPartner('dg-team', 70);
 assert.equal(team.pendingDungeon.companion.role, 'partner');
@@ -100,11 +103,11 @@ assert.equal(lost.session.companion, null);
 assert.match(lost.session.lastStageResult.vi, /không quay lại/);
 // A close companion takes half a blow once
 const saveRun = withPartner('dg-save', 80);
-saveRun.pendingDungeon.currentStageIndex = 1;
+saveRun.pendingDungeon.currentStageIndex = 2;
 const nerveIdx = pickWhere(saveRun, (c) => c.checkTrait && (c.fx?.health ?? 0) < 0);
 assert.ok(nerveIdx >= 0);
-const alone = start(delver('dg-save'), 'dungeon_bloodfiend_carnival');
-alone.pendingDungeon.currentStageIndex = 1;
+const alone = start(delver('dg-save'), 'dungeon_outskirts_ruins');
+alone.pendingDungeon.currentStageIndex = 2;
 rolls = [0.999, 0.0];
 const saved = resolveDungeonChoice(saveRun, nerveIdx, () => rolls.shift() ?? 0.5);
 const unsaved = resolveDungeonChoice(alone, nerveIdx, () => 0.999);
@@ -144,14 +147,15 @@ assert.equal(matchesEventContext(assocGate, delver('dg-assoc-none')), false);
 zwei.pendingEvent = assocGate;
 const inRun = resolveEventChoice(zwei, 0, () => 0.5);
 assert.equal(inRun.pendingDungeon.aff, 'zwei');
-inRun.pendingDungeon.currentStageIndex = 3;
+assert.equal(inRun.pendingDungeon.mode, 'gauntlet');
+inRun.pendingDungeon = { ...inRun.pendingDungeon, currentStageIndex: 3, combat: { ...inRun.pendingDungeon.combat, done: true } };
 assert.equal(resolveDungeonChoice(inRun, 0, always).char.affiliation.standing, 60);
 const refused = { ...zwei, pendingEvent: assocGate, affiliation: { ...zwei.affiliation } };
 assert.equal(resolveEventChoice(refused, 2, () => 0.5).affiliation.standing, 45);
 
 // Carrying something out plants a callback
 const keeper = start(delver('dg-keep'), 'dungeon_lobotomy_ruin');
-keeper.pendingDungeon.currentStageIndex = 3;
+keeper.pendingDungeon = { ...keeper.pendingDungeon, currentStageIndex: 3, combat: { ...keeper.pendingDungeon.combat, done: true } };
 const kept = resolveDungeonChoice(keeper, 0, always).char;
 assert.ok(kept.flags.includes('KeptDungeonTrophy'));
 assert.ok(kept.weaver.pendingThreads.some((t) => t.eventId === 'csq_dungeon_trophy_kept'));

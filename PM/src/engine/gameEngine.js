@@ -42,6 +42,9 @@ import { EXPANSION_STORY_EVENTS } from '../data/eventsNpcAndWorldExpansion.js';
 import { DUNGEON_GATE_EVENTS } from '../data/eventsDungeonGates.js';
 import { DUNGEON_GATE_EVENTS_2 } from '../data/eventsDungeonGates2.js';
 import { EGO_COLOR_EVENTS } from '../data/eventsEgoColorPerks.js';
+import { APEX_COLOR_EVENTS } from '../data/eventsApexPath.js';
+import { APEX_TWILIGHT_EVENTS } from '../data/eventsApexTwilight.js';
+import { LIFE_ENDINGS, lifeEndingOf } from '../data/lifeEndings.js';
 import { BRANCH_DEPTH_EVENTS } from '../data/eventsBranchDepth.js';
 import { WORKSHOP_VISIT_EVENTS } from '../data/eventsWorkshopVisits.js';
 import { FINGER_STORY_EVENTS } from '../data/eventsFingers.js';
@@ -123,6 +126,8 @@ export const ALL_STORY_EVENTS = [
   ...DUNGEON_GATE_EVENTS,
   ...DUNGEON_GATE_EVENTS_2,
   ...EGO_COLOR_EVENTS,
+  ...APEX_COLOR_EVENTS,
+  ...APEX_TWILIGHT_EVENTS,
   ...BRANCH_DEPTH_EVENTS,
   ...WORKSHOP_VISIT_EVENTS,
   ...FINGER_STORY_EVENTS,
@@ -1584,6 +1589,24 @@ export function applyFatalOrCompanionSave(char, deathCauseVi, deathCauseEn) {
   evaluateCharacterAchievements(char);
 }
 
+/** Closes the chronicle without a death: no ampoule or companion can step in, and the epitaph tells why. */
+export function closeLifeByChoice(char, lifeEnding, causeVi, causeEn) {
+  char.alive = false;
+  char.lifeEnding = lifeEnding || 'retired';
+  char.deathCauseVi = causeVi || 'Rời khỏi câu chuyện theo ý mình';
+  char.deathCauseEn = causeEn || 'Left the story on their own terms';
+  const ending = LIFE_ENDINGS[char.lifeEnding];
+  char.logs.push({
+    id: `ending_${char.lifeEnding}_${char.age}`,
+    age: char.age,
+    season: SEASONS[char.seasonIdx || 0],
+    type: 'major',
+    vi: `[${ending?.titleVi || 'Kết thúc'}] ${char.deathCauseVi}.`,
+    en: `[${ending?.titleEn || 'An ending'}] ${char.deathCauseEn}.`
+  });
+  evaluateCharacterAchievements(char);
+}
+
 export function handleSanityBreakdown(char, rng = Math.random) {
   if (!char.alive || char.stats.sanity > 0) return;
   if (char.flags.includes('Distorted') || char.flags.includes('EGOAwakened')) return;
@@ -2119,10 +2142,13 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
   // Mark any thread targeting this event as fulfilled
   closeThreads(char, event.id);
 
-  // Check if outcome caused immediate death or health <= 0
-  if (outcome.deathCauseVi || char.stats.health <= 0) {
+  // A life can end by choice: the character walks away or hands the seat on, and the chronicle closes
+  if ((outcome.endsLife || choice.endsLife) && char.alive) {
+    closeLifeByChoice(char, outcome.lifeEnding || choice.lifeEnding, outcome.deathCauseVi || choice.deathCauseVi, outcome.deathCauseEn || choice.deathCauseEn);
+  } else if (outcome.deathCauseVi || char.stats.health <= 0) {
     const [woundVi, woundEn] = woundDeath(char, 'Gục ngã vì vết thương quá nặng', 'Succumbed to fatal wounds');
     applyFatalOrCompanionSave(char, outcome.deathCauseVi || woundVi, outcome.deathCauseEn || woundEn);
+    if (!char.alive && (outcome.lifeEnding || choice.lifeEnding)) char.lifeEnding = outcome.lifeEnding || choice.lifeEnding;
   } else if (char.stats.sanity <= 0) {
     handleSanityBreakdown(char, rng);
   }
@@ -2247,7 +2273,15 @@ export function buildLifeSummaryAndLegacy(char) {
   let poeticQuoteVi = '“Họ trút hơi thở cuối cùng vào một buổi chiều mà không một ai trong thành phố này dừng bước.”';
   let poeticQuoteEn = '“They breathed their last on an afternoon when no one in the City was in a hurry.”';
 
-  if (char.endingId === 'library_threshold') {
+  const closedBy = lifeEndingOf(char);
+  const topOfCareer = flags.includes('ColorFixer') || (char.job === 'Syndicate' && (char.fingerRank || 0) >= 3);
+  if (closedBy) {
+    poeticQuoteVi = closedBy.quoteVi;
+    poeticQuoteEn = closedBy.quoteEn;
+  } else if (topOfCareer && char.age >= 100) {
+    poeticQuoteVi = LIFE_ENDINGS.ripe_age.quoteVi;
+    poeticQuoteEn = LIFE_ENDINGS.ripe_age.quoteEn;
+  } else if (char.endingId === 'library_threshold') {
     poeticQuoteVi = '“B Corp không ghi lại những gì ở phía sau cánh cửa.”';
     poeticQuoteEn = '“B Corp did not record what lay beyond the door.”';
   } else if (char.age === 0) {
@@ -2437,6 +2471,10 @@ export function buildLifeSummaryAndLegacy(char) {
   if (char.endingId === 'library_threshold') {
     lifeStoryParagraphsVi.push(`Ở tuổi ${char.age}, bạn sống sót qua án của The Head và bị đẩy ra Outskirts. Nhiều ngày sau, giữa vùng đất không tên, bạn tìm thấy The Library. Bạn đặt tay lên tay nắm và đẩy cửa bước vào. Hồ sơ của bạn dừng ở đó.`);
     lifeStoryParagraphsEn.push(`At age ${char.age}, you survived the Head’s judgment and were cast into the Outskirts. Days later, in an unnamed waste, you found the Library. You took the handle and pushed the door open. Your record ends there.`);
+  } else if (closedBy?.closing) {
+    const closing = closedBy.closing({ age: char.age, relic: relicName });
+    lifeStoryParagraphsVi.push(closing.vi);
+    lifeStoryParagraphsEn.push(closing.en);
   } else {
     lifeStoryParagraphsVi.push(
       `Ở tuổi ${char.age} (${lifeCompVi}), hành trình ấy khép lại: ${deathCauseVi}. Khi tấm màn sinh mệnh hạ xuống, bạn để lại 「${relicName}」, ${char.stats?.wealth ?? 0} Ahn tài sản cùng ${char.stats?.rep ?? 0} điểm uy danh cho thế hệ kế tiếp viết tiếp câu chuyện còn dang dở.`
@@ -2582,6 +2620,7 @@ export function buildLifeSummaryAndLegacy(char) {
 
   return {
     endingId: char.endingId || null,
+    lifeEnding: char.lifeEnding || null,
     generation: char.generation,
     seed: char.seed,
     name: char.name,

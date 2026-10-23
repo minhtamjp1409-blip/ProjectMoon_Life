@@ -4,6 +4,8 @@ import Sidebar from './Sidebar';
 import Header, { BottomNav } from './Header';
 import { CityBackdrop } from '../components/CityBackdrop';
 import { useShallow } from 'zustand/react/shallow';
+import { DUNGEON_DEFINITIONS } from '../engine/gameEngine';
+import '../styles/dungeonFx.css';
 import { useGameStore } from '../store/gameStore';
 import { useThemeStore } from '../store/themeStore';
 
@@ -12,7 +14,7 @@ const TICK_MS = 100;
 export const MainLayout = ({ children }) => {
   const location = useLocation();
   // Only the fields the loop needs; yearProgress is left out so the layout doesn't re-render each tick
-  const { inRun, alive, pendingEvent, pendingContract, pendingMinor, pendingModal, activeResolution, speed, autoPlay, tick, selectEventChoice, selectContractApproach, dismissResolution, hydrateFromBackend } =
+  const { inRun, alive, pendingEvent, pendingContract, pendingMinor, pendingModal, activeResolution, speed, autoPlay, tick, selectEventChoice, selectContractApproach, dismissResolution, hydrateFromBackend, dungeonId, dungeonFx, dungeonNonce } =
     useGameStore(
       useShallow((s) => ({
         inRun: s.inRun,
@@ -28,7 +30,10 @@ export const MainLayout = ({ children }) => {
         selectEventChoice: s.selectEventChoice,
         selectContractApproach: s.selectContractApproach,
         dismissResolution: s.dismissResolution,
-        hydrateFromBackend: s.hydrateFromBackend
+        hydrateFromBackend: s.hydrateFromBackend,
+        dungeonId: s.char.pendingDungeon?.id || null,
+        dungeonFx: s.char.pendingDungeon?.lastStageResult?.fx || null,
+        dungeonNonce: s.char.pendingDungeon?.lastStageResult?.nonce || 0
       }))
     );
 
@@ -74,10 +79,15 @@ export const MainLayout = ({ children }) => {
   const hasDock = isPlay && Boolean(pendingEvent || pendingContract || pendingMinor || activeResolution);
   const { sidebarCollapsed, toggleSidebar } = useThemeStore();
   const isNavCollapsed = sidebarCollapsed !== null ? sidebarCollapsed : isPlay;
+  const dungeon = isPlay && dungeonId ? DUNGEON_DEFINITIONS[dungeonId] : null;
 
   return (
-    <div className={`shell interface-v2 ${isNavCollapsed ? 'is-nav-collapsed' : ''} ${isPlay ? 'is-in-play' : ''} ${hasDock ? 'has-dock' : ''}`}>
+    <div
+      className={`shell interface-v2 ${isNavCollapsed ? 'is-nav-collapsed' : ''} ${isPlay ? 'is-in-play' : ''} ${hasDock ? 'has-dock' : ''} ${dungeon ? `in-dungeon dg-shell-${dungeon.theme}` : ''}`}
+      style={dungeon ? { '--dg': dungeon.accentColor } : undefined}
+    >
       <CityBackdrop variant="ambient" />
+      {dungeon && dungeonFx && <span key={dungeonNonce} className={`dg-shell-pulse fx-${dungeonFx}`} aria-hidden="true" />}
       <Sidebar isCollapsed={isNavCollapsed} onToggleCollapse={() => toggleSidebar(isNavCollapsed)} isPlay={isPlay} />
       <Header />
       <main className="main" id="main-content">{isPlay ? children : <div className="main-scroll">{children}</div>}</main>

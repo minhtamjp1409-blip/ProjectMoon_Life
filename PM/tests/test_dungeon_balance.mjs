@@ -16,7 +16,7 @@ import {
 } from '../src/engine/gameEngine.js';
 import { ALL_STORY_EVENTS } from '../src/engine/gameEngine.js';
 import { DUNGEON_GATE_EVENTS } from '../src/data/eventsDungeonGates.js';
-import { FAIL_TEXT } from '../src/data/dungeonText.js';
+import { FAIL_TEXT, GENERIC_FAIL } from '../src/data/dungeonText.js';
 
 console.log('--- RUNNING DUNGEON BALANCE AND STORY TESTS ---');
 
@@ -62,21 +62,22 @@ console.log(`   ok: ${dungeonIds.length} dungeons, ${prep.length} prepared entri
 
 // 3. A failed check reads as a failure and hurts more than a success
 console.log('3. A failed check has its own text and its own price...');
-const checkStage = DUNGEON_DEFINITIONS.dungeon_warp_train.stages[1];
-const checkIdx = checkStage.choices.findIndex((c) => c.checkTrait === 'nerve');
+// Exploration checks are the Outskirts' own; the other dungeons fight floor by floor (test_dungeon_gauntlet.mjs)
+const checkStage = DUNGEON_DEFINITIONS.dungeon_outskirts_ruins.stages[1];
+const checkIdx = checkStage.choices.findIndex((c) => c.checkTrait === 'luck' && !c.goto);
 const midRun = () => {
   const c = createNewCharacter({ seed: 'check_seed' });
   c.stats.health = 90;
   c.stats.sanity = 90;
   c.alive = true;
-  c.pendingDungeon = { ...createDungeonSession('dungeon_warp_train', c), currentStageIndex: 1 };
+  c.pendingDungeon = { ...createDungeonSession('dungeon_outskirts_ruins', c), currentStageIndex: 1 };
   return c;
 };
 const won = resolveDungeonChoice(midRun(), checkIdx, () => 0.0);
 const lost = resolveDungeonChoice(midRun(), checkIdx, () => 0.999);
 assert.strictEqual(won.session.lastStageResult.type, 'check_ok');
 assert.strictEqual(lost.session.lastStageResult.type, 'check_fail');
-assert(lost.session.lastStageResult.vi.includes(FAIL_TEXT.warp.nerve.vi), 'a failed check must say it failed');
+assert(lost.session.lastStageResult.vi.includes((FAIL_TEXT.outskirts.luck || GENERIC_FAIL).vi), 'a failed check must say it failed');
 assert(!lost.session.lastStageResult.vi.includes(checkStage.choices[checkIdx].resultVi), 'a failed check must not narrate the success');
 assert(lost.char.stats.health < won.char.stats.health, 'a failed check costs more health');
 assert(lost.session.sanityStrain > won.session.sanityStrain, 'a failed check adds strain');
@@ -97,7 +98,7 @@ const breaking = midRun();
 breaking.pendingDungeon.sanityStrain = 97;
 breaking.pendingDungeon.accumulatedLootAhn = 40;
 breaking.stats.wealth = 0;
-const broke = resolveDungeonChoice(breaking, 0, () => 0.5);
+const broke = resolveDungeonChoice(breaking, 1, () => 0.5);
 assert.strictEqual(broke.isFinished, true, 'reaching the limit ends the run');
 assert.strictEqual(broke.resolution.outcome, 'broken');
 assert.strictEqual(broke.char.alive, true, 'a breakdown is not a death');
@@ -131,7 +132,7 @@ for (let i = 0; i < 120; i++) {
     c.alive = true;
     c.pendingDungeon = createDungeonSession(id, c);
     let guard = 0;
-    while (c.pendingDungeon && guard++ < 8) {
+    while (c.pendingDungeon && guard++ < 60) {
       const stage = getDungeonCurrentStage(c.pendingDungeon);
       const idx = stage.choices.findIndex((ch) => !ch.isFlee && isDungeonChoiceAvailable(ch, c));
       c = resolveDungeonChoice(c, idx, r).char;

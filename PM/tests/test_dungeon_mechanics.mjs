@@ -66,9 +66,9 @@ console.log('✓ createDungeonSession initialized valid session state with tacti
 
 // 3. Item Requirement Utility Checks
 console.log('3. Checking item requirements in isDungeonChoiceAvailable...');
-const stage0 = getDungeonCurrentStage(session);
-const kCorpChoice = stage0.choices.find(c => c.reqItem === 'con_kcorp_ampoule');
-assert(kCorpChoice, 'K Corp Ampoule choice not found in stage 0');
+assert.strictEqual(session.mode, 'gauntlet', 'the WARP train is fought floor by floor');
+assert(getDungeonCurrentStage(session).isCombat, 'the first floor is a fight');
+const kCorpChoice = { labelVi: 'x', labelEn: 'x', reqItem: 'con_kcorp_ampoule' };
 
 // Char without K Corp Ampoule
 dummyChar.inventory = [];
@@ -82,30 +82,29 @@ console.log('✓ Item utility checks properly gate dungeon choices.');
 // 4. Sequential Delve & Sanity Strain Progression
 console.log('4. Testing multi-stage progression through 4 nodes...');
 let testChar = createNewCharacter({ seed: 'delve_char_seed' });
-testChar.pendingDungeon = createDungeonSession('dungeon_warp_train', testChar, rng);
-testChar.inventory = [{ id: 'con_kcorp_ampoule', nameVi: 'Ống Tiêm K Corp' }];
+testChar.stats.health = 100;
+testChar.pendingDungeon = createDungeonSession('dungeon_outskirts_ruins', testChar, rng);
 
-// Stage 0 -> Pick choice 1 (consumes item)
-const step0 = resolveDungeonChoice(testChar, 1, rng);
+// Stage 0 -> Pick choice 0 (read the old tracks)
+const step0 = resolveDungeonChoice(testChar, 0, () => 0);
 assert.strictEqual(step0.isFinished, false, 'Dungeon should not finish on stage 0');
 assert.strictEqual(step0.char.pendingDungeon.currentStageIndex, 1, 'Should advance to stage 1');
-assert(step0.char.inventory.length === 0, 'K Corp Ampoule should be consumed');
 assert(step0.char.pendingDungeon.sanityStrain >= 0, 'Sanity Strain should update');
 
-// Stage 1 -> Pick choice 0 (suppression staff, adds loot)
-const step1 = resolveDungeonChoice(step0.char, 0, rng);
+// Stage 1 -> Pick choice 0 (a luck check that pays)
+const step1 = resolveDungeonChoice(step0.char, 0, () => 0);
 assert.strictEqual(step1.isFinished, false, 'Dungeon should not finish on stage 1');
 assert.strictEqual(step1.char.pendingDungeon.currentStageIndex, 2, 'Should advance to stage 2');
 assert(step1.char.pendingDungeon.accumulatedLootAhn > 0, 'Should accumulate loot Ahn');
 
-// Stage 2 -> Pick choice 1 (crush amalgam)
-const step2 = resolveDungeonChoice(step1.char, 1, rng);
+// Stage 2 -> Pick choice 1 (lure it away)
+const step2 = resolveDungeonChoice(step1.char, 1, () => 0);
 assert.strictEqual(step2.isFinished, false, 'Dungeon should not finish on stage 2');
 assert.strictEqual(step2.char.pendingDungeon.currentStageIndex, 3, 'Should advance to stage 3');
 
 // Stage 3 -> Pick final choice (take bounty and step out)
 const initialWealth = step2.char.stats.wealth;
-const step3 = resolveDungeonChoice(step2.char, 0, rng);
+const step3 = resolveDungeonChoice(step2.char, 0, () => 0);
 assert.strictEqual(step3.isFinished, true, 'Dungeon must finish at final stage');
 assert.strictEqual(step3.char.pendingDungeon, null, 'pendingDungeon must clear after completion');
 assert(step3.resolution, 'Resolution summary must be returned');
@@ -118,6 +117,9 @@ console.log('5. Testing safe evacuation (fleeDungeon)...');
 let fleeChar = createNewCharacter({ seed: 'flee_char_seed' });
 fleeChar.pendingDungeon = createDungeonSession('dungeon_lobotomy_ruin', fleeChar, rng);
 fleeChar.pendingDungeon.accumulatedLootAhn = 45;
+assert.strictEqual(fleeDungeon(fleeChar).isFinished, false, 'there is no leaving in the middle of a fight');
+// Only at a rest
+fleeChar.pendingDungeon = { ...fleeChar.pendingDungeon, combat: { ...fleeChar.pendingDungeon.combat, floor: 2, enemy: null } };
 
 const beforeFleeWealth = fleeChar.stats.wealth;
 const fleeRes = fleeDungeon(fleeChar);
@@ -131,9 +133,9 @@ console.log('✓ Emergency evacuation successfully preserves life and accumulate
 console.log('6. Testing lethal wounds in dungeon...');
 let mortalChar = createNewCharacter({ seed: 'mortal_seed' });
 mortalChar.pendingDungeon = createDungeonSession('dungeon_bloodfiend_carnival', mortalChar, rng);
-mortalChar.stats.health = 2; // Critical low health
+mortalChar.stats.health = 1; // Critical low health
 
-// Pick choice 1 with health damage (-4 hp) when char only has 2 hp
+// Strike into whatever the first enemy does: every answer but a dodge or a heal costs at least one HP
 const lethalRes = resolveDungeonChoice(mortalChar, 1, rng);
 assert.strictEqual(lethalRes.isFinished, true, 'Lethal damage must terminate dungeon');
 assert.strictEqual(lethalRes.char.alive, false, 'Character must be marked deceased');

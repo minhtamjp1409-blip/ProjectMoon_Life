@@ -13,7 +13,9 @@ import {
   isDungeonChoiceAvailable,
   evaluateDungeonChoiceOdds
 } from '../../../engine/gameEngine.js';
+import { gauntletRoute } from '../../../engine/dungeonCombat.js';
 import '../../../styles/dungeon.css';
+import '../../../styles/dungeonFx.css';
 
 const STANCES = [
   {
@@ -111,7 +113,14 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
   // Ambience itself follows the dungeon theme from LiveStageFeed; the dock only voices each stage result
   useEffect(() => {
     if (!result) return;
-    if (result.type === 'check_fail') audioEngine.playDamage(1.3);
+    const fx = result.fx;
+    if (fx === 'heavyhit') audioEngine.playDamage(1.6);
+    else if (fx === 'hit') audioEngine.playDamage(1.2);
+    else if (fx === 'mind' || fx === 'phase') audioEngine.playDanger();
+    else if (fx === 'block' || fx === 'counter' || fx === 'clash') audioEngine.playBladeClash();
+    else if (fx === 'break' || fx === 'boss-down' || fx === 'rest') audioEngine.playBuff();
+    else if (fx === 'evade' || fx === 'ally' || fx === 'shortcut' || fx === 'door') audioEngine.playClick();
+    else if (result.type === 'check_fail') audioEngine.playDamage(1.3);
     else if (result.type === 'check_ok') audioEngine.playBuff();
   }, [result]);
 
@@ -127,9 +136,12 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
   const ego = dungeonEgoState(char, session);
   const pick = (vi, en) => (lang === 'en' ? en : vi);
   const ambient = AMBIENT[def.theme] || AMBIENT.warp;
+  const route = session.mode === 'gauntlet' ? gauntletRoute(session) : null;
+  const fight = stage.combat || null;
 
   return (
-    <div className={`dock is-dungeon theme-${def.theme}`} style={{ '--dg': def.accentColor }} role="document">
+    <div className={`dock is-dungeon theme-${def.theme}${fight?.isBoss ? ' is-boss' : ''}${fight?.phase === 2 ? ' is-phase-2' : ''}`} style={{ '--dg': def.accentColor }} role="document">
+      {result?.fx && <span key={result.nonce} className={`dg-fx fx-${result.fx}`} aria-hidden="true" />}
       <div className="dock-inner dg">
         <header className="dg-head">
           <div className="dock-kicker-row">
@@ -142,6 +154,21 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
           <h3 className="dock-title">{pick(def.titleVi, def.titleEn)}</h3>
           <p className="dg-ambient">{t(ambient[0], ambient[1])}</p>
           {def.noRetreat && <p className="dg-judgment-warning">{t('Không có lối rút. HP hoặc SP cạn sẽ chết. Trượt kiểm định cuối cũng chết.', 'No retreat. Reaching zero HP or SP kills you. Failing the final check also kills you.')}</p>}
+          {route ? (
+            <ol className="dg-route is-gauntlet" aria-label={t('Các tầng', 'Floors')}>
+              {route.map((floor, idx) => (
+                <li
+                  key={idx}
+                  className={`is-${floor.kind} ${floor.state === 'done' ? 'is-done' : floor.state === 'now' ? 'is-now' : ''}`}
+                  aria-current={floor.state === 'now' ? 'step' : undefined}
+                  title={floor.kind === 'rest' ? t('Điểm nghỉ', 'Rest') : floor.kind === 'boss' ? t('Trùm', 'Boss') : floor.kind === 'elite' ? t('Tinh nhuệ', 'Elite') : t('Giao tranh', 'Fight')}
+                >
+                  <span className="dg-route-bar" />
+                  <span className="dg-route-num">{floor.kind === 'rest' ? '·' : floor.kind === 'boss' ? '★' : idx + 1}</span>
+                </li>
+              ))}
+            </ol>
+          ) : (
           <ol className="dg-route" aria-label={t('Tiến trình hầm ngục', 'Dungeon progress')}>
             {stages.map((st, idx) => (
               <li
@@ -155,6 +182,7 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
               </li>
             ))}
           </ol>
+          )}
         </header>
 
         <section className="dg-status" aria-label={t('Trạng thái chuyến đi', 'Run status')}>
@@ -185,11 +213,32 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
           </aside>
         )}
 
-        <section key={currentIdx} className="dg-scene">
+        <section key={session.combat ? `f${session.combat.floor}-${session.combat.phase || 1}` : currentIdx} className="dg-scene">
           <h4 className="dg-scene-title">
-            <span>{stage.isSide ? t(stage.sceneLabelVi, stage.sceneLabelEn) : t(`Chặng ${currentIdx + 1} / ${stages.length}`, `Stage ${currentIdx + 1} / ${stages.length}`)}</span>
+            <span>{stage.sceneLabelVi ? t(stage.sceneLabelVi, stage.sceneLabelEn) : route ? t('Sau trận cuối', 'After the last fight') : t(`Chặng ${currentIdx + 1} / ${stages.length}`, `Stage ${currentIdx + 1} / ${stages.length}`)}</span>
             {pick(stage.nameVi, stage.nameEn)}
           </h4>
+          {fight && (
+            <div className="dg-foe" aria-label={t('Kẻ thù', 'Enemy')}>
+              <div className="dg-foe-guard" role="meter" aria-valuemin={0} aria-valuemax={fight.guardMax} aria-valuenow={fight.guard} aria-label={t('Thế thủ còn lại', 'Guard left')}>
+                {Array.from({ length: fight.guardMax }, (_, i) => (
+                  <span key={i} className={`dg-foe-pip ${i < fight.guard ? 'is-up' : ''}`} />
+                ))}
+                {fight.isBoss && <span className="dg-foe-phase">{t(`Pha ${fight.phase}`, `Phase ${fight.phase}`)}</span>}
+              </div>
+              <p className={`dg-intent is-${fight.intent.kind}`}>
+                <span className="dg-intent-kind">{pick(fight.intent.kindVi, fight.intent.kindEn)}</span>
+                <span className="dg-intent-name">{pick(fight.intent.nameVi, fight.intent.nameEn)}</span>
+              </p>
+              {fight.next && (
+                <p className="dg-intent-next">{t('Đòn sau', 'Next')}: {pick(fight.next.kindVi, fight.next.kindEn)} · {pick(fight.next.nameVi, fight.next.nameEn)}</p>
+              )}
+              <details className="dg-foe-help">
+                <summary>{t('Cách đáp đòn', 'How to answer')}</summary>
+                <p>{t('Thủ hợp với đòn nặng và tấn công tâm trí. Phản công hợp với đòn nhanh. Né hợp với đòn quét và túm giữ, nhưng có thể trượt. Đáp đúng thì kẻ thù mất thế; phản công đúng lúc làm mất hai nấc.', 'Guard suits heavy blows and mind attacks. Strike suits quick attacks. Evade suits sweeps and grabs, but can miss. The right answer breaks a notch of guard; a well-timed strike breaks two.')}</p>
+              </details>
+            </div>
+          )}
           <p className="dock-text">{pick(stage.descVi, stage.descEn)}</p>
         </section>
 

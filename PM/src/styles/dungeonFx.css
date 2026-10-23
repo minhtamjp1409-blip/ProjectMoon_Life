@@ -1,0 +1,268 @@
+/* Dungeon feedback and dressing. Three layers react to a fight:
+   1. the dock: an overlay that flashes once per action, the enemy panel that punches on a counter;
+   2. the backdrop behind the stage: floors darken toward the boss, phase two shifts the colour;
+   3. the shell: both sidebars, the header and the bottom bar take the dungeon's accent (--dg)
+      while a run is open, and a thin edge pulse answers each blow.
+   Every effect is short and returns to rest; prefers-reduced-motion keeps the colours and drops the motion. */
+
+/* ---------- the enemy panel ---------- */
+.dg-foe {
+  display: grid;
+  gap: 8px;
+  margin: 4px 0 10px;
+  padding: 10px 12px;
+  border: 1px solid color-mix(in srgb, var(--dg) 30%, var(--rule));
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--dg) 7%, var(--raised));
+}
+.dg-foe-guard { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
+.dg-foe-pip {
+  width: 18px;
+  height: 6px;
+  border-radius: 2px;
+  background: var(--control);
+  transition: background-color 0.25s ease, transform 0.25s ease;
+}
+.dg-foe-pip.is-up { background: var(--dg); }
+.dg-foe-phase {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--dg-ink);
+}
+.dg-intent { display: flex; align-items: baseline; gap: 8px; margin: 0; flex-wrap: wrap; }
+.dg-intent-kind {
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: #0b0d10;
+  background: var(--dg);
+}
+.dg-intent-name { font-size: 15px; font-weight: 700; color: var(--text); }
+.dg-intent.is-heavy .dg-intent-kind { background: #f2994a; }
+.dg-intent.is-quick .dg-intent-kind { background: #f2c94c; }
+.dg-intent.is-sweep .dg-intent-kind { background: #56ccf2; }
+.dg-intent.is-mind .dg-intent-kind { background: #bb6bd9; color: #fff; }
+.dg-intent.is-grab .dg-intent-kind { background: #eb5757; color: #fff; }
+.dg-intent-next { margin: 0; font-size: 12.5px; color: var(--muted); }
+.dg-foe-help summary { cursor: pointer; font-size: 12px; color: var(--muted); }
+.dg-foe-help summary:focus-visible { outline: 2px solid var(--dg); outline-offset: 2px; border-radius: 3px; }
+.dg-foe-help p { margin: 6px 0 0; font-size: 12.5px; line-height: 1.6; color: var(--muted); }
+
+.dock.is-dungeon.is-boss .dg-foe { border-color: var(--dg); box-shadow: 0 0 0 1px color-mix(in srgb, var(--dg) 40%, transparent) inset; }
+.dock.is-dungeon.is-phase-2 .dg-foe { background: color-mix(in srgb, var(--bad) 10%, var(--raised)); }
+
+/* ---------- the floor strip ---------- */
+.dg-route.is-gauntlet li.is-rest .dg-route-bar { background: color-mix(in srgb, var(--good) 35%, var(--control)); }
+.dg-route.is-gauntlet li.is-boss .dg-route-num { color: var(--dg-ink); }
+.dg-route.is-gauntlet li.is-elite .dg-route-bar { box-shadow: 0 0 0 1px var(--dg) inset; }
+
+/* ---------- one-shot overlay inside the dock ---------- */
+.dock.is-dungeon { position: relative; }
+.dg-fx {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+}
+.dg-fx.fx-hit,
+.dg-fx.fx-heavyhit { background: radial-gradient(ellipse at 50% 40%, transparent 40%, rgba(235, 87, 87, 0.42) 100%); animation: dgfxFlash 0.42s ease-out; }
+.dg-fx.fx-heavyhit { animation-duration: 0.6s; }
+.dg-fx.fx-block { box-shadow: inset 0 0 0 2px var(--dg), inset 0 0 40px color-mix(in srgb, var(--dg) 35%, transparent); animation: dgfxFlash 0.32s ease-out; }
+.dg-fx.fx-counter,
+.dg-fx.fx-clash { background: radial-gradient(circle at 50% 35%, rgba(255, 255, 255, 0.38) 0%, transparent 45%); animation: dgfxFlash 0.28s ease-out; }
+.dg-fx.fx-evade { background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--dg) 30%, transparent), transparent); animation: dgfxSwipe 0.36s ease-out; }
+.dg-fx.fx-mind { background: radial-gradient(circle at 50% 50%, rgba(187, 107, 217, 0.0) 20%, rgba(187, 107, 217, 0.38) 70%); animation: dgfxRipple 0.7s ease-out; }
+.dg-fx.fx-break { background: radial-gradient(circle at 50% 30%, color-mix(in srgb, var(--dg) 45%, transparent) 0%, transparent 60%); animation: dgfxFlash 0.55s ease-out; }
+.dg-fx.fx-phase { background: radial-gradient(ellipse at 50% 50%, transparent 30%, rgba(0, 0, 0, 0.75) 100%); animation: dgfxFlash 0.9s ease-out; }
+.dg-fx.fx-boss-down { background: radial-gradient(circle at 50% 35%, rgba(242, 201, 76, 0.55) 0%, transparent 65%); animation: dgfxFlash 1.1s ease-out; }
+.dg-fx.fx-ally { box-shadow: inset 0 0 0 2px var(--good); animation: dgfxFlash 0.4s ease-out; }
+.dg-fx.fx-rest { background: linear-gradient(180deg, color-mix(in srgb, var(--good) 22%, transparent), transparent 55%); animation: dgfxFlash 0.8s ease-out; }
+
+/* Each place hurts in its own way */
+.dock.theme-warp .dg-fx.fx-hit,
+.dock.theme-warp .dg-fx.fx-heavyhit { background: repeating-linear-gradient(180deg, rgba(56, 189, 248, 0.35) 0 3px, transparent 3px 9px), radial-gradient(ellipse, transparent 40%, rgba(236, 72, 153, 0.35) 100%); animation: dgfxGlitch 0.45s steps(4, end); }
+.dock.theme-lobotomy .dg-fx.fx-hit,
+.dock.theme-lobotomy .dg-fx.fx-heavyhit { background: repeating-linear-gradient(135deg, rgba(245, 158, 11, 0.32) 0 14px, transparent 14px 28px); animation: dgfxSiren 0.5s ease-out; }
+.dock.theme-bloodfiend .dg-fx.fx-hit,
+.dock.theme-bloodfiend .dg-fx.fx-heavyhit { background: linear-gradient(115deg, transparent 42%, rgba(244, 63, 94, 0.55) 48%, rgba(244, 63, 94, 0.15) 54%, transparent 60%); animation: dgfxSlash 0.4s ease-out; }
+.dock.theme-greatlake .dg-fx.fx-hit,
+.dock.theme-greatlake .dg-fx.fx-heavyhit { background: linear-gradient(0deg, rgba(6, 182, 212, 0.4), transparent 60%); animation: dgfxWash 0.6s ease-out; }
+.dock.theme-night .dg-fx.fx-hit,
+.dock.theme-night .dg-fx.fx-heavyhit { background: radial-gradient(ellipse at 50% 100%, rgba(10, 6, 20, 0.85) 0%, rgba(167, 139, 250, 0.18) 45%, transparent 75%); animation: dgfxInk 0.65s ease-out; }
+.dock.theme-claw .dg-fx.fx-hit,
+.dock.theme-claw .dg-fx.fx-heavyhit { background: linear-gradient(100deg, transparent 49.2%, rgba(125, 211, 252, 0.95) 50%, transparent 50.8%); animation: dgfxCut 0.42s ease-out; }
+
+/* A counter lands: the enemy panel takes a short punch; a heavy hit shakes the scene */
+.dg-fx.fx-counter ~ .dock-inner .dg-foe { animation: dgfxPunch 0.22s ease-out; }
+.dg-fx.fx-heavyhit ~ .dock-inner .dg-scene { animation: dgfxShake 0.34s ease-in-out; }
+.dg-fx.fx-break ~ .dock-inner .dg-foe-guard,
+.dg-fx.fx-boss-down ~ .dock-inner .dg-foe-guard { animation: dgfxPunch 0.3s ease-out; }
+
+@keyframes dgfxFlash { 0% { opacity: 0; } 18% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes dgfxSwipe { 0% { opacity: 0; transform: translateX(-30%); } 30% { opacity: 1; } 100% { opacity: 0; transform: translateX(30%); } }
+@keyframes dgfxRipple { 0% { opacity: 0; transform: scale(0.85); } 30% { opacity: 1; } 100% { opacity: 0; transform: scale(1.08); } }
+@keyframes dgfxGlitch { 0% { opacity: 1; transform: translateX(-4px); } 25% { transform: translateX(5px); } 50% { opacity: 0.7; transform: translateX(-2px); } 100% { opacity: 0; transform: none; } }
+@keyframes dgfxSiren { 0%, 50% { opacity: 1; } 25%, 75% { opacity: 0.25; } 100% { opacity: 0; } }
+@keyframes dgfxSlash { 0% { opacity: 0; transform: translateX(-40%); } 20% { opacity: 1; } 100% { opacity: 0; transform: translateX(40%); } }
+@keyframes dgfxWash { 0% { opacity: 0; transform: translateY(40%); } 35% { opacity: 1; } 100% { opacity: 0; transform: translateY(-10%); } }
+@keyframes dgfxInk { 0% { opacity: 0; transform: scaleY(0.4); transform-origin: bottom; } 40% { opacity: 1; } 100% { opacity: 0; transform: scaleY(1.1); } }
+@keyframes dgfxCut { 0% { opacity: 0; transform: translateX(-60%); } 25% { opacity: 1; transform: none; } 100% { opacity: 0; } }
+@keyframes dgfxPunch { 0% { transform: scale(1); } 40% { transform: scale(0.97) translateX(2px); } 100% { transform: scale(1); } }
+@keyframes dgfxShake { 0%, 100% { transform: none; } 20% { transform: translateX(-5px); } 40% { transform: translateX(4px); } 60% { transform: translateX(-3px); } 80% { transform: translateX(2px); } }
+
+/* ---------- the backdrop ---------- */
+.interface-v2 .dungeon-backdrop { transition: filter 0.8s ease; }
+.interface-v2 .dungeon-backdrop.is-floor-3,
+.interface-v2 .dungeon-backdrop.is-floor-4 { filter: saturate(1.12) brightness(0.92); }
+.interface-v2 .dungeon-backdrop.is-boss { filter: saturate(1.25) brightness(0.82) contrast(1.06); }
+.interface-v2 .dungeon-backdrop.is-phase-2 { filter: saturate(1.4) brightness(0.72) contrast(1.12) hue-rotate(-12deg); }
+.interface-v2 .dungeon-backdrop.is-rest { filter: saturate(0.85) brightness(1.04); }
+.dgb-flash {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+}
+.dgb-flash.fx-hit,
+.dgb-flash.fx-heavyhit { background: radial-gradient(ellipse at 50% 50%, transparent 45%, rgba(235, 87, 87, 0.3) 100%); animation: dgfxFlash 0.5s ease-out; }
+.dgb-flash.fx-break,
+.dgb-flash.fx-boss-down { background: radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--dg, #fff) 30%, transparent), transparent 60%); animation: dgfxFlash 0.9s ease-out; }
+.dgb-flash.fx-phase { background: rgba(0, 0, 0, 0.55); animation: dgfxFlash 1.2s ease-out; }
+
+/* Night in the Backstreets */
+.interface-v2 .dungeon-backdrop.theme-night {
+  background:
+    radial-gradient(ellipse at 22% 12%, rgba(250, 204, 21, 0.14) 0%, transparent 32%),
+    linear-gradient(180deg, #07060d 0%, #0d0a18 55%, #050409 100%);
+}
+.night-alley-scene { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.night-lamp {
+  position: absolute;
+  top: 6%;
+  left: 18%;
+  width: 160px;
+  height: 260px;
+  background: radial-gradient(ellipse at 50% 0%, rgba(250, 204, 21, 0.32), transparent 70%);
+  animation: nightFlicker 6s infinite steps(1, end);
+}
+.night-clock {
+  position: absolute;
+  top: 9%;
+  right: 9%;
+  font: 700 28px/1 ui-monospace, 'SFMono-Regular', monospace;
+  letter-spacing: 0.08em;
+  color: rgba(167, 139, 250, 0.35);
+  text-shadow: 0 0 12px rgba(167, 139, 250, 0.35);
+}
+.night-windows {
+  position: absolute;
+  inset: 18% 0 40% 0;
+  background: repeating-linear-gradient(90deg, transparent 0 60px, rgba(255, 255, 255, 0.025) 60px 96px, transparent 96px 150px);
+  mask-image: linear-gradient(180deg, transparent, #000 30%, #000 70%, transparent);
+}
+.night-ink {
+  position: absolute;
+  bottom: -20px;
+  height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(10, 6, 20, 0.95), transparent 70%);
+  filter: blur(6px);
+  animation: nightSeep 9s ease-in-out infinite;
+}
+.night-ink.ink-1 { left: 10%; width: 40%; }
+.night-ink.ink-2 { right: 5%; width: 45%; animation-delay: -4s; }
+.night-suit {
+  position: absolute;
+  bottom: 12%;
+  width: 34px;
+  height: 120px;
+  border-radius: 14px 14px 4px 4px;
+  background: linear-gradient(180deg, #0a0812 0%, #13101f 100%);
+  box-shadow: 0 0 18px rgba(0, 0, 0, 0.8);
+  opacity: 0.0;
+  animation: nightStroll 14s linear infinite;
+}
+.night-suit.suit-1 { left: -6%; animation-delay: 0s; }
+.night-suit.suit-2 { left: -6%; animation-delay: -5s; height: 104px; }
+.night-suit.suit-3 { left: -6%; animation-delay: -9s; height: 140px; }
+.interface-v2 .dungeon-backdrop.theme-night.is-boss .night-suit.suit-3 { height: 190px; width: 44px; }
+.interface-v2 .dungeon-backdrop.theme-night.is-phase-2 .night-clock { color: rgba(235, 87, 87, 0.55); }
+@keyframes nightFlicker { 0%, 100% { opacity: 1; } 47% { opacity: 1; } 48% { opacity: 0.2; } 50% { opacity: 0.9; } 51% { opacity: 0.3; } 53% { opacity: 1; } }
+@keyframes nightSeep { 0%, 100% { transform: scaleX(1); opacity: 0.8; } 50% { transform: scaleX(1.15); opacity: 1; } }
+@keyframes nightStroll { 0% { transform: translateX(0); opacity: 0; } 10% { opacity: 0.85; } 90% { opacity: 0.85; } 100% { transform: translateX(112vw); opacity: 0; } }
+
+/* ---------- the shell: sidebars, header and bottom bar belong to the place ---------- */
+.interface-v2.shell.in-dungeon .app-navigation {
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--dg) 12%, transparent), transparent 55%),
+    var(--surface);
+  border-right-color: color-mix(in srgb, var(--dg) 45%, var(--rule));
+  transition: background-color 0.5s ease, border-color 0.5s ease;
+}
+.interface-v2.shell.in-dungeon .app-nav-link.is-current { color: var(--dg); box-shadow: inset 2px 0 0 var(--dg); }
+.interface-v2.shell.in-dungeon .side.desktop-dossier-side {
+  border-color: color-mix(in srgb, var(--dg) 35%, var(--rule));
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--dg) 9%, transparent), transparent 40%),
+    var(--surface);
+  transition: background-color 0.5s ease, border-color 0.5s ease;
+}
+.interface-v2.shell.in-dungeon .app-mobile-header,
+.interface-v2.shell.in-dungeon .bottom-nav { border-color: color-mix(in srgb, var(--dg) 45%, var(--rule)); box-shadow: 0 0 0 1px color-mix(in srgb, var(--dg) 18%, transparent); }
+
+/* A texture per place along the sidebars */
+.interface-v2.shell.dg-shell-warp .app-navigation,
+.interface-v2.shell.dg-shell-warp .side.desktop-dossier-side { background-image: repeating-linear-gradient(180deg, rgba(56, 189, 248, 0.05) 0 2px, transparent 2px 6px), linear-gradient(180deg, color-mix(in srgb, var(--dg) 12%, transparent), transparent 55%); }
+.interface-v2.shell.dg-shell-lobotomy .app-navigation,
+.interface-v2.shell.dg-shell-lobotomy .side.desktop-dossier-side { background-image: repeating-linear-gradient(135deg, rgba(245, 158, 11, 0.05) 0 12px, transparent 12px 24px), linear-gradient(180deg, color-mix(in srgb, var(--dg) 12%, transparent), transparent 55%); }
+.interface-v2.shell.dg-shell-bloodfiend .app-navigation,
+.interface-v2.shell.dg-shell-bloodfiend .side.desktop-dossier-side { background-image: linear-gradient(180deg, rgba(244, 63, 94, 0.16), transparent 30%), linear-gradient(0deg, rgba(76, 5, 25, 0.35), transparent 45%); }
+.interface-v2.shell.dg-shell-greatlake .app-navigation,
+.interface-v2.shell.dg-shell-greatlake .side.desktop-dossier-side { background-image: linear-gradient(0deg, rgba(6, 182, 212, 0.14), transparent 50%), linear-gradient(180deg, rgba(226, 232, 240, 0.05), transparent 40%); }
+.interface-v2.shell.dg-shell-night .app-navigation,
+.interface-v2.shell.dg-shell-night .side.desktop-dossier-side { background-image: linear-gradient(180deg, rgba(7, 6, 13, 0.6), transparent 60%), linear-gradient(0deg, rgba(167, 139, 250, 0.1), transparent 35%); }
+.interface-v2.shell.dg-shell-claw .app-navigation,
+.interface-v2.shell.dg-shell-claw .side.desktop-dossier-side { background-image: linear-gradient(100deg, transparent 49.6%, rgba(125, 211, 252, 0.22) 50%, transparent 50.4%), linear-gradient(180deg, rgba(214, 208, 186, 0.08), transparent 40%); }
+.interface-v2.shell.dg-shell-outskirts .app-navigation,
+.interface-v2.shell.dg-shell-outskirts .side.desktop-dossier-side { background-image: linear-gradient(180deg, rgba(234, 179, 8, 0.1), transparent 45%), radial-gradient(ellipse at 50% 100%, rgba(120, 85, 20, 0.2), transparent 60%); }
+
+/* The edge of the screen answers a blow */
+.dg-shell-pulse {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0;
+}
+.dg-shell-pulse.fx-hit,
+.dg-shell-pulse.fx-heavyhit { box-shadow: inset 0 0 0 3px rgba(235, 87, 87, 0.7), inset 0 0 80px rgba(235, 87, 87, 0.25); animation: dgfxFlash 0.45s ease-out; }
+.dg-shell-pulse.fx-block,
+.dg-shell-pulse.fx-counter { box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--dg) 80%, transparent); animation: dgfxFlash 0.3s ease-out; }
+.dg-shell-pulse.fx-boss-down { box-shadow: inset 0 0 120px rgba(242, 201, 76, 0.35); animation: dgfxFlash 1.1s ease-out; }
+.dg-shell-pulse.fx-phase { box-shadow: inset 0 0 140px rgba(0, 0, 0, 0.8); animation: dgfxFlash 1s ease-out; }
+.dg-shell-pulse.fx-mind { box-shadow: inset 0 0 100px rgba(187, 107, 217, 0.35); animation: dgfxRipple 0.7s ease-out; }
+
+@media (prefers-reduced-motion: reduce) {
+  .dg-fx,
+  .dgb-flash,
+  .dg-shell-pulse,
+  .night-lamp,
+  .night-ink,
+  .night-suit,
+  .dg-fx ~ .dock-inner .dg-foe,
+  .dg-fx ~ .dock-inner .dg-scene,
+  .dg-fx ~ .dock-inner .dg-foe-guard { animation: none !important; }
+  .dg-fx,
+  .dgb-flash,
+  .dg-shell-pulse { display: none; }
+  .night-suit { opacity: 0.5; transform: none; }
+  .night-suit.suit-2 { left: 40%; }
+  .night-suit.suit-3 { left: 70%; }
+}

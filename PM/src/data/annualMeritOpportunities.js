@@ -1,5 +1,15 @@
+import { APEX_MINORS } from './eventsApexPath.js';
+import { APEX_COLOR_GENERATED, APEX_FINGER_GENERATED } from './apexCommissions.js';
+
+// The general commissions are for careers still climbing. A Color or a top-rank Finger gets the apex set instead.
+const climbing = (need) => ({
+  ...need,
+  ...(need.jobs?.includes('Fixer') ? { noFlags: ['ColorFixer'] } : {}),
+  ...(need.jobs?.includes('Syndicate') ? { fingerRankAtMost: 2 } : {})
+});
+
 const task = (id, need, vi, en, steady, gamble, declined) => ({
-  id, age: [15, 140], need, vi, en,
+  id, age: [15, 140], need: climbing(need), vi, en,
   careerOpportunity: true,
   allowDistorted: need.jobs?.includes('Distortion') || Boolean(need.finger),
   tags: ['career', 'merit'],
@@ -16,7 +26,7 @@ const task = (id, need, vi, en, steady, gamble, declined) => ({
   ignore: { vi: 'Bỏ qua', en: 'Pass', rvi: declined[0], ren: declined[1], fx: {} }
 });
 
-export const ANNUAL_MERIT_OPPORTUNITIES = [
+const CLIMBING_MERIT_OPPORTUNITIES = [
   task('m_annual_fixer_shelter', { jobs: ['Fixer'] },
     '[Yêu cầu hộ tống] Một văn phòng nhỏ nhận đơn đưa ba cư dân qua hai con hẻm đang tranh chấp. Tiền ứng trước chỉ đủ trả một người.',
     '[Escort request] A small Office must move three residents through two disputed alleys. The advance pays for only one Fixer.',
@@ -107,4 +117,11 @@ export const ANNUAL_MERIT_OPPORTUNITIES = [
     ['Dời kho và cắt dấu vết dẫn tới nơi trú', 'Move the stores and erase the trail', 'Nơi trú vẫn kín. Bạn học thêm một lối thoát qua mái nhà.', 'The shelter stays hidden. You learn another route over the roofs.', { merit: 4, health: -4, sanity: -3 }],
     ['Phá trạm gác trong đêm để giữ địa bàn', 'Break the post at night to keep the territory', 'Trạm gác bị bỏ. Kẻ còn sống kể lại cuộc chạm trán, và khu vực trống trở lại.', 'The post is abandoned. Survivors describe the encounter, and the area clears.', { merit: 8, heat: 8, health: -7 }, 'Bạn bị phát hiện dưới đèn pha. Nơi trú phải bỏ lại cùng nửa kho lương.', 'Floodlights catch you. You abandon the shelter and half the stores.', { health: -11, wealth: -5, heat: 10 }],
     ['Bạn rời nơi trú trước khi trạm gác hoàn thành.', 'You leave before the post is finished.'])
+];
+
+export const ANNUAL_MERIT_OPPORTUNITIES = [
+  ...CLIMBING_MERIT_OPPORTUNITIES,
+  ...APEX_MINORS,
+  ...APEX_COLOR_GENERATED,
+  ...APEX_FINGER_GENERATED
 ];

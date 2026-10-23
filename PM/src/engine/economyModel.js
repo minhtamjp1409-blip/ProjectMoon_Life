@@ -30,6 +30,8 @@ export const BALANCE = {
     base: { natural: 3, bond: 4, tavern: 4 },
     deficitRate: 0.02
   },
+  // A Color or a head of a Finger that accepted the City's care keeps its body about this much longer
+  apexLongevityShift: 38,
   aging: {
     start: 50,                    // effective age where the body starts to give
     step: 0.32,
@@ -68,7 +70,9 @@ export function reputationGain(current, gain) {
 export function agingLoss(char) {
   const a = BALANCE.aging;
   const flags = char.flags || [];
-  const start = flags.includes('Bloodfiend') ? 120 : flags.includes('FullBodyProsthetic') ? a.start + 20 : a.start;
+  const start = flags.includes('Bloodfiend') ? 120
+    : flags.includes('ApexLongevity') ? a.start + BALANCE.apexLongevityShift
+      : flags.includes('FullBodyProsthetic') ? a.start + 20 : a.start;
   const over = effectiveAge(char) - start;
   if (over <= 0) return 0;
   return Math.round(a.floor + a.step * Math.pow(over, a.power));
@@ -80,7 +84,7 @@ export function healAmount(char, kind) {
   const hp = char.stats.health;
   if (hp >= h.below) return 0;
   const deficit = 100 - hp;
-  const naturalAgePenalty = kind === 'natural' && !char.flags?.includes('FullBodyProsthetic') && !char.flags?.includes('Bloodfiend')
+  const naturalAgePenalty = kind === 'natural' && !char.flags?.includes('FullBodyProsthetic') && !char.flags?.includes('Bloodfiend') && !char.flags?.includes('ApexLongevity')
     ? Math.min(2, Math.floor(Math.max(0, effectiveAge(char) - 60) / 12))
     : 0;
   return Math.min(5, Math.max(1, Math.round((h.base[kind] + h.deficitRate * deficit) * traitsOf(char).vigor) - naturalAgePenalty));

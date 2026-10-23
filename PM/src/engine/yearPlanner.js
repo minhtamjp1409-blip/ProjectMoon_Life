@@ -64,6 +64,7 @@ import { THREAD_MINORS } from '../data/narrative/causalThreads.js';
 import { SCAR_CALLBACKS } from '../data/lifeScarCallbacks.js';
 import { LIFE_CAREER_OPPORTUNITIES } from '../data/lifeCareerOpportunities.js';
 import { ANNUAL_MERIT_OPPORTUNITIES } from '../data/annualMeritOpportunities.js';
+import { apexLongevityEventId } from '../data/eventsApexTwilight.js';
 import { EXPANDED_DAILIES } from '../data/narrative/dailies.js';
 import { DAILIES_2 } from '../data/narrative/dailies2.js';
 import { EXPANSION_LIFE_MINORS, EXPANSION_LIFE_DAILIES } from '../data/lifeMinorsAndDailiesExpansion.js';
@@ -292,6 +293,7 @@ function majorIsDue(char, rng) {
   }
   if (gap >= 5) return true;
   if ((char.job === 'Syndicate' || (char.flags?.includes('Distorted') && char.finger)) && (char.fingerRank || 0) >= 3 && gap >= 2 && rng() < 0.65) return true;
+  if (char.job === 'Fixer' && char.flags?.includes('ColorFixer') && gap >= 2 && rng() < 0.55) return true;
   return gap >= 2 && rng() < 0.32;
 }
 
@@ -363,6 +365,13 @@ export function planYear(charState, rng) {
   if (char.job === 'Fixer' && age >= 28 && age <= 38 && char.fixerGrade >= 2 && char.fixerGrade <= 6 &&
       !char.flags.includes('Distorted') && !char.seenEvents.includes('fixer_seven_unclaimed_dossier') && rng() < 0.018) {
     scheduledKey.push({ kind: 'major', forcedEventId: 'fixer_seven_unclaimed_dossier' });
+  }
+
+  // The city keeps its Colors and its Finger heads alive: that offer comes soon after they reach the top
+  const longevityId = apexLongevityEventId(char);
+  if (longevityId && age >= 38 && !char.flags.includes('apex_longevity_done') && !(char.seenEvents || []).includes(longevityId) &&
+      !scheduledKey.some((it) => it.forcedEventId === longevityId) && rng() < 0.5) {
+    scheduledKey.push({ kind: 'major', forcedEventId: longevityId });
   }
 
   const nextFixerTrial = getNextFixerPromotion(char);

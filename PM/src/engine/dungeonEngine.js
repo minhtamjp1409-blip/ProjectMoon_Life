@@ -19,6 +19,7 @@ import { CLAW_DUNGEON, CLAW_DUNGEON_ID } from '../data/dungeonClaw.js';
 import { npcIsActive } from './eventConditions.js';
 import { ensureAffiliation, getAffiliation } from './affiliation.js';
 import { applyNpcFate } from './director.js';
+import { initGauntlet, isGauntlet, gauntletStage, previewCombatAction, resolveGauntletChoice, canLeaveGauntlet } from './dungeonCombat.js';
 
 export const DUNGEON_DEFINITIONS = {
   dungeon_warp_train: {
@@ -1035,6 +1036,13 @@ export function evaluateDungeonChoiceOdds(choice, char, session) {
   if (!choice || !char) return null;
   const def = session ? DUNGEON_DEFINITIONS[session.id] : null;
   const mastery = getDungeonMastery(def, char);
+  if (choice.combatAction && session?.combat) return previewCombatAction(COMBAT_CTX, choice, char, session);
+  if (choice.restAction) {
+    const pct = choice.checkTrait ? Math.round(clamp(0.58 * traitFactor(char, 'luck') + mastery.checkBonus, 0.25, 0.9) * 100) : 100;
+    const rest = choice.restAction === 'rest';
+    const push = choice.restAction === 'push';
+    return { hasCheck: Boolean(choice.checkTrait), trait: choice.checkTrait || null, successPct: pct, estHp: rest ? 12 : 0, estSp: rest ? 10 : 0, estWealth: 0, estLoot: push ? 8 : 0, estRep: 0, estMerit: push ? 2 : 0, estResonance: 0 };
+  }
   if (choice.companionLead) {
     const r = stageRewards(choice, session || {}, true);
     return {
@@ -1106,7 +1114,7 @@ export function createDungeonSession(dungeonId, char) {
     (char?.flags || []).some((f) => ['OutskirtsAdaptability', 'GreatLakeHardened', 'GoreDesensitized', 'EGOAwakened'].includes(f));
   const maxSupplies = def.noRetreat ? (bonusSupply ? 2 : 1) : (bonusSupply ? 3 : 2);
 
-  return {
+  const session = {
     id: def.id,
     theme: def.theme,
     titleVi: def.titleVi,
@@ -1145,6 +1153,8 @@ export function createDungeonSession(dungeonId, char) {
     },
     logs: []
   };
+  // Five of the dungeons are a chain of fights floor by floor; the rest keep their exploration stages
+  return isGauntlet(def.id) ? initGauntlet(session, char) : session;
 }
 
 /**
@@ -1204,6 +1214,7 @@ export function getDungeonCurrentStage(session) {
   if (!session) return null;
   const def = DUNGEON_DEFINITIONS[session.id];
   if (!def) return null;
+  if (session.mode === 'gauntlet' && session.combat && !session.combat.done) return gauntletStage(COMBAT_CTX, session);
   if (session.inSide && def.sideRoom?.id === session.inSide.id) {
     return { ...def.sideRoom, stageIndex: session.currentStageIndex, isSide: true, sceneLabelVi: 'Ngõ phụ', sceneLabelEn: 'Side room' };
   }
@@ -1240,6 +1251,7 @@ export function companionLeadChance(char, session) {
  */
 export function isDungeonChoiceAvailable(choice, char) {
   if (!choice || !char) return false;
+  if (choice.sealed) return false;
   if (choice.needAff && !getAffiliation(char)) return false;
   if (choice.companionLead && !npcIsActive(char.npcs?.[char.pendingDungeon?.companion?.role])) return false;
   if (choice.reqItem) {
@@ -1307,6 +1319,12 @@ export function resolveDungeonChoice(charState, choiceIndex, rng = Math.random) 
   const char = { ...charState, stats: { ...charState.stats }, logs: [...(charState.logs || [])] };
   const session = char.pendingDungeon ? { ...char.pendingDungeon, logs: [...(char.pendingDungeon.logs || [])] } : null;
   if (!session) return { char, session: null, isFinished: true, resolution: null };
+  if (session.mode === 'gauntlet' && session.combat && !session.combat.done) {
+    session.combat = { ...session.combat, plan: session.combat.plan.map((f) => ({ ...f })) };
+    const r = resolveGauntletChoice(char, session, choiceIndex, rng, COMBAT_CTX);
+    if (!r.isFinished) r.char.pendingDungeon = r.session;
+    return r;
+  }
 
   const def = DUNGEON_DEFINITIONS[session.id];
   const stage = def ? getDungeonCurrentStage(session) : null;
@@ -1591,7 +1609,7 @@ export function fleeDungeon(charState) {
   if (!session) return { char, session: null, isFinished: true };
 
   const def = DUNGEON_DEFINITIONS[session.id];
-  if (def?.noRetreat) return { char: charState, session, isFinished: false, resolution: null };
+  if (def?.noRetreat || (session.mode === 'gauntlet' && !canLeaveGauntlet(session))) return { char: charState, session, isFinished: false, resolution: null };
   const haul = session.accumulatedLootAhn || 0;
   if (haul > 0) char.stats.wealth = clamp((char.stats.wealth || 0) + haul, 0, 100);
   settleRun(char, session, 'fled');
@@ -1613,3 +1631,86 @@ export function fleeDungeon(charState) {
     }
   };
 }
+
+/** Everything the gauntlet module needs from here, so it never imports this file back. */
+const COMBAT_CTX = {
+  def: (session) => DUNGEON_DEFINITIONS[session.id],
+  damageMult: (def, char, session, kind) => damageMultOf(def, char, session, getDungeonMastery(def, char), kind),
+  hazardOf: (def) => DUNGEON_BALANCE.hazardDamage[def?.hazard] || 1,
+  traitFactor,
+  mastery: (char, session) => getDungeonMastery(DUNGEON_DEFINITIONS[session.id], char),
+  strainCheck: (session) => getStrainTier(session.sanityStrain || 0).check,
+  strainMult: (char, session) => STANCE[session.stance || 'balanced'].strain * ((char.flags || []).includes('ColorFixer') ? DUNGEON_BALANCE.ego.color.strainMult : 1),
+  lootMult: (session) => STANCE[session.stance || 'balanced'].loot,
+  companionLeadChance,
+  companionActive: (session) => Boolean(session.companion),
+  companionBond: (char, session) => char.npcs?.[session.companion?.role]?.bond ?? 30,
+  moveCompanionBond,
+  companionLine,
+  lastCompanionLine: null,
+  loseCompanion(char, session) {
+    const c = session.companion;
+    if (!c || !applyNpcFate(char, c.role, 'dead')) return false;
+    COMBAT_CTX.lastCompanionLine = companionLine('leadLost', c);
+    char.stats.sanity = clamp((char.stats.sanity || 0) - 10, 0, 100);
+    addScar(char, 'Người đi trước không trở lại');
+    if (c.role === 'mentee') {
+      char.mentee = null;
+      char.flags = (char.flags || []).filter((f) => f !== 'Mentoring');
+    }
+    session.companion = null;
+    return true;
+  },
+  log(char, session, def, stage, result) {
+    const entry = {
+      id: `log_dungeon_${session.id}_f${session.combat?.floor ?? 0}_${session.fxNonce || 0}_${char.logs.length}`,
+      age: char.age,
+      season: char.season || 'Xuân',
+      type: 'story',
+      vi: `[${def.titleVi} · ${stage.sceneLabelVi || stage.nameVi}: ${stage.nameVi}] ${result.vi}`,
+      en: `[${def.titleEn} · ${stage.sceneLabelEn || stage.nameEn}: ${stage.nameEn}] ${result.en}`
+    };
+    char.logs.push(entry);
+    session.logs.push(entry);
+  },
+  breakAt: DUNGEON_BALANCE.breakAt,
+  fatalBreak: (def) => Boolean(def.fatalOnBreak),
+  finishJudgment: (char, session, stage, escaped) => ({ char, session: null, isFinished: true, resolution: finishClawJudgment(char, session, stage, escaped) }),
+  finishDead(char, session, def, stage) {
+    char.alive = false;
+    char.deathCauseVi = `Bỏ mạng trong ${def.titleVi} (${stage.nameVi})`;
+    char.deathCauseEn = `Perished in ${def.titleEn} (${stage.nameEn})`;
+    char.pendingDungeon = null;
+    const title = ENDING_TEXT.dead.title({ vi: def.titleVi, en: def.titleEn });
+    const body = ENDING_TEXT.dead.body({ vi: stage.nameVi, en: stage.nameEn });
+    return {
+      char, session: null, isFinished: true,
+      resolution: { outcome: 'dead', titleVi: title.vi, titleEn: title.en, resultVi: body.vi, resultEn: body.en, haul: { ahn: 0, merit: session.accumulatedMerit || 0 }, isDead: true }
+    };
+  },
+  finishBroken(char, session, def, stage) {
+    const resolution = breakOutcome(char, session, def, stage, char.stats.sanity <= 0 ? 'mind' : 'strain');
+    settleRun(char, session, 'broken');
+    return { char, session: null, isFinished: true, resolution };
+  },
+  finishFled(char, session, text) {
+    const def = DUNGEON_DEFINITIONS[session.id];
+    const haul = session.accumulatedLootAhn || 0;
+    if (haul > 0) char.stats.wealth = clamp((char.stats.wealth || 0) + haul, 0, 100);
+    const notes = settleRun(char, session, 'fled');
+    char.pendingDungeon = null;
+    const title = ENDING_TEXT.fled.title({ vi: def.titleVi, en: def.titleEn });
+    const tailVi = notes.map((n) => n.vi).join(' ');
+    const tailEn = notes.map((n) => n.en).join(' ');
+    return {
+      char, session: null, isFinished: true,
+      resolution: {
+        outcome: 'fled', titleVi: title.vi, titleEn: title.en,
+        resultVi: `${text.vi}${tailVi ? ` ${tailVi}` : ''}\n\n${ENDING_TEXT.fled.body.vi}`,
+        resultEn: `${text.en}${tailEn ? ` ${tailEn}` : ''}\n\n${ENDING_TEXT.fled.body.en}`,
+        haul: { ahn: haul, merit: session.accumulatedMerit || 0 },
+        isDead: false
+      }
+    };
+  }
+};
