@@ -12,6 +12,7 @@ import {
   useDungeonEgo,
   resolveDungeonChoice,
   fleeDungeon,
+  createDungeonSession,
   buildLifeSummaryAndLegacy,
   cloneChar,
   interpolateText
@@ -21,6 +22,7 @@ import { CODEX_RECORDS } from '../data/worldData.js';
 import { getItemById } from '../data/itemsData.js';
 import { cityArchiveAPI } from '../services/api/cityArchiveAPI.js';
 import { choiceIsAvailable } from '../engine/eventConditions.js';
+import { CLAW_DUNGEON_ID } from '../data/dungeonClaw.js';
 
 const META_KEY = 'pm_city_chronicles_save_v3';
 const RUN_KEY = 'pm_city_chronicles_run_v1';
@@ -127,6 +129,7 @@ function withDeltas(prev, next) {
 // Which full-stage effect, if any, the newest lines deserve
 function stageFxFor(prev, next) {
   const fresh = next.logs.slice(prev.logs.length);
+  if (next.endingId === 'library_threshold' && prev.endingId !== next.endingId) return 'gold';
   if (!next.alive && prev.alive) return 'death';
   if (next.pendingModal === 'ego_name' && prev.pendingModal !== 'ego_name') return 'ego';
   if (next.flags.includes('Distorted') && !prev.flags.includes('Distorted')) return 'distort';
@@ -135,6 +138,24 @@ function stageFxFor(prev, next) {
   if (fresh.some((l) => l.type === 'danger')) return 'blood';
   if (fresh.some((l) => l.type === 'causal')) return 'echo';
   return null;
+}
+
+function enforceTabooJudgment(char) {
+  if (!char?.alive || (char.taboo || 0) < 3 || char.pendingDungeon) return char;
+  const next = cloneChar(char);
+  next.pendingEvent = null;
+  next.pendingMinor = null;
+  next.pendingContract = null;
+  next.pendingModal = null;
+  next.pendingDungeon = createDungeonSession(CLAW_DUNGEON_ID, next);
+  next.logs.push({
+    id: `claw_arrival_${next.age}_${next.logs.length}`,
+    age: next.age,
+    type: 'danger',
+    vi: '[Án của The Head] Taboo Gaze đã chạm 3/3. Một đường cắt xanh mở ra ngay trước mặt bạn. Claw đã đến.',
+    en: '[The Head’s Judgment] Taboo Gaze has reached 3/3. A blue cut opens before you. The Claw has arrived.'
+  });
+  return next;
 }
 
 // A finished delve is summarized once, against the state the player went in with
@@ -153,6 +174,7 @@ function dungeonResolution(prevChar, nextChar, resolution) {
     narrativeEn: resolution.resultEn,
     deltas: dungeonDeltas(prevChar.pendingDungeon, nextChar),
     isDead: Boolean(resolution.isDead),
+    isEnding: Boolean(resolution.isEnding),
     isCausal: false
   };
 }
@@ -288,7 +310,7 @@ export const useGameStore = create((set, get) => ({
   // Meta progression
   pastLives: savedMeta.pastLives,
   globalCodex: savedMeta.globalCodex,
-  pendingLegacy: savedMeta.pastLives[0] || null,
+  pendingLegacy: savedMeta.pastLives.find((life) => !life.endingId) || null,
 
   setConfigField: (field, value) => set({ [field]: value }),
   setSpeed: (speed) => set((s) => ({ speed, ...(speed === 0 ? { postChoicePauseMs: 0 } : {}) })),
@@ -356,7 +378,7 @@ export const useGameStore = create((set, get) => ({
   resumeRun: () => {
     const run = get().savedRun;
     if (!run) return;
-    const char = cloneChar(run.char);
+    const char = enforceTabooJudgment(cloneChar(run.char));
     lifeRng = lifeRngFor(char);
     set({ char, inRun: true, yearProgress: run.yearProgress || 0, speed: 1, stageFx: null, activeResolution: null, postChoicePauseMs: 0, minorRemainingMs: MINOR_WINDOW_MS });
   },
@@ -392,6 +414,8 @@ export const useGameStore = create((set, get) => ({
     if (item.flagGranted && !nextChar.flags.includes(item.flagGranted)) {
       nextChar.flags.push(item.flagGranted);
     }
+    if (item.tabooClear) nextChar.taboo = Math.max(0, (nextChar.taboo || 0) - item.tabooClear);
+    if (item.heatClear) nextChar.heat = Math.max(0, (nextChar.heat || 0) - item.heatClear);
 
     nextChar.logs.push({
       id: `log_buy_${itemId}_${Date.now()}`,
@@ -507,7 +531,7 @@ export const useGameStore = create((set, get) => ({
 
     if (!nextChar.alive) {
       const summary = buildLifeSummaryAndLegacy(nextChar);
-      nextPendingLegacy = summary;
+      nextPendingLegacy = summary.endingId ? null : summary;
       if (!nextPastLives.some((p) => p.seed === summary.seed && p.age === summary.age)) {
         nextPastLives = [summary, ...nextPastLives].slice(0, 30);
         cityArchiveAPI
@@ -531,7 +555,7 @@ export const useGameStore = create((set, get) => ({
 
   // Every change to the character goes through here, so deltas, effects and saving stay consistent
   commit: (prev, next, extra = {}) => {
-    const withD = withDeltas(prev, next);
+    const withD = withDeltas(prev, enforceTabooJudgment(next));
     const fx = stageFxFor(prev, withD);
     const meta = get().syncMetaFromChar(withD);
     set({
@@ -539,7 +563,8 @@ export const useGameStore = create((set, get) => ({
       ...(fx ? { stageFx: { kind: fx, at: Date.now() } } : {}),
       ...(withD.pendingMinor && !prev.pendingMinor ? { minorRemainingMs: MINOR_WINDOW_MS } : {}),
       ...meta,
-      ...extra
+      ...extra,
+      ...(withD.pendingDungeon?.id === CLAW_DUNGEON_ID && !prev.pendingDungeon ? { postChoicePauseMs: 0, activeResolution: null } : {})
     });
     if (withD.alive) get().saveRun();
   },
@@ -624,7 +649,7 @@ export const useGameStore = create((set, get) => ({
           merged.pendingBirthLogs = [...curChar.pendingBirthLogs];
           merged.logs = [...(curChar.logs || [])];
         }
-        set({ char: merged });
+        if ((curChar?.taboo || 0) < 3 && !curChar?.pendingDungeon) set({ char: merged });
       }
     });
   },

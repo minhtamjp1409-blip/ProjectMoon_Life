@@ -11,7 +11,7 @@ export const DungeonBackdrop = ({ session }) => {
 
   return (
     <div
-      className={`dungeon-backdrop theme-${theme} ${isHighStrain ? 'is-high-strain' : ''} ${isCriticalStrain ? 'is-crit-strain' : ''}`}
+      className={`dungeon-backdrop theme-${theme} is-stage-${session.currentStageIndex || 0} ${isHighStrain ? 'is-high-strain' : ''} ${isCriticalStrain ? 'is-crit-strain' : ''}`}
       aria-hidden="true"
     >
       {/* 1. WARP Train: Dimensional scanlines, speedlines & spatial tear */}
@@ -68,6 +68,19 @@ export const DungeonBackdrop = ({ session }) => {
           <div className="pallid-spore-mote spore-1" />
           <div className="pallid-spore-mote spore-2" />
           <div className="pallid-spore-mote spore-3" />
+        </div>
+      )}
+
+      {theme === 'claw' && (
+        <div className="claw-judgment-scene">
+          <div className="claw-wall-seam" />
+          <div className="claw-sight sight-outer" />
+          <div className="claw-sight sight-inner" />
+          <div className="claw-serum serum-w" />
+          <div className="claw-serum serum-r" />
+          <div className="claw-serum serum-k" />
+          <div className="claw-cut" />
+          <div className="claw-floor" />
         </div>
       )}
 

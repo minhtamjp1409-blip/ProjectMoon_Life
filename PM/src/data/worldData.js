@@ -1041,6 +1041,7 @@ export const CODEX_RECORDS = [
   { key: 'distortion_awaken', category: 'supernatural', tier: 'epic', vi: 'Đã buông tay', en: 'Let Go', hintVi: 'Buông theo giọng nói của Carmen và trở thành Distortion.', hintEn: 'Succumb to the Voice and become a Distortion.' },
   { key: 'ego_effloresced', category: 'supernatural', tier: 'miracle', vi: 'E.G.O khai hoa', en: 'Effloresced E.G.O', hintVi: 'Khước từ giọng nói của Carmen và thức tỉnh E.G.O.', hintEn: 'Reject the Voice, overcome your Karma Scars, and awaken your own Effloresced E.G.O.' },
   { key: 'defied_the_claw', category: 'supernatural', tier: 'miracle', vi: 'Sống sót trước The Claw', en: 'Survived the Claw', hintVi: 'Gặp một Claw khi Taboo đủ 3/3 và vẫn sống.', hintEn: 'Face an Executioner Claw of The Head and survive.' },
+  { key: 'library_threshold', category: 'supernatural', tier: 'miracle', vi: 'Ngưỡng cửa The Library', en: 'The Library Threshold', hintVi: 'Thoát khỏi Claw rồi đẩy cửa bước vào The Library giữa Outskirts.', hintEn: 'Escape the Claw and open the Library door in the Outskirts.' },
   { key: 'omen_cursed_birth', category: 'supernatural', tier: 'rare', vi: 'Sinh dưới điềm dữ', en: 'Born Under a Bad Omen', hintVi: 'Chào đời với Gaze of The Head, 3:13 AM Blood Star hoặc Bleeding Seed of Light.', hintEn: 'Roll a dangerous RNG Fate Omen at birth.' },
   { key: 'scarred_psyche_4', category: 'supernatural', tier: 'epic', vi: 'Ba dấu tích', en: 'Three Marks', hintVi: 'Mang 3 dấu tích có tác động mà vẫn sống.', hintEn: 'Carry 3 active marks while alive.' },
 

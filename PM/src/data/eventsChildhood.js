@@ -754,46 +754,6 @@ export const CONSEQUENCE_EVENTS = [
     ]
   },
   {
-    id: 'csq_claw_taboo_visitation',
-    major: true,
-    isCausalCallback: true,
-    vi: '[The Claw] Không khí quanh bạn đông cứng lại. Một vết rách màu xanh mở ra giữa căn phòng, và một Claw của C Corp bước ra. Trên cánh tay máy của hắn là ba ống huyết thanh đang sáng: W, R, K.\n"Vi phạm Taboo lần thứ ba. Bắt đầu xử lý."',
-    en: '[The Claw] The air around you froze. A blue tear opened in the middle of the room, and a C Corp Claw stepped through. On his mechanical arm three serum vials glowed: W, R, K.\n“Third Taboo violation. Commencing disposal.”',
-    choices: [
-      {
-        labelVi: 'Dồn hết những gì bạn có vào một đòn',
-        labelEn: 'Put everything you have into one strike',
-        outcomes: [
-          {
-            w: 32,
-            resultVi: 'Một nửa mạn sườn của bạn biến mất trong vết cắt màu xanh. Nhưng đòn của bạn làm vỡ ống huyết thanh K trên tay hắn, và vụ nổ hất bạn xuống một khe sâu dưới Ruins, nơi hắn không theo xuống.',
-            resultEn: 'Half your side vanished into the blue cut. But your strike shattered the K vial on his arm, and the blast threw you down a crevice into the Ruins, where he did not follow.',
-            effects: { health: -38, sanity: -20, rep: +30, taboo: -3, resonance: +25 },
-            recordsAdd: ['defied_the_claw'],
-            scarsAdd: ['Nửa mạn sườn mất trong vết cắt xanh'],
-            meritAdd: 45
-          },
-          {
-            w: 68,
-            resultVi: 'Bạn chỉ kịp thấy một vệt sáng vàng. Rồi không còn gì nữa.',
-            resultEn: 'You saw a streak of gold light. Then nothing.',
-            deathCauseVi: 'Bị một Claw của C Corp xử lý vì vi phạm Taboo',
-            deathCauseEn: 'Disposed of by a C Corp Claw for violating a Taboo'
-          }
-        ]
-      },
-      {
-        labelVi: 'Nộp mọi thứ vi phạm Taboo, và chấp nhận bị trục xuất',
-        labelEn: 'Surrender everything that breaks the Taboo, and accept exile',
-        resultVi: 'Hắn lấy đi tất cả những gì bạn sở hữu. Rồi hắn đặt bạn xuống một bãi rác ngoài bức tường, trong The Outskirts, và biến mất mà không nói thêm một lời.',
-        resultEn: 'He took everything you owned. Then he set you down on a garbage heap beyond the wall, in The Outskirts, and vanished without another word.',
-        setRegion: 'OUTSKIRTS',
-        effects: { health: -26, sanity: -16, wealth: -30, rep: -20, taboo: -3, resonance: +18 },
-        scarsAdd: ['Bị trục xuất ra The Outskirts']
-      }
-    ]
-  },
-  {
     id: 'csq_warp_survivor_debt',
     major: true,
     isCausalCallback: true,

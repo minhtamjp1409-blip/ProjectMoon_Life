@@ -15,6 +15,7 @@ import { traitsOf } from './variance.js';
 import { evaluateCompanionSupport } from '../data/npcPersonality.js';
 import { FAIL_TEXT, GENERIC_FAIL, STRAIN_NOTES, BREAK_TEXT, SUPPLY_TEXT, ENDING_TEXT } from '../data/dungeonText.js';
 import { NIGHT_DUNGEON, STAGE_VARIANTS, SIDE_ROOMS, SHORTCUTS, COMPANION_TEXT, COMPANION_LEAD, FINAL_KEEPS, REPORT_FIT } from '../data/dungeonExtras.js';
+import { CLAW_DUNGEON, CLAW_DUNGEON_ID } from '../data/dungeonClaw.js';
 import { npcIsActive } from './eventConditions.js';
 import { ensureAffiliation, getAffiliation } from './affiliation.js';
 import { applyNpcFate } from './director.js';
@@ -764,6 +765,7 @@ export const DUNGEON_DEFINITIONS = {
 };
 
 DUNGEON_DEFINITIONS[NIGHT_DUNGEON.id] = NIGHT_DUNGEON;
+DUNGEON_DEFINITIONS[CLAW_DUNGEON_ID] = CLAW_DUNGEON;
 
 const REPORT_CHOICE = {
   labelVi: 'Mang những gì thấy được về báo cho Association của bạn',
@@ -806,7 +808,7 @@ for (const def of Object.values(DUNGEON_DEFINITIONS)) {
       reasonEn: `What you carried out of ${def.titleEn} has not stayed quiet`
     }];
   }
-  last.choices.push({ ...REPORT_CHOICE });
+  if (!def.noRewards) last.choices.push({ ...REPORT_CHOICE });
 }
 
 const fnv = (text) => {
@@ -974,15 +976,18 @@ function traitFactor(char, trait) {
 
 function checkChanceOf(choice, char, session, mastery) {
   const stance = session?.stance || 'balanced';
+  const def = session ? DUNGEON_DEFINITIONS[session.id] : null;
   const tier = getStrainTier(session?.sanityStrain || 0);
   let chance = DUNGEON_BALANCE.baseCheck * traitFactor(char, choice.checkTrait) + mastery.checkBonus;
   chance += (evaluateCompanionSupport(char).dungeonOddsMod || 0) / 100;
   chance += STANCE[stance].check;
+  if (def?.noRetreat) chance += stance === 'guarded' ? -0.1 : stance === 'balanced' ? 0.04 : 0.12;
   if (stance === 'reckless' && choice.checkTrait === 'vigor') chance += 0.1;
   if (session?.stageScanned) chance += 0.18;
   if ((char.stats?.sanity ?? 50) >= 70) chance += 0.05;
   chance += tier.check;
   if (session?.egoActive) chance += DUNGEON_BALANCE.ego.checkBonus;
+  chance -= choice.checkPenalty || 0;
   return clamp(chance, DUNGEON_BALANCE.checkFloor, session?.egoActive ? DUNGEON_BALANCE.ego.ceiling : DUNGEON_BALANCE.checkCeiling);
 }
 
@@ -1099,7 +1104,7 @@ export function createDungeonSession(dungeonId, char) {
 
   const bonusSupply = ['Fixer', 'Wing Employee', 'Workshop Craftsman', 'Syndicate'].includes(char?.job) ||
     (char?.flags || []).some((f) => ['OutskirtsAdaptability', 'GreatLakeHardened', 'GoreDesensitized', 'EGOAwakened'].includes(f));
-  const maxSupplies = bonusSupply ? 3 : 2;
+  const maxSupplies = def.noRetreat ? (bonusSupply ? 2 : 1) : (bonusSupply ? 3 : 2);
 
   return {
     id: def.id,
@@ -1126,7 +1131,7 @@ export function createDungeonSession(dungeonId, char) {
     // The same door can open onto a different third stage: fixed by seed and age, so a reload does not reroll it
     variant: def.variants?.[2] && fnv(`${char?.seed ?? ''}|${def.id}|${char?.age ?? 0}`) % 2 === 1 ? 2 : null,
     inSide: null,
-    companion: pickDungeonCompanion(char),
+    companion: def.noCompanion ? null : pickDungeonCompanion(char),
     companionSaved: false,
     companionBalked: false,
     aff: null,
@@ -1210,7 +1215,7 @@ export function getDungeonCurrentStage(session) {
     : base;
   // A companion can be sent ahead on the two middle stages
   const c = session.companion;
-  if (c && idx > 0 && idx < def.stages.length - 1) {
+  if (!def.noCompanion && c && idx > 0 && idx < def.stages.length - 1) {
     const lead = {
       labelVi: named(COMPANION_LEAD.labelVi, c, 'vi'), labelEn: named(COMPANION_LEAD.labelEn, c, 'en'),
       companionLead: true, resultVi: '', resultEn: '',
@@ -1266,6 +1271,34 @@ const breakOutcome = (char, session, def, stage, kind) => {
   };
 };
 
+function finishClawJudgment(char, session, stage, escaped) {
+  char.pendingDungeon = null;
+  char.alive = false;
+  if (escaped) {
+    char.endingId = 'library_threshold';
+    char.regionId = 'OUTSKIRTS';
+    char.taboo = 0;
+    char.flags = (char.flags || []).filter((flag) => flag !== 'Nest' && flag !== 'Feather');
+    if (!char.flags.includes('Outskirts')) char.flags.push('Outskirts');
+    if (!(char.unlockedRecords || []).includes('defied_the_claw')) char.unlockedRecords = [...(char.unlockedRecords || []), 'defied_the_claw'];
+    if (!(char.unlockedRecords || []).includes('library_threshold')) char.unlockedRecords = [...char.unlockedRecords, 'library_threshold'];
+    char.newRecordsThisLife = [...new Set([...(char.newRecordsThisLife || []), 'defied_the_claw', 'library_threshold'])];
+    char.deathCauseVi = 'Mất dấu ở ngưỡng cửa The Library trong Outskirts';
+    char.deathCauseEn = 'Last seen at the Library threshold in the Outskirts';
+    const vi = 'Claw rơi xuống đống đổ nát. Bạn sống, nhưng phía bên kia bức tường không còn đường về. Qua nhiều ngày đi trong Outskirts, bạn thấy một tòa nhà đứng một mình giữa vùng đất trống. Trên cánh cửa có một tấm biển: The Library. Bên trong có tiếng lật trang. Bạn đặt tay lên tay nắm, rồi đẩy cửa bước vào.';
+    const en = 'The Claw falls into the ruins. You live, but there is no road back through the wall. After days in the Outskirts, you find a building standing alone in the waste. A sign on its door reads: The Library. From within comes the turn of a page. You take the handle and push the door open.';
+    char.logs.push({ id: `ending_library_${char.age}`, age: char.age, type: 'major', vi: `[Ngưỡng cửa The Library] ${vi}`, en: `[The Library Threshold] ${en}` });
+    return { outcome: 'library', titleVi: 'Ngưỡng cửa The Library', titleEn: 'The Library Threshold', resultVi: vi, resultEn: en, haul: { ahn: 0, merit: 0 }, isDead: false, isEnding: true };
+  }
+  char.stats.health = 0;
+  char.deathCauseVi = `Bị Claw của C Corp xử lý tại ${stage.nameVi}`;
+  char.deathCauseEn = `Executed by a C Corp Claw at ${stage.nameEn}`;
+  const vi = 'Claw hoàn thành bản án. Hồ sơ của bạn không còn được B Corp theo dõi.';
+  const en = 'The Claw completes the sentence. B Corp no longer has a file to watch.';
+  char.logs.push({ id: `death_claw_${char.age}`, age: char.age, type: 'death', vi: `[Án của The Head] ${vi}`, en: `[The Head’s Judgment] ${en}` });
+  return { outcome: 'dead', titleVi: 'Án đã thi hành', titleEn: 'Sentence carried out', resultVi: vi, resultEn: en, haul: { ahn: 0, merit: 0 }, isDead: true };
+}
+
 /**
  * Resolves a choice taken in the active dungeon
  * Returns updated { char, session, isFinished, resolution }
@@ -1311,7 +1344,7 @@ export function resolveDungeonChoice(charState, choiceIndex, rng = Math.random) 
   const spDelta = fx.sanity < 0
     ? Math.min(-1, Math.ceil(fx.sanity * damageMultOf(def, char, session, mastery, 'sanity') * resultMult))
     : healOf(fx.sanity);
-  const rewards = stageRewards(choice, session, success);
+  const rewards = def.noRewards ? { wealth: 0, loot: 0, rep: 0, network: 0, merit: 0, resonance: 0 } : stageRewards(choice, session, success);
   let companionStrain = 0;
 
   if (lead && companion) {
@@ -1450,6 +1483,11 @@ export function resolveDungeonChoice(charState, choiceIndex, rng = Math.random) 
   char.logs.push(stageLog);
   session.logs.push(stageLog);
 
+  if (def.fatalOnBreak && (char.stats.health <= 0 || char.stats.sanity <= 0 || session.sanityStrain >= DUNGEON_BALANCE.breakAt)) {
+    const resolution = finishClawJudgment(char, session, stage, false);
+    return { char, session: null, isFinished: true, resolution };
+  }
+
   if (char.stats.health <= 0) {
     char.alive = false;
     char.deathCauseVi = `Bỏ mạng trong ${def.titleVi} (${stage.nameVi})`;
@@ -1481,6 +1519,11 @@ export function resolveDungeonChoice(charState, choiceIndex, rng = Math.random) 
 
   const isFlee = Boolean(choice.isFlee);
   const isLastStage = !wasSide && session.currentStageIndex >= def.stages.length - 1;
+
+  if (def.fatalOnFinalFailure && isLastStage) {
+    const resolution = finishClawJudgment(char, session, stage, success);
+    return { char, session: null, isFinished: true, resolution };
+  }
 
   if (isFlee || isLastStage) {
     const c = DUNGEON_BALANCE.conquest;
@@ -1548,6 +1591,7 @@ export function fleeDungeon(charState) {
   if (!session) return { char, session: null, isFinished: true };
 
   const def = DUNGEON_DEFINITIONS[session.id];
+  if (def?.noRetreat) return { char: charState, session, isFinished: false, resolution: null };
   const haul = session.accumulatedLootAhn || 0;
   if (haul > 0) char.stats.wealth = clamp((char.stats.wealth || 0) + haul, 0, 100);
   settleRun(char, session, 'fled');

@@ -482,8 +482,8 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeT
           <TabooStat
             value={char.taboo || 0}
             tooltip={t(
-              'Taboo Gaze: Mức độ vi phạm Điều Cấm Kỵ tối cao của The Head (A Corp). Đạt 3/3 Điều Cấm sẽ kích hoạt Án Thanh Trừng từ Móng Vuốt (The Claw) và Điều Tra Viên (Arbiter) không thể né tránh.',
-              'Taboo Gaze: Infringement of The Head’s supreme Taboos. Reaching 3/3 triggers an unavoidable Purge Execution by an Arbiter and Claw.'
+              'Taboo Gaze: Mức độ vi phạm Điều Cấm Kỵ của The Head. Đạt 3/3, Claw của C Corp sẽ đến ngay. Không thể rút lui: gục ngã là chết; vượt qua sẽ mở kết thúc đặc biệt ở Outskirts.',
+              'Taboo Gaze: Violations of the Head’s Taboos. At 3/3, a C Corp Claw arrives at once. There is no retreat: collapse means death; survival unlocks a special Outskirts ending.'
             )}
           />
         </section>

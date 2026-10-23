@@ -253,7 +253,6 @@ function majorIsDue(char, rng) {
   }
   if ((reachedCareerAge(char) && char.job === 'Child') && !(char.seenEvents || []).includes('ad_career_crossroad_18')) return true;
   if (char.job === 'Syndicate' && !char.finger && !(char.seenEvents || []).includes('syn_choose_finger_allegiance')) return true;
-  if ((char.taboo || 0) >= 3) return true;
   if ((w.pendingThreads || []).some((th) => th.kind !== 'minor' && !th.fulfilled && char.age >= th.triggerAge)) return true;
   if (rollEgoEncounter(char, rng) && !(char.seenEvents || []).includes('ego_carmen_crossroad') && !char.flags.includes('EGOAwakened') && !char.flags.includes('Distorted')) return true;
   if (char.job === 'Fixer' && !char.flags.includes('Distorted') && checkColorFixerReadiness(char).ready && !char.flags.includes('ColorFixer') && colorTrialAvailable(char)) return true;
@@ -1318,6 +1317,7 @@ export function runDueItems(charState, progress, rng) {
     }
     char.planCursor = (char.planCursor || 0) + 1;
     char = runPlanItem(char, item, rng);
+    if ((char.taboo || 0) >= 3) break;
   }
   return { char, changed };
 }

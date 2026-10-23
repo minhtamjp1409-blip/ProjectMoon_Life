@@ -13,13 +13,15 @@ export const BloodlinePage = () => {
   const { pastLives, setPendingLegacy, deletePastLife, clearBloodline, exitToSetup } = useGameStore();
 
   const handleInherit = (life) => {
+    if (life.endingId) return;
     setPendingLegacy(life);
     exitToSetup();
     navigate('/');
   };
 
   const highestGen = pastLives.reduce((m, l) => Math.max(m, l.generation || 0), 0);
-  const avgAge = pastLives.length ? Math.round(pastLives.reduce((s, l) => s + (l.age || 0), 0) / pastLives.length) : 0;
+  const endedLives = pastLives.filter((life) => !life.endingId);
+  const avgAge = endedLives.length ? Math.round(endedLives.reduce((s, l) => s + (l.age || 0), 0) / endedLives.length) : 0;
 
   return (
     <div className="page">
@@ -30,8 +32,8 @@ export const BloodlinePage = () => {
           pastLives.length === 0
             ? t('Chưa có kiếp sống nào khép lại.', 'No life has ended yet.')
             : t(
-                `${pastLives.length} kiếp · thế hệ xa nhất #${highestGen} · thọ trung bình ${avgAge} tuổi`,
-                `${pastLives.length} lives · furthest generation #${highestGen} · average lifespan ${avgAge}`
+                `${pastLives.length} hồ sơ · thế hệ xa nhất #${highestGen}${endedLives.length ? ` · tuổi thọ TB ${avgAge}` : ''}`,
+                `${pastLives.length} records · furthest generation #${highestGen}${endedLives.length ? ` · average lifespan ${avgAge}` : ''}`
               )
         }
       />
@@ -81,7 +83,7 @@ export const BloodlinePage = () => {
               <tr>
                 <th className="num" style={{ width: 64 }}>{t('Đời', 'Gen')}</th>
                 <th>{t('Tên & danh hiệu', 'Name & title')}</th>
-                <th className="num">{t('Thọ', 'Age')}</th>
+                <th className="num">{t('Tuổi khi khép hồ sơ', 'Age at record end')}</th>
                 <th>{t('Kết cục', 'Fate')}</th>
                 <th>{t('Di vật', 'Relic')}</th>
                 <th style={{ width: 220 }} />
@@ -98,15 +100,15 @@ export const BloodlinePage = () => {
                     </div>
                     <div className="cell-sub">{lang === 'en' ? life.regionNameEn || life.regionNameVi : life.regionNameVi}</div>
                   </td>
-                  <td className="num" data-label={t('Tuổi thọ', 'Age')}>{life.age} {t('tuổi', 'yrs')}</td>
+                  <td className="num" data-label={t('Tuổi khi khép hồ sơ', 'Age at record end')}>{life.age} {t('tuổi', 'yrs')}</td>
                   <td style={{ maxWidth: 260 }} data-label={t('Kết cục', 'Fate')}>{lang === 'en' ? life.deathCauseEn || life.deathCauseVi : life.deathCauseVi}</td>
                   <td className="muted" style={{ maxWidth: 200 }} data-label={t('Di vật', 'Relic')}>{life.relic}</td>
                   <td className="bloodline-action-td">
                     <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end', flexWrap: 'wrap' }}>
-                      <button type="button" className="btn btn-primary" style={{ height: 32 }} onClick={() => handleInherit(life)}>
+                      {!life.endingId && <button type="button" className="btn btn-primary" style={{ height: 32 }} onClick={() => handleInherit(life)}>
                         <Play size={14} />
                         {t('Chơi đời con', 'Play heir')}
-                      </button>
+                      </button>}
                       <button
                         type="button"
                         className="icon-btn"

@@ -355,8 +355,7 @@ export function isEventEligible(event, char, { scripted = false } = {}) {
   if (isAffInviteEvent(event.id) && getAffiliationInvite(char) !== event.id) return false;
   if (isGateEvent(event.id) && gateOnCooldown(char)) return false;
   if (event.id === 'ego_carmen_crossroad' && !(char.age >= 18 && (hasEgoOpportunity(char) || char.stats.sanity <= 15 || (char.resonance || 0) >= 50))) return false;
-  if (event.id === 'csq_claw_taboo_visitation' && char.taboo < 3) return false;
-  const milestones = ['ad_career_crossroad_18', 'ad_outskirts_crossroad_18', 'ego_carmen_crossroad', 'ego_second_efflorescence_trial', 'hana_color_ascension_trial', 'csq_claw_taboo_visitation'];
+  const milestones = ['ad_career_crossroad_18', 'ad_outskirts_crossroad_18', 'ego_carmen_crossroad', 'ego_second_efflorescence_trial', 'hana_color_ascension_trial'];
   return scripted || (!milestones.includes(event.id) && !isEgoLeapEvent(event.id));
 }
 
@@ -481,28 +480,6 @@ export function selectEventWithWeaverAI({
   rng
 }) {
   const updatedWeaver = updateDramaTension(weaver, char);
-
-  if ((char.taboo || 0) >= 3 && !char.seenEvents.includes('csq_claw_taboo_visitation')) {
-    const clawEv = consequencePool.find(e => e.id === 'csq_claw_taboo_visitation');
-    if (clawEv && isEventEligible(clawEv, char, { scripted: true })) {
-      const logEntry = {
-        age: char.age,
-        phase: 'CLIMAX',
-        selectedId: clawEv.id,
-        utility: 999,
-        reasonVi: 'Taboo Gaze đã đủ 3/3: C Corp cử một Claw đến',
-        reasonEn: 'Taboo Gaze reached 3/3: C Corp sent a Claw',
-        candidates: [{ eventId: clawEv.id, totalUtility: 999 }]
-      };
-      return {
-        event: clawEv,
-        weaver: {
-          ...updatedWeaver,
-          decisionLog: [logEntry, ...updatedWeaver.decisionLog].slice(0, 18)
-        }
-      };
-    }
-  }
 
   // Career crossroad at the character's own working age
   if (reachedCareerAge(char) && char.job === 'Child') {

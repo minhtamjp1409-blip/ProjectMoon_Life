@@ -20,7 +20,7 @@ import { FAIL_TEXT } from '../src/data/dungeonText.js';
 
 console.log('--- RUNNING DUNGEON BALANCE AND STORY TESTS ---');
 
-const dungeonIds = Object.keys(DUNGEON_DEFINITIONS);
+const dungeonIds = Object.keys(DUNGEON_DEFINITIONS).filter((id) => !DUNGEON_DEFINITIONS[id].noRetreat);
 const rng = createRNG('dungeon_balance_seed');
 
 // 1. Entry never pays: the stages do

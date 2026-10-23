@@ -62,7 +62,8 @@ const AMBIENT = {
   lobotomy: ['Đèn khẩn cấp chớp màu cam. Còi Meltdown vọng lên từ tầng dưới.', 'Emergency lamps pulse amber. A Meltdown siren echoes from the floor below.'],
   bloodfiend: ['Nhạc kèn lạc điệu đúng một nốt. Đu quay vẫn quay.', 'The organ music is off by exactly one note. The wheel keeps turning.'],
   outskirts: ['Cát chảy xuống theo từng bước. Gió mang mùi kim loại cũ.', 'Sand runs down with every step. The wind smells of old metal.'],
-  night: ['Mọi cánh cửa đã khóa. Đồng hồ đầu hẻm vẫn chưa tới 4 giờ 34.', 'Every door is locked. The clock at the head of the alley has not reached 4:34.']
+  night: ['Mọi cánh cửa đã khóa. Đồng hồ đầu hẻm vẫn chưa tới 4 giờ 34.', 'Every door is locked. The clock at the head of the alley has not reached 4:34.'],
+  claw: ['Không có lối rút. Gục ngã hoặc thất bại ở chặng cuối đồng nghĩa với cái chết.', 'There is no retreat. Breaking down or failing the final stage means death.']
 };
 
 const STAT_ICON = { health: '♥', sanity: '✦', wealth: '◆', merit: '◈', resonance: '◎', rep: '★' };
@@ -140,6 +141,7 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
           </div>
           <h3 className="dock-title">{pick(def.titleVi, def.titleEn)}</h3>
           <p className="dg-ambient">{t(ambient[0], ambient[1])}</p>
+          {def.noRetreat && <p className="dg-judgment-warning">{t('Không có lối rút. HP hoặc SP cạn sẽ chết. Trượt kiểm định cuối cũng chết.', 'No retreat. Reaching zero HP or SP kills you. Failing the final check also kills you.')}</p>}
           <ol className="dg-route" aria-label={t('Tiến trình hầm ngục', 'Dungeon progress')}>
             {stages.map((st, idx) => (
               <li
@@ -157,13 +159,20 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
 
         <section className="dg-status" aria-label={t('Trạng thái chuyến đi', 'Run status')}>
           <StrainMeter strain={strain} t={t} />
-          <div className="dg-haul">
-            <span className="dg-label">{t('Thu hoạch', 'Haul')}</span>
-            <span className="dg-haul-val">
-              <b className="num">{session.accumulatedLootAhn || 0}</b> Ahn
-              {(session.accumulatedMerit || 0) > 0 && <> · <b className="num">{session.accumulatedMerit}</b> {t('công trạng', 'merit')}</>}
-            </span>
-          </div>
+          {def.noRewards ? (
+            <div className="dg-haul dg-judgment-note">
+              <span className="dg-label">{t('Điều kiện sống sót', 'Survival condition')}</span>
+              <span className="dg-haul-val">{t('Qua bốn chặng · Không được rút lui', 'Clear four stages · No retreat')}</span>
+            </div>
+          ) : (
+            <div className="dg-haul">
+              <span className="dg-label">{t('Thu hoạch', 'Haul')}</span>
+              <span className="dg-haul-val">
+                <b className="num">{session.accumulatedLootAhn || 0}</b> Ahn
+                {(session.accumulatedMerit || 0) > 0 && <> · <b className="num">{session.accumulatedMerit}</b> {t('công trạng', 'merit')}</>}
+              </span>
+            </div>
+          )}
         </section>
 
         {session.companion && (
@@ -239,6 +248,9 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
                       {ch.isFlee && (
                         <span className="dg-need is-met"><LogOut size={12} aria-hidden="true" />{t('Rút lui, giữ hàng đã gom', 'Leave with what you hold')}</span>
                       )}
+                      {def.fatalOnFinalFailure && currentIdx === stages.length - 1 && (
+                        <span className="dg-need is-unmet">{t('Trượt kiểm định: chết', 'Failed check: death')}</span>
+                      )}
                       {odds?.estHp < 0 && <Chip stat="health" tone="down">HP · {t(...SEVERITY[severityOf(-odds.estHp)])}</Chip>}
                       {odds?.estHp > 0 && <Chip stat="health" tone="up">HP</Chip>}
                       {odds?.estSp < 0 && <Chip stat="sanity" tone="down">SP · {t(...SEVERITY[severityOf(-odds.estSp)])}</Chip>}
@@ -254,7 +266,7 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
           })}
         </ul>
 
-        {stage.canFlee && (
+        {stage.canFlee && !def.noRetreat && (
           <div className="dg-leave">
             <button
               type="button"
@@ -287,7 +299,13 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
                     audioEngine.playClick();
                     onSetStance?.(st.id);
                   }}
-                  title={pick(st.noteVi, st.noteEn)}
+                  title={def.noRetreat
+                    ? st.id === 'guarded'
+                      ? t('Giảm sát thương và áp lực; không tăng xác suất kiểm định.', 'Less damage and strain; no bonus to check odds.')
+                      : st.id === 'balanced'
+                        ? t('Sát thương bình thường, xác suất kiểm định nhỉnh hơn.', 'Normal damage and slightly better check odds.')
+                        : t('Tăng cơ hội kiểm định, nhưng chịu nhiều sát thương và áp lực hơn.', 'Better check odds, but more damage and strain.')
+                    : pick(st.noteVi, st.noteEn)}
                 >
                   <Icon size={14} aria-hidden="true" />
                   <span>{pick(st.vi, st.en)}</span>
@@ -319,7 +337,7 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
                 audioEngine.playPrescriptTick();
                 onUseSupply?.('scan');
               }}
-              title={t('Dò đường: đọc quy luật của chặng này. Dễ qua kiểm định hơn, nhận ít thương tổn hơn, tìm thêm được chút hàng.', 'Read the stage: better check odds, less damage, a little extra haul.')}
+              title={def.noRewards ? t('Đọc nhịp ra đòn của Claw: tăng cơ hội kiểm định và giảm sát thương trong chặng này.', 'Read the Claw’s attack rhythm: better odds and less damage this stage.') : t('Dò đường: đọc quy luật của chặng này. Dễ qua kiểm định hơn, nhận ít thương tổn hơn, tìm thêm được chút hàng.', 'Read the stage: better check odds, less damage, a little extra haul.')}
             >
               <Radar size={14} aria-hidden="true" />
               <span>{scan.reason === 'scanned' ? t('Đã dò', 'Read') : t('Dò đường', 'Read stage')}</span>
@@ -347,7 +365,13 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
             </span>
           </div>
           <p className="dg-tools-note">
-            {pick(activeStance.noteVi, activeStance.noteEn)}
+            {def.noRetreat
+              ? activeStance.id === 'guarded'
+                ? t('Thận trọng: ít thương tổn, không cộng tỉ lệ kiểm định.', 'Guarded: less damage, no check bonus.')
+                : activeStance.id === 'balanced'
+                  ? t('Cân bằng: thương tổn vừa phải, tỉ lệ kiểm định tăng nhẹ.', 'Balanced: normal damage, slightly better odds.')
+                  : t('Xung kích: tỉ lệ kiểm định tăng, thương tổn và áp lực cũng tăng.', 'Reckless: better odds, more damage and strain.')
+              : pick(activeStance.noteVi, activeStance.noteEn)}
             {mastery.hasMastery && (
               <span className="dg-mastery" title={t('Xuất thân và trang bị giúp bạn nhận ít thương tổn hơn và dễ qua kiểm định hơn.', 'Your background and gear mean less damage and better odds on checks.')}>
                 <Award size={13} aria-hidden="true" /> {pick(mastery.labelVi, mastery.labelEn)}

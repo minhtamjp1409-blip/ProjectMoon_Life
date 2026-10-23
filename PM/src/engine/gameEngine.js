@@ -2247,7 +2247,10 @@ export function buildLifeSummaryAndLegacy(char) {
   let poeticQuoteVi = '“Họ trút hơi thở cuối cùng vào một buổi chiều mà không một ai trong thành phố này dừng bước.”';
   let poeticQuoteEn = '“They breathed their last on an afternoon when no one in the City was in a hurry.”';
 
-  if (char.age === 0) {
+  if (char.endingId === 'library_threshold') {
+    poeticQuoteVi = '“B Corp không ghi lại những gì ở phía sau cánh cửa.”';
+    poeticQuoteEn = '“B Corp did not record what lay beyond the door.”';
+  } else if (char.age === 0) {
     poeticQuoteVi = '“Một sinh linh khép mắt trước khi ánh đèn neon ngoài cửa sổ kịp đổi màu.”';
     poeticQuoteEn = '“A fragile breath extinguished before the neon outside the window could even flicker.”';
   } else if (flags.includes('ColorFixer') || flags.includes('EGOAwakened')) {
@@ -2431,12 +2434,17 @@ export function buildLifeSummaryAndLegacy(char) {
     ? `outliving the local average lifespan of ${region.nameEn} (${localAvgLife} yrs) by +${lifespanDiff} years`
     : `falling ${Math.abs(lifespanDiff)} years short of ${region.nameEn}’s average lifespan (${localAvgLife} yrs)`;
 
-  lifeStoryParagraphsVi.push(
-    `Ở tuổi ${char.age} (${lifeCompVi}), hành trình ấy khép lại: ${deathCauseVi}. Khi tấm màn sinh mệnh hạ xuống, bạn để lại 「${relicName}」, ${char.stats?.wealth ?? 0} Ahn tài sản cùng ${char.stats?.rep ?? 0} điểm uy danh cho thế hệ kế tiếp viết tiếp câu chuyện còn dang dở.`
-  );
-  lifeStoryParagraphsEn.push(
-    `At age ${char.age} (${lifeCompEn}), your chronicle reached its final page: ${deathCauseEn}. When the curtain fell, you left behind "${relicName}", ${char.stats?.wealth ?? 0} Ahn in wealth, and ${char.stats?.rep ?? 0} Reputation for the next generation to carry forward.`
-  );
+  if (char.endingId === 'library_threshold') {
+    lifeStoryParagraphsVi.push(`Ở tuổi ${char.age}, bạn sống sót qua án của The Head và bị đẩy ra Outskirts. Nhiều ngày sau, giữa vùng đất không tên, bạn tìm thấy The Library. Bạn đặt tay lên tay nắm và đẩy cửa bước vào. Hồ sơ của bạn dừng ở đó.`);
+    lifeStoryParagraphsEn.push(`At age ${char.age}, you survived the Head’s judgment and were cast into the Outskirts. Days later, in an unnamed waste, you found the Library. You took the handle and pushed the door open. Your record ends there.`);
+  } else {
+    lifeStoryParagraphsVi.push(
+      `Ở tuổi ${char.age} (${lifeCompVi}), hành trình ấy khép lại: ${deathCauseVi}. Khi tấm màn sinh mệnh hạ xuống, bạn để lại 「${relicName}」, ${char.stats?.wealth ?? 0} Ahn tài sản cùng ${char.stats?.rep ?? 0} điểm uy danh cho thế hệ kế tiếp viết tiếp câu chuyện còn dang dở.`
+    );
+    lifeStoryParagraphsEn.push(
+      `At age ${char.age} (${lifeCompEn}), your chronicle reached its final page: ${deathCauseEn}. When the curtain fell, you left behind "${relicName}", ${char.stats?.wealth ?? 0} Ahn in wealth, and ${char.stats?.rep ?? 0} Reputation for the next generation to carry forward.`
+    );
+  }
 
   // Build Rich Records List (combining unlocked CODEX_RECORDS + contextual life achievements)
   const newKeysSet = new Set(char.newRecordsThisLife || []);
@@ -2573,6 +2581,7 @@ export function buildLifeSummaryAndLegacy(char) {
   });
 
   return {
+    endingId: char.endingId || null,
     generation: char.generation,
     seed: char.seed,
     name: char.name,

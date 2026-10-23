@@ -20,7 +20,7 @@ const pickWhere = (c, pred) => getDungeonCurrentStage(c.pendingDungeon).choices.
 const always = () => 0;
 
 // Six dungeons, each still four main stages, each with a side room, a shortcut and a report choice
-const ids = Object.keys(DUNGEON_DEFINITIONS);
+const ids = Object.keys(DUNGEON_DEFINITIONS).filter((id) => !DUNGEON_DEFINITIONS[id].noRetreat);
 assert.ok(ids.includes('dungeon_backstreets_night'));
 for (const id of ids) {
   const def = DUNGEON_DEFINITIONS[id];

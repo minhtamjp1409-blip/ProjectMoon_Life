@@ -452,6 +452,7 @@ const ContractDock = ({ contract, wealth, onPick }) => {
 };
 
 const DUNGEON_KICKER = {
+  library: ['Kết thúc đặc biệt · Ngưỡng cửa The Library', 'Special ending · The Library Threshold'],
   conquered: ['Hầm ngục · Đã đi hết', 'Dungeon · Cleared'],
   fled: ['Hầm ngục · Đã rút lui', 'Dungeon · Withdrawn'],
   broken: ['Hầm ngục · Tinh thần gục ngã', 'Dungeon · Broken']
@@ -466,7 +467,7 @@ const ResultDock = ({ resolution, onDismiss }) => {
   const narrativeAlt = lang === 'en' ? resolution.narrativeVi : resolution.narrativeEn;
 
   return (
-    <div className={`dock is-resolution ${resolution.isDead ? 'is-dead' : ''} ${resolution.isCausal ? 'is-causal' : ''}`} role="document">
+    <div className={`dock is-resolution ${resolution.isDead ? 'is-dead' : ''} ${resolution.isCausal ? 'is-causal' : ''} ${resolution.isEnding ? 'is-library-ending' : ''}`} role="document">
       <div className="dock-inner">
         <div className="dock-banner">
           <div className="dock-banner-text">
@@ -488,6 +489,14 @@ const ResultDock = ({ resolution, onDismiss }) => {
             <h3 className="dock-title">{title}</h3>
           </div>
         </div>
+
+        {resolution.isEnding && (
+          <div className="library-threshold-visual" aria-hidden="true">
+            <div className="library-door-panel is-left" />
+            <div className="library-door-panel is-right" />
+            <div className="library-door-light" />
+          </div>
+        )}
 
         {choiceLabel && (
           <div className="resolution-choice-pill">
@@ -526,7 +535,7 @@ const ResultDock = ({ resolution, onDismiss }) => {
             onClick={onDismiss}
             autoFocus
           >
-            <span>{resolution.isDead ? t('Xem Bia Mộ ➔', 'View Epitaph ➔') : t('Tiếp tục hành trình ➔', 'Continue Journey ➔')}</span>
+            <span>{resolution.isEnding ? t('Xem kết thúc ➔', 'View Ending ➔') : resolution.isDead ? t('Xem Bia Mộ ➔', 'View Epitaph ➔') : t('Tiếp tục hành trình ➔', 'Continue Journey ➔')}</span>
             <span className="key-badge">Space / Enter</span>
           </button>
         </div>
@@ -580,7 +589,7 @@ const Epitaph = ({ summary, onInherit, onRestart, onViewRecord, onGoHome }) => {
   };
 
   return (
-    <section className="epitaph epitaph-v2" aria-label={t('Tổng kết cuộc đời', 'Life Summary')}>
+    <section className={`epitaph epitaph-v2 ${summary.endingId ? 'is-special-ending' : ''}`} aria-label={summary.endingId ? t('Kết thúc đặc biệt', 'Special ending') : t('Tổng kết cuộc đời', 'Life Summary')}>
       <div className="epitaph-body">
         {/* Top Kicker & Giant Lifespan Header */}
         <p className="epitaph-kicker-origin">
@@ -611,15 +620,14 @@ const Epitaph = ({ summary, onInherit, onRestart, onViewRecord, onGoHome }) => {
             <b>{lang === 'en' ? (summary.occupationEn || summary.epitaphTitleEn) : (summary.occupationVi || summary.epitaphTitleVi)}</b>
           </div>
           <div className="epitaph-fact-card">
-            <span>
-              {t(
-                `So với tuổi thọ TB Quận (${summary.localAvgLife || 55})`,
-                `vs. local average lifespan (${summary.localAvgLife || 55})`
-              )}
-            </span>
-            <b className={`num ${diff >= 0 ? 'is-pos-life' : 'is-neg-life'}`}>
-              {diffSign} {t('tuổi', 'yrs')}
-            </b>
+            {summary.endingId ? (
+              <><span>{t('Nơi cuối cùng được ghi nhận', 'Last recorded location')}</span><b>Outskirts</b></>
+            ) : (
+              <>
+                <span>{t(`So với tuổi thọ TB Quận (${summary.localAvgLife || 55})`, `vs. local average lifespan (${summary.localAvgLife || 55})`)}</span>
+                <b className={`num ${diff >= 0 ? 'is-pos-life' : 'is-neg-life'}`}>{diffSign} {t('tuổi', 'yrs')}</b>
+              </>
+            )}
           </div>
         </div>
 
@@ -634,7 +642,7 @@ const Epitaph = ({ summary, onInherit, onRestart, onViewRecord, onGoHome }) => {
             <b className="text-accent">{summary.rankTier}</b>
           </div>
           <div className="epitaph-fact-card">
-            <span>{t('Di vật truyền đời', 'Relic left behind')}</span>
+            <span>{summary.endingId ? t('Vật mang theo', 'Carried onward') : t('Di vật truyền đời', 'Relic left behind')}</span>
             <b>{summary.relic}</b>
           </div>
         </div>
@@ -727,7 +735,7 @@ const Epitaph = ({ summary, onInherit, onRestart, onViewRecord, onGoHome }) => {
         {/* Final State (Stat Bars + Life Tags) Card */}
         <div className="epitaph-panel epitaph-final-panel">
           <div className="epitaph-panel-head">
-            <h3>{t('Trạng thái cuối đời', 'Final state')}</h3>
+            <h3>{summary.endingId ? t('Trạng thái ở ngưỡng cửa', 'At the threshold') : t('Trạng thái cuối đời', 'Final state')}</h3>
             <span className="epitaph-panel-sub">
               {t(`Chiến công (Merit): ${summary.merit || 0}`, `Merit: ${summary.merit || 0}`)}
             </span>
@@ -763,14 +771,14 @@ const Epitaph = ({ summary, onInherit, onRestart, onViewRecord, onGoHome }) => {
 
         {/* Action Buttons */}
         <div className="epitaph-actions epitaph-actions-v2">
-          <button type="button" className="btn btn-primary btn-lg epitaph-btn-reborn" onClick={onInherit}>
+          {!summary.endingId && <button type="button" className="btn btn-primary btn-lg epitaph-btn-reborn" onClick={onInherit}>
             <GitBranch size={16} />
             {summary.age < 14
               ? t(`Chơi đời em · thế hệ #${summary.generation + 1}`, `Play as sibling · gen #${summary.generation + 1}`)
               : summary.age < 18 || !summary.hasChild
                 ? t(`Kế thừa di vật · thế hệ #${summary.generation + 1}`, `Be born again · gen #${summary.generation + 1}`)
                 : t(`Chơi đời con · thế hệ #${summary.generation + 1}`, `Play the heir · gen #${summary.generation + 1}`)}
-          </button>
+          </button>}
 
           <button type="button" className="btn btn-lg" onClick={onViewRecord}>
             <BookOpen size={16} />
@@ -921,10 +929,15 @@ export const LiveStageFeed = () => {
   // Death audio & traumatic hit-stop
   useEffect(() => {
     if (prevAliveRef.current && !char.alive) {
-      audioEngine.playDeath();
-      gameFeel.haptic([80, 50, 160]);
-      gameFeel.addTrauma(0.85);
-      gameFeel.triggerHitStop(220);
+      if (char.endingId === 'library_threshold') {
+        audioEngine.playPageFlip();
+        gameFeel.haptic(30);
+      } else {
+        audioEngine.playDeath();
+        gameFeel.haptic([80, 50, 160]);
+        gameFeel.addTrauma(0.85);
+        gameFeel.triggerHitStop(220);
+      }
     }
     prevAliveRef.current = char.alive;
   }, [char.alive]);
@@ -1049,7 +1062,7 @@ export const LiveStageFeed = () => {
         handleChooseMinor(-1);
         return;
       }
-      if (char.pendingDungeon && (e.key === 'f' || e.key === 'F' || e.key === 'Escape')) {
+      if (char.pendingDungeon && !DUNGEON_DEFINITIONS[char.pendingDungeon.id]?.noRetreat && (e.key === 'f' || e.key === 'F' || e.key === 'Escape')) {
         e.preventDefault();
         handleFleeDungeon();
         return;
