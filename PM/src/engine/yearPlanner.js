@@ -1,5 +1,6 @@
 import { advanceCityCondition } from './cityConditions.js';
 import { contractRouteOf } from '../data/careerContracts.js';
+import { careerAgeOf, reachedCareerAge, effectiveMinAge } from './careerAge.js';
 import { rememberResonance, hasEgoOpportunity, colorTrialAvailable, rollEgoEncounter } from './awakeningProgress.js';
 import { simulateNpcAutonomousLife } from './narrativeArcEngine.js';
 import { matchesNeed, matchesEventContext, choiceIsAvailable, mergeEffects, isNestResident, isOutsideCity, npcIsActive } from './eventConditions.js';
@@ -126,7 +127,7 @@ export const isBackstreets = (char) => !isNest(char) && !isOutskirts(char);
 /** Does an entry's `need` filter match this character right now? */
 export const matchNeed = matchesNeed;
 
-const ageOk = (entry, age) => !entry.age || (age >= entry.age[0] && age <= entry.age[1]);
+const ageOk = (entry, age, char = null) => !entry.age || (age >= (char ? effectiveMinAge(entry, char) : entry.age[0]) && age <= entry.age[1]);
 
 /**
  * Applies an effect map and returns the deltas that actually landed after clamping,
@@ -239,7 +240,7 @@ function majorIsDue(char, rng) {
     const nextPromo = getNextWingPromotion(char);
     if (nextPromo && nextPromo.isEligible) return true;
   }
-  if ((char.age >= 18 && char.job === 'Child') && !(char.seenEvents || []).includes('ad_career_crossroad_18')) return true;
+  if ((reachedCareerAge(char) && char.job === 'Child') && !(char.seenEvents || []).includes('ad_career_crossroad_18')) return true;
   if (char.job === 'Syndicate' && !char.finger && !(char.seenEvents || []).includes('syn_choose_finger_allegiance')) return true;
   if ((char.taboo || 0) >= 3) return true;
   if ((w.pendingThreads || []).some((th) => th.kind !== 'minor' && !th.fulfilled && char.age >= th.triggerAge)) return true;
@@ -312,8 +313,8 @@ export function planYear(charState, rng) {
     }
   }
 
-  // Mandatory Age 18 Milestone or unassigned adult must select career immediately
-  if (char.age >= 18 && char.job === 'Child') {
+  // The career crossroads comes at the character's own working age (15 to 20), not a fixed 18
+  if (reachedCareerAge(char) && char.job === 'Child') {
     const careerEventId = isOutskirts(char) ? 'ad_outskirts_crossroad_18' : 'ad_career_crossroad_18';
     if (!(char.seenEvents || []).includes(careerEventId) && !scheduledKey.some((it) => it.forcedEventId === careerEventId)) {
       scheduledKey.push({ kind: 'major', forcedEventId: careerEventId });
@@ -350,7 +351,7 @@ export function planYear(charState, rng) {
 
   // Fixer combat contract: tactical commission
   // Every career with contracts is offered them, not only Fixers (see careerContracts.js)
-  if (contractRouteOf(char) && age >= 19 && rng() < contractOfferChance(char) && !scheduledKey.some((it) => it.kind === 'contract')) {
+  if (contractRouteOf(char) && age >= careerAgeOf(char) + 1 && rng() < contractOfferChance(char) && !scheduledKey.some((it) => it.kind === 'contract')) {
     scheduledKey.push({ kind: 'contract' });
   }
 
@@ -593,7 +594,7 @@ export async function syncPlanWithBackend(charState, rng) {
             const alreadyPickedIds = hydrated.map((h) => h.id);
             let available = poolDailies.filter((d) => !alreadyPickedIds.includes(d.id));
             if (available.length === 0) {
-              const allAgeDailies = LIFE_DAILIES.filter((d) => ageOk(d, charState.age) && matchNeed(d.need, charState));
+              const allAgeDailies = LIFE_DAILIES.filter((d) => ageOk(d, charState.age, charState) && matchNeed(d.need, charState));
               available = allAgeDailies.filter((d) => !alreadyPickedIds.includes(d.id));
             }
             const pick = pickWeighted(available, weightOf(charState), rng) || available[0];
@@ -613,7 +614,7 @@ export async function syncPlanWithBackend(charState, rng) {
             const alreadyPickedIds = hydrated.map((h) => h.id);
             let available = poolMinors.filter((m) => !alreadyPickedIds.includes(m.id));
             if (available.length === 0) {
-              const allAgeMinors = LIFE_MINORS.filter((m) => ageOk(m, charState.age) && matchNeed(m.need, charState) && !(m.once && (charState.seenEvents || []).includes(m.id)));
+              const allAgeMinors = LIFE_MINORS.filter((m) => ageOk(m, charState.age, charState) && matchNeed(m.need, charState) && !(m.once && (charState.seenEvents || []).includes(m.id)));
               available = allAgeMinors.filter((m) => !alreadyPickedIds.includes(m.id));
             }
             const pick = pickWeighted(available, weightOf(charState), rng) || available[0];
@@ -688,6 +689,21 @@ export async function syncPlanWithBackend(charState, rng) {
         const replaceAt = hydrated.findIndex((item) => item.kind === 'daily');
         if (localTrial && replaceAt >= 0) hydrated[replaceAt] = localTrial;
         else if (localTrial) hydrated.push(localTrial);
+      }
+
+      // The server forces the career crossroads at 18. A character whose working age came sooner
+      // (15 to 20) keeps the crossroads the local planner scheduled.
+      const crossroadId = isOutskirts(charState) ? 'ad_outskirts_crossroad_18' : 'ad_career_crossroad_18';
+      if (reachedCareerAge(charState) && charState.job === 'Child' && !(charState.seenEvents || []).includes(crossroadId) &&
+          !hydrated.some((item) => item.forcedEventId === crossroadId)) {
+        const localCross = localPlan.find((item) => item.forcedEventId === crossroadId);
+        if (localCross) {
+          let at = hydrated.findIndex((item) => item.kind === 'major' && !item.forcedEventId);
+          if (at < 0) at = hydrated.findIndex((item) => item.kind === 'daily');
+          if (at < 0) at = hydrated.findIndex((item) => item.kind === 'minor' && !item.isCausal);
+          if (at >= 0) hydrated[at] = { ...localCross, t: hydrated[at].t, season: hydrated[at].season, seasonIdx: hydrated[at].seasonIdx };
+          else hydrated.push(localCross);
+        }
       }
 
       // The server only knows daily/minor/major/contract. The mishap and medical-care
@@ -1017,7 +1033,7 @@ export function endYear(charState, rng) {
     en.push(le);
   };
 
-  if (char.age >= 18 && !char.flags.includes('Distorted')) {
+  if (reachedCareerAge(char) && !char.flags.includes('Distorted')) {
     let livingCost = nest ? 5 : isOutskirts(char) ? 2 : 3;
 
     // Head Weapons & Firearms Tax: Strictly enforced by The Head & Tres Association
@@ -1078,7 +1094,7 @@ export function endYear(charState, rng) {
     } else if (nest) {
       add('health', healAmount(char, 'nest'));
       line('heal_nest');
-    } else if (char.stats.wealth >= 3 && char.age >= 18) {
+    } else if (char.stats.wealth >= 3 && reachedCareerAge(char)) {
       add('wealth', -2);
       add('health', healAmount(char, 'clinic'));
       line('heal_clinic');
@@ -1094,7 +1110,7 @@ export function endYear(charState, rng) {
     if (bond) {
       add('sanity', calmAmount(char, 'bond'));
       line('calm_bond');
-    } else if (char.stats.wealth >= 2 && char.age >= 18) {
+    } else if (char.stats.wealth >= 2 && reachedCareerAge(char)) {
       add('wealth', -1);
       add('sanity', calmAmount(char, 'tavern'));
       line('calm_tavern');
@@ -1116,7 +1132,7 @@ export function endYear(charState, rng) {
     en.push('High resonance made Carmen’s voice harder to quiet.');
   }
 
-  if (char.age >= 18 && ['Fixer', 'Syndicate', 'Wing Employee', 'Workshop Craftsman'].includes(char.job) && !char.flags.includes('Distorted')) {
+  if (reachedCareerAge(char) && ['Fixer', 'Syndicate', 'Wing Employee', 'Workshop Craftsman'].includes(char.job) && !char.flags.includes('Distorted')) {
     const wear = char.job === 'Fixer' || char.job === 'Syndicate' ? 2 : 1;
     add('health', -wear);
     add('sanity', -(char.job === 'Wing Employee' || char.job === 'Syndicate' ? 3 : 2));
@@ -1204,7 +1220,7 @@ export function endYear(charState, rng) {
   }
 
   // Hard knocks the City deals on its own
-  if (char.age >= 18 && char.stats.wealth <= 0 && !nest && !char.flags.includes('Distorted')) {
+  if (reachedCareerAge(char) && char.stats.wealth <= 0 && !nest && !char.flags.includes('Distorted')) {
     const d = applyFx(char, { health: -20, sanity: -12, wealth: 14, resonance: 10 });
     addScar(char, 'Vết mổ trả nợ');
     pushLog(
@@ -1261,7 +1277,7 @@ export function endYear(charState, rng) {
     yearsSinceLastMajor: (char.weaver?.yearsSinceLastMajor || 0) + 1,
     yearsSinceLastCrisis: (char.weaver?.yearsSinceLastCrisis || 0) + 1
   };
-  if (char.age >= 18 && (char.job === 'Fixer' || char.job === 'Syndicate')) applyFx(char, { merit: 2 });
+  if (reachedCareerAge(char) && (char.job === 'Fixer' || char.job === 'Syndicate')) applyFx(char, { merit: 2 });
   settle(char, 0, rng);
   char.weaver = updateDramaTension(char.weaver, char);
   if (char.alive) planYear(char, rng);

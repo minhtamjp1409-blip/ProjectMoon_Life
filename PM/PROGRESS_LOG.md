@@ -373,6 +373,15 @@ Mô phỏng 1.000 sinh mệnh độc lập (tuổi thọ trung bình 52.0 tuổi
 
 ## 10. Nhật ký phát triển chi tiết (Changelog từ Đợt 1 đến Đợt 23)
 
+### Đợt 28 (23/10/2026): Tuổi bước vào nghề dao động từ 15 đến 20
+
+* `careerAge` được tung lúc sinh theo seed (`src/engine/careerAge.js`): 15 (14%), 16 (18%), 17 (20%), 18 (22%), 19 (14%), 20 (12%). Con của Nest và Feather có xu hướng đi làm muộn hơn, trẻ Outskirts và mồ côi sớm hơn. Save cũ không có trường này nên giữ 18.
+* Ngã rẽ nghề (`ad_career_crossroad_18`, `ad_outskirts_crossroad_18`) xuất hiện đúng tuổi của nhân vật. Giữ nguyên id để không vỡ save, chỉ đổi khoảng tuổi sang 15 đến 99 và bỏ chữ "mười tám" trong văn bản.
+* Mọi sự kiện, sự kiện nhỏ và dòng thường ngày viết cho người trưởng thành (tuổi tối thiểu từ 18 trở lên) dịch xuống theo số năm đi làm sớm, để người vào nghề lúc 15 tuổi không phải chờ ba năm với một kho nội dung trống. Người đi làm muộn không bị lùi thêm. Chi phí sống, hao mòn nghề, tiền chữa trị và Merit cuối năm tính từ tuổi đi làm.
+* Hợp đồng đầu tiên đến sau tuổi đi làm một năm (trước đây cố định 19).
+* Khi đồng bộ với BE, kế hoạch của server vẫn ép ngã rẽ lúc 18, nên FE giữ lại ngã rẽ đã xếp cho những ai đến tuổi sớm hơn. BE không cần sửa.
+* Mô phỏng 150 cuộc đời: 0 lỗi, 132/134 người nhận nghề đúng tuổi của mình, 127 năm đi làm dưới 18 tuổi mà chỉ 3 năm không có việc gì xảy ra. Kiểm tra qua BE trên Render: 30/30 ngã rẽ còn nguyên sau đồng bộ.
+
 ### Đợt 27 (23/10/2026): Hợp đồng cho mọi nghề, không chỉ Fixer
 
 * Hệ Request của Fixer (bậc đe dọa, tỉ lệ thành công, chết) được tổng quát hóa. `contractRouteOf` trả về tuyến của nhân vật: fixer, thumb, index, middle, ring, pinky, wing. `generateFixerContract` và `resolveFixerContract` chạy chung một công thức sức mạnh, quy đổi hạng của nghề sang Grade tương đương (rank 0 ≈ Grade 7, rank 3 ≈ Grade 1). Tên hàm giữ nguyên để không phải sửa chỗ gọi.

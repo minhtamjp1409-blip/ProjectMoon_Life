@@ -389,13 +389,13 @@ export const CHILDHOOD_EVENTS = [
   // --- eighteen ---
   {
     id: 'ad_outskirts_crossroad_18',
-    age: [18, 99],
+    age: [15, 99],
     jobs: ['Child'],
     regions: ['OUTSKIRTS'],
     major: true,
     weight: 999,
-    vi: "[Bên kia bức tường] Mười tám tuổi, bạn theo đoàn phế liệu tới cổng kiểm hàng. Ánh đèn The City đã ở rất gần, nhưng bạn vẫn đứng ngoài tường. Người dẫn đường chỉ ba người đang cần thêm tay chân. Mỗi người có một đường đưa bạn vào Backstreets.",
-    en: '[Across the wall] At eighteen you leave camp with a scrap caravan. From the Outskirts you could see the City lights; reaching the wall is not the same as entering. The caravan stops at a cargo checkpoint. Your guide points out three people who need workers. Each has a way through the gate. None promises a way back.',
+    vi: "[Bên kia bức tường] Đến tuổi phải tự lo thân, bạn theo đoàn phế liệu tới cổng kiểm hàng. Ánh đèn The City đã ở rất gần, nhưng bạn vẫn đứng ngoài tường. Người dẫn đường chỉ ba người đang cần thêm tay chân. Mỗi người có một đường đưa bạn vào Backstreets.",
+    en: '[Across the wall] Old enough to carry your own weight, you leave camp with a scrap caravan. From the Outskirts you could see the City lights; reaching the wall is not the same as entering. The caravan stops at a cargo checkpoint. Your guide points out three people who need workers. Each has a way through the gate. None promises a way back.',
     choices: [
       {
         labelVi: 'Theo người chở hàng vào xưởng',
@@ -433,11 +433,11 @@ export const CHILDHOOD_EVENTS = [
   },
   {
     id: 'ad_career_crossroad_18',
-    age: [18, 99],
+    age: [15, 99],
     major: true,
     weight: 999,
-    vi: "[Mười tám tuổi] Tiền ăn, tiền ở và những khoản nợ giờ đến tên bạn. Dưới mái hiên Backstreets, bạn nhìn ba nơi còn nhận người: quầy cấp thẻ Fixer, một Syndicate và cổng tuyển dụng Wing. Bạn chỉ đủ thời gian nộp một đơn.",
-    en: '[Eighteen] At eighteen you start paying for everything in the City yourself, breathing included. No one feeds you anymore. How will you make a living?',
+    vi: "[Đến tuổi phải tự lo] Tiền ăn, tiền ở và những khoản nợ giờ đến tên bạn. Dưới mái hiên Backstreets, bạn nhìn ba nơi còn nhận người: quầy cấp thẻ Fixer, một Syndicate và cổng tuyển dụng Wing. Bạn chỉ đủ thời gian nộp một đơn.",
+    en: '[Working age] You are old enough now, and you start paying for everything in the City yourself, breathing included. No one feeds you anymore. How will you make a living?',
     choices: [
       {
         labelVi: 'Đăng ký làm Fixer Grade 9 với Hana Association',

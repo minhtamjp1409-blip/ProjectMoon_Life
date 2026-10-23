@@ -1,4 +1,5 @@
 import { cityEventMultiplier } from './cityConditions.js';
+import { careerAgeOf, reachedCareerAge } from './careerAge.js';
 import { rememberResonance, hasEgoOpportunity, colorTrialAvailable, rollEgoEncounter } from './awakeningProgress.js';
 import { evaluateNarrativeArcProgression, computeEmotionalWaveConsideration } from './narrativeArcEngine.js';
 import { matchesEventContext } from './eventConditions.js';
@@ -344,8 +345,8 @@ export function isEventEligible(event, char, { scripted = false } = {}) {
     const prefix = next.route === 'finger' ? 'Finger' : 'Wing';
     if (char[`last${prefix}TrialAge`] === char.age) return false;
   }
-  if (event.id === 'ad_career_crossroad_18' && (char.age < 18 || char.job !== 'Child' || char.regionId === 'OUTSKIRTS')) return false;
-  if (event.id === 'ad_outskirts_crossroad_18' && (char.age < 18 || char.job !== 'Child')) return false;
+  if (event.id === 'ad_career_crossroad_18' && (!reachedCareerAge(char) || char.job !== 'Child' || char.regionId === 'OUTSKIRTS')) return false;
+  if (event.id === 'ad_outskirts_crossroad_18' && (!reachedCareerAge(char) || char.job !== 'Child')) return false;
   if (event.id === 'ego_carmen_crossroad' && !(char.age >= 18 && (hasEgoOpportunity(char) || char.stats.sanity <= 15 || (char.resonance || 0) >= 50))) return false;
   if (event.id === 'csq_claw_taboo_visitation' && char.taboo < 3) return false;
   const milestones = ['ad_career_crossroad_18', 'ad_outskirts_crossroad_18', 'ego_carmen_crossroad', 'ego_second_efflorescence_trial', 'hana_color_ascension_trial', 'csq_claw_taboo_visitation'];
@@ -418,10 +419,10 @@ export function scoreEventUtility(event, char, weaver) {
     }
   }
 
-  if (event.id === 'ad_career_crossroad_18' && char.age === 18) {
+  if (event.id === 'ad_career_crossroad_18' && char.age === careerAgeOf(char)) {
     pacingScore += 120;
-    reasonsVi.push('Tuổi 18: phải chọn đường');
-    reasonsEn.push('Mandatory Age 18 career crossroad milestone');
+    reasonsVi.push('Đến tuổi phải chọn đường');
+    reasonsEn.push('Working-age career crossroad milestone');
   }
 
   // 1. Multi-Stage Narrative Arc Progression Priority
@@ -494,8 +495,8 @@ export function selectEventWithWeaverAI({
     }
   }
 
-  // Mandatory Age 18 Adult Career Crossroad (BitLife / PM Canon Milestone)
-  if (char.age >= 18 && char.job === 'Child') {
+  // Career crossroad at the character's own working age
+  if (reachedCareerAge(char) && char.job === 'Child') {
     const crossroadId = char.regionId === 'OUTSKIRTS' ? 'ad_outskirts_crossroad_18' : 'ad_career_crossroad_18';
     const crossroadEv = allPools.find(e => e.id === crossroadId);
     if (crossroadEv && isEventEligible(crossroadEv, char, { scripted: true })) {
@@ -504,8 +505,8 @@ export function selectEventWithWeaverAI({
         phase: 'CLIMAX',
         selectedId: crossroadEv.id,
         utility: 995,
-        reasonVi: 'Tuổi 18: Ngã rẽ trưởng thành bắt buộc — tự nuôi sống bản thân tại The City',
-        reasonEn: 'Age 18: Mandatory career crossroad — surviving on your own in The City',
+        reasonVi: 'Đến tuổi phải tự nuôi sống bản thân tại The City: ngã rẽ nghề nghiệp bắt buộc',
+        reasonEn: 'Working age reached: mandatory career crossroad, surviving on your own in The City',
         candidates: [{ eventId: crossroadEv.id, totalUtility: 995 }]
       };
       return {

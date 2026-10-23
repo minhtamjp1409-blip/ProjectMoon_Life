@@ -626,7 +626,7 @@ export const BirthSetupPanel = () => {
           <div>
             <h2 id="paths-title">{t('Những con đường trong The City', 'Ways through The City')}</h2>
             <p>
-              {t('Đến tuổi 18, cuộc đời đưa bạn tới ngã rẽ.', 'At eighteen, your life reaches a crossroads.')}
+              {t('Từ khoảng 15 đến 20 tuổi, cuộc đời đưa bạn tới ngã rẽ.', 'Somewhere between fifteen and twenty, your life reaches a crossroads.')}
             </p>
           </div>
         </div>

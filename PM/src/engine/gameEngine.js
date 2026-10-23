@@ -30,6 +30,7 @@ import { EXPANSION_EVENTS } from '../data/eventsExpansion.js';
 import { SUPERNATURAL_EVENTS, FIXER_REQUESTS } from '../data/eventsSupernatural.js';
 import { FIXER_PATH_EVENTS } from '../data/eventsFixerPath.js';
 import { CONTRACT_ROUTES, contractRouteOf, equivalentGrade } from '../data/careerContracts.js';
+import { rollCareerAge, careerAgeOf } from './careerAge.js';
 import { CAREER_REQUESTS } from '../data/careerContractTemplates.js';
 import { DISTORTION_PATH_EVENTS } from '../data/eventsDistortionPath.js';
 import { WORKSHOP_ECONOMY_EVENTS } from '../data/eventsWorkshopEconomy.js';
@@ -614,6 +615,11 @@ export function createNewCharacter({
     job: actualAge >= 18 && region.id !== 'OUTSKIRTS'
       ? (parentLegacy?.job === 'Syndicate' ? 'Syndicate' : parentLegacy?.job === 'Wing Employee' ? 'Wing Employee' : 'Fixer')
       : 'Child',
+    careerAge: rollCareerAge(actualSeed, {
+      nest: flags.includes('Nest') || flags.includes('Feather'),
+      outskirts: region.id === 'OUTSKIRTS',
+      poor: ['orphan', 'backstreet_worker', 'smoke_war_veteran'].includes(family.id)
+    }),
     fixerGrade: 9,
     lastFixerExamAge: null,
     fixerTrialRetryGrade: null,
@@ -795,8 +801,8 @@ export function getNextCareerMilestone(char) {
     };
   }
 
-  // 1. Childhood (Age < 18)
-  if (char.age < 18 || char.job === 'Child') {
+  // 1. Childhood, until the character has a livelihood
+  if (char.job === 'Child') {
     if (char.age < 7) {
       const curAge = char.age;
       const targetAge = 7;
@@ -853,9 +859,9 @@ export function getNextCareerMilestone(char) {
       };
     }
 
-    // Age 14 - 17: Preparing for Age 18 Crossroads
+    // From 14 until the first livelihood: preparing for the career crossroads
     const curAge = char.age;
-    const targetAge = 18;
+    const targetAge = careerAgeOf(char);
     const curMerit = char.merit || 0;
     const curWealth = char.stats?.wealth ?? char.wealth ?? 0;
     const curRep = char.stats?.rep ?? char.rep ?? 0;
@@ -865,16 +871,16 @@ export function getNextCareerMilestone(char) {
     const progressPct = Math.round((pAge * 0.6) + (pStat * 0.4));
 
     return {
-      category: 'CAREER CROSSROADS (AGE 18)',
-      titleVi: 'Chuẩn bị bước ngoặt cuộc đời (Tuổi 18)',
-      titleEn: 'Preparation for Age 18 Crossroads',
+      category: 'CAREER CROSSROADS',
+      titleVi: `Chuẩn bị bước ngoặt cuộc đời (Tuổi ${targetAge})`,
+      titleEn: `Preparation for the Career Crossroads (Age ${targetAge})`,
       progressPct,
       requirements: [
-        { labelVi: 'Đạt tuổi trưởng thành (18)', labelEn: 'Reach Adulthood (18)', current: curAge, target: targetAge, met: curAge >= targetAge },
+        { labelVi: `Đến tuổi phải tự kiếm sống (${targetAge})`, labelEn: `Reach working age (${targetAge})`, current: curAge, target: targetAge, met: curAge >= targetAge },
         { labelVi: 'Tích lũy nền tảng (Merit, Ahn hoặc Rep)', labelEn: 'Merit, Ahn or Rep', current: Math.max(curMerit, curWealth, curRep), target: 10, met: Math.max(curMerit, curWealth, curRep) >= 10 }
       ],
-      tipVi: 'Tại tuổi 18, bạn sẽ quyết định con đường: Hana Fixer, Syndicate, Wing Feather hay Workshop.',
-      tipEn: 'At age 18, you will choose your path: Hana Fixer, Syndicate, Wing Feather, or Workshop.'
+      tipVi: `Đến tuổi ${targetAge}, bạn phải chọn nơi kiếm sống: Fixer, Syndicate hay Wing.`,
+      tipEn: `At ${targetAge} you must choose how you earn a living: Fixer, Syndicate or Wing.`
     };
   }
 
@@ -2231,8 +2237,8 @@ export function buildLifeSummaryAndLegacy(char) {
     let careerArcEn = '';
 
     if (char.job === 'Fixer') {
-      careerArcVi = `Bước qua tuổi 18, bạn dấn thân vào con đường Fixer chuyên nghiệp${char.org?.name ? ` thuộc ${char.org.name}` : ''}, từng bước leo lên tới cấp bậc Fixer Grade ${char.fixerGrade}${flags.includes('ColorFixer') ? ` và được Hana Association sắc phong danh hiệu huyền thoại 「${char.customTitle}」` : ''}.`;
-      careerArcEn = `Stepping across the threshold of age 18, you took up the Fixer’s license${char.org?.name ? ` with ${char.org.name}` : ''}, carving your way up to Grade ${char.fixerGrade}${flags.includes('ColorFixer') ? ` and claiming the legendary Color title "${char.customTitle}" from Hana Association` : ''}.`;
+      careerArcVi = `Đến tuổi phải tự kiếm sống, bạn dấn thân vào con đường Fixer chuyên nghiệp${char.org?.name ? ` thuộc ${char.org.name}` : ''}, từng bước leo lên tới cấp bậc Fixer Grade ${char.fixerGrade}${flags.includes('ColorFixer') ? ` và được Hana Association sắc phong danh hiệu huyền thoại 「${char.customTitle}」` : ''}.`;
+      careerArcEn = `Old enough to work for your keep, you took up the Fixer’s license${char.org?.name ? ` with ${char.org.name}` : ''}, carving your way up to Grade ${char.fixerGrade}${flags.includes('ColorFixer') ? ` and claiming the legendary Color title "${char.customTitle}" from Hana Association` : ''}.`;
     } else if (char.job === 'Syndicate') {
       const fRankName = char.finger && FINGER_RANKS[char.finger] ? FINGER_RANKS[char.finger][char.fingerRank || 0] : 'thành viên Syndicate';
       careerArcVi = `Ở tuổi trưởng thành, bạn bước vào thế giới ngầm của ${char.finger ? `Ngón Tay The ${char.finger}` : 'Syndicate'}, dùng máu và kỷ luật sắt để vươn lên địa vị ${fRankName} với ${char.merit || 0} điểm công trạng giang hồ.`;

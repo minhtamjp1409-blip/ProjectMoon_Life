@@ -1,3 +1,4 @@
+import { effectiveMinAge } from './careerAge.js';
 import { hasScarTag } from './scarModel.js';
 
 export const npcIsActive = (npc) => Boolean(npc) && npc.alive !== false && !npc.deceased && !['dead', 'missing', 'estranged', 'betrayer'].includes(npc.status);
@@ -97,7 +98,7 @@ export function hasNarrativeContext(entry, char) {
 
 export function matchesEventContext(entry, char) {
   if (!entry || !char.alive) return false;
-  if (entry.age && (char.age < entry.age[0] || char.age > entry.age[1])) return false;
+  if (entry.age && (char.age < effectiveMinAge(entry, char) || char.age > entry.age[1])) return false;
   if (entry.regions && !regionMatchesList(entry.regions, char.regionId)) return false;
   if (entry.jobs) {
     const jobMatches = entry.jobs.includes(char.job) ||
