@@ -33,6 +33,7 @@ export function matchesNeed(need, char) {
   }
   if (need.regions && !regionMatchesList(need.regions, char.regionId)) return false;
   if (need.finger && need.finger !== char.finger) return false;
+  if (need.notFinger && need.notFinger === char.finger && char.job === 'Syndicate') return false;
   if (need.flags && !need.flags.every((f) => flags.includes(f))) return false;
   if (need.noFlags?.some((f) => flags.includes(f))) return false;
   if (need.scarTag && !hasScarTag(char, need.scarTag)) return false;

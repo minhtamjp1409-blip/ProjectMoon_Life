@@ -37,7 +37,7 @@ export const LIFE_CAREER_OPPORTUNITIES = [
       ] })
     ], I('Người khác nhận món nợ trong sổ.', 'Someone else took the debt recorded in the book.'), { tags: ['career', 'middle', 'syndicate', 'danger'] }),
 
-  M('m_career_ring_commission', { jobs: ['Syndicate'], finger: 'Ring' },
+  M('m_career_ring_commission', { jobs: ['Syndicate'], finger: 'Ring', fingerRankAtMost: 1 },
     '[Khung tranh còn trống] Docent đưa bạn một phòng triển lãm bỏ không và một buổi chiều để sắp đặt tác phẩm.',
     '[The empty frame] A Docent gives you an unused gallery room and one afternoon to arrange a work.', [
       C('Dùng những vật bỏ lại trong phòng', 'Use what was left in the room', 'Docent dừng trước khung tranh lâu hơn những phòng khác. Ông ghi tên bạn vào danh sách phụ tá.', 'The Docent lingered at your frame. He wrote your name on the assistants’ list.', { merit: 4, rep: 2, sanity: -2 }),

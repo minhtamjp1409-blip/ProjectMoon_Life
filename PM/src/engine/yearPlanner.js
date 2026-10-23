@@ -215,6 +215,7 @@ function eligibleMinors(char) {
 // Director weights reach x6; the 0.8 power keeps their order but lets weaker entries through
 const weightOf = (char) => (e) => {
   let weight = Math.pow(directorWeight(e, char).w, 0.8) * freshness(e.id, char.recent, char.seenCount);
+  if (char.job === 'Syndicate' && e.need?.finger === char.finger && e.id.startsWith('d_')) weight *= 5;
   if (e.id === 'm_fx_request_choice') {
     const next = getNextFixerPromotion(char);
     if (next && next.currentRep < next.repReq) {

@@ -243,16 +243,16 @@ export const FINGER_CANON_EVENTS = [
         { sanity: 1, rep: 1, network: 2 })
     ], { age: [28, 90], weight: 10 }),
 
-  fe('ring_three_pieces', 'Ring', [1, 3],
+  fe('ring_three_pieces', 'Ring', [1, 1],
     '[Ba tác phẩm để thành Maestro] Muốn mang danh Maestro, một Docent phải có ba tác phẩm chứng minh giá trị của mình. Bạn đã có hai, và Hội đồng đang chờ cái thứ ba. Chiếc nhẫn trên tay trái bạn có hai vòng xoắn, và bạn nhìn nó mỗi sáng. Một người khách hứa trả một khoản lớn nếu bạn làm cái thứ ba theo ý họ, nhanh và an toàn.',
     '[Three works to become Maestro] To bear the title of Maestro, a Docent must have three works establishing their worth. You have two, and the council awaits the third. The ring on your left hand has two coils, and you look at it each morning. A patron offers a large sum if you make the third to their wishes, quick and safe.',
     [
       fc('Nhận đơn hàng, làm nhanh và hoàn hảo theo yêu cầu', 'Take the commission and make it fast and perfect to specification',
-        'Tác phẩm thứ ba được hoàn thành trong hai tháng, và Hội đồng chấp nhận. Chiếc nhẫn của bạn có thêm một vòng xoắn, và bạn nhận ra nó nhẹ hơn bạn nghĩ. Có điều gì đó trong tác phẩm ấy bạn không bao giờ muốn nhìn lại.',
-        'The third work is finished in two months, and the council accepts. Your ring gains a third coil, and you find it lighter than you thought. There is something in that work you never wish to look at again.',
+        'Tác phẩm thứ ba hoàn thành trong hai tháng. Hội đồng nhận hồ sơ xét Maestro, nhưng cuộc sát hạch vẫn còn phía trước. Có điều trong tác phẩm ấy bạn không muốn nhìn lại.',
+        'The third work is finished in two months. The council accepts your Maestro dossier, but the trial still lies ahead. There is something in the work you never wish to see again.',
         { rep: 9, wealth: 16, sanity: -8, network: 5 }, { flagsAdd: ['ring_chased_perfection'], meritAdd: 6 }),
       fg('Từ chối đơn hàng, làm tác phẩm thứ ba theo ý riêng', 'Refuse the commission and make the third as you wish', [
-        [50, 'Bạn mất một năm, và tác phẩm làm cả Hội đồng im lặng. Một Maestro già nói đó là tác phẩm đầu tiên ông thấy mà không thể phân loại vào Trường phái nào. Bạn nhận danh hiệu, và nhận ra mình cô độc hơn.', 'It takes a year, and the work leaves the whole council silent. An elder Maestro says it is the first he has seen that he cannot classify under any School. You receive the title and realize you are lonelier.', { rep: 10, sanity: 3, wealth: -6, network: 3 }, { flagsAdd: ['ring_kept_conscience'], meritAdd: 6 }],
+        [50, 'Bạn mất một năm, và tác phẩm làm Hội đồng im lặng. Một Maestro già nói ông không thể xếp nó vào Trường phái nào. Hồ sơ của bạn được chuyển sang sát hạch, còn bạn trở về xưởng chờ ngày gọi tên.', 'It takes a year, and the work leaves the council silent. An elder Maestro cannot place it in any School. Your dossier goes to the trial, and you return to the studio to wait.', { rep: 10, sanity: 3, wealth: -6, network: 3 }, { flagsAdd: ['ring_kept_conscience'], meritAdd: 6 }],
         [50, 'Hội đồng nhìn tác phẩm và từ chối. Họ nói nó thật, nhưng không đủ cho một Maestro. Bạn mang nó về xưởng, và nhìn nó nhiều tháng sau mà không biết nên đau hay tự hào.', 'The council looks at the work and declines. They say it is true, but not enough for a Maestro. You carry it back to the studio and look at it for months without knowing whether to grieve or take pride.', { rep: -4, sanity: -3, wealth: -6 }, { flagsAdd: ['ring_kept_conscience'] }]
       ]),
       fc('Hoãn tác phẩm thứ ba thêm vài năm', 'Postpone the third work another few years',

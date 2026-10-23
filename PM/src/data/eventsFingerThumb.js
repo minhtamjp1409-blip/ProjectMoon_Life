@@ -8,7 +8,7 @@ const T = 'Thumb';
 
 export const THUMB_EVENTS = [
   // ------------------------------------------------------------------ missions
-  fe('thumb_market_tribute', T, [0, 3],
+  fe('thumb_market_tribute', T, [0, 1],
     '[Cống nạp ở chợ cá] Capo giao bạn đi thu khoản cống nạp tháng ở chợ cá District 12. Mười hai sạp, mười một phong bì đã nằm sẵn. Sạp thứ mười hai thuộc về một góa phụ có hai đứa cháu, và bà đặt lên bàn một nắm tiền lẻ, kèm mảnh giấy ghi những khoản bà đã trả cho Wing.',
     '[Tribute at the fish market] Your Capo sends you to collect the monthly tribute at the District 12 fish market. Twelve stalls, eleven envelopes already waiting. The twelfth belongs to a widow with two grandchildren, and she sets a handful of small change on the counter with a slip listing what she has already paid the Wing.',
     [
@@ -26,7 +26,7 @@ export const THUMB_EVENTS = [
       ])
     ], { weight: 10 }),
 
-  fe('thumb_ammo_count', T, [0, 3],
+  fe('thumb_ammo_count', T, [0, 1],
     '[Ba hộp đạn thiếu] Kho đạn của The Thumb báo thiếu ba hộp sau kỳ kiểm sổ. Sổ ghi tên ba Soldato đã ký nhận, và Capo muốn một cái tên trước khi Sottocapo đến. Một trong ba người là người đã chia thuốc lá với bạn từ lúc mới nhập hội.',
     '[Three missing crates] The Thumb’s ammunition store reports three crates missing after the ledger check. The book carries three Soldato names who signed for them, and your Capo wants one name before the Sottocapo arrives. One of the three is the person who shared cigarettes with you from your first week in.',
     [
@@ -44,7 +44,7 @@ export const THUMB_EVENTS = [
         { wealth: -10, rep: 2, network: 6, sanity: 2 })
     ]),
 
-  fe('thumb_wedding_guard', T, [0, 3],
+  fe('thumb_wedding_guard', T, [0, 2],
     '[Tiệc cưới của Capo] Con gái của Capo xuất giá ở một nhà hàng mướn cả tầng. Nghi thức của The Thumb quy định tiệc cưới không được có tiếng súng, và mọi Soldato phải gửi vũ khí ở cửa. Bạn được giao một việc ngược lại: đứng ở hành lang với khẩu súng giấu dưới áo, vì có tin một nhà khách đến mang theo thứ gì đó khác ngoài quà.',
     '[The Capo’s daughter’s wedding] The Capo’s daughter marries in a restaurant that has rented a whole floor. Thumb etiquette says no gunfire at a wedding, and every Soldato must leave weapons at the door. You are given the opposite task: stand in the corridor with a pistol under your coat, because word has it one guest is bringing something other than a gift.',
     [

@@ -27,7 +27,7 @@ export const PINKY_EVENTS = [
         { sanity: 4, rep: -5, network: -2 }, { flagsAdd: ['pinky_bent_word'] })
     ], { weight: 11 }),
 
-  fe('pinky_sworn_blade_delivery', P, [0, 3],
+  fe('pinky_sworn_blade_delivery', P, [1, 3],
     '[Thanh kiếm cho người lập thệ] Một đao thủ trẻ sắp lập lời thề trọn đời với The Pinky, và theo lệ phải nhận từ tay một Sworn Blade một thanh kiếm rèn từ sao, rồi chọn nó làm thanh kiếm duy nhất của mình. Hôm nay là bạn. Thanh kiếm nằm trong một vỏ gỗ cũ, nặng hơn nó trông. Người đao thủ đã đứng chờ ở tháp chuông từ lúc rạng sáng.',
     '[A sword for the oath-taker] A young swordsman is about to swear a lifelong oath to the Pinky and by custom must receive a star-forged sword from the hand of a Sworn Blade and appoint it as their one and only. Today that is you. The sword lies in an old wooden scabbard, heavier than it looks. The swordsman has waited at the bell tower since dawn.',
     [

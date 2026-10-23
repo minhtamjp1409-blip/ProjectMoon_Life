@@ -9,7 +9,7 @@ const R = 'Ring';
 
 export const RING_EVENTS = [
   // ------------------------------------------------------------------ missions
-  fe('ring_atelier_critique', R, [0, 3],
+  fe('ring_atelier_critique', R, [0, 1],
     '[Buổi phê bình ở Atelier] Maestro đặt bốn ghế quanh một tác phẩm bạn mới hoàn thành, và mời bốn người đến xem: hai Docent, một thợ dựng khung, một người lạ mặc áo choàng xám. Không ai nói gì trong mười phút. Rồi người lạ hỏi bạn một câu duy nhất: Bạn muốn người xem cảm thấy gì khi nhìn nó?',
     '[Critique at the Atelier] The Maestro sets four chairs around a piece you have just finished, and invites four to view it: two Docents, a frame builder, and a stranger in a gray cloak. No one speaks for ten minutes. Then the stranger asks you one question: What do you want a viewer to feel on seeing this?',
     [
@@ -27,7 +27,7 @@ export const RING_EVENTS = [
         { sanity: 2, rep: 4, network: 6 })
     ], { weight: 11 }),
 
-  fe('ring_patron_portrait', R, [0, 3],
+  fe('ring_patron_portrait', R, [0, 1],
     '[Chân dung cho người ở Nest] Một khách hàng ở Nest ngồi đối diện bạn trong phòng tiếp khách mạ vàng, và đặt trước một bức chân dung của chính họ, không phải bằng sơn. Họ muốn nó giữ lại một thứ mà họ nói họ đang mất. Họ không nói thứ ấy là gì, và đặt một túi Ahn lên bàn để bạn không hỏi.',
     '[A portrait for a Nest patron] A Nest patron sits across from you in a gilded reception room and orders a portrait of themselves, not in paint. They want it to keep something they say they are losing. They do not say what, and set a purse of Ahn on the table so you will not ask.',
     [
@@ -45,7 +45,7 @@ export const RING_EVENTS = [
         { sanity: 3, rep: 1, wealth: -2 })
     ]),
 
-  fe('ring_opening_night', R, [0, 3],
+  fe('ring_opening_night', R, [0, 1],
     '[Đêm khai mạc] Phòng trưng bày mở cửa lần đầu sau ba tháng chuẩn bị. Hai trăm khách mời, ba mươi tác phẩm, và một dãy hành lang tối chỉ dành cho người có thiệp đen. Bạn được giao đứng ở cửa phòng cuối, nơi trưng bày một tác phẩm chưa ai được nhìn trước. Có người đang cố qua mặt bạn.',
     '[Opening night] The gallery opens for the first time after three months’ preparation. Two hundred guests, thirty works, and a dark corridor for holders of black invitations only. You are posted at the last room’s door, where an unseen work is displayed. Someone is trying to get past you.',
     [
@@ -99,7 +99,7 @@ export const RING_EVENTS = [
         { sanity: 1, rep: -2 })
     ], { age: [26, 90] }),
 
-  fe('ring_model_wants_out', R, [0, 3],
+  fe('ring_model_wants_out', R, [0, 1],
     '[Người mẫu muốn rời đi] Một người từng ký hợp đồng làm mẫu cho Ring ba năm trước đến gặp bạn vào đêm muộn. Họ đã thay đổi, nói họ muốn rời đi, và đưa bạn một lá thư viết tay. Hợp đồng không có điều khoản nào cho phép điều đó, và họ biết rõ bạn biết.',
     '[A model who wants to leave] A person who signed a contract as model for the Ring three years ago visits you late at night. They have changed, say they want to leave, and hand you a handwritten letter. The contract has no clause allowing it, and they know you know.',
     [
@@ -117,7 +117,7 @@ export const RING_EVENTS = [
         { sanity: -8, rep: 1 }, { flagsAdd: ['ring_chased_perfection'] })
     ]),
 
-  fe('ring_harsh_critic', R, [1, 3],
+  fe('ring_harsh_critic', R, [1, 1],
     '[Nhà phê bình khắc nghiệt] Một nhà phê bình nổi tiếng vì chưa bao giờ khen đến thăm Ring và ngồi cả buổi chiều trước một tác phẩm của bạn mà không nói. Khi đứng dậy, ông ta lấy ra một cuốn sổ nhỏ và viết hai chữ. Ông ta không cho ai xem, và để lại cuốn sổ trên ghế như một lời thách thức.',
     '[The harsh critic] A critic famous for never praising visits the Ring and sits a whole afternoon before one of your works without a word. When rising, he draws out a small notebook and writes two words. He shows no one, and leaves the notebook on the chair like a challenge.',
     [
@@ -153,7 +153,7 @@ export const RING_EVENTS = [
       ])
     ], { age: [28, 90] }),
 
-  fe('ring_restoring_the_damaged', R, [0, 3],
+  fe('ring_restoring_the_damaged', R, [0, 1],
     '[Phục dựng một tác phẩm hư hại] Một tác phẩm cũ của The Ring, nặng hơn hai mươi năm tuổi, bị nứt sau một đợt rét. Curator giao bạn phục dựng nó. Công việc cần ba tháng, với tay nghề mà bạn chưa chắc có. Mỗi nét của tác phẩm là của một người đã mất, và bạn đang chạm vào từng người một.',
     '[Restoring a damaged work] An old work of the Ring, over twenty years old, has cracked after a cold snap. The Curator tasks you with restoring it. The work needs three months, with a craft you are not sure you possess. Each stroke belongs to someone dead, and you are touching them one by one.',
     [
@@ -189,7 +189,7 @@ export const RING_EVENTS = [
         { sanity: 2, rep: -3 })
     ], { age: [26, 90] }),
 
-  fe('ring_pigment_from_outskirts', R, [0, 3],
+  fe('ring_pigment_from_outskirts', R, [0, 1],
     '[Sắc tố từ Outskirts] Maestro cần một thứ sắc tố chỉ tìm được ở Outskirts, một màu đỏ nâu mà ông nói là màu của đất sau cơn mưa đầu tiên. Bạn phải đi cùng một đoàn buôn, và người dẫn đường nói thứ này không nằm trong sổ của ai. Không ai biết nó thật sự là gì.',
     '[Pigment from the Outskirts] The Maestro needs a pigment found only in the Outskirts, a red-brown he calls the color of earth after the first rain. You must go with a trade caravan, and the guide says this thing is in no one’s ledger. No one knows what it truly is.',
     [
@@ -279,7 +279,7 @@ export const RING_EVENTS = [
         { sanity: -4, rep: -2, network: -4 })
     ], { age: [28, 90] }),
 
-  fe('ring_signature_stamp', R, [1, 3],
+  fe('ring_signature_stamp', R, [2, 3],
     '[Con dấu của bạn] Curator thông báo mỗi Maestro phải thiết kế một con dấu để khắc vào tác phẩm của mình. Một dấu duy nhất, nhỏ như đầu ngón tay, dùng đến hết đời. Bạn ngồi trước tờ giấy trắng ba đêm, vẽ rồi xóa, vẽ rồi xóa, và chưa biết mình muốn người ta nhớ mình thế nào.',
     '[Your seal] The Curator announces that every Maestro must design a seal to stamp their works. A single mark, small as a fingertip, for life. You sit before a blank sheet three nights, drawing and erasing, drawing and erasing, unsure how you wish to be remembered.',
     [

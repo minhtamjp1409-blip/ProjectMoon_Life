@@ -1116,7 +1116,7 @@ export const LIFE_MINORS = [
   M(
     'm_a_ring_gallery',
     [18, 60],
-    {},
+    { notFinger: 'Ring' },
     '[Phòng trưng bày nghệ thuật Ring] Một kẻ lập dị lạ mặt đưa cho bạn một tấm vé mời miễn phí đến tham quan một "triển lãm nghệ thuật đương đại" do Syndicate The Ring bí mật tổ chức.',
     '[The Ring’s Exhibition Gallery] An eccentric stranger slipped you a complimentary pass to a private “artistic salon” hosted by the Ring syndicate.',
     [
