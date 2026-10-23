@@ -14,6 +14,10 @@ import { addScar } from './scarModel.js';
 import { traitsOf } from './variance.js';
 import { evaluateCompanionSupport } from '../data/npcPersonality.js';
 import { FAIL_TEXT, GENERIC_FAIL, STRAIN_NOTES, BREAK_TEXT, SUPPLY_TEXT, ENDING_TEXT } from '../data/dungeonText.js';
+import { NIGHT_DUNGEON, STAGE_VARIANTS, SIDE_ROOMS, SHORTCUTS, COMPANION_TEXT, COMPANION_LEAD, FINAL_KEEPS, REPORT_FIT } from '../data/dungeonExtras.js';
+import { npcIsActive } from './eventConditions.js';
+import { ensureAffiliation, getAffiliation } from './affiliation.js';
+import { applyNpcFate } from './director.js';
 
 export const DUNGEON_DEFINITIONS = {
   dungeon_warp_train: {
@@ -759,6 +763,102 @@ export const DUNGEON_DEFINITIONS = {
   }
 };
 
+DUNGEON_DEFINITIONS[NIGHT_DUNGEON.id] = NIGHT_DUNGEON;
+
+const REPORT_CHOICE = {
+  labelVi: 'Mang những gì thấy được về báo cho Association của bạn',
+  labelEn: 'Carry what you saw back to your Association',
+  resultVi: 'Bạn viết bản báo cáo ngay trong đêm, đủ chi tiết để người khác đi lại con đường ấy mà không phải trả giá như bạn. Association nhận nó mà không hỏi thêm, và ghi tên bạn ở dòng đầu.',
+  resultEn: 'You write the report that same night, detailed enough for someone else to walk that route without paying what you paid. The Association takes it without further questions and puts your name on the first line.',
+  fx: { wealth: 30, rep: 10, sanity: 8, merit: 12 },
+  reportAff: true,
+  needAff: true
+};
+
+// Every dungeon gets its seeded variant, side room, shortcut and report choice merged in once, at load
+for (const def of Object.values(DUNGEON_DEFINITIONS)) {
+  def.variants = STAGE_VARIANTS[def.id] || {};
+  const insertBeforeFlee = (stage, choice) => {
+    const fleeAt = stage.choices.findIndex((c) => c.isFlee);
+    if (fleeAt < 0) stage.choices.push(choice);
+    else stage.choices.splice(fleeAt, 0, choice);
+  };
+  const side = SIDE_ROOMS[def.id];
+  if (side) {
+    def.sideRoom = side.room;
+    insertBeforeFlee(def.stages[side.fromStage], { ...side.door, side: side.room.id });
+  }
+  const shortcut = SHORTCUTS[def.id];
+  if (shortcut) {
+    insertBeforeFlee(def.stages[1], {
+      ...shortcut, checkTrait: 'luck', goto: def.stages.length - 1,
+      fx: { health: -9, sanity: -7, merit: 12, rep: 6 }, lootAhn: 18, strainDelta: 16
+    });
+  }
+  const last = def.stages[def.stages.length - 1];
+  const keepIdx = FINAL_KEEPS[def.id];
+  if (keepIdx != null && last.choices[keepIdx]) {
+    const keep = last.choices[keepIdx];
+    keep.flagAdd = [...(keep.flagAdd || []), 'KeptDungeonTrophy'];
+    keep.later = [...(keep.later || []), {
+      id: 'csq_dungeon_trophy_kept', years: 3,
+      reasonVi: `Thứ bạn mang ra khỏi ${def.titleVi} chưa ở yên`,
+      reasonEn: `What you carried out of ${def.titleEn} has not stayed quiet`
+    }];
+  }
+  last.choices.push({ ...REPORT_CHOICE });
+}
+
+const fnv = (text) => {
+  let h = 2166136261;
+  for (let i = 0; i < text.length; i++) { h ^= text.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return h >>> 0;
+};
+
+const COMPANION_ORDER = ['partner', 'mentee', 'friend', 'mentor'];
+
+/** Who comes down with you: the closest working relationship that is still active and not cold. */
+export function pickDungeonCompanion(char) {
+  for (const role of COMPANION_ORDER) {
+    const npc = char?.npcs?.[role];
+    if (npcIsActive(npc) && (npc.bond ?? 0) >= 15) return { role, nameVi: npc.nameVi, nameEn: npc.nameEn || npc.nameVi };
+  }
+  return null;
+}
+
+const named = (text, companion, lang) => text.replace('{name}', lang === 'en' ? companion.nameEn : companion.nameVi);
+const companionLine = (key, companion) => ({ vi: named(COMPANION_TEXT[key].vi, companion, 'vi'), en: named(COMPANION_TEXT[key].en, companion, 'en') });
+
+function moveCompanionBond(char, companion, delta) {
+  const npc = char.npcs?.[companion?.role];
+  if (!npc || !npcIsActive(npc)) return;
+  char.npcs = { ...char.npcs, [companion.role]: { ...npc, bond: clamp((npc.bond ?? 0) + delta, 0, 100), lastSeen: char.age } };
+}
+
+/** Standing in the Association the run was taken for (or reported to), when there is one. */
+function moveStanding(char, delta) {
+  const a = ensureAffiliation(char);
+  // The session copies the character shallowly, so write a new object rather than edit the shared one
+  if (a) char.affiliation = { ...a, standing: clamp(a.standing + delta, 0, 100) };
+}
+
+/** What a run did to the people and the badge around you, written once at its end. */
+function settleRun(char, session, outcome) {
+  const notes = [];
+  const c = session.companion;
+  if (c && npcIsActive(char.npcs?.[c.role])) {
+    const delta = outcome === 'conquered' ? 4 : outcome === 'fled' ? 1 : -2;
+    moveCompanionBond(char, c, delta + (session.companionSaved ? 3 : 0));
+    if (outcome === 'conquered') notes.push(companionLine('homeWin', c));
+    else if (outcome === 'fled') notes.push(companionLine('homeFled', c));
+    if (c.role === 'mentee' && char.mentee && outcome === 'conquered') char.mentee = { ...char.mentee, progress: Math.min(99, (char.mentee.progress || 0) + 10) };
+  }
+  if (session.aff && getAffiliation(char)?.id === session.aff) {
+    moveStanding(char, outcome === 'conquered' ? 10 : outcome === 'fled' ? -3 : -5);
+  }
+  return notes;
+}
+
 /**
  * Evaluates character adaptation & mastery bonuses for a given dungeon
  */
@@ -806,6 +906,11 @@ export function getDungeonMastery(def, char) {
     checkBonus += 0.15;
     reasonsVi.push('Thích nghi Outskirts');
     reasonsEn.push('Outskirts Adaptation');
+  } else if (def.theme === 'night' && (['Syndicate', 'Outcast'].includes(char.job) || flags.includes('Backstreets'))) {
+    dmgMult *= 0.78;
+    checkBonus += 0.14;
+    reasonsVi.push('Quen đêm Backstreets');
+    reasonsEn.push('Knows the Backstreets night');
   }
 
   return {
@@ -925,6 +1030,13 @@ export function evaluateDungeonChoiceOdds(choice, char, session) {
   if (!choice || !char) return null;
   const def = session ? DUNGEON_DEFINITIONS[session.id] : null;
   const mastery = getDungeonMastery(def, char);
+  if (choice.companionLead) {
+    const r = stageRewards(choice, session || {}, true);
+    return {
+      hasCheck: true, trait: 'bond', successPct: Math.round(companionLeadChance(char, session) * 100),
+      estHp: 0, estSp: choice.fx?.sanity || 0, estWealth: r.wealth, estLoot: r.loot, estRep: r.rep, estMerit: r.merit, estResonance: r.resonance
+    };
+  }
   const successPct = choice.checkTrait ? Math.round(checkChanceOf(choice, char, session, mastery) * 100) : 100;
   const fx = choice.fx || {};
   const hpMult = damageMultOf(def, char, session, mastery, 'health') * DUNGEON_BALANCE.successDamage;
@@ -985,7 +1097,7 @@ export function createDungeonSession(dungeonId, char) {
   const def = DUNGEON_DEFINITIONS[dungeonId];
   if (!def) return null;
 
-  const bonusSupply = ['Fixer', 'Wing Employee', 'Workshop Craftsman'].includes(char?.job) ||
+  const bonusSupply = ['Fixer', 'Wing Employee', 'Workshop Craftsman', 'Syndicate'].includes(char?.job) ||
     (char?.flags || []).some((f) => ['OutskirtsAdaptability', 'GreatLakeHardened', 'GoreDesensitized', 'EGOAwakened'].includes(f));
   const maxSupplies = bonusSupply ? 3 : 2;
 
@@ -1011,6 +1123,13 @@ export function createDungeonSession(dungeonId, char) {
     egoActive: false,
     resolveAwakened: false,
     lastStageResult: null,
+    // The same door can open onto a different third stage: fixed by seed and age, so a reload does not reroll it
+    variant: def.variants?.[2] && fnv(`${char?.seed ?? ''}|${def.id}|${char?.age ?? 0}`) % 2 === 1 ? 2 : null,
+    inSide: null,
+    companion: pickDungeonCompanion(char),
+    companionSaved: false,
+    companionBalked: false,
+    aff: null,
     startSnapshot: {
       stats: { ...char.stats },
       merit: char.merit || 0,
@@ -1080,7 +1199,35 @@ export function getDungeonCurrentStage(session) {
   if (!session) return null;
   const def = DUNGEON_DEFINITIONS[session.id];
   if (!def) return null;
-  return def.stages[session.currentStageIndex] || null;
+  if (session.inSide && def.sideRoom?.id === session.inSide.id) {
+    return { ...def.sideRoom, stageIndex: session.currentStageIndex, isSide: true, sceneLabelVi: 'Ngõ phụ', sceneLabelEn: 'Side room' };
+  }
+  const idx = session.currentStageIndex;
+  const base = def.stages[idx];
+  if (!base) return null;
+  const stage = session.variant === idx && def.variants?.[idx]
+    ? { ...base, ...def.variants[idx], stageIndex: idx, canFlee: base.canFlee, isVariant: true }
+    : base;
+  // A companion can be sent ahead on the two middle stages
+  const c = session.companion;
+  if (c && idx > 0 && idx < def.stages.length - 1) {
+    const lead = {
+      labelVi: named(COMPANION_LEAD.labelVi, c, 'vi'), labelEn: named(COMPANION_LEAD.labelEn, c, 'en'),
+      companionLead: true, resultVi: '', resultEn: '',
+      fx: { sanity: -3, merit: 6 }, lootAhn: 14, strainDelta: 2
+    };
+    return { ...stage, choices: [...stage.choices, lead] };
+  }
+  return stage;
+}
+
+/** The chance a companion sent ahead comes through: bond, how steady they are, and how dangerous the place is. */
+export function companionLeadChance(char, session) {
+  const npc = char?.npcs?.[session?.companion?.role];
+  if (!npc) return 0;
+  const def = DUNGEON_DEFINITIONS[session.id];
+  const hazard = def?.hazard === 'ALEPH' ? 0.08 : 0;
+  return clamp(0.55 + ((npc.bond ?? 30) - 50) / 160 + (evaluateCompanionSupport(char).dungeonOddsMod || 0) / 100 - hazard, 0.3, 0.9);
 }
 
 /**
@@ -1088,6 +1235,8 @@ export function getDungeonCurrentStage(session) {
  */
 export function isDungeonChoiceAvailable(choice, char) {
   if (!choice || !char) return false;
+  if (choice.needAff && !getAffiliation(char)) return false;
+  if (choice.companionLead && !npcIsActive(char.npcs?.[char.pendingDungeon?.companion?.role])) return false;
   if (choice.reqItem) {
     const hasItem = (char.inventory || []).some((it) => it.id === choice.reqItem || it === choice.reqItem);
     if (!hasItem) return false;
@@ -1127,7 +1276,7 @@ export function resolveDungeonChoice(charState, choiceIndex, rng = Math.random) 
   if (!session) return { char, session: null, isFinished: true, resolution: null };
 
   const def = DUNGEON_DEFINITIONS[session.id];
-  const stage = def?.stages[session.currentStageIndex];
+  const stage = def ? getDungeonCurrentStage(session) : null;
   if (!stage) {
     char.pendingDungeon = null;
     return { char, session: null, isFinished: true, resolution: null };
@@ -1138,9 +1287,16 @@ export function resolveDungeonChoice(charState, choiceIndex, rng = Math.random) 
 
   const mastery = getDungeonMastery(def, char);
   const startTier = getStrainTier(session.sanityStrain || 0).id;
+  const wasSide = Boolean(session.inSide);
+  const lead = Boolean(choice.companionLead);
+  const companion = session.companion;
+  const companionNpc = companion ? char.npcs?.[companion.role] : null;
+  const companionNotes = [];
+  let leadText = null;
 
   let success = true;
-  if (choice.checkTrait) success = rng() < checkChanceOf(choice, char, session, mastery);
+  if (lead) success = rng() < companionLeadChance(char, session);
+  else if (choice.checkTrait) success = rng() < checkChanceOf(choice, char, session, mastery);
 
   if (choice.consumeItem && choice.reqItem) {
     char.inventory = (char.inventory || []).filter((it) => (it.id || it) !== choice.reqItem);
@@ -1149,13 +1305,45 @@ export function resolveDungeonChoice(charState, choiceIndex, rng = Math.random) 
 
   const fx = choice.fx || {};
   const resultMult = choice.checkTrait ? (success ? DUNGEON_BALANCE.successDamage : DUNGEON_BALANCE.failDamage) : 1;
-  const hpDelta = fx.health < 0
+  let hpDelta = fx.health < 0
     ? Math.min(-1, Math.ceil(fx.health * damageMultOf(def, char, session, mastery, 'health') * resultMult))
     : healOf(fx.health);
   const spDelta = fx.sanity < 0
     ? Math.min(-1, Math.ceil(fx.sanity * damageMultOf(def, char, session, mastery, 'sanity') * resultMult))
     : healOf(fx.sanity);
   const rewards = stageRewards(choice, session, success);
+  let companionStrain = 0;
+
+  if (lead && companion) {
+    // The one sent ahead takes the danger: you lose no health, they may
+    if (success) {
+      moveCompanionBond(char, companion, 2);
+      leadText = companionLine('leadOk', companion);
+    } else {
+      const lossChance = (def.hazard === 'ALEPH' ? 0.16 : 0.1) * ((companionNpc?.bond ?? 30) < 30 ? 1.6 : 1);
+      if (rng() < lossChance && applyNpcFate(char, companion.role, 'dead')) {
+        leadText = companionLine('leadLost', companion);
+        char.stats.sanity = clamp((char.stats.sanity || 0) - 10, 0, 100);
+        addScar(char, 'Người đi trước không trở lại');
+        if (companion.role === 'mentee') { char.mentee = null; char.flags = (char.flags || []).filter((f) => f !== 'Mentoring'); }
+        session.companion = null;
+      } else {
+        moveCompanionBond(char, companion, -3);
+        leadText = companionLine('leadHurt', companion);
+      }
+    }
+  } else if (companion && npcIsActive(companionNpc)) {
+    const bond = companionNpc.bond ?? 30;
+    if (!success && choice.checkTrait && bond >= 60 && !session.companionSaved && rng() < 0.5) {
+      hpDelta = Math.min(-1, Math.ceil(hpDelta / 2));
+      session.companionSaved = true;
+      companionNotes.push(companionLine('saved', companion));
+    } else if (!success && bond < 30 && !session.companionBalked && rng() < 0.5) {
+      session.companionBalked = true;
+      companionStrain = 8;
+      companionNotes.push(companionLine('balked', companion));
+    }
+  }
 
   char.stats.health = clamp((char.stats.health || 0) + hpDelta, 0, 100);
   char.stats.sanity = clamp((char.stats.sanity || 0) + spDelta, 0, 100);
@@ -1174,13 +1362,16 @@ export function resolveDungeonChoice(charState, choiceIndex, rng = Math.random) 
   const stance = STANCE[session.stance || 'balanced'];
   const colorCalm = (char.flags || []).includes('ColorFixer') ? DUNGEON_BALANCE.ego.color.strainMult : 1;
   const rawStrain = ((stage.strainGain || 15) + (choice.strainDelta || 0)) * stance.strain * (session.stageScanned ? 0.5 : 1) * colorCalm;
-  session.sanityStrain = clamp((session.sanityStrain || 0) + Math.round(rawStrain) + (success ? 0 : DUNGEON_BALANCE.failStrain), 0, 100);
+  session.sanityStrain = clamp((session.sanityStrain || 0) + Math.round(rawStrain) + (success ? 0 : DUNGEON_BALANCE.failStrain) + companionStrain, 0, 100);
 
   const notes = [];
-  if (!success) {
+  if (leadText) {
+    notes.push(leadText);
+  } else if (!success) {
     const text = FAIL_TEXT[def.theme]?.[choice.checkTrait] || GENERIC_FAIL;
     notes.push({ vi: choice.failVi || text.vi, en: choice.failEn || text.en });
   }
+  notes.push(...companionNotes);
 
   let broke = null;
   let resolveEvent = null;
@@ -1225,14 +1416,18 @@ export function resolveDungeonChoice(charState, choiceIndex, rng = Math.random) 
     char.unlockedRecords = [...(char.unlockedRecords || []), choice.recordAdd];
   }
 
-  const resultVi = success ? choice.resultVi : notes[0].vi;
-  const resultEn = success ? choice.resultEn : notes[0].en;
-  const extraVi = notes.slice(success ? 0 : 1).map((n) => n.vi).join(' ');
-  const extraEn = notes.slice(success ? 0 : 1).map((n) => n.en).join(' ');
+  // The first note replaces the result text when the stage did not go as written (a failed check, a companion's run)
+  const headless = !success || lead;
+  const resultVi = headless ? notes[0].vi : choice.resultVi;
+  const resultEn = headless ? notes[0].en : choice.resultEn;
+  const extraVi = notes.slice(headless ? 1 : 0).map((n) => n.vi).join(' ');
+  const extraEn = notes.slice(headless ? 1 : 0).map((n) => n.en).join(' ');
   session.stageScanned = false;
   session.egoActive = false;
+  const stageTagVi = wasSide ? `Ngõ phụ: ${stage.nameVi}` : `Chặng ${session.currentStageIndex + 1}: ${stage.nameVi}`;
+  const stageTagEn = wasSide ? `Side room: ${stage.nameEn}` : `Stage ${session.currentStageIndex + 1}: ${stage.nameEn}`;
   session.lastStageResult = {
-    type: choice.checkTrait ? (success ? 'check_ok' : 'check_fail') : 'stage_clear',
+    type: choice.checkTrait || lead ? (success ? 'check_ok' : 'check_fail') : 'stage_clear',
     stageNum: session.currentStageIndex + 1,
     stageNameVi: stage.nameVi,
     stageNameEn: stage.nameEn,
@@ -1249,8 +1444,8 @@ export function resolveDungeonChoice(charState, choiceIndex, rng = Math.random) 
     age: char.age,
     season: char.season || 'Xuân',
     type: 'story',
-    vi: `[${def.titleVi} · Chặng ${session.currentStageIndex + 1}: ${stage.nameVi}] ${session.lastStageResult.vi}`,
-    en: `[${def.titleEn} · Stage ${session.currentStageIndex + 1}: ${stage.nameEn}] ${session.lastStageResult.en}`
+    vi: `[${def.titleVi} · ${stageTagVi}] ${session.lastStageResult.vi}`,
+    en: `[${def.titleEn} · ${stageTagEn}] ${session.lastStageResult.en}`
   };
   char.logs.push(stageLog);
   session.logs.push(stageLog);
@@ -1280,15 +1475,26 @@ export function resolveDungeonChoice(charState, choiceIndex, rng = Math.random) 
 
   if (char.stats.sanity <= 0 || session.sanityStrain >= DUNGEON_BALANCE.breakAt) {
     broke = breakOutcome(char, session, def, stage, char.stats.sanity <= 0 ? 'mind' : 'strain');
+    settleRun(char, session, 'broken');
     return { char, session: null, isFinished: true, resolution: broke };
   }
 
   const isFlee = Boolean(choice.isFlee);
-  const isLastStage = session.currentStageIndex >= def.stages.length - 1;
+  const isLastStage = !wasSide && session.currentStageIndex >= def.stages.length - 1;
 
   if (isFlee || isLastStage) {
     const c = DUNGEON_BALANCE.conquest;
     const conquered = !isFlee && isLastStage;
+    if (conquered && choice.reportAff) {
+      const a = getAffiliation(char);
+      if (a) moveStanding(char, 8 + ((REPORT_FIT[def.id] || []).includes(a.id) ? 6 : 0));
+    }
+    const runNotes = settleRun(char, session, conquered ? 'conquered' : 'fled');
+    const tailVi = runNotes.map((n) => n.vi).join(' ');
+    const tailEn = runNotes.map((n) => n.en).join(' ');
+    if (tailVi) {
+      session.lastStageResult = { ...session.lastStageResult, vi: `${session.lastStageResult.vi} ${tailVi}`, en: `${session.lastStageResult.en} ${tailEn}` };
+    }
     const totalLoot = (session.accumulatedLootAhn || 0) + (conquered ? c.ahn : 0);
     if (totalLoot > 0) char.stats.wealth = clamp((char.stats.wealth || 0) + totalLoot, 0, 100);
     if (conquered) {
@@ -1317,7 +1523,17 @@ export function resolveDungeonChoice(charState, choiceIndex, rng = Math.random) 
     };
   }
 
-  session.currentStageIndex += 1;
+  // Where the route goes next: back from a side room, into one, down a shortcut, or one stage on
+  if (wasSide) {
+    session.currentStageIndex = session.inSide.returnTo;
+    session.inSide = null;
+  } else if (success && choice.side && def.sideRoom?.id === choice.side) {
+    session.inSide = { id: choice.side, returnTo: session.currentStageIndex + 1 };
+  } else if (success && Number.isInteger(choice.goto) && choice.goto > session.currentStageIndex) {
+    session.currentStageIndex = choice.goto;
+  } else {
+    session.currentStageIndex += 1;
+  }
   char.pendingDungeon = session;
 
   return { char, session, isFinished: false, resolution: null };
@@ -1334,6 +1550,7 @@ export function fleeDungeon(charState) {
   const def = DUNGEON_DEFINITIONS[session.id];
   const haul = session.accumulatedLootAhn || 0;
   if (haul > 0) char.stats.wealth = clamp((char.stats.wealth || 0) + haul, 0, 100);
+  settleRun(char, session, 'fled');
   char.pendingDungeon = null;
 
   const title = ENDING_TEXT.fled.title({ vi: def?.titleVi || 'Hầm Ngục', en: def?.titleEn || 'Dungeon' });

@@ -2,7 +2,9 @@ import assert from 'node:assert/strict';
 import { ALL_STORY_EVENTS, createNewCharacter, resolveEventChoice } from '../src/engine/gameEngine.js';
 import { firstGateAge, planFirstGate, gateOnCooldown, GATE_COOLDOWN_YEARS } from '../src/engine/dungeonPacing.js';
 import { isEventEligible } from '../src/engine/weaverAI.js';
-import { DUNGEON_GATE_EVENTS } from '../src/data/eventsDungeonGates.js';
+import { DUNGEON_GATE_EVENTS as GATES_1 } from '../src/data/eventsDungeonGates.js';
+import { DUNGEON_GATE_EVENTS_2 } from '../src/data/eventsDungeonGates2.js';
+const DUNGEON_GATE_EVENTS = [...GATES_1, ...DUNGEON_GATE_EVENTS_2];
 
 function worker(seed, job = 'Fixer') {
   const c = createNewCharacter({ seed, startAge: 18 });

@@ -40,6 +40,7 @@ import { COMPANION_QUEST_EVENTS } from '../data/eventsCompanionQuests.js';
 import { CAREER_DRAMA_EVENTS } from '../data/eventsCareerDrama.js';
 import { EXPANSION_STORY_EVENTS } from '../data/eventsNpcAndWorldExpansion.js';
 import { DUNGEON_GATE_EVENTS } from '../data/eventsDungeonGates.js';
+import { DUNGEON_GATE_EVENTS_2 } from '../data/eventsDungeonGates2.js';
 import { EGO_COLOR_EVENTS } from '../data/eventsEgoColorPerks.js';
 import { BRANCH_DEPTH_EVENTS } from '../data/eventsBranchDepth.js';
 import { WORKSHOP_VISIT_EVENTS } from '../data/eventsWorkshopVisits.js';
@@ -47,7 +48,7 @@ import { FINGER_STORY_EVENTS } from '../data/eventsFingers.js';
 import { EGO_LEAP_EVENTS } from '../data/eventsEgoLeap.js';
 import { AFFILIATION_EVENTS } from '../data/eventsAffiliation.js';
 import { egoEdge } from './egoEdge.js';
-import { laneContractSet, laneContractMods, noteAffiliationContract, applyAffiliationChoice, ensureAffiliation } from './affiliation.js';
+import { laneContractSet, laneContractMods, noteAffiliationContract, applyAffiliationChoice, ensureAffiliation, getAffiliation } from './affiliation.js';
 import {
   FIXER_LADDER,
   FINGER_LADDERS,
@@ -120,6 +121,7 @@ export const ALL_STORY_EVENTS = [
   ...EXPANSION_EVENTS,
   ...EXPANSION_STORY_EVENTS,
   ...DUNGEON_GATE_EVENTS,
+  ...DUNGEON_GATE_EVENTS_2,
   ...EGO_COLOR_EVENTS,
   ...BRANCH_DEPTH_EVENTS,
   ...WORKSHOP_VISIT_EVENTS,
@@ -2080,6 +2082,8 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
       char.pendingDungeon.maxSupplies += 1;
       char.pendingDungeon.supplyCharges += 1;
     }
+    // A run taken for the Association moves standing when it ends
+    if (char.pendingDungeon && (choice.dungeonAff || outcome.dungeonAff)) char.pendingDungeon.aff = getAffiliation(char)?.id || null;
   }
 
   const textVi = interpolateText(outcome.resultVi || outcome.rvi || choice.resultVi || choice.rvi || '', char);

@@ -45,7 +45,8 @@ const STANCES = [
 const TRAIT_NAMES = {
   vigor: ['Thể lực', 'Vigor'],
   nerve: ['Thần kinh', 'Nerve'],
-  luck: ['Vận may', 'Luck']
+  luck: ['Vận may', 'Luck'],
+  bond: ['Gắn bó', 'Bond']
 };
 
 const TIER_NAMES = {
@@ -60,7 +61,8 @@ const AMBIENT = {
   greatlake: ['Sương trắng dày thêm sau mỗi chặng. Chuông Luật Đại Hồ chưa ngừng.', 'The fog thickens with every stage. The Lake Law bells have not stopped.'],
   lobotomy: ['Đèn khẩn cấp chớp màu cam. Còi Meltdown vọng lên từ tầng dưới.', 'Emergency lamps pulse amber. A Meltdown siren echoes from the floor below.'],
   bloodfiend: ['Nhạc kèn lạc điệu đúng một nốt. Đu quay vẫn quay.', 'The organ music is off by exactly one note. The wheel keeps turning.'],
-  outskirts: ['Cát chảy xuống theo từng bước. Gió mang mùi kim loại cũ.', 'Sand runs down with every step. The wind smells of old metal.']
+  outskirts: ['Cát chảy xuống theo từng bước. Gió mang mùi kim loại cũ.', 'Sand runs down with every step. The wind smells of old metal.'],
+  night: ['Mọi cánh cửa đã khóa. Đồng hồ đầu hẻm vẫn chưa tới 4 giờ 34.', 'Every door is locked. The clock at the head of the alley has not reached 4:34.']
 };
 
 const STAT_ICON = { health: '♥', sanity: '✦', wealth: '◆', merit: '◈', resonance: '◎', rep: '★' };
@@ -164,6 +166,10 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
           </div>
         </section>
 
+        {session.companion && (
+          <p className="dg-ambient">{t(`Đi cùng: ${session.companion.nameVi}`, `With you: ${session.companion.nameEn}`)}</p>
+        )}
+
         {result && (
           <aside key={`${result.stageNum}-${result.type}-${strain}`} className={`dg-result is-${result.type || 'pass'}`} aria-live="polite">
             <p>{pick(result.vi, result.en)}</p>
@@ -172,7 +178,7 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
 
         <section key={currentIdx} className="dg-scene">
           <h4 className="dg-scene-title">
-            <span>{t(`Chặng ${currentIdx + 1} / ${stages.length}`, `Stage ${currentIdx + 1} / ${stages.length}`)}</span>
+            <span>{stage.isSide ? t(stage.sceneLabelVi, stage.sceneLabelEn) : t(`Chặng ${currentIdx + 1} / ${stages.length}`, `Stage ${currentIdx + 1} / ${stages.length}`)}</span>
             {pick(stage.nameVi, stage.nameEn)}
           </h4>
           <p className="dock-text">{pick(stage.descVi, stage.descEn)}</p>
@@ -184,7 +190,7 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
             const odds = evaluateDungeonChoiceOdds(ch, char, session);
             const label = pick(ch.labelVi, ch.labelEn);
             const alt = pick(ch.labelEn, ch.labelVi);
-            const trait = ch.checkTrait ? TRAIT_NAMES[ch.checkTrait] : null;
+            const trait = ch.companionLead ? TRAIT_NAMES.bond : ch.checkTrait ? TRAIT_NAMES[ch.checkTrait] : null;
             const hasItem = ch.reqItem ? (char.inventory || []).some((i) => (i.id || i) === ch.reqItem) : true;
             const ahn = (odds?.estLoot || 0) + Math.max(0, odds?.estWealth || 0);
             return (
@@ -220,6 +226,9 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
                           {t(trait[0], trait[1])} {odds.successPct}%
                         </span>
                       )}
+                      {ch.side && <span className="dg-need is-met">{t('Ngõ phụ, thêm một chặng', 'Side room, one more stage')}</span>}
+                      {Number.isInteger(ch.goto) && <span className="dg-need is-met">{t('Lối tắt, bỏ qua một chặng', 'Shortcut, skips a stage')}</span>}
+                      {ch.companionLead && <span className="dg-need is-met">{t('Người đi cùng chịu rủi ro thay bạn', 'Your companion takes the risk')}</span>}
                       {ch.reqItem && (
                         <span className={`dg-need ${hasItem ? 'is-met' : 'is-unmet'}`}>
                           <Package size={12} aria-hidden="true" />

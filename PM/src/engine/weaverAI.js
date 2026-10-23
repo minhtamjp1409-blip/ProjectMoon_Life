@@ -20,7 +20,7 @@ import {
   RETIRED_WORKSHOP_TRIAL_IDS
 } from './careerPipeline.js';
 import { isAffInviteEvent, getAffiliationInvite, preferredPromoIds } from './affiliation.js';
-import { isGateEvent, gateOnCooldown } from './dungeonPacing.js';
+import { isGateEvent, gateOnCooldown, gateWeightMult } from './dungeonPacing.js';
 // ============================================================================
 // THE PRESCRIPT LOOM: CAUSAL MEMORY GRAPH & RNG FATE OMEN ENGINE
 // Pure In-Universe Project Moon Causal Engine (Zero Meta/AI Text)
@@ -453,7 +453,9 @@ export function scoreEventUtility(event, char, weaver) {
   }
 
   const customMult = weaver.customWeights?.[event.id] ?? 1;
-  const rawTotal = (baseWeight + causalScore + loreScore + npcScore + pacingScore + arcBonus) * considerationMult * waveMultiplier * customMult * cityEventMultiplier(event, char);
+  // Branches with less content of their own meet dungeon gates more often
+  const gateMult = isGateEvent(event.id) ? gateWeightMult(char) : 1;
+  const rawTotal = (baseWeight + causalScore + loreScore + npcScore + pacingScore + arcBonus) * considerationMult * waveMultiplier * customMult * cityEventMultiplier(event, char) * gateMult;
   const totalUtility = Math.round(rawTotal * 10) / 10;
 
   return {
