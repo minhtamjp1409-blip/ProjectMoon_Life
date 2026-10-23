@@ -1548,6 +1548,14 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
 
   const choice = event.choices?.[choiceIdx];
   if (!choiceIsAvailable(choice, char)) return char;
+  if (choice.useItem) {
+    const index = char.inventory.findIndex(i => (i.id || i) === choice.useItem);
+    char.inventory.splice(index, 1);
+  }
+  if (choice.favorCost) {
+    const { role, amount } = choice.favorCost;
+    char.npcs[role] = { ...char.npcs[role], bond: char.npcs[role].bond - amount };
+  }
   const review = {
     vi: event.displayVi || interpolateText(event.vi || '', char),
     en: event.displayEn || interpolateText(event.en || '', char),

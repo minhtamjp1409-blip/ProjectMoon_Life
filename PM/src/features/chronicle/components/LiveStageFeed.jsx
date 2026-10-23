@@ -1,3 +1,5 @@
+import { choiceIsAvailable } from '../../../engine/eventConditions.js';
+import { ITEMS_CATALOG } from '../../../data/itemsData.js';
 import React, { useEffect, useRef, useState } from 'react';
 import { Modal } from 'antd';
 import { GitBranch, Download, RotateCcw, Hammer, ChevronDown, Eye, EyeOff, BookOpen, Copy, Check, House } from 'lucide-react';
@@ -290,10 +292,15 @@ const EventDock = ({ event, char, onPick }) => {
             const check = evaluateDiscoChoiceCheck(ch, char);
             const playerWealth = char.stats?.wealth ?? char.wealth ?? 0;
             const isShortAhn = Boolean(ch.costAhn && ch.costAhn > playerWealth);
+            const blocked = !choiceIsAvailable(ch, char);
+            const item = ITEMS_CATALOG.find(i => i.id === (ch.useItem || ch.need?.item));
             const extra = [];
+            if (item) extra.push(<span className="delta is-static" key="item">{t(ch.useItem ? 'D?ng h?t: ' : 'C?n trang b?: ', ch.useItem ? 'Consume: ' : 'Requires: ')}{lang === 'en' ? item.nameEn : item.nameVi}</span>);
+            if (ch.favorCost) extra.push(<span className="delta is-static" key="favor">{t('C?n ng??i c?n s?ng, ?? g?n b?: ', 'Needs an available contact with bond: ')}{ch.favorCost.amount}</span>);
+            if (blocked) extra.push(<span className="delta is-static" key="blocked">{t('Ch?a ?? ?i?u ki?n', 'Requirements not met')}</span>);
             if (ch.costAhn) {
               extra.push(
-                <span className={`delta ${isShortAhn ? 'is-down' : 'is-static'}`} key="costAhn" style={isShortAhn ? { borderColor: 'rgba(239,68,68,0.5)', color: '#f87171' } : { borderColor: 'rgba(234,179,8,0.4)', color: '#facc15' }}>
+                <span className={`delta ${isShortAhn ? 'is-down' : 'is-static'}`} key="costAhn" style={blocked ? { borderColor: 'rgba(239,68,68,0.5)', color: '#f87171' } : { borderColor: 'rgba(234,179,8,0.4)', color: '#facc15' }}>
                   {isShortAhn ? t(`Thiếu Ahn (Cần ${ch.costAhn})`, `Short Ahn (Needs ${ch.costAhn})`) : t(`Tốn ${ch.costAhn} Ahn`, `Cost: ${ch.costAhn} Ahn`)}
                 </span>
               );
@@ -317,10 +324,10 @@ const EventDock = ({ event, char, onPick }) => {
               <button
                 type="button"
                 key={idx}
-                className={`choice ${isShortAhn ? 'is-disabled' : ''}`}
-                disabled={isShortAhn}
+                className={`choice ${blocked ? 'is-disabled' : ''}`}
+                disabled={blocked}
                 style={isShortAhn ? { opacity: 0.55, cursor: 'not-allowed' } : undefined}
-                onClick={() => !isShortAhn && onPick(idx)}
+                onClick={() => !blocked && onPick(idx)}
               >
                 <span className="choice-badge">{idx + 1}</span>
                 <span>
@@ -936,6 +943,7 @@ export const LiveStageFeed = () => {
   };
 
   const handleSelectEvent = (idx) => {
+    if (!choiceIsAvailable(char.pendingEvent?.choices?.[idx], char)) return;
     audioEngine.playClick();
     selectEventChoice(idx);
   };
@@ -1081,7 +1089,7 @@ export const LiveStageFeed = () => {
         handleSelectContract(app.id);
       } else if (char.pendingMinor && idx < char.pendingMinor.choices.length) {
         const choice = LIFE_MINORS.find((event) => event.id === char.pendingMinor.id)?.choices[idx];
-        if (choice?.costAhn > char.stats.wealth) return;
+        if (!choiceIsAvailable(choice, char)) return;
         e.preventDefault();
         handleChooseMinor(idx);
       }

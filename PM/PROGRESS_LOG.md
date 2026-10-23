@@ -1,6 +1,7 @@
 # The City Chronicles: Tài Liệu Tiến Trình & Kiến Trúc Kỹ Thuật Toàn Diện
 
-> **Cập nhật ghi chép: 23/10/2026 (Đợt 25)**
+> **Cập nhật ghi chép: 23/10/2026 (Đợt 26)**
+> Đợt 26 thay cơ chế gọi Carmen và bổ sung lựa chọn chuẩn bị; số đo cuộc đời ở Đợt 23 là lịch sử, không phải tỷ lệ hiện tại.
 > **Trạng thái xác minh tại máy cho Đợt 22:** `npm test` đạt, gồm hồi quy BUG-34–40, lint nội dung và audit 500 khoảnh khắc; `npm run build` đạt. Backend và Git remote không được thay đổi trong đợt này. Các số liệu kho sự kiện và mô phỏng 1.000 cuộc đời ở Đợt 20 là kết quả lịch sử, không phải lần chạy lại của Đợt 22.
 > **Cách đọc số liệu:** Các kết quả mô phỏng ở Đợt 1–21 là ảnh chụp lịch sử tại thời điểm ghi; xem Đợt 23 để đọc phép đo Color/E.G.O hiện hành. Đợt 22 và mục 9.3 ghi các lần kiểm thử chức năng trước đó.
 
@@ -371,6 +372,16 @@ Mô phỏng 1.000 sinh mệnh độc lập (tuổi thọ trung bình 52.0 tuổi
 ---
 
 ## 10. Nhật ký phát triển chi tiết (Changelog từ Đợt 1 đến Đợt 23)
+
+### Đợt 26 (23/10/2026): Lựa chọn có chuẩn bị, biến cố giữa đời và cơ hội gặp Carmen
+
+* Carmen không còn được chọn chắc chắn chỉ vì đủ ngưỡng. `rollEgoEncounter` rút một lần mỗi năm với xác suất 25%, 40%, 55% qua ba năm của cửa sổ. Kết quả lưu bằng `egoEncounterRollAge` và `egoEncounterOffered` trên nhân vật, dùng chung giữa kế hoạch năm và Weaver. Gọi bộ chọn nhiều lần trong năm không rút lại. Cửa sổ đang mở không bị gia hạn liên tục khiến xác suất kẹt ở năm đầu; sau khi hết hạn, nhân vật còn đủ ngưỡng có thể mở cửa sổ mới. Nhánh SP ≤12 có cơ hội cơ sở 25%; không tự nhận E.G.O. Lựa chọn từ chối, E.G.O chưa hoàn chỉnh và Distortion tiếp tục tồn tại. Mẫu 500 cửa sổ ba năm với điều kiện cố định có 376 lần gặp; đây không phải tỷ lệ thức tỉnh trên toàn bộ cuộc đời.
+* Thêm `need.item`, `useItem`, `favorCost` vào điều kiện lựa chọn. Trang bị mở nhánh nhưng không bị tiêu hao; vật phẩm dùng một lần bị xóa đúng một bản sao khi xác nhận. Ân huệ yêu cầu NPC còn hoạt động, đủ bond và trừ bond khi chọn; nhân vật chết, mất tích hoặc đoạn tuyệt không được giúp. Resolver kiểm tra lại điều kiện, giữ nguyên state nguồn. Nút lựa chọn dùng cùng hàm điều kiện, có nhãn vật phẩm/cái giá và khóa khi thiếu; phím số đi qua cùng chốt kiểm tra.
+* `eventsPreparedChoices.js` bổ sung 12 sự kiện: hộ tống qua phong tỏa và đòi khoản tiền giữ lại (Fixer); thu hồi hàng và đối chiếu kiểm toán sau hai năm (Wing); chuyến đạn và sổ niêm (Thumb); Chỉ Lệnh vượt rào (Index); bữa ăn và thông tin ghi vào sổ (Middle); kiện triển lãm (Ring); giữ lời hẹn ở đường rút (Pinky); quan sát và thu hồi hồ sơ tại chi nhánh L Corp bỏ hoang. Các mở đầu nghề nghiệp giới hạn tuổi 25–40, có khóa nghề/Finger; hậu quả đến sau 1–2 năm và kiểm tra lại ngữ cảnh. Những sự kiện này vào pool có trọng số, không bắt buộc mọi cuộc đời phải trải qua. Đây là biến cố cục bộ được phóng tác, không thay đổi lịch sử canon toàn The City.
+* Chuỗi dị thể dùng sinh vật chưa định danh, lấy thông tin quan sát làm chìa khóa (`AbnoCycleNotes`), có rút lui và nhánh đánh cược. Không gán quy tắc tự sáng tác cho một Abnormality canon có tên. Hai lựa chọn dùng áo giáp/katana và một lựa chọn dùng Enkephalin cho thấy chuẩn bị tác động trực tiếp tới tình huống; phương án an toàn vẫn có chi phí hoặc hậu quả.
+* Âm thanh: hệ ambient và SFX đã có nên không tạo thêm vòng âm trùng. Sửa callback hồi âm lượng sau ducking để đọc trạng thái mute/volume hiện tại, tránh âm nền bật lại sau khi người chơi vừa tắt. Có kiểm thử dùng bộ gain giả; chưa thực hiện nghe thử trên điện thoại trong đợt này.
+* Nguồn tham khảo: [Failbetter — Choice, Complicity and Consequence](https://www.failbettergames.com/news/choice-complicity-and-consequence) cho lựa chọn dùng ân huệ và hậu quả đến sau; [giới thiệu Lobotomy Corporation của Project Moon](https://store.steampowered.com/app/568220/Lobotomy_Corporation__Monster_Management_Simulation/) cho vai trò quan sát, thông tin và kiểm soát nguy hiểm. Chỉ áp dụng nguyên tắc thiết kế; câu chữ và chuỗi nhiệm vụ được viết mới. Skill áp dụng: dialogue-systems, audio-design, game-ui-ux, antislop core/copywriting/human.
+* Kiểm thử: bổ sung `tests/test_prepared_choices.mjs` vào `npm test`. Kiểm tra rút một lần/năm trên 500 seed, thiếu thuốc không giải quyết event, tiêu hao đúng, không sửa state nguồn, NPC chết không giúp, trừ bond, callback tới đúng năm, khóa từng Finger và mute trong lúc ducking. Hai bài hồi quy cũ được đổi sang RNG thắng cố định vì trước đây giả định Carmen luôn xuất hiện khi đủ điều kiện. `npm test` và build production đạt; audit vẫn giới hạn 500 khoảnh khắc. Chưa đo lại tỷ lệ Color/E.G.O của 500 cuộc đời sau đợt này.
 
 ### Đợt 25 (23/10/2026): Dungeon có rủi ro thật, giao diện sáng/tối và mobile, đánh bóng chữ, nối nốt nhánh Color sớm
 

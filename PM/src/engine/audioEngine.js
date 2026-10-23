@@ -181,7 +181,8 @@ class AudioEngine {
       const t = this.ctx.currentTime;
       this.ambienceGain.gain.cancelScheduledValues(t);
       this.ambienceGain.gain.setValueAtTime(this.ambienceGain.gain.value, t);
-      this.ambienceGain.gain.linearRampToValueAtTime(baseGain, t + 0.45);
+      const restoredGain = (this.isMuted || this.isAmbienceMuted) ? 0 : this.linearToGain(this.ambienceVolume) * 0.45;
+      this.ambienceGain.gain.linearRampToValueAtTime(restoredGain, t + 0.45);
     }, durationMs);
   }
 

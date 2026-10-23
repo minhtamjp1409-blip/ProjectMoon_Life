@@ -18,6 +18,7 @@ function regionMatchesList(allowedRegions, regionId) {
 export function matchesNeed(need, char) {
   if (!need) return true;
   const flags = char.flags || [];
+  if (need.item && !(char.inventory || []).some(i => (i.id || i) === need.item)) return false;
   if (need.nest && !isNestResident(char)) return false;
   if (need.notNest && isNestResident(char)) return false;
   if (need.back && (isNestResident(char) || isOutsideCity(char))) return false;
@@ -115,6 +116,9 @@ export function matchesEventContext(entry, char) {
 
 export function choiceIsAvailable(choice, char) {
   return Boolean(choice) && matchesNeed(choice.need, char) &&
+    (!choice.useItem || (char.inventory || []).some(i => (i.id || i) === choice.useItem)) &&
+    (!choice.favorCost || (npcIsActive(char.npcs?.[choice.favorCost.role]) &&
+      (char.npcs[choice.favorCost.role].bond || 0) >= choice.favorCost.amount)) &&
     (choice.costAhn == null || char.stats.wealth >= choice.costAhn);
 }
 

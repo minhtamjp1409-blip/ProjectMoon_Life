@@ -1,4 +1,4 @@
-import { rememberResonance, hasEgoOpportunity, colorTrialAvailable } from './awakeningProgress.js';
+import { rememberResonance, hasEgoOpportunity, colorTrialAvailable, rollEgoEncounter } from './awakeningProgress.js';
 import { evaluateNarrativeArcProgression, computeEmotionalWaveConsideration } from './narrativeArcEngine.js';
 import { matchesEventContext } from './eventConditions.js';
 import { evaluateEventConsiderations } from './utilityCurves.js';
@@ -320,6 +320,8 @@ export function recordChoiceInGraph(weaver, char, event, choice, outcomeTextVi, 
 }
 
 export function isEventEligible(event, char, { scripted = false } = {}) {
+  if (event.id === 'ego_carmen_crossroad' &&
+      (char.egoEncounterRollAge !== char.age || char.egoEncounterOffered !== true)) return false;
   if (event.id === 'fixer_seven_unclaimed_dossier' && !scripted) return false;
   if (RETIRED_WORKSHOP_TRIAL_IDS.has(event.id)) return false;
   const otherTrial = careerTrialForEvent(event.id);
@@ -543,15 +545,10 @@ export function selectEventWithWeaverAI({
 
   const carmenEv = allPools.find(e => e.id === 'ego_carmen_crossroad');
   const curSanity = char.stats?.sanity ?? char.sanity ?? 50;
-  const scarsCount = activeScarCount(char);
-  const meetsCarmenPrereq = char.age >= 18 &&
-    ((char.resonance || 0) >= 70 ||
-      ((char.resonance || 0) >= 58 && ((scarsCount >= 1 && curSanity <= 38) || (scarsCount >= 2 && curSanity <= 45))) ||
-      (curSanity <= 12 && rng() < 0.35));
 
   if (
     carmenEv &&
-    (meetsCarmenPrereq || hasEgoOpportunity(char)) &&
+    rollEgoEncounter(char, rng) &&
     !char.flags.includes('EGOAwakened') &&
     !char.flags.includes('Distorted') &&
     !char.seenEvents.includes('ego_carmen_crossroad')

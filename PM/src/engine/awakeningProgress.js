@@ -7,12 +7,25 @@ export function rememberResonance(char, gain = 0) {
   const ready = char.age >= 18 && ((char.resonance || 0) >= 70 ||
     ((char.resonance || 0) >= 58 && ((scars >= 1 && char.stats.sanity <= 38) || (scars >= 2 && char.stats.sanity <= 45))));
   if (ready && !char.flags?.some(f => ['EGOAwakened', 'Distorted'].includes(f)) && !char.seenEvents?.includes('ego_carmen_crossroad')) {
-    char.egoOpportunityUntil = char.age + 2;
+    if (!hasEgoOpportunity(char)) char.egoOpportunityUntil = char.age + 2;
   }
 }
 
 export function hasEgoOpportunity(char) {
   return char.age >= 18 && Number.isFinite(char.egoOpportunityUntil) && char.age <= char.egoOpportunityUntil;
+}
+
+export function rollEgoEncounter(char, rng) {
+  if (char.age < 18 || char.flags?.some(f => ['EGOAwakened', 'Distorted'].includes(f)) ||
+      char.seenEvents?.includes('ego_carmen_crossroad')) return false;
+  rememberResonance(char);
+  if (!hasEgoOpportunity(char) && char.stats.sanity > 12) return false;
+  if (char.egoEncounterRollAge !== char.age) {
+    const elapsed = hasEgoOpportunity(char) ? Math.max(0, char.age - (char.egoOpportunityUntil - 2)) : 0;
+    char.egoEncounterRollAge = char.age;
+    char.egoEncounterOffered = rng() < Math.min(0.55, 0.25 + elapsed * 0.15);
+  }
+  return char.egoEncounterOffered === true;
 }
 
 export function colorTrialAvailable(char) {

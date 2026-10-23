@@ -1,4 +1,4 @@
-import { rememberResonance, hasEgoOpportunity, colorTrialAvailable } from './awakeningProgress.js';
+import { rememberResonance, hasEgoOpportunity, colorTrialAvailable, rollEgoEncounter } from './awakeningProgress.js';
 import { simulateNpcAutonomousLife } from './narrativeArcEngine.js';
 import { matchesNeed, matchesEventContext, choiceIsAvailable, mergeEffects, isNestResident, isOutsideCity, npcIsActive } from './eventConditions.js';
 import {
@@ -240,12 +240,7 @@ function majorIsDue(char, rng) {
   if (char.job === 'Syndicate' && !char.finger && !(char.seenEvents || []).includes('syn_choose_finger_allegiance')) return true;
   if ((char.taboo || 0) >= 3) return true;
   if ((w.pendingThreads || []).some((th) => th.kind !== 'minor' && !th.fulfilled && char.age >= th.triggerAge)) return true;
-  const scarsCount = activeScarCount(char);
-  const carmenPressure = char.age >= 18 &&
-    ((char.resonance || 0) >= 70
-      || ((char.resonance || 0) >= 58 && ((scarsCount >= 1 && char.stats.sanity <= 38) || (scarsCount >= 2 && char.stats.sanity <= 45)))
-      || (char.stats.sanity <= 12 && rng() < 0.35));
-  if ((carmenPressure || hasEgoOpportunity(char)) && !(char.seenEvents || []).includes('ego_carmen_crossroad') && !char.flags.includes('EGOAwakened') && !char.flags.includes('Distorted')) return true;
+  if (rollEgoEncounter(char, rng) && !(char.seenEvents || []).includes('ego_carmen_crossroad') && !char.flags.includes('EGOAwakened') && !char.flags.includes('Distorted')) return true;
   if (char.job === 'Fixer' && !char.flags.includes('Distorted') && checkColorFixerReadiness(char).ready && !char.flags.includes('ColorFixer') && colorTrialAvailable(char)) return true;
   const gap = w.yearsSinceLastMajor || 0;
   // Childhood: the gap counts from birth, so "every 5 years" used to put the first

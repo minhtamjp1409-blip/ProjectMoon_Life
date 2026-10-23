@@ -84,7 +84,7 @@ normalized.resonance = 100;
 normalized.stats.sanity = 60;
 for (const mark of ['Vết móc câu Sweeper 3:13 AM', 'Ký ức địa ngục tàu WARP', 'Vết mổ trả nợ']) addScar(normalized, mark);
 assert.equal(ALL_STORY_EVENTS.find((event) => event.id === 'ego_carmen_crossroad').age[1], 140);
-const selected = selectEventWithWeaverAI({ weaver: normalized.weaver, char: normalized, allPools: ALL_STORY_EVENTS, consequencePool: CONSEQUENCE_EVENTS, rng: () => 0.5 });
+const selected = selectEventWithWeaverAI({ weaver: normalized.weaver, char: normalized, allPools: ALL_STORY_EVENTS, consequencePool: CONSEQUENCE_EVENTS, rng: () => 0 });
 assert.equal(selected.event.id, 'ego_carmen_crossroad');
 planYear(normalized, () => 0.5);
 assert.ok(normalized.plan.some((item) => item.kind === 'major'));

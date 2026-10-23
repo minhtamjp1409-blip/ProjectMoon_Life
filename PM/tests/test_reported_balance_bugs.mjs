@@ -219,7 +219,7 @@ const pickedEgo = selectEventWithWeaverAI({
   char: egoSeeker,
   allPools: ALL_STORY_EVENTS,
   consequencePool: CONSEQUENCE_EVENTS,
-  rng: () => 0.5
+  rng: () => 0
 });
 assert.equal(pickedEgo.event.id, 'ego_carmen_crossroad');
 planYear(egoSeeker, () => 0.5);
