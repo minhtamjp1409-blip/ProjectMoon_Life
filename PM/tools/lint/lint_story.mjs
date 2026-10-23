@@ -11,12 +11,14 @@ import { LIFE_MINORS, LIFE_DAILIES } from '../../src/engine/yearPlanner.js';
 import { CONSEQUENCE_EVENTS } from '../../src/data/eventsChildhood.js';
 import { FIXER_REQUESTS } from '../../src/data/eventsSupernatural.js';
 import { CAREER_REQUESTS } from '../../src/data/careerContractTemplates.js';
+import { ASSOCIATIONS, OFFICE_REQUESTS } from '../../src/data/associations.js';
 import { ROLE_WORDS, entryGatesRole } from '../../src/engine/storyInvariants.js';
 import { FINGER_LADDERS, WING_LADDER_PROMOTIONS, FIXER_LADDER } from '../../src/engine/careerPipeline.js';
 import { NARRATIVE_ARCS } from '../../src/engine/narrativeArcEngine.js';
 import { FINGER_RANKS } from '../../src/data/worldData.js';
 
 const VERBOSE = process.argv.includes('--verbose');
+const ASSOC_REQUEST_POOL = [...Object.values(ASSOCIATIONS).flatMap((a) => a.requests), ...OFFICE_REQUESTS];
 const EFFECT_KEYS = new Set(['health', 'sanity', 'wealth', 'network', 'rep', 'heat', 'taboo', 'resonance', 'merit']);
 
 const pools = [
@@ -76,7 +78,7 @@ for (const [, list] of pools) {
   }
 }
 const contractIds = new Set();
-for (const request of [...FIXER_REQUESTS, ...Object.values(CAREER_REQUESTS).flat()]) {
+for (const request of [...FIXER_REQUESTS, ...Object.values(CAREER_REQUESTS).flat(), ...ASSOC_REQUEST_POOL]) {
   if (request.mem) producedMem.add(request.mem);
   if (request.later) targetIds.add(request.later.id);
   if (!request.id || contractIds.has(request.id)) err(`duplicate or missing Fixer request id: ${request.id}`);

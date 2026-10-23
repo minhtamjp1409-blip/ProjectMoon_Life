@@ -45,7 +45,9 @@ import { BRANCH_DEPTH_EVENTS } from '../data/eventsBranchDepth.js';
 import { WORKSHOP_VISIT_EVENTS } from '../data/eventsWorkshopVisits.js';
 import { FINGER_STORY_EVENTS } from '../data/eventsFingers.js';
 import { EGO_LEAP_EVENTS } from '../data/eventsEgoLeap.js';
+import { AFFILIATION_EVENTS } from '../data/eventsAffiliation.js';
 import { egoEdge } from './egoEdge.js';
+import { laneContractSet, laneContractMods, noteAffiliationContract, applyAffiliationChoice, ensureAffiliation } from './affiliation.js';
 import {
   FIXER_LADDER,
   FINGER_LADDERS,
@@ -122,7 +124,8 @@ export const ALL_STORY_EVENTS = [
   ...BRANCH_DEPTH_EVENTS,
   ...WORKSHOP_VISIT_EVENTS,
   ...FINGER_STORY_EVENTS,
-  ...EGO_LEAP_EVENTS
+  ...EGO_LEAP_EVENTS,
+  ...AFFILIATION_EVENTS
 ];
 
 export const SEASONS = [
@@ -1174,7 +1177,10 @@ export function checkPromotions(char) {
  */
 export function generateFixerContract(char, rng) {
   const route = contractRouteOf(char) || 'fixer';
-  const cfg = route === 'fixer' ? null : CONTRACT_ROUTES[route];
+  // A Fixer's work comes by lane: an Association's own board, an Office's, or the open one
+  const laneSet = route === 'fixer' ? laneContractSet(char) : null;
+  const mods = route === 'fixer' ? laneContractMods(char, equivalentGrade(char, route)) : laneContractMods({}, 9);
+  const cfg = laneSet ? laneSet.cfg : route === 'fixer' ? null : CONTRACT_ROUTES[route];
   const effGrade = equivalentGrade(char, route);
   let maxTier = 0;
   if (effGrade <= 1) maxTier = 5;
@@ -1182,8 +1188,9 @@ export function generateFixerContract(char, rng) {
   else if (effGrade <= 5) maxTier = 3;
   else if (effGrade <= 7) maxTier = 2;
   else maxTier = 1;
+  maxTier = Math.max(1, maxTier - mods.tierCap);
 
-  const pool = cfg ? CAREER_REQUESTS[route] : FIXER_REQUESTS;
+  const pool = laneSet ? laneSet.pool : cfg ? CAREER_REQUESTS[route] : FIXER_REQUESTS;
   const inBand = pool.filter(r => r.tier <= maxTier && r.tier >= Math.max(0, maxTier - 2));
   // A career should not hand out the same commission twice in a row
   const recent = new Set((char.contractLog || []).slice(-6));
@@ -1205,7 +1212,8 @@ export function generateFixerContract(char, rng) {
   power += compSupport.contractPower;
 
   const difficulty = 32 + template.tier * 16;
-  const baseSuccess = clamp(Math.round(55 + (power - difficulty) * 1.1 + egoEdge(char) * 100), 18, 94);
+  const baseSuccess = clamp(Math.round(55 + (power - difficulty) * 1.1 + egoEdge(char) * 100 + mods.successDelta), 18, 94);
+  const pay = (base) => Math.max(1, Math.round(base * mods.payMult));
   const baseDeath = clamp(Math.round((100 - baseSuccess) * (0.12 + template.tier * 0.05)), 2, 42);
   const approachOdds = (successPct, wantedDeathPct) => {
     const deathPct = clamp(wantedDeathPct, 1, 100 - successPct);
@@ -1215,6 +1223,8 @@ export function generateFixerContract(char, rng) {
   return {
     id: `${template.id}_${char.age}`,
     route,
+    lane: laneSet?.lane || null,
+    affId: laneSet?.affId || null,
     kickerVi: cfg?.kickerVi || null,
     kickerEn: cfg?.kickerEn || null,
     template,
@@ -1236,7 +1246,7 @@ export function generateFixerContract(char, rng) {
         labelVi: cfg?.careful[0] || 'Làm chậm mà chắc',
         labelEn: cfg?.careful[1] || 'Slow and careful',
         ...approachOdds(clamp(baseSuccess + 8, 25, 96), Math.max(1, Math.round(baseDeath * 0.55))),
-        payAhn: tierInfo.basePay,
+        payAhn: pay(tierInfo.basePay),
         meritGain: tierInfo.baseMerit,
         costAhn: 0
       },
@@ -1245,7 +1255,7 @@ export function generateFixerContract(char, rng) {
         labelVi: cfg?.bold[0] || 'Xông vào, xong sớm (thêm 50% Ahn và Merit)',
         labelEn: cfg?.bold[1] || 'Go in hard, finish fast (50% more Ahn and Merit)',
         ...approachOdds(clamp(baseSuccess - 8, 15, 90), clamp(Math.round(baseDeath * 1.45), 4, 55)),
-        payAhn: Math.round(tierInfo.basePay * 1.5),
+        payAhn: pay(tierInfo.basePay * 1.5),
         meritGain: Math.round(tierInfo.baseMerit * 1.5),
         costAhn: 0
       },
@@ -1254,7 +1264,7 @@ export function generateFixerContract(char, rng) {
         labelVi: cfg?.intel[0] || 'Mua hồ sơ mục tiêu của Seven Association (8 Ahn)',
         labelEn: cfg?.intel[1] || 'Buy the target file from Seven Association (8 Ahn)',
         ...approachOdds(clamp(baseSuccess + 18, 35, 98), 1),
-        payAhn: tierInfo.basePay,
+        payAhn: pay(tierInfo.basePay),
         meritGain: tierInfo.baseMerit + 3,
         costAhn: 8
       },
@@ -1317,7 +1327,13 @@ export function resolveFixerContract(charState, approachId, rng = Math.random) {
   const approach = contract.approaches.find(a => a.id === approachId);
   if (!approach || char.stats.wealth < approach.costAhn) return char;
   const { template, tierInfo } = contract;
-  const cfg = contract.route && contract.route !== 'fixer' ? CONTRACT_ROUTES[contract.route] : null;
+  const fixerRoute = !contract.route || contract.route === 'fixer';
+  const cfg = !fixerRoute ? CONTRACT_ROUTES[contract.route] : contract.affId ? laneContractSet(char)?.cfg || null : null;
+  const appendStandingNote = (outcome) => {
+    const note = fixerRoute && contract.affId ? noteAffiliationContract(char, outcome, template) : null;
+    const last = char.logs[char.logs.length - 1];
+    if (note && last) { last.vi += ` ${note.vi}`; last.en += ` ${note.en}`; }
+  };
   const tagVi = cfg?.tagVi || 'Request';
   const tagEn = cfg?.tagEn || 'Request';
   char.pendingContract = null;
@@ -1342,6 +1358,7 @@ export function resolveFixerContract(charState, approachId, rng = Math.random) {
         ? `[Declined · ${tagEn}] ${cfg.declineEn}${isHanaDispatch ? ' Reputation fell by 2.' : ''}`
         : `[Contract Declined] You returned the file for ${template.nameEn || 'this assignment'} before accepting it.${isHanaDispatch ? ' Hana recorded a refused dispatch; reputation fell by 2.' : ' There is no pay or merit.'}`
     });
+    appendStandingNote('decline');
     char.weaver = updateDramaTension(char.weaver, char);
     return char;
   }
@@ -1414,7 +1431,7 @@ export function resolveFixerContract(charState, approachId, rng = Math.random) {
       char.unlockedRecords.push('shi_boundary_of_death');
     }
     // Near the top the Requests that matter are few; a Grade 1 or 2 Fixer is paid in Merit like it
-    const topGradeMult = !cfg && (char.fixerGrade ?? 9) <= 2 ? 1.25 : 1;
+    const topGradeMult = fixerRoute && (char.fixerGrade ?? 9) <= 2 ? 1.25 : 1;
     const gainedMerit = Math.round(approach.meritGain * meritMult * topGradeMult);
     char.stats.wealth = clamp(char.stats.wealth + approach.payAhn, 0, 100);
     char.stats.rep = clamp(char.stats.rep + reputationGain(char.stats.rep, Math.max(2, template.tier + 2)), 0, 100);
@@ -1437,6 +1454,7 @@ export function resolveFixerContract(charState, approachId, rng = Math.random) {
       en: `[${cfg ? tagEn : 'Request completed'} · ${tierInfo.nameEn}] ${template.okEn}${assistNoteEn}`
     });
     applyContractAftermath(char, cfg, template, true);
+    appendStandingNote('ok');
   } else if (roll < approach.successPct + approach.failPct) {
     const hpLoss = 10 + template.tier * 5;
     const spLoss = 6 + template.tier * 3;
@@ -1463,6 +1481,7 @@ export function resolveFixerContract(charState, approachId, rng = Math.random) {
       en: `[${cfg ? `${tagEn} failed` : 'Request failed'} · ${tierInfo.nameEn}] ${template.failEn}${frictionNoteEn}`
     });
     applyContractAftermath(char, cfg, template, false);
+    appendStandingNote('fail');
 
     if (char.stats.health <= 0) {
       applyFatalOrCompanionSave(char, template.deathVi, template.deathEn);
@@ -1906,7 +1925,10 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
   }
 
   const setOrg = outcome.setOrg || choice.setOrg;
-  if (setOrg) char.org = setOrg;
+  if (setOrg) {
+    char.org = setOrg;
+    ensureAffiliation(char);
+  }
 
   const setRegion = outcome.setRegion || choice.setRegion;
   if (setRegion) char.regionId = setRegion;
@@ -2031,6 +2053,10 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
       applyNpcFate(char, role, status);
     }
   }
+
+  // Joining, leaving or standing in an Association or Office, and the junior under your wing
+  applyAffiliationChoice(char, choice);
+  if (outcome !== choice) applyAffiliationChoice(char, outcome);
 
   // Interactive Modals (Workshop Crafting / Naming E.G.O / Color Title)
   if (choice.openCraftModal || outcome.openCraftModal) {

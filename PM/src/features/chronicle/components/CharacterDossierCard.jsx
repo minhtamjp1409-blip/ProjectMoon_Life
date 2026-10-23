@@ -11,6 +11,7 @@ import { audioEngine } from '../../../engine/audioEngine';
 import { gameFeel } from '../../../engine/gameFeel';
 import { useT } from '../../../i18n';
 import { getScarProfile, MAX_ACTIVE_SCARS } from '../../../engine/scarModel';
+import { getAffiliation, affiliationLabel, standingLabel } from '../../../engine/affiliation';
 
 const JOB_LABELS = {
   Child: { vi: 'Trẻ em', en: 'Child' },
@@ -411,8 +412,20 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeT
           <div className="dossier-meta-card">
             <div className="kv" style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.05)', padding: '6px 0' }}>
               <span>{t('Tổ chức', 'Faction')}</span>
-              <span className="kv-val-wrap">{char.org?.name || (char.finger ? `The ${char.finger}` : t('Tự do', 'Unaffiliated'))}</span>
+              <span className="kv-val-wrap">{getAffiliation(char) ? affiliationLabel(char, lang) : (char.org?.name || (char.finger ? `The ${char.finger}` : t('Tự do', 'Unaffiliated')))}</span>
             </div>
+            {getAffiliation(char) && (
+              <div className="kv" style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.05)', padding: '6px 0' }}>
+                <span>{t('Tín nhiệm', 'Standing')}</span>
+                <span className="kv-val-wrap">{standingLabel(char, lang)}</span>
+              </div>
+            )}
+            {char.mentee && char.npcs?.mentee && (
+              <div className="kv" style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.05)', padding: '6px 0' }}>
+                <span>{t('Đang dìu dắt', 'Training')}</span>
+                <span className="kv-val-wrap">{lang === 'en' ? char.npcs.mentee.nameEn : char.npcs.mentee.nameVi}</span>
+              </div>
+            )}
             {char.job !== 'Child' && (
               <div className="kv" style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.05)', padding: '6px 0' }}>
                 <span>Merit</span>

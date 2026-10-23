@@ -11,6 +11,7 @@ import { npcIsActive } from './eventConditions.js';
 import { SEASONS } from './gameEngine.js';
 import { getItemById } from '../data/itemsData.js';
 import { contractRouteOf } from '../data/careerContracts.js';
+import { laneContractMods } from './affiliation.js';
 import { egoEdge, hasAwakenedEgo } from './egoEdge.js';
 
 export const FIXER_LADDER = [
@@ -138,7 +139,11 @@ export function fixerContractOfferChance(char) {
 export function contractOfferChance(char) {
   const route = contractRouteOf(char);
   if (!route) return 0;
-  if (route === 'fixer') return fixerContractOfferChance(char);
+  if (route === 'fixer') {
+    // Work comes through a badge: an Association or Office hands it out, a lone Fixer finds it
+    const mods = laneContractMods(char, char.fixerGrade ?? 9);
+    return Math.min(0.85, Math.max(0, fixerContractOfferChance(char) * mods.offerMult + mods.offerDelta));
+  }
   const step = getOtherCareerPromotion(char);
   if (!step) return 0.5;
   const meritGap = Math.max(0, step.meritReq - step.currentMerit);

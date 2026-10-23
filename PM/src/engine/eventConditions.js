@@ -1,5 +1,6 @@
 import { effectiveMinAge } from './careerAge.js';
 import { hasScarTag } from './scarModel.js';
+import { getAffiliation, laneOf } from './affiliation.js';
 
 export const npcIsActive = (npc) => Boolean(npc) && npc.alive !== false && !npc.deceased && !['dead', 'missing', 'estranged', 'betrayer'].includes(npc.status);
 export const isNestResident = (char) => ['Nest', 'NestResident', 'Feather'].some((f) => char.flags?.includes(f));
@@ -66,6 +67,17 @@ export function matchesNeed(need, char) {
     const min = Math.min(need.grade[0], need.grade[1]);
     const max = Math.max(need.grade[0], need.grade[1]);
     if (char.fixerGrade < min || char.fixerGrade > max) return false;
+  }
+  if (need.aff || need.affSection || need.affYears != null || need.affStanding) {
+    const a = getAffiliation(char);
+    const want = need.aff;
+    if (want === 'free') { if (!['free', 'owner'].includes(laneOf(char))) return false; }
+    else if (want === 'any') { if (!a) return false; }
+    else if (want === 'assoc' || want === 'office') { if (a?.kind !== want) return false; }
+    else if (want && (!a || a.id !== want)) return false;
+    if (need.affSection && (a?.kind !== 'assoc' || a.section < need.affSection[0] || a.section > need.affSection[1])) return false;
+    if (need.affYears != null && (!a || char.age - a.joinedAge < need.affYears)) return false;
+    if (need.affStanding && (!a || a.standing < need.affStanding[0] || a.standing > need.affStanding[1])) return false;
   }
   if (need.fingerRank != null && (char.fingerRank || 0) !== need.fingerRank) return false;
   if (need.fingerRankAtLeast != null && (char.fingerRank || 0) < need.fingerRankAtLeast) return false;

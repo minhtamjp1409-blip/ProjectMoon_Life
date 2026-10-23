@@ -1,6 +1,6 @@
 # The City Chronicles: Tài Liệu Tiến Trình & Kiến Trúc Kỹ Thuật Toàn Diện
 
-> **Cập nhật ghi chép: 23/10/2026 (Đợt 26)**
+> **Cập nhật ghi chép: 23/10/2026 (Đợt 31)**
 > Đợt 26 thay cơ chế gọi Carmen và bổ sung lựa chọn chuẩn bị; số đo cuộc đời ở Đợt 23 là lịch sử, không phải tỷ lệ hiện tại.
 > **Trạng thái xác minh tại máy cho Đợt 22:** `npm test` đạt, gồm hồi quy BUG-34–40, lint nội dung và audit 500 khoảnh khắc; `npm run build` đạt. Backend và Git remote không được thay đổi trong đợt này. Các số liệu kho sự kiện và mô phỏng 1.000 cuộc đời ở Đợt 20 là kết quả lịch sử, không phải lần chạy lại của Đợt 22.
 > **Cách đọc số liệu:** Các kết quả mô phỏng ở Đợt 1–21 là ảnh chụp lịch sử tại thời điểm ghi; xem Đợt 23 để đọc phép đo Color/E.G.O hiện hành. Đợt 22 và mục 9.3 ghi các lần kiểm thử chức năng trước đó.
@@ -372,6 +372,19 @@ Mô phỏng 1.000 sinh mệnh độc lập (tuổi thọ trung bình 52.0 tuổi
 ---
 
 ## 10. Nhật ký phát triển chi tiết (Changelog từ Đợt 1 đến Đợt 23)
+
+### Đợt 31 (23/10/2026): Association và Office không còn là cái tên
+* **Ba lối đi cho Fixer** (`src/engine/affiliation.js`, dữ liệu ở `src/data/associations.js`): tự do, Office (Hook, Yun's, Molar), hoặc associate Fixer của một trong chín Association (Zwei, Shi, Cinq, Liu, Seven, Tres, Devyat', Dieci, Öufi). Mặc định là tự do từ Grade 9; từ Grade 8 trở đi, mỗi năm có xác suất được mời, nơi nào mời do hạt giống và tuổi quyết định (nơi nào hợp chỉ số thì mới mời). Hồ sơ cũ có `org` Hook, Shi hoặc Öufi được tự nhận làm thành viên.
+* **Mỗi nơi có kho Request riêng:** 7 đến 8 mẫu mỗi Association (`careerContractsAssocA/B/C.js`), 6 mẫu cho Office, gọi tên bậc đe dọa theo chuyên môn của nơi ấy, nhãn ba cách tiếp cận riêng. Fixer tự do dùng kho chung cũ. Lore: yêu cầu được xếp loại rồi gửi cho Association hợp, Association giao lại cho Office hoặc associate Fixer; associate nhận lương ổn định và phải nhận việc được giao.
+* **Cân bằng giữa các lối:** Association cộng khoảng 10 điểm phần trăm xác suất có việc mỗi năm, cộng 2 điểm thành công và thêm 3 phần trăm tiền công cho mỗi Section lên cao; Office cộng 5 điểm phần trăm xác suất có việc; Fixer tự do được tiền công ×1,3 nhưng thành công −4, bậc việc tối đa thấp hơn một bậc từ Grade 7 trở lên (trừ khi Network từ 60), và ít việc hơn 12% từ Grade 8. Chủ Office riêng: tiền công ×1,2, thành công −2.
+* **Tín nhiệm (standing, 0 đến 100):** xong việc cộng, trượt trừ 7, từ chối trừ 9 (Association) hoặc 5 (Office), cả năm không nhận việc thì trừ; ở một nơi 6 năm mà vẫn Grade 8 trở xuống thì trừ dần. Hiển thị bằng chữ (Vững vàng, Ổn định, Lung lay, Sắp bị cắt) ở hồ sơ nhân vật, không in số. Dưới ngưỡng thì có cảnh cáo, vẫn thấp sau cảnh cáo thì bị cắt hợp đồng: Merit và giấy phép Hana giữ nguyên, Rep và Network giảm, nơi đã đuổi sẽ không mời lại trong 12 năm.
+* **Section 6 đến 1 (chỉ Association):** lương năm theo Section, thăng khi tín nhiệm đủ cao và bậc Fixer đủ (Section 2 cần Grade 4 trở lên, Section 1 cần Grade 3 trở lên). Section 1 mở đường tới ghế Director (có sự kiện riêng).
+* **Mỗi nơi một thử thách lòng trung thành** (`aff_conflict_*`, 10 sự kiện, gieo thành sợi nhân quả 4 đến 6 năm sau khi vào): tuân lệnh, kín đáo không làm theo, hoặc bỏ đi. Bỏ đi biến bạn thành Defector, mất Rep và Network, và nơi cũ gửi người tìm đến sau 3 năm. Từ Office bỏ đi cũng vậy.
+* **Dìu dắt lứa trẻ:** từ Grade 5 trở lên, 32 tuổi trở lên, mỗi nơi (hoặc tự do) có thể giao hoặc nhận một Fixer trẻ (`aff_mentee_assoc`, `aff_mentee_free`). Người trẻ có tiến độ theo năm, một lần gặp việc quá tầm (`aff_mentee_crisis`), rồi hoặc tốt nghiệp (cộng Rep, Network, tín nhiệm), hoặc bỏ đi, hoặc chết nếu bạn để họ tự đối mặt. Tối đa hai người mỗi đời.
+* **Tự lập Office:** `aff_office_hire` (nhận thêm người, Office có thu nhập nhỏ), `aff_office_pressure` (một Association đòi phí bảo trợ: trả, từ chối, hoặc gia nhập Zwei mà vẫn giữ Office). Rời Association thì quay lại làm chủ Office nếu có.
+* **Bài thi Hana theo huy hiệu:** nơi bạn thuộc về có biến thể bài thi riêng (Seven, Zwei, Shi, Tres, Cinq, Öufi, Dieci, Devyat', Molar), và nó được chọn với xác suất 70% khi tới kỳ thi cùng bậc.
+* **Ghi rõ phần phóng tác:** wiki không nói về tín nhiệm, cảnh cáo, bị đuổi, dìu dắt hay Office của Fixer; các nội dung đó (kể cả mức lương và tên Office Yun's, Molar) là cách game dựng quanh khung canon. Khung canon dùng: Hana chấm bậc và cấp phép; Request xếp loại theo Association; associate không tiếp khách trực tiếp, phải nhận mọi việc được giao; mỗi Association có Section 1 đến 6 do Director đứng đầu.
+* **Test và lint:** `tests/test_affiliation.mjs` (mời, vào, ba lối, tín nhiệm, cảnh cáo và bị cắt, Section, Defector, Director, dìu dắt, Office), lint story/voice kiểm cả kho Request của Association. Mô phỏng 200 đời: khoảng 55% Fixer vào một Association hoặc Office; tiến độ tới Grade 5 trước 40 tuổi không đổi (khoảng 40%).
 
 ### Đợt 30 (23/10/2026): Trượt bài thăng cấp không còn kéo cả đời đi xuống
 

@@ -19,6 +19,7 @@ import {
   isEgoLeapEvent,
   RETIRED_WORKSHOP_TRIAL_IDS
 } from './careerPipeline.js';
+import { isAffInviteEvent, getAffiliationInvite, preferredPromoIds } from './affiliation.js';
 // ============================================================================
 // THE PRESCRIPT LOOM: CAUSAL MEMORY GRAPH & RNG FATE OMEN ENGINE
 // Pure In-Universe Project Moon Causal Engine (Zero Meta/AI Text)
@@ -350,6 +351,7 @@ export function isEventEligible(event, char, { scripted = false } = {}) {
   if (event.id === 'ad_career_crossroad_18' && (!reachedCareerAge(char) || char.job !== 'Child' || char.regionId === 'OUTSKIRTS')) return false;
   if (event.id === 'ad_outskirts_crossroad_18' && (!reachedCareerAge(char) || char.job !== 'Child')) return false;
   if (isEgoLeapEvent(event.id) && getEgoLeap(char)?.eventId !== event.id) return false;
+  if (isAffInviteEvent(event.id) && getAffiliationInvite(char) !== event.id) return false;
   if (event.id === 'ego_carmen_crossroad' && !(char.age >= 18 && (hasEgoOpportunity(char) || char.stats.sanity <= 15 || (char.resonance || 0) >= 50))) return false;
   if (event.id === 'csq_claw_taboo_visitation' && char.taboo < 3) return false;
   const milestones = ['ad_career_crossroad_18', 'ad_outskirts_crossroad_18', 'ego_carmen_crossroad', 'ego_second_efflorescence_trial', 'hana_color_ascension_trial', 'csq_claw_taboo_visitation'];
@@ -619,7 +621,11 @@ export function selectEventWithWeaverAI({
     const retryDue = nextPromo?.isEligible && char.fixerTrialRetryGrade === nextPromo.grade &&
       char.lastFixerExamAge != null && char.age > char.lastFixerExamAge;
     if (availableIds.length > 0 && char.lastFixerExamAge !== char.age && (retryDue || rng() < fixerPromotionOfferChance(char, nextPromo))) {
-      const chosenId = availableIds[Math.floor(rng() * availableIds.length)];
+      // The trial that belongs to the badge you wear comes up more often than a stranger's
+      const own = availableIds.filter((id) => preferredPromoIds(char).includes(id));
+      const chosenId = own.length && rng() < 0.7
+        ? own[Math.floor(rng() * own.length)]
+        : availableIds[Math.floor(rng() * availableIds.length)];
       const examEv = allPools.find((e) => e.id === chosenId);
       if (examEv && isEventEligible(examEv, char)) {
         const logEntry = {
@@ -793,6 +799,27 @@ export function selectEventWithWeaverAI({
         weaver: {
           ...updatedWeaver,
           decisionLog: [logEntry, ...updatedWeaver.decisionLog].slice(0, 18)
+        }
+      };
+    }
+  }
+
+  // A freelance Fixer past Grade 9 gets asked to join an Association or an Office; which one is fixed by seed and age
+  const threadDue = (updatedWeaver.pendingThreads || []).some((t) => !t.fulfilled && t.triggerAge <= char.age);
+  const inviteId = threadDue ? null : getAffiliationInvite(char);
+  if (inviteId) {
+    const inviteEv = allPools.find((e) => e.id === inviteId);
+    if (inviteEv && isEventEligible(inviteEv, char)) {
+      return {
+        event: inviteEv,
+        weaver: {
+          ...updatedWeaver,
+          decisionLog: [{
+            age: char.age, phase: 'CLIMAX', selectedId: inviteEv.id, utility: 960,
+            reasonVi: 'Một Association hoặc Office để mắt đến Fixer tự do này và gửi lời mời',
+            reasonEn: 'An Association or Office has noticed this freelance Fixer and sent an offer',
+            candidates: [{ eventId: inviteEv.id, totalUtility: 960 }]
+          }, ...updatedWeaver.decisionLog].slice(0, 18)
         }
       };
     }

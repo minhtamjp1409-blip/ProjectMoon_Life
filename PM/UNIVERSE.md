@@ -93,6 +93,12 @@ Thức tỉnh phụ thuộc vào thứ giữ người ta đứng vững: Resonan
 
 Lợi ích của người có E.G.O: cộng 5 điểm phần trăm thành công cho bài thăng cấp của Hana, bài thăng bậc của Finger và Wing và các hợp đồng (Volatile: 1,5); kết quả có Merit nghiêng nhẹ về phía họ; Fixer Grade 1 được Hana xét Color sớm hơn; và một lần trong đời, người đã đủ điều kiện cho bậc kế tiếp được mời bài tái định hạng đặc biệt nhảy hai bậc, do một Association chấm theo chuyên môn của họ. Hana nâng bậc theo các Request ghi trong báo cáo, nên với Hana, E.G.O là bằng chứng chưa kịp vào báo cáo. Mọi bài đều có thể trượt.
 
+### 2.5. Association và Office (phần lớn là phóng tác)
+
+Khung lấy từ canon: Hana chấm bậc và cấp phép cho Fixer. Request được xếp theo loại và gửi tới Association hợp nhất, Association giao lại cho Office hoặc associate Fixer; associate Fixer không tiếp khách trực tiếp, nhận lương ổn định, và phải nhận mọi việc được giao. Mỗi Association chia Section từ 1 đến 6, Section 1 tốt nhất, do Director đứng đầu. Chuyên môn: Zwei bảo vệ và giải cứu; Shi ám sát kín; Cinq quyết đấu theo hợp đồng; Liu đánh quy mô lớn, sống như một gia đình; Seven điều tra và xử phạt sau hợp đồng; Tres kiểm vũ khí Workshop và thu thuế; Devyat' giao món hàng hiếm; Dieci Relic, Ruins và nuôi trẻ mồ côi; Öufi thi hành hợp đồng, kể cả bằng bạo lực.
+
+Wiki không nói về những thứ sau, nên chúng là của game: tín nhiệm trong Association, cảnh cáo và bị cắt hợp đồng, thử thách lòng trung thành, bỏ đi thành Defector, dìu dắt một Fixer trẻ, ghế Director cho người ở Section 1, Office tự lập thuê người, và luật cho Fixer tự do (việc đến từ khách trực tiếp, khó hơn, thưởng cao hơn, bậc việc lớn cần có người đứng ra bảo lãnh). Khi viết thêm, giữ nguyên tắc: Association không đuổi người vì giận, chỉ vì người ấy thôi hữu ích.
+
 ---
 
 ## 3. Nhân quả
