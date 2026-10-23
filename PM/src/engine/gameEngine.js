@@ -29,6 +29,8 @@ import { FACTION_EVENTS } from '../data/eventsFactions.js';
 import { EXPANSION_EVENTS } from '../data/eventsExpansion.js';
 import { SUPERNATURAL_EVENTS, FIXER_REQUESTS } from '../data/eventsSupernatural.js';
 import { FIXER_PATH_EVENTS } from '../data/eventsFixerPath.js';
+import { CONTRACT_ROUTES, contractRouteOf, equivalentGrade } from '../data/careerContracts.js';
+import { CAREER_REQUESTS } from '../data/careerContractTemplates.js';
 import { DISTORTION_PATH_EVENTS } from '../data/eventsDistortionPath.js';
 import { WORKSHOP_ECONOMY_EVENTS } from '../data/eventsWorkshopEconomy.js';
 import { BEREAVEMENT_EVENTS } from '../data/eventsBereavementMemories.js';
@@ -1149,7 +1151,9 @@ export function checkPromotions(char) {
  * Generates an interactive Fixer Contract with 3 tactical choices (Methodical, Bold, Seven Intel)
  */
 export function generateFixerContract(char, rng) {
-  const effGrade = char.fixerGrade === 0 ? 0 : char.fixerGrade;
+  const route = contractRouteOf(char) || 'fixer';
+  const cfg = route === 'fixer' ? null : CONTRACT_ROUTES[route];
+  const effGrade = equivalentGrade(char, route);
   let maxTier = 0;
   if (effGrade <= 1) maxTier = 5;
   else if (effGrade <= 3) maxTier = 4;
@@ -1157,11 +1161,19 @@ export function generateFixerContract(char, rng) {
   else if (effGrade <= 7) maxTier = 2;
   else maxTier = 1;
 
-  const candidateReqs = FIXER_REQUESTS.filter(r => r.tier <= maxTier && r.tier >= Math.max(0, maxTier - 2));
-  const template = candidateReqs[Math.floor(rng() * candidateReqs.length)] || FIXER_REQUESTS[0];
-  const tierInfo = THREAT_TIERS[template.tier] || THREAT_TIERS[0];
+  const pool = cfg ? CAREER_REQUESTS[route] : FIXER_REQUESTS;
+  const inBand = pool.filter(r => r.tier <= maxTier && r.tier >= Math.max(0, maxTier - 2));
+  // A career should not hand out the same commission twice in a row
+  const recent = new Set((char.contractLog || []).slice(-6));
+  const fresh = inBand.filter((r) => !recent.has(r.id));
+  const candidateReqs = fresh.length >= 2 ? fresh : inBand;
+  const template = candidateReqs[Math.floor(rng() * candidateReqs.length)] || pool[0];
+  const baseTier = THREAT_TIERS[template.tier] || THREAT_TIERS[0];
+  const tierInfo = cfg ? { ...baseTier, nameVi: cfg.tiers[template.tier].nameVi, nameEn: cfg.tiers[template.tier].nameEn } : baseTier;
 
   let power = 48 + (9 - effGrade) * 7.5;
+  if (route === 'middle' || route === 'wing') power += ((char.stats.network ?? 40) - 40) * 0.12;
+  if (route === 'thumb' || route === 'pinky') power += ((char.stats.health ?? 50) - 50) * 0.1;
   power += (char.stats.health - 50) * 0.25;
   power += (char.stats.sanity - 50) * 0.2;
   power += scarContractPower(char);
@@ -1180,6 +1192,9 @@ export function generateFixerContract(char, rng) {
 
   return {
     id: `${template.id}_${char.age}`,
+    route,
+    kickerVi: cfg?.kickerVi || null,
+    kickerEn: cfg?.kickerEn || null,
     template,
     tierInfo,
     companionSupport: compSupport.active ? {
@@ -1196,8 +1211,8 @@ export function generateFixerContract(char, rng) {
     approaches: [
       {
         id: 'careful',
-        labelVi: 'Làm chậm mà chắc',
-        labelEn: 'Slow and careful',
+        labelVi: cfg?.careful[0] || 'Làm chậm mà chắc',
+        labelEn: cfg?.careful[1] || 'Slow and careful',
         ...approachOdds(clamp(baseSuccess + 8, 25, 96), Math.max(1, Math.round(baseDeath * 0.55))),
         payAhn: tierInfo.basePay,
         meritGain: tierInfo.baseMerit,
@@ -1205,8 +1220,8 @@ export function generateFixerContract(char, rng) {
       },
       {
         id: 'bold',
-        labelVi: 'Xông vào, xong sớm (thêm 50% Ahn và Merit)',
-        labelEn: 'Go in hard, finish fast (50% more Ahn and Merit)',
+        labelVi: cfg?.bold[0] || 'Xông vào, xong sớm (thêm 50% Ahn và Merit)',
+        labelEn: cfg?.bold[1] || 'Go in hard, finish fast (50% more Ahn and Merit)',
         ...approachOdds(clamp(baseSuccess - 8, 15, 90), clamp(Math.round(baseDeath * 1.45), 4, 55)),
         payAhn: Math.round(tierInfo.basePay * 1.5),
         meritGain: Math.round(tierInfo.baseMerit * 1.5),
@@ -1214,8 +1229,8 @@ export function generateFixerContract(char, rng) {
       },
       {
         id: 'intel',
-        labelVi: 'Mua hồ sơ mục tiêu của Seven Association (8 Ahn)',
-        labelEn: 'Buy the target file from Seven Association (8 Ahn)',
+        labelVi: cfg?.intel[0] || 'Mua hồ sơ mục tiêu của Seven Association (8 Ahn)',
+        labelEn: cfg?.intel[1] || 'Buy the target file from Seven Association (8 Ahn)',
         ...approachOdds(clamp(baseSuccess + 18, 35, 98), 1),
         payAhn: tierInfo.basePay,
         meritGain: tierInfo.baseMerit + 3,
@@ -1238,6 +1253,38 @@ export function generateFixerContract(char, rng) {
 }
 
 /**
+ * What a non-Fixer contract leaves behind besides Ahn and Merit: heat, nerves, a name that remembers you.
+ * Only a finished job plants a memory and a delayed callback; a failed one just costs.
+ */
+function applyContractAftermath(char, cfg, template, ok) {
+  if (!cfg) return;
+  const fx = ok ? cfg.okFx : cfg.failFx;
+  for (const [key, value] of Object.entries(fx || {})) {
+    if (key === 'heat') char.heat = clamp((char.heat || 0) + value, 0, 100);
+    else char.stats[key] = clamp((char.stats[key] ?? 0) + value, 0, 100);
+  }
+  if (ok && template.mem && !(char.memory || []).some((m) => m.key === template.mem)) {
+    char.memory = [...(char.memory || []), { key: template.mem, age: char.age }];
+  }
+  if (ok && template.later) {
+    const l = template.later;
+    char.weaver = {
+      ...char.weaver,
+      pendingThreads: [...(char.weaver?.pendingThreads || []), {
+        id: `thr_${char.age}_${l.id}`,
+        kind: 'minor',
+        eventId: l.id,
+        plantedAtAge: char.age,
+        triggerAge: char.age + (l.years || 3),
+        reasonVi: l.reasonVi,
+        reasonEn: l.reasonEn,
+        fulfilled: false
+      }]
+    };
+  }
+}
+
+/**
  * Resolves the player's chosen tactical approach on a Fixer Contract
  */
 export function resolveFixerContract(charState, approachId, rng = Math.random) {
@@ -1248,7 +1295,11 @@ export function resolveFixerContract(charState, approachId, rng = Math.random) {
   const approach = contract.approaches.find(a => a.id === approachId);
   if (!approach || char.stats.wealth < approach.costAhn) return char;
   const { template, tierInfo } = contract;
+  const cfg = contract.route && contract.route !== 'fixer' ? CONTRACT_ROUTES[contract.route] : null;
+  const tagVi = cfg?.tagVi || 'Request';
+  const tagEn = cfg?.tagEn || 'Request';
   char.pendingContract = null;
+  char.contractLog = [...(char.contractLog || []), template.id].slice(-12);
 
   if (approach.costAhn > 0) {
     char.stats.wealth = clamp(char.stats.wealth - approach.costAhn, 0, 100);
@@ -1262,8 +1313,12 @@ export function resolveFixerContract(charState, approachId, rng = Math.random) {
       age: char.age,
       season: SEASONS[char.seasonIdx || 0],
       type: 'story',
-      vi: `[Từ chối ủy thác] Bạn trả lại hồ sơ ${template.nameVi || ''} trước khi nhận việc.${isHanaDispatch ? ' Hana ghi nhận một lần từ chối điều động; uy tín giảm 2.' : ' Không có thù lao hay công trạng.'}`,
-      en: `[Contract Declined] You returned the file for ${template.nameEn || 'this assignment'} before accepting it.${isHanaDispatch ? ' Hana recorded a refused dispatch; reputation fell by 2.' : ' There is no pay or merit.'}`
+      vi: cfg
+        ? `[Từ chối · ${tagVi}] ${cfg.declineVi}${isHanaDispatch ? ' Uy tín giảm 2.' : ''}`
+        : `[Từ chối ủy thác] Bạn trả lại hồ sơ ${template.nameVi || ''} trước khi nhận việc.${isHanaDispatch ? ' Hana ghi nhận một lần từ chối điều động; uy tín giảm 2.' : ' Không có thù lao hay công trạng.'}`,
+      en: cfg
+        ? `[Declined · ${tagEn}] ${cfg.declineEn}${isHanaDispatch ? ' Reputation fell by 2.' : ''}`
+        : `[Contract Declined] You returned the file for ${template.nameEn || 'this assignment'} before accepting it.${isHanaDispatch ? ' Hana recorded a refused dispatch; reputation fell by 2.' : ' There is no pay or merit.'}`
     });
     char.weaver = updateDramaTension(char.weaver, char);
     return char;
@@ -1354,9 +1409,10 @@ export function resolveFixerContract(charState, approachId, rng = Math.random) {
       age: char.age,
       season: SEASONS[char.seasonIdx],
       type: 'choice',
-      vi: `[Request hoàn thành · ${tierInfo.nameVi}] ${template.okVi}${assistNoteVi}`,
-      en: `[Request completed · ${tierInfo.nameEn}] ${template.okEn}${assistNoteEn}`
+      vi: `[${cfg ? tagVi : 'Request hoàn thành'} · ${tierInfo.nameVi}] ${template.okVi}${assistNoteVi}`,
+      en: `[${cfg ? tagEn : 'Request completed'} · ${tierInfo.nameEn}] ${template.okEn}${assistNoteEn}`
     });
+    applyContractAftermath(char, cfg, template, true);
   } else if (roll < approach.successPct + approach.failPct) {
     const hpLoss = 10 + template.tier * 5;
     const spLoss = 6 + template.tier * 3;
@@ -1379,9 +1435,10 @@ export function resolveFixerContract(charState, approachId, rng = Math.random) {
       age: char.age,
       season: SEASONS[char.seasonIdx],
       type: 'danger',
-      vi: `[Request thất bại · ${tierInfo.nameVi}] ${template.failVi}${frictionNoteVi}`,
-      en: `[Request failed · ${tierInfo.nameEn}] ${template.failEn}${frictionNoteEn}`
+      vi: `[${cfg ? `${tagVi} thất bại` : 'Request thất bại'} · ${tierInfo.nameVi}] ${template.failVi}${frictionNoteVi}`,
+      en: `[${cfg ? `${tagEn} failed` : 'Request failed'} · ${tierInfo.nameEn}] ${template.failEn}${frictionNoteEn}`
     });
+    applyContractAftermath(char, cfg, template, false);
 
     if (char.stats.health <= 0) {
       applyFatalOrCompanionSave(char, template.deathVi, template.deathEn);
@@ -1783,7 +1840,10 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
   const setRegion = outcome.setRegion || choice.setRegion;
   if (setRegion) char.regionId = setRegion;
 
-  const listedMerit = startDungeonId ? 0 : (choice.meritAdd || 0) + (outcome === choice ? 0 : outcome.meritAdd || 0);
+  // Finger missions were written without Merit, so a member's ladder stalled while a Fixer's did not
+  const missionMerit = event.mission && char.job === 'Syndicate' ? 4 + (char.fingerRank || 0) * 3 : 0;
+  const listedMerit = startDungeonId ? 0 : (choice.meritAdd || 0) + (outcome === choice ? 0 : outcome.meritAdd || 0) ||
+    (startDungeonId ? 0 : missionMerit);
   const meritAdd = isFixerCareerEvent(event) ? Math.round(listedMerit * BALANCE.fixerMeritScale) : listedMerit;
   if (meritAdd) {
     if (char.job === 'Child') {

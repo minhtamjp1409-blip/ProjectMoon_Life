@@ -373,6 +373,15 @@ Mô phỏng 1.000 sinh mệnh độc lập (tuổi thọ trung bình 52.0 tuổi
 
 ## 10. Nhật ký phát triển chi tiết (Changelog từ Đợt 1 đến Đợt 23)
 
+### Đợt 27 (23/10/2026): Hợp đồng cho mọi nghề, không chỉ Fixer
+
+* Hệ Request của Fixer (bậc đe dọa, tỉ lệ thành công, chết) được tổng quát hóa. `contractRouteOf` trả về tuyến của nhân vật: fixer, thumb, index, middle, ring, pinky, wing, workshop. `generateFixerContract` và `resolveFixerContract` chạy chung một công thức sức mạnh, quy đổi hạng của nghề sang Grade tương đương (rank 0 ≈ Grade 7, rank 3 ≈ Grade 1). Tên hàm giữ nguyên để không phải sửa chỗ gọi.
+* 126 template mới, mỗi nghề 18 cái, 3 cái mỗi bậc trong 6 bậc, nằm ở `careerContracts*.js`. Bậc gọi theo từ vựng của nghề: Middle đòi nợ theo sức mạnh của người trong Book of Vengeance (con nợ thường, Fixer Grade 9, Grade 6 đến 7, Grade 4 đến 5, Grade 2 đến 3, Grade 1 hoặc Color); Thumb thu tô từ khoản vặt đến Color; Index nhận Prescript từ mảnh giấy đến chỉ thị của Weaver; Ring đi tìm nguyên liệu từ chợ đến tác phẩm của một Star; Pinky giải quyết lời thề từ kẻ thất hứa đến Star của thanh kiếm; Wing nhận chỉ thị nội bộ; Workshop nhận đơn đặt vũ khí.
+* Ba cách tiếp cận (cẩn thận, liều, mua tin) có nhãn riêng theo nghề. Mỗi nghề có hệ quả phụ: Thumb và Pinky tăng Heat, Index tổn Sanity, Middle đổi Network, Ring đổi Sanity, Wing đổi Network, Workshop đổi uy tín. Template tránh lặp lại sáu hợp đồng gần nhất.
+* 8 sự kiện nhỏ gọi lại ở `lifeMinorsContracts.js`: hợp đồng xong có thể gieo ký ức và một sợi chỉ hẹn giờ (người thuê nhà bạn chuộc súng, Color nhớ tên, người nhà của tên trong sổ, Prescript quay lại, hồ sơ niêm phong trả về, Color trở lại xưởng, tro của Distortion, con của Capo).
+* Sửa lỗi Merit của Finger quá thấp: toàn bộ sự kiện Finger chỉ có 14 chỗ cộng Merit (trung bình khoảng 4), Fixer có 71 chỗ (trung bình khoảng 32). Sự kiện mission không tự ghi Merit nay cộng mặc định 4 cộng 3 mỗi rank.
+* Mô phỏng 60 cuộc đời mỗi nghề, chọn ngẫu nhiên: số hợp đồng mỗi năm là 0,36 đến 0,53 (Fixer 0,52). Lint kiểm tra thêm id trùng, bậc và đủ chữ của template mới.
+
 ### Đợt 26 (23/10/2026): Lựa chọn có chuẩn bị, biến cố giữa đời và cơ hội gặp Carmen
 
 * Carmen không còn được chọn chắc chắn chỉ vì đủ ngưỡng. `rollEgoEncounter` rút một lần mỗi năm với xác suất 25%, 40%, 55% qua ba năm của cửa sổ. Kết quả lưu bằng `egoEncounterRollAge` và `egoEncounterOffered` trên nhân vật, dùng chung giữa kế hoạch năm và Weaver. Gọi bộ chọn nhiều lần trong năm không rút lại. Cửa sổ đang mở không bị gia hạn liên tục khiến xác suất kẹt ở năm đầu; sau khi hết hạn, nhân vật còn đủ ngưỡng có thể mở cửa sổ mới. Nhánh SP ≤12 có cơ hội cơ sở 25%; không tự nhận E.G.O. Lựa chọn từ chối, E.G.O chưa hoàn chỉnh và Distortion tiếp tục tồn tại. Mẫu 500 cửa sổ ba năm với điều kiện cố định có 376 lần gặp; đây không phải tỷ lệ thức tỉnh trên toàn bộ cuộc đời.

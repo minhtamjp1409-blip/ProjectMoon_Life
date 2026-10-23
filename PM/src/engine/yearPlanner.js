@@ -1,10 +1,11 @@
 import { advanceCityCondition } from './cityConditions.js';
+import { contractRouteOf } from '../data/careerContracts.js';
 import { rememberResonance, hasEgoOpportunity, colorTrialAvailable, rollEgoEncounter } from './awakeningProgress.js';
 import { simulateNpcAutonomousLife } from './narrativeArcEngine.js';
 import { matchesNeed, matchesEventContext, choiceIsAvailable, mergeEffects, isNestResident, isOutsideCity, npcIsActive } from './eventConditions.js';
 import {
   getNextFixerPromotion,
-  fixerContractOfferChance,
+  contractOfferChance,
   fixerPromotionSuccessChance,
   fixerPromotionFailureEffects,
   checkColorFixerReadiness,
@@ -54,6 +55,7 @@ import { LIFE_MINORS_SEEDS } from '../data/lifeMinorsSeeds.js';
 import { WORKSHOP_VISIT_MINORS, WORKSHOP_VISIT_DAILIES } from '../data/eventsWorkshopVisits.js';
 import { FINGER_MINORS, FINGER_DAILIES, FINGER_MISSIONS } from '../data/eventsFingers.js';
 import { LIFE_MINORS_KIDS } from '../data/lifeMinorsKids.js';
+import { LIFE_MINORS_CONTRACTS } from '../data/lifeMinorsContracts.js';
 import { THREAD_MINORS } from '../data/narrative/causalThreads.js';
 import { SCAR_CALLBACKS } from '../data/lifeScarCallbacks.js';
 import { LIFE_CAREER_OPPORTUNITIES } from '../data/lifeCareerOpportunities.js';
@@ -64,7 +66,7 @@ import { cityArchiveAPI } from '../services/api/cityArchiveAPI.js';
 
 const FINGER_MISSION_CHANCE = 0.4;
 
-export const LIFE_MINORS = [...MINORS_FIRST, ...LIFE_MINORS_2, ...LIFE_MINORS_3, ...LIFE_MINORS_4, ...LIFE_MINORS_5, ...LIFE_MINORS_SEEDS, ...WORKSHOP_VISIT_MINORS, ...FINGER_MINORS, ...LIFE_MINORS_KIDS, ...THREAD_MINORS, ...SCAR_CALLBACKS, ...LIFE_CAREER_OPPORTUNITIES, ...EXPANSION_LIFE_MINORS];
+export const LIFE_MINORS = [...MINORS_FIRST, ...LIFE_MINORS_2, ...LIFE_MINORS_3, ...LIFE_MINORS_4, ...LIFE_MINORS_5, ...LIFE_MINORS_SEEDS, ...WORKSHOP_VISIT_MINORS, ...FINGER_MINORS, ...LIFE_MINORS_KIDS, ...LIFE_MINORS_CONTRACTS, ...THREAD_MINORS, ...SCAR_CALLBACKS, ...LIFE_CAREER_OPPORTUNITIES, ...EXPANSION_LIFE_MINORS];
 export const LIFE_DAILIES = [...DAILIES_FIRST, ...LIFE_DAILIES_3, ...EXPANDED_DAILIES, ...DAILIES_2, ...EXPANSION_LIFE_DAILIES, ...WORKSHOP_VISIT_DAILIES, ...FINGER_DAILIES];
 import {
   directorWeight,
@@ -347,7 +349,8 @@ export function planYear(charState, rng) {
   }
 
   // Fixer combat contract: tactical commission
-  if (char.job === 'Fixer' && !char.flags.includes('Distorted') && age >= 19 && rng() < fixerContractOfferChance(char) && !scheduledKey.some((it) => it.kind === 'contract')) {
+  // Every career with contracts is offered them, not only Fixers (see careerContracts.js)
+  if (contractRouteOf(char) && age >= 19 && rng() < contractOfferChance(char) && !scheduledKey.some((it) => it.kind === 'contract')) {
     scheduledKey.push({ kind: 'contract' });
   }
 
@@ -647,7 +650,7 @@ export async function syncPlanWithBackend(charState, rng) {
         }
       }
 
-      if (charState.job === 'Fixer') {
+      if (contractRouteOf(charState)) {
         const localContract = localPlan.find((item) => item.kind === 'contract');
         const serverContractAt = hydrated.findIndex((item) => item.kind === 'contract');
         if (localContract && serverContractAt < 0) {
@@ -862,7 +865,7 @@ export function runPlanItem(charState, item, rng) {
     return char;
   }
 
-  if (item.kind === 'contract' && char.job === 'Fixer' && !char.flags.includes('Distorted')) {
+  if (item.kind === 'contract' && contractRouteOf(char)) {
     char.pendingContract = { ...generateFixerContract(char, rng), t: item.t };
   }
   return char;

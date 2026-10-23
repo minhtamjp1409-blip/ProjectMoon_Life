@@ -10,6 +10,7 @@ import { npcIsActive } from './eventConditions.js';
 
 import { SEASONS } from './gameEngine.js';
 import { getItemById } from '../data/itemsData.js';
+import { contractRouteOf } from '../data/careerContracts.js';
 
 export const FIXER_LADDER = [
   {
@@ -127,6 +128,21 @@ export function fixerContractOfferChance(char) {
   const repChance = repGap > 0 ? 0.54 + 0.18 * Math.min(1, repGap / Math.max(10, step.repReq * 0.25)) : 0.42;
   const meritChance = meritGap > 0 ? 0.5 + 0.1 * Math.min(1, meritGap / Math.max(15, step.meritReq * 0.25)) : 0.42;
   return Math.max(repChance, meritChance);
+}
+
+/**
+ * How likely a contract is offered this year for any career that has them. A Fixer keeps the
+ * promotion-gap curve above; the others lean on Merit, because Merit is what their ladders gate on.
+ */
+export function contractOfferChance(char) {
+  const route = contractRouteOf(char);
+  if (!route) return 0;
+  if (route === 'fixer') return fixerContractOfferChance(char);
+  const step = getOtherCareerPromotion(char);
+  if (!step) return 0.5;
+  const meritGap = Math.max(0, step.meritReq - step.currentMerit);
+  if (meritGap <= 0) return 0.5;
+  return 0.5 + 0.12 * Math.min(1, meritGap / Math.max(15, step.meritReq * 0.25));
 }
 
 export function fixerPromotionSuccessChance(char, targetGrade) {

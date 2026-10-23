@@ -28,7 +28,7 @@ const ENTRY_KIND = {
   choice: { cls: 'k-choice', vi: 'Decision', en: 'Decision' },
   lore: { cls: 'k-lore', vi: 'Chronicle Lore', en: 'Chronicle Lore' },
   daily: { cls: 'k-daily', vi: 'Life Friction', en: 'Life Friction' },
-  contract: { cls: 'k-contract', vi: 'Fixer Contract', en: 'Fixer Contract' }
+  contract: { cls: 'k-contract', vi: 'Contract', en: 'Contract' }
 };
 
 const WORKSHOP_STYLES = [
@@ -369,7 +369,8 @@ const ContractDock = ({ contract, wealth, onPick }) => {
               <p className="dock-kicker">
                 <span className="dock-kicker-icon">📜</span>
                 <span>
-                  {t('Request · ', 'Request · ')}
+                  {lang === 'en' ? (contract.kickerEn || 'Request') : (contract.kickerVi || 'Request')}
+                  {' · '}
                   {lang === 'en' ? contract.tierInfo.nameEn : contract.tierInfo.nameVi}
                 </span>
               </p>
