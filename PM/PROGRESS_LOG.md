@@ -373,6 +373,15 @@ Mô phỏng 1.000 sinh mệnh độc lập (tuổi thọ trung bình 52.0 tuổi
 
 ## 10. Nhật ký phát triển chi tiết (Changelog từ Đợt 1 đến Đợt 23)
 
+### Đợt 30 (23/10/2026): Trượt bài thăng cấp không còn kéo cả đời đi xuống
+
+* **Vấn đề do người chơi báo:** Fixer Grade 2 trượt bài lên Grade 1 thì các lần sau càng khó, Grade 1 và Color gần như xa vời. Mô phỏng 150 Fixer Grade 2 (36 tuổi, Merit 170, Rep 86, bot ngẫu nhiên) cho thấy xác suất mỗi lần chỉ giảm nhẹ (0,42 xuống 0,36). Cái kéo người ta xuống là phí thất bại cộng dồn: mỗi lần trượt tốn 19 HP và 33 Ahn ở bậc cao, nên ở lần thử thứ 4 trung bình còn 32 HP và 13 Ahn. Ngoài ra Merit sau khi lên Grade 1 chỉ còn khoảng 217 trong khi Color cần 300, và ở bậc đó Merit chỉ tăng khoảng 5 mỗi năm.
+* **Phí thất bại có trần:** HP mất 3 cộng 1,5 mỗi bậc khó (Grade 1: 15), Ahn mất 2 cộng 1,5 mỗi bậc khó (Grade 1: 14, trước là 33). Sanity giữ nguyên.
+* **Lần trượt được ghi vào hồ sơ:** mỗi lần trượt cộng một ít Merit (ít nhất 2, bằng số bậc khó) và cộng 4 điểm phần trăm cho lần sau ở cùng bậc, tối đa 12. Hana nâng bậc theo các Request ghi trong báo cáo, nên một lần thử dang dở vẫn là một dòng trong báo cáo. Bộ đếm lưu ở `fixerExamFailures`, theo từng bậc đích.
+* **Phần Merit sống sót sau khi lên hạng** tăng từ 25% lên 45% cho Grade 2 và Grade 1. Phần Merit của Fixer Grade 2 trở lên ở mỗi hợp đồng tăng 25%, vì ở bậc đó ít Request đủ tầm.
+* **Đo lại cùng cấu hình:** lần thử thứ 4 còn 40 HP và 40 Ahn (trước 32 và 13), xác suất mỗi lần tăng dần từ 0,43 lên 0,51 thay vì giảm; số Fixer lên Grade 1 gần như giữ nguyên (109/150, trước 111); số Fixer đạt Color tăng từ 28 lên 43 trên 150, trung vị 5 năm từ Grade 1 lên Color. Đây là cấu hình khởi đầu mạnh, không phải tỉ lệ toàn bộ người chơi.
+* Cập nhật `test_fixer_promotion_retry.mjs` theo phí mới và thêm kiểm tra: bộ đếm trượt, trần của phần thưởng thử lại, trần của phí.
+
 ### Đợt 29 (23/10/2026): Thức tỉnh E.G.O khó hơn, và E.G.O đem lại lợi ích thật
 
 * **Nguồn lore đã tra trước khi viết.** [Limbus Company wiki, trang E.G.O](https://limbuscompany.wiki.gg/wiki/E.G.O): E.G.O chia hai loại, Abnormality E.G.O (vỏ mượn, trả giá bằng Corrosion) và Effloresced E.G.O (nở ra từ ý chí của chính người cầm, Kali là ca đầu tiên); bản thành hình dở là Volatile E.G.O, không ổn định và không chống được Distortion; E.G.O hoàn chỉnh đến từ việc từ chối Carmen, còn Distortion đến từ việc đồng ý. [Library of Ruina wiki, trang Fixer](https://libraryofruina.wiki.gg/wiki/Fixer): Hana chấm Grade 9 đến 1 theo các Request ghi trong báo cáo, Grade 1 là nơi Color được chọn. [Limbus Company wiki, trang Association](https://limbuscompany.wiki.gg/wiki/Association): chuyên môn của Zwei, Öufi, Liu, Cinq, Seven, Dieci mà các bài test dùng làm người chấm. [Library of Ruina wiki, trang Distortion](https://libraryofruina.wiki.gg/wiki/Distortion). Wiki không có hạng bậc của năm Finger nên các bài của Finger và Wing là phóng tác, ghi rõ ở đây.

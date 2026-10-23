@@ -153,15 +153,24 @@ export function fixerPromotionSuccessChance(char, targetGrade) {
   const extraMerit = Math.max(0, (char.merit || 0) - step.meritReq);
   const healthBonus = Math.max(-0.08, Math.min(0.08, (char.stats.health - 55) * 0.002));
   const edge = egoEdge(char);
-  return Math.min(0.85 + edge, Math.max(0.2, 0.8 - (8 - targetGrade) * 0.065 + extraRep * 0.003 + extraMerit * 0.0008 + healthBonus + edge));
+  // Each failed attempt at this band is entered in Hana's report and makes the next one a little easier
+  const retryBonus = Math.min(RETRY_BONUS_CAP, (char.fixerExamFailures?.[targetGrade] || 0) * RETRY_BONUS_STEP);
+  return Math.min(0.85 + edge + retryBonus, Math.max(0.2, 0.8 - (8 - targetGrade) * 0.065 + extraRep * 0.003 + extraMerit * 0.0008 + healthBonus + edge + retryBonus));
 }
+
+const RETRY_BONUS_STEP = 0.04;
+const RETRY_BONUS_CAP = 0.12;
+
+/** Share of Merit above the new Grade's threshold that survives a promotion. The top two Grades keep more. */
+export const meritRetentionAfterPromotion = (newGrade) => (newGrade <= 2 ? 0.45 : 0.25);
 
 export const isFixerPromotionChoice = (choice, char) =>
   char?.job === 'Fixer' && choice?.setFixerGrade != null && choice.setFixerGrade < (char.fixerGrade ?? 9);
 
 export function fixerPromotionFailureEffects(targetGrade) {
   const difficulty = 9 - targetGrade;
-  return { health: -(3 + difficulty * 2), wealth: -(1 + difficulty * 4), sanity: -(1 + difficulty) };
+  // Hospital and compensation, capped so that two failures in a row do not empty the purse and the body
+  return { health: -(3 + Math.round(difficulty * 1.5)), wealth: -(2 + Math.round(difficulty * 1.5)), sanity: -(1 + difficulty) };
 }
 
 /**

@@ -62,6 +62,7 @@ import {
   careerPromotionSuccessChance,
   careerPromotionFailureEffects,
   getEgoLeap,
+  meritRetentionAfterPromotion,
   isEgoLeapEvent,
   egoLeapSuccessChance,
   egoLeapFailureEffects,
@@ -1412,7 +1413,9 @@ export function resolveFixerContract(charState, approachId, rng = Math.random) {
     if (char.stats.health <= 25 && !char.unlockedRecords.includes('shi_boundary_of_death')) {
       char.unlockedRecords.push('shi_boundary_of_death');
     }
-    const gainedMerit = Math.round(approach.meritGain * meritMult);
+    // Near the top the Requests that matter are few; a Grade 1 or 2 Fixer is paid in Merit like it
+    const topGradeMult = !cfg && (char.fixerGrade ?? 9) <= 2 ? 1.25 : 1;
+    const gainedMerit = Math.round(approach.meritGain * meritMult * topGradeMult);
     char.stats.wealth = clamp(char.stats.wealth + approach.payAhn, 0, 100);
     char.stats.rep = clamp(char.stats.rep + reputationGain(char.stats.rep, Math.max(2, template.tier + 2)), 0, 100);
     char.merit += gainedMerit;
@@ -1774,6 +1777,10 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
     if (choice.setFixerGrade != null && rng() >= fixerPromotionSuccessChance(char, choice.setFixerGrade)) {
       const loss = fixerPromotionFailureEffects(choice.setFixerGrade);
       const before = { ...char.stats };
+      // The attempt still goes into Hana's report: a little Merit, and a better chance next time
+      const noted = Math.max(2, 9 - choice.setFixerGrade);
+      char.merit = (char.merit || 0) + noted;
+      char.fixerExamFailures = { ...(char.fixerExamFailures || {}), [choice.setFixerGrade]: (char.fixerExamFailures?.[choice.setFixerGrade] || 0) + 1 };
       char.stats.health = clamp(char.stats.health + loss.health, 0, 100);
       char.stats.wealth = clamp(char.stats.wealth + loss.wealth, 0, 100);
       char.stats.sanity = clamp(char.stats.sanity + loss.sanity, 0, 100);
@@ -1920,7 +1927,7 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
     const earnedAtGrade = FIXER_LADDER.find((step) => step.grade === char.fixerGrade)?.meritReq || 0;
     const nextRequirement = FIXER_LADDER.find((step) => step.grade === char.fixerGrade - 1)?.meritReq || COLOR_FIXER_REQ.merit;
     const retained = earnedAtGrade + Math.floor(Math.max(0, char.merit - earnedAtGrade) *
-      (char.flags.includes('SevenExceptionalRecord') ? 0.85 : 0.25));
+      (char.flags.includes('SevenExceptionalRecord') ? 0.85 : meritRetentionAfterPromotion(char.fixerGrade)));
     char.merit = char.flags.includes('SevenExceptionalRecord') ? retained : Math.min(nextRequirement - 10, retained);
   }
   if ((char.fingerRank || 0) > previousFingerRank && char.finger && FINGER_LADDERS[char.finger]) {

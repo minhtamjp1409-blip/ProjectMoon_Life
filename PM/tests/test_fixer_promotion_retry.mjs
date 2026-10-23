@@ -49,14 +49,20 @@ assert.ok(!notOffered.event?.id.startsWith('fixer_promo_'));
 
 const shown = runPlanItem({ ...fixer, pendingEvent: null }, { kind: 'major', forcedEventId: event.id, t: 0.8 }, () => 0.5);
 assert.match(shown.pendingEvent.displayVi, /Tỉ lệ đỗ hiện tại: \d+%/);
-assert.match(shown.pendingEvent.displayVi, /Nếu trượt: -17 HP, -29 Ahn, -8 SP/);
+assert.match(shown.pendingEvent.displayVi, /Nếu trượt: -14 HP, -13 Ahn, -8 SP/);
 const failed = resolveEventChoice(shown, 0, () => 0.99);
 assert.equal(failed.fixerGrade, 3);
 assert.equal(failed.lastFixerExamAge, 45);
 assert.equal(failed.fixerTrialRetryGrade, 2);
-assert.equal(failed.stats.health, 83);
-assert.equal(failed.stats.wealth, 71);
+assert.equal(failed.stats.health, 86);
+assert.equal(failed.stats.wealth, 87);
 assert.equal(failed.stats.rep, 82);
+// A failed try is entered in the report: it makes the next one easier, with a ceiling, and the fee has a ceiling too
+assert.equal(failed.fixerExamFailures[2], 1);
+const without = { ...failed, fixerExamFailures: {} };
+assert.ok(fixerPromotionSuccessChance(failed, 2) > fixerPromotionSuccessChance(without, 2));
+assert.ok(fixerPromotionSuccessChance({ ...failed, fixerExamFailures: { 2: 9 } }, 2) - fixerPromotionSuccessChance(without, 2) <= 0.121);
+assert.ok(fixerPromotionFailureEffects(1).wealth >= -16 && fixerPromotionFailureEffects(1).health >= -16, 'two failures in a row must not empty the purse');
 assert.equal(isEventEligible(event, failed), false);
 failed.age = 46;
 assert.equal(isEventEligible(event, failed), true);
