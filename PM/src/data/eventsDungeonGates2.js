@@ -21,6 +21,104 @@ const NIGHT = 'dungeon_backstreets_night';
 const PREP_NIGHT = ['Chi 12 Ahn mua thuốc giữ tỉnh và một chiếc đèn bọc vải', 'Spend 12 Ahn on stay-awake tablets and a cloth-hooded lamp'];
 
 export const DUNGEON_GATE_EVENTS_2 = [
+  gate({
+    id: 'gate_wing_lcorp_research', done: 'gate_wing_lcorp_research_done', age: [20, 65], weight: 38,
+    need: { jobs: ['Wing Employee'] },
+    vi: '[Hồ sơ từ chi nhánh L Corp] Bộ phận nghiên cứu của Wing cần mẫu vật trong một chi nhánh L Corp bỏ hoang. Họ có bản đồ tầng trên, nhưng tầng chứa mẫu đã bị xóa khỏi hồ sơ.',
+    en: '[A file from an L Corp branch] Your Wing research division needs a specimen from an abandoned L Corp branch. They have a map of the upper floor, but the specimen floor was erased from the file.',
+    choices: [
+      enter('dungeon_lobotomy_ruin', 'gate_wing_lcorp_research_done', 'Nhận hộp chứa mẫu và xuống chi nhánh', 'Take the specimen case and enter the branch',
+        'Bạn kiểm tra khóa hộp chứa mẫu rồi bước qua cửa an ninh không còn điện.', 'You check the specimen case lock and pass through an unpowered security door.'),
+      prepare('dungeon_lobotomy_ruin', 'gate_wing_lcorp_research_done', 'Chi 12 Ahn mua bộ lọc và dây dự phòng', 'Spend 12 Ahn on a filter and spare rope',
+        'Kho chỉ cấp một đèn. Bạn tự mua bộ lọc và dây trước khi xuống.', 'The stores issue one lamp. You buy a filter and rope before going down.'),
+      decline('gate_wing_lcorp_research_done', 'Yêu cầu đội khảo sát xác minh bản đồ trước', 'Ask the survey team to verify the map first',
+        'Quản lý chuyển hồ sơ cho người khác. Bạn mất một ca phụ cấp.', 'Your manager passes the file to someone else. You lose a shift allowance.', { wealth: -4 })
+    ]
+  }),
+  gate({
+    id: 'gate_wing_lake_contract', done: 'gate_wing_lake_contract_done', age: [20, 65], weight: 36,
+    need: { jobs: ['Wing Employee'] },
+    vi: '[Hợp đồng kiểm định ở Great Lake] U Corp thuê Wing của bạn kiểm tra một thiết bị vừa trục vớt. Phòng pháp chế cử bạn đi cùng tàu để ký nhận tận nơi; thiết bị vẫn nằm giữa vùng sương.',
+    en: '[Inspection contract on the Great Lake] U Corp hires your Wing to inspect a salvaged device. Legal sends you aboard to sign for it in person; the device is still out in the fog.',
+    choices: [
+      enter('dungeon_great_lake', 'gate_wing_lake_contract_done', 'Lên tàu và kiểm tra thiết bị', 'Board the ship and inspect the device',
+        'Thuyền trưởng đặt trước mặt bạn sổ Luật Đại Hồ và chờ bạn đọc xong mới nhổ neo.', 'The captain puts the Lake Law book before you and waits until you finish reading to cast off.'),
+      prepare('dungeon_great_lake', 'gate_wing_lake_contract_done', 'Chi 12 Ahn mua áo phao và thuốc chống lạnh', 'Spend 12 Ahn on a life vest and cold-water medicine',
+        'Áo phao của tàu không vừa. Bạn mua một chiếc khác ngay tại bến.', 'The ship vest does not fit. You buy another at the dock.'),
+      decline('gate_wing_lake_contract_done', 'Chỉ nhận kiểm định khi thiết bị được đưa lên bờ', 'Insist on inspecting the device ashore',
+        'U Corp giao hợp đồng cho một nhân viên khác. Phòng pháp chế ghi lại lý do bạn từ chối.', 'U Corp gives the contract to another employee. Legal records why you declined.', { rep: -2 })
+    ]
+  }),
+  gate({
+    id: 'gate_wing_night_recovery', done: 'gate_wing_night_recovery_done', age: [18, 65], weight: 34,
+    need: { jobs: ['Wing Employee'] },
+    vi: '[Máy ghi dữ liệu mất liên lạc] Một thiết bị thử nghiệm của Wing nằm lại ngoài Backstreets khi chuông 3 giờ 13 vang lên. Bộ phận an ninh khóa cửa; phòng nghiên cứu vẫn cần dữ liệu trước sáng.',
+    en: '[A recorder goes silent] A Wing test device is stranded in the Backstreets when the 3:13 bell sounds. Security locks the doors; research still needs the data by morning.',
+    choices: [
+      enter(NIGHT, 'gate_wing_night_recovery_done', 'Ra phố thu hồi máy ghi', 'Go out and recover the recorder',
+        'Bạn đánh dấu đường về trên bản đồ rồi bước qua cửa an ninh.', 'You mark the way back on a map and step through the security door.'),
+      prepare(NIGHT, 'gate_wing_night_recovery_done', ...PREP_NIGHT,
+        'Bạn bọc đèn trong vải và kiểm tra pin của máy thu tín hiệu.', 'You hood the lamp and check the receiver battery.'),
+      decline('gate_wing_night_recovery_done', 'Đợi đội an ninh ra phố lúc bình minh', 'Wait for security to go out at dawn',
+        'Dữ liệu mất một đêm. Người quản lý trừ ca trực của bạn khỏi bảng thưởng.', 'The data loses a night. Your manager removes your shift from the bonus sheet.', { wealth: -3 })
+    ]
+  }),
+  gate({
+    id: 'gate_wing_carnival_sample', done: 'gate_wing_carnival_sample_done', age: [20, 65], weight: 32,
+    need: { jobs: ['Wing Employee'] },
+    vi: '[Mẫu máu dưới công viên] Phòng thí nghiệm của Wing truy tìm một mẫu máu bị chuyển vào công viên ngầm ở District 16. Người giao mẫu đã mất liên lạc; biên bản giao nhận vẫn mang chữ ký của bạn.',
+    en: '[A sample beneath the park] Your Wing lab traces a blood sample to an underground park in District 16. The courier is missing; the receipt still bears your signature.',
+    choices: [
+      enter('dungeon_bloodfiend_carnival', 'gate_wing_carnival_sample_done', 'Theo dấu người giao mẫu xuống công viên', 'Follow the courier into the park',
+        'Trên bậc thang có một hộp giữ lạnh rỗng và vệt bánh xe kéo đi vào trong.', 'An empty chilled case sits on the stairs; wheel marks lead farther in.'),
+      prepare('dungeon_bloodfiend_carnival', 'gate_wing_carnival_sample_done', 'Chi 12 Ahn mua đèn và thuốc cầm máu', 'Spend 12 Ahn on a lamp and coagulant',
+        'Bạn mua đồ ở quầy cuối cùng còn mở gần lối xuống.', 'You buy supplies at the last stall still open near the entrance.'),
+      decline('gate_wing_carnival_sample_done', 'Báo mất mẫu và chịu điều tra nội bộ', 'Report the loss and face an internal inquiry',
+        'Bạn ký biên bản mất mẫu. Phòng thí nghiệm giữ lại khoản phụ cấp tháng này.', 'You sign the loss report. The lab withholds this month’s allowance.', { wealth: -5 })
+    ]
+  }),
+  gate({
+    id: 'gate_syndicate_lake_passage', done: 'gate_syndicate_lake_passage_done', age: [20, 65], weight: 34,
+    need: { jobs: ['Syndicate'] },
+    vi: '[Món hàng vượt Great Lake] Người của bạn phải chuyển một kiện hàng qua District 21. Bến chính bị U Corp kiểm soát, còn người lái tàu thuê chỉ nhận đi qua vùng sương.',
+    en: '[Cargo across the Great Lake] Your crew must move a consignment through District 21. U Corp controls the main docks; the hired captain will only sail through the fog.',
+    choices: [
+      enter('dungeon_great_lake', 'gate_syndicate_lake_passage_done', 'Lên tàu giữ kiện hàng', 'Board and guard the consignment',
+        'Người lái tàu nhắc ba điều Luật Đại Hồ. Bạn buộc kiện hàng vào lan can.', 'The captain recites three Lake Laws. You lash the consignment to the rail.'),
+      prepare('dungeon_great_lake', 'gate_syndicate_lake_passage_done', 'Chi 12 Ahn mua áo phao và thuốc', 'Spend 12 Ahn on a life vest and medicine',
+        'Bạn tự trả tiền tiếp tế vì Capo chỉ thanh toán khi hàng cập bến.', 'You pay for supplies yourself; the Capo only settles accounts on delivery.'),
+      decline('gate_syndicate_lake_passage_done', 'Giao kiện hàng lại cho Capo', 'Return the consignment to the Capo',
+        'Capo nhận hàng, gọi người khác và gạch phần công của bạn.', 'The Capo takes the cargo, calls someone else, and strikes your share of the pay.', { rep: -3, wealth: -2 })
+    ]
+  }),
+  gate({
+    id: 'gate_outcast_lake_salvage', done: 'gate_outcast_lake_salvage_done', age: [18, 65], weight: 36,
+    need: { jobs: ['Outcast'] },
+    vi: '[Chỗ trên tàu vớt hàng] Một tàu vớt hàng ở District 21 thiếu người kéo lưới. Họ không hỏi giấy cư trú; tiền công chia theo những thùng mang về từ Great Lake.',
+    en: '[A berth on the salvage boat] A District 21 salvage boat needs another pair of hands on the nets. They ask for no residence papers; pay is split by the crates brought back from the Great Lake.',
+    choices: [
+      enter('dungeon_great_lake', 'gate_outcast_lake_salvage_done', 'Nhận chỗ và lên tàu', 'Take the berth and board',
+        'Bạn ký tên vào sổ thủy thủ, nơi nhiều cái tên cũ đã bị gạch ngang.', 'You sign the crew book beside names that have already been crossed out.'),
+      prepare('dungeon_great_lake', 'gate_outcast_lake_salvage_done', 'Chi 12 Ahn mua áo phao và thuốc chống lạnh', 'Spend 12 Ahn on a vest and cold-water medicine',
+        'Bạn dùng tiền dành dụm mua đồ trước khi tàu rời bến.', 'You spend your savings on supplies before the boat casts off.'),
+      decline('gate_outcast_lake_salvage_done', 'Ở bến bốc hàng cho tàu khác', 'Load crates for another boat at the dock',
+        'Bạn khiêng hàng đến tối, rồi nhìn con tàu rời bến qua màn sương.', 'You haul crates until dusk and watch the boat leave through the fog.', { wealth: 4, health: -2 })
+    ]
+  }),
+  gate({
+    id: 'gate_outcast_carnival_missing', done: 'gate_outcast_carnival_missing_done', age: [18, 65], weight: 34,
+    need: { jobs: ['Outcast'] },
+    vi: '[Người mất tích ở công viên] Người từng cho bạn trú nhờ biến mất gần công viên ngầm ở District 16. Hàng xóm chỉ tìm thấy chiếc áo của họ và một tấm vé rạp hát ướt.',
+    en: '[Missing beneath the park] The person who once gave you shelter has vanished near an underground park in District 16. A neighbor found only their coat and a damp theater ticket.',
+    choices: [
+      enter('dungeon_bloodfiend_carnival', 'gate_outcast_carnival_missing_done', 'Mang tấm vé đi tìm họ', 'Take the ticket and search for them',
+        'Bạn cất tấm vé trong túi áo rồi lần theo tiếng nhạc từ dưới cống.', 'You tuck the ticket into your coat and follow music rising from the drain.'),
+      prepare('dungeon_bloodfiend_carnival', 'gate_outcast_carnival_missing_done', 'Chi 12 Ahn mua đèn và băng gạc', 'Spend 12 Ahn on a lamp and dressings',
+        'Người bán thuốc nhìn tấm vé rồi đưa thêm một cuộn băng.', 'The medic sees the ticket and adds another roll of bandage.'),
+      decline('gate_outcast_carnival_missing_done', 'Đưa tấm vé cho đội tìm người của Zwei', 'Give the ticket to a Zwei search team',
+        'Zwei nhận tấm vé và ghi lời khai của bạn. Bạn đợi nhiều tuần mà không nghe tin.', 'Zwei takes the ticket and your statement. Weeks pass without news.', { sanity: -3 })
+    ]
+  }),
   // ---- Night in the Backstreets, one door per Finger ----
   gate({
     id: 'gate_night_thumb_debt', done: 'gate_night_thumb_done', age: [18, 70], weight: 40,

@@ -12,6 +12,9 @@ import { careerAgeOf } from './careerAge.js';
 
 export const isGateEvent = (id) => typeof id === 'string' && id.startsWith('gate_');
 const GATES = [...DUNGEON_GATE_EVENTS, ...DUNGEON_GATE_EVENTS_2].filter((e) => isGateEvent(e.id));
+const gateDungeon = (event) => event?.choices?.find((choice) => choice.startDungeon)?.startDungeon;
+const gateById = new Map(GATES.map((event) => [event.id, event]));
+const DUNGEON_GATE_IDS = [...new Set(GATES.map(gateDungeon).filter(Boolean))];
 
 /** Per branch: guaranteed gates in a life, years between them, the cooldown, and how much more often they come up on their own. */
 export const GATE_PROFILES = {
@@ -72,9 +75,17 @@ export function planFirstGate(char) {
   const seen = new Set(char.seenEvents || []);
   const options = GATES.filter((e) => e.id !== planted?.eventId && !seen.has(e.id) && matchesEventContext(e, next));
   if (!options.length) return false;
-  const total = options.reduce((s, e) => s + (e.weight || 1), 0);
+  const previousDungeons = new Set((char.seenEvents || []).map((id) => gateDungeon(gateById.get(id))).filter(Boolean));
+  for (const log of char.logs || []) {
+    const id = DUNGEON_GATE_IDS.find((dungeonId) => String(log.id || '').startsWith(`log_${dungeonId}_`));
+    if (id) previousDungeons.add(id);
+  }
+  if (char.pendingDungeon?.id) previousDungeons.add(char.pendingDungeon.id);
+  const fresh = options.filter((event) => !previousDungeons.has(gateDungeon(event)));
+  const pool = fresh.length ? fresh : options;
+  const total = pool.reduce((s, e) => s + (e.weight || 1), 0);
   let pick = (fnv(`${char.seed ?? ''}|gate|${char.age}`) % 10000) / 10000 * total;
-  const chosen = options.find((e) => (pick -= e.weight || 1) < 0) || options[0];
+  const chosen = pool.find((e) => (pick -= e.weight || 1) < 0) || pool[0];
   char.weaver = {
     ...char.weaver,
     pendingThreads: [...pending.filter((t) => t !== planted), {

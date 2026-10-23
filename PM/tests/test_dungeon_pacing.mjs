@@ -58,4 +58,36 @@ assert.equal(isEventEligible(other, after), false);
 after.age += GATE_COOLDOWN_YEARS;
 assert.equal(gateOnCooldown(after), false);
 assert.equal(isEventEligible(other, after), true);
+
+const dungeonOf = (event) => event.choices.find((choice) => choice.startDungeon)?.startDungeon;
+const branchCases = [
+  ['Fixer', 'gate_warp_fixer_request'],
+  ['Syndicate', 'gate_night_thumb_debt'],
+  ['Wing Employee', 'gate_warp_wing_loan'],
+  ['Outcast', 'gate_lobotomy_workshop_casing']
+];
+for (const [job, firstId] of branchCases) {
+  const firstDungeon = dungeonOf(DUNGEON_GATE_EVENTS.find((event) => event.id === firstId));
+  const reachable = new Set(DUNGEON_GATE_EVENTS.filter((event) => {
+    const char = worker(`gate-coverage-${job}`, job);
+    char.age = 45;
+    return event.id.startsWith('gate_') && isEventEligible(event, char);
+  }).map(dungeonOf));
+  assert.ok(reachable.size >= 4, `${job} can reach ${reachable.size} distinct dungeons`);
+  if (job === 'Fixer') continue;
+  const offered = new Set();
+  for (let i = 0; i < 150; i++) {
+    const char = worker(`gate-variety-${job}-${i}`, job);
+    char.age = 45;
+    char.lastGateAge = 35;
+    char.seenEvents = [firstId];
+    assert.equal(planFirstGate(char), true, `${job} gets a second guaranteed gate`);
+    const thread = char.weaver.pendingThreads.find((entry) => entry.eventId.startsWith('gate_'));
+    const next = DUNGEON_GATE_EVENTS.find((event) => event.id === thread.eventId);
+    const dungeon = dungeonOf(next);
+    assert.notEqual(dungeon, firstDungeon, `${job} repeats ${firstDungeon} before seeing another dungeon`);
+    offered.add(dungeon);
+  }
+  assert.ok(offered.size >= 3, `${job} second gates should offer several other dungeons`);
+}
 console.log('Dungeon pacing: seeded first gate, fits every working job, cooldown between gates passed.');
