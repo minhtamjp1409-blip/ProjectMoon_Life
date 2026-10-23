@@ -105,8 +105,8 @@ try {
   cityArchiveAPI.planYear = originalPlanYear;
 }
 
-assert.deepEqual(FIXER_LADDER.map((step) => step.meritReq), [10, 22, 44, 66, 92, 124, 172, 230]);
-for (const ladder of Object.values(FINGER_LADDERS)) assert.deepEqual(ladder.map((step) => step.meritReq), [28, 82, 185]);
-assert.deepEqual(WING_LADDER_PROMOTIONS.map((step) => step.meritReq), [25, 78, 150]);
+assert.deepEqual(FIXER_LADDER.map((step) => step.meritReq), [10, 22, 38, 56, 78, 105, 150, 200]);
+for (const ladder of Object.values(FINGER_LADDERS)) assert.deepEqual(ladder.map((step) => step.meritReq), [28, 68, 155]);
+assert.deepEqual(WING_LADDER_PROMOTIONS.map((step) => step.meritReq), [25, 65, 125]);
 
 console.log('Annual Merit: 1,440 seeded career years, protected choices, backend preservation and higher promotion gates passed.');

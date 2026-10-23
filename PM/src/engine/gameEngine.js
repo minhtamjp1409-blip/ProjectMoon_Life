@@ -793,8 +793,8 @@ export function evaluateCharacterAchievements(char) {
 export const WING_RANKS = [
   { rank: 0, titleVi: 'Nhân viên tập sự (Contract Intern)', titleEn: 'Contract Intern', merit: 0, wealth: 0, network: 0 },
   { rank: 1, titleVi: 'Feather chính thức (Feather Agent)', titleEn: 'Feather Agent', merit: 25, wealth: 18, network: 14 },
-  { rank: 2, titleVi: 'Trưởng phòng ban (Section Chief)', titleEn: 'Section Chief', merit: 78, wealth: 45, network: 32 },
-  { rank: 3, titleVi: 'Giám đốc cấp cao (Senior Executive)', titleEn: 'Senior Executive', merit: 150, wealth: 85, network: 60 }
+  { rank: 2, titleVi: 'Trưởng phòng ban (Section Chief)', titleEn: 'Section Chief', merit: 65, wealth: 45, network: 32 },
+  { rank: 3, titleVi: 'Giám đốc cấp cao (Senior Executive)', titleEn: 'Senior Executive', merit: 125, wealth: 85, network: 60 }
 ];
 
 /**
