@@ -278,12 +278,12 @@ export const PlayBar = () => {
     },
     {
       key: 'audio',
-      icon: audioMuted ? <VolumeX size={16} /> : <Volume2 size={16} />,
+      icon: audioState.isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />,
       label: (
         <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 14 }}>
-          <span>{audioMuted ? t('Bật âm thanh', 'Unmute audio') : t('Tắt âm thanh', 'Mute audio')}</span>
-          <span style={{ fontSize: 11, fontWeight: 700, color: !audioMuted ? 'var(--good)' : 'var(--muted)' }}>
-            {!audioMuted ? t('BẬT', 'ON') : t('TẮT', 'OFF')}
+          <span>{audioState.isMuted ? t('Bật âm thanh', 'Unmute audio') : t('Tắt âm thanh', 'Mute audio')}</span>
+          <span style={{ fontSize: 11, fontWeight: 700, color: !audioState.isMuted ? 'var(--good)' : 'var(--muted)' }}>
+            {!audioState.isMuted ? t('BẬT', 'ON') : t('TẮT', 'OFF')}
           </span>
         </span>
       ),
@@ -324,12 +324,6 @@ export const PlayBar = () => {
     },
     {
       type: 'divider'
-    },
-    {
-      key: 'audio',
-      icon: audioState.isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />,
-      label: audioState.isMuted ? t('Bật âm thanh & Tiếng nền', 'Unmute Audio & Ambience') : t('Tắt âm thanh (phím M)', 'Mute Audio (M)'),
-      onClick: handleToggleAudio
     },
     {
       key: 'ambience',

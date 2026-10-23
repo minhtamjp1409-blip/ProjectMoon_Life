@@ -103,6 +103,15 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
   const { t, lang, bilingual } = useT();
   const def = session ? DUNGEON_DEFINITIONS[session.id] : null;
   const stage = getDungeonCurrentStage(session);
+  const result = session?.lastStageResult;
+
+  // Ambience itself follows the dungeon theme from LiveStageFeed; the dock only voices each stage result
+  useEffect(() => {
+    if (!result) return;
+    if (result.type === 'check_fail') audioEngine.playDamage(1.3);
+    else if (result.type === 'check_ok') audioEngine.playBuff();
+  }, [result]);
+
   if (!session || !def || !stage) return null;
 
   const stages = def.stages;
@@ -113,38 +122,8 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
   const breather = dungeonSupplyState(char, session, 'breather');
   const scan = dungeonSupplyState(char, session, 'scan');
   const ego = dungeonEgoState(char, session);
-  const result = session.lastStageResult;
   const pick = (vi, en) => (lang === 'en' ? en : vi);
   const ambient = AMBIENT[def.theme] || AMBIENT.warp;
-
-  // Contextual Ambience for Dungeons
-  useEffect(() => {
-    if (!def) return;
-    const theme = def.theme;
-    if (theme === 'warp') {
-      audioEngine.setAmbience('warp_train');
-    } else if (theme === 'greatlake' || theme === 'outskirts') {
-      audioEngine.setAmbience('outskirts_lake');
-    } else if (theme === 'lobotomy' || theme === 'bloodfiend') {
-      audioEngine.setAmbience('warp_train');
-    } else {
-      audioEngine.setAmbience('backstreets');
-    }
-
-    return () => {
-      audioEngine.updateContextualAmbience(char, false, null);
-    };
-  }, [def?.theme]);
-
-  // Audio cue when stage resolution completes
-  useEffect(() => {
-    if (!result) return;
-    if (result.type === 'fail' || result.type === 'defeat') {
-      audioEngine.playDamage(1.3);
-    } else if (result.type === 'pass' || result.type === 'critical') {
-      audioEngine.playBuff();
-    }
-  }, [result]);
 
   return (
     <div className={`dock is-dungeon theme-${def.theme}`} style={{ '--dg': def.accentColor }} role="document">
