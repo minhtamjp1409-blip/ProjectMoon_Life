@@ -299,6 +299,12 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeT
         <div className="dossier-id">
           <h2>{char.name}</h2>
           <p>{describeJob(char, t)}</p>
+          {char.customTitle && (
+            <div className="dossier-color-crest">
+              <span className="crest-swatch" />
+              <span className="crest-title">{char.customTitle}</span>
+            </div>
+          )}
         </div>
       </div>
 
@@ -341,69 +347,85 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeT
       {/* Tab: Overview & Stats */}
       {showOverview && (
         <section>
-          <div className="kv kv-stack">
-            <div className="kv-row-top">
-              <span>{t('Khu vực', 'District')}</span>
-              <span className="kv-val-wrap">{lang === 'en' ? region.nameEn : region.nameVi}</span>
+          {/* District Context Card */}
+          <div className="dossier-context-card kv-stack">
+            <div className="context-card-header">
+              <span className="context-card-tag">{t('Khu vực', 'District')}</span>
+              <span className="context-card-val">{lang === 'en' ? region.nameEn : region.nameVi}</span>
             </div>
-            <div className="kv-perk-note">
-              {(lang === 'en' ? region.singularityEn : region.singularityVi) && (
-                <div>
-                  <b>{t('Đặc trưng', 'Singularity')}:</b> {lang === 'en' ? region.singularityEn : region.singularityVi}
-                </div>
-              )}
-              <div className="kv-perk-metrics">
-                {t(
-                  `Phúc lợi vùng: An ninh ${region.safety}/10 · Y tế ${region.medical}/10 · Kinh tế ${region.wealth}/10 · Tuổi thọ TB ${region.avgLife}`,
-                  `District metrics: Safety ${region.safety}/10 · Medical ${region.medical}/10 · Wealth ${region.wealth}/10 · Avg Life ${region.avgLife}`
-                )}
+            {(lang === 'en' ? region.singularityEn : region.singularityVi) && (
+              <div className="context-feature-box kv-perk-note">
+                <b>{t('Đặc trưng', 'Singularity')}:</b> {lang === 'en' ? region.singularityEn : region.singularityVi}
               </div>
+            )}
+            <div className="metric-pill-row">
+              <span className="metric-pill">
+                <span>{t('An ninh', 'Safety')}</span>
+                <b>{region.safety}/10</b>
+              </span>
+              <span className="metric-pill">
+                <span>{t('Y tế', 'Medical')}</span>
+                <b>{region.medical}/10</b>
+              </span>
+              <span className="metric-pill">
+                <span>{t('Kinh tế', 'Wealth')}</span>
+                <b>{region.wealth}/10</b>
+              </span>
+              <span className="metric-pill">
+                <span>{t('Tuổi thọ TB', 'Avg Life')}</span>
+                <b>{region.avgLife}</b>
+              </span>
             </div>
           </div>
+
+          {/* Background / Family Context Card */}
           {char.family && (() => {
             const famDef = FAMILIES.find((f) => f.id === char.family?.id) || char.family;
             const modSummary = formatStatModSummary(famDef?.statMod, t);
             const trait = char.backgroundTrait || famDef?.trait;
             return (
-              <div className="kv kv-stack">
-                <div className="kv-row-top">
-                  <span>{t('Xuất thân', 'Background')}</span>
-                  <span className="kv-val-wrap" style={{ color: 'var(--accent-gold, #ffd700)', fontWeight: 600 }}>
+              <div className="dossier-context-card kv-stack">
+                <div className="context-card-header">
+                  <span className="context-card-tag">{t('Xuất thân', 'Background')}</span>
+                  <span className="context-card-val" style={{ color: 'var(--accent-gold, #ffd700)' }}>
                     {lang === 'en' ? char.family.nameEn : char.family.nameVi}
                   </span>
                 </div>
-                <div className="kv-perk-note">
-                  {modSummary && (
-                    <div className="kv-perk-mods">
-                      <b>{t('Chỉ số khởi đầu', 'Starting bonus')}:</b> {modSummary}
-                    </div>
-                  )}
-                  {trait && (
-                    <div className="kv-perk-trait">
-                      <b>{t('Phúc lợi', 'Perk')} · {lang === 'en' ? trait.nameEn : trait.nameVi}:</b>{' '}
-                      {lang === 'en' ? trait.descEn : trait.descVi}
-                    </div>
-                  )}
-                </div>
+                {modSummary && (
+                  <div className="context-feature-box kv-perk-note" style={{ borderLeftColor: 'var(--accent-gold, #ffd700)' }}>
+                    <b>{t('Chỉ số khởi đầu', 'Starting bonus')}:</b>{' '}
+                    <span className="stat-bonus-badge">{modSummary}</span>
+                  </div>
+                )}
+                {trait && (
+                  <div className="context-feature-box kv-perk-note">
+                    <b>{t('Phúc lợi', 'Perk')} · {lang === 'en' ? trait.nameEn : trait.nameVi}:</b>{' '}
+                    {lang === 'en' ? trait.descEn : trait.descVi}
+                  </div>
+                )}
               </div>
             );
           })()}
-          <div className="kv">
-            <span>{t('Tổ chức', 'Faction')}</span>
-            <span className="kv-val-wrap">{char.org?.name || (char.finger ? `The ${char.finger}` : t('Tự do', 'Unaffiliated'))}</span>
+
+          {/* Faction, Merit & Fate Omen Meta Card */}
+          <div className="dossier-meta-card">
+            <div className="kv" style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.05)', padding: '6px 0' }}>
+              <span>{t('Tổ chức', 'Faction')}</span>
+              <span className="kv-val-wrap">{char.org?.name || (char.finger ? `The ${char.finger}` : t('Tự do', 'Unaffiliated'))}</span>
+            </div>
+            {char.job !== 'Child' && (
+              <div className="kv" style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.05)', padding: '6px 0' }}>
+                <span>Merit</span>
+                <span className="num">{char.merit}</span>
+              </div>
+            )}
+            <Tooltip title={lang === 'en' ? omen.descEn : omen.descVi} placement="right">
+              <div className="kv" style={{ cursor: 'help', padding: '6px 0' }}>
+                <span>{t('Điềm báo', 'Fate omen')}</span>
+                <span style={{ color: 'var(--accent)' }}>{(lang === 'en' ? omen.nameEn : omen.nameVi).split(' · ')[0]}</span>
+              </div>
+            </Tooltip>
           </div>
-          {char.job !== 'Child' && (
-            <div className="kv">
-              <span>Merit</span>
-              <span className="num">{char.merit}</span>
-            </div>
-          )}
-          <Tooltip title={lang === 'en' ? omen.descEn : omen.descVi} placement="right">
-            <div className="kv" style={{ cursor: 'help' }}>
-              <span>{t('Điềm báo', 'Fate omen')}</span>
-              <span style={{ color: 'var(--accent)' }}>{(lang === 'en' ? omen.nameEn : omen.nameVi).split(' · ')[0]}</span>
-            </div>
-          </Tooltip>
         </section>
       )}
 
@@ -519,6 +541,17 @@ export const CharacterDossierCard = () => {
   const isSpCritical = sanity <= 20;
   const tabooLevel = char.taboo || 0;
 
+  const isColor = Boolean(char.isColorFixer || char.fixerGrade === 0 || char.flags?.includes('ColorFixer') || char.customTitle);
+  const isFingerApex = char.job === 'Syndicate' && (char.fingerRank || 0) >= 2;
+  const isWingApex = char.job === 'Wing Employee' && (char.wingRank || 0) >= 2;
+  const isApex = isColor || isFingerApex || isWingApex;
+
+  const colorData = char.colorData;
+  const apexStyle = isColor && colorData?.color ? {
+    '--apex-color': colorData.color,
+    '--apex-glow': colorData.glow || 'rgba(212, 175, 55, 0.4)'
+  } : {};
+
   return (
     <>
       {/* 1. Dedicated Mobile Status Header (Safe-Area Protected, All Vitals + Timeline in View) */}
@@ -602,7 +635,12 @@ export const CharacterDossierCard = () => {
           aria-modal="true"
           aria-label={t('Hồ sơ nhân vật chi tiết', 'Full Character Dossier')}
         >
-          <div className="mobile-dossier-sheet" ref={sheetRef} onClick={(e) => e.stopPropagation()}>
+          <div
+            className={`mobile-dossier-sheet ${isColor ? 'is-color-fixer' : ''} ${isApex ? 'is-apex-rank' : ''}`}
+            style={apexStyle}
+            ref={sheetRef}
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="mobile-dossier-sheet-head">
               <div className="sheet-drag-handle" />
               <div className="sheet-title-row">
@@ -674,7 +712,11 @@ export const CharacterDossierCard = () => {
       )}
 
       {/* 3. Desktop Sidebar (Visible only on > 820px) */}
-      <aside className="side desktop-dossier-side" aria-label={t('Hồ sơ nhân vật', 'Character')}>
+      <aside
+        className={`side desktop-dossier-side ${isColor ? 'is-color-fixer' : ''} ${isApex ? 'is-apex-rank' : ''}`}
+        style={apexStyle}
+        aria-label={t('Hồ sơ nhân vật', 'Character')}
+      >
         <DossierContent
           char={char}
           milestone={milestone}

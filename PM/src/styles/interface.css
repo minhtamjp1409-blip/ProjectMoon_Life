@@ -621,7 +621,20 @@ input:focus-visible, select:focus-visible, textarea:focus-visible {
   z-index: 1;
 }
 
-.interface-v2 .scene { display: none; }
+.interface-v2 .scene {
+  display: block;
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 1.2s ease, filter 1.2s ease;
+}
+
+.interface-v2 .scene.on {
+  opacity: 1;
+}
 .chronicle-heading { display: flex; justify-content: space-between; gap: 16px; align-items: center; flex: none; padding: 16px 24px; border-bottom: 1px solid var(--border); background: var(--surface); }
 .chronicle-heading h1 { font-size: 16px; font-weight: 600; margin: 0; color: var(--text); letter-spacing: -.01em; }
 .chronicle-heading span { font-size: 12px; color: var(--accent); font-weight: 500; max-width: 55%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -2979,3 +2992,498 @@ html[data-text='lg'] .interface-v2 :is(.entry-text, .dock-text, .dg-result p) { 
 html[data-text='lg'] .interface-v2 :is(.choice-label, .dg-scene-title) { font-size: 16px !important; }
 html[data-text='xl'] .interface-v2 :is(.entry-text, .dock-text, .dg-result p) { font-size: 19.5px !important; line-height: 1.75 !important; }
 html[data-text='xl'] .interface-v2 :is(.choice-label, .dg-scene-title) { font-size: 18px !important; }
+
+/* ==========================================================================
+   DYNAMIC FACTION ATMOSPHERES & AMBIENT SCENES
+   ========================================================================== */
+
+.interface-v2 .scene-ambient-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.interface-v2 .scene-particle-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-repeat: repeat;
+  opacity: 0.45;
+}
+
+/* Branch: Fixer Office & Association (Rain & Streetlights) */
+.interface-v2 .scene-branch-fixer {
+  background: radial-gradient(1100px 650px at 50% 15%, #111827 0%, #080c14 55%, var(--ground));
+}
+.interface-v2 .scene-branch-fixer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 75% 20%, rgba(217, 119, 6, 0.08) 0%, transparent 60%),
+              radial-gradient(circle at 25% 85%, rgba(14, 165, 233, 0.05) 0%, transparent 50%);
+}
+
+/* Branch: The Thumb (Ammunition, Brass, Imperial Discipline) */
+.interface-v2 .scene-branch-thumb {
+  background: radial-gradient(1000px 600px at 50% 25%, #2a0b0e 0%, #150507 60%, var(--ground));
+}
+.interface-v2 .scene-branch-thumb::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 10%, rgba(220, 38, 38, 0.15) 0%, transparent 70%),
+              repeating-linear-gradient(45deg, rgba(217, 119, 6, 0.02) 0px, rgba(217, 119, 6, 0.02) 2px, transparent 2px, transparent 12px);
+  animation: scene-thumb-soot 6s ease-in-out infinite alternate;
+}
+
+/* Branch: The Middle (Electric Violet, Vengeance Chains, Glowing Runes) */
+.interface-v2 .scene-branch-middle {
+  background: radial-gradient(1050px 620px at 50% 30%, #290838 0%, #12031a 58%, var(--ground));
+}
+.interface-v2 .scene-branch-middle::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 40%, rgba(168, 85, 247, 0.18) 0%, transparent 65%),
+              radial-gradient(circle at 20% 20%, rgba(6, 182, 212, 0.12) 0%, transparent 50%);
+  animation: scene-middle-pulse 4.5s ease-in-out infinite alternate;
+}
+
+/* Branch: The Index (Sacred Prescript, Candlelight, Red Threads) */
+.interface-v2 .scene-branch-index {
+  background: radial-gradient(1100px 640px at 50% 20%, #261f14 0%, #130f0a 60%, var(--ground));
+}
+.interface-v2 .scene-branch-index::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 25%, rgba(234, 179, 8, 0.14) 0%, transparent 60%),
+              radial-gradient(circle at 80% 80%, rgba(220, 38, 38, 0.12) 0%, transparent 50%);
+  animation: scene-index-shimmer 5s ease-in-out infinite;
+}
+
+/* Branch: The Ring (Avant-garde Flesh Atelier, Chromatic Surrealism) */
+.interface-v2 .scene-branch-ring {
+  background: radial-gradient(1000px 650px at 50% 35%, #05201c 0%, #0d1222 45%, #03080e 70%, var(--ground));
+}
+.interface-v2 .scene-branch-ring::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 30% 30%, rgba(16, 185, 129, 0.14) 0%, transparent 55%),
+              radial-gradient(circle at 70% 60%, rgba(139, 92, 246, 0.16) 0%, transparent 50%);
+  animation: scene-ring-delirium 7s ease-in-out infinite alternate;
+}
+
+/* Branch: The Pinky (Veiled Shadows, Silken Needles, Whispered Oaths) */
+.interface-v2 .scene-branch-pinky {
+  background: radial-gradient(1000px 600px at 50% 25%, #061c24 0%, #030d12 60%, var(--ground));
+}
+.interface-v2 .scene-branch-pinky::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(20, 184, 166, 0.12) 0%, transparent 60%),
+              radial-gradient(circle at 80% 20%, rgba(99, 102, 241, 0.1) 0%, transparent 50%);
+}
+
+/* Branch: Wing Corporation (Sterile Corporate Chrome & Cyan Singularity) */
+.interface-v2 .scene-branch-wing {
+  background: radial-gradient(1200px 680px at 50% 10%, #0a2038 0%, #05101d 55%, var(--ground));
+}
+.interface-v2 .scene-branch-wing::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(14, 165, 233, 0.08) 0%, transparent 40%),
+              repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.015) 0px, rgba(255, 255, 255, 0.015) 1px, transparent 1px, transparent 32px);
+}
+
+/* Branch: Workshop Craftsman (Smoldering Forge & Molten Embers) */
+.interface-v2 .scene-branch-workshop {
+  background: radial-gradient(1050px 600px at 50% 30%, #2b1407 0%, #150903 60%, var(--ground));
+}
+.interface-v2 .scene-branch-workshop::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 80%, rgba(249, 115, 22, 0.18) 0%, transparent 60%),
+              radial-gradient(circle at 50% 20%, rgba(234, 179, 8, 0.1) 0%, transparent 50%);
+  animation: scene-forge-glow 3.5s ease-in-out infinite alternate;
+}
+
+/* Branch: Distortion (Carmen's Voice & Red Hallucination) */
+.interface-v2 .scene-branch-distortion {
+  background: radial-gradient(950px 580px at 50% 40%, #3d0710 0%, #1c0307 58%, var(--ground));
+}
+.interface-v2 .scene-branch-distortion::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(239, 68, 68, 0.25) 0%, transparent 70%);
+  animation: scene-pulse 1.6s ease-in-out infinite;
+}
+.interface-v2 .scene-branch-distortion::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.25) 0px, rgba(0, 0, 0, 0.25) 2px, transparent 2px, transparent 4px);
+  opacity: 0.6;
+}
+
+/* Branch: E.G.O (Seed of Light Efflorescence & Golden Sunburst) */
+.interface-v2 .scene-branch-ego {
+  background: radial-gradient(1200px 700px at 50% 15%, #383011 0%, #1c1808 55%, var(--ground));
+}
+.interface-v2 .scene-branch-ego::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 20%, rgba(250, 204, 21, 0.28) 0%, transparent 70%);
+  animation: scene-ego-radiance 4s ease-in-out infinite alternate;
+}
+.interface-v2 .scene-branch-ego .scene-ego-beams {
+  position: absolute;
+  inset: -50%;
+  background: conic-gradient(from 0deg at 50% 35%, transparent 0deg, rgba(255, 255, 255, 0.08) 30deg, transparent 60deg, rgba(250, 204, 21, 0.1) 90deg, transparent 120deg, rgba(255, 255, 255, 0.06) 180deg, transparent 240deg, rgba(250, 204, 21, 0.09) 300deg, transparent 360deg);
+  animation: scene-beams-rotate 40s linear infinite;
+  pointer-events: none;
+}
+
+/* Branch: Color Fixer (Hana Conferred Signature Tint) */
+.interface-v2 .scene-branch-color {
+  background: radial-gradient(1200px 700px at 50% 20%, #151821 0%, #0a0d14 60%, var(--ground));
+}
+.interface-v2 .scene-branch-color::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 15%, var(--apex-color, rgba(225, 52, 30, 0.3)) 0%, transparent 68%),
+              radial-gradient(circle at 50% 85%, var(--apex-glow, rgba(225, 52, 30, 0.15)) 0%, transparent 60%);
+  animation: scene-pulse 4s ease-in-out infinite alternate;
+}
+
+/* Apex Rank Overlays & Radiance */
+.interface-v2 .scene.is-apex .scene-apex-aura {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  box-shadow: inset 0 0 60px rgba(212, 175, 55, 0.12);
+}
+.interface-v2 .scene.is-apex::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, transparent 0%, var(--apex-color, #ffd700) 50%, transparent 100%);
+  box-shadow: 0 0 16px var(--apex-color, #ffd700);
+}
+
+@keyframes scene-thumb-soot {
+  0% { transform: translateY(0); opacity: 0.8; }
+  100% { transform: translateY(-8px); opacity: 1; }
+}
+@keyframes scene-middle-pulse {
+  0% { opacity: 0.7; filter: hue-rotate(0deg); }
+  100% { opacity: 1; filter: hue-rotate(15deg); }
+}
+@keyframes scene-index-shimmer {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; }
+}
+@keyframes scene-ring-delirium {
+  0% { transform: scale(1); filter: contrast(100%); }
+  100% { transform: scale(1.03); filter: contrast(120%); }
+}
+@keyframes scene-forge-glow {
+  0% { opacity: 0.75; }
+  100% { opacity: 1; }
+}
+@keyframes scene-ego-radiance {
+  0% { opacity: 0.75; filter: brightness(1); }
+  100% { opacity: 1; filter: brightness(1.2); }
+}
+@keyframes scene-beams-rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ==========================================================================
+   SIDEBAR & DOSSIER CARD REDESIGN (ANTI-SLOP & SPACIOUS LAYOUT)
+   ========================================================================== */
+
+.interface-v2 .side.is-color-fixer {
+  border-color: var(--apex-color, #ffd700);
+  box-shadow: 0 0 24px var(--apex-glow, rgba(212, 175, 55, 0.25)), 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+.interface-v2 .side.is-color-fixer::before {
+  background: linear-gradient(90deg, var(--apex-color, #ffd700) 0%, transparent 80%);
+  height: 3px;
+}
+.interface-v2 .side.is-apex-rank {
+  border-color: rgba(212, 175, 55, 0.4);
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.15), 0 8px 32px rgba(0, 0, 0, 0.45);
+}
+.interface-v2 .side.is-apex-rank::before {
+  background: linear-gradient(90deg, #ffd700 0%, #ff8c00 50%, transparent 90%);
+  height: 3px;
+}
+
+/* Color Fixer Dossier Crest */
+.interface-v2 .dossier-color-crest {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--apex-color, var(--accent));
+  box-shadow: 0 0 10px var(--apex-glow, rgba(212, 175, 55, 0.3));
+  margin-top: 6px;
+}
+.interface-v2 .dossier-color-crest .crest-swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--apex-color, #ffd700);
+  box-shadow: 0 0 6px var(--apex-color, #ffd700);
+}
+.interface-v2 .dossier-color-crest .crest-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--apex-color, #ffd700);
+}
+
+/* Distinct Context Card (District, Background, Faction) */
+.interface-v2 .dossier-context-card {
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  transition: all 0.2s ease;
+}
+.interface-v2 .dossier-context-card:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.interface-v2 .context-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.interface-v2 .context-card-tag {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+.interface-v2 .context-card-val {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  text-align: right;
+  line-height: 1.35;
+}
+
+.interface-v2 .context-feature-box {
+  background: rgba(0, 0, 0, 0.22);
+  border-left: 2px solid var(--accent);
+  border-radius: 0 6px 6px 0;
+  padding: 8px 10px;
+  margin-top: 8px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-secondary, #cbd5e1);
+}
+.interface-v2 .context-feature-box b {
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* Metric Pills */
+.interface-v2 .metric-pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+.interface-v2 .metric-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 4px;
+  padding: 3px 8px;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+}
+.interface-v2 .metric-pill b {
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* Stat Bonus Badge */
+.interface-v2 .stat-bonus-badge {
+  display: inline-block;
+  background: rgba(212, 175, 55, 0.1);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  color: var(--accent);
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+/* Dossier Meta Mini Card (Faction, Merit, Fate Omen) */
+.interface-v2 .dossier-meta-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.015);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+}
+
+/* ==========================================================================
+   HANA ASSOCIATION SECTION 1 COLOR DECREE MODAL
+   ========================================================================== */
+
+.hana-decree-modal .ant-modal-content {
+  background: #0f121a !important;
+  border: 1px solid #d4af37 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 0 40px rgba(212, 175, 55, 0.3), 0 20px 48px rgba(0, 0, 0, 0.8) !important;
+  padding: 28px !important;
+  overflow: hidden;
+  position: relative;
+}
+.hana-decree-modal .ant-modal-content::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, #d4af37 0%, #ffffff 50%, #d4af37 100%);
+  box-shadow: 0 0 12px #d4af37;
+}
+
+.hana-decree-scroll {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 16px;
+}
+
+.hana-decree-crest-wrap {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.2) 0%, transparent 70%);
+  border: 1px solid rgba(212, 175, 55, 0.5);
+  box-shadow: 0 0 18px rgba(212, 175, 55, 0.25);
+}
+.hana-seal-icon {
+  font-size: 24px;
+  color: #ffd700;
+}
+
+.hana-decree-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.hana-decree-subtitle {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: #d4af37;
+}
+.hana-decree-main-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #f8fafc;
+  letter-spacing: -.01em;
+}
+
+.hana-title-plate {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 18px 24px;
+  background: rgba(0, 0, 0, 0.45);
+  border: 2px solid var(--conferred-color, #e1341e);
+  border-radius: 8px;
+  box-shadow: 0 0 24px var(--conferred-glow, rgba(225, 52, 30, 0.4));
+  margin: 6px 0;
+}
+.hana-title-swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--conferred-color, #e1341e);
+  box-shadow: 0 0 12px var(--conferred-color, #e1341e);
+}
+.hana-title-name {
+  font-family: 'Cinzel', 'Playfair Display', 'Times New Roman', serif;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--conferred-color, #e1341e);
+  text-shadow: 0 0 16px var(--conferred-glow, rgba(225, 52, 30, 0.5));
+}
+.hana-title-heraldry {
+  font-size: 12px;
+  color: var(--muted);
+  font-style: italic;
+}
+
+.hana-decree-proclamation {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: #e2e8f0;
+  max-width: 440px;
+}
+.hana-decree-proclamation b {
+  color: #ffd700;
+}
+
+.hana-decree-action-btn {
+  width: 100%;
+  padding: 12px 20px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%);
+  color: #0b0d13;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(212, 175, 55, 0.35);
+  transition: all 0.15s ease;
+}
+.hana-decree-action-btn:hover {
+  filter: brightness(1.15);
+  box-shadow: 0 6px 22px rgba(212, 175, 55, 0.5);
+  transform: translateY(-1px);
+}
+

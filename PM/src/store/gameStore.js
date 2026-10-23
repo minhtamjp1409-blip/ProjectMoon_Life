@@ -823,10 +823,18 @@ export const useGameStore = create((set, get) => ({
     });
   },
 
-  confirmColorTitle: (titleText) => {
+  confirmColorTitle: (colorInput) => {
     const prev = get().char;
     const next = cloneChar(prev);
-    next.customTitle = (titleText || '').trim() || 'The Crimson Dusk';
+    const title = typeof colorInput === 'object' && colorInput?.title ? colorInput.title : (colorInput || 'Vermilion Gale');
+    const colorData = typeof colorInput === 'object' && colorInput?.color ? colorInput : {
+      title,
+      color: '#e1341e',
+      glow: 'rgba(225, 52, 30, 0.45)'
+    };
+    next.customTitle = title;
+    next.colorData = colorData;
+    next.isColorFixer = true;
     next.pendingModal = null;
     if (!next.unlockedRecords.includes('color_fixer')) next.unlockedRecords.push('color_fixer');
     next.logs.push({
@@ -834,8 +842,8 @@ export const useGameStore = create((set, get) => ({
       age: next.age,
       season: SEASONS[next.seasonIdx],
       type: 'miracle',
-      vi: `Hana Association công bố tên Color của bạn. Từ hôm nay, cả 26 District gọi bạn là 「${next.customTitle}」.`,
-      en: `Hana Association announced your Color. From today, all 26 Districts call you 「${next.customTitle}」.`
+      vi: `Hiệp Hội Hana Phân Khu 1 long trọng ban sắc chỉ phong Color. Kể từ hôm nay, cả 26 Quận đều tôn kính gọi bạn là 「${next.customTitle}」.`,
+      en: `Hana Association Section 1 decrees your Color Title. From this day forward, all 26 Districts call you 「${next.customTitle}」.`
     });
     get().commit(prev, next);
   },

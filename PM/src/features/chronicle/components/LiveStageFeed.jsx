@@ -14,6 +14,7 @@ import { gameFeel } from '../../../engine/gameFeel';
 import { useT } from '../../../i18n';
 import { Deltas, ChoicePreview } from './Deltas';
 import { getPsycheInterjection, evaluateDiscoChoiceCheck } from '../../../engine/discoPsyche';
+import { bestowHanaColorTitle } from '../../../engine/colorRegistry';
 
 const ENTRY_KIND = {
   causal: { cls: 'k-causal', vi: 'Causal Echo', en: 'Causal Echo' },
@@ -144,20 +145,72 @@ const StageFx = () => {
   );
 };
 
-const AmbientScene = ({ char }) => {
-  let sceneClass = 'scene-blade';
+export const getBranchSceneMeta = (char) => {
+  if (!char) return { sceneClass: 'scene-branch-fixer', isApex: false, isColor: false, isEgo: false };
+
+  const isDistorted = Boolean(
+    !char.alive && (char.flags?.includes('Distorted') || char.flags?.includes('Distortion'))
+  ) || Boolean(char.flags?.includes('Distorted') || char.flags?.includes('Distortion') || (char.distortStage || 0) > 0);
+
+  const isEgo = Boolean(char.flags?.includes('EGOAwakened') || char.egoName || char.egoWeapon);
+  const isColor = Boolean(char.isColorFixer || char.fixerGrade === 0 || char.flags?.includes('ColorFixer') || char.customTitle);
+
+  // Apex checks
+  const isFingerApex = char.job === 'Syndicate' && (char.fingerRank || 0) >= 2;
+  const isWingApex = char.job === 'Wing Employee' && (char.wingRank || 0) >= 2;
+  const isApex = isColor || isFingerApex || isWingApex;
+
+  let sceneClass = 'scene-branch-fixer';
+
   if (!char.alive) {
     sceneClass = 'scene-hatch red';
+  } else if (isDistorted) {
+    sceneClass = 'scene-branch-distortion';
+  } else if (isEgo) {
+    sceneClass = 'scene-branch-ego';
+  } else if (isColor) {
+    sceneClass = 'scene-branch-color';
+  } else if (char.finger) {
+    const fLower = char.finger.toLowerCase();
+    sceneClass = `scene-branch-${fLower}`;
+  } else if (char.job === 'Wing Employee') {
+    sceneClass = 'scene-branch-wing';
+  } else if (char.job === 'Workshop Craftsman') {
+    sceneClass = 'scene-branch-workshop';
   } else if ((char.heat || 0) >= 50 || (char.taboo || 0) >= 2) {
     sceneClass = 'scene-hatch';
   } else if ((char.resonance || 0) >= 40 || char.fateOmenId?.includes('star')) {
     sceneClass = 'scene-star';
   } else if (char.regionId === '11' || char.regionId === '23') {
     sceneClass = 'scene-warp';
-  } else if (char.job === 'Syndicate') {
-    sceneClass = 'scene-kong';
+  } else {
+    sceneClass = 'scene-branch-fixer';
   }
-  return <div className={`scene on ${sceneClass}`} aria-hidden="true" />;
+
+  if (isApex && char.alive) {
+    sceneClass += ' is-apex';
+  }
+
+  return { sceneClass, isApex, isColor, isEgo };
+};
+
+const AmbientScene = ({ char }) => {
+  const meta = getBranchSceneMeta(char);
+  const colorData = char?.colorData;
+
+  const style = meta.isColor && colorData?.color ? {
+    '--apex-color': colorData.color,
+    '--apex-glow': colorData.glow || 'rgba(212, 175, 55, 0.4)'
+  } : {};
+
+  return (
+    <div className={`scene on ${meta.sceneClass}`} style={style} aria-hidden="true">
+      <div className="scene-ambient-layer" />
+      <div className="scene-particle-layer" />
+      {meta.isApex && <div className="scene-apex-aura" />}
+      {meta.isEgo && <div className="scene-ego-beams" />}
+    </div>
+  );
 };
 
 /* ---------- Decision docks ---------- */
@@ -861,7 +914,17 @@ export const LiveStageFeed = () => {
   const stageRef = useRef(null);
   const prevAliveRef = useRef(char.alive);
   const [titleInput, setTitleInput] = useState('The Crimson Dusk');
+  const [bestowedColor, setBestowedColor] = useState(null);
   const [egoInput, setEgoInput] = useState('Penitence of Ash');
+
+  useEffect(() => {
+    if (char.pendingModal === 'color_title' && !bestowedColor) {
+      const rolled = bestowHanaColorTitle(char);
+      setBestowedColor(rolled);
+    } else if (char.pendingModal !== 'color_title' && bestowedColor) {
+      setBestowedColor(null);
+    }
+  }, [char.pendingModal, char]);
   const [weaponName, setWeaponName] = useState('Atelier Crimson Edge');
   const [weaponStyle, setWeaponStyle] = useState(WORKSHOP_STYLES[0]);
   const [cursorPos, setCursorPos] = useState(50);
@@ -1234,17 +1297,61 @@ export const LiveStageFeed = () => {
         </div>
       )}
 
-      <Modal open={char.pendingModal === 'color_title'} footer={null} closable={false} centered title={t('Hana Association trao Color', 'Hana Association grants a Color')}>
-        <div className="stack" style={{ paddingTop: 4 }}>
-          <p className="muted">
-            {t('Hana Association công nhận bạn là một Color Fixer. Cả 26 District sẽ gọi bạn bằng danh hiệu này.', 'Hana Association recognises you as a Color Fixer. All 26 Districts will call you by this title.')}
-          </p>
-          <div className="field">
-            <label htmlFor="color-title">{t('Danh hiệu', 'Title')}</label>
-            <input id="color-title" className="input" value={titleInput} onChange={(e) => setTitleInput(e.target.value)} />
+      <Modal
+        open={char.pendingModal === 'color_title'}
+        footer={null}
+        closable={false}
+        centered
+        className="hana-decree-modal"
+        title={null}
+      >
+        <div
+          className="hana-decree-scroll"
+          style={{
+            '--conferred-color': bestowedColor?.color || '#e1341e',
+            '--conferred-glow': bestowedColor?.glow || 'rgba(225, 52, 30, 0.4)'
+          }}
+        >
+          <div className="hana-decree-crest-wrap">
+            <span className="hana-seal-icon">✦</span>
           </div>
-          <button type="button" className="btn btn-primary btn-lg btn-block" onClick={() => confirmColorTitle(titleInput)}>
-            {t('Khắc danh hiệu', 'Engrave the title')}
+
+          <div className="hana-decree-header">
+            <span className="hana-decree-subtitle">
+              {t('Hiệp Hội Hana Phân Khu 1 · Sắc Phong', 'Hana Association Section 1 · Imperial Decree')}
+            </span>
+            <h2 className="hana-decree-main-title">
+              {t('Sắc Lệnh Tuyên Phong Color', 'Color Fixer Bestowal Decree')}
+            </h2>
+          </div>
+
+          <div className="hana-title-plate">
+            <div className="hana-title-swatch" />
+            <div className="hana-title-name">
+              {bestowedColor?.title || 'Vermilion Gale'}
+            </div>
+            <div className="hana-title-heraldry">
+              {t(
+                `Định danh sắc tộc: ${bestowedColor?.colorName || 'Vermilion'} · Khí tiết: ${bestowedColor?.epithet || 'Gale'}`,
+                `Color designation: ${bestowedColor?.colorName || 'Vermilion'} · Epithet: ${bestowedColor?.epithet || 'Gale'}`
+              )}
+            </div>
+          </div>
+
+          <p className="hana-decree-proclamation">
+            {t(
+              `Theo nghị định tối cao của Hội Đồng Hana, chiến tích và khí chất của bạn đã đạt tới cảnh giới huyền thoại của Thành Phố. Kể từ giây phút này, cả 26 Quận sẽ mãi mãi kính sợ và xướng tên bạn dưới danh hiệu độc nhất: `,
+              `By supreme decree of the Hana Association Council, your prowess and essence have attained the legendary zenith of the City. From this moment onward, all 26 Districts shall revere and know you solely by the title: `
+            )}
+            <b>「{bestowedColor?.title || 'Vermilion Gale'}」</b>.
+          </p>
+
+          <button
+            type="button"
+            className="hana-decree-action-btn"
+            onClick={() => handleConfirmColorTitle(bestowedColor || { title: 'Vermilion Gale', color: '#e1341e', glow: 'rgba(225, 52, 30, 0.4)' })}
+          >
+            {t('Tiếp nhận Sắc Chỉ Hana', 'Accept Hana Decree')}
           </button>
         </div>
       </Modal>
