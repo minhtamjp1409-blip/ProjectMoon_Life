@@ -9,7 +9,7 @@ import { SUPERNATURAL_EVENTS } from '../src/data/eventsSupernatural.js';
 
 function born(seed = 'prepared') {
   const c = createNewCharacter({ seed });
-  Object.assign(c, { age: 30, job: 'Fixer', regionId: '1', flags: [], resonance: 70, inventory: [] });
+  Object.assign(c, { age: 30, job: 'Fixer', regionId: '1', flags: [], resonance: 76, inventory: [] });
   c.stats = { health: 90, sanity: 70, wealth: 60, rep: 40, network: 40 };
   return c;
 }
@@ -28,7 +28,7 @@ for (let seed = 0; seed < 500; seed++) {
   }
   if (offered) offers++;
 }
-assert.ok(offers > 340 && offers < 460, `unexpected encounter frequency ${offers}/500`);
+assert.ok(offers > 270 && offers < 390, `unexpected encounter frequency ${offers}/500`);
 const c = born();
 const carmen = SUPERNATURAL_EVENTS.find(e => e.id === 'ego_carmen_crossroad');
 assert.equal(rollEgoEncounter(c, () => 0.99), false);

@@ -44,6 +44,8 @@ import { EGO_COLOR_EVENTS } from '../data/eventsEgoColorPerks.js';
 import { BRANCH_DEPTH_EVENTS } from '../data/eventsBranchDepth.js';
 import { WORKSHOP_VISIT_EVENTS } from '../data/eventsWorkshopVisits.js';
 import { FINGER_STORY_EVENTS } from '../data/eventsFingers.js';
+import { EGO_LEAP_EVENTS } from '../data/eventsEgoLeap.js';
+import { egoEdge } from './egoEdge.js';
 import {
   FIXER_LADDER,
   FINGER_LADDERS,
@@ -59,6 +61,10 @@ import {
   careerTrialForEvent,
   careerPromotionSuccessChance,
   careerPromotionFailureEffects,
+  getEgoLeap,
+  isEgoLeapEvent,
+  egoLeapSuccessChance,
+  egoLeapFailureEffects,
   RETIRED_WORKSHOP_TRIAL_IDS,
   triggerDistortionTransformation,
   tryItemAutoRevive,
@@ -114,7 +120,8 @@ export const ALL_STORY_EVENTS = [
   ...EGO_COLOR_EVENTS,
   ...BRANCH_DEPTH_EVENTS,
   ...WORKSHOP_VISIT_EVENTS,
-  ...FINGER_STORY_EVENTS
+  ...FINGER_STORY_EVENTS,
+  ...EGO_LEAP_EVENTS
 ];
 
 export const SEASONS = [
@@ -924,10 +931,14 @@ export function getNextCareerMilestone(char) {
         requirements: [
           { labelVi: `Chiến công (Merit >= ${targetMerit})`, labelEn: `Merit (>= ${targetMerit})`, current: char.merit || 0, target: targetMerit, met: (char.merit || 0) >= targetMerit },
           { labelVi: `Danh tiếng (Rep >= ${targetRep})`, labelEn: `Reputation (>= ${targetRep})`, current: curRep, target: targetRep, met: curRep >= targetRep },
-          { labelVi: 'Tuổi để Hana xét hồ sơ', labelEn: 'Age for Hana review', current: char.age, target: 30, met: char.age >= 30 }
+          { labelVi: 'Tuổi để Hana xét hồ sơ', labelEn: 'Age for Hana review', current: char.age, target: readiness.targetAge, met: char.age >= readiness.targetAge }
         ],
-        tipVi: 'Đủ Merit và Rep thì Hana Association triệu tập đại khảo thí phong Color. E.G.O không phải điều kiện bắt buộc.',
-        tipEn: 'With enough Merit and Rep, Hana Association convenes the Color Investiture trial. E.G.O is not a prerequisite.'
+        tipVi: char.flags.includes('EGOAwakened')
+          ? 'E.G.O của bạn khiến Hana xét hồ sơ sớm hơn và với ngưỡng thấp hơn. Bài khảo thí vẫn là bài khảo thí: bạn có thể trượt.'
+          : 'Đủ Merit và Rep thì Hana Association triệu tập đại khảo thí phong Color. E.G.O không bắt buộc, nhưng người mang E.G.O được xét sớm hơn.',
+        tipEn: char.flags.includes('EGOAwakened')
+          ? 'Your E.G.O makes Hana review your file earlier and at lower thresholds. The trial is still a trial: you can fail it.'
+          : 'With enough Merit and Rep, Hana Association convenes the Color Investiture trial. E.G.O is not required, but wielders are reviewed sooner.'
       };
     }
 
@@ -948,8 +959,12 @@ export function getNextCareerMilestone(char) {
         { labelVi: 'Chiến công (Merit)', labelEn: 'Merit', current: char.merit || 0, target: targetMerit, met: (char.merit || 0) >= targetMerit },
         { labelVi: 'Danh tiếng (Rep)', labelEn: 'Reputation', current: curRep, target: targetRep, met: curRep >= targetRep }
       ],
-      tipVi: 'Nhận hợp đồng Fixer, giải quyết ủy thác từ Association hoặc can thiệp bạo lực để tích lũy Merit và Rep.',
-      tipEn: 'Accept Fixer contracts, resolve Association requests, or survive clashes to earn Merit and Rep.'
+      tipVi: char.flags.includes('EGOAwakened') && char.fixerGrade >= 3
+        ? 'Có E.G.O, bạn đủ điều kiện để Hana mở một bài tái định hạng đặc biệt nhảy hai bậc, sau khi đã đủ Merit và Rep cho bậc kế tiếp. Bài này khó hơn bài thường và vẫn có thể thất bại.'
+        : 'Nhận hợp đồng Fixer, giải quyết ủy thác từ Association hoặc can thiệp bạo lực để tích lũy Merit và Rep.',
+      tipEn: char.flags.includes('EGOAwakened') && char.fixerGrade >= 3
+        ? 'With an E.G.O, Hana can open a special re-rating that skips two bands, once you have the Merit and Rep for the next one. It is harder than the ordinary exam and can still be failed.'
+        : 'Accept Fixer contracts, resolve Association requests, or survive clashes to earn Merit and Rep.'
     };
   }
 
@@ -1189,7 +1204,7 @@ export function generateFixerContract(char, rng) {
   power += compSupport.contractPower;
 
   const difficulty = 32 + template.tier * 16;
-  const baseSuccess = clamp(Math.round(55 + (power - difficulty) * 1.1), 18, 94);
+  const baseSuccess = clamp(Math.round(55 + (power - difficulty) * 1.1 + egoEdge(char) * 100), 18, 94);
   const baseDeath = clamp(Math.round((100 - baseSuccess) * (0.12 + template.tier * 0.05)), 2, 42);
   const approachOdds = (successPct, wantedDeathPct) => {
     const deathPct = clamp(wantedDeathPct, 1, 100 - successPct);
@@ -1664,6 +1679,49 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
       return char;
     }
   }
+  if (isEgoLeapEvent(event.id)) {
+    const leap = getEgoLeap(char);
+    if (!leap || leap.eventId !== event.id) {
+      char.logs.push({
+        id: `log_ev_${char.age}_${event.id}_invalid`, age: char.age, season: SEASONS[char.seasonIdx], type: 'promo',
+        vi: 'Giấy gọi tái định hạng đặc biệt không còn khớp với hồ sơ hiện tại. Không có chỉ số nào thay đổi.',
+        en: 'The special re-rating summons no longer matches your record. No resources changed.'
+      });
+      return char;
+    }
+    if (choice.leapPromotion) {
+      char.lastEgoLeapAge = char.age;
+      if (rng() >= Math.min(0.92, egoLeapSuccessChance(char, leap) + (choice.leapOdds || 0))) {
+        const loss = egoLeapFailureEffects(leap);
+        const deltas = [];
+        for (const [key, amount] of Object.entries(loss)) {
+          const statsKey = ['health', 'sanity', 'wealth', 'network', 'rep'].includes(key);
+          const before = statsKey ? char.stats[key] : char[key] || 0;
+          const after = clamp(before + amount, 0, key === 'merit' ? 9999 : 100);
+          if (statsKey) char.stats[key] = after; else char[key] = after;
+          if (after !== before) deltas.push({ k: key, v: after - before });
+        }
+        const vi = leap.route === 'fixer'
+          ? 'Hana không đóng dấu cho bài tái định hạng đặc biệt. Vũ khí của bạn vẫn có thật, nhưng hồ sơ chưa nhảy được hai bậc. Bạn trở về với thương tích và phí điều trị, và Hana sẽ không mở lại bài này trong ba năm.'
+          : 'Buổi xét bậc đặc biệt không cho kết quả. Vũ khí không bị tước, nhưng ghế vẫn chưa thuộc về bạn. Họ sẽ không mở lại chuyện này trong ba năm.';
+        const en = leap.route === 'fixer'
+          ? 'Hana did not stamp the special re-rating. The weapon is real, but the record cannot jump two bands. You return with wounds and a treatment bill, and Hana will not reopen this for three years.'
+          : 'The special review gives no result. The weapon is not taken from you, but the seat is not yet yours. They will not reopen it for three years.';
+        char.logs.push({
+          id: `log_ev_${char.age}_${event.id}_failed`, age: char.age, season: SEASONS[char.seasonIdx], type: 'major',
+          choiceVi: choice.labelVi, choiceEn: choice.labelEn, vi, en, deltas, review
+        });
+        char.weaver = recordChoiceInGraph(char.weaver, char, event, { effects: loss }, vi, en);
+        closeThreads(char, event.id);
+        if (char.stats.health <= 0) {
+          const [woundVi, woundEn] = woundDeath(char, 'Gục ngã trong bài tái định hạng đặc biệt', 'Succumbed during a special re-rating trial');
+          applyFatalOrCompanionSave(char, woundVi, woundEn);
+        } else if (char.stats.sanity <= 0) handleSanityBreakdown(char, rng);
+        char.weaver = updateDramaTension(char.weaver, char);
+        return char;
+      }
+    }
+  }
   if (!char.seenEvents.includes(event.id)) {
     char.seenEvents.push(event.id);
   }
@@ -1858,7 +1916,7 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
       char.merit = Math.max(0, char.merit + meritAdd);
     }
   }
-  if (event.id.startsWith('fixer_promo_') && char.fixerGrade < previousFixerGrade) {
+  if ((event.id.startsWith('fixer_promo_') || event.id.startsWith('fixer_ego_leap_')) && char.fixerGrade < previousFixerGrade) {
     const earnedAtGrade = FIXER_LADDER.find((step) => step.grade === char.fixerGrade)?.meritReq || 0;
     const nextRequirement = FIXER_LADDER.find((step) => step.grade === char.fixerGrade - 1)?.meritReq || COLOR_FIXER_REQ.merit;
     const retained = earnedAtGrade + Math.floor(Math.max(0, char.merit - earnedAtGrade) *

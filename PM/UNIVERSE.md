@@ -85,6 +85,14 @@ Mỗi lần bấm chào đời, engine ghép các mảnh độc lập (`src/data
 
 Sinh lực về 0 thì chết, trừ khi một người gắn bó từ 65 trở lên đỡ thay (người đó chết). Bia mộ ghi tuổi, nguyên nhân, danh hiệu, cấp đe dọa, di vật. Đời con thừa kế một phần tài sản, danh vọng, mạng lưới, di vật, và có thể cả món nợ trong Book of Vengeance.
 
+### 2.4. E.G.O
+
+Hai thứ có tên giống nhau: Abnormality E.G.O (vỏ mượn từ một Abnormality, trả giá bằng Corrosion) và Effloresced E.G.O (nở ra từ ý chí của chính người cầm). Game chỉ viết về loại thứ hai. Carmen hỏi người sắp gục có nghe giọng cô không: đồng ý thì thành Distortion, từ chối thì có E.G.O. Cờ `EGOAwakened` là bản hoàn chỉnh; `IncompleteEGO` là Volatile E.G.O, chưa ổn định, không chống được Distortion và chỉ đem lại một phần lợi ích.
+
+Thức tỉnh phụ thuộc vào thứ giữ người ta đứng vững: Resonance làm nguyên liệu, Sanity, sẹo và một người thân gắn bó làm chỗ đứng. Không ai chắc chắn, không ai mất hẳn đường.
+
+Lợi ích của người có E.G.O: cộng 5 điểm phần trăm thành công cho bài thăng cấp của Hana, bài thăng bậc của Finger và Wing và các hợp đồng (Volatile: 1,5); kết quả có Merit nghiêng nhẹ về phía họ; Fixer Grade 1 được Hana xét Color sớm hơn; và một lần trong đời, người đã đủ điều kiện cho bậc kế tiếp được mời bài tái định hạng đặc biệt nhảy hai bậc, do một Association chấm theo chuyên môn của họ. Hana nâng bậc theo các Request ghi trong báo cáo, nên với Hana, E.G.O là bằng chứng chưa kịp vào báo cáo. Mọi bài đều có thể trượt.
+
 ---
 
 ## 3. Nhân quả

@@ -11,6 +11,7 @@ import { npcIsActive } from './eventConditions.js';
 import { SEASONS } from './gameEngine.js';
 import { getItemById } from '../data/itemsData.js';
 import { contractRouteOf } from '../data/careerContracts.js';
+import { egoEdge, hasAwakenedEgo } from './egoEdge.js';
 
 export const FIXER_LADDER = [
   {
@@ -120,7 +121,7 @@ export function fixerPromotionOfferChance(char, step = getNextFixerPromotion(cha
 export function fixerContractOfferChance(char) {
   if (char.job !== 'Fixer' || char.flags?.includes('Distorted')) return 0;
   const step = getNextFixerPromotion(char) || (char.fixerGrade === 1 && !char.flags?.includes('ColorFixer')
-    ? { repReq: COLOR_FIXER_REQ.rep, meritReq: COLOR_FIXER_REQ.merit }
+    ? { repReq: colorRequirementFor(char).rep, meritReq: colorRequirementFor(char).merit }
     : null);
   if (!step) return 0.42;
   const repGap = Math.max(0, step.repReq - (char.stats?.rep ?? char.rep ?? 0));
@@ -151,7 +152,8 @@ export function fixerPromotionSuccessChance(char, targetGrade) {
   const extraRep = Math.max(0, char.stats.rep - step.repReq);
   const extraMerit = Math.max(0, (char.merit || 0) - step.meritReq);
   const healthBonus = Math.max(-0.08, Math.min(0.08, (char.stats.health - 55) * 0.002));
-  return Math.min(0.85, Math.max(0.2, 0.8 - (8 - targetGrade) * 0.065 + extraRep * 0.003 + extraMerit * 0.0008 + healthBonus));
+  const edge = egoEdge(char);
+  return Math.min(0.85 + edge, Math.max(0.2, 0.8 - (8 - targetGrade) * 0.065 + extraRep * 0.003 + extraMerit * 0.0008 + healthBonus + edge));
 }
 
 export const isFixerPromotionChoice = (choice, char) =>
@@ -169,16 +171,23 @@ export function fixerPromotionFailureEffects(targetGrade) {
  */
 export const COLOR_FIXER_REQ = { merit: 300, rep: 95 };
 
+// Hana draws its Colors from Grade 1. A Fixer whose E.G.O has taken shape is already past what the
+// grading system measures, so Hana looks sooner; the trial itself is the same and can still be failed.
+export const COLOR_FIXER_REQ_EGO = { merit: 240, rep: 88, age: 28 };
+export const colorRequirementFor = (char) => (hasAwakenedEgo(char) ? COLOR_FIXER_REQ_EGO : { ...COLOR_FIXER_REQ, age: 30 });
+
 export function checkColorFixerReadiness(char) {
-  const targetMerit = COLOR_FIXER_REQ.merit;
-  const targetRep = COLOR_FIXER_REQ.rep;
+  const req = colorRequirementFor(char);
+  const targetMerit = req.merit;
+  const targetRep = req.rep;
+  const targetAge = req.age;
   if (char.job !== 'Fixer' || char.flags.includes('Distorted') || char.flags.includes('ColorFixer')) {
     return { ready: false, reason: 'Chưa đủ điều kiện', targetMerit, targetRep };
   }
   if (char.fixerGrade !== 1) {
     return { ready: false, reason: 'Bắt buộc phải là Fixer Grade 1', targetMerit, targetRep };
   }
-  if (char.age < 30) return { ready: false, reason: 'Hana yêu cầu hồ sơ hành nghề lâu năm (từ 30 tuổi)', targetMerit, targetRep };
+  if (char.age < targetAge) return { ready: false, reason: `Hana yêu cầu hồ sơ hành nghề lâu năm (từ ${targetAge} tuổi)`, targetMerit, targetRep, targetAge };
   const curRep = (char.stats?.rep ?? char.rep) || 0;
   const meritOk = (char.merit || 0) >= targetMerit;
   const repOk = curRep >= targetRep;
@@ -190,7 +199,8 @@ export function checkColorFixerReadiness(char) {
     repOk,
     egoOrResonance,
     targetMerit,
-    targetRep
+    targetRep,
+    targetAge
   };
 }
 
@@ -339,7 +349,8 @@ export function careerPromotionSuccessChance(char, step) {
     ? Math.max(0, char.stats.rep - step.repReq) * 0.002 + Math.max(0, char.stats.network - (step.networkReq || 0)) * 0.001
     : Math.max(0, char.stats.network - step.networkReq) * 0.002 + Math.max(0, char.stats.wealth - step.wealthReq) * 0.001;
   const readiness = step.route === 'wing' ? (char.stats.sanity - 50) * 0.0015 : (char.stats.health - 50) * 0.0015;
-  return Math.max(0.25, Math.min(0.86, base + Math.min(0.14, extraMerit * 0.001 + standingBonus) + readiness));
+  const edge = egoEdge(char);
+  return Math.max(0.25, Math.min(0.86 + edge, base + Math.min(0.14, extraMerit * 0.001 + standingBonus) + readiness + edge));
 }
 
 export function careerPromotionFailureEffects(step) {
@@ -476,4 +487,54 @@ export function determineSuccessorType(char) {
     introVi: `Bạn là một kẻ sống sót vô danh ở Backstreets, tình cờ đào bới được chiếc ba lô cũ và cuốn nhật ký vấy máu của ${char.name} từ đống gạch vụn.`,
     introEn: `You are an unnamed Backstreet survivor who uncovered the battered pack and bloodstained journal of ${char.name} amidst the rubble.`
   };
+}
+
+// ---------------------------------------------------------------------------
+// E.G.O leap: a second, harder track beside the ordinary exams.
+// Hana raises a Fixer by the Requests in their reports, and an Effloresced E.G.O is proof of strength the
+// reports have not caught up with. So Hana sets one verification Request two bands above the Fixer's
+// Grade. The Finger and Wing ladders get the same one-time leap of two ranks.
+// ---------------------------------------------------------------------------
+
+const LEAP_COOLDOWN_YEARS = 3;
+const FINGER_LEAP_MIN_AGE = [26, 30];
+const WING_LEAP_MIN_AGE = [28, 32];
+
+export const isEgoLeapEvent = (id) => /^(fixer|finger|wing)_ego_leap_/.test(String(id));
+
+/** The leap this character could be offered now, or null. Needs the next ordinary promotion to be earned first. */
+export function getEgoLeap(char) {
+  if (!hasAwakenedEgo(char) || char.flags.includes('Distorted') || char.flags.includes('ego_leap_done')) return null;
+  if (Number.isFinite(char.lastEgoLeapAge) && char.age < char.lastEgoLeapAge + LEAP_COOLDOWN_YEARS) return null;
+
+  if (char.job === 'Fixer') {
+    const from = char.fixerGrade ?? 9;
+    if (from < 3 || !getNextFixerPromotion(char)?.isEligible) return null;
+    return { route: 'fixer', from, to: Math.max(1, from - 2), eventId: `fixer_ego_leap_g${from}` };
+  }
+  if (char.job === 'Syndicate' && char.finger) {
+    const from = char.fingerRank || 0;
+    if (from > 1 || char.age < FINGER_LEAP_MIN_AGE[from] || !getNextFingerPromotion(char)?.isEligible) return null;
+    return { route: 'finger', finger: char.finger, from, to: from + 2, eventId: `finger_ego_leap_${char.finger.toLowerCase()}_r${from}` };
+  }
+  if (char.job === 'Wing Employee') {
+    const from = char.wingRank || 0;
+    if (from > 1 || char.age < WING_LEAP_MIN_AGE[from] || !getNextWingPromotion(char)?.isEligible) return null;
+    return { route: 'wing', from, to: from + 2, eventId: `wing_ego_leap_r${from}` };
+  }
+  return null;
+}
+
+const leapStep = (leap) => {
+  const ladder = leap.route === 'finger' ? FINGER_LADDERS[leap.finger] : WING_LADDER_PROMOTIONS;
+  return { ...ladder.find((entry) => entry.rank === leap.to), route: leap.route, finger: leap.finger };
+};
+
+/** Judged against the band the leap lands in, so it is harder than the ordinary exam it skips past. */
+export function egoLeapSuccessChance(char, leap) {
+  return leap.route === 'fixer' ? fixerPromotionSuccessChance(char, leap.to) : careerPromotionSuccessChance(char, leapStep(leap));
+}
+
+export function egoLeapFailureEffects(leap) {
+  return leap.route === 'fixer' ? fixerPromotionFailureEffects(leap.to) : careerPromotionFailureEffects(leapStep(leap));
 }

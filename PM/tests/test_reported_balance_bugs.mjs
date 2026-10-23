@@ -205,11 +205,11 @@ for (const [finger, ids] of [
   }
 }
 
-// BUG-36: E.G.O Resonance reachable & triggers Carmen crossroad at 58-70% without massive yearly decay
+// BUG-36: E.G.O Resonance reachable & triggers Carmen crossroad at 62-74% without massive yearly decay
 const egoSeeker = newChar();
 egoSeeker.age = 24;
 egoSeeker.job = 'Fixer';
-egoSeeker.resonance = 60;
+egoSeeker.resonance = 64;
 egoSeeker.stats.sanity = 36;
 addScar(egoSeeker, 'Vết móc câu Sweeper 3:13 AM');
 const resDrift = driftOf(egoSeeker).resonance || 0;

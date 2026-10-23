@@ -8,7 +8,7 @@ import { FIXER_PATH_EVENTS } from '../src/data/eventsFixerPath.js';
 
 function candidate() {
   const c = createNewCharacter({ seed: 'awakening-regression', customName: 'Audit' });
-  Object.assign(c, { age: 40, job: 'Fixer', fixerGrade: 1, merit: 400, resonance: 70, flags: [], seenEvents: [] });
+  Object.assign(c, { age: 40, job: 'Fixer', fixerGrade: 1, merit: 400, resonance: 76, flags: [], seenEvents: [] });
   c.stats = { health: 100, sanity: 80, wealth: 100, network: 80, rep: 100 };
   return c;
 }
@@ -22,8 +22,8 @@ c.age = 43;
 assert.equal(hasEgoOpportunity(c), false);
 c.resonance = 90;
 assert.ok(Math.abs(driftOf(c).resonance || 0) <= 1);
-assert.equal(c.resonancePeak, 70);
-assert.equal(JSON.parse(JSON.stringify(c)).resonancePeak, 70);
+assert.equal(c.resonancePeak, 76);
+assert.equal(JSON.parse(JSON.stringify(c)).resonancePeak, 76);
 
 const trial = SUPERNATURAL_EVENTS.find(e => e.id === 'hana_color_ascension_trial');
 for (const [roll, success] of [[0, true], [0.999, false]]) {

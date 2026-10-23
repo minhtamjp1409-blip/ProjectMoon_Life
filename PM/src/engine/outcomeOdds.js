@@ -1,6 +1,13 @@
 import { matchesNeed } from './eventConditions.js';
 import { tiltWeight, traitsOf } from './variance.js';
 import { hasScarTag } from './scarModel.js';
+import { egoEdge, egoMeritTilt } from './egoEdge.js';
+
+/** Someone alive and close enough to be what you refuse the light for. */
+const hasAnchor = (char) => ['spouse', 'partner', 'friend', 'mentor', 'child'].some((role) => {
+  const npc = char.npcs?.[role];
+  return npc && !npc.deceased && npc.status !== 'dead' && (npc.bond || 0) >= 60;
+});
 
 export function weightedOutcomes(choice, char, kind = 'major') {
   const outcomes = choice?.outcomes || choice?.out || [];
@@ -12,7 +19,12 @@ export function weightedOutcomes(choice, char, kind = 'major') {
       const result = outcome.resultVi || outcome.rvi || '';
       if (char.flags?.includes('ShinAwakened') &&
           (result.includes('đứng') || result.includes('thắng') || result.includes('sống') || !outcome.deathCauseVi)) {
-        weight = Math.round(weight * 1.35);
+        weight = Math.round(weight * 1.12);
+      }
+      // A wielder's trials that pay Merit lean slightly their way; a death or a fall into Distortion does not
+      if (egoEdge(char) > 0 && (outcome.meritAdd || 0) > 0 && !outcome.deathCauseVi &&
+          !outcome.flagsAdd?.includes('Distorted') && !outcome.flagsAdd?.includes('IncompleteEGO')) {
+        weight = Math.round(weight * egoMeritTilt(char));
       }
       if (char.flags?.includes('Distorted') &&
           ((outcome.effects?.sanity || 0) < 0 || (outcome.effects?.rep || 0) > 0)) {
@@ -28,16 +40,20 @@ export function weightedOutcomes(choice, char, kind = 'major') {
       }
       const outcomeEffects = outcome.effects || outcome.fx || {};
       if (outcome.flagsAdd?.includes('EGOAwakened')) {
+        // Canon: an E.G.O grows from refusing Carmen, and what holds a person there is conviction.
+        // Resonance gives the raw material, a steady mind and someone to come back to give the footing.
         const res = char.resonance || 0;
         const sp = char.stats?.sanity ?? char.sanity ?? 50;
-        const scarBonus = 1 + Math.min(3, (char.scars || []).length) * 0.15;
-        const resBonus = res >= 75 ? 1.85 : res >= 60 ? 1.55 : res >= 50 ? 1.3 : 1.0;
-        const sanityBonus = sp >= 40 ? 1.25 : 1.0;
-        weight = Math.round(weight * scarBonus * resBonus * sanityBonus);
+        const scarBonus = 1 + Math.min(3, (char.scars || []).length) * 0.12;
+        const resBonus = res >= 80 ? 1.5 : res >= 70 ? 1.3 : res >= 58 ? 1.15 : 1.0;
+        const sanityBonus = sp >= 55 ? 1.3 : sp >= 40 ? 1.15 : sp >= 25 ? 1.0 : 0.7;
+        weight = Math.round(weight * scarBonus * resBonus * sanityBonus * (hasAnchor(char) ? 1.15 : 1));
       } else if (outcome.flagsAdd?.includes('Distorted') && !choice.flagsAdd?.includes('Distorted')) {
         const sp = char.stats?.sanity ?? char.sanity ?? 50;
         if (sp >= 45 && (char.resonance || 0) >= 50) {
-          weight = Math.max(5, Math.round(weight * 0.55));
+          weight = Math.max(5, Math.round(weight * 0.6));
+        } else if (sp < 30) {
+          weight = Math.round(weight * 1.4);
         }
       }
       if (hasScarTag(char, 'survivor') &&

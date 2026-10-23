@@ -15,6 +15,8 @@ import {
   getOtherCareerPromotion,
   careerTrialForEvent,
   careerPromotionOfferChance,
+  getEgoLeap,
+  isEgoLeapEvent,
   RETIRED_WORKSHOP_TRIAL_IDS
 } from './careerPipeline.js';
 // ============================================================================
@@ -347,10 +349,11 @@ export function isEventEligible(event, char, { scripted = false } = {}) {
   }
   if (event.id === 'ad_career_crossroad_18' && (!reachedCareerAge(char) || char.job !== 'Child' || char.regionId === 'OUTSKIRTS')) return false;
   if (event.id === 'ad_outskirts_crossroad_18' && (!reachedCareerAge(char) || char.job !== 'Child')) return false;
+  if (isEgoLeapEvent(event.id) && getEgoLeap(char)?.eventId !== event.id) return false;
   if (event.id === 'ego_carmen_crossroad' && !(char.age >= 18 && (hasEgoOpportunity(char) || char.stats.sanity <= 15 || (char.resonance || 0) >= 50))) return false;
   if (event.id === 'csq_claw_taboo_visitation' && char.taboo < 3) return false;
   const milestones = ['ad_career_crossroad_18', 'ad_outskirts_crossroad_18', 'ego_carmen_crossroad', 'ego_second_efflorescence_trial', 'hana_color_ascension_trial', 'csq_claw_taboo_visitation'];
-  return scripted || !milestones.includes(event.id);
+  return scripted || (!milestones.includes(event.id) && !isEgoLeapEvent(event.id));
 }
 
 export function scoreEventUtility(event, char, weaver) {
@@ -571,6 +574,28 @@ export function selectEventWithWeaverAI({
         decisionLog: [logEntry, ...updatedWeaver.decisionLog].slice(0, 18)
       }
     };
+  }
+
+  // Someone whose E.G.O has taken shape is offered the special track first, and often. The ordinary exam stays
+  // available the years the leap is declined, on cooldown, or not rolled.
+  const egoLeap = getEgoLeap(char);
+  if (egoLeap && char.lastEgoLeapAge !== char.age && rng() < 0.4) {
+    const leapEv = allPools.find((e) => e.id === egoLeap.eventId);
+    if (leapEv && isEventEligible(leapEv, char, { scripted: true })) {
+      const logEntry = {
+        age: char.age,
+        phase: 'CLIMAX',
+        selectedId: leapEv.id,
+        utility: 978,
+        reasonVi: 'E.G.O đã thành hình: Hana, hoặc tổ chức của bạn, mở một bài tái định hạng đặc biệt nhảy hai bậc',
+        reasonEn: 'Your E.G.O has taken shape: a special two-band re-rating is opened',
+        candidates: [{ eventId: leapEv.id, totalUtility: 978 }]
+      };
+      return {
+        event: leapEv,
+        weaver: { ...updatedWeaver, decisionLog: [logEntry, ...updatedWeaver.decisionLog].slice(0, 18) }
+      };
+    }
   }
 
   // Prioritize sequential Fixer Grade Promotion exams (Multi-track Association trials)

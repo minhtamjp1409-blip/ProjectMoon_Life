@@ -74,12 +74,16 @@ while (STATS.totalScenariosExecuted < TARGET_SCENARIOS) {
   });
 
   let previousGrade = 9;
+  let leapSeen = false;
 
   // Check 3 runs after every step that can change the grade, so two exams passed in one
   // year count as two single steps, not as one skip
   const noteGrade = () => {
     if (char.job === 'Fixer' && char.fixerGrade != null) {
-      if (previousGrade - char.fixerGrade > 1) STATS.fixerGradeSkipViolations++;
+      // The one allowed exception is the E.G.O leap: two bands, once per life, and only with that flag
+      const gap = previousGrade - char.fixerGrade;
+      if (gap > 1 && !(gap === 2 && char.flags.includes('ego_leap_done') && !leapSeen)) STATS.fixerGradeSkipViolations++;
+      if (gap === 2 && char.flags.includes('ego_leap_done')) leapSeen = true;
       previousGrade = char.fixerGrade;
     }
   };
@@ -245,7 +249,7 @@ const checks = [
   {
     name: 'Fixer Grade Skipping Violations',
     count: STATS.fixerGradeSkipViolations,
-    pass: 'Fixer thăng tiến từng bậc một qua sát hạch Hana.',
+    pass: 'Fixer thăng tiến từng bậc một qua sát hạch Hana, trừ một lần nhảy hai bậc có E.G.O.',
     fail: 'Có Fixer nhảy qua một Grade.'
   },
   {
