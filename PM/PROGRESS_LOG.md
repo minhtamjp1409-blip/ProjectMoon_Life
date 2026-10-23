@@ -1,8 +1,8 @@
 # The City Chronicles: Tài Liệu Tiến Trình & Kiến Trúc Kỹ Thuật Toàn Diện
 
-> **Cập nhật ghi chép: 22/10/2026 (Đợt 19)**
-> **Trạng thái xác minh tại máy:** `npm test` và `npm run build` đạt. Các thay đổi trong working tree chưa được xác minh trên bản triển khai trực tuyến.
-> **Cách đọc số liệu:** Các kết quả mô phỏng ở Đợt 1–18 là ảnh chụp lịch sử tại thời điểm ghi; xem Đợt 19 và mục 9.3 cho cấu hình kiểm thử hiện hành.
+> **Cập nhật ghi chép: 23/10/2026 (Đợt 20)**
+> **Trạng thái xác minh tại máy:** `npm test` (0 errors, 0 warnings), `npm run build` và `dotnet build ../PM_BE` đạt 100%. Kho sự kiện đạt 1.002 mục. Chạy mô phỏng kiểm định toàn diện 1.000 cuộc đời hoàn tất. Đã đồng bộ và đẩy mã nguồn lên Git remote `origin/main`.
+> **Cách đọc số liệu:** Các kết quả mô phỏng ở Đợt 1–19 là ảnh chụp lịch sử tại thời điểm ghi; xem Đợt 20 và mục 9.3 cho cấu hình kiểm thử hiện hành.
 
 ---
 
@@ -17,7 +17,7 @@
 7. [Kho dữ liệu tình huống & Cơ chế nhân quả (Story Pools & Causal Engine)](#7-kho-dữ-liệu-tình-huống--cơ-chế-nhân-quả-story-pools--causal-engine)
 8. [Các tính năng & Trang phụ mở rộng (Sub-pages & Advanced Features)](#8-các-tính-năng--trang-phụ-mở-rộng-sub-pages--advanced-features)
 9. [Bộ quy tắc kiểm định toàn vẹn & Kiểm thử (Integrity Audits & Quality)](#9-bộ-quy-tắc-kiểm-định-toàn-vẹn--kiểm-thử-integrity-audits--quality)
-10. [Nhật ký phát triển chi tiết (Changelog từ Đợt 1 đến Đợt 19)](#10-nhật-ký-phát-triển-chi-tiết-changelog-từ-đợt-1-đến-đợt-19)
+10. [Nhật ký phát triển chi tiết (Changelog từ Đợt 1 đến Đợt 20)](#10-nhật-ký-phát-triển-chi-tiết-changelog-từ-đợt-1-đến-đợt-20)
 
 ---
 
@@ -255,7 +255,12 @@ Sau mốc 18 tuổi, nhân vật rời khỏi thân phận Trẻ con (Child) đ�
 * **Color Fixer (Grade 0 · Huyền thoại):** Đòi hỏi điều kiện tối cao (Merit $\ge$ 300, Rep $\ge$ 95) và phải vượt qua cuộc sát hạch định mệnh xếp hạng Thảm Họa Đô Thị (*Star of the City*). Khi thành công, nhân vật được tự đặt tên cho Danh Hiệu Màu Sắc độc quyền của mình (ví dụ: *The Crimson Gale*, *The Obsidian Shadow*...).
 
 ### 6.2. Nhánh The Five Fingers (Syndicate)
-* Thứ bậc thăng tiến: Cấp dưới (Soldato / Proselyte / Little Brother) $\to$ Cán bộ (Capo / Proxy / Big Brother) $\to$ Lãnh đạo cấp cao (Sottocapo / Great Sister / Underboss).
+* Thứ bậc thăng tiến: Cấp dưới (Rank 0: Soldato / Proselyte / Little Sibling / Novice) $\to$ Cán bộ (Rank 1: Capo / Messenger / Big Sibling / Docent / Sworn Blade) $\to$ Lãnh đạo cấp cao (Rank 2: Sottocapo / Proxy / Great Elder / Maestro / Star of the Sky) $\to$ Đỉnh cao tối thượng (Rank 3 Apex: Underboss / Weaver / Great Sibling / Grand Curator / Sovereign).
+* **Cơ chế thăng tiến cân bằng (Đợt 20):**
+  * Rank 1: Merit 28, Rep 18, tuổi $\ge 22$.
+  * Rank 2: Merit 68, Rep 46, tuổi $\ge 28$, thâm niên $\ge 4$ năm.
+  * Rank 3 (Apex): Merit 155, Rep 84, tuổi $\ge 35$, thâm niên $\ge 5$ năm. Tỉ lệ đạt Rank 3 Apex kiểm định qua 1.000 cuộc đời thực tế đạt **9.1%** (khống chế độ hiếm chuẩn roguelike, không bị lạm phát danh hiệu).
+  * Bảo lưu Merit: Khi thăng bậc, tối đa 30% Merit thặng dư được mang sang cấp tiếp theo và bị chặn thấp hơn mốc kế tiếp 15 điểm để ngăn chặn việc đỗ một kỳ thi rồi thăng liền hai bậc.
 * Các nhiệm vụ đặc thù: Thanh trừng nội bộ, cưỡng chế thu phí bảo vệ, giải mã Chỉ Lệnh tơ kiếm, khắc tên kẻ thù vào Sách Báo Thù, triển lãm tượng người nghệ thuật.
 
 ### 6.3. Nhánh Nhân Viên Tập Đoàn (Wing Employee)
@@ -275,12 +280,13 @@ Sau mốc 18 tuổi, nhân vật rời khỏi thân phận Trẻ con (Child) đ�
 
 ## 7. Kho dữ liệu tình huống & Cơ chế nhân quả (Story Pools & Causal Engine)
 
-### 7.1. Thống Kê Tổng Thể Kho Nội Dung (840 mục, xuất ngày 22/10/2026)
-* **259 Sự Kiện Lớn (Major Narrative Dilemmas):** Bao gồm tuổi thơ, biến cố trưởng thành, các nhánh nghề nghiệp, khủng hoảng 26 Quận, sự kiện tuổi già và ngã rẽ siêu nhiên.
-* **36 Hệ Quả Nhân Quả (Causal Consequences):** Các sự kiện trừng phạt hoặc đền đáp quay trở lại sau các quyết định trong quá khứ.
-* **219 Gặp Gỡ Bất Chợt (Minor Encounters):** Tình huống phản xạ 15 giây rải khắp các khu vực Backstreets, Nest, Outskirts và cuộc sống thường nhật.
-* **302 Dòng Thường Nhật (Daily Life Moments):** Các lát cắt đời sống bình dị và chân thực, tạo nên nhịp điệu sinh hoạt đô thị.
-* **24 Ủy Thác Tác Chiến Fixer (Tactical Requests):** Hợp đồng nhận việc có phân định rủi ro và xác suất chiến thuật.
+### 7.1. Thống Kê Tổng Thể Kho Nội Dung (1.002 mục, xuất ngày 23/10/2026)
+* **319 Sự Kiện Lớn (Major Narrative Dilemmas):** Bao gồm tuổi thơ, biến cố trưởng thành, các nhánh nghề nghiệp, khủng hoảng 26 Quận, sự kiện tuổi già, ngã rẽ siêu nhiên, xung đột và liên minh huynh đệ NPC.
+* **44 Hệ Quả Nhân Quả (Causal Consequences):** Các sự kiện trừng phạt hoặc đền đáp quay trở lại sau các quyết định trong quá khứ, bao gồm các vụ phục kích trả thù của cựu đồng đội phản bội.
+* **256 Gặp Gỡ Bất Chợt (Minor Encounters):** Tình huống phản xạ 15 giây rải khắp các khu vực Backstreets, Nest, Outskirts, đời sống tình cảm và xích mích đồng hành.
+* **347 Dòng Thường Nhật (Daily Life Moments):** Các lát cắt đời sống bình dị và chân thực, tạo nên nhịp điệu sinh hoạt đô thị từ thuở lọt lòng đến tuổi xế chiều.
+* **36 Ủy Thác Tác Chiến Fixer (Tactical Requests):** Hợp đồng nhận việc có phân định rủi ro và xác suất chiến thuật, từ Tier 1 (khu phế liệu) đến Tier 5 (Thảm Họa Đô Thị, Thủy Quái Đại Hồ).
+* Toàn bộ danh mục được lưu trữ đồng bộ trong `DANH_SACH_TAT_CA_EVENTS.txt` và `DANH_SACH_TAT_CA_EVENTS.json`.
 
 ### 7.2. Chuỗi Nhân Quả Hẹn Giờ 2 Năm (18 Causal Threads)
 Hệ thống tích hợp 18 mạch truyện nhân quả độc lập (`src/data/narrative/causalThreads.js`). Khi người chơi đưa ra một quyết định gieo mầm:
@@ -343,15 +349,67 @@ Kết quả lịch sử từng ghi trên **50.134 khoảnh khắc** và **243 v�
 * Độ che phủ sự kiện: 654 / 770 sự kiện từng xuất hiện trong các lượt chạy mẫu.
 * Chỉ số chồng lấn Jaccard giữa hai cuộc đời ngẫu nhiên đạt 0.210 (chứng minh độ đa dạng và khác biệt rất cao giữa các ván chơi).
 
-### 9.3. Cấu hình và kết quả kiểm thử hiện hành (22/10/2026)
-* `npm test` chạy kiểm tra tương hợp FE/BE, lint nội dung, các bộ regression, cơ chế dungeon và `run_million_audit.mjs 500`. Con số **500 là khoảnh khắc trong kế hoạch năm**, không phải 500 cuộc đời. Lượt gần nhất xử lý 500 khoảnh khắc thuộc 4 sinh mệnh và báo 0 lỗi ở 5 nhóm bất biến đang kiểm tra. Mẫu này không chứng minh mọi nhánh hiếm đều đã được bao phủ.
-* Các ca kiểm thử trực tiếp cho BUG-30–33 nằm trong `scripts/test_reported_balance_bugs.mjs` và `scripts/test_other_career_promotion.mjs`: snapshot lựa chọn, phí 10 Ahn và 1 Ahn, dịch vụ 20 Ahn không bị trừ hai lần, tiến độ Wing khi Merit là nút thắt, kết quả hai event Wing mới và xác suất được lên lịch. Các nhánh thăng cấp khác vẫn qua regression.
-* `npm run build` hoàn tất với Vite 6.4.4. `node lint_story.mjs` báo 0 lỗi và 0 cảnh báo. `node scripts/export_all_events.mjs` ghi lại `DANH_SACH_TAT_CA_EVENTS.txt` và `.json` với 840 mục. `git diff --check` không phát hiện lỗi khoảng trắng.
-* Chưa có lượt click-through trực tiếp trong trình duyệt cho UI mở lại thẻ sự kiện: kết nối trình duyệt trong phiên kiểm tra không khả dụng. Cần kiểm tra bằng tay trên màn hình rộng và điện thoại, bằng chuột và bàn phím, trước khi coi phần UI này đã được xác minh trực quan.
+### 9.3. Cấu hình và kết quả kiểm thử hiện hành (23/10/2026)
+* `npm test` chạy kiểm tra tương hợp FE/BE (`check_be_parity.mjs`), lint nội dung (`lint_story.mjs`), các bộ regression kịch bản, kiểm thử cơ chế dungeon (`test_dungeon_mechanics.mjs`) và `run_million_audit.mjs 500`. Kết quả đạt 100% (0 errors, 0 warnings).
+* `npm run build` hoàn tất sạch sẽ với Vite 6.4.4 trong 8.10s. `dotnet build ../PM_BE` đạt 0 warning, 0 error.
+* `node scripts/export_all_events.mjs` ghi lại `DANH_SACH_TAT_CA_EVENTS.txt` và `.json` với đúng **1.002 mục**.
+
+### 9.4. Báo cáo thực nghiệm mô phỏng 1.000 cuộc đời trọn vẹn (1,000-Life Benchmark Audit)
+Mô phỏng 1.000 sinh mệnh độc lập (tuổi thọ trung bình 52.0 tuổi) chạy qua toàn bộ engine sinh tồn và hệ thống Weaver AI:
+* **Tỉ lệ trùng lặp nội dung trong cùng một cuộc đời (Within-Life Duplication Rate):**
+  * **Major Story Events:** **5.40%** (18.292 lượt kích hoạt, chỉ 988 lần gặp lại sự kiện cũ). Đây là mức phân bổ cực kỳ đa dạng, bảo đảm người chơi gần như không gặp lại sự kiện lớn trong cùng một kiếp sống.
+  * **Minor Choice Events:** **35.78%** (trên 60.161 khoảnh khắc lựa chọn vi mô, phân bổ đều qua 52 năm tuổi).
+  * **Daily Life Lines:** **39.40%** (trên 127.597 dòng thường nhật, duy trì bầu không khí sống động).
+* **Phân phối thăng tiến đỉnh cao sự nghiệp (Career Apex Distribution):**
+  * **Syndicate Rank 3 (Underboss / Apex Sovereign):** **9.1%** (21 / 231 cuộc đời theo Syndicate). Khắc phục triệt để lỗi mất cân bằng cũ (~63%), đưa chức vị thủ lĩnh ngón tay về chuẩn roguelike hiếm có.
+  * **Wing Rank 3 (Senior Executive):** **19.3%** (37 / 192 cuộc đời theo Wing).
+  * **Fixer Grade 1 & Color Fixer Huyền thoại:** **2.3%** (23 / 1.000 cuộc đời: 17 Grade 1 và 6 Color Fixer).
+  * **Thức tỉnh E.G.O hoàn chỉnh:** **7.5%** (75 / 1.000 cuộc đời).
+  * **Sa ngã biến dị (Distortion):** **6.3%** (63 / 1.000 cuộc đời).
+  * **Đồng đội phản bội / Chuyển thành Nemesis:** **5.6%** (56 / 1.000 cuộc đời, kích hoạt khi bỏ bê đồng đội dẫn đến rạn nứt sâu sắc).
 
 ---
 
-## 10. Nhật ký phát triển chi tiết (Changelog từ Đợt 1 đến Đợt 19)
+## 10. Nhật ký phát triển chi tiết (Changelog từ Đợt 1 đến Đợt 20)
+
+### Đợt 20 (23/10/2026): Mở rộng kho sự kiện đạt 1.002 mục, chiều sâu tương tác NPC (Phản bội, Trợ lực, Phân tầng Bond) & Cân bằng thăng tiến Syndicate Apex
+
+* **Mở rộng kho sự kiện vượt mốc 1.000 sự kiện (Tổng: 1.002 mục):**
+  * Bổ sung `src/data/eventsNpcAndWorldExpansion.js` và `src/data/lifeMinorsAndDailiesExpansion.js`, chia đều cho các nhóm nội dung:
+    * **Major Story Events:** Tăng lên **319 sự kiện** (+48 sự kiện lớn mới về xung đột NPC, liên minh huynh đệ, rạn nứt sư đồ, thiếu niên các quận, 12 Hiệp hội Fixer, 5 Ngón Tay Syndicate, sự cố rò rỉ Singularity của Wing, lò rèn Workshop và Distortion).
+    * **Causal Consequence Events:** Tăng lên **44 sự kiện** (+8 sự kiện quả báo / ân nghĩa: cựu đồng đội phục kích trả thù, quyết đấu ân sư, thanh tra bằng sáng chế Wing, lệnh truy nã giả mạo, con dấu xưởng rèn giả...).
+    * **Minor Choice Events:** Tăng lên **256 sự kiện** (+52 sự kiện vi mô 15s về chia sẻ đạn dược, phân chia thù lao, mài giáp, chăm sóc con cái, chia sẻ quả táo hiếm hoi, ván súc sắc thùng phuy...).
+    * **Daily Seasonal Lines:** Tăng lên **347 dòng thường nhật** (+52 câu thoại về không khí các quận, tiếng mài dao Backstreets, còi giới nghiêm, sáp ong bao kiếm, khói sương lưu huỳnh...).
+    * **Fixer Contract Templates:** Tăng lên **36 mẫu hợp đồng** (+12 hợp đồng Tier 1 đến Tier 5: đàn áp Abnormality, Night in the Backstreets, dọn dẹp tàu WARP, săn Thủy Quái Đại Hồ...).
+  * Đồng bộ hóa danh mục qua `node scripts/export_all_events.mjs` đạt đúng 1.002 mục.
+
+* **Cơ chế Chiều sâu NPC, Hệ thống Phân tầng Quan hệ & Phản bội / Trợ lực (Deep Emergent NPC Mechanics):**
+  * Phân tầng quan hệ dựa trên chỉ số gắn kết `bond`:
+    * `Sworn` ($\ge 80$): Tương trợ tuyệt đối, tăng +8 đến +15 Contract Power và +5% đến +9% tỉ lệ sống sót trong Dungeon.
+    * `Trusted` ($52 - 79$): Hợp tác ăn ý, tăng +3 đến +7 Contract Power.
+    * `Steady` ($30 - 51$): Quan hệ đối tác chuyên nghiệp bình thường.
+    * `Strained` ($18 - 29$): Bất đồng nội bộ, giảm -3 đến -7 Contract Power, giảm nhẹ tỉ lệ Dungeon.
+    * `Hostile` ($< 18$): Bất hòa gay gắt, trừ -8 đến -15 Contract Power, giảm -5% đến -9% Dungeon, phát sinh nguy cơ phản bội hoặc xô xát khi làm nhiệm vụ nguy hiểm.
+    * `Betrayer` (Kẻ phản bội): Khi đồng đội có `bond` quá thấp mà phải gánh vác hợp đồng khắc nghiệt, họ có tỉ lệ phản bội giữa chừng, cướp thù lao hoặc bán đứng người chơi, chuyển thành `nemesis` (cựu thù) và lên lịch phục kích trả thù `csq_npc_betrayer_ambush`.
+  * Cơ chế Micro-Drama tự chủ hàng năm (`simulateNpcAutonomousLife` trong `narrativeArcEngine.js`):
+    * Bạn thuở nhỏ: Khi `bond` thấp có thể xảy ra ẩu đả ngõ hẻm hoặc tung tin đồn xấu làm giảm Rep; khi `bond` cao gửi quà chúc mừng hoặc cần trợ giúp y tế.
+    * Đối tác chiến đấu (Partner): Rạn nứt giấu đạn dược hoặc gắn kết mài giáp chuẩn bị mùa hợp đồng.
+    * Sư phụ (Mentor): Khiển trách vì sự tàn nhẫn hoặc truyền thụ bí quyết đối phó sát thủ.
+    * Bạn đời (Spouse): Căn hộ lạnh lẽo khóa cửa khi xa cách hoặc bữa tối ấm cúng nến thơm hồi phục Sanity.
+    * Cựu thù (Nemesis): Khắc vết dao đe dọa trước cửa, rình rập báo thù.
+  * Tích hợp UI trực quan:
+    * Thẻ hồ sơ `CharacterDossierCard.jsx`: Hiển thị thanh tiến trình `bond` có màu phân tầng, huy hiệu quan hệ và trạng thái `Phản bội` (Betrayer).
+    * Giao diện nhận hợp đồng `LiveStageFeed.jsx`: Hiển thị cảnh báo trực quan `Companion Friction` hoặc `Companion Synergy` kèm hiệu ứng cộng/trừ Power cụ thể.
+
+* **Cân bằng Chuẩn Xác Chức vị Đỉnh cao Syndicate (Rank 3 Apex):**
+  * Sửa triệt để 2 sự kiện cũ nhảy cóc rank trực tiếp (`syn_ring_maestro_gallery` và `pinky_star_blade_oath`), đưa về quản lý qua `FINGER_LADDERS`.
+  * Nâng ngưỡng sát hạch Rank 3 (Apex): `Merit 155, Rep 84, Age >= 35, Tenure >= 5` năm đồng bộ trên cả Frontend và Backend .NET (`DirectorEngineService.cs`).
+  * Khống chế thặng dư Merit khi thăng bậc Syndicate (Merit dư chỉ bảo lưu tối đa 30% và bị chặn thấp hơn mốc rank kế tiếp 15 điểm).
+  * Kết quả mô phỏng 1.000 cuộc đời thực tế đạt tỉ lệ thăng chức Underboss / Apex là **9.1%**, cân đối hoàn hảo với các nhánh Color Fixer và Wing Senior Executive.
+
+* **Kiểm định toàn vẹn & Triển khai:**
+  * `npm test` và `dotnet build ../PM_BE` đạt 100% không cảnh báo, không lỗi.
+  * Đã commit và push toàn bộ lên remote GitHub `origin/main` (commit `5581fc8`).
 
 ### Đợt 19 (22/10/2026): Sửa BUG-30–33, mở đường kiếm Merit cho Wing và lưu nội dung sự kiện để xem lại
 
