@@ -67,18 +67,6 @@ export const LIFE_MINORS_CONTRACTS = [
     ],
     I('Bạn để tập hồ sơ trên bàn. Sáng hôm sau, nó đã biến mất, nhưng bàn bạn đã được dọn gọn.', 'You leave the file on the desk. By morning it is gone, but your desk has been tidied.', { sanity: -2 })),
 
-  M('mx_ws_color_returns', ADULT, { mem: 'ws_color_commission' },
-    '[Color quay lại xưởng] Vào một buổi chiều, cánh cửa xưởng mở. Người bước vào là Color Fixer năm xưa, không mang vũ khí. Họ đặt một thanh kiếm cũ lên đe: chính thanh bạn đã rèn lại.',
-    '[The Color returns to the forge] One afternoon the forge door opens. The one who steps in is the Color Fixer from years ago, carrying no weapon. They lay an old sword on your anvil: the one you reforged.',
-    [
-      C('Hỏi họ muốn gì', 'Ask what they want', 'Họ nói thanh kiếm vẫn tốt, nhưng người cầm nó thì không còn như xưa. Họ muốn ngồi bên lò một lúc. Cả chiều hôm đó, hai người nhìn lửa, và không ai nói thêm.', 'They say the sword is still good but the one who holds it is not what they were. They want to sit by the furnace a while. All that afternoon the two of you watch the fire, and neither says more.', { sanity: +4, rep: +3 }),
-      C('Cầm thanh kiếm lên xem', 'Pick up the sword and inspect it', null, null, {}, { out: [
-        O(60, 'Bạn thấy một vết mòn mà bạn không để lại. Họ đã dùng nó nhiều hơn bạn nghĩ. Họ cười và nói: "Rèn thêm một thanh như thế," rồi đặt trước một khoản lớn.', 'You see a wear mark you did not leave. They used it more than you thought. They smile and say, “Make one more like it,” and place a large deposit.', { wealth: +10, rep: +4, merit: +10 }),
-        O(40, 'Bạn thấy một vết nứt nhỏ chạy dọc lưỡi. Họ biết, và đã biết từ lâu. Họ chỉ muốn nghe bạn nói ra điều đó.', 'You see a hairline crack running along the blade. They know, and have known for a long time. They only wanted to hear you say it.', { sanity: -2, rep: +2 })
-      ] })
-    ],
-    I('Bạn đứng yên bên đe. Họ để lại thanh kiếm và đi. Bạn không dám động đến nó cả tuần.', 'You stand still by the anvil. They leave the sword and go. You do not dare touch it for a week.', { sanity: -2 })),
-
   M('mx_ring_ash_stirs', ADULT, { mem: 'ring_distortion_ash' },
     '[Tro cựa mình] Hộp chì đựng tro từ nơi Distortion gục xuống, vẫn đặt ở góc xưởng, bỗng ấm lên. Nắp hộp rung rất khẽ, như có ai đang gõ từ bên trong.',
     '[The ash stirs] The lead box of ash from where the Distortion fell, still sitting in a corner of the studio, has gone warm. The lid trembles faintly, as if someone were knocking from inside.',

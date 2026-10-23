@@ -4,8 +4,7 @@
 // Fixer decides how high the tiers go. Every other career gets the same loop in
 // its own terms: a Thumb collects, a Middle works the Book of Vengeance, an Index
 // member carries out a Prescript, a Ring member hunts material for the next piece,
-// a Pinky settles an oath, a Wing Feather answers to a Singularity, a Workshop
-// smith fills orders for people who can kill over a late delivery.
+// a Pinky settles an oath, and a Wing Feather answers to a Singularity.
 // Tier 0 is the lowest band, tier 5 the highest; templates share the Fixer shape:
 //   { id, tier, typeVi, typeEn, vi, en, okVi, okEn, failVi, failEn, deathVi, deathEn,
 //     later?: { id, years, reasonVi, reasonEn }, mem?: string }
@@ -106,20 +105,6 @@ export const CONTRACT_ROUTES = {
       ['Việc hành chính', 'Administrative task'], ['Kiểm định hiện trường', 'Field inspection'], ['Sự cố cấp phòng', 'A section-level incident'],
       ['Sự cố Singularity', 'A Singularity incident'], ['Hồ sơ mật cấp quản trị', 'An executive-level sealed file'], ['Việc The Head quan tâm', 'A matter the Head watches']
     )
-  },
-  workshop: {
-    jobKey: null,
-    tagVi: 'Đơn đặt của Workshop', tagEn: 'Workshop Order',
-    kickerVi: 'Đơn đặt hàng của Workshop', kickerEn: 'A Workshop order',
-    careful: ['Rèn chậm, thử kỹ, giao đúng hạn', 'Forge slowly, test thoroughly, deliver on time'],
-    bold: ['Đẩy lò hết công suất để giao sớm (thêm 50% Ahn và Merit)', 'Run the furnace flat out to deliver early (50% more Ahn and Merit)'],
-    intel: ['Thuê một thợ phụ kiểm định nguyên liệu trước khi rèn (8 Ahn)', 'Hire a journeyman to assay the stock before you strike (8 Ahn)'],
-    okFx: { rep: 1 }, failFx: { wealth: -3 },
-    declineVi: 'Bạn trả lại đơn và tiền đặt cọc. Người đặt hàng đi sang xưởng bên cạnh, và nhớ rằng xưởng bạn đã từ chối.', declineEn: 'You return the order and the deposit. The client walks to the next forge and remembers yours turned them away.',
-    tiers: tiers(
-      ['Dụng cụ thường ngày', 'Everyday tools'], ['Vũ khí cho Fixer mới', 'Arms for a new Fixer'], ['Đơn của một Office',  'An Office order'],
-      ['Đơn cấp Association', 'An Association order'], ['Vũ khí cho Grade cao', 'A weapon for a high Grade'], ['Vũ khí cho một Color', 'A weapon for a Color']
-    )
   }
 };
 
@@ -132,7 +117,6 @@ export function contractRouteOf(char) {
     return CONTRACT_ROUTES[key] ? key : null;
   }
   if (char.job === 'Wing Employee') return 'wing';
-  if (char.job === 'Workshop Craftsman') return 'workshop';
   return null;
 }
 
@@ -142,8 +126,6 @@ export function contractRouteOf(char) {
  */
 export function equivalentGrade(char, route) {
   if (route === 'fixer') return char.fixerGrade === 0 ? 0 : (char.fixerGrade ?? 9);
-  const rank = route === 'wing' ? (char.wingRank || 0)
-    : route === 'workshop' ? (char.workshopRank || 0)
-      : (char.fingerRank || 0);
+  const rank = route === 'wing' ? (char.wingRank || 0) : (char.fingerRank || 0);
   return [7, 5, 3, 1][Math.min(3, rank)];
 }
