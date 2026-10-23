@@ -126,3 +126,59 @@ export function bestowHanaColorTitle(char = null) {
     conferredAtAge: char?.age || 28
   };
 }
+
+/**
+ * Resolves the atmospheric branch scene class and apex ascension metadata.
+ *
+ * @param {Object} char - The active character
+ * @returns {{ sceneClass: string, isApex: boolean, isColor: boolean, isEgo: boolean }}
+ */
+export function getBranchSceneMeta(char) {
+  if (!char) return { sceneClass: 'scene-branch-fixer', isApex: false, isColor: false, isEgo: false };
+
+  const isDistorted = Boolean(
+    !char.alive && (char.flags?.includes('Distorted') || char.flags?.includes('Distortion'))
+  ) || Boolean(char.flags?.includes('Distorted') || char.flags?.includes('Distortion') || (char.distortStage || 0) > 0);
+
+  const isEgo = Boolean(char.flags?.includes('EGOAwakened') || char.egoName || char.egoWeapon);
+  const isColor = Boolean(char.isColorFixer || char.fixerGrade === 0 || char.flags?.includes('ColorFixer') || char.customTitle);
+
+  // Apex checks
+  const isFingerApex = char.job === 'Syndicate' && (char.fingerRank || 0) >= 2;
+  const isWingApex = char.job === 'Wing Employee' && (char.wingRank || 0) >= 2;
+  const isApex = isColor || isFingerApex || isWingApex;
+
+  let sceneClass = 'scene-branch-fixer';
+
+  if (!char.alive) {
+    sceneClass = 'scene-hatch red';
+  } else if (isDistorted) {
+    sceneClass = 'scene-branch-distortion';
+  } else if (isEgo) {
+    sceneClass = 'scene-branch-ego';
+  } else if (isColor) {
+    sceneClass = 'scene-branch-color';
+  } else if (char.finger) {
+    const fLower = char.finger.toLowerCase();
+    sceneClass = `scene-branch-${fLower}`;
+  } else if (char.job === 'Wing Employee') {
+    sceneClass = 'scene-branch-wing';
+  } else if (char.job === 'Workshop Craftsman') {
+    sceneClass = 'scene-branch-workshop';
+  } else if ((char.heat || 0) >= 50 || (char.taboo || 0) >= 2) {
+    sceneClass = 'scene-hatch';
+  } else if ((char.resonance || 0) >= 40 || char.fateOmenId?.includes('star')) {
+    sceneClass = 'scene-star';
+  } else if (char.regionId === '11' || char.regionId === '23') {
+    sceneClass = 'scene-warp';
+  } else {
+    sceneClass = 'scene-branch-fixer';
+  }
+
+  if (isApex && char.alive) {
+    sceneClass += ' is-apex';
+  }
+
+  return { sceneClass, isApex, isColor, isEgo };
+}
+
