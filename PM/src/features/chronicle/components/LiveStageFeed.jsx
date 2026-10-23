@@ -182,18 +182,20 @@ const MinorDock = ({ prompt, char, npcs, wealth = 0, remainingMs, onPick, place 
   return (
     <div className="dock is-minor" role="document">
       <div className="dock-inner">
-        <div className="countdown-wrap">
+        {!prompt.annualMerit && <div className="countdown-wrap">
           <div className="countdown" aria-hidden="true">
             <i style={{ transform: `scaleX(${Math.max(0, Math.min(1, remainingMs / MINOR_WINDOW_MS))})` }} />
           </div>
           <span className="countdown-badge">{Math.ceil(Math.max(0, remainingMs) / 1000)}s</span>
-        </div>
+        </div>}
         <div className="dock-banner">
           <div className="dock-banner-text">
             <div className="dock-kicker-row">
               <p className="dock-kicker">
                 <span className="dock-kicker-icon">⚡</span>
-                <span>{t(`Gặp gỡ bất chợt · ${place}`, `Encounter · ${place}`)}</span>
+                <span>{prompt.annualMerit
+                  ? t(`Nhiệm vụ Công trạng · ${place}`, `Merit commission · ${place}`)
+                  : t(`Gặp gỡ bất chợt · ${place}`, `Encounter · ${place}`)}</span>
               </p>
               <span className="dock-hotkey-hint">{t('0 / Esc: bỏ qua', '0 / Esc: pass')}</span>
             </div>

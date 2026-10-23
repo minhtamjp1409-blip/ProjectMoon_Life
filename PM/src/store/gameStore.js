@@ -672,6 +672,7 @@ export const useGameStore = create((set, get) => ({
     if (s.speed === 0) return;
 
     if (c.pendingMinor) {
+      if (c.pendingMinor.annualMerit && !s.autoPlay) return;
       const remaining = s.minorRemainingMs - dtMs;
       if (s.autoPlay && MINOR_WINDOW_MS - remaining >= AUTO_MINOR_MS) {
         const def = LIFE_MINORS.find((event) => event.id === c.pendingMinor.id);

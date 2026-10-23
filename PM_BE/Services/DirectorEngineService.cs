@@ -30,12 +30,12 @@ public sealed class DirectorEngineService
     [
         new(8, 10, 8, "Fixer Grade 8", "Grade 8 Fixer"),
         new(7, 22, 16, "Fixer Grade 7", "Grade 7 Fixer"),
-        new(6, 38, 26, "Fixer Grade 6", "Grade 6 Fixer"),
-        new(5, 56, 38, "Fixer Grade 5", "Grade 5 Fixer"),
-        new(4, 78, 52, "Fixer Grade 4", "Grade 4 Fixer"),
-        new(3, 105, 68, "Fixer Grade 3", "Grade 3 Fixer"),
-        new(2, 150, 82, "Fixer Grade 2", "Grade 2 Fixer"),
-        new(1, 200, 95, "Fixer Grade 1", "Grade 1 Fixer")
+        new(6, 44, 26, "Fixer Grade 6", "Grade 6 Fixer"),
+        new(5, 66, 38, "Fixer Grade 5", "Grade 5 Fixer"),
+        new(4, 92, 52, "Fixer Grade 4", "Grade 4 Fixer"),
+        new(3, 124, 68, "Fixer Grade 3", "Grade 3 Fixer"),
+        new(2, 172, 82, "Fixer Grade 2", "Grade 2 Fixer"),
+        new(1, 230, 95, "Fixer Grade 1", "Grade 1 Fixer")
     ];
 
     // Both tables mirror careerPipeline.js (FIXER_LADDER, COLOR_FIXER_REQ), which gates the exams
@@ -72,8 +72,8 @@ public sealed class DirectorEngineService
     [
         new(0, "Nhân viên tập sự (Contract Intern)", "Contract Intern", 0, 0, 0),
         new(1, "Feather chính thức (Feather Agent)", "Feather Agent", 25, 18, 14),
-        new(2, "Trưởng phòng ban (Section Chief)", "Section Chief", 65, 45, 32),
-        new(3, "Giám đốc cấp cao (Senior Executive)", "Senior Executive", 125, 85, 60)
+        new(2, "Trưởng phòng ban (Section Chief)", "Section Chief", 78, 45, 32),
+        new(3, "Giám đốc cấp cao (Senior Executive)", "Senior Executive", 150, 85, 60)
     ];
 
     /// <summary>
@@ -256,9 +256,9 @@ public sealed class DirectorEngineService
 
             int nextRank = curRank + 1;
             string nextTitle = ladder[nextRank];
-            int reqMerit = nextRank == 3 ? 155 : nextRank == 2 ? 68 : 28;
+            int reqMerit = nextRank == 3 ? 185 : nextRank == 2 ? 82 : 28;
             int reqRep = nextRank == 3 ? 84 : nextRank == 2 ? 46 : 18;
-            int reqNet = nextRank == 3 ? 48 : nextRank == 2 ? 24 : 0;
+            int reqNet = 0;
             int pM = Math.Min(100, (c.Merit * 100) / reqMerit);
             int pR = Math.Min(100, (c.Rep * 100) / reqRep);
             int pN = reqNet > 0 ? Math.Min(100, (c.Network * 100) / reqNet) : pM;
@@ -467,7 +467,7 @@ public sealed class DirectorEngineService
         else if (c.Job.Equals("Syndicate", StringComparison.OrdinalIgnoreCase) && !flags.Contains("Distorted"))
         {
             string finger = string.IsNullOrEmpty(c.Finger) ? "Thumb" : c.Finger;
-            if (c.FingerRank == 0 && c.Merit >= 26 && c.Rep >= 16)
+            if (c.FingerRank == 0 && c.Merit >= 28 && c.Rep >= 18)
             {
                 majorDue = true;
                 majorId = finger.ToLowerInvariant() switch
@@ -481,7 +481,7 @@ public sealed class DirectorEngineService
                 majorTitleVi = $"Khảo thí thăng bậc The {finger} (Rank 1)";
                 majorTitleEn = $"The {finger} Promotion Trial (Rank 1)";
             }
-            else if (c.FingerRank == 1 && c.Merit >= 52 && c.Rep >= 32)
+            else if (c.FingerRank == 1 && c.Merit >= 82 && c.Rep >= 46)
             {
                 majorDue = true;
                 majorId = finger.ToLowerInvariant() switch
@@ -495,7 +495,7 @@ public sealed class DirectorEngineService
                 majorTitleVi = $"Khảo thí thăng bậc The {finger} (Rank 2)";
                 majorTitleEn = $"The {finger} Promotion Trial (Rank 2)";
             }
-            else if (c.FingerRank == 2 && c.Merit >= 155 && c.Rep >= 84)
+            else if (c.FingerRank == 2 && c.Merit >= 185 && c.Rep >= 84)
             {
                 majorDue = true;
                 majorId = finger.ToLowerInvariant() switch
@@ -519,14 +519,14 @@ public sealed class DirectorEngineService
                 majorTitleVi = "Bổ Nhiệm Feather Chính Thức (Nest Feather)";
                 majorTitleEn = "Official Feather Commission";
             }
-            else if (c.WingRank == 1 && c.Merit >= 65 && c.Wealth >= 45 && c.Network >= 32 && !seen.Contains("wing_promo_specialist_r2"))
+            else if (c.WingRank == 1 && c.Merit >= 78 && c.Wealth >= 45 && c.Network >= 32 && !seen.Contains("wing_promo_specialist_r2"))
             {
                 majorDue = true;
                 majorId = "wing_promo_specialist_r2";
                 majorTitleVi = "Trưởng Phòng Ban Singularity (Section Chief)";
                 majorTitleEn = "Section Chief / Singularity Specialist";
             }
-            else if (c.WingRank == 2 && c.Merit >= 125 && c.Wealth >= 85 && c.Network >= 60 && !seen.Contains("wing_singularity_classified_audit"))
+            else if (c.WingRank == 2 && c.Merit >= 150 && c.Wealth >= 85 && c.Network >= 60 && !seen.Contains("wing_singularity_classified_audit"))
             {
                 majorDue = true;
                 majorId = "wing_singularity_classified_audit";

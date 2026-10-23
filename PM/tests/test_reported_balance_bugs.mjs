@@ -7,7 +7,7 @@ import { reputationGain, driftOf } from '../src/engine/economyModel.js';
 import { isEventEligible, selectEventWithWeaverAI } from '../src/engine/weaverAI.js';
 import { LIFE_MINORS, resolveMinor, planYear } from '../src/engine/yearPlanner.js';
 import { CONSEQUENCE_EVENTS } from '../src/data/eventsChildhood.js';
-import { syndicateApexOpportunity, isFixerPromotionChoice } from '../src/engine/careerPipeline.js';
+import { syndicateApexOpportunity, isFixerPromotionChoice, FIXER_LADDER, WING_LADDER_PROMOTIONS } from '../src/engine/careerPipeline.js';
 import { useGameStore } from '../src/store/gameStore.js';
 import { addScar } from '../src/engine/scarModel.js';
 import { simulateNpcAutonomousLife } from '../src/engine/narrativeArcEngine.js';
@@ -42,7 +42,7 @@ licensed.fixerGrade = 3;
 licensed.pendingEvent = grade2;
 const promoted = resolveEventChoice(licensed, 0, () => 0);
 assert.equal(promoted.fixerGrade, 2);
-assert.ok(promoted.merit < 200);
+assert.ok(promoted.merit < FIXER_LADDER.find((step) => step.grade === 1).meritReq);
 assert.equal(isEventEligible(grade1, promoted), false);
 assert.equal(promoted.logs.findLast((entry) => entry.review)?.review.choices.length, grade2.choices.length);
 
@@ -109,7 +109,7 @@ wing.lastWingPromotionAge = 40;
 wing.merit = 18;
 wing.stats.wealth = 45;
 wing.stats.network = 32;
-assert.equal(getNextCareerMilestone(wing).progressPct, Math.round(18 / 65 * 100));
+assert.equal(getNextCareerMilestone(wing).progressPct, Math.round(18 / WING_LADDER_PROMOTIONS[1].meritReq * 100));
 for (const id of ['m_career_wing_quota', 'm_career_wing_incident']) {
   const opportunity = LIFE_MINORS.find((event) => event.id === id);
   const employee = newChar();

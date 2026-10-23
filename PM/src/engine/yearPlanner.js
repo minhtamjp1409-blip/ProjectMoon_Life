@@ -63,6 +63,7 @@ import { LIFE_MINORS_CONTRACTS } from '../data/lifeMinorsContracts.js';
 import { THREAD_MINORS } from '../data/narrative/causalThreads.js';
 import { SCAR_CALLBACKS } from '../data/lifeScarCallbacks.js';
 import { LIFE_CAREER_OPPORTUNITIES } from '../data/lifeCareerOpportunities.js';
+import { ANNUAL_MERIT_OPPORTUNITIES } from '../data/annualMeritOpportunities.js';
 import { EXPANDED_DAILIES } from '../data/narrative/dailies.js';
 import { DAILIES_2 } from '../data/narrative/dailies2.js';
 import { EXPANSION_LIFE_MINORS, EXPANSION_LIFE_DAILIES } from '../data/lifeMinorsAndDailiesExpansion.js';
@@ -70,7 +71,7 @@ import { cityArchiveAPI } from '../services/api/cityArchiveAPI.js';
 
 const FINGER_MISSION_CHANCE = 0.4;
 
-export const LIFE_MINORS = [...MINORS_FIRST, ...LIFE_MINORS_2, ...LIFE_MINORS_3, ...LIFE_MINORS_4, ...LIFE_MINORS_5, ...LIFE_MINORS_SEEDS, ...WORKSHOP_VISIT_MINORS, ...FINGER_MINORS, ...LIFE_MINORS_KIDS, ...LIFE_MINORS_CONTRACTS, ...LIFE_MINORS_BONDS, ...THREAD_MINORS, ...SCAR_CALLBACKS, ...LIFE_CAREER_OPPORTUNITIES, ...EXPANSION_LIFE_MINORS];
+export const LIFE_MINORS = [...MINORS_FIRST, ...LIFE_MINORS_2, ...LIFE_MINORS_3, ...LIFE_MINORS_4, ...LIFE_MINORS_5, ...LIFE_MINORS_SEEDS, ...WORKSHOP_VISIT_MINORS, ...FINGER_MINORS, ...LIFE_MINORS_KIDS, ...LIFE_MINORS_CONTRACTS, ...LIFE_MINORS_BONDS, ...THREAD_MINORS, ...SCAR_CALLBACKS, ...LIFE_CAREER_OPPORTUNITIES, ...ANNUAL_MERIT_OPPORTUNITIES, ...EXPANSION_LIFE_MINORS];
 export const LIFE_DAILIES = [...DAILIES_FIRST, ...LIFE_DAILIES_3, ...EXPANDED_DAILIES, ...DAILIES_2, ...EXPANSION_LIFE_DAILIES, ...WORKSHOP_VISIT_DAILIES, ...FINGER_DAILIES];
 import {
   directorWeight,
@@ -210,6 +211,32 @@ function eligibleMinors(char) {
     if (m.once && (char.seenEvents || []).includes(m.id)) return false;
     return true;
   });
+}
+
+const minorCanEarnMerit = (id) => LIFE_MINORS.some((entry) => entry.id === id &&
+  entry.choices?.some((choice) => (choice.fx?.merit || 0) > 0 ||
+    (choice.out || choice.outcomes || []).some((outcome) => (outcome.fx?.merit || 0) > 0)));
+
+function annualMeritMoment(char, moments, rng) {
+  if (char.job === 'Child' || char.age < careerAgeOf(char) || !char.alive) return null;
+  if (moments.some((item) => item?.kind === 'contract')) return null;
+  const existing = moments.find((item) => item?.kind === 'minor' &&
+    (item.id === 'm_fx_request_choice' ||
+      LIFE_CAREER_OPPORTUNITIES.some((event) => event.id === item.id) ||
+      ANNUAL_MERIT_OPPORTUNITIES.some((event) => event.id === item.id)) &&
+    minorCanEarnMerit(item.id));
+  if (existing) {
+    existing.annualMerit = true;
+    return null;
+  }
+  const pool = ANNUAL_MERIT_OPPORTUNITIES.filter((entry) => matchesEventContext(entry, char));
+  const event = pickWeighted(pool, (entry) => freshness(entry.id, char.recent, char.seenCount), rng);
+  if (!event) return null;
+  const t = [0.235, 0.485, 0.735][Math.floor(rng() * 3)];
+  const seasonIdx = seasonIdxAt(t);
+  remember(char, event.id);
+  logDecision(char, event, { vi: 'Một việc làm có thể ghi vào hồ sơ công trạng', en: 'A commission that can enter the merit record', w: 1 }, 'minor');
+  return { kind: 'minor', id: event.id, t, seasonIdx, season: SEASONS[seasonIdx], extra: true, annualMerit: true };
 }
 
 // Director weights reach x6; the 0.8 power keeps their order but lets weaker entries through
@@ -531,6 +558,9 @@ export function planYear(charState, rng) {
     if (extra) planItems.push({ ...extra, t: it ? at(mid, band.maxT) : at(band.minT, band.maxT), seasonIdx: s, season: band.season });
   }
 
+  const annual = annualMeritMoment(char, planItems, rng);
+  if (annual) planItems.push(annual);
+
   planItems.sort((a, b) => a.t - b.t);
 
   char.plan = planItems;
@@ -718,12 +748,12 @@ export async function syncPlanWithBackend(charState, rng) {
 
       // The server only knows daily/minor/major/contract. The mishap and medical-care
       // moments the client rolled would be lost, so they take over a plain slot.
-      const isLocalOnly = (it) => it.kind === 'mishap' || it.extra || (it.kind === 'minor' && (/^m_(med|wellness)_/.test(String(it.id)) || LIFE_CAREER_OPPORTUNITIES.some((event) => event.id === it.id)));
+      const isLocalOnly = (it) => it.kind === 'mishap' || it.extra || it.annualMerit || (it.kind === 'minor' && (/^m_(med|wellness)_/.test(String(it.id)) || LIFE_CAREER_OPPORTUNITIES.some((event) => event.id === it.id)));
       const isReplaceable = (it) => it.kind === 'daily' || (it.kind === 'minor' && !it.isCausal);
       for (const keep of localPlan.filter(isLocalOnly)) {
         if (hydrated.some((h) => h.id === keep.id && h.kind === keep.kind)) continue;
-        if (keep.extra) {
-          // An extra moment rides along with the server's four; keep it clear of their times
+        if (keep.extra || keep.annualMerit) {
+          // A protected commission rides along when the server has filled its season
           let t = keep.t;
           while (hydrated.some((h) => Math.abs(h.t - t) < 0.03) && t < 0.97) t = Math.round((t + 0.04) * 1000) / 1000;
           hydrated.push({ ...keep, t });
@@ -819,6 +849,7 @@ export function runPlanItem(charState, item, rng) {
     char.pendingMinor = {
       id: def.id,
       t: item.t,
+      annualMerit: Boolean(item.annualMerit),
       vi: interpolateText(def.vi, char),
       en: interpolateText(def.en, char),
       choices: def.choices.map((c) => ({ vi: interpolateText(c.vi, char), en: interpolateText(c.en, char), fx: c.fx, out: c.out, need: c.need, costAhn: c.costAhn })),
