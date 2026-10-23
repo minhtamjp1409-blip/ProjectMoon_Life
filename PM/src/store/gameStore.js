@@ -1,3 +1,4 @@
+import { workshopPrice } from '../engine/cityConditions.js';
 import { create } from 'zustand';
 import { notification } from 'antd';
 import {
@@ -373,12 +374,13 @@ export const useGameStore = create((set, get) => ({
     const item = getItemById(itemId);
     if (!item) return;
     const wealth = char.stats?.wealth ?? char.wealth ?? 0;
-    if (wealth < item.costAhn) return;
+    const price = workshopPrice(item, char);
+    if (wealth < price) return;
 
     const nextChar = cloneChar(char);
     if (!Array.isArray(nextChar.inventory)) nextChar.inventory = [];
     nextChar.inventory.push(item);
-    nextChar.stats.wealth = wealth - item.costAhn;
+    nextChar.stats.wealth = wealth - price;
 
     if (!nextChar.equipped) nextChar.equipped = { weapon: null, armor: null, consumable: null };
     if (item.type === 'weapon') nextChar.equipped.weapon = item;
@@ -396,8 +398,8 @@ export const useGameStore = create((set, get) => ({
       age: nextChar.age,
       season: SEASONS[nextChar.seasonIdx || 0],
       type: 'major',
-      vi: `[Mua sắm Workshop] Bạn đã chi ${item.costAhn} Ahn để sở hữu 「${item.nameVi}」.`,
-      en: `[Workshop Purchase] You spent ${item.costAhn} Ahn to acquire "${item.nameEn}".`
+      vi: `[Mua sắm Workshop] Bạn đã chi ${price} Ahn để sở hữu 「${item.nameVi}」.`,
+      en: `[Workshop Purchase] You spent ${price} Ahn to acquire "${item.nameEn}".`
     });
 
     set({ char: nextChar });

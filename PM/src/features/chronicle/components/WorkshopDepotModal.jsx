@@ -1,3 +1,4 @@
+import { activeCityCondition, workshopPrice } from '../../../engine/cityConditions.js';
 import React, { useState } from 'react';
 import { Modal, Tag } from 'antd';
 import { ShoppingBag, Shield, Zap, Sparkles, Check, Coins, AlertCircle } from 'lucide-react';
@@ -27,7 +28,7 @@ export const WorkshopDepotModal = ({ open, onClose }) => {
   };
 
   const handleBuy = (item) => {
-    if (playerAhn < item.costAhn) return;
+    if (playerAhn < workshopPrice(item, char)) return;
     audioEngine.playCoinChime();
     buyItem(item.id);
   };
@@ -69,6 +70,10 @@ export const WorkshopDepotModal = ({ open, onClose }) => {
           )}
         </p>
 
+        {activeCityCondition(char) && <p role="status" style={{ color: 'var(--accent)', fontSize: 13 }}>
+          {t('Phong tỏa nguồn hàng: thuốc và trang bị +15%, làm tròn lên. Hết hiệu lực sau tuổi ', 'Supply cordon: medicine and equipment +15%, rounded up. Ends after age ')}
+          {char.cityCondition.endAge}.
+        </p>}
         {/* Category Filters */}
         <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 10, marginBottom: 16 }}>
           {[
@@ -102,10 +107,11 @@ export const WorkshopDepotModal = ({ open, onClose }) => {
         </div>
 
         {/* Item Cards Grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 12, maxHeight: '56vh', overflowY: 'auto', paddingRight: 4 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 300px), 1fr))', gap: 12, maxHeight: '56vh', overflowY: 'auto', paddingRight: 4 }}>
           {filterItems().map((item) => {
             const owned = isOwned(item);
-            const canAfford = playerAhn >= item.costAhn;
+            const price = workshopPrice(item, char);
+            const canAfford = playerAhn >= price;
 
             return (
               <div
@@ -140,7 +146,7 @@ export const WorkshopDepotModal = ({ open, onClose }) => {
                   <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
                     <Coins size={14} color="var(--accent)" />
                     <span style={{ fontSize: 14, fontWeight: 700, color: canAfford ? 'var(--accent)' : 'var(--bad)' }}>
-                      {item.costAhn} Ahn
+                      {price} Ahn
                     </span>
                   </div>
 

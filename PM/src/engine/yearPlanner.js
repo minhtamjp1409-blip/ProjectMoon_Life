@@ -1,3 +1,4 @@
+import { advanceCityCondition } from './cityConditions.js';
 import { rememberResonance, hasEgoOpportunity, colorTrialAvailable, rollEgoEncounter } from './awakeningProgress.js';
 import { simulateNpcAutonomousLife } from './narrativeArcEngine.js';
 import { matchesNeed, matchesEventContext, choiceIsAvailable, mergeEffects, isNestResident, isOutsideCity, npcIsActive } from './eventConditions.js';
@@ -258,6 +259,7 @@ function majorIsDue(char, rng) {
 export function planYear(charState, rng) {
   const char = charState;
   rememberResonance(char);
+  advanceCityCondition(char, rng);
   const age = char.age;
   const nest = isNest(char);
 

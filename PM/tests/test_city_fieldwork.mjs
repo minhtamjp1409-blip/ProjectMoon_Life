@@ -1,0 +1,68 @@
+import assert from 'node:assert/strict';
+import { createNewCharacter, resolveEventChoice } from '../src/engine/gameEngine.js';
+import { advanceCityCondition, activeCityCondition, workshopPrice, cityEventMultiplier } from '../src/engine/cityConditions.js';
+import { ABNORMALITY_FIELDWORK_EVENTS } from '../src/data/eventsAbnormalityFieldwork.js';
+import { DUNGEON_GATE_EVENTS } from '../src/data/eventsDungeonGates.js';
+import { choiceIsAvailable, matchesEventContext } from '../src/engine/eventConditions.js';
+import { planYear, runPlanItem } from '../src/engine/yearPlanner.js';
+
+const born = () => {
+  const c = createNewCharacter({ seed: 'fieldwork' });
+  Object.assign(c, { age: 30, job: 'Fixer', regionId: '1', flags: [], inventory: [] });
+  Object.assign(c.stats, { health: 90, sanity: 70, wealth: 50 });
+  return c;
+};
+const c = born();
+assert.equal(workshopPrice({ costAhn: 25, type: 'weapon' }, c), 25, 'old save without city fields');
+let draws = 0;
+advanceCityCondition(c, () => { draws++; return 0; });
+assert.equal(c.cityCondition.endAge, 31);
+advanceCityCondition(c, () => { throw Error('rerolled same year'); });
+assert.equal(draws, 2);
+assert.equal(workshopPrice({ costAhn: 25, type: 'weapon' }, c), 29);
+assert.equal(workshopPrice({ costAhn: 25, type: 'special' }, c), 25);
+assert.equal(cityEventMultiplier({ id: 'mid_fixer_cordon' }, c), 2);
+assert.equal(cityEventMultiplier({ id: 'fixer_promo_grade_1' }, c), 1);
+const loaded = JSON.parse(JSON.stringify(c));
+assert.deepEqual(activeCityCondition(loaded), activeCityCondition(c));
+advanceCityCondition(loaded, () => { throw Error('reload rerolled'); });
+loaded.regionId = '2';
+assert.equal(activeCityCondition(loaded), null);
+loaded.regionId = '1'; loaded.age = 32;
+assert.equal(activeCityCondition(loaded), null);
+advanceCityCondition(loaded, () => { throw Error('cooldown ignored'); });
+loaded.age = 35;
+advanceCityCondition(loaded, () => 0.99);
+assert.equal(activeCityCondition(loaded), null);
+const outside = born(); outside.regionId = 'OUTSKIRTS';
+advanceCityCondition(outside, () => { throw Error('Outskirts must not roll a City cordon'); });
+
+for (const id of ['abno_bird_field_notes', 'abno_one_sin_record']) {
+  const char = born();
+  char.pendingEvent = ABNORMALITY_FIELDWORK_EVENTS.find(e => e.id === id);
+  const result = resolveEventChoice(char, 0, () => 0);
+  result.age++;
+  planYear(result, () => 0.99);
+  const expected = id === 'abno_bird_field_notes' ? 'abno_bird_return' : 'abno_one_sin_session';
+  const item = result.plan.find(e => e.forcedEventId === expected);
+  assert.ok(item, `${expected} scheduled`);
+  assert.equal(runPlanItem(result, item, () => 0).pendingEvent.id, expected);
+  const event = ABNORMALITY_FIELDWORK_EVENTS.find(e => e.id === expected);
+  result.regionId = 'OUTSKIRTS';
+  assert.equal(matchesEventContext(event, result), false);
+}
+const gate = DUNGEON_GATE_EVENTS.find(e => e.id === 'gate_bloodfiend_zwei_bounty');
+const trade = gate.choices.length - 1;
+const customer = born(); customer.pendingEvent = gate;
+assert.equal(choiceIsAvailable(gate.choices[trade], customer), false);
+customer.inventory.push({ id: 'con_kcorp_ampoule' });
+customer.equipped = { consumable: { id: 'con_kcorp_ampoule' } };
+assert.equal(choiceIsAvailable(gate.choices[trade], customer), true);
+const entered = resolveEventChoice(customer, trade, () => 0);
+assert.equal(entered.inventory.length, 0);
+assert.equal(customer.inventory.length, 1);
+assert.equal(entered.equipped.consumable, null);
+assert.equal(customer.equipped.consumable.id, 'con_kcorp_ampoule');
+assert.ok(entered.flags.includes('gate_bloodfiend_fixer_done'));
+assert.equal(entered.stats.wealth, customer.stats.wealth, 'item barter does not also charge cash');
+console.log('City lifecycle, save roundtrip, contextual callbacks and legacy preparation passed.');

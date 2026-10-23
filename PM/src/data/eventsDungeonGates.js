@@ -3,7 +3,31 @@
 // Fixer, one for the jobs or places that touch it, and a way to turn down the risk and get paid
 // less. `dungeonPrep: 'supplies'` costs Ahn at the door and buys one extra supply charge.
 
-const gate = ({ done, ...spec }) => ({ major: true, forbids: ['Distorted', done], ...spec });
+const preparationOptions = {
+  gate_lobotomy_fixer_survey: {
+    labelVi: 'Nhờ bạn kiếm người hướng dẫn khảo sát (20 gắn bó)', labelEn: 'Ask your friend to arrange a survey guide (20 bond)',
+    favorCost: { role: 'friend', amount: 20 }, dungeonPrep: 'supplies',
+    resultVi: 'Người quen tìm giúp một người từng vận chuyển đồ vào chi nhánh. Anh đưa bạn dây dự phòng và chỉ chỗ trục thông gió bị gãy. Món nợ này không tính bằng tiền.',
+    resultEn: 'Your friend finds a former branch courier. He provides a spare rope and marks the broken ventilation shaft. You owe your friend for this.'
+  },
+  gate_bloodfiend_zwei_bounty: {
+    labelVi: 'Đổi ống K Corp đang mang lấy bộ tiếp tế', labelEn: 'Trade your K Corp ampoule for a supply kit',
+    useItem: 'con_kcorp_ampoule', dungeonPrep: 'supplies',
+    resultVi: 'Quầy thuốc nhận ống K Corp còn niêm, đổi cho bạn băng gạc, thuốc cầm máu và đèn. Bạn kiểm tra từng món rồi mới xuống công viên.',
+    resultEn: 'The medic trades your sealed ampoule for dressings, coagulant and a lamp. You check each item before entering the park.'
+  },
+  gate_outskirts_salvage_crew: {
+    labelVi: 'Nhờ bạn góp bộ dây và nước dự phòng (20 gắn bó)', labelEn: 'Ask your friend for rope and spare water (20 bond)',
+    favorCost: { role: 'friend', amount: 20 }, dungeonPrep: 'supplies',
+    resultVi: 'Bạn nhận bình nước và dây, hứa sẽ bù lại chuyến hàng sau. Đội nhặt phế tích cho bạn chỗ ở giữa hàng người.',
+    resultEn: 'You accept water and rope, promising to repay the favor on a later trip. The scavengers place you in the middle of the column.'
+  }
+};
+const gate = ({ done, ...spec }) => ({ major: true, forbids: ['Distorted', done], ...spec,
+  choices: preparationOptions[spec.id] ? [...spec.choices, {
+    ...preparationOptions[spec.id], startDungeon: spec.choices[0].startDungeon, flagsAdd: [done]
+  }] : spec.choices
+});
 
 const enter = (dungeon, done, labelVi, labelEn, resultVi, resultEn) => ({
   labelVi, labelEn, resultVi, resultEn,

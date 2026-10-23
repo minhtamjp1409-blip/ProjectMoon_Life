@@ -1,3 +1,4 @@
+import { cityEventMultiplier } from './cityConditions.js';
 import { rememberResonance, hasEgoOpportunity, colorTrialAvailable, rollEgoEncounter } from './awakeningProgress.js';
 import { evaluateNarrativeArcProgression, computeEmotionalWaveConsideration } from './narrativeArcEngine.js';
 import { matchesEventContext } from './eventConditions.js';
@@ -444,7 +445,7 @@ export function scoreEventUtility(event, char, weaver) {
   }
 
   const customMult = weaver.customWeights?.[event.id] ?? 1;
-  const rawTotal = (baseWeight + causalScore + loreScore + npcScore + pacingScore + arcBonus) * considerationMult * waveMultiplier * customMult;
+  const rawTotal = (baseWeight + causalScore + loreScore + npcScore + pacingScore + arcBonus) * considerationMult * waveMultiplier * customMult * cityEventMultiplier(event, char);
   const totalUtility = Math.round(rawTotal * 10) / 10;
 
   return {

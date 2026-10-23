@@ -48,7 +48,7 @@ const gatesBy = {};
 for (const { e, c } of entries) (gatesBy[c.startDungeon] ||= new Set()).add(e.id);
 for (const id of dungeonIds) assert((gatesBy[id]?.size || 0) >= 2, `${id} needs at least two entry events`);
 const prep = DUNGEON_GATE_EVENTS.flatMap((e) => e.choices).filter((c) => c.dungeonPrep);
-assert(prep.length >= 5 && prep.every((c) => c.costAhn > 0 && c.startDungeon), 'prepared entries must cost Ahn and start a dungeon');
+assert(prep.length >= 5 && prep.every((c) => (c.costAhn > 0 || c.useItem || c.favorCost?.amount > 0) && c.startDungeon), 'prepared entries must spend cash, an item or a favor and start a dungeon');
 const prepEvent = DUNGEON_GATE_EVENTS.find((e) => e.choices.some((c) => c.dungeonPrep));
 const prepIdx = prepEvent.choices.findIndex((c) => c.dungeonPrep);
 let prepChar = createNewCharacter({ seed: 'prep_seed' });

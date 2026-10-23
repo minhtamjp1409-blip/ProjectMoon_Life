@@ -1551,6 +1551,12 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
   if (choice.useItem) {
     const index = char.inventory.findIndex(i => (i.id || i) === choice.useItem);
     char.inventory.splice(index, 1);
+    if (!char.inventory.some(i => (i.id || i) === choice.useItem) && char.equipped) {
+      char.equipped = { ...char.equipped };
+      for (const [slot, item] of Object.entries(char.equipped)) {
+        if ((item?.id || item) === choice.useItem) char.equipped[slot] = null;
+      }
+    }
   }
   if (choice.favorCost) {
     const { role, amount } = choice.favorCost;

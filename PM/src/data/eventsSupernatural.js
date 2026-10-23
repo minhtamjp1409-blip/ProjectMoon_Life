@@ -1,4 +1,5 @@
 import { PREPARED_CHOICE_EVENTS } from './eventsPreparedChoices.js';
+import { ABNORMALITY_FIELDWORK_EVENTS } from './eventsAbnormalityFieldwork.js';
 import { FIXER_BREAKTHROUGH_EVENTS } from './eventsFixerBreakthrough.js';
 // ============================================================================
 // MAJOR EVENTS: WORKSHOPS, BLOODFIENDS, THE GREAT LAKE, HONGYUAN, THE PINKY,
@@ -8,6 +9,7 @@ import { FIXER_BREAKTHROUGH_EVENTS } from './eventsFixerBreakthrough.js';
 
 export const SUPERNATURAL_EVENTS = [
   ...PREPARED_CHOICE_EVENTS,
+  ...ABNORMALITY_FIELDWORK_EVENTS,
   ...FIXER_BREAKTHROUGH_EVENTS,
   // ------------------------------------------------------------------ the Workshop
   // ------------------------------------------------------------------ Bloodfiends
