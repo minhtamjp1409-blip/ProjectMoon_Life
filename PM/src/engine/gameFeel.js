@@ -4,8 +4,18 @@
  * - Decaying trauma-based screen shake (trauma^2 quadratic response).
  * - Smooth pseudo-random offsets via sine wave phase sampling, NOT erratic jitter.
  * - Hit-stop / freeze frame mechanics for impact moments.
- * - Button squash & stretch feedback.
+ *
+ * The frame loop only runs while there is trauma to spend, so an idle screen costs nothing,
+ * and nothing shakes for players who asked for reduced motion.
  */
+
+const reducedMotion = () => {
+  if (typeof document === 'undefined') return true;
+  const mode = document.documentElement.dataset.motion;
+  if (mode === 'reduced') return true;
+  if (mode === 'full') return false;
+  return typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+};
 
 class GameFeelEngine {
   constructor() {
@@ -16,54 +26,50 @@ class GameFeelEngine {
     this.maxRoll = 0.035; // radians (~2 degrees)
 
     this.time = 0.0;
-    this.lastFrame = performance.now();
+    this.lastFrame = 0;
     this.listeners = new Set();
     this.animId = null;
 
     this.hitStopActive = false;
     this.hitStopTimeout = null;
-
-    this.startLoop();
   }
 
-  startLoop() {
-    const loop = (now) => {
-      const dt = Math.min(0.1, (now - this.lastFrame) / 1000);
-      this.lastFrame = now;
+  loop = (now) => {
+    const dt = Math.min(0.1, (now - this.lastFrame) / 1000);
+    this.lastFrame = now;
+    this.trauma = Math.max(0, this.trauma - this.decay * dt);
+    this.time += dt * 32.0;
 
-      if (this.trauma > 0) {
-        this.trauma = Math.max(0, this.trauma - this.decay * dt);
-        this.time += dt * 32.0;
+    // Quadratic response: trauma^2 gives gentle low hits and sharp punchy high hits
+    const shake = this.trauma * this.trauma;
+    this.emit({
+      x: this.maxOffsetX * shake * Math.sin(this.time * 1.7),
+      y: this.maxOffsetY * shake * Math.sin(this.time * 2.3),
+      rot: this.maxRoll * shake * Math.sin(this.time * 1.1),
+      shake,
+      isShaking: this.trauma > 0
+    });
 
-        // Quadratic response: trauma^2 gives gentle low hits and sharp punchy high hits
-        const shake = this.trauma * this.trauma;
-        const x = this.maxOffsetX * shake * Math.sin(this.time * 1.7);
-        const y = this.maxOffsetY * shake * Math.sin(this.time * 2.3);
-        const rot = this.maxRoll * shake * Math.sin(this.time * 1.1);
-
-        this.emit({ x, y, rot, shake, isShaking: true });
-      } else {
-        this.emit({ x: 0, y: 0, rot: 0, shake: 0, isShaking: false });
-      }
-
-      this.animId = requestAnimationFrame(loop);
-    };
-
-    this.animId = requestAnimationFrame(loop);
-  }
+    this.animId = this.trauma > 0 ? requestAnimationFrame(this.loop) : null;
+  };
 
   /**
    * Adds trauma (0.0 to 1.0). Hits stack trauma instead of overriding.
    */
   addTrauma(amount) {
+    if (reducedMotion()) return;
     this.trauma = Math.min(1.0, this.trauma + amount);
+    if (this.animId === null) {
+      this.lastFrame = performance.now();
+      this.animId = requestAnimationFrame(this.loop);
+    }
   }
 
   /**
    * Triggers a hit-stop freeze frame for high-impact moments (deaths, E.G.O, fatal choices).
    */
   triggerHitStop(durationMs = 90) {
-    if (this.hitStopActive) return;
+    if (this.hitStopActive || reducedMotion()) return;
     this.hitStopActive = true;
     document.body.classList.add('is-hit-stop');
 
@@ -72,6 +78,13 @@ class GameFeelEngine {
       this.hitStopActive = false;
       document.body.classList.remove('is-hit-stop');
     }, durationMs);
+  }
+
+  /** A short buzz on touch devices: a choice landing, a check failing, a death. */
+  haptic(pattern = 12) {
+    if (reducedMotion() || typeof navigator === 'undefined' || !navigator.vibrate) return;
+    if (!window.matchMedia?.('(pointer: coarse)').matches) return;
+    try { navigator.vibrate(pattern); } catch { /* unsupported */ }
   }
 
   subscribe(listener) {

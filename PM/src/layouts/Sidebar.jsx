@@ -13,7 +13,8 @@ import {
   PanelLeftOpen,
   Monitor,
   Sparkles,
-  Pause
+  Pause,
+  Type
 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useThemeStore } from '../store/themeStore';
@@ -104,6 +105,26 @@ export function MotionToggle({ lang, placement = 'top' }) {
   );
 }
 
+const TEXT_LABELS = {
+  md: ['Cỡ chữ: vừa', 'Text size: medium'],
+  lg: ['Cỡ chữ: lớn', 'Text size: large'],
+  xl: ['Cỡ chữ: rất lớn', 'Text size: extra large']
+};
+
+/** Story text is the product, so its size is a setting and not an afterthought. */
+export function TextSizeToggle({ lang, placement = 'top' }) {
+  const textSize = useThemeStore((s) => s.textSize);
+  const cycleTextSize = useThemeStore((s) => s.cycleTextSize);
+  const label = pick(lang, ...TEXT_LABELS[textSize]);
+  return (
+    <Tooltip title={`${label}. ${pick(lang, 'Bấm để đổi.', 'Click to change.')}`} placement={placement}>
+      <button className="app-tool" onClick={cycleTextSize} aria-label={label}>
+        <Type size={textSize === 'md' ? 15 : textSize === 'lg' ? 17 : 19} aria-hidden="true" />
+      </button>
+    </Tooltip>
+  );
+}
+
 export const Sidebar = ({ isCollapsed, onToggleCollapse, isPlay, languageOverride }) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -178,6 +199,7 @@ export const Sidebar = ({ isCollapsed, onToggleCollapse, isPlay, languageOverrid
           >
             {themeMode === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
           </button>
+          <TextSizeToggle lang={lang} />
           <MotionToggle lang={lang} />
         </div>
         <span className="app-connection">

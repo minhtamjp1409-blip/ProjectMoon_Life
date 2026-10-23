@@ -207,6 +207,52 @@ export function computeEmotionalWaveConsideration(char, weaver, event) {
  * Autonomous Micro-Drama for living companions:
  * Runs annually at year end to create living, breathing companion events
  */
+/**
+ * What certain people do when the relationship has run long enough. These callbacks exist in the
+ * data but no choice plants them, because nobody can know in advance who will stay close, so the
+ * bond itself schedules them.
+ */
+const NPC_RETURNS = [
+  {
+    id: 'csq_npc_sworn_rescue', roles: ['partner', 'friend'], minBond: 65, minAge: 20, chance: 0.16, delay: 1,
+    reasonVi: (n) => `${n.nameVi} đã đứng cạnh bạn đủ lâu để không cần được nhờ`,
+    reasonEn: (n) => `${n.nameEn} has stood by you long enough not to need asking`
+  },
+  {
+    id: 'csq_npc_mentor_duel', roles: ['mentor'], minBond: 50, minAge: 28, chance: 0.07, delay: 2,
+    reasonVi: (n) => `${n.nameVi} muốn biết bạn đã đi xa tới đâu`,
+    reasonEn: (n) => `${n.nameEn} wants to know how far you have come`
+  },
+  {
+    id: 'csq_npc_rival_reckoning', roles: ['nemesis', 'rival'], minAge: 22, chance: 0.08, delay: 2,
+    reasonVi: (n) => `${n.nameVi} vẫn nhớ món nợ giữa hai người`,
+    reasonEn: (n) => `${n.nameEn} still remembers what lies between you`
+  }
+];
+
+function scheduleNpcReturns(char, rng) {
+  const pending = char.weaver?.pendingThreads || [];
+  const seen = char.seenEvents || [];
+  const added = [];
+  for (const rule of NPC_RETURNS) {
+    if (seen.includes(rule.id) || pending.some((th) => th.eventId === rule.id && !th.fulfilled)) continue;
+    if ((char.age || 0) < rule.minAge) continue;
+    const npc = rule.roles.map((role) => char.npcs?.[role]).find((n) => npcIsActive(n) && (n.bond ?? 35) >= (rule.minBond ?? 0));
+    if (!npc || rng() >= rule.chance) continue;
+    added.push({
+      id: `thr_${char.age}_${rule.id}`,
+      kind: 'major',
+      eventId: rule.id,
+      plantedAtAge: char.age,
+      triggerAge: char.age + rule.delay,
+      reasonVi: rule.reasonVi(npc),
+      reasonEn: rule.reasonEn(npc),
+      fulfilled: false
+    });
+  }
+  if (added.length) char.weaver = { ...char.weaver, pendingThreads: [...pending, ...added] };
+}
+
 export function simulateNpcAutonomousLife(char, rng = Math.random) {
   const logs = [];
   if (!char.npcs) return logs;
@@ -230,7 +276,7 @@ export function simulateNpcAutonomousLife(char, rng = Math.random) {
             vi: `[Tin đồn bất lợi] ${friend.nameVi} công khai phàn nàn với các môi giới trong vùng rằng bạn là kẻ tính toán chỉ biết giữ mạng mình, khiến uy tín của bạn sứt mẻ ít nhiều.`,
             en: `[Hostile Rumor] ${friend.nameEn} openly complained to local brokers that you only ever look out for your own skin, chipping away at your standing in the district.`
           });
-          if (char.stats) char.stats.reputation = Math.max(-100, (char.stats.reputation || 0) - 3);
+          if (char.stats) char.stats.rep = Math.max(0, (char.stats.rep || 0) - 3);
         }
       } else {
         const roll = rng();
@@ -328,5 +374,6 @@ export function simulateNpcAutonomousLife(char, rng = Math.random) {
     if (char.stats) char.stats.sanity = Math.max(0, (char.stats.sanity || 50) - 3);
   }
 
+  scheduleNpcReturns(char, rng);
   return logs;
 }

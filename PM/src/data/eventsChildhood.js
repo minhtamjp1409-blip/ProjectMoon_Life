@@ -246,7 +246,7 @@ export const CHILDHOOD_EVENTS = [
   },
   {
     id: 'ch_outskirts_ruins_expedition',
-    age: [6, 15],
+    age: [12, 17],
     major: true,
     weight: 9.5,
     requires: ['Outskirts'],
@@ -257,23 +257,8 @@ export const CHILDHOOD_EVENTS = [
         labelVi: 'Trát bùn lên người cho mất mùi, bò vào lấy chiếc hộp',
         labelEn: 'Smear yourself with mud to hide your scent and crawl in for the case',
         startDungeon: 'dungeon_outskirts_ruins',
-        outcomes: [
-          {
-            w: 60,
-            resultVi: 'Bạn trét bùn tanh khắp người, nín thở bò sát mặt đá nhặt lấy chiếc hộp kim loại cùng thanh đoản kiếm của người tử nạn. Bên trong hộp là các bản vẽ cơ khí Singularity cổ xưa; bạn đổi nó cho đoàn thương nhân sa mạc để lấy một bộ trang bị sinh tồn cao cấp mà cả trại tị nạn chưa từng thấy.',
-            resultEn: 'The beast never looked up. You took the case and the dead man’s short sword. What was inside traded with a caravan for gear no one in the camp had ever owned.',
-            effects: { wealth: +24, rep: +12, network: +10, resonance: +12 },
-            flagsAdd: ['유물', '고급장비', '해결사동경']
-          },
-          {
-            w: 40,
-            resultVi: 'Nó ngửi thấy bạn ở mét cuối cùng. Móng của nó cào ba đường dọc lưng bạn khi bạn ôm hộp lăn xuống khe đá.',
-            resultEn: 'It caught your scent in the last meter. Its claws raked three lines down your back as you rolled into a crevice with the case.',
-            effects: { health: -28, sanity: -12, wealth: +16, resonance: +16 },
-            flagsAdd: ['유물'],
-            scarsAdd: ['Ba vết cào trên lưng']
-          }
-        ]
+        resultVi: 'Bạn trét bùn tanh khắp người, nín thở và bò sát mặt đá. Đường hầm hẹp dần, và mùi của thứ đang ăn xác chuyển từ tanh sang ngọt.',
+        resultEn: 'You smear stinking mud over yourself and crawl along the stone, holding your breath. The tunnel narrows, and the smell of whatever feeds on the body turns from rank to sweet.'
       },
       {
         labelVi: 'Bán vị trí cái hầm cho một nhóm săn tiền thưởng',
@@ -415,10 +400,10 @@ export const CHILDHOOD_EVENTS = [
       {
         labelVi: 'Theo người chở hàng vào xưởng',
         labelEn: 'Follow the freight crew to a workshop',
-        resultVi: 'Bạn phụ đẩy xe phế liệu qua cổng. Bên trong, người thợ ở District T giữ lại đôi tay còn nguyên của bạn và ghi tên vào sổ học việc. Đêm đầu tiên trong Backstreets, bạn ngủ cạnh lò rèn đã tắt.',
-        resultEn: 'You push the scrap cart through the gate. Inside, a District T smith sees your uninjured hands and enters your name in the apprentice ledger. Your first night in the Backstreets is spent beside a cold forge.',
+        resultVi: 'Bạn phụ đẩy xe phế liệu qua cổng. Bên trong, người thợ ở District T giữ lại đôi tay còn nguyên của bạn và trả công theo ngày, không ghi tên vào sổ nào. Đêm đầu tiên trong Backstreets, bạn ngủ cạnh lò rèn đã tắt.',
+        resultEn: 'You push the scrap cart through the gate. Inside, a District T smith sees your uninjured hands and pays you by the day, entering your name in no ledger. Your first night in the Backstreets is spent beside a cold forge.',
         setRegion: 'T',
-        setJob: 'Workshop Craftsman',
+        setJob: 'Outcast',
         effects: { health: -5, wealth: 5, network: 4 },
         flagsAdd: ['EnteredCity']
       },
@@ -451,7 +436,7 @@ export const CHILDHOOD_EVENTS = [
     age: [18, 99],
     major: true,
     weight: 999,
-    vi: "[Mười tám tuổi] Tiền ăn, tiền ở và những khoản nợ giờ đến tên bạn. Dưới mái hiên Backstreets, bạn nhìn bốn nơi còn nhận người: quầy cấp thẻ Fixer, một Syndicate, cổng tuyển dụng Wing và xưởng học nghề. Bạn chỉ đủ thời gian nộp một đơn.",
+    vi: "[Mười tám tuổi] Tiền ăn, tiền ở và những khoản nợ giờ đến tên bạn. Dưới mái hiên Backstreets, bạn nhìn ba nơi còn nhận người: quầy cấp thẻ Fixer, một Syndicate và cổng tuyển dụng Wing. Bạn chỉ đủ thời gian nộp một đơn.",
     en: '[Eighteen] At eighteen you start paying for everything in the City yourself, breathing included. No one feeds you anymore. How will you make a living?',
     choices: [
       {
@@ -485,14 +470,64 @@ export const CHILDHOOD_EVENTS = [
         effects: { wealth: +18, network: +12, sanity: -8 },
         flagsAdd: ['Feather', 'Nest'],
         recordsAdd: ['nest_migration']
+      }
+    ]
+  },
+  // --- found in childhood, not scheduled by any earlier choice ---
+  {
+    id: 'child_rusty_workshop_blade',
+    age: [7, 13],
+    major: true,
+    weight: 60,
+    forbids: ['child_blade_found'],
+    vi: '[Thanh Đao Rỉ Sét Dưới Bãi Rác] Bới tìm linh kiện trong bãi phế thải Backstreets, tay bạn chạm phải một chuôi kiếm bọc da sờn rách. Đó là một thanh đao Workshop cũ bị bỏ lại sau một vụ thanh trừng đêm qua. Lưỡi đao mẻ vài chỗ nhưng thép vẫn sáng loáng dưới ánh đèn đường.',
+    en: '[Rusted Workshop Blade in the Scraps] Foraging through Backstreet refuse, your fingers strike worn leather. A discarded Workshop sabre from last night’s purge. The edge is nicked, but the alloy gleams under lamplight.',
+    choices: [
+      {
+        labelVi: 'Giấu thanh đao dưới gầm giường, ngày ngày lén tập vung kiếm',
+        labelEn: 'Hide the sabre under your cot, practicing forms in secret',
+        resultVi: 'Những vết chai đầu tiên hình thành trên lòng bàn tay non nớt của bạn. Cảm giác cầm vũ khí mang lại cho bạn sự tự tin hiếm hoi giữa khu ổ chuột đầy hiểm nguy.',
+        resultEn: 'The first calluses hardened across your young palms. Holding steel gave you rare courage in a predatory neighborhood.',
+        effects: { health: +5, sanity: +5, rep: +4 },
+        meritAdd: 6,
+        flagsAdd: ['child_blade_found', 'EarlySwordAptitude']
       },
       {
-        labelVi: 'Học nghề ở một Workshop',
-        labelEn: 'Apprentice at a Workshop',
-        resultVi: "Người thợ cả đặt búa vào tay bạn, chỉ về lò rèn. \"Hỏng một trăm phôi cũng được. Đừng để phôi thứ một trăm lẻ một hỏng vì bạn không chịu học.\"",
-        resultEn: 'The workshop owner handed you a hammer and pointed at the forge. “Ruin a hundred and you’ll make your first.” He meant it.',
-        setJob: 'Workshop Craftsman',
-        effects: { wealth: +12, network: +10, sanity: -4 }
+        labelVi: 'Đem bán cho một lò rèn Workshop ở đầu hẻm lấy 10 Ahn',
+        labelEn: 'Sell it to a local alley forge master for 10 Ahn',
+        resultVi: 'Người thợ rèn gật gù khen mắt nhìn của bạn, trả đủ 10 Ahn và cho bạn một đĩa bánh bao nóng hổi. Bạn giúp gia đình no bụng suốt cả tuần.',
+        resultEn: 'The smith nodded at your keen eye, handing over 10 Ahn and hot dumplings. You kept the household fed for a week.',
+        effects: { wealth: +10, sanity: +6 },
+        meritAdd: 5,
+        flagsAdd: ['child_blade_found']
+      }
+    ]
+  },
+  {
+    id: 'child_middle_brother_protection',
+    age: [10, 16],
+    major: true,
+    weight: 55,
+    forbids: ['child_middle_favor_done'],
+    vi: "[Người của Middle] Đám cướp giật giày bạn. Một người áo tím thêu xích bước tới, đánh ngã tên cầm đầu. \"Đứng dậy, nhóc. Ở đây phải biết đấm trả.\" Ông nhìn bạn chờ phản ứng.",
+    en: '[Shadow of a Middle Big Brother] When muggers corner you for your shoes, a man in a purple chained coat strolls up. With a single backhand, he sends the ringleader flying into the bin. He glares at you: "Stand up, kid. In this alley, if you don’t hit back, you get eaten."',
+    choices: [
+      {
+        labelVi: 'Lau máu trên mũi, xin ông ta chỉ dạy cách đấm bốc',
+        labelEn: 'Wipe blood from your nose, asking him to teach you to box',
+        resultVi: 'Người đại ca cười lớn vỗ vai bạn đau điếng. Ông ta chỉ cho bạn thế thủ cơ bản của Middle và cho phép bạn nhắc tên ông ta khi gặp rắc rối ở khu phố này.',
+        resultEn: 'The Big Brother laughed, clapping your shoulder hard. He demonstrated the Middle’s defensive guard and gave you leave to speak his name in these alleys.',
+        effects: { health: +8, sanity: +8, rep: +10 },
+        meritAdd: 8,
+        flagsAdd: ['child_middle_favor_done', 'MiddleSympathy']
+      },
+      {
+        labelVi: 'Cúi đầu cảm ơn lễ phép rồi chạy thật nhanh về nhà',
+        labelEn: 'Bow respectfully in thanks and sprint straight home',
+        resultVi: 'Bạn giữ an toàn cho bản thân và tránh bị cuốn vào các ân oán giang hồ của các Syndicate ngón tay.',
+        resultEn: 'You stayed safe and avoided entangling yourself early in syndicate turf wars.',
+        effects: { sanity: +4 },
+        flagsAdd: ['child_middle_favor_done']
       }
     ]
   }
@@ -788,7 +823,7 @@ export const CONSEQUENCE_EVENTS = [
     major: true,
     isCausalCallback: true,
     vi: "[Đứa trẻ trở lại] Inquisitor N Corp dồn bạn vào hẻm. Đứa trẻ bạn từng cứu nhảy xuống giữa hai bên, giờ là Fixer mang mắt và tay máy. Người ấy nâng cưa xích: \"Lần này để tôi nhổ đinh cho bạn.\"",
-    en: '[The child with the prosthetic eye returns] Three N Corp Inquisitors backed you into a dead end, hammers and nails gleaming in the dark. As the first nail neared your shoulder, a figure dropped from the rooftops with a massive Workshop chainsaw blade—the orphan you cut loose years ago, now a Grade 3 Fixer with gleaming chrome eyes and arms!\n“This time, it’s my turn to pull the nails for you!”',
+    en: '[The child with the prosthetic eye returns] Three N Corp Inquisitors backed you into a dead end, hammers and nails gleaming in the dark. As the first nail neared your shoulder, a figure dropped from the rooftops with a massive Workshop chainsaw blade, the orphan you cut loose years ago, now a Grade 3 Fixer with gleaming chrome eyes and arms.\n“This time, it’s my turn to pull the nails for you!”',
     choices: [
       {
         labelVi: 'Kề vai chiến đấu, cùng nhau đập tan toán Inquisitor',
@@ -834,7 +869,7 @@ export const CONSEQUENCE_EVENTS = [
     major: true,
     isCausalCallback: true,
     vi: "[Kiếm dưới mưa] Bamboo-hatted Kim chặn bạn trên cầu. Ông nhớ lần bạn đánh bại đệ tử mình. \"Rút kiếm. Ta muốn xem ngươi đã học được gì từ trận ấy.\" Nước mưa chảy dọc sống đao.",
-    en: '[To Claim Their Bones: Returning the Blade] On a rain-soaked bridge, Kim—the Sasu of the Blade Lineage with his straw hat and tattered bamboo coat—stood across your path. His katana leveled at your chest.\n“You are the one who yielded flesh and claimed my disciple’s bones that year. Draw your sword. Show me if your bones are worthy of standing in this rain.”',
+    en: '[To Claim Their Bones: Returning the Blade] On a rain-soaked bridge, Kim, the Sasu of the Blade Lineage with his straw hat and tattered bamboo coat, stood across your path. His katana leveled at your chest.\n“You are the one who yielded flesh and claimed my disciple’s bones that year. Draw your sword. Show me if your bones are worthy of standing in this rain.”',
     choices: [
       {
         labelVi: 'Dồn hết ý chí vào thế thủ To Claim Their Bones',
@@ -864,24 +899,24 @@ export const CONSEQUENCE_EVENTS = [
     id: 'csq_taboo_workshop_raid',
     major: true,
     isCausalCallback: true,
-    vi: "[Tres phong tỏa xưởng] Tres Association đến cùng một Beholder. Khẩu súng xuyên tường bạn từng chế tạo đã xuất hiện trong vụ ám sát Giám đốc Wing. Họ đòi bản vẽ, tiền phạt và câu trả lời ngay tại cửa.",
-    en: '[Tres and the Taboo Hunters] Three Tres Association Workshop Sweepers sealed off your workshop alongside a B Corp Beholder. The wall-piercing firearm you secretly crafted years ago was just used to assassinate a Wing Director.\n“Surrender all schematics and pay a 40 Ahn penalty, or this workshop burns to ash with you inside.”',
+    vi: '[Tres siết lại] Một người của Tres đến cùng một Beholder của B Corp. Khẩu súng xuyên tường bạn từng nhờ người thợ rèn quen chế tạo vừa xuất hiện trong một vụ ám sát một Giám đốc Wing. Họ không hỏi ai đã làm ra nó. Họ hỏi ai đã đặt nó.',
+    en: '[Tres closes in] A Tres Association inspector arrives with a B Corp Beholder. The wall-piercing gun you once had your regular smith build has just surfaced in the assassination of a Wing Director. They do not ask who made it. They ask who ordered it.',
     choices: [
       {
-        labelVi: 'Nộp 40 Ahn và đốt toàn bộ bản thiết kế trước mặt họ',
-        labelEn: 'Pay 40 Ahn and burn all blueprints in front of them',
-        resultVi: 'Ngọn lửa lò rèn nuốt trọn tác phẩm tâm huyết của bạn. Tres đóng dấu "Đã giải quyết" và rời đi. Bạn mất hết tiền, nhưng giữ lại được mạng sống và giấy phép mở xưởng.',
-        resultEn: 'The forge flames consumed your life’s masterpiece. Tres stamped “Resolved” and departed. You lost all your wealth, but kept your life and forge license.',
-        effects: { wealth: -40, sanity: -15, taboo: -2 }
+        labelVi: 'Nộp 40 Ahn và khai bạn chỉ là người trung gian',
+        labelEn: 'Pay 40 Ahn and say you were only the go-between',
+        resultVi: 'Người của Tres ghi tên bạn vào dòng "bên trung gian" và đóng dấu "Đã giải quyết". Bạn mất hết tiền, giữ lại được mạng, và người thợ rèn quen từ nay không nhận đơn của bạn nữa.',
+        resultEn: 'Tres writes your name on the "intermediary" line and stamps it Resolved. You lose your money, keep your life, and your regular smith stops taking your orders.',
+        costAhn: 40,
+        effects: { wealth: -40, sanity: -12, taboo: -2, network: -6 }
       },
       {
-        labelVi: 'Kích nổ lò rèn, dùng bom khói Workshop phá đường chạy',
-        labelEn: 'Overload the forge, deploy smoke bombs, and break out',
-        resultVi: 'Vụ nổ thổi bay cả góc phố. Bạn thoát được vào cống ngầm với vài vết bỏng sâu. Từ nay xưởng của bạn là tàn tích, và bạn trở thành một Thợ rèn giang hồ bị truy nã.',
-        resultEn: 'The blast blew apart half the block. You escaped through the drains with severe burns. From now on your shop is rubble, and you are a rogue wandering craftsman with a bounty.',
-        effects: { health: -32, wealth: -20, rep: +24, heat: +35, resonance: +22 },
-        scarsAdd: ['Thợ rèn phạm Taboo'],
-        meritAdd: 25
+        labelVi: 'Bỏ chạy qua cống ngầm, để người thợ rèn lại',
+        labelEn: 'Run through the drains and leave the smith behind',
+        resultVi: 'Bạn thoát qua cống với vài vết bỏng nhẹ. Hôm sau nghe tin xưởng bị niêm phong, và người thợ rèn quen không có mặt khi họ vào. Hana ghi tên bạn vào danh sách theo dõi.',
+        resultEn: 'You escape through the drains with minor burns. The next day you hear the shop has been sealed, and the smith was not there when they entered. Hana adds your name to a watch list.',
+        effects: { health: -18, heat: 32, rep: -10, resonance: 12 },
+        scarsAdd: ['Kẻ đặt khẩu súng phạm Taboo']
       }
     ]
   },
@@ -928,63 +963,6 @@ export const CONSEQUENCE_EVENTS = [
     ]
   },
 
-  {
-    id: 'child_rusty_workshop_blade',
-    age: [7, 13],
-    major: true,
-    weight: 60,
-    forbids: ['child_blade_found'],
-    vi: '[Thanh Đao Rỉ Sét Dưới Bãi Rác] Bới tìm linh kiện trong bãi phế thải Backstreets, tay bạn chạm phải một chuôi kiếm bọc da sờn rách. Đó là một thanh đao Workshop cũ bị bỏ lại sau một vụ thanh trừng đêm qua. Lưỡi đao mẻ vài chỗ nhưng thép vẫn sáng loáng dưới ánh đèn đường.',
-    en: '[Rusted Workshop Blade in the Scraps] Foraging through Backstreet refuse, your fingers strike worn leather. A discarded Workshop sabre from last night’s purge. The edge is nicked, but the alloy gleams under lamplight.',
-    choices: [
-      {
-        labelVi: 'Giấu thanh đao dưới gầm giường, ngày ngày lén tập vung kiếm',
-        labelEn: 'Hide the sabre under your cot, practicing forms in secret',
-        resultVi: 'Những vết chai đầu tiên hình thành trên lòng bàn tay non nớt của bạn. Cảm giác cầm vũ khí mang lại cho bạn sự tự tin hiếm hoi giữa khu ổ chuột đầy hiểm nguy.',
-        resultEn: 'The first calluses hardened across your young palms. Holding steel gave you rare courage in a predatory neighborhood.',
-        effects: { health: +5, sanity: +5, rep: +4 },
-        meritAdd: 6,
-        flagsAdd: ['child_blade_found', 'EarlySwordAptitude']
-      },
-      {
-        labelVi: 'Đem bán cho một lò rèn Workshop ở đầu hẻm lấy 10 Ahn',
-        labelEn: 'Sell it to a local alley forge master for 10 Ahn',
-        resultVi: 'Người thợ rèn gật gù khen mắt nhìn của bạn, trả đủ 10 Ahn và cho bạn một đĩa bánh bao nóng hổi. Bạn giúp gia đình no bụng suốt cả tuần.',
-        resultEn: 'The smith nodded at your keen eye, handing over 10 Ahn and hot dumplings. You kept the household fed for a week.',
-        effects: { wealth: +10, sanity: +6 },
-        meritAdd: 5,
-        flagsAdd: ['child_blade_found']
-      }
-    ]
-  },
-  {
-    id: 'child_middle_brother_protection',
-    age: [10, 16],
-    major: true,
-    weight: 55,
-    forbids: ['child_middle_favor_done'],
-    vi: "[Người của Middle] Đám cướp giật giày bạn. Một người áo tím thêu xích bước tới, đánh ngã tên cầm đầu. \"Đứng dậy, nhóc. Ở đây phải biết đấm trả.\" Ông nhìn bạn chờ phản ứng.",
-    en: '[Shadow of a Middle Big Brother] When muggers corner you for your shoes, a man in a purple chained coat strolls up. With a single backhand, he sends the ringleader flying into the bin. He glares at you: "Stand up, kid. In this alley, if you don’t hit back, you get eaten."',
-    choices: [
-      {
-        labelVi: 'Lau máu trên mũi, xin ông ta chỉ dạy cách đấm bốc',
-        labelEn: 'Wipe blood from your nose, asking him to teach you to box',
-        resultVi: 'Người đại ca cười lớn vỗ vai bạn đau điếng. Ông ta chỉ cho bạn thế thủ cơ bản của Middle và cho phép bạn nhắc tên ông ta khi gặp rắc rối ở khu phố này.',
-        resultEn: 'The Big Brother laughed, clapping your shoulder hard. He demonstrated the Middle’s defensive guard and gave you leave to speak his name in these alleys.',
-        effects: { health: +8, sanity: +8, rep: +10 },
-        meritAdd: 8,
-        flagsAdd: ['child_middle_favor_done', 'MiddleSympathy']
-      },
-      {
-        labelVi: 'Cúi đầu cảm ơn lễ phép rồi chạy thật nhanh về nhà',
-        labelEn: 'Bow respectfully in thanks and sprint straight home',
-        resultVi: 'Bạn giữ an toàn cho bản thân và tránh bị cuốn vào các ân oán giang hồ của các Syndicate ngón tay.',
-        resultEn: 'You stayed safe and avoided entangling yourself early in syndicate turf wars.',
-        effects: { sanity: +4 },
-        flagsAdd: ['child_middle_favor_done']
-      }
-    ]
-  },
-  ...THREAD_CONSEQUENCES,
+      ...THREAD_CONSEQUENCES,
   ...EXPANSION_CONSEQUENCE_EVENTS
 ];

@@ -216,8 +216,8 @@ export const EXPANSION_STORY_EVENTS = [
     need: { npc: 'mentor', bondAtLeast: ['mentor', 70] },
     forbids: ['mentor_final_duel_done'],
     tags: ['combat', 'loyalty', 'npc'],
-    vi: '[Bài học cuối cùng trên mái nhà] Dưới ánh trăng mờ đục của Backstreets, {mentor} rút vũ khí ra khỏi bao và chỉ thẳng vào ngực bạn: "Mọi kỹ thuật ta biết, con đều đã thuần thục. Nhưng kiếm thuật thực sự chỉ nở rộ khi con vượt qua cái bóng của người dạy dỗ mình. Đêm nay, đừng nương tay."',
-    en: '[Final Lesson upon the Rooftop] Under the dull moonlight of the Backstreets, {mentor} drew their weapon and leveled it at your chest: "Every technique I possess, you have mastered. But true craft only blooms when you surpass the shadow of your teacher. Tonight, do not hold back."',
+    vi: '[Bài học cuối cùng trên mái nhà] Dưới ánh đèn mờ đục của Backstreets, {mentor} rút vũ khí ra khỏi bao và chỉ thẳng vào ngực bạn: "Mọi kỹ thuật ta biết, con đều đã thuần thục. Nhưng kiếm thuật thực sự chỉ nở rộ khi con vượt qua cái bóng của người dạy dỗ mình. Đêm nay, đừng nương tay."',
+    en: '[Final Lesson upon the Rooftop] Under the dull lamplight of the Backstreets, {mentor} drew their weapon and leveled it at your chest: "Every technique I possess, you have mastered. But true craft only blooms when you surpass the shadow of your teacher. Tonight, do not hold back."',
     choices: [
       {
         labelVi: 'Vung toàn lực quyết đấu, khắc ghi từng chiêu thức của {mentor}',
@@ -802,23 +802,23 @@ export const EXPANSION_STORY_EVENTS = [
     need: { jobs: ['Fixer'] },
     forbids: ['liu_blazing_done'],
     tags: ['combat'],
-    vi: '[Ngọn Lửa Chiến Tuyến Liu] Tác chiến cùng Liu Association Section 3 trong chiến dịch càn quét một ổ Syndicate buôn lậu vũ khí, bạn được giao vị trí tiên phong trong đội hình Thiết Chưởng rực lửa.',
-    en: '[Liu Vanguard Blaze] Partnering with Liu Association Section 3 against an illicit arms syndicate, you were assigned point in their flaming palm strike formation.',
+    vi: "[Mũi dẫn của đội hình Liu] Bạn cùng Liu Association Section 3 càn quét một ổ Syndicate buôn lậu vũ khí, và được xếp ở mũi dẫn của đội hình Thiết Chưởng rực lửa.",
+    en: "[Point of the Liu Formation] You are working with Liu Association Section 3 to sweep an arms-smuggling Syndicate nest, and you are placed at the point of their flaming-palm formation.",
     choices: [
       {
-        labelVi: 'Vận khí toàn thân, tung chưởng lửa đốt cháy hàng phòng ngự đối phương',
-        labelEn: 'Channel inner breath, hurling blazing strikes through barricades',
-        resultVi: 'Sức nóng bốc lên ngùn ngụt; hàng rào gỗ và khiên thép đối phương tan chảy dưới uy lực nắm đấm rực lửa của bạn. Các võ sư Liu đồng thanh reo hò thán phục.',
-        resultEn: 'Scorching heat erupted; wooden ramparts and shields buckled beneath blazing fists. Liu martial masters roared in fierce acclaim.',
+        labelVi: "Vận khí toàn thân và tung chưởng lửa vào hàng rào đối phương",
+        labelEn: "Draw your breath through the whole body and throw flaming palm strikes at their barricade",
+        resultVi: "Hơi nóng dồn lên cho tới khi hàng rào gỗ và tấm khiên thép sụp xuống trước nắm đấm của bạn. Các võ sư Liu im lặng một nhịp, rồi gật đầu.",
+        resultEn: "The heat builds until the wooden barricade and steel shields buckle under your fists. The Liu masters stay silent a beat, then nod.",
         effects: { health: -15, sanity: +10, rep: +25 },
         meritAdd: 28,
         flagsAdd: ['liu_blazing_done', 'LiuFlameInitiate']
       },
       {
-        labelVi: 'Duy trì thế bộ vững chắc, bảo vệ đội hình tránh bị chia cắt',
-        labelEn: 'Anchor a steady stance, sealing formation flanks against breach',
-        resultVi: 'Sự kiên định của bạn giữ cho thế trận Liu không một kẽ hở. Trận càn quét thắng lợi mà không tổn thất một người nào.',
-        resultEn: 'Your disciplined footing prevented any breach. The purge succeeded without a single casualty on your flank.',
+        labelVi: "Giữ thế bộ thật vững để đội hình không bị chia cắt",
+        labelEn: "Hold a steady stance so the formation is not split",
+        resultVi: "Bạn đứng yên đủ lâu để cả đội hình Liu không lộ kẽ hở. Trận càn quét xong mà không ai bên sườn bạn bị thương.",
+        resultEn: "You stand still long enough that the Liu formation shows no gap. The sweep ends without a single injury on your flank.",
         effects: { health: -8, sanity: +8, rep: +18 },
         meritAdd: 20,
         flagsAdd: ['liu_blazing_done']
@@ -834,24 +834,24 @@ export const EXPANSION_STORY_EVENTS = [
     forbids: ['seven_auction_done'],
     tags: ['investigation'],
     vi: '[Mật Báo Của Seven Association] Một chuyên viên tình báo của Seven Association tiếp cận bạn tại quán cà phê kín, cung cấp hồ sơ tham nhũng của một quan chức Nest với giá hời nếu bạn chịu thâm nhập xác thực.',
-    en: '[Seven Association Intelligence Ledger] A field analyst from Seven Association approached you in a secluded bistro, offering a high-grade corruption docket on a Nest executive if you verify the vault coordinates.',
+    en: "[Seven Association Tip] An analyst from Seven Association approaches you in a back-room café with a corruption file on a Nest official, cheap, if you will verify it by getting into his vault.",
     choices: [
       {
-        labelVi: 'Đột nhập két sắt bí mật để chụp lại toàn bộ bằng chứng',
-        labelEn: 'Infiltrate the executive vault to microfilm the paper trail',
+        labelVi: "Đột nhập két sắt và chụp lại toàn bộ bằng chứng",
+        labelEn: "Break into the safe and photograph all the evidence",
         outcomes: [
           {
             w: 65,
-            resultVi: 'Bạn vượt qua hệ thống camera nhiệt và thoát ra không để lại dấu vết. Bằng chứng đanh thép mang lại cho bạn khoản thù lao khổng lồ từ Seven.',
-            resultEn: 'You bypassed thermal sweeps and extracted without tripping a single relay. The unassailable dossier earned massive Seven Association bounty.',
+            resultVi: "Bạn lách qua các camera nhiệt và rời đi không để lại dấu vết. Bằng chứng đủ chắc, và Seven trả bạn rất hậu.",
+            resultEn: "You slip past the thermal cameras and leave without a trace. The evidence is solid, and Seven pays you well.",
             effects: { wealth: +35, rep: +20, network: +15 },
             meritAdd: 25,
             flagsAdd: ['seven_auction_done']
           },
           {
             w: 35,
-            resultVi: 'Còi báo động vang lên khi bạn vừa lấy xong tài liệu; bạn phải nổ súng mở đường máu thoát thân.',
-            resultEn: 'Alarms blared as you tucked the papers away; you had to shoot your way down the fire escape.',
+            resultVi: "Còi báo động rú lên đúng lúc bạn vừa chép xong giấy tờ, và bạn phải nổ súng mở đường thoát.",
+            resultEn: "The alarm goes off just as you finish copying the papers, and you have to shoot your way out.",
             effects: { health: -18, wealth: +20, heat: +25 },
             meritAdd: 15,
             flagsAdd: ['seven_auction_done']
@@ -859,10 +859,10 @@ export const EXPANSION_STORY_EVENTS = [
         ]
       },
       {
-        labelVi: 'Bán lại tọa độ cho đối thủ của viên quan chức để kiếm tiền an toàn',
-        labelEn: 'Fip coordinates to the official’s corporate rival for clean coin',
+        labelVi: "Bán tọa độ cho đối thủ của viên quan chức để lấy tiền sạch",
+        labelEn: "Sell the coordinates to the official’s rival for clean money",
         resultVi: 'Bạn nhận 25 Ahn tiền môi giới mà không cần phải mạo hiểm mạng sống trong khu Nest được bảo vệ nghiêm ngặt.',
-        resultEn: 'You pocketed 25 Ahn in broker fees without risking life in heavily patrolled Nest perimeters.',
+        resultEn: "You take 25 Ahn in broker fees without risking your life in the heavily patrolled Nest.",
         effects: { wealth: +25, network: +10 },
         flagsAdd: ['seven_auction_done']
       }
@@ -1060,22 +1060,22 @@ export const EXPANSION_STORY_EVENTS = [
     forbids: ['index_prescript_pilgrim_done'],
     tags: ['syndicate'],
     vi: '[Mệnh Lệnh Không Tưởng Của The Index] Tờ Prescript từ người đưa tin Proselyte ghi rõ: "Bước đi lùi ba trăm bước vào lúc nửa đêm, đặt một bông hoa hồng trắng vào hòm thư nhà số 42, rồi cắt đứt dây đàn của cây phong cầm."',
-    en: '[The Index’s Impossible Prescript] The parchment from the Proselyte read: "Take three hundred paces backward at midnight, place one white rose inside mailbox 42, then sever the third string of the street accordion."',
+    en: "[The Index’s Impossible Prescript] The Prescript from the Proselyte messenger reads: “Walk backward three hundred steps at midnight, place a white rose in the mailbox of house 42, then cut the third string of the street accordion.”",
     choices: [
       {
-        labelVi: 'Tuân thủ tuyệt đối từng chữ trong chỉ dụ không thắc mắc',
-        labelEn: 'Execute every syllable of the decree without question',
-        resultVi: 'Sáng hôm sau bạn nghe tin vụ nổ khí ga ở nhà số 42 đã không xảy ra vì đường ống được sửa lúc người ta nhặt hoa. Ý chí của Thành Phố đã vận hành qua tay bạn.',
-        resultEn: 'At dawn you learned a fatal gas leak at 42 was averted when someone checked the flower. The City’s will wove through your blind compliance.',
+        labelVi: "Làm đúng từng chữ trong Prescript và không hỏi gì",
+        labelEn: "Follow every word of the Prescript without asking",
+        resultVi: 'Sáng hôm sau bạn nghe tin vụ nổ khí ga ở nhà số 42 đã không xảy ra vì đường ống được sửa lúc người ta nhặt hoa. Ý chí của The City đã vận hành qua tay bạn.',
+        resultEn: "By dawn you hear that a gas explosion at house 42 never happened, because the pipe was repaired while people were picking up the flower. The City’s will worked through your hands.",
         effects: { sanity: +15, resonance: +18 },
         meritAdd: 28,
         flagsAdd: ['index_prescript_pilgrim_done']
       },
       {
-        labelVi: 'Tìm hiểu ngọn nguồn logic ẩn giấu đằng sau chỉ dụ',
-        labelEn: 'Investigate the hidden causal chain behind the decree',
-        resultVi: 'Bạn nhận ra chuỗi nhân quả kinh hoàng được sắp đặt bởi The City. Sự thấu hiểu mang lại tri thức nhưng làm đầu óc bạn căng thẳng tột độ.',
-        resultEn: 'You unraveled the terrifying chain of causes laid by The City. Understanding granted insight but pushed sanity to the brink.',
+        labelVi: "Lần theo logic ẩn sau Prescript",
+        labelEn: "Trace the logic hidden behind the Prescript",
+        resultVi: "Bạn nhìn ra chuỗi nhân quả mà The City đã xếp sẵn. Hiểu được nó cho bạn nhiều thứ, và làm đầu bạn căng như dây đàn.",
+        resultEn: "You see the chain of cause and effect The City has laid out. Understanding it gives you a great deal, and stretches your head like a string.",
         effects: { sanity: -15, resonance: +25 },
         meritAdd: 20,
         flagsAdd: ['index_prescript_pilgrim_done']
@@ -1091,22 +1091,22 @@ export const EXPANSION_STORY_EVENTS = [
     forbids: ['middle_blood_debt_done'],
     tags: ['combat', 'syndicate'],
     vi: '[Món Nợ Trong Cuốn Sổ Hận Thù] Cuốn Book of Vengeance gọi tên một nhóm cướp vừa làm trầy xước cánh tay của một em nhỏ trong khu phố của The Middle. Đại Ca ra lệnh cho bạn dẫn đầu đội trừng phạt.',
-    en: '[The Ledger of Vengeance Call] The Book of Vengeance named a crew who bruised an orphan in the Middle’s residential ward. A Big Brother commanded you to lead the punitive march.',
+    en: "[A Debt in the Book of Vengeance] The Book of Vengeance names a crew who scraped the arm of a small child in the Middle’s neighborhood. The Big Brother orders you to lead the punishment squad.",
     choices: [
       {
         labelVi: 'Dẫn đầu huynh đệ đập nát sào huyệt lũ cướp bằng xích sắt',
         labelEn: 'Lead brothers to pulverize the hideout with iron chains',
-        resultVi: 'Xích sắt gầm vang trong ngõ hẹp; không một tên nào lành lặn thoát thân. Tên của bọn chúng bị gạch bỏ bằng mực đỏ rực rỡ trong sổ thù.',
-        resultEn: 'Chains roared through the corridor; none escaped unblemished. Their entries were struck out with gleaming red ink in the ledger.',
+        resultVi: "Xích sắt gầm trong ngõ hẹp; không tên nào ra khỏi đó lành lặn. Tên chúng bị gạch bằng mực đỏ trong sổ.",
+        resultEn: "Chains roar through the narrow alley; none leave it whole. Their names are struck out in red ink in the book.",
         effects: { health: -14, sanity: +12, rep: +25 },
         meritAdd: 28,
         flagsAdd: ['middle_blood_debt_done', 'MiddleChainEnforcer']
       },
       {
         labelVi: 'Bắt lũ cướp quỳ gối xin lỗi và bồi thường gấp mười lần Ahn',
-        labelEn: 'Force the raiders to kneel and pay tenfold restitution',
-        resultVi: 'Món tiền bồi thường lớn xoa dịu cơn giận của khu phố. Đại ca vỗ vai khen ngợi cách giải quyết thực tế của bạn.',
-        resultEn: 'The massive restitution pacified the ward’s wrath. The Big Brother praised your pragmatic restitution collection.',
+        labelEn: "Make the raiders kneel and pay ten times the Ahn",
+        resultVi: "Khoản bồi thường lớn làm cơn giận của khu phố nguội đi. Đại ca vỗ vai bạn vì cách giải quyết thực tế.",
+        resultEn: "The large payment cools the neighborhood’s anger. The Big Brother claps your shoulder for the practical solution.",
         effects: { wealth: +30, rep: +18 },
         meritAdd: 22,
         flagsAdd: ['middle_blood_debt_done']
@@ -1152,7 +1152,7 @@ export const EXPANSION_STORY_EVENTS = [
     need: { jobs: ['Syndicate'], finger: 'Pinky' },
     forbids: ['pinky_whisper_done'],
     tags: ['syndicate'],
-    vi: '[Mạng Lưới Dây Tơ Của The Pinky] Người đưa tin của Ngón Út giao cho bạn một phong thư niêm bằng sáp đen không chữ, bảo bạn chuyển đến tay một kẻ ăn mày ở ngã tư mà không được nhìn vào mặt người đó.',
+    vi: '[Mạng Lưới Dây Tơ Của The Pinky] Người đưa tin của The Pinky giao cho bạn một phong thư niêm bằng sáp đen không chữ, bảo bạn chuyển đến tay một kẻ ăn mày ở ngã tư mà không được nhìn vào mặt người đó.',
     en: '[The Pinky’s Silk Filament Network] A Pinky courier handed you a blank black-wax sealed envelope, instructing you to deliver it to a beggar at the crossroads without looking at their face.',
     choices: [
       {
@@ -1207,7 +1207,8 @@ export const EXPANSION_STORY_EVENTS = [
             scarsAdd: ['Vết đạn tranh giành địa bàn'],
             flagsAdd: ['brawl_territory_done']
           }
-        ]
+        ],
+        later: [{ id: 'csq_syn_turf_audit', years: 3, reasonVi: "Cuộc đánh nhau giành địa bàn để lại những khoản chưa ai giải thích với cấp trên", reasonEn: "The turf fight left accounts nobody has explained to the people above" }]
       },
       {
         labelVi: 'Dàn trận phòng thủ ngõ hẹp, dùng súng kẹp chặt lối vào',
@@ -1216,7 +1217,8 @@ export const EXPANSION_STORY_EVENTS = [
         resultEn: 'Disciplined suppressive fire repelled three assaults with minimal syndicate casualties.',
         effects: { health: -8, rep: +15, wealth: +15 },
         meritAdd: 20,
-        flagsAdd: ['brawl_territory_done']
+        flagsAdd: ['brawl_territory_done'],
+        later: [{ id: 'csq_syn_turf_audit', years: 3, reasonVi: "Cuộc đánh nhau giành địa bàn để lại những khoản chưa ai giải thích với cấp trên", reasonEn: "The turf fight left accounts nobody has explained to the people above" }]
       }
     ]
   },
@@ -1413,22 +1415,22 @@ export const EXPANSION_STORY_EVENTS = [
     major: true,
     weight: 22,
     forbids: ['d20_mirage_seen'],
-    vi: '[Ảo Ảnh Gương Kính District 20] Đi qua khu trung tâm T Corp ở District 20, các bề mặt kính của những tòa tháp khổng lồ phản chiếu các dòng thời gian khác nhau của cuộc đời bạn: những phiên bản giàu có hơn, tàn bạo hơn hoặc đã chết từ lâu.',
-    en: '[District 20 Mirror Mirage] Crossing the center of District 20 under T Corp towers, massive window panes reflected alternate timelines of your life: richer variants, bloodier monsters, or versions long buried.',
+    vi: "[Gương kính District 20] Đi ngang khu trung tâm T Corp ở District 20, bạn thấy mặt kính các tòa tháp phản chiếu những phiên bản khác của mình: một người giàu hơn, một người tàn nhẫn hơn, và một người đã chết từ lâu.",
+    en: "[District 20 Glass] Crossing the T Corp center in District 20, you see the tower glass reflect other versions of you: a richer one, a crueler one, and one long dead.",
     choices: [
       {
-        labelVi: 'Dừng lại quan sát phiên bản tương lai thành đạt nhất của mình',
-        labelEn: 'Gaze into the reflection of your most triumphant future self',
-        resultVi: 'Hình ảnh quyền uy của bản thân tiếp thêm ngọn lửa tham vọng mãnh liệt trong lòng bạn; bạn bước đi với quyết tâm sắt đá.',
-        resultEn: 'The regal posture of your alternate self fueled blazing ambition; you stepped forward with hardened purpose.',
+        labelVi: "Dừng lại nhìn phiên bản thành đạt nhất của mình",
+        labelEn: "Stop and study the most successful version of yourself",
+        resultVi: "Người trong kính đứng thẳng như quen được nghe lệnh. Bạn rời đi với sải chân dài hơn thường lệ, và nhớ mãi cách họ gài cổ áo.",
+        resultEn: "The figure in the glass stands like someone used to being obeyed. You leave with a longer stride than usual, and remember for a long time how they fastened their collar.",
         effects: { sanity: +12, rep: +10, resonance: +10 },
         flagsAdd: ['d20_mirage_seen']
       },
       {
-        labelVi: 'Nhìn vào phiên bản đã chết để ghi nhớ bài học cảnh giác sinh tồn',
-        labelEn: 'Examine the fallen reflection to study fatal blindspots',
-        resultVi: 'Nhìn thấy vết thương chí mạng trên hình bóng phản chiếu giúp bạn nhận ra những sơ hở trong lối di chuyển hàng ngày của mình.',
-        resultEn: 'Scrutinizing the mortal wound across the glass revealed critical oversights in your daily patrol habits.',
+        labelVi: "Nhìn phiên bản đã chết và học xem họ sai ở đâu",
+        labelEn: "Study the dead version and learn where they went wrong",
+        resultVi: "Vết thương trên bóng phản chiếu nằm ở bên sườn, chỗ bạn vẫn để hở mỗi khi đi qua các ngõ hẹp. Từ hôm đó bạn đi sát tường hơn.",
+        resultEn: "The wound on the reflection sits at the side, where you always leave yourself open in narrow alleys. From that day you walk closer to the wall.",
         effects: { health: +5, sanity: -4, resonance: +12 },
         flagsAdd: ['d20_mirage_seen']
       }
@@ -1560,82 +1562,6 @@ export const EXPANSION_STORY_EVENTS = [
   // 6. WORKSHOP CRAFTSMAN & DISTORTION EXPANSIONS (4 Events)
   // --------------------------------------------------------------------------
   {
-    id: 'ws_exp_masterpiece_alloy_refinement',
-    age: [25, 65],
-    major: true,
-    weight: 24,
-    need: { jobs: ['Workshop Craftsman'] },
-    forbids: ['masterpiece_alloy_done'],
-    tags: ['workshop'],
-    vi: '[Mẻ Thép Tuyệt Tác Của Workshop] Sau ba năm nghiên cứu công thức thất truyền, bạn gom đủ nguyên liệu quý để nung một mẻ hợp kim siêu bền trong lò tôi nhiệt áp suất cao. Nhiệt độ lò đã chạm ngưỡng tới hạn.',
-    en: '[The Masterpiece Alloy Crucible] After three years refining lost metallurgical formulas, you gathered rare ingots to fire an ultra-durable alloy in your high-pressure forge. Core heat reached redline threshold.',
-    choices: [
-      {
-        labelVi: 'Duy trì nhiệt độ tối đa, tự tay rèn thanh phôi thép dưới búa máy',
-        labelEn: 'Hold peak heat and hammer the billet personally at the anvil',
-        outcomes: [
-          {
-            w: 65,
-            resultVi: 'Lưỡi kiếm rèn ra mang ánh xanh biếc tuyệt mỹ, chém sắt như chém bùn. Tác phẩm kiệt tác được Hiệp hội Tres đóng dấu chứng nhận hạng A.',
-            resultEn: 'The forged blade gleamed with azure brilliance, shearing iron like loam. The masterpiece received a coveted Grade-A Tres seal.',
-            effects: { health: -15, sanity: +20, rep: +35, wealth: +45 },
-            meritAdd: 40,
-            flagsAdd: ['masterpiece_alloy_done', 'MasterpieceCreated']
-          },
-          {
-            w: 35,
-            resultVi: 'Nồi nấu kim loại bị nứt nhẹ; bạn cứu được phôi thép nhưng bị bỏng rộp hai cánh tay do hơi nóng phả vào.',
-            resultEn: 'The crucible fractured slightly; you saved the billet but took severe heat blisters across both forearms.',
-            effects: { health: -28, sanity: +5, wealth: +25 },
-            meritAdd: 20,
-            scarsAdd: ['Vết bỏng lò rèn tuyệt tác'],
-            flagsAdd: ['masterpiece_alloy_done']
-          }
-        ]
-      },
-      {
-        labelVi: 'Hạ nhiệt độ an toàn, tạo ra một lô vũ khí tiêu chuẩn chất lượng cao',
-        labelEn: 'Lower temperature to safe bounds, casting high-grade standard arms',
-        resultVi: 'Bạn xuất xưởng mười thanh đao Workshop chất lượng đồng đều, bán sạch trong một buổi sáng cho các văn phòng Fixer trong vùng.',
-        resultEn: 'You turned out ten uniformly tempered sabres, selling out in one morning to neighborhood Fixer offices.',
-        effects: { wealth: +35, rep: +18 },
-        meritAdd: 25,
-        flagsAdd: ['masterpiece_alloy_done']
-      }
-    ]
-  },
-  {
-    id: 'ws_exp_stolen_patent_dilemma',
-    age: [24, 60],
-    major: true,
-    weight: 22,
-    need: { jobs: ['Workshop Craftsman'] },
-    forbids: ['stolen_patent_done'],
-    tags: ['workshop'],
-    vi: '[Bản Vẽ Bằng Sáng Chế Đánh Cắp] Một tên trộm công nghệ mang đến xưởng bạn bản thiết kế cơ cấu súng nén khí độc quyền của xưởng Atelier danh tiếng, gạ bán với giá rẻ 20 Ahn.',
-    en: '[Stolen Atelier Patent Dilemma] A tech thief brought the proprietary pneumatic rifle blueprints of a renowned Atelier workshop to your counter, offering them for a meager 20 Ahn.',
-    choices: [
-      {
-        labelVi: 'Mua lại bản vẽ để sao chép công nghệ vào các sản phẩm của mình',
-        labelEn: 'Buy the plans to reverse-engineer into your product lines',
-        resultVi: 'Vũ khí xưởng bạn nâng cấp vượt bậc về hỏa lực; lợi nhuận tăng vọt dẫu bạn luôn phải lo sợ sự điều tra từ Tres Association.',
-        resultEn: 'Your workshop armaments surged in firepower; revenues soared, though you cast wary glances for Tres inspectors.',
-        effects: { wealth: +40, rep: +20, heat: +25 },
-        meritAdd: 28,
-        flagsAdd: ['stolen_patent_done']
-      },
-      {
-        labelVi: 'Đuổi tên trộm đi và báo cho Tres Association để giữ uy tín nghề nghiệp',
-        labelEn: 'Turn the thief away and alert Tres Association to keep your honor',
-        resultVi: 'Tres Association gửi thư khen ngợi đạo đức hành nghề của xưởng và miễn giảm thuế môn bài một năm cho bạn.',
-        resultEn: 'Tres Association sent commendations for vocational ethics, granting your forge a one-year trademark excise waiver.',
-        effects: { rep: +22, sanity: +10, wealth: +10 },
-        meritAdd: 20,
-        flagsAdd: ['stolen_patent_done']
-      }
-    ]
-  },
-  {
     id: 'dist_exp_monologue_in_the_rain',
     age: [20, 70],
     major: true,
@@ -1643,23 +1569,23 @@ export const EXPANSION_STORY_EVENTS = [
     need: { jobs: ['Distortion'] },
     forbids: ['dist_rain_monologue_done'],
     tags: ['distortion'],
-    vi: '[Độc Thoại Dưới Cơn Mưa Máu] Đứng trên đỉnh tháp chuông đổ nát trong hình hài biến dạng, bạn nghe thấy hàng ngàn tiếng thì thầm của cư dân thành phố đang quằn quại trong nỗi đau và sự kìm nén.',
-    en: '[Soliloquy in Blood-Rain] Perched upon a shattered bell tower in your distorted flesh, you caught ten thousand whispers of City dwellers writhing in repression and despair.',
+    vi: "[Mưa máu trên tháp chuông] Bạn đứng trên tháp chuông đổ nát trong hình hài đã biến dạng. Mưa chảy qua những khớp xương lệch của bạn, và ở dưới kia cả khu phố thì thầm trong giấc ngủ những chuyện họ không dám nói ban ngày.",
+    en: "[Blood Rain on the Bell Tower] You stand on the broken bell tower in your changed body. Rain runs through the crooked joints of your shoulders, and below, the whole district whispers in its sleep the things nobody dares say by day.",
     choices: [
       {
-        labelVi: 'Hét lên một tiếng gầm vang dội, truyền bá nỗi ám ảnh của bạn ra khắp quận',
-        labelEn: 'Unleash a resonant roar, projecting your obsession across the ward',
-        resultVi: 'Sóng âm cảm xúc chấn động cả khu phố; đèn đường vỡ vụn và những kẻ yếu đuối run rẩy quỳ rạp trước sự hiện diện vĩ đại của bạn.',
-        resultEn: 'Emotional shockwaves rattled the ward; streetlamps burst and frail souls knelt before your monstrous epiphany.',
+        labelVi: "Gầm lên để cả khu phố nghe thấy bạn",
+        labelEn: "Roar and let the whole district hear you",
+        resultVi: "Tiếng gầm đập vào các mặt tường. Đèn đường vỡ từng chiếc một, và ở các ô cửa sổ rèm khép lại gần như cùng lúc. Không ai ra ngoài, nhưng sáng mai cả khu sẽ nói về bạn.",
+        resultEn: "The roar strikes the walls. Streetlamps burst one by one, and in the windows the curtains close almost together. Nobody comes outside, but by morning the whole district will be talking about you.",
         effects: { sanity: -20, resonance: +35, rep: +25, heat: +35 },
         meritAdd: 30,
         flagsAdd: ['dist_rain_monologue_done']
       },
       {
-        labelVi: 'Thu mình lại trong bóng tối, ôm lấy nỗi cô độc tuyệt đối của riêng mình',
-        labelEn: 'Curl back into shadows, embracing your absolute personal solitude',
-        resultVi: 'Bạn nhận ra mình không thuộc về thế giới con người nữa. Sự bình yên ma quái tràn ngập tâm trí bạn giữa màn mưa đen.',
-        resultEn: 'You recognized you no longer belong to mortal mankind. Eerie serenity washed over your mind amid black downpours.',
+        labelVi: "Thu mình vào bóng tối và để mưa chảy qua",
+        labelEn: "Curl into the shadows and let the rain run over you",
+        resultVi: "Bạn không còn thuộc về những người ở dưới kia, và lạ là bạn không thấy đau vì điều đó. Mưa đen vẫn rơi. Bạn nghe nó cho tới sáng.",
+        resultEn: "You no longer belong to the people below, and oddly it does not hurt. The black rain keeps falling. You listen to it until dawn.",
         effects: { sanity: +15, resonance: +15 },
         flagsAdd: ['dist_rain_monologue_done']
       }
@@ -1840,7 +1766,7 @@ export const EXPANSION_CONSEQUENCE_EVENTS = [
     major: true,
     isCausalCallback: true,
     tags: ['syndicate'],
-    vi: '[Cuộc Thanh Tra Của Ngón Tay] Lãnh đạo cấp cao của Syndicate bất ngờ đến kiểm tra sổ sách và địa bàn bạn cai quản sau những tranh chấp đẫm máu gần đây.',
+    vi: '[Cuộc thanh tra của The Five Fingers] Lãnh đạo cấp cao của Syndicate bất ngờ đến kiểm tra sổ sách và địa bàn bạn cai quản sau những tranh chấp đẫm máu gần đây.',
     en: '[The Finger’s Audit Inspection] High syndicate brass arrived without notice to audit accounts and turf security after recent territorial skirmishes.',
     choices: [
       {
@@ -1871,24 +1797,6 @@ export const EXPANSION_CONSEQUENCE_EVENTS = [
       }
     ]
   },
-  {
-    id: 'csq_ws_forged_seal',
-    major: true,
-    isCausalCallback: true,
-    tags: ['workshop'],
-    vi: '[Dấu Ấn Tres Bị Làm Giả] Thanh tra Tres Association đến kiểm tra vũ khí của xưởng bạn sau khi phát hiện hàng giả mang dấu ấn của bạn trên thị trường đen.',
-    en: '[Forged Workshop Trademark Inquest] Tres inspectors inspected your workshop racks after counterfeit weapons bearing your maker mark surfaced on black markets.',
-    choices: [
-      {
-        labelVi: 'Dẫn thanh tra đến bắt quả tang cơ sở làm giả ở khu ổ chuột ngầm',
-        labelEn: 'Lead inspectors straight to the counterfeit forge in the under-city',
-        resultVi: 'Cơ sở làm giả bị triệt phá hoàn toàn; uy tín thương hiệu của xưởng bạn được nâng lên một tầm cao mới.',
-        resultEn: 'The bootleg forge was dismantled root and branch; your workshop’s brand standing reached new heights.',
-        effects: { health: -10, rep: +30, wealth: +25 },
-        meritAdd: 28
-      }
-    ]
-  }
 ];
 
 // ----------------------------------------------------------------------------

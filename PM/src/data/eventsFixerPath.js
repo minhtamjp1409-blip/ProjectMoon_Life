@@ -42,8 +42,8 @@ export const FIXER_PATH_EVENTS = [
       {
         labelVi: 'Chưa vội sát hạch, dành thêm một mùa tích lũy thể lực và trang bị',
         labelEn: 'Defer evaluation: Take another season to prepare gear and stamina',
-        resultVi: 'Bạn gửi đơn xin hoãn khảo thí lên Hana Section 6 để luyện tập thêm. Viên thanh tra ghi nhận đơn; bạn dành trọn mùa này tĩnh dưỡng (+16 HP, +12 SP).',
-        resultEn: 'You filed a formal deferral with Hana Section 6 to train further. The proctor accepted; you spent the season recovering (+16 HP, +12 SP).',
+        resultVi: 'Bạn gửi đơn xin hoãn khảo thí lên Hana Section 6 để luyện tập thêm. Viên thanh tra ghi nhận đơn; bạn dành trọn mùa này tĩnh dưỡng.',
+        resultEn: 'You filed a formal deferral with Hana Section 6 to train further. The proctor accepted; you spent the season recovering.',
         effects: { health: +16, sanity: +12 }
       }
     ]
@@ -85,8 +85,8 @@ export const FIXER_PATH_EVENTS = [
       {
         labelVi: 'Hoãn nhận chiến dịch nguy hiểm, tập trung dưỡng thương và chuẩn bị',
         labelEn: 'Defer dangerous raid: Focus on healing wounds and preparation',
-        resultVi: 'Bạn xin phép Hana lùi thời hạn nhận chiến dịch trấn áp để dưỡng thương. Bạn dành thời gian nghỉ ngơi tĩnh dưỡng (+16 HP, +12 SP).',
-        resultEn: 'You requested Hana defer the raid window to heal wounds. You spent the season resting (+16 HP, +12 SP).',
+        resultVi: 'Bạn xin phép Hana lùi thời hạn nhận chiến dịch trấn áp để dưỡng thương. Bạn dành thời gian nghỉ ngơi tĩnh dưỡng.',
+        resultEn: 'You requested Hana defer the raid window to heal wounds. You spent the season resting.',
         effects: { health: +16, sanity: +12 }
       }
     ]
@@ -128,8 +128,8 @@ export const FIXER_PATH_EVENTS = [
       {
         labelVi: 'Hoãn tham gia vùng chiến sự, tập trung nghỉ ngơi hồi phục thể lực',
         labelEn: 'Defer frontline deployment: Focus on physical rest and recuperation',
-        resultVi: 'Nhận thấy chiến trường hai phe quá hỗn loạn, bạn gửi thông báo lùi thời hạn tham chiến để củng cố thể trạng (+16 HP, +12 SP).',
-        resultEn: 'Deeming the turf war too chaotic, you notified Hana of a tactical postponement to recover (+16 HP, +12 SP).',
+        resultVi: 'Nhận thấy chiến trường hai phe quá hỗn loạn, bạn gửi thông báo lùi thời hạn tham chiến để củng cố thể trạng.',
+        resultEn: 'Deeming the turf war too chaotic, you notified Hana of a tactical postponement to recover.',
         effects: { health: +16, sanity: +12 }
       }
     ]
@@ -145,8 +145,8 @@ export const FIXER_PATH_EVENTS = [
     weight: 75,
     need: { jobs: ['Fixer'], grade: [6, 6] },
     forbids: ['Distorted', 'promo_g5_done'],
-    vi: '[Đại hội Thăng cấp Trung cấp Grade 5] Bước vào ngưỡng Grade 5 là bước qua lằn ranh sinh tử giữa lính mới và cựu binh. Bạn được phái đi giải quyết một vụ án Sweeper săn mồi ngoài khung giờ 3:13 AM — một vi phạm Taboo nghiêm trọng.',
-    en: '[Grade 5 Veteran Examination] Crossing into Grade 5 divides rookies from veterans. Hana dispatches you to neutralize rogue Sweepers hunting outside 3:13 AM hours — a severe Taboo violation.',
+    vi: '[Đại hội Thăng cấp Trung cấp Grade 5] Bước vào ngưỡng Grade 5 là bước qua lằn ranh sinh tử giữa lính mới và cựu binh. Bạn được phái đi giải quyết một vụ án Sweeper săn mồi ngoài khung giờ 3:13 AM, một vi phạm Taboo nghiêm trọng.',
+    en: '[Grade 5 Veteran Examination] Crossing into Grade 5 divides rookies from veterans. Hana dispatches you to neutralize rogue Sweepers hunting outside 3:13 AM hours, a severe Taboo violation.',
     choices: [
       {
         labelVi: 'Kích hoạt vũ khí Workshop công suất tối đa thiêu rụi bầy Sweeper',
@@ -171,8 +171,8 @@ export const FIXER_PATH_EVENTS = [
       {
         labelVi: 'Chưa nhận nhiệm vụ Sweeper, tạm thời nghỉ ngơi hồi phục thể trạng',
         labelEn: 'Postpone Sweeper assignment: Temporarily rest and restore physical condition',
-        resultVi: 'Bạn xin hoãn lệnh triệu tập săn Sweeper để dưỡng thương. Ban quản lý Hana chấp thuận lưu hồ sơ của bạn cho đợt khảo thí sau (+16 HP, +12 SP).',
-        resultEn: 'You deferred the Sweeper hunt summons to heal. Hana proctors archived your eligibility for the next cycle (+16 HP, +12 SP).',
+        resultVi: 'Bạn xin hoãn lệnh triệu tập săn Sweeper để dưỡng thương. Ban quản lý Hana chấp thuận lưu hồ sơ của bạn cho đợt khảo thí sau.',
+        resultEn: 'You deferred the Sweeper hunt summons to heal. Hana proctors archived your eligibility for the next cycle.',
         effects: { health: +16, sanity: +12 }
       }
     ]
@@ -214,8 +214,8 @@ export const FIXER_PATH_EVENTS = [
       {
         labelVi: 'Từ chối làm mũi nhọn đột kích lúc này, dành thời gian điều dưỡng',
         labelEn: 'Decline spearheading right now: Dedicate season to medical recuperation',
-        resultVi: 'Bạn thông báo cho phân hội Shi và Liu rằng bản thân cần thêm thời gian tĩnh dưỡng vết thương trước khi chỉ huy đột kích (+16 HP, +12 SP).',
-        resultEn: 'You notified Shi and Liu Associations that physical recovery takes priority before leading assaults (+16 HP, +12 SP).',
+        resultVi: 'Bạn thông báo cho phân hội Shi và Liu rằng bản thân cần thêm thời gian tĩnh dưỡng vết thương trước khi chỉ huy đột kích.',
+        resultEn: 'You notified Shi and Liu Associations that physical recovery takes priority before leading assaults.',
         effects: { health: +16, sanity: +12 }
       }
     ]
@@ -258,8 +258,8 @@ export const FIXER_PATH_EVENTS = [
       {
         labelVi: 'Chưa tiến vào vùng cấm không gian, ưu tiên bảo toàn tính mạng và hồi phục',
         labelEn: 'Hold off entering the exclusion zone: Prioritize life preservation and recovery',
-        resultVi: 'Bạn xin phép Hana dời ngày thâm nhập dị thể không gian để củng cố tâm trí và thể chất. Bạn dành thời gian nghỉ ngơi (+16 HP, +12 SP).',
-        resultEn: 'You requested Hana postpone spatial anomaly infiltration to consolidate mind and body (+16 HP, +12 SP).',
+        resultVi: 'Bạn xin phép Hana dời ngày thâm nhập dị thể không gian để củng cố tâm trí và thể chất. Bạn dành thời gian nghỉ ngơi.',
+        resultEn: 'You requested Hana postpone spatial anomaly infiltration to consolidate mind and body.',
         effects: { health: +16, sanity: +12 }
       }
     ]
@@ -301,8 +301,8 @@ export const FIXER_PATH_EVENTS = [
       {
         labelVi: 'Lùi hạn nhận hợp đồng hộ tống sinh tử, tập trung tĩnh dưỡng',
         labelEn: 'Defer life-or-death escort contract: Focus on resting and recuperating',
-        resultVi: 'Bạn gửi thư thoái thác nhiệm vụ hộ tống giám đốc vì lý do chấn thương chưa lành. Section 1 ghi nhận và cho phép bạn bảo lưu tư cách (+16 HP, +12 SP).',
-        resultEn: 'You sent word declining the escort due to unhealed trauma. Section 1 noted the medical deferral (+16 HP, +12 SP).',
+        resultVi: 'Bạn gửi thư thoái thác nhiệm vụ hộ tống giám đốc vì lý do chấn thương chưa lành. Section 1 ghi nhận và cho phép bạn bảo lưu tư cách.',
+        resultEn: 'You sent word declining the escort due to unhealed trauma. Section 1 noted the medical deferral.',
         effects: { health: +16, sanity: +12 }
       }
     ]
@@ -318,34 +318,34 @@ export const FIXER_PATH_EVENTS = [
     weight: 55,
     need: { jobs: ['Fixer'], grade: [2, 2] },
     forbids: ['Distorted', 'promo_g1_done'],
-    vi: '[Đại Khảo Hạch Fixer Grade 1] Đỉnh cao của giới Fixer. Bạn được triệu tập vào Hội đồng Trung ương Hana tại District 1. Trước mặt bạn là bản án Star of the City: Một đại tổ chức Syndicate hoặc phòng thí nghiệm Singularities bị sụp đổ cần bị tiêu diệt hoàn toàn.',
-    en: '[Hana Supreme Grade 1 Evaluation] The summit of Fixer hierarchy. Summoned to District 1 before Hana’s Grand Council. Your assignment is a Star of the City verdict: Total annihilation of a rogue syndicate syndicate or collapsed Singularity facility.',
+    vi: "[Khảo hạch Fixer Grade 1] Hội đồng Trung ương Hana ở District 1 triệu tập bạn. Đề bài là một bản án cấp Star of the City: một tổ chức Syndicate hoặc một cơ sở Singularity đã sụp đổ phải bị xóa sổ hoàn toàn.",
+    en: "[Fixer Grade 1 Evaluation] Hana’s Central Council in District 1 summons you. The assignment is a Star of the City verdict: a Syndicate or a collapsed Singularity facility must be erased entirely.",
     choices: [
       {
-        labelVi: 'Một mình dẫn quân công phá hang ổ Star of the City',
-        labelEn: 'Lead the vanguard and shatter the Star of the City stronghold',
-        resultVi: 'Trận chiến kinh thiên động địa làm rung chuyển cả một khu vực. Khi tro tàn lắng xuống, bạn đứng vững giữa đống đổ nát. Hội đồng Hana đồng loạt đứng dậy bái phục: "Chúc mừng, Fixer Grade 1 của The City."',
-        resultEn: 'A cataclysmic clash that rattled the entire district. When the ash settled, you stood victorious amidst the ruin. The Hana Council rose in solemn reverence: "Congratulations, Grade 1 Fixer of The City."',
+        labelVi: "Dẫn đầu cuộc đột kích vào hang ổ",
+        labelEn: "Lead the assault on the stronghold",
+        resultVi: "Trận đánh kéo dài qua đêm và làm rung kính cả một dãy phố. Khi khói tan, bạn đứng giữa đống đổ nát, tai ù, tay chưa hết run. Hội đồng đọc tên bạn: Fixer Grade 1.",
+        resultEn: "The fight runs through the night and rattles windows down the whole street. When the smoke clears you stand in the rubble, ears ringing, hands still shaking. The Council reads your name: Fixer Grade 1.",
         setFixerGrade: 1,
         flagsAdd: ['promo_g1_done'],
         meritAdd: 70,
         effects: { health: -14, sanity: -8, rep: +65, wealth: +280, resonance: +25 }
       },
       {
-        labelVi: 'Hiệu triệu liên minh các Văn phòng uy tín mở chiến dịch vây quét tổng lực',
-        labelEn: 'Summon an allied coalition of elite Offices to conduct a coordinated grand raid',
-        resultVi: 'Chiến dịch hiệp đồng quy mô lớn san phẳng hang ổ hiểm họa mà vẫn bảo toàn mạng sống các chỉ huy. Hội đồng Tối cao Hana đứng dậy cúi đầu: "Chúc mừng, Fixer Grade 1."',
-        resultEn: 'A magnificent combined assault leveled the catastrophic stronghold while keeping command casualties low. Hana Grand Council stands in reverence: "Welcome, Grade 1 Fixer."',
+        labelVi: "Kêu gọi các Văn phòng có tiếng lập liên quân vây quét",
+        labelEn: "Call the reputable Offices into a joint sweep",
+        resultVi: "Chiến dịch chung san phẳng hang ổ mà không mất người chỉ huy nào. Hội đồng ghi nhận cách bạn dùng người nhiều hơn cách bạn dùng kiếm. Bạn là Fixer Grade 1.",
+        resultEn: "The joint operation levels the stronghold without losing a single commander. The Council notes how you used people more than how you used a blade. You are a Fixer Grade 1.",
         setFixerGrade: 1,
         flagsAdd: ['promo_g1_done'],
         meritAdd: 65,
         effects: { health: -8, sanity: -5, rep: +55, wealth: +190, network: +25 }
       },
       {
-        labelVi: 'Bảo lưu quyền khảo thí Star of the City, dành một mùa hồi phục phong độ đỉnh cao',
-        labelEn: 'Preserve Star of the City trial rights: Spend a season regaining peak form',
-        resultVi: 'Hội đồng Trung ương Hana đồng ý cho bạn dời ngày viễn chinh để đạt trạng thái thể lực sung mãn nhất (+16 HP, +12 SP).',
-        resultEn: 'Hana Grand Council agreed to reschedule the expedition so you may achieve peak physical prowess (+16 HP, +12 SP).',
+        labelVi: "Xin hoãn một mùa để lấy lại phong độ",
+        labelEn: "Ask for a season’s delay to regain form",
+        resultVi: "Hội đồng đồng ý dời ngày. Bạn dùng mùa đó để ngủ, ăn đủ bữa và tập lại các bài cũ.",
+        resultEn: "The Council agrees to move the date. You spend the season sleeping, eating proper meals and drilling old forms.",
         effects: { health: +16, sanity: +12 }
       }
     ]
@@ -423,23 +423,23 @@ export const FIXER_PATH_EVENTS = [
     weight: 60,
     need: { jobs: ['Fixer'], grade: [6, 6] },
     forbids: ['Distorted', 'fixer_g6_hostage_done'],
-    vi: '[Bắt cóc Con tin tại Nhà băng J Corp] Một nhóm lính đánh thuê dạt từ Smoke War trang bị súng tự động đã chiếm giữ chi nhánh ngân hàng cầm đồ của J Corp, bắt 20 cư dân làm bia đỡ đạn. Hana Association yêu cầu giải quyết nhanh trước giờ đóng cửa.',
-    en: '[J Corp Pawn Vault Hostage Crisis] Deserters from the Smoke War armed with automatic weapons seized a J Corp pawn branch, holding twenty civilians as human shields. Hana demands resolution before close of business.',
+    vi: "[Con tin ở tiệm cầm đồ J Corp] Một nhóm lính đánh thuê chạy ra từ Smoke War chiếm chi nhánh cầm đồ của J Corp và giữ hai mươi cư dân làm lá chắn. Hana muốn xong việc trước giờ đóng cửa.",
+    en: "[Hostages at the J Corp Pawn Shop] A band of mercenaries out of the Smoke War seizes a J Corp pawn branch and holds twenty residents as shields. Hana wants it over before closing time.",
     choices: [
       {
-        labelVi: 'Đột nhập qua đường ống thông gió, vô hiệu hóa ngòi nổ chất dẻo',
-        labelEn: 'Infiltrate via ventilation shafts, disarming plastic charges',
-        resultVi: 'Bạn bò qua ống thông gió đầy bụi than, cắt dây ngòi nổ chỉ 3 giây trước khi phát nổ rồi đạp cửa xông vào chém gục tên đầu sỏ. Toàn bộ con tin được giải cứu.',
-        resultEn: 'Crawling through soot-lined vents, you clipped the detonation wire with three seconds left, bursting into the vault to cleave the ringleader. All hostages lived.',
+        labelVi: "Chui qua ống thông gió và gỡ ngòi nổ",
+        labelEn: "Crawl through the vents and defuse the charges",
+        resultVi: "Bạn bò qua ống thông gió đầy bụi than và cắt dây ngòi nổ khi đồng hồ còn ba giây. Rồi bạn đạp cửa, và cuộc đối đầu với tên cầm đầu kéo dài thêm chừng ấy. Cả hai mươi người đi ra.",
+        resultEn: "You crawl through soot-lined vents and cut the detonation wire with three seconds left on the clock. Then you kick in the door, and the standoff with the leader lasts about that long. All twenty walk out.",
         meritAdd: 28,
         effects: { health: -20, rep: +24, wealth: +55, sanity: +10 },
         flagsAdd: ['fixer_g6_hostage_done']
       },
       {
-        labelVi: 'Đàm phán trả một phần tiền cọc để đổi lấy tự do cho trẻ em và phụ nữ',
-        labelEn: 'Negotiate partial ransom to extract women and children first',
-        resultVi: 'Bạn giữ chân bọn cướp bằng sự điềm tĩnh phi thường trong khi phân đội Liu bí mật triển khai hỏa trận phía sau. Khi đòn hỏa tiễn nổ ra, thương vong được giảm thiểu tối đa.',
-        resultEn: 'You held the bandits’ attention with ice-cold poise while Liu shock teams deployed behind. When the flame volley cracked, civilian losses were minimized.',
+        labelVi: "Đàm phán một phần tiền chuộc để đổi lấy trẻ em và phụ nữ trước",
+        labelEn: "Negotiate part of the ransom to get the women and children out first",
+        resultVi: "Bạn giữ chúng nói chuyện bằng giọng đều và tiền mặt, trong lúc đội Liu âm thầm chiếm chỗ phía sau. Khi họ nổ súng, người bị thương là những kẻ đang cầm súng.",
+        resultEn: "You keep them talking with a level voice and cash while the Liu team quietly takes positions behind. When they open fire, the ones hurt are the ones holding guns.",
         meritAdd: 25,
         effects: { rep: +20, network: +18, wealth: +45 },
         flagsAdd: ['fixer_g6_hostage_done']
@@ -548,8 +548,8 @@ export const FIXER_PATH_EVENTS = [
       {
         labelVi: 'Chưa vội sát hạch, dành thêm một mùa tích lũy thể lực và trang bị',
         labelEn: 'Defer evaluation: Take another season to prepare gear and stamina',
-        resultVi: 'Bạn xin hoãn đợt thẩm định để dưỡng thương và chuẩn bị chu đáo hơn (+16 HP, +12 SP).',
-        resultEn: 'You postponed the evaluation window to heal wounds and prepare (+16 HP, +12 SP).',
+        resultVi: 'Bạn xin hoãn đợt thẩm định để dưỡng thương và chuẩn bị chu đáo hơn.',
+        resultEn: 'You postponed the evaluation window to heal wounds and prepare.',
         effects: { health: +16, sanity: +12 }
       }
     ]
@@ -587,8 +587,8 @@ export const FIXER_PATH_EVENTS = [
       {
         labelVi: 'Chưa vội sát hạch, dành thêm một mùa tích lũy thể lực và trang bị',
         labelEn: 'Defer evaluation: Take another season to prepare gear and stamina',
-        resultVi: 'Bạn xin hoãn đợt khảo sát để nghỉ ngơi dưỡng sức (+16 HP, +12 SP).',
-        resultEn: 'You deferred the patrol trial to rest and recuperate (+16 HP, +12 SP).',
+        resultVi: 'Bạn xin hoãn đợt khảo sát để nghỉ ngơi dưỡng sức.',
+        resultEn: 'You deferred the patrol trial to rest and recuperate.',
         effects: { health: +16, sanity: +12 }
       }
     ]
@@ -628,8 +628,8 @@ export const FIXER_PATH_EVENTS = [
       {
         labelVi: 'Hoãn nhận chiến dịch nguy hiểm, tập trung dưỡng thương và chuẩn bị',
         labelEn: 'Defer dangerous raid: Focus on healing wounds and preparation',
-        resultVi: 'Bạn thông báo lùi thời hạn hợp đồng để dưỡng thương (+16 HP, +12 SP).',
-        resultEn: 'You requested a deferral to heal your wounds (+16 HP, +12 SP).',
+        resultVi: 'Bạn thông báo lùi thời hạn hợp đồng để dưỡng thương.',
+        resultEn: 'You requested a deferral to heal your wounds.',
         effects: { health: +16, sanity: +12 }
       }
     ]
@@ -667,8 +667,8 @@ export const FIXER_PATH_EVENTS = [
       {
         labelVi: 'Hoãn nhận chiến dịch nguy hiểm, tập trung dưỡng thương và chuẩn bị',
         labelEn: 'Defer dangerous raid: Focus on healing wounds and preparation',
-        resultVi: 'Bạn lùi lại đợt đột kích để tĩnh dưỡng (+16 HP, +12 SP).',
-        resultEn: 'You deferred the raid to rest and heal (+16 HP, +12 SP).',
+        resultVi: 'Bạn lùi lại đợt đột kích để tĩnh dưỡng.',
+        resultEn: 'You deferred the raid to rest and heal.',
         effects: { health: +16, sanity: +12 }
       }
     ]
@@ -708,8 +708,8 @@ export const FIXER_PATH_EVENTS = [
       {
         labelVi: 'Hoãn tham gia quyết đấu, tập trung nghỉ ngơi hồi phục thể lực',
         labelEn: 'Defer duel tournament: Focus on physical rest and recuperation',
-        resultVi: 'Bạn gửi đơn xin hoãn tham gia đại hội để dưỡng thương (+16 HP, +12 SP).',
-        resultEn: 'You withdrew temporarily from the tournament to heal (+16 HP, +12 SP).',
+        resultVi: 'Bạn gửi đơn xin hoãn tham gia đại hội để dưỡng thương.',
+        resultEn: 'You withdrew temporarily from the tournament to heal.',
         effects: { health: +16, sanity: +12 }
       }
     ]
@@ -747,8 +747,8 @@ export const FIXER_PATH_EVENTS = [
       {
         labelVi: 'Hoãn tham gia thi hành án, tập trung nghỉ ngơi hồi phục thể lực',
         labelEn: 'Defer enforcement: Focus on physical rest and recuperation',
-        resultVi: 'Bạn hoãn hợp đồng thi hành án để dưỡng sức (+16 HP, +12 SP).',
-        resultEn: 'You postponed the enforcement action to recuperate (+16 HP, +12 SP).',
+        resultVi: 'Bạn hoãn hợp đồng thi hành án để dưỡng sức.',
+        resultEn: 'You postponed the enforcement action to recuperate.',
         effects: { health: +16, sanity: +12 }
       }
     ]
@@ -788,8 +788,8 @@ export const FIXER_PATH_EVENTS = [
       {
         labelVi: 'Chưa nhận nhiệm vụ khảo cổ, tạm thời nghỉ ngơi hồi phục thể trạng',
         labelEn: 'Postpone expedition: Temporarily rest and restore physical condition',
-        resultVi: 'Bạn hoãn chuyến viễn chinh để tích lũy thể lực (+16 HP, +12 SP).',
-        resultEn: 'You deferred the expedition to gather strength (+16 HP, +12 SP).',
+        resultVi: 'Bạn hoãn chuyến viễn chinh để tích lũy thể lực.',
+        resultEn: 'You deferred the expedition to gather strength.',
         effects: { health: +16, sanity: +12 }
       }
     ]
@@ -827,8 +827,8 @@ export const FIXER_PATH_EVENTS = [
       {
         labelVi: 'Chưa nhận nhiệm vụ trục vớt, tạm thời nghỉ ngơi hồi phục thể trạng',
         labelEn: 'Postpone salvage: Temporarily rest and restore physical condition',
-        resultVi: 'Bạn dời lại chuyến lặn trục vớt để hồi phục thể lực (+16 HP, +12 SP).',
-        resultEn: 'You deferred the salvage operation to rest (+16 HP, +12 SP).',
+        resultVi: 'Bạn dời lại chuyến lặn trục vớt để hồi phục thể lực.',
+        resultEn: 'You deferred the salvage operation to rest.',
         effects: { health: +16, sanity: +12 }
       }
     ]
@@ -868,8 +868,8 @@ export const FIXER_PATH_EVENTS = [
       {
         labelVi: 'Từ chối làm mũi nhọn tốc hành lúc này, dành thời gian điều dưỡng',
         labelEn: 'Decline express courier run: Dedicate season to medical recuperation',
-        resultVi: 'Bạn lùi lại chuyến hàng để tĩnh dưỡng vết thương (+16 HP, +12 SP).',
-        resultEn: 'You deferred the dangerous transit to heal wounds (+16 HP, +12 SP).',
+        resultVi: 'Bạn lùi lại chuyến hàng để tĩnh dưỡng vết thương.',
+        resultEn: 'You deferred the dangerous transit to heal wounds.',
         effects: { health: +16, sanity: +12 }
       }
     ]
@@ -907,8 +907,8 @@ export const FIXER_PATH_EVENTS = [
       {
         labelVi: 'Từ chối công phá lúc này, dành thời gian điều dưỡng',
         labelEn: 'Decline assault: Dedicate season to medical recuperation',
-        resultVi: 'Bạn lùi lại chiến dịch đột phá để dưỡng sức (+16 HP, +12 SP).',
-        resultEn: 'You postponed the assault to recover (+16 HP, +12 SP).',
+        resultVi: 'Bạn lùi lại chiến dịch đột phá để dưỡng sức.',
+        resultEn: 'You postponed the assault to recover.',
         effects: { health: +16, sanity: +12 }
       }
     ]
@@ -948,8 +948,8 @@ export const FIXER_PATH_EVENTS = [
       {
         labelVi: 'Chưa tiến vào toa tàu WARP, ưu tiên bảo toàn tính mạng và hồi phục',
         labelEn: 'Hold off entering WARP carriage: Prioritize life preservation and recovery',
-        resultVi: 'Bạn xin hoãn nhiệm vụ để hồi phục thể lực và tâm trí (+16 HP, +12 SP).',
-        resultEn: 'You deferred the containment run to recuperate (+16 HP, +12 SP).',
+        resultVi: 'Bạn xin hoãn nhiệm vụ để hồi phục thể lực và tâm trí.',
+        resultEn: 'You deferred the containment run to recuperate.',
         effects: { health: +16, sanity: +12 }
       }
     ]
@@ -987,8 +987,8 @@ export const FIXER_PATH_EVENTS = [
       {
         labelVi: 'Chưa tham gia trấn áp lúc này, dành thời gian nghỉ ngơi dưỡng sức',
         labelEn: 'Defer psychic suppression: Prioritize rest and recovery',
-        resultVi: 'Bạn xin phép Hana dời lại đợt trấn áp để bồi dưỡng sức khỏe (+16 HP, +12 SP).',
-        resultEn: 'You requested a deferral to regain stamina (+16 HP, +12 SP).',
+        resultVi: 'Bạn xin phép Hana dời lại đợt trấn áp để bồi dưỡng sức khỏe.',
+        resultEn: 'You requested a deferral to regain stamina.',
         effects: { health: +16, sanity: +12 }
       }
     ]
@@ -1028,8 +1028,8 @@ export const FIXER_PATH_EVENTS = [
       {
         labelVi: 'Lùi hạn nhận hợp đồng phong tỏa nguy hiểm, tập trung tĩnh dưỡng',
         labelEn: 'Defer quarantine contract: Focus on resting and recuperating',
-        resultVi: 'Bạn lùi lại thời hạn hợp đồng để điều dưỡng thể chất (+16 HP, +12 SP).',
-        resultEn: 'You postponed the mission to recuperate (+16 HP, +12 SP).',
+        resultVi: 'Bạn lùi lại thời hạn hợp đồng để điều dưỡng thể chất.',
+        resultEn: 'You postponed the mission to recuperate.',
         effects: { health: +16, sanity: +12 }
       }
     ]
@@ -1067,8 +1067,8 @@ export const FIXER_PATH_EVENTS = [
       {
         labelVi: 'Lùi hạn nhận quyền chỉ huy chiến sự, tập trung dưỡng thương',
         labelEn: 'Defer command: Focus on resting and recuperating',
-        resultVi: 'Bạn xin hoãn nắm quyền chỉ huy để dưỡng thương (+16 HP, +12 SP).',
-        resultEn: 'You deferred command duties to heal wounds (+16 HP, +12 SP).',
+        resultVi: 'Bạn xin hoãn nắm quyền chỉ huy để dưỡng thương.',
+        resultEn: 'You deferred command duties to heal wounds.',
         effects: { health: +16, sanity: +12 }
       }
     ]
@@ -1082,34 +1082,34 @@ export const FIXER_PATH_EVENTS = [
     weight: 55,
     need: { jobs: ['Fixer'], grade: [2, 2] },
     forbids: ['Distorted', 'promo_g1_done'],
-    vi: '[Đại Hội Luận Kiếm Tối Cao Section 1 Hana · Grade 1] Để bước chân vào hàng ngũ Fixer Grade 1 đỉnh cao, bạn được triệu tập tới quảng trường trung tâm District 1 trước mặt 12 Viện trưởng Hiệp hội để tham gia khảo thí đối kháng sinh tử với các Át Chủ Bài hàng đầu của The City.',
-    en: '[Hana Apex Martial Summit · Grade 1] To cross into the summit of Grade 1 Fixers, you are summoned to District 1’s grand forum before the 12 Association Directors to face the fiercest combat trials against the City’s top aces.',
+    vi: "[Luận kiếm tại Section 1 của Hana · Grade 1] Để vào hàng Fixer Grade 1, bạn được gọi tới quảng trường trung tâm District 1, đứng trước mười hai Viện trưởng của Hiệp hội và đấu sinh tử với các Át chủ bài hàng đầu của The City.",
+    en: "[The Section 1 Sword Trial · Grade 1] To join the Fixer Grade 1, you are called to the central square of District 1, before twelve Association Directors, to fight the City’s leading aces in a duel to the death.",
     choices: [
       {
-        labelVi: 'Vung tuyệt kỹ vũ khí tối thượng, một mình đánh bại ba đối thủ khảo hạch',
-        labelEn: 'Unleash your apex weapon art, overcoming three grand examiners simultaneously',
-        resultVi: 'Khí kình bùng nổ rung chuyển cả võ đài. Cả ba giám khảo Hana đều lùi bước tâm phục khẩu phục. Tiếng chuông vàng ngân vang công nhận bạn là Fixer Grade 1 của The City.',
-        resultEn: 'A colossal shockwave rattled the arena. All three examiners bowed in solemn respect. Golden chimes proclaimed you as a Grade 1 Fixer of The City.',
+        labelVi: "Thi triển tuyệt kỹ và hạ cả ba giám khảo cùng lúc",
+        labelEn: "Show your finest technique and beat all three examiners at once",
+        resultVi: "Luồng khí từ đường chém của bạn làm rung cả võ đài. Ba giám khảo của Hana lùi một bước, rồi cúi đầu. Chuông vàng vang lên, công nhận bạn là Fixer Grade 1.",
+        resultEn: "The air from your cut rattles the whole arena. The three Hana examiners step back, then bow. The golden bell rings, naming you a Fixer Grade 1.",
         setFixerGrade: 1,
         flagsAdd: ['promo_g1_done'],
         meritAdd: 72,
         effects: { health: -13, sanity: -7, rep: +68, wealth: +300 }
       },
       {
-        labelVi: 'Thể hiện triết lý chiến đấu toàn diện và khả năng ứng biến mọi tình huống',
-        labelEn: 'Demonstrate holistic combat philosophy and flawless strategic adaptability',
-        resultVi: 'Sự hoàn mỹ trong từng cử chỉ và quyết định của bạn chinh phục trọn vẹn Hội đồng Tối cao Hana. Bạn nhận tấm thẻ Fixer Grade 1 mạ vàng ròng.',
-        resultEn: 'Flawless mastery in every movement conquered the Hana Grand Council. You received the solid gold Grade 1 credential.',
+        labelVi: "Cho thấy lối đánh rộng, biết ứng biến theo từng tình huống",
+        labelEn: "Show a wide, adaptable way of fighting that answers every situation",
+        resultVi: "Mỗi cử chỉ và mỗi quyết định của bạn đều gọn, và Hội đồng không tìm ra chỗ nào để chê. Bạn nhận tấm thẻ Fixer Grade 1 mạ vàng.",
+        resultEn: "Every move and every decision is tidy, and the Council finds nothing to fault. You receive the gold-plated Grade 1 card.",
         setFixerGrade: 1,
         flagsAdd: ['promo_g1_done'],
         meritAdd: 68,
         effects: { rep: +60, network: +30, wealth: +240, sanity: +12 }
       },
       {
-        labelVi: 'Bảo lưu quyền khảo thí tối cao, dành một mùa hồi phục phong độ đỉnh cao',
-        labelEn: 'Preserve trial rights: Spend a season regaining peak form',
-        resultVi: 'Hội đồng Hana đồng ý cho bạn dời ngày khảo thí để đạt trạng thái thể lực sung mãn nhất (+16 HP, +12 SP).',
-        resultEn: 'Hana Council agreed to reschedule so you may achieve peak physical prowess (+16 HP, +12 SP).',
+        labelVi: "Xin hoãn một mùa để lấy lại phong độ",
+        labelEn: "Ask for a season’s delay to regain form",
+        resultVi: "Hội đồng đồng ý dời ngày khảo thí. Bạn dùng mùa đó để ngủ, ăn và tập lại các bài cũ.",
+        resultEn: "The Council agrees to move the date. You spend the season sleeping, eating and drilling old forms.",
         effects: { health: +16, sanity: +12 }
       }
     ]
@@ -1121,34 +1121,34 @@ export const FIXER_PATH_EVENTS = [
     weight: 55,
     need: { jobs: ['Fixer'], grade: [2, 2] },
     forbids: ['Distorted', 'promo_g1_done'],
-    vi: '[Tiêu Diệt Thực Thể Biến Dị Cấp Thảm Họa · Grade 1] Một cá thể Distortion cấp độ Star of the City vừa thức tỉnh ở rìa khu vực, gieo rắc sự điên cuồng và hủy diệt cả một phân khu. Hana Association ban bố lệnh khẩn cấp, chỉ định bạn dẫn đầu cuộc thanh trừng để bước lên Fixer Grade 1.',
-    en: '[Apex Calamity Distortion Extermination · Grade 1] A Star of the City tier Distortion awakened on the district border, spreading madness and leveling buildings. Hana issues an emergency decree designating you to lead the suppression for Grade 1 investiture.',
+    vi: "[Distortion cấp Star of the City] Một Distortion cấp Star of the City vừa thức tỉnh ở rìa khu vực và đang san phẳng cả một phân khu. Hana ra lệnh khẩn, chỉ định bạn dẫn đầu cuộc thanh trừng. Thắng thì bạn lên Fixer Grade 1.",
+    en: "[A Star of the City Distortion] A Star of the City Distortion has woken on the district edge and is flattening an entire ward. Hana issues an emergency order and names you to lead the suppression. Win, and you become a Fixer Grade 1.",
     choices: [
       {
-        labelVi: 'Kích hoạt toàn bộ công lực vũ khí, chém đứt lõi sinh mệnh của thực thể Biến Dị',
-        labelEn: 'Overdrive your armaments, severing the core of the Calamity Distortion',
-        resultVi: 'Tiếng thét quái đản tan biến trong tro tàn. Bạn đứng sừng sững trên xác con quái vật khổng lồ. Toàn thể The City nghiêng mình trước tân Fixer Grade 1.',
-        resultEn: 'The monstrous screech dissolved into ash. You stood triumphant atop the fallen behemoth. The City bowed before its newest Grade 1 Fixer.',
+        labelVi: "Dồn hết sức vào vũ khí và chém đứt lõi của nó",
+        labelEn: "Put everything into your weapon and cut through its core",
+        resultVi: "Tiếng thét của nó tắt dần thành tro. Bạn đứng trên xác nó với hai tay không còn cảm giác. Hana đọc tên bạn vào danh sách Fixer Grade 1.",
+        resultEn: "Its scream fades into ash. You stand on its body with both hands numb. Hana reads your name into the roll of Fixer Grade 1.",
         setFixerGrade: 1,
         flagsAdd: ['promo_g1_done'],
         meritAdd: 75,
         effects: { health: -14, sanity: -8, rep: +70, wealth: +320, resonance: +20 }
       },
       {
-        labelVi: 'Dựng trận đồ phong tỏa không gian, vô hiệu hóa nguồn ô nhiễm tâm thức của nó',
-        labelEn: 'Erect spatial containment wards, neutralizing its psychic infection aura',
-        resultVi: 'Trận đồ phong tỏa cô lập dị thể trước khi đòn kết liễu được tung ra. Hiệp hội Hana chính thức phê chuẩn sắc lệnh thăng bạn lên Fixer Grade 1.',
-        resultEn: 'Spatial wards isolated the anomaly before the finishing strike fell. Hana officially confirmed your ascension to Grade 1 Fixer.',
+        labelVi: "Dựng trận phong tỏa không gian trước khi ra đòn kết liễu",
+        labelEn: "Raise spatial wards before the finishing blow",
+        resultVi: "Trận phong tỏa cô lập nó trước khi đòn cuối rơi xuống, nên không ai trong đội bị cuốn theo. Hana ký sắc lệnh nâng bạn lên Fixer Grade 1.",
+        resultEn: "The wards isolate it before the last blow falls, so nobody on the team is dragged in. Hana signs the order raising you to Fixer Grade 1.",
         setFixerGrade: 1,
         flagsAdd: ['promo_g1_done'],
         meritAdd: 70,
         effects: { rep: +62, network: +28, wealth: +260, sanity: +10 }
       },
       {
-        labelVi: 'Bảo lưu quyền tham chiến, dành một mùa hồi phục phong độ đỉnh cao',
-        labelEn: 'Preserve trial rights: Spend a season regaining peak form',
-        resultVi: 'Bạn lùi lại chiến dịch để bồi dưỡng thể lực đạt trạng thái tối ưu (+16 HP, +12 SP).',
-        resultEn: 'You postponed the raid to achieve peak physical condition (+16 HP, +12 SP).',
+        labelVi: "Xin hoãn một mùa để lấy lại phong độ",
+        labelEn: "Ask for a season’s delay to regain form",
+        resultVi: "Bạn xin lùi chiến dịch một mùa. Hana ghi lại, và một Fixer khác nhận phần việc tạm thời.",
+        resultEn: "You ask to push the campaign back a season. Hana notes it, and another Fixer takes the work in the meantime.",
         effects: { health: +16, sanity: +12 }
       }
     ]
@@ -1192,8 +1192,8 @@ export const FIXER_PATH_EVENTS = [
     weight: 46,
     need: { jobs: ['Fixer'] },
     forbids: ['Distorted'],
-    vi: '[Hiệp Hội Oufi · Hòa Giải Khế Ước Máu Backstreets] Hiệp hội Oufi — tổ chức chuyên giám sát hợp đồng và công chứng các hiệp ước sinh tử tại District 19 — cử bạn đi thẩm định một bản khế ước giữa một xưởng rèn lớn và một băng đảng Syndicate. Bất kỳ bên nào vi phạm sẽ phải trả giá bằng cả mạng sống.',
-    en: '[Oufi Association · Backstreet Blood Oath Inquest] The Oufi Association — custodians of binding treaties and lethal contracts in District 19 — dispatches you to verify a pact between a major workshop and a syndicate family. Any breach triggers absolute execution.',
+    vi: '[Hiệp Hội Oufi · Hòa Giải Khế Ước Máu Backstreets] Hiệp hội Oufi, tổ chức chuyên giám sát hợp đồng và công chứng các hiệp ước sinh tử tại District 19, cử bạn đi thẩm định một bản khế ước giữa một xưởng rèn lớn và một băng đảng Syndicate. Bất kỳ bên nào vi phạm sẽ phải trả giá bằng cả mạng sống.',
+    en: '[Oufi Association · Backstreet Blood Oath Inquest] The Oufi Association, custodians of binding treaties and lethal contracts in District 19, dispatches you to verify a pact between a major workshop and a syndicate family. Any breach triggers absolute execution.',
     choices: [
       {
         labelVi: 'Dùng uy tín và đao pháp răn đe, buộc cả hai bên ký cam kết hòa bình vĩnh viễn',
@@ -1276,8 +1276,8 @@ export const FIXER_PATH_EVENTS = [
     weight: 45,
     need: { jobs: ['Fixer'] },
     forbids: ['Distorted'],
-    vi: '[Hiệp Hội Devzat · Hộ Tống Đoàn Tàu Thiết Giáp Vượt Hẻm] Hiệp hội Devzat — bậc thầy súng hỏa mai và nỏ nặng — thuê bạn cùng hộ tống một đoàn tàu thiết giáp chở quặng nhiên liệu cao cấp chạy qua ranh giới Backstreets đang bị Syndicate vây hãm.',
-    en: '[Devzat Association · Armored Rail Escort] The Devzat Association — masters of heavy arbalests and kinetic firearms — hires you to escort an armored locomotive hauling hyper-refined fuel across syndicate-besieged Backstreets.',
+    vi: '[Hiệp Hội Devzat · Hộ Tống Đoàn Tàu Thiết Giáp Vượt Hẻm] Hiệp hội Devzat, bậc thầy súng hỏa mai và nỏ nặng, thuê bạn cùng hộ tống một đoàn tàu thiết giáp chở quặng nhiên liệu cao cấp chạy qua ranh giới Backstreets đang bị Syndicate vây hãm.',
+    en: '[Devzat Association · Armored Rail Escort] The Devzat Association, masters of heavy arbalests and kinetic firearms, hires you to escort an armored locomotive hauling hyper-refined fuel across syndicate-besieged Backstreets.',
     choices: [
       {
         labelVi: 'Leo lên nóc toa tàu, dùng hỏa lực và vũ khí cận chiến đẩy lùi từng đợt tập kích',
@@ -1310,8 +1310,8 @@ export const FIXER_PATH_EVENTS = [
       {
         labelVi: 'Chi 35 Ahn thuê mặt bằng và xin giấy phép Hana thành lập Văn Phòng Độc Lập',
         labelEn: 'Spend 35 Ahn to lease premises and charter your independent Office from Hana',
-        resultVi: 'Tấm biển đồng khắc tên bạn sáng lấp lánh dưới ánh đèn neon. Các thân chủ nườm nượp tìm đến đặt hợp đồng, danh tiếng nghề nghiệp của bạn bước lên một tầm cao mới!',
-        resultEn: 'The polished brass plaque bearing your name gleamed under neon lights. High-paying clients flooded your parlor; your career prestige reached unprecedented heights!',
+        resultVi: 'Tấm biển đồng khắc tên bạn sáng lấp lánh dưới ánh đèn neon. Các thân chủ nườm nượp tìm đến đặt hợp đồng, danh tiếng nghề nghiệp của bạn bước lên một tầm cao mới.',
+        resultEn: 'The polished brass plaque bearing your name gleamed under neon lights. High-paying clients flooded your parlor; your career prestige reached unprecedented heights.',
         costAhn: 35,
         meritAdd: 35,
         flagsAdd: ['OwnFixerOffice'],
@@ -1343,7 +1343,8 @@ export const FIXER_PATH_EVENTS = [
         resultVi: 'Không một tên sát thủ nào còn đứng vững. Bạn đạp tung cửa biệt thự của tên thân chủ gian ác, kề đao vào cổ buộc hắn giao nộp toàn bộ két sắt Ahn và van xin tha mạng.',
         resultEn: 'Not a single assassin remained upright. Kicking open the client’s manor doors, your blade at his throat extracted the entire vault in triple damages.',
         meritAdd: 28,
-        effects: { health: -16, rep: +30, wealth: +75, resonance: +18 }
+        effects: { health: -16, rep: +30, wealth: +75, resonance: +18 },
+        later: [{ id: 'csq_fixer_false_bounty', years: 3, reasonVi: "Thân chủ bị bạn bắt trả gấp ba vẫn còn tiền và còn nhớ tên bạn", reasonEn: "The client you made pay triple still has money and still remembers your name" }]
       },
       {
         labelVi: 'Nộp vali cho Hiệp hội Seven, công khai bằng chứng phạm tội của hắn lên báo chí',

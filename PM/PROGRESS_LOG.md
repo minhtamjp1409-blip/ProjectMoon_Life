@@ -1,8 +1,8 @@
 # The City Chronicles: Tài Liệu Tiến Trình & Kiến Trúc Kỹ Thuật Toàn Diện
 
-> **Cập nhật ghi chép: 23/10/2026 (Đợt 20)**
-> **Trạng thái xác minh tại máy:** `npm test` (0 errors, 0 warnings), `npm run build` và `dotnet build ../PM_BE` đạt 100%. Kho sự kiện đạt 1.002 mục. Chạy mô phỏng kiểm định toàn diện 1.000 cuộc đời hoàn tất. Đã đồng bộ và đẩy mã nguồn lên Git remote `origin/main`.
-> **Cách đọc số liệu:** Các kết quả mô phỏng ở Đợt 1–19 là ảnh chụp lịch sử tại thời điểm ghi; xem Đợt 20 và mục 9.3 cho cấu hình kiểm thử hiện hành.
+> **Cập nhật ghi chép: 23/10/2026 (Đợt 25)**
+> **Trạng thái xác minh tại máy cho Đợt 22:** `npm test` đạt, gồm hồi quy BUG-34–40, lint nội dung và audit 500 khoảnh khắc; `npm run build` đạt. Backend và Git remote không được thay đổi trong đợt này. Các số liệu kho sự kiện và mô phỏng 1.000 cuộc đời ở Đợt 20 là kết quả lịch sử, không phải lần chạy lại của Đợt 22.
+> **Cách đọc số liệu:** Các kết quả mô phỏng ở Đợt 1–21 là ảnh chụp lịch sử tại thời điểm ghi; xem Đợt 23 để đọc phép đo Color/E.G.O hiện hành. Đợt 22 và mục 9.3 ghi các lần kiểm thử chức năng trước đó.
 
 ---
 
@@ -17,7 +17,7 @@
 7. [Kho dữ liệu tình huống & Cơ chế nhân quả (Story Pools & Causal Engine)](#7-kho-dữ-liệu-tình-huống--cơ-chế-nhân-quả-story-pools--causal-engine)
 8. [Các tính năng & Trang phụ mở rộng (Sub-pages & Advanced Features)](#8-các-tính-năng--trang-phụ-mở-rộng-sub-pages--advanced-features)
 9. [Bộ quy tắc kiểm định toàn vẹn & Kiểm thử (Integrity Audits & Quality)](#9-bộ-quy-tắc-kiểm-định-toàn-vẹn--kiểm-thử-integrity-audits--quality)
-10. [Nhật ký phát triển chi tiết (Changelog từ Đợt 1 đến Đợt 20)](#10-nhật-ký-phát-triển-chi-tiết-changelog-từ-đợt-1-đến-đợt-20)
+10. [Nhật ký phát triển chi tiết (Changelog từ Đợt 1 đến Đợt 25)](#10-nhật-ký-phát-triển-chi-tiết-changelog-từ-đợt-1-đến-đợt-23)
 
 ---
 
@@ -286,7 +286,7 @@ Sau mốc 18 tuổi, nhân vật rời khỏi thân phận Trẻ con (Child) đ�
 * **256 Gặp Gỡ Bất Chợt (Minor Encounters):** Tình huống phản xạ 15 giây rải khắp các khu vực Backstreets, Nest, Outskirts, đời sống tình cảm và xích mích đồng hành.
 * **347 Dòng Thường Nhật (Daily Life Moments):** Các lát cắt đời sống bình dị và chân thực, tạo nên nhịp điệu sinh hoạt đô thị từ thuở lọt lòng đến tuổi xế chiều.
 * **36 Ủy Thác Tác Chiến Fixer (Tactical Requests):** Hợp đồng nhận việc có phân định rủi ro và xác suất chiến thuật, từ Tier 1 (khu phế liệu) đến Tier 5 (Thảm Họa Đô Thị, Thủy Quái Đại Hồ).
-* Toàn bộ danh mục được lưu trữ đồng bộ trong `DANH_SACH_TAT_CA_EVENTS.txt` và `DANH_SACH_TAT_CA_EVENTS.json`.
+* Toàn bộ danh mục được lưu trữ đồng bộ trong `docs/events/DANH_SACH_TAT_CA_EVENTS.txt` và `docs/events/DANH_SACH_TAT_CA_EVENTS.json`.
 
 ### 7.2. Chuỗi Nhân Quả Hẹn Giờ 2 Năm (18 Causal Threads)
 Hệ thống tích hợp 18 mạch truyện nhân quả độc lập (`src/data/narrative/causalThreads.js`). Khi người chơi đưa ra một quyết định gieo mầm:
@@ -344,15 +344,15 @@ Kết quả lịch sử từng ghi trên **50.134 khoảnh khắc** và **243 v�
 4. **[CHECK 4] Biological Child without Offspring Violations (0 LỖI):** Phân biệt chính xác giữa con ruột hợp pháp, đệ tử truyền thừa và trẻ lang thang nhặt từ Backstreets.
 5. **[CHECK 5] Career Checklist vs Exam Gate Mismatches (0 LỖI):** Danh sách điều kiện hiển thị trên giao diện người chơi khớp chính xác 100% với logic cổng mở kỳ thi của engine.
 
-### 9.2. Kết quả lịch sử của kiểm định 120 sinh mệnh (`story_logic_audit.mjs`)
+### 9.2. Kết quả lịch sử của kiểm định 120 sinh mệnh (`tools/sim/story_logic_audit.mjs`)
 * Mô phỏng ngẫu nhiên 120 cuộc đời hoàn chỉnh (hơn 24.000 khoảnh khắc): **0 VI PHẠM LOGIC**.
 * Độ che phủ sự kiện: 654 / 770 sự kiện từng xuất hiện trong các lượt chạy mẫu.
 * Chỉ số chồng lấn Jaccard giữa hai cuộc đời ngẫu nhiên đạt 0.210 (chứng minh độ đa dạng và khác biệt rất cao giữa các ván chơi).
 
 ### 9.3. Cấu hình và kết quả kiểm thử hiện hành (23/10/2026)
-* `npm test` chạy kiểm tra tương hợp FE/BE (`check_be_parity.mjs`), lint nội dung (`lint_story.mjs`), các bộ regression kịch bản, kiểm thử cơ chế dungeon (`test_dungeon_mechanics.mjs`) và `run_million_audit.mjs 500`. Kết quả đạt 100% (0 errors, 0 warnings).
+* `npm test` chạy kiểm tra tương hợp FE/BE (`tools/lint/check_be_parity.mjs`), lint nội dung (`tools/lint/lint_story.mjs`), các bộ regression kịch bản, kiểm thử cơ chế dungeon (`tests/test_dungeon_mechanics.mjs`) và `run_million_audit.mjs 500`. Kết quả đạt 100% (0 errors, 0 warnings).
 * `npm run build` hoàn tất sạch sẽ với Vite 6.4.4 trong 8.10s. `dotnet build ../PM_BE` đạt 0 warning, 0 error.
-* `node scripts/export_all_events.mjs` ghi lại `DANH_SACH_TAT_CA_EVENTS.txt` và `.json` với đúng **1.002 mục**.
+* `node tools/export_all_events.mjs` ghi lại `docs/events/DANH_SACH_TAT_CA_EVENTS.txt` và `.json` với đúng **1.002 mục**.
 
 ### 9.4. Báo cáo thực nghiệm mô phỏng 1.000 cuộc đời trọn vẹn (1,000-Life Benchmark Audit)
 Mô phỏng 1.000 sinh mệnh độc lập (tuổi thọ trung bình 52.0 tuổi) chạy qua toàn bộ engine sinh tồn và hệ thống Weaver AI:
@@ -370,7 +370,54 @@ Mô phỏng 1.000 sinh mệnh độc lập (tuổi thọ trung bình 52.0 tuổi
 
 ---
 
-## 10. Nhật ký phát triển chi tiết (Changelog từ Đợt 1 đến Đợt 20)
+## 10. Nhật ký phát triển chi tiết (Changelog từ Đợt 1 đến Đợt 23)
+
+### Đợt 25 (23/10/2026): Dungeon có rủi ro thật, giao diện sáng/tối và mobile, đánh bóng chữ, nối nốt nhánh Color sớm
+
+* **Dungeon (`dungeonEngine.js`, `dungeonText.js`, `eventsDungeonGates.js`)**: sửa lỗi lối vào dungeon vừa trả thưởng vừa kể kết quả (thưởng hai lần); lối vào nay chỉ dựng cảnh, lint chặn tái phạm. Kiểm tra thất bại có lời kể riêng, sát thương cao hơn và mất nửa chiến lợi phẩm; Strain có bậc (Vững, Run tay, Hoảng loạn, Sắp gãy), chạm trần thì gục nhưng không chết; Nghỉ thở tốn Ahn. Thưởng giảm theo hệ số `DUNGEON_BALANCE`. Thêm 12 sự kiện cổng (mỗi dungeon ít nhất 2 lối vào, có lựa chọn mua thêm tiếp tế). Khoảng 20% số đời gặp một dungeon. Đo bằng `node dungeon_sim.mjs`: đi cẩn thận gần 0% chết, lao vào khoảng 13 đến 22%.
+* **Giao diện**: DungeonDock viết lại (thanh chiến thuật dính đáy, đồng hồ giả bỏ vòng lặp 65ms), thẻ kết quả hiện thay đổi cả chuyến đi; sửa chế độ sáng (dock, HUD, chip chỉ số đọc được), toast thành tựu không che lựa chọn trên mobile, tiêu đề trang lưu trữ trên mobile, cỡ chữ 3 mức, rung nhẹ trên cảm ứng, hiệu ứng rung màn hình chỉ chạy khi có va chạm và tôn trọng chế độ giảm chuyển động.
+* **Chữ (`tools/lint/voice_lint.mjs`, `tools/lint/slop_scan.mjs`)**: 0 vi phạm giọng văn (gạch dài, chấm than ngoài thoại, số chỉ số trong câu, thuật ngữ dịch); viết lại khoảng 40 sự kiện và toàn bộ chữ dungeon; sửa `{age}` không được thay thế; nối 11 sự kiện hệ quả mồ côi và 2 sự kiện thơ ấu nằm nhầm mảng.
+* **Nhánh Color sớm**: bản trước có sự kiện Seven nhưng không gì mời nó. Nay Weaver mời Fixer 28 đến 38 tuổi Grade 2 đến 6 với xác suất 22% mỗi lần chọn sự kiện lớn. Đo (800 đời ép Fixer, bot ngẫu nhiên): 13% được mời, 1% đạt hồ sơ xuất sắc; chưa có ca Color trước 45 vì bot ngẫu nhiên không biết thi thăng hạng. Cần đo lại bằng người chơi thật.
+
+### Đợt 24 (23/10/2026): Giữ tiến trình Resonance, cơ hội Color sớm và tái xét khảo thí
+
+* `economyModel.js`: hao hụt Resonance giảm từ 8% phần dư (tối đa 3/năm, tối thiểu 1) xuống 2% phần dư, tối đa 1/năm và có thể bằng 0. Năm có hiệu ứng tăng Resonance được miễn hao hụt nền. Mốc Resonance cao nhất từng đạt bổ sung sàn tự nhiên: mỗi 20 điểm đỉnh giữ thêm 5 điểm sàn, kết hợp với sàn từ sẹo bằng giá trị cao hơn. Sàn chỉ hạn chế hao hụt nền, không ngăn lựa chọn hoặc hậu quả chủ động trừ Resonance.
+* `awakeningProgress.js`: lưu `resonancePeak`, `lastResonanceGainAge`, `egoOpportunityUntil` bằng trường số trên nhân vật. Khi đạt ngưỡng ổn định của Carmen (70 Resonance, hoặc 58 kèm điều kiện sẹo/SP), giữ cơ hội tới hết tuổi hiện tại +2. Mỗi lần tiếp tục đủ ngưỡng sẽ gia hạn. E.G.O/Distortion và sự kiện đã trải qua vẫn chặn việc gọi lại. Đây là cửa sổ xuất hiện, không phải phần thưởng thức tỉnh chắc chắn. Các nguồn tăng điểm ở major, daily/minor, dungeon và biến cố đặc biệt đều ghi nhận tiến trình.
+* Chuỗi Seven gồm `fixer_seven_unclaimed_dossier` và `fixer_seven_sealed_deposition`: cơ hội mở đầu 1,8% mỗi kế hoạch năm hợp lệ, tuổi 28–38, Fixer Grade 2–6, chưa nhận hồ sơ và chưa Distort. Sự kiện mở đầu chỉ vào từ kế hoạch năm, không lọt vào pool ngẫu nhiên thường. Hai nhiệm vụ có xác suất thành công cơ sở 65%, lựa chọn rút lui, tổn thất sức khỏe/tinh thần và hậu quả tài chính. Nhiệm vụ sau được hẹn sau một năm, cần HP ≥45 và SP ≥30 để nhận rủi ro. Công trạng thực nhận khi thành công lần lượt 60 và 160 sau hệ số nghề 0,4.
+* Hoàn tất chuỗi nhận `SevenExceptionalRecord`: khi đỗ kỳ thăng Grade, giữ 85% công trạng dư thay cho 25% và bỏ chặn phần dư dưới ngưỡng cấp tiếp theo. Vẫn phải dự thi từng Grade, vẫn có thể trượt và tử vong. Điều kiện Color giữ nguyên Grade 1, tuổi ≥30, Merit ≥300, Rep ≥95. Chuỗi hiếm tạo cơ hội tăng tốc, không bảo đảm Color trước 45 tuổi.
+* Bài thử Color: nhánh Seven tiêu 15 Ahn ở cả hai kết quả; xác suất cơ sở 75% nhận Color, 25% rút lui với thương tích. Không còn nhánh bảo đảm nhận danh hiệu. `lastColorTrialAge` khóa tái xét ba năm, sau đó phải đủ điều kiện hiện tại. Từ chối danh hiệu (`ColorRefused`) ngừng lời mời. Hồ sơ cũ từng trượt mà chưa có trường tuổi khảo thí được phép xét lại; lần thi mới bắt đầu áp dụng thời gian chờ.
+* Kế hoạch do server trả về được ghép lại với chuỗi Seven và major cục bộ cần cho cơ hội E.G.O/Color, để không mất các cơ hội chỉ engine client biết. Không đổi các ngưỡng nghề chung ở backend. Các trường tiến trình mới có mặc định an toàn khi thiếu; chúng đi cùng đối tượng nhân vật khi lưu/clone.
+* Kiểm thử: `npm test` đạt (gồm audit 500 khoảnh khắc và hồi quy mới), `npm run build` đạt. `scripts/test_awakening_progress.mjs` kiểm tra miễn hao hụt, hết hạn lời gọi, kết quả thắng/trượt Color, phí chính xác, cooldown, từ chối, hồ sơ cũ, khóa route, chuỗi hậu quả và giữ công trạng mà không nhảy Grade. Có thể chạy riêng bằng `npm run test:awakening`.
+
+### Đợt 23 (23/10/2026): Đo tỷ lệ Color Fixer và thức tỉnh E.G.O theo cuộc đời
+
+* Mở rộng `tools/sim/balance_sim.mjs` để ghi tuổi **lần đầu** đạt Color và E.G.O, tỷ lệ có cả hai trong một cuộc đời, cùng năm tuổi, cùng lần giải quyết sự kiện; thêm chính sách `focused` chủ động chọn tuyến Fixer, thử Color và kháng lại lời mời của Carmen. Đây là mô phỏng engine FE theo seed cố định, không phải đo hành vi người chơi thật. Mỗi chính sách chạy 500 cuộc đời hoàn chỉnh; `node --check balance_sim.mjs` và cả ba lần chạy đều thành công. Mẫu số chính là 500 cuộc đời/chính sách, không phải 500 sự kiện hay 500 năm.
+* **Chọn ngẫu nhiên** (`node tools/sim/balance_sim.mjs 500 random`): 90/500 từng làm Fixer; 3/90 từng lên Grade 1; 1/500 gặp bài thử Color và 0/500 đạt Color. E.G.O: 42/500 (8,4%), tuổi thức tỉnh trung bình 40,2. Cả hai trong một cuộc đời: 0/500; cùng năm: 0/500. Một lần gặp bài thử không đủ để suy ra tỷ lệ đỗ Color; kết quả 0/500 chỉ cho thấy mốc này rất hiếm với cách chọn ngẫu nhiên.
+* **Chủ đích theo đuổi hai mốc** (`node tools/sim/balance_sim.mjs 500 focused`): 444/500 từng làm Fixer; 121/444 từng lên Grade 1; 92/500 gặp bài thử Color và cả 92 đều đạt Color (18,4% cuộc đời; tuổi đạt trung bình 66,1). E.G.O: 46/500 (9,2%; tuổi trung bình 44,8). Cả Color lẫn E.G.O trong cùng cuộc đời: 17/500 (3,4%); lần đầu đạt hai mốc trong cùng năm tuổi: 0/500; cùng một lần giải quyết sự kiện: 0/500. Nhánh phối hợp Seven Association của bài thử Color hiện cho Color chắc chắn khi đủ điều kiện Wealth/Sanity, nên 92/92 là hệ quả của cách chọn, không phải xác suất ngẫu nhiên nội tại của thử thách.
+* **Chẩn đoán chính sách chọn lợi ích trước mắt** (`node tools/sim/balance_sim.mjs 500 greedy --fixers`): ép nhân vật chuyển sang Fixer ở tuổi trưởng thành để soi tuyến nghề; 103/500 gặp bài thử nhưng 0 nhận Color, 0 thức tỉnh E.G.O. Bộ chọn tự động ưu tiên lợi ích chỉ số trước mắt, có thể chọn từ chối Color hoặc Carmen. Đây không phải tỷ lệ người chơi thật và chế độ `--fixers` không mô phỏng lựa chọn nghề tự nhiên.
+* **Giới hạn và lưu ý logic:** 0/500 cùng năm không chứng minh xác suất bằng 0; cận trên xấp xỉ 0,6% với độ tin cậy 95% cho từng mẫu 500. Color và E.G.O nằm ở hai sự kiện khác nhau, không có outcome gộp cả hai trong một lần giải quyết. Color cần Fixer Grade 1, từ 30 tuổi, Merit ≥300, Rep ≥95; E.G.O không phải điều kiện bắt buộc. Sau khi `hana_color_ascension_trial` được ghi vào `seenEvents`, bộ chọn không gọi lại sự kiện này, dù nhánh trượt có lời kể hoãn phong Color đến khi hồi phục; cần sửa riêng nếu muốn có cơ hội thi lại đúng như lời kể.
+
+### Đợt 22 (23/10/2026): Rà soát BUG-34–40, sửa xác suất hiển thị và phần thưởng lựa chọn
+
+* **BUG-34, pause rồi “Qua mùa” bị khóa:** Code hiện tại đã tách `postChoicePauseMs` khỏi điều kiện khóa nút. `stepYear()` chỉ dừng ở quyết định thực sự đang chờ, rồi xóa thời gian đọc khi bước tiếp. Bổ sung hồi quy hành vi bằng Zustand: đặt nhân vật ở tiến độ 25%, `speed = 0` và còn 3 giây đọc, gọi `stepYear()` đưa đến 50% và đưa `postChoicePauseMs` về 0. Không cần chỉnh lại luồng game.
+* **BUG-35, người đứng đầu Finger thiếu việc và cách dùng tiền:** Cây mã hiện tại đã có cơ hội riêng cho Apex ở cả Thumb, Index, Middle, Ring, Pinky; mỗi nhánh có hai major event riêng, lựa chọn thu tiền và chi tiền, cùng cổng `fingerRank = 3`. Bài hồi quy xác nhận 10 event tồn tại, người rank 3 đủ điều kiện và rank 2 không thể nhận. Đây là hệ thống đã có trước Đợt 22; không thêm event trùng lặp.
+* **BUG-36, E.G.O Resonance khó chạm cổng:** Cơ chế hiện tại đã giới hạn mức hao mòn hằng năm còn tối đa 3 điểm và mở ngã rẽ Carmen từ khoảng 58–70% tùy sẹo, SP; không buộc E.G.O biến thành Distortion. Bài hồi quy tạo nhân vật trưởng thành có 60% Resonance, SP 36 và sẹo phù hợp, xác nhận sự kiện `ego_carmen_crossroad` được chọn và có lịch trong năm. Không nới ngưỡng thêm trong đợt này.
+* **BUG-37, dòng “Khu vực” và “Xuất thân” tràn viền:** Giao diện hiện tại đã chuyển hai mục sang `kv-stack` với tên vùng, gia cảnh, chỉ số khởi đầu và đặc quyền ở các dòng riêng. Bài hồi quy xác nhận cấu trúc đó còn hiện diện. Việc hiển thị đầy đủ đặc quyền đã có từ trước Đợt 22, không thay các bonus gốc.
+* **BUG-38, vào nghề Fixer hiện “Đỗ 0%”:** `ChoicePreview` trước đây coi mọi lựa chọn có `setFixerGrade` là bài thi thăng hạng. Nay chỉ hiện tỷ lệ đỗ khi nhân vật đang là Fixer và Grade mục tiêu cao hơn bậc hiện tại theo thứ tự Hana. Lựa chọn đăng ký Grade 9 ở tuổi 18 là bước vào nghề chắc chắn, nên không hiện “Đỗ 0% · Trượt 100%”; các kỳ thi từ Grade 9 lên 8 vẫn giữ tỷ lệ. Predicate dùng chung `isFixerPromotionChoice` có kiểm thử riêng.
+* **BUG-39, “Bốn đồng Ahn cứu con” trả sai:** Lựa chọn nhận việc không cộng sẵn 1 Ahn. Nhánh cứu được cậu bé nhận đúng 4 Ahn tiền công; nhánh đến muộn hoàn tiền, số dư cuối không đổi. `resolveMinor` hỗ trợ `exactFx` cho hiệu ứng cần giữ số tuyệt đối khi các chỉ số khác vẫn được phép biến thiên theo RNG. Đã thử cả hai nhánh với số dư khởi đầu 20 Ahn: kết quả lần lượt 24 và 20.
+* **BUG-40, đại tu Workshop giá 22 Ahn nhưng lợi ích nhỏ:** Gói đại tu nay cho SP khoảng 8 và Quan hệ khoảng 12, bên cạnh Danh tiếng khoảng 6; RNG vẫn có thể làm các mức trên dao động và Danh tiếng vẫn giảm dần khi đã cao. Câu kết quả chỉ nói về thiết bị được sửa và chủ xưởng giới thiệu khách, không biến bảo dưỡng giáp thành chữa lành HP. Chi phí vẫn trừ đúng 22 Ahn, giữ vị trí của gói cao cấp so với gói tra dầu 6 Ahn. Hồi quy xác nhận ở nhân vật Rep 80 vẫn nhận SP và Quan hệ đáng kể mà HP không đổi.
+* **Kiểm định và phạm vi:** `npm test` đạt sau thay đổi, gồm lint truyện 0 lỗi/0 cảnh báo, các suite về nghề nghiệp, kinh tế, dungeon và audit 500 khoảnh khắc; `npm run build` đạt. `run_million_audit.mjs 500` kiểm tra engine chứ không phải 500 cuộc đời hoặc chụp ảnh UI. Workspace đã có nhiều thay đổi chưa commit từ các đợt trước; đợt này không hoàn nguyên hay đẩy chúng lên remote.
+
+
+### Đợt 21 (23/10/2026): Làm rõ luồng khai sinh, biên niên, chỉ số và đồng hồ sự kiện nhanh
+
+* **Vòng quay trước popup khi mở kiếp mới trên điện thoại:** `BirthSetupPanel.jsx` đã có logic quay đến District được chọn trước khi bật `CityLoadingOverlay`, nhưng `.opening-atlas` bị ẩn ở viewport dưới 820 px. Khi nhấn “Bước vào The City”, giao diện nay đưa chính vòng quay đó lên lớp toàn màn hình, cho nó hoàn tất rồi mới mở thẻ tải hồ sơ. Trạng thái `spinning` khóa nhấn khởi đầu lặp trong lúc chuyển cảnh và được giải phóng khi tải xong. Trên desktop, vòng quay vẫn nằm trong bố cục trang chủ.
+* **Xem lại sự kiện không kể lại cùng một đoạn:** `LiveStageFeed.jsx` nhận biết log sự kiện nhanh đã lưu nguyên đề bài ở đầu `vi/en`. Thẻ biên niên tách phần tình huống và phần kết quả; mục “Xem lại sự kiện và lựa chọn” chỉ liệt kê các phương án khi đề bài đã hiện ngay trên thẻ. Với sự kiện lớn, nếu thẻ chỉ hiện kết quả, phần xem lại vẫn giữ đề bài. Log và save cũ không bị viết lại. Chế độ song ngữ tiếp tục hiện nội dung tiếng Anh đầy đủ.
+* **Màu kết quả sau lựa chọn:** Phần hậu quả trên thẻ biên niên có màu xanh lục lam và vạch trái, tách khỏi phần tình huống. Màu chữ được đặt riêng cho nền sáng (`#176a68` trên trắng, 6.37:1) và nền tối (`#9fd2cf` trên `#14171d`, 10.76:1); cả hai vượt ngưỡng tương phản 4.5:1 cho chữ thường. Quy tắc áp dụng ở web và mobile.
+* **HUD điện thoại không cần mở hồ sơ để đọc chỉ số chính:** Hàng đầu giữ HP, SP, Ahn. Một hàng gọn ngay dưới hiện Quan hệ, Rep, Heat, cộng hưởng E.G.O và Taboo, kể cả khi áp lực bằng 0. Chỉ số nguy hiểm có màu cảnh báo khi Heat từ 65 hoặc Taboo từ 2. Hồ sơ trượt vẫn giữ bảng chi tiết, sự nghiệp và quan hệ. Đã kiểm tra ở 390 px và 320 px: HUD không gây tràn ngang; nhãn Rep được rút ngắn để đọc được trên máy hẹp.
+* **Thanh 15 giây theo đúng đồng hồ game:** Thanh và số giây hiện lấy `minorRemainingMs` từ Zustand, cùng nguồn mà `tick()` dùng để hết hạn sự kiện. Bỏ animation CSS chạy độc lập vốn có thể bị tắt bởi thiết lập giảm chuyển động hoặc lệch khi game tạm dừng. Khi pause, cả thời gian game lẫn thanh cùng đứng; khi tiếp tục, thanh giảm từ thời gian còn lại. Đây là thay đổi hiển thị, không đổi luật chọn lựa hoặc thời hạn 15 giây.
+* **Kiểm định Đợt 21:** `npm test` đạt, bao gồm lint nội dung, hồi quy sự kiện/cân bằng và audit 500 khoảnh khắc; `npm run build` đạt. Kiểm tra trình duyệt thật ở 390 px xác nhận trước khi bấm khởi đầu atlas bị ẩn, sau khi bấm vòng quay nằm ở `position: fixed` và màn tải chưa xuất hiện. Kiểm tra 320 px xác nhận `document.scrollWidth` và HUD đều bằng 320 px. Đợt này chưa có kiểm thử tự động chụp ảnh cho toàn bộ biến thể ngôn ngữ và cỡ chữ.
+
 
 ### Đợt 20 (23/10/2026): Mở rộng kho sự kiện đạt 1.002 mục, chiều sâu tương tác NPC (Phản bội, Trợ lực, Phân tầng Bond) & Cân bằng thăng tiến Syndicate Apex
 
@@ -381,7 +428,7 @@ Mô phỏng 1.000 sinh mệnh độc lập (tuổi thọ trung bình 52.0 tuổi
     * **Minor Choice Events:** Tăng lên **256 sự kiện** (+52 sự kiện vi mô 15s về chia sẻ đạn dược, phân chia thù lao, mài giáp, chăm sóc con cái, chia sẻ quả táo hiếm hoi, ván súc sắc thùng phuy...).
     * **Daily Seasonal Lines:** Tăng lên **347 dòng thường nhật** (+52 câu thoại về không khí các quận, tiếng mài dao Backstreets, còi giới nghiêm, sáp ong bao kiếm, khói sương lưu huỳnh...).
     * **Fixer Contract Templates:** Tăng lên **36 mẫu hợp đồng** (+12 hợp đồng Tier 1 đến Tier 5: đàn áp Abnormality, Night in the Backstreets, dọn dẹp tàu WARP, săn Thủy Quái Đại Hồ...).
-  * Đồng bộ hóa danh mục qua `node scripts/export_all_events.mjs` đạt đúng 1.002 mục.
+  * Đồng bộ hóa danh mục qua `node tools/export_all_events.mjs` đạt đúng 1.002 mục.
 
 * **Cơ chế Chiều sâu NPC, Hệ thống Phân tầng Quan hệ & Phản bội / Trợ lực (Deep Emergent NPC Mechanics):**
   * Phân tầng quan hệ dựa trên chỉ số gắn kết `bond`:
@@ -423,10 +470,10 @@ Mô phỏng 1.000 sinh mệnh độc lập (tuổi thọ trung bình 52.0 tuổi
 
 #### Cần lưu ý khi tiếp tục phát triển
 
-1. Sau khi thêm hoặc sửa event, cập nhật `DANH_SACH_TAT_CA_EVENTS.txt` và `.json` bằng `node scripts/export_all_events.mjs`; số đếm hiện tại là 259 major + 36 consequence + 219 minor + 302 daily + 24 contract = 840.
+1. Sau khi thêm hoặc sửa event, cập nhật `docs/events/DANH_SACH_TAT_CA_EVENTS.txt` và `.json` bằng `node tools/export_all_events.mjs`; số đếm hiện tại là 259 major + 36 consequence + 219 minor + 302 daily + 24 contract = 840.
 2. Với lựa chọn có giá cố định, dùng `costAhn` để khóa UI và engine, rồi kiểm tra số Ahn thực trừ trên cả đường có và không có `fx.wealth`. Không chỉ ghi giá trong nhãn. Phần thưởng hoặc mất tiền ngẫu nhiên ngoài phí được tính riêng.
 3. Bất kỳ đường tạo log lựa chọn mới nào muốn hỗ trợ xem lại phải lưu snapshot `review` (đề bài, nhãn phương án song ngữ, phương án đã chọn); log cũ không được tự suy diễn từ dữ liệu event mới.
-4. Bảng tiến độ Wing và cổng thăng cấp phải đọc cùng các mốc bậc. Khi thay đổi ngưỡng, kiểm tra cả `gameEngine.js`, `careerPipeline.js`, bản tương ứng trong `PM_BE/Services/DirectorEngineService.cs` và `check_be_parity.mjs`.
+4. Bảng tiến độ Wing và cổng thăng cấp phải đọc cùng các mốc bậc. Khi thay đổi ngưỡng, kiểm tra cả `gameEngine.js`, `careerPipeline.js`, bản tương ứng trong `PM_BE/Services/DirectorEngineService.cs` và `tools/lint/check_be_parity.mjs`.
 5. Bộ 500 khoảnh khắc là phép dò nhanh, không phải kiểm thử phân phối dài hạn. Trước khi chốt cân bằng Wing, nên đo nhiều seed cho thời gian đạt bậc, số lần event cơ hội xuất hiện, tỷ lệ trượt và chết; không diễn giải 0 vi phạm trong mẫu ngắn thành bảo đảm tuyệt đối.
 6. Trước khi phát hành giao diện xem lại, kiểm tra trực tiếp các trạng thái mở/đóng, tiếng Việt/Anh, save mới/save cũ, màn hình hẹp và bàn phím. Lượt build hiện tại chỉ xác nhận biên dịch, chưa xác nhận cách hiển thị trong trình duyệt.
 
@@ -487,7 +534,7 @@ Mô phỏng 1.000 sinh mệnh độc lập (tuổi thọ trung bình 52.0 tuổi
   * Chuẩn hóa tính toán tỷ lệ thành công / thất bại qua `outcomeOdds.js` cho mọi nhánh lựa chọn siêu nhiên.
 * **Kiểm định toàn vẹn 100%:**
   * `npm test` chạy kiểm thử tự động 50.145 khoảnh khắc với 0 lỗi / 0 cảnh báo.
-  * Bộ kiểm định logic cốt truyện 120 vòng đời (`story_logic_audit.mjs`) đạt 0 vi phạm (0 logic violations).
+  * Bộ kiểm định logic cốt truyện 120 vòng đời (`tools/sim/story_logic_audit.mjs`) đạt 0 vi phạm (0 logic violations).
   * Bản build Vite production đạt 100% thành công trong 12.56s.
 
 ### Đợt 16 (21/10/2026): Tinh gọn tài nguyên & Trải nghiệm đọc kết quả trực tiếp
@@ -495,7 +542,7 @@ Mô phỏng 1.000 sinh mệnh độc lập (tuổi thọ trung bình 52.0 tuổi
 * **Hiển thị trực tiếp trên dòng thời gian ngoài (Chronicle Feed):** Toàn bộ kết quả lựa chọn, diễn biến cốt truyện, biến động chỉ số (HP, SP, Rep, Ahn, Sẹo...) hiển thị mượt mà trên thẻ sự kiện ở feed chính.
 * **Thời gian dừng đọc 3 giây (`postChoicePauseMs: 3000`):** Thanh tiến trình dừng 3 giây sau khi chọn và hiển thị thông báo đếm lùi trực quan `Kết quả vừa lưu · Tiếp tục sau 3s... 2s... 1s` để người chơi thong thả đọc kết quả; hỗ trợ phím Space / Enter hoặc nút Play để bỏ qua ngay nếu muốn đọc nhanh.
 * **Dọn dẹp triệt để tài nguyên rác:**
-  * Xóa toàn bộ các file báo cáo text thừa (`BAO_CAO_GIA_LAP_VA_SO_SANH_PROJECT_MOON.txt`, `BAO_CAO_KIEM_THU_1_TRIEU_KICH_BAN.txt`, `DANH_SACH_TAT_CA_EVENTS.txt`, `THE_CITY_CHRONICLES_GAMEPLAY_DOC.txt`, `TOAN_BO_KICH_BAN_PROJECT_MOON.txt`).
+  * Xóa toàn bộ các file báo cáo text thừa (`BAO_CAO_GIA_LAP_VA_SO_SANH_PROJECT_MOON.txt`, `BAO_CAO_KIEM_THU_1_TRIEU_KICH_BAN.txt`, `docs/events/DANH_SACH_TAT_CA_EVENTS.txt`, `THE_CITY_CHRONICLES_GAMEPLAY_DOC.txt`, `TOAN_BO_KICH_BAN_PROJECT_MOON.txt`).
   * Xóa các tệp sơ đồ hình ảnh và PDF dư thừa trong thư mục gốc và thư mục `public/` (`ARCHITECTURE_DIAGRAM.png`, `event_diagram.png`, `diagram_preview.png`, `EVENT_ARCHITECTURE_DIAGRAM.pdf`, `THE_CITY_CHRONICLES_DOCUMENTATION.pdf`), chỉ giữ lại biểu tượng `favicon.svg`.
   * Chuyển hướng link "Tài liệu gameplay" ở footer trang chủ sang liên kết nội bộ trực tiếp đến trang **Thuật ngữ thế giới (`/glossary`)**.
   * Hợp nhất toàn bộ tài liệu kỹ thuật, gameplay và tiến trình vào duy nhất tệp tài liệu tổng thể này (`PROGRESS_LOG.md`).
@@ -506,13 +553,13 @@ Mô phỏng 1.000 sinh mệnh độc lập (tuổi thọ trung bình 52.0 tuổi
 * Khôi phục cơ chế quay bánh xe 26 District bằng `requestAnimationFrame` (`spinTo`), tương thích hoàn hảo với các thiết bị bật chế độ giảm chuyển động (`prefers-reduced-motion`).
 
 ### Đợt 14 (21/10/2026): Đồng bộ hoàn hảo Frontend / Backend & Triển khai Vercel Live
-* Xây dựng bộ kiểm định tính tương đồng giữa Frontend JS và Backend .NET (`check_be_parity.mjs`): đồng bộ 100% thang bậc Fixer, mốc Color Fixer (Merit 300 / Rep 95) và các thứ bậc Finger.
+* Xây dựng bộ kiểm định tính tương đồng giữa Frontend JS và Backend .NET (`tools/lint/check_be_parity.mjs`): đồng bộ 100% thang bậc Fixer, mốc Color Fixer (Merit 300 / Rep 95) và các thứ bậc Finger.
 * Đồng bộ hàm băm tất định FNV-1a 32-bit (`StableHash`) trên Backend.
-* Chạy mô phỏng kiểm định cân bằng 1.500 kiếp sống (`balance_sim.mjs`) đạt tuổi thọ trung bình 55.7 tuổi (khớp 105.3% lore `avgLife`).
+* Chạy mô phỏng kiểm định cân bằng 1.500 kiếp sống (`tools/sim/balance_sim.mjs`) đạt tuổi thọ trung bình 55.7 tuổi (khớp 105.3% lore `avgLife`).
 * Triển khai CI/CD tự động lên Vercel Production và cấu hình kết nối API Render.
 
 ### Đợt 13 (21/10/2026): Rà soát logic cốt truyện & Mở rộng 152 sự kiện mới
-* Xây dựng hệ thống phát hiện lỗi logic (`storyInvariants.js`, `story_logic_audit.mjs`), sửa triệt để lỗi cờ quan hệ người thân đã mất, lỗi trùng tên NPC và lỗi kẹt chuyển nghề của Distortion.
+* Xây dựng hệ thống phát hiện lỗi logic (`storyInvariants.js`, `tools/sim/story_logic_audit.mjs`), sửa triệt để lỗi cờ quan hệ người thân đã mất, lỗi trùng tên NPC và lỗi kẹt chuyển nghề của Distortion.
 * Bổ sung 152 nội dung mới (20 sự kiện lớn, 63 sự kiện nhỏ, 70 dòng thường ngày), nâng tổng số kho sự kiện lên 689 mục.
 * Triển khai thuật toán chống lặp dựa trên trọng số độ mới `freshness` và cá tính ngẫu nhiên `variance.js`.
 
@@ -553,3 +600,25 @@ Mô phỏng 1.000 sinh mệnh độc lập (tuổi thọ trung bình 52.0 tuổi
 * Xây dựng bộ engine mô phỏng cốt lõi: Vòng lặp 4 mùa `yearPlanner.js`, hệ thống chỉ số tài nguyên, hạt giống PRNG `sfc32` và bộ dữ liệu bối cảnh 26 Quận.
 * Xây dựng Backend .NET 8 Minimal API với cơ chế lưu file nguyên tử `.tmp`.
 * Tích hợp Web Audio API và hệ thống thành tựu Codex.
+
+### Cấu trúc thư mục (đợt 25)
+* `src/` mã game; `tests/` các bộ test (`npm test`); `tools/lint/` kiểm tra nội dung và tương hợp FE/BE; `tools/sim/` mô phỏng, audit và cân bằng; `tools/export_all_events.mjs` (`npm run export:events`) ghi `docs/events/`.
+* Thư mục gốc chỉ còn cấu hình (`package.json`, `vite.config.js`, `vercel.json`, `index.html`) và tài liệu chính (`AGENTS.md`, `DESIGN.md`, `UNIVERSE.md`, `PROGRESS_LOG.md`).
+
+### Quyền lợi E.G.O/Color, độ sâu các nhánh, Workshop (đợt 25, phần bổ sung)
+* **Kích hoạt E.G.O trong dungeon** (`dungeonEngine.js`, phím R): mỗi chặng, một lần bật làm kiểm định dễ hơn nhiều và giảm sát thương, đổi lại tăng áp lực, giảm tinh thần và tăng Resonance. Người thức tỉnh E.G.O có 1 lần mỗi lượt, Color có 2 lần, trả ít hơn, tích lũy áp lực chậm hơn và được cộng nhẹ vào kiểm định. Test: `tests/test_ego_perks.mjs`.
+* **9 sự kiện E.G.O/Color** (`eventsEgoColorPerks.js`): đăng ký E.G.O với Hana hoặc giữ kín (cả hai đều có hệ quả sau vài năm), người cầm kiếm cũ, vũ khí lệch nhịp; ghế ở Hana, Request niêm phong của The Head, lời xin học, đối thủ cũ.
+* **8 sự kiện cho nhánh mỏng** (`eventsBranchDepth.js`): Wing (hợp đồng Nest, điều chuyển cơ sở, gói nghỉ hưu, người mới nộp nhầm) và Distortion (một giờ tỉnh táo, bia không có xác, nhờ người cuối cùng). `tools/sim/branch_experience.mjs` đo số cảnh lớn mỗi 10 năm của từng nghề: Fixer 4,8, Syndicate 3,7, Distortion 3,4, Workshop 3,2, Wing 3,1.
+* **Workshop không còn là nghề chọn được**: gỡ khỏi danh sách nghề ở màn tạo nhân vật, khỏi lối chọn nghề ở tuổi 18 (`eventsChildhood.js`); lối "vào xưởng" từ Outskirts vẫn còn nhưng nay cho lao động tự do (Outcast) ở District T, không phải nghề; backend cũng đã bỏ lời gợi ý. Xưởng và vũ khí vẫn xuất hiện trong chợ, sự kiện nhận vũ khí và tàng thư. Còn khoảng 42 mục (16 major, 10 minor, 16 daily) chỉ dành cho nghề Workshop, hiện không ai tới được. Test: `tests/test_career_choices.mjs`.
+
+### Workshop thành bối cảnh, năm Finger dày lên (đợt 25, phần cuối)
+* **Workshop không còn là nghề.** Thay vì để 42 mục gắn nghề Workshop nằm chết, mình xóa chúng và viết lại thành cảnh của người ghé xưởng (`eventsWorkshopVisits.js`: 10 major, 6 minor, 6 daily) cho Fixer, Syndicate và Outcast: rèn lõi Abnormality, thanh kiếm cho một cái tên Color, mẫu thử của Mook, dấu Tres, quặng từ Outskirts, canh xưởng đêm, chuôi cho E.G.O, thư bảo lãnh cho đứa trẻ. `csq_taboo_workshop_raid` viết lại từ góc người đặt hàng. Hai cổng dungeon đổi sang nghề Fixer/Syndicate/Outcast. Lối chọn nghề tuổi 18 chỉ còn Fixer, Syndicate, Wing.
+* **Kênh nhiệm vụ riêng cho Finger.** Trước đây một Fixer được giao Request gần như mỗi năm (khoảng 5 mỗi 10 năm), còn Finger chỉ có vài cảnh thăng cấp. Nay `yearPlanner.js` mỗi năm có 40% đưa một nhiệm vụ của đúng Finger đó (`FINGER_MISSIONS`), và nhiệm vụ không lẫn sang Finger khác (test `tests/test_finger_missions.mjs`).
+* **Nội dung mỗi Finger** (`eventsFingerThumb/Index/Middle/Ring/Pinky.js` và `eventsFingerExtra.js`, dùng `fingerKit.js`): mỗi Finger 14 nhiệm vụ riêng, các cảnh kể chuyện, 5 đến 6 ký ức đọc lại sau này, khoảng 30 minor và 36 daily. Mỗi Finger có một câu hỏi cố định: Thumb là phẩm cấp và cống nạp, Index là theo hay bẻ cong Prescript, Middle là viết hay gạch tên khỏi Book, Ring là theo đuổi hoàn hảo hay giữ lương tâm, Pinky là giữ lời hay bẻ lời thề. Lựa chọn của người chơi để lại cờ ký ức, và có cảnh đọc lại các cờ đó.
+* **Đo bằng mô phỏng** (`node tools/sim/finger_experience.mjs`): số cảnh riêng của nhánh gặp mỗi 10 năm ở bot chọn ngẫu nhiên, Fixer 16,6; Thumb 14,0; Index 13,9; Middle 14,8; Ring 15,5; Pinky 13,8. Số cảnh major mỗi 10 năm ngang Fixer (2,8 đến 3,5 so với 3,3).
+
+### Đối chiếu lore và chữa văn máy cho nội dung mới (đợt 25, cuối)
+* **Nguồn đối chiếu:** trang The City, The Index, Thumb, Middle, Ring và Pinky trên wiki Limbus Company và Library of Ruina (`limbuscompany.wiki.gg`, `libraryofruina.wiki.gg`). Các trang Pinky và Index của wiki Library of Ruina còn đánh dấu chưa hoàn chỉnh.
+* **Đã sửa cho đúng canon:** Index (hình phạt không có sẵn: một Proxy phải nhận một Prescript ra lệnh phạt; Proxy giải nghĩa và truy bắt, Messenger chỉ đưa Prescript; Weaver làm việc dưới kho ngầm với con lắc mực, bánh xe giải mã và ống khí nén; Proselyte bịt mắt, tháo khi thăng cấp), Pinky (ghế sao gắn với một thanh kiếm sao, chỉ được dùng thanh đã chọn, người chết thì ghế bỏ trống đến khi có người nhận kiếm), Middle (Book of Vengeance không quen buông, xăm một hình mỗi Vengeance, xích vàng, Pilgrimage of Loyalty qua các Labor, rời hội thì bị săn, báo thù lan sang người xung quanh), Thumb (huy hiệu mũi tên và ghim bậc, không nhìn thẳng mặt cấp trên, hình phạt cắt lưỡi và lan sang người vô can, học thuộc cấp bậc của phe khác, lưỡi lê để tiết kiệm đạn), Ring (chấm điểm tranh của dân Backstreets theo thang chữ cái, ba lần trượt thì bị xử, đấu giá có voan, các Trường phái, ba tác phẩm để thành Maestro, nhẫn nhiều vòng xoắn, áo trắng để vết bẩn nói lên quá trình làm việc, chiến sự với Pinky ở Outskirts). Sửa tên `Yan Vismod` thành `Yan Vismok`. Thêm 20 cảnh, 10 minor và 10 daily trong `eventsFingerCanon.js`.
+* **Vẫn là sáng tác của game, wiki không có hoặc không nói:** bậc Great Elder của Middle, Grand Curator và Atelier của Ring, Sworn Blade và Shadow Arbiter của Pinky, nghi thức tháp chuông và sổ lời thề của Pinky (wiki nói thành viên Pinky ẩn mình, ít khi biết nhau, tụ rồi tan theo điều kiện, và wiki không có lời thề), Underboss tách khỏi Sottocapo ở bậc Thumb (wiki coi hai chữ là một). Đổi các bậc này sẽ phá bậc thăng hạng, test và đồng bộ backend, nên giữ nguyên và ghi ở đây.
+* **Chữa văn máy:** `tools/lint/rhythm_scan.mjs` (có trong `npm test`) đếm các kiểu câu lộ văn máy. Bản đầu của phần nội dung Finger có kiểu câu kết "Bạn không biết... hay..." nhiều gấp 8 lần phần còn lại của game, "Bạn nhận ra..." gấp 5,5 lần, "rất lâu" gấp 7 lần, "không nói gì" gấp 7 lần. Đã cắt 211 câu kết, thêm biến thể cho "rất lâu", "gật đầu", "im lặng", bỏ ba câu châm ngôn "Có những...". Hai chỉ số còn cao hơn phần còn lại (rất lâu, gật đầu) nhưng đã giảm khoảng một nửa.

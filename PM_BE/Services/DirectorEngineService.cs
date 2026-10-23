@@ -146,8 +146,8 @@ public sealed class DirectorEngineService
                     new("Đạt tuổi trưởng thành (18)", "Reach Adulthood (18)", c.Age, 18, c.Age >= 18),
                     new("Tích lũy nền tảng (Merit, Ahn hoặc Rep)", "Merit, Ahn or Rep", Math.Max(c.Merit, Math.Max(c.Wealth, c.Rep)), 10, Math.Max(c.Merit, Math.Max(c.Wealth, c.Rep)) >= 10)
                 ],
-                TipVi: "Tại tuổi 18, bạn sẽ quyết định con đường: Hana Fixer, Syndicate, Wing Feather hay Workshop.",
-                TipEn: "At age 18, you will choose your path: Hana Fixer, Syndicate, Wing Feather, or Workshop."
+                TipVi: "Tại tuổi 18, bạn sẽ quyết định con đường: Hana Fixer, Syndicate hay Wing Feather.",
+                TipEn: "At age 18, you will choose your path: Hana Fixer, Syndicate, or Wing Feather."
             );
         }
 

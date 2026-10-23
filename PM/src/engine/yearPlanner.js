@@ -1,3 +1,4 @@
+import { rememberResonance, hasEgoOpportunity, colorTrialAvailable } from './awakeningProgress.js';
 import { simulateNpcAutonomousLife } from './narrativeArcEngine.js';
 import { matchesNeed, matchesEventContext, choiceIsAvailable, mergeEffects, isNestResident, isOutsideCity, npcIsActive } from './eventConditions.js';
 import {
@@ -48,6 +49,9 @@ import { LIFE_DAILIES_3, LIFE_MINORS_3 } from '../data/lifeMinors3.js';
 import { YEAR_END_LINES } from '../data/yearEndLines.js';
 import { LIFE_MINORS_4 } from '../data/lifeMinors4.js';
 import { LIFE_MINORS_5 } from '../data/lifeMinors5.js';
+import { LIFE_MINORS_SEEDS } from '../data/lifeMinorsSeeds.js';
+import { WORKSHOP_VISIT_MINORS, WORKSHOP_VISIT_DAILIES } from '../data/eventsWorkshopVisits.js';
+import { FINGER_MINORS, FINGER_DAILIES, FINGER_MISSIONS } from '../data/eventsFingers.js';
 import { LIFE_MINORS_KIDS } from '../data/lifeMinorsKids.js';
 import { THREAD_MINORS } from '../data/narrative/causalThreads.js';
 import { SCAR_CALLBACKS } from '../data/lifeScarCallbacks.js';
@@ -57,8 +61,10 @@ import { DAILIES_2 } from '../data/narrative/dailies2.js';
 import { EXPANSION_LIFE_MINORS, EXPANSION_LIFE_DAILIES } from '../data/lifeMinorsAndDailiesExpansion.js';
 import { cityArchiveAPI } from '../services/api/cityArchiveAPI.js';
 
-export const LIFE_MINORS = [...MINORS_FIRST, ...LIFE_MINORS_2, ...LIFE_MINORS_3, ...LIFE_MINORS_4, ...LIFE_MINORS_5, ...LIFE_MINORS_KIDS, ...THREAD_MINORS, ...SCAR_CALLBACKS, ...LIFE_CAREER_OPPORTUNITIES, ...EXPANSION_LIFE_MINORS];
-export const LIFE_DAILIES = [...DAILIES_FIRST, ...LIFE_DAILIES_3, ...EXPANDED_DAILIES, ...DAILIES_2, ...EXPANSION_LIFE_DAILIES];
+const FINGER_MISSION_CHANCE = 0.4;
+
+export const LIFE_MINORS = [...MINORS_FIRST, ...LIFE_MINORS_2, ...LIFE_MINORS_3, ...LIFE_MINORS_4, ...LIFE_MINORS_5, ...LIFE_MINORS_SEEDS, ...WORKSHOP_VISIT_MINORS, ...FINGER_MINORS, ...LIFE_MINORS_KIDS, ...THREAD_MINORS, ...SCAR_CALLBACKS, ...LIFE_CAREER_OPPORTUNITIES, ...EXPANSION_LIFE_MINORS];
+export const LIFE_DAILIES = [...DAILIES_FIRST, ...LIFE_DAILIES_3, ...EXPANDED_DAILIES, ...DAILIES_2, ...EXPANSION_LIFE_DAILIES, ...WORKSHOP_VISIT_DAILIES, ...FINGER_DAILIES];
 import {
   directorWeight,
   markTheme,
@@ -143,6 +149,7 @@ export function applyFx(char, fx = {}, { exactRep = false } = {}) {
     const d = char[k] - before;
     if (d) deltas.push({ k, v: d });
   }
+  rememberResonance(char, fx.resonance || 0);
   return deltas;
 }
 
@@ -238,8 +245,8 @@ function majorIsDue(char, rng) {
     ((char.resonance || 0) >= 70
       || ((char.resonance || 0) >= 58 && ((scarsCount >= 1 && char.stats.sanity <= 38) || (scarsCount >= 2 && char.stats.sanity <= 45)))
       || (char.stats.sanity <= 12 && rng() < 0.35));
-  if (carmenPressure && !(char.seenEvents || []).includes('ego_carmen_crossroad') && !char.flags.includes('EGOAwakened') && !char.flags.includes('Distorted')) return true;
-  if (char.job === 'Fixer' && !char.flags.includes('Distorted') && checkColorFixerReadiness(char).ready && !char.flags.includes('ColorFixer') && !(char.seenEvents || []).includes('hana_color_ascension_trial')) return true;
+  if ((carmenPressure || hasEgoOpportunity(char)) && !(char.seenEvents || []).includes('ego_carmen_crossroad') && !char.flags.includes('EGOAwakened') && !char.flags.includes('Distorted')) return true;
+  if (char.job === 'Fixer' && !char.flags.includes('Distorted') && checkColorFixerReadiness(char).ready && !char.flags.includes('ColorFixer') && colorTrialAvailable(char)) return true;
   const gap = w.yearsSinceLastMajor || 0;
   // Childhood: the gap counts from birth, so "every 5 years" used to put the first
   // major event at exactly 5 for everyone. Spread it over 5-9 instead.
@@ -255,6 +262,7 @@ function majorIsDue(char, rng) {
 /** Builds this year's plan. Called at birth and after every birthday. */
 export function planYear(charState, rng) {
   const char = charState;
+  rememberResonance(char);
   const age = char.age;
   const nest = isNest(char);
 
@@ -315,6 +323,11 @@ export function planYear(charState, rng) {
     scheduledKey.push({ kind: 'major' });
   }
 
+  if (char.job === 'Fixer' && age >= 28 && age <= 38 && char.fixerGrade >= 2 && char.fixerGrade <= 6 &&
+      !char.flags.includes('Distorted') && !char.seenEvents.includes('fixer_seven_unclaimed_dossier') && rng() < 0.018) {
+    scheduledKey.push({ kind: 'major', forcedEventId: 'fixer_seven_unclaimed_dossier' });
+  }
+
   const nextFixerTrial = getNextFixerPromotion(char);
   if (nextFixerTrial?.isEligible && char.fixerTrialRetryGrade === nextFixerTrial.grade &&
       char.lastFixerExamAge != null && char.age > char.lastFixerExamAge &&
@@ -325,6 +338,15 @@ export function planYear(charState, rng) {
   if (careerTrialRetryDue(char, nextOtherTrial) &&
       !scheduledKey.some((it) => it.kind === 'major' && !it.forcedEventId)) {
     scheduledKey.unshift({ kind: 'major' });
+  }
+
+  // Finger mission: a member is handed one of their Finger's own jobs in most years, as a Fixer is handed a Request
+  if (char.job === 'Syndicate' && char.finger && !char.flags.includes('Distorted') && age >= 19 && rng() < FINGER_MISSION_CHANCE) {
+    const pool = FINGER_MISSIONS.filter((e) => e.finger === char.finger && isEventEligible(e, char));
+    const mission = pool.length ? pool[Math.floor(rng() * pool.length)] : null;
+    if (mission && !scheduledKey.some((it) => it.forcedEventId === mission.id)) {
+      scheduledKey.push({ kind: 'major', forcedEventId: mission.id });
+    }
   }
 
   // Fixer combat contract: tactical commission
@@ -690,6 +712,11 @@ export async function syncPlanWithBackend(charState, rng) {
         }
       }
 
+      for (const item of localPlan.filter(it => it.kind === 'major' &&
+        (it.forcedEventId?.startsWith('fixer_seven_') || (!it.forcedEventId &&
+          (hasEgoOpportunity(charState) || (checkColorFixerReadiness(charState).ready && colorTrialAvailable(charState))))))) {
+        if (!hydrated.some(it => it.kind === 'major' && (it.forcedEventId || '') === (item.forcedEventId || ''))) hydrated.push(item);
+      }
       hydrated.sort((a, b) => a.t - b.t);
       charState.plan = hydrated;
       charState.planCursor = 0;
@@ -893,6 +920,9 @@ export function resolveMinor(charState, idx, rng) {
   }
   // A result that prints its own numbers must land on exactly those numbers
   const mergedEffects = PRINTED_NUMBERS.test(resultText) ? baseEffects : varyEffects(baseEffects, rng, traits);
+  for (const key of [...(choice.exactFx || []), ...(outcome === choice ? [] : outcome.exactFx || [])]) {
+    if (key in baseEffects) mergedEffects[key] = baseEffects[key];
+  }
   if (choice.costAhn) mergedEffects.wealth = (mergedEffects.wealth || 0) - choice.costAhn;
   const deltas = applyFx(char, mergedEffects, { exactRep: PRINTED_NUMBERS.test(resultText) });
   [...(choice.flags || []), ...(outcome === choice ? [] : outcome.flags || [])].forEach((f) => {

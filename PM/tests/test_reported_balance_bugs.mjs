@@ -7,7 +7,8 @@ import { reputationGain, driftOf } from '../src/engine/economyModel.js';
 import { isEventEligible, selectEventWithWeaverAI } from '../src/engine/weaverAI.js';
 import { LIFE_MINORS, resolveMinor, planYear } from '../src/engine/yearPlanner.js';
 import { CONSEQUENCE_EVENTS } from '../src/data/eventsChildhood.js';
-import { syndicateApexOpportunity } from '../src/engine/careerPipeline.js';
+import { syndicateApexOpportunity, isFixerPromotionChoice } from '../src/engine/careerPipeline.js';
+import { useGameStore } from '../src/store/gameStore.js';
 import { addScar } from '../src/engine/scarModel.js';
 import { simulateNpcAutonomousLife } from '../src/engine/narrativeArcEngine.js';
 import { evaluateDiscoChoiceCheck } from '../src/engine/discoPsyche.js';
@@ -171,6 +172,13 @@ const playBarSrc = fs.readFileSync('src/features/chronicle/components/PlayBar.js
 const gameStoreSrc = fs.readFileSync('src/store/gameStore.js', 'utf8');
 assert.ok(!playBarSrc.includes('const isWaiting = (s) => Boolean(s?.char?.pendingEvent || s?.char?.pendingContract || s?.char?.pendingDungeon || s?.char?.pendingModal || s?.activeResolution || (s?.postChoicePauseMs > 0));'));
 assert.ok(gameStoreSrc.includes('const readingPause = get().speed > 0 && !nextChar.pendingModal ? 3000 : 0;'));
+const pausedLife = newChar();
+pausedLife.plan = [];
+pausedLife.planCursor = 0;
+useGameStore.setState({ char: pausedLife, inRun: true, speed: 0, postChoicePauseMs: 3000, yearProgress: 25 });
+useGameStore.getState().stepYear();
+assert.equal(useGameStore.getState().yearProgress, 50);
+assert.equal(useGameStore.getState().postChoicePauseMs, 0);
 
 // BUG-35: Syndicate Apex (fingerRank === 3) unique Finger leader events + money-making & money-spending options
 for (const [finger, ids] of [
@@ -221,4 +229,35 @@ assert.ok(egoSeeker.plan.some((it) => it.kind === 'major'));
 const dossierSrc = fs.readFileSync('src/features/chronicle/components/CharacterDossierCard.jsx', 'utf8');
 assert.ok(dossierSrc.includes('kv-stack') && dossierSrc.includes('kv-perk-note'));
 
-console.log('Reported balance bugs 23–37: rank gates, exact Ahn costs, choice review, Wing progress, Pause+StepYear unlock, Syndicate Apex economy, E.G.O Resonance balance, and Dossier perk layout passed.');
+// BUG-38: career registration is a certain choice, not a Fixer promotion exam.
+assert.equal(isFixerPromotionChoice(crossroad.choices[0], child), false);
+assert.equal(isFixerPromotionChoice(grade2.choices.find((choice) => choice.setFixerGrade === 2), { ...licensed, fixerGrade: 3 }), true);
+
+const pendingMinor = (event) => ({ id: event.id, vi: event.vi, en: event.en,
+  choices: event.choices.map((choice) => ({ vi: choice.vi, en: choice.en })), t: 0.4 });
+
+// BUG-39: the four coins are kept only when the child is rescued.
+const cheapJob = LIFE_MINORS.find((event) => event.id === 'm2_fx_cheap_job');
+for (const [roll, expectedAhn] of [[0, 4], [0.99, 0]]) {
+  const worker = newChar();
+  worker.job = 'Fixer';
+  worker.fixerGrade = 9;
+  worker.stats.wealth = 20;
+  worker.pendingMinor = pendingMinor(cheapJob);
+  const resolved = resolveMinor(worker, 0, () => roll);
+  assert.equal(resolved.stats.wealth - worker.stats.wealth, expectedAhn, `Four Ahn case at roll ${roll}`);
+}
+
+// BUG-40: the 22-Ahn overhaul must deliver useful returns beyond fame, without healing wounds.
+const overhaul = LIFE_MINORS.find((event) => event.id === 'm_wellness_workshop_tuneup');
+const wounded = newChar();
+wounded.job = 'Fixer';
+Object.assign(wounded.stats, { wealth: 40, health: 50, sanity: 50, network: 20, rep: 80 });
+wounded.pendingMinor = pendingMinor(overhaul);
+const serviced = resolveMinor(wounded, 0, () => 0.5);
+assert.equal(serviced.stats.wealth - wounded.stats.wealth, -22);
+assert.equal(serviced.stats.health, wounded.stats.health);
+assert.ok(serviced.stats.sanity - wounded.stats.sanity >= 6);
+assert.ok(serviced.stats.network - wounded.stats.network >= 10);
+
+console.log('Reported balance bugs 23–40: progression gates, paused step, Syndicate Apex, E.G.O, dossier, career preview and exact Ahn/recovery rewards passed.');

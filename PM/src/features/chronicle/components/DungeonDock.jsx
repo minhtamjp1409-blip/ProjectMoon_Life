@@ -1,507 +1,312 @@
-import React, { useEffect, useState } from 'react';
-import {
-  ShieldAlert,
-  LogOut,
-  CheckCircle2,
-  Circle,
-  Sparkles,
-  Package,
-  Shield,
-  Scale,
-  Flame,
-  HeartPulse,
-  Radar,
-  Clock,
-  Compass,
-  Activity,
-  Droplets,
-  Snowflake,
-  Award
-} from 'lucide-react';
+import React from 'react';
+import { ShieldAlert, LogOut, Shield, Scale, Flame, HeartPulse, Radar, Package, Award, Sparkles, Zap } from 'lucide-react';
 import { useT } from '../../../i18n';
 import {
   DUNGEON_DEFINITIONS,
+  DUNGEON_BALANCE,
   getDungeonCurrentStage,
   getDungeonMastery,
+  getStrainTier,
+  dungeonSupplyState,
+  dungeonEgoState,
   isDungeonChoiceAvailable,
   evaluateDungeonChoiceOdds
 } from '../../../engine/gameEngine.js';
+import '../../../styles/dungeon.css';
 
 const STANCES = [
   {
     id: 'guarded',
     icon: Shield,
-    vi: 'Thận Trọng',
+    vi: 'Thận trọng',
     en: 'Guarded',
-    subVi: '-35% Sát thương/Áp lực · +12% Kiểm định · 0.85x Ahn',
-    subEn: '-35% Dmg/Strain · +12% Check · 0.85x Loot'
+    noteVi: 'Ít thương tổn và áp lực hơn, dễ qua kiểm định hơn, nhặt được ít hơn.',
+    noteEn: 'Less damage and strain, better odds on checks, a smaller haul.'
   },
   {
     id: 'balanced',
     icon: Scale,
-    vi: 'Cân Bằng',
+    vi: 'Cân bằng',
     en: 'Balanced',
-    subVi: '100% Công thủ & Chiến lợi phẩm tiêu chuẩn',
-    subEn: 'Standard 1.0x Damage, Checks & Vault Haul'
+    noteVi: 'Không cộng, không trừ.',
+    noteEn: 'No bonus, no penalty.'
   },
   {
     id: 'reckless',
     icon: Flame,
-    vi: 'Xung Kích',
+    vi: 'Xung kích',
     en: 'Reckless',
-    subVi: '+45% Ahn · +30% Merit · +10% Vigor · +4 Resonance',
-    subEn: '+45% Loot · +30% Merit · +10% Vigor · +4 Resonance'
+    noteVi: 'Nhặt nhiều hơn và thêm công trạng, nhưng đau hơn và áp lực dâng nhanh hơn.',
+    noteEn: 'A bigger haul and extra merit, but more damage and faster strain.'
   }
 ];
 
 const TRAIT_NAMES = {
-  vigor: { vi: 'Thể Lực (Vigor)', en: 'Vigor' },
-  nerve: { vi: 'Thần Kinh (Nerve)', en: 'Nerve' },
-  charm: { vi: 'Khéo Léo (Charm)', en: 'Charm' },
-  luck: { vi: 'Vận May (Luck)', en: 'Luck' }
+  vigor: ['Thể lực', 'Vigor'],
+  nerve: ['Thần kinh', 'Nerve'],
+  luck: ['Vận may', 'Luck']
 };
 
-export const DungeonDock = ({
-  session,
-  char,
-  onPick,
-  onFlee,
-  onSetStance,
-  onUseSupply
-}) => {
-  const { t, lang, bilingual } = useT();
+const TIER_NAMES = {
+  calm: ['Vững', 'Steady'],
+  shaken: ['Run tay', 'Shaken'],
+  panic: ['Hoảng loạn', 'Panicked'],
+  breaking: ['Sắp gãy', 'Breaking']
+};
 
-  const def = session ? DUNGEON_DEFINITIONS[session.id] : null;
-  const theme = def?.theme || 'warp';
-  const currentIdx = session?.currentStageIndex || 0;
+const AMBIENT = {
+  warp: ['Đồng hồ T Corp đứng ở 00:09.99. Trong toa, thời gian vẫn trôi.', 'The T Corp clock holds at 00:09.99. Inside the car, time keeps passing.'],
+  greatlake: ['Sương trắng dày thêm sau mỗi chặng. Chuông Luật Đại Hồ chưa ngừng.', 'The fog thickens with every stage. The Lake Law bells have not stopped.'],
+  lobotomy: ['Đèn khẩn cấp chớp màu cam. Còi Meltdown vọng lên từ tầng dưới.', 'Emergency lamps pulse amber. A Meltdown siren echoes from the floor below.'],
+  bloodfiend: ['Nhạc kèn lạc điệu đúng một nốt. Đu quay vẫn quay.', 'The organ music is off by exactly one note. The wheel keeps turning.'],
+  outskirts: ['Cát chảy xuống theo từng bước. Gió mang mùi kim loại cũ.', 'Sand runs down with every step. The wind smells of old metal.']
+};
 
-  // Live anomaly chronometer / telemetry counter inside the DungeonDock
-  const [anomalyTick, setAnomalyTick] = useState(0);
-  useEffect(() => {
-    if (!session) return undefined;
-    setAnomalyTick(currentIdx * 520 + 18);
-    const interval = setInterval(() => {
-      setAnomalyTick((prev) => prev + Math.floor(Math.random() * 17) + 9 + currentIdx * 6);
-    }, 70);
-    return () => clearInterval(interval);
-  }, [session?.id, currentIdx]);
+const STAT_ICON = { health: '♥', sanity: '✦', wealth: '◆', merit: '◈', resonance: '◎', rep: '★' };
+const SEVERITY = [null, ['nhẹ', 'light'], ['vừa', 'moderate'], ['nặng', 'heavy']];
+const severityOf = (n) => (n >= 13 ? 3 : n >= 6 ? 2 : 1);
 
-  if (!session || !def) return null;
-  const stage = getDungeonCurrentStage(session);
-  if (!stage) return null;
+const Chip = ({ stat, tone, children }) => (
+  <span className={`delta is-affected is-affected-${stat} is-static dg-chip is-${tone}`}>
+    <span className="delta-stat-icon" aria-hidden="true">{STAT_ICON[stat]}</span>
+    {children}
+  </span>
+);
 
-  const stages = def.stages || [];
-  const strain = session.sanityStrain || 0;
-  const strainPct = Math.min(100, Math.max(0, strain));
-  const isHighStrain = strain >= 60;
-  const isCriticalStrain = strain >= 80;
-
-  const mastery = getDungeonMastery(def, char);
-  const activeStance = session.stance || 'balanced';
-  const supplyCharges = session.supplyCharges ?? 0;
-  const maxSupplies = session.maxSupplies ?? 2;
-  const stageScanned = Boolean(session.stageScanned);
-
-  const title = lang === 'en' ? def.titleEn : def.titleVi;
-  const kicker = lang === 'en' ? def.kickerEn : def.kickerVi;
-  const stageName = lang === 'en' ? stage.nameEn : stage.nameVi;
-  const stageDesc = lang === 'en' ? stage.descEn : stage.descVi;
-
-  const renderAnomalyTelemetry = () => {
-    if (theme === 'warp') {
-      const subjectiveAge = (char?.age || 20) + anomalyTick;
-      return (
-        <div className="dungeon-telemetry-bar theme-warp">
-          <div className="telemetry-primary">
-            <Clock size={15} className="telemetry-icon spin-pulse" />
-            <span className="telemetry-label">{t('TUỔI DỊ GIỚI (SUBJECTIVE AGE):', 'SUBJECTIVE RIFT AGE:')}</span>
-            <strong className="telemetry-counter warp-glitch-num">
-              {subjectiveAge.toLocaleString()} {t('tuổi', 'yrs')}
-            </strong>
-          </div>
-          <div className="telemetry-secondary">
-            <span className="telemetry-chip">
-              {t(`Đồng hồ Singularity: 00:09.99s (Đóng băng ở ${char?.age || 20} tuổi)`, `Singularity Clock: 00:09.99s (Locked at Age ${char?.age || 20})`)}
-            </span>
-          </div>
-        </div>
-      );
-    }
-    if (theme === 'greatlake') {
-      const depthMeters = 180 + currentIdx * 340 + (anomalyTick % 45);
-      const pallidIndex = Math.min(99, 14 + currentIdx * 22 + Math.floor(strain * 0.25));
-      return (
-        <div className="dungeon-telemetry-bar theme-greatlake">
-          <div className="telemetry-primary">
-            <Compass size={15} className="telemetry-icon" />
-            <span className="telemetry-label">{t('ĐỘ SÂU ĐẠI HỒ:', 'ABYSSAL DEPTH:')}</span>
-            <strong className="telemetry-counter">-{depthMeters}m</strong>
-          </div>
-          <div className="telemetry-secondary">
-            <span className="telemetry-chip">
-              {t(`Màng Sáp Pallid: ${pallidIndex}% · Âm thoa U Corp: 432 Hz`, `Pallid Wax Index: ${pallidIndex}% · U Corp Tuning: 432 Hz`)}
-            </span>
-          </div>
-        </div>
-      );
-    }
-    if (theme === 'lobotomy') {
-      const qliphothLevel = Math.max(1, 4 - currentIdx);
-      const enkephalinPpm = 420 + currentIdx * 280 + (anomalyTick % 60);
-      return (
-        <div className="dungeon-telemetry-bar theme-lobotomy">
-          <div className="telemetry-primary">
-            <Activity size={15} className="telemetry-icon" />
-            <span className="telemetry-label">{t('KHÓA QLIPHOTH:', 'QLIPHOTH DETERRENCE:')}</span>
-            <strong className="telemetry-counter">{t(`Cấp ${qliphothLevel} / Meltdown`, `Tier ${qliphothLevel} / Meltdown`)}</strong>
-          </div>
-          <div className="telemetry-secondary">
-            <span className="telemetry-chip">
-              {t(`Nồng độ Enkephalin: ${enkephalinPpm} PPM`, `Enkephalin Density: ${enkephalinPpm} PPM`)}
-            </span>
-          </div>
-        </div>
-      );
-    }
-    if (theme === 'bloodfiend') {
-      const thirstPulse = 88 + currentIdx * 18 + (anomalyTick % 14);
-      return (
-        <div className="dungeon-telemetry-bar theme-bloodfiend">
-          <div className="telemetry-primary">
-            <Droplets size={15} className="telemetry-icon" />
-            <span className="telemetry-label">{t('NHỊP TIM ĐÊM HỘI MÁU:', 'CRIMSON BANQUET PULSE:')}</span>
-            <strong className="telemetry-counter">{thirstPulse} BPM</strong>
-          </div>
-          <div className="telemetry-secondary">
-            <span className="telemetry-chip">
-              {t(`Huyết áp dị thể · Tầng diễu hành ${currentIdx + 1}/4`, `Hematic Pressure · Parade Sector ${currentIdx + 1}/4`)}
-            </span>
-          </div>
-        </div>
-      );
-    }
-    const subZero = -(28 + currentIdx * 9 + (anomalyTick % 5));
-    return (
-      <div className="dungeon-telemetry-bar theme-outskirts">
-        <div className="telemetry-primary">
-          <Snowflake size={15} className="telemetry-icon" />
-          <span className="telemetry-label">{t('NHIỆT ĐỘ PHẾ TÍCH:', 'RUIN AMBIENT TEMP:')}</span>
-          <strong className="telemetry-counter">{subZero}°C</strong>
-        </div>
-        <div className="telemetry-secondary">
-          <span className="telemetry-chip">
-            {t('Bức xạ Singularity cổ đại đang hoạt động', 'Primordial Singularity Radiation Active')}
-          </span>
-        </div>
-      </div>
-    );
-  };
-
+const StrainMeter = ({ strain, t }) => {
+  const tier = getStrainTier(strain);
+  const [vi, en] = TIER_NAMES[tier.id];
   return (
-    <div className={`dock is-dungeon theme-${theme}`} role="document">
-      <div className="dock-inner">
-        {/* Header Banner */}
-        <div className="dock-banner">
-          <div className="dock-banner-text">
-            <div className="dock-kicker-row">
-              <p className="dock-kicker">
-                <span className="dock-kicker-icon">
-                  <ShieldAlert size={14} />
-                </span>
-                <span className="dungeon-hazard-tag" style={{ borderColor: def.accentColor || '#38bdf8' }}>
-                  {def.hazard || 'WAW'}
-                </span>
-                <span>{kicker}</span>
-              </p>
-              <span className="dock-hotkey-hint">
-                {t('Phím 1-9 chọn · Q/E tiếp tế · F rút lui', '1-9 choose · Q/E supply · F flee')}
-              </span>
-            </div>
-            <h3 className="dock-title">{title}</h3>
-          </div>
-        </div>
-
-        {/* Live Anomaly Telemetry / WARP Chronometer */}
-        {renderAnomalyTelemetry()}
-
-        {/* 4-Stage Breadcrumbs Stepper */}
-        <nav className="dungeon-breadcrumbs" aria-label={t('Tiến trình hầm ngục', 'Dungeon Progress')}>
-          {stages.map((st, idx) => {
-            const isCompleted = idx < currentIdx;
-            const isActive = idx === currentIdx;
-            const isLocked = idx > currentIdx;
-            const stName = lang === 'en' ? st.nameEn : st.nameVi;
-
-            return (
-              <div
-                key={idx}
-                className={`dungeon-step ${isCompleted ? 'is-completed' : ''} ${isActive ? 'is-active' : ''} ${isLocked ? 'is-locked' : ''}`}
-              >
-                <div className="dungeon-step-indicator">
-                  {isCompleted ? (
-                    <CheckCircle2 size={16} className="step-icon done" />
-                  ) : isActive ? (
-                    <span className="step-active-dot" style={{ background: def.accentColor || '#38bdf8' }} />
-                  ) : (
-                    <Circle size={14} className="step-icon locked" />
-                  )}
-                  <span className="step-num">{idx + 1}</span>
-                </div>
-                <span className="step-label" title={stName}>
-                  {stName}
-                </span>
-                {idx < stages.length - 1 && <span className="step-connector" />}
-              </div>
-            );
-          })}
-        </nav>
-
-        {/* Status Dashboard: Sanity Strain Gauge, Mastery & Accumulated Haul */}
-        <div className="dungeon-dashboard">
-          <div className="dungeon-gauge-group">
-            <div className="gauge-label-row">
-              <span className="gauge-title">
-                {t('Áp Lực Tâm Thần (Sanity Strain)', 'Sanity Strain & Resolve Threshold')}
-                {session.resolveAwakened && (
-                  <span className="resolve-awakened-pill">
-                    🔥 {t('Ý Chí Bất Khuất (-25% DMG)', 'Heroic Resolve (-25% DMG)')}
-                  </span>
-                )}
-              </span>
-              <span className={`gauge-value ${isCriticalStrain ? 'is-crit' : isHighStrain ? 'is-high' : ''}`}>
-                {strain}%
-              </span>
-            </div>
-            <div className="dungeon-strain-track" aria-hidden="true">
-              <div
-                className={`dungeon-strain-fill ${isCriticalStrain ? 'is-crit' : isHighStrain ? 'is-high' : ''}`}
-                style={{ width: `${strainPct}%` }}
-              />
-            </div>
-          </div>
-
-          <div className="dungeon-haul-badge">
-            <span className="haul-label">{t('Kho Báu Tích Lũy:', 'Vault Haul:')}</span>
-            <span className="haul-val">+{session.accumulatedLootAhn || 0} Ahn</span>
-            {(session.accumulatedMerit || 0) > 0 && (
-              <span className="haul-merit">+{session.accumulatedMerit} Merit</span>
-            )}
-          </div>
-        </div>
-
-        {/* Tactical Command Bar: Stances, Field Supplies & Adaptation Mastery */}
-        <div className="dungeon-tactics-bar">
-          <div className="tactics-stances" role="group" aria-label={t('Thế Chiến Thuật', 'Tactical Stance')}>
-            <span className="tactics-group-label">{t('Thế:', 'Stance:')}</span>
-            {STANCES.map((st) => {
-              const Icon = st.icon;
-              const isSelected = activeStance === st.id;
-              return (
-                <button
-                  key={st.id}
-                  type="button"
-                  className={`stance-btn stance-${st.id} ${isSelected ? 'is-active' : ''}`}
-                  onClick={() => onSetStance && onSetStance(st.id)}
-                  title={lang === 'en' ? st.subEn : st.subVi}
-                  aria-pressed={isSelected}
-                >
-                  <Icon size={13} />
-                  <span>{lang === 'en' ? st.en : st.vi}</span>
-                </button>
-              );
-            })}
-          </div>
-
-          <div className="tactics-supplies">
-            <span className="tactics-group-label">
-              {t(`Tiếp tế (${supplyCharges}/${maxSupplies}):`, `Supplies (${supplyCharges}/${maxSupplies}):`)}
-            </span>
-            <button
-              type="button"
-              className="supply-btn supply-breather"
-              disabled={supplyCharges <= 0}
-              onClick={() => onUseSupply && onUseSupply('breather')}
-              title={t('Hồi phục ngay +16 HP, +14 SP và giảm 20% Áp lực Tâm thần (Phím Q)', 'Restore +16 HP, +14 SP & -20% Sanity Strain (Key Q)')}
-            >
-              <HeartPulse size={13} />
-              <span>{t('Hồi sức (+16 HP/SP)', 'Field Stim (+16 HP/SP)')}</span>
-              <kbd>Q</kbd>
-            </button>
-            <button
-              type="button"
-              className={`supply-btn supply-scan ${stageScanned ? 'is-scanned' : ''}`}
-              disabled={supplyCharges <= 0 || stageScanned}
-              onClick={() => onUseSupply && onUseSupply('scan')}
-              title={t('Tăng +25% tỷ lệ kiểm định, giảm 50% sát thương tầng này và +10 Ahn (Phím E)', '+25% Check Odds, -50% Stage Damage & +10 Bonus Ahn (Key E)')}
-            >
-              <Radar size={13} />
-              <span>
-                {stageScanned
-                  ? t('Đã Thẩm Định', 'Sector Scanned')
-                  : t('Thẩm định (+25% Tỉ lệ)', 'Scan (+25% Odds)')}
-              </span>
-              <kbd>E</kbd>
-            </button>
-          </div>
-        </div>
-
-        {/* Adaptation Mastery & Active Stance Summary Strip */}
-        <div className="dungeon-modifier-strip">
-          <span className="mod-stance-summary">
-            {lang === 'en'
-              ? STANCES.find((s) => s.id === activeStance)?.subEn
-              : STANCES.find((s) => s.id === activeStance)?.subVi}
-          </span>
-          {mastery.hasMastery && (
-            <span className="mod-mastery-badge" title={t('Thích nghi từ Trang bị & Xuất thân giúp giảm sát thương và tăng tỷ lệ thành công', 'Equipment & Background Mastery reduces incoming damage and boosts check odds')}>
-              <Award size={13} />
-              <span>
-                {t('Thích nghi:', 'Mastery:')} {lang === 'en' ? mastery.labelEn : mastery.labelVi}{' '}
-                (-{Math.round((1 - mastery.dmgMult) * 100)}% DMG, +{Math.round(mastery.checkBonus * 100)}% Check)
-              </span>
-            </span>
-          )}
-        </div>
-
-        {/* Previous Stage Feedback Banner */}
-        {session.lastStageResult && (
-          <div className={`dungeon-stage-feedback is-${session.lastStageResult.type || 'pass'}`}>
-            <p className="feedback-text">
-              {lang === 'en' ? session.lastStageResult.en : session.lastStageResult.vi}
-            </p>
-          </div>
-        )}
-
-        {/* Active Stage Description */}
-        <div className="dungeon-stage-body">
-          <h4 className="dungeon-stage-title">
-            <span className="stage-marker">{t(`Chặng ${currentIdx + 1}/${stages.length}:`, `Stage ${currentIdx + 1}/${stages.length}:`)}</span>{' '}
-            {stageName}
-          </h4>
-          <p className="dock-text">{stageDesc}</p>
-        </div>
-
-        {/* Stage Choice Actions */}
-        <div className="choices">
-          {stage.choices.map((ch, idx) => {
-            const isAvail = isDungeonChoiceAvailable(ch, char, session);
-            const odds = evaluateDungeonChoiceOdds(ch, char, session);
-            const label = lang === 'en' ? ch.labelEn : ch.labelVi;
-            const labelAlt = lang === 'en' ? ch.labelVi : ch.labelEn;
-            const traitInfo = ch.checkTrait ? TRAIT_NAMES[ch.checkTrait] : null;
-            const totalEstAhn = (odds?.estLoot || 0) + (odds?.estWealth > 0 ? odds.estWealth : 0);
-
-            return (
-              <button
-                type="button"
-                key={idx}
-                className={`choice ${!isAvail ? 'is-disabled' : ''} ${ch.isFlee ? 'is-flee-choice' : ''}`}
-                disabled={!isAvail}
-                onClick={() => isAvail && onPick(idx)}
-              >
-                <span className="choice-badge">{idx + 1}</span>
-                <span className="choice-content">
-                  <span className="choice-label-row">
-                    <span className="choice-label">{label}</span>
-                    {totalEstAhn > 0 && (
-                      <span className="choice-loot-pill">+{totalEstAhn} Ahn</span>
-                    )}
-                  </span>
-
-                  {bilingual && labelAlt && labelAlt !== label && (
-                    <span className="choice-alt">{labelAlt}</span>
-                  )}
-
-                  {/* Requirements, Check Odds & Expected Stat Preview Pills */}
-                  <div className="choice-pills-row">
-                    {ch.reqItem && (
-                      <span className={`req-pill ${char.inventory?.some(i => i.id === ch.reqItem) ? 'is-met' : 'is-unmet'}`}>
-                        <Package size={12} />
-                        {char.inventory?.some(i => i.id === ch.reqItem)
-                          ? t('Có vật phẩm yêu cầu', 'Item Available')
-                          : t('Thiếu vật phẩm yêu cầu', 'Missing Required Item')}
-                      </span>
-                    )}
-
-                    {ch.costAhn && (
-                      <span className={`req-pill ${(char.stats?.wealth ?? 0) >= ch.costAhn ? 'is-met' : 'is-unmet'}`}>
-                        💰 -{ch.costAhn} Ahn
-                      </span>
-                    )}
-
-                    {odds?.hasCheck ? (
-                      <span
-                        className={`trait-pill ${
-                          odds.successPct >= 80 ? 'is-pos' : odds.successPct >= 60 ? 'is-neutral' : 'is-warn'
-                        }`}
-                      >
-                        <Sparkles size={12} />
-                        {t(
-                          `Kiểm định ${traitInfo?.vi || ch.checkTrait}: ${odds.successPct}%`,
-                          `${traitInfo?.en || ch.checkTrait} Check: ${odds.successPct}%`
-                        )}
-                      </span>
-                    ) : !ch.isFlee ? (
-                      <span className="trait-pill is-pos">
-                        ✓ {t('Chắc chắn (100%)', 'Guaranteed (100%)')}
-                      </span>
-                    ) : null}
-
-                    {odds && odds.estHp !== 0 && (
-                      <span className={`delta-preview-pill ${odds.estHp > 0 ? 'is-good' : 'is-bad'}`}>
-                        ❤️ {odds.estHp > 0 ? `+${odds.estHp}` : odds.estHp} HP
-                      </span>
-                    )}
-                    {odds && odds.estSp !== 0 && (
-                      <span className={`delta-preview-pill ${odds.estSp > 0 ? 'is-good' : 'is-bad'}`}>
-                        🧠 {odds.estSp > 0 ? `+${odds.estSp}` : odds.estSp} SP
-                      </span>
-                    )}
-                    {odds && odds.estMerit > 0 && (
-                      <span className="delta-preview-pill is-good">
-                        🎖️ +{odds.estMerit} Merit
-                      </span>
-                    )}
-                    {odds && odds.estResonance > 0 && (
-                      <span className="delta-preview-pill is-good">
-                        ✨ +{odds.estResonance} Resonance
-                      </span>
-                    )}
-
-                    {ch.isFlee && (
-                      <span className="flee-pill">
-                        <LogOut size={12} />
-                        {t('Rút lui bảo toàn chiến lợi phẩm', 'Retreat with current haul')}
-                      </span>
-                    )}
-                  </div>
-                </span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Explicit Emergency Evacuate / Flee Button if allowed */}
-        {stage.canFlee && (
-          <div className="dungeon-retreat-bar">
-            <button
-              type="button"
-              className="btn btn-ghost btn-sm dungeon-flee-btn"
-              onClick={onFlee}
-              title={t('Rút lui khỏi hầm ngục ngay lập tức', 'Evacuate dungeon immediately')}
-            >
-              <LogOut size={14} />
-              <span>
-                {t(
-                  `Rút lui an toàn (Mang về +${session.accumulatedLootAhn || 0} Ahn)`,
-                  `Safe Evacuation (Keep +${session.accumulatedLootAhn || 0} Ahn)`
-                )}
-              </span>
-              <span className="key-badge">F / Esc</span>
-            </button>
-          </div>
-        )}
+    <div className={`dg-strain is-${tier.id}`}>
+      <div className="dg-strain-head">
+        <span className="dg-label">{t('Áp lực tâm thần', 'Mental strain')}</span>
+        <span className="dg-strain-tier">{t(vi, en)}</span>
+      </div>
+      <div
+        className="dg-meter"
+        role="meter"
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={strain}
+        aria-valuetext={`${strain}, ${t(vi, en)}`}
+        aria-label={t('Áp lực tâm thần', 'Mental strain')}
+      >
+        <span className="dg-meter-fill" style={{ width: `${strain}%` }} />
+        {[45, 70, 90].map((at) => <span key={at} className="dg-meter-tick" style={{ left: `${at}%` }} aria-hidden="true" />)}
       </div>
     </div>
   );
 };
+
+export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseSupply, onUseEgo }) => {
+  const { t, lang, bilingual } = useT();
+  const def = session ? DUNGEON_DEFINITIONS[session.id] : null;
+  const stage = getDungeonCurrentStage(session);
+  if (!session || !def || !stage) return null;
+
+  const stages = def.stages;
+  const currentIdx = session.currentStageIndex || 0;
+  const strain = session.sanityStrain || 0;
+  const mastery = getDungeonMastery(def, char);
+  const activeStance = STANCES.find((s) => s.id === (session.stance || 'balanced')) || STANCES[1];
+  const breather = dungeonSupplyState(char, session, 'breather');
+  const scan = dungeonSupplyState(char, session, 'scan');
+  const ego = dungeonEgoState(char, session);
+  const result = session.lastStageResult;
+  const pick = (vi, en) => (lang === 'en' ? en : vi);
+  const ambient = AMBIENT[def.theme] || AMBIENT.warp;
+
+  return (
+    <div className={`dock is-dungeon theme-${def.theme}`} style={{ '--dg': def.accentColor }} role="document">
+      <div className="dock-inner dg">
+        <header className="dg-head">
+          <div className="dock-kicker-row">
+            <p className="dock-kicker">
+              <ShieldAlert size={14} aria-hidden="true" />
+              <span className="dg-hazard">{def.hazard}</span>
+              <span>{pick(def.kickerVi, def.kickerEn)}</span>
+            </p>
+          </div>
+          <h3 className="dock-title">{pick(def.titleVi, def.titleEn)}</h3>
+          <p className="dg-ambient">{t(ambient[0], ambient[1])}</p>
+          <ol className="dg-route" aria-label={t('Tiến trình hầm ngục', 'Dungeon progress')}>
+            {stages.map((st, idx) => (
+              <li
+                key={st.stageIndex}
+                className={idx < currentIdx ? 'is-done' : idx === currentIdx ? 'is-now' : ''}
+                aria-current={idx === currentIdx ? 'step' : undefined}
+                title={pick(st.nameVi, st.nameEn)}
+              >
+                <span className="dg-route-bar" />
+                <span className="dg-route-num">{idx + 1}</span>
+              </li>
+            ))}
+          </ol>
+        </header>
+
+        <section className="dg-status" aria-label={t('Trạng thái chuyến đi', 'Run status')}>
+          <StrainMeter strain={strain} t={t} />
+          <div className="dg-haul">
+            <span className="dg-label">{t('Thu hoạch', 'Haul')}</span>
+            <span className="dg-haul-val">
+              <b className="num">{session.accumulatedLootAhn || 0}</b> Ahn
+              {(session.accumulatedMerit || 0) > 0 && <> · <b className="num">{session.accumulatedMerit}</b> {t('công trạng', 'merit')}</>}
+            </span>
+          </div>
+        </section>
+
+        {result && (
+          <aside key={`${result.stageNum}-${result.type}-${strain}`} className={`dg-result is-${result.type || 'pass'}`} aria-live="polite">
+            <p>{pick(result.vi, result.en)}</p>
+          </aside>
+        )}
+
+        <section key={currentIdx} className="dg-scene">
+          <h4 className="dg-scene-title">
+            <span>{t(`Chặng ${currentIdx + 1} / ${stages.length}`, `Stage ${currentIdx + 1} / ${stages.length}`)}</span>
+            {pick(stage.nameVi, stage.nameEn)}
+          </h4>
+          <p className="dock-text">{pick(stage.descVi, stage.descEn)}</p>
+        </section>
+
+        <ul className="choices dg-choices">
+          {stage.choices.map((ch, idx) => {
+            const avail = isDungeonChoiceAvailable(ch, char, session);
+            const odds = evaluateDungeonChoiceOdds(ch, char, session);
+            const label = pick(ch.labelVi, ch.labelEn);
+            const alt = pick(ch.labelEn, ch.labelVi);
+            const trait = ch.checkTrait ? TRAIT_NAMES[ch.checkTrait] : null;
+            const hasItem = ch.reqItem ? (char.inventory || []).some((i) => (i.id || i) === ch.reqItem) : true;
+            const ahn = (odds?.estLoot || 0) + Math.max(0, odds?.estWealth || 0);
+            return (
+              <li key={idx}>
+                <button
+                  type="button"
+                  className={`choice dg-choice ${ch.isFlee ? 'is-leave' : ''}`}
+                  disabled={!avail}
+                  onClick={() => avail && onPick(idx)}
+                >
+                  <span className="choice-badge">{idx + 1}</span>
+                  <span className="choice-content">
+                    <span className="choice-label">{label}</span>
+                    {bilingual && alt && alt !== label && <span className="choice-alt">{alt}</span>}
+                    <span className="preview">
+                      {trait && (
+                        <span className={`dg-odds ${odds.successPct >= 80 ? 'is-high' : odds.successPct >= 60 ? 'is-mid' : 'is-low'}`}>
+                          <Sparkles size={12} aria-hidden="true" />
+                          {t(trait[0], trait[1])} {odds.successPct}%
+                        </span>
+                      )}
+                      {ch.reqItem && (
+                        <span className={`dg-need ${hasItem ? 'is-met' : 'is-unmet'}`}>
+                          <Package size={12} aria-hidden="true" />
+                          {hasItem ? t('Dùng vật phẩm', 'Uses an item') : t('Thiếu vật phẩm', 'Item missing')}
+                        </span>
+                      )}
+                      {ch.costAhn && <span className={`dg-need ${(char.stats?.wealth ?? 0) >= ch.costAhn ? 'is-met' : 'is-unmet'}`}>{ch.costAhn} Ahn</span>}
+                      {ch.isFlee && (
+                        <span className="dg-need is-met"><LogOut size={12} aria-hidden="true" />{t('Rút lui, giữ hàng đã gom', 'Leave with what you hold')}</span>
+                      )}
+                      {odds?.estHp < 0 && <Chip stat="health" tone="down">HP · {t(...SEVERITY[severityOf(-odds.estHp)])}</Chip>}
+                      {odds?.estHp > 0 && <Chip stat="health" tone="up">HP</Chip>}
+                      {odds?.estSp < 0 && <Chip stat="sanity" tone="down">SP · {t(...SEVERITY[severityOf(-odds.estSp)])}</Chip>}
+                      {odds?.estSp > 0 && <Chip stat="sanity" tone="up">SP</Chip>}
+                      {ahn > 0 && <Chip stat="wealth" tone="up">Ahn</Chip>}
+                      {odds?.estMerit > 0 && <Chip stat="merit" tone="up">{t('Công trạng', 'Merit')}</Chip>}
+                      {odds?.estResonance > 0 && <Chip stat="resonance" tone="up">{t('Cộng hưởng', 'Resonance')}</Chip>}
+                    </span>
+                  </span>
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+
+        {stage.canFlee && (
+          <div className="dg-leave">
+            <button type="button" className="btn btn-ghost btn-sm dg-leave-btn" onClick={onFlee}>
+              <LogOut size={14} aria-hidden="true" />
+              <span>{t(`Rút lui và giữ ${session.accumulatedLootAhn || 0} Ahn đã gom`, `Leave and keep the ${session.accumulatedLootAhn || 0} Ahn you hold`)}</span>
+              <kbd>F</kbd>
+            </button>
+          </div>
+        )}
+
+        <section className="dg-tools" aria-label={t('Chiến thuật', 'Tactics')}>
+          <div className="dg-stances" role="radiogroup" aria-label={t('Thế chiến thuật', 'Stance')}>
+            {STANCES.map((st) => {
+              const Icon = st.icon;
+              const on = st.id === activeStance.id;
+              return (
+                <button
+                  key={st.id}
+                  type="button"
+                  role="radio"
+                  aria-checked={on}
+                  className={`dg-stance stance-${st.id} ${on ? 'is-on' : ''}`}
+                  onClick={() => onSetStance?.(st.id)}
+                  title={pick(st.noteVi, st.noteEn)}
+                >
+                  <Icon size={14} aria-hidden="true" />
+                  <span>{pick(st.vi, st.en)}</span>
+                </button>
+              );
+            })}
+          </div>
+          <div className="dg-supplies">
+            <button
+              type="button"
+              className="dg-supply"
+              disabled={!breather.ok}
+              onClick={() => onUseSupply?.('breather')}
+              title={t(`Nghỉ thở: hồi máu và tinh thần, giảm áp lực. Tốn ${DUNGEON_BALANCE.breather.cost} Ahn và một lần tiếp tế.`, `Catch breath: restores HP and SP, eases strain. Costs ${DUNGEON_BALANCE.breather.cost} Ahn and one supply.`)}
+            >
+              <HeartPulse size={14} aria-hidden="true" />
+              <span>{t('Nghỉ thở', 'Catch breath')}</span>
+              <small>{DUNGEON_BALANCE.breather.cost} Ahn</small>
+              <kbd>Q</kbd>
+            </button>
+            <button
+              type="button"
+              className={`dg-supply ${scan.reason === 'scanned' ? 'is-used' : ''}`}
+              disabled={!scan.ok}
+              onClick={() => onUseSupply?.('scan')}
+              title={t('Dò đường: đọc quy luật của chặng này. Dễ qua kiểm định hơn, nhận ít thương tổn hơn, tìm thêm được chút hàng.', 'Read the stage: better check odds, less damage, a little extra haul.')}
+            >
+              <Radar size={14} aria-hidden="true" />
+              <span>{scan.reason === 'scanned' ? t('Đã dò', 'Read') : t('Dò đường', 'Read stage')}</span>
+              <kbd>E</kbd>
+            </button>
+            {ego.reason !== 'none' && (
+              <button
+                type="button"
+                className={`dg-supply dg-supply--ego ${ego.reason === 'active' ? 'is-used' : ''}`}
+                disabled={!ego.ok}
+                onClick={() => onUseEgo?.()}
+                title={t('Kích hoạt E.G.O: chặng này dễ qua kiểm định hơn nhiều và nhận ít thương tổn hơn. Đổi lại áp lực, tinh thần và Resonance đều tăng. Mỗi lần vào hầm có số lần giới hạn.', 'Awaken the E.G.O: this stage is far easier and hurts less. In exchange strain, sanity and Resonance all take a hit. Limited uses per run.')}
+              >
+                <Zap size={14} aria-hidden="true" />
+                <span>{ego.reason === 'active' ? t('E.G.O đang mở', 'E.G.O open') : t('Kích hoạt E.G.O', 'Awaken E.G.O')}</span>
+                <small>{session.egoCharges ?? 0}</small>
+                <kbd>R</kbd>
+              </button>
+            )}
+            <span className="dg-supply-count" title={t('Số lần tiếp tế còn lại', 'Supplies left')}>
+              {t('Tiếp tế', 'Supplies')} {session.supplyCharges ?? 0}/{session.maxSupplies ?? 2}
+            </span>
+          </div>
+          <p className="dg-tools-note">
+            {pick(activeStance.noteVi, activeStance.noteEn)}
+            {mastery.hasMastery && (
+              <span className="dg-mastery" title={t('Xuất thân và trang bị giúp bạn nhận ít thương tổn hơn và dễ qua kiểm định hơn.', 'Your background and gear mean less damage and better odds on checks.')}>
+                <Award size={13} aria-hidden="true" /> {pick(mastery.labelVi, mastery.labelEn)}
+              </span>
+            )}
+          </p>
+        </section>
+      </div>
+    </div>
+  );
+};
+
+export default DungeonDock;

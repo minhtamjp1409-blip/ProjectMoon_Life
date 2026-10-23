@@ -1,6 +1,6 @@
-import { createNewCharacter, createRNG, resolveEventChoice, resolveFixerContract } from '../src/engine/gameEngine.js';
-import { planYear, runPlanItem, resolveMinor, endYear } from '../src/engine/yearPlanner.js';
-import { choiceIsAvailable } from '../src/engine/eventConditions.js';
+import { createNewCharacter, createRNG, resolveEventChoice, resolveFixerContract } from '../../src/engine/gameEngine.js';
+import { planYear, runPlanItem, resolveMinor, endYear } from '../../src/engine/yearPlanner.js';
+import { choiceIsAvailable } from '../../src/engine/eventConditions.js';
 
 const lives = Number(process.argv[2] || 300);
 const stages = [

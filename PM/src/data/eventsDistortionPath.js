@@ -60,14 +60,14 @@ export const DISTORTION_PATH_EVENTS = [
     weight: 80,
     requires: ['Distorted', 'DistortionNightmare'],
     forbids: ['domain_manifested'],
-    vi: '[Mê Cung Bất Tận: Lãnh Địa Biến Dị] Sự hiện diện của bạn đã thay đổi cấu trúc vật lý của cả một góc Backstreets. Những tòa nhà biến thành phím đàn khổng lồ hoặc những mê cung gai thép rỉ sét. Kẻ nào lạc vào đây đều nghe thấy tiếng gào khóc trong tâm trí bạn.',
-    en: '[The Infinite Labyrinth: Distortion Domain] Your presence permanently warps the physics of the Backstreets sector. Tenements twist into colossal iron instruments or barbed lattices. All who wander within hear the eternal cadence of your anguish.',
+    vi: "[Lãnh địa] Sự hiện diện của bạn đã đổi cả một góc Backstreets. Những tòa nhà dựng lên như phím đàn khổng lồ hoặc rối vào nhau thành mê cung gai thép. Ai lạc vào đây cũng nghe thấy tiếng bạn khóc trong đầu mình.",
+    en: "[A Domain] Your presence has remade a corner of the Backstreets. Buildings rise like the keys of a giant instrument or knot together into a maze of barbed steel. Anyone who wanders in hears you weeping inside their own head.",
     choices: [
       {
-        labelVi: 'Hòa tan ý thức vào lãnh địa, trở thành chúa tể bóng tối',
-        labelEn: 'Melt your consciousness into the domain, becoming its absolute sovereign',
-        resultVi: 'Bạn không còn cần ăn uống hay thở nữa. Bạn là một phần của The City, một vết thương không bao giờ lành do Carmen gieo rắc.',
-        resultEn: 'You no longer require sustenance or breath. You are part of The City itself — an unhealing wound sown by Carmen.',
+        labelVi: "Hòa ý thức vào lãnh địa và để nó thành thân thể mới của bạn",
+        labelEn: "Let your mind sink into the domain and make it your new body",
+        resultVi: "Bạn không còn cần ăn hay thở. Bạn là một phần của The City, một vết thương không lành mà Carmen đã gieo.",
+        resultEn: "You no longer need to eat or breathe. You are part of The City, an unhealing wound that Carmen sowed.",
         flagsAdd: ['domain_manifested', 'DistortionStar'],
         effects: { health: +60, sanity: -40, rep: +60, resonance: +45 }
       }
@@ -109,8 +109,8 @@ export const DISTORTION_PATH_EVENTS = [
     weight: 65,
     requires: ['Distorted', 'DistortionStage2'],
     forbids: ['distort_flock_done'],
-    vi: '[Tín Đồ Của Nỗi Thống Khổ · Giáo Phái Biến Dị] Xung quanh lãnh địa của bạn, hàng trăm con người tuyệt vọng từ Backstreets — những kẻ bị Wing ruồng bỏ, bị Syndicate siết nợ — quỳ rạp dưới chân bạn. Họ tôn sùng cơ thể biến dị và tiếng gầm của bạn như thánh ca của một vị thần mới.',
-    en: '[Disciples of Anguish · Cult of the Warped] Around your domain, hundreds of destitute alley dwellers — cast out by Wings, hounded by Syndicates — prostrate themselves before you. They worship your warped form and tortured shrieks as the gospel of a new messiah.',
+    vi: '[Tín Đồ Của Nỗi Thống Khổ · Giáo Phái Biến Dị] Xung quanh lãnh địa của bạn, hàng trăm con người tuyệt vọng từ Backstreets, những kẻ bị Wing ruồng bỏ, bị Syndicate siết nợ, quỳ rạp dưới chân bạn. Họ tôn sùng cơ thể biến dị và tiếng gầm của bạn như thánh ca của một vị thần mới.',
+    en: '[Disciples of Anguish · Cult of the Warped] Around your domain, hundreds of destitute alley dwellers, cast out by Wings, hounded by Syndicates, prostrate themselves before you. They worship your warped form and tortured shrieks as the gospel of a new messiah.',
     choices: [
       {
         labelVi: 'Thu nhận họ vào vòng tay biến dị, ban phát một phần sức mạnh của Carmen',
@@ -233,8 +233,8 @@ export const DISTORTION_PATH_EVENTS = [
       {
         labelVi: 'Hòa quyện ý thức của bản thân vào tần số dị thể, hấp thụ một phần khái niệm kinh hoàng',
         labelEn: 'Harmonize your consciousness with the Abnormality, assimilating its terror concept',
-        resultVi: 'Một luồng năng lượng hoang dại trào dâng trong huyết quản dị biến của bạn! Hình thái méo mó của bạn tiến hóa thêm một tầng gai góc và uy lực, khiến không khí xung quanh lạnh toát.',
-        resultEn: 'A surge of feral concept flooded your warped veins! Your mutated form evolved another layer of razor chitin and spatial dread, plunging the temperature below freezing.',
+        resultVi: 'Một luồng năng lượng hoang dại trào dâng trong huyết quản dị biến của bạn. Hình thái méo mó của bạn tiến hóa thêm một tầng gai góc và uy lực, khiến không khí xung quanh lạnh toát.',
+        resultEn: 'A surge of feral concept flooded your warped veins. Your mutated form evolved another layer of razor chitin and spatial dread, plunging the temperature below freezing.',
         meritAdd: 28,
         effects: { rep: +35, resonance: +30, health: +20, sanity: -8 }
       },
@@ -289,8 +289,8 @@ export const DISTORTION_PATH_EVENTS = [
       {
         labelVi: 'Bùng nổ làn sóng biến dị toàn diện, đánh vỡ lồng giam và phản sát đội trưởng',
         labelEn: 'Detonate a total psychic shockwave, shattering the containment cage and felling the captain',
-        resultVi: 'Sóng xung kích biến dị bẻ cong các xích phong tỏa như cành củi khô. Vị đội trưởng Hana văng vào tường đá hộc máu, buộc toán Fixer phải thu quân rút lui trong kinh hoàng. Danh tiếng của bạn chấn động khắp giới Fixer!',
-        resultEn: 'Your psychic eruption snapped suppression chains like dry twigs. The Hana captain was hurled against the masonry, forcing a frantic retreat. Your legend struck terror across the Association!',
+        resultVi: 'Sóng xung kích biến dị bẻ cong các xích phong tỏa như cành củi khô. Vị đội trưởng Hana văng vào tường đá hộc máu, buộc toán Fixer phải thu quân rút lui trong kinh hoàng. Danh tiếng của bạn chấn động khắp giới Fixer.',
+        resultEn: 'Your psychic eruption snapped suppression chains like dry twigs. The Hana captain was hurled against the masonry, forcing a frantic retreat. Your legend struck terror across the Association.',
         meritAdd: 32,
         effects: { health: -18, rep: +45, heat: +25, resonance: +25 }
       },
@@ -311,22 +311,22 @@ export const DISTORTION_PATH_EVENTS = [
     weight: 45,
     allowDistorted: true,
     need: { jobs: ['Distortion'] },
-    vi: '[Mở Rộng Lãnh Địa Biến Dị · Sân Khấu Ký Ức] Nỗi đau khổ và uất ức tích tụ suốt cả đời bạn tràn ra ngoài thực tại. Một bán kính 300 mét quanh bạn biến thành một Sân Khấu Ký Ức siêu thực: Tường gạch biến thành những phím đàn piano khổng lồ phát ra giai điệu rỉ máu của cuộc đời bạn.',
-    en: '[Distortion Domain Expansion · Theatre of Memory] A lifetime of unhealed agony spills into physical reality. A 300-meter radius warps into a surreal Theatre of Memory: Brick walls morph into colossal piano keys chiming arterial melodies of your past.',
+    vi: "[Sân khấu ký ức] Nỗi đau tích tụ cả đời bạn tràn ra thực tại. Trong bán kính ba trăm mét quanh bạn, tường gạch hóa thành phím đàn piano khổng lồ, và mỗi phím vang lên một đoạn đời của bạn.",
+    en: "[The Theater of Memory] The pain you have stored up all your life spills into reality. In a three-hundred-meter radius around you, brick walls turn into giant piano keys, and each key sounds a piece of your life.",
     choices: [
       {
-        labelVi: 'Tấu lên bản giao hưởng cuộc đời, biến nỗi đau thành vũ khí tuyệt đối',
-        labelEn: 'Play the grand symphony of your life, converting past suffering into lethal cadence',
-        resultVi: 'Mỗi nốt nhạc giáng xuống cắt đứt không gian và đánh bại bất kỳ kẻ nào dám xâm phạm lãnh địa. Cả khu vực trở thành thánh địa bất khả xâm phạm dưới sự thống trị của bạn!',
-        resultEn: 'Each resounding chord severed spatial planes, repelling all intruders. The ward solidified into your sovereign, untouchable sanctuary!',
+        labelVi: "Chơi bản nhạc của cả cuộc đời bạn và biến nỗi đau thành vũ khí",
+        labelEn: "Play the song of your whole life and turn the pain into a weapon",
+        resultVi: "Mỗi nốt nhạc cắt qua không khí và đẩy lui bất cứ kẻ nào bước vào. Cả khu trở thành nơi không ai dám tới gần, và bạn là thứ nằm ở giữa nó.",
+        resultEn: "Every note cuts through the air and drives back whoever steps in. The whole area becomes a place nobody dares approach, and you are what sits at its center.",
         meritAdd: 35,
         effects: { rep: +50, resonance: +35, health: +25, sanity: +20 }
       },
       {
-        labelVi: 'Thu nhỏ lãnh địa vào bên trong trái tim, giữ kín sân khấu ký ức cho riêng mình',
-        labelEn: 'Fold the domain inwards into your chest, keeping the theater of memory private',
-        resultVi: 'Không gian trở lại bình thường nhưng cơ thể bạn đặc quánh lại thành một bức tượng bất hoại. Bạn làm chủ hoàn toàn bản ngã méo mó mà không bị mất kiểm soát.',
-        resultEn: 'Pavements straightened, but your inner form condensed into unyielding armor. You achieved absolute mastery over your warped ego without succumbing to frenzy.',
+        labelVi: "Thu lãnh địa vào trong ngực và giữ sân khấu ký ức cho riêng mình",
+        labelEn: "Fold the domain back into your chest and keep the theater of memory to yourself",
+        resultVi: "Mặt đường thẳng lại, nhưng cơ thể bạn đặc lại như áo giáp. Bạn giữ được cái bản ngã méo mó của mình mà không để nó giữ lại bạn.",
+        resultEn: "The pavement straightens, but your body thickens like armor. You keep your twisted self without letting it keep you.",
         meritAdd: 28,
         effects: { sanity: +30, health: +20, resonance: +20 }
       }
@@ -368,21 +368,21 @@ export const DISTORTION_PATH_EVENTS = [
     allowDistorted: true,
     need: { jobs: ['Distortion'] },
     vi: "[Lời Carmen] Giữa cơn hỗn loạn, Carmen cất tiếng trong đầu bạn: \"Ngươi đã mệt vì phải giữ một hình hài vừa mắt The City. Buông tay đi.\" Giọng nói dịu xuống, chờ câu trả lời.",
-    en: '[Carmen’s Final Solace · Unbound Efflorescence] At the eye of the psychic storm, a soothing voice echoes within warm crimson light. Carmen embraces your mind: "Look at you. You no longer break your bones to fit their callous City machine. This is the truest, most beautiful form of your heart’s desire."',
+    en: "[Carmen’s Voice] In the middle of the chaos Carmen speaks inside your head: “You are tired of holding a shape that suits The City. Let go.” The voice softens and waits for an answer.",
     choices: [
       {
-        labelVi: 'Mỉm cười đón nhận sự thật, biến thành một tồn tại thần thoại của The City',
-        labelEn: 'Embrace the solar truth with a smile, ascending into City myth',
-        resultVi: 'Cơn đau biến mất hoàn toàn, nhường chỗ cho sự thanh thản tuyệt đối. Bạn không còn là một con quái vật đau khổ, mà là một sinh linh tự do tự tại sống đúng với bản ngã tận cùng của mình.',
-        resultEn: 'All agony vanished into sublime serenity. You were no longer a pitiable beast, but a transcendent sovereign living in absolute truth to your soul.',
+        labelVi: "Mỉm cười chấp nhận và trở thành một huyền thoại của The City",
+        labelEn: "Smile, accept, and become a legend of The City",
+        resultVi: "Cơn đau biến mất, nhường chỗ cho một sự yên lặng mà bạn không nhớ đã từng có. Bạn không còn là con quái vật đau khổ nữa, mà là một sinh linh sống đúng với phần sâu nhất của mình.",
+        resultEn: "The pain disappears and leaves a quiet you do not remember ever having. You are no longer a suffering monster but a being who lives by the deepest part of itself.",
         meritAdd: 40,
         effects: { sanity: +45, resonance: +40, health: +30, rep: +50 }
       },
       {
-        labelVi: 'Rơi một giọt nước mắt con người cuối cùng, giữ lại ký ức về thuở ban đầu',
-        labelEn: 'Shed a single final human tear, preserving the memory of who you once were',
-        resultVi: 'Giọt nước mắt rơi xuống vỡ tan như pha lê. Bạn giữ lại được mảnh ký ức thiêng liêng nhất về những người bạn từng yêu thương, trở thành một quái vật mang trái tim hoài niệm.',
-        resultEn: 'The tear shattered like crystal upon the cobbles. You preserved the sacred memory of those you once cherished — a beast holding an eternal, nostalgic human heart.',
+        labelVi: "Rơi một giọt nước mắt cuối cùng và giữ lại ký ức về lúc ban đầu",
+        labelEn: "Shed one last tear and keep the memory of how you began",
+        resultVi: "Giọt nước mắt rơi xuống và vỡ như pha lê trên mặt đá. Bạn giữ lại mảnh ký ức quý nhất về những người từng yêu mình, và trở thành một con quái vật vẫn còn nhớ.",
+        resultEn: "The tear falls and shatters like crystal on the cobbles. You keep the most precious memory of the people who once loved you, and become a monster that still remembers.",
         meritAdd: 35,
         effects: { sanity: +35, resonance: +25, rep: +35 }
       }

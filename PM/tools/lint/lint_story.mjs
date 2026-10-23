@@ -2,18 +2,18 @@
  * Static lint for story data. Hard errors (exit 1): duplicate ids, references to events that do not
  * exist, unknown effect keys, choices that cannot resolve. Warnings: text that names a relationship
  * without requiring that person, events gated on a flag or memory nothing ever grants.
- * Usage: node lint_story.mjs [--verbose]
+ * Usage: node tools/lint/lint_story.mjs [--verbose]
  */
 import fs from 'fs';
 import path from 'path';
-import { ALL_STORY_EVENTS } from './src/engine/gameEngine.js';
-import { LIFE_MINORS, LIFE_DAILIES } from './src/engine/yearPlanner.js';
-import { CONSEQUENCE_EVENTS } from './src/data/eventsChildhood.js';
-import { FIXER_REQUESTS } from './src/data/eventsSupernatural.js';
-import { ROLE_WORDS, entryGatesRole } from './src/engine/storyInvariants.js';
-import { FINGER_LADDERS, WING_LADDER_PROMOTIONS, FIXER_LADDER } from './src/engine/careerPipeline.js';
-import { NARRATIVE_ARCS } from './src/engine/narrativeArcEngine.js';
-import { FINGER_RANKS } from './src/data/worldData.js';
+import { ALL_STORY_EVENTS } from '../../src/engine/gameEngine.js';
+import { LIFE_MINORS, LIFE_DAILIES } from '../../src/engine/yearPlanner.js';
+import { CONSEQUENCE_EVENTS } from '../../src/data/eventsChildhood.js';
+import { FIXER_REQUESTS } from '../../src/data/eventsSupernatural.js';
+import { ROLE_WORDS, entryGatesRole } from '../../src/engine/storyInvariants.js';
+import { FINGER_LADDERS, WING_LADDER_PROMOTIONS, FIXER_LADDER } from '../../src/engine/careerPipeline.js';
+import { NARRATIVE_ARCS } from '../../src/engine/narrativeArcEngine.js';
+import { FINGER_RANKS } from '../../src/data/worldData.js';
 
 const VERBOSE = process.argv.includes('--verbose');
 const EFFECT_KEYS = new Set(['health', 'sanity', 'wealth', 'network', 'rep', 'heat', 'taboo', 'resonance', 'merit']);
@@ -112,6 +112,17 @@ for (const [kind, list] of pools) {
       if (noText && kind !== 'daily') warn(`${kind} ${e.id}: a choice has no result text`);
       for (const src of [c, ...outs]) {
         for (const k of Object.keys(src.effects || src.fx || {})) if (!EFFECT_KEYS.has(k)) err(`${kind} ${e.id}: unknown effect key "${k}"`);
+      }
+      // Entering a dungeon only sets the scene; the stages are what pay, so the entry must not
+      const entersDungeon = [c, ...outs].some((s) => s.startDungeon);
+      if (entersDungeon) {
+        const pays = [c, ...outs].some((s) => Object.values(s.effects || s.fx || {}).some((v) => v > 0) || s.meritAdd > 0);
+        if (pays) err(`${kind} ${e.id}: a choice that starts a dungeon also pays out, so the player is paid twice`);
+      }
+      // A price written in the label has to be the price the engine charges
+      const label = `${c.labelVi || ''} ${c.labelEn || ''}`;
+      for (const m of label.matchAll(/(\d+)\s*Ahn/g)) {
+        if (/(Chi|Spend|Pay|Trả|Mua|Purchase|Đóng)/i.test(label) && c.costAhn && Number(m[1]) !== c.costAhn) warn(`${kind} ${e.id}: label says ${m[1]} Ahn but costAhn is ${c.costAhn}`);
       }
     }
     if (e.choices?.length && !e.ignore && e.choices.every((choice) => (choice.costAhn || 0) > 0)) {

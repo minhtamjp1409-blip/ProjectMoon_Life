@@ -149,7 +149,7 @@ input:focus-visible, select:focus-visible, textarea:focus-visible {
 .interface-v2 .input::placeholder, .interface-v2 .textarea::placeholder { color: var(--faint); opacity: 1; }
 .interface-v2 .field label { color: var(--text); font-size: 13px; font-weight: 500; }
 .interface-v2 .pill { border-radius: 4px; font-size: 12px; letter-spacing: 0; text-transform: none; }
-.interface-v2 .bar { box-shadow: none; background: #101217; border-radius: 4px; }
+.interface-v2 .bar { box-shadow: none; background: var(--deep); border-radius: 4px; }
 
 /* Main Shell Layout */
 .shell.interface-v2 {
@@ -280,7 +280,7 @@ input:focus-visible, select:focus-visible, textarea:focus-visible {
   letter-spacing: -.03em;
 }
 .the-city-title {
-  background: linear-gradient(135deg, #f0f2eb 40%, var(--accent) 100%);
+  background: linear-gradient(135deg, var(--text) 35%, var(--accent) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   display: inline-block;
@@ -304,7 +304,7 @@ input:focus-visible, select:focus-visible, textarea:focus-visible {
 .district-dial g:hover text, .district-dial g:focus-visible text { fill: var(--text); }
 .district-dial g.is-selected path { fill: var(--accent); stroke: #ffd700; stroke-width: 1.5; filter: drop-shadow(0 0 6px rgba(212, 175, 55, 0.4)); }
 .district-dial g.is-selected text { fill: #0a0c0f; font-weight: 700; }
-.district-dial .dial-inner { fill: #101217; stroke: rgba(212, 175, 55, 0.35); stroke-width: 1; }
+.district-dial .dial-inner { fill: var(--raised); stroke: rgba(212, 175, 55, 0.35); stroke-width: 1; }
 .district-dial .dial-outer-ring { fill: none; stroke: rgba(212, 175, 55, 0.15); stroke-width: .8; stroke-dasharray: 4 6; }
 .district-dial .dial-mid-ring { fill: none; stroke: rgba(255, 255, 255, 0.08); stroke-width: .5; }
 .district-dial .dial-name { font-size: 23px; font-weight: 600; fill: var(--text); letter-spacing: -.6px; }
@@ -525,7 +525,7 @@ input:focus-visible, select:focus-visible, textarea:focus-visible {
 .interface-v2 .yearbar-track {
   height: 6px;
   border-radius: 3px;
-  background: #101217;
+  background: var(--deep);
   border: 1px solid rgba(255, 255, 255, 0.06);
   position: relative;
   overflow: hidden;
@@ -573,14 +573,14 @@ input:focus-visible, select:focus-visible, textarea:focus-visible {
 .interface-v2 .dossier-gen { font-size: 11px; color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: .06em; }
 .interface-v2 .dossier-head { border-color: var(--rule); padding-bottom: 14px; margin-bottom: 16px; }
 .interface-v2 .section-title { margin-bottom: 12px; font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
-.interface-v2 .side .bar { height: 7px; border-radius: 4px; background: #101217; border: 1px solid rgba(255, 255, 255, 0.05); overflow: hidden; }
+.interface-v2 .side .bar { height: 7px; border-radius: 4px; background: var(--deep); border: 1px solid var(--rule); overflow: hidden; }
 .interface-v2 .side .bar i { border-radius: 3px; box-shadow: 0 0 6px var(--c); }
 
 .interface-v2 .career-objective-card { background: var(--raised); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: 6px; padding: 14px; }
 .interface-v2 .career-objective-card:hover { border-color: var(--control); }
 .interface-v2 .career-obj-tag { font-size: 11px; color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: .06em; }
 .interface-v2 .career-obj-title { font-size: 13px; font-weight: 600; line-height: 1.6; color: var(--text); }
-.interface-v2 .career-obj-bar { height: 5px; border-radius: 3px; background: #101217; }
+.interface-v2 .career-obj-bar { height: 5px; border-radius: 3px; background: var(--deep); }
 .interface-v2 .career-obj-bar i { background: var(--accent); box-shadow: 0 0 6px rgba(212, 175, 55, 0.4); }
 .interface-v2 .career-req-item .req-val { color: var(--text); font-weight: 500; }
 .interface-v2 .career-req-item.is-met, .interface-v2 .career-req-item.is-met .req-val { color: var(--good); }
@@ -666,6 +666,8 @@ input:focus-visible, select:focus-visible, textarea:focus-visible {
 }
 .interface-v2 .entry.k-causal .entry-tag { color: var(--rare); }
 .interface-v2 .entry-text, .interface-v2 .dock-text { font-size: 15px; line-height: 1.9; color: var(--story); }
+.interface-v2 .entry-text.is-result { color: #176a68; }
+:root.dark .interface-v2 .entry-text.is-result { color: #9fd2cf; }
 .interface-v2 .entry-tag { font-size: 13px; font-weight: 600; color: var(--text); }
 .interface-v2 .entry-season-badge {
   background: var(--raised);
@@ -711,7 +713,7 @@ input:focus-visible, select:focus-visible, textarea:focus-visible {
   min-height: 44px;
   padding: 8px 14px;
   color: var(--story);
-  background: #151a21;
+  background: var(--raised);
   border: 1px solid var(--accent);
   border-radius: 8px;
   cursor: pointer;
@@ -740,12 +742,11 @@ input:focus-visible, select:focus-visible, textarea:focus-visible {
   max-width: 620px;
   max-height: 86vh;
   margin: auto;
-  background: #0e1217;
-  background: linear-gradient(180deg, #13171e 0%, #0a0d12 100%);
+  background: var(--surface);
   border: 1px solid var(--border);
   border-top: 3px solid var(--accent);
   border-radius: 12px;
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.88), 0 0 0 1px rgba(212, 175, 55, 0.22);
+  box-shadow: 0 24px 64px var(--dock-shade), 0 0 0 1px color-mix(in srgb, var(--accent) 24%, transparent);
   padding: 24px 28px;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
@@ -755,7 +756,7 @@ input:focus-visible, select:focus-visible, textarea:focus-visible {
 
 .interface-v2 .dock.is-causal {
   border-top-color: #f59e0b;
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.88), 0 0 0 1px rgba(245, 158, 11, 0.25);
+  box-shadow: 0 24px 64px var(--dock-shade), 0 0 0 1px rgba(245, 158, 11, 0.25);
 }
 
 .interface-v2 .dock.is-minor {
@@ -765,301 +766,7 @@ input:focus-visible, select:focus-visible, textarea:focus-visible {
 
 .interface-v2 .dock.is-contract {
   border-top-color: #60a5fa;
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.88), 0 0 0 1px rgba(96, 165, 250, 0.2);
-}
-
-.interface-v2 .dock.is-dungeon {
-  border-top-color: #38bdf8;
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.92), 0 0 0 1px rgba(56, 189, 248, 0.28);
-  animation: eventCardPopIn 0.28s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.interface-v2 .dock.is-dungeon.theme-warp {
-  border-top-color: #38bdf8;
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.92), 0 0 0 1px rgba(56, 189, 248, 0.3);
-}
-
-.interface-v2 .dock.is-dungeon.theme-lobotomy {
-  border-top-color: #10b981;
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.92), 0 0 0 1px rgba(16, 185, 129, 0.3);
-}
-
-.interface-v2 .dock.is-dungeon.theme-bloodfiend {
-  border-top-color: #f43f5e;
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.92), 0 0 0 1px rgba(244, 63, 94, 0.35);
-}
-
-.interface-v2 .dock.is-dungeon.theme-outskirts {
-  border-top-color: #f59e0b;
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.92), 0 0 0 1px rgba(245, 158, 11, 0.3);
-}
-
-.interface-v2 .dungeon-hazard-tag {
-  display: inline-flex;
-  align-items: center;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  padding: 1px 7px;
-  border-radius: 4px;
-  border: 1px solid;
-  background: rgba(0, 0, 0, 0.45);
-  margin-right: 8px;
-}
-
-.interface-v2 .dungeon-breadcrumbs {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  padding: 10px 14px;
-  margin-block: 8px 14px;
-  background: rgba(15, 23, 42, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  border-radius: 8px;
-  overflow-x: auto;
-}
-
-.interface-v2 .dungeon-step {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 12px;
-  white-space: nowrap;
-  opacity: 0.5;
-  transition: opacity 0.2s, color 0.2s;
-}
-
-.interface-v2 .dungeon-step.is-active {
-  opacity: 1;
-  font-weight: 600;
-  color: var(--text, #f8fafc);
-}
-
-.interface-v2 .dungeon-step.is-completed {
-  opacity: 0.85;
-  color: var(--accent, #38bdf8);
-}
-
-.interface-v2 .dungeon-step-indicator {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-}
-
-.interface-v2 .step-active-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  box-shadow: 0 0 10px currentColor;
-  animation: pulse 1.8s infinite;
-}
-
-.interface-v2 .step-num {
-  font-size: 11px;
-  font-weight: 700;
-  margin-left: 2px;
-}
-
-.interface-v2 .step-connector {
-  width: 14px;
-  height: 1px;
-  background: rgba(255, 255, 255, 0.15);
-  margin-left: 6px;
-}
-
-.interface-v2 .dungeon-dashboard {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 10px 14px;
-  margin-bottom: 14px;
-  background: rgba(0, 0, 0, 0.35);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 6px;
-}
-
-.interface-v2 .dungeon-gauge-group {
-  flex: 1;
-  min-width: 0;
-}
-
-.interface-v2 .gauge-label-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  margin-bottom: 4px;
-  color: var(--muted, #94a3b8);
-}
-
-.interface-v2 .gauge-value {
-  font-weight: 700;
-  font-family: var(--font-mono, monospace);
-  color: #38bdf8;
-}
-
-.interface-v2 .gauge-value.is-high {
-  color: #f59e0b;
-}
-
-.interface-v2 .gauge-value.is-crit {
-  color: #ef4444;
-  animation: pulse 1s infinite;
-}
-
-.interface-v2 .dungeon-strain-track {
-  width: 100%;
-  height: 6px;
-  border-radius: 3px;
-  background: rgba(255, 255, 255, 0.08);
-  overflow: hidden;
-}
-
-.interface-v2 .dungeon-strain-fill {
-  height: 100%;
-  border-radius: 3px;
-  background: linear-gradient(90deg, #38bdf8, #60a5fa);
-  transition: width 0.3s ease, background 0.3s ease;
-}
-
-.interface-v2 .dungeon-strain-fill.is-high {
-  background: linear-gradient(90deg, #f59e0b, #ef4444);
-}
-
-.interface-v2 .dungeon-strain-fill.is-crit {
-  background: linear-gradient(90deg, #ef4444, #dc2626);
-  box-shadow: 0 0 10px rgba(239, 68, 68, 0.8);
-}
-
-.interface-v2 .dungeon-haul-badge {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 2px;
-  font-size: 12px;
-  white-space: nowrap;
-}
-
-.interface-v2 .haul-label {
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--muted, #94a3b8);
-}
-
-.interface-v2 .haul-val {
-  font-weight: 700;
-  color: #facc15;
-}
-
-.interface-v2 .haul-merit {
-  font-size: 11px;
-  font-weight: 600;
-  color: #a855f7;
-}
-
-.interface-v2 .dungeon-stage-body {
-  margin-bottom: 14px;
-}
-
-.interface-v2 .dungeon-stage-title {
-  font-size: 15px;
-  font-weight: 600;
-  margin: 0 0 6px 0;
-  color: var(--text, #f8fafc);
-}
-
-.interface-v2 .dungeon-stage-title .stage-marker {
-  color: var(--accent, #38bdf8);
-  font-size: 13px;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  margin-right: 4px;
-}
-
-.interface-v2 .choice.is-flee-choice {
-  border-left-color: rgba(239, 68, 68, 0.6);
-}
-
-.interface-v2 .choice-loot-pill {
-  font-size: 12px;
-  font-weight: 600;
-  color: #facc15;
-  background: rgba(250, 204, 21, 0.12);
-  padding: 1px 6px;
-  border-radius: 4px;
-  margin-left: auto;
-}
-
-.interface-v2 .choice-pills-row {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
-  margin-top: 5px;
-}
-
-.interface-v2 .req-pill,
-.interface-v2 .trait-pill,
-.interface-v2 .flee-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 11px;
-  padding: 2px 7px;
-  border-radius: 4px;
-  background: rgba(255, 255, 255, 0.06);
-}
-
-.interface-v2 .req-pill.is-met {
-  color: #4ade80;
-  background: rgba(74, 222, 128, 0.12);
-  border: 1px solid rgba(74, 222, 128, 0.25);
-}
-
-.interface-v2 .req-pill.is-unmet {
-  color: #f87171;
-  background: rgba(248, 113, 113, 0.12);
-  border: 1px solid rgba(248, 113, 113, 0.25);
-}
-
-.interface-v2 .trait-pill.is-pos {
-  color: #38bdf8;
-  background: rgba(56, 189, 248, 0.12);
-  border: 1px solid rgba(56, 189, 248, 0.25);
-}
-
-.interface-v2 .flee-pill {
-  color: #fb923c;
-  background: rgba(251, 146, 60, 0.12);
-  border: 1px solid rgba(251, 146, 60, 0.25);
-}
-
-.interface-v2 .dungeon-retreat-bar {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 10px;
-  padding-top: 8px;
-  border-top: 1px solid rgba(255, 255, 255, 0.07);
-}
-
-.interface-v2 .dungeon-flee-btn {
-  font-size: 12px;
-  color: #94a3b8;
-  border-color: rgba(255, 255, 255, 0.12);
-}
-
-.interface-v2 .dungeon-flee-btn:hover {
-  color: #fb7185;
-  border-color: #fb7185;
+  box-shadow: 0 24px 64px var(--dock-shade), 0 0 0 1px rgba(96, 165, 250, 0.2);
 }
 
 /* =========================================================================
@@ -1464,7 +1171,7 @@ input:focus-visible, select:focus-visible, textarea:focus-visible {
 }
 
 .interface-v2 .choice-pill-text {
-  color: #fff;
+  color: var(--text);
   font-weight: 600;
 }
 
@@ -1820,6 +1527,25 @@ input:focus-visible, select:focus-visible, textarea:focus-visible {
   .opening-story h1 br { display: none; }
   .opening-lead { font-size: 13px; line-height: 1.8; max-width: 520px; }
   .opening-atlas { display: none; }
+  .opening-atlas.is-launch-spinning {
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 24px;
+    background: #08090d;
+  }
+  .opening-atlas.is-launch-spinning .district-dial-container {
+    width: min(320px, 82vw);
+  }
+  .opening-atlas.is-launch-spinning .atlas-note,
+  .opening-atlas.is-launch-spinning .dial-spin-btn {
+    display: none;
+  }
   .birth-panel { padding: 22px; margin: 0; }
   .birth-heading { padding-bottom: 18px; margin-bottom: 18px; }
   .birth-heading h2 { font-size: 19px; }
@@ -1902,9 +1628,8 @@ input:focus-visible, select:focus-visible, textarea:focus-visible {
     border: 0 !important;
     border-bottom: 1px solid var(--border) !important;
     border-radius: 0 !important;
-    background: #0d1117 !important;
-    background: linear-gradient(180deg, #141923 0%, #0a0d12 100%) !important;
-    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5) !important;
+    background: var(--surface) !important;
+    box-shadow: 0 4px 18px var(--dock-shade) !important;
     flex-shrink: 0 !important;
     cursor: pointer !important;
     z-index: 30 !important;
@@ -1986,7 +1711,7 @@ input:focus-visible, select:focus-visible, textarea:focus-visible {
     width: 28px;
     height: 5px;
     border-radius: 3px;
-    background: #090c10;
+    background: var(--deep);
     border: 1px solid rgba(255, 255, 255, 0.12);
     overflow: hidden;
   }
@@ -2179,12 +1904,12 @@ input:focus-visible, select:focus-visible, textarea:focus-visible {
     height: auto !important;
     padding: 8px 12px calc(8px + env(safe-area-inset-bottom)) !important;
     gap: 8px !important;
-    background: rgba(14, 18, 24, 0.96) !important;
+    background: color-mix(in srgb, var(--surface) 96%, transparent) !important;
     backdrop-filter: blur(16px) !important;
     -webkit-backdrop-filter: blur(16px) !important;
     border: 0 !important;
     border-top: 1px solid rgba(212, 175, 55, 0.25) !important;
-    box-shadow: 0 -8px 28px rgba(0, 0, 0, 0.65) !important;
+    box-shadow: 0 -8px 28px var(--dock-shade) !important;
     flex-shrink: 0 !important;
     z-index: 25 !important;
   }
@@ -2326,11 +2051,11 @@ input:focus-visible, select:focus-visible, textarea:focus-visible {
     max-width: 100% !important;
     max-height: 84dvh !important;
     border-radius: 20px 20px 0 0 !important;
-    border: 1px solid rgba(255, 255, 255, 0.14) !important;
+    border: 1px solid var(--border) !important;
     border-bottom: 0 !important;
     border-top: 3px solid var(--accent) !important;
     padding: 18px 18px calc(24px + env(safe-area-inset-bottom)) !important;
-    box-shadow: 0 -16px 48px rgba(0, 0, 0, 0.95), 0 0 0 1px rgba(212, 175, 55, 0.25) !important;
+    box-shadow: 0 -16px 48px var(--dock-shade), 0 0 0 1px color-mix(in srgb, var(--accent) 25%, transparent) !important;
     margin: 0 !important;
     overflow-y: auto !important;
     animation: mobileSheetSlideUp 0.28s cubic-bezier(0.16, 1, 0.3, 1) !important;
@@ -2345,7 +2070,7 @@ input:focus-visible, select:focus-visible, textarea:focus-visible {
     font-size: 18px !important;
     line-height: 1.35 !important;
     margin-bottom: 4px;
-    color: #fff;
+    color: var(--text);
   }
 
   .interface-v2 .dock-text {
@@ -2397,18 +2122,18 @@ input:focus-visible, select:focus-visible, textarea:focus-visible {
   }
   .interface-v2 .mobile-dossier-sheet {
     max-height: 88dvh;
-    background: #0e1218;
+    background: var(--surface);
     color: var(--text);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    border: 1px solid var(--border);
     border-bottom: 0;
     border-radius: 20px 20px 0 0;
-    box-shadow: 0 -16px 60px rgba(0, 0, 0, 0.8);
+    box-shadow: 0 -16px 60px var(--dock-shade);
     padding-bottom: calc(14px + env(safe-area-inset-bottom));
     animation: mobileSheetSlideUp 0.28s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .interface-v2 .mobile-dossier-sheet-head {
-    background: #121720;
-    border-color: rgba(255, 255, 255, 0.1);
+    background: var(--raised);
+    border-color: var(--border);
     border-radius: 20px 20px 0 0;
     padding: 12px 18px;
   }
@@ -2982,8 +2707,8 @@ input:focus-visible, select:focus-visible, textarea:focus-visible {
   .interface-v2 .mobile-resource-hud {
     gap: 8px !important;
     padding: calc(10px + env(safe-area-inset-top)) 14px 10px !important;
-    background: #0d1117 !important;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35) !important;
+    background: var(--surface) !important;
+    box-shadow: 0 6px 16px var(--dock-shade) !important;
   }
   .interface-v2 .hud2-top {
     display: flex;
@@ -3042,9 +2767,38 @@ input:focus-visible, select:focus-visible, textarea:focus-visible {
 
   .interface-v2 .hud2-stats {
     display: grid;
-    grid-template-columns: repeat(var(--cells, 3), minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 6px;
   }
+  .interface-v2 .hud2-secondary {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 5px;
+  }
+  .interface-v2 .hud2-secondary > span {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 0;
+    padding: 4px 2px;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    color: var(--muted);
+    font-size: 10px;
+    line-height: 1.25;
+  }
+  .interface-v2 .hud2-secondary > span > span {
+    overflow: hidden;
+    max-width: 100%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .interface-v2 .hud2-secondary b {
+    color: var(--text);
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+  }
+  .interface-v2 .hud2-secondary .is-danger b { color: #fca5a5; }
   .interface-v2 .hud2-stat {
     display: grid;
     grid-template-columns: 1fr auto;
@@ -3206,3 +2960,22 @@ input:focus-visible, select:focus-visible, textarea:focus-visible {
     display: block !important;
   }
 }
+
+/* Achievement toast: small, out of the way of the decision dock */
+.achievement-toast.ant-notification-notice { width: min(360px, calc(100vw - 32px)); padding: 12px 14px; }
+.achievement-toast .ant-notification-notice-title { font-size: 14px; line-height: 1.4; margin-bottom: 2px; }
+.achievement-toast .ant-notification-notice-description { font-size: 13px; line-height: 1.5; color: var(--muted) !important; }
+
+/* Archive pages on a phone: the action drops under the title instead of squeezing it */
+@media (max-width: 640px) {
+  .archive-header { flex-direction: column; gap: 14px; margin-bottom: 20px; padding-bottom: 16px; }
+  .archive-header h1 { font-size: 22px; margin-bottom: 6px; }
+  .archive-action { align-self: stretch; }
+  .archive-action .btn { width: 100%; justify-content: center; }
+}
+
+/* Reading size (html[data-text]): story text, choices and dungeon prose grow together */
+html[data-text='lg'] .interface-v2 :is(.entry-text, .dock-text, .dg-result p) { font-size: 17px !important; line-height: 1.8 !important; }
+html[data-text='lg'] .interface-v2 :is(.choice-label, .dg-scene-title) { font-size: 16px !important; }
+html[data-text='xl'] .interface-v2 :is(.entry-text, .dock-text, .dg-result p) { font-size: 19.5px !important; line-height: 1.75 !important; }
+html[data-text='xl'] .interface-v2 :is(.choice-label, .dg-scene-title) { font-size: 18px !important; }

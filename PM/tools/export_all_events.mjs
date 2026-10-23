@@ -79,8 +79,8 @@ for (const [name, entries] of pools) {
 }
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const output = path.join(root, 'DANH_SACH_TAT_CA_EVENTS.txt');
-const jsonOutput = path.join(root, 'DANH_SACH_TAT_CA_EVENTS.json');
+const output = path.join(root, 'docs', 'events', 'DANH_SACH_TAT_CA_EVENTS.txt');
+const jsonOutput = path.join(root, 'docs', 'events', 'DANH_SACH_TAT_CA_EVENTS.json');
 const total = pools.reduce((sum, [, entries]) => sum + entries.length, 0);
 fs.writeFileSync(output, `${lines.join('\n').trimEnd()}\n`, 'utf8');
 fs.writeFileSync(jsonOutput, `${JSON.stringify({

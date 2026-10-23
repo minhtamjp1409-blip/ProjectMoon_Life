@@ -87,16 +87,6 @@ export const LIFE_CAREER_OPPORTUNITIES = [
       C('Ký theo bản tường trình của cấp trên', 'Sign the account prepared by your superior', 'Hồ sơ khép lại trước giờ tan ca. Bạn nhận phụ cấp, nhưng biên bản không ghi ai đã đổi dấu niêm phong.', 'The file closed before the shift ended. You received an allowance. It says nothing about who changed the seal.', { wealth: 4, network: 1, sanity: -4 })
     ], I('Ca sau nhận thùng hàng và bản biên bản còn trống.', 'The next shift inherited the crate and the blank report.'), { tags: ['career', 'wing', 'report'] }),
 
-  M('m_career_workshop_proof', { jobs: ['Workshop Craftsman'] },
-    '[Mẫu thử cho Tres] Một đại diện Tres đến xem lô vũ khí mới. Ông đặt lên bàn mẫu đã hỏng và hỏi bạn có thể sửa đến đâu.',
-    '[A sample for Tres] A Tres representative inspects the new batch. He sets a broken sample on your bench and asks how far you can repair it.', [
-      C('Thay phần hỏng bằng vật liệu có sẵn', 'Replace the damaged part with stock material', 'Lưỡi thép chịu được bài thử. Đại diện Tres đóng dấu vào biên bản của bạn.', 'The blade passed the test. The Tres representative stamped your report.', { merit: 4, wealth: 2, resonance: 3 }),
-      C('Thử lại lõi vật liệu bất thường', 'Retest the unusual core', null, null, {}, { out: [
-        O(55, 'Lõi giữ được hình dưới tải nặng. Bạn ghi đủ số đo trước khi nó nguội.', 'The core held its shape under load. You recorded the readings before it cooled.', { merit: 6, resonance: 6, wealth: 3, sanity: -3 }),
-        O(45, 'Lõi nứt. Bạn dập lò trước khi lửa lan sang bàn bên cạnh.', 'The core cracked. You shut down the forge before fire reached the next bench.', { wealth: -6, health: -7, resonance: 2 })
-      ] })
-    ], I('Đại diện Tres mang mẫu hỏng đi. Buổi kiểm tra kết thúc.', 'The Tres representative took the broken sample away. The inspection ended.'), { tags: ['career', 'workshop', 'craft'] }),
-
   M('m_career_thumb_apex_tribute', { jobs: ['Syndicate'], finger: 'Thumb', fingerRankAtLeast: 3 },
     '[Cống nạp định kỳ cho Underboss] Các Capo dưới quyền mang sổ thu phế từ các chợ súng và sòng bạc trong quận lên trình diện bạn.',
     '[Periodic Tribute to the Underboss] Your Capos present the protection ledgers from the District’s gun markets and casinos.', [

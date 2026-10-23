@@ -1,3 +1,4 @@
+import { FIXER_BREAKTHROUGH_EVENTS } from './eventsFixerBreakthrough.js';
 // ============================================================================
 // MAJOR EVENTS: WORKSHOPS, BLOODFIENDS, THE GREAT LAKE, HONGYUAN, THE PINKY,
 // AND CARMEN'S VOICE. Plus the Fixer request templates.
@@ -5,50 +6,8 @@
 // ============================================================================
 
 export const SUPERNATURAL_EVENTS = [
+  ...FIXER_BREAKTHROUGH_EVENTS,
   // ------------------------------------------------------------------ the Workshop
-  {
-    id: 'ws_forge_masterpiece_event',
-    age: [20, 65],
-    major: true,
-    weight: 7,
-    jobs: ['Workshop Craftsman'],
-    vi: "[Khối hợp kim còn nhịp đập] Một Fixer Grade 1 đặt lên đe của bạn lõi kim loại lấy từ Abnormality. Nó rỉ dịch đen và làm mặt đe lạnh buốt. \"Rèn thành kiếm.\" Nước tôi thường sẽ làm nó nứt; bạn phải chọn cách khác.",
-    en: '[The metal that still bleeds] A Grade 1 Fixer set a lump of alloy on your anvil, cut from the core of an Abnormality. It was still seeping something black. “Make me a sword from this.” Ordinary quenching water would crack it. The old smiths say only blood will hold it.',
-    choices: [
-      {
-        labelVi: 'Tôi thép bằng máu của chính bạn',
-        labelEn: 'Quench it in your own blood',
-        resultVi: "Bạn rạch lòng bàn tay và dùng máu tôi khối hợp kim. Nó nguội lại thành lưỡi kiếm đen không nứt. Khi bạn cầm chuôi, nhịp đập trong kim loại khớp với tim mình. Fixer nhận kiếm và trả tiền.",
-        resultEn: 'When the blade met your blood the steam rose red and smelled of iron. It did not crack. When you lifted it, it was warm, as if it had a pulse.',
-        openCraftModal: true,
-        effects: { health: -15, wealth: +18, rep: +16, network: +12, resonance: +14 },
-        flagsAdd: ['유물'],
-        recordsAdd: ['workshop_masterpiece'],
-        scarsAdd: ['Thanh kiếm tôi bằng máu mình'],
-        meritAdd: 28
-      },
-      {
-        labelVi: 'Làm thêm một khẩu súng bắn xuyên tường cho người trả giá cao hơn (vi phạm Taboo)',
-        labelEn: 'Also build a wall-piercing gun for a higher bidder (a Taboo violation)',
-        resultVi: "Viên đạn thử xé qua các vách bê tông. Khách hàng trả Ahn rồi đi. Ba ngày sau, một chấp hành viên B Corp đứng trước xưởng, ghi chép vào sổ mà không gõ cửa.",
-        resultEn: 'The test round went through four concrete walls. The buyer paid double and asked nothing. Three days later someone in a B Corp uniform stood across from your workshop, doing nothing, only watching.',
-        effects: { wealth: +28, rep: +14, taboo: +1, sanity: -10, resonance: +14 },
-        flagsAdd: ['유물'],
-        recordsAdd: ['workshop_masterpiece'],
-        scarsAdd: ['Khẩu súng phạm Taboo'],
-        meritAdd: 22,
-        scheduleConsequences: [
-          {
-            eventId: 'csq_taboo_workshop_raid',
-            delayYears: 4,
-            reasonVi: 'Khẩu súng phạm Taboo bị Tres và B Corp phát hiện',
-            reasonEn: 'The Taboo firearm was traced by Tres and B Corp'
-          }
-        ]
-      }
-    ]
-  },
-
   // ------------------------------------------------------------------ Bloodfiends
   {
     id: 'bf_crimson_awakening',
@@ -96,39 +55,23 @@ export const SUPERNATURAL_EVENTS = [
     major: true,
     regions: ['U', '21'],
     weight: 6.5,
-    vi: "[Pallid Whale] Bão quật con thuyền trên Great Lake. Pallid Whale trồi lên, nuốt mất nửa đoàn. Dịch trắng bắn lên boong, làm thủy thủ hóa cứng. Người vừa chia thuốc lá với bạn đã trắng tới cằm và đang quay sang cắn bạn.",
-    en: '[The Whale on the Great Lake] In the middle of the storm on District 21’s Great Lake, a Whale surfaced and swallowed half the fleet. Sailors splashed with its white fluid began to harden like wax, their legs fusing into tails. Then they turned and bit the living.\nThe person beside you had turned white up to the neck.',
+    vi: "[Pallid Whale] Bão quật con tàu bọc thép của U Corp trên Great Lake. Pallid Whale trồi lên, nuốt mất nửa đoàn. Dịch trắng bắn lên boong, làm thủy thủ hóa cứng. Người vừa chia thuốc lá với bạn đã trắng tới cằm và đang quay sang cắn bạn.",
+    en: "[The Whale on the Great Lake] A storm throws a U Corp armored ship around on the Great Lake. The Pallid Whale surfaces and swallows half the fleet. White fluid splashes across the deck and sailors harden like wax, their legs fusing into tails. The person who shared a cigarette with you has gone white up to the chin and is turning to bite you.",
     choices: [
       {
-        labelVi: 'Cắt cánh tay đang hóa trắng của người ấy, rồi buộc mình vào dây lao và phóng thẳng vào mắt con Cá Voi',
-        labelEn: 'Cut off their whitening arm, then tie yourself to the harpoon line and drive it into the Whale’s eye',
+        labelVi: 'Cắt cánh tay đang hóa trắng của người ấy, rồi nhận bệ phóng lao',
+        labelEn: 'Cut off their whitening arm, then take the harpoon cannon',
         startDungeon: 'dungeon_great_lake',
-        outcomes: [
-          {
-            w: 56,
-            resultVi: "Bạn cắt phần tay đã hóa trắng của đồng đội, rồi buộc mình vào bệ phóng lao. Mũi lao mang thuốc nổ xuyên vào mắt Pallid Whale. Nó lặn xuống, kéo theo một xoáy nước trắng. Ở bến cảng, người ta nhắc tên bạn mỗi khi kể về chuyến săn ấy.",
-            resultEn: 'The harpoon went into its eye. The Whale sank, dragging a white whirlpool down with it. In District 21 they tell this story in the bars, and every time the Whale gets a little bigger.',
-            effects: { health: -10, sanity: -6, wealth: +24, rep: +24, resonance: +18 },
-            recordsAdd: ['lake_whale_slayer'],
-            scarsAdd: ['Vết trắng trên vai'],
-            meritAdd: 30
-          },
-          {
-            w: 44,
-            resultVi: "Đuôi Pallid Whale phá nát bệ phóng lao. Dịch trắng bám vào vai bạn, làm da hóa cứng. Bạn đốt rồi cắt bỏ phần nhiễm trước khi nó lan sâu hơn. Vết sáp trên vai không mất đi.",
-            resultEn: 'Its tail broke the hull apart. A white patch landed on your shoulder and began to spread. You heated a knife over the oil lamp and cut that flesh out yourself before it reached your heart.',
-            effects: { health: -14, sanity: -10, resonance: +22 },
-            scarsAdd: ['Mảng thịt tự cắt bỏ']
-          }
-        ]
+        resultVi: 'Bạn cắt phần tay đã hóa trắng trước khi nó lan lên vai người ấy, rồi đẩy họ vào xuồng. Con tàu quay mũi vào sương, và chuông Luật Đại Hồ rung dồn dập quanh bạn.',
+        resultEn: 'You cut off the whitened arm before it spreads to their shoulder, then push them into the lifeboat. The ship turns its bow into the fog, and the Lake Law bells ring wildly around you.'
       },
       {
-        labelVi: 'Chặt đứt dây neo boong phụ và kích hoạt xuồng cứu sinh bọc âm thoa U Corp',
-        labelEn: 'Sever the auxiliary deck moorings and launch the U Corp tuning-fork lifeboat',
-        resultVi: 'Bạn kéo những thủy thủ chưa nhiễm dịch nhảy xuống xuồng bọc âm thoa ngay trước khi hàm răng khổng lồ khép lại. Tiếng sóng Đại Hồ gầm rú sau lưng.',
-        resultEn: 'You hauled the uninfected sailors into the tuning-fork lifeboat right before the colossal jaws slammed shut. The Great Lake roared behind you.',
-        effects: { health: -8, sanity: -6, rep: +10, network: +12 },
-        meritAdd: 14
+        labelVi: 'Chặt đứt dây neo boong phụ và hạ xuồng cứu sinh bọc âm thoa U Corp',
+        labelEn: 'Cut the aft deck anchor lines and launch the U Corp tuning-fork lifeboat',
+        resultVi: 'Bạn kéo những thủy thủ chưa nhiễm dịch nhảy xuống xuồng ngay trước khi hàm răng khổng lồ khép lại. Tiếng sóng Đại Hồ gầm rú sau lưng.',
+        resultEn: 'You haul the uninfected sailors into the boat just before the colossal jaws close. The Great Lake roars behind you.',
+        effects: { health: -8, sanity: -6, rep: +6, network: +8 },
+        meritAdd: 8
       }
     ]
   },
@@ -204,7 +147,7 @@ export const SUPERNATURAL_EVENTS = [
     weight: 999,
     forbids: ['EGOAwakened', 'Distorted'],
     vi: "[Giọng nói trong ánh sáng] Những vết sẹo cũ ({scars}) đau trở lại. The City mờ đi; một giọng phụ nữ cất lên trong ánh sáng: \"Bạn đã chịu đủ rồi. Đừng ép mình mang hình dạng người khác mong muốn.\" Bàn tay bạn run. Bạn có thể nghe theo, hoặc tự chọn mình sẽ là ai.",
-    en: '[Can you hear my voice? · The Scorching Sun of The Light] Everything you ever lost returned at once ({scars}). The surrounding room dissolved into a blinding white sun — an ocean of radiant, scorching light. From the center of the brilliant sun, a woman with piercing eyes and a gentle smile tilted her head:\n“It hurts so much, doesn’t it? In this City, clinging to a human shape only gets you torn apart. Love yourself. You can let go, and become what you truly desire.”',
+    en: '[Can you hear my voice? · The Scorching Sun of The Light] Everything you ever lost returned at once ({scars}). The surrounding room dissolved into a blinding white sun, an ocean of radiant, scorching light. From the center of the brilliant sun, a woman with piercing eyes and a gentle smile tilted her head:\n“It hurts so much, doesn’t it? In this City, clinging to a human shape only gets you torn apart. Love yourself. You can let go, and become what you truly desire.”',
     choices: [
       {
         labelVi: '"Nỗi đau này là của tôi. Những vết sẹo này thuộc về tôi. Tôi sẽ không khuất phục trước sự an ủi dối trá của người!"',
@@ -311,8 +254,8 @@ export const SUPERNATURAL_EVENTS = [
         effects: { sanity: +45, health: +10, rep: +25, resonance: -25 },
         scarsAdd: ['Kẻ từ chối tiếng gọi thái dương'],
         meritAdd: 25,
-        resultVi: 'Bạn nhắm mắt, bịt tai, dùng lời thề với các huynh đệ và tổ chức khước từ mọi cám dỗ từ vầng thái dương của Carmen. Biển ánh sáng tan biến; bạn trở về thực tại: một con người trần thế kiên cường tiếp tục bước đi trên mặt đất The City (+45 SP, +10 HP, -25 Resonance).',
-        resultEn: 'You shut your eyes and closed your ears, clinging to oaths and brotherhood to refuse every whisper from Carmen. The blinding sun dissolved; you remained yourself: an ordinary human walking the ground of The City (+45 SP, +10 HP, -25 Resonance).'
+        resultVi: 'Bạn nhắm mắt, bịt tai, dùng lời thề với các huynh đệ và tổ chức khước từ mọi cám dỗ từ vầng thái dương của Carmen. Biển ánh sáng tan biến; bạn trở về thực tại: một con người trần thế kiên cường tiếp tục bước đi trên mặt đất The City.',
+        resultEn: 'You shut your eyes and closed your ears, clinging to oaths and brotherhood to refuse every whisper from Carmen. The blinding sun dissolved; you remained yourself: an ordinary human walking the ground of The City.'
       }
     ]
   },
@@ -379,17 +322,18 @@ export const SUPERNATURAL_EVENTS = [
   // ------------------------------------------------------------------ Hana Color Fixer Supreme Trial
   {
     id: 'hana_color_ascension_trial',
+    repeatable: true,
     age: [20, 95],
     major: true,
     weight: 980,
     jobs: ['Fixer'],
     forbids: ['ColorFixer', 'Distorted'],
     vi: "[Bài thử Color] Hana giao bạn xử lý một mối họa cấp Star of the City. Các Director đặt tấm thẻ chưa ghi tên lên bàn: \"Trở về sau nhiệm vụ, chúng tôi sẽ khắc Color của bạn lên đây.\"",
-    en: '[Star of the City · Hana Color Investiture] Hana Association Section 1 summoned you to the supreme dais. A Star of the City calamity has erupted on the border. The Hana Directors stare straight into your eyes:\n“The entire City holds fewer than ten Colors. We do not bestow this title upon those who merely file routine contracts. Extinguish this calamity, or perish in its wake. When you return, the Color license shall bear your name.”',
+    en: "[Color Trial] Hana gives you a Star of the City threat to handle. The Directors set a blank card on the table: “When you come back from the mission, we will engrave your Color here.”",
     choices: [
       {
-        labelVi: 'Tiên phong độc hành: Trực diện đồ sát Calamity',
-        labelEn: 'Solo vanguard: Confront and annihilate the Calamity directly',
+        labelVi: "Đi một mình, đối đầu trực diện với mối họa",
+        labelEn: "Go alone and face the threat head on",
         outcomes: [
           {
             w: 60,
@@ -401,7 +345,7 @@ export const SUPERNATURAL_EVENTS = [
             scarsAdd: ['Vết sẹo của Star of the City'],
             meritAdd: 60,
             resultVi: "Bạn phá lõi của mối họa sau một trận chiến dài. Khi trở về, hội đồng Hana mời bạn đến trước tấm thẻ còn để trống. Tên Color mới được khắc ngay tại đó.",
-            resultEn: 'The battle raged sixteen unceasing hours. Your weapon severed the core of the Star of the City before stunned Hana enforcers. Blood and ash coated the battlefield. The Hana Council stood and bowed in unison: “The City honors its new Color.” They invited you to the dais to engrave your title.'
+            resultEn: "You break the threat’s core after a long fight. When you return, the Hana council invites you to the blank card. Your new Color is engraved right there."
           },
           {
             w: 40,
@@ -409,32 +353,41 @@ export const SUPERNATURAL_EVENTS = [
             scarsAdd: ['Thương tật từ Star of the City'],
             meritAdd: 30,
             resultVi: 'Sức mạnh của mối họa vượt xa dự tính. Bạn chém đứt được một chi của nó nhưng bị đánh văng qua ba dãy tường bê tông, nát vụn xương sườn. Bạn sống sót nhưng bất tỉnh ba tuần. Hana Association ghi nhận chiến công nhưng hoãn kỳ phong Color cho đến khi bạn bình phục.',
-            resultEn: 'The calamity’s might exceeded all projections. You severed one of its limbs but were hurled through three concrete walls, ribs splintered. You survived but lay comatose three weeks. Hana credited your valor but postponed the Color ceremony until your recovery.'
+            resultEn: "The threat is far stronger than anyone estimated. You cut off one of its limbs but are thrown through three concrete walls, ribs shattered. You survive but lie unconscious for three weeks. Hana records the deed and postpones the Color ceremony until you recover."
           }
         ]
       },
       {
-        labelVi: 'Bày trận khắc chế cùng Seven Association (Chiến thuật & Tình báo)',
-        labelEn: 'Coordinate tactical dissection with Seven Association',
+        labelVi: "Phối hợp với Seven Association để tìm điểm yếu rồi ra đòn",
+        labelEn: "Work with Seven Association to find its weak point, then strike",
         need: { stat: { wealth: [15, 100], sanity: [30, 100] } },
+        costAhn: 15,
+        outcomes: [{
+        w: 75,
         openColorModal: true,
         flagsAdd: ['ColorFixer'],
         recordsAdd: ['color_fixer'],
-        effects: { health: -18, sanity: -15, wealth: -15, rep: +40 },
+        effects: { health: -18, sanity: -15, rep: +40 },
         scarsAdd: ['Bản đồ giải phẫu Star of the City'],
         meritAdd: 45,
-        resultVi: 'Chi trả ngân sách lớn cho Seven Association để phân tích cấu trúc Singularity và sơ hở của mối họa. Bạn đánh trúng tim của nó bằng một nhát duy nhất. Nest được bảo toàn. Hana Association đóng dấu phê chuẩn tuyệt đối: Một Color mới ra đời bằng trí tuệ và sự chuẩn xác.',
-        resultEn: 'Expending a substantial purse for Seven Association intel on the singularity weakness, you struck its core in a single fatal blow. The Nest was saved. Hana Association stamped absolute approval: A new Color born of intellect and lethal precision.'
+        resultVi: "Bạn trả một khoản lớn cho Seven Association để họ phân tích cấu trúc Singularity và những chỗ hở của mối họa. Một nhát đâm vào tim. Nest được giữ nguyên. Hana đóng dấu: một Color mới, đạt được bằng sự chính xác.",
+        resultEn: "You pay Seven Association a large sum to analyze the threat’s Singularity structure and its openings. One thrust to the heart. The Nest is spared. Hana stamps the card: a new Color, earned by precision."
+        }, {
+          w: 25,
+          effects: { health: -24, sanity: -18, rep: -5 },
+          resultVi: 'Bản đồ của Seven bỏ sót một lõi phụ. Bạn ra hiệu rút lui trước khi vòng vây khép lại. Tiền điều tra đã mất; Hana yêu cầu ba năm hồi phục và bổ sung hồ sơ trước khi xét lại.',
+          resultEn: 'Seven’s map missed a secondary core. You signal a retreat before the ring closes. The investigation fee is spent; Hana requires three years of recovery and further field work before reconsidering.'
+        }]
       },
       {
-        labelVi: 'Từ chối chiếc vòng kim cô: Tiếp tục là Fixer Grade 1 tự do',
-        labelEn: 'Refuse the Color crown: Remain a free Grade 1 Senior Fixer',
+        labelVi: "Từ chối vòng Color và ở lại làm Fixer Grade 1 tự do",
+        labelEn: "Refuse the Color and stay a free Fixer Grade 1",
         flagsAdd: ['ColorRefused'],
         effects: { sanity: +20, rep: +22, wealth: +25 },
         scarsAdd: ['Người từ chối làm Color'],
         meritAdd: 20,
-        resultVi: 'Bạn đặt bản ủy thác xuống bàn và mỉm cười quay lưng: "Làm Color chỉ biến tôi thành công cụ để The Head và các Wing dòm ngó. Tôi thích tự do ở Grade 1 hơn." Cả hội trường chết lặng. Danh tiếng về người Fixer từ chối Color lan truyền khắp Backstreets.',
-        resultEn: 'Setting the contract down, you smiled and turned away: “Becoming a Color only makes me a target for The Head and a puppet for the Wings. I prefer my freedom at Grade 1.” The hall fell dead silent. Whispers of the Fixer who refused a Color swept the Backstreets.'
+        resultVi: "Bạn đặt bản ủy thác xuống bàn và nói: “Làm Color chỉ biến tôi thành mục tiêu cho The Head và con rối của các Wing. Tôi thích tự do ở Grade 1.” Cả phòng im lặng. Trước sáng, tin về Fixer từ chối Color đã lan khắp Backstreets.",
+        resultEn: "You set the contract on the table and say: “Being a Color would only make me a target for The Head and a puppet for the Wings. I prefer to be free at Grade 1.” The room goes silent. By morning the story of the Fixer who refused a Color is all over the Backstreets."
       }
     ]
   },
@@ -538,7 +491,7 @@ export const SUPERNATURAL_EVENTS = [
     weight: 4.5,
     jobs: ['Syndicate', 'Fixer', 'Workshop Craftsman'],
     vi: "[Phòng tranh của The Ring] Docent chỉ bức tượng ghép từ mười hai kẻ phản bội. Một kiếm sĩ ngậm điếu thuốc đỏ hỏi bạn muốn đứng trong khung tranh hay nhìn từ ngoài. Cửa phòng sau lưng vừa khép.",
-    en: '[The Ring’s Gallery · Brushstroke of Carnage] In a subterranean gallery of District 8, a Docent of The Ring greeted you before a sculpture twisted from the living flesh of 12 traitors. A swordswoman with a burning cigarette and a cloth-wrapped sheath stepped forward:\n“A.R.T. — Absolute Ruin Transcends. Dost thou wish to be a brushstroke in this canvas, or a connoisseur with discerning eyes?”',
+    en: '[The Ring’s Gallery · Brushstroke of Carnage] In a subterranean gallery of District 8, a Docent of The Ring greeted you before a sculpture twisted from the living flesh of 12 traitors. A swordswoman with a burning cigarette and a cloth-wrapped sheath stepped forward:\n“A.R.T., Absolute Ruin Transcends. Dost thou wish to be a brushstroke in this canvas, or a connoisseur with discerning eyes?”',
     choices: [
       {
         labelVi: 'Rút kiếm phác họa một tuyệt tác kiếm thuật đối lập (I.M.P.A.C.T)',
@@ -550,8 +503,8 @@ export const SUPERNATURAL_EVENTS = [
             scarsAdd: ['Nét kiếm của Tuyệt Tác'],
             recordsAdd: ['ring_master_curator'],
             meritAdd: 40,
-            resultVi: 'Bạn vung kiếm. Ba nhát gọn gàng chém đứt các thớ gân đang co giật, để máu phun thành một vệt đối xứng trên bức tường trắng. Người phụ nữ đứng cạnh nhả một làn khói xám, ngón tay gõ nhẹ lên chuôi kiếm: "K.K.T.H — Khá khen cho kẻ biết vung dao." The Ring đóng dấu thông hành cho bạn qua khu trưng bày.',
-            resultEn: 'You swung your steel. Three surgical strokes severed the twitching tendons, letting the crimson spray form an immaculate bilateral arc against the plaster. The woman beside you exhaled a thread of gray smoke and tapped her sheath: “N.B.T. — Not bad at all.” The Ring stamped your safe-conduct pass.'
+            resultVi: 'Bạn vung kiếm. Ba nhát gọn gàng chém đứt các thớ gân đang co giật, để máu phun thành một vệt đối xứng trên bức tường trắng. Người phụ nữ đứng cạnh nhả một làn khói xám, ngón tay gõ nhẹ lên chuôi kiếm: "K.K.T.H, Khá khen cho kẻ biết vung dao." The Ring đóng dấu thông hành cho bạn qua khu trưng bày.',
+            resultEn: 'You swung your steel. Three surgical strokes severed the twitching tendons, letting the crimson spray form an immaculate bilateral arc against the plaster. The woman beside you exhaled a thread of gray smoke and tapped her sheath: “N.B.T., Not bad at all.” The Ring stamped your safe-conduct pass.'
           },
           {
             w: 45,

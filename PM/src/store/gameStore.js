@@ -8,6 +8,7 @@ import {
   resolveFixerContract,
   setDungeonStance,
   useDungeonSupply,
+  useDungeonEgo,
   resolveDungeonChoice,
   fleeDungeon,
   buildLifeSummaryAndLegacy,
@@ -133,6 +134,34 @@ function stageFxFor(prev, next) {
   if (fresh.some((l) => l.type === 'danger')) return 'blood';
   if (fresh.some((l) => l.type === 'causal')) return 'echo';
   return null;
+}
+
+// A finished delve is summarized once, against the state the player went in with
+function dungeonResolution(prevChar, nextChar, resolution) {
+  return {
+    id: `res_dungeon_${Date.now()}`,
+    kind: 'dungeon',
+    outcome: resolution.outcome,
+    age: nextChar.age,
+    seasonIdx: nextChar.seasonIdx,
+    titleVi: resolution.titleVi,
+    titleEn: resolution.titleEn,
+    choiceLabelVi: '',
+    choiceLabelEn: '',
+    narrativeVi: resolution.resultVi,
+    narrativeEn: resolution.resultEn,
+    deltas: dungeonDeltas(prevChar.pendingDungeon, nextChar),
+    isDead: Boolean(resolution.isDead),
+    isCausal: false
+  };
+}
+
+function dungeonDeltas(prevSession, nextChar) {
+  const snap = prevSession?.startSnapshot;
+  if (!snap) return [];
+  const deltas = diffStats({ stats: snap.stats, merit: snap.merit, resonance: snap.resonance, heat: snap.heat, taboo: snap.taboo }, nextChar);
+  for (const scar of nextChar.scars || []) if (!(snap.scars || []).includes(scar)) deltas.push({ k: 'scar', name: scar });
+  return deltas;
 }
 
 export function buildResolutionPayload({
@@ -458,11 +487,13 @@ export const useGameStore = create((set, get) => ({
         const rec = CODEX_RECORDS.find((r) => r.key === key);
         if (rec) {
           try {
+            // On a phone the bottom edge is the decision dock, so the toast goes to the top
             notification.open({
-              message: `Mở khóa thành tựu · ${rec.vi}`,
+              title: `Mở khóa thành tựu · ${rec.vi}`,
               description: rec.hintVi,
-              placement: 'bottomLeft',
-              duration: 3.5
+              placement: typeof window !== 'undefined' && window.innerWidth <= 820 ? 'top' : 'bottomLeft',
+              className: 'achievement-toast',
+              duration: 3.2
             });
           } catch {
             // ignore in headless / test environment
@@ -763,27 +794,21 @@ export const useGameStore = create((set, get) => ({
     return true;
   },
 
+  useDungeonEgo: () => {
+    const prev = get().char;
+    if (!prev?.pendingDungeon) return false;
+    const nextChar = useDungeonEgo(prev);
+    if (nextChar === prev) return false;
+    get().commit(prev, nextChar, { activeResolution: null });
+    return true;
+  },
+
   chooseDungeonAction: (choiceIdx) => {
     const prev = get().char;
     if (!prev.pendingDungeon) return;
     const { char: nextChar, isFinished, resolution } = resolveDungeonChoice(prev, choiceIdx, lifeRng);
-
     get().commit(prev, nextChar, {
-      activeResolution: resolution ? {
-        id: `res_dungeon_${Date.now()}`,
-        kind: 'dungeon',
-        age: nextChar.age,
-        seasonIdx: nextChar.seasonIdx,
-        titleVi: resolution.titleVi,
-        titleEn: resolution.titleEn,
-        choiceLabelVi: '',
-        choiceLabelEn: '',
-        narrativeVi: resolution.resultVi,
-        narrativeEn: resolution.resultEn,
-        deltas: [],
-        isDead: Boolean(resolution.isDead),
-        isCausal: false
-      } : null,
+      activeResolution: resolution ? dungeonResolution(prev, nextChar, resolution) : null,
       postChoicePauseMs: isFinished && get().speed > 0 ? 3000 : 0
     });
   },
@@ -792,23 +817,8 @@ export const useGameStore = create((set, get) => ({
     const prev = get().char;
     if (!prev.pendingDungeon) return;
     const { char: nextChar, resolution } = fleeDungeon(prev);
-
     get().commit(prev, nextChar, {
-      activeResolution: resolution ? {
-        id: `res_dungeon_${Date.now()}`,
-        kind: 'dungeon',
-        age: nextChar.age,
-        seasonIdx: nextChar.seasonIdx,
-        titleVi: resolution.titleVi,
-        titleEn: resolution.titleEn,
-        choiceLabelVi: '',
-        choiceLabelEn: '',
-        narrativeVi: resolution.resultVi,
-        narrativeEn: resolution.resultEn,
-        deltas: [],
-        isDead: false,
-        isCausal: false
-      } : null,
+      activeResolution: resolution ? dungeonResolution(prev, nextChar, resolution) : null,
       postChoicePauseMs: get().speed > 0 ? 3000 : 0
     });
   },

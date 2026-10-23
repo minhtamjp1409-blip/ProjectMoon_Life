@@ -4,6 +4,7 @@ export const useThemeStore = create((set) => {
   const initialMode = localStorage.getItem('pm-theme-mode') || 'dark';
   const initialLang = localStorage.getItem('pm-lang-mode') || 'vi';
   const initialMotion = localStorage.getItem('pm-motion-mode') || 'system';
+  const initialText = localStorage.getItem('pm-text-size') || 'md';
 
   if (initialMode === 'dark') {
     document.documentElement.classList.add('dark');
@@ -11,6 +12,7 @@ export const useThemeStore = create((set) => {
     document.documentElement.classList.remove('dark');
   }
   document.documentElement.dataset.motion = initialMotion;
+  document.documentElement.dataset.text = initialText;
 
   return {
     themeMode: initialMode,
@@ -23,6 +25,15 @@ export const useThemeStore = create((set) => {
         localStorage.setItem('pm-motion-mode', next);
         document.documentElement.dataset.motion = next;
         return { motionMode: next };
+      }),
+    // Reading size for story text: 'md' | 'lg' | 'xl'
+    textSize: initialText,
+    cycleTextSize: () =>
+      set((state) => {
+        const next = { md: 'lg', lg: 'xl', xl: 'md' }[state.textSize] || 'md';
+        localStorage.setItem('pm-text-size', next);
+        document.documentElement.dataset.text = next;
+        return { textSize: next };
       }),
     lang: initialLang, // 'vi' | 'bi' | 'en'
     sidebarCollapsed: null, // null = auto (collapses during active chronicle play), true/false = user override

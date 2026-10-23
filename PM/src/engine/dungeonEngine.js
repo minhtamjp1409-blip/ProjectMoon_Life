@@ -1,3 +1,4 @@
+import { rememberResonance } from './awakeningProgress.js';
 /**
  * Project Moon - Deep Anomalous Micro-Dungeon Engine
  * Provides multi-stage narrative dungeon crawls with:
@@ -12,6 +13,7 @@ import { clamp, interpolateText } from './gameEngine.js';
 import { addScar } from './scarModel.js';
 import { traitsOf } from './variance.js';
 import { evaluateCompanionSupport } from '../data/npcPersonality.js';
+import { FAIL_TEXT, GENERIC_FAIL, STRAIN_NOTES, BREAK_TEXT, SUPPLY_TEXT, ENDING_TEXT } from '../data/dungeonText.js';
 
 export const DUNGEON_DEFINITIONS = {
   dungeon_warp_train: {
@@ -28,33 +30,33 @@ export const DUNGEON_DEFINITIONS = {
         stageIndex: 0,
         nameVi: 'Khoang Niêm Phong Cửa',
         nameEn: 'Airlock Decontamination Car',
-        descVi: 'Khóa cửa niêm phong rít lên chói tai khi áp suất tụt dốc. Mùi máu tanh nồng và tiếng gầm gừ vô thanh rỉ qua khe cửa. Nhân viên W Corp đứng cạnh bạn đang run rẩy kiểm tra bình dưỡng khí.',
-        descEn: 'The airtight bulkheads screech as pressure drops. A visceral stench of warm iron and silent screams leaks through the seal. The W Corp cleaners beside you tremble as they check their rebreathers.',
+        descVi: "Khóa niêm phong rít lên khi áp suất tụt. Qua khe cửa rỉ ra mùi máu tanh và một tiếng gầm gừ không thành tiếng. Nhân viên W Corp đứng cạnh bạn kiểm tra bình dưỡng khí lần thứ ba, tay vẫn run.",
+        descEn: "The airtight lock shrieks as the pressure drops. Through the door gap seep the smell of blood and a growl that never becomes a sound. The W Corp cleaner beside you checks their rebreather for the third time, hands still shaking.",
         strainGain: 15,
         choices: [
           {
-            labelVi: 'Bơm khí khử trùng công nghiệp, ổn định nhịp thở trước khi xông vào',
-            labelEn: 'Flood industrial disinfectant, steadying breath before breaching',
-            resultVi: 'Màn khói khử khuẩn làm dịu bớt mùi tanh tưởi. Bạn bước qua ngưỡng cửa với cái đầu lạnh.',
-            resultEn: 'The antiseptic mist dulled the nauseating stench. You crossed the threshold with cold composure.',
+            labelVi: "Bơm khí khử trùng và hít thở đều trước khi vào",
+            labelEn: "Flood the car with disinfectant and breathe evenly before going in",
+            resultVi: "Làn khói khử khuẩn dìm bớt mùi tanh. Bạn bước qua ngưỡng cửa với cái đầu lạnh.",
+            resultEn: "The antiseptic mist drowns part of the stench. You cross the threshold with a cold head.",
             fx: { sanity: 5, health: 0 },
             strainDelta: -5
           },
           {
-            labelVi: 'Dùng ống tiêm K Corp dự phòng gia cố cơ bắp và thần kinh',
-            labelEn: 'Expend a K Corp Ampoule to reinforce muscle and nerve fibers',
+            labelVi: "Dùng ống tiêm K Corp dự phòng để gia cố cơ bắp và thần kinh",
+            labelEn: "Use a spare K Corp ampoule to reinforce muscle and nerves",
             reqItem: 'con_kcorp_ampoule',
             consumeItem: true,
-            resultVi: 'Dung dịch huyết thanh xanh ngọc bích tràn vào huyết quản, mang lại sinh lực dồi dào và sự tập trung tuyệt đối.',
-            resultEn: 'Emerald singularity tears flooded your veins, granting surging vigor and supreme clarity.',
+            resultVi: "Dung dịch xanh ngọc chạy vào huyết quản, và mọi thứ trong tầm nhìn sắc hơn bình thường.",
+            resultEn: "The emerald fluid runs into your veins, and everything in view sharpens past normal.",
             fx: { health: 25, sanity: 20 },
             strainDelta: -20
           },
           {
-            labelVi: 'Phá then cài lao thẳng vào không chần chừ',
-            labelEn: 'Shatter the latch and charge inside without hesitation',
-            resultVi: 'Áp suất chênh lệch quật mạnh vào ngực bạn, nhưng tốc độ giúp bạn chiếm ưu thế chủ động và nhặt được túi tiền đánh rơi của hành khách.',
-            resultEn: 'The pressure wave slammed your chest, but sheer speed seized immediate initiative and a dropped passenger pouch.',
+            labelVi: "Phá then cài và lao thẳng vào",
+            labelEn: "Break the latch and charge straight in",
+            resultVi: "Chênh áp quật vào ngực bạn, nhưng tốc độ cho bạn nhịp đầu tiên và một túi tiền ai đó đánh rơi.",
+            resultEn: "The pressure difference slams your chest, but speed gives you the first beat and a purse someone dropped.",
             fx: { health: -4, rep: 5, merit: 4 },
             lootAhn: 12,
             strainDelta: +8
@@ -65,37 +67,37 @@ export const DUNGEON_DEFINITIONS = {
         stageIndex: 1,
         nameVi: 'Khoang Hành Khách Biến Dị',
         nameEn: 'The Writhing Passenger Cabins',
-        descVi: 'Bên trong toa xe, ghế ngồi đã bị nuốt chửng bởi những khối thịt người hòa lẫn. Hàng chục khuôn mặt còn nguyên nhận thức sau hai nghìn năm giam cầm đang khóc lóc và giơ những cánh tay biến dạng về phía bạn.',
-        descEn: 'Inside, passenger seats are drowned beneath fused, writhing masses of human tissue. Dozens of faces, conscious through two millennia of dimensional exile, weep and reach out with warped limbs.',
+        descVi: "Ghế ngồi trong toa đã bị những khối thịt người dính vào nhau nuốt mất. Hàng chục khuôn mặt vẫn còn tỉnh táo sau hai nghìn năm bị giam, đang khóc và đưa những cánh tay méo mó về phía bạn.",
+        descEn: "The seats in the car have been swallowed by fused masses of human flesh. Dozens of faces, still conscious after two thousand years of confinement, weep and reach toward you with misshapen arms.",
         strainGain: 16,
         canFlee: true,
         choices: [
           {
-            labelVi: 'Dùng gậy khống chế W Corp tách rời và dồn bầy thịt vào các ghế số',
-            labelEn: 'Use W Corp suppression staves to peel and herd flesh amalgams onto seats',
+            labelVi: "Dùng gậy khống chế của W Corp tách khối thịt ra và dồn từng khối vào ghế số",
+            labelEn: "Use the W Corp suppression staves to peel the masses apart and herd each onto a numbered seat",
             checkTrait: 'nerve',
-            resultVi: 'Bạn làm việc kiên trì giữa những tiếng gào van xin. Bầy thịt được ghim chặt vào ghế trước khi cỗ máy thời gian khởi động.',
-            resultEn: 'You worked methodically through agonizing pleas, pinning screaming amalgams to their assigned seats.',
+            resultVi: "Bạn làm việc đều tay giữa những lời van xin. Mỗi khối thịt được ghim vào đúng ghế trước khi cỗ máy thời gian khởi động.",
+            resultEn: "You work steadily through the pleading. Each mass is pinned to its proper seat before the time machine starts.",
             fx: { health: -6, sanity: -4, merit: 8, rep: 4 },
             lootAhn: 22,
             strainDelta: +6
           },
           {
-            labelVi: 'Tìm chiếc vali chứa tài liệu mật của một nhà nghiên cứu Wing bị kẹt lại',
-            labelEn: 'Search for a stranded Wing researcher’s encrypted briefcase',
+            labelVi: "Tìm chiếc cặp tài liệu của một nhà nghiên cứu Wing bị kẹt lại",
+            labelEn: "Look for the briefcase of a stranded Wing researcher",
             checkTrait: 'luck',
-            resultVi: 'Bạn đào bới lớp thịt nhão và giật lấy chiếc cặp số nguyên tem. Bên trong là các chứng từ đắt giá cùng bộ ổn định xung nhịp.',
-            resultEn: 'You dug through warm sinew and tore free the sealed case. Inside lay classified financial bonds and a pulse stabilizer.',
+            resultVi: "Bạn đào qua lớp thịt còn ấm và giật ra chiếc cặp đã niêm phong. Bên trong có chứng từ giá trị và một bộ ổn định xung nhịp.",
+            resultEn: "You dig through warm flesh and tear out the sealed case. Inside are valuable bonds and a pulse stabilizer.",
             fx: { health: -9, sanity: -6, wealth: 35, merit: 6, resonance: 6 },
             lootAhn: 15,
             strainDelta: +10
           },
           {
-            labelVi: 'Lùi lại buồng đệm, kích hoạt báo động rút lui sớm',
-            labelEn: 'Fall back into the airlock and sound an early extraction siren',
+            labelVi: "Lùi về khoang đệm và bấm chuông rút lui sớm",
+            labelEn: "Fall back to the airlock and ring the early extraction alarm",
             isFlee: true,
-            resultVi: 'Bạn thoát ra cửa ga an toàn trước khi lũ quái vật ùa tới. W Corp trả nửa tiền công cho sự cẩn trọng.',
-            resultEn: 'You evacuated safely before the horrors swarmed. W Corp wired half-pay for your discretion.',
+            resultVi: "Bạn ra tới sân ga trước khi lũ thịt kịp tràn tới. W Corp trả nửa công vì bạn biết dừng.",
+            resultEn: "You reach the platform before the flesh can surge after you. W Corp pays half for knowing when to stop.",
             fx: { wealth: 18, sanity: 6 }
           }
         ]
@@ -104,36 +106,36 @@ export const DUNGEON_DEFINITIONS = {
         stageIndex: 2,
         nameVi: 'Toa Hạng Nhất: Quái Thai Hợp Thể',
         nameEn: 'First-Class Chamber: Apex Amalgam',
-        descVi: 'Toa hạng nhất đã biến thành một pháo đài thịt khổng lồ. Vị tài phiệt Feather cùng đoàn vệ sĩ đã hợp thành một sinh vật nhiều đầu mang vũ khí Workshop sắc lẹm, đôi mắt đỏ rực cơn cuồng nộ vô tận sau hàng thiên niên kỷ.',
-        descEn: 'The first-class car has coalesced into a colossal flesh bastion. A wealthy Feather and his retinue have fused into a multi-headed juggernaut brandishing jagged Workshop steel, eyes burning with millennia of endless fury.',
+        descVi: "Toa hạng nhất đã thành một khối thịt dựng như pháo đài. Một tài phiệt Feather và đám vệ sĩ của ông ta dính vào nhau thành một sinh vật nhiều đầu, tay cầm vũ khí Workshop lởm chởm, mắt đỏ vì hàng nghìn năm giận dữ.",
+        descEn: "The first-class car has become a fortress of flesh. A Feather magnate and his guards have fused into a many-headed creature holding jagged Workshop steel, eyes red from thousands of years of rage.",
         strainGain: 18,
         canFlee: true,
         choices: [
           {
-            labelVi: 'Vận toàn bộ nội lực chém đứt khớp nối trung tâm của quái thai',
-            labelEn: 'Channel all combat prowess to sever the central nervous node',
+            labelVi: "Dồn hết sức chém đứt khớp nối thần kinh ở giữa",
+            labelEn: "Put everything into severing the nerve junction at its center",
             checkTrait: 'vigor',
-            resultVi: 'Lưỡi đao của bạn xé toạc lõi thần kinh. Con quái vật đổ sụp trong tiếng gầm rú chấn động cả toa tàu, rơi ra những trang sức vàng từ vùng Nest.',
-            resultEn: 'Your blade ripped through the nervous apex. The titan collapsed, its dying roar rattling the carriage frame and spilling Nest gold.',
+            resultVi: "Lưỡi dao xé toạc lõi thần kinh. Sinh vật đổ xuống với một tiếng gầm làm rung cả toa, rơi ra mấy món trang sức vàng từ Nest.",
+            resultEn: "The blade tears through the nerve core. The creature collapses with a roar that shakes the whole car, dropping a few gold pieces of Nest jewelry.",
             fx: { health: -11, sanity: -5, rep: 14, merit: 12, resonance: 10 },
             lootAhn: 34,
             strainDelta: +6
           },
           {
-            labelVi: 'Giữ khoảng cách, dùng bẫy buồng chân không nghiền nát sinh vật',
-            labelEn: 'Maintain distance and crush the abomination with decompression bulkheads',
-            resultVi: 'Vách ngăn kim loại sập xuống nghiền nát con quái vật. Bạn giữ an toàn tính mạng với tổn thất tối thiểu.',
-            resultEn: 'Hydraulic bulkheads sheared the monster in two. You kept your skin intact with minimal attrition.',
+            labelVi: "Giữ khoảng cách và dùng vách chân không nghiền nát nó",
+            labelEn: "Keep your distance and crush it with the decompression bulkheads",
+            resultVi: "Các vách thép sập xuống và ép nó làm đôi. Bạn giữ nguyên mạng với tổn thất tối thiểu.",
+            resultEn: "The steel bulkheads drop and shear it in two. You keep your skin whole with minimal loss.",
             fx: { health: -4, sanity: -6, merit: 9, rep: 6 },
             lootAhn: 20,
             strainDelta: +2
           },
           {
-            labelVi: 'Bỏ lại khoang hạng nhất, chạy nhanh về phía cửa thoát hiểm',
-            labelEn: 'Abandon the luxury cabin and dash toward the exit bulkhead',
+            labelVi: "Bỏ khoang hạng nhất và chạy về phía cửa thoát",
+            labelEn: "Abandon the first-class car and run for the exit door",
             isFlee: true,
-            resultVi: 'Bạn đóng sập cánh cửa sắt sau lưng, bỏ lại khoang hạng nhất cho đội thanh trừng hạng nặng.',
-            resultEn: 'You slammed the steel door shut behind you, leaving first-class to the heavy purge units.',
+            resultVi: "Bạn đóng sầm cánh cửa sắt lại sau lưng, để khoang hạng nhất cho đội thanh trừng hạng nặng.",
+            resultEn: "You slam the steel door behind you and leave first class to the heavy purge team.",
             fx: { rep: -2, sanity: 4 }
           }
         ]
@@ -142,25 +144,27 @@ export const DUNGEON_DEFINITIONS = {
         stageIndex: 3,
         nameVi: 'Đếm Ngược 10 Giây Khôi Phục',
         nameEn: 'The Ten-Second Temporal Reset',
-        descVi: 'Tiếng chuông báo hiệu vang dội: hệ thống Singularity khôi phục nguyên trạng chuẩn bị kích hoạt! Đồng hồ T Corp điểm đúng 10 giây — hàng nghìn năm điên loạn trong toa tàu sắp bị xóa sạch về con số không.',
-        descEn: 'The station chime rings deafeningly: the state-restoration Singularity is priming! The T Corp chronometer hits 10.0 seconds — millennia of madness are about to snap back to zero.',
+        descVi: "Chuông ga vang lên: hệ thống Singularity sắp khôi phục nguyên trạng. Đồng hồ T Corp chỉ đúng mười giây, và hàng nghìn năm điên loạn trong toa sắp bị xóa về không.",
+        descEn: "The station chime rings: the Singularity restoration is about to fire. The T Corp clock reads exactly ten seconds, and thousands of years of madness in the car are about to be wiped to zero.",
         strainGain: 8,
         choices: [
           {
-            labelVi: 'Uống viên thuốc xóa nhớ của W Corp, nhận 70 Ahn tiền công và bước ra ga',
-            labelEn: 'Take W Corp amnestics, collect the 70 Ahn hazard bounty, and step onto the platform',
-            resultVi: 'Cơn ác mộng 2.000 năm tan biến như bọt nước. Cơ thể bạn quay về đúng số tuổi ban đầu. Bạn bước ra sân ga rạng rỡ với túi tiền trĩu nặng.',
-            resultEn: 'The 2,000-year nightmare dissolved like sea foam. Your body snapped back to your exact starting age. You stepped onto the sunlit platform with heavy pockets.',
+            labelVi: "Uống thuốc xóa nhớ của W Corp, nhận tiền công và bước ra ga",
+            labelEn: "Take the W Corp amnestic, collect the pay and step onto the platform",
+            resultVi: "Cơn ác mộng hai nghìn năm tan như bọt nước, và cơ thể bạn trở về đúng tuổi cũ. Bạn bước ra sân ga sáng rực với một túi tiền nặng.",
+            resultEn: "The two-thousand-year nightmare dissolves like foam, and your body returns to its old age. You step onto the bright platform with a heavy purse.",
             fx: { wealth: 70, sanity: 20, health: 12, rep: 12, merit: 15 },
             recordAdd: 'warp_cleaner_survivor'
           },
           {
-            labelVi: 'Từ chối thuốc xóa nhớ, khắc ghi 2.000 năm kiếm thuật dị chiều và giấu mẫu mô Singularity',
-            labelEn: 'Refuse amnestics, retain millennia of dimensional combat memory, and smuggle Singularity tissue',
-            resultVi: 'Bạn giữ trọn ký ức hàng thiên niên kỷ chiến đấu trong dị chiều và bán mẫu mô cho Seven Association lấy khoản tiền khổng lồ. Tâm thức bạn bước gần hơn tới ngưỡng thức tỉnh E.G.O!',
-            resultEn: 'You retained the muscle memory of millennia in the rift and sold the bio-sample to Seven Association for a king’s ransom, surging toward E.G.O!',
+            labelVi: "Từ chối thuốc, giữ lại ký ức chiến đấu và giấu một mẫu mô Singularity",
+            labelEn: "Refuse the amnestic, keep the memory of the fighting and smuggle out a tissue sample",
+            resultVi: "Bạn giữ nguyên ký ức của cả thiên niên kỷ chiến đấu trong dị chiều, rồi bán mẫu mô cho Seven Association. Tâm trí bạn bước gần hơn tới ngưỡng E.G.O, và W Corp sẽ không quên chuyện này.",
+            resultEn: "You keep the memory of millennia of fighting in the rift, then sell the tissue to Seven Association. Your mind edges closer to the E.G.O threshold, and W Corp will not forget this.",
             fx: { wealth: 95, sanity: -6, resonance: 24, rep: 18, heat: 18, taboo: 1, merit: 22 },
             scarAdd: 'Ký ức địa ngục tàu WARP',
+            flagAdd: ['WCorpWhistleblower'],
+            later: [{ id: 'csq_warp_survivor_debt', years: 3, reasonVi: 'Bạn đã mang một mẫu mô ra khỏi toa tàu WARP', reasonEn: 'You carried a tissue sample out of the WARP car' }],
             recordAdd: 'singularity_whistleblower'
           }
         ]
@@ -182,31 +186,31 @@ export const DUNGEON_DEFINITIONS = {
         stageIndex: 0,
         nameVi: 'Trục Thông Gió Khẩn Cấp',
         nameEn: 'The Emergency Ventilation Shaft',
-        descVi: 'Đoàn thám hiểm đu dây xuống đường ống thông gió sâu hun hút. Dưới đáy hầm, đèn khẩn cấp chớp nháy màu cam ảm đạm; tiếng còi báo động Meltdown rú rít vọng lại từ các tầng sâu.',
-        descEn: 'The expedition rappels into the yawning ventilation shaft. At the bottom, amber emergency lamps pulse; the shrill wail of a containment Meltdown siren echoes from the lower decks.',
+        descVi: "Đoàn thám hiểm đu dây xuống một đường ống thông gió sâu hun hút. Ở đáy, đèn khẩn cấp chớp màu cam, và tiếng còi Meltdown vọng lên từ những tầng bên dưới.",
+        descEn: "The expedition rappels down a deep ventilation shaft. At the bottom, emergency lamps pulse amber, and a Meltdown siren echoes up from the floors below.",
         strainGain: 15,
         choices: [
           {
-            labelVi: 'Giải mã bản đồ kiến trúc của chi nhánh từ bảng điều khiển hỏng',
-            labelEn: 'Decode the branch floor plan from a damaged terminal',
-            resultVi: 'Màn hình xanh hiện lên sơ đồ các phòng chứa Enkephalin an toàn nhất. Đoàn đi tránh được các cạm bẫy khí độc.',
-            resultEn: 'The CRT screen flickered green, showing safe transit routes. The team bypassed toxic gas corridors.',
+            labelVi: "Giải mã sơ đồ chi nhánh từ một bảng điều khiển hỏng",
+            labelEn: "Decode the branch floor plan from a broken terminal",
+            resultVi: "Màn hình xanh hiện ra sơ đồ những phòng chứa Enkephalin an toàn nhất. Đoàn tránh được các hành lang khí độc.",
+            resultEn: "The green screen shows the safest Enkephalin storage rooms. The team avoids the gas corridors.",
             fx: { sanity: 5, network: 3 },
             strainDelta: -5
           },
           {
-            labelVi: 'Dùng thiết bị lọc Workshop dọn sạch khói Enkephalin rò rỉ',
-            labelEn: 'Deploy a Workshop filtration rig to scrub leaking Enkephalin smog',
-            resultVi: 'Bộ lọc rít lên và hút cạn làn sương thôi miên. Cả đội thở phào nhẹ nhõm.',
-            resultEn: 'The filters hummed, scouring the hypnotic mist. The team breathed a collective sigh of relief.',
+            labelVi: "Dùng bộ lọc Workshop để hút sạch khói Enkephalin rò rỉ",
+            labelEn: "Use a Workshop filter to scrub the leaking Enkephalin smoke",
+            resultVi: "Bộ lọc rít lên và hút cạn màn sương thôi miên. Cả đội thở ra một hơi dài.",
+            resultEn: "The filter whines and drains the hypnotic haze. The whole team lets out a long breath.",
             fx: { health: 5, sanity: 5, wealth: -4 },
             strainDelta: -10
           },
           {
-            labelVi: 'Bật đèn pin công suất lớn, dẫn đầu đội tiến thẳng vào hành lang chính',
-            labelEn: 'Switch on high-beam torches and lead the squad down the main concourse',
-            resultVi: 'Ánh đèn xua tan bóng tối nhưng đánh động những sinh vật đang ngủ sâu bên trong.',
-            resultEn: 'The halogen beams tore through darkness but disturbed dormant things nesting in the ducts.',
+            labelVi: "Bật đèn pha mạnh và dẫn đoàn đi thẳng hành lang chính",
+            labelEn: "Switch on the high-beam torches and lead the team down the main corridor",
+            resultVi: "Ánh đèn xua bóng tối, nhưng cũng đánh thức những thứ đang ngủ trong ống dẫn.",
+            resultEn: "The beams drive back the dark, but they also wake what sleeps in the ducts.",
             fx: { health: -6, rep: 4 },
             strainDelta: +10
           }
@@ -216,34 +220,34 @@ export const DUNGEON_DEFINITIONS = {
         stageIndex: 1,
         nameVi: 'Bộ Phận Chiết Xuất Năng Lượng',
         nameEn: 'The Extraction & Refining Department',
-        descVi: 'Bể chứa Enkephalin khổng lồ đã bị nứt toác, dung dịch phát quang xanh lục tràn ngập sàn nhà. Những chiếc kén Abnormality rỗng không vỡ nát ngổn ngang giữa các xác nhân viên mặc áo blouse trắng.',
-        descEn: 'A colossal Enkephalin tank has fractured, spilling luminescent green fluid across the floor. Shattered, empty Abnormality containment pods litter the corridor amongst white-coated corpses.',
+        descVi: "Bể Enkephalin đã nứt toác, dịch xanh lục phát sáng tràn ngập sàn. Những chiếc kén Abnormality rỗng vỡ nằm lẫn giữa các xác nhân viên mặc áo blouse trắng.",
+        descEn: "The Enkephalin tank has split open and glowing green fluid floods the floor. Empty, shattered Abnormality pods lie among the bodies of staff in white coats.",
         strainGain: 20,
         canFlee: true,
         choices: [
           {
-            labelVi: 'Thu hồi các bình tinh thể Enkephalin nguyên vẹn chưa bị vỡ',
-            labelEn: 'Extract intact refined Enkephalin fuel canisters from the wreckage',
-            resultVi: 'Bạn cẩn thận tháo 3 bình nhiên liệu quý giá cho vào thùng bảo quản. Giá trị của chúng ở chợ đen là cực lớn.',
-            resultEn: 'You delicately secured three pristine fuel cylinders. Their black-market bounty is immense.',
+            labelVi: "Thu những bình Enkephalin tinh chế còn nguyên trong đống đổ nát",
+            labelEn: "Recover the intact refined Enkephalin canisters from the wreckage",
+            resultVi: "Bạn tháo ba bình nhiên liệu cho vào thùng bảo quản. Chợ đen sẽ trả cao cho chúng.",
+            resultEn: "You unscrew three fuel canisters and pack them in a storage case. The black market will pay well for them.",
             fx: { wealth: 35, merit: 6, health: -6 },
             lootAhn: 25,
             strainDelta: +5
           },
           {
-            labelVi: 'Khám xét thi thể các Quản Lý cấp cao để tìm thẻ khóa phòng trung tâm',
-            labelEn: 'Search senior researcher corpses for Central Command access keys',
-            resultVi: 'Bạn tìm thấy một chiếc thẻ từ phủ vàng và chiếc máy ghi âm chứa những dữ liệu nghiên cứu mật.',
-            resultEn: 'You recovered a gold-plated keycard and an audio cassette containing classified trial logs.',
+            labelVi: "Lục xác các nhà nghiên cứu cấp cao để tìm thẻ khóa phòng trung tâm",
+            labelEn: "Search the senior researchers’ bodies for a central-room keycard",
+            resultVi: "Bạn tìm ra một thẻ từ mạ vàng và một cuộn băng ghi âm chứa dữ liệu nghiên cứu mật.",
+            resultEn: "You find a gold-plated keycard and an audio tape of classified research logs.",
             fx: { network: 8, sanity: -8, rep: 6 },
             strainDelta: +10
           },
           {
-            labelVi: 'Mang số Enkephalin nhặt được rút lui theo lối thông gió',
-            labelEn: 'Take the salvaged Enkephalin and evacuate through the vent',
+            labelVi: "Mang số Enkephalin nhặt được rút lui qua đường thông gió",
+            labelEn: "Take the salvaged Enkephalin and withdraw through the vent",
             isFlee: true,
-            resultVi: 'Bạn rút lui an toàn lên mặt đất, bàn giao số nhiên liệu và nhận tiền thù lao thỏa đáng.',
-            resultEn: 'You withdrew safely to the surface, delivering the fuel for an honorable bounty.',
+            resultVi: "Bạn lên được mặt đất, giao nhiên liệu và nhận thù lao vừa đủ để thấy chuyến đi đáng giá.",
+            resultEn: "You reach the surface, deliver the fuel and collect pay just large enough to make the trip feel worth it.",
             fx: { wealth: 25, sanity: 5 }
           }
         ]
@@ -252,35 +256,35 @@ export const DUNGEON_DEFINITIONS = {
         stageIndex: 2,
         nameVi: 'Khu Giam Giữ Vỡ Kén: Dị Thường Thức Tỉnh',
         nameEn: 'Containment Sector: Awakening Abnormality',
-        descVi: 'Một cánh cửa thép cấp ALEPH bị xé toạc từ bên trong. Giữa căn phòng ngập tràn rễ cây kim loại và gai nhọn, một thực thể Abnormality đang cất tiếng hát ru kỳ dị khiến tai bạn rỉ máu.',
-        descEn: 'An ALEPH-grade blast door has been torn outward. Amidst a chamber choked with metallic roots and barbed thorns, an awakened Abnormality hums a dissonant lullaby that makes your ears bleed.',
+        descVi: "Một cánh cửa thép cấp ALEPH bị xé ra từ bên trong. Giữa căn phòng đầy rễ kim loại và gai nhọn, một Abnormality đã thức dậy đang ngân khúc hát ru lệch tông, đủ làm tai bạn rỉ máu.",
+        descEn: "An ALEPH-grade steel door has been torn open from the inside. In a room full of metal roots and thorns, an awakened Abnormality hums an off-key lullaby that makes your ears bleed.",
         strainGain: 25,
         canFlee: true,
         choices: [
           {
-            labelVi: 'Vận dụng vũ khí E.G.O, đồng thanh phản kháng lại tiếng hát thôi miên',
-            labelEn: 'Raise your weapon and resist the psychic hum with steadfast volition',
+            labelVi: "Nâng vũ khí E.G.O và cùng cả đội đứng vững trước khúc hát",
+            labelEn: "Raise your E.G.O weapon and hold your ground against the song with the team",
             checkTrait: 'nerve',
-            resultVi: 'Ý chí kiên định giúp bạn đập tan sóng âm dị thường. Sinh vật thu rễ rút sâu vào bóng tối, để lại một mảnh giáp E.G.O quý hiếm.',
-            resultEn: 'Iron willpower shattered the psychic hum. The entity recoiled into shadows, leaving a pristine E.G.O armor shard.',
+            resultVi: "Ý chí giữ bạn đứng yên đủ lâu để sóng âm vỡ tan. Sinh vật thu rễ lùi vào bóng tối, bỏ lại một mảnh giáp E.G.O còn nguyên.",
+            resultEn: "Willpower holds you still long enough for the sound to break. The entity pulls its roots back into the dark, leaving an intact shard of E.G.O armor.",
             fx: { health: -12, sanity: -8, resonance: 15, rep: 10 },
             lootAhn: 30,
             strainDelta: +10
           },
           {
-            labelVi: 'Cắt đứt nguồn điện dẫn đến rễ kim loại, cô lập buồng giam giữ',
-            labelEn: 'Sever the power conduits feeding the metallic roots, sealing the chamber',
-            resultVi: 'Dòng điện tắt ngấm, cánh cửa tự động sập xuống nhốt chặt dị thể. Cả đội an toàn thoát nạn.',
-            resultEn: 'Power died; hydraulic blast doors slammed shut, entombing the anomaly once more.',
+            labelVi: "Cắt nguồn điện dẫn vào các rễ kim loại để cô lập buồng giam",
+            labelEn: "Cut the power feeding the metal roots to seal the chamber",
+            resultVi: "Điện tắt, cánh cửa tự động sập xuống và nhốt dị thể lại. Cả đội thoát ra an toàn.",
+            resultEn: "The power dies, the automatic doors slam down and lock the anomaly in again. The whole team gets out safe.",
             fx: { health: -8, sanity: -6, merit: 8 },
             strainDelta: +5
           },
           {
-            labelVi: 'Bỏ chạy ngược về phía thang máy phụ trước khi tinh thần tan vỡ',
-            labelEn: 'Flee toward the auxiliary lift before your sanity unravels',
+            labelVi: "Chạy ngược về thang máy phụ trước khi đầu óc bạn vỡ ra",
+            labelEn: "Run back to the auxiliary lift before your mind comes apart",
             isFlee: true,
-            resultVi: 'Bạn bấm nút thang máy khẩn cấp phóng lên trên, bỏ lại căn phòng sau lưng trong tiếng thở phào.',
-            resultEn: 'You hit the emergency ascent winch, escaping the chamber with rattling nerves.',
+            resultVi: "Bạn đập nút thang máy khẩn cấp và vọt lên, bỏ lại căn phòng và tiếng hát sau lưng.",
+            resultEn: "You slam the emergency lift button and shoot upward, leaving the room and the singing behind.",
             fx: { sanity: -4, rep: -2 }
           }
         ]
@@ -289,23 +293,23 @@ export const DUNGEON_DEFINITIONS = {
         stageIndex: 3,
         nameVi: 'Lõi Trung Tâm: Tinh Thể Cogito',
         nameEn: 'Central Command: The Well of Cogito',
-        descVi: 'Tầng sâu nhất của chi nhánh mở ra trước mắt: một giếng sâu hun hút phát ra ánh sáng lung linh của Cogito nguyên chất. Nơi đây là khởi nguồn của mọi phép màu và thảm họa trong The City.',
-        descEn: 'The deepest floor opens before you: an abyssal well shimmering with pure, primordial Cogito. The fountainhead of both miracles and nightmares in the City.',
+        descVi: "Tầng sâu nhất mở ra trước mắt bạn: một cái giếng sâu hun hút phát ánh sáng của Cogito nguyên chất. Từ đây sinh ra mọi phép màu lẫn mọi thảm họa của The City.",
+        descEn: "The deepest floor opens before you: a bottomless well giving off the light of pure Cogito. Every miracle and every disaster of The City began here.",
         strainGain: 10,
         choices: [
           {
-            labelVi: 'Chiết xuất một ống Cogito nguyên chất niêm phong trong hộp chì',
-            labelEn: 'Extract a phial of raw Cogito sealed inside a lead casing',
-            resultVi: 'Bạn mang mẫu vật vô giá lên mặt đất. Các Cánh lớn sẵn sàng chi trả cả một gia tài để sở hữu bí mật này.',
-            resultEn: 'You brought the priceless specimen to the surface. Wings would wage silent wars for this secret.',
+            labelVi: "Chiết một ống Cogito nguyên chất và niêm phong trong hộp chì",
+            labelEn: "Draw a phial of raw Cogito and seal it in a lead case",
+            resultVi: "Bạn mang mẫu vật lên mặt đất. Các Wing lớn sẵn sàng trả cả một gia tài để giữ bí mật này cho riêng họ.",
+            resultEn: "You carry the sample to the surface. The big Wings are ready to pay a fortune to keep this secret to themselves.",
             fx: { wealth: 85, sanity: -12, rep: 18, resonance: 20 },
             recordAdd: 'cogito_ruin_salvager'
           },
           {
-            labelVi: 'Lắng nghe tiếng thì thầm của giếng sâu, đón nhận sự khai mở của Ánh Sáng',
-            labelEn: 'Listen to the deep well’s cadence, embracing the efflorescence of Light',
-            resultVi: 'Một luồng sáng ấm áp rực rỡ truyền vào tâm khảm. Vết nứt trong tâm trí bạn liền lại; bạn thấu hiểu sâu sắc hơn về bản ngã con người.',
-            resultEn: 'Warm, blinding luminescence flooded your psyche. The fissures in your soul healed; your comprehension of the self deepened forever.',
+            labelVi: "Lắng nghe tiếng thì thầm của giếng và đón nhận Ánh Sáng",
+            labelEn: "Listen to the whisper of the well and accept the Light",
+            resultVi: "Một luồng sáng ấm chảy vào tâm trí bạn. Vết nứt trong đầu bạn liền lại, và bạn hiểu mình rõ hơn bất cứ lúc nào trước đó.",
+            resultEn: "A warm light flows into your mind. The crack in your head closes, and you understand yourself better than you ever did.",
             fx: { sanity: 30, resonance: 25, health: 15, rep: 12 },
             recordAdd: 'light_seeker_initiate'
           }
@@ -328,23 +332,23 @@ export const DUNGEON_DEFINITIONS = {
         stageIndex: 0,
         nameVi: 'Cổng Đón Khách: Búp Bê Khâu Da',
         nameEn: 'The Welcome Gate: Stitched Marionettes',
-        descVi: 'Dưới hầm ngầm District 16, một công viên giải trí rực rỡ ánh đèn neon đỏ máu hiện ra. Những con rối khâu bằng da người dang tay cúi chào, trong khi bản nhạc kèn hơi méo mó vang vọng khắp các gian hàng.',
-        descEn: 'Beneath District 16’s drainage vaults, a subterranean amusement park glows with crimson neon. Marionettes stitched from human hide bow in mock welcome as warped organ music drifts through the stalls.',
+        descVi: "Dưới hầm ngầm District 16, một công viên giải trí hiện ra trong ánh neon đỏ như máu. Những con rối khâu bằng da người cúi chào, và một bản nhạc kèn méo tiếng vọng qua các gian hàng.",
+        descEn: "Beneath District 16, an amusement park appears in blood-red neon. Marionettes stitched from human hide bow, and a warped organ tune drifts through the stalls.",
         strainGain: 15,
         choices: [
           {
-            labelVi: 'Mua một chiếc vé danh dự bằng vài đồng Ahn để qua cổng đúng phép',
-            labelEn: 'Buy an honorary carnival ticket with small Ahn to pass with courtesy',
-            resultVi: 'Con rối nhận tiền, xé vé và mở cổng cho bạn. Sự tôn trọng hình thức giúp bạn tránh đụng độ sớm.',
-            resultEn: 'The puppet took the coins, punched your ticket, and unlocked the turnstile without bloodshed.',
+            labelVi: "Mua một vé danh dự bằng vài đồng Ahn để qua cổng đúng phép",
+            labelEn: "Buy an honorary ticket with a few Ahn and pass the gate properly",
+            resultVi: "Con rối nhận tiền, đục vé và mở cổng. Bạn qua được mà không đổ giọt máu nào.",
+            resultEn: "The puppet takes the coins, punches the ticket and opens the turnstile. You pass without spilling a drop.",
             fx: { wealth: -3, rep: 3 },
             strainDelta: -5
           },
           {
-            labelVi: 'Chém đứt dây điều khiển của các con rối và đạp tung rào chắn',
-            labelEn: 'Sever the marionette strings and kick through the barricade',
-            resultVi: 'Lũ búp bê đổ sụp, để lộ lối đi thẳng vào khu trung tâm nhưng phát ra tiếng chuông báo động.',
-            resultEn: 'The puppets slumped lifeless, clearing the corridor but ringing hidden alarm chimes.',
+            labelVi: "Chém đứt dây điều khiển của lũ rối và đạp rào chắn qua",
+            labelEn: "Cut the puppets’ strings and kick through the barricade",
+            resultVi: "Lũ rối đổ xuống, mở ra một lối thẳng vào khu trung tâm, và một tiếng chuông báo động bắt đầu reo ở đâu đó.",
+            resultEn: "The puppets slump, opening a straight path to the center, and an alarm bell begins to ring somewhere.",
             fx: { health: -4, rep: 6, heat: 5 },
             strainDelta: +10
           }
@@ -354,36 +358,36 @@ export const DUNGEON_DEFINITIONS = {
         stageIndex: 1,
         nameVi: 'Đu Quay Máu & Mê Cung Gương Nứt',
         nameEn: 'The Crimson Ferris Wheel & Shattered Mirrors',
-        descVi: 'Một chiếc đu quay khổng lồ đang quay tít trên một hồ máu quánh đặc. Trong mê cung gương nứt bên cạnh, những cái bóng phản chiếu nhe răng nanh và cất tiếng gọi tên bạn bằng giọng nói của những người thân đã khuất.',
-        descEn: 'A colossal wheel churns atop an oily lake of coagulated blood. Inside the hall of mirrors, your reflections bare fangs and whisper your name in the voices of departed kin.',
-        strainGain: 20,
+        descVi: "Một chiếc đu quay khổng lồ quay trên hồ máu đặc. Trong mê cung gương nứt cạnh đó, những bóng phản chiếu nhe răng và gọi tên bạn bằng giọng của những người đã khuất.",
+        descEn: "A huge wheel turns above a lake of thick blood. In the cracked-mirror maze beside it, your reflections bare their teeth and call your name in the voices of the dead.",
+        strainGain: 17,
         canFlee: true,
         choices: [
           {
-            labelVi: 'Nhắm chặt mắt, dùng thính giác và nhịp thở để xuyên qua mê cung gương',
-            labelEn: 'Close your eyes and navigate the mirror maze by breath and sound alone',
+            labelVi: "Nhắm mắt và đi qua mê cung gương chỉ bằng tai và nhịp thở",
+            labelEn: "Close your eyes and cross the mirror maze by ear and breath alone",
             checkTrait: 'nerve',
-            resultVi: 'Bạn không bị ảo ảnh đánh lừa và bước ra khỏi mê cung với tinh thần vững vàng.',
-            resultEn: 'Refusing the illusions, you strode past the mirrors with unshaken composure.',
+            resultVi: "Ảo ảnh không bám được vào bạn. Bạn bước ra khỏi mê cung với đầu óc còn nguyên.",
+            resultEn: "The illusions find nothing to hold on to. You leave the maze with your head intact.",
             fx: { sanity: 8, merit: 6 },
             lootAhn: 20,
             strainDelta: -5
           },
           {
-            labelVi: 'Lục soát các quầy trò chơi bị bỏ hoang để tìm Huyết Tinh quý hiếm',
-            labelEn: 'Scavenge abandoned prize booths for crystallized Bloodfiend shards',
-            resultVi: 'Bạn tìm thấy hai viên Huyết Tinh đỏ thẫm tỏa hơi ấm kỳ lạ, nhưng bị mảnh gương cứa vào tay.',
-            resultEn: 'You pocketed two warm crimson blood gems, though broken glass slashed your palms.',
+            labelVi: "Lục các quầy trò chơi bỏ hoang để tìm Huyết Tinh",
+            labelEn: "Search the abandoned game booths for blood crystals",
+            resultVi: "Bạn tìm được hai viên Huyết Tinh đỏ thẫm, còn ấm, và mảnh gương cứa một đường vào lòng bàn tay.",
+            resultEn: "You find two dark-red blood crystals, still warm, and a shard of mirror opens a line across your palm.",
             fx: { health: -10, wealth: 30, merit: 4 },
             lootAhn: 20,
             strainDelta: +10
           },
           {
-            labelVi: 'Rút lui theo đường cống dẫn nước thải trước khi bị bao vây',
-            labelEn: 'Retreat through the runoff culvert before the Kindred close in',
+            labelVi: "Chui ra bằng cống nước thải trước khi bị bao vây",
+            labelEn: "Crawl out through the runoff culvert before you are surrounded",
             isFlee: true,
-            resultVi: 'Bạn trườn qua đường cống ngầm thoát ra ngoài phố, bảo toàn an toàn tính mạng.',
-            resultEn: 'You crawled through the culvert and emerged into the rain, alive and whole.',
+            resultVi: "Bạn bò qua cống và trồi lên giữa cơn mưa trên phố, còn sống và còn đủ tay chân.",
+            resultEn: "You crawl through the culvert and surface into the rain on the street, alive and in one piece.",
             fx: { sanity: 4, wealth: 10 }
           }
         ]
@@ -392,36 +396,36 @@ export const DUNGEON_DEFINITIONS = {
         stageIndex: 2,
         nameVi: 'Vũ Đài Huyết Tộc: Trưởng Trại Đói Khát',
         nameEn: 'The Grand Tent: Starving Kindred Elder',
-        descVi: 'Dưới mái bạt rạp xiếc khổng lồ, một Huyết Tộc cổ đại (Bloodfiend) khoác áo dạ hội rách rưới đang chờ bạn bên bàn tiệc rượu máu. Đôi mắt đỏ rực như than hồng thèm khát sinh lực ấm áp của con người.',
-        descEn: 'Beneath the circus canopy, an ancient Bloodfiend in frayed evening velvet awaits beside a feast of blood wine. Crimson eyes burn with ravenous hunger for living human warmth.',
-        strainGain: 25,
+        descVi: "Dưới mái bạt rạp xiếc, một Bloodfiend cổ khoác áo nhung rách đang ngồi bên bàn tiệc rượu máu, chờ bạn. Đôi mắt đỏ của nó đói thứ hơi ấm mà chỉ người sống mới có.",
+        descEn: "Under the circus canopy an ancient Bloodfiend in frayed velvet sits at a table of blood wine, waiting for you. Its red eyes hunger for the warmth only the living have.",
+        strainGain: 21,
         canFlee: true,
         choices: [
           {
-            labelVi: 'Rút vũ khí giao đấu sinh tử, từ chối làm con mồi của Huyết Tộc',
-            labelEn: 'Draw your weapon and duel the vampire, refusing to become prey',
+            labelVi: "Rút vũ khí đấu sinh tử và từ chối làm con mồi",
+            labelEn: "Draw your weapon and fight to the death, refusing to be prey",
             checkTrait: 'vigor',
-            resultVi: 'Trận kiếm kích tóe lửa trong rạp xiếc. Bạn chém đứt một bên cánh dơi của nó, buộc thực thể phải lùi sâu vào bóng tối.',
-            resultEn: 'Steel clashed with fangs in a shower of sparks. You severed a leathery wing, driving the monster back into the vaults.',
+            resultVi: "Kiếm và răng nanh va vào nhau tóe lửa trong rạp. Bạn chém đứt một bên cánh của nó, và nó phải lùi vào bóng tối.",
+            resultEn: "Steel and fangs strike sparks under the canopy. You sever one of its wings, and it has to fall back into the dark.",
             fx: { health: -16, sanity: -6, rep: 14, merit: 10 },
             lootAhn: 30,
             strainDelta: +10
           },
           {
-            labelVi: 'Rạch đầu ngón tay dâng một chén máu nhỏ để đổi lấy bí mật cổ xưa',
-            labelEn: 'Slice a fingertip to offer a goblet of blood in exchange for ancient secrets',
-            resultVi: 'Sinh vật uống từng giọt với vẻ mãn nguyện rồi trao cho bạn một chiếc gia huy Huyết Tộc cổ.',
-            resultEn: 'The creature savored every drop and presented you with an antique Kindred signet ring.',
+            labelVi: "Rạch đầu ngón tay, dâng một chén máu để đổi lấy bí mật cổ",
+            labelEn: "Cut a fingertip and offer a goblet of blood in exchange for an old secret",
+            resultVi: "Nó uống từng giọt với vẻ hài lòng rồi trao bạn một chiếc nhẫn gia huy cổ của Huyết Tộc.",
+            resultEn: "It drinks every drop with satisfaction, then hands you an antique Kindred signet ring.",
             fx: { health: -8, sanity: -12, network: 12, resonance: 15 },
             lootAhn: 25,
             strainDelta: +5
           },
           {
-            labelVi: 'Ném lựu đạn chói mắt rồi tháo chạy về phía lối thoát',
-            labelEn: 'Throw a flash flare and sprint for the exit chute',
+            labelVi: "Ném một quả lựu đạn chói rồi chạy về lối thoát",
+            labelEn: "Throw a flash grenade and sprint for the exit",
             isFlee: true,
-            resultVi: 'Ánh sáng gay gắt làm mù mắt sinh vật trong vài giây. Bạn kịp phóng qua cửa ngầm thoát nạn.',
-            resultEn: 'The blinding flash stunned the beast. You vaulted through the service chute to safety.',
+            resultVi: "Ánh sáng làm nó mù trong vài giây. Bạn kịp phóng qua cửa ngầm.",
+            resultEn: "The light blinds it for a few seconds. You vault through the service door in time.",
             fx: { health: -4, sanity: 2 }
           }
         ]
@@ -430,24 +434,26 @@ export const DUNGEON_DEFINITIONS = {
         stageIndex: 3,
         nameVi: 'Cửa Thoát Ra Phố Đêm',
         nameEn: 'Escape into the Rain-Swept Night',
-        descVi: 'Ánh trăng lạnh lẽo của The City chiếu qua khe nắp cống. Tiếng nhạc xiếc quái đản dần chìm sâu dưới lòng đất sau lưng bạn.',
-        descEn: 'Cold moonlight from the City above filters through the manhole grill. The dissonant carnival waltz fades into the subterranean depths behind you.',
+        descVi: "Ánh đèn lạnh của The City phía trên lọt qua khe nắp cống. Tiếng nhạc xiếc kỳ quái chìm dần xuống lòng đất sau lưng bạn.",
+        descEn: "Cold lamplight from the City above filters through the manhole grill. The strange circus music sinks into the ground behind you.",
         strainGain: 5,
         choices: [
           {
-            labelVi: 'Đẩy nắp cống trèo lên phố, bán chiến lợi phẩm Huyết Tinh cho Workshop',
-            labelEn: 'Push the iron grate open and broker the Bloodfiend relics to Workshops',
-            resultVi: 'Bạn trở về mặt đất với một túi Huyết Tinh quý hiếm. Các xưởng rèn trả giá rất cao để chế tác vũ khí hút máu.',
-            resultEn: 'You returned to the surface with rare blood crystals. Workshops paid handsomely for crafting hematic arms.',
+            labelVi: "Đẩy nắp cống lên phố và bán Huyết Tinh cho Workshop",
+            labelEn: "Push the manhole open, climb to the street and sell the blood crystals to the Workshops",
+            resultVi: "Bạn trở về mặt đất với một túi Huyết Tinh quý. Các xưởng rèn trả cao để chế vũ khí hút máu.",
+            resultEn: "You return to the surface with a bag of rare blood crystals. The forges pay well to make blood-drinking arms.",
             fx: { wealth: 65, rep: 12, sanity: 10, merit: 12 },
+            flagAdd: ['BloodfiendSlayer'],
             recordAdd: 'bloodfiend_carnival_survivor'
           },
           {
-            labelVi: 'Báo cáo tọa độ công viên cho Zwei Association và nhận tiền thưởng truy quét',
-            labelEn: 'Report the carnival coordinates to Zwei Association for a bounty',
-            resultVi: 'Zwei phong tỏa toàn bộ khu cống ngầm. Bạn được trao thưởng danh dự và ghi nhận công trạng với Hiệp hội.',
-            resultEn: 'Zwei cordoned off the sewers. You received an honorary bounty and lasting acclaim from the Association.',
+            labelVi: "Báo tọa độ công viên cho Zwei Association để nhận tiền truy quét",
+            labelEn: "Report the park’s coordinates to Zwei Association for the sweep bounty",
+            resultVi: "Zwei phong tỏa cả khu cống ngầm. Bạn nhận tiền thưởng, và tên bạn được ghi vào sổ của Hiệp hội.",
+            resultEn: "Zwei seals off the whole sewer district. You collect the bounty, and your name is entered in the Association’s book.",
             fx: { rep: 25, wealth: 45, sanity: 15, merit: 16 },
+            flagAdd: ['BloodfiendSlayer'],
             recordAdd: 'zwei_informant_hero'
           }
         ]
@@ -469,23 +475,23 @@ export const DUNGEON_DEFINITIONS = {
         stageIndex: 0,
         nameVi: 'Vết Sạt Cát & Cổng Vòm Cổ',
         nameEn: 'The Collapsed Sand Archway',
-        descVi: 'Bão cát hoang mạc thổi bay lớp đất bề mặt, làm lộ ra một cổng vòm cự thạch khổng lồ chìm sâu dưới lòng đất Outskirts. Bên trong là một cầu thang xoắn ốc dẫn xuống bóng tối vô tận.',
-        descEn: 'A desert squall peels back centuries of sand, exposing a cyclopean megalith archway buried deep in the Outskirts. A spiral staircase descends into fathomless obsidian gloom.',
+        descVi: "Bão cát lật lớp đất mặt và để lộ một cổng vòm đá lớn chìm dưới Outskirts. Bên trong, một cầu thang xoắn dẫn xuống bóng tối.",
+        descEn: "A sandstorm strips the topsoil and exposes a great stone archway sunk beneath the Outskirts. Inside, a spiral stair leads down into the dark.",
         strainGain: 15,
         choices: [
           {
-            labelVi: 'Đốt đuốc và kiểm tra vết tích của những đoàn thám hiểm trước',
-            labelEn: 'Light torches and survey tracks left by previous expeditions',
-            resultVi: 'Bạn nhận diện được các dấu hiệu cạm bẫy cổ xưa mà các Fixer đi trước đã đánh dấu bằng máu.',
-            resultEn: 'You deciphered ancient hazard glyphs marked in dried blood by fallen predecessors.',
+            labelVi: "Đốt đuốc và đọc dấu vết của những đoàn đi trước",
+            labelEn: "Light a torch and read the marks of the parties that came before",
+            resultVi: "Bạn nhận ra những dấu cảnh báo bẫy mà các Fixer trước đó đã vạch bằng chính máu của họ.",
+            resultEn: "You recognize the trap warnings that earlier Fixers scratched in their own blood.",
             fx: { sanity: 5, network: 3 },
             strainDelta: -5
           },
           {
-            labelVi: 'Buộc dây cứu sinh vào xe kéo của đoàn caravan và bước xuống',
-            labelEn: 'Anchor a lifeline to the caravan wagon and descend carefully',
-            resultVi: 'Sợi dây cáp chắc chắn giúp bạn giữ vững thăng bằng khi đất đá lở sụt dưới chân.',
-            resultEn: 'The reinforced cable caught your weight when loose masonry gave way beneath your boots.',
+            labelVi: "Buộc dây cứu sinh vào xe kéo của đoàn caravan rồi bước xuống",
+            labelEn: "Tie a lifeline to the caravan’s tow cart and climb down",
+            resultVi: "Sợi cáp giữ bạn đứng vững khi đất đá sụt dưới chân.",
+            resultEn: "The cable keeps you steady as earth and stone slide away beneath your feet.",
             fx: { health: 4, rep: 3 },
             strainDelta: -5
           }
@@ -495,35 +501,35 @@ export const DUNGEON_DEFINITIONS = {
         stageIndex: 1,
         nameVi: 'Hầm Mộ Kim Loại & Máy Móc Cổ Đại',
         nameEn: 'Vault of Forgotten Singularities',
-        descVi: 'Tầng hầm mở rộng ra một quảng trường kim loại kỳ dị. Những cỗ máy khổng lồ từ nền văn minh trước The City vẫn đang quay nhịp nhàng mà không cần nguồn điện, canh giữ những chiếc rương phủ bụi ngàn năm.',
-        descEn: 'The chamber opens into an alien subterranean plaza. Titan automata from civilizations predating the City churn in silent rhythms without cables, guarding chests layered in millennia of dust.',
+        descVi: "Tầng hầm mở thành một quảng trường kim loại. Những cỗ máy từ trước thời The City vẫn quay đều mà không cần điện, canh giữ những chiếc rương phủ bụi hàng nghìn năm.",
+        descEn: "The cellar opens into a metal plaza. Machines from before The City still turn steadily without power, guarding chests that have gathered dust for thousands of years.",
         strainGain: 20,
         canFlee: true,
         choices: [
           {
-            labelVi: 'Vô hiệu hóa bánh răng bảo vệ, cạy mở rương kim loại cổ',
-            labelEn: 'Dismantle the clockwork wards and pry open an ancient chest',
+            labelVi: "Vô hiệu bánh răng bảo vệ và cạy mở một chiếc rương",
+            labelEn: "Disable the guard gears and pry open a chest",
             checkTrait: 'luck',
-            resultVi: 'Bạn gỡ thành công ngòi nổ và lấy được những thỏi kim loại cổ đại có độ cứng phi thường.',
-            resultEn: 'You disarmed the primer and extracted ingots of primordial metal with supernatural density.',
+            resultVi: "Bạn gỡ ngòi nổ kịp lúc và lấy ra những thỏi kim loại cổ cứng đến khó tin.",
+            resultEn: "You defuse the trigger in time and take out ancient ingots of unbelievable hardness.",
             fx: { wealth: 40, merit: 6, health: -6 },
             lootAhn: 30,
             strainDelta: +5
           },
           {
-            labelVi: 'Sao chép các ký tự Singularity cổ đại vào sổ tay',
-            labelEn: 'Transcribe the ancient Singularity glyphs into your field journal',
-            resultVi: 'Những đồ hình toán học cổ xưa mở rộng hiểu biết của bạn về quy luật vận hành của The City.',
-            resultEn: 'The arcane schematics expanded your understanding of the City’s deepest physical laws.',
+            labelVi: "Chép các ký tự Singularity cổ vào sổ tay",
+            labelEn: "Copy the ancient Singularity characters into your notebook",
+            resultVi: "Những đồ hình cổ làm bạn hiểu thêm một chút về cách The City vận hành.",
+            resultEn: "The old diagrams teach you a little more about how The City runs.",
             fx: { resonance: 15, sanity: -6, rep: 8 },
             strainDelta: +10
           },
           {
-            labelVi: 'Thu dây leo ngược lên xe kéo caravan để bảo toàn an toàn',
-            labelEn: 'Ascend the lifeline back to the caravan wagon safely',
+            labelVi: "Leo ngược dây lên xe caravan cho chắc mạng",
+            labelEn: "Climb the rope back to the caravan cart to be safe",
             isFlee: true,
-            resultVi: 'Bạn leo lên mặt đất an toàn cùng vài món kim loại nhỏ nhặt được.',
-            resultEn: 'You hauled yourself up to the sunlight with a modest handful of salvaged alloy.',
+            resultVi: "Bạn lên được mặt đất cùng vài món kim loại nhỏ nhặt được.",
+            resultEn: "You reach the surface with a few small pieces of metal.",
             fx: { wealth: 20, sanity: 5 }
           }
         ]
@@ -532,35 +538,35 @@ export const DUNGEON_DEFINITIONS = {
         stageIndex: 2,
         nameVi: 'Sinh Vật Dị Giới Canh Cổng',
         nameEn: 'Guardian Beast of the Beyond',
-        descVi: 'Trước cánh cửa đền cổ, một sinh vật khổng lồ không có mắt, phủ kín vảy sừng và gai nhọn bước ra từ bóng tối. Cơ thể nó phát ra luồng nhiệt dữ dội làm tan chảy cả cát đá xung quanh.',
-        descEn: 'Before the inner sanctum, an eyeless colossus armored in chitin plates and radiating blinding thermal heat emerges from the shadows, melting stone wherever its claws tread.',
+        descVi: "Trước cửa đền cổ, một sinh vật không mắt, phủ vảy sừng và gai, bước ra từ bóng tối. Thân nó tỏa nhiệt đủ làm chảy cả cát đá quanh nó.",
+        descEn: "At the door of the old temple, an eyeless creature covered in horn scales and thorns steps out of the dark. Its body gives off enough heat to melt the sand and stone around it.",
         strainGain: 25,
         canFlee: true,
         choices: [
           {
-            labelVi: 'Lợi dụng các trụ đá cổ để bẫy và hạ gục sinh vật',
-            labelEn: 'Lure the beast beneath crumbling stone pillars and collapse them',
+            labelVi: "Dụ nó vào giữa các trụ đá cổ để bẫy và hạ nó",
+            labelEn: "Lure it among the old stone pillars to trap and bring it down",
             checkTrait: 'vigor',
-            resultVi: 'Khối cự thạch đổ sập chôn vùi con quái vật. Bạn chặt lấy chiếc sừng phát quang làm chiến lợi phẩm vô giá.',
-            resultEn: 'Megaliths crashed down, crushing the titan. You severed its radiant horn as an invaluable trophy.',
+            resultVi: "Một khối cự thạch đổ xuống chôn nó. Bạn chặt lấy chiếc sừng còn phát sáng làm chiến lợi phẩm.",
+            resultEn: "A great block of stone falls and buries it. You cut off its still-glowing horn as a trophy.",
             fx: { health: -15, rep: 16, merit: 12 },
             lootAhn: 35,
             strainDelta: +10
           },
           {
-            labelVi: 'Ném đá mồi lửa dụ quái vật ra xa rồi luồn qua cửa đền',
-            labelEn: 'Distract the beast with incendiary flares and slip past the threshold',
-            resultVi: 'Bạn trườn qua kẽ đá hẹp trong gang tấc khi hàm răng sắc nhọn ngoạm hụt phía sau lưng.',
-            resultEn: 'You slipped through the fissure a fraction of a second before snapping jaws closed on empty air.',
+            labelVi: "Ném đá mồi lửa dụ nó đi xa rồi luồn qua cửa đền",
+            labelEn: "Throw a flaming stone to draw it away, then slip through the temple door",
+            resultVi: "Bạn trườn qua kẽ đá hẹp trong khi hàm răng của nó ngoạm hụt ngay sau lưng.",
+            resultEn: "You wriggle through the narrow gap as its jaws snap shut just behind you.",
             fx: { health: -8, sanity: -6, merit: 6 },
             strainDelta: +5
           },
           {
-            labelVi: 'Rút lui khẩn cấp lên mặt đất trước khi nhiệt lượng thiêu cháy bạn',
-            labelEn: 'Emergency retreat to the surface before thermal heat immolates you',
+            labelVi: "Rút khẩn lên mặt đất trước khi sức nóng thiêu bạn",
+            labelEn: "Withdraw to the surface before the heat burns you",
             isFlee: true,
-            resultVi: 'Bạn phóng ra ngoài cửa hầm ngay khi luồng lửa quét qua bậc thang.',
-            resultEn: 'You scrambled through the archway just as a furnace blast swept the stairs.',
+            resultVi: "Bạn lao ra miệng hầm đúng lúc ngọn lửa quét qua bậc thang.",
+            resultEn: "You dive out of the shaft mouth just as a gust of fire sweeps the stairs.",
             fx: { health: -5, sanity: 2 }
           }
         ]
@@ -569,23 +575,23 @@ export const DUNGEON_DEFINITIONS = {
         stageIndex: 3,
         nameVi: 'Điện Thờ Di Tích Cổ & Quặng Thần Thánh',
         nameEn: 'The Relic Sanctuary: Ancient Singularity Alloy',
-        descVi: 'Bên trong thánh đường cổ là một bệ đá lơ lửng giữa không trung, giữ một khối hợp kim cổ đại phát ra hào quang màu hoàng kim rực rỡ — thứ kim loại huyền thoại có thể rèn nên vũ khí Color Fixer.',
-        descEn: 'Inside the sanctum floats a stone altar holding a slab of primordial alloy humming with blinding golden light — the legendary ore capable of forging Color Fixer masterworks.',
+        descVi: "Trong thánh đường cổ, một bệ đá lơ lửng giữ khối hợp kim phát ánh vàng, thứ kim loại truyền thuyết có thể rèn vũ khí cho một Color Fixer.",
+        descEn: "In the old sanctum a floating stone altar holds a slab of alloy that glows gold, the legendary metal that could forge a Color Fixer’s weapon.",
         strainGain: 10,
         choices: [
           {
-            labelVi: 'Cung kính thu hồi khối quặng cổ đại mang về cho xưởng rèn đỉnh cao',
-            labelEn: 'Reverently extract the primordial alloy for masterwork forging',
-            resultVi: 'Bạn mang khối kim loại thần thánh lên mặt đất. Tên tuổi bạn được ghi vào biên niên sử của các thợ rèn vĩ đại nhất The City.',
-            resultEn: 'You carried the divine metal to the sun. Your name was etched into the annals of the City’s greatest smiths.',
+            labelVi: "Cẩn thận lấy khối quặng về cho một lò rèn xứng đáng",
+            labelEn: "Carefully take the ore back for a forge worthy of it",
+            resultVi: "Bạn mang khối kim loại lên mặt đất. Tên bạn đi vào những câu chuyện mà thợ rèn kể nhau trong The City.",
+            resultEn: "You carry the metal to the surface. Your name enters the stories smiths tell each other across The City.",
             fx: { wealth: 100, rep: 25, resonance: 20, merit: 20 },
             recordAdd: 'outskirts_ruin_conqueror'
           },
           {
-            labelVi: 'Hấp thụ tinh hoa của khối quặng để thức tỉnh thể chất siêu phàm',
-            labelEn: 'Commune with the ancient alloy, awakening superhuman fortitude',
-            resultVi: 'Năng lượng cổ xưa ngấm vào từng tế bào xương thịt, chữa lành mọi thương tật và ban cho bạn sức mạnh phi thường.',
-            resultEn: 'Ancient energy fused into bone and marrow, curing all frailties and bestowing transcendent endurance.',
+            labelVi: "Để khối quặng chạm vào mình và đánh thức thể chất",
+            labelEn: "Let the ore touch you and awaken your body",
+            resultVi: "Năng lượng cổ ngấm vào xương thịt, chữa lành những thương tật cũ và để lại một sức mạnh không còn hoàn toàn của con người.",
+            resultEn: "The old energy sinks into flesh and bone, healing old injuries and leaving a strength that is no longer entirely human.",
             fx: { health: 40, sanity: 25, resonance: 30, rep: 15 },
             scarAdd: 'Dấu ấn di tích cổ Outskirts',
             recordAdd: 'outskirts_ascendant'
@@ -609,36 +615,36 @@ export const DUNGEON_DEFINITIONS = {
         stageIndex: 0,
         nameVi: 'Vùng Sương Mù & Luật Lệ Đại Hồ',
         nameEn: 'Fog-Choked Boundary & The Lake’s Laws',
-        descVi: 'Con tàu bọc thép rẽ qua ranh giới hai vùng nước của Đại Hồ District 21. Chuông báo Luật Đại Hồ rung lên dồn dập: sương mù trắng đục đang ập tới cùng tiếng hát nghêu ngao của những kẻ đã hóa thành Người Cá (Mermaids).',
-        descEn: 'The reinforced hull crosses the boundary between two Great Lake sectors in District 21. The Lake Law bells clamour: chalk-white fog rolls in alongside the dissonant chorus of sailors already turned into Mermaids.',
+        descVi: "Con tàu bọc thép rẽ qua ranh giới hai vùng nước của Đại Hồ, District 21. Chuông Luật Đại Hồ rung dồn dập, sương trắng đục ập tới cùng tiếng hát lạc điệu của những thủy thủ đã hóa thành Người Cá.",
+        descEn: "The armored ship crosses the boundary between two sectors of the Great Lake, District 21. The Lake Law bells ring wildly as chalk-white fog rolls in with the off-key chorus of sailors who have already turned into Mermaids.",
         strainGain: 14,
         choices: [
           {
-            labelVi: 'Kích hoạt Thoa Âm (Tuning Fork) của U Corp để hòa nhập tần số sóng và giữ vững mạn tàu',
-            labelEn: 'Strike U Corp Tuning Forks to harmonize hull resonance against the waves',
+            labelVi: "Gõ âm thoa của U Corp để tàu hòa vào tần số sóng và giữ mạn tàu",
+            labelEn: "Strike the U Corp tuning forks to bring the hull into step with the waves",
             checkTrait: 'nerve',
-            resultVi: 'Âm thanh ngân vang từ mũi tàu đẩy lùi màn sương trắng. Thủy thủ đoàn giữ vững đội hình trước đợt sóng đầu tiên.',
-            resultEn: 'Resonant vibrations from the bow repelled the pallid mist. The crew held formation against the opening swell.',
+            resultVi: "Âm thanh từ mũi tàu đẩy lùi màn sương trắng. Đội thủy thủ giữ đội hình qua đợt sóng đầu.",
+            resultEn: "The sound from the bow pushes back the white fog. The crew holds formation through the first swell.",
             fx: { sanity: 8, health: 4, rep: 5, merit: 5 },
             lootAhn: 15,
             strainDelta: -6
           },
           {
-            labelVi: 'Dùng Ống Tiêm K Corp gia cố thể lực trước khi bước ra boong tàu nghênh chiến',
-            labelEn: 'Inject a K Corp Ampoule before taking the deck in full storm gear',
+            labelVi: "Tiêm ống K Corp để cơ thể chịu được cái lạnh trước khi ra boong",
+            labelEn: "Inject a K Corp ampoule so the body can take the cold before stepping on deck",
             reqItem: 'con_kcorp_ampoule',
             consumeItem: true,
-            resultVi: 'Huyết thanh lục bảo giúp cơ thể bạn miễn nhiễm với cái lạnh cắt da của biển sâu và sẵn sàng đón đầu thủy quái.',
-            resultEn: 'Emerald serum fortified your body against the abyssal chill, priming you for the leviathan clash.',
+            resultVi: "Dịch xanh ngọc làm da bạn bớt buốt trước gió biển và đầu óc rõ ràng. Bạn ra boong sẵn sàng.",
+            resultEn: "The emerald fluid dulls the sea wind on your skin and clears your head. You step on deck ready.",
             fx: { health: 25, sanity: 20, rep: 6 },
             lootAhn: 15,
             strainDelta: -18
           },
           {
-            labelVi: 'Ra lệnh tăng hết tốc lực động cơ đâm xuyên qua vành đai sương mù',
-            labelEn: 'Order full ahead, ramming straight through the fog barrier',
-            resultVi: 'Mũi tàu bọc thép cày nát những tảng băng sáp trắng, thu hồi được một thùng hàng trôi dạt của thương thuyền bị đắm.',
-            resultEn: 'The armored prow smashed through waxy floes, salvaging a floating cargo pod from a sunken merchantman.',
+            labelVi: "Ra lệnh tăng hết tốc lực và đâm xuyên vành đai sương",
+            labelEn: "Order full ahead and ram through the fog belt",
+            resultVi: "Mũi tàu bọc thép cày nát những tảng băng sáp, và hất lên một thùng hàng trôi dạt của một thương thuyền bị đắm.",
+            resultEn: "The armored prow plows through the wax floes and flips up a drifting cargo pod from a sunken merchantman.",
             fx: { health: -5, wealth: 20, rep: 6, merit: 6 },
             lootAhn: 20,
             strainDelta: +6
@@ -649,36 +655,36 @@ export const DUNGEON_DEFINITIONS = {
         stageIndex: 1,
         nameVi: 'Boong Tàu Đẫm Sáp: Đàn Người Cá Pallid',
         nameEn: 'Wax-Slicked Deck: Swarm of Pallid Mermaids',
-        descVi: 'Hàng chục Người Cá phủ màng sáp trắng toát phóng vọt từ dưới mặt nước đen lên boong tàu! Chúng từng là những Fixer và thủy thủ lành nghề, nay cầm mái chèo gãy và móc sắt lao vào cắn xé người sống.',
-        descEn: 'Dozens of Mermaids encased in chalk-white membrane vault from the black water onto the deck! Once seasoned Fixers and sailors, they now wield broken oars and iron hooks to drag the living below.',
+        descVi: "Hàng chục Người Cá phủ màng sáp trắng vọt từ mặt nước đen lên boong. Chúng từng là Fixer và thủy thủ lành nghề. Giờ chúng cầm mái chèo gãy và móc sắt lao vào những người còn sống.",
+        descEn: "Dozens of Mermaids coated in chalk-white membrane vault from the black water onto the deck. They were once skilled Fixers and sailors. Now they swing broken oars and iron hooks at the living.",
         strainGain: 16,
         canFlee: true,
         choices: [
           {
-            labelVi: 'Dùng lao móc nhiệt lượng chém gãy đội hình Người Cá và đốt sạch dịch trắng trên sàn',
-            labelEn: 'Wield thermal harpoons to shatter the Mermaid vanguard and cauterize the white slime',
+            labelVi: "Dùng lao móc nhiệt đập vỡ hàng đầu của chúng và đốt sạch dịch trắng trên sàn",
+            labelEn: "Use the thermal harpoons to break their front rank and burn the white slime off the deck",
             checkTrait: 'vigor',
-            resultVi: 'Ngọn lửa nhiệt lượng ngăn không cho màng trắng kịp bám vào da thịt. Bạn thu được những mảnh tinh thể cộng hưởng từ xác lũ quái vật.',
-            resultEn: 'Thermal fire seared the pallid slime before it could take root. You harvested resonant crystals from the fallen swarm.',
+            resultVi: "Lửa cháy xém lớp dịch trước khi nó kịp bám vào da. Bạn nhặt được những mảnh tinh thể cộng hưởng từ xác bầy quái.",
+            resultEn: "The fire sears the slime before it can take root. You gather resonant crystal fragments from the dead swarm.",
             fx: { health: -7, sanity: -3, rep: 10, merit: 9 },
             lootAhn: 26,
             strainDelta: +4
           },
           {
-            labelVi: 'Lập rào chắn bằng lưới thép U Corp, bắn tỉa từ đài chỉ huy để bảo toàn sinh lực',
-            labelEn: 'Erect U Corp steel netting and snipe from the bridge to conserve vitality',
-            resultVi: 'Lưới thép giữ chân bầy Người Cá, giúp bạn tiêu diệt chúng an toàn dù tốn thêm thời gian.',
-            resultEn: 'Reinforced netting held the Mermaids at bay, letting you clear the deck safely with minimal wounds.',
+            labelVi: "Giăng lưới thép của U Corp rồi bắn tỉa từ đài chỉ huy",
+            labelEn: "Rig U Corp steel netting and snipe from the bridge",
+            resultVi: "Lưới thép giữ chân bầy Người Cá, nên bạn dọn boong chậm nhưng ít bị thương.",
+            resultEn: "The netting holds the Mermaids, so you clear the deck slowly but with few wounds.",
             fx: { health: -3, sanity: -4, merit: 7, network: 5 },
             lootAhn: 18,
             strainDelta: +2
           },
           {
-            labelVi: 'Phóng xuồng cứu sinh bọc thép quay về cảng U Corp ngay lập tức',
-            labelEn: 'Launch the armored lifeboat and return to U Corp port immediately',
+            labelVi: "Hạ xuồng cứu sinh bọc thép và quay về cảng U Corp ngay",
+            labelEn: "Launch the armored lifeboat and return to U Corp’s port at once",
             isFlee: true,
-            resultVi: 'Bạn rút lui về bến cảng an toàn cùng số mẫu vật thu thập được ở vùng rìa Đại Hồ.',
-            resultEn: 'You retreated safely to port with the specimens gathered along the Lake perimeter.',
+            resultVi: "Bạn về tới bến an toàn cùng số mẫu vật nhặt được ở rìa hồ.",
+            resultEn: "You reach port safely with the specimens gathered along the lake’s edge.",
             fx: { wealth: 20, sanity: 6 }
           }
         ]
@@ -687,37 +693,37 @@ export const DUNGEON_DEFINITIONS = {
         stageIndex: 2,
         nameVi: 'Họng Thẳm Cá Voi Trắng (The Pallid Maw)',
         nameEn: 'The Abyssal Maw of the Pallid Whale',
-        descVi: 'Mặt biển dựng đứng như bức tường thành! Con Cá Voi Trắng (Pallid Whale) khổng lồ bằng cả một khu phố trồi lên, há chiếc miệng sâu hun hút tạo thành xoáy nước tử thần hút toàn bộ tàu bè vào trong vòm họng.',
-        descEn: 'The sea rises like a fortress wall! The colossal Pallid Whale, vast as a city ward, breaches the surface — its yawning maw spinning a maelstrom that drags ships into its gullet.',
+        descVi: "Mặt nước dựng lên như một bức tường. Con Pallid Whale to bằng cả một khu phố trồi lên, há họng thành một xoáy nước hút cả các con tàu vào miệng.",
+        descEn: "The water rises like a wall. The Pallid Whale, as big as a city ward, breaches the surface and opens its maw into a whirlpool that pulls ships into its throat.",
         strainGain: 18,
         canFlee: true,
         choices: [
           {
-            labelVi: 'Buộc chặt dây cáp vào người, nạp đại pháo Lao Móc Singularity bắn thẳng vào con ngươi Cá Voi',
-            labelEn: 'Lash yourself to the Singularity Harpoon cannon and fire straight into the Whale’s eye',
+            labelVi: "Buộc mình vào bệ phóng và bắn đại bác Lao Singularity vào mắt nó",
+            labelEn: "Lash yourself to the harpoon cannon and fire a Singularity harpoon into its eye",
             checkTrait: 'vigor',
-            resultVi: 'Mũi lao khổng lồ mang lõi nổ xuyên thủng con ngươi trắng dã! Tiếng rống của Pallid Whale làm vỡ tan mây mù trên bầu trời Đại Hồ.',
-            resultEn: 'The explosive Singularity harpoon pierced the colossal white eye! The Whale’s bellow shattered the storm clouds above the Great Lake.',
+            resultVi: "Mũi lao mang lõi nổ xuyên con mắt trắng dã. Tiếng rống của nó xé tan mây bão trên Đại Hồ.",
+            resultEn: "The explosive-cored harpoon pierces the pale eye. Its bellow tears the storm clouds above the Great Lake.",
             fx: { health: -10, sanity: -4, rep: 16, merit: 14, resonance: 12 },
             lootAhn: 36,
             strainDelta: +6
           },
           {
-            labelVi: 'Thả thủy lôi âm thanh vào vòm họng nó rồi bẻ lái cắt ngang dòng xoáy',
-            labelEn: 'Drop acoustic depth charges into its gullet and veer hard across the vortex',
+            labelVi: "Thả thủy lôi âm thanh vào họng nó rồi bẻ lái cắt ngang dòng xoáy",
+            labelEn: "Drop acoustic depth charges into its throat and veer across the vortex",
             checkTrait: 'luck',
-            resultVi: 'Vụ nổ chấn động từ bên trong buộc con quái vật phải nhả luồng nước xoáy, phun ra hàng loạt kho báu từ những con tàu cổ.',
-            resultEn: 'The internal detonation forced the leviathan to convulse, disgorging ancient shipwreck treasures across the waves.',
+            resultVi: "Vụ nổ từ bên trong làm nó co giật và nhả dòng xoáy ra, kéo theo cả kho báu từ những con tàu cổ.",
+            resultEn: "The blast from inside makes it convulse and spit out the whirlpool, along with treasure from old ships.",
             fx: { health: -5, sanity: -5, rep: 10, merit: 10 },
             lootAhn: 30,
             strainDelta: +3
           },
           {
-            labelVi: 'Chặt đứt cáp neo, lợi dụng sóng dội để thoát khỏi vùng xoáy',
-            labelEn: 'Sever the anchor cables and ride the shockwave out of the maelstrom',
+            labelVi: "Chặt cáp neo và cưỡi sóng xung kích thoát khỏi xoáy",
+            labelEn: "Cut the anchor cables and ride the shockwave out of the maelstrom",
             isFlee: true,
-            resultVi: 'Con tàu lướt qua rìa xoáy nước trong gang tấc và rút lui về vùng biển an toàn.',
-            resultEn: 'The vessel skimmed the edge of the whirlpool by inches, escaping to calm waters.',
+            resultVi: "Con tàu sượt qua rìa xoáy trong gang tấc và thoát về vùng nước yên.",
+            resultEn: "The ship skims the edge of the whirlpool by a hand’s breadth and escapes to calm water.",
             fx: { sanity: 4, rep: 2 }
           }
         ]
@@ -726,23 +732,23 @@ export const DUNGEON_DEFINITIONS = {
         stageIndex: 3,
         nameVi: 'Trái Tim Hóa Thạch & Long Diên Hương Hoàng Kim',
         nameEn: 'The Calcified Heart & Golden Ambergris',
-        descVi: 'Con Cá Voi Trắng chìm dần xuống vực thẳm, để lại trên mặt biển lặng sóng khối Long Diên Hương Hoàng Kim (Golden Ambergris) và tinh chất cộng hưởng nguyên thủy của Đại Hồ.',
-        descEn: 'As the Pallid Whale sinks into the trench, the calmed waters reveal a floating mass of Golden Ambergris and primordial tuning essence of the Great Lake.',
+        descVi: "Pallid Whale chìm dần xuống vực. Mặt nước yên lại và để lộ một khối Long Diên Hương vàng cùng tinh chất cộng hưởng đầu tiên của Đại Hồ.",
+        descEn: "The Pallid Whale sinks slowly into the trench. The water calms and reveals a mass of golden ambergris and the first resonant essence of the Great Lake.",
         strainGain: 6,
         choices: [
           {
-            labelVi: 'Thu hoạch toàn bộ Long Diên Hương và mỡ cá voi giao cho U Corp đổi lấy đại gia tài',
-            labelEn: 'Harvest the Golden Ambergris and blubber for U Corp’s supreme bounty',
-            resultVi: 'Cả bến cảng District 21 đổ ra reoò đón đoàn tàu chiến thắng. U Corp trao cho bạn phần thưởng khổng lồ và danh hiệu Thợ Săn Đại Hồ huyền thoại!',
-            resultEn: 'All of District 21’s docks cheered your triumphant return. U Corp awarded a massive fortune and hailed you as a legendary Great Lake Hunter!',
+            labelVi: "Gom Long Diên Hương và mỡ cá voi giao cho U Corp lấy một món tiền lớn",
+            labelEn: "Harvest the ambergris and blubber and hand it to U Corp for a large payment",
+            resultVi: "Cả bến cảng District 21 ra đón đoàn tàu về. U Corp trao bạn phần thưởng và gọi bạn là Thợ Săn Đại Hồ.",
+            resultEn: "All the District 21 docks turn out for the ship’s return. U Corp gives you your reward and calls you a Great Lake Hunter.",
             fx: { wealth: 85, rep: 24, sanity: 18, health: 12, merit: 20 },
             recordAdd: 'lake_whale_slayer'
           },
           {
-            labelVi: 'Chạm tay vào lõi cộng hưởng của Đại Hồ, khắc ghi bản lĩnh vượt qua Cơn Ác Mộng Trắng',
-            labelEn: 'Commune with the abyssal resonance core, forging an unbreakable soul against the Pallid nightmare',
-            resultVi: 'Sóng âm từ trái tim biển cả gột rửa mọi nỗi sợ hãi trong bạn. Tâm trí và cơ thể bạn cộng hưởng mạnh mẽ với Ánh Sáng!',
-            resultEn: 'Harmonic waves from the ocean’s heart scoured away all terror. Your mind and body resonated fiercely with the Light!',
+            labelVi: "Chạm vào lõi cộng hưởng của Đại Hồ và khắc ghi bản lĩnh đã đưa bạn qua Cơn Ác Mộng Trắng",
+            labelEn: "Touch the resonant core of the Great Lake and carve in the strength that carried you through the White Nightmare",
+            resultVi: "Sóng âm từ trái tim biển gột sạch nỗi sợ trong bạn. Tâm trí và thân thể bạn ngân lên cùng Ánh Sáng.",
+            resultEn: "Sound from the heart of the sea washes the fear out of you. Your mind and body ring together with the Light.",
             fx: { wealth: 50, sanity: 30, health: 20, resonance: 28, rep: 18, merit: 18 },
             scarAdd: 'Vết trắng trên vai',
             recordAdd: 'lake_whale_slayer'
@@ -764,6 +770,11 @@ export function getDungeonMastery(def, char) {
   let checkBonus = hasGear ? 0.1 : 0;
   const reasonsVi = [];
   const reasonsEn = [];
+  if (flags.includes('ColorFixer')) {
+    checkBonus += DUNGEON_BALANCE.ego.color.checkBonus;
+    reasonsVi.push('Danh Color');
+    reasonsEn.push('Color name');
+  }
 
   if (hasGear) {
     reasonsVi.push('Vũ khí/Trang bị');
@@ -807,57 +818,170 @@ export function getDungeonMastery(def, char) {
 }
 
 /**
- * Evaluates displayed success odds & expected stat shifts for a dungeon choice
+ * Numbers the dungeon balance rests on. Rewards sit below the equivalent event rewards because a
+ * dungeon is a chosen risk: it can end a life, and strain makes every later stage harder.
+ */
+export const DUNGEON_BALANCE = {
+  reward: { wealth: 0.3, loot: 0.33, merit: 0.4, resonance: 0.4, rep: 0.5, network: 0.6 },
+  healScale: 0.45,
+  hazardDamage: { WAW: 1.7, ALEPH: 2.2 },
+  successDamage: 0.9,
+  failDamage: 1.8,
+  failStrain: 8,
+  failLootKept: 0.5,
+  breakLootKept: 0.5,
+  breakAt: 100,
+  conquest: { ahn: 8, health: 5, sanity: 6, merit: 4 },
+  breather: { health: 8, sanity: 7, strain: -16, cost: 6 },
+  // E.G.O is a loan against the mind: one stage goes much easier, and the bill comes in strain and resonance.
+  ego: {
+    checkBonus: 0.3, ceiling: 0.97, damageMult: 0.6,
+    awakened: { charges: 1, strain: 12, sanity: -4, resonance: 5 },
+    color: { charges: 2, strain: 7, sanity: -2, resonance: 3, strainMult: 0.85, checkBonus: 0.05 }
+  },
+  baseCheck: 0.7,
+  checkFloor: 0.3,
+  checkCeiling: 0.95,
+  strainTiers: [
+    { id: 'breaking', min: 90, check: -0.18, sanityMult: 1.3 },
+    { id: 'panic', min: 70, check: -0.12, sanityMult: 1.2 },
+    { id: 'shaken', min: 45, check: -0.05, sanityMult: 1 },
+    { id: 'calm', min: 0, check: 0, sanityMult: 1 }
+  ]
+};
+
+const STANCE = {
+  guarded: { damage: 0.75, strain: 0.7, loot: 0.85, check: 0.1 },
+  balanced: { damage: 1, strain: 1, loot: 1, check: 0 },
+  reckless: { damage: 1.25, strain: 1.15, loot: 1.3, check: 0 }
+};
+
+export function getStrainTier(strain) {
+  return DUNGEON_BALANCE.strainTiers.find((tier) => strain >= tier.min) || DUNGEON_BALANCE.strainTiers.at(-1);
+}
+
+/** Traits sit near 1, except luck which sits near 0 and is mapped onto the same range. */
+function traitFactor(char, trait) {
+  const traits = traitsOf(char);
+  if (trait === 'luck') return 1 + (traits.luck || 0) * 0.18;
+  return traits[trait] ?? 1;
+}
+
+function checkChanceOf(choice, char, session, mastery) {
+  const stance = session?.stance || 'balanced';
+  const tier = getStrainTier(session?.sanityStrain || 0);
+  let chance = DUNGEON_BALANCE.baseCheck * traitFactor(char, choice.checkTrait) + mastery.checkBonus;
+  chance += (evaluateCompanionSupport(char).dungeonOddsMod || 0) / 100;
+  chance += STANCE[stance].check;
+  if (stance === 'reckless' && choice.checkTrait === 'vigor') chance += 0.1;
+  if (session?.stageScanned) chance += 0.18;
+  if ((char.stats?.sanity ?? 50) >= 70) chance += 0.05;
+  chance += tier.check;
+  if (session?.egoActive) chance += DUNGEON_BALANCE.ego.checkBonus;
+  return clamp(chance, DUNGEON_BALANCE.checkFloor, session?.egoActive ? DUNGEON_BALANCE.ego.ceiling : DUNGEON_BALANCE.checkCeiling);
+}
+
+/** What multiplies a negative health or sanity effect in this stage, before the check result. */
+function damageMultOf(def, char, session, mastery, kind) {
+  const stance = session?.stance || 'balanced';
+  const hazard = DUNGEON_BALANCE.hazardDamage[def?.hazard] || 1;
+  const traits = traitsOf(char);
+  const trait = kind === 'sanity' ? traits.nerve ?? 1 : traits.vigor ?? 1;
+  const tier = getStrainTier(session?.sanityStrain || 0);
+  let mult = hazard * mastery.dmgMult * STANCE[stance].damage * (2 - trait);
+  if (session?.stageScanned) mult *= 0.65;
+  if (session?.resolveAwakened) mult *= 0.75;
+  if (session?.egoActive) mult *= DUNGEON_BALANCE.ego.damageMult;
+  if (kind === 'sanity') mult *= tier.sanityMult;
+  return mult;
+}
+
+const healOf = (value) => (value > 0 ? Math.max(1, Math.round(value * DUNGEON_BALANCE.healScale)) : value || 0);
+const scaleGain = (value, mult) => (value > 0 ? Math.max(1, Math.round(value * mult)) : value);
+
+function stageRewards(choice, session, success) {
+  const fx = choice.fx || {};
+  const stance = STANCE[session.stance || 'balanced'];
+  const reckless = session.stance === 'reckless' && !choice.isFlee;
+  const keep = success ? 1 : DUNGEON_BALANCE.failLootKept;
+  const r = DUNGEON_BALANCE.reward;
+  const loot = choice.lootAhn ? Math.round(choice.lootAhn * r.loot * stance.loot * keep) : 0;
+  const scanLoot = session.stageScanned && !choice.isFlee ? 10 : 0;
+  return {
+    wealth: Math.round(scaleGain(fx.wealth || 0, r.wealth) * (fx.wealth > 0 ? keep : 1)),
+    loot: loot + (loot > 0 ? scanLoot : 0),
+    rep: Math.round(scaleGain(fx.rep || 0, r.rep) * (fx.rep > 0 ? keep : 1)),
+    network: Math.round(scaleGain(fx.network || 0, r.network) * (fx.network > 0 ? keep : 1)),
+    merit: fx.merit > 0 ? Math.round(fx.merit * r.merit * (reckless ? 1.3 : 1) * keep) : 0,
+    resonance: Math.round(scaleGain(fx.resonance || 0, r.resonance) * (fx.resonance > 0 ? keep : 1)) + (reckless && success ? 3 : 0)
+  };
+}
+
+/**
+ * Displayed odds and expected shifts for a dungeon choice. The numbers come from the same
+ * helpers the resolver uses, so the screen cannot promise what the engine will not deliver.
  */
 export function evaluateDungeonChoiceOdds(choice, char, session) {
   if (!choice || !char) return null;
   const def = session ? DUNGEON_DEFINITIONS[session.id] : null;
   const mastery = getDungeonMastery(def, char);
-  const stance = session?.stance || 'balanced';
-  const scanned = Boolean(session?.stageScanned);
-
-  let successPct = 100;
-  if (choice.checkTrait) {
-    const traits = traitsOf(char);
-    const traitVal = traits[choice.checkTrait] ?? 1.0;
-    const compSupport = evaluateCompanionSupport(char);
-    let chance = 0.76 * traitVal + mastery.checkBonus + (compSupport.dungeonOddsMod || 0) / 100;
-    if (stance === 'guarded') chance += 0.12;
-    if (stance === 'reckless' && choice.checkTrait === 'vigor') chance += 0.10;
-    if (scanned) chance += 0.25;
-    if ((char.stats?.sanity ?? 50) >= 70) chance += 0.05;
-    successPct = clamp(Math.round(chance * 100), 30, 98);
-  }
-
-  const stanceDmgMult = stance === 'guarded' ? 0.65 : stance === 'reckless' ? 1.2 : 1.0;
-  const scanDmgMult = scanned ? 0.5 : 1.0;
-  const resolveMult = session?.resolveAwakened ? 0.75 : 1.0;
-  const totalDmgMult = mastery.dmgMult * stanceDmgMult * scanDmgMult * resolveMult;
-
-  const stanceLootMult = stance === 'guarded' ? 0.85 : stance === 'reckless' ? 1.45 : 1.0;
+  const successPct = choice.checkTrait ? Math.round(checkChanceOf(choice, char, session, mastery) * 100) : 100;
   const fx = choice.fx || {};
-  const estHp = fx.health < 0 ? Math.min(-1, Math.ceil(fx.health * totalDmgMult)) : (fx.health || 0);
-  const estSp = fx.sanity < 0 ? Math.min(-1, Math.ceil(fx.sanity * totalDmgMult)) : (fx.sanity || 0);
-  const estLoot = choice.lootAhn ? Math.round(choice.lootAhn * stanceLootMult) + (scanned ? 10 : 0) : 0;
-
+  const hpMult = damageMultOf(def, char, session, mastery, 'health') * DUNGEON_BALANCE.successDamage;
+  const spMult = damageMultOf(def, char, session, mastery, 'sanity') * DUNGEON_BALANCE.successDamage;
+  const rewards = stageRewards(choice, session || {}, true);
   return {
     hasCheck: Boolean(choice.checkTrait),
     trait: choice.checkTrait || null,
     successPct,
-    estHp,
-    estSp,
-    estWealth: fx.wealth || 0,
-    estLoot,
-    estRep: fx.rep || 0,
-    estMerit: fx.merit ? (stance === 'reckless' ? Math.round(fx.merit * 1.3) : fx.merit) : 0,
-    estResonance: (fx.resonance || 0) + (stance === 'reckless' && !choice.isFlee ? 4 : 0)
+    estHp: fx.health < 0 ? Math.min(-1, Math.ceil(fx.health * hpMult)) : healOf(fx.health),
+    estSp: fx.sanity < 0 ? Math.min(-1, Math.ceil(fx.sanity * spMult)) : healOf(fx.sanity),
+    estWealth: rewards.wealth,
+    estLoot: rewards.loot,
+    estRep: rewards.rep,
+    estMerit: rewards.merit,
+    estResonance: rewards.resonance
   };
 }
 
 /**
  * Creates a new active dungeon session
  */
-export function createDungeonSession(dungeonId, char, rng = Math.random) {
+/** Color Fixers carry two E.G.O surges into a dungeon, an awakened Fixer one, anyone else none. */
+export function egoChargesOf(char) {
+  const flags = char?.flags || [];
+  if (flags.includes('ColorFixer')) return DUNGEON_BALANCE.ego.color.charges;
+  if (flags.includes('EGOAwakened')) return DUNGEON_BALANCE.ego.awakened.charges;
+  return 0;
+}
+
+export function dungeonEgoState(char, session) {
+  if (!session || egoChargesOf(char) === 0) return { ok: false, reason: 'none' };
+  if (session.egoActive) return { ok: false, reason: 'active' };
+  if ((session.egoCharges || 0) <= 0) return { ok: false, reason: 'empty' };
+  return { ok: true };
+}
+
+/** Spends an E.G.O surge: the next stage is easier and hurts less, at a cost to strain, sanity and resonance. */
+export function useDungeonEgo(charState) {
+  if (!charState?.pendingDungeon || !dungeonEgoState(charState, charState.pendingDungeon).ok) return charState;
+  const isColor = (charState.flags || []).includes('ColorFixer');
+  const price = isColor ? DUNGEON_BALANCE.ego.color : DUNGEON_BALANCE.ego.awakened;
+  const session = { ...charState.pendingDungeon };
+  const char = { ...charState, stats: { ...charState.stats } };
+  session.egoCharges -= 1;
+  session.egoActive = true;
+  session.sanityStrain = clamp((session.sanityStrain || 0) + price.strain, 0, 99);
+  char.stats.sanity = clamp((char.stats.sanity || 0) + price.sanity, 1, 100);
+  char.resonance = clamp((char.resonance || 0) + price.resonance, 0, 100);
+  rememberResonance(char, price.resonance);
+  const text = isColor ? SUPPLY_TEXT.egoColor : SUPPLY_TEXT.ego;
+  session.lastStageResult = { type: 'ego', vi: text.vi, en: text.en };
+  char.pendingDungeon = session;
+  return char;
+}
+
+export function createDungeonSession(dungeonId, char) {
   const def = DUNGEON_DEFINITIONS[dungeonId];
   if (!def) return null;
 
@@ -883,8 +1007,18 @@ export function createDungeonSession(dungeonId, char, rng = Math.random) {
     supplyCharges: maxSupplies,
     maxSupplies,
     stageScanned: false,
+    egoCharges: egoChargesOf(char),
+    egoActive: false,
     resolveAwakened: false,
     lastStageResult: null,
+    startSnapshot: {
+      stats: { ...char.stats },
+      merit: char.merit || 0,
+      resonance: char.resonance || 0,
+      heat: char.heat || 0,
+      taboo: char.taboo || 0,
+      scars: [...(char.scars || [])]
+    },
     logs: []
   };
 }
@@ -904,34 +1038,35 @@ export function setDungeonStance(charState, stance) {
   };
 }
 
+/** Whether a supply can be used right now, and why not when it cannot. */
+export function dungeonSupplyState(char, session, supplyType) {
+  if (!session || (session.supplyCharges || 0) <= 0) return { ok: false, reason: 'empty' };
+  if (supplyType === 'scan') return session.stageScanned ? { ok: false, reason: 'scanned' } : { ok: true };
+  const wealth = char?.stats?.wealth ?? 0;
+  return wealth < DUNGEON_BALANCE.breather.cost ? { ok: false, reason: 'broke' } : { ok: true };
+}
+
 /**
- * Expends 1 tactical supply charge inside a dungeon ('breather' | 'scan')
+ * Spends one supply charge inside a dungeon. A scan reads the stage (better odds, less damage);
+ * a breather heals but costs Ahn, so supplies are a decision and not free health.
  */
 export function useDungeonSupply(charState, supplyType = 'breather') {
   if (!charState?.pendingDungeon) return charState;
+  if (!dungeonSupplyState(charState, charState.pendingDungeon, supplyType).ok) return charState;
   const session = { ...charState.pendingDungeon, logs: [...(charState.pendingDungeon.logs || [])] };
-  if ((session.supplyCharges || 0) <= 0) return charState;
-  if (supplyType === 'scan' && session.stageScanned) return charState;
-
   const char = { ...charState, stats: { ...charState.stats }, logs: [...(charState.logs || [])] };
   session.supplyCharges -= 1;
 
   if (supplyType === 'scan') {
     session.stageScanned = true;
-    session.lastStageResult = {
-      type: 'scan',
-      vi: '🔍 [Thẩm Định Dị Thể] Bạn phân tích quy luật vận hành của chặng này: +25% tỷ lệ kiểm định, giảm 50% sát thương nhận vào và phát hiện +10 Ahn chiến lợi phẩm ẩn!',
-      en: '🔍 [Tactical Tuning] You analyzed this sector’s anomaly pattern: +25% check odds, -50% incoming damage, and +10 bonus Ahn uncovered!'
-    };
+    session.lastStageResult = { type: 'scan', vi: SUPPLY_TEXT.scan.vi, en: SUPPLY_TEXT.scan.en };
   } else {
-    char.stats.health = clamp((char.stats.health || 0) + 16, 0, 100);
-    char.stats.sanity = clamp((char.stats.sanity || 0) + 14, 0, 100);
-    session.sanityStrain = clamp((session.sanityStrain || 0) - 20, 0, 100);
-    session.lastStageResult = {
-      type: 'breather',
-      vi: '💉 [Tiếp Tế Thực Địa] Bạn dùng thuốc kích thích sinh học và điều hòa nhịp thở: +16 HP, +14 SP, -20% Áp lực Tâm thần!',
-      en: '💉 [Field Stims] You administered bio-stimulants and steadied your breathing: +16 HP, +14 SP, -20% Sanity Strain!'
-    };
+    const b = DUNGEON_BALANCE.breather;
+    char.stats.wealth = Math.max(0, (char.stats.wealth || 0) - b.cost);
+    char.stats.health = clamp((char.stats.health || 0) + b.health, 0, 100);
+    char.stats.sanity = clamp((char.stats.sanity || 0) + b.sanity, 0, 100);
+    session.sanityStrain = clamp((session.sanityStrain || 0) + b.strain, 0, 100);
+    session.lastStageResult = { type: 'breather', vi: SUPPLY_TEXT.breather.vi, en: SUPPLY_TEXT.breather.en };
   }
 
   char.pendingDungeon = session;
@@ -951,10 +1086,10 @@ export function getDungeonCurrentStage(session) {
 /**
  * Checks if a specific choice is available based on character state and inventory
  */
-export function isDungeonChoiceAvailable(choice, char, session) {
+export function isDungeonChoiceAvailable(choice, char) {
   if (!choice || !char) return false;
   if (choice.reqItem) {
-    const hasItem = (char.inventory || []).some(it => it.id === choice.reqItem || it === choice.reqItem);
+    const hasItem = (char.inventory || []).some((it) => it.id === choice.reqItem || it === choice.reqItem);
     if (!hasItem) return false;
   }
   if (choice.costAhn) {
@@ -964,13 +1099,31 @@ export function isDungeonChoiceAvailable(choice, char, session) {
   return true;
 }
 
+const breakOutcome = (char, session, def, stage, kind) => {
+  const haul = Math.round((session.accumulatedLootAhn || 0) * DUNGEON_BALANCE.breakLootKept);
+  if (haul > 0) char.stats.wealth = clamp((char.stats.wealth || 0) + haul, 0, 100);
+  char.stats.sanity = clamp(Math.max(char.stats.sanity || 0, 6) - 4, 1, 100);
+  addScar(char, 'Di chứng sụp đổ tinh thần');
+  char.pendingDungeon = null;
+  const text = BREAK_TEXT[kind];
+  return {
+    outcome: 'broken',
+    titleVi: text.title.vi,
+    titleEn: text.title.en,
+    resultVi: text.body.vi,
+    resultEn: text.body.en,
+    haul: { ahn: haul, merit: session.accumulatedMerit || 0 },
+    isDead: false
+  };
+};
+
 /**
  * Resolves a choice taken in the active dungeon
  * Returns updated { char, session, isFinished, resolution }
  */
 export function resolveDungeonChoice(charState, choiceIndex, rng = Math.random) {
-  let char = { ...charState, stats: { ...charState.stats }, logs: [...(charState.logs || [])] };
-  let session = char.pendingDungeon ? { ...char.pendingDungeon } : null;
+  const char = { ...charState, stats: { ...charState.stats }, logs: [...(charState.logs || [])] };
+  const session = char.pendingDungeon ? { ...char.pendingDungeon, logs: [...(char.pendingDungeon.logs || [])] } : null;
   if (!session) return { char, session: null, isFinished: true, resolution: null };
 
   const def = DUNGEON_DEFINITIONS[session.id];
@@ -981,201 +1134,189 @@ export function resolveDungeonChoice(charState, choiceIndex, rng = Math.random) 
   }
 
   const choice = stage.choices[choiceIndex];
-  if (!choice) return { char, session, isFinished: false, resolution: null };
+  if (!choice || !isDungeonChoiceAvailable(choice, char)) return { char, session, isFinished: false, resolution: null };
 
-  // Calculate traits & tactical modifiers
-  const traits = traitsOf(char);
   const mastery = getDungeonMastery(def, char);
-  const stance = session.stance || 'balanced';
-  const scanned = Boolean(session.stageScanned);
+  const startTier = getStrainTier(session.sanityStrain || 0).id;
 
-  // Check trait bonus if applicable
   let success = true;
-  if (choice.checkTrait) {
-    const traitVal = traits[choice.checkTrait] ?? 1.0;
-    let chance = 0.76 * traitVal + mastery.checkBonus;
-    if (stance === 'guarded') chance += 0.12;
-    if (stance === 'reckless' && choice.checkTrait === 'vigor') chance += 0.10;
-    if (scanned) chance += 0.25;
-    const roll = rng();
-    success = roll < clamp(chance, 0.35, 0.98);
-  }
+  if (choice.checkTrait) success = rng() < checkChanceOf(choice, char, session, mastery);
 
-  // Consume item if needed
   if (choice.consumeItem && choice.reqItem) {
-    char.inventory = (char.inventory || []).filter(it => (it.id || it) !== choice.reqItem);
+    char.inventory = (char.inventory || []).filter((it) => (it.id || it) !== choice.reqItem);
   }
+  if (choice.costAhn) char.stats.wealth = Math.max(0, (char.stats.wealth || 0) - choice.costAhn);
 
-  // Cost Ahn
-  if (choice.costAhn) {
-    char.stats.wealth = Math.max(0, (char.stats.wealth || 0) - choice.costAhn);
-  }
-
-  // Apply FX with Stance, Mastery, Scan & Check scaling
   const fx = choice.fx || {};
-  let hpDelta = fx.health || 0;
-  let spDelta = fx.sanity || 0;
-
-  // Preserve exact lethal damage when already at critical 1-3 HP without scan/guarded so fatal tests remain deterministic
-  const isBareMortalTest = (char.stats.health || 0) <= 3 && stance === 'balanced' && !scanned && !mastery.hasMastery;
-  if (!isBareMortalTest) {
-    const stanceDmgMult = stance === 'guarded' ? 0.65 : stance === 'reckless' ? 1.2 : 1.0;
-    const scanDmgMult = scanned ? 0.5 : 1.0;
-    const resolveMult = session.resolveAwakened ? 0.75 : 1.0;
-    const totalDmgMult = mastery.dmgMult * stanceDmgMult * scanDmgMult * resolveMult;
-
-    if (hpDelta < 0) hpDelta = Math.min(-1, Math.ceil(hpDelta * totalDmgMult));
-    if (spDelta < 0) spDelta = Math.min(-1, Math.ceil(spDelta * totalDmgMult));
-  }
-
-  // Scale down damage if trait check succeeded, or increase slightly if failed
-  if (choice.checkTrait) {
-    if (success) {
-      if (hpDelta < 0) hpDelta = Math.ceil(hpDelta * 0.65);
-      if (spDelta < 0) spDelta = Math.ceil(spDelta * 0.65);
-    } else {
-      if (hpDelta < 0) hpDelta = Math.floor(hpDelta * 1.2);
-      if (spDelta < 0) spDelta = Math.floor(spDelta * 1.2);
-    }
-  }
-
-  const stanceLootMult = stance === 'guarded' ? 0.85 : stance === 'reckless' ? 1.45 : 1.0;
-  const meritGain = fx.merit ? (stance === 'reckless' ? Math.round(fx.merit * 1.3) : fx.merit) : 0;
-  const resGain = (fx.resonance || 0) + (stance === 'reckless' && !choice.isFlee ? 4 : 0);
+  const resultMult = choice.checkTrait ? (success ? DUNGEON_BALANCE.successDamage : DUNGEON_BALANCE.failDamage) : 1;
+  const hpDelta = fx.health < 0
+    ? Math.min(-1, Math.ceil(fx.health * damageMultOf(def, char, session, mastery, 'health') * resultMult))
+    : healOf(fx.health);
+  const spDelta = fx.sanity < 0
+    ? Math.min(-1, Math.ceil(fx.sanity * damageMultOf(def, char, session, mastery, 'sanity') * resultMult))
+    : healOf(fx.sanity);
+  const rewards = stageRewards(choice, session, success);
 
   char.stats.health = clamp((char.stats.health || 0) + hpDelta, 0, 100);
   char.stats.sanity = clamp((char.stats.sanity || 0) + spDelta, 0, 100);
-  if (fx.wealth) char.stats.wealth = clamp((char.stats.wealth || 0) + fx.wealth, 0, 100);
-  if (fx.rep) char.stats.rep = clamp((char.stats.rep || 0) + fx.rep, 0, 100);
-  if (fx.network) char.stats.network = clamp((char.stats.network || 0) + fx.network, 0, 100);
-  if (resGain) char.resonance = clamp((char.resonance || 0) + resGain, 0, 100);
-  if (meritGain) char.merit = Math.max(0, (char.merit || 0) + meritGain);
+  if (rewards.wealth) char.stats.wealth = clamp((char.stats.wealth || 0) + rewards.wealth, 0, 100);
+  if (rewards.rep) char.stats.rep = clamp((char.stats.rep || 0) + rewards.rep, 0, 100);
+  if (rewards.network) char.stats.network = clamp((char.stats.network || 0) + rewards.network, 0, 100);
+  if (rewards.resonance) char.resonance = clamp((char.resonance || 0) + rewards.resonance, 0, 100);
+  rememberResonance(char, rewards.resonance || 0);
+  if (rewards.merit) char.merit = Math.max(0, (char.merit || 0) + rewards.merit);
   if (fx.heat) char.heat = Math.max(0, (char.heat || 0) + fx.heat);
   if (fx.taboo) char.taboo = Math.max(0, (char.taboo || 0) + fx.taboo);
 
-  // Accumulate loot
-  const stageLoot = (choice.lootAhn ? Math.round(choice.lootAhn * stanceLootMult) : 0) + (scanned && !choice.isFlee ? 10 : 0);
-  if (stageLoot > 0) {
-    session.accumulatedLootAhn = (session.accumulatedLootAhn || 0) + stageLoot;
-  }
-  if (meritGain > 0) {
-    session.accumulatedMerit = (session.accumulatedMerit || 0) + meritGain;
+  session.accumulatedLootAhn = (session.accumulatedLootAhn || 0) + rewards.loot;
+  session.accumulatedMerit = (session.accumulatedMerit || 0) + rewards.merit;
+
+  const stance = STANCE[session.stance || 'balanced'];
+  const colorCalm = (char.flags || []).includes('ColorFixer') ? DUNGEON_BALANCE.ego.color.strainMult : 1;
+  const rawStrain = ((stage.strainGain || 15) + (choice.strainDelta || 0)) * stance.strain * (session.stageScanned ? 0.5 : 1) * colorCalm;
+  session.sanityStrain = clamp((session.sanityStrain || 0) + Math.round(rawStrain) + (success ? 0 : DUNGEON_BALANCE.failStrain), 0, 100);
+
+  const notes = [];
+  if (!success) {
+    const text = FAIL_TEXT[def.theme]?.[choice.checkTrait] || GENERIC_FAIL;
+    notes.push({ vi: choice.failVi || text.vi, en: choice.failEn || text.en });
   }
 
-  // Update Sanity Strain & Resolve Check
-  const baseStrain = stage.strainGain || 15;
-  const deltaStrain = choice.strainDelta || 0;
-  const rawStrainGain = Math.round((baseStrain + deltaStrain) * (stance === 'guarded' ? 0.65 : stance === 'reckless' ? 1.15 : 1.0) * (scanned ? 0.5 : 1.0));
-  session.sanityStrain = clamp((session.sanityStrain || 0) + rawStrainGain, 0, 100);
-
-  let resolveNoteVi = '';
-  let resolveNoteEn = '';
-  if (session.sanityStrain >= 80 && !session.resolveAwakened && char.stats.health > 0) {
-    const resolveSuccess = char.stats.sanity >= 35 || (char.flags || []).includes('EGOAwakened') || rng() < 0.65;
-    if (resolveSuccess) {
+  let broke = null;
+  let resolveEvent = null;
+  if (session.sanityStrain >= 80 && !session.resolveAwakened && char.stats.health > 0 && session.sanityStrain < DUNGEON_BALANCE.breakAt) {
+    const holds = char.stats.sanity >= 35 || (char.flags || []).includes('EGOAwakened') || rng() < 0.65;
+    if (holds) {
       session.resolveAwakened = true;
       session.sanityStrain = Math.max(20, session.sanityStrain - 35);
       char.stats.sanity = clamp((char.stats.sanity || 0) + 12, 0, 100);
-      char.resonance = clamp((char.resonance || 0) + 10, 0, 100);
-      resolveNoteVi = ' ⚡ [Ý Chí Bất Khuất] Giữa áp lực cùng cực, tâm thức bạn bừng tỉnh (+12 SP, +10% Resonance, -35% Strain, giảm 25% sát thương tiếp theo)!';
-      resolveNoteEn = ' ⚡ [Heroic Resolve] Amidst crushing pressure, your resolve awakened (+12 SP, +10% Resonance, -35% Strain, -25% future damage)!';
+      char.resonance = clamp((char.resonance || 0) + 6, 0, 100);
+      rememberResonance(char, 6);
+      resolveEvent = 'won';
+      notes.push({ vi: STRAIN_NOTES.resolveWon.vi, en: STRAIN_NOTES.resolveWon.en });
     } else {
       session.sanityStrain = Math.max(45, session.sanityStrain - 25);
       char.stats.sanity = clamp((char.stats.sanity || 0) - 6, 0, 100);
-      resolveNoteVi = ' ⚠️ [Chấn Động Tâm Thần] Áp lực dị giới làm tim bạn đập loạn nhịp (-6 SP, hạ Strain về mức kiểm soát).';
-      resolveNoteEn = ' ⚠️ [Mental Tremor] Anomalous pressure shook your nerves (-6 SP, Strain vented to manageable levels).';
+      resolveEvent = 'lost';
+      notes.push({ vi: STRAIN_NOTES.resolveLost.vi, en: STRAIN_NOTES.resolveLost.en });
     }
+  } else {
+    const nowTier = getStrainTier(session.sanityStrain).id;
+    if (nowTier !== startTier && STRAIN_NOTES[nowTier]) notes.push({ vi: STRAIN_NOTES[nowTier].vi, en: STRAIN_NOTES[nowTier].en });
   }
 
-  session.stageScanned = false;
-  session.lastStageResult = {
-    type: choice.checkTrait ? (success ? 'check_ok' : 'check_fail') : 'stage_clear',
-    stageNum: session.currentStageIndex + 1,
-    stageNameVi: stage.nameVi,
-    stageNameEn: stage.nameEn,
-    vi: `${choice.resultVi}${resolveNoteVi}`,
-    en: `${choice.resultEn}${resolveNoteEn}`,
-    hpDelta,
-    spDelta,
-    lootGain: stageLoot + (fx.wealth > 0 ? fx.wealth : 0)
-  };
-
-  // Scars & Records
-  if (choice.scarAdd) {
-    addScar(char, choice.scarAdd);
+  if (!success && char.stats.health > 0 && char.stats.health <= 20) addScar(char, `Vết cào hằn từ ${def.titleVi}`);
+  if (choice.scarAdd) addScar(char, choice.scarAdd);
+  for (const flag of choice.flagAdd || []) if (!(char.flags || []).includes(flag)) char.flags = [...(char.flags || []), flag];
+  if (choice.later?.length) {
+    const threads = choice.later.map((l, i) => ({
+      id: `thr_${char.age}_${l.id}_${i}`,
+      kind: 'major',
+      eventId: l.id,
+      plantedAtAge: char.age,
+      triggerAge: char.age + (l.years || 3),
+      reasonVi: l.reasonVi,
+      reasonEn: l.reasonEn,
+      fulfilled: false
+    }));
+    char.weaver = { ...char.weaver, pendingThreads: [...(char.weaver?.pendingThreads || []), ...threads] };
   }
   if (choice.recordAdd && !(char.unlockedRecords || []).includes(choice.recordAdd)) {
     char.unlockedRecords = [...(char.unlockedRecords || []), choice.recordAdd];
   }
 
-  // Build log
+  const resultVi = success ? choice.resultVi : notes[0].vi;
+  const resultEn = success ? choice.resultEn : notes[0].en;
+  const extraVi = notes.slice(success ? 0 : 1).map((n) => n.vi).join(' ');
+  const extraEn = notes.slice(success ? 0 : 1).map((n) => n.en).join(' ');
+  session.stageScanned = false;
+  session.egoActive = false;
+  session.lastStageResult = {
+    type: choice.checkTrait ? (success ? 'check_ok' : 'check_fail') : 'stage_clear',
+    stageNum: session.currentStageIndex + 1,
+    stageNameVi: stage.nameVi,
+    stageNameEn: stage.nameEn,
+    vi: `${resultVi}${extraVi ? ` ${extraVi}` : ''}`,
+    en: `${resultEn}${extraEn ? ` ${extraEn}` : ''}`,
+    hpDelta,
+    spDelta,
+    lootGain: rewards.loot + Math.max(0, rewards.wealth),
+    resolve: resolveEvent
+  };
+
   const stageLog = {
     id: `log_dungeon_${session.id}_${session.currentStageIndex}_${Date.now()}`,
     age: char.age,
     season: char.season || 'Xuân',
     type: 'story',
-    vi: `[${def.titleVi} · Chặng ${session.currentStageIndex + 1}: ${stage.nameVi}] ${choice.resultVi}`,
-    en: `[${def.titleEn} · Stage ${session.currentStageIndex + 1}: ${stage.nameEn}] ${choice.resultEn}`
+    vi: `[${def.titleVi} · Chặng ${session.currentStageIndex + 1}: ${stage.nameVi}] ${session.lastStageResult.vi}`,
+    en: `[${def.titleEn} · Stage ${session.currentStageIndex + 1}: ${stage.nameEn}] ${session.lastStageResult.en}`
   };
   char.logs.push(stageLog);
   session.logs.push(stageLog);
 
-  // Check death or sanity breakdown
   if (char.stats.health <= 0) {
     char.alive = false;
     char.deathCauseVi = `Bỏ mạng trong ${def.titleVi} (${stage.nameVi})`;
     char.deathCauseEn = `Perished in ${def.titleEn} (${stage.nameEn})`;
     char.pendingDungeon = null;
+    const title = ENDING_TEXT.dead.title({ vi: def.titleVi, en: def.titleEn });
+    const body = ENDING_TEXT.dead.body({ vi: stage.nameVi, en: stage.nameEn });
     return {
       char,
       session: null,
       isFinished: true,
       resolution: {
-        titleVi: `Tử Trận Trong ${def.titleVi}`,
-        titleEn: `Fell in ${def.titleEn}`,
-        resultVi: `Vết thương chí tử tại ${stage.nameVi} đã cướp đi sinh mệnh của bạn. Thân xác bạn hòa lẫn vào lòng hầm ngục.`,
-        resultEn: `Fatal wounds sustained in ${stage.nameEn} claimed your life. Your body remains in the deep vaults.`,
+        outcome: 'dead',
+        titleVi: title.vi,
+        titleEn: title.en,
+        resultVi: body.vi,
+        resultEn: body.en,
+        haul: { ahn: 0, merit: session.accumulatedMerit || 0 },
         isDead: true
       }
     };
   }
 
-  // Check if player chose to flee or reached end
+  if (char.stats.sanity <= 0 || session.sanityStrain >= DUNGEON_BALANCE.breakAt) {
+    broke = breakOutcome(char, session, def, stage, char.stats.sanity <= 0 ? 'mind' : 'strain');
+    return { char, session: null, isFinished: true, resolution: broke };
+  }
+
   const isFlee = Boolean(choice.isFlee);
   const isLastStage = session.currentStageIndex >= def.stages.length - 1;
 
   if (isFlee || isLastStage) {
-    // Award accumulated loot + full conquest triumph bonus
-    const conquestBonusAhn = !isFlee && isLastStage ? 15 : 0;
-    const totalLoot = (session.accumulatedLootAhn || 0) + conquestBonusAhn;
-    if (totalLoot > 0) {
-      char.stats.wealth = clamp((char.stats.wealth || 0) + totalLoot, 0, 100);
+    const c = DUNGEON_BALANCE.conquest;
+    const conquered = !isFlee && isLastStage;
+    const totalLoot = (session.accumulatedLootAhn || 0) + (conquered ? c.ahn : 0);
+    if (totalLoot > 0) char.stats.wealth = clamp((char.stats.wealth || 0) + totalLoot, 0, 100);
+    if (conquered) {
+      char.stats.health = clamp((char.stats.health || 0) + c.health, 0, 100);
+      char.stats.sanity = clamp((char.stats.sanity || 0) + c.sanity, 0, 100);
+      char.merit = (char.merit || 0) + c.merit;
+      session.accumulatedMerit = (session.accumulatedMerit || 0) + c.merit;
     }
-    if (!isFlee && isLastStage) {
-      char.stats.health = clamp((char.stats.health || 0) + 10, 0, 100);
-      char.stats.sanity = clamp((char.stats.sanity || 0) + 12, 0, 100);
-      char.merit = (char.merit || 0) + 8;
-      session.accumulatedMerit = (session.accumulatedMerit || 0) + 8;
-    }
-    const totalHaulDisplay = totalLoot + (fx.wealth > 0 ? fx.wealth : 0);
     char.pendingDungeon = null;
-
-    const resolution = {
-      titleVi: isFlee ? `Rút Lui Khỏi ${def.titleVi}` : `Chinh Phục Hoàn Hảo: ${def.titleVi}`,
-      titleEn: isFlee ? `Retreated from ${def.titleEn}` : `Dungeon Conquered: ${def.titleEn}`,
-      resultVi: isFlee
-        ? `${choice.resultVi}\n\nBạn rút lui an toàn khỏi ${stage.nameVi}. Tổng thù lao thu hoạch: +${totalHaulDisplay} Ahn, +${session.accumulatedMerit} Merit.`
-        : `${choice.resultVi}\n\n🏆 Bạn đã chinh phục trọn vẹn cả 4 chặng của ${def.titleVi}! Hào khí chiến thắng giúp hồi phục thể trạng (+10 HP, +12 SP). Tổng chiến lợi phẩm: +${totalHaulDisplay} Ahn, +${session.accumulatedMerit} Merit.`,
-      resultEn: isFlee
-        ? `${choice.resultEn}\n\nYou successfully retreated from ${stage.nameEn}. Total haul: +${totalHaulDisplay} Ahn, +${session.accumulatedMerit} Merit.`
-        : `${choice.resultEn}\n\n🏆 You conquered all 4 stages of ${def.titleEn}! The rush of triumph restored your vigor (+10 HP, +12 SP). Total haul: +${totalHaulDisplay} Ahn, +${session.accumulatedMerit} Merit.`,
-      isDead: false
+    const name = { vi: def.titleVi, en: def.titleEn };
+    const ending = conquered ? ENDING_TEXT.conquered : ENDING_TEXT.fled;
+    const title = ending.title(name);
+    return {
+      char,
+      session: null,
+      isFinished: true,
+      resolution: {
+        outcome: conquered ? 'conquered' : 'fled',
+        titleVi: title.vi,
+        titleEn: title.en,
+        resultVi: `${session.lastStageResult.vi}\n\n${ending.body.vi}`,
+        resultEn: `${session.lastStageResult.en}\n\n${ending.body.en}`,
+        haul: { ahn: totalLoot + Math.max(0, rewards.wealth), merit: session.accumulatedMerit || 0 },
+        isDead: false
+      }
     };
-
-    return { char, session: null, isFinished: true, resolution };
   }
 
-  // Advance stage
   session.currentStageIndex += 1;
   char.pendingDungeon = session;
 
@@ -1186,25 +1327,28 @@ export function resolveDungeonChoice(charState, choiceIndex, rng = Math.random) 
  * Direct retreat action from dungeon
  */
 export function fleeDungeon(charState) {
-  let char = { ...charState, stats: { ...charState.stats }, logs: [...(charState.logs || [])] };
-  let session = char.pendingDungeon;
+  const char = { ...charState, stats: { ...charState.stats }, logs: [...(charState.logs || [])] };
+  const session = char.pendingDungeon;
   if (!session) return { char, session: null, isFinished: true };
 
   const def = DUNGEON_DEFINITIONS[session.id];
-  const stage = def?.stages[session.currentStageIndex];
-
-  if (session.accumulatedLootAhn > 0) {
-    char.stats.wealth = clamp((char.stats.wealth || 0) + session.accumulatedLootAhn, 0, 100);
-  }
+  const haul = session.accumulatedLootAhn || 0;
+  if (haul > 0) char.stats.wealth = clamp((char.stats.wealth || 0) + haul, 0, 100);
   char.pendingDungeon = null;
 
-  const resolution = {
-    titleVi: `Rút Lui Khỏi ${def?.titleVi || 'Hầm Ngục'}`,
-    titleEn: `Retreated from ${def?.titleEn || 'Dungeon'}`,
-    resultVi: `Bạn quyết định rút lui khẩn cấp từ ${stage?.nameVi || 'giữa đường'} để bảo toàn tính mạng. Mang về +${session.accumulatedLootAhn || 0} Ahn.`,
-    resultEn: `You initiated an emergency evacuation from ${stage?.nameEn || 'midway'} to preserve your life. Returning with +${session.accumulatedLootAhn || 0} Ahn.`,
-    isDead: false
+  const title = ENDING_TEXT.fled.title({ vi: def?.titleVi || 'Hầm Ngục', en: def?.titleEn || 'Dungeon' });
+  return {
+    char,
+    session: null,
+    isFinished: true,
+    resolution: {
+      outcome: 'fled',
+      titleVi: title.vi,
+      titleEn: title.en,
+      resultVi: ENDING_TEXT.fled.body.vi,
+      resultEn: ENDING_TEXT.fled.body.en,
+      haul: { ahn: haul, merit: session.accumulatedMerit || 0 },
+      isDead: false
+    }
   };
-
-  return { char, session: null, isFinished: true, resolution };
 }

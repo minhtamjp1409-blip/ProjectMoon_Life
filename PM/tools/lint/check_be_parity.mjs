@@ -1,11 +1,11 @@
 /**
  * The backend mirrors a few tables from the frontend engine (Fixer ladder, Color gate, Finger rank names).
  * This fails when the two disagree, so the milestone a player sees can never differ from the gate that opens the exam.
- * Usage: node check_be_parity.mjs
+ * Usage: node tools/lint/check_be_parity.mjs
  */
 import fs from 'fs';
-import { FIXER_LADDER, COLOR_FIXER_REQ, FINGER_LADDERS } from './src/engine/careerPipeline.js';
-import { FINGER_RANKS } from './src/data/worldData.js';
+import { FIXER_LADDER, COLOR_FIXER_REQ, FINGER_LADDERS } from '../../src/engine/careerPipeline.js';
+import { FINGER_RANKS } from '../../src/data/worldData.js';
 
 const cs = fs.readFileSync('../PM_BE/Services/DirectorEngineService.cs', 'utf8');
 const problems = [];

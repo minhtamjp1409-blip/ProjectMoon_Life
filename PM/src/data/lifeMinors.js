@@ -848,7 +848,7 @@ export const LIFE_MINORS = [
         {
           out: [
             O(55, 'Bạn nhanh hơn một tích tắc. {rival} đổ gục xuống vũng nước đục; bạn đứng lặng dưới mưa hồi lâu cho đến khi nước mưa rửa sạch vết máu trên tay.', 'You were a breath faster. {rival} collapsed into the mud; you stood in the rain until downpours rinsed away the gore.', { sanity: -12, rep: 4, heat: 6 }, { npcFate: { rival: 'dead' }, scar: 'Phát súng dưới mưa', motif: { violence: 2 } }),
-            O(45, 'Viên đạn xé toạc bả vai bạn. {rival} hạ súng bỏ đi để bạn sống sót trong đau đớn; có lẽ đó chính là sự báo thù tàn khốc nhất.', 'A heavy bullet punched through your shoulder. {rival} walked away leaving you to bleed—perhaps the cruelest vengeance of all.', { health: -18, sanity: -6 }, { bond: { rival: -10 } })
+            O(45, 'Viên đạn xé toạc bả vai bạn. {rival} hạ súng bỏ đi để bạn sống sót trong đau đớn; có lẽ đó chính là sự báo thù tàn khốc nhất.', 'A heavy bullet punched through your shoulder. {rival} walked away leaving you to bleed, perhaps the cruelest vengeance of all.', { health: -18, sanity: -6 }, { bond: { rival: -10 } })
           ]
         }
       ),
@@ -1377,33 +1377,6 @@ export const LIFE_MINORS = [
     { network: -1 }
   ),
 
-  M(
-    'm_ws_taboo_order',
-    GROWN,
-    { jobs: ['Workshop Craftsman'] },
-    '[Đơn đặt hàng vũ khí Taboo] Một vị khách hàng bí ẩn trùm kín mặt đến Workshop đặt rèn một loại vũ khí có công năng vượt xa quy chuẩn kiểm định của Tres, thứ mà The Head chắc chắn sẽ phán định là Taboo. Tiền công trả gấp mười lần.',
-    '[The Taboo Weapon Commission] A masked patron visited your workshop, offering tenfold pay to forge an armament exceeding Tres specifications—something the Head would brand as Taboo.',
-    [
-      C(
-        'Nhận rèn tác phẩm cấm',
-        'Accept the forbidden commission',
-        'Bạn thức trắng cả tháng ròng để hoàn thành kiệt tác. Đó là món vũ khí hoàn mỹ và sắc bén nhất trong cuộc đời thợ rèn của bạn, nhưng bạn vĩnh viễn không được phép khắc tên mình lên lưỡi thép.',
-        'You spent an entire month forging the taboo masterpiece. It was your life’s crowning creation, yet you could never engrave your mark upon its steel.',
-        { wealth: 15, rep: 4, taboo: 1 },
-        { mem: 'taboo_weapon' }
-      ),
-      C(
-        'Thẳng thừng từ chối vì sợ Head',
-        'Decline out of fear of the Head',
-        'Vị khách bí ẩn để lại một tấm danh thiếp trên bàn rồi rời đi. Trên tấm thiếp chỉ in duy nhất một vết cào móng vuốt kỳ quái.',
-        'The enigmatic patron dropped a calling card bearing solely a bizarre talon mark before dissolving into the street.',
-        { sanity: -2 }
-      )
-    ],
-    I('Bạn ngập ngừng bảo sẽ cân nhắc; vị khách ấy không bao giờ quay trở lại nữa.', 'You stalled, and the masked patron never crossed your threshold again.'),
-    { theme: 'taboo' }
-  ),
-
   // =========================================================================
   // ACTIVE MEDICAL & WOUND RECOVERY (BACKSTREET CLINIC / NEST / CHILDHOOD / WELLNESS)
   // =========================================================================
@@ -1567,9 +1540,9 @@ export const LIFE_MINORS = [
       C(
         'Đại tu toàn diện giáp nano và mài sắc lưỡi cắt phân tử (-22 Ahn)',
         'Commission full armor nano-reinforcement & molecular hone (-22 Ahn)',
-        'Bộ giáp được vá kín, lưỡi kiếm mài lại. Chủ xưởng giới thiệu tay nghề của bạn với vài khách quen.',
-        'The armor was patched and the blade honed. The proprietor mentioned your work to a few regular clients.',
-        { rep: 8, network: 5, wealth: -22 },
+        'Bộ giáp được vá kín, lưỡi kiếm mài lại. Bạn thử từng khớp cho đến khi không còn tiếng kẹt; chủ xưởng giới thiệu tên bạn với nhóm khách thường thuê người hộ tống.',
+        'The armor was patched and the blade honed. You tested every joint until the creaking stopped; the proprietor passed your name to clients who regularly hire escorts.',
+        { sanity: 8, rep: 6, network: 12, wealth: -22 },
         { costAhn: 22 }
       ),
       C(

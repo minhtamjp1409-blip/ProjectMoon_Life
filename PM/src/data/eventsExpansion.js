@@ -978,40 +978,6 @@ export const EXPANSION_EVENTS = [
     ]
   },
 
-  {
-    id: 'ev4_elder_workshop_mark',
-    age: [62, 140],
-    major: true,
-    weight: 12,
-    jobs: ['Workshop Craftsman'],
-    need: { stat: { merit: [45, 9999] } },
-    vi: '[Dấu xưởng trên lưỡi mới] Một thợ trẻ mang đến thanh kiếm vừa xuất lò để xin đóng dấu xưởng của bạn. Lưỡi kiếm đẹp, nhưng mối hàn bên trong chưa được thử tải. Khách đang chờ, còn tên xưởng sẽ nằm trên món hàng lâu hơn cả ca làm hôm nay.',
-    en: '[The Workshop Mark] A young craftsperson brings a fresh blade for your Workshop seal. It looks fine, but the inner weld has not been stress-tested. The client is waiting, and the Workshop name will outlast today’s shift.',
-    choices: [
-      {
-        labelVi: 'Thử tải và rèn lại mối hàn',
-        labelEn: 'Stress-test and reforge the weld',
-        effects: { wealth: -4, health: -3, merit: 4 },
-        resultVi: 'Mối hàn nứt đúng lần thử thứ ba. Bạn cùng thợ trẻ làm lại tới khuya; đơn hàng trễ, nhưng thanh kiếm mới chịu được tải ghi trên hợp đồng.',
-        resultEn: 'The weld cracked on the third test. You and the young smith worked until late. Delivery slipped, but the new blade met the load written in the contract.'
-      },
-      {
-        labelVi: 'Giao thợ cả kiểm tra và chịu trách nhiệm',
-        labelEn: 'Put the master smith in charge of inspection',
-        effects: { network: -2, sanity: 2 },
-        resultVi: 'Thợ cả giữ món hàng lại để kiểm tra. Từ nay khách hỏi ý ông ấy trước khi tìm bạn; dấu xưởng vẫn do bạn quyết.',
-        resultEn: 'The master smith held the order for inspection. Clients began asking for his opinion before yours; the Workshop seal remained your call.'
-      },
-      {
-        labelVi: 'Đóng dấu và giao đúng hạn',
-        labelEn: 'Seal it and deliver on schedule',
-        effects: { wealth: 3, sanity: -4, heat: 3 },
-        resultVi: 'Khách trả đủ tiền, nhưng thanh tra Tres ghi nhận rằng lưỡi kiếm chưa qua thử tải. Bạn giữ lại bản vẽ mối hàn và dặn xưởng không nhận thêm đơn cùng kiểu.',
-        resultEn: 'The client paid in full, but a Tres inspector recorded that the blade had not been load-tested. You kept the weld drawing and barred another order of this pattern.'
-      }
-    ]
-  },
-
   // ------------------------------------------------------------ careers
   {
     id: 'ev4_syn_loyalty_errand',

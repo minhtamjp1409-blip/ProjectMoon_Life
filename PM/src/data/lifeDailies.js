@@ -112,7 +112,7 @@ export const LIFE_DAILIES = [
     INF,
     {},
     '[Ánh nắng hiếm hoi] Lần đầu tiên trong đời bạn được người lớn bế lên sân thượng sau cơn mưa dài. Bạn nheo đôi mắt non nớt ngắm nhìn khoảng sáng vàng nhạt xuyên qua tầng mây bụi mà người lớn gọi là ánh mặt trời.',
-    '[A Rare Sunbeam] For the first time in your life, you were carried to the rooftop after a prolonged downpour. You squinted your little eyes at the pale golden warmth breaking through heavy smog—what the adults called the sun.',
+    '[A Rare Sunbeam] For the first time in your life, you were carried to the rooftop after a prolonged downpour. You squinted your little eyes at the pale golden warmth breaking through heavy smog, what the adults called the sun.',
     { sanity: 2 }
   ),
   D(
@@ -256,7 +256,7 @@ export const LIFE_DAILIES = [
     INF,
     { nest: true },
     '[Bồn khử trùng nano] Bạn được đưa vào khoang khử trùng sương nano định kỳ của khu cư dân Nest cao cấp. Hơi sương mát lạnh phủ kín không gian mang theo thoang thoảng mùi ozone nhân tạo, sạch sẽ, vô trùng nhưng hoàn toàn xa lạ với hơi ấm tự nhiên.',
-    '[Nano-Sanitation Pod] You were placed inside a residential mist-cleansing capsule for routine purification. Cool microscopic vapor enveloped you with a faint ozone scent—sterile, pristine, and completely detached from natural warmth.',
+    '[Nano-Sanitation Pod] You were placed inside a residential mist-cleansing capsule for routine purification. Cool microscopic vapor enveloped you with a faint ozone scent, sterile, pristine, and completely detached from natural warmth.',
     { health: 1 }
   ),
   D(
@@ -604,14 +604,6 @@ export const LIFE_DAILIES = [
     { sanity: -2, rep: 1 }
   ),
   D(
-    't_back_workshop',
-    [18, 25],
-    { back: true, jobs: ['Workshop Craftsman'] },
-    '[Thợ phụ Workshop mài đao] Bạn làm thợ phụ việc tại một xưởng vũ khí Workshop nhỏ, nhận mài bén những lưỡi trường đao cho các Fixer Grade 8. Một tay kiếm sĩ hài lòng vì độ bén ngọt của lưỡi kiếm đã hào phóng thưởng thêm cho bạn cả chục đồng Ahn tiền boa.',
-    '[Workshop Blade Grinding] You worked as an apprentice at a humble weapon Workshop, honing edges for Grade 8 Fixers. An experienced duelist was so impressed with your meticulous grinding that he tossed you a generous ten-Ahn tip.',
-    { wealth: 3, network: 1 }
-  ),
-  D(
     't_back_fight',
     TEEN,
     { back: true },
@@ -739,7 +731,7 @@ export const LIFE_DAILIES = [
     GROWN,
     {},
     '[Chiếc ví rơi trên sân ga] Bạn tình cờ nhặt được một chiếc ví da rơi trên sân ga tàu điện ngầm. Bên trong có 20 đồng Ahn và tấm ảnh chụp một đứa trẻ đang cười tươi; bạn giữ lấy tiền và vứt tấm ảnh đi, hoặc có lẽ là ngược lại, chính bạn cũng không còn nhớ rõ.',
-    '[Wallet on the Platform] You discovered an abandoned leather wallet upon the train platform. Inside were twenty crisp Ahn and a portrait of a smiling infant; you pocketed the currency and tossed the photo, or perhaps vice versa—you no longer recall.',
+    '[Wallet on the Platform] You discovered an abandoned leather wallet upon the train platform. Inside were twenty crisp Ahn and a portrait of a smiling infant; you pocketed the currency and tossed the photo, or perhaps vice versa, you no longer recall.',
     { wealth: 4 }
   ),
   D(
@@ -873,31 +865,6 @@ export const LIFE_DAILIES = [
     '[The Erased Colleague] The cubicle next to yours was suddenly vacated on Monday morning without notice. By Wednesday afternoon, even their name and employment history were thoroughly wiped from the corporate directory.',
     { sanity: -3 }
   ),
-  D(
-    'j_ws_order',
-    GROWN,
-    { jobs: ['Workshop Craftsman'] },
-    '[Đơn hàng của Fixer Grade 3] Một Fixer danh tiếng Grade 3 trực tiếp tìm đến Workshop đặt rèn một thanh trường đao đặc chế theo bản thiết kế riêng biệt. Bạn thức trắng bốn đêm liền bên lò nhiệt để rèn đúc từng thớ thép sao cho đạt độ cân bằng tuyệt đối.',
-    '[Grade 3 Custom Armament] A celebrated Grade 3 Fixer commissioned a specialized greatsword forged to their intricate custom blueprints. You stayed awake four consecutive nights beside the furnace to balance every layer of steel.',
-    { wealth: 5, health: -2, rep: 2 }
-  ),
-  D(
-    'j_ws_burn',
-    GROWN,
-    { jobs: ['Workshop Craftsman'] },
-    '[Tai nạn phụt lửa lò rèn] Lò nung nhiệt cao bất ngờ phụt ra một luồng hỏa diệm dữ dội do áp suất quá tải. Bạn bị cháy rụi một bên lông mày và bong tróc một mảng da lớn trên cánh tay, nhưng may mắn là phôi kiếm đang rèn vẫn giữ nguyên được độ tinh khiết.',
-    '[Furnace Backfire Flare] The high-heat smelting kiln flared abruptly from high-pressure fuel buildup. The flash fire scorched away your eyebrow and blistered your forearm, but the master blade in the vice remained undamaged.',
-    { health: -4, rep: 1 }
-  ),
-  D(
-    'j_ws_tres',
-    GROWN,
-    { jobs: ['Workshop Craftsman'] },
-    '[Thanh tra Tres Association] Đoàn thanh tra trang nghiêm của Hiệp hội Tres đến xưởng tiến hành kiểm định chất lượng các thiết bị cơ khí theo quy chuẩn an toàn. Họ đo đạc tỉ mỉ từng chi tiết rồi đóng một con dấu chứng nhận mà bạn phải cắn răng nộp 6 Ahn mới được nhận.',
-    '[Tres Association Inspection] Stern auditors from Tres Association conducted a mandatory safety compliance inspection on all workshop machinery. After rigorous measurements, they stamped an official seal that cost you six Ahn to behold.',
-    { wealth: -3, rep: 2 }
-  ),
-
   // ------------------------------------------------------------------ districts
   D(
     'r_t_time',
@@ -1034,7 +1001,7 @@ export const LIFE_DAILIES = [
     MID,
     {},
     '[Tấm ảnh tuổi mười tám] Bạn lục tìm thấy một bức ảnh ố vàng chụp chính bản thân mình vào năm tròn 18 tuổi trong đáy hòm cũ. Đôi mắt trong bức ảnh sáng ngời và tràn đầy nhiệt huyết, tựa như ánh mắt của một kẻ xa lạ nào đó từng dám mơ mộng và hy vọng giữa thế giới tàn khốc.',
-    '[Photograph at Eighteen] You unearthed a faded photograph of yourself at age eighteen hidden in an old chest. The gaze captured in the print was vibrant with hope—the look of an absolute stranger who once dared to believe in a future.',
+    '[Photograph at Eighteen] You unearthed a faded photograph of yourself at age eighteen hidden in an old chest. The gaze captured in the print was vibrant with hope, the look of an absolute stranger who once dared to believe in a future.',
     { sanity: 1, resonance: 1 }
   ),
   D(

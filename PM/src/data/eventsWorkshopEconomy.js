@@ -17,8 +17,8 @@ export const WORKSHOP_ECONOMY_EVENTS = [
       {
         labelVi: 'Mua Lưỡi Hỏa Kiếm Stigma Atelier (Tốn 65 Ahn)',
         labelEn: 'Purchase Stigma Atelier Heat Blade (Cost 65 Ahn)',
-        resultVi: 'Bạn đếm từng đồng tiền Ahn đặt lên bàn cân. Cầm lấy thanh kiếm rực lửa, bạn cảm nhận sức nóng truyền thẳng vào mạch máu. Sức mạnh chiến đấu tăng vượt trội!',
-        resultEn: 'You stacked the Ahn onto the scales. Grasping the searing hilt, raw thermal energy surged through your veins. Combat prowess vastly augmented!',
+        resultVi: 'Bạn đếm từng đồng tiền Ahn đặt lên bàn cân. Cầm lấy thanh kiếm rực lửa, bạn cảm nhận sức nóng truyền thẳng vào mạch máu. Sức mạnh chiến đấu tăng vượt trội.',
+        resultEn: 'You stacked the Ahn onto the scales. Grasping the searing hilt, raw thermal energy surged through your veins. Combat prowess vastly augmented.',
         costAhn: 65,
         itemAdd: 'wpn_stigma_blade',
         effects: { wealth: -65, rep: +15, heat: +5 }
@@ -54,8 +54,8 @@ export const WORKSHOP_ECONOMY_EVENTS = [
       {
         labelVi: 'Dốc cạn tiền bạc mua Thị thực Nest (Tốn 85 Ahn)',
         labelEn: 'Liquidate savings for the Nest Visa (Cost 85 Ahn)',
-        resultVi: 'Toàn bộ tài sản tích cóp cả đời đổi lấy tấm thẻ cư dân bằng kim loại bóng bẩy. Cánh cổng Nest District mở ra, để lại Backstreets mịt mù phía sau lưng bạn!',
-        resultEn: 'A lifetime of blood money traded for a polished citizen badge. The fortified Nest gates swung open, leaving the grim Backstreets behind forever!',
+        resultVi: 'Toàn bộ tài sản tích cóp cả đời đổi lấy tấm thẻ cư dân bằng kim loại bóng bẩy. Cánh cổng Nest District mở ra, để lại Backstreets mịt mù phía sau lưng bạn.',
+        resultEn: 'A lifetime of blood money traded for a polished citizen badge. The fortified Nest gates swung open, leaving the grim Backstreets behind forever.',
         costAhn: 85,
         flagsAdd: ['NestResident', 'Feather'],
         recordsAdd: ['nest_migration'],
@@ -65,7 +65,7 @@ export const WORKSHOP_ECONOMY_EVENTS = [
         labelVi: 'Từ chối, 85 Ahn là quá đắt đỏ cho một giấc mơ',
         labelEn: 'Decline, 85 Ahn is far too exorbitant for a dream',
         resultVi: 'Bạn quay gót trở lại con hẻm tối. Backstreets vẫn là nhà của bạn, nơi bạn thuộc về.',
-        resultEn: 'You turned back into the dimly lit alley. The Backstreets remain your home — where you belong.',
+        resultEn: 'You turned back into the dimly lit alley. The Backstreets remain your home, where you belong.',
         effects: { sanity: -5 }
       }
     ]
@@ -82,8 +82,8 @@ export const WORKSHOP_ECONOMY_EVENTS = [
       {
         labelVi: 'Cấy ghép cánh tay cơ khí Old G Corp (Tốn 70 Ahn)',
         labelEn: 'Install Old G Corp biomimetic arm (Cost 70 Ahn)',
-        resultVi: 'Cơn đau xé ruột khi xương thịt được kết nối với mạch điện sinh học. Khi vết khâu lành lặn, bạn có thể dễ dàng bóp nát một thanh sắt đặc!',
-        resultEn: 'Agonizing fire as nerves fused with bio-circuits. Once healed, your new arm crushed solid rebar like chalk!',
+        resultVi: 'Cơn đau xé ruột khi xương thịt được kết nối với mạch điện sinh học. Khi vết khâu lành lặn, bạn có thể dễ dàng bóp nát một thanh sắt đặc.',
+        resultEn: 'Agonizing fire as nerves fused with bio-circuits. Once healed, your new arm crushed solid rebar like chalk.',
         costAhn: 70,
         itemAdd: 'arm_old_gcorp_graft',
         effects: { wealth: -70, health: +25, sanity: -6, rep: +10 }
@@ -122,8 +122,8 @@ export const WORKSHOP_ECONOMY_EVENTS = [
       {
         labelVi: 'Ngâm mình trọn vẹn trong Buồng Tái Tạo K-Tier (Tốn 48 Ahn)',
         labelEn: 'Full immersion in K-Tier Singularity Restoration Pod (Cost 48 Ahn)',
-        resultVi: 'Dòng dịch ngọc bích ùa vào phổi và bao phủ toàn thân mà không hề gây ngạt. Từng vết rách cơ, mô hoại tử và sẹo chém sâu lành lại như một phép màu. Bạn bước ra khỏi kén trong trạng thái sinh lực tràn trề nhất cuộc đời!',
-        resultEn: 'The emerald Singularity tears engulfed your form without suffocating. Torn viscera and agonizing combat scars fused seamlessly as if by magic. You stepped from the vat at the pinnacle of physical perfection!',
+        resultVi: 'Dòng dịch ngọc bích ùa vào phổi và bao phủ toàn thân mà không hề gây ngạt. Từng vết rách cơ, mô hoại tử và sẹo chém sâu lành lại như một phép màu. Bạn bước ra khỏi kén trong trạng thái sinh lực tràn trề nhất cuộc đời.',
+        resultEn: 'The emerald Singularity tears engulfed your form without suffocating. Torn viscera and agonizing combat scars fused seamlessly as if by magic. You stepped from the vat at the pinnacle of physical perfection.',
         costAhn: 48,
         itemAdd: 'con_kcorp_ampoule',
         effects: { wealth: -48, health: +60, sanity: +18, heat: -5 }
@@ -139,8 +139,8 @@ export const WORKSHOP_ECONOMY_EVENTS = [
       {
         labelVi: 'Lắc đầu từ chối trước mức phí trên trời của Wing',
         labelEn: 'Decline before the exorbitant Wing price tag',
-        resultVi: 'Bạn ôm vết thương quay lưng rời đi. K Corp chỉ cứu người giàu — đó là quy luật bất biến của The City.',
-        resultEn: 'Clutching your wounds, you turned away. K Corp only saves the affluent — the eternal iron law of The City.',
+        resultVi: 'Bạn ôm vết thương quay lưng rời đi. K Corp chỉ cứu người giàu, đó là quy luật bất biến của The City.',
+        resultEn: 'Clutching your wounds, you turned away. K Corp only saves the affluent, the eternal iron law of The City.',
         effects: { sanity: -2 }
       }
     ]
@@ -152,13 +152,13 @@ export const WORKSHOP_ECONOMY_EVENTS = [
     weight: 50,
     forbids: ['Distorted'],
     vi: "[Buồng phục hồi T Corp] Chi nhánh T Corp đề nghị tua cơ thể bạn về trước lúc bị thương. Đồng hồ trên buồng chạy ngược; hợp đồng tính phí theo thời gian thu hồi. Nhân viên đưa bút cho bạn.",
-    en: '[T Corp Chrono-Restorative Pod · District 4 Tech] You pause before a licensed temporal restoration outpost harnessing T Corp’s Time Singularity. Forgoing scalpels and stitches, the Chrono-Pod rewinds your biological clock by two subjective weeks — restoring tissues to their state before catastrophic trauma.',
+    en: '[T Corp Chrono-Restorative Pod · District 4 Tech] You pause before a licensed temporal restoration outpost harnessing T Corp’s Time Singularity. Forgoing scalpels and stitches, the Chrono-Pod rewinds your biological clock by two subjective weeks, restoring tissues to their state before catastrophic trauma.',
     choices: [
       {
         labelVi: 'Kích hoạt Liệu Trình Tua Ngược Thời Gian Sinh Học (Tốn 52 Ahn)',
         labelEn: 'Initiate Temporal Biological Reversal Treatment (Cost 52 Ahn)',
-        resultVi: 'Các bánh răng đồng thau và tinh thể thời gian phát ra tiếng tích tắc nghẹt thở. Trong tích tắc ánh sáng vàng óng bừng lên, toàn bộ tế bào rách nát và độc tố trong máu tự động biến mất về trạng thái nguyên vẹn thuở ban đầu!',
-        resultEn: 'Brass chronometer gears ticked in breathless rhythm. A flash of sepia light engulfed the pod; ruptured cells and metabolic toxins rewound cleanly into flawless prior health!',
+        resultVi: 'Các bánh răng đồng thau và tinh thể thời gian phát ra tiếng tích tắc nghẹt thở. Trong tích tắc ánh sáng vàng óng bừng lên, toàn bộ tế bào rách nát và độc tố trong máu tự động biến mất về trạng thái nguyên vẹn thuở ban đầu.',
+        resultEn: 'Brass chronometer gears ticked in breathless rhythm. A flash of sepia light engulfed the pod; ruptured cells and metabolic toxins rewound cleanly into flawless prior health.',
         costAhn: 52,
         effects: { wealth: -52, health: +45, sanity: +30, resonance: -10 }
       },
@@ -191,8 +191,8 @@ export const WORKSHOP_ECONOMY_EVENTS = [
       {
         labelVi: 'Gọi Đại Tiệc Master Set Kèm Trà Thảo Mộc Thượng Hạng (Tốn 24 Ahn)',
         labelEn: 'Feast on the Grand Master Sandwich Set & Herbal Vintage (Cost 24 Ahn)',
-        resultVi: 'Cắn miếng bánh mì giòn rụm với lớp phô mai béo ngậy và thịt mềm tan trong miệng, ngụm trà thảo mộc ấm áp chảy tràn lồng ngực. Mọi đau khổ, sang chấn tinh thần và tiếng thì thầm méo mó tan biến hoàn toàn thành sự bình yên thuần khiết!',
-        resultEn: 'Savoring the golden crust overflowing with savory cutlets and molten cheese, washed down by warm herbal brew. Existential dread and lingering distortions dissolved into sheer, unadulterated contentment!',
+        resultVi: 'Cắn miếng bánh mì giòn rụm với lớp phô mai béo ngậy và thịt mềm tan trong miệng, ngụm trà thảo mộc ấm áp chảy tràn lồng ngực. Mọi đau khổ, sang chấn tinh thần và tiếng thì thầm méo mó tan biến hoàn toàn thành sự bình yên thuần khiết.',
+        resultEn: 'Savoring the golden crust overflowing with savory cutlets and molten cheese, washed down by warm herbal brew. Existential dread and lingering distortions dissolved into sheer, unadulterated contentment.',
         costAhn: 24,
         effects: { wealth: -24, sanity: +45, health: +20, resonance: -20, rep: +5 }
       },
@@ -225,8 +225,8 @@ export const WORKSHOP_ECONOMY_EVENTS = [
       {
         labelVi: 'Bao trọn Gói Nghỉ Dưỡng VIP Thượng Hạng & Trị Liệu Trầm Hương (Tốn 42 Ahn)',
         labelEn: 'Reserve Presidential VIP Suite & Aromatic Thermal Soak (Cost 42 Ahn)',
-        resultVi: 'Ngâm mình trong dòng nước ấm thơm nồng tinh dầu thảo mộc và thưởng thức rượu vang, toàn bộ căng thẳng thần kinh tan rã. Lực lượng truy đuổi cũng mất dấu bạn giữa khu phức hợp sòng bạc bảo mật cao!',
-        resultEn: 'Submerged in thermal minerals laced with aromatic oils while sipping fine vintage, every ounce of nervous tension melted away. Pursuers completely lost your trail in the high-security district!',
+        resultVi: 'Ngâm mình trong dòng nước ấm thơm nồng tinh dầu thảo mộc và thưởng thức rượu vang, toàn bộ căng thẳng thần kinh tan rã. Lực lượng truy đuổi cũng mất dấu bạn giữa khu phức hợp sòng bạc bảo mật cao.',
+        resultEn: 'Submerged in thermal minerals laced with aromatic oils while sipping fine vintage, every ounce of nervous tension melted away. Pursuers completely lost your trail in the high-security district.',
         costAhn: 42,
         effects: { wealth: -42, sanity: +50, heat: -25, resonance: -18, rep: +5 }
       },
@@ -259,8 +259,8 @@ export const WORKSHOP_ECONOMY_EVENTS = [
       {
         labelVi: 'Đặt Trọn Gói Đại Tu Giáp Nano & Hiệu Chỉnh Khớp Động Lực (Tốn 45 Ahn)',
         labelEn: 'Commission Complete Nano-Plate Armor & Joint Calibration (Cost 45 Ahn)',
-        resultVi: 'Bộ áo khoác và giáp bảo hộ được đan xen sợi siêu chịu lực chống cắt xé. Cơ thể bạn như được bao bọc trong một pháo đài thép di động, tự tin đương đầu với mọi đòn hiểm hóc!',
-        resultEn: 'Your coat was woven with hyper-tensile ballistic weave and carbon plating. Moving like a walking armored citadel, your resilience against fatal blows skyrocketed!',
+        resultVi: 'Bộ áo khoác và giáp bảo hộ được đan xen sợi siêu chịu lực chống cắt xé. Cơ thể bạn như được bao bọc trong một pháo đài thép di động, tự tin đương đầu với mọi đòn hiểm hóc.',
+        resultEn: 'Your coat was woven with hyper-tensile ballistic weave and carbon plating. Moving like a walking armored citadel, your resilience against fatal blows skyrocketed.',
         costAhn: 45,
         itemAdd: 'arm_atelier_coat',
         effects: { wealth: -45, health: +40, rep: +15, sanity: +8 }
@@ -289,13 +289,13 @@ export const WORKSHOP_ECONOMY_EVENTS = [
     weight: 45,
     forbids: ['Distorted'],
     vi: "[Chỗ trú của Seven] Bạn tìm đến cửa mật mã của Seven Association. Bên trong có giường bệnh, hồ sơ và người biết cách thương lượng với kẻ đang săn bạn. Nhân viên chỉ mở cửa sau khi nghe tên bạn.",
-    en: '[Sanctuary at Seven Association Safehouse] Hunted by adversaries or exhausted from syndicate turf wars, you signal the coded door of Seven Association — The City’s apex information brokers. Behind reinforced blast doors lies diplomatic immunity, confidential surgery, and record laundering.',
+    en: '[Sanctuary at Seven Association Safehouse] Hunted by adversaries or exhausted from syndicate turf wars, you signal the coded door of Seven Association, The City’s apex information brokers. Behind reinforced blast doors lies diplomatic immunity, confidential surgery, and record laundering.',
     choices: [
       {
         labelVi: 'Mua Trọn Gói Tẩy Rửa Hồ Sơ & Điều Trị Y Tế Bí Mật (Tốn 55 Ahn)',
         labelEn: 'Purchase Complete Identity Laundering & Covert Trauma Care (Cost 55 Ahn)',
-        resultVi: 'Các thám tử Seven lập tức can thiệp xóa sạch camera và tài liệu lưu trữ của các phe phái, trong khi bác sĩ ngoại giao vá lành từng vết đạn trên người bạn. Bạn bước ra hoàn toàn tự do và khỏe mạnh!',
-        resultEn: 'Seven intelligence officers purged security feeds and faction bounties while surgeons sealed every ballistic tear under diplomatic privilege. You stepped out entirely cleared and restored!',
+        resultVi: 'Các thám tử Seven lập tức can thiệp xóa sạch camera và tài liệu lưu trữ của các phe phái, trong khi bác sĩ ngoại giao vá lành từng vết đạn trên người bạn. Bạn bước ra hoàn toàn tự do và khỏe mạnh.',
+        resultEn: 'Seven intelligence officers purged security feeds and faction bounties while surgeons sealed every ballistic tear under diplomatic privilege. You stepped out entirely cleared and restored.',
         costAhn: 55,
         effects: { wealth: -55, health: +35, sanity: +30, heat: -40, rep: +12 }
       },
@@ -327,8 +327,8 @@ export const WORKSHOP_ECONOMY_EVENTS = [
       {
         labelVi: 'Thưởng thức Chiếc Bánh Thịt Thượng Hạng Của Nghệ Nhân (Tốn 25 Ahn)',
         labelEn: 'Savor the Artisan Meat Pie Special (Cost 25 Ahn)',
-        resultVi: 'Vị giác của bạn bùng nổ trước sự hòa quyện hoàn hảo của thịt và thảo mộc. Dù có một thoáng rùng mình ớn lạnh về nguồn gốc nguyên liệu của Quận 23, cơ thể bạn phục hồi mãnh liệt như chưa từng bị thương!',
-        resultEn: 'Flavors exploded across your palate in exquisite harmony. Though an uncanny shiver gripped your spine regarding District 23’s ingredient sourcing, miraculous vitality flooded your muscles and bones!',
+        resultVi: 'Vị giác của bạn bùng nổ trước sự hòa quyện hoàn hảo của thịt và thảo mộc. Dù có một thoáng rùng mình ớn lạnh về nguồn gốc nguyên liệu của Quận 23, cơ thể bạn phục hồi mãnh liệt như chưa từng bị thương.',
+        resultEn: 'Flavors exploded across your palate in exquisite harmony. Though an uncanny shiver gripped your spine regarding District 23’s ingredient sourcing, miraculous vitality flooded your muscles and bones.',
         costAhn: 25,
         effects: { wealth: -25, health: +55, sanity: -6, rep: +10 }
       },
@@ -350,314 +350,9 @@ export const WORKSHOP_ECONOMY_EVENTS = [
     ]
   },
 
-  {
-    id: 'workshop_tres_patent_dispute',
-    age: [19, 70],
-    major: true,
-    weight: 60,
-    need: { jobs: ['Workshop Craftsman'] },
-    forbids: ['Distorted', 'workshop_tres_done'],
-    vi: '[Thanh Tra Bản Quyền của Tres Association] Hai thanh tra đeo găng tay trắng của Hiệp hội Tres bước vào xưởng của bạn. Họ cầm bản vẽ và cáo buộc cơ chế tản nhiệt trên mẫu đao mới của bạn vi phạm bằng sáng chế độc quyền của Stigma Atelier. Nếu bị phạt, xưởng sẽ phá sản.',
-    en: '[Tres Association Patent Inquest] Two white-gloved Tres inspectors enter your forge. Holding blueprints, they allege your new thermal heatsink breaches Stigma Atelier’s patent. A fine means bankruptcy.',
-    choices: [
-      {
-        labelVi: 'Trình diễn cấu trúc cơ khí cải tiến độc lập, chứng minh tính nguyên bản',
-        labelEn: 'Demonstrate independent kinematic innovation, proving originality',
-        resultVi: 'Bạn tháo rời thanh kiếm trước mặt thanh tra, chỉ ra rãnh ma sát kép hoàn toàn khác biệt với Stigma. Khâm phục tài năng cơ khí của bạn, Tres hủy bỏ đơn kiện và cấp chứng chỉ sáng chế vàng.',
-        resultEn: 'Disassembling the blade before them, you proved your dual-friction channel was utterly distinct. Impressed, Tres dismissed the claim and granted you a gold patent seal.',
-        meritAdd: 25,
-        effects: { rep: +25, network: +18, wealth: +40 },
-        flagsAdd: ['workshop_tres_done']
-      },
-      {
-        labelVi: 'Đút lót 25 Ahn cho viên thanh tra trưởng để đổi lấy sự êm thấm',
-        labelEn: 'Slip 25 Ahn to the lead inspector for an expedited clearance',
-        resultVi: 'Chiếc phong bì trượt êm vào túi áo khoác viên thanh tra. Ông ta đóng dấu "Đạt chuẩn" lên hồ sơ xưởng rồi rời đi. Bạn thoát hiểm trong gang tấc nhưng túi tiền hao hụt.',
-        resultEn: 'The envelope slipped cleanly into his coat. He stamped "Approved" on your ledger and departed. You dodged ruin at the expense of hard currency.',
-        effects: { wealth: -25, rep: +12, sanity: -5 },
-        meritAdd: 15,
-        flagsAdd: ['workshop_tres_done']
-      }
-    ]
-  },
-  {
-    id: 'workshop_color_fixer_custom_order',
-    age: [25, 75],
-    major: true,
-    weight: 55,
-    need: { jobs: ['Workshop Craftsman'] },
-    forbids: ['Distorted', 'workshop_color_order_done'],
-    vi: "[Đơn hàng của Color] Một Color Fixer đến xưởng lúc khuya, đặt khối đá từ Outskirts lên đe. \"Rèn cho tôi thanh kiếm chém qua khoảng cách.\" Người ấy để lại tiền cọc và chờ bạn trả lời.",
-    en: '[Commission from a Legendary Color Fixer] A cloaked figure enters your forge at 1:00 AM. Lowering their hood reveals an internationally renowned Color Fixer. They place a meteorite upon your anvil: "Forge me a steel that cleaves through space."',
-    choices: [
-      {
-        labelVi: 'Thức trắng 7 ngày 7 đêm dốc toàn bộ tâm huyết rèn nên thần binh',
-        labelEn: 'Labor seven relentless days and nights, forging the master blade',
-        resultVi: 'Khi nhát búa cuối cùng giáng xuống, lưỡi đao phát ra hào quang xé rách làn khói xưởng. Vị Color Fixer vung đao thử nghiệm, hài lòng để lại một túi tiền Ahn khổng lồ cùng danh xưng "Xưởng Rèn Của Thần Binh."',
-        resultEn: 'At the final hammer strike, the blade cracked the air with spatial resonance. Testing the balance, the Color Fixer left a fortune in Ahn and hailed you as a Legendary Forge Master.',
-        meritAdd: 45,
-        effects: { health: -20, rep: +60, wealth: +220, resonance: +25 },
-        flagsAdd: ['workshop_color_order_done', 'LegendarySmith']
-      }
-    ]
-  },
-
   // =========================================================================
   // ------------------------------------------------------------------ Workshop: Rich Craft Lore & Dilemmas
-  {
-    id: 'ws_mook_spatial_edge_experiment',
-    age: [20, 68],
-    major: true,
-    weight: 60,
-    need: { jobs: ['Workshop Craftsman'] },
-    forbids: ['Distorted', 'ws_mook_done'],
-    vi: '[Thử Nghiệm Lưỡi Cắt Không Gian · Mook Workshop Tech] Bạn có trong tay một bản vẽ thất lạc về công nghệ rạch nứt không gian của Mook Workshop. Để lưỡi kiếm đạt độ mỏng một phân tử, buồng cộng hưởng phải chịu áp suất cực lớn có thể làm nát vụn đôi bàn tay người thợ rèn.',
-    en: '[Dimensional Slicing Resonance · Mook Workshop Tech] You acquire a lost blueprint detailing Mook Workshop’s spatial fissure metallurgy. To grind an edge one molecule thick, the acoustic resonance chamber must withstand pressures capable of pulverizing a blacksmith’s hands.',
-    choices: [
-      {
-        labelVi: 'Gia công mài dũa bằng cảm ứng vi mô, hoàn thành thanh Katana xé không gian',
-        labelEn: 'Hone the edge via micro-sensory feedback, forging the dimensional-slash Katana',
-        resultVi: 'Lưỡi kiếm khi vung lên không tạo ra tiếng gió mà để lại một vết nứt đen lơ lửng giữa không trung trong nửa giây. Một kiếm sĩ Shi Association trả một gia tài để sở hữu thanh kiếm này.',
-        resultEn: 'The blade swing made no sound through the air, leaving a hairline spatial rift suspended for half a second. A Shi Association swordmaster paid a small fortune to claim it.',
-        meritAdd: 28,
-        effects: { health: -14, wealth: +85, rep: +30, resonance: +20 },
-        flagsAdd: ['ws_mook_done']
-      },
-      {
-        labelVi: 'Lắp thêm cơ chế giới hạn an toàn, sản xuất hàng loạt phiên bản thương mại',
-        labelEn: 'Install safety dampers, mass-producing a stabilized commercial version',
-        resultVi: 'Dù sức mạnh cắt giảm đi một nửa nhưng vũ khí an toàn tuyệt đối và bán rất chạy cho các Văn phòng hạng trung, đem lại nguồn thu nhập ổn định.',
-        resultEn: 'Though cutting potency halved, the arm was 100% reliable and sold out instantly to mid-tier Offices, securing steady royalties.',
-        meritAdd: 20,
-        effects: { wealth: +55, rep: +18, sanity: +5 },
-        flagsAdd: ['ws_mook_done']
-      }
-    ]
-  },
-  {
-    id: 'ws_wheels_industry_colossus',
-    age: [21, 70],
-    major: true,
-    weight: 55,
-    need: { jobs: ['Workshop Craftsman'] },
-    forbids: ['Distorted', 'ws_wheels_done'],
-    vi: '[Đại Chùy Chiến 180kg · Đơn Hàng Wheels Industry] Một đại hán Fixer Grade 1 từ Hiệp hội Liu đặt hàng một cây chiến chùy nặng 180kg làm từ thép nén tỷ trọng cực cao của Wheels Industry. Cây chùy này phải chịu được cú đập nổ tung giáp xe tăng của Syndicate.',
-    en: '[The 180kg Colossus Maul · Wheels Industry Commission] A towering Grade 1 Liu Fixer commissions a 180kg great-maul forged from hyper-dense Wheels Industry alloy. It must withstand kinetic impacts capable of crushing syndicate assault crawlers.',
-    choices: [
-      {
-        labelVi: 'Đúc lõi năng lượng thủy lực bên trong thân chùy, tạo lực bộc phá khi va chạm',
-        labelEn: 'Cast hydraulic kinetic accumulators inside the shaft, detonating on impact',
-        resultVi: 'Cú vung thử nghiệm của vị Fixer đập vỡ nát tảng đá thử tải ba tấn thành bụi mịn. Vị khách cười vang như sấm, thanh toán gấp rưỡi số Ahn đã hứa và giới thiệu cả phân hội Liu đến đặt hàng ở xưởng bạn.',
-        resultEn: 'The Fixer’s test swing pulverized a three-ton granite ballast into powder. Roaring with delight, he paid 150% of the bounty and directed the entire Liu branch to your smithy.',
-        meritAdd: 30,
-        effects: { health: -16, rep: +35, wealth: +110 },
-        flagsAdd: ['ws_wheels_done']
-      },
-      {
-        labelVi: 'Tôi luyện bề mặt bằng hợp kim chống ăn mòn, tối ưu độ bền vĩnh cửu',
-        labelEn: 'Temper the exterior with anti-corrosive lacquer, guaranteeing eternal durability',
-        resultVi: 'Cây chùy trở nên bất hoại trước mọi loại axit và nhiệt độ cực đoan. Vị khách vô cùng hài lòng với sự chắc chắn và uy tín của xưởng bạn.',
-        resultEn: 'The maul became completely impervious to acid and extreme thermal shock. Highly impressed by your reliability, the client commended your shop.',
-        meritAdd: 24,
-        effects: { rep: +25, wealth: +70, sanity: +5 },
-        flagsAdd: ['ws_wheels_done']
-      }
-    ]
-  },
-  {
-    id: 'ws_outskirts_ruins_alloy',
-    age: [22, 75],
-    major: true,
-    weight: 50,
-    need: { jobs: ['Workshop Craftsman'] },
-    forbids: ['Distorted', 'ws_ruins_done'],
-    vi: '[Quặng Kim Loại Cổ Đại từ Outskirts] Một toán thợ săn tàn tích Outskirts bí mật ghé vào sân sau xưởng của bạn. Họ mở bọc vải bạt để lộ một khối kim loại rỉ sét khai quật từ Di Tích Cổ Đại (Ruins) nằm ngoài bức tường The City — thứ vật liệu chưa từng thấy trong hồ sơ của The Head.',
-    en: '[Ancient Ruins Alloy from The Outskirts] A squad of Outskirts scavengers sneaks into your backyard forge. Peeling back greasy tarps, they reveal a corroded ingot exhumed from the ancient Ruins beyond City borders — an alloy missing from all Head registries.',
-    choices: [
-      {
-        labelVi: 'Mua lại khối quặng cổ đại (Tốn 80 Ahn) và tinh luyện thành hợp kim kỳ dị',
-        labelEn: 'Purchase the ancient ingot (Cost 80 Ahn) and refine it into an aberrant superalloy',
-        resultVi: 'Ngọn lửa lò rèn chuyển sang màu xanh lam ma mị. Kim loại nóng chảy tự kết tinh lại với độ cứng vượt xa mọi hợp kim đương đại của các Wing! Bạn thu được vật liệu huyền thoại để rèn thần binh.',
-        resultEn: 'Furnace flames flared phantom sapphire. The molten metal self-crystallized with hardness far exceeding any contemporary Wing alloy! You acquired legendary masterwork stock.',
-        costAhn: 80,
-        meritAdd: 32,
-        effects: { wealth: -80, resonance: +30, rep: +30, heat: +20 },
-        flagsAdd: ['ws_ruins_done', 'RuinsAlloyMaster']
-      },
-      {
-        labelVi: 'Từ chối mua, đề phòng bị The Head kết tội tàng trữ vật phẩm phi nhân',
-        labelEn: 'Refuse the transaction, avoiding Head prosecution for non-human contraband',
-        resultVi: 'Toán thợ săn gói ghém đồ đạc rời đi trong bóng đêm. Bạn giữ được sự an toàn trước thanh tra kiểm duyệt, dù có chút tiếc nuối.',
-        resultEn: 'The scavengers wrapped their goods and vanished into the fog. You remained safely beneath the Head’s radar, albeit with lingering curiosity.',
-        effects: { sanity: +5 }
-      }
-    ]
-  },
-
   // =========================================================================
   // WORKSHOP ARTISAN DIVERSITY: COMMISSIONS, ATELIER PATENTS & GUILD RIVALRIES
   // =========================================================================
-  {
-    id: 'ws_zelkova_telescopic_quarterstaff',
-    age: [20, 75],
-    major: true,
-    weight: 48,
-    need: { jobs: ['Workshop Craftsman'] },
-    vi: "[Trượng thu phóng] Một Fixer đưa bản vẽ trượng Zelkova cho bạn. Cơ cấu khí nén phải kéo dài thân trượng trong một nhịp, nhưng vẫn chịu nổi cú đập vào khiên. Khớp nối là phần khó nhất.",
-    en: '[Zelkova Telescopic Staff Commission] A veteran Fixer brings blueprints for a Zelkova-style collapsible kinetic quarterstaff. They commission you to integrate pressurized hydraulic servos, allowing the iron-banded staff to crush shields at close quarters or extend four meters in a microsecond.',
-    choices: [
-      {
-        labelVi: 'Gia công khớp nối vi cơ khí chuẩn xác, tối ưu hóa tốc độ vươn dài tức thì',
-        labelEn: 'Mill micro-kinematic joint couplings, optimizing instant deployment velocity',
-        resultVi: 'Cú vung thử của vị Fixer đập vỡ nát tảng đá thử tải trong chớp mắt. Vị khách vô cùng kinh ngạc trước độ chuẩn xác của bạn, thanh toán toàn bộ hợp đồng kèm theo tiền thưởng lớn!',
-        resultEn: 'The Fixer’s test swing pulverized a granite block in the blink of an eye. Astounded by your mechanical precision, they paid the bounty in full plus a handsome tip!',
-        meritAdd: 22,
-        effects: { rep: +24, wealth: +48, resonance: +12, sanity: +6 }
-      },
-      {
-        labelVi: 'Tăng cường vỏ bọc chống sốc bằng hợp kim nặng, đảm bảo trượng không bao giờ cong vênh',
-        labelEn: 'Reinforce the outer casing with dense shock alloy, guaranteeing absolute unbendability',
-        resultVi: 'Thanh trượng trở nên chắc nịch như một cột thép nguyên khối. Khách hàng tấm tắc khen ngợi độ bền vĩnh cửu của sản phẩm xưởng bạn.',
-        resultEn: 'The staff felt as solid as an unyielding steel pillar. The client commended the eternal durability of your handiwork.',
-        meritAdd: 18,
-        effects: { rep: +18, wealth: +36, sanity: +5 }
-      }
-    ]
-  },
-  {
-    id: 'ws_tres_singularity_infringement_audit',
-    age: [22, 75],
-    major: true,
-    weight: 46,
-    need: { jobs: ['Workshop Craftsman'] },
-    vi: '[Thanh Tra Bằng Sáng Chế Lò Rèn · Hiệp Hội Tres] Hai viên thanh tra áo khoác xám của Hiệp hội Tres bất ngờ ập vào lò rèn của bạn lúc nửa đêm. Họ nghi ngờ cuộn dây nhiệt độ siêu cao trên lò nấu thép của bạn vi phạm công nghệ Singularity được cấp bằng sáng chế độc quyền của R Corp.',
-    en: '[Tres Association Furnace Patent Inquest] Two grey-coated Tres inspectors raid your forge at midnight. They allege your super-thermal smelting coils unlawfully infringe upon R Corp’s patented kinetic metallurgy singularities.',
-    choices: [
-      {
-        labelVi: 'Mở buồng máy chứng minh nguyên lý phản ứng nhiệt cơ học hoàn toàn độc lập',
-        labelEn: 'Disassemble the furnace to prove independent thermodynamic mechanics',
-        resultVi: 'Các phép tính áp suất và lưu nhiệt của bạn đập tan mọi nghi ngờ của thanh tra Tres. Họ phải cúi đầu xin lỗi và cấp Dấu Mộc Độc Lập cho lò rèn của bạn!',
-        resultEn: 'Your thermodynamic calculations completely dispelled their allegations. The inspectors apologized and awarded an official Independent Maker’s Mark to your forge!',
-        meritAdd: 24,
-        effects: { rep: +26, wealth: +40, network: +18, sanity: +8 }
-      },
-      {
-        labelVi: 'Kín đáo đút lót 20 Ahn để đẩy nhanh thủ tục kiểm định và tiễn thanh tra ra cửa',
-        labelEn: 'Discreetly slip 20 Ahn to expedite the inspection ledger and see them off',
-        resultVi: 'Chiếc phong bì giúp lò rèn của bạn tiếp tục đỏ lửa mà không bị niêm phong điều tra, bảo toàn tiến độ các đơn hàng gấp.',
-        resultEn: 'The grease expedited the paperwork, keeping your forges roaring without downtime and preserving client delivery schedules.',
-        costAhn: 20,
-        effects: { wealth: -20, rep: +15, sanity: -3 }
-      }
-    ]
-  },
-  {
-    id: 'ws_workshop_turf_sabotage',
-    age: [20, 72],
-    major: true,
-    weight: 44,
-    need: { jobs: ['Workshop Craftsman'] },
-    vi: '[Phục Kích Phá Hoại Lò Rèn Lúc 2 Giờ Sáng] Tiếng kính vỡ lách cách ở tầng hầm đánh thức bạn dậy. Hai kẻ phá hoại do một xưởng rèn đối thủ thuê đang định đổ axit ăn mòn vào bồn dầu tôi thép và các pít-tông thủy lực của bạn.',
-    en: '[2:00 AM Workshop Sabotage] The crunch of shattered glass in your cellar wakes you. Two hired saboteurs from a rival atelier are poised to pour corrosive acid into your quenching vats and hydraulic rams.',
-    choices: [
-      {
-        labelVi: 'Cầm cây búa rèn đang nóng đỏ lao xuống tầng hầm đánh gục cả hai tên phá hoại',
-        labelEn: 'Charge into the cellar wielding a glowing-red hammer, subduing both saboteurs',
-        resultVi: 'Sức mạnh và độ hung bạo của bạn khiến hai tên phá hoại ngã gục rên rỉ xin tha mạng. Bạn trói nghiến chúng lại, buộc xưởng đối thủ phải nộp một khoản tiền chuộc khổng lồ!',
-        resultEn: 'Your ferocious counter-attack flattened both saboteurs. Tying them up, you forced their sponsoring atelier to pay exorbitant restitution!',
-        meritAdd: 22,
-        effects: { health: -10, rep: +25, wealth: +55, sanity: +6 }
-      },
-      {
-        labelVi: 'Kích hoạt hệ thống phun hơi nước áp lực cao, giam giữ chúng đợi hiệp hội xử lý',
-        labelEn: 'Trigger the high-pressure steam venting grid, trapping them for Association arrest',
-        resultVi: 'Hơi nước nóng rát phong tỏa tầng hầm khiến chúng không kịp trở tay. Hiệp hội Tres đến tiếp quản hiện trường và xử phạt nặng xưởng rèn đối thủ.',
-        resultEn: 'Scalding steam trapped the intruders instantly. Tres Association enforcers took custody, penalizing the rival forge with heavy fines.',
-        meritAdd: 20,
-        effects: { rep: +20, wealth: +32, sanity: +8 }
-      }
-    ]
-  },
-  {
-    id: 'ws_ego_casing_resonance_craft',
-    age: [24, 75],
-    major: true,
-    weight: 48,
-    need: { jobs: ['Workshop Craftsman'] },
-    vi: '[Gia Công Chuôi Kiếm Cộng Hưởng E.G.O] Một Fixer Grade 1 mang đến một mảnh vỡ tinh thể hữu cơ phát quang nhặt từ tàn tích của Lobotomy Corp. Khối tinh thể đập từng nhịp như một trái tim sống; họ yêu cầu bạn rèn một bộ vỏ kim loại cách nhiệt tâm lý để kìm hãm sự méo mó khi sử dụng.',
-    en: '[E.G.O Resonance Hilt Metallurgy] A Grade 1 Fixer brings an organic crystal shard salvaged from Lobotomy Corp ruins. The crystal pulses with a living heartbeat; they commission an insulated hilt assembly to contain psychological bleed-through during combat.',
-    choices: [
-      {
-        labelVi: 'Dùng hợp kim nén ba lớp và vòng đệm nano để khóa chặt sóng cộng hưởng tinh thần',
-        labelEn: 'Forge triple-layer compressed alloy with nano-dampers to stabilize mental resonance',
-        resultVi: 'Khi thanh kiếm được lắp ráp hoàn chỉnh, ánh sáng dị thường bị kìm nén hoàn hảo trong chuôi kiếm. Vị Fixer vung thử và reo lên kinh ngạc trước sự ổn định phi thường của vũ khí, thưởng bạn một khoản tiền lớn!',
-        resultEn: 'Assembled flawlessly, the aberrant luminescence was perfectly contained within the grip. Testing the balance, the Fixer marveled at the stability and showered you in coin!',
-        meritAdd: 28,
-        effects: { rep: +30, wealth: +70, resonance: +18, sanity: +8 }
-      },
-      {
-        labelVi: 'Hòa quyện một phần máu của chính bạn vào khuôn đúc để tăng tính liên kết tâm linh',
-        labelEn: 'Temper the casting mold with a drop of your own blood for psychic attunement',
-        resultVi: 'Lò rèn bùng lên ngọn lửa màu lam ma mị. Lưỡi kiếm rèn ra đạt độ sắc bén thần thoại và có khả năng tương tác sâu sắc với cảm xúc người cầm.',
-        resultEn: 'Flames flared phantom sapphire. The blade attained mythic sharpness, resonating in uncanny harmony with its bearer’s soul.',
-        meritAdd: 25,
-        effects: { health: -15, rep: +28, wealth: +55, resonance: +25 }
-      }
-    ]
-  },
-  {
-    id: 'ws_allonge_rapier_molecular_grind',
-    age: [21, 72],
-    major: true,
-    weight: 45,
-    need: { jobs: ['Workshop Craftsman'] },
-    vi: "[Đơn hàng Cinq] Kiếm sĩ Cinq đặt một thanh Allonge nhẹ và mảnh, đủ sức chống đỡ đại chùy. Bạn thử lưỡi mẫu trên đe: mép kiếm cong đi. Cô ấy chờ một cách mài khác.",
-    en: '[Cinq Allonge Rapier Molecular Grind] A Cinq Section 3 swordswoman commissions an ultra-slender Allonge rapier: weighing under 300 grams yet capable of parrying heavy kinetic mauls without fracturing. A challenge demanding peak molecular grinding craftsmanship.',
-    choices: [
-      {
-        labelVi: 'Sử dụng bột kim cương nano mài thủ công suốt 48 giờ liên tục',
-        labelEn: 'Grind the edge with nano-diamond slurry across 48 continuous hours',
-        resultVi: 'Lưỡi kiếm khi hoàn thành mỏng đến mức gần như vô hình dưới ánh sáng, nhẹ bẫng và sắc ngọt đến rợn người. Nữ kiếm sĩ Cinq cúi chào bạn với lòng biết ơn sâu sắc, giới thiệu cả phân hội Cinq đến xưởng bạn.',
-        resultEn: 'The finished rapier was so slender it was nearly invisible in daylight, terrifyingly razor-sharp. The Cinq duelist bowed deeply, directing her entire Section to your shop.',
-        meritAdd: 24,
-        effects: { rep: +26, wealth: +52, sanity: +8, resonance: +10 }
-      },
-      {
-        labelVi: 'Lắp thêm lò xo giảm chấn vi mô bên trong chuôi kiếm để hấp thụ phản lực',
-        labelEn: 'Install micro-damper springs within the hilt to absorb heavy recoil',
-        resultVi: 'Thanh kiếm vừa giữ được trọng lượng nhẹ vừa bảo vệ cổ tay kiếm sĩ trước các đòn đánh nặng nề. Khách hàng vô cùng hài lòng với thiết kế thông minh của bạn.',
-        resultEn: 'The rapier retained featherweight agility while shielding the duelist’s wrist against blunt shocks. Highly pleased, the client praised your ingenuity.',
-        meritAdd: 20,
-        effects: { rep: +20, wealth: +38, sanity: +6 }
-      }
-    ]
-  },
-  {
-    id: 'ws_workshop_apprentice_legacy',
-    age: [26, 80],
-    major: true,
-    weight: 50,
-    need: { jobs: ['Workshop Craftsman'] },
-    forbids: ['HasWorkshopApprentice'],
-    vi: '[Người Kế Thừa Lò Rèn · Đứa Trẻ Backstreets] Một đứa trẻ mồ côi Backstreets với đôi bàn tay đầy vết bỏng và đôi mắt sáng ngời quỳ trước cửa lò rèn của bạn trong màn mưa. Nó xin được quét dọn tro than và gánh nước không công, chỉ để được học nghệ thuật rèn thép và cơ khí của bạn.',
-    en: '[The Forge Apprentice · Child of the Alleys] A scarred Backstreet orphan with blistered hands and burning eyes kneels before your forge in the rain. The child begs to sweep ashes and haul water for free, merely to learn your craft of steel and kinematics.',
-    choices: [
-      {
-        labelVi: 'Nhận đứa trẻ vào xưởng làm Đồ Đệ Kế Thừa, truyền dạy bí quyết luyện kim',
-        labelEn: 'Take the child in as your Sworn Apprentice, passing down your metallurgy',
-        resultVi: 'Đứa trẻ học việc chăm chỉ ngày đêm, giúp lò rèn vận hành trơn tru hơn và luôn tràn ngập sức sống mới. Bạn không còn đơn độc trên con đường của một người thợ rèn giữa The City lạnh lẽo!',
-        resultEn: 'The apprentice labored tirelessly, bringing warmth and vital momentum to your smithy. You were no longer alone on the craftsman’s arduous journey!',
-        meritAdd: 30,
-        flagsAdd: ['HasWorkshopApprentice'],
-        effects: { rep: +25, sanity: +20, wealth: +15, network: +18 }
-      },
-      {
-        labelVi: 'Cho đứa trẻ một túi tiền Ahn và chiếc áo khoác ấm rồi khuyên nó tìm công việc an toàn hơn',
-        labelEn: 'Give the child a pouch of Ahn and a warm coat, advising a safer path',
-        resultVi: 'Nghề thợ rèn đầy khói bụi, độc hại và nguy hiểm đến tính mạng. Bạn giúp đứa trẻ có bữa ăn no ấm mà không phải chịu khổ cực như bạn thuở ban đầu.',
-        resultEn: 'The forge is toxic and peril-laden. You spared the child the grueling hardships you endured, giving them means to survive the winter.',
-        effects: { sanity: +12, wealth: -8 }
-      }
-    ]
-  }
 ];

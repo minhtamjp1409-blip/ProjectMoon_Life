@@ -28,11 +28,6 @@ const CAREERS = [
     'Wing Employee',
     'Một chỗ trong Nest, một công việc gắn với Singularity. Sự an toàn kéo dài chừng nào bạn còn hữu dụng.',
     'A place in a Nest and a job serving a Singularity. Safety lasts as long as you remain useful.'
-  ],
-  [
-    'Workshop Craftsman',
-    'Rèn vũ khí, chế tác cơ thể và tạo nên một di vật có thể sống lâu hơn chính bạn.',
-    'Forge weapons, craft prosthetics and make an heirloom that might outlive you.'
   ]
 ];
 
@@ -186,7 +181,7 @@ export const BirthSetupPanel = () => {
   const globalCodex = useGameStore((s) => s.globalCodex);
   const savedRun = useGameStore((s) => s.savedRun);
   const { setConfigField, startLife, resumeRun, abandonRun, discardPendingLegacy } = useGameStore.getState();
-    const [spinning, setSpinning] = useState(false);
+  const [spinning, setSpinning] = useState(false);
   const [search, setSearch] = useState('');
   const [wheelRotation, setWheelRotation] = useState(0);
   const [isWheelSpinning, setIsWheelSpinning] = useState(false);
@@ -274,6 +269,7 @@ export const BirthSetupPanel = () => {
     const seed = customSeed?.trim();
     const chosen = fixed || rollBirthRegion(seed ? createRNG(seed) : Math.random, inherit ? pendingLegacy : null, selectedFamily);
     setTargetLaunchParams({ inherit, age, region: chosen, regionId: fixed ? null : chosen.id });
+    setSpinning(true);
     spinTo(chosen, fixed ? { turns: 3, duration: 1900 } : {}).then(() => {
       setTimeout(() => setLoadingActive(true), 350);
     });
@@ -281,6 +277,7 @@ export const BirthSetupPanel = () => {
 
   const handleLoadingComplete = () => {
     setLoadingActive(false);
+    setSpinning(false);
     const inherit = targetLaunchParams?.inherit ?? false;
     const age = targetLaunchParams?.age ?? 0;
     startLife(inherit, age, targetLaunchParams?.regionId || null);
@@ -351,7 +348,7 @@ export const BirthSetupPanel = () => {
               'You do not choose the world you are born into. What you leave behind is another matter.'
             )}
           </p>
-          <div className="opening-atlas">
+          <div className={`opening-atlas ${spinning ? 'is-launch-spinning' : ''}`}>
             <DistrictDial
               selected={selectedRegion}
               onSelect={(id) => {

@@ -1,10 +1,10 @@
 ﻿/**
  * Balance report: plays N full lives with a random-choice policy and prints how
  * deaths, money, bonds and the supernatural funnels are distributed.
- * Usage: node balance_report.mjs [lives=600]
+ * Usage: node tools/sim/balance_report.mjs [lives=600]
  */
-import { createNewCharacter, resolveEventChoice, createRNG, resolveFixerContract } from './src/engine/gameEngine.js';
-import { planYear, runDueItems, resolveMinor, endYear } from './src/engine/yearPlanner.js';
+import { createNewCharacter, resolveEventChoice, createRNG, resolveFixerContract } from '../../src/engine/gameEngine.js';
+import { planYear, runDueItems, resolveMinor, endYear } from '../../src/engine/yearPlanner.js';
 
 const LIVES = Number(process.argv[2] || 600);
 const q = (arr, p) => (arr.length ? [...arr].sort((a, b) => a - b)[Math.min(arr.length - 1, Math.floor(arr.length * p))] : 0);

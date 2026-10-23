@@ -11,20 +11,20 @@ import {
   ALL_STORY_EVENTS,
   buildLifeSummaryAndLegacy,
   getNextCareerMilestone
-} from './src/engine/gameEngine.js';
+} from '../../src/engine/gameEngine.js';
 
-import { getNextFixerPromotion, checkColorFixerReadiness } from './src/engine/careerPipeline.js';
+import { getNextFixerPromotion, checkColorFixerReadiness } from '../../src/engine/careerPipeline.js';
 
 import {
   planYear,
   endYear,
   runPlanItem,
   resolveMinor
-} from './src/engine/yearPlanner.js';
+} from '../../src/engine/yearPlanner.js';
 
-import { choiceIsAvailable } from './src/engine/eventConditions.js';
+import { choiceIsAvailable } from '../../src/engine/eventConditions.js';
 
-// Usage: node run_million_audit.mjs [scenarios]. Only a full run rewrites the report file.
+// Usage: node tools/sim/run_million_audit.mjs [scenarios]. Only a full run rewrites the report file.
 const FULL_RUN = 1000000;
 const TARGET_SCENARIOS = Number(process.argv[2]) || 500;
 console.log('================================================================');

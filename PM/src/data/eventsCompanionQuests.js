@@ -265,23 +265,23 @@ export const COMPANION_QUEST_EVENTS = [
     need: { npc: 'spouse', noQuest: { role: 'spouse', max: 1 } },
     forbids: ['Distorted'],
     vi: "[Mái nhà thủng] Bão tro giật bật mái tôn phòng trọ. Mưa đen rơi xuống chỗ ngủ, còn {spouse} đang cố nhóm bếp bằng than vụn. Bạn phải tìm nơi trú trước khi căn phòng ngập nước.",
-    en: '[Shelter in the Grey Blizzard] A freezing ash storm slams the City, plunging temperatures below zero. Roof sheets tore loose, black freezing rain dripping onto floorboards. {spouse} shivers in the corner beneath patched quilts, pale lips blowing life into coal embers to keep a meager broth warm for your return.',
+    en: "[A Roof in the Ash Storm] A gale of ash tears the tin roof off your rented room. Black rain falls on the bed, and {spouse} is trying to light the stove with coal dust. You have to find shelter before the room floods.",
     choices: [
       {
-        labelVi: 'Chi 15 Ahn mua tôn kim loại cách nhiệt và bếp lò than mới gia cố căn nhà',
-        labelEn: 'Spend fifteen Ahn for insulated metal sheets and a cast-iron stove',
-        resultVi: 'Ngọn lửa than đỏ rực xua tan cái lạnh cắt da cắt thịt. Mái nhà được lợp lại kiên cố, căn phòng nhỏ ngập tràn ánh sáng ấm áp. {spouse} tựa đầu vào ngực bạn, lắng nghe tiếng gió rít ngoài khung cửa trong sự bình yên tuyệt đối.',
-        resultEn: 'Glowing red embers banished the bitter frost. With reinforced roofing secured, the room filled with comforting warmth. {spouse} rested their head upon your chest, listening to the gale howling outside in deep, serene peace.',
+        labelVi: "Chi 15 Ahn mua tôn cách nhiệt và một bếp lò than để gia cố căn phòng",
+        labelEn: "Spend 15 Ahn on insulated sheets and a coal stove to repair the room",
+        resultVi: "Than đỏ lên và cái lạnh lùi ra khỏi góc phòng. Mái nhà được lợp lại chắc tay. {spouse} tựa đầu vào vai bạn và nghe gió rít ngoài khung cửa, lần đầu trong tuần không phải đếm giờ.",
+        resultEn: "The coals glow red and the cold backs out of the corner. The roof is patched firmly. {spouse} rests their head on your shoulder and listens to the wind outside the frame, for the first time this week not counting the hours.",
         costAhn: 15,
         effects: { sanity: +18, rep: +6 },
         npcQuest: ['spouse'],
         meritAdd: 12
       },
       {
-        labelVi: 'Thức trắng đêm ôm chặt {spouse}, dùng thân mình che chắn gió tuyết',
-        labelEn: 'Stay awake all night holding {spouse} tight, shielding with your own body',
-        resultVi: 'Gió tuyết rít từng cơn lạnh buốt da thịt, nhưng hơi ấm của hai cơ thể kề sát nhau đã chiến thắng mùa đông khắc nghiệt. Sự gắn kết giữa hai người trở thành một pháo đài tinh thần bất khả xâm phạm.',
-        resultEn: 'Sleet howled against bare skin, yet the warmth of two beating hearts triumphed over the bitter freeze. The devotion forged through that vigil became an impenetrable spiritual fortress.',
+        labelVi: "Thức cả đêm ôm {spouse} và che gió bằng thân mình",
+        labelEn: "Stay awake all night holding {spouse}, shielding them from the wind with your body",
+        resultVi: "Gió tro rít từng cơn qua khe tôn, nhưng hơi ấm của hai người kề nhau đủ cho tới sáng. Sau đêm đó, hai người ít khi nhắc lại chuyện ấy, và cũng không quên.",
+        resultEn: "The ash wind screams through the gaps in the tin, but the warmth of two people side by side lasts until morning. Afterwards neither of you talks about it much, and neither forgets.",
         effects: { health: -4, sanity: +12 },
         npcQuest: ['spouse'],
         meritAdd: 10
@@ -378,7 +378,7 @@ export const COMPANION_QUEST_EVENTS = [
     need: { npcTag: ['friend', 'mentor'], noQuest: { role: 'friend', max: 1 } },
     forbids: ['Distorted'],
     vi: "[Bài học cuối của người thầy] Người thầy Fixer ngồi trong xưởng, các khớp tay giả kêu rít. Ông mở rương, lấy ra thanh đao Workshop đã mòn: \"Ta sắp không cầm nổi nó. Nếu muốn nhận, hãy cho ta thấy bạn dùng nó thế nào.\"",
-    en: '[The Old Master’s Final Lesson] The veteran Fixer who guided your rookie steps sits alone on a wooden crate in his dim forge. His prosthetic valves hiss with rusted friction; his rasping cough reeks of Smoke War fallout. Unlocking a brass coffer, he reveals a weathered yet razor-sharp Workshop blade:\n“My grip is failing me, kid. In this City, the truest legacy isn’t Ahn—it’s passing your steel to hands that won’t waver.”',
+    en: '[The Old Master’s Final Lesson] The veteran Fixer who guided your rookie steps sits alone on a wooden crate in his dim forge. His prosthetic valves hiss with rusted friction; his rasping cough reeks of Smoke War fallout. Unlocking a brass coffer, he reveals a weathered yet razor-sharp Workshop blade:\n“My grip is failing me, kid. In this City, the truest legacy isn’t Ahn, it’s passing your steel to hands that won’t waver.”',
     choices: [
       {
         labelVi: 'Quỳ xuống hai tay đón nhận thanh đao, thề kế tục ý chí của người thầy',

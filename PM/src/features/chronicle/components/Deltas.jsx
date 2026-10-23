@@ -1,7 +1,7 @@
 import React from 'react';
 import { useT } from '../../../i18n';
 import { weightedOutcomes } from '../../../engine/outcomeOdds.js';
-import { fixerPromotionSuccessChance } from '../../../engine/careerPipeline.js';
+import { fixerPromotionSuccessChance, isFixerPromotionChoice } from '../../../engine/careerPipeline.js';
 
 const LABELS = {
   health: ['HP', 'HP'],
@@ -149,7 +149,7 @@ const outsOf = (c) => c?.out || c?.outcomes || null;
 export function previewChoice(choice, char, kind = 'major') {
   const base = fxOf(choice);
   const costOutsideEffects = choice.costAhn && base.wealth !== -choice.costAhn ? choice.costAhn : 0;
-  if (char && choice.setFixerGrade != null) {
+  if (isFixerPromotionChoice(choice, char)) {
     const pass = Math.round(fixerPromotionSuccessChance(char, choice.setFixerGrade) * 100);
     return { affected: [...new Set([...STAT_ORDER.filter((key) => Boolean(base[key])), 'health', 'wealth', 'sanity'])],
       fixed: [], ranges: [], odds: null, examOdds: { pass, fail: 100 - pass } };

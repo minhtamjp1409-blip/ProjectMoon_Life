@@ -61,7 +61,7 @@ assert.equal(matchesEventContext(backFever, nestInfant), true);
 
 const teen = born(15);
 teen.job = 'Child';
-const workIds = ['t_back_workshop', 'daily_adolescence_gloves', 'daily_adolescence_wages', 'daily_adolescence_birthday'];
+const workIds = ['daily_adolescence_gloves', 'daily_adolescence_wages', 'daily_adolescence_birthday'];
 for (const id of workIds) {
   const event = LIFE_DAILIES.find((item) => item.id === id);
   assert.equal(matchesEventContext(event, teen), false, id);

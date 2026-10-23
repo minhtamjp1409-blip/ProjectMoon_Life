@@ -77,7 +77,7 @@ Mỗi lần bấm chào đời, engine ghép các mảnh độc lập (`src/data
 | 4–6 | sự kiện nhỏ đầu tiên; bài học khóa cửa, căn cứ bằng thùng giấy |
 | 7–11 | chuyện của khu phố: chó hoang, ông chủ quán thịt nướng, Prescript đầu tiên |
 | 12–17 | người bạn đi làm cho Office, đối thủ, người thương, đêm 3 giờ 13 |
-| 18 | bắt buộc chọn đường: Fixer, Syndicate, Wing, Workshop |
+| 18 | bắt buộc chọn đường: Fixer, Syndicate, Wing |
 | 18–59 | Request, Finger, Wing, gia đình, con cái, người thầy già đi |
 | 60+ | tay run, danh sách người đã chết dài hơn người còn sống, lá thư để lại |
 

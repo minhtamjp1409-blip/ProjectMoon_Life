@@ -1,3 +1,4 @@
+import { rememberResonance, hasEgoOpportunity, colorTrialAvailable } from './awakeningProgress.js';
 import { advanceActiveNarrativeArcs } from './narrativeArcEngine.js';
 import { choiceIsAvailable, matchesEventContext, mergeEffects, npcIsActive } from './eventConditions.js';
 import { ITEMS_CATALOG } from '../data/itemsData.js';
@@ -35,6 +36,11 @@ import { DERIVATIVE_LORE_EVENTS } from '../data/eventsDerivativeLore.js';
 import { COMPANION_QUEST_EVENTS } from '../data/eventsCompanionQuests.js';
 import { CAREER_DRAMA_EVENTS } from '../data/eventsCareerDrama.js';
 import { EXPANSION_STORY_EVENTS } from '../data/eventsNpcAndWorldExpansion.js';
+import { DUNGEON_GATE_EVENTS } from '../data/eventsDungeonGates.js';
+import { EGO_COLOR_EVENTS } from '../data/eventsEgoColorPerks.js';
+import { BRANCH_DEPTH_EVENTS } from '../data/eventsBranchDepth.js';
+import { WORKSHOP_VISIT_EVENTS } from '../data/eventsWorkshopVisits.js';
+import { FINGER_STORY_EVENTS } from '../data/eventsFingers.js';
 import {
   FIXER_LADDER,
   FINGER_LADDERS,
@@ -74,8 +80,14 @@ import {
   getDungeonMastery,
   isDungeonChoiceAvailable,
   evaluateDungeonChoiceOdds,
+  DUNGEON_BALANCE,
+  getStrainTier,
+  dungeonSupplyState,
   setDungeonStance,
   useDungeonSupply,
+  useDungeonEgo,
+  dungeonEgoState,
+  egoChargesOf,
   resolveDungeonChoice,
   fleeDungeon
 } from './dungeonEngine.js';
@@ -94,7 +106,12 @@ export const ALL_STORY_EVENTS = [
   ...COMPANION_QUEST_EVENTS,
   ...CAREER_DRAMA_EVENTS,
   ...EXPANSION_EVENTS,
-  ...EXPANSION_STORY_EVENTS
+  ...EXPANSION_STORY_EVENTS,
+  ...DUNGEON_GATE_EVENTS,
+  ...EGO_COLOR_EVENTS,
+  ...BRANCH_DEPTH_EVENTS,
+  ...WORKSHOP_VISIT_EVENTS,
+  ...FINGER_STORY_EVENTS
 ];
 
 export const SEASONS = [
@@ -230,6 +247,7 @@ export function interpolateText(text, char) {
   const npcName = (role, fallback) => char.npcs?.[role]?.nameVi || fallback;
   return text
     .replace(/\{name\}/g, char.name || '')
+    .replace(/\{age\}/g, String(char.age ?? ''))
     .replace(/\{friend\}/g, npcName('friend', 'đứa bạn cùng hẻm'))
     .replace(/\{rival\}/g, npcName('rival', 'kẻ kia'))
     .replace(/\{lover\}/g, npcName('lover', npcName('spouse', 'người ấy')))
@@ -1101,8 +1119,8 @@ export function checkPromotions(char) {
         age: char.age,
         season: SEASONS[char.seasonIdx],
         type: 'promo',
-        vi: `[The ${char.finger} Thông Báo] Bạn đã tích lũy đủ công trạng và uy danh để bước vào đại lễ thăng bậc: ${nextPromo.titleVi}!`,
-        en: `[The ${char.finger} Notice] Your merits and renown qualify you for the advancement trial: ${nextPromo.titleEn}!`
+        vi: `[The ${char.finger} Thông Báo] Bạn đã tích lũy đủ công trạng và uy danh để bước vào đại lễ thăng bậc: ${nextPromo.titleVi}.`,
+        en: `[The ${char.finger} Notice] Your merits and renown qualify you for the advancement trial: ${nextPromo.titleEn}.`
       });
     }
   }
@@ -1117,8 +1135,8 @@ export function checkPromotions(char) {
         age: char.age,
         season: SEASONS[char.seasonIdx],
         type: 'promo',
-        vi: `[Ban Giám Đốc Wing] Bạn đã đạt đủ chỉ tiêu hiệu suất và quan hệ để được xét duyệt thăng chức: ${nextPromo.titleVi}!`,
-        en: `[Wing Directorate] You have fulfilled corporate quotas and are eligible for promotion: ${nextPromo.titleEn}!`
+        vi: `[Ban Giám Đốc Wing] Bạn đã đạt đủ chỉ tiêu hiệu suất và quan hệ để được xét duyệt thăng chức: ${nextPromo.titleVi}.`,
+        en: `[Wing Directorate] You have fulfilled corporate quotas and are eligible for promotion: ${nextPromo.titleEn}.`
       });
     }
   }
@@ -1269,6 +1287,7 @@ export function resolveFixerContract(charState, approachId, rng = Math.random) {
       char.stats.sanity = clamp(char.stats.sanity - 14, 0, 100);
       char.heat = clamp((char.heat || 0) + 12, 0, 100);
       char.resonance = clamp((char.resonance || 0) + 12, 0, 100);
+      rememberResonance(char, 12);
       if (!char.flags.includes('BetrayedByCompanion')) char.flags.push('BetrayedByCompanion');
       char.weaver.pendingThreads = [
         ...(char.weaver.pendingThreads || []),
@@ -1288,8 +1307,8 @@ export function resolveFixerContract(charState, approachId, rng = Math.random) {
         age: char.age,
         season: SEASONS[char.seasonIdx],
         type: 'danger',
-        vi: `[Phản bội giữa nhiệm vụ · ${traitor.nameVi}] Giữa lúc giao chiến trong vụ ${template.nameVi || tierInfo.nameVi}, ${traitor.nameVi} (Bond ${traitor.bond ?? 0}) đã bán đứng lộ trình của bạn cho đối phương để đổi lấy tiền thưởng rồi bỏ mặc bạn giữa vòng vây!`,
-        en: `[Mid-Contract Betrayal · ${traitor.nameEn}] In the middle of ${template.nameEn || tierInfo.nameEn}, ${traitor.nameEn} (Bond ${traitor.bond ?? 0}) sold your route to the enemy for a payout and left you surrounded!`
+        vi: `[Phản bội giữa nhiệm vụ · ${traitor.nameVi}] Giữa lúc giao chiến trong vụ ${template.nameVi || tierInfo.nameVi}, ${traitor.nameVi} đã bán lộ trình của bạn cho đối phương để lấy tiền thưởng, rồi bỏ mặc bạn giữa vòng vây.`,
+        en: `[Mid-Contract Betrayal · ${traitor.nameEn}] In the middle of ${template.nameEn || tierInfo.nameEn}, ${traitor.nameEn} sold your route to the enemy for a payout and left you surrounded.`
       });
       if (char.stats.health <= 0) {
         applyFatalOrCompanionSave(char, template.deathVi, template.deathEn);
@@ -1344,6 +1363,7 @@ export function resolveFixerContract(charState, approachId, rng = Math.random) {
     char.stats.health = clamp(char.stats.health - hpLoss, 0, 100);
     char.stats.sanity = clamp(char.stats.sanity - spLoss, 0, 100);
     char.resonance = clamp((char.resonance || 0) + 8, 0, 100);
+      rememberResonance(char, 8);
     if (compSupport.active && compSupport.contractPower < 0) {
       char.npcs = { ...char.npcs, [compSupport.role]: { ...compSupport.npc, bond: Math.max(5, (compSupport.npc.bond || 20) - 3), lastSeen: char.age } };
     }
@@ -1395,8 +1415,8 @@ export function applyFatalOrCompanionSave(char, deathCauseVi, deathCauseEn) {
       age: char.age,
       season: SEASONS[char.seasonIdx || 0],
       type: 'miracle',
-      vi: '[Ống Tiêm K Corp Tự Động Kích Hoạt] Khi tim bạn vừa ngừng đập, dung dịch sinh học màu xanh lá của K Corp tự động bơm thẳng vào động mạch chủ. Mô tế bào và xương gãy tái tạo trong đau đớn dữ dội. Bạn sống sót qua vết thương chí mạng!',
-      en: '[K Corp Ampoule Auto-Activated] As your heart flatlined, green K Corp biomass auto-injected into your aorta. Flesh and shattered bone reconstituted amid agony. You survived a fatal blow!'
+      vi: '[Ống Tiêm K Corp Tự Động Kích Hoạt] Khi tim bạn vừa ngừng đập, dung dịch sinh học màu xanh lá của K Corp tự động bơm thẳng vào động mạch chủ. Thịt và xương gãy liền lại trong cơn đau mà bạn không muốn nhớ. Vết thương lẽ ra đã giết bạn.',
+      en: '[K Corp Ampoule Auto-Activated] As your heart flatlined, green K Corp biomass auto-injected into your aorta. Flesh and broken bone knit together in a pain you would rather not remember. The wound should have killed you.'
     });
     evaluateCharacterAchievements(char);
     return;
@@ -1429,6 +1449,7 @@ export function applyFatalOrCompanionSave(char, deathCauseVi, deathCauseEn) {
     char.stats.health = 20;
     char.stats.sanity = clamp(char.stats.sanity - 45, 1, 100);
     char.resonance = clamp((char.resonance || 0) + 40, 0, 100);
+      rememberResonance(char, 40);
     if (!char.unlockedRecords.includes('savior_sacrifice')) {
       char.unlockedRecords.push('savior_sacrifice');
     }
@@ -1672,10 +1693,8 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
   const rolled = mergeEffects(choice, outcome);
   const effects = printsNumbers ? rolled : varyEffects(rolled, rng, traitsOf(char));
   if (/^fixer_promo_/.test(event.id) && effects.health < 0) effects.health = Math.ceil(effects.health * 0.65);
-  if (startDungeonId) {
-    if (effects.health < 0) effects.health = 0;
-    if (effects.sanity < 0) effects.sanity = 0;
-  }
+  // Entering a dungeon only sets the scene: the stages pay out, so the entry itself never pays twice
+  if (startDungeonId) for (const key of Object.keys(effects)) effects[key] = 0;
   if (choice.costAhn) effects.wealth = (effects.wealth || 0) - Math.max(0, choice.costAhn + Math.min(0, effects.wealth || 0));
   const itemId = outcome.itemAdd || choice.itemAdd;
   const purchasedItem = ITEMS_CATALOG.find(i => i.id === itemId);
@@ -1688,6 +1707,9 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
   if (effects.heat) char.heat = clamp((char.heat || 0) + effects.heat, 0, 100);
   if (effects.taboo) char.taboo = clamp((char.taboo || 0) + effects.taboo, 0, 3);
   if (effects.resonance) char.resonance = clamp((char.resonance || 0) + effects.resonance, 0, 100);
+
+  rememberResonance(char, effects.resonance || 0);
+  if (event.id === 'hana_color_ascension_trial') char.lastColorTrialAge = char.age;
 
   // Career / Faction / Region mutations
   const setJob = outcome.setJob || choice.setJob;
@@ -1747,7 +1769,7 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
   const setRegion = outcome.setRegion || choice.setRegion;
   if (setRegion) char.regionId = setRegion;
 
-  const listedMerit = (choice.meritAdd || 0) + (outcome === choice ? 0 : outcome.meritAdd || 0);
+  const listedMerit = startDungeonId ? 0 : (choice.meritAdd || 0) + (outcome === choice ? 0 : outcome.meritAdd || 0);
   const meritAdd = isFixerCareerEvent(event) ? Math.round(listedMerit * BALANCE.fixerMeritScale) : listedMerit;
   if (meritAdd) {
     if (char.job === 'Child') {
@@ -1759,8 +1781,9 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
   if (event.id.startsWith('fixer_promo_') && char.fixerGrade < previousFixerGrade) {
     const earnedAtGrade = FIXER_LADDER.find((step) => step.grade === char.fixerGrade)?.meritReq || 0;
     const nextRequirement = FIXER_LADDER.find((step) => step.grade === char.fixerGrade - 1)?.meritReq || COLOR_FIXER_REQ.merit;
-    char.merit = Math.min(nextRequirement - 10,
-      earnedAtGrade + Math.floor(Math.max(0, char.merit - earnedAtGrade) * 0.25));
+    const retained = earnedAtGrade + Math.floor(Math.max(0, char.merit - earnedAtGrade) *
+      (char.flags.includes('SevenExceptionalRecord') ? 0.85 : 0.25));
+    char.merit = char.flags.includes('SevenExceptionalRecord') ? retained : Math.min(nextRequirement - 10, retained);
   }
   if ((char.fingerRank || 0) > previousFingerRank && char.finger && FINGER_LADDERS[char.finger]) {
     const ladder = FINGER_LADDERS[char.finger];
@@ -1879,7 +1902,11 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
 
   // Micro-Dungeon Delve trigger
   if (startDungeonId && char.alive) {
-    char.pendingDungeon = createDungeonSession(startDungeonId, char, rng);
+    char.pendingDungeon = createDungeonSession(startDungeonId, char);
+    if (choice.dungeonPrep === 'supplies') {
+      char.pendingDungeon.maxSupplies += 1;
+      char.pendingDungeon.supplyCharges += 1;
+    }
   }
 
   const textVi = interpolateText(outcome.resultVi || outcome.rvi || choice.resultVi || choice.rvi || '', char);
@@ -2423,8 +2450,14 @@ export {
   getDungeonMastery,
   isDungeonChoiceAvailable,
   evaluateDungeonChoiceOdds,
+  DUNGEON_BALANCE,
+  getStrainTier,
+  dungeonSupplyState,
   setDungeonStance,
   useDungeonSupply,
+  useDungeonEgo,
+  dungeonEgoState,
+  egoChargesOf,
   resolveDungeonChoice,
   fleeDungeon
 } from './dungeonEngine.js';

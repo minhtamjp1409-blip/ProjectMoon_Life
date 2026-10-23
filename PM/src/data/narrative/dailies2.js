@@ -41,15 +41,6 @@ export const DAILIES_2 = [
   ]),
 
   // ------------------------------------------------------------ Workshop
-  ...rows('ws', GROWN, { jobs: ['Workshop Craftsman'] }, [
-    ['hammer', 'Tiếng búa đầu ngày ở xưởng nghe khác nhau tùy người cầm. Bạn nhận ra nhịp của thợ cả từ cuối phố, và biết hôm nay ông có tâm trạng thế nào.', 'The first hammer of the day sounds different depending on whose hand holds it. You recognise the master smith’s rhythm from the end of the street and know his mood.', { sanity: 1 }],
-    ['crack', 'Khuôn đúc cũ có một đường nứt mảnh mà cả xưởng đều biết và không ai nhắc đến, vì nó đã làm ra những món đẹp nhất.', 'The old mould has a hairline crack that the whole workshop knows and no one mentions, because it has produced their finest pieces.', { merit: 1 }],
-    ['warm_coal', 'Sáng nào bạn đến, than trong lò vẫn còn ấm dù đã tắt từ tối qua. Có ai trong xưởng ở lại qua đêm, và không ai nhận.', 'Every morning you arrive, the coal in the furnace is still warm though it was put out last night. Someone in the workshop stays after dark, and no one admits it.', { sanity: 1 }],
-    ['sharpening', 'Một người hàng xóm mang dao bếp đến nhờ mài và để lại một túi quả khô thay tiền. Bạn mài rất kỹ, như thể con dao ấy thuộc về một Fixer.', 'A neighbour brings a kitchen knife to be sharpened and leaves a bag of dried fruit instead of coin. You sharpen it with great care, as if it belonged to a Fixer.', { network: 1 }],
-    ['dust', 'Bụi kim loại bám vào cổ họng bạn cả buổi chiều. Tối đó bạn ho ra một chấm bạc nhỏ và đứng nhìn nó rất lâu.', 'Metal dust clings to your throat all afternoon. That evening you cough up a tiny silver fleck and stand looking at it a long time.', { health: -1 }],
-    ['crooked_stamp', 'Dấu ấn của Tres trên món hàng bạn vừa hoàn thành bị đóng lệch một nét. Bạn nhìn nó một lúc, rồi quyết định coi đó là chữ ký của cả xưởng.', 'The Tres stamp on the piece you just finished has been struck one stroke off. You look at it a while, then decide to treat it as the signature of the whole workshop.', { rep: 1 }]
-  ]),
-
   // ------------------------------------------------------------ Distortion
   ...rows('dist', GROWN, { jobs: ['Distortion'] }, [
     ['drain_voice', 'Có tiếng gọi từ dưới cống, đúng giọng một người bạn từng biết. Bạn đứng nghe đến cuối câu, và câu ấy chưa bao giờ có phần kết.', 'A voice calls from the drain, exactly the voice of someone you once knew. You stand listening to the end of the sentence, and it never has an ending.', { resonance: 2 }],

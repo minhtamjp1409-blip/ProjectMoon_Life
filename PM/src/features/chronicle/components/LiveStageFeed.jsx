@@ -45,6 +45,20 @@ const FX_TEXT = {
   echo: null
 };
 
+const storyParts = (entry, lang) => {
+  const raw = lang === 'en' ? entry.en || entry.vi : entry.vi;
+  const { title, body } = splitTitle(raw);
+  const reviewRaw = entry.review && (lang === 'en' ? entry.review.en || entry.review.vi : entry.review.vi);
+  const reviewBody = reviewRaw ? splitTitle(reviewRaw).body : '';
+  const repeatedPrompt = Boolean(reviewBody && body.startsWith(reviewBody));
+  return {
+    title,
+    situation: repeatedPrompt ? reviewBody : '',
+    result: repeatedPrompt ? body.slice(reviewBody.length).trim() : body,
+    reviewBody: repeatedPrompt ? '' : reviewBody
+  };
+};
+
 /* ---------- Story log ---------- */
 
 const LogEntries = React.memo(function LogEntries({ logs }) {
@@ -76,9 +90,7 @@ const LogEntries = React.memo(function LogEntries({ logs }) {
       );
     }
     const kind = ENTRY_KIND[entry.type];
-    const raw = lang === 'en' ? entry.en || entry.vi : entry.vi;
-    // Older events open with "[Title]"; show it as the entry's tag instead of inline
-    const { title, body } = splitTitle(raw);
+    const { title, situation, result, reviewBody } = storyParts(entry, lang);
     const tag = entry.omen ? t('Điềm lúc chào đời', 'Omen at birth') : title || (kind?.vi ? t(kind.vi, kind.en) : null);
     out.push(
       <article className={`entry ${kind?.cls || ''}`} key={entry.id}>
@@ -95,12 +107,13 @@ const LogEntries = React.memo(function LogEntries({ logs }) {
           </p>
         )}
         {entry.passed && <p className="entry-choice is-muted">{t('Bạn để nó trôi qua.', 'You let it pass.')}</p>}
-        <p className="entry-text">{body}</p>
+        {situation && <p className="entry-text">{situation}</p>}
+        {result && <p className={`entry-text ${entry.choiceVi || entry.passed ? 'is-result' : ''}`}>{result}</p>}
         {bilingual && entry.en && entry.en !== entry.vi && <p className="entry-alt">{splitTitle(entry.en).body}</p>}
         {entry.review && (
           <details className="entry-review">
             <summary>{t('Xem lại sự kiện và lựa chọn', 'Review event and choices')}</summary>
-            <p>{splitTitle(lang === 'en' ? entry.review.en || entry.review.vi : entry.review.vi).body}</p>
+            {reviewBody && <p>{reviewBody}</p>}
             <ol>
               {entry.review.choices.map((option, index) => (
                 <li key={index} className={index === entry.review.selected ? 'is-selected' : ''}>
@@ -155,7 +168,7 @@ const DockNavigation = () => null;
 const placeOf = (char) =>
   char.flags?.includes('Nest') || char.flags?.includes('Feather') ? 'Nest' : char.flags?.includes('Outskirts') || char.regionId === 'OUTSKIRTS' ? 'Outskirts' : 'Backstreets';
 
-const MinorDock = ({ prompt, char, npcs, wealth = 0, paused, onPick, place = 'Backstreets' }) => {
+const MinorDock = ({ prompt, char, npcs, wealth = 0, remainingMs, onPick, place = 'Backstreets' }) => {
   const { t, lang, bilingual } = useT();
   const raw = lang === 'en' ? prompt.en : prompt.vi;
   const { title, body } = splitTitle(raw);
@@ -165,9 +178,9 @@ const MinorDock = ({ prompt, char, npcs, wealth = 0, paused, onPick, place = 'Ba
       <div className="dock-inner">
         <div className="countdown-wrap">
           <div className="countdown" aria-hidden="true">
-            <i key={prompt.id} style={{ animationDuration: `${MINOR_WINDOW_MS}ms`, animationPlayState: paused ? 'paused' : 'running' }} />
+            <i style={{ transform: `scaleX(${Math.max(0, Math.min(1, remainingMs / MINOR_WINDOW_MS))})` }} />
           </div>
-          <span className="countdown-badge">15s</span>
+          <span className="countdown-badge">{Math.ceil(Math.max(0, remainingMs) / 1000)}s</span>
         </div>
         <div className="dock-banner">
           <div className="dock-banner-text">
@@ -426,6 +439,12 @@ const ContractDock = ({ contract, wealth, onPick }) => {
   );
 };
 
+const DUNGEON_KICKER = {
+  conquered: ['Hầm ngục · Đã đi hết', 'Dungeon · Cleared'],
+  fled: ['Hầm ngục · Đã rút lui', 'Dungeon · Withdrawn'],
+  broken: ['Hầm ngục · Tinh thần gục ngã', 'Dungeon · Broken']
+};
+
 const ResultDock = ({ resolution, onDismiss }) => {
   const { t, lang, bilingual } = useT();
 
@@ -445,6 +464,8 @@ const ResultDock = ({ resolution, onDismiss }) => {
                 <span>
                   {resolution.isDead
                     ? t('Tử trận · Số mệnh khép lại', 'Fallen · Fate Sealed')
+                    : resolution.kind === 'dungeon'
+                    ? t(...(DUNGEON_KICKER[resolution.outcome] || DUNGEON_KICKER.fled))
                     : resolution.isCausal
                     ? t('Causal Echo · Nhân quả khắc ghi', 'Causal Echo · Causality Imprinted')
                     : t(`Kết quả quyết định · Tuổi ${resolution.age}`, `Decision Outcome · Age ${resolution.age}`)}
@@ -782,12 +803,14 @@ export const LiveStageFeed = () => {
   const {
     char,
     speed,
+    minorRemainingMs,
     setSpeed,
     chooseMinor,
     selectEventChoice,
     selectContractApproach,
     setDungeonStance,
     useDungeonSupply,
+    useDungeonEgo,
     chooseDungeonAction,
     fleeDungeon,
     confirmColorTitle,
@@ -806,12 +829,14 @@ export const LiveStageFeed = () => {
     useShallow((s) => ({
       char: s.char,
       speed: s.speed,
+      minorRemainingMs: s.minorRemainingMs,
       setSpeed: s.setSpeed,
       chooseMinor: s.chooseMinor,
       selectEventChoice: s.selectEventChoice,
       selectContractApproach: s.selectContractApproach,
       setDungeonStance: s.setDungeonStance,
       useDungeonSupply: s.useDungeonSupply,
+      useDungeonEgo: s.useDungeonEgo,
       chooseDungeonAction: s.chooseDungeonAction,
       fleeDungeon: s.fleeDungeon,
       confirmColorTitle: s.confirmColorTitle,
@@ -875,6 +900,7 @@ export const LiveStageFeed = () => {
   useEffect(() => {
     if (prevAliveRef.current && !char.alive) {
       audioEngine.playDeath();
+      gameFeel.haptic([80, 50, 160]);
       gameFeel.addTrauma(0.85);
       gameFeel.triggerHitStop(220);
     }
@@ -923,6 +949,11 @@ export const LiveStageFeed = () => {
   const handleUseDungeonSupply = (supplyType) => {
     audioEngine.playClick();
     useDungeonSupply(supplyType);
+  };
+
+  const handleUseDungeonEgo = () => {
+    audioEngine.playEgo();
+    useDungeonEgo();
   };
 
   const handleConfirmColorTitle = (title) => {
@@ -1010,6 +1041,11 @@ export const LiveStageFeed = () => {
         handleUseDungeonSupply('scan');
         return;
       }
+      if (char.pendingDungeon && (e.key === 'r' || e.key === 'R')) {
+        e.preventDefault();
+        handleUseDungeonEgo();
+        return;
+      }
       const idx = parseInt(e.key, 10) - 1;
       if (Number.isNaN(idx) || idx < 0) return;
       if (char.pendingDungeon) {
@@ -1079,6 +1115,12 @@ export const LiveStageFeed = () => {
     }
   }, [char.pendingDungeon?.id, char.pendingDungeon?.currentStageIndex, char.pendingEvent?.id, char.pendingContract?.id]);
 
+  const lastDungeonResult = char.pendingDungeon?.lastStageResult;
+  useEffect(() => {
+    if (lastDungeonResult?.type === 'check_fail') gameFeel.haptic([30, 40, 30]);
+    else if (lastDungeonResult?.type === 'check_ok') gameFeel.haptic(10);
+  }, [lastDungeonResult]);
+
   const forgeQuality = strikes.length ? Math.round(strikes.reduce((a, b) => a + b, 0) / strikes.length) : 0;
   const lifeSummary = !char.alive ? buildLifeSummaryAndLegacy(char) : null;
   const hasDock = Boolean(char.pendingDungeon || char.pendingEvent || char.pendingContract || char.pendingMinor || activeResolution);
@@ -1109,7 +1151,7 @@ export const LiveStageFeed = () => {
                   skipAllBirthLogs();
                 }}
               >
-                {t('Bỏ qua ⏭', 'Skip ⏭')}
+                {t('Bỏ qua', 'Skip')}
               </button>
             </div>
           )}
@@ -1158,12 +1200,13 @@ export const LiveStageFeed = () => {
                   onFlee={handleFleeDungeon}
                   onSetStance={handleSetDungeonStance}
                   onUseSupply={handleUseDungeonSupply}
+                  onUseEgo={handleUseDungeonEgo}
                 />
               )}
               {!char.pendingDungeon && char.pendingEvent && <EventDock event={char.pendingEvent} char={char} onPick={handleSelectEvent} />}
               {!char.pendingDungeon && !char.pendingEvent && char.pendingContract && <ContractDock contract={char.pendingContract} wealth={char.stats.wealth} onPick={handleSelectContract} />}
               {!char.pendingDungeon && !char.pendingEvent && !char.pendingContract && char.pendingMinor && (
-                <MinorDock prompt={char.pendingMinor} char={char} npcs={char.npcs} wealth={char.stats.wealth} place={placeOf(char)} paused={speed === 0} onPick={handleChooseMinor} />
+                <MinorDock prompt={char.pendingMinor} char={char} npcs={char.npcs} wealth={char.stats.wealth} place={placeOf(char)} remainingMs={minorRemainingMs} onPick={handleChooseMinor} />
               )}
             </>
           )}

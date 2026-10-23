@@ -62,13 +62,13 @@ export const BEREAVEMENT_EVENTS = [
     forbids: ['Distorted'],
     need: { mem: 'lost_partner' },
     vi: '[Di vật của {partner}] Dọn dẹp lại ngăn tủ đồ cũ, bạn tìm thấy chiếc bao kiếm cũ mòn mà {partner} từng dùng khi hai người còn là những kẻ non nớt mới bước chân vào nghề.',
-    en: '[Relic of {partner}] Sifting through an old locker, you uncover the worn scabbard {partner} carried back when you were both greenhorns chasing your first bounties.',
+    en: "[{partner}’s Things] Clearing out an old locker, you find the worn scabbard {partner} used when you were both green and new to the work.",
     choices: [
       {
         labelVi: 'Gia cố chiếc bao kiếm và đeo nó bên mình như một lời nhắc nhở',
-        labelEn: 'Reinforce the scabbard and wear it as an eternal memento',
-        resultVi: 'Mỗi lần rút kiếm, bạn như cảm nhận được bàn tay của {partner} vỗ vai khích lệ. Tinh thần của bạn trở nên vững vàng hơn bao giờ hết.',
-        resultEn: 'Every time you draw steel, you feel {partner}’s phantom hand upon your shoulder. Your resolve becomes unbreakable.',
+        labelEn: "Reinforce the scabbard and wear it as a reminder",
+        resultVi: "Mỗi lần rút kiếm, bạn gần như cảm thấy bàn tay {partner} vỗ lên vai. Tay bạn vững hơn.",
+        resultEn: "Each time you draw the blade you almost feel {partner}’s hand on your shoulder. Your own hand steadies.",
         effects: { sanity: +15, rep: +10 }
       }
     ]

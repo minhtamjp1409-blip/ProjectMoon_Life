@@ -37,7 +37,7 @@ export const BALANCE = {
     floor: 1
   },
   drift: {
-    resonance: { rate: 0.08, calmBonus: 0, baseFloor: 10 },
+    resonance: { rate: 0.02, calmBonus: 0, baseFloor: 10 },
     network: { rate: 0.16, anchor: 30, careerBonus: 12, bondBonus: 8 },
     merit: { rate: 0.07, anchor: 40 },
     rep: { rate: 0.18, anchor: 20, fixerBonus: 20, seniorBonus: 35, colorAnchor: 75, syndicateBonus: 15 }
@@ -114,14 +114,14 @@ export function driftOf(char, bonded = 0, protectedThresholds = {}) {
   const flags = char.flags || [];
   const out = {};
 
-  if (!flags.includes('Distorted')) {
-    const floor = Math.min(55, d.resonance.baseFloor + scarResonanceFloor(char) * 4);
+  if (!flags.includes('Distorted') && char.lastResonanceGainAge !== char.age) {
+    const floor = Math.min(55, Math.max(d.resonance.baseFloor + scarResonanceFloor(char) * 4, Math.floor((char.resonancePeak || 0) / 20) * 5));
     const excess = (char.resonance || 0) - floor;
     if (excess > 0) {
       const calm = char.stats.sanity >= 80 ? d.resonance.calmBonus : 0;
       const rate = flags.includes('EGOAwakened') ? d.resonance.rate / 2 : d.resonance.rate;
       const available = (char.resonance || 0) - (protectedThresholds.resonance ?? 0);
-      if (available > 0) out.resonance = -Math.min(available, 3, Math.max(1, Math.round(excess * rate) + calm));
+      if (available > 0) out.resonance = -Math.min(available, 1, Math.max(0, Math.round(excess * rate) + calm));
     }
   }
 

@@ -12,29 +12,29 @@ export const BACKGROUND_OPENING_EVENTS = [
     weight: 35,
     need: { flags: ['SmokeWarLineage'] },
     vi: "[Cơn ho của cha] Giữa đêm, cha bạn bật dậy tìm chiếc mặt nạ phòng độc cũ. Ông không nhận ra căn phòng, chỉ gọi tên những đồng đội đã chết trong Smoke War. Bạn đứng cạnh giường; cơn ho vẫn chưa dứt.",
-    en: '[The Smoke War Nightmare] In the dead of night, your father woke convulsing, chest wheezing like a shattered exhaust duct. Eyes wild with phantom horrors of the fallen L Corp Smoke War, he clawed at floorboards searching for his dented respirator.',
+    en: "[Father’s Cough] In the middle of the night your father sits up and searches for his old gas mask. He does not recognize the room and calls out the names of comrades who died in the Smoke War. You stand by the bed; the cough has not stopped.",
     choices: [
       {
         labelVi: 'Ôm chặt lấy cha, ép ông thở chậm lại và xoa bóp lồng ngực cho đến khi cơn co giật dịu đi',
-        labelEn: 'Hold him tight, force his breathing slow, and rub his chest until the spasms ease',
+        labelEn: "Hold him close and make him breathe slowly, rubbing his chest until the coughing eases",
         resultVi: 'Hơi ấm từ bàn tay nhỏ bé của bạn thấm qua chiếc áo đẫm mồ hôi lạnh của cha. Hơi thở ông từ từ chậm lại, từng giọt nước mắt lăn dài trên gò má nám đen. Ông đặt bàn tay thô ráp lên đầu bạn: "Phổi của con khỏe hơn của cha... Ở The City này, phải biết thở để sống."',
-        resultEn: 'Your small hands steady his shuddering frame. His wheezing calms into rough weeping. "Your lungs are stronger than mine," he whispers. "In this City, you breathe to survive."',
+        resultEn: "The warmth of your small hands soaks through his cold-sweat shirt. His breathing slows, and tears run down his soot-darkened cheeks. He lays a rough hand on your head: “Your lungs are stronger than mine… In The City you have to know how to breathe to live.”",
         effects: { health: +8, sanity: +6, network: +6 },
         flagsAdd: ['HơiThởKhóiBếp']
       },
       {
         labelVi: 'Lục tìm chiếc hộp kim loại dưới gầm giường, lấy chiếc mặt nạ phòng độc cũ đeo vào mặt ông',
-        labelEn: 'Fish out the dented iron box beneath the bed and fit the old gas mask over his face',
+        labelEn: "Dig the old gas mask out of the metal box under the bed and fit it over his face",
         resultVi: 'Tiếng van thở kim loại rít lên nhịp nhàng quen thuộc. Hít sâu luồng không khí lọc qua lớp than hoạt tính cũ kỹ, đôi mắt vằn đỏ của cha bạn dần lấy lại tiêu cự. Ông tháo chiếc mặt nạ, trao nó vào tay bạn: "Cầm lấy. Khói ở The City chưa bao giờ tan hẳn đâu."',
-        resultEn: 'The rhythmic hiss of the vintage valve settles his panic. Removing the scarred mask, he presses it into your hands: "Keep it close. The City’s smoke never truly clears."',
+        resultEn: "The metal valve hisses in a familiar rhythm. He breathes the air filtered through old charcoal, and his bloodshot eyes slowly regain focus. He takes off the mask and puts it in your hands: “Take it. The smoke in The City never really clears.”",
         effects: { health: +4, sanity: -4, rep: +6 },
         flagsAdd: ['KỷVậtKhói']
       },
       {
         labelVi: 'Lắng nghe từng lời mê sảng của ông về vị trí kho quân nhu bị chôn vùi trong khói',
-        labelEn: 'Listen close to his fevered delirium as he mutters grid coordinates of buried war caches',
+        labelEn: "Listen to his fevered mutter about the buried supply depots",
         resultVi: 'Bạn ngồi im trong bóng tối, ghi nhớ từng con số tọa độ và ký hiệu mật mã của sư đoàn cựu chiến binh. Sự tàn nhẫn của cuộc chiến tranh khói ngấm sâu vào tâm trí bạn từ thuở lên năm.',
-        resultEn: 'You commit his frantic coordinates and bunker codes to memory. The cold brutality of the Smoke War seeps deep into your five-year-old soul.',
+        resultEn: "You sit still in the dark and memorize every coordinate and cipher mark of the veterans’ division. The cruelty of the Smoke War sinks into you at age five.",
         effects: { sanity: -8, wealth: +8, resonance: +12 },
         flagsAdd: ['BíMậtChiếnTranhKhói']
       }

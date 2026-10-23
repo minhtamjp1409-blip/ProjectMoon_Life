@@ -421,33 +421,6 @@ export const EXPANSION_LIFE_MINORS = [
   ),
 
   M(
-    'm_exp_ws_scrap_metal_bargain',
-    GROWN,
-    { jobs: ['Workshop Craftsman'] },
-    '[Mớ sắt phế liệu từ Nest] Một phu xe đẩy qua cửa xưởng bạn một xe cút kít chứa đầy các mảnh vụn titan vứt đi từ công trường xây dựng của Corp lân cận.',
-    '[Scrap Titanium Pushcart] A scavenger wheeled past your forge with a cart packed with discarded titanium trimmings from the neighboring Wing works.',
-    [
-      C(
-        'Mặc cả mua đứt toàn bộ xe phế liệu với giá 8 Ahn',
-        'Haggle the whole cartload down to a brisk 8 Ahn',
-        'Lô phế liệu mang lại cho bạn nguồn hợp kim cao cấp để rèn dao găm bán kiếm lời gấp ba lần.',
-        'The scrap yielded premium alloy bars to forge high-margin daggers, tripling your coin.',
-        { wealth: 14, sanity: 2 },
-        {}
-      ),
-      C(
-        'Lắc đầu từ chối vì nghi ngờ nguồn gốc hàng trộm cắp',
-        'Pass on the lot, wary of stolen corporate serial numbers',
-        'Nửa giờ sau, đội tuần tra của Wing ập đến bắt giữ tên phu xe. Bạn thở phào vì đã tránh được một rắc rối lớn.',
-        'Thirty minutes later, Wing security tackled the scavenger. You breathed easy having sidestepped a raid.',
-        { rep: 2, sanity: 1 },
-        {}
-      )
-    ],
-    I('Bạn tiếp tục quai búa vào đe mà không ngẩng lên.', 'You kept your hammer ringing upon the anvil without looking up.', {})
-  ),
-
-  M(
     'm_exp_partner_field_dress_wound',
     GROWN,
     { npc: 'partner' },
@@ -826,33 +799,6 @@ export const EXPANSION_LIFE_MINORS = [
   ),
 
   M(
-    'm_exp_ws_tempering_oil_change',
-    GROWN,
-    { jobs: ['Workshop Craftsman'] },
-    '[Thay dầu tôi kim loại] Bể dầu tôi luyện trong xưởng đã đóng cặn đen kịt sau một tháng rèn đúc liên tục; bạn dành buổi chiều lọc cặn và châm dầu mới.',
-    '[Skimming the Quench Tank] The oil tank was thick with carbon sludge after a month of forging; you spent dusk filtering grime and pouring fresh mineral lube.',
-    [
-      C(
-        'Tỉ mỉ lọc sạch cặn và châm dầu khoáng chất lượng cao',
-        'Filter the sludge clean and blend high-viscosity mineral lube',
-        'Các mẻ thép tiếp theo được tôi luyện với độ cứng tuyệt đối và bề mặt sáng bóng không chút xỉn màu.',
-        'Subsequent blades quenched with flawless tensile hardness and mirror luster.',
-        { wealth: -2, merit: 2, sanity: 2 },
-        {}
-      ),
-      C(
-        'Tận dụng cặn dầu cũ để thắp sáng đèn xưởng',
-        'Refine the discarded sludge to fuel workshop lanterns',
-        'Xưởng rèn sáng rực suốt đêm mà không tốn thêm một xu tiền dầu thắp.',
-        'The forge blazed bright all night without costing a penny in lamp oil.',
-        { wealth: 2, sanity: 1 },
-        {}
-      )
-    ],
-    I('Bạn đậy nắp bể dầu lại.', 'You closed the tank lid.', {})
-  ),
-
-  M(
     'm_exp_dist_broken_mirror_stare',
     GROWN,
     { jobs: ['Distortion'] },
@@ -937,15 +883,6 @@ export const EXPANSION_LIFE_DAILIES = [
   ]),
 
   // Workshop Craftsman Daily Atmosphere
-  ...rowList('ws', GROWN, { jobs: ['Workshop Craftsman'] }, [
-    ['anvil_rebound', 'Độ nảy của chiếc búa tạ trên đe thép phát ra âm vang giòn giã làm rung rinh ngọn nến trên bàn rèn.', 'The crisp bounce of your sledge against anvil horn rang out, making the forge candle dance.', { merit: 1 }],
-    ['quenching_steam', 'Khói hơi nước bốc lên mù mịt khi nhúng thanh đao đỏ lửa vào bể dầu cọ, mùi khen khét đặc trưng tỏa ra.', 'Acrid steam billowed as glowing steel plunged into the quench tank, smelling of scorched oil.', { sanity: 1 }],
-    ['callus_trim', 'Bạn dùng lưỡi dao cạo bớt lớp chai sạn dày cộp trên lòng bàn tay để giữ cảm giác chuẩn xác khi cầm búa.', 'You shaved thickened calluses off your palm with a razor to preserve tactile grip on the hammer.', { health: -1, rep: 1 }],
-    ['oil_soaked_rag', 'Chiếc giẻ lau dính đầy mỡ máy đen sì dùng để bọc bảo quản những thanh kiếm vừa mài xong.', 'A blackened, grease-stiff rag wrapped each polished edge before packing them into wooden crates.', { wealth: 1 }],
-    ['tempering_glow', 'Màu rơm cháy trên mép phôi thép báo hiệu nhiệt độ tôi kim loại đã đạt đến độ dẻo dai hoàn hảo.', 'A faint straw-yellow hue across the bevel signalled the temper had reached ideal toughness.', { sanity: 1 }],
-    ['workshop_bellows', 'Tiếng thở phì phò đều đặn của bễ lò rèn bằng da bò thổi bùng những đốm than đỏ rực trong đêm.', 'The rhythmic sigh of ox-hide bellows stoked glowing charcoal embers against the night chill.', { sanity: 1 }]
-  ]),
-
   // Districts Specific Atmosphere
   ...rowList('d_flv', ANY, {}, [
     ['district_10_clock', 'Đồng hồ khổng lồ trên quảng trường District 10 điểm chuông; người qua đường đồng loạt chỉnh lại kim đồng hồ tay.', 'The central tower clock of District 10 struck; pedestrians in the square paused in unison to wind watches.', { sanity: 1 }],

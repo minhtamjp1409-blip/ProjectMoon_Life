@@ -1,18 +1,18 @@
 /**
  * Balance harness: plays N lives with fixed seeds so two runs differ only by what changed in the game.
- * Usage: node balance_sim.mjs [lives=1500] [policy=random|greedy] [--regions] [--fixers]
+ * Usage: node tools/sim/balance_sim.mjs [lives=1500] [policy=random|greedy|focused] [--regions] [--fixers]
  *   random: picks any choice (a naive player)
  *   greedy: picks the choice with the best summed visible effect (a careful player)
  * Reports lifespan against each District's avgLife, every resource by age, how often a
  * resource sits on its floor or cap, and which kind of moment moves each resource.
  */
-import { createNewCharacter, resolveEventChoice, resolveDungeonChoice, createRNG, resolveFixerContract } from './src/engine/gameEngine.js';
-import { planYear, runDueItems, resolveMinor, endYear, LIFE_MINORS } from './src/engine/yearPlanner.js';
-import { REGIONS } from './src/data/worldData.js';
-import { choiceIsAvailable } from './src/engine/eventConditions.js';
+import { createNewCharacter, resolveEventChoice, resolveDungeonChoice, getDungeonCurrentStage, isDungeonChoiceAvailable, createRNG, resolveFixerContract } from '../../src/engine/gameEngine.js';
+import { planYear, runDueItems, resolveMinor, endYear, LIFE_MINORS } from '../../src/engine/yearPlanner.js';
+import { REGIONS } from '../../src/data/worldData.js';
+import { choiceIsAvailable } from '../../src/engine/eventConditions.js';
 
 const LIVES = Number(process.argv[2]) || 1500;
-const POLICY = process.argv[3] === 'greedy' ? 'greedy' : 'random';
+const POLICY = ['greedy', 'focused'].includes(process.argv[3]) ? process.argv[3] : 'random';
 const SHOW_REGIONS = process.argv.includes('--regions');
 const FORCE_FIXER = process.argv.includes('--fixers');
 
@@ -37,13 +37,28 @@ function choiceScore(ch) {
   return fxScore(ch.fx || ch.effects);
 }
 // A player can only pick what the screen offers
-const pickIndex = (choices, rng, char) => {
+const pickIndex = (choices, rng, char, eventId = '') => {
   const ok = (choices || []).map((c, i) => i).filter((i) => choiceIsAvailable(choices[i], char));
   if (!ok.length) return -1;
   if (POLICY === 'random') return ok[Math.floor(rng() * ok.length)];
+  if (POLICY === 'focused') {
+    if (eventId.startsWith('fixer_seven_')) return ok[0];
+    if (eventId === 'hana_color_ascension_trial') return ok.includes(1) ? 1 : 0;
+    if (eventId === 'ego_carmen_crossroad' || eventId === 'ego_second_efflorescence_trial') return ok[0];
+    if (eventId === 'ad_career_crossroad_18' || eventId === 'ad_outskirts_crossroad_18') {
+      const fixer = ok.find((i) => choices[i].setJob === 'Fixer');
+      if (fixer !== undefined) return fixer;
+    }
+    if (eventId.startsWith('fixer_promo_')) {
+      const promotion = ok.find((i) => choices[i].setFixerGrade != null);
+      if (promotion !== undefined) return promotion;
+    }
+  }
   return ok.reduce((b, i) => (choiceScore(choices[i]) > choiceScore(choices[b]) ? i : b), ok[0]);
 };
 
+const dungeons = { lives: 0, byId: {} };
+const dunLives = new Set();
 const flow = {};            // op -> key -> summed delta
 const addFlow = (op, a, b) => {
   const row = (flow[op] ||= {});
@@ -57,6 +72,7 @@ const causes = {};
 const endState = {};
 const ladder = { fixers: 0, g5: [], g3: [], g1: [], color: [] };
 const outcomes = { distorted: 0, ego: 0, color: 0, grade1: 0, adults: 0, jobs: {}, carmen: 0, married: 0, child: 0 };
+const milestones = { colorAges: [], egoAges: [], sameYearAges: [], bothLives: 0, sameActionLives: 0, fixerEgoLives: 0, colorTrialLives: 0 };
 let years = 0;
 const bucketOf = (age) => (age < 1 ? '0' : age < 5 ? '1-4' : age < 12 ? '5-11' : age < 18 ? '12-17' : age < 30 ? '18-29' : age < 45 ? '30-44' : age < 60 ? '45-59' : '60+');
 
@@ -67,6 +83,16 @@ for (let i = 0; i < LIVES; i++) {
   let guard = 0;
   const seenG = new Set();
   let wasFixer = false;
+  let firstColorAge = null;
+  let firstEgoAge = null;
+  let sameAction = false;
+  const observeMilestones = (beforeFlags) => {
+    const colorNow = char.flags.includes('ColorFixer');
+    const egoNow = char.flags.includes('EGOAwakened');
+    if (beforeFlags && colorNow && egoNow && !beforeFlags.includes('ColorFixer') && !beforeFlags.includes('EGOAwakened')) sameAction = true;
+    if (colorNow && firstColorAge === null) firstColorAge = char.age;
+    if (egoNow && firstEgoAge === null) firstEgoAge = char.age;
+  };
   while (char.alive && char.age < 120 && guard++ < 200) {
     if (FORCE_FIXER && char.age >= 18 && !wasFixer) {
       char.job = 'Fixer';
@@ -78,18 +104,36 @@ for (let i = 0; i < LIVES; i++) {
     for (let t = 0; t <= 100 && char.alive; t += 2) {
       let before = snap(char);
       const planned = char.plan?.[char.planCursor || 0];
+      const beforeFlags = [...char.flags];
       const res = runDueItems(char, t, rng);
       char = res.char;
+      observeMilestones(beforeFlags);
       if (res.changed) { addFlow(planned?.kind || 'plan', before, snap(char)); }
       let spin = 0;
       while (char.alive && (char.pendingEvent || char.pendingMinor || char.pendingContract || char.pendingDungeon || char.pendingModal) && spin++ < 8) {
         before = snap(char);
+        const resolutionFlags = [...char.flags];
         if (char.pendingEvent) {
-          char = resolveEventChoice(char, Math.max(0, pickIndex(char.pendingEvent.choices, rng, char)), rng);
+          char = resolveEventChoice(char, Math.max(0, pickIndex(char.pendingEvent.choices, rng, char, char.pendingEvent.id)), rng);
           addFlow('major', before, snap(char));
         } else if (char.pendingDungeon) {
-          char = resolveDungeonChoice(char, 0, rng).char;
-          addFlow('major', before, snap(char));
+          const sess = char.pendingDungeon;
+          if (!dunLives.has(i)) { dunLives.add(i); dungeons.lives++; }
+          const stage = getDungeonCurrentStage(sess);
+          const usable = stage.choices.map((c, k) => k).filter((k) => isDungeonChoiceAvailable(stage.choices[k], char));
+          // random: any offered choice; greedy: leave when hurt, otherwise the safest way forward
+          let k = usable[Math.floor(rng() * usable.length)];
+          if (POLICY !== 'random') {
+            const flee = usable.find((x) => stage.choices[x].isFlee);
+            const hurt = char.stats.health < 45 || char.stats.sanity < 30;
+            const forward = usable.filter((x) => !stage.choices[x].isFlee).sort((a, b) => (stage.choices[b].fx?.health || 0) - (stage.choices[a].fx?.health || 0));
+            k = hurt && flee !== undefined ? flee : forward[0] ?? flee;
+          }
+          const r = resolveDungeonChoice(char, k, rng);
+          char = r.char;
+          const row = (dungeons.byId[sess.id] ||= { runs: 0, dead: 0, broken: 0, fled: 0, conquered: 0 });
+          if (r.isFinished) { row.runs++; row[r.resolution.outcome]++; }
+          addFlow('dungeon', before, snap(char));
         } else if (char.pendingMinor) {
           const def = LIFE_MINORS.find((m) => m.id === char.pendingMinor.id);
           char = resolveMinor(char, pickIndex(def?.choices, rng, char), rng);
@@ -102,6 +146,7 @@ for (let i = 0; i < LIVES; i++) {
         } else {
           char.pendingModal = null;
         }
+        observeMilestones(resolutionFlags);
       }
     }
     if (char.alive && char.job === 'Fixer') {
@@ -118,11 +163,22 @@ for (let i = 0; i < LIVES; i++) {
         for (const k of KEYS) (row[k] ||= []).push(s[k]);
       }
       const before = snap(char);
+      const beforeFlags = [...char.flags];
       char = endYear(char, rng);
+      observeMilestones(beforeFlags);
       addFlow('endYear', before, snap(char));
     }
   }
   if (wasFixer || char.job === 'Fixer') ladder.fixers++;
+  if (firstColorAge !== null) milestones.colorAges.push(firstColorAge);
+  if (firstEgoAge !== null) milestones.egoAges.push(firstEgoAge);
+  if (firstColorAge !== null && firstEgoAge !== null) {
+    milestones.bothLives++;
+    if (firstColorAge === firstEgoAge) milestones.sameYearAges.push(firstColorAge);
+  }
+  if ((char.seenEvents || []).includes('hana_color_ascension_trial')) milestones.colorTrialLives++;
+  if (sameAction) milestones.sameActionLives++;
+  if ((wasFixer || char.job === 'Fixer') && firstEgoAge !== null) milestones.fixerEgoLives++;
   lifespans.push(char.age);
   if (char.age >= 18) {
     outcomes.adults++;
@@ -168,7 +224,12 @@ const pc = (n, d = LIVES) => `${((100 * n) / d).toFixed(1)}%`;
 console.log(`Outcomes: Distorted ${pc(outcomes.distorted)}  E.G.O ${pc(outcomes.ego)}  Carmen crossroad ${pc(outcomes.carmen)}  Color ${pc(outcomes.color)}  Fixer Grade1 ${pc(outcomes.grade1)}  Spouse ${pc(outcomes.married)}  Child ${pc(outcomes.child)}`);
 const med = (a) => (a.length ? q(a, 0.5) : '-');
 console.log(`Fixer ladder (of ${ladder.fixers} Fixers): Grade<=5 ${pc(ladder.g5.length, ladder.fixers)} (median age ${med(ladder.g5)})  Grade<=3 ${pc(ladder.g3.length, ladder.fixers)} (${med(ladder.g3)})  Grade<=1 ${pc(ladder.g1.length, ladder.fixers)} (${med(ladder.g1)})  Color ${pc(ladder.color.length, ladder.fixers)} (${med(ladder.color)})`);
+console.log(`First attainment: Color ${milestones.colorAges.length}/${LIVES} (${pc(milestones.colorAges.length)}), mean age ${milestones.colorAges.length ? f1(mean(milestones.colorAges)) : '-'}; E.G.O ${milestones.egoAges.length}/${LIVES} (${pc(milestones.egoAges.length)}), mean age ${milestones.egoAges.length ? f1(mean(milestones.egoAges)) : '-'}`);
+console.log(`Both in one life ${milestones.bothLives}/${LIVES} (${pc(milestones.bothLives)}); first attained in the same age/year ${milestones.sameYearAges.length}/${LIVES} (${pc(milestones.sameYearAges.length)}), mean age ${milestones.sameYearAges.length ? f1(mean(milestones.sameYearAges)) : '-'}; same resolution/action ${milestones.sameActionLives}/${LIVES} (${pc(milestones.sameActionLives)}); E.G.O among Fixers ${milestones.fixerEgoLives}/${ladder.fixers} (${pc(milestones.fixerEgoLives, ladder.fixers)})`);
+console.log('Color age distribution:', JSON.stringify({ min: milestones.colorAges.length ? Math.min(...milestones.colorAges) : null, median: med(milestones.colorAges), before45: milestones.colorAges.filter(a => a < 45).length, egoMin: milestones.egoAges.length ? Math.min(...milestones.egoAges) : null }));
+console.log(`Color trial seen ${milestones.colorTrialLives}/${LIVES} (${pc(milestones.colorTrialLives)}); Color among trial lives ${milestones.colorAges.length}/${milestones.colorTrialLives} (${milestones.colorTrialLives ? pc(milestones.colorAges.length, milestones.colorTrialLives) : '-'})`);
 console.log('Adult jobs:', Object.entries(outcomes.jobs).map(([j, n]) => `${j} ${pc(n, outcomes.adults)}`).join('  '));
+console.log(`Dungeons: ${pc(dungeons.lives)} of lives enter one;`, Object.entries(dungeons.byId).map(([id, r]) => `${id.replace('dungeon_', '')} ${r.runs} runs (dead ${pc(r.dead, r.runs)}, broken ${pc(r.broken, r.runs)}, fled ${pc(r.fled, r.runs)}, through ${pc(r.conquered, r.runs)})`).join(' | ') || 'none');
 console.log('\nResource by age (mean [p10-p90]) among the living');
 console.log('age   ' + KEYS.map((k) => k.padEnd(14)).join(''));
 for (const a of AGES) {

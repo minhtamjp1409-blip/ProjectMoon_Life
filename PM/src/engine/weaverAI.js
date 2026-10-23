@@ -1,3 +1,4 @@
+import { rememberResonance, hasEgoOpportunity, colorTrialAvailable } from './awakeningProgress.js';
 import { evaluateNarrativeArcProgression, computeEmotionalWaveConsideration } from './narrativeArcEngine.js';
 import { matchesEventContext } from './eventConditions.js';
 import { evaluateEventConsiderations } from './utilityCurves.js';
@@ -319,6 +320,7 @@ export function recordChoiceInGraph(weaver, char, event, choice, outcomeTextVi, 
 }
 
 export function isEventEligible(event, char, { scripted = false } = {}) {
+  if (event.id === 'fixer_seven_unclaimed_dossier' && !scripted) return false;
   if (RETIRED_WORKSHOP_TRIAL_IDS.has(event.id)) return false;
   const otherTrial = careerTrialForEvent(event.id);
   const contextEvent = otherTrial && event.age ? { ...event, age: [event.age[0], 140] } : event;
@@ -331,7 +333,7 @@ export function isEventEligible(event, char, { scripted = false } = {}) {
     const eventGrade = event.choices?.find((choice) => choice.setFixerGrade != null)?.setFixerGrade;
     if (!next?.isEligible || eventGrade !== next.grade || char.lastFixerExamAge === char.age) return false;
   }
-  if (event.id === 'hana_color_ascension_trial' && !checkColorFixerReadiness(char).ready) return false;
+  if (event.id === 'hana_color_ascension_trial' && (!checkColorFixerReadiness(char).ready || !colorTrialAvailable(char))) return false;
   if (otherTrial) {
     const next = getOtherCareerPromotion(char);
     if (!next?.isEligible || next.route !== otherTrial.route || next.rank !== otherTrial.rank ||
@@ -341,7 +343,7 @@ export function isEventEligible(event, char, { scripted = false } = {}) {
   }
   if (event.id === 'ad_career_crossroad_18' && (char.age < 18 || char.job !== 'Child' || char.regionId === 'OUTSKIRTS')) return false;
   if (event.id === 'ad_outskirts_crossroad_18' && (char.age < 18 || char.job !== 'Child')) return false;
-  if (event.id === 'ego_carmen_crossroad' && !(char.age >= 18 && (char.stats.sanity <= 15 || (char.resonance || 0) >= 50))) return false;
+  if (event.id === 'ego_carmen_crossroad' && !(char.age >= 18 && (hasEgoOpportunity(char) || char.stats.sanity <= 15 || (char.resonance || 0) >= 50))) return false;
   if (event.id === 'csq_claw_taboo_visitation' && char.taboo < 3) return false;
   const milestones = ['ad_career_crossroad_18', 'ad_outskirts_crossroad_18', 'ego_carmen_crossroad', 'ego_second_efflorescence_trial', 'hana_color_ascension_trial', 'csq_claw_taboo_visitation'];
   return scripted || !milestones.includes(event.id);
@@ -526,7 +528,7 @@ export function selectEventWithWeaverAI({
       phase: 'CLIMAX',
       selectedId: chooseFingerEv.id,
       utility: 980,
-      reasonVi: 'Gia nhập Syndicate: Tuyên thệ trung thành với một trong Năm Ngón Tay (Five Fingers)',
+      reasonVi: 'Gia nhập Syndicate: Tuyên thệ trung thành với một trong The Five Fingers',
       reasonEn: 'Joined Syndicate: Swear allegiance to one of the Five Fingers',
       candidates: [{ eventId: chooseFingerEv.id, totalUtility: 980 }]
     };
@@ -549,7 +551,7 @@ export function selectEventWithWeaverAI({
 
   if (
     carmenEv &&
-    meetsCarmenPrereq &&
+    (meetsCarmenPrereq || hasEgoOpportunity(char)) &&
     !char.flags.includes('EGOAwakened') &&
     !char.flags.includes('Distorted') &&
     !char.seenEvents.includes('ego_carmen_crossroad')
@@ -719,7 +721,7 @@ export function selectEventWithWeaverAI({
     char.job === 'Fixer' &&
     !char.flags.includes('Distorted') &&
     checkColorFixerReadiness(char).ready &&
-    !char.seenEvents.includes('hana_color_ascension_trial')
+    colorTrialAvailable(char)
   ) {
     const logEntry = {
       age: char.age,
@@ -737,6 +739,39 @@ export function selectEventWithWeaverAI({
         decisionLog: [logEntry, ...updatedWeaver.decisionLog].slice(0, 18)
       }
     };
+  }
+
+  // Rare early lane to Color: a Seven Association case can hand a mid-career Fixer merit that
+  // would otherwise take a decade of contracts, without touching the trial's own merit/rep gate.
+  // Most Fixers never see this offered; it is a chance, not a track.
+  if (
+    char.job === 'Fixer' &&
+    !char.flags.includes('Distorted') &&
+    !char.flags.includes('ColorFixer') &&
+    !char.seenEvents.includes('fixer_seven_unclaimed_dossier') &&
+    char.age >= 28 && char.age <= 38 &&
+    (char.fixerGrade ?? 9) >= 2 && (char.fixerGrade ?? 9) <= 6 &&
+    rng() < 0.22
+  ) {
+    const dossierEv = allPools.find(e => e.id === 'fixer_seven_unclaimed_dossier');
+    if (dossierEv && isEventEligible(dossierEv, char, { scripted: true })) {
+      const logEntry = {
+        age: char.age,
+        phase: updatedWeaver.dramaPhase,
+        selectedId: dossierEv.id,
+        utility: 860,
+        reasonVi: 'Một đồng nghiệp đề cử bạn cho vụ của Seven, đặt cả tên mình vào rủi ro',
+        reasonEn: 'A colleague puts their own name at risk to recommend you for Seven’s case',
+        candidates: [{ eventId: dossierEv.id, totalUtility: 860 }]
+      };
+      return {
+        event: dossierEv,
+        weaver: {
+          ...updatedWeaver,
+          decisionLog: [logEntry, ...updatedWeaver.decisionLog].slice(0, 18)
+        }
+      };
+    }
   }
 
   const dueThread = updatedWeaver.pendingThreads.find(

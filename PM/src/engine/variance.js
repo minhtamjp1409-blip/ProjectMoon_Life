@@ -14,8 +14,8 @@
 
 export const NEUTRAL_TRAITS = { luck: 0, vigor: 1, nerve: 1, hustle: 1, drama: 1 };
 
-// A result that spells out its own numbers ("+16 HP") must land on exactly those numbers
-export const PRINTED_NUMBERS = /[+\-−]\s?\d+\s?(HP|SP|Ahn|Merit|Rep)/i;
+// A result that spells out its own numbers ("+16 HP", "paid 14 Ahn") must land on exactly those numbers
+export const PRINTED_NUMBERS = /(?:[+\-−]\s?)?\b\d+\s?(?:HP|SP|Ahn|Merit|Rep)\b/i;
 
 // Sum of three uniforms: bell-shaped on [-1, 1] without a log or sqrt
 const bell = (rng) => (rng() + rng() + rng() - 1.5) / 1.5;

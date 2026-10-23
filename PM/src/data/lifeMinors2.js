@@ -349,10 +349,11 @@ export const LIFE_MINORS_2 = [
         'Take the case off the books',
         null,
         null,
-        { wealth: 1 },
+        {},
         {
+          exactFx: ['wealth'],
           out: [
-            O(55, 'Bạn đột kích vào căn hầm phế liệu và giải cứu thành công cậu bé trước khi chúng kịp mổ lấy nội tạng. Người mẹ ôm con khóc nức nở và cố dúi thêm tiền; bạn kiên quyết từ chối.', 'You breached the cellar and secured the boy before they could harvest his organs. The weeping mother tried to offer her ring; you refused to take it.', { rep: 6, sanity: 5, merit: 3 }, { motif: { mercy: 1 } }),
+            O(55, 'Bạn đột kích vào căn hầm phế liệu và cứu được cậu bé trước khi toán Rat kịp đưa nó đi. Người mẹ ôm con, giữ lời trả 4 Ahn; bạn từ chối món tiền bà định dúi thêm.', 'You reached the scrap cellar before the Rats could move the boy. His mother kept her promise and paid the four Ahn; you refused the extra coins she tried to press into your hand.', { wealth: 4, rep: 6, sanity: 5, merit: 3 }, { motif: { mercy: 1 } }),
             O(45, 'Bạn đến chậm mất một ngày định mệnh. Bạn nghẹn ngào hoàn trả lại 4 đồng Ahn cho người mẹ, và trong cơn đau đớn tột cùng, bà ném thẳng số tiền ấy vào mặt bạn.', 'You arrived one fateful day too late. You solemnly returned the four coins, and in raw despair, she hurled them straight into your face.', { sanity: -6 })
           ]
         }
@@ -535,32 +536,6 @@ export const LIFE_MINORS_2 = [
       )
     ],
     I('Bạn ậm ừ bảo sẽ cân nhắc thêm rồi lảng tránh vấn đề.', 'You murmured that you would think about it, evading the plot.')
-  ),
-
-  M(
-    'm2_ws_apprentice',
-    GROWN,
-    { jobs: ['Workshop Craftsman'] },
-    '[Đứa trẻ xin học việc rèn] Một đứa trẻ gầy gò ở Backstreets ngày nào cũng đứng nép ngoài cửa xưởng chăm chú ngắm nhìn bạn rèn vũ khí. Hôm nay, nó lấy hết can đảm bước vào rụt rè hỏi xin được theo bạn học nghề.',
-    '[The Backstreet Smith Apprentice] A scrawny alley youth stood outside the workshop every morning, transfixed by your forge hammer. Today, it gathered courage to step inside, asking to become your apprentice.',
-    [
-      C(
-        'Nhận đứa trẻ vào làm thợ phụ',
-        'Accept the eager apprentice',
-        'Nó làm hỏng ba phôi kiếm trong tháng đầu tiên, nhưng đến tháng thứ tư đã tự tay rèn được một lưỡi dao găm bén ngót. Bạn tự hào treo thanh kiếm đầu tay của nó lên tường danh dự.',
-        'It ruined three steel blanks in the first month, but forged a flawless dagger by the fourth. You proudly mounted its first creation upon the workshop wall.',
-        { wealth: -3, sanity: 5, rep: 2 },
-        { npc: { role: 'partner', bond: 60 } }
-      ),
-      C(
-        'Quát mắng xua đuổi nó đi',
-        'Drive the kid away',
-        'Đứa trẻ sợ hãi không dám quay lại xưởng nữa. Vài tháng sau, bạn tình cờ nhìn thấy nó đang làm chân chạy việc vặt cho một băng đảng Syndicate khét tiếng.',
-        'The terrified child ceased visiting. Months later, you spotted it running street errands for a ruthless syndicate gang.',
-        { sanity: -2 }
-      )
-    ],
-    I('Bạn không buồn đáp lời, tiếp tục quai búa nện thép trên đe.', 'You ignored the request, continuing to hammer glowing steel upon the anvil.')
   ),
 
   // ------------------------------------------------------------ the people closest to you

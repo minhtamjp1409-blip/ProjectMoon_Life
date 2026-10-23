@@ -138,6 +138,9 @@ export function fixerPromotionSuccessChance(char, targetGrade) {
   return Math.min(0.85, Math.max(0.2, 0.8 - (8 - targetGrade) * 0.065 + extraRep * 0.003 + extraMerit * 0.0008 + healthBonus));
 }
 
+export const isFixerPromotionChoice = (choice, char) =>
+  char?.job === 'Fixer' && choice?.setFixerGrade != null && choice.setFixerGrade < (char.fixerGrade ?? 9);
+
 export function fixerPromotionFailureEffects(targetGrade) {
   const difficulty = 9 - targetGrade;
   return { health: -(3 + difficulty * 2), wealth: -(1 + difficulty * 4), sanity: -(1 + difficulty) };
@@ -415,8 +418,8 @@ export function tryItemAutoRevive(char) {
     age: char.age,
     season: SEASONS[char.seasonIdx || 0],
     type: 'major',
-    vi: `[Ống tiêm K Corp kích hoạt!] Ống tiêm chứa dịch màu lục bảo K Corp vỡ tung, chất lỏng sinh học thần kỳ thấm sâu vào từng tế bào bị hủy hoại, kéo bạn tức thì trở về từ cõi chết! (+50 HP)`,
-    en: `[K Corp Ampoule Triggered!] The emerald vial shattered, miraculous biogel flooding your ruined tissues and pulling you back from the brink of oblivion! (+50 HP)`
+    vi: `[Ống tiêm K Corp] Ống tiêm màu lục bảo của K Corp vỡ trong tay bạn. Dịch sinh học thấm vào những mô đã hỏng và kéo bạn trở lại ngay trước khi mọi thứ tối đi.`,
+    en: `[K Corp Ampoule] The emerald K Corp ampoule breaks in your hand. The biogel seeps into the ruined tissue and pulls you back just before everything goes dark.`
   });
 
   return true;

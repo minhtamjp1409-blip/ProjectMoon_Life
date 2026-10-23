@@ -554,7 +554,7 @@ export const CharacterDossierCard = () => {
         </div>
 
         {/* Row 2: equal cells, so a long number can never push into its neighbour */}
-        <div className="hud2-stats" style={{ '--cells': 3 + (char.heat > 0 ? 1 : 0) + (tabooLevel > 0 ? 1 : 0) }}>
+        <div className="hud2-stats">
           <div className={`hud2-stat is-hp ${isHpCritical ? 'is-critical' : ''}`} title={`HP: ${health}/100`}>
             <span className="hud2-k"><Heart size={13} aria-hidden="true" />HP</span>
             <b className="hud2-v num">{health}</b>
@@ -569,18 +569,14 @@ export const CharacterDossierCard = () => {
             <span className="hud2-k"><Coins size={13} aria-hidden="true" />Ahn</span>
             <b className="hud2-v num">{wealth}</b>
           </div>
-          {char.heat > 0 && (
-            <div className={`hud2-stat is-heat ${char.heat >= 65 ? 'is-critical' : ''}`} title={t('Mức độ truy nã', 'Heat Level')}>
-              <span className="hud2-k"><Flame size={13} aria-hidden="true" />Heat</span>
-              <b className="hud2-v num">{char.heat}</b>
-            </div>
-          )}
-          {tabooLevel > 0 && (
-            <div className={`hud2-stat is-taboo ${tabooLevel >= 2 ? 'is-critical' : ''}`} title={t('Ánh nhìn Taboo', 'Taboo Gaze')}>
-              <span className="hud2-k"><Eye size={13} aria-hidden="true" />Taboo</span>
-              <b className="hud2-v num">{tabooLevel}<small>/3</small></b>
-            </div>
-          )}
+        </div>
+
+        <div className="hud2-secondary" aria-label={t('Chỉ số bổ sung', 'Additional stats')}>
+          <span title={t('Quan hệ', 'Network')}><span>{t('Quan hệ', 'Network')}</span><b>{network}</b></span>
+          <span title={t('Danh tiếng', 'Reputation')} aria-label={t(`Danh tiếng ${rep}`, `Reputation ${rep}`)}><span>Rep</span><b>{rep}</b></span>
+          <span title={t('Mức độ truy nã', 'Heat Level')} className={char.heat >= 65 ? 'is-danger' : ''}><span>Heat</span><b>{char.heat || 0}</b></span>
+          <span title={t('Cộng hưởng E.G.O', 'E.G.O Resonance')}><span>E.G.O</span><b>{char.resonance || 0}%</b></span>
+          <span title={t('Ánh nhìn Taboo', 'Taboo Gaze')} className={tabooLevel >= 2 ? 'is-danger' : ''}><span>Taboo</span><b>{tabooLevel}/3</b></span>
         </div>
 
         {/* Row 3: the year, and the next career goal */}

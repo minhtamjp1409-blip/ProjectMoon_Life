@@ -158,29 +158,26 @@ export const DERIVATIVE_LORE_EVENTS = [
     major: true,
     weight: 10,
     forbids: ['Distorted', 'bloodfiend_met'],
-    vi: "[Công viên dưới lòng đất] Bạn lần theo người mất tích vào công viên ngầm District 16. Đu quay vẫn sáng dù các quầy đều vắng. Một Bloodfiend nâng ly đỏ thẫm: \"Khách mới. Ở lại dùng bữa chứ?\"",
-    en: '[Bloodfiend Carnival · La Manchaland] Tracking a missing carriage convoy, you descend into a subterranean cavern beneath District 16 (P Corp). A carnival of neon Ferris wheels spins in utter silence. A nobleman draped in crimson velvet, skin porcelain-dead with carmine pupils (Bloodfiend Kindred), lifts a chalice of fresh blood: "Welcome, pilgrim. Here, we share warm blood so we may forget our endless thirst."',
+    vi: "[Công viên dưới lòng đất] Bạn lần theo người mất tích tới cổng một công viên ngầm ở District 16. Đu quay vẫn sáng dù các quầy đều vắng. Một con rối khâu bằng da người cúi chào và chìa ra tấm vé còn ấm: \"Khách mới. Vào chơi chứ?\"",
+    en: '[La Manchaland] Tracking a missing convoy, you reach the gate of an underground amusement park beneath District 16. The Ferris wheel is lit though every stall is empty. A marionette stitched from human hide bows and holds out a ticket that is still warm: “New guest. Coming in?”',
     choices: [
       {
-        labelVi: 'Vung vũ khí chém nát ly rượu, kiên quyết diệt trừ dị chủng',
-        labelEn: 'Strike the chalice down, resolving to purge the bloodfiend',
+        labelVi: 'Nhận tấm vé và bước qua cổng',
+        labelEn: 'Take the ticket and walk through the gate',
         startDungeon: 'dungeon_bloodfiend_carnival',
-        resultVi: 'Cơn thịnh nộ bùng phát. Tốc độ của Bloodfiend xé rách không khí như bóng ma. Trận chiến kết thúc khi bạn đâm mũi kiếm xuyên qua trái tim đóng băng của con quái vật. Bạn thu được tinh chất Máu Cổ Xưa cực kỳ quý hiếm.',
-        resultEn: 'Furious carnage erupted. The Bloodfiend moved like a sonic ghost. You drove your steel clean through its frozen heart after taking savage claw gouges. You harvested a phial of Primordial Blood Essence.',
-        effects: { health: -16, sanity: -8, rep: +25, wealth: +35 },
-        flagsAdd: ['bloodfiend_met', 'BloodfiendSlayer'],
-        recordsAdd: ['la_manchaland_slayer'],
-        meritAdd: 35
+        resultVi: 'Tấm vé ấm như vừa rời khỏi tay ai đó. Cánh cổng quay một vòng sau lưng bạn, và bản nhạc kèn bắt đầu lại từ đầu.',
+        resultEn: 'The ticket is warm, as if it just left someone’s hand. The turnstile completes a turn behind you, and the organ music starts again from the beginning.',
+        flagsAdd: ['bloodfiend_met']
       },
       {
-        labelVi: 'Kín đáo ký kết hiệp ước ngầm cung cấp máu đổi lấy Singularity',
-        labelEn: 'Discreetly negotiate a pact: supply plasma for Singularity tech',
-        resultVi: 'Vị quý tộc Bloodfiend hài lòng cúi đầu lịch thiệp. Hắn trao cho bạn một tấm bùa phòng hộ bằng huyết thạch có khả năng hồi phục cơ thể thần kỳ, đổi lại việc bạn giữ kín địa điểm của công viên ngầm.',
-        resultEn: 'The Bloodfiend bowed with aristocratic grace. He bestowed a Bloodstone Talisman capable of miraculous cellular coagulation, in exchange for your vow of silence regarding the catacombs.',
-        effects: { wealth: +50, sanity: -15, taboo: +1, resonance: +15 },
+        labelVi: 'Đứng ngoài cổng, nhắn chủ công viên rằng bạn muốn thỏa thuận',
+        labelEn: 'Stay outside the gate and send word to the park’s owner that you want to deal',
+        resultVi: 'Con rối biến vào bóng tối rồi quay lại với một tấm bùa huyết thạch. Chủ công viên chịu giữ im lặng, miễn là bạn quên con đường dẫn tới đây.',
+        resultEn: 'The marionette vanishes into the dark and returns with a bloodstone talisman. The owner will keep quiet as long as you forget the way back here.',
+        effects: { wealth: +24, sanity: -10, taboo: +1, resonance: +10 },
         flagsAdd: ['bloodfiend_met', 'BloodfiendContract'],
         recordsAdd: ['bloodfiend_pact'],
-        meritAdd: 20
+        meritAdd: 8
       }
     ]
   },
@@ -229,11 +226,11 @@ export const DERIVATIVE_LORE_EVENTS = [
     need: { regions: ['T', 'Backstreets', 'Nest'] },
     forbids: ['Distorted', 'color_contraband_done'],
     vi: "[Lọ màu lậu] Giữa District 20 xám màu, tay buôn mở rương chì cho bạn xem một lọ màu sắc bị giấu kín. \"Một giọt thôi, mọi thứ sẽ khác.\" Tiếng giày tuần tra vang lên ngoài ngõ.",
-    en: '[The Stolen Colors of T Corp] You enter a covert black-market cellar in District 20 (T Corp), where the entire world has been drained of hue into dreary sepia-gray. A contrabandist cracks a lead coffer, revealing a glass flask swirling with vibrant, incandescent iridescent pigment—natural color forbidden under T Corp time-patents. "One drop, and you will see the world in divine brilliance. Interested?"',
+    en: '[The Stolen Colors of T Corp] You enter a covert black-market cellar in District 20 (T Corp), where the entire world has been drained of hue into dreary sepia-gray. A contrabandist cracks a lead coffer, revealing a glass flask swirling with vibrant, incandescent iridescent pigment, natural color forbidden under T Corp time-patents. "One drop, and you will see the world in divine brilliance. Interested?"',
     choices: [
       {
-        labelVi: 'Chi 40 Ahn mua lọ sắc màu và uống trọn để giải thoát tâm thức',
-        labelEn: 'Spend 40 Ahn to purchase and ingest the forbidden iridescent pigment',
+        labelVi: 'Chi 20 Ahn mua lọ sắc màu và uống trọn để giải thoát tâm thức',
+        labelEn: 'Spend 20 Ahn to purchase and ingest the forbidden iridescent pigment',
         resultVi: 'Thế giới bùng nổ trong sắc đỏ rực rỡ, sắc xanh biếc và ánh vàng chói lọi. Tâm trí bạn như được tái sinh khỏi sự ngột ngạt ngàn cân của The City, giải phóng toàn bộ áp lực tinh thần.',
         resultEn: 'The sepia veil detonated into vivid scarlet, sapphire, and radiant emerald. Your senses rejuvenated from decades of dreary monochromatic oppression, purging mental rot instantly.',
         costAhn: 20,
@@ -265,29 +262,24 @@ export const DERIVATIVE_LORE_EVENTS = [
     weight: 10,
     forbids: ['Distorted', 'wcorp_cleaned'],
     vi: "[Ca dọn tàu WARP] W Corp trả hậu hĩnh cho một ca dọn tàu và phát thuốc xóa trí nhớ. Cửa toa mở ra: hành khách không còn ngồi đúng hình dạng của mình. Bạn phải đưa họ về ghế trước khi hệ thống khôi phục khởi động.",
-    en: '[Special Commission: WARP Train Cleanup Crew] W Corp issues a high-security emergency dispatch offering an astronomical bounty: 70 Ahn for one hour of work. Clad in airtight hazmat gear, you are armed with suppression staves and grade-A amnestics. As the WARP train bulkhead hisses open, the sickening stench of warm gore and writhing heaps of conscious passenger flesh trapped for millennia hits your face. Objective: Shovel the screaming meat onto passenger seats before the Singularity resets their biology.',
+    en: '[WARP Train Cleanup] W Corp pays well for one hour of work and hands out amnestics. The car door opens: the passengers no longer sit in their own shapes. You have to get them back into their seats before the restoration system starts.',
     choices: [
       {
-        labelVi: 'Cắn răng dọn dẹp hiện trường địa ngục, nhận thù lao và uống thuốc xóa nhớ',
-        labelEn: 'Grit your teeth, clean the charnel house, take the bounty and memory wipe',
+        labelVi: 'Nhận ca, đeo mặt nạ khí và bước vào toa',
+        labelEn: 'Take the shift, pull on the rebreather and step into the car',
         startDungeon: 'dungeon_warp_train',
-        resultVi: 'Bạn làm việc điên cuồng giữa những tiếng gào thét của các khối thịt còn nhận thức. Khi cỗ máy phục hồi bấm nút, những hành khách bước ra ngoài ga như thể chỉ vừa trải qua 10 giây. Bạn cầm bọc tiền 70 Ahn, uống viên thuốc xóa nhớ để quên đi cơn ác mộng.',
-        resultEn: 'You worked like a demon amidst shrieking tangles of sentient flesh. When the temporal restoration chime rang, passengers walked off at the station believing only 10 seconds had elapsed. Clutching 70 Ahn, you took the amnestic pill to drown the nightmare.',
-        effects: { wealth: +60, sanity: -12, rep: +15 },
-        flagsAdd: ['wcorp_cleaned'],
-        recordsAdd: ['wcorp_cleaner_survivor'],
-        meritAdd: 28
+        resultVi: 'Bạn kéo mặt nạ xuống và gài khóa. Cửa toa đóng lại sau lưng với tiếng rít của áp suất, và đồng hồ T Corp trên tường bắt đầu đếm.',
+        resultEn: 'You pull the mask down and seat the clasp. The car door seals behind you with a hiss of pressure, and the T Corp clock on the wall begins to count.',
+        flagsAdd: ['wcorp_cleaned']
       },
       {
-        labelVi: 'Từ chối xóa trí nhớ, lưu giữ bản ghi bằng chứng Singularity của W Corp',
-        labelEn: 'Refuse the memory wipe and smuggle out photographic evidence',
-        resultVi: 'Bạn bí mật giấu một mẫu mô và cuốn băng ghi hình vào lớp giáp rồi bỏ trốn. Hiệp hội Seven lập tức trả một khoản tiền khổng lồ để mua tài liệu này, nhưng bạn vĩnh viễn bị W Corp đưa vào danh sách đen thanh trừng.',
-        resultEn: 'You concealed a passenger bio-sample and encrypted micro-tape inside your breastplate and fled into the crowd. Seven Association paid a king’s ransom for the leak, but W Corp marked your file for permanent execution.',
-        effects: { wealth: +90, sanity: -18, heat: +30, taboo: +1 },
-        flagsAdd: ['wcorp_cleaned', 'WCorpWhistleblower'],
-        scarsAdd: ['Ký ức địa ngục tàu WARP'],
-        recordsAdd: ['singularity_whistleblower'],
-        meritAdd: 40
+        labelVi: 'Chỉ nhận phần canh cửa ga, đứng ngoài toa chờ nửa công',
+        labelEn: 'Take only the platform watch and wait outside for half the pay',
+        resultVi: 'Bạn đứng ở sân ga hai mươi phút và nghe tiếng thịt va vào vách thép. Khi cửa mở lại, hành khách bước ra như vừa ngủ gật. Nhân viên W Corp không nhìn bạn.',
+        resultEn: 'You stand on the platform for twenty minutes and listen to flesh knocking against steel. When the doors open again, the passengers step out like people who dozed off. The W Corp staff do not look at you.',
+        effects: { wealth: +14, sanity: -4 },
+        flagsAdd: ['wcorp_cleaned'],
+        meritAdd: 5
       }
     ]
   },
@@ -302,7 +294,7 @@ export const DERIVATIVE_LORE_EVENTS = [
     weight: 10,
     forbids: ['Distorted', 'aberration_encountered'],
     vi: "[Mẫu vật WonderLab] Một nhà nghiên cứu chạy vào chỗ trú của bạn, ôm lồng kính chứa bông hoa thủy tinh đang hát. \"Nó thoát khỏi phân viện. Giúp tôi phong ấn, hoặc mang nó ra Outskirts.\" Chốt lồng đã lỏng.",
-    en: '[WonderLab · The Aberrant Specimen] A researcher in a torn white lab coat bursts into your sanctuary, clutching a containment capsule. Inside writhes an Aberration—a glass blossom weeping crimson nectar, harmonizing a siren lullaby: "It breached the entire WonderLab branch... please, help me seal it, or smuggle it past the City walls!"',
+    en: '[WonderLab · The Aberrant Specimen] A researcher in a torn white lab coat bursts into your sanctuary, clutching a containment capsule. Inside writhes an Aberration, a glass blossom weeping crimson nectar, harmonizing a siren lullaby: "It breached the entire WonderLab branch... please, help me seal it, or smuggle it past the City walls!"',
     choices: [
       {
         labelVi: 'Sử dụng sóng tâm thức và ý chí kiên định để áp chế phong ấn Dị thể',
@@ -338,13 +330,13 @@ export const DERIVATIVE_LORE_EVENTS = [
     need: { jobs: ['Fixer', 'Wing Employee'] },
     forbids: ['Distorted', 'seven_dossier_read'],
     vi: "[Hồ sơ của Seven] Trên mái nhà giữa cơn mưa, chuyên viên Seven đưa bạn cặp tài liệu về những Singularity của các Wing. Hana đang tới phong tỏa khu này. \"Đọc ngay, hoặc đốt nó cùng tôi.\"",
-    en: '[Seven Association · Dossier Zero] A senior intelligence officer from Seven Section 1 meets you atop a Nest spire amidst a howling storm. He unlocks a titanium briefcase: "Inside lies the truth of how the Wings sustain their Singularities: K Corp’s tears, W Corp’s eternal butchery, R Corp’s cloning charnel house. Hana is sealing the perimeter. Will you read it to understand the City’s marrow, or burn it to preserve your life?"',
+    en: "[Seven’s Dossier] On a rooftop in the rain, a Seven analyst hands you a case of documents about the Wings’ Singularities. Hana is on its way to seal the district. “Read it now, or burn it with me.”",
     choices: [
       {
-        labelVi: 'Đọc trọn tập tài liệu, thấu suốt toàn bộ bản chất đen tối của The City',
-        labelEn: 'Read the dossier in full, gazing directly into the City’s grim foundation',
-        resultVi: 'Sự thật trần trụi làm sụp đổ mọi ảo tưởng bạn từng có về thế giới. Bạn không còn sợ hãi bất kỳ Cánh hay thế lực nào nữa. Ý chí của bạn đạt đến sự giác ngộ tối thượng.',
-        resultEn: 'The raw, unfiltered horror shattered every illusion you held of civilization. You no longer fear Wings, Syndicates, or death. Your soul attained supreme existential awakening.',
+        labelVi: "Đọc hết tập tài liệu và nhìn thẳng vào cái nền của The City",
+        labelEn: "Read the whole dossier and look straight at the foundation of The City",
+        resultVi: "Sự thật trần trụi làm sụp mọi ảo tưởng bạn từng có. Từ đêm đó bạn không còn sợ một Wing hay một Syndicate nào theo cách cũ, và cũng không còn ngủ như cũ.",
+        resultEn: "The plain truth brings down every illusion you had. From that night you no longer fear any Wing or Syndicate the old way, and you no longer sleep the old way either.",
         effects: { sanity: -16, resonance: +25, rep: +18 },
         flagsAdd: ['seven_dossier_read', 'EnlightenedMind'],
         scarsAdd: ['Vết rách nhận thức: Chân tướng The City'],
@@ -352,10 +344,10 @@ export const DERIVATIVE_LORE_EVENTS = [
         meritAdd: 30
       },
       {
-        labelVi: 'Châm lửa thiêu rụi tập hồ sơ ngay trước mặt viên thanh tra',
-        labelEn: 'Set the briefcase ablaze immediately before the inspector',
-        resultVi: 'Ngọn lửa nuốt chửng những trang giấy tử thần trong màn mưa. Viên thanh tra Seven thở phào nhẹ nhõm: "Đôi khi, ngu ngơ là ân huệ duy nhất để sống thọ ở nơi này." Hiệp hội Seven gửi lời cảm ơn và bảo đảm cho bạn sự nghiệp bình yên.',
-        resultEn: 'Flames consumed the fatal parchment in the rain. The Seven inspector exhaled in profound relief: "Sometimes, ignorance is the only mercy allowing an operative to grow old here." Seven Association guaranteed your safety.',
+        labelVi: "Châm lửa đốt tập hồ sơ ngay trước mặt viên chuyên viên",
+        labelEn: "Set the dossier on fire right in front of the analyst",
+        resultVi: "Ngọn lửa nuốt những trang giấy dưới mưa. Viên chuyên viên Seven thở ra: “Đôi khi không biết là ân huệ duy nhất để sống lâu ở đây.” Seven gửi lời cảm ơn và bảo đảm cho bạn một sự nghiệp yên ổn.",
+        resultEn: "The fire eats the pages in the rain. The Seven analyst exhales: “Sometimes not knowing is the only mercy that lets you grow old here.” Seven thanks you and guarantees you a quiet career.",
         effects: { sanity: +20, network: +25, rep: +15 },
         flagsAdd: ['seven_dossier_read'],
         meritAdd: 20
