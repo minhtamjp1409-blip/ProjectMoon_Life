@@ -11,6 +11,7 @@ import {
   getOtherCareerPromotion,
   careerTrialRetryDue,
   careerOpportunity,
+  syndicateApexOpportunity,
   careerTrialForEvent,
   careerPromotionSuccessChance,
   careerPromotionFailureEffects
@@ -53,10 +54,11 @@ import { SCAR_CALLBACKS } from '../data/lifeScarCallbacks.js';
 import { LIFE_CAREER_OPPORTUNITIES } from '../data/lifeCareerOpportunities.js';
 import { EXPANDED_DAILIES } from '../data/narrative/dailies.js';
 import { DAILIES_2 } from '../data/narrative/dailies2.js';
+import { EXPANSION_LIFE_MINORS, EXPANSION_LIFE_DAILIES } from '../data/lifeMinorsAndDailiesExpansion.js';
 import { cityArchiveAPI } from '../services/api/cityArchiveAPI.js';
 
-export const LIFE_MINORS = [...MINORS_FIRST, ...LIFE_MINORS_2, ...LIFE_MINORS_3, ...LIFE_MINORS_4, ...LIFE_MINORS_5, ...LIFE_MINORS_KIDS, ...THREAD_MINORS, ...SCAR_CALLBACKS, ...LIFE_CAREER_OPPORTUNITIES];
-export const LIFE_DAILIES = [...DAILIES_FIRST, ...LIFE_DAILIES_3, ...EXPANDED_DAILIES, ...DAILIES_2];
+export const LIFE_MINORS = [...MINORS_FIRST, ...LIFE_MINORS_2, ...LIFE_MINORS_3, ...LIFE_MINORS_4, ...LIFE_MINORS_5, ...LIFE_MINORS_KIDS, ...THREAD_MINORS, ...SCAR_CALLBACKS, ...LIFE_CAREER_OPPORTUNITIES, ...EXPANSION_LIFE_MINORS];
+export const LIFE_DAILIES = [...DAILIES_FIRST, ...LIFE_DAILIES_3, ...EXPANDED_DAILIES, ...DAILIES_2, ...EXPANSION_LIFE_DAILIES];
 import {
   directorWeight,
   markTheme,
@@ -231,9 +233,11 @@ function majorIsDue(char, rng) {
   if (char.job === 'Syndicate' && !char.finger && !(char.seenEvents || []).includes('syn_choose_finger_allegiance')) return true;
   if ((char.taboo || 0) >= 3) return true;
   if ((w.pendingThreads || []).some((th) => th.kind !== 'minor' && !th.fulfilled && char.age >= th.triggerAge)) return true;
-  const carmenPressure = char.age >= 18 && (((char.resonance || 0) >= 95 && activeScarCount(char) >= 3)
-    || (char.stats.sanity <= 5 && rng() < 0.12)
-    || ((char.resonance || 0) >= 90 && rng() < 0.15));
+  const scarsCount = activeScarCount(char);
+  const carmenPressure = char.age >= 18 &&
+    ((char.resonance || 0) >= 70
+      || ((char.resonance || 0) >= 58 && ((scarsCount >= 1 && char.stats.sanity <= 38) || (scarsCount >= 2 && char.stats.sanity <= 45)))
+      || (char.stats.sanity <= 12 && rng() < 0.35));
   if (carmenPressure && !(char.seenEvents || []).includes('ego_carmen_crossroad') && !char.flags.includes('EGOAwakened') && !char.flags.includes('Distorted')) return true;
   if (char.job === 'Fixer' && !char.flags.includes('Distorted') && checkColorFixerReadiness(char).ready && !char.flags.includes('ColorFixer') && !(char.seenEvents || []).includes('hana_color_ascension_trial')) return true;
   const gap = w.yearsSinceLastMajor || 0;
@@ -244,6 +248,7 @@ function majorIsDue(char, rng) {
     return gap >= 3 && rng() < (char.age <= 6 ? 0.3 : 0.4);
   }
   if (gap >= 5) return true;
+  if ((char.job === 'Syndicate' || (char.flags?.includes('Distorted') && char.finger)) && (char.fingerRank || 0) >= 3 && gap >= 2 && rng() < 0.65) return true;
   return gap >= 2 && rng() < 0.32;
 }
 
@@ -327,7 +332,7 @@ export function planYear(charState, rng) {
     scheduledKey.push({ kind: 'contract' });
   }
 
-  const opportunity = careerOpportunity(char);
+  const opportunity = careerOpportunity(char) || syndicateApexOpportunity(char);
   if (opportunity && rng() < opportunity.chance && scheduledKey.length < 4 &&
       !scheduledKey.some((item) => opportunity.ids.includes(item.id))) {
     const id = opportunity.ids[Math.floor(rng() * opportunity.ids.length)];
@@ -335,7 +340,7 @@ export function planYear(charState, rng) {
     if (event && matchesEventContext(event, char)) {
       scheduledKey.push({ kind: 'minor', id });
       remember(char, id);
-      logDecision(char, event, { vi: 'Thiếu thành tích cho bậc kế tiếp', en: 'A chance to close the next rank gap', w: opportunity.chance }, 'minor');
+      logDecision(char, event, { vi: opportunity.route === 'finger_apex' ? 'Đặc quyền người đứng đầu Ngón Tay' : 'Thiếu thành tích cho bậc kế tiếp', en: opportunity.route === 'finger_apex' ? 'Syndicate Apex privilege' : 'A chance to close the next rank gap', w: opportunity.chance }, 'minor');
     }
   }
 
@@ -934,7 +939,7 @@ const JOB_INCOME = (char) => {
     case 'Fixer':
       return 2 + Math.round((9 - Math.min(9, char.fixerGrade)) * 0.7);
     case 'Syndicate':
-      return 3 + (char.fingerRank || 0);
+      return 3 + (char.fingerRank || 0) * 2 + ((char.fingerRank || 0) >= 3 ? 3 : 0);
     case 'Wing Employee':
       return 4 + (char.wingRank || 0);
     case 'Workshop Craftsman':

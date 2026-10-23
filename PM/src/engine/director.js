@@ -112,6 +112,14 @@ export function directorWeight(entry, char) {
       w *= 2.6;
       reason = reason || { vi: `Đã lâu không gặp ${npc?.nameVi || ''}`.trim(), en: `You haven't seen ${npc?.nameEn || 'them'} in a while` };
     } else if (since <= 0) w *= 0.5;
+    const bondVal = npc?.bond ?? 35;
+    if (bondVal <= 28 && (tags.includes('friction') || tags.includes('betrayal') || n.bondAtMost)) {
+      w *= 2.8;
+      reason = { vi: `Rạn nứt ngầm với ${npc?.nameVi || 'đồng đội'}`, en: `Simmering rift with ${npc?.nameEn || 'your companion'}` };
+    } else if (bondVal >= 75 && (tags.includes('loyalty') || tags.includes('camaraderie') || n.bondAtLeast)) {
+      w *= 2.2;
+      reason = { vi: `Thề ước gắn kết cùng ${npc?.nameVi || 'đồng đội'}`, en: `Sworn camaraderie with ${npc?.nameEn || 'your companion'}` };
+    }
   }
 
   const motif = dominantMotif(char);
@@ -350,6 +358,23 @@ export function applyNpcFate(char, role, status, age = char.age) {
   } else if (role === 'mentor') {
     flags.add('MentorLost');
   }
+  if (status === 'betrayer') {
+    flags.add('BetrayedByCompanion');
+    if (!char.npcs?.nemesis) {
+      char.npcs = {
+        ...char.npcs,
+        nemesis: {
+          ...target,
+          role: 'nemesis',
+          status: 'active',
+          deceased: false,
+          bond: 0,
+          formerRole: role,
+          betrayedAtAge: age
+        }
+      };
+    }
+  }
   char.flags = [...flags];
   return true;
 }
@@ -372,16 +397,16 @@ export function ageNpcCompanions(char, rng = Math.random) {
   return logs;
 }
 
-/** People drift apart when you stop seeing them. */
+/** People drift apart when you stop seeing them; prolonged neglect can sour trust into friction. */
 export function driftBonds(char) {
   const next = { ...char.npcs };
   let changed = false;
   for (const [role, npc] of Object.entries(char.npcs || {})) {
-    if (!npcActive(npc) || role === 'child') continue;
+    if (!npcActive(npc) || role === 'child' || role === 'nemesis') continue;
     const yearsApart = char.age - (npc.lastSeen ?? npc.metAge ?? 0);
-    if (yearsApart >= 2 && (npc.bond || 0) > 10) {
-      const drop = yearsApart >= 5 ? 3 : 2;
-      next[role] = { ...npc, bond: Math.max(10, (npc.bond || 0) - drop) };
+    if (yearsApart >= 2 && (npc.bond || 0) > 6) {
+      const drop = yearsApart >= 5 ? 4 : 2;
+      next[role] = { ...npc, bond: Math.max(6, (npc.bond || 0) - drop) };
       changed = true;
     }
   }

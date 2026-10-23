@@ -15,12 +15,14 @@ import {
   OFFICES,
   WORKSHOPS,
   FINGER_RANKS,
-  THREAT_TIERS
+  THREAT_TIERS,
+  CODEX_RECORDS
 } from '../data/worldData.js';
 import { CHILDHOOD_EVENTS, CONSEQUENCE_EVENTS } from '../data/eventsChildhood.js';
 import { CHILDHOOD_EVENTS_2 } from '../data/eventsChildhood2.js';
 import { BACKGROUND_OPENING_EVENTS } from '../data/eventsBackgroundOpening.js';
 import { composeBirth, makeNpc } from '../data/birthStories.js';
+import { evaluateCompanionSupport } from '../data/npcPersonality.js';
 import { generatePersonName } from '../data/nameGenerator.js';
 import { FACTION_EVENTS } from '../data/eventsFactions.js';
 import { EXPANSION_EVENTS } from '../data/eventsExpansion.js';
@@ -32,6 +34,7 @@ import { BEREAVEMENT_EVENTS } from '../data/eventsBereavementMemories.js';
 import { DERIVATIVE_LORE_EVENTS } from '../data/eventsDerivativeLore.js';
 import { COMPANION_QUEST_EVENTS } from '../data/eventsCompanionQuests.js';
 import { CAREER_DRAMA_EVENTS } from '../data/eventsCareerDrama.js';
+import { EXPANSION_STORY_EVENTS } from '../data/eventsNpcAndWorldExpansion.js';
 import {
   FIXER_LADDER,
   FINGER_LADDERS,
@@ -68,7 +71,11 @@ import {
   DUNGEON_DEFINITIONS,
   createDungeonSession,
   getDungeonCurrentStage,
+  getDungeonMastery,
   isDungeonChoiceAvailable,
+  evaluateDungeonChoiceOdds,
+  setDungeonStance,
+  useDungeonSupply,
   resolveDungeonChoice,
   fleeDungeon
 } from './dungeonEngine.js';
@@ -86,7 +93,8 @@ export const ALL_STORY_EVENTS = [
   ...DERIVATIVE_LORE_EVENTS,
   ...COMPANION_QUEST_EVENTS,
   ...CAREER_DRAMA_EVENTS,
-  ...EXPANSION_EVENTS
+  ...EXPANSION_EVENTS,
+  ...EXPANSION_STORY_EVENTS
 ];
 
 export const SEASONS = [
@@ -941,17 +949,21 @@ export function getNextCareerMilestone(char) {
 
     const nextRank = currentRank + 1;
     const nextTitle = ladder[nextRank];
-    const minAge = [0, 22, 28, 35][nextRank];
-    const yearsInRank = currentRank === 0 || char.lastFingerPromotionAge == null ? 3 : Math.max(0, char.age - char.lastFingerPromotionAge);
+    const minAge = [0, 22, 28, 36][nextRank];
+    const minTenure = [0, 0, 4, 5][nextRank];
+    const yearsInRank = currentRank === 0 || char.lastFingerPromotionAge == null ? minTenure : Math.max(0, char.age - char.lastFingerPromotionAge);
     const nextStep = FINGER_LADDERS[finger]?.[nextRank - 1];
-    const targetMerit = nextStep?.meritReq || nextRank * 26;
-    const targetRep = nextStep?.repReq || nextRank * 16;
+    const targetMerit = nextStep?.meritReq || nextRank * 28;
+    const targetRep = nextStep?.repReq || nextRank * 18;
+    const targetNet = nextStep?.networkReq || 0;
     const curRep = (char.stats?.rep ?? char.rep) || 0;
+    const curNet = (char.stats?.network ?? char.network) || 0;
     const p1 = Math.min(100, ((char.merit || 0) / targetMerit) * 100);
     const p2 = Math.min(100, (curRep / targetRep) * 100);
-    const p3 = Math.min(100, (yearsInRank / 3) * 100);
-    const p4 = finger === 'Thumb' ? Math.min(100, (char.age / minAge) * 100) : 100;
-    const progressPct = Math.min(Math.round((p1 + p2) / 2), p3, p4);
+    const pNet = targetNet > 0 ? Math.min(100, (curNet / targetNet) * 100) : 100;
+    const p3 = minTenure > 0 ? Math.min(100, (yearsInRank / minTenure) * 100) : 100;
+    const p4 = Math.min(100, (char.age / minAge) * 100);
+    const progressPct = Math.min(Math.round((p1 + p2 + (targetNet > 0 ? pNet : p1)) / 3), p3, p4);
 
     return {
       category: `THE ${finger.toUpperCase()} TRIAL`,
@@ -961,8 +973,9 @@ export function getNextCareerMilestone(char) {
       requirements: [
         { labelVi: 'Công trạng với Ngón (Merit)', labelEn: 'Syndicate Merit', current: char.merit || 0, target: targetMerit, met: (char.merit || 0) >= targetMerit },
         { labelVi: 'Uy danh giang hồ (Rep)', labelEn: 'Reputation', current: curRep, target: targetRep, met: curRep >= targetRep },
-        ...(finger === 'Thumb' ? [{ labelVi: 'Tuổi tối thiểu', labelEn: 'Minimum age', current: char.age, target: minAge, met: char.age >= minAge }] : []),
-        ...(currentRank > 0 ? [{ labelVi: 'Năm giữ bậc hiện tại', labelEn: 'Years at current rank', current: yearsInRank, target: 3, met: yearsInRank >= 3 }] : [])
+        ...(targetNet > 0 ? [{ labelVi: 'Mạng lưới chân rết (Network)', labelEn: 'Syndicate Network', current: curNet, target: targetNet, met: curNet >= targetNet }] : []),
+        { labelVi: 'Tuổi tối thiểu', labelEn: 'Minimum age', current: char.age, target: minAge, met: char.age >= minAge },
+        ...(currentRank > 0 && minTenure > 0 ? [{ labelVi: 'Năm giữ bậc hiện tại', labelEn: 'Years at current rank', current: yearsInRank, target: minTenure, met: yearsInRank >= minTenure }] : [])
       ],
       tipVi: 'Thực thi mệnh lệnh của Ngón, thu hồi nợ máu và chứng minh lòng trung thành.',
       tipEn: 'Execute Finger orders, claim vengeance debts, and prove unquestioned loyalty.'
@@ -1015,11 +1028,11 @@ export function getNextCareerMilestone(char) {
   if (char.job === 'Workshop Craftsman') {
     return {
       category: 'WORKSHOP',
-      titleVi: 'M?t ng?y ? x??ng',
+      titleVi: 'Một ngày ở xưởng',
       titleEn: 'A Day at the Workshop',
       progressPct: 0,
       requirements: [],
-      tipVi: 'Nh?n ??n ??t h?ng, gi? l? ho?t ??ng v? ch?n ng??i ???c c?m v? kh? b?n r?n.',
+      tipVi: 'Nhận đơn đặt hàng, giữ lò hoạt động và chọn người được cầm vũ khí bạn rèn.',
       tipEn: 'Take commissions, keep the forge running, and decide who receives your weapons.'
     };
   }
@@ -1136,7 +1149,8 @@ export function generateFixerContract(char, rng) {
   power += scarContractPower(char);
   if (char.flags.includes('고급장비') || char.flags.includes('유물') || char.craftWeapon) power += 12;
   if (char.flags.includes('EGOAwakened') || char.flags.includes('ShinAwakened')) power += 18;
-  if (npcIsActive(char.npcs?.partner)) power += 9;
+  const compSupport = evaluateCompanionSupport(char);
+  power += compSupport.contractPower;
 
   const difficulty = 32 + template.tier * 16;
   const baseSuccess = clamp(Math.round(55 + (power - difficulty) * 1.1), 18, 94);
@@ -1150,6 +1164,17 @@ export function generateFixerContract(char, rng) {
     id: `${template.id}_${char.age}`,
     template,
     tierInfo,
+    companionSupport: compSupport.active ? {
+      role: compSupport.role,
+      nameVi: compSupport.npc.nameVi,
+      nameEn: compSupport.npc.nameEn,
+      bond: compSupport.npc.bond ?? 22,
+      stateId: compSupport.state.id,
+      stateVi: compSupport.state.vi,
+      stateEn: compSupport.state.en,
+      powerDelta: compSupport.contractPower,
+      betrayalRisk: compSupport.betrayalRisk
+    } : null,
     approaches: [
       {
         id: 'careful',
@@ -1228,6 +1253,64 @@ export function resolveFixerContract(charState, approachId, rng = Math.random) {
 
   const omenObj = FATE_OMENS.find((o) => o.id === char.fateOmenId);
   const meritMult = omenObj?.meritMult || 1.0;
+  const compSupport = evaluateCompanionSupport(char);
+
+  // Low-bond companion clash or mid-mission betrayal check
+  if (compSupport.active && compSupport.betrayalRisk > 0 && rng() < compSupport.betrayalRisk) {
+    const traitor = compSupport.npc;
+    const role = compSupport.role;
+    const isFullBetrayal = (traitor.bond ?? 20) < 18 || rng() < 0.45;
+    if (isFullBetrayal) {
+      applyNpcFate(char, role, 'betrayer', char.age);
+      if (!char.npcs.nemesis) {
+        char.npcs = { ...char.npcs, nemesis: { ...traitor, role: 'nemesis', status: 'alive', bond: 0, lastSeen: char.age } };
+      }
+      char.stats.health = clamp(char.stats.health - (14 + template.tier * 4), 0, 100);
+      char.stats.sanity = clamp(char.stats.sanity - 14, 0, 100);
+      char.heat = clamp((char.heat || 0) + 12, 0, 100);
+      char.resonance = clamp((char.resonance || 0) + 12, 0, 100);
+      if (!char.flags.includes('BetrayedByCompanion')) char.flags.push('BetrayedByCompanion');
+      char.weaver.pendingThreads = [
+        ...(char.weaver.pendingThreads || []),
+        {
+          id: `thr_${char.age}_csq_npc_betrayer_ambush`,
+          kind: 'major',
+          eventId: 'csq_npc_betrayer_ambush',
+          plantedAtAge: char.age,
+          triggerAge: char.age + 3,
+          reasonVi: `${traitor.nameVi} đã bán đứng bạn và vẫn còn ở ngoài kia`,
+          reasonEn: `${traitor.nameEn} sold you out and is still out there`,
+          fulfilled: false
+        }
+      ];
+      char.logs.push({
+        id: `log_req_betrayal_${char.age}`,
+        age: char.age,
+        season: SEASONS[char.seasonIdx],
+        type: 'danger',
+        vi: `[Phản bội giữa nhiệm vụ · ${traitor.nameVi}] Giữa lúc giao chiến trong vụ ${template.nameVi || tierInfo.nameVi}, ${traitor.nameVi} (Bond ${traitor.bond ?? 0}) đã bán đứng lộ trình của bạn cho đối phương để đổi lấy tiền thưởng rồi bỏ mặc bạn giữa vòng vây!`,
+        en: `[Mid-Contract Betrayal · ${traitor.nameEn}] In the middle of ${template.nameEn || tierInfo.nameEn}, ${traitor.nameEn} (Bond ${traitor.bond ?? 0}) sold your route to the enemy for a payout and left you surrounded!`
+      });
+      if (char.stats.health <= 0) {
+        applyFatalOrCompanionSave(char, template.deathVi, template.deathEn);
+      }
+      char.weaver = updateDramaTension(char.weaver, char);
+      return char;
+    } else {
+      // Insubordination / clash during contract reduces successPct by 18% and costs HP/SP
+      char.stats.health = clamp(char.stats.health - 5, 0, 100);
+      char.stats.sanity = clamp(char.stats.sanity - 5, 0, 100);
+      char.npcs = { ...char.npcs, [role]: { ...traitor, bond: Math.max(5, (traitor.bond || 20) - 4), lastSeen: char.age } };
+      char.logs.push({
+        id: `log_req_clash_${char.age}`,
+        age: char.age,
+        season: SEASONS[char.seasonIdx],
+        type: 'danger',
+        vi: `[Xô xát nội bộ · ${traitor.nameVi}] Mối quan hệ rạn nứt khiến bạn và ${traitor.nameVi} cãi vã ngay trước giờ hành động, làm lộ vị trí và giảm mạnh tỉ lệ thành công.`,
+        en: `[Internal Clash · ${traitor.nameEn}] Strained trust led to a bitter argument with ${traitor.nameEn} right before the strike, exposing your position and hurting your odds.`
+      });
+    }
+  }
 
   const roll = rng() * 100;
   if (roll < approach.successPct) {
@@ -1238,13 +1321,22 @@ export function resolveFixerContract(charState, approachId, rng = Math.random) {
     char.stats.wealth = clamp(char.stats.wealth + approach.payAhn, 0, 100);
     char.stats.rep = clamp(char.stats.rep + reputationGain(char.stats.rep, Math.max(2, template.tier + 2)), 0, 100);
     char.merit += gainedMerit;
+    if (compSupport.active && compSupport.state.id === 'sworn' && rng() < 0.45) {
+      char.npcs = { ...char.npcs, [compSupport.role]: { ...compSupport.npc, bond: Math.min(100, (compSupport.npc.bond || 80) + 2), lastSeen: char.age } };
+    }
+    const assistNoteVi = compSupport.active && compSupport.contractPower >= 8
+      ? ` Sự phối hợp ăn ý của ${compSupport.npc.nameVi} giúp bạn kết thúc gọn gàng.`
+      : '';
+    const assistNoteEn = compSupport.active && compSupport.contractPower >= 8
+      ? ` ${compSupport.npc.nameEn}’s tight coordination made the finish clean.`
+      : '';
     char.logs.push({
       id: `log_req_ok_${char.age}`,
       age: char.age,
       season: SEASONS[char.seasonIdx],
       type: 'choice',
-      vi: `[Request hoàn thành · ${tierInfo.nameVi}] ${template.okVi}`,
-      en: `[Request completed · ${tierInfo.nameEn}] ${template.okEn}`
+      vi: `[Request hoàn thành · ${tierInfo.nameVi}] ${template.okVi}${assistNoteVi}`,
+      en: `[Request completed · ${tierInfo.nameEn}] ${template.okEn}${assistNoteEn}`
     });
   } else if (roll < approach.successPct + approach.failPct) {
     const hpLoss = 10 + template.tier * 5;
@@ -1252,14 +1344,23 @@ export function resolveFixerContract(charState, approachId, rng = Math.random) {
     char.stats.health = clamp(char.stats.health - hpLoss, 0, 100);
     char.stats.sanity = clamp(char.stats.sanity - spLoss, 0, 100);
     char.resonance = clamp((char.resonance || 0) + 8, 0, 100);
+    if (compSupport.active && compSupport.contractPower < 0) {
+      char.npcs = { ...char.npcs, [compSupport.role]: { ...compSupport.npc, bond: Math.max(5, (compSupport.npc.bond || 20) - 3), lastSeen: char.age } };
+    }
+    const frictionNoteVi = compSupport.active && compSupport.contractPower < 0
+      ? ` Sự thiếu ăn ý và bất đồng với ${compSupport.npc.nameVi} khiến bạn trả giá đắt.`
+      : '';
+    const frictionNoteEn = compSupport.active && compSupport.contractPower < 0
+      ? ` Friction and hesitation with ${compSupport.npc.nameEn} cost you dearly.`
+      : '';
 
     char.logs.push({
       id: `log_req_fail_${char.age}`,
       age: char.age,
       season: SEASONS[char.seasonIdx],
       type: 'danger',
-      vi: `[Request thất bại · ${tierInfo.nameVi}] ${template.failVi}`,
-      en: `[Request failed · ${tierInfo.nameEn}] ${template.failEn}`
+      vi: `[Request thất bại · ${tierInfo.nameVi}] ${template.failVi}${frictionNoteVi}`,
+      en: `[Request failed · ${tierInfo.nameEn}] ${template.failEn}${frictionNoteEn}`
     });
 
     if (char.stats.health <= 0) {
@@ -1566,10 +1667,15 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
   }
 
   // Merge effects from both choice and rolled outcome (supports both .effects and .fx formats)
+  const startDungeonId = outcome.startDungeon || choice.startDungeon;
   const printsNumbers = PRINTED_NUMBERS.test(`${outcome.resultVi || outcome.rvi || ''}${choice.resultVi || choice.rvi || ''}`);
   const rolled = mergeEffects(choice, outcome);
   const effects = printsNumbers ? rolled : varyEffects(rolled, rng, traitsOf(char));
   if (/^fixer_promo_/.test(event.id) && effects.health < 0) effects.health = Math.ceil(effects.health * 0.65);
+  if (startDungeonId) {
+    if (effects.health < 0) effects.health = 0;
+    if (effects.sanity < 0) effects.sanity = 0;
+  }
   if (choice.costAhn) effects.wealth = (effects.wealth || 0) - Math.max(0, choice.costAhn + Math.min(0, effects.wealth || 0));
   const itemId = outcome.itemAdd || choice.itemAdd;
   const purchasedItem = ITEMS_CATALOG.find(i => i.id === itemId);
@@ -1622,6 +1728,7 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
     char.flags.push(`Finger${setFinger}`);
   }
 
+  const previousFingerRank = char.fingerRank || 0;
   const setFingerRank = outcome.setFingerRank ?? choice.setFingerRank;
   if (setFingerRank !== undefined) {
     if (setFingerRank > (char.fingerRank || 0)) char.lastFingerPromotionAge = char.age;
@@ -1654,6 +1761,13 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
     const nextRequirement = FIXER_LADDER.find((step) => step.grade === char.fixerGrade - 1)?.meritReq || COLOR_FIXER_REQ.merit;
     char.merit = Math.min(nextRequirement - 10,
       earnedAtGrade + Math.floor(Math.max(0, char.merit - earnedAtGrade) * 0.25));
+  }
+  if ((char.fingerRank || 0) > previousFingerRank && char.finger && FINGER_LADDERS[char.finger]) {
+    const ladder = FINGER_LADDERS[char.finger];
+    const earnedAtRank = ladder.find((step) => step.rank === char.fingerRank)?.meritReq || 0;
+    const nextRequirement = ladder.find((step) => step.rank === char.fingerRank + 1)?.meritReq || 220;
+    char.merit = Math.min(nextRequirement - 12,
+      earnedAtRank + Math.floor(Math.max(0, char.merit - earnedAtRank) * 0.25));
   }
 
   // Flags, Scars, Codex Records, NPCs, Memories (Persistent Causality)
@@ -1764,7 +1878,6 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
   }
 
   // Micro-Dungeon Delve trigger
-  const startDungeonId = outcome.startDungeon || choice.startDungeon;
   if (startDungeonId && char.alive) {
     char.pendingDungeon = createDungeonSession(startDungeonId, char, rng);
   }
@@ -1824,30 +1937,46 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
  */
 export function buildLifeSummaryAndLegacy(char) {
   const region = REGIONS.find(r => r.id === char.regionId) || REGIONS[0];
+  const birthRegion = REGIONS.find(r => r.id === (char.birthRegionId || char.regionId)) || region;
+  const family = char.family || FAMILIES.find(f => f.id === char.familyId) || FAMILIES[0];
+  const omen = FATE_OMENS.find(o => o.id === char.fateOmenId) || FATE_OMENS[0];
+  const flags = char.flags || [];
 
   let epitaphTitleVi = 'Một người dân bình thường của The City';
   let epitaphTitleEn = 'An ordinary citizen of the City';
+  let occupationVi = 'Cư dân tự do';
+  let occupationEn = 'Freelance Citizen';
   let rankTier = 'Canard';
 
   if (char.age === 0 && char.deathCauseVi) {
     epitaphTitleVi = 'Sinh linh chưa kịp thấy ánh mặt trời';
     epitaphTitleEn = 'A life lost before the first dawn';
+    occupationVi = 'Chưa kịp trưởng thành';
+    occupationEn = 'Perished at Birth';
     rankTier = 'Canard';
-  } else if (char.flags.includes('ColorFixer')) {
+  } else if (flags.includes('ColorFixer')) {
     epitaphTitleVi = char.customTitle || 'Color Fixer';
     epitaphTitleEn = char.customTitle || 'Color Fixer';
+    occupationVi = `Color Fixer · 「${char.customTitle || 'The Crimson Dusk'}」`;
+    occupationEn = `Color Fixer · "${char.customTitle || 'The Crimson Dusk'}"`;
     rankTier = 'Star of the City';
-  } else if (char.flags.includes('EGOAwakened')) {
+  } else if (flags.includes('EGOAwakened')) {
     epitaphTitleVi = `Người mang E.G.O 「${char.egoName || 'không tên'}」`;
     epitaphTitleEn = `Bearer of the E.G.O 「${char.egoName || 'nameless'}」`;
+    occupationVi = `${char.job === 'Fixer' ? `Fixer Grade ${char.fixerGrade}` : char.job} · E.G.O 「${char.egoName || 'Thức Tỉnh'}」`;
+    occupationEn = `${char.job === 'Fixer' ? `Grade ${char.fixerGrade} Fixer` : char.job} · E.G.O "${char.egoName || 'Awakened'}"`;
     rankTier = 'Star of the City';
-  } else if (char.flags.includes('HongyuanHierarch')) {
+  } else if (flags.includes('HongyuanHierarch')) {
     epitaphTitleVi = 'Gia chủ của Hongyuan';
     epitaphTitleEn = 'Family Hierarch of Hongyuan';
+    occupationVi = 'H Corp · Gia chủ Hongyuan';
+    occupationEn = 'H Corp · Hierarch of Hongyuan';
     rankTier = 'Star of the City';
   } else if (char.job === 'Fixer') {
     epitaphTitleVi = `Fixer Grade ${char.fixerGrade} · ${char.org?.name || 'tự do'}`;
     epitaphTitleEn = `Grade ${char.fixerGrade} Fixer · ${char.org?.name || 'Freelance'}`;
+    occupationVi = `${char.org?.name || 'Fixer tự do'} · Grade ${char.fixerGrade}`;
+    occupationEn = `${char.org?.name || 'Freelance Fixer'} · Grade ${char.fixerGrade}`;
     rankTier = char.fixerGrade <= 2 ? 'Urban Nightmare' : (char.fixerGrade <= 5 ? 'Urban Plague' : 'Urban Legend');
   } else if (char.job === 'Syndicate') {
     const rankName =
@@ -1856,15 +1985,31 @@ export function buildLifeSummaryAndLegacy(char) {
         : 'Người của Syndicate';
     epitaphTitleVi = `${rankName} · ${char.finger ? `The ${char.finger}` : (char.org?.name || 'Backstreets')}`;
     epitaphTitleEn = `${rankName} · ${char.finger ? `The ${char.finger}` : (char.org?.name || 'Backstreets')}`;
+    occupationVi = `${char.finger ? `The ${char.finger}` : 'Syndicate'} · ${rankName}`;
+    occupationEn = `${char.finger ? `The ${char.finger}` : 'Syndicate'} · ${rankName}`;
     rankTier = (char.fingerRank || 0) >= 2 ? 'Urban Nightmare' : 'Urban Plague';
   } else if (char.job === 'Wing Employee') {
-    epitaphTitleVi = `Feather của Wing · ${char.org?.name || region.nameVi}`;
-    epitaphTitleEn = `Wing Feather Operative · ${char.org?.name || region.nameEn}`;
-    rankTier = 'Urban Legend';
+    const wRank = Math.min(WING_RANKS.length - 1, char.wingRank || 0);
+    const wingTitleVi = WING_RANKS[wRank]?.titleVi || 'Feather của Wing';
+    const wingTitleEn = WING_RANKS[wRank]?.titleEn || 'Wing Feather';
+    const wingShort = region.nameVi?.split('·')[1]?.trim() || region.nameVi;
+    epitaphTitleVi = `${wingTitleVi} · ${char.org?.name || wingShort}`;
+    epitaphTitleEn = `${wingTitleEn} · ${char.org?.name || wingShort}`;
+    occupationVi = `${wingShort} · ${wingTitleVi.split('(')[0].trim()}`;
+    occupationEn = `${wingShort} · ${wingTitleEn}`;
+    rankTier = wRank >= 3 ? 'Star of the City' : wRank >= 2 ? 'Urban Nightmare' : 'Urban Legend';
   } else if (char.job === 'Workshop Craftsman') {
-    epitaphTitleVi = `Thợ rèn Workshop`;
-    epitaphTitleEn = `Workshop Craftsman`;
-    rankTier = char.craftWeapon ? 'Urban Nightmare' : 'Urban Legend';
+    const wsRank = char.workshopRank || 0;
+    const wsTitleVi = wsRank >= 3 ? 'Đại Sư Xưởng Rèn Tres' : wsRank === 2 ? 'Nghệ Nhân Vũ Khí Cấp Cao' : wsRank === 1 ? 'Thợ Rèn Chứng Nhận Tres' : 'Thợ rèn Workshop';
+    const wsTitleEn = wsRank >= 3 ? 'Tres Grandmaster Smith' : wsRank === 2 ? 'Master Atelier Artisan' : wsRank === 1 ? 'Certified Workshop Smith' : 'Workshop Craftsman';
+    epitaphTitleVi = wsTitleVi;
+    epitaphTitleEn = wsTitleEn;
+    occupationVi = char.craftWeapon ? `${wsTitleVi} · 「${char.craftWeapon.name}」` : wsTitleVi;
+    occupationEn = char.craftWeapon ? `${wsTitleEn} · "${char.craftWeapon.name}"` : wsTitleEn;
+    rankTier = char.craftWeapon || wsRank >= 2 ? 'Urban Nightmare' : 'Urban Legend';
+  } else if (char.age < 18) {
+    occupationVi = 'Đứa trẻ của The City';
+    occupationEn = 'Child of the City';
   }
 
   const relicName =
@@ -1889,6 +2034,340 @@ export function buildLifeSummaryAndLegacy(char) {
     childAgeWhenParentDied = Math.max(1, Math.min(18, char.age - 5));
   }
 
+  const localAvgLife = region.avgLife || 55;
+  const lifespanDiff = char.age - localAvgLife;
+  const deathCauseVi = char.deathCauseVi || 'Qua đời ở The City';
+  const deathCauseEn = char.deathCauseEn || 'Passed away in the City';
+
+  // Poetic Epitaph Quote tailored to how the life unfolded and ended
+  let poeticQuoteVi = '“Họ trút hơi thở cuối cùng vào một buổi chiều mà không một ai trong thành phố này dừng bước.”';
+  let poeticQuoteEn = '“They breathed their last on an afternoon when no one in the City was in a hurry.”';
+
+  if (char.age === 0) {
+    poeticQuoteVi = '“Một sinh linh khép mắt trước khi ánh đèn neon ngoài cửa sổ kịp đổi màu.”';
+    poeticQuoteEn = '“A fragile breath extinguished before the neon outside the window could even flicker.”';
+  } else if (flags.includes('ColorFixer') || flags.includes('EGOAwakened')) {
+    poeticQuoteVi = '“Giữa một thành phố nghiền nát mọi linh hồn thành tro bụi, họ đã tự rèn nỗi đau của mình thành một sắc màu không thể phai mờ.”';
+    poeticQuoteEn = '“In a City that grinds every soul to ash, they forged their own agony into an indelible radiance.”';
+  } else if (flags.includes('Distorted')) {
+    poeticQuoteVi = '“Khi hình hài con người trở nên quá chật hẹp cho nỗi tuyệt vọng, họ đã buông tay để hóa thành chính cơn ác mộng của mình.”';
+    poeticQuoteEn = '“When a human shell grew too narrow for their despair, they let go and became the shape of their own sorrow.”';
+  } else if (char.age >= 70 || /tuổi già|lão|nhắm mắt|old age/i.test(`${deathCauseVi} ${deathCauseEn}`)) {
+    poeticQuoteVi = '“Giữa một nơi mà tuổi già là thứ xa xỉ phẩm hiếm hoi nhất, họ đã lặng lẽ khép mắt sau khi chứng kiến biết bao mùa mưa máu đi qua.”';
+    poeticQuoteEn = '“In a place where old age is the rarest luxury of all, they quietly closed their eyes after outliving a hundred storms.”';
+  } else if (char.age < 18) {
+    poeticQuoteVi = '“Những con hẻm của The City chưa bao giờ đủ rộng cho những giấc mơ chưa kịp lớn.”';
+    poeticQuoteEn = '“The alleys of the City were never wide enough for dreams that had not yet grown.”';
+  } else if (/Hầm ngục|Bỏ mạng tại|WARP|Great Lake|Pallid|Lobotomy|La Manchaland|Outskirts/i.test(deathCauseVi)) {
+    poeticQuoteVi = '“Họ bước vào nơi bóng tối sâu thẳm nhất của dị thể và mãi mãi trở thành một phần của truyền thuyết nơi đáy vực.”';
+    poeticQuoteEn = '“They stepped into the deepest abyss of the anomaly and became part of the legend whispered in the dark.”';
+  } else {
+    poeticQuoteVi = '“Máu rơi trên mặt đường ướt lạnh rồi sẽ trôi theo nước mưa, nhưng vết cắt họ để lại trong biên niên sử vẫn còn nguyên vẹn.”';
+    poeticQuoteEn = '“Blood spilled on wet cobblestones washes away with the rain, yet the mark they carved into the chronicle remains.”';
+  }
+
+  // Extract pivotal turning points from logs for the timeline & deep narrative synthesis
+  const logs = Array.isArray(char.logs) ? char.logs : [];
+  const majorLogs = logs.filter(l => l.age > 0 && ['major', 'promo', 'miracle', 'causal', 'choice', 'danger'].includes(l.type) && !l.passed);
+  const turningPoints = [];
+  const seenMilestoneAges = new Set();
+
+  for (const entry of majorLogs) {
+    const rawVi = entry.vi || '';
+    const rawEn = entry.en || '';
+    const titleMatchVi = /^\s*\[([^\]]{2,80})\]\s*/.exec(rawVi);
+    const titleMatchEn = /^\s*\[([^\]]{2,80})\]\s*/.exec(rawEn);
+    const cleanBodyVi = (titleMatchVi ? rawVi.slice(titleMatchVi[0].length) : rawVi).split(/(?<=[.!?])\s+/)[0] || rawVi;
+    const cleanBodyEn = (titleMatchEn ? rawEn.slice(titleMatchEn[0].length) : rawEn).split(/(?<=[.!?])\s+/)[0] || rawEn;
+    const isPriority = ['promo', 'miracle', 'causal'].includes(entry.type) || entry.age === 18;
+    if (isPriority || !seenMilestoneAges.has(entry.age)) {
+      seenMilestoneAges.add(entry.age);
+      turningPoints.push({
+        age: entry.age,
+        type: entry.type,
+        titleVi: titleMatchVi ? titleMatchVi[1] : (entry.choiceVi || `Tuổi ${entry.age}`),
+        titleEn: titleMatchEn ? titleMatchEn[1] : (entry.choiceEn || `Age ${entry.age}`),
+        summaryVi: cleanBodyVi,
+        summaryEn: cleanBodyEn
+      });
+    }
+  }
+
+  // Synthesize Deep Multi-Paragraph Life Story (Vi & En)
+  const lifeStoryParagraphsVi = [];
+  const lifeStoryParagraphsEn = [];
+
+  // Paragraph 1: Origins, Family, Fate Omen & Childhood
+  const lineageIntroVi = char.lineage?.parentName
+    ? `Mang trong mình huyết thống thế hệ thứ #${char.generation} và kế thừa di vật 「${char.lineage.relic}」 từ ${char.lineage.parentName}, `
+    : '';
+  const lineageIntroEn = char.lineage?.parentName
+    ? `Carrying the bloodline of Generation #${char.generation} and inheriting "${char.lineage.relic}" from ${char.lineage.parentName}, `
+    : '';
+
+  const childhoodLog = majorLogs.find(l => l.age >= 5 && l.age < 18);
+  const childhoodSnippetVi = childhoodLog
+    ? ` Năm ${childhoodLog.age} tuổi, biến cố đầu đời ập đến khi ${childhoodLog.choiceVi ? `bạn chọn "${childhoodLog.choiceVi.toLowerCase()}"` : 'bạn phải tự mình đối mặt với sự khắc nghiệt của khu phố'}, sớm định hình bản lĩnh sinh tồn trước tuổi trưởng thành.`
+    : (char.age < 18
+      ? ' Tuy nhiên, những năm tháng thơ ấu ngắn ngủi đã sớm khép lại giữa vòng xoáy tàn nhẫn của thành phố.'
+      : ' Vượt qua những năm tháng thơ ấu đầy bất trắc giữa khói bụi và tiếng còi báo động, bạn từng bước trưởng thành với đôi mắt không còn biết sợ hãi.');
+  const childhoodSnippetEn = childhoodLog
+    ? ` At age ${childhoodLog.age}, an early crucible arrived when ${childhoodLog.choiceEn ? `you chose to "${childhoodLog.choiceEn.toLowerCase()}"` : 'you confronted the brutality of the streets firsthand'}, tempering your instincts long before adulthood.`
+    : (char.age < 18
+      ? ' Yet those fragile early years were cut tragically short by the merciless gears of the City.'
+      : ' Surviving a perilous youth amidst industrial smog and distant sirens, you came of age with hardened resolve.');
+
+  lifeStoryParagraphsVi.push(
+    `${lineageIntroVi}${char.name} cất tiếng khóc chào đời tại ${birthRegion.nameVi} trong một ${family.nameVi?.toLowerCase() || 'gia đình bình thường'}, dưới điềm báo định mệnh 「${omen?.nameVi || 'Ngôi Sao Mờ'}」.${childhoodSnippetVi}`
+  );
+  lifeStoryParagraphsEn.push(
+    `${lineageIntroEn}${char.name} was born in ${birthRegion.nameEn} into a ${family.nameEn || 'humble household'}, under the natal omen of "${omen?.nameEn || 'Faint Star'}".${childhoodSnippetEn}`
+  );
+
+  // Paragraph 2: Adulthood Career, Promotions, Dungeons & Masterworks
+  if (char.age >= 18) {
+    let careerArcVi = '';
+    let careerArcEn = '';
+
+    if (char.job === 'Fixer') {
+      careerArcVi = `Bước qua tuổi 18, bạn dấn thân vào con đường Fixer chuyên nghiệp${char.org?.name ? ` thuộc ${char.org.name}` : ''}, từng bước leo lên tới cấp bậc Fixer Grade ${char.fixerGrade}${flags.includes('ColorFixer') ? ` và được Hana Association sắc phong danh hiệu huyền thoại 「${char.customTitle}」` : ''}.`;
+      careerArcEn = `Stepping across the threshold of age 18, you took up the Fixer’s license${char.org?.name ? ` with ${char.org.name}` : ''}, carving your way up to Grade ${char.fixerGrade}${flags.includes('ColorFixer') ? ` and claiming the legendary Color title "${char.customTitle}" from Hana Association` : ''}.`;
+    } else if (char.job === 'Syndicate') {
+      const fRankName = char.finger && FINGER_RANKS[char.finger] ? FINGER_RANKS[char.finger][char.fingerRank || 0] : 'thành viên Syndicate';
+      careerArcVi = `Ở tuổi trưởng thành, bạn bước vào thế giới ngầm của ${char.finger ? `Ngón Tay The ${char.finger}` : 'Syndicate'}, dùng máu và kỷ luật sắt để vươn lên địa vị ${fRankName} với ${char.merit || 0} điểm công trạng giang hồ.`;
+      careerArcEn = `In adulthood, you swore yourself to the underworld of ${char.finger ? `The ${char.finger}` : 'the Backstreets Syndicates'}, rising through blood and iron discipline to the rank of ${fRankName} with ${char.merit || 0} Merit.`;
+    } else if (char.job === 'Wing Employee') {
+      const wRank = Math.min(WING_RANKS.length - 1, char.wingRank || 0);
+      careerArcVi = `Từ tuổi trưởng thành, bạn khoác lên mình tấm áo Feather của tập đoàn Wing tại ${region.nameVi}, thăng tiến qua các cuộc thanh trừng nội bộ để đạt chức vụ ${WING_RANKS[wRank]?.titleVi || 'Nhân viên Wing'}.`;
+      careerArcEn = `Upon coming of age, you entered corporate service as a Wing Feather in ${region.nameEn}, navigating boardroom purges and Singularity quotas to rise to ${WING_RANKS[wRank]?.titleEn || 'Wing Operative'}.`;
+    } else if (char.job === 'Workshop Craftsman') {
+      careerArcVi = `Bạn chọn gắn đời mình với lửa lò và búa sắt của một nghệ nhân Workshop, tích lũy ${char.merit || 0} điểm danh tiếng chế tác${char.craftWeapon ? ` và tự tay rèn nên tuyệt tác vũ khí 「${char.craftWeapon.name}」 được Tres Association đóng dấu công nhận` : ''}.`;
+      careerArcEn = `You dedicated your adulthood to the furnace and anvil as a Workshop Craftsman, earning ${char.merit || 0} Merit${char.craftWeapon ? ` and forging the registered masterpiece "${char.craftWeapon.name}"` : ''}.`;
+    } else {
+      careerArcVi = `Trong suốt những năm tháng trưởng thành tại ${region.nameVi}, bạn vật lộn mưu sinh qua từng mùa biến động của The City.`;
+      careerArcEn = `Throughout your adult years in ${region.nameEn}, you fought to carve out a living across the shifting seasons of the City.`;
+    }
+
+    const promoMoments = turningPoints.filter(tp => tp.type === 'promo' || tp.type === 'miracle').slice(0, 3);
+    const milestoneTextVi = promoMoments.length > 0
+      ? ` Những cột mốc chói lọi nhất trong sự nghiệp của bạn được ghi dấu vào các năm tuổi ${promoMoments.map(m => `${m.age} (${m.titleVi})`).join(', ')}.`
+      : '';
+    const milestoneTextEn = promoMoments.length > 0
+      ? ` Defining milestones marked your ascent at ages ${promoMoments.map(m => `${m.age} (${m.titleEn})`).join(', ')}.`
+      : '';
+
+    const egoOrDistortVi = flags.includes('EGOAwakened')
+      ? ` Trước ánh mặt trời chói lòa của Carmen, bạn đã khước từ sự buông xuôi để kết tinh nỗi đau thành E.G.O 「${char.egoName || 'Bất Khuất'}」.`
+      : flags.includes('Distorted')
+        ? ' Giữa tột cùng bi kịch và độ cộng hưởng tâm thức chạm ngưỡng, bạn đã nghe theo lời thì thầm của Carmen và biến đổi thành một thực thể Distortion.'
+        : (char.resonance || 0) >= 40
+          ? ` Tâm thức bạn nhiều lần rung chuyển dữ dội trước tiếng gọi của Ánh Sáng với độ Cộng hưởng (Resonance) lên tới ${char.resonance}%.`
+          : '';
+    const egoOrDistortEn = flags.includes('EGOAwakened')
+      ? ` Standing before Carmen’s blinding sun, you refused to yield and crystallized your soul into the Effloresced E.G.O "${char.egoName || 'Unbowed'}".`
+      : flags.includes('Distorted')
+        ? ' At the breaking point of grief and psychic resonance, you surrendered to Carmen’s whisper and transformed into a Distortion.'
+        : (char.resonance || 0) >= 40
+          ? ` Your psyche resonated deeply with the Light, reaching ${char.resonance}% Resonance amidst the City’s horrors.`
+          : '';
+
+    lifeStoryParagraphsVi.push(`${careerArcVi}${milestoneTextVi}${egoOrDistortVi}`);
+    lifeStoryParagraphsEn.push(`${careerArcEn}${milestoneTextEn}${egoOrDistortEn}`);
+  }
+
+  // Paragraph 3: Relationships, Loved Ones & Karma Scars
+  const npcs = char.npcs || {};
+  const spouseOrLover = npcs.spouse || npcs.lover;
+  const childNpc = npcs.child;
+  const partnerOrFriend = npcs.partner || npcs.mentor || npcs.friend;
+  const bondPartsVi = [];
+  const bondPartsEn = [];
+
+  if (spouseOrLover) {
+    const spName = spouseOrLover.nameVi || spouseOrLover.name || 'người thương';
+    if (spouseOrLover.deceased || spouseOrLover.status === 'dead') {
+      bondPartsVi.push(`Bạn từng tìm thấy hơi ấm hiếm hoi bên cạnh ${spName}, nhưng bi kịch đã cướp mất người ấy, để lại khoảng trống không gì bù đắp nổi`);
+      bondPartsEn.push(`You once found rare warmth beside ${spName}, before tragedy tore them away and left an aching void`);
+    } else {
+      bondPartsVi.push(`Giữa thành phố lạnh lùng, bạn đã xây dựng được một mái nhà bình yên bên cạnh ${spName}`);
+      bondPartsEn.push(`Amidst a merciless metropolis, you built a quiet sanctuary beside ${spName}`);
+    }
+  }
+  if (childNpc) {
+    const chName = childNpc.nameVi || childNpc.name || 'con của bạn';
+    bondPartsVi.push(`truyền lại ngọn lửa sinh tồn cho người con ${chName}`);
+    bondPartsEn.push(`passing the torch of survival to your child, ${chName}`);
+  }
+  if (partnerOrFriend) {
+    const pfName = partnerOrFriend.nameVi || partnerOrFriend.name || 'người đồng hành';
+    bondPartsVi.push(`sát cánh cùng tri kỷ ${pfName} qua những đêm dài hiểm nguy`);
+    bondPartsEn.push(`standing shoulder to shoulder with ${pfName} through the darkest nights`);
+  }
+
+  const scarCount = (char.scars || []).length;
+  const scarSentenceVi = scarCount > 0
+    ? ` Trên cơ thể và tâm hồn bạn khắc sâu ${scarCount} vết sẹo không thể xóa nhòa (${char.scars.slice(0, 3).join(', ')}) — minh chứng sống động cho cái giá phải trả để tồn tại.`
+    : ' Bạn khéo léo đi qua những cơn bão ngầm mà vẫn giữ được tâm hồn mình không bị vấy bẩn bởi những vết sẹo tâm thức.';
+  const scarSentenceEn = scarCount > 0
+    ? ` Etched across your flesh and psyche were ${scarCount} permanent Karma Scars (${char.scars.slice(0, 3).join(', ')}) — living proof of the price paid to endure.`
+    : ' Through caution and resilience, you navigated the storms while keeping your psyche unmarred by permanent scars.';
+
+  if (bondPartsVi.length > 0 || scarCount > 0) {
+    const bondLeadVi = bondPartsVi.length > 0 ? `${bondPartsVi.join(', ')}.` : 'Bạn bước đi độc hành giữa hàng triệu bóng người xa lạ của The City.';
+    const bondLeadEn = bondPartsEn.length > 0 ? `${bondPartsEn.join(', ')}.` : 'You walked a solitary road amidst the millions of strangers in the City.';
+    lifeStoryParagraphsVi.push(`${bondLeadVi}${scarSentenceVi}`);
+    lifeStoryParagraphsEn.push(`${bondLeadEn}${scarSentenceEn}`);
+  }
+
+  // Paragraph 4: Final Reckoning, Lifespan Comparison & Heirloom
+  const lifeCompVi = lifespanDiff >= 0
+    ? `thọ hơn mức tuổi trung bình của cư dân ${region.nameVi} (${localAvgLife} tuổi) tới +${lifespanDiff} năm`
+    : `ngắn hơn mức tuổi thọ trung bình của ${region.nameVi} (${localAvgLife} tuổi) ${Math.abs(lifespanDiff)} năm`;
+  const lifeCompEn = lifespanDiff >= 0
+    ? `outliving the local average lifespan of ${region.nameEn} (${localAvgLife} yrs) by +${lifespanDiff} years`
+    : `falling ${Math.abs(lifespanDiff)} years short of ${region.nameEn}’s average lifespan (${localAvgLife} yrs)`;
+
+  lifeStoryParagraphsVi.push(
+    `Ở tuổi ${char.age} (${lifeCompVi}), hành trình ấy khép lại: ${deathCauseVi}. Khi tấm màn sinh mệnh hạ xuống, bạn để lại 「${relicName}」, ${char.stats?.wealth ?? 0} Ahn tài sản cùng ${char.stats?.rep ?? 0} điểm uy danh cho thế hệ kế tiếp viết tiếp câu chuyện còn dang dở.`
+  );
+  lifeStoryParagraphsEn.push(
+    `At age ${char.age} (${lifeCompEn}), your chronicle reached its final page: ${deathCauseEn}. When the curtain fell, you left behind "${relicName}", ${char.stats?.wealth ?? 0} Ahn in wealth, and ${char.stats?.rep ?? 0} Reputation for the next generation to carry forward.`
+  );
+
+  // Build Rich Records List (combining unlocked CODEX_RECORDS + contextual life achievements)
+  const newKeysSet = new Set(char.newRecordsThisLife || []);
+  const RARITY_ORDER = { miracle: 6, myth: 5, legend: 4, epic: 3, rare: 2, uncommon: 1, common: 0 };
+  const RARITY_LABELS = {
+    miracle: { vi: 'Thần tích', en: 'Miracle' },
+    myth: { vi: 'Huyền thoại', en: 'Mythic' },
+    legend: { vi: 'Truyền thuyết', en: 'Legendary' },
+    epic: { vi: 'Sử thi', en: 'Epic' },
+    rare: { vi: 'Hiếm', en: 'Rare' },
+    uncommon: { vi: 'Khá hiếm', en: 'Uncommon' },
+    common: { vi: 'Phổ biến', en: 'Common' }
+  };
+
+  const recordsList = (char.unlockedRecords || [])
+    .map((key) => {
+      const def = CODEX_RECORDS.find((r) => r.key === key);
+      if (!def) return null;
+      const tier = def.tier || 'common';
+      return {
+        key,
+        vi: def.vi,
+        en: def.en,
+        hintVi: def.hintVi,
+        hintEn: def.hintEn,
+        tier,
+        rarityVi: RARITY_LABELS[tier]?.vi || 'Phổ biến',
+        rarityEn: RARITY_LABELS[tier]?.en || 'Common',
+        isNew: newKeysSet.has(key)
+      };
+    })
+    .filter(Boolean);
+
+  // Add dynamic contextual life records (matching reference screenshot style)
+  if (char.age >= 80 && !recordsList.some(r => r.key === 'lived_past_80')) {
+    recordsList.push({
+      key: 'lived_past_80',
+      vi: 'Sống qua tuổi bát tuần (80+)',
+      en: 'Lived past 80',
+      hintVi: 'Vượt qua tuổi 80 giữa The City.',
+      hintEn: 'Reached 80 years of age in The City.',
+      tier: 'uncommon',
+      rarityVi: 'Khá hiếm',
+      rarityEn: 'Uncommon',
+      isNew: char.age >= 80
+    });
+  }
+  if (char.job === 'Wing Employee' && (char.wingRank || 0) >= 2 && !recordsList.some(r => r.key === 'wing_dept_head')) {
+    recordsList.push({
+      key: 'wing_dept_head',
+      vi: 'Thăng tới Trưởng phòng / Giám đốc Wing',
+      en: 'Rose to Department Head of a Wing',
+      hintVi: 'Đạt cấp quản lý cấp cao trong một Tập đoàn Wing.',
+      hintEn: 'Reached executive management inside a Wing.',
+      tier: 'uncommon',
+      rarityVi: 'Khá hiếm',
+      rarityEn: 'Uncommon',
+      isNew: true
+    });
+  } else if (char.job === 'Wing Employee' && !recordsList.some(r => r.key === 'wing_emp_record')) {
+    recordsList.push({
+      key: 'wing_emp_record',
+      vi: 'Nhân viên tập đoàn Wing',
+      en: 'Wing employee',
+      hintVi: 'Làm việc cho một trong 26 Wing của The City.',
+      hintEn: 'Served as an employee of a Wing.',
+      tier: 'common',
+      rarityVi: 'Phổ biến',
+      rarityEn: 'Common',
+      isNew: false
+    });
+  }
+  if (flags.includes('FullBodyProsthetic') && !recordsList.some(r => r.key === 'fine_prosthetic')) {
+    recordsList.push({
+      key: 'fine_prosthetic',
+      vi: 'Phẫu thuật cơ thể cơ khí toàn phần',
+      en: 'Underwent fine prosthetic surgery',
+      hintVi: 'Thay thế cơ thể sinh học bằng khung cơ khí cao cấp.',
+      hintEn: 'Replaced biological flesh with a high-grade prosthetic frame.',
+      tier: 'common',
+      rarityVi: 'Phổ biến',
+      rarityEn: 'Common',
+      isNew: false
+    });
+  }
+
+  recordsList.sort((a, b) => {
+    if (a.isNew !== b.isNew) return a.isNew ? -1 : 1;
+    return (RARITY_ORDER[b.tier] || 0) - (RARITY_ORDER[a.tier] || 0);
+  });
+
+  // Build Final State Tags (Traits, Relationships, Equipment, Encounters & Scars)
+  const lifeTags = [];
+  if (flags.includes('Married') || npcIsActive(char.npcs?.spouse)) {
+    lifeTags.push({ vi: 'Đã lập gia đình', en: 'Has a family', kind: 'bond' });
+  } else if (npcIsActive(char.npcs?.lover)) {
+    lifeTags.push({ vi: 'Có người thương', en: 'Has a lover', kind: 'bond' });
+  }
+  if (npcIsActive(char.npcs?.child) || flags.includes('HasChild')) {
+    lifeTags.push({ vi: 'Có con nối dõi', en: 'Has a child', kind: 'bond' });
+  }
+  if (npcIsActive(char.npcs?.partner)) {
+    lifeTags.push({ vi: 'Có cộng sự sinh tử', en: 'Sworn partner', kind: 'bond' });
+  }
+  if (char.job === 'Fixer') {
+    lifeTags.push({ vi: `Thẻ Fixer Grade ${char.fixerGrade}`, en: `Grade ${char.fixerGrade} Fixer ID`, kind: 'career' });
+  } else if (char.job === 'Wing Employee') {
+    lifeTags.push({ vi: 'Thẻ nhân viên Wing', en: 'Wing employee ID', kind: 'career' });
+  } else if (char.job === 'Syndicate') {
+    lifeTags.push({ vi: `Huy hiệu ${char.finger ? `The ${char.finger}` : 'Syndicate'}`, en: `${char.finger ? `The ${char.finger}` : 'Syndicate'} Crest`, kind: 'career' });
+  } else if (char.job === 'Workshop Craftsman') {
+    lifeTags.push({ vi: 'Chứng nhận Thợ rèn Tres', en: 'Tres Atelier License', kind: 'career' });
+  }
+  if (char.org?.name) {
+    lifeTags.push({ vi: `Thuộc ${char.org.name}`, en: `Affiliated: ${char.org.name}`, kind: 'career' });
+  }
+  if (flags.includes('FullBodyProsthetic') || flags.includes('ProstheticClinic')) {
+    lifeTags.push({ vi: 'Cơ thể cơ khí tinh xảo', en: 'Fine prosthesis', kind: 'tech' });
+  }
+  if (char.craftWeapon) {
+    lifeTags.push({ vi: `Vũ khí: ${char.craftWeapon.name}`, en: `Weapon: ${char.craftWeapon.name}`, kind: 'tech' });
+  }
+  if ((char.resonance || 0) >= 25) {
+    lifeTags.push({ vi: 'Đã tiếp xúc Dị thể (Abnormality)', en: 'Has seen an Abnormality', kind: 'lore' });
+  }
+  if ((char.resonance || 0) >= 50 || flags.includes('Distorted') || flags.includes('EGOAwakened')) {
+    lifeTags.push({ vi: 'Chứng kiến hiện tượng Distortion', en: 'Witnessed a Distortion', kind: 'lore' });
+  }
+  if (char.backgroundTrait?.nameVi) {
+    lifeTags.push({ vi: char.backgroundTrait.nameVi, en: char.backgroundTrait.nameEn || char.backgroundTrait.nameVi, kind: 'trait' });
+  }
+  (char.scars || []).slice(0, 5).forEach((s) => {
+    lifeTags.push({ vi: `Sẹo: ${s}`, en: `Scar: ${s}`, kind: 'scar' });
+  });
+
   return {
     generation: char.generation,
     seed: char.seed,
@@ -1897,23 +2376,43 @@ export function buildLifeSummaryAndLegacy(char) {
     regionId: char.regionId,
     regionNameVi: region.nameVi,
     regionNameEn: region.nameEn,
+    birthRegionNameVi: birthRegion.nameVi,
+    birthRegionNameEn: birthRegion.nameEn,
+    familyNameVi: family.nameVi || 'Gia đình bình thường',
+    familyNameEn: family.nameEn || 'Ordinary family',
     job: char.job,
+    occupationVi,
+    occupationEn,
     epitaphTitleVi,
     epitaphTitleEn,
+    poeticQuoteVi,
+    poeticQuoteEn,
+    localAvgLife,
+    lifespanDiff,
     rankTier,
-    deathCauseVi: char.deathCauseVi || 'Qua đời ở The City',
-    deathCauseEn: char.deathCauseEn || 'Passed away in the City',
-    wealth: char.stats.wealth,
-    rep: char.stats.rep,
-    network: char.stats.network,
-    scars: [...char.scars],
+    deathCauseVi,
+    deathCauseEn,
+    health: Math.max(0, char.stats?.health ?? 0),
+    sanity: Math.max(0, char.stats?.sanity ?? 0),
+    wealth: char.stats?.wealth ?? 0,
+    rep: char.stats?.rep ?? 0,
+    network: char.stats?.network ?? 0,
+    resonance: char.resonance || 0,
+    merit: char.merit || 0,
+    scars: [...(char.scars || [])],
     relic: relicName,
+    lifeStoryParagraphsVi,
+    lifeStoryParagraphsEn,
+    turningPoints: turningPoints.slice(0, 8),
+    recordsList,
+    newRecordsCount: recordsList.filter(r => r.isNew).length,
+    lifeTags,
     successorRelation,
     successorInfo: succInfo,
     childAgeWhenParentDied,
     hasChild: npcIsActive(char.npcs?.child),
     childName: char.npcs?.child?.nameVi || '',
-    hasVendetta: (char.heat || 0) >= 40 || char.flags.includes('MiddleVendetta')
+    hasVendetta: (char.heat || 0) >= 40 || flags.includes('MiddleVendetta')
   };
 }
 
@@ -1921,7 +2420,11 @@ export {
   DUNGEON_DEFINITIONS,
   createDungeonSession,
   getDungeonCurrentStage,
+  getDungeonMastery,
   isDungeonChoiceAvailable,
+  evaluateDungeonChoiceOdds,
+  setDungeonStance,
+  useDungeonSupply,
   resolveDungeonChoice,
   fleeDungeon
 } from './dungeonEngine.js';

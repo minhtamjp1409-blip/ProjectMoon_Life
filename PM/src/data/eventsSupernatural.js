@@ -94,20 +94,21 @@ export const SUPERNATURAL_EVENTS = [
     id: 'lake_calamity_whale_hunt',
     age: [19, 55],
     major: true,
-    regions: ['21'],
-    weight: 5.5,
+    regions: ['U', '21'],
+    weight: 6.5,
     vi: "[Pallid Whale] Bão quật con thuyền trên Great Lake. Pallid Whale trồi lên, nuốt mất nửa đoàn. Dịch trắng bắn lên boong, làm thủy thủ hóa cứng. Người vừa chia thuốc lá với bạn đã trắng tới cằm và đang quay sang cắn bạn.",
     en: '[The Whale on the Great Lake] In the middle of the storm on District 21’s Great Lake, a Whale surfaced and swallowed half the fleet. Sailors splashed with its white fluid began to harden like wax, their legs fusing into tails. Then they turned and bit the living.\nThe person beside you had turned white up to the neck.',
     choices: [
       {
         labelVi: 'Cắt cánh tay đang hóa trắng của người ấy, rồi buộc mình vào dây lao và phóng thẳng vào mắt con Cá Voi',
         labelEn: 'Cut off their whitening arm, then tie yourself to the harpoon line and drive it into the Whale’s eye',
+        startDungeon: 'dungeon_great_lake',
         outcomes: [
           {
             w: 56,
             resultVi: "Bạn cắt phần tay đã hóa trắng của đồng đội, rồi buộc mình vào bệ phóng lao. Mũi lao mang thuốc nổ xuyên vào mắt Pallid Whale. Nó lặn xuống, kéo theo một xoáy nước trắng. Ở bến cảng, người ta nhắc tên bạn mỗi khi kể về chuyến săn ấy.",
             resultEn: 'The harpoon went into its eye. The Whale sank, dragging a white whirlpool down with it. In District 21 they tell this story in the bars, and every time the Whale gets a little bigger.',
-            effects: { health: -22, sanity: -12, wealth: +24, rep: +24, resonance: +18 },
+            effects: { health: -10, sanity: -6, wealth: +24, rep: +24, resonance: +18 },
             recordsAdd: ['lake_whale_slayer'],
             scarsAdd: ['Vết trắng trên vai'],
             meritAdd: 30
@@ -116,10 +117,18 @@ export const SUPERNATURAL_EVENTS = [
             w: 44,
             resultVi: "Đuôi Pallid Whale phá nát bệ phóng lao. Dịch trắng bám vào vai bạn, làm da hóa cứng. Bạn đốt rồi cắt bỏ phần nhiễm trước khi nó lan sâu hơn. Vết sáp trên vai không mất đi.",
             resultEn: 'Its tail broke the hull apart. A white patch landed on your shoulder and began to spread. You heated a knife over the oil lamp and cut that flesh out yourself before it reached your heart.',
-            effects: { health: -34, sanity: -20, resonance: +22 },
+            effects: { health: -14, sanity: -10, resonance: +22 },
             scarsAdd: ['Mảng thịt tự cắt bỏ']
           }
         ]
+      },
+      {
+        labelVi: 'Chặt đứt dây neo boong phụ và kích hoạt xuồng cứu sinh bọc âm thoa U Corp',
+        labelEn: 'Sever the auxiliary deck moorings and launch the U Corp tuning-fork lifeboat',
+        resultVi: 'Bạn kéo những thủy thủ chưa nhiễm dịch nhảy xuống xuồng bọc âm thoa ngay trước khi hàm răng khổng lồ khép lại. Tiếng sóng Đại Hồ gầm rú sau lưng.',
+        resultEn: 'You hauled the uninfected sailors into the tuning-fork lifeboat right before the colossal jaws slammed shut. The Great Lake roared behind you.',
+        effects: { health: -8, sanity: -6, rep: +10, network: +12 },
+        meritAdd: 14
       }
     ]
   },
@@ -162,10 +171,12 @@ export const SUPERNATURAL_EVENTS = [
   // ------------------------------------------------------------------ the Pinky
   {
     id: 'pinky_star_blade_oath',
-    age: [22, 55],
+    age: [28, 62],
     major: true,
     weight: 7.5,
-    jobs: ['Syndicate', 'Fixer'],
+    jobs: ['Syndicate'],
+    need: { finger: 'Pinky', fingerRank: 1 },
+    forbids: ['promo_pinky_star_done'],
     vi: "[Lời thề The Pinky] Trên tháp chuông, một đao thủ đặt thanh kiếm của kẻ phản bội dưới chân bạn. \"Muốn dẫn đường cho chúng ta, hãy khảm một mẩu xương của chính mình vào đốc kiếm.\" Con dao nhỏ nằm cạnh đó, còn người của The Pinky đang chờ.",
     en: '[The Pinky’s oath] On top of a bell tower in the rain, someone of the Pinky drew a sword from a traitor’s chest and laid it at your feet.\n“In the Pinky there are no ranks, only oaths. Take a piece of your own rib and set it into this hilt.”',
     choices: [
@@ -176,10 +187,11 @@ export const SUPERNATURAL_EVENTS = [
         resultEn: 'You did it yourself, with a small knife, while the other watched in silence. The piece of bone fit the hilt exactly, as if it had been waiting there. From tonight you are a Star of the Pinky.',
         setFinger: 'Pinky',
         setFingerRank: 2,
+        flagsAdd: ['promo_pinky_star_done'],
         recordsAdd: ['pinky_star'],
-        effects: { health: -28, sanity: -15, rep: +36, wealth: +28, resonance: +28 },
+        effects: { health: -28, sanity: -15, rep: +28, wealth: +24, resonance: +24 },
         scarsAdd: ['Mảnh xương sườn trong chuôi kiếm'],
-        meritAdd: 36
+        meritAdd: 24
       }
     ]
   },
@@ -199,7 +211,7 @@ export const SUPERNATURAL_EVENTS = [
         labelEn: '“This pain is mine. I will not yield before your sun.”',
         outcomes: [
           {
-            w: 16,
+            w: 50,
             openEgoModal: true,
             flagsAdd: ['EGOAwakened', 'ShinAwakened'],
             recordsAdd: ['ego_effloresced'],
@@ -210,7 +222,7 @@ export const SUPERNATURAL_EVENTS = [
             resultEn: 'You held firm to every memory and scar, refusing to yield before Carmen’s radiant sun. The blinding light fractured against your unbending resolve. From the depths of your psyche, armor and a weapon forged from your agony manifested. It is your E.G.O.'
           },
           {
-            w: 52,
+            w: 36,
             flagsAdd: ['IncompleteEGO'],
             effects: { health: -18, sanity: -12, rep: +20, resonance: +18 },
             scarsAdd: ['Vết rạn khung cửi tự ngã'],
@@ -227,7 +239,7 @@ export const SUPERNATURAL_EVENTS = [
             resultEn: 'You roared in resistance, but your inner philosophy was not yet forged enough to bear the full weight of the light. The E.G.O half-manifested then cracked, emotion scorch marks searing your flesh. You did not break, but your soul bears a fissure: an Incomplete E.G.O.'
           },
           {
-            w: 32,
+            w: 14,
             flagsAdd: ['Distorted'],
             recordsAdd: ['distortion_awaken'],
             effects: { health: +40, sanity: -60, rep: +30, heat: +45, resonance: +55 },
@@ -243,7 +255,7 @@ export const SUPERNATURAL_EVENTS = [
         labelEn: 'Burn every past scar as living fuel for breakthrough',
         outcomes: [
           {
-            w: 12,
+            w: 44,
             openEgoModal: true,
             flagsAdd: ['EGOAwakened', 'ShinAwakened'],
             recordsAdd: ['ego_effloresced'],
@@ -254,7 +266,7 @@ export const SUPERNATURAL_EVENTS = [
             resultEn: 'Turning your bleeding scars into kindling, you incinerated Carmen’s gentle whispers. Your body tore with wounds, but from the ashes, complete E.G.O emerged with overwhelming might.'
           },
           {
-            w: 58,
+            w: 24,
             flagsAdd: ['Distorted'],
             recordsAdd: ['distortion_awaken'],
             effects: { health: +50, sanity: -65, rep: +35, heat: +50, resonance: +60 },
@@ -264,7 +276,7 @@ export const SUPERNATURAL_EVENTS = [
             resultEn: 'The emotional blaze flared beyond mortal endurance. The heat consumed your sanity; instead of E.G.O, you collapsed entirely into obsession. A ravenous Distortion arose from the ashes.'
           },
           {
-            w: 30,
+            w: 32,
             flagsAdd: ['IncompleteEGO'],
             effects: { health: -35, sanity: -20, rep: +22, resonance: +25 },
             scarsAdd: ['Vết Bỏng Linh Hồn'],
@@ -322,7 +334,7 @@ export const SUPERNATURAL_EVENTS = [
         labelEn: 'Mend the soul fissure: Forge through trial to Effloresce True E.G.O',
         outcomes: [
           {
-            w: 30,
+            w: 62,
             openEgoModal: true,
             flagsAdd: ['EGOAwakened', 'ShinAwakened'],
             flagsRemove: ['IncompleteEGO'],
@@ -334,7 +346,7 @@ export const SUPERNATURAL_EVENTS = [
             resultEn: 'The fracture in your soul welded into golden armor. Complete E.G.O enveloped you, serene and sovereign. The entire street held its breath before the pure light.'
           },
           {
-            w: 45,
+            w: 18,
             flagsAdd: ['Distorted'],
             flagsRemove: ['IncompleteEGO'],
             recordsAdd: ['distortion_awaken'],
@@ -345,7 +357,7 @@ export const SUPERNATURAL_EVENTS = [
             resultEn: 'The strain of the incomplete E.G.O exceeded mortal limits. Instead of blooming, the fissure ruptured into a violent psychic collapse. You distorted into a monstrous entity.'
           },
           {
-            w: 25,
+            w: 20,
             effects: { health: -20, sanity: -15, rep: +10 },
             scarsAdd: ['Vết Nứt Chưa Liền'],
             meritAdd: 15,
@@ -658,6 +670,7 @@ export const SUPERNATURAL_EVENTS = [
 // ============================================================================
 
 import { EXPANDED_FIXER_REQUESTS } from './narrative/fixerRequests.js';
+import { EXPANSION_FIXER_REQUESTS } from './eventsNpcAndWorldExpansion.js';
 
 export const FIXER_REQUESTS = [
   {
@@ -744,7 +757,8 @@ export const FIXER_REQUESTS = [
     deathVi: 'Nó thêm bạn vào bài hát của nó.',
     deathEn: 'It added you to its song.'
   },
-  ...EXPANDED_FIXER_REQUESTS
+  ...EXPANDED_FIXER_REQUESTS,
+  ...EXPANSION_FIXER_REQUESTS
 ];
 
 

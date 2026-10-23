@@ -256,23 +256,30 @@ public sealed class DirectorEngineService
 
             int nextRank = curRank + 1;
             string nextTitle = ladder[nextRank];
-            int reqMerit = nextRank == 3 ? 115 : nextRank * 26;
-            int reqRep = nextRank == 3 ? 65 : nextRank * 16;
+            int reqMerit = nextRank == 3 ? 155 : nextRank == 2 ? 68 : 28;
+            int reqRep = nextRank == 3 ? 84 : nextRank == 2 ? 46 : 18;
+            int reqNet = nextRank == 3 ? 48 : nextRank == 2 ? 24 : 0;
             int pM = Math.Min(100, (c.Merit * 100) / reqMerit);
             int pR = Math.Min(100, (c.Rep * 100) / reqRep);
-            int progress = (pM + pR) / 2;
-            bool canUp = c.Merit >= reqMerit && c.Rep >= reqRep;
+            int pN = reqNet > 0 ? Math.Min(100, (c.Network * 100) / reqNet) : pM;
+            int progress = (pM + pR + pN) / 3;
+            bool canUp = c.Merit >= reqMerit && c.Rep >= reqRep && c.Network >= reqNet;
 
             return new CareerMilestoneDto(
                 Category: $"THE {finger.ToUpperInvariant()} TRIAL",
                 TitleVi: $"Thăng bậc: {nextTitle}",
                 TitleEn: $"Syndicate Rank: {nextTitle}",
                 ProgressPct: progress,
-                Requirements:
-                [
-                    new("Công trạng với Ngón (Merit)", "Syndicate Merit", c.Merit, reqMerit, c.Merit >= reqMerit),
-                    new("Uy danh giang hồ (Rep)", "Reputation", c.Rep, reqRep, c.Rep >= reqRep)
-                ],
+                Requirements: reqNet > 0
+                    ? [
+                        new("Công trạng với Ngón (Merit)", "Syndicate Merit", c.Merit, reqMerit, c.Merit >= reqMerit),
+                        new("Uy danh giang hồ (Rep)", "Reputation", c.Rep, reqRep, c.Rep >= reqRep),
+                        new("Mạng lưới chân rết (Network)", "Syndicate Network", c.Network, reqNet, c.Network >= reqNet)
+                    ]
+                    : [
+                        new("Công trạng với Ngón (Merit)", "Syndicate Merit", c.Merit, reqMerit, c.Merit >= reqMerit),
+                        new("Uy danh giang hồ (Rep)", "Reputation", c.Rep, reqRep, c.Rep >= reqRep)
+                    ],
                 TipVi: "Thực thi mệnh lệnh của Ngón, thu hồi nợ máu và chứng minh lòng trung thành.",
                 TipEn: "Execute Finger orders, claim vengeance debts, and prove unquestioned loyalty.",
                 CanPromote: canUp,
@@ -328,11 +335,11 @@ public sealed class DirectorEngineService
         {
             return new CareerMilestoneDto(
                 Category: "WORKSHOP",
-                TitleVi: "M?t ng?y ? x??ng",
+                TitleVi: "Một ngày ở xưởng",
                 TitleEn: "A day at the Workshop",
                 ProgressPct: 0,
                 Requirements: [],
-                TipVi: "Nh?n ??n, l?m ra m?n ??, v? gi? x??ng m? c?a.",
+                TipVi: "Nhận đơn, làm ra món đồ, và giữ xưởng mở cửa.",
                 TipEn: "Take commissions, finish the work, and keep the Workshop open."
             );
         }
@@ -438,7 +445,7 @@ public sealed class DirectorEngineService
             majorTitleVi = "Móng Vuốt Phạt Tội (A Corp Claw)";
             majorTitleEn = "Head Taboo Enforcement Claw";
         }
-        else if (c.Age >= 18 && ((c.Sanity <= 5 && random.NextDouble() < 0.12) || (c.Resonance >= 90 && random.NextDouble() < 0.15)) && !seen.Contains("ego_carmen_crossroad") && !flags.Contains("EGOAwakened") && !flags.Contains("Distorted"))
+        else if (c.Age >= 18 && (c.Resonance >= 70 || (c.Resonance >= 58 && c.Sanity <= 38) || (c.Sanity <= 12 && random.NextDouble() < 0.35)) && !seen.Contains("ego_carmen_crossroad") && !flags.Contains("EGOAwakened") && !flags.Contains("Distorted"))
         {
             majorDue = true;
             majorId = "ego_carmen_crossroad";
@@ -488,7 +495,7 @@ public sealed class DirectorEngineService
                 majorTitleVi = $"Khảo thí thăng bậc The {finger} (Rank 2)";
                 majorTitleEn = $"The {finger} Promotion Trial (Rank 2)";
             }
-            else if (c.FingerRank == 2 && c.Merit >= 115 && c.Rep >= 65)
+            else if (c.FingerRank == 2 && c.Merit >= 155 && c.Rep >= 84)
             {
                 majorDue = true;
                 majorId = finger.ToLowerInvariant() switch

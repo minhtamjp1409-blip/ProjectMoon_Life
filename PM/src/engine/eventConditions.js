@@ -1,8 +1,19 @@
 import { hasScarTag } from './scarModel.js';
 
-export const npcIsActive = (npc) => Boolean(npc) && npc.alive !== false && !npc.deceased && !['dead', 'missing', 'estranged'].includes(npc.status);
+export const npcIsActive = (npc) => Boolean(npc) && npc.alive !== false && !npc.deceased && !['dead', 'missing', 'estranged', 'betrayer'].includes(npc.status);
 export const isNestResident = (char) => ['Nest', 'NestResident', 'Feather'].some((f) => char.flags?.includes(f));
 export const isOutsideCity = (char) => char.regionId === 'OUTSKIRTS' || char.flags?.includes('Outskirts');
+
+function regionMatchesList(allowedRegions, regionId) {
+  if (!Array.isArray(allowedRegions) || allowedRegions.length === 0) return true;
+  if (!regionId) return false;
+  if (allowedRegions.includes(regionId)) return true;
+  if (typeof regionId === 'string' && regionId.length === 1 && regionId >= 'A' && regionId <= 'Z') {
+    const wardStr = String(regionId.charCodeAt(0) - 64);
+    if (allowedRegions.includes(wardStr) || allowedRegions.includes(Number(wardStr))) return true;
+  }
+  return false;
+}
 
 export function matchesNeed(need, char) {
   if (!need) return true;
@@ -17,7 +28,7 @@ export function matchesNeed(need, char) {
       (char.flags?.includes('Distorted') && char.finger && need.jobs.includes('Syndicate'));
     if (!jobAllowed) return false;
   }
-  if (need.regions && !need.regions.includes(char.regionId)) return false;
+  if (need.regions && !regionMatchesList(need.regions, char.regionId)) return false;
   if (need.finger && need.finger !== char.finger) return false;
   if (need.flags && !need.flags.every((f) => flags.includes(f))) return false;
   if (need.noFlags?.some((f) => flags.includes(f))) return false;
@@ -38,6 +49,11 @@ export function matchesNeed(need, char) {
     const [bRole, min] = need.bondAtLeast;
     const bTarget = char.npcs?.[bRole] || (bRole === 'lover' ? char.npcs?.spouse : null);
     if (!npcIsActive(bTarget) || (bTarget.bond || 0) < min) return false;
+  }
+  if (need.bondAtMost) {
+    const [bRole, max] = need.bondAtMost;
+    const bTarget = char.npcs?.[bRole] || (bRole === 'lover' ? char.npcs?.spouse : null);
+    if (!npcIsActive(bTarget) || (bTarget.bond || 0) > max) return false;
   }
   if (need.deadNpc && (!char.npcs?.[need.deadNpc] || !char.npcs[need.deadNpc].deceased)) return false;
   const remembers = (key) => (char.memory || []).some((m) => m.key === key);
@@ -61,7 +77,7 @@ export function matchesNeed(need, char) {
   return true;
 }
 
-const roles = ['friend', 'partner', 'mentor', 'lover', 'spouse', 'child', 'ward', 'parent', 'rival'];
+const roles = ['friend', 'partner', 'mentor', 'lover', 'spouse', 'child', 'ward', 'parent', 'rival', 'nemesis'];
 export function hasNarrativeContext(entry, char) {
   const text = [entry.vi, entry.en, entry.ignore?.rvi, entry.ignore?.ren,
     ...(entry.choices || []).flatMap((choice) => [choice.vi, choice.en, choice.rvi, choice.ren,
@@ -81,7 +97,7 @@ export function hasNarrativeContext(entry, char) {
 export function matchesEventContext(entry, char) {
   if (!entry || !char.alive) return false;
   if (entry.age && (char.age < entry.age[0] || char.age > entry.age[1])) return false;
-  if (entry.regions && !entry.regions.includes(char.regionId)) return false;
+  if (entry.regions && !regionMatchesList(entry.regions, char.regionId)) return false;
   if (entry.jobs) {
     const jobMatches = entry.jobs.includes(char.job) ||
       (char.flags?.includes('Distorted') && char.finger && entry.jobs.includes('Syndicate'));

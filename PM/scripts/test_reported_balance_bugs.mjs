@@ -1,10 +1,14 @@
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
 import { ALL_STORY_EVENTS, createNewCharacter, generateFixerContract, getNextCareerMilestone, resolveEventChoice, resolveFixerContract } from '../src/engine/gameEngine.js';
 import { matchesEventContext, choiceIsAvailable } from '../src/engine/eventConditions.js';
 import { weightedOutcomes } from '../src/engine/outcomeOdds.js';
-import { reputationGain } from '../src/engine/economyModel.js';
-import { isEventEligible } from '../src/engine/weaverAI.js';
-import { LIFE_MINORS, resolveMinor } from '../src/engine/yearPlanner.js';
+import { reputationGain, driftOf } from '../src/engine/economyModel.js';
+import { isEventEligible, selectEventWithWeaverAI } from '../src/engine/weaverAI.js';
+import { LIFE_MINORS, resolveMinor, planYear } from '../src/engine/yearPlanner.js';
+import { CONSEQUENCE_EVENTS } from '../src/data/eventsChildhood.js';
+import { syndicateApexOpportunity } from '../src/engine/careerPipeline.js';
+import { addScar } from '../src/engine/scarModel.js';
 import { simulateNpcAutonomousLife } from '../src/engine/narrativeArcEngine.js';
 import { evaluateDiscoChoiceCheck } from '../src/engine/discoPsyche.js';
 
@@ -162,4 +166,59 @@ assert.match(outcomeAt(careful.successPct - 0.01), /log_req_ok/);
 assert.match(outcomeAt(careful.successPct + 0.01), /log_req_fail/);
 assert.doesNotMatch(outcomeAt(careful.successPct + careful.failPct + 0.01), /log_req_(ok|fail)/);
 
-console.log('Reported balance bugs 23–33: rank gates, exact Ahn costs, choice review, Wing progress and opportunities passed.');
+// BUG-34: PlayBar & gameStore must not lock stepYear / btn-step-season behind postChoicePauseMs when paused
+const playBarSrc = fs.readFileSync('src/features/chronicle/components/PlayBar.jsx', 'utf8');
+const gameStoreSrc = fs.readFileSync('src/store/gameStore.js', 'utf8');
+assert.ok(!playBarSrc.includes('const isWaiting = (s) => Boolean(s?.char?.pendingEvent || s?.char?.pendingContract || s?.char?.pendingDungeon || s?.char?.pendingModal || s?.activeResolution || (s?.postChoicePauseMs > 0));'));
+assert.ok(gameStoreSrc.includes('const readingPause = get().speed > 0 && !nextChar.pendingModal ? 3000 : 0;'));
+
+// BUG-35: Syndicate Apex (fingerRank === 3) unique Finger leader events + money-making & money-spending options
+for (const [finger, ids] of [
+  ['Thumb', ['syn_thumb_apex_tribute_summit', 'syn_thumb_apex_wing_treaty']],
+  ['Index', ['syn_index_apex_loom_decree', 'syn_index_apex_fate_arbitration']],
+  ['Middle', ['syn_middle_apex_vengeance_court', 'syn_middle_apex_turf_crusade']],
+  ['Ring', ['syn_ring_apex_royal_auction', 'syn_ring_apex_critic_tribunal']],
+  ['Pinky', ['syn_pinky_apex_shadow_bourse', 'syn_pinky_apex_ten_blades_conclave']]
+]) {
+  const boss = newChar();
+  boss.age = 36;
+  boss.job = 'Syndicate';
+  boss.finger = finger;
+  boss.fingerRank = 3;
+  boss.stats.wealth = 50;
+  const opp = syndicateApexOpportunity(boss);
+  assert.ok(opp && opp.route === 'finger_apex', `Apex opportunity for ${finger}`);
+  for (const id of ids) {
+    const ev = ALL_STORY_EVENTS.find((e) => e.id === id);
+    assert.ok(ev, `Missing apex event ${id}`);
+    assert.equal(isEventEligible(ev, boss), true, `${id} eligible for ${finger} rank 3`);
+    assert.equal(isEventEligible(ev, { ...boss, fingerRank: 2 }), false, `${id} gated from rank 2`);
+    assert.ok(ev.choices.some((c) => (c.effects?.wealth || 0) >= 25), `${id} has money-earning choice`);
+  }
+}
+
+// BUG-36: E.G.O Resonance reachable & triggers Carmen crossroad at 58-70% without massive yearly decay
+const egoSeeker = newChar();
+egoSeeker.age = 24;
+egoSeeker.job = 'Fixer';
+egoSeeker.resonance = 60;
+egoSeeker.stats.sanity = 36;
+addScar(egoSeeker, 'Vết móc câu Sweeper 3:13 AM');
+const resDrift = driftOf(egoSeeker).resonance || 0;
+assert.ok(resDrift >= -3, `Resonance drift too harsh: ${resDrift}`);
+const pickedEgo = selectEventWithWeaverAI({
+  weaver: egoSeeker.weaver,
+  char: egoSeeker,
+  allPools: ALL_STORY_EVENTS,
+  consequencePool: CONSEQUENCE_EVENTS,
+  rng: () => 0.5
+});
+assert.equal(pickedEgo.event.id, 'ego_carmen_crossroad');
+planYear(egoSeeker, () => 0.5);
+assert.ok(egoSeeker.plan.some((it) => it.kind === 'major'));
+
+// BUG-37: CharacterDossierCard renders multi-line District & Background perks without truncation
+const dossierSrc = fs.readFileSync('src/features/chronicle/components/CharacterDossierCard.jsx', 'utf8');
+assert.ok(dossierSrc.includes('kv-stack') && dossierSrc.includes('kv-perk-note'));
+
+console.log('Reported balance bugs 23–37: rank gates, exact Ahn costs, choice review, Wing progress, Pause+StepYear unlock, Syndicate Apex economy, E.G.O Resonance balance, and Dossier perk layout passed.');

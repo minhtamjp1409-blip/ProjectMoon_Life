@@ -4,7 +4,7 @@ import { ChevronDown, ChevronUp, User, Heart, Brain, Coins, Flame, Eye, Sparkles
 import { WorkshopDepotModal } from './WorkshopDepotModal';
 import { useGameStore } from '../../../store/gameStore';
 import { useThemeStore } from '../../../store/themeStore';
-import { REGIONS, FINGER_RANKS } from '../../../data/worldData';
+import { REGIONS, FAMILIES, FINGER_RANKS } from '../../../data/worldData';
 import { FATE_OMENS } from '../../../engine/weaverAI';
 import { SEASONS, getNextCareerMilestone } from '../../../engine/gameEngine';
 import { audioEngine } from '../../../engine/audioEngine';
@@ -30,6 +30,27 @@ export function describeJob(char, t) {
   }
   const local = JOB_LABELS[char.job];
   return local ? t(local.vi, local.en) : char.job || t('Chưa có nghề', 'No trade yet');
+}
+
+function formatStatModSummary(statMod, t) {
+  if (!statMod) return '';
+  const labels = {
+    health: 'HP',
+    sanity: 'SP',
+    wealth: 'Ahn',
+    network: t('Quan hệ', 'Network'),
+    rep: 'Rep',
+    heat: 'Heat',
+    taboo: 'Taboo',
+    resonance: t('Cộng hưởng', 'Resonance')
+  };
+  const parts = [];
+  for (const [k, v] of Object.entries(statMod)) {
+    if (!v || !labels[k]) continue;
+    const sign = v > 0 ? '+' : '';
+    parts.push(`${sign}${v} ${labels[k]}`);
+  }
+  return parts.join(' · ');
 }
 
 // When a value changes, float the difference above the bar for a moment
@@ -195,8 +216,18 @@ const ROLE_LABELS = {
 const STATUS_LABELS = {
   dead: ['Đã chết', 'Dead'],
   missing: ['Mất tích', 'Missing'],
-  estranged: ['Đã rời bỏ bạn', 'Gone from your life']
+  estranged: ['Đã rời bỏ bạn', 'Gone from your life'],
+  betrayer: ['Đã phản bội bạn', 'Betrayed you']
 };
+
+function bondTierInfo(bond = 0, role = '') {
+  if (role === 'nemesis') return { vi: 'Thù địch', en: 'Nemesis', color: 'var(--state-danger)' };
+  if (bond >= 80) return { vi: 'Gắn kết (+Tỉ lệ)', en: 'Sworn (+Odds)', color: 'var(--accent-gold)' };
+  if (bond >= 52) return { vi: 'Tin cậy (+Hỗ trợ)', en: 'Trusted (+Aid)', color: 'var(--state-chill)' };
+  if (bond >= 30) return { vi: 'Ổn định', en: 'Steady', color: 'var(--s-rep)' };
+  if (bond >= 18) return { vi: 'Rạn nứt (-Tỉ lệ)', en: 'Strained (-Odds)', color: 'var(--s-heat)' };
+  return { vi: 'Bất mãn / Dễ phản (!)', en: 'Hostile / Betrayal Risk (!)', color: 'var(--state-danger)' };
+}
 
 // The people in this life, each with what they are like and how close you are
 const People = ({ npcs, age, t, lang }) => {
@@ -211,7 +242,7 @@ const People = ({ npcs, age, t, lang }) => {
       </section>
     );
   }
-  const gone = (n) => n.deceased || ['dead', 'missing', 'estranged'].includes(n.status);
+  const gone = (n) => n.deceased || ['dead', 'missing', 'estranged', 'betrayer'].includes(n.status);
   list.sort(([, a], [, b]) => Number(gone(a)) - Number(gone(b)));
   return (
     <section>
@@ -220,6 +251,7 @@ const People = ({ npcs, age, t, lang }) => {
         const isGone = gone(n);
         const status = n.deceased ? 'dead' : n.status;
         const since = age - (n.lastSeen ?? n.metAge ?? 0);
+        const tier = bondTierInfo(n.bond ?? 0, role);
         return (
           <div key={role} className={`npc ${isGone ? 'is-gone' : ''}`}>
             <div className="npc-head">
@@ -232,11 +264,15 @@ const People = ({ npcs, age, t, lang }) => {
             ) : (
               <>
                 <div className="stat-head" style={{ marginBottom: 0, fontSize: 13 }}>
-                  <span className="muted">{since >= 3 ? t(`Đã ${since} năm không gặp`, `Not seen in ${since} years`) : t('Gắn bó', 'Bond')}</span>
+                  <span className="muted">
+                    {since >= 3 ? t(`Đã ${since} năm không gặp`, `Not seen in ${since} years`) : t('Gắn bó', 'Bond')}
+                    {' · '}
+                    <em style={{ fontStyle: 'normal', color: tier.color, fontWeight: 600 }}>{t(tier.vi, tier.en)}</em>
+                  </span>
                   <b>{n.bond ?? 0}</b>
                 </div>
                 <div className="bar" style={{ height: 4 }}>
-                  <i style={{ width: `${n.bond ?? 0}%`, '--c': 'var(--s-rep)' }} />
+                  <i style={{ width: `${n.bond ?? 0}%`, '--c': tier.color }} />
                 </div>
               </>
             )}
@@ -305,29 +341,56 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeT
       {/* Tab: Overview & Stats */}
       {showOverview && (
         <section>
-          <div className="kv">
-            <span>{t('Khu vực', 'District')}</span>
-            <span title={lang === 'en' ? region.nameEn : region.nameVi}>{lang === 'en' ? region.nameEn : region.nameVi}</span>
+          <div className="kv kv-stack">
+            <div className="kv-row-top">
+              <span>{t('Khu vực', 'District')}</span>
+              <span className="kv-val-wrap">{lang === 'en' ? region.nameEn : region.nameVi}</span>
+            </div>
+            <div className="kv-perk-note">
+              {(lang === 'en' ? region.singularityEn : region.singularityVi) && (
+                <div>
+                  <b>{t('Đặc trưng', 'Singularity')}:</b> {lang === 'en' ? region.singularityEn : region.singularityVi}
+                </div>
+              )}
+              <div className="kv-perk-metrics">
+                {t(
+                  `Phúc lợi vùng: An ninh ${region.safety}/10 · Y tế ${region.medical}/10 · Kinh tế ${region.wealth}/10 · Tuổi thọ TB ${region.avgLife}`,
+                  `District metrics: Safety ${region.safety}/10 · Medical ${region.medical}/10 · Wealth ${region.wealth}/10 · Avg Life ${region.avgLife}`
+                )}
+              </div>
+            </div>
           </div>
-          {char.family && (
-            <div className="kv">
-              <span>{t('Xuất thân', 'Background')}</span>
-              <span title={lang === 'en' ? char.family.descEn : char.family.descVi} style={{ color: 'var(--accent-gold, #ffd700)', fontWeight: 500 }}>
-                {lang === 'en' ? char.family.nameEn : char.family.nameVi}
-              </span>
-            </div>
-          )}
-          {char.backgroundTrait && (
-            <div className="kv" style={{ alignItems: 'flex-start' }}>
-              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{t('Đặc quyền', 'Trait')}</span>
-              <span title={lang === 'en' ? char.backgroundTrait.descEn : char.backgroundTrait.descVi} style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-                {lang === 'en' ? char.backgroundTrait.nameEn : char.backgroundTrait.nameVi}
-              </span>
-            </div>
-          )}
+          {char.family && (() => {
+            const famDef = FAMILIES.find((f) => f.id === char.family?.id) || char.family;
+            const modSummary = formatStatModSummary(famDef?.statMod, t);
+            const trait = char.backgroundTrait || famDef?.trait;
+            return (
+              <div className="kv kv-stack">
+                <div className="kv-row-top">
+                  <span>{t('Xuất thân', 'Background')}</span>
+                  <span className="kv-val-wrap" style={{ color: 'var(--accent-gold, #ffd700)', fontWeight: 600 }}>
+                    {lang === 'en' ? char.family.nameEn : char.family.nameVi}
+                  </span>
+                </div>
+                <div className="kv-perk-note">
+                  {modSummary && (
+                    <div className="kv-perk-mods">
+                      <b>{t('Chỉ số khởi đầu', 'Starting bonus')}:</b> {modSummary}
+                    </div>
+                  )}
+                  {trait && (
+                    <div className="kv-perk-trait">
+                      <b>{t('Phúc lợi', 'Perk')} · {lang === 'en' ? trait.nameEn : trait.nameVi}:</b>{' '}
+                      {lang === 'en' ? trait.descEn : trait.descVi}
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })()}
           <div className="kv">
             <span>{t('Tổ chức', 'Faction')}</span>
-            <span>{char.org?.name || (char.finger ? `The ${char.finger}` : t('Tự do', 'Unaffiliated'))}</span>
+            <span className="kv-val-wrap">{char.org?.name || (char.finger ? `The ${char.finger}` : t('Tự do', 'Unaffiliated'))}</span>
           </div>
           {char.job !== 'Child' && (
             <div className="kv">
@@ -375,9 +438,10 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeT
             value={char.resonance || 0}
             unit="%"
             color="var(--s-reso)"
+            flag={char.flags?.includes('EGOAwakened') ? 'E.G.O' : (char.resonance || 0) >= 50 ? 'READY' : null}
             tooltip={t(
-              'E.G.O Resonance: Mức cộng hưởng với Ánh Sáng (The Light). Chỉ số cao mở ra khả năng thức tỉnh E.G.O. Khi tinh thần suy sụp, nhân vật cũng có thể đứng trước ngã rẽ Distortion; E.G.O không tự biến thành Distortion theo thời gian.',
-              'E.G.O Resonance: Affinity with the Light. A high value can open a path to E.G.O. A severe mental crisis may also bring a Distortion crossroads; E.G.O does not inevitably become a Distortion over time.'
+              'E.G.O Resonance: Mức cộng hưởng với Ánh Sáng (The Light). Đạt từ 50%–60% Cộng hưởng (hoặc có Vết sẹo + 50% Cộng hưởng) ở tuổi trưởng thành sẽ mở ra Ngã rẽ Ánh Sáng để thức tỉnh E.G.O.',
+              'E.G.O Resonance: Affinity with the Light. Reaching 50%–60% Resonance (or 50% with an active scar) in adulthood unlocks the Crossroads of the Light to awaken E.G.O.'
             )}
           />
           <TabooStat

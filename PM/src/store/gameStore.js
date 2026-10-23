@@ -6,6 +6,8 @@ import {
   createNewCharacter,
   resolveEventChoice,
   resolveFixerContract,
+  setDungeonStance,
+  useDungeonSupply,
   resolveDungeonChoice,
   fleeDungeon,
   buildLifeSummaryAndLegacy,
@@ -259,7 +261,7 @@ export const useGameStore = create((set, get) => ({
   pendingLegacy: savedMeta.pastLives[0] || null,
 
   setConfigField: (field, value) => set({ [field]: value }),
-  setSpeed: (speed) => set({ speed }),
+  setSpeed: (speed) => set((s) => ({ speed, ...(speed === 0 ? { postChoicePauseMs: 0 } : {}) })),
   toggleAutoPlay: () => set((s) => ({ autoPlay: !s.autoPlay })),
   dismissResolution: () => set({ activeResolution: null, postChoicePauseMs: 0 }),
   clearPostChoicePause: () => set({ postChoicePauseMs: 0 }),
@@ -444,6 +446,9 @@ export const useGameStore = create((set, get) => ({
   syncMetaFromChar: (nextChar) => {
     const state = get();
     const newlyUnlocked = (nextChar.unlockedRecords || []).filter((k) => !state.globalCodex.includes(k));
+    if (newlyUnlocked.length > 0) {
+      nextChar.newRecordsThisLife = Array.from(new Set([...(nextChar.newRecordsThisLife || []), ...newlyUnlocked]));
+    }
     const mergedCodex = Array.from(new Set([...state.globalCodex, ...(nextChar.unlockedRecords || [])]));
     let nextPastLives = state.pastLives;
     let nextPendingLegacy = state.pendingLegacy;
@@ -595,16 +600,18 @@ export const useGameStore = create((set, get) => ({
   tick: (dtMs) => {
     const s = get();
     const c = s.char;
-    if (!s.inRun || !c.alive || s.speed === 0) return;
+    if (!s.inRun || !c.alive) return;
     if (s.activeResolution) return;
     if (c.pendingEvent || c.pendingContract || c.pendingDungeon || c.pendingModal) return;
 
     // Post-choice reading pause: gives ~3 seconds on outer screen before timeline flows
     if (s.postChoicePauseMs > 0) {
-      const nextPause = Math.max(0, s.postChoicePauseMs - dtMs);
+      const nextPause = s.speed === 0 ? 0 : Math.max(0, s.postChoicePauseMs - dtMs);
       set({ postChoicePauseMs: nextPause });
       return;
     }
+
+    if (s.speed === 0) return;
 
     if (c.pendingMinor) {
       const remaining = s.minorRemainingMs - dtMs;
@@ -678,14 +685,14 @@ export const useGameStore = create((set, get) => ({
     const waiting = char.pendingMinor || char.pendingEvent || char.pendingContract || char.pendingDungeon || char.pendingModal;
     if (waiting || !char.alive) {
       const item = char.plan?.[(char.planCursor || 1) - 1];
-      get().commit(c, char, { yearProgress: item ? item.t * 100 : targetP });
+      get().commit(c, char, { yearProgress: item ? item.t * 100 : targetP, postChoicePauseMs: 0 });
       return;
     }
 
     if (targetP >= 100 && !nextPlanItem(char)) {
       const base = changed ? char : c;
       const nextChar = endYear(base, lifeRng);
-      get().commit(c, nextChar, { yearProgress: 0 });
+      get().commit(c, nextChar, { yearProgress: 0, postChoicePauseMs: 0 });
       syncPlanWithBackend(nextChar, lifeRng).then((synced) => {
         if (get().char?.age === synced.age) {
           get().commit(get().char, synced);
@@ -699,7 +706,7 @@ export const useGameStore = create((set, get) => ({
       char.seasonIdx = nextSeasonIdx;
     }
     const base = changed ? char : c;
-    get().commit(c, base, { yearProgress: targetP });
+    get().commit(c, base, { yearProgress: targetP, postChoicePauseMs: 0 });
   },
 
   stepSeasonOrEvent: () => get().stepYear(),
@@ -712,8 +719,9 @@ export const useGameStore = create((set, get) => ({
     const ignore = def?.ignore || { vi: 'Để nó trôi qua', en: 'Let it pass' };
     const choice = idx >= 0 ? def?.choices?.[idx] : ignore;
     const nextChar = resolveMinor(prev, idx, lifeRng);
+    const readingPause = get().speed > 0 && !nextChar.pendingModal ? 3000 : 0;
 
-    get().commit(prev, nextChar, { activeResolution: null, postChoicePauseMs: nextChar.pendingModal ? 0 : 3000 });
+    get().commit(prev, nextChar, { activeResolution: null, postChoicePauseMs: readingPause });
   },
 
   selectEventChoice: (choiceIdx) => {
@@ -722,8 +730,9 @@ export const useGameStore = create((set, get) => ({
     const event = prev.pendingEvent;
     const choice = event.choices?.[choiceIdx];
     const nextChar = resolveEventChoice(prev, choiceIdx, lifeRng);
+    const readingPause = get().speed > 0 && !nextChar.pendingModal ? 3000 : 0;
 
-    get().commit(prev, nextChar, { activeResolution: null, postChoicePauseMs: nextChar.pendingModal ? 0 : 3000 });
+    get().commit(prev, nextChar, { activeResolution: null, postChoicePauseMs: readingPause });
   },
 
   selectContractApproach: (approachId) => {
@@ -732,8 +741,26 @@ export const useGameStore = create((set, get) => ({
     const contract = prev.pendingContract;
     const approach = contract.approaches.find((a) => a.id === approachId);
     const nextChar = resolveFixerContract(prev, approachId, lifeRng);
+    const readingPause = get().speed > 0 && !nextChar.pendingModal ? 3000 : 0;
 
-    get().commit(prev, nextChar, { activeResolution: null, postChoicePauseMs: nextChar.pendingModal ? 0 : 3000 });
+    get().commit(prev, nextChar, { activeResolution: null, postChoicePauseMs: readingPause });
+  },
+
+  setDungeonStance: (stance) => {
+    const prev = get().char;
+    if (!prev?.pendingDungeon) return;
+    const nextChar = setDungeonStance(prev, stance);
+    set({ char: nextChar });
+    get().saveRun(false);
+  },
+
+  useDungeonSupply: (supplyType) => {
+    const prev = get().char;
+    if (!prev?.pendingDungeon) return false;
+    const nextChar = useDungeonSupply(prev, supplyType);
+    if (nextChar === prev) return false;
+    get().commit(prev, nextChar, { activeResolution: null });
+    return true;
   },
 
   chooseDungeonAction: (choiceIdx) => {
@@ -757,7 +784,7 @@ export const useGameStore = create((set, get) => ({
         isDead: Boolean(resolution.isDead),
         isCausal: false
       } : null,
-      postChoicePauseMs: isFinished ? 3000 : 0
+      postChoicePauseMs: isFinished && get().speed > 0 ? 3000 : 0
     });
   },
 
@@ -782,7 +809,7 @@ export const useGameStore = create((set, get) => ({
         isDead: false,
         isCausal: false
       } : null,
-      postChoicePauseMs: 3000
+      postChoicePauseMs: get().speed > 0 ? 3000 : 0
     });
   },
 

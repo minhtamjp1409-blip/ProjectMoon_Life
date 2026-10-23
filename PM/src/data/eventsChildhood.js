@@ -503,6 +503,7 @@ export const CHILDHOOD_EVENTS = [
 // ============================================================================
 
 import { THREAD_CONSEQUENCES } from './narrative/causalThreads.js';
+import { EXPANSION_CONSEQUENCE_EVENTS } from './eventsNpcAndWorldExpansion.js';
 
 export const CONSEQUENCE_EVENTS = [
   {
@@ -984,5 +985,6 @@ export const CONSEQUENCE_EVENTS = [
       }
     ]
   },
-  ...THREAD_CONSEQUENCES
+  ...THREAD_CONSEQUENCES,
+  ...EXPANSION_CONSEQUENCE_EVENTS
 ];

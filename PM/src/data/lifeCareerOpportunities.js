@@ -95,5 +95,40 @@ export const LIFE_CAREER_OPPORTUNITIES = [
         O(55, 'Lõi giữ được hình dưới tải nặng. Bạn ghi đủ số đo trước khi nó nguội.', 'The core held its shape under load. You recorded the readings before it cooled.', { merit: 6, resonance: 6, wealth: 3, sanity: -3 }),
         O(45, 'Lõi nứt. Bạn dập lò trước khi lửa lan sang bàn bên cạnh.', 'The core cracked. You shut down the forge before fire reached the next bench.', { wealth: -6, health: -7, resonance: 2 })
       ] })
-    ], I('Đại diện Tres mang mẫu hỏng đi. Buổi kiểm tra kết thúc.', 'The Tres representative took the broken sample away. The inspection ended.'), { tags: ['career', 'workshop', 'craft'] })
+    ], I('Đại diện Tres mang mẫu hỏng đi. Buổi kiểm tra kết thúc.', 'The Tres representative took the broken sample away. The inspection ended.'), { tags: ['career', 'workshop', 'craft'] }),
+
+  M('m_career_thumb_apex_tribute', { jobs: ['Syndicate'], finger: 'Thumb', fingerRankAtLeast: 3 },
+    '[Cống nạp định kỳ cho Underboss] Các Capo dưới quyền mang sổ thu phế từ các chợ súng và sòng bạc trong quận lên trình diện bạn.',
+    '[Periodic Tribute to the Underboss] Your Capos present the protection ledgers from the District’s gun markets and casinos.', [
+      C('Thu tiền cống nạp vào két sắt Underboss', 'Collect the tribute into the Underboss vault', 'Các rương tiền mặt được kiểm đếm đủ không thiếu một đồng. Uy quyền của bạn giữ cho cả khu phố răm rắp nghe lệnh.', 'Every chest of Ahn was counted in full. Your authority kept the entire District in line.', { wealth: 16, rep: 5, merit: 6 }),
+      C('Chi 12 Ahn thưởng đạn đặc chế và mở tiệc khao quân đoàn Capo', 'Spend 12 Ahn on custom rounds and a feast for your Capo regiment', 'Cả quân đoàn reo hò vang dậy. Mọi mệt mỏi và sức ép truy nã đều giảm hẳn.', 'The regiment roared in salute. Fatigue and bounty pressure melted away.', { health: 10, sanity: 10, rep: 8, network: 6, heat: -12 }, { costAhn: 12 })
+    ], I('Bạn giao cho Sottocapo thân tín xử lý sổ sách kỳ này.', 'You delegated the ledgers to a trusted Sottocapo.', { wealth: 6, rep: 2 }), { tags: ['career', 'thumb', 'syndicate'] }),
+
+  M('m_career_index_apex_tribute', { jobs: ['Syndicate'], finger: 'Index', fingerRankAtLeast: 3 },
+    '[Hiến lễ tại Thánh Điện Khung Cửi] Các thương hội được The Index bảo hộ mang lễ vật và vàng bạc đến đặt trước thềm đá của Weaver.',
+    '[Offerings at the Loom Sanctum] Merchant guilds under Index protection lay gold and offerings before the Weaver’s stone dais.', [
+      C('Tiếp nhận hiến lễ và ban phát Prescript mới', 'Accept the offerings and issue new Prescripts', 'Kho quỹ của Thánh Điện đầy ắp Ahn, còn tiếng tăm của Weaver ngày càng vang xa.', 'The Sanctum treasury filled with Ahn as the Weaver’s renown spread.', { wealth: 16, rep: 5, resonance: 4, merit: 6 }),
+      C('Chi 12 Ahn bảo dưỡng con lắc cộng hưởng và ban thưởng cho các Proxy', 'Spend 12 Ahn to tune the resonance pendulums and reward your Proxies', 'Âm thanh Khung Cửi ngân vang êm dịu giúp tâm trí bạn thanh thản và gắn kết toàn nhánh.', 'The soothing hum of the Loom calmed your mind and unified the branch.', { sanity: 12, health: 8, rep: 7, resonance: 6, heat: -10 }, { costAhn: 12 })
+    ], I('Bạn để các Proxy tự phân bổ lễ vật vào kho chung.', 'You let the Proxies allocate the offerings to the common vault.', { wealth: 6, sanity: 2 }), { tags: ['career', 'index', 'syndicate'] }),
+
+  M('m_career_middle_apex_tribute', { jobs: ['Syndicate'], finger: 'Middle', fingerRankAtLeast: 3 },
+    '[Tiền chuộc tội trước Book of Vengeance] Một thương đoàn từng lỡ lời với người nhà của The Middle mang rương tiền mặt đến cầu xin Great Sibling tha thứ.',
+    '[Atonement Before the Book of Vengeance] A merchant consortium that slighted a Middle member brings a chest of Ahn begging the Great Sibling’s pardon.', [
+      C('Nhận tiền bồi thường danh dự gia tộc', 'Accept the family honor indemnity', 'Bạn đóng dấu xóa nợ. Số tiền lớn chảy vào quỹ riêng của Great Sibling.', 'You stamped the debt settled. A handsome sum flowed into the Great Sibling’s coffers.', { wealth: 16, rep: 6, merit: 6 }),
+      C('Chi 12 Ahn mở đại tiệc toàn gia đình và tặng trang sức vàng cho đàn em', 'Spend 12 Ahn on a grand family banquet and gold chains for the crew', 'Tình huynh đệ nồng ấm giúp bạn hồi phục cả thể lực lẫn tinh thần.', 'Warm family camaraderie restored both your vigor and spirits.', { health: 12, sanity: 12, rep: 7, network: 6 }, { costAhn: 12 })
+    ], I('Bạn giao cho một Big Sibling thu nhận và xử lý theo lệ thường.', 'You let a Big Sibling handle the settlement as customary.', { wealth: 6, rep: 2 }), { tags: ['career', 'middle', 'syndicate'] }),
+
+  M('m_career_ring_apex_tribute', { jobs: ['Syndicate'], finger: 'Ring', fingerRankAtLeast: 3 },
+    '[Tiền bản quyền và đấu giá của Grand Curator] Các phòng tranh khắp vùng Nest và Backstreets gửi tiền hoa hồng định kỳ lên ngai vàng của bạn.',
+    '[Royalties and Auction Dividends of the Grand Curator] Galleries across the Nest and Backstreets remit periodic royalties to your throne.', [
+      C('Thu toàn bộ tiền bản quyền và phí thẩm định', 'Collect all royalties and appraisal fees', 'Những tấm ngân phiếu vàng từ giới thượng lưu chảy thẳng vào két sắt của Grand Curator.', 'Golden bank drafts from the elite flowed straight into the Grand Curator’s safe.', { wealth: 18, rep: 5, merit: 6 }),
+      C('Chi 12 Ahn mở đêm nhạc giao hưởng riêng và sưu tầm rượu quý', 'Spend 12 Ahn on a private chamber symphony and rare vintage collection', 'Đêm nhạc tuyệt mỹ rửa sạch mọi căng thẳng và mang lại nguồn cảm hứng lớn.', 'The exquisite performance washed away all tension and sparked deep inspiration.', { sanity: 14, health: 8, resonance: 6, rep: 6, heat: -10 }, { costAhn: 12 })
+    ], I('Bạn chuyển khoản hoa hồng vào quỹ học bổng cho các Docent trẻ.', 'You channeled the royalties into a fellowship fund for young Docents.', { wealth: 6, rep: 4 }), { tags: ['career', 'ring', 'syndicate'] }),
+
+  M('m_career_pinky_apex_tribute', { jobs: ['Syndicate'], finger: 'Pinky', fingerRankAtLeast: 3 },
+    '[Cổ tức mật ước trình lên Sovereign] Các trạm giao dịch ngầm trên khắp 26 District gửi báo cáo lợi nhuận và phong bì mật lên tháp chuông của bạn.',
+    '[Shadow Pact Dividends for the Sovereign] Covert trading posts across all 26 Districts remit profit ledgers and sealed envelopes to your bell tower.', [
+      C('Thu cổ tức chợ đen và phí bảo mật', 'Collect the black-market dividends and secrecy fees', 'Tài khoản mật của Sovereign tăng vọt mà không để lại bất kỳ dấu vết nào.', 'The Sovereign’s secret accounts swelled without leaving a trace.', { wealth: 17, network: 6, rep: 4, merit: 6 }),
+      C('Chi 12 Ahn củng cố mạng lưới ẩn danh và chăm sóc y tế cao cấp', 'Spend 12 Ahn to reinforce covert safehouses and private medical care', 'Bạn nghỉ ngơi an toàn tuyệt đối giữa vòng bảo vệ của Thập Đao.', 'You rested in absolute security encircled by the Ten Blades.', { health: 10, sanity: 10, network: 8, heat: -16 }, { costAhn: 12 })
+    ], I('Bạn để quỹ mật tự xoay vòng cho các phi vụ tháng sau.', 'You let the covert fund roll over into next month’s operations.', { wealth: 6, network: 3 }), { tags: ['career', 'pinky', 'syndicate'] })
 ];

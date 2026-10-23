@@ -233,11 +233,13 @@ export const FACTION_EVENTS = [
   },
   {
     id: 'syn_ring_maestro_gallery',
-    age: [21, 52],
+    age: [28, 62],
     major: true,
     weight: 8.5,
     jobs: ['Syndicate'],
     finger: 'Ring',
+    need: { finger: 'Ring', fingerRank: 1 },
+    forbids: ['promo_ring_maestro_done'],
     vi: "[Bài thi Maestro] The Ring đưa một Fixer còn sống vào phòng triển lãm, trói họ lên khung gỗ. Các Docent đứng quanh chấm điểm. Một người nhắc bạn: \"Dưới điểm B, nghệ sĩ sẽ thành vật liệu của tác phẩm kế tiếp.\"",
     en: '[The Ring’s grading] The Maestro examination has come. Your material is a living Fixer, fixed to a frame. The Docents wait with their scorecards.\nA work below a B and its artist becomes the material for tonight’s concert.',
     choices: [
@@ -247,11 +249,12 @@ export const FACTION_EVENTS = [
         resultVi: "Bạn hoàn thành tác phẩm trên khung gỗ. Các Docent chấm điểm A và gọi bạn là Maestro. Khi khán phòng đã vắng, từ khung tranh vẫn còn tiếng thở.",
         resultEn: 'You worked for four hours. You tried not to hear the sounds from the frame. When you were done, the Docents stood and applauded. “A plus.” You are a Maestro. You did not sleep for a week.',
         setFinger: 'Ring',
-        setFingerRank: 3,
+        setFingerRank: 2,
+        flagsAdd: ['promo_ring_maestro_done'],
         recordsAdd: ['ring_maestro'],
-        effects: { sanity: -14, rep: +34, wealth: +32, resonance: +16 },
+        effects: { sanity: -14, rep: +28, wealth: +26, resonance: +16 },
         scarsAdd: ['Tác phẩm được điểm A cộng'],
-        meritAdd: 34
+        meritAdd: 24
       },
       {
         labelVi: 'Dùng da thịt của chính mình thay cho chất liệu',
@@ -259,7 +262,9 @@ export const FACTION_EVENTS = [
         resultVi: 'Các Docent im lặng một lúc lâu. Rồi họ cho bạn qua, và cởi trói người Fixer trên khung, vì "tác phẩm đã đủ". Bạn mất phần da trên cả cánh tay trái.',
         resultEn: 'The Docents were silent a long while. Then they passed you, and untied the Fixer on the frame, because “the work is complete.” You lost the skin of your whole left forearm.',
         setFinger: 'Ring',
-        setFingerRank: 1,
+        setFingerRank: 2,
+        flagsAdd: ['promo_ring_maestro_done'],
+        recordsAdd: ['ring_maestro'],
         effects: { health: -20, sanity: -10, rep: +22, wealth: +20, resonance: +12 },
         scarsAdd: ['Cánh tay không còn da'],
         meritAdd: 22
@@ -271,8 +276,10 @@ export const FACTION_EVENTS = [
         resultEn: 'Using stained prisms and optical refraction, you projected a vivid anatomical illusion without shedding blood. The Docents commended your avant-garde ingenuity.',
         setFinger: 'Ring',
         setFingerRank: 2,
-        effects: { sanity: +12, rep: +26, wealth: +25, resonance: +10 },
-        meritAdd: 26
+        flagsAdd: ['promo_ring_maestro_done'],
+        recordsAdd: ['ring_maestro'],
+        effects: { sanity: +12, rep: +24, wealth: +22, resonance: +10 },
+        meritAdd: 22
       }
     ]
   },
@@ -2268,10 +2275,11 @@ export const FACTION_EVENTS = [
       {
         labelVi: 'Bắn lao móc Singularity ghim chặt con quái vật biển sâu, rút mỡ cá voi quý hiếm',
         labelEn: 'Fire Singularity harpoons into the deep-sea leviathan, siphoning rare whale blubber',
+        startDungeon: 'dungeon_great_lake',
         resultVi: 'Máu xanh thẫm nhuộm đen mặt biển. Đội tàu của bạn kéo được xác con cá voi khổng lồ về bến cảng U Corp. Lượng mỡ cá voi biến thành hợp chất định hình không gian vô giá, đem lại cho bạn danh tiếng lẫy lừng.',
         resultEn: 'Azure ichor stained the churning sea. Your vessel towed the colossal leviathan back to U Corp docks. Its blubber, processed into priceless spatial tuning resin, earned you legendary renown.',
         meritAdd: 30,
-        effects: { health: -18, rep: +35, wealth: +90, resonance: +20 },
+        effects: { health: -10, rep: +35, wealth: +90, resonance: +20 },
         flagsAdd: ['ucorp_dive_done']
       },
       {
@@ -2675,6 +2683,432 @@ export const FACTION_EVENTS = [
         resultEn: 'A warm luminescent spark flooded your psyche. Your comprehension of the soul and latent E.G.O resonance deepened profoundly.',
         meritAdd: 24,
         effects: { sanity: +25, resonance: +25, rep: +15, health: +10 }
+      }
+    ]
+  },
+
+  // ==================================================================
+  // SYNDICATE APEX SOVEREIGNTY & BOSS ECONOMY EVENTS (BUG-35)
+  // ==================================================================
+  {
+    id: 'syn_thumb_apex_tribute_summit',
+    age: [28, 95],
+    major: true,
+    repeatable: true,
+    allowDistorted: true,
+    weight: 88,
+    need: { jobs: ['Syndicate'], finger: 'Thumb', fingerRank: 3 },
+    vi: '[Đại Hội Cống Nạp The Thumb · Quyền Bính Underboss] Từ chiếc ghế bọc nhung đỏ trên đỉnh Lầu Năm Góc Đêm Đỏ, bạn nhìn xuống hàng chục Capo và thủ lĩnh các băng đảng chư hầu đang quỳ gối dâng lên những chiếc rương sắt chứa đầy tiền bảo kê, thuế thuốc súng và khế ước đất đai của cả bốn khu phố.',
+    en: '[The Thumb Tribute Summit · Underboss Authority] From the velvet-draped throne atop the Red Night Pentagon, you look down upon dozens of kneeling Capos and vassal gang bosses presenting iron chests overflowing with protection tribute, gunpowder tariffs, and street deeds.',
+    choices: [
+      {
+        labelVi: 'Thu toàn bộ tiền cống nạp quý và siết chặt kỷ luật nộp tô của các băng chư hầu',
+        labelEn: 'Claim the full quarterly tribute and tighten vassal tax quotas',
+        resultVi: 'Những rương Ahn nặng trịch được chuyển thẳng vào hầm bạc riêng của Underboss. Không một Capo nào dám ngẩng đầu nhìn thẳng vào mắt bạn (+38 Ahn, +18 Rep, +20 Merit).',
+        resultEn: 'Chests of Ahn flowed straight into your private Underboss vault. Not a single Capo dared raise their gaze (+38 Ahn, +18 Rep, +20 Merit).',
+        meritAdd: 20,
+        effects: { wealth: +38, rep: +18, network: +10 }
+      },
+      {
+        labelVi: 'Chi 25 Ahn trang bị đạn áp suất cao cấp quân sự cho toàn bộ quân đoàn Capo dưới trướng',
+        labelEn: 'Spend 25 Ahn to outfit your entire Capo regiment with military high-pressure ammunition',
+        costAhn: 25,
+        resultVi: 'Tiếng lên đạn đồng loạt vang dội khắp đại sảnh. Sức mạnh hỏa lực của nhánh The Thumb dưới quyền bạn tăng vọt, biến mọi con hẻm thành pháo đài bất khả xâm phạm (+28 Rep, +18 Network, +15 HP, +25 Merit).',
+        resultEn: 'Synchronized chambering echoed across the grand hall. Your Thumb branch’s firepower surged, turning every alley into an impenetrable fortress (+28 Rep, +18 Network, +15 HP, +25 Merit).',
+        meritAdd: 25,
+        effects: { rep: +28, network: +18, health: +15, sanity: +10, heat: -10 }
+      },
+      {
+        labelVi: 'Chi 15 Ahn mở đại tiệc rượu vang Nest và ban thưởng đạn vàng cho các Sottocapo trung thành',
+        labelEn: 'Spend 15 Ahn on a Nest wine banquet and golden bullets for loyal Sottocapos',
+        costAhn: 15,
+        resultVi: 'Sự hào phóng đúng mực của một Underboss khiến toàn bộ thuộc hạ nguyện sống chết vì bạn. Mọi mầm mống bất mãn hay truy nã đều được dập tắt (+18 SP, +14 Rep, -18 Heat).',
+        resultEn: 'The measured generosity of an Underboss bound every officer to your banner in life and death (+18 SP, +14 Rep, -18 Heat).',
+        meritAdd: 16,
+        effects: { sanity: +18, rep: +14, network: +14, heat: -18 }
+      }
+    ]
+  },
+  {
+    id: 'syn_thumb_apex_wing_treaty',
+    age: [28, 95],
+    major: true,
+    repeatable: true,
+    allowDistorted: true,
+    weight: 82,
+    need: { jobs: ['Syndicate'], finger: 'Thumb', fingerRank: 3 },
+    vi: '[Mật Đàm Vũ Khí Với Wing · Phán Quyết Của Underboss] Một Giám đốc hậu cần của Wing lân cận đích thân tìm đến dinh thự của bạn trong đêm, đề nghị ký thỏa thuận ngầm: The Thumb sẽ bảo vệ các đoàn tàu chở hàng Singularity đi qua Backstreets để đổi lấy hoa hồng kếch xù hoặc công nghệ quân giới.',
+    en: '[Clandestine Wing Arms Treaty · Underboss Decree] A neighboring Wing logistics director visits your manor by night, proposing a secret pact: The Thumb will guard Singularity freight convoys through the Backstreets in exchange for massive commissions or military tech.',
+    choices: [
+      {
+        labelVi: 'Ký khế ước bảo kê tuyến vận chuyển ngầm, thu tiền mặt trực tiếp bằng Ahn',
+        labelEn: 'Sign the convoy protection pact and collect direct Ahn payouts',
+        resultVi: 'Mỗi chuyến tàu đi qua lãnh địa của bạn đều để lại những vali tiền mặt nguyên niêm phong. Kho bạc của bạn ngày càng đầy ắp (+42 Ahn, +15 Network, +22 Merit).',
+        resultEn: 'Every freight train crossing your turf left behind sealed briefcases of Ahn (+42 Ahn, +15 Network, +22 Merit).',
+        meritAdd: 22,
+        effects: { wealth: +42, network: +15, rep: +14 }
+      },
+      {
+        labelVi: 'Chi 22 Ahn mua đứt lô lõi năng lượng Singularity để nâng cấp kho vũ khí The Thumb',
+        labelEn: 'Spend 22 Ahn to acquire Singularity energy cores for The Thumb armory',
+        costAhn: 22,
+        resultVi: 'Những khẩu súng lưỡi lê của nhánh bạn được tích hợp lõi năng lượng mới. Uy thế của bạn vượt xa các Underboss cùng thời (+30 Rep, +14 Resonance, +28 Merit).',
+        resultEn: 'Your branch’s bayonet rifles were fitted with Singularity cores, elevating your prestige above rival Underbosses (+30 Rep, +14 Resonance, +28 Merit).',
+        meritAdd: 28,
+        effects: { rep: +30, resonance: +14, health: +12, network: +12 }
+      }
+    ]
+  },
+  {
+    id: 'syn_index_apex_loom_decree',
+    age: [26, 95],
+    major: true,
+    repeatable: true,
+    allowDistorted: true,
+    weight: 88,
+    need: { jobs: ['Syndicate'], finger: 'Index', fingerRank: 3 },
+    vi: '[Thánh Điện Khung Cửi · Ý Chỉ Của Weaver] Dưới căn hầm sâu nhất nơi hàng vạn sợi chỉ vàng rung lên theo chấn động của The City, các Proxy và Messenger đồng loạt quỳ xuống chờ bạn trao những cuộn Prescript vừa dệt xong. Quyền phân phối định mệnh và tài sản của cả vùng nằm trong tay bạn.',
+    en: '[Sanctum of the Loom · Will of the Weaver] In the deepest subterranean chamber where ten thousand golden threads hum with the City’s vibrations, Proxies and Messengers kneel awaiting the newly woven Prescripts from your hand.',
+    choices: [
+      {
+        labelVi: 'Ban hành Prescript thu nạp hiến lễ tài chính từ các thương hội ngầm trong ba District',
+        labelEn: 'Issue Prescripts levying financial offerings from underground merchant guilds across three Districts',
+        resultVi: 'Không một thương hội nào dám trái lời Chỉ thị. Những đoàn xe chở đầy vàng và Ahn lặng lẽ xếp hàng trước cửa thánh điện của bạn (+36 Ahn, +16 Rep, +14 Resonance, +22 Merit).',
+        resultEn: 'No guild dared defy the Prescript. Caravans laden with Ahn queued silently before your sanctum (+36 Ahn, +16 Rep, +14 Resonance, +22 Merit).',
+        meritAdd: 22,
+        effects: { wealth: +36, rep: +16, resonance: +14, network: +10 }
+      },
+      {
+        labelVi: 'Chi 25 Ahn trùng tu đại sảnh con lắc cộng hưởng và ban giáp lụa trắng mới cho các Proxy',
+        labelEn: 'Spend 25 Ahn to consecrate the resonance pendulums and robe your Proxies in new white silk armor',
+        costAhn: 25,
+        resultVi: 'Âm thanh của Khung Cửi vang ngân trong trẻo chưa từng thấy. Tâm trí bạn hòa làm một với dòng chảy nhân quả của thành phố (+26 Rep, +18 SP, +18 Resonance, +26 Merit).',
+        resultEn: 'The Loom’s resonance rang with unprecedented clarity. Your mind harmonized with the causal tide of the City (+26 Rep, +18 SP, +18 Resonance, +26 Merit).',
+        meritAdd: 26,
+        effects: { rep: +26, sanity: +18, resonance: +18, network: +14 }
+      },
+      {
+        labelVi: 'Chi 16 Ahn mở kho lương thực cứu tế cư dân Backstreets theo lời dệt của Khung Cửi',
+        labelEn: 'Spend 16 Ahn to open granaries for Backstreets residents as woven by the Loom',
+        costAhn: 16,
+        resultVi: 'Cả khu phố tôn sùng The Index như vị cứu tinh giữa đêm đen. Mọi cuộc điều tra của Hana nhắm vào nhánh của bạn đều bị người dân che giấu (+20 SP, +16 Network, -20 Heat).',
+        resultEn: 'The streets revered The Index as saviors in the dark. Citizens shielded your branch from every Hana inquiry (+20 SP, +16 Network, -20 Heat).',
+        meritAdd: 18,
+        effects: { sanity: +20, network: +16, rep: +12, heat: -20 }
+      }
+    ]
+  },
+  {
+    id: 'syn_index_apex_fate_arbitration',
+    age: [26, 95],
+    major: true,
+    repeatable: true,
+    allowDistorted: true,
+    weight: 82,
+    need: { jobs: ['Syndicate'], finger: 'Index', fingerRank: 3 },
+    vi: '[Phán Quyết Dòng Chảy · Quyền Năng Weaver] Hai tập đoàn buôn vũ khí lớn đang đứng bên bờ vực hủy diệt lẫn nhau. Cả hai bên đều bí mật cử sứ giả mang rương báu vật đến cầu xin một lời giải mã từ Khung Cửi của bạn để biết ai sẽ là kẻ sống sót.',
+    en: '[Arbitration of the Causal Tide · Weaver Sovereignty] Two rival arms cartels stand on the brink of mutual annihilation. Both secretly send envoys bearing treasure chests to beg a reading from your Loom.',
+    choices: [
+      {
+        labelVi: 'Thu phí giải mã định mệnh từ cả hai phía và trao đúng mảnh Prescript phần thắng',
+        labelEn: 'Collect divination tribute from both sides and deliver the true Prescript of victory',
+        resultVi: 'Lời tiên tri của Khung Cửi ứng nghiệm tuyệt đối chỉ sau một đêm. Bạn thu về khoản tiền khổng lồ và củng cố mạng lưới quyền lực ngầm (+44 Ahn, +18 Network, +20 Merit).',
+        resultEn: 'The Loom’s prophecy came to pass overnight. You reaped a massive fortune and expanded your shadow network (+44 Ahn, +18 Network, +20 Merit).',
+        meritAdd: 20,
+        effects: { wealth: +44, network: +18, rep: +14 }
+      },
+      {
+        labelVi: 'Đích thân dẫn các Messenger xóa sổ cả hai phe để thu hồi tuyến đường buôn về tay The Index',
+        labelEn: 'Lead your Messengers to purge both cartels and claim their trade routes for The Index',
+        resultVi: 'Những lưỡi kiếm trắng lướt qua trong đêm. Toàn bộ kho hàng và tuyến đường giao thương thuộc về The Index (+28 Ahn, +28 Rep, +16 Resonance, +25 Merit, -8 HP).',
+        resultEn: 'White blades flashed through the night. Every warehouse and trade route fell under The Index (+28 Ahn, +28 Rep, +16 Resonance, +25 Merit, -8 HP).',
+        meritAdd: 25,
+        effects: { wealth: +28, rep: +28, resonance: +16, health: -8 }
+      }
+    ]
+  },
+  {
+    id: 'syn_middle_apex_vengeance_court',
+    age: [26, 95],
+    major: true,
+    repeatable: true,
+    allowDistorted: true,
+    weight: 88,
+    need: { jobs: ['Syndicate'], finger: 'Middle', fingerRank: 3 },
+    vi: '[Đại Sảnh Book of Vengeance · Phán Quyết Của Great Sibling] Bạn ngồi trên chiếc ghế bành chạm khắc xích vàng, trước mặt là cuốn Book of Vengeance dày cộm. Hàng loạt ông chủ sòng bạc, chủ xưởng và hội trưởng thương đoàn đang run rẩy đặt những bao tải Ahn lên bàn để xin xóa tên khỏi danh sách trả thù của đại gia đình.',
+    en: '[Grand Hall of the Book of Vengeance · Great Sibling Judgment] Seated upon a throne carved with golden chains, the heavy Book of Vengeance open before you, casino owners and guild masters tremble as they pile sacks of Ahn to beg erasure from the family’s grudge ledger.',
+    choices: [
+      {
+        labelVi: 'Chấp thuận tiền bồi thường danh dự gia tộc và thu tô bảo hộ gấp đôi',
+        labelEn: 'Accept the blood-indemnity fortune and double their protection tribute',
+        resultVi: 'Bạn gạch một đường mực tím xác nhận món nợ đã trả bằng vàng. Kho quỹ của đại gia đình ngập tràn Ahn (+40 Ahn, +20 Rep, +22 Merit).',
+        resultEn: 'A stroke of violet ink marked the debt settled in gold. The family treasury overflowed with Ahn (+40 Ahn, +20 Rep, +22 Merit).',
+        meritAdd: 22,
+        effects: { wealth: +40, rep: +20, network: +12 }
+      },
+      {
+        labelVi: 'Chi 25 Ahn mở Đại Tiệc Huynh Đệ suốt ba ngày đêm và rèn xiềng xích vàng mới cho các Big Sibling',
+        labelEn: 'Spend 25 Ahn on a three-day Family Feast and forge golden chains for your Big Siblings',
+        costAhn: 25,
+        resultVi: 'Tiếng cụng ly và tiếng cười vang vọng khắp cả quận. Tình nghĩa huynh đệ gắn kết như sắt thép, hình xăm cường hóa trên cơ thể bạn rực sáng (+22 HP, +20 SP, +25 Rep, +18 Network, +25 Merit).',
+        resultEn: 'Toasts and laughter shook the District. Family bonds hardened like steel as your enhancement tattoos glowed (+22 HP, +20 SP, +25 Rep, +18 Network, +25 Merit).',
+        meritAdd: 25,
+        effects: { health: +22, sanity: +20, rep: +25, network: +18 }
+      },
+      {
+        labelVi: 'Hất đổ đống tiền: Đích thân dẫn đại quân nghiền nát kẻ dám xúc phạm Little Sibling của bạn',
+        labelEn: 'Kick aside the money: Personally lead the family to crush those who insulted your Little Sibling',
+        resultVi: 'Bạn tịch thu toàn bộ gia sản của kẻ thù sau khi san phẳng trụ sở của chúng. Cả The City thêm một lần khiếp sợ câu nói: "The Middle không bao giờ quên" (+30 Ahn, +32 Rep, +26 Merit, -10 HP).',
+        resultEn: 'You seized their entire estate after flattening their headquarters. The City remembered once more: The Middle never forgets (+30 Ahn, +32 Rep, +26 Merit, -10 HP).',
+        meritAdd: 26,
+        effects: { wealth: +30, rep: +32, health: -10, heat: +10 }
+      }
+    ]
+  },
+  {
+    id: 'syn_middle_apex_turf_crusade',
+    age: [26, 95],
+    major: true,
+    repeatable: true,
+    allowDistorted: true,
+    weight: 82,
+    need: { jobs: ['Syndicate'], finger: 'Middle', fingerRank: 3 },
+    vi: '[Đại Viễn Chinh Gia Tộc · Uy Quyền Great Sibling] Các bến cảng và khu chợ đêm mới mở ở rìa District đang tìm kiếm một thế lực bảo hộ tối cao. Với tư cách Great Sibling, chỉ một cái phất tay của bạn cũng quyết định dòng chảy hàng triệu Ahn mỗi mùa.',
+    en: '[Grand Family Turf Crusade · Great Sibling Authority] Newly opened docks and night markets along the District border seek a supreme protector. As Great Sibling, a single wave of your hand directs millions of Ahn each season.',
+    choices: [
+      {
+        labelVi: 'Thu tô bảo kê toàn bộ cảng hàng và phố đêm, chia cổ phần cho các nhánh gia tộc',
+        labelEn: 'Collect protection tribute across all docks and night markets',
+        resultVi: 'Cờ hiệu của The Middle tung bay trên mọi nóc kho cảng. Nguồn thu ổn định chảy về túi bạn đều đặn mỗi tuần (+38 Ahn, +16 Rep, +14 Network, +20 Merit).',
+        resultEn: 'The Middle’s banner flew atop every dock warehouse, funneling steady tribute into your coffers (+38 Ahn, +16 Rep, +14 Network, +20 Merit).',
+        meritAdd: 20,
+        effects: { wealth: +38, rep: +16, network: +14 }
+      },
+      {
+        labelVi: 'Chi 20 Ahn khắc hình xăm cường hóa thế hệ mới và lập quỹ thưởng cho các Little Sibling',
+        labelEn: 'Spend 20 Ahn on next-generation enhancement tattoos and a reward fund for Little Siblings',
+        costAhn: 20,
+        resultVi: 'Mỗi thành viên trong đại gia đình đều mạnh mẽ và trung thành tuyệt đối. Uy danh Great Sibling của bạn vang dội khắp Năm Ngón Tay (+24 Rep, +16 SP, +14 Resonance, +24 Merit).',
+        resultEn: 'Every family member grew stronger and fiercely loyal. Your renown as Great Sibling echoed across the Five Fingers (+24 Rep, +16 SP, +14 Resonance, +24 Merit).',
+        meritAdd: 24,
+        effects: { rep: +24, sanity: +16, resonance: +14, health: +12 }
+      }
+    ]
+  },
+  {
+    id: 'syn_ring_apex_royal_auction',
+    age: [26, 95],
+    major: true,
+    repeatable: true,
+    allowDistorted: true,
+    weight: 88,
+    need: { jobs: ['Syndicate'], finger: 'Ring', fingerRank: 3 },
+    vi: '[Đấu Giá Tuyệt Tác Đêm Đỏ · Đặc Quyền Grand Curator] Dưới ánh đèn chùm pha lê của Đại Bảo Tàng Năm Hành Lang, các tỷ phú từ Nest và những nhà sưu tầm bí ẩn đeo mặt nạ vàng đang tranh nhau trả giá cho những tác phẩm được đóng dấu phê duyệt bởi chính bạn — Grand Curator tối cao của The Ring.',
+    en: '[Crimson Night Masterpiece Auction · Grand Curator Privilege] Beneath crystal chandeliers in the Five Corridors Grand Museum, masked Nest billionaires bid fiercely for artworks bearing your personal seal as Supreme Grand Curator of The Ring.',
+    choices: [
+      {
+        labelVi: 'Chốt giá phiên đấu giá đặc biệt, thu về khoản hoa hồng khổng lồ cho Grand Curator',
+        labelEn: 'Gavel the special auction lots and claim the Grand Curator’s massive commission',
+        resultVi: 'Tiếng búa gỗ gõ xuống bàn đá cẩm thạch. Những tấm séc vàng từ Nest được dâng lên tận tay bạn (+48 Ahn, +22 Rep, +16 Network, +24 Merit).',
+        resultEn: 'The gavel struck marble. Golden checks from the Nest were delivered straight to your hands (+48 Ahn, +22 Rep, +16 Network, +24 Merit).',
+        meritAdd: 24,
+        effects: { wealth: +48, rep: +22, network: +16 }
+      },
+      {
+        labelVi: 'Chi 25 Ahn tài trợ Năm Trường Phái dựng đại triển lãm điêu khắc ánh sáng chấn động The City',
+        labelEn: 'Spend 25 Ahn to patronize all Five Corridors in a monumental light-sculpture exhibition',
+        costAhn: 25,
+        resultVi: 'Buổi triển lãm trở thành huyền thoại nghệ thuật của thập kỷ. Tâm hồn bạn thăng hoa trong sự ngưỡng mộ tuyệt đối của toàn bộ Maestro và Docent (+30 Rep, +20 SP, +20 Resonance, +28 Merit).',
+        resultEn: 'The exhibition became the artistic legend of the decade. Your soul soared amidst the reverence of every Maestro and Docent (+30 Rep, +20 SP, +20 Resonance, +28 Merit).',
+        meritAdd: 28,
+        effects: { rep: +30, sanity: +20, resonance: +20, network: +16 }
+      },
+      {
+        labelVi: 'Chi 18 Ahn thu mua các cổ vật kỳ dị từ The Ruins về phòng trưng bày riêng của bạn',
+        labelEn: 'Spend 18 Ahn to acquire anomalous Ruins artifacts for your private gallery',
+        costAhn: 18,
+        resultVi: 'Những cổ vật phát ra âm hưởng kỳ bí giúp bạn thấu hiểu sâu hơn về cái đẹp và Ánh Sáng (+18 SP, +18 Resonance, +14 Network, -12 Heat).',
+        resultEn: 'The mysterious relics deepened your insight into beauty and the Light (+18 SP, +18 Resonance, +14 Network, -12 Heat).',
+        meritAdd: 18,
+        effects: { sanity: +18, resonance: +18, network: +14, heat: -12 }
+      }
+    ]
+  },
+  {
+    id: 'syn_ring_apex_critic_tribunal',
+    age: [26, 95],
+    major: true,
+    repeatable: true,
+    allowDistorted: true,
+    weight: 82,
+    need: { jobs: ['Syndicate'], finger: 'Ring', fingerRank: 3 },
+    vi: '[Hội Đồng Thẩm Định Tối Cao · Ngai Vàng Grand Curator] Hàng loạt phòng trưng bày tại các vùng Nest và Backstreets gửi đơn xin chứng nhận "Bảo Tàng Không Xâm Phạm" của The Ring. Chỉ cần chữ ký của bạn, họ sẵn sàng dâng nộp cả gia tài.',
+    en: '[Supreme Appraisal Tribunal · Throne of the Grand Curator] Galleries across Nests and Backstreets petition for The Ring’s Inviolable Sanctuary seal. For your signature alone, they offer fortunes.',
+    choices: [
+      {
+        labelVi: 'Cấp ấn bảo chứng cho các phòng tranh thượng lưu để thu phí thẩm định hàng năm',
+        labelEn: 'Grant sanctuary seals to elite galleries in exchange for annual appraisal fees',
+        resultVi: 'Nguồn tiền tài trợ nghệ thuật chảy vào két sắt của bạn không ngừng nghỉ (+38 Ahn, +18 Rep, +15 Network, +20 Merit).',
+        resultEn: 'Art patronage royalties flowed ceaselessly into your vault (+38 Ahn, +18 Rep, +15 Network, +20 Merit).',
+        meritAdd: 20,
+        effects: { wealth: +38, rep: +18, network: +15 }
+      },
+      {
+        labelVi: 'Đích thân chấm điểm và nâng đỡ một thế hệ Maestro mới cho The Ring',
+        labelEn: 'Personally judge and elevate a new generation of Maestros for The Ring',
+        resultVi: 'Các tân Maestro tuyên thệ trung thành tuyệt đối với học thuyết thẩm mỹ của bạn (+26 Rep, +18 Network, +16 SP, +24 Merit).',
+        resultEn: 'The newly anointed Maestros swore undying fealty to your aesthetic doctrine (+26 Rep, +18 Network, +16 SP, +24 Merit).',
+        meritAdd: 24,
+        effects: { rep: +26, network: +18, sanity: +16, resonance: +10 }
+      }
+    ]
+  },
+  {
+    id: 'syn_pinky_apex_shadow_bourse',
+    age: [26, 95],
+    major: true,
+    repeatable: true,
+    allowDistorted: true,
+    weight: 88,
+    need: { jobs: ['Syndicate'], finger: 'Pinky', fingerRank: 3 },
+    vi: '[Sàn Giao Dịch Mật Ước · Quyền Bính Sovereign] Trên đỉnh tháp chuông cổ nhìn xuống toàn cảnh sương mù The City, các mật sứ của The Pinky đặt trước mặt bạn những chiếc hộp gỗ mun chứa cổ tức chợ đen, tiền chuộc bí mật từ các quan chức Wing và danh sách những kẻ nợ lời thề ngoắc tay.',
+    en: '[The Shadow Pact Bourse · Sovereign Authority] Atop the ancient bell tower overlooking the mist-shrouded City, Pinky envoys lay ebony boxes before you containing black-market dividends, hush-money tributes from Wing officials, and pinky-swear ledgers.',
+    choices: [
+      {
+        labelVi: 'Thu toàn bộ cổ tức chợ đen và tiền cống nạp giữ bí mật từ các tài phiệt Nest',
+        labelEn: 'Collect all black-market dividends and secrecy tributes from Nest oligarchs',
+        resultVi: 'Bạn nắm giữ sinh mạng chính trị của hàng chục nhân vật lớn. Vàng bạc và Ahn được chuyển thẳng vào tài khoản vô danh của Sovereign (+44 Ahn, +20 Network, +18 Rep, +24 Merit).',
+        resultEn: 'Holding the political lifelines of dozens of elites, vast sums of Ahn flowed into your untraceable Sovereign accounts (+44 Ahn, +20 Network, +18 Rep, +24 Merit).',
+        meritAdd: 24,
+        effects: { wealth: +44, network: +20, rep: +18 }
+      },
+      {
+        labelVi: 'Chi 25 Ahn nuôi dưỡng mạng lưới sát thủ Thập Đao và xóa sạch mọi hồ sơ truy nã tại Hana',
+        labelEn: 'Spend 25 Ahn to fund the Ten Blades assassin network and erase all Hana wanted files',
+        costAhn: 25,
+        resultVi: 'Mọi dấu vết của bạn và các huynh đệ biến mất hoàn toàn khỏi sổ sách Hiệp hội. Tên tuổi Sovereign trở thành bóng ma tối thượng của thế giới ngầm (-35 Heat, +26 Rep, +22 Network, +26 Merit).',
+        resultEn: 'Every trace of you and your sworn brethren vanished from Association records (-35 Heat, +26 Rep, +22 Network, +26 Merit).',
+        meritAdd: 26,
+        effects: { heat: -35, rep: +26, network: +22, sanity: +14 }
+      },
+      {
+        labelVi: 'Chi 16 Ahn lập quỹ tín thác ngầm và trạm y tế bí mật cho các huynh đệ The Pinky',
+        labelEn: 'Spend 16 Ahn to establish covert safe houses and medical stations for Pinky brethren',
+        costAhn: 16,
+        resultVi: 'Bất cứ nơi nào trong 26 District cũng có trạm nghỉ ngơi và bác sĩ riêng chờ đón bạn (+20 HP, +18 SP, +16 Network, -15 Heat).',
+        resultEn: 'Across all 26 Districts, hidden sanctuaries and private physicians await your call (+20 HP, +18 SP, +16 Network, -15 Heat).',
+        meritAdd: 18,
+        effects: { health: +20, sanity: +18, network: +16, heat: -15 }
+      }
+    ]
+  },
+  {
+    id: 'syn_pinky_apex_ten_blades_conclave',
+    age: [26, 95],
+    major: true,
+    repeatable: true,
+    allowDistorted: true,
+    weight: 82,
+    need: { jobs: ['Syndicate'], finger: 'Pinky', fingerRank: 3 },
+    vi: '[Mật Hội Thập Đao · Mệnh Lệnh Sovereign] Hai thế lực lớn tại biên giới District đang chuẩn bị giao chiến và cả hai đều gửi mật thư kèm tiền đặt cọc khổng lồ để cầu xin các Ngôi Sao của The Pinky không can dự.',
+    en: '[Conclave of the Ten Blades · Sovereign Command] Two major powers along the District border prepare for war, both sending envoys with massive deposits begging the Stars of The Pinky to remain neutral.',
+    choices: [
+      {
+        labelVi: 'Nhận khoản tiền cống nạp trung lập và bán thông tin tình báo cho kẻ trả giá cao hơn',
+        labelEn: 'Accept the neutrality tribute and auction intelligence to the highest bidder',
+        resultVi: 'Chỉ bằng vài lời nhắn qua ngón tay út, bạn thu về khoản lợi nhuận khổng lồ mà không tốn một giọt máu (+42 Ahn, +18 Rep, +16 Network, +22 Merit).',
+        resultEn: 'With a few whispered messages, you reaped a fortune without shedding a drop of blood (+42 Ahn, +18 Rep, +16 Network, +22 Merit).',
+        meritAdd: 22,
+        effects: { wealth: +42, rep: +18, network: +16 }
+      },
+      {
+        labelVi: 'Phát lệnh triệu tập các Ngôi Sao của The Pinky thâu tóm toàn bộ tuyến thương mại biên giới',
+        labelEn: 'Summon the Stars of The Pinky to seize the entire border trade corridor',
+        resultVi: 'Khi bóng tối buông xuống, cả tuyến biên giới đã đổi chủ. Uy quyền Sovereign của bạn khiến cả các Fixer cấp cao cũng phải kiêng dè (+30 Ahn, +30 Rep, +16 Resonance, +28 Merit, -8 HP).',
+        resultEn: 'By nightfall, the entire border corridor had changed hands. Even high-grade Fixers tread carefully around your Sovereign domain (+30 Ahn, +30 Rep, +16 Resonance, +28 Merit, -8 HP).',
+        meritAdd: 28,
+        effects: { wealth: +30, rep: +30, resonance: +16, health: -8 }
+      }
+    ]
+  },
+  {
+    id: 'syn_boss_underground_casino_tribute',
+    age: [24, 95],
+    major: true,
+    repeatable: true,
+    allowDistorted: true,
+    weight: 78,
+    need: { jobs: ['Syndicate'], fingerRankAtLeast: 2 },
+    vi: '[Sòng Bạc Ngầm & Thuế Bảo Kê Liên Quận · Thủ Lĩnh Syndicate] Các quản lý sòng bạc ngầm, chợ đêm và kho hàng lậu trên khắp địa bàn đồng loạt mang sổ sách cuối mùa đến trình diện bạn. Với địa vị đứng đầu một phương của Ngón Tay, bạn toàn quyền quyết định cách thu và tiêu số tiền khổng lồ này.',
+    en: '[Underground Casino & Turf Tribute · Syndicate Boss] Managers of underground casinos, night markets, and smuggling depots across your territory present their seasonal ledgers. As a high-ranking Finger leader, the flow of Ahn is yours to command.',
+    choices: [
+      {
+        labelVi: 'Thu toàn bộ lợi nhuận ròng và tiền bảo kê mùa này vào két sắt cá nhân',
+        labelEn: 'Sweep all net profits and seasonal protection tribute into your personal vault',
+        resultVi: 'Những vali tiền mặt được xếp kín căn phòng làm việc của bạn. Quyền lực ở thế giới ngầm luôn đi kèm với khối tài sản kếch xù (+36 Ahn, +15 Rep, +18 Merit).',
+        resultEn: 'Briefcases of Ahn lined your office walls. Underworld authority brings immense wealth (+36 Ahn, +15 Rep, +18 Merit).',
+        meritAdd: 18,
+        effects: { wealth: +36, rep: +15, network: +8 }
+      },
+      {
+        labelVi: 'Chi 20 Ahn đầu tư mở rộng thêm hai sòng bạc và bến hàng ngầm ở khu phố kế bên',
+        labelEn: 'Spend 20 Ahn to expand two new casinos and smuggling docks in the adjacent ward',
+        costAhn: 20,
+        outcomes: [
+          {
+            w: 75,
+            meritAdd: 24,
+            effects: { wealth: +48, rep: +22, network: +18 },
+            resultVi: 'Thương vụ mở rộng địa bàn thành công vang dội! Chỉ sau một quý, tiền lãi thu về đã gấp đôi số vốn bỏ ra (+28 Ahn ròng, +22 Rep, +18 Network, +24 Merit).',
+            resultEn: 'The turf expansion succeeded brilliantly! Within a single quarter, returns more than doubled your outlay (+28 net Ahn, +22 Rep, +18 Network, +24 Merit).'
+          },
+          {
+            w: 25,
+            meritAdd: 16,
+            effects: { wealth: +26, rep: +14, heat: +10 },
+            resultVi: 'Dù có chút va chạm với băng nhóm địa phương, đàn em của bạn vẫn áp đảo hoàn toàn và mang về khoản lời đáng kể (+6 Ahn ròng, +14 Rep, +16 Merit).',
+            resultEn: 'Despite brief friction with local crews, your enforcers secured the turf and brought back solid profits (+6 net Ahn, +14 Rep, +16 Merit).'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'syn_boss_lavish_syndicate_extravaganza',
+    age: [24, 95],
+    major: true,
+    repeatable: true,
+    allowDistorted: true,
+    weight: 76,
+    need: { jobs: ['Syndicate'], fingerRankAtLeast: 2 },
+    vi: '[Đặc Quyền Thủ Lĩnh Ngón · Tiêu Tiền Như Nước] Khi đã đứng trên đỉnh cao của Syndicate, tiền bạc chỉ là công cụ để củng cố sinh mạng, danh tiếng và sự bất khả xâm phạm của bạn giữa The City.',
+    en: '[Syndicate Boss Extravaganza · Spending Power] At the apex of the Syndicate, Ahn is merely an instrument to fortify your vitality, prestige, and untouchable standing in The City.',
+    choices: [
+      {
+        labelVi: 'Chi 25 Ahn thuê trọn gói khoang hồi phục sinh học K Corp VIP và biệt thự nghỉ dưỡng kín',
+        labelEn: 'Spend 25 Ahn on a private K Corp bio-regeneration pod and secluded luxury retreat',
+        costAhn: 25,
+        resultVi: 'Các vết thương cũ lành hẳn, tinh thần sảng khoái tuyệt đối sau những ngày nghỉ dưỡng xa hoa được đội cận vệ tinh nhuệ canh gác 24/24 (+32 HP, +28 SP, -15 Heat).',
+        resultEn: 'Old wounds vanished and your mind cleared completely after a lavish retreat guarded around the clock (+32 HP, +28 SP, -15 Heat).',
+        meritAdd: 15,
+        effects: { health: +32, sanity: +28, heat: -15, rep: +10 }
+      },
+      {
+        labelVi: 'Chi 20 Ahn mua chuộc các thanh tra Hiệp hội và quan chức Wing để xóa sạch án tích',
+        labelEn: 'Spend 20 Ahn to bribe Association inspectors and Wing officials to expunge wanted records',
+        costAhn: 20,
+        resultVi: 'Những phong bì dày cộm phát huy tác dụng ngay lập tức. Mọi hồ sơ truy nã nhắm vào bạn bị xếp vào kho lưu trữ mật (-35 Heat, +20 Network, +15 Rep).',
+        resultEn: 'Thick envelopes worked wonders. Every bounty file bearing your name was buried in classified archives (-35 Heat, +20 Network, +15 Rep).',
+        meritAdd: 18,
+        effects: { heat: -35, network: +20, rep: +15, sanity: +10 }
+      },
+      {
+        labelVi: 'Không tiêu tiền: Triệu tập các đội trưởng dưới quyền nộp quỹ dự phòng khẩn cấp',
+        labelEn: 'Save your funds: Order subordinate captains to contribute to the emergency war chest',
+        resultVi: 'Các đội trưởng lập tức gom đủ số tiền quỹ dâng lên bàn làm việc của bạn (+28 Ahn, +12 Rep, +15 Merit).',
+        resultEn: 'Your captains promptly delivered the war chest contribution to your desk (+28 Ahn, +12 Rep, +15 Merit).',
+        meritAdd: 15,
+        effects: { wealth: +28, rep: +12 }
       }
     ]
   }

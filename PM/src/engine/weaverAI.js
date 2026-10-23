@@ -341,7 +341,7 @@ export function isEventEligible(event, char, { scripted = false } = {}) {
   }
   if (event.id === 'ad_career_crossroad_18' && (char.age < 18 || char.job !== 'Child' || char.regionId === 'OUTSKIRTS')) return false;
   if (event.id === 'ad_outskirts_crossroad_18' && (char.age < 18 || char.job !== 'Child')) return false;
-  if (event.id === 'ego_carmen_crossroad' && !(char.age >= 18 && (char.stats.sanity <= 5 || char.resonance >= 90))) return false;
+  if (event.id === 'ego_carmen_crossroad' && !(char.age >= 18 && (char.stats.sanity <= 15 || (char.resonance || 0) >= 50))) return false;
   if (event.id === 'csq_claw_taboo_visitation' && char.taboo < 3) return false;
   const milestones = ['ad_career_crossroad_18', 'ad_outskirts_crossroad_18', 'ego_carmen_crossroad', 'ego_second_efflorescence_trial', 'hana_color_ascension_trial', 'csq_claw_taboo_visitation'];
   return scripted || !milestones.includes(event.id);
@@ -379,6 +379,16 @@ export function scoreEventUtility(event, char, weaver) {
     loreScore += 9 * w.lore;
     reasonsVi.push('Chuyện của nghề bạn đang làm');
     reasonsEn.push(`Advances ${char.job} career arc`);
+  }
+  if ((char.job === 'Syndicate' || (char.flags?.includes('Distorted') && char.finger)) && (char.fingerRank || 0) >= 2 &&
+      (event.need?.fingerRank === 3 || (event.need?.fingerRankAtLeast || 0) >= 2)) {
+    loreScore += 28 * w.lore;
+    reasonsVi.push('Quyền bính và cống nạp của Thủ lĩnh Ngón Tay');
+    reasonsEn.push('Syndicate Apex leadership & tribute');
+  }
+  if ((char.resonance || 0) >= 25 && !char.flags?.includes('EGOAwakened') && !char.flags?.includes('Distorted') &&
+      Array.isArray(event.choices) && event.choices.some((c) => (c?.effects?.resonance || 0) > 0 || (c?.outcomes || []).some((o) => (o?.effects?.resonance || 0) > 0))) {
+    loreScore += 10 * w.lore;
   }
 
   const eventText = `${event.vi || ''} ${event.en || ''}`;
@@ -501,6 +511,65 @@ export function selectEventWithWeaverAI({
         }
       };
     }
+  }
+
+  // Syndicate initiate choosing Finger allegiance
+  const chooseFingerEv = allPools.find(e => e.id === 'syn_choose_finger_allegiance');
+  if (
+    chooseFingerEv &&
+    char.job === 'Syndicate' &&
+    !char.finger &&
+    !char.seenEvents.includes('syn_choose_finger_allegiance')
+  ) {
+    const logEntry = {
+      age: char.age,
+      phase: 'CLIMAX',
+      selectedId: chooseFingerEv.id,
+      utility: 980,
+      reasonVi: 'Gia nhập Syndicate: Tuyên thệ trung thành với một trong Năm Ngón Tay (Five Fingers)',
+      reasonEn: 'Joined Syndicate: Swear allegiance to one of the Five Fingers',
+      candidates: [{ eventId: chooseFingerEv.id, totalUtility: 980 }]
+    };
+    return {
+      event: chooseFingerEv,
+      weaver: {
+        ...updatedWeaver,
+        decisionLog: [logEntry, ...updatedWeaver.decisionLog].slice(0, 18)
+      }
+    };
+  }
+
+  const carmenEv = allPools.find(e => e.id === 'ego_carmen_crossroad');
+  const curSanity = char.stats?.sanity ?? char.sanity ?? 50;
+  const scarsCount = activeScarCount(char);
+  const meetsCarmenPrereq = char.age >= 18 &&
+    ((char.resonance || 0) >= 70 ||
+      ((char.resonance || 0) >= 58 && ((scarsCount >= 1 && curSanity <= 38) || (scarsCount >= 2 && curSanity <= 45))) ||
+      (curSanity <= 12 && rng() < 0.35));
+
+  if (
+    carmenEv &&
+    meetsCarmenPrereq &&
+    !char.flags.includes('EGOAwakened') &&
+    !char.flags.includes('Distorted') &&
+    !char.seenEvents.includes('ego_carmen_crossroad')
+  ) {
+    const logEntry = {
+      age: char.age,
+      phase: 'CLIMAX',
+      selectedId: carmenEv.id,
+      utility: 950,
+      reasonVi: `Tâm trí còn ${curSanity}, Resonance ${char.resonance}%: Carmen bắt đầu nói`,
+      reasonEn: `Sanity at ${curSanity}, Resonance ${char.resonance}%: Carmen starts to speak`,
+      candidates: [{ eventId: carmenEv.id, totalUtility: 950 }]
+    };
+    return {
+      event: carmenEv,
+      weaver: {
+        ...updatedWeaver,
+        decisionLog: [logEntry, ...updatedWeaver.decisionLog].slice(0, 18)
+      }
+    };
   }
 
   // Prioritize sequential Fixer Grade Promotion exams (Multi-track Association trials)
@@ -641,63 +710,6 @@ export function selectEventWithWeaverAI({
         }
       }
     }
-  }
-
-  // Syndicate initiate choosing Finger allegiance
-  const chooseFingerEv = allPools.find(e => e.id === 'syn_choose_finger_allegiance');
-  if (
-    chooseFingerEv &&
-    char.job === 'Syndicate' &&
-    !char.finger &&
-    !char.seenEvents.includes('syn_choose_finger_allegiance')
-  ) {
-    const logEntry = {
-      age: char.age,
-      phase: 'CLIMAX',
-      selectedId: chooseFingerEv.id,
-      utility: 980,
-      reasonVi: 'Gia nhập Syndicate: Tuyên thệ trung thành với một trong Năm Ngón Tay (Five Fingers)',
-      reasonEn: 'Joined Syndicate: Swear allegiance to one of the Five Fingers',
-      candidates: [{ eventId: chooseFingerEv.id, totalUtility: 980 }]
-    };
-    return {
-      event: chooseFingerEv,
-      weaver: {
-        ...updatedWeaver,
-        decisionLog: [logEntry, ...updatedWeaver.decisionLog].slice(0, 18)
-      }
-    };
-  }
-
-  const carmenEv = allPools.find(e => e.id === 'ego_carmen_crossroad');
-  const meetsCarmenPrereq = char.age >= 18 &&
-    (((char.resonance || 0) >= 95 && activeScarCount(char) >= 3) ||
-      (char.sanity <= 5 && rng() < 0.12) ||
-      ((char.resonance || 0) >= 90 && rng() < 0.15));
-
-  if (
-    carmenEv &&
-    meetsCarmenPrereq &&
-    !char.flags.includes('EGOAwakened') &&
-    !char.flags.includes('Distorted') &&
-    !char.seenEvents.includes('ego_carmen_crossroad')
-  ) {
-    const logEntry = {
-      age: char.age,
-      phase: 'CLIMAX',
-      selectedId: carmenEv.id,
-      utility: 950,
-      reasonVi: `Tâm trí còn ${char.sanity}, Resonance ${char.resonance}%: Carmen bắt đầu nói`,
-      reasonEn: `Sanity at ${char.sanity}, Resonance ${char.resonance}%: Carmen starts to speak`,
-      candidates: [{ eventId: carmenEv.id, totalUtility: 950 }]
-    };
-    return {
-      event: carmenEv,
-      weaver: {
-        ...updatedWeaver,
-        decisionLog: [logEntry, ...updatedWeaver.decisionLog].slice(0, 18)
-      }
-    };
   }
 
   // Hana Color Fixer Supreme Trial (Star of the City Calamity)

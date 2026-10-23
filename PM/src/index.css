@@ -1257,7 +1257,7 @@ p {
 .kv {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   gap: 12px;
   padding: 5px 0;
   border-bottom: 1px solid var(--rule);
@@ -1271,9 +1271,57 @@ p {
   font-weight: 600;
   color: var(--text);
   text-align: right;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+  line-height: 1.35;
+}
+.kv.kv-stack {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+  padding: 7px 0;
+}
+.kv-row-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+}
+.kv-row-top > span:first-child {
+  color: var(--muted);
+  flex: none;
+  padding-top: 1px;
+}
+.kv-row-top > .kv-val-wrap {
+  font-weight: 600;
+  color: var(--text);
+  text-align: right;
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: break-word;
+  line-height: 1.35;
+}
+.kv-perk-note {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 11.5px;
+  line-height: 1.42;
+  color: var(--muted);
+  background: var(--bg-soft, rgba(255, 255, 255, 0.03));
+  border-left: 2px solid var(--accent);
+  padding: 5px 8px;
+  border-radius: 0 4px 4px 0;
+  margin-top: 2px;
+}
+.kv-perk-note b {
+  color: var(--text);
+  font-weight: 600;
+}
+.kv-perk-mods {
+  color: var(--accent);
 }
 
 .stat {
@@ -4716,3 +4764,914 @@ body.is-hit-stop .stage {
 .entry.k-contract {
   border-left-color: #e67e22;
 }
+
+/* ==========================================================================
+   WARP CHRONOMETER & TACTICAL DUNGEON DELVE UI/UX (5 ICONIC DUNGEONS)
+   ========================================================================== */
+
+/* PlayBar Rapid WARP Age Counter & Anomaly Telemetry */
+.playbar-age.is-warp-anomaly {
+  background: linear-gradient(135deg, rgba(14, 165, 233, 0.2), rgba(217, 70, 239, 0.18));
+  border: 1px solid rgba(56, 189, 248, 0.65);
+  border-radius: 6px;
+  padding: 2px 10px;
+  box-shadow: 0 0 18px rgba(56, 189, 248, 0.35), inset 0 0 8px rgba(217, 70, 239, 0.2);
+  animation: warp-age-pulse 1.2s ease-in-out infinite alternate;
+  cursor: help;
+}
+
+.playbar-age.is-warp-anomaly b.warp-age-counter {
+  font-family: var(--font-mono, monospace);
+  color: #38bdf8;
+  text-shadow: 0 0 10px rgba(56, 189, 248, 0.85), 1px 0 0 rgba(236, 72, 153, 0.75);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.playbar-age.is-warp-anomaly span {
+  color: #e0f2fe;
+  font-weight: 600;
+  font-size: 11px;
+}
+
+@keyframes warp-age-pulse {
+  0% {
+    border-color: rgba(56, 189, 248, 0.55);
+    box-shadow: 0 0 12px rgba(56, 189, 248, 0.25);
+  }
+  100% {
+    border-color: rgba(236, 72, 153, 0.75);
+    box-shadow: 0 0 20px rgba(56, 189, 248, 0.45), 0 0 10px rgba(236, 72, 153, 0.35);
+  }
+}
+
+.yearbar-dungeon-telemetry {
+  font-weight: 700;
+  font-size: 11.5px;
+  letter-spacing: 0.02em;
+}
+.yearbar-dungeon-telemetry.theme-warp { color: #38bdf8; }
+.yearbar-dungeon-telemetry.theme-greatlake { color: #22d3ee; }
+.yearbar-dungeon-telemetry.theme-lobotomy { color: #4ade80; }
+.yearbar-dungeon-telemetry.theme-bloodfiend { color: #f87171; }
+.yearbar-dungeon-telemetry.theme-outskirts { color: #facc15; }
+
+/* Great Lake Theme for DungeonDock & DungeonBackdrop */
+.dock.is-dungeon.theme-greatlake {
+  border-color: rgba(6, 182, 212, 0.55);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.82), 0 0 32px rgba(6, 182, 212, 0.22);
+}
+
+.dungeon-backdrop.theme-greatlake {
+  background:
+    radial-gradient(circle at 72% 28%, rgba(226, 232, 240, 0.16) 0%, rgba(6, 182, 212, 0.12) 28%, transparent 65%),
+    radial-gradient(ellipse at 50% 100%, rgba(8, 51, 68, 0.85) 0%, rgba(2, 6, 23, 0.96) 75%);
+}
+
+.greatlake-abyss-grid {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.greatlake-wave-layer {
+  position: absolute;
+  left: -15%;
+  right: -15%;
+  height: 220px;
+  border-radius: 45%;
+  filter: blur(18px);
+  opacity: 0.35;
+}
+
+.greatlake-wave-layer.wave-1 {
+  bottom: -80px;
+  background: linear-gradient(90deg, rgba(6, 182, 212, 0.35), rgba(248, 250, 252, 0.22), rgba(14, 116, 144, 0.4));
+  animation: lake-wave-drift 9s ease-in-out infinite alternate;
+}
+
+.greatlake-wave-layer.wave-2 {
+  bottom: -110px;
+  background: linear-gradient(90deg, rgba(241, 245, 249, 0.2), rgba(6, 182, 212, 0.3), rgba(15, 23, 42, 0.6));
+  animation: lake-wave-drift 13s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes lake-wave-drift {
+  0% { transform: translateX(-4%) translateY(0) rotate(-1deg); }
+  100% { transform: translateX(4%) translateY(-14px) rotate(1deg); }
+}
+
+.greatlake-tuning-ring {
+  position: absolute;
+  top: 22%;
+  right: 14%;
+  border-radius: 50%;
+  border: 1px dashed rgba(34, 211, 238, 0.28);
+  pointer-events: none;
+}
+
+.greatlake-tuning-ring.ring-outer {
+  width: 340px;
+  height: 340px;
+  animation: rotate-slow 38s linear infinite;
+}
+
+.greatlake-tuning-ring.ring-inner {
+  top: calc(22% + 50px);
+  right: calc(14% + 50px);
+  width: 240px;
+  height: 240px;
+  border-style: solid;
+  border-color: rgba(241, 245, 249, 0.18);
+  animation: rotate-reverse 24s linear infinite;
+}
+
+.pallid-whale-eye-glow {
+  position: absolute;
+  top: 26%;
+  right: 20%;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(248, 250, 252, 0.32) 0%, rgba(34, 211, 238, 0.18) 45%, transparent 72%);
+  filter: blur(12px);
+  animation: whale-pulse 4.5s ease-in-out infinite alternate;
+}
+
+@keyframes whale-pulse {
+  0% { transform: scale(0.92); opacity: 0.55; }
+  100% { transform: scale(1.12); opacity: 0.9; }
+}
+
+.pallid-spore-mote {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(248, 250, 252, 0.75);
+  box-shadow: 0 0 10px rgba(226, 232, 240, 0.9);
+  animation: spore-rise 8s ease-in-out infinite;
+}
+.pallid-spore-mote.spore-1 { left: 22%; bottom: 18%; animation-delay: 0s; }
+.pallid-spore-mote.spore-2 { left: 54%; bottom: 26%; animation-delay: 2.2s; }
+.pallid-spore-mote.spore-3 { left: 78%; bottom: 14%; animation-delay: 4.1s; }
+
+@keyframes spore-rise {
+  0% { transform: translateY(20px) scale(0.8); opacity: 0; }
+  50% { opacity: 0.75; }
+  100% { transform: translateY(-120px) scale(1.2); opacity: 0; }
+}
+
+/* Live Anomaly Telemetry Banner inside DungeonDock */
+.dungeon-telemetry-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  padding: 8px 12px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  background: rgba(10, 14, 23, 0.78);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  font-size: 12px;
+}
+
+.dungeon-telemetry-bar.theme-warp {
+  border-color: rgba(56, 189, 248, 0.5);
+  background: linear-gradient(90deg, rgba(14, 165, 233, 0.16), rgba(217, 70, 239, 0.12));
+}
+.dungeon-telemetry-bar.theme-greatlake {
+  border-color: rgba(6, 182, 212, 0.5);
+  background: linear-gradient(90deg, rgba(8, 145, 178, 0.18), rgba(241, 245, 249, 0.08));
+}
+.dungeon-telemetry-bar.theme-lobotomy {
+  border-color: rgba(34, 197, 94, 0.45);
+  background: linear-gradient(90deg, rgba(22, 163, 74, 0.16), rgba(234, 179, 8, 0.08));
+}
+.dungeon-telemetry-bar.theme-bloodfiend {
+  border-color: rgba(239, 68, 68, 0.5);
+  background: linear-gradient(90deg, rgba(185, 28, 28, 0.2), rgba(88, 28, 135, 0.12));
+}
+.dungeon-telemetry-bar.theme-outskirts {
+  border-color: rgba(234, 179, 8, 0.45);
+  background: linear-gradient(90deg, rgba(161, 98, 7, 0.18), rgba(30, 41, 59, 0.25));
+}
+
+.telemetry-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.telemetry-icon {
+  color: var(--accent);
+}
+
+.telemetry-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: rgba(241, 245, 249, 0.78);
+}
+
+.telemetry-counter {
+  font-family: var(--font-mono, monospace);
+  font-size: 14px;
+  font-weight: 800;
+  color: #38bdf8;
+  font-variant-numeric: tabular-nums;
+}
+
+.warp-glitch-num {
+  color: #38bdf8;
+  text-shadow: 0 0 8px rgba(56, 189, 248, 0.8), 1px 0 0 rgba(236, 72, 153, 0.8);
+}
+
+.telemetry-chip {
+  font-size: 11px;
+  color: rgba(226, 232, 240, 0.82);
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Tactical Command Bar: Stances & Supplies */
+.dungeon-tactics-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  padding: 8px 10px;
+  margin-bottom: 6px;
+  border-radius: 6px;
+  background: rgba(15, 19, 28, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tactics-stances,
+.tactics-supplies {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tactics-group-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  margin-right: 2px;
+}
+
+.stance-btn,
+.supply-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 9px;
+  border-radius: 4px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: rgba(241, 245, 249, 0.82);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.stance-btn:hover:not(:disabled),
+.supply-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+.stance-btn.stance-guarded.is-active {
+  background: rgba(56, 189, 248, 0.18);
+  border-color: #38bdf8;
+  color: #e0f2fe;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.25);
+}
+
+.stance-btn.stance-balanced.is-active {
+  background: rgba(208, 169, 79, 0.2);
+  border-color: #d0a94f;
+  color: #fef3c7;
+  box-shadow: 0 0 10px rgba(208, 169, 79, 0.25);
+}
+
+.stance-btn.stance-reckless.is-active {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: #ef4444;
+  color: #fee2e2;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
+}
+
+.supply-btn:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+}
+
+.supply-btn.supply-breather:not(:disabled) {
+  border-color: rgba(46, 204, 113, 0.45);
+  color: #bbf7d0;
+}
+
+.supply-btn.supply-scan:not(:disabled) {
+  border-color: rgba(56, 189, 248, 0.45);
+  color: #bae6fd;
+}
+
+.supply-btn.is-scanned {
+  background: rgba(56, 189, 248, 0.16);
+  border-color: rgba(56, 189, 248, 0.5);
+  color: #7dd3fc;
+  opacity: 0.85;
+}
+
+.supply-btn kbd {
+  font-family: var(--font-mono, monospace);
+  font-size: 10px;
+  padding: 1px 4px;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.dungeon-modifier-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  padding: 4px 10px;
+  margin-bottom: 8px;
+  font-size: 11px;
+  color: rgba(226, 232, 240, 0.78);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 4px;
+}
+
+.mod-mastery-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #fcd34d;
+  font-weight: 600;
+}
+
+.resolve-awakened-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 8px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #fef08a;
+  background: rgba(234, 179, 8, 0.22);
+  border: 1px solid rgba(250, 204, 21, 0.55);
+}
+
+/* Previous Stage Feedback Banner */
+.dungeon-stage-feedback {
+  padding: 8px 12px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  border-left: 3px solid #38bdf8;
+  background: rgba(15, 23, 42, 0.78);
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: #f1f5f9;
+}
+
+.dungeon-stage-feedback.is-resolve {
+  border-left-color: #facc15;
+  background: linear-gradient(90deg, rgba(234, 179, 8, 0.18), rgba(15, 23, 42, 0.82));
+}
+
+.dungeon-stage-feedback.is-fail {
+  border-left-color: #ef4444;
+  background: linear-gradient(90deg, rgba(239, 68, 68, 0.16), rgba(15, 23, 42, 0.82));
+}
+
+.dungeon-stage-feedback.is-breather {
+  border-left-color: #22c55e;
+}
+
+.dungeon-stage-feedback .feedback-text {
+  margin: 0;
+}
+
+/* Choice Stat Preview Pills */
+.trait-pill.is-warn {
+  color: #fca5a5;
+  border-color: rgba(239, 68, 68, 0.45);
+  background: rgba(239, 68, 68, 0.14);
+}
+
+.delta-preview-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.delta-preview-pill.is-good {
+  color: #86efac;
+  background: rgba(34, 197, 94, 0.14);
+  border: 1px solid rgba(34, 197, 94, 0.32);
+}
+
+.delta-preview-pill.is-bad {
+  color: #fca5a5;
+  background: rgba(239, 68, 68, 0.14);
+  border: 1px solid rgba(239, 68, 68, 0.32);
+}
+
+/* ==========================================================================
+   EPITAPH V2: DETAILED LIFE SUMMARY, DEEP BIOGRAPHY, RECORDS & FINAL STATE
+   ========================================================================== */
+
+.epitaph.epitaph-v2 {
+  margin-top: 44px;
+  border: 1px solid rgba(208, 169, 79, 0.28);
+  border-radius: 12px;
+  background: radial-gradient(circle at 50% 0%, rgba(208, 169, 79, 0.08) 0%, rgba(12, 14, 20, 0.96) 55%);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.65);
+  text-align: center;
+}
+
+.epitaph.epitaph-v2 .epitaph-body {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 36px clamp(18px, 4vw, 36px) 28px;
+}
+
+.epitaph-kicker-origin {
+  margin: 0 0 10px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: 0.02em;
+}
+
+.epitaph.epitaph-v2 .epitaph-age {
+  margin: 0;
+  font-size: clamp(64px, 9vw, 84px);
+  font-weight: 800;
+  line-height: 1;
+  color: var(--text);
+  letter-spacing: -0.03em;
+}
+
+.epitaph.epitaph-v2 .epitaph-age span {
+  margin-left: 8px;
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.epitaph.epitaph-v2 .epitaph-cause {
+  margin: 10px 0 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #ef4444;
+}
+
+.epitaph-poetic-quote {
+  margin: 18px auto 26px;
+  max-width: 580px;
+  font-family: var(--font-serif, "Noto Serif", Georgia, serif);
+  font-size: 15.5px;
+  font-style: italic;
+  line-height: 1.65;
+  color: rgba(241, 241, 238, 0.88);
+}
+
+/* 3-Card Fact Grids */
+.epitaph.epitaph-v2 .epitaph-facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0 0 10px;
+  border: none;
+  background: transparent;
+  text-align: center;
+}
+
+.epitaph.epitaph-v2 .epitaph-facts > div + div {
+  border-left: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.epitaph-fact-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  padding: 14px 12px !important;
+  border-radius: 8px;
+  background: rgba(19, 22, 30, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.epitaph-fact-card span {
+  font-size: 11.5px !important;
+  color: var(--muted);
+}
+
+.epitaph-fact-card b {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.35;
+}
+
+.epitaph-fact-card b.is-pos-life {
+  color: #4ade80;
+}
+
+.epitaph-fact-card b.is-neg-life {
+  color: #f87171;
+}
+
+.epitaph-fact-card b.text-accent {
+  color: var(--accent);
+}
+
+/* Content Panels (Life Story, Records, Final State) */
+.epitaph-panel {
+  margin-top: 14px;
+  padding: 18px 20px;
+  border-radius: 10px;
+  background: rgba(17, 20, 28, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  text-align: left;
+}
+
+.epitaph-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.epitaph-panel-head h3 {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: 0.02em;
+}
+
+.epitaph-panel-sub {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.epitaph-subtoggle {
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--accent);
+  background: rgba(208, 169, 79, 0.12);
+  border: 1px solid rgba(208, 169, 79, 0.3);
+  cursor: pointer;
+}
+
+.epitaph-subtoggle:hover {
+  background: rgba(208, 169, 79, 0.22);
+}
+
+.epitaph-story-paragraphs {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.epitaph-story-p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.75;
+  color: rgba(241, 245, 249, 0.92);
+}
+
+.epitaph-story-p.is-alt {
+  margin-top: 4px;
+  font-size: 13.5px;
+  font-style: italic;
+  color: var(--muted);
+}
+
+/* Turning Points Timeline inside Life Story */
+.epitaph-turning-points {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.12);
+}
+
+.turning-points-heading {
+  margin: 0 0 10px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--accent);
+}
+
+.turning-points-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tp-item {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  gap: 10px;
+  align-items: baseline;
+  padding: 7px 10px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.03);
+  border-left: 2px solid rgba(208, 169, 79, 0.5);
+  font-size: 13px;
+}
+
+.tp-item.tp-miracle,
+.tp-item.tp-promo {
+  border-left-color: #4ade80;
+}
+
+.tp-item.tp-causal {
+  border-left-color: #a78bfa;
+}
+
+.tp-item.tp-danger {
+  border-left-color: #f87171;
+}
+
+.tp-age {
+  font-family: var(--font-mono, monospace);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.tp-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tp-content strong {
+  color: var(--text);
+  font-size: 13px;
+}
+
+.tp-content span {
+  color: var(--muted);
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+
+/* Records List & Badges */
+.records-new-count {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fde68a;
+  background: rgba(208, 169, 79, 0.2);
+  border: 1px solid rgba(208, 169, 79, 0.45);
+}
+
+.epitaph-records-list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.epitaph-record-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 7px;
+  background: rgba(24, 28, 38, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-left: 3px solid rgba(148, 163, 184, 0.5);
+}
+
+.epitaph-record-row.tier-uncommon {
+  border-left-color: #34d399;
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.1), rgba(24, 28, 38, 0.85));
+}
+
+.epitaph-record-row.tier-rare {
+  border-left-color: #38bdf8;
+  background: linear-gradient(90deg, rgba(56, 189, 248, 0.12), rgba(24, 28, 38, 0.85));
+}
+
+.epitaph-record-row.tier-epic {
+  border-left-color: #a855f7;
+  background: linear-gradient(90deg, rgba(168, 85, 247, 0.14), rgba(24, 28, 38, 0.85));
+}
+
+.epitaph-record-row.tier-legend,
+.epitaph-record-row.tier-myth,
+.epitaph-record-row.tier-miracle {
+  border-color: rgba(208, 169, 79, 0.45);
+  border-left-color: #facc15;
+  background: linear-gradient(90deg, rgba(234, 179, 8, 0.16), rgba(24, 28, 38, 0.9));
+}
+
+.epitaph-record-row.is-new-record {
+  border-color: rgba(208, 169, 79, 0.45);
+}
+
+.record-row-left {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.record-row-title {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.epitaph-record-row.tier-uncommon .record-row-title {
+  color: #6ee7b7;
+}
+
+.epitaph-record-row.tier-rare .record-row-title {
+  color: #7dd3fc;
+}
+
+.epitaph-record-row.tier-epic .record-row-title {
+  color: #d8b4fe;
+}
+
+.epitaph-record-row.tier-legend .record-row-title,
+.epitaph-record-row.tier-myth .record-row-title,
+.epitaph-record-row.tier-miracle .record-row-title {
+  color: #fde047;
+}
+
+.record-new-badge {
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: #111827;
+  background: #eab308;
+}
+
+.record-row-rarity {
+  font-size: 12px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* Final State Progress Bars & Life Tags */
+.epitaph-stat-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.epitaph-stat-row {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.epitaph-stat-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  color: rgba(241, 245, 249, 0.88);
+}
+
+.epitaph-stat-head b {
+  font-size: 13.5px;
+  color: var(--text);
+}
+
+.epitaph-stat-track {
+  height: 6px;
+  width: 100%;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.epitaph-stat-fill {
+  height: 100%;
+  border-radius: 999px;
+}
+
+.epitaph-stat-fill.bar-hp { background: #6ee7b7; }
+.epitaph-stat-fill.bar-sp { background: #818cf8; }
+.epitaph-stat-fill.bar-wealth { background: #d4af37; }
+.epitaph-stat-fill.bar-net { background: #34d399; }
+.epitaph-stat-fill.bar-rep { background: #f472b6; }
+.epitaph-stat-fill.bar-res { background: #38bdf8; }
+
+.epitaph-life-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.epitaph-tag-pill {
+  padding: 4px 11px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(226, 232, 240, 0.88);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.epitaph-tag-pill.kind-scar {
+  color: #fca5a5;
+  border-color: rgba(239, 68, 68, 0.35);
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.epitaph-tag-pill.kind-lore {
+  color: #93c5fd;
+  border-color: rgba(59, 130, 246, 0.35);
+  background: rgba(59, 130, 246, 0.1);
+}
+
+.epitaph-tag-pill.kind-bond {
+  color: #86efac;
+  border-color: rgba(34, 197, 94, 0.35);
+  background: rgba(34, 197, 94, 0.1);
+}
+
+/* Action Buttons & Footer */
+.epitaph-actions-v2 {
+  margin-top: 24px;
+  gap: 10px;
+}
+
+.epitaph-btn-reborn {
+  font-weight: 700;
+}
+
+.epitaph-secondary-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.epitaph-seed-footer {
+  margin: 18px 0 0;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+@media (max-width: 640px) {
+  .epitaph.epitaph-v2 .epitaph-facts {
+    grid-template-columns: 1fr;
+  }
+  .epitaph.epitaph-v2 .epitaph-facts > div + div {
+    border-left: 1px solid rgba(255, 255, 255, 0.09);
+  }
+  .tp-item {
+    grid-template-columns: 1fr;
+    gap: 3px;
+  }
+}
+
+

@@ -6,25 +6,31 @@ import {
   DUNGEON_DEFINITIONS,
   createDungeonSession,
   getDungeonCurrentStage,
+  getDungeonMastery,
   isDungeonChoiceAvailable,
+  evaluateDungeonChoiceOdds,
+  setDungeonStance,
+  useDungeonSupply,
   resolveDungeonChoice,
   fleeDungeon
 } from '../src/engine/gameEngine.js';
 import { DERIVATIVE_LORE_EVENTS } from '../src/data/eventsDerivativeLore.js';
 import { FACTION_EVENTS } from '../src/data/eventsFactions.js';
 import { CHILDHOOD_EVENTS } from '../src/data/eventsChildhood.js';
+import { SUPERNATURAL_EVENTS } from '../src/data/eventsSupernatural.js';
 
 console.log('--- RUNNING DUNGEON MECHANICS TEST SUITE ---');
 
 const rng = createRNG('dungeon_test_seed_42');
 
-// 1. Definition Integrity
+// 1. Definition Integrity (All 5 Iconic 4-Stage Dungeons)
 console.log('1. Checking DUNGEON_DEFINITIONS integrity...');
 const expectedDungeons = [
   'dungeon_warp_train',
   'dungeon_lobotomy_ruin',
   'dungeon_bloodfiend_carnival',
-  'dungeon_outskirts_ruins'
+  'dungeon_outskirts_ruins',
+  'dungeon_great_lake'
 ];
 
 for (const dungeonId of expectedDungeons) {
@@ -42,7 +48,7 @@ for (const dungeonId of expectedDungeons) {
     assert(Array.isArray(stage.choices) && stage.choices.length > 0, `Stage ${sIdx} missing choices`);
   });
 }
-console.log('✓ All 4 iconic 4-stage dungeons defined with full bilingual metadata.');
+console.log('✓ All 5 iconic 4-stage dungeons defined with full bilingual metadata.');
 
 // 2. Session Initialization
 console.log('2. Checking createDungeonSession...');
@@ -53,8 +59,10 @@ assert.strictEqual(session.id, 'dungeon_warp_train');
 assert.strictEqual(session.currentStageIndex, 0);
 assert.strictEqual(session.sanityStrain, 0);
 assert.strictEqual(session.accumulatedLootAhn, 0);
+assert.strictEqual(session.stance, 'balanced');
+assert(session.supplyCharges >= 2, 'Session must start with tactical supply charges');
 assert(Array.isArray(session.logs), 'Session logs must be an array');
-console.log('✓ createDungeonSession initialized valid session state.');
+console.log('✓ createDungeonSession initialized valid session state with tactical stances & supplies.');
 
 // 3. Item Requirement Utility Checks
 console.log('3. Checking item requirements in isDungeonChoiceAvailable...');
@@ -133,34 +141,62 @@ assert(lethalRes.char.deathCauseVi.includes('Bỏ mạng'), 'Death cause must re
 assert.strictEqual(lethalRes.resolution.isDead, true, 'Resolution must mark death');
 console.log('✓ Dungeon death properly triggers fatality mechanics and epitaph causes.');
 
-// 7. Event Integration Checks
-console.log('7. Verifying major events trigger dungeon sessions...');
-// Check WARP train event
+// 7. Tactical Stances, Supplies, Mastery & Great Lake Delve
+console.log('7. Testing Tactical Stances, Field Supplies, Mastery & Great Lake Dungeon...');
+let lakeChar = createNewCharacter({ seed: 'great_lake_seed', preferredRegionId: 'U' });
+lakeChar.flags.push('GreatLakeHardened');
+lakeChar.pendingDungeon = createDungeonSession('dungeon_great_lake', lakeChar, rng);
+
+const lakeDef = DUNGEON_DEFINITIONS.dungeon_great_lake;
+const mastery = getDungeonMastery(lakeDef, lakeChar);
+assert.strictEqual(mastery.hasMastery, true, 'GreatLakeHardened character must have Great Lake mastery');
+assert(mastery.dmgMult < 1.0, 'Mastery must reduce incoming damage');
+
+// Switch to guarded stance
+lakeChar = setDungeonStance(lakeChar, 'guarded');
+assert.strictEqual(lakeChar.pendingDungeon.stance, 'guarded', 'Stance must switch to guarded');
+
+// Use Tactical Scan supply
+const initialSupplies = lakeChar.pendingDungeon.supplyCharges;
+lakeChar = useDungeonSupply(lakeChar, 'scan');
+assert.strictEqual(lakeChar.pendingDungeon.supplyCharges, initialSupplies - 1, 'Supply charge must decrement');
+assert.strictEqual(lakeChar.pendingDungeon.stageScanned, true, 'Stage must be marked scanned');
+
+const lakeStage0 = getDungeonCurrentStage(lakeChar.pendingDungeon);
+const odds = evaluateDungeonChoiceOdds(lakeStage0.choices[0], lakeChar, lakeChar.pendingDungeon);
+assert(odds.successPct >= 90, 'Scanned + Guarded + Mastery choice must have very high success odds');
+console.log(`✓ Tactical Stance, Scan Supply & Mastery verified (Choice 0 odds: ${odds.successPct}%).`);
+
+// 8. Event Integration & No Double-Jeopardy Entry Damage
+console.log('8. Verifying major events trigger dungeon sessions without unfair upfront damage...');
 const warpEvent = DERIVATIVE_LORE_EVENTS.find(e => e.id === 'wcorp_cleaning_crew_amnesia');
 assert(warpEvent, 'wcorp_cleaning_crew_amnesia not found');
 assert.strictEqual(warpEvent.choices[0].startDungeon, 'dungeon_warp_train', 'wcorp choice 0 must trigger dungeon_warp_train');
 
-// Check Lobotomy event
 const lcorpEvent = FACTION_EVENTS.find(e => e.id === 'wing_lobotomy_ruin_cogito_salvage');
 assert(lcorpEvent, 'wing_lobotomy_ruin_cogito_salvage not found');
 assert.strictEqual(lcorpEvent.choices[0].startDungeon, 'dungeon_lobotomy_ruin', 'lcorp choice 0 must trigger dungeon_lobotomy_ruin');
 
-// Check Bloodfiend Carnival event
 const carnivalEvent = DERIVATIVE_LORE_EVENTS.find(e => e.id === 'bloodfiend_carnival_pcorp');
 assert(carnivalEvent, 'bloodfiend_carnival_pcorp not found');
 assert.strictEqual(carnivalEvent.choices[0].startDungeon, 'dungeon_bloodfiend_carnival', 'carnival choice 0 must trigger dungeon_bloodfiend_carnival');
 
-// Check Outskirts event
 const outskirtsEvent = CHILDHOOD_EVENTS.find(e => e.id === 'ch_outskirts_ruins_expedition');
 assert(outskirtsEvent, 'ch_outskirts_ruins_expedition not found');
 assert.strictEqual(outskirtsEvent.choices[0].startDungeon, 'dungeon_outskirts_ruins', 'outskirts choice 0 must trigger dungeon_outskirts_ruins');
 
-// Test resolving event sets pendingDungeon
+const whaleEvent = SUPERNATURAL_EVENTS.find(e => e.id === 'lake_calamity_whale_hunt');
+assert(whaleEvent, 'lake_calamity_whale_hunt not found');
+assert.strictEqual(whaleEvent.choices[0].startDungeon, 'dungeon_great_lake', 'whale hunt choice 0 must trigger dungeon_great_lake');
+
+// Test resolving whale event sets pendingDungeon and does not strip HP before stage 0
 let eventChar = createNewCharacter({ seed: 'event_trigger_seed' });
-eventChar.pendingEvent = warpEvent;
+const hpBeforeTrigger = eventChar.stats.health;
+eventChar.pendingEvent = whaleEvent;
 eventChar = resolveEventChoice(eventChar, 0, rng);
 assert(eventChar.pendingDungeon, 'resolveEventChoice must set pendingDungeon');
-assert.strictEqual(eventChar.pendingDungeon.id, 'dungeon_warp_train');
-console.log('✓ All major events properly trigger corresponding micro-dungeon delves.');
+assert.strictEqual(eventChar.pendingDungeon.id, 'dungeon_great_lake');
+assert.strictEqual(eventChar.stats.health, hpBeforeTrigger, 'Outer event choice should not deal double-jeopardy negative HP before Stage 0 begins');
+console.log('✓ All 5 major dungeon events properly trigger sessions without double-jeopardy entry damage.');
 
 console.log('--- ALL DUNGEON MECHANICS TESTS PASSED (100%) ---');

@@ -19,8 +19,8 @@ const SPEEDS = [
   { spd: 3, secs: 10 }
 ];
 
-const isWaiting = (s) => Boolean(s?.char?.pendingEvent || s?.char?.pendingContract || s?.char?.pendingDungeon || s?.char?.pendingModal || s?.activeResolution || (s?.postChoicePauseMs > 0));
-const isRunning = (s) => s.inRun && s.char?.alive && s.speed > 0 && !isWaiting(s);
+const isWaiting = (s) => Boolean(s?.char?.pendingEvent || s?.char?.pendingContract || s?.char?.pendingDungeon || s?.char?.pendingModal || s?.char?.pendingMinor || s?.activeResolution);
+const isRunning = (s) => s.inRun && s.char?.alive && s.speed > 0 && !isWaiting(s) && !(s.postChoicePauseMs > 0);
 
 /*
  * The store advances yearProgress in 200ms steps. Drawing those steps makes the bar
@@ -86,10 +86,12 @@ const YearTrack = () => {
 // Re-renders only when the whole-second count changes
 const YearStatus = () => {
   const { t } = useT();
+  const pendingDungeon = useGameStore((s) => s.char?.pendingDungeon);
   const status = useGameStore((s) => {
     if (!s.char?.alive) return 'dead';
     if (s.postChoicePauseMs > 0) return `reading_${Math.ceil(s.postChoicePauseMs / 1000)}`;
     if (s.activeResolution) return 'resolution';
+    if (s.char?.pendingDungeon) return 'dungeon';
     if (isWaiting(s)) return 'wait';
     if (s.char.pendingMinor) return 'minor';
     if (s.speed === 0) return 'pause';
@@ -101,6 +103,42 @@ const YearStatus = () => {
     return <span style={{ color: 'var(--good)' }}>{t(`Kết quả vừa lưu · Tiếp tục sau ${sec}s`, `Result logged · Resuming in ${sec}s`)}</span>;
   }
   if (status === 'resolution') return <span style={{ color: 'var(--good)' }}>{t('Đang xem kết quả quyết định', 'Reviewing outcome')}</span>;
+  if (status === 'dungeon' && pendingDungeon) {
+    const stageStr = `${(pendingDungeon.currentStageIndex || 0) + 1}/${pendingDungeon.totalStages || 4}`;
+    if (pendingDungeon.theme === 'warp') {
+      return (
+        <span className="yearbar-dungeon-telemetry theme-warp">
+          ⚡ {t(`Dị Không Gian W Corp · Tầng ${stageStr} · Thời gian thực: 10.0s (Đóng băng)`, `W Corp Dimensional Rift · Stage ${stageStr} · Real Time: 10.0s (Frozen)`)}
+        </span>
+      );
+    }
+    if (pendingDungeon.theme === 'greatlake') {
+      return (
+        <span className="yearbar-dungeon-telemetry theme-greatlake">
+          ⚓ {t(`Đại Hồ District 21 · Tầng ${stageStr} · Dịch Pallid hóa sáp đang dâng`, `District 21 Great Lake · Stage ${stageStr} · Pallid Tide Rising`)}
+        </span>
+      );
+    }
+    if (pendingDungeon.theme === 'lobotomy') {
+      return (
+        <span className="yearbar-dungeon-telemetry theme-lobotomy">
+          ☣️ {t(`Qliphoth Meltdown · Tầng ${stageStr} · Nồng độ Enkephalin cao`, `Qliphoth Meltdown · Stage ${stageStr} · High Enkephalin Density`)}
+        </span>
+      );
+    }
+    if (pendingDungeon.theme === 'bloodfiend') {
+      return (
+        <span className="yearbar-dungeon-telemetry theme-bloodfiend">
+          🩸 {t(`Lâu Đài Huyết Tộc · Tầng ${stageStr} · Huyết Lệ dâng trào`, `Bloodfiend Banquet · Stage ${stageStr} · Crimson Thirst Rising`)}
+        </span>
+      );
+    }
+    return (
+      <span className="yearbar-dungeon-telemetry theme-outskirts">
+        ❄️ {t(`Phế Tích Outskirts · Tầng ${stageStr} · Bão tuyết hắc ám`, `Outskirts Ruins · Stage ${stageStr} · Black Blizzard`)}
+      </span>
+    );
+  }
   if (status === 'wait') return <span style={{ color: 'var(--accent)' }}>{t('Đang chờ bạn quyết định', 'Waiting for your decision')}</span>;
   if (status === 'minor') return <span style={{ color: 'var(--accent)' }}>{t('Một lựa chọn đang chờ', 'A choice is waiting')}</span>;
   if (status === 'pause') return <span>{t('Tạm dừng', 'Paused')}</span>;
@@ -136,6 +174,24 @@ export const PlayBar = () => {
 
   const [justSaved, setJustSaved] = React.useState(false);
   const [audioMuted, setAudioMuted] = React.useState(audioEngine.isMuted);
+  const isWarpDungeon = char?.pendingDungeon?.theme === 'warp';
+  const warpStageIdx = char?.pendingDungeon?.currentStageIndex || 0;
+  const [warpSubjectiveYears, setWarpSubjectiveYears] = React.useState(0);
+
+  React.useEffect(() => {
+    if (!isWarpDungeon) {
+      setWarpSubjectiveYears(0);
+      return undefined;
+    }
+    setWarpSubjectiveYears((prev) => Math.max(prev, warpStageIdx * 540 + 12));
+    const timer = setInterval(() => {
+      setWarpSubjectiveYears((prev) => {
+        const step = Math.floor(Math.random() * 19) + 7 + warpStageIdx * 6;
+        return prev + step;
+      });
+    }, 65);
+    return () => clearInterval(timer);
+  }, [isWarpDungeon, warpStageIdx]);
 
   React.useEffect(() => {
     return audioEngine.subscribe(({ isMuted }) => {
@@ -337,12 +393,27 @@ export const PlayBar = () => {
 
   return (
     <div className="playbar">
-      <div className="playbar-age">
-        <b>{age}</b>
-        <span>
-          {t('tuổi', 'yrs')} · {t(season?.vi, season?.en)}
-        </span>
-      </div>
+      <Tooltip
+        title={
+          isWarpDungeon
+            ? t(
+                `Dị thể không gian W Corp: Tuổi chủ quan trong toa tàu đang trôi qua hàng thiên niên kỷ (${(age + warpSubjectiveYears).toLocaleString()} tuổi), nhưng đồng hồ Singularity sẽ khôi phục cơ thể bạn về đúng ${age} tuổi sau 10 giây thực!`,
+                `W Corp Dimensional Anomaly: Subjective age inside the cabin is racing across millennia (${(age + warpSubjectiveYears).toLocaleString()} yrs), while the Singularity resets your physical body back to ${age} yrs in 10 real seconds!`
+              )
+            : undefined
+        }
+      >
+        <div className={`playbar-age ${isWarpDungeon ? 'is-warp-anomaly' : ''}`}>
+          <b className={isWarpDungeon ? 'warp-age-counter' : ''}>
+            {isWarpDungeon ? (age + warpSubjectiveYears).toLocaleString() : age}
+          </b>
+          <span>
+            {isWarpDungeon
+              ? t(`tuổi dị giới · (Thực: ${age}t · 10s)`, `rift yrs · (Real: ${age}y · 10s)`)
+              : `${t('tuổi', 'yrs')} · ${t(season?.vi, season?.en)}`}
+          </span>
+        </div>
+      </Tooltip>
 
       <div className="yearbar" aria-label={t('Tiến độ năm', 'Year progress')}>
         <YearTrack />

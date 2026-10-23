@@ -81,9 +81,11 @@ export function tiltWeight(weight, outcomeFx, traits) {
  * Recent entries are damped hard, familiar ones gently, never-played ones keep full weight.
  */
 export function freshness(id, recent = [], seen = {}) {
+  const count = seen[id] || 0;
+  if (count === 0) return 1;
   const at = recent.lastIndexOf(id);
   const since = at < 0 ? Infinity : recent.length - at;           // 1 = just played
-  const recency = since === Infinity ? 1 : 1 - Math.exp(-since / 40);
-  const familiarity = 1 / Math.pow(1 + (seen[id] || 0), 0.9);
-  return Math.max(0.02, recency * familiarity);
+  const recency = since === Infinity ? 0.15 : (1 - Math.exp(-since / 65)) * 0.12;
+  const familiarity = 1 / Math.pow(1 + count * 6, 2.2);
+  return Math.max(0.0005, recency * familiarity);
 }

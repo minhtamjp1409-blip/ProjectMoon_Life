@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Modal } from 'antd';
-import { GitBranch, Download, RotateCcw, Hammer, ChevronDown, Eye, EyeOff } from 'lucide-react';
+import { GitBranch, Download, RotateCcw, Hammer, ChevronDown, Eye, EyeOff, BookOpen, Copy, Check, House } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 import { useGameStore } from '../../../store/gameStore';
 import { buildLifeSummaryAndLegacy, getDungeonCurrentStage, isDungeonChoiceAvailable, DUNGEON_DEFINITIONS } from '../../../engine/gameEngine';
@@ -356,6 +357,29 @@ const ContractDock = ({ contract, wealth, onPick }) => {
 
         <p className="dock-text">{lang === 'en' ? contract.template.en : contract.template.vi}</p>
 
+        {contract.companionSupport && (contract.companionSupport.noteVi || contract.companionSupport.noteEn) && (
+          <div
+            className="companion-contract-banner"
+            style={{
+              margin: '0 0 12px 0',
+              padding: '8px 12px',
+              borderRadius: 4,
+              fontSize: 12,
+              lineHeight: 1.45,
+              borderLeft: `3px solid ${contract.companionSupport.powerMod < 0 ? 'var(--bad)' : 'var(--good)'}`,
+              background: contract.companionSupport.powerMod < 0 ? 'rgba(229, 72, 77, 0.09)' : 'rgba(61, 154, 80, 0.09)',
+              color: 'var(--ink)'
+            }}
+          >
+            <strong style={{ color: contract.companionSupport.powerMod < 0 ? 'var(--bad)' : 'var(--good)', marginRight: 6 }}>
+              {contract.companionSupport.powerMod < 0
+                ? t(`⚠ Bất hòa đồng đội (${contract.companionSupport.powerMod} Power)`, `⚠ Companion Friction (${contract.companionSupport.powerMod} Power)`)
+                : t(`✦ Phối hợp đồng đội (+${contract.companionSupport.powerMod} Power)`, `✦ Companion Synergy (+${contract.companionSupport.powerMod} Power)`)}
+            </strong>
+            <span>{lang === 'en' ? contract.companionSupport.noteEn : contract.companionSupport.noteVi}</span>
+          </div>
+        )}
+
         <div className="choices">
           {contract.approaches.map((app, idx) => {
             const short = app.costAhn > wealth;
@@ -480,52 +504,271 @@ const ResultDock = ({ resolution, onDismiss }) => {
 
 /* ---------- End of a life ---------- */
 
-const Epitaph = ({ summary, onInherit, onRestart }) => {
-  const { t, lang } = useT();
+const Epitaph = ({ summary, onInherit, onRestart, onViewRecord, onGoHome }) => {
+  const { t, lang, bilingual } = useT();
+  const [copied, setCopied] = useState(false);
+  const [showTimeline, setShowTimeline] = useState(true);
+
+  const paragraphs = lang === 'en'
+    ? (summary.lifeStoryParagraphsEn || [])
+    : (summary.lifeStoryParagraphsVi || []);
+  const altParagraphs = lang === 'en'
+    ? (summary.lifeStoryParagraphsVi || [])
+    : (summary.lifeStoryParagraphsEn || []);
+  const turningPoints = summary.turningPoints || [];
+  const recordsList = summary.recordsList || [];
+  const lifeTags = summary.lifeTags || [];
+  const diff = summary.lifespanDiff ?? 0;
+  const diffSign = diff >= 0 ? `+${diff}` : `${diff}`;
+
+  const finalStatBars = [
+    { key: 'health', labelVi: 'Sinh lực (Health)', labelEn: 'Health', val: summary.health ?? 0, cls: 'bar-hp' },
+    { key: 'sanity', labelVi: 'Tỉnh táo (Sanity)', labelEn: 'Sanity', val: summary.sanity ?? 0, cls: 'bar-sp' },
+    { key: 'wealth', labelVi: 'Tài sản (Wealth)', labelEn: 'Wealth', val: summary.wealth ?? 0, cls: 'bar-wealth' },
+    { key: 'network', labelVi: 'Mạng lưới (Network)', labelEn: 'Network', val: summary.network ?? 0, cls: 'bar-net' },
+    { key: 'rep', labelVi: 'Danh tiếng (Reputation)', labelEn: 'Reputation', val: summary.rep ?? 0, cls: 'bar-rep' },
+    { key: 'resonance', labelVi: 'Cộng hưởng (Resonance)', labelEn: 'Resonance', val: summary.resonance ?? 0, cls: 'bar-res' }
+  ];
+
+  const handleCopySummary = () => {
+    const header = lang === 'en'
+      ? `${summary.name}, born in ${summary.birthRegionNameEn || summary.regionNameEn} — ${summary.age} yrs (${summary.deathCauseEn})`
+      : `${summary.name}, sinh ra tại ${summary.birthRegionNameVi || summary.regionNameVi} — ${summary.age} tuổi (${summary.deathCauseVi})`;
+    const quote = lang === 'en' ? summary.poeticQuoteEn : summary.poeticQuoteVi;
+    const story = paragraphs.join('\n\n');
+    const statsLine = `HP ${summary.health ?? 0} | SP ${summary.sanity ?? 0} | Ahn ${summary.wealth ?? 0} | Net ${summary.network ?? 0} | Rep ${summary.rep ?? 0} | Resonance ${summary.resonance ?? 0}%`;
+    const fullText = `${header}\n${quote}\n\n${story}\n\n[${statsLine}]\nSeed: ${summary.seed}`;
+    if (navigator?.clipboard?.writeText) {
+      navigator.clipboard.writeText(fullText).then(() => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      }).catch(() => {});
+    }
+  };
+
   return (
-    <section className="epitaph" aria-label={t('Bia mộ', 'Epitaph')}>
+    <section className="epitaph epitaph-v2" aria-label={t('Tổng kết cuộc đời', 'Life Summary')}>
       <div className="epitaph-body">
+        {/* Top Kicker & Giant Lifespan Header */}
+        <p className="epitaph-kicker-origin">
+          {lang === 'en'
+            ? `${summary.name}, born in ${summary.birthRegionNameEn || summary.regionNameEn}`
+            : `${summary.name}, sinh ra tại ${summary.birthRegionNameVi || summary.regionNameVi}`}
+        </p>
+
         <p className="epitaph-age">
           {summary.age}
-          <span>{t('tuổi', 'years')}</span>
+          <span>{t('tuổi', 'yrs')}</span>
         </p>
-        <h2 className="epitaph-name">{summary.name}</h2>
-        <p className="epitaph-cause">{lang === 'en' ? summary.deathCauseEn : summary.deathCauseVi}</p>
-        <p className="epitaph-title">{lang === 'en' ? summary.epitaphTitleEn : summary.epitaphTitleVi}</p>
 
-        <div className="epitaph-facts">
-          <div>
-            <span>{t('Thế hệ', 'Generation')}</span>
+        <p className="epitaph-cause">{lang === 'en' ? summary.deathCauseEn : summary.deathCauseVi}</p>
+
+        <blockquote className="epitaph-poetic-quote">
+          {lang === 'en' ? summary.poeticQuoteEn : summary.poeticQuoteVi}
+        </blockquote>
+
+        {/* Primary 3-Card Fact Grid (Born into / Occupation / vs. Local Avg Lifespan) */}
+        <div className="epitaph-facts epitaph-facts-primary">
+          <div className="epitaph-fact-card">
+            <span>{t('Xuất thân gia đình', 'Born into')}</span>
+            <b>{lang === 'en' ? summary.familyNameEn : summary.familyNameVi}</b>
+          </div>
+          <div className="epitaph-fact-card">
+            <span>{t('Nghề nghiệp & Địa vị', 'Occupation')}</span>
+            <b>{lang === 'en' ? (summary.occupationEn || summary.epitaphTitleEn) : (summary.occupationVi || summary.epitaphTitleVi)}</b>
+          </div>
+          <div className="epitaph-fact-card">
+            <span>
+              {t(
+                `So với tuổi thọ TB Quận (${summary.localAvgLife || 55})`,
+                `vs. local average lifespan (${summary.localAvgLife || 55})`
+              )}
+            </span>
+            <b className={`num ${diff >= 0 ? 'is-pos-life' : 'is-neg-life'}`}>
+              {diffSign} {t('tuổi', 'yrs')}
+            </b>
+          </div>
+        </div>
+
+        {/* Secondary Bloodline & Hana Classification Row */}
+        <div className="epitaph-facts epitaph-facts-secondary">
+          <div className="epitaph-fact-card">
+            <span>{t('Thế hệ huyết thống', 'Generation')}</span>
             <b className="num">#{summary.generation}</b>
           </div>
-          <div>
-            <span>{t('Cấp đe dọa', 'Threat tier')}</span>
-            <b>{summary.rankTier}</b>
+          <div className="epitaph-fact-card">
+            <span>{t('Phân cấp đe dọa Hana', 'Threat tier')}</span>
+            <b className="text-accent">{summary.rankTier}</b>
           </div>
-          <div>
-            <span>{t('Di vật để lại', 'Relic left behind')}</span>
+          <div className="epitaph-fact-card">
+            <span>{t('Di vật truyền đời', 'Relic left behind')}</span>
             <b>{summary.relic}</b>
           </div>
         </div>
 
-        <div className="epitaph-actions">
-          <button type="button" className="btn btn-primary btn-lg" onClick={onInherit}>
+        {/* Deep Narrative Life Story Card */}
+        <div className="epitaph-panel epitaph-story-panel">
+          <div className="epitaph-panel-head">
+            <h3>{t('Tiểu sử cuộc đời', 'Life story')}</h3>
+            {turningPoints.length > 0 && (
+              <button
+                type="button"
+                className="epitaph-subtoggle"
+                onClick={() => setShowTimeline((v) => !v)}
+              >
+                {showTimeline
+                  ? t('Ẩn cột mốc năm tuổi', 'Hide age milestones')
+                  : t(`Xem ${turningPoints.length} cột mốc năm tuổi`, `Show ${turningPoints.length} age milestones`)}
+              </button>
+            )}
+          </div>
+
+          <div className="epitaph-story-paragraphs">
+            {paragraphs.map((p, idx) => (
+              <div key={idx} className="epitaph-story-block">
+                <p className="epitaph-story-p">{p}</p>
+                {bilingual && altParagraphs[idx] && altParagraphs[idx] !== p && (
+                  <p className="epitaph-story-p is-alt">{altParagraphs[idx]}</p>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {showTimeline && turningPoints.length > 0 && (
+            <div className="epitaph-turning-points">
+              <p className="turning-points-heading">
+                {t('Các bước ngoặt định mệnh theo năm tuổi:', 'Pivotal turning points by age:')}
+              </p>
+              <ul className="turning-points-list">
+                {turningPoints.map((tp, idx) => (
+                  <li key={`${tp.age}_${idx}`} className={`tp-item tp-${tp.type || 'major'}`}>
+                    <span className="tp-age">{t(`Tuổi ${tp.age}`, `Age ${tp.age}`)}</span>
+                    <div className="tp-content">
+                      <strong>{lang === 'en' ? tp.titleEn : tp.titleVi}</strong>
+                      <span>{lang === 'en' ? tp.summaryEn : tp.summaryVi}</span>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+
+        {/* Unlocked Records & Milestones Card */}
+        {recordsList.length > 0 && (
+          <div className="epitaph-panel epitaph-records-panel">
+            <div className="epitaph-panel-head">
+              <h3>
+                {t('Dấu ấn & Thành tựu', 'Records')}
+                {summary.newRecordsCount > 0 && (
+                  <span className="records-new-count">
+                    {summary.newRecordsCount} {t('mới', 'new')}
+                  </span>
+                )}
+              </h3>
+              <span className="epitaph-panel-sub">
+                {t(`${recordsList.length} dấu ấn được ghi nhận`, `${recordsList.length} records logged`)}
+              </span>
+            </div>
+
+            <div className="epitaph-records-list">
+              {recordsList.map((rec) => (
+                <div
+                  key={rec.key}
+                  className={`epitaph-record-row tier-${rec.tier || 'common'} ${rec.isNew ? 'is-new-record' : ''}`}
+                  title={lang === 'en' ? rec.hintEn : rec.hintVi}
+                >
+                  <div className="record-row-left">
+                    <span className="record-row-title">{lang === 'en' ? rec.en : rec.vi}</span>
+                    {rec.isNew && <span className="record-new-badge">NEW</span>}
+                  </div>
+                  <span className="record-row-rarity">
+                    {lang === 'en' ? rec.rarityEn : rec.rarityVi}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Final State (Stat Bars + Life Tags) Card */}
+        <div className="epitaph-panel epitaph-final-panel">
+          <div className="epitaph-panel-head">
+            <h3>{t('Trạng thái cuối đời', 'Final state')}</h3>
+            <span className="epitaph-panel-sub">
+              {t(`Chiến công (Merit): ${summary.merit || 0}`, `Merit: ${summary.merit || 0}`)}
+            </span>
+          </div>
+
+          <div className="epitaph-stat-bars">
+            {finalStatBars.map((st) => (
+              <div key={st.key} className="epitaph-stat-row">
+                <div className="epitaph-stat-head">
+                  <span>{lang === 'en' ? st.labelEn : st.labelVi}</span>
+                  <b className="num">{st.val}</b>
+                </div>
+                <div className="epitaph-stat-track">
+                  <div
+                    className={`epitaph-stat-fill ${st.cls}`}
+                    style={{ width: `${Math.min(100, Math.max(0, st.val))}%` }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {lifeTags.length > 0 && (
+            <div className="epitaph-life-tags">
+              {lifeTags.map((tag, idx) => (
+                <span key={idx} className={`epitaph-tag-pill kind-${tag.kind || 'default'}`}>
+                  {lang === 'en' ? tag.en : tag.vi}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Action Buttons */}
+        <div className="epitaph-actions epitaph-actions-v2">
+          <button type="button" className="btn btn-primary btn-lg epitaph-btn-reborn" onClick={onInherit}>
             <GitBranch size={16} />
             {summary.age < 14
               ? t(`Chơi đời em · thế hệ #${summary.generation + 1}`, `Play as sibling · gen #${summary.generation + 1}`)
               : summary.age < 18 || !summary.hasChild
-                ? t(`Kế thừa di vật · thế hệ #${summary.generation + 1}`, `Inherit legacy · gen #${summary.generation + 1}`)
+                ? t(`Kế thừa di vật · thế hệ #${summary.generation + 1}`, `Be born again · gen #${summary.generation + 1}`)
                 : t(`Chơi đời con · thế hệ #${summary.generation + 1}`, `Play the heir · gen #${summary.generation + 1}`)}
           </button>
+
+          <button type="button" className="btn btn-lg" onClick={onViewRecord}>
+            <BookOpen size={16} />
+            {t('Xem lại biên niên sử', 'View life record')}
+          </button>
+
+          <button type="button" className="btn btn-lg" onClick={handleCopySummary}>
+            {copied ? <Check size={16} /> : <Copy size={16} />}
+            {copied ? t('Đã sao chép!', 'Copied!') : t('Sao chép tóm tắt', 'Copy summary')}
+          </button>
+
           <button type="button" className="btn btn-lg" onClick={() => exportDossierCardPNG(summary)}>
             <Download size={16} />
-            {t('Tải thẻ PNG', 'Download PNG')}
+            {t('Lưu ảnh thẻ', 'Save image')}
           </button>
-          <button type="button" className="btn btn-ghost btn-lg" onClick={onRestart}>
-            <RotateCcw size={16} />
+        </div>
+
+        <div className="epitaph-secondary-actions">
+          <button type="button" className="btn btn-ghost btn-sm" onClick={onGoHome}>
+            <House size={14} />
+            {t('Về trang chủ', 'Home')}
+          </button>
+          <button type="button" className="btn btn-ghost btn-sm" onClick={onRestart}>
+            <RotateCcw size={14} />
             {t('Kiếp mới từ đầu', 'Start over')}
           </button>
         </div>
+
+        <p className="epitaph-seed-footer">
+          Seed · <span className="num">{summary.seed}</span>
+        </p>
       </div>
     </section>
   );
@@ -535,6 +778,7 @@ const Epitaph = ({ summary, onInherit, onRestart }) => {
 
 export const LiveStageFeed = () => {
   const { t } = useT();
+  const navigate = useNavigate();
   const {
     char,
     speed,
@@ -542,6 +786,8 @@ export const LiveStageFeed = () => {
     chooseMinor,
     selectEventChoice,
     selectContractApproach,
+    setDungeonStance,
+    useDungeonSupply,
     chooseDungeonAction,
     fleeDungeon,
     confirmColorTitle,
@@ -549,6 +795,7 @@ export const LiveStageFeed = () => {
     completeWorkshopCraft,
     startLife,
     abandonRun,
+    exitToSetup,
     activeResolution,
     dismissResolution,
     postChoicePauseMs,
@@ -563,6 +810,8 @@ export const LiveStageFeed = () => {
       chooseMinor: s.chooseMinor,
       selectEventChoice: s.selectEventChoice,
       selectContractApproach: s.selectContractApproach,
+      setDungeonStance: s.setDungeonStance,
+      useDungeonSupply: s.useDungeonSupply,
       chooseDungeonAction: s.chooseDungeonAction,
       fleeDungeon: s.fleeDungeon,
       confirmColorTitle: s.confirmColorTitle,
@@ -570,6 +819,7 @@ export const LiveStageFeed = () => {
       completeWorkshopCraft: s.completeWorkshopCraft,
       startLife: s.startLife,
       abandonRun: s.abandonRun,
+      exitToSetup: s.exitToSetup,
       activeResolution: s.activeResolution,
       dismissResolution: s.dismissResolution,
       postChoicePauseMs: s.postChoicePauseMs,
@@ -665,6 +915,16 @@ export const LiveStageFeed = () => {
     fleeDungeon();
   };
 
+  const handleSetDungeonStance = (stance) => {
+    audioEngine.playClick();
+    setDungeonStance(stance);
+  };
+
+  const handleUseDungeonSupply = (supplyType) => {
+    audioEngine.playClick();
+    useDungeonSupply(supplyType);
+  };
+
   const handleConfirmColorTitle = (title) => {
     audioEngine.playEgo();
     confirmColorTitle(title);
@@ -738,6 +998,16 @@ export const LiveStageFeed = () => {
       if (char.pendingDungeon && (e.key === 'f' || e.key === 'F' || e.key === 'Escape')) {
         e.preventDefault();
         handleFleeDungeon();
+        return;
+      }
+      if (char.pendingDungeon && (e.key === 'q' || e.key === 'Q')) {
+        e.preventDefault();
+        handleUseDungeonSupply('breather');
+        return;
+      }
+      if (char.pendingDungeon && (e.key === 'e' || e.key === 'E')) {
+        e.preventDefault();
+        handleUseDungeonSupply('scan');
         return;
       }
       const idx = parseInt(e.key, 10) - 1;
@@ -844,7 +1114,20 @@ export const LiveStageFeed = () => {
             </div>
           )}
           {lifeSummary && !isPrologueActive && (
-            <Epitaph summary={lifeSummary} onInherit={() => startLife(true)} onRestart={abandonRun} />
+            <Epitaph
+              summary={lifeSummary}
+              onInherit={() => startLife(true)}
+              onRestart={abandonRun}
+              onViewRecord={() => {
+                if (logRef.current) {
+                  logRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+              }}
+              onGoHome={() => {
+                exitToSetup();
+                navigate('/');
+              }}
+            />
           )}
         </div>
       </div>
@@ -873,6 +1156,8 @@ export const LiveStageFeed = () => {
                   char={char}
                   onPick={handleSelectDungeon}
                   onFlee={handleFleeDungeon}
+                  onSetStance={handleSetDungeonStance}
+                  onUseSupply={handleUseDungeonSupply}
                 />
               )}
               {!char.pendingDungeon && char.pendingEvent && <EventDock event={char.pendingEvent} char={char} onPick={handleSelectEvent} />}

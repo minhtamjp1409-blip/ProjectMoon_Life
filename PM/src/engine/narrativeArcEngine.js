@@ -211,54 +211,121 @@ export function simulateNpcAutonomousLife(char, rng = Math.random) {
   const logs = [];
   if (!char.npcs) return logs;
 
-  // 1. Childhood Friend Autonomous Life
+  // 1. Childhood Friend Autonomous Life (Bond-aware: camaraderie vs. friction/clash)
   const friend = char.npcs.friend;
   if (npcIsActive(friend)) {
-    const friendAge = (char.age || 0);
-    if (friendAge >= 18 && rng() < 0.12) {
-      const roll = rng();
-      if (roll < 0.4) {
-        logs.push({
-          vi: `[Tin khu phố] ${friend.nameVi} vừa ký được hợp đồng dài hạn với một Văn phòng Fixer độc lập, gửi tặng bạn một bao thuốc lá Backstreets ăn mừng.`,
-          en: `[Alley Dispatch] ${friend.nameEn} signed an operative contract with an independent Fixer Office, sending a pack of Backstreet cigarettes in celebration.`
-        });
-        if (friend.bond) friend.bond = Math.min(100, friend.bond + 3);
-      } else if (roll < 0.7) {
-        logs.push({
-          vi: `[Tin khu phố] ${friend.nameVi} lỡ thua sạch tiền tại sòng bạc J Corp, phải vay nóng Syndicate và đang tạm trốn tại một nhà trọ giá rẻ.`,
-          en: `[Alley Dispatch] ${friend.nameEn} lost their purse at a J Corp casino, borrowing on high syndicate interest and lying low in a cheap tenement.`
-        });
+    const friendAge = char.age || 0;
+    const fBond = friend.bond ?? 35;
+    if (friendAge >= 18 && rng() < 0.14) {
+      if (fBond < 24) {
+        if (rng() < 0.5) {
+          logs.push({
+            vi: `[Va chạm ngõ hẻm] ${friend.nameVi} chạm mặt bạn ở quán rượu Backstreets. Rượu rẻ tiền làm bùng lên những bất mãn tích tụ; hai người lời qua tiếng lại đến mức rút vũ khí găm vào mặt bàn trước khi khách xung quanh kịp can ngăn.`,
+            en: `[Alley Altercation] ${friend.nameEn} crossed paths with you in a Backstreet tavern. Cheap liquor ignited festering grievances; the argument escalated until blades were driven into the tabletop before patrons pulled you apart.`
+          });
+          friend.bond = Math.max(0, fBond - 4);
+          if (char.stats) char.stats.sanity = Math.max(0, (char.stats.sanity || 50) - 4);
+        } else {
+          logs.push({
+            vi: `[Tin đồn bất lợi] ${friend.nameVi} công khai phàn nàn với các môi giới trong vùng rằng bạn là kẻ tính toán chỉ biết giữ mạng mình, khiến uy tín của bạn sứt mẻ ít nhiều.`,
+            en: `[Hostile Rumor] ${friend.nameEn} openly complained to local brokers that you only ever look out for your own skin, chipping away at your standing in the district.`
+          });
+          if (char.stats) char.stats.reputation = Math.max(-100, (char.stats.reputation || 0) - 3);
+        }
       } else {
-        logs.push({
-          vi: `[Tin khu phố] ${friend.nameVi} bị ho dữ dội do khói bụi công nghiệp nồng nặc; bạn gửi sang một lọ thuốc an thần để xoa dịu cơn đau.`,
-          en: `[Alley Dispatch] ${friend.nameEn} suffers coughing fits from industrial smog; you sent over a bottle of sedatives to soothe the pain.`
-        });
+        const roll = rng();
+        if (roll < 0.4) {
+          logs.push({
+            vi: `[Tin khu phố] ${friend.nameVi} vừa ký được hợp đồng dài hạn với một Văn phòng Fixer độc lập, gửi tặng bạn một bao thuốc lá Backstreets ăn mừng.`,
+            en: `[Alley Dispatch] ${friend.nameEn} signed an operative contract with an independent Fixer Office, sending a pack of Backstreet cigarettes in celebration.`
+          });
+          friend.bond = Math.min(100, fBond + 3);
+        } else if (roll < 0.7) {
+          logs.push({
+            vi: `[Tin khu phố] ${friend.nameVi} lỡ thua sạch tiền tại sòng bạc J Corp, phải vay nóng Syndicate và đang tạm trốn tại một nhà trọ giá rẻ.`,
+            en: `[Alley Dispatch] ${friend.nameEn} lost their purse at a J Corp casino, borrowing on high syndicate interest and lying low in a cheap tenement.`
+          });
+        } else {
+          logs.push({
+            vi: `[Tin khu phố] ${friend.nameVi} bị ho dữ dội do khói bụi công nghiệp nồng nặc; bạn gửi sang một lọ thuốc an thần để xoa dịu cơn đau.`,
+            en: `[Alley Dispatch] ${friend.nameEn} suffers coughing fits from industrial smog; you sent over a bottle of sedatives to soothe the pain.`
+          });
+        }
       }
     }
   }
 
-  // 2. Living Mentor Autonomous Life
-  const mentor = char.npcs.mentor;
-  if (npcIsActive(mentor)) {
-    if (char.age >= 25 && rng() < 0.14) {
-      logs.push({
-        vi: `[Chỉ dạy của Sư Phụ] ${mentor.nameVi} gọi bạn tới uống trà lúc hoàng hôn, ngắm nhìn vết chém cũ trên tay và truyền thụ kinh nghiệm đối đầu sát thủ Shi.`,
-        en: `[Mentor’s Teachings] ${mentor.nameEn} summoned you for twilight tea, reflecting on old battle scars and sharing tactical poise against Shi assassins.`
-      });
-      if (mentor.bond) mentor.bond = Math.min(100, mentor.bond + 2);
+  // 2. Combat Partner Autonomous Life (Synergy vs. Friction)
+  const partner = char.npcs.partner;
+  if (npcIsActive(partner)) {
+    const pBond = partner.bond ?? 35;
+    if ((char.age || 0) >= 19 && rng() < 0.15) {
+      if (pBond < 26) {
+        logs.push({
+          vi: `[Rạn nứt tác chiến] ${partner.nameVi} tự ý giữ lại một phần đạn dược và thông tin tình báo sau ca tuần tra chung, buông lời lạnh nhạt rằng ai cũng phải tự lo đường lui ở The City.`,
+          en: `[Tactical Friction] ${partner.nameEn} withheld spare ammunition and recon notes after a joint patrol, remarking coldly that everyone in The City needs their own exit plan.`
+        });
+        partner.bond = Math.max(0, pBond - 3);
+      } else if (pBond >= 65) {
+        logs.push({
+          vi: `[Đồng đội ăn ý] ${partner.nameVi} thức trắng đêm mài chỉnh lại vũ khí và bọc lại giáp vai cho bạn trước mùa hợp đồng mới.`,
+          en: `[Trusted Wingman] ${partner.nameEn} stayed up all night recalibrating your weapon balance and reinforcing your pauldron straps ahead of the new contract season.`
+        });
+        if (char.stats) char.stats.health = Math.min(100, (char.stats.health || 50) + 3);
+      }
     }
   }
 
-  // 3. Living Spouse Autonomous Life
+  // 3. Living Mentor Autonomous Life
+  const mentor = char.npcs.mentor;
+  if (npcIsActive(mentor)) {
+    const mBond = mentor.bond ?? 35;
+    if (char.age >= 25 && rng() < 0.14) {
+      if (mBond < 24) {
+        logs.push({
+          vi: `[Lời trách của Sư Phụ] ${mentor.nameVi} nhìn cách bạn xuống tay trong các vụ việc gần đây rồi lắc đầu bỏ đi, nói rằng bạn đã quên mất giới hạn tối thiểu của nghề.`,
+          en: `[Mentor’s Rebuke] ${mentor.nameEn} watched how you handled recent affairs and walked away shaking their head, saying you have forgotten the craft's bare minimum restraint.`
+        });
+        if (char.stats) char.stats.sanity = Math.max(0, (char.stats.sanity || 50) - 3);
+      } else {
+        logs.push({
+          vi: `[Chỉ dạy của Sư Phụ] ${mentor.nameVi} gọi bạn tới uống trà lúc hoàng hôn, ngắm nhìn vết chém cũ trên tay và truyền thụ kinh nghiệm đối đầu sát thủ Shi.`,
+          en: `[Mentor’s Teachings] ${mentor.nameEn} summoned you for twilight tea, reflecting on old battle scars and sharing tactical poise against Shi assassins.`
+        });
+        mentor.bond = Math.min(100, mBond + 2);
+      }
+    }
+  }
+
+  // 4. Living Spouse Autonomous Life
   const spouse = char.npcs.spouse;
   if (npcIsActive(spouse) && char.flags.includes('Married')) {
+    const sBond = spouse.bond ?? 45;
     if (rng() < 0.15) {
-      logs.push({
-        vi: `[Tổ ấm Backstreets] ${spouse.nameVi} thắp một ngọn nến thơm tự chế bên bàn ăn, chuẩn bị bữa tối nóng hổi xua tan giá lạnh sau một ca làm việc dài.`,
-        en: `[Backstreet Hearth] ${spouse.nameEn} lit a fragrant homemade candle by the table, serving a hot meal that drove away the bone-chilling frost of your long shift.`
-      });
-      if (char.stats) char.stats.sanity = Math.min(100, (char.stats.sanity || 50) + 4);
+      if (sBond < 25) {
+        logs.push({
+          vi: `[Căn hộ lạnh lẽo] Bạn trở về nhà lúc nửa đêm; ${spouse.nameVi} đã khóa cửa phòng ngủ từ sớm, trên bàn chỉ còn tờ hóa đơn tiền điện nước đặt cạnh phần cơm nguội ngắt.`,
+          en: `[Cold Apartment] You returned home at midnight; ${spouse.nameEn} had locked the bedroom door hours ago, leaving only an unpaid utility bill beside a plate of cold rice.`
+        });
+        if (char.stats) char.stats.sanity = Math.max(0, (char.stats.sanity || 50) - 4);
+      } else {
+        logs.push({
+          vi: `[Tổ ấm Backstreets] ${spouse.nameVi} thắp một ngọn nến thơm tự chế bên bàn ăn, chuẩn bị bữa tối nóng hổi xua tan giá lạnh sau một ca làm việc dài.`,
+          en: `[Backstreet Hearth] ${spouse.nameEn} lit a fragrant homemade candle by the table, serving a hot meal that drove away the bone-chilling frost of your long shift.`
+        });
+        if (char.stats) char.stats.sanity = Math.min(100, (char.stats.sanity || 50) + 4);
+      }
     }
+  }
+
+  // 5. Active Nemesis Shadow Harassment
+  const nemesis = char.npcs.nemesis;
+  if (npcIsActive(nemesis) && rng() < 0.14) {
+    logs.push({
+      vi: `[Bóng ma phản bội] Bạn phát hiện ký hiệu quen thuộc của ${nemesis.nameVi} vạch bằng mũi dao ngay trên hộp thư trước cửa. Kẻ từng đi bên cạnh bạn vẫn đang rình rập chờ thời cơ.`,
+      en: `[Shadow of Betrayal] You found ${nemesis.nameEn}'s familiar knife-mark scratched into your doorway postbox. Your former companion is still stalking your movements.`
+    });
+    if (char.stats) char.stats.sanity = Math.max(0, (char.stats.sanity || 50) - 3);
   }
 
   return logs;

@@ -27,6 +27,19 @@ export function weightedOutcomes(choice, char, kind = 'major') {
         }
       }
       const outcomeEffects = outcome.effects || outcome.fx || {};
+      if (outcome.flagsAdd?.includes('EGOAwakened')) {
+        const res = char.resonance || 0;
+        const sp = char.stats?.sanity ?? char.sanity ?? 50;
+        const scarBonus = 1 + Math.min(3, (char.scars || []).length) * 0.15;
+        const resBonus = res >= 75 ? 1.85 : res >= 60 ? 1.55 : res >= 50 ? 1.3 : 1.0;
+        const sanityBonus = sp >= 40 ? 1.25 : 1.0;
+        weight = Math.round(weight * scarBonus * resBonus * sanityBonus);
+      } else if (outcome.flagsAdd?.includes('Distorted') && !choice.flagsAdd?.includes('Distorted')) {
+        const sp = char.stats?.sanity ?? char.sanity ?? 50;
+        if (sp >= 45 && (char.resonance || 0) >= 50) {
+          weight = Math.max(5, Math.round(weight * 0.55));
+        }
+      }
       if (hasScarTag(char, 'survivor') &&
           ((char.stats?.health ?? char.health ?? 50) <= 40 || (char.stats?.sanity ?? char.sanity ?? 50) <= 40) &&
           !outcome.deathCauseVi && ((outcomeEffects.health || 0) > 0 || (outcomeEffects.sanity || 0) > 0 || outcome.survival)) {

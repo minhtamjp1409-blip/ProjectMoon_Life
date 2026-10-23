@@ -177,29 +177,29 @@ export function checkColorFixerReadiness(char) {
 
 export const FINGER_LADDERS = {
   Thumb: [
-    { rank: 1, meritReq: 26, repReq: 16, eventId: 'syn_thumb_promo_capo', eventIds: ['syn_thumb_promo_capo', 'syn_thumb_promo_capo_convoy'], titleVi: 'Thăng cấp Capo (The Thumb)', titleEn: 'Thumb Capo Promotion Trial' },
-    { rank: 2, meritReq: 52, repReq: 32, eventId: 'syn_thumb_promo_sottocapo', eventIds: ['syn_thumb_promo_sottocapo', 'syn_thumb_promo_sottocapo_armory'], titleVi: 'Khảo thí Sottocapo (The Thumb)', titleEn: 'Thumb Sottocapo Promotion Trial' },
-    { rank: 3, meritReq: 115, repReq: 65, eventId: 'syn_thumb_underboss_purge', eventIds: ['syn_thumb_underboss_purge', 'syn_thumb_apex_godfather'], titleVi: 'Đại Lễ Tuyên Thệ Underboss (The Thumb)', titleEn: 'Thumb Underboss Pinnacle Trial' }
+    { rank: 1, meritReq: 28, repReq: 18, eventId: 'syn_thumb_promo_capo', eventIds: ['syn_thumb_promo_capo', 'syn_thumb_promo_capo_convoy'], titleVi: 'Thăng cấp Capo (The Thumb)', titleEn: 'Thumb Capo Promotion Trial' },
+    { rank: 2, meritReq: 68, repReq: 46, eventId: 'syn_thumb_promo_sottocapo', eventIds: ['syn_thumb_promo_sottocapo', 'syn_thumb_promo_sottocapo_armory'], titleVi: 'Khảo thí Sottocapo (The Thumb)', titleEn: 'Thumb Sottocapo Promotion Trial' },
+    { rank: 3, meritReq: 155, repReq: 84, eventId: 'syn_thumb_underboss_purge', eventIds: ['syn_thumb_underboss_purge', 'syn_thumb_apex_godfather'], titleVi: 'Đại Lễ Tuyên Thệ Underboss (The Thumb)', titleEn: 'Thumb Underboss Pinnacle Trial' }
   ],
   Index: [
-    { rank: 1, meritReq: 26, repReq: 16, eventId: 'syn_index_promo_messenger', eventIds: ['syn_index_promo_messenger', 'syn_index_promo_messenger_conduit'], titleVi: 'Sứ Giả Chỉ Lệnh (Index Messenger Trial)', titleEn: 'Index Messenger Promotion Trial' },
-    { rank: 2, meritReq: 52, repReq: 32, eventId: 'syn_index_promo_proxy', eventIds: ['syn_index_promo_proxy', 'syn_index_promo_proxy_sword'], titleVi: 'Đại Kiếm Proxy (Index Proxy Trial)', titleEn: 'Index Proxy Promotion Trial' },
-    { rank: 3, meritReq: 115, repReq: 65, eventId: 'syn_index_weaver_prescript', eventIds: ['syn_index_weaver_prescript', 'syn_index_grand_proxy_flow'], titleVi: 'Ý Chỉ Thần Dệt (Index Weaver Pinnacle)', titleEn: 'Index Weaver Pinnacle Trial' }
+    { rank: 1, meritReq: 28, repReq: 18, eventId: 'syn_index_promo_messenger', eventIds: ['syn_index_promo_messenger', 'syn_index_promo_messenger_conduit'], titleVi: 'Sứ Giả Chỉ Lệnh (Index Messenger Trial)', titleEn: 'Index Messenger Promotion Trial' },
+    { rank: 2, meritReq: 68, repReq: 46, eventId: 'syn_index_promo_proxy', eventIds: ['syn_index_promo_proxy', 'syn_index_promo_proxy_sword'], titleVi: 'Đại Kiếm Proxy (Index Proxy Trial)', titleEn: 'Index Proxy Promotion Trial' },
+    { rank: 3, meritReq: 155, repReq: 84, eventId: 'syn_index_weaver_prescript', eventIds: ['syn_index_weaver_prescript', 'syn_index_grand_proxy_flow'], titleVi: 'Ý Chỉ Thần Dệt (Index Weaver Pinnacle)', titleEn: 'Index Weaver Pinnacle Trial' }
   ],
   Middle: [
-    { rank: 1, meritReq: 26, repReq: 16, eventId: 'syn_middle_promo_big_sibling', eventIds: ['syn_middle_promo_big_sibling', 'syn_middle_promo_big_sibling_rescue'], titleVi: 'Lễ Khắc Xích Vàng: Big Sibling (The Middle)', titleEn: 'Middle Big Sibling Promotion Trial' },
-    { rank: 2, meritReq: 52, repReq: 32, eventId: 'syn_middle_promo_great_elder', eventIds: ['syn_middle_promo_great_elder', 'syn_middle_promo_great_elder_clan'], titleVi: 'Đại Trưởng Lão (Middle Great Elder)', titleEn: 'Middle Great Elder Promotion Trial' },
-    { rank: 3, meritReq: 115, repReq: 65, eventId: 'syn_middle_great_brother_vendetta', eventIds: ['syn_middle_great_brother_vendetta', 'syn_middle_apex_patriarch'], titleVi: 'Đại Huyết Nợ: Great Brother/Sister (The Middle)', titleEn: 'Middle Great Sibling Pinnacle Trial' }
+    { rank: 1, meritReq: 28, repReq: 18, eventId: 'syn_middle_promo_big_sibling', eventIds: ['syn_middle_promo_big_sibling', 'syn_middle_promo_big_sibling_rescue'], titleVi: 'Lễ Khắc Xích Vàng: Big Sibling (The Middle)', titleEn: 'Middle Big Sibling Promotion Trial' },
+    { rank: 2, meritReq: 68, repReq: 46, eventId: 'syn_middle_promo_great_elder', eventIds: ['syn_middle_promo_great_elder', 'syn_middle_promo_great_elder_clan'], titleVi: 'Đại Trưởng Lão (Middle Great Elder)', titleEn: 'Middle Great Elder Promotion Trial' },
+    { rank: 3, meritReq: 155, repReq: 84, eventId: 'syn_middle_great_brother_vendetta', eventIds: ['syn_middle_great_brother_vendetta', 'syn_middle_apex_patriarch'], titleVi: 'Đại Huyết Nợ: Great Brother/Sister (The Middle)', titleEn: 'Middle Great Sibling Pinnacle Trial' }
   ],
   Ring: [
-    { rank: 1, meritReq: 26, repReq: 16, eventId: 'syn_ring_promo_docent', eventIds: ['syn_ring_promo_docent', 'syn_ring_promo_docent_gallery'], titleVi: 'Triển Lãm Giải Phẫu: Docent (The Ring)', titleEn: 'Ring Docent Promotion Trial' },
-    { rank: 2, meritReq: 52, repReq: 32, eventId: 'syn_ring_promo_maestro', eventIds: ['syn_ring_promo_maestro', 'syn_ring_promo_maestro_symphony'], titleVi: 'Đại Nhạc Trưởng: Maestro (The Ring)', titleEn: 'Ring Maestro Promotion Trial' },
-    { rank: 3, meritReq: 115, repReq: 65, eventId: 'syn_ring_curator_monument', eventIds: ['syn_ring_curator_monument', 'syn_ring_apex_grand_master'], titleVi: 'Đại Quản Trưởng: Grand Curator (The Ring)', titleEn: 'Ring Grand Curator Pinnacle Trial' }
+    { rank: 1, meritReq: 28, repReq: 18, eventId: 'syn_ring_promo_docent', eventIds: ['syn_ring_promo_docent', 'syn_ring_promo_docent_gallery'], titleVi: 'Triển Lãm Giải Phẫu: Docent (The Ring)', titleEn: 'Ring Docent Promotion Trial' },
+    { rank: 2, meritReq: 68, repReq: 46, eventId: 'syn_ring_promo_maestro', eventIds: ['syn_ring_promo_maestro', 'syn_ring_promo_maestro_symphony', 'syn_ring_maestro_gallery'], titleVi: 'Đại Nhạc Trưởng: Maestro (The Ring)', titleEn: 'Ring Maestro Promotion Trial' },
+    { rank: 3, meritReq: 155, repReq: 84, eventId: 'syn_ring_curator_monument', eventIds: ['syn_ring_curator_monument', 'syn_ring_apex_grand_master'], titleVi: 'Đại Quản Trưởng: Grand Curator (The Ring)', titleEn: 'Ring Grand Curator Pinnacle Trial' }
   ],
   Pinky: [
-    { rank: 1, meritReq: 26, repReq: 16, eventId: 'syn_pinky_promo_blade', eventIds: ['syn_pinky_promo_blade', 'syn_pinky_promo_blade_oath'], titleVi: 'Lưỡi Đao Lập Thệ: Sworn Blade (The Pinky)', titleEn: 'Pinky Sworn Blade Promotion Trial' },
-    { rank: 2, meritReq: 52, repReq: 32, eventId: 'syn_pinky_star_blade_pinnacle', eventIds: ['syn_pinky_star_blade_pinnacle', 'syn_pinky_promo_shadow_arbiter'], titleVi: 'Thiên Tinh: Star of the Sky (The Pinky)', titleEn: 'Pinky Star of the Sky Promotion Trial' },
-    { rank: 3, meritReq: 115, repReq: 65, eventId: 'syn_pinky_promo_sovereign', eventIds: ['syn_pinky_promo_sovereign', 'syn_pinky_apex_monarch'], titleVi: 'Chúa Tể Ngón Út: Sovereign (The Pinky)', titleEn: 'Pinky Sovereign Pinnacle Trial' }
+    { rank: 1, meritReq: 28, repReq: 18, eventId: 'syn_pinky_promo_blade', eventIds: ['syn_pinky_promo_blade', 'syn_pinky_promo_blade_oath'], titleVi: 'Lưỡi Đao Lập Thệ: Sworn Blade (The Pinky)', titleEn: 'Pinky Sworn Blade Promotion Trial' },
+    { rank: 2, meritReq: 68, repReq: 46, eventId: 'syn_pinky_star_blade_pinnacle', eventIds: ['syn_pinky_star_blade_pinnacle', 'syn_pinky_promo_shadow_arbiter', 'pinky_star_blade_oath'], titleVi: 'Thiên Tinh: Star of the Sky (The Pinky)', titleEn: 'Pinky Star of the Sky Promotion Trial' },
+    { rank: 3, meritReq: 155, repReq: 84, eventId: 'syn_pinky_promo_sovereign', eventIds: ['syn_pinky_promo_sovereign', 'syn_pinky_apex_monarch'], titleVi: 'Chúa Tể Ngón Út: Sovereign (The Pinky)', titleEn: 'Pinky Sovereign Pinnacle Trial' }
   ]
 };
 
@@ -215,17 +215,21 @@ export function getNextFingerPromotion(char) {
   if (!nextStep) return null;
 
   const curRep = (char.stats?.rep ?? char.rep) || 0;
+  const curNet = (char.stats?.network ?? char.network) || 0;
+  const netReq = nextStep.networkReq || 0;
   const earliestAge = [0, 22, 28, 35][nextStep.rank];
-  const tenureOk = curRank === 0 || char.lastFingerPromotionAge == null || char.age - char.lastFingerPromotionAge >= 3;
-  const fingerPacingOk = tenureOk && (char.finger !== 'Thumb' || char.age >= earliestAge);
-  const isEligible = (char.merit || 0) >= nextStep.meritReq && curRep >= nextStep.repReq && fingerPacingOk;
+  const minTenure = [0, 0, 4, 5][nextStep.rank];
+  const tenureOk = curRank === 0 || char.lastFingerPromotionAge == null || char.age - char.lastFingerPromotionAge >= minTenure;
+  const fingerPacingOk = tenureOk && char.age >= earliestAge;
+  const isEligible = (char.merit || 0) >= nextStep.meritReq && curRep >= nextStep.repReq && curNet >= netReq && fingerPacingOk;
 
   return {
     ...nextStep,
     finger: char.finger,
     isEligible,
     currentMerit: char.merit || 0,
-    currentRep: curRep
+    currentRep: curRep,
+    currentNetwork: curNet
   };
 }
 
@@ -267,6 +271,14 @@ const FINGER_OPPORTUNITIES = {
   Pinky: 'm_career_pinky_oath'
 };
 
+const FINGER_APEX_OPPORTUNITIES = {
+  Thumb: 'm_career_thumb_apex_tribute',
+  Index: 'm_career_index_apex_tribute',
+  Middle: 'm_career_middle_apex_tribute',
+  Ring: 'm_career_ring_apex_tribute',
+  Pinky: 'm_career_pinky_apex_tribute'
+};
+
 export function getOtherCareerPromotion(char) {
   if (char.job === 'Syndicate' || (char.flags?.includes('Distorted') && char.finger)) {
     const step = getNextFingerPromotion(char);
@@ -302,13 +314,13 @@ export function careerPromotionOfferChance(char, step = getOtherCareerPromotion(
 
 export function careerPromotionSuccessChance(char, step) {
   const rank = step.rank;
-  const base = { finger: 0.74, wing: 0.77 }[step.route] - (rank - 1) * 0.12;
+  const base = { finger: 0.72, wing: 0.77 }[step.route] - (rank - 1) * (step.route === 'finger' ? 0.14 : 0.12);
   const extraMerit = Math.max(0, (char.merit || 0) - step.meritReq);
   const standingBonus = step.route === 'finger'
-    ? Math.max(0, char.stats.rep - step.repReq) * 0.002
+    ? Math.max(0, char.stats.rep - step.repReq) * 0.002 + Math.max(0, char.stats.network - (step.networkReq || 0)) * 0.001
     : Math.max(0, char.stats.network - step.networkReq) * 0.002 + Math.max(0, char.stats.wealth - step.wealthReq) * 0.001;
   const readiness = step.route === 'wing' ? (char.stats.sanity - 50) * 0.0015 : (char.stats.health - 50) * 0.0015;
-  return Math.max(0.25, Math.min(0.88, base + Math.min(0.14, extraMerit * 0.001 + standingBonus) + readiness));
+  return Math.max(0.25, Math.min(0.86, base + Math.min(0.14, extraMerit * 0.001 + standingBonus) + readiness));
 }
 
 export function careerPromotionFailureEffects(step) {
@@ -345,6 +357,14 @@ export function careerOpportunity(char) {
     ? [FINGER_OPPORTUNITIES[step.finger]]
     : ['m_career_wing_review', 'm_career_wing_quota', 'm_career_wing_incident'];
   return { id: ids[0], ids, chance: Math.min(step.route === 'wing' ? 0.78 : 0.68, 0.34 + shortage * (step.route === 'wing' ? 0.44 : 0.34)), shortage, route: step.route };
+}
+
+export function syndicateApexOpportunity(char) {
+  if ((char.job === 'Syndicate' || (char.flags?.includes('Distorted') && char.finger)) && char.finger && (char.fingerRank || 0) >= 3) {
+    const id = FINGER_APEX_OPPORTUNITIES[char.finger] || FINGER_APEX_OPPORTUNITIES.Thumb;
+    return { id, ids: [id], chance: 0.68, shortage: 0, route: 'finger_apex' };
+  }
+  return null;
 }
 
 /**

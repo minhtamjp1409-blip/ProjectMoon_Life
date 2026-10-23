@@ -104,3 +104,61 @@ export function bondCapFor(npc) {
   const base = ['spouse', 'child', 'parent'].includes(npc.role) ? 55 : 40;
   return Math.min(100, base + 20 * (npc.questsDone || 0));
 }
+
+export function getNpcBondState(npc) {
+  if (!npc) return { id: 'none', vi: 'Không có', en: 'None', color: 'var(--text-muted)', contractMod: 0, dungeonMod: 0, betrayalRisk: 0 };
+  if (npc.status === 'betrayer') {
+    return { id: 'betrayer', vi: 'Kẻ phản bội', en: 'Betrayer', color: 'var(--state-danger)', contractMod: -16, dungeonMod: -10, betrayalRisk: 0 };
+  }
+  const b = npc.bond ?? 22;
+  const volatile = hasTag(npc, 'greedy') || hasTag(npc, 'liar') || hasTag(npc, 'ambitious') || hasTag(npc, 'hothead');
+  if (b >= 80) {
+    return { id: 'sworn', vi: 'Gắn kết sinh tử', en: 'Sworn', color: 'var(--accent-gold)', contractMod: 13, dungeonMod: 6, betrayalRisk: 0 };
+  }
+  if (b >= 52) {
+    return { id: 'trusted', vi: 'Tin cậy', en: 'Trusted', color: 'var(--state-chill)', contractMod: 8, dungeonMod: 3, betrayalRisk: 0 };
+  }
+  if (b >= 30) {
+    return { id: 'steady', vi: 'Bình thường', en: 'Steady', color: 'var(--text-secondary)', contractMod: 3, dungeonMod: 0, betrayalRisk: volatile && b <= 33 ? 0.04 : 0 };
+  }
+  if (b >= 18) {
+    return {
+      id: 'strained',
+      vi: 'Rạn nứt (-Tỉ lệ)',
+      en: 'Strained (-Odds)',
+      color: 'var(--s-heat)',
+      contractMod: volatile ? -10 : -7,
+      dungeonMod: -5,
+      betrayalRisk: volatile ? 0.14 : 0.06
+    };
+  }
+  return {
+    id: 'hostile',
+    vi: 'Bất mãn / Dễ phản',
+    en: 'Hostile / Betrayal Risk',
+    color: 'var(--state-danger)',
+    contractMod: -15,
+    dungeonMod: -9,
+    betrayalRisk: volatile ? 0.28 : 0.18
+  };
+}
+
+export function evaluateCompanionSupport(char) {
+  const npcs = char?.npcs || {};
+  const isActive = (n) => Boolean(n) && n.alive !== false && !n.deceased && !['dead', 'missing', 'estranged', 'betrayer'].includes(n.status);
+  const role = isActive(npcs.partner) ? 'partner' : isActive(npcs.friend) ? 'friend' : isActive(npcs.mentor) ? 'mentor' : null;
+  if (!role) return { active: false, role: null, npc: null, state: null, contractPower: 0, dungeonOddsMod: 0, betrayalRisk: 0 };
+  const npc = npcs[role];
+  const state = getNpcBondState(npc);
+  const roleScale = role === 'partner' ? 1.0 : 0.65;
+  return {
+    active: true,
+    role,
+    npc,
+    state,
+    contractPower: Math.round(state.contractMod * roleScale),
+    dungeonOddsMod: Math.round(state.dungeonMod * roleScale),
+    betrayalRisk: role === 'mentor' ? state.betrayalRisk * 0.4 : state.betrayalRisk
+  };
+}
+

@@ -57,6 +57,20 @@ export const DungeonBackdrop = ({ session }) => {
         </div>
       )}
 
+      {/* 5. The Great Lake (Pallid Whale Abyss): Abyssal currents, pallid membrane & U Corp tuning rings */}
+      {theme === 'greatlake' && (
+        <div className="greatlake-abyss-grid">
+          <div className="greatlake-wave-layer wave-1" />
+          <div className="greatlake-wave-layer wave-2" />
+          <div className="greatlake-tuning-ring ring-outer" />
+          <div className="greatlake-tuning-ring ring-inner" />
+          <div className="pallid-whale-eye-glow" />
+          <div className="pallid-spore-mote spore-1" />
+          <div className="pallid-spore-mote spore-2" />
+          <div className="pallid-spore-mote spore-3" />
+        </div>
+      )}
+
       {/* Sanity Strain Vignette: Darkens and bleeds red as strain rises */}
       <div
         className="strain-vignette"

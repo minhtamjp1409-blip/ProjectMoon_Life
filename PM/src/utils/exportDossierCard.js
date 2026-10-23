@@ -44,10 +44,12 @@ export function exportDossierCardPNG(summary) {
   ctx.stroke();
 
   // Key Dossier Metrics
+  const diff = summary.lifespanDiff ?? 0;
+  const diffLabel = `${summary.age} Tuổi (${diff >= 0 ? `+${diff}` : diff} vs TB Quận)`;
   const metrics = [
-    ['TUỔI THỌ / LIFESPAN', `${summary.age} Tuổi`],
-    ['KHU VỰC / DISTRICT', summary.regionNameVi],
-    ['NGHỀ NGHIỆP / PATH', summary.job],
+    ['TUỔI THỌ / LIFESPAN', diffLabel],
+    ['XUẤT THÂN / ORIGIN', `${summary.familyNameVi || summary.regionNameVi}`],
+    ['NGHỀ NGHIỆP / OCCUPATION', summary.occupationVi || summary.job],
     ['DI VẬT ĐỂ LẠI / HEIRLOOM', summary.relic]
   ];
 
