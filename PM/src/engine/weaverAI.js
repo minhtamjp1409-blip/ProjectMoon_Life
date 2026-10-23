@@ -20,6 +20,7 @@ import {
   RETIRED_WORKSHOP_TRIAL_IDS
 } from './careerPipeline.js';
 import { isAffInviteEvent, getAffiliationInvite, preferredPromoIds } from './affiliation.js';
+import { isGateEvent, gateOnCooldown } from './dungeonPacing.js';
 // ============================================================================
 // THE PRESCRIPT LOOM: CAUSAL MEMORY GRAPH & RNG FATE OMEN ENGINE
 // Pure In-Universe Project Moon Causal Engine (Zero Meta/AI Text)
@@ -352,6 +353,7 @@ export function isEventEligible(event, char, { scripted = false } = {}) {
   if (event.id === 'ad_outskirts_crossroad_18' && (!reachedCareerAge(char) || char.job !== 'Child')) return false;
   if (isEgoLeapEvent(event.id) && getEgoLeap(char)?.eventId !== event.id) return false;
   if (isAffInviteEvent(event.id) && getAffiliationInvite(char) !== event.id) return false;
+  if (isGateEvent(event.id) && gateOnCooldown(char)) return false;
   if (event.id === 'ego_carmen_crossroad' && !(char.age >= 18 && (hasEgoOpportunity(char) || char.stats.sanity <= 15 || (char.resonance || 0) >= 50))) return false;
   if (event.id === 'csq_claw_taboo_visitation' && char.taboo < 3) return false;
   const milestones = ['ad_career_crossroad_18', 'ad_outskirts_crossroad_18', 'ego_carmen_crossroad', 'ego_second_efflorescence_trial', 'hana_color_ascension_trial', 'csq_claw_taboo_visitation'];

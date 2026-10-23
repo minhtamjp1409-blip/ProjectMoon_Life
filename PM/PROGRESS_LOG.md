@@ -373,6 +373,12 @@ Mô phỏng 1.000 sinh mệnh độc lập (tuổi thọ trung bình 52.0 tuổi
 
 ## 10. Nhật ký phát triển chi tiết (Changelog từ Đợt 1 đến Đợt 23)
 
+### Đợt 33 (23/10/2026): Mỗi đời ít nhất một cửa dungeon
+* **Đo trước khi sửa** (150 đời Fixer từ 18 tuổi): chỉ 15% đời được mời vào dungeon, trung bình 0,19 lần mỗi đời, lần đầu thường ở tuổi 48. Các cửa dungeon (`eventsDungeonGates.js`) phải cạnh tranh với khoảng 70 event major đủ điều kiện mỗi năm nên hiếm khi được rút.
+* **Cửa đầu tiên có hẹn** (`src/engine/dungeonPacing.js`): mỗi đời có một tuổi hẹn theo hạt giống, từ 2 đến 7 năm sau tuổi đi làm. Đến tuổi ấy mà chưa gặp cửa nào thì cuối năm chọn một cửa hợp với nghề, District và cờ của nhân vật (theo trọng số của cửa) và gieo thành sợi nhân quả cho năm sau. Nếu cửa đã gieo không còn hợp (đổi nghề, chuyển District) thì sau 3 năm đổi cửa khác. Distortion không nhận.
+* **Chống dồn dập:** trả lời một cửa (vào hay từ chối) bắt đầu 5 năm chờ trước khi cửa khác được mời. Mỗi cửa vẫn chỉ gặp một lần như cũ.
+* **Kết quả** (100 đời mỗi nghề): Fixer 89%, Syndicate 90% đời có ít nhất một cửa; mọi đời sống tới 33 tuổi đều đã gặp. Số còn lại là những đời chết trước tuổi hẹn. Lần đầu trung bình ở tuổi 22, khoảng một cửa mỗi đời. Test: `tests/test_dungeon_pacing.mjs`.
+
 ### Đợt 32 (23/10/2026): Bond với người thân không còn tụt âm thầm
 * **Đo trước khi sửa** (mô phỏng 120 Fixer, một friend bond 60 và một partner bond 55 từ lúc 22 tuổi): bond trung bình 47 ở tuổi 30, 36 ở tuổi 40, 30 ở tuổi 50; chỉ 8% còn từ 50 trở lên ở tuổi 50. Nguyên nhân: `driftBonds` trừ 2 mỗi năm từ năm thứ 2 không gặp (4 từ năm thứ 5), mà mốc "gặp" chỉ được cập nhật khi một event chọn đúng người đó; Fixer ngập hợp đồng và thi Hana nên mốc ấy đứng yên.
 * **Trừ chậm lại** (`director.js`): chỉ bắt đầu sau 4 năm không gặp, trừ 1 mỗi năm (2 nếu từ 7 năm và bond dưới 60), bond từ 60 trở lên chỉ trừ 1; sàn vẫn là 6.

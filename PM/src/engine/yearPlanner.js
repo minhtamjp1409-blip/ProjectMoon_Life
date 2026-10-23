@@ -1,6 +1,7 @@
 import { advanceCityCondition } from './cityConditions.js';
 import { contractRouteOf } from '../data/careerContracts.js';
 import { affiliationYearTick } from './affiliation.js';
+import { planFirstGate } from './dungeonPacing.js';
 import { careerAgeOf, reachedCareerAge, effectiveMinAge } from './careerAge.js';
 import { rememberResonance, hasEgoOpportunity, colorTrialAvailable, rollEgoEncounter } from './awakeningProgress.js';
 import { simulateNpcAutonomousLife } from './narrativeArcEngine.js';
@@ -1214,6 +1215,7 @@ export function endYear(charState, rng) {
   }
 
   for (const affLog of affiliationYearTick(char, rng)) pushLog(char, affLog, 0.985);
+  planFirstGate(char);
 
   if (deltas.some((d) => d.k !== 'heat')) {
     const textVi = vi.length ? vi.join(' ') : 'Một năm nữa lặng lẽ trôi qua dưới màn đêm không bao giờ tắt của The City.';

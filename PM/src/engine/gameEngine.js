@@ -1850,6 +1850,8 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
 
   // Merge effects from both choice and rolled outcome (supports both .effects and .fx formats)
   const startDungeonId = outcome.startDungeon || choice.startDungeon;
+  // A gate answered, entered or not, starts the wait before the next one
+  if (event.id.startsWith('gate_')) char.lastGateAge = char.age;
   const printsNumbers = PRINTED_NUMBERS.test(`${outcome.resultVi || outcome.rvi || ''}${choice.resultVi || choice.rvi || ''}`);
   const rolled = mergeEffects(choice, outcome);
   const effects = printsNumbers ? rolled : varyEffects(rolled, rng, traitsOf(char));
