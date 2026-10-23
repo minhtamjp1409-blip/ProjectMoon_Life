@@ -16,34 +16,34 @@ export const FIXER_PATH_EVENTS = [
     requires: [],
     need: { jobs: ['Fixer'], grade: [9, 9] },
     forbids: ['Distorted', 'promo_g8_done'],
-    vi: '[Khảo thí Hana Section 6] Giấy triệu tập của Hana Association đóng dấu sáp đỏ gửi tới hòm thư của bạn. Bạn đã tích lũy đủ chiến tích ban đầu ở Backstreets. Hôm nay là ngày bạn bước vào sàn đấu ngầm của Section 6 để chứng minh mình không còn là một con chuột cống Grade 9.',
-    en: '[Hana Section 6 Evaluation] A wax-sealed summons arrives from Hana Association. You have accumulated enough Backstreet merit. Today you enter the Section 6 proving arena to prove you are no longer a bottom-tier Grade 9 rat.',
+    vi: "[Khảo thí của Hana Section 6] Giấy triệu tập đóng sáp đỏ của Hana Association nằm trong hòm thư bạn. Bạn đã đủ chiến tích ở Backstreets. Hôm nay bạn bước vào sàn đấu của Section 6 để chứng minh mình không còn là một Grade 9.",
+    en: "[Hana Section 6 evaluation] A red wax summons from Hana Association lies in your mailbox. You have enough merit from the Backstreets. Today you walk into the Section 6 arena to prove you are no longer a Grade 9.",
     choices: [
       {
-        labelVi: 'Vung vũ khí hạ gục đối thủ sát hạch trong 3 chiêu',
-        labelEn: 'Strike down the examiner within three paces',
-        resultVi: 'Thanh kiếm chém rách khiên phòng hộ của giám khảo. Người thanh tra Hana Section 6 gật đầu lạnh lùng, thu lại tấm thẻ cũ và đóng dấu vàng: "Chúc mừng, Fixer Grade 8."',
-        resultEn: 'Your weapon shattered the examiner’s kinetic ward. The Hana proctor gave a cold nod, retrieving your old card and stamping gold: "Congratulations, Grade 8 Fixer."',
+        labelVi: "Hạ giám khảo trong ba chiêu",
+        labelEn: "Put the examiner down in three moves",
+        resultVi: "Thanh kiếm xé khiên phòng hộ của giám khảo. Người thanh tra gật đầu, thu thẻ cũ của bạn và đóng dấu vàng. \"Fixer Grade 8.\"",
+        resultEn: "Your blade split the examiner’s ward. The proctor nodded, took your old card and stamped it in gold. “Grade 8 Fixer.”",
         setFixerGrade: 8,
         flagsAdd: ['promo_g8_done'],
         meritAdd: 12,
         effects: { rep: +10, sanity: +5, wealth: +15 }
       },
       {
-        labelVi: 'Thể hiện tư duy điều tra và đọc hiểu quy tắc Backstreets',
-        labelEn: 'Demonstrate tactical deduction and Backstreet rule mastery',
-        resultVi: 'Bạn vạch trần sơ hở trong vụ án mẫu của Hana trước sự ngạc nhiên của viên giám thị. Bạn nhận giấy phép Grade 8 danh giá cùng lời mời hợp tác từ phân hội Seven.',
-        resultEn: 'You exposed flaws in Hana’s mock dossier, impressing the proctor. You receive your Grade 8 license and a commendation from Seven Association.',
+        labelVi: "Chỉ ra sơ hở của hồ sơ mẫu bằng cách đọc luật Backstreets",
+        labelEn: "Point out the holes in the mock dossier by reading the Backstreets rules",
+        resultVi: "Bạn vạch ra chỗ sơ hở trong vụ án mẫu của Hana, làm viên giám thị chững lại. Bạn nhận giấy phép Grade 8 kèm một lời mời hợp tác từ Seven Association.",
+        resultEn: "You pointed out the hole in Hana’s mock case and the proctor stopped short. You got your Grade 8 license and an invitation to work with Seven Association.",
         setFixerGrade: 8,
         flagsAdd: ['promo_g8_done'],
         meritAdd: 14,
         effects: { rep: +12, network: +10, sanity: +8 }
       },
       {
-        labelVi: 'Chưa vội sát hạch, dành thêm một mùa tích lũy thể lực và trang bị',
-        labelEn: 'Defer evaluation: Take another season to prepare gear and stamina',
-        resultVi: 'Bạn gửi đơn xin hoãn khảo thí lên Hana Section 6 để luyện tập thêm. Viên thanh tra ghi nhận đơn; bạn dành trọn mùa này tĩnh dưỡng.',
-        resultEn: 'You filed a formal deferral with Hana Section 6 to train further. The proctor accepted; you spent the season recovering.',
+        labelVi: "Hoãn khảo thí một mùa để luyện thể lực và sắm trang bị",
+        labelEn: "Defer the exam a season to train and buy gear",
+        resultVi: "Bạn nộp đơn xin hoãn lên Section 6. Viên thanh tra ghi nhận, và bạn dành cả mùa để tĩnh dưỡng.",
+        resultEn: "You filed a deferral with Section 6. The proctor logged it, and you spent the season recovering.",
         effects: { health: +16, sanity: +12 }
       }
     ]
@@ -59,34 +59,34 @@ export const FIXER_PATH_EVENTS = [
     weight: 85,
     need: { jobs: ['Fixer'], grade: [8, 8] },
     forbids: ['Distorted', 'promo_g7_done'],
-    vi: '[Thẩm định Văn phòng Grade 7] Lượng hợp đồng xử lý tăng vọt, Hana Association yêu cầu bạn tham gia chiến dịch trấn áp một ổ cướp đường có trang bị vũ khí lậu. Đây là bước kiểm tra thực tế để bước lên Fixer Grade 7 chính thức.',
-    en: '[Grade 7 Office Certification] Contract volumes surge. Hana assigns you to lead a live suppression raid against armed smugglers to verify your Grade 7 eligibility.',
+    vi: "[Thẩm định Grade 7] Lượng hợp đồng của bạn tăng vọt, và Hana yêu cầu bạn tham gia trấn áp một ổ cướp đường có vũ khí lậu. Đây là bài kiểm tra thực tế để lên Grade 7 chính thức.",
+    en: "[Grade 7 certification] Your contract volume has surged, and Hana asks you to join the suppression of a highway gang with smuggled weapons. This is the field test for full Grade 7.",
     choices: [
       {
-        labelVi: 'Xông thẳng vào cửa chính, một mình triệt hạ đầu sỏ',
-        labelEn: 'Breach the front gate and decapitate the ringleader',
-        resultVi: 'Khói súng và máu tanh Backstreets nhuộm đỏ lưỡi đao. Khi tiếp viện Zwei đến nơi, bạn đã thu gom xong chiến lợi phẩm. Tấm thẻ Grade 7 chính thức thuộc về bạn.',
-        resultEn: 'Gunsmoke and arterial spray stained your blade. When Zwei backup arrived, you had already secured the contraband. The Grade 7 license is officially yours.',
+        labelVi: "Xông vào cửa chính, một mình hạ tên đầu sỏ",
+        labelEn: "Go in by the front gate and take down the ringleader alone",
+        resultVi: "Khói súng và máu nhuộm lưỡi đao. Khi tiếp viện của Zwei đến nơi, bạn đã gom xong số hàng lậu. Thẻ Grade 7 chính thức thuộc về bạn.",
+        resultEn: "Gunsmoke and blood stained your blade. By the time Zwei backup arrived, you had secured the contraband. The Grade 7 card was yours.",
         setFixerGrade: 7,
         flagsAdd: ['promo_g7_done'],
         meritAdd: 18,
         effects: { health: -8, rep: +15, wealth: +30 }
       },
       {
-        labelVi: 'Phối hợp nhịp nhàng với Fixer đồng minh bao vây',
-        labelEn: 'Coordinate perimeter encirclement with allied Fixers',
-        resultVi: 'Không một tên tội phạm nào thoát khỏi lưới vây. Các Văn phòng lân cận bắt đầu nhớ tên bạn như một chỉ huy đáng tin cậy. Bạn được phong Fixer Grade 7.',
-        resultEn: 'Not a single fugitive breached the perimeter. Neighboring Offices recognize your name as a dependable coordinator. You are promoted to Grade 7.',
+        labelVi: "Phối hợp với các Fixer đồng minh, bao vây từ ba phía",
+        labelEn: "Work with allied Fixers and surround them from three sides",
+        resultVi: "Không một tên nào lọt khỏi vòng vây. Các Office lân cận bắt đầu nhớ tên bạn như một người chỉ huy đáng tin. Bạn lên Grade 7.",
+        resultEn: "Not one of them slipped the cordon. The neighboring Offices began to remember your name as a commander they could trust. You made Grade 7.",
         setFixerGrade: 7,
         flagsAdd: ['promo_g7_done'],
         meritAdd: 20,
         effects: { network: +16, rep: +12, sanity: +10 }
       },
       {
-        labelVi: 'Hoãn nhận chiến dịch nguy hiểm, tập trung dưỡng thương và chuẩn bị',
-        labelEn: 'Defer dangerous raid: Focus on healing wounds and preparation',
-        resultVi: 'Bạn xin phép Hana lùi thời hạn nhận chiến dịch trấn áp để dưỡng thương. Bạn dành thời gian nghỉ ngơi tĩnh dưỡng.',
-        resultEn: 'You requested Hana defer the raid window to heal wounds. You spent the season resting.',
+        labelVi: "Hoãn chiến dịch để dưỡng thương và chuẩn bị",
+        labelEn: "Defer the raid to heal and prepare",
+        resultVi: "Bạn xin Hana lùi hạn nhận chiến dịch để dưỡng thương, và dành mùa đó nghỉ ngơi.",
+        resultEn: "You asked Hana to push back the raid window to heal, and spent the season resting.",
         effects: { health: +16, sanity: +12 }
       }
     ]
@@ -102,34 +102,34 @@ export const FIXER_PATH_EVENTS = [
     weight: 80,
     need: { jobs: ['Fixer'], grade: [7, 7] },
     forbids: ['Distorted', 'promo_g6_done'],
-    vi: '[Bổ nhiệm Thực chiến Grade 6] Một hiểm họa cấp Urban Legend bùng phát tại ranh giới quận: Băng đảng Stray Dogs và tàn dư Kurokumo đụng độ đẫm máu. Hana giao cho bạn quyền chỉ huy biệt đội trấn áp.',
-    en: '[Grade 6 Field Commission] An Urban Legend outbreak erupts: Stray Dogs clash violently with rogue Kurokumo ronin. Hana commissions you to command a suppression taskforce.',
+    vi: "[Bổ nhiệm thực chiến Grade 6] Một hiểm họa cấp Urban Legend nổ ra ở ranh giới quận: băng Stray Dogs và tàn dư Kurokumo đụng nhau đẫm máu. Hana giao cho bạn quyền chỉ huy biệt đội trấn áp.",
+    en: "[Grade 6 field commission] An Urban Legend hazard breaks out on a district boundary: the Stray Dogs and Kurokumo remnants are clashing in blood. Hana gives you command of the suppression team.",
     choices: [
       {
-        labelVi: 'Đâm thẳng vào trung tâm chiến trường, đối đầu kiếm khách Kurokumo',
-        labelEn: 'Charge the epicenter, duel the Kurokumo swordsman',
-        resultVi: 'Trận đấu tay đôi rực lửa kết thúc bằng một nhát chém quyết định. Lưỡi kiếm đối phương gãy đôi. Hana Association nâng bậc hồ sơ của bạn lên Fixer Grade 6.',
-        resultEn: 'The fierce duel concluded with a decisive strike, snapping the rival blade. Hana elevates your dossier to Grade 6 Fixer.',
+        labelVi: "Lao vào giữa chiến trường, đấu tay đôi với kiếm khách Kurokumo",
+        labelEn: "Charge into the middle and duel the Kurokumo swordsman",
+        resultVi: "Cuộc đấu tay đôi kết thúc bằng một nhát chém. Lưỡi kiếm đối phương gãy đôi. Hana nâng hồ sơ của bạn lên Grade 6.",
+        resultEn: "The duel ended with one cut. The opponent’s blade snapped in two. Hana raised your file to Grade 6.",
         setFixerGrade: 6,
         flagsAdd: ['promo_g6_done'],
         meritAdd: 24,
         effects: { health: -10, rep: +20, wealth: +45 }
       },
       {
-        labelVi: 'Khai thác địa hình hiểm trở, dẫn dụ kẻ địch vào bẫy kinetic',
-        labelEn: 'Use hazardous alley terrain, lure them into kinetic traps',
-        resultVi: 'Bẫy nổ kích hoạt xé tan đội hình địch. Bạn hoàn thành nhiệm vụ với thương vong tối thiểu. Huy hiệu Fixer Grade 6 lấp lánh trên ngực áo bạn.',
-        resultEn: 'Kinetic charges detonated, shattering their ranks. You completed the contract with minimal casualties. The Grade 6 emblem glints on your coat.',
+        labelVi: "Dùng địa hình hẹp, dụ chúng vào bẫy nổ",
+        labelEn: "Use the narrow ground and lure them into explosive traps",
+        resultVi: "Bẫy nổ xé tan đội hình đối phương. Bạn xong việc với thương vong tối thiểu. Huy hiệu Grade 6 nằm trên ngực áo bạn.",
+        resultEn: "The traps tore their ranks apart. You finished with minimal casualties. The Grade 6 badge sat on your coat.",
         setFixerGrade: 6,
         flagsAdd: ['promo_g6_done'],
         meritAdd: 26,
         effects: { rep: +18, network: +18, wealth: +40 }
       },
       {
-        labelVi: 'Hoãn tham gia vùng chiến sự, tập trung nghỉ ngơi hồi phục thể lực',
-        labelEn: 'Defer frontline deployment: Focus on physical rest and recuperation',
-        resultVi: 'Nhận thấy chiến trường hai phe quá hỗn loạn, bạn gửi thông báo lùi thời hạn tham chiến để củng cố thể trạng.',
-        resultEn: 'Deeming the turf war too chaotic, you notified Hana of a tactical postponement to recover.',
+        labelVi: "Hoãn tham chiến, nghỉ cho hồi sức",
+        labelEn: "Defer deployment and rest to recover",
+        resultVi: "Thấy trận hai phe quá hỗn loạn, bạn gửi Hana đơn lùi hạn để củng cố thể trạng.",
+        resultEn: "Judging the two-sided brawl too chaotic, you sent Hana a request to postpone and rebuild your strength.",
         effects: { health: +16, sanity: +12 }
       }
     ]
@@ -145,34 +145,34 @@ export const FIXER_PATH_EVENTS = [
     weight: 75,
     need: { jobs: ['Fixer'], grade: [6, 6] },
     forbids: ['Distorted', 'promo_g5_done'],
-    vi: '[Đại hội Thăng cấp Trung cấp Grade 5] Bước vào ngưỡng Grade 5 là bước qua lằn ranh sinh tử giữa lính mới và cựu binh. Bạn được phái đi giải quyết một vụ án Sweeper săn mồi ngoài khung giờ 3:13 AM, một vi phạm Taboo nghiêm trọng.',
-    en: '[Grade 5 Veteran Examination] Crossing into Grade 5 divides rookies from veterans. Hana dispatches you to neutralize rogue Sweepers hunting outside 3:13 AM hours, a severe Taboo violation.',
+    vi: "[Đại hội thăng Grade 5] Lên Grade 5 là qua lằn ranh giữa lính mới và người đã trải. Hana cử bạn xử lý một vụ Sweeper săn mồi ngoài khung giờ 3:13, một vi phạm Taboo nặng.",
+    en: "[Grade 5 examination] Reaching Grade 5 is the line between rookies and veterans. Hana sends you to deal with Sweepers hunting outside the 3:13 hour, a serious Taboo violation.",
     choices: [
       {
-        labelVi: 'Kích hoạt vũ khí Workshop công suất tối đa thiêu rụi bầy Sweeper',
-        labelEn: 'Overdrive Workshop weapons to incinerate the rogue Sweepers',
-        resultVi: 'Dịch lỏng màu trà tanh tưởi bốc hơi dưới ngọn lửa rực cháy. Bạn đem bình mẫu về nộp cho Hana. Viên chỉ huy đóng dấu đỏ: "Fixer Grade 5. Kể từ nay, bạn được phép mở Văn phòng riêng."',
-        resultEn: 'Vile tea-colored fluid evaporated under intense flames. You delivered the core samples to Hana. The officer stamped: "Grade 5 Fixer. You may now found an Office."',
+        labelVi: "Mở hết công suất vũ khí Workshop, thiêu cả bầy Sweeper",
+        labelEn: "Run the Workshop weapon at full power and burn the whole pack",
+        resultVi: "Chất lỏng màu trà tanh tưởi bốc hơi dưới lửa. Bạn nộp bình mẫu cho Hana, và viên chỉ huy đóng dấu đỏ. \"Fixer Grade 5. Từ nay bạn được mở Office riêng.\"",
+        resultEn: "The tea-colored fluid evaporated under the flames. You turned in the sample flasks, and the officer stamped red. “Grade 5 Fixer. You may now open your own Office.”",
         setFixerGrade: 5,
         flagsAdd: ['promo_g5_done', 'OfficeEligible'],
         meritAdd: 30,
         effects: { health: -9, rep: +25, wealth: +60 }
       },
       {
-        labelVi: 'Dàn trận phối hợp cùng Fixer đồng minh và đặt bẫy kinetic',
-        labelEn: 'Coordinate a defensive perimeter with allied Fixers and deploy kinetic snares',
-        resultVi: 'Bẫy nổ kích hoạt xé tan đội hình Sweeper, hạn chế tối đa thương vong. Bạn giao nộp mẫu mô an toàn. Hana Association cấp phép mở Văn phòng riêng cho Fixer Grade 5.',
-        resultEn: 'Kinetic snares detonated, scattering the Sweeper pack with controlled damage. You submitted clean samples. Hana certifies your Grade 5 license and Office rights.',
+        labelVi: "Cùng Fixer đồng minh dàn trận, đặt bẫy nổ",
+        labelEn: "Set a line with allied Fixers and lay explosive traps",
+        resultVi: "Bẫy nổ xé đội hình Sweeper, thương vong được giữ thấp. Bạn nộp mẫu mô còn nguyên. Hana cấp phép mở Office riêng cho Fixer Grade 5.",
+        resultEn: "The traps tore the Sweeper pack apart, and casualties stayed low. You turned in clean tissue samples. Hana granted a Grade 5 Fixer the right to open an Office.",
         setFixerGrade: 5,
         flagsAdd: ['promo_g5_done', 'OfficeEligible'],
         meritAdd: 28,
         effects: { health: -5, sanity: -2, rep: +20, wealth: +45, network: +10 }
       },
       {
-        labelVi: 'Chưa nhận nhiệm vụ Sweeper, tạm thời nghỉ ngơi hồi phục thể trạng',
-        labelEn: 'Postpone Sweeper assignment: Temporarily rest and restore physical condition',
-        resultVi: 'Bạn xin hoãn lệnh triệu tập săn Sweeper để dưỡng thương. Ban quản lý Hana chấp thuận lưu hồ sơ của bạn cho đợt khảo thí sau.',
-        resultEn: 'You deferred the Sweeper hunt summons to heal. Hana proctors archived your eligibility for the next cycle.',
+        labelVi: "Chưa nhận việc Sweeper, nghỉ dưỡng thương",
+        labelEn: "Hold off on the Sweeper job and rest to heal",
+        resultVi: "Bạn xin hoãn lệnh săn Sweeper để dưỡng thương. Ban quản lý của Hana giữ hồ sơ cho đợt khảo thí sau.",
+        resultEn: "You deferred the Sweeper summons to heal. Hana’s administrators held your file for the next cycle.",
         effects: { health: +16, sanity: +12 }
       }
     ]
@@ -188,34 +188,34 @@ export const FIXER_PATH_EVENTS = [
     weight: 70,
     need: { jobs: ['Fixer'], grade: [5, 5] },
     forbids: ['Distorted', 'promo_g4_done'],
-    vi: '[Phó Chỉ Huy Section Grade 4] Một hiệp ước ngầm giữa hai Syndicate ngón tay bị xé bỏ, hiểm họa cấp Urban Plague đe dọa cả một khu phố Backstreets. Phân hội Shi và Liu cần một Fixer Grade 4 đủ gan lì để làm mũi nhọn đột kích.',
-    en: '[Section 4 Officer Advancement] A truce between Fingers collapses, plunging the district into an Urban Plague crisis. Shi and Liu Associations recruit an ironclad Grade 4 spearhead.',
+    vi: "[Phó chỉ huy Section, Grade 4] Một hiệp ước ngầm giữa hai Finger vỡ, hiểm họa cấp Urban Plague đe dọa cả một khu Backstreets. Shi và Liu Association cần một Fixer Grade 4 đủ gan làm mũi nhọn.",
+    en: "[Section officer, Grade 4] A secret truce between two Fingers collapses, and an Urban Plague hazard threatens a whole stretch of the Backstreets. Shi and Liu Association need a Grade 4 Fixer with the nerve to be the spearhead.",
     choices: [
       {
-        labelVi: 'Dẫn đầu mũi đột kích đâm xuyên phòng tuyến đối phương',
-        labelEn: 'Lead the vanguard piercing their fortified perimeter',
-        resultVi: 'Bạn chém gục Capo chỉ huy và thu giữ toàn bộ chứng từ cấm. Hiệp hội Liu trao cho bạn huy hiệu Fixer Grade 4 cùng một khoản tiền thưởng kếch xù.',
-        resultEn: 'You felled the enemy Capo and seized their forbidden records. Liu Association awards you the Grade 4 license and a hefty bounty.',
+        labelVi: "Dẫn mũi đột kích đâm xuyên phòng tuyến đối phương",
+        labelEn: "Lead the spearhead through their line",
+        resultVi: "Bạn chém gục Capo chỉ huy và thu hết chứng từ cấm. Liu Association trao bạn huy hiệu Grade 4 cùng một khoản thưởng lớn.",
+        resultEn: "You cut down the commanding Capo and seized every forbidden record. Liu Association gave you the Grade 4 badge and a large bounty.",
         setFixerGrade: 4,
         flagsAdd: ['promo_g4_done'],
         meritAdd: 36,
         effects: { health: -10, rep: +32, wealth: +85 }
       },
       {
-        labelVi: 'Khai thác tài liệu tình báo của Seven Association để đón lõng điểm hẹn',
-        labelEn: 'Use Seven Association intelligence dossiers to ambush their clandestine rendezvous',
-        resultVi: 'Đòn mai phục chính xác tóm gọn toán đầu não trước khi chúng kịp phản kháng. Phân hội Shi và Liu trao bạn huy hiệu Fixer Grade 4 kèm lời khen ngợi tác chiến xuất sắc.',
-        resultEn: 'A surgical ambush neutralized their commanders before blades were drawn. Shi and Liu Associations award you the Grade 4 crest for exemplary tactical prowess.',
+        labelVi: "Dùng tình báo của Seven Association để mai phục điểm hẹn",
+        labelEn: "Use Seven Association’s intelligence to ambush their meeting point",
+        resultVi: "Đòn mai phục chính xác tóm gọn đầu não trước khi chúng kịp rút vũ khí. Shi và Liu trao bạn huy hiệu Grade 4 kèm lời khen.",
+        resultEn: "A precise ambush took their leaders before they drew a blade. Shi and Liu gave you the Grade 4 badge with praise.",
         setFixerGrade: 4,
         flagsAdd: ['promo_g4_done'],
         meritAdd: 34,
         effects: { health: -5, rep: +26, wealth: +65, network: +14 }
       },
       {
-        labelVi: 'Từ chối làm mũi nhọn đột kích lúc này, dành thời gian điều dưỡng',
-        labelEn: 'Decline spearheading right now: Dedicate season to medical recuperation',
-        resultVi: 'Bạn thông báo cho phân hội Shi và Liu rằng bản thân cần thêm thời gian tĩnh dưỡng vết thương trước khi chỉ huy đột kích.',
-        resultEn: 'You notified Shi and Liu Associations that physical recovery takes priority before leading assaults.',
+        labelVi: "Từ chối làm mũi nhọn lúc này, dành mùa này điều dưỡng",
+        labelEn: "Decline to lead the spearhead now and use the season to recover",
+        resultVi: "Bạn báo cho Shi và Liu rằng bạn cần thêm thời gian hồi phục trước khi chỉ huy đột kích.",
+        resultEn: "You told Shi and Liu you needed more time to recover before leading an assault.",
         effects: { health: +16, sanity: +12 }
       }
     ]
@@ -231,24 +231,24 @@ export const FIXER_PATH_EVENTS = [
     weight: 65,
     need: { jobs: ['Fixer'], grade: [4, 4] },
     forbids: ['Distorted', 'promo_g3_done'],
-    vi: '[Thẩm định Cấp cao Grade 3] Chỉ 3% Fixer toàn The City chạm tới Grade 3. Hana Association gửi bạn tới vùng biên giới cấm để trấn áp một dị thể Urban Nightmare đang biến đổi không gian.',
-    en: '[Senior Specialist Commission Grade 3] Only 3% of all Fixers reach Grade 3. Hana dispatches you to an exclusion zone to suppress an Urban Nightmare aberration distorting space.',
+    vi: "[Thẩm định cấp cao, Grade 3] Rất ít Fixer ở The City chạm tới Grade 3. Hana gửi bạn tới vùng biên giới cấm để trấn áp một dị thể cấp Urban Nightmare đang bẻ cong không gian.",
+    en: "[Senior commission, Grade 3] Very few Fixers in the City reach Grade 3. Hana sends you to a closed border zone to suppress an Urban Nightmare anomaly bending space.",
     choices: [
       {
-        labelVi: 'Giữ vững tâm trí, chém đứt lõi không gian của dị thể',
-        labelEn: 'Anchor your sanity and cleave the aberration’s dimensional core',
-        resultVi: 'Không gian rách nát liền lại. Tiếng rên rỉ quái đản tan biến. Bạn mang mảnh lõi về giao nộp. Hội đồng Hana chính thức công nhận: Fixer Grade 3.',
-        resultEn: 'Warped space snapped back together. The monstrous keening silenced. You returned with the core: officially recognized as a Grade 3 Fixer.',
+        labelVi: "Giữ vững tâm trí và chém đứt lõi không gian của nó",
+        labelEn: "Keep your mind steady and cut through its spatial core",
+        resultVi: "Không gian rách liền lại. Tiếng rên quái dị tắt. Bạn mang mảnh lõi về nộp, và hội đồng Hana công nhận bạn là Fixer Grade 3.",
+        resultEn: "The torn space knit back together. The strange keening stopped. You brought the core fragment back, and the Hana council recognized you as a Grade 3 Fixer.",
         setFixerGrade: 3,
         flagsAdd: ['promo_g3_done'],
         meritAdd: 45,
         effects: { health: -12, sanity: -6, rep: +40, wealth: +120, resonance: +15 }
       },
       {
-        labelVi: 'Sử dụng neo không gian và khiên phân giải của Workshop để cô lập dị thể',
-        labelEn: 'Deploy Workshop dimensional anchors and dispersion barriers to isolate the anomaly',
-        resultVi: 'Trận pháp công nghệ Workshop giữ chặt lõi không gian trước khi bạn tung nhát chém kết liễu. Hội đồng Hana chính thức phê duyệt danh xưng Fixer Grade 3.',
-        resultEn: 'Workshop barrier wards locked the spatial anomaly in stasis before you delivered the severing blow. Hana Council ratifies your Grade 3 ascension.',
+        labelVi: "Dùng neo không gian và khiên phân giải của Workshop để giam nó",
+        labelEn: "Use Workshop space anchors and dispersal barriers to pin it down",
+        resultVi: "Trận pháp của Workshop giữ chặt lõi không gian trước khi bạn tung nhát cuối. Hội đồng Hana phê chuẩn bạn lên Grade 3.",
+        resultEn: "The Workshop array held the spatial core still before you landed the last cut. The Hana council ratified your rise to Grade 3.",
         setFixerGrade: 3,
         flagsAdd: ['promo_g3_done'],
         meritAdd: 42,
@@ -256,10 +256,10 @@ export const FIXER_PATH_EVENTS = [
         effects: { health: -6, sanity: -3, rep: +35, wealth: +80, network: +12 }
       },
       {
-        labelVi: 'Chưa tiến vào vùng cấm không gian, ưu tiên bảo toàn tính mạng và hồi phục',
-        labelEn: 'Hold off entering the exclusion zone: Prioritize life preservation and recovery',
-        resultVi: 'Bạn xin phép Hana dời ngày thâm nhập dị thể không gian để củng cố tâm trí và thể chất. Bạn dành thời gian nghỉ ngơi.',
-        resultEn: 'You requested Hana postpone spatial anomaly infiltration to consolidate mind and body.',
+        labelVi: "Chưa vào vùng cấm, ưu tiên giữ mạng và hồi phục",
+        labelEn: "Stay out of the closed zone for now and put your life and recovery first",
+        resultVi: "Bạn xin Hana dời ngày vào vùng dị thể để củng cố tinh thần và thể chất, rồi dành mùa đó nghỉ ngơi.",
+        resultEn: "You asked Hana to move the day for entering the anomaly zone so you could steady your mind and body, and spent the season resting.",
         effects: { health: +16, sanity: +12 }
       }
     ]
@@ -275,34 +275,34 @@ export const FIXER_PATH_EVENTS = [
     weight: 60,
     need: { jobs: ['Fixer'], grade: [3, 3] },
     forbids: ['Distorted', 'promo_g2_done'],
-    vi: '[Át Chủ Bài Section 1 Grade 2] Một bức thư mạ bạc từ Section 1 của Hiệp hội Hana. Một nhiệm vụ sinh tử: Bảo vệ một giám đốc điều hành của Wing trước cuộc thanh trừng từ các sát thủ Section 1 của Shi Association.',
-    en: '[Section 1 Ace Grade 2] A silver-inscribed missive from Hana Section 1. A life-or-death mission: Escort a Wing executive targeted for execution by Shi Section 1 death squads.',
+    vi: "[Quân bài của Section 1, Grade 2] Một lá thư mạ bạc từ Section 1 của Hana. Một việc sinh tử: bảo vệ một giám đốc của Wing trước toán sát thủ Section 1 của Shi Association.",
+    en: "[A Section 1 trump card, Grade 2] A silver-edged letter from Hana Section 1. A matter of life and death: protect a Wing executive from the Section 1 assassins of Shi Association.",
     choices: [
       {
-        labelVi: 'Chặn đứng toàn bộ sát thủ trong đêm mưa máu',
-        labelEn: 'Hold the bridge against every assassin in the pouring rain',
-        resultVi: 'Lưỡi kiếm của bạn va chạm tóe lửa suốt 6 giờ liền. Đến bình minh, người điều hành vẫn sống sót nguyên vẹn. Hana Association trao tặng huy chương Grade 2 danh giá.',
-        resultEn: 'Your blade sparked against death for six relentless hours. At dawn, the executive breathed unharmed. Hana bestows the prestigious Grade 2 cross.',
+        labelVi: "Giữ chặt cây cầu trước mọi tay sát thủ trong đêm mưa",
+        labelEn: "Hold the bridge against every assassin in the rain",
+        resultVi: "Lưỡi kiếm của bạn va nhau tóe lửa suốt sáu giờ. Đến bình minh, viên giám đốc vẫn nguyên vẹn. Hana trao bạn huy chương Grade 2.",
+        resultEn: "Your blade sparked against theirs for six hours. By dawn the executive was unharmed. Hana awarded you the Grade 2 cross.",
         setFixerGrade: 2,
         flagsAdd: ['promo_g2_done'],
         meritAdd: 55,
         effects: { health: -12, sanity: -6, rep: +50, wealth: +180, resonance: +20 }
       },
       {
-        labelVi: 'Phối hợp cùng hộ vệ Zwei Association lập phòng tuyến kiên cố',
-        labelEn: 'Form a resilient defensive phalanx with Zwei Association bodyguards',
-        resultVi: 'Khiên chắn Zwei chặn đứng làn mưa ám khí, tạo điều kiện cho bạn phản công hạ gục các sát thủ then chốt. Viên giám đốc Wing bình an vô sự. Bạn nhận huy chương Grade 2.',
-        resultEn: 'Zwei kinetic shields deflected the assassination salvo, allowing you to counter and neutralize key strikers. The executive survived unharmed. You gain the Grade 2 cross.',
+        labelVi: "Cùng vệ sĩ của Zwei Association dựng hàng phòng thủ",
+        labelEn: "Form a defensive line with the Zwei Association bodyguards",
+        resultVi: "Khiên của Zwei chặn làn ám khí, cho bạn lúc phản công hạ những sát thủ then chốt. Viên giám đốc Wing bình an. Bạn nhận huy chương Grade 2.",
+        resultEn: "Zwei shields stopped the volley of throwing weapons and gave you time to counter and drop the key assassins. The Wing executive was safe. You took the Grade 2 cross.",
         setFixerGrade: 2,
         flagsAdd: ['promo_g2_done'],
         meritAdd: 50,
         effects: { health: -7, sanity: -4, rep: +42, wealth: +130, network: +18 }
       },
       {
-        labelVi: 'Lùi hạn nhận hợp đồng hộ tống sinh tử, tập trung tĩnh dưỡng',
-        labelEn: 'Defer life-or-death escort contract: Focus on resting and recuperating',
-        resultVi: 'Bạn gửi thư thoái thác nhiệm vụ hộ tống giám đốc vì lý do chấn thương chưa lành. Section 1 ghi nhận và cho phép bạn bảo lưu tư cách.',
-        resultEn: 'You sent word declining the escort due to unhealed trauma. Section 1 noted the medical deferral.',
+        labelVi: "Lùi hạn nhận việc hộ tống sinh tử, tĩnh dưỡng",
+        labelEn: "Push back the life-or-death escort and rest",
+        resultVi: "Bạn gửi thư xin thoái thác vì thương tích chưa lành. Section 1 ghi nhận và cho bảo lưu tư cách của bạn.",
+        resultEn: "You sent a letter declining because your injuries had not healed. Section 1 noted it and held your standing.",
         effects: { health: +16, sanity: +12 }
       }
     ]

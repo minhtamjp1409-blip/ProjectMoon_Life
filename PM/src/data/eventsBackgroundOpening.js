@@ -326,30 +326,30 @@ export const BACKGROUND_OPENING_EVENTS = [
     major: true,
     weight: 35,
     need: { flags: ['BistroHeir'] },
-    vi: '[Ngọn Lửa Bếp Đêm Backstreets] Một vị khách lạ đẫm máu vừa ngã gục vào cửa sau quán mì đêm của gia đình bạn, để lại một túi tiền Ahn trước chảo dầu đang sôi sùng sục. Ngoài ngõ, tiếng ủng da gõ dồn dập của toán đòi nợ mang theo mã tấu đang tiến sát.',
-    en: '[Backstreets Kitchen Fire] A bleeding stranger collapses through the rear kitchen door of your family diner, dropping a heavy purse of Ahn beside a boiling oil wok while debt-enforcers march outside.',
+    vi: "[Lửa bếp đêm Backstreets] Một vị khách lạ đẫm máu ngã qua cửa sau quán mì đêm của nhà bạn, để lại túi Ahn nặng trịch cạnh chảo dầu đang sôi. Ngoài ngõ, ủng da gõ dồn dập: toán đòi nợ mang mã tấu đang tiến tới.",
+    en: "[Kitchen fire in the Backstreets] A bleeding stranger falls through the back door of your family’s night noodle shop and drops a heavy purse of Ahn beside the boiling oil wok. Outside, boots knock fast in the alley: debt collectors with machetes are coming.",
     choices: [
       {
-        labelVi: 'Giấu người khách xuống hầm than, bưng bát súp nóng hổi ra tươi cười tiếp đãi toán truy sát',
-        labelEn: 'Shove the stranger into the coal chute, greeting enforcers with hot bowls and fake smiles',
-        resultVi: 'Toán đòi nợ ăn sạch bát súp cay rồi bỏ đi mà không nghi ngờ gì. Vị khách sống sót tặng lại cho gia đình bạn một nửa túi tiền Ahn và một lời hứa bảo kê.',
-        resultEn: 'Enforcers devour the spicy broth and leave unsuspectingly. The grateful fugitive leaves half the purse and an Office contact.',
+        labelVi: "Giấu người khách xuống hầm than, bưng bát súp ra cười tiếp toán truy sát",
+        labelEn: "Hide the stranger in the coal cellar and meet the collectors with hot soup and a smile",
+        resultVi: "Toán đòi nợ húp sạch bát súp cay rồi đi mà không nghi gì. Người khách sống sót để lại cho nhà bạn nửa túi Ahn và một lời hứa che chở.",
+        resultEn: "The collectors drank the spicy broth to the last drop and left without suspicion. The stranger who lived left your family half the purse and a promise of protection.",
         effects: { sanity: +6, network: +16, wealth: +10 },
         flagsAdd: ['KhéoLéoĐưaĐẩy']
       },
       {
-        labelVi: 'Hắt chảo dầu sôi vào mặt tên dẫn đầu khi hắn vừa thò đầu vào cửa bếp',
-        labelEn: 'Heave the boiling wok directly into the lead thug’s face as he breaches the door',
-        resultVi: 'Tiếng thét xé lòng vang lên trong ngõ hẻm. Toán côn đồ hoảng sợ khiêng đồng bọn bỏ chạy. Sự liều lĩnh của bạn khiến cả khu phố phải kiêng dè quán ăn nhà bạn.',
-        resultEn: 'Screams echo through the alley as scalding grease does its work. The thugs flee in horror, leaving the street terrified of your diner.',
+        labelVi: "Hắt chảo dầu sôi vào mặt tên dẫn đầu khi hắn thò đầu vào cửa bếp",
+        labelEn: "Throw the boiling oil in the lead man’s face as he puts his head through the kitchen door",
+        resultVi: "Tiếng thét vang khắp ngõ. Cả toán hoảng hốt khiêng đồng bọn chạy. Từ đó cả khu kiêng dè quán nhà bạn.",
+        resultEn: "A scream ran down the alley. The whole crew fled, carrying their man. From then on the whole street gave your shop a wide berth.",
         effects: { health: -4, rep: +12, heat: +8 },
         flagsAdd: ['HăngMáuBếpNóng']
       },
       {
-        labelVi: 'Nhanh tay cất túi tiền Ahn rồi chỉ tay ra hướng ngược lại đánh lừa toán giang hồ',
-        labelEn: 'Pocket the purse in a blink, pointing enforcers down the opposite blind alley',
-        resultVi: 'Toán côn đồ hùng hổ đuổi theo hướng chỉ tay của bạn. Bạn nhét túi tiền Ahn căng phồng vào hũ gạo của mẹ một cách êm thấm.',
-        resultEn: 'Enforcers sprint down the false path. You slip the heavy purse into your mother’s rice urn without a ripple.',
+        labelVi: "Nhanh tay cất túi Ahn rồi chỉ toán giang hồ chạy sang hướng ngược lại",
+        labelEn: "Pocket the purse and point the thugs the wrong way",
+        resultVi: "Cả toán hùng hổ đuổi theo hướng bạn chỉ. Bạn nhét túi Ahn nặng vào hũ gạo của mẹ mà không ai thấy.",
+        resultEn: "The whole crew charged off the way you pointed. You slipped the heavy purse into your mother’s rice jar unseen.",
         effects: { wealth: +18, sanity: -2 },
         flagsAdd: ['ThựcDụngĐườngPhố']
       }
@@ -361,30 +361,30 @@ export const BACKGROUND_OPENING_EVENTS = [
     major: true,
     weight: 35,
     need: { flags: ['ProstheticClinic'] },
-    vi: '[Bó Dây Thần Kinh Nhân Tạo Đầu Tiên] Máy cấp điện trong phòng khám chân tay giả của gia đình bạn bị chập lửa giữa ca phẫu thuật nối cánh tay cơ khí cho một Fixer bị trọng thương. Vết thương phun máu xối xả và bệnh nhân bắt đầu co giật nguy kịch.',
-    en: '[The First Nerve Spark] The generator shorts out mid-surgery in your unlicensed cybernetics clinic while attaching a battle-grade arm to a Fixer. Blood spurts as the patient convulses.',
+    vi: "[Dây thần kinh nhân tạo đầu tiên] Máy cấp điện của phòng khám chân tay giả nhà bạn chập lửa giữa ca nối cánh tay cơ khí cho một Fixer bị thương nặng. Máu phun, bệnh nhân bắt đầu co giật.",
+    en: "[The first artificial nerve] The generator in your family’s prosthetics clinic shorts out in the middle of fitting a mechanical arm to a badly wounded Fixer. Blood sprays and the patient begins to convulse.",
     choices: [
       {
-        labelVi: 'Dùng kìm cách điện nối tắt hai đầu dây bình ắc quy dự phòng để khởi động lại máy cầm máu',
-        labelEn: 'Use insulated pliers to bridge the backup cell, restarting the cauterizer',
-        resultVi: 'Tia lửa bắn vào ngón tay làm bạn bỏng rát, nhưng máy cầm máu đã kịp hoạt động trở lại. Fixer qua cơn nguy kịch và cúi đầu cảm tạ bạn.',
-        resultEn: 'Sparks scorch your fingers, but the cauterizer hums to life in the nick of time. The Fixer survives and bows deeply to you.',
+        labelVi: "Dùng kìm cách điện nối tắt hai đầu bình ắc quy dự phòng để chạy lại máy cầm máu",
+        labelEn: "Bridge the backup battery with insulated pliers to restart the cauterizer",
+        resultVi: "Tia lửa bắn vào ngón tay làm bạn bỏng, nhưng máy cầm máu kịp chạy lại. Fixer qua cơn nguy và cúi đầu cảm ơn bạn.",
+        resultEn: "Sparks scorched your fingers, but the cauterizer came back in time. The Fixer got through and bowed to you.",
         effects: { health: -4, sanity: +8, rep: +10 },
         flagsAdd: ['BànTayCứuSinh']
       },
       {
-        labelVi: 'Giữ chặt van xả áp suất của cánh tay giả để ngăn dòng dầu thủy lực rò rỉ vào mạch máu',
-        labelEn: 'Clamp down the hydraulic release valve to stop toxic motor fluid entering arteries',
-        resultVi: 'Đôi bàn tay nhỏ bé của bạn siết chặt chốt van không buông suốt 10 phút. Bác sĩ khen ngợi bạn có sự bình tĩnh và phản xạ của một phẫu thuật viên thiên tài.',
-        resultEn: 'Your small hands clamp the valve tight for ten grueling minutes. The surgeon praises your icy nerves and surgical instinct.',
+        labelVi: "Giữ chặt van xả áp của cánh tay giả để dầu thủy lực khỏi rò vào mạch máu",
+        labelEn: "Hold the arm’s pressure valve shut so hydraulic fluid does not leak into the blood",
+        resultVi: "Đôi tay nhỏ của bạn siết van suốt mười phút, không buông. Bác sĩ nói bạn có sự bình tĩnh của một người cầm dao mổ.",
+        resultEn: "Your small hands held the valve for ten minutes without letting go. The surgeon said you had the calm of someone who holds a scalpel.",
         effects: { health: +6, wealth: +8, network: +6 },
         flagsAdd: ['BìnhTĩnhPhẫuThuật']
       },
       {
-        labelVi: 'Tranh thủ lúc hỗn loạn tháo lấy chiếc van gia tốc bằng titan rơi ra từ cánh tay cơ khí',
-        labelEn: 'Pocket an unfastened titanium accelerator valve jarred loose in the chaos',
-        resultVi: 'Món linh kiện cơ khí cao cấp được bạn cất giấu cẩn thận. Về sau, đây là nguyên liệu quý giá để chế tạo vũ khí cho riêng bạn.',
-        resultEn: 'A high-grade alloy valve slips cleanly into your pocket. Later, it becomes the beating heart of your own gear.',
+        labelVi: "Nhân lúc hỗn loạn nhặt chiếc van gia tốc titan rơi ra khỏi cánh tay cơ khí",
+        labelEn: "In the confusion pocket the titanium accelerator valve that fell out of the mechanical arm",
+        resultVi: "Bạn cất kỹ món linh kiện đắt giá ấy. Về sau nó thành phần lõi trong vũ khí đầu tiên của bạn.",
+        resultEn: "You hid the expensive part carefully. Later it became the core of your first weapon.",
         effects: { wealth: +14, sanity: -2 },
         flagsAdd: ['ChiTiếtMáyHiếm']
       }
@@ -396,30 +396,30 @@ export const BACKGROUND_OPENING_EVENTS = [
     major: true,
     weight: 35,
     need: { flags: ['StreetRatInstinct'] },
-    vi: '[Bãi Rác Sau Giờ Sweeper] Đồng hồ chỉ 4:35 sáng, tiếng còi báo hết giờ giới nghiêm Night in the Backstreets vừa dứt. Bạn bò ra khỏi nắp cống hôi thối, chạy đua cùng bầy chuột và những đứa trẻ mồ côi khác để bới tìm bất kỳ thứ gì có thể ăn được hoặc bán được trước khi xe dọn đường của khu đến.',
-    en: '[The Scavenge Post-Sweepers] At 4:35 AM, curfew sirens cut out. You scramble from the sewer grate, racing alley rats and other starving orphans to strip the morning gutters before municipal incinerators arrive.',
+    vi: "[Bãi rác sau giờ Sweeper] Bốn giờ ba mươi lăm sáng, còi hết giờ giới nghiêm của Night in the Backstreets vừa dứt. Bạn bò ra khỏi nắp cống, chạy đua cùng lũ chuột và những đứa trẻ mồ côi khác để bới thứ gì ăn được hoặc bán được trước khi xe dọn đường tới.",
+    en: "[The dump after the Sweepers] At 4:35 in the morning the all-clear siren of the Backstreets night cuts off. You climb out of the sewer grate and race the rats and other orphans to dig out anything edible or sellable before the street-cleaning carts arrive.",
     choices: [
       {
-        labelVi: 'Tranh cướp được một mẩu bánh mì khô nguyên vẹn dưới gầm chiếc xe rác hỏng',
-        labelEn: 'Wrest a dry crust of bread from beneath a crumpled disposal cart',
-        resultVi: 'Bị hai đứa trẻ khác cào rách vai, nhưng bạn cắn chặt mẩu bánh và nuốt chửng nó. Lồng ngực ấm lại, xua tan cơn đói cồn cào sau một đêm đông lạnh giá.',
-        resultEn: 'Scratched across the shoulders by rivals, you swallow the dry crust whole. Warmth returns to your ribs against the frost.',
+        labelVi: "Giành một mẩu bánh mì khô nguyên vẹn dưới gầm xe rác hỏng",
+        labelEn: "Fight for a whole dry crust under a broken refuse cart",
+        resultVi: "Hai đứa khác cào rách vai bạn, nhưng bạn cắn chặt mẩu bánh và nuốt chửng. Bụng ấm lên, cơn đói đêm đông dịu đi.",
+        resultEn: "Two others clawed your shoulder, but you bit down on the crust and swallowed it whole. Your belly warmed, and the winter hunger eased.",
         effects: { health: +8, sanity: +4 },
         flagsAdd: ['MiếngĂnSinhTồn']
       },
       {
-        labelVi: 'Nhặt được một thanh sắt nhọn hoắt dính mỡ Sweeper để mài làm vũ khí tự vệ',
-        labelEn: 'Claim a rusted metal stake slick with Sweeper tallow as your weapon',
-        resultVi: 'Thanh sắt nhọn hoắt trở thành chiếc nanh vuốt đầu tiên của bạn trong thế giới ngầm. Những đứa trẻ khác nhìn thấy thanh sắt trong tay bạn đều phải lùi bước.',
-        resultEn: 'The rusted stake becomes your very first fang. Other alley urchins glance at your iron bar and back off into the dark.',
+        labelVi: "Nhặt một thanh sắt nhọn dính mỡ Sweeper để mài làm vũ khí",
+        labelEn: "Take a pointed iron stake slick with Sweeper grease to sharpen into a weapon",
+        resultVi: "Thanh sắt thành chiếc nanh đầu tiên của bạn. Mấy đứa khác thấy nó trong tay bạn thì lùi lại.",
+        resultEn: "The stake became your first fang. The other children saw it in your hand and backed away.",
         effects: { health: -4, rep: +8 },
         flagsAdd: ['ThanhSắtBén']
       },
       {
-        labelVi: 'Mò mẫm dưới bùn đen của cống thoát nước nhặt được vài đồng Ahn rơi vãi',
-        labelEn: 'Sift through the black sludge of the runoff drain to fish out dropped Ahn coins',
-        resultVi: 'Bàn tay bạn mò mẫm trong chất nhờn tanh tưởi và chạm vào những đồng xu kim loại lạnh ngắt. Ba đồng Ahn nhặt được là kho báu đầu đời của bạn.',
-        resultEn: 'Fingers sifting foul muck strike cold metal discs. Three tarnished Ahn become your first earned fortune in The City.',
+        labelVi: "Mò trong bùn đen của cống thoát nước tìm vài đồng Ahn rơi",
+        labelEn: "Grope through the black mud of the drain for dropped Ahn",
+        resultVi: "Tay bạn mò trong lớp nhớt thối và chạm vào những đồng xu lạnh. Ba đồng Ahn là tài sản đầu tiên bạn tự kiếm.",
+        resultEn: "Your hand groped through the foul slime and touched cold coins. Three Ahn were the first wealth you earned yourself.",
         effects: { wealth: +8, sanity: +2 },
         flagsAdd: ['ĐồngAhnMayMắn']
       }
