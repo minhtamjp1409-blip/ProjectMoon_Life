@@ -57,6 +57,8 @@ export function cardPlayable(cardId, char) {
   const card = DUNGEON_CARDS[cardId];
   if (!card) return false;
   if (card.needsEgo && !char?.flags?.includes('EGOAwakened')) return false;
+  // The free scan does not stack with a scan already paid for this stage: the play would be spent for nothing
+  if (card.scan && char?.pendingDungeon?.stageScanned) return false;
   const hp = char?.stats?.health ?? 0;
   const sp = char?.stats?.sanity ?? 0;
   if ((card.now?.health || 0) < 0 && hp + card.now.health < 1) return false;

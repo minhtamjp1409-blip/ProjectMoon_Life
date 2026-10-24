@@ -138,3 +138,15 @@ console.log('Roguelike loop: seeded annual offers, single commitment, saved draf
   const dock = (await import('node:fs')).readFileSync(new URL('../src/features/chronicle/components/DungeonDock.jsx', import.meta.url), 'utf8');
   assert.ok(/key=\{`\$\{id\}-\$\{slot\}`\}/.test(dock), 'cards in hand are keyed by slot as well as id');
 }
+
+{
+  const c = createNewCharacter({ seed: 'card-scan', startAge: 30 });
+  c.job = 'Fixer';
+  const s = createDungeonSession('dungeon_outskirts_ruins', c);
+  const scanned = { ...c, pendingDungeon: { ...s, cardHand: ['cold'], stageScanned: true } };
+  assert.equal(playDungeonCard(scanned, 'cold'), scanned, 'Cold Count is refused once the stage is already scanned');
+  const fresh = { ...c, pendingDungeon: { ...s, cardHand: ['cold'], stageScanned: false } };
+  assert.equal(playDungeonCard(fresh, 'cold').pendingDungeon.stageScanned, true);
+  const dock = (await import('node:fs')).readFileSync(new URL('../src/features/chronicle/components/DungeonDock.jsx', import.meta.url), 'utf8');
+  assert.ok(dock.includes('dg-hand-spent'), 'spent hands collapse to one line');
+}
