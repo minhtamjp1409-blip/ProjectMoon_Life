@@ -13,11 +13,11 @@ export const DUNGEON_CARDS = {
   steady: { vi: 'Giữ nhịp', en: 'Keep Steady', textVi: 'Thương tổn nhận vào giảm một phần tư.', textEn: 'Damage taken drops by a quarter.', damage: 0.75 },
   blood: { vi: 'Đánh đổi máu', en: 'Trade Blood', textVi: 'Mất 6 HP ngay. Dò đường dễ hơn 10 điểm, phần thưởng thêm 30%.', textEn: 'Lose 6 HP now. Checks 10 points easier, rewards 30% larger.', check: 0.10, reward: 1.3, now: { health: -6 } },
   greed: { vi: 'Mắt tham', en: 'Greedy Eye', textVi: 'Loot thêm một nửa, nhưng dò đường khó hơn 6 điểm.', textEn: 'Loot half again as large, but checks 6 points harder.', check: -0.06, loot: 1.5 },
-  ego: { needsEgo: true, vi: 'Khai mở E.G.O', en: 'Open the E.G.O', textVi: 'Mất 8 SP ngay, thêm 4 Resonance. Dò đường dễ hơn 22 điểm, thương tổn giảm 40%.', textEn: 'Lose 8 SP now, gain 4 Resonance. Checks 22 points easier, damage down 40%.', check: 0.22, damage: 0.6, now: { sanity: -8, resonance: 4 } },
+  ego: { needsEgo: true, vi: 'Khai mở E.G.O', en: 'Open the E.G.O', textVi: 'Mất 8 SP ngay, thêm 4 Resonance. Dò đường và né dễ hơn 22 điểm, thương tổn giảm 40%.', textEn: 'Lose 8 SP now, gain 4 Resonance. Checks and dodges 22 points easier, damage down 40%.', check: 0.22, damage: 0.6, now: { sanity: -8, resonance: 4 } },
   second: { vi: 'Hơi thở thứ hai', en: 'Second Wind', textVi: 'Hồi 8 HP và 4 SP ngay. Không đổi gì ở chặng này.', textEn: 'Heal 8 HP and 4 SP now. Changes nothing about this stage.', now: { health: 8, sanity: 4 } },
   cold: { vi: 'Đếm lạnh', en: 'Cold Count', textVi: 'Quét chặng này miễn phí, không tốn tiếp tế.', textEn: 'Scan this stage for free, no supply spent.', scan: true },
   wall: { vi: 'Dựng thế thủ', en: 'Raise the Wall', textVi: 'Thương tổn lượt này giảm 40%, nhưng đòn của bạn không phá được thế của nó.', textEn: 'Damage this turn drops 40%, but your blows cannot break its stance.', damage: 0.6, noBreak: true, combatOnly: true },
-  slip: { vi: 'Bước lướt', en: 'Slip Step', textVi: 'Né dễ hơn 25 điểm, nhưng nếu hụt thì đau thêm một phần mười.', textEn: 'Evading is 25 points easier, but a miss hurts a tenth more.', evade: 0.25, damage: 1.1, combatOnly: true },
+  slip: { vi: 'Bước lướt', en: 'Slip Step', textVi: 'Né dễ hơn 25 điểm, nhưng nếu né hụt thì đòn trúng nặng thêm một phần mười.', textEn: 'Evading is 25 points easier, but a missed dodge lands a tenth heavier.', evade: 0.25, missMult: 1.1, combatOnly: true },
   riposte: { vi: 'Bắt nhịp', en: 'Catch the Beat', textVi: 'Phản công phá thêm một nhịp thế của nó, nhưng mọi đòn nhận vào nặng hơn một phần tư.', textEn: 'A strike breaks one more beat of its stance, but every blow you take is a quarter heavier.', breaks: 1, damage: 1.25, combatOnly: true },
   time_stop: { vi: 'Dừng một giây', en: 'Stop One Second', textVi: 'Đòn của nó trượt qua bạn lượt này, nhưng đòn của bạn cũng không phá được thế. Thêm 10 áp lực.', textEn: 'Its blow slides past you this turn, but yours cannot break its stance either. Adds 10 strain.', damage: 0.1, noBreak: true, now: { strain: 10 }, theme: 'warp', combatOnly: true },
   lcorp_log: { vi: 'Sổ ghi chép nhân viên', en: 'Staff Field Notes', textVi: 'Né dễ hơn 15 điểm, thương tổn giảm một phần tám. Mất 4 SP vì phải đọc lại những gì đã xảy ra với người trước.', textEn: 'Evading is 15 points easier, damage down an eighth. Lose 4 SP rereading what happened to those before you.', evade: 0.15, damage: 0.88, now: { sanity: -4 }, theme: 'lcorp', combatOnly: true },
@@ -25,7 +25,7 @@ export const DUNGEON_CARDS = {
   blood_toast: { vi: 'Chén máu mời', en: 'The Offered Cup', textVi: 'Hồi 10 HP ngay, mất 6 SP vì vị của nó.', textEn: 'Heal 10 HP now, lose 6 SP to the taste.', now: { health: 10, sanity: -6 }, theme: 'blood', combatOnly: true },
   blood_mask: { vi: 'Đeo mặt nạ dạ hội', en: 'Wear the Masquerade Mask', textVi: 'Né dễ hơn 10 điểm, thương tổn giảm một phần năm. Mất 3 SP vì không còn nhìn thấy mặt mình.', textEn: 'Evading is 10 points easier, damage down a fifth. Lose 3 SP at not seeing your own face.', evade: 0.10, damage: 0.8, now: { sanity: -3 }, theme: 'blood', combatOnly: true },
   alley_run: { vi: 'Đường tắt của Backstreets', en: 'The Backstreets Shortcut', textVi: 'Né dễ hơn 20 điểm, loot thêm một phần năm.', textEn: 'Evading is 20 points easier, loot a fifth larger.', evade: 0.20, loot: 1.2, theme: 'alley', combatOnly: true },
-  alley_knife: { vi: 'Con dao giấu trong ủng', en: 'The Knife in the Boot', textVi: 'Phản công phá thêm một nhịp thế, nhưng mọi đòn nhận vào nặng hơn một phần mười lăm. Loot thêm một phần mười lăm.', textEn: 'A strike breaks one more beat of its stance, but every blow you take is a fifteenth heavier. Loot a fifteenth larger.', breaks: 1, damage: 1.07, loot: 1.07, theme: 'alley', combatOnly: true },
+  alley_knife: { vi: 'Con dao giấu trong ủng', en: 'The Knife in the Boot', textVi: 'Phản công phá thêm một nhịp thế, nhưng mọi đòn nhận vào nặng hơn 7%. Loot thêm 7%.', textEn: 'A strike breaks one more beat of its stance, but every blow you take is 7% heavier. Loot 7% larger.', breaks: 1, damage: 1.07, loot: 1.07, theme: 'alley', combatOnly: true },
   bluff: { vi: 'Giả điềm tĩnh', en: 'Feigned Calm', textVi: 'Dò đường dễ hơn 8 điểm, thương tổn giảm một phần mười.', textEn: 'Checks 8 points easier, damage down a tenth.', check: 0.08, damage: 0.9 }
 };
 
@@ -89,6 +89,9 @@ export function cardPlayable(cardId, char) {
   if (card.needsEgo && !char?.flags?.includes('EGOAwakened')) return false;
   // The free scan does not stack with a scan already paid for this stage: the play would be spent for nothing
   if (card.scan && char?.pendingDungeon?.stageScanned) return false;
+  // Between fights only a card that heals has anything to act on
+  const pending = char?.pendingDungeon;
+  if (pending?.mode === 'gauntlet' && pending.combat?.plan?.[pending.combat.floor]?.kind === 'rest' && !((card.now?.health || 0) > 0)) return false;
   const hp = char?.stats?.health ?? 0;
   const sp = char?.stats?.sanity ?? 0;
   if ((card.now?.health || 0) < 0 && hp + card.now.health < 1) return false;

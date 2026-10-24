@@ -62,6 +62,8 @@ function enterFloor(session, char, index) {
   c.floor = index;
   c.turn = 0;
   c.floorPlays = 0;
+  // A card played before a rest has done its work; it must not follow the player into the next fight
+  session.cardActive = null;
   const floor = c.plan[index];
   if (!floor || floor.kind === 'rest') {
     c.enemy = null;
@@ -116,7 +118,7 @@ export function evadeChance(ctx, char, session) {
   let chance = COMBAT_BALANCE.evadeBase * ctx.traitFactor(char, 'luck') + ctx.mastery(char, session).checkBonus;
   if (session.stageScanned) chance += 0.15;
   if (session.egoActive) chance += 0.3;
-  chance += cardEffectOf(session).evade || 0;
+  chance += (cardEffectOf(session).evade || 0) + (cardEffectOf(session).check || 0);
   if (session.stance === 'guarded') chance += 0.05;
   if ((char.stats?.health ?? 100) <= 40 && activeScarSynergies(char).some((synergy) => synergy.id === 'cornered_blade')) chance += 0.06;
   chance += ctx.strainCheck(session);
@@ -135,7 +137,7 @@ export function previewCombatAction(ctx, choice, char, session) {
   }
   const [taken] = ANSWERS[action][intent.kind];
   const ok = action === 'evade' ? evadeChance(ctx, char, session) : 1;
-  const expected = action === 'evade' ? ok * taken + (1 - ok) * EVADE_MISS : taken;
+  const expected = action === 'evade' ? ok * taken + (1 - ok) * EVADE_MISS * (cardEffectOf(session).missMult || 1) : taken;
   return {
     hasCheck: action === 'evade', trait: action === 'evade' ? 'luck' : null, successPct: Math.round(ok * 100),
     estHp: -damageOf(ctx, def, char, session, intent, expected, 'health'),
@@ -310,7 +312,7 @@ export function resolveGauntletChoice(char, session, choiceIndex, rng, ctx) {
   } else {
     [taken, breaks] = ANSWERS[action][intent.kind];
     if (action === 'evade' && rng() >= evadeChance(ctx, char, session)) {
-      taken = EVADE_MISS; breaks = 0; quality = 'poor';
+      taken = EVADE_MISS * (cardEffectOf(session).missMult || 1); breaks = 0; quality = 'poor';
     } else {
       quality = qualityOfIntent(intent, action, taken, breaks);
     }

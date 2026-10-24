@@ -767,3 +767,10 @@ Mô phỏng 1.000 sinh mệnh độc lập (tuổi thọ trung bình 52.0 tuổi
 
 ### Đợt 42 (25/10/2026): Mỗi dungeon có cách kết thúc một đời theo lore riêng
 * Khi ngã trong dungeon, đoạn kết và nguyên nhân tử vong nay riêng theo từng nơi: WARP Train (đội dọn W Corp chỉ còn lau sàn khi hết lượt khôi phục), chi nhánh L Corp (còi Meltdown, bộ sưu tập dưới tầng), La Manchaland (con rối khâu bằng da người đưa bạn về với lễ hội), đợt quét 3:13 ở Backstreets (không còn ai nhớ), Đại Hồ (Luật: thứ gì xuống nước thì thuộc về nước), Phế Tích Ngoại Ô (bão cát phủ cổng vòm). Test kiểm không có hai nơi dùng chung một đoạn.
+
+### Đợt 43 (25/10/2026): Sửa ba lỗi của bộ bài chiến đấu và test từng lá
+* Lá dùng ở tầng nghỉ không còn "đang dùng" sang trận kế tiếp; ở tầng nghỉ chỉ lá hồi máu mới dùng được.
+* Lá Khai mở E.G.O nay thật sự tăng tỉ lệ né trong trận (điểm kiểm định cộng vào tỉ lệ né).
+* Bước lướt chỉ làm nặng thêm đòn trúng khi né hụt, không làm nặng mọi đòn như trước.
+* Chữ trên lá Con dao giấu trong ủng khớp với số thật (7%).
+* `tests/test_dungeon_cards.mjs` kiểm từng lá: giá phải trả, tỉ lệ né, sát thương hiển thị, khóa phá thế, loot, thời gian sống của lá và ngân sách mỗi tầng.
