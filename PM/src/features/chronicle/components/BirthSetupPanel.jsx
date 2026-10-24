@@ -170,7 +170,7 @@ function MotionHint({ t }) {
 }
 
 export const BirthSetupPanel = () => {
-  const { t, lang } = useT();
+  const { t, lang } = useT('en');
   const navigate = useNavigate();
   const customName = useGameStore((s) => s.customName);
   const customSeed = useGameStore((s) => s.customSeed);

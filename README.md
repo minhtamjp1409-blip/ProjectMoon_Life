@@ -160,6 +160,14 @@ dotnet run
 ```
 Default API port: `http://localhost:5080`.
 
+### Saved progress on a hosted server
+
+The browser keeps its own save and a random player token in local storage. The API uses that token to keep each player's archive and active run separate. It is an anonymous device identity, not a login: clearing browser storage loses access to that server archive.
+
+Deploy the frontend and backend changes together. The older shared files in `PM_BE/Data/city_archive.json` and `PM_BE/Data/run_state.json` are left untouched; the new API does not assign those shared records to any player. Existing saves in each browser remain available locally.
+
+For durable server saves, set `CITY_DATA_DIR` to an absolute path backed by persistent storage. Without it, the backend writes under its local `Data` folder. On Render, that default filesystem is cleared on restart or redeploy; the browser save remains the fallback. Run `npm run test:backend-isolation` from `PM` after changing backend persistence.
+
 ---
 
 ## 🛠️ Build & Verification
@@ -169,7 +177,7 @@ Default API port: `http://localhost:5080`.
 cd PM
 npm run build
 
-# Story lint, 50k-moment integrity audit and a 120-life logic audit (non-zero exit on any failure)
+# Story lint, regression tests and a 500-moment integrity audit
 npm run test
 ```
 

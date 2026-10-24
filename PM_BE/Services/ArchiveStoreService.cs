@@ -38,10 +38,16 @@ public sealed class ArchiveStoreService
     private int _archiveDirty;
     private int _stateDirty;
 
-    public ArchiveStoreService(IWebHostEnvironment env, ILogger<ArchiveStoreService> log)
+    public ArchiveStoreService(IWebHostEnvironment env, ILogger<ArchiveStoreService> log, string playerKey)
     {
         _log = log;
-        var dataDir = Path.Combine(env.ContentRootPath, "Data");
+        var configuredDataDir = Environment.GetEnvironmentVariable("CITY_DATA_DIR");
+        if (!string.IsNullOrWhiteSpace(configuredDataDir) && !Path.IsPathFullyQualified(configuredDataDir))
+            throw new InvalidOperationException("CITY_DATA_DIR must be an absolute path.");
+        var dataRoot = !string.IsNullOrWhiteSpace(configuredDataDir)
+            ? configuredDataDir
+            : Path.Combine(env.ContentRootPath, "Data");
+        var dataDir = Path.Combine(dataRoot, "players", playerKey);
         Directory.CreateDirectory(dataDir);
         _archivePath = Path.Combine(dataDir, "city_archive.json");
         _statePath = Path.Combine(dataDir, "run_state.json");
@@ -214,6 +220,7 @@ public sealed class ArchiveStoreService
             {
                 await JsonSerializer.SerializeAsync(stream, value, info, ct);
             }
+            if (File.Exists(path)) File.Copy(path, path + ".bak", overwrite: true);
             File.Move(tmp, path, overwrite: true);
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
@@ -234,9 +241,17 @@ public sealed class ArchiveStoreService
         }
         catch (Exception ex) when (ex is JsonException or IOException)
         {
-            // Keep the unreadable file for inspection and start clean
-            _log.LogWarning(ex, "Unreadable {Path}; starting fresh and keeping a .bad copy", path);
+            _log.LogWarning(ex, "Unreadable {Path}; checking backup", path);
             try { File.Copy(path, path + ".bad", overwrite: true); } catch (IOException) { }
+            try
+            {
+                using var backup = File.OpenRead(path + ".bak");
+                return JsonSerializer.Deserialize(backup, info);
+            }
+            catch (Exception backupEx) when (backupEx is JsonException or IOException)
+            {
+                _log.LogWarning(backupEx, "Unreadable backup for {Path}; starting fresh", path);
+            }
             return null;
         }
     }
@@ -250,7 +265,7 @@ public sealed class ArchiveStoreService
 }
 
 /// <summary>Flushes the archive every second when something changed, and once more on shutdown.</summary>
-public sealed class ArchiveFlushService(ArchiveStoreService store) : BackgroundService
+public sealed class ArchiveFlushService(PlayerArchiveRegistry registry) : BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -259,7 +274,7 @@ public sealed class ArchiveFlushService(ArchiveStoreService store) : BackgroundS
         {
             while (await timer.WaitForNextTickAsync(stoppingToken))
             {
-                await store.FlushAsync(stoppingToken);
+                await registry.FlushAsync(stoppingToken);
             }
         }
         catch (OperationCanceledException)
@@ -271,6 +286,6 @@ public sealed class ArchiveFlushService(ArchiveStoreService store) : BackgroundS
     public override async Task StopAsync(CancellationToken cancellationToken)
     {
         await base.StopAsync(cancellationToken);
-        await store.FlushAsync(CancellationToken.None);
+        await registry.FlushAsync(CancellationToken.None);
     }
 }

@@ -100,12 +100,16 @@ function loadSavedRun() {
 }
 
 function clearSavedRun() {
+  const clearAfterRequest = ++saveRequestId;
   try {
     localStorage.removeItem(RUN_KEY);
   } catch {
     // ignore
   }
-  cityArchiveAPI.clearRunState().catch(() => {});
+  Promise.allSettled([...pendingRunWrites]).then(() => {
+    if (clearAfterRequest === saveRequestId) return cityArchiveAPI.clearRunState();
+    return null;
+  }).catch(() => {});
 }
 
 // The life's own random stream, separate from the one that built the character
@@ -285,6 +289,8 @@ const savedMeta = loadSavedMeta();
 const initialChar = createNewCharacter({});
 let lifeRng = createRNG(initialChar.seed);
 let saveTimer = null;
+let saveRequestId = 0;
+const pendingRunWrites = new Set();
 
 export const useGameStore = create((set, get) => ({
   inRun: false,
@@ -300,6 +306,7 @@ export const useGameStore = create((set, get) => ({
   telemetry: null,
   savedRun: loadSavedRun(),
   lastSavedAt: null,
+  saveError: false,
 
   // Start form
   customName: '',
@@ -362,13 +369,24 @@ export const useGameStore = create((set, get) => ({
       }
       const savedAt = new Date().toISOString();
       const payload = { char, yearProgress, savedAt };
+      const requestId = ++saveRequestId;
+      let savedLocally = false;
       try {
         localStorage.setItem(RUN_KEY, JSON.stringify(payload));
-      } catch {
-        // ignore quota errors
-      }
-      set({ savedRun: { char, yearProgress, savedAt }, lastSavedAt: savedAt });
-      cityArchiveAPI.saveRunState(payload).catch(() => {});
+        savedLocally = true;
+      } catch {}
+      if (savedLocally) set({ savedRun: { char, yearProgress, savedAt }, lastSavedAt: savedAt, saveError: false });
+      const remoteWrite = cityArchiveAPI.saveRunState(payload)
+        .then(() => {
+          if (!savedLocally && requestId === saveRequestId) {
+            set({ savedRun: { char, yearProgress, savedAt }, lastSavedAt: savedAt, saveError: false });
+          }
+        })
+        .catch(() => {
+          if (!savedLocally && requestId === saveRequestId) set({ saveError: true });
+        });
+      pendingRunWrites.add(remoteWrite);
+      remoteWrite.finally(() => pendingRunWrites.delete(remoteWrite));
     };
     clearTimeout(saveTimer);
     if (immediate) write();

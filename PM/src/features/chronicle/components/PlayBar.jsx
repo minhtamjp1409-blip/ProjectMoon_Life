@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Tooltip, Modal, Dropdown } from 'antd';
-import { User, Play, Pause, SkipForward, Bot, RotateCcw, House, Save, Check, Volume2, VolumeX, MoreHorizontal, BookOpen, GitFork, Trophy, Compass, Sun, Moon } from 'lucide-react';
+import { User, Play, Pause, SkipForward, Bot, RotateCcw, House, Save, Check, AlertTriangle, Volume2, VolumeX, MoreHorizontal, BookOpen, GitFork, Trophy, Compass, Sun, Moon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 import { useGameStore } from '../../../store/gameStore';
@@ -124,7 +124,7 @@ export const PlayBar = () => {
   const { themeMode, toggleTheme, setMobileDossierOpen } = useThemeStore();
   const char = useGameStore((s) => s.char);
   const milestone = getNextCareerMilestone(char);
-  const { age, seasonIdx, yearProgress, dramaPhase, alive, waiting, speed, autoPlay, setSpeed, toggleAutoPlay, stepYear, exitToSetup, abandonRun, saveRun, lastSavedAt } =
+  const { age, seasonIdx, yearProgress, dramaPhase, alive, waiting, speed, autoPlay, setSpeed, toggleAutoPlay, stepYear, exitToSetup, abandonRun, saveRun, lastSavedAt, saveError } =
     useGameStore(
       useShallow((s) => ({
         age: s.char.age,
@@ -141,7 +141,8 @@ export const PlayBar = () => {
         exitToSetup: s.exitToSetup,
         abandonRun: s.abandonRun,
         saveRun: s.saveRun,
-        lastSavedAt: s.lastSavedAt
+        lastSavedAt: s.lastSavedAt,
+        saveError: s.saveError
       }))
     );
 
@@ -346,8 +347,8 @@ export const PlayBar = () => {
     },
     {
       key: 'save',
-      icon: justSaved ? <Check size={16} style={{ color: 'var(--good)' }} /> : <Save size={16} />,
-      label: justSaved ? t('Đã lưu thành công!', 'Saved!') : t('Lưu tiến trình', 'Save game'),
+      icon: saveError ? <AlertTriangle size={16} style={{ color: 'var(--bad)' }} /> : justSaved ? <Check size={16} style={{ color: 'var(--good)' }} /> : <Save size={16} />,
+      label: saveError ? t('Chưa lưu được · thử lại', 'Save failed · retry') : justSaved ? t('Đã lưu thành công!', 'Saved!') : t('Lưu tiến trình', 'Save game'),
       disabled: !alive,
       onClick: () => saveRun(true)
     },
@@ -525,9 +526,10 @@ export const PlayBar = () => {
             </button>
           </Dropdown>
 
-          <button type="button" className="icon-btn" onClick={() => saveRun(true)} disabled={!alive} aria-label={t('Lưu tiến trình', 'Save progress')} title={t('Lưu tiến trình (game cũng tự lưu)', 'Save progress (the game also autosaves)')}>
-            {justSaved ? <Check size={17} style={{ color: 'var(--good)' }} /> : <Save size={17} />}
+          <button type="button" className="icon-btn" onClick={() => saveRun(true)} disabled={!alive} aria-label={saveError ? t('Chưa lưu được, bấm để thử lại', 'Save failed, press to retry') : t('Lưu tiến trình', 'Save progress')} title={saveError ? t('Chưa lưu được · thử lại', 'Save failed · retry') : t('Lưu tiến trình (game cũng tự lưu)', 'Save progress (the game also autosaves)')}>
+            {saveError ? <AlertTriangle size={17} style={{ color: 'var(--bad)' }} /> : justSaved ? <Check size={17} style={{ color: 'var(--good)' }} /> : <Save size={17} />}
           </button>
+          {saveError && <span className="sr-only" role="status">{t('Chưa lưu được tiến trình. Kiểm tra bộ nhớ trình duyệt hoặc kết nối rồi thử lại.', 'Progress was not saved. Check browser storage or your connection and retry.')}</span>}
           <button type="button" className="icon-btn" onClick={goHome} aria-label={t('Về trang chủ', 'Home')} title={t('Về trang chủ (tiến trình được giữ lại)', 'Home (progress is kept)')}>
             <House size={17} />
           </button>
@@ -549,13 +551,13 @@ export const PlayBar = () => {
 
         {/* Mobile More dropdown menu (pops up from bottom bar) */}
         <div className="playbar-mobile-more">
-          <Dropdown menu={{ items: menuItems }} placement="topRight" trigger={['click']}>
+          <Dropdown menu={{ items: menuItems }} placement="topRight" trigger={['click']} overlayClassName="playbar-more-menu">
             <button 
               type="button" 
               className="icon-btn" 
-              aria-label={t('Thao tác khác', 'More options')}
+              aria-label={saveError ? t('Chưa lưu được · mở thao tác để thử lại', 'Save failed · open menu to retry') : t('Thao tác khác', 'More options')}
             >
-              <MoreHorizontal size={18} />
+              {saveError ? <AlertTriangle size={18} color="var(--bad)" /> : <MoreHorizontal size={18} />}
             </button>
           </Dropdown>
         </div>

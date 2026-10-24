@@ -1,6 +1,6 @@
 # The City Chronicles: Tài Liệu Tiến Trình & Kiến Trúc Kỹ Thuật Toàn Diện
 
-> **Cập nhật ghi chép: 23/10/2026 (Đợt 31)**
+> **Cập nhật ghi chép: 24/10/2026 (Đợt 35, chỉ ở máy; chưa push/deploy)**
 > Đợt 26 thay cơ chế gọi Carmen và bổ sung lựa chọn chuẩn bị; số đo cuộc đời ở Đợt 23 là lịch sử, không phải tỷ lệ hiện tại.
 > **Trạng thái xác minh tại máy cho Đợt 22:** `npm test` đạt, gồm hồi quy BUG-34–40, lint nội dung và audit 500 khoảnh khắc; `npm run build` đạt. Backend và Git remote không được thay đổi trong đợt này. Các số liệu kho sự kiện và mô phỏng 1.000 cuộc đời ở Đợt 20 là kết quả lịch sử, không phải lần chạy lại của Đợt 22.
 > **Cách đọc số liệu:** Các kết quả mô phỏng ở Đợt 1–21 là ảnh chụp lịch sử tại thời điểm ghi; xem Đợt 23 để đọc phép đo Color/E.G.O hiện hành. Đợt 22 và mục 9.3 ghi các lần kiểm thử chức năng trước đó.
@@ -395,6 +395,13 @@ Mô phỏng 1.000 sinh mệnh độc lập (tuổi thọ trung bình 52.0 tuổi
 * **Hiệu ứng và nền** (`src/styles/dungeonFx.css`): mỗi lượt có hiệu ứng ngắn theo kết quả (trúng đòn, đòn nặng, đỡ, phản công, né, tấn công tâm trí, hạ tầng, đổi pha, hạ trùm) và theo từng nơi (WARP nhiễu sọc, L Corp vạch còi báo, Carnival vệt chém đỏ, Great Lake sóng tràn, Night mực đen, Claw đường cắt xanh). Bảng kẻ thù rung khi bị phản công, cảnh rung khi trúng đòn nặng. Nền sau sân khấu tối dần theo tầng, trùm và pha hai đổi màu; Night có nền riêng (đèn đường chập chờn, đồng hồ 3:13, mực rỉ từ cống, bóng vest đi qua). Âm thanh theo từng loại kết quả.
 * **Sidebar theo dungeon:** khi đang trong dungeon, menu trái, hồ sơ nhân vật, thanh đầu trang và thanh dưới đổi sang màu và họa tiết của nơi đó, và viền màn hình chớp nhẹ khi trúng đòn. Có tôn trọng chế độ giảm chuyển động (giữ màu, bỏ chuyển động).
 * Test: `tests/test_dungeon_gauntlet.mjs` (mới); `test_dungeon_mechanics`, `test_dungeon_balance`, `test_dungeon_variety` chuyển phần cơ chế khám phá sang Outskirts; `test_claw_judgment` viết lại phần sau cho ba tầng. Voice lint giờ kiểm cả lời báo đòn, lời mở đầu và câu đổi pha.
+
+### Đợt 35 (24/10/2026): Cô lập hồ sơ người chơi, độ tin cậy của lưu trữ và rà soát giao diện
+* **Dữ liệu backend theo người chơi:** API hồ sơ, trạng thái và telemetry yêu cầu `X-Player-Token` hợp lệ; server băm token để chọn thư mục riêng. Các thao tác đọc, ghi và xóa của một trình duyệt không còn đụng vào hồ sơ của trình duyệt khác. Dữ liệu server dùng chung từ phiên bản cũ không được tự gán cho người chơi mới.
+* **Độ bền lưu trữ:** ghi bản sao `.bak` và phục hồi khi tệp chính hỏng; hỗ trợ `CITY_DATA_DIR` tuyệt đối cho ổ dữ liệu bền vững. Nếu host dùng ổ tạm thì dữ liệu backend vẫn có thể mất khi khởi động lại; cần cấu hình ổ bền vững khi triển khai.
+* **Frontend:** token ngẫu nhiên được lưu trên thiết bị và gửi cùng yêu cầu API. Trạng thái lưu chỉ báo thành công khi ít nhất một nơi lưu thành công, có báo lỗi và nút thử lại. Khi bỏ cuộc chơi, đợi yêu cầu ghi cũ hoàn tất để không hồi sinh lượt chơi đã xóa.
+* **Giao diện:** Home và điều hướng Home dùng tiếng Anh theo thiết kế; ngôn ngữ trong lượt chơi theo lựa chọn hiện có. Thanh điều khiển và menu trên màn hình rộng 320 px không còn tràn ngang.
+* **Xác minh tại máy:** `npm test`, `npm run build`, `npm run test:backend-isolation` đạt; thử thực tế Home, lượt chơi và menu trên điện thoại 320/390 px và desktop 1366 px. Mô phỏng nhánh và Finger đã được rà soát; chưa thay đổi cân bằng khi mẫu đo chưa đủ để kết luận. Không commit, push hoặc deploy trong đợt này.
 
 ### Đợt 34 (23/10/2026): Dungeon có rẽ nhánh, người đi cùng, và nhiều hơn cho Finger
 * **Dungeon thứ sáu: Đêm ở Backstreets** (`src/data/dungeonExtras.js`). Lore (wiki Library of Ruina, trang Sweepers): Night in the Backstreets kéo dài từ 3 giờ 13 đến 4 giờ 34; Sweepers ra thành ba đợt, ai qua đủ ba đợt thì an toàn; Sweepers không vào nhà dân; thân thể là chất lỏng giữ trong bộ vest đen, nạp lại qua cái móc cắm vào người; chúng không để lại gì. Bốn chặng: ba đợt quét và 4 giờ 34. Lối thoát giữa chừng là gõ cửa một nhà dân. Syndicate, Outcast và người có cờ Backstreets có thông thạo cho dungeon này.

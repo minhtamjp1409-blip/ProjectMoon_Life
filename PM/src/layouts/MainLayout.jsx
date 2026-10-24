@@ -76,6 +76,7 @@ export const MainLayout = ({ children }) => {
 
   // The play screen manages its own scrolling regions; other screens scroll as a page
   const isPlay = location.pathname === '/' && inRun;
+  const isHome = location.pathname === '/' && !inRun;
   const hasDock = isPlay && Boolean(pendingEvent || pendingContract || pendingMinor || activeResolution);
   const { sidebarCollapsed, toggleSidebar } = useThemeStore();
   const isNavCollapsed = sidebarCollapsed !== null ? sidebarCollapsed : isPlay;
@@ -88,10 +89,10 @@ export const MainLayout = ({ children }) => {
     >
       <CityBackdrop variant="ambient" />
       {dungeon && dungeonFx && <span key={dungeonNonce} className={`dg-shell-pulse fx-${dungeonFx}`} aria-hidden="true" />}
-      <Sidebar isCollapsed={isNavCollapsed} onToggleCollapse={() => toggleSidebar(isNavCollapsed)} isPlay={isPlay} />
-      <Header />
+      <Sidebar isCollapsed={isNavCollapsed} onToggleCollapse={() => toggleSidebar(isNavCollapsed)} isPlay={isPlay} languageOverride={isHome ? 'en' : undefined} />
+      <Header languageOverride={isHome ? 'en' : undefined} />
       <main className="main" id="main-content">{isPlay ? children : <div className="main-scroll">{children}</div>}</main>
-      <BottomNav />
+      <BottomNav languageOverride={isHome ? 'en' : undefined} />
     </div>
   );
 };

@@ -6,8 +6,20 @@ const API_BASE_URL = cleanUrl.endsWith('/api') ? cleanUrl : `${cleanUrl}/api`;
 // When the archive server is down, stop knocking for a while instead of failing every call
 let offlineUntil = 0;
 
+function getPlayerToken() {
+  const key = 'pm-player-token-v1';
+  const saved = localStorage.getItem(key);
+  if (/^[a-f0-9]{64}$/.test(saved || '')) return saved;
+
+  const bytes = new Uint8Array(32);
+  crypto.getRandomValues(bytes);
+  const token = Array.from(bytes, (byte) => byte.toString(16).padStart(2, '0')).join('');
+  localStorage.setItem(key, token);
+  return token;
+}
+
 export async function apiRequest(endpoint, options = {}) {
-  const { allow404, ...fetchOptions } = options;
+  const { allow404, headers, ...fetchOptions } = options;
   if (Date.now() < offlineUntil) throw new Error('API offline');
 
   const controller = new AbortController();
@@ -15,9 +27,9 @@ export async function apiRequest(endpoint, options = {}) {
   let response;
   try {
     response = await fetch(`${API_BASE_URL}${endpoint}`, {
-      headers: { 'Content-Type': 'application/json', ...(fetchOptions.headers || {}) },
-      signal: controller.signal,
-      ...fetchOptions
+      ...fetchOptions,
+      headers: { 'Content-Type': 'application/json', ...(headers || {}), 'X-Player-Token': getPlayerToken() },
+      signal: controller.signal
     });
   } catch (err) {
     offlineUntil = Date.now() + 30000;

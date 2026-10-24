@@ -2214,6 +2214,25 @@ input:focus-visible, select:focus-visible, textarea:focus-visible {
   .interface-v2 .playbar-controls .btn-step-season { font-size: 11px; padding-inline: 8px; }
 }
 
+@media (max-width: 360px) {
+  .interface-v2 .playbar-controls .btn-step-season {
+    min-width: 0 !important;
+    padding-inline: 4px !important;
+    gap: 4px !important;
+  }
+  .playbar-more-menu {
+    max-width: calc(100vw - 16px);
+  }
+  .playbar-more-menu .ant-dropdown-menu {
+    min-width: 0;
+    width: 100%;
+  }
+  .playbar-more-menu .ant-dropdown-menu-item {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   :root:not([data-motion='full']) *, :root:not([data-motion='full']) *::before, :root:not([data-motion='full']) *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
   :root:not([data-motion='full']) .interface-v2 :is(.entry, .stage-fx, .is-critical) { animation: none !important; }
