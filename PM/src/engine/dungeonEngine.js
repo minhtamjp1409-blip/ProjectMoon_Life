@@ -26,6 +26,7 @@ import { initGauntlet, isGauntlet, gauntletStage, previewCombatAction, resolveGa
 export const DUNGEON_DEFINITIONS = {
   dungeon_warp_train: {
     id: 'dungeon_warp_train',
+    fall: { vi: 'Đội dọn W Corp đến như mọi lần, với túi đựng và ống tiêm. Lần này họ không mở túi. Họ lau sàn toa, kiểm lại số ghế, và chuyến tàu đi tiếp mà không thiếu ai trong danh sách, vì tên bạn đã được gạch từ trước.', en: 'The W Corp cleaning crew arrives as always, with bags and syringes. This time they do not open the bags. They wipe the carriage floor, recount the seats, and the train goes on missing no one from the list, because your name was struck beforehand.', causeVi: 'Đội dọn W Corp không khôi phục được nữa', causeEn: 'Beyond what the W Corp cleaners could put back' },
     theme: 'warp',
     titleVi: 'Chuyến Tàu WARP: Toa Cuối Địa Ngục',
     titleEn: 'WARP Train: The Nether Carriages',
@@ -186,6 +187,7 @@ export const DUNGEON_DEFINITIONS = {
 
   dungeon_lobotomy_ruin: {
     id: 'dungeon_lobotomy_ruin',
+    fall: { vi: "Còi Meltdown tắt khi bạn ngừng thở. Chi nhánh không còn nhân viên nào để ghi tên bạn vào danh sách thương vong, và thứ ở tầng dưới thêm bạn vào bộ sưu tập của nó, chậm rãi, đúng theo quy trình.", en: "The Meltdown siren falls silent when you stop breathing. The branch has no staff left to enter your name on a casualty list, and what lives on the lower floors adds you to its collection, slowly, by the book.", causeVi: "Mất tích trong chi nhánh L Corp đã sụp đổ", causeEn: "Lost in the collapsed L Corp branch" },
     cards: true,
     theme: 'lobotomy',
     titleVi: 'Tàn Tích L Corp: Chi Nhánh Sụp Đổ',
@@ -333,6 +335,7 @@ export const DUNGEON_DEFINITIONS = {
 
   dungeon_bloodfiend_carnival: {
     id: 'dungeon_bloodfiend_carnival',
+    fall: { vi: "Nhạc kèn không ngừng khi bạn ngã. Những con rối khâu bằng da người đến nhấc bạn lên, cẩn thận như đỡ một vị khách quá chén, và đưa bạn về nơi lễ hội giữ những người đến sau cùng.", en: "The brass does not stop when you fall. The puppets stitched from human skin come to lift you, careful as if helping a guest who has had too much, and carry you to where the carnival keeps those who arrive last.", causeVi: "Ở lại La Manchaland", causeEn: "Stayed behind in La Manchaland" },
     cards: true,
     theme: 'bloodfiend',
     titleVi: 'La Manchaland: Lễ Hội Khát Máu',
@@ -477,6 +480,7 @@ export const DUNGEON_DEFINITIONS = {
 
   dungeon_outskirts_ruins: {
     id: 'dungeon_outskirts_ruins',
+    fall: { vi: "Bão cát phủ lại cổng vòm đá chỉ sau một đêm. Người đi qua đây năm sau sẽ chỉ thấy một mô cát hơi cao hơn bình thường, và không có ai ở Outskirts hỏi tên người nằm dưới.", en: "The sandstorm covers the stone archway again in a single night. Someone passing next year will see only a dune slightly higher than usual, and no one in the Outskirts asks the name of whoever lies beneath.", causeVi: "Chôn dưới Phế Tích Ngoại Ô", causeEn: "Buried beneath the Outskirts ruins" },
     cards: true,
     theme: 'outskirts',
     titleVi: 'Phế Tích Ngoại Ô: Cung Điện Cổ Tích',
@@ -618,6 +622,7 @@ export const DUNGEON_DEFINITIONS = {
 
   dungeon_great_lake: {
     id: 'dungeon_great_lake',
+    fall: { vi: "Sóng đen khép lại trên đầu bạn. Ở Đại Hồ không có nghĩa trang, chỉ có Luật, và bạn đã chạm vào điều đầu tiên: thứ gì xuống nước thì thuộc về nước.", en: "The black waves close over you. The Great Lake has no cemetery, only its Law, and you have met the first of it: what goes into the water belongs to the water.", causeVi: "Chìm ở Đại Hồ", causeEn: "Sank in the Great Lake" },
     theme: 'greatlake',
     titleVi: 'Đại Hồ District 21: Hải Trình Săn Cá Voi Trắng',
     titleEn: 'The Great Lake: Pallid Whale Abyss',
@@ -1551,11 +1556,11 @@ export function resolveDungeonChoice(charState, choiceIndex, rng = Math.random) 
     const restored = recoveredByCleaners(char, session, def, stage);
     if (restored) return restored;
     char.alive = false;
-    char.deathCauseVi = def.recovery === 'w_corp' ? `Đội dọn W Corp không khôi phục được nữa (${stage.nameVi})` : `Bỏ mạng trong ${def.titleVi} (${stage.nameVi})`;
-    char.deathCauseEn = def.recovery === 'w_corp' ? `Beyond what the W Corp cleaners could put back (${stage.nameEn})` : `Perished in ${def.titleEn} (${stage.nameEn})`;
+    char.deathCauseVi = def.recovery === 'w_corp' ? `Đội dọn W Corp không khôi phục được nữa (${stage.nameVi})` : def.fall ? `${def.fall.causeVi} (${stage.nameVi})` : `Bỏ mạng trong ${def.titleVi} (${stage.nameVi})`;
+    char.deathCauseEn = def.recovery === 'w_corp' ? `Beyond what the W Corp cleaners could put back (${stage.nameEn})` : def.fall ? `${def.fall.causeEn} (${stage.nameEn})` : `Perished in ${def.titleEn} (${stage.nameEn})`;
     char.pendingDungeon = null;
     const title = ENDING_TEXT.dead.title({ vi: def.titleVi, en: def.titleEn });
-    const body = ENDING_TEXT.dead.body({ vi: stage.nameVi, en: stage.nameEn });
+    const body = def.fall ? { vi: def.fall.vi, en: def.fall.en } : ENDING_TEXT.dead.body({ vi: stage.nameVi, en: stage.nameEn });
     return {
       char,
       session: null,
@@ -1723,11 +1728,11 @@ const COMBAT_CTX = {
     const restored = recoveredByCleaners(char, session, def, stage);
     if (restored) return restored;
     char.alive = false;
-    char.deathCauseVi = def.recovery === 'w_corp' ? `Đội dọn W Corp không khôi phục được nữa (${stage.nameVi})` : `Bỏ mạng trong ${def.titleVi} (${stage.nameVi})`;
-    char.deathCauseEn = def.recovery === 'w_corp' ? `Beyond what the W Corp cleaners could put back (${stage.nameEn})` : `Perished in ${def.titleEn} (${stage.nameEn})`;
+    char.deathCauseVi = def.recovery === 'w_corp' ? `Đội dọn W Corp không khôi phục được nữa (${stage.nameVi})` : def.fall ? `${def.fall.causeVi} (${stage.nameVi})` : `Bỏ mạng trong ${def.titleVi} (${stage.nameVi})`;
+    char.deathCauseEn = def.recovery === 'w_corp' ? `Beyond what the W Corp cleaners could put back (${stage.nameEn})` : def.fall ? `${def.fall.causeEn} (${stage.nameEn})` : `Perished in ${def.titleEn} (${stage.nameEn})`;
     char.pendingDungeon = null;
     const title = ENDING_TEXT.dead.title({ vi: def.titleVi, en: def.titleEn });
-    const body = ENDING_TEXT.dead.body({ vi: stage.nameVi, en: stage.nameEn });
+    const body = def.fall ? { vi: def.fall.vi, en: def.fall.en } : ENDING_TEXT.dead.body({ vi: stage.nameVi, en: stage.nameEn });
     return {
       char, session: null, isFinished: true,
       resolution: { outcome: 'dead', titleVi: title.vi, titleEn: title.en, resultVi: body.vi, resultEn: body.en, haul: { ahn: 0, merit: session.accumulatedMerit || 0 }, isDead: true }

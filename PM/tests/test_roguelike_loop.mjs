@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { createNewCharacter, createRNG, cloneChar } from '../src/engine/gameEngine.js';
+import { createNewCharacter, createRNG, cloneChar, DUNGEON_DEFINITIONS } from '../src/engine/gameEngine.js';
 import { planYear, chooseYearLead, LIFE_MINORS } from '../src/engine/yearPlanner.js';
 import { addScar, activeScarSynergies, scarAnnualEffects } from '../src/engine/scarModel.js';
 import { createDungeonSession, getDungeonCurrentStage, resolveDungeonChoice, evaluateDungeonChoiceOdds, playDungeonCard, CARD_BUDGET } from '../src/engine/dungeonEngine.js';
@@ -182,4 +182,16 @@ console.log('Roguelike loop: seeded annual offers, single commitment, saved draf
   const last = fall(2);
   assert.equal(last.char.alive, false, 'a body can only be put back so many times');
   assert.equal(last.resolution?.outcome, 'dead');
+}
+
+{
+  const defs = ['dungeon_warp_train', 'dungeon_lobotomy_ruin', 'dungeon_bloodfiend_carnival', 'dungeon_outskirts_ruins', 'dungeon_great_lake', 'dungeon_backstreets_night'];
+  const texts = new Set();
+  for (const id of defs) {
+    const def = DUNGEON_DEFINITIONS[id];
+    assert.ok(def?.fall?.vi && def.fall.en && def.fall.causeVi && def.fall.causeEn, `${id} has a fall of its own`);
+    assert.ok(!/[—–]/.test(def.fall.vi + def.fall.en), `${id} fall text has no long dash`);
+    texts.add(def.fall.vi);
+  }
+  assert.equal(texts.size, defs.length, 'no two dungeons end a life with the same words');
 }

@@ -11,6 +11,7 @@
 export const NIGHT_DUNGEON = {
   id: 'dungeon_backstreets_night',
   cards: true,
+  fall: { vi: "Đồng hồ ở đầu hẻm nhảy sang 4 giờ 34. Mặt đường sạch như vừa được lau, và không ai trong dãy nhà nhớ rằng bạn từng ở đó. Các bộ vest đen không để lại gì, kể cả một lý do.", en: "The clock at the head of the alley jumps to 4:34. The street is clean as if freshly wiped, and no one in the row remembers you were ever there. The black suits leave nothing behind, not even a reason.", causeVi: "Biến mất trong đợt quét lúc 3 giờ 13", causeEn: "Vanished in the 3:13 sweep" },
   theme: 'night',
   titleVi: 'Đêm ở Backstreets: Ba Đợt Quét',
   titleEn: 'Night in the Backstreets: Three Sweeps',
