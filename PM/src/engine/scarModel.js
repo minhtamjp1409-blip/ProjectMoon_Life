@@ -1,9 +1,9 @@
 export const MAX_ACTIVE_SCARS = 3;
 
 export const SCAR_SYNERGIES = [
-  { id: 'cornered_blade', tags: ['survivor', 'weapon'], labelVi: 'Lưỡi kiếm trong ngõ cụt', labelEn: 'Cornered blade', boonVi: 'Khi HP thấp, né đòn trong dungeon dễ hơn 6%.', boonEn: 'At low HP, dungeon evasion gains 6 percentage points.', costVi: 'Mỗi năm thêm 1 Heat.', costEn: 'Gain 1 extra Heat each year.', annual: { heat: 1 } },
-  { id: 'field_repair', tags: ['injury', 'craft'], labelVi: 'Tự vá mình', labelEn: 'Field repair', boonVi: 'Vào dungeon với thêm một lần tiếp tế.', boonEn: 'Enter dungeons with one extra supply.', costVi: 'Mỗi năm tốn thêm 1 Ahn cho vật liệu.', costEn: 'Spend 1 extra Ahn each year on materials.', annual: { wealth: -1 } },
-  { id: 'haunted_witness', tags: ['trauma', 'witness'], labelVi: 'Mắt không ngủ', labelEn: 'Sleepless witness', boonVi: 'Dò đường trong dungeon tăng thêm 7 điểm phần trăm cơ hội kiểm định.', boonEn: 'Scanned dungeon checks gain 7 percentage points.', costVi: 'Mỗi năm mất thêm 1 SP.', costEn: 'Lose 1 extra SP each year.', annual: { sanity: -1 } }
+  { id: 'cornered_blade', tags: ['survivor', 'weapon'], labelVi: 'Lưỡi kiếm trong ngõ cụt', labelEn: 'Cornered blade', boonVi: 'Khi HP thấp, né đòn trong dungeon dễ hơn 6%.', boonEn: 'At low HP, dungeon evasion gains 6 percentage points.', costVi: 'Cứ hai năm thêm 1 Heat.', costEn: 'Gain 1 extra Heat every other year.', annual: { heat: 1 } },
+  { id: 'field_repair', tags: ['injury', 'craft'], labelVi: 'Tự vá mình', labelEn: 'Field repair', boonVi: 'Vào dungeon với thêm một lần tiếp tế.', boonEn: 'Enter dungeons with one extra supply.', costVi: 'Cứ hai năm tốn thêm 1 Ahn cho vật liệu.', costEn: 'Spend 1 extra Ahn every other year on materials.', annual: { wealth: -1 } },
+  { id: 'haunted_witness', tags: ['trauma', 'witness'], labelVi: 'Mắt không ngủ', labelEn: 'Sleepless witness', boonVi: 'Dò đường trong dungeon tăng thêm 7 điểm phần trăm cơ hội kiểm định.', boonEn: 'Scanned dungeon checks gain 7 percentage points.', costVi: 'Cứ hai năm mất thêm 1 SP.', costEn: 'Lose 1 extra SP every other year.', annual: { sanity: -1 } }
 ];
 
 export function activeScarSynergies(char) {
@@ -81,9 +81,11 @@ export function hasScarTag(char, tag) {
   return normalizeScars(char).scars.some((name) => getScarProfile(name)?.tag === tag);
 }
 
+// A pairing costs on top of the two marks only every other year: the boon is real, the price should not double the bill
 export function scarAnnualEffects(char) {
   const effects = {};
-  const annuals = [...normalizeScars(char).scars.map((name) => getScarProfile(name)?.annual || {}), ...activeScarSynergies(char).map((synergy) => synergy.annual)];
+  const synergyYear = (char.age || 0) % 2 === 0;
+  const annuals = [...normalizeScars(char).scars.map((name) => getScarProfile(name)?.annual || {}), ...(synergyYear ? activeScarSynergies(char).map((synergy) => synergy.annual) : [])];
   for (const annual of annuals) {
     for (const [key, value] of Object.entries(annual)) {
       if (key === 'wealth' && char.age < 18) continue;

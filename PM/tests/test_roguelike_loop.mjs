@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { createNewCharacter, createRNG, cloneChar } from '../src/engine/gameEngine.js';
 import { planYear, chooseYearLead, LIFE_MINORS } from '../src/engine/yearPlanner.js';
 import { addScar, activeScarSynergies, scarAnnualEffects } from '../src/engine/scarModel.js';
-import { createDungeonSession, getDungeonCurrentStage, resolveDungeonChoice, evaluateDungeonChoiceOdds } from '../src/engine/dungeonEngine.js';
+import { createDungeonSession, getDungeonCurrentStage, resolveDungeonChoice, evaluateDungeonChoiceOdds, playDungeonCard, CARD_BUDGET } from '../src/engine/dungeonEngine.js';
 
 for (let i = 0; i < 30; i++) {
   const char = createNewCharacter({ seed: `lead-${i}`, startAge: 25 });
@@ -25,13 +25,15 @@ const scarred = createNewCharacter({ seed: 'synergy', startAge: 25 });
 addScar(scarred, 'Vết móc câu Sweeper 3:13 AM');
 addScar(scarred, 'Thanh kiếm tôi bằng máu mình');
 assert.ok(activeScarSynergies(scarred).some((entry) => entry.id === 'cornered_blade'));
-assert.equal(scarAnnualEffects(scarred).heat, 3);
+assert.equal(scarAnnualEffects({ ...scarred, age: 26 }).heat, 3);
+assert.equal(scarAnnualEffects({ ...scarred, age: 27 }).heat, 2, 'the pairing bills only every other year');
 
 const repaired = createNewCharacter({ seed: 'repair', startAge: 25 });
 addScar(repaired, 'Vết dao trả nợ');
 addScar(repaired, 'Chiếc hộp từ nhà máy');
 assert.ok(activeScarSynergies(repaired).some((entry) => entry.id === 'field_repair'));
-assert.equal(scarAnnualEffects(repaired).wealth, -2);
+assert.equal(scarAnnualEffects({ ...repaired, age: 26 }).wealth, -2);
+assert.equal(scarAnnualEffects({ ...repaired, age: 27 }).wealth, -1);
 const baseSupply = createDungeonSession('dungeon_warp_train', createNewCharacter({ seed: 'base', startAge: 25 })).maxSupplies;
 assert.equal(createDungeonSession('dungeon_warp_train', repaired).maxSupplies, baseSupply + 1);
 
@@ -76,5 +78,35 @@ console.log('Roguelike loop: seeded annual offers, single commitment, saved draf
     const c = createNewCharacter({ seed: `tier-${i}`, startAge: 25 });
     planYear(c, createRNG(`${c.seed}:year`));
     assert.equal(c.pendingLead.offers.length, 3);
+  }
+}
+
+{
+  const card = createNewCharacter({ seed: 'card-hand', startAge: 30 });
+  card.job = 'Fixer';
+  const session = createDungeonSession('dungeon_outskirts_ruins', card);
+  assert.equal(session.cardHand.length, 3, 'a card dungeon deals three cards');
+  assert.equal(session.cardPile.length + session.cardHand.length, 10, 'the deck holds ten');
+  assert.ok(!createDungeonSession('dungeon_warp_train', card).cardHand, 'only dungeons that opt in deal cards');
+  card.pendingDungeon = session;
+  const id = session.cardHand[0];
+  const played = playDungeonCard(card, id);
+  assert.equal(played.pendingDungeon.cardActive, id);
+  assert.equal(played.pendingDungeon.cardHand.length, 2);
+  assert.equal(playDungeonCard(played, played.pendingDungeon.cardHand[0]), played, 'one card at a time');
+  const second = { ...played, pendingDungeon: { ...played.pendingDungeon, cardActive: null, cardsPlayed: CARD_BUDGET } };
+  assert.equal(playDungeonCard(second, second.pendingDungeon.cardHand[0]), second, 'the budget is a hard cap');
+  assert.equal(playDungeonCard(card, 'not_a_card'), card);
+  const stage = getDungeonCurrentStage(session);
+  const choiceIdx = stage.choices.findIndex((c) => c.checkTrait);
+  if (choiceIdx >= 0) {
+    const plain = evaluateDungeonChoiceOdds(stage.choices[choiceIdx], card, session);
+    const read = playDungeonCard({ ...card, pendingDungeon: { ...session, cardHand: ['read_blow'] } }, 'read_blow');
+    assert.ok(evaluateDungeonChoiceOdds(stage.choices[choiceIdx], read, read.pendingDungeon).successPct > plain.successPct, 'a card moves the odds the screen shows');
+  }
+  const done = resolveDungeonChoice(played, 0, () => 0.5);
+  if (done.char.pendingDungeon) {
+    assert.equal(done.char.pendingDungeon.cardActive, null, 'a card lasts for one stage');
+    assert.equal(done.char.pendingDungeon.cardHand.length, 3, 'a new hand is dealt');
   }
 }

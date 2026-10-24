@@ -173,7 +173,7 @@ export const BirthSetupPanel = () => {
   const { t, lang } = useT();
   const navigate = useNavigate();
   const customName = useGameStore((s) => s.customName);
-  const gender = useGameStore((s) => s.gender || 'unspecified');
+  const gender = useGameStore((s) => s.gender === 'female' ? 'female' : 'male');
   const customSeed = useGameStore((s) => s.customSeed);
   const selectedRegion = useGameStore((s) => s.selectedRegion);
   const selectedFamily = useGameStore((s) => s.selectedFamily || 'RANDOM');
@@ -452,7 +452,7 @@ export const BirthSetupPanel = () => {
             <div className="field">
               <span className="field-label" id="birth-gender-label">{t('Giới tính', 'Gender')}</span>
               <div className="seg birth-gender" role="radiogroup" aria-labelledby="birth-gender-label">
-                {[['unspecified', t('Không nêu', 'Unspecified')], ['male', t('Nam', 'Male')], ['female', t('Nữ', 'Female')]].map(([id, label]) => (
+                {[['male', t('Nam', 'Male')], ['female', t('Nữ', 'Female')]].map(([id, label]) => (
                   <button
                     key={id}
                     type="button"

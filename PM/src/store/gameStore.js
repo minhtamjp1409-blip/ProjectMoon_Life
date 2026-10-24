@@ -9,6 +9,7 @@ import {
   resolveFixerContract,
   setDungeonStance,
   useDungeonSupply,
+  playDungeonCard,
   useDungeonEgo,
   resolveDungeonChoice,
   fleeDungeon,
@@ -311,7 +312,7 @@ export const useGameStore = create((set, get) => ({
 
   // Start form
   customName: '',
-  gender: 'unspecified',
+  gender: 'male',
   customSeed: '',
   selectedRegion: 'RANDOM',
   selectedFamily: 'RANDOM',
@@ -637,7 +638,7 @@ export const useGameStore = create((set, get) => ({
     const legacyPkg = useLegacy ? state.pendingLegacy : null;
     const nextChar = createNewCharacter({
       customName: state.customName,
-      gender: state.gender,
+      gender: state.gender === 'female' ? 'female' : 'male',
       seed: state.customSeed,
       preferredRegionId: regionId || state.selectedRegion,
       preferredFamilyId: state.selectedFamily || 'RANDOM',
@@ -853,6 +854,15 @@ export const useGameStore = create((set, get) => ({
     const prev = get().char;
     if (!prev?.pendingDungeon) return false;
     const nextChar = useDungeonSupply(prev, supplyType);
+    if (nextChar === prev) return false;
+    get().commit(prev, nextChar, { activeResolution: null });
+    return true;
+  },
+
+  playDungeonCard: (cardId) => {
+    const prev = get().char;
+    if (!prev?.pendingDungeon) return false;
+    const nextChar = playDungeonCard(prev, cardId);
     if (nextChar === prev) return false;
     get().commit(prev, nextChar, { activeResolution: null });
     return true;

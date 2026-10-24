@@ -753,3 +753,9 @@ Mô phỏng 1.000 sinh mệnh độc lập (tuổi thọ trung bình 52.0 tuổi
 * **Nội dung:** 24 event lớn (kiểm toán, họp phòng, thanh lọc, tuyến ngoài, phỏng vấn, phòng Singularity), 9 cảnh thăng cấp mới (mỗi bậc 4 cảnh), 30 event nhỏ, 18 hợp đồng mới (36 tổng), 7 cảnh ở đỉnh và đề nghị kéo dài tuổi thọ của Wing.
 * **Ba kết cục riêng:** Ghế không có tên (ngồi vào Hội đồng), Bị gạch khỏi sổ nhân sự, Ra khỏi Nest.
 * **Kỹ thuật:** thang Wing dùng `eventIds` như Finger; điều kiện `wingRankAtLeast/AtMost`; test `tests/test_wing_route.mjs` trong chuỗi `npm test`.
+
+### Đợt 40 (24/10/2026): Cân bằng cơ chế roguelike và thử bộ bài ở dungeon
+* **Manh mối hằng năm:** mỗi manh mối nay cho biết hướng thưởng và hướng phạt (chỉ số có thể được và có thể mất, không in số); nhãn rủi ro luôn là rủi ro thật của sự kiện.
+* **Sẹo:** phần phạt riêng của tổ hợp sẹo chỉ tính cứ hai năm một lần, để tổ hợp không nhân đôi hóa đơn của hai sẹo.
+* **Cược ở điểm nghỉ:** lần cược thứ hai làm đòn đau thêm 35% tổng cộng (thay vì 30%), giao diện ghi rõ loot và sát thương; dungeon không có phần thưởng không còn hiện lựa chọn cược.
+* **Bộ bài chiến thuật (thử nghiệm, chỉ ở Phế Tích Ngoại Ô):** bộ 10 lá, mỗi chặng chia 3 lá, tối đa 2 lá mỗi dungeon, mỗi lá có giá riêng. Mô phỏng 500 lượt chơi liều: tử vong 14,8% (không bài) xuống 11,4% (bài rút bừa) và 8,2% (bài chơi khéo); chơi thận trọng hầu như không đổi. Code ở `src/engine/dungeonCards.js`, bật bằng `cards: true` trong định nghĩa dungeon.

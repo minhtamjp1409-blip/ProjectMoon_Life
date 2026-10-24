@@ -834,6 +834,7 @@ export const LiveStageFeed = () => {
     selectContractApproach,
     setDungeonStance,
     useDungeonSupply,
+    playDungeonCard,
     useDungeonEgo,
     chooseDungeonAction,
     fleeDungeon,
@@ -861,6 +862,7 @@ export const LiveStageFeed = () => {
       selectContractApproach: s.selectContractApproach,
       setDungeonStance: s.setDungeonStance,
       useDungeonSupply: s.useDungeonSupply,
+      playDungeonCard: s.playDungeonCard,
       useDungeonEgo: s.useDungeonEgo,
       chooseDungeonAction: s.chooseDungeonAction,
       fleeDungeon: s.fleeDungeon,
@@ -990,6 +992,11 @@ export const LiveStageFeed = () => {
   const handleUseDungeonSupply = (supplyType) => {
     audioEngine.playClick();
     useDungeonSupply(supplyType);
+  };
+
+  const handlePlayDungeonCard = (cardId) => {
+    audioEngine.playBuff();
+    playDungeonCard(cardId);
   };
 
   const handleUseDungeonEgo = () => {
@@ -1274,6 +1281,7 @@ export const LiveStageFeed = () => {
                   onFlee={handleFleeDungeon}
                   onSetStance={handleSetDungeonStance}
                   onUseSupply={handleUseDungeonSupply}
+                  onPlayCard={handlePlayDungeonCard}
                   onUseEgo={handleUseDungeonEgo}
                 />
               )}

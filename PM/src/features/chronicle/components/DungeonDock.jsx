@@ -5,6 +5,8 @@ import { audioEngine } from '../../../engine/audioEngine.js';
 import {
   DUNGEON_DEFINITIONS,
   DUNGEON_BALANCE,
+  DUNGEON_CARDS,
+  CARD_BUDGET,
   getDungeonCurrentStage,
   getDungeonMastery,
   getStrainTier,
@@ -104,7 +106,7 @@ const StrainMeter = ({ strain, t }) => {
   );
 };
 
-export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseSupply, onUseEgo }) => {
+export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseSupply, onUseEgo, onPlayCard }) => {
   const { t, lang, bilingual } = useT();
   const def = session ? DUNGEON_DEFINITIONS[session.id] : null;
   const stage = getDungeonCurrentStage(session);
@@ -298,7 +300,7 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
                       {ch.isFlee && (
                         <span className="dg-need is-met"><LogOut size={12} aria-hidden="true" />{t('Rút lui, giữ hàng đã gom', 'Leave with what you hold')}</span>
                       )}
-                      {ch.restAction === 'push' && <span className="dg-need is-unmet">{t('Trận sau: thêm hàng, nhưng đòn đau hơn', 'Later fights: more loot, harder hits')}</span>}
+                      {ch.restAction === 'push' && <span className="dg-need is-unmet">{t(`Trận sau: loot +35%, đòn đau hơn ${(session.delveStake || 0) >= 1 ? 20 : 15}%`, `Later fights: loot +35%, hits ${(session.delveStake || 0) >= 1 ? 20 : 15}% harder`)}</span>}
                       {def.fatalOnFinalFailure && currentIdx === stages.length - 1 && (
                         <span className="dg-need is-unmet">{t('Trượt kiểm định: chết', 'Failed check: death')}</span>
                       )}
@@ -415,6 +417,32 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
               {t('Tiếp tế', 'Supplies')} {session.supplyCharges ?? 0}/{session.maxSupplies ?? 2}
             </span>
           </div>
+          {Array.isArray(session.cardHand) && session.cardHand.length > 0 && (
+            <div className="dg-hand" role="group" aria-label={t('Bài chiến thuật', 'Tactic cards')}>
+              <span className="dg-hand-label">
+                {t('Bài trên tay', 'Hand')} · {t('còn', 'plays left')} {Math.max(0, CARD_BUDGET - (session.cardsPlayed || 0))}
+              </span>
+              {session.cardHand.map((id) => {
+                const card = DUNGEON_CARDS[id];
+                if (!card) return null;
+                return (
+                  <button
+                    key={id}
+                    type="button"
+                    className="dg-card"
+                    disabled={Boolean(session.cardActive) || (session.cardsPlayed || 0) >= CARD_BUDGET}
+                    onClick={() => onPlayCard?.(id)}
+                  >
+                    <strong>{t(card.vi, card.en)}</strong>
+                    <small>{t(card.textVi, card.textEn)}</small>
+                  </button>
+                );
+              })}
+              {session.cardActive && DUNGEON_CARDS[session.cardActive] && (
+                <span className="dg-card-active">{t('Đang dùng', 'In play')}: {t(DUNGEON_CARDS[session.cardActive].vi, DUNGEON_CARDS[session.cardActive].en)}</span>
+              )}
+            </div>
+          )}
           <p className="dg-tools-note">
             {def.noRetreat
               ? activeStance.id === 'guarded'

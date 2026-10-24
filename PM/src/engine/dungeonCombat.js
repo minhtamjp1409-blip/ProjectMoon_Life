@@ -29,6 +29,9 @@ ANSWERS.evade.heal = [0, 0];
 const EVADE_MISS = 1.3;
 const MAX_ALLY_CALLS = 2;
 
+// Pressing on twice hurts more than twice as much as once: the second wager is the one worth a second thought
+const STAKE_DAMAGE = [0, 0.15, 0.35];
+
 export const COMBAT_BALANCE = {
   damageScale: 0.9,
   tierScale: 0.12,
@@ -104,7 +107,7 @@ function damageOf(ctx, def, char, session, intent, taken, kind) {
   const scale = (1 + (tier - 1) * COMBAT_BALANCE.tierScale) * (def.hazard === 'ALEPH' ? COMBAT_BALANCE.aleph : 1);
   // The same multiplier stage choices use: mastery, stance, traits, scan, E.G.O and strain
   const mult = ctx.damageMult(def, char, session, kind === 'sanity' ? 'sanity' : 'health') / (ctx.hazardOf(def) || 1);
-  return Math.max(1, Math.ceil(base * taken * scale * mult * COMBAT_BALANCE.damageScale * (1 + 0.15 * (session.delveStake || 0))));
+  return Math.max(1, Math.ceil(base * taken * scale * mult * COMBAT_BALANCE.damageScale * (1 + STAKE_DAMAGE[Math.min(2, session.delveStake || 0)])));
 }
 
 export function evadeChance(ctx, char, session) {

@@ -19,6 +19,8 @@ import { CLAW_DUNGEON, CLAW_DUNGEON_ID } from '../data/dungeonClaw.js';
 import { npcIsActive } from './eventConditions.js';
 import { ensureAffiliation, getAffiliation } from './affiliation.js';
 import { applyNpcFate } from './director.js';
+import { dealCards, cardEffectOf, nextHand, dungeonUsesCards } from './dungeonCards.js';
+export { playDungeonCard, DUNGEON_CARDS, CARD_BUDGET } from './dungeonCards.js';
 import { initGauntlet, isGauntlet, gauntletStage, previewCombatAction, resolveGauntletChoice, canLeaveGauntlet } from './dungeonCombat.js';
 
 export const DUNGEON_DEFINITIONS = {
@@ -469,6 +471,7 @@ export const DUNGEON_DEFINITIONS = {
 
   dungeon_outskirts_ruins: {
     id: 'dungeon_outskirts_ruins',
+    cards: true,
     theme: 'outskirts',
     titleVi: 'Phế Tích Ngoại Ô: Cung Điện Cổ Tích',
     titleEn: 'Ancient Ruins of the Outskirts',
@@ -989,6 +992,7 @@ function checkChanceOf(choice, char, session, mastery) {
   chance += tier.check;
   if (session?.egoActive) chance += DUNGEON_BALANCE.ego.checkBonus;
   chance -= choice.checkPenalty || 0;
+  chance += cardEffectOf(session).check || 0;
   return clamp(chance, DUNGEON_BALANCE.checkFloor, session?.egoActive ? DUNGEON_BALANCE.ego.ceiling : DUNGEON_BALANCE.checkCeiling);
 }
 
@@ -1004,6 +1008,7 @@ function damageMultOf(def, char, session, mastery, kind) {
   if (session?.resolveAwakened) mult *= 0.75;
   if (session?.egoActive) mult *= DUNGEON_BALANCE.ego.damageMult;
   if (kind === 'sanity') mult *= tier.sanityMult;
+  mult *= cardEffectOf(session).damage ?? 1;
   return mult;
 }
 
@@ -1016,14 +1021,16 @@ function stageRewards(choice, session, success) {
   const reckless = session.stance === 'reckless' && !choice.isFlee;
   const keep = success ? 1 : DUNGEON_BALANCE.failLootKept;
   const r = DUNGEON_BALANCE.reward;
-  const loot = choice.lootAhn ? Math.round(choice.lootAhn * r.loot * stance.loot * keep) : 0;
+  const card = cardEffectOf(session);
+  const pay = card.reward ?? 1;
+  const loot = choice.lootAhn ? Math.round(choice.lootAhn * r.loot * stance.loot * keep * pay * (card.loot ?? 1)) : 0;
   const scanLoot = session.stageScanned && !choice.isFlee ? 10 : 0;
   return {
-    wealth: Math.round(scaleGain(fx.wealth || 0, r.wealth) * (fx.wealth > 0 ? keep : 1)),
+    wealth: Math.round(scaleGain(fx.wealth || 0, r.wealth) * (fx.wealth > 0 ? keep * pay : 1)),
     loot: loot + (loot > 0 ? scanLoot : 0),
     rep: Math.round(scaleGain(fx.rep || 0, r.rep) * (fx.rep > 0 ? keep : 1)),
     network: Math.round(scaleGain(fx.network || 0, r.network) * (fx.network > 0 ? keep : 1)),
-    merit: fx.merit > 0 ? Math.round(fx.merit * r.merit * (reckless ? 1.3 : 1) * keep) : 0,
+    merit: fx.merit > 0 ? Math.round(fx.merit * r.merit * (reckless ? 1.3 : 1) * keep * pay) : 0,
     resonance: Math.round(scaleGain(fx.resonance || 0, r.resonance) * (fx.resonance > 0 ? keep : 1)) + (reckless && success ? 3 : 0)
   };
 }
@@ -1156,7 +1163,8 @@ export function createDungeonSession(dungeonId, char) {
     logs: []
   };
   // Five of the dungeons are a chain of fights floor by floor; the rest keep their exploration stages
-  return isGauntlet(def.id) ? initGauntlet(session, char) : session;
+  if (isGauntlet(def.id)) return initGauntlet(session, char);
+  return dungeonUsesCards(def) ? dealCards(session, char) : session;
 }
 
 /**
@@ -1477,6 +1485,7 @@ export function resolveDungeonChoice(charState, choiceIndex, rng = Math.random) 
   const extraEn = notes.slice(headless ? 1 : 0).map((n) => n.en).join(' ');
   session.stageScanned = false;
   session.egoActive = false;
+  if (dungeonUsesCards(def)) Object.assign(session, nextHand(session, char));
   const stageTagVi = wasSide ? `Ngõ phụ: ${stage.nameVi}` : `Chặng ${session.currentStageIndex + 1}: ${stage.nameVi}`;
   const stageTagEn = wasSide ? `Side room: ${stage.nameEn}` : `Stage ${session.currentStageIndex + 1}: ${stage.nameEn}`;
   session.lastStageResult = {

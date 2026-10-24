@@ -9,3 +9,6 @@
 .year-lead-copy { color: var(--muted); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .year-leads-note { margin: 0; font-size: 12px; }
 @media (max-width: 480px) { .year-lead { padding: 13px; min-height: 70px; } .year-leads-list { margin: 16px 0; } }
+.year-lead-outlook { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12px; }
+.year-lead-outlook .is-gain { color: var(--good, #7fb88a); }
+.year-lead-outlook .is-cost { color: var(--bad); }
