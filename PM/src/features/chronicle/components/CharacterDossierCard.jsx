@@ -456,6 +456,33 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeT
       {showOverview && (
         <section>
           <h3 className="section-title">{t('Áp lực', 'Causal pressure')}</h3>
+          {char.job === 'Wing Employee' && (
+            <>
+              <Stat
+                label={t('Hồ sơ sạch', 'Standing')}
+                value={char.standing ?? 50}
+                unit="%"
+                color="var(--s-network)"
+                flag={(char.standing ?? 50) <= 20 ? t('Bị để mắt', 'Under review') : null}
+                tooltip={t(
+                  'Hồ sơ sạch: độ tin cậy của bạn với cấp trên trong Wing. Thấp dưới 20 thì kiểm toán và thanh lọc nhắm vào bạn trước.',
+                  'Standing: how far your superiors in the Wing trust your record. Below 20, audits and purges come for you first.'
+                )}
+              />
+              <Stat
+                label={t('Bí mật nắm giữ', 'Leverage')}
+                value={char.leverage || 0}
+                unit="%"
+                color="var(--s-heat)"
+                flag={(char.leverage || 0) >= 60 ? t('Bị nhòm ngó', 'Noticed') : null}
+                riseIsBad
+                tooltip={t(
+                  'Bí mật nắm giữ: những gì bạn biết về người khác. Mở được cửa, nhưng từ 60 trở lên hồ sơ sạch bị bào mòn mỗi năm và thế lực phía trên bắt đầu để ý.',
+                  'Leverage: what you know about other people. It opens doors, but from 60 up your standing erodes each year and those above start to notice.'
+                )}
+              />
+            </>
+          )}
           <Stat
             label="Syndicate Heat"
             value={char.heat || 0}

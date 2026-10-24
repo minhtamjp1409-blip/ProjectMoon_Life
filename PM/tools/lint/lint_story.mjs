@@ -19,7 +19,7 @@ import { FINGER_RANKS } from '../../src/data/worldData.js';
 
 const VERBOSE = process.argv.includes('--verbose');
 const ASSOC_REQUEST_POOL = [...Object.values(ASSOCIATIONS).flatMap((a) => a.requests), ...OFFICE_REQUESTS];
-const EFFECT_KEYS = new Set(['health', 'sanity', 'wealth', 'network', 'rep', 'heat', 'taboo', 'resonance', 'merit']);
+const EFFECT_KEYS = new Set(['health', 'sanity', 'wealth', 'network', 'rep', 'heat', 'taboo', 'resonance', 'merit', 'standing', 'leverage']);
 
 const pools = [
   ['major', ALL_STORY_EVENTS],

@@ -670,7 +670,11 @@ export function selectEventWithWeaverAI({
   if (char.job === 'Wing Employee' && !char.flags.includes('Distorted')) {
     const nextWingPromo = getNextWingPromotion(char);
     if (nextWingPromo?.isEligible && char.lastWingTrialAge !== char.age && rng() < careerPromotionOfferChance(char)) {
-      const promoEv = allPools.find((e) => e.id === nextWingPromo.eventId);
+      const wingIds = (nextWingPromo.eventIds || [nextWingPromo.eventId]).filter((id) => {
+        const event = allPools.find((entry) => entry.id === id);
+        return event && isEventEligible(event, char);
+      });
+      const promoEv = wingIds.length ? allPools.find((e) => e.id === wingIds[Math.floor(rng() * wingIds.length)]) : null;
       if (promoEv && isEventEligible(promoEv, char)) {
         const logEntry = {
           age: char.age,

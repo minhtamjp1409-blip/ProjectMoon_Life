@@ -10,6 +10,7 @@ export const apexLongevityEventId = (char) => {
   if (!char || !char.alive || char.flags?.includes('Distorted')) return null;
   if (char.job === 'Fixer' && char.flags?.includes('ColorFixer')) return 'apex_longevity_color';
   if (char.job === 'Syndicate' && char.finger && (char.fingerRank || 0) >= 3) return `apex_longevity_${char.finger.toLowerCase()}`;
+  if (char.job === 'Wing Employee' && (char.wingRank || 0) >= 3) return 'apex_longevity_wing';
   return null;
 };
 

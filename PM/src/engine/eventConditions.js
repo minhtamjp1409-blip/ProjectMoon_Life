@@ -84,9 +84,11 @@ export function matchesNeed(need, char) {
   if (need.fingerRankAtLeast != null && (char.fingerRank || 0) < need.fingerRankAtLeast) return false;
   if (need.fingerRankAtMost != null && (char.fingerRank || 0) > need.fingerRankAtMost) return false;
   if (need.wingRank != null && (char.wingRank || 0) !== need.wingRank) return false;
+  if (need.wingRankAtLeast != null && (char.wingRank || 0) < need.wingRankAtLeast) return false;
+  if (need.wingRankAtMost != null && (char.wingRank || 0) > need.wingRankAtMost) return false;
   if (need.workshopRank != null && (char.workshopRank || 0) !== need.workshopRank) return false;
   for (const [key, [lo, hi]] of Object.entries(need.stat || {})) {
-    const value = char.stats?.[key] ?? char[key] ?? 0;
+    const value = char.stats?.[key] ?? char[key] ?? (key === 'standing' ? 50 : 0);
     if (!Number.isFinite(value) || value < lo || value > hi) return false;
   }
   return true;

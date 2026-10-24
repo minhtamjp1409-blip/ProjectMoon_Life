@@ -1,6 +1,7 @@
 // Wing contracts: directives from inside a Singularity company. A Feather is safe until the Wing needs something done
 // that cannot be put in writing; the tier is how high up the page the directive came from.
 import { rq } from './careerContracts.js';
+import { WING_CONTRACTS_MORE } from './careerContractsWingMore.js';
 
 export const WING_CONTRACTS = [
   // ------------------------------------------------------------ tier 0: administrative task
@@ -189,4 +190,4 @@ export const WING_CONTRACTS = [
     'You say nothing. Six months later the project is discovered and your name is on the list of those who knew.',
     'Bạn báo cáo. Hôm sau, người ký bản ghi nhớ biến mất.',
     'You report it. The next day, the one who signed the memo is gone.')
-];
+].concat(WING_CONTRACTS_MORE);

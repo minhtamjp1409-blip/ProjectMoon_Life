@@ -48,6 +48,33 @@ export const LIFE_ENDINGS = {
       en: `At age ${c.age}, a sealed Request reaches you under the stamp of a Section you once sat beside. It has no fee and no casualty clause, because no one in that room meant you to return. Your file is closed with one short line. "${c.relic}" goes into storage.`
     })
   },
+  sealed_seat: {
+    titleVi: 'Ghế không có tên', titleEn: 'The Seat With No Name',
+    quoteVi: '“Họ ngồi ở đó lâu đến mức bàn thôi ghi tên người ngồi. Chiếc ghế đã học cách giữ họ.”',
+    quoteEn: '“They sat there so long that the desk stopped recording who sat. The chair had learned how to keep them.”',
+    closing: (c) => ({
+      vi: `Ở tuổi ${c.age}, bạn nhận một chiếc ghế trong Hội đồng mà không có biển tên, và không ai đề nghị bạn rời nó. Bạn ký những trang giấy bạn không còn đọc, trong một phòng không có cửa sổ, và sống rất lâu. Khi hồ sơ khép lại, ghế vẫn ở đó, và người ngồi vào sau bạn cũng chưa biết rằng chiếc ghế không bao giờ trống.`,
+      en: `At age ${c.age}, you take a seat on the Council with no nameplate, and no one suggests you leave it. You sign pages you no longer read, in a room without windows, and live a very long time. When the file closes the seat remains, and whoever sits in it after you does not yet know the chair is never empty.`
+    })
+  },
+  struck_roll: {
+    titleVi: 'Bị gạch khỏi sổ nhân sự', titleEn: 'Struck From the Roll',
+    quoteVi: '“Wing không đuổi bạn. Nó chỉ để tên bạn rơi ra khỏi trang, rất nhẹ, như một cánh lông.”',
+    quoteEn: '“The Wing does not drive you out. It only lets your name drift off the page, very lightly, like a feather.”',
+    closing: (c) => ({
+      vi: `Ở tuổi ${c.age}, bạn đến tòa nhà vào một buổi sáng và thẻ không mở được cổng. Người gác nhìn bạn rất lịch sự. Không ai giải thích, vì trong hồ sơ, bạn chưa từng làm việc ở đây. Bạn đứng ngoài một lúc, rồi đi, và danh sách mà bạn từng ký cho người khác chính là danh sách mà tên bạn đã nằm trong.`,
+      en: `At age ${c.age}, you arrive at the building one morning and your badge will not open the gate. The guard looks at you very politely. No one explains, because on file you never worked here. You stand outside a while, then go, and the list you once signed for others is the same list your name has now been entered on.`
+    })
+  },
+  walked_out: {
+    titleVi: 'Ra khỏi Nest', titleEn: 'Out of the Nest',
+    quoteVi: '“Người ta nói họ mang theo một chiếc hộp nhỏ. Không ai biết bên trong có gì, ngoài việc nó đủ nhẹ để đi bộ.”',
+    quoteEn: '“It is said they carried one small box. No one knows what was inside, except that it was light enough to walk with.”',
+    closing: (c) => ({
+      vi: `Ở tuổi ${c.age}, bạn đi qua cổng phụ của Nest vào một buổi chiều, mang theo một chiếc hộp nhỏ và những gì bạn biết. Bên ngoài tường, bạn thuê một căn phòng ở Backstreets dưới một cái tên mới. Wing không tìm bạn, hoặc tìm rất lặng lẽ. Một người già với bàn tay không còn dấu mực, nấu ăn cho chính mình lần đầu tiên sau nhiều thập kỷ.`,
+      en: `At age ${c.age}, you pass through the Nest’s side gate one afternoon carrying one small box and what you know. Outside the wall you rent a room in the Backstreets under a new name. The Wing does not look for you, or looks very quietly. An old person with hands no longer stained by ink cooks for themselves for the first time in decades.`
+    })
+  },
   ripe_age: {
     titleVi: 'Sống qua nhiều thế hệ', titleEn: 'Outliving Generations',
     quoteVi: '“Họ tiễn những người trẻ ra tay trước họ, và không còn ai nhớ cái tên nào cũ hơn tên họ.”',

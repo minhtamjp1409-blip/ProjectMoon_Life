@@ -48,6 +48,7 @@ import { LIFE_ENDINGS, lifeEndingOf } from '../data/lifeEndings.js';
 import { BRANCH_DEPTH_EVENTS } from '../data/eventsBranchDepth.js';
 import { WORKSHOP_VISIT_EVENTS } from '../data/eventsWorkshopVisits.js';
 import { FINGER_STORY_EVENTS } from '../data/eventsFingers.js';
+import { WING_STORY_EVENTS } from '../data/eventsWing.js';
 import { EGO_LEAP_EVENTS } from '../data/eventsEgoLeap.js';
 import { AFFILIATION_EVENTS } from '../data/eventsAffiliation.js';
 import { egoEdge } from './egoEdge.js';
@@ -131,6 +132,7 @@ export const ALL_STORY_EVENTS = [
   ...BRANCH_DEPTH_EVENTS,
   ...WORKSHOP_VISIT_EVENTS,
   ...FINGER_STORY_EVENTS,
+  ...WING_STORY_EVENTS,
   ...EGO_LEAP_EVENTS,
   ...AFFILIATION_EVENTS
 ];
@@ -1302,6 +1304,8 @@ function applyContractAftermath(char, cfg, template, ok) {
   const fx = ok ? cfg.okFx : cfg.failFx;
   for (const [key, value] of Object.entries(fx || {})) {
     if (key === 'heat') char.heat = clamp((char.heat || 0) + value, 0, 100);
+    else if (key === 'standing') char.standing = clamp((char.standing ?? 50) + value, 0, 100);
+    else if (key === 'leverage') char.leverage = clamp((char.leverage || 0) + value, 0, 100);
     else char.stats[key] = clamp((char.stats[key] ?? 0) + value, 0, 100);
   }
   if (ok && template.mem && !(char.memory || []).some((m) => m.key === template.mem)) {
@@ -1897,6 +1901,8 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
   if (effects.heat) char.heat = clamp((char.heat || 0) + effects.heat, 0, 100);
   if (effects.taboo) char.taboo = clamp((char.taboo || 0) + effects.taboo, 0, 3);
   if (effects.resonance) char.resonance = clamp((char.resonance || 0) + effects.resonance, 0, 100);
+  if (effects.standing) char.standing = clamp((char.standing ?? 50) + effects.standing, 0, 100);
+  if (effects.leverage) char.leverage = clamp((char.leverage || 0) + effects.leverage, 0, 100);
 
   rememberResonance(char, effects.resonance || 0);
   if (event.id === 'hana_color_ascension_trial') char.lastColorTrialAge = char.age;

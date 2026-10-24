@@ -55,6 +55,7 @@ import { LIFE_DAILIES_3, LIFE_MINORS_3 } from '../data/lifeMinors3.js';
 import { YEAR_END_LINES } from '../data/yearEndLines.js';
 import { LIFE_MINORS_4 } from '../data/lifeMinors4.js';
 import { LIFE_MINORS_5 } from '../data/lifeMinors5.js';
+import { LIFE_MINORS_WING } from '../data/lifeMinorsWing.js';
 import { LIFE_MINORS_SEEDS } from '../data/lifeMinorsSeeds.js';
 import { WORKSHOP_VISIT_MINORS, WORKSHOP_VISIT_DAILIES } from '../data/eventsWorkshopVisits.js';
 import { FINGER_MINORS, FINGER_DAILIES, FINGER_MISSIONS } from '../data/eventsFingers.js';
@@ -72,7 +73,7 @@ import { cityArchiveAPI } from '../services/api/cityArchiveAPI.js';
 
 const FINGER_MISSION_CHANCE = 0.4;
 
-export const LIFE_MINORS = [...MINORS_FIRST, ...LIFE_MINORS_2, ...LIFE_MINORS_3, ...LIFE_MINORS_4, ...LIFE_MINORS_5, ...LIFE_MINORS_SEEDS, ...WORKSHOP_VISIT_MINORS, ...FINGER_MINORS, ...LIFE_MINORS_KIDS, ...LIFE_MINORS_CONTRACTS, ...LIFE_MINORS_BONDS, ...THREAD_MINORS, ...SCAR_CALLBACKS, ...LIFE_CAREER_OPPORTUNITIES, ...ANNUAL_MERIT_OPPORTUNITIES, ...EXPANSION_LIFE_MINORS];
+export const LIFE_MINORS = [...MINORS_FIRST, ...LIFE_MINORS_2, ...LIFE_MINORS_3, ...LIFE_MINORS_4, ...LIFE_MINORS_5, ...LIFE_MINORS_WING, ...LIFE_MINORS_SEEDS, ...WORKSHOP_VISIT_MINORS, ...FINGER_MINORS, ...LIFE_MINORS_KIDS, ...LIFE_MINORS_CONTRACTS, ...LIFE_MINORS_BONDS, ...THREAD_MINORS, ...SCAR_CALLBACKS, ...LIFE_CAREER_OPPORTUNITIES, ...ANNUAL_MERIT_OPPORTUNITIES, ...EXPANSION_LIFE_MINORS];
 export const LIFE_DAILIES = [...DAILIES_FIRST, ...LIFE_DAILIES_3, ...EXPANDED_DAILIES, ...DAILIES_2, ...EXPANSION_LIFE_DAILIES, ...WORKSHOP_VISIT_DAILIES, ...FINGER_DAILIES];
 import {
   directorWeight,
@@ -97,8 +98,10 @@ export const MINOR_WINDOW_MS = 15000;
 const RECENT_LIMIT = 120;
 
 export const STAT_KEYS = ['health', 'sanity', 'wealth', 'network', 'rep'];
-const EXTRA_KEYS = ['heat', 'resonance', 'taboo', 'merit'];
-const LIMITS = { heat: [0, 100], resonance: [0, 100], taboo: [0, 3], merit: [0, 9999] };
+const EXTRA_KEYS = ['heat', 'resonance', 'taboo', 'merit', 'standing', 'leverage'];
+const LIMITS = { heat: [0, 100], resonance: [0, 100], taboo: [0, 3], merit: [0, 9999], standing: [0, 100], leverage: [0, 100] };
+// A Wing record starts clean: standing reads 50 until something moves it
+const extraBase = (char, k) => char[k] ?? (k === 'standing' ? 50 : 0);
 
 /* ---------- small helpers ---------- */
 
@@ -153,7 +156,7 @@ export function applyFx(char, fx = {}, { exactRep = false } = {}) {
   for (const k of EXTRA_KEYS) {
     if (!fx[k]) continue;
     const [lo, hi] = LIMITS[k];
-    const before = char[k] || 0;
+    const before = extraBase(char, k);
     const raw = k === 'merit' && fx[k] > 0 ? Math.round(fx[k] * (omen?.meritMult || 1)) : fx[k];
     char[k] = clamp(before + raw, lo, hi);
     const d = char[k] - before;
@@ -171,7 +174,7 @@ export function diffStats(prev, next) {
     if (d) out.push({ k, v: d });
   }
   for (const k of EXTRA_KEYS) {
-    const d = (next[k] || 0) - (prev[k] || 0);
+    const d = extraBase(next, k) - extraBase(prev, k);
     if (d) out.push({ k, v: d });
   }
   return out;
@@ -1258,6 +1261,11 @@ export function endYear(charState, rng) {
   }
 
   if ((char.heat || 0) > 0) add('heat', -1);
+  // Secrets go stale and a record that has been leaned on too long gets noticed
+  if (char.job === 'Wing Employee') {
+    if ((char.leverage || 0) > 0 && char.age % 2 === 0) add('leverage', -1);
+    if ((char.leverage || 0) >= 60) add('standing', -1);
+  }
   // A Distortion is never off Hana's books, and people stop recognizing you
   if (char.flags.includes('Distorted')) {
     add('heat', 6);

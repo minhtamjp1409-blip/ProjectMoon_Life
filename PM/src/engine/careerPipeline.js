@@ -285,9 +285,9 @@ export function getNextFingerPromotion(char) {
 }
 
 export const WING_LADDER_PROMOTIONS = [
-  { rank: 1, meritReq: 25, wealthReq: 18, networkReq: 14, eventId: 'wing_promo_feather_r1', titleVi: 'Bổ Nhiệm Feather Chính Thức (Nest Feather)', titleEn: 'Official Feather Commission' },
-  { rank: 2, meritReq: 65, wealthReq: 45, networkReq: 32, eventId: 'wing_promo_specialist_r2', titleVi: 'Trưởng Phòng Ban Singularity (Section Chief)', titleEn: 'Section Chief / Singularity Specialist' },
-  { rank: 3, meritReq: 125, wealthReq: 85, networkReq: 60, eventId: 'wing_singularity_classified_audit', titleVi: 'Đại Hội Đồng Quản Trị (Senior Executive Audit)', titleEn: 'Senior Executive Board Audit' }
+  { rank: 1, meritReq: 25, wealthReq: 18, networkReq: 14, eventId: 'wing_promo_feather_r1', eventIds: ['wing_promo_feather_r1', 'wing_promo_feather_vetting', 'wing_promo_feather_witness', 'wing_promo_feather_ledger'], titleVi: 'Bổ Nhiệm Feather Chính Thức (Nest Feather)', titleEn: 'Official Feather Commission' },
+  { rank: 2, meritReq: 65, wealthReq: 45, networkReq: 32, eventId: 'wing_promo_specialist_r2', eventIds: ['wing_promo_specialist_r2', 'wing_promo_chief_reorg', 'wing_promo_chief_inheritance', 'wing_promo_chief_oversight'], titleVi: 'Trưởng Phòng Ban Singularity (Section Chief)', titleEn: 'Section Chief / Singularity Specialist' },
+  { rank: 3, meritReq: 125, wealthReq: 85, networkReq: 60, eventId: 'wing_singularity_classified_audit', eventIds: ['wing_singularity_classified_audit', 'wing_promo_exec_board_vote', 'wing_promo_exec_quiet_room', 'wing_promo_exec_the_list'], titleVi: 'Đại Hội Đồng Quản Trị (Senior Executive Audit)', titleEn: 'Senior Executive Board Audit' }
 ];
 
 export function getNextWingPromotion(char) {
@@ -308,7 +308,8 @@ export function getNextWingPromotion(char) {
     isEligible,
     currentMerit: char.merit || 0,
     currentWealth: curWealth,
-    currentNetwork: curNet
+    currentNetwork: curNet,
+    currentStanding: char.standing ?? 50
   };
 }
 
@@ -347,7 +348,7 @@ export function careerTrialForEvent(id) {
     const step = ladder.find((entry) => (entry.eventIds || [entry.eventId]).includes(id));
     if (step) return { route: 'finger', finger, ...step };
   }
-  const wing = WING_LADDER_PROMOTIONS.find((step) => step.eventId === id);
+  const wing = WING_LADDER_PROMOTIONS.find((step) => step.eventIds.includes(id));
   if (wing) return { route: 'wing', ...wing };
   return null;
 }
@@ -358,10 +359,13 @@ export function careerPromotionOfferChance(char, step = getOtherCareerPromotion(
   const extraMerit = Math.max(0, step.currentMerit - step.meritReq);
   const extraStanding = step.route === 'finger'
     ? Math.max(0, step.currentRep - step.repReq)
-    : Math.max(0, step.currentNetwork - step.networkReq) + Math.max(0, step.currentWealth - step.wealthReq) * 0.5;
+    : Math.max(0, step.currentNetwork - step.networkReq) + Math.max(0, step.currentWealth - step.wealthReq) * 0.5 + Math.max(0, (step.currentStanding ?? 50) - 50) * 0.3;
   const base = step.route === 'finger' ? 0.56 : 0.52;
   return Math.min(0.86, base + (retry ? 0.16 : 0) + Math.min(0.18, extraMerit * 0.002 + extraStanding * 0.006));
 }
+
+// A clean record opens doors and held secrets pry them open, but a clean record bought with secrets is a thin one
+const wingRecordEdge = (char) => ((char.standing ?? 50) - 50) * 0.002 + Math.min(40, char.leverage || 0) * 0.001;
 
 export function careerPromotionSuccessChance(char, step) {
   const rank = step.rank;
@@ -369,7 +373,7 @@ export function careerPromotionSuccessChance(char, step) {
   const extraMerit = Math.max(0, (char.merit || 0) - step.meritReq);
   const standingBonus = step.route === 'finger'
     ? Math.max(0, char.stats.rep - step.repReq) * 0.002 + Math.max(0, char.stats.network - (step.networkReq || 0)) * 0.001
-    : Math.max(0, char.stats.network - step.networkReq) * 0.002 + Math.max(0, char.stats.wealth - step.wealthReq) * 0.001;
+    : Math.max(0, char.stats.network - step.networkReq) * 0.002 + Math.max(0, char.stats.wealth - step.wealthReq) * 0.001 + wingRecordEdge(char);
   const readiness = step.route === 'wing' ? (char.stats.sanity - 50) * 0.0015 : (char.stats.health - 50) * 0.0015;
   const edge = egoEdge(char);
   return Math.max(0.25, Math.min(0.86 + edge, base + Math.min(0.14, extraMerit * 0.001 + standingBonus) + readiness + edge));

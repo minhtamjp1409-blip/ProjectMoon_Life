@@ -12,7 +12,9 @@ const LABELS = {
   heat: ['Truy nã', 'Heat'],
   resonance: ['Cộng hưởng', 'Resonance'],
   taboo: ['Điều cấm', 'Taboo'],
-  merit: ['Công trạng', 'Merit']
+  merit: ['Công trạng', 'Merit'],
+  standing: ['Hồ sơ sạch', 'Standing'],
+  leverage: ['Bí mật nắm giữ', 'Leverage']
 };
 
 const STAT_ICONS = {
@@ -24,7 +26,9 @@ const STAT_ICONS = {
   heat: '▲',
   resonance: '◎',
   taboo: '✖',
-  merit: '◈'
+  merit: '◈',
+  standing: '▣',
+  leverage: '◇'
 };
 
 // Stats whose rise is bad news
