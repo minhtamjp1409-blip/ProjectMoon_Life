@@ -917,3 +917,18 @@ Chủ dự án yêu cầu làm lại toàn bộ giao diện lần nữa: bỏ t�
   * Tên trên thanh trạng thái mobile cũng theo kiểu chữ của route (nghiêng cho Ring, chữ hoa hẹp cho Thumb...).
 * **Sửa:** nhãn "Điềm báo"/"Tổ chức" không còn xuống dòng khi giá trị dài.
 * **Kiểm tra:** chụp khung của bảy route ở 1440px và Thumb, Wing, Index trong bảng hồ sơ mobile 390px, không lỗi runtime.
+
+### Đợt 49 (25/10/2026): cảnh động riêng cho từng dungeon
+* **Trước đó:** mỗi dungeon đã có màu, thời tiết và âm thanh riêng, nhưng lớp vẽ cũ (div CSS từ giao diện trước) gần như không nhìn thấy: cột biên niên và lớp tối của popup che hết, chỉ còn một dải màu ở mép.
+* **Bây giờ:** `components/world/DungeonBackdrop.jsx` vẽ mỗi dungeon thành một sân khấu SVG 1440 x 900 phủ kín màn hình (cắt, không kéo giãn). Chuyển động ở `styles/ui/dungeon-scenes.css`, chỉ dùng transform và opacity. Thời tiết canvas của thế giới vẫn chạy phía trên.
+  * Tàu WARP: trong toa tàu đang lao, City vụt qua cửa sổ thành vệt sáng (lặp liền mạch), dây vịn đung đưa, cả toa rung nhẹ; áp lực cao thì vệt sáng nhanh gấp đôi và vết nứt không gian sáng lên.
+  * Tàn tích L Corp: hành lang phòng giam phối cảnh một điểm, cửa đơn vị hai bên, đèn cửa nhấp nháy, đèn trần chập chờn, vạch cảnh báo dưới sàn, còi quay quét hai chùm sáng (trùm hoặc áp lực cao thì quay nhanh hơn).
+  * La Manchaland: vòng đu quay quay chậm dưới trăng máu, bóng đèn trên vành và dây treo nhấp nháy xen kẽ, lều xiếc, sương đỏ trôi.
+  * Tàn tích Outskirts: mặt trời thấp, đá dựng và cổng vòm cổ, không khí nóng dao động, đồi cát trôi.
+  * Great Lake: nhìn từ dưới mặt nước, sóng mặt nước trôi, cột sáng đung đưa, bóng cá voi khổng lồ trôi rất chậm ở xa, vòng cộng hưởng của U Corp lan ra, rong đung đưa.
+  * Đêm ở Backstreets: con hẻm phối cảnh, cửa cuốn đóng, đèn đường chập chờn, cửa sổ tắt dần, đồng hồ 3:13 (đỏ ở pha hai), mực loang dưới rãnh, bóng ba bộ vest đen hiện ra ở cuối hẻm và tiến lại gần (nhanh hơn khi gặp trùm).
+  * Phán quyết của Claw: căn phòng vô trùng với lưới sàn, ống ngắm xoay hai chiều, vạch quét lên xuống, vết nứt tường sáng ở chặng 1, ba ống huyết thanh lần lượt sáng theo chặng, vệt chém lóe lên.
+  * Vẫn giữ: bộ lọc màu theo tầng/trùm/pha hai, chớp khi trúng đòn, viền đỏ theo áp lực tâm thần.
+* **Hiển thị:** khi popup dungeon mở, cột biên niên ẩn đi, lớp tối mỏng lại và thẻ thành kính mờ (74%) để cảnh hiện rõ quanh và sau thẻ. Trên mobile thẻ đặc 90% với lớp nền làm mờ, vì thẻ đè lên thanh trạng thái. Nút "Xem phía sau" vẫn mở lại biên niên.
+* **Dọn code:** bỏ hơn 400 dòng CSS dungeon cũ trong `world-scenes.css`, `dungeon-art.css`, `dungeon-fx.css`, và lớp `.scene` không còn dùng.
+* **Kiểm tra:** chụp cả 7 cảnh ở 1440px khi ẩn và khi hiện popup, Great Lake ở 390px; không lỗi runtime. Chưa tự đánh giá mức tiêu thụ GPU trên máy yếu.

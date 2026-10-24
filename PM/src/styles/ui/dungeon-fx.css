@@ -87,68 +87,6 @@
 .dgb-flash.fx-break { background: radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--dg, #fff) 30%, transparent), transparent 60%); animation: dgfxFlash 0.9s ease-out; }
 .dgb-flash.fx-phase { background: rgba(0, 0, 0, 0.55); animation: dgfxFlash 1.2s ease-out; }
 
-/* Night in the Backstreets */
-.interface-v2 .dungeon-backdrop.theme-night {
-  background:
-    radial-gradient(ellipse at 22% 12%, rgba(250, 204, 21, 0.14) 0%, transparent 32%),
-    linear-gradient(180deg, #07060d 0%, #0d0a18 55%, #050409 100%);
-}
-.night-alley-scene { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
-.night-lamp {
-  position: absolute;
-  top: 6%;
-  left: 18%;
-  width: 160px;
-  height: 260px;
-  background: radial-gradient(ellipse at 50% 0%, rgba(250, 204, 21, 0.32), transparent 70%);
-  animation: nightFlicker 6s infinite steps(1, end);
-}
-.night-clock {
-  position: absolute;
-  top: 9%;
-  right: 9%;
-  font: 700 28px/1 ui-monospace, 'SFMono-Regular', monospace;
-  letter-spacing: 0.08em;
-  color: rgba(167, 139, 250, 0.35);
-  text-shadow: 0 0 12px rgba(167, 139, 250, 0.35);
-}
-.night-windows {
-  position: absolute;
-  inset: 18% 0 40% 0;
-  background: repeating-linear-gradient(90deg, transparent 0 60px, rgba(255, 255, 255, 0.025) 60px 96px, transparent 96px 150px);
-  mask-image: linear-gradient(180deg, transparent, #000 30%, #000 70%, transparent);
-}
-.night-ink {
-  position: absolute;
-  bottom: -20px;
-  height: 120px;
-  border-radius: 50%;
-  background: radial-gradient(ellipse, rgba(10, 6, 20, 0.95), transparent 70%);
-  filter: blur(6px);
-  animation: nightSeep 9s ease-in-out infinite;
-}
-.night-ink.ink-1 { left: 10%; width: 40%; }
-.night-ink.ink-2 { right: 5%; width: 45%; animation-delay: -4s; }
-.night-suit {
-  position: absolute;
-  bottom: 12%;
-  width: 34px;
-  height: 120px;
-  border-radius: 14px 14px 4px 4px;
-  background: linear-gradient(180deg, #0a0812 0%, #13101f 100%);
-  box-shadow: 0 0 18px rgba(0, 0, 0, 0.8);
-  opacity: 0.0;
-  animation: nightStroll 14s linear infinite;
-}
-.night-suit.suit-1 { left: -6%; animation-delay: 0s; }
-.night-suit.suit-2 { left: -6%; animation-delay: -5s; height: 104px; }
-.night-suit.suit-3 { left: -6%; animation-delay: -9s; height: 140px; }
-.interface-v2 .dungeon-backdrop.theme-night.is-boss .night-suit.suit-3 { height: 190px; width: 44px; }
-.interface-v2 .dungeon-backdrop.theme-night.is-phase-2 .night-clock { color: rgba(235, 87, 87, 0.55); }
-@keyframes nightFlicker { 0%, 100% { opacity: 1; } 47% { opacity: 1; } 48% { opacity: 0.2; } 50% { opacity: 0.9; } 51% { opacity: 0.3; } 53% { opacity: 1; } }
-@keyframes nightSeep { 0%, 100% { transform: scaleX(1); opacity: 0.8; } 50% { transform: scaleX(1.15); opacity: 1; } }
-@keyframes nightStroll { 0% { transform: translateX(0); opacity: 0; } 10% { opacity: 0.85; } 90% { opacity: 0.85; } 100% { transform: translateX(112vw); opacity: 0; } }
-
 /* ---------- the shell: a line in the place's colour under the bar while a run is open ---------- */
 .shell.in-dungeon .playbar { box-shadow: inset 0 -2px 0 var(--dg); }
 .shell.in-dungeon .bottom-nav button.is-current svg { color: var(--dg); }
@@ -172,16 +110,10 @@
   .dg-fx,
   .dgb-flash,
   .dg-shell-pulse,
-  .night-lamp,
-  .night-ink,
-  .night-suit,
   .dg-fx ~ .dock-inner .dg-foe,
   .dg-fx ~ .dock-inner .dg-scene,
   .dg-fx ~ .dock-inner .dg-foe-guard { animation: none !important; }
   .dg-fx,
   .dgb-flash,
   .dg-shell-pulse { display: none; }
-  .night-suit { opacity: 0.5; transform: none; }
-  .night-suit.suit-2 { left: 40%; }
-  .night-suit.suit-3 { left: 70%; }
 }

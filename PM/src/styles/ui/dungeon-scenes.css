@@ -1,0 +1,146 @@
+/* Dungeon scenes: one illustrated stage per place (components/world/DungeonBackdrop.jsx).
+   Each place keeps its own small palette here; everything moves with transforms and opacity only. */
+
+.dungeon-backdrop .dgs { position: absolute; inset: 0; width: 100%; height: 100%; }
+.dgs * { transform-box: fill-box; transform-origin: center; }
+
+/* WARP: a car at full speed */
+.dgs-warp .warp-wall { fill: #071723; }
+.dgs-warp .warp-ceiling { fill: #040d15; }
+.dgs-warp .warp-ceil-light { fill: #bfefff; opacity: .45; animation: dgsFlicker 9s steps(1) infinite; }
+.dgs-warp .warp-frame { fill: none; stroke: #0f2c40; stroke-width: 12; }
+.dgs-warp .warp-streaks line { stroke: #7fe3ff; opacity: .5; stroke-linecap: round; }
+.dgs-warp .warp-streaks line.is-hot { stroke: #f2fcff; opacity: .85; }
+.dgs-warp .warp-streaks { animation: warpRush .9s linear infinite; }
+.dgs-warp .warp-sway { animation: warpSway 2.8s ease-in-out infinite; }
+.dgs-warp .warp-rail { stroke: #23465c; stroke-width: 6; }
+.dgs-warp .warp-strap { transform-origin: top center; animation: warpStrap 2.8s ease-in-out infinite; }
+.dgs-warp .warp-strap line { stroke: #23465c; stroke-width: 3; }
+.dgs-warp .warp-strap circle { fill: none; stroke: #2f5d78; stroke-width: 4; }
+.dgs-warp .warp-seat { fill: #0a2232; }
+.dgs-warp .warp-floor { fill: #050f17; }
+.dgs-warp .warp-floor-line { stroke: #5fd2ff; opacity: .08; stroke-width: 2; }
+.dgs-warp .warp-rift { opacity: .35; animation: dgsBreath 4s ease-in-out infinite; }
+.is-high-strain .dgs-warp .warp-rift { opacity: .8; }
+.is-high-strain .dgs-warp .warp-streaks { animation-duration: .5s; }
+@keyframes warpRush { to { transform: translateX(-1440px); } }
+@keyframes warpSway { 0%, 100% { transform: translate(0, 0); } 30% { transform: translate(-2px, 3px); } 60% { transform: translate(2px, 1px); } }
+@keyframes warpStrap { 0%, 100% { transform: rotate(-6deg); } 50% { transform: rotate(6deg); } }
+
+/* L Corp: a containment corridor */
+.dgs-lobotomy .lob-ceiling { fill: #0d0904; }
+.dgs-lobotomy .lob-wall { fill: #150e05; }
+.dgs-lobotomy .lob-floor { fill: #0b0703; }
+.dgs-lobotomy .lob-hazard { opacity: .5; }
+.dgs-lobotomy .lob-ceil-light { fill: #ffe2a8; opacity: .45; animation: dgsFlicker 7s steps(1) infinite; }
+.dgs-lobotomy .lob-door { fill: #22170a; stroke: #3d2a10; stroke-width: 2; }
+.dgs-lobotomy .lob-lamp { fill: #f2a531; animation: lobBlink 1.4s steps(1) infinite; }
+.dgs-lobotomy .lob-end { fill: #1c1308; }
+.dgs-lobotomy .lob-end-door { fill: #2a1c0b; stroke: #f2a531; stroke-opacity: .4; stroke-width: 2; }
+.dgs-lobotomy .lob-end-seam { stroke: #ffd27a; stroke-width: 2; opacity: .5; animation: dgsGlow 3s ease-in-out infinite; }
+.dgs-lobotomy .lob-core { opacity: .16; animation: dgsBreath 4s ease-in-out infinite; }
+.dgs-lobotomy .lob-siren { transform-box: view-box; transform-origin: 720px 352px; fill: #ff9a2e; opacity: .1; mix-blend-mode: screen; animation: lobSiren 3.2s linear infinite; }
+.dgs-lobotomy .lob-siren-head { fill: #ff8a1f; }
+.is-boss .dgs-lobotomy .lob-siren, .is-high-strain .dgs-lobotomy .lob-siren { opacity: .2; animation-duration: 1.8s; }
+@keyframes lobBlink { 0%, 100% { opacity: 1; } 50% { opacity: .15; } }
+@keyframes lobSiren { to { transform: rotate(360deg); } }
+
+/* La Manchaland: the carnival */
+.dgs-bloodfiend .car-moon { fill: #ff4a5e; opacity: .8; }
+.dgs-bloodfiend .car-moon-glow { opacity: .7; animation: dgsBreath 6s ease-in-out infinite; }
+.dgs-bloodfiend .car-mist { opacity: .7; animation: carMist 18s ease-in-out infinite alternate; }
+.dgs-bloodfiend .car-mist.is-far { opacity: .5; animation-duration: 26s; }
+.dgs-bloodfiend .car-wheel-legs line { stroke: #2a0b12; stroke-width: 14; }
+.dgs-bloodfiend .car-wheel { transform-box: view-box; transform-origin: 1080px 430px; animation: carWheel 80s linear infinite; }
+.dgs-bloodfiend .car-rim { fill: none; stroke: #3a0f18; stroke-width: 8; }
+.dgs-bloodfiend .car-rim.is-inner { stroke-width: 3; }
+.dgs-bloodfiend .car-spoke { stroke: #2a0b12; stroke-width: 3; }
+.dgs-bloodfiend .car-rim-light, .dgs-bloodfiend .car-bulb { fill: #ffcf8a; }
+.dgs-bloodfiend .car-rim-light { fill: #ffb3be; }
+.dgs-bloodfiend .is-a { animation: carTwinkle 1.6s steps(1) infinite; }
+.dgs-bloodfiend .is-b { animation: carTwinkle 1.6s steps(1) -.8s infinite; }
+.dgs-bloodfiend .car-gondola { fill: #1c060b; stroke: #5a1622; stroke-width: 2; }
+.dgs-bloodfiend .car-hub { fill: #5a1622; }
+.dgs-bloodfiend .car-tent polygon { fill: #12040a; }
+.dgs-bloodfiend .car-tent .car-tent-stripe { fill: #3a0f18; }
+.dgs-bloodfiend .car-ground { fill: #080205; }
+.dgs-bloodfiend .car-wire { fill: none; stroke: #2a0b12; stroke-width: 2; }
+@keyframes carWheel { to { transform: rotate(360deg); } }
+@keyframes carTwinkle { 0%, 100% { opacity: 1; } 50% { opacity: .25; } }
+@keyframes carMist { from { transform: translateX(-60px); } to { transform: translateX(60px); } }
+
+/* The Outskirts: ruins under a low sun */
+.dgs-outskirts .ruin-sun { fill: #ffcf8a; opacity: .85; }
+.dgs-outskirts .ruin-sun-glow { opacity: .6; animation: dgsBreath 7s ease-in-out infinite; }
+.dgs-outskirts .ruin-mesa { fill: #2a1a0b; opacity: .75; }
+.dgs-outskirts .ruin-stones path { fill: #140c05; }
+.dgs-outskirts .ruin-heat { fill: #ffc88c; opacity: .05; animation: ruinHeat 3.4s ease-in-out infinite; }
+.dgs-outskirts .ruin-dune.is-far { fill: #1e1308; animation: ruinDune 22s ease-in-out infinite alternate; }
+.dgs-outskirts .ruin-dune { fill: #120b05; animation: ruinDune 16s ease-in-out infinite alternate-reverse; }
+@keyframes ruinHeat { 0%, 100% { transform: scaleY(1); opacity: .04; } 50% { transform: scaleY(1.5) skewX(2deg); opacity: .09; } }
+@keyframes ruinDune { from { transform: translateX(0); } to { transform: translateX(-36px); } }
+
+/* The Great Lake: under the surface */
+.dgs-greatlake .lake-surface { fill: #9ff5ea; opacity: .12; animation: lakeSurface 6s linear infinite; }
+.dgs-greatlake .lake-shaft { mix-blend-mode: screen; transform-origin: top center; animation: lakeShaft 9s ease-in-out infinite alternate; }
+.dgs-greatlake .lake-whale { fill: #c7e8e2; opacity: .09; animation: lakeWhale 90s linear infinite; }
+.dgs-greatlake .lake-whale-eye { fill: #e8fffb; opacity: .6; }
+.dgs-greatlake .lake-ring { fill: none; stroke: #4fd6c8; stroke-width: 2; animation: lakeRing 7.8s ease-out infinite; }
+.dgs-greatlake .lake-weed { fill: none; stroke: #0f3d3a; stroke-width: 10; stroke-linecap: round; transform-origin: bottom center; animation: lakeWeed 5s ease-in-out infinite alternate; }
+@keyframes lakeSurface { to { transform: translateX(-200px); } }
+@keyframes lakeShaft { from { transform: rotate(-4deg); opacity: .7; } to { transform: rotate(4deg); opacity: 1; } }
+@keyframes lakeWhale { from { transform: translate(-900px, 330px); } to { transform: translate(1700px, 250px); } }
+@keyframes lakeRing { from { transform: scale(.3); opacity: .6; } to { transform: scale(1.6); opacity: 0; } }
+@keyframes lakeWeed { from { transform: rotate(-5deg); } to { transform: rotate(5deg); } }
+
+/* Night in the Backstreets */
+.dgs-night .night-wall { fill: #0c0a16; }
+.dgs-night .night-street { fill: #08070f; }
+.dgs-night .night-far { fill: #05040a; }
+.dgs-night .night-shutter { stroke: #221d33; stroke-width: 2; }
+.dgs-night .night-window { fill: #120f1d; }
+.dgs-night .night-window.is-lit { fill: #ffcf7a; opacity: .5; animation: nightWindow 14s steps(1) infinite; }
+.dgs-night .night-window.is-late { animation-delay: -6s; }
+.dgs-night .night-clock circle { fill: #120e22; stroke: #9d8cf2; stroke-opacity: .7; stroke-width: 3; }
+.dgs-night .night-clock text { fill: #c9bdff; font-family: var(--serif); font-size: 32px; font-weight: 600; }
+.dgs-night .night-clock { opacity: .75; animation: dgsGlow 5s ease-in-out infinite; }
+.is-phase-2 .dgs-night .night-clock text { fill: #ff6b6b; }
+.dgs-night .night-pole { fill: none; stroke: #1b1726; stroke-width: 8; }
+.dgs-night .night-lamp { animation: nightLamp 7s steps(1) infinite; }
+.dgs-night .night-bulb { fill: #ffe3a0; }
+.dgs-night .night-ink { fill: #1a0f2e; animation: nightInk 8s ease-in-out infinite; }
+.dgs-night .night-ink.is-late { animation-delay: -4s; }
+.dgs-night .night-suit { fill: #030206; transform-origin: bottom center; opacity: 0; animation: nightSuit 9s ease-in-out infinite; }
+.is-boss .dgs-night .night-suit { animation-duration: 6s; }
+@keyframes nightWindow { 0%, 62% { opacity: .5; } 63%, 100% { opacity: 0; } }
+@keyframes nightLamp { 0%, 46%, 53%, 100% { opacity: 1; } 47% { opacity: .2; } 49% { opacity: .85; } 51% { opacity: .3; } }
+@keyframes nightInk { 0%, 100% { transform: scaleX(1); } 50% { transform: scaleX(1.18); } }
+@keyframes nightSuit { 0% { opacity: 0; transform: scale(.85); } 30%, 60% { opacity: .95; } 100% { opacity: 0; transform: scale(1.25); } }
+
+/* The Claw: the judgment room */
+.dgs-claw .claw-back { fill: #0f1519; }
+.dgs-claw .claw-side { fill: #0b1013; }
+.dgs-claw .claw-floor { fill: #080c0e; }
+.dgs-claw .claw-grid { stroke: #7fe0ec; opacity: .08; stroke-width: 1.5; }
+.dgs-claw .claw-seam { stroke: #7fe0ec; stroke-width: 2; opacity: .35; animation: dgsGlow 4s ease-in-out infinite; }
+.is-stage-1 .dgs-claw .claw-seam { stroke-width: 6; opacity: .9; }
+.dgs-claw .claw-sight { fill: none; stroke: #7fe0ec; stroke-width: 2; opacity: .4; animation: dgsGlow 6s ease-in-out infinite; }
+.dgs-claw .claw-ring.is-outer { stroke-dasharray: 14 10; animation: clawTurn 30s linear infinite; }
+.dgs-claw .claw-ring.is-inner { stroke-dasharray: 40 18; animation: clawTurn 20s linear infinite reverse; }
+.dgs-claw .claw-scan { stroke: #7fe0ec; stroke-width: 2; opacity: .5; animation: clawScan 5s ease-in-out infinite alternate; }
+.dgs-claw .claw-serum { opacity: .15; transition: opacity .8s ease; }
+.dgs-claw .claw-serum.is-w { fill: #f4f4f0; }
+.dgs-claw .claw-serum.is-r { fill: #e5484d; }
+.dgs-claw .claw-serum.is-k { fill: #6b4bd6; }
+.is-stage-1 .dgs-claw .claw-serum.is-w,
+.is-stage-2 .dgs-claw .claw-serum:is(.is-w, .is-r),
+.is-stage-3 .dgs-claw .claw-serum { opacity: 1; filter: drop-shadow(0 0 10px currentColor); }
+.dgs-claw .claw-cut { stroke: #e8fbff; stroke-width: 3; opacity: 0; transform-origin: left center; animation: clawCut 9s ease-out infinite; }
+@keyframes clawTurn { to { transform: rotate(360deg); } }
+@keyframes clawScan { from { transform: translateY(160px); } to { transform: translateY(580px); } }
+@keyframes clawCut { 0%, 78% { opacity: 0; transform: scaleX(0); } 81% { opacity: .9; transform: scaleX(1); } 88%, 100% { opacity: 0; transform: scaleX(1); } }
+
+/* Shared */
+@keyframes dgsBreath { 50% { transform: scale(1.08); } }
+@keyframes dgsGlow { 50% { filter: brightness(1.7); } }
+@keyframes dgsFlicker { 0%, 100% { opacity: .45; } 71% { opacity: .1; } 72% { opacity: .45; } 74% { opacity: .15; } 75% { opacity: .45; } }

@@ -101,6 +101,18 @@
   box-shadow: 0 30px 90px rgba(0, 0, 0, .7), 0 0 0 1px rgba(0, 0, 0, .4), 0 0 60px color-mix(in srgb, var(--accent) 14%, transparent);
 }
 .event-modal-backdrop > .dock.is-dungeon { width: min(820px, 100%); border-top-color: var(--dg); }
+/* Inside a dungeon the place itself is the backdrop: the chronicle steps aside, the scrim thins,
+   and the card turns to frosted glass so the scene still moves behind it */
+.stage.is-dungeon-stage:has(> .event-modal-backdrop) .log-col { opacity: 0; transition: opacity .5s ease; }
+.event-modal-backdrop:has(> .dock.is-dungeon) { background: rgba(4, 4, 7, .16); backdrop-filter: none; -webkit-backdrop-filter: none; }
+.event-modal-backdrop > .dock.is-dungeon {
+  background: rgba(10, 10, 14, .74);
+}
+/* On a phone the card covers the status strip, whose words would show through */
+@media (max-width: 860px) {
+  .event-modal-backdrop:has(> .dock.is-dungeon) { background: rgba(4, 4, 7, .4); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
+  .event-modal-backdrop > .dock.is-dungeon { background: rgba(10, 10, 14, .9); }
+}
 .event-modal-backdrop > .dock.is-dead { border-top-color: var(--bad); }
 .dock { padding: 26px 28px 28px; animation: dockIn .34s cubic-bezier(.2, .9, .25, 1.1) both; }
 @keyframes dockIn { from { opacity: 0; transform: translateY(14px) scale(.96); } }
