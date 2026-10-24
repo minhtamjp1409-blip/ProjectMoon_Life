@@ -13,6 +13,7 @@ import { getItemById } from '../data/itemsData.js';
 import { contractRouteOf } from '../data/careerContracts.js';
 import { laneContractMods } from './affiliation.js';
 import { egoEdge, hasAwakenedEgo } from './egoEdge.js';
+import { annualTrainingBonus } from './annualPlan.js';
 
 export const FIXER_LADDER = [
   {
@@ -160,7 +161,7 @@ export function fixerPromotionSuccessChance(char, targetGrade) {
   const edge = egoEdge(char);
   // Each failed attempt at this band is entered in Hana's report and makes the next one a little easier
   const retryBonus = Math.min(RETRY_BONUS_CAP, (char.fixerExamFailures?.[targetGrade] || 0) * RETRY_BONUS_STEP);
-  return Math.min(0.85 + edge + retryBonus, Math.max(0.2, 0.8 - (8 - targetGrade) * 0.065 + extraRep * 0.003 + extraMerit * 0.0008 + healthBonus + edge + retryBonus));
+  return Math.min(0.85 + edge + retryBonus, Math.max(0.2, 0.8 - (8 - targetGrade) * 0.065 + extraRep * 0.003 + extraMerit * 0.0008 + healthBonus + edge + retryBonus + annualTrainingBonus(char)));
 }
 
 const RETRY_BONUS_STEP = 0.04;
@@ -376,7 +377,7 @@ export function careerPromotionSuccessChance(char, step) {
     : Math.max(0, char.stats.network - step.networkReq) * 0.002 + Math.max(0, char.stats.wealth - step.wealthReq) * 0.001 + wingRecordEdge(char);
   const readiness = step.route === 'wing' ? (char.stats.sanity - 50) * 0.0015 : (char.stats.health - 50) * 0.0015;
   const edge = egoEdge(char);
-  return Math.max(0.25, Math.min(0.86 + edge, base + Math.min(0.14, extraMerit * 0.001 + standingBonus) + readiness + edge));
+  return Math.max(0.25, Math.min(0.86 + edge, base + Math.min(0.14, extraMerit * 0.001 + standingBonus) + readiness + edge + annualTrainingBonus(char)));
 }
 
 export function careerPromotionFailureEffects(step) {

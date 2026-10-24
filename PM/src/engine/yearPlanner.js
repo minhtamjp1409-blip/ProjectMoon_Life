@@ -91,6 +91,7 @@ import {
 import { freshness, varyEffects, traitsOf, PRINTED_NUMBERS } from './variance.js';
 import { BALANCE, healAmount, calmAmount, agingLoss, effectiveAge, driftOf, hasEstablishedStanding, reputationGain } from './economyModel.js';
 import { activeScarCount, addScar, scarAnnualEffects } from './scarModel.js';
+import { ambitionComplete, ambitionWeight } from './annualPlan.js';
 import { weightedOutcomes } from './outcomeOdds.js';
 
 export const MINOR_WINDOW_MS = 15000;
@@ -316,6 +317,7 @@ const weightOf = (char) => (e) => {
   }
   const opportunity = careerOpportunity(char);
   if (opportunity?.ids?.includes(e.id)) weight *= 1.5 + opportunity.shortage;
+  weight *= ambitionWeight(e, char.ambition?.id);
   return weight;
 };
 
@@ -675,7 +677,13 @@ export async function syncPlanWithBackend(charState, rng) {
         kind: th.kind || '',
         reasonVi: th.reasonVi || '',
         reasonEn: th.reasonEn || ''
-      }))
+      })),
+      annualTrain: charState.annualPlan?.age === charState.age ? charState.annualPlan.points?.train || 0 : 0,
+      annualWork: charState.annualPlan?.age === charState.age ? charState.annualPlan.points?.work || 0 : 0,
+      annualBond: charState.annualPlan?.age === charState.age ? charState.annualPlan.points?.bond || 0 : 0,
+      annualRest: charState.annualPlan?.age === charState.age ? charState.annualPlan.points?.rest || 0 : 0,
+      annualScheme: charState.annualPlan?.age === charState.age ? charState.annualPlan.points?.scheme || 0 : 0,
+      ambition: charState.ambition?.id || ''
     };
 
     // Saves from before the milestone was computed locally still carry a stale copy
@@ -1390,6 +1398,7 @@ export function endYear(charState, rng) {
   // Birthday
   char.age += 1;
   char.seasonIdx = 0;
+  if (char.ambition && !char.ambition.complete && ambitionComplete(char)) char.ambition.complete = true;
   char.weaver = {
     ...char.weaver,
     yearsSinceLastMajor: (char.weaver?.yearsSinceLastMajor || 0) + 1,
@@ -1398,7 +1407,11 @@ export function endYear(charState, rng) {
   if (reachedCareerAge(char) && (char.job === 'Fixer' || char.job === 'Syndicate')) applyFx(char, { merit: 2 });
   settle(char, 0, rng);
   char.weaver = updateDramaTension(char.weaver, char);
-  if (char.alive) planYear(char, rng);
+  if (char.alive) {
+    planYear(char, rng);
+    // A working life plans its year on the same screen as the year's leads
+    if (reachedCareerAge(char) && char.job !== 'Child') char.pendingYearPlan = { age: char.age };
+  }
   return char;
 }
 
@@ -1410,9 +1423,10 @@ export const nextPlanItem = (char) => (char.plan || [])[char.planCursor || 0] ||
  * moment that asks for a decision.
  */
 export function runDueItems(charState, progress, rng) {
+  if (charState.pendingDungeon) return { char: charState, changed: false };
   let char = charState;
   let changed = false;
-  while (char.alive && !char.pendingEvent && !char.pendingContract && !char.pendingModal && !char.pendingMinor) {
+  while (char.alive && !char.pendingDungeon && !char.pendingEvent && !char.pendingContract && !char.pendingModal && !char.pendingMinor) {
     const item = nextPlanItem(char);
     if (!item || item.t * 100 > progress) break;
     if (!changed) {

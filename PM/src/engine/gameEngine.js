@@ -31,6 +31,7 @@ import { SUPERNATURAL_EVENTS, FIXER_REQUESTS } from '../data/eventsSupernatural.
 import { FIXER_PATH_EVENTS } from '../data/eventsFixerPath.js';
 import { CONTRACT_ROUTES, contractRouteOf, equivalentGrade } from '../data/careerContracts.js';
 import { rollCareerAge, careerAgeOf } from './careerAge.js';
+import { AMBITIONS, ambitionComplete } from './annualPlan.js';
 import { CAREER_REQUESTS } from '../data/careerContractTemplates.js';
 import { DISTORTION_PATH_EVENTS } from '../data/eventsDistortionPath.js';
 import { WORKSHOP_ECONOMY_EVENTS } from '../data/eventsWorkshopEconomy.js';
@@ -90,6 +91,7 @@ import { hasMemory, closeThreads, applyNpcFate, namesInUse, applyBonds } from '.
 import { BALANCE, isFixerCareerEvent, reputationGain } from './economyModel.js';
 import { activeScarCount, addScar, normalizeScars, scarContractPower } from './scarModel.js';
 import { weightedOutcomes } from './outcomeOdds.js';
+import { dungeonWagerLevel } from './dungeonWager.js';
 import {
   DUNGEON_DEFINITIONS,
   createDungeonSession,
@@ -226,8 +228,8 @@ function cyrb128(str) {
   return [(h1 ^ h2 ^ h3 ^ h4) >>> 0, (h2 ^ h1) >>> 0, (h3 ^ h1) >>> 0, (h4 ^ h1) >>> 0];
 }
 
-export function createRNG(seedStr) {
-  let [a, b, c, d] = cyrb128(String(seedStr || `${Date.now()}:${Math.random()}`));
+export function createRNG(seedStr, savedState = null) {
+  let [a, b, c, d] = savedState || cyrb128(String(seedStr || `${Date.now()}:${Math.random()}`));
   const next = () => {
     a >>>= 0; b >>>= 0; c >>>= 0; d >>>= 0;
     let t = (a + b) | 0;
@@ -239,7 +241,8 @@ export function createRNG(seedStr) {
     c = (c + t) | 0;
     return (t >>> 0) / 4294967296;
   };
-  for (let i = 0; i < 15; i++) next(); // discard the warm-up outputs
+  if (!savedState) for (let i = 0; i < 15; i++) next(); // discard the warm-up outputs
+  next.getState = () => [a >>> 0, b >>> 0, c >>> 0, d >>> 0];
   return next;
 }
 
@@ -1673,7 +1676,7 @@ export function handleSanityBreakdown(char, rng = Math.random) {
 /**
  * Resolves a player's choice on a Story / Causal Event
  */
-export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
+export function resolveEventChoice(charState, choiceIdx, rng = Math.random, dungeonStake = 0) {
   const char = cloneChar(charState);
   const event = char.pendingEvent;
   if (!event) return char;
@@ -2114,6 +2117,7 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random) {
   // Micro-Dungeon Delve trigger
   if (startDungeonId && char.alive) {
     char.pendingDungeon = createDungeonSession(startDungeonId, char);
+    if (char.pendingDungeon && !DUNGEON_DEFINITIONS[startDungeonId]?.noRetreat) char.pendingDungeon.delveStake = dungeonWagerLevel(dungeonStake);
     if (choice.dungeonPrep === 'supplies') {
       char.pendingDungeon.maxSupplies += 1;
       char.pendingDungeon.supplyCharges += 1;
@@ -2630,9 +2634,18 @@ export function buildLifeSummaryAndLegacy(char) {
   (char.scars || []).slice(0, 5).forEach((s) => {
     lifeTags.push({ vi: `Sẹo: ${s}`, en: `Scar: ${s}`, kind: 'scar' });
   });
+  const ambition = AMBITIONS.find((goal) => goal.id === char.ambition?.id);
+  const ambitionAchieved = Boolean(ambition && (char.ambition.complete || ambitionComplete(char)));
+  if (ambition) lifeTags.push({
+    vi: `${ambitionAchieved ? 'Đã đạt' : 'Dở dang'}: ${ambition.vi}`,
+    en: `${ambitionAchieved ? 'Fulfilled' : 'Unfinished'}: ${ambition.en}`,
+    kind: ambitionAchieved ? 'achievement' : 'ambition'
+  });
 
   return {
     endingId: char.endingId || null,
+    ambitionId: ambition?.id || '',
+    ambitionAchieved,
     lifeEnding: char.lifeEnding || null,
     generation: char.generation,
     seed: char.seed,

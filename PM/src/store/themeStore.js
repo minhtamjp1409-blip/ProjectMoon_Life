@@ -3,17 +3,18 @@ import { create } from 'zustand';
 export const useThemeStore = create((set) => {
   // One theme: the City is always at night
   const initialMode = 'dark';
-  const initialLang = localStorage.getItem('pm-lang-mode') || 'vi';
-  const initialMotion = localStorage.getItem('pm-motion-mode') || 'system';
-  const initialText = localStorage.getItem('pm-text-size') || 'md';
+  const readSetting = (key) => typeof localStorage === 'undefined' ? null : localStorage.getItem(key);
+  const initialLang = readSetting('pm-lang-mode') || 'vi';
+  const initialMotion = readSetting('pm-motion-mode') || 'system';
+  const initialText = readSetting('pm-text-size') || 'md';
+  const initialGameplayMetrics = readSetting('pm-gameplay-metrics') === 'on';
 
-  if (initialMode === 'dark') {
-    document.documentElement.classList.add('dark');
-  } else {
-    document.documentElement.classList.remove('dark');
+  if (typeof document !== 'undefined') {
+    if (initialMode === 'dark') document.documentElement.classList.add('dark');
+    else document.documentElement.classList.remove('dark');
+    document.documentElement.dataset.motion = initialMotion;
+    document.documentElement.dataset.text = initialText;
   }
-  document.documentElement.dataset.motion = initialMotion;
-  document.documentElement.dataset.text = initialText;
 
   return {
     themeMode: initialMode,
@@ -29,6 +30,11 @@ export const useThemeStore = create((set) => {
       }),
     // Reading size for story text: 'md' | 'lg' | 'xl'
     textSize: initialText,
+    gameplayMetricsEnabled: initialGameplayMetrics,
+    setGameplayMetrics: (enabled) => {
+      localStorage.setItem('pm-gameplay-metrics', enabled ? 'on' : 'off');
+      set({ gameplayMetricsEnabled: enabled });
+    },
     cycleTextSize: () =>
       set((state) => {
         const next = { md: 'lg', lg: 'xl', xl: 'md' }[state.textSize] || 'md';

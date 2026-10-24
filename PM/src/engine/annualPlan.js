@@ -1,0 +1,73 @@
+export const YEAR_PLAN_POINTS = 3;
+
+export const YEAR_ACTIVITIES = [
+  { id: 'train', vi: 'Luyện tập', en: 'Train', effectVi: '+2% cơ hội thăng cấp mỗi điểm trong năm', effectEn: '+2% promotion chance per point this year' },
+  { id: 'work', vi: 'Kiếm sống', en: 'Earn', effectVi: '+2 Ahn mỗi điểm', effectEn: '+2 Ahn per point' },
+  { id: 'bond', vi: 'Gắn bó', en: 'Connect', effectVi: '+2 Quan hệ mỗi điểm', effectEn: '+2 Network per point' },
+  { id: 'rest', vi: 'Nghỉ ngơi', en: 'Rest', effectVi: '+3 SP mỗi điểm', effectEn: '+3 SP per point' },
+  { id: 'scheme', vi: 'Mưu tính', en: 'Scheme', effectVi: '-2 Heat, +2 Leverage mỗi điểm', effectEn: '-2 Heat, +2 Leverage per point' }
+];
+
+export const AMBITIONS = [
+  { id: 'rank', vi: 'Vươn lên trong tổ chức', en: 'Rise through the ranks', detailVi: 'Đạt cấp cao nhất trên con đường đang đi.', detailEn: 'Reach the highest rank on your path.' },
+  { id: 'fortune', vi: 'Tích lũy gia sản', en: 'Build a fortune', detailVi: 'Sở hữu ít nhất 80 Ahn.', detailEn: 'Hold at least 80 Ahn.' },
+  { id: 'survive', vi: 'Sống qua The City', en: 'Outlive the City', detailVi: 'Sống đến 70 tuổi.', detailEn: 'Live to age 70.' },
+  { id: 'outskirts', vi: 'Đến Outskirts', en: 'Reach the Outskirts', detailVi: 'Đặt chân tới Outskirts.', detailEn: 'Set foot in the Outskirts.' }
+];
+
+const inOutskirts = (char) => String(char?.regionId || '').toLowerCase().includes('outskirts') || Boolean(char?.flags?.includes('OutskirtsExile'));
+const LADDER_JOBS = new Set(['Fixer', 'Syndicate', 'Wing Employee', 'Workshop Craftsman']);
+
+/** The ambitions that still mean something for this life: no ladder to climb, no Outskirts to reach if already there. */
+export function ambitionsFor(char) {
+  return AMBITIONS.filter((goal) => (goal.id !== 'rank' || LADDER_JOBS.has(char?.job)) && (goal.id !== 'outskirts' || !inOutskirts(char)));
+}
+
+export const defaultYearPoints = () => ({ train: 1, work: 1, bond: 0, rest: 1, scheme: 0 });
+
+export function validYearPoints(points) {
+  return points && YEAR_ACTIVITIES.every(({ id }) => Number.isInteger(points[id]) && points[id] >= 0 && points[id] <= YEAR_PLAN_POINTS) &&
+    YEAR_ACTIVITIES.reduce((sum, { id }) => sum + points[id], 0) === YEAR_PLAN_POINTS;
+}
+
+export function applyAnnualPlan(char, points, ambitionId) {
+  if (!char?.pendingYearPlan || char.pendingYearPlan.age !== char.age || !validYearPoints(points)) return false;
+  if (!char.ambition && !ambitionsFor(char).some((goal) => goal.id === ambitionId)) return false;
+  const p = { ...points };
+  char.annualPlan = { age: char.age, points: p };
+  char.lastYearPoints = p;
+  if (!char.ambition) char.ambition = { id: ambitionId, chosenAge: char.age, complete: false };
+  const stats = char.stats;
+  stats.wealth = Math.min(100, (stats.wealth || 0) + p.work * 2);
+  stats.network = Math.min(100, (stats.network || 0) + p.bond * 2);
+  stats.sanity = Math.min(100, (stats.sanity || 0) + p.rest * 3);
+  char.heat = Math.max(0, (char.heat || 0) - p.scheme * 2);
+  char.leverage = Math.min(100, (char.leverage || 0) + p.scheme * 2);
+  char.pendingYearPlan = null;
+  return true;
+}
+
+export function annualTrainingBonus(char) {
+  return char?.annualPlan?.age === char?.age ? Math.min(0.06, (char.annualPlan.points?.train || 0) * 0.02) : 0;
+}
+
+export function ambitionComplete(char) {
+  switch (char?.ambition?.id) {
+    case 'rank': return Boolean(char.flags?.includes('ColorFixer') || char.fixerGrade === 1 || char.fingerRank >= 3 || char.wingRank >= 3 || char.workshopRank >= 3);
+    case 'fortune': return (char.stats?.wealth || 0) >= 80;
+    case 'survive': return char.age >= 70;
+    case 'outskirts': return inOutskirts(char) || char.endingId === 'library_threshold';
+    default: return false;
+  }
+}
+
+export function ambitionWeight(event, ambitionId) {
+  if (!ambitionId) return 1;
+  const effects = (event?.choices || []).flatMap((choice) => [choice.fx || choice.effects || {}, ...(choice.out || choice.outcomes || []).map((outcome) => outcome.fx || outcome.effects || {})]);
+  const hasGain = (key) => effects.some((fx) => (fx[key] || 0) > 0);
+  if (ambitionId === 'rank' && (hasGain('merit') || hasGain('rep'))) return 1.25;
+  if (ambitionId === 'fortune' && hasGain('wealth')) return 1.25;
+  if (ambitionId === 'survive' && (hasGain('health') || hasGain('sanity'))) return 1.2;
+  if (ambitionId === 'outskirts' && (event.id?.includes('outskirts') || event.need?.regionId?.includes?.('outskirts'))) return 1.35;
+  return 1;
+}

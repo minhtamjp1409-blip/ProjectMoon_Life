@@ -9,6 +9,7 @@
 import { cardEffectOf, dungeonUsesCards, nextHand } from './dungeonCards.js';
 import { GAUNTLETS, INTENT_KINDS, REST_TEXT } from '../data/dungeonGauntlets.js';
 import { activeScarSynergies } from './scarModel.js';
+import { dungeonWagerDamage, dungeonWagerLoot } from './dungeonWager.js';
 
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
 const fnv = (text) => {
@@ -31,7 +32,6 @@ const EVADE_MISS = 1.3;
 const MAX_ALLY_CALLS = 2;
 
 // Pressing on twice hurts more than twice as much as once: the second wager is the one worth a second thought
-const STAKE_DAMAGE = [0, 0.15, 0.35];
 
 export const COMBAT_BALANCE = {
   damageScale: 0.9,
@@ -111,7 +111,7 @@ function damageOf(ctx, def, char, session, intent, taken, kind) {
   const scale = (1 + (tier - 1) * COMBAT_BALANCE.tierScale) * (def.hazard === 'ALEPH' ? COMBAT_BALANCE.aleph : 1);
   // The same multiplier stage choices use: mastery, stance, traits, scan, E.G.O and strain
   const mult = ctx.damageMult(def, char, session, kind === 'sanity' ? 'sanity' : 'health') / (ctx.hazardOf(def) || 1);
-  return Math.max(1, Math.ceil(base * taken * scale * mult * COMBAT_BALANCE.damageScale * (1 + STAKE_DAMAGE[Math.min(2, session.delveStake || 0)])));
+  return Math.max(1, Math.ceil(base * taken * scale * mult * COMBAT_BALANCE.damageScale * dungeonWagerDamage(session.delveStake)));
 }
 
 export function evadeChance(ctx, char, session) {
@@ -363,7 +363,7 @@ export function resolveGauntletChoice(char, session, choiceIndex, rng, ctx) {
     const meritBase = COMBAT_BALANCE.clearMerit;
     const extraLoot = floor.kind === 'boss' ? lootBase.boss : floor.elite ? lootBase.elite : 0;
     const extraMerit = floor.kind === 'boss' ? meritBase.boss : floor.elite ? meritBase.elite : 0;
-    const loot = Math.round((lootBase.base + floor.tier * lootBase.perTier + extraLoot) * ctx.lootMult(session) * (1 + 0.35 * (session.delveStake || 0)) * (playedCard.loot ?? 1) * (playedCard.reward ?? 1));
+    const loot = Math.round((lootBase.base + floor.tier * lootBase.perTier + extraLoot) * ctx.lootMult(session) * dungeonWagerLoot(session.delveStake) * (playedCard.loot ?? 1) * (playedCard.reward ?? 1));
     const merit = meritBase.base + floor.tier * meritBase.perTier + extraMerit;
     session.accumulatedLootAhn = (session.accumulatedLootAhn || 0) + (def.noRewards ? 0 : loot);
     if (!def.noRewards) {

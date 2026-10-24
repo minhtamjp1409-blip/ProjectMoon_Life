@@ -11,6 +11,7 @@ import { rememberResonance } from './awakeningProgress.js';
 
 import { clamp, interpolateText } from './gameEngine.js';
 import { addScar, activeScarSynergies } from './scarModel.js';
+import { dungeonWagerDamage, dungeonWagerLoot, dungeonWagerLevel } from './dungeonWager.js';
 import { traitsOf } from './variance.js';
 import { evaluateCompanionSupport } from '../data/npcPersonality.js';
 import { FAIL_TEXT, GENERIC_FAIL, STRAIN_NOTES, BREAK_TEXT, SUPPLY_TEXT, ENDING_TEXT } from '../data/dungeonText.js';
@@ -1020,6 +1021,7 @@ function damageMultOf(def, char, session, mastery, kind) {
   if (session?.egoActive) mult *= DUNGEON_BALANCE.ego.damageMult;
   if (kind === 'sanity') mult *= tier.sanityMult;
   mult *= cardEffectOf(session).damage ?? 1;
+  if (!session?.combat) mult *= dungeonWagerDamage(session?.delveStake);
   return mult;
 }
 
@@ -1033,7 +1035,7 @@ function stageRewards(choice, session, success) {
   const keep = success ? 1 : DUNGEON_BALANCE.failLootKept;
   const r = DUNGEON_BALANCE.reward;
   const card = cardEffectOf(session);
-  const pay = card.reward ?? 1;
+  const pay = (card.reward ?? 1) * dungeonWagerLoot(session?.delveStake);
   const loot = choice.lootAhn ? Math.round(choice.lootAhn * r.loot * stance.loot * keep * pay * (card.loot ?? 1)) : 0;
   const scanLoot = session.stageScanned && !choice.isFlee ? 10 : 0;
   return {
@@ -1176,6 +1178,22 @@ export function createDungeonSession(dungeonId, char) {
   // Five of the dungeons are a chain of fights floor by floor; the rest keep their exploration stages
   const ready = isGauntlet(def.id) ? initGauntlet(session, char) : session;
   return dungeonUsesCards(def) ? dealCards(ready, char) : ready;
+}
+
+export function dungeonEntryForecast(dungeonId, char, stake = 0) {
+  const def = DUNGEON_DEFINITIONS[dungeonId];
+  if (!def || !char) return null;
+  const level = def.noRetreat ? 0 : dungeonWagerLevel(stake);
+  const session = createDungeonSession(dungeonId, char);
+  session.delveStake = level;
+  const stage = getDungeonCurrentStage(session);
+  const losses = (stage?.choices || []).filter((choice) => !choice.isFlee).map((choice) => evaluateDungeonChoiceOdds(choice, char, session)).filter(Boolean);
+  const hp = Math.max(1, char.stats?.health || 1);
+  const sp = Math.max(1, char.stats?.sanity || 1);
+  const lossRatio = Math.max(0, ...losses.map((loss) => Math.max(-(loss.estHp || 0) / hp, -(loss.estSp || 0) / sp)));
+  const pressure = Math.max(lossRatio, (def.hazard === 'ALEPH' ? 0.27 : 0.16) * damageMultOf(def, char, session, getDungeonMastery(def, char), 'health'));
+  const risk = def.noRetreat || pressure >= 0.48 ? 'critical' : pressure >= 0.27 ? 'high' : pressure >= 0.14 ? 'severe' : 'uncertain';
+  return { level, risk, damagePercent: Math.round((dungeonWagerDamage(level) - 1) * 100), lootPercent: Math.round((dungeonWagerLoot(level) - 1) * 100), firstEncounter: losses.length ? { hp: Math.max(0, ...losses.map((loss) => -(loss.estHp || 0))), sp: Math.max(0, ...losses.map((loss) => -(loss.estSp || 0))) } : null };
 }
 
 /**

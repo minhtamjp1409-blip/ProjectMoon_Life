@@ -147,6 +147,14 @@
 
 /* Choices: an index in the margin, the words, and what it will cost */
 .choices { display: flex; flex-direction: column; gap: 8px; counter-reset: none; }
+.dungeon-entry-wager { border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px; margin: 0 0 16px; color: var(--story); }
+.dungeon-entry-wager legend { padding: 0 5px; color: var(--text); font-weight: 600; }
+.dungeon-entry-wager p { margin: 3px 0 10px; line-height: 1.45; }
+.dungeon-entry-wager small { display: block; margin-top: 9px; color: var(--muted); line-height: 1.4; }
+.dungeon-entry-options { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.dungeon-entry-options button { min-height: 44px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); color: var(--text); cursor: pointer; }
+.dungeon-entry-options button.is-selected { border-color: var(--accent); background: var(--raised); }
+.dungeon-entry-options button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .choice {
   display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 12px; align-items: start;
   width: 100%; padding: 14px 16px 14px 12px; text-align: left;
@@ -200,6 +208,10 @@
 .year-lead-outlook .is-gain { color: var(--good); }
 .year-lead-outlook .is-cost { color: var(--bad); }
 .year-leads-note { font-size: 13px; color: var(--faint); }
+.year-lead:disabled { opacity: .45; cursor: not-allowed; }
+.year-lead:disabled:hover { border-color: var(--border); background: var(--surface); }
+.year-plan-leads { display: flex; flex-direction: column; gap: 10px; margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--rule); }
+.year-plan-leads h3 { font-family: var(--serif); font-size: 18px; font-weight: 600; }
 
 /* Outcome */
 .resolution-choice-pill { display: flex; flex-direction: column; gap: 2px; padding-left: 12px; border-left: 2px solid var(--accent); }
@@ -228,10 +240,10 @@
   .log-col::before { display: none; }
   .entry.k-good::before, .entry.k-bad::before { left: -13px; }
   .yearline { margin-top: 34px; }
-  /* On a phone the card keeps the middle of the screen, with a thumb's width of City around it */
-  .event-modal-backdrop { padding: 12px 10px calc(12px + env(safe-area-inset-bottom, 0px)); }
-  .event-modal-backdrop > .dock { max-height: calc(100dvh - 24px - env(safe-area-inset-bottom, 0px)); border-radius: 14px; }
-  .event-peek-toggle { top: auto; right: 50%; transform: translateX(50%); bottom: calc(14px + env(safe-area-inset-bottom, 0px)); }
+  /* On a phone the card sits between the play bar and the bottom tabs, which stay above it; --bottom already holds the safe area */
+  .event-modal-backdrop { padding: calc(var(--top) + 66px) 10px calc(var(--bottom) + 8px); }
+  .event-modal-backdrop > .dock { max-height: calc(100dvh - var(--top) - 66px - var(--bottom) - 8px); border-radius: 14px; }
+  .event-peek-toggle { top: auto; right: 50%; transform: translateX(50%); bottom: calc(var(--bottom) + 12px); }
   .dock { padding: 18px 16px 22px; }
   .dock-title { font-size: 22px; }
   .dock-hotkey-hint { display: none; }
@@ -303,3 +315,23 @@
   .epitaph-facts + .epitaph-facts { margin-top: -22px; }
   .epitaph-stat-bars { grid-template-columns: 1fr; }
 }
+.year-plan .dock-inner { max-width: 600px; }
+.year-plan-intro { color: var(--muted); margin: 0 0 1rem; line-height: 1.5; }
+.year-plan-remaining { color: var(--accent); font-weight: 700; margin: 0 0 .75rem; }
+.year-plan-activities { display: grid; gap: .5rem; }
+.year-plan-activity { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: .7rem .8rem; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); }
+.year-plan-activity strong, .year-plan-activity small, .year-plan-ambitions strong, .year-plan-ambitions small { display: block; }
+.year-plan-activity small, .year-plan-ambitions small { color: var(--muted); line-height: 1.35; margin-top: .2rem; }
+.year-plan-stepper { display: flex; align-items: center; gap: .25rem; flex: none; }
+.year-plan-stepper button { min-width: 44px; min-height: 44px; border: 1px solid var(--border); border-radius: 6px; color: var(--text); background: var(--surface); cursor: pointer; }
+.year-plan-stepper button:hover:not(:disabled), .year-plan-stepper button:focus-visible { border-color: var(--accent); }
+.year-plan-stepper button:disabled { opacity: .35; cursor: default; }
+.year-plan-stepper output { min-width: 1.2rem; text-align: center; font-variant-numeric: tabular-nums; }
+.year-plan-ambitions { border: 0; margin: 1.25rem 0 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; }
+.year-plan-ambitions legend { font-weight: 700; margin-bottom: .6rem; }
+.year-plan-ambitions label { display: flex; gap: .65rem; padding: .75rem; border: 1px solid var(--border); border-radius: 8px; cursor: pointer; }
+.year-plan-ambitions label.is-selected { border-color: var(--accent); }
+.year-plan-ambitions input { accent-color: var(--accent); align-self: flex-start; margin-top: .25rem; }
+.year-plan-current-goal { color: var(--muted); margin: 1rem 0 0; }
+.year-plan-confirm { width: 100%; min-height: 44px; margin-top: 1rem; }
+@media (max-width: 600px) { .year-plan-activity { gap: .5rem; } .year-plan-ambitions { grid-template-columns: 1fr; } }

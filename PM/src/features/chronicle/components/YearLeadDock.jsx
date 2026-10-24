@@ -29,38 +29,46 @@ function outlook(event) {
   return { gain: [...gain].slice(0, 4), cost: [...cost].slice(0, 4) };
 }
 
-export function YearLeadDock({ draft, char, onPick }) {
+// The three leads as buttons; also shown on the year plan, where picking one starts the year
+export function YearLeadList({ draft, char, onPick, disabled = false, autoFocus = true }) {
   const { t } = useT();
   const firstOffer = useRef(null);
   const usable = draft.offers.map((offer, index) => ({ offer, index })).filter(({ offer }) => isYearLeadUsable(offer, char));
-  useEffect(() => { firstOffer.current?.focus(); }, [draft.age]);
+  useEffect(() => { if (autoFocus) firstOffer.current?.focus(); }, [draft.age, autoFocus]);
+  return (
+    <div className="year-leads-list">
+      {usable.map(({ offer, index }) => {
+        const event = LIFE_MINORS.find((entry) => entry.id === offer.id);
+        if (!event) return null;
+        const vi = splitTitle(interpolateText(event.vi || '', char));
+        const en = splitTitle(interpolateText(event.en || '', char));
+        const { gain, cost } = outlook(event);
+        return (
+          <button className={`year-lead is-${offer.tier}`} type="button" key={offer.id} disabled={disabled} ref={index === usable[0]?.index ? firstOffer : null} onClick={() => onPick(index)}>
+            <span className="year-lead-meta"><span>{index + 1}</span><span>{t(...(TIER[offer.tier] || TIER.uncertain))}</span></span>
+            <strong>{t(vi.title || vi.body.slice(0, 65), en.title || en.body.slice(0, 65))}</strong>
+            <span className="year-lead-copy">{t(vi.body, en.body)}</span>
+            <span className="year-lead-outlook">
+              {gain.length > 0 && <span className="is-gain">{t('Có thể được', 'May gain')}: {gain.map((k) => t(...KEY[k])).join(', ')}</span>}
+              {cost.length > 0 && <span className="is-cost">{t('Có thể mất', 'May cost')}: {cost.map((k) => t(...KEY[k])).join(', ')}</span>}
+            </span>
+          </button>
+        );
+      })}
+      {usable.length === 0 && <button className="year-lead" type="button" disabled={disabled} ref={firstOffer} onClick={() => onPick(-1)}>{t('Các manh mối đã nguội. Tiếp tục năm nay.', 'The leads have gone cold. Continue this year.')}</button>}
+    </div>
+  );
+}
+
+export function YearLeadDock({ draft, char, onPick }) {
+  const { t } = useT();
   return (
     <section className="dock year-leads" aria-labelledby="year-leads-title">
       <div className="dock-inner">
         <p className="dock-kicker">{t(`Tuổi ${draft.age}`, `Age ${draft.age}`)}</p>
         <h2 className="dock-title" id="year-leads-title">{t('Ba manh mối', 'Three leads')}</h2>
         <p className="year-leads-intro">{t('Bạn chỉ đủ thời gian theo một dấu vết. Hai chuyện còn lại sẽ trôi qua.', 'You have time to follow one lead. The other two will pass you by.')}</p>
-        <div className="year-leads-list">
-          {usable.map(({ offer, index }) => {
-            const event = LIFE_MINORS.find((entry) => entry.id === offer.id);
-            if (!event) return null;
-            const vi = splitTitle(interpolateText(event.vi || '', char));
-            const en = splitTitle(interpolateText(event.en || '', char));
-            const { gain, cost } = outlook(event);
-            return (
-              <button className={`year-lead is-${offer.tier}`} type="button" key={offer.id} ref={index === usable[0]?.index ? firstOffer : null} onClick={() => onPick(index)}>
-                <span className="year-lead-meta"><span>{index + 1}</span><span>{t(...(TIER[offer.tier] || TIER.uncertain))}</span></span>
-                <strong>{t(vi.title || vi.body.slice(0, 65), en.title || en.body.slice(0, 65))}</strong>
-                <span className="year-lead-copy">{t(vi.body, en.body)}</span>
-                <span className="year-lead-outlook">
-                  {gain.length > 0 && <span className="is-gain">{t('Có thể được', 'May gain')}: {gain.map((k) => t(...KEY[k])).join(', ')}</span>}
-                  {cost.length > 0 && <span className="is-cost">{t('Có thể mất', 'May cost')}: {cost.map((k) => t(...KEY[k])).join(', ')}</span>}
-                </span>
-              </button>
-            );
-          })}
-          {usable.length === 0 && <button className="year-lead" type="button" ref={firstOffer} onClick={() => onPick(-1)}>{t('Các manh mối đã nguội. Tiếp tục năm nay.', 'The leads have gone cold. Continue this year.')}</button>}
-        </div>
+        <YearLeadList draft={draft} char={char} onPick={onPick} />
         <p className="year-leads-note">{t('Mức nguy hiểm chỉ là dấu hiệu ban đầu; lựa chọn trong sự kiện vẫn quyết định hậu quả.', 'The warning is only a first impression. Your choice inside the event still shapes the outcome.')}</p>
       </div>
     </section>

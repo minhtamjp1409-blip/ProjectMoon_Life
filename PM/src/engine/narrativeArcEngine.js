@@ -122,6 +122,28 @@ export function evaluateNarrativeArcProgression(char, event) {
 export function advanceActiveNarrativeArcs(char, eventId) {
   if (!char.activeArcs) char.activeArcs = [];
 
+  const scheduleNextStage = (arc, def) => {
+    const stage = def.stages.find((entry) => entry.stage === arc.currentStage);
+    if (!stage) return;
+    const pending = char.weaver?.pendingThreads || [];
+    if (pending.some((thread) => !thread.fulfilled && thread.eventId === stage.eventId)) return;
+    char.weaver = {
+      ...char.weaver,
+      pendingThreads: [...pending, {
+        id: `arc_${arc.id}_${stage.stage}_${char.age}`,
+        eventId: stage.eventId,
+        kind: 'major',
+        arcId: arc.id,
+        arcStage: stage.stage,
+        plantedAtAge: char.age,
+        triggerAge: char.age + 1,
+        reasonVi: `${def.nameVi}: hồi ${stage.stage}/${def.stages.length}`,
+        reasonEn: `${def.nameEn}: chapter ${stage.stage}/${def.stages.length}`,
+        fulfilled: false
+      }]
+    };
+  };
+
   // Check if any active arc advanced
   for (const arc of char.activeArcs) {
     if (arc.status !== 'active') continue;
@@ -135,7 +157,7 @@ export function advanceActiveNarrativeArcs(char, eventId) {
         arc.status = 'completed';
         if (!char.unlockedRecords) char.unlockedRecords = [];
         char.unlockedRecords.push(`arc_completed_${arc.id}`);
-      }
+      } else scheduleNextStage(arc, def);
       return;
     }
   }
@@ -151,6 +173,7 @@ export function advanceActiveNarrativeArcs(char, eventId) {
         status: 'active',
         startedAge: char.age
       });
+      scheduleNextStage(char.activeArcs[char.activeArcs.length - 1], def);
       return;
     }
   }

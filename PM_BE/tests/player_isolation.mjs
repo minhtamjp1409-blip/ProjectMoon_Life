@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { createServer } from 'node:net';
-import { mkdtemp, rm, writeFile } from 'node:fs/promises';
+import { mkdtemp, rm, writeFile, readFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { dirname, join, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -74,11 +74,16 @@ try {
 
   assert.equal((await request('/state/main', tokenA, {
     method: 'PUT',
-    body: JSON.stringify({ char: { seed: 'player-a', alive: true }, yearProgress: 12 })
+    body: JSON.stringify({ char: { seed: 'player-a', alive: true }, yearProgress: 12, version: 3, rngState: [0, 4294967295, 123456789, 77], activePlayMs: 61000 })
   })).status, 204);
   assert.equal((await request('/state/main', tokenB)).status, 404);
   assert.equal((await request('/state/main', tokenB, { method: 'DELETE' })).status, 404);
   assert.equal((await request('/state/main', tokenA)).status, 200);
+  assert.equal((await request('/telemetry/gameplay')).status, 401);
+  const sample = { runKey: 'run-a', age: 34, minutes: 12, firstDungeonOutcome: 'dead' };
+  assert.equal((await request('/telemetry/gameplay', tokenA, { method: 'POST', body: JSON.stringify(sample) })).status, 204);
+  assert.equal((await request('/telemetry/gameplay', tokenA, { method: 'POST', body: JSON.stringify(sample) })).status, 204);
+  assert.equal((await request('/telemetry/gameplay', tokenB, { method: 'POST', body: JSON.stringify({ ...sample, runKey: 'run-b', firstDungeonOutcome: 'none' }) })).status, 204);
 
   assert.equal((await request('/archive/codex', tokenA, {
     method: 'POST', body: JSON.stringify({ keys: ['player_a_only'] })
@@ -96,6 +101,16 @@ try {
   assert.equal(persistedResponse.status, 200, 'player A save should survive restart');
   const savedA = await persistedResponse.json();
   assert.equal(savedA.char.seed, 'player-a');
+  assert.deepEqual(savedA.rngState, [0, 4294967295, 123456789, 77]);
+  assert.equal(savedA.activePlayMs, 61000);
+  const playerKey = createHash('sha256').update(tokenA).digest('hex');
+  const playerBKey = createHash('sha256').update(tokenB).digest('hex');
+  const metricsA = JSON.parse(await readFile(join(dataRoot, 'Data', 'players', playerKey, 'gameplay_metrics.json'), 'utf8'));
+  const metricsB = JSON.parse(await readFile(join(dataRoot, 'Data', 'players', playerBKey, 'gameplay_metrics.json'), 'utf8'));
+  assert.equal(metricsA.lives, 1);
+  assert.equal(metricsA.firstDungeonDeaths, 1);
+  assert.equal(metricsB.firstDungeonDeaths, 0);
+  assert(!JSON.stringify(metricsA).includes('run-a'), 'the metrics file stores only a hash of the run key');
   assert.equal((await request('/state/main', tokenB)).status, 404);
 
   assert.equal((await request('/state/main', tokenA, {
@@ -103,7 +118,6 @@ try {
   })).status, 204);
   await new Promise((resolve) => setTimeout(resolve, 1300));
   await stop();
-  const playerKey = createHash('sha256').update(tokenA).digest('hex');
   await writeFile(join(dataRoot, 'Data', 'players', playerKey, 'run_state.json'), '{broken');
 
   await start();

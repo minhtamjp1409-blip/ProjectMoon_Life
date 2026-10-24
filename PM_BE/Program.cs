@@ -80,6 +80,8 @@ api.MapPost("/archive/custom-event", (CustomEventDto customEvent, HttpContext co
         : Results.Ok(new CustomEventsResponse(PlayerStore(context).AddCustomEvent(customEvent))));
 api.MapGet("/archive/hall-of-fame", (int? take, HttpContext context) => Results.Ok(PlayerStore(context).GetHallOfFame(take ?? 10)));
 api.MapGet("/telemetry", (HttpContext context) => Results.Ok(PlayerStore(context).GetTelemetry()));
+api.MapPost("/telemetry/gameplay", (GameplaySampleDto sample, HttpContext context) =>
+    PlayerStore(context).RecordGameplaySample(sample) ? Results.NoContent() : Results.BadRequest());
 
 // The life in progress, so a player can leave mid-run and come back
 api.MapGet("/state/{slot}", (string slot, HttpContext context) =>

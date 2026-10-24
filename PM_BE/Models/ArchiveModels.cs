@@ -28,7 +28,9 @@ public sealed record BloodlineMemorialDto(
     bool HasChild = false,
     string ChildName = "",
     bool HasVendetta = false,
-    DateTime? CreatedAtUtc = null
+    DateTime? CreatedAtUtc = null,
+    string AmbitionId = "",
+    bool AmbitionAchieved = false
 );
 
 public sealed record CustomChoiceDto(
@@ -59,6 +61,25 @@ public sealed record CityTelemetryDto(
     int LongestLife = 0
 );
 
+public sealed record GameplaySampleDto(
+    string RunKey = "",
+    int Age = 0,
+    int Minutes = 0,
+    string FirstDungeonOutcome = "none",
+    bool Abandoned = false
+);
+
+public sealed record GameplayMetricsDto(
+    int Lives = 0,
+    int TotalAge = 0,
+    int TotalMinutes = 0,
+    int FirstDungeonVisits = 0,
+    int FirstDungeonDeaths = 0,
+    int AbandonedRuns = 0,
+    Dictionary<string, int>? FirstDungeonOutcomes = null,
+    List<string>? RecordedRuns = null
+);
+
 public sealed record ArchiveSnapshotDto(
     List<BloodlineMemorialDto> PastLives,
     List<string> GlobalCodex,
@@ -76,7 +97,9 @@ public sealed record RunStateDto(
     JsonElement Char,
     double YearProgress = 0,
     string? SavedAt = null,
-    int Version = 0
+    int Version = 0,
+    uint[]? RngState = null,
+    int ActivePlayMs = 0
 );
 
 public sealed record HallOfFameEntryDto(
@@ -173,7 +196,13 @@ public sealed record CharacterSnapshotDto(
     string FateOmenId = "",
     int YearsSinceLastMajor = 0,
     int ActiveNpcsCount = 0,
-    List<PendingThreadDto>? PendingThreads = null
+    List<PendingThreadDto>? PendingThreads = null,
+    int AnnualTrain = 0,
+    int AnnualWork = 0,
+    int AnnualBond = 0,
+    int AnnualRest = 0,
+    int AnnualScheme = 0,
+    string Ambition = ""
 );
 
 public sealed record MilestoneRequirementDto(
@@ -259,6 +288,8 @@ public sealed record CrucibleTrialResponseDto(
 [JsonSerializable(typeof(Dictionary<string, RunStateDto>))]
 [JsonSerializable(typeof(List<HallOfFameEntryDto>))]
 [JsonSerializable(typeof(CityTelemetryDto))]
+[JsonSerializable(typeof(GameplaySampleDto))]
+[JsonSerializable(typeof(GameplayMetricsDto))]
 [JsonSerializable(typeof(HealthDto))]
 [JsonSerializable(typeof(WeaverEvaluationRequest))]
 [JsonSerializable(typeof(WeaverEvaluationResponse))]

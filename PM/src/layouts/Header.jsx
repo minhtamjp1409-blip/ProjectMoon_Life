@@ -13,7 +13,7 @@ import { NAV_ITEMS, LANG_OPTIONS, BrandMark } from './Sidebar';
 export const Header = ({ languageOverride, isPlay }) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const { lang: preferredLang, setLang, textSize, setTextSize, motionMode, setMotion } = useThemeStore();
+  const { lang: preferredLang, setLang, textSize, setTextSize, motionMode, setMotion, gameplayMetricsEnabled, setGameplayMetrics } = useThemeStore();
   const [muted, setMuted] = React.useState(() => audioEngine.isMuted);
   React.useEffect(() => audioEngine.subscribe((st) => setMuted(st.isMuted)), []);
   const lang = languageOverride || preferredLang;
@@ -28,17 +28,19 @@ export const Header = ({ languageOverride, isPlay }) => {
   };
   const settings = {
     selectable: true,
-    selectedKeys: ['lang:' + preferredLang, 'text:' + textSize, 'motion:' + motionMode],
+    selectedKeys: ['lang:' + preferredLang, 'text:' + textSize, 'motion:' + motionMode, ...(gameplayMetricsEnabled ? ['metrics:toggle'] : [])],
     items: [
       { type: 'group', key: 'g-lang', label: pick(lang, 'Ngôn ngữ', 'Language'), children: LANG_OPTIONS.map((o) => ({ key: 'lang:' + o.key, label: o.label })) },
       { type: 'group', key: 'g-text', label: pick(lang, 'Cỡ chữ truyện', 'Story text size'), children: [['md', 'Vừa', 'Medium'], ['lg', 'Lớn', 'Large'], ['xl', 'Rất lớn', 'Extra large']].map(([k, vi, en]) => ({ key: 'text:' + k, label: pick(lang, vi, en) })) },
-      { type: 'group', key: 'g-motion', label: pick(lang, 'Chuyển động', 'Motion'), children: [['system', 'Theo hệ thống', 'Follow system'], ['full', 'Đầy đủ', 'Full'], ['reduced', 'Giảm', 'Reduced']].map(([k, vi, en]) => ({ key: 'motion:' + k, label: pick(lang, vi, en) })) }
+      { type: 'group', key: 'g-motion', label: pick(lang, 'Chuyển động', 'Motion'), children: [['system', 'Theo hệ thống', 'Follow system'], ['full', 'Đầy đủ', 'Full'], ['reduced', 'Giảm', 'Reduced']].map(([k, vi, en]) => ({ key: 'motion:' + k, label: pick(lang, vi, en) })) },
+      { key: 'metrics:toggle', label: pick(lang, `Gửi thống kê chơi ẩn danh: ${gameplayMetricsEnabled ? 'Bật' : 'Tắt'}`, `Share anonymous play totals: ${gameplayMetricsEnabled ? 'On' : 'Off'}`) }
     ],
     onClick: ({ key }) => {
       const [kind, value] = key.split(':');
       if (kind === 'lang') setLang(value);
       else if (kind === 'text') setTextSize(value);
       else if (kind === 'motion') setMotion(value);
+      else if (kind === 'metrics') setGameplayMetrics(!gameplayMetricsEnabled);
     }
   };
   return (

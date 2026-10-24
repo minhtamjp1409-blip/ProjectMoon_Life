@@ -44,6 +44,8 @@ export const cityArchiveAPI = {
 
   clearRunState: (slot = 'main') => apiRequest(`/state/${slot}`, { method: 'DELETE', allow404: true }),
 
+  recordGameplaySample: (sample) => apiRequest('/telemetry/gameplay', { method: 'POST', body: JSON.stringify(sample) }),
+
   // Director Engine: Offloaded server-side computation
   planYear: (payload) =>
     apiRequest('/director/plan-year', {

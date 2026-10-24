@@ -19,7 +19,7 @@ const SPEEDS = [
   { spd: 3, secs: 10 }
 ];
 
-const isWaiting = (s) => Boolean(s?.char?.pendingLead || s?.char?.pendingEvent || s?.char?.pendingContract || s?.char?.pendingDungeon || s?.char?.pendingModal || s?.char?.pendingMinor || s?.activeResolution);
+const isWaiting = (s) => Boolean(s?.char?.pendingYearPlan || s?.char?.pendingLead || s?.char?.pendingEvent || s?.char?.pendingContract || s?.char?.pendingDungeon || s?.char?.pendingModal || s?.char?.pendingMinor || s?.activeResolution);
 const isRunning = (s) => s.inRun && s.char?.alive && s.speed > 0 && !isWaiting(s) && !(s.postChoicePauseMs > 0);
 
 /*
@@ -124,7 +124,7 @@ export const PlayBar = () => {
   const { setMobileDossierOpen } = useThemeStore();
   const char = useGameStore((s) => s.char);
   const milestone = getNextCareerMilestone(char);
-  const { age, seasonIdx, yearProgress, dramaPhase, alive, waiting, speed, autoPlay, setSpeed, toggleAutoPlay, stepYear, exitToSetup, abandonRun, saveRun, lastSavedAt, saveError } =
+  const { age, seasonIdx, yearProgress, dramaPhase, alive, waiting, speed, autoPlay, setSpeed, toggleAutoPlay, stepYear, skipQuietTime, exitToSetup, abandonRun, saveRun, lastSavedAt, saveError } =
     useGameStore(
       useShallow((s) => ({
         age: s.char.age,
@@ -138,6 +138,7 @@ export const PlayBar = () => {
         setSpeed: s.setSpeed,
         toggleAutoPlay: s.toggleAutoPlay,
         stepYear: s.stepYear,
+        skipQuietTime: s.skipQuietTime,
         exitToSetup: s.exitToSetup,
         abandonRun: s.abandonRun,
         saveRun: s.saveRun,
@@ -245,6 +246,13 @@ export const PlayBar = () => {
   };
 
   const menuItems = [
+    {
+      key: 'quiet-skip',
+      icon: <SkipForward size={16} />,
+      label: t('Qua thời gian yên ắng', 'Skip quiet time'),
+      disabled: !alive || waiting,
+      onClick: () => { audioEngine.playYearTick(); skipQuietTime(); }
+    },
     {
       key: 'autoplay',
       icon: <Bot size={16} />,

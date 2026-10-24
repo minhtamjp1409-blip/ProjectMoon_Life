@@ -9,6 +9,7 @@ import { useGameStore } from '../../../store/gameStore';
 import { buildLifeSummaryAndLegacy, getDungeonCurrentStage, isDungeonChoiceAvailable, DUNGEON_DEFINITIONS } from '../../../engine/gameEngine';
 import { DungeonDock } from './DungeonDock';
 import { YearLeadDock } from './YearLeadDock';
+import { YearPlanDock } from './YearPlanDock';
 import { LIFE_MINORS, MINOR_WINDOW_MS, splitTitle } from '../../../engine/yearPlanner';
 import { exportDossierCardPNG } from '../../../utils/exportDossierCard';
 import { audioEngine } from '../../../engine/audioEngine';
@@ -17,6 +18,7 @@ import { useT } from '../../../i18n';
 import { Deltas, ChoicePreview } from './Deltas';
 import { getPsycheInterjection, evaluateDiscoChoiceCheck } from '../../../engine/discoPsyche';
 import { bestowHanaColorTitle } from '../../../engine/colorRegistry';
+import { dungeonEntryForecast } from '../../../engine/dungeonEngine';
 
 const ENTRY_KIND = {
   causal: { cls: 'k-causal', vi: 'Causal Echo', en: 'Causal Echo' },
@@ -221,11 +223,15 @@ const MinorDock = ({ prompt, char, npcs, wealth = 0, remainingMs, onPick, place 
   );
 };
 
-const EventDock = ({ event, char, onPick }) => {
+const EventDock = ({ event, char, onPick, dungeonStake, onDungeonStake }) => {
   const { t, lang, bilingual } = useT();
   const causal = event.isCausalCallback;
   const title = lang === 'en' ? event.titleEn || event.titleVi : event.titleVi;
   const psyche = getPsycheInterjection(char, event, lang);
+  const firstDungeon = event.choices?.find((choice) => choice.startDungeon)?.startDungeon;
+  const wagerAvailable = firstDungeon && !DUNGEON_DEFINITIONS[firstDungeon]?.noRetreat;
+  const forecast = wagerAvailable ? dungeonEntryForecast(firstDungeon, char, dungeonStake) : null;
+  const riskNames = { uncertain: ['Khó đoán', 'Uncertain'], severe: ['Nguy hiểm', 'Dangerous'], high: ['Rất nguy hiểm', 'Very dangerous'], critical: ['Cực kỳ nguy hiểm', 'Critical'] };
 
   return (
     <div className={`dock ${causal ? 'is-causal' : ''}`} role="document">
@@ -254,6 +260,21 @@ const EventDock = ({ event, char, onPick }) => {
 
         <p className="dock-text">{lang === 'en' ? event.displayEn || event.displayVi : event.displayVi}</p>
         {bilingual && event.displayEn && <p className="entry-alt">{event.displayEn}</p>}
+
+        {forecast && (
+          <fieldset className="dungeon-entry-wager">
+            <legend>{t('Mức cược trước cửa', 'Wager at the door')}</legend>
+            <p>{t(`Nguy cơ với thể trạng hiện tại: ${riskNames[forecast.risk][0]}. Mức cược ${forecast.level}: đòn nhận thêm ${forecast.damagePercent}%, thu hoạch thêm ${forecast.lootPercent}%.`, `Risk with your current condition: ${riskNames[forecast.risk][1]}. Wager ${forecast.level}: incoming damage +${forecast.damagePercent}%, haul +${forecast.lootPercent}%.`)}</p>
+            <div className="dungeon-entry-options" role="group" aria-label={t('Chọn mức cược', 'Choose wager')}>
+              {[0, 1, 2].map((level) => (
+                <button type="button" key={level} className={dungeonStake === level ? 'is-selected' : ''} aria-pressed={dungeonStake === level} onClick={() => onDungeonStake(level)}>
+                  {t(`Mức ${level}`, `Wager ${level}`)}
+                </button>
+              ))}
+            </div>
+            <small>{t('Mức cược áp dụng cho chuyến này; có thể tăng thêm khi bỏ nghỉ giữa các trận.', 'This wager lasts for the expedition; skipping recovery can raise it later.')}</small>
+          </fieldset>
+        )}
 
         {psyche && (
           <details className="disco-psyche-card">
@@ -811,6 +832,7 @@ export const LiveStageFeed = () => {
     setSpeed,
     chooseMinor,
     chooseYearLead,
+    chooseAnnualPlan,
     selectEventChoice,
     selectContractApproach,
     setDungeonStance,
@@ -839,6 +861,7 @@ export const LiveStageFeed = () => {
       setSpeed: s.setSpeed,
       chooseMinor: s.chooseMinor,
       chooseYearLead: s.chooseYearLead,
+      chooseAnnualPlan: s.chooseAnnualPlan,
       selectEventChoice: s.selectEventChoice,
       selectContractApproach: s.selectContractApproach,
       setDungeonStance: s.setDungeonStance,
@@ -885,6 +908,8 @@ export const LiveStageFeed = () => {
   const [cursorPos, setCursorPos] = useState(50);
   const [strikes, setStrikes] = useState([]);
   const [peekBehind, setPeekBehind] = useState(false);
+  const [dungeonStake, setDungeonStake] = useState(0);
+  useEffect(() => setDungeonStake(0), [char.pendingEvent?.id]);
   const dirRef = useRef(1);
 
   // Auto-reveal birth prologue events sequentially with cinematic pacing
@@ -947,7 +972,7 @@ export const LiveStageFeed = () => {
   const handleSelectEvent = (idx) => {
     if (!choiceIsAvailable(char.pendingEvent?.choices?.[idx], char)) return;
     audioEngine.playClick();
-    selectEventChoice(idx);
+    selectEventChoice(idx, dungeonStake);
   };
 
   const handleSelectContract = (id) => {
@@ -1033,6 +1058,9 @@ export const LiveStageFeed = () => {
         return;
       }
 
+      // The year plan screen holds its own buttons; number keys there would skip the plan
+      if (char.pendingYearPlan) return;
+
       if (char.pendingLead) {
         const leadIndex = Number(e.key) - 1;
         if (Number.isInteger(leadIndex) && leadIndex >= 0 && leadIndex < char.pendingLead.offers.length) {
@@ -1114,7 +1142,7 @@ export const LiveStageFeed = () => {
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [char.alive, char.pendingLead, char.pendingDungeon, char.pendingEvent, char.pendingContract, char.pendingMinor, char.stats.wealth, activeResolution, dismissResolution, postChoicePauseMs, clearPostChoicePause, speed, setSpeed, chooseYearLead, chooseMinor, selectEventChoice, selectContractApproach, chooseDungeonAction, fleeDungeon, isPrologueActive, revealNextBirthLog, peekBehind]);
+  }, [char.alive, char.pendingYearPlan, char.pendingLead, char.pendingDungeon, char.pendingEvent, char.pendingContract, char.pendingMinor, char.stats.wealth, activeResolution, dismissResolution, postChoicePauseMs, clearPostChoicePause, speed, setSpeed, chooseYearLead, chooseMinor, selectEventChoice, selectContractApproach, chooseDungeonAction, fleeDungeon, isPrologueActive, revealNextBirthLog, peekBehind]);
 
   // Forge mini-game: the cursor sweeps while the craft modal is open
   useEffect(() => {
@@ -1175,7 +1203,7 @@ export const LiveStageFeed = () => {
 
   const forgeQuality = strikes.length ? Math.round(strikes.reduce((a, b) => a + b, 0) / strikes.length) : 0;
   const lifeSummary = !char.alive ? buildLifeSummaryAndLegacy(char) : null;
-  const hasDock = Boolean((char.pendingLead && !isPrologueActive) || char.pendingDungeon || char.pendingEvent || char.pendingContract || char.pendingMinor || activeResolution);
+  const hasDock = Boolean((char.pendingYearPlan && !isPrologueActive) || (char.pendingLead && !isPrologueActive) || char.pendingDungeon || char.pendingEvent || char.pendingContract || char.pendingMinor || activeResolution);
   const canPeek = Boolean(char.pendingDungeon || char.pendingEvent || char.pendingContract || activeResolution);
   useEffect(() => setPeekBehind(false), [char.pendingDungeon?.id, char.pendingEvent?.id, char.pendingContract?.id, activeResolution?.titleVi]);
 
@@ -1242,8 +1270,9 @@ export const LiveStageFeed = () => {
             />
           ) : (
             <>
-              {char.pendingLead && <YearLeadDock draft={char.pendingLead} char={char} onPick={chooseYearLead} />}
-              {!char.pendingLead && char.pendingDungeon && (
+              {char.pendingYearPlan && <YearPlanDock char={char} draft={char.pendingLead} onConfirm={chooseAnnualPlan} />}
+              {!char.pendingYearPlan && char.pendingLead && <YearLeadDock draft={char.pendingLead} char={char} onPick={chooseYearLead} />}
+              {!char.pendingYearPlan && !char.pendingLead && char.pendingDungeon && (
                 <DungeonDock
                   session={char.pendingDungeon}
                   char={char}
@@ -1255,9 +1284,9 @@ export const LiveStageFeed = () => {
                   onUseEgo={handleUseDungeonEgo}
                 />
               )}
-              {!char.pendingLead && !char.pendingDungeon && char.pendingEvent && <EventDock event={char.pendingEvent} char={char} onPick={handleSelectEvent} />}
-              {!char.pendingLead && !char.pendingDungeon && !char.pendingEvent && char.pendingContract && <ContractDock contract={char.pendingContract} wealth={char.stats.wealth} onPick={handleSelectContract} />}
-              {!char.pendingLead && !char.pendingDungeon && !char.pendingEvent && !char.pendingContract && char.pendingMinor && (
+              {!char.pendingYearPlan && !char.pendingLead && !char.pendingDungeon && char.pendingEvent && <EventDock event={char.pendingEvent} char={char} onPick={handleSelectEvent} dungeonStake={dungeonStake} onDungeonStake={setDungeonStake} />}
+              {!char.pendingYearPlan && !char.pendingLead && !char.pendingDungeon && !char.pendingEvent && char.pendingContract && <ContractDock contract={char.pendingContract} wealth={char.stats.wealth} onPick={handleSelectContract} />}
+              {!char.pendingYearPlan && !char.pendingLead && !char.pendingDungeon && !char.pendingEvent && !char.pendingContract && char.pendingMinor && (
                 <MinorDock prompt={char.pendingMinor} char={char} npcs={char.npcs} wealth={char.stats.wealth} place={placeOf(char)} remainingMs={minorRemainingMs} onPick={handleChooseMinor} />
               )}
             </>

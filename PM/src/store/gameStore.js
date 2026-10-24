@@ -23,8 +23,11 @@ import { CODEX_RECORDS } from '../data/worldData.js';
 import { getItemById } from '../data/itemsData.js';
 import { cityArchiveAPI } from '../services/api/cityArchiveAPI.js';
 import { migrateRun, SAVE_VERSION } from '../engine/saveSchema.js';
+import { createPlanSynchronizer } from '../engine/planSync.js';
+import { useThemeStore } from './themeStore.js';
 import { choiceIsAvailable } from '../engine/eventConditions.js';
 import { CLAW_DUNGEON_ID } from '../data/dungeonClaw.js';
+import { applyAnnualPlan, ambitionsFor, defaultYearPoints } from '../engine/annualPlan.js';
 
 const META_KEY = 'pm_city_chronicles_save_v3';
 const RUN_KEY = 'pm_city_chronicles_run_v1';
@@ -65,7 +68,13 @@ export function buildCharSnapshot(char) {
       kind: th.kind || '',
       reasonVi: th.reasonVi || '',
       reasonEn: th.reasonEn || ''
-    }))
+    })),
+    annualTrain: char.annualPlan?.age === char.age ? char.annualPlan.points?.train || 0 : 0,
+    annualWork: char.annualPlan?.age === char.age ? char.annualPlan.points?.work || 0 : 0,
+    annualBond: char.annualPlan?.age === char.age ? char.annualPlan.points?.bond || 0 : 0,
+    annualRest: char.annualPlan?.age === char.age ? char.annualPlan.points?.rest || 0 : 0,
+    annualScheme: char.annualPlan?.age === char.age ? char.annualPlan.points?.scheme || 0 : 0,
+    ambition: char.ambition?.id || ''
   };
 }
 
@@ -95,7 +104,7 @@ function loadSavedRun() {
   try {
     const raw = migrateRun(JSON.parse(localStorage.getItem(RUN_KEY) || 'null'));
     if (!raw) return null;
-    return { char: cloneChar(raw.char), yearProgress: raw.yearProgress || 0, savedAt: raw.savedAt };
+    return { char: cloneChar(raw.char), yearProgress: raw.yearProgress || 0, rngState: raw.rngState, activePlayMs: raw.activePlayMs || 0, savedAt: raw.savedAt };
   } catch {
     return null;
   }
@@ -290,9 +299,24 @@ export function buildResolutionPayload({
 const savedMeta = loadSavedMeta();
 const initialChar = createNewCharacter({});
 let lifeRng = createRNG(initialChar.seed);
+let lifeActiveMs = 0;
 let saveTimer = null;
 let saveRequestId = 0;
 const pendingRunWrites = new Set();
+const synchronizePlan = createPlanSynchronizer({ plan: syncPlanWithBackend, clone: cloneChar, createRng: createRNG });
+const requestPlanSync = (get) => get().char?.pendingYearPlan
+  ? Promise.resolve(false)
+  : synchronizePlan(get, (before, synced) => get().commit(before, synced)).catch(() => false);
+const reportGameplaySample = (char, abandoned = false) => {
+  if (!char?.seed || !useThemeStore.getState().gameplayMetricsEnabled) return;
+  cityArchiveAPI.recordGameplaySample({
+    runKey: char.seed,
+    age: Math.max(0, Math.min(200, char.age || 0)),
+    minutes: Math.max(0, Math.min(100000, Math.round(lifeActiveMs / 60000))),
+    firstDungeonOutcome: char.firstDungeonOutcome || 'none',
+    abandoned
+  }).catch(() => {});
+};
 
 export const useGameStore = create((set, get) => ({
   inRun: false,
@@ -371,18 +395,20 @@ export const useGameStore = create((set, get) => ({
         return;
       }
       const savedAt = new Date().toISOString();
-      const payload = { version: SAVE_VERSION, char, yearProgress, savedAt };
+      const rngState = lifeRng.getState();
+      const activePlayMs = Math.floor(lifeActiveMs);
+      const payload = { version: SAVE_VERSION, char, yearProgress, rngState, activePlayMs, savedAt };
       const requestId = ++saveRequestId;
       let savedLocally = false;
       try {
         localStorage.setItem(RUN_KEY, JSON.stringify(payload));
         savedLocally = true;
       } catch {}
-      if (savedLocally) set({ savedRun: { char, yearProgress, savedAt }, lastSavedAt: savedAt, saveError: false });
+      if (savedLocally) set({ savedRun: { char, yearProgress, rngState, activePlayMs, savedAt }, lastSavedAt: savedAt, saveError: false });
       const remoteWrite = cityArchiveAPI.saveRunState(payload)
         .then(() => {
           if (!savedLocally && requestId === saveRequestId) {
-            set({ savedRun: { char, yearProgress, savedAt }, lastSavedAt: savedAt, saveError: false });
+            set({ savedRun: { char, yearProgress, rngState, activePlayMs, savedAt }, lastSavedAt: savedAt, saveError: false });
           }
         })
         .catch(() => {
@@ -400,7 +426,8 @@ export const useGameStore = create((set, get) => ({
     const run = get().savedRun;
     if (!run) return;
     const char = enforceTabooJudgment(cloneChar(run.char));
-    lifeRng = lifeRngFor(char);
+    lifeRng = run.rngState ? createRNG(`${char.seed}:life:${char.age}`, run.rngState) : lifeRngFor(char);
+    lifeActiveMs = run.activePlayMs || 0;
     set({ char, inRun: true, yearProgress: run.yearProgress || 0, speed: 1, stageFx: null, activeResolution: null, postChoicePauseMs: 0, minorRemainingMs: MINOR_WINDOW_MS });
   },
 
@@ -476,6 +503,7 @@ export const useGameStore = create((set, get) => ({
 
   // Throw the current run away and go back to the birth screen
   abandonRun: () => {
+    if (get().inRun && get().char?.alive) reportGameplaySample(get().char, true);
     clearTimeout(saveTimer);
     clearSavedRun();
     set({ inRun: false, speed: 1, yearProgress: 0, savedRun: null, activeResolution: null, postChoicePauseMs: 0 });
@@ -502,7 +530,7 @@ export const useGameStore = create((set, get) => ({
         const remote = await cityArchiveAPI.getRunState().catch(() => null);
         const upgraded = migrateRun(remote);
         if (upgraded) {
-          savedRunNext = { char: cloneChar(upgraded.char), yearProgress: upgraded.yearProgress || 0, savedAt: upgraded.savedAt };
+          savedRunNext = { char: cloneChar(upgraded.char), yearProgress: upgraded.yearProgress || 0, rngState: upgraded.rngState, activePlayMs: upgraded.activePlayMs || 0, savedAt: upgraded.savedAt };
         }
       }
 
@@ -553,6 +581,7 @@ export const useGameStore = create((set, get) => ({
 
     if (!nextChar.alive) {
       const summary = buildLifeSummaryAndLegacy(nextChar);
+      reportGameplaySample(nextChar);
       nextPendingLegacy = summary.endingId ? null : summary;
       if (!nextPastLives.some((p) => p.seed === summary.seed && p.age === summary.age)) {
         nextPastLives = [summary, ...nextPastLives].slice(0, 30);
@@ -578,6 +607,11 @@ export const useGameStore = create((set, get) => ({
   // Every change to the character goes through here, so deltas, effects and saving stay consistent
   commit: (prev, next, extra = {}) => {
     const withD = withDeltas(prev, enforceTabooJudgment(next));
+    if (!withD.firstDungeonId && withD.pendingDungeon?.id) withD.firstDungeonId = withD.pendingDungeon.id;
+    if (!withD.firstDungeonOutcome && prev.pendingDungeon && !withD.pendingDungeon &&
+        prev.pendingDungeon.id === (withD.firstDungeonId || prev.firstDungeonId)) {
+      withD.firstDungeonOutcome = extra.activeResolution?.outcome || (!withD.alive ? 'dead' : 'broken');
+    }
     const fx = stageFxFor(prev, withD);
     const meta = get().syncMetaFromChar(withD);
     set({
@@ -646,7 +680,9 @@ export const useGameStore = create((set, get) => ({
       startAge
     });
     lifeRng = createRNG(`${nextChar.seed}:life:${nextChar.age}`);
+    lifeActiveMs = 0;
     planYear(nextChar, lifeRng);
+    if (nextChar.job !== 'Child') nextChar.pendingYearPlan = { age: nextChar.age };
     const metaUpdates = get().syncMetaFromChar(nextChar);
     const hasBirthLogs = Boolean(nextChar.pendingBirthLogs && nextChar.pendingBirthLogs.length > 0);
     set({
@@ -663,19 +699,7 @@ export const useGameStore = create((set, get) => ({
       get().saveRun(true);
     }
 
-    // Offload to .NET 8 Director backend for authoritative verification
-    syncPlanWithBackend(nextChar, lifeRng).then((synced) => {
-      if (get().inRun && get().char?.age === synced.age) {
-        const curChar = get().char;
-        const merged = cloneChar(synced);
-        if (curChar?.pendingBirthLogs) {
-          merged.pendingBirthLogs = [...curChar.pendingBirthLogs];
-          merged.logs = [...(curChar.logs || [])];
-        }
-        if ((curChar?.taboo || 0) < 3 && !curChar?.pendingDungeon &&
-            (curChar?.leadChoice?.age ?? -1) === (synced.leadChoice?.age ?? -1)) set({ char: merged });
-      }
-    });
+    requestPlanSync(get);
   },
 
   /** Advances the year by real elapsed time. Called by the layout's loop. */
@@ -683,7 +707,15 @@ export const useGameStore = create((set, get) => ({
     const s = get();
     const c = s.char;
     if (!s.inRun || !c.alive) return;
+    if (s.speed > 0) lifeActiveMs += Math.max(0, Math.min(1000, dtMs));
     if (s.activeResolution) return;
+    if (c.pendingYearPlan) {
+      if (s.autoPlay && s.speed > 0 && !(c.pendingBirthLogs || []).length) {
+        const leadIndex = c.pendingLead ? Math.floor(lifeRng() * c.pendingLead.offers.length) : null;
+        get().chooseAnnualPlan(c.lastYearPoints || defaultYearPoints(), c.ambition?.id || ambitionsFor(c)[0].id, leadIndex);
+      }
+      return;
+    }
     if (c.pendingLead) {
       if (s.autoPlay && s.speed > 0 && !(c.pendingBirthLogs || []).length) get().chooseYearLead(Math.floor(lifeRng() * c.pendingLead.offers.length));
       return;
@@ -731,11 +763,7 @@ export const useGameStore = create((set, get) => ({
     if (progress >= 100 && cur.alive && !nextPlanItem(cur)) {
       const nextChar = endYear(cur, lifeRng);
       get().commit(cur, nextChar, { yearProgress: 0 });
-      syncPlanWithBackend(nextChar, lifeRng).then((synced) => {
-        if (get().char?.age === synced.age && (get().char?.leadChoice?.age ?? -1) === (synced.leadChoice?.age ?? -1)) {
-          get().commit(get().char, synced);
-        }
-      });
+      requestPlanSync(get);
     } else if (!changed) {
       const liveSeason = Math.min(3, Math.floor(progress / 25));
       if (cur.seasonIdx !== liveSeason) {
@@ -753,7 +781,7 @@ export const useGameStore = create((set, get) => ({
   stepYear: () => {
     const s = get();
     const c = s.char;
-    if (!c.alive || c.pendingLead || c.pendingEvent || c.pendingContract || c.pendingDungeon || c.pendingModal || c.pendingMinor || s.activeResolution) return;
+    if (!c.alive || c.pendingYearPlan || c.pendingLead || c.pendingEvent || c.pendingContract || c.pendingDungeon || c.pendingModal || c.pendingMinor || s.activeResolution) return;
 
     const curP = s.yearProgress;
     const nextItem = nextPlanItem(c);
@@ -780,11 +808,7 @@ export const useGameStore = create((set, get) => ({
       const base = changed ? char : c;
       const nextChar = endYear(base, lifeRng);
       get().commit(c, nextChar, { yearProgress: 0, postChoicePauseMs: 0 });
-      syncPlanWithBackend(nextChar, lifeRng).then((synced) => {
-        if (get().char?.age === synced.age && (get().char?.leadChoice?.age ?? -1) === (synced.leadChoice?.age ?? -1)) {
-          get().commit(get().char, synced);
-        }
-      });
+      requestPlanSync(get);
       return;
     }
 
@@ -798,9 +822,35 @@ export const useGameStore = create((set, get) => ({
 
   stepSeasonOrEvent: () => get().stepYear(),
 
+  skipQuietTime: () => {
+    const startAge = get().char?.age;
+    for (let step = 0; step < 5; step++) {
+      const before = get();
+      if (!before.char?.alive || before.char.age !== startAge || before.char.pendingYearPlan || before.char.pendingLead || before.char.pendingEvent || before.char.pendingContract || before.char.pendingDungeon || before.char.pendingMinor || before.char.pendingModal || before.activeResolution) break;
+      const cursor = before.char.planCursor;
+      const progress = before.yearProgress;
+      get().stepYear();
+      const after = get();
+      if (after.char.age !== startAge || after.char.planCursor !== cursor || after.yearProgress === progress) break;
+    }
+  },
+
+  // The year's plan and its lead are one decision: picking a lead also starts the year
+  chooseAnnualPlan: (points, ambitionId, leadIndex = null) => {
+    const prev = get().char;
+    if (!prev?.pendingYearPlan) return false;
+    let next = cloneChar(prev);
+    if (!applyAnnualPlan(next, points, ambitionId)) return false;
+    if (!next.plan?.length) planYear(next, lifeRng);
+    if (next.pendingLead && Number.isInteger(leadIndex)) next = chooseYearLead(next, leadIndex);
+    get().commit(prev, next, { postChoicePauseMs: 0 });
+    requestPlanSync(get);
+    return true;
+  },
+
   chooseYearLead: (index) => {
     const prev = get().char;
-    if (!prev?.pendingLead) return false;
+    if (!prev?.pendingLead || prev.pendingYearPlan) return false;
     const next = chooseYearLead(prev, index);
     if (next === prev) return false;
     get().commit(prev, next, { postChoicePauseMs: 0 });
@@ -820,12 +870,13 @@ export const useGameStore = create((set, get) => ({
     get().commit(prev, nextChar, { activeResolution: null, postChoicePauseMs: readingPause });
   },
 
-  selectEventChoice: (choiceIdx) => {
+  selectEventChoice: (choiceIdx, dungeonStake = 0) => {
     const prev = get().char;
     if (!prev.pendingEvent) return;
     const event = prev.pendingEvent;
     const choice = event.choices?.[choiceIdx];
-    const nextChar = resolveEventChoice(prev, choiceIdx, lifeRng);
+    const nextChar = resolveEventChoice(prev, choiceIdx, lifeRng, dungeonStake);
+    if (prev.job === 'Child' && nextChar.job !== 'Child' && nextChar.alive && !nextChar.pendingDungeon) nextChar.pendingYearPlan = { age: nextChar.age };
     const readingPause = get().speed > 0 && !nextChar.pendingModal ? 3000 : 0;
 
     get().commit(prev, nextChar, { activeResolution: null, postChoicePauseMs: readingPause });

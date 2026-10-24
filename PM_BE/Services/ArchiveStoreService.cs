@@ -1,5 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization.Metadata;
+using System.Security.Cryptography;
+using System.Text;
 using ProjectMoon.Api.Models;
 
 namespace ProjectMoon.Api.Services;
@@ -27,16 +29,21 @@ public sealed class ArchiveStoreService
         (JsonTypeInfo<ArchiveSnapshotDto>)AppJsonContext.Default.GetTypeInfo(typeof(ArchiveSnapshotDto))!;
     private static readonly JsonTypeInfo<Dictionary<string, RunStateDto>> RunsInfo =
         (JsonTypeInfo<Dictionary<string, RunStateDto>>)AppJsonContext.Default.GetTypeInfo(typeof(Dictionary<string, RunStateDto>))!;
+    private static readonly JsonTypeInfo<GameplayMetricsDto> GameplayInfo =
+        (JsonTypeInfo<GameplayMetricsDto>)AppJsonContext.Default.GetTypeInfo(typeof(GameplayMetricsDto))!;
 
     private readonly string _archivePath;
     private readonly string _statePath;
+    private readonly string _gameplayPath;
     private readonly ILogger<ArchiveStoreService> _log;
     private readonly object _gate = new();
 
     private volatile ArchiveSnapshotDto _snapshot;
     private volatile Dictionary<string, RunStateDto> _runs;
+    private volatile GameplayMetricsDto _gameplay;
     private int _archiveDirty;
     private int _stateDirty;
+    private int _gameplayDirty;
 
     public ArchiveStoreService(IWebHostEnvironment env, ILogger<ArchiveStoreService> log, string playerKey)
     {
@@ -51,11 +58,42 @@ public sealed class ArchiveStoreService
         Directory.CreateDirectory(dataDir);
         _archivePath = Path.Combine(dataDir, "city_archive.json");
         _statePath = Path.Combine(dataDir, "run_state.json");
+        _gameplayPath = Path.Combine(dataDir, "gameplay_metrics.json");
         _snapshot = Normalize(Load(_archivePath, ArchiveInfo));
         _runs = Load(_statePath, RunsInfo) ?? new Dictionary<string, RunStateDto>();
+        _gameplay = Load(_gameplayPath, GameplayInfo) ?? new GameplayMetricsDto();
     }
 
-    public int PendingWrites => _archiveDirty + _stateDirty;
+    public int PendingWrites => _archiveDirty + _stateDirty + _gameplayDirty;
+
+    public bool RecordGameplaySample(GameplaySampleDto sample)
+    {
+        if (string.IsNullOrWhiteSpace(sample.RunKey) || sample.RunKey.Length > 80 ||
+            sample.Age < 0 || sample.Age > 200 || sample.Minutes < 0 || sample.Minutes > 100000 ||
+            !new[] { "none", "conquered", "fled", "broken", "restored", "dead", "library" }.Contains(sample.FirstDungeonOutcome)) return false;
+        var key = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(sample.RunKey))).ToLowerInvariant();
+        lock (_gate)
+        {
+            var current = _gameplay;
+            if (current.RecordedRuns?.Contains(key) == true) return true;
+            var outcomes = new Dictionary<string, int>(current.FirstDungeonOutcomes ?? new());
+            outcomes[sample.FirstDungeonOutcome] = outcomes.GetValueOrDefault(sample.FirstDungeonOutcome) + 1;
+            var recorded = new List<string>(current.RecordedRuns ?? new()) { key };
+            if (recorded.Count > MaxLives) recorded.RemoveRange(0, recorded.Count - MaxLives);
+            _gameplay = current with {
+                Lives = current.Lives + 1,
+                TotalAge = current.TotalAge + sample.Age,
+                TotalMinutes = current.TotalMinutes + sample.Minutes,
+                FirstDungeonVisits = current.FirstDungeonVisits + (sample.FirstDungeonOutcome == "none" ? 0 : 1),
+                FirstDungeonDeaths = current.FirstDungeonDeaths + (sample.FirstDungeonOutcome == "dead" ? 1 : 0),
+                AbandonedRuns = current.AbandonedRuns + (sample.Abandoned ? 1 : 0),
+                FirstDungeonOutcomes = outcomes,
+                RecordedRuns = recorded
+            };
+            Interlocked.Exchange(ref _gameplayDirty, 1);
+            return true;
+        }
+    }
 
     public ArchiveSnapshotDto GetSnapshot() => _snapshot;
 
@@ -208,6 +246,10 @@ public sealed class ArchiveStoreService
         if (Interlocked.Exchange(ref _stateDirty, 0) == 1)
         {
             await WriteAtomicAsync(_statePath, _runs, RunsInfo, ct);
+        }
+        if (Interlocked.Exchange(ref _gameplayDirty, 0) == 1)
+        {
+            await WriteAtomicAsync(_gameplayPath, _gameplay, GameplayInfo, ct);
         }
     }
 
