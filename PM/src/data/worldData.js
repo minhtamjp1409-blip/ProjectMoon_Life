@@ -968,7 +968,7 @@ export const WORKSHOPS = [
 export const FINGER_RANKS = {
   Thumb: ['Soldato', 'Capo', 'Sottocapo', 'Underboss'],
   Index: ['Proselyte', 'Messenger', 'Proxy', 'Weaver'],
-  Middle: ['Little Sibling', 'Big Sibling', 'Great Elder', 'Great Sibling'],
+  Middle: ['Little Sibling', 'Young Sibling', 'Big Sibling', 'Great Sibling'],
   Ring: ['Student', 'Docent', 'Maestro', 'Grand Curator'],
   Pinky: ['Initiate', 'Sworn Blade', 'Star of the Sky', 'Sovereign']
 };

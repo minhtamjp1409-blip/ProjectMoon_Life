@@ -1018,9 +1018,13 @@ export function getNextCareerMilestone(char) {
     const progressPct = Math.min(Math.round((p1 + p2 + (targetNet > 0 ? pNet : p1)) / 3), p3, p4);
 
     return {
-      category: `THE ${finger.toUpperCase()} TRIAL`,
-      titleVi: `Thăng bậc: ${nextTitle}`,
-      titleEn: `Syndicate Rank: ${nextTitle}`,
+      ...(char.finger ? { category: `THE ${finger.toUpperCase()} TRIAL` } : {}),
+      ...(char.finger ? {} : {
+        categoryVi: 'Gia nhập tổ chức lớn ở Backstreets',
+        categoryEn: 'Join a Major Backstreets Organization'
+      }),
+      titleVi: char.finger ? `Thăng bậc: ${nextTitle}` : 'Thành viên tổ chức',
+      titleEn: char.finger ? `Syndicate Rank: ${nextTitle}` : 'Organization Member',
       progressPct,
       requirements: [
         { labelVi: 'Công trạng với Ngón (Merit)', labelEn: 'Syndicate Merit', current: char.merit || 0, target: targetMerit, met: (char.merit || 0) >= targetMerit },

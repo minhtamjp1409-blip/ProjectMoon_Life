@@ -313,7 +313,9 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeT
       {showCareer && milestone && (
         <section className="career-objective-card">
           <div className="career-obj-header">
-            <span className="career-obj-tag">{milestone.category}</span>
+            <span className="career-obj-tag">
+              {lang === 'en' ? (milestone.categoryEn || milestone.category) : (milestone.categoryVi || milestone.category)}
+            </span>
             {milestone.category !== 'WORKSHOP' && <span className="career-obj-pct num">{milestone.progressPct}%</span>}
           </div>
           <h4 className="career-obj-title">{lang === 'en' ? milestone.titleEn : milestone.titleVi}</h4>
