@@ -3511,3 +3511,15 @@ html[data-text='xl'] .interface-v2 :is(.choice-label, .dg-scene-title) { font-si
 
 .birth-fields .field-label { color: var(--text); font-size: 13px; font-weight: 500; }
 .birth-gender { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+/* Flat surfaces and sentence-case labels: colour goes on meaning, small caps and gradients are dropped */
+.interface-v2 .btn-primary { background: #d4af37; box-shadow: none; }
+.interface-v2 .btn-primary:hover:not(:disabled) { background: #e5c158; box-shadow: none; transform: none; }
+.the-city-title { background: none; -webkit-text-fill-color: currentColor; color: var(--accent); }
+.app-nav-caption,
+.birth-resume > div > span,
+.district-selection > span,
+.interface-v2 .dossier-gen,
+.interface-v2 .section-title,
+.interface-v2 .career-obj-tag,
+.opening-context, .opening-story .opening-kicker { text-transform: none; letter-spacing: 0; font-size: 13px; }
