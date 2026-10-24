@@ -8,6 +8,13 @@ import { PINKY_EVENTS, PINKY_MINORS, PINKY_DAILIES } from './eventsFingerPinky.j
 import { FINGER_EXTRA_EVENTS, FINGER_EXTRA_MINORS, FINGER_EXTRA_DAILIES } from './eventsFingerExtra.js';
 import { FINGER_CANON_EVENTS, FINGER_CANON_MINORS, FINGER_CANON_DAILIES } from './eventsFingerCanon.js';
 import { FINGER_UPDATE4_MINORS, FINGER_UPDATE4_DAILIES } from './eventsFingerUpdate4.js';
+import { FINGER_PROMO_EXTRA } from './eventsFingerDepth.js';
+import { THUMB_DEPTH } from './eventsFingerDepthThumb.js';
+import { INDEX_DEPTH } from './eventsFingerDepthIndex.js';
+import { MIDDLE_DEPTH } from './eventsFingerDepthMiddle.js';
+import { RING_DEPTH } from './eventsFingerDepthRing.js';
+import { PINKY_DEPTH } from './eventsFingerDepthPinky.js';
+import { FINGER_DEPTH_MARGIN } from './eventsFingerDepthMore.js';
 
 const MISSION_IDS = new Set([
   // Thumb
@@ -37,7 +44,7 @@ const MISSION_IDS = new Set([
 ]);
 const tag = (list) => list.map((e) => (MISSION_IDS.has(e.id) ? { ...e, mission: true } : e));
 
-export const FINGER_STORY_EVENTS = tag([...THUMB_EVENTS, ...INDEX_EVENTS, ...MIDDLE_EVENTS, ...RING_EVENTS, ...PINKY_EVENTS, ...FINGER_EXTRA_EVENTS, ...FINGER_CANON_EVENTS]);
+export const FINGER_STORY_EVENTS = tag([...THUMB_EVENTS, ...INDEX_EVENTS, ...MIDDLE_EVENTS, ...RING_EVENTS, ...PINKY_EVENTS, ...FINGER_EXTRA_EVENTS, ...FINGER_CANON_EVENTS, ...FINGER_PROMO_EXTRA, ...THUMB_DEPTH, ...INDEX_DEPTH, ...MIDDLE_DEPTH, ...RING_DEPTH, ...PINKY_DEPTH, ...FINGER_DEPTH_MARGIN]);
 export const FINGER_MINORS = [...THUMB_MINORS, ...INDEX_MINORS, ...MIDDLE_MINORS, ...RING_MINORS, ...PINKY_MINORS, ...FINGER_EXTRA_MINORS, ...FINGER_CANON_MINORS, ...FINGER_UPDATE4_MINORS];
 export const FINGER_DAILIES = [...THUMB_DAILIES, ...INDEX_DAILIES, ...MIDDLE_DAILIES, ...RING_DAILIES, ...PINKY_DAILIES, ...FINGER_EXTRA_DAILIES, ...FINGER_CANON_DAILIES, ...FINGER_UPDATE4_DAILIES];
 export const FINGER_MISSIONS = FINGER_STORY_EVENTS.filter((e) => e.mission);

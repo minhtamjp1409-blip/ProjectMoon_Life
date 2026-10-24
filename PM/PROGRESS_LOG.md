@@ -373,6 +373,14 @@ Mô phỏng 1.000 sinh mệnh độc lập (tuổi thọ trung bình 52.0 tuổi
 
 ## 10. Nhật ký phát triển chi tiết (Changelog từ Đợt 1 đến Đợt 23)
 
+### Đợt 38 (24/10/2026): Năm nhánh Finger ngang Fixer về nội dung
+* **Đo trước:** so từng loại nội dung mà mỗi nhánh có thể gặp trong cả đời với Fixer (dùng chính cổng điều kiện của game, bỏ phần ai cũng gặp). Event lớn chỉ đạt 67 đến 73%, hợp đồng mỗi chặng 45 đến 56% (mỗi bậc chỉ 3 hợp đồng, dải chọn rộng 3 bậc nên chỉ 9, trừ 6 cái vừa chơi còn 3), cảnh thăng cấp 2 mỗi bậc so với 3 của Fixer, cửa dungeon Thumb và Ring thiếu 1. Event nhỏ (89 đến 94%) và cảnh thường ngày (hơn 130%) đã đủ.
+* **Hợp đồng** (`src/data/careerContractsMore.js`): thêm 18 mỗi Finger, mỗi bậc 6. Mỗi hợp đồng có cảnh viết riêng; lời kết cục theo giọng từng Finger dùng chung và điền địa điểm, đối tượng của từng cảnh. Dải chọn giờ có 18 hợp đồng ở mọi rank, ngang Fixer (16 đến 20).
+* **Cảnh thăng cấp** (`src/data/eventsFingerDepth.js`): thêm 13 cảnh để mỗi bậc của mỗi Finger có 3 cảnh như Fixer; đã nối vào `FINGER_LADDERS`.
+* **Nhiệm vụ** (`eventsFingerDepth{Thumb,Index,Middle,Ring,Pinky,More}.js`): thêm 66 nhiệm vụ viết tay, đặt vào các rank đang mỏng (Middle rank 0 từ 6 lên 11, Ring rank 2 đến 3 từ 10 lên 17 đến 19). Event lớn mỗi nhánh nay 82% của Fixer.
+* **Cửa dungeon:** `gate_lake_thumb_cargo` và `gate_lobotomy_ring_relic`, nên cả năm Finger đều có đủ cửa.
+* Test: `tests/test_finger_parity.mjs` (mới) giữ các ngưỡng này: 6 hợp đồng mỗi bậc, 3 cảnh mỗi bậc, 9 nhiệm vụ mỗi rank, event lớn, nhỏ và cửa dungeon từ 80% của Fixer.
+
 ### Đợt 37 (24/10/2026): Viết lại giọng văn các event mở đầu
 * Rà văn bản toàn bộ pool (hơn 1400 event). Thân event trung vị 48 từ, chỉ 14 event dài quá 70 từ; mật độ cụm văn mẫu trung bình 1,27 trên 1000 từ, cao nhất ở `eventsBackgroundOpening.js` (2,63), `eventsFactions.js` (1,97), `eventsDistortionPath.js`, `eventsNpcAndWorldExpansion.js`, `eventsFixerPath.js`. Hai file tuổi thơ đã thấp sau đợt này.
 * Viết lại VI và EN cùng nhịp (cơ chế, chỉ số, cờ giữ nguyên): 26 event trong `eventsChildhood.js` (hai event đã gọn được giữ), cả 12 event của `eventsBackgroundOpening.js`, 11 trên 14 event của `eventsDistortionPath.js` (sửa luôn chỗ bản EN ghi Claw và Beholder thuộc A Corp, nay là C Corp và B Corp như bản VI), và 7 bài khảo thí Grade 8 đến Grade 2 trong `eventsFixerPath.js`. Bỏ cụm vá tính từ, sửa chỗ VI và EN kể khác nhau, mỗi kết quả khép bằng một hậu quả nhỏ.
