@@ -9,7 +9,6 @@ import { useGameStore } from '../../../store/gameStore';
 import { buildLifeSummaryAndLegacy, getDungeonCurrentStage, isDungeonChoiceAvailable, DUNGEON_DEFINITIONS } from '../../../engine/gameEngine';
 import { DungeonDock } from './DungeonDock';
 import { YearLeadDock } from './YearLeadDock';
-import { DungeonBackdrop } from './DungeonBackdrop';
 import { LIFE_MINORS, MINOR_WINDOW_MS, splitTitle } from '../../../engine/yearPlanner';
 import { exportDossierCardPNG } from '../../../utils/exportDossierCard';
 import { audioEngine } from '../../../engine/audioEngine';
@@ -17,7 +16,7 @@ import { gameFeel } from '../../../engine/gameFeel';
 import { useT } from '../../../i18n';
 import { Deltas, ChoicePreview } from './Deltas';
 import { getPsycheInterjection, evaluateDiscoChoiceCheck } from '../../../engine/discoPsyche';
-import { bestowHanaColorTitle, getBranchSceneMeta } from '../../../engine/colorRegistry';
+import { bestowHanaColorTitle } from '../../../engine/colorRegistry';
 
 const ENTRY_KIND = {
   causal: { cls: 'k-causal', vi: 'Causal Echo', en: 'Causal Echo' },
@@ -144,25 +143,6 @@ const StageFx = () => {
   return (
     <div key={fx.at} className={`stage-fx fx-${fx.kind}`} aria-hidden="true">
       {label && <span className="stage-fx-word">{t(...label)}</span>}
-    </div>
-  );
-};
-
-const AmbientScene = ({ char }) => {
-  const meta = getBranchSceneMeta(char);
-  const colorData = char?.colorData;
-
-  const style = meta.isColor && colorData?.color ? {
-    '--apex-color': colorData.color,
-    '--apex-glow': colorData.glow || 'rgba(212, 175, 55, 0.4)'
-  } : {};
-
-  return (
-    <div className={`scene on ${meta.sceneClass}`} style={style} aria-hidden="true">
-      <div className="scene-ambient-layer" />
-      <div className="scene-particle-layer" />
-      {meta.isApex && <div className="scene-apex-aura" />}
-      {meta.isEgo && <div className="scene-ego-beams" />}
     </div>
   );
 };
@@ -1187,15 +1167,6 @@ export const LiveStageFeed = () => {
     }
   }, [char.pendingDungeon?.id, char.pendingDungeon?.currentStageIndex, char.pendingEvent?.id, char.pendingContract?.id]);
 
-  // Dynamic Contextual Ambience: smoothly adjusts as character travels or enters states
-  useEffect(() => {
-    audioEngine.updateContextualAmbience(
-      char,
-      Boolean(char.pendingDungeon),
-      char.pendingDungeon ? (DUNGEON_DEFINITIONS[char.pendingDungeon.id]?.theme || 'warp') : null
-    );
-  }, [char.alive, char.pendingDungeon?.id, char.career, char.district, char.distortionPoints]);
-
   const lastDungeonResult = char.pendingDungeon?.lastStageResult;
   useEffect(() => {
     if (lastDungeonResult?.type === 'check_fail') gameFeel.haptic([30, 40, 30]);
@@ -1215,8 +1186,6 @@ export const LiveStageFeed = () => {
       className={`stage ${hasDock ? 'has-dock' : ''} ${dungeonTheme ? `is-dungeon-stage is-dungeon-${dungeonTheme}` : ''}`}
       ref={stageRef}
     >
-      <DungeonBackdrop session={char.pendingDungeon} />
-      <AmbientScene char={char} />
       <StageFx />
       <div className="chronicle-heading"><h1>{t('Biên niên', 'Chronicle')}</h1><span>{char.name}</span></div>
       <div className="log" ref={logRef}>

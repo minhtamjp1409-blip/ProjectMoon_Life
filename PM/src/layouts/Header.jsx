@@ -1,17 +1,20 @@
 import React from 'react';
-import { Sun, Moon, Languages } from 'lucide-react';
+import { Languages, Volume2, VolumeX } from 'lucide-react';
 import { Tooltip } from 'antd';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useThemeStore } from '../store/themeStore';
 import { useGameStore } from '../store/gameStore';
 import { pick } from '../i18n';
+import { audioEngine } from '../engine/audioEngine';
 import { NAV_ITEMS, LANG_OPTIONS, BrandMark, LangMenu, MotionToggle, TextSizeToggle } from './Sidebar';
 
 // One bar for every width: the archive tabs sit in it on a desktop and move to the bottom bar on a phone
 export const Header = ({ languageOverride, isPlay }) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const { themeMode, toggleTheme, lang: preferredLang } = useThemeStore();
+  const { lang: preferredLang } = useThemeStore();
+  const [muted, setMuted] = React.useState(() => audioEngine.isMuted);
+  React.useEffect(() => audioEngine.subscribe((st) => setMuted(st.isMuted)), []);
   const lang = languageOverride || preferredLang;
   const online = useGameStore((s) => s.backendOnline);
   const inRun = useGameStore((s) => s.inRun);
@@ -58,11 +61,11 @@ export const Header = ({ languageOverride, isPlay }) => {
         <button
           type="button"
           className="app-tool"
-          onClick={toggleTheme}
-          aria-label={pick(lang, 'Đổi giao diện sáng / tối', 'Toggle light / dark theme')}
-          aria-pressed={themeMode === 'dark'}
+          onClick={() => audioEngine.toggleMute()}
+          aria-label={muted ? pick(lang, 'Bật âm thanh', 'Sound on') : pick(lang, 'Tắt âm thanh', 'Sound off')}
+          aria-pressed={!muted}
         >
-          {themeMode === 'dark' ? <Sun size={17} /> : <Moon size={17} />}
+          {muted ? <VolumeX size={17} /> : <Volume2 size={17} />}
         </button>
         <TextSizeToggle lang={lang} placement="bottomRight" />
         <MotionToggle lang={lang} placement="bottomRight" />

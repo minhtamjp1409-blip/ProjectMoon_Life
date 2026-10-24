@@ -1,7 +1,8 @@
 import { create } from 'zustand';
 
 export const useThemeStore = create((set) => {
-  const initialMode = localStorage.getItem('pm-theme-mode') || 'dark';
+  // One theme: the City is always at night
+  const initialMode = 'dark';
   const initialLang = localStorage.getItem('pm-lang-mode') || 'vi';
   const initialMotion = localStorage.getItem('pm-motion-mode') || 'system';
   const initialText = localStorage.getItem('pm-text-size') || 'md';
@@ -44,17 +45,7 @@ export const useThemeStore = create((set) => {
         sidebarCollapsed: !currentEffective
       })),
     setSidebarCollapsed: (val) => set({ sidebarCollapsed: val }),
-    toggleTheme: () =>
-      set((state) => {
-        const nextMode = state.themeMode === 'light' ? 'dark' : 'light';
-        localStorage.setItem('pm-theme-mode', nextMode);
-        if (nextMode === 'dark') {
-          document.documentElement.classList.add('dark');
-        } else {
-          document.documentElement.classList.remove('dark');
-        }
-        return { themeMode: nextMode };
-      }),
+    toggleTheme: () => {},
     setLang: (lang) =>
       set(() => {
         localStorage.setItem('pm-lang-mode', lang);

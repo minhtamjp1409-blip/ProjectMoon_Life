@@ -16,7 +16,8 @@
   display: flex; align-items: center; gap: 20px;
   padding: 0 var(--pad);
   border-bottom: 1px solid var(--border);
-  background: var(--ground);
+  background: rgba(7, 7, 10, .6);
+  backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
 }
 .topbar-brand { display: flex; align-items: center; gap: 10px; min-width: 0; color: var(--text); }
 .topbar-brand img { flex: none; border-radius: 2px; }
@@ -30,7 +31,7 @@
 }
 .topbar-nav button:hover { color: var(--text); }
 .topbar-nav button.is-current { color: var(--text); }
-.topbar-nav button.is-current::after { content: ''; position: absolute; left: 12px; right: 12px; bottom: -1px; height: 2px; background: var(--text); }
+.topbar-nav button.is-current::after { content: ''; position: absolute; left: 12px; right: 12px; bottom: -1px; height: 2px; background: var(--accent); box-shadow: 0 0 10px var(--accent); }
 .topbar-tools { display: flex; align-items: center; gap: 2px; margin-left: auto; }
 .topbar-life {
   display: flex; flex-direction: column; align-items: flex-start; margin-right: 10px; padding: 4px 12px;
@@ -65,7 +66,8 @@
     display: grid; grid-template-columns: repeat(5, minmax(0, 1fr));
     padding: 0 4px env(safe-area-inset-bottom, 0px);
     border-top: 1px solid var(--border);
-    background: var(--ground);
+    background: rgba(7, 7, 10, .82);
+    backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
   }
   .bottom-nav button {
     display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;

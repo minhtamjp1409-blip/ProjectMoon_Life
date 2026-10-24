@@ -35,7 +35,6 @@
 .dg-fx.fx-mind { background: radial-gradient(circle at 50% 50%, rgba(187, 107, 217, 0.0) 20%, rgba(187, 107, 217, 0.38) 70%); animation: dgfxRipple 0.7s ease-out; }
 .dg-fx.fx-break { background: radial-gradient(circle at 50% 30%, color-mix(in srgb, var(--dg) 45%, transparent) 0%, transparent 60%); animation: dgfxFlash 0.55s ease-out; }
 .dg-fx.fx-phase { background: radial-gradient(ellipse at 50% 50%, transparent 30%, rgba(0, 0, 0, 0.75) 100%); animation: dgfxFlash 0.9s ease-out; }
-.dg-fx.fx-boss-down { background: radial-gradient(circle at 50% 35%, rgba(242, 201, 76, 0.55) 0%, transparent 65%); animation: dgfxFlash 1.1s ease-out; }
 .dg-fx.fx-ally { box-shadow: inset 0 0 0 2px var(--good); animation: dgfxFlash 0.4s ease-out; }
 .dg-fx.fx-rest { background: linear-gradient(180deg, color-mix(in srgb, var(--good) 22%, transparent), transparent 55%); animation: dgfxFlash 0.8s ease-out; }
 
@@ -56,8 +55,7 @@
 /* A counter lands: the enemy panel takes a short punch; a heavy hit shakes the scene */
 .dg-fx.fx-counter ~ .dock-inner .dg-foe { animation: dgfxPunch 0.22s ease-out; }
 .dg-fx.fx-heavyhit ~ .dock-inner .dg-scene { animation: dgfxShake 0.34s ease-in-out; }
-.dg-fx.fx-break ~ .dock-inner .dg-foe-guard,
-.dg-fx.fx-boss-down ~ .dock-inner .dg-foe-guard { animation: dgfxPunch 0.3s ease-out; }
+.dg-fx.fx-break ~ .dock-inner .dg-foe-guard { animation: dgfxPunch 0.3s ease-out; }
 
 @keyframes dgfxFlash { 0% { opacity: 0; } 18% { opacity: 1; } 100% { opacity: 0; } }
 @keyframes dgfxSwipe { 0% { opacity: 0; transform: translateX(-30%); } 30% { opacity: 1; } 100% { opacity: 0; transform: translateX(30%); } }
@@ -86,8 +84,7 @@
 }
 .dgb-flash.fx-hit,
 .dgb-flash.fx-heavyhit { background: radial-gradient(ellipse at 50% 50%, transparent 45%, rgba(235, 87, 87, 0.3) 100%); animation: dgfxFlash 0.5s ease-out; }
-.dgb-flash.fx-break,
-.dgb-flash.fx-boss-down { background: radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--dg, #fff) 30%, transparent), transparent 60%); animation: dgfxFlash 0.9s ease-out; }
+.dgb-flash.fx-break { background: radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--dg, #fff) 30%, transparent), transparent 60%); animation: dgfxFlash 0.9s ease-out; }
 .dgb-flash.fx-phase { background: rgba(0, 0, 0, 0.55); animation: dgfxFlash 1.2s ease-out; }
 
 /* Night in the Backstreets */
@@ -153,7 +150,7 @@
 @keyframes nightStroll { 0% { transform: translateX(0); opacity: 0; } 10% { opacity: 0.85; } 90% { opacity: 0.85; } 100% { transform: translateX(112vw); opacity: 0; } }
 
 /* ---------- the shell: a line in the place's colour under the bar while a run is open ---------- */
-.shell.in-dungeon .topbar, .shell.in-dungeon .playbar { box-shadow: inset 0 -2px 0 var(--dg); }
+.shell.in-dungeon .playbar { box-shadow: inset 0 -2px 0 var(--dg); }
 .shell.in-dungeon .bottom-nav button.is-current svg { color: var(--dg); }
 
 /* The edge of the screen answers a blow */
@@ -168,7 +165,6 @@
 .dg-shell-pulse.fx-heavyhit { box-shadow: inset 0 0 0 3px rgba(235, 87, 87, 0.7), inset 0 0 80px rgba(235, 87, 87, 0.25); animation: dgfxFlash 0.45s ease-out; }
 .dg-shell-pulse.fx-block,
 .dg-shell-pulse.fx-counter { box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--dg) 80%, transparent); animation: dgfxFlash 0.3s ease-out; }
-.dg-shell-pulse.fx-boss-down { box-shadow: inset 0 0 120px rgba(242, 201, 76, 0.35); animation: dgfxFlash 1.1s ease-out; }
 .dg-shell-pulse.fx-phase { box-shadow: inset 0 0 140px rgba(0, 0, 0, 0.8); animation: dgfxFlash 1s ease-out; }
 .dg-shell-pulse.fx-mind { box-shadow: inset 0 0 100px rgba(187, 107, 217, 0.35); animation: dgfxRipple 0.7s ease-out; }
 

@@ -18,8 +18,6 @@ import {
   evaluateDungeonChoiceOdds
 } from '../../../engine/gameEngine.js';
 import { gauntletRoute } from '../../../engine/dungeonCombat.js';
-import '../../../styles/ui/dungeon.css';
-import '../../../styles/dungeonFx.css';
 
 const STANCES = [
   {

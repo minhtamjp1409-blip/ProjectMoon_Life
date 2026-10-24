@@ -1,6 +1,6 @@
 # The City Chronicles: Tài Liệu Tiến Trình & Kiến Trúc Kỹ Thuật Toàn Diện
 
-> **Cập nhật ghi chép: 24/10/2026 (Đợt 35, chỉ ở máy; chưa push/deploy)**
+> **Cập nhật ghi chép: 25/10/2026 (Đợt 45: giao diện v4, thế giới động theo bối cảnh, âm thanh môi trường; đã push và deploy)**
 > Đợt 26 thay cơ chế gọi Carmen và bổ sung lựa chọn chuẩn bị; số đo cuộc đời ở Đợt 23 là lịch sử, không phải tỷ lệ hiện tại.
 > **Trạng thái xác minh tại máy cho Đợt 22:** `npm test` đạt, gồm hồi quy BUG-34–40, lint nội dung và audit 500 khoảnh khắc; `npm run build` đạt. Backend và Git remote không được thay đổi trong đợt này. Các số liệu kho sự kiện và mô phỏng 1.000 cuộc đời ở Đợt 20 là kết quả lịch sử, không phải lần chạy lại của Đợt 22.
 > **Cách đọc số liệu:** Các kết quả mô phỏng ở Đợt 1–21 là ảnh chụp lịch sử tại thời điểm ghi; xem Đợt 23 để đọc phép đo Color/E.G.O hiện hành. Đợt 22 và mục 9.3 ghi các lần kiểm thử chức năng trước đó.
@@ -30,10 +30,10 @@
 * **Live Frontend (Vercel Production):** [https://project-moon-life-five.vercel.app](https://project-moon-life-five.vercel.app)
 * **Live Backend (Render Web Service):** [https://projectmoon-life.onrender.com/api](https://projectmoon-life.onrender.com/api)
 * **Mã nguồn Git Repository:** [https://github.com/minhtamjp1409-blip/ProjectMoon_Life](https://github.com/minhtamjp1409-blip/ProjectMoon_Life)
-* **Thư mục cục bộ:**
-  * Workspace được kiểm tra ngày 22/10/2026: `C:\Users\nguyenhuynhminhtam\Downloads\TestPM\TestPM\PM`.
-  * Backend cùng cây dự án: `C:\Users\nguyenhuynhminhtam\Downloads\TestPM\TestPM\PM_BE`.
-  * Các đường dẫn `D:\School\...` ở các ghi chép cũ là đường dẫn lịch sử, không phải workspace của lần kiểm tra này.
+* **Thư mục cục bộ hiện hành (kiểm tra 24/10/2026):**
+  * Frontend: `D:\School\PM`.
+  * Backend: `D:\School\PM_BE`.
+  * Các đường dẫn `C:\Users\nguyenhuynhminhtam\Downloads\TestPM\...` trong ghi chép trước là vị trí cũ. `D:\School\ProjectMoon_Life` là checkout Git riêng, không phải hai thư mục chạy cục bộ ở trên.
 
 ---
 
@@ -394,6 +394,12 @@ Mô phỏng 1.000 sinh mệnh độc lập (tuổi thọ trung bình 52.0 tuổi
 * **Kết thúc không nhất thiết là chết giường** (`src/data/lifeEndings.js`, trường `lifeEnding` và `endsLife` trong event): chu du ngoài tường, nhường ghế, bị người kế vị đâm sau lưng để soán ngôi, trận đấu cuối với người từng kèm cặp, bị Section của Hana gạch tên bằng một Request niêm phong. Mỗi cái có câu bia mộ và đoạn kết riêng; chết già sau một trăm tuổi ở đỉnh cũng có câu riêng. Các kết thúc này không khóa nút kế thừa (khác kết thúc The Library). Mỗi tình huống đều có lối thoát hoặc lối từ chối, nên người chơi chọn được cách kết thúc.
 * **Lore:** ống tiêm K Corp là vật phẩm có sẵn trong game và là công nghệ thật của K Corp; các phương pháp kéo dài tuổi của Finger là phóng tác, không có trong nguyên tác.
 * Test: `tests/test_apex_path.mjs` (mới): pool, chống lặp, tuổi thọ, từng kết thúc và bia mộ.
+
+### Đợt 36 (24/10/2026): Quyết định trước khi xúc xắc rơi
+* **Ba manh mối mỗi năm từ tuổi 15:** game rút ba sự kiện nhỏ phù hợp với nhân vật, không trùng nhau hoặc trùng lịch năm đó; mỗi manh mối báo mức rủi ro dự kiến. Chỉ manh mối được chọn mới xuất hiện vào đầu mùa hạ. Bản tự chơi chọn một manh mối; lựa chọn và lịch sự kiện được lưu cùng run. Cơ hội công trạng hằng năm và các sự kiện nhân quả vẫn giữ lịch riêng.
+* **Cược sâu trong dungeon giao tranh:** tại điểm nghỉ, đi tiếp không hồi phục sẽ tăng một nấc cược (tối đa hai). Mỗi nấc tăng 35% hàng từ các trận sau và 15% sát thương nhận. Có thể rút ở điểm nghỉ với hàng đã gom; phán quyết của The Head vẫn không có đường rút hoặc phần thưởng.
+* **Ba tổ hợp sẹo:** sống sót + vũ khí giúp né lúc HP thấp nhưng tăng Heat; thương tật + tay nghề cho thêm một lần tiếp tế nhưng tốn Ahn hằng năm; ám ảnh + chứng kiến giúp dò đường nhưng hao SP. Hồ sơ hiển thị cả lợi và giá; các tổ hợp chỉ hoạt động khi hai dấu tương ứng đang nằm trong ba sẹo hiện hành.
+* **Xác minh:** `npm test`, `npm run build` đạt; test mới quét 30 seed qua Fixer, Syndicate, Wing, Outcast và Distortion, kiểm tra lưu/lựa chọn manh mối, cặp sẹo và cược dungeon. Chưa kiểm tra trực quan trong trình duyệt ở đợt này vì bề mặt trình duyệt cục bộ không khả dụng. Trong lúc kiểm thử, commit `2b7ffaa` chứa phần lớn cơ chế trên đã xuất hiện trên GitHub từ một thao tác ngoài phiên này; tôi không commit/push. Các tinh chỉnh điều kiện sự kiện, tự chơi, test và ghi chép cuối vẫn ở máy.
 
 ### Đợt 35 (24/10/2026): Dungeon thành chuỗi giao tranh, phán quyết của The Head
 * **Rải đều:** luồng làm việc song song đã thêm cửa cầu nối và ưu tiên dungeon chưa gặp; đợt này thêm 3 cửa cuối (Syndicate và Outcast đi tàu WARP, Wing đi Outskirts). Đo 150 đời mỗi nhánh: mỗi dungeon được gặp ở 20 đến 44% số đời của mọi nhánh, không còn ô gần 0.
@@ -782,3 +788,93 @@ Mô phỏng 1.000 sinh mệnh độc lập (tuổi thọ trung bình 52.0 tuổi
 * **Màn chơi:** quyết định nằm cạnh trang từ 1240px trở lên, hẹp hơn thì thành tấm trượt từ dưới lên. Hồ sơ nhân vật bỏ thẻ màu, chỉ còn số và vạch 3px.
 * **Sửa kèm:** bốn nhãn tiếng Việt bị hỏng thành dấu hỏi trong ô lựa chọn ("Dùng hết", "Cần trang bị", "Chưa đủ điều kiện"...); emoji trong khung sự kiện thay bằng icon nét mảnh; modal Workshop viết lại thành bảng giá, bỏ style viết cứng.
 * **Kiểm tra:** `npm test` xanh, `vite build` sạch, inspector của skill taste 0 FAIL ở màn chính. Đã chụp 1440, 1024 và 390px cho màn chính, màn chơi, sự kiện, dungeon, văn bia và bốn trang lưu trữ.
+
+### Đợt 45 (25/10/2026): giao diện v4 "The City về đêm", thế giới động theo bối cảnh, âm thanh môi trường
+
+Chủ dự án yêu cầu làm lại toàn bộ giao diện lần nữa: bỏ tông sáng, nền phải đa dạng và đổi theo bối cảnh (route, khi lên Color, khi bật E.G.O, khi vào dungeon), có âm thanh môi trường để người chơi thấy mình đang ở The City, chuyển động mượt, gọn chữ nhưng vẫn đủ thông tin, kiểm tra cả mobile. Chủ dự án **không cho làm nhạc**: chỉ âm thanh môi trường (mưa, tiếng thì thầm của Carmen, tiếng tàu WARP...), không sinh bất kỳ đoạn nhạc nào. Bộ soạn nhạc đã viết thử trong đợt này bị xóa ngay khi nhận yêu cầu, không còn dòng nào trong code.
+
+#### 1. Kiến trúc mới
+
+* **Một nguồn sự thật cho bối cảnh:** `src/engine/sceneContext.js`, hàm thuần `sceneContextOf({ inRun, path, char })`. Nó trả về `world` (24 thế giới), bảng màu của thế giới (`accent`, `ink`, `glow`), `weather`, `intensity`, `ego` (`none`/`awakened`/`active`), `color` (màu Hana nếu là Color Fixer), `danger`, `carmen` và `season`. Backdrop, màu nhấn của giao diện và âm thanh đều đọc từ đây, nên thêm một route mới chỉ cần thêm một dòng vào `WORLDS` và một dòng vào `SCAPES`.
+* **Thứ tự ưu tiên khi chọn thế giới:**
+  1. Không ở `/` thì là `library`, ngoài kiếp sống thì là `title`.
+  2. Chết thì là `dead`.
+  3. Đang trong dungeon thì là `dungeon-<theme>`.
+  4. Distortion thì là `distortion`.
+  5. Còn lại theo route: Finger (`finger-index`, `-middle`, `-ring`, `-pinky`, `-thumb`), Syndicate, Wing, Fixer, Workshop, Outskirts. Trẻ em thì là Nest hoặc `childhood`, người không nghề là `backstreets`.
+* **Thời tiết các thế giới đường phố đổi theo mùa:** xuân mưa phùn, hạ khói bụi, thu mưa, đông tuyết.
+* **Nối vào game:** `MainLayout` tính scene thành một chuỗi JSON qua selector, nên chỉ render lại khi bối cảnh thật sự đổi. Nó đặt `--accent`, `--accent-ink`, `--accent-soft` và `--glow` lên `.shell`, rồi gọi `audioEngine.setScene(scene)`. Toàn bộ nút chính, vạch năm, tab đang chọn, vạch đầu trang biên niên và tiêu đề năm đổi màu theo route.
+* **Thế giới phía sau giao diện:** `src/components/world/`.
+  * `WorldBackdrop.jsx`: bầu trời ba điểm màu, quầng sáng chân trời, đường chân trời City sinh theo seed của từng thế giới (hai lớp tòa nhà, cửa sổ sáng, vài ô chớp tắt). Nest và Wing là tháp nhọn, Outskirts là đồi cát và mặt trời, Library là mái vòm và kệ sách. Có crossfade 1,6 giây khi đổi thế giới, một lớp phủ cho Color, E.G.O và nguy hiểm, và hiệu ứng bùng sáng một lần khi vừa được phong Color hoặc vừa thức tỉnh hay mở E.G.O.
+  * `worldWeather.js`: một canvas thời tiết với 17 loại (mưa, mưa phùn, tuyết, tro, bụi, đốm sáng, cát, tia lửa, than hồng, dòng dữ liệu của Wing, nét Prescript rơi của Index, vệt sơn của Ring, glitch của Distortion, vệt tốc độ của WARP, hoa giấy Bloodfiend, bọt nước Great Lake). Giới hạn 30 khung hình mỗi giây và DPR 1,5, giảm hạt trên màn nhỏ, dừng khi tab ẩn, đứng yên khi bật giảm chuyển động.
+  * `DungeonBackdrop.jsx` (dời từ `features/chronicle`): tranh cảnh riêng từng dungeon, nay vẽ bên trong thế giới.
+* **Âm thanh môi trường:** `src/engine/ambienceScapes.js`. Mỗi thế giới là danh sách lớp, mỗi lớp là một nền lặp hoặc một sự kiện ngẫu nhiên, dựng từ tiếng ồn hồng, nâu và trắng cùng bộ lọc. Không có nốt nhạc nào.
+  * Các lớp: mưa có giọt rơi lệch trái phải, mưa phùn, gió, gió giật, cát, tiếng ồn thành phố có xe lướt qua và còi xa, máy lạnh văn phòng có tiếng điện, tiếng gõ phím, máy đánh chữ của Index có tiếng kéo dòng, đồng hồ tích tắc, đường ray WARP (các mối nối đi theo cặp) và tiếng xé không gian, lò rèn (lửa lách tách, búa đe), đám đông, sóng hồ, tiếng trầm dưới sâu, tiếng thì thầm của Carmen, còi báo động L Corp, máy móc, nhịp tim, glitch.
+  * Lớp phủ: `danger` thêm nhịp tim, `carmen` (SP ≤ 22 hoặc sự kiện Distortion/Carmen) thêm tiếng thì thầm, E.G.O mở thêm tiếng rít sáng.
+  * `audioEngine.setScene()` thay cho các hàm `_startXxxAmbience` cũ và `updateContextualAmbience`, cả hai đã bị xóa. Âm nền vào trong 2,2 giây và ra trong 1,6 giây, các timer sự kiện được dọn khi đổi cảnh.
+  * Mức đo trong Chrome khoảng -35 dBFS ở mặc định (âm nền mặc định 0,7).
+* **Chỉ còn theme tối:** `themeStore` luôn là `dark`, `toggleTheme` bỏ trống, nút sáng/tối trên thanh trên và trong menu PlayBar đã gỡ. Chỗ nút đó nay là nút bật/tắt âm thanh. Ant Design luôn dùng `darkAlgorithm`.
+
+#### 2. Quy tắc làm UI (áp dụng cho mọi thay đổi sau này)
+
+* **Token trước, không viết màu cứng.** Mọi màu lấy từ `src/styles/ui/tokens.css`. Màu nhấn là `--accent` do bối cảnh đặt, không bao giờ cố định trong component. Vàng `--gold` chỉ dành cho cột mốc, Ahn và đánh giá Hana. HP, SP và chỉ số khác giữ màu riêng và luôn có nhãn chữ đi kèm.
+* **Selector gốc là `:root`, không dùng `:root.dark`.** `:root.dark` có độ ưu tiên cao hơn `@media` và `html[data-text]`, nên từng làm mất thanh điều hướng dưới trên mobile và làm hỏng cài đặt cỡ chữ.
+* **Bề mặt là kính tối** (`--surface`, `--page` cùng `backdrop-filter: var(--glass-blur)`) để thế giới phía sau lộ ra. Không làm nền sáng, không dùng gradient trên chữ hay nút.
+* **Chữ:** truyện, tiêu đề và tên dùng Literata (`--serif`), chỉ số, nhãn và nút dùng Archivo (`--font`), số luôn ở dạng tabular. Nhãn viết hoa đầu câu, 12,5–14px. Không dùng nhãn in hoa giãn chữ, không dùng emoji (chỉ icon lucide nét mảnh). Cỡ chữ truyện đọc từ `--story-size` để cài đặt T có hiệu lực.
+* **Chuyển động phải có lý do:** đổi thế giới (crossfade), mục biên niên mới (mờ lên), khung quyết định trồi lên, lá bài nhấc lên, kết quả dungeon rung, bùng sáng Color/E.G.O. Mọi animation tắt khi bật giảm chuyển động (`html[data-motion]` hoặc tùy chọn của OS).
+* **Bố cục:** từ 1240px trở lên quyết định nằm cạnh trang biên niên, hẹp hơn thì là tấm trượt từ dưới lên. Trên mobile có thanh trên, thanh trạng thái hai dòng và thanh điều hướng dưới. Ở 390px không được cuộn ngang.
+* **Kiểm tra trước khi đẩy:**
+  * `npm test` (có `test_scene_context.mjs`) và `vite build`.
+  * Chụp 1440 và 390px các cảnh: màn chính, màn chơi, sự kiện, dungeon, văn bia và ít nhất hai route.
+  * `inspect.mjs --app` của skill taste không có FAIL.
+  * Ảnh chụp để ở scratchpad, không để trong repo.
+* **Thêm một route hoặc dungeon mới:** thêm `WORLDS[id]` (màu, thời tiết), `SCAPES[id]` (lớp âm), một dòng `.world-scene[data-world='id']` (bầu trời, cửa sổ) trong `world.css` và `FAMILY[id]` nếu cần đường chân trời. Test `test_scene_context.mjs` sẽ báo nếu thiếu soundscape.
+
+#### 3. Cấu trúc code sau khi dọn
+
+* `src/components/world/`: WorldBackdrop, worldWeather, DungeonBackdrop. `CityBackdrop.jsx` cũ đã xóa.
+* `src/styles/ui/`: mọi CSS nằm ở đây, `index.css` nạp theo thứ tự:
+  1. tokens, base
+  2. world, world-scenes (tranh cảnh dungeon và hiệu ứng sân khấu còn dùng)
+  3. shell, home, play, chronicle, pages
+  4. dungeon (chrome, art, fx)
+  5. overlays
+
+  `src/styles/dungeonFx.css` đã dời thành `ui/dungeon-fx.css`, component không còn tự import CSS.
+* **Dọn CSS chết bằng script:** một script postcss (đặt ở scratchpad, không vào repo) quét toàn bộ `src`, bỏ 127 rule và keyframe không còn class nào dùng. `world-scenes.css` từ 1.421 xuống 594 dòng.
+* `LiveStageFeed.jsx` bỏ `AmbientScene` và hiệu ứng ambience cũ. `getBranchSceneMeta` trong `colorRegistry.js` vẫn được `test_color_registry.mjs` kiểm, nhưng giao diện không còn dùng; có thể bỏ ở đợt sau cùng test của nó.
+* Các thư mục ảnh chụp `.taste-skill/v3`, `v3i`, `v4`, `live`, `now` của các đợt 43–45 đã dời ra scratchpad.
+
+#### 4. Gameplay hiện có (tóm tắt để đọc nhanh, chi tiết ở các đợt trước)
+
+* **Vòng lặp:** mỗi năm khoảng 30 giây ở tốc độ 1×, có 4 mùa. Mỗi năm có ba manh mối (year leads) để chọn một (Đợt 40). Sau đó là sự kiện lớn, sự kiện nhỏ có đếm ngược và hợp đồng nghề. Cuối năm có tổng kết. Tự lưu sau mỗi lựa chọn, save có phiên bản (`SAVE_VERSION = 2`, `migrateRun`).
+* **Route:**
+  * Trẻ em (Nest, Backstreets, Outskirts): ngã rẽ nghề ở tuổi 15–20.
+  * Fixer: Grade 9 đến 1, rồi Color do Hana phong.
+  * Wing: bậc 0 đến 3, có đồng hồ "Hồ sơ sạch" và "Bí mật nắm giữ", 24 sự kiện lớn riêng, 9 cảnh thăng chức, 30 sự kiện nhỏ, 36 hợp đồng, 3 kết thúc riêng.
+  * Năm Finger (Index, Middle, Ring, Pinky, Thumb), Syndicate, Workshop, Outcast, Distortion.
+  * Đạt đỉnh nghề thì mở cảnh trường thọ và các kết thúc đặc biệt (`lifeEndings.js`).
+* **Chỉ số:** HP, SP, Ahn, Quan hệ, Danh tiếng; Heat, Taboo (3/3 thì Claw đến), Resonance (E.G.O), Merit; dấu tích (scar) có cộng hưởng, tính phí hai năm một lần. Người thân có mức gắn bó.
+* **Dungeon:** WARP Train (toa khóa, W Corp khôi phục xác tối đa 2 lần, lần chết thứ ba là thật), L Corp, Bloodfiend, Great Lake, Night in the Backstreets, Claw (không rút được), Outskirts.
+  * Thế đánh: Thận trọng, Cân bằng, Xung kích.
+  * Tiếp tế: Nghỉ thở, Dò đường; E.G.O dùng được khi đã thức tỉnh.
+  * Cược sâu (tối đa 2 bậc, hàng +35% mỗi bậc).
+  * Chiến đấu theo ý định của địch: thủ, phản công, né, phá thế.
+  * Bài chiến thuật: tay 3 lá, mỗi tầng chơi 1 lá. Bốn dungeon chiến đấu mỗi nơi có 2 lá riêng. Great Lake và Claw chưa có bài.
+* **Ngôn ngữ và lời kể:** VI, EN hoặc song ngữ. Lời kể gọi người chơi là "bạn", giữ nguyên thuật ngữ Project Moon tiếng Anh, theo UNIVERSE.md.
+
+#### 5. Đã kiểm tra trong đợt này
+
+* `npm test` xanh, `vite build` sạch.
+* Âm thanh trong Chrome thật: bật lần lượt cả 24 soundscape, không lỗi, mỗi lần chỉ còn một nhóm node (không rò), mức khoảng -35 dBFS.
+* **Ảnh chụp:**
+  * Ở 1440px: màn chính, Fixer, Index, Color, E.G.O, Distortion, Wing, Workshop, sự kiện, WARP Train, văn bia.
+  * Ở 390px: màn chính, Index, Ring, sự kiện, dungeon.
+* **Lỗi tìm ra và đã sửa:** thanh điều hướng dưới mất trên mobile, cỡ chữ không đổi (cả hai do `:root.dark`), mặt trăng đè tiêu đề trên mobile, vạch màu dungeon bị lặp trên hai thanh.
+
+#### 6. Còn mở
+
+* Chưa nghe thử bằng tai, chỉ đo mức và kiểm lỗi. Cần chủ dự án nghe và chỉnh mức từng lớp.
+* Chưa chụp: Nest/Wing ở mobile, Outskirts, Library (các trang lưu trữ) ở v4, lớp nguy hiểm, hiệu ứng bùng sáng lúc phong Color.
+* Thông báo thành tựu của Ant Design trên mobile vẫn đè lên phần đầu màn hình trong vài giây.
+* Màn hình cũ có hai màu nhấn cố định trong vài chỗ inline style (menu PlayBar, một số chip), chưa đổi hết sang `--accent`.

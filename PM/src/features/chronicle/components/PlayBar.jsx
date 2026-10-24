@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Tooltip, Modal, Dropdown } from 'antd';
-import { User, Play, Pause, SkipForward, Bot, RotateCcw, House, Save, Check, AlertTriangle, Volume2, VolumeX, MoreHorizontal, BookOpen, GitFork, Trophy, Compass, Sun, Moon } from 'lucide-react';
+import { User, Play, Pause, SkipForward, Bot, RotateCcw, House, Save, Check, AlertTriangle, Volume2, VolumeX, MoreHorizontal, BookOpen, GitFork, Trophy, Compass } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 import { useGameStore } from '../../../store/gameStore';
@@ -121,7 +121,7 @@ const YearStatus = () => {
 export const PlayBar = () => {
   const { t, lang } = useT();
   const navigate = useNavigate();
-  const { themeMode, toggleTheme, setMobileDossierOpen } = useThemeStore();
+  const { setMobileDossierOpen } = useThemeStore();
   const char = useGameStore((s) => s.char);
   const milestone = getNextCareerMilestone(char);
   const { age, seasonIdx, yearProgress, dramaPhase, alive, waiting, speed, autoPlay, setSpeed, toggleAutoPlay, stepYear, exitToSetup, abandonRun, saveRun, lastSavedAt, saveError } =
@@ -289,12 +289,6 @@ export const PlayBar = () => {
         </span>
       ),
       onClick: handleToggleAudio
-    },
-    {
-      key: 'theme',
-      icon: themeMode === 'dark' ? <Sun size={16} /> : <Moon size={16} />,
-      label: themeMode === 'dark' ? t('Giao diện Sáng', 'Light Theme') : t('Giao diện Tối', 'Dark Theme'),
-      onClick: toggleTheme
     },
     {
       type: 'divider'

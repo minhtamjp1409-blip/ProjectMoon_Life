@@ -3,37 +3,37 @@
   position: relative; isolation: isolate;
   display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr);
   min-width: 0; min-height: 0; height: 100%;
-  overflow: hidden; background: var(--ground);
+  overflow: hidden; background: transparent;
 }
 .stage > .log { grid-area: 1 / 1; }
 .chronicle-heading { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
 
 .log { position: relative; z-index: 1; min-height: 0; overflow-y: auto; scrollbar-gutter: stable; padding: 28px clamp(12px, 3vw, 40px) 0; scroll-behavior: smooth; }
 
-/* The page itself: paper in both themes, its own ink */
+/* The chronicle column: the darkest glass, so the world shows around it and the words stay legible */
 .log-col {
-  --text: var(--page-ink); --story: var(--page-ink); --muted: var(--page-muted); --faint: var(--page-muted);
-  --border: var(--page-edge); --rule: var(--page-rule); --surface: color-mix(in srgb, var(--page-ink) 4%, var(--page));
-  --raised: color-mix(in srgb, var(--page-ink) 8%, var(--page)); --active: color-mix(in srgb, var(--page-ink) 12%, var(--page));
-  --good: #2b6e3f; --bad: #a3282a; --gold: #7a5716; --rare: #35558a; --accent: #a8232b;
   position: relative;
   max-width: 740px; min-height: calc(100% - 28px); margin: 0 auto;
   padding: 40px clamp(20px, 5vw, 64px) 96px;
   background: var(--page); color: var(--page-ink);
-  border-radius: 2px 2px 0 0;
+  backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--rule); border-bottom: 0;
+  border-radius: var(--radius) var(--radius) 0 0;
 }
-.log-col::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--page-ink); opacity: .85; }
+.log-col::before { content: ''; position: absolute; top: -1px; left: 24px; right: 24px; height: 2px; background: var(--accent); opacity: .9; transition: background-color 1.2s ease; }
 
 /* A new year opens like a new chapter */
-.yearline { display: flex; align-items: baseline; gap: 12px; margin: 44px 0 14px; padding-top: 14px; border-top: 1px solid var(--page-ink); }
+.yearline { display: flex; align-items: baseline; gap: 12px; margin: 44px 0 14px; padding-top: 14px; border-top: 1px solid var(--page-edge); }
 .yearline:first-child { margin-top: 0; }
 .yearline span { font-family: var(--serif); font-size: 15px; color: var(--page-muted); }
-.yearline b { font-family: var(--serif); font-size: 24px; font-weight: 600; color: var(--page-ink); margin-right: 2px; }
+.yearline b { font-family: var(--serif); font-size: 24px; font-weight: 600; color: var(--accent); margin-right: 2px; transition: color 1.2s ease; }
 .season-divider { display: flex; align-items: center; gap: 12px; margin: 28px 0 12px; }
 .season-divider-line { flex: 1; height: 1px; background: var(--page-rule); }
 .season-divider-badge { font-family: var(--serif); font-style: italic; font-size: 14.5px; color: var(--page-muted); }
 
-.entry { margin: 0 0 22px; }
+.entry { margin: 0 0 22px; animation: entryIn .55s cubic-bezier(.2, .8, .2, 1) both; }
+@keyframes entryIn { from { opacity: 0; transform: translateY(10px); filter: blur(2px); } }
+.yearline, .season-divider { animation: entryIn .7s ease both; }
 .entry-header-row { display: flex; align-items: baseline; gap: 10px; margin-bottom: 4px; }
 .entry-tag { font-family: var(--font); font-size: 13px; font-weight: 600; color: var(--page-muted); }
 .entry-text { font-family: var(--serif); font-size: var(--story-size); line-height: var(--story-lead); color: var(--page-ink); text-wrap: pretty; }
@@ -84,7 +84,8 @@
 .event-modal-backdrop {
   position: relative; z-index: 5;
   grid-area: 1 / 2; min-height: 0; overflow-y: auto; scrollbar-gutter: stable;
-  border-left: 1px solid var(--border); background: var(--ground);
+  border-left: 1px solid var(--border); background: rgba(8, 7, 10, .84);
+  backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
 }
 .stage.has-dock { grid-template-columns: minmax(0, 1fr) minmax(380px, 460px); }
 .stage.has-dock .event-peek-toggle { display: none; }
@@ -192,7 +193,7 @@
 .event-peek-toggle {
   position: absolute; z-index: 7; right: 16px; bottom: 16px;
   display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px;
-  border: 1px solid var(--border); border-radius: 999px; background: var(--ground); color: var(--text);
+  border: 1px solid var(--border); border-radius: 999px; background: var(--surface-solid); color: var(--text);
   font-size: 13.5px; font-weight: 600; box-shadow: var(--shadow-pop);
 }
 
@@ -223,12 +224,11 @@
 }
 
 /* The scene behind the page is a tint of the room, never a picture competing with the words */
-.stage > .scene.on { opacity: .4; filter: saturate(.6); }
 .career-obj-tag { text-transform: lowercase; }
 .career-obj-tag::first-letter { text-transform: uppercase; }
 
 /* The end of a life: the colophon of the book. Age as the large figure, the cause under it, then the record */
-.epitaph { margin-top: 56px; padding-top: 28px; border-top: 3px double var(--page-ink); }
+.epitaph { margin-top: 56px; padding-top: 28px; border-top: 3px double var(--page-edge); }
 .epitaph-body { display: flex; flex-direction: column; gap: 22px; }
 .epitaph-kicker-origin { text-align: center; font-family: var(--serif); font-style: italic; font-size: 16px; color: var(--page-muted); }
 .epitaph-age { display: flex; justify-content: center; align-items: baseline; gap: 10px; font-family: var(--serif); font-size: clamp(64px, 10vw, 96px); font-weight: 600; line-height: .9; color: var(--page-ink); font-variant-numeric: lining-nums; }
@@ -244,7 +244,7 @@
 .epitaph-fact-card .is-pos-life { color: var(--good); }
 .epitaph-fact-card .is-neg-life { color: var(--bad); }
 .epitaph-panel { display: flex; flex-direction: column; gap: 12px; }
-.epitaph-panel-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--page-ink); }
+.epitaph-panel-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--page-edge); }
 .epitaph-panel-head h3 { display: flex; align-items: baseline; gap: 8px; font-size: 20px; color: var(--page-ink); }
 .epitaph-panel-sub { font-size: 13px; color: var(--page-muted); }
 .epitaph-subtoggle { font-size: 13.5px; font-weight: 600; color: var(--page-muted); text-decoration: underline; text-underline-offset: 4px; min-height: 32px; }
@@ -272,7 +272,7 @@
 .epitaph-stat-head { display: flex; justify-content: space-between; font-size: 13.5px; color: var(--page-muted); }
 .epitaph-stat-head b { color: var(--page-ink); }
 .epitaph-stat-track { height: 3px; background: var(--page-rule); }
-.epitaph-stat-fill { display: block; height: 100%; background: var(--page-ink); }
+.epitaph-stat-fill { display: block; height: 100%; background: var(--accent); }
 .epitaph-life-tags { display: flex; flex-wrap: wrap; gap: 6px; }
 .epitaph-tag-pill { padding: 2px 9px; border: 1px solid var(--page-edge); border-radius: 999px; font-size: 12.5px; font-weight: 600; color: var(--page-muted); }
 .epitaph-actions { display: flex; flex-wrap: wrap; gap: 8px; padding-top: 6px; }

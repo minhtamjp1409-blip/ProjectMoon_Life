@@ -6,11 +6,8 @@
  * - Bus Mixing Graph: MasterGain -> { SFXGain, UIGain, AmbienceGain }.
  * - Sidechain Ducking: Ambience smoothly ducks under high-impact SFX / dialogue and recovers.
  * - Procedural Ambience Generator (Zero-latency, 0 network asset dependencies):
- *     1. 'backstreets' - Rain drops & cold alley wind gusts in Backstreets.
- *     2. 'warp_train' - W-Corp WARP train dimensional drone & rhythmic track hum.
- *     3. 'nest' - Sterile, high-tech pristine office hum of Wing Feathers.
- *     4. 'outskirts_lake' - Deep surging waves & gale-force winds of Great Lake & Outskirts.
- *     5. 'distortion' - Carmen whispers, binaural dissonance & eerie metallic resonance.
+ *     Layered scapes per world (src/engine/ambienceScapes.js): rain and wind, WARP rails, a forge, office
+ *     air and typing, a Great Lake tide, Carmen's whispers. Noise and mechanical events only, no music.
  * - Contextual Project Moon SFX (with pitch/volume variation to eliminate repetitive fatigue):
  *     - Page flip / Sổ thù hận (Middle's Book of Vengeance)
  *     - Prescript typewriter / dệt chỉ thị (Index Prescript)
@@ -21,6 +18,8 @@
  *     - Dice roll / kiểm tra chỉ số
  *     - Decision chime, damage crunch, E.G.O choral swell, somber death toll
  */
+
+import { startScape } from './ambienceScapes.js';
 
 class AudioEngine {
   constructor() {
@@ -34,12 +33,12 @@ class AudioEngine {
     const savedMuted = localStorage.getItem('pm_audio_muted') === 'true';
     const savedVol = parseFloat(localStorage.getItem('pm_audio_vol') || '0.7');
     const savedAmbienceMuted = localStorage.getItem('pm_ambience_muted') === 'true';
-    const savedAmbienceVol = parseFloat(localStorage.getItem('pm_ambience_vol') || '0.5');
+    const savedAmbienceVol = parseFloat(localStorage.getItem('pm_ambience_vol') || '0.7');
 
     this.isMuted = savedMuted;
     this.volume = isNaN(savedVol) ? 0.7 : Math.max(0, Math.min(1, savedVol));
     this.isAmbienceMuted = savedAmbienceMuted;
-    this.ambienceVolume = isNaN(savedAmbienceVol) ? 0.5 : Math.max(0, Math.min(1, savedAmbienceVol));
+    this.ambienceVolume = isNaN(savedAmbienceVol) ? 0.7 : Math.max(0, Math.min(1, savedAmbienceVol));
 
     // Ambience state
     this.currentAmbienceType = null;
@@ -94,9 +93,10 @@ class AudioEngine {
     this.sfxGain.gain.setValueAtTime(0.85, now);
     this.uiGain.gain.setValueAtTime(0.65, now);
 
-    const targetAmbienceGain = (this.isMuted || this.isAmbienceMuted) ? 0 : this.linearToGain(this.ambienceVolume) * 0.45;
+    const targetAmbienceGain = (this.isMuted || this.isAmbienceMuted) ? 0 : this.linearToGain(this.ambienceVolume) * 0.9;
     this.ambienceGain.gain.setValueAtTime(this.ambienceGain.gain.value, now);
     this.ambienceGain.gain.linearRampToValueAtTime(targetAmbienceGain, now + 0.1);
+
   }
 
   linearToGain(slider01) {
@@ -168,7 +168,7 @@ class AudioEngine {
   duckAmbience(targetFraction = 0.25, durationMs = 800) {
     if (!this.ctx || !this.ambienceGain || this.isMuted || this.isAmbienceMuted) return;
     const now = this.ctx.currentTime;
-    const baseGain = this.linearToGain(this.ambienceVolume) * 0.45;
+    const baseGain = this.linearToGain(this.ambienceVolume) * 0.9;
     const duckedGain = baseGain * targetFraction;
 
     this.ambienceGain.gain.cancelScheduledValues(now);
@@ -181,7 +181,7 @@ class AudioEngine {
       const t = this.ctx.currentTime;
       this.ambienceGain.gain.cancelScheduledValues(t);
       this.ambienceGain.gain.setValueAtTime(this.ambienceGain.gain.value, t);
-      const restoredGain = (this.isMuted || this.isAmbienceMuted) ? 0 : this.linearToGain(this.ambienceVolume) * 0.45;
+      const restoredGain = (this.isMuted || this.isAmbienceMuted) ? 0 : this.linearToGain(this.ambienceVolume) * 0.9;
       this.ambienceGain.gain.linearRampToValueAtTime(restoredGain, t + 0.45);
     }, durationMs);
   }
@@ -237,38 +237,32 @@ class AudioEngine {
   // =========================================================================
 
   /**
-   * Switches the ambient soundscape smoothly.
-   * Types: 'backstreets' | 'warp_train' | 'nest' | 'outskirts_lake' | 'distortion' | null
+   * Switches the ambient soundscape smoothly. The scene comes from sceneContextOf: its world picks the
+   * layers, its season picks the weather, a danger adds a heartbeat and an active E.G.O a bright hiss.
    */
-  setAmbience(type) {
-    if (this.currentAmbienceType === type) return;
+  setScene(scene) {
+    const key = scene ? [scene.world, scene.weather, scene.ego === 'active' ? 'ego' : '', scene.danger ? 'danger' : '', scene.carmen ? 'carmen' : ''].join('|') : null;
+    if (this.currentAmbienceType === key) return;
     this.init();
     if (!this.ctx) return;
-
     this.stopAmbience();
-    this.currentAmbienceType = type;
+    this.currentAmbienceType = key;
     this.notify();
+    if (!scene || this.isMuted || this.isAmbienceMuted) return;
 
-    if (!type || this.isMuted || this.isAmbienceMuted) return;
+    const t = this.ctx.currentTime;
+    const groupGain = this.ctx.createGain();
+    groupGain.gain.setValueAtTime(0.0001, t);
+    groupGain.gain.linearRampToValueAtTime(1, t + 2.2);
+    groupGain.connect(this.ambienceGain);
+    const noise = { pink: this.getNoiseBuffer('pink', 4), brown: this.getNoiseBuffer('brown', 5), white: this.getNoiseBuffer('white', 2) };
+    const { sources, handles } = startScape(this.ctx, groupGain, noise, scene.world, scene);
+    this.activeAmbienceNodes.push({ gain: groupGain, sources, handles });
+  }
 
-    switch (type) {
-      case 'warp_train':
-        this._startWarpTrainAmbience();
-        break;
-      case 'nest':
-        this._startNestAmbience();
-        break;
-      case 'outskirts_lake':
-        this._startOutskirtsLakeAmbience();
-        break;
-      case 'distortion':
-        this._startDistortionAmbience();
-        break;
-      case 'backstreets':
-      default:
-        this._startBackstreetsAmbience();
-        break;
-    }
+  /** Kept for callers that still name a scape directly. */
+  setAmbience(type) {
+    this.setScene(type ? { world: type, weather: 'rain', ego: 'none', danger: false } : null);
   }
 
   stopAmbience() {
@@ -276,368 +270,22 @@ class AudioEngine {
       const now = this.ctx ? this.ctx.currentTime : 0;
       this.activeAmbienceNodes.forEach((nodeGroup) => {
         try {
+          nodeGroup.handles?.forEach((h) => { h.stopped = true; clearTimeout(h.id); });
           if (nodeGroup.gain) {
             nodeGroup.gain.gain.cancelScheduledValues(now);
-            nodeGroup.gain.gain.linearRampToValueAtTime(0.0001, now + 0.6);
+            nodeGroup.gain.gain.setValueAtTime(nodeGroup.gain.gain.value, now);
+            nodeGroup.gain.gain.linearRampToValueAtTime(0.0001, now + 1.6);
           }
           setTimeout(() => {
             nodeGroup.sources?.forEach((s) => {
               try { s.stop(); s.disconnect(); } catch {}
             });
-          }, 650);
+            try { nodeGroup.gain?.disconnect(); } catch {}
+          }, 1700);
         } catch {}
       });
       this.activeAmbienceNodes = [];
     }
-  }
-
-  /**
-   * Backstreets Ambience: Cold alley wind gusts + gentle rain hiss and occasional drops.
-   */
-  _startBackstreetsAmbience() {
-    const t = this.ctx.currentTime;
-    const groupGain = this.ctx.createGain();
-    groupGain.gain.setValueAtTime(0.0001, t);
-    groupGain.gain.linearRampToValueAtTime(0.42, t + 1.2);
-    groupGain.connect(this.ambienceGain);
-
-    const sources = [];
-
-    // 1. Rain hiss (Pink noise through gentle bandpass)
-    const rainBuf = this.getNoiseBuffer('pink', 4);
-    if (rainBuf) {
-      const rain = this.ctx.createBufferSource();
-      rain.buffer = rainBuf;
-      rain.loop = true;
-
-      const rainFilter = this.ctx.createBiquadFilter();
-      rainFilter.type = 'bandpass';
-      rainFilter.frequency.setValueAtTime(950, t);
-      rainFilter.Q.setValueAtTime(0.7, t);
-
-      const rainGain = this.ctx.createGain();
-      rainGain.gain.setValueAtTime(0.25, t);
-
-      rain.connect(rainFilter);
-      rainFilter.connect(rainGain);
-      rainGain.connect(groupGain);
-      rain.start(t);
-      sources.push(rain);
-    }
-
-    // 2. Wind gust (Brown noise modulated by slow LFO)
-    const windBuf = this.getNoiseBuffer('brown', 5);
-    if (windBuf) {
-      const wind = this.ctx.createBufferSource();
-      wind.buffer = windBuf;
-      wind.loop = true;
-
-      const windFilter = this.ctx.createBiquadFilter();
-      windFilter.type = 'lowpass';
-      windFilter.frequency.setValueAtTime(260, t);
-
-      const lfo = this.ctx.createOscillator();
-      lfo.frequency.setValueAtTime(0.12, t); // Wind cycle every ~8 seconds
-      const lfoGain = this.ctx.createGain();
-      lfoGain.gain.setValueAtTime(120, t); // Modulates filter cutoff 140Hz - 380Hz
-      lfo.connect(windFilter.frequency);
-
-      const windGain = this.ctx.createGain();
-      windGain.gain.setValueAtTime(0.35, t);
-
-      wind.connect(windFilter);
-      windFilter.connect(windGain);
-      windGain.connect(groupGain);
-
-      wind.start(t);
-      lfo.start(t);
-      sources.push(wind, lfo);
-    }
-
-    this.activeAmbienceNodes.push({ gain: groupGain, sources });
-  }
-
-  /**
-   * W-Corp WARP Train Ambience: Deep dimensional drone, eerie resonant whistle & rhythmic track pulse.
-   */
-  _startWarpTrainAmbience() {
-    const t = this.ctx.currentTime;
-    const groupGain = this.ctx.createGain();
-    groupGain.gain.setValueAtTime(0.0001, t);
-    groupGain.gain.linearRampToValueAtTime(0.48, t + 1.2);
-    groupGain.connect(this.ambienceGain);
-
-    const sources = [];
-
-    // 1. Dual detuned sub-bass drone (45Hz & 47.5Hz -> binaural spatial hum)
-    const subOsc1 = this.ctx.createOscillator();
-    const subOsc2 = this.ctx.createOscillator();
-    subOsc1.type = 'sawtooth';
-    subOsc2.type = 'triangle';
-    subOsc1.frequency.setValueAtTime(45, t);
-    subOsc2.frequency.setValueAtTime(47.5, t);
-
-    const subFilter = this.ctx.createBiquadFilter();
-    subFilter.type = 'lowpass';
-    subFilter.frequency.setValueAtTime(130, t);
-    subFilter.Q.setValueAtTime(3.5, t);
-
-    const subGain = this.ctx.createGain();
-    subGain.gain.setValueAtTime(0.38, t);
-
-    subOsc1.connect(subFilter);
-    subOsc2.connect(subFilter);
-    subFilter.connect(subGain);
-    subGain.connect(groupGain);
-
-    subOsc1.start(t);
-    subOsc2.start(t);
-    sources.push(subOsc1, subOsc2);
-
-    // 2. High dimensional tension shimmer (peaking bandpass noise)
-    const dimBuf = this.getNoiseBuffer('pink', 4);
-    if (dimBuf) {
-      const dimSource = this.ctx.createBufferSource();
-      dimSource.buffer = dimBuf;
-      dimSource.loop = true;
-
-      const dimFilter = this.ctx.createBiquadFilter();
-      dimFilter.type = 'bandpass';
-      dimFilter.frequency.setValueAtTime(1850, t);
-      dimFilter.Q.setValueAtTime(6.0, t);
-
-      const dimLfo = this.ctx.createOscillator();
-      dimLfo.frequency.setValueAtTime(0.2, t);
-      const dimLfoGain = this.ctx.createGain();
-      dimLfoGain.gain.setValueAtTime(400, t);
-      dimLfo.connect(dimFilter.frequency);
-
-      const dimGain = this.ctx.createGain();
-      dimGain.gain.setValueAtTime(0.12, t);
-
-      dimSource.connect(dimFilter);
-      dimFilter.connect(dimGain);
-      dimGain.connect(groupGain);
-
-      dimSource.start(t);
-      dimLfo.start(t);
-      sources.push(dimSource, dimLfo);
-    }
-
-    this.activeAmbienceNodes.push({ gain: groupGain, sources });
-  }
-
-  /**
-   * Nest Ambience: Pristine sterile climate hum & gentle crystalline frequencies of Wing Feathers.
-   */
-  _startNestAmbience() {
-    const t = this.ctx.currentTime;
-    const groupGain = this.ctx.createGain();
-    groupGain.gain.setValueAtTime(0.0001, t);
-    groupGain.gain.linearRampToValueAtTime(0.32, t + 1.2);
-    groupGain.connect(this.ambienceGain);
-
-    const sources = [];
-
-    // Pristine pure sine hum (60Hz + 120Hz harmonic)
-    const hum1 = this.ctx.createOscillator();
-    const hum2 = this.ctx.createOscillator();
-    hum1.type = 'sine';
-    hum2.type = 'sine';
-    hum1.frequency.setValueAtTime(60, t);
-    hum2.frequency.setValueAtTime(120, t);
-
-    const humGain = this.ctx.createGain();
-    humGain.gain.setValueAtTime(0.18, t);
-
-    hum1.connect(humGain);
-    hum2.connect(humGain);
-    humGain.connect(groupGain);
-
-    hum1.start(t);
-    hum2.start(t);
-    sources.push(hum1, hum2);
-
-    // Filtered air circulation
-    const airBuf = this.getNoiseBuffer('pink', 4);
-    if (airBuf) {
-      const air = this.ctx.createBufferSource();
-      air.buffer = airBuf;
-      air.loop = true;
-
-      const airFilter = this.ctx.createBiquadFilter();
-      airFilter.type = 'lowpass';
-      airFilter.frequency.setValueAtTime(320, t);
-
-      const airGain = this.ctx.createGain();
-      airGain.gain.setValueAtTime(0.12, t);
-
-      air.connect(airFilter);
-      airFilter.connect(airGain);
-      airGain.connect(groupGain);
-      air.start(t);
-      sources.push(air);
-    }
-
-    this.activeAmbienceNodes.push({ gain: groupGain, sources });
-  }
-
-  /**
-   * Great Lake & Outskirts Ambience: Crashing deep tide swells and desolate howling gales.
-   */
-  _startOutskirtsLakeAmbience() {
-    const t = this.ctx.currentTime;
-    const groupGain = this.ctx.createGain();
-    groupGain.gain.setValueAtTime(0.0001, t);
-    groupGain.gain.linearRampToValueAtTime(0.45, t + 1.2);
-    groupGain.connect(this.ambienceGain);
-
-    const sources = [];
-
-    // Deep wave swell (Brown noise with 0.15Hz surging LFO)
-    const waveBuf = this.getNoiseBuffer('brown', 5);
-    if (waveBuf) {
-      const wave = this.ctx.createBufferSource();
-      wave.buffer = waveBuf;
-      wave.loop = true;
-
-      const waveFilter = this.ctx.createBiquadFilter();
-      waveFilter.type = 'lowpass';
-      waveFilter.frequency.setValueAtTime(220, t);
-
-      const waveLfo = this.ctx.createOscillator();
-      waveLfo.frequency.setValueAtTime(0.14, t); // Wave crashes every ~7s
-      const waveLfoGain = this.ctx.createGain();
-      waveLfoGain.gain.setValueAtTime(140, t);
-      waveLfo.connect(waveFilter.frequency);
-
-      const waveGain = this.ctx.createGain();
-      waveGain.gain.setValueAtTime(0.42, t);
-
-      wave.connect(waveFilter);
-      waveFilter.connect(waveGain);
-      waveGain.connect(groupGain);
-
-      wave.start(t);
-      waveLfo.start(t);
-      sources.push(wave, waveLfo);
-    }
-
-    // High whistling gale
-    const galeOsc = this.ctx.createOscillator();
-    galeOsc.type = 'sine';
-    galeOsc.frequency.setValueAtTime(340, t);
-
-    const galeLfo = this.ctx.createOscillator();
-    galeLfo.frequency.setValueAtTime(0.08, t);
-    const galeLfoGain = this.ctx.createGain();
-    galeLfoGain.gain.setValueAtTime(90, t);
-    galeLfo.connect(galeOsc.frequency);
-
-    const galeGain = this.ctx.createGain();
-    galeGain.gain.setValueAtTime(0.05, t);
-
-    galeOsc.connect(galeGain);
-    galeGain.connect(groupGain);
-
-    galeOsc.start(t);
-    galeLfo.start(t);
-    sources.push(galeOsc, galeLfo);
-
-    this.activeAmbienceNodes.push({ gain: groupGain, sources });
-  }
-
-  /**
-   * Distortion / Carmen Whispers Ambience: Eerie binaural dissonance & metallic resonant shimmer.
-   */
-  _startDistortionAmbience() {
-    const t = this.ctx.currentTime;
-    const groupGain = this.ctx.createGain();
-    groupGain.gain.setValueAtTime(0.0001, t);
-    groupGain.gain.linearRampToValueAtTime(0.44, t + 1.2);
-    groupGain.connect(this.ambienceGain);
-
-    const sources = [];
-
-    // Minor second dissonance (110Hz A2 and 116.54Hz Bb2 - Carmen's dissonance)
-    const toneA = this.ctx.createOscillator();
-    const toneB = this.ctx.createOscillator();
-    toneA.type = 'sine';
-    toneB.type = 'triangle';
-    toneA.frequency.setValueAtTime(110.0, t);
-    toneB.frequency.setValueAtTime(116.54, t);
-
-    const toneGain = this.ctx.createGain();
-    toneGain.gain.setValueAtTime(0.24, t);
-
-    toneA.connect(toneGain);
-    toneB.connect(toneGain);
-    toneGain.connect(groupGain);
-
-    toneA.start(t);
-    toneB.start(t);
-    sources.push(toneA, toneB);
-
-    // Eerie high resonant drone (comb/bandpass filter at 1320Hz)
-    const whisperBuf = this.getNoiseBuffer('pink', 4);
-    if (whisperBuf) {
-      const whisper = this.ctx.createBufferSource();
-      whisper.buffer = whisperBuf;
-      whisper.loop = true;
-
-      const whisperFilter = this.ctx.createBiquadFilter();
-      whisperFilter.type = 'bandpass';
-      whisperFilter.frequency.setValueAtTime(1320, t);
-      whisperFilter.Q.setValueAtTime(8.0, t);
-
-      const whisperGain = this.ctx.createGain();
-      whisperGain.gain.setValueAtTime(0.09, t);
-
-      whisper.connect(whisperFilter);
-      whisperFilter.connect(whisperGain);
-      whisperGain.connect(groupGain);
-
-      whisper.start(t);
-      sources.push(whisper);
-    }
-
-    this.activeAmbienceNodes.push({ gain: groupGain, sources });
-  }
-
-  /**
-   * Automatically updates ambient soundscape based on live character and dungeon context.
-   */
-  updateContextualAmbience(char, inDungeon, dungeonType) {
-    if (!char || !char.alive) {
-      this.setAmbience(null);
-      return;
-    }
-
-    if (inDungeon) {
-      if (dungeonType === 'w_corp' || dungeonType === 'warp_train') {
-        this.setAmbience('warp_train');
-      } else if (dungeonType === 'great_lake' || dungeonType === 'outskirts') {
-        this.setAmbience('outskirts_lake');
-      } else {
-        this.setAmbience('warp_train');
-      }
-      return;
-    }
-
-    // High distortion trigger
-    if (char.distortionPoints >= 50 || char.pendingEvent?.isDistortion || char.hasDistorted) {
-      this.setAmbience('distortion');
-      return;
-    }
-
-    // Wing Feather / Nest resident
-    if (char.career === 'wing' || char.district?.toLowerCase().includes('nest')) {
-      this.setAmbience('nest');
-      return;
-    }
-
-    // Backstreets default
-    this.setAmbience('backstreets');
   }
 
   // =========================================================================

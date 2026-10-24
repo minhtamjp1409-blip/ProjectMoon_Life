@@ -7,17 +7,18 @@
   display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 24px;
   min-height: 64px; padding: 8px var(--pad);
   border-bottom: 1px solid var(--border);
-  background: var(--ground);
+  background: rgba(7, 7, 10, .66);
+  backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
 }
 .playbar-age { display: flex; align-items: baseline; gap: 8px; white-space: nowrap; }
 .playbar-age b { font-family: var(--font); font-size: 34px; font-weight: 600; font-stretch: 80%; font-variant-numeric: tabular-nums; line-height: 1; }
 .playbar-age span { font-family: var(--serif); font-size: 15px; color: var(--muted); }
 .yearbar { display: flex; flex-direction: column; gap: 7px; min-width: 0; }
 .yearbar-track { position: relative; height: 4px; background: var(--raised); overflow: hidden; }
-.yearbar-fill { position: absolute; inset: 0; transform-origin: left center; transform: scaleX(0); background: var(--text); }
+.yearbar-fill { position: absolute; inset: 0; transform-origin: left center; transform: scaleX(0); background: var(--accent); box-shadow: 0 0 12px var(--accent); transition: background-color 1.2s ease; }
 .yearbar-track.is-paused .yearbar-fill { background: var(--muted); }
 .yearbar-quarter-ticks { position: absolute; inset: 0; pointer-events: none; }
-.yearbar-quarter-ticks .tick { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--ground); }
+.yearbar-quarter-ticks .tick { position: absolute; top: 0; bottom: 0; width: 2px; background: rgba(7, 7, 10, .9); }
 .tick-25 { left: 25%; } .tick-50 { left: 50%; } .tick-75 { left: 75%; }
 .yearbar-meta { display: flex; align-items: center; gap: 14px; min-width: 0; font-size: 13.5px; color: var(--muted); white-space: nowrap; }
 .yearbar-meta > span:first-child { overflow: hidden; text-overflow: ellipsis; }
@@ -35,7 +36,7 @@
 .playbar-controls { display: flex; align-items: center; gap: 6px; }
 .playbar-controls > .divider { width: 1px; height: 26px; margin: 0 6px; background: var(--border); }
 .play-pause-btn { width: 42px; height: 42px; border: 1px solid var(--border); color: var(--text); }
-.play-pause-btn.is-on { background: var(--text); color: var(--ground); border-color: var(--text); }
+.play-pause-btn.is-on { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
 .speeds { display: inline-flex; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 2px; gap: 2px; }
 .speeds button { min-width: 36px; height: 34px; border-radius: var(--radius-sm); color: var(--muted); font-size: 13.5px; font-weight: 600; font-variant-numeric: tabular-nums; }
 .speeds button:hover:not(:disabled) { color: var(--text); background: var(--raised); }
@@ -53,7 +54,8 @@
   min-height: 0; overflow-y: auto; scrollbar-gutter: stable;
   padding: 24px 20px 40px 24px;
   border-right: 1px solid var(--border);
-  background: var(--ground);
+  background: rgba(8, 7, 10, .72);
+  backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
   display: flex; flex-direction: column; gap: 26px;
 }
 .side > section { display: flex; flex-direction: column; gap: 10px; }
@@ -174,7 +176,7 @@
 
   .mobile-resource-hud {
     display: flex; flex-direction: column; gap: 8px;
-    padding: 10px 16px 10px; border-bottom: 1px solid var(--border); background: var(--ground); cursor: pointer;
+    padding: 10px 16px 10px; border-bottom: 1px solid var(--border); background: rgba(8, 7, 10, .78); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); cursor: pointer;
   }
   .hud2-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
   .hud2-who { display: flex; align-items: baseline; gap: 8px; min-width: 0; overflow: hidden; }
@@ -207,7 +209,7 @@
   .mobile-dossier-sheet {
     position: absolute; left: 0; right: 0; bottom: 0;
     max-height: 88dvh; display: flex; flex-direction: column;
-    background: var(--ground); border-top: 1px solid var(--border);
+    background: var(--surface-solid); border-top: 1px solid var(--border);
     border-radius: 10px 10px 0 0; box-shadow: var(--shadow-pop);
   }
   .mobile-dossier-sheet-head { padding: 8px 16px 0; border-bottom: 1px solid var(--border); }
@@ -223,3 +225,4 @@
   .mobile-dossier-sheet-body > section { display: flex; flex-direction: column; gap: 10px; }
   .mobile-dossier-sheet-body .section-title { font-family: var(--font); font-size: 13px; font-weight: 600; color: var(--muted); padding-bottom: 8px; border-bottom: 1px solid var(--rule); }
 }
+@media (max-width: 1439px) { .yearbar-meta .phase { display: none; } }

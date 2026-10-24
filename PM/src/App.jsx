@@ -10,8 +10,7 @@ import { useThemeStore } from './store/themeStore';
 // Ant Design is kept for modals, tooltips and notifications only; its tokens
 // mirror the CSS variables in styles/ui/tokens.css so those surfaces match the screens.
 const PALETTE = {
-  dark: { primary: '#c8323a', bg: '#141110', elevated: '#1d1917', border: '#3a322e', text: '#ece8e1' },
-  light: { primary: '#a8232b', bg: '#f4f1eb', elevated: '#fbf7ef', border: '#c4b7a3', text: '#1e1814' }
+  dark: { primary: '#d23b3b', bg: '#121115', elevated: '#18161b', border: '#2e2b33', text: '#f1ede6' },
 };
 
 export const App = () => {
@@ -19,9 +18,9 @@ export const App = () => {
   useEffect(() => { notification.config({ maxCount: 1, duration: 3 }); }, []);
 
   const antTheme = useMemo(() => {
-    const p = PALETTE[themeMode] || PALETTE.dark;
+    const p = PALETTE.dark;
     return {
-      algorithm: themeMode === 'dark' ? AntdThemeLib.darkAlgorithm : AntdThemeLib.defaultAlgorithm,
+      algorithm: AntdThemeLib.darkAlgorithm,
       token: {
         colorPrimary: p.primary,
         colorBgContainer: p.bg,

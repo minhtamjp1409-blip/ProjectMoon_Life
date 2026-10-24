@@ -59,7 +59,7 @@ h3 { font-size: 16.5px; }
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   min-height: 40px; padding: 0 16px;
   border: 1px solid var(--border); border-radius: var(--radius-sm);
-  background: var(--surface); color: var(--text);
+  background: rgba(255, 255, 255, .04); color: var(--text);
   font-size: 14.5px; font-weight: 600; line-height: 1.2; text-decoration: none; white-space: nowrap;
   transition: background-color .14s ease, border-color .14s ease, color .14s ease;
 }
@@ -67,7 +67,7 @@ h3 { font-size: 16.5px; }
 .btn:active:not(:disabled) { background: var(--active); }
 .btn:disabled { opacity: .5; }
 .btn-primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
-.btn-primary:hover:not(:disabled) { background: var(--accent-hover); border-color: var(--accent-hover); color: var(--accent-ink); }
+.btn-primary:hover:not(:disabled) { background: var(--accent-hover); border-color: var(--accent-hover); color: var(--accent-ink); filter: brightness(1.1); box-shadow: 0 0 24px var(--accent-soft); }
 .btn-primary:active:not(:disabled) { background: var(--accent); }
 .btn-danger { background: transparent; border-color: var(--bad); color: var(--bad); }
 .btn-danger:hover:not(:disabled) { background: var(--accent-soft); border-color: var(--bad); }
@@ -95,17 +95,17 @@ h3 { font-size: 16.5px; }
 .input, .select, .textarea {
   display: block; width: 100%; min-width: 0; height: var(--control-h);
   padding: 0 12px; border: 1px solid var(--border); border-radius: var(--radius-sm);
-  background: var(--surface); color: var(--text); font-size: 15px;
+  background: rgba(0, 0, 0, .35); color: var(--text); font-size: 15px;
 }
 .textarea { height: auto; min-height: 96px; padding: 10px 12px; line-height: 1.6; resize: vertical; }
 .input::placeholder, .textarea::placeholder { color: var(--faint); }
-.input:focus, .select:focus, .textarea:focus { outline: none; border-color: var(--text); }
+.input:focus, .select:focus, .textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
 .select {
   appearance: none; cursor: pointer; padding-right: 34px;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23998b7c' stroke-width='2.2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
   background-repeat: no-repeat; background-position: right 12px center;
 }
-.select option { background: var(--surface); color: var(--text); }
+.select option { background: var(--surface-solid); color: var(--text); }
 .search { position: relative; display: flex; align-items: center; }
 .search svg { position: absolute; left: 12px; color: var(--faint); pointer-events: none; }
 .search .input, .search input { padding-left: 36px; }
@@ -113,7 +113,7 @@ h3 { font-size: 16.5px; }
 /* Segmented control and tabs: the chosen one is ink on paper, not a coloured pill */
 .seg, .tabs {
   display: inline-flex; flex-wrap: wrap; gap: 2px; padding: 3px;
-  border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--ground);
+  border: 1px solid var(--border); border-radius: var(--radius-sm); background: rgba(0, 0, 0, .3);
 }
 .seg button, .tabs button, .tabs .tab {
   min-height: 34px; padding: 0 14px; border-radius: var(--radius-sm);
@@ -121,14 +121,14 @@ h3 { font-size: 16.5px; }
 }
 .seg button:hover:not(:disabled), .tabs button:hover:not(:disabled) { color: var(--text); background: var(--raised); }
 .seg button.is-on, .seg button.is-active, .seg button[aria-checked='true'],
-.tabs button.is-on, .tabs button.is-active, .tabs .tab.is-on, .tabs button[aria-selected='true'] { background: var(--text); color: var(--ground); }
+.tabs button.is-on, .tabs button.is-active, .tabs .tab.is-on, .tabs button[aria-selected='true'] { background: var(--accent); color: var(--accent-ink); }
 
 /* Disclosure */
 details > summary { cursor: pointer; list-style: none; }
 details > summary::-webkit-details-marker { display: none; }
 
 /* Panels: a 1px line and a tone step, no shadows */
-.panel { border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); min-width: 0; }
+.panel { border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); min-width: 0; }
 .panel-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 18px; border-bottom: 1px solid var(--rule); }
 .panel-head :is(h2, h3) { font-size: 16.5px; }
 .panel-meta { font-size: 13px; color: var(--muted); }
@@ -185,13 +185,13 @@ details > summary::-webkit-details-marker { display: none; }
 ::-webkit-scrollbar-thumb { background: var(--control); border: 3px solid transparent; background-clip: padding-box; border-radius: 999px; }
 
 /* Ant Design surfaces (modals, menus, tooltips, notices) speak the same language */
-.ant-modal .ant-modal-content { border: 1px solid var(--border); border-radius: var(--radius) !important; background: var(--surface) !important; color: var(--text); max-height: calc(100dvh - 48px); overflow-y: auto; box-shadow: var(--shadow-pop) !important; }
+.ant-modal .ant-modal-content { border: 1px solid var(--border); border-radius: var(--radius) !important; background: var(--surface-solid) !important; color: var(--text); max-height: calc(100dvh - 48px); overflow-y: auto; box-shadow: var(--shadow-pop) !important; }
 .ant-modal .ant-modal-header { background: transparent !important; }
 .ant-modal-title { font-family: var(--serif) !important; font-weight: 600 !important; color: var(--text) !important; }
 .ant-modal .btn { white-space: normal; height: auto; min-height: 44px; line-height: 1.5; padding: 10px 16px; }
 .ant-modal :is(.input, .select, .textarea) { max-width: 100%; }
 .ant-modal-confirm-title { font-family: var(--serif); }
-.ant-notification-notice { background: var(--surface) !important; color: var(--text) !important; border: 1px solid var(--border) !important; border-radius: var(--radius) !important; }
+.ant-notification-notice { background: var(--surface-solid) !important; color: var(--text) !important; border: 1px solid var(--border) !important; border-radius: var(--radius) !important; }
 .ant-notification-notice-message, .ant-notification-notice-description, .ant-notification-notice-close { color: var(--text) !important; }
 .ant-dropdown-menu { border: 1px solid var(--border) !important; border-radius: var(--radius) !important; }
 .ant-tooltip-inner { font-size: 13px !important; line-height: 1.5 !important; }

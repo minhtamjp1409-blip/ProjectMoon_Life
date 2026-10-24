@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import Header, { BottomNav } from './Header';
-import { CityBackdrop } from '../components/CityBackdrop';
+import { WorldBackdrop } from '../components/world/WorldBackdrop';
+import { sceneContextOf } from '../engine/sceneContext';
+import { audioEngine } from '../engine/audioEngine';
 import { useShallow } from 'zustand/react/shallow';
 import { DUNGEON_DEFINITIONS } from '../engine/gameEngine';
-import '../styles/dungeonFx.css';
 import { useGameStore } from '../store/gameStore';
 
 const TICK_MS = 100;
@@ -78,12 +79,29 @@ export const MainLayout = ({ children }) => {
   const hasDock = isPlay && Boolean(pendingEvent || pendingContract || pendingMinor || activeResolution);
   const dungeon = isPlay && dungeonId ? DUNGEON_DEFINITIONS[dungeonId] : null;
 
+  // The world this life is in right now: one string, so the layout re-renders only when it changes
+  const sceneKey = useGameStore((s) => JSON.stringify(sceneContextOf({ inRun: s.inRun, path: location.pathname, char: s.char })));
+  const scene = useMemo(() => JSON.parse(sceneKey), [sceneKey]);
+  const session = useGameStore((s) => s.char.pendingDungeon || null);
+  useEffect(() => {
+    audioEngine.setScene(scene);
+  }, [scene]);
+  const sceneStyle = {
+    '--accent': scene.color || scene.accent,
+    '--accent-hover': scene.color || scene.accent,
+    '--accent-ink': scene.color ? '#fff' : scene.ink,
+    '--accent-soft': 'color-mix(in srgb, ' + (scene.color || scene.accent) + ' 16%, transparent)',
+    '--glow': scene.glow,
+    ...(dungeon ? { '--dg': dungeon.accentColor } : {})
+  };
+
   return (
     <div
       className={`shell interface-v2 ${isPlay ? 'is-in-play' : ''} ${hasDock ? 'has-dock' : ''} ${dungeon ? `in-dungeon dg-shell-${dungeon.theme}` : ''}`}
-      style={dungeon ? { '--dg': dungeon.accentColor } : undefined}
+      data-world={scene.world}
+      style={sceneStyle}
     >
-      <CityBackdrop variant="ambient" />
+      <WorldBackdrop scene={scene} session={session} />
       {dungeon && dungeonFx && <span key={dungeonNonce} className={`dg-shell-pulse fx-${dungeonFx}`} aria-hidden="true" />}
       <Header isPlay={isPlay} />
       <main className={`main ${isHome ? 'is-home' : ''}`} id="main-content">{isPlay ? children : <div className="main-scroll">{children}</div>}</main>

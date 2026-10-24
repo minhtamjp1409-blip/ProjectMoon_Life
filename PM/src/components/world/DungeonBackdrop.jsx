@@ -1,5 +1,5 @@
 import React from 'react';
-import { DUNGEON_DEFINITIONS } from '../../../engine/gameEngine';
+import { DUNGEON_DEFINITIONS } from '../../engine/gameEngine';
 
 export const DungeonBackdrop = ({ session }) => {
   if (!session) return null;

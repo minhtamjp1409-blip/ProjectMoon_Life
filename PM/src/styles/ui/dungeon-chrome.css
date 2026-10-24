@@ -78,7 +78,7 @@
 .dg-stances { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2px; padding: 3px; border: 1px solid var(--border); border-radius: var(--radius-sm); }
 .dg-stance { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 38px; border-radius: var(--radius-sm); color: var(--muted); font-size: 14px; font-weight: 600; }
 .dg-stance:hover { color: var(--text); background: var(--raised); }
-.dg-stance.is-on { background: var(--text); color: var(--ground); }
+.dg-stance.is-on { background: var(--dg); color: #06080c; }
 .dg-supplies { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
 .dg-supply { display: inline-flex; align-items: center; gap: 6px; min-height: 38px; padding: 0 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 14px; font-weight: 600; color: var(--text); }
 .dg-supply:hover:not(:disabled) { background: var(--raised); border-color: var(--control); }

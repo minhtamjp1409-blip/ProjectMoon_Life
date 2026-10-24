@@ -4,7 +4,7 @@
 .city-loading-overlay {
   position: fixed; inset: 0; z-index: 80;
   display: grid; place-items: center; padding: 24px;
-  background: var(--ground);
+  background: rgba(5, 5, 8, .9); backdrop-filter: blur(6px);
   animation: overlayIn .3s ease;
 }
 @keyframes overlayIn { from { opacity: 0; } }
@@ -27,13 +27,13 @@
 .terminal-prefix { color: var(--accent); }
 .loading-progress-wrap { width: 100%; display: flex; flex-direction: column; gap: 6px; }
 .loading-progress-track { height: 2px; background: var(--raised); overflow: hidden; }
-.loading-progress-fill { height: 100%; background: var(--text); transition: width .25s ease; }
+.loading-progress-fill { height: 100%; background: var(--accent); transition: width .25s ease; }
 .loading-progress-meta { display: flex; justify-content: space-between; font-size: 12.5px; color: var(--faint); font-variant-numeric: tabular-nums; }
 .loading-skip-hint { font-size: 13px; color: var(--faint); }
 .loading-skip-hint button { color: var(--text); text-decoration: underline; text-underline-offset: 3px; font-weight: 600; }
 
-/* The Hana certificate: a sheet of paper with the conferred colour as its only ink */
-.hana-decree-modal .ant-modal-content { padding: 0 !important; background: var(--page) !important; border: 0 !important; overflow: hidden; }
+/* The Hana certificate: dark glass lit by the conferred colour */
+.hana-decree-modal .ant-modal-content { padding: 0 !important; background: radial-gradient(120% 80% at 50% 0%, color-mix(in srgb, var(--conferred-color, var(--accent)) 28%, transparent), transparent 60%), var(--surface-solid) !important; border: 1px solid color-mix(in srgb, var(--conferred-color, var(--accent)) 50%, transparent) !important; overflow: hidden; }
 .hana-decree-scroll {
   display: flex; flex-direction: column; align-items: center; gap: 18px;
   padding: 36px 32px 28px; text-align: center; color: var(--page-ink);
@@ -48,8 +48,8 @@
 .hana-title-name { font-family: var(--serif); font-size: 30px; font-weight: 600; color: var(--page-ink); }
 .hana-title-heraldry { font-size: 13.5px; color: var(--page-muted); }
 .hana-decree-proclamation { font-family: var(--serif); font-size: 16px; line-height: 1.65; color: var(--page-ink); }
-.hana-decree-action-btn { width: 100%; min-height: 48px; border-radius: var(--radius-sm); background: var(--page-ink); color: var(--page); font-weight: 600; font-size: 15px; }
-.hana-decree-action-btn:hover { background: color-mix(in srgb, var(--page-ink) 85%, var(--page)); }
+.hana-decree-action-btn { width: 100%; min-height: 48px; border-radius: var(--radius-sm); background: var(--conferred-color, var(--accent)); color: #fff; font-weight: 600; font-size: 15px; text-shadow: 0 1px 2px rgba(0,0,0,.4); }
+.hana-decree-action-btn:hover { filter: brightness(1.1); }
 
 /* Workshop counter: a price list, not a shop window */
 .depot-title { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding-right: 28px; }

@@ -27,14 +27,14 @@
 .district-dial svg { width: 100%; height: auto; overflow: visible; }
 .dial-outer-ring { fill: none; stroke: var(--border); stroke-width: 1; }
 .dial-mid-ring { fill: none; stroke: var(--rule); stroke-width: 1; }
-.dial-inner { fill: var(--surface); stroke: var(--border); stroke-width: 1; }
-.dial-sector path { fill: var(--raised); stroke: var(--ground); stroke-width: 1.5; transition: fill .15s ease; }
+.dial-inner { fill: rgba(8,7,10,.85); stroke: var(--border); stroke-width: 1; }
+.dial-sector path { fill: rgba(255,255,255,.07); stroke: rgba(7,7,10,.9); stroke-width: 1.5; transition: fill .15s ease; }
 .dial-sector text { fill: var(--muted); font-family: var(--font); font-size: 13px; font-weight: 600; pointer-events: none; }
 .dial-sector { cursor: pointer; outline: none; }
 .dial-sector:hover path, .dial-sector:focus-visible path { fill: var(--active); }
 .dial-sector:focus-visible path { stroke: var(--text); stroke-width: 2; }
-.dial-sector.is-selected path { fill: var(--text); }
-.dial-sector.is-selected text { fill: var(--ground); }
+.dial-sector.is-selected path { fill: var(--accent); }
+.dial-sector.is-selected text { fill: var(--accent-ink); }
 .dial-pointer-needle polygon { fill: var(--accent); }
 .dial-name { fill: var(--text); font-family: var(--serif); font-size: 26px; font-weight: 600; }
 .dial-caption { fill: var(--muted); font-family: var(--font); font-size: 13px; }
@@ -53,17 +53,16 @@
 .atlas-note p { color: var(--muted); font-size: 14.5px; line-height: 1.55; margin-bottom: 10px; }
 .atlas-note button { display: inline-flex; align-items: center; gap: 4px; color: var(--text); font-size: 14px; font-weight: 600; text-decoration: underline; text-underline-offset: 4px; }
 
-/* The birth record: paper in both themes, so the one thing to fill in is the one thing lit */
+/* The birth record: the darkest glass on the screen, with the accent as its top edge */
 .birth-panel {
-  --surface: var(--page); --raised: color-mix(in srgb, var(--page-ink) 7%, var(--page)); --active: color-mix(in srgb, var(--page-ink) 12%, var(--page));
-  --ground: color-mix(in srgb, var(--page-ink) 4%, var(--page));
-  --border: var(--page-edge); --rule: var(--page-rule); --text: var(--page-ink); --muted: var(--page-muted); --faint: var(--page-muted);
   position: relative;
   display: flex; flex-direction: column; gap: 20px;
   padding: 28px 28px 24px;
-  background: var(--page); color: var(--page-ink);
+  background: var(--page); color: var(--text);
+  backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--border); border-top: 3px solid var(--accent);
   border-radius: var(--radius);
-  border-top: 4px solid var(--accent);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, .45);
 }
 .birth-heading { display: flex; gap: 14px; align-items: flex-start; padding-bottom: 18px; border-bottom: 1px solid var(--page-rule); }
 .birth-symbol { display: grid; place-items: center; width: 38px; height: 38px; flex: none; border: 1px solid var(--page-edge); border-radius: 50%; color: var(--page-ink); }
@@ -139,8 +138,8 @@
 .district-index button strong { font-size: 15px; font-weight: 600; }
 .district-index button small { color: var(--muted); font-size: 13px; line-height: 1.4; }
 .district-index button:hover { background: var(--raised); }
-.district-index button.is-selected { background: var(--text); color: var(--ground); }
-.district-index button.is-selected :is(span, small) { color: color-mix(in srgb, var(--ground) 75%, transparent); }
+.district-index button.is-selected { background: var(--accent); color: var(--accent-ink); }
+.district-index button.is-selected :is(span, small) { color: color-mix(in srgb, var(--accent-ink) 75%, transparent); }
 .district-index .empty { grid-column: 1 / -1; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
 .region-mark { margin-left: 0; align-self: flex-start; }
 

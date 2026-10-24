@@ -1,0 +1,116 @@
+/* The world behind the interface. Each world sets its sky (three stops), its haze, the colour of its
+   lit windows and of its two silhouette layers. Overlays answer E.G.O, a Hana Color and danger. */
+.world { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; background: #050507; }
+.world-scene { position: absolute; inset: 0; animation: worldIn 1.6s ease both; transition: opacity 1.5s ease; }
+.world-scene.is-leaving { opacity: 0; }
+@keyframes worldIn { from { opacity: 0; transform: scale(1.03); } }
+
+.world-scene {
+  --sky-top: #07070b; --sky-mid: #14101a; --sky-low: #2a141a; --haze: rgba(210, 59, 59, .18);
+  --far: #120d12; --near: #060508; --win: #e8b46a;
+}
+.world-sky { position: absolute; inset: 0; background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 52%, var(--sky-low) 100%); }
+.world-glow { position: absolute; left: -10%; right: -10%; bottom: 8%; height: 55%; background: radial-gradient(60% 60% at 50% 100%, var(--haze), transparent 70%); animation: glowBreath 9s ease-in-out infinite; }
+@keyframes glowBreath { 50% { opacity: .7; transform: scaleX(1.06); } }
+.world-silhouette { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: min(58vh, 520px); }
+.world-silhouette .world-far { fill: var(--far); stroke: color-mix(in srgb, var(--haze) 60%, transparent); stroke-width: 1; opacity: .95; }
+.world-silhouette .world-near { fill: var(--near); }
+.world-lights rect { fill: var(--win); opacity: .42; }
+.world-lights.is-far rect { opacity: .22; }
+.world-lights rect.is-flicker { animation: winFlicker 7s steps(1) infinite; }
+@keyframes winFlicker { 0%, 100% { opacity: .55; } 42% { opacity: .1; } 44% { opacity: .6; } 46% { opacity: .05; } 70% { opacity: .55; } }
+.world-weather { position: absolute; inset: 0; width: 100%; height: 100%; }
+.world-sun { fill: var(--sun, #d9a463); opacity: .5; filter: blur(2px); }
+
+.world-vignette { position: absolute; inset: 0; background: radial-gradient(120% 90% at 50% 40%, transparent 45%, rgba(0, 0, 0, .65) 100%); }
+.world-grain {
+  position: absolute; inset: -50%; opacity: .07; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ---------- the worlds ---------- */
+.world-scene[data-world='title'] { --sky-top: #050409; --sky-mid: #130a12; --sky-low: #3a1016; --haze: rgba(220, 50, 50, .32); --far: #1a0c10; --near: #050407; --win: #f3c27c; }
+.world-scene[data-world='title'] .world-sky::after { content: ''; position: absolute; top: 9%; left: 44%; width: 110px; height: 110px; border-radius: 50%; background: radial-gradient(circle at 40% 40%, #ffb3a0, #c8323a 55%, #5a0f14 100%); box-shadow: 0 0 120px 30px rgba(200, 50, 58, .35); opacity: .85; }
+/* searchlights sweeping over the skyline */
+.world-scene[data-world='title'] .world-glow::before,
+.world-scene[data-world='title'] .world-glow::after,
+.world-scene[data-world='nest'] .world-glow::before {
+  content: ''; position: absolute; bottom: 0; left: 30%; width: 140px; height: 160%;
+  background: linear-gradient(0deg, rgba(255, 220, 200, .16), transparent 85%);
+  transform-origin: 50% 100%; filter: blur(6px); animation: searchlight 14s ease-in-out infinite;
+}
+.world-scene[data-world='title'] .world-glow::after { left: 64%; animation-duration: 19s; animation-delay: -6s; }
+@keyframes searchlight { 0%, 100% { transform: rotate(-28deg); } 50% { transform: rotate(26deg); } }
+
+.world-scene[data-world='library'] { --sky-top: #0c0806; --sky-mid: #1d130b; --sky-low: #3a2512; --haze: rgba(220, 170, 90, .26); --far: #1c120a; --near: #0a0604; }
+.world-scene[data-world='childhood'] { --sky-top: #0a0810; --sky-mid: #1b1420; --sky-low: #3d2a22; --haze: rgba(230, 170, 100, .22); --far: #1a1218; --near: #07050a; --win: #f4c784; }
+.world-scene[data-world='backstreets'] { --sky-top: #05090c; --sky-mid: #0b1a1e; --sky-low: #1a2b2e; --haze: rgba(80, 200, 185, .2); --far: #0d1618; --near: #040708; --win: #7fe0d2; }
+.world-scene[data-world='syndicate'] { --sky-top: #090508; --sky-mid: #1c0c14; --sky-low: #3a1420; --haze: rgba(220, 80, 100, .24); --far: #180a10; --near: #060306; --win: #ff9aa8; }
+.world-scene[data-world='fixer'] { --sky-top: #090705; --sky-mid: #1e140a; --sky-low: #4a2a10; --haze: rgba(240, 160, 60, .3); --far: #1c1209; --near: #070503; --win: #ffc46a; }
+.world-scene[data-world='workshop'] { --sky-top: #0a0604; --sky-mid: #22110a; --sky-low: #5a250c; --haze: rgba(255, 130, 50, .38); --far: #1e0e07; --near: #080403; --win: #ffa45a; }
+.world-scene[data-world='nest'] { --sky-top: #0a1424; --sky-mid: #1a3350; --sky-low: #4a7092; --haze: rgba(190, 230, 255, .3); --far: #1c3048; --near: #0c1624; --win: #e8f6ff; }
+.world-scene[data-world='nest'] .world-glow::before { background: linear-gradient(0deg, rgba(220, 240, 255, .14), transparent 85%); animation-duration: 22s; }
+.world-scene[data-world='wing'] { --sky-top: #050a18; --sky-mid: #0d1a36; --sky-low: #1d3566; --haze: rgba(120, 170, 255, .26); --far: #0e1a34; --near: #050a16; --win: #a9c8ff; }
+.world-scene[data-world='wing'] .world-sky::after { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(90deg, rgba(140, 180, 255, .05) 0 1px, transparent 1px 72px), repeating-linear-gradient(0deg, rgba(140, 180, 255, .035) 0 1px, transparent 1px 72px); mask-image: linear-gradient(180deg, transparent, #000 40%, transparent); }
+.world-scene[data-world='outskirts'], .world-scene[data-world='dungeon-outskirts'] { --sky-top: #0e0906; --sky-mid: #2a1a0e; --sky-low: #6a3f1a; --haze: rgba(230, 160, 90, .34); --far: #2a1a0e; --near: #120a05; --sun: #f0b06a; }
+.world-scene[data-world='finger-index'] { --sky-top: #0b0b07; --sky-mid: #1e1d10; --sky-low: #3d3a1a; --haze: rgba(236, 224, 142, .22); --far: #1a1a0e; --near: #070705; --win: #f3eab0; }
+.world-scene[data-world='finger-middle'] { --sky-top: #050407; --sky-mid: #0f0c14; --sky-low: #221a10; --haze: rgba(217, 179, 74, .2); --far: #0e0b10; --near: #030204; --win: #e8c25a; }
+.world-scene[data-world='finger-ring'] { --sky-top: #0b0406; --sky-mid: #2a0a10; --sky-low: #5a141c; --haze: rgba(255, 230, 230, .18); --far: #24080e; --near: #080204; --win: #fff1f1; }
+.world-scene[data-world='finger-pinky'] { --sky-top: #08050e; --sky-mid: #1a1030; --sky-low: #33204e; --haze: rgba(184, 138, 232, .26); --far: #170e28; --near: #06040c; --win: #d9bbff; }
+.world-scene[data-world='finger-thumb'] { --sky-top: #0a0604; --sky-mid: #22100a; --sky-low: #4e1f0e; --haze: rgba(216, 116, 60, .32); --far: #1e0d08; --near: #080403; --win: #ffb184; }
+.world-scene[data-world='distortion'] { --sky-top: #0a0410; --sky-mid: #2a0a2a; --sky-low: #5a1440; --haze: rgba(226, 72, 122, .34); --far: #22081e; --near: #08020a; --win: #ff8ac0; }
+.world-scene[data-world='distortion'] .world-silhouette { animation: warpCity 6s ease-in-out infinite; transform-origin: 50% 100%; }
+.world-scene[data-world='distortion'] .world-sky { animation: hueDrift 12s linear infinite; }
+@keyframes warpCity { 50% { transform: skewX(-3deg) scaleY(1.05); filter: hue-rotate(25deg); } }
+@keyframes hueDrift { to { filter: hue-rotate(360deg); } }
+.world-scene[data-world='dead'] { --sky-top: #070707; --sky-mid: #121212; --sky-low: #1e1d1c; --haze: rgba(200, 200, 200, .08); --far: #141414; --near: #050505; --win: #8a8680; filter: grayscale(1); }
+
+.world-scene[data-world='dungeon-warp'] { --sky-top: #020810; --sky-mid: #06182a; --sky-low: #0b2e4a; --haze: rgba(95, 210, 255, .26); }
+.world-scene[data-world='dungeon-lobotomy'] { --sky-top: #0a0602; --sky-mid: #1e1206; --sky-low: #40240a; --haze: rgba(242, 165, 49, .28); }
+.world-scene[data-world='dungeon-lobotomy'] .world-glow { animation: alarmPulse 2.6s ease-in-out infinite; }
+@keyframes alarmPulse { 50% { opacity: .35; } }
+.world-scene[data-world='dungeon-bloodfiend'] { --sky-top: #0a0206; --sky-mid: #240812; --sky-low: #4a0c1a; --haze: rgba(240, 67, 92, .34); }
+.world-scene[data-world='dungeon-greatlake'] { --sky-top: #020a0b; --sky-mid: #062024; --sky-low: #0a3238; --haze: rgba(79, 214, 200, .22); }
+.world-scene[data-world='dungeon-night'] { --sky-top: #04030a; --sky-mid: #0d0a1e; --sky-low: #1c1440; --haze: rgba(157, 140, 242, .2); --far: #0e0b1e; --near: #030208; --win: #b5a8ff; }
+.world-scene[data-world='dungeon-claw'] { --sky-top: #02080a; --sky-mid: #081a1e; --sky-low: #0c2e34; --haze: rgba(127, 224, 236, .2); }
+.world-scene .dungeon-backdrop { position: absolute; inset: 0; opacity: .9; }
+
+/* ---------- overlays ---------- */
+.world-color, .world-ego, .world-danger { position: absolute; inset: 0; opacity: 0; transition: opacity 1.4s ease; }
+/* A Hana Color: rays of the conferred colour turning slowly over the City */
+.world[data-color='on'] .world-color { opacity: 1; background: radial-gradient(70% 50% at 50% 0%, color-mix(in srgb, var(--w-color) 30%, transparent), transparent 70%); overflow: hidden; }
+.world[data-color='on'] .world-color::before {
+  content: ''; position: absolute; left: 50%; top: -80vmax; width: 160vmax; height: 160vmax; margin-left: -80vmax;
+  background: repeating-conic-gradient(color-mix(in srgb, var(--w-color) 13%, transparent) 0deg 3deg, transparent 3deg 12deg);
+  mask-image: radial-gradient(circle, #000 20%, transparent 62%);
+  animation: colorRays 120s linear infinite;
+}
+@keyframes colorRays { to { transform: rotate(360deg); } }
+/* E.G.O: pale violet light falling from above; stronger and breathing while it is open */
+.world[data-ego='awakened'] .world-ego, .world[data-ego='active'] .world-ego {
+  opacity: .9;
+  background:
+    linear-gradient(100deg, transparent 30%, rgba(190, 170, 255, .2) 38%, transparent 46%),
+    linear-gradient(80deg, transparent 52%, rgba(190, 170, 255, .16) 58%, transparent 64%),
+    radial-gradient(80% 40% at 50% 0%, rgba(173, 156, 245, .3), transparent 70%);
+  box-shadow: inset 0 0 90px rgba(173, 156, 245, .16);
+  animation: egoDrift 14s ease-in-out infinite;
+}
+@keyframes egoDrift { 50% { background-position: 60px 0, -40px 0, 0 0; } }
+.world[data-ego='active'] .world-ego { opacity: 1; animation: egoBreath 3.2s ease-in-out infinite; box-shadow: inset 0 0 120px rgba(173, 156, 245, .35); }
+@keyframes egoBreath { 50% { opacity: .65; } }
+/* Danger: the edges of the screen beat with the heart */
+.world[data-danger='on'] .world-danger { opacity: 1; background: radial-gradient(110% 80% at 50% 50%, transparent 55%, rgba(200, 30, 40, .32) 100%); animation: heartEdge 1.1s ease-in-out infinite; }
+@keyframes heartEdge { 0%, 40%, 100% { opacity: .55; } 12% { opacity: 1; } 26% { opacity: .8; } }
+
+@media (max-width: 860px) {
+  .world-silhouette { height: 42vh; }
+  .world-scene[data-world='title'] .world-sky::after { width: 64px; height: 64px; top: 64px; left: auto; right: 7%; opacity: .55; }
+}
+
+/* One-shot bursts: a Color conferred, an E.G.O awakened or opened. Big, brief, then the world returns. */
+.world-burst { position: absolute; inset: 0; opacity: 0; }
+.world-burst.is-color { background: radial-gradient(circle at 50% 45%, color-mix(in srgb, var(--w-color, #e1341e) 70%, #fff) 0, color-mix(in srgb, var(--w-color, #e1341e) 40%, transparent) 18%, transparent 55%); animation: burstColor 2.6s cubic-bezier(.2, .8, .2, 1) both; }
+.world-burst.is-ego { background: radial-gradient(circle at 50% 30%, rgba(230, 220, 255, .9) 0, rgba(173, 156, 245, .45) 20%, transparent 60%); animation: burstEgo 2.2s cubic-bezier(.2, .8, .2, 1) both; }
+@keyframes burstColor { 0% { opacity: 0; transform: scale(.4); } 18% { opacity: 1; } 100% { opacity: 0; transform: scale(1.8); } }
+@keyframes burstEgo { 0% { opacity: 0; transform: scale(.6); } 15% { opacity: 1; } 100% { opacity: 0; transform: scale(1.5); } }
