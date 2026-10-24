@@ -897,3 +897,9 @@ Chủ dự án yêu cầu làm lại toàn bộ giao diện lần nữa: bỏ t�
 * **Màn chính:** bỏ dòng dẫn "Nơi bạn sinh ra…" dưới tiêu đề.
 * **Sửa:** khung tên bị co mất phần tên trong cột hồ sơ (cột là flex, khung có `overflow: hidden`), nay mọi khối trong cột không co.
 * **Kiểm tra:** `npm test` xanh, `vite build` sạch. Đã chụp: popup sự kiện ở 1440 và 390px, khung tên đỉnh Ring, Color và Hội đồng Wing ở 1440px, dungeon, màn chính.
+
+### Đợt 47 (25/10/2026): khung tên gọn hơn, chức vụ Wing theo bậc
+* **Khung tên:** dòng đầu ghi "Thế hệ #n · Nam/Nữ"; tên và chức vụ có khoảng cách rõ hơn. "Tổ chức" và "Điềm báo" nằm ngay dưới chức vụ, trong khung tên, trước phần chỉ số. Phần gập đổi tên thành "Khu vực & xuất thân", còn giữ Tín nhiệm, người đang dìu dắt và Merit.
+* **Chức vụ theo bậc:** chức vụ đổi theo bậc ở mọi nhánh. Fixer là "Fixer Grade n", Color Fixer kèm danh hiệu, Finger là "The X · tên bậc". Wing trước đây luôn ghi "Nhân viên Wing", nay là "Wing · Nhân viên tập sự / Feather chính thức / Trưởng phòng ban / Giám đốc cấp cao".
+* **Sửa:** nhân viên Wing không có `org` nên ô Tổ chức ghi "Tự do"; nay ghi Corp của khu vực (ví dụ P Corp), không rõ thì ghi "Wing".
+* **Kiểm tra:** chụp 1440px (trẻ em, đỉnh Ring, Hội đồng Wing) và 390px, không lỗi runtime.

@@ -6,7 +6,7 @@ import { useGameStore } from '../../../store/gameStore';
 import { useThemeStore } from '../../../store/themeStore';
 import { REGIONS, FAMILIES, FINGER_RANKS } from '../../../data/worldData';
 import { FATE_OMENS } from '../../../engine/weaverAI';
-import { SEASONS, getNextCareerMilestone } from '../../../engine/gameEngine';
+import { SEASONS, WING_RANKS, getNextCareerMilestone } from '../../../engine/gameEngine';
 import { audioEngine } from '../../../engine/audioEngine';
 import { gameFeel } from '../../../engine/gameFeel';
 import { useT } from '../../../i18n';
@@ -16,7 +16,6 @@ import { rankPlateOf } from '../../../engine/sceneContext';
 
 const JOB_LABELS = {
   Child: { vi: 'Trẻ em', en: 'Child' },
-  'Wing Employee': { vi: 'Nhân viên Wing', en: 'Wing Employee' },
   'Workshop Craftsman': { vi: 'Thợ rèn Workshop', en: 'Workshop Craftsman' },
   Outcast: { vi: 'Kẻ đào tẩu', en: 'Outcast' }
 };
@@ -29,6 +28,10 @@ export function describeJob(char, t) {
   }
   if (char.job === 'Syndicate' && char.finger) {
     return `The ${char.finger} · ${FINGER_RANKS[char.finger]?.[char.fingerRank || 0] || ''}`;
+  }
+  if (char.job === 'Wing Employee') {
+    const rank = WING_RANKS[Math.min(WING_RANKS.length - 1, char.wingRank || 0)];
+    return `Wing · ${t(rank.titleVi.split(' (')[0], rank.titleEn)}`;
   }
   const local = JOB_LABELS[char.job];
   return local ? t(local.vi, local.en) : char.job || t('Chưa có nghề', 'No trade yet');
@@ -273,9 +276,15 @@ const People = ({ npcs, age, t, lang }) => {
 
 // Name and post. The top of a branch gets its own frame (see rankPlateOf): the conferred colour of a
 // Hana Color, a Finger's colour at its top seat, the Wing board's blue; one step below gets a quieter one.
-const Nameplate = ({ char, t, lang }) => {
+// Wing staff carry no org record; their employer is the Corp of the district they work in
+const wingOf = (region) => (region?.tags?.includes('wing') && region.nameEn?.split(' · ')[1]) || 'Wing';
+
+const Nameplate = ({ char, region, omen, t, lang }) => {
   const plate = rankPlateOf(char);
   const special = plate.tier !== 'plain';
+  const gender = char.gender && char.gender !== 'unspecified' ? (char.gender === 'male' ? t('Nam', 'Male') : t('Nữ', 'Female')) : null;
+  const faction = getAffiliation(char) ? affiliationLabel(char, lang)
+    : char.org?.name || (char.finger ? `The ${char.finger}` : char.job === 'Wing Employee' ? wingOf(region) : t('Tự do', 'Unaffiliated'));
   return (
     <div className={`dossier-head nameplate is-${plate.tier}`} style={special ? { '--plate': plate.color } : undefined}>
       {special && (
@@ -284,11 +293,25 @@ const Nameplate = ({ char, t, lang }) => {
           {t(plate.vi, plate.en)}
         </span>
       )}
-      <span className="dossier-gen num">{t('Thế hệ', 'Gen')} #{char.generation}</span>
+      <span className="dossier-gen">
+        <span className="num">{t('Thế hệ', 'Gen')} #{char.generation}</span>
+        {gender && <span>{gender}</span>}
+      </span>
       <div className="dossier-id">
         <h2>{char.name}</h2>
         <p className="nameplate-post">{describeJob(char, t)}</p>
-        <p className="nameplate-sub">{char.gender && char.gender !== 'unspecified' ? (char.gender === 'male' ? t('Nam', 'Male') : t('Nữ', 'Female')) : ''}</p>
+      </div>
+      <div className="nameplate-facts">
+        <div className="kv">
+          <span>{t('Tổ chức', 'Faction')}</span>
+          <span className="kv-val-wrap">{faction}</span>
+        </div>
+        <Tooltip title={lang === 'en' ? omen.descEn : omen.descVi} placement="right">
+          <div className="kv is-help">
+            <span>{t('Điềm báo', 'Fate omen')}</span>
+            <span className="text-accent">{(lang === 'en' ? omen.nameEn : omen.nameVi).split(' · ')[0]}</span>
+          </div>
+        </Tooltip>
       </div>
     </div>
   );
@@ -303,7 +326,7 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeT
 
   return (
     <>
-      <Nameplate char={char} t={t} lang={lang} />
+      <Nameplate char={char} region={region} omen={omen} t={t} lang={lang} />
 
       {showOverview && (
         <section>
@@ -407,7 +430,7 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeT
       {showOverview && (
         <details className="dossier-fold">
           <summary>
-            <span>{t('Khu vực, xuất thân & tổ chức', 'District, background & faction')}</span>
+            <span>{t('Khu vực & xuất thân', 'District & background')}</span>
             <small>{lang === 'en' ? region.nameEn : region.nameVi}</small>
           </summary>
           <div className="dossier-fold-body">
@@ -471,12 +494,8 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeT
             );
           })()}
 
-          {/* Faction, Merit & Fate Omen Meta Card */}
+          {/* Standing, mentee & merit; faction and omen sit on the nameplate */}
           <div className="dossier-meta-card">
-            <div className="kv">
-              <span>{t('Tổ chức', 'Faction')}</span>
-              <span className="kv-val-wrap">{getAffiliation(char) ? affiliationLabel(char, lang) : (char.org?.name || (char.finger ? `The ${char.finger}` : t('Tự do', 'Unaffiliated')))}</span>
-            </div>
             {getAffiliation(char) && (
               <div className="kv">
                 <span>{t('Tín nhiệm', 'Standing')}</span>
@@ -495,12 +514,6 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeT
                 <span className="num">{char.merit}</span>
               </div>
             )}
-            <Tooltip title={lang === 'en' ? omen.descEn : omen.descVi} placement="right">
-              <div className="kv is-help">
-                <span>{t('Điềm báo', 'Fate omen')}</span>
-                <span className="text-accent">{(lang === 'en' ? omen.nameEn : omen.nameVi).split(' · ')[0]}</span>
-              </div>
-            </Tooltip>
           </div>
           </div>
         </details>

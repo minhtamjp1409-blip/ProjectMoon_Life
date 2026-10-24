@@ -62,9 +62,15 @@
 .side .section-title { font-family: var(--font); font-size: 13px; font-weight: 600; color: var(--muted); letter-spacing: 0; text-transform: none; padding-bottom: 8px; border-bottom: 1px solid var(--rule); margin: 0; }
 .side .section-title small { display: block; font-weight: 400; color: var(--faint); margin-top: 2px; }
 
-.dossier-head { display: flex; flex-direction: column; gap: 6px; padding-bottom: 18px; border-bottom: 1px solid var(--border); }
-.dossier-gen { font-size: 13px; color: var(--muted); }
-.dossier-id h2 { font-size: 30px; line-height: 1.1; margin-bottom: 4px; overflow-wrap: anywhere; }
+.dossier-head { display: flex; flex-direction: column; gap: 10px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+.dossier-gen { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; font-size: 13px; color: var(--muted); }
+.dossier-gen > span + span::before { content: ''; display: inline-block; width: 3px; height: 3px; margin-right: 10px; border-radius: 50%; background: var(--faint); vertical-align: middle; }
+.dossier-id { display: flex; flex-direction: column; gap: 6px; }
+.dossier-id h2 { font-size: 30px; line-height: 1.1; overflow-wrap: anywhere; }
+.nameplate-facts { display: flex; flex-direction: column; margin-top: 2px; }
+.nameplate-facts .kv { padding: 7px 0; font-size: 13.5px; }
+.nameplate-facts .kv:last-child { border-bottom: 0; padding-bottom: 0; }
+.nameplate-facts .kv:first-child { border-top: 1px solid var(--rule); }
 .dossier-id p { color: var(--muted); font-size: 14.5px; }
 .dossier-color-crest { display: inline-flex; align-items: center; gap: 8px; margin-top: 10px; padding: 4px 10px 4px 4px; border: 1px solid var(--border); border-radius: 999px; }
 .crest-swatch { width: 16px; height: 16px; border-radius: 50%; background: var(--apex-color, var(--gold)); }
@@ -228,8 +234,6 @@
 
 /* Nameplate: plain for most lives; the top of a branch gets a frame in its own colour, one step below a rule */
 .nameplate-post { color: var(--muted); font-size: 14.5px; }
-.nameplate-sub { color: var(--faint); font-size: 13px; }
-.nameplate-sub:empty { display: none; }
 .nameplate-rank {
   display: inline-flex; align-self: flex-start; align-items: center; gap: 6px;
   padding: 3px 10px; border-radius: 999px; font-size: 12.5px; font-weight: 700;
