@@ -236,9 +236,14 @@ function offerYearLeads(char, rng) {
     const available = pool.filter((entry) => !selected.some((item) => item.id === entry.id));
     const matched = available.filter((entry) => leadRisk(entry) === tier);
     const pick = pickWeighted(matched.length ? matched : available, weightOf(char), rng);
-    if (pick) selected.push({ id: pick.id, tier });
+    // The label is the event's real risk, not the slot it was drawn for, so a fallback pick is never sold as something it is not
+    if (pick) selected.push({ id: pick.id, tier: leadRisk(pick) });
   }
   char.pendingLead = selected.length === 3 ? { age: char.age, offers: selected } : null;
+}
+
+export function isYearLeadUsable(offer, char) {
+  return LIFE_MINORS.some((entry) => entry.id === offer?.id && matchesEventContext(entry, char) && entry.choices?.some((choice) => choiceIsAvailable(choice, char)));
 }
 
 export function chooseYearLead(charState, index) {
@@ -248,10 +253,9 @@ export function chooseYearLead(charState, index) {
   // A draft from another year (old save) or with no offer left can never be answered, so drop it instead of stalling the run
   if (draft.age !== char.age) { char.pendingLead = null; return char; }
   const offers = draft.offers || [];
-  const usable = (offer) => LIFE_MINORS.some((entry) => entry.id === offer?.id && matchesEventContext(entry, char) && entry.choices?.some((choice) => choiceIsAvailable(choice, char)));
   const chosen = offers[index];
-  if (!usable(chosen)) {
-    if (offers.some(usable)) return charState;
+  if (!isYearLeadUsable(chosen, char)) {
+    if (offers.some((offer) => isYearLeadUsable(offer, char))) return charState;
     char.pendingLead = null;
     return char;
   }

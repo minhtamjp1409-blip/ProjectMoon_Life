@@ -156,6 +156,8 @@ export function gauntletStage(ctx, session) {
       { labelVi: 'Băng bó và thở một lúc', labelEn: 'Bind your wounds and breathe a while', restAction: 'rest', resultVi: 'Bạn ngồi dựa lưng vào tường, buộc lại những chỗ đang chảy máu, và đếm hơi thở cho tới khi tay thôi run.', resultEn: 'You sit with your back to the wall, tie off what is bleeding, and count your breaths until your hands stop shaking.' },
       { labelVi: 'Đi tiếp ngay, nhặt nhạnh những gì rơi lại', labelEn: 'Press on at once, picking up what was dropped', restAction: 'push', resultVi: 'Bạn không dừng. Trên đường đi, bạn nhặt được những thứ người đi trước đã đánh rơi.', resultEn: 'You do not stop. On the way you pick up what those before you dropped.' }
     ];
+    // A dungeon that pays nothing has nothing to press on for, so the option would only skip the rest
+    if (ctx.def(session).noRewards) choices.splice(choices.findIndex((choice) => choice.restAction === 'push'), 1);
     const noRetreat = Boolean(ctx.def(session).noRetreat);
     if (!noRetreat && firstRest && g.elite && !c.sideUsed) {
       choices.push({ labelVi: 'Mở cánh cửa phụ: một kẻ mạnh hơn, phần thưởng lớn hơn', labelEn: 'Open the side door: a stronger foe, a bigger reward', restAction: 'side', resultVi: 'Bạn đẩy cánh cửa phụ. Thứ phía sau đã nghe thấy bạn từ trước.', resultEn: 'You push the side door. What is behind it heard you long before.' });

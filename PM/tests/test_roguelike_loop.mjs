@@ -63,3 +63,18 @@ console.log('Roguelike loop: seeded annual offers, single commitment, saved draf
   dead.pendingLead = { age: dead.age, offers: [{ id: 'no_such_event', tier: 'steady' }] };
   assert.equal(chooseYearLead(dead, 0).pendingLead, null, 'a draft with no usable offer is dropped');
 }
+
+{
+  const claw = createNewCharacter({ seed: 'claw-rest', startAge: 30 });
+  claw.job = 'Fixer';
+  const session = createDungeonSession('dungeon_claw_judgment', claw);
+  session.combat.floor = session.combat.plan.findIndex((floor) => floor.kind === 'rest');
+  const restChoices = getDungeonCurrentStage(session).choices;
+  assert.ok(restChoices.some((choice) => choice.restAction === 'rest'));
+  assert.ok(!restChoices.some((choice) => choice.restAction === 'push'), 'a dungeon with no rewards offers no wager');
+  for (let i = 0; i < 40; i++) {
+    const c = createNewCharacter({ seed: `tier-${i}`, startAge: 25 });
+    planYear(c, createRNG(`${c.seed}:year`));
+    assert.equal(c.pendingLead.offers.length, 3);
+  }
+}
