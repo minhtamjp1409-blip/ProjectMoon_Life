@@ -89,10 +89,10 @@ export const MainLayout = ({ children }) => {
     >
       <CityBackdrop variant="ambient" />
       {dungeon && dungeonFx && <span key={dungeonNonce} className={`dg-shell-pulse fx-${dungeonFx}`} aria-hidden="true" />}
-      <Sidebar isCollapsed={isNavCollapsed} onToggleCollapse={() => toggleSidebar(isNavCollapsed)} isPlay={isPlay} languageOverride={isHome ? 'en' : undefined} />
-      <Header languageOverride={isHome ? 'en' : undefined} />
+      <Sidebar isCollapsed={isNavCollapsed} onToggleCollapse={() => toggleSidebar(isNavCollapsed)} isPlay={isPlay} />
+      <Header />
       <main className="main" id="main-content">{isPlay ? children : <div className="main-scroll">{children}</div>}</main>
-      <BottomNav languageOverride={isHome ? 'en' : undefined} />
+      <BottomNav />
     </div>
   );
 };
