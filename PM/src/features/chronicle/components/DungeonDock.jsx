@@ -7,6 +7,7 @@ import {
   DUNGEON_BALANCE,
   DUNGEON_CARDS,
   CARD_BUDGET,
+  cardPlayable,
   getDungeonCurrentStage,
   getDungeonMastery,
   getStrainTier,
@@ -422,15 +423,15 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
               <span className="dg-hand-label">
                 {t('Bài trên tay', 'Hand')} · {t('còn', 'plays left')} {Math.max(0, CARD_BUDGET - (session.cardsPlayed || 0))}
               </span>
-              {session.cardHand.map((id) => {
+              {session.cardHand.map((id, slot) => {
                 const card = DUNGEON_CARDS[id];
                 if (!card) return null;
                 return (
                   <button
-                    key={id}
+                    key={`${id}-${slot}`}
                     type="button"
                     className="dg-card"
-                    disabled={Boolean(session.cardActive) || (session.cardsPlayed || 0) >= CARD_BUDGET}
+                    disabled={Boolean(session.cardActive) || (session.cardsPlayed || 0) >= CARD_BUDGET || !cardPlayable(id, char)}
                     onClick={() => onPlayCard?.(id)}
                   >
                     <strong>{t(card.vi, card.en)}</strong>

@@ -20,7 +20,7 @@ import { npcIsActive } from './eventConditions.js';
 import { ensureAffiliation, getAffiliation } from './affiliation.js';
 import { applyNpcFate } from './director.js';
 import { dealCards, cardEffectOf, nextHand, dungeonUsesCards } from './dungeonCards.js';
-export { playDungeonCard, DUNGEON_CARDS, CARD_BUDGET } from './dungeonCards.js';
+export { playDungeonCard, cardPlayable, DUNGEON_CARDS, CARD_BUDGET } from './dungeonCards.js';
 import { initGauntlet, isGauntlet, gauntletStage, previewCombatAction, resolveGauntletChoice, canLeaveGauntlet } from './dungeonCombat.js';
 
 export const DUNGEON_DEFINITIONS = {

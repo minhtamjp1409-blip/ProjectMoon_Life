@@ -13,13 +13,15 @@ export const DUNGEON_CARDS = {
   steady: { vi: 'Giữ nhịp', en: 'Keep Steady', textVi: 'Thương tổn nhận vào giảm một phần tư.', textEn: 'Damage taken drops by a quarter.', damage: 0.75 },
   blood: { vi: 'Đánh đổi máu', en: 'Trade Blood', textVi: 'Mất 6 HP ngay. Dò đường dễ hơn 10 điểm, phần thưởng thêm 30%.', textEn: 'Lose 6 HP now. Checks 10 points easier, rewards 30% larger.', check: 0.10, reward: 1.3, now: { health: -6 } },
   greed: { vi: 'Mắt tham', en: 'Greedy Eye', textVi: 'Loot thêm một nửa, nhưng dò đường khó hơn 6 điểm.', textEn: 'Loot half again as large, but checks 6 points harder.', check: -0.06, loot: 1.5 },
-  ego: { vi: 'Khai mở E.G.O', en: 'Open the E.G.O', textVi: 'Mất 8 SP ngay, thêm 4 Resonance. Dò đường dễ hơn 22 điểm, thương tổn giảm 40%.', textEn: 'Lose 8 SP now, gain 4 Resonance. Checks 22 points easier, damage down 40%.', check: 0.22, damage: 0.6, now: { sanity: -8, resonance: 4 } },
+  ego: { needsEgo: true, vi: 'Khai mở E.G.O', en: 'Open the E.G.O', textVi: 'Mất 8 SP ngay, thêm 4 Resonance. Dò đường dễ hơn 22 điểm, thương tổn giảm 40%.', textEn: 'Lose 8 SP now, gain 4 Resonance. Checks 22 points easier, damage down 40%.', check: 0.22, damage: 0.6, now: { sanity: -8, resonance: 4 } },
   second: { vi: 'Hơi thở thứ hai', en: 'Second Wind', textVi: 'Hồi 8 HP và 4 SP ngay. Không đổi gì ở chặng này.', textEn: 'Heal 8 HP and 4 SP now. Changes nothing about this stage.', now: { health: 8, sanity: 4 } },
   cold: { vi: 'Đếm lạnh', en: 'Cold Count', textVi: 'Quét chặng này miễn phí, không tốn tiếp tế.', textEn: 'Scan this stage for free, no supply spent.', scan: true },
   bluff: { vi: 'Giả điềm tĩnh', en: 'Feigned Calm', textVi: 'Dò đường dễ hơn 8 điểm, thương tổn giảm một phần mười.', textEn: 'Checks 8 points easier, damage down a tenth.', check: 0.08, damage: 0.9 }
 };
 
 const STARTER = ['read_blow', 'read_blow', 'steady', 'blood', 'greed', 'ego', 'second', 'cold', 'bluff', 'bluff'];
+// Someone whose E.G.O has not woken has no such card to hold; the slot goes to the plain steady-hands card
+const deckFor = (char) => STARTER.map((id) => (DUNGEON_CARDS[id].needsEgo && !char?.flags?.includes('EGOAwakened') ? 'steady' : id));
 const HAND = 3;
 // A dungeon is a handful of stages; the hand is a resource to ration, not a fresh buff every stage
 export const CARD_BUDGET = 2;
@@ -50,11 +52,24 @@ function draw(session, seed) {
   return { cardPile: pile, cardDiscard: discard, cardHand: hand };
 }
 
+/** Can this character pay the card's price without being left at zero or holding a power they have not woken? */
+export function cardPlayable(cardId, char) {
+  const card = DUNGEON_CARDS[cardId];
+  if (!card) return false;
+  if (card.needsEgo && !char?.flags?.includes('EGOAwakened')) return false;
+  const hp = char?.stats?.health ?? 0;
+  const sp = char?.stats?.sanity ?? 0;
+  if ((card.now?.health || 0) < 0 && hp + card.now.health < 1) return false;
+  if ((card.now?.sanity || 0) < 0 && sp + card.now.sanity < 1) return false;
+  return true;
+}
+
 export const dungeonUsesCards = (def) => Boolean(def?.cards);
 
 export function dealCards(session, char) {
   const seed = `${char?.seed ?? ''}|${session.id}|${char?.age ?? 0}`;
-  return { ...session, cardPile: shuffle(STARTER, seed), cardDiscard: [], cardActive: null, cardsPlayed: 0, ...draw({ cardPile: shuffle(STARTER, seed), cardDiscard: [], currentStageIndex: 0 }, seed) };
+  const pile = shuffle(deckFor(char), seed);
+  return { ...session, cardPile: pile, cardDiscard: [], cardActive: null, cardsPlayed: 0, ...draw({ cardPile: pile, cardDiscard: [], currentStageIndex: 0 }, seed) };
 }
 
 /** The effect the stage is under right now, or an empty one. */
@@ -63,10 +78,10 @@ export const cardEffectOf = (session) => (session?.cardActive ? DUNGEON_CARDS[se
 /** Plays a card from the hand: pays its immediate price and marks it for the next choice. */
 export function playDungeonCard(charState, cardId) {
   const session = charState?.pendingDungeon;
-  if (!session || session.cardActive || (session.cardsPlayed || 0) >= CARD_BUDGET || !(session.cardHand || []).includes(cardId) || !DUNGEON_CARDS[cardId]) return charState;
+  if (!session || session.cardActive || (session.cardsPlayed || 0) >= CARD_BUDGET || !(session.cardHand || []).includes(cardId) || !cardPlayable(cardId, charState)) return charState;
   const card = DUNGEON_CARDS[cardId];
   const char = { ...charState, stats: { ...charState.stats } };
-  const clamp = (v) => Math.max(0, Math.min(100, v));
+  const clamp = (v) => Math.max(1, Math.min(100, v));
   if (card.now?.health) char.stats.health = clamp(char.stats.health + card.now.health);
   if (card.now?.sanity) char.stats.sanity = clamp(char.stats.sanity + card.now.sanity);
   if (card.now?.resonance) char.resonance = clamp((char.resonance || 0) + card.now.resonance);

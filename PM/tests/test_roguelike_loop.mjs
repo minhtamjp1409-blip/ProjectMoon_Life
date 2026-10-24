@@ -110,3 +110,31 @@ console.log('Roguelike loop: seeded annual offers, single commitment, saved draf
     assert.equal(done.char.pendingDungeon.cardHand.length, 3, 'a new hand is dealt');
   }
 }
+
+{
+  const plain = createNewCharacter({ seed: 'card-ego', startAge: 30 });
+  plain.job = 'Fixer';
+  const deal = (c) => createDungeonSession('dungeon_outskirts_ruins', c);
+  const dealt = deal(plain);
+  assert.ok(![...dealt.cardPile, ...dealt.cardHand].includes('ego'), 'an unawakened character holds no E.G.O card');
+  const awake = { ...plain, flags: [...plain.flags, 'EGOAwakened'] };
+  const awakeSession = deal(awake);
+  assert.ok([...awakeSession.cardPile, ...awakeSession.cardHand].includes('ego'), 'an awakened one does');
+  assert.equal(playDungeonCard({ ...plain, pendingDungeon: { ...dealt, cardHand: ['ego'] } }, 'ego').pendingDungeon.cardActive, null, 'the card cannot be forced on someone who has not woken it');
+
+  for (const [hp, ok] of [[6, false], [7, true], [1, false], [80, true]]) {
+    const c = { ...awake, stats: { ...awake.stats, health: hp, sanity: 50 }, pendingDungeon: { ...awakeSession, cardHand: ['blood'] } };
+    const r = playDungeonCard(c, 'blood');
+    assert.equal(Boolean(r.pendingDungeon.cardActive), ok, `Trade Blood at ${hp} HP`);
+    assert.ok(r.stats.health >= 1, 'a card never leaves a living character at zero HP');
+  }
+  for (const sp of [8, 9, 3]) {
+    const c = { ...awake, stats: { ...awake.stats, health: 80, sanity: sp }, pendingDungeon: { ...awakeSession, cardHand: ['ego'] } };
+    const r = playDungeonCard(c, 'ego');
+    assert.ok(r.stats.sanity >= 1, `Open the E.G.O at ${sp} SP never leaves zero`);
+  }
+  const twin = { ...plain, pendingDungeon: { ...dealt, cardHand: ['bluff', 'bluff', 'bluff'] } };
+  assert.equal(playDungeonCard(twin, 'bluff').pendingDungeon.cardHand.length, 2, 'duplicates in hand play one at a time');
+  const dock = (await import('node:fs')).readFileSync(new URL('../src/features/chronicle/components/DungeonDock.jsx', import.meta.url), 'utf8');
+  assert.ok(/key=\{`\$\{id\}-\$\{slot\}`\}/.test(dock), 'cards in hand are keyed by slot as well as id');
+}
