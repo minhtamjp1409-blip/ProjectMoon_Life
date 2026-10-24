@@ -3508,3 +3508,6 @@ html[data-text='xl'] .interface-v2 :is(.choice-label, .dg-scene-title) { font-si
   transform: translateY(-1px);
 }
 
+
+.birth-fields .field-label { color: var(--text); font-size: 13px; font-weight: 500; }
+.birth-gender { display: grid; grid-template-columns: repeat(3, 1fr); }

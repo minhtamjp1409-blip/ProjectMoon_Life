@@ -299,7 +299,7 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeT
         </span>
         <div className="dossier-id">
           <h2>{char.name}</h2>
-          <p>{describeJob(char, t)}</p>
+          <p>{describeJob(char, t)}{char.gender && char.gender !== 'unspecified' ? ` · ${char.gender === 'male' ? t('Nam', 'Male') : t('Nữ', 'Female')}` : ''}</p>
           {char.customTitle && (
             <div className="dossier-color-crest">
               <span className="crest-swatch" />

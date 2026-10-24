@@ -366,6 +366,7 @@ export function rollBirthFamily(region, rng, parentLegacy = null, preferredFamil
 
 export function createNewCharacter({
   customName = '',
+  gender = 'unspecified',
   seed = '',
   preferredRegionId = 'RANDOM',
   preferredFamilyId = 'RANDOM',
@@ -611,6 +612,7 @@ export function createNewCharacter({
     seed: actualSeed,
     generation,
     name: defaultName,
+    gender: gender === 'male' || gender === 'female' ? gender : 'unspecified',
     age: actualAge,
     seasonIdx: 0,
     alive: !perinatal,

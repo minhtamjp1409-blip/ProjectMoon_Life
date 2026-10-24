@@ -1,10 +1,10 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Dices, GitBranch, Play, ChevronDown, ArrowUpRight, Search, BookOpen, MapPin, Sparkles } from 'lucide-react';
+import { Dices, GitBranch, Play, ChevronDown, ArrowUpRight, Search, BookOpen, MapPin } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Modal } from 'antd';
 import { useGameStore } from '../../../store/gameStore';
 import { freshSeed, createRNG, rollBirthRegion } from '../../../engine/gameEngine';
-import { REGIONS, CODEX_RECORDS, FAMILIES } from '../../../data/worldData';
+import { REGIONS, CODEX_RECORDS } from '../../../data/worldData';
 import { FATE_OMENS } from '../../../engine/weaverAI';
 import { useT } from '../../../i18n';
 import { RegionMark } from '../../../components/RegionMark';
@@ -173,6 +173,7 @@ export const BirthSetupPanel = () => {
   const { t, lang } = useT();
   const navigate = useNavigate();
   const customName = useGameStore((s) => s.customName);
+  const gender = useGameStore((s) => s.gender || 'unspecified');
   const customSeed = useGameStore((s) => s.customSeed);
   const selectedRegion = useGameStore((s) => s.selectedRegion);
   const selectedFamily = useGameStore((s) => s.selectedFamily || 'RANDOM');
@@ -290,10 +291,6 @@ export const BirthSetupPanel = () => {
       setConfigField('selectedFamily', 'RANDOM');
     }
   };
-  const setFamily = (id) => {
-    setConfigField('selectedFamily', id);
-    if (id === 'outskirts_nomad') setConfigField('selectedRegion', 'OUTSKIRTS');
-  };
   const region = REGIONS.find((r) => r.id === selectedRegion);
   const districts = REGIONS.filter((r) =>
     `${r.nameEn} ${r.aliasEn} ${r.aliasVi}`.toLowerCase().includes(search.toLowerCase().trim())
@@ -338,7 +335,7 @@ export const BirthSetupPanel = () => {
             {t('Một câu chuyện trong vũ trụ Project Moon', 'A life in the Project Moon universe')}
           </p>
           <h1 id="home-title">
-            The City
+            The City{' '}
             <br />
             <span className="the-city-title">Chronicles.</span>
           </h1>
@@ -453,81 +450,22 @@ export const BirthSetupPanel = () => {
               />
             </div>
             <div className="field">
-              <label htmlFor="birth-region">{t('Khu vực sinh ra', 'Birthplace')}</label>
-              <select
-                id="birth-region"
-                className="select"
-                value={selectedRegion}
-                onChange={(e) => setRegion(e.target.value)}
-              >
-                <option value="RANDOM">
-                  {t('Ngẫu nhiên theo dân số', 'Random, weighted by population')}
-                </option>
-                {REGIONS.map((r) => (
-                  <option key={r.id} value={r.id}>
-                    {lang === 'en' ? r.nameEn : r.nameVi || r.nameEn} · {t(r.aliasVi, r.aliasEn)}
-                  </option>
+              <span className="field-label" id="birth-gender-label">{t('Giới tính', 'Gender')}</span>
+              <div className="seg birth-gender" role="radiogroup" aria-labelledby="birth-gender-label">
+                {[['unspecified', t('Không nêu', 'Unspecified')], ['male', t('Nam', 'Male')], ['female', t('Nữ', 'Female')]].map(([id, label]) => (
+                  <button
+                    key={id}
+                    type="button"
+                    role="radio"
+                    aria-checked={gender === id}
+                    className={gender === id ? 'is-on' : ''}
+                    onClick={() => setConfigField('gender', id)}
+                  >
+                    {label}
+                  </button>
                 ))}
-              </select>
-            </div>
-            <div className="field">
-              <label htmlFor="birth-family">{t('Xuất thân & Gia cảnh', 'Family background')}</label>
-              <select
-                id="birth-family"
-                className="select"
-                value={selectedFamily}
-                onChange={(e) => setFamily(e.target.value)}
-              >
-                <option value="RANDOM">
-                  {t('🎲 Ngẫu nhiên theo số phận (Khuyên dùng)', '🎲 Random Destiny (Recommended)')}
-                </option>
-                {FAMILIES.filter((f) => selectedRegion === 'RANDOM' || (selectedRegion === 'OUTSKIRTS') === (f.tier === 'out')).map((f) => (
-                  <option key={f.id} value={f.id}>
-                    {lang === 'en' ? f.nameEn : f.nameVi} · {f.tier === 'nest' ? 'Nest' : f.tier === 'out' ? 'Outskirts' : 'Backstreets'}
-                  </option>
-                ))}
-              </select>
-              <p className="field-hint">
-                {selectedRegion === 'OUTSKIRTS'
-                  ? t('Sinh ngoài tường. Đến tuổi trưởng thành, bạn sẽ chọn đường vào The City.', 'Born beyond the wall. At adulthood, you will choose a route into the City.')
-                  : t('Gia cảnh phải thuộc khu vực sinh ra; Outskirts nằm ngoài 26 District.', 'Your background must match your birthplace. The Outskirts lie beyond the 26 Districts.')}
-              </p>
-              {selectedFamily !== 'RANDOM' && (() => {
-                const curFam = FAMILIES.find((f) => f.id === selectedFamily);
-                if (!curFam) return null;
-                return (
-                  <div className="birth-family-preview" style={{ marginTop: '0.45rem', padding: '0.6rem 0.75rem', background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border-subtle, #333)', borderRadius: '4px', fontSize: '0.82rem' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.2rem' }}>
-                      <strong style={{ color: 'var(--accent-gold, #ffd700)' }}>
-                        {lang === 'en' ? curFam.nameEn : curFam.nameVi}
-                      </strong>
-                      <span style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--text-muted, #888)', border: '1px solid currentColor', padding: '1px 5px', borderRadius: '3px' }}>
-                        {curFam.tier === 'nest' ? 'Nest Citizen' : curFam.tier === 'out' ? 'Outskirts' : 'Backstreets'}
-                      </span>
-                    </div>
-                    <p style={{ margin: '0 0 0.35rem 0', color: 'var(--text-secondary, #bbb)', fontSize: '0.78rem', lineHeight: '1.35' }}>
-                      {lang === 'en' ? curFam.descEn : curFam.descVi}
-                    </p>
-                    {curFam.trait && (
-                      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.35rem', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '0.3rem', fontSize: '0.75rem', color: 'var(--accent-silver, #b0c4de)' }}>
-                        <Sparkles size={12} style={{ flexShrink: 0, marginTop: '2px', color: 'var(--accent-gold, #ffd700)' }} />
-                        <span>
-                          <strong style={{ color: '#fff' }}>{lang === 'en' ? curFam.trait.nameEn : curFam.trait.nameVi}: </strong>
-                          {lang === 'en' ? curFam.trait.descEn : curFam.trait.descVi}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                );
-              })()}
-              {selectedFamily === 'RANDOM' && (
-                <p className="field-hint" style={{ fontSize: '0.74rem', color: 'var(--text-muted, #777)', margin: '0.25rem 0 0 0' }}>
-                  {t(
-                    'Xuất thân sẽ được quyết định ngẫu nhiên theo đặc thù của từng District sinh ra.',
-                    'Background is procedurally determined by the unique culture of your birthplace.'
-                  )}
-                </p>
-              )}
+              </div>
+              <p className="field-hint">{t('Nơi sinh và gia cảnh do The City định đoạt. Lời kể vẫn gọi bạn là "bạn".', 'The City decides your birthplace and background. The story still addresses you as "you".')}</p>
             </div>
             <details className="birth-seed">
               <summary>

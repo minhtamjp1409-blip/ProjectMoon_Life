@@ -311,6 +311,7 @@ export const useGameStore = create((set, get) => ({
 
   // Start form
   customName: '',
+  gender: 'unspecified',
   customSeed: '',
   selectedRegion: 'RANDOM',
   selectedFamily: 'RANDOM',
@@ -636,6 +637,7 @@ export const useGameStore = create((set, get) => ({
     const legacyPkg = useLegacy ? state.pendingLegacy : null;
     const nextChar = createNewCharacter({
       customName: state.customName,
+      gender: state.gender,
       seed: state.customSeed,
       preferredRegionId: regionId || state.selectedRegion,
       preferredFamilyId: state.selectedFamily || 'RANDOM',
