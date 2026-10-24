@@ -903,3 +903,17 @@ Chủ dự án yêu cầu làm lại toàn bộ giao diện lần nữa: bỏ t�
 * **Chức vụ theo bậc:** chức vụ đổi theo bậc ở mọi nhánh. Fixer là "Fixer Grade n", Color Fixer kèm danh hiệu, Finger là "The X · tên bậc". Wing trước đây luôn ghi "Nhân viên Wing", nay là "Wing · Nhân viên tập sự / Feather chính thức / Trưởng phòng ban / Giám đốc cấp cao".
 * **Sửa:** nhân viên Wing không có `org` nên ô Tổ chức ghi "Tự do"; nay ghi Corp của khu vực (ví dụ P Corp), không rõ thì ghi "Wing".
 * **Kiểm tra:** chụp 1440px (trẻ em, đỉnh Ring, Hội đồng Wing) và 390px, không lỗi runtime.
+
+### Đợt 48 (25/10/2026): khung tên ở đỉnh mỗi route mang dáng riêng
+* **Chung cho mọi khung đỉnh (và Color):** tên to hơn (36px), tô màu của nhánh pha sáng, có quầng sáng; chức vụ thành một dải danh hiệu có kẻ trên dưới; khung "thở" ánh sáng chậm (5 giây) và vẫn có vệt sáng lướt qua. Tắt chuyển động thì mọi hiệu ứng dừng.
+* **Từng route:** (`rankPlateOf` trả thêm `route`; class `route-<route>`)
+  * Color của Hana: viền đôi, tia màu được phong quay chậm sau tên, tên 38px.
+  * The Index: tờ Prescript có dòng kẻ, viền đứt, chức vụ chữ máy đánh chữ.
+  * The Middle: góc vuông, mép trái sọc vàng đen, tên chữ Archivo rộng đậm.
+  * The Ring: vệt sơn văng góc phải, tên và chức vụ in nghiêng như chữ ký, gạch chân màu sơn.
+  * The Pinky: khung lồng trong khung, căn giữa, chức vụ chữ hoa nhỏ giãn cách.
+  * The Thumb: góc vuông, đáy dày, sọc chevron góc phải, tên chữ hoa hẹp như lệnh hành quân.
+  * Hội đồng Wing: thẻ ra vào của Corp, dải xanh trên cùng mang huy hiệu, nền lưới mờ.
+  * Tên trên thanh trạng thái mobile cũng theo kiểu chữ của route (nghiêng cho Ring, chữ hoa hẹp cho Thumb...).
+* **Sửa:** nhãn "Điềm báo"/"Tổ chức" không còn xuống dòng khi giá trị dài.
+* **Kiểm tra:** chụp khung của bảy route ở 1440px và Thumb, Wing, Index trong bảng hồ sơ mobile 390px, không lỗi runtime.

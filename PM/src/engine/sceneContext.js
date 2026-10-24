@@ -105,21 +105,22 @@ export function sceneContextOf({ inRun = false, path = '/', char = null } = {}) 
 export function rankPlateOf(char) {
   if (!char) return { tier: 'plain' };
   if (isColorFixer(char)) {
-    return { tier: 'color', color: char.colorData?.color || '#e1341e', vi: 'Color của Hana', en: 'Hana Color' };
+    return { tier: 'color', route: 'color', color: char.colorData?.color || '#e1341e', vi: 'Color của Hana', en: 'Hana Color' };
   }
   if (char.job === 'Syndicate' && char.finger) {
-    const color = WORLDS[`finger-${String(char.finger).toLowerCase()}`]?.accent || WORLDS.syndicate.accent;
+    const route = String(char.finger).toLowerCase();
+    const color = WORLDS[`finger-${route}`]?.accent || WORLDS.syndicate.accent;
     const rank = char.fingerRank || 0;
-    if (rank >= 3) return { tier: 'apex', color, vi: `Đỉnh của The ${char.finger}`, en: `The top of The ${char.finger}` };
-    if (rank === 2) return { tier: 'high', color, vi: `Cấp cao The ${char.finger}`, en: `Senior in The ${char.finger}` };
+    if (rank >= 3) return { tier: 'apex', route, color, vi: `Đỉnh của The ${char.finger}`, en: `The top of The ${char.finger}` };
+    if (rank === 2) return { tier: 'high', route, color, vi: `Cấp cao The ${char.finger}`, en: `Senior in The ${char.finger}` };
   }
   if (char.job === 'Wing Employee') {
     const rank = char.wingRank || 0;
-    if (rank >= 3) return { tier: 'apex', color: WORLDS.wing.accent, vi: 'Hội đồng của Wing', en: 'The Wing board' };
-    if (rank === 2) return { tier: 'high', color: WORLDS.wing.accent, vi: 'Cấp quản lý Wing', en: 'Wing management' };
+    if (rank >= 3) return { tier: 'apex', route: 'wing', color: WORLDS.wing.accent, vi: 'Hội đồng của Wing', en: 'The Wing board' };
+    if (rank === 2) return { tier: 'high', route: 'wing', color: WORLDS.wing.accent, vi: 'Cấp quản lý Wing', en: 'Wing management' };
   }
   if (char.job === 'Fixer' && (char.fixerGrade ?? 9) <= 2) {
-    return { tier: 'high', color: WORLDS.fixer.accent, vi: `Fixer Grade ${char.fixerGrade}`, en: `Fixer Grade ${char.fixerGrade}` };
+    return { tier: 'high', route: 'fixer', color: WORLDS.fixer.accent, vi: `Fixer Grade ${char.fixerGrade}`, en: `Fixer Grade ${char.fixerGrade}` };
   }
   return { tier: 'plain' };
 }

@@ -286,7 +286,7 @@ const Nameplate = ({ char, region, omen, t, lang }) => {
   const faction = getAffiliation(char) ? affiliationLabel(char, lang)
     : char.org?.name || (char.finger ? `The ${char.finger}` : char.job === 'Wing Employee' ? wingOf(region) : t('Tự do', 'Unaffiliated'));
   return (
-    <div className={`dossier-head nameplate is-${plate.tier}`} style={special ? { '--plate': plate.color } : undefined}>
+    <div className={`dossier-head nameplate is-${plate.tier}${special ? ` route-${plate.route}` : ''}`} style={special ? { '--plate': plate.color } : undefined}>
       {special && (
         <span className="nameplate-rank">
           <Crown size={13} aria-hidden="true" />
@@ -632,7 +632,7 @@ export const CharacterDossierCard = () => {
         {/* Row 1: who, when, and the dossier button */}
         <div className="hud2-top">
           <div className="hud2-who">
-            <span className={`hud2-name is-${plate.tier}`} style={plate.color ? { '--plate': plate.color } : undefined}>{char.name}</span>
+            <span className={`hud2-name is-${plate.tier}${plate.route ? ` route-${plate.route}` : ''}`} style={plate.color ? { '--plate': plate.color } : undefined}>{char.name}</span>
             <span className="hud2-gen">#{char.generation}</span>
             <span className="hud2-when">
               {jobDesc.split(' · ')[0]} · <b>{t(`Tuổi ${char.age}`, `Age ${char.age}`)}</b> · {t(currentSeason?.vi, currentSeason?.en)}

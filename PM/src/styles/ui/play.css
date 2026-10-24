@@ -69,6 +69,7 @@
 .dossier-id h2 { font-size: 30px; line-height: 1.1; overflow-wrap: anywhere; }
 .nameplate-facts { display: flex; flex-direction: column; margin-top: 2px; }
 .nameplate-facts .kv { padding: 7px 0; font-size: 13.5px; }
+.nameplate-facts .kv > span:first-child { flex: none; white-space: nowrap; }
 .nameplate-facts .kv:last-child { border-bottom: 0; padding-bottom: 0; }
 .nameplate-facts .kv:first-child { border-top: 1px solid var(--rule); }
 .dossier-id p { color: var(--muted); font-size: 14.5px; }
@@ -242,26 +243,109 @@
 }
 .nameplate.is-high { padding-left: 14px; border-left: 3px solid var(--plate); }
 .nameplate.is-high .nameplate-post { color: var(--plate); font-weight: 600; }
+/* The top of a branch: the name is lit in the branch's colour, larger, and the post becomes a title.
+   --plate-ink is the name colour: the plate colour lifted toward bone so it reads on the dark glass. */
 .nameplate.is-apex, .nameplate.is-color {
-  position: relative; overflow: hidden;
-  padding: 14px 16px 18px; border-radius: 8px;
-  border: 1px solid color-mix(in srgb, var(--plate) 55%, transparent);
-  background: radial-gradient(120% 90% at 0% 0%, color-mix(in srgb, var(--plate) 24%, transparent), transparent 65%), rgba(0, 0, 0, .35);
-  box-shadow: 0 0 34px color-mix(in srgb, var(--plate) 22%, transparent), inset 0 0 0 1px rgba(255, 255, 255, .03);
+  --plate-ink: color-mix(in srgb, var(--plate) 62%, #fff8ec);
+  position: relative; overflow: hidden; isolation: isolate;
+  gap: 8px; padding: 16px 18px 18px; border-radius: 8px;
+  border: 1px solid color-mix(in srgb, var(--plate) 60%, transparent);
+  background: radial-gradient(130% 100% at 0% 0%, color-mix(in srgb, var(--plate) 30%, transparent), transparent 68%), rgba(0, 0, 0, .42);
+  box-shadow: 0 0 40px color-mix(in srgb, var(--plate) 26%, transparent), inset 0 0 0 1px rgba(255, 255, 255, .04);
+  animation: plateBreath 5s ease-in-out infinite;
 }
-.nameplate.is-apex h2, .nameplate.is-color h2 { text-shadow: 0 0 22px color-mix(in srgb, var(--plate) 55%, transparent); }
-.nameplate.is-apex .nameplate-post, .nameplate.is-color .nameplate-post { color: var(--plate); font-weight: 700; font-family: var(--serif); font-size: 16px; }
-/* a slow sheen across the plate, the only moving thing in the dossier */
+@keyframes plateBreath { 50% { box-shadow: 0 0 58px color-mix(in srgb, var(--plate) 38%, transparent), inset 0 0 0 1px rgba(255, 255, 255, .06); } }
+.nameplate.is-apex > *, .nameplate.is-color > * { position: relative; z-index: 1; }
+.nameplate.is-apex h2, .nameplate.is-color h2 {
+  font-size: 36px; line-height: 1.04; color: var(--plate-ink);
+  text-shadow: 0 0 18px color-mix(in srgb, var(--plate) 70%, transparent), 0 0 42px color-mix(in srgb, var(--plate) 35%, transparent);
+}
+.nameplate.is-apex .nameplate-post, .nameplate.is-color .nameplate-post {
+  align-self: flex-start; margin-top: 4px; padding: 4px 10px 5px;
+  font-family: var(--serif); font-size: 15.5px; font-weight: 700; color: var(--plate-ink);
+  background: color-mix(in srgb, var(--plate) 16%, transparent);
+  border-top: 1px solid color-mix(in srgb, var(--plate) 60%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--plate) 60%, transparent);
+}
+.nameplate.is-apex .dossier-gen, .nameplate.is-color .dossier-gen { color: color-mix(in srgb, var(--plate) 40%, var(--muted)); }
+.nameplate.is-apex .nameplate-facts .kv, .nameplate.is-color .nameplate-facts .kv { border-color: color-mix(in srgb, var(--plate) 22%, transparent); }
+/* a slow sheen across the plate */
 .nameplate.is-apex::after, .nameplate.is-color::after {
-  content: ''; position: absolute; inset: 0; pointer-events: none;
-  background: linear-gradient(105deg, transparent 40%, color-mix(in srgb, var(--plate) 22%, rgba(255, 255, 255, .12)) 50%, transparent 60%);
+  content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 2;
+  background: linear-gradient(105deg, transparent 40%, color-mix(in srgb, var(--plate) 22%, rgba(255, 255, 255, .14)) 50%, transparent 60%);
   transform: translateX(-120%); animation: plateSheen 7s ease-in-out infinite;
 }
 @keyframes plateSheen { 0%, 60% { transform: translateX(-120%); } 85%, 100% { transform: translateX(120%); } }
-.nameplate.is-color { border-width: 2px; }
-.nameplate.is-color::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--plate); box-shadow: 0 0 16px var(--plate); }
-.hud2-name.is-apex, .hud2-name.is-color { color: var(--plate); text-shadow: 0 0 14px color-mix(in srgb, var(--plate) 50%, transparent); }
+.nameplate:is(.is-apex, .is-color)::before { content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+
+/* Each branch dresses its top seat differently */
+/* Hana Color: a double frame and the conferred colour fanning out behind the name */
+.nameplate.route-color { border: 3px double color-mix(in srgb, var(--plate) 80%, transparent); }
+.nameplate.route-color::before {
+  inset: -60%;
+  background: repeating-conic-gradient(from 0deg at 20% 30%, color-mix(in srgb, var(--plate) 16%, transparent) 0 6deg, transparent 6deg 18deg);
+  -webkit-mask: radial-gradient(closest-side at 30% 35%, #000, transparent); mask: radial-gradient(closest-side at 30% 35%, #000, transparent);
+  animation: plateRays 40s linear infinite;
+}
+@keyframes plateRays { to { transform: rotate(360deg); } }
+.nameplate.route-color h2 { font-size: 38px; }
+
+/* Index: a Prescript slip, ruled paper and typewriter type */
+.nameplate.route-index { border-radius: 2px; border-style: dashed; }
+.nameplate.route-index::before { background: repeating-linear-gradient(180deg, transparent 0 21px, color-mix(in srgb, var(--plate) 12%, transparent) 21px 22px); }
+.nameplate.route-index .nameplate-post { font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace; font-size: 14px; letter-spacing: .02em; border-top-style: dashed; border-bottom-style: dashed; }
+
+/* Middle: a ledger of debts, heavy wide type and a striped edge */
+.nameplate.route-middle { border-radius: 0; padding-left: 26px; }
+.nameplate.route-middle::before { right: auto; width: 10px; background: repeating-linear-gradient(135deg, var(--plate) 0 6px, #0b0904 6px 12px); }
+.nameplate.route-middle h2 { font-family: var(--font); font-stretch: 125%; font-weight: 800; font-size: 31px; letter-spacing: -.01em; }
+
+/* Ring: paint thrown across the plate, the name signed in italics */
+.nameplate.route-ring::before {
+  background:
+    radial-gradient(38px 30px at 86% 18%, color-mix(in srgb, var(--plate) 34%, transparent), transparent 70%),
+    radial-gradient(12px 12px at 74% 34%, color-mix(in srgb, var(--plate) 40%, transparent), transparent 70%),
+    radial-gradient(70px 26px at 92% 78%, color-mix(in srgb, var(--plate) 22%, transparent), transparent 70%),
+    radial-gradient(8px 8px at 64% 86%, color-mix(in srgb, var(--plate) 45%, transparent), transparent 70%);
+}
+.nameplate.route-ring h2 { font-style: italic; }
+.nameplate.route-ring .nameplate-post { font-style: italic; border: 0; background: none; padding-left: 0; box-shadow: inset 0 -6px 0 color-mix(in srgb, var(--plate) 30%, transparent); }
+
+/* Pinky: a quiet frame inside the frame, everything spaced and centred */
+.nameplate.route-pinky { align-items: center; text-align: center; padding: 20px 18px; }
+.nameplate.route-pinky::before { inset: 6px; border: 1px solid color-mix(in srgb, var(--plate) 40%, transparent); border-radius: 4px; }
+.nameplate.route-pinky .nameplate-rank, .nameplate.route-pinky .nameplate-post { align-self: center; }
+.nameplate.route-pinky .dossier-gen { justify-content: center; }
+.nameplate.route-pinky .nameplate-facts { align-self: stretch; text-align: left; }
+.nameplate.route-pinky .nameplate-post { letter-spacing: .06em; font-variant: small-caps; }
+
+/* Thumb: a field order, square corners, chevrons and condensed capitals */
+.nameplate.route-thumb { border-radius: 0; border-width: 1px 1px 3px; }
+.nameplate.route-thumb::before {
+  left: auto; bottom: auto; width: 84px; height: 34px;
+  background: repeating-linear-gradient(-45deg, color-mix(in srgb, var(--plate) 45%, transparent) 0 5px, transparent 5px 11px);
+  -webkit-mask: linear-gradient(225deg, #000 40%, transparent); mask: linear-gradient(225deg, #000 40%, transparent);
+}
+.nameplate.route-thumb h2 { font-family: var(--font); font-stretch: 70%; font-weight: 800; text-transform: uppercase; letter-spacing: .03em; font-size: 34px; }
+.nameplate.route-thumb .nameplate-post { font-family: var(--font); text-transform: uppercase; letter-spacing: .08em; font-size: 12.5px; }
+
+/* Wing board: a corporate pass, a blue header band and a faint grid */
+.nameplate.route-wing { border-radius: 6px; padding-top: 0; }
+.nameplate.route-wing::before {
+  background: linear-gradient(color-mix(in srgb, var(--plate) 7%, transparent) 1px, transparent 1px) 0 0 / 100% 16px,
+    linear-gradient(90deg, color-mix(in srgb, var(--plate) 7%, transparent) 1px, transparent 1px) 0 0 / 16px 100%;
+}
+.nameplate.route-wing .nameplate-rank {
+  align-self: stretch; margin: 0 -18px 4px; padding: 7px 18px; border-radius: 0; border: 0;
+  color: var(--accent-ink, #06122a); background: var(--plate);
+}
+.nameplate.route-wing h2 { font-family: var(--font); font-weight: 700; letter-spacing: -.01em; }
+
+.hud2-name.is-apex, .hud2-name.is-color { color: color-mix(in srgb, var(--plate) 62%, #fff8ec); text-shadow: 0 0 12px color-mix(in srgb, var(--plate) 70%, transparent); }
 .hud2-name.is-high { color: var(--plate); }
+.hud2-name.route-ring { font-style: italic; }
+.hud2-name.route-thumb { font-family: var(--font); font-stretch: 70%; text-transform: uppercase; }
+.hud2-name.route-middle, .hud2-name.route-wing { font-family: var(--font); font-weight: 700; }
 
 /* Reference blocks fold away; closed by default so the vitals sit right under the name */
 .dossier-fold { border-top: 1px solid var(--rule); }
