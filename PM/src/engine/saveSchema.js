@@ -20,6 +20,12 @@ export function migrateRun(raw) {
   if (version > SAVE_VERSION) return null;
   let run = { ...raw, char: { ...raw.char } };
   for (let v = version; v < SAVE_VERSION; v++) run = MIGRATIONS[v]?.(run) || run;
+  const draft = run.char.pendingLead;
+  if (draft && (draft.age !== run.char.age || !Array.isArray(draft.offers) || draft.offers.length !== 3 ||
+      new Set(draft.offers.map((offer) => offer?.id)).size !== 3 ||
+      draft.offers.some((offer) => typeof offer?.id !== 'string' || !offer.id))) {
+    run.char.pendingLead = null;
+  }
   run.version = SAVE_VERSION;
   return run;
 }
