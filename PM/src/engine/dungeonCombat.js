@@ -6,6 +6,7 @@
 // Shared dungeon helpers (damage scaling, endings, companions) come in through `ctx` from
 // dungeonEngine.js, so this module never imports it back.
 // ============================================================================
+import { cardEffectOf, dungeonUsesCards, nextHand } from './dungeonCards.js';
 import { GAUNTLETS, INTENT_KINDS, REST_TEXT } from '../data/dungeonGauntlets.js';
 import { activeScarSynergies } from './scarModel.js';
 
@@ -60,6 +61,7 @@ function enterFloor(session, char, index) {
   const c = session.combat;
   c.floor = index;
   c.turn = 0;
+  c.floorPlays = 0;
   const floor = c.plan[index];
   if (!floor || floor.kind === 'rest') {
     c.enemy = null;
@@ -114,6 +116,7 @@ export function evadeChance(ctx, char, session) {
   let chance = COMBAT_BALANCE.evadeBase * ctx.traitFactor(char, 'luck') + ctx.mastery(char, session).checkBonus;
   if (session.stageScanned) chance += 0.15;
   if (session.egoActive) chance += 0.3;
+  chance += cardEffectOf(session).evade || 0;
   if (session.stance === 'guarded') chance += 0.05;
   if ((char.stats?.health ?? 100) <= 40 && activeScarSynergies(char).some((synergy) => synergy.id === 'cornered_blade')) chance += 0.06;
   chance += ctx.strainCheck(session);
@@ -162,12 +165,13 @@ export function gauntletStage(ctx, session) {
     // A dungeon that pays nothing has nothing to press on for, so the option would only skip the rest
     if (ctx.def(session).noRewards) choices.splice(choices.findIndex((choice) => choice.restAction === 'push'), 1);
     const noRetreat = Boolean(ctx.def(session).noRetreat);
-    if (!noRetreat && firstRest && g.elite && !c.sideUsed) {
+    // A locked train still has a next carriage door and a gap between cars, but no way back out
+    if (firstRest && !noRetreat && g.elite && !c.sideUsed) {
       choices.push({ labelVi: 'Mở cánh cửa phụ: một kẻ mạnh hơn, phần thưởng lớn hơn', labelEn: 'Open the side door: a stronger foe, a bigger reward', restAction: 'side', resultVi: 'Bạn đẩy cánh cửa phụ. Thứ phía sau đã nghe thấy bạn từ trước.', resultEn: 'You push the side door. What is behind it heard you long before.' });
       choices.push({ labelVi: 'Đi lối tắt, bỏ qua tầng kế tiếp', labelEn: 'Take the shortcut and skip the next floor', restAction: 'shortcut', checkTrait: 'luck', resultVi: 'Lối tắt hẹp và nguy hiểm, nhưng bạn qua được và tránh hẳn một tầng.', resultEn: 'The shortcut is narrow and dangerous, but you get through and skip a whole floor.', failVi: 'Lối tắt sụp dưới chân bạn. Bạn rơi xuống đúng tầng mình định tránh, người đầy vết xước.', failEn: 'The shortcut gives way beneath you. You fall right onto the floor you meant to avoid, scraped all over.' });
     }
-    if (!noRetreat) choices.push({ labelVi: 'Rời đi với những gì đã gom được', labelEn: 'Leave with what you have gathered', restAction: 'leave', isFlee: true, resultVi: 'Bạn quay lưng về phía lối ra. Phần còn lại của nơi này sẽ chờ một người khác.', resultEn: 'You turn toward the way out. The rest of this place will wait for someone else.' });
-    return { stageIndex: c.floor, nameVi: REST_TEXT.nameVi, nameEn: REST_TEXT.nameEn, descVi: noRetreat ? REST_TEXT.judgmentVi : REST_TEXT.descVi, descEn: noRetreat ? REST_TEXT.judgmentEn : REST_TEXT.descEn, canFlee: !noRetreat, isRest: true, sceneLabelVi: `Tầng ${c.floor + 1} / ${total}`, sceneLabelEn: `Floor ${c.floor + 1} / ${total}`, choices };
+    if (!noRetreat && !ctx.def(session).locked) choices.push({ labelVi: 'Rời đi với những gì đã gom được', labelEn: 'Leave with what you have gathered', restAction: 'leave', isFlee: true, resultVi: 'Bạn quay lưng về phía lối ra. Phần còn lại của nơi này sẽ chờ một người khác.', resultEn: 'You turn toward the way out. The rest of this place will wait for someone else.' });
+    return { stageIndex: c.floor, nameVi: REST_TEXT.nameVi, nameEn: REST_TEXT.nameEn, descVi: ctx.def(session).locked ? g.locked.vi : noRetreat ? REST_TEXT.judgmentVi : REST_TEXT.descVi, descEn: ctx.def(session).locked ? g.locked.en : noRetreat ? REST_TEXT.judgmentEn : REST_TEXT.descEn, canFlee: !noRetreat, isRest: true, sceneLabelVi: `Tầng ${c.floor + 1} / ${total}`, sceneLabelEn: `Floor ${c.floor + 1} / ${total}`, choices };
   }
   const enemy = c.enemy;
   const intent = intentAt(session);
@@ -311,6 +315,8 @@ export function resolveGauntletChoice(char, session, choiceIndex, rng, ctx) {
       quality = qualityOfIntent(intent, action, taken, breaks);
     }
     if (action === 'strike' && session.egoActive) breaks += 1;
+    if (action === 'strike') breaks += cardEffectOf(session).breaks || 0;
+    if (cardEffectOf(session).noBreak) breaks = 0;
     if (action === 'strike' && session.stance === 'reckless' && rng() < 0.35) breaks += 1;
     line = lineFor(action, quality, intent);
     fx = action === 'guard' ? (quality === 'poor' ? 'hit' : 'block') : action === 'strike' ? (quality === 'good' ? 'counter' : 'clash') : (quality === 'good' ? 'evade' : 'hit');
@@ -345,6 +351,7 @@ export function resolveGauntletChoice(char, session, choiceIndex, rng, ctx) {
   c.turn += 1;
   session.stageScanned = false;
   session.egoActive = false;
+  const playedCard = cardEffectOf(session);
 
   const enemy = c.enemy;
   let cleared = false;
@@ -354,7 +361,7 @@ export function resolveGauntletChoice(char, session, choiceIndex, rng, ctx) {
     const meritBase = COMBAT_BALANCE.clearMerit;
     const extraLoot = floor.kind === 'boss' ? lootBase.boss : floor.elite ? lootBase.elite : 0;
     const extraMerit = floor.kind === 'boss' ? meritBase.boss : floor.elite ? meritBase.elite : 0;
-    const loot = Math.round((lootBase.base + floor.tier * lootBase.perTier + extraLoot) * ctx.lootMult(session) * (1 + 0.35 * (session.delveStake || 0)));
+    const loot = Math.round((lootBase.base + floor.tier * lootBase.perTier + extraLoot) * ctx.lootMult(session) * (1 + 0.35 * (session.delveStake || 0)) * (playedCard.loot ?? 1) * (playedCard.reward ?? 1));
     const merit = meritBase.base + floor.tier * meritBase.perTier + extraMerit;
     session.accumulatedLootAhn = (session.accumulatedLootAhn || 0) + (def.noRewards ? 0 : loot);
     if (!def.noRewards) {
@@ -372,6 +379,11 @@ export function resolveGauntletChoice(char, session, choiceIndex, rng, ctx) {
     c.turn = 0;
     notes.push({ vi: enemy.phaseVi, en: enemy.phaseEn });
     fx = 'phase';
+  }
+
+  if (dungeonUsesCards(def)) {
+    if (cleared) c.floorPlays = 0;
+    Object.assign(session, nextHand(session, char));
   }
 
   const vi = notes.map((n) => n.vi).join(' ');
@@ -402,3 +414,5 @@ export function resolveGauntletChoice(char, session, choiceIndex, rng, ctx) {
 
 /** At a rest the player may leave; in a fight there is no way out but through. */
 export const canLeaveGauntlet = (session) => !session?.combat || session.combat.done || session.combat.plan[session.combat.floor]?.kind === 'rest';
+// A locked train keeps its rests but never opens a way out of them
+export const isLockedDungeon = (def) => Boolean(def?.locked);

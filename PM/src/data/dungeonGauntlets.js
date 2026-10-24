@@ -31,6 +31,10 @@ export const REST_TEXT = {
 
 export const GAUNTLETS = {
   dungeon_warp_train: {
+    locked: {
+      vi: 'Cửa toa trước đã khóa lại sau lưng bạn, và cửa toa sau chưa mở. Chuyến tàu không dừng ở ga nào cho đến khi nó muốn. Đây là khoảng lặng giữa hai toa: băng vết thương, hoặc đi tiếp.',
+      en: 'The door of the car behind has locked, and the door of the next has not opened. The train stops at no station until it chooses to. This is the lull between two carriages: dress your wounds, or go on.'
+    },
     intents: {
       lunge: it('Vồ tới', 'Lunge', 'Khối thịt co lại như lò xo, sắp bật thẳng vào bạn.', 'The flesh coils like a spring, about to snap straight at you.', 'quick', 9),
       crush: it('Đè nát', 'Crush', 'Hàng chục cánh tay nhập lại thành một, giơ cao chạm trần toa.', 'Dozens of arms merge into one and rise to the carriage ceiling.', 'heavy', 14),

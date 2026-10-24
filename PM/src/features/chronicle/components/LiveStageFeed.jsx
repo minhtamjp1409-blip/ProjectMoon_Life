@@ -458,7 +458,8 @@ const DUNGEON_KICKER = {
   library: ['Kết thúc đặc biệt · Ngưỡng cửa The Library', 'Special ending · The Library Threshold'],
   conquered: ['Hầm ngục · Đã đi hết', 'Dungeon · Cleared'],
   fled: ['Hầm ngục · Đã rút lui', 'Dungeon · Withdrawn'],
-  broken: ['Hầm ngục · Tinh thần gục ngã', 'Dungeon · Broken']
+  broken: ['Hầm ngục · Tinh thần gục ngã', 'Dungeon · Broken'],
+  restored: ['Hầm ngục · W Corp đã khôi phục bạn', 'Dungeon · Restored by W Corp']
 };
 
 const ResultDock = ({ resolution, onDismiss }) => {

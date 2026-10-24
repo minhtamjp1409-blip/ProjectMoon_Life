@@ -20,7 +20,7 @@ import { npcIsActive } from './eventConditions.js';
 import { ensureAffiliation, getAffiliation } from './affiliation.js';
 import { applyNpcFate } from './director.js';
 import { dealCards, cardEffectOf, nextHand, dungeonUsesCards } from './dungeonCards.js';
-export { playDungeonCard, cardPlayable, DUNGEON_CARDS, CARD_BUDGET } from './dungeonCards.js';
+export { playDungeonCard, cardPlayable, cardBudgetLeft, DUNGEON_CARDS, CARD_BUDGET } from './dungeonCards.js';
 import { initGauntlet, isGauntlet, gauntletStage, previewCombatAction, resolveGauntletChoice, canLeaveGauntlet } from './dungeonCombat.js';
 
 export const DUNGEON_DEFINITIONS = {
@@ -30,16 +30,20 @@ export const DUNGEON_DEFINITIONS = {
     titleVi: 'Chuyến Tàu WARP: Toa Cuối Địa Ngục',
     titleEn: 'WARP Train: The Nether Carriages',
     hazard: 'WAW',
-    kickerVi: 'Không Gian Dị Chiều W Corp · Thời Gian Đóng Băng',
-    kickerEn: 'W Corp Dimensional Rift · Frozen Time',
+    // The doors lock once the train leaves, and W Corp's cleaners put back whoever does not survive, a limited number of times
+    locked: true,
+    recovery: 'w_corp',
+    cards: true,
+    kickerVi: 'Không Gian Dị Chiều W Corp · Cửa đã khóa',
+    kickerEn: 'W Corp Dimensional Rift · Doors Locked',
     accentColor: '#38bdf8',
     stages: [
       {
         stageIndex: 0,
         nameVi: 'Khoang Niêm Phong Cửa',
         nameEn: 'Airlock Decontamination Car',
-        descVi: "Khóa niêm phong rít lên khi áp suất tụt. Qua khe cửa rỉ ra mùi máu tanh và một tiếng gầm gừ không thành tiếng. Nhân viên W Corp đứng cạnh bạn kiểm tra bình dưỡng khí lần thứ ba, tay vẫn run.",
-        descEn: "The airtight lock shrieks as the pressure drops. Through the door gap seep the smell of blood and a growl that never becomes a sound. The W Corp cleaner beside you checks their rebreather for the third time, hands still shaking.",
+        descVi: "Khóa niêm phong rít lên khi áp suất tụt. Qua khe cửa rỉ ra mùi máu tanh và một tiếng gầm gừ không thành tiếng. Nhân viên W Corp đứng cạnh bạn kiểm tra bình dưỡng khí lần thứ ba, tay vẫn run. Cửa phía sau đóng lại và tự khóa. Chuyến tàu này không có ga nào để xuống, và ở cuối đoàn, đội dọn W Corp đã chờ sẵn với túi đựng và ống tiêm.",
+        descEn: "The airtight lock shrieks as the pressure drops. Through the door gap seep the smell of blood and a growl that never becomes a sound. The W Corp cleaner beside you checks their rebreather for the third time, hands still shaking. The door behind you closes and locks itself. This train has no station to step off at, and at the rear of the consist the W Corp cleaning crew is already waiting with bags and syringes.",
         strainGain: 15,
         choices: [
           {
@@ -182,6 +186,7 @@ export const DUNGEON_DEFINITIONS = {
 
   dungeon_lobotomy_ruin: {
     id: 'dungeon_lobotomy_ruin',
+    cards: true,
     theme: 'lobotomy',
     titleVi: 'Tàn Tích L Corp: Chi Nhánh Sụp Đổ',
     titleEn: 'Collapsed L Corp Sub-Branch Ruins',
@@ -328,6 +333,7 @@ export const DUNGEON_DEFINITIONS = {
 
   dungeon_bloodfiend_carnival: {
     id: 'dungeon_bloodfiend_carnival',
+    cards: true,
     theme: 'bloodfiend',
     titleVi: 'La Manchaland: Lễ Hội Khát Máu',
     titleEn: 'La Manchaland: The Crimson Carnival',
@@ -1163,8 +1169,8 @@ export function createDungeonSession(dungeonId, char) {
     logs: []
   };
   // Five of the dungeons are a chain of fights floor by floor; the rest keep their exploration stages
-  if (isGauntlet(def.id)) return initGauntlet(session, char);
-  return dungeonUsesCards(def) ? dealCards(session, char) : session;
+  const ready = isGauntlet(def.id) ? initGauntlet(session, char) : session;
+  return dungeonUsesCards(def) ? dealCards(ready, char) : ready;
 }
 
 /**
@@ -1292,6 +1298,30 @@ const breakOutcome = (char, session, def, stage, kind) => {
     isDead: false
   };
 };
+
+// W Corp does not leave a body on its train. The cleaners put it back, and the invoice grows each time
+export const WARP_RESTORES = 2;
+
+function recoveredByCleaners(char, session, def, stage) {
+  const done = char.warpRestored || 0;
+  if (def.recovery !== 'w_corp' || done >= WARP_RESTORES) return null;
+  char.warpRestored = done + 1;
+  const fee = Math.ceil((char.stats.wealth || 0) * (done === 0 ? 0.5 : 0.8));
+  char.stats.wealth = Math.max(0, (char.stats.wealth || 0) - fee);
+  char.stats.health = 22;
+  char.stats.sanity = Math.min(char.stats.sanity > 0 ? char.stats.sanity : 12, 18);
+  char.pendingDungeon = null;
+  if (!(char.flags || []).includes('WarpRestored')) char.flags = [...(char.flags || []), 'WarpRestored'];
+  settleRun(char, session, 'broken');
+  const last = char.warpRestored >= WARP_RESTORES;
+  const vi = `Tim bạn ngừng đập ở ${stage.nameVi}. Thứ cuối cùng bạn nghe là tiếng giày cao su của đội dọn W Corp trên sàn toa tàu. Họ không chạy và không nói. Họ gỡ từng giây ra khỏi người bạn rồi khâu lại theo đúng thứ tự, như dọn một toa tàu. Bạn tỉnh dậy ở sân ga, sạch sẽ, trong bộ đồ không phải của mình, với một hóa đơn trong túi áo. ${last ? 'Dòng cuối của hóa đơn ghi rằng một thân thể chỉ được đặt lại chỗ cũ chừng ấy lần.' : 'Lần sau, hóa đơn sẽ dày hơn.'}`;
+  const en = `Your heart stops in ${stage.nameEn}. The last thing you hear is the rubber soles of the W Corp cleaning crew on the carriage floor. They neither run nor speak. They take the seconds out of you one by one and sew them back in the right order, the way one clears a carriage. You wake on the platform, clean, in clothes that are not yours, with an invoice in your pocket. ${last ? 'The last line of the invoice says a body may be put back in its place only this many times.' : 'Next time the invoice will be thicker.'}`;
+  char.logs.push({ id: `warp_restored_${char.age}_${char.warpRestored}`, age: char.age, type: 'major', vi: `[W Corp khôi phục] ${vi}`, en: `[Restored by W Corp] ${en}` });
+  return {
+    char, session: null, isFinished: true,
+    resolution: { outcome: 'restored', titleVi: 'Đội dọn W Corp đã đến', titleEn: 'The W Corp cleaners came', resultVi: vi, resultEn: en, haul: { ahn: 0, merit: 0 }, isDead: false }
+  };
+}
 
 function finishClawJudgment(char, session, stage, escaped) {
   char.pendingDungeon = null;
@@ -1518,9 +1548,11 @@ export function resolveDungeonChoice(charState, choiceIndex, rng = Math.random) 
   }
 
   if (char.stats.health <= 0) {
+    const restored = recoveredByCleaners(char, session, def, stage);
+    if (restored) return restored;
     char.alive = false;
-    char.deathCauseVi = `Bỏ mạng trong ${def.titleVi} (${stage.nameVi})`;
-    char.deathCauseEn = `Perished in ${def.titleEn} (${stage.nameEn})`;
+    char.deathCauseVi = def.recovery === 'w_corp' ? `Đội dọn W Corp không khôi phục được nữa (${stage.nameVi})` : `Bỏ mạng trong ${def.titleVi} (${stage.nameVi})`;
+    char.deathCauseEn = def.recovery === 'w_corp' ? `Beyond what the W Corp cleaners could put back (${stage.nameEn})` : `Perished in ${def.titleEn} (${stage.nameEn})`;
     char.pendingDungeon = null;
     const title = ENDING_TEXT.dead.title({ vi: def.titleVi, en: def.titleEn });
     const body = ENDING_TEXT.dead.body({ vi: stage.nameVi, en: stage.nameEn });
@@ -1620,7 +1652,7 @@ export function fleeDungeon(charState) {
   if (!session) return { char, session: null, isFinished: true };
 
   const def = DUNGEON_DEFINITIONS[session.id];
-  if (def?.noRetreat || (session.mode === 'gauntlet' && !canLeaveGauntlet(session))) return { char: charState, session, isFinished: false, resolution: null };
+  if (def?.noRetreat || def?.locked || (session.mode === 'gauntlet' && !canLeaveGauntlet(session))) return { char: charState, session, isFinished: false, resolution: null };
   const haul = session.accumulatedLootAhn || 0;
   if (haul > 0) char.stats.wealth = clamp((char.stats.wealth || 0) + haul, 0, 100);
   settleRun(char, session, 'fled');
@@ -1688,9 +1720,11 @@ const COMBAT_CTX = {
   fatalBreak: (def) => Boolean(def.fatalOnBreak),
   finishJudgment: (char, session, stage, escaped) => ({ char, session: null, isFinished: true, resolution: finishClawJudgment(char, session, stage, escaped) }),
   finishDead(char, session, def, stage) {
+    const restored = recoveredByCleaners(char, session, def, stage);
+    if (restored) return restored;
     char.alive = false;
-    char.deathCauseVi = `Bỏ mạng trong ${def.titleVi} (${stage.nameVi})`;
-    char.deathCauseEn = `Perished in ${def.titleEn} (${stage.nameEn})`;
+    char.deathCauseVi = def.recovery === 'w_corp' ? `Đội dọn W Corp không khôi phục được nữa (${stage.nameVi})` : `Bỏ mạng trong ${def.titleVi} (${stage.nameVi})`;
+    char.deathCauseEn = def.recovery === 'w_corp' ? `Beyond what the W Corp cleaners could put back (${stage.nameEn})` : `Perished in ${def.titleEn} (${stage.nameEn})`;
     char.pendingDungeon = null;
     const title = ENDING_TEXT.dead.title({ vi: def.titleVi, en: def.titleEn });
     const body = ENDING_TEXT.dead.body({ vi: stage.nameVi, en: stage.nameEn });

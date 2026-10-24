@@ -87,7 +87,7 @@ console.log('Roguelike loop: seeded annual offers, single commitment, saved draf
   const session = createDungeonSession('dungeon_outskirts_ruins', card);
   assert.equal(session.cardHand.length, 3, 'a card dungeon deals three cards');
   assert.equal(session.cardPile.length + session.cardHand.length, 10, 'the deck holds ten');
-  assert.ok(!createDungeonSession('dungeon_warp_train', card).cardHand, 'only dungeons that opt in deal cards');
+  assert.ok(!createDungeonSession('dungeon_great_lake', card).cardHand, 'only dungeons that opt in deal cards');
   card.pendingDungeon = session;
   const id = session.cardHand[0];
   const played = playDungeonCard(card, id);
@@ -149,4 +149,37 @@ console.log('Roguelike loop: seeded annual offers, single commitment, saved draf
   assert.equal(playDungeonCard(fresh, 'cold').pendingDungeon.stageScanned, true);
   const dock = (await import('node:fs')).readFileSync(new URL('../src/features/chronicle/components/DungeonDock.jsx', import.meta.url), 'utf8');
   assert.ok(dock.includes('dg-hand-spent'), 'spent hands collapse to one line');
+}
+
+{
+  const fall = (restored) => {
+    const c = createNewCharacter({ seed: `warp-${restored}`, startAge: 30 });
+    c.job = 'Fixer'; c.stats.health = 1; c.stats.sanity = 90; c.stats.wealth = 60; c.warpRestored = restored;
+    c.pendingDungeon = createDungeonSession('dungeon_warp_train', c);
+    let r = { char: c, isFinished: false };
+    for (let i = 0; i < 40 && !r.isFinished; i++) {
+      const stage = getDungeonCurrentStage(r.char.pendingDungeon);
+      const idx = stage.choices.findIndex((ch) => ch.combatAction === 'strike' || ch.restAction === 'push');
+      r = resolveDungeonChoice(r.char, Math.max(0, idx), () => 0.99);
+    }
+    return r;
+  };
+  const flee = createNewCharacter({ seed: 'warp-locked', startAge: 30 });
+  flee.job = 'Fixer';
+  const session = createDungeonSession('dungeon_warp_train', flee);
+  session.combat.floor = session.combat.plan.findIndex((floor) => floor.kind === 'rest');
+  const rest = getDungeonCurrentStage(session).choices;
+  assert.ok(!rest.some((choice) => choice.restAction === 'leave'), 'the doors of a WARP train do not open');
+  assert.ok(rest.some((choice) => choice.restAction === 'rest'));
+
+  const first = fall(0);
+  assert.equal(first.resolution?.outcome, 'restored', 'the first fall is put right by the cleaners');
+  assert.equal(first.char.alive, true);
+  assert.equal(first.char.warpRestored, 1);
+  assert.equal(first.char.stats.health, 22);
+  assert.ok(first.char.stats.wealth < 60, 'the invoice is paid in Ahn');
+  assert.ok(first.char.flags.includes('WarpRestored'));
+  const last = fall(2);
+  assert.equal(last.char.alive, false, 'a body can only be put back so many times');
+  assert.equal(last.resolution?.outcome, 'dead');
 }

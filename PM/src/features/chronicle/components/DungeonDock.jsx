@@ -8,6 +8,7 @@ import {
   DUNGEON_CARDS,
   CARD_BUDGET,
   cardPlayable,
+  cardBudgetLeft,
   getDungeonCurrentStage,
   getDungeonMastery,
   getStrainTier,
@@ -418,13 +419,13 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
               {t('Tiếp tế', 'Supplies')} {session.supplyCharges ?? 0}/{session.maxSupplies ?? 2}
             </span>
           </div>
-          {Array.isArray(session.cardHand) && session.cardHand.length > 0 && (session.cardsPlayed || 0) >= CARD_BUDGET && !session.cardActive && (
+          {Array.isArray(session.cardHand) && session.cardHand.length > 0 && cardBudgetLeft(session) <= 0 && !session.cardActive && (
             <p className="dg-hand-spent">{t('Đã dùng hết bài chiến thuật.', 'Tactic cards spent.')}</p>
           )}
-          {Array.isArray(session.cardHand) && session.cardHand.length > 0 && ((session.cardsPlayed || 0) < CARD_BUDGET || session.cardActive) && (
+          {Array.isArray(session.cardHand) && session.cardHand.length > 0 && (cardBudgetLeft(session) > 0 || session.cardActive) && (
             <div className="dg-hand" role="group" aria-label={t('Bài chiến thuật', 'Tactic cards')}>
               <span className="dg-hand-label">
-                {t('Bài trên tay', 'Hand')} · {t('còn', 'plays left')} {Math.max(0, CARD_BUDGET - (session.cardsPlayed || 0))}
+                {t('Bài trên tay', 'Hand')} · {t('còn', 'plays left')} {cardBudgetLeft(session)}
               </span>
               {session.cardHand.map((id, slot) => {
                 const card = DUNGEON_CARDS[id];
@@ -434,7 +435,7 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
                     key={`${id}-${slot}`}
                     type="button"
                     className="dg-card"
-                    disabled={Boolean(session.cardActive) || (session.cardsPlayed || 0) >= CARD_BUDGET || !cardPlayable(id, char)}
+                    disabled={Boolean(session.cardActive) || cardBudgetLeft(session) <= 0 || !cardPlayable(id, char)}
                     onClick={() => onPlayCard?.(id)}
                   >
                     <strong>{t(card.vi, card.en)}</strong>

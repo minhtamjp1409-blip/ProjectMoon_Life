@@ -10,6 +10,7 @@
 
 export const NIGHT_DUNGEON = {
   id: 'dungeon_backstreets_night',
+  cards: true,
   theme: 'night',
   titleVi: 'Đêm ở Backstreets: Ba Đợt Quét',
   titleEn: 'Night in the Backstreets: Three Sweeps',
