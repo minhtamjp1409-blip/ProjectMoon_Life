@@ -338,9 +338,9 @@ export const BirthSetupPanel = () => {
             {t('Một câu chuyện trong vũ trụ Project Moon', 'A life in the Project Moon universe')}
           </p>
           <h1 id="home-title">
-            {t('Một đời giữa', 'A life in')}{' '}
+            The City
             <br />
-            <span className="the-city-title">The City.</span>
+            <span className="the-city-title">Chronicles.</span>
           </h1>
           <p className="opening-lead">
             {t(

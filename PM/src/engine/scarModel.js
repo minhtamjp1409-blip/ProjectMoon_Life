@@ -1,5 +1,16 @@
 export const MAX_ACTIVE_SCARS = 3;
 
+export const SCAR_SYNERGIES = [
+  { id: 'cornered_blade', tags: ['survivor', 'weapon'], labelVi: 'Lưỡi kiếm trong ngõ cụt', labelEn: 'Cornered blade', boonVi: 'Khi HP thấp, né đòn trong dungeon dễ hơn 6%.', boonEn: 'At low HP, dungeon evasion gains 6 percentage points.', costVi: 'Mỗi năm thêm 1 Heat.', costEn: 'Gain 1 extra Heat each year.', annual: { heat: 1 } },
+  { id: 'field_repair', tags: ['injury', 'craft'], labelVi: 'Tự vá mình', labelEn: 'Field repair', boonVi: 'Vào dungeon với thêm một lần tiếp tế.', boonEn: 'Enter dungeons with one extra supply.', costVi: 'Mỗi năm tốn thêm 1 Ahn cho vật liệu.', costEn: 'Spend 1 extra Ahn each year on materials.', annual: { wealth: -1 } },
+  { id: 'haunted_witness', tags: ['trauma', 'witness'], labelVi: 'Mắt không ngủ', labelEn: 'Sleepless witness', boonVi: 'Dò đường trong dungeon tăng thêm 7 điểm phần trăm cơ hội kiểm định.', boonEn: 'Scanned dungeon checks gain 7 percentage points.', costVi: 'Mỗi năm mất thêm 1 SP.', costEn: 'Lose 1 extra SP each year.', annual: { sanity: -1 } }
+];
+
+export function activeScarSynergies(char) {
+  const tags = new Set(normalizeScars(char).scars.map((name) => getScarProfile(name)?.tag).filter(Boolean));
+  return SCAR_SYNERGIES.filter((synergy) => synergy.tags.every((tag) => tags.has(tag)));
+}
+
 const PROFILES = {
   survivor: {
     tag: 'survivor', labelVi: 'Bản năng sống sót', labelEn: 'Survival instinct',
@@ -72,8 +83,8 @@ export function hasScarTag(char, tag) {
 
 export function scarAnnualEffects(char) {
   const effects = {};
-  for (const name of normalizeScars(char).scars) {
-    const annual = getScarProfile(name)?.annual || {};
+  const annuals = [...normalizeScars(char).scars.map((name) => getScarProfile(name)?.annual || {}), ...activeScarSynergies(char).map((synergy) => synergy.annual)];
+  for (const annual of annuals) {
     for (const [key, value] of Object.entries(annual)) {
       if (key === 'wealth' && char.age < 18) continue;
       effects[key] = (effects[key] || 0) + value;

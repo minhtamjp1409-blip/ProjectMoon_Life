@@ -10,7 +10,7 @@ import { SEASONS, getNextCareerMilestone } from '../../../engine/gameEngine';
 import { audioEngine } from '../../../engine/audioEngine';
 import { gameFeel } from '../../../engine/gameFeel';
 import { useT } from '../../../i18n';
-import { getScarProfile, MAX_ACTIVE_SCARS } from '../../../engine/scarModel';
+import { getScarProfile, activeScarSynergies, MAX_ACTIVE_SCARS } from '../../../engine/scarModel';
 import { getAffiliation, affiliationLabel, standingLabel } from '../../../engine/affiliation';
 
 const JOB_LABELS = {
@@ -506,6 +506,11 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeT
               </article>;
             })}
           </div>
+          {activeScarSynergies(char).map((synergy) => <article className="scar-card" key={synergy.id}>
+            <div className="scar-card-heading"><strong>{t(synergy.labelVi, synergy.labelEn)}</strong><span>{t('Kết hợp', 'Synergy')}</span></div>
+            <p className="scar-boon">+ {t(synergy.boonVi, synergy.boonEn)}</p>
+            <p className="scar-cost">− {t(synergy.costVi, synergy.costEn)}</p>
+          </article>)}
           {(char.scarHistory?.length || 0) > 0 && <details><summary>{t(`${char.scarHistory.length} dấu tích cũ`, `${char.scarHistory.length} older marks`)}</summary><div className="chips">{char.scarHistory.map((scar, index) => <span className="chip" key={`${scar}_${index}`}>{scar}</span>)}</div></details>}
         </section>
       )}

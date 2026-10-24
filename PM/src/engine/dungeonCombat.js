@@ -7,6 +7,7 @@
 // dungeonEngine.js, so this module never imports it back.
 // ============================================================================
 import { GAUNTLETS, INTENT_KINDS, REST_TEXT } from '../data/dungeonGauntlets.js';
+import { activeScarSynergies } from './scarModel.js';
 
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
 const fnv = (text) => {
@@ -103,7 +104,7 @@ function damageOf(ctx, def, char, session, intent, taken, kind) {
   const scale = (1 + (tier - 1) * COMBAT_BALANCE.tierScale) * (def.hazard === 'ALEPH' ? COMBAT_BALANCE.aleph : 1);
   // The same multiplier stage choices use: mastery, stance, traits, scan, E.G.O and strain
   const mult = ctx.damageMult(def, char, session, kind === 'sanity' ? 'sanity' : 'health') / (ctx.hazardOf(def) || 1);
-  return Math.max(1, Math.ceil(base * taken * scale * mult * COMBAT_BALANCE.damageScale));
+  return Math.max(1, Math.ceil(base * taken * scale * mult * COMBAT_BALANCE.damageScale * (1 + 0.15 * (session.delveStake || 0))));
 }
 
 export function evadeChance(ctx, char, session) {
@@ -111,6 +112,7 @@ export function evadeChance(ctx, char, session) {
   if (session.stageScanned) chance += 0.15;
   if (session.egoActive) chance += 0.3;
   if (session.stance === 'guarded') chance += 0.05;
+  if ((char.stats?.health ?? 100) <= 40 && activeScarSynergies(char).some((synergy) => synergy.id === 'cornered_blade')) chance += 0.06;
   chance += ctx.strainCheck(session);
   return clamp(chance, 0.25, session.egoActive ? 0.95 : 0.9);
 }
@@ -241,6 +243,7 @@ export function resolveGauntletChoice(char, session, choiceIndex, rng, ctx) {
       session.sanityStrain = clamp((session.sanityStrain || 0) + r.strain, 0, 100);
       fx = 'rest';
     } else if (choice.restAction === 'push' && !def.noRewards) {
+      session.delveStake = Math.min(2, (session.delveStake || 0) + 1);
       session.accumulatedLootAhn = (session.accumulatedLootAhn || 0) + COMBAT_BALANCE.push.loot;
       char.merit = (char.merit || 0) + COMBAT_BALANCE.push.merit;
       session.accumulatedMerit = (session.accumulatedMerit || 0) + COMBAT_BALANCE.push.merit;
@@ -346,7 +349,7 @@ export function resolveGauntletChoice(char, session, choiceIndex, rng, ctx) {
     const meritBase = COMBAT_BALANCE.clearMerit;
     const extraLoot = floor.kind === 'boss' ? lootBase.boss : floor.elite ? lootBase.elite : 0;
     const extraMerit = floor.kind === 'boss' ? meritBase.boss : floor.elite ? meritBase.elite : 0;
-    const loot = Math.round((lootBase.base + floor.tier * lootBase.perTier + extraLoot) * ctx.lootMult(session));
+    const loot = Math.round((lootBase.base + floor.tier * lootBase.perTier + extraLoot) * ctx.lootMult(session) * (1 + 0.35 * (session.delveStake || 0)));
     const merit = meritBase.base + floor.tier * meritBase.perTier + extraMerit;
     session.accumulatedLootAhn = (session.accumulatedLootAhn || 0) + (def.noRewards ? 0 : loot);
     if (!def.noRewards) {

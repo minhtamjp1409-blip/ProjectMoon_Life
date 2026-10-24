@@ -17,7 +17,7 @@ import {
   cloneChar,
   interpolateText
 } from '../engine/gameEngine.js';
-import { planYear, syncPlanWithBackend, runDueItems, resolveMinor, endYear, nextPlanItem, diffStats, MINOR_WINDOW_MS, splitTitle, LIFE_MINORS } from '../engine/yearPlanner.js';
+import { planYear, chooseYearLead, syncPlanWithBackend, runDueItems, resolveMinor, endYear, nextPlanItem, diffStats, MINOR_WINDOW_MS, splitTitle, LIFE_MINORS } from '../engine/yearPlanner.js';
 import { CODEX_RECORDS } from '../data/worldData.js';
 import { getItemById } from '../data/itemsData.js';
 import { cityArchiveAPI } from '../services/api/cityArchiveAPI.js';
@@ -667,7 +667,8 @@ export const useGameStore = create((set, get) => ({
           merged.pendingBirthLogs = [...curChar.pendingBirthLogs];
           merged.logs = [...(curChar.logs || [])];
         }
-        if ((curChar?.taboo || 0) < 3 && !curChar?.pendingDungeon) set({ char: merged });
+        if ((curChar?.taboo || 0) < 3 && !curChar?.pendingDungeon &&
+            (curChar?.leadChoice?.age ?? -1) === (synced.leadChoice?.age ?? -1)) set({ char: merged });
       }
     });
   },
@@ -678,6 +679,10 @@ export const useGameStore = create((set, get) => ({
     const c = s.char;
     if (!s.inRun || !c.alive) return;
     if (s.activeResolution) return;
+    if (c.pendingLead) {
+      if (s.autoPlay && !(c.pendingBirthLogs || []).length) get().chooseYearLead(Math.floor(lifeRng() * c.pendingLead.offers.length));
+      return;
+    }
     if (c.pendingEvent || c.pendingContract || c.pendingDungeon || c.pendingModal) return;
 
     // Post-choice reading pause: gives ~3 seconds on outer screen before timeline flows
@@ -722,7 +727,7 @@ export const useGameStore = create((set, get) => ({
       const nextChar = endYear(cur, lifeRng);
       get().commit(cur, nextChar, { yearProgress: 0 });
       syncPlanWithBackend(nextChar, lifeRng).then((synced) => {
-        if (get().char?.age === synced.age) {
+        if (get().char?.age === synced.age && (get().char?.leadChoice?.age ?? -1) === (synced.leadChoice?.age ?? -1)) {
           get().commit(get().char, synced);
         }
       });
@@ -743,7 +748,7 @@ export const useGameStore = create((set, get) => ({
   stepYear: () => {
     const s = get();
     const c = s.char;
-    if (!c.alive || c.pendingEvent || c.pendingContract || c.pendingDungeon || c.pendingModal || c.pendingMinor || s.activeResolution) return;
+    if (!c.alive || c.pendingLead || c.pendingEvent || c.pendingContract || c.pendingDungeon || c.pendingModal || c.pendingMinor || s.activeResolution) return;
 
     const curP = s.yearProgress;
     const nextItem = nextPlanItem(c);
@@ -771,7 +776,7 @@ export const useGameStore = create((set, get) => ({
       const nextChar = endYear(base, lifeRng);
       get().commit(c, nextChar, { yearProgress: 0, postChoicePauseMs: 0 });
       syncPlanWithBackend(nextChar, lifeRng).then((synced) => {
-        if (get().char?.age === synced.age) {
+        if (get().char?.age === synced.age && (get().char?.leadChoice?.age ?? -1) === (synced.leadChoice?.age ?? -1)) {
           get().commit(get().char, synced);
         }
       });
@@ -787,6 +792,15 @@ export const useGameStore = create((set, get) => ({
   },
 
   stepSeasonOrEvent: () => get().stepYear(),
+
+  chooseYearLead: (index) => {
+    const prev = get().char;
+    if (!prev?.pendingLead) return false;
+    const next = chooseYearLead(prev, index);
+    if (next === prev) return false;
+    get().commit(prev, next, { postChoicePauseMs: 0 });
+    return true;
+  },
 
   chooseMinor: (idx) => {
     const prev = get().char;
