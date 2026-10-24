@@ -214,6 +214,50 @@ function eligibleMinors(char) {
   });
 }
 
+const leadEffects = (choice) => [choice?.fx || choice?.effects || {}, ...(choice?.out || choice?.outcomes || []).map((outcome) => outcome.fx || outcome.effects || {})];
+
+function leadRisk(event) {
+  const effects = (event.choices || []).flatMap(leadEffects);
+  const worst = Math.min(0, ...effects.map((fx) => (fx.health || 0) + (fx.sanity || 0) + Math.min(0, fx.wealth || 0) * 0.4));
+  if (worst <= -12 || event.tags?.includes('danger')) return 'danger';
+  if (event.choices?.some((choice) => (choice.out || choice.outcomes || []).length) || worst <= -5) return 'uncertain';
+  return 'steady';
+}
+
+function offerYearLeads(char, rng) {
+  if (!char.alive || char.age < 15 || char.flags?.includes('Distorted')) {
+    char.pendingLead = null;
+    return;
+  }
+  const reserved = new Set((char.plan || []).map((item) => item.id).filter(Boolean));
+  const pool = eligibleMinors(char).filter((entry) => !entry.careerOpportunity && !reserved.has(entry.id) && entry.choices?.some((choice) => choiceIsAvailable(choice, char)));
+  const selected = [];
+  for (const tier of ['steady', 'uncertain', 'danger']) {
+    const available = pool.filter((entry) => !selected.some((item) => item.id === entry.id));
+    const matched = available.filter((entry) => leadRisk(entry) === tier);
+    const pick = pickWeighted(matched.length ? matched : available, weightOf(char), rng);
+    if (pick) selected.push({ id: pick.id, tier });
+  }
+  char.pendingLead = selected.length === 3 ? { age: char.age, offers: selected } : null;
+}
+
+export function chooseYearLead(charState, index) {
+  const char = cloneChar(charState);
+  const draft = char.pendingLead;
+  if (!draft || draft.age !== char.age) return charState;
+  const offers = draft.offers || [];
+  const chosen = offers[index];
+  if (!chosen || !LIFE_MINORS.some((entry) => entry.id === chosen.id && matchesEventContext(entry, char) && entry.choices?.some((choice) => choiceIsAvailable(choice, char)))) return charState;
+  const event = LIFE_MINORS.find((entry) => entry.id === chosen.id);
+  const t = 0.265;
+  char.plan = [...(char.plan || []), { kind: 'minor', id: chosen.id, t, seasonIdx: 1, season: SEASONS[1], extra: true, lead: true }].sort((a, b) => a.t - b.t);
+  char.pendingLead = null;
+  char.leadChoice = { age: char.age, id: chosen.id, tier: chosen.tier };
+  remember(char, chosen.id);
+  logDecision(char, event, { vi: 'Bạn chọn theo manh mối này', en: 'You followed this lead', w: 1 }, 'minor');
+  return char;
+}
+
 const minorCanEarnMerit = (id) => LIFE_MINORS.some((entry) => entry.id === id &&
   entry.choices?.some((choice) => (choice.fx?.merit || 0) > 0 ||
     (choice.out || choice.outcomes || []).some((outcome) => (outcome.fx?.merit || 0) > 0)));
@@ -574,6 +618,7 @@ export function planYear(charState, rng) {
 
   char.plan = planItems;
   char.planCursor = 0;
+  offerYearLeads(char, rng);
   return char;
 }
 

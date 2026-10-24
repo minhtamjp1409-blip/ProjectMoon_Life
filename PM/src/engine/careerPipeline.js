@@ -228,29 +228,29 @@ export function checkColorFixerReadiness(char) {
 
 export const FINGER_LADDERS = {
   Thumb: [
-    { rank: 1, meritReq: 28, repReq: 18, eventId: 'syn_thumb_promo_capo', eventIds: ['syn_thumb_promo_capo', 'syn_thumb_promo_capo_convoy'], titleVi: 'Thăng cấp Capo (The Thumb)', titleEn: 'Thumb Capo Promotion Trial' },
-    { rank: 2, meritReq: 68, repReq: 46, eventId: 'syn_thumb_promo_sottocapo', eventIds: ['syn_thumb_promo_sottocapo', 'syn_thumb_promo_sottocapo_armory'], titleVi: 'Khảo thí Sottocapo (The Thumb)', titleEn: 'Thumb Sottocapo Promotion Trial' },
-    { rank: 3, meritReq: 155, repReq: 84, eventId: 'syn_thumb_underboss_purge', eventIds: ['syn_thumb_underboss_purge', 'syn_thumb_apex_godfather'], titleVi: 'Đại Lễ Tuyên Thệ Underboss (The Thumb)', titleEn: 'Thumb Underboss Pinnacle Trial' }
+    { rank: 1, meritReq: 28, repReq: 18, eventId: 'syn_thumb_promo_capo', eventIds: ['syn_thumb_promo_capo', 'syn_thumb_promo_capo_convoy', 'syn_thumb_promo_capo_ledger'], titleVi: 'Thăng cấp Capo (The Thumb)', titleEn: 'Thumb Capo Promotion Trial' },
+    { rank: 2, meritReq: 68, repReq: 46, eventId: 'syn_thumb_promo_sottocapo', eventIds: ['syn_thumb_promo_sottocapo', 'syn_thumb_promo_sottocapo_armory', 'syn_thumb_promo_sottocapo_envoy'], titleVi: 'Khảo thí Sottocapo (The Thumb)', titleEn: 'Thumb Sottocapo Promotion Trial' },
+    { rank: 3, meritReq: 155, repReq: 84, eventId: 'syn_thumb_underboss_purge', eventIds: ['syn_thumb_underboss_purge', 'syn_thumb_apex_godfather', 'syn_thumb_underboss_succession'], titleVi: 'Đại Lễ Tuyên Thệ Underboss (The Thumb)', titleEn: 'Thumb Underboss Pinnacle Trial' }
   ],
   Index: [
-    { rank: 1, meritReq: 28, repReq: 18, eventId: 'syn_index_promo_messenger', eventIds: ['syn_index_promo_messenger', 'syn_index_promo_messenger_conduit'], titleVi: 'Sứ Giả Chỉ Lệnh (Index Messenger Trial)', titleEn: 'Index Messenger Promotion Trial' },
-    { rank: 2, meritReq: 68, repReq: 46, eventId: 'syn_index_promo_proxy', eventIds: ['syn_index_promo_proxy', 'syn_index_promo_proxy_sword'], titleVi: 'Đại Kiếm Proxy (Index Proxy Trial)', titleEn: 'Index Proxy Promotion Trial' },
-    { rank: 3, meritReq: 155, repReq: 84, eventId: 'syn_index_weaver_prescript', eventIds: ['syn_index_weaver_prescript', 'syn_index_grand_proxy_flow'], titleVi: 'Ý Chỉ Thần Dệt (Index Weaver Pinnacle)', titleEn: 'Index Weaver Pinnacle Trial' }
+    { rank: 1, meritReq: 28, repReq: 18, eventId: 'syn_index_promo_messenger', eventIds: ['syn_index_promo_messenger', 'syn_index_promo_messenger_conduit', 'syn_index_promo_messenger_night'], titleVi: 'Sứ Giả Chỉ Lệnh (Index Messenger Trial)', titleEn: 'Index Messenger Promotion Trial' },
+    { rank: 2, meritReq: 68, repReq: 46, eventId: 'syn_index_promo_proxy', eventIds: ['syn_index_promo_proxy', 'syn_index_promo_proxy_sword', 'syn_index_promo_proxy_silence'], titleVi: 'Đại Kiếm Proxy (Index Proxy Trial)', titleEn: 'Index Proxy Promotion Trial' },
+    { rank: 3, meritReq: 155, repReq: 84, eventId: 'syn_index_weaver_prescript', eventIds: ['syn_index_weaver_prescript', 'syn_index_grand_proxy_flow', 'syn_index_weaver_blank'], titleVi: 'Ý Chỉ Thần Dệt (Index Weaver Pinnacle)', titleEn: 'Index Weaver Pinnacle Trial' }
   ],
   Middle: [
-    { rank: 1, meritReq: 28, repReq: 18, eventId: 'syn_middle_promo_big_sibling', eventIds: ['syn_middle_promo_big_sibling', 'syn_middle_promo_big_sibling_rescue'], titleVi: 'Lễ Khắc Xích Vàng: Big Sibling (The Middle)', titleEn: 'Middle Big Sibling Promotion Trial' },
-    { rank: 2, meritReq: 68, repReq: 46, eventId: 'syn_middle_promo_great_elder', eventIds: ['syn_middle_promo_great_elder', 'syn_middle_promo_great_elder_clan'], titleVi: 'Đại Trưởng Lão (Middle Great Elder)', titleEn: 'Middle Great Elder Promotion Trial' },
-    { rank: 3, meritReq: 155, repReq: 84, eventId: 'syn_middle_great_brother_vendetta', eventIds: ['syn_middle_great_brother_vendetta', 'syn_middle_apex_patriarch'], titleVi: 'Đại Huyết Nợ: Great Brother/Sister (The Middle)', titleEn: 'Middle Great Sibling Pinnacle Trial' }
+    { rank: 1, meritReq: 28, repReq: 18, eventId: 'syn_middle_promo_big_sibling', eventIds: ['syn_middle_promo_big_sibling', 'syn_middle_promo_big_sibling_rescue', 'syn_middle_promo_big_sibling_dinner'], titleVi: 'Lễ Khắc Xích Vàng: Big Sibling (The Middle)', titleEn: 'Middle Big Sibling Promotion Trial' },
+    { rank: 2, meritReq: 68, repReq: 46, eventId: 'syn_middle_promo_great_elder', eventIds: ['syn_middle_promo_great_elder', 'syn_middle_promo_great_elder_clan', 'syn_middle_promo_great_elder_ledger'], titleVi: 'Đại Trưởng Lão (Middle Great Elder)', titleEn: 'Middle Great Elder Promotion Trial' },
+    { rank: 3, meritReq: 155, repReq: 84, eventId: 'syn_middle_great_brother_vendetta', eventIds: ['syn_middle_great_brother_vendetta', 'syn_middle_apex_patriarch', 'syn_middle_great_sibling_forgiveness'], titleVi: 'Đại Huyết Nợ: Great Brother/Sister (The Middle)', titleEn: 'Middle Great Sibling Pinnacle Trial' }
   ],
   Ring: [
-    { rank: 1, meritReq: 28, repReq: 18, eventId: 'syn_ring_promo_docent', eventIds: ['syn_ring_promo_docent', 'syn_ring_promo_docent_gallery'], titleVi: 'Triển Lãm Giải Phẫu: Docent (The Ring)', titleEn: 'Ring Docent Promotion Trial' },
+    { rank: 1, meritReq: 28, repReq: 18, eventId: 'syn_ring_promo_docent', eventIds: ['syn_ring_promo_docent', 'syn_ring_promo_docent_gallery', 'syn_ring_promo_docent_restoration'], titleVi: 'Triển Lãm Giải Phẫu: Docent (The Ring)', titleEn: 'Ring Docent Promotion Trial' },
     { rank: 2, meritReq: 68, repReq: 46, eventId: 'syn_ring_promo_maestro', eventIds: ['syn_ring_promo_maestro', 'syn_ring_promo_maestro_symphony', 'syn_ring_maestro_gallery'], titleVi: 'Đại Nhạc Trưởng: Maestro (The Ring)', titleEn: 'Ring Maestro Promotion Trial' },
-    { rank: 3, meritReq: 155, repReq: 84, eventId: 'syn_ring_curator_monument', eventIds: ['syn_ring_curator_monument', 'syn_ring_apex_grand_master'], titleVi: 'Đại Quản Trưởng: Grand Curator (The Ring)', titleEn: 'Ring Grand Curator Pinnacle Trial' }
+    { rank: 3, meritReq: 155, repReq: 84, eventId: 'syn_ring_curator_monument', eventIds: ['syn_ring_curator_monument', 'syn_ring_apex_grand_master', 'syn_ring_curator_unsigned'], titleVi: 'Đại Quản Trưởng: Grand Curator (The Ring)', titleEn: 'Ring Grand Curator Pinnacle Trial' }
   ],
   Pinky: [
-    { rank: 1, meritReq: 28, repReq: 18, eventId: 'syn_pinky_promo_blade', eventIds: ['syn_pinky_promo_blade', 'syn_pinky_promo_blade_oath'], titleVi: 'Lưỡi Đao Lập Thệ: Sworn Blade (The Pinky)', titleEn: 'Pinky Sworn Blade Promotion Trial' },
+    { rank: 1, meritReq: 28, repReq: 18, eventId: 'syn_pinky_promo_blade', eventIds: ['syn_pinky_promo_blade', 'syn_pinky_promo_blade_oath', 'syn_pinky_promo_blade_ferry'], titleVi: 'Lưỡi Đao Lập Thệ: Sworn Blade (The Pinky)', titleEn: 'Pinky Sworn Blade Promotion Trial' },
     { rank: 2, meritReq: 68, repReq: 46, eventId: 'syn_pinky_star_blade_pinnacle', eventIds: ['syn_pinky_star_blade_pinnacle', 'syn_pinky_promo_shadow_arbiter', 'pinky_star_blade_oath'], titleVi: 'Thiên Tinh: Star of the Sky (The Pinky)', titleEn: 'Pinky Star of the Sky Promotion Trial' },
-    { rank: 3, meritReq: 155, repReq: 84, eventId: 'syn_pinky_promo_sovereign', eventIds: ['syn_pinky_promo_sovereign', 'syn_pinky_apex_monarch'], titleVi: 'Chúa Tể Ngón Út: Sovereign (The Pinky)', titleEn: 'Pinky Sovereign Pinnacle Trial' }
+    { rank: 3, meritReq: 155, repReq: 84, eventId: 'syn_pinky_promo_sovereign', eventIds: ['syn_pinky_promo_sovereign', 'syn_pinky_apex_monarch', 'syn_pinky_sovereign_empty_yard'], titleVi: 'Chúa Tể Ngón Út: Sovereign (The Pinky)', titleEn: 'Pinky Sovereign Pinnacle Trial' }
   ]
 };
 

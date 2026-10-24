@@ -199,6 +199,7 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
                 <b className="num">{session.accumulatedLootAhn || 0}</b> Ahn
                 {(session.accumulatedMerit || 0) > 0 && <> · <b className="num">{session.accumulatedMerit}</b> {t('công trạng', 'merit')}</>}
               </span>
+              {(session.delveStake || 0) > 0 && <span className="dg-need is-unmet">{t(`Cược sâu ${session.delveStake}/2: hàng ở các trận tới +${session.delveStake * 35}%, sát thương nhận +${session.delveStake * 15}%`, `Deep wager ${session.delveStake}/2: future fight loot +${session.delveStake * 35}%, damage taken +${session.delveStake * 15}%`)}</span>}
             </div>
           )}
         </section>
@@ -297,6 +298,7 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
                       {ch.isFlee && (
                         <span className="dg-need is-met"><LogOut size={12} aria-hidden="true" />{t('Rút lui, giữ hàng đã gom', 'Leave with what you hold')}</span>
                       )}
+                      {ch.restAction === 'push' && <span className="dg-need is-unmet">{t('Trận sau: thêm hàng, nhưng đòn đau hơn', 'Later fights: more loot, harder hits')}</span>}
                       {def.fatalOnFinalFailure && currentIdx === stages.length - 1 && (
                         <span className="dg-need is-unmet">{t('Trượt kiểm định: chết', 'Failed check: death')}</span>
                       )}

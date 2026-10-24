@@ -170,7 +170,7 @@ function MotionHint({ t }) {
 }
 
 export const BirthSetupPanel = () => {
-  const { t, lang } = useT('en');
+  const { t, lang } = useT();
   const navigate = useNavigate();
   const customName = useGameStore((s) => s.customName);
   const customSeed = useGameStore((s) => s.customSeed);
@@ -338,9 +338,9 @@ export const BirthSetupPanel = () => {
             {t('Một câu chuyện trong vũ trụ Project Moon', 'A life in the Project Moon universe')}
           </p>
           <h1 id="home-title">
-            {t('Một đời giữa', 'A life in')}{' '}
+            The City
             <br />
-            <span className="the-city-title">The City.</span>
+            <span className="the-city-title">Chronicles.</span>
           </h1>
           <p className="opening-lead">
             {t(
@@ -368,7 +368,7 @@ export const BirthSetupPanel = () => {
             <div className="atlas-note">
               <MapPin size={16} aria-hidden="true" />
               <div>
-                <strong>{region ? region.nameEn : t('Nơi sinh chưa định', 'A birthplace unwritten')}</strong>
+                <strong>{region ? (lang === 'en' ? region.nameEn : region.nameVi || region.nameEn) : t('Nơi sinh chưa định', 'A birthplace unwritten')}</strong>
                 <p>
                   {region
                     ? t(region.aliasVi, region.aliasEn)
@@ -465,7 +465,7 @@ export const BirthSetupPanel = () => {
                 </option>
                 {REGIONS.map((r) => (
                   <option key={r.id} value={r.id}>
-                    {r.nameEn} · {t(r.aliasVi, r.aliasEn)}
+                    {lang === 'en' ? r.nameEn : r.nameVi || r.nameEn} · {t(r.aliasVi, r.aliasEn)}
                   </option>
                 ))}
               </select>
@@ -672,7 +672,7 @@ export const BirthSetupPanel = () => {
         <div className="district-browser">
           <div className="district-selection">
             <span>{t('Nơi sinh đã chọn', 'Selected birthplace')}</span>
-            <h3>{region ? region.nameEn : t('Để số phận quyết định', 'Leave it to fate')}</h3>
+            <h3>{region ? (lang === 'en' ? region.nameEn : region.nameVi || region.nameEn) : t('Để số phận quyết định', 'Leave it to fate')}</h3>
             <p>
               {region
                 ? t(region.descVi, region.descEn)

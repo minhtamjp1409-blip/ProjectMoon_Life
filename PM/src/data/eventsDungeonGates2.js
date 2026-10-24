@@ -354,5 +354,34 @@ export const DUNGEON_GATE_EVENTS_2 = [
         resultVi: 'Bạn mang món đồ đến văn phòng và ký vào ba tờ giấy. Người lạ không bao giờ xuất hiện ở quán quen nữa. Ai đó trong văn phòng nhìn bạn với chút kính nể.', resultEn: 'You bring it to the office and sign three forms. The stranger never shows up at your bar again. Someone in the office looks at you with a little respect.',
         effects: { rep: 6, sanity: 3 }, affStanding: 6, flagsRemove: ['KeptDungeonTrophy'], meritAdd: 6 }
     ]
-  }
+  },
+  // ---- a second way in for the two Fingers that had one gate fewer than the rest
+  gate({
+    id: 'gate_lake_thumb_cargo', done: 'gate_lake_thumb_cargo_done', age: [18, 70], weight: 40,
+    need: { jobs: ['Syndicate'], finger: 'Thumb' },
+    vi: '[Lô đạn qua mặt hồ] Capo cần một lô đạn đi qua Great Lake mà không ghi vào sổ của Hana. Người lái đò quen đã ốm, và chiếc thuyền duy nhất còn nổi đang neo ở bến District 21. Capo không nói chiếc thuyền ấy có về một mình hay không.',
+    en: '[A shipment across the lake] Your Capo needs a lot of ammunition taken over the Great Lake without entering Hana’s books. The regular ferryman is ill, and the only boat afloat is moored at the District 21 dock. The Capo does not say whether that boat comes back alone.',
+    choices: [
+      enter('dungeon_great_lake', 'gate_lake_thumb_cargo_done', 'Nhận lô hàng và tự chèo thuyền ra khơi', 'Take the cargo and row the boat out yourself',
+        'Mặt nước đen đến mức bạn không thấy mái chèo. Từ xa, những cọc neo rung theo một nhịp không phải của sóng.', 'The water is so dark you cannot see the oars. From far off the mooring posts shake to a rhythm that is not the waves.'),
+      prepare('dungeon_great_lake', 'gate_lake_thumb_cargo_done', 'Chi 12 Ahn mua dây neo và đèn chống sương', 'Spend 12 Ahn on mooring line and a fog lamp',
+        'Người bán dây đưa bạn cuộn tốt nhất của mình mà không hỏi gì, rồi dặn đừng đáp lại bất kỳ tiếng gọi nào từ dưới nước.', 'The rope seller gives you his best coil without asking, then tells you not to answer any call from beneath the water.'),
+      decline('gate_lake_thumb_cargo_done', 'Báo Capo rằng bạn không biết bơi', 'Tell the Capo you cannot swim',
+        'Capo nhìn bạn một lúc rồi giao lô hàng cho người khác. Tên bạn không còn nằm ở dòng đầu trong sổ giao việc.', 'The Capo looks at you a moment, then gives the cargo to someone else. Your name is no longer on the first line of the assignment book.', { rep: -3, wealth: -2 })
+    ]
+  }),
+  gate({
+    id: 'gate_lobotomy_ring_relic', done: 'gate_lobotomy_ring_relic_done', age: [18, 70], weight: 40,
+    need: { jobs: ['Syndicate'], finger: 'Ring' },
+    vi: '[Mảnh còn lại của L Corp] Maestro nghe nói trong tàn tích L Corp còn một tấm kính chưa vỡ, trong đến mức như không có ở đó. Họ muốn nó cho tác phẩm kế tiếp, và không nói ai đã đi lấy nó trước bạn.',
+    en: '[What is left of L Corp] The Maestro has heard that in the ruins of L Corp one pane of glass remains unbroken, so clear it seems not to be there. They want it for the next work, and do not say who went for it before you.',
+    choices: [
+      enter('dungeon_lobotomy_ruin', 'gate_lobotomy_ring_relic_done', 'Nhận bản đồ cũ và vào tàn tích', 'Take the old map and enter the ruins',
+        'Bản đồ ghi các hành lang bằng nét chữ của một người đã chết. Có hành lang không còn ở đó nữa, và có hành lang khác chưa từng có.', 'The map marks the corridors in a dead person’s hand. Some corridors are no longer there, and some others never were.'),
+      prepare('dungeon_lobotomy_ruin', 'gate_lobotomy_ring_relic_done', 'Chi 12 Ahn mua mặt nạ lọc và một cuộn băng đánh dấu đường', 'Spend 12 Ahn on a filter mask and a roll of marking tape',
+        'Người bán băng dặn: dán mỗi ba bước, và nếu một dải biến mất thì quay lại ngay.', 'The tape seller tells you: stick a strip every three paces, and if one vanishes turn back at once.'),
+      decline('gate_lobotomy_ring_relic_done', 'Nói với Maestro rằng tác phẩm không cần thứ trong suốt', 'Tell the Maestro the work needs nothing transparent',
+        'Maestro im lặng một lúc lâu rồi ghi gì đó vào sổ phác thảo. Lần sau họ giao việc này cho một Student khác.', 'The Maestro is silent a long while, then writes something in a sketchbook. Next time they give the job to another Student.', { rep: -2, sanity: 1 })
+    ]
+  })
 ];

@@ -8,6 +8,7 @@ import { useShallow } from 'zustand/react/shallow';
 import { useGameStore } from '../../../store/gameStore';
 import { buildLifeSummaryAndLegacy, getDungeonCurrentStage, isDungeonChoiceAvailable, DUNGEON_DEFINITIONS } from '../../../engine/gameEngine';
 import { DungeonDock } from './DungeonDock';
+import { YearLeadDock } from './YearLeadDock';
 import { DungeonBackdrop } from './DungeonBackdrop';
 import { LIFE_MINORS, MINOR_WINDOW_MS, splitTitle } from '../../../engine/yearPlanner';
 import { exportDossierCardPNG } from '../../../utils/exportDossierCard';
@@ -828,6 +829,7 @@ export const LiveStageFeed = () => {
     minorRemainingMs,
     setSpeed,
     chooseMinor,
+    chooseYearLead,
     selectEventChoice,
     selectContractApproach,
     setDungeonStance,
@@ -854,6 +856,7 @@ export const LiveStageFeed = () => {
       minorRemainingMs: s.minorRemainingMs,
       setSpeed: s.setSpeed,
       chooseMinor: s.chooseMinor,
+      chooseYearLead: s.chooseYearLead,
       selectEventChoice: s.selectEventChoice,
       selectContractApproach: s.selectContractApproach,
       setDungeonStance: s.setDungeonStance,
@@ -1039,6 +1042,17 @@ export const LiveStageFeed = () => {
           revealNextBirthLog();
           return;
         }
+        return;
+      }
+
+      if (char.pendingLead) {
+        const leadIndex = Number(e.key) - 1;
+        if (Number.isInteger(leadIndex) && leadIndex >= 0 && leadIndex < char.pendingLead.offers.length) {
+          e.preventDefault();
+          audioEngine.playClick();
+          chooseYearLead(leadIndex);
+        }
+        return;
       }
 
       if (e.code === 'Space') {
@@ -1112,7 +1126,7 @@ export const LiveStageFeed = () => {
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [char.alive, char.pendingDungeon, char.pendingEvent, char.pendingContract, char.pendingMinor, char.stats.wealth, activeResolution, dismissResolution, postChoicePauseMs, clearPostChoicePause, speed, setSpeed, chooseMinor, selectEventChoice, selectContractApproach, chooseDungeonAction, fleeDungeon, isPrologueActive, revealNextBirthLog, peekBehind]);
+  }, [char.alive, char.pendingLead, char.pendingDungeon, char.pendingEvent, char.pendingContract, char.pendingMinor, char.stats.wealth, activeResolution, dismissResolution, postChoicePauseMs, clearPostChoicePause, speed, setSpeed, chooseYearLead, chooseMinor, selectEventChoice, selectContractApproach, chooseDungeonAction, fleeDungeon, isPrologueActive, revealNextBirthLog, peekBehind]);
 
   // Forge mini-game: the cursor sweeps while the craft modal is open
   useEffect(() => {
@@ -1182,7 +1196,7 @@ export const LiveStageFeed = () => {
 
   const forgeQuality = strikes.length ? Math.round(strikes.reduce((a, b) => a + b, 0) / strikes.length) : 0;
   const lifeSummary = !char.alive ? buildLifeSummaryAndLegacy(char) : null;
-  const hasDock = Boolean(char.pendingDungeon || char.pendingEvent || char.pendingContract || char.pendingMinor || activeResolution);
+  const hasDock = Boolean((char.pendingLead && !isPrologueActive) || char.pendingDungeon || char.pendingEvent || char.pendingContract || char.pendingMinor || activeResolution);
   const canPeek = Boolean(char.pendingDungeon || char.pendingEvent || char.pendingContract || activeResolution);
   useEffect(() => setPeekBehind(false), [char.pendingDungeon?.id, char.pendingEvent?.id, char.pendingContract?.id, activeResolution?.titleVi]);
 
@@ -1251,7 +1265,8 @@ export const LiveStageFeed = () => {
             />
           ) : (
             <>
-              {char.pendingDungeon && (
+              {char.pendingLead && <YearLeadDock draft={char.pendingLead} char={char} onPick={chooseYearLead} />}
+              {!char.pendingLead && char.pendingDungeon && (
                 <DungeonDock
                   session={char.pendingDungeon}
                   char={char}
@@ -1262,9 +1277,9 @@ export const LiveStageFeed = () => {
                   onUseEgo={handleUseDungeonEgo}
                 />
               )}
-              {!char.pendingDungeon && char.pendingEvent && <EventDock event={char.pendingEvent} char={char} onPick={handleSelectEvent} />}
-              {!char.pendingDungeon && !char.pendingEvent && char.pendingContract && <ContractDock contract={char.pendingContract} wealth={char.stats.wealth} onPick={handleSelectContract} />}
-              {!char.pendingDungeon && !char.pendingEvent && !char.pendingContract && char.pendingMinor && (
+              {!char.pendingLead && !char.pendingDungeon && char.pendingEvent && <EventDock event={char.pendingEvent} char={char} onPick={handleSelectEvent} />}
+              {!char.pendingLead && !char.pendingDungeon && !char.pendingEvent && char.pendingContract && <ContractDock contract={char.pendingContract} wealth={char.stats.wealth} onPick={handleSelectContract} />}
+              {!char.pendingLead && !char.pendingDungeon && !char.pendingEvent && !char.pendingContract && char.pendingMinor && (
                 <MinorDock prompt={char.pendingMinor} char={char} npcs={char.npcs} wealth={char.stats.wealth} place={placeOf(char)} remainingMs={minorRemainingMs} onPick={handleChooseMinor} />
               )}
             </>

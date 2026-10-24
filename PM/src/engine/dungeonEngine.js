@@ -10,7 +10,7 @@ import { rememberResonance } from './awakeningProgress.js';
  */
 
 import { clamp, interpolateText } from './gameEngine.js';
-import { addScar } from './scarModel.js';
+import { addScar, activeScarSynergies } from './scarModel.js';
 import { traitsOf } from './variance.js';
 import { evaluateCompanionSupport } from '../data/npcPersonality.js';
 import { FAIL_TEXT, GENERIC_FAIL, STRAIN_NOTES, BREAK_TEXT, SUPPLY_TEXT, ENDING_TEXT } from '../data/dungeonText.js';
@@ -984,7 +984,7 @@ function checkChanceOf(choice, char, session, mastery) {
   chance += STANCE[stance].check;
   if (def?.noRetreat) chance += stance === 'guarded' ? -0.1 : stance === 'balanced' ? 0.04 : 0.12;
   if (stance === 'reckless' && choice.checkTrait === 'vigor') chance += 0.1;
-  if (session?.stageScanned) chance += 0.18;
+  if (session?.stageScanned) chance += 0.18 + (activeScarSynergies(char).some((synergy) => synergy.id === 'haunted_witness') ? 0.07 : 0);
   if ((char.stats?.sanity ?? 50) >= 70) chance += 0.05;
   chance += tier.check;
   if (session?.egoActive) chance += DUNGEON_BALANCE.ego.checkBonus;
@@ -1112,7 +1112,8 @@ export function createDungeonSession(dungeonId, char) {
 
   const bonusSupply = ['Fixer', 'Wing Employee', 'Workshop Craftsman', 'Syndicate'].includes(char?.job) ||
     (char?.flags || []).some((f) => ['OutskirtsAdaptability', 'GreatLakeHardened', 'GoreDesensitized', 'EGOAwakened'].includes(f));
-  const maxSupplies = def.noRetreat ? (bonusSupply ? 2 : 1) : (bonusSupply ? 3 : 2);
+  const synergySupply = activeScarSynergies(char).some((synergy) => synergy.id === 'field_repair') ? 1 : 0;
+  const maxSupplies = (def.noRetreat ? (bonusSupply ? 2 : 1) : (bonusSupply ? 3 : 2)) + synergySupply;
 
   const session = {
     id: def.id,
@@ -1128,6 +1129,7 @@ export function createDungeonSession(dungeonId, char) {
     sanityStrain: 0,
     accumulatedLootAhn: 0,
     accumulatedMerit: 0,
+    delveStake: 0,
     stance: 'balanced',
     supplyCharges: maxSupplies,
     maxSupplies,
