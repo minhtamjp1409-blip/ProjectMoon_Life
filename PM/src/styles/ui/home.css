@@ -15,10 +15,9 @@
   font-weight: 600;
   line-height: 1;
   letter-spacing: -0.025em;
-  margin-bottom: 22px;
+  margin-bottom: 40px;
 }
 .opening-story h1 .the-city-title { display: block; font-style: normal; }
-.opening-lead { max-width: 30em; font-family: var(--serif); font-size: 19px; line-height: 1.6; color: var(--story); margin-bottom: 36px; }
 
 /* The birthplace dial: a real selector of the 25 Districts, the letter under the pointer is the pick */
 .opening-atlas { display: grid; grid-template-columns: minmax(220px, 300px) minmax(0, 1fr); gap: 28px; align-items: center; }
@@ -166,8 +165,7 @@
   .home-opening { padding-top: 24px; gap: 28px; }
   .opening-story { display: contents; }
   .opening-context { order: 1; margin-bottom: -18px; }
-  .opening-story h1 { order: 2; font-size: clamp(40px, 12vw, 56px); margin-bottom: -12px; }
-  .opening-lead { order: 3; font-size: 17px; margin-bottom: 0; }
+  .opening-story h1 { order: 2; font-size: clamp(40px, 12vw, 56px); margin-bottom: 0; }
   .birth-panel { order: 4; max-width: none; padding: 22px 18px 20px; }
   .opening-atlas { order: 5; grid-template-columns: 1fr; }
   .district-dial-container { max-width: 300px; margin: 0 auto; }

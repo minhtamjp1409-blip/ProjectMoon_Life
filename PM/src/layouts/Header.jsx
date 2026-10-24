@@ -1,35 +1,57 @@
 import React from 'react';
-import { Languages, Volume2, VolumeX } from 'lucide-react';
-import { Tooltip } from 'antd';
+import { Volume2, VolumeX, Settings2 } from 'lucide-react';
+import { Dropdown, Tooltip } from 'antd';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useThemeStore } from '../store/themeStore';
 import { useGameStore } from '../store/gameStore';
 import { pick } from '../i18n';
 import { audioEngine } from '../engine/audioEngine';
-import { NAV_ITEMS, LANG_OPTIONS, BrandMark, LangMenu, MotionToggle, TextSizeToggle } from './Sidebar';
+import { NAV_ITEMS, LANG_OPTIONS, BrandMark } from './Sidebar';
 
-// One bar for every width: the archive tabs sit in it on a desktop and move to the bottom bar on a phone
+// One bar for every width: the archive tabs sit in it on a desktop and move to the bottom bar on a phone.
+// The mark goes home; during a life that means back to the title screen (the run is saved first).
 export const Header = ({ languageOverride, isPlay }) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const { lang: preferredLang } = useThemeStore();
+  const { lang: preferredLang, setLang, textSize, setTextSize, motionMode, setMotion } = useThemeStore();
   const [muted, setMuted] = React.useState(() => audioEngine.isMuted);
   React.useEffect(() => audioEngine.subscribe((st) => setMuted(st.isMuted)), []);
   const lang = languageOverride || preferredLang;
-  const online = useGameStore((s) => s.backendOnline);
   const inRun = useGameStore((s) => s.inRun);
+  const exitToSetup = useGameStore((s) => s.exitToSetup);
   const name = useGameStore((s) => s.char.name);
   const age = useGameStore((s) => s.char.age);
   const current = NAV_ITEMS.find((i) => i.key === pathname) || NAV_ITEMS[0];
+  const goHome = () => {
+    if (inRun && pathname === '/') exitToSetup();
+    navigate('/');
+  };
+  const settings = {
+    selectable: true,
+    selectedKeys: ['lang:' + preferredLang, 'text:' + textSize, 'motion:' + motionMode],
+    items: [
+      { type: 'group', key: 'g-lang', label: pick(lang, 'Ngôn ngữ', 'Language'), children: LANG_OPTIONS.map((o) => ({ key: 'lang:' + o.key, label: o.label })) },
+      { type: 'group', key: 'g-text', label: pick(lang, 'Cỡ chữ truyện', 'Story text size'), children: [['md', 'Vừa', 'Medium'], ['lg', 'Lớn', 'Large'], ['xl', 'Rất lớn', 'Extra large']].map(([k, vi, en]) => ({ key: 'text:' + k, label: pick(lang, vi, en) })) },
+      { type: 'group', key: 'g-motion', label: pick(lang, 'Chuyển động', 'Motion'), children: [['system', 'Theo hệ thống', 'Follow system'], ['full', 'Đầy đủ', 'Full'], ['reduced', 'Giảm', 'Reduced']].map(([k, vi, en]) => ({ key: 'motion:' + k, label: pick(lang, vi, en) })) }
+    ],
+    onClick: ({ key }) => {
+      const [kind, value] = key.split(':');
+      if (kind === 'lang') setLang(value);
+      else if (kind === 'text') setTextSize(value);
+      else if (kind === 'motion') setMotion(value);
+    }
+  };
   return (
     <header className="topbar" lang={lang === 'bi' ? 'vi' : lang}>
-      <button type="button" className="topbar-brand" onClick={() => navigate('/')} aria-label="The City Chronicles">
-        <BrandMark size={28} />
-        <span className="topbar-word">
-          The City <em>Chronicles</em>
-        </span>
-        <span className="topbar-here">{pick(lang, current.vi, current.en)}</span>
-      </button>
+      <Tooltip title={inRun && pathname === '/' ? pick(lang, 'Về màn hình chính (đã lưu)', 'Back to the title screen (saved)') : null} placement="bottomLeft">
+        <button type="button" className="topbar-brand" onClick={goHome} aria-label={pick(lang, 'The City Chronicles, về màn hình chính', 'The City Chronicles, home')}>
+          <BrandMark size={28} />
+          <span className="topbar-word">
+            The City <em>Chronicles</em>
+          </span>
+          <span className="topbar-here">{pick(lang, current.vi, current.en)}</span>
+        </button>
+      </Tooltip>
       <nav className="topbar-nav" aria-label={pick(lang, 'Điều hướng chính', 'Main navigation')}>
         {NAV_ITEMS.map((item) => (
           <button
@@ -52,12 +74,6 @@ export const Header = ({ languageOverride, isPlay }) => {
             </strong>
           </button>
         )}
-        <LangMenu placement="bottomRight">
-          <button type="button" className="app-tool" aria-label={languageOverride ? 'Choose story language' : pick(lang, 'Chọn ngôn ngữ', 'Choose language')}>
-            <Languages size={16} aria-hidden="true" />
-            <span>{LANG_OPTIONS.find((o) => o.key === preferredLang)?.short}</span>
-          </button>
-        </LangMenu>
         <button
           type="button"
           className="app-tool"
@@ -67,17 +83,11 @@ export const Header = ({ languageOverride, isPlay }) => {
         >
           {muted ? <VolumeX size={17} /> : <Volume2 size={17} />}
         </button>
-        <TextSizeToggle lang={lang} placement="bottomRight" />
-        <MotionToggle lang={lang} placement="bottomRight" />
-        <Tooltip
-          title={online ? pick(lang, 'Đã kết nối archive', 'Archive connected') : pick(lang, 'Lưu trên thiết bị', 'Saved on this device')}
-          placement="bottomRight"
-        >
-          <span className={`topbar-sync ${online ? 'is-online' : ''}`} role="status">
-            <i aria-hidden="true" />
-            <span className="sr-only">{online ? pick(lang, 'Đã kết nối archive', 'Archive connected') : pick(lang, 'Lưu trên thiết bị', 'Saved on this device')}</span>
-          </span>
-        </Tooltip>
+        <Dropdown menu={settings} trigger={['click']} placement="bottomRight">
+          <button type="button" className="app-tool" aria-label={pick(lang, 'Cài đặt: ngôn ngữ, cỡ chữ, chuyển động', 'Settings: language, text size, motion')}>
+            <Settings2 size={17} aria-hidden="true" />
+          </button>
+        </Dropdown>
       </div>
     </header>
   );

@@ -326,12 +326,6 @@ export const BirthSetupPanel = () => {
           <h1 id="home-title">
             The City <em className="the-city-title">Chronicles</em>
           </h1>
-          <p className="opening-lead">
-            {t(
-              'Nơi bạn sinh ra không phải lựa chọn của bạn. Nhưng những gì còn lại sau một đời người thì có.',
-              'You do not choose the world you are born into. What you leave behind is another matter.'
-            )}
-          </p>
           <div className={`opening-atlas ${spinning ? 'is-launch-spinning' : ''}`}>
             <DistrictDial
               selected={selectedRegion}

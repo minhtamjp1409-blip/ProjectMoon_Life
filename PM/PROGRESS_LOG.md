@@ -878,3 +878,22 @@ Chủ dự án yêu cầu làm lại toàn bộ giao diện lần nữa: bỏ t�
 * Chưa chụp: Nest/Wing ở mobile, Outskirts, Library (các trang lưu trữ) ở v4, lớp nguy hiểm, hiệu ứng bùng sáng lúc phong Color.
 * Thông báo thành tựu của Ant Design trên mobile vẫn đè lên phần đầu màn hình trong vài giây.
 * Màn hình cũ có hai màu nhấn cố định trong vài chỗ inline style (menu PlayBar, một số chip), chưa đổi hết sang `--accent`.
+
+### Đợt 46 (25/10/2026): khung tên theo cấp, popup sự kiện giữa màn hình, thanh công cụ gọn lại
+* **Khung tên (nameplate) theo cấp bậc:** `rankPlateOf(char)` trong `sceneContext.js` (có test).
+  * Color Fixer: khung viền đôi màu được phong, có vạch sáng bên trái, huy hiệu "Color của Hana".
+  * Đỉnh Finger (`fingerRank` 3): khung màu của Finger đó, huy hiệu "Đỉnh của The …".
+  * Hội đồng Wing (`wingRank` 3): khung xanh Wing.
+  * Bậc ngay dưới đỉnh (Finger 2, Wing 2, Fixer Grade 1–2): vạch màu bên trái và chức vụ in màu.
+  * Khung đỉnh có một vệt sáng chạy chậm, là thứ duy nhất chuyển động trong hồ sơ. Tên trên thanh trạng thái mobile cũng đổi màu theo cấp.
+* **Hồ sơ nhân vật sắp lại:** khung tên, rồi Chỉ số và Áp lực ngay dưới (không phải cuộn), rồi mục tiêu nghề. "Khu vực, xuất thân & tổ chức" và "Trang bị & Vũ khí" thành phần gập, mặc định đóng; dòng tóm tắt hiện tên District và số món trang bị.
+* **Popup sự kiện:**
+  * Mọi tình huống (sự kiện, sự kiện nhỏ, hợp đồng, kết quả, manh mối năm, dungeon) hiện thành thẻ ở giữa màn hình trên nền City làm mờ, không còn nằm thành cột bên cạnh.
+  * Thẻ rộng 640px, dungeon 820px, cao tối đa 84% màn hình và tự cuộn bên trong, viền trên theo màu bối cảnh (dungeon theo màu dungeon, chết là đỏ).
+  * Trên mobile thẻ cách mép 10px, bo 14px, nút "Xem phía sau" nằm giữa đáy màn hình.
+  * Thanh thời gian và thanh trên vẫn dùng được trong lúc popup mở.
+* **Thanh trên:** bỏ nút chọn ngôn ngữ, nút cỡ chữ, nút chuyển động và chấm trạng thái online. Ngôn ngữ, cỡ chữ và chuyển động gom vào một nút Cài đặt (menu ba nhóm). `themeStore` có thêm `setMotion` và `setTextSize`. Bấm logo là về màn hình chính; trong lúc đang chơi, game lưu trước rồi mới thoát.
+* **Thanh điều khiển màn chơi:** bỏ số Ahn (Ahn vẫn ở hồ sơ) và chỉ giữ icon mở Workshop; bỏ nút ngôi nhà (và mục "Về trang chủ" trong menu mobile) vì logo đã làm việc đó.
+* **Màn chính:** bỏ dòng dẫn "Nơi bạn sinh ra…" dưới tiêu đề.
+* **Sửa:** khung tên bị co mất phần tên trong cột hồ sơ (cột là flex, khung có `overflow: hidden`), nay mọi khối trong cột không co.
+* **Kiểm tra:** `npm test` xanh, `vite build` sạch. Đã chụp: popup sự kiện ở 1440 và 390px, khung tên đỉnh Ring, Color và Hội đồng Wing ở 1440px, dungeon, màn chính.

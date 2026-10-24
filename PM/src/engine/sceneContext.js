@@ -98,3 +98,28 @@ export function sceneContextOf({ inRun = false, path = '/', char = null } = {}) 
   const weather = base.weather === 'season' ? SEASON_WEATHER[season] || 'rain' : base.weather;
   return { world, ...base, weather, intensity, ego, color, danger, carmen, season };
 }
+
+// The nameplate a life has earned. The top of a branch gets its own frame: a Hana Color carries the
+// conferred colour, the top seat of a Finger its Finger's colour, the Wing's board its corporate blue.
+// One step below the top gets a quieter frame in the same hue.
+export function rankPlateOf(char) {
+  if (!char) return { tier: 'plain' };
+  if (isColorFixer(char)) {
+    return { tier: 'color', color: char.colorData?.color || '#e1341e', vi: 'Color của Hana', en: 'Hana Color' };
+  }
+  if (char.job === 'Syndicate' && char.finger) {
+    const color = WORLDS[`finger-${String(char.finger).toLowerCase()}`]?.accent || WORLDS.syndicate.accent;
+    const rank = char.fingerRank || 0;
+    if (rank >= 3) return { tier: 'apex', color, vi: `Đỉnh của The ${char.finger}`, en: `The top of The ${char.finger}` };
+    if (rank === 2) return { tier: 'high', color, vi: `Cấp cao The ${char.finger}`, en: `Senior in The ${char.finger}` };
+  }
+  if (char.job === 'Wing Employee') {
+    const rank = char.wingRank || 0;
+    if (rank >= 3) return { tier: 'apex', color: WORLDS.wing.accent, vi: 'Hội đồng của Wing', en: 'The Wing board' };
+    if (rank === 2) return { tier: 'high', color: WORLDS.wing.accent, vi: 'Cấp quản lý Wing', en: 'Wing management' };
+  }
+  if (char.job === 'Fixer' && (char.fixerGrade ?? 9) <= 2) {
+    return { tier: 'high', color: WORLDS.fixer.accent, vi: `Fixer Grade ${char.fixerGrade}`, en: `Fixer Grade ${char.fixerGrade}` };
+  }
+  return { tier: 'plain' };
+}

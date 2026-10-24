@@ -40,3 +40,15 @@ console.log('4. The season sets the weather on the street worlds only...');
 assert.deepEqual([0, 1, 2, 3].map((s) => at(life({ seasonIdx: s })).weather), ['drizzle', 'haze', 'rain', 'snow']);
 assert.equal(at(life({ job: 'Wing Employee', seasonIdx: 3 })).weather, 'data');
 console.log('Scene context: worlds, routes, overlays and weather passed.');
+
+console.log('5. The nameplate marks the top of each branch...');
+const { rankPlateOf } = await import('../src/engine/sceneContext.js');
+assert.equal(rankPlateOf(life({ customTitle: 'Vermilion Gale', colorData: { color: '#e1341e' } })).tier, 'color');
+assert.equal(rankPlateOf(life({ job: 'Syndicate', finger: 'Ring', fingerRank: 3 })).tier, 'apex');
+assert.equal(rankPlateOf(life({ job: 'Syndicate', finger: 'Ring', fingerRank: 3 })).color, WORLDS['finger-ring'].accent);
+assert.equal(rankPlateOf(life({ job: 'Syndicate', finger: 'Index', fingerRank: 2 })).tier, 'high');
+assert.equal(rankPlateOf(life({ job: 'Wing Employee', wingRank: 3 })).tier, 'apex');
+assert.equal(rankPlateOf(life({ job: 'Fixer', fixerGrade: 1 })).tier, 'high');
+assert.equal(rankPlateOf(life({ job: 'Fixer', fixerGrade: 7 })).tier, 'plain');
+assert.equal(rankPlateOf(life({ job: 'Child' })).tier, 'plain');
+console.log('Nameplates passed.');

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Tooltip } from 'antd';
-import { ChevronDown, ChevronUp, User, Heart, Brain, Coins, Flame, Eye, Sparkles, X, ShieldAlert, ShoppingBag, HelpCircle } from 'lucide-react';
+import { ChevronDown, ChevronUp, User, Heart, Brain, Coins, Flame, Eye, Sparkles, X, ShieldAlert, ShoppingBag, HelpCircle, Crown } from 'lucide-react';
 import { WorkshopDepotModal } from './WorkshopDepotModal';
 import { useGameStore } from '../../../store/gameStore';
 import { useThemeStore } from '../../../store/themeStore';
@@ -12,6 +12,7 @@ import { gameFeel } from '../../../engine/gameFeel';
 import { useT } from '../../../i18n';
 import { getScarProfile, activeScarSynergies, MAX_ACTIVE_SCARS } from '../../../engine/scarModel';
 import { getAffiliation, affiliationLabel, standingLabel } from '../../../engine/affiliation';
+import { rankPlateOf } from '../../../engine/sceneContext';
 
 const JOB_LABELS = {
   Child: { vi: 'Trẻ em', en: 'Child' },
@@ -270,6 +271,29 @@ const People = ({ npcs, age, t, lang }) => {
   );
 };
 
+// Name and post. The top of a branch gets its own frame (see rankPlateOf): the conferred colour of a
+// Hana Color, a Finger's colour at its top seat, the Wing board's blue; one step below gets a quieter one.
+const Nameplate = ({ char, t, lang }) => {
+  const plate = rankPlateOf(char);
+  const special = plate.tier !== 'plain';
+  return (
+    <div className={`dossier-head nameplate is-${plate.tier}`} style={special ? { '--plate': plate.color } : undefined}>
+      {special && (
+        <span className="nameplate-rank">
+          <Crown size={13} aria-hidden="true" />
+          {t(plate.vi, plate.en)}
+        </span>
+      )}
+      <span className="dossier-gen num">{t('Thế hệ', 'Gen')} #{char.generation}</span>
+      <div className="dossier-id">
+        <h2>{char.name}</h2>
+        <p className="nameplate-post">{describeJob(char, t)}</p>
+        <p className="nameplate-sub">{char.gender && char.gender !== 'unspecified' ? (char.gender === 'male' ? t('Nam', 'Male') : t('Nữ', 'Female')) : ''}</p>
+      </div>
+    </div>
+  );
+};
+
 const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeTab = 'all', onOpenDepot }) => {
   const { health, sanity, wealth, network, rep } = char.stats;
 
@@ -279,21 +303,81 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeT
 
   return (
     <>
-      <div className="dossier-head">
-        <span className="dossier-gen num">
-          {t('Thế hệ', 'Gen')} #{char.generation}
-        </span>
-        <div className="dossier-id">
-          <h2>{char.name}</h2>
-          <p>{describeJob(char, t)}{char.gender && char.gender !== 'unspecified' ? ` · ${char.gender === 'male' ? t('Nam', 'Male') : t('Nữ', 'Female')}` : ''}</p>
-          {char.customTitle && (
-            <div className="dossier-color-crest">
-              <span className="crest-swatch" />
-              <span className="crest-title">{char.customTitle}</span>
-            </div>
+      <Nameplate char={char} t={t} lang={lang} />
+
+      {showOverview && (
+        <section>
+          <h3 className="section-title">{t('Chỉ số', 'Vitals')}</h3>
+          <Stat label="HP" value={health} color="var(--s-health)" flag={health <= 25 ? 'CRITICAL' : null} tooltip={t('Sinh lực. Về 0 có thể chết vì thương tích; được hồi bằng điều trị và nghỉ cuối năm.', 'Vitality. Reaching 0 can be fatal; treatment and year-end rest restore it.')} />
+          <Stat label="SP" value={sanity} color="var(--s-sanity)" flag={sanity <= 22 ? 'Carmen Calls' : null} tooltip={t('Tinh thần. Về 0 dẫn tới khủng hoảng; chỗ dựa và nghỉ ngơi giúp hồi phục.', 'Sanity. Reaching 0 triggers a crisis; support and rest help restore it.')} />
+          <Stat label={t('Tiền mặt', 'Wealth')} value={wealth} unit="Ahn" color="var(--s-wealth)" flag={wealth <= 5 ? t('Cạn tiền', 'Near ruin') : null} tooltip={t('Ahn dùng cho sinh hoạt, mua tin và điều trị.', 'Ahn pays for living costs, intelligence, and treatment.')} />
+          <Stat label={t('Quan hệ', 'Network')} value={network} color="var(--s-network)" />
+          <Stat label={t('Danh tiếng', 'Reputation')} value={rep} color="var(--s-rep)" />
+        </section>
+      )}
+
+      {showOverview && (
+        <section>
+          <h3 className="section-title">{t('Áp lực', 'Causal pressure')}</h3>
+          {char.job === 'Wing Employee' && (
+            <>
+              <Stat
+                label={t('Hồ sơ sạch', 'Standing')}
+                value={char.standing ?? 50}
+                unit="%"
+                color="var(--s-network)"
+                flag={(char.standing ?? 50) <= 20 ? t('Bị để mắt', 'Under review') : null}
+                tooltip={t(
+                  'Hồ sơ sạch: độ tin cậy của bạn với cấp trên trong Wing. Thấp dưới 20 thì kiểm toán và thanh lọc nhắm vào bạn trước.',
+                  'Standing: how far your superiors in the Wing trust your record. Below 20, audits and purges come for you first.'
+                )}
+              />
+              <Stat
+                label={t('Bí mật nắm giữ', 'Leverage')}
+                value={char.leverage || 0}
+                unit="%"
+                color="var(--s-heat)"
+                flag={(char.leverage || 0) >= 60 ? t('Bị nhòm ngó', 'Noticed') : null}
+                riseIsBad
+                tooltip={t(
+                  'Bí mật nắm giữ: những gì bạn biết về người khác. Mở được cửa, nhưng từ 60 trở lên hồ sơ sạch bị bào mòn mỗi năm và thế lực phía trên bắt đầu để ý.',
+                  'Leverage: what you know about other people. It opens doors, but from 60 up your standing erodes each year and those above start to notice.'
+                )}
+              />
+            </>
           )}
-        </div>
-      </div>
+          <Stat
+            label="Syndicate Heat"
+            value={char.heat || 0}
+            unit="%"
+            color="var(--s-heat)"
+            flag={(char.heat || 0) >= 70 ? 'Hunted' : null}
+            riseIsBad
+            tooltip={t(
+              'Syndicate Heat: Mức độ truy nã và căm phẫn từ các băng đảng Backstreets. Khi vượt quá 70%, sát thủ và thợ săn tiền thưởng sẽ liên tục phục kích bạn.',
+              'Syndicate Heat: Backstreet Syndicate hostility and bounty level. Above 70%, hitmen and bounty hunters will relentlessly ambush you.'
+            )}
+          />
+          <Stat
+            label="E.G.O Resonance"
+            value={char.resonance || 0}
+            unit="%"
+            color="var(--s-reso)"
+            flag={char.flags?.includes('EGOAwakened') ? 'E.G.O' : (char.resonance || 0) >= 50 ? 'READY' : null}
+            tooltip={t(
+              'E.G.O Resonance: Mức cộng hưởng với Ánh Sáng (The Light). Đạt từ 50%–60% Cộng hưởng (hoặc có Vết sẹo + 50% Cộng hưởng) ở tuổi trưởng thành sẽ mở ra Ngã rẽ Ánh Sáng để thức tỉnh E.G.O.',
+              'E.G.O Resonance: Affinity with the Light. Reaching 50%–60% Resonance (or 50% with an active scar) in adulthood unlocks the Crossroads of the Light to awaken E.G.O.'
+            )}
+          />
+          <TabooStat
+            value={char.taboo || 0}
+            tooltip={t(
+              'Taboo Gaze: Mức độ vi phạm Điều Cấm Kỵ của The Head. Đạt 3/3, Claw của C Corp sẽ đến ngay. Không thể rút lui: gục ngã là chết; vượt qua sẽ mở kết thúc đặc biệt ở Outskirts.',
+              'Taboo Gaze: Violations of the Head’s Taboos. At 3/3, a C Corp Claw arrives at once. There is no retreat: collapse means death; survival unlocks a special Outskirts ending.'
+            )}
+          />
+        </section>
+      )}
 
       {/* Tab: Career & Equipment */}
       {showCareer && milestone && (
@@ -319,21 +403,14 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeT
         </section>
       )}
 
-      {showCareer && items.length > 0 && (
-        <section>
-          <h3 className="section-title">{t('Trang bị & Vũ khí', 'Equipment & Relics')}</h3>
-          {items.map((it) => (
-            <div className="kv" key={it.k}>
-              <span>{it.k}</span>
-              <span className="kv-strong">{it.v}</span>
-            </div>
-          ))}
-        </section>
-      )}
-
       {/* Tab: Overview & Stats */}
       {showOverview && (
-        <section>
+        <details className="dossier-fold">
+          <summary>
+            <span>{t('Khu vực, xuất thân & tổ chức', 'District, background & faction')}</span>
+            <small>{lang === 'en' ? region.nameEn : region.nameVi}</small>
+          </summary>
+          <div className="dossier-fold-body">
           {/* District Context Card */}
           <div className="dossier-context-card kv-stack">
             <div className="context-card-header">
@@ -425,81 +502,25 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeT
               </div>
             </Tooltip>
           </div>
-        </section>
+          </div>
+        </details>
       )}
 
-      {showOverview && (
-        <section>
-          <h3 className="section-title">{t('Chỉ số', 'Vitals')}</h3>
-          <Stat label="HP" value={health} color="var(--s-health)" flag={health <= 25 ? 'CRITICAL' : null} tooltip={t('Sinh lực. Về 0 có thể chết vì thương tích; được hồi bằng điều trị và nghỉ cuối năm.', 'Vitality. Reaching 0 can be fatal; treatment and year-end rest restore it.')} />
-          <Stat label="SP" value={sanity} color="var(--s-sanity)" flag={sanity <= 22 ? 'Carmen Calls' : null} tooltip={t('Tinh thần. Về 0 dẫn tới khủng hoảng; chỗ dựa và nghỉ ngơi giúp hồi phục.', 'Sanity. Reaching 0 triggers a crisis; support and rest help restore it.')} />
-          <Stat label={t('Tiền mặt', 'Wealth')} value={wealth} unit="Ahn" color="var(--s-wealth)" flag={wealth <= 5 ? t('Cạn tiền', 'Near ruin') : null} tooltip={t('Ahn dùng cho sinh hoạt, mua tin và điều trị.', 'Ahn pays for living costs, intelligence, and treatment.')} />
-          <Stat label={t('Quan hệ', 'Network')} value={network} color="var(--s-network)" />
-          <Stat label={t('Danh tiếng', 'Reputation')} value={rep} color="var(--s-rep)" />
-        </section>
-      )}
-
-      {showOverview && (
-        <section>
-          <h3 className="section-title">{t('Áp lực', 'Causal pressure')}</h3>
-          {char.job === 'Wing Employee' && (
-            <>
-              <Stat
-                label={t('Hồ sơ sạch', 'Standing')}
-                value={char.standing ?? 50}
-                unit="%"
-                color="var(--s-network)"
-                flag={(char.standing ?? 50) <= 20 ? t('Bị để mắt', 'Under review') : null}
-                tooltip={t(
-                  'Hồ sơ sạch: độ tin cậy của bạn với cấp trên trong Wing. Thấp dưới 20 thì kiểm toán và thanh lọc nhắm vào bạn trước.',
-                  'Standing: how far your superiors in the Wing trust your record. Below 20, audits and purges come for you first.'
-                )}
-              />
-              <Stat
-                label={t('Bí mật nắm giữ', 'Leverage')}
-                value={char.leverage || 0}
-                unit="%"
-                color="var(--s-heat)"
-                flag={(char.leverage || 0) >= 60 ? t('Bị nhòm ngó', 'Noticed') : null}
-                riseIsBad
-                tooltip={t(
-                  'Bí mật nắm giữ: những gì bạn biết về người khác. Mở được cửa, nhưng từ 60 trở lên hồ sơ sạch bị bào mòn mỗi năm và thế lực phía trên bắt đầu để ý.',
-                  'Leverage: what you know about other people. It opens doors, but from 60 up your standing erodes each year and those above start to notice.'
-                )}
-              />
-            </>
-          )}
-          <Stat
-            label="Syndicate Heat"
-            value={char.heat || 0}
-            unit="%"
-            color="var(--s-heat)"
-            flag={(char.heat || 0) >= 70 ? 'Hunted' : null}
-            riseIsBad
-            tooltip={t(
-              'Syndicate Heat: Mức độ truy nã và căm phẫn từ các băng đảng Backstreets. Khi vượt quá 70%, sát thủ và thợ săn tiền thưởng sẽ liên tục phục kích bạn.',
-              'Syndicate Heat: Backstreet Syndicate hostility and bounty level. Above 70%, hitmen and bounty hunters will relentlessly ambush you.'
-            )}
-          />
-          <Stat
-            label="E.G.O Resonance"
-            value={char.resonance || 0}
-            unit="%"
-            color="var(--s-reso)"
-            flag={char.flags?.includes('EGOAwakened') ? 'E.G.O' : (char.resonance || 0) >= 50 ? 'READY' : null}
-            tooltip={t(
-              'E.G.O Resonance: Mức cộng hưởng với Ánh Sáng (The Light). Đạt từ 50%–60% Cộng hưởng (hoặc có Vết sẹo + 50% Cộng hưởng) ở tuổi trưởng thành sẽ mở ra Ngã rẽ Ánh Sáng để thức tỉnh E.G.O.',
-              'E.G.O Resonance: Affinity with the Light. Reaching 50%–60% Resonance (or 50% with an active scar) in adulthood unlocks the Crossroads of the Light to awaken E.G.O.'
-            )}
-          />
-          <TabooStat
-            value={char.taboo || 0}
-            tooltip={t(
-              'Taboo Gaze: Mức độ vi phạm Điều Cấm Kỵ của The Head. Đạt 3/3, Claw của C Corp sẽ đến ngay. Không thể rút lui: gục ngã là chết; vượt qua sẽ mở kết thúc đặc biệt ở Outskirts.',
-              'Taboo Gaze: Violations of the Head’s Taboos. At 3/3, a C Corp Claw arrives at once. There is no retreat: collapse means death; survival unlocks a special Outskirts ending.'
-            )}
-          />
-        </section>
+      {showCareer && items.length > 0 && (
+        <details className="dossier-fold">
+          <summary>
+            <span>{t('Trang bị & Vũ khí', 'Equipment & Relics')}</span>
+            <small>{items.length}</small>
+          </summary>
+          <div className="dossier-fold-body">
+          {items.map((it) => (
+            <div className="kv" key={it.k}>
+              <span>{it.k}</span>
+              <span className="kv-strong">{it.v}</span>
+            </div>
+          ))}
+          </div>
+        </details>
       )}
 
       {/* Tab: Relations & Scars */}
@@ -578,6 +599,7 @@ export const CharacterDossierCard = () => {
   const isApex = isColor || isFingerApex || isWingApex;
 
   const colorData = char.colorData;
+  const plate = rankPlateOf(char);
   const apexStyle = isColor && colorData?.color ? {
     '--apex-color': colorData.color,
     '--apex-glow': colorData.glow || 'rgba(212, 175, 55, 0.4)'
@@ -597,7 +619,7 @@ export const CharacterDossierCard = () => {
         {/* Row 1: who, when, and the dossier button */}
         <div className="hud2-top">
           <div className="hud2-who">
-            <span className="hud2-name">{char.name}</span>
+            <span className={`hud2-name is-${plate.tier}`} style={plate.color ? { '--plate': plate.color } : undefined}>{char.name}</span>
             <span className="hud2-gen">#{char.generation}</span>
             <span className="hud2-when">
               {jobDesc.split(' · ')[0]} · <b>{t(`Tuổi ${char.age}`, `Age ${char.age}`)}</b> · {t(currentSeason?.vi, currentSeason?.en)}

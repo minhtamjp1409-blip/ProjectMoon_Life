@@ -36,6 +36,16 @@ export const useThemeStore = create((set) => {
         document.documentElement.dataset.text = next;
         return { textSize: next };
       }),
+    setMotion: (next) => {
+      localStorage.setItem('pm-motion-mode', next);
+      document.documentElement.dataset.motion = next;
+      set({ motionMode: next });
+    },
+    setTextSize: (next) => {
+      localStorage.setItem('pm-text-size', next);
+      document.documentElement.dataset.text = next;
+      set({ textSize: next });
+    },
     lang: initialLang, // 'vi' | 'bi' | 'en'
     sidebarCollapsed: null, // null = auto (collapses during active chronicle play), true/false = user override
     mobileDossierOpen: false,

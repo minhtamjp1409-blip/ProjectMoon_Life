@@ -69,7 +69,6 @@
 .dossier-color-crest { display: inline-flex; align-items: center; gap: 8px; margin-top: 10px; padding: 4px 10px 4px 4px; border: 1px solid var(--border); border-radius: 999px; }
 .crest-swatch { width: 16px; height: 16px; border-radius: 50%; background: var(--apex-color, var(--gold)); }
 .crest-title { font-size: 13.5px; font-weight: 600; }
-.desktop-dossier-side.is-color-fixer .dossier-head { border-bottom-color: var(--apex-color, var(--gold)); }
 
 /* Vitals: a name, a number, a 3px rule */
 .stat { display: flex; flex-direction: column; gap: 6px; padding: 4px 0; }
@@ -226,3 +225,47 @@
   .mobile-dossier-sheet-body .section-title { font-family: var(--font); font-size: 13px; font-weight: 600; color: var(--muted); padding-bottom: 8px; border-bottom: 1px solid var(--rule); }
 }
 @media (max-width: 1439px) { .yearbar-meta .phase { display: none; } }
+
+/* Nameplate: plain for most lives; the top of a branch gets a frame in its own colour, one step below a rule */
+.nameplate-post { color: var(--muted); font-size: 14.5px; }
+.nameplate-sub { color: var(--faint); font-size: 13px; }
+.nameplate-sub:empty { display: none; }
+.nameplate-rank {
+  display: inline-flex; align-self: flex-start; align-items: center; gap: 6px;
+  padding: 3px 10px; border-radius: 999px; font-size: 12.5px; font-weight: 700;
+  color: var(--plate); background: color-mix(in srgb, var(--plate) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--plate) 45%, transparent);
+}
+.nameplate.is-high { padding-left: 14px; border-left: 3px solid var(--plate); }
+.nameplate.is-high .nameplate-post { color: var(--plate); font-weight: 600; }
+.nameplate.is-apex, .nameplate.is-color {
+  position: relative; overflow: hidden;
+  padding: 14px 16px 18px; border-radius: 8px;
+  border: 1px solid color-mix(in srgb, var(--plate) 55%, transparent);
+  background: radial-gradient(120% 90% at 0% 0%, color-mix(in srgb, var(--plate) 24%, transparent), transparent 65%), rgba(0, 0, 0, .35);
+  box-shadow: 0 0 34px color-mix(in srgb, var(--plate) 22%, transparent), inset 0 0 0 1px rgba(255, 255, 255, .03);
+}
+.nameplate.is-apex h2, .nameplate.is-color h2 { text-shadow: 0 0 22px color-mix(in srgb, var(--plate) 55%, transparent); }
+.nameplate.is-apex .nameplate-post, .nameplate.is-color .nameplate-post { color: var(--plate); font-weight: 700; font-family: var(--serif); font-size: 16px; }
+/* a slow sheen across the plate, the only moving thing in the dossier */
+.nameplate.is-apex::after, .nameplate.is-color::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(105deg, transparent 40%, color-mix(in srgb, var(--plate) 22%, rgba(255, 255, 255, .12)) 50%, transparent 60%);
+  transform: translateX(-120%); animation: plateSheen 7s ease-in-out infinite;
+}
+@keyframes plateSheen { 0%, 60% { transform: translateX(-120%); } 85%, 100% { transform: translateX(120%); } }
+.nameplate.is-color { border-width: 2px; }
+.nameplate.is-color::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--plate); box-shadow: 0 0 16px var(--plate); }
+.hud2-name.is-apex, .hud2-name.is-color { color: var(--plate); text-shadow: 0 0 14px color-mix(in srgb, var(--plate) 50%, transparent); }
+.hud2-name.is-high { color: var(--plate); }
+
+/* Reference blocks fold away; closed by default so the vitals sit right under the name */
+.dossier-fold { border-top: 1px solid var(--rule); }
+.dossier-fold > summary { display: flex; align-items: center; gap: 10px; min-height: 44px; font-size: 14px; font-weight: 600; color: var(--text); }
+.dossier-fold > summary > span { flex: 1; min-width: 0; }
+.dossier-fold > summary > small { color: var(--faint); font-weight: 500; font-size: 13px; max-width: 45%; text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dossier-fold > summary::after { content: ''; flex: none; width: 7px; height: 7px; border-right: 1.5px solid var(--muted); border-bottom: 1.5px solid var(--muted); transform: rotate(45deg) translateY(-2px); transition: transform .2s ease; }
+.dossier-fold[open] > summary::after { transform: rotate(-135deg) translateY(-2px); }
+.dossier-fold > summary:hover { color: var(--accent); }
+.dossier-fold-body { display: flex; flex-direction: column; gap: 8px; padding-bottom: 12px; animation: entryIn .3s ease both; }
+.side > *, .mobile-dossier-sheet-body > * { flex-shrink: 0; }

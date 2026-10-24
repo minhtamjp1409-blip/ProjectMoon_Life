@@ -80,17 +80,30 @@
 
 .prologue-dock { display: flex; justify-content: flex-end; margin-top: 8px; }
 
-/* The decision: beside the page on a wide screen, a sheet from below on a narrow one */
+/* The decision: a card in the middle of the screen over a dimmed City. One card at a time; the page
+   under it can be uncovered with "See behind". The dungeon card is wider, because it holds a hand. */
 .event-modal-backdrop {
-  position: relative; z-index: 5;
-  grid-area: 1 / 2; min-height: 0; overflow-y: auto; scrollbar-gutter: stable;
-  border-left: 1px solid var(--border); background: rgba(8, 7, 10, .84);
-  backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+  position: fixed; inset: 0; z-index: 45;
+  display: grid; place-items: center;
+  padding: calc(var(--top) + 16px) 20px 24px;
+  background: rgba(4, 4, 7, .58);
+  backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
+  animation: scrimIn .25s ease both;
 }
-.stage.has-dock { grid-template-columns: minmax(0, 1fr) minmax(380px, 460px); }
-.stage.has-dock .event-peek-toggle { display: none; }
-.dock { padding: 28px 28px 32px; animation: dockIn .28s cubic-bezier(.2, .8, .2, 1); }
-@keyframes dockIn { from { opacity: 0; transform: translateY(8px); } }
+@keyframes scrimIn { from { opacity: 0; } }
+.event-modal-backdrop > .dock {
+  width: min(640px, 100%);
+  max-height: min(84dvh, 860px);
+  overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable;
+  background: rgba(13, 12, 16, .94);
+  border: 1px solid var(--border); border-top: 3px solid var(--accent);
+  border-radius: 12px;
+  box-shadow: 0 30px 90px rgba(0, 0, 0, .7), 0 0 0 1px rgba(0, 0, 0, .4), 0 0 60px color-mix(in srgb, var(--accent) 14%, transparent);
+}
+.event-modal-backdrop > .dock.is-dungeon { width: min(820px, 100%); border-top-color: var(--dg); }
+.event-modal-backdrop > .dock.is-dead { border-top-color: var(--bad); }
+.dock { padding: 26px 28px 28px; animation: dockIn .34s cubic-bezier(.2, .9, .25, 1.1) both; }
+@keyframes dockIn { from { opacity: 0; transform: translateY(14px) scale(.96); } }
 .dock-inner { display: flex; flex-direction: column; gap: 16px; }
 .dock-banner { display: flex; flex-direction: column; gap: 8px; }
 .dock-kicker-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
@@ -191,31 +204,22 @@
 
 /* Hide the decision for a moment to read the page under it */
 .event-peek-toggle {
-  position: absolute; z-index: 7; right: 16px; bottom: 16px;
+  position: fixed; z-index: 46; right: 20px; top: calc(var(--top) + 76px);
   display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px;
   border: 1px solid var(--border); border-radius: 999px; background: var(--surface-solid); color: var(--text);
   font-size: 13.5px; font-weight: 600; box-shadow: var(--shadow-pop);
 }
 
-@media (max-width: 1240px) {
-  .stage.has-dock { grid-template-columns: minmax(0, 1fr); }
-  .event-modal-backdrop {
-    position: absolute; left: 0; right: 0; bottom: 0; grid-area: auto;
-    max-height: min(64%, 640px);
-    border-left: 0; border-top: 1px solid var(--border);
-    box-shadow: 0 -18px 40px rgba(0, 0, 0, .35);
-  }
-  .dock { max-width: 760px; margin: 0 auto; padding: 22px var(--pad) 28px; }
-  .stage.has-dock .event-peek-toggle { display: inline-flex; bottom: auto; top: 14px; }
-  .stage.has-dock .log { padding-bottom: 50vh; }
-}
 @media (max-width: 860px) {
   .log { padding: 0; }
   .log-col { padding: 28px 20px 80px; min-height: 100%; border-radius: 0; }
   .log-col::before { display: none; }
   .entry.k-good::before, .entry.k-bad::before { left: -13px; }
   .yearline { margin-top: 34px; }
-  .event-modal-backdrop { max-height: 72%; border-radius: 10px 10px 0 0; }
+  /* On a phone the card keeps the middle of the screen, with a thumb's width of City around it */
+  .event-modal-backdrop { padding: 12px 10px calc(12px + env(safe-area-inset-bottom, 0px)); }
+  .event-modal-backdrop > .dock { max-height: calc(100dvh - 24px - env(safe-area-inset-bottom, 0px)); border-radius: 14px; }
+  .event-peek-toggle { top: auto; right: 50%; transform: translateX(50%); bottom: calc(14px + env(safe-area-inset-bottom, 0px)); }
   .dock { padding: 18px 16px 22px; }
   .dock-title { font-size: 22px; }
   .dock-hotkey-hint { display: none; }

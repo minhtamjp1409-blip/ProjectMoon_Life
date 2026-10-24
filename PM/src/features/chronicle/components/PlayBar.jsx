@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Tooltip, Modal, Dropdown } from 'antd';
-import { User, Play, Pause, SkipForward, Bot, RotateCcw, House, Save, Check, AlertTriangle, Volume2, VolumeX, MoreHorizontal, BookOpen, GitFork, Trophy, Compass } from 'lucide-react';
+import { User, Play, Pause, SkipForward, Bot, RotateCcw, Save, Check, AlertTriangle, Volume2, VolumeX, MoreHorizontal, BookOpen, GitFork, Trophy, Compass } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 import { useGameStore } from '../../../store/gameStore';
@@ -192,12 +192,6 @@ export const PlayBar = () => {
     toggleAutoPlay();
   };
 
-  const goHome = () => {
-    audioEngine.playClick();
-    exitToSetup();
-    navigate('/');
-  };
-
   const openArchive = (path) => {
     audioEngine.playClick();
     if (alive) saveRun(true);
@@ -347,12 +341,6 @@ export const PlayBar = () => {
       onClick: () => saveRun(true)
     },
     {
-      key: 'home',
-      icon: <House size={16} />,
-      label: t('Về trang chủ', 'Go Home'),
-      onClick: goHome
-    },
-    {
       key: 'restart',
       danger: true,
       icon: <RotateCcw size={16} />,
@@ -482,18 +470,11 @@ export const PlayBar = () => {
           <span>{stepLabel}</span>
         </button>
 
-        {/* Desktop secondary utilities (Bot, Mute, Save, Home, Restart) */}
+        {/* Desktop secondary utilities (Workshop, auto-pick, sound, save, new life); the mark in the top bar goes home */}
         <div className="playbar-desktop-actions">
-        <Tooltip title={t('Mở Xưởng Workshop & Chợ Đen để mua vũ khí / vật phẩm', 'Open Workshop & Black Market to purchase gear')}>
-          <button
-            type="button"
-            className="btn btn-sm playbar-ahn"
-            onClick={() => setShopOpen(true)}
-          >
-            <ShoppingBag size={15} aria-hidden="true" />
-            <span className="num">
-              {char.stats?.wealth ?? char.wealth ?? 0} Ahn
-            </span>
+        <Tooltip title={t('Workshop & Chợ Đen', 'Workshop & Black Market')}>
+          <button type="button" className="icon-btn" onClick={() => setShopOpen(true)} aria-label={t('Mở Workshop & Chợ Đen', 'Open Workshop & Black Market')}>
+            <ShoppingBag size={17} aria-hidden="true" />
           </button>
         </Tooltip>
           <button
@@ -523,9 +504,6 @@ export const PlayBar = () => {
             {saveError ? <AlertTriangle size={17} style={{ color: 'var(--bad)' }} /> : justSaved ? <Check size={17} style={{ color: 'var(--good)' }} /> : <Save size={17} />}
           </button>
           {saveError && <span className="sr-only" role="status">{t('Chưa lưu được tiến trình. Kiểm tra bộ nhớ trình duyệt hoặc kết nối rồi thử lại.', 'Progress was not saved. Check browser storage or your connection and retry.')}</span>}
-          <button type="button" className="icon-btn" onClick={goHome} aria-label={t('Về trang chủ', 'Home')} title={t('Về trang chủ (tiến trình được giữ lại)', 'Home (progress is kept)')}>
-            <House size={17} />
-          </button>
           <button type="button" className="icon-btn" onClick={newLife} aria-label={t('Kiếp sống mới', 'New life')} title={t('Bỏ kiếp này, bắt đầu kiếp mới', 'Abandon this life and start anew')}>
             <RotateCcw size={16} />
           </button>
