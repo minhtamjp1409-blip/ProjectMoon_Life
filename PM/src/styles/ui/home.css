@@ -1,0 +1,188 @@
+/* Home: a title page on the left, the birth record on the right as a sheet of paper, then the archive */
+.city-home { position: relative; max-width: 1320px; margin: 0 auto; padding: 0 var(--pad) 48px; }
+
+.home-opening {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(340px, 5fr);
+  gap: clamp(32px, 5vw, 80px);
+  align-items: start;
+  padding: clamp(32px, 6vh, 72px) 0 40px;
+}
+.opening-context { font-size: 14px; color: var(--muted); margin-bottom: 14px; }
+.opening-story h1 {
+  font-family: var(--serif);
+  font-size: clamp(44px, 5.6vw, 80px);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.025em;
+  margin-bottom: 22px;
+}
+.opening-story h1 .the-city-title { display: block; font-style: normal; }
+.opening-lead { max-width: 30em; font-family: var(--serif); font-size: 19px; line-height: 1.6; color: var(--story); margin-bottom: 36px; }
+
+/* The birthplace dial: a real selector of the 25 Districts, the letter under the pointer is the pick */
+.opening-atlas { display: grid; grid-template-columns: minmax(220px, 300px) minmax(0, 1fr); gap: 28px; align-items: center; }
+.district-dial-container { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.district-dial { position: relative; width: 100%; }
+.district-dial svg { width: 100%; height: auto; overflow: visible; }
+.dial-outer-ring { fill: none; stroke: var(--border); stroke-width: 1; }
+.dial-mid-ring { fill: none; stroke: var(--rule); stroke-width: 1; }
+.dial-inner { fill: var(--surface); stroke: var(--border); stroke-width: 1; }
+.dial-sector path { fill: var(--raised); stroke: var(--ground); stroke-width: 1.5; transition: fill .15s ease; }
+.dial-sector text { fill: var(--muted); font-family: var(--font); font-size: 13px; font-weight: 600; pointer-events: none; }
+.dial-sector { cursor: pointer; outline: none; }
+.dial-sector:hover path, .dial-sector:focus-visible path { fill: var(--active); }
+.dial-sector:focus-visible path { stroke: var(--text); stroke-width: 2; }
+.dial-sector.is-selected path { fill: var(--text); }
+.dial-sector.is-selected text { fill: var(--ground); }
+.dial-pointer-needle polygon { fill: var(--accent); }
+.dial-name { fill: var(--text); font-family: var(--serif); font-size: 26px; font-weight: 600; }
+.dial-caption { fill: var(--muted); font-family: var(--font); font-size: 13px; }
+.dial-instruction { display: block; margin-top: 6px; text-align: center; font-size: 13px; color: var(--faint); }
+.dial-spin-btn {
+  display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 16px;
+  border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-size: 14px; font-weight: 600;
+}
+.dial-spin-btn:hover:not(:disabled) { background: var(--raised); }
+.dial-spin-btn:disabled { opacity: .55; }
+.dial-motion-hint { max-width: 300px; font-size: 13px; color: var(--faint); text-align: center; line-height: 1.5; }
+.dial-motion-hint button { color: var(--text); text-decoration: underline; text-underline-offset: 3px; font-weight: 600; }
+.atlas-note { display: flex; gap: 12px; padding-top: 14px; border-top: 1px solid var(--border); }
+.atlas-note > svg { flex: none; margin-top: 4px; color: var(--accent); }
+.atlas-note strong { display: block; font-family: var(--serif); font-size: 20px; font-weight: 600; margin-bottom: 4px; }
+.atlas-note p { color: var(--muted); font-size: 14.5px; line-height: 1.55; margin-bottom: 10px; }
+.atlas-note button { display: inline-flex; align-items: center; gap: 4px; color: var(--text); font-size: 14px; font-weight: 600; text-decoration: underline; text-underline-offset: 4px; }
+
+/* The birth record: paper in both themes, so the one thing to fill in is the one thing lit */
+.birth-panel {
+  --surface: var(--page); --raised: color-mix(in srgb, var(--page-ink) 7%, var(--page)); --active: color-mix(in srgb, var(--page-ink) 12%, var(--page));
+  --ground: color-mix(in srgb, var(--page-ink) 4%, var(--page));
+  --border: var(--page-edge); --rule: var(--page-rule); --text: var(--page-ink); --muted: var(--page-muted); --faint: var(--page-muted);
+  position: relative;
+  display: flex; flex-direction: column; gap: 20px;
+  padding: 28px 28px 24px;
+  background: var(--page); color: var(--page-ink);
+  border-radius: var(--radius);
+  border-top: 4px solid var(--accent);
+}
+.birth-heading { display: flex; gap: 14px; align-items: flex-start; padding-bottom: 18px; border-bottom: 1px solid var(--page-rule); }
+.birth-symbol { display: grid; place-items: center; width: 38px; height: 38px; flex: none; border: 1px solid var(--page-edge); border-radius: 50%; color: var(--page-ink); }
+.birth-heading h2 { font-size: 24px; margin-bottom: 4px; color: var(--page-ink); }
+.birth-heading p { font-family: var(--serif); font-style: italic; color: var(--page-muted); font-size: 15px; }
+.birth-fields { display: flex; flex-direction: column; gap: 18px; }
+.birth-gender { display: grid; grid-template-columns: 1fr 1fr; width: 100%; }
+.birth-gender button { min-height: 40px; }
+.birth-seed summary { display: flex; justify-content: space-between; align-items: center; min-height: 40px; font-size: 14px; font-weight: 600; color: var(--page-muted); border-top: 1px solid var(--page-rule); padding-top: 10px; }
+.birth-seed[open] summary svg { transform: rotate(180deg); }
+.birth-seed > div { display: flex; gap: 8px; margin-top: 8px; }
+.birth-seed .app-tool { color: var(--page-ink); border: 1px solid var(--page-edge); width: 44px; height: 44px; }
+.hero-start-btn { margin-top: 4px; }
+.birth-footnote { font-size: 13px; color: var(--page-muted); text-align: center; }
+.birth-text-action { align-self: center; display: inline-flex; align-items: center; gap: 4px; min-height: 36px; font-size: 14px; font-weight: 600; color: var(--muted); text-decoration: underline; text-underline-offset: 4px; }
+.birth-text-action:hover { color: var(--text); }
+.birth-resume { display: flex; flex-direction: column; gap: 10px; padding: 14px 16px; border: 1px solid var(--page-edge); border-left: 3px solid var(--gold); border-radius: var(--radius-sm); }
+.birth-resume > div > span { display: block; font-size: 13px; color: var(--page-muted); }
+.birth-resume strong { font-family: var(--serif); font-size: 19px; }
+.birth-resume small { font-family: var(--font); font-size: 14px; color: var(--page-muted); font-weight: 500; }
+.birth-legacy { border-top: 1px solid var(--page-rule); padding-top: 12px; display: flex; flex-direction: column; gap: 10px; }
+.birth-legacy summary { display: flex; align-items: center; gap: 8px; min-height: 40px; font-weight: 600; }
+.birth-legacy summary svg:last-child { margin-left: auto; }
+.birth-legacy[open] summary svg:last-child { transform: rotate(180deg); }
+.birth-legacy p { font-size: 14px; color: var(--page-muted); margin-bottom: 4px; }
+.birth-legacy .btn { margin-top: 6px; }
+
+/* What this archive already holds: figures on a rule, not tiles */
+.archive-strip {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 0;
+  border-block: 1px solid var(--border);
+  margin-bottom: 64px;
+}
+.archive-strip > div { display: flex; align-items: baseline; gap: 10px; padding: 18px 32px 18px 0; margin-right: 32px; border-right: 1px solid var(--rule); }
+.archive-strip b { font-family: var(--font); font-size: 34px; font-weight: 600; font-stretch: 85%; font-variant-numeric: tabular-nums; line-height: 1; color: var(--text); }
+.archive-strip b small { font-size: 16px; color: var(--muted); font-weight: 500; }
+.archive-strip span { color: var(--muted); font-size: 14.5px; }
+.archive-strip > button { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-weight: 600; font-size: 14px; }
+.archive-strip > button:hover { background: var(--raised); }
+
+.city-section { margin-bottom: 64px; }
+.city-section-heading { display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; margin-bottom: 22px; }
+.city-section-heading h2, .fate-disclosure summary h2 { font-size: clamp(26px, 3vw, 34px); margin-bottom: 6px; }
+.city-section-heading p, .fate-disclosure summary p { color: var(--muted); font-size: 15.5px; }
+
+/* The ways a life can go, numbered like the chapters they become */
+.career-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 48px; counter-reset: path; }
+.career-list article { counter-increment: path; display: grid; grid-template-columns: 44px minmax(0, 1fr); column-gap: 8px; padding: 18px 0; border-top: 1px solid var(--border); }
+.career-list article::before { content: counter(path, upper-roman); grid-row: span 2; font-family: var(--serif); font-style: italic; color: var(--faint); font-size: 17px; padding-top: 2px; }
+.career-list h3 { font-size: 20px; margin-bottom: 6px; }
+.career-list p { color: var(--muted); font-size: 15px; line-height: 1.6; }
+.ego-note { margin-top: 28px; padding: 20px 24px; border-left: 3px solid var(--accent); background: var(--surface); }
+.ego-note span { display: block; font-weight: 700; font-size: 14px; letter-spacing: .02em; color: var(--text); margin-bottom: 6px; }
+.ego-note p { font-family: var(--serif); font-size: 17px; line-height: 1.6; color: var(--story); }
+
+/* Birthplace browser */
+.district-browser { display: grid; grid-template-columns: minmax(260px, 4fr) minmax(0, 8fr); gap: 32px; align-items: start; }
+.district-selection { position: sticky; top: 16px; display: flex; flex-direction: column; gap: 10px; padding: 22px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+.district-selection > span { font-size: 13px; color: var(--muted); }
+.district-selection h3 { font-size: 26px; }
+.district-selection p { color: var(--muted); font-size: 15px; line-height: 1.6; }
+.district-selection .birth-text-action { align-self: flex-start; }
+.district-search { position: relative; display: flex; align-items: center; margin-bottom: 14px; }
+.district-search svg { position: absolute; left: 12px; color: var(--faint); }
+.district-search input { width: 100%; height: 44px; padding: 0 12px 0 38px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); font-size: 15px; }
+.district-search input:focus { outline: none; border-color: var(--text); }
+.district-index { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); border-top: 1px solid var(--border); border-left: 1px solid var(--border); }
+.district-index button {
+  display: grid; grid-template-columns: 34px minmax(0, 1fr); column-gap: 6px; align-items: baseline;
+  padding: 12px 14px; text-align: left; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border);
+}
+.district-index button > span { grid-row: span 2; font-variant-numeric: tabular-nums; font-size: 13px; color: var(--faint); font-weight: 600; }
+.district-index button strong { font-size: 15px; font-weight: 600; }
+.district-index button small { color: var(--muted); font-size: 13px; line-height: 1.4; }
+.district-index button:hover { background: var(--raised); }
+.district-index button.is-selected { background: var(--text); color: var(--ground); }
+.district-index button.is-selected :is(span, small) { color: color-mix(in srgb, var(--ground) 75%, transparent); }
+.district-index .empty { grid-column: 1 / -1; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.region-mark { margin-left: 0; align-self: flex-start; }
+
+/* Omens */
+.fate-disclosure summary { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 18px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.fate-disclosure[open] summary > svg { transform: rotate(180deg); }
+.fate-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 32px; }
+.fate-grid article { padding: 18px 0; border-bottom: 1px solid var(--rule); }
+.fate-grid article > div { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 6px; }
+.fate-grid h3 { font-size: 18px; }
+.fate-grid .num { color: var(--muted); font-size: 14px; }
+.fate-grid p { color: var(--muted); font-size: 14.5px; line-height: 1.55; }
+
+.city-footer { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px; padding-top: 22px; border-top: 1px solid var(--border); color: var(--muted); font-size: 14px; }
+.city-footer > span { font-family: var(--serif); font-weight: 600; color: var(--text); }
+.city-footer a { display: inline-flex; align-items: center; gap: 4px; margin-left: auto; font-weight: 600; color: var(--text); text-underline-offset: 4px; }
+
+@media (max-width: 1100px) {
+  .home-opening { grid-template-columns: minmax(0, 1fr); }
+  .birth-panel { max-width: 560px; }
+  .opening-atlas { max-width: 640px; }
+}
+@media (max-width: 860px) {
+  .home-opening { padding-top: 24px; gap: 28px; }
+  .opening-story { display: contents; }
+  .opening-context { order: 1; margin-bottom: -18px; }
+  .opening-story h1 { order: 2; font-size: clamp(40px, 12vw, 56px); margin-bottom: -12px; }
+  .opening-lead { order: 3; font-size: 17px; margin-bottom: 0; }
+  .birth-panel { order: 4; max-width: none; padding: 22px 18px 20px; }
+  .opening-atlas { order: 5; grid-template-columns: 1fr; }
+  .district-dial-container { max-width: 300px; margin: 0 auto; }
+  .archive-strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-bottom: 44px; }
+  .archive-strip > div { flex-direction: column; gap: 4px; padding: 16px 10px 16px 0; margin-right: 0; border-right: 0; }
+  .archive-strip > div + div { padding-left: 12px; border-left: 1px solid var(--rule); }
+  .archive-strip b { font-size: 28px; }
+  .archive-strip span { font-size: 13px; }
+  .archive-strip > button { grid-column: 1 / -1; justify-content: center; margin: 0 0 14px; }
+  .city-section { margin-bottom: 44px; }
+  .city-section-heading { flex-direction: column; align-items: stretch; }
+  .career-list, .fate-grid { grid-template-columns: 1fr; }
+  .district-browser { grid-template-columns: 1fr; }
+  .district-selection { position: static; }
+  .district-index { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .city-footer a { margin-left: 0; }
+}

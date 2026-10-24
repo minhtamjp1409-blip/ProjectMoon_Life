@@ -1,7 +1,7 @@
 import { activeCityCondition, workshopPrice } from '../../../engine/cityConditions.js';
 import React, { useState } from 'react';
-import { Modal, Tag } from 'antd';
-import { ShoppingBag, Shield, Zap, Sparkles, Check, Coins, AlertCircle } from 'lucide-react';
+import { Modal } from 'antd';
+import { Check } from 'lucide-react';
 import { useGameStore } from '../../../store/gameStore';
 import { ITEMS_CATALOG, ITEM_TYPES } from '../../../data/itemsData';
 import { audioEngine } from '../../../engine/audioEngine';
@@ -42,40 +42,32 @@ export const WorkshopDepotModal = ({ open, onClose }) => {
       open={open}
       onCancel={onClose}
       footer={null}
-      width={720}
+      width={760}
       centered
       className="workshop-depot-modal"
       title={
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingRight: 28 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <ShoppingBag size={20} color="var(--accent)" />
-            <span style={{ fontSize: 17, fontWeight: 700, color: 'var(--text)' }}>
-              {t('Xưởng Chế tác Workshop & Chợ Đen', 'Workshop Depot & Black Market')}
-            </span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'var(--surface)', padding: '4px 12px', borderRadius: 6, border: '1px solid var(--border)' }}>
-            <Coins size={16} color="var(--accent)" />
-            <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--accent)' }}>
-              {playerAhn} <small style={{ fontSize: 11 }}>Ahn</small>
-            </span>
-          </div>
+        <div className="depot-title">
+          <span>{t('Workshop & Chợ Đen', 'Workshop Depot & Black Market')}</span>
+          <span className="depot-purse num">
+            {playerAhn} <small>Ahn</small>
+          </span>
         </div>
       }
     >
-      <div style={{ marginTop: 12 }}>
-        <p style={{ fontSize: 13, color: 'var(--muted)', lineHeight: 1.6, margin: '0 0 16px' }}>
+      <div className="depot">
+        <p className="depot-lead">
           {t(
-            'Trang bị vũ khí Workshop, cấy ghép sinh học hoặc thuốc phục hồi K Corp để gia tăng cơ hội sống sót giữa những cuộc thanh trừng đẫm máu của The City.',
-            'Procure Workshop weaponry, bio-grafts, and K Corp miraculous ampoules to ensure your survival through The City’s brutal purges.'
+            'Vũ khí Workshop, cấy ghép và thuốc K Corp. Mỗi món tăng cơ hội sống sót, không món nào bảo đảm điều đó.',
+            'Workshop weapons, grafts and K Corp ampoules. Each one improves your odds; none of them guarantees anything.'
           )}
         </p>
-
-        {activeCityCondition(char) && <p role="status" style={{ color: 'var(--accent)', fontSize: 13 }}>
-          {t('Phong tỏa nguồn hàng: thuốc và trang bị +15%, làm tròn lên. Hết hiệu lực sau tuổi ', 'Supply cordon: medicine and equipment +15%, rounded up. Ends after age ')}
-          {char.cityCondition.endAge}.
-        </p>}
-        {/* Category Filters */}
-        <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 10, marginBottom: 16 }}>
+        {activeCityCondition(char) && (
+          <p role="status" className="depot-notice">
+            {t('Phong tỏa nguồn hàng: thuốc và trang bị +15%, làm tròn lên. Hết hiệu lực sau tuổi ', 'Supply cordon: medicine and equipment +15%, rounded up. Ends after age ')}
+            {char.cityCondition.endAge}.
+          </p>
+        )}
+        <div className="tabs depot-tabs" role="tablist">
           {[
             { id: 'ALL', labelVi: 'Tất cả', labelEn: 'All Items' },
             { id: ITEM_TYPES.WEAPON, labelVi: 'Vũ khí Workshop', labelEn: 'Weapons' },
@@ -85,101 +77,46 @@ export const WorkshopDepotModal = ({ open, onClose }) => {
           ].map((tab) => (
             <button
               type="button"
+              role="tab"
+              aria-selected={activeTab === tab.id}
               key={tab.id}
+              className={activeTab === tab.id ? 'is-on' : ''}
               onClick={() => setActiveTab(tab.id)}
-              style={{
-                padding: '6px 14px',
-                borderRadius: 6,
-                fontSize: 12,
-                fontWeight: 600,
-                border: '1px solid',
-                borderColor: activeTab === tab.id ? 'var(--accent)' : 'var(--border)',
-                background: activeTab === tab.id ? 'rgba(212, 175, 55, 0.15)' : 'var(--raised)',
-                color: activeTab === tab.id ? 'var(--accent)' : 'var(--text)',
-                cursor: 'pointer',
-                whiteSpace: 'nowrap',
-                transition: 'all 0.15s ease'
-              }}
             >
               {lang === 'en' ? tab.labelEn : tab.labelVi}
             </button>
           ))}
         </div>
-
-        {/* Item Cards Grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 300px), 1fr))', gap: 12, maxHeight: '56vh', overflowY: 'auto', paddingRight: 4 }}>
+        <ul className="depot-list">
           {filterItems().map((item) => {
             const owned = isOwned(item);
             const price = workshopPrice(item, char);
             const canAfford = playerAhn >= price;
-
             return (
-              <div
-                key={item.id}
-                style={{
-                  background: 'var(--raised)',
-                  border: '1px solid var(--border)',
-                  borderTop: item.type === 'weapon' ? '2px solid var(--accent)' : item.type === 'consumable' ? '2px solid #22c55e' : '2px solid #60a5fa',
-                  borderRadius: 8,
-                  padding: 14,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'space-between',
-                  gap: 10
-                }}
-              >
-                <div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8, marginBottom: 6 }}>
-                    <h4 style={{ fontSize: 14, fontWeight: 700, color: 'var(--text)', margin: 0 }}>
-                      {lang === 'en' ? item.nameEn : item.nameVi}
-                    </h4>
-                    <Tag color="gold" style={{ margin: 0, fontSize: 10, fontWeight: 700 }}>
-                      {item.tier}
-                    </Tag>
-                  </div>
-                  <p style={{ fontSize: 12, color: 'var(--story)', lineHeight: 1.5, margin: 0 }}>
-                    {lang === 'en' ? item.descEn : item.descVi}
-                  </p>
+              <li key={item.id} className={"depot-item is-" + item.type}>
+                <div className="depot-item-main">
+                  <h4>
+                    {lang === 'en' ? item.nameEn : item.nameVi}
+                    <span className="depot-tier">{item.tier}</span>
+                  </h4>
+                  <p>{lang === 'en' ? item.descEn : item.descVi}</p>
                 </div>
-
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 10 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                    <Coins size={14} color="var(--accent)" />
-                    <span style={{ fontSize: 14, fontWeight: 700, color: canAfford ? 'var(--accent)' : 'var(--bad)' }}>
-                      {price} Ahn
-                    </span>
-                  </div>
-
+                <div className="depot-item-buy">
+                  <span className={"depot-price num" + (canAfford ? "" : " is-short")}>{price} Ahn</span>
                   {owned ? (
-                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 11, fontWeight: 600, color: 'var(--good)' }}>
-                      <Check size={14} /> {t('Đã sở hữu', 'Owned')}
+                    <span className="depot-owned">
+                      <Check size={14} aria-hidden="true" /> {t('Đã sở hữu', 'Owned')}
                     </span>
                   ) : (
-                    <button
-                      type="button"
-                      disabled={!canAfford}
-                      onClick={() => handleBuy(item)}
-                      style={{
-                        padding: '6px 14px',
-                        borderRadius: 5,
-                        fontSize: 12,
-                        fontWeight: 600,
-                        border: '1px solid',
-                        borderColor: canAfford ? 'var(--accent)' : 'var(--border)',
-                        background: canAfford ? 'var(--accent)' : 'var(--raised)',
-                        color: canAfford ? '#0a0d12' : 'var(--faint)',
-                        cursor: canAfford ? 'pointer' : 'not-allowed',
-                        transition: 'all 0.15s ease'
-                      }}
-                    >
-                      {canAfford ? t('Mua ngay', 'Purchase') : t('Thiếu tiền', 'Need Ahn')}
+                    <button type="button" className="btn btn-sm" disabled={!canAfford} onClick={() => handleBuy(item)}>
+                      {canAfford ? t('Mua', 'Buy') : t('Thiếu Ahn', 'Need Ahn')}
                     </button>
                   )}
                 </div>
-              </div>
+              </li>
             );
           })}
-        </div>
+        </ul>
       </div>
     </Modal>
   );

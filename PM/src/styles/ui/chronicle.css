@@ -1,0 +1,289 @@
+/* The stage: the room around the page. The page is the chronicle, the decision sits beside it */
+.stage {
+  position: relative; isolation: isolate;
+  display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr);
+  min-width: 0; min-height: 0; height: 100%;
+  overflow: hidden; background: var(--ground);
+}
+.stage > .log { grid-area: 1 / 1; }
+.chronicle-heading { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
+
+.log { position: relative; z-index: 1; min-height: 0; overflow-y: auto; scrollbar-gutter: stable; padding: 28px clamp(12px, 3vw, 40px) 0; scroll-behavior: smooth; }
+
+/* The page itself: paper in both themes, its own ink */
+.log-col {
+  --text: var(--page-ink); --story: var(--page-ink); --muted: var(--page-muted); --faint: var(--page-muted);
+  --border: var(--page-edge); --rule: var(--page-rule); --surface: color-mix(in srgb, var(--page-ink) 4%, var(--page));
+  --raised: color-mix(in srgb, var(--page-ink) 8%, var(--page)); --active: color-mix(in srgb, var(--page-ink) 12%, var(--page));
+  --good: #2b6e3f; --bad: #a3282a; --gold: #7a5716; --rare: #35558a; --accent: #a8232b;
+  position: relative;
+  max-width: 740px; min-height: calc(100% - 28px); margin: 0 auto;
+  padding: 40px clamp(20px, 5vw, 64px) 96px;
+  background: var(--page); color: var(--page-ink);
+  border-radius: 2px 2px 0 0;
+}
+.log-col::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--page-ink); opacity: .85; }
+
+/* A new year opens like a new chapter */
+.yearline { display: flex; align-items: baseline; gap: 12px; margin: 44px 0 14px; padding-top: 14px; border-top: 1px solid var(--page-ink); }
+.yearline:first-child { margin-top: 0; }
+.yearline span { font-family: var(--serif); font-size: 15px; color: var(--page-muted); }
+.yearline b { font-family: var(--serif); font-size: 24px; font-weight: 600; color: var(--page-ink); margin-right: 2px; }
+.season-divider { display: flex; align-items: center; gap: 12px; margin: 28px 0 12px; }
+.season-divider-line { flex: 1; height: 1px; background: var(--page-rule); }
+.season-divider-badge { font-family: var(--serif); font-style: italic; font-size: 14.5px; color: var(--page-muted); }
+
+.entry { margin: 0 0 22px; }
+.entry-header-row { display: flex; align-items: baseline; gap: 10px; margin-bottom: 4px; }
+.entry-tag { font-family: var(--font); font-size: 13px; font-weight: 600; color: var(--page-muted); }
+.entry-text { font-family: var(--serif); font-size: var(--story-size); line-height: var(--story-lead); color: var(--page-ink); text-wrap: pretty; }
+.entry-text + .entry-text { margin-top: 10px; }
+.entry-text.is-result { margin-top: 8px; }
+.entry-alt { margin-top: 6px; font-family: var(--serif); font-style: italic; font-size: calc(var(--story-size) - 2px); line-height: 1.65; color: var(--page-muted); }
+.entry-choice { margin: 2px 0 8px; padding-left: 12px; border-left: 2px solid var(--accent); font-size: 14.5px; font-weight: 600; color: var(--page-ink); }
+.entry-choice.is-muted { border-left-color: var(--page-rule); color: var(--page-muted); font-weight: 500; }
+/* Turning points and dangers stand apart from daily life by their tag and a mark in the margin */
+.entry.k-bad, .entry.k-death, .entry.k-good, .entry.k-causal, .entry.k-contract, .entry.k-choice { position: relative; }
+.entry.k-bad .entry-tag, .entry.k-death .entry-tag { color: var(--bad); }
+.entry.k-good .entry-tag { color: var(--gold); }
+.entry.k-causal .entry-tag { color: var(--rare); }
+.entry.k-death { padding: 14px 0 4px; border-top: 2px solid var(--bad); }
+.entry.k-good::before, .entry.k-bad::before { content: ''; position: absolute; left: -22px; top: 6px; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.entry.k-good::before { color: var(--gold); }
+.entry.k-bad::before { color: var(--bad); }
+.entry.k-summary { padding: 12px 14px; background: var(--surface); }
+.entry.k-summary .entry-text { font-size: calc(var(--story-size) - 1px); }
+.entry-review { margin-top: 10px; font-size: 14px; }
+.entry-review summary { display: inline-flex; min-height: 32px; align-items: center; font-weight: 600; color: var(--page-muted); text-decoration: underline; text-underline-offset: 4px; }
+.entry-review > p { margin: 6px 0; font-family: var(--serif); color: var(--page-muted); line-height: 1.6; }
+.entry-review ol { list-style: decimal; padding-left: 22px; display: flex; flex-direction: column; gap: 4px; color: var(--page-muted); }
+.entry-review li.is-selected { color: var(--page-ink); font-weight: 600; }
+
+/* Changes: small marks after the paragraph, a sign on every number */
+.deltas { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.delta {
+  display: inline-flex; align-items: center; gap: 5px; min-height: 24px; padding: 0 8px;
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  font-family: var(--font); font-size: 12.5px; font-weight: 500; color: var(--muted); white-space: nowrap;
+  animation: deltaIn .35s ease backwards;
+}
+.delta b { font-weight: 700; font-variant-numeric: tabular-nums; }
+.delta.is-up, .delta.is-gain, .delta.is-good { color: var(--good); border-color: color-mix(in srgb, var(--good) 45%, transparent); }
+.delta.is-down, .delta.is-bad { color: var(--bad); border-color: color-mix(in srgb, var(--bad) 45%, transparent); }
+.delta.is-heavy { background: color-mix(in srgb, var(--bad) 10%, transparent); font-weight: 700; }
+.delta.is-bond { color: var(--text); }
+.delta.is-rare { color: var(--rare); border-color: color-mix(in srgb, var(--rare) 40%, transparent); }
+.delta.is-static { animation: none; }
+.delta-stat-icon { font-size: 11px; opacity: .8; }
+.deltas-empty { font-size: 13.5px; color: var(--faint); }
+@keyframes deltaIn { from { opacity: 0; transform: translateY(3px); } }
+
+.prologue-dock { display: flex; justify-content: flex-end; margin-top: 8px; }
+
+/* The decision: beside the page on a wide screen, a sheet from below on a narrow one */
+.event-modal-backdrop {
+  position: relative; z-index: 5;
+  grid-area: 1 / 2; min-height: 0; overflow-y: auto; scrollbar-gutter: stable;
+  border-left: 1px solid var(--border); background: var(--ground);
+}
+.stage.has-dock { grid-template-columns: minmax(0, 1fr) minmax(380px, 460px); }
+.stage.has-dock .event-peek-toggle { display: none; }
+.dock { padding: 28px 28px 32px; animation: dockIn .28s cubic-bezier(.2, .8, .2, 1); }
+@keyframes dockIn { from { opacity: 0; transform: translateY(8px); } }
+.dock-inner { display: flex; flex-direction: column; gap: 16px; }
+.dock-banner { display: flex; flex-direction: column; gap: 8px; }
+.dock-kicker-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.dock-kicker { display: inline-flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 600; color: var(--muted); }
+.dock-kicker-icon { display: inline-grid; place-items: center; color: var(--accent); }
+.dock-kicker.is-causal .dock-kicker-icon { color: var(--rare); }
+.dock-kicker.is-outcome .dock-kicker-icon { color: var(--good); }
+.dock-kicker.is-dead, .dock-kicker.is-dead .dock-kicker-icon { color: var(--bad); }
+.dock-hotkey-hint { font-size: 12.5px; color: var(--faint); white-space: nowrap; }
+.dock-title { font-family: var(--serif); font-size: 26px; font-weight: 600; line-height: 1.2; text-wrap: balance; }
+.dock-text { font-family: var(--serif); font-size: var(--story-size); line-height: var(--story-lead); color: var(--story); text-wrap: pretty; white-space: pre-line; }
+.dock .entry-alt { color: var(--muted); }
+.year-leads-intro { font-family: var(--serif); font-size: 16px; line-height: 1.6; color: var(--story); }
+
+.countdown-wrap { display: flex; align-items: center; gap: 10px; }
+.countdown { flex: 1; height: 2px; background: var(--raised); overflow: hidden; }
+.countdown i { display: block; height: 100%; background: var(--accent); transform-origin: left; transition: transform .2s linear; }
+.countdown-badge { font-size: 12.5px; font-variant-numeric: tabular-nums; color: var(--muted); }
+
+.causal-echo-badge { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border-left: 2px solid var(--rare); background: var(--surface); font-size: 14px; line-height: 1.5; color: var(--muted); }
+.causal-icon { color: var(--rare); margin-top: 2px; }
+.companion-contract-banner { display: flex; gap: 10px; align-items: center; width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); text-align: left; font-size: 14px; color: var(--muted); background: var(--surface); }
+
+/* Inner voices (the Disco Elysium move): set as a margin note */
+.disco-psyche-card { border-left: 2px solid var(--rare); padding: 4px 0 4px 12px; }
+.disco-psyche-header { display: flex; align-items: center; gap: 8px; min-height: 32px; font-size: 13.5px; font-weight: 600; color: var(--muted); }
+.disco-psyche-faculty { color: var(--rare); }
+.disco-psyche-voice { font-family: var(--serif); font-style: italic; font-size: 16px; line-height: 1.6; color: var(--story); margin-top: 4px; }
+
+/* Choices: an index in the margin, the words, and what it will cost */
+.choices { display: flex; flex-direction: column; gap: 8px; counter-reset: none; }
+.choice {
+  display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 12px; align-items: start;
+  width: 100%; padding: 14px 16px 14px 12px; text-align: left;
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  background: var(--surface); color: var(--text);
+  transition: border-color .14s ease, background-color .14s ease;
+}
+.choice:hover:not(:disabled):not(.is-disabled) { border-color: var(--text); background: var(--raised); }
+.choice:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.choice:active:not(:disabled) { background: var(--active); }
+.choice-badge {
+  display: grid; place-items: center; width: 28px; height: 28px; margin-top: -2px;
+  border: 1px solid var(--border); border-radius: 50%;
+  font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--muted);
+}
+.choice:hover:not(:disabled) .choice-badge { border-color: var(--text); color: var(--text); }
+.choice-content { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.choice-content > div:first-child { display: flex; justify-content: space-between; gap: 10px; }
+.choice-label { font-size: var(--choice-size); font-weight: 500; line-height: 1.45; }
+.choice-alt { font-size: 13.5px; color: var(--muted); font-style: italic; }
+.choice.is-disabled, .choice:disabled { opacity: .5; cursor: not-allowed; }
+.choice.is-ghost { background: transparent; border-style: dashed; color: var(--muted); }
+.choice-badge.is-ghost { border-style: dashed; }
+.preview { display: flex; flex-wrap: wrap; gap: 6px; }
+.preview-odds { font-size: 12.5px; font-weight: 600; color: var(--muted); }
+.disco-check-pill { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 12.5px; }
+.check-tag { padding: 2px 8px; border: 1px solid var(--text); border-radius: var(--radius-sm); font-weight: 600; }
+.check-tag b { font-variant-numeric: tabular-nums; }
+.disco-check-pill.is-red .check-tag { border-color: var(--bad); color: var(--bad); }
+.check-mod { color: var(--muted); }
+.check-mod.is-pos { color: var(--good); }
+.check-mod.is-neg { color: var(--bad); }
+
+/* Contract odds: one stacked rule, the death share in red */
+.odds { display: flex; flex-direction: column; gap: 6px; }
+.odds .stack-bar { height: 4px; }
+.odds-legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12.5px; color: var(--muted); }
+.odds-legend > span { display: inline-flex; align-items: center; gap: 5px; }
+
+/* Year leads */
+.year-leads-list { display: flex; flex-direction: column; gap: 8px; }
+.year-lead { display: flex; flex-direction: column; gap: 6px; width: 100%; padding: 14px 16px; text-align: left; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); }
+.year-lead:hover { border-color: var(--text); background: var(--raised); }
+.year-lead-meta { display: flex; justify-content: space-between; gap: 12px; font-size: 12.5px; font-weight: 600; color: var(--muted); }
+.year-lead-meta span:first-child { font-variant-numeric: tabular-nums; }
+.year-lead.is-danger { border-left: 3px solid var(--bad); }
+.year-lead.is-danger .year-lead-meta span:last-child { color: var(--bad); }
+.year-lead strong { font-family: var(--serif); font-size: 18px; font-weight: 600; line-height: 1.3; }
+.year-lead-copy { color: var(--muted); font-size: 14.5px; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.year-lead-outlook { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 13px; }
+.year-lead-outlook .is-gain { color: var(--good); }
+.year-lead-outlook .is-cost { color: var(--bad); }
+.year-leads-note { font-size: 13px; color: var(--faint); }
+
+/* Outcome */
+.resolution-choice-pill { display: flex; flex-direction: column; gap: 2px; padding-left: 12px; border-left: 2px solid var(--accent); }
+.choice-pill-label { font-size: 12.5px; color: var(--muted); }
+.choice-pill-text { font-size: 15px; font-weight: 600; }
+.resolution-deltas-section { display: flex; flex-direction: column; gap: 6px; padding-top: 12px; border-top: 1px solid var(--rule); }
+.deltas-title { font-size: 13px; font-weight: 600; color: var(--muted); }
+.resolution-deltas-section .deltas { margin-top: 0; }
+.resolution-death-banner { display: flex; gap: 10px; align-items: center; padding: 12px 14px; border: 1px solid var(--bad); color: var(--bad); font-size: 14.5px; line-height: 1.5; }
+.dock.is-dead .dock-title { color: var(--bad); }
+.dock.is-dead { border-top: 3px solid var(--bad); }
+.resolution-actions { margin-top: 4px; }
+.resolution-btn { justify-content: space-between; }
+
+/* Hide the decision for a moment to read the page under it */
+.event-peek-toggle {
+  position: absolute; z-index: 7; right: 16px; bottom: 16px;
+  display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px;
+  border: 1px solid var(--border); border-radius: 999px; background: var(--ground); color: var(--text);
+  font-size: 13.5px; font-weight: 600; box-shadow: var(--shadow-pop);
+}
+
+@media (max-width: 1240px) {
+  .stage.has-dock { grid-template-columns: minmax(0, 1fr); }
+  .event-modal-backdrop {
+    position: absolute; left: 0; right: 0; bottom: 0; grid-area: auto;
+    max-height: min(64%, 640px);
+    border-left: 0; border-top: 1px solid var(--border);
+    box-shadow: 0 -18px 40px rgba(0, 0, 0, .35);
+  }
+  .dock { max-width: 760px; margin: 0 auto; padding: 22px var(--pad) 28px; }
+  .stage.has-dock .event-peek-toggle { display: inline-flex; bottom: auto; top: 14px; }
+  .stage.has-dock .log { padding-bottom: 50vh; }
+}
+@media (max-width: 860px) {
+  .log { padding: 0; }
+  .log-col { padding: 28px 20px 80px; min-height: 100%; border-radius: 0; }
+  .log-col::before { display: none; }
+  .entry.k-good::before, .entry.k-bad::before { left: -13px; }
+  .yearline { margin-top: 34px; }
+  .event-modal-backdrop { max-height: 72%; border-radius: 10px 10px 0 0; }
+  .dock { padding: 18px 16px 22px; }
+  .dock-title { font-size: 22px; }
+  .dock-hotkey-hint { display: none; }
+  .choice { padding: 12px 12px 12px 10px; gap: 10px; grid-template-columns: 26px minmax(0, 1fr); }
+  .choice-badge { width: 26px; height: 26px; }
+}
+
+/* The scene behind the page is a tint of the room, never a picture competing with the words */
+.stage > .scene.on { opacity: .4; filter: saturate(.6); }
+.career-obj-tag { text-transform: lowercase; }
+.career-obj-tag::first-letter { text-transform: uppercase; }
+
+/* The end of a life: the colophon of the book. Age as the large figure, the cause under it, then the record */
+.epitaph { margin-top: 56px; padding-top: 28px; border-top: 3px double var(--page-ink); }
+.epitaph-body { display: flex; flex-direction: column; gap: 22px; }
+.epitaph-kicker-origin { text-align: center; font-family: var(--serif); font-style: italic; font-size: 16px; color: var(--page-muted); }
+.epitaph-age { display: flex; justify-content: center; align-items: baseline; gap: 10px; font-family: var(--serif); font-size: clamp(64px, 10vw, 96px); font-weight: 600; line-height: .9; color: var(--page-ink); font-variant-numeric: lining-nums; }
+.epitaph-age span { font-size: 22px; font-weight: 400; color: var(--page-muted); }
+.epitaph-cause { text-align: center; font-size: 15.5px; font-weight: 600; color: var(--bad); }
+.epitaph-poetic-quote { margin: 0 auto; max-width: 34em; text-align: center; font-family: var(--serif); font-style: italic; font-size: calc(var(--story-size) + 1px); line-height: 1.6; color: var(--page-ink); }
+.epitaph-facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-block: 1px solid var(--page-rule); }
+.epitaph-facts + .epitaph-facts { border-top: 0; margin-top: -22px; }
+.epitaph-fact-card { display: flex; flex-direction: column; gap: 4px; padding: 12px 14px 12px 0; }
+.epitaph-fact-card + .epitaph-fact-card { padding-left: 14px; border-left: 1px solid var(--page-rule); }
+.epitaph-fact-card > span { font-size: 12.5px; color: var(--page-muted); }
+.epitaph-fact-card > b { font-family: var(--serif); font-size: 16px; font-weight: 600; line-height: 1.3; }
+.epitaph-fact-card .is-pos-life { color: var(--good); }
+.epitaph-fact-card .is-neg-life { color: var(--bad); }
+.epitaph-panel { display: flex; flex-direction: column; gap: 12px; }
+.epitaph-panel-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--page-ink); }
+.epitaph-panel-head h3 { display: flex; align-items: baseline; gap: 8px; font-size: 20px; color: var(--page-ink); }
+.epitaph-panel-sub { font-size: 13px; color: var(--page-muted); }
+.epitaph-subtoggle { font-size: 13.5px; font-weight: 600; color: var(--page-muted); text-decoration: underline; text-underline-offset: 4px; min-height: 32px; }
+.epitaph-story-paragraphs { display: flex; flex-direction: column; gap: 12px; }
+.epitaph-story-p { font-family: var(--serif); font-size: var(--story-size); line-height: var(--story-lead); color: var(--page-ink); }
+.epitaph-story-p.is-alt { font-style: italic; color: var(--page-muted); font-size: calc(var(--story-size) - 2px); }
+.epitaph-turning-points { margin-top: 6px; }
+.turning-points-heading { font-size: 13.5px; font-weight: 600; color: var(--page-muted); margin-bottom: 8px; }
+.turning-points-list { display: flex; flex-direction: column; }
+.tp-item { display: grid; grid-template-columns: 70px minmax(0, 1fr); gap: 12px; padding: 8px 0; border-top: 1px solid var(--page-rule); }
+.tp-age { font-size: 13px; font-weight: 600; color: var(--page-muted); font-variant-numeric: tabular-nums; }
+.tp-content { font-size: 14.5px; line-height: 1.5; }
+.tp-danger .tp-age, .tp-death .tp-age { color: var(--bad); }
+.records-new-count { font-family: var(--font); font-size: 12.5px; font-weight: 700; color: var(--accent); }
+.epitaph-records-list { display: flex; flex-direction: column; }
+.epitaph-record-row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--page-rule); }
+.record-row-left { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+.record-row-title { font-size: 14.5px; font-weight: 600; }
+.record-new-badge { font-size: 11.5px; font-weight: 700; color: var(--accent); }
+.record-row-rarity { font-size: 12.5px; color: var(--page-muted); white-space: nowrap; }
+.epitaph-record-row.tier-rare .record-row-rarity, .epitaph-record-row.tier-epic .record-row-rarity { color: var(--rare); }
+.epitaph-record-row.tier-legendary .record-row-rarity { color: var(--gold); }
+.epitaph-stat-bars { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 24px; }
+.epitaph-stat-row { display: flex; flex-direction: column; gap: 5px; }
+.epitaph-stat-head { display: flex; justify-content: space-between; font-size: 13.5px; color: var(--page-muted); }
+.epitaph-stat-head b { color: var(--page-ink); }
+.epitaph-stat-track { height: 3px; background: var(--page-rule); }
+.epitaph-stat-fill { display: block; height: 100%; background: var(--page-ink); }
+.epitaph-life-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.epitaph-tag-pill { padding: 2px 9px; border: 1px solid var(--page-edge); border-radius: 999px; font-size: 12.5px; font-weight: 600; color: var(--page-muted); }
+.epitaph-actions { display: flex; flex-wrap: wrap; gap: 8px; padding-top: 6px; }
+.epitaph-actions .btn { flex: 1 1 180px; }
+.epitaph-btn-reborn { flex-basis: 100% !important; }
+.epitaph-secondary-actions { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+.epitaph-seed-footer { text-align: center; font-size: 12.5px; color: var(--page-muted); }
+.epitaph.is-special-ending { border-top-color: var(--gold); }
+@media (max-width: 860px) {
+  .epitaph-facts { grid-template-columns: 1fr; }
+  .epitaph-fact-card + .epitaph-fact-card { padding-left: 0; border-left: 0; border-top: 1px solid var(--page-rule); }
+  .epitaph-facts + .epitaph-facts { margin-top: -22px; }
+  .epitaph-stat-bars { grid-template-columns: 1fr; }
+}

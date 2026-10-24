@@ -100,9 +100,9 @@ const YearStatus = () => {
   if (status === 'dead') return <span>{t('Kiếp sống đã khép lại', 'This life has ended')}</span>;
   if (typeof status === 'string' && status.startsWith('reading_')) {
     const sec = status.split('_')[1];
-    return <span style={{ color: 'var(--good)' }}>{t(`Kết quả vừa lưu · Tiếp tục sau ${sec}s`, `Result logged · Resuming in ${sec}s`)}</span>;
+    return <span className="is-good">{t(`Kết quả vừa lưu · Tiếp tục sau ${sec}s`, `Result logged · Resuming in ${sec}s`)}</span>;
   }
-  if (status === 'resolution') return <span style={{ color: 'var(--good)' }}>{t('Đang xem kết quả quyết định', 'Reviewing outcome')}</span>;
+  if (status === 'resolution') return <span className="is-good">{t('Đang xem kết quả quyết định', 'Reviewing outcome')}</span>;
   if (status === 'dungeon' && pendingDungeon) {
     const stageNo = (pendingDungeon.currentStageIndex || 0) + 1;
     const total = pendingDungeon.totalStages || 4;
@@ -112,8 +112,8 @@ const YearStatus = () => {
       </span>
     );
   }
-  if (status === 'wait') return <span style={{ color: 'var(--accent)' }}>{t('Đang chờ bạn quyết định', 'Waiting for your decision')}</span>;
-  if (status === 'minor') return <span style={{ color: 'var(--accent)' }}>{t('Một lựa chọn đang chờ', 'A choice is waiting')}</span>;
+  if (status === 'wait') return <span className="is-wait">{t('Đang chờ bạn quyết định', 'Waiting for your decision')}</span>;
+  if (status === 'minor') return <span className="is-wait">{t('Một lựa chọn đang chờ', 'A choice is waiting')}</span>;
   if (status === 'pause') return <span>{t('Tạm dừng', 'Paused')}</span>;
   return <span className="num">{t(`Sang năm sau ${status} giây`, `Next year in ${status}s`)}</span>;
 };
@@ -493,12 +493,11 @@ export const PlayBar = () => {
         <Tooltip title={t('Mở Xưởng Workshop & Chợ Đen để mua vũ khí / vật phẩm', 'Open Workshop & Black Market to purchase gear')}>
           <button
             type="button"
-            className="btn btn-secondary btn-icon"
+            className="btn btn-sm playbar-ahn"
             onClick={() => setShopOpen(true)}
-            style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '0 10px', height: 32, borderColor: 'rgba(212, 175, 55, 0.3)' }}
           >
-            <ShoppingBag size={14} color="var(--accent)" />
-            <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--accent)' }}>
+            <ShoppingBag size={15} aria-hidden="true" />
+            <span className="num">
               {char.stats?.wealth ?? char.wealth ?? 0} Ahn
             </span>
           </button>
@@ -546,7 +545,7 @@ export const PlayBar = () => {
           title={t('Xưởng Workshop & Chợ Đen', 'Workshop & Market')}
           aria-label={t('Xưởng Workshop & Chợ Đen', 'Workshop & Market')}
         >
-          <ShoppingBag size={18} color="var(--accent)" />
+          <ShoppingBag size={18} aria-hidden="true" />
         </button>
 
         {/* Mobile More dropdown menu (pops up from bottom bar) */}

@@ -774,3 +774,11 @@ Mô phỏng 1.000 sinh mệnh độc lập (tuổi thọ trung bình 52.0 tuổi
 * Bước lướt chỉ làm nặng thêm đòn trúng khi né hụt, không làm nặng mọi đòn như trước.
 * Chữ trên lá Con dao giấu trong ủng khớp với số thật (7%).
 * `tests/test_dungeon_cards.mjs` kiểm từng lá: giá phải trả, tỉ lệ né, sát thương hiển thị, khóa phá thế, loot, thời gian sống của lá và ngân sách mỗi tầng.
+
+### Đợt 44 (25/10/2026): giao diện mới từ đầu (v3, "một đời đóng thành sách")
+* **Bỏ toàn bộ CSS cũ** (`index.css`, `interface.css`, `dungeon.css`, `yearLeads.css`, khoảng 9.300 dòng chồng lớp lên nhau). Hệ mới nằm trong `src/styles/ui/`: tokens, base, shell, home, play, chronicle, dungeon, pages, overlays. Tranh cảnh (dungeon backdrop, City backdrop, phòng Claw, cửa Thư viện) được tách nguyên vẹn sang `scenes.css` và `dungeon-art.css`.
+* **Hướng thiết kế (DESIGN.md):** phòng mực đen, một trang giấy sáng là biên niên, đỏ thẫm cho hành động và hiểm nguy, vàng chỉ cho cột mốc. Literata cho truyện, Archivo cho chỉ số. Năm mới mở như một chương, mùa là dòng nghiêng, cái chết là trang cuối sách (tuổi là con số lớn nhất).
+* **Khung:** bỏ sidebar, thay bằng một thanh trên ở mọi độ rộng; trên điện thoại các mục chuyển xuống thanh dưới.
+* **Màn chơi:** quyết định nằm cạnh trang từ 1240px trở lên, hẹp hơn thì thành tấm trượt từ dưới lên. Hồ sơ nhân vật bỏ thẻ màu, chỉ còn số và vạch 3px.
+* **Sửa kèm:** bốn nhãn tiếng Việt bị hỏng thành dấu hỏi trong ô lựa chọn ("Dùng hết", "Cần trang bị", "Chưa đủ điều kiện"...); emoji trong khung sự kiện thay bằng icon nét mảnh; modal Workshop viết lại thành bảng giá, bỏ style viết cứng.
+* **Kiểm tra:** `npm test` xanh, `vite build` sạch, inspector của skill taste 0 FAIL ở màn chính. Đã chụp 1440, 1024 và 390px cho màn chính, màn chơi, sự kiện, dungeon, văn bia và bốn trang lưu trữ.

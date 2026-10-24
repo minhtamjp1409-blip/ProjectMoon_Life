@@ -1,0 +1,115 @@
+/*
+  The City Chronicles, interface v3: "a life bound as a book".
+  Ink-black room, one lit page (the chronicle), crimson for what you do and what can kill you,
+  gold only for the milestones a life is remembered by. Literata sets the story, Archivo the instruments.
+*/
+:root {
+  color-scheme: light;
+  /* paper room (light theme) */
+  --ground: #e9e5dd;
+  --surface: #f4f1eb;
+  --raised: #dfd9cf;
+  --active: #d6cab7;
+  --border: #c4b7a3;
+  --rule: #d8cdbc;
+  --control: #8a7c6c;
+  --text: #1e1814;
+  --story: #2a221c;
+  --muted: #574b40;
+  --faint: #6b5e51;
+
+  --page: #fcfaf6;
+  --page-ink: #1e1814;
+  --page-muted: #5d5045;
+  --page-rule: #e3d8c6;
+  --page-edge: #cfc1aa;
+
+  --accent: #a8232b;
+  --accent-hover: #8f1c23;
+  --accent-ink: #fff6f2;
+  --accent-soft: rgba(168, 35, 43, 0.1);
+  --gold: #85601c;
+  --gold-soft: rgba(133, 96, 28, 0.12);
+
+  --good: #2d7343;
+  --bad: #b0302b;
+  --warn: #9a6a12;
+  --rare: #3c5d93;
+
+  --s-health: #b03a2c;
+  --s-sanity: #2e5f8e;
+  --s-wealth: #85601c;
+  --s-network: #2b736c;
+  --s-rep: #6a4a9a;
+  --s-heat: #b0302b;
+  --s-reso: #5a4bb0;
+
+  --shadow-pop: 0 12px 32px rgba(40, 28, 18, 0.18);
+
+  --font: 'Archivo', system-ui, 'Segoe UI', sans-serif;
+  --serif: 'Literata', Georgia, 'Times New Roman', serif;
+  --font-serif: var(--serif);
+
+  --radius: 4px;
+  --radius-sm: 2px;
+  --top: 56px;
+  --bottom: 0px;
+  --side: 296px;
+  --pad: clamp(16px, 3vw, 40px);
+  --control-h: 44px;
+
+  --story-size: 17px;
+  --story-lead: 1.75;
+  --choice-size: 15.5px;
+}
+
+:root.dark {
+  color-scheme: dark;
+  --ground: #0c0a09;
+  --surface: #141110;
+  --raised: #1d1917;
+  --active: #28221f;
+  --border: #322a26;
+  --rule: #221d1a;
+  --control: #5e534c;
+  --text: #ece8e1;
+  --story: #ddd7cc;
+  --muted: #aaa196;
+  --faint: #8c8377;
+
+  /* the chronicle stays a page of paper, dimmed for the night */
+  --page: #d9d4ca;
+  --page-ink: #211a15;
+  --page-muted: #5a4c40;
+  --page-rule: #c3bcaf;
+  --page-edge: #a39b8d;
+
+  --accent: #c8323a;
+  --accent-hover: #db4249;
+  --accent-ink: #fff3ef;
+  --accent-soft: rgba(200, 50, 58, 0.14);
+  --gold: #d0a85a;
+  --gold-soft: rgba(208, 168, 90, 0.14);
+
+  --good: #86bd92;
+  --bad: #e8695f;
+  --warn: #e0ae52;
+  --rare: #8fb3e6;
+
+  --s-health: #e5705f;
+  --s-sanity: #7fb0da;
+  --s-wealth: #d0a85a;
+  --s-network: #6fbdb3;
+  --s-rep: #b99ae0;
+  --s-heat: #e8695f;
+  --s-reso: #a596ea;
+
+  --shadow-pop: 0 16px 40px rgba(0, 0, 0, 0.55);
+}
+
+html[data-text='lg'] { --story-size: 18.5px; --story-lead: 1.78; --choice-size: 16.5px; }
+html[data-text='xl'] { --story-size: 20.5px; --story-lead: 1.74; --choice-size: 18px; }
+
+@media (max-width: 860px) {
+  :root { --top: 52px; --bottom: calc(60px + env(safe-area-inset-bottom, 0px)); }
+}

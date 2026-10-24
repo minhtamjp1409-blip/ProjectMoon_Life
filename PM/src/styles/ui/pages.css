@@ -1,0 +1,47 @@
+/* Archive screens: Loom, World, Bloodline, Codex. Each opens with its name as a book's section title. */
+.page { max-width: 1240px; margin: 0 auto; padding: 32px var(--pad) 64px; }
+.archive-header { display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; padding-bottom: 20px; margin-bottom: 24px; border-bottom: 1px solid var(--text); }
+.archive-heading { display: flex; align-items: flex-start; gap: 12px; min-width: 0; }
+.archive-heading .app-tool { margin-top: 6px; border: 1px solid var(--border); }
+.archive-heading h1 { font-size: clamp(28px, 3.4vw, 40px); line-height: 1.1; margin-bottom: 6px; }
+.archive-heading p { max-width: 46em; color: var(--muted); font-size: 15.5px; line-height: 1.55; }
+.archive-action { flex: none; }
+
+/* Panels on archive screens carry their own toolbar row */
+.panel > .toolbar { padding: 14px 18px; border-bottom: 1px solid var(--rule); justify-content: space-between; }
+.tabs .count { margin-left: 6px; font-size: 12.5px; font-weight: 500; opacity: .75; font-variant-numeric: tabular-nums; }
+.tabs { margin-bottom: 16px; }
+.story { font-family: var(--serif); font-size: 15.5px; line-height: 1.65; color: var(--story); }
+.table code, .rows code { font-size: 13px; color: var(--muted); }
+
+/* Codex */
+.bar.is-accent { height: 4px; }
+.bar.is-accent > i { background: var(--gold); }
+.record { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; padding: 14px 18px; }
+.record:nth-child(odd) { border-right: 1px solid var(--rule); }
+.record-name { font-family: var(--serif); font-size: 16px; font-weight: 600; }
+.record-sub { font-size: 13.5px; color: var(--muted); line-height: 1.5; }
+.record.is-locked .record-name { color: var(--muted); }
+.record-status .pill { font-size: 12px; }
+
+/* Bloodline */
+.table-bloodline td { vertical-align: top; }
+.bloodline-action-td { width: 1%; white-space: nowrap; }
+
+@media (max-width: 860px) {
+  .page { padding: 20px 16px 40px; }
+  .archive-header { flex-direction: column; align-items: stretch; gap: 14px; }
+  .archive-action .btn { width: 100%; }
+  .record:nth-child(odd) { border-right: 0; }
+  .panel > .toolbar { flex-direction: column; align-items: stretch; }
+  .panel > .toolbar .search { width: 100% !important; }
+  /* A table on a phone becomes a list of labelled rows */
+  .table.stack-sm { min-width: 0 !important; }
+  .table.stack-sm thead { display: none; }
+  .table.stack-sm, .table.stack-sm tbody, .table.stack-sm tr, .table.stack-sm td { display: block; width: 100%; }
+  .table.stack-sm tr { padding: 12px 16px; border-bottom: 1px solid var(--rule); }
+  .table.stack-sm td { padding: 3px 0; border: 0; max-width: none !important; text-align: left; }
+  .table.stack-sm td[data-label] { display: flex; justify-content: space-between; gap: 12px; }
+  .table.stack-sm td[data-label]::before { content: attr(data-label); color: var(--muted); font-size: 13px; font-weight: 500; }
+  .bloodline-action-td { width: 100%; padding-top: 10px !important; }
+}

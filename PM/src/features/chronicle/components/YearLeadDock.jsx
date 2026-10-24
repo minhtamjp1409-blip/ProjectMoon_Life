@@ -2,7 +2,6 @@ import { useEffect, useRef } from 'react';
 import { interpolateText } from '../../../engine/gameEngine';
 import { LIFE_MINORS, isYearLeadUsable, splitTitle } from '../../../engine/yearPlanner';
 import { useT } from '../../../i18n';
-import '../../../styles/yearLeads.css';
 
 const TIER = {
   steady: ['Ít rủi ro', 'Lower risk'],

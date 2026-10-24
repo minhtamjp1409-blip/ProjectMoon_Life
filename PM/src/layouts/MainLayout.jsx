@@ -1,13 +1,11 @@
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import Sidebar from './Sidebar';
 import Header, { BottomNav } from './Header';
 import { CityBackdrop } from '../components/CityBackdrop';
 import { useShallow } from 'zustand/react/shallow';
 import { DUNGEON_DEFINITIONS } from '../engine/gameEngine';
 import '../styles/dungeonFx.css';
 import { useGameStore } from '../store/gameStore';
-import { useThemeStore } from '../store/themeStore';
 
 const TICK_MS = 100;
 
@@ -78,20 +76,17 @@ export const MainLayout = ({ children }) => {
   const isPlay = location.pathname === '/' && inRun;
   const isHome = location.pathname === '/' && !inRun;
   const hasDock = isPlay && Boolean(pendingEvent || pendingContract || pendingMinor || activeResolution);
-  const { sidebarCollapsed, toggleSidebar } = useThemeStore();
-  const isNavCollapsed = sidebarCollapsed !== null ? sidebarCollapsed : isPlay;
   const dungeon = isPlay && dungeonId ? DUNGEON_DEFINITIONS[dungeonId] : null;
 
   return (
     <div
-      className={`shell interface-v2 ${isNavCollapsed ? 'is-nav-collapsed' : ''} ${isPlay ? 'is-in-play' : ''} ${hasDock ? 'has-dock' : ''} ${dungeon ? `in-dungeon dg-shell-${dungeon.theme}` : ''}`}
+      className={`shell interface-v2 ${isPlay ? 'is-in-play' : ''} ${hasDock ? 'has-dock' : ''} ${dungeon ? `in-dungeon dg-shell-${dungeon.theme}` : ''}`}
       style={dungeon ? { '--dg': dungeon.accentColor } : undefined}
     >
       <CityBackdrop variant="ambient" />
       {dungeon && dungeonFx && <span key={dungeonNonce} className={`dg-shell-pulse fx-${dungeonFx}`} aria-hidden="true" />}
-      <Sidebar isCollapsed={isNavCollapsed} onToggleCollapse={() => toggleSidebar(isNavCollapsed)} isPlay={isPlay} />
-      <Header />
-      <main className="main" id="main-content">{isPlay ? children : <div className="main-scroll">{children}</div>}</main>
+      <Header isPlay={isPlay} />
+      <main className={`main ${isHome ? 'is-home' : ''}`} id="main-content">{isPlay ? children : <div className="main-scroll">{children}</div>}</main>
       <BottomNav />
     </div>
   );

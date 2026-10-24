@@ -6,19 +6,12 @@ import {
   BookOpen,
   GitBranch,
   Trophy,
-  Sun,
-  Moon,
-  Languages,
-  PanelLeftClose,
-  PanelLeftOpen,
   Monitor,
   Sparkles,
   Pause,
   Type
 } from 'lucide-react';
-import { useNavigate, useLocation } from 'react-router-dom';
 import { useThemeStore } from '../store/themeStore';
-import { useGameStore } from '../store/gameStore';
 import { pick } from '../i18n';
 
 export const NAV_ITEMS = [
@@ -124,95 +117,3 @@ export function TextSizeToggle({ lang, placement = 'top' }) {
     </Tooltip>
   );
 }
-
-export const Sidebar = ({ isCollapsed, onToggleCollapse, isPlay, languageOverride }) => {
-  const navigate = useNavigate();
-  const { pathname } = useLocation();
-  const { lang: preferredLang, themeMode, toggleTheme } = useThemeStore();
-  const lang = languageOverride || preferredLang;
-  const online = useGameStore((s) => s.backendOnline);
-  const inRun = useGameStore((s) => s.inRun);
-  const name = useGameStore((s) => s.char.name);
-  const age = useGameStore((s) => s.char.age);
-  return (
-    <aside className={`app-navigation ${isCollapsed ? 'is-compact' : ''}`} lang={lang === 'bi' ? 'vi' : lang}>
-      <div className="app-brand-row">
-        <button className="app-brand" onClick={() => navigate('/')} aria-label="The City Chronicles">
-          <BrandMark />
-          <span>
-            <strong>The City</strong>
-            <small>Chronicles</small>
-          </span>
-        </button>
-        <button
-          className="app-nav-collapse"
-          onClick={onToggleCollapse}
-          aria-label={pick(lang, 'Thu gọn hoặc mở menu', 'Toggle navigation')}
-          aria-expanded={!isCollapsed}
-        >
-          {isCollapsed ? <PanelLeftOpen size={17} /> : <PanelLeftClose size={17} />}
-        </button>
-      </div>
-      <div className="app-nav-caption">{pick(lang, 'Hồ sơ lưu trữ', 'The archives')}</div>
-      <nav className="app-nav-links" aria-label={pick(lang, 'Điều hướng chính', 'Main navigation')}>
-        {NAV_ITEMS.map((item) => {
-          const Icon = item.icon;
-          const label = pick(lang, item.vi, item.en);
-          return (
-            <Tooltip key={item.key} title={isCollapsed ? label : null} placement="right">
-              <button
-                type="button"
-                className={`app-nav-link ${pathname === item.key ? 'is-current' : ''}`}
-                aria-current={pathname === item.key ? 'page' : undefined}
-                aria-label={label}
-                onClick={() => navigate(item.key)}
-              >
-                <Icon size={19} strokeWidth={1.6} aria-hidden="true" />
-                <span>{label}</span>
-              </button>
-            </Tooltip>
-          );
-        })}
-      </nav>
-      <div className="app-nav-footer">
-        {inRun && !isPlay && (
-          <button className="app-life-link" onClick={() => navigate('/')}>
-            <span>{pick(lang, 'Kiếp đang sống', 'Life in progress')}</span>
-            <strong>{name}</strong>
-            <small>
-              {age} {pick(lang, 'tuổi', 'years')}
-            </small>
-          </button>
-        )}
-        <div className="app-nav-tools">
-          <LangMenu>
-            <button className="app-tool" aria-label={languageOverride ? 'Choose story language' : pick(lang, 'Chọn ngôn ngữ', 'Choose language')}>
-              <Languages size={17} aria-hidden="true" />
-              <span>{LANG_OPTIONS.find((o) => o.key === preferredLang)?.short}</span>
-            </button>
-          </LangMenu>
-          <button
-            className="app-tool"
-            onClick={toggleTheme}
-            aria-label={pick(lang, 'Đổi giao diện sáng / tối', 'Toggle light / dark theme')}
-            aria-pressed={themeMode === 'dark'}
-          >
-            {themeMode === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
-          </button>
-          <TextSizeToggle lang={lang} />
-          <MotionToggle lang={lang} />
-        </div>
-        <span className="app-connection">
-          <i className={online ? 'is-online' : ''} />
-          <span>
-            {online
-              ? pick(lang, 'Đã kết nối archive', 'Archive connected')
-              : pick(lang, 'Lưu trên thiết bị', 'Saved on this device')}
-          </span>
-        </span>
-        <span className="app-edition">Project Moon · Fan project</span>
-      </div>
-    </aside>
-  );
-};
-export default Sidebar;

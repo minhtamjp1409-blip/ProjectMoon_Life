@@ -2,7 +2,7 @@ import { choiceIsAvailable } from '../../../engine/eventConditions.js';
 import { ITEMS_CATALOG } from '../../../data/itemsData.js';
 import React, { useEffect, useRef, useState } from 'react';
 import { Modal } from 'antd';
-import { GitBranch, Download, RotateCcw, Hammer, ChevronDown, Eye, EyeOff, BookOpen, Copy, Check, House } from 'lucide-react';
+import { GitBranch, Download, RotateCcw, Hammer, ChevronDown, Eye, EyeOff, BookOpen, Copy, Check, House, Zap, Hourglass, ScrollText, Skull, History, Stamp } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 import { useGameStore } from '../../../store/gameStore';
@@ -193,7 +193,7 @@ const MinorDock = ({ prompt, char, npcs, wealth = 0, remainingMs, onPick, place 
           <div className="dock-banner-text">
             <div className="dock-kicker-row">
               <p className="dock-kicker">
-                <span className="dock-kicker-icon">⚡</span>
+                <span className="dock-kicker-icon" aria-hidden="true"><Zap size={14} /></span>
                 <span>{prompt.annualMerit
                   ? t(`Nhiệm vụ Công trạng · ${place}`, `Merit commission · ${place}`)
                   : t(`Gặp gỡ bất chợt · ${place}`, `Encounter · ${place}`)}</span>
@@ -254,7 +254,7 @@ const EventDock = ({ event, char, onPick }) => {
           <div className="dock-banner-text">
             <div className="dock-kicker-row">
               <p className={`dock-kicker ${causal ? 'is-causal' : ''}`}>
-                <span className="dock-kicker-icon">{causal ? '⟲' : '⏳'}</span>
+                <span className="dock-kicker-icon" aria-hidden="true">{causal ? <History size={14} /> : <Hourglass size={14} />}</span>
                 <span>{causal ? 'Causal Echo · Time stops' : t(`Tuổi ${char.age} · thời gian dừng lại`, `Age ${char.age} · time stops`)}</span>
               </p>
               <span className="dock-hotkey-hint">{t('Phím 1-9 để chọn', 'Keys 1-9')}</span>
@@ -265,7 +265,7 @@ const EventDock = ({ event, char, onPick }) => {
 
         {causal && (event.causalReasonVi || event.causalReasonEn) && (
           <div className="causal-echo-badge">
-            <span className="causal-icon">⟲</span>
+            <span className="causal-icon" aria-hidden="true"><History size={15} /></span>
             <span className="causal-text">
               {lang === 'en' ? (event.causalReasonEn || event.causalReasonVi) : (event.causalReasonVi || event.causalReasonEn)}
             </span>
@@ -298,9 +298,9 @@ const EventDock = ({ event, char, onPick }) => {
             const blocked = !choiceIsAvailable(ch, char);
             const item = ITEMS_CATALOG.find(i => i.id === (ch.useItem || ch.need?.item));
             const extra = [];
-            if (item) extra.push(<span className="delta is-static" key="item">{t(ch.useItem ? 'D?ng h?t: ' : 'C?n trang b?: ', ch.useItem ? 'Consume: ' : 'Requires: ')}{lang === 'en' ? item.nameEn : item.nameVi}</span>);
-            if (ch.favorCost) extra.push(<span className="delta is-static" key="favor">{t('C?n ng??i c?n s?ng, ?? g?n b?: ', 'Needs an available contact with bond: ')}{ch.favorCost.amount}</span>);
-            if (blocked) extra.push(<span className="delta is-static" key="blocked">{t('Ch?a ?? ?i?u ki?n', 'Requirements not met')}</span>);
+            if (item) extra.push(<span className="delta is-static" key="item">{t(ch.useItem ? 'Dùng hết: ' : 'Cần trang bị: ', ch.useItem ? 'Consume: ' : 'Requires: ')}{lang === 'en' ? item.nameEn : item.nameVi}</span>);
+            if (ch.favorCost) extra.push(<span className="delta is-static" key="favor">{t('Cần một người quen còn sống, gắn bó tối thiểu: ', 'Needs an available contact with bond: ')}{ch.favorCost.amount}</span>);
+            if (blocked) extra.push(<span className="delta is-static" key="blocked">{t('Chưa đủ điều kiện', 'Requirements not met')}</span>);
             if (ch.costAhn) {
               extra.push(
                 <span className={`delta ${isShortAhn ? 'is-down' : 'is-static'}`} key="costAhn" style={blocked ? { borderColor: 'rgba(239,68,68,0.5)', color: '#f87171' } : { borderColor: 'rgba(234,179,8,0.4)', color: '#facc15' }}>
@@ -370,7 +370,7 @@ const ContractDock = ({ contract, wealth, onPick }) => {
           <div className="dock-banner-text">
             <div className="dock-kicker-row">
               <p className="dock-kicker">
-                <span className="dock-kicker-icon">📜</span>
+                <span className="dock-kicker-icon" aria-hidden="true"><ScrollText size={14} /></span>
                 <span>
                   {lang === 'en' ? (contract.kickerEn || 'Request') : (contract.kickerVi || 'Request')}
                   {' · '}
@@ -477,7 +477,7 @@ const ResultDock = ({ resolution, onDismiss }) => {
           <div className="dock-banner-text">
             <div className="dock-kicker-row">
               <p className={`dock-kicker is-outcome ${resolution.isDead ? 'is-dead' : ''}`}>
-                <span className="dock-kicker-icon">{resolution.isDead ? '☠' : resolution.isCausal ? '⟲' : '✓'}</span>
+                <span className="dock-kicker-icon" aria-hidden="true">{resolution.isDead ? <Skull size={14} /> : resolution.isCausal ? <History size={14} /> : <Check size={14} />}</span>
                 <span>
                   {resolution.isDead
                     ? t('Tử trận · Số mệnh khép lại', 'Fallen · Fate Sealed')
@@ -527,7 +527,7 @@ const ResultDock = ({ resolution, onDismiss }) => {
 
         {resolution.isDead && (
           <div className="resolution-death-banner">
-            <span className="death-icon">☠</span>
+            <span className="death-icon" aria-hidden="true"><Skull size={18} /></span>
             <span>{t('Quyết định này đã đưa bạn đến cái chết giữa The City lạnh lùng.', 'This choice led you to death in the cold expanse of The City.')}</span>
           </div>
         )}
@@ -1312,7 +1312,7 @@ export const LiveStageFeed = () => {
           }}
         >
           <div className="hana-decree-crest-wrap">
-            <span className="hana-seal-icon">✦</span>
+            <span className="hana-seal-icon" aria-hidden="true"><Stamp size={22} /></span>
           </div>
 
           <div className="hana-decree-header">

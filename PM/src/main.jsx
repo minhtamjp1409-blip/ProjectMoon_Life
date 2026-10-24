@@ -1,8 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
-import './index.css';
-import './styles/interface.css';
+import './styles/ui/index.css';
 import { useGameStore } from './store/gameStore';
 import { audioEngine } from './engine/audioEngine';
 

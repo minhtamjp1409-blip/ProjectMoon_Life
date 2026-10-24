@@ -18,7 +18,7 @@ import {
   evaluateDungeonChoiceOdds
 } from '../../../engine/gameEngine.js';
 import { gauntletRoute } from '../../../engine/dungeonCombat.js';
-import '../../../styles/dungeon.css';
+import '../../../styles/ui/dungeon.css';
 import '../../../styles/dungeonFx.css';
 
 const STANCES = [
@@ -110,6 +110,7 @@ const StrainMeter = ({ strain, t }) => {
 
 // What a card is about, read from the effects it carries: the first match names its type and picks its emblem
 const CARD_FACES = {
+  ego: { vi: 'E.G.O', en: 'E.G.O', path: 'M12 2l2.4 5.6L20 8l-4.3 3.9L17 18l-5-3-5 3 1.3-6.1L4 8l5.6-.4z' },
   scan: { vi: 'Dò xét', en: 'Scout', path: 'M12 5C6.5 5 3 12 3 12s3.5 7 9 7 9-7 9-7-3.5-7-9-7zm0 3a4 4 0 110 8 4 4 0 010-8zm0 2a2 2 0 100 4 2 2 0 000-4z' },
   heal: { vi: 'Hồi phục', en: 'Mend', path: 'M9 3h6v6h6v6h-6v6H9v-6H3V9h6z' },
   strike: { vi: 'Phản công', en: 'Counter', path: 'M20 3l1 1-9 9 2 2-2 2-2-2-4 4-2-2 4-4-2-2 2-2 2 2z' },
@@ -120,7 +121,8 @@ const CARD_FACES = {
 };
 const cardFace = (card) => {
   let kind = 'guard';
-  if (card.scan) kind = 'scan';
+  if (card.needsEgo) kind = 'ego';
+  else if (card.scan) kind = 'scan';
   else if ((card.now?.health || 0) > 0) kind = 'heal';
   else if (card.breaks) kind = 'strike';
   else if (card.evade) kind = 'evade';
@@ -459,6 +461,7 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
               <span className="dg-hand-label">
                 {t('Bài trên tay', 'Hand')} · {t('còn', 'plays left')} {cardBudgetLeft(session)}
               </span>
+              <div className="dg-hand-cards">
               {session.cardHand.map((id, slot) => {
                 const card = DUNGEON_CARDS[id];
                 if (!card) return null;
@@ -486,6 +489,7 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
                   </button>
                 );
               })}
+              </div>
               {session.cardActive && DUNGEON_CARDS[session.cardActive] && (
                 <span className="dg-card-active">{t('Đang dùng', 'In play')}: {t(DUNGEON_CARDS[session.cardActive].vi, DUNGEON_CARDS[session.cardActive].en)}</span>
               )}

@@ -1,19 +1,16 @@
-# The City Chronicles: interface direction
+# The City Chronicles: interface direction (v3, "a life bound as a book")
 
-The interface is an archive of a life in The City. Its main object is a person's chronicle, with choices and consequences beside that record. The home screen opens a birth record, and the other screens preserve the world's terms, memories, family and achievements.
+Every life in The City ends as a book (the Library of Ruina idea). The interface is the room that book is written in: an ink-black room, one lit page, and the instruments around it. The page is the chronicle; nothing else on screen is paper except the birth record and the Hana certificate.
 
-- Direction: True-black flat, seed 375464302, adapted to the existing Project Moon identity. Warm charcoal surfaces, ivory text, restrained archival gold. The light theme uses neutral paper and dark ink.
-- Typeface: Be Vietnam Pro throughout, for Vietnamese diacritics and long reading sessions. The existing crescent mark remains the product identifier.
-- Dials: ENERGY 2 / RHYTHM 2 / MOTION 1. Motion communicates an interaction or a consequence; backgrounds remain still.
-- Home: the birth form is the primary action. The district dial is a selectable index of actual game regions, not a geographic map or decorative telemetry.
-- Language: the Home content and its navigation use English, including for browsers with VI or VI+EN saved. The language selector controls the story and archive preference; opening Home does not overwrite that preference.
-- Play: a compact time control, a character dossier and a reading column. A dedicated choice region keeps pending decisions reachable.
-- Mobile: a short introduction followed by the birth form. During play, a compact resource HUD opens the dossier as a sheet. The navigation owns its own grid row and never covers content.
-- Surfaces: separation by lightness, restrained structural rules, tight radii. Shadows belong to floating menus and the dossier sheet.
-- Background update requested by the owner: one stationary City wireframe wraps the entire application viewport. It reuses the existing geometric vocabulary, with no decorative status boxes or readable labels. Opaque reading and form surfaces protect the content.
-- Decisions: at 1360px and above, choices sit beside the chronicle. Narrower screens allocate separate grid rows to the story and decisions, with independent scrolling and a direct jump to choices.
-- Icons: the existing outline family represents navigation, controls and actual resource types. No decorative emoji or badges.
-- Colour: gold marks the selected district and narrative milestones. Health, sanity and danger keep semantic colours and written labels.
-- Checks: desktop, tablet and phone; both themes; keyboard, focus, pending decisions, empty archives, loading and failure states; reduced motion.
+- Idea: a life becomes a book. Each year opens like a chapter (age as a serif heading over a full rule), seasons are italic dividers, choices are marginal notes, death is the colophon (the age as the largest figure on the page, the cause in red under it).
+- Typefaces: Literata for the story, headings and names (Vietnamese diacritics, long reading); Archivo for the instruments, labels and figures (tabular numbers, condensed width for large figures). Both loaded from Google Fonts.
+- Colour: ink ground (#0c0a09), bone text (#ece8e1), paper page (#d9d4ca dark / #fcfaf6 light). Crimson (#c8323a) is the one action colour and the colour of what can kill you. Gold (#d0a85a) only for milestones, Ahn and Hana evaluations. HP, SP and the other stats keep their own hues and always carry a written label.
+- Surfaces: flat. Separation is a 1px rule or one tone step; shadows only on things that float (the decision sheet on narrow screens, menus, the dossier sheet). Radii 2-4px; tactic cards are the exception (10px), because they are cards.
+- Shell: one top bar on every width (brand, archive tabs, tools). On a phone the tabs move to a bottom bar and the top bar names the current screen.
+- Play: running head (age, the year's rule with season ticks, the clock), dossier column on the left, the page in the centre, the decision beside the page from 1240px up. Narrower, the decision is a sheet from below and the page can be uncovered with "See behind".
+- Dungeons: the decision column takes the dungeon's own accent (--dg) as a top rule and route marker; stances are one segmented row; the hand is a row of portrait cards with type, emblem, effect and price.
+- Labels: sentence case at 12.5-14px. No uppercase letter-spaced captions, no gradient text, no emoji icons (lucide outline icons only).
+- Dials: ENERGY 2 / RHYTHM 2 / MOTION 1. Motion answers an action (a card lifts, a blow shakes the result, the dock rises); backgrounds stay still.
+- Checks: 1440, 1024 and 390 wide; dark and light; keyboard focus; reduced motion; empty archive states.
 
-The existing brand mark retains its original SVG treatment. The home heading is larger than an archive title because it serves as the game's title screen. No statistics or world facts are invented for the redesign.
+This direction was written by the agent at the owner's request for a completely new interface; the owner can change any line.

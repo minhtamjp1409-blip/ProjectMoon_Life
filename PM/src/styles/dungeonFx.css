@@ -1,57 +1,11 @@
 /* Dungeon feedback and dressing. Three layers react to a fight:
    1. the dock: an overlay that flashes once per action, the enemy panel that punches on a counter;
    2. the backdrop behind the stage: floors darken toward the boss, phase two shifts the colour;
-   3. the shell: both sidebars, the header and the bottom bar take the dungeon's accent (--dg)
+   3. the shell: the top bars take a line of the dungeon accent (--dg)
       while a run is open, and a thin edge pulse answers each blow.
    Every effect is short and returns to rest; prefers-reduced-motion keeps the colours and drops the motion. */
 
 /* ---------- the enemy panel ---------- */
-.dg-foe {
-  display: grid;
-  gap: 8px;
-  margin: 4px 0 10px;
-  padding: 10px 12px;
-  border: 1px solid color-mix(in srgb, var(--dg) 30%, var(--rule));
-  border-radius: 8px;
-  background: color-mix(in srgb, var(--dg) 7%, var(--raised));
-}
-.dg-foe-guard { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
-.dg-foe-pip {
-  width: 18px;
-  height: 6px;
-  border-radius: 2px;
-  background: var(--control);
-  transition: background-color 0.25s ease, transform 0.25s ease;
-}
-.dg-foe-pip.is-up { background: var(--dg); }
-.dg-foe-phase {
-  margin-left: auto;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--dg-ink);
-}
-.dg-intent { display: flex; align-items: baseline; gap: 8px; margin: 0; flex-wrap: wrap; }
-.dg-intent-kind {
-  padding: 2px 8px;
-  border-radius: 999px;
-  font-size: 11.5px;
-  font-weight: 700;
-  letter-spacing: 0.03em;
-  color: #0b0d10;
-  background: var(--dg);
-}
-.dg-intent-name { font-size: 15px; font-weight: 700; color: var(--text); }
-.dg-intent.is-heavy .dg-intent-kind { background: #f2994a; }
-.dg-intent.is-quick .dg-intent-kind { background: #f2c94c; }
-.dg-intent.is-sweep .dg-intent-kind { background: #56ccf2; }
-.dg-intent.is-mind .dg-intent-kind { background: #bb6bd9; color: #fff; }
-.dg-intent.is-grab .dg-intent-kind { background: #eb5757; color: #fff; }
-.dg-intent-next { margin: 0; font-size: 12.5px; color: var(--muted); }
-.dg-foe-help summary { cursor: pointer; font-size: 12px; color: var(--muted); }
-.dg-foe-help summary:focus-visible { outline: 2px solid var(--dg); outline-offset: 2px; border-radius: 3px; }
-.dg-foe-help p { margin: 6px 0 0; font-size: 12.5px; line-height: 1.6; color: var(--muted); }
 
 .dock.is-dungeon.is-boss .dg-foe { border-color: var(--dg); box-shadow: 0 0 0 1px color-mix(in srgb, var(--dg) 40%, transparent) inset; }
 .dock.is-dungeon.is-phase-2 .dg-foe { background: color-mix(in srgb, var(--bad) 10%, var(--raised)); }
@@ -198,40 +152,9 @@
 @keyframes nightSeep { 0%, 100% { transform: scaleX(1); opacity: 0.8; } 50% { transform: scaleX(1.15); opacity: 1; } }
 @keyframes nightStroll { 0% { transform: translateX(0); opacity: 0; } 10% { opacity: 0.85; } 90% { opacity: 0.85; } 100% { transform: translateX(112vw); opacity: 0; } }
 
-/* ---------- the shell: sidebars, header and bottom bar belong to the place ---------- */
-.interface-v2.shell.in-dungeon .app-navigation {
-  background:
-    linear-gradient(180deg, color-mix(in srgb, var(--dg) 12%, transparent), transparent 55%),
-    var(--surface);
-  border-right-color: color-mix(in srgb, var(--dg) 45%, var(--rule));
-  transition: background-color 0.5s ease, border-color 0.5s ease;
-}
-.interface-v2.shell.in-dungeon .app-nav-link.is-current { color: var(--dg); box-shadow: inset 2px 0 0 var(--dg); }
-.interface-v2.shell.in-dungeon .side.desktop-dossier-side {
-  border-color: color-mix(in srgb, var(--dg) 35%, var(--rule));
-  background:
-    linear-gradient(180deg, color-mix(in srgb, var(--dg) 9%, transparent), transparent 40%),
-    var(--surface);
-  transition: background-color 0.5s ease, border-color 0.5s ease;
-}
-.interface-v2.shell.in-dungeon .app-mobile-header,
-.interface-v2.shell.in-dungeon .bottom-nav { border-color: color-mix(in srgb, var(--dg) 45%, var(--rule)); box-shadow: 0 0 0 1px color-mix(in srgb, var(--dg) 18%, transparent); }
-
-/* A texture per place along the sidebars */
-.interface-v2.shell.dg-shell-warp .app-navigation,
-.interface-v2.shell.dg-shell-warp .side.desktop-dossier-side { background-image: repeating-linear-gradient(180deg, rgba(56, 189, 248, 0.05) 0 2px, transparent 2px 6px), linear-gradient(180deg, color-mix(in srgb, var(--dg) 12%, transparent), transparent 55%); }
-.interface-v2.shell.dg-shell-lobotomy .app-navigation,
-.interface-v2.shell.dg-shell-lobotomy .side.desktop-dossier-side { background-image: repeating-linear-gradient(135deg, rgba(245, 158, 11, 0.05) 0 12px, transparent 12px 24px), linear-gradient(180deg, color-mix(in srgb, var(--dg) 12%, transparent), transparent 55%); }
-.interface-v2.shell.dg-shell-bloodfiend .app-navigation,
-.interface-v2.shell.dg-shell-bloodfiend .side.desktop-dossier-side { background-image: linear-gradient(180deg, rgba(244, 63, 94, 0.16), transparent 30%), linear-gradient(0deg, rgba(76, 5, 25, 0.35), transparent 45%); }
-.interface-v2.shell.dg-shell-greatlake .app-navigation,
-.interface-v2.shell.dg-shell-greatlake .side.desktop-dossier-side { background-image: linear-gradient(0deg, rgba(6, 182, 212, 0.14), transparent 50%), linear-gradient(180deg, rgba(226, 232, 240, 0.05), transparent 40%); }
-.interface-v2.shell.dg-shell-night .app-navigation,
-.interface-v2.shell.dg-shell-night .side.desktop-dossier-side { background-image: linear-gradient(180deg, rgba(7, 6, 13, 0.6), transparent 60%), linear-gradient(0deg, rgba(167, 139, 250, 0.1), transparent 35%); }
-.interface-v2.shell.dg-shell-claw .app-navigation,
-.interface-v2.shell.dg-shell-claw .side.desktop-dossier-side { background-image: linear-gradient(100deg, transparent 49.6%, rgba(125, 211, 252, 0.22) 50%, transparent 50.4%), linear-gradient(180deg, rgba(214, 208, 186, 0.08), transparent 40%); }
-.interface-v2.shell.dg-shell-outskirts .app-navigation,
-.interface-v2.shell.dg-shell-outskirts .side.desktop-dossier-side { background-image: linear-gradient(180deg, rgba(234, 179, 8, 0.1), transparent 45%), radial-gradient(ellipse at 50% 100%, rgba(120, 85, 20, 0.2), transparent 60%); }
+/* ---------- the shell: a line in the place's colour under the bar while a run is open ---------- */
+.shell.in-dungeon .topbar, .shell.in-dungeon .playbar { box-shadow: inset 0 -2px 0 var(--dg); }
+.shell.in-dungeon .bottom-nav button.is-current svg { color: var(--dg); }
 
 /* The edge of the screen answers a blow */
 .dg-shell-pulse {

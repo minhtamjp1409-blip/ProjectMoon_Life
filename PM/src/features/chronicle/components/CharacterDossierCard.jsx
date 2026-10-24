@@ -96,7 +96,7 @@ const Stat = ({ label, value, unit = '/100', color, flag, riseIsBad = false, too
   return (
     <div className={`stat ${flashClass} ${isCritical ? 'is-critical' : ''}`}>
       <div className="stat-head">
-        <span className="label" style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+        <span className="label stat-label">
           <i className="dot" style={{ background: isCritical ? 'var(--bad)' : color }} />
           <span>{label}</span>
           {tooltip && (
@@ -105,14 +105,7 @@ const Stat = ({ label, value, unit = '/100', color, flag, riseIsBad = false, too
                 role="button"
                 tabIndex={0}
                 aria-label="Thông tin chỉ số"
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  cursor: 'help',
-                  color: 'var(--ink-muted)',
-                  marginLeft: 2,
-                  opacity: 0.85
-                }}
+                className="stat-help"
               >
                 <HelpCircle size={12} />
               </span>
@@ -159,7 +152,7 @@ const TabooStat = ({ value, tooltip = null }) => {
   return (
     <div className={`stat ${flashClass}`}>
       <div className="stat-head">
-        <span className="label" style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+        <span className="label stat-label">
           <i className="dot" style={{ background: 'var(--bad)' }} />
           <span>Taboo Gaze</span>
           {tooltip && (
@@ -168,14 +161,7 @@ const TabooStat = ({ value, tooltip = null }) => {
                 role="button"
                 tabIndex={0}
                 aria-label="Thông tin chỉ số"
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  cursor: 'help',
-                  color: 'var(--ink-muted)',
-                  marginLeft: 2,
-                  opacity: 0.85
-                }}
+                className="stat-help"
               >
                 <HelpCircle size={12} />
               </span>
@@ -237,7 +223,7 @@ const People = ({ npcs, age, t, lang }) => {
     return (
       <section>
         <h3 className="section-title">{t('Những người trong đời bạn', 'The people in your life')}</h3>
-        <p className="muted" style={{ fontSize: 13, fontStyle: 'italic', padding: '8px 0' }}>
+        <p className="empty is-inline">
           {t('Hiện tại bạn sống cô độc giữa The City, chưa có mối liên hệ thân thiết nào.', 'You currently walk alone in The City, holding no close bonds.')}
         </p>
       </section>
@@ -264,15 +250,15 @@ const People = ({ npcs, age, t, lang }) => {
               <span className="npc-status">{t(...(STATUS_LABELS[status] || STATUS_LABELS.dead))}</span>
             ) : (
               <>
-                <div className="stat-head" style={{ marginBottom: 0, fontSize: 13 }}>
+                <div className="stat-head is-bond">
                   <span className="muted">
                     {since >= 3 ? t(`Đã ${since} năm không gặp`, `Not seen in ${since} years`) : t('Gắn bó', 'Bond')}
                     {' · '}
-                    <em style={{ fontStyle: 'normal', color: tier.color, fontWeight: 600 }}>{t(tier.vi, tier.en)}</em>
+                    <em className="bond-tier" style={{ color: tier.color }}>{t(tier.vi, tier.en)}</em>
                   </span>
                   <b>{n.bond ?? 0}</b>
                 </div>
-                <div className="bar" style={{ height: 4 }}>
+                <div className="bar is-thin">
                   <i style={{ width: `${n.bond ?? 0}%`, '--c': tier.color }} />
                 </div>
               </>
@@ -339,7 +325,7 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeT
           {items.map((it) => (
             <div className="kv" key={it.k}>
               <span>{it.k}</span>
-              <span style={{ color: 'var(--accent)', fontWeight: 600 }}>{it.v}</span>
+              <span className="kv-strong">{it.v}</span>
             </div>
           ))}
         </section>
@@ -388,12 +374,12 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeT
               <div className="dossier-context-card kv-stack">
                 <div className="context-card-header">
                   <span className="context-card-tag">{t('Xuất thân', 'Background')}</span>
-                  <span className="context-card-val" style={{ color: 'var(--accent-gold, #ffd700)' }}>
+                  <span className="context-card-val text-accent">
                     {lang === 'en' ? char.family.nameEn : char.family.nameVi}
                   </span>
                 </div>
                 {modSummary && (
-                  <div className="context-feature-box kv-perk-note" style={{ borderLeftColor: 'var(--accent-gold, #ffd700)' }}>
+                  <div className="context-feature-box kv-perk-note is-gold">
                     <b>{t('Chỉ số khởi đầu', 'Starting bonus')}:</b>{' '}
                     <span className="stat-bonus-badge">{modSummary}</span>
                   </div>
@@ -410,32 +396,32 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeT
 
           {/* Faction, Merit & Fate Omen Meta Card */}
           <div className="dossier-meta-card">
-            <div className="kv" style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.05)', padding: '6px 0' }}>
+            <div className="kv">
               <span>{t('Tổ chức', 'Faction')}</span>
               <span className="kv-val-wrap">{getAffiliation(char) ? affiliationLabel(char, lang) : (char.org?.name || (char.finger ? `The ${char.finger}` : t('Tự do', 'Unaffiliated')))}</span>
             </div>
             {getAffiliation(char) && (
-              <div className="kv" style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.05)', padding: '6px 0' }}>
+              <div className="kv">
                 <span>{t('Tín nhiệm', 'Standing')}</span>
                 <span className="kv-val-wrap">{standingLabel(char, lang)}</span>
               </div>
             )}
             {char.mentee && char.npcs?.mentee && (
-              <div className="kv" style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.05)', padding: '6px 0' }}>
+              <div className="kv">
                 <span>{t('Đang dìu dắt', 'Training')}</span>
                 <span className="kv-val-wrap">{lang === 'en' ? char.npcs.mentee.nameEn : char.npcs.mentee.nameVi}</span>
               </div>
             )}
             {char.job !== 'Child' && (
-              <div className="kv" style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.05)', padding: '6px 0' }}>
+              <div className="kv">
                 <span>Merit</span>
                 <span className="num">{char.merit}</span>
               </div>
             )}
             <Tooltip title={lang === 'en' ? omen.descEn : omen.descVi} placement="right">
-              <div className="kv" style={{ cursor: 'help', padding: '6px 0' }}>
+              <div className="kv is-help">
                 <span>{t('Điềm báo', 'Fate omen')}</span>
-                <span style={{ color: 'var(--accent)' }}>{(lang === 'en' ? omen.nameEn : omen.nameVi).split(' · ')[0]}</span>
+                <span className="text-accent">{(lang === 'en' ? omen.nameEn : omen.nameVi).split(' · ')[0]}</span>
               </div>
             </Tooltip>
           </div>

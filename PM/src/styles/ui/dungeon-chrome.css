@@ -1,0 +1,140 @@
+/* Dungeon dock. Where you are, what the stage says, what you can do, and the tactics at the foot.
+   --dg is the dungeon's own accent from its definition, so a new dungeon needs no CSS. */
+.dock.is-dungeon { --dg: #8fb3e6; border-top: 3px solid var(--dg); }
+.dg { gap: 18px; }
+.dg-head { display: flex; flex-direction: column; gap: 8px; padding-bottom: 14px; border-bottom: 1px solid var(--rule); }
+.dg-hazard { padding: 1px 7px; border: 1px solid var(--dg); border-radius: var(--radius-sm); color: var(--text); font-size: 12px; font-weight: 700; letter-spacing: .04em; }
+.dg-ambient { font-family: var(--serif); font-style: italic; font-size: 15px; line-height: 1.55; color: var(--muted); }
+.dg-judgment-warning { padding: 8px 12px; border-left: 2px solid var(--bad); color: var(--bad); font-size: 14px; line-height: 1.5; }
+
+/* The route: one segment per stage, the current one in the dungeon's colour */
+.dg-route { display: flex; gap: 4px; margin-top: 4px; }
+.dg-route li { flex: 1; display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.dg-route-bar { height: 3px; background: var(--raised); }
+.dg-route li.is-done .dg-route-bar { background: var(--muted); }
+.dg-route li.is-now .dg-route-bar { background: var(--dg); }
+.dg-route-num { font-size: 12px; font-weight: 600; color: var(--faint); font-variant-numeric: tabular-nums; }
+.dg-route li.is-now .dg-route-num { color: var(--text); }
+.dg-route.is-gauntlet li.is-boss .dg-route-num { color: var(--bad); }
+
+.dg-status { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+.dg-label { display: block; font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 4px; }
+.dg-haul-val { font-size: 15px; color: var(--muted); }
+.dg-haul-val b { font-size: 22px; font-weight: 600; color: var(--gold); font-stretch: 85%; }
+.dg-strain-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.dg-strain-head .dg-label { margin-bottom: 6px; }
+.dg-strain-tier { font-size: 13px; font-weight: 600; }
+.dg-strain.is-calm .dg-strain-tier { color: var(--good); }
+.dg-strain.is-shaken .dg-strain-tier, .dg-strain.is-panic .dg-strain-tier { color: var(--warn); }
+.dg-strain.is-breaking .dg-strain-tier { color: var(--bad); }
+.dg-meter { position: relative; height: 4px; background: var(--raised); }
+.dg-meter-fill { position: absolute; inset: 0 auto 0 0; background: var(--warn); transition: width .4s ease; }
+.dg-strain.is-calm .dg-meter-fill { background: var(--good); }
+.dg-strain.is-breaking .dg-meter-fill, .dg-strain.is-panic .dg-meter-fill { background: var(--bad); }
+.dg-meter-tick { position: absolute; top: -2px; bottom: -2px; width: 1px; background: var(--ground); }
+.dg-need { display: inline-flex; align-items: center; gap: 4px; min-height: 22px; padding: 0 7px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 12.5px; color: var(--muted); }
+.dg-need.is-met { color: var(--good); border-color: color-mix(in srgb, var(--good) 40%, transparent); }
+.dg-need.is-unmet { color: var(--bad); border-color: color-mix(in srgb, var(--bad) 40%, transparent); }
+.dg-haul .dg-need { margin-top: 6px; }
+
+/* What the last stage did */
+.dg-result { padding: 10px 14px; border-left: 3px solid var(--border); background: var(--surface); font-size: 14.5px; line-height: 1.55; animation: dgRise .3s ease; }
+.dg-result p { font-family: var(--serif); font-size: calc(var(--story-size) - 1.5px); line-height: 1.6; }
+.dg-result.is-check_ok, .dg-result.is-pass { border-left-color: var(--good); }
+.dg-result.is-check_fail, .dg-result.is-fail, .dg-result.is-hit { border-left-color: var(--bad); animation: dgRise .3s ease, dgShake .32s ease .05s; }
+@keyframes dgRise { from { opacity: 0; transform: translateY(6px); } }
+@keyframes dgShake { 20% { transform: translateX(-4px); } 45% { transform: translateX(3px); } 70% { transform: translateX(-2px); } }
+
+.dg-scene { display: flex; flex-direction: column; gap: 12px; }
+.dg-scene-title { display: flex; flex-direction: column; gap: 2px; font-family: var(--serif); font-size: 21px; font-weight: 600; line-height: 1.25; }
+.dg-scene-title > span { font-family: var(--font); font-size: 13px; font-weight: 600; color: var(--muted); }
+
+/* The foe: its guard as pips, what it is about to do in large type */
+.dg-foe { display: flex; flex-direction: column; gap: 8px; padding: 12px 14px; border: 1px solid var(--border); border-left: 3px solid var(--dg); border-radius: var(--radius-sm); }
+.dg-foe-guard { display: flex; align-items: center; gap: 4px; }
+.dg-foe-pip { width: 14px; height: 6px; background: var(--raised); }
+.dg-foe-pip.is-up { background: var(--text); }
+.dg-foe-phase { margin-left: auto; font-size: 12.5px; font-weight: 700; color: var(--bad); }
+.dg-intent { display: flex; flex-direction: column; gap: 1px; }
+.dg-intent-kind { font-size: 13px; font-weight: 600; color: var(--muted); }
+.dg-intent-name { font-family: var(--serif); font-size: 19px; font-weight: 600; }
+.dg-intent.is-heavy .dg-intent-kind, .dg-intent.is-mind .dg-intent-kind { color: var(--bad); }
+.dg-intent-next { font-size: 13.5px; color: var(--faint); }
+.dg-foe-help summary { min-height: 30px; display: flex; align-items: center; font-size: 13.5px; font-weight: 600; color: var(--muted); text-decoration: underline; text-underline-offset: 4px; }
+.dg-foe-help p { font-size: 14px; color: var(--muted); line-height: 1.55; }
+
+.dg-choices { list-style: none; }
+.dg-choice.is-leave { border-style: dashed; }
+.dg-odds { font-size: 12.5px; font-weight: 700; font-variant-numeric: tabular-nums; padding: 1px 7px; border: 1px solid currentColor; border-radius: var(--radius-sm); }
+.dg-odds.is-high { color: var(--good); }
+.dg-odds.is-mid { color: var(--warn); }
+.dg-odds.is-low { color: var(--bad); }
+.dg-leave { display: flex; justify-content: flex-end; }
+.dg-chip.is-good { color: var(--good); }
+.dg-chip.is-bad { color: var(--bad); }
+
+/* Tactics: stances as one segmented row, supplies as plain buttons, then the hand */
+.dg-tools { display: flex; flex-direction: column; gap: 12px; padding-top: 16px; border-top: 1px solid var(--rule); }
+.dg-stances { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2px; padding: 3px; border: 1px solid var(--border); border-radius: var(--radius-sm); }
+.dg-stance { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 38px; border-radius: var(--radius-sm); color: var(--muted); font-size: 14px; font-weight: 600; }
+.dg-stance:hover { color: var(--text); background: var(--raised); }
+.dg-stance.is-on { background: var(--text); color: var(--ground); }
+.dg-supplies { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.dg-supply { display: inline-flex; align-items: center; gap: 6px; min-height: 38px; padding: 0 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 14px; font-weight: 600; color: var(--text); }
+.dg-supply:hover:not(:disabled) { background: var(--raised); border-color: var(--control); }
+.dg-supply:disabled { opacity: .45; }
+.dg-supply small { font-weight: 500; color: var(--gold); font-size: 12.5px; }
+.dg-supply kbd, .dg-leave-btn kbd { font-family: var(--font); font-size: 11.5px; color: var(--faint); padding: 0 5px; border: 1px solid var(--border); border-radius: var(--radius-sm); }
+.dg-supply.is-used { color: var(--muted); }
+.dg-supply--ego { border-color: var(--s-reso); }
+.dg-supply-count { margin-left: auto; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.dg-tools-note { font-size: 13.5px; color: var(--muted); line-height: 1.5; }
+.dg-mastery { display: inline-flex; align-items: center; gap: 4px; margin-left: 8px; color: var(--gold); font-weight: 600; }
+.dg-hand-spent { font-size: 13.5px; color: var(--faint); }
+
+/* The hand: real cards, portrait, a type and its colour at the top, the price at the foot */
+.dg-hand { display: flex; flex-direction: column; gap: 10px; }
+.dg-hand-label { font-size: 13px; font-weight: 600; color: var(--muted); }
+.dg-hand-cards { display: flex; gap: 10px; overflow-x: auto; padding: 10px 2px 12px; margin: -10px -2px 0; scroll-snap-type: x proximity; overscroll-behavior-x: contain; }
+.dg-card {
+  --kc: var(--text);
+  position: relative; flex: 0 0 150px; scroll-snap-align: start;
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  min-height: 218px; padding: 12px; text-align: center;
+  background: var(--surface); color: var(--text);
+  border: 1px solid color-mix(in srgb, var(--kc) 45%, var(--border)); border-radius: 10px;
+  box-shadow: 0 3px 0 color-mix(in srgb, var(--kc) 35%, var(--ground));
+  transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+}
+.dg-card::before { content: ''; position: absolute; inset: 4px; border: 1px solid color-mix(in srgb, var(--kc) 22%, transparent); border-radius: 7px; pointer-events: none; }
+.dg-card::after { content: ''; position: absolute; left: 12px; right: 12px; top: 0; height: 3px; background: var(--kc); border-radius: 0 0 2px 2px; }
+.dg-card--scan { --kc: #6fb7d8; }
+.dg-card--heal { --kc: #6cc08b; }
+.dg-card--strike { --kc: #e0805f; }
+.dg-card--evade { --kc: #b79be0; }
+.dg-card--guard { --kc: #9aaac4; }
+.dg-card--check { --kc: #e0c15f; }
+.dg-card--loot { --kc: #d6a550; }
+.dg-card--ego { --kc: #e05660; }
+.dg-card-kind { margin-top: 4px; font-size: 12px; font-weight: 700; color: var(--kc); }
+.dg-card-emblem { width: 32px; height: 32px; flex: none; fill: var(--kc); }
+.dg-card-name { font-family: var(--serif); font-size: 16px; font-weight: 600; line-height: 1.25; }
+.dg-card-text { font-size: 12.5px; line-height: 1.45; color: var(--muted); }
+.dg-card-price { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; margin-top: auto; padding-top: 4px; }
+.dg-card-price i { font-style: normal; font-size: 12px; font-weight: 700; padding: 1px 7px; border-radius: 999px; border: 1px solid currentColor; }
+.dg-card-price .is-cost { color: var(--bad); }
+.dg-card-price .is-gain { color: var(--good); }
+.dg-card:focus-visible { outline: 2px solid var(--kc); outline-offset: 3px; }
+.dg-card:disabled { opacity: .45; cursor: not-allowed; box-shadow: none; }
+.dg-card-active { font-size: 13.5px; font-weight: 600; color: var(--text); }
+@media (hover: hover) {
+  .dg-card:hover:not(:disabled) { transform: translateY(-6px); border-color: var(--kc); box-shadow: 0 3px 0 var(--kc), 0 12px 22px rgba(0, 0, 0, .3); }
+}
+.dg-card:active:not(:disabled) { transform: translateY(-2px) scale(.98); }
+
+@media (max-width: 860px) {
+  .dg-status { grid-template-columns: 1fr; gap: 12px; }
+  .dg-supply kbd, .dg-leave-btn kbd { display: none; }
+  .dg-stance, .dg-supply { min-height: 44px; }
+  .dg-card { flex-basis: 144px; min-height: 210px; }
+}

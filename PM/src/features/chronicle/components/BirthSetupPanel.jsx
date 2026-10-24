@@ -48,15 +48,6 @@ function DistrictDial({ selected, onSelect, isSpinning, rotation, displayRegion,
     <div className="district-dial-container">
       <div className={`district-dial ${isSpinning ? 'is-spinning' : ''}`}>
         <svg viewBox="0 0 360 360" aria-label={t('Chọn một District', 'Choose a District')}>
-          <defs>
-            <filter id="dialNeedleGlow" x="-20%" y="-20%" width="140%" height="140%">
-              <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="#ffd700" floodOpacity="0.6" />
-            </filter>
-            <filter id="sectorGlow" x="-30%" y="-30%" width="160%" height="160%">
-              <feDropShadow dx="0" dy="0" stdDeviation="5" floodColor="#ffd700" floodOpacity="0.8" />
-            </filter>
-          </defs>
-
           {/* Static outer ring & mid ring */}
           <circle cx="180" cy="180" r="172" className="dial-outer-ring" />
           <circle cx="180" cy="180" r="122" className="dial-mid-ring" />
@@ -99,7 +90,6 @@ function DistrictDial({ selected, onSelect, isSpinning, rotation, displayRegion,
                 >
                   <path
                     d={`M ${p[0]} L ${p[1]} A 164 164 0 0 1 ${p[2]} L ${p[3]} A 130 130 0 0 0 ${p[0]} Z`}
-                    filter={isSelected ? 'url(#sectorGlow)' : undefined}
                   />
                   <text x={label[0]} y={label[1]} textAnchor="middle" dominantBaseline="middle">
                     {r.id}
@@ -113,10 +103,9 @@ function DistrictDial({ selected, onSelect, isSpinning, rotation, displayRegion,
           {/* Inner Static Hub */}
           <circle cx="180" cy="180" r="110" className="dial-inner" />
 
-          {/* Golden Pointer Needle at 12 o'clock */}
-          <g className="dial-pointer-needle" filter="url(#dialNeedleGlow)">
-            <polygon points="180,24 172,6 188,6" fill="#ffd700" stroke="#b8860b" strokeWidth="1" />
-            <circle cx="180" cy="8" r="2.5" fill="#fff" />
+          {/* The pointer at twelve o'clock reads the letter under it */}
+          <g className="dial-pointer-needle">
+            <polygon points="180,26 171,6 189,6" />
           </g>
 
           {/* Center District Status */}
@@ -335,9 +324,7 @@ export const BirthSetupPanel = () => {
             {t('Một câu chuyện trong vũ trụ Project Moon', 'A life in the Project Moon universe')}
           </p>
           <h1 id="home-title">
-            The City{' '}
-            <br />
-            <span className="the-city-title">Chronicles.</span>
+            The City <em className="the-city-title">Chronicles</em>
           </h1>
           <p className="opening-lead">
             {t(

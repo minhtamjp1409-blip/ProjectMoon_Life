@@ -1,0 +1,79 @@
+/* The frame: one bar across the top, the screen below it, and on a phone a bar of archives at the foot */
+.shell {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-rows: var(--top) minmax(0, 1fr);
+  height: 100dvh;
+  overflow: hidden;
+  background: var(--ground);
+}
+.main { position: relative; z-index: 1; min-height: 0; min-width: 0; overflow: hidden; }
+.main-scroll { height: 100%; overflow-y: auto; overflow-x: hidden; scrollbar-gutter: stable; }
+
+.topbar {
+  position: relative; z-index: 20;
+  display: flex; align-items: center; gap: 20px;
+  padding: 0 var(--pad);
+  border-bottom: 1px solid var(--border);
+  background: var(--ground);
+}
+.topbar-brand { display: flex; align-items: center; gap: 10px; min-width: 0; color: var(--text); }
+.topbar-brand img { flex: none; border-radius: 2px; }
+.topbar-word { font-family: var(--serif); font-size: 17px; font-weight: 600; letter-spacing: -0.01em; white-space: nowrap; }
+.topbar-word em { font-style: normal; font-weight: 400; color: var(--muted); }
+.topbar-here { display: none; }
+.topbar-nav { display: flex; align-items: stretch; align-self: stretch; gap: 4px; margin-left: 12px; }
+.topbar-nav button {
+  position: relative; padding: 0 12px;
+  color: var(--muted); font-size: 14.5px; font-weight: 600; white-space: nowrap;
+}
+.topbar-nav button:hover { color: var(--text); }
+.topbar-nav button.is-current { color: var(--text); }
+.topbar-nav button.is-current::after { content: ''; position: absolute; left: 12px; right: 12px; bottom: -1px; height: 2px; background: var(--text); }
+.topbar-tools { display: flex; align-items: center; gap: 2px; margin-left: auto; }
+.topbar-life {
+  display: flex; flex-direction: column; align-items: flex-start; margin-right: 10px; padding: 4px 12px;
+  border-left: 2px solid var(--accent); text-align: left; line-height: 1.25;
+}
+.topbar-life span { font-size: 12px; color: var(--muted); }
+.topbar-life strong { font-size: 14px; color: var(--text); }
+.topbar-life:hover strong { text-decoration: underline; text-underline-offset: 3px; }
+.topbar-sync { display: inline-grid; place-items: center; width: 30px; height: 38px; }
+.topbar-sync i { width: 7px; height: 7px; border-radius: 50%; background: var(--faint); }
+.topbar-sync.is-online i { background: var(--good); }
+
+.bottom-nav { display: none; }
+
+/* A tablet keeps the bar but drops the long words */
+@media (max-width: 1180px) {
+  .topbar-word em { display: none; }
+  .topbar-nav button { padding: 0 9px; font-size: 14px; }
+  .topbar-life { display: none; }
+}
+
+@media (max-width: 860px) {
+  .shell { grid-template-rows: var(--top) minmax(0, 1fr) var(--bottom); }
+  .topbar { gap: 10px; padding: 0 8px 0 14px; }
+  .topbar-word { display: none; }
+  .topbar-here { display: block; font-family: var(--serif); font-size: 17px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .topbar-nav { display: none; }
+  .topbar-tools .app-tool span { display: none; }
+  .topbar-sync { display: none; }
+  .bottom-nav {
+    position: relative; z-index: 20;
+    display: grid; grid-template-columns: repeat(5, minmax(0, 1fr));
+    padding: 0 4px env(safe-area-inset-bottom, 0px);
+    border-top: 1px solid var(--border);
+    background: var(--ground);
+  }
+  .bottom-nav button {
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+    min-height: 60px; color: var(--faint); font-size: 11.5px; font-weight: 600;
+  }
+  .bottom-nav button.is-current { color: var(--text); }
+  .bottom-nav button.is-current svg { color: var(--accent); }
+}
+@media (max-width: 360px) {
+  .topbar-tools .app-tool { min-width: 34px; padding: 0 6px; }
+}
