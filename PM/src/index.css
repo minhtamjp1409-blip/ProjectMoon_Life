@@ -48,7 +48,8 @@
   --scrim: rgba(10, 10, 12, 0.62);
 
   --font: "Be Vietnam Pro", "Segoe UI", system-ui, sans-serif;
-  --serif: "Cinzel", "Song Myung", Georgia, serif;
+  --font-serif: var(--font);
+  --serif: "Cinzel", var(--font);
 
   --radius: 10px;
   --radius-sm: 7px;
@@ -4948,7 +4949,7 @@ body.is-hit-stop .stage {
 .epitaph-poetic-quote {
   margin: 18px auto 26px;
   max-width: 580px;
-  font-family: var(--font-serif, "Noto Serif", Georgia, serif);
+  font-family: var(--font);
   font-size: 15.5px;
   font-style: italic;
   line-height: 1.65;

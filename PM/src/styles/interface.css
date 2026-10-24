@@ -23,6 +23,7 @@
   --s-wealth: #8c6d2d;
   --font: 'Be Vietnam Pro', system-ui, sans-serif;
   --serif: var(--font);
+  --font-serif: var(--font);
   --radius: 8px;
   --radius-sm: 5px;
   --nav: 216px;
@@ -1433,6 +1434,7 @@ input:focus-visible, select:focus-visible, textarea:focus-visible {
 .interface-v2 .epitaph { background: var(--surface); border: 1px solid var(--border); border-top: 3px solid var(--accent); padding: 28px; border-radius: 8px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4); }
 .interface-v2 .epitaph h2 { font-size: 26px; font-weight: 600; color: var(--text); }
 .interface-v2 .epitaph-quote { font-size: 16px; color: var(--accent); font-style: italic; }
+.interface-v2 .epitaph-poetic-quote { font-family: var(--font); font-style: italic; }
 .interface-v2 .delta { border-radius: 4px; box-shadow: none; font-weight: 500; font-size: 11px; }
 
 /* Prologue sequential reveal dock */
