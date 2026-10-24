@@ -373,6 +373,11 @@ Mô phỏng 1.000 sinh mệnh độc lập (tuổi thọ trung bình 52.0 tuổi
 
 ## 10. Nhật ký phát triển chi tiết (Changelog từ Đợt 1 đến Đợt 23)
 
+### Đợt 37 (24/10/2026): Viết lại giọng văn các event mở đầu
+* Rà văn bản toàn bộ pool (hơn 1400 event). Thân event trung vị 48 từ, chỉ 14 event dài quá 70 từ; mật độ cụm văn mẫu trung bình 1,27 trên 1000 từ, cao nhất ở `eventsBackgroundOpening.js` (2,63), `eventsFactions.js` (1,97), `eventsDistortionPath.js`, `eventsNpcAndWorldExpansion.js`, `eventsFixerPath.js`. Hai file tuổi thơ đã thấp sau đợt này.
+* Viết lại VI và EN cùng nhịp (cơ chế, chỉ số, cờ giữ nguyên): 26 event trong `eventsChildhood.js` (hai event đã gọn được giữ), cả 12 event của `eventsBackgroundOpening.js`, 11 trên 14 event của `eventsDistortionPath.js` (sửa luôn chỗ bản EN ghi Claw và Beholder thuộc A Corp, nay là C Corp và B Corp như bản VI), và 7 bài khảo thí Grade 8 đến Grade 2 trong `eventsFixerPath.js`. Bỏ cụm vá tính từ, sửa chỗ VI và EN kể khác nhau, mỗi kết quả khép bằng một hậu quả nhỏ.
+* Còn lại: phần còn lại của `eventsFixerPath.js`, `eventsFactions.js`, `eventsNpcAndWorldExpansion.js`, các file Finger, dungeon, đỉnh bậc. Các event ch2 trong `eventsChildhood2.js` đã gọn nên chưa sửa.
+
 ### Đợt 36 (24/10/2026): Đỉnh Color và đỉnh Finger, tuổi thọ dài, kết thúc theo tình huống
 * **Chỗ trống:** sau khi lên Color hoặc rank cao nhất của một Finger, người chơi chỉ còn vài quest chung của người đang leo. Đợt này thêm một bộ việc riêng cho đỉnh bậc: mỗi năm một việc tăng danh vọng hoặc một trận ngang tầm (đấu giữa hai cái tên, săn Urban Nightmare, dẹp tổ dưới cống, hộ tống, phán xử, biểu diễn trước lớp trẻ). Các việc dành cho người đang leo không còn xuất hiện với Color và với Finger rank cao.
 * **Chống lặp** (`src/data/apexCommissions.js`, `src/data/eventsApexPath.js`): mỗi việc ghép từ ba phần viết riêng là cảnh mở đầu, loại việc (đấu, săn, hộ tống, đột kích, phán xử, biểu diễn) và tình tiết phụ trong ngày. Màu Color có hơn chín mươi việc khác nhau, mỗi Finger có năm mươi sáu. Mô phỏng 55 năm ở đỉnh: không việc nào lặp. Tổng pool event lên hơn một nghìn bốn trăm (khoảng tám trăm hai mươi minor và năm trăm tám mươi major).
