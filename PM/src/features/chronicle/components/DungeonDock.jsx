@@ -108,6 +108,38 @@ const StrainMeter = ({ strain, t }) => {
   );
 };
 
+// What a card is about, read from the effects it carries: the first match names its type and picks its emblem
+const CARD_FACES = {
+  scan: { vi: 'Dò xét', en: 'Scout', path: 'M12 5C6.5 5 3 12 3 12s3.5 7 9 7 9-7 9-7-3.5-7-9-7zm0 3a4 4 0 110 8 4 4 0 010-8zm0 2a2 2 0 100 4 2 2 0 000-4z' },
+  heal: { vi: 'Hồi phục', en: 'Mend', path: 'M9 3h6v6h6v6h-6v6H9v-6H3V9h6z' },
+  strike: { vi: 'Phản công', en: 'Counter', path: 'M20 3l1 1-9 9 2 2-2 2-2-2-4 4-2-2 4-4-2-2 2-2 2 2z' },
+  evade: { vi: 'Né', en: 'Evade', path: 'M3 6h10l-3 3h9l-4 3h6l-5 3H9l3-3H4l3-3H3z' },
+  guard: { vi: 'Thủ', en: 'Guard', path: 'M12 3l8 3v6c0 4.5-3.4 7.7-8 9-4.6-1.3-8-4.5-8-9V6z' },
+  check: { vi: 'Dò đường', en: 'Read', path: 'M12 2l3 7 7 3-7 3-3 7-3-7-7-3 7-3z' },
+  loot: { vi: 'Thu hoạch', en: 'Haul', path: 'M12 3c4.5 0 8 1.5 8 3.5S16.5 10 12 10 4 8.5 4 6.5 7.5 3 12 3zM4 9c1.7 1.5 4.5 2.5 8 2.5S18.3 10.5 20 9v4c0 2-3.5 3.5-8 3.5S4 15 4 13zm0 7c1.7 1.5 4.5 2.5 8 2.5s6.3-1 8-2.5v2c0 2-3.5 3.5-8 3.5S4 20 4 18z' }
+};
+const cardFace = (card) => {
+  let kind = 'guard';
+  if (card.scan) kind = 'scan';
+  else if ((card.now?.health || 0) > 0) kind = 'heal';
+  else if (card.breaks) kind = 'strike';
+  else if (card.evade) kind = 'evade';
+  else if (card.damage != null && card.damage < 1) kind = 'guard';
+  else if (card.check) kind = 'check';
+  else if (card.loot || card.reward) kind = 'loot';
+  return { kind, ...CARD_FACES[kind] };
+};
+// The foot of the card shows only what is paid or gained the moment it is played
+const cardPrice = (card, t) => {
+  const n = card.now || {};
+  const out = [];
+  if (n.health) out.push({ key: 'hp', label: `${n.health > 0 ? '+' : '-'}${Math.abs(n.health)} HP`, good: n.health > 0 });
+  if (n.sanity) out.push({ key: 'sp', label: `${n.sanity > 0 ? '+' : '-'}${Math.abs(n.sanity)} SP`, good: n.sanity > 0 });
+  if (n.resonance) out.push({ key: 'rs', label: `+${n.resonance} Resonance`, good: true });
+  if (n.strain) out.push({ key: 'st', label: `+${n.strain} ${t('áp lực', 'strain')}`, good: false });
+  return out;
+};
+
 export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseSupply, onUseEgo, onPlayCard }) => {
   const { t, lang, bilingual } = useT();
   const def = session ? DUNGEON_DEFINITIONS[session.id] : null;
@@ -430,16 +462,27 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
               {session.cardHand.map((id, slot) => {
                 const card = DUNGEON_CARDS[id];
                 if (!card) return null;
+                const face = cardFace(card);
+                const price = cardPrice(card, t);
                 return (
                   <button
                     key={`${id}-${slot}`}
                     type="button"
-                    className="dg-card"
+                    className={`dg-card dg-card--${face.kind}`}
                     disabled={Boolean(session.cardActive) || cardBudgetLeft(session) <= 0 || !cardPlayable(id, char)}
                     onClick={() => onPlayCard?.(id)}
                   >
-                    <strong>{t(card.vi, card.en)}</strong>
-                    <small>{t(card.textVi, card.textEn)}</small>
+                    <span className="dg-card-kind">{t(face.vi, face.en)}</span>
+                    <svg className="dg-card-emblem" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                      <path d={face.path} />
+                    </svg>
+                    <strong className="dg-card-name">{t(card.vi, card.en)}</strong>
+                    <small className="dg-card-text">{t(card.textVi, card.textEn)}</small>
+                    {price.length > 0 && (
+                      <span className="dg-card-price">
+                        {price.map((p) => <i key={p.key} className={p.good ? 'is-gain' : 'is-cost'}>{p.label}</i>)}
+                      </span>
+                    )}
                   </button>
                 );
               })}
