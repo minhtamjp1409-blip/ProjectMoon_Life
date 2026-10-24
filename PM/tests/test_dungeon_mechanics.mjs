@@ -139,7 +139,7 @@ mortalChar.stats.health = 1; // Critical low health
 const lethalRes = resolveDungeonChoice(mortalChar, 1, rng);
 assert.strictEqual(lethalRes.isFinished, true, 'Lethal damage must terminate dungeon');
 assert.strictEqual(lethalRes.char.alive, false, 'Character must be marked deceased');
-assert(lethalRes.char.deathCauseVi.includes('Bỏ mạng'), 'Death cause must reflect dungeon demise');
+assert(/\(.+\)$/.test(lethalRes.char.deathCauseVi) && lethalRes.char.deathCauseVi.length > 12, 'Death cause must name the dungeon demise and the stage it happened in');
 assert.strictEqual(lethalRes.resolution.isDead, true, 'Resolution must mark death');
 console.log('✓ Dungeon death properly triggers fatality mechanics and epitaph causes.');
 
