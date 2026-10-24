@@ -1,4 +1,4 @@
-import { APEX_MINORS } from './eventsApexPath.js';
+import { APEX_MINORS } from './apexPath.js';
 import { APEX_COLOR_GENERATED, APEX_FINGER_GENERATED } from './apexCommissions.js';
 
 // The general commissions are for careers still climbing. A Color or a top-rank Finger gets the apex set instead.

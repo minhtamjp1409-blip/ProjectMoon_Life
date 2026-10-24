@@ -42,7 +42,7 @@ import { EXPANSION_STORY_EVENTS } from '../data/eventsNpcAndWorldExpansion.js';
 import { DUNGEON_GATE_EVENTS } from '../data/eventsDungeonGates.js';
 import { DUNGEON_GATE_EVENTS_2 } from '../data/eventsDungeonGates2.js';
 import { EGO_COLOR_EVENTS } from '../data/eventsEgoColorPerks.js';
-import { APEX_COLOR_EVENTS } from '../data/eventsApexPath.js';
+import { APEX_COLOR_EVENTS } from '../data/apexPath.js';
 import { APEX_TWILIGHT_EVENTS } from '../data/eventsApexTwilight.js';
 import { LIFE_ENDINGS, lifeEndingOf } from '../data/lifeEndings.js';
 import { BRANCH_DEPTH_EVENTS } from '../data/eventsBranchDepth.js';

@@ -19,8 +19,30 @@ const chunkFor = (id) => {
   return undefined;
 };
 
+// Two chunks that import each other run in the wrong order in the browser ("Cannot access ... before
+// initialization") and the page stays blank, while Node tests pass. Fail the build instead of shipping that.
+const noChunkCycles = () => ({
+  name: 'no-chunk-cycles',
+  generateBundle(_, bundle) {
+    const graph = new Map(Object.values(bundle)
+      .filter((item) => item.type === 'chunk')
+      .map((chunk) => [chunk.fileName, chunk.imports.filter((name) => bundle[name]?.type === 'chunk')]));
+    const state = new Map();
+    const visit = (name, trail) => {
+      if (state.get(name) === 2) return;
+      if (state.get(name) === 1) {
+        this.error(`Chunk import cycle: ${[...trail.slice(trail.indexOf(name)), name].join(' -> ')}. Move the module that creates the edge into the chunk it belongs with (see chunkFor).`);
+      }
+      state.set(name, 1);
+      for (const next of graph.get(name) || []) visit(next, [...trail, name]);
+      state.set(name, 2);
+    };
+    for (const name of graph.keys()) visit(name, []);
+  }
+});
+
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  plugins: [react(), tailwindcss(), noChunkCycles()],
   build: {
     // The story chunks hold all event text and are cached separately, so the default 500 kB warning does not apply to them
     chunkSizeWarningLimit: 1200,
