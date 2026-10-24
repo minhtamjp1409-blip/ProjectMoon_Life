@@ -6,7 +6,8 @@ import { createDungeonSession, getDungeonCurrentStage, resolveDungeonChoice, eva
 
 for (let i = 0; i < 30; i++) {
   const char = createNewCharacter({ seed: `lead-${i}`, startAge: 25 });
-  char.job = ['Fixer', 'Syndicate', 'Wing Employee', 'Outcast'][i % 4];
+  char.job = ['Fixer', 'Syndicate', 'Wing Employee', 'Outcast', 'Distortion'][i % 5];
+  if (char.job === 'Distortion') char.flags.push('Distorted');
   planYear(char, createRNG(`${char.seed}:year`));
   const draft = char.pendingLead;
   assert.equal(draft?.offers.length, 3, `${char.job} has three offers`);
@@ -51,3 +52,14 @@ const withoutStake = evaluateDungeonChoiceOdds(guard, pushed, { ...pushed.pendin
 assert.ok(withStake.estHp <= withoutStake.estHp, 'pressing on cannot make incoming damage safer');
 
 console.log('Roguelike loop: seeded annual offers, single commitment, saved draft, scar tradeoffs and dungeon wager passed.');
+
+{
+  const stale = createNewCharacter({ seed: 'lead-stale', startAge: 25 });
+  planYear(stale, createRNG(`${stale.seed}:year`));
+  const old = cloneChar(stale);
+  old.age += 1;
+  assert.equal(chooseYearLead(old, 0).pendingLead, null, 'a draft left over from another year is dropped');
+  const dead = cloneChar(stale);
+  dead.pendingLead = { age: dead.age, offers: [{ id: 'no_such_event', tier: 'steady' }] };
+  assert.equal(chooseYearLead(dead, 0).pendingLead, null, 'a draft with no usable offer is dropped');
+}

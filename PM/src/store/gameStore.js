@@ -21,6 +21,7 @@ import { planYear, chooseYearLead, syncPlanWithBackend, runDueItems, resolveMino
 import { CODEX_RECORDS } from '../data/worldData.js';
 import { getItemById } from '../data/itemsData.js';
 import { cityArchiveAPI } from '../services/api/cityArchiveAPI.js';
+import { migrateRun, SAVE_VERSION } from '../engine/saveSchema.js';
 import { choiceIsAvailable } from '../engine/eventConditions.js';
 import { CLAW_DUNGEON_ID } from '../data/dungeonClaw.js';
 
@@ -91,8 +92,8 @@ function saveMeta(pastLives, globalCodex) {
 
 function loadSavedRun() {
   try {
-    const raw = JSON.parse(localStorage.getItem(RUN_KEY) || 'null');
-    if (!raw?.char?.seed || !raw.char.alive) return null;
+    const raw = migrateRun(JSON.parse(localStorage.getItem(RUN_KEY) || 'null'));
+    if (!raw) return null;
     return { char: cloneChar(raw.char), yearProgress: raw.yearProgress || 0, savedAt: raw.savedAt };
   } catch {
     return null;
@@ -368,7 +369,7 @@ export const useGameStore = create((set, get) => ({
         return;
       }
       const savedAt = new Date().toISOString();
-      const payload = { char, yearProgress, savedAt };
+      const payload = { version: SAVE_VERSION, char, yearProgress, savedAt };
       const requestId = ++saveRequestId;
       let savedLocally = false;
       try {
@@ -497,8 +498,9 @@ export const useGameStore = create((set, get) => ({
       let savedRunNext = state.savedRun;
       if (!savedRunNext) {
         const remote = await cityArchiveAPI.getRunState().catch(() => null);
-        if (remote?.char?.alive) {
-          savedRunNext = { char: cloneChar(remote.char), yearProgress: remote.yearProgress || 0, savedAt: remote.savedAt };
+        const upgraded = migrateRun(remote);
+        if (upgraded) {
+          savedRunNext = { char: cloneChar(upgraded.char), yearProgress: upgraded.yearProgress || 0, savedAt: upgraded.savedAt };
         }
       }
 
@@ -680,7 +682,7 @@ export const useGameStore = create((set, get) => ({
     if (!s.inRun || !c.alive) return;
     if (s.activeResolution) return;
     if (c.pendingLead) {
-      if (s.autoPlay && !(c.pendingBirthLogs || []).length) get().chooseYearLead(Math.floor(lifeRng() * c.pendingLead.offers.length));
+      if (s.autoPlay && s.speed > 0 && !(c.pendingBirthLogs || []).length) get().chooseYearLead(Math.floor(lifeRng() * c.pendingLead.offers.length));
       return;
     }
     if (c.pendingEvent || c.pendingContract || c.pendingDungeon || c.pendingModal) return;

@@ -225,7 +225,7 @@ function leadRisk(event) {
 }
 
 function offerYearLeads(char, rng) {
-  if (!char.alive || char.age < 15 || char.flags?.includes('Distorted')) {
+  if (!char.alive || char.age < 15) {
     char.pendingLead = null;
     return;
   }
@@ -244,10 +244,17 @@ function offerYearLeads(char, rng) {
 export function chooseYearLead(charState, index) {
   const char = cloneChar(charState);
   const draft = char.pendingLead;
-  if (!draft || draft.age !== char.age) return charState;
+  if (!draft) return charState;
+  // A draft from another year (old save) or with no offer left can never be answered, so drop it instead of stalling the run
+  if (draft.age !== char.age) { char.pendingLead = null; return char; }
   const offers = draft.offers || [];
+  const usable = (offer) => LIFE_MINORS.some((entry) => entry.id === offer?.id && matchesEventContext(entry, char) && entry.choices?.some((choice) => choiceIsAvailable(choice, char)));
   const chosen = offers[index];
-  if (!chosen || !LIFE_MINORS.some((entry) => entry.id === chosen.id && matchesEventContext(entry, char) && entry.choices?.some((choice) => choiceIsAvailable(choice, char)))) return charState;
+  if (!usable(chosen)) {
+    if (offers.some(usable)) return charState;
+    char.pendingLead = null;
+    return char;
+  }
   const event = LIFE_MINORS.find((entry) => entry.id === chosen.id);
   const t = 0.265;
   char.plan = [...(char.plan || []), { kind: 'minor', id: chosen.id, t, seasonIdx: 1, season: SEASONS[1], extra: true, lead: true }].sort((a, b) => a.t - b.t);

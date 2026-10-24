@@ -75,7 +75,8 @@ public sealed record CodexSyncRequest(List<string>? Keys = null);
 public sealed record RunStateDto(
     JsonElement Char,
     double YearProgress = 0,
-    string? SavedAt = null
+    string? SavedAt = null,
+    int Version = 0
 );
 
 public sealed record HallOfFameEntryDto(
