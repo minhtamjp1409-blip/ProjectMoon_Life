@@ -2,7 +2,14 @@
    --dg is the dungeon's own accent from its definition, so a new dungeon needs no CSS. */
 .dock.is-dungeon { --dg: #8fb3e6; border-top: 3px solid var(--dg); }
 .dg { gap: 18px; }
-.dg-head { display: flex; flex-direction: column; gap: 8px; padding-bottom: 14px; border-bottom: 1px solid var(--rule); }
+.dg-head {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 2px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--rule);
+}
 .dg-hazard { padding: 1px 7px; border: 1px solid var(--dg); border-radius: var(--radius-sm); color: var(--text); font-size: 12px; font-weight: 700; letter-spacing: .04em; }
 .dg-ambient { font-family: var(--serif); font-style: italic; font-size: 15px; line-height: 1.55; color: var(--muted); }
 .dg-judgment-warning { padding: 8px 12px; border-left: 2px solid var(--bad); color: var(--bad); font-size: 14px; line-height: 1.5; }

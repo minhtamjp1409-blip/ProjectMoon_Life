@@ -81,11 +81,12 @@
 .prologue-dock { display: flex; justify-content: flex-end; margin-top: 8px; }
 
 /* The decision: a card in the middle of the screen over a dimmed City. One card at a time; the page
-   under it can be uncovered with "See behind". The dungeon card is wider, because it holds a hand. */
+   under it can be uncovered with "See behind". The dungeon card is wider, because it holds a hand.
+   Desktop clearance: accounts for both .topbar (var(--top) ~ 56px) and .playbar (~ 64px) + margin. */
 .event-modal-backdrop {
   position: fixed; inset: 0; z-index: 45;
   display: grid; place-items: center;
-  padding: calc(var(--top) + 16px) 20px 24px;
+  padding: calc(var(--top) + 76px) 20px 24px;
   background: rgba(4, 4, 7, .58);
   backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
   animation: scrimIn .25s ease both;
@@ -93,7 +94,7 @@
 @keyframes scrimIn { from { opacity: 0; } }
 .event-modal-backdrop > .dock {
   width: min(640px, 100%);
-  max-height: min(84dvh, 860px);
+  max-height: min(calc(100dvh - var(--top) - 100px), 860px);
   overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable;
   background: rgba(13, 12, 16, .94);
   border: 1px solid var(--border); border-top: 3px solid var(--accent);
