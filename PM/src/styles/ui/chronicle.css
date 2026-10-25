@@ -120,7 +120,7 @@
 .dock-inner { display: flex; flex-direction: column; gap: 16px; }
 .dock-banner { display: flex; flex-direction: column; gap: 8px; }
 .dock-kicker-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-.dock-kicker { display: inline-flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 600; color: var(--muted); }
+.dock-kicker { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 8px; font-size: 13.5px; font-weight: 600; color: var(--muted); }
 .dock-kicker-icon { display: inline-grid; place-items: center; color: var(--accent); }
 .dock-kicker.is-causal .dock-kicker-icon { color: var(--rare); }
 .dock-kicker.is-outcome .dock-kicker-icon { color: var(--good); }
@@ -245,8 +245,8 @@
   .entry.k-good::before, .entry.k-bad::before { left: -13px; }
   .yearline { margin-top: 34px; }
   /* On a phone the card sits between the play bar and the bottom tabs, which stay above it; --bottom already holds the safe area */
-  .event-modal-backdrop { padding: calc(var(--top) + 66px) 10px calc(var(--bottom) + 8px); }
-  .event-modal-backdrop > .dock { max-height: calc(100dvh - var(--top) - 66px - var(--bottom) - 8px); border-radius: 14px; }
+  .event-modal-backdrop { padding: calc(var(--top) + 68px) 10px calc(var(--bottom) + 10px); }
+  .event-modal-backdrop > .dock { max-height: calc(100dvh - var(--top) - 68px - var(--bottom) - 10px); border-radius: 14px; }
   .event-peek-toggle { top: auto; right: 50%; transform: translateX(50%); bottom: calc(var(--bottom) + 12px); }
   .dock { padding: 18px 16px 22px; }
   .dock-title { font-size: 22px; }

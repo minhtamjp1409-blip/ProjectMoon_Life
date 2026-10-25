@@ -145,8 +145,25 @@
 .dg-card:active:not(:disabled) { transform: translateY(-2px) scale(.98); }
 
 @media (max-width: 860px) {
+  .dg-head {
+    gap: 6px;
+    padding-top: 4px;
+    padding-bottom: 12px;
+  }
+  .dg-hazard {
+    font-size: 11px;
+    padding: 1px 6px;
+  }
   .dg-status { grid-template-columns: 1fr; gap: 12px; }
   .dg-supply kbd, .dg-leave-btn kbd { display: none; }
   .dg-stance, .dg-supply { min-height: 44px; }
+  .dg-stance { font-size: 13px; gap: 4px; padding: 0 4px; }
+  .dg-leave-btn { min-height: 40px; }
   .dg-card { flex-basis: 144px; min-height: 210px; }
+  .dg-hand-cards { -webkit-overflow-scrolling: touch; }
+}
+
+@media (max-width: 480px) {
+  .dg-head .dock-title { font-size: 20px; }
+  .dg-card { flex-basis: 136px; min-height: 200px; padding: 10px; }
 }
