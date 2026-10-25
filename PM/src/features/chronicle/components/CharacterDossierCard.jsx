@@ -140,7 +140,7 @@ const Stat = ({ label, value, unit = '/100', color, flag, riseIsBad = false, too
   );
 };
 
-const TabooStat = ({ value, tooltip = null }) => {
+const TabooStat = ({ value, tooltip = null, flag = null }) => {
   const change = useChange(value);
   const good = change && change.d < 0;
   const flashClass = change ? (good ? 'is-flash-up' : 'is-flash-down') : '';
@@ -159,6 +159,7 @@ const TabooStat = ({ value, tooltip = null }) => {
         <span className="label stat-label">
           <i className="dot" style={{ background: 'var(--bad)' }} />
           <span>Taboo Gaze</span>
+          {flag && <span className="stat-flag">{flag}</span>}
           {tooltip && (
             <Tooltip title={tooltip} placement="top">
               <span
@@ -394,6 +395,7 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeT
           />
           <TabooStat
             value={char.taboo || 0}
+            flag={(char.taboo || 0) === 2 ? t('Lần tới: Claw', 'Next: the Claw') : null}
             tooltip={t(
               'Taboo Gaze: Mức độ vi phạm Điều Cấm Kỵ của The Head. Đạt 3/3, Claw của C Corp sẽ đến ngay. Không thể rút lui: gục ngã là chết; vượt qua sẽ mở kết thúc đặc biệt ở Outskirts.',
               'Taboo Gaze: Violations of the Head’s Taboos. At 3/3, a C Corp Claw arrives at once. There is no retreat: collapse means death; survival unlocks a special Outskirts ending.'

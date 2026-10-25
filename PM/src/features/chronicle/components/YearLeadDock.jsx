@@ -6,7 +6,8 @@ import { useT } from '../../../i18n';
 const TIER = {
   steady: ['Ít rủi ro', 'Lower risk'],
   uncertain: ['Khó đoán', 'Uncertain'],
-  danger: ['Nguy hiểm', 'Dangerous']
+  danger: ['Nguy hiểm', 'Dangerous'],
+  forbidden: ['Điều cấm kỵ', 'Forbidden']
 };
 
 const KEY = {
@@ -52,6 +53,12 @@ export function YearLeadList({ draft, char, onPick, disabled = false, autoFocus 
               {gain.length > 0 && <span className="is-gain">{t('Có thể được', 'May gain')}: {gain.map((k) => t(...KEY[k])).join(', ')}</span>}
               {cost.length > 0 && <span className="is-cost">{t('Có thể mất', 'May cost')}: {cost.map((k) => t(...KEY[k])).join(', ')}</span>}
             </span>
+            {offer.tier === 'forbidden' && (
+              <span className="year-lead-warning">
+                {t('Chuỗi ba hồi, mỗi hồi thêm 1 Taboo và luôn có đường dừng. Đủ 3 Taboo, Claw đến ngay và không có đường rút.',
+                  'Three chapters, each adds 1 Taboo and each lets you stop. At 3 Taboo the Claw arrives at once, with no retreat.')}
+              </span>
+            )}
           </button>
         );
       })}

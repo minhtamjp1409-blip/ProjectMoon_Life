@@ -28,6 +28,7 @@ import { useThemeStore } from './themeStore.js';
 import { choiceIsAvailable } from '../engine/eventConditions.js';
 import { CLAW_DUNGEON_ID } from '../data/dungeonClaw.js';
 import { applyAnnualPlan, ambitionsFor, defaultYearPoints } from '../engine/annualPlan.js';
+import { autoLeadIndex, tabooGainOf } from '../engine/forbiddenPath.js';
 
 const META_KEY = 'pm_city_chronicles_save_v3';
 const RUN_KEY = 'pm_city_chronicles_run_v1';
@@ -711,13 +712,13 @@ export const useGameStore = create((set, get) => ({
     if (s.activeResolution) return;
     if (c.pendingYearPlan) {
       if (s.autoPlay && s.speed > 0 && !(c.pendingBirthLogs || []).length) {
-        const leadIndex = c.pendingLead ? Math.floor(lifeRng() * c.pendingLead.offers.length) : null;
+        const leadIndex = c.pendingLead ? autoLeadIndex(c.pendingLead, lifeRng) : null;
         get().chooseAnnualPlan(c.lastYearPoints || defaultYearPoints(), c.ambition?.id || ambitionsFor(c)[0].id, leadIndex);
       }
       return;
     }
     if (c.pendingLead) {
-      if (s.autoPlay && s.speed > 0 && !(c.pendingBirthLogs || []).length) get().chooseYearLead(Math.floor(lifeRng() * c.pendingLead.offers.length));
+      if (s.autoPlay && s.speed > 0 && !(c.pendingBirthLogs || []).length) get().chooseYearLead(autoLeadIndex(c.pendingLead, lifeRng));
       return;
     }
     if (c.pendingEvent || c.pendingContract || c.pendingDungeon || c.pendingModal) return;
@@ -736,7 +737,8 @@ export const useGameStore = create((set, get) => ({
       const remaining = s.minorRemainingMs - dtMs;
       if (s.autoPlay && MINOR_WINDOW_MS - remaining >= AUTO_MINOR_MS) {
         const def = LIFE_MINORS.find((event) => event.id === c.pendingMinor.id);
-        const available = (def?.choices || []).map((choice, index) => choiceIsAvailable(choice, c) ? index : -1).filter((index) => index >= 0);
+        // The autopilot never raises Taboo; that is the player's call alone
+        const available = (def?.choices || []).map((choice, index) => choiceIsAvailable(choice, c) && !tabooGainOf(choice) ? index : -1).filter((index) => index >= 0);
         get().chooseMinor(available.length ? available[Math.floor(lifeRng() * available.length)] : -1);
         return;
       }

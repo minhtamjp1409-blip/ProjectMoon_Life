@@ -62,6 +62,8 @@ import { FINGER_MINORS, FINGER_DAILIES, FINGER_MISSIONS } from '../data/eventsFi
 import { LIFE_MINORS_KIDS } from '../data/lifeMinorsKids.js';
 import { LIFE_MINORS_CONTRACTS } from '../data/lifeMinorsContracts.js';
 import { THREAD_MINORS } from '../data/narrative/causalThreads.js';
+import { FORBIDDEN_MINORS, FORBIDDEN_LEAD_ID } from '../data/eventsForbidden.js';
+import { forbiddenLeadOpen, FORBIDDEN_OFFER_CHANCE } from './forbiddenPath.js';
 import { SCAR_CALLBACKS } from '../data/lifeScarCallbacks.js';
 import { LIFE_CAREER_OPPORTUNITIES } from '../data/lifeCareerOpportunities.js';
 import { ANNUAL_MERIT_OPPORTUNITIES } from '../data/annualMeritOpportunities.js';
@@ -73,7 +75,7 @@ import { cityArchiveAPI } from '../services/api/cityArchiveAPI.js';
 
 const FINGER_MISSION_CHANCE = 0.4;
 
-export const LIFE_MINORS = [...MINORS_FIRST, ...LIFE_MINORS_2, ...LIFE_MINORS_3, ...LIFE_MINORS_4, ...LIFE_MINORS_5, ...LIFE_MINORS_WING, ...LIFE_MINORS_SEEDS, ...WORKSHOP_VISIT_MINORS, ...FINGER_MINORS, ...LIFE_MINORS_KIDS, ...LIFE_MINORS_CONTRACTS, ...LIFE_MINORS_BONDS, ...THREAD_MINORS, ...SCAR_CALLBACKS, ...LIFE_CAREER_OPPORTUNITIES, ...ANNUAL_MERIT_OPPORTUNITIES, ...EXPANSION_LIFE_MINORS];
+export const LIFE_MINORS = [...MINORS_FIRST, ...LIFE_MINORS_2, ...LIFE_MINORS_3, ...LIFE_MINORS_4, ...LIFE_MINORS_5, ...LIFE_MINORS_WING, ...LIFE_MINORS_SEEDS, ...WORKSHOP_VISIT_MINORS, ...FINGER_MINORS, ...LIFE_MINORS_KIDS, ...LIFE_MINORS_CONTRACTS, ...LIFE_MINORS_BONDS, ...THREAD_MINORS, ...FORBIDDEN_MINORS, ...SCAR_CALLBACKS, ...LIFE_CAREER_OPPORTUNITIES, ...ANNUAL_MERIT_OPPORTUNITIES, ...EXPANSION_LIFE_MINORS];
 export const LIFE_DAILIES = [...DAILIES_FIRST, ...LIFE_DAILIES_3, ...EXPANDED_DAILIES, ...DAILIES_2, ...EXPANSION_LIFE_DAILIES, ...WORKSHOP_VISIT_DAILIES, ...FINGER_DAILIES];
 import {
   directorWeight,
@@ -212,7 +214,8 @@ function eligibleDailies(char) {
 
 function eligibleMinors(char) {
   return LIFE_MINORS.filter((m) => {
-    if (!matchesEventContext(m, char)) return false;
+    // A lead-only scene arrives only as one of the year's leads, never in the ordinary draw
+    if (m.leadOnly || !matchesEventContext(m, char)) return false;
     if (m.once && (char.seenEvents || []).includes(m.id)) return false;
     return true;
   });
@@ -242,6 +245,11 @@ function offerYearLeads(char, rng) {
     const pick = pickWeighted(matched.length ? matched : available, weightOf(char), rng);
     // The label is the event's real risk, not the slot it was drawn for, so a fallback pick is never sold as something it is not
     if (pick) selected.push({ id: pick.id, tier: leadRisk(pick) });
+  }
+  // A life strong enough is sometimes offered the forbidden path in place of the dangerous lead
+  if (selected.length === 3 && forbiddenLeadOpen(char) && rng() < FORBIDDEN_OFFER_CHANCE) {
+    selected[2] = { id: FORBIDDEN_LEAD_ID, tier: 'forbidden' };
+    char.forbiddenOfferAge = char.age;
   }
   char.pendingLead = selected.length === 3 ? { age: char.age, offers: selected } : null;
 }
@@ -730,7 +738,7 @@ export async function syncPlanWithBackend(charState, rng) {
             const alreadyPickedIds = hydrated.map((h) => h.id);
             let available = poolMinors.filter((m) => !alreadyPickedIds.includes(m.id));
             if (available.length === 0) {
-              const allAgeMinors = LIFE_MINORS.filter((m) => ageOk(m, charState.age, charState) && matchNeed(m.need, charState) && !(m.once && (charState.seenEvents || []).includes(m.id)));
+              const allAgeMinors = LIFE_MINORS.filter((m) => !m.leadOnly && ageOk(m, charState.age, charState) && matchNeed(m.need, charState) && !(m.once && (charState.seenEvents || []).includes(m.id)));
               available = allAgeMinors.filter((m) => !alreadyPickedIds.includes(m.id));
             }
             const pick = pickWeighted(available, weightOf(charState), rng) || available[0];

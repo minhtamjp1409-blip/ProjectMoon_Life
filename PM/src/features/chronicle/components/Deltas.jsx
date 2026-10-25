@@ -2,6 +2,7 @@ import React from 'react';
 import { useT } from '../../../i18n';
 import { weightedOutcomes } from '../../../engine/outcomeOdds.js';
 import { fixerPromotionSuccessChance, isFixerPromotionChoice } from '../../../engine/careerPipeline.js';
+import { bringsClaw } from '../../../engine/forbiddenPath.js';
 
 const LABELS = {
   health: ['HP', 'HP'],
@@ -186,7 +187,7 @@ export const ChoicePreview = ({ choice, npcs, char, kind = 'major' }) => {
   const bonds = Object.entries(choice.bond || {})
     .map(([role]) => ({ name: npcs?.[role]?.nameVi || npcs?.spouse?.nameVi }))
     .filter((b) => b.name);
-  if (!affected?.length && !bonds.length && !choice.later && !choice.scar && !choice.npcFate) return null;
+  if (!affected?.length && !bonds.length && !choice.later && !choice.scar && !choice.npcFate && !bringsClaw(choice, char)) return null;
 
   return (
     <span className="preview">
@@ -211,6 +212,7 @@ export const ChoicePreview = ({ choice, npcs, char, kind = 'major' }) => {
           {t('Quan hệ', 'Bond')} · {b.name}
         </span>
       ))}
+      {bringsClaw(choice, char) && <span className="delta is-down is-static">{t('Đủ 3 Taboo: Claw đến ngay, không có đường rút', 'Reaches 3 Taboo: the Claw arrives at once, no retreat')}</span>}
       {choice.later && <span className="delta is-rare is-static">{t('Sẽ có hậu quả', 'Has consequences')}</span>}
       {choice.scar && <span className="delta is-rare is-static">{t('Để lại dấu tích', 'Leaves a mark')}</span>}
     </span>

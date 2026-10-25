@@ -202,6 +202,9 @@
 .year-lead-meta span:first-child { font-variant-numeric: tabular-nums; }
 .year-lead.is-danger { border-left: 3px solid var(--bad); }
 .year-lead.is-danger .year-lead-meta span:last-child { color: var(--bad); }
+.year-lead.is-forbidden { border: 1px solid color-mix(in srgb, var(--bad) 55%, var(--border)); border-left: 3px solid var(--bad); background: color-mix(in srgb, var(--bad) 8%, var(--surface)); }
+.year-lead.is-forbidden .year-lead-meta span:last-child { color: var(--bad); }
+.year-lead-warning { font-size: 13px; line-height: 1.45; color: var(--text); padding-top: 6px; border-top: 1px solid var(--rule); }
 .year-lead strong { font-family: var(--serif); font-size: 18px; font-weight: 600; line-height: 1.3; }
 .year-lead-copy { color: var(--muted); font-size: 14.5px; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 .year-lead-outlook { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 13px; }
