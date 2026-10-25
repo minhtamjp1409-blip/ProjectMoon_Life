@@ -946,3 +946,8 @@ Chủ dự án yêu cầu làm lại toàn bộ giao diện lần nữa: bỏ t�
 * **Mobile:** thẻ popup giờ nằm giữa thanh điều khiển và thanh tab dưới (trước đó thanh tab đè lên đáy thẻ); nút "Xem phía sau" nằm trên thanh tab.
 * **Kiểm tra:** `npm test` (thêm `test_annual_plan`, `test_dungeon_entry_wager`, `test_narrative_arc_threads`, `test_run_state_integrity`), `vite build`, `dotnet build`, `player_isolation` (token, telemetry, RNG qua khởi động lại). `tools/qa/annual_plan_browser.mjs` bấm thẻ lịch năm có và không có manh mối ở 1440/768/390px, không tràn ngang và không lỗi console.
 * **Chưa đẩy lên:** `tools/sim/dungeon_policy.mjs`, `tests/test_dungeon_deckbuilding.mjs` và `docs/GAMEPLAY_BALANCE.md` thuộc lượt bộ bài phát triển trước đó, phần code bộ bài đã được gỡ khỏi bản này; test đó hiện không chạy được. Các file vẫn nằm ở máy.
+
+### Đợt 51 (25/10/2026): nền không còn giật khi sang mùa
+* **Nguyên nhân:** ở các thế giới đường phố (tuổi thơ, Backstreets, Fixer, Syndicate) thời tiết đổi theo mùa, và `WorldBackdrop` dùng thời tiết làm khóa của cả cảnh. Mỗi lần sang mùa, cả bầu trời, đường chân trời SVG và canvas bị dựng lại, hai cảnh chồng nhau 1,6 giây dưới lớp kính mờ, cảnh mới còn phóng to 3% rồi co lại.
+* **Sửa:** cảnh chỉ đổi khi đổi thế giới. Thời tiết có lớp riêng (`WeatherStack`): canvas mới hiện dần trên canvas cũ trong 1,2 giây rồi canvas cũ được gỡ; bầu trời và đường chân trời đứng yên. Bỏ hiệu ứng phóng to khi vào thế giới mới, chỉ còn chuyển mờ.
+* **Kiểm tra:** trong Chrome, đổi mùa ba lần ở thế giới Fixer: vẫn đúng một cảnh và cùng một phần tử, hai lớp thời tiết trong lúc chuyển; 326 khung hình, khung chậm nhất 17,7 ms, không khung nào quá 50 ms. `npm test`, `vite build` đạt.

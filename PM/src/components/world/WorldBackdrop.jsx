@@ -115,6 +115,21 @@ function Weather({ kind, color }) {
   return <canvas ref={ref} className="world-weather" aria-hidden="true" />;
 }
 
+// A change of weather (the seasons on the street worlds) fades one canvas into the next; the sky and skyline stay put
+function WeatherStack({ kind, color }) {
+  const [layers, setLayers] = useState([kind]);
+  useEffect(() => {
+    setLayers((prev) => (prev[prev.length - 1] === kind ? prev : [...prev.slice(-1), kind]));
+    const id = setTimeout(() => setLayers((prev) => prev.slice(-1)), 1300);
+    return () => clearTimeout(id);
+  }, [kind]);
+  return layers.map((k, i) => (
+    <div key={k} className={`world-weather-layer ${i < layers.length - 1 ? 'is-leaving' : ''}`}>
+      <Weather kind={k} color={color} />
+    </div>
+  ));
+}
+
 function Scene({ scene, session, leaving }) {
   return (
     <div className={`world-scene ${leaving ? 'is-leaving' : ''}`} data-world={scene.world}>
@@ -122,7 +137,7 @@ function Scene({ scene, session, leaving }) {
       <div className="world-glow" />
       <Silhouette world={scene.world} />
       {session && <DungeonBackdrop session={session} />}
-      <Weather kind={scene.weather} color={scene.accent} />
+      <WeatherStack kind={scene.weather} color={scene.accent} />
     </div>
   );
 }
@@ -147,8 +162,9 @@ export function WorldBackdrop({ scene, session }) {
     const id = setTimeout(() => setBurst(null), 2800);
     return () => clearTimeout(id);
   }, [scene.color, scene.ego]);
+  // Only a new world crossfades the whole scene; weather and accent update the scene already showing
   useEffect(() => {
-    setShown((prev) => (prev[prev.length - 1]?.world === scene.world && prev[prev.length - 1]?.weather === scene.weather ? [...prev.slice(0, -1), scene] : [...prev.slice(-1), scene]));
+    setShown((prev) => (prev[prev.length - 1]?.world === scene.world ? [...prev.slice(0, -1), scene] : [...prev.slice(-1), scene]));
     const id = setTimeout(() => setShown((prev) => prev.slice(-1)), 1700);
     return () => clearTimeout(id);
   }, [scene.world, scene.weather, scene.accent]);
@@ -163,7 +179,7 @@ export function WorldBackdrop({ scene, session }) {
       aria-hidden="true"
     >
       {shown.map((s, i) => (
-        <Scene key={`${s.world}-${s.weather}`} scene={s} session={s.world.startsWith('dungeon-') ? session : null} leaving={i < shown.length - 1} />
+        <Scene key={s.world} scene={s} session={s.world.startsWith('dungeon-') ? session : null} leaving={i < shown.length - 1} />
       ))}
       <div className="world-color" />
       <div className="world-ego" />
