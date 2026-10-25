@@ -94,6 +94,7 @@ import { freshness, varyEffects, traitsOf, PRINTED_NUMBERS } from './variance.js
 import { BALANCE, healAmount, calmAmount, agingLoss, effectiveAge, driftOf, hasEstablishedStanding, reputationGain } from './economyModel.js';
 import { activeScarCount, addScar, scarAnnualEffects } from './scarModel.js';
 import { ambitionComplete, ambitionWeight } from './annualPlan.js';
+import { ENSEMBLE_INVITE_ID, ENSEMBLE_LAST_CALL_ID, prepareEnsembleYear } from './ensemblePath.js';
 import { weightedOutcomes } from './outcomeOdds.js';
 
 export const MINOR_WINDOW_MS = 15000;
@@ -247,7 +248,8 @@ function offerYearLeads(char, rng) {
     if (pick) selected.push({ id: pick.id, tier: leadRisk(pick) });
   }
   // A life strong enough is sometimes offered the forbidden path in place of the dangerous lead
-  if (selected.length === 3 && forbiddenLeadOpen(char) && rng() < FORBIDDEN_OFFER_CHANCE) {
+  const hasEnsemble = (char.plan || []).some((item) => item.forcedEventId === ENSEMBLE_INVITE_ID || item.forcedEventId === ENSEMBLE_LAST_CALL_ID);
+  if (selected.length === 3 && !hasEnsemble && forbiddenLeadOpen(char) && rng() < FORBIDDEN_OFFER_CHANCE) {
     selected[2] = { id: FORBIDDEN_LEAD_ID, tier: 'forbidden' };
     char.forbiddenOfferAge = char.age;
   }
@@ -375,6 +377,8 @@ export function planYear(charState, rng) {
 
   // 1. Collect Key / Causal items (Consequences scheduled by earlier choices come first)
   const scheduledKey = [];
+  const ensembleDue = prepareEnsembleYear(char);
+  if (ensembleDue) scheduledKey.push({ kind: 'major', forcedEventId: ensembleDue });
   const pending = char.weaver?.pendingThreads || [];
   for (const th of pending) {
     if (th.fulfilled || char.age < th.triggerAge) continue;
@@ -828,6 +832,13 @@ export async function syncPlanWithBackend(charState, rng) {
           if (at >= 0) hydrated[at] = { ...localCross, t: hydrated[at].t, season: hydrated[at].season, seasonIdx: hydrated[at].seasonIdx };
           else hydrated.push(localCross);
         }
+      }
+
+      const localEnsemble = localPlan.find((item) => item.forcedEventId === ENSEMBLE_INVITE_ID || item.forcedEventId === ENSEMBLE_LAST_CALL_ID);
+      if (localEnsemble && !hydrated.some((item) => item.forcedEventId === localEnsemble.forcedEventId)) {
+        const replaceAt = hydrated.findIndex((item) => item.kind === 'major' && !item.forcedEventId);
+        if (replaceAt >= 0) hydrated[replaceAt] = { ...localEnsemble, t: hydrated[replaceAt].t, season: hydrated[replaceAt].season, seasonIdx: hydrated[replaceAt].seasonIdx };
+        else hydrated.push(localEnsemble);
       }
 
       // The server only knows daily/minor/major/contract. The mishap and medical-care

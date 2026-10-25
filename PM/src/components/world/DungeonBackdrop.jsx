@@ -329,7 +329,25 @@ function Judgment() {
   );
 }
 
-const SCENES = { warp: WarpCar, lobotomy: Facility, bloodfiend: Carnival, outskirts: Ruins, greatlake: Abyss, night: Alley, claw: Judgment };
+function EnsembleTheatre() {
+  return (
+    <Stage name="ensemble">
+      <rect className="ensemble-wall" width="1440" height="900" />
+      <path className="ensemble-proscenium" d="M245 0V625H1195V0M330 0V550H1110V0" />
+      <path className="ensemble-curtain is-left" d="M0 0H305L350 610 0 790Z" />
+      <path className="ensemble-curtain is-right" d="M1440 0H1135L1090 610 1440 790Z" />
+      <path className="ensemble-stage" d="M300 550H1140L1440 900H0Z" />
+      <ellipse className="ensemble-light" cx="720" cy="580" rx="335" ry="98" />
+      {Array.from({ length: 8 }, (_, i) => <line key={i} className="ensemble-string" x1={350 + i * 105} y1="0" x2={240 + i * 137} y2="620" style={{ animationDelay: `${-i * 0.38}s` }} />)}
+      <g className="ensemble-conductor"><circle cx="720" cy="443" r="25" /><path d="M695 474 670 590H770L745 474Z" /><path d="m724 490 125-92" /></g>
+      {Array.from({ length: 9 }, (_, i) => <g key={i} className="ensemble-seat" style={{ animationDelay: `${-i * 0.42}s` }}><path d={`M${90 + i * 150} 735h94l14 120h-122z`} /><path d={`M${109 + i * 150} 856v44m70-44v44`} /></g>)}
+      {Array.from({ length: 7 }, (_, i) => <g key={i} className="ensemble-witness" style={{ transitionDelay: `${i * 0.25}s` }}><circle cx={287 + i * 150} cy="720" r="23" /><path d={`M${263 + i * 150} 749h48l22 106h-92z`} /></g>)}
+      <path className="ensemble-exit" d="M1060 430h62v120h-62z" />
+    </Stage>
+  );
+}
+
+const SCENES = { warp: WarpCar, lobotomy: Facility, bloodfiend: Carnival, outskirts: Ruins, greatlake: Abyss, night: Alley, claw: Judgment, ensemble: EnsembleTheatre };
 
 export const DungeonBackdrop = ({ session }) => {
   if (!session) return null;

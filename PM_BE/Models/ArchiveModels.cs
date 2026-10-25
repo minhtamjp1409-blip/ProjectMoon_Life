@@ -30,7 +30,8 @@ public sealed record BloodlineMemorialDto(
     bool HasVendetta = false,
     DateTime? CreatedAtUtc = null,
     string AmbitionId = "",
-    bool AmbitionAchieved = false
+    bool AmbitionAchieved = false,
+    bool EnsembleScore = false
 );
 
 public sealed record CustomChoiceDto(

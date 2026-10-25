@@ -67,7 +67,8 @@ const AMBIENT = {
   bloodfiend: ['Nhạc kèn lạc điệu đúng một nốt. Đu quay vẫn quay.', 'The organ music is off by exactly one note. The wheel keeps turning.'],
   outskirts: ['Cát chảy xuống theo từng bước. Gió mang mùi kim loại cũ.', 'Sand runs down with every step. The wind smells of old metal.'],
   night: ['Mọi cánh cửa đã khóa. Đồng hồ đầu hẻm vẫn chưa tới 4 giờ 34.', 'Every door is locked. The clock at the head of the alley has not reached 4:34.'],
-  claw: ['Không có lối rút. Gục ngã hoặc thất bại ở chặng cuối đồng nghĩa với cái chết.', 'There is no retreat. Breaking down or failing the final stage means death.']
+  claw: ['Không có lối rút. Gục ngã hoặc thất bại ở chặng cuối đồng nghĩa với cái chết.', 'There is no retreat. Breaking down or failing the final stage means death.'],
+  ensemble: ['Không có nhạc. Những sợi dây và ghế gỗ báo trước nhịp. Cửa ra chỉ mở ở hồi đầu, trừ khi lời mời cuối đã ép bạn vào.', 'There is no music. Strings and wooden chairs telegraph the beat. The exit opens only in the first act, unless the final invitation forced you in.']
 };
 
 const STAT_ICON = { health: '♥', sanity: '✦', wealth: '◆', merit: '◈', resonance: '◎', rep: '★' };
@@ -188,8 +189,11 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
             </p>
           </div>
           <h3 className="dock-title">{pick(def.titleVi, def.titleEn)}</h3>
-          <p className="dg-ambient">{t(ambient[0], ambient[1])}</p>
+          {!session.ensembleCoda && <p className="dg-ambient">{t(ambient[0], ambient[1])}</p>}
           {def.noRetreat && <p className="dg-judgment-warning">{t('Không có lối rút. HP hoặc SP cạn sẽ chết. Trượt kiểm định cuối cũng chết.', 'No retreat. Reaching zero HP or SP kills you. Failing the final check also kills you.')}</p>}
+          {def.theme === 'ensemble' && <p className="dg-judgment-warning">{session.ensembleCoda
+            ? t('Theo Carmen: thành Distortion. Chống lại: mất 8 HP nếu thành công; trượt hoặc HP cạn sẽ chết.', 'Follow Carmen: become a Distortion. Resist: lose 8 HP on success; a failed check or zero HP means death.')
+            : t(`HP cạn hoặc trượt hồi cuối: chết. SP cạn, áp lực đầy hoặc 3 Hòa âm: đối diện Carmen.${session.ensembleForced ? ' Lần mời cuối: không được rời đi.' : ' Chỉ được rời ở hồi đầu.'}`, `Zero HP or a failed finale means death. Zero SP, full strain or 3 Harmony: face Carmen.${session.ensembleForced ? ' Final invitation: no retreat.' : ' You may leave only in the opening act.'}`)}</p>}
           {route ? (
             <ol className="dg-route is-gauntlet" aria-label={t('Các tầng', 'Floors')}>
               {route.map((floor, idx) => (
@@ -223,10 +227,14 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
 
         <section className="dg-status" aria-label={t('Trạng thái chuyến đi', 'Run status')}>
           <StrainMeter strain={strain} t={t} />
-          {def.noRewards ? (
+          {def.theme === 'ensemble' && <div className="dg-harmony" role="meter" aria-label={t('Hòa âm', 'Harmony')} aria-valuemin={0} aria-valuemax={3} aria-valuenow={session.ensembleHarmony || 0}>
+            <span>{t('Hòa âm', 'Harmony')} <b>{session.ensembleHarmony || 0}/3</b></span>
+            <span className="dg-harmony-marks" aria-hidden="true">{[0, 1, 2].map((mark) => <i key={mark} className={mark < (session.ensembleHarmony || 0) ? 'is-filled' : ''} />)}</span>
+          </div>}
+          {def.noRewards ? !session.ensembleCoda && (
             <div className="dg-haul dg-judgment-note">
               <span className="dg-label">{t('Điều kiện sống sót', 'Survival condition')}</span>
-              <span className="dg-haul-val">{t('Qua bốn chặng · Không được rút lui', 'Clear four stages · No retreat')}</span>
+              <span className="dg-haul-val">{def.theme === 'ensemble' ? t('Giữ một nhịp của riêng mình', 'Keep a beat of your own') : t('Qua bốn chặng · Không được rút lui', 'Clear four stages · No retreat')}</span>
             </div>
           ) : (
             <div className="dg-haul">
@@ -332,8 +340,13 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
                       )}
                       {ch.costAhn && <span className={`dg-need ${(char.stats?.wealth ?? 0) >= ch.costAhn ? 'is-met' : 'is-unmet'}`}>{ch.costAhn} Ahn</span>}
                       {ch.isFlee && (
-                        <span className="dg-need is-met"><LogOut size={12} aria-hidden="true" />{t('Rút lui, giữ hàng đã gom', 'Leave with what you hold')}</span>
+                        <span className="dg-need is-met"><LogOut size={12} aria-hidden="true" />{def.theme === 'ensemble' ? t('Rời nhà hát · mất danh tiếng', 'Leave the theatre · lose reputation') : t('Rút lui, giữ hàng đã gom', 'Leave with what you hold')}</span>
                       )}
+                      {ch.ensembleHarmony > 0 && <span className="dg-need is-unmet">{t(`+${ch.ensembleHarmony} Hòa âm · 3 dấu mở tiếng gọi`, `+${ch.ensembleHarmony} Harmony · 3 marks summon the voice`)}</span>}
+                      {ch.ensembleHarmony > 0 && ch.strainDelta < 0 && <span className="dg-need is-met">{t('Giảm áp lực', 'Less strain')}</span>}
+                      {ch.ensembleAccept && <span className="dg-need is-unmet">{t('Trở thành Distortion · mất con đường hiện tại', 'Become a Distortion · lose your current path')}</span>}
+                      {ch.ensembleResist && <span className="dg-need is-unmet">{t('Trượt kiểm định: chết', 'Failed check: death')}</span>}
+                      {def.theme === 'ensemble' && currentIdx === stages.length - 1 && ch.checkTrait && !session.ensembleCoda && <span className="dg-need is-unmet">{t('Trượt hồi cuối: chết', 'Failed finale: death')}</span>}
                       {ch.restAction === 'push' && <span className="dg-need is-unmet">{t(`Trận sau: loot +35%, đòn đau hơn ${(session.delveStake || 0) >= 1 ? 20 : 15}%`, `Later fights: loot +35%, hits ${(session.delveStake || 0) >= 1 ? 20 : 15}% harder`)}</span>}
                       {def.fatalOnFinalFailure && currentIdx === stages.length - 1 && (
                         <span className="dg-need is-unmet">{t('Trượt kiểm định: chết', 'Failed check: death')}</span>
@@ -364,7 +377,7 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
               }}
             >
               <LogOut size={14} aria-hidden="true" />
-              <span>{t(`Rút lui và giữ ${session.accumulatedLootAhn || 0} Ahn đã gom`, `Leave and keep the ${session.accumulatedLootAhn || 0} Ahn you hold`)}</span>
+              <span>{def.theme === 'ensemble' ? t('Rời nhà hát · mất danh tiếng', 'Leave the theatre · lose reputation') : t(`Rút lui và giữ ${session.accumulatedLootAhn || 0} Ahn đã gom`, `Leave and keep the ${session.accumulatedLootAhn || 0} Ahn you hold`)}</span>
               <kbd>F</kbd>
             </button>
           </div>
@@ -424,7 +437,7 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
                 audioEngine.playPrescriptTick();
                 onUseSupply?.('scan');
               }}
-              title={def.noRewards ? t('Đọc nhịp ra đòn của Claw: tăng cơ hội kiểm định và giảm sát thương trong chặng này.', 'Read the Claw’s attack rhythm: better odds and less damage this stage.') : t('Dò đường: đọc quy luật của chặng này. Dễ qua kiểm định hơn, nhận ít thương tổn hơn, tìm thêm được chút hàng.', 'Read the stage: better check odds, less damage, a little extra haul.')}
+              title={def.noRewards ? t('Đọc nhịp của đối thủ: tăng cơ hội kiểm định và giảm sát thương trong chặng này.', 'Read the opponent’s rhythm: better odds and less damage this stage.') : t('Dò đường: đọc quy luật của chặng này. Dễ qua kiểm định hơn, nhận ít thương tổn hơn, tìm thêm được chút hàng.', 'Read the stage: better check odds, less damage, a little extra haul.')}
             >
               <Radar size={14} aria-hidden="true" />
               <span>{scan.reason === 'scanned' ? t('Đã dò', 'Read') : t('Dò đường', 'Read stage')}</span>
@@ -494,7 +507,7 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
             </div>
           )}
           <p className="dg-tools-note">
-            {def.noRetreat
+            {def.noRewards
               ? activeStance.id === 'guarded'
                 ? t('Thận trọng: ít thương tổn, không cộng tỉ lệ kiểm định.', 'Guarded: less damage, no check bonus.')
                 : activeStance.id === 'balanced'

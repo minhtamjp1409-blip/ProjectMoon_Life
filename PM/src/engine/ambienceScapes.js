@@ -144,7 +144,8 @@ const LAYERS = {
   heartbeat: (c, d) => ({ events: [{ every: [1.05, 1.15], fire: (t) => { thud(c, d, t, { from: 70, to: 40, peak: 0.35, decay: 0.16 }); thud(c, d, t + 0.24, { from: 60, to: 35, peak: 0.22, decay: 0.14 }); } }] }),
   glitch: (c, d, n) => ({ events: [{ every: [0.4, 2.5], fire: (t) => burst(c, d, n.white, t, { type: 'highpass', freq: rand(800, 6000), q: 1, peak: rand(0.03, 0.1), decay: rand(0.01, 0.06), pan: rand(-1, 1) }) }] }),
   lightSwell: (c, d, n) => ({ sources: bed(c, d, n.pink, { type: 'highpass', freq: 3500, gain: 0.04, lfo: 0.15, lfoDepth: 0.03 }) }),
-  hush: (c, d, n) => ({ sources: bed(c, d, n.pink, { type: 'lowpass', freq: 600, gain: 0.07 }) })
+  hush: (c, d, n) => ({ sources: bed(c, d, n.pink, { type: 'lowpass', freq: 600, gain: 0.07 }) }),
+  theatre: (c, d, n) => ({ sources: bed(c, d, n.brown, { type: 'lowpass', freq: 180, gain: 0.05 }), events: [{ every: [4, 9], fire: (t) => burst(c, d, n.pink, t, { type: 'bandpass', freq: rand(500, 1300), q: 5, peak: 0.035, attack: 0.02, decay: 0.5, pan: rand(-0.8, 0.8) }) }] })
 };
 
 // A distant siren is a slow pitch sweep in the distance: a city sound, not a note
@@ -213,6 +214,7 @@ export const SCAPES = {
   'dungeon-greatlake': ['waves', 'gale'],
   'dungeon-night': ['wind', 'clock', 'drizzle'],
   'dungeon-claw': ['hvac', 'deep'],
+  'dungeon-ensemble': ['theatre'],
   'dungeon-outskirts': ['gale', 'sand']
 };
 

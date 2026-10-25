@@ -2,6 +2,7 @@ import { cityEventMultiplier } from './cityConditions.js';
 import { careerAgeOf, reachedCareerAge } from './careerAge.js';
 import { rememberResonance, hasEgoOpportunity, colorTrialAvailable, rollEgoEncounter } from './awakeningProgress.js';
 import { evaluateNarrativeArcProgression, computeEmotionalWaveConsideration } from './narrativeArcEngine.js';
+import { ENSEMBLE_INVITE_ID, ENSEMBLE_LAST_CALL_ID, ensembleEligible } from './ensemblePath.js';
 import { matchesEventContext } from './eventConditions.js';
 import { evaluateEventConsiderations } from './utilityCurves.js';
 import { createCityBlackboard } from './cityBlackboard.js';
@@ -329,6 +330,7 @@ export function isEventEligible(event, char, { scripted = false } = {}) {
   if (event.id === 'ego_carmen_crossroad' &&
       (char.egoEncounterRollAge !== char.age || char.egoEncounterOffered !== true)) return false;
   if (event.id === 'fixer_seven_unclaimed_dossier' && !scripted) return false;
+  if (event.id === ENSEMBLE_INVITE_ID || event.id === ENSEMBLE_LAST_CALL_ID) return scripted && ensembleEligible(char);
   if (RETIRED_WORKSHOP_TRIAL_IDS.has(event.id)) return false;
   const otherTrial = careerTrialForEvent(event.id);
   const contextEvent = otherTrial && event.age ? { ...event, age: [event.age[0], 140] } : event;

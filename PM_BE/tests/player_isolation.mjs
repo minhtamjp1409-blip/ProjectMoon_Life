@@ -83,7 +83,10 @@ try {
   const sample = { runKey: 'run-a', age: 34, minutes: 12, firstDungeonOutcome: 'dead' };
   assert.equal((await request('/telemetry/gameplay', tokenA, { method: 'POST', body: JSON.stringify(sample) })).status, 204);
   assert.equal((await request('/telemetry/gameplay', tokenA, { method: 'POST', body: JSON.stringify(sample) })).status, 204);
-  assert.equal((await request('/telemetry/gameplay', tokenB, { method: 'POST', body: JSON.stringify({ ...sample, runKey: 'run-b', firstDungeonOutcome: 'none' }) })).status, 204);
+  assert.equal((await request('/telemetry/gameplay', tokenB, { method: 'POST', body: JSON.stringify({ ...sample, runKey: 'run-b', firstDungeonOutcome: 'distorted' }) })).status, 204);
+  assert.equal((await request('/archive/memorial', tokenA, {
+    method: 'POST', body: JSON.stringify({ seed: 'ensemble-survivor', name: 'Ensemble survivor', age: 70, relic: 'The Unfinished Score', ensembleScore: true })
+  })).status, 200);
 
   assert.equal((await request('/archive/codex', tokenA, {
     method: 'POST', body: JSON.stringify({ keys: ['player_a_only'] })
@@ -103,6 +106,8 @@ try {
   assert.equal(savedA.char.seed, 'player-a');
   assert.deepEqual(savedA.rngState, [0, 4294967295, 123456789, 77]);
   assert.equal(savedA.activePlayMs, 61000);
+  const persistedArchive = await (await request('/archive', tokenA)).json();
+  assert.equal(persistedArchive.pastLives.find((life) => life.seed === 'ensemble-survivor')?.ensembleScore, true, 'the inheritable Ensemble relic survives backend restart');
   const playerKey = createHash('sha256').update(tokenA).digest('hex');
   const playerBKey = createHash('sha256').update(tokenB).digest('hex');
   const metricsA = JSON.parse(await readFile(join(dataRoot, 'Data', 'players', playerKey, 'gameplay_metrics.json'), 'utf8'));
@@ -110,6 +115,7 @@ try {
   assert.equal(metricsA.lives, 1);
   assert.equal(metricsA.firstDungeonDeaths, 1);
   assert.equal(metricsB.firstDungeonDeaths, 0);
+  assert.equal(metricsB.firstDungeonOutcomes.distorted, 1);
   assert(!JSON.stringify(metricsA).includes('run-a'), 'the metrics file stores only a hash of the run key');
   assert.equal((await request('/state/main', tokenB)).status, 404);
 

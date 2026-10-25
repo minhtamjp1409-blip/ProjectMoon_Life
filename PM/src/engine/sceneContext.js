@@ -27,6 +27,7 @@ export const WORLDS = {
   'dungeon-greatlake': { accent: '#4fd6c8', ink: '#031613', glow: '#0a3238', weather: 'bubbles' },
   'dungeon-night': { accent: '#9d8cf2', ink: '#0d0820', glow: '#1c1440', weather: 'rain' },
   'dungeon-claw': { accent: '#7fe0ec', ink: '#031619', glow: '#0c2e34', weather: 'motes' },
+  'dungeon-ensemble': { accent: '#b8a1df', ink: '#120d1d', glow: '#342341', weather: 'dust' },
   'dungeon-outskirts': { accent: '#d9a463', ink: '#1a1006', glow: '#3a2410', weather: 'sand' }
 };
 
@@ -86,7 +87,7 @@ export function sceneContextOf({ inRun = false, path = '/', char = null } = {}) 
     }
     // Carmen's voice: a mind near its edge, or a scene that is about her
     const ev = char.pendingEvent;
-    carmen = char.alive && ((char.stats?.sanity ?? 100) <= 22 || Boolean(ev?.isDistortion || /carmen|distort/i.test(ev?.id || '')));
+    carmen = char.alive && ((char.stats?.sanity ?? 100) <= 22 || Boolean(session?.ensembleCoda) || Boolean(ev?.isDistortion || /carmen|distort/i.test(ev?.id || '')));
     if (char.alive) {
       if (session?.egoActive) ego = 'active';
       else if (char.flags?.includes('EGOAwakened') || char.egoName) ego = 'awakened';

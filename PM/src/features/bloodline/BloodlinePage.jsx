@@ -1,4 +1,5 @@
 import React from 'react';
+import { localizeEnsembleName } from '../../data/ensembleNames.js';
 import { Download, Play, Trash2 } from 'lucide-react';
 import { Modal } from 'antd';
 import { useNavigate } from 'react-router-dom';
@@ -102,7 +103,7 @@ export const BloodlinePage = () => {
                   </td>
                   <td className="num" data-label={t('Tuổi khi khép hồ sơ', 'Age at record end')}>{life.age} {t('tuổi', 'yrs')}</td>
                   <td style={{ maxWidth: 260 }} data-label={t('Kết cục', 'Fate')}>{lang === 'en' ? life.deathCauseEn || life.deathCauseVi : life.deathCauseVi}</td>
-                  <td className="muted" style={{ maxWidth: 200 }} data-label={t('Di vật', 'Relic')}>{life.relic}</td>
+                  <td className="muted" style={{ maxWidth: 200 }} data-label={t('Di vật', 'Relic')}>{t(life.relic, localizeEnsembleName(life.relic, 'en'))}</td>
                   <td className="bloodline-action-td">
                     <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end', flexWrap: 'wrap' }}>
                       {!life.endingId && <button type="button" className="btn btn-primary" style={{ height: 32 }} onClick={() => handleInherit(life)}>

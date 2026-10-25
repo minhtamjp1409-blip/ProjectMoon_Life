@@ -6,6 +6,11 @@
 .dg-hazard { padding: 1px 7px; border: 1px solid var(--dg); border-radius: var(--radius-sm); color: var(--text); font-size: 12px; font-weight: 700; letter-spacing: .04em; }
 .dg-ambient { font-family: var(--serif); font-style: italic; font-size: 15px; line-height: 1.55; color: var(--muted); }
 .dg-judgment-warning { padding: 8px 12px; border-left: 2px solid var(--bad); color: var(--bad); font-size: 14px; line-height: 1.5; }
+.dg-harmony { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 12px; border: 1px solid var(--dg); color: var(--text); font-size: 13px; }
+.dg-harmony-marks { display: inline-flex; gap: 5px; }
+.dg-harmony-marks i { width: 12px; height: 12px; border: 1px solid var(--dg); transform: rotate(45deg); }
+.dg-harmony-marks i.is-filled { background: var(--dg); }
+.ensemble-mark { display: inline-flex; margin-inline-start: 6px; color: var(--accent); vertical-align: middle; flex-shrink: 0; }
 
 /* The route: one segment per stage, the current one in the dungeon's colour */
 .dg-route { display: flex; gap: 4px; margin-top: 4px; }

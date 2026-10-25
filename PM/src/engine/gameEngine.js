@@ -52,6 +52,9 @@ import { FINGER_STORY_EVENTS } from '../data/eventsFingers.js';
 import { WING_STORY_EVENTS } from '../data/eventsWing.js';
 import { EGO_LEAP_EVENTS } from '../data/eventsEgoLeap.js';
 import { AFFILIATION_EVENTS } from '../data/eventsAffiliation.js';
+import { ENSEMBLE_EVENTS, ENSEMBLE_SCORE_ITEM } from '../data/dungeonEnsemble.js';
+import { localizeEnsembleName } from '../data/ensembleNames.js';
+import { ENSEMBLE_INVITE_ID, ENSEMBLE_LAST_CALL_ID, recordEnsembleInvitation } from './ensemblePath.js';
 import { egoEdge } from './egoEdge.js';
 import { laneContractSet, laneContractMods, noteAffiliationContract, applyAffiliationChoice, ensureAffiliation, getAffiliation } from './affiliation.js';
 import {
@@ -141,7 +144,8 @@ export const ALL_STORY_EVENTS = [
   ...FINGER_STORY_EVENTS,
   ...WING_STORY_EVENTS,
   ...EGO_LEAP_EVENTS,
-  ...AFFILIATION_EVENTS
+  ...AFFILIATION_EVENTS,
+  ...ENSEMBLE_EVENTS
 ];
 
 export const SEASONS = [
@@ -443,6 +447,7 @@ export function createNewCharacter({
     wealth = clamp(wealth + Math.round((parentLegacy.wealth || 0) * 0.22), 2, 75);
     rep = clamp(rep + Math.round((parentLegacy.rep || 0) * 0.15), 1, 50);
     network = clamp(network + Math.round((parentLegacy.network || 0) * 0.18), 1, 50);
+    if (parentLegacy.ensembleScore) resonance = clamp(resonance + 3, 0, 100);
 
     lineageInfo = {
       generation,
@@ -452,16 +457,20 @@ export function createNewCharacter({
       parentJob: parentLegacy.job,
       parentDeathVi: parentLegacy.deathCauseVi,
       parentDeathEn: parentLegacy.deathCauseEn,
-      relic: parentLegacy.relic || (parentLegacy.age < 16 ? `Kỷ vật của ${parentLegacy.name}` : `Di vật của ${parentLegacy.name}`),
+      relic: parentLegacy.ensembleScore ? 'Bản tổng phổ viết dở' : (parentLegacy.relic || (parentLegacy.age < 16 ? `Kỷ vật của ${parentLegacy.name}` : `Di vật của ${parentLegacy.name}`)),
       inheritedDebt: Boolean(parentLegacy.hasVendetta),
       successorRelation: parentLegacy.successorRelation || (parentLegacy.age < 14 ? 'sibling' : parentLegacy.age < 18 ? 'companion' : parentLegacy.hasChild ? 'child' : 'heir')
     };
 
     inheritedEchoes.push({
       labelVi: `Thừa kế từ ${parentLegacy.name}: ${parentLegacy.relic}`,
-      labelEn: `Inherited legacy of ${parentLegacy.name} (${parentLegacy.relic})`,
+      labelEn: `Inherited legacy of ${parentLegacy.name} (${localizeEnsembleName(parentLegacy.relic, 'en')})`,
       impactVi: `Thêm Ahn lúc đầu, và người cũ của ${parentLegacy.name} có thể tìm đến`,
       impactEn: `+Starting Ahn, unlocks Heirloom & Old Comrade causal events`
+    });
+    if (parentLegacy.ensembleScore) inheritedEchoes.push({
+      labelVi: 'Bản tổng phổ viết dở', labelEn: 'The Unfinished Score',
+      impactVi: 'Thêm 3 Resonance khi bắt đầu đời mới', impactEn: 'Start the next life with 3 extra Resonance'
     });
 
     if (parentLegacy.hasVendetta) {
@@ -558,8 +567,8 @@ export function createNewCharacter({
         ? `Năm bạn ${actualAge} tuổi, đoàn xe dừng bên ngoài bức tường The City. Bạn mang theo 「${lineageInfo?.relic || 'kỷ vật cũ'}」 của ${parentLegacy?.name || 'người đi trước'} và tự chọn đường đi tiếp.`
         : `Năm bạn ${actualAge} tuổi, ${parentLegacy ? parentLegacy.name : 'người đi trước'} đã ngã xuống trong biến cố The City. Bạn tiếp nhận di vật 「${lineageInfo?.relic || 'Kỷ vật cũ'}」 và chính thức bắt đầu hành trình của riêng mình.`,
       en: region.id === 'OUTSKIRTS'
-        ? `At age ${actualAge}, the caravan stops beyond the City wall. You carry 「${lineageInfo?.relic || 'an old keepsake'}」 from ${parentLegacy?.name || 'the one before you'} and choose your next road.`
-        : `At age ${actualAge}, ${parentLegacy ? parentLegacy.name : 'your predecessor'} fell in the perils of The City. You take up 「${lineageInfo?.relic || 'Relic'}」 and begin your own path.`
+        ? `At age ${actualAge}, the caravan stops beyond the City wall. You carry 「${localizeEnsembleName(lineageInfo?.relic, 'en') || 'an old keepsake'}」 from ${parentLegacy?.name || 'the one before you'} and choose your next road.`
+        : `At age ${actualAge}, ${parentLegacy ? parentLegacy.name : 'your predecessor'} fell in the perils of The City. You take up 「${localizeEnsembleName(lineageInfo?.relic, 'en') || 'Relic'}」 and begin your own path.`
     });
   } else {
     initialLogs = birth.lines.map((line, i) => ({
@@ -581,17 +590,17 @@ export function createNewCharacter({
         });
       } else {
         let legacyVi = `Bạn là con của ${lineageInfo.parentName}. Thứ duy nhất người ấy để lại là 「${lineageInfo.relic}」${lineageInfo.inheritedDebt ? ', và một món nợ máu với Syndicate.' : '.'}`;
-        let legacyEn = `You are the child of ${lineageInfo.parentName}. All they left you was 「${lineageInfo.relic}」${lineageInfo.inheritedDebt ? ', and a blood debt to a Syndicate.' : '.'}`;
+        let legacyEn = `You are the child of ${lineageInfo.parentName}. All they left you was 「${localizeEnsembleName(lineageInfo.relic, 'en')}」${lineageInfo.inheritedDebt ? ', and a blood debt to a Syndicate.' : '.'}`;
 
         if (lineageInfo.successorRelation === 'sibling' || (lineageInfo.parentAge > 0 && lineageInfo.parentAge < 14)) {
           legacyVi = `${lineageInfo.parentName} mất năm ${lineageInfo.parentAge} tuổi khi chưa kịp lớn. Bạn là em ruột (hoặc đứa trẻ cùng xóm) nhặt lại 「${lineageInfo.relic}」${lineageInfo.inheritedDebt ? ', cùng món nợ máu dở dang với Syndicate.' : '.'}`;
-          legacyEn = `${lineageInfo.parentName} died young at age ${lineageInfo.parentAge}. You are a younger sibling (or local child) who found their 「${lineageInfo.relic}」${lineageInfo.inheritedDebt ? ', along with an unsettled Syndicate blood debt.' : '.'}`;
+          legacyEn = `${lineageInfo.parentName} died young at age ${lineageInfo.parentAge}. You are a younger sibling (or local child) who found their 「${localizeEnsembleName(lineageInfo.relic, 'en')}」${lineageInfo.inheritedDebt ? ', along with an unsettled Syndicate blood debt.' : '.'}`;
         } else if (lineageInfo.successorRelation === 'companion' || (lineageInfo.parentAge >= 14 && lineageInfo.parentAge < 18)) {
           legacyVi = `${lineageInfo.parentName} ngã xuống năm ${lineageInfo.parentAge} tuổi. Bạn là người tiếp bước mang theo 「${lineageInfo.relic}」${lineageInfo.inheritedDebt ? ', cùng món nợ máu dở dang với Syndicate.' : '.'}`;
-          legacyEn = `${lineageInfo.parentName} fell at age ${lineageInfo.parentAge}. You are the one who took up their 「${lineageInfo.relic}」${lineageInfo.inheritedDebt ? ', along with an unsettled Syndicate blood debt.' : '.'}`;
+          legacyEn = `${lineageInfo.parentName} fell at age ${lineageInfo.parentAge}. You are the one who took up their 「${localizeEnsembleName(lineageInfo.relic, 'en')}」${lineageInfo.inheritedDebt ? ', along with an unsettled Syndicate blood debt.' : '.'}`;
         } else if (lineageInfo.successorRelation === 'heir') {
           legacyVi = `${lineageInfo.parentName} qua đời năm ${lineageInfo.parentAge} tuổi mà không có con cái. Bạn là hậu bối tiếp nhận 「${lineageInfo.relic}」${lineageInfo.inheritedDebt ? ', và món nợ máu của người ấy.' : '.'}`;
-          legacyEn = `${lineageInfo.parentName} passed away at age ${lineageInfo.parentAge} without an heir. You are the successor taking up 「${lineageInfo.relic}」${lineageInfo.inheritedDebt ? ', and their Syndicate blood debt.' : '.'}`;
+          legacyEn = `${lineageInfo.parentName} passed away at age ${lineageInfo.parentAge} without an heir. You are the successor taking up 「${localizeEnsembleName(lineageInfo.relic, 'en')}」${lineageInfo.inheritedDebt ? ', and their Syndicate blood debt.' : '.'}`;
         }
 
         initialLogs.push({
@@ -661,6 +670,7 @@ export function createNewCharacter({
     customTitle: null,
     egoName: null,
     craftWeapon: null,
+    inventory: parentLegacy?.ensembleScore ? [{ ...ENSEMBLE_SCORE_ITEM }] : [],
     stats: {
       health: perinatal ? 0 : health,
       sanity: perinatal ? 0 : sanity,
@@ -2117,7 +2127,7 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random, dung
   // Micro-Dungeon Delve trigger
   if (startDungeonId && char.alive) {
     char.pendingDungeon = createDungeonSession(startDungeonId, char);
-    if (char.pendingDungeon && !DUNGEON_DEFINITIONS[startDungeonId]?.noRetreat) char.pendingDungeon.delveStake = dungeonWagerLevel(dungeonStake);
+    if (char.pendingDungeon && !DUNGEON_DEFINITIONS[startDungeonId]?.noRetreat && !DUNGEON_DEFINITIONS[startDungeonId]?.noWager) char.pendingDungeon.delveStake = dungeonWagerLevel(dungeonStake);
     if (choice.dungeonPrep === 'supplies') {
       char.pendingDungeon.maxSupplies += 1;
       char.pendingDungeon.supplyCharges += 1;
@@ -2125,9 +2135,15 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random, dung
     // A run taken for the Association moves standing when it ends
     if (char.pendingDungeon && (choice.dungeonAff || outcome.dungeonAff)) char.pendingDungeon.aff = getAffiliation(char)?.id || null;
   }
+  if (event.id === ENSEMBLE_INVITE_ID || event.id === ENSEMBLE_LAST_CALL_ID) recordEnsembleInvitation(char, Boolean(startDungeonId));
 
-  const textVi = interpolateText(outcome.resultVi || outcome.rvi || choice.resultVi || choice.rvi || '', char);
-  const textEn = interpolateText(outcome.resultEn || outcome.ren || choice.resultEn || choice.ren || '', char);
+  let textVi = interpolateText(outcome.resultVi || outcome.rvi || choice.resultVi || choice.rvi || '', char);
+  let textEn = interpolateText(outcome.resultEn || outcome.ren || choice.resultEn || choice.ren || '', char);
+  if (choice.ensembleDecline) {
+    const final = char.ensemble.declines >= 2;
+    textVi += final ? ` Lần tới, ở tuổi ${char.ensemble.nextAge}, buổi diễn sẽ bắt buộc bắt đầu. Bạn có một năm để chuẩn bị; lần đó không được rút lui.` : ` Lời mời sẽ trở lại sớm nhất ở tuổi ${char.ensemble.nextAge}. Bạn còn một lần từ chối.`;
+    textEn += final ? ` At age ${char.ensemble.nextAge}, the performance will begin by force. You have one year to prepare; that visit allows no retreat.` : ` The invitation will return no earlier than age ${char.ensemble.nextAge}. You have one refusal left.`;
+  }
 
   char.logs.push({
     id: `log_ev_${char.age}_${event.id}`,
@@ -2209,9 +2225,9 @@ export function buildLifeSummaryAndLegacy(char) {
     rankTier = 'Star of the City';
   } else if (flags.includes('EGOAwakened')) {
     epitaphTitleVi = `Người mang E.G.O 「${char.egoName || 'không tên'}」`;
-    epitaphTitleEn = `Bearer of the E.G.O 「${char.egoName || 'nameless'}」`;
+    epitaphTitleEn = `Bearer of the E.G.O 「${localizeEnsembleName(char.egoName, 'en') || 'nameless'}」`;
     occupationVi = `${char.job === 'Fixer' ? `Fixer Grade ${char.fixerGrade}` : char.job} · E.G.O 「${char.egoName || 'Thức Tỉnh'}」`;
-    occupationEn = `${char.job === 'Fixer' ? `Grade ${char.fixerGrade} Fixer` : char.job} · E.G.O "${char.egoName || 'Awakened'}"`;
+    occupationEn = `${char.job === 'Fixer' ? `Grade ${char.fixerGrade} Fixer` : char.job} · E.G.O "${localizeEnsembleName(char.egoName, 'en') || 'Awakened'}"`;
     rankTier = 'Star of the City';
   } else if (flags.includes('HongyuanHierarch')) {
     epitaphTitleVi = 'Gia chủ của Hongyuan';
@@ -2260,12 +2276,14 @@ export function buildLifeSummaryAndLegacy(char) {
   }
 
   const relicName =
+    (char.ensembleScore ? 'Bản tổng phổ viết dở' : null) ||
     char.craftWeapon?.name ||
     (char.egoName ? `Mảnh E.G.O 「${char.egoName}」` : null) ||
     (char.customTitle ? `Huy hiệu Color 「${char.customTitle}」` : null) ||
     (char.lineage?.relic ? char.lineage.relic : (char.age < 16 ? `Kỷ vật của ${char.name}` : `Di vật của ${char.name}`));
 
   const succInfo = determineSuccessorType(char);
+  const relicNameEn = localizeEnsembleName(relicName, 'en');
   let successorRelation = succInfo.type;
   let childAgeWhenParentDied = 0;
   if (char.age < 14) {
@@ -2360,7 +2378,7 @@ export function buildLifeSummaryAndLegacy(char) {
     ? `Mang trong mình huyết thống thế hệ thứ #${char.generation} và kế thừa di vật 「${char.lineage.relic}」 từ ${char.lineage.parentName}, `
     : '';
   const lineageIntroEn = char.lineage?.parentName
-    ? `Carrying the bloodline of Generation #${char.generation} and inheriting "${char.lineage.relic}" from ${char.lineage.parentName}, `
+    ? `Carrying the bloodline of Generation #${char.generation} and inheriting "${localizeEnsembleName(char.lineage.relic, 'en')}" from ${char.lineage.parentName}, `
     : '';
 
   const childhoodLog = majorLogs.find(l => l.age >= 5 && l.age < 18);
@@ -2422,7 +2440,7 @@ export function buildLifeSummaryAndLegacy(char) {
           ? ` Tâm thức bạn nhiều lần rung chuyển dữ dội trước tiếng gọi của Ánh Sáng với độ Cộng hưởng (Resonance) lên tới ${char.resonance}%.`
           : '';
     const egoOrDistortEn = flags.includes('EGOAwakened')
-      ? ` Standing before Carmen’s blinding sun, you refused to yield and crystallized your soul into the Effloresced E.G.O "${char.egoName || 'Unbowed'}".`
+      ? ` Standing before Carmen’s blinding sun, you refused to yield and crystallized your soul into the Effloresced E.G.O "${localizeEnsembleName(char.egoName, 'en') || 'Unbowed'}".`
       : flags.includes('Distorted')
         ? ' At the breaking point of grief and psychic resonance, you surrendered to Carmen’s whisper and transformed into a Distortion.'
         : (char.resonance || 0) >= 40
@@ -2491,13 +2509,13 @@ export function buildLifeSummaryAndLegacy(char) {
   } else if (closedBy?.closing) {
     const closing = closedBy.closing({ age: char.age, relic: relicName });
     lifeStoryParagraphsVi.push(closing.vi);
-    lifeStoryParagraphsEn.push(closing.en);
+    lifeStoryParagraphsEn.push(closing.en.replaceAll(relicName, relicNameEn));
   } else {
     lifeStoryParagraphsVi.push(
       `Ở tuổi ${char.age} (${lifeCompVi}), hành trình ấy khép lại: ${deathCauseVi}. Khi tấm màn sinh mệnh hạ xuống, bạn để lại 「${relicName}」, ${char.stats?.wealth ?? 0} Ahn tài sản cùng ${char.stats?.rep ?? 0} điểm uy danh cho thế hệ kế tiếp viết tiếp câu chuyện còn dang dở.`
     );
     lifeStoryParagraphsEn.push(
-      `At age ${char.age} (${lifeCompEn}), your chronicle reached its final page: ${deathCauseEn}. When the curtain fell, you left behind "${relicName}", ${char.stats?.wealth ?? 0} Ahn in wealth, and ${char.stats?.rep ?? 0} Reputation for the next generation to carry forward.`
+      `At age ${char.age} (${lifeCompEn}), your chronicle reached its final page: ${deathCauseEn}. When the curtain fell, you left behind "${relicNameEn}", ${char.stats?.wealth ?? 0} Ahn in wealth, and ${char.stats?.rep ?? 0} Reputation for the next generation to carry forward.`
     );
   }
 
@@ -2641,11 +2659,13 @@ export function buildLifeSummaryAndLegacy(char) {
     en: `${ambitionAchieved ? 'Fulfilled' : 'Unfinished'}: ${ambition.en}`,
     kind: ambitionAchieved ? 'achievement' : 'ambition'
   });
+  if (char.ensembleScore) lifeTags.push({ vi: 'Sống sót qua buổi diễn của Reverberation Ensemble', en: 'Survived the Reverberation Ensemble performance', kind: 'achievement' });
 
   return {
     endingId: char.endingId || null,
     ambitionId: ambition?.id || '',
     ambitionAchieved,
+    ensembleScore: Boolean(char.ensembleScore),
     lifeEnding: char.lifeEnding || null,
     generation: char.generation,
     seed: char.seed,

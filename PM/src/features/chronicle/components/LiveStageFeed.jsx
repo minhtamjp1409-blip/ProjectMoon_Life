@@ -1,5 +1,6 @@
 import { choiceIsAvailable } from '../../../engine/eventConditions.js';
 import { ITEMS_CATALOG } from '../../../data/itemsData.js';
+import { localizeEnsembleName } from '../../../data/ensembleNames.js';
 import React, { useEffect, useRef, useState } from 'react';
 import { Modal } from 'antd';
 import { GitBranch, Download, RotateCcw, Hammer, ChevronDown, Eye, EyeOff, BookOpen, Copy, Check, House, Zap, Hourglass, ScrollText, Skull, History, Stamp } from 'lucide-react';
@@ -229,7 +230,7 @@ const EventDock = ({ event, char, onPick, dungeonStake, onDungeonStake }) => {
   const title = lang === 'en' ? event.titleEn || event.titleVi : event.titleVi;
   const psyche = getPsycheInterjection(char, event, lang);
   const firstDungeon = event.choices?.find((choice) => choice.startDungeon)?.startDungeon;
-  const wagerAvailable = firstDungeon && !DUNGEON_DEFINITIONS[firstDungeon]?.noRetreat;
+  const wagerAvailable = firstDungeon && !DUNGEON_DEFINITIONS[firstDungeon]?.noRetreat && !DUNGEON_DEFINITIONS[firstDungeon]?.noWager;
   const forecast = wagerAvailable ? dungeonEntryForecast(firstDungeon, char, dungeonStake) : null;
   const riskNames = { uncertain: ['Khó đoán', 'Uncertain'], severe: ['Nguy hiểm', 'Dangerous'], high: ['Rất nguy hiểm', 'Very dangerous'], critical: ['Cực kỳ nguy hiểm', 'Critical'] };
 
@@ -460,7 +461,8 @@ const DUNGEON_KICKER = {
   conquered: ['Hầm ngục · Đã đi hết', 'Dungeon · Cleared'],
   fled: ['Hầm ngục · Đã rút lui', 'Dungeon · Withdrawn'],
   broken: ['Hầm ngục · Tinh thần gục ngã', 'Dungeon · Broken'],
-  restored: ['Hầm ngục · W Corp đã khôi phục bạn', 'Dungeon · Restored by W Corp']
+  restored: ['Hầm ngục · W Corp đã khôi phục bạn', 'Dungeon · Restored by W Corp'],
+  distorted: ['Hầm ngục · Một giọng khác trong dàn diễn', 'Dungeon · Another voice in the ensemble']
 };
 
 const ResultDock = ({ resolution, onDismiss }) => {
@@ -648,7 +650,7 @@ const Epitaph = ({ summary, onInherit, onRestart, onViewRecord, onGoHome }) => {
           </div>
           <div className="epitaph-fact-card">
             <span>{summary.endingId ? t('Vật mang theo', 'Carried onward') : t('Di vật truyền đời', 'Relic left behind')}</span>
-            <b>{summary.relic}</b>
+            <b>{t(summary.relic, localizeEnsembleName(summary.relic, 'en'))}</b>
           </div>
         </div>
 
@@ -1094,7 +1096,7 @@ export const LiveStageFeed = () => {
         handleChooseMinor(-1);
         return;
       }
-      if (char.pendingDungeon && !DUNGEON_DEFINITIONS[char.pendingDungeon.id]?.noRetreat && (e.key === 'f' || e.key === 'F' || e.key === 'Escape')) {
+      if (char.pendingDungeon && getDungeonCurrentStage(char.pendingDungeon)?.canFlee && !DUNGEON_DEFINITIONS[char.pendingDungeon.id]?.noRetreat && (e.key === 'f' || e.key === 'F' || e.key === 'Escape')) {
         e.preventDefault();
         handleFleeDungeon();
         return;

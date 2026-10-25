@@ -17,6 +17,9 @@ import { evaluateCompanionSupport } from '../data/npcPersonality.js';
 import { FAIL_TEXT, GENERIC_FAIL, STRAIN_NOTES, BREAK_TEXT, SUPPLY_TEXT, ENDING_TEXT } from '../data/dungeonText.js';
 import { NIGHT_DUNGEON, STAGE_VARIANTS, SIDE_ROOMS, SHORTCUTS, COMPANION_TEXT, COMPANION_LEAD, FINAL_KEEPS, REPORT_FIT } from '../data/dungeonExtras.js';
 import { CLAW_DUNGEON, CLAW_DUNGEON_ID } from '../data/dungeonClaw.js';
+import { ENSEMBLE_DUNGEON, ENSEMBLE_ROUTE_SCENES, ENSEMBLE_SCORE_ITEM } from '../data/dungeonEnsemble.js';
+import { ENSEMBLE_DUNGEON_ID, ensembleRoute, ensembleWitness, recordEnsembleRetreat, finishEnsembleRun } from './ensemblePath.js';
+import { triggerDistortionTransformation } from './careerPipeline.js';
 import { npcIsActive } from './eventConditions.js';
 import { ensureAffiliation, getAffiliation } from './affiliation.js';
 import { applyNpcFate } from './director.js';
@@ -782,6 +785,7 @@ export const DUNGEON_DEFINITIONS = {
 
 DUNGEON_DEFINITIONS[NIGHT_DUNGEON.id] = NIGHT_DUNGEON;
 DUNGEON_DEFINITIONS[CLAW_DUNGEON_ID] = CLAW_DUNGEON;
+DUNGEON_DEFINITIONS[ENSEMBLE_DUNGEON_ID] = ENSEMBLE_DUNGEON;
 
 const REPORT_CHOICE = {
   labelVi: 'Mang những gì thấy được về báo cho Association của bạn',
@@ -883,7 +887,7 @@ function settleRun(char, session, outcome) {
 export function getDungeonMastery(def, char) {
   if (!def || !char) return { hasMastery: false, dmgMult: 1.0, checkBonus: 0, labelVi: '', labelEn: '' };
   const flags = char.flags || [];
-  const hasGear = Boolean(char.craftWeapon || (char.inventory && char.inventory.length > 0) || flags.includes('EGOAwakened') || flags.includes('ColorFixer'));
+  const hasGear = Boolean(char.craftWeapon || (char.inventory || []).some((item) => item?.type === 'weapon' || item?.type === 'armor') || flags.includes('EGOAwakened') || flags.includes('ColorFixer'));
   let dmgMult = hasGear ? 0.85 : 1.0;
   let checkBonus = hasGear ? 0.1 : 0;
   const reasonsVi = [];
@@ -997,7 +1001,7 @@ function checkChanceOf(choice, char, session, mastery) {
   let chance = DUNGEON_BALANCE.baseCheck * traitFactor(char, choice.checkTrait) + mastery.checkBonus;
   chance += (evaluateCompanionSupport(char).dungeonOddsMod || 0) / 100;
   chance += STANCE[stance].check;
-  if (def?.noRetreat) chance += stance === 'guarded' ? -0.1 : stance === 'balanced' ? 0.04 : 0.12;
+  if (def?.noRewards) chance += stance === 'guarded' ? -0.1 : stance === 'balanced' ? 0.04 : 0.12;
   if (stance === 'reckless' && choice.checkTrait === 'vigor') chance += 0.1;
   if (session?.stageScanned) chance += 0.18 + (activeScarSynergies(char).some((synergy) => synergy.id === 'haunted_witness') ? 0.07 : 0);
   if ((char.stats?.sanity ?? 50) >= 70) chance += 0.05;
@@ -1005,7 +1009,8 @@ function checkChanceOf(choice, char, session, mastery) {
   if (session?.egoActive) chance += DUNGEON_BALANCE.ego.checkBonus;
   chance -= choice.checkPenalty || 0;
   chance += cardEffectOf(session).check || 0;
-  return clamp(chance, DUNGEON_BALANCE.checkFloor, session?.egoActive ? DUNGEON_BALANCE.ego.ceiling : DUNGEON_BALANCE.checkCeiling);
+  chance *= choice.checkScale ?? 1;
+  return clamp(chance, choice.checkFloor ?? DUNGEON_BALANCE.checkFloor, session?.egoActive ? DUNGEON_BALANCE.ego.ceiling : DUNGEON_BALANCE.checkCeiling);
 }
 
 /** What multiplies a negative health or sanity effect in this stage, before the check result. */
@@ -1056,6 +1061,11 @@ export function evaluateDungeonChoiceOdds(choice, char, session) {
   if (!choice || !char) return null;
   const def = session ? DUNGEON_DEFINITIONS[session.id] : null;
   const mastery = getDungeonMastery(def, char);
+  if (choice.ensembleResist) return {
+    hasCheck: true, trait: 'nerve', successPct: Math.round(checkChanceOf(choice, char, session, mastery) * 100),
+    estHp: -8, estSp: Math.max(8, char.stats.sanity || 0) - (char.stats.sanity || 0),
+    estWealth: 0, estLoot: 0, estRep: 0, estMerit: 0, estResonance: 0
+  };
   if (choice.combatAction && session?.combat) return previewCombatAction(COMBAT_CTX, choice, char, session);
   if (choice.restAction) {
     const pct = choice.checkTrait ? Math.round(clamp(0.58 * traitFactor(char, 'luck') + mastery.checkBonus, 0.25, 0.9) * 100) : 100;
@@ -1175,6 +1185,14 @@ export function createDungeonSession(dungeonId, char) {
     },
     logs: []
   };
+  if (def.id === ENSEMBLE_DUNGEON_ID) {
+    session.ensembleHarmony = 0;
+    session.ensembleRoute = ensembleRoute(char);
+    session.ensembleWitness = ensembleWitness(char);
+    session.ensembleForced = (char.ensemble?.declines || 0) >= 2;
+    session.supplyCharges = Math.min(1, session.supplyCharges);
+    session.maxSupplies = session.supplyCharges;
+  }
   // Five of the dungeons are a chain of fights floor by floor; the rest keep their exploration stages
   const ready = isGauntlet(def.id) ? initGauntlet(session, char) : session;
   return dungeonUsesCards(def) ? dealCards(ready, char) : ready;
@@ -1183,7 +1201,7 @@ export function createDungeonSession(dungeonId, char) {
 export function dungeonEntryForecast(dungeonId, char, stake = 0) {
   const def = DUNGEON_DEFINITIONS[dungeonId];
   if (!def || !char) return null;
-  const level = def.noRetreat ? 0 : dungeonWagerLevel(stake);
+  const level = def.noRetreat || def.noWager ? 0 : dungeonWagerLevel(stake);
   const session = createDungeonSession(dungeonId, char);
   session.delveStake = level;
   const stage = getDungeonCurrentStage(session);
@@ -1253,6 +1271,18 @@ export function getDungeonCurrentStage(session) {
   if (!session) return null;
   const def = DUNGEON_DEFINITIONS[session.id];
   if (!def) return null;
+  if (session.id === ENSEMBLE_DUNGEON_ID && session.ensembleCoda) {
+    return {
+      stageIndex: session.currentStageIndex,
+      nameVi: 'Coda: tiếng nói sau sân khấu', nameEn: 'Coda: the voice behind the stage',
+      descVi: 'Tiếng của Carmen chen vào khoảng lặng. Bạn có thể buông mình vào buổi diễn, hoặc giữ lấy điều cuối cùng còn thuộc về mình. Nếu chống lại rồi trượt, bạn sẽ chết.',
+      descEn: 'Carmen speaks into the pause. You can surrender to the performance, or hold on to the last thing that is yours. If you resist and fail, you die.',
+      choices: [
+        { labelVi: 'Nghe theo tiếng nói và ở lại', labelEn: 'Follow the voice and remain', ensembleAccept: true },
+        { labelVi: 'Từ chối, giành lại nhịp của mình', labelEn: 'Refuse and reclaim your own beat', ensembleResist: true, checkTrait: 'nerve', checkPenalty: 0.55, fx: { health: -8 } }
+      ]
+    };
+  }
   if (session.mode === 'gauntlet' && session.combat && !session.combat.done) return gauntletStage(COMBAT_CTX, session);
   if (session.inSide && def.sideRoom?.id === session.inSide.id) {
     return { ...def.sideRoom, stageIndex: session.currentStageIndex, isSide: true, sceneLabelVi: 'Ngõ phụ', sceneLabelEn: 'Side room' };
@@ -1263,6 +1293,15 @@ export function getDungeonCurrentStage(session) {
   const stage = session.variant === idx && def.variants?.[idx]
     ? { ...base, ...def.variants[idx], stageIndex: idx, canFlee: base.canFlee, isVariant: true }
     : base;
+  if (session.id === ENSEMBLE_DUNGEON_ID) {
+    if (idx === 0 && session.ensembleForced) return { ...stage, canFlee: false, choices: stage.choices.filter((choice) => !choice.isFlee) };
+    if (idx === 1) return { ...stage, ...(ENSEMBLE_ROUTE_SCENES[session.ensembleRoute] || {}) };
+    if (idx === 2 && session.ensembleWitness?.role !== 'record') {
+      const nameVi = session.ensembleWitness.nameVi;
+      const nameEn = session.ensembleWitness.nameEn;
+      return { ...stage, descVi: `${nameVi} đọc lại một quyết định cũ của bạn từ hàng ghế sau. Những bóng người khác ngồi xuống từng chiếc ghế. Không ai vỗ tay.`, descEn: `${nameEn} recites a decision you once made from the rear row. Other figures take their seats one by one. No one applauds.` };
+    }
+  }
   // A companion can be sent ahead on the two middle stages
   const c = session.companion;
   if (!def.noCompanion && c && idx > 0 && idx < def.stages.length - 1) {
@@ -1378,6 +1417,56 @@ function finishClawJudgment(char, session, stage, escaped) {
  * Resolves a choice taken in the active dungeon
  * Returns updated { char, session, isFinished, resolution }
  */
+function ensembleResolution(char, session, outcome, stage) {
+  char.pendingDungeon = null;
+  if (outcome === 'fled') {
+    recordEnsembleRetreat(char);
+    const vi = 'Bạn khép cửa trước khi màn kéo lên. Tên mình vẫn còn trên chiếc ghế. Danh tiếng của bạn chịu một vết xước, và lời mời có thể trở lại.';
+    const en = 'You close the door before the curtain rises. Your name remains on its seat. Your reputation takes a mark, and the invitation may return.';
+    return { outcome, titleVi: 'Rời nhà hát', titleEn: 'Left the theatre', resultVi: vi, resultEn: en, haul: { ahn: 0, merit: 0 }, isDead: false };
+  }
+  finishEnsembleRun(char, outcome);
+  if (outcome === 'dead') {
+    char.alive = false;
+    char.stats.health = 0;
+    char.deathCauseVi = `Chết trong buổi diễn của Reverberation Ensemble (${stage.nameVi})`;
+    char.deathCauseEn = `Died in the Reverberation Ensemble's performance (${stage.nameEn})`;
+    const vi = 'Sợi dây cuối siết chặt. Argalia hạ tay, và chiếc ghế mang tên bạn đã có người ngồi.';
+    const en = 'The final string draws tight. Argalia lowers his hand, and the seat bearing your name is occupied.';
+    char.logs.push({ id: `death_ensemble_${char.age}`, age: char.age, type: 'death', vi: `[Buổi diễn không có khán giả] ${vi}`, en: `[The Performance Without an Audience] ${en}` });
+    return { outcome, titleVi: 'Chiếc ghế có người ngồi', titleEn: 'The seat is occupied', resultVi: vi, resultEn: en, haul: { ahn: 0, merit: 0 }, isDead: true };
+  }
+  if (outcome === 'distorted') {
+    char.flags = [...(char.flags || [])].filter((flag) => !['EGOAwakened', 'IncompleteEGO', 'ColorFixer'].includes(flag));
+    char.isColorFixer = false;
+    char.customTitle = null;
+    char.colorData = null;
+    char.egoName = null;
+    char.org = null;
+    char.pendingContract = null;
+    char.pendingModal = null;
+    char.logs.push(...triggerDistortionTransformation(char));
+    const vi = 'Bạn giữ được mạng sống bằng cách buông nhịp của mình. Khi bước khỏi sân khấu, hình dáng cũ không còn theo bạn nữa.';
+    const en = 'You live by surrendering your own beat. When you leave the stage, your old shape does not follow.';
+    return { outcome, titleVi: 'Một giọng khác trong dàn diễn', titleEn: 'Another voice in the ensemble', resultVi: vi, resultEn: en, haul: { ahn: 0, merit: 0 }, isDead: false };
+  }
+  char.ensembleScore = true;
+  if (session.ensembleScarred) {
+    char.flags = [...new Set([...(char.flags || []).filter((flag) => flag !== 'EGOAwakened'), 'IncompleteEGO'])];
+    char.egoName ||= 'Nhịp còn sót lại';
+  }
+  char.flags = [...new Set([...(char.flags || []), 'EnsembleSurvivor'])];
+  char.unlockedRecords = [...new Set([...(char.unlockedRecords || []), 'ensemble_star_unextinguished'])];
+  char.resonance = Math.min(100, (char.resonance || 0) + 6);
+  char.stats.sanity = Math.max(8, char.stats.sanity || 0);
+  char.inventory = [...(char.inventory || []).filter((item) => (item.id || item) !== ENSEMBLE_SCORE_ITEM.id), { ...ENSEMBLE_SCORE_ITEM }];
+  rememberResonance(char, 6);
+  const vi = 'Bạn cắt đứt sợi dây cuối. Argalia nhìn khoảng trống trên sân khấu rồi nhường lối ra. Nhà hát vẫn đứng đó; hôm nay nó không giữ được bạn. Bạn mang theo bản tổng phổ viết dở để truyền lại cho đời sau.' + (session.ensembleScarred ? ' Ba dấu Hòa âm đã để lại một E.G.O bất ổn (Volatile), thay cho E.G.O hoàn chỉnh.' : '');
+  const en = 'You sever the last string. Argalia studies the gap onstage and steps aside. The theatre remains; today it could not keep you. You carry the Unfinished Score for your successor.' + (session.ensembleScarred ? ' Three Harmony marks have left a Volatile E.G.O in place of a settled one.' : '');
+  char.logs.push({ id: `ensemble_survived_${char.age}`, age: char.age, type: 'major', vi: `[Ngôi sao không tắt] ${vi}`, en: `[The star that would not go out] ${en}` });
+  return { outcome: 'conquered', titleVi: 'Ngôi sao không tắt', titleEn: 'The star that would not go out', resultVi: vi, resultEn: en, haul: { ahn: 0, merit: 0 }, isDead: false };
+}
+
 export function resolveDungeonChoice(charState, choiceIndex, rng = Math.random) {
   const char = { ...charState, stats: { ...charState.stats }, logs: [...(charState.logs || [])] };
   const session = char.pendingDungeon ? { ...char.pendingDungeon, logs: [...(char.pendingDungeon.logs || [])] } : null;
@@ -1398,6 +1487,37 @@ export function resolveDungeonChoice(charState, choiceIndex, rng = Math.random) 
 
   const choice = stage.choices[choiceIndex];
   if (!choice || !isDungeonChoiceAvailable(choice, char)) return { char, session, isFinished: false, resolution: null };
+
+  if (session.id === ENSEMBLE_DUNGEON_ID) {
+    if (choice.isFlee && session.currentStageIndex === 0 && !session.ensembleForced) {
+      return { char, session: null, isFinished: true, resolution: ensembleResolution(char, session, 'fled', stage) };
+    }
+    if (choice.ensembleAccept) {
+      return { char, session: null, isFinished: true, resolution: ensembleResolution(char, session, 'distorted', stage) };
+    }
+    if (session.ensembleCoda) {
+      const mastery = getDungeonMastery(def, char);
+      const held = rng() < checkChanceOf(choice, char, session, mastery);
+      if (!held) return { char, session: null, isFinished: true, resolution: ensembleResolution(char, session, 'dead', stage) };
+      char.stats.health = Math.max(0, (char.stats.health || 0) - 8);
+      if (char.stats.health <= 0) return { char, session: null, isFinished: true, resolution: ensembleResolution(char, session, 'dead', stage) };
+      const spBefore = char.stats.sanity || 0;
+      char.stats.sanity = Math.max(8, char.stats.sanity || 0);
+      session.sanityStrain = Math.min(65, Math.max(25, (session.sanityStrain || 0) - 34));
+      session.ensembleHarmony = 1;
+      session.ensembleCoda = false;
+      session.stageScanned = false;
+      session.egoActive = false;
+      session.lastStageResult = { type: 'check_ok', stageNum: session.currentStageIndex + 1, vi: 'Bạn giữ lại được một nhịp của mình. Tiếng nói lùi về phía sau sân khấu.', en: 'You keep one beat of your own. The voice withdraws behind the stage.', hpDelta: -8, spDelta: char.stats.sanity - spBefore };
+      const codaLog = { id: `ensemble_coda_${char.age}_${session.currentStageIndex}`, age: char.age, season: char.season || 'Xuân', type: 'choice', choiceVi: choice.labelVi, choiceEn: choice.labelEn, vi: session.lastStageResult.vi, en: session.lastStageResult.en };
+      char.logs.push(codaLog);
+      session.logs.push(codaLog);
+      if (session.ensembleCodaWin) return { char, session: null, isFinished: true, resolution: ensembleResolution(char, session, 'conquered', stage) };
+      session.currentStageIndex += 1;
+      char.pendingDungeon = session;
+      return { char, session, isFinished: false, resolution: null };
+    }
+  }
 
   const mastery = getDungeonMastery(def, char);
   const startTier = getStrainTier(session.sanityStrain || 0).id;
@@ -1477,6 +1597,7 @@ export function resolveDungeonChoice(charState, choiceIndex, rng = Math.random) 
   const colorCalm = (char.flags || []).includes('ColorFixer') ? DUNGEON_BALANCE.ego.color.strainMult : 1;
   const rawStrain = ((stage.strainGain || 15) + (choice.strainDelta || 0)) * stance.strain * (session.stageScanned ? 0.5 : 1) * colorCalm;
   session.sanityStrain = clamp((session.sanityStrain || 0) + Math.round(rawStrain) + (success ? 0 : DUNGEON_BALANCE.failStrain) + companionStrain, 0, 100);
+  if (session.id === ENSEMBLE_DUNGEON_ID) session.ensembleHarmony = Math.min(3, (session.ensembleHarmony || 0) + (choice.ensembleHarmony || 0));
 
   const notes = [];
   if (leadText) {
@@ -1489,7 +1610,7 @@ export function resolveDungeonChoice(charState, choiceIndex, rng = Math.random) 
 
   let broke = null;
   let resolveEvent = null;
-  if (session.sanityStrain >= 80 && !session.resolveAwakened && char.stats.health > 0 && session.sanityStrain < DUNGEON_BALANCE.breakAt) {
+  if (session.sanityStrain >= 80 && !session.resolveAwakened && char.stats.health > 0 && session.sanityStrain < DUNGEON_BALANCE.breakAt && !(session.id === ENSEMBLE_DUNGEON_ID && char.stats.sanity <= 0)) {
     const holds = char.stats.sanity >= 35 || (char.flags || []).includes('EGOAwakened') || rng() < 0.65;
     if (holds) {
       session.resolveAwakened = true;
@@ -1564,6 +1685,21 @@ export function resolveDungeonChoice(charState, choiceIndex, rng = Math.random) 
   };
   char.logs.push(stageLog);
   session.logs.push(stageLog);
+
+  if (session.id === ENSEMBLE_DUNGEON_ID) {
+    const lastAct = session.currentStageIndex === def.stages.length - 1;
+    if (char.stats.health <= 0 || (lastAct && !success)) {
+      return { char, session: null, isFinished: true, resolution: ensembleResolution(char, session, 'dead', stage) };
+    }
+    if (char.stats.sanity <= 0 || session.sanityStrain >= DUNGEON_BALANCE.breakAt || session.ensembleHarmony >= 3) {
+      if (session.ensembleHarmony >= 3) session.ensembleScarred = true;
+      session.ensembleCoda = true;
+      session.ensembleCodaWin = lastAct && success;
+      char.pendingDungeon = session;
+      return { char, session, isFinished: false, resolution: null };
+    }
+    if (lastAct) return { char, session: null, isFinished: true, resolution: ensembleResolution(char, session, 'conquered', stage) };
+  }
 
   if (def.fatalOnBreak && (char.stats.health <= 0 || char.stats.sanity <= 0 || session.sanityStrain >= DUNGEON_BALANCE.breakAt)) {
     const resolution = finishClawJudgment(char, session, stage, false);
@@ -1675,6 +1811,11 @@ export function fleeDungeon(charState) {
   if (!session) return { char, session: null, isFinished: true };
 
   const def = DUNGEON_DEFINITIONS[session.id];
+  if (session.id === ENSEMBLE_DUNGEON_ID) {
+    if (session.currentStageIndex > 0 || session.ensembleForced || session.ensembleCoda) return { char: charState, session, isFinished: false, resolution: null };
+    const stage = getDungeonCurrentStage(session);
+    return { char, session: null, isFinished: true, resolution: ensembleResolution(char, session, 'fled', stage) };
+  }
   if (def?.noRetreat || def?.locked || (session.mode === 'gauntlet' && !canLeaveGauntlet(session))) return { char: charState, session, isFinished: false, resolution: null };
   const haul = session.accumulatedLootAhn || 0;
   if (haul > 0) char.stats.wealth = clamp((char.stats.wealth || 0) + haul, 0, 100);

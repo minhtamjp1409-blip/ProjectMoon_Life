@@ -141,6 +141,33 @@
 @keyframes clawCut { 0%, 78% { opacity: 0; transform: scaleX(0); } 81% { opacity: .9; transform: scaleX(1); } 88%, 100% { opacity: 0; transform: scaleX(1); } }
 
 /* Shared */
+.dgs-ensemble .ensemble-wall { fill: #090710; }
+.dgs-ensemble .ensemble-proscenium { fill: none; stroke: #4b3958; stroke-width: 14; }
+.dgs-ensemble .ensemble-curtain { fill: #231426; stroke: #4d2c45; stroke-width: 4; }
+.dgs-ensemble .ensemble-curtain.is-left { animation: ensembleCurtainLeft 17s ease-in-out infinite alternate; }
+.dgs-ensemble .ensemble-curtain.is-right { animation: ensembleCurtainRight 17s ease-in-out infinite alternate; }
+.dgs-ensemble .ensemble-light { fill: #c3a5d9; opacity: .11; animation: ensembleLight 9s ease-in-out infinite alternate; }
+.dgs-ensemble .ensemble-stage { fill: #160d1b; stroke: #6a4f6c; stroke-width: 3; }
+.dgs-ensemble .ensemble-string { stroke: #b8a1df; stroke-width: 2; opacity: .32; transform-origin: top center; animation: ensembleString 3.4s ease-in-out infinite alternate; }
+.dgs-ensemble .ensemble-conductor { fill: #07060c; stroke: #8d6d9e; stroke-width: 3; }
+.dgs-ensemble .ensemble-conductor path:last-child { fill: none; transform-origin: 0 100%; animation: ensembleHand 6s ease-in-out infinite; }
+.dgs-ensemble .ensemble-seat { fill: #0a0710; stroke: #57415d; stroke-width: 4; opacity: .5; animation: ensembleAudience 14s ease-in-out infinite; }
+.dgs-ensemble .ensemble-exit { fill: #0a080e; stroke: #a88bbd; stroke-width: 3; opacity: .45; }
+.dgs-ensemble .ensemble-witness { fill: #030205; opacity: 0; transition: opacity 1.5s ease; }
+.is-stage-2 .dgs-ensemble .ensemble-witness, .is-stage-3 .dgs-ensemble .ensemble-witness { opacity: .85; }
+.is-stage-3 .dgs-ensemble .ensemble-exit { opacity: .9; filter: drop-shadow(0 0 15px #b8a1df); }
+.is-high-strain .dgs-ensemble .ensemble-string { opacity: .7; }
+@keyframes ensembleCurtainLeft { to { transform: translateX(-70px); } }
+@keyframes ensembleCurtainRight { to { transform: translateX(70px); } }
+@keyframes ensembleLight { to { opacity: .28; transform: scale(1.08); } }
+@keyframes ensembleString { to { transform: rotate(1.3deg); opacity: .62; } }
+@keyframes ensembleHand { 0%, 73%, 100% { transform: rotate(-12deg); } 80% { transform: rotate(12deg); } }
+@keyframes ensembleAudience { 0%, 35% { opacity: .12; } 70%, 100% { opacity: .6; } }
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-motion='full']) .dgs-ensemble * { animation: none !important; transition: none !important; }
+}
+:root[data-motion='reduced'] .dgs-ensemble * { animation: none !important; transition: none !important; }
+
 @keyframes dgsBreath { 50% { transform: scale(1.08); } }
 @keyframes dgsGlow { 50% { filter: brightness(1.7); } }
 @keyframes dgsFlicker { 0%, 100% { opacity: .45; } 71% { opacity: .1; } 72% { opacity: .45; } 74% { opacity: .15; } 75% { opacity: .45; } }

@@ -70,7 +70,7 @@ public sealed class ArchiveStoreService
     {
         if (string.IsNullOrWhiteSpace(sample.RunKey) || sample.RunKey.Length > 80 ||
             sample.Age < 0 || sample.Age > 200 || sample.Minutes < 0 || sample.Minutes > 100000 ||
-            !new[] { "none", "conquered", "fled", "broken", "restored", "dead", "library" }.Contains(sample.FirstDungeonOutcome)) return false;
+            !new[] { "none", "conquered", "fled", "broken", "restored", "dead", "library", "distorted" }.Contains(sample.FirstDungeonOutcome)) return false;
         var key = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(sample.RunKey))).ToLowerInvariant();
         lock (_gate)
         {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Tooltip } from 'antd';
-import { ChevronDown, ChevronUp, User, Heart, Brain, Coins, Flame, Eye, Sparkles, X, ShieldAlert, ShoppingBag, HelpCircle, Crown } from 'lucide-react';
+import { ChevronDown, ChevronUp, User, Heart, Brain, Coins, Flame, Eye, Sparkles, X, ShieldAlert, ShoppingBag, HelpCircle, Crown, Star } from 'lucide-react';
 import { WorkshopDepotModal } from './WorkshopDepotModal';
 import { useGameStore } from '../../../store/gameStore';
 import { useThemeStore } from '../../../store/themeStore';
@@ -13,6 +13,7 @@ import { useT } from '../../../i18n';
 import { getScarProfile, activeScarSynergies, MAX_ACTIVE_SCARS } from '../../../engine/scarModel';
 import { getAffiliation, affiliationLabel, standingLabel } from '../../../engine/affiliation';
 import { rankPlateOf } from '../../../engine/sceneContext';
+import { localizeEnsembleName } from '../../../data/ensembleNames.js';
 
 const JOB_LABELS = {
   Child: { vi: 'Trẻ em', en: 'Child' },
@@ -299,7 +300,7 @@ const Nameplate = ({ char, region, omen, t, lang }) => {
         {gender && <span>{gender}</span>}
       </span>
       <div className="dossier-id">
-        <h2>{char.name}</h2>
+        <h2>{char.name}{char.flags?.includes('EnsembleSurvivor') && <span className="ensemble-mark" title={t('Ngôi sao không tắt · sống sót qua Ensemble', 'The star that would not go out · Ensemble survivor')}><Star size={16} aria-label={t('Sống sót qua Ensemble', 'Ensemble survivor')} /></span>}</h2>
         <p className="nameplate-post">{describeJob(char, t)}</p>
       </div>
       <div className="nameplate-facts">
@@ -598,9 +599,9 @@ export const CharacterDossierCard = () => {
   const yearProgress = useGameStore((s) => s.yearProgress);
   const currentSeason = SEASONS[char.seasonIdx] || SEASONS[0];
   const items = [
-    char.egoName && { k: 'E.G.O', v: char.egoName },
+    char.egoName && { k: 'E.G.O', v: t(char.egoName, localizeEnsembleName(char.egoName, 'en')) },
     char.craftWeapon && { k: t('Thần binh', 'Weapon'), v: char.craftWeapon.name },
-    char.lineage?.relic && !char.craftWeapon && { k: t('Di vật', 'Relic'), v: char.lineage.relic }
+    char.lineage?.relic && !char.craftWeapon && { k: t('Di vật', 'Relic'), v: t(char.lineage.relic, localizeEnsembleName(char.lineage.relic, 'en')) }
   ].filter(Boolean);
 
   const jobDesc = describeJob(char, t);
@@ -634,7 +635,7 @@ export const CharacterDossierCard = () => {
         {/* Row 1: who, when, and the dossier button */}
         <div className="hud2-top">
           <div className="hud2-who">
-            <span className={`hud2-name is-${plate.tier}${plate.route ? ` route-${plate.route}` : ''}`} style={plate.color ? { '--plate': plate.color } : undefined}>{char.name}</span>
+            <span className={`hud2-name is-${plate.tier}${plate.route ? ` route-${plate.route}` : ''}`} style={plate.color ? { '--plate': plate.color } : undefined}>{char.name}{char.flags?.includes('EnsembleSurvivor') && <Star className="ensemble-mark" size={13} aria-label={t('Sống sót qua Ensemble', 'Ensemble survivor')} />}</span>
             <span className="hud2-gen">#{char.generation}</span>
             <span className="hud2-when">
               {jobDesc.split(' · ')[0]} · <b>{t(`Tuổi ${char.age}`, `Age ${char.age}`)}</b> · {t(currentSeason?.vi, currentSeason?.en)}

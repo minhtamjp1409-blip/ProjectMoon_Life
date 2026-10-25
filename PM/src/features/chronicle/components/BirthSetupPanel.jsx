@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
+import { localizeEnsembleName } from '../../../data/ensembleNames.js';
 import { Dices, GitBranch, Play, ChevronDown, ArrowUpRight, Search, BookOpen, MapPin } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Modal } from 'antd';
@@ -500,7 +501,7 @@ export const BirthSetupPanel = () => {
               </summary>
               <p>
                 {t('Di sản của', 'The legacy of')} <strong>{pendingLegacy.name}</strong> ·{' '}
-                {pendingLegacy.relic}
+                {t(pendingLegacy.relic, localizeEnsembleName(pendingLegacy.relic, 'en'))}
               </p>
               <button className="btn btn-block" disabled={spinning} onClick={() => launch(true, 0)}>
                 {t('Bắt đầu từ tuổi 0', 'Begin at age 0')}

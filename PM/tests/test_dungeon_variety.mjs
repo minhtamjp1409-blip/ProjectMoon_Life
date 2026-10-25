@@ -19,8 +19,8 @@ const start = (c, id) => { c.pendingDungeon = createDungeonSession(id, c); retur
 const pickWhere = (c, pred) => getDungeonCurrentStage(c.pendingDungeon).choices.findIndex(pred);
 const always = () => 0;
 
-// Six dungeons, each still four main stages, each with a side room, a shortcut and a report choice
-const ids = Object.keys(DUNGEON_DEFINITIONS).filter((id) => !DUNGEON_DEFINITIONS[id].noRetreat);
+// Expeditions have side rooms and report choices; the Head and Ensemble have their own fixed scripts.
+const ids = Object.keys(DUNGEON_DEFINITIONS).filter((id) => !DUNGEON_DEFINITIONS[id].noRewards);
 assert.ok(ids.includes('dungeon_backstreets_night'));
 for (const id of ids) {
   const def = DUNGEON_DEFINITIONS[id];
