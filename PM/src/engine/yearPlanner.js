@@ -353,7 +353,7 @@ function majorIsDue(char, rng) {
   if (char.job === 'Syndicate' && !char.finger && !(char.seenEvents || []).includes('syn_choose_finger_allegiance')) return true;
   if ((w.pendingThreads || []).some((th) => th.kind !== 'minor' && !th.fulfilled && char.age >= th.triggerAge)) return true;
   if (rollEgoEncounter(char, rng) && !(char.seenEvents || []).includes('ego_carmen_crossroad') && !char.flags.includes('EGOAwakened') && !char.flags.includes('Distorted')) return true;
-  if (char.job === 'Fixer' && !char.flags.includes('Distorted') && checkColorFixerReadiness(char).ready && !char.flags.includes('ColorFixer') && colorTrialAvailable(char)) return true;
+  if ((char.job === 'Fixer' || char.job === 'Color Fixer') && !char.flags.includes('Distorted') && checkColorFixerReadiness(char).ready && !char.flags.includes('ColorFixer') && colorTrialAvailable(char)) return true;
   const gap = w.yearsSinceLastMajor || 0;
   // Childhood: the gap counts from birth, so "every 5 years" used to put the first
   // major event at exactly 5 for everyone. Spread it over 5-9 instead.
@@ -363,7 +363,7 @@ function majorIsDue(char, rng) {
   }
   if (gap >= 5) return true;
   if ((char.job === 'Syndicate' || (char.flags?.includes('Distorted') && char.finger)) && (char.fingerRank || 0) >= 3 && gap >= 2 && rng() < 0.65) return true;
-  if (char.job === 'Fixer' && char.flags?.includes('ColorFixer') && gap >= 2 && rng() < 0.55) return true;
+  if ((char.job === 'Fixer' || char.job === 'Color Fixer') && char.flags?.includes('ColorFixer') && gap >= 2 && rng() < 0.55) return true;
   return gap >= 2 && rng() < 0.32;
 }
 
@@ -502,7 +502,7 @@ export function planYear(charState, rng) {
       if (careDue(medId, 0.75)) scheduleCare(medId);
     } else if (char.stats.sanity < 70 && age >= 16 && !isOutskirts(char)) {
       if (careDue('m_wellness_hamham_lunch', 0.65)) scheduleCare('m_wellness_hamham_lunch');
-    } else if (char.stats.wealth >= 35 && age >= 18 && !isOutskirts(char) && ['Fixer', 'Syndicate', 'Workshop Craftsman'].includes(char.job)) {
+    } else if (char.stats.wealth >= 35 && age >= 18 && !isOutskirts(char) && ['Fixer', 'Color Fixer', 'Syndicate', 'Workshop Craftsman'].includes(char.job)) {
       if (careDue('m_wellness_workshop_tuneup', 0.25)) scheduleCare('m_wellness_workshop_tuneup');
     }
   }
@@ -1121,6 +1121,7 @@ export function resolveMinor(charState, idx, rng) {
 /* ---------- the turn of the year ---------- */
 
 const JOB_INCOME = (char) => {
+  if (char.flags?.includes('ColorFixer') || char.job === 'Color Fixer') return 12;
   switch (char.job) {
     case 'Fixer':
       return 2 + Math.round((9 - Math.min(9, char.fixerGrade)) * 0.7);
@@ -1272,8 +1273,8 @@ export function endYear(charState, rng) {
     en.push('High resonance made Carmen’s voice harder to quiet.');
   }
 
-  if (reachedCareerAge(char) && ['Fixer', 'Syndicate', 'Wing Employee', 'Workshop Craftsman'].includes(char.job) && !char.flags.includes('Distorted')) {
-    const wear = char.job === 'Fixer' || char.job === 'Syndicate' ? 2 : 1;
+  if (reachedCareerAge(char) && ['Fixer', 'Color Fixer', 'Syndicate', 'Wing Employee', 'Workshop Craftsman'].includes(char.job) && !char.flags.includes('Distorted')) {
+    const wear = char.job === 'Fixer' || char.job === 'Color Fixer' || char.job === 'Syndicate' ? 2 : 1;
     add('health', -wear);
     add('sanity', -(char.job === 'Wing Employee' || char.job === 'Syndicate' ? 3 : 2));
     line('job_wear');
@@ -1427,7 +1428,7 @@ export function endYear(charState, rng) {
     yearsSinceLastMajor: (char.weaver?.yearsSinceLastMajor || 0) + 1,
     yearsSinceLastCrisis: (char.weaver?.yearsSinceLastCrisis || 0) + 1
   };
-  if (reachedCareerAge(char) && (char.job === 'Fixer' || char.job === 'Syndicate')) applyFx(char, { merit: 2 });
+  if (reachedCareerAge(char) && (char.job === 'Fixer' || char.job === 'Color Fixer' || char.job === 'Syndicate')) applyFx(char, { merit: 2 });
   settle(char, 0, rng);
   char.weaver = updateDramaTension(char.weaver, char);
   if (char.alive) {

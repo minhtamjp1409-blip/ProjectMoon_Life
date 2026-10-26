@@ -111,7 +111,7 @@ export const CONTRACT_ROUTES = {
 /** Which contract route this character works, or null when they have none. */
 export function contractRouteOf(char) {
   if (!char || char.flags?.includes('Distorted')) return null;
-  if (char.job === 'Fixer') return 'fixer';
+  if (char.job === 'Fixer' || char.job === 'Color Fixer' || char.flags?.includes('ColorFixer')) return 'fixer';
   if (char.job === 'Syndicate' && char.finger) {
     const key = String(char.finger).toLowerCase();
     return CONTRACT_ROUTES[key] ? key : null;

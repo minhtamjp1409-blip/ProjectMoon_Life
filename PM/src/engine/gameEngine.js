@@ -55,6 +55,7 @@ import { WING_STORY_EVENTS } from '../data/eventsWing.js';
 import { EGO_LEAP_EVENTS } from '../data/eventsEgoLeap.js';
 import { AFFILIATION_EVENTS } from '../data/eventsAffiliation.js';
 import { ENSEMBLE_EVENTS, ENSEMBLE_SCORE_ITEM } from '../data/dungeonEnsemble.js';
+import { COLOR_CAREER_EVENTS } from '../data/eventsColorCareerArc.js';
 import { localizeEnsembleName } from '../data/ensembleNames.js';
 import { ENSEMBLE_INVITE_ID, ENSEMBLE_LAST_CALL_ID, recordEnsembleInvitation } from './ensemblePath.js';
 import { egoEdge } from './egoEdge.js';
@@ -149,7 +150,8 @@ export const ALL_STORY_EVENTS = [
   ...WING_STORY_EVENTS,
   ...EGO_LEAP_EVENTS,
   ...AFFILIATION_EVENTS,
-  ...ENSEMBLE_EVENTS
+  ...ENSEMBLE_EVENTS,
+  ...COLOR_CAREER_EVENTS
 ];
 
 export const SEASONS = [
@@ -350,7 +352,7 @@ export function rollBirthFamily(region, rng, parentLegacy = null, preferredFamil
     if (parentLegacy.wealth >= 60) {
       const nestFam = FAMILIES.find((f) => f.id === 'nest_feather' || f.id === 'wing_executive');
       if (nestFam) return nestFam;
-    } else if (parentLegacy.job === 'Fixer') {
+    } else if (parentLegacy.job === 'Fixer' || parentLegacy.job === 'Color Fixer') {
       const fixerFam = FAMILIES.find((f) => f.id === 'fixer_lineage');
       if (fixerFam) return fixerFam;
     }
@@ -1017,9 +1019,9 @@ export function getNextCareerMilestone(char) {
     };
   }
 
-  // 2. Fixer Career
-  if (char.job === 'Fixer') {
-    if (char.fixerGrade === 0) {
+  // 2. Fixer Career / Color Fixer
+  if (char.job === 'Fixer' || char.job === 'Color Fixer') {
+    if (char.fixerGrade === 0 || char.job === 'Color Fixer' || char.flags.includes('ColorFixer')) {
       const targetMerit = 250;
       const targetRep = 90;
       const p1 = Math.min(100, ((char.merit || 0) / targetMerit) * 100);
@@ -2117,6 +2119,10 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random, dung
     if (!char.flags.includes(f)) {
       char.flags.push(f);
       if (f === 'Married') char.flags = char.flags.filter((x) => x !== 'Widowed' && x !== 'Separated');
+      if (f === 'ColorFixer') {
+        char.job = 'Color Fixer';
+        char.fixerGrade = 0;
+      }
       if (f === 'Distorted') {
         const distortLogs = triggerDistortionTransformation(char);
         char.logs.push(...distortLogs);
@@ -2214,6 +2220,7 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random, dung
   if (choice.openColorModal || outcome.openColorModal) {
     char.pendingModal = 'color_title';
     char.fixerGrade = 0;
+    char.job = 'Color Fixer';
     if (!char.flags.includes('ColorFixer')) char.flags.push('ColorFixer');
   }
 

@@ -57,7 +57,8 @@ export function checkState(char) {
   if (flags.includes('Distorted') && char.job !== 'Distortion') add('distorted-job', `Distorted but job is ${char.job}`);
   if (char.job === 'Distortion' && !flags.includes('Distorted')) add('distortion-flag', 'job Distortion without the Distorted flag');
   if (flags.includes('ColorFixer') && char.fixerGrade !== 0) add('color-grade', `ColorFixer with grade ${char.fixerGrade}`);
-  if (char.job === 'Fixer' && !(Number.isInteger(char.fixerGrade) && char.fixerGrade >= 0 && char.fixerGrade <= 9)) add('fixer-grade', `Fixer grade ${char.fixerGrade}`);
+  if ((char.job === 'Fixer' || char.job === 'Color Fixer') && !(Number.isInteger(char.fixerGrade) && char.fixerGrade >= 0 && char.fixerGrade <= 9)) add('fixer-grade', `Fixer grade ${char.fixerGrade}`);
+  if (char.job === 'Color Fixer' && !flags.includes('ColorFixer')) add('color-job-flag', 'job is Color Fixer but lacks ColorFixer flag');
   if (char.job === 'Child' && char.age > 20) add('child-adult', `still Child at ${char.age}`);
   if (char.job === 'Syndicate' && char.age >= 22 && !char.finger) add('syndicate-no-finger', 'Syndicate without a Finger');
 

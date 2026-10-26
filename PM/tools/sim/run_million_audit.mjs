@@ -79,10 +79,12 @@ while (STATS.totalScenariosExecuted < TARGET_SCENARIOS) {
   // Check 3 runs after every step that can change the grade, so two exams passed in one
   // year count as two single steps, not as one skip
   const noteGrade = () => {
-    if (char.job === 'Fixer' && char.fixerGrade != null) {
-      // The one allowed exception is the E.G.O leap: two bands, once per life, and only with that flag
+    if ((char.job === 'Fixer' || char.job === 'Color Fixer') && char.fixerGrade != null) {
+      // The allowed exceptions:
+      // 1) E.G.O leap: two bands, once per life, and only with that flag
+      // 2) Color Fixer appointment (Grade 1 or prodigy Grade 2/3 -> Grade 0)
       const gap = previousGrade - char.fixerGrade;
-      if (gap > 1 && !(gap === 2 && char.flags.includes('ego_leap_done') && !leapSeen)) STATS.fixerGradeSkipViolations++;
+      if (gap > 1 && !(gap === 2 && char.flags.includes('ego_leap_done') && !leapSeen) && !char.flags.includes('ColorFixer')) STATS.fixerGradeSkipViolations++;
       if (gap === 2 && char.flags.includes('ego_leap_done')) leapSeen = true;
       previousGrade = char.fixerGrade;
     }
@@ -91,7 +93,7 @@ while (STATS.totalScenariosExecuted < TARGET_SCENARIOS) {
   while (char.alive && char.age < 120 && STATS.totalScenariosExecuted < TARGET_SCENARIOS) {
     STATS.totalYearsLived++;
     if (char.age > STATS.maxAge) STATS.maxAge = char.age;
-    const yearStartGrade = char.job === 'Fixer' ? char.fixerGrade : null;
+    const yearStartGrade = (char.job === 'Fixer' || char.job === 'Color Fixer') ? char.fixerGrade : null;
 
     // Check 5: the checklist shown to the player must agree with the gate that opens the exam
     if (char.job === 'Fixer' && !char.flags.includes('Distorted') && !char.flags.includes('ColorFixer') && char.fixerGrade >= 1) {
@@ -193,7 +195,7 @@ while (STATS.totalScenariosExecuted < TARGET_SCENARIOS) {
       char = endYear(char, lifeRng);
       noteGrade();
     }
-    if (yearStartGrade != null && char.job === 'Fixer' && yearStartGrade - char.fixerGrade > 1) {
+    if (yearStartGrade != null && (char.job === 'Fixer' || char.job === 'Color Fixer') && yearStartGrade - char.fixerGrade > 1 && !char.flags.includes('ColorFixer')) {
       STATS.multiGradeYears++;
     }
   }
@@ -209,7 +211,7 @@ while (STATS.totalScenariosExecuted < TARGET_SCENARIOS) {
   if (char.flags.includes('Distorted')) STATS.distortionsCount++;
   if (char.flags.includes('EGOAwakened')) STATS.egoAwakenedCount++;
 
-  if (char.job === 'Fixer') {
+  if (char.job === 'Fixer' || char.job === 'Color Fixer') {
     if (char.flags.includes('ColorFixer')) STATS.fixerGradesReached.color++;
     else if (char.fixerGrade >= 1 && char.fixerGrade <= 9) {
       STATS.fixerGradesReached[`g${char.fixerGrade}`]++;

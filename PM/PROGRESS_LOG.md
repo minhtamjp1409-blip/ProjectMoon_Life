@@ -1,8 +1,8 @@
 # The City Chronicles: Tài Liệu Tiến Trình & Kiến Trúc Kỹ Thuật Toàn Diện
 
-> **Cập nhật ghi chép: 26/10/2026 (Đợt 61: Tối ưu hóa Toàn diện Hệ thống Hầm ngục - Gimmick Dị thể & Môi trường, Trích xuất Cổ vật Kỳ tích, Hội thoại Đồng hành tại Chặng & Game Feel Nhịp tim Hoảng loạn; đã push và deploy)**
+> **Cập nhật ghi chép: 26/10/2026 (Đợt 62: Đặc cách Thần đồng Color Hana Directive Zero, Nhánh Sự nghiệp Riêng biệt Color Fixer & Tuyến Truyện Đỉnh cao 9 Sự kiện Project Moon; đã push và deploy)**
 > Đợt 26 thay cơ chế gọi Carmen và bổ sung lựa chọn chuẩn bị; số đo cuộc đời ở Đợt 23 là lịch sử, không phải tỷ lệ hiện tại.
-> **Trạng thái xác minh tại máy cho Đợt 61:** `npm test` đạt toàn bộ 50 suite (thêm `test_dungeon_enhancements.mjs`), story linter & voice linter 31.438 chuỗi đạt 0 lỗi, audit 500 khoảnh khắc đạt 100%; `npm run build` đạt. Đã commit và push đồng bộ lên Git remote `origin/main`.
+> **Trạng thái xác minh tại máy cho Đợt 62:** `npm test` đạt toàn bộ 51 suite (thêm `test_color_career_arc.mjs`), story linter & voice linter 31.571 chuỗi đạt 0 lỗi/0 cảnh báo, audit 500 khoảnh khắc đạt 100%, story logic audit 100 đời 0 lỗi; `npm run build` đạt. Đã commit và push đồng bộ lên Git remote `origin/main`.
 > **Cách đọc số liệu:** Các kết quả mô phỏng ở Đợt 1–21 là ảnh chụp lịch sử tại thời điểm ghi; xem Đợt 23 để đọc phép đo Color/E.G.O hiện hành. Đợt 22 và mục 9.3 ghi các lần kiểm thử chức năng trước đó.
 
 ---
@@ -1196,3 +1196,43 @@ Chủ dự án yêu cầu làm lại toàn bộ giao diện lần nữa: bỏ t�
   * Voice linter & Story linter 31.438 chuỗi: 0 lỗi.
   * Production Vite Build: hoàn tất 100% trong 7.14s.
   * Git remote: Đồng bộ thành công lên nhánh `main`.
+
+### Đợt 62 (26/10/2026): Đặc Cách Thần Đồng Color (Hana Directive Zero - Tuổi 26–34), Nhánh Sự Nghiệp Chuyên Biệt `job === 'Color Fixer'` & Tuyến Truyện Đỉnh Cao 9 Sự Kiện Kỳ Quan Project Moon
+
+* **Cơ chế Thần đồng Đặc cách Thăng phong Color (Hana Directive Zero - Nghị định số 0 của Hiệp hội Hana):**
+  * Giải quyết vấn đề nhịp game trước đây (Color thường chỉ đạt được ở tuổi 40–50 hoặc cuối đời) bằng việc cho phép các cá nhân kiệt xuất được Hana triệu tập đại khảo thí Star of the City (`hana_color_ascension_trial`) ngay từ độ tuổi trẻ **26 đến 34 tuổi**.
+  * Cho phép đặc cách nhảy cóc trực tiếp từ **Fixer Grade 2 hoặc Grade 3** lên thẳng Color Fixer mà không bắt buộc phải leo qua từng cấp bậc truyền thống nếu thỏa mãn một trong các lộ trình thần đồng:
+    * *Track A - Thức tỉnh E.G.O Sớm (Kali / Gebura path):* Mang trạng thái `EGOAwakened`, đạt Merit $\ge 120$ và Rep $\ge 72$.
+    * *Track B - Thần đồng Chiến tích & Di vật Bất khả thi (Roland / Argalia path):* Thu thập di vật/vũ khí kỳ tích (`rel_*`, `wpn_*`) hoặc lập chiến công diệt họa cấp Star of the City (`ProdigyFixer`, `KeptDungeonTrophy`, `StarConqueror`, `SoloStarConqueror`, `TabooHunter`), đạt Merit $\ge 130$ và Rep $\ge 75$.
+    * *Track C - Đột phá Cộng hưởng Dị thường (Anomaly Resonance):* Chỉ số Resonance $\ge 50$ kết hợp Merit $\ge 130$ và Rep $\ge 75$.
+  * Bổ sung hằng số quy chuẩn `COLOR_FIXER_REQ_PRODIGY = { merit: 140, rep: 78, age: 26 }` trong `src/engine/careerPipeline.js` và tích hợp đồng bộ vào bộ máy xét duyệt `checkColorFixerReadiness(char)`.
+
+* **Xây dựng Nhánh Nghề nghiệp Độc lập Chuyên biệt `Color Fixer` (`job === 'Color Fixer'`):**
+  * Khi chính thức vượt qua khảo thí và nhận sắc danh Màu, nhân vật được chuyển giao toàn diện sang chức nghiệp `char.job = 'Color Fixer'`, đẳng cấp danh nghĩa `char.fixerGrade = 0`, gắn cờ vĩnh viễn `char.flags.push('ColorFixer')` và ghi nhận danh hiệu Color độc bản qua giao diện phong hiệu Hana.
+  * **Thu nhập Đỉnh cao:** Nâng mức phụ cấp `JOB_INCOME` của Color Fixer lên mức tối thượng **12 Ahn/năm** (vượt trội so với Fixer Grade 1 là 8 Ahn và Wing Executive là 7 Ahn).
+  * **Tiếp tục Hợp đồng Đỉnh cao:** Hàm `contractRouteOf` trong `careerContracts.js` công nhận `Color Fixer` duy trì tuyến hợp đồng Fixer với cấp lực chiến `equivalentGrade = 0` (tiếp cận trọn vẹn Requests Tier 5 Star of the City).
+  * **Hài hòa Bất biến Engine & Kiểm định Triệu khoảnh khắc:**
+    * `src/engine/storyInvariants.js`: Cho phép `char.job === 'Color Fixer'` đồng hành cùng `fixerGrade === 0` và cờ `ColorFixer`, ngăn ngừa báo động sai lệch trạng thái.
+    * `tools/sim/run_million_audit.mjs`: Miễn trừ quy tắc kiểm tra nhảy bậc (`STATS.fixerGradeSkipViolations`) và đa bậc trong năm đối với trường hợp thăng phong Color Fixer hợp lệ.
+    * `src/engine/yearPlanner.js`: Điều chỉnh hao mòn thể lực (`job_wear`) và điểm Merit hàng năm cho `Color Fixer`.
+    * `src/engine/gameEngine.js`: Đồng bộ hóa hiển thị mục tiêu cột mốc sự nghiệp `getNextCareerMilestone` sang huy hiệu `COLOR FIXER ASCENSION: Sovereign Legend of The City`.
+
+* **Tuyến Truyện & Nhiệm vụ Đỉnh cao Dành Riêng Cho Color (`src/data/eventsColorCareerArc.js`):**
+  * Sáng tác trọn vẹn **9 sự kiện cốt truyện lớn** mang đậm triết lý và không khí tàn khốc, bi tráng của vũ trụ Project Moon, song ngữ Việt - Anh chuẩn chỉnh, vượt qua 100% Voice Linter và Story Linter:
+    1. `color_arc_found_office`: Khai trương Văn phòng Color Bản mệnh (dựng cờ tại Backstreets D23 đón kẻ bần cùng hoặc thuê penthouse Nest ký kết đồng minh cùng Wing).
+    2. `color_arc_star_aberration`: Trấn áp Dị thể Cấp Star of the City (đối đầu quái vật cấu trúc dị hình vượt qua giới hạn phong tỏa).
+    3. `color_arc_wing_proxy_war`: Can thiệp Chiến tranh Ủy nhiệm Singularity (đứng giữa hai tập đoàn Corp chuẩn bị kích hoạt vũ khí hủy diệt).
+    4. `color_arc_beholder_scrutiny`: Ánh Nhìn của Mắt Thần Beholder B Corp (cuộc đối mặt với thanh tra toàn giác và ranh giới Điều Cấm Kỵ The Head).
+    5. `color_arc_disciple_recruitment`: Thu nhận Đệ tử Thần đồng Kế tục (truyền thụ đao kiếm cho thiếu niên mồ côi mang mầm mống thiên bẩm).
+    6. `color_arc_rival_color_duel`: Tỉ thí Đỉnh cao giữa Hai Color Huyền thoại (đọ kiếm thâu đêm tại tàn tích cổ đại, thử thách sinh tử và sự tôn trọng của bậc tôn sư).
+    7. `color_arc_taboo_workshop_commission`: Đúc Vũ khí Bản mệnh tại Workshop Cổ xưa (rèn đúc kiệt tác vũ khí phát sáng sắc màu linh hồn).
+    8. `color_arc_backstreets_aegis`: Tấm Khiên Phố Ngầm (đứng ra bảo vệ khu chợ nghèo Backstreets trước liên minh cướp bóc nội tạng).
+    9. `color_arc_legacy_transmission`: Trao Lại Áo Choàng Color Khi Về Già (di chúc truyền thừa sắc danh cho thế hệ sau khi sức tàn lực kiệt).
+
+* **Kiểm định Toàn vẹn & Triển khai:**
+  * Bổ sung test suite `tests/test_color_career_arc.mjs` và tích hợp vào quy trình `package.json` (`npm test`).
+  * Toàn bộ 51 test suites đạt kết quả 100% OK.
+  * Voice linter 31.571 chuỗi và Story linter: 0 lỗi, 0 cảnh báo.
+  * Story logic audit 100 cuộc đời (15.570 khoảnh khắc): 0 vi phạm logic.
+  * Vite production build: hoàn thành thành công trong 6.80s.
+

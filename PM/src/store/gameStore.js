@@ -975,6 +975,9 @@ export const useGameStore = create((set, get) => ({
     next.customTitle = title;
     next.colorData = colorData;
     next.isColorFixer = true;
+    next.job = 'Color Fixer';
+    next.fixerGrade = 0;
+    if (!next.flags.includes('ColorFixer')) next.flags.push('ColorFixer');
     next.pendingModal = null;
     if (!next.unlockedRecords.includes('color_fixer')) next.unlockedRecords.push('color_fixer');
     next.logs.push({

@@ -197,27 +197,57 @@ export const COLOR_FIXER_REQ = { merit: 300, rep: 95 };
 // Hana draws its Colors from Grade 1. A Fixer whose E.G.O has taken shape is already past what the
 // grading system measures, so Hana looks sooner; the trial itself is the same and can still be failed.
 export const COLOR_FIXER_REQ_EGO = { merit: 240, rep: 88, age: 28 };
-export const colorRequirementFor = (char) => (hasAwakenedEgo(char) ? COLOR_FIXER_REQ_EGO : { ...COLOR_FIXER_REQ, age: 30 });
+
+// Prodigy Fast-Track: extraordinary feats / early E.G.O allow Color ascension around age 26-32
+export const COLOR_FIXER_REQ_PRODIGY = { merit: 140, rep: 78, age: 26 };
+
+export const isColorProdigyEligible = (char) => {
+  if (!char || char.flags?.includes('Distorted') || char.flags?.includes('ColorFixer')) return false;
+  if (char.job !== 'Fixer' && char.job !== 'Color Fixer') return false;
+  if (char.age < 26 || char.age > 34) return false;
+  if (![1, 2, 3].includes(char.fixerGrade)) return false;
+
+  const rep = (char.stats?.rep ?? char.rep) || 0;
+  const merit = char.merit || 0;
+  const flags = char.flags || [];
+  const hasRelic = (char.inventory || []).some((it) => String(it?.id || it).startsWith('rel_') || String(it?.id || it).startsWith('wpn_'));
+  const hasFeat = flags.some((f) => ['ProdigyFixer', 'KeptDungeonTrophy', 'StarConqueror', 'SoloStarConqueror', 'TabooHunter'].includes(f));
+
+  // Feat / Impossible Trial Conqueror (all grades 1-3)
+  if ((hasRelic || hasFeat || (char.resonance || 0) >= 50) && rep >= 75 && merit >= 130) return true;
+
+  // Track A: Awakened E.G.O Prodigy (specifically for exceptional under-grade Fixers Grade 2-3)
+  if ([2, 3].includes(char.fixerGrade) && hasAwakenedEgo(char) && rep >= 72 && merit >= 120) return true;
+
+  return false;
+};
+
+export const colorRequirementFor = (char) => {
+  if (isColorProdigyEligible(char)) return COLOR_FIXER_REQ_PRODIGY;
+  return hasAwakenedEgo(char) ? COLOR_FIXER_REQ_EGO : { ...COLOR_FIXER_REQ, age: 30 };
+};
 
 export function checkColorFixerReadiness(char) {
+  const isProdigy = isColorProdigyEligible(char);
   const req = colorRequirementFor(char);
   const targetMerit = req.merit;
   const targetRep = req.rep;
   const targetAge = req.age;
-  if (char.job !== 'Fixer' || char.flags.includes('Distorted') || char.flags.includes('ColorFixer')) {
+  if ((char.job !== 'Fixer' && char.job !== 'Color Fixer') || char.flags.includes('Distorted') || char.flags.includes('ColorFixer')) {
     return { ready: false, reason: 'Chưa đủ điều kiện', targetMerit, targetRep };
   }
-  if (char.fixerGrade !== 1) {
-    return { ready: false, reason: 'Bắt buộc phải là Fixer Grade 1', targetMerit, targetRep };
+  if (char.fixerGrade !== 1 && !isProdigy) {
+    return { ready: false, reason: 'Bắt buộc phải là Fixer Grade 1 (hoặc đạt chuẩn Thần Đồng Đặc Cách)', targetMerit, targetRep };
   }
   if (char.age < targetAge) return { ready: false, reason: `Hana yêu cầu hồ sơ hành nghề lâu năm (từ ${targetAge} tuổi)`, targetMerit, targetRep, targetAge };
   const curRep = (char.stats?.rep ?? char.rep) || 0;
   const meritOk = (char.merit || 0) >= targetMerit;
   const repOk = curRep >= targetRep;
-  const egoOrResonance = true; // E.G.O is not a prerequisite for a Color designation.
+  const egoOrResonance = true;
 
   return {
     ready: meritOk && repOk && egoOrResonance,
+    isProdigy,
     meritOk,
     repOk,
     egoOrResonance,
