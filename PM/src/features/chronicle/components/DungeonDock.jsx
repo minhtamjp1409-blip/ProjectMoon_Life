@@ -18,6 +18,7 @@ import {
   evaluateDungeonChoiceOdds
 } from '../../../engine/gameEngine.js';
 import { gauntletRoute } from '../../../engine/dungeonCombat.js';
+import { getCompanionStageBanter } from '../../../data/dungeonExtras.js';
 
 const STANCES = [
   {
@@ -177,7 +178,7 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
   const fight = stage.combat || null;
 
   return (
-    <div className={`dock is-dungeon theme-${def.theme}${fight?.isBoss ? ' is-boss' : ''}${fight?.phase === 2 ? ' is-phase-2' : ''}`} style={{ '--dg': def.accentColor }} role="document">
+    <div className={`dock is-dungeon theme-${def.theme}${fight?.isBoss ? ' is-boss' : ''}${fight?.phase === 2 ? ' is-phase-2' : ''}${strain >= 70 ? ' is-panic-high' : ''}`} style={{ '--dg': def.accentColor }} role="document">
       {result?.fx && <span key={result.nonce} className={`dg-fx fx-${result.fx}`} aria-hidden="true" />}
       <div className="dock-inner dg">
         <header className="dg-head">

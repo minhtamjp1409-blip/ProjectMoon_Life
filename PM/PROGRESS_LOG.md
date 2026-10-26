@@ -1,8 +1,8 @@
 # The City Chronicles: Tài Liệu Tiến Trình & Kiến Trúc Kỹ Thuật Toàn Diện
 
-> **Cập nhật ghi chép: 26/10/2026 (Đợt 60: Nâng cấp Toàn Diện Hệ Thống NPC - Dynamic Agency, Nghề Nghiệp Song Hành, Tương Tác Giãi Bày/Hỗ Trợ, Dungeon Tag-Team & Kế Thừa Huyết Thống; đã push và deploy)**
+> **Cập nhật ghi chép: 26/10/2026 (Đợt 61: Tối ưu hóa Toàn diện Hệ thống Hầm ngục - Gimmick Dị thể & Môi trường, Trích xuất Cổ vật Kỳ tích, Hội thoại Đồng hành tại Chặng & Game Feel Nhịp tim Hoảng loạn; đã push và deploy)**
 > Đợt 26 thay cơ chế gọi Carmen và bổ sung lựa chọn chuẩn bị; số đo cuộc đời ở Đợt 23 là lịch sử, không phải tỷ lệ hiện tại.
-> **Trạng thái xác minh tại máy cho Đợt 60:** `npm test` đạt toàn bộ 49 suite (thêm `test_npc_dynamic_agency.mjs`), story linter & voice linter 31.438 chuỗi đạt 0 lỗi, 100 kiếp Story Logic Audit đạt 0 vi phạm (15.112 khoảnh khắc), audit 500 khoảnh khắc đạt 100%; `npm run build` đạt. Đã commit và push đồng bộ lên Git remote `origin/main`.
+> **Trạng thái xác minh tại máy cho Đợt 61:** `npm test` đạt toàn bộ 50 suite (thêm `test_dungeon_enhancements.mjs`), story linter & voice linter 31.438 chuỗi đạt 0 lỗi, audit 500 khoảnh khắc đạt 100%; `npm run build` đạt. Đã commit và push đồng bộ lên Git remote `origin/main`.
 > **Cách đọc số liệu:** Các kết quả mô phỏng ở Đợt 1–21 là ảnh chụp lịch sử tại thời điểm ghi; xem Đợt 23 để đọc phép đo Color/E.G.O hiện hành. Đợt 22 và mục 9.3 ghi các lần kiểm thử chức năng trước đó.
 
 ---
@@ -1158,3 +1158,41 @@ Chủ dự án yêu cầu làm lại toàn bộ giao diện lần nữa: bỏ t�
   * Story logic audit 100 kiếp nhân sinh (`tools/sim/story_logic_audit.mjs 100`): 0 logic violations trên 15.112 khoảnh khắc đời người.
   * Production Vite Build thành công 100% trong 7.05s.
   * Git remote: Đã commit và push đồng bộ lên nhánh `main`.
+
+
+### Đợt 61 (26/10/2026): Tối Ưu Hóa Toàn Diện Hệ Thống Hầm Ngục - Gimmick Dị Thể & Môi Trường, Trích Xuất Cổ Vật Kỳ Tích, Hội Thoại Đồng Hành Tại Chặng & Game Feel Nhịp Tim Hoảng Loạn
+
+* **Gimmick Dị thể & Khắc chế Môi trường (`DUNGEON_GIMMICKS` trong `src/engine/dungeonEngine.js`):**
+  * Tích hợp cơ chế môi trường và quy tắc dị thể đặc thù cho toàn bộ các địa danh thám hiểm:
+    * *WARP Train (`warp_pressure`):* Áp suất dị chiều gây nhiễu loạn không gian; khi áp lực tâm thần cao, sát thương trượt kiểm định tăng nhưng thế Thận trọng (`guarded`) giảm 50% chấn động.
+    * *L Corp Ruins (`qlippoth_meltdown`):* Băng hoại Qlippoth tăng dần theo từng chặng; thao tác Dò đường (`E`) hoặc thẻ Dò xét giúp giải trừ mức báo động.
+    * *Great Lake (`lake_currents`):* Sóng ngầm Đại Hồ U Corp gia tăng cơ hội kiểm định Thể lực nhưng tăng áp lực tinh thần cho Thần kinh.
+    * *Bloodfiend Carnival (`crimson_carnival`):* Khát vọng huyết hội La Manchaland: kiểm định thành công hồi phục sinh lực, thất bại rút thêm máu.
+    * *Outskirts Ruins (`ancient_relic_decay`):* Bụi kim loại cổ đại bào mòn trang bị; tăng chi phí nghỉ thở nhưng nhặt thêm 20% giá trị cổ vật.
+    * *Backstreets Night (`sweeper_hour`):* Khung giờ Sweeper phong tỏa 3:13 đến 4:34; rút lui an toàn nhận thêm danh tiếng.
+  * Hiển thị huy hiệu Gimmick trực quan (`.dg-gimmick-badge`) tại góc tiêu đề của `DungeonDock.jsx`.
+
+* **Trích xuất Cổ vật Kỳ tích & Trang bị Đặc chế (`DUNGEON_EXTRACTION_REWARDS` & `src/data/itemsData.js`):**
+  * Chinh phục hoàn tất hầm ngục (Conquest) mở khóa cơ hội thu hồi cổ vật độc bản vào kho đồ nhân vật (`char.inventory`):
+    * L Corp Ruin: `rel_qlippoth_core` (Lõi Qlippoth L Corp - giảm 15% áp lực tâm thần trong mọi hầm ngục).
+    * WARP Train: `rel_warp_shard` (Mảnh Dị Chiều W Corp - né tránh các vết nứt không gian).
+    * Bloodfiend Carnival: `wpn_carnival_rapier` (Liễu Kiếm Huyết Hội - vũ khí hút sinh lực).
+    * Great Lake: `rel_pallid_oil` (Dầu Tinh Chất Cá Voi Trắng - neo giữ lý trí).
+    * Outskirts Ruins: `rel_ruin_monolith` (Phiến Đá Khắc Outskirts - vĩnh viễn +16 Resonance).
+    * Backstreets Night: `rel_sweeper_fluid` (Huyết Thanh Sweeper 3:13).
+  * Cổ vật lưu trữ vĩnh viễn và có thể truyền lại cho đời sau qua hệ thống kế thừa huyết thống.
+
+* **Hội thoại Đồng hành Sống động tại Chặng (`COMPANION_STAGE_BANTER` & `src/data/dungeonExtras.js`):**
+  * Tích hợp phát ngôn đồng hành theo sát 10 tính cách (Archetype: `hothead`, `cautious`, `veteran`, `loyal`, `gambler`, `idealist`, `tinkerer`, `cynic`, `proud`, `silent`).
+  * Trích dẫn thoại được bố trí trang nhã (`.dg-companion-banter`) ngay dưới tiêu đề từng chặng thám hiểm, mang lại không khí đồng đội vào sinh ra tử.
+
+* **Game Feel: Nhịp tim Hoảng loạn & Rung chấn Thị giác (`src/engine/audioEngine.js` & `dungeon-fx.css`):**
+  * Kỹ thuật âm thanh Web Audio API: phương thức `playHeartbeat(rate)` tạo tiếng đập hai pha (lub-dub) dồn dập khi áp lực tâm thần vượt ngưỡng nguy cấp (`strain >= 70`).
+  * Thêm `playClashSpark()` tái hiện tiếng kim khí ma sát và tia lửa chém đỡ.
+  * Hiệu ứng `.dock.is-dungeon.is-panic-high`: viền đỏ mờ (cardiac vignette) nhấp nháy chậm theo nhịp tim, tạo cảm giác ngột ngạt chân thực.
+
+* **Kiểm thử & Khắc phục Toàn vẹn:**
+  * Tạo bộ kiểm thử chuyên dụng `tests/test_dungeon_enhancements.mjs` tích hợp vào luồng `npm test` (vượt qua toàn bộ 50/50 suites).
+  * Voice linter & Story linter 31.438 chuỗi: 0 lỗi.
+  * Production Vite Build: hoàn tất 100% trong 7.14s.
+  * Git remote: Đồng bộ thành công lên nhánh `main`.

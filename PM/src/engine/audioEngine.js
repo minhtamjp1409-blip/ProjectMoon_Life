@@ -727,6 +727,99 @@ class AudioEngine {
   /**
    * Danger / Syndicate siren / Sweeper chime: Low resonant drone.
    */
+  /**
+   * Visceral low-frequency cardiac pulse for high strain / panic in dungeons (lub-dub).
+   */
+  playHeartbeat(rate = 1) {
+    if (this.isMuted) return;
+    this.init();
+    if (!this.ctx) return;
+
+    const t = this.ctx.currentTime;
+    this.duckAmbience(0.4, 600);
+
+    // Lub (first contraction)
+    const osc1 = this.ctx.createOscillator();
+    const gain1 = this.ctx.createGain();
+    const filter1 = this.ctx.createBiquadFilter();
+
+    osc1.type = 'sine';
+    osc1.frequency.setValueAtTime(62, t);
+    osc1.frequency.exponentialRampToValueAtTime(36, t + 0.14);
+
+    filter1.type = 'lowpass';
+    filter1.frequency.setValueAtTime(110, t);
+
+    gain1.gain.setValueAtTime(0.001, t);
+    gain1.gain.linearRampToValueAtTime(0.38 * rate, t + 0.02);
+    gain1.gain.exponentialRampToValueAtTime(0.001, t + 0.16);
+
+    osc1.connect(filter1);
+    filter1.connect(gain1);
+    gain1.connect(this.sfxGain);
+
+    osc1.start(t);
+    osc1.stop(t + 0.18);
+
+    // Dub (second closure)
+    const osc2 = this.ctx.createOscillator();
+    const gain2 = this.ctx.createGain();
+    const filter2 = this.ctx.createBiquadFilter();
+
+    const t2 = t + 0.15;
+    osc2.type = 'sine';
+    osc2.frequency.setValueAtTime(54, t2);
+    osc2.frequency.exponentialRampToValueAtTime(30, t2 + 0.12);
+
+    filter2.type = 'lowpass';
+    filter2.frequency.setValueAtTime(95, t2);
+
+    gain2.gain.setValueAtTime(0.001, t2);
+    gain2.gain.linearRampToValueAtTime(0.28 * rate, t2 + 0.02);
+    gain2.gain.exponentialRampToValueAtTime(0.001, t2 + 0.14);
+
+    osc2.connect(filter2);
+    filter2.connect(gain2);
+    gain2.connect(this.sfxGain);
+
+    osc2.start(t2);
+    osc2.stop(t2 + 0.16);
+  }
+
+  /**
+   * Clash sparks & high-velocity blade deflection friction.
+   */
+  playClashSpark() {
+    if (this.isMuted) return;
+    this.init();
+    if (!this.ctx) return;
+
+    const t = this.ctx.currentTime;
+    this.duckAmbience(0.5, 300);
+
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    const filter = this.ctx.createBiquadFilter();
+
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(1800, t);
+    osc.frequency.exponentialRampToValueAtTime(800, t + 0.12);
+
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(1400, t);
+    filter.Q.setValueAtTime(4, t);
+
+    gain.gain.setValueAtTime(0.3, t);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.15);
+
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.sfxGain);
+
+    osc.start(t);
+    osc.stop(t + 0.16);
+  }
+
   playDanger() {
     if (this.isMuted) return;
     this.init();

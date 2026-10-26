@@ -390,3 +390,89 @@ export const REPORT_FIT = {
 
 // Flags the dungeon engine grants from the tables above, declared where the story lint can see them
 export const DUNGEON_FLAGS = [{ flagGranted: 'KeptDungeonTrophy' }];
+
+/**
+ * Dungeon extraction unique relics & signature gear
+ */
+export const DUNGEON_EXTRACTION_REWARDS = {
+  dungeon_lobotomy_ruin: 'rel_qlippoth_core',
+  dungeon_warp_train: 'rel_warp_shard',
+  dungeon_bloodfiend_carnival: 'wpn_carnival_rapier',
+  dungeon_great_lake: 'rel_pallid_oil',
+  dungeon_outskirts_ruins: 'rel_ruin_monolith',
+  dungeon_backstreets_night: 'rel_sweeper_fluid'
+};
+
+/**
+ * Contextual companion stage banter dialogues based on archetype
+ */
+export const COMPANION_STAGE_BANTER = {
+  hothead: [
+    { vi: '“Cứ xông thẳng vào! Lùi bước trước lũ quái thai này là sỉ nhục vũ khí của chúng ta.”', en: '“Charge straight through! Backing down from these freaks is an insult to our steel.”' },
+    { vi: '“Máu dính đầy mặt rồi, nhưng đao của tôi vẫn còn bén lắm.”', en: '“Blood is all over my face, but my blade is still razor sharp.”' },
+    { vi: '“Đừng nhìn tôi như thế, tôi chưa ngã xuống đâu!”', en: '“Don’t look at me like that, I haven’t fallen yet!”' }
+  ],
+  cautious: [
+    { vi: '“Nhìn sàn nhà kìa... vết máu còn chưa khô. Giữ vững thế thủ, một sơ hở là hết đường về.”', en: '“Look at the floor... the blood hasn’t dried. Keep your guard up, one slip and there’s no way back.”' },
+    { vi: '“Tiếng bước chân sau vách tường... Chúng ta đang bị bám đuôi đấy.”', en: '“Footsteps behind the wall... Something is stalking us.”' },
+    { vi: '“Nếu thấy tình hình không ổn, hãy rút lui ngay lập tức.”', en: '“If things turn south, sound the retreat immediately.”' }
+  ],
+  veteran: [
+    { vi: '“Điều chỉnh nhịp thở đi. Đừng để tiếng rít gào làm rối loạn bước chân. Sống sót ở The City là nhờ cái đầu lạnh.”', en: '“Steady your breathing. Don’t let the roaring disrupt your footwork. Survival in the City belongs to cold heads.”' },
+    { vi: '“Căn phòng này có cấu trúc giống hệt bẫy phục kích thời Chiến Tranh Khói. Đi sát mép tường.”', en: '“This room is laid out just like an ambush from the Smoke War. Hug the wall.”' },
+    { vi: '“Đòn kết liễu luôn đến lúc đối phương nghĩ mình đã an toàn.”', en: '“The killing stroke always lands when the foe thinks they are safe.”' }
+  ],
+  loyal: [
+    { vi: '“Cứ tập trung phía trước. Lưng của bạn, tôi nhận trách nhiệm bảo vệ bằng cả tính mạng.”', en: '“Keep your eyes forward. I swear my life on watching your back.”' },
+    { vi: '“Chỉ cần bạn chưa bỏ cuộc, tôi sẽ không lùi nửa bước.”', en: '“As long as you do not give up, I will not yield half a step.”' },
+    { vi: '“Tôi sẽ mở đường máu, đi ngay sau tôi!”', en: '“I will cut a path through, stay right behind me!”' }
+  ],
+  gambler: [
+    { vi: '“Một ăn cả, ngã về không! Tỷ lệ càng hiểm thì chiến lợi phẩm bên dưới càng đáng giá.”', en: '“Double or nothing! The deadlier the odds, the richer the spoils waiting below.”' },
+    { vi: '“Con xúc xắc sinh tử đã tung ra rồi, giờ không có đường quay đầu đâu!”', en: '“The mortal die is cast, there is no turning back now!”' },
+    { vi: '“Một ván cược tuyệt vời, đúng phong cách của The City!”', en: '“A magnificent wager, true City style!”' }
+  ],
+  idealist: [
+    { vi: '“Bóng tối ở đây dù sâu đến đâu, ngọn lửa trong lòng chúng ta vẫn chưa thể bị dập tắt.”', en: '“No matter how deep this dark is, the spark in our hearts cannot be smothered.”' },
+    { vi: '“Chúng ta sẽ đưa mọi người trở về bình an, tôi tin vào điều đó.”', en: '“We will bring everyone back safely, I believe in that.”' },
+    { vi: '“Đừng để nỗi sợ nuốt chửng bản thân, hãy nhìn vào ánh sáng phía trước.”', en: '“Do not let fear swallow you whole, keep your gaze on the light ahead.”' }
+  ],
+  tinkerer: [
+    { vi: '“Cấu trúc tàn tích này... nếu tháo được một cụm lõi mang về, Workshop sẽ trả cả gia tài.”', en: '“The machinery in this ruin... if we salvage even one core assembly, the Workshops will pay a fortune.”' },
+    { vi: '“Cẩn thận van áp suất bên góc trái, nó sắp quá tải vì cộng hưởng rồi!”', en: '“Watch the pressure valve on the left, it’s about to overload from resonance!”' },
+    { vi: '“Tôi vừa gắn thêm chốt gia cố vào giáp của bạn đấy, chịu đòn tốt hơn rồi.”', en: '“I just reinforced your armor latch, it should take a hit better now.”' }
+  ],
+  cynic: [
+    { vi: '“Tất cả những bộ xương rải rác ở đây đều từng nghĩ mình là kẻ đặc biệt. Giữ đầu trên cổ đã.”', en: '“Every skeleton rotting here once thought they were special. Keep your head on your shoulders first.”' },
+    { vi: '“The City không có chỗ cho anh hùng, chỉ có kẻ sống sót và thức ăn cho Sweeper.”', en: '“The City has no room for heroes, only survivors and Sweeper chow.”' },
+    { vi: '“Lại thêm một căn phòng tanh mùi máu... Hy vọng số Ahn nhặt được bõ công.”', en: '“Another room reeking of iron... Let us hope the Ahn haul is worth the trouble.”' }
+  ],
+  proud: [
+    { vi: '“Một nơi nhớp nhúa tồi tàn... Nhưng nếu đã bước vào, ta phải dọn sạch nó một cách hoàn hảo.”', en: '“A wretched, filthy pit... But since we entered, we shall purge it with absolute perfection.”' },
+    { vi: '“Lũ quái vật hạ đẳng này không xứng đáng làm đối thủ của chúng ta.”', en: '“These low-life beasts are unworthy to cross blades with us.”' },
+    { vi: '“Đi thẳng về phía trước, đừng để vấy bẩn danh tiếng của chúng ta.”', en: '“March straight ahead, do not tarnish our reputation.”' }
+  ],
+  silent: [
+    { vi: '“... (gật đầu siết chặt chuôi kiếm, ánh mắt lạnh lùng quét qua bóng tối).”', en: '“... (nods firmly, gripping the hilt, scanning the darkness with cold eyes).”' },
+    { vi: '“... (ra hiệu tay chỉ về phía góc khuất, vũ khí đã vào thế sẵn sàng).”', en: '“... (signals with a hand toward the blind corner, weapon primed).”' },
+    { vi: '“... (bước lên nửa bước, che chắn hướng tấn công hiểm hóc nhất).”', en: '“... (steps half a pace forward, shielding the most dangerous angle).”' }
+  ]
+};
+
+/**
+ * Returns contextual banter for companion at current stage
+ */
+export function getCompanionStageBanter(companion, theme, stageIndex = 0) {
+  if (!companion) return null;
+  const arch = companion.archetype || (companion.tags && companion.tags[0]) || 'veteran';
+  const pool = COMPANION_STAGE_BANTER[arch] || COMPANION_STAGE_BANTER.veteran;
+  const idx = Math.abs((stageIndex || 0)) % pool.length;
+  const item = pool[idx];
+  return {
+    nameVi: companion.nameVi || 'Đồng đội',
+    nameEn: companion.nameEn || 'Companion',
+    role: companion.role || 'partner',
+    vi: item.vi,
+    en: item.en
+  };
+}

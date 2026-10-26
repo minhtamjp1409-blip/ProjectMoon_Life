@@ -15,7 +15,8 @@ import { dungeonWagerDamage, dungeonWagerLoot, dungeonWagerLevel } from './dunge
 import { traitsOf } from './variance.js';
 import { evaluateCompanionSupport, ensureNpcAgency, getNpcDungeonPerk } from '../data/npcPersonality.js';
 import { FAIL_TEXT, GENERIC_FAIL, STRAIN_NOTES, BREAK_TEXT, SUPPLY_TEXT, ENDING_TEXT } from '../data/dungeonText.js';
-import { NIGHT_DUNGEON, STAGE_VARIANTS, SIDE_ROOMS, SHORTCUTS, COMPANION_TEXT, COMPANION_LEAD, FINAL_KEEPS, REPORT_FIT } from '../data/dungeonExtras.js';
+import { NIGHT_DUNGEON, STAGE_VARIANTS, SIDE_ROOMS, SHORTCUTS, COMPANION_TEXT, COMPANION_LEAD, FINAL_KEEPS, REPORT_FIT, DUNGEON_EXTRACTION_REWARDS } from '../data/dungeonExtras.js';
+import { ITEMS_CATALOG } from '../data/itemsData.js';
 import { CLAW_DUNGEON, CLAW_DUNGEON_ID } from '../data/dungeonClaw.js';
 import { ENSEMBLE_DUNGEON, ENSEMBLE_ROUTE_SCENES, ENSEMBLE_SCORE_ITEM } from '../data/dungeonEnsemble.js';
 import { ENSEMBLE_DUNGEON_ID, ensembleRoute, ensembleWitness, recordEnsembleRetreat, finishEnsembleRun } from './ensemblePath.js';
@@ -26,6 +27,52 @@ import { applyNpcFate } from './director.js';
 import { dealCards, cardEffectOf, nextHand, dungeonUsesCards } from './dungeonCards.js';
 export { playDungeonCard, cardPlayable, cardBudgetLeft, DUNGEON_CARDS, CARD_BUDGET } from './dungeonCards.js';
 import { initGauntlet, isGauntlet, gauntletStage, previewCombatAction, resolveGauntletChoice, canLeaveGauntlet } from './dungeonCombat.js';
+
+
+export const DUNGEON_GIMMICKS = {
+  warp: {
+    id: 'warp_pressure',
+    nameVi: 'Áp Suất Dị Chiều',
+    nameEn: 'Dimensional Compression',
+    descVi: 'Không gian bị nén ép: áp lực tâm thần tăng thêm khi trượt kiểm định, nhưng thế Thận trọng giảm 50% chấn động.',
+    descEn: 'Warped spacetime: failure inflicts extra strain, but Guarded stance halves dimensional recoil.'
+  },
+  lobotomy: {
+    id: 'qlippoth_meltdown',
+    nameVi: 'Băng Hoại Qlippoth',
+    nameEn: 'Qlippoth Meltdown',
+    descVi: 'Mỗi chặng tăng 1 mức Meltdown (+2 áp lực). Dò đường (E) hoặc thẻ Dò xét giúp giải trừ cảnh báo.',
+    descEn: 'Each stage elevates Meltdown (+2 strain). Reading stage (E) or Scout cards purges the alarm.'
+  },
+  greatlake: {
+    id: 'lake_currents',
+    nameVi: 'Hải Trình Đại Hồ',
+    nameEn: 'Great Lake Current',
+    descVi: 'Sương mù và sóng ngầm: kiểm định Thể lực tăng cơ hội thành công, nhưng kiểm định Thần kinh nhận thêm áp lực.',
+    descEn: 'Fog and undercurrents: Vigor checks are empowered, but Nerve failures inflict extra strain.'
+  },
+  bloodfiend: {
+    id: 'crimson_carnival',
+    nameVi: 'Khát Vọng Huyết Hội',
+    nameEn: 'Carnival Bloodthirst',
+    descVi: 'Khát vọng máu thôi thúc: thành công kiểm định hồi +3 HP, thất bại mất thêm 3 HP.',
+    descEn: 'Bloodlust surges: check successes restore +3 HP, while failures drain 3 extra HP.'
+  },
+  outskirts: {
+    id: 'ancient_relic_decay',
+    nameVi: 'Bụi Tàn Tích Cổ Đại',
+    nameEn: 'Ancient Dust Decay',
+    descVi: 'Bụi kim loại cổ đại bào mòn: nghỉ thở tốn thêm +2 Ahn, nhưng chiến lợi phẩm tăng thêm +20%.',
+    descEn: 'Ancient dust wears down gear: breather costs +2 Ahn, but gathered haul is worth +20% more.'
+  },
+  night: {
+    id: 'sweeper_hour',
+    nameVi: 'Khung Giờ Quét Dọn',
+    nameEn: 'The Sweeping Hour',
+    descVi: '3:13 đến 4:34: Không gian Backstreets bị Sweeper phong tỏa; rút lui an toàn thưởng thêm danh tiếng.',
+    descEn: '3:13 to 4:34: Streets locked by Sweepers; safe extraction earns bonus reputation.'
+  }
+};
 
 export const DUNGEON_DEFINITIONS = {
   dungeon_warp_train: {
@@ -888,6 +935,22 @@ function settleRun(char, session, outcome) {
   if (session.aff && getAffiliation(char)?.id === session.aff) {
     moveStanding(char, outcome === 'conquered' ? 10 : outcome === 'fled' ? -3 : -5);
   }
+  if (outcome === 'conquered') {
+    const relicId = DUNGEON_EXTRACTION_REWARDS?.[session.id];
+    if (relicId) {
+      const hasItem = (char.inventory || []).some((it) => (it.id || it) === relicId);
+      if (!hasItem) {
+        const relic = ITEMS_CATALOG.find((i) => i.id === relicId);
+        if (relic) {
+          char.inventory = [...(char.inventory || []), { ...relic }];
+          notes.push({
+            vi: '[Trích xuất Cổ vật] Bạn thu hồi được kỳ tích độc bản: ' + relic.nameVi + '.',
+            en: '[Relic Extracted] You salvaged a signature relic: ' + relic.nameEn + '.'
+          });
+        }
+      }
+    }
+  }
   return notes;
 }
 
@@ -1179,6 +1242,8 @@ export function createDungeonSession(dungeonId, char) {
     resolveAwakened: false,
     lastStageResult: null,
     // The same door can open onto a different third stage: fixed by seed and age, so a reload does not reroll it
+    gimmick: DUNGEON_GIMMICKS[def.theme] || null,
+    meltdownLevel: 0,
     variant: def.variants?.[2] && fnv(`${char?.seed ?? ''}|${def.id}|${char?.age ?? 0}`) % 2 === 1 ? 2 : null,
     inSide: null,
     companion: def.noCompanion ? null : pickDungeonCompanion(char),

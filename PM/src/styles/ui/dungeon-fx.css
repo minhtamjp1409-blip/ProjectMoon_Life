@@ -106,6 +106,82 @@
 .dg-shell-pulse.fx-phase { box-shadow: inset 0 0 140px rgba(0, 0, 0, 0.8); animation: dgfxFlash 1s ease-out; }
 .dg-shell-pulse.fx-mind { box-shadow: inset 0 0 100px rgba(187, 107, 217, 0.35); animation: dgfxRipple 0.7s ease-out; }
 
+
+/* ---------- High strain cardiac panic vignette ---------- */
+.dock.is-dungeon.is-panic-high::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 2;
+  box-shadow: inset 0 0 50px rgba(239, 68, 68, 0.28), inset 0 0 110px rgba(0, 0, 0, 0.42);
+  animation: dgHeartbeatPulse 1.4s infinite ease-in-out;
+}
+
+@keyframes dgHeartbeatPulse {
+  0%, 100% { opacity: 0.42; }
+  30% { opacity: 0.88; }
+  50% { opacity: 0.52; }
+  65% { opacity: 0.82; }
+}
+
+/* ---------- Tactical Gimmick Badge ---------- */
+.dg-gimmick-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--dg, var(--accent)) 16%, transparent);
+  color: var(--dg, var(--accent));
+  border: 1px solid color-mix(in srgb, var(--dg, var(--accent)) 38%, transparent);
+  letter-spacing: 0.02em;
+  margin-left: auto;
+}
+
+/* ---------- Contextual Companion Banter Bubble ---------- */
+.dg-companion-banter {
+  margin: 6px 0 10px 0;
+  padding: 7px 12px;
+  border-left: 2px solid color-mix(in srgb, var(--dg, var(--accent)) 65%, var(--border));
+  background: color-mix(in srgb, var(--raised) 75%, transparent);
+  border-radius: 0 6px 6px 0;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: var(--muted);
+  font-style: italic;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.dg-companion-banter .dg-banter-name {
+  font-weight: 700;
+  color: var(--ink);
+  font-style: normal;
+  letter-spacing: 0.01em;
+}
+
+.dg-companion-banter .dg-banter-text {
+  color: var(--muted);
+}
+
+@media (max-width: 640px) {
+  .dg-companion-banter {
+    padding: 6px 10px;
+    font-size: 0.78rem;
+    margin: 4px 0 8px 0;
+  }
+  .dg-gimmick-badge {
+    font-size: 0.68rem;
+    padding: 1px 6px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .dg-fx,
   .dgb-flash,

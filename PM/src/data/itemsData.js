@@ -170,7 +170,78 @@ export const ITEMS_CATALOG = [
     descEn: 'Underground diplomatic waiver wiping active Taboo points and cooling Syndicate heat.',
     tabooClear: 2,
     heatClear: 25
-  }
+  },
+  // ==========================================
+  // DUNGEON RELICS & SINGULARITIES (Chiến lợi phẩm Hầm ngục)
+  // ==========================================
+  {
+    id: 'rel_qlippoth_core',
+    type: ITEM_TYPES.SPECIAL,
+    tier: 'Star of the City',
+    costAhn: 120,
+    nameVi: 'Lõi Qlippoth L Corp',
+    nameEn: 'L Corp Qlippoth Core',
+    descVi: 'Lõi phát quang kỳ tích L Corp thu hồi từ lòng tàn tích. Hào quang này xoa dịu thần kinh và giảm 15% áp lực tâm thần trong mọi chuyến thám hiểm.',
+    descEn: 'A luminescent L Corp relic salvaged from the deep ruins. Its glow soothes the nerves and eases mental strain by 15% on delves.',
+    statBonus: { sanity: 12, resonance: 6 }
+  },
+  {
+    id: 'rel_warp_shard',
+    type: ITEM_TYPES.SPECIAL,
+    tier: 'Star of the City',
+    costAhn: 140,
+    nameVi: 'Mảnh Dị Chiều W Corp',
+    nameEn: 'W Corp Dimensional Shard',
+    descVi: 'Mảnh tinh thể kết tinh từ không gian dị chiều của chuyến tàu WARP. Giúp người mang né tránh các vết nứt không gian hiểm hóc.',
+    descEn: 'A crystal shard coalesced from dimensional folds of the WARP Train. Helps the bearer slip past perilous rift anomalies.',
+    statBonus: { rep: 8, network: 10 }
+  },
+  {
+    id: 'wpn_carnival_rapier',
+    type: ITEM_TYPES.WEAPON,
+    tier: 'Urban Nightmare',
+    costAhn: 95,
+    nameVi: 'Liễu Kiếm Huyết Hội',
+    nameEn: 'Carnival Blood Rapier',
+    descVi: 'Thanh liễu kiếm mảnh mai nhuộm đẫm huyết dịch từ lễ hội La Manchaland. Mỗi đường đâm chuẩn xác đều hút lấy sinh lực đối phương.',
+    descEn: 'A slender rapier bathed in carnival blood from La Manchaland. Precise thrusts leach the enemy vitality.',
+    stats: { rep: 12 },
+    combatPower: 26,
+    skillBonus: { combat: 28 }
+  },
+  {
+    id: 'rel_pallid_oil',
+    type: ITEM_TYPES.SPECIAL,
+    tier: 'Urban Nightmare',
+    costAhn: 80,
+    nameVi: 'Dầu Tinh Chất Cá Voi Trắng',
+    nameEn: 'Pallid Whale Essence Oil',
+    descVi: 'Chất dầu sáp chiết xuất từ làn nước trắng xóa của Đại Hồ U Corp. Hương thơm lạnh buốt giúp neo giữ lý trí trước cơn hoảng loạn.',
+    descEn: 'Waxy oil distilled from the pallid waves of U Corp Great Lake. Its freezing scent anchors reason against encroaching panic.',
+    statBonus: { sanity: 14 }
+  },
+  {
+    id: 'rel_ruin_monolith',
+    type: ITEM_TYPES.SPECIAL,
+    tier: 'Star of the City',
+    costAhn: 130,
+    nameVi: 'Phiến Đá Khắc Outskirts',
+    nameEn: 'Ancient Outskirts Monolith',
+    descVi: 'Mảnh phiến đá cổ chạm khắc ký tự vượt ngoài tầm hiểu biết của The City. Phát ra dao động cộng hưởng siêu nhiên vĩnh cửu.',
+    descEn: 'An ancient tablet fragment engraved with glyphs pre-dating the City. Emits a continuous supernatural resonance.',
+    statBonus: { resonance: 16 }
+  },
+  {
+    id: 'rel_sweeper_fluid',
+    type: ITEM_TYPES.SPECIAL,
+    tier: 'Urban Plague',
+    costAhn: 60,
+    nameVi: 'Huyết Thanh Sweeper 3:13',
+    nameEn: '3:13 Sweeper Catalyst Fluid',
+    descVi: 'Dung dịch sinh học thu được sau khi một bộ vest Sweeper tan rã lúc rạng sáng. Đựng trong bình chịu áp lực cao của Workshop.',
+    descEn: 'Bio-fluid collected when a Sweeper suit dissolved at dawn. Kept in a reinforced Workshop pressure flask.',
+    statBonus: { health: 10, rep: 6 }
+  },
 ];
 
 export function getItemById(id) {
