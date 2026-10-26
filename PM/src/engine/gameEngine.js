@@ -35,6 +35,7 @@ import { rollCareerAge, careerAgeOf } from './careerAge.js';
 import { AMBITIONS, ambitionComplete } from './annualPlan.js';
 import { CAREER_REQUESTS } from '../data/careerContractTemplates.js';
 import { DISTORTION_PATH_EVENTS } from '../data/eventsDistortionPath.js';
+import { DISTORTION_OVERHAUL_EVENTS } from '../data/eventsDistortionOverhaul.js';
 import { WORKSHOP_ECONOMY_EVENTS } from '../data/eventsWorkshopEconomy.js';
 import { BEREAVEMENT_EVENTS } from '../data/eventsBereavementMemories.js';
 import { DERIVATIVE_LORE_EVENTS } from '../data/eventsDerivativeLore.js';
@@ -129,6 +130,7 @@ export const ALL_STORY_EVENTS = [
   ...SUPERNATURAL_EVENTS,
   ...FIXER_PATH_EVENTS,
   ...DISTORTION_PATH_EVENTS,
+  ...DISTORTION_OVERHAUL_EVENTS,
   ...WORKSHOP_ECONOMY_EVENTS,
   ...BEREAVEMENT_EVENTS,
   ...DERIVATIVE_LORE_EVENTS,

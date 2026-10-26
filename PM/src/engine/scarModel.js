@@ -61,10 +61,10 @@ const RULES = [
   ['weapon', /thanh kiếm tôi bằng máu|khẩu súng phạm taboo|mảnh xương sườn trong chuôi kiếm|chiếc búa của n corp|đại sư rèn thần binh|kiếm của kim/i],
   ['craft', /chiếc hộp từ nhà máy|thợ rèn phạm taboo|viên bolus của hongyuan/i],
   ['faction', /hình xăm hắc vân|con mắt của the ring|sự tuân phục tuyệt đối của the thumb|kẻ đào tẩu vĩ đại của the thumb|người thi hành ý chỉ|kẻ xé prescript|nắm đấm sắt của the middle|lời thề thiên tinh|bí mật đen tối của wing|kẻ đốt prescript|dấu của shi association|người làm đứt xích của the middle|chiến tích xóa tên khỏi sổ thù/i],
-  ['survivor', /bị trục xuất ra the outskirts|vết móc đêm 3:13|vết móc câu sweeper|đêm ở ngoài lúc 3:13|cánh cửa mở lúc 3:13|lều cuối trại|kẻ chém đứt xiềng xích erlking|tấm khiên của kẻ bị săn đuổi|chuộc thân khỏi sổ thù|nỗi đau kẻ sống sót/i],
-  ['witness', /chân tướng the city|con mắt nhìn thấu đa vũ trụ|bản đồ giải phẫu star of the city|con số sau tai|tên viết bằng mực đỏ/i],
-  ['trauma', /di chứng sụp đổ tinh thần|ký ức địa ngục tàu warp|hai nghìn năm trong toa cuối|tiếng khóc ở phòng bên|người bạn đã bỏ lại|bàn tay vấy máu|tiếng hú của cuộc săn hoang dã|vết rạn khung cửi|vết nứt chưa liền|ngọn lửa cuồng loạn|vết bỏng linh hồn|tâm trí quá tải|đêm ở giếng không đáy|dấu ấn linh hồn tiền nhân/i],
-  ['injury', /vết mổ trả nợ|vết mổ cưỡng chế thuế nội tạng|cổ tay gãy|vết dao|vết kim trên cột sống|bả vai vỡ|gân vai đứt|xương đòn đổi|vết chém mở ngực|thương tật từ star|vết cưa|mất ngón|ngón tay trả|bàn tay thiếu|vết khâu bên hông|lưng bỏng|cánh tay bỏng|cánh tay không còn da|vết răng|vết cào|vết dây thép|vết sẹo hình bông hoa|nửa mạn sườn mất|những khối u của k corp/i]
+  ['survivor', /bị trục xuất ra the outskirts|vết móc đêm 3:13|vết móc câu sweeper|đêm ở ngoài lúc 3:13|cánh cửa mở lúc 3:13|lều cuối trại|kẻ chém đứt xiềng xích erlking|tấm khiên của kẻ bị săn đuổi|chuộc thân khỏi sổ thù|nỗi đau kẻ sống sót|tấm khiên quái vật bảo vệ tri kỷ/i],
+  ['witness', /chân tướng the city|con mắt nhìn thấu đa vũ trụ|bản đồ giải phẫu star of the city|con số sau tai|tên viết bằng mực đỏ|người dám mở khóa toa tàu warp/i],
+  ['trauma', /di chứng sụp đổ tinh thần|ký ức địa ngục tàu warp|hai nghìn năm trong toa cuối|tiếng khóc ở phòng bên|người bạn đã bỏ lại|bàn tay vấy máu|tiếng hú của cuộc săn hoang dã|vết rạn khung cửi|vết nứt chưa liền|ngọn lửa cuồng loạn|vết bỏng linh hồn|tâm trí quá tải|đêm ở giếng không đáy|dấu ấn linh hồn tiền nhân|vết rạn linh hồn của carmen|ám ảnh toa tàu số 4/i],
+  ['injury', /vết mổ trả nợ|vết mổ cưỡng chế thuế nội tạng|cổ tay gãy|vết dao|vết kim trên cột sống|bả vai vỡ|gân vai đứt|xương đòn đổi|vết chém mở ngực|thương tật từ star|vết cưa|mất ngón|ngón tay trả|bàn tay thiếu|vết khâu bên hông|lưng bỏng|cánh tay bỏng|cánh tay không còn da|vết răng|vết cào|vết dây thép|vết sẹo hình bông hoa|nửa mạn sườn mất|những khối u của k corp|vết bỏng điện trường hana/i]
 ];
 
 export function getScarProfile(name) {

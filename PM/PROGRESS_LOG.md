@@ -1032,3 +1032,32 @@ Chủ dự án yêu cầu làm lại toàn bộ giao diện lần nữa: bỏ t�
   * `npm test`: Vượt qua tất cả hơn 46 bộ test suite, bao gồm bộ test mới `test_successor_archetypes.mjs`, voice linter (0 lỗi trên 31.260 chuỗi), story linter, rhythm scan, và Million Audit (Check 4: 0 lỗi / 500 khoảnh khắc).
   * `npm run build`: Vite build hoàn tất thành công trong 7.50s với dung lượng nén gzip tối ưu.
   * Git remote: Đã commit và push đồng bộ thành công lên nhánh `main`.
+
+### Đợt 58 (26/10/2026): Đổi mới toàn diện tuyến truyện Distortion và Wing với lựa chọn rủi ro cao (Risk-Reward Gambles) & Tương tác NPC sâu sắc
+* **Đổi mới tuyến truyện Biến Dị (Distortion Overhaul - `eventsDistortionOverhaul.js`):**
+  * Tách biệt hoàn toàn khỏi lối tự sự thụ động, tập trung vào những ngã rẽ đánh cược sinh tử mang tính biến đổi bản ngã với cơ chế trọng số may rủi (`outcomes: [{ w, ... }]`):
+    * `distort_gamble_carmen_communion`: Đánh cược tâm trí trong đồng hoa trắng cùng Carmen; thắng kết tinh bản ngã hoàn mỹ (`DịThểHoànMỹ`, +35 Resonance, +45 Rep, +32 Merit); thua gục ngã vì tiếng thì thầm rách nát, mang vết sẹo `Vết rạn linh hồn của Carmen`.
+    * `distort_gamble_night_sweeper_raid`: Đi săn bầy Sweeper lúc 3:13 AM; giành giật nhiên liệu sống của The City hoặc bị lưỡi cưa Sweeper chém trọng thương.
+    * `distort_gamble_ambush_hana_cordon`: Phá vỡ rào chắn điện trường và đội truy quét Hana Association; đánh sập vòng vây thành thảm họa Star of the City hoặc bị bỏng nặng (`Vết bỏng điện trường Hana`).
+    * `distort_npc_partner_confrontation`: Đối mặt tri kỷ `{partner}` tại ngõ hẻm; lao mình đỡ hỏa lực xé xác thợ săn để cứu bạn đời, nhận vết sẹo `Tấm khiên quái vật bảo vệ tri kỷ` giữ lại chiếc neo nhân tính.
+    * `distort_npc_rival_predation`: Cuộc săn báo thù kẻ thù cũ `{rival}`; xé toạc sàn xe chỉ huy quyết đấu sinh tử hoặc đánh sập cầu triệt hạ toàn bộ đoàn xe hậu cần.
+* **Đổi mới tuyến truyện Tập Đoàn Cánh (Wing Overhaul - `eventsWingOverhaul.js`):**
+  * Khắc họa chân thực sự tàn bạo, mưu đồ chính trị và hiểm họa công nghệ Singularity trong lòng các Wing:
+    * `wing_singularity_blackmail_wager`: Nắm giữ tài liệu tuyệt mật về việc Singularity tiêu thụ cư dân Backstreets; tống tiền Ban Giám Đốc thăng chức Trưởng phòng (`setWingRank: 2`, `FeatherNắmThópCorp`) hoặc bị an ninh tước đoạt tài sản giáng cấp.
+    * `wing_department_coup_with_rival`: Bắt tay kình địch `{rival}` đảo chính lật đổ phe phái đối địch; thanh trừng nội bộ chia quyền hoặc bị phản đòn thất thế.
+    * `wing_tcorp_time_harvest_gamble`: Đánh cược máy nén thời gian cao áp tại T Corp; nén 3 năm thời gian bứt phá vượt bậc hoặc bị quá tải già nua rút cạn sinh lực.
+    * `wing_warp_cleanup_dilemma`: Mở khóa toa tàu số 4 kẹt chiều không gian của W Corp; dùng mã bảo mật cá nhân cứu bạn thuở nhỏ `{friend}` thoát khỏi máy nghiền (`Người dám mở khóa toa tàu WARP`) hoặc nhắm mắt ấn nút tiêu hủy vô trùng (`Ám ảnh toa tàu số 4`).
+    * `wing_board_apex_hostile_takeover`: Thâu tóm quyền lực tại phòng họp Đại Cổ Đông (`setWingRank: 3`); trở thành Giám đốc điều hành hoặc bị tống giam vào phòng thí nghiệm ngầm.
+* **Tích hợp Engine & Cơ chế Vết sẹo (`gameEngine.js`, `scarModel.js`, `eventsWing.js`):**
+  * Tích hợp `DISTORTION_OVERHAUL_EVENTS` vào danh mục `ALL_STORY_EVENTS`.
+  * Tích hợp `WING_OVERHAUL_EVENTS` vào `WING_STORY_EVENTS`.
+  * Bổ sung luật nhận diện profile vết sẹo trong `scarModel.js`: `tấm khiên quái vật bảo vệ tri kỷ` (Survivor), `người dám mở khóa toa tàu warp` (Witness), `vết rạn linh hồn của carmen` & `ám ảnh toa tàu số 4` (Trauma), `vết bỏng điện trường hana` (Injury).
+* **Kiểm tra & Xác minh:**
+  * Tạo test suite `tests/test_distortion_wing_overhaul.mjs` kiểm tra toàn bộ 10 sự kiện:
+    * Đảm bảo tính song ngữ (vi / en), nhãn lựa chọn và văn bản kết quả.
+    * Kiểm tra tổng trọng số may rủi các nhánh lựa chọn luôn đúng 100%.
+    * Kiểm tra các cổng kích hoạt (Distorted, Wing Employee, wingRank, NPC partner/rival/friend).
+    * Mô phỏng kiểm tra hàm `resolveEventChoice` với 2 kịch bản may rủi (thắng/thua) cập nhật đúng chỉ số, cờ hiệu, vết sẹo và ghi nhật ký.
+  * `npm test`: Vượt qua tất cả hơn 47 bộ test suite, voice lint (0 lỗi trên 31.438 chuỗi), story lint (0 lỗi), rhythm scan, và Million Audit (500 khoảnh khắc mô phỏng đạt 100% logic).
+  * `npm run build`: Vite build thành công trong 6.64s.
+  * Git remote: Commit và push đồng bộ thành công lên nhánh `main`.
