@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { NpcDossierModal } from './NpcDossierModal.jsx';
 import { Tooltip } from 'antd';
 import { ChevronDown, ChevronUp, User, Heart, Brain, Coins, Flame, Eye, Sparkles, X, ShieldAlert, ShoppingBag, HelpCircle, Crown, Star } from 'lucide-react';
 import { WorkshopDepotModal } from './WorkshopDepotModal';
@@ -223,7 +224,7 @@ function bondTierInfo(bond = 0, role = '') {
 }
 
 // The people in this life, each with what they are like and how close you are
-const People = ({ npcs, age, t, lang }) => {
+const People = ({ npcs, age, t, lang, onSelectRole }) => {
   const list = Object.entries(npcs || {}).filter(([, n]) => Boolean(n));
   if (!list.length) {
     return (
@@ -320,6 +321,7 @@ const Nameplate = ({ char, region, omen, t, lang }) => {
 };
 
 const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeTab = 'all', onOpenDepot }) => {
+  const [activeNpcRole, setActiveNpcRole] = useState(null);
   const { health, sanity, wealth, network, rep } = char.stats;
 
   const showOverview = activeTab === 'all' || activeTab === 'overview';
@@ -540,7 +542,8 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeT
       )}
 
       {/* Tab: Relations & Scars */}
-      {showRelations && <People npcs={char.npcs} age={char.age} t={t} lang={lang} />}
+      {showRelations && <People npcs={char.npcs} age={char.age} t={t} lang={lang} onSelectRole={setActiveNpcRole} />}
+      {activeNpcRole && <NpcDossierModal npcRole={activeNpcRole} onClose={() => setActiveNpcRole(null)} />}
 
       {showRelations && (char.scars.length > 0 || char.scarHistory?.length > 0) && (
         <section>

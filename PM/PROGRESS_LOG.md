@@ -1,8 +1,8 @@
 # The City Chronicles: Tài Liệu Tiến Trình & Kiến Trúc Kỹ Thuật Toàn Diện
 
-> **Cập nhật ghi chép: 26/10/2026 (Đợt 59: Kiểm thử logic thực chiến toàn diện, triệt tiêu lặp sự kiện, cân bằng Dungeon & tuổi thọ 51.4 năm theo chuẩn mực ngành; đã push và deploy)**
+> **Cập nhật ghi chép: 26/10/2026 (Đợt 60: Nâng cấp Toàn Diện Hệ Thống NPC - Dynamic Agency, Nghề Nghiệp Song Hành, Tương Tác Giãi Bày/Hỗ Trợ, Dungeon Tag-Team & Kế Thừa Huyết Thống; đã push và deploy)**
 > Đợt 26 thay cơ chế gọi Carmen và bổ sung lựa chọn chuẩn bị; số đo cuộc đời ở Đợt 23 là lịch sử, không phải tỷ lệ hiện tại.
-> **Trạng thái xác minh tại máy cho Đợt 57:** `npm test` đạt toàn bộ 46+ suite (thêm `test_successor_archetypes.mjs`), lint nội dung 31.260 chuỗi đạt 0 lỗi, rhythm scan và audit 500 khoảnh khắc đạt 100%; `npm run build` đạt. Đã commit và push đồng bộ lên Git remote `origin/main`.
+> **Trạng thái xác minh tại máy cho Đợt 60:** `npm test` đạt toàn bộ 49 suite (thêm `test_npc_dynamic_agency.mjs`), story linter & voice linter 31.438 chuỗi đạt 0 lỗi, 100 kiếp Story Logic Audit đạt 0 vi phạm (15.112 khoảnh khắc), audit 500 khoảnh khắc đạt 100%; `npm run build` đạt. Đã commit và push đồng bộ lên Git remote `origin/main`.
 > **Cách đọc số liệu:** Các kết quả mô phỏng ở Đợt 1–21 là ảnh chụp lịch sử tại thời điểm ghi; xem Đợt 23 để đọc phép đo Color/E.G.O hiện hành. Đợt 22 và mục 9.3 ghi các lần kiểm thử chức năng trước đó.
 
 ---
@@ -1108,4 +1108,53 @@ Chủ dự án yêu cầu làm lại toàn bộ giao diện lần nữa: bỏ t�
   * Rhythm scan: Đạt.
   * 500-moment Million Audit: 0 vi phạm trên cả 5 nhóm kiểm định.
   * Production Vite Build: Hoàn tất thành công trong 7.04s.
+  * Git remote: Đã commit và push đồng bộ lên nhánh `main`.
+
+
+### Đợt 60 (26/10/2026): Nâng Cấp Toàn Diện Hệ Thống NPC - Dynamic Agency, Nghề Nghiệp Song Hành, Tương Tác Trực Tiếp, Kỹ Năng Hiệp Đồng Hầm Ngục & Kế Thừa Huyết Thống (The Living City Overhaul)
+
+* **Tư duy & Động lực Thiết kế (Design Philosophy & Canon Lore Integration):**
+  * Chuyển hóa toàn diện NPC từ các thực thể cộng chỉ số thụ động (passive stat-sticks) thành những sinh mệnh sống động có cuộc đời, tham vọng, công việc và áp lực sinh tồn riêng tại The City.
+  * Tích hợp sâu rộng các quy chuẩn canon của Project Moon: Fixer có văn phòng và cấp bậc sát hạch Hana (Grade 9 đến Grade 4), nhân viên Wing có Nest sở tại và nấc thang chức vụ (Probationary đến Team Lead), thành viên Syndicate có Ngón tay bảo hộ; kèm theo các áp lực đô thị khắc nghiệt (nợ nần lãi cắt cổ Backstreets, đào thải phế thể máy móc prosthetic, và tiếng thì thầm mời gọi của Carmen).
+
+* **Nền tảng Dynamic Agency & Nghề nghiệp Độc lập (`src/data/npcPersonality.js`, `src/data/birthStories.js`):**
+  * Tự động khởi tạo và chuẩn hóa hồ sơ cá nhân qua `ensureNpcAgency`: nghề nghiệp (`Fixer`, `Wing Employee`, `Syndicate`, `Workshop Artisan`, `Backstreets Stray`), cấp bậc (`rank`, `rankLabelVi`, `rankLabelEn`), địa bàn cư trú tại các Quận đặc thù (`NPC_DISTRICTS`), và kỹ năng hiệp đồng (`ARCHETYPE_DUNGEON_PERKS`).
+  * Cơ chế theo dõi vi biến cố & khủng hoảng tâm lý (`crisis`): Nợ phi pháp (`debt`), Đào thải phế thể máy móc (`prosthetic`), Nguy cơ biến dị sa ngã (`distortion_risk`).
+  * Sổ ân oán và ký ức tương tác (`debts`, `memories`): theo dõi món nợ ân tình (`favorCount`), nợ qua lại và lịch sử sát cánh qua từng biến cố cuộc đời.
+
+* **Bảng Hành Động Tương Tác Đồng Hành Trực Tiếp (`src/engine/npcInteractions.js`, `src/store/gameStore.js`):**
+  * Bổ sung cơ chế tương tác trực tiếp với bạn đồng hành / người thân trong kế hoạch năm hoặc từ hồ sơ:
+    * `drink_confide` (Uống rượu giãi bày): Tiêu tốn 4 Ahn, hồi phục +10 Sanity, +6 Bond, giải tỏa 25 điểm khủng hoảng của NPC, khắc ghi ký ức tâm tình.
+    * `spar_coordinate` (Luyện kiếm / Thao dượt hiệp lực): Tiêu hao 2 HP thể lực, +4 Bond, kích hoạt trạng thái phối hợp tác chiến `char.companionSynergy`.
+    * `emergency_aid` (Cứu viện hoạn nạn): Khi NPC rơi vào khủng hoảng nghiêm trọng, tiêu tốn 15 Ahn hoặc 8 Rep để cứu viện dập tắt khủng hoảng, nhận lại +1 món nợ ân tình (`favorCount + 1`) và +20 Bond sâu sắc.
+    * `call_favor` (Đòi nợ ân tình / Nhờ vả đặc quyền nghề nghiệp): Sử dụng 1 món nợ ân tình (hoặc 6 điểm Bond gắn kết) để nhận trợ giúp đặc quyền tùy theo công việc của NPC:
+      * Wing: Tiếp nhận ống tiêm K Corp phục hồi 35 HP.
+      * Syndicate: Xóa bớt 25 điểm Heat truy nã ngầm.
+      * Fixer: Mở rộng mạng lưới (+14 Network, +10 Rep, +4 Merit).
+      * Khác: Chăm sóc tinh thần (+15 Sanity, +8 HP).
+
+* **Tiến trình Cuộc sống Tự trị & Kịch bản Vi mô (`src/engine/narrativeArcEngine.js`):**
+  * Trong `simulateNpcAutonomousLife`, NPC tự phát triển sự nghiệp theo năm tháng (Fixer thăng cấp từ Grade 9 lên Grade 4, nhân viên Wing từ tập sự lên trưởng nhóm).
+  * Tự tích tụ căng thẳng và phát tác khủng hoảng, phát tín hiệu cảnh báo trực tiếp đến người chơi khi cận kề biến dị hoặc phá sản.
+
+* **Tác chiến Hiệp đồng & Khiên Sinh mệnh trong Dungeon (`src/engine/dungeonEngine.js`, `src/engine/dungeonCombat.js`):**
+  * Khai mở 18 Archetype Dungeon Perks: `parry` (gạt đòn hiểm hóc), `calm` (ngọn hải đăng trấn an tâm trí), `first_aid` (cứu thương trạm nghỉ), `ration` (tiết kiệm chi phí nghỉ), `vanguard`, `tactician`, `clash`, v.v.
+  * Khiên Sinh Mệnh (Mortal Aegis / Interception): Khi người chơi chịu đòn chí mạng trong hầm ngục hoặc gauntlet tử chiến, đồng đội mang perk bảo hộ (`shield`) hoặc khi đã kích hoạt `companionSynergy` sẽ lao vào đỡ đòn, giữ người chơi sống sót ở 5 HP, NPC chịu thương tật (`status: 'wounded'`) hoặc hy sinh anh dũng.
+
+* **Kế thừa Huyết thống & Mối Thâm thù Xuyên Thế hệ (`src/engine/gameEngine.js`):**
+  * Bảo lưu toàn vẹn mạng lưới NPC trong `buildLifeSummaryAndLegacy`.
+  * Thế hệ sau (đặc biệt là hướng đệ tử `apprentice`) kế thừa đồng đội cũ của tiền nhân làm sư phụ định hướng (`mentor`), và kẻ thù chưa dứt điểm (`nemesis`) trở thành mối đe dọa truyền đời.
+
+* **Giao diện Dossier Hồ sơ Noir & Mobile Bottom-Sheet (`NpcDossierModal.jsx`, `CharacterDossierCard.jsx`, `play.css`, `overlays.css`):**
+  * Thiết kế giao diện thẻ hồ sơ Project Moon bí mật, hiển thị chi tiết thân thế, địa bàn, cấp bậc, kỹ năng hiệp đồng, thanh đo khủng hoảng và lịch sử ký ức.
+  * 4 nút bấm tương tác trực quan với điều kiện, chi phí và phản hồi thời gian thực.
+  * Tương thích 100% desktop modal và mobile bottom-sheet với thanh kéo trượt, hỗ trợ safe-area insets trên thiết bị di động.
+
+* **Kiểm thử & Khắc phục Lỗi Logic Toàn diện:**
+  * Tạo bộ kiểm thử chuyên dụng `tests/test_npc_dynamic_agency.mjs` tích hợp vào luồng `npm test`.
+  * Sửa lỗi gán hằng số `let spDelta` trong `src/engine/dungeonEngine.js`.
+  * Sửa từ ngữ gây cảnh báo giả định vai trò `em vợ` thành `người em họ` trong `src/data/careerContractsMiddle.js`.
+  * Đạt 100% qua toàn bộ 49 suites (`npm test`), story linter, voice linter (0 errors trên 31.438 chuỗi), rhythm scan, 500-moment Million Audit.
+  * Story logic audit 100 kiếp nhân sinh (`tools/sim/story_logic_audit.mjs 100`): 0 logic violations trên 15.112 khoảnh khắc đời người.
+  * Production Vite Build thành công 100% trong 7.05s.
   * Git remote: Đã commit và push đồng bộ lên nhánh `main`.

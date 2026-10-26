@@ -8,6 +8,7 @@
 
 import { normalize, ResponseCurves } from './utilityCurves.js';
 import { npcIsActive } from './eventConditions.js';
+import { ensureNpcAgency } from '../data/npcPersonality.js';
 
 /**
  * Canonical Multi-Stage Narrative Arcs:
@@ -398,6 +399,69 @@ export function simulateNpcAutonomousLife(char, rng = Math.random) {
       en: `[Shadow of Betrayal] You found ${nemesis.nameEn}'s familiar knife-mark scratched into your doorway postbox. Your former companion is still stalking your movements.`
     });
     if (char.stats) char.stats.sanity = Math.max(0, (char.stats.sanity || 50) - 3);
+  }
+
+  // 6. Dynamic Career Progression & Crisis Tracking
+  for (const [role, rawNpc] of Object.entries(char.npcs)) {
+    if (!npcIsActive(rawNpc)) continue;
+    const npc = ensureNpcAgency(rawNpc, rng);
+    char.npcs[role] = npc;
+
+    // Career Promotion roll
+    if (rng() < 0.10) {
+      if (npc.job === 'Fixer' && npc.rank > 4) {
+        npc.rank -= 1;
+        npc.rankLabelVi = `Fixer Grade ${npc.rank}`;
+        npc.rankLabelEn = `Grade ${npc.rank} Fixer`;
+        const memVi = `Năm ${char.age || 0} tuổi: Thăng cấp lên Fixer Grade ${npc.rank} sau kỳ khảo thí của Hana.`;
+        const memEn = `Age ${char.age || 0}: Promoted to Grade ${npc.rank} Fixer through Hana Association exam.`;
+        npc.memories = [...(npc.memories || []), { age: char.age || 0, vi: memVi, en: memEn }].slice(-6);
+        logs.push({
+          vi: `[Tin vui thăng cấp] ${npc.nameVi} vừa vượt qua kỳ sát hạch gắt gao của Hiệp hội Hana, chính thức thăng tiến lên Fixer Grade ${npc.rank}.`,
+          en: `[Promotion Dispatch] ${npc.nameEn} passed the rigorous Hana Association exam, officially promoted to Grade ${npc.rank} Fixer.`
+        });
+      } else if (npc.job === 'Wing Employee' && npc.rank < 3) {
+        npc.rank += 1;
+        const rankTitlesVi = ['Thử việc', 'Chính thức', 'Trưởng phòng', 'Giám đốc bộ phận'];
+        const rankTitlesEn = ['Probationary', 'Staff Member', 'Department Lead', 'Branch Director'];
+        const corpName = (npc.rankLabelVi || 'Wing').split(' ')[0] || 'Wing';
+        npc.rankLabelVi = `${corpName} ${rankTitlesVi[npc.rank] || 'Cán bộ'}`;
+        npc.rankLabelEn = `${corpName} ${rankTitlesEn[npc.rank] || 'Feather'}`;
+        const memVi = `Năm ${char.age || 0} tuổi: Được bổ nhiệm vị trí ${rankTitlesVi[npc.rank]} tại Wing.`;
+        const memEn = `Age ${char.age || 0}: Appointed to ${rankTitlesEn[npc.rank]} inside the Wing.`;
+        npc.memories = [...(npc.memories || []), { age: char.age || 0, vi: memVi, en: memEn }].slice(-6);
+        logs.push({
+          vi: `[Bổ nhiệm Tập đoàn] ${npc.nameVi} vừa được thăng chức lên ${rankTitlesVi[npc.rank]} trong Wing; họ gửi thư mời bạn uống một tách trà từ Nest.`,
+          en: `[Corporate Promotion] ${npc.nameEn} was promoted to ${rankTitlesEn[npc.rank]} within the Wing, inviting you to share tea from the Nest.`
+        });
+      }
+    }
+
+    // Crisis tick & alert
+    if (npc.crisis && npc.crisis.type !== 'none' && npc.crisis.severity > 0) {
+      npc.crisis.severity = Math.min(100, npc.crisis.severity + Math.floor(rng() * 10) + 6);
+      if (npc.crisis.severity >= 75 && rng() < 0.35) {
+        if (npc.crisis.type === 'debt') {
+          logs.push({
+            vi: `[Báo động nợ máu] Toán đòi nợ của Syndicate đã bao vây khu trọ của ${npc.nameVi}. Họ cần bạn can thiệp gấp trước khi bị cắt ngón tay!`,
+            en: `[Debt Crisis] Syndicate debt collectors surrounded ${npc.nameEn}’s lodgings. They desperately need your aid before fingers are severed!`
+          });
+        } else if (npc.crisis.type === 'distortion_risk') {
+          logs.push({
+            vi: `[Ám ảnh tâm trí] Bạn thoáng thấy ${npc.nameVi} đứng dưới mưa, ánh mắt vô hồn thì thầm câu hát của Carmen. Tinh thần của họ đang trên bờ vực sụp đổ!`,
+            en: `[Mind Slip] You spotted ${npc.nameEn} standing in the rain, glassy-eyed and murmuring Carmen's verses. Their psyche is fracturing!`
+          });
+        }
+      }
+    } else if (rng() < 0.05 && (!npc.crisis || npc.crisis.type === 'none')) {
+      if (['gambler', 'greedy'].includes(npc.archetype)) {
+        npc.crisis = { type: 'debt', severity: 40, labelVi: 'Nợ nóng sòng bạc', labelEn: 'Gambling Debt' };
+      } else if (['tinkerer', 'sickly'].includes(npc.archetype)) {
+        npc.crisis = { type: 'prosthetic', severity: 40, labelVi: 'Hội chứng đào thải cơ khí', labelEn: 'Prosthetic Rejection' };
+      } else if (['idealist', 'proud'].includes(npc.archetype)) {
+        npc.crisis = { type: 'distortion_risk', severity: 45, labelVi: 'Tiếng thì thầm của Carmen', labelEn: 'Whispers of Carmen' };
+      }
+    }
   }
 
   scheduleNpcReturns(char, rng);

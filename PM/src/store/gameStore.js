@@ -26,6 +26,7 @@ import { migrateRun, SAVE_VERSION } from '../engine/saveSchema.js';
 import { createPlanSynchronizer } from '../engine/planSync.js';
 import { useThemeStore } from './themeStore.js';
 import { choiceIsAvailable } from '../engine/eventConditions.js';
+import { executeNpcInteraction, canInteractWithNpc } from '../engine/npcInteractions.js';
 import { CLAW_DUNGEON_ID } from '../data/dungeonClaw.js';
 import { applyAnnualPlan, ambitionsFor, defaultYearPoints } from '../engine/annualPlan.js';
 import { autoLeadIndex, tabooGainOf } from '../engine/forbiddenPath.js';
@@ -882,6 +883,18 @@ export const useGameStore = create((set, get) => ({
     const readingPause = get().speed > 0 && !nextChar.pendingModal ? 3000 : 0;
 
     get().commit(prev, nextChar, { activeResolution: null, postChoicePauseMs: readingPause });
+  },
+
+  interactNpc: (role, actionId) => {
+    const prev = get().char;
+    if (!prev || !prev.alive) return { ok: false, success: false, reasonVi: 'Nhân vật không còn sống', reasonEn: 'Character is not alive' };
+    const res = executeNpcInteraction(prev, role, actionId, lifeRng);
+    if (!res.success) return res;
+    get().commit(prev, res.nextChar, {
+      activeResolution: null,
+      postChoicePauseMs: 0
+    });
+    return res;
   },
 
   selectContractApproach: (approachId) => {

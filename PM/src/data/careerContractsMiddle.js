@@ -9,7 +9,7 @@ export const MIDDLE_CONTRACTS = [
     'The laundry owner at the head of the alley borrowed from the siblings to buy a dryer, paid three times, then stopped. The book says he still owes, and he has money for a second dryer.',
     'Bạn ngồi gấp khăn ở quầy của ông ta đến giờ đóng cửa, không nhắc một chữ về tiền. Khi tắt đèn, ông tự đưa phong bì ra.',
     'You sit folding towels at his counter until closing, not mentioning money once. When the lights go out he hands over the envelope himself.',
-    'Chủ tiệm khóc, thề rằng máy sấy thứ hai là của em vợ. Bạn tin một nửa, và sổ vẫn ghi dòng ấy là chưa xong.',
+    'Chủ tiệm khóc, thề rằng máy sấy thứ hai là của người em họ. Bạn tin một nửa, và sổ vẫn ghi dòng ấy là chưa xong.',
     'He weeps and swears the second dryer belongs to his brother-in-law. You believe half of it, and the book still lists the line as open.',
     'Chủ tiệm đã chờ bạn, và chiếc máy sấy mới không hoạt động như một chiếc máy sấy.',
     'He was waiting for you, and the new dryer does not work like a dryer.'),

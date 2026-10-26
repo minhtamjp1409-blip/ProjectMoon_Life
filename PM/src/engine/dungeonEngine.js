@@ -13,7 +13,7 @@ import { clamp, interpolateText } from './gameEngine.js';
 import { addScar, activeScarSynergies } from './scarModel.js';
 import { dungeonWagerDamage, dungeonWagerLoot, dungeonWagerLevel } from './dungeonWager.js';
 import { traitsOf } from './variance.js';
-import { evaluateCompanionSupport } from '../data/npcPersonality.js';
+import { evaluateCompanionSupport, ensureNpcAgency, getNpcDungeonPerk } from '../data/npcPersonality.js';
 import { FAIL_TEXT, GENERIC_FAIL, STRAIN_NOTES, BREAK_TEXT, SUPPLY_TEXT, ENDING_TEXT } from '../data/dungeonText.js';
 import { NIGHT_DUNGEON, STAGE_VARIANTS, SIDE_ROOMS, SHORTCUTS, COMPANION_TEXT, COMPANION_LEAD, FINAL_KEEPS, REPORT_FIT } from '../data/dungeonExtras.js';
 import { CLAW_DUNGEON, CLAW_DUNGEON_ID } from '../data/dungeonClaw.js';
@@ -842,8 +842,18 @@ const COMPANION_ORDER = ['partner', 'mentee', 'friend', 'mentor'];
 /** Who comes down with you: the closest working relationship that is still active and not cold. */
 export function pickDungeonCompanion(char) {
   for (const role of COMPANION_ORDER) {
-    const npc = char?.npcs?.[role];
-    if (npcIsActive(npc) && (npc.bond ?? 0) >= 15) return { role, nameVi: npc.nameVi, nameEn: npc.nameEn || npc.nameVi };
+    const raw = char?.npcs?.[role];
+    if (npcIsActive(raw) && (raw.bond ?? 0) >= 15) {
+      const npc = ensureNpcAgency(raw);
+      if (char.npcs) char.npcs[role] = npc;
+      return {
+        role,
+        nameVi: npc.nameVi,
+        nameEn: npc.nameEn || npc.nameVi,
+        perk: npc.dungeonPerk || getNpcDungeonPerk(npc),
+        archetype: npc.archetype
+      };
+    }
   }
   return null;
 }
@@ -1253,9 +1263,13 @@ export function useDungeonSupply(charState, supplyType = 'breather') {
     session.lastStageResult = { type: 'scan', vi: SUPPLY_TEXT.scan.vi, en: SUPPLY_TEXT.scan.en };
   } else {
     const b = DUNGEON_BALANCE.breather;
-    char.stats.wealth = Math.max(0, (char.stats.wealth || 0) - b.cost);
-    char.stats.health = clamp((char.stats.health || 0) + b.health, 0, 100);
-    char.stats.sanity = clamp((char.stats.sanity || 0) + b.sanity, 0, 100);
+    const perk = session.companion?.perk;
+    const cost = perk?.type === 'breather_discount' ? Math.round(b.cost * 0.7) : b.cost;
+    const healBonus = perk?.type === 'breather_bonus' ? (perk.healBonus || 10) : 0;
+    const sanityBonus = perk?.type === 'breather_bonus' ? (perk.sanityBonus || 6) : 0;
+    char.stats.wealth = Math.max(0, (char.stats.wealth || 0) - cost);
+    char.stats.health = clamp((char.stats.health || 0) + b.health + healBonus, 0, 100);
+    char.stats.sanity = clamp((char.stats.sanity || 0) + b.sanity + sanityBonus, 0, 100);
     session.sanityStrain = clamp((session.sanityStrain || 0) + b.strain, 0, 100);
     session.lastStageResult = { type: 'breather', vi: SUPPLY_TEXT.breather.vi, en: SUPPLY_TEXT.breather.en };
   }
@@ -1542,7 +1556,7 @@ export function resolveDungeonChoice(charState, choiceIndex, rng = Math.random) 
   let hpDelta = fx.health < 0
     ? Math.min(-1, Math.ceil(fx.health * damageMultOf(def, char, session, mastery, 'health') * resultMult))
     : healOf(fx.health);
-  const spDelta = fx.sanity < 0
+  let spDelta = fx.sanity < 0
     ? Math.min(-1, Math.ceil(fx.sanity * damageMultOf(def, char, session, mastery, 'sanity') * resultMult))
     : healOf(fx.sanity);
   const rewards = def.noRewards ? { wealth: 0, loot: 0, rep: 0, network: 0, merit: 0, resonance: 0 } : stageRewards(choice, session, success);
@@ -1568,6 +1582,27 @@ export function resolveDungeonChoice(charState, choiceIndex, rng = Math.random) 
     }
   } else if (companion && npcIsActive(companionNpc)) {
     const bond = companionNpc.bond ?? 30;
+    const perk = companion.perk || companionNpc.dungeonPerk;
+
+    // Perk: Combat Parry
+    if (!success && perk?.type === 'parry' && !session.companionParried && hpDelta < 0) {
+      session.companionParried = true;
+      hpDelta = 0;
+      companionNotes.push({
+        vi: `[Gạt đòn thực chiến] ${companion.nameVi} vung đao gạt phăng mũi kích hiểm hóc trước khi nó kịp chạm vào bạn.`,
+        en: `[Combat Parry] ${companion.nameEn} deflected the lethal strike just before it touched you.`
+      });
+    }
+
+    // Perk: Moral Beacon (Calm)
+    if (perk?.type === 'calm' && spDelta < 0) {
+      spDelta = Math.min(0, spDelta + (perk.sanityRestore || 8));
+      companionNotes.push({
+        vi: `[Ngọn hải đăng] Ánh mắt kiên định của ${companion.nameVi} xua tan cơn hoảng loạn, neo giữ tâm trí bạn.`,
+        en: `[Moral Beacon] ${companion.nameEn} anchored your mind against creeping madness.`
+      });
+    }
+
     if (!success && choice.checkTrait && bond >= 60 && !session.companionSaved && rng() < 0.5) {
       hpDelta = Math.min(-1, Math.ceil(hpDelta / 2));
       session.companionSaved = true;
@@ -1581,6 +1616,26 @@ export function resolveDungeonChoice(charState, choiceIndex, rng = Math.random) 
 
   char.stats.health = clamp((char.stats.health || 0) + hpDelta, 0, 100);
   char.stats.sanity = clamp((char.stats.sanity || 0) + spDelta, 0, 100);
+
+  // Companion Mortal Shield Intervention
+  if (char.stats.health <= 0 && companion && npcIsActive(companionNpc) && !session.companionShieldUsed) {
+    const perk = companion.perk || companionNpc.dungeonPerk;
+    const canShield = (perk?.type === 'shield' || char.companionSynergy?.active);
+    if (canShield) {
+      session.companionShieldUsed = true;
+      char.stats.health = 5;
+      companionNpc.status = 'wounded';
+      companionNpc.bond = Math.min(100, (companionNpc.bond || 50) + 15);
+      const shieldMemVi = `Năm ${char.age || 0} tuổi: Đỡ đòn chí mạng thay bạn trong ${def.titleVi}.`;
+      const shieldMemEn = `Age ${char.age || 0}: Absorbed a mortal strike for you in ${def.titleEn}.`;
+      companionNpc.memories = [...(companionNpc.memories || []), { age: char.age || 0, vi: shieldMemVi, en: shieldMemEn }].slice(-6);
+      char.npcs[companion.role] = companionNpc;
+      notes.push({
+        vi: `[Tấm khiên sinh tử] ${companion.nameVi} lao mình chắn ngang nhát chém kết liễu, máu nhuộm đỏ giáp vai: "Rút đi... đừng để cả hai cùng bỏ mạng ở đây!"`,
+        en: `[Mortal Shield] ${companion.nameEn} threw themselves in front of the killing stroke, armor drenched in crimson: "Retreat... do not let both of us die here!"`
+      });
+    }
+  }
   if (rewards.wealth) char.stats.wealth = clamp((char.stats.wealth || 0) + rewards.wealth, 0, 100);
   if (rewards.rep) char.stats.rep = clamp((char.stats.rep || 0) + rewards.rep, 0, 100);
   if (rewards.network) char.stats.network = clamp((char.stats.network || 0) + rewards.network, 0, 100);

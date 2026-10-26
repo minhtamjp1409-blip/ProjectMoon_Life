@@ -353,3 +353,405 @@
   }
 }
 
+/* ============================================================================
+ * NPC Dossier & Relationship Modal / Bottom Sheet
+ * ============================================================================ */
+.npc-dossier-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(4, 4, 7, 0.82);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: overlayIn .2s ease;
+}
+
+.npc-dossier-sheet {
+  background: var(--surface-solid, #101015);
+  border: 1px solid var(--border, #2c2c36);
+  width: min(560px, 100%);
+  max-height: min(90vh, 760px);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.7);
+}
+
+.npc-dossier-head {
+  padding: 18px 20px 14px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--accent, #e5a93c) 10%, transparent), transparent), var(--surface, #14141a);
+  border-bottom: 1px solid var(--rule, #22222a);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.npc-dossier-badge-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+}
+
+.npc-role-tag {
+  color: var(--accent, #e5a93c);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.npc-district-tag {
+  color: var(--muted, #8a8a98);
+  font-size: 11.5px;
+}
+
+.npc-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.npc-dossier-name {
+  font-family: var(--serif, 'Cinzel', serif);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text, #f0f0f5);
+  margin: 0;
+}
+
+.npc-close-btn {
+  background: transparent;
+  border: 1px solid var(--rule, #333340);
+  border-radius: 6px;
+  color: var(--muted, #8a8a98);
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all .15s ease;
+}
+
+.npc-close-btn:hover {
+  border-color: var(--text, #f0f0f5);
+  color: var(--text, #f0f0f5);
+}
+
+.npc-career-sub {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.npc-career-pill {
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--accent, #e5a93c) 14%, transparent);
+  color: var(--accent, #e5a93c);
+  border: 1px solid color-mix(in srgb, var(--accent, #e5a93c) 30%, transparent);
+  font-weight: 500;
+}
+
+.npc-status-pill {
+  font-size: 11.5px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.npc-status-pill.is-wounded {
+  background: rgba(220, 38, 38, 0.18);
+  color: #ef4444;
+  border: 1px solid rgba(220, 38, 38, 0.4);
+}
+
+.npc-status-pill.is-dead {
+  background: rgba(100, 116, 139, 0.18);
+  color: #94a3b8;
+  border: 1px solid rgba(100, 116, 139, 0.4);
+}
+
+.npc-dossier-body {
+  padding: 16px 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+}
+
+.npc-dossier-section {
+  padding: 12px 14px;
+  border-radius: 8px;
+  background: var(--surface, #14141a);
+  border: 1px solid var(--rule, #22222a);
+}
+
+.npc-trait-quote {
+  font-size: 13.5px;
+  color: var(--text, #f0f0f5);
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+.want-fear-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--rule, #282832);
+}
+
+.wf-label {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  color: var(--muted, #8a8a98);
+  margin-bottom: 2px;
+  letter-spacing: 0.04em;
+}
+
+.wf-val {
+  font-size: 12.5px;
+  color: var(--story, #dcdce6);
+  line-height: 1.4;
+}
+
+.bond-status-head {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+
+.bond-progress-track {
+  height: 5px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.bond-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width .3s ease;
+}
+
+.ledger-sub-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--muted, #8a8a98);
+  padding-top: 4px;
+}
+
+.crisis-alert-card {
+  border-color: rgba(239, 68, 68, 0.5);
+  background: radial-gradient(120% 80% at 0% 0%, rgba(239, 68, 68, 0.15), transparent 70%), var(--surface, #14141a);
+}
+
+.crisis-card-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.crisis-icon {
+  font-size: 18px;
+}
+
+.crisis-title {
+  margin: 0;
+  font-size: 13.5px;
+  color: #ef4444;
+  font-weight: 700;
+}
+
+.crisis-desc {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: var(--text, #f0f0f5);
+}
+
+.crisis-severity-bar {
+  height: 4px;
+  background: rgba(239, 68, 68, 0.2);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.crisis-severity-fill {
+  height: 100%;
+  background: #ef4444;
+  transition: width .3s ease;
+}
+
+.perk-card {
+  border-left: 3px solid var(--accent, #e5a93c);
+}
+
+.perk-card-head {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 4px;
+}
+
+.perk-badge {
+  font-size: 10.5px;
+  text-transform: uppercase;
+  color: var(--accent, #e5a93c);
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+
+.perk-name {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text, #f0f0f5);
+}
+
+.perk-desc {
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--muted, #8a8a98);
+  line-height: 1.45;
+}
+
+.memories-title {
+  margin: 0 0 8px;
+  font-size: 12px;
+  text-transform: uppercase;
+  color: var(--muted, #8a8a98);
+  letter-spacing: 0.04em;
+}
+
+.memories-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.memory-item {
+  display: flex;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--story, #dcdce6);
+  line-height: 1.4;
+}
+
+.memory-bullet {
+  color: var(--accent, #e5a93c);
+  font-size: 9px;
+  padding-top: 4px;
+}
+
+.npc-action-feedback {
+  padding: 10px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  line-height: 1.45;
+  animation: overlayIn .2s ease;
+}
+
+.npc-action-feedback.is-success {
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.4);
+  color: #4ade80;
+}
+
+.npc-action-feedback.is-error {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #f87171;
+}
+
+.npc-dossier-footer {
+  padding: 14px 20px 18px;
+  background: var(--surface, #14141a);
+  border-top: 1px solid var(--rule, #22222a);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.action-dock-title {
+  margin: 0;
+  font-size: 11.5px;
+  text-transform: uppercase;
+  color: var(--muted, #8a8a98);
+  letter-spacing: 0.05em;
+}
+
+.npc-action-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.npc-action-btn {
+  background: var(--surface-solid, #181820);
+  border: 1px solid var(--border, #2e2e3a);
+  border-radius: 6px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  cursor: pointer;
+  transition: all .15s ease;
+  text-align: left;
+}
+
+.npc-action-btn:hover:not(:disabled) {
+  border-color: var(--accent, #e5a93c);
+  background: color-mix(in srgb, var(--accent, #e5a93c) 8%, var(--surface-solid, #181820));
+}
+
+.npc-action-btn:disabled, .npc-action-btn.is-disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.action-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text, #f0f0f5);
+}
+
+.action-cost {
+  font-size: 11px;
+  color: var(--accent, #e5a93c);
+  font-weight: 500;
+}
+
+@media (max-width: 640px) {
+  .npc-dossier-overlay {
+    align-items: flex-end;
+    padding: 0;
+  }
+  .npc-dossier-sheet {
+    width: 100%;
+    max-height: 85vh;
+    border-radius: 16px 16px 0 0;
+    border-bottom: 0;
+    padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+  }
+  .npc-action-grid {
+    grid-template-columns: 1fr;
+  }
+}

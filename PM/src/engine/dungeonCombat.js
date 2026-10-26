@@ -396,6 +396,28 @@ export function resolveGauntletChoice(char, session, choiceIndex, rng, ctx) {
   };
   ctx.log(char, session, def, stage, session.lastStageResult);
 
+  if (char.stats.health <= 0 && session.companion && !session.companionShieldUsed) {
+    const compRole = session.companion.role;
+    const companionNpc = char.npcs?.[compRole];
+    const perk = session.companion.perk || companionNpc?.dungeonPerk;
+    if ((perk?.type === 'shield' || char.companionSynergy?.active) && companionNpc && companionNpc.status !== 'dead') {
+      session.companionShieldUsed = true;
+      char.stats.health = 5;
+      companionNpc.status = 'wounded';
+      companionNpc.bond = Math.min(100, (companionNpc.bond || 50) + 15);
+      const shieldMemVi = `Năm ${char.age || 0} tuổi: Đỡ đòn chí mạng thay bạn trong ${def.titleVi}.`;
+      const shieldMemEn = `Age ${char.age || 0}: Absorbed a mortal strike for you in ${def.titleEn}.`;
+      companionNpc.memories = [...(companionNpc.memories || []), { age: char.age || 0, vi: shieldMemVi, en: shieldMemEn }].slice(-6);
+      char.npcs[compRole] = companionNpc;
+      notes.push({
+        vi: `[Tấm khiên sinh tử] ${session.companion.nameVi} lao mình chắn ngang nhát chém kết liễu, máu nhuộm đỏ giáp vai: "Rút đi... đừng để cả hai cùng bỏ mạng ở đây!"`,
+        en: `[Mortal Shield] ${session.companion.nameEn} threw themselves in front of the killing stroke, armor drenched in crimson: "Retreat... do not let both of us die here!"`
+      });
+      session.lastStageResult.vi += ' ' + notes[notes.length - 1].vi;
+      session.lastStageResult.en += ' ' + notes[notes.length - 1].en;
+    }
+  }
+
   if (ctx.fatalBreak(def) && (char.stats.health <= 0 || char.stats.sanity <= 0 || session.sanityStrain >= ctx.breakAt)) {
     return ctx.finishJudgment(char, session, stage, false);
   }

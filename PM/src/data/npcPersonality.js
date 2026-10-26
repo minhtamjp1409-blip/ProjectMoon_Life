@@ -162,3 +162,304 @@ export function evaluateCompanionSupport(char) {
   };
 }
 
+export const ARCHETYPE_DUNGEON_PERKS = {
+  gambler: {
+    id: 'gamble',
+    nameVi: 'Liều Ăn Nhiều',
+    nameEn: 'High Roller',
+    descVi: '+25% Ahn thu được từ Dungeon nhưng tăng nhẹ rủi ro áp lực',
+    descEn: '+25% Ahn loot in Dungeons with slight strain risk',
+    type: 'loot',
+    lootBonus: 0.25
+  },
+  proud: {
+    id: 'unyielding',
+    nameVi: 'Bất Khuất',
+    nameEn: 'Unyielding Poise',
+    descVi: 'Không nao núng trước đòn đe dọa, tăng 10% tỉ lệ thành công khi đọ chiêu',
+    descEn: 'Immune to intimidation, +10% Clash success rate',
+    type: 'clash',
+    clashBonus: 0.10
+  },
+  idealist: {
+    id: 'beacon',
+    nameVi: 'Ngọn Hải Đăng',
+    nameEn: 'Moral Beacon',
+    descVi: 'Hồi 8 Sanity khi người chơi đối mặt với dị thể hoặc cảnh hãi hùng',
+    descEn: 'Restores 8 Sanity when encountering horrors',
+    type: 'calm',
+    sanityRestore: 8
+  },
+  sickly: {
+    id: 'last_breath',
+    nameVi: 'Hơi Thở Tàn',
+    nameEn: 'Desperate Grasp',
+    descVi: 'Tăng 20% khả năng rút lui an toàn khi cạn kiệt sinh lực',
+    descEn: '+20% safe flee chance when low on HP',
+    type: 'flee',
+    fleeBonus: 0.20
+  },
+  ambitious: {
+    id: 'tactician',
+    nameVi: 'Toan Tính',
+    nameEn: 'Ruthless Tactician',
+    descVi: '+15% Merit nhận được từ Dungeon',
+    descEn: '+15% Merit earned in Dungeons',
+    type: 'merit',
+    meritBonus: 0.15
+  },
+  secretive: {
+    id: 'scout',
+    nameVi: 'Thám Thính Ngõ Ngách',
+    nameEn: 'Shadow Scout',
+    descVi: 'Phát hiện bẫy ngầm, giảm 30% sát thương hiểm họa bẫy',
+    descEn: 'Detects hidden hazards, reducing trap damage by 30%',
+    type: 'trap_mitigation',
+    damageReduction: 0.30
+  },
+  loyal: {
+    id: 'shield',
+    nameVi: 'Tấm Khiên Sinh Tử',
+    nameEn: 'Mortal Aegis',
+    descVi: 'Đỡ một đòn sát thương chí mạng thay người chơi (1 lần duy nhất)',
+    descEn: 'Absorbs one fatal blow for the player',
+    type: 'shield'
+  },
+  greedy: {
+    id: 'salvage',
+    nameVi: 'Mắt Nhặt Xác',
+    nameEn: 'Scrap Eye',
+    descVi: 'Tìm thêm vật phẩm hoặc linh kiện giá trị trong tàn tích',
+    descEn: 'Unearths additional gear or scraps from ruins',
+    type: 'salvage',
+    lootBonus: 0.20
+  },
+  devout: {
+    id: 'prescript_faith',
+    nameVi: 'Tín Niệm Chỉ Lệnh',
+    nameEn: 'Prescript Guidance',
+    descVi: 'Giảm 25% biến động tâm thần trong lúc nguy khốn',
+    descEn: 'Reduces Sanity swings by 25%',
+    type: 'sanity_shield',
+    sanityReduction: 0.25
+  },
+  artist: {
+    id: 'flair',
+    nameVi: 'Nét Cọ Cuồng Tưởng',
+    nameEn: 'Demented Stroke',
+    descVi: 'Tăng sát thương diện rộng khi đối đầu bầy quái ngõ hẻm',
+    descEn: 'Enhanced clash damage against mobs',
+    type: 'clash',
+    clashBonus: 0.12
+  },
+  veteran: {
+    id: 'parry',
+    nameVi: 'Gạt Đòn Thực Chiến',
+    nameEn: 'Combat Parry',
+    descVi: 'Hóa giải hoàn toàn 1 đòn hiểm họa mỗi tầng',
+    descEn: 'Parries 1 hazard check per floor',
+    type: 'parry'
+  },
+  caretaker: {
+    id: 'first_aid',
+    nameVi: 'Băng Bó Dã Chiến',
+    nameEn: 'Field Dressing',
+    descVi: 'Hồi thêm 10 HP và 6 Sanity tại mỗi trạm nghỉ',
+    descEn: 'Restores additional 10 HP & 6 Sanity at rest stops',
+    type: 'breather_bonus',
+    healBonus: 10,
+    sanityBonus: 6
+  },
+  bookish: {
+    id: 'analysis',
+    nameVi: 'Phân Tích Điểm Yếu',
+    nameEn: 'Weakness Study',
+    descVi: 'Bộc lộ điểm yếu kẻ địch, tăng 12% tỉ lệ thắng giao tranh',
+    descEn: 'Reveals enemy vulnerabilities, +12% combat odds',
+    type: 'clash',
+    clashBonus: 0.12
+  },
+  hothead: {
+    id: 'frenzy',
+    nameVi: 'Cuồng Nộ',
+    nameEn: 'Blood Rage',
+    descVi: 'Gấp đôi sát thương phản đòn khi người chơi bị thương tích',
+    descEn: 'Doubles counter damage when wounded',
+    type: 'clash',
+    clashBonus: 0.15
+  },
+  fixerfan: {
+    id: 'mimicry',
+    nameVi: 'Học Đòi Color',
+    nameEn: 'Hero’s Form',
+    descVi: 'Tăng 8% tỉ lệ thành công trên mọi quyết định',
+    descEn: '+8% success rate on all checks',
+    type: 'check_bonus',
+    checkBonus: 0.08
+  },
+  nestdreamer: {
+    id: 'grit',
+    nameVi: 'Bám Trụ Kiên Cường',
+    nameEn: 'Tenacity',
+    descVi: 'Giảm 20% lượng máu tiêu hao do kiệt sức',
+    descEn: 'Reduces strain damage by 20%',
+    type: 'strain_reduction',
+    strainReduction: 0.20
+  },
+  liar: {
+    id: 'feint',
+    nameVi: 'Hư Chiêu Đánh Lừa',
+    nameEn: 'Deceptive Feint',
+    descVi: 'Tăng 25% tỉ lệ né tránh đòn công kích phủ đầu',
+    descEn: '+25% evasion rate against first strikes',
+    type: 'flee',
+    fleeBonus: 0.25
+  },
+  cook: {
+    id: 'ration',
+    nameVi: 'Khẩu Phần Ấm',
+    nameEn: 'Warm Ration',
+    descVi: 'Giảm 30% chi phí hồi phục tại trạm nghỉ',
+    descEn: 'Reduces breather cost by 30%',
+    type: 'breather_discount',
+    costReduction: 0.30
+  },
+  tinkerer: {
+    id: 'field_repair',
+    nameVi: 'Sửa Đồ Cấp Tốc',
+    nameEn: 'Field Repair',
+    descVi: 'Bảo dưỡng vũ khí tức thì, giảm 35% sát thương hiểm họa cơ khí',
+    descEn: 'Mitigates mechanical hazards by 35%',
+    type: 'trap_mitigation',
+    damageReduction: 0.35
+  }
+};
+
+export function getNpcDungeonPerk(npc) {
+  if (!npc) return null;
+  const arch = npc.archetype || (npc.tags?.[0]) || 'loyal';
+  return ARCHETYPE_DUNGEON_PERKS[arch] || ARCHETYPE_DUNGEON_PERKS.loyal;
+}
+
+export const NPC_DISTRICTS = [
+  'District 23 · Phố Thịt & Ẩm Thực',
+  'District 4 · Tàn Tích Chiến Tranh Khói',
+  'District 11 · Khu Khói Bụi Công Nghiệp',
+  'District 20 · Phố Hơi Nước T Corp',
+  'District 10 · Tiền Tiêu Y Tế K Corp',
+  'District 8 · Phố Môi Giới Thông Tin',
+  'District 2 · Vùng Giáp Ranh Nest'
+];
+
+export function rollNpcCareer(archetype, role, rng = Math.random) {
+  if (role === 'mentor') {
+    return {
+      job: 'Fixer',
+      rank: 4,
+      rankLabelVi: 'Fixer Grade 4 (Kỳ cựu)',
+      rankLabelEn: 'Veteran Grade 4 Fixer',
+      district: NPC_DISTRICTS[Math.floor(rng() * NPC_DISTRICTS.length)]
+    };
+  }
+  if (role === 'child' || role === 'ward') {
+    return {
+      job: 'Apprentice',
+      rank: 0,
+      rankLabelVi: 'Học nghề Backstreets',
+      rankLabelEn: 'Backstreets Apprentice',
+      district: NPC_DISTRICTS[0]
+    };
+  }
+  if (['veteran', 'hothead', 'fixerfan', 'proud'].includes(archetype)) {
+    const grades = [9, 8, 7, 6, 5];
+    const g = grades[Math.floor(rng() * grades.length)];
+    return {
+      job: 'Fixer',
+      rank: g,
+      rankLabelVi: `Fixer Grade ${g}`,
+      rankLabelEn: `Grade ${g} Fixer`,
+      district: NPC_DISTRICTS[Math.floor(rng() * NPC_DISTRICTS.length)]
+    };
+  }
+  if (['gambler', 'greedy', 'secretive', 'devout'].includes(archetype)) {
+    const fingers = ['Thumb', 'Index', 'Middle', 'Ring', 'Pinky'];
+    const f = fingers[Math.floor(rng() * fingers.length)];
+    return {
+      job: 'Syndicate',
+      rank: 1,
+      rankLabelVi: `Thành viên The ${f}`,
+      rankLabelEn: `The ${f} Member`,
+      district: NPC_DISTRICTS[Math.floor(rng() * NPC_DISTRICTS.length)]
+    };
+  }
+  if (['nestdreamer', 'ambitious', 'bookish'].includes(archetype)) {
+    const corps = ['W Corp', 'K Corp', 'T Corp'];
+    const corp = corps[Math.floor(rng() * corps.length)];
+    return {
+      job: 'Wing Employee',
+      rank: 1,
+      rankLabelVi: `Nhân viên ${corp}`,
+      rankLabelEn: `${corp} Feather`,
+      district: NPC_DISTRICTS[Math.floor(rng() * NPC_DISTRICTS.length)]
+    };
+  }
+  if (['tinkerer', 'artist'].includes(archetype)) {
+    return {
+      job: 'Workshop Artisan',
+      rank: 1,
+      rankLabelVi: 'Thợ chế tác Workshop',
+      rankLabelEn: 'Workshop Artisan',
+      district: NPC_DISTRICTS[Math.floor(rng() * NPC_DISTRICTS.length)]
+    };
+  }
+  const civJobs = [
+    { vi: 'Chủ quán rượu Backstreets', en: 'Backstreet Tavern Keeper' },
+    { vi: 'Môi giới thông tin ngầm', en: 'Underground Broker' },
+    { vi: 'Bác sĩ phòng khám chui', en: 'Backstreet Alley Medic' },
+    { vi: 'Người giao hàng ngõ ngách', en: 'Alley Courier' }
+  ];
+  const c = civJobs[Math.floor(rng() * civJobs.length)];
+  return {
+    job: 'Civilian',
+    rank: 0,
+    rankLabelVi: c.vi,
+    rankLabelEn: c.en,
+    district: NPC_DISTRICTS[Math.floor(rng() * NPC_DISTRICTS.length)]
+  };
+}
+
+export function ensureNpcAgency(npc, rng = Math.random) {
+  if (!npc) return npc;
+  const copy = { ...npc };
+  if (!copy.archetype) {
+    const arch = rollArchetype(rng);
+    copy.archetype = arch.id;
+    copy.tags = copy.tags || [...arch.tags];
+    copy.wantVi = copy.wantVi || arch.wantVi;
+    copy.wantEn = copy.wantEn || arch.wantEn;
+    copy.fearVi = copy.fearVi || arch.fearVi;
+    copy.fearEn = copy.fearEn || arch.fearEn;
+  }
+  if (!copy.job || !copy.district) {
+    const career = rollNpcCareer(copy.archetype, copy.role, rng);
+    copy.job = copy.job || career.job;
+    copy.rank = copy.rank ?? career.rank;
+    copy.rankLabelVi = copy.rankLabelVi || career.rankLabelVi;
+    copy.rankLabelEn = copy.rankLabelEn || career.rankLabelEn;
+    copy.district = copy.district || career.district;
+  }
+  if (!copy.dungeonPerk) {
+    copy.dungeonPerk = getNpcDungeonPerk(copy);
+  }
+  if (!copy.crisis) {
+    copy.crisis = { type: 'none', severity: 0, labelVi: '', labelEn: '' };
+  }
+  if (!copy.debts) {
+    copy.debts = { toPlayer: 0, toOthers: 0, favorCount: 0 };
+  }
+  if (!Array.isArray(copy.memories)) {
+    copy.memories = [];
+  }
+  return copy;
+}
+

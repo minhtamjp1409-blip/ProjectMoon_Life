@@ -766,11 +766,30 @@ export function createNewCharacter({
     npcs: {
       friend: birth.friend ? { ...birth.friend, metAge: 0 } : null,
       parent: parentNpc,
-      mentor: null,
+      mentor: (parentLegacy && parentLegacy.successorRelation === 'apprentice' && parentLegacy.npcs?.partner && parentLegacy.npcs.partner.status !== 'dead')
+        ? {
+            ...parentLegacy.npcs.partner,
+            role: 'mentor',
+            metAge: 0,
+            bond: 65,
+            traitVi: `Cộng sự cũ của ${parentLegacy.name}, nay trở thành người dìu dắt bạn`,
+            traitEn: `Former comrade of ${parentLegacy.name}, now guiding you`,
+            memories: [{ age: 0, vi: `Năm 0 tuổi: Nhận lời dìu dắt từ người bạn chiến đấu của ${parentLegacy.name}.`, en: `Age 0: Taken under the wing of ${parentLegacy.name}'s comrade.` }]
+          }
+        : null,
       partner: null,
       spouse: null,
       child: null,
-      nemesis: null
+      nemesis: (parentLegacy?.npcs?.nemesis && parentLegacy.npcs.nemesis.status !== 'dead')
+        ? {
+            ...parentLegacy.npcs.nemesis,
+            role: 'nemesis',
+            metAge: 0,
+            traitVi: `Kẻ thù truyền kiếp của ${parentLegacy.name}, nay chuyển tầm ngắm sang hậu bối`,
+            traitEn: `Sworn nemesis of ${parentLegacy.name}, now hunting the heir`,
+            memories: [{ age: 0, vi: `Năm 0 tuổi: Thừa kế mối thù sâu nặng từ thời ${parentLegacy.name}.`, en: `Age 0: Inherited the blood feud from ${parentLegacy.name}.` }]
+          }
+        : null
     },
     lineage: lineageInfo,
     seenEvents: [],
@@ -2783,7 +2802,8 @@ export function buildLifeSummaryAndLegacy(char) {
     childAgeWhenParentDied,
     hasChild: npcIsActive(char.npcs?.child),
     childName: char.npcs?.child?.nameVi || '',
-    hasVendetta: (char.heat || 0) >= 40 || flags.includes('MiddleVendetta')
+    hasVendetta: (char.heat || 0) >= 40 || flags.includes('MiddleVendetta'),
+    npcs: char.npcs || {}
   };
 }
 

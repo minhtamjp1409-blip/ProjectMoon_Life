@@ -132,7 +132,12 @@
 .npc { display: flex; flex-direction: column; gap: 6px; padding: 10px 0; border-bottom: 1px solid var(--rule); }
 .npc:last-child { border-bottom: 0; }
 .npc.is-gone { opacity: .6; }
+.npc.is-interactive { cursor: pointer; transition: background .15s ease, padding .15s ease; border-radius: 4px; padding: 10px 6px; }
+.npc.is-interactive:hover { background: color-mix(in srgb, var(--accent, #e5a93c) 8%, transparent); }
+.npc.is-interactive:focus-visible { outline: 2px solid var(--accent, #e5a93c); outline-offset: 1px; }
 .npc-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.npc-head-meta { display: flex; align-items: baseline; gap: 8px; }
+.npc-inspect-hint { font-size: 11.5px; color: var(--accent, #e5a93c); opacity: .85; font-weight: 600; letter-spacing: 0.03em; }
 .npc-head strong, .npc-head b { font-family: var(--serif); font-size: 15.5px; font-weight: 600; }
 .npc-head span { font-size: 13px; color: var(--muted); }
 .npc-trait { font-size: 13.5px; color: var(--muted); line-height: 1.5; }

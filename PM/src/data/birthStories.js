@@ -4,7 +4,7 @@
 // person you'll grow up with) so that no two starts read alike.
 // ============================================================================
 import { generatePersonName } from './nameGenerator.js';
-import { rollArchetype } from './npcPersonality.js';
+import { rollArchetype, ensureNpcAgency } from './npcPersonality.js';
 
 const pick = (arr, rng) => arr[Math.floor(rng() * arr.length) % arr.length];
 
@@ -195,7 +195,7 @@ export function makeNpc(role, rng, extra = {}) {
     id = generatePersonName(rng, { regionId, nest });
   }
   const arch = rollArchetype(rng);
-  return {
+  return ensureNpcAgency({
     role,
     nameVi: id.name,
     nameEn: id.name,
@@ -217,7 +217,7 @@ export function makeNpc(role, rng, extra = {}) {
     ageAtMeet: role === 'mentor' ? (rest.metAge || 0) + 20 : role === 'child' ? 0 : (rest.metAge || 0),
     memories: [],
     ...rest
-  };
+  }, rng);
 }
 
 const FRIEND_LINE = [
