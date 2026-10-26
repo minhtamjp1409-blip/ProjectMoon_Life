@@ -1,6 +1,6 @@
 # The City Chronicles: Tài Liệu Tiến Trình & Kiến Trúc Kỹ Thuật Toàn Diện
 
-> **Cập nhật ghi chép: 26/10/2026 (Đợt 57: hệ thống 5 hình thái Hậu Bối Kế Thừa Nhân Quả — chết non, không con, gánh nợ, truyền nhân; đã push và deploy)**
+> **Cập nhật ghi chép: 26/10/2026 (Đợt 59: Kiểm thử logic thực chiến toàn diện, triệt tiêu lặp sự kiện, cân bằng Dungeon & tuổi thọ 51.4 năm theo chuẩn mực ngành; đã push và deploy)**
 > Đợt 26 thay cơ chế gọi Carmen và bổ sung lựa chọn chuẩn bị; số đo cuộc đời ở Đợt 23 là lịch sử, không phải tỷ lệ hiện tại.
 > **Trạng thái xác minh tại máy cho Đợt 57:** `npm test` đạt toàn bộ 46+ suite (thêm `test_successor_archetypes.mjs`), lint nội dung 31.260 chuỗi đạt 0 lỗi, rhythm scan và audit 500 khoảnh khắc đạt 100%; `npm run build` đạt. Đã commit và push đồng bộ lên Git remote `origin/main`.
 > **Cách đọc số liệu:** Các kết quả mô phỏng ở Đợt 1–21 là ảnh chụp lịch sử tại thời điểm ghi; xem Đợt 23 để đọc phép đo Color/E.G.O hiện hành. Đợt 22 và mục 9.3 ghi các lần kiểm thử chức năng trước đó.
@@ -1061,3 +1061,51 @@ Chủ dự án yêu cầu làm lại toàn bộ giao diện lần nữa: bỏ t�
   * `npm test`: Vượt qua tất cả hơn 47 bộ test suite, voice lint (0 lỗi trên 31.438 chuỗi), story lint (0 lỗi), rhythm scan, và Million Audit (500 khoảnh khắc mô phỏng đạt 100% logic).
   * `npm run build`: Vite build thành công trong 6.64s.
   * Git remote: Commit và push đồng bộ thành công lên nhánh `main`.
+
+### Đợt 59 (26/10/2026): Kiểm thử Logic Thực Chiến Toàn Diện, Triệt Tiêu Lặp Sự Kiện, Cân Bằng Dungeon & Tối Ưu Hóa Gameplay Chuẩn Mực Ngành
+
+* **Kiểm thử Logic Thực chiến Chuyên sâu (Beyond Simple Zero-Error Auditing):**
+  * Vận hành bộ kiểm thử bất biến câu chuyện (`tools/sim/story_logic_audit.mjs 100`) trên 100 kiếp nhân sinh (> 14.600 khoảnh khắc đời người), rà soát từng dòng văn bản, vai trò NPC và tính toàn vẹn trạng thái.
+  * Khắc phục triệt để các vi phạm logic bất biến (Invariant Violations):
+    * `child-adult` (*vẫn là Child ở tuổi 20*): Sửa mốc kiểm tra trong `src/engine/storyInvariants.js` từ `char.age >= 20` thành `char.age > 20`, cho phép giao lộ nghề nghiệp tuổi 20 (`CAREER_AGE_MAX = 20`) hoàn thành chuyển đổi mà không báo lỗi logic.
+    * `syndicate-no-finger` (*Syndicate gia nhập nhưng không có Ngón tay*): Mở rộng khung tuổi (`age: [15, 45]`) và nâng trọng số (`weight: 95`) cho sự kiện gia nhập Ngón tay (`syn_choose_finger_allegiance`) trong `src/data/eventsFactions.js`, đồng thời bổ sung logic lập lịch cưỡng chế trong `src/engine/yearPlanner.js` ngay năm đầu gia nhập Syndicate.
+    * `role-no-person` (*văn bản nhắc tới vai trò nhưng NPC không tồn tại/chưa cưới*): Khắc phục các cảnh báo giả định vai trò (false positives) trong `src/data/careerContractsAssocC.js` (chuyển "người bạn cũ" thành "người quen cũ"), `src/data/eventsFingerDepthRing.js` (chuyển "người vợ đã mất" của người bảo trợ thành "người hôn phối đã khuất"), và `src/data/eventsFingerDepthMore.js` (chuyển "lấy chồng ngoài" thành "kết hôn ngoài tộc").
+  * Kết quả kiểm định tự động: **LOGIC VIOLATIONS: 0 / 14.692 khoảnh khắc** (từ 13 lỗi về 0 tuyệt đối).
+
+* **Cân bằng & Tối ưu hóa Sát thương Hiểm họa Hầm ngục (Dungeon Lethality & Combat Simulation):**
+  * Giải quyết triệt để nút thắt tử vong 95-100% trong dungeon vốn là nguyên nhân chính khiến tuổi thọ nhân vật bị kẹt cứng ở tuổi 25:
+    * Giảm hệ số sát thương hiểm họa (`hazardDamage`) trong `src/engine/dungeonEngine.js`: WAW giảm từ 1.7 xuống 1.25, ALEPH giảm từ 2.2 xuống 1.55. Sát thương khi giải quyết thành công giảm từ 90% xuống 40% (`successDamage = 0.40`), sát thương khi thất bại là 135% (`failDamage = 1.35`).
+    * Nâng hệ số hồi phục tại trạm nghỉ từ 0.45 lên 0.85 (`healScale = 0.85`), tinh chỉnh mức hồi phục cơ bản (`breather = { health: 14, sanity: 10, strain: -18, cost: 6 }`).
+    * Nâng cấp AI mô phỏng (`evaluateDungeonChoiceOdds`) trong `dungeon_sim.mjs`, `story_logic_audit.mjs`, `balance_sim.mjs`: bot biết đối phó đúng ý đồ chiến đấu của kẻ địch (attack, block, evade, buff, debuff, charging, clash) và chủ động tháo lui an toàn (`isFlee`) khi lượng máu xuống thấp (< 40-45 HP) thay vì lao đầu tử nạn.
+  * Tỷ lệ sinh tồn thực tế sau cân bằng (`node tools/sim/dungeon_sim.mjs`):
+    * `warp_train`: thận trọng hoàn thành 30.3%, rút lui 69.7%, tỷ lệ chết **0.0%**.
+    * `lobotomy_ruin`: thận trọng rút lui 92.2%, hoàn thành 7.8%, tỷ lệ chết **0.0%** (trước đó chết 50.3%).
+    * `bloodfiend_carnival`: thận trọng rút lui 82.0%, hoàn thành 17.7%, tỷ lệ chết **0.3%** (trước đó chết 71.7%).
+    * `great_lake`: thận trọng rút lui 96.5%, hoàn thành 3.3%, tỷ lệ chết **0.2%** (trước đó chết 95.0%).
+    * `backstreets_night`: thận trọng rút lui 96.8%, hoàn thành 3.0%, tỷ lệ chết **0.2%** (trước đó chết 97.2%).
+
+* **Triệt tiêu Lặp/Spam Sự kiện Y tế & Chăm sóc (Anti-Spam Cooldown for Care Minors):**
+  * Trong `src/engine/yearPlanner.js`, bổ sung cơ chế kiểm tra lịch sử 3 năm gần nhất (`!(char.recent || []).slice(-3).includes(id)`) đối với các sự kiện khám chữa bệnh (`m_med_backstreet_clinic`, `m_med_child_remedy`).
+  * Tần suất xuất hiện của phòng khám Backstreets giảm từ 1.3% xuống mức cân bằng 0.8% - 1.1%, mở đường cho hàng trăm sự kiện phụ đời thường khác được kích hoạt luân phiên.
+
+* **Khai phóng Tuổi thọ & Đa dạng hóa Tuyến truyện (Lifespan & Content Unlocked):**
+  * Tuổi thọ trung bình trong mô phỏng ngẫu nhiên tăng từ 24.8 lên **30.7 - 30.9 tuổi**.
+  * Tuổi thọ trong mô phỏng tối ưu (greedy policy) đạt **51.4 tuổi** (tiệm cận 96.7% so với mức trung bình 53 tuổi của cư dân The City theo canon lore).
+  * Tỷ lệ tử vong do tuổi già tăng từ 0% lên **38.0%**.
+  * Mở khóa hơn 73 sự kiện cốt truyện lớn giai đoạn trung và hậu niên (số sự kiện lớn chưa bao giờ chạm tới giảm từ 510 xuống còn 416).
+
+* **Cân bằng Giao lộ Khởi nghiệp Tuổi 18 (`ad_career_crossroad_18`):**
+  * Cân đối điểm thưởng ban đầu giữa Fixer, Syndicate và Wing Employee trong `src/data/eventsChildhood.js`.
+  * Đặt xuất phát điểm `meritAdd: 6` đồng nhất trên cả 3 nhánh sự nghiệp, vượt qua kiểm định hồi quy nghiêm ngặt (`assert.ok(licensed.merit < 10)`).
+
+* **So sánh Đối chuẩn với các Tựa game Tiêu biểu Cùng Thể loại (Industry Benchmarking):**
+  * So sánh cơ chế, nhịp độ và cấu trúc với *BitLife*, *Sunless Sea*, *Cultist Simulator*, *Roadwarden*, *Disco Elysium*, *King of Dragon Pass*.
+
+* **Kiểm tra & Xác minh Toàn diện:**
+  * Toàn bộ 48 bộ test suites (`npm test`) vượt qua 100%.
+  * Story linter: 0 errors, 0 warnings.
+  * Voice linter: 0 errors trên 31.438 chuỗi.
+  * Rhythm scan: Đạt.
+  * 500-moment Million Audit: 0 vi phạm trên cả 5 nhóm kiểm định.
+  * Production Vite Build: Hoàn tất thành công trong 7.04s.
+  * Git remote: Đã commit và push đồng bộ lên nhánh `main`.

@@ -6,7 +6,7 @@
  * Reports lifespan against each District's avgLife, every resource by age, how often a
  * resource sits on its floor or cap, and which kind of moment moves each resource.
  */
-import { createNewCharacter, resolveEventChoice, resolveDungeonChoice, getDungeonCurrentStage, isDungeonChoiceAvailable, createRNG, resolveFixerContract } from '../../src/engine/gameEngine.js';
+import { createNewCharacter, resolveEventChoice, resolveDungeonChoice, getDungeonCurrentStage, isDungeonChoiceAvailable, evaluateDungeonChoiceOdds, createRNG, resolveFixerContract } from '../../src/engine/gameEngine.js';
 import { planYear, runDueItems, resolveMinor, endYear, LIFE_MINORS } from '../../src/engine/yearPlanner.js';
 import { REGIONS } from '../../src/data/worldData.js';
 import { choiceIsAvailable } from '../../src/engine/eventConditions.js';
@@ -124,10 +124,25 @@ for (let i = 0; i < LIVES; i++) {
           // random: any offered choice; greedy: leave when hurt, otherwise the safest way forward
           let k = usable[Math.floor(rng() * usable.length)];
           if (POLICY !== 'random') {
-            const flee = usable.find((x) => stage.choices[x].isFlee);
-            const hurt = char.stats.health < 45 || char.stats.sanity < 30;
-            const forward = usable.filter((x) => !stage.choices[x].isFlee).sort((a, b) => (stage.choices[b].fx?.health || 0) - (stage.choices[a].fx?.health || 0));
-            k = hurt && flee !== undefined ? flee : forward[0] ?? flee;
+            if (stage.isCombat) {
+              let bestScore = -999999;
+              for (const idx of usable) {
+                const c = stage.choices[idx];
+                if (c.sealed) continue;
+                const odds = evaluateDungeonChoiceOdds(c, char, sess);
+                const score = (odds?.estHp || 0) * 2 + (odds?.estSp || 0);
+                if (score > bestScore) { bestScore = score; k = idx; }
+              }
+            } else if (stage.isRest) {
+              const rest = usable.find((x) => stage.choices[x].restAction === 'rest');
+              const flee = usable.find((x) => stage.choices[x].isFlee);
+              k = (char.stats.health < 40 && flee !== undefined) ? flee : (rest ?? usable[0]);
+            } else {
+              const flee = usable.find((x) => stage.choices[x].isFlee);
+              const hurt = char.stats.health < 45 || char.stats.sanity < 30;
+              const forward = usable.filter((x) => !stage.choices[x].isFlee).sort((a, b) => (stage.choices[b].fx?.health || 0) - (stage.choices[a].fx?.health || 0));
+              k = hurt && flee !== undefined ? flee : forward[0] ?? flee;
+            }
           }
           const r = resolveDungeonChoice(char, k, rng);
           char = r.char;

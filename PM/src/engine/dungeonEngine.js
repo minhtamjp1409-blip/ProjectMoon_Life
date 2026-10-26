@@ -950,16 +950,16 @@ export function getDungeonMastery(def, char) {
  */
 export const DUNGEON_BALANCE = {
   reward: { wealth: 0.3, loot: 0.33, merit: 0.4, resonance: 0.4, rep: 0.5, network: 0.6 },
-  healScale: 0.45,
-  hazardDamage: { WAW: 1.7, ALEPH: 2.2 },
-  successDamage: 0.9,
-  failDamage: 1.8,
+  healScale: 0.85,
+  hazardDamage: { WAW: 1.25, ALEPH: 1.55 },
+  successDamage: 0.40,
+  failDamage: 1.35,
   failStrain: 8,
   failLootKept: 0.5,
   breakLootKept: 0.5,
   breakAt: 100,
   conquest: { ahn: 8, health: 5, sanity: 6, merit: 4 },
-  breather: { health: 8, sanity: 7, strain: -16, cost: 6 },
+  breather: { health: 14, sanity: 10, strain: -18, cost: 6 },
   // E.G.O is a loan against the mind: one stage goes much easier, and the bill comes in strain and resonance.
   ego: {
     checkBonus: 0.3, ceiling: 0.97, damageMult: 0.6,

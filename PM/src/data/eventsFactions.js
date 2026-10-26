@@ -96,9 +96,9 @@ export const FACTION_EVENTS = [
   // ------------------------------------------------------------------ the Fingers
   {
     id: 'syn_choose_finger_allegiance',
-    age: [18, 38],
+    age: [15, 45],
     major: true,
-    weight: 10,
+    weight: 95,
     jobs: ['Syndicate'],
     forbids: ['SwornFinger'],
     vi: "[Chọn một Finger] Năm sứ giả ngồi quanh chiếc bàn dưới Backstreets. Mỗi người đưa ra một luật để sống theo và một giá phải trả khi phá luật. Họ chờ bạn chọn nơi sẽ nhận mình.",

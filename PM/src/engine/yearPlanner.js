@@ -430,6 +430,10 @@ export function planYear(charState, rng) {
     if (!(char.seenEvents || []).includes(careerEventId) && !scheduledKey.some((it) => it.forcedEventId === careerEventId)) {
       scheduledKey.push({ kind: 'major', forcedEventId: careerEventId });
     }
+  } else if (char.job === 'Syndicate' && !char.finger && !(char.seenEvents || []).includes('syn_choose_finger_allegiance')) {
+    if (!scheduledKey.some((it) => it.forcedEventId === 'syn_choose_finger_allegiance')) {
+      scheduledKey.push({ kind: 'major', forcedEventId: 'syn_choose_finger_allegiance' });
+    }
   } else if (!scheduledKey.some((it) => it.kind === 'major') && majorIsDue(char, rng)) {
     scheduledKey.push({ kind: 'major' });
   }
@@ -488,7 +492,7 @@ export function planYear(charState, rng) {
   // Offer care when injured or distressed, and gear maintenance for equipped careers.
   // Need decides whether one is due; how recently and how often it played decides how likely.
   if (!char.flags.includes('Distorted')) {
-    const careDue = (id, p) => !scheduledKey.some((it) => it.id === id) && rng() < p * Math.max(0.2, freshness(id, char.recent, char.seenCount));
+    const careDue = (id, p) => !scheduledKey.some((it) => it.id === id) && !(char.recent || []).slice(-3).includes(id) && rng() < p * Math.max(0.1, freshness(id, char.recent, char.seenCount));
     const scheduleCare = (id) => {
       scheduledKey.push({ kind: 'minor', id });
       remember(char, id);

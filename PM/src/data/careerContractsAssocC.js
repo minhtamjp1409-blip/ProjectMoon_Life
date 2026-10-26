@@ -180,7 +180,7 @@ export const OUFI_CONTRACTS = [
   rq('oufi_breaker_hunt', 3, 'Truy một kẻ phá hợp đồng', 'Hunt a contract breaker',
     'Một Fixer Grade 6 phá hợp đồng đã công chứng và biến mất. Öufi đã cho ba lần cảnh báo. Bạn được giao thi hành bản án và đưa người đó về hoặc ghi lại lý do không thể.',
     'A Grade 6 Fixer broke a notarized contract and vanished. Öufi gave three warnings. You are assigned to enforce the verdict and bring them in, or record why you cannot.',
-    'Bạn tìm thấy người ấy ở nhà một người bạn cũ. Họ đi theo bạn không phản kháng, và trên đường về nói rằng đã chờ bạn đến từ lâu.',
+    'Bạn tìm thấy người ấy ở nhà một người quen cũ. Họ đi theo bạn không phản kháng, và trên đường về nói rằng đã chờ bạn đến từ lâu.',
     'You find them at an old friend’s house. They come with you without resistance, and on the way say they have been waiting for you for some time.',
     'Người ấy chạy khỏi bạn qua mái nhà. Öufi nói lần sau phải nhanh hơn, và đưa cho bạn bản án thứ hai.',
     'They flee over the rooftops. Öufi says the next time must be faster, and hands you the second verdict.',

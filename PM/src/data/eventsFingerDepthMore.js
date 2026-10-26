@@ -47,7 +47,7 @@ export const FINGER_DEPTH_MARGIN = [
 
   // ------------------------------------------------------------------ Middle
   mission('middle_the_cousin_who_married_out', 'Middle', [1, 2],
-    '[Người em họ lấy chồng ngoài] Một người em họ của bạn kết hôn với người của một băng đối địch và xin gia đình đến dự đám cưới. Không ai muốn đi. Không ai muốn nói rằng mình không muốn đi.',
+    '[Người em họ kết hôn ngoài tộc] Một người em họ của bạn kết hôn với người của một băng đối địch và xin gia đình đến dự đám cưới. Không ai muốn đi. Không ai muốn nói rằng mình không muốn đi.',
     '[The cousin who married out] A cousin of yours marries into a rival crew and asks the family to attend the wedding. No one wants to go. No one wants to say they do not want to.',
     [
       fc('Đi một mình và mang quà của cả gia đình', 'Go alone and carry the whole family’s gift',

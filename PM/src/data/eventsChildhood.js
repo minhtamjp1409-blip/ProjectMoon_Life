@@ -446,9 +446,9 @@ export const CHILDHOOD_EVENTS = [
         resultEn: "You paid the fee at the Hana desk and took your Grade 9 card. The clerk did not look up. “Keep the card dry. If you last the first year, you will need it.”",
         setJob: 'Fixer',
         setFixerGrade: 9,
-        effects: { rep: +8, network: +8, sanity: -5 },
+        effects: { rep: +14, network: +10, wealth: +12, sanity: -4 },
         recordsAdd: ['fixer_license'],
-        meritAdd: 5
+        meritAdd: 6
       },
       {
         labelVi: "Theo một Syndicate trong khu",
@@ -456,7 +456,7 @@ export const CHILDHOOD_EVENTS = [
         resultVi: "Capo đưa bạn một con dao và danh sách các hộ nợ tiền bảo kê. \"Thu đủ trước bình minh.\" Không ai hỏi bạn đã cầm dao bao giờ chưa.",
         resultEn: "A Capo handed you a knife and a list of households behind on protection money. “Collect it all before dawn.” No one asked whether you had ever held a knife.",
         setJob: 'Syndicate',
-        effects: { wealth: +14, rep: +8, heat: +18, sanity: -12 },
+        effects: { wealth: +22, rep: +12, heat: +8, sanity: -6 },
         recordsAdd: ['finger_initiate'],
         meritAdd: 6
       },
@@ -467,7 +467,8 @@ export const CHILDHOOD_EVENTS = [
         resultEn: "You passed the interview and received a probationary badge and a Feather uniform. The contract let the Wing dispose of an employee’s body when a Singularity failed. Your signature sat directly under that clause.",
         setJob: 'Wing Employee',
         setWingRank: 0,
-        effects: { wealth: +18, network: +12, sanity: -8 },
+        effects: { wealth: +18, network: +14, rep: +6, sanity: -6 },
+        meritAdd: 6,
         flagsAdd: ['Feather', 'Nest'],
         recordsAdd: ['nest_migration']
       }
@@ -498,7 +499,7 @@ export const CHILDHOOD_EVENTS = [
         resultVi: "Người thợ rèn khen mắt bạn tinh, trả mười Ahn và cho một đĩa bánh bao nóng. Cả nhà bạn đủ ăn suốt một tuần.",
         resultEn: "The smith praised your eye, paid ten Ahn and gave you hot dumplings. The household ate for a week.",
         effects: { wealth: +10, sanity: +6 },
-        meritAdd: 5,
+        meritAdd: 10,
         flagsAdd: ['child_blade_found']
       }
     ]

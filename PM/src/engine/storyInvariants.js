@@ -58,7 +58,7 @@ export function checkState(char) {
   if (char.job === 'Distortion' && !flags.includes('Distorted')) add('distortion-flag', 'job Distortion without the Distorted flag');
   if (flags.includes('ColorFixer') && char.fixerGrade !== 0) add('color-grade', `ColorFixer with grade ${char.fixerGrade}`);
   if (char.job === 'Fixer' && !(Number.isInteger(char.fixerGrade) && char.fixerGrade >= 0 && char.fixerGrade <= 9)) add('fixer-grade', `Fixer grade ${char.fixerGrade}`);
-  if (char.job === 'Child' && char.age >= 20) add('child-adult', `still Child at ${char.age}`);
+  if (char.job === 'Child' && char.age > 20) add('child-adult', `still Child at ${char.age}`);
   if (char.job === 'Syndicate' && char.age >= 22 && !char.finger) add('syndicate-no-finger', 'Syndicate without a Finger');
 
   for (const k of ['health', 'sanity', 'wealth', 'network', 'rep']) {

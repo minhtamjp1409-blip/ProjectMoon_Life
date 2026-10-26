@@ -30,13 +30,55 @@ const POLICIES = {
   },
   push: (stage, char, sess) => {
     const ok = stage.choices.map((c, i) => [c, i]).filter(([c]) => isDungeonChoiceAvailable(c, char, sess) && !c.isFlee);
+    if (stage.isCombat) {
+      let best = ok[0];
+      let bestScore = -999999;
+      for (const entry of ok) {
+        const c = entry[0];
+        if (c.sealed) continue;
+        const odds = evaluateDungeonChoiceOdds(c, char, sess);
+        const score = (odds?.estHp || 0) * 1.5 + (odds?.estSp || 0);
+        if (score > bestScore) {
+          bestScore = score;
+          best = entry;
+        }
+      }
+      return (best || ok[0])[1];
+    }
+    if (stage.isRest) {
+      const p = ok.find(([c]) => c.restAction === 'push');
+      if (p) return p[1];
+    }
     ok.sort((a, b) => (b[0].lootAhn || 0) + (b[0].fx?.wealth || 0) - (a[0].lootAhn || 0) - (a[0].fx?.wealth || 0));
     return ok[0][1];
   },
   careful: (stage, char, sess) => {
+    const ok = stage.choices.map((c, i) => [c, i]).filter(([c]) => isDungeonChoiceAvailable(c, char, sess));
+    if (stage.isCombat) {
+      let best = ok[0];
+      let bestScore = -999999;
+      for (const entry of ok) {
+        const c = entry[0];
+        if (c.sealed) continue;
+        const odds = evaluateDungeonChoiceOdds(c, char, sess);
+        const score = (odds?.estHp || 0) * 2 + (odds?.estSp || 0);
+        if (score > bestScore) {
+          bestScore = score;
+          best = entry;
+        }
+      }
+      return (best || ok[0])[1];
+    }
+    if (stage.isRest) {
+      if (char.stats.health < 45 || char.stats.sanity < 30) {
+        const leave = ok.find(([c]) => c.isFlee);
+        if (leave) return leave[1];
+      }
+      const rest = ok.find(([c]) => c.restAction === 'rest');
+      if (rest) return rest[1];
+    }
     // Flee when hurt, otherwise take the choice that costs the least health
     const hurt = char.stats.health < 45 || char.stats.sanity < 30;
-    const ok = stage.choices.map((c, i) => [c, i]).filter(([c]) => isDungeonChoiceAvailable(c, char, sess));
     if (hurt) { const f = ok.find(([c]) => c.isFlee); if (f) return f[1]; }
     const safe = ok.filter(([c]) => !c.isFlee).sort((a, b) => (b[0].fx?.health || 0) - (a[0].fx?.health || 0));
     return (safe[0] || ok[0])[1];

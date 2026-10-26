@@ -6,7 +6,7 @@
  * Usage: node tools/sim/story_logic_audit.mjs [lives=500] [policy=random|greedy]
  * Exit code 1 when any logic violation is found.
  */
-import { createNewCharacter, resolveEventChoice, resolveDungeonChoice, createRNG, resolveFixerContract, ALL_STORY_EVENTS } from '../../src/engine/gameEngine.js';
+import { createNewCharacter, resolveEventChoice, resolveDungeonChoice, getDungeonCurrentStage, isDungeonChoiceAvailable, evaluateDungeonChoiceOdds, createRNG, resolveFixerContract, ALL_STORY_EVENTS } from '../../src/engine/gameEngine.js';
 import { planYear, runDueItems, resolveMinor, endYear, LIFE_MINORS, LIFE_DAILIES } from '../../src/engine/yearPlanner.js';
 import { CONSEQUENCE_EVENTS } from '../../src/data/eventsChildhood.js';
 import { choiceIsAvailable } from '../../src/engine/eventConditions.js';
@@ -150,7 +150,29 @@ for (let i = 0; i < LIVES; i++) {
           char = resolveEventChoice(char, Math.max(0, pick(char.pendingEvent.choices, rng, char)), rng);
           if (trial && char.pendingEvent?.id === eventId) stalledCareerTrials[eventId] = (stalledCareerTrials[eventId] || 0) + 1;
         } else if (char.pendingDungeon) {
-          char = resolveDungeonChoice(char, 0, rng).char;
+          const sess = char.pendingDungeon;
+          const stage = getDungeonCurrentStage(sess);
+          const usable = stage.choices.map((c, k) => k).filter((k) => isDungeonChoiceAvailable(stage.choices[k], char));
+          let pickIdx = usable[0];
+          if (stage.isCombat) {
+            let bestScore = -999999;
+            for (const k of usable) {
+              const c = stage.choices[k];
+              if (c.sealed) continue;
+              const odds = evaluateDungeonChoiceOdds(c, char, sess);
+              const score = (odds?.estHp || 0) * 2 + (odds?.estSp || 0);
+              if (score > bestScore) { bestScore = score; pickIdx = k; }
+            }
+          } else if (stage.isRest) {
+            const rest = usable.find((k) => stage.choices[k].restAction === 'rest');
+            const flee = usable.find((k) => stage.choices[k].isFlee);
+            pickIdx = (char.stats.health < 40 && flee !== undefined) ? flee : (rest ?? usable[0]);
+          } else {
+            const flee = usable.find((k) => stage.choices[k].isFlee);
+            const hurt = char.stats.health < 45 || char.stats.sanity < 30;
+            pickIdx = (hurt && flee !== undefined) ? flee : usable[0];
+          }
+          char = resolveDungeonChoice(char, pickIdx, rng).char;
         } else if (char.pendingMinor) {
           const def = LIFE_MINORS.find((m) => m.id === char.pendingMinor.id);
           char = resolveMinor(char, pick(def?.choices, rng, char), rng); // -1 lets the moment pass
