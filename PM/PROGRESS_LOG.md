@@ -1,8 +1,8 @@
 # The City Chronicles: Tài Liệu Tiến Trình & Kiến Trúc Kỹ Thuật Toàn Diện
 
-> **Cập nhật ghi chép: 25/10/2026 (Đợt 45: giao diện v4, thế giới động theo bối cảnh, âm thanh môi trường; đã push và deploy)**
+> **Cập nhật ghi chép: 26/10/2026 (Đợt 56: định danh Color tự động theo Hana Lore, Audio Mixer 3 kênh, Tiết kiệm pin, Settings Modal và Huyết thống Thế hệ; đã push và deploy)**
 > Đợt 26 thay cơ chế gọi Carmen và bổ sung lựa chọn chuẩn bị; số đo cuộc đời ở Đợt 23 là lịch sử, không phải tỷ lệ hiện tại.
-> **Trạng thái xác minh tại máy cho Đợt 22:** `npm test` đạt, gồm hồi quy BUG-34–40, lint nội dung và audit 500 khoảnh khắc; `npm run build` đạt. Backend và Git remote không được thay đổi trong đợt này. Các số liệu kho sự kiện và mô phỏng 1.000 cuộc đời ở Đợt 20 là kết quả lịch sử, không phải lần chạy lại của Đợt 22.
+> **Trạng thái xác minh tại máy cho Đợt 56:** `npm test` đạt toàn bộ 45+ suite, gồm kiểm thử Color Registry, Lineage Legacy, lint nội dung 31.260 chuỗi, rhythm scan và audit 500 khoảnh khắc đạt 100%; `npm run build` đạt. Đã commit và push đồng bộ lên Git remote `origin/main`.
 > **Cách đọc số liệu:** Các kết quả mô phỏng ở Đợt 1–21 là ảnh chụp lịch sử tại thời điểm ghi; xem Đợt 23 để đọc phép đo Color/E.G.O hiện hành. Đợt 22 và mục 9.3 ghi các lần kiểm thử chức năng trước đó.
 
 ---
@@ -980,4 +980,36 @@ Chủ dự án yêu cầu làm lại toàn bộ giao diện lần nữa: bỏ t�
 * **Hòa nhịp:** ba hồi đầu hồi lần lượt 3/4/5 SP với hệ số hồi hiện tại và giảm lượng áp lực tích so với giữ nhịp riêng. Giá vẫn là Hòa âm, Coda và E.G.O Volatile nếu sống sót. Có chip báo giảm áp lực, nên lựa chọn có lợi ích cả khi hai tỉ lệ cùng chạm trần.
 * **Kiểm định cuối:** thay phạt cố định 0,8 bằng hệ số 0,36 trên tỉ lệ đã tính, với mức tối thiểu riêng 5%; Nerve và công cụ còn tác dụng khi không chạm sàn. Test thay đổi sàn dungeon thường không làm lệch kiểm định cuối Ensemble. Chạy lại 400 seed mỗi nhánh với cấu hình chuẩn bị đã ghi: Color 48%, Finger 48%, Wing 45%, Workshop 49% thoát.
 * **Xác nhận cân bằng toàn game:** sửa `hasGear` ở đợt trước là chủ ý. Ampoule/vật phẩm đặc biệt không tính là vũ khí hoặc giáp; trước đây bất kỳ vật phẩm trong túi cũng có thể cho giảm 15% sát thương và cộng 10 điểm phần trăm kiểm định. Quy tắc mới áp dụng mọi dungeon, còn Craft Weapon/E.G.O/Color giữ lợi thế vốn có. Đã thêm test phân biệt vũ khí, giáp, vật phẩm dùng một lần và vật phẩm đặc biệt.
-* **Kiểm tra:** `npm test`, `vite build`; browser QA ở 1440/768/390px kiểm tra animation đầy đủ và giảm chuyển động, lối ra duy nhất, nhãn Distortion và tên tiếng Anh. Không lỗi console. Chưa push/deploy.
+* **Kiểm tra:** `npm test`, `vite build`; browser QA ở 1440/768/390px kiểm tra animation đầy đủ và giảm chuyển động, lối ra duy nhất, nhãn Distortion và tên tiếng Anh. Không lỗi console. Đã push và deploy.
+
+### Đợt 55 (26/10/2026): tối ưu hiển thị mobile, khoảng cách thanh điều khiển và điều chỉnh thẻ dungeon/modal
+* **Khoảng cách và che khuất trên mobile (`chronicle.css`, `overlays.css`):**
+  * Tinh chỉnh padding và margin thanh điều khiển `playbar` để không đè lên thẻ sự kiện hoặc tiêu đề dungeon modal trên màn hình di động hẹp (360px - 390px).
+  * Điều chỉnh `max-height` và `overflow-y` cho cửa sổ kết quả giao tranh và các thông báo nhân quả, bảo đảm vùng cuộn tự nhiên và nút hành động luôn nằm trong tầm với của ngón cái.
+* **Kiểm tra:** Đo đạc kích thước thực tế trên Viewport di động 360px, 390px và desktop 1440px; không còn tình trạng tràn chữ hoặc đè khuất thanh tab dưới.
+
+### Đợt 56 (26/10/2026): hệ thống định danh Color tự động, Audio Mixer 3 kênh, chế độ Tiết kiệm pin, Settings Modal và Huyết thống Thế hệ
+* **Hệ thống định danh Color tự động theo Hana Lore (`colorRegistry.js`, `gameEngine.js`):**
+  * Người chơi khi vươn tới cấp Color Fixer được Hiệp Hội Hana tự động phong tặng danh hiệu theo chuẩn vũ trụ Project Moon: kết hợp ngẫu nhiên 1 trong các sắc thái màu đặc trưng (Crimson, Indigo, Emerald, Obsidian, Azure, Ochre, Violet...) với một danh xưng trừu tượng bằng tiếng Anh (Mist, Gale, Fang, Gaze, Hunter, Torrent...).
+  * Thuật toán lọc trùng lặp tuyệt đối với toàn bộ các Color đã xuất hiện trong mạch truyện canon (Red Mist, Red Gaze, Black Silence, Blue Reverberation, Purple Tear, Indigo Elder, Grey Coat,...).
+* **Bộ điều khiển Audio Mixer & kênh âm thanh độc lập (`audioEngine.js`):**
+  * Tách độc lập 3 kênh âm lượng: Âm lượng tổng (Master Volume), Âm thanh môi trường (Ambience / Mưa, Gió, WARP), và Hiệu ứng âm thanh (SFX / Lật thẻ, Búa, Kiếm).
+  * Áp dụng hàm suy giảm âm học logarit ($v^2$) tạo cảm giác điều chỉnh âm lượng mượt mà, chân thực.
+  * Bộ đệm `safeGetStorage` và `safeSetStorage` bảo đảm an toàn khi đọc/ghi `localStorage`, ngăn chặn lỗi trong môi trường SSR/Unit test không có DOM.
+* **Chế độ Tiết kiệm pin & Tối ưu hóa hiệu năng di động (`themeStore.js`, `worldWeather.js`, `dungeon-scenes.css`):**
+  * Tùy chọn Low-Power Mode (`document.documentElement.dataset.perf = 'low'`) ngắt hoàn toàn vòng lặp vẽ hạt thời tiết Canvas (30 FPS), đóng băng các animation SVG biến dạng phức tạp của bối cảnh Dungeon và City.
+  * Giảm tải GPU/CPU đáng kể, giúp thiết bị di động duy trì nhiệt độ mát mẻ và tiết kiệm pin khi mô phỏng thời gian dài.
+* **Bảng Cài đặt & Điều khiển trực quan (`SettingsModal.jsx`, `Header.jsx`, `overlays.css`):**
+  * Thay thế dropdown menu cũ bằng modal kính mờ cao cấp: hiển thị dạng popup căn giữa trên Desktop và tự động thích ứng thành Bottom Sheet vuốt chạm mượt mà trên Mobile (< 640px) có bù trừ vùng an toàn notch (`env(safe-area-inset-bottom)`).
+  * Tích hợp thanh trượt Mixer 3 kênh, công tắc Tiết kiệm pin, chọn ngôn ngữ hiển thị (VI / EN / BI), cỡ chữ truyện (Vừa / Lớn / Rất lớn), chế độ chuyển động và tùy chọn gửi số liệu ẩn danh.
+* **Hệ thống Cốt truyện Huyết thống Thế hệ (`eventsLineageLegacy.js`, `gameEngine.js`):**
+  * Hiện thực hóa lời hứa thừa kế từ đời trước qua 3 chuỗi sự kiện người lớn (tuổi 18–36) cho nhân vật có cờ `HuyếtThốngKếThừa` và `NợMáuĐờiTrước`:
+    * `m_lineage_vendetta_confrontation`: Đối mặt toán chấp pháp The Middle và đòi nợ máu liên quan đến tiền nhân `{parentName}`; có thể quyết đấu phá xích để xóa tên khỏi Book of Vengeance, nộp tiền chuộc thân, hoặc mai phục rút lui.
+    * `m_lineage_sworn_patronage`: Chủ xưởng Workshop từng mang ơn cứu mạng của `{parentName}` tìm đến hỗ trợ trang bị hoặc truyền dạy kỹ thuật sinh tồn.
+    * `m_lineage_relic_resonance`: Món di vật 「{relic}」 phát sáng và cộng hưởng nhịp tim, mở ra cơ hội thức tỉnh tiềm năng E.G.O, tái thiết xưởng hoặc cất giữ tưởng nhớ.
+* **Đồng bộ hồ sơ Vết sẹo (`scarModel.js`):**
+  * Bổ sung quy tắc định danh hồ sơ cơ chế cho các vết sẹo mới: `Chiến tích xóa tên khỏi Sổ Thù` (Faction), `Chuộc thân khỏi Sổ Thù` (Survivor), và `Dấu ấn linh hồn tiền nhân` (Trauma).
+* **Kiểm tra & Xác minh:**
+  * `npm test`: Vượt qua tất cả hơn 45 bộ test suite, bao gồm `test_lineage_legacy.mjs`, `test_color_registry.mjs`, voice linter (0 lỗi trên 31.260 chuỗi), story linter, rhythm scan, và Million Audit (500 khoảnh khắc mô phỏng đạt 100% logic).
+  * `npm run build`: Vite build hoàn tất thành công trong 6.67s với dung lượng nén gzip tối ưu.
+  * Git remote: Đã commit và push đồng bộ thành công lên nhánh `main`.
