@@ -307,6 +307,77 @@
 .epitaph-stat-fill { display: block; height: 100%; background: var(--accent); }
 .epitaph-life-tags { display: flex; flex-wrap: wrap; gap: 6px; }
 .epitaph-tag-pill { padding: 2px 9px; border: 1px solid var(--page-edge); border-radius: 999px; font-size: 12.5px; font-weight: 600; color: var(--page-muted); }
+
+/* Successor of Fate Archetype Display */
+.epitaph-successor-card {
+  padding: 16px 18px;
+  border: 1px solid var(--page-edge);
+  border-left: 3px solid var(--accent);
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.14);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 6px;
+}
+.successor-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.successor-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--page-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.successor-badge {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 2px 9px;
+  background: var(--accent-soft, rgba(210, 59, 59, 0.16));
+  color: var(--accent);
+  border-radius: 3px;
+  border: 1px solid color-mix(in srgb, var(--accent) 32%, transparent);
+}
+.successor-intro {
+  font-family: var(--serif);
+  font-size: 14.5px;
+  line-height: 1.5;
+  color: var(--page-ink);
+  font-style: italic;
+  margin: 0;
+}
+
+/* Birth Legacy Details Panel */
+.birth-legacy-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 0 4px;
+}
+.birth-legacy-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.birth-legacy-intro {
+  font-family: var(--serif);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--muted);
+  font-style: italic;
+  margin: 0;
+}
+.birth-legacy-relic {
+  font-size: 13.5px;
+  color: var(--text);
+  margin: 0;
+}
+
 .epitaph-actions { display: flex; flex-wrap: wrap; gap: 8px; padding-top: 6px; }
 .epitaph-actions .btn { flex: 1 1 180px; }
 .epitaph-btn-reborn { flex-basis: 100% !important; }

@@ -776,16 +776,42 @@ const Epitaph = ({ summary, onInherit, onRestart, onViewRecord, onGoHome }) => {
           )}
         </div>
 
+        {/* Successor of Fate Archetype Card */}
+        {!summary.endingId && summary.successorType && (
+          <div className="epitaph-successor-card" role="region" aria-label={t('Người tiếp nhận di sản', 'Successor of fate')}>
+            <div className="successor-head">
+              <GitBranch size={16} className="text-accent" aria-hidden="true" />
+              <span className="successor-label">{t('Người tiếp nhận di sản:', 'Successor of this fate:')}</span>
+              <span className="successor-badge">
+                {lang === 'en'
+                  ? (summary.successorTitleEn || summary.successorType)
+                  : (summary.successorTitleVi || summary.successorType)}
+              </span>
+            </div>
+            <p className="successor-intro">
+              {lang === 'en' ? summary.successorIntroEn : summary.successorIntroVi}
+            </p>
+          </div>
+        )}
+
         {/* Action Buttons */}
         <div className="epitaph-actions epitaph-actions-v2">
-          {!summary.endingId && <button type="button" className="btn btn-primary btn-lg epitaph-btn-reborn" onClick={onInherit}>
-            <GitBranch size={16} />
-            {summary.age < 14
-              ? t(`Chơi đời em · thế hệ #${summary.generation + 1}`, `Play as sibling · gen #${summary.generation + 1}`)
-              : summary.age < 18 || !summary.hasChild
-                ? t(`Kế thừa di vật · thế hệ #${summary.generation + 1}`, `Be born again · gen #${summary.generation + 1}`)
-                : t(`Chơi đời con · thế hệ #${summary.generation + 1}`, `Play the heir · gen #${summary.generation + 1}`)}
-          </button>}
+          {!summary.endingId && (
+            <button type="button" className="btn btn-primary btn-lg epitaph-btn-reborn" onClick={onInherit}>
+              <GitBranch size={16} />
+              {summary.successorType === 'sibling'
+                ? t(`Tiếp bước: Đồng lứa Sống sót · thế hệ #${summary.generation + 1}`, `Continue as Surviving Sibling · gen #${summary.generation + 1}`)
+                : summary.successorType === 'companion'
+                  ? t(`Tiếp bước: Bạn đồng hành · thế hệ #${summary.generation + 1}`, `Continue as Companion · gen #${summary.generation + 1}`)
+                  : summary.successorType === 'child'
+                    ? t(`Tiếp bước: Huyết tử Thừa kế · thế hệ #${summary.generation + 1}`, `Continue as Biological Heir · gen #${summary.generation + 1}`)
+                    : summary.successorType === 'apprentice'
+                      ? t(`Tiếp bước: Truyền nhân Ý chí · thế hệ #${summary.generation + 1}`, `Continue as Successor Apprentice · gen #${summary.generation + 1}`)
+                      : summary.successorType === 'debt_bearer'
+                        ? t(`Gánh nợ: Thế thân Syndicate · thế hệ #${summary.generation + 1}`, `Take up Ledger: Bound Debt · gen #${summary.generation + 1}`)
+                        : t(`Nhặt tàn dư: Kẻ sống sót Backstreets · thế hệ #${summary.generation + 1}`, `Scavenge Relic: Backstreet Heir · gen #${summary.generation + 1}`)}
+            </button>
+          )}
 
           <button type="button" className="btn btn-lg" onClick={onViewRecord}>
             <BookOpen size={16} />

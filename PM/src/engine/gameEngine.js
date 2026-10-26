@@ -439,17 +439,82 @@ export function createNewCharacter({
   if (generation >= 5) unlockedRecords.push('dynasty_gen5');
   if (region.id === 'T') unlockedRecords.push('tcorp_time_debtor');
 
-  // Apply Generational Inheritance if continuing as Child / Disciple
+  // Apply Generational Inheritance based on the 5 Successor Archetypes
   let lineageInfo = null;
   const inheritedEchoes = [];
 
   if (parentLegacy) {
     flags.push('HuyếtThốngKếThừa');
     if (!unlockedRecords.includes('lineage_heir')) unlockedRecords.push('lineage_heir');
-    wealth = clamp(wealth + Math.round((parentLegacy.wealth || 0) * 0.22), 2, 75);
-    rep = clamp(rep + Math.round((parentLegacy.rep || 0) * 0.15), 1, 50);
-    network = clamp(network + Math.round((parentLegacy.network || 0) * 0.18), 1, 50);
     if (parentLegacy.ensembleScore) resonance = clamp(resonance + 3, 0, 100);
+
+    const succRel = parentLegacy.successorRelation || (parentLegacy.age < 14 ? 'sibling' : parentLegacy.age < 18 ? 'companion' : parentLegacy.hasChild ? 'child' : 'scavenger');
+
+    if (succRel === 'child') {
+      wealth = clamp(wealth + Math.round((parentLegacy.wealth || 0) * 0.25), 2, 75);
+      rep = clamp(rep + Math.round((parentLegacy.rep || 0) * 0.15), 1, 50);
+      network = clamp(network + Math.round((parentLegacy.network || 0) * 0.18), 1, 50);
+      inheritedEchoes.push({
+        labelVi: `Huyết tử thừa kế từ ${parentLegacy.name}: ${parentLegacy.relic}`,
+        labelEn: `Biological inheritance from ${parentLegacy.name} (${localizeEnsembleName(parentLegacy.relic, 'en')})`,
+        impactVi: `Thêm Ahn lúc đầu, người cũ của ${parentLegacy.name} có thể tìm đến`,
+        impactEn: `+Starting Ahn, unlocks Heirloom & Old Comrade causal events`
+      });
+    } else if (succRel === 'sibling') {
+      wealth = clamp(wealth + Math.round((parentLegacy.wealth || 0) * 0.10), 2, 45);
+      resonance = clamp(resonance + 6, 0, 100);
+      sanity = clamp(sanity + 5, 10, 95);
+      scars.push('Nỗi đau kẻ sống sót');
+      inheritedEchoes.push({
+        labelVi: `Kỷ vật của người ngã xuống tuổi thơ: ${parentLegacy.relic}`,
+        labelEn: `Keepsake of one fallen young (${localizeEnsembleName(parentLegacy.relic, 'en')})`,
+        impactVi: `+6 Resonance, mang Vết sẹo Nỗi đau kẻ sống sót kiên cường khi nguy cấp`,
+        impactEn: `+6 Resonance, Survivor's Guilt scar grants resilience in crisis`
+      });
+    } else if (succRel === 'companion') {
+      network = clamp(network + Math.round((parentLegacy.network || 0) * 0.20), 1, 50);
+      rep = clamp(rep + Math.round((parentLegacy.rep || 0) * 0.12), 1, 50);
+      resonance = clamp(resonance + 4, 0, 100);
+      inheritedEchoes.push({
+        labelVi: `Di nguyện của bạn đồng hành: ${parentLegacy.relic}`,
+        labelEn: `Companion's parting vow (${localizeEnsembleName(parentLegacy.relic, 'en')})`,
+        impactVi: `+Mạng lưới Backstreets và Resonance từ lời thề đồng hành`,
+        impactEn: `+Starting Network and Resonance from shared youthful vows`
+      });
+    } else if (succRel === 'apprentice') {
+      rep = clamp(rep + Math.round((parentLegacy.rep || 0) * 0.25), 1, 50);
+      network = clamp(network + Math.round((parentLegacy.network || 0) * 0.22), 1, 50);
+      health = clamp(health + 8, 20, 95);
+      inheritedEchoes.push({
+        labelVi: `Truyền nhân ý chí của ${parentLegacy.name}: ${parentLegacy.relic}`,
+        labelEn: `Protege inheritor of ${parentLegacy.name} (${localizeEnsembleName(parentLegacy.relic, 'en')})`,
+        impactVi: `+Khởi điểm Danh tiếng, Mạng lưới và Thân pháp võ học được rèn giũa`,
+        impactEn: `+Higher starting Rep, Network and trained physical fortitude`
+      });
+    } else if (succRel === 'debt_bearer') {
+      network = clamp(network + 16, 1, 50);
+      resonance = clamp(resonance + 6, 0, 100);
+      heat = clamp(heat + 32, 0, 100);
+      flags.push('NợMáuĐờiTrước');
+      scars.push(`Món Nợ Máu Của ${parentLegacy.name}`);
+      inheritedEchoes.push({
+        labelVi: `Món nợ ép gánh từ thời ${parentLegacy.name}`,
+        labelEn: `Blood debt forced upon you from ${parentLegacy.name}`,
+        impactVi: `Syndicate bắt thế nợ, Heat cao kích thích tiềm năng phản kháng`,
+        impactEn: `Forced debt, starts with Syndicate Heat and resistance drive`
+      });
+    } else {
+      // scavenger / solitary
+      wealth = clamp(wealth + Math.round((parentLegacy.wealth || 0) * 0.08), 2, 40);
+      resonance = clamp(resonance + 5, 0, 100);
+      flags.push('BảnLĩnhNgõCùng');
+      inheritedEchoes.push({
+        labelVi: `Di vật nhặt từ đống đổ nát của ${parentLegacy.name}: ${parentLegacy.relic}`,
+        labelEn: `Scavenged relic of ${parentLegacy.name} (${localizeEnsembleName(parentLegacy.relic, 'en')})`,
+        impactVi: `Nhận di vật vô chủ, tiềm năng thức tỉnh vũ khí bí mật`,
+        impactEn: `Found unowned relic, hidden weapon awakening potential`
+      });
+    }
 
     lineageInfo = {
       generation,
@@ -460,22 +525,20 @@ export function createNewCharacter({
       parentDeathVi: parentLegacy.deathCauseVi,
       parentDeathEn: parentLegacy.deathCauseEn,
       relic: parentLegacy.ensembleScore ? 'Bản tổng phổ viết dở' : (parentLegacy.relic || (parentLegacy.age < 16 ? `Kỷ vật của ${parentLegacy.name}` : `Di vật của ${parentLegacy.name}`)),
-      inheritedDebt: Boolean(parentLegacy.hasVendetta),
-      successorRelation: parentLegacy.successorRelation || (parentLegacy.age < 14 ? 'sibling' : parentLegacy.age < 18 ? 'companion' : parentLegacy.hasChild ? 'child' : 'heir')
+      inheritedDebt: Boolean(parentLegacy.hasVendetta || succRel === 'debt_bearer'),
+      successorRelation: succRel,
+      successorTitleVi: parentLegacy.successorTitleVi,
+      successorTitleEn: parentLegacy.successorTitleEn,
+      successorIntroVi: parentLegacy.successorIntroVi,
+      successorIntroEn: parentLegacy.successorIntroEn
     };
 
-    inheritedEchoes.push({
-      labelVi: `Thừa kế từ ${parentLegacy.name}: ${parentLegacy.relic}`,
-      labelEn: `Inherited legacy of ${parentLegacy.name} (${localizeEnsembleName(parentLegacy.relic, 'en')})`,
-      impactVi: `Thêm Ahn lúc đầu, và người cũ của ${parentLegacy.name} có thể tìm đến`,
-      impactEn: `+Starting Ahn, unlocks Heirloom & Old Comrade causal events`
-    });
     if (parentLegacy.ensembleScore) inheritedEchoes.push({
       labelVi: 'Bản tổng phổ viết dở', labelEn: 'The Unfinished Score',
       impactVi: 'Thêm 3 Resonance khi bắt đầu đời mới', impactEn: 'Start the next life with 3 extra Resonance'
     });
 
-    if (parentLegacy.hasVendetta) {
+    if (parentLegacy.hasVendetta && succRel !== 'debt_bearer') {
       flags.push('NợMáuĐờiTrước');
       heat = clamp(heat + 28, 0, 100);
       scars.push(`Món Nợ Máu Của ${parentLegacy.name}`);
@@ -489,7 +552,8 @@ export function createNewCharacter({
   }
 
   let deathAtChildAge = 0;
-  if (parentLegacy && parentLegacy.age >= 18) {
+  const isBiologicalChild = Boolean(parentLegacy && parentLegacy.successorRelation === 'child');
+  if (isBiologicalChild && parentLegacy.age >= 18) {
     const parentChildBirthAge = Math.min(parentLegacy.age - 1, Math.max(18, parentLegacy.age - 18));
     deathAtChildAge = Math.max(1, parentLegacy.age - parentChildBirthAge);
   }
@@ -502,7 +566,7 @@ export function createNewCharacter({
     role: 'parent',
     job: parentLegacy.job,
     relic: parentLegacy.relic,
-    alive: actualAge < deathAtChildAge,
+    alive: isBiologicalChild && actualAge < deathAtChildAge,
     deathAgeInChildLife: deathAtChildAge
   } : null;
 
@@ -595,14 +659,20 @@ export function createNewCharacter({
         let legacyEn = `You are the child of ${lineageInfo.parentName}. All they left you was 「${localizeEnsembleName(lineageInfo.relic, 'en')}」${lineageInfo.inheritedDebt ? ', and a blood debt to a Syndicate.' : '.'}`;
 
         if (lineageInfo.successorRelation === 'sibling' || (lineageInfo.parentAge > 0 && lineageInfo.parentAge < 14)) {
-          legacyVi = `${lineageInfo.parentName} mất năm ${lineageInfo.parentAge} tuổi khi chưa kịp lớn. Bạn là em ruột (hoặc đứa trẻ cùng xóm) nhặt lại 「${lineageInfo.relic}」${lineageInfo.inheritedDebt ? ', cùng món nợ máu dở dang với Syndicate.' : '.'}`;
-          legacyEn = `${lineageInfo.parentName} died young at age ${lineageInfo.parentAge}. You are a younger sibling (or local child) who found their 「${localizeEnsembleName(lineageInfo.relic, 'en')}」${lineageInfo.inheritedDebt ? ', along with an unsettled Syndicate blood debt.' : '.'}`;
+          legacyVi = `${lineageInfo.parentName} ngã xuống năm ${lineageInfo.parentAge} tuổi khi chưa kịp lớn. Bạn là đứa trẻ trốn cùng buồng trọ lúc 3:13 AM nhặt lại 「${lineageInfo.relic}」${lineageInfo.inheritedDebt ? ', cùng món nợ máu dở dang với Syndicate.' : '.'}`;
+          legacyEn = `${lineageInfo.parentName} perished young at age ${lineageInfo.parentAge}. You are the room-child who hid beside them at 3:13 AM, clutching 「${localizeEnsembleName(lineageInfo.relic, 'en')}」${lineageInfo.inheritedDebt ? ', along with an unsettled Syndicate blood debt.' : '.'}`;
         } else if (lineageInfo.successorRelation === 'companion' || (lineageInfo.parentAge >= 14 && lineageInfo.parentAge < 18)) {
-          legacyVi = `${lineageInfo.parentName} ngã xuống năm ${lineageInfo.parentAge} tuổi. Bạn là người tiếp bước mang theo 「${lineageInfo.relic}」${lineageInfo.inheritedDebt ? ', cùng món nợ máu dở dang với Syndicate.' : '.'}`;
-          legacyEn = `${lineageInfo.parentName} fell at age ${lineageInfo.parentAge}. You are the one who took up their 「${localizeEnsembleName(lineageInfo.relic, 'en')}」${lineageInfo.inheritedDebt ? ', along with an unsettled Syndicate blood debt.' : '.'}`;
-        } else if (lineageInfo.successorRelation === 'heir') {
-          legacyVi = `${lineageInfo.parentName} qua đời năm ${lineageInfo.parentAge} tuổi mà không có con cái. Bạn là hậu bối tiếp nhận 「${lineageInfo.relic}」${lineageInfo.inheritedDebt ? ', và món nợ máu của người ấy.' : '.'}`;
-          legacyEn = `${lineageInfo.parentName} passed away at age ${lineageInfo.parentAge} without an heir. You are the successor taking up 「${localizeEnsembleName(lineageInfo.relic, 'en')}」${lineageInfo.inheritedDebt ? ', and their Syndicate blood debt.' : '.'}`;
+          legacyVi = `${lineageInfo.parentName} ngã xuống giữa tuổi thiếu niên (${lineageInfo.parentAge} tuổi). Bạn là người bạn cùng ngõ hẻm tiếp bước mang theo 「${lineageInfo.relic}」${lineageInfo.inheritedDebt ? ', cùng món nợ máu dở dang với Syndicate.' : '.'}`;
+          legacyEn = `${lineageInfo.parentName} fell at age ${lineageInfo.parentAge}. You are the alley companion who took up their 「${localizeEnsembleName(lineageInfo.relic, 'en')}」${lineageInfo.inheritedDebt ? ', along with an unsettled Syndicate blood debt.' : '.'}`;
+        } else if (lineageInfo.successorRelation === 'apprentice') {
+          legacyVi = `${lineageInfo.parentName} qua đời năm ${lineageInfo.parentAge} tuổi. Bạn là môn sinh được người ấy dìu dắt, tiếp nhận 「${lineageInfo.relic}」 và ý chí chiến đấu chưa hoàn tất.`;
+          legacyEn = `${lineageInfo.parentName} passed away at age ${lineageInfo.parentAge}. You are the protégé they mentored, taking up 「${localizeEnsembleName(lineageInfo.relic, 'en')}」 and their martial will.`;
+        } else if (lineageInfo.successorRelation === 'debt_bearer') {
+          legacyVi = `${lineageInfo.parentName} qua đời năm ${lineageInfo.parentAge} tuổi khi nợ máu chưa trả hết. Bạn bị Syndicate ép gánh cuốn sổ nợ cùng di vật 「${lineageInfo.relic}」.`;
+          legacyEn = `${lineageInfo.parentName} died at age ${lineageInfo.parentAge} with an unsettled blood debt. The Syndicate forced their ledger and 「${localizeEnsembleName(lineageInfo.relic, 'en')}」 into your hands.`;
+        } else if (lineageInfo.successorRelation === 'scavenger' || lineageInfo.successorRelation === 'heir') {
+          legacyVi = `${lineageInfo.parentName} qua đời cô độc năm ${lineageInfo.parentAge} tuổi. Bạn là kẻ nhặt rác Backstreets tình cờ đào được 「${lineageInfo.relic}」 từ đống gạch vụn trước giờ Sweeper dọn sạch.`;
+          legacyEn = `${lineageInfo.parentName} died alone at age ${lineageInfo.parentAge}. You are a Backstreet scavenger who unearthed 「${localizeEnsembleName(lineageInfo.relic, 'en')}」 before the Sweepers arrived.`;
         }
 
         initialLogs.push({
@@ -2286,18 +2356,12 @@ export function buildLifeSummaryAndLegacy(char) {
 
   const succInfo = determineSuccessorType(char);
   const relicNameEn = localizeEnsembleName(relicName, 'en');
-  let successorRelation = succInfo.type;
+  const successorRelation = succInfo.type;
   let childAgeWhenParentDied = 0;
-  if (char.age < 14) {
-    successorRelation = 'sibling';
-  } else if (char.age < 18) {
-    successorRelation = 'companion';
-  } else if (npcIsActive(char.npcs?.child)) {
-    successorRelation = 'child';
+  if (succInfo.type === 'child') {
     const parentChildBirthAge = Math.min(char.age - 1, Math.max(18, char.age - 18));
     childAgeWhenParentDied = Math.max(1, char.age - parentChildBirthAge);
   } else {
-    successorRelation = succInfo.type;
     childAgeWhenParentDied = Math.max(1, Math.min(18, char.age - 5));
   }
 
@@ -2709,6 +2773,11 @@ export function buildLifeSummaryAndLegacy(char) {
     lifeTags,
     successorRelation,
     successorInfo: succInfo,
+    successorType: succInfo.type,
+    successorTitleVi: succInfo.titleVi,
+    successorTitleEn: succInfo.titleEn,
+    successorIntroVi: succInfo.introVi,
+    successorIntroEn: succInfo.introEn,
     childAgeWhenParentDied,
     hasChild: npcIsActive(char.npcs?.child),
     childName: char.npcs?.child?.nameVi || '',

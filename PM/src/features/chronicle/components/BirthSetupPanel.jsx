@@ -490,30 +490,44 @@ export const BirthSetupPanel = () => {
             )}
           </p>
           {pendingLegacy && (
-            <details className="birth-legacy">
+            <details className="birth-legacy" open>
               <summary>
                 <GitBranch size={17} />
                 {t(
-                  `Kế thừa đời ${pendingLegacy.generation + 1}`,
-                  `Continue generation ${pendingLegacy.generation + 1}`
+                  `Kế thừa thế hệ #${pendingLegacy.generation + 1}`,
+                  `Continue generation #${pendingLegacy.generation + 1}`
                 )}
                 <ChevronDown size={15} />
               </summary>
-              <p>
-                {t('Di sản của', 'The legacy of')} <strong>{pendingLegacy.name}</strong> ·{' '}
-                {t(pendingLegacy.relic, localizeEnsembleName(pendingLegacy.relic, 'en'))}
-              </p>
-              <button className="btn btn-block" disabled={spinning} onClick={() => launch(true, 0)}>
-                {t('Bắt đầu từ tuổi 0', 'Begin at age 0')}
-              </button>
-              {relation === 'child' && heirAge >= 14 && (
-                <button className="btn btn-block" disabled={spinning} onClick={() => launch(true, heirAge)}>
-                  {t(`Tiếp quản ở tuổi ${heirAge}`, `Take over at age ${heirAge}`)}
+              <div className="birth-legacy-inner">
+                <div className="birth-legacy-header">
+                  <span className="successor-badge">
+                    {lang === 'en'
+                      ? (pendingLegacy.successorTitleEn || pendingLegacy.successorRelation || 'Successor')
+                      : (pendingLegacy.successorTitleVi || pendingLegacy.successorRelation || 'Người kế thừa')}
+                  </span>
+                </div>
+                <p className="birth-legacy-intro">
+                  {lang === 'en'
+                    ? (pendingLegacy.successorIntroEn || `You take up the legacy of ${pendingLegacy.name}.`)
+                    : (pendingLegacy.successorIntroVi || `Bạn tiếp nhận di sản của ${pendingLegacy.name}.`)}
+                </p>
+                <p className="birth-legacy-relic">
+                  {t('Kỷ vật truyền đời:', 'Relic passed down:')}{' '}
+                  <strong>{t(pendingLegacy.relic, localizeEnsembleName(pendingLegacy.relic, 'en'))}</strong>
+                </p>
+                <button className="btn btn-block btn-primary" disabled={spinning} onClick={() => launch(true, 0)}>
+                  {t('Bắt đầu kiếp này từ tuổi 0', 'Begin this life at age 0')}
                 </button>
-              )}
-              <button className="birth-text-action" onClick={confirmDiscard}>
-                {t('Bỏ di sản, bắt đầu độc lập', 'Discard heirloom and start fresh')}
-              </button>
+                {relation === 'child' && heirAge >= 14 && (
+                  <button className="btn btn-block" disabled={spinning} onClick={() => launch(true, heirAge)}>
+                    {t(`Tiếp quản ở tuổi ${heirAge}`, `Take over at age ${heirAge}`)}
+                  </button>
+                )}
+                <button className="birth-text-action" onClick={confirmDiscard}>
+                  {t('Bỏ di sản, bắt đầu độc lập', 'Discard heirloom and start fresh')}
+                </button>
+              </div>
             </details>
           )}
         </section>

@@ -1,8 +1,8 @@
 # The City Chronicles: Tài Liệu Tiến Trình & Kiến Trúc Kỹ Thuật Toàn Diện
 
-> **Cập nhật ghi chép: 26/10/2026 (Đợt 56: định danh Color tự động theo Hana Lore, Audio Mixer 3 kênh, Tiết kiệm pin, Settings Modal và Huyết thống Thế hệ; đã push và deploy)**
+> **Cập nhật ghi chép: 26/10/2026 (Đợt 57: hệ thống 5 hình thái Hậu Bối Kế Thừa Nhân Quả — chết non, không con, gánh nợ, truyền nhân; đã push và deploy)**
 > Đợt 26 thay cơ chế gọi Carmen và bổ sung lựa chọn chuẩn bị; số đo cuộc đời ở Đợt 23 là lịch sử, không phải tỷ lệ hiện tại.
-> **Trạng thái xác minh tại máy cho Đợt 56:** `npm test` đạt toàn bộ 45+ suite, gồm kiểm thử Color Registry, Lineage Legacy, lint nội dung 31.260 chuỗi, rhythm scan và audit 500 khoảnh khắc đạt 100%; `npm run build` đạt. Đã commit và push đồng bộ lên Git remote `origin/main`.
+> **Trạng thái xác minh tại máy cho Đợt 57:** `npm test` đạt toàn bộ 46+ suite (thêm `test_successor_archetypes.mjs`), lint nội dung 31.260 chuỗi đạt 0 lỗi, rhythm scan và audit 500 khoảnh khắc đạt 100%; `npm run build` đạt. Đã commit và push đồng bộ lên Git remote `origin/main`.
 > **Cách đọc số liệu:** Các kết quả mô phỏng ở Đợt 1–21 là ảnh chụp lịch sử tại thời điểm ghi; xem Đợt 23 để đọc phép đo Color/E.G.O hiện hành. Đợt 22 và mục 9.3 ghi các lần kiểm thử chức năng trước đó.
 
 ---
@@ -1012,4 +1012,23 @@ Chủ dự án yêu cầu làm lại toàn bộ giao diện lần nữa: bỏ t�
 * **Kiểm tra & Xác minh:**
   * `npm test`: Vượt qua tất cả hơn 45 bộ test suite, bao gồm `test_lineage_legacy.mjs`, `test_color_registry.mjs`, voice linter (0 lỗi trên 31.260 chuỗi), story linter, rhythm scan, và Million Audit (500 khoảnh khắc mô phỏng đạt 100% logic).
   * `npm run build`: Vite build hoàn tất thành công trong 6.67s với dung lượng nén gzip tối ưu.
+  * Git remote: Đã commit và push đồng bộ thành công lên nhánh `main`.
+
+### Đợt 57 (26/10/2026): hệ thống 5 hình thái Hậu Bối Kế Thừa Nhân Quả (Successor Archetypes)
+* **Bối cảnh & Hợp lý hóa Lore (Dying Young & Childless Progression):**
+  * Trong The City, cái chết là sự dịch chuyển nhân quả. Khi một sinh mệnh ngã xuống (dù là chết yểu lúc thơ ấu, chết độc hành không con cái, hay tử trận vì nợ máu), luôn có một kẻ khác phải cúi xuống nhặt lấy di vật để sống tiếp.
+* **5 Hình thái Hậu Bối kế thừa trong `careerPipeline.js` & `gameEngine.js`:**
+  * **1. Đồng lứa Sống sót (`sibling` - Tuổi < 14):** Đứa trẻ trốn cùng buồng trọ lúc 3:13 AM nhặt lại kỷ vật và gánh lời thề sống sót. Bắt đầu với +6 Resonance, Vết sẹo `Nỗi đau kẻ sống sót` (Survivor tag).
+  * **2. Bạn đồng hành Niên thiếu (`companion` - Tuổi 14–17):** Người bạn cùng vào sinh ra tử trong ngõ hẻm Backstreets tiếp bước mang theo di nguyện. Bắt đầu với +Mạng lưới (Network) và +4 Resonance.
+  * **3. Huyết tử Thừa kế (`child` - Tuổi >= 18 có con sống):** Con ruột thừa kế hợp pháp, nhận 25% Ahn, 15% Danh tiếng, 18% Mạng lưới và mở khóa các sự kiện di vật gia tộc.
+  * **4. Truyền nhân Ý chí (`apprentice` - Tuổi >= 18 có đệ tử/cộng sự):** Môn sinh hoặc đồng đội trong văn phòng nhận lại vũ khí và bài học chiến đấu. Bắt đầu với +Thân pháp (+8 HP), +25% Danh tiếng và +22% Mạng lưới.
+  * **5. Kẻ Gánh Nợ Bất Đắc Dĩ (`debt_bearer` - Không con, có nợ Syndicate):** Toán chấp pháp của The Middle lùng bắt người quen biết duy nhất để ép thế nợ. Bắt đầu với Heat cao (+32), cờ `NợMáuĐờiTrước` và +6 Resonance kích thích tiềm năng phản kháng.
+  * **6. Kẻ Nhặt Tàn Dư Backstreets (`scavenger` - Chết đơn độc):** Kẻ bần hàn vô danh đào bới được chiếc ba lô cũ từ đống đổ nát trước giờ Sweeper dọn sạch, nhận cờ `BảnLĩnhNgõCùng` và +5 Resonance.
+* **Giao diện & Trải nghiệm người chơi (`LiveStageFeed.jsx`, `BirthSetupPanel.jsx`, `chronicle.css`):**
+  * **Màn hình Bia Mộ (Epitaph):** Bổ sung thẻ thông tin "Người tiếp nhận di sản" (Successor Card) hiển thị huy hiệu hình thái (Badge) và đoạn trích văn cảnh di ngôn cảm động tương ứng với độ tuổi và nguyên nhân tử trận.
+  * **Nút bấm chuyển kiếp (Epitaph Button):** Thay đổi linh hoạt theo hình thái (`Tiếp bước: Đồng lứa Sống sót`, `Tiếp bước: Bạn đồng hành`, `Gánh nợ: Thế thân Syndicate`, `Tiếp bước: Truyền nhân Ý chí`...).
+  * **Màn hình Bắt đầu (Birth Setup):** Thẻ `details.birth-legacy` mở mặc định, hiển thị rõ ràng danh tính người kế thừa, văn cảnh chuyển giao và di vật truyền đời.
+* **Kiểm tra & Xác minh:**
+  * `npm test`: Vượt qua tất cả hơn 46 bộ test suite, bao gồm bộ test mới `test_successor_archetypes.mjs`, voice linter (0 lỗi trên 31.260 chuỗi), story linter, rhythm scan, và Million Audit (Check 4: 0 lỗi / 500 khoảnh khắc).
+  * `npm run build`: Vite build hoàn tất thành công trong 7.50s với dung lượng nén gzip tối ưu.
   * Git remote: Đã commit và push đồng bộ thành công lên nhánh `main`.

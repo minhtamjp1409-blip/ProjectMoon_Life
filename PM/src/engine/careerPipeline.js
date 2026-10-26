@@ -506,9 +506,32 @@ export function tryItemAutoRevive(char) {
 }
 
 /**
- * Calculates biological inheritance vs protégé vs scavenger successor.
+ * Calculates biological inheritance vs sibling/companion vs protégé vs debt-bearer vs scavenger successor.
+ * Covers dying young (age < 18), dying childless, dying with debts, and dying solitary in The City.
  */
 export function determineSuccessorType(char) {
+  // Case 1: Dying young (Child or adolescent)
+  if (char.age < 14) {
+    return {
+      type: 'sibling',
+      titleVi: 'Đồng lứa Sống sót',
+      titleEn: 'Surviving Sibling / Room Urchin',
+      introVi: `${char.name} ngã xuống năm ${char.age} tuổi khi chưa kịp lớn. Bạn là đứa trẻ trốn cùng buồng trọ lúc 3:13 AM, run rẩy giấu đi kỷ vật và lời thề sống sót giữa lòng The City.`,
+      introEn: `${char.name} perished young at age ${char.age}. You are the fellow room-child who hid alongside them at 3:13 AM, clutching their keepsake and sworn to survive in The City.`
+    };
+  }
+
+  if (char.age < 18) {
+    return {
+      type: 'companion',
+      titleVi: 'Bạn đồng hành Niên thiếu',
+      titleEn: 'Youthful Companion',
+      introVi: `${char.name} ngã xuống giữa tuổi thiếu niên. Bạn là người bạn cùng vào sinh ra tử trong ngõ hẻm Backstreets tiếp bước mang theo di nguyện dở dang.`,
+      introEn: `${char.name} fell in the bloom of youth. You are the companion who walked the Backstreet alleys beside them, taking up their unfinished will.`
+    };
+  }
+
+  // Case 2: Biological offspring (age >= 18 with active living child)
   const aliveChild = npcIsActive(char.npcs?.child);
   if (aliveChild) {
     return {
@@ -520,25 +543,42 @@ export function determineSuccessorType(char) {
     };
   }
 
-  const activeProtégé = npcIsActive(char.npcs?.apprentice);
-
+  // Case 3: Successor Apprentice / Protégé or Sworn Partner
+  const activeProtégé = npcIsActive(char.npcs?.apprentice) || npcIsActive(char.npcs?.partner);
   if (activeProtégé) {
     return {
       type: 'apprentice',
-      titleVi: 'Học trò Kế thừa Di nguyện',
+      titleVi: 'Truyền nhân Ý chí',
       titleEn: 'Successor Apprentice',
-      introVi: `Bạn là đệ tử được ${char.name} dìu dắt, nắm chặt thanh vũ khí và những lời dặn dò cuối cùng trước khi người ấy ngã xuống.`,
-      introEn: `You are the chosen protégé of ${char.name}, gripping their parting teachings and weapon.`
+      introVi: `Bạn là người được ${char.name} dìu dắt và gửi gắm di nguyện, nắm chặt vũ khí cùng những bài học sống còn trước khi người ấy ngã xuống.`,
+      introEn: `You are the chosen successor entrusted by ${char.name}, gripping their weapon and surviving lessons before they fell.`
     };
   }
 
-  // Solitary death: scavenger in the Backstreets
+  // Case 4: Bound Debt Bearer (Con nợ thế thân do Syndicate lùng bắt)
+  const hasVendetta = Boolean(
+    char.hasVendetta ||
+    (char.heat || 0) >= 40 ||
+    char.flags?.includes('MiddleVendetta') ||
+    char.scars?.some((s) => typeof s === 'string' && s.includes('Nợ Máu'))
+  );
+  if (hasVendetta) {
+    return {
+      type: 'debt_bearer',
+      titleVi: 'Kẻ Gánh Nợ Bất Đắc Dĩ',
+      titleEn: 'Bound Debt Successor',
+      introVi: `${char.name} qua đời khi nợ máu với Syndicate chưa tất toán. Toán chấp pháp lùng ra người quen biết duy nhất còn sống là bạn, ép bạn tiếp nhận cuốn sổ nợ đẫm máu.`,
+      introEn: `${char.name} passed away leaving an unsettled Syndicate blood debt. The enforcers hunted down the only surviving associate — you — pressing the bloodstained ledger into your hands.`
+    };
+  }
+
+  // Case 5: Solitary death: scavenger in the Backstreets
   return {
     type: 'scavenger',
     titleVi: 'Kẻ nhặt tàn dư Backstreets',
     titleEn: 'Backstreet Scavenger Inheritor',
-    introVi: `Bạn là một kẻ sống sót vô danh ở Backstreets, tình cờ đào bới được chiếc ba lô cũ và cuốn nhật ký vấy máu của ${char.name} từ đống gạch vụn.`,
-    introEn: `You are an unnamed Backstreet survivor who uncovered the battered pack and bloodstained journal of ${char.name} amidst the rubble.`
+    introVi: `Bạn là một kẻ sống sót vô danh ở Backstreets, tình cờ đào bới được chiếc ba lô cũ và di vật vấy máu của ${char.name} từ đống gạch vụn trước giờ Sweeper dọn sạch.`,
+    introEn: `You are an unnamed Backstreet survivor who scavenged the battered pack and bloodstained relic of ${char.name} from the rubble before the Sweepers arrived.`
   };
 }
 
