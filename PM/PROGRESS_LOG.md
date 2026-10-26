@@ -1,8 +1,8 @@
 # The City Chronicles: Tài Liệu Tiến Trình & Kiến Trúc Kỹ Thuật Toàn Diện
 
-> **Cập nhật ghi chép: 26/10/2026 (Đợt 62: Đặc cách Thần đồng Color Hana Directive Zero, Nhánh Sự nghiệp Riêng biệt Color Fixer & Tuyến Truyện Đỉnh cao 9 Sự kiện Project Moon; đã push và deploy)**
+> **Cập nhật ghi chép: 26/10/2026 (Đợt 63: Tinh Chỉnh & Cân Bằng Toàn Diện Các Tuyến Truyện Wing, Distortion, Color Fixer, 5 Ngón Tay Syndicate Lấy Fixer Làm Chuẩn Mực; đã push và deploy)**
 > Đợt 26 thay cơ chế gọi Carmen và bổ sung lựa chọn chuẩn bị; số đo cuộc đời ở Đợt 23 là lịch sử, không phải tỷ lệ hiện tại.
-> **Trạng thái xác minh tại máy cho Đợt 62:** `npm test` đạt toàn bộ 51 suite (thêm `test_color_career_arc.mjs`), story linter & voice linter 31.571 chuỗi đạt 0 lỗi/0 cảnh báo, audit 500 khoảnh khắc đạt 100%, story logic audit 100 đời 0 lỗi; `npm run build` đạt. Đã commit và push đồng bộ lên Git remote `origin/main`.
+> **Trạng thái xác minh tại máy cho Đợt 63:** `npm test` đạt toàn bộ 52 suite (thêm `test_all_routes_parity_expansion.mjs`), story linter & voice linter 32.122 chuỗi đạt 0 lỗi/0 cảnh báo, audit 500 khoảnh khắc đạt 100%, story logic audit 100 đời (16.388 khoảnh khắc) 0 vi phạm logic; `npm run build` đạt. Đã commit và push đồng bộ lên Git remote `origin/main`.
 > **Cách đọc số liệu:** Các kết quả mô phỏng ở Đợt 1–21 là ảnh chụp lịch sử tại thời điểm ghi; xem Đợt 23 để đọc phép đo Color/E.G.O hiện hành. Đợt 22 và mục 9.3 ghi các lần kiểm thử chức năng trước đó.
 
 ---
@@ -1235,4 +1235,38 @@ Chủ dự án yêu cầu làm lại toàn bộ giao diện lần nữa: bỏ t�
   * Voice linter 31.571 chuỗi và Story linter: 0 lỗi, 0 cảnh báo.
   * Story logic audit 100 cuộc đời (15.570 khoảnh khắc): 0 vi phạm logic.
   * Vite production build: hoàn thành thành công trong 6.80s.
+
+### Đợt 63 (26/10/2026): Tinh Chỉnh & Cân Bằng Toàn Diện Mọi Tuyến Truyện (Wing, Distortion, Color Fixer, 5 Ngón Tay Syndicate) Lấy Nhánh Fixer Làm Chuẩn Mực Parity
+
+* **Nâng Cấp Tuyến Nhân Viên Tập Đoàn Wing Employee (`src/data/eventsWingParityExpansion.js`):**
+  * Đưa quy mô nội dung của Wing lên ngang tầm tương tác phong phú của Fixer:
+    * **Major Events (+2 sự kiện lớn):** `wing_arc_singularity_meltdown_containment` (khủng hoảng rò rỉ lò phản ứng Singularity, lựa chọn xông vào cứu viện hay phong tỏa cô lập) và `wing_arc_corporate_patent_warfare` (chiến tranh bằng sáng chế khốc liệt giữa 2 tập đoàn Wing, đấu trí ngoại giao hoặc bán tài liệu mật).
+    * **Minor Rapid Dilemmas (+8 sự kiện vi mô 15s):** Xoay quanh các Singularity nổi tiếng (thẻ thuế thời gian T Corp, ống huyết thanh xanh K Corp, dọn dẹp khoang hạng nhất W Corp, buồng nhân bản R Corp, tố giác xả thải, chạm trán thang máy Giám đốc).
+    * **Daily Lines (+10 dòng thường nhật):** Tái hiện không khí Nest vô cảm, đèn huỳnh quang 6:00 AM, ống gel dinh dưỡng, tiếng máy rung ngầm, trạm kiểm soát di dân.
+
+* **Nâng Cấp Tuyến Thực Thể Biến Dị Distortion (`src/data/eventsDistortionParityExpansion.js`):**
+  * Khắc phục triệt để tình trạng thiếu hụt sự kiện vi mô và đơn điệu khi biến dị:
+    * **Major Events (+2 sự kiện đại họa):** `distort_arc_star_calamity_ascension` (Hana nâng cấp định danh lên Star of the City, đụng độ Giám đốc Section 1 của Liu Association) và `distort_arc_ego_clash_manifestation` (va chạm kịch liệt giữa ánh sáng E.G.O thức tỉnh và khát vọng bạo liệt của Distortion).
+    * **Minor Rapid Dilemmas (+6 sự kiện 15s):** Lời mời gọi cánh hoa trắng của Carmen, đao phủ Shi Association phục kích, thu hoạch làn sóng sợ hãi tại chợ Backstreets, soi bóng gương vũng nước, đứa trẻ mồ côi không biết sợ, nuốt vụn thép cỗ máy Workshop.
+    * **Daily Lines (+8 dòng thường nhật):** Khúc hát ru trong tủy sống của Carmen, cánh hoa pha lê mọc xuyên da thịt, thính giác nghe rõ nhịp tim 3 dãy nhà, bầy Sweeper dạt sang hai bên lúc 3:13 AM.
+
+* **Nâng Cấp Tuyến Huyền Thoại Color Fixer (`src/data/eventsColorExpansionSuite.js`):**
+  * Làm giàu nhịp sống và thế đứng của một Color Fixer đương thời:
+    * **Minor Rapid Dilemmas (+4 sự kiện 15s):** Tân binh Grade 1 thách đấu ngông cuồng tại quán rượu, công văn khẩn của Seven Association xin chữ ký tối thượng, tài phiệt Nest quỳ xin tị nạn trước Beholder B Corp, triệt phá lò rèn dập nổi con dấu Color giả mạo.
+    * **Daily Lines (+8 dòng thường nhật):** Đám cướp nép sát tường khi bạn đi qua, chủ quán HamHamPangPang cung kính tiếp đãi miễn phí, mài vũ khí bản mệnh lúc rạng sáng 5:00 AM, phong bì hoa héo từ kẻ thù giấu mặt.
+
+* **Bổ Sung Canh Bạc May Rủi & Tương Tác Sống Động Cho 5 Ngón Tay Syndicate (`src/data/eventsFingersGambleSuite.js`):**
+  * Bổ sung 5 sự kiện đại canh bạc mang tính thử thách và rủi ro cực cao, tối ưu hóa yếu tố gameplay máy rủi và liên kết chặt chẽ với NPC đồng đội:
+    * **Thumb (`syn_thumb_gamble_etiquette_duel`):** Canh bạc Đấu trường Nghi thức, dùng súng lục nạp một viên quyết đấu vì danh dự đồng đội bị vu cáo chào sai góc độ.
+    * **Index (`syn_index_gamble_blank_prescript`):** Canh bạc Chỉ lệnh Trống, thấu thị dòng chảy của Thần Dệt qua hành động táo bạo hay quy phục tuyệt đối.
+    * **Middle (`syn_middle_gamble_great_vendetta`):** Đại huyết thù Sổ Huyết Hận, đột kích sòng bạc kiên cố đòi nợ máu cùng huynh đệ kết nghĩa.
+    * **Ring (`syn_ring_gamble_flesh_gallery`):** Đại triển lãm giải phẫu kỳ dị của Maestro, đánh cược chính cơ thể sống để rèn đúc kiệt tác.
+    * **Pinky (`syn_pinky_gamble_unbroken_oath`):** Quyết đấu lập thệ trên bến phà sương mù District 21, cược cả bàn tay kiếm pháp vào một nhát chém duy nhất.
+
+* **Kiểm Thử Toàn Diện & Đảm Bảo Parity Tuyệt Đối:**
+  * Bổ sung bộ kiểm thử chuyên dụng `tests/test_all_routes_parity_expansion.mjs` xác nhận 100% các sự kiện mới đăng ký trọn vẹn vào `ALL_STORY_EVENTS`, `LIFE_MINORS`, và `LIFE_DAILIES`.
+  * Toàn bộ **52/52 test suites** của dự án vượt qua thành công trong `npm test`.
+  * Voice linter 32.122 chuỗi đạt **0 lỗi**; Story linter đạt **0 lỗi, 0 cảnh báo** (Tổng kho tăng lên: 737 Majors, 866 Minors, 572 Dailies).
+  * Story logic audit 100 cuộc đời (16.388 khoảnh khắc): **0 vi phạm logic**.
+  * Production Vite build biên dịch thành công 100% trong 6.97s.
 

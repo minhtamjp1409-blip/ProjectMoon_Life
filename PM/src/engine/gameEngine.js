@@ -56,6 +56,9 @@ import { EGO_LEAP_EVENTS } from '../data/eventsEgoLeap.js';
 import { AFFILIATION_EVENTS } from '../data/eventsAffiliation.js';
 import { ENSEMBLE_EVENTS, ENSEMBLE_SCORE_ITEM } from '../data/dungeonEnsemble.js';
 import { COLOR_CAREER_EVENTS } from '../data/eventsColorCareerArc.js';
+import { WING_PARITY_MAJORS } from '../data/eventsWingParityExpansion.js';
+import { DISTORTION_PARITY_MAJORS } from '../data/eventsDistortionParityExpansion.js';
+import { FINGERS_GAMBLE_EVENTS } from '../data/eventsFingersGambleSuite.js';
 import { localizeEnsembleName } from '../data/ensembleNames.js';
 import { ENSEMBLE_INVITE_ID, ENSEMBLE_LAST_CALL_ID, recordEnsembleInvitation } from './ensemblePath.js';
 import { egoEdge } from './egoEdge.js';
@@ -151,7 +154,10 @@ export const ALL_STORY_EVENTS = [
   ...EGO_LEAP_EVENTS,
   ...AFFILIATION_EVENTS,
   ...ENSEMBLE_EVENTS,
-  ...COLOR_CAREER_EVENTS
+  ...COLOR_CAREER_EVENTS,
+  ...WING_PARITY_MAJORS,
+  ...DISTORTION_PARITY_MAJORS,
+  ...FINGERS_GAMBLE_EVENTS
 ];
 
 export const SEASONS = [
