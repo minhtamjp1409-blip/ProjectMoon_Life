@@ -21,6 +21,20 @@
 
 import { startScape } from './ambienceScapes.js';
 
+const safeGetStorage = (key, fallback = null) => {
+  try {
+    return typeof localStorage !== 'undefined' ? localStorage.getItem(key) : fallback;
+  } catch {
+    return fallback;
+  }
+};
+
+const safeSetStorage = (key, value) => {
+  try {
+    if (typeof localStorage !== 'undefined') localStorage.setItem(key, String(value));
+  } catch {}
+};
+
 class AudioEngine {
   constructor() {
     this.ctx = null;
@@ -30,15 +44,17 @@ class AudioEngine {
     this.ambienceGain = null;
 
     // Load persisted settings
-    const savedMuted = localStorage.getItem('pm_audio_muted') === 'true';
-    const savedVol = parseFloat(localStorage.getItem('pm_audio_vol') || '0.7');
-    const savedAmbienceMuted = localStorage.getItem('pm_ambience_muted') === 'true';
-    const savedAmbienceVol = parseFloat(localStorage.getItem('pm_ambience_vol') || '0.7');
+    const savedMuted = safeGetStorage('pm_audio_muted') === 'true';
+    const savedVol = parseFloat(safeGetStorage('pm_audio_vol', '0.7') || '0.7');
+    const savedAmbienceMuted = safeGetStorage('pm_ambience_muted') === 'true';
+    const savedAmbienceVol = parseFloat(safeGetStorage('pm_ambience_vol', '0.7') || '0.7');
+    const savedSfxVol = parseFloat(safeGetStorage('pm_sfx_vol', '0.8') || '0.8');
 
     this.isMuted = savedMuted;
     this.volume = isNaN(savedVol) ? 0.7 : Math.max(0, Math.min(1, savedVol));
     this.isAmbienceMuted = savedAmbienceMuted;
     this.ambienceVolume = isNaN(savedAmbienceVol) ? 0.7 : Math.max(0, Math.min(1, savedAmbienceVol));
+    this.sfxVolume = isNaN(savedSfxVol) ? 0.8 : Math.max(0, Math.min(1, savedSfxVol));
 
     // Ambience state
     this.currentAmbienceType = null;
@@ -90,8 +106,12 @@ class AudioEngine {
     this.masterGain.gain.setValueAtTime(this.masterGain.gain.value, now);
     this.masterGain.gain.linearRampToValueAtTime(targetMasterGain, now + 0.05);
 
-    this.sfxGain.gain.setValueAtTime(0.85, now);
-    this.uiGain.gain.setValueAtTime(0.65, now);
+    const targetSfxGain = this.isMuted ? 0 : this.linearToGain(this.sfxVolume);
+    this.sfxGain.gain.setValueAtTime(this.sfxGain.gain.value, now);
+    this.sfxGain.gain.linearRampToValueAtTime(targetSfxGain * 0.9, now + 0.05);
+
+    this.uiGain.gain.setValueAtTime(this.uiGain.gain.value, now);
+    this.uiGain.gain.linearRampToValueAtTime(targetSfxGain * 0.75, now + 0.05);
 
     const targetAmbienceGain = (this.isMuted || this.isAmbienceMuted) ? 0 : this.linearToGain(this.ambienceVolume) * 0.9;
     this.ambienceGain.gain.setValueAtTime(this.ambienceGain.gain.value, now);
@@ -107,7 +127,7 @@ class AudioEngine {
 
   setMuted(muted) {
     this.isMuted = Boolean(muted);
-    localStorage.setItem('pm_audio_muted', String(this.isMuted));
+    safeSetStorage('pm_audio_muted', this.isMuted);
     this.applyVolumes();
     this.notify();
   }
@@ -119,10 +139,10 @@ class AudioEngine {
 
   setVolume(vol) {
     this.volume = Math.max(0, Math.min(1, vol));
-    localStorage.setItem('pm_audio_vol', String(this.volume));
+    safeSetStorage('pm_audio_vol', this.volume);
     if (this.isMuted && this.volume > 0) {
       this.isMuted = false;
-      localStorage.setItem('pm_audio_muted', 'false');
+      safeSetStorage('pm_audio_muted', 'false');
     }
     this.applyVolumes();
     this.notify();
@@ -130,7 +150,7 @@ class AudioEngine {
 
   setAmbienceMuted(muted) {
     this.isAmbienceMuted = Boolean(muted);
-    localStorage.setItem('pm_ambience_muted', String(this.isAmbienceMuted));
+    safeSetStorage('pm_ambience_muted', this.isAmbienceMuted);
     this.applyVolumes();
     this.notify();
   }
@@ -142,7 +162,14 @@ class AudioEngine {
 
   setAmbienceVolume(vol) {
     this.ambienceVolume = Math.max(0, Math.min(1, vol));
-    localStorage.setItem('pm_ambience_vol', String(this.ambienceVolume));
+    safeSetStorage('pm_ambience_vol', this.ambienceVolume);
+    this.applyVolumes();
+    this.notify();
+  }
+
+  setSfxVolume(vol) {
+    this.sfxVolume = Math.max(0, Math.min(1, vol));
+    safeSetStorage('pm_sfx_vol', this.sfxVolume);
     this.applyVolumes();
     this.notify();
   }
@@ -158,6 +185,7 @@ class AudioEngine {
       volume: this.volume,
       isAmbienceMuted: this.isAmbienceMuted,
       ambienceVolume: this.ambienceVolume,
+      sfxVolume: this.sfxVolume,
       currentAmbienceType: this.currentAmbienceType
     }));
   }

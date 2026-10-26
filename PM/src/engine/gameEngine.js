@@ -21,6 +21,7 @@ import {
 } from '../data/worldData.js';
 import { CHILDHOOD_EVENTS, CONSEQUENCE_EVENTS } from '../data/eventsChildhood.js';
 import { CHILDHOOD_EVENTS_2 } from '../data/eventsChildhood2.js';
+import { LINEAGE_LEGACY_EVENTS } from '../data/eventsLineageLegacy.js';
 import { BACKGROUND_OPENING_EVENTS } from '../data/eventsBackgroundOpening.js';
 import { composeBirth, makeNpc } from '../data/birthStories.js';
 import { evaluateCompanionSupport } from '../data/npcPersonality.js';
@@ -122,6 +123,7 @@ import {
 export const ALL_STORY_EVENTS = [
   ...CHILDHOOD_EVENTS,
   ...CHILDHOOD_EVENTS_2,
+  ...LINEAGE_LEGACY_EVENTS,
   ...BACKGROUND_OPENING_EVENTS,
   ...FACTION_EVENTS,
   ...SUPERNATURAL_EVENTS,

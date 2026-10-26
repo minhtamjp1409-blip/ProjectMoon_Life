@@ -1,20 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Volume2, VolumeX, Settings2 } from 'lucide-react';
-import { Dropdown, Tooltip } from 'antd';
+import { Tooltip } from 'antd';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useThemeStore } from '../store/themeStore';
 import { useGameStore } from '../store/gameStore';
 import { pick } from '../i18n';
 import { audioEngine } from '../engine/audioEngine';
-import { NAV_ITEMS, LANG_OPTIONS, BrandMark } from './Sidebar';
+import { NAV_ITEMS, BrandMark } from './Sidebar';
+import { SettingsModal } from '../components/SettingsModal';
 
 // One bar for every width: the archive tabs sit in it on a desktop and move to the bottom bar on a phone.
 // The mark goes home; during a life that means back to the title screen (the run is saved first).
 export const Header = ({ languageOverride, isPlay }) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const { lang: preferredLang, setLang, textSize, setTextSize, motionMode, setMotion, gameplayMetricsEnabled, setGameplayMetrics } = useThemeStore();
-  const [muted, setMuted] = React.useState(() => audioEngine.isMuted);
+  const preferredLang = useThemeStore((s) => s.lang);
+  const [muted, setMuted] = useState(() => audioEngine.isMuted);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   React.useEffect(() => audioEngine.subscribe((st) => setMuted(st.isMuted)), []);
   const lang = languageOverride || preferredLang;
   const inRun = useGameStore((s) => s.inRun);
@@ -25,23 +27,6 @@ export const Header = ({ languageOverride, isPlay }) => {
   const goHome = () => {
     if (inRun && pathname === '/') exitToSetup();
     navigate('/');
-  };
-  const settings = {
-    selectable: true,
-    selectedKeys: ['lang:' + preferredLang, 'text:' + textSize, 'motion:' + motionMode, ...(gameplayMetricsEnabled ? ['metrics:toggle'] : [])],
-    items: [
-      { type: 'group', key: 'g-lang', label: pick(lang, 'Ngôn ngữ', 'Language'), children: LANG_OPTIONS.map((o) => ({ key: 'lang:' + o.key, label: o.label })) },
-      { type: 'group', key: 'g-text', label: pick(lang, 'Cỡ chữ truyện', 'Story text size'), children: [['md', 'Vừa', 'Medium'], ['lg', 'Lớn', 'Large'], ['xl', 'Rất lớn', 'Extra large']].map(([k, vi, en]) => ({ key: 'text:' + k, label: pick(lang, vi, en) })) },
-      { type: 'group', key: 'g-motion', label: pick(lang, 'Chuyển động', 'Motion'), children: [['system', 'Theo hệ thống', 'Follow system'], ['full', 'Đầy đủ', 'Full'], ['reduced', 'Giảm', 'Reduced']].map(([k, vi, en]) => ({ key: 'motion:' + k, label: pick(lang, vi, en) })) },
-      { key: 'metrics:toggle', label: pick(lang, `Gửi thống kê chơi ẩn danh: ${gameplayMetricsEnabled ? 'Bật' : 'Tắt'}`, `Share anonymous play totals: ${gameplayMetricsEnabled ? 'On' : 'Off'}`) }
-    ],
-    onClick: ({ key }) => {
-      const [kind, value] = key.split(':');
-      if (kind === 'lang') setLang(value);
-      else if (kind === 'text') setTextSize(value);
-      else if (kind === 'motion') setMotion(value);
-      else if (kind === 'metrics') setGameplayMetrics(!gameplayMetricsEnabled);
-    }
   };
   return (
     <header className="topbar" lang={lang === 'bi' ? 'vi' : lang}>
@@ -85,12 +70,16 @@ export const Header = ({ languageOverride, isPlay }) => {
         >
           {muted ? <VolumeX size={17} /> : <Volume2 size={17} />}
         </button>
-        <Dropdown menu={settings} trigger={['click']} placement="bottomRight">
-          <button type="button" className="app-tool" aria-label={pick(lang, 'Cài đặt: ngôn ngữ, cỡ chữ, chuyển động', 'Settings: language, text size, motion')}>
-            <Settings2 size={17} aria-hidden="true" />
-          </button>
-        </Dropdown>
+        <button
+          type="button"
+          className="app-tool"
+          onClick={() => setSettingsOpen(true)}
+          aria-label={pick(lang, 'Cài đặt: âm thanh, hiển thị, hiệu năng', 'Settings: audio, display, performance')}
+        >
+          <Settings2 size={17} aria-hidden="true" />
+        </button>
       </div>
+      <SettingsModal open={settingsOpen} onClose={() => setSettingsOpen(false)} />
     </header>
   );
 };

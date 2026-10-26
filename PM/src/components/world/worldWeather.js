@@ -62,6 +62,11 @@ export function startWeather(canvas, kind, color, { reduced = false } = {}) {
   const spec = KINDS[kind];
   const ctx = canvas.getContext('2d');
   if (!ctx || !spec) return () => {};
+  const isPerfLow = typeof document !== 'undefined' && document.documentElement.dataset.perf === 'low';
+  if (isPerfLow) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    return () => {};
+  }
   let w = 0;
   let h = 0;
   let parts = [];

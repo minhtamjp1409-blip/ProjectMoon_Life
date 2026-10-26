@@ -8,12 +8,14 @@ export const useThemeStore = create((set) => {
   const initialMotion = readSetting('pm-motion-mode') || 'system';
   const initialText = readSetting('pm-text-size') || 'md';
   const initialGameplayMetrics = readSetting('pm-gameplay-metrics') === 'on';
+  const initialPerfMode = readSetting('pm-perf-mode') === 'on';
 
   if (typeof document !== 'undefined') {
     if (initialMode === 'dark') document.documentElement.classList.add('dark');
     else document.documentElement.classList.remove('dark');
     document.documentElement.dataset.motion = initialMotion;
     document.documentElement.dataset.text = initialText;
+    document.documentElement.dataset.perf = initialPerfMode ? 'low' : 'high';
   }
 
   return {
@@ -30,6 +32,14 @@ export const useThemeStore = create((set) => {
       }),
     // Reading size for story text: 'md' | 'lg' | 'xl'
     textSize: initialText,
+    perfMode: initialPerfMode,
+    setPerfMode: (enabled) => {
+      localStorage.setItem('pm-perf-mode', enabled ? 'on' : 'off');
+      if (typeof document !== 'undefined') {
+        document.documentElement.dataset.perf = enabled ? 'low' : 'high';
+      }
+      set({ perfMode: enabled });
+    },
     gameplayMetricsEnabled: initialGameplayMetrics,
     setGameplayMetrics: (enabled) => {
       localStorage.setItem('pm-gameplay-metrics', enabled ? 'on' : 'off');
