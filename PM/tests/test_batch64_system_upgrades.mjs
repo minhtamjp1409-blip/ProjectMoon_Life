@@ -22,6 +22,7 @@ import {
   getImbuedCombatBonus
 } from '../src/engine/cityUpgrades.js';
 import { matchesEventContext, isOutsideCity } from '../src/engine/eventConditions.js';
+import { ITEMS_CATALOG } from '../src/data/itemsData.js';
 
 console.log('=== TEST SUITE: BATCH 64-68 SYSTEM UPGRADES (5 PILLARS) ===');
 
@@ -162,6 +163,40 @@ console.log('=== TEST SUITE: BATCH 64-68 SYSTEM UPGRADES (5 PILLARS) ===');
   assert.equal(outskirter.flags.includes('Outskirts'), false, 'Crossing into District K must clear Outskirts flag');
   assert.equal(outskirter.flags.includes('EnteredCity'), true, 'Crossing into District K must grant EnteredCity flag');
   assert.equal(isOutsideCity(outskirter), false, 'isOutsideCity must return false after relocating into District K');
+
+  // Permit item IDs & Workshop catalog price alignment
+  const nestPermitItem = ITEMS_CATALOG.find((it) => it.id === 'spc_nest_migration_permit');
+  assert.ok(nestPermitItem, 'spc_nest_migration_permit must exist in ITEMS_CATALOG');
+  assert(nestPermitItem.costAhn <= 100, 'spc_nest_migration_permit cost must not exceed max wealth 100');
+  assert.equal(nestPermitItem.costAhn, 85, 'spc_nest_migration_permit cost must be 85 Ahn');
+
+  const devyatPassItem = ITEMS_CATALOG.find((it) => it.id === 'spc_devyat_courier_pass');
+  assert.ok(devyatPassItem, 'spc_devyat_courier_pass must exist in ITEMS_CATALOG');
+  assert.equal(devyatPassItem.costAhn, 45, 'spc_devyat_courier_pass cost must be 45 Ahn');
+
+  const permitBearer = createNewCharacter({ seed: 'outskirts-permit-bearer', startAge: 20, preferredRegionId: 'OUTSKIRTS' });
+  permitBearer.job = 'Scavenger';
+  permitBearer.stats.wealth = 50;
+  permitBearer.stats.network = 5;
+  permitBearer.stats.rep = 5;
+  permitBearer.inventory = [{ id: 'spc_devyat_courier_pass', nameVi: 'Thẻ thông hành Devyat Association' }];
+  assert.equal(canRelocateDistrict(permitBearer, 'K').ok, true, 'Bearer of spc_devyat_courier_pass can cross into District K');
+
+  const nestPermitBearer = createNewCharacter({ seed: 'outskirts-nest-permit-bearer', startAge: 20, preferredRegionId: 'OUTSKIRTS' });
+  nestPermitBearer.job = 'Scavenger';
+  nestPermitBearer.stats.wealth = 50;
+  nestPermitBearer.stats.network = 5;
+  nestPermitBearer.stats.rep = 5;
+  nestPermitBearer.inventory = [{ id: 'spc_nest_migration_permit', nameVi: 'Thị thực định cư Nest' }];
+  assert.equal(canRelocateDistrict(nestPermitBearer, 'K').ok, true, 'Bearer of spc_nest_migration_permit can cross into District K');
+
+  const ampouleBearer = createNewCharacter({ seed: 'outskirts-ampoule-bearer', startAge: 20, preferredRegionId: 'OUTSKIRTS' });
+  ampouleBearer.job = 'Scavenger';
+  ampouleBearer.stats.wealth = 50;
+  ampouleBearer.stats.network = 5;
+  ampouleBearer.stats.rep = 5;
+  ampouleBearer.inventory = [{ id: 'con_kcorp_ampoule', nameVi: 'Ống tiêm sinh học K Corp' }];
+  assert.equal(canRelocateDistrict(ampouleBearer, 'K').ok, true, 'Bearer of con_kcorp_ampoule can cross into District K');
   console.log('  ✓ Pillar 2: Inter-District Transit, Outskirts Gate & Regional Singularity Mechanics verified');
 }
 

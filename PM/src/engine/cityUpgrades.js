@@ -332,9 +332,22 @@ export function transitCostFor(hub, char) {
 export function canBorderCrossFromOutskirts(char) {
   if (!char) return false;
   const flags = char.flags || [];
-  if (flags.includes('EnteredCity') || flags.includes('NestResident') || flags.includes('ColorFixer')) return true;
+  if (
+    flags.includes('EnteredCity') ||
+    flags.includes('NestResident') ||
+    flags.includes('ColorFixer') ||
+    flags.includes('DevyatPass')
+  ) return true;
   const inv = Array.isArray(char.inventory) ? char.inventory : [];
-  if (inv.some((it) => ['nest_permit', 'devyat_pass', 'k_ampoule'].includes(it?.id || it))) return true;
+  const PERMIT_ITEM_IDS = [
+    'spc_nest_migration_permit',
+    'nest_permit',
+    'spc_devyat_courier_pass',
+    'devyat_pass',
+    'con_kcorp_ampoule',
+    'k_ampoule'
+  ];
+  if (inv.some((it) => PERMIT_ITEM_IDS.includes(it?.id || it))) return true;
   if (char.age >= 18 && char.job !== 'Child' && ((char.stats?.network ?? 0) >= 25 || (char.stats?.rep ?? 0) >= 25)) return true;
   return false;
 }

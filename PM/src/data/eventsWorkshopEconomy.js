@@ -59,6 +59,7 @@ export const WORKSHOP_ECONOMY_EVENTS = [
         costAhn: 85,
         flagsAdd: ['NestResident', 'Feather'],
         recordsAdd: ['nest_migration'],
+        itemsAdd: ['spc_nest_migration_permit'],
         effects: { wealth: -85, sanity: +35, rep: +25 }
       },
       {

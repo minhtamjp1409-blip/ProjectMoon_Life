@@ -152,12 +152,23 @@ export const ITEMS_CATALOG = [
     id: 'spc_nest_migration_permit',
     type: ITEM_TYPES.SPECIAL,
     tier: 'Star of the City',
-    costAhn: 180,
+    costAhn: 85,
     nameVi: 'Thị thực định cư Nest (Nest Visa)',
     nameEn: 'Nest Migration Permit',
-    descVi: 'Giấy phép cư trú chính thức đóng dấu vàng của Hội đồng Wing. Cho phép rời bỏ Backstreets đầy rẫy Sweeper để trở thành Feather chính thức.',
-    descEn: 'Official golden-stamped resident visa. Grants passage out of the Sweeper-infested Backstreets into a fortified Nest.',
+    descVi: 'Giấy phép cư trú chính thức đóng dấu vàng của Hội đồng Wing. Cho phép rời bỏ Backstreets đầy rẫy Sweeper hoặc vượt Bức Tường từ Outskirts để trở thành Feather chính thức.',
+    descEn: 'Official golden-stamped resident visa. Grants passage out of the Sweeper-infested Backstreets or across the Wall from the Outskirts into a fortified Nest.',
     flagGranted: 'NestResident'
+  },
+  {
+    id: 'spc_devyat_courier_pass',
+    type: ITEM_TYPES.SPECIAL,
+    tier: 'Urban Plague',
+    costAhn: 45,
+    nameVi: 'Thẻ thông hành Devyat Association',
+    nameEn: 'Devyat Courier Border Pass',
+    descVi: 'Thẻ bài đồng nghiệp hoặc lệnh ủy thác thông quan của Hiệp hội Devyat. Cho phép di chuyển qua các trạm kiểm soát Bức Tường giữa Outskirts và các Quận nội đô.',
+    descEn: 'Official courier badge recognized by Wall checkpoint guards. Authorizes safe passage between the Outskirts and City Districts.',
+    flagGranted: 'DevyatPass'
   },
   {
     id: 'spc_hana_audit_waiver',
