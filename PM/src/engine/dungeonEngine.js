@@ -1701,7 +1701,7 @@ export function resolveDungeonChoice(charState, choiceIndex, rng = Math.random) 
       const shieldMemEn = `Age ${char.age || 0}: Absorbed a mortal strike for you in ${def.titleEn}.`;
       companionNpc.memories = [...(companionNpc.memories || []), { age: char.age || 0, vi: shieldMemVi, en: shieldMemEn }].slice(-6);
       char.npcs[companion.role] = companionNpc;
-      notes.push({
+      companionNotes.push({
         vi: `[Tấm khiên sinh tử] ${companion.nameVi} lao mình chắn ngang nhát chém kết liễu, máu nhuộm đỏ giáp vai: "Rút đi... đừng để cả hai cùng bỏ mạng ở đây!"`,
         en: `[Mortal Shield] ${companion.nameEn} threw themselves in front of the killing stroke, armor drenched in crimson: "Retreat... do not let both of us die here!"`
       });

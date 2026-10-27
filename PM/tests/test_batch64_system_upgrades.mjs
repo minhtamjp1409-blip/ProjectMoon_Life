@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import {
   createNewCharacter,
+  cloneChar,
   buildLifeSummaryAndLegacy,
   resolveEventChoice,
   generateFixerContract,
@@ -20,9 +21,9 @@ import {
   imbueCharacterEquipment,
   getImbuedCombatBonus
 } from '../src/engine/cityUpgrades.js';
-import { matchesEventContext } from '../src/engine/eventConditions.js';
+import { matchesEventContext, isOutsideCity } from '../src/engine/eventConditions.js';
 
-console.log('=== TEST SUITE: BATCH 64 SYSTEM UPGRADES (5 PILLARS) ===');
+console.log('=== TEST SUITE: BATCH 64-68 SYSTEM UPGRADES (5 PILLARS) ===');
 
 // ----------------------------------------------------------------------------
 // 1. LIVING ANCESTOR ECHOES & HALL OF LEGENDS
@@ -139,7 +140,29 @@ console.log('=== TEST SUITE: BATCH 64 SYSTEM UPGRADES (5 PILLARS) ===');
   assert.equal(resT.ok, true);
   assert(afterYear.flags.includes('TCorpTimeBorrowed'), 'Arriving at T Corp must grant TCorpTimeBorrowed');
   assert.equal(afterYear.stats.health, hpBeforeT - 5, 'T Corp 28-hour time loan must drain -5 HP on arrival');
-  console.log('  ✓ Pillar 2: Inter-District Transit & Regional Singularity Mechanics (Hard-But-Fair) verified');
+
+  // Batch 68: Outskirts border entry gate & flag synchronization
+  const outskirter = createNewCharacter({ seed: 'outskirts-transit-gate', startAge: 22, preferredRegionId: 'OUTSKIRTS' });
+  outskirter.job = 'Scavenger';
+  outskirter.stats.wealth = 50;
+  outskirter.stats.network = 10;
+  outskirter.stats.rep = 5;
+  assert.equal(isOutsideCity(outskirter), true, 'Outskirts native starts outside the City');
+
+  const deniedBorder = canRelocateDistrict(outskirter, 'K');
+  assert.equal(deniedBorder.ok, false, 'Outskirts resident without entry clearance cannot buy City transit');
+
+  outskirter.stats.network = 28; // Smuggler contacts (>= 25 Network)
+  const allowedBorder = canRelocateDistrict(outskirter, 'K');
+  assert.equal(allowedBorder.ok, true, 'Outskirts resident with smuggler contacts can cross into District K');
+
+  const crossRes = relocateCharacterDistrict(outskirter, 'K');
+  assert.equal(crossRes.ok, true);
+  assert.equal(outskirter.regionId, 'K');
+  assert.equal(outskirter.flags.includes('Outskirts'), false, 'Crossing into District K must clear Outskirts flag');
+  assert.equal(outskirter.flags.includes('EnteredCity'), true, 'Crossing into District K must grant EnteredCity flag');
+  assert.equal(isOutsideCity(outskirter), false, 'isOutsideCity must return false after relocating into District K');
+  console.log('  ✓ Pillar 2: Inter-District Transit, Outskirts Gate & Regional Singularity Mechanics verified');
 }
 
 // ----------------------------------------------------------------------------
@@ -173,7 +196,7 @@ console.log('=== TEST SUITE: BATCH 64 SYSTEM UPGRADES (5 PILLARS) ===');
 }
 
 // ----------------------------------------------------------------------------
-// 4. WORKSHOP SINGULARITY IMBUEMENT
+// 4. WORKSHOP SINGULARITY IMBUEMENT & STATE ISOLATION
 // ----------------------------------------------------------------------------
 {
   const smith = createNewCharacter({ seed: 'smith-imbue-1', startAge: 28 });
@@ -207,11 +230,29 @@ console.log('=== TEST SUITE: BATCH 64 SYSTEM UPGRADES (5 PILLARS) ===');
 
   const mastery = getDungeonMastery(DUNGEON_DEFINITIONS.dungeon_warp_train, smith);
   assert(mastery.labelEn.includes('Singularity Imbued'), 'Dungeon mastery must recognize Singularity Imbued gear');
-  console.log('  ✓ Pillar 4: Workshop Singularity Imbuement verified');
+
+  // Batch 68: Equipped item state isolation across cloneChar & inventory sync
+  const fixer = createNewCharacter({ seed: 'fixer-imbue-isolation', startAge: 26 });
+  fixer.job = 'Fixer';
+  fixer.stats.wealth = 30;
+  const baseBlade = { id: 'wpn_stigma_blade', nameVi: 'Kiếm Stigma', nameEn: 'Stigma Blade', type: 'weapon', combatPower: 18 };
+  const relicItem = { id: 'rel_warp_shard', nameVi: 'Mảnh Dị Chiều W Corp', nameEn: 'W Corp Dimensional Shard', type: 'special' };
+  fixer.inventory = [{ ...baseBlade }, { ...relicItem }];
+  fixer.equipped = { weapon: fixer.inventory[0], armor: null, consumable: null, utility: null };
+
+  const clonedNext = cloneChar(fixer);
+  const eqImbueRes = imbueCharacterEquipment(clonedNext, 'rel_warp_shard');
+  assert.equal(eqImbueRes.ok, true);
+  assert.equal(fixer.equipped.weapon.nameEn, 'Stigma Blade', 'Previous state equipped.weapon must not be mutated');
+  assert.equal(fixer.equipped.weapon.imbuedRelicId, undefined, 'Previous state equipped.weapon must not gain imbuedRelicId');
+  assert(clonedNext.equipped.weapon.nameEn.includes('Rift-Edge'), 'Cloned state equipped.weapon must gain Singularity prefix');
+  assert.equal(clonedNext.inventory[0].imbuedRelicId, 'rel_warp_shard', 'Matching weapon in clonedNext.inventory must also be updated');
+  assert.equal(clonedNext.equipped.weapon, clonedNext.inventory[0], 'clonedNext.equipped.weapon and inventory item must stay synchronized');
+  console.log('  ✓ Pillar 4: Workshop Singularity Imbuement & State Isolation verified');
 }
 
 // ----------------------------------------------------------------------------
-// 5. BATCH 66 UI UPGRADES (TASTESKILL V2, ANTISLOP, ACCESSIBILITY & GAME-FEEL)
+// 5. BATCH 66-68 UI UPGRADES (TASTESKILL V2, ANTISLOP, ACCESSIBILITY & MOBILE)
 // ----------------------------------------------------------------------------
 {
   const fs = await import('node:fs');
@@ -222,17 +263,24 @@ console.log('=== TEST SUITE: BATCH 64 SYSTEM UPGRADES (5 PILLARS) ===');
   const dossierSrc = fs.readFileSync('src/features/chronicle/components/CharacterDossierCard.jsx', 'utf8');
   const depotSrc = fs.readFileSync('src/features/chronicle/components/WorkshopDepotModal.jsx', 'utf8');
   const yearPlanSrc = fs.readFileSync('src/features/chronicle/components/YearPlanDock.jsx', 'utf8');
+  const birthSetupSrc = fs.readFileSync('src/features/chronicle/components/BirthSetupPanel.jsx', 'utf8');
 
   assert(tokensCss.includes('--accent: #c43232;'), 'Primary accent token must meet WCAG AA contrast');
   assert(!overlaysCss.includes('transition: all'), 'overlays.css must not use transition: all');
   assert(!overlaysCss.includes('Cinzel'), 'overlays.css must not reference unloaded Cinzel font');
   assert(overlaysCss.includes('.settings-slider:focus-visible'), 'Settings slider must have keyboard focus-visible ring');
   assert(!deltasSrc.includes('STAT_ICONS'), 'Deltas.jsx must use semantic token dots instead of dingbat icons');
-  assert(npcModalSrc.includes("event.key === 'Escape'"), 'NpcDossierModal must close on Escape key');
+  assert(npcModalSrc.includes("event.key === 'Escape'") && npcModalSrc.includes("event.key === 'Tab'"), 'NpcDossierModal must trap Tab focus and close on Escape');
   assert(dossierSrc.includes('npc is-interactive') && dossierSrc.includes('onSelectRole(role)'), 'Dossier NPC cards must be interactive and keyboard-accessible');
   assert(depotSrc.includes('renderTradeoffChips') && depotSrc.includes('gameFeel.addTrauma'), 'WorkshopDepotModal must render quantitative trade-off chips and gameFeel feedback');
+  assert(depotSrc.includes('aria-controls="depot-tabpanel"') && depotSrc.includes("e.key === 'ArrowRight'"), 'WorkshopDepotModal tabs must implement WAI-ARIA tablist and arrow key navigation');
   assert(yearPlanSrc.includes('renderDirectiveChips'), 'YearPlanDock must render quantitative trade-off chips for Apex Directives');
-  console.log('  ✓ Pillar 5: Batch 66 UI Upgrades (tasteskill v2, antislop, WCAG AA, keyboard/mobile & game-feel) verified');
+  assert(
+    birthSetupSrc.indexOf('id="birth-region"') > 0 &&
+    birthSetupSrc.indexOf('id="birth-region"') < birthSetupSrc.indexOf('hero-start-btn'),
+    'BirthSetupPanel must place #birth-region selector before the start button on mobile'
+  );
+  console.log('  ✓ Pillar 5: Batch 66-68 UI Upgrades (tasteskill v2, antislop, WCAG AA, focus trap, WAI-ARIA tabs & mobile birthplace) verified');
 }
 
-console.log('=== ALL BATCH 64 & 66 SYSTEM/UI UPGRADE TESTS PASSED ===');
+console.log('=== ALL BATCH 64-68 SYSTEM/UI UPGRADE TESTS PASSED ===');

@@ -838,6 +838,18 @@ export function createNewCharacter({
  */
 export function cloneChar(char) {
   const scarState = normalizeScars(char);
+  const invClone = structuredClone(char.inventory || []);
+  const eqClone = char.equipped ? structuredClone(char.equipped) : undefined;
+  if (eqClone) {
+    for (const slot of ['weapon', 'armor', 'consumable', 'utility']) {
+      if (eqClone[slot]?.id) {
+        const matchInInv = invClone.find((it) => it && (it.id || it) === eqClone[slot].id);
+        if (matchInInv && typeof matchInInv === 'object') {
+          eqClone[slot] = matchInInv;
+        }
+      }
+    }
+  }
   const copy = {
     ...char,
     stats: { ...char.stats },
@@ -846,7 +858,9 @@ export function cloneChar(char) {
     scarHistory: scarState.scarHistory,
     npcs: structuredClone(char.npcs || {}),
     weaver: structuredClone(char.weaver),
-    inventory: structuredClone(char.inventory || []),
+    inventory: invClone,
+    ...(eqClone !== undefined ? { equipped: eqClone } : {}),
+    ...(char.craftWeapon !== undefined ? { craftWeapon: structuredClone(char.craftWeapon) } : {}),
     imbuedRelics: structuredClone(char.imbuedRelics || []),
     themes: { ...(char.themes || {}) },
     plan: structuredClone(char.plan || []),
@@ -2164,7 +2178,9 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random, dung
     char.flags = char.flags.filter(f => f !== 'Nest' && f !== 'Feather');
     if (!char.flags.includes('Outskirts')) char.flags.push('Outskirts');
   } else if (setRegion) {
+    const wasOutside = char.regionId === 'OUTSKIRTS' || char.flags.includes('Outskirts');
     char.flags = char.flags.filter(f => f !== 'Outskirts');
+    if (wasOutside && !char.flags.includes('EnteredCity')) char.flags.push('EnteredCity');
   }
 
   const scarsAdd = [

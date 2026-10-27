@@ -447,7 +447,46 @@ export const BirthSetupPanel = () => {
                   </button>
                 ))}
               </div>
-              <p className="field-hint">{t('Nơi sinh và gia cảnh do The City định đoạt. Lời kể vẫn gọi bạn là "bạn".', 'The City decides your birthplace and background. The story still addresses you as "you".')}</p>
+              <p className="field-hint">{t('Gia cảnh khởi đầu do The City định đoạt. Lời kể vẫn gọi bạn là "bạn".', 'Your starting household is decided by The City. The story still addresses you as "you".')}</p>
+            </div>
+            <div className="field birth-region-field">
+              <label htmlFor="birth-region">
+                {t('Nơi sinh', 'Birthplace')}
+                <button
+                  type="button"
+                  className="birth-map-link"
+                  onClick={() =>
+                    mapRef.current?.scrollIntoView({
+                      behavior: reducedMotion() ? 'instant' : 'smooth'
+                    })
+                  }
+                >
+                  {t('Tra cứu bản đồ', 'Explore map')}
+                  <ArrowUpRight size={13} aria-hidden="true" />
+                </button>
+              </label>
+              <select
+                id="birth-region"
+                className="input birth-region-select"
+                value={selectedRegion || 'RANDOM'}
+                onChange={(e) => {
+                  const id = e.target.value;
+                  setRegion(id);
+                  const picked = REGIONS.find((r) => r.id === id);
+                  if (picked) spinTo(picked, { turns: 0, duration: 520 });
+                }}
+              >
+                <option value="RANDOM">
+                  {t('Ngẫu nhiên · Để The City định đoạt', 'Random · Let The City decide')}
+                </option>
+                {REGIONS.map((r) => (
+                  <option key={r.id} value={r.id}>
+                    {r.id === 'OUTSKIRTS'
+                      ? t('Outskirts · Ngoài Bức Tường', 'Outskirts · Beyond the Wall')
+                      : `District ${String(r.ward).padStart(2, '0')} (${r.id} Corp) · ${lang === 'en' ? r.aliasEn : r.aliasVi}`}
+                  </option>
+                ))}
+              </select>
             </div>
             <details className="birth-seed">
               <summary>

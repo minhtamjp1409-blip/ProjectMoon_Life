@@ -10,13 +10,15 @@ import {
   executeNpcInteraction
 } from '../src/engine/npcInteractions.js';
 import { simulateNpcAutonomousLife } from '../src/engine/narrativeArcEngine.js';
-import { createNewCharacter, buildLifeSummaryAndLegacy } from '../src/engine/gameEngine.js';
+import { createNewCharacter, buildLifeSummaryAndLegacy, resolveEventChoice, ALL_STORY_EVENTS } from '../src/engine/gameEngine.js';
 import {
   pickDungeonCompanion,
   createDungeonSession,
   resolveDungeonChoice,
   useDungeonSupply
 } from '../src/engine/dungeonEngine.js';
+import { affiliationYearTick } from '../src/engine/affiliation.js';
+import { choiceIsAvailable } from '../src/engine/eventConditions.js';
 
 console.log('--- Testing NPC Dynamic Agency & Interactive System ---');
 
@@ -179,10 +181,7 @@ assert.ok(apprenticeSuccessor.npcs.nemesis, 'Successor must inherit active nemes
 assert.equal(apprenticeSuccessor.npcs.nemesis.nameVi, 'Argalia');
 assert.ok(apprenticeSuccessor.npcs.nemesis.memories[0].vi.includes('Thừa kế mối thù'));
 
-// 6. Leadership Subordinate Delegation & Cross-Route Mentee Progression
-import { affiliationYearTick } from '../src/engine/affiliation.js';
-import { resolveEventChoice, ALL_STORY_EVENTS } from '../src/engine/gameEngine.js';
-
+// 6. Leadership Subordinate Delegation, Real Cost Gate & Partner Reckoning
 const wingLeader = createNewCharacter({ seed: 'test-wing-leader', startAge: 32 });
 wingLeader.job = 'Wing Employee';
 wingLeader.wingRank = 2;
@@ -229,5 +228,44 @@ assert.ok(
   falloutDel.nextChar.weaver.pendingThreads.some((t) => t.eventId === 'aff_subordinate_reckoning'),
   'Fallout on mentee plants aff_subordinate_reckoning thread'
 );
+
+// Batch 68: Verify costAhn: 8 gate on aff_subordinate_reckoning Choice 0 and crisis clearing
+const subReckonEvent = ALL_STORY_EVENTS.find((e) => e.id === 'aff_subordinate_reckoning');
+assert.ok(subReckonEvent, 'aff_subordinate_reckoning must exist');
+assert.equal(subReckonEvent.choices[0].costAhn, 8, 'Choice 0 must enforce costAhn: 8');
+
+const brokeLeader = { ...falloutDel.nextChar, stats: { ...falloutDel.nextChar.stats, wealth: 3 } };
+assert.equal(choiceIsAvailable(subReckonEvent.choices[0], brokeLeader), false, 'Choice 0 must be unavailable when wealth < 8');
+assert.equal(choiceIsAvailable(subReckonEvent.choices[0], falloutDel.nextChar), true, 'Choice 0 must be available when wealth >= 8');
+
+falloutDel.nextChar.pendingEvent = subReckonEvent;
+const afterSubReckon = resolveEventChoice(falloutDel.nextChar, 0, () => 0.5);
+assert.equal(afterSubReckon.stats.wealth, falloutDel.nextChar.stats.wealth - 8, 'Resolving Choice 0 must deduct 8 Ahn');
+assert.equal(afterSubReckon.npcs.mentee.crisis.severity, 0, 'Resolving Choice 0 must clear mentee crisis');
+
+// Batch 68: Verify delegating to partner plants aff_partner_reckoning on fallout
+afterSubReckon.age = 34;
+afterSubReckon.npcs.partner = {
+  role: 'partner',
+  nameVi: 'Olivier',
+  nameEn: 'Olivier',
+  archetype: 'veteran',
+  bond: 60,
+  status: 'alive'
+};
+const partnerFallout = executeNpcInteraction(afterSubReckon, 'partner', 'delegate_command', () => 0.1);
+assert.equal(partnerFallout.success, true);
+assert.ok(partnerFallout.nextChar.npcs.partner.crisis.severity > 0, 'Fallout inflicts acute crisis on partner');
+assert.ok(
+  partnerFallout.nextChar.weaver.pendingThreads.some((t) => t.eventId === 'aff_partner_reckoning'),
+  'Fallout on partner plants aff_partner_reckoning thread'
+);
+
+const partnerReckonEvent = ALL_STORY_EVENTS.find((e) => e.id === 'aff_partner_reckoning');
+assert.ok(partnerReckonEvent, 'aff_partner_reckoning must exist');
+assert.equal(partnerReckonEvent.choices[0].costAhn, 8, 'Partner reckoning Choice 0 must enforce costAhn: 8');
+partnerFallout.nextChar.pendingEvent = partnerReckonEvent;
+const afterPartnerReckon = resolveEventChoice(partnerFallout.nextChar, 0, () => 0.5);
+assert.equal(afterPartnerReckon.npcs.partner.crisis.severity, 0, 'Resolving Choice 0 must clear partner crisis');
 
 console.log('All NPC Dynamic Agency & Interactive tests passed successfully!');

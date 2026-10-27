@@ -452,16 +452,17 @@ export const useGameStore = create((set, get) => ({
 
     const nextChar = cloneChar(char);
     if (!Array.isArray(nextChar.inventory)) nextChar.inventory = [];
-    nextChar.inventory.push(item);
+    const purchased = { ...item };
+    nextChar.inventory.push(purchased);
     nextChar.stats.wealth = wealth - price;
 
     if (!nextChar.equipped) nextChar.equipped = { weapon: null, armor: null, consumable: null };
-    if (item.type === 'weapon') nextChar.equipped.weapon = item;
-    if (item.type === 'armor') {
-      nextChar.equipped.armor = item;
-      if (item.stats?.health) nextChar.stats.health = Math.min(100, nextChar.stats.health + item.stats.health);
+    if (purchased.type === 'weapon') nextChar.equipped.weapon = purchased;
+    if (purchased.type === 'armor') {
+      nextChar.equipped.armor = purchased;
+      if (purchased.stats?.health) nextChar.stats.health = Math.min(100, nextChar.stats.health + purchased.stats.health);
     }
-    if (item.type === 'consumable') nextChar.equipped.consumable = item;
+    if (purchased.type === 'consumable') nextChar.equipped.consumable = purchased;
     if (item.flagGranted && !nextChar.flags.includes(item.flagGranted)) {
       nextChar.flags.push(item.flagGranted);
     }

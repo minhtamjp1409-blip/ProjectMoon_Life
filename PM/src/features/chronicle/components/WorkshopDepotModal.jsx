@@ -159,32 +159,61 @@ export const WorkshopDepotModal = ({ open, onClose }) => {
             {depotFeedback.text}
           </p>
         )}
-        <div className="tabs depot-tabs" role="tablist">
-          {[
-            { id: 'ALL', labelVi: 'Tất cả', labelEn: 'All Items' },
-            { id: ITEM_TYPES.WEAPON, labelVi: 'Vũ khí Workshop', labelEn: 'Weapons' },
-            { id: ITEM_TYPES.ARMOR, labelVi: 'Giáp & Cấy ghép', labelEn: 'Armor & Grafts' },
-            { id: ITEM_TYPES.CONSUMABLE, labelVi: 'Thuốc K Corp', labelEn: 'Consumables' },
-            { id: ITEM_TYPES.SPECIAL, labelVi: 'Thị thực & Cổ vật', labelEn: 'Permits & Relics' },
-            { id: 'IMBUEMENT', labelVi: 'Khảm Singularity', labelEn: 'Imbuement' },
-            { id: 'TRANSIT', labelVi: 'Vé Tàu & Chuyển Quận', labelEn: 'District Transit' }
-          ].map((tab) => (
-            <button
-              type="button"
-              role="tab"
-              aria-selected={activeTab === tab.id}
-              key={tab.id}
-              className={activeTab === tab.id ? 'is-on' : ''}
-              onClick={() => {
-                setActiveTab(tab.id);
-                setDepotFeedback(null);
-              }}
-            >
-              {lang === 'en' ? tab.labelEn : tab.labelVi}
-            </button>
-          ))}
+        <div className="tabs depot-tabs" role="tablist" aria-label={t('Danh mục Workshop', 'Workshop categories')}>
+          {(() => {
+            const tabs = [
+              { id: 'ALL', labelVi: 'Tất cả', labelEn: 'All Items' },
+              { id: ITEM_TYPES.WEAPON, labelVi: 'Vũ khí Workshop', labelEn: 'Weapons' },
+              { id: ITEM_TYPES.ARMOR, labelVi: 'Giáp & Cấy ghép', labelEn: 'Armor & Grafts' },
+              { id: ITEM_TYPES.CONSUMABLE, labelVi: 'Thuốc K Corp', labelEn: 'Consumables' },
+              { id: ITEM_TYPES.SPECIAL, labelVi: 'Thị thực & Cổ vật', labelEn: 'Permits & Relics' },
+              { id: 'IMBUEMENT', labelVi: 'Khảm Singularity', labelEn: 'Imbuement' },
+              { id: 'TRANSIT', labelVi: 'Vé Tàu & Chuyển Quận', labelEn: 'District Transit' }
+            ];
+            const selectTabAt = (nextIdx) => {
+              const target = tabs[(nextIdx + tabs.length) % tabs.length];
+              if (!target) return;
+              setActiveTab(target.id);
+              setDepotFeedback(null);
+              document.getElementById(`depot-tab-${target.id}`)?.focus();
+            };
+            return tabs.map((tab, idx) => (
+              <button
+                type="button"
+                role="tab"
+                id={`depot-tab-${tab.id}`}
+                aria-selected={activeTab === tab.id}
+                aria-controls="depot-tabpanel"
+                tabIndex={activeTab === tab.id ? 0 : -1}
+                key={tab.id}
+                className={activeTab === tab.id ? 'is-on' : ''}
+                onClick={() => {
+                  setActiveTab(tab.id);
+                  setDepotFeedback(null);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'ArrowRight') {
+                    e.preventDefault();
+                    selectTabAt(idx + 1);
+                  } else if (e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    selectTabAt(idx - 1);
+                  } else if (e.key === 'Home') {
+                    e.preventDefault();
+                    selectTabAt(0);
+                  } else if (e.key === 'End') {
+                    e.preventDefault();
+                    selectTabAt(tabs.length - 1);
+                  }
+                }}
+              >
+                {lang === 'en' ? tab.labelEn : tab.labelVi}
+              </button>
+            ));
+          })()}
         </div>
 
+        <div id="depot-tabpanel" role="tabpanel" aria-labelledby={`depot-tab-${activeTab}`}>
         {activeTab === 'IMBUEMENT' ? (
           <ul className="depot-list">
             {IMBUEMENT_RECIPES.map((rec) => {
@@ -271,6 +300,11 @@ export const WorkshopDepotModal = ({ open, onClose }) => {
                     <small className="depot-subnote">
                       {lang === 'en' ? hub.passiveEn : hub.passiveVi}
                     </small>
+                    {!isHere && !check.ok && (
+                      <small className="depot-subnote">
+                        {lang === 'en' ? check.reasonEn : check.reasonVi}
+                      </small>
+                    )}
                   </div>
                   <div className="depot-item-buy">
                     <span className={'depot-price num' + (playerAhn >= cost ? '' : ' is-short')}>{cost} Ahn</span>
@@ -289,7 +323,9 @@ export const WorkshopDepotModal = ({ open, onClose }) => {
                           ? t('Khởi hành', 'Depart')
                           : char.lastRelocatedAge === char.age
                             ? t('Đã đi năm nay', 'Moved this year')
-                            : t('Thiếu Ahn', 'Need Ahn')}
+                            : playerAhn < cost
+                              ? t('Thiếu Ahn', 'Need Ahn')
+                              : t('Chưa đủ điều kiện', 'Locked')}
                       </button>
                     )}
                   </div>
@@ -329,6 +365,7 @@ export const WorkshopDepotModal = ({ open, onClose }) => {
             })}
           </ul>
         )}
+        </div>
       </div>
     </Modal>
   );

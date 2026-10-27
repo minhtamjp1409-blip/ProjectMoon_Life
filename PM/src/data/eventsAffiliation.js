@@ -379,11 +379,11 @@ const lifecycleEvents = [
     en: '[The price of delegation] After the hazardous task you delegated, {mentee} returns with blood-soaked bandages on their shoulder and the completed file. Higher-ups are auditing the collateral fallout. {mentee} sets the report on your desk and waits in silence to see whether you sign your own name or push the blame onto them.',
     choices: [
       {
-        labelVi: 'Đứng ra nhận hết trách nhiệm và tự bỏ tiền lo thuốc men cho {mentee}',
-        labelEn: 'Take full responsibility and pay for {mentee}’s medical care yourself',
+        labelVi: 'Đứng ra nhận hết trách nhiệm và chi 8 Ahn lo thuốc men cho {mentee}',
+        labelEn: 'Take full responsibility and spend 8 Ahn on {mentee}’s medical care',
         resultVi: 'Bạn ký tên mình lên dòng chịu trách nhiệm chính và thanh toán toàn bộ phí tổn. {mentee} nhìn con dấu rất lâu, rồi cúi đầu sâu hơn mọi lần trước. Danh tiếng của bạn sứt mẻ đôi chút, nhưng bạn có một người sẵn sàng vào sinh ra tử vì mình.',
         resultEn: 'You sign your own name on the liability line and cover every cost. {mentee} stares at the seal for a long moment, then bows deeper than ever before. Your reputation takes a dent, yet you gain someone who would walk through fire for you.',
-        menteeBond: 16, menteeProgress: 20, effects: { wealth: -8, rep: -4, sanity: 3, standing: -4 }, meritAdd: 4
+        costAhn: 8, clearNpcCrisis: 'mentee', menteeBond: 16, menteeProgress: 20, effects: { rep: -4, sanity: 3, standing: -4 }, meritAdd: 4
       },
       {
         labelVi: 'Giữ đúng kỷ luật tổ chức: thưởng công sòng phẳng nhưng ghi nhận lỗi sai',
@@ -398,6 +398,37 @@ const lifecycleEvents = [
         resultVi: 'Bạn đẩy tờ biên bản về phía họ. {mentee} không nói một lời, ký tên rồi tháo phù hiệu đặt xuống góc bàn trước khi bước ra khỏi cửa. Hồ sơ của bạn hoàn toàn sạch sẽ, và căn phòng cũng trống hẳn đi.',
         resultEn: 'You push the report back across the desk. {mentee} says nothing, signs, and sets their badge on the corner of the table before walking out. Your record stays spotless, and the room feels much emptier.',
         menteeFate: 'estranged', effects: { heat: -14, wealth: 6, sanity: -8, standing: 6 }, meritAdd: 6
+      }
+    ]
+  },
+  {
+    id: 'aff_partner_reckoning',
+    age: [22, 99], major: true, weight: 0, causalOnly: true, repeatable: true,
+    jobs: ['Fixer', 'Color Fixer', 'Wing Employee', 'Syndicate'],
+    need: { npc: 'partner' },
+    vi: '[Vết máu từ lệnh ủy thác] Sau phi vụ nguy hiểm bạn giao phó, {partner} trở về với vết thương sâu bên sườn và ánh mắt nặng trĩu. Bên trên đang truy xét thiệt hại từ nhiệm vụ ấy. {partner} đặt biên bản lên bàn bạn, chờ xem bạn sẽ đứng ra gánh cùng hay để họ tự chịu trận.',
+    en: '[Blood from a delegated order] After the hazardous operation you delegated, {partner} returns with a deep wound in their side and a heavy gaze. Higher-ups are auditing the collateral fallout. {partner} sets the report on your desk, waiting to see whether you stand with them or leave them to take the fall.',
+    choices: [
+      {
+        labelVi: 'Đứng ra nhận trách nhiệm và chi 8 Ahn chạy chữa cho {partner}',
+        labelEn: 'Take full responsibility and spend 8 Ahn on {partner}’s treatment',
+        resultVi: 'Bạn tự tay ký nhận trách nhiệm và chi trả tiền thuốc men cho {partner}. Họ khẽ thở phào, vỗ nhẹ lên vai bạn trước khi lui về nghỉ dưỡng. Danh tiếng của bạn hao hụt ít nhiều, nhưng tình nghĩa sống chết giữa hai người càng thêm bền chặt.',
+        resultEn: 'You sign the liability line yourself and cover {partner}’s medical bill. They let out a quiet breath and clap your shoulder before retiring to recover. Your reputation takes a hit, yet the bond between you grows stronger.',
+        costAhn: 8, clearNpcCrisis: 'partner', bonds: { partner: 15 }, effects: { rep: -4, sanity: 3, standing: -4 }, meritAdd: 4
+      },
+      {
+        labelVi: 'Xử lý theo quy chế: chia phần thưởng nhưng giữ biên bản khiển trách',
+        labelEn: 'Go by the book: split the bonus but keep the formal reprimand',
+        resultVi: 'Bạn chia đủ phần thưởng cho {partner} nhưng vẫn nộp biên bản ghi nhận sai sót lên cấp trên. {partner} cất phong bì vào áo, không trách cứ câu nào, chỉ có khoảng cách giữa hai chiếc ghế là xa hơn trước.',
+        resultEn: 'You hand {partner} their full share while filing the formal reprimand upstairs. {partner} pockets the envelope without a word of complaint, though the space between your chairs feels wider than before.',
+        bonds: { partner: -10 }, effects: { rep: 4, sanity: -4, standing: 5 }, meritAdd: 8
+      },
+      {
+        labelVi: 'Đổ toàn bộ trách nhiệm lên đầu {partner} để giữ sạch hồ sơ',
+        labelEn: 'Pin the entire fallout on {partner} to keep your record clean',
+        resultVi: 'Bạn để tên {partner} nằm một mình trên biên bản kỷ luật. Họ nhìn bạn một lần cuối, cười nhạt rồi quay lưng bước ra khỏi cửa. Bạn giữ trọn chiếc ghế và tiền thưởng, nhưng mất đi người từng chắn đao sau lưng mình.',
+        resultEn: 'You leave {partner}’s name alone on the disciplinary report. They give you one last look and a thin smile before walking out the door. You keep your seat and the payout, at the cost of the one who guarded your back.',
+        npcFate: { partner: 'estranged' }, effects: { heat: -14, wealth: 6, sanity: -10, standing: 6 }, meritAdd: 6
       }
     ]
   },

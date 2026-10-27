@@ -13,6 +13,7 @@ export const NpcDossierModal = ({ npcRole, onClose }) => {
   const [feedback, setFeedback] = useState(null);
   const [loadingAction, setLoadingAction] = useState(null);
   const closeBtnRef = useRef(null);
+  const sheetRef = useRef(null);
 
   useEffect(() => {
     const previous = document.activeElement;
@@ -22,6 +23,24 @@ export const NpcDossierModal = ({ npcRole, onClose }) => {
         event.preventDefault();
         event.stopPropagation();
         onClose();
+        return;
+      }
+      if (event.key === 'Tab' && sheetRef.current) {
+        const focusables = Array.from(
+          sheetRef.current.querySelectorAll(
+            'button:not(:disabled), [href], input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex="-1"])'
+          )
+        );
+        if (focusables.length === 0) return;
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        if (event.shiftKey && (document.activeElement === first || !sheetRef.current.contains(document.activeElement))) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && (document.activeElement === last || !sheetRef.current.contains(document.activeElement))) {
+          event.preventDefault();
+          first.focus();
+        }
       }
     };
     document.addEventListener('keydown', handleKeyDown, true);
@@ -85,7 +104,7 @@ export const NpcDossierModal = ({ npcRole, onClose }) => {
       aria-modal="true"
       aria-labelledby="npc-dossier-title"
     >
-      <div className="npc-dossier-sheet" onClick={(e) => e.stopPropagation()}>
+      <div className="npc-dossier-sheet" ref={sheetRef} onClick={(e) => e.stopPropagation()}>
         {/* Header */}
         <header className="npc-dossier-head">
           <div className="npc-dossier-badge-row">

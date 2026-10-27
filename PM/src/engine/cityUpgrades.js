@@ -329,11 +329,29 @@ export function transitCostFor(hub, char) {
   return hasVipTransitPass(char) ? Math.max(8, Math.round(hub.baseCostAhn * 0.5)) : hub.baseCostAhn;
 }
 
+export function canBorderCrossFromOutskirts(char) {
+  if (!char) return false;
+  const flags = char.flags || [];
+  if (flags.includes('EnteredCity') || flags.includes('NestResident') || flags.includes('ColorFixer')) return true;
+  const inv = Array.isArray(char.inventory) ? char.inventory : [];
+  if (inv.some((it) => ['nest_permit', 'devyat_pass', 'k_ampoule'].includes(it?.id || it))) return true;
+  if (char.age >= 18 && char.job !== 'Child' && ((char.stats?.network ?? 0) >= 25 || (char.stats?.rep ?? 0) >= 25)) return true;
+  return false;
+}
+
 export function canRelocateDistrict(char, targetRegionId) {
   if (!char || !char.alive) return { ok: false, reasonVi: 'Nhân vật không còn sống', reasonEn: 'Character is not alive' };
   const hub = TRANSIT_HUBS.find((h) => h.regionId === targetRegionId);
   if (!hub) return { ok: false, reasonVi: 'Tuyến đường không hợp lệ', reasonEn: 'Invalid transit hub' };
-  if (char.regionId === targetRegionId) {
+  const outside = char.regionId === 'OUTSKIRTS' || (char.flags || []).includes('Outskirts');
+  if (outside && !canBorderCrossFromOutskirts(char)) {
+    return {
+      ok: false,
+      reasonVi: 'Đang ở Outskirts ngoài Bức Tường: cần đủ 18 tuổi kèm giấy thông hành hoặc Mạng lưới/Danh tiếng >= 25 để vượt tường vào The City',
+      reasonEn: 'Currently in the Outskirts beyond the Wall: requires age 18+ with a permit or Network/Rep >= 25 to cross into The City'
+    };
+  }
+  if (!outside && char.regionId === targetRegionId) {
     return { ok: false, reasonVi: 'Bạn đang ở tại District này rồi', reasonEn: 'You are already in this District' };
   }
   if (char.lastRelocatedAge === char.age) {
@@ -353,9 +371,18 @@ export function relocateCharacterDistrict(char, targetRegionId) {
 
   const { hub, cost } = check;
   const vip = hasVipTransitPass(char);
+  const wasOutside = char.regionId === 'OUTSKIRTS' || (char.flags || []).includes('Outskirts');
   char.stats.wealth = clamp((char.stats.wealth || 0) - cost, 0, 100);
   char.regionId = hub.regionId;
   char.lastRelocatedAge = char.age;
+  char.flags = Array.isArray(char.flags) ? [...char.flags] : [];
+  if (hub.regionId === 'OUTSKIRTS') {
+    char.flags = char.flags.filter((f) => f !== 'Nest' && f !== 'Feather');
+    if (!char.flags.includes('Outskirts')) char.flags.push('Outskirts');
+  } else {
+    char.flags = char.flags.filter((f) => f !== 'Outskirts');
+    if (wasOutside && !char.flags.includes('EnteredCity')) char.flags.push('EnteredCity');
+  }
 
   const fx = hub.arrivalFx || {};
   if (fx.health) char.stats.health = clamp((char.stats.health || 0) + fx.health, 1, 100);
@@ -382,12 +409,14 @@ export function relocateCharacterDistrict(char, targetRegionId) {
   }
 
   const reg = REGIONS.find((r) => r.id === hub.regionId);
+  const crossVi = wasOutside ? 'Bạn vượt qua cổng kiểm soát Bức Tường từ Outskirts để tiến vào nội thành The City. ' : '';
+  const crossEn = wasOutside ? 'You cleared the City Wall border checkpoint from the Outskirts, entering The City proper. ' : '';
   char.logs.push({
     id: `log_relocate_${hub.regionId}_${char.age}_${Date.now()}`,
     age: char.age,
     type: 'major',
-    vi: `[Chuyển Quận · ${hub.carrierVi}] Bạn chi ${cost} Ahn di chuyển tới ${reg?.nameVi || hub.nameVi}. ${hub.arrivalDescVi}`,
-    en: `[District Transit · ${hub.carrierEn}] You spent ${cost} Ahn to relocate to ${reg?.nameEn || hub.nameEn}. ${hub.arrivalDescEn}`
+    vi: `[${wasOutside ? 'Nhập Thành · ' : 'Chuyển Quận · '}${hub.carrierVi}] ${crossVi}Bạn chi ${cost} Ahn di chuyển tới ${reg?.nameVi || hub.nameVi}. ${hub.arrivalDescVi}`,
+    en: `[${wasOutside ? 'City Entry · ' : 'District Transit · '}${hub.carrierEn}] ${crossEn}You spent ${cost} Ahn to relocate to ${reg?.nameEn || hub.nameEn}. ${hub.arrivalDescEn}`
   });
 
   return { ok: true, char, cost, hub };
@@ -620,6 +649,8 @@ export function imbueCharacterEquipment(char, relicId) {
   if (!check.ok) return { ok: false, char, reasonVi: check.reasonVi, reasonEn: check.reasonEn };
 
   const { recipe, relicIdx, cost } = check;
+  char.inventory = structuredClone(char.inventory || []);
+  if (char.equipped) char.equipped = structuredClone(char.equipped);
   const relicItem = char.inventory[relicIdx];
   char.inventory.splice(relicIdx, 1);
   char.stats.wealth = clamp((char.stats.wealth || 0) - cost, 0, 100);
@@ -640,16 +671,28 @@ export function imbueCharacterEquipment(char, relicId) {
       imbuedRelicId: recipe.relicId
     };
   } else {
-    const eqWeapon = char.equipped?.weapon || char.inventory.find((i) => i?.type === 'weapon');
-    const eqArmor = char.equipped?.armor || char.inventory.find((i) => i?.type === 'armor');
-    const target = eqWeapon || eqArmor;
-    if (target) {
-      targetNameVi = target.nameVi || target.name || targetNameVi;
-      targetNameEn = target.nameEn || target.name || targetNameEn;
-      target.nameVi = `${recipe.prefixVi} · ${targetNameVi}`;
-      target.nameEn = `${recipe.prefixEn} ${targetNameEn}`;
-      target.combatPower = (target.combatPower || 10) + powerGain;
-      target.imbuedRelicId = recipe.relicId;
+    const slot = (char.equipped?.weapon || char.inventory.some((i) => i?.type === 'weapon')) ? 'weapon' : 'armor';
+    const eqItem = char.equipped?.[slot];
+    const invIdx = eqItem?.id
+      ? char.inventory.findIndex((i) => i && (i.id || i) === eqItem.id)
+      : char.inventory.findIndex((i) => i?.type === slot);
+    const baseItem = eqItem || (invIdx >= 0 ? char.inventory[invIdx] : null);
+    if (baseItem) {
+      targetNameVi = baseItem.nameVi || baseItem.name || targetNameVi;
+      targetNameEn = baseItem.nameEn || baseItem.name || targetNameEn;
+      const upgradedItem = {
+        ...baseItem,
+        nameVi: `${recipe.prefixVi} · ${targetNameVi}`,
+        nameEn: `${recipe.prefixEn} ${targetNameEn}`,
+        combatPower: (baseItem.combatPower || 10) + powerGain,
+        imbuedRelicId: recipe.relicId
+      };
+      if (invIdx >= 0) {
+        char.inventory[invIdx] = upgradedItem;
+      }
+      if (char.equipped && (char.equipped[slot] || invIdx >= 0)) {
+        char.equipped[slot] = upgradedItem;
+      }
     }
   }
 

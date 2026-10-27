@@ -514,4 +514,14 @@ export function applyAffiliationChoice(char, src) {
     const staff = clamp((char.officeState?.staff || 0) + src.officeStaff, 0, 4);
     char.officeState = { ...(char.officeState || {}), staff };
   }
+  if (src.clearNpcCrisis && char.npcs?.[src.clearNpcCrisis]) {
+    const r = src.clearNpcCrisis;
+    char.npcs = {
+      ...char.npcs,
+      [r]: {
+        ...char.npcs[r],
+        crisis: { type: 'none', severity: 0, labelVi: '', labelEn: '' }
+      }
+    };
+  }
 }

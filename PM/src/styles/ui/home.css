@@ -70,6 +70,17 @@
 .birth-fields { display: flex; flex-direction: column; gap: 18px; }
 .birth-gender { display: grid; grid-template-columns: 1fr 1fr; width: 100%; }
 .birth-gender button { min-height: 40px; }
+.birth-region-field label { display: flex; justify-content: space-between; align-items: center; }
+.birth-map-link {
+  display: inline-flex; align-items: center; gap: 3px;
+  font-size: 13px; font-weight: 600; color: var(--page-ink);
+  text-decoration: underline; text-underline-offset: 3px;
+}
+.birth-map-link:hover { color: var(--gold); }
+.birth-region-select {
+  appearance: auto; cursor: pointer;
+  background-color: var(--surface); color: var(--text);
+}
 .birth-seed summary { display: flex; justify-content: space-between; align-items: center; min-height: 40px; font-size: 14px; font-weight: 600; color: var(--page-muted); border-top: 1px solid var(--page-rule); padding-top: 10px; }
 .birth-seed[open] summary svg { transform: rotate(180deg); }
 .birth-seed > div { display: flex; gap: 8px; margin-top: 8px; }

@@ -284,6 +284,14 @@ export function executeNpcInteraction(char, role, actionId, rng = Math.random) {
           'Cấp dưới trở về với thương tích sau lệnh ủy thác của bạn',
           'Your subordinate returns wounded from the task you delegated'
         );
+      } else if (role === 'partner') {
+        plantThread(
+          nextChar,
+          'aff_partner_reckoning',
+          1,
+          'Cộng sự trở về với thương tích sau lệnh ủy thác của bạn',
+          'Your partner returns wounded from the task you delegated'
+        );
       }
       const memoryTextVi = `Năm ${age} tuổi: Gánh phần việc nguy hiểm do bạn ủy thác và bị thương nặng.`;
       const memoryTextEn = `Age ${age}: Carried out a hazardous task you delegated and suffered heavy fallout.`;

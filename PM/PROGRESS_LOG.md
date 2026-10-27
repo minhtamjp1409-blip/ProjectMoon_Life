@@ -1,9 +1,10 @@
 # The City Chronicles: Tài Liệu Tiến Trình & Kiến Trúc Kỹ Thuật Toàn Diện
 
-> **Cập nhật ghi chép: 26/10/2026 (Đợt 63: Tinh Chỉnh & Cân Bằng Toàn Diện Các Tuyến Truyện Wing, Distortion, Color Fixer, 5 Ngón Tay Syndicate Lấy Fixer Làm Chuẩn Mực; đã push và deploy)**
-> Đợt 26 thay cơ chế gọi Carmen và bổ sung lựa chọn chuẩn bị; số đo cuộc đời ở Đợt 23 là lịch sử, không phải tỷ lệ hiện tại.
-> **Trạng thái xác minh tại máy cho Đợt 63:** `npm test` đạt toàn bộ 52 suite (thêm `test_all_routes_parity_expansion.mjs`), story linter & voice linter 32.122 chuỗi đạt 0 lỗi/0 cảnh báo, audit 500 khoảnh khắc đạt 100%, story logic audit 100 đời (16.388 khoảnh khắc) 0 vi phạm logic; `npm run build` đạt. Đã commit và push đồng bộ lên Git remote `origin/main`.
-> **Cách đọc số liệu:** Các kết quả mô phỏng ở Đợt 1–21 là ảnh chụp lịch sử tại thời điểm ghi; xem Đợt 23 để đọc phép đo Color/E.G.O hiện hành. Đợt 22 và mục 9.3 ghi các lần kiểm thử chức năng trước đó.
+> **Cập nhật ghi chép: 27/10/2026 (Đợt 68: Đồng Bộ Hóa Trạng Thái Khảm Trang Bị, Cổng Nhập Cảnh Outskirts, Chi Phí Ủy Thác Thực, Chọn Nơi Sinh Mobile 390px, Bẫy Focus/Tablist WAI-ARIA & Đo Kiểm Cân Bằng 500 Cuộc Đời; đã push và deploy)**
+> **Phân biệt rõ số liệu kiểm thử tự động & số liệu mô phỏng 500 đời hiện hành (Đợt 68):**
+> - **Đã xác minh tự động bằng bộ test (`npm test`):** Toàn bộ **53/53 test suites** đạt 100%, parity cổng thăng tiến FE/BE khớp tuyệt đối, `lint_story.mjs` (745 major, 40 consequence, 866 minor, 572 daily, 36 contract) & `voice_lint.mjs --fail` (**32.287 chuỗi**) đạt 0 lỗi / 0 cảnh báo, `run_million_audit.mjs 500` (500 khoảnh khắc) đạt 5/5 nhóm quy tắc toàn vẹn, `npm run build` đạt chuẩn phân mảnh gói.
+> - **Đã đo mới trên codebase hiện tại qua mô phỏng 500 cuộc đời đầy đủ (Đợt 68):** `story_logic_audit.mjs 500 random` (**76.992 khoảnh khắc**, 500 đời, **0 vi phạm logic**), `balance_sim.mjs 500 random` (13.003 năm sống, phân bổ nghề trưởng thành cân bằng: Fixer `31.0%`, Wing Employee `29.9%`, Syndicate `31.9%`, Distortion `5.4%`), `balance_sim.mjs 500 focused` (20.964 năm sống, tuổi thọ TB `41.0`, tỷ lệ đạt Color Fixer `9.6%` ở tuổi TB `55.4`, thức tỉnh E.G.O `12.2%` ở tuổi TB `45.9`, `0%` đạt Color và E.G.O trong cùng năm/hành động), và `branch_experience.mjs 500`.
+> - **Cách đọc số liệu lịch sử:** Các kết quả mô phỏng ở Đợt 1–23 là ảnh chụp lịch sử tại thời điểm ghi nhận của từng đợt trước; xem mục **Đợt 68** ở cuối tài liệu để đọc bảng số liệu 500 cuộc đời hiện hành sau toàn bộ các nâng cấp Đợt 64–68.
 
 ---
 
@@ -18,7 +19,7 @@
 7. [Kho dữ liệu tình huống & Cơ chế nhân quả (Story Pools & Causal Engine)](#7-kho-dữ-liệu-tình-huống--cơ-chế-nhân-quả-story-pools--causal-engine)
 8. [Các tính năng & Trang phụ mở rộng (Sub-pages & Advanced Features)](#8-các-tính-năng--trang-phụ-mở-rộng-sub-pages--advanced-features)
 9. [Bộ quy tắc kiểm định toàn vẹn & Kiểm thử (Integrity Audits & Quality)](#9-bộ-quy-tắc-kiểm-định-toàn-vẹn--kiểm-thử-integrity-audits--quality)
-10. [Nhật ký phát triển chi tiết (Changelog từ Đợt 1 đến Đợt 25)](#10-nhật-ký-phát-triển-chi-tiết-changelog-từ-đợt-1-đến-đợt-23)
+10. [Nhật ký phát triển chi tiết (Changelog từ Đợt 1 đến Đợt 68)](#10-nhật-ký-phát-triển-chi-tiết-changelog-từ-đợt-1-đến-đợt-23)
 
 ---
 
@@ -1388,5 +1389,66 @@ Chủ dự án yêu cầu làm lại toàn bộ giao diện lần nữa: bỏ t�
     * `aff_mentee_syndicate`: Một đàn em sống sót qua đợt thanh trừng xin đứng dưới trướng chỉ huy Finger (`fingerRank >= 2`).
     * `aff_subordinate_reckoning`: Sự kiện đối chất nhân quả sau khi cấp dưới bị thương vì lệnh ủy thác của bạn — buộc người đứng đầu chọn giữa: **(a)** Đứng ra nhận trách nhiệm và tự bỏ tiền lo thuốc men (`-8 Ahn, -4 Rep, +16 Gắn kết, +20 Tiến độ`), **(b)** Giữ kỷ luật sắt của tổ chức (`+8 Merit, +4 Rep, -8 Gắn kết, -3 SP`), hoặc **(c)** Đẩy hết tội lỗi cho cấp dưới để giữ sạch hồ sơ (`-14 Heat, +6 Ahn, +6 Merit`, cấp dưới cắt đứt quan hệ `estranged`).
   * Bổ sung nội suy biến `{mentee}` trong `interpolateText` (`src/engine/gameEngine.js`) và `tools/lint/voice_lint.mjs`, đồng thời mở rộng kiểm thử tự động trong `tests/test_npc_dynamic_agency.mjs`.
+
+
+### Đợt 68 (27/10/2026): Khắc Phục 5 Điểm Rà Soát Kỹ Thuật — Cô Lập Trạng Thái Khảm Trang Bị, Đồng Bộ Cổng Chuyển Quận Outskirts, Ràng Buộc Phí Ủy Thác, Chọn Nơi Sinh Mobile 390px, Bẫy Focus/Tablist & Kiểm Định Cân Bằng 500 Cuộc Đời
+
+* **1. Cô Lập Tham Chiếu `equipped` & Đồng Bộ Túi Đồ Khi Khảm Cổ Vật Singularity (`src/engine/gameEngine.js`, `src/engine/cityUpgrades.js`, `src/store/gameStore.js`):**
+  * **Nguyên nhân gốc:** `cloneChar` trong `src/engine/gameEngine.js` trước đây nhân bản sâu `inventory` bằng `structuredClone` nhưng giữ nguyên tham chiếu nông của `equipped` (`...char`). Khi khảm cổ vật vào vũ khí đang trang bị (`char.equipped.weapon`), đối tượng trên state cũ bị đột biến tại chỗ, trong khi bản sao vũ khí tương ứng nằm trong `nextChar.inventory` lại không được cập nhật.
+  * **Khắc phục:**
+    * Trong `cloneChar` (`src/engine/gameEngine.js`): nhân bản sâu cả `equipped` lẫn `craftWeapon`, sau đó liên kết lại `eqClone[slot]` trỏ đúng vào phần tử tương ứng trong `invClone` theo `id`.
+    * Trong `imbueCharacterEquipment` (`src/engine/cityUpgrades.js`): tạo bản sao đối tượng trang bị mới đã khảm và cập nhật đồng thời cả `char.equipped[slot]` lẫn phần tử khớp `id` trong `char.inventory` mà không chạm vào state trước đó.
+    * Trong `buyItem` (`src/store/gameStore.js`): nhân bản `{ ...item }` trước khi đưa vào `nextChar.inventory` và `nextChar.equipped`, ngăn việc sửa đổi ngược vào danh mục tĩnh `ITEMS_CATALOG`.
+    * Đồng thời sửa lỗi tham chiếu biến `notes` trước dòng khởi tạo trong nhánh khiên chắn đồng đội ở `src/engine/dungeonEngine.js` (chuyển sang `companionNotes.push`).
+
+* **2. Khóa Điều Kiện Vượt Biên Outskirts & Đồng Bộ Cờ `Outskirts` / `EnteredCity` Khi Chuyển Quận (`src/engine/cityUpgrades.js`, `src/engine/gameEngine.js`):**
+  * **Nguyên nhân gốc:** Nhân vật đang ở `OUTSKIRTS` trước đây có thể mua vé chuyển thẳng tới District K trong `WorkshopDepotModal` trong khi vẫn giữ nguyên cờ `'Outskirts'`, khiến UI hiển thị ở District 11 nhưng `isOutsideCity(char)` vẫn coi nhân vật đang ở ngoài The City.
+  * **Khắc phục:**
+    * Bổ sung hàm `canBorderCrossFromOutskirts(char)` và kiểm tra trong `canRelocateDistrict`: nếu nhân vật đang ở ngoài The City (`isOutsideCity(char)`), bắt buộc phải từ 18 tuổi trở lên, đã có nghề nghiệp và đáp ứng điều kiện thông hành biên giới (đã có cờ `EnteredCity`/`NestResident`/`ColorFixer`, mang giấy thông hành trong hành trang, hoặc đạt `network >= 25` / `rep >= 25`).
+    * Khi chuyển từ `OUTSKIRTS` vào bất kỳ Quận nội đô nào qua `relocateCharacterDistrict` hoặc qua hiệu ứng sự kiện `setRegion` (`resolveEventChoice`), hệ thống tự động gỡ cờ `'Outskirts'` và cấp cờ `'EnteredCity'`, đảm bảo `regionId` và `isOutsideCity(char)` đồng bộ 100%.
+
+* **3. Ràng Buộc `costAhn: 8` Thực Thi & Bổ Sung Sự Kiện Hậu Quả Ủy Thác Cho Cộng Sự `partner` (`src/data/eventsAffiliation.js`, `src/engine/affiliation.js`, `src/engine/npcInteractions.js`):**
+  * Chuyển chi phí thuốc men ở lựa chọn 0 của `aff_subordinate_reckoning` từ `effects: { wealth: -8 }` sang cổng kiểm tra cứng `costAhn: 8` kèm `clearNpcCrisis: 'mentee'` (xử lý trong `applyAffiliationChoice`), chặn việc chọn phương án chi trả 8 Ahn khi nhân vật đang có `< 8 Ahn`.
+  * Bổ sung sự kiện nhân quả `aff_partner_reckoning` (`need: { npc: 'partner' }`, `causalOnly: true`, lựa chọn 0 có `costAhn: 8` và `clearNpcCrisis: 'partner'`) và cập nhật `executeNpcInteraction` (`src/engine/npcInteractions.js`) để khi ủy thác nhiệm vụ (`delegate_command`) cho `partner` gặp sự cố (35%), hệ thống gieo đúng `aff_partner_reckoning` vào năm kế tiếp.
+
+* **4. Đưa Bộ Chọn Nơi Sinh Lên Trước Nút Khởi Đầu Trên Màn Hình Mobile 390px (`src/features/chronicle/components/BirthSetupPanel.jsx`, `src/styles/ui/home.css`):**
+  * Trên màn hình hẹp `< 920px` (Mobile `390px`), khối `.birth-panel` (`order: 4`) nằm phía trên bản đồ `.opening-atlas` (`order: 5`). Bổ sung trường chọn nhanh `#birth-region` (*Nơi sinh / Birthplace*: Ngẫu nhiên + 25 Quận nội đô + Outskirts) kèm nút `Tra cứu bản đồ / Explore map` ngay trong `.birth-fields` phía trước nút `Bước vào The City`, giúp người chơi trên điện thoại chọn Quận xuất phát trước khi bắt đầu mà không phải cuộn qua nút chính.
+
+* **5. Hoàn Thiện Bẫy Focus Bàn Phím (`Tab` Focus Trap) & Điều Hướng WAI-ARIA Tablist (`src/features/chronicle/components/NpcDossierModal.jsx`, `src/features/chronicle/components/WorkshopDepotModal.jsx`):**
+  * Bổ sung bẫy focus tuần hoàn `Tab` / `Shift+Tab` trong phạm vi `.npc-dossier-sheet` của `NpcDossierModal.jsx`, giữ điểm nhấn bàn phím không thoát ra các phần tử nền phía sau hộp thoại.
+  * Chuẩn hóa mẫu WAI-ARIA Tabs cho `.depot-tabs` trong `WorkshopDepotModal.jsx`: bổ sung `aria-controls="depot-tabpanel"`, `tabIndex={activeTab === tab ? 0 : -1}`, điều hướng phím mũi tên `ArrowRight` / `ArrowLeft` / `Home` / `End` tự động chuyển tab và focus, cùng vùng nội dung `id="depot-tabpanel" role="tabpanel" aria-labelledby={...}`.
+
+* **6. Kết Quả Mô Phỏng Cân Bằng 500 Cuộc Đời Trên Codebase Hiện Hành (Đợt 68):**
+  * **A. Kiểm định Logic & Tiến trình Nhánh Nghề (`node tools/sim/story_logic_audit.mjs 500 random` — 500 đời, 76.992 khoảnh khắc):**
+    * **Vi phạm logic (`LOGIC VIOLATIONS`):** **`0`** trên toàn bộ 76.992 khoảnh khắc; tuổi thọ trung bình `32.0`; trung bình `141.1` khoảnh khắc phân biệt/đời; độ trùng lặp Jaccard giữa 2 đời chỉ `0.138` (entropy đạt `82.6%` mức tối đa).
+    * **Phân bổ thăng tiến các nhánh Wing & 5 Ngón Tay Syndicate (500 đời ngẫu nhiên):**
+
+| Tuyến nghề nghiệp | Số đời tham gia | Tổng năm nghề | Năm đủ chuẩn thi | Số lượt khảo thí | Đạt bậc cao nhất (Rank 0 / 1 / 2 / 3) |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **Wing Employee** | 140 | 2.673 | 831 | 326 | `36 / 35 / 44 / 25` |
+| **The Index** | 38 | 415 | 132 | 74 | `11 / 12 / 12 / 3` |
+| **The Pinky** | 33 | 316 | 101 | 59 | `11 / 14 / 6 / 2` |
+| **The Ring** | 30 | 433 | 140 | 87 | `5 / 9 / 10 / 6` |
+| **The Thumb** | 29 | 339 | 116 | 67 | `9 / 10 / 8 / 2` |
+| **The Middle** | 24 | 351 | 125 | 76 | `4 / 7 / 10 / 3` |
+
+  * **B. Đối chiếu Mô phỏng Cân bằng 500 Đời Giữa Chiến thuật Ngẫu nhiên (`random`) và Tập trung (`focused`) (`node tools/sim/balance_sim.mjs 500`):**
+
+| Chỉ số đo lường (500 cuộc đời / chế độ) | Chế độ `random` (13.003 năm sống) | Chế độ `focused` (20.964 năm sống) |
+| :--- | :---: | :---: |
+| **Tuổi thọ trung bình (p10 / med / p90)** | `25.1` (`17 / 24 / 39`) | `41.0` (`17 / 40 / 69`) |
+| **Phân bổ nghề trưởng thành** | Fixer `31.0%` · Wing `29.9%` · Syndicate `31.9%` · Distortion `5.4%` · Outcast `1.4%` | Fixer `80.2%` · Color Fixer `10.2%` · Distortion `6.0%` · Syndicate `3.3%` |
+| **Thang bậc Fixer (trên tổng số Fixer)** | Grade $\le 5$: `29.7%` (tuổi TV 33) · Grade $\le 3$: `8.1%` (tuổi TV 47) | Grade $\le 5$: `70.8%` (tuổi TV 30) · Grade $\le 3$: `44.2%` (40) · Grade $\le 1$: `13.0%` (51) |
+| **Tỷ lệ đạt Color Fixer & Độ tuổi** | `0/500` (`0.0%`) | **`48/500` (`9.6%`)**, tuổi TB **`55.4`** (trung vị `56`, nhỏ nhất `41`, đạt `48/50 = 96.0%` số người vào đại khảo thí) |
+| **Tỷ lệ thức tỉnh E.G.O & Độ tuổi** | `9/500` (`1.8%`), tuổi TB `23.6` (nhỏ nhất `20`) | **`61/500` (`12.2%`)**, tuổi TB **`45.9`** (nhỏ nhất `19`, trong nhóm Fixer đạt `59/439 = 13.4%`) |
+| **Đạt cả Color & E.G.O / Cùng năm** | `0/500` (`0.0%`) / Cùng năm: `0%` | **`27/500` (`5.4%`)** / Cùng năm: **`0/500` (`0.0%`)** / Cùng hành động: **`0%`** |
+| **Tỷ lệ biến dị Distortion / Gặp Carmen** | Distortion `4.8%` · Carmen `9.8%` | Distortion `5.4%` · Carmen `18.2%` |
+
+  * **C. Mật độ Trải nghiệm Sự kiện Theo Nhánh Nghề (`node tools/sim/branch_experience.mjs 500`):**
+    * **Fixer (136 đời):** `11.8` năm/đời, `6.0` major/10 năm, `11.3` minor/10 năm, bắt gặp `108` đại sự kiện khác nhau.
+    * **Wing Employee (143 đời):** `9.8` năm/đời, `5.1` major/10 năm, `10.9` minor/10 năm, bắt gặp `83` đại sự kiện khác nhau.
+    * **Syndicate (159 đời):** `8.2` năm/đời, `9.2` major/10 năm, `12.7` minor/10 năm, bắt gặp `237` đại sự kiện khác nhau (trải đều trên 5 Ngón Tay).
+    * **Distortion (23 đời):** `3.8` năm/đời, `4.6` major/10 năm, `16.3` minor/10 năm, bắt gặp `16` đại sự kiện khác nhau.
+
 
 
