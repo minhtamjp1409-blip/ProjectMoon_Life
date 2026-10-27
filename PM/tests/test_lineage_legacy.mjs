@@ -15,7 +15,15 @@ for (const event of LINEAGE_LEGACY_EVENTS) {
   assert.ok(Array.isArray(event.choices) && event.choices.length >= 2, `Event ${event.id} must have at least 2 choices`);
   for (const choice of event.choices) {
     assert.ok(choice.labelVi && choice.labelEn, `Choice in ${event.id} must have bilingual labels`);
-    assert.ok(choice.resultVi && choice.resultEn, `Choice in ${event.id} must have bilingual results`);
+    if (Array.isArray(choice.outcomes)) {
+      const totalW = choice.outcomes.reduce((s, o) => s + (o.w || 0), 0);
+      assert.equal(totalW, 100, `Weighted outcomes in ${event.id} must sum to 100`);
+      for (const o of choice.outcomes) {
+        assert.ok(o.resultVi && o.resultEn, `Outcome in ${event.id} must have bilingual results`);
+      }
+    } else {
+      assert.ok(choice.resultVi && choice.resultEn, `Choice in ${event.id} must have bilingual results`);
+    }
   }
   assert.ok(
     ALL_STORY_EVENTS.some((e) => e.id === event.id),

@@ -64,18 +64,30 @@ export const COLOR_CAREER_EVENTS = [
         labelVi: "Đơn thương độc mã vung vũ khí xé toạc màn sương máu",
         labelEn: "Charge alone, cutting through the crimson mist with your bare blade",
         checkTrait: 'vigor',
-        effects: { health: -22, sanity: -15, rep: +35, merit: +30, wealth: +75 },
-        scarsAdd: ['Chiến tích Star of the City'],
-        resultVi: "Lưỡi vũ khí của bạn va chạm với lõi thực thể trong một tiếng nổ chấn động. Khi lớp sương tan, bạn đứng vững trên đống đổ nát với lõi Dị thể trong tay. Cả The City lặng đi trước sức mạnh của Color.",
-        resultEn: "Your weapon shatters the core in a deafening thunderclap. When the mist clears, you stand over the ruin holding the core. The entire City falls silent before the Color’s might."
+        outcomes: [
+          {
+            w: 65,
+            effects: { health: -22, sanity: -14, rep: +30, merit: +28, wealth: +45 },
+            scarsAdd: ['Chiến tích Star of the City'],
+            resultVi: "Lưỡi vũ khí của bạn va chạm với lõi thực thể trong một tiếng nổ chấn động. Khi lớp sương tan, bạn đứng vững trên đống đổ nát với lõi Dị thể trong tay. Cả The City lặng đi trước sức mạnh của Color.",
+            resultEn: "Your weapon shatters the core in a deafening thunderclap. When the mist clears, you stand over the ruin holding the core. The entire City falls silent before the Color’s might."
+          },
+          {
+            w: 35,
+            effects: { health: -36, sanity: -22, rep: +14, merit: +12, wealth: +24 },
+            scarsAdd: ['Vết rách từ lõi Star of the City'],
+            resultVi: "Thực thể phát nổ ngay khoảnh khắc bị chém vỡ lõi, phóng thích luồng sóng ăn mòn xuyên qua giáp hộ thân của bạn. Bạn hoàn thành hợp đồng nhưng phải trả giá bằng máu tươi và nhiều tuần dưỡng thương.",
+            resultEn: "The entity detonated the instant its core split, driving a corrosive wave through your armor. You fulfilled the directive, yet paid in blood and weeks of recovery."
+          }
+        ]
       },
       {
         labelVi: "Phối hợp với phái đoàn Hana và các chi hội Association dàn thế trận vây hãm",
         labelEn: "Coordinate with the Hana delegation and Association sections to encircle the beast",
         checkTrait: 'nerve',
-        effects: { health: -12, sanity: -10, rep: +25, merit: +25, wealth: +45 },
-        resultVi: "Trận địa khép lại chuẩn xác từng nhịp. Nhát chém kết liễu của bạn dập tắt sinh lực con quái vật mà không gây thêm thương vong cho cư dân xung quanh.",
-        resultEn: "The perimeter closes with clockwork precision. Your finishing blow extinguishes the beast without further civilian casualties."
+        effects: { health: -12, sanity: -10, rep: +22, merit: +22, wealth: +32 },
+        resultVi: "Trận địa khép lại chuẩn xác từng nhịp. Nhát chém kết liễu của bạn dập tắt sinh lực con quái vật mà không gây thêm thương vong cho cư dân xung quanh, dù thù lao phải chia sẻ cùng các chi hội hỗ trợ.",
+        resultEn: "The perimeter closes with clockwork precision. Your finishing blow extinguishes the beast without further civilian casualties, sharing the bounty across the supporting sections."
       }
     ]
   },
@@ -90,22 +102,34 @@ export const COLOR_CAREER_EVENTS = [
     jobs: ['Color Fixer'],
     requires: ['ColorFixer'],
     forbids: ['Distorted'],
-    vi: "[Chiến Tranh Tập Đoàn Wing] Hai tập đoàn Cánh đối địch chuẩn bị nổ ra chiến tranh ngầm tranh giành bằng sáng chế Singularity. Cả hai bên đều bí mật cử giám đốc điều hành mang vali chứa 120 Ahn đến trước cửa bạn, thỉnh cầu bạn trở thành cán cân quyết định chiến trường.",
-    en: "[Corporate Proxy War] Two rival Wings prepare for an underground war over a Singularity patent. Both send executive directors with briefcases of 120 Ahn to your door, begging you to serve as their decisive deterrent.",
+    vi: "[Chiến Tranh Tập Đoàn Wing] Hai tập đoàn Cánh đối địch chuẩn bị nổ ra chiến tranh ngầm tranh giành bằng sáng chế Singularity. Cả hai bên đều bí mật cử giám đốc điều hành mang vali chứa 48 Ahn đến trước cửa bạn, thỉnh cầu bạn trở thành cán cân quyết định chiến trường.",
+    en: "[Corporate Proxy War] Two rival Wings prepare for an underground war over a Singularity patent. Both send executive directors with briefcases of 48 Ahn to your door, begging you to serve as their decisive deterrent.",
     choices: [
       {
         labelVi: "Ký hợp đồng với Wing trả giá cao hơn, ra tay nghiền nát lực lượng đối thủ",
         labelEn: "Sign with the higher bidder and crush the opposing strike force",
-        effects: { wealth: +120, rep: +15, heat: +15, sanity: -12 },
-        resultVi: "Trận chiến kết thúc chỉ sau mười lăm phút khi bạn bước vào tiền tuyến. Wing thuê bạn thâu tóm toàn bộ phòng thí nghiệm, còn danh tiếng của bạn khiến các tập đoàn khác phải khiếp sợ.",
-        resultEn: "The battle ends fifteen minutes after you step onto the front. The hiring Wing secures the lab, and your name strikes terror into corporate boardrooms."
+        outcomes: [
+          {
+            w: 70,
+            effects: { wealth: +48, rep: +14, heat: +18, sanity: -14, health: -14 },
+            resultVi: "Trận chiến kết thúc chỉ sau mười lăm phút khi bạn bước vào tiền tuyến. Wing thuê bạn thâu tóm toàn bộ phòng thí nghiệm, còn tập đoàn bại trận ghi tên bạn vào sổ đen trả thù.",
+            resultEn: "The battle ends fifteen minutes after you step onto the front. The hiring Wing secures the lab, while the defeated corporation inscribes your name onto its retaliation ledger."
+          },
+          {
+            w: 30,
+            effects: { wealth: +24, health: -28, sanity: -18, heat: +24 },
+            scarsAdd: ['Dư chấn vũ khí Singularity cấp Wing'],
+            resultVi: "Đối phương tung ra mẫu vũ khí Singularity thử nghiệm tự hủy ngay khi bạn áp sát. Bạn sống sót bước ra khỏi biển lửa với một nửa số tiền cọc và vết thương âm ỉ.",
+            resultEn: "The opposing force detonated an experimental Singularity prototype as you closed in. You walked out of the inferno with half the retainer and a smoldering wound."
+          }
+        ]
       },
       {
         labelVi: "Từ chối cả hai bên, tuyên bố quyền trung lập của một Color độc lập",
         labelEn: "Refuse both sides, asserting the neutrality of an independent Color",
-        effects: { rep: +25, sanity: +20, resonance: +10 },
-        resultVi: "Bạn đóng cửa từ chối cả hai vali tiền. Cả hai tập đoàn đều không dám manh động vì sợ bạn nghiêng về phía đối phương. Cuộc chiến bị đình trệ nhờ uy danh của bạn.",
-        resultEn: "You shut the door on both briefcases. Neither Wing dares strike first fearing you might side with the other. War is stalled purely by your presence."
+        effects: { rep: +18, sanity: +14, resonance: +10, heat: +8 },
+        resultVi: "Bạn đóng cửa từ chối cả hai vali tiền. Cả hai tập đoàn đều không dám manh động vì sợ bạn nghiêng về phía đối phương, dù mật vụ của họ vẫn âm thầm canh chừng nhất cử nhất động của bạn.",
+        resultEn: "You shut the door on both briefcases. Neither Wing dares strike first fearing you might side with the other, though their operatives quietly monitor your every move."
       }
     ]
   },
@@ -189,17 +213,29 @@ export const COLOR_CAREER_EVENTS = [
         labelVi: "Đến điểm hẹn, rút vũ khí giao phong một trăm hiệp đến khi trời rạng",
         labelEn: "Arrive at dusk and cross blades for a hundred passes until sunrise",
         checkTrait: 'vigor',
-        effects: { health: -15, rep: +30, merit: +25, sanity: +20 },
-        scarsAdd: ['Vết kiếm của Color đối địch'],
-        resultVi: "Kiếm khí của hai vị Color xé toạc màn đêm và san phẳng những cột đá cổ đại. Trận đấu khép lại trong tiếng cười sảng khoái của hai đỉnh cao võ đạo.",
-        resultEn: "The shockwaves of two Colors tear open the night and level ancient stone pillars. The duel closes with the roaring laughter of two peerless masters."
+        outcomes: [
+          {
+            w: 65,
+            effects: { health: -18, rep: +26, merit: +22, sanity: +14 },
+            scarsAdd: ['Vết kiếm của Color đối địch'],
+            resultVi: "Kiếm khí của hai vị Color xé toạc màn đêm và san phẳng những cột đá cổ đại. Trận đấu khép lại trong tiếng cười sảng khoái của hai đỉnh cao võ đạo.",
+            resultEn: "The shockwaves of two Colors tear open the night and level ancient stone pillars. The duel closes with the roaring laughter of two peerless masters."
+          },
+          {
+            w: 35,
+            effects: { health: -32, sanity: -8, rep: +12, merit: +10 },
+            scarsAdd: ['Thương tích từ tuyệt kỹ của Color'],
+            resultVi: "Ở hiệp thứ chín mươi chín, tuyệt kỹ sát chiêu của đối phương xẻ dọc sườn bạn trước khi hai lưỡi vũ khí cùng gãy vụn. Bạn giữ vững uy danh nhưng phải mất hàng tháng trời để lành vết thương.",
+            resultEn: "On the ninety-ninth pass, your rival’s signature technique carved across your ribs before both blades shattered. You upheld your honor, yet needed months to mend."
+          }
+        ]
       },
       {
         labelVi: "Ngồi lại bên đống lửa, uống cạn bình rượu mạnh và đàm đạo về cái giá của sức mạnh",
         labelEn: "Sit by the fire, finish the spirits, and discuss the toll of supreme power",
-        effects: { sanity: +30, network: +20, resonance: +15 },
-        resultVi: "Hai huyền thoại ngồi tựa lưng vào phế tích dưới bầu trời đầy bụi xám. Đêm nay không ai rút kiếm, nhưng cả hai đều hiểu thấu tâm tư của đối phương.",
-        resultEn: "Two legends sit against ancient stone under gray motes. Tonight neither blade is drawn, yet both understand the other’s burden perfectly."
+        effects: { sanity: +22, network: +16, resonance: +12, rep: -4 },
+        resultVi: "Hai huyền thoại ngồi tựa lưng vào phế tích dưới bầu trời đầy bụi xám. Đêm nay không ai rút kiếm; dù đám hiếu kỳ ở The City có phần hụt hẫng, cả hai đều hiểu thấu tâm tư của đối phương.",
+        resultEn: "Two legends sit against ancient stone under gray motes. Neither blade is drawn tonight; though City spectators feel cheated of a spectacle, both understand the other’s burden."
       }
     ]
   },
@@ -222,14 +258,14 @@ export const COLOR_CAREER_EVENTS = [
         labelEn: "Spend 80 Ahn and provide Singularity ore to forge your supreme armament",
         costAhn: 80,
         flagsAdd: ['CraftedColorWeapon'],
-        effects: { rep: +30, merit: +20 },
-        resultVi: "Sau bảy ngày trong lò lửa áp suất cao, một thanh vũ khí mang ánh hào quang sắc Màu độc nhất của bạn ra lò. Cầm nó trong tay, uy lực của bạn tăng gấp bội.",
-        resultEn: "After seven days in high-pressure fires, a masterpiece glowing with your signature Color emerges. Gripping it, your lethality doubles."
+        effects: { rep: +28, merit: +20, health: -10, heat: +10 },
+        resultVi: "Sau bảy ngày trích máu hòa vào lò lửa áp suất cao, một thanh vũ khí mang ánh hào quang sắc Màu độc nhất của bạn ra lò. Cầm nó trong tay, uy lực của bạn tăng gấp bội nhưng sát khí cũng thu hút thêm vô số kẻ địch.",
+        resultEn: "After seven days tempering high-pressure fires with your own blood, a masterpiece glowing with your signature Color emerges. Your lethality surges, alongside the scrutiny of every rival in the City."
       },
       {
         labelVi: "Từ chối vì thanh kiếm cũ đã thấm đẫm đủ máu và ký ức của cuộc đời bạn",
         labelEn: "Refuse, for your old blade has already absorbed enough blood and memories",
-        effects: { sanity: +20, resonance: +18 },
+        effects: { sanity: +18, resonance: +16 },
         resultVi: "Bạn lau nhẹ thanh kiếm đã sứt mẻ bên hông. Với một chiến binh thực thụ, vũ khí mạnh nhất là thứ đã cùng mình đi qua sinh tử.",
         resultEn: "You gently wipe the nicked steel at your hip. For a true combatant, the deadliest steel is the one that weathered death with you."
       }
@@ -253,9 +289,9 @@ export const COLOR_CAREER_EVENTS = [
         labelVi: "Đứng sừng sững ở đầu cầu, một nhát chém vạch ra ranh giới sinh tử",
         labelEn: "Stand upon the bridge, drawing a lethal boundary line with one strike",
         checkTrait: 'vigor',
-        effects: { health: -14, rep: +35, merit: +20, resonance: +15 },
-        resultVi: "Cả đoàn quân Syndicate khựng lại khi nhìn thấy bóng hình của Color dưới ánh đèn đường. Bọn chúng vứt vũ khí bỏ chạy tán loạn. Cả khu chợ sống sót trong nước mắt cảm tạ.",
-        resultEn: "The entire syndicate host halts upon recognizing the Color’s silhouette. They scatter into the dark, casting down weapons. The whole quarter survives in grateful tears."
+        effects: { health: -16, rep: +28, merit: +18, resonance: +12, heat: +14 },
+        resultVi: "Cả đoàn quân Syndicate khựng lại khi nhìn thấy bóng hình của Color dưới ánh đèn đường. Bọn chúng vứt vũ khí bỏ chạy tán loạn nhưng thề sẽ báo thù; cả khu chợ sống sót trong nước mắt cảm tạ.",
+        resultEn: "The entire syndicate host halts upon recognizing the Color’s silhouette. They scatter into the dark swearing vengeance, while the whole quarter survives in grateful tears."
       },
       {
         labelVi: "Bỏ qua vì một Color Fixer không nên can thiệp vào vòng xoay bạo lực tự nhiên của Phố Ngầm",

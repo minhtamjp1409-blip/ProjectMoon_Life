@@ -1,9 +1,9 @@
 // ============================================================================
-// CITY UPGRADES ENGINE:
-// 1. Living Ancestor Echoes & Dynasty Hall of Legends
-// 2. Inter-District Transit (WARP / Devyat') & Regional Singularity Passives
-// 3. Apex Command Directives (Office / Syndicate / Wing / Color Leadership)
-// 4. Workshop Singularity Imbuement (Relic + Equipment Synthesis)
+// CITY UPGRADES ENGINE (HARD BUT FAIR EDITION):
+// 1. Living Ancestor Echoes & Dynasty Hall of Legends (Prestige + Inherited Heat/Trauma)
+// 2. Inter-District Transit (WARP / Devyat') & Regional Singularity Boone/Burden
+// 3. Apex Command Directives (Strategic Leadership with Resource & Stress Trade-offs)
+// 4. Workshop Singularity Imbuement (Relic Power + Singularity Corrosion Trade-offs)
 // ============================================================================
 
 import { REGIONS } from '../data/worldData.js';
@@ -84,58 +84,63 @@ export function applyAncestorEchoInheritance(parentLegacy, state) {
     parentLegacy.isApexWorkshopAncestor || (parentLegacy.workshopRank || 0) >= 2
   );
 
+  // Hard-but-fair: Every legendary bloodline grants an edge AND attracts eyes/burden
   if (isColor) {
     addFlag('AncestorWasColor');
-    state.rep = clamp((state.rep || 0) + 10, 1, 60);
+    state.rep = clamp((state.rep || 0) + 8, 1, 60);
+    state.heat = clamp((state.heat || 0) + 8, 0, 100);
     inheritedEchoes.push({
       labelVi: `Di sản Sắc Màu của ${parentLegacy.name}${parentLegacy.colorTitle ? ` (「${parentLegacy.colorTitle}」)` : ''}`,
       labelEn: `Color Legacy of ${parentLegacy.name}${parentLegacy.colorTitle ? ` ("${parentLegacy.colorTitle}")` : ''}`,
-      impactVi: '+10 Uy danh khởi đầu, mở khóa Sự kiện Dư Ảnh Color Fixer tiền bối',
-      impactEn: '+10 starting Reputation, unlocks Ancestral Color Echo events'
+      impactVi: '+8 Danh tiếng nhưng +8 Heat (kẻ thù cũ và thanh tra Hana luôn dò xét bạn)',
+      impactEn: '+8 starting Rep, +8 Heat (old rivals and Hana evaluators scrutinize you)'
     });
   }
 
   if (isDistorted) {
     addFlag('AncestorWasDistortion');
-    state.resonance = clamp((state.resonance || 0) + 10, 0, 100);
+    state.resonance = clamp((state.resonance || 0) + 8, 0, 100);
+    if (typeof state.sanity === 'number') state.sanity = clamp(state.sanity - 4, 15, 95);
     inheritedEchoes.push({
       labelVi: `Dư chấn Distortion chưa tan của ${parentLegacy.name}`,
       labelEn: `Lingering Distortion Echo of ${parentLegacy.name}`,
-      impactVi: '+10 Resonance khởi đầu, có thể chạm trán lãnh địa Distortion của đời trước',
-      impactEn: '+10 starting Resonance, unlocks confrontation with ancestral Distortion territory'
+      impactVi: '+8 Resonance, -4 SP (ác mộng từ lãnh địa biến dị của đời trước)',
+      impactEn: '+8 starting Resonance, -4 SP (nightmares from ancestral Distortion territory)'
     });
   }
 
   if (isFingerBoss) {
     addFlag('AncestorWasFingerBoss');
-    state.network = clamp((state.network || 0) + 8, 1, 60);
+    state.network = clamp((state.network || 0) + 7, 1, 60);
+    state.heat = clamp((state.heat || 0) + 10, 0, 100);
     inheritedEchoes.push({
       labelVi: `Uy quyền Ngón Tay của ${parentLegacy.name}`,
       labelEn: `Finger Dominion of ${parentLegacy.name}`,
-      impactVi: '+8 Mạng lưới khởi đầu, thuộc hạ cũ của đời trước vẫn còn giữ địa bàn',
-      impactEn: '+8 starting Network, old Syndicate lieutenants remember your bloodline'
+      impactVi: '+7 Mạng lưới nhưng +10 Heat (các băng đảng đối địch dòm ngó hậu nhân)',
+      impactEn: '+7 starting Network, +10 Heat (rival Syndicates watch the bloodline)'
     });
   }
 
   if (isWingExec) {
     addFlag('AncestorWasWingExec');
-    state.wealth = clamp((state.wealth || 0) + 12, 2, 85);
+    state.wealth = clamp((state.wealth || 0) + 10, 2, 85);
+    state.heat = clamp((state.heat || 0) + 6, 0, 100);
     inheritedEchoes.push({
       labelVi: `Quỹ tín thác Wing của ${parentLegacy.name}`,
       labelEn: `Wing Executive Trust of ${parentLegacy.name}`,
-      impactVi: '+12 Ahn khởi đầu, mở khóa Két Sắt Sinh Trắc Học tại Nest',
-      impactEn: '+12 starting Ahn, unlocks Biometric Nest Vault event'
+      impactVi: '+10 Ahn nhưng +6 Heat (thanh tra nội bộ Wing theo dõi tài sản thừa kế)',
+      impactEn: '+10 starting Ahn, +6 Heat (corporate auditors monitor the family trust)'
     });
   }
 
   if (isMeister) {
     addFlag('AncestorWasMeister');
-    state.rep = clamp((state.rep || 0) + 6, 1, 60);
+    state.rep = clamp((state.rep || 0) + 5, 1, 60);
     inheritedEchoes.push({
       labelVi: `Bản vẽ lò rèn của nghệ nhân ${parentLegacy.name}`,
       labelEn: `Master Atelier Blueprints of ${parentLegacy.name}`,
-      impactVi: '+6 Uy danh khởi đầu, giảm chi phí khảm Singularity tại Workshop',
-      impactEn: '+6 starting Reputation, discounts Singularity Imbuement at the Workshop'
+      impactVi: '+5 Danh tiếng khởi đầu, giảm phí khảm Singularity tại Workshop',
+      impactEn: '+5 starting Rep, discounts Singularity Imbuement at the Workshop'
     });
   }
 }
@@ -216,7 +221,7 @@ export function summarizeDynastyHallOfLegends(pastLives = []) {
 }
 
 // ============================================================================
-// 2. INTER-DISTRICT TRANSIT & REGIONAL SINGULARITY MECHANICS
+// 2. INTER-DISTRICT TRANSIT & REGIONAL SINGULARITY MECHANICS (HARD BUT FAIR)
 // ============================================================================
 
 export const TRANSIT_HUBS = [
@@ -226,12 +231,13 @@ export const TRANSIT_HUBS = [
     nameEn: 'District 11 · K Corp (Bio-Regeneration Hub)',
     carrierVi: 'Tàu WARP Khoang Phổ Thông',
     carrierEn: 'WARP Train Economy Class',
+    isWarpEconomy: true,
     baseCostAhn: 22,
-    arrivalDescVi: 'Bụi nanobot K Corp trong không khí chữa lành vết thương cũ (+12 HP) và mỗi năm hồi phục thêm +3 HP.',
-    arrivalDescEn: 'Ambient K Corp nanobots mend old wounds (+12 HP) and restore +3 HP every year.',
-    arrivalFx: { health: 12, sanity: 2 },
-    passiveVi: 'Đặc tính K Corp: +3 HP mỗi cuối năm nếu bị thương.',
-    passiveEn: 'K Corp Singularity: +3 HP at year-end when injured.'
+    arrivalDescVi: 'Nanobot K Corp hàn gắn mô tổn thương (+12 HP) nhưng cảm giác thịt tự mọc lại gây rùng mình (-3 SP). Vé WARP phổ thông để lại dư chấn tâm lý nhẹ nếu không có thẻ VIP.',
+    arrivalDescEn: 'K Corp nanobots mend torn tissue (+12 HP), though the sensation of crawling flesh chills the mind (-3 SP). Economy WARP transit leaves faint dimensional strain without VIP status.',
+    arrivalFx: { health: 12, sanity: -3 },
+    passiveVi: 'Đặc tính K Corp: +3 HP mỗi cuối năm nếu bị thương, nhưng tốn -2 Ahn phí bảo trì y tế (trừ Quản lý Wing).',
+    passiveEn: 'K Corp Singularity: +3 HP at year-end when injured, costing -2 Ahn medical upkeep (waived for Wing Execs).'
   },
   {
     regionId: 'J',
@@ -239,12 +245,13 @@ export const TRANSIT_HUBS = [
     nameEn: 'District 10 · J Corp (Wishpower Casino Ward)',
     carrierVi: 'Đoàn Xe Giao Hàng Devyat\'',
     carrierEn: 'Devyat\' Courier Caravan',
+    isWarpEconomy: false,
     baseCostAhn: 20,
-    arrivalDescVi: 'Bùa vận mệnh J Corp mở đường cho các phi vụ ngầm (+8 Leverage, +4 Danh tiếng) và sinh lời +2 Ahn mỗi năm.',
-    arrivalDescEn: 'J Corp wish-stickers grease underground deals (+8 Leverage, +4 Rep) and yield +2 Ahn yearly.',
-    arrivalFx: { leverage: 8, rep: 4 },
-    passiveVi: 'Đặc tính J Corp: +2 Ahn và +2 Leverage mỗi cuối năm.',
-    passiveEn: 'J Corp Singularity: +2 Ahn and +2 Leverage at year-end.'
+    arrivalDescVi: 'Bùa Wishpower mở đường cho các phi vụ ngầm (+6 Leverage, +4 Danh tiếng) nhưng thu hút sự chú ý của đám đòi nợ sòng bạc (+4 Heat).',
+    arrivalDescEn: 'Wishpower stickers grease underground deals (+6 Leverage, +4 Rep) but draw casino enforcers (+4 Heat).',
+    arrivalFx: { leverage: 6, rep: 4, heat: 4 },
+    passiveVi: 'Đặc tính J Corp: Cuối năm nếu SP >= 55 thì thắng cược (+3 Ahn, +2 Leverage); nếu tâm loạn (SP < 55) thì cháy túi (-3 Ahn, -2 SP).',
+    passiveEn: 'J Corp Singularity: At year-end, if SP >= 55 win +3 Ahn & +2 Leverage; if rattled (SP < 55), lose -3 Ahn & -2 SP.'
   },
   {
     regionId: 'L',
@@ -252,12 +259,13 @@ export const TRANSIT_HUBS = [
     nameEn: 'District 12 · Fallen L Corp (Enkephalin Mist Zone)',
     carrierVi: 'Đoàn Thám Hiểm Ngầm',
     carrierEn: 'Subterranean Salvage Convoy',
+    isWarpEconomy: false,
     baseCostAhn: 20,
-    arrivalDescVi: 'Sương mù từ ổ L Corp cũ kích thích tâm thức (+8 Resonance, +6 Merit) và tăng +2 Merit mỗi năm.',
-    arrivalDescEn: 'Mist from the fallen L Corp Nest stirs the psyche (+8 Resonance, +6 Merit) and grants +2 Merit yearly.',
-    arrivalFx: { resonance: 8, merit: 6 },
-    passiveVi: 'Đặc tính L Corp Cũ: +2 Resonance và +2 Merit mỗi cuối năm.',
-    passiveEn: 'Fallen L Corp Singularity: +2 Resonance and +2 Merit at year-end.'
+    arrivalDescVi: 'Sương mù từ ổ L Corp cũ kích thích tâm thức (+8 Resonance, +6 Merit) nhưng bào mòn thần kinh (-5 SP).',
+    arrivalDescEn: 'Mist from the fallen L Corp Nest stirs the psyche (+8 Resonance, +6 Merit) at the cost of mental erosion (-5 SP).',
+    arrivalFx: { resonance: 8, merit: 6, sanity: -5 },
+    passiveVi: 'Đặc tính L Corp Cũ: +2 Resonance và +2 Merit mỗi cuối năm, nhưng mất -2 SP vì khói Enkephalin rò rỉ.',
+    passiveEn: 'Fallen L Corp Singularity: +2 Resonance and +2 Merit at year-end, but -2 SP from lingering Enkephalin mist.'
   },
   {
     regionId: 'T',
@@ -265,13 +273,14 @@ export const TRANSIT_HUBS = [
     nameEn: 'District 20 · T Corp (28-Hour Timebooks Ward)',
     carrierVi: 'Tàu Hơi Nước Liên Quận T-Track',
     carrierEn: 'T-Track Inter-District Steam Line',
+    isWarpEconomy: false,
     baseCostAhn: 22,
-    arrivalDescVi: 'Vay giờ từ quỹ T Corp để ép tiến độ rèn luyện (+6 Merit, +4 Ahn) và tăng hiệu suất làm việc hàng năm.',
-    arrivalDescEn: 'Borrow hours from T Corp collectors to compress training (+6 Merit, +4 Ahn) and boost annual output.',
-    arrivalFx: { merit: 6, wealth: 4 },
+    arrivalDescVi: 'Vay giờ từ T Corp để ép tiến độ (+6 Merit, +4 Ahn) nhưng nhịp sinh học 28 giờ vắt kiệt thể lực (-5 HP).',
+    arrivalDescEn: 'Borrow hours from T Corp collectors (+6 Merit, +4 Ahn), though the 28-hour clock drains vitality (-5 HP).',
+    arrivalFx: { merit: 6, wealth: 4, health: -5 },
     flagGranted: 'TCorpTimeBorrowed',
-    passiveVi: 'Đặc tính T Corp: +2 Merit mỗi cuối năm nhờ nhịp đồng hồ công nghiệp.',
-    passiveEn: 'T Corp Singularity: +2 Merit at year-end from extended industrial hours.'
+    passiveVi: 'Đặc tính T Corp: +3 Merit mỗi cuối năm, đổi lại hao tổn -2 HP vì ca kíp kéo dài (hoặc -2 Ahn thuế giờ nếu nghèo).',
+    passiveEn: 'T Corp Singularity: +3 Merit at year-end, costing -2 HP from grueling shifts (or -2 Ahn Time Tax if poor).'
   },
   {
     regionId: 'P',
@@ -279,12 +288,13 @@ export const TRANSIT_HUBS = [
     nameEn: 'District 16 · P Corp (Preservation Shelter Ward)',
     carrierVi: 'Tàu WARP Khoang Bảo Tồn',
     carrierEn: 'WARP Train Preservation Cabin',
+    isWarpEconomy: true,
     baseCostAhn: 24,
-    arrivalDescVi: 'Trường lực P Corp cách ly tiếng ồn và hiểm họa của The City (+10 SP, +6 HP, -6 Heat).',
-    arrivalDescEn: 'P Corp spatial fields insulate you from the City’s clamor (+10 SP, +6 HP, -6 Heat).',
-    arrivalFx: { sanity: 10, health: 6, heat: -6 },
-    passiveVi: 'Đặc tính P Corp: +3 SP mỗi cuối năm.',
-    passiveEn: 'P Corp Singularity: +3 SP at year-end.'
+    arrivalDescVi: 'Trường lực P Corp cách ly hiểm họa (+8 SP, +5 HP, -6 Heat) nhưng làm đứt gãy các mối liên hệ đường phố (-3 Quan hệ).',
+    arrivalDescEn: 'P Corp spatial fields insulate you from danger (+8 SP, +5 HP, -6 Heat) but sever street contacts (-3 Network).',
+    arrivalFx: { sanity: 8, health: 5, heat: -6, network: -3 },
+    passiveVi: 'Đặc tính P Corp: +3 SP mỗi cuối năm, nhưng giảm -1 Quan hệ do sống khép kín trong buồng bảo tồn.',
+    passiveEn: 'P Corp Singularity: +3 SP at year-end, but -1 Network from sheltered isolation.'
   },
   {
     regionId: 'U',
@@ -292,25 +302,31 @@ export const TRANSIT_HUBS = [
     nameEn: 'District 19 · U Corp (Great Lake Harbors)',
     carrierVi: 'Phà Bọc Thép U Corp',
     carrierEn: 'U Corp Armored Lake Ferry',
+    isWarpEconomy: false,
     baseCostAhn: 20,
-    arrivalDescVi: 'Đóng gói hàng hóa bằng Singularity của U Corp và kết nối với giới thủy thủ (+8 Quan hệ, +4 Danh tiếng).',
-    arrivalDescEn: 'Resonant tuning forks and mariner brokers expand your reach (+8 Network, +4 Rep).',
-    arrivalFx: { network: 8, rep: 4 },
+    arrivalDescVi: 'Mở rộng giao thương bến cảng (+8 Quan hệ, +4 Danh tiếng) nhưng sương muối và sóng âm thoa bào mòn cơ thể (-4 HP).',
+    arrivalDescEn: 'Harbor brokers expand your reach (+8 Network, +4 Rep), though freezing lake spray takes a physical toll (-4 HP).',
+    arrivalFx: { network: 8, rep: 4, health: -4 },
     flagGranted: 'GreatLakeHardened',
-    passiveVi: 'Đặc tính U Corp: +2 Quan hệ mỗi cuối năm và kháng hiểm họa Đại Hồ.',
-    passiveEn: 'U Corp Singularity: +2 Network at year-end and Great Lake mastery.'
+    passiveVi: 'Đặc tính U Corp: +2 Quan hệ, +1 Merit mỗi cuối năm, nhưng -1 SP trước sóng ngầm Đại Hồ.',
+    passiveEn: 'U Corp Singularity: +2 Network, +1 Merit at year-end, costing -1 SP from Great Lake waves.'
   }
 ];
 
-export function transitCostFor(hub, char) {
-  if (!hub || !char) return 999;
+export function hasVipTransitPass(char) {
+  if (!char) return false;
   const flags = char.flags || [];
-  const hasVipPass =
+  return Boolean(
     flags.includes('NestResident') ||
     flags.includes('ColorFixer') ||
     char.job === 'Color Fixer' ||
-    (char.wingRank || 0) >= 2;
-  return hasVipPass ? Math.max(8, Math.round(hub.baseCostAhn * 0.5)) : hub.baseCostAhn;
+    (char.wingRank || 0) >= 2
+  );
+}
+
+export function transitCostFor(hub, char) {
+  if (!hub || !char) return 999;
+  return hasVipTransitPass(char) ? Math.max(8, Math.round(hub.baseCostAhn * 0.5)) : hub.baseCostAhn;
 }
 
 export function canRelocateDistrict(char, targetRegionId) {
@@ -336,13 +352,14 @@ export function relocateCharacterDistrict(char, targetRegionId) {
   if (!check.ok) return { ok: false, char, reasonVi: check.reasonVi, reasonEn: check.reasonEn };
 
   const { hub, cost } = check;
+  const vip = hasVipTransitPass(char);
   char.stats.wealth = clamp((char.stats.wealth || 0) - cost, 0, 100);
   char.regionId = hub.regionId;
   char.lastRelocatedAge = char.age;
 
   const fx = hub.arrivalFx || {};
-  if (fx.health) char.stats.health = clamp((char.stats.health || 0) + fx.health, 0, 100);
-  if (fx.sanity) char.stats.sanity = clamp((char.stats.sanity || 0) + fx.sanity, 0, 100);
+  if (fx.health) char.stats.health = clamp((char.stats.health || 0) + fx.health, 1, 100);
+  if (fx.sanity) char.stats.sanity = clamp((char.stats.sanity || 0) + fx.sanity, 1, 100);
   if (fx.wealth) char.stats.wealth = clamp((char.stats.wealth || 0) + fx.wealth, 0, 100);
   if (fx.network) char.stats.network = clamp((char.stats.network || 0) + fx.network, 0, 100);
   if (fx.rep) char.stats.rep = clamp((char.stats.rep || 0) + fx.rep, 0, 100);
@@ -350,6 +367,12 @@ export function relocateCharacterDistrict(char, targetRegionId) {
   if (fx.resonance) char.resonance = clamp((char.resonance || 0) + fx.resonance, 0, 100);
   if (fx.leverage) char.leverage = clamp((char.leverage || 0) + fx.leverage, 0, 100);
   if (fx.heat) char.heat = clamp((char.heat || 0) + fx.heat, 0, 100);
+
+  // Canon WARP Economy Class side-effect for non-VIP passengers
+  if (hub.isWarpEconomy && !vip) {
+    char.stats.sanity = clamp((char.stats.sanity || 0) - 3, 1, 100);
+    char.resonance = clamp((char.resonance || 0) + 3, 0, 100);
+  }
 
   if (hub.flagGranted && !char.flags.includes(hub.flagGranted)) {
     char.flags.push(hub.flagGranted);
@@ -376,26 +399,42 @@ export function applyRegionalSingularityPassive(char) {
   if (rid === 'K') {
     if ((char.stats?.health ?? 50) < 92) {
       char.stats.health = clamp((char.stats.health || 0) + 3, 1, 100);
+      if ((char.wingRank || 0) < 2 && (char.stats?.wealth ?? 0) >= 8) {
+        char.stats.wealth = clamp((char.stats.wealth || 0) - 2, 0, 100);
+      }
     }
   } else if (rid === 'J') {
-    char.stats.wealth = clamp((char.stats.wealth || 0) + 2, 0, 100);
-    char.leverage = clamp((char.leverage || 0) + 2, 0, 100);
+    if ((char.stats?.sanity ?? 50) >= 55) {
+      char.stats.wealth = clamp((char.stats.wealth || 0) + 3, 0, 100);
+      char.leverage = clamp((char.leverage || 0) + 2, 0, 100);
+    } else {
+      char.stats.wealth = clamp((char.stats.wealth || 0) - 3, 0, 100);
+      char.stats.sanity = clamp((char.stats.sanity || 0) - 2, 1, 100);
+    }
   } else if (rid === 'L') {
     char.resonance = clamp((char.resonance || 0) + 2, 0, 100);
     char.merit = Math.max(0, (char.merit || 0) + 2);
+    char.stats.sanity = clamp((char.stats.sanity || 0) - 2, 1, 100);
   } else if (rid === 'T') {
-    char.merit = Math.max(0, (char.merit || 0) + 2);
+    char.merit = Math.max(0, (char.merit || 0) + 3);
+    char.stats.health = clamp((char.stats.health || 0) - 2, 1, 100);
+    if ((char.stats?.wealth ?? 0) < 12) {
+      char.stats.wealth = clamp((char.stats.wealth || 0) - 2, 0, 100);
+    }
   } else if (rid === 'P') {
     if ((char.stats?.sanity ?? 50) < 92) {
       char.stats.sanity = clamp((char.stats.sanity || 0) + 3, 1, 100);
     }
+    char.stats.network = clamp((char.stats.network || 0) - 1, 0, 100);
   } else if (rid === 'U') {
     char.stats.network = clamp((char.stats.network || 0) + 2, 0, 100);
+    char.merit = Math.max(0, (char.merit || 0) + 1);
+    char.stats.sanity = clamp((char.stats.sanity || 0) - 1, 1, 100);
   }
 }
 
 // ============================================================================
-// 3. APEX COMMAND DIRECTIVES (OFFICE / SYNDICATE / WING / COLOR LEADERSHIP)
+// 3. APEX COMMAND DIRECTIVES (HARD-BUT-FAIR STRATEGIC TRADE-OFFS)
 // ============================================================================
 
 export const APEX_DIRECTIVES = [
@@ -403,25 +442,25 @@ export const APEX_DIRECTIVES = [
     id: 'dispatch_squad',
     vi: 'Phái Đội Thực Chiến',
     en: 'Dispatch Subordinate Squad',
-    detailVi: 'Cử thuộc hạ giải quyết ủy thác phụ: +5 Ahn, +6 Merit, +3 Danh tiếng.',
-    detailEn: 'Send subordinates on secondary contracts: +5 Ahn, +6 Merit, +3 Rep.',
-    fx: { wealth: 5, merit: 6, rep: 3 }
+    detailVi: 'Cử thuộc hạ nhận hợp đồng nguy hiểm: +5 Ahn, +6 Merit, +3 Danh tiếng, nhưng +5 Heat và -3 SP áp lực chỉ huy.',
+    detailEn: 'Send subordinates on hazardous contracts: +5 Ahn, +6 Merit, +3 Rep, at the cost of +5 Heat and -3 SP command strain.',
+    fx: { wealth: 5, merit: 6, rep: 3, heat: 5, sanity: -3 }
   },
   {
     id: 'fortify_turf',
-    vi: 'Củng Cố Lãnh Địa & Hậu Cần',
-    en: 'Fortify Turf & Logistics',
-    detailVi: 'Siết chặt an ninh địa bàn và trạm y tế: -8 Heat, +5 HP, +5 SP, +4 Leverage.',
-    detailEn: 'Lock down perimeter security and medical bays: -8 Heat, +5 HP, +5 SP, +4 Leverage.',
-    fx: { heat: -8, health: 5, sanity: 5, leverage: 4 }
+    vi: 'Thiết Quân Luật & Củng Cố Địa Bàn',
+    en: 'Martial Lockdown & Logistics',
+    detailVi: 'Chi -5 Ahn phí an ninh (hoặc -3 Danh tiếng nếu cạn quỹ) để đổi lấy: -8 Heat, +5 HP, +5 SP, +4 Leverage.',
+    detailEn: 'Spend -5 Ahn security upkeep (or -3 Rep if broke) to secure: -8 Heat, +5 HP, +5 SP, +4 Leverage.',
+    fx: { costAhnOrRep: 5, heat: -8, health: 5, sanity: 5, leverage: 4 }
   },
   {
     id: 'mentor_network',
-    vi: 'Bồi Dưỡng Đệ Tử & Thế Lực',
-    en: 'Cultivate Protégés & Influence',
-    detailVi: 'Truyền dạy kỹ năng và mở rộng mạng lưới: +6 Quan hệ, +5 Resonance, +4 Merit, +5 Gắn kết đồng hành.',
-    detailEn: 'Train protégés and expand influence: +6 Network, +5 Resonance, +4 Merit, +5 Companion Bond.',
-    fx: { network: 6, resonance: 5, merit: 4, bondBoost: 5 }
+    vi: 'Đầu Tư Mạng Lưới & Bồi Dưỡng Đệ Tử',
+    en: 'Sponsor Protégés & Broker Network',
+    detailVi: 'Tiêu hao -4 Ahn và -3 HP trực tiếp chỉ điểm để nhận: +6 Quan hệ, +4 Resonance, +4 Merit, +4 Gắn kết đồng hành.',
+    detailEn: 'Invest -4 Ahn and -3 HP in live sparring to gain: +6 Network, +4 Resonance, +4 Merit, +4 Companion Bond.',
+    fx: { wealth: -4, health: -3, network: 6, resonance: 4, merit: 4, bondBoost: 4 }
   }
 ];
 
@@ -444,9 +483,16 @@ export function applyApexDirective(char, directiveId) {
   if (!dir) return false;
 
   const fx = dir.fx || {};
+  if (fx.costAhnOrRep) {
+    if ((char.stats.wealth || 0) >= fx.costAhnOrRep) {
+      char.stats.wealth = clamp((char.stats.wealth || 0) - fx.costAhnOrRep, 0, 100);
+    } else {
+      char.stats.rep = clamp((char.stats.rep || 0) - 3, 0, 100);
+    }
+  }
   if (fx.wealth) char.stats.wealth = clamp((char.stats.wealth || 0) + fx.wealth, 0, 100);
-  if (fx.health) char.stats.health = clamp((char.stats.health || 0) + fx.health, 0, 100);
-  if (fx.sanity) char.stats.sanity = clamp((char.stats.sanity || 0) + fx.sanity, 0, 100);
+  if (fx.health) char.stats.health = clamp((char.stats.health || 0) + fx.health, 1, 100);
+  if (fx.sanity) char.stats.sanity = clamp((char.stats.sanity || 0) + fx.sanity, 1, 100);
   if (fx.network) char.stats.network = clamp((char.stats.network || 0) + fx.network, 0, 100);
   if (fx.rep) char.stats.rep = clamp((char.stats.rep || 0) + fx.rep, 0, 100);
   if (fx.merit) char.merit = Math.max(0, (char.merit || 0) + fx.merit);
@@ -471,7 +517,7 @@ export function applyApexDirective(char, directiveId) {
 }
 
 // ============================================================================
-// 4. WORKSHOP SINGULARITY IMBUEMENT (RELIC + EQUIPMENT SYNTHESIS)
+// 4. WORKSHOP SINGULARITY IMBUEMENT (POWER + SINGULARITY CORROSION)
 // ============================================================================
 
 export const IMBUEMENT_RECIPES = [
@@ -479,53 +525,53 @@ export const IMBUEMENT_RECIPES = [
     relicId: 'rel_qlippoth_core',
     prefixVi: 'Qlippoth Khắc Chế',
     prefixEn: 'Qlippoth-Tempered',
-    bonusVi: '+14 Sức chiến đấu, +12 SP, +8 Resonance, giảm áp lực tinh thần Hầm ngục',
-    bonusEn: '+14 Combat Power, +12 SP, +8 Resonance, reduces Dungeon mental strain',
+    bonusVi: '+14 Sức chiến đấu, +10 SP, +8 Resonance, nhưng -6 HP do bức xạ Qlippoth ăn mòn dây thần kinh',
+    bonusEn: '+14 Combat Power, +10 SP, +8 Resonance, but -6 HP from Qlippoth nerve radiation',
     combatPowerBonus: 14,
-    statFx: { sanity: 12, resonance: 8, rep: 6 }
+    statFx: { sanity: 10, resonance: 8, rep: 5, health: -6 }
   },
   {
     relicId: 'rel_warp_shard',
     prefixVi: 'Xé Chiều W Corp',
     prefixEn: 'Rift-Edge',
-    bonusVi: '+18 Sức chiến đấu, +10 Danh tiếng, +8 Quan hệ, xuyên giáp không gian',
-    bonusEn: '+18 Combat Power, +10 Rep, +8 Network, dimensional rift severance',
+    bonusVi: '+18 Sức chiến đấu, +10 Danh tiếng, +8 Merit, nhưng -8 SP và +6 Heat vì tiếng gào trong vết nứt không gian',
+    bonusEn: '+18 Combat Power, +10 Rep, +8 Merit, but -8 SP and +6 Heat from dimensional rift screams',
     combatPowerBonus: 18,
-    statFx: { rep: 10, network: 8, merit: 8 }
+    statFx: { rep: 10, merit: 8, sanity: -8, heat: 6 }
   },
   {
     relicId: 'rel_pallid_oil',
     prefixVi: 'Bạch Kình Đại Hồ',
     prefixEn: 'Pallid-Anointed',
-    bonusVi: '+12 Sức chiến đấu, +14 SP, +8 HP, kháng hoảng loạn tuyệt đối',
-    bonusEn: '+12 Combat Power, +14 SP, +8 HP, unwavering panic resistance',
+    bonusVi: '+12 Sức chiến đấu, +12 SP, +6 HP, nhưng -5 Quan hệ và +6 Resonance do dầu cá voi trắng tẩy mờ ký ức',
+    bonusEn: '+12 Combat Power, +12 SP, +6 HP, but -5 Network and +6 Resonance as pallid oil blurs memory',
     combatPowerBonus: 12,
-    statFx: { sanity: 14, health: 8, rep: 5 }
+    statFx: { sanity: 12, health: 6, rep: 4, network: -5, resonance: 6 }
   },
   {
     relicId: 'rel_ruin_monolith',
     prefixVi: 'Cổ Ngữ Outskirts',
     prefixEn: 'Monolith-Runed',
-    bonusVi: '+16 Sức chiến đấu, +16 Resonance, +10 Merit, đánh thức tiềm năng E.G.O',
-    bonusEn: '+16 Combat Power, +16 Resonance, +10 Merit, accelerates E.G.O awakening',
+    bonusVi: '+16 Sức chiến đấu, +14 Resonance, +10 Merit, nhưng -10 SP và +6 Heat trước cổ ngữ cấm kỵ',
+    bonusEn: '+16 Combat Power, +14 Resonance, +10 Merit, but -10 SP and +6 Heat from forbidden Outskirts glyphs',
     combatPowerBonus: 16,
-    statFx: { resonance: 16, merit: 10, rep: 8 }
+    statFx: { resonance: 14, merit: 10, rep: 6, sanity: -10, heat: 6 }
   },
   {
     relicId: 'rel_sweeper_fluid',
     prefixVi: 'Huyết Dịch 3:13',
     prefixEn: 'Sweeper-Infused',
-    bonusVi: '+12 Sức chiến đấu, +14 HP, +6 Danh tiếng, hút sinh lực giao tranh đêm',
-    bonusEn: '+12 Combat Power, +14 HP, +6 Rep, nocturnal bio-regeneration',
+    bonusVi: '+12 Sức chiến đấu, +12 HP, +6 Danh tiếng, nhưng -6 SP và +8 Heat vì mùi dung dịch tử thi đêm',
+    bonusEn: '+12 Combat Power, +12 HP, +6 Rep, but -6 SP and +8 Heat from nocturnal bio-fluid stench',
     combatPowerBonus: 12,
-    statFx: { health: 14, rep: 6, merit: 6 }
+    statFx: { health: 12, rep: 6, merit: 5, sanity: -6, heat: 8 }
   }
 ];
 
 export function imbuementCostFor(char) {
-  if (!char) return 20;
+  if (!char) return 22;
   if (char.job === 'Workshop Craftsman' || (char.flags || []).includes('AncestorWasMeister')) return 0;
-  return 20;
+  return 22;
 }
 
 export function getImbuableRelics(char) {
@@ -619,13 +665,18 @@ export function imbueCharacterEquipment(char, relicId) {
   ];
 
   const fx = recipe.statFx || {};
-  if (fx.health) char.stats.health = clamp((char.stats.health || 0) + fx.health, 0, 100);
-  if (fx.sanity) char.stats.sanity = clamp((char.stats.sanity || 0) + fx.sanity, 0, 100);
+  if (fx.health) char.stats.health = clamp((char.stats.health || 0) + fx.health, 1, 100);
+  if (fx.sanity) char.stats.sanity = clamp((char.stats.sanity || 0) + fx.sanity, 1, 100);
   if (fx.rep) char.stats.rep = clamp((char.stats.rep || 0) + fx.rep, 0, 100);
   if (fx.network) char.stats.network = clamp((char.stats.network || 0) + fx.network, 0, 100);
   if (fx.resonance) char.resonance = clamp((char.resonance || 0) + fx.resonance, 0, 100);
+  if (fx.heat) char.heat = clamp((char.heat || 0) + fx.heat, 0, 100);
   if (fx.merit || isCraftsman) {
-    char.merit = Math.max(0, (char.merit || 0) + (fx.merit || 0) + (isCraftsman ? 10 : 0));
+    char.merit = Math.max(0, (char.merit || 0) + (fx.merit || 0) + (isCraftsman ? 8 : 0));
+  }
+  if (isCraftsman) {
+    // Physical toil of hammering a raw Singularity relic on the anvil yourself
+    char.stats.health = clamp((char.stats.health || 0) - 3, 1, 100);
   }
 
   if (!char.flags.includes('SingularityImbued')) {

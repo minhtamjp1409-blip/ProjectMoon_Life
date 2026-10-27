@@ -53,10 +53,11 @@ console.log('=== TEST SUITE: BATCH 64 SYSTEM UPGRADES (5 PILLARS) ===');
   assert(colorEchoEvent, 'm_lineage_color_shadow_trial must exist in ALL_STORY_EVENTS');
   assert(matchesEventContext(colorEchoEvent, colorHeir), 'Color echo event must match Color heir');
 
-  // Resolve choice 0 on m_lineage_color_shadow_trial
+  // Resolve choice 0 on m_lineage_color_shadow_trial (weighted outcome: roll 0.1 hits win branch, roll 0.9 hits fail branch)
   colorHeir.pendingEvent = colorEchoEvent;
-  const afterTrial = resolveEventChoice(colorHeir, 0, () => 0.5);
+  const afterTrial = resolveEventChoice(colorHeir, 0, () => 0.1);
   assert(afterTrial.flags.includes('ProdigyFixer'), 'Winning Hana courtyard trial should grant ProdigyFixer');
+  assert(afterTrial.heat > 0, 'Ancestor Color fame + Hana trial must carry realistic Heat burden');
 
   // B. Distortion Ancestor -> Heir
   const distAncestor = createNewCharacter({ seed: 'ancestor-dist-1', startAge: 32 });
@@ -115,26 +116,30 @@ console.log('=== TEST SUITE: BATCH 64 SYSTEM UPGRADES (5 PILLARS) ===');
   const checkK = canRelocateDistrict(traveler, 'K');
   assert.equal(checkK.ok, true, 'Should be able to relocate to District 11 (K Corp)');
 
+  const initialSanity = traveler.stats.sanity;
   const resK = relocateCharacterDistrict(traveler, 'K');
   assert.equal(resK.ok, true);
   assert.equal(traveler.regionId, 'K');
   assert.equal(traveler.stats.health, 72, 'Arriving at K Corp should heal +12 HP');
+  assert(traveler.stats.sanity < initialSanity, 'Non-VIP WARP + K Corp bio-scan must carry a Sanity cost');
 
   // Cannot relocate twice in the same year
   const secondMoveSameYear = canRelocateDistrict(traveler, 'T');
   assert.equal(secondMoveSameYear.ok, false, 'Cannot relocate twice in the same year');
 
-  // End year -> Regional Singularity Passive triggers (+3 HP in K Corp)
+  // End year -> Regional Singularity Passive triggers (+3 HP in K Corp, -2 Ahn co-pay)
   traveler.stats.health = 70;
   const afterYear = endYear(traveler, () => 0.5);
   assert(afterYear.stats.health >= 71, 'K Corp annual Singularity passive must restore health');
 
   // Relocate to T Corp in the new year
   afterYear.stats.wealth = 60;
+  const hpBeforeT = afterYear.stats.health;
   const resT = relocateCharacterDistrict(afterYear, 'T');
   assert.equal(resT.ok, true);
   assert(afterYear.flags.includes('TCorpTimeBorrowed'), 'Arriving at T Corp must grant TCorpTimeBorrowed');
-  console.log('  ✓ Pillar 2: Inter-District Transit & Regional Singularity Mechanics verified');
+  assert.equal(afterYear.stats.health, hpBeforeT - 5, 'T Corp 28-hour time loan must drain -5 HP on arrival');
+  console.log('  ✓ Pillar 2: Inter-District Transit & Regional Singularity Mechanics (Hard-But-Fair) verified');
 }
 
 // ----------------------------------------------------------------------------
@@ -152,6 +157,8 @@ console.log('=== TEST SUITE: BATCH 64 SYSTEM UPGRADES (5 PILLARS) ===');
   commander.flags.push('ColorFixer');
   commander.stats.wealth = 40;
   commander.stats.rep = 50;
+  commander.heat = 10;
+  commander.stats.sanity = 60;
   commander.merit = 20;
   commander.pendingYearPlan = { age: 32 };
   assert.equal(isApexCommander(commander), true, 'Color Fixer is an Apex Commander');
@@ -161,7 +168,8 @@ console.log('=== TEST SUITE: BATCH 64 SYSTEM UPGRADES (5 PILLARS) ===');
   assert(commander.flags.includes('ApexDirectiveIssued'), 'Applying directive should grant ApexDirectiveIssued');
   assert.equal(commander.merit, 26, 'dispatch_squad should grant +6 Merit');
   assert.equal(commander.stats.wealth, 40 + 2 + 5, 'work(1)*2 + dispatch_squad(5) = +7 Ahn');
-  console.log('  ✓ Pillar 3: Apex Command Directives verified');
+  assert.equal(commander.heat, 15, 'dispatch_squad must incur +5 Heat from rival countermeasures');
+  console.log('  ✓ Pillar 3: Apex Command Directives (Hard-But-Fair) verified');
 }
 
 // ----------------------------------------------------------------------------
@@ -171,6 +179,9 @@ console.log('=== TEST SUITE: BATCH 64 SYSTEM UPGRADES (5 PILLARS) ===');
   const smith = createNewCharacter({ seed: 'smith-imbue-1', startAge: 28 });
   smith.job = 'Workshop Craftsman';
   smith.stats.wealth = 15;
+  smith.stats.health = 70;
+  smith.stats.sanity = 70;
+  smith.heat = 10;
   smith.craftWeapon = { name: 'Zelkova Cleaver', combatPower: 30, gradeLabel: 'Fine Work' };
   smith.inventory = [{ id: 'rel_warp_shard', nameVi: 'Mảnh Dị Chiều W Corp', nameEn: 'W Corp Dimensional Shard', type: 'special' }];
 
@@ -183,6 +194,9 @@ console.log('=== TEST SUITE: BATCH 64 SYSTEM UPGRADES (5 PILLARS) ===');
   assert.equal(imbueRes.ok, true);
   assert(smith.flags.includes('SingularityImbued'), 'Should grant SingularityImbued flag');
   assert(getImbuedCombatBonus(smith) >= 24, 'Craftsman should receive +18 base +6 craftsman bonus combat power');
+  assert.equal(smith.stats.health, 67, 'Craftsman anvil toil should cost -3 HP');
+  assert.equal(smith.stats.sanity, 62, 'W Corp Dimensional Shard corrosion should cost -8 SP');
+  assert.equal(smith.heat, 16, 'W Corp Dimensional Shard should add +6 Heat from Rip Space signature');
   assert(smith.craftWeapon.name.includes('Xé Chiều W Corp'), 'Weapon name should gain Singularity prefix');
 
   const imbuedContract = generateFixerContract(smith, () => 0.3);

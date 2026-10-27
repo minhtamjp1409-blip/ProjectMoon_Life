@@ -1305,3 +1305,44 @@ Chủ dự án yêu cầu làm lại toàn bộ giao diện lần nữa: bỏ t�
   * Bộ kiểm thử mới `tests/test_batch64_system_upgrades.mjs` tích hợp vào `npm test`, nâng tổng số lên **53/53 bộ test suites** đạt 100%.
 
 
+### Đợt 65 (27/10/2026): Tinh Chỉnh Cân Bằng "Hard But Fair" & Logic Ngữ Cảnh Nghiêm Ngặt Toàn Hệ Thống
+
+* **Triết Lý Thiết Kế "Hard But Fair" (Tham chiếu *Darkest Dungeon*, *Sunless Sea*, *Cultist Simulator*, *Frostpunk*, *Library of Ruina*):**
+  * Loại bỏ hoàn toàn cơ chế "buff miễn phí" (free lunch) và các lựa chọn thắng tuyệt đối 100% không rủi ro; mọi nguồn sức mạnh, đặc quyền dòng tộc, công nghệ Singularity hay quyết định lãnh đạo đều đi kèm cái giá đánh đổi tương xứng và logic ngữ cảnh chặt chẽ.
+
+* **1. Cái Giá Của Di Sản Tiền Nhân (`applyAncestorEchoInheritance` trong `src/engine/cityUpgrades.js`, `src/engine/gameEngine.js`, `src/data/eventsLineageLegacy.js`):**
+  * Kế thừa danh tiếng đỉnh cao luôn đi kèm sự dòm ngó của kẻ thù cũ và di chứng tâm lý:
+    * `AncestorWasColor`: `+8 Rep`, nhưng gánh `+8 Heat` từ những kẻ muốn săn lùng hậu nhân của một Color.
+    * `AncestorWasDistortion`: `+8 Resonance`, nhưng chịu `-4 SP` do tiếng vọng ám ảnh từ tiền kiếp.
+    * `AncestorWasFingerBoss`: `+7 Network`, nhưng cộng `+10 Heat` từ các băng đảng đối địch.
+    * `AncestorWasWingExec`: `+10 Ahn`, nhưng cộng `+6 Heat` từ bộ phận kiểm toán nội bộ Nest.
+  * Bổ sung khóa ngữ cảnh `forbids: ['Distorted']` cho các sự kiện sân tập Hana (`m_lineage_color_shadow_trial`), tiếp quản kho ngầm Syndicate (`m_lineage_finger_turf_remnant`), và két sắt sinh trắc học Nest (`m_lineage_wing_trust_vault`).
+  * Chuyển các lựa chọn đối kháng/mạo hiểm trong 4 sự kiện di sản sang hệ thống nhánh xác suất `outcomes` (60–65% thành công / 35–40% trả giá đắt bằng HP, SP, Scars hoặc bị phản đòn), đồng thời thêm lựa chọn thứ 3 an toàn nhưng đánh đổi lợi ích thực dụng.
+
+* **2. Tác Dụng Phụ Singularity & Dư Chấn Tàu WARP Phổ Thông (`TRANSIT_HUBS`, `relocateCharacterDistrict`, `applyRegionalSingularityPassive`):**
+  * Hành khách đi **Tàu WARP Khoang Phổ Thông** (không có thẻ VIP/Nest/Color) phải chịu dư chấn không gian `-3 SP, +3 Resonance` đúng chuẩn lore W Corp.
+  * Mỗi trung tâm Singularity đều có mặt trái khi đặt chân đến và chi phí duy trì hàng năm:
+    * **K Corp (District 11):** Hồi `+12 HP` khi đến nhưng cảm giác mô thịt tự mọc lại gây rùng mình (`-3 SP`); cuối năm hồi `+3 HP` nhưng trừ `-2 Ahn` phí bảo trì y tế (miễn trừ cho Quản lý Wing cấp cao).
+    * **J Corp (District 10):** Bùa Wishpower cộng `+6 Leverage, +4 Rep` nhưng kéo theo đám đòi nợ sòng bạc (`+4 Heat`); cuối năm kiểm định bản lĩnh tâm lý: nếu `SP >= 55` thì thắng cược (`+3 Ahn, +2 Leverage`), nếu tâm loạn (`SP < 55`) thì cháy túi (`-3 Ahn, -2 SP`).
+    * **L Corp Cũ (District 12):** Cộng `+8 Resonance, +6 Merit` nhưng sương mù Enkephalin bào mòn `-5 SP` khi đến và `-2 SP` mỗi cuối năm.
+    * **T Corp (District 20):** Vay thời gian nhận `+6 Merit, +4 Ahn` nhưng đồng hồ 28 giờ vắt kiệt `-5 HP` khi đến và `-2 HP` mỗi cuối năm.
+    * **P Corp (District 16):** Vòm bảo tồn hồi `+8 SP, +5 HP, -6 Heat` nhưng sống khép kín làm đứt gãy `-3 Network` khi đến và `-1 Network` mỗi cuối năm.
+    * **U Corp (District 19):** Mở rộng giao thương `+8 Network, +4 Rep` nhưng sương muối Đại Hồ bào mòn `-4 HP` khi đến và `-1 SP` mỗi cuối năm.
+
+* **3. Trách Nhiệm & Chi Phí Của Chỉ Thị Thủ Lĩnh (`APEX_DIRECTIVES`, `applyApexDirective`):**
+  * `dispatch_squad` (*Phái Đội Thực Chiến*): Thu về `+5 Ahn, +6 Merit, +3 Rep`, nhưng việc mở rộng hoạt động khiến kẻ thù chú ý (`+5 Heat`) và gây áp lực chỉ huy (`-3 SP`).
+  * `fortify_turf` (*Củng Cố Lãnh Địa*): Giảm `-8 Heat`, hồi `+5 HP, +5 SP, +4 Leverage`, nhưng bắt buộc tiêu tốn `-5 Ahn` quỹ bảo vệ (hoặc mất `-3 Rep` nếu kiệt quệ tài chính).
+  * `mentor_network` (*Bồi Dưỡng Đệ Tử*): Tăng `+6 Network, +5 Resonance, +4 Merit` và `+5 Bond` đồng đội, đổi lại tốn `-4 Ahn` chi phí huấn luyện và `-3 HP` hao tổn sức lực thị phạm.
+
+* **4. Phản Chấn Ăn Mòn Khi Khảm Cổ Vật Singularity (`IMBUEMENT_RECIPES`, `imbueCharacterEquipment`):**
+  * Khảm cổ vật hầm ngục vào vũ khí mang lại sức mạnh vượt trội nhưng luôn đi kèm **Phản chấn Singularity (Singularity Corrosion)**:
+    * `rel_qlippoth_core`: Phản chấn sinh học `-6 HP`.
+    * `rel_warp_shard`: Rung chấn lệch chiều `-8 SP, +6 Heat`.
+    * `rel_pallid_oil`: Ám ảnh sương trắng `-5 Network, +6 Resonance`.
+    * `rel_ruin_monolith`: Tiếng vọng cổ ngữ `-10 SP, +6 Heat`.
+    * `rel_sweeper_fluid`: Mùi máu đêm 3:13 AM `-6 SP, +8 Heat`.
+  * Ngay cả **Workshop Craftsman** được miễn phí tiền công khảm cũng phải chịu `-3 HP` bỏng nhiệt lò rèn cùng toàn bộ phản chấn cổ vật.
+
+* **5. Chuẩn Hóa Nhánh Rủi Ro & Chống Lạm Phát Kinh Tế Ở Sự Kiện Đỉnh Cao (`eventsColorCareerArc.js`, `eventsWingParityExpansion.js`, `eventsDistortionParityExpansion.js`):**
+  * Khắc phục các lựa chọn đại sự kiện trước đây chỉ có 1 nhánh `outcomes` đơn lẻ (`wing_arc_corporate_patent_warfare`, `distort_arc_star_calamity_ascension`, `distort_arc_ego_clash_manifestation`), bổ sung nhánh thất bại 35% với hậu quả thực tế để tổng trọng số luôn đạt chuẩn `100%`.
+  * Điều chỉnh mức thưởng tiền mặt quá đà trong `color_arc_wing_proxy_war` (từ `+120 Ahn` xuống `+48 Ahn` kèm 30% rủi ro trúng vũ khí Singularity tự hủy của đối phương) và `wing_arc_singularity_meltdown` (từ `+80 Ahn` xuống `+42 Ahn` kèm `+8 Taboo`), giữ vững nhịp cân bằng kinh tế toàn game.

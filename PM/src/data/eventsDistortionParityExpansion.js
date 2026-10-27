@@ -212,11 +212,18 @@ export const DISTORTION_PARITY_MAJORS = [
         labelEn: "Dissolve into crimson mist, warping the surrounding three blocks",
         outcomes: [
           {
-            w: 75,
-            resultVi: "Bạn biến môi trường xung quanh thành một mê cung dị thể sống. Các Fixer lạc hướng giữa những bức tường biết thở; bạn bình thản ngắm nhìn họ từ trên đỉnh tháp chuông đổ nát.",
-            resultEn: "You transform the terrain into a living distortion labyrinth. Fixers stumble through breathing masonry; you watch calmly from a ruined bell tower.",
-            effects: { resonance: +25, sanity: -10, rep: +35 },
+            w: 65,
+            resultVi: "Bạn biến môi trường xung quanh thành một mê cung dị thể sống. Các Fixer lạc hướng giữa những bức tường biết thở; bạn bình thản ngắm nhìn họ từ trên đỉnh tháp chuông đổ nát, dù tâm thức bạn ngày càng rời xa hình hài con người.",
+            resultEn: "You transform the terrain into a living distortion labyrinth. Fixers stumble through breathing masonry; you watch calmly from a ruined bell tower as your mind drifts further from humanity.",
+            effects: { resonance: +22, sanity: -14, rep: +28, heat: +16 },
             flagsAdd: ['distort_star_calamity_done', 'DistortionArchitect']
+          },
+          {
+            w: 35,
+            resultVi: "Trận địa hỏa công của Liu Section 1 đốt bốc hơi gần một nửa màn sương máu của bạn. Bạn giữ được lãnh địa nhưng bản thể suy kiệt nặng nề sau đòn thiêu đốt diện rộng.",
+            resultEn: "Liu Section 1’s wide-area fire formation vaporizes nearly half your crimson mist. You hold your domain, yet your core essence suffers severe thermal depletion.",
+            effects: { health: -32, sanity: -18, resonance: +10, heat: +20 },
+            flagsAdd: ['distort_star_calamity_done']
           }
         ]
       }
@@ -241,7 +248,7 @@ export const DISTORTION_PARITY_MAJORS = [
             w: 65,
             resultVi: "Hai ý chí va chạm tạo nên làn sóng chấn động thổi bay kính của toàn khu vực. Móng vuốt của bạn đánh gãy vũ khí E.G.O đối phương; người ấy ngã xuống với ánh mắt kinh hoàng trước vẻ đẹp bạo liệt của bạn.",
             resultEn: "Two wills collide, generating shockwaves that shatter windows for miles. Your talons shatter their E.G.O weapon; they fall in terror before your violent majesty.",
-            effects: { health: -20, resonance: +30, rep: +40, sanity: -12 },
+            effects: { health: -20, resonance: +28, rep: +32, sanity: -12, heat: +14 },
             flagsAdd: ['distort_ego_clash_done', 'EGOBreaker']
           },
           {
@@ -258,11 +265,19 @@ export const DISTORTION_PARITY_MAJORS = [
         labelEn: "Channel Carmen’s whisper to unravel the E.G.O wielder’s convictions",
         outcomes: [
           {
-            w: 70,
-            resultVi: "Giọng nói của bạn hòa cùng Carmen rót thẳng vào tai người Fixer. Ánh sáng vũ khí của người ấy lịm dần; người ấy ôm đầu gào thét khi nhận ra sự giả dối của lòng kiên định The City.",
-            resultEn: "Your voice, laced with Carmen’s song, pours into the Fixer’s mind. Their light dims; they scream clutching their head as conviction crumbles.",
-            effects: { sanity: +15, resonance: +20, rep: +30 },
+            w: 65,
+            resultVi: "Giọng nói của bạn hòa cùng Carmen rót thẳng vào tai người Fixer. Ánh sáng vũ khí của người ấy lịm dần; người ấy ôm đầu gào thét khi nhận ra sự giả dối của lòng kiên định The City, dù cổ họng tâm linh của bạn rướm máu.",
+            resultEn: "Your voice, laced with Carmen’s song, pours into the Fixer’s mind. Their light dims; they scream clutching their head as conviction crumbles, though your psychic vessel bleeds from the strain.",
+            effects: { health: -12, sanity: -8, resonance: +22, rep: +26, heat: +12 },
             flagsAdd: ['distort_ego_clash_done', 'CorrupterOfConviction']
+          },
+          {
+            w: 35,
+            resultVi: "Ý chí sắt đá của người mang E.G.O phản dội ngược âm thanh của bạn, đâm xuyên qua lớp màng bảo vệ tâm thức và chém một đường sâu lên ngực bạn trước khi rút lui.",
+            resultEn: "The E.G.O wielder’s iron conviction reflects your psychic chorus back at you, piercing your mental veil and carving a deep gash across your chest before withdrawing.",
+            effects: { health: -28, sanity: -20, resonance: +8 },
+            flagsAdd: ['distort_ego_clash_done'],
+            scarsAdd: ['Vết chém phản chấn E.G.O']
           }
         ]
       }

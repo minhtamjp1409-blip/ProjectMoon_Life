@@ -136,33 +136,47 @@ export const LINEAGE_LEGACY_EVENTS = [
     major: true,
     weight: 16,
     requires: ['AncestorWasColor'],
+    forbids: ['Distorted'],
     vi: "[Cái Bóng Của Sắc Màu] Tại phân khu địa phương của Hana Association, một thanh tra lão niên dừng bước trước bàn làm thủ tục của bạn. Ông ta nhìn chằm chằm vào 「{relic}」 bên hông bạn rồi đặt xuống tấm hồ sơ đóng dấu mật của {parentName}. \"Cả District này vẫn còn nhớ cái tên đó. Nhưng danh hiệu Color không phải là tước vị cha truyền con nối. Chứng minh cho ta thấy ngươi mang bản lĩnh của người đó, hay chỉ đang nấp dưới cái bóng quá lớn.\"",
     en: "[Shadow of a Color] At the local Hana Association branch, an aging evaluator stops before your desk. He stares at 「{relic}」 at your hip and sets down {parentName}’s sealed dossier. “This entire District still remembers that name. Yet a Color title is no hereditary peerage. Show me whether you carry their edge, or merely hide beneath an oversized shadow.”",
     choices: [
       {
-        labelVi: "Chấp nhận bài khảo sát thực chiến ngay tại sân tập Hana",
-        labelEn: "Accept an immediate live-combat evaluation in the Hana courtyard",
-        resultVi: "Dưới ánh mắt của hàng chục Fixer, bạn đỡ trọn ba đòn sát thủ của viên thanh tra bằng kỹ pháp kế thừa từ {parentName} rồi phản kích chuẩn xác. Ông ta thu vũ khí, gật đầu ghi nhận công trạng đặc cách cho bạn.",
-        resultEn: "Under the gaze of dozens of Fixers, you parried three lethal strikes using {parentName}’s stance and countered cleanly. The evaluator sheathed his blade and logged a special merit commendation.",
-        effects: { health: -14, sanity: +10, rep: +24, resonance: +16 },
-        flagsAdd: ['ProdigyFixer'],
-        meritAdd: 28
+        labelVi: "Chấp nhận bài khảo sát thực chiến ngay tại sân tập Hana (Thử thách sinh tử)",
+        labelEn: "Accept an immediate live-combat evaluation in the Hana courtyard (Trial by combat)",
+        outcomes: [
+          {
+            w: 65,
+            resultVi: "Dưới ánh mắt của hàng chục Fixer, bạn đỡ trọn ba đòn sát thủ của viên thanh tra bằng kỹ pháp kế thừa từ {parentName} rồi phản kích chuẩn xác. Máu rỉ qua kẽ tay nhưng ông ta thu vũ khí, gật đầu ghi nhận công trạng đặc cách cho bạn.",
+            resultEn: "Under the gaze of dozens of Fixers, you parried three lethal strikes using {parentName}’s stance and countered cleanly. Blood dripped from your knuckles, yet the evaluator sheathed his blade and logged a special merit commendation.",
+            effects: { health: -16, sanity: +8, rep: +22, resonance: +14, heat: +6 },
+            flagsAdd: ['ProdigyFixer'],
+            meritAdd: 24
+          },
+          {
+            w: 35,
+            resultVi: "Áp lực từ cái bóng của {parentName} khiến nhịp chân bạn chậm nửa nhịp. Lưỡi kiếm khảo sát đánh bật 「{relic}」 khỏi tay bạn, để lại vết thương sâu trên vai và những tiếng xì xầm thất vọng quanh sân tập.",
+            resultEn: "The weight of {parentName}’s shadow slowed your footwork by half a beat. The evaluator’s blade knocked 「{relic}」 from your grip, leaving a deep gash across your shoulder and disappointed murmurs around the yard.",
+            effects: { health: -24, sanity: -12, rep: -6, resonance: +8 },
+            scarsAdd: ['Thất bại dưới bóng Color tiền bối'],
+            meritAdd: 8
+          }
+        ]
       },
       {
-        labelVi: "Sử dụng uy tín của tiền nhân để mở rộng mạng lưới ủy thác cấp cao",
-        labelEn: "Leverage your predecessor's prestige to access upper-tier brokerage",
-        resultVi: "Bạn không cần đôi co bằng vũ lực. Chỉ riêng con dấu cũ của {parentName} đã đủ để các môi giới Section 3 mở cửa phòng riêng và chuyển giao những hợp đồng béo bở nhất.",
-        resultEn: "You had no need to prove yourself in a spar. {parentName}’s old seal alone was enough for Section 3 brokers to open their private parlors and hand over lucrative contracts.",
-        effects: { wealth: +28, network: +22, rep: +14 },
-        meritAdd: 18
+        labelVi: "Sử dụng uy tín của tiền nhân để mở rộng mạng lưới ủy thác cấp cao (Đánh đổi danh dự)",
+        labelEn: "Leverage your predecessor's prestige to access upper-tier brokerage (Trade pride for access)",
+        resultVi: "Bạn từ chối giao đấu và đưa ra con dấu cũ của {parentName}. Các môi giới mở cửa phòng riêng cho bạn, nhưng giới Fixer thực chiến khinh ra mặt kẻ dựa hơi tiền bối, đồng thời tai mắt kẻ thù cũ lập tức đánh hơi thấy bạn.",
+        resultEn: "You declined the duel and presented {parentName}’s old seal. Brokers opened their parlors, yet combat Fixers openly disdained riding a predecessor’s coattails, and old enemies immediately caught your scent.",
+        effects: { wealth: +22, network: +16, rep: -8, heat: +10 },
+        meritAdd: 10
       },
       {
         labelVi: "Tuyên bố xóa bỏ liên hệ, tự đi con đường không mang tên người cũ",
         labelEn: "Renounce the comparison and walk a path unbound by their name",
-        resultVi: "Bạn đẩy trả tập hồ sơ. Không dựa dẫm cũng không sợ hãi, sự lạnh lùng dứt khoát của bạn khiến tâm trí nhẹ nhõm và ý chí riêng càng thêm sắc bén.",
-        resultEn: "You pushed the dossier back across the counter. Neither leaning on nor fearing the past, your quiet resolve steadied your mind and sharpened your own identity.",
-        effects: { sanity: +20, resonance: +20, rep: +12 },
-        meritAdd: 20
+        resultVi: "Bạn đẩy trả tập hồ sơ và chấp nhận từ bỏ mọi đặc quyền ưu tiên của gia tộc. Sự lạnh lùng dứt khoát khiến bạn mất đi nhiều mối quan hệ có sẵn, nhưng tâm trí nhẹ nhõm và ý chí riêng càng thêm sắc bén.",
+        resultEn: "You pushed the dossier back and forfeited all hereditary privileges. Your cold refusal cost you ready-made connections, yet steadied your mind and sharpened your own identity.",
+        effects: { sanity: +14, resonance: +14, network: -10, rep: -4 },
+        meritAdd: 14
       }
     ]
   },
@@ -180,19 +194,39 @@ export const LINEAGE_LEGACY_EVENTS = [
       {
         labelVi: "Bước vào tâm vùng dị biến, đối mặt và giải thoát cho ý thức người cũ",
         labelEn: "Step into the core, confront the remnant, and grant them release",
-        resultVi: "Giữa không gian bóp nghẹt lý trí, bạn chém tan lớp vỏ tuyệt vọng đang giam cầm hình bóng {parentName}. Khi bóng hình ấy tan thành những hạt sáng ấm áp, một nguồn cộng hưởng thuần khiết truyền thẳng vào tâm hồn bạn.",
-        resultEn: "Amidst mind-crushing pressure, you severed the shell of despair caging {parentName}’s echo. As the figure dissolved into warm motes of light, pure resonance surged into your soul.",
-        effects: { health: -18, sanity: +16, resonance: +28, rep: +20 },
-        scarsAdd: ['Người giải thoát dư ảnh Distortion'],
-        meritAdd: 30
+        outcomes: [
+          {
+            w: 60,
+            resultVi: "Giữa không gian bóp nghẹt lý trí, bạn chịu đựng hàng chục vết cắt tâm linh để chém tan lớp vỏ tuyệt vọng đang giam cầm hình bóng {parentName}. Khi bóng hình ấy tan đi, nguồn cộng hưởng khắc nghiệt truyền thẳng vào tâm hồn bạn.",
+            resultEn: "Amidst mind-crushing pressure, you endured dozens of psychic lacerations to sever the shell of despair caging {parentName}’s echo. As the figure dissolved, a fierce resonance surged into your soul.",
+            effects: { health: -20, sanity: -8, resonance: +24, rep: +16 },
+            scarsAdd: ['Người giải thoát dư ảnh Distortion'],
+            meritAdd: 24
+          },
+          {
+            w: 40,
+            resultVi: "Tiếng gào khóc của {parentName} trong tâm bão dị biến quá sức chịu đựng. Bạn bị luồng sóng âm dị dạng đánh văng ra ngoài hàng rào phong tỏa, máu mũi tuôn trào và tâm trí rạn nứt dữ dội.",
+            resultEn: "The anguished wail of {parentName} inside the anomaly proved overwhelming. A distorted shockwave hurled you back across the barricade with a bleeding nose and a fractured psyche.",
+            effects: { health: -22, sanity: -20, resonance: +10, taboo: +6 },
+            scarsAdd: ['Ám ảnh tiếng gào tiền kiếp']
+          }
+        ]
       },
       {
-        labelVi: "Thu hoạch tinh thể Enkephalin kết tụ quanh lãnh địa rồi bán cho Wing",
-        labelEn: "Harvest the crystallized Enkephalin around the lair for a Wing buyer",
-        resultVi: "Bạn giữ khoảng cách an toàn, thu gom những khối tinh thể quý hiếm kết tủa từ nỗi đau của đời trước. Khoản tiền thu về rất lớn, dù đôi lúc tiếng vọng trong sương vẫn ám ảnh giấc ngủ của bạn.",
-        resultEn: "Keeping a cautious distance, you gathered rare crystals precipitated from your predecessor’s grief. The payout was immense, though echoes in the fog still trouble your sleep.",
-        effects: { wealth: +36, sanity: -10, resonance: +14, network: +12 },
-        meritAdd: 16
+        labelVi: "Thu hoạch tinh thể Enkephalin kết tụ quanh lãnh địa rồi bán cho chợ đen",
+        labelEn: "Harvest the crystallized Enkephalin around the lair for black-market buyers",
+        resultVi: "Bạn giữ khoảng cách ở vòng ngoài, thu gom những khối tinh thể kết tủa từ nỗi đau của đời trước. Khoản tiền thu về khá hậu hĩnh, nhưng mặc cảm tội lỗi và sự theo dõi của đội thanh trừng Hana lập tức bám riết lấy bạn.",
+        resultEn: "Keeping to the outer perimeter, you gathered crystals precipitated from your predecessor’s grief. The payout was substantial, yet guilt and the scrutiny of Hana purgers immediately latched onto you.",
+        effects: { wealth: +24, sanity: -14, heat: +10, taboo: +8 },
+        meritAdd: 10
+      },
+      {
+        labelVi: "Báo cáo tọa độ điểm yếu của vùng sương cho đội phong tỏa Hana",
+        labelEn: "Report the fog's structural weak point to the Hana containment squad",
+        resultVi: "Bạn giao nộp bản đồ dao động của 「{relic}」 cho đội xử lý hiện trường rồi lặng lẽ quay lưng. Bạn nhận được khoản phí hỗ trợ nhỏ và giữ được sự tỉnh táo, dù cơ hội tiếp cận sức mạnh dị biến đã khép lại.",
+        resultEn: "You handed the oscillation readings of 「{relic}」 to the containment squad and walked away. You received a modest stipend and preserved your sanity, though the anomaly's power was sealed off forever.",
+        effects: { wealth: +10, sanity: +8, rep: +8, resonance: -6 },
+        meritAdd: 12
       }
     ]
   },
@@ -204,24 +238,45 @@ export const LINEAGE_LEGACY_EVENTS = [
     major: true,
     weight: 15,
     requires: ['AncestorWasFingerBoss'],
+    forbids: ['Distorted'],
     vi: "[Di Sản Địa Bàn Ngón Tay] Khi bạn đi ngang qua một kho hàng ngầm từng thuộc quyền cai quản của {parentName}, một toán cựu binh Syndicate bước ra từ bóng tối. Nhận ra 「{relic}」, gã chỉ huy vết sẹo đầy mặt lập tức cúi đầu: \"Hậu nhân của ngài {parentName}. Địa bàn này đã đổi chủ nhiều lần, nhưng quỹ đen và mạng lưới mật báo mà ngài ấy cài lại vẫn chỉ mở theo tín vật trên tay ngài.\"",
     en: "[Finger Turf Remnant] As you pass an underground depot once ruled by {parentName}, a squad of veteran Syndicate enforcers steps from the shadows. Recognizing 「{relic}」, their scarred captain bows low: “Heir of {parentName}. This turf has changed hands many times, yet the hidden war chest and informant web they planted still answer only to the token you carry.”",
     choices: [
       {
-        labelVi: "Tiếp quản mạng lưới mật báo và kho quỹ ngầm",
-        labelEn: "Claim the informant network and underground war chest",
-        resultVi: "Bạn nhận lấy sổ mật mã và các hòm bạc cất giấu dưới hầm lạnh. Quyền lực ngầm của {parentName} trở thành bàn đạp vững chắc cho con đường của bạn.",
-        resultEn: "You took the cipher ledgers and silver crates from the sub-vault. {parentName}’s underground dominion became a formidable springboard for your ascent.",
-        effects: { wealth: +30, network: +24, leverage: +16, heat: +10 },
-        meritAdd: 22
+        labelVi: "Tiếp quản mạng lưới mật báo và kho quỹ ngầm (Chấp nhận bị săn đuổi)",
+        labelEn: "Claim the informant network and underground war chest (Accept the target on your back)",
+        resultVi: "Bạn nhận lấy sổ mật mã và các hòm bạc dưới hầm lạnh. Ngay trong đêm đó, các băng đảng đang chiếm đóng khu phố phát hiện quỹ đen bị rút ruột và phát lệnh truy sát kẻ thừa kế của {parentName}.",
+        resultEn: "You took the cipher ledgers and silver crates from the sub-vault. That very night, rival gangs holding the block discovered the drained war chest and placed a kill-order on {parentName}’s heir.",
+        effects: { wealth: +24, network: +18, leverage: +14, heat: +16, sanity: -8 },
+        meritAdd: 16
       },
       {
-        labelVi: "Tuyển mộ toán cựu binh làm đội hộ vệ trung thành",
-        labelEn: "Induct the veteran enforcers as your loyal retinue",
-        resultVi: "Những tay đao dày dạn kinh nghiệm nguyện đi theo bảo vệ bạn, giúp vị thế và sức chiến đấu của bạn tăng vọt trên khắp các ngõ ngách Backstreets.",
-        resultEn: "The battle-hardened enforcers swore themselves to your banner, bolstering your standing and reach across the Backstreets.",
-        effects: { health: +12, rep: +22, network: +16, leverage: +12 },
-        meritAdd: 24
+        labelVi: "Tuyển mộ toán cựu binh làm đội hộ vệ và mở đường máu rút lui",
+        labelEn: "Induct the veteran enforcers and carve a bloody path out of the block",
+        outcomes: [
+          {
+            w: 65,
+            resultVi: "Bạn trả phí chiêu mộ hậu hĩnh cho toán cựu binh và cùng họ đánh bật cuộc phục kích của băng đảng địa phương. Máu đổ dọc con hẻm, nhưng vị thế của bạn được xác lập bằng sắt và lửa.",
+            resultEn: "You paid a heavy retainer to the veterans and fought through a local gang ambush together. Blood stained the alley, yet your standing was forged in iron and fire.",
+            effects: { wealth: -12, health: -14, rep: +20, network: +16, leverage: +12, heat: +10 },
+            meritAdd: 20
+          },
+          {
+            w: 35,
+            resultVi: "Một nửa toán cựu binh hóa ra đã ngầm bán đứng bạn cho chủ mới của khu phố. Bạn phải trả giá đắt bằng máu và tiền bạc mới thoát khỏi vòng vây tại nhà kho ngầm.",
+            resultEn: "Half the veteran squad had secretly sold you out to the block’s new bosses. You paid dearly in blood and coin just to break out of the underground depot ambush.",
+            effects: { wealth: -16, health: -24, sanity: -10, rep: +6, heat: +12 },
+            scarsAdd: ['Vết đâm phản bội ở kho ngầm']
+          }
+        ]
+      },
+      {
+        labelVi: "Đốt sổ mật mã để đổi lấy sự an toàn cho cả hai phía",
+        labelEn: "Burn the cipher ledger to buy clean safety for both sides",
+        resultVi: "Bạn ném cuốn sổ mật mã vào lò sưởi trước mặt toán cựu binh, giải phóng họ khỏi lời thề cũ. Bạn không lấy được đồng tiền bẩn nào, nhưng xóa sạch được một mối họa sát thân.",
+        resultEn: "You tossed the cipher ledger into the brazier before the veterans, releasing them from their old oath. You walked away without dirty coin, yet erased a lethal vendetta.",
+        effects: { heat: -12, sanity: +12, rep: +8 },
+        meritAdd: 12
       }
     ]
   },
@@ -233,24 +288,45 @@ export const LINEAGE_LEGACY_EVENTS = [
     major: true,
     weight: 15,
     requires: ['AncestorWasWingExec'],
+    forbids: ['Distorted'],
     vi: "[Két Sắt Sinh Trắc Học Tại Nest] Một ngân hàng lưu ký tự động tại trung tâm Nest gửi thông báo bảo mật khi quét thấy chuỗi gen của bạn trùng khớp với cố quản lý cấp cao {parentName}. Cánh cửa hợp kim mở ra, để lộ một két an toàn chứa cổ phiếu ưu đãi của Tập đoàn cùng tập hồ sơ đen ghi chép các dự án Singularity chưa từng công bố.",
     en: "[Biometric Nest Vault] An automated depository in the Nest core issues a priority alert upon matching your genetic sequence to former executive {parentName}. The alloy vault parts, revealing preferred corporate shares alongside a black binder of undisclosed Singularity trials.",
     choices: [
       {
-        labelVi: "Thanh khoản cổ phiếu và kích hoạt quỹ tín thác gia tộc",
-        labelEn: "Liquidate the preferred shares and activate the family trust",
-        resultVi: "Tài khoản Ahn của bạn nhảy vọt lên mức thượng lưu, kèm theo quyền ưu tiên giao dịch tại các trạm cung ứng của Nest.",
-        resultEn: "Your Ahn balance surged into upper-class brackets, accompanied by priority clearance at Nest supply depots.",
-        effects: { wealth: +38, sanity: +10, rep: +14 },
-        meritAdd: 18
+        labelVi: "Thanh khoản cổ phiếu sau khi nộp thuế thừa kế và phí kiểm toán Nest",
+        labelEn: "Liquidate the shares after paying Nest inheritance tariffs and audit fees",
+        resultVi: "Sau khi hệ thống tự động khấu trừ hơn một nửa giá trị cho phí bảo trì két và thuế chuyển nhượng Nest, phần tiền sạch còn lại vẫn đủ giúp bạn trang trải cuộc sống, dù tên bạn đã bị đưa vào danh sách theo dõi tài sản của bộ phận nội vụ.",
+        resultEn: "After automated deductions claimed over half the value in vault arrears and Nest transfer tariffs, the clean remainder still bolstered your coffers, though Internal Affairs flagged your name on their asset watchlists.",
+        effects: { wealth: +24, sanity: -6, rep: +8, heat: +8 },
+        meritAdd: 14
       },
       {
-        labelVi: "Sử dụng hồ sơ đen làm đòn bẩy chính trị với giới quản lý Wing",
-        labelEn: "Use the black binder as political leverage over Wing directors",
-        resultVi: "Những bí mật mà {parentName} để lại giúp bạn nắm thóp nhiều nhân vật tai to mặt lớn, mở toang cánh cửa thăng tiến và quan hệ cấp cao.",
-        resultEn: "The secrets {parentName} archived gave you ironclad leverage over senior directors, throwing open the doors to elite networks and advancement.",
-        effects: { network: +24, leverage: +22, rep: +18, heat: +8 },
-        meritAdd: 25
+        labelVi: "Sử dụng hồ sơ đen làm đòn bẩy chính trị với giới quản lý Wing (Canh bạc mạo hiểm)",
+        labelEn: "Use the black binder as political leverage over Wing directors (High-stakes gamble)",
+        outcomes: [
+          {
+            w: 60,
+            resultVi: "Những bí mật mà {parentName} để lại đánh trúng tử huyệt của hai giám đốc bộ phận. Họ buộc phải nhượng bộ quyền lợi cho bạn, nhưng bạn luôn phải ngủ với một mắt mở trước nguy cơ bị thủ tiêu bịt đầu mối.",
+            resultEn: "The secrets {parentName} archived struck the vital nerve of two department directors. They conceded influence to you, though you now sleep with one eye open against corporate cleaners.",
+            effects: { network: +20, leverage: +18, rep: +14, heat: +14, sanity: -10 },
+            meritAdd: 22
+          },
+          {
+            w: 40,
+            resultVi: "Các dữ liệu trong hồ sơ đã bị ban giám đốc đương nhiệm chuẩn bị sẵn phương án phản đòn. Đội an ninh doanh nghiệp tịch thu tài liệu, đóng băng tài khoản phụ của bạn và ghi án phạt vi phạm bảo mật.",
+            resultEn: "The sitting board had already prepared countermeasures for the archived files. Corporate security confiscated the binder, froze your secondary accounts, and logged a confidentiality penalty.",
+            effects: { wealth: -18, sanity: -14, rep: -10, heat: +16, taboo: +10 },
+            scarsAdd: ['Án phạt rò rỉ mật vụ Wing']
+          }
+        ]
+      },
+      {
+        labelVi: "Giao nộp nguyên vẹn tập hồ sơ đen cho ban kiểm soát để đổi lấy miễn trừ",
+        labelEn: "Surrender the sealed black binder to corporate compliance for immunity",
+        resultVi: "Bạn chủ động nộp lại tài liệu mật cho ban kiểm soát nội bộ. Họ thưởng cho bạn một khoản phí tuân thủ vừa phải và xóa bỏ các nghi ngờ an ninh quanh gia đình bạn.",
+        resultEn: "You voluntarily surrendered the classified binder to corporate compliance. They granted you a modest compliance stipend and cleared lingering security flags around your family name.",
+        effects: { wealth: +12, heat: -10, sanity: +10, standing: +8 },
+        meritAdd: 12
       }
     ]
   }

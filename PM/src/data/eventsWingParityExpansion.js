@@ -260,17 +260,17 @@ export const WING_PARITY_MAJORS = [
         labelEn: "Evacuate via the executive tunnel, smuggling out a raw Singularity sample",
         outcomes: [
           {
-            w: 70,
-            resultVi: "Bạn thoát ra ngoài an toàn với lọ mẫu phẩm quý giá. Khu vực bị phong tỏa; một tổ chức tài chính ngầm trả bạn 80 Ahn để sở hữu dữ liệu giải phẫu của Singularity này.",
-            resultEn: "You escape safely with the precious vial. The sector is purged; a shadow syndicate pays you 80 Ahn for the unredacted Singularity blueprints.",
-            effects: { wealth: +80, leverage: +15, sanity: -10, heat: +20 },
+            w: 65,
+            resultVi: "Bạn thoát ra ngoài an toàn với lọ mẫu phẩm quý giá. Khu vực bị phong tỏa; một tổ chức tài chính ngầm trả bạn 42 Ahn để sở hữu dữ liệu giải phẫu của Singularity này, dù đội thanh trừng nội bộ đã bắt đầu truy dấu.",
+            resultEn: "You escape safely with the precious vial. The sector is purged; a shadow syndicate pays you 42 Ahn for the unredacted Singularity blueprints, though internal purgers have begun tracking the leak.",
+            effects: { wealth: +42, leverage: +15, sanity: -10, heat: +20, taboo: +8 },
             flagsAdd: ['wing_singularity_meltdown_done', 'SingularitySmuggler']
           },
           {
-            w: 30,
+            w: 35,
             resultVi: "Thanh tra B Corp chặn bạn ngay tại cửa hầm. Mẫu phẩm bị tịch thu; bạn phải đem toàn bộ quỹ đen ra hối lộ để không bị đưa về District 2 xét xử.",
             resultEn: "B Corp auditors intercept you at the tunnel hatch. The sample is confiscated; you surrender your entire hidden reserve to avoid extradition to District 2.",
-            effects: { wealth: -50, standing: -20, sanity: -15 },
+            effects: { wealth: -40, standing: -20, sanity: -15, heat: +12 },
             flagsAdd: ['wing_singularity_meltdown_done']
           }
         ]
@@ -310,16 +310,24 @@ export const WING_PARITY_MAJORS = [
         ]
       },
       {
-        labelVi: "Bán đứng bản sao sáng chế cho đối phương để lấy quốc tịch Nest đối địch",
-        labelEn: "Sell a copy to the rival Wing in exchange for rival Nest citizenship",
+        labelVi: "Bán đứng bản sao sáng chế cho đối phương để lấy kim phiếu và sự bảo hộ ngầm",
+        labelEn: "Sell a copy to the rival Wing in exchange for bearer drafts and covert protection",
         costAhn: 10,
         outcomes: [
           {
-            w: 80,
-            resultVi: "Giao dịch bí mật hoàn tất trong đêm. Bạn nhận một vali đầy kim phiếu và sự bảo hộ của Wing đối thủ; vị thế của bạn trong tập đoàn cũ được thăng chức vì công trạng 'bảo toàn bí mật'.",
-            resultEn: "The secret exchange concludes by midnight. You secure a suitcase of bearer drafts and rival protection; your old Wing promotes you for 'safeguarding secrets'.",
-            effects: { wealth: +75, leverage: +20, sanity: -8 },
+            w: 65,
+            resultVi: "Giao dịch bí mật hoàn tất trong đêm. Bạn nhận một vali kim phiếu và đường dây bảo hộ ngầm của Wing đối thủ, nhưng bộ phận phản gián của tập đoàn bắt đầu rà soát danh sách đặc sứ.",
+            resultEn: "The secret exchange concludes by midnight. You secure a briefcase of bearer drafts and rival covert backing, though corporate counter-intelligence begins auditing the envoy roster.",
+            effects: { wealth: +45, leverage: +16, sanity: -10, heat: +18, taboo: +12 },
             flagsAdd: ['wing_patent_warfare_done', 'DoubleAgentFeather']
+          },
+          {
+            w: 35,
+            resultVi: "Đặc vụ phản gián cài bẫy ngay tại điểm giao dịch. Bạn phải hủy bản sao và chi đậm để xóa dấu vết, trở về trụ sở với hai bàn tay trắng cùng vết sẹo đạn sượt qua sườn.",
+            resultEn: "Counter-intelligence agents spring a trap at the dead-drop. You destroy the copy and burn your reserves to scrub your trail, limping back to headquarters with a graze across your ribs.",
+            effects: { health: -20, wealth: -25, sanity: -14, standing: -15, heat: +16 },
+            flagsAdd: ['wing_patent_warfare_done'],
+            scarsAdd: ['Vết đạn phản gián giữa hai Wing']
           }
         ]
       }

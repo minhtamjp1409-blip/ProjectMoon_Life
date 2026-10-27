@@ -565,12 +565,14 @@ export function createNewCharacter({
       });
     }
 
-    const echoState = { wealth, rep, network, resonance, flags, inheritedEchoes };
+    const echoState = { wealth, rep, network, resonance, heat, sanity, flags, inheritedEchoes };
     applyAncestorEchoInheritance(parentLegacy, echoState);
     wealth = echoState.wealth;
     rep = echoState.rep;
     network = echoState.network;
     resonance = echoState.resonance;
+    heat = echoState.heat;
+    sanity = echoState.sanity;
   }
 
   let deathAtChildAge = 0;
