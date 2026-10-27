@@ -1371,3 +1371,22 @@ Chủ dự án yêu cầu làm lại toàn bộ giao diện lần nữa: bỏ t�
   * Phân tầng hiệu ứng khi thực hiện hành động trọng đại trong Workshop: **Khảm Cổ Vật Singularity** kích hoạt `audioEngine.playBuff()` + rung chấn màn hình `gameFeel.addTrauma(0.24)` kèm băng rôn trạng thái `.depot-feedback.is-imbue`; **Khởi Hành Liên Quận** kích hoạt `audioEngine.playCoinChime()` + `gameFeel.addTrauma(0.14)` kèm băng rôn xác nhận `.depot-feedback.is-transit`.
   * Bổ sung kiểm thử tự động Pillar 5 trong `tests/test_batch64_system_upgrades.mjs` và cố định seed kiểm thử trong `tests/test_dungeon_enhancements.mjs`; toàn bộ **53/53 bộ test suites** và bản build production đều đạt chuẩn 100%.
 
+
+### Đợt 67 (27/10/2026): Tối Ưu Quản Lý Cấp Dưới & Ủy Thác Quyền Lực Đa Tuyến (Không Ôm Đồm UI, Bảo Toàn Tuyệt Đối Các Bài Test Lặp)
+
+* **1. Mở Rộng Cơ Chế Thu Nạp & Đào Tạo Cấp Dưới (`mentee`) Sang Wing, Syndicate/Fingers & Color Fixer (`src/engine/affiliation.js`, `src/data/npcPersonality.js`, `src/engine/eventConditions.js`):**
+  * Mở rộng `affiliationYearTick`, `plantStoryBeats` và `menteeYear` trong `src/engine/affiliation.js` để không chỉ Fixer mà cả **Color Fixer**, **Trưởng phòng / Giám đốc Wing (`wingRank >= 2`)** và **Chỉ huy / Thủ lĩnh Ngón Tay (`fingerRank >= 2`)** đều có thể thu nạp, kèm cặp và chứng kiến cấp dưới thân tín (`mentee`) trưởng thành qua từng năm.
+  * Khi `mentee` được thu nạp hoặc xuất sư (`graduated: true`), chức danh nghề nghiệp trong hồ sơ NPC (`rankLabelVi` / `rankLabelEn`) và thông điệp biên niên sử tự động thích ứng với nhánh của người chơi: *Trợ lý Feather (Đệ tử)* → *Trưởng tổ Feather (Đã xuất sư)* ở Wing; *Đàn em kế cận The Finger* → *Chỉ huy nhánh phố (Đã xuất sư)* ở Syndicate; *Fixer trẻ (Đệ tử Grade 8)* → *Fixer độc lập (Đã xuất sư)* ở Hiệp hội/Fixer.
+
+* **2. Hành Động Tương Tác Chỉ Huy "Ủy Thác Việc Tổ Chức" (`delegate_command`) Theo Triết Lý Hard-But-Fair (`src/engine/npcInteractions.js`, `src/features/chronicle/components/NpcDossierModal.jsx`):**
+  * Bổ sung hành động thứ 5 **`delegate_command` (*Ủy thác việc tổ chức / Delegate Faction Task*)** trực tiếp vào bảng tương tác trong `NpcDossierModal.jsx` khi người chơi đạt cấp độ chỉ huy (`isFactionLeader`: Fixer Grade 2+, Chủ Office, Section Director, Color Fixer, Wing Rank 2+, hoặc Finger Rank 2+) và mở hồ sơ của `mentee` hoặc `partner` (yêu cầu `bond >= 35`, không bị thương/khủng hoảng, giới hạn 1 lần/năm).
+  * **Đánh đổi Hard-But-Fair:** Cấp dưới thay mặt bạn giải quyết phần việc nhạy cảm của tổ chức, mang về **`+6 Merit`, `+6 Ahn`, `-10 Heat`** (cùng `+5 Standing` cho Wing hoặc `+4 Standing` cho Association và `+12` tiến độ đào tạo đệ tử), nhưng tiêu hao **`-6 Gắn kết`** do áp lực mệnh lệnh và có **35% rủi ro** cấp dưới rơi vào phục kích/thanh tra (`crisis.severity = 45`), đồng thời tự động gieo nhân quả sự kiện `aff_subordinate_reckoning` vào năm kế tiếp.
+
+* **3. Chuỗi Sự Kiện Nhân Sự Ngữ Cảnh (`causalOnly: true`, Không Gây Loãng Pool Hay Lặp Bài Test — `src/data/eventsAffiliation.js`, `src/engine/gameEngine.js`, `tools/lint/voice_lint.mjs`):**
+  * Bổ sung 3 sự kiện lớn gắn cờ `weight: 0, causalOnly: true` (kích hoạt qua hàng đợi `pendingThreads` khi đủ điều kiện nhân quả, đảm bảo không làm thay đổi tỷ lệ rơi sự kiện ngẫu nhiên hay phá vỡ các bài kiểm thử chống lặp `test_apex_path.mjs`, `test_finger_parity.mjs`, `test_wing_route.mjs`):
+    * `aff_mentee_wing`: Ban nhân sự Wing phân công một Feather trẻ về dưới quyền Trưởng phòng/Giám đốc (`wingRank >= 2`).
+    * `aff_mentee_syndicate`: Một đàn em sống sót qua đợt thanh trừng xin đứng dưới trướng chỉ huy Finger (`fingerRank >= 2`).
+    * `aff_subordinate_reckoning`: Sự kiện đối chất nhân quả sau khi cấp dưới bị thương vì lệnh ủy thác của bạn — buộc người đứng đầu chọn giữa: **(a)** Đứng ra nhận trách nhiệm và tự bỏ tiền lo thuốc men (`-8 Ahn, -4 Rep, +16 Gắn kết, +20 Tiến độ`), **(b)** Giữ kỷ luật sắt của tổ chức (`+8 Merit, +4 Rep, -8 Gắn kết, -3 SP`), hoặc **(c)** Đẩy hết tội lỗi cho cấp dưới để giữ sạch hồ sơ (`-14 Heat, +6 Ahn, +6 Merit`, cấp dưới cắt đứt quan hệ `estranged`).
+  * Bổ sung nội suy biến `{mentee}` trong `interpolateText` (`src/engine/gameEngine.js`) và `tools/lint/voice_lint.mjs`, đồng thời mở rộng kiểm thử tự động trong `tests/test_npc_dynamic_agency.mjs`.
+
+

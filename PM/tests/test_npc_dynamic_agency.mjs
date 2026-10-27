@@ -179,4 +179,55 @@ assert.ok(apprenticeSuccessor.npcs.nemesis, 'Successor must inherit active nemes
 assert.equal(apprenticeSuccessor.npcs.nemesis.nameVi, 'Argalia');
 assert.ok(apprenticeSuccessor.npcs.nemesis.memories[0].vi.includes('Thừa kế mối thù'));
 
+// 6. Leadership Subordinate Delegation & Cross-Route Mentee Progression
+import { affiliationYearTick } from '../src/engine/affiliation.js';
+import { resolveEventChoice, ALL_STORY_EVENTS } from '../src/engine/gameEngine.js';
+
+const wingLeader = createNewCharacter({ seed: 'test-wing-leader', startAge: 32 });
+wingLeader.job = 'Wing Employee';
+wingLeader.wingRank = 2;
+wingLeader.standing = 50;
+wingLeader.heat = 30;
+wingLeader.stats.wealth = 40;
+
+// Tick affiliationYearTick with low rng to plant aff_mentee_wing
+affiliationYearTick(wingLeader, () => 0.1);
+assert.ok(
+  wingLeader.weaver.pendingThreads.some((t) => t.eventId === 'aff_mentee_wing'),
+  'Wing Rank 2+ leader should be offered a junior Feather mentee via aff_mentee_wing'
+);
+
+// Resolve aff_mentee_wing choice 0 (accept attaché)
+const wingMenteeEvent = ALL_STORY_EVENTS.find((e) => e.id === 'aff_mentee_wing');
+assert.ok(wingMenteeEvent, 'aff_mentee_wing must exist in ALL_STORY_EVENTS');
+wingLeader.pendingEvent = wingMenteeEvent;
+const afterMenteeAccept = resolveEventChoice(wingLeader, 0, () => 0.5);
+assert.ok(afterMenteeAccept.flags.includes('Mentoring'), 'Wing leader should gain Mentoring flag');
+assert.ok(afterMenteeAccept.npcs.mentee, 'Wing leader should gain mentee NPC');
+assert.equal(afterMenteeAccept.npcs.mentee.job, 'Wing Employee', 'Wing mentee job should align with Wing Employee');
+
+// Test delegate_command (clean run first at age 32, then fallout at age 33)
+const canDelegate = canInteractWithNpc(afterMenteeAccept, 'mentee', 'delegate_command');
+assert.equal(canDelegate.ok, true, 'Wing Rank 2 leader can delegate organizational task to mentee');
+
+const cleanDel = executeNpcInteraction(afterMenteeAccept, 'mentee', 'delegate_command', () => 0.8);
+assert.equal(cleanDel.success, true);
+assert.equal(cleanDel.nextChar.merit, (afterMenteeAccept.merit || 0) + 6, 'Delegation grants +6 Merit');
+assert.equal(cleanDel.nextChar.heat, 20, 'Delegation reduces Heat by 10');
+assert.equal(cleanDel.nextChar.npcs.mentee.bond, 44, 'Delegation costs 6 Bond');
+
+// Cooldown check in same year
+const sameYearDelegate = canInteractWithNpc(cleanDel.nextChar, 'mentee', 'delegate_command');
+assert.equal(sameYearDelegate.ok, false, 'Cannot delegate twice in the same year');
+
+// Next year fallout roll (< 0.35) plants aff_subordinate_reckoning
+cleanDel.nextChar.age = 33;
+const falloutDel = executeNpcInteraction(cleanDel.nextChar, 'mentee', 'delegate_command', () => 0.1);
+assert.equal(falloutDel.success, true);
+assert.ok(falloutDel.nextChar.npcs.mentee.crisis.severity > 0, 'Fallout inflicts acute crisis on mentee');
+assert.ok(
+  falloutDel.nextChar.weaver.pendingThreads.some((t) => t.eventId === 'aff_subordinate_reckoning'),
+  'Fallout on mentee plants aff_subordinate_reckoning thread'
+);
+
 console.log('All NPC Dynamic Agency & Interactive tests passed successfully!');

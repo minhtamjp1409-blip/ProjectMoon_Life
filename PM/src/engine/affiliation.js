@@ -62,7 +62,7 @@ export function ensureAffiliation(char) {
 }
 
 export function laneOf(char) {
-  if (!char || char.job !== 'Fixer' || has(char, 'Distorted')) return null;
+  if (!char || (char.job !== 'Fixer' && char.job !== 'Color Fixer') || has(char, 'Distorted')) return null;
   const a = getAffiliation(char);
   if (a) return a.kind;
   return has(char, 'OwnFixerOffice') ? 'owner' : 'free';
@@ -158,7 +158,7 @@ export function getAffiliationInvite(char) {
 }
 
 /** Queues a story beat for the weaver to bring up, once, unless one of the same kind is already waiting. */
-function plantThread(char, eventId, delay, reasonVi, reasonEn) {
+export function plantThread(char, eventId, delay, reasonVi, reasonEn) {
   const pending = char.weaver?.pendingThreads || [];
   if (pending.some((t) => t.eventId === eventId && !t.fulfilled)) return;
   char.weaver = {
@@ -261,17 +261,50 @@ function menteeYear(char, logs) {
   if (m.progress >= 100) {
     char.mentee = null;
     char.menteesTrained = (char.menteesTrained || 0) + 1;
-    char.npcs = { ...char.npcs, mentee: { ...char.npcs.mentee, graduated: true } };
+    const gradLabelVi = char.job === 'Wing Employee'
+      ? 'Trưởng tổ Feather (Đã xuất sư)'
+      : char.job === 'Syndicate'
+        ? 'Chỉ huy nhánh phố (Đã xuất sư)'
+        : 'Fixer độc lập (Đã xuất sư)';
+    const gradLabelEn = char.job === 'Wing Employee'
+      ? 'Feather Unit Lead (Graduated)'
+      : char.job === 'Syndicate'
+        ? 'Branch Captain (Graduated)'
+        : 'Independent Fixer (Graduated)';
+    char.npcs = {
+      ...char.npcs,
+      mentee: {
+        ...char.npcs.mentee,
+        graduated: true,
+        rankLabelVi: gradLabelVi,
+        rankLabelEn: gradLabelEn
+      }
+    };
     dropFlag(char, 'Mentoring');
     addFlag(char, 'MentorGraduate');
     char.stats.rep = clamp(char.stats.rep + 4, 0, 100);
     char.stats.network = clamp(char.stats.network + 5, 0, 100);
     const a = char.affiliation;
     if (a) a.standing = clamp(a.standing + 6, 0, 100);
+    if (char.job === 'Wing Employee' && char.standing != null) {
+      char.standing = clamp(char.standing + 6, 0, 100);
+    }
+    const mNameVi = char.npcs.mentee.nameVi || 'Người bạn dìu dắt';
+    const mNameEn = char.npcs.mentee.nameEn || 'The junior you trained';
+    const gradVi = char.job === 'Wing Employee'
+      ? `[Lứa sau] ${mNameVi} vượt qua kỳ đánh giá nội bộ của Wing và được bổ nhiệm phụ trách một tổ chuyên trách riêng. Trước khi chuyển sang tầng mới, họ đặt bản báo cáo cuối cùng lên bàn bạn và cúi đầu chào.`
+      : char.job === 'Syndicate'
+        ? `[Lứa sau] ${mNameVi} tự mình dẫn một toán người giữ trọn khu phố mà không cần bạn ra mặt. Khi việc xong, họ đến cúi đầu trước bạn đúng lễ nghĩa của Finger rồi bước về nhánh của mình.`
+        : `[Lứa sau] ${mNameVi} nhận Request đầu tiên mà không cần bạn đứng sau lưng. Khi người ấy đi, họ cúi đầu một lần, và bạn nhận ra mình đang đứng đúng chỗ người từng dạy bạn đã đứng.`;
+    const gradEn = char.job === 'Wing Employee'
+      ? `[The next generation] ${mNameEn} passes the Wing’s internal review and is appointed to head a unit of their own. Before moving to the new floor, they set a final report on your desk and bow once.`
+      : char.job === 'Syndicate'
+        ? `[The next generation] ${mNameEn} leads a crew to hold a street block without needing you to step in. When it is done, they bow before you in the Finger’s proper manner and return to their own branch.`
+        : `[The next generation] ${mNameEn} takes a first Request without you standing behind. On leaving they bow once, and you realize you are standing where whoever taught you once stood.`;
     logs.push({
       key: 'mentee_graduate', type: 'story',
-      vi: `[Lứa sau] ${char.npcs.mentee.nameVi || 'Người bạn dìu dắt'} nhận Request đầu tiên mà không cần bạn đứng sau lưng. Khi người ấy đi, họ cúi đầu một lần, và bạn nhận ra mình đang đứng đúng chỗ người từng dạy bạn đã đứng.`,
-      en: `[The next generation] ${char.npcs.mentee.nameEn || 'The junior you trained'} takes a first Request without you standing behind. On leaving they bow once, and you realize you are standing where whoever taught you once stood.`
+      vi: gradVi,
+      en: gradEn
     });
     return;
   }
@@ -287,6 +320,22 @@ function menteeYear(char, logs) {
 
 /** The slower stories of a long career: a chair, a junior, an Office of your own. They come as threads so they do not drown in the pool. */
 function plantStoryBeats(char, rng) {
+  if (char.job === 'Wing Employee') {
+    if (char.age >= 28 && (char.wingRank || 0) >= 2 && !has(char, 'Mentoring') && (char.menteesTrained || 0) < 2 &&
+        char.age - (char.lastMenteeOfferAge ?? -99) >= 6 && rng() < 0.25) {
+      char.lastMenteeOfferAge = char.age;
+      plantThread(char, 'aff_mentee_wing', 1, 'Một nhân sự trẻ của Wing được phân về dưới quyền bạn', 'A junior Wing operative is assigned under your command');
+    }
+    return;
+  }
+  if (char.job === 'Syndicate') {
+    if (char.age >= 28 && (char.fingerRank || 0) >= 2 && !has(char, 'Mentoring') && (char.menteesTrained || 0) < 2 &&
+        char.age - (char.lastMenteeOfferAge ?? -99) >= 6 && rng() < 0.25) {
+      char.lastMenteeOfferAge = char.age;
+      plantThread(char, 'aff_mentee_syndicate', 1, 'Một đàn em trẻ trong Finger xin đi theo học việc dưới trướng bạn', 'A young initiate in the Finger asks to serve under your wing');
+    }
+    return;
+  }
   const a = getAffiliation(char);
   const grade = char.fixerGrade ?? 9;
   if (a?.kind === 'assoc' && a.section === 1 && !a.director && grade <= 3 && !char.directorOffered) {
@@ -319,7 +368,13 @@ function plantStoryBeats(char, rng) {
  */
 export function affiliationYearTick(char, rng) {
   const logs = [];
-  if (char.job !== 'Fixer' || has(char, 'Distorted')) return logs;
+  if (has(char, 'Distorted')) return logs;
+  if (char.job === 'Wing Employee' || char.job === 'Syndicate') {
+    plantStoryBeats(char, rng);
+    menteeYear(char, logs);
+    return logs;
+  }
+  if (char.job !== 'Fixer' && char.job !== 'Color Fixer') return logs;
   const a = ensureAffiliation(char);
 
   if (a) {
@@ -417,6 +472,31 @@ export function applyAffiliationChoice(char, src) {
   if (src.menteeStart) {
     char.mentee = { sinceAge: char.age, progress: 0 };
     addFlag(char, 'Mentoring');
+    if (char.npcs?.mentee) {
+      if (char.job === 'Wing Employee') {
+        char.npcs = {
+          ...char.npcs,
+          mentee: {
+            ...char.npcs.mentee,
+            job: 'Wing Employee',
+            rank: 1,
+            rankLabelVi: 'Trợ lý Feather (Đệ tử)',
+            rankLabelEn: 'Junior Feather Protege'
+          }
+        };
+      } else if (char.job === 'Syndicate') {
+        char.npcs = {
+          ...char.npcs,
+          mentee: {
+            ...char.npcs.mentee,
+            job: 'Syndicate',
+            rank: 1,
+            rankLabelVi: char.finger ? `Đàn em kế cận The ${char.finger}` : 'Đàn em kế cận Syndicate',
+            rankLabelEn: char.finger ? `The ${char.finger} Protege` : 'Syndicate Protege'
+          }
+        };
+      }
+    }
   }
   const mentee = char.npcs?.mentee;
   if (mentee && src.menteeBond) {

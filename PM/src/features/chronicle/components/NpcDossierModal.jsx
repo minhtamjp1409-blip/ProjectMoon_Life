@@ -227,6 +227,7 @@ export const NpcDossierModal = ({ npcRole, onClose }) => {
                       {action.id === 'spar_coordinate' && '-2 HP'}
                       {action.id === 'emergency_aid' && (lang === 'en' ? 'Aid Crisis' : 'Cứu viện')}
                       {action.id === 'call_favor' && (lang === 'en' ? 'Use Favor' : 'Đòi ân nghĩa')}
+                      {action.id === 'delegate_command' && (lang === 'en' ? '-6 Bond · 35% Risk' : '-6 Gắn kết · 35% Rủi ro')}
                     </span>
                   </button>
                 );

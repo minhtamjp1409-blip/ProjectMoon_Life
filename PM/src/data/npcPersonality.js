@@ -361,6 +361,15 @@ export function rollNpcCareer(archetype, role, rng = Math.random) {
       district: NPC_DISTRICTS[Math.floor(rng() * NPC_DISTRICTS.length)]
     };
   }
+  if (role === 'mentee') {
+    return {
+      job: 'Fixer',
+      rank: 8,
+      rankLabelVi: 'Fixer trẻ (Đệ tử Grade 8)',
+      rankLabelEn: 'Junior Fixer (Grade 8 Protege)',
+      district: NPC_DISTRICTS[Math.floor(rng() * NPC_DISTRICTS.length)]
+    };
+  }
   if (role === 'child' || role === 'ward') {
     return {
       job: 'Apprentice',

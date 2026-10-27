@@ -9,6 +9,17 @@
 
 import { npcIsActive } from './eventConditions.js';
 import { bondCapFor, ensureNpcAgency } from '../data/npcPersonality.js';
+import { plantThread } from './affiliation.js';
+
+export function isFactionLeader(char) {
+  if (!char) return false;
+  const flags = char.flags || [];
+  if (char.job === 'Color Fixer' || char.fixerGrade === 0 || flags.includes('ColorFixer')) return true;
+  if (char.job === 'Fixer' && ((char.fixerGrade ?? 9) <= 2 || flags.includes('AssocDirector') || flags.includes('OwnFixerOffice'))) return true;
+  if (char.job === 'Wing Employee' && (char.wingRank || 0) >= 2) return true;
+  if (char.job === 'Syndicate' && (char.fingerRank || 0) >= 2) return true;
+  return false;
+}
 
 export const NPC_INTERACTION_ACTIONS = [
   {
@@ -44,6 +55,14 @@ export const NPC_INTERACTION_ACTIONS = [
     nameEn: 'Call In A Favor',
     descVi: 'Nhờ vả ân nghĩa để họ tận dụng vị trí trong Wing, Syndicate hoặc mạng lưới Fixer giúp đỡ bạn.',
     descEn: 'Call in owed gratitude, leveraging their rank in a Wing, Syndicate, or Fixer network to aid you.'
+  },
+  {
+    id: 'delegate_command',
+    nameVi: 'Ủy thác việc tổ chức',
+    nameEn: 'Delegate Faction Task',
+    descVi: 'Giao phần việc gai góc của tổ chức cho cấp dưới/cộng sự gánh vác (+6 Merit, +6 Ahn, -10 Heat, nhưng giảm 6 Gắn kết và có 35% rủi ro họ gặp nguy biến).',
+    descEn: 'Assign a hazardous organizational task to your subordinate or partner (+6 Merit, +6 Ahn, -10 Heat, costs 6 Bond with a 35% risk of acute crisis).',
+    cooldownYears: 1
   }
 ];
 
@@ -91,6 +110,25 @@ export function canInteractWithNpc(char, role, actionId) {
     const isSworn = (npc.bond || 0) >= 70;
     if (!hasDebt && !isSworn) {
       return { ok: false, reasonVi: 'Họ không nợ ân huệ của bạn và chưa đủ gắn kết (cần 70 Gắn bó)', reasonEn: 'They owe no favors and bond is not yet sworn (need 70 Bond)' };
+    }
+    return { ok: true };
+  }
+
+  if (actionId === 'delegate_command') {
+    if (!['mentee', 'partner'].includes(role)) {
+      return { ok: false, reasonVi: 'Chỉ có thể ủy thác việc tổ chức cho Đệ tử hoặc Cộng sự tác chiến', reasonEn: 'Only a Mentee or Combat Partner can be delegated organizational tasks' };
+    }
+    if (!isFactionLeader(char)) {
+      return { ok: false, reasonVi: 'Cần giữ vị trí chỉ huy (Grade 2+, Chủ Office, Director, Wing Rank 2+, hoặc Finger Rank 2+)', reasonEn: 'Requires command rank (Grade 2+, Office Owner, Director, Wing Rank 2+, or Finger Rank 2+)' };
+    }
+    if (npc.status === 'wounded' || (npc.crisis && npc.crisis.severity > 0 && npc.crisis.type !== 'none')) {
+      return { ok: false, reasonVi: 'Họ đang mang thương tích hoặc khủng hoảng, không thể gánh thêm lệnh ủy thác', reasonEn: 'They are wounded or in crisis and cannot take on another assignment' };
+    }
+    if ((npc.bond || 0) < 35) {
+      return { ok: false, reasonVi: 'Mức gắn kết quá thấp để giao việc nhạy cảm (cần 35 Gắn kết)', reasonEn: 'Bond too low to entrust sensitive operations (need 35 Bond)' };
+    }
+    if (npc.lastDelegatedAge === char.age) {
+      return { ok: false, reasonVi: 'Bạn đã ủy thác nhiệm vụ cho họ trong năm nay rồi', reasonEn: 'You have already delegated an operation to them this year' };
     }
     return { ok: true };
   }
@@ -214,6 +252,57 @@ export function executeNpcInteraction(char, role, actionId, rng = Math.random) {
       vi: `[Đền đáp ân nghĩa] Bạn liên lạc với ${name} yêu cầu sự trợ giúp. Không một lời từ chối, ${rewardVi}`,
       en: `[Calling the Debt] You called upon ${npc.nameEn} for aid. Without hesitation, ${rewardEn}`
     };
+  } else if (actionId === 'delegate_command') {
+    npc.lastDelegatedAge = age;
+    npc.bond = Math.max(0, (npc.bond || 40) - 6);
+    nextChar.merit = (nextChar.merit || 0) + 6;
+    nextChar.stats.wealth = Math.min(100, (nextChar.stats.wealth || 0) + 6);
+    nextChar.heat = Math.max(0, (nextChar.heat || 0) - 10);
+    if (nextChar.job === 'Wing Employee' && nextChar.standing != null) {
+      nextChar.standing = Math.min(100, nextChar.standing + 5);
+    }
+    if (nextChar.affiliation) {
+      nextChar.affiliation.standing = Math.min(100, (nextChar.affiliation.standing || 50) + 4);
+    }
+    if (role === 'mentee' && nextChar.mentee) {
+      nextChar.mentee.progress = Math.min(99, (nextChar.mentee.progress || 0) + 12);
+    }
+
+    const sufferedFallout = rng() < 0.35;
+    if (sufferedFallout) {
+      npc.crisis = {
+        type: 'ambush',
+        severity: 45,
+        labelVi: 'Thương tích & rắc rối khi gánh lệnh ủy thác thay bạn',
+        labelEn: 'Wounded & audited carrying out your delegated order'
+      };
+      if (role === 'mentee') {
+        plantThread(
+          nextChar,
+          'aff_subordinate_reckoning',
+          1,
+          'Cấp dưới trở về với thương tích sau lệnh ủy thác của bạn',
+          'Your subordinate returns wounded from the task you delegated'
+        );
+      }
+      const memoryTextVi = `Năm ${age} tuổi: Gánh phần việc nguy hiểm do bạn ủy thác và bị thương nặng.`;
+      const memoryTextEn = `Age ${age}: Carried out a hazardous task you delegated and suffered heavy fallout.`;
+      npc.memories = [...(npc.memories || []), { age, vi: memoryTextVi, en: memoryTextEn }].slice(-6);
+
+      log = {
+        vi: `[Ủy thác trả giá đắt] Bạn giao phần việc gai góc của tổ chức cho ${name} xử lý. Nhiệm vụ hoàn tất trót lọt, hồ sơ của bạn sạch dấu vết, nhưng ${name} rơi vào ổ phục kích và đang lâm vào khủng hoảng cần cứu viện. (+6 Merit, +6 Ahn, -10 Heat, -6 Gắn kết · Cảnh báo khủng hoảng)`,
+        en: `[Costly Delegation] You assigned a thorny organizational operation to ${npc.nameEn}. The task succeeded and your ledger stays clean, but ${npc.nameEn} walked into an ambush and now faces an acute crisis. (+6 Merit, +6 Ahn, -10 Heat, -6 Bond · Crisis Alert)`
+      };
+    } else {
+      const memoryTextVi = `Năm ${age} tuổi: Thay mặt bạn giải quyết gọn gàng công việc của tổ chức.`;
+      const memoryTextEn = `Age ${age}: Handled a sensitive organizational operation on your behalf.`;
+      npc.memories = [...(npc.memories || []), { age, vi: memoryTextVi, en: memoryTextEn }].slice(-6);
+
+      log = {
+        vi: `[Ủy thác việc tổ chức] ${name} thay mặt bạn đứng mũi chịu sào xử lý êm thấm phần việc nhạy cảm của tổ chức, mang về cả chiến công lẫn lợi tức mà không để lại dấu vết trên hồ sơ của bạn. (+6 Merit, +6 Ahn, -10 Heat, -6 Gắn kết)`,
+        en: `[Delegated Operation] ${npc.nameEn} handled a sensitive organizational assignment in your stead, securing both Merit and profit while keeping your own hands clean. (+6 Merit, +6 Ahn, -10 Heat, -6 Bond)`
+      };
+    }
   }
 
   nextChar.npcs[role] = npc;

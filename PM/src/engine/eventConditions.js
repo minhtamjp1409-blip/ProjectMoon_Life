@@ -64,9 +64,10 @@ export function matchesNeed(need, char) {
   if (need.mem && !remembers(need.mem)) return false;
   if (need.noMem && remembers(need.noMem)) return false;
   if (need.grade) {
-    if (char.job !== 'Fixer' || char.fixerGrade == null) return false;
     const min = Math.min(need.grade[0], need.grade[1]);
     const max = Math.max(need.grade[0], need.grade[1]);
+    const isColorAllowed = min === 0 && char.job === 'Color Fixer';
+    if ((char.job !== 'Fixer' && !isColorAllowed) || char.fixerGrade == null) return false;
     if (char.fixerGrade < min || char.fixerGrade > max) return false;
   }
   if (need.aff || need.affSection || need.affYears != null || need.affStanding) {
@@ -94,7 +95,7 @@ export function matchesNeed(need, char) {
   return true;
 }
 
-const roles = ['friend', 'partner', 'mentor', 'lover', 'spouse', 'child', 'ward', 'parent', 'rival', 'nemesis'];
+const roles = ['friend', 'partner', 'mentor', 'lover', 'spouse', 'child', 'ward', 'parent', 'rival', 'nemesis', 'mentee'];
 export function hasNarrativeContext(entry, char) {
   const text = [entry.vi, entry.en, entry.ignore?.rvi, entry.ignore?.ren,
     ...(entry.choices || []).flatMap((choice) => [choice.vi, choice.en, choice.rvi, choice.ren,

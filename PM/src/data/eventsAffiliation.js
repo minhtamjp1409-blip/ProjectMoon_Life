@@ -235,7 +235,7 @@ const lifecycleEvents = [
   },
   {
     id: 'aff_director_offer',
-    age: [36, 99], major: true, weight: 0, causalOnly: true, jobs: ['Fixer'], forbids: ['AssocDirector'],
+    age: [36, 99], major: true, weight: 0, causalOnly: true, jobs: ['Fixer', 'Color Fixer'], forbids: ['AssocDirector'],
     need: { aff: 'assoc', affSection: [1, 1], grade: [0, 3] },
     vi: '[Chiếc ghế Director] Section 1 của Association không còn ai đủ tư cách ngồi cùng bạn. Director cũ muốn rời, và danh sách tên người thay thế chỉ có một dòng. Người điều phối đặt chìa khóa phòng họp lên bàn và không nói gì.',
     en: '[The Director’s chair] Your Association’s Section 1 has no one left worthy of sitting beside you. The old Director wants to step down, and the list of replacements has one line. The coordinator sets the meeting-room key on the table and says nothing.',
@@ -258,7 +258,7 @@ const lifecycleEvents = [
   },
   {
     id: 'aff_mentee_assoc',
-    age: [32, 99], major: true, weight: 0, causalOnly: true, jobs: ['Fixer'], repeatable: true, forbids: ['Mentoring'],
+    age: [32, 99], major: true, weight: 0, causalOnly: true, jobs: ['Fixer', 'Color Fixer'], repeatable: true, forbids: ['Mentoring'],
     need: { aff: 'any', grade: [0, 5] },
     vi: '[Một người trẻ được giao cho bạn] Association của bạn có một Fixer trẻ vừa nhận giấy phép và chưa nhận nổi một Request cho tử tế. Người điều phối chỉ vào bạn: "Cho bạn tập một năm, hai năm cũng được." Người trẻ đứng cạnh, tay nắm chặt dây đeo.',
     en: '[A junior assigned to you] Your Association has a young Fixer who just got a license and cannot yet hold a Request properly. The coordinator points at you: “Let them train under you a year, two if needed.” The young one stands beside, gripping their strap.',
@@ -279,7 +279,7 @@ const lifecycleEvents = [
   },
   {
     id: 'aff_mentee_free',
-    age: [32, 99], major: true, weight: 0, causalOnly: true, jobs: ['Fixer'], repeatable: true, forbids: ['Mentoring'],
+    age: [32, 99], major: true, weight: 0, causalOnly: true, jobs: ['Fixer', 'Color Fixer'], repeatable: true, forbids: ['Mentoring'],
     need: { aff: 'free', grade: [0, 5] },
     vi: '[Một người trẻ tự tìm đến] Một Fixer trẻ không thuộc nơi nào đứng chờ bạn trước cửa với một bản danh sách các Request họ đã trượt. Họ không xin tiền. Họ xin bạn nói cho họ biết họ đã sai ở đâu.',
     en: '[A junior comes on their own] A young Fixer belonging nowhere waits at your door with a list of Requests they have failed. They do not ask for money. They ask you to tell them where they went wrong.',
@@ -299,8 +299,50 @@ const lifecycleEvents = [
     ]
   },
   {
+    id: 'aff_mentee_wing',
+    age: [28, 99], major: true, weight: 0, causalOnly: true, jobs: ['Wing Employee'], repeatable: true, forbids: ['Mentoring'],
+    need: { wingRankAtLeast: 2 },
+    vi: '[Nhân sự trẻ dưới quyền] Ban nhân sự của Wing điều một Feather trẻ vừa qua kỳ sát hạch về dưới phòng ban của bạn. Hồ sơ điểm số rất đẹp, nhưng tay họ vẫn run khi đóng dấu lệnh thu hồi đầu tiên. Họ đứng chờ bạn phân công.',
+    en: '[A junior Feather assigned to your desk] Wing personnel assigns a newly cleared Feather to your department. Their test scores are spotless, yet their hand trembles when stamping a first reclamation order. They wait by your desk for instructions.',
+    choices: [
+      {
+        labelVi: 'Nhận kèm cặp trực tiếp làm trợ lý thân tín', labelEn: 'Train them directly as your personal attaché',
+        resultVi: 'Bạn chỉ cho họ dòng nào trong báo cáo của Wing cần đọc, và dòng nào viết ra chỉ để đổ lỗi khi sự cố nổ ra. Họ lắng nghe không sót chữ nào, rồi lặng lẽ pha lại ấm cà phê trên bàn bạn.',
+        resultEn: 'You show them which lines in a Wing report matter, and which are written only to assign blame when an incident breaks. They listen to every word, then quietly brew a fresh pot of coffee for your desk.',
+        menteeStart: true, npcAdd: { role: 'mentee', bond: 50 }, flagsAdd: ['MentorStarted'], effects: { sanity: 2, wealth: -2, network: 4, standing: 3 }, meritAdd: 5
+      },
+      {
+        labelVi: 'Chuyển sang bộ phận hành chính chung', labelEn: 'Reassign them to the general clerical pool',
+        resultVi: 'Bạn ký giấy chuyển họ sang bàn tổng hợp số liệu. Họ cúi chào đúng quy chuẩn tập đoàn, nhưng phòng ban của bạn vẫn thiếu một người đủ tin cậy để chia lửa.',
+        resultEn: 'You sign the transfer to general data processing. They bow to corporate specification, though your department remains short of a trusted pair of hands.',
+        effects: { sanity: 1, standing: -2 }
+      }
+    ]
+  },
+  {
+    id: 'aff_mentee_syndicate',
+    age: [28, 99], major: true, weight: 0, causalOnly: true, jobs: ['Syndicate'], repeatable: true, forbids: ['Mentoring'],
+    need: { fingerRankAtLeast: 2 },
+    vi: '[Đàn em xin theo hầu] Một kẻ trẻ tuổi vừa sống sót qua đợt thanh lọc ở ngõ sau tìm đến chỗ bạn ngồi. Áo khoác của họ còn vết rách chưa khâu, nhưng ánh mắt không hề tránh né. Họ muốn đứng dưới trướng bạn và học luật của Finger từ chính tay bạn.',
+    en: '[An initiate asks to serve] A young survivor from a back-alley purge approaches your table. Their coat still bears an unmended tear, but their gaze does not flinch. They ask to stand under your banner and learn the Finger’s law from your hand.',
+    choices: [
+      {
+        labelVi: 'Thu nạp làm đệ tử thân tín dưới trướng', labelEn: 'Take them in as your sworn protégé',
+        resultVi: 'Bạn ném cho họ một con dao sạch và chỉ chỗ đứng sau lưng ghế mình. Ở thế giới ngầm của Finger, thêm một người dám chắn lưỡi đao phía sau còn quý hơn chục kẻ chỉ biết hô hào.',
+        resultEn: 'You toss them a clean blade and point to the spot behind your chair. In the Finger’s underworld, one person willing to guard your back is worth ten who only shout.',
+        menteeStart: true, npcAdd: { role: 'mentee', bond: 50 }, flagsAdd: ['MentorStarted'], effects: { sanity: 2, wealth: -2, network: 4, rep: 2 }, meritAdd: 5
+      },
+      {
+        labelVi: 'Đuổi đi: bạn không giữ người chưa rõ gốc gác', labelEn: 'Send them away: you keep no untested strays',
+        resultVi: 'Bạn phất tay bảo họ quay về đội tuần tra ngoài phố. Họ cúi đầu lùi ra cửa, không oán trách, nhưng bạn biết mình vừa khước từ một lưỡi dao sắc.',
+        resultEn: 'You wave them back to the street patrols. They bow and step out without complaint, though you know you just turned away a sharp blade.',
+        effects: { sanity: 1 }
+      }
+    ]
+  },
+  {
     id: 'aff_mentee_crisis',
-    age: [34, 99], major: true, weight: 0, causalOnly: true, jobs: ['Fixer'], requires: ['Mentoring'], repeatable: true,
+    age: [29, 99], major: true, weight: 0, causalOnly: true, jobs: ['Fixer', 'Color Fixer', 'Wing Employee', 'Syndicate'], requires: ['Mentoring'], repeatable: true,
     need: { npc: 'mentee' },
     vi: '[Việc quá tầm] Người trẻ bạn đang dìu dắt nhận một Request vượt xa sức, vì khách trả giá cao và họ muốn chứng tỏ. Bạn biết khi nghe qua một người thứ ba. Còn một đêm trước hạn.',
     en: '[Beyond their reach] The junior you are training takes a Request far above their strength, because the client pays well and they want to prove something. You hear it from a third person. One night remains before the deadline.',
@@ -325,6 +367,37 @@ const lifecycleEvents = [
         resultVi: 'Họ nhìn bạn như thể bị phản bội, rồi gật đầu từ từ. Request đi sang tay người khác. Từ hôm sau, họ ngồi cạnh bạn ít hơn và nhìn các tấm bảng việc lâu hơn.',
         resultEn: 'They look at you as if betrayed, then nod slowly. The Request goes to someone else. From the next day they sit beside you less and read the job boards longer.',
         menteeBond: -10, menteeProgress: 8, effects: { sanity: 2 }
+      }
+    ]
+  },
+  {
+    id: 'aff_subordinate_reckoning',
+    age: [28, 99], major: true, weight: 0, causalOnly: true, repeatable: true,
+    jobs: ['Fixer', 'Color Fixer', 'Wing Employee', 'Syndicate'],
+    need: { npc: 'mentee' },
+    vi: '[Cái giá của lệnh ủy thác] Sau nhiệm vụ nguy hiểm bạn giao phó, {mentee} trở về phòng với băng gạc thấm máu trên vai và tập hồ sơ đã hoàn tất. Bên trên đang truy xét thiệt hại phát sinh từ vụ việc ấy. {mentee} đặt biên bản lên bàn bạn và im lặng chờ xem bạn sẽ ký tên mình hay đẩy họ ra chịu trách nhiệm.',
+    en: '[The price of delegation] After the hazardous task you delegated, {mentee} returns with blood-soaked bandages on their shoulder and the completed file. Higher-ups are auditing the collateral fallout. {mentee} sets the report on your desk and waits in silence to see whether you sign your own name or push the blame onto them.',
+    choices: [
+      {
+        labelVi: 'Đứng ra nhận hết trách nhiệm và tự bỏ tiền lo thuốc men cho {mentee}',
+        labelEn: 'Take full responsibility and pay for {mentee}’s medical care yourself',
+        resultVi: 'Bạn ký tên mình lên dòng chịu trách nhiệm chính và thanh toán toàn bộ phí tổn. {mentee} nhìn con dấu rất lâu, rồi cúi đầu sâu hơn mọi lần trước. Danh tiếng của bạn sứt mẻ đôi chút, nhưng bạn có một người sẵn sàng vào sinh ra tử vì mình.',
+        resultEn: 'You sign your own name on the liability line and cover every cost. {mentee} stares at the seal for a long moment, then bows deeper than ever before. Your reputation takes a dent, yet you gain someone who would walk through fire for you.',
+        menteeBond: 16, menteeProgress: 20, effects: { wealth: -8, rep: -4, sanity: 3, standing: -4 }, meritAdd: 4
+      },
+      {
+        labelVi: 'Giữ đúng kỷ luật tổ chức: thưởng công sòng phẳng nhưng ghi nhận lỗi sai',
+        labelEn: 'Enforce strict organizational discipline: reward the result but log the fault',
+        resultVi: 'Bạn phê duyệt khoản thưởng cho {mentee} nhưng vẫn giữ nguyên biên bản khiển trách theo quy định. Họ nhận phong bì, gật đầu đúng phép tắc và bước ra ngoài với ánh mắt lạnh hơn trước.',
+        resultEn: 'You approve {mentee}’s bonus while leaving the formal reprimand on record. They take the envelope, nod by the rules, and walk out with colder eyes than before.',
+        menteeBond: -8, menteeProgress: 15, effects: { rep: 4, sanity: -3, standing: 5 }, meritAdd: 8
+      },
+      {
+        labelVi: 'Đẩy toàn bộ trách nhiệm cho {mentee} để giữ sạch hồ sơ của bạn',
+        labelEn: 'Shift the entire blame onto {mentee} to keep your own record clean',
+        resultVi: 'Bạn đẩy tờ biên bản về phía họ. {mentee} không nói một lời, ký tên rồi tháo phù hiệu đặt xuống góc bàn trước khi bước ra khỏi cửa. Hồ sơ của bạn hoàn toàn sạch sẽ, và căn phòng cũng trống hẳn đi.',
+        resultEn: 'You push the report back across the desk. {mentee} says nothing, signs, and sets their badge on the corner of the table before walking out. Your record stays spotless, and the room feels much emptier.',
+        menteeFate: 'estranged', effects: { heat: -14, wealth: 6, sanity: -8, standing: 6 }, meritAdd: 6
       }
     ]
   },

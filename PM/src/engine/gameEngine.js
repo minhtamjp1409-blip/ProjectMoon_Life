@@ -313,6 +313,7 @@ export function interpolateText(text, char) {
     .replace(/\{child\}/g, child)
     .replace(/\{ward\}/g, npcName('ward', 'đứa trẻ'))
     .replace(/\{mentor\}/g, mentor)
+    .replace(/\{mentee\}/g, npcName('mentee', 'đệ tử'))
     .replace(/\{scars\}/g, scars);
 }
 
