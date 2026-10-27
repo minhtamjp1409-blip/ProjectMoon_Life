@@ -495,6 +495,29 @@ export function triggerDistortionTransformation(char) {
   char.resonance = Math.max(char.resonance || 0, 85);
   char.heat = Math.max(char.heat || 0, 60);
 
+  // Guarantee initiation of the 3-stage Carmen abyss saga in the very next year
+  const pending = char.weaver?.pendingThreads || [];
+  if (!pending.some((t) => t.eventId === 'distort_carmen_communion_1')) {
+    char.weaver = {
+      ...(char.weaver || {}),
+      pendingThreads: [
+        ...pending,
+        {
+          id: `arc_distortion_${char.age}_init`,
+          eventId: 'distort_carmen_communion_1',
+          kind: 'major',
+          arcId: 'arc_carmen_distortion_abyss',
+          arcStage: 1,
+          plantedAtAge: char.age,
+          triggerAge: char.age + 1,
+          reasonVi: 'Tiếng Gọi Của Carmen: hồi 1/3 (Lời thầm thì dưới ánh mặt trời)',
+          reasonEn: 'Carmen’s Siren: chapter 1/3 (Whispers under the sun)',
+          fulfilled: false
+        }
+      ]
+    };
+  }
+
   const logs = [
     {
       id: `log_distort_transform_${char.age}`,

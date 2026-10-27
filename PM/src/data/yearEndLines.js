@@ -25,6 +25,13 @@ export const YEAR_END_LINES = {
       ['Vết thương cũ lành dần, dù trời trở lạnh là lại nhức.', 'Old wounds healed, though they still ache when the weather turns.']
     ]
   },
+  heal_distortion_tissue: {
+    adult: [
+      ['Các thớ thịt dị thường tự co bóp và đan kết lại dưới tần số cộng hưởng của Vực thẳm.', 'Anomalous tissues pulsate and knit together under abyssal resonance frequencies.'],
+      ['Vết thương thịt nát xương tan tự bù đắp bằng các tế bào biến dị sau mỗi đêm trăng.', 'Flesh and bone wounds regenerate with anomalous cellular growth beneath the night sky.'],
+      ['Tần số của Carmen nâng đỡ bản ngã dị dạng của bạn, bù đắp mọi thương tổn thể xác.', 'Carmen’s frequency cradles your deformed self, repairing physical wounds without human clinics.']
+    ]
+  },
   heal_nest: {
     adult: [
       ['Bác sĩ của Nest khám định kỳ và kê đủ thuốc.', 'The Nest doctor came for check-ups and prescribed what you needed.'],

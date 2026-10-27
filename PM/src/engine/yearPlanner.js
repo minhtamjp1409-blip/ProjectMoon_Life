@@ -1231,8 +1231,14 @@ export function endYear(charState, rng) {
     }
   }
 
-  // Healthcare & Wounds recovery vs Street clinic expenses
-  if (char.stats.health < BALANCE.heal.below && !char.flags.includes('Distorted')) {
+  // Healthcare & Wounds recovery vs Street clinic expenses vs Distortion anomaly tissue regeneration
+  if (char.flags.includes('Distorted')) {
+    if (char.stats.health < BALANCE.heal.below) {
+      const anomalyRegen = Math.max(8, Math.round(((char.resonance || 50) * 0.16)));
+      add('health', anomalyRegen);
+      line('heal_distortion_tissue');
+    }
+  } else if (char.stats.health < BALANCE.heal.below) {
     if (char.flags.includes('KCorpAmpoule')) {
       add('health', healAmount(char, 'ampoule'));
       line('heal_ampoule');
@@ -1391,7 +1397,7 @@ export function endYear(charState, rng) {
   }
   if (char.age >= 16 && (char.heat || 0) >= 65 && rng() < 0.35) {
     const distorted = char.flags.includes('Distorted');
-    const d = applyFx(char, distorted ? { health: -24, sanity: -6, heat: -14 } : { health: -18, sanity: -8, heat: -18 });
+    const d = applyFx(char, distorted ? { health: -14, sanity: -6, heat: -14 } : { health: -18, sanity: -8, heat: -18 });
     pushLog(
       char,
       {

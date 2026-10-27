@@ -925,6 +925,92 @@ export const CONSEQUENCE_EVENTS = [
     ]
   },
 
+  {
+    id: 'csq_color_first_mandate',
+    major: true,
+    isCausalCallback: true,
+    weight: 45,
+    vi: "[Chỉ Thị Tối Mật Của Hana] Đúng một năm sau ngày được phong Color, một đặc phái viên của Hana Association xuất hiện tại cửa. Trên bàn là một tài liệu đóng dấu sáp đỏ: “Một thảm họa Singularity cấp Star of the City đang bùng phát ở biên giới Nest. The City cần Color của bạn dẹp yên trước rạng đông.”",
+    en: "[Hana Supreme Mandate] Exactly one year after your Color investiture, a Hana Association envoy appears at your door with a red-wax-sealed dossier: “A Star of the City Singularity catastrophe is erupting at the Nest boundary. The City requires your Color designation to silence it before dawn.”",
+    choices: [
+      {
+        labelVi: "Tiến thẳng vào tâm chấn: Dùng sức mạnh áp đảo nghiền nát thảm họa",
+        labelEn: "Charge into the epicenter: Crush the catastrophe with sovereign force",
+        resultVi: "Trận chiến xé toạc bầu trời đêm. Bạn đập tan hiện tượng dị thường trước khi nó lan rộng, chứng minh bản lĩnh của một Color thực thụ. Danh tiếng và chiến công vang dội khắp 25 District.",
+        resultEn: "The clash tears through the night sky. You obliterate the anomaly before it spreads, proving the supreme mettle of a true Color. Your renown thunders across all twenty-five Districts.",
+        effects: { health: -20, sanity: -12, rep: +30, wealth: +50 },
+        meritAdd: 35,
+        flagsAdd: ['ColorMandateExecuted']
+      },
+      {
+        labelVi: "Dàn xếp sơ tán và cô lập khu vực: Ưu tiên bảo toàn sinh mạng cư dân",
+        labelEn: "Coordinate evacuation and containment: Prioritize civilian preservation",
+        resultVi: "Bạn dẫn đường cho hàng ngàn cư dân thoát khỏi vùng ô nhiễm Singularity trước khi phong tỏa ranh giới. Hana ghi nhận sự thận trọng hiếm có từ một Color; các cư dân lập đền tưởng niệm bạn.",
+        resultEn: "You lead thousands of civilians out of the Singularity contaminated zone before sealing the perimeter. Hana notes rare prudence in a Color; residents erect a memorial in your honor.",
+        effects: { health: -10, sanity: +15, rep: +25, network: +15 },
+        meritAdd: 25,
+        flagsAdd: ['ColorProtectorOfFolk']
+      }
+    ]
+  },
+  {
+    id: 'csq_seven_debt_reckoning',
+    major: true,
+    isCausalCallback: true,
+    weight: 45,
+    vi: "[Hợp Đồng Ràng Buộc Của Seven] Đại diện Seven Association gõ cửa mang theo bản thế chấp bạn từng ký để đổi lấy thông tin trong kỳ khảo thí Color. “Khoản nợ ân nghĩa đã đến hạn. Chúng tôi cần Color của bạn đứng tên bảo trợ cho một cuộc thẩm định tài phán nhạy cảm.”",
+    en: "[Seven Association Debt Reckoning] A Seven Association representative knocks on your door bearing the promissory note you signed during the Color exam. “The obligation is due. We need our designated Color to sponsor a sensitive jurisdictional audit.”",
+    choices: [
+      {
+        labelVi: "Thi hành nghĩa vụ: Đứng ra bảo trợ pháp lý và răn đe đối thủ của Seven",
+        labelEn: "Honor the obligation: Provide legal sponsorship and deter Seven's rivals",
+        resultVi: "Sự hiện diện của một Color Fixer khiến mọi phe phái đối lập lập tức rút lui trong trật tự. Bản hợp đồng thế chấp được đốt thành tro trước mặt bạn. Mối liên minh giữa bạn và Seven Association càng thêm bền chặt.",
+        resultEn: "The presence of a Color Fixer forces all opposing syndicates to withdraw in orderly silence. The promissory note is burnt to ashes before your eyes, cementing your alliance with Seven.",
+        effects: { rep: +20, network: +25, sanity: +10 },
+        flagsRemove: ['AssociationDebtObligation'],
+        flagsAdd: ['SevenAssociationPatron']
+      },
+      {
+        labelVi: "Thanh toán dứt điểm bằng tiền mặt: Chi trả 30 Ahn để xóa sạch mọi ràng buộc",
+        labelEn: "Settle fully in cash: Pay 30 Ahn to wipe clean all lingering strings",
+        costAhn: 30,
+        resultVi: "Bạn ném túi 30 Ahn lên bàn và hủy bỏ bản cam kết. Seven Association cúi đầu nhận tiền. Bạn lấy lại sự tự do tuyệt đối, không còn vướng bận món nợ nào trong quá khứ.",
+        resultEn: "You cast a purse of 30 Ahn onto the table and tear up the bond. Seven bows and accepts the gold. You reclaim absolute independence without lingering debts.",
+        effects: { wealth: -30, rep: +10, sanity: +15 },
+        flagsRemove: ['AssociationDebtObligation']
+      }
+    ]
+  },
+  {
+    id: 'csq_color_sponsor_aftermath',
+    major: true,
+    isCausalCallback: true,
+    weight: 45,
+    vi: "[Người Đã Đỡ Đòn Cho Bạn] Một năm sau ngày bạn trở thành Color, vết thương của người cộng sự từng chắn đòn cho bạn tại kỳ khảo thí vẫn tái phát. Họ nằm tại phòng hồi sức của Văn phòng, mỉm cười nhìn tấm thẻ Color của bạn treo trên tường.",
+    en: "[The One Who Shielded You] One year after you became a Color, the wounds your companion suffered taking the blow during your trial still flare up. They rest in the Office infirmary, smiling at your Color plate mounted on the wall.",
+    choices: [
+      {
+        labelVi: "Mua ống tiêm phục hồi cao cấp K Corp (15 Ahn) để chữa lành triệt để cho họ",
+        labelEn: "Purchase advanced K Corp restorative ampoules (15 Ahn) for full recovery",
+        costAhn: 15,
+        resultVi: "Dịch thể xanh lục của K Corp tái tạo hoàn toàn các bó cơ bị xé toạc. Cộng sự của bạn hồi phục nguyên vẹn và thề sẽ tiếp tục làm phó tướng quản lý Văn phòng trọn đời bên bạn.",
+        resultEn: "The green fluid of K Corp regenerates torn muscle fibers completely. Your companion makes a full recovery and vows to stand as your lifelong deputy director.",
+        effects: { wealth: -15, sanity: +25, rep: +15 },
+        bond: { partner: 40, mentor: 40 },
+        flagsAdd: ['CompanionFullyHealed']
+      },
+      {
+        labelVi: "Tận tâm chăm sóc và bổ nhiệm họ làm cố vấn tối cao của Văn phòng",
+        labelEn: "Care for them personally and appoint them Senior Advisor of the Office",
+        resultVi: "Dù không thể cầm vũ khí ra trận như xưa, trí tuệ và sự thấu hiểu của họ giúp Văn phòng của bạn vận hành trơn tru. Tình cảm và lòng trung thành giữa cả hai đạt đến mức tuyệt đối.",
+        resultEn: "Though unable to wield heavy weapons as before, their wisdom keeps your Office running smoothly. The bond between you reaches absolute devotion.",
+        effects: { sanity: +15, network: +20, rep: +10 },
+        bond: { partner: 30, mentor: 30 },
+        flagsAdd: ['CompanionSeniorAdvisor']
+      }
+    ]
+  },
+
       ...THREAD_CONSEQUENCES,
   ...FORBIDDEN_ACTS,
   ...EXPANSION_CONSEQUENCE_EVENTS

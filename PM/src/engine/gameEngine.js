@@ -993,9 +993,9 @@ export function getNextCareerMilestone(char) {
         titleEn: 'Childhood Survival in The City',
         progressPct,
         requirements: [
-          { labelVi: 'Đạt tuổi 7', labelEn: 'Reach Age 7', current: curAge, target: targetAge, met: curAge >= targetAge },
-          { labelVi: 'Sinh lực an toàn (HP)', labelEn: 'Safe Health (HP)', current: curHp, target: targetHp, met: curHp >= targetHp },
-          { labelVi: 'Tỉnh táo an toàn (SP)', labelEn: 'Safe Sanity (SP)', current: curSp, target: targetSp, met: curSp >= targetSp }
+          { labelVi: 'Đạt tuổi 7', labelEn: 'Reach Age 7', current: curAge, target: targetAge, met: curAge >= targetAge, sources: ['Sống qua từng năm'] },
+          { labelVi: 'Sinh lực an toàn (HP)', labelEn: 'Safe Health (HP)', current: curHp, target: targetHp, met: curHp >= targetHp, sources: ['Phòng khám khu phố', 'Dinh dưỡng cơ bản'] },
+          { labelVi: 'Tỉnh táo an toàn (SP)', labelEn: 'Safe Sanity (SP)', current: curSp, target: targetSp, met: curSp >= targetSp, sources: ['Nghỉ ngơi', 'Gia đình bảo bọc'] }
         ],
         tipVi: 'Bảo toàn mạng sống và giữ tâm trí ổn định trước những nguy hiểm đầu đời.',
         tipEn: 'Stay alive and keep your mind sound amidst early city perils.'
@@ -1021,9 +1021,9 @@ export function getNextCareerMilestone(char) {
         titleEn: 'Street Aptitude & Bonds',
         progressPct,
         requirements: [
-          { labelVi: 'Đạt tuổi 14', labelEn: 'Reach Age 14', current: curAge, target: targetAge, met: curAge >= targetAge },
-          { labelVi: 'Mối quan hệ (Network)', labelEn: 'Network', current: curNet, target: targetNet, met: curNet >= targetNet },
-          { labelVi: 'Bạn bè / Người thân đồng hành', labelEn: 'Companions', current: activeNpcs, target: targetNpcs, met: activeNpcs >= targetNpcs }
+          { labelVi: 'Đạt tuổi 14', labelEn: 'Reach Age 14', current: curAge, target: targetAge, met: curAge >= targetAge, sources: ['Sống qua từng năm'] },
+          { labelVi: 'Mối quan hệ (Network)', labelEn: 'Network', current: curNet, target: targetNet, met: curNet >= targetNet, sources: ['Gặp gỡ Backstreets', 'Kết thân đồng trang lứa'] },
+          { labelVi: 'Bạn bè / Người thân đồng hành', labelEn: 'Companions', current: activeNpcs, target: targetNpcs, met: activeNpcs >= targetNpcs, sources: ['Tương tác NPC', 'Biến cố đường phố'] }
         ],
         tipVi: 'Kết thân với bạn bè hoặc người thầy, học hỏi quy tắc sinh tồn ở Backstreets hoặc Nest.',
         tipEn: 'Befriend companions or mentors, learning the survival codes of the City.'
@@ -1047,8 +1047,8 @@ export function getNextCareerMilestone(char) {
       titleEn: `Preparation for the Career Crossroads (Age ${targetAge})`,
       progressPct,
       requirements: [
-        { labelVi: `Đến tuổi phải tự kiếm sống (${targetAge})`, labelEn: `Reach working age (${targetAge})`, current: curAge, target: targetAge, met: curAge >= targetAge },
-        { labelVi: 'Tích lũy nền tảng (Merit, Ahn hoặc Rep)', labelEn: 'Merit, Ahn or Rep', current: Math.max(curMerit, curWealth, curRep), target: 10, met: Math.max(curMerit, curWealth, curRep) >= 10 }
+        { labelVi: `Đến tuổi phải tự kiếm sống (${targetAge})`, labelEn: `Reach working age (${targetAge})`, current: curAge, target: targetAge, met: curAge >= targetAge, sources: ['Trưởng thành theo năm tháng'] },
+        { labelVi: 'Tích lũy nền tảng (Merit, Ahn hoặc Rep)', labelEn: 'Merit, Ahn or Rep', current: Math.max(curMerit, curWealth, curRep), target: 10, met: Math.max(curMerit, curWealth, curRep) >= 10, sources: ['Học việc đường phố', 'Làm thuê thời vụ', 'Bảo vệ khu phố'] }
       ],
       tipVi: `Đến tuổi ${targetAge}, bạn phải chọn nơi kiếm sống: Fixer, Syndicate hay Wing.`,
       tipEn: `At ${targetAge} you must choose how you earn a living: Fixer, Syndicate or Wing.`
@@ -1070,8 +1070,8 @@ export function getNextCareerMilestone(char) {
         titleEn: 'Sovereign Legend of The City',
         progressPct,
         requirements: [
-          { labelVi: 'Chiến công tối thượng (Merit)', labelEn: 'Merit', current: char.merit || 0, target: targetMerit, met: (char.merit || 0) >= targetMerit },
-          { labelVi: 'Danh tiếng vang dội (Rep)', labelEn: 'Reputation', current: (char.stats?.rep ?? char.rep) || 0, target: targetRep, met: ((char.stats?.rep ?? char.rep) || 0) >= targetRep }
+          { labelVi: 'Chiến công tối thượng (Merit)', labelEn: 'Merit', current: char.merit || 0, target: targetMerit, met: (char.merit || 0) >= targetMerit, sources: ['Hợp đồng Star of the City', 'Nhiệm vụ đặc biệt Hana', 'Săn Abnormality cấp cao'] },
+          { labelVi: 'Danh tiếng vang dội (Rep)', labelEn: 'Reputation', current: (char.stats?.rep ?? char.rep) || 0, target: targetRep, met: ((char.stats?.rep ?? char.rep) || 0) >= targetRep, sources: ['Uy danh The City', 'Nhiệm vụ chấn động'] }
         ],
         tipVi: 'Bạn là một Color. Tên tuổi bạn sánh ngang Red Mist hay Black Silence, ghi dấu vào lịch sử.',
         tipEn: 'You are a Color. Your name stands alongside the Red Mist and Black Silence.'
@@ -1093,9 +1093,9 @@ export function getNextCareerMilestone(char) {
         titleEn: 'Hana Star of the City: Color Investiture',
         progressPct,
         requirements: [
-          { labelVi: `Chiến công (Merit >= ${targetMerit})`, labelEn: `Merit (>= ${targetMerit})`, current: char.merit || 0, target: targetMerit, met: (char.merit || 0) >= targetMerit },
-          { labelVi: `Danh tiếng (Rep >= ${targetRep})`, labelEn: `Reputation (>= ${targetRep})`, current: curRep, target: targetRep, met: curRep >= targetRep },
-          { labelVi: 'Tuổi để Hana xét hồ sơ', labelEn: 'Age for Hana review', current: char.age, target: readiness.targetAge, met: char.age >= readiness.targetAge }
+          { labelVi: `Chiến công (Merit >= ${targetMerit})`, labelEn: `Merit (>= ${targetMerit})`, current: char.merit || 0, target: targetMerit, met: (char.merit || 0) >= targetMerit, sources: ['Đại hợp đồng Star of the City', 'Khủng hoảng Hiệp hội cấp cao', 'Chinh phục Dungeon'] },
+          { labelVi: `Danh tiếng (Rep >= ${targetRep})`, labelEn: `Reputation (>= ${targetRep})`, current: curRep, target: targetRep, met: curRep >= targetRep, sources: ['Ủy thác Association', 'Tiêu diệt mối họa cấp cao'] },
+          { labelVi: 'Tuổi để Hana xét hồ sơ', labelEn: 'Age for Hana review', current: char.age, target: readiness.targetAge, met: char.age >= readiness.targetAge, sources: ['Năm tháng rèn giũa (Thức tỉnh E.G.O để xét sớm)'] }
         ],
         tipVi: char.flags.includes('EGOAwakened')
           ? 'E.G.O của bạn khiến Hana xét hồ sơ sớm hơn và với ngưỡng thấp hơn. Bài khảo thí vẫn là bài khảo thí: bạn có thể trượt.'
@@ -1120,8 +1120,8 @@ export function getNextCareerMilestone(char) {
       titleEn: `Promotion: Grade ${targetThreshold.grade} Fixer`,
       progressPct,
       requirements: [
-        { labelVi: 'Chiến công (Merit)', labelEn: 'Merit', current: char.merit || 0, target: targetMerit, met: (char.merit || 0) >= targetMerit },
-        { labelVi: 'Danh tiếng (Rep)', labelEn: 'Reputation', current: curRep, target: targetRep, met: curRep >= targetRep }
+        { labelVi: 'Chiến công (Merit)', labelEn: 'Merit', current: char.merit || 0, target: targetMerit, met: (char.merit || 0) >= targetMerit, sources: ['Hợp đồng Fixer thường niên', 'Ủy thác Hiệp hội', 'Chiến đấu hẻm tối', 'Dungeon Delve'] },
+        { labelVi: 'Danh tiếng (Rep)', labelEn: 'Reputation', current: curRep, target: targetRep, met: curRep >= targetRep, sources: ['Hoàn tất hợp đồng xuất sắc', 'Sự kiện khu vực'] }
       ],
       tipVi: char.flags.includes('EGOAwakened') && char.fixerGrade >= 3
         ? 'Có E.G.O, bạn đủ điều kiện để Hana mở một bài tái định hạng đặc biệt nhảy hai bậc, sau khi đã đủ Merit và Rep cho bậc kế tiếp. Bài này khó hơn bài thường và vẫn có thể thất bại.'
@@ -1145,7 +1145,7 @@ export function getNextCareerMilestone(char) {
         titleEn: `Peak Authority: ${ladder[currentRank]}`,
         progressPct: 100,
         requirements: [
-          { labelVi: 'Chiến công (Merit)', labelEn: 'Merit', current: char.merit || 0, target: FINGER_LADDERS[finger]?.[2]?.meritReq || 115, met: true }
+          { labelVi: 'Chiến công (Merit)', labelEn: 'Merit', current: char.merit || 0, target: FINGER_LADDERS[finger]?.[2]?.meritReq || 115, met: true, sources: ['Mệnh lệnh Ngón', 'Thu hồi nợ máu'] }
         ],
         tipVi: 'Bạn đã là người đứng đầu một nhánh của Ngón. Mệnh lệnh của bạn là luật trong hẻm.',
         tipEn: 'You hold supreme authority within your Finger branch. Your word is alley law.'
@@ -1176,11 +1176,11 @@ export function getNextCareerMilestone(char) {
       titleEn: `Syndicate Rank: ${nextTitle}`,
       progressPct,
       requirements: [
-        { labelVi: 'Công trạng với Ngón (Merit)', labelEn: 'Syndicate Merit', current: char.merit || 0, target: targetMerit, met: (char.merit || 0) >= targetMerit },
-        { labelVi: 'Uy danh giang hồ (Rep)', labelEn: 'Reputation', current: curRep, target: targetRep, met: curRep >= targetRep },
-        ...(targetNet > 0 ? [{ labelVi: 'Mạng lưới chân rết (Network)', labelEn: 'Syndicate Network', current: curNet, target: targetNet, met: curNet >= targetNet }] : []),
-        { labelVi: 'Tuổi tối thiểu', labelEn: 'Minimum age', current: char.age, target: minAge, met: char.age >= minAge },
-        ...(currentRank > 0 && minTenure > 0 ? [{ labelVi: 'Năm giữ bậc hiện tại', labelEn: 'Years at current rank', current: yearsInRank, target: minTenure, met: yearsInRank >= minTenure }] : [])
+        { labelVi: 'Công trạng với Ngón (Merit)', labelEn: 'Syndicate Merit', current: char.merit || 0, target: targetMerit, met: (char.merit || 0) >= targetMerit, sources: ['Mệnh lệnh thanh trừng của Ngón', 'Thu hồi nợ máu', 'Apex Command Directives'] },
+        { labelVi: 'Uy danh giang hồ (Rep)', labelEn: 'Reputation', current: curRep, target: targetRep, met: curRep >= targetRep, sources: ['Đàn áp đối thủ', 'Huyết chiến đường phố'] },
+        ...(targetNet > 0 ? [{ labelVi: 'Mạng lưới chân rết (Network)', labelEn: 'Syndicate Network', current: curNet, target: targetNet, met: curNet >= targetNet, sources: ['Kết thân đàn em', 'Mở rộng cơ sở bảo kê'] }] : []),
+        { labelVi: 'Tuổi tối thiểu', labelEn: 'Minimum age', current: char.age, target: minAge, met: char.age >= minAge, sources: ['Thâm niên sinh tồn trong hắc đạo'] },
+        ...(currentRank > 0 && minTenure > 0 ? [{ labelVi: 'Năm giữ bậc hiện tại', labelEn: 'Years at current rank', current: yearsInRank, target: minTenure, met: yearsInRank >= minTenure, sources: ['Cống hiến qua các năm'] }] : [])
       ],
       tipVi: 'Thực thi mệnh lệnh của Ngón, thu hồi nợ máu và chứng minh lòng trung thành.',
       tipEn: 'Execute Finger orders, claim vengeance debts, and prove unquestioned loyalty.'
@@ -1220,13 +1220,51 @@ export function getNextCareerMilestone(char) {
       titleEn: `Promotion: ${target.titleEn}`,
       progressPct,
       requirements: [
-        { labelVi: 'Hiệu suất công việc (Merit)', labelEn: 'Merit', current: char.merit || 0, target: target.merit, met: (char.merit || 0) >= target.merit },
-        { labelVi: 'Cổ phần & Ahn (Wealth)', labelEn: 'Wealth (Ahn)', current: curWealth, target: target.wealth, met: curWealth >= target.wealth },
-        { labelVi: 'Mối quan hệ nội bộ (Network)', labelEn: 'Network', current: curNet, target: target.network, met: curNet >= target.network },
-        ...(currentRank > 0 ? [{ labelVi: 'Năm giữ chức hiện tại', labelEn: 'Years in current post', current: yearsInRank, target: 3, met: yearsInRank >= 3 }] : [])
+        { labelVi: 'Hiệu suất công việc (Merit)', labelEn: 'Merit', current: char.merit || 0, target: target.merit, met: (char.merit || 0) >= target.merit, sources: ['Nghiên cứu dự án Singularity', 'Báo cáo hiệu suất', 'Apex Directive'] },
+        { labelVi: 'Cổ phần & Ahn (Wealth)', labelEn: 'Wealth (Ahn)', current: curWealth, target: target.wealth, met: curWealth >= target.wealth, sources: ['Lương tập đoàn', 'Cổ phần nội bộ Wing'] },
+        { labelVi: 'Mối quan hệ nội bộ (Network)', labelEn: 'Network', current: curNet, target: target.network, met: curNet >= target.network, sources: ['Quan hệ với cấp quản lý', 'Ngoại giao phòng ban'] },
+        ...(currentRank > 0 ? [{ labelVi: 'Năm giữ chức hiện tại', labelEn: 'Years in current post', current: yearsInRank, target: 3, met: yearsInRank >= 3, sources: ['Thâm niên công tác'] }] : [])
       ],
       tipVi: 'Hoàn thành các dự án nghiên cứu của Wing, giữ quan hệ với ban quản trị và tích lũy Ahn.',
       tipEn: 'Deliver Wing research quotas, cultivate corporate ties, and amass Ahn.'
+    };
+  }
+
+  // 5. Distortion Metamorphosis Milestone
+  if (char.job === 'Distortion' || char.flags.includes('Distorted')) {
+    const curRes = char.resonance || 0;
+    const targetRes = 100;
+    const curHp = char.stats?.health ?? char.health ?? 0;
+    const targetHp = 80;
+    const p1 = Math.min(100, (curRes / targetRes) * 100);
+    const p2 = Math.min(100, (curHp / targetHp) * 100);
+    const progressPct = Math.round((p1 + p2) / 2);
+
+    return {
+      category: 'DISTORTION METAMORPHOSIS',
+      titleVi: 'Biến Dị Vực Thẳm (Distortion Metamorphosis)',
+      titleEn: 'Abyssal Distortion Metamorphosis',
+      progressPct,
+      requirements: [
+        {
+          labelVi: 'Cộng hưởng Vực thẳm (Resonance >= 100)',
+          labelEn: 'Abyssal Resonance (>= 100)',
+          current: curRes,
+          target: targetRes,
+          met: curRes >= targetRes,
+          sources: ['Tiếng gọi của Carmen', 'Giải phóng dục vọng bản ngã', 'Nghi thức bóng tối']
+        },
+        {
+          labelVi: 'Thể xác Dị Thường cường hóa (HP >= 80)',
+          labelEn: 'Reinforced Anomaly Flesh (HP >= 80)',
+          current: curHp,
+          target: targetHp,
+          met: curHp >= targetHp,
+          sources: ['Tái tạo tế bào dị thường (Tissue Regen)', 'Hấp thụ tinh hoa bóng đêm', 'Đè bẹp thợ săn']
+        }
+      ],
+      tipVi: 'Bạn là một Distortion. Các mô thịt dị thường tự co bóp tái sinh hàng năm theo chỉ số Cộng hưởng. Vực thẳm không phục vụ The Head hay các Wing: bạn là bản ngã trần trụi nhất.',
+      tipEn: 'You are a Distortion. Anomalous tissues pulsate and knit together each year based on Resonance. The abyss answers neither Head nor Wings: you are the rawest self.'
     };
   }
 
@@ -1249,10 +1287,90 @@ export function getNextCareerMilestone(char) {
     titleEn: 'Survival & Renown',
     progressPct: Math.min(100, (char.merit || 0) * 2),
     requirements: [
-      { labelVi: 'Chiến công (Merit)', labelEn: 'Merit', current: char.merit || 0, target: 50, met: (char.merit || 0) >= 50 }
+      { labelVi: 'Chiến công (Merit)', labelEn: 'Merit', current: char.merit || 0, target: 50, met: (char.merit || 0) >= 50, sources: ['Hợp đồng Backstreets', 'Bảo vệ khu trọ'] }
     ],
     tipVi: 'Gia tăng tài nguyên và tạo dựng danh tiếng trong khu vực.',
     tipEn: 'Build your wealth and cement your reputation across the District.'
+  };
+}
+
+/**
+ * Returns character's E.G.O Awakening & Distortion psychological readiness horizon
+ */
+export function getEgoReadiness(char) {
+  if (!char) return null;
+  const flags = char.flags || [];
+  if (flags.includes('EGOAwakened')) {
+    return {
+      status: 'awakened',
+      progressPct: 100,
+      labelVi: 'Đã Thức Tỉnh E.G.O Toàn Phần',
+      labelEn: 'Fully Awakened E.G.O',
+      descVi: 'Bản ngã của bạn đã kết tinh thành vũ khí và ý chí bất khuất, tỏa sáng giữa màn đêm The City.',
+      descEn: 'Your ego has crystallized into unique armaments and resolve that cannot waver.',
+      sourcesVi: ['Vũ khí và giáp trụ cá nhân đã thức tỉnh']
+    };
+  }
+  if (char.job === 'Distortion' || flags.includes('Distorted')) {
+    return {
+      status: 'distorted',
+      progressPct: 100,
+      labelVi: 'Đã Biến Dị Thành Distortion',
+      labelEn: 'Metamorphosed into Distortion',
+      descVi: 'Bạn đã lắng nghe tiếng gọi ngọt ngào của Carmen và chấp nhận hình thái trần trụi nhất của dục vọng.',
+      descEn: 'You embraced Carmen’s honeyed whispers and abandoned your humanity into pure form.',
+      sourcesVi: ['Tái tạo tế bào dị thường', 'Tiếng gọi Carmen']
+    };
+  }
+  const res = char.resonance || 0;
+  const sanity = (char.stats?.sanity ?? char.sanity) || 0;
+  // Critical triggers: Resonance >= 70 OR (Resonance >= 58 && Sanity <= 38)
+  const isImminent = res >= 70 || (res >= 58 && sanity <= 38);
+  const isStirring = res >= 40;
+  const progressPct = Math.min(100, Math.round(Math.max((res / 70) * 100, isImminent ? 100 : (res >= 58 ? 85 : (res / 40) * 50))));
+
+  if (isImminent) {
+    return {
+      status: 'imminent',
+      progressPct: Math.max(90, progressPct),
+      resonance: res,
+      sanity,
+      labelVi: 'Giao Lộ Ngàn Cân Treo Sợi Tóc (E.G.O hoặc Distortion)',
+      labelEn: 'Psychic Precipice: E.G.O or Distortion Crossroads',
+      descVi: sanity <= 38
+        ? 'Tâm trí rơi vào khủng hoảng trong khi tần số cộng hưởng cực cao. Giọng nói của Carmen đang thầm thì bên tai. Giữ vững niềm tin để thức tỉnh E.G.O, hoặc gục ngã thành Distortion.'
+        : 'Tần số Ánh Sáng đã đạt cực điểm. Một bài khảo nghiệm tinh thần có thể xuất hiện bất cứ lúc nào để tôi luyện vũ khí bản ngã E.G.O.',
+      descEn: sanity <= 38
+        ? 'Sanity has fractured while resonance peaks. Carmen whispers in your ear. Hold fast to awaken E.G.O, or surrender to Distortion.'
+        : 'Resonance has reached apex. A mental crucible may manifest at any moment to forge your personal E.G.O weapon.',
+      sourcesVi: ['Vượt qua khủng hoảng tâm trí', 'Đối diện chấn thương quá khứ', 'Kiên định với nguyên tắc']
+    };
+  }
+
+  if (isStirring) {
+    return {
+      status: 'stirring',
+      progressPct,
+      resonance: res,
+      sanity,
+      labelVi: 'Bản Ngã Bắt Đầu Dao Động (Resonance Đang Tăng)',
+      labelEn: 'Ego Awakening Stirring (Resonance Rising)',
+      descVi: 'Tần số Ánh Sáng đang cộng hưởng trong máu thịt. Khi Resonance đạt 70 (hoặc 58 khi gặp khủng hoảng tâm trí), cánh cửa E.G.O sẽ mở ra.',
+      descEn: 'The Light echoes in your pulse. Once Resonance reaches 70 (or 58 during a mental crisis), the E.G.O threshold opens.',
+      sourcesVi: ['Chiến đấu sinh tử', 'Chinh phục Dungeon Dị Thường', 'Khảo nghiệm số phận']
+    };
+  }
+
+  return {
+    status: 'dormant',
+    progressPct,
+    resonance: res,
+    sanity,
+    labelVi: 'Tâm Thức Bình Thường (Chưa Thức Tỉnh)',
+    labelEn: 'Dormant Psychic Threshold',
+    descVi: 'Chưa có dấu hiệu cộng hưởng bất thường với Ánh Sáng của The City.',
+    descEn: 'No unusual psychic resonance with the City’s Light has manifested yet.',
+    sourcesVi: ['Tiếp xúc với Abnormality', 'Chấn thương tâm lý', 'Nghi thức siêu nhiên']
   };
 }
 

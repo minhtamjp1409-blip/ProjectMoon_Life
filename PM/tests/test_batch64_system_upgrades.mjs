@@ -197,6 +197,12 @@ console.log('=== TEST SUITE: BATCH 64-68 SYSTEM UPGRADES (5 PILLARS) ===');
   ampouleBearer.stats.rep = 5;
   ampouleBearer.inventory = [{ id: 'con_kcorp_ampoule', nameVi: 'Ống tiêm sinh học K Corp' }];
   assert.equal(canRelocateDistrict(ampouleBearer, 'K').ok, true, 'Bearer of con_kcorp_ampoule can cross into District K');
+
+  const childWithPermit = createNewCharacter({ seed: 'outskirts-child-permit', startAge: 12, preferredRegionId: 'OUTSKIRTS' });
+  childWithPermit.job = 'Child';
+  childWithPermit.flags.push('NestResident');
+  childWithPermit.inventory = [{ id: 'spc_nest_migration_permit', nameVi: 'Thị thực định cư Nest' }];
+  assert.equal(canRelocateDistrict(childWithPermit, 'K').ok, false, 'Unaccompanied child in Outskirts cannot independently cross border');
   console.log('  ✓ Pillar 2: Inter-District Transit, Outskirts Gate & Regional Singularity Mechanics verified');
 }
 
@@ -318,4 +324,112 @@ console.log('=== TEST SUITE: BATCH 64-68 SYSTEM UPGRADES (5 PILLARS) ===');
   console.log('  ✓ Pillar 5: Batch 66-68 UI Upgrades (tasteskill v2, antislop, WCAG AA, focus trap, WAI-ARIA tabs & mobile birthplace) verified');
 }
 
-console.log('=== ALL BATCH 64-68 SYSTEM/UI UPGRADE TESTS PASSED ===');
+// ----------------------------------------------------------------------------
+// 6. BATCH 69 FAILBETTER ROADMAP: MILESTONES, COLOR TRIAL & DISTORTION REGEN
+// ----------------------------------------------------------------------------
+{
+  const { getNextCareerMilestone, getEgoReadiness, ALL_STORY_EVENTS, createRNG } = await import('../src/engine/gameEngine.js');
+  const { endYear } = await import('../src/engine/yearPlanner.js');
+  const { triggerDistortionTransformation } = await import('../src/engine/careerPipeline.js');
+
+  // Test 1: Milestone requirements have sources and Distortion has dedicated category
+  const rookieFixer = createNewCharacter({ seed: 'failbetter-rookie', startAge: 20 });
+  rookieFixer.job = 'Fixer';
+  rookieFixer.fixerGrade = 9;
+  const rookieMilestone = getNextCareerMilestone(rookieFixer);
+  assert(rookieMilestone.requirements.every((r) => Array.isArray(r.sources) && r.sources.length > 0), 'Milestone requirements must have sources array');
+
+  const distortedEntity = createNewCharacter({ seed: 'failbetter-distort', startAge: 25 });
+  distortedEntity.job = 'Distortion';
+  distortedEntity.flags.push('Distorted');
+  distortedEntity.resonance = 75;
+  const distortMilestone = getNextCareerMilestone(distortedEntity);
+  assert.equal(distortMilestone.category, 'DISTORTION METAMORPHOSIS', 'Distortion must have dedicated DISTORTION METAMORPHOSIS category');
+
+  // Test 2: E.G.O Readiness Horizon evaluation
+  const dormantChar = createNewCharacter({ seed: 'ego-dormant', startAge: 22 });
+  dormantChar.resonance = 20;
+  assert.equal(getEgoReadiness(dormantChar).status, 'dormant');
+
+  const stirringChar = createNewCharacter({ seed: 'ego-stirring', startAge: 22 });
+  stirringChar.resonance = 55;
+  stirringChar.stats.sanity = 60;
+  assert.equal(getEgoReadiness(stirringChar).status, 'stirring');
+
+  const imminentResChar = createNewCharacter({ seed: 'ego-imminent-res', startAge: 22 });
+  imminentResChar.resonance = 72;
+  assert.equal(getEgoReadiness(imminentResChar).status, 'imminent');
+
+  const imminentCrisisChar = createNewCharacter({ seed: 'ego-imminent-crisis', startAge: 22 });
+  imminentCrisisChar.resonance = 60;
+  imminentCrisisChar.stats.sanity = 30; // Sanity <= 38 + Resonance >= 58
+  assert.equal(getEgoReadiness(imminentCrisisChar).status, 'imminent');
+
+  const awakenedChar = createNewCharacter({ seed: 'ego-awakened', startAge: 22 });
+  awakenedChar.flags.push('EGOAwakened');
+  assert.equal(getEgoReadiness(awakenedChar).status, 'awakened');
+
+  // Test 3: Color Ascension Trial (Hana Council) choices & consequences
+  const colorTrial = ALL_STORY_EVENTS.find((e) => e.id === 'hana_color_ascension_trial');
+  assert.ok(colorTrial, 'hana_color_ascension_trial must exist');
+  assert.equal(colorTrial.choices.length, 4, 'Color trial must have 4 choices (Alone, Seven, Companion, Refuse)');
+  assert(colorTrial.choices[0].outcomes[0].later?.some((l) => l.id === 'csq_color_first_mandate'), 'Alone win must schedule csq_color_first_mandate');
+  assert.equal(colorTrial.choices[1].costAhn, 15, 'Seven Association must cost 15 Ahn');
+  assert(colorTrial.choices[1].outcomes[0].flagsAdd?.includes('AssociationDebtObligation'), 'Seven route must add AssociationDebtObligation flag');
+  assert(colorTrial.choices[2].outcomes[0].later?.some((l) => l.id === 'csq_color_sponsor_aftermath'), 'Companion route must schedule csq_color_sponsor_aftermath');
+
+  // Test 4: Distortion Anomaly Biological Tissue Regeneration
+  const lowHpDistort = createNewCharacter({ seed: 'distort-regen-hp', startAge: 28 });
+  lowHpDistort.job = 'Distortion';
+  lowHpDistort.flags.push('Distorted');
+  lowHpDistort.stats.health = 20;
+  lowHpDistort.resonance = 80;
+  const hpBefore = lowHpDistort.stats.health;
+  const nextYearDistort = endYear(lowHpDistort, createRNG('distort-regen-hp'));
+  assert(nextYearDistort.stats.health > hpBefore, 'Distortion anomaly tissue regeneration must heal low HP');
+
+  // Test 5: Distortion transformation starts 3-stage Carmen saga
+  const transformingChar = createNewCharacter({ seed: 'transform-saga', startAge: 24 });
+  triggerDistortionTransformation(transformingChar);
+  assert(
+    (transformingChar.weaver?.pendingThreads || []).some((t) => t.eventId === 'distort_carmen_communion_1'),
+    'triggerDistortionTransformation must queue distort_carmen_communion_1 into weaver.pendingThreads'
+  );
+
+  // Test 6: Annual Plan Heavy Allocation Micro Trade-Offs
+  const plannerChar = createNewCharacter({ seed: 'plan-tradeoff', startAge: 25 });
+  plannerChar.job = 'Fixer';
+  plannerChar.fixerGrade = 7;
+  plannerChar.stats.health = 50;
+  plannerChar.stats.sanity = 50;
+  plannerChar.npcs = {
+    partner: { role: 'partner', nameVi: 'Yuri', status: 'alive', bond: 40 }
+  };
+  plannerChar.pendingYearPlan = { age: 25 };
+
+  // 2 train + 1 work -> HP -1
+  applyAnnualPlan(plannerChar, { train: 2, work: 1, bond: 0, rest: 0, scheme: 0 }, 'rank');
+  assert.equal(plannerChar.stats.health, 49, 'Allocating 2 points in train must drain 1 HP');
+
+  const plannerChar2 = createNewCharacter({ seed: 'plan-tradeoff-2', startAge: 26 });
+  plannerChar2.job = 'Fixer';
+  plannerChar2.stats.sanity = 50;
+  plannerChar2.pendingYearPlan = { age: 26 };
+  // 2 work + 1 rest -> SP -1 (+3 from rest = net +2)
+  applyAnnualPlan(plannerChar2, { train: 0, work: 2, bond: 0, rest: 1, scheme: 0 }, 'fortune');
+  assert.equal(plannerChar2.stats.sanity, 52, 'Allocating 2 points in work must drain 1 SP');
+
+  const plannerChar3 = createNewCharacter({ seed: 'plan-tradeoff-3', startAge: 27 });
+  plannerChar3.job = 'Fixer';
+  plannerChar3.npcs = {
+    partner: { role: 'partner', nameVi: 'Yuri', status: 'alive', bond: 40 }
+  };
+  plannerChar3.pendingYearPlan = { age: 27 };
+  // 2 scheme + 1 bond -> Companion bond -1
+  applyAnnualPlan(plannerChar3, { train: 0, work: 0, bond: 1, rest: 0, scheme: 2 }, 'survive');
+  assert.equal(plannerChar3.npcs.partner.bond, 39, 'Allocating 2 points in scheme must drain 1 companion bond');
+
+  console.log('  ✓ Pillar 6: Batch 69 Failbetter Roadmap (Milestones, Color Trial & Distortion Regen) verified');
+}
+
+console.log('=== ALL BATCH 64-69 SYSTEM/UI UPGRADE TESTS PASSED ===');

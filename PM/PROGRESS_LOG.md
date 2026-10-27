@@ -1,10 +1,10 @@
 # The City Chronicles: Tài Liệu Tiến Trình & Kiến Trúc Kỹ Thuật Toàn Diện
 
-> **Cập nhật ghi chép: 27/10/2026 (Đợt 68: Đồng Bộ Hóa Trạng Thái Khảm Trang Bị, Cổng Nhập Cảnh Outskirts, Chi Phí Ủy Thác Thực, Chọn Nơi Sinh Mobile 390px, Bẫy Focus/Tablist WAI-ARIA & Đo Kiểm Cân Bằng 500 Cuộc Đời; đã push và deploy)**
-> **Phân biệt rõ số liệu kiểm thử tự động & số liệu mô phỏng 500 đời hiện hành (Đợt 68):**
-> - **Đã xác minh tự động bằng bộ test (`npm test`):** Toàn bộ **53/53 test suites** đạt 100%, parity cổng thăng tiến FE/BE khớp tuyệt đối, `lint_story.mjs` (745 major, 40 consequence, 866 minor, 572 daily, 36 contract) & `voice_lint.mjs --fail` (**32.287 chuỗi**) đạt 0 lỗi / 0 cảnh báo, `run_million_audit.mjs 500` (500 khoảnh khắc) đạt 5/5 nhóm quy tắc toàn vẹn, `npm run build` đạt chuẩn phân mảnh gói.
-> - **Đã đo mới trên codebase hiện tại qua mô phỏng 500 cuộc đời đầy đủ (Đợt 68):** `story_logic_audit.mjs 500 random` (**76.992 khoảnh khắc**, 500 đời, **0 vi phạm logic**), `balance_sim.mjs 500 random` (13.003 năm sống, phân bổ nghề trưởng thành cân bằng: Fixer `31.0%`, Wing Employee `29.9%`, Syndicate `31.9%`, Distortion `5.4%`), `balance_sim.mjs 500 focused` (20.964 năm sống, tuổi thọ TB `41.0`, tỷ lệ đạt Color Fixer `9.6%` ở tuổi TB `55.4`, thức tỉnh E.G.O `12.2%` ở tuổi TB `45.9`, `0%` đạt Color và E.G.O trong cùng năm/hành động), và `branch_experience.mjs 500`.
-> - **Cách đọc số liệu lịch sử:** Các kết quả mô phỏng ở Đợt 1–23 là ảnh chụp lịch sử tại thời điểm ghi nhận của từng đợt trước; xem mục **Đợt 68** ở cuối tài liệu để đọc bảng số liệu 500 cuộc đời hiện hành sau toàn bộ các nâng cấp Đợt 64–68.
+> **Cập nhật ghi chép: 27/10/2026 (Đợt 69: Nâng Cấp Thiết Kế Triết Lý Failbetter Games & Darkest Dungeon: Con Đường Mốc Lớn, Khảo Thí Color Có Sức Nặng, Tái Tạo Sinh Học Distortion, Đánh Đổi Kế Hoạch Năm & Đo Kiểm 500 Đời; đã push và deploy)**
+> **Phân biệt rõ số liệu kiểm thử tự động & số liệu mô phỏng 500 đời hiện hành (Đợt 69):**
+> - **Đã xác minh tự động bằng bộ test (`npm test`):** Toàn bộ **53/53 test suites** đạt 100%, parity cổng thăng tiến FE/BE khớp tuyệt đối, `lint_story.mjs` (745 major, 43 consequence, 866 minor, 572 daily, 36 contract) & `voice_lint.mjs --fail` (**32.337 chuỗi**) đạt 0 lỗi / 0 cảnh báo, `run_million_audit.mjs 500` (500 khoảnh khắc) đạt 5/5 nhóm quy tắc toàn vẹn, `npm run build` hoàn tất sạch bóng.
+> - **Đã đo mới trên codebase hiện tại qua mô phỏng 500 cuộc đời đầy đủ (Đợt 69):** `story_logic_audit.mjs 500 random` (**80.338 khoảnh khắc**, 500 đời, **0 vi phạm logic**, entropy `83.1%`), `balance_sim.mjs 500 random` (13.208 năm sống, phân bổ nghề: Fixer `31.0%`, Wing `29.9%`, Syndicate `31.9%`, Distortion `5.4%`), `balance_sim.mjs 500 focused` (21.749 năm sống, tuổi thọ TB `42.6`, đạt Color Fixer `9.6%` ở tuổi TB `55.4`, thức tỉnh E.G.O `12.6%` ở tuổi TB `45.5`), và `branch_experience.mjs 500` (tuổi thọ Distortion tăng vọt từ `3.8` lên **`11.3` năm/đời**, đại sự kiện trải nghiệm từ `16` lên **`40`**).
+> - **Cách đọc số liệu lịch sử:** Các kết quả mô phỏng ở Đợt 1–23 là ảnh chụp lịch sử tại thời điểm ghi nhận của từng đợt trước; xem mục **Đợt 69** ở cuối tài liệu để đọc bảng số liệu 500 cuộc đời hiện hành.
 
 ---
 
@@ -1451,6 +1451,39 @@ Chủ dự án yêu cầu làm lại toàn bộ giao diện lần nữa: bỏ t�
     * **Wing Employee (143 đời):** `9.8` năm/đời, `5.1` major/10 năm, `10.9` minor/10 năm, bắt gặp `83` đại sự kiện khác nhau.
     * **Syndicate (159 đời):** `8.2` năm/đời, `9.2` major/10 năm, `12.7` minor/10 năm, bắt gặp `237` đại sự kiện khác nhau (trải đều trên 5 Ngón Tay).
     * **Distortion (23 đời):** `3.8` năm/đời, `4.6` major/10 năm, `16.3` minor/10 năm, bắt gặp `16` đại sự kiện khác nhau.
+
+* **Đợt 69: Nâng Cấp Thiết Kế Theo Triết Lý Failbetter Games & Darkest Dungeon (Con Đường Mốc Lớn, Khảo Thí Color Có Sức Nặng, Tái Tạo Sinh Học Distortion & Đánh Đổi Kế Hoạch Năm; đã kiểm định 500 đời):**
+  * **1. Khóa Điều Kiện Vượt Biên Trẻ Em & Chuẩn Hóa Danh Mục Giấy Phép (`src/engine/cityUpgrades.js`, `src/data/itemsData.js`):**
+    * Thêm chặn tuổi `(char.age || 0) < 18 || char.job === 'Child'` ngay đầu hàm `canBorderCrossFromOutskirts`, ngăn trẻ em mang cờ `NestResident` hoặc giấy phép vượt Bức Tường vào The City khi chưa trưởng thành.
+    * Hạ giá `spc_nest_migration_permit` từ 180 Ahn xuống 85 Ahn (vừa vặn trần tài sản 100 Ahn), bổ sung `spc_devyat_courier_pass` (45 Ahn, cờ `DevyatPass`), đồng bộ toàn bộ mã giấy phép trong kho đồ.
+  * **2. Làm Rõ Con Đường Đến Mốc Lớn & Cột Mốc Riêng Biệt Cho Distortion (`src/engine/gameEngine.js`, `src/features/chronicle/components/CharacterDossierCard.jsx`, `src/styles/ui/play.css`):**
+    * Trong `getNextCareerMilestone(char)`: bổ sung mảng `sources` chi tiết nguồn thu thập (Hợp đồng thường niên, Ủy thác Association, Apex Directives, Dungeon) cho từng điều kiện chưa hoàn thành (`unmet`).
+    * Bổ sung cột mốc riêng biệt `category: 'DISTORTION METAMORPHOSIS'` cho nhân vật sa ngã thành Distortion với mục tiêu Cộng hưởng $\ge 100$ và Thể xác Dị thường $\ge 80$ HP, thay thế hoàn toàn tình trạng rơi vào mục `SURVIVAL` chung chung.
+    * Bổ sung hàm xuất khẩu `getEgoReadiness(char)` phân loại 5 trạng thái tâm thức: `dormant` ($<40$), `stirring` ($40-69$), `imminent` ($\ge 70$, hoặc $\ge 58$ khi SP $\le 38$), `awakened` (đã có E.G.O), và `distorted`.
+    * Trên giao diện Dossier (`CharacterDossierCard.jsx`): hiển thị số điểm còn thiếu `(Thiếu X)`, danh sách tag nguồn kiếm `Sources: ...`, và thẻ giao diện khí quyển `ego-horizon-card` hiển thị thanh tiến trình thức tỉnh E.G.O và giao lộ tâm thức Carmen/Ayin.
+  * **3. Tăng Sức Nặng & Chuỗi Hệ Quả Của Đại Khảo Thí Color (`src/data/eventsSupernatural.js`, `src/data/eventsChildhood.js`):**
+    * Lựa chọn 0 (Đi một mình): Chịu tổn thất nặng nề `-35 HP, -20 SP, +18 Heat`, nhận sẹo `Vết sẹo của Star of the City`, và kích hoạt chuỗi nhân quả `later: [{ id: 'csq_color_first_mandate', years: 1 }]` (Hana điều động thực thi nhiệm vụ tối mật).
+    * Lựa chọn 1 (Nhờ Seven Association & thế chấp): Tốn 15 Ahn, nhận cờ `AssociationDebtObligation`, nhận sẹo `Bản đồ giải phẫu Star of the City`, và gieo sự kiện `csq_seven_debt_reckoning` vào 2 năm sau.
+    * Lựa chọn 2 (MỚI: Kề vai sát cánh cùng cộng sự): Cần cộng sự (`partner`/`mentor`), tỷ lệ thành công cao nhất (85%), nhận sẹo `Ký ức đẫm máu cùng cộng sự`, và cộng sự bị thương nặng kích hoạt chuỗi hậu quả `csq_color_sponsor_aftermath` vào năm sau (cần chữa trị bằng ampoule K Corp hoặc bổ nhiệm làm cố vấn).
+    * Đăng ký cả 3 sự kiện hệ quả lớn (`csq_color_first_mandate`, `csq_seven_debt_reckoning`, `csq_color_sponsor_aftermath`) vào `CONSEQUENCE_EVENTS`.
+  * **4. Kéo Dài Tuổi Thọ Tuyến Distortion & Bảo Đảm Mạch Truyện 3 Hồi (`src/engine/yearPlanner.js`, `src/data/yearEndLines.js`, `src/engine/careerPipeline.js`):**
+    * Thêm cơ chế tái tạo tế bào mô thịt dị thường `heal_distortion_tissue`: nhân vật Distortion có HP $< 45$ tự động hồi phục `Math.max(8, Math.round(resonance * 0.16))` HP mỗi cuối năm, kèm dòng diễn họa không khí trong `YEAR_END_LINES`.
+    * Giảm sát thương đột kích Sweeper trong đêm hẻm tối đối với Distortion từ -24 HP xuống -14 HP.
+    * Trong `triggerDistortionTransformation`: tự động kích hoạt hồi 1 của đại mạch truyện 3 hồi `arc_carmen_distortion_abyss` (`distort_carmen_communion_1`) vào `char.weaver.pendingThreads` ngay năm đầu tiên sau khi biến dị.
+    * Kết quả thực nghiệm (`branch_experience.mjs 500`): Tuổi thọ trung bình của Distortion tăng từ **3.8 năm** lên **11.3 năm/đời**, số đại sự kiện trải nghiệm tăng từ **16** lên **40**, bảo đảm tuyến biến dị sống đủ lâu để trải nghiệm toàn bộ bi kịch và sức mạnh bản ngã.
+  * **5. Đánh Đổi Vi Mô Trong Kế Hoạch Năm (`src/engine/annualPlan.js`):**
+    * Dồn $\ge 2$ điểm vào `train` (luyện tập cường độ cao): tiêu hao -1 HP thể lực.
+    * Dồn $\ge 2$ điểm vào `work` (làm việc kiệt sức): tiêu hao -1 SP tinh thần.
+    * Dồn $\ge 2$ điểm vào `scheme` (mưu tính hắc ám): làm rạn nứt -1 Bond của cộng sự tích cực.
+    * Cập nhật mô tả hoạt động trong `YEAR_ACTIVITIES` để người chơi thấy rõ đánh đổi trước khi phân bổ.
+  * **6. Đo Kiểm Toàn Diện (Đợt 69):**
+    * Toàn bộ **53/53 test suites** đạt 100% (`npm test`).
+    * Linters (`lint_story.mjs` & `voice_lint.mjs --fail`) kiểm tra **32.337 chuỗi** đạt **0 lỗi, 0 cảnh báo**.
+    * `npm run build` hoàn thành trong 7.2 giây, sạch bóng lỗi cảnh báo.
+    * `balance_sim.mjs 500 random` (13.208 năm sống, tuổi thọ TB `25.5`) & `balance_sim.mjs 500 focused` (21.749 năm sống, tuổi thọ TB `42.6`, đạt Color Fixer `9.6%` ở tuổi TB `55.4`, E.G.O `12.6%` ở tuổi TB `45.5`).
+    * `story_logic_audit.mjs 500 random` (80.338 khoảnh khắc, **0 vi phạm logic**, entropy `83.1%`).
+    * `branch_experience.mjs 500`: Distortion đạt **11.3 năm/đời** (tăng 297% so với Đợt 68), Fixer `11.8` năm/đời, Wing Employee `9.8` năm/đời, Syndicate `8.2` năm/đời.
+
 
 
 

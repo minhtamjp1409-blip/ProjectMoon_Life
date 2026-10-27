@@ -109,11 +109,34 @@
 .career-obj-bar { height: 3px; background: var(--raised); }
 .career-obj-bar i { display: block; height: 100%; background: var(--gold); }
 .career-obj-reqs { display: flex; flex-direction: column; gap: 4px; }
-.career-req-item { display: grid; grid-template-columns: 16px minmax(0, 1fr) auto; gap: 6px; font-size: 13.5px; color: var(--muted); }
+.career-req-item { display: flex; flex-direction: column; gap: 4px; font-size: 13.5px; color: var(--muted); padding: 4px 0; border-bottom: 1px dashed var(--rule, rgba(255,255,255,0.06)); }
+.career-req-item:last-child { border-bottom: none; }
+.career-req-row { display: grid; grid-template-columns: 16px minmax(0, 1fr) auto; gap: 6px; align-items: baseline; }
 .career-req-item.is-met { color: var(--text); }
 .career-req-item.is-met .req-status { color: var(--good); }
 .req-val { font-variant-numeric: tabular-nums; }
+.req-deficit { color: var(--gold); font-size: 12px; font-weight: 500; }
+.career-req-sources { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; margin-left: 22px; margin-top: 2px; }
+.req-sources-label { font-size: 11px; color: var(--faint); }
+.req-source-tag { font-size: 11px; color: var(--muted); background: var(--raised); padding: 1px 6px; border: 1px solid var(--border); border-radius: 2px; }
 .career-obj-tip { font-size: 13.5px; color: var(--faint); line-height: 1.5; }
+
+/* E.G.O Awakening & Distortion Psychic Horizon Card */
+.ego-horizon-card { display: flex; flex-direction: column; gap: 8px; padding: 14px 16px; border-left: 3px solid var(--border); background: var(--surface); margin-top: 10px; }
+.ego-horizon-card.status-awakened { border-left-color: var(--gold); }
+.ego-horizon-card.status-distorted { border-left-color: var(--bad); }
+.ego-horizon-card.status-imminent { border-left-color: #d97706; }
+.ego-horizon-card.status-stirring { border-left-color: #0284c7; }
+.ego-horizon-header { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.ego-horizon-tag { font-size: 11.5px; font-weight: 600; color: var(--muted); letter-spacing: 0.5px; }
+.ego-horizon-status-badge { font-size: 12.5px; font-weight: 600; color: var(--gold); }
+.ego-horizon-bar { height: 3px; background: var(--raised); }
+.ego-horizon-bar i { display: block; height: 100%; background: var(--gold); transition: width 0.3s ease; }
+.ego-horizon-card.status-distorted .ego-horizon-bar i { background: var(--bad); }
+.ego-horizon-card.status-imminent .ego-horizon-bar i { background: #d97706; }
+.ego-horizon-card.status-stirring .ego-horizon-bar i { background: #0284c7; }
+.ego-horizon-meta { display: flex; gap: 16px; font-size: 12.5px; color: var(--muted); }
+.ego-horizon-desc { font-size: 13px; color: var(--faint); line-height: 1.5; margin: 0; }
 
 .kv.is-help { cursor: help; }
 .kv-strong { font-weight: 600; color: var(--text); text-align: right; }

@@ -340,19 +340,20 @@ export const SUPERNATURAL_EVENTS = [
         labelEn: "Go alone and face the threat head on",
         outcomes: [
           {
-            w: 60,
+            w: 65,
             need: { stat: { health: [35, 100] } },
             openColorModal: true,
             flagsAdd: ['ColorFixer'],
             recordsAdd: ['color_fixer'],
-            effects: { health: -30, sanity: -15, rep: +45, wealth: +60 },
+            effects: { health: -35, sanity: -20, rep: +45, wealth: +40, heat: +18 },
             scarsAdd: ['Vết sẹo của Star of the City'],
+            later: [{ id: 'csq_color_first_mandate', years: 1, reasonVi: 'Chỉ thị tối mật đầu tiên của Hana dành cho tân Color Fixer', reasonEn: 'First high-stakes Hana mandate for the newly designated Color Fixer' }],
             meritAdd: 60,
-            resultVi: "Bạn phá lõi của mối họa sau một trận chiến dài. Khi trở về, hội đồng Hana mời bạn đến trước tấm thẻ còn để trống. Tên Color mới được khắc ngay tại đó.",
-            resultEn: "You break the threat’s core after a long fight. When you return, the Hana council invites you to the blank card. Your new Color is engraved right there."
+            resultVi: "Bạn phá lõi của mối họa sau một trận chiến dài và tàn khốc. Khi trở về với thương tích đầy mình, hội đồng Hana đứng dậy nghênh đón. Tên Color mới được khắc ngay tại chỗ. Nhưng gánh nặng của The City lập tức giáng xuống vai: một ủy thác tối mật của Hana sẽ tìm đến vào năm sau.",
+            resultEn: "You break the threat's core after a long, agonizing fight. When you return covered in blood, the Hana council stands in silent respect. Your new Color is engraved right there. But the City's burdens fall upon your shoulders: a high-stakes mandate awaits you next year."
           },
           {
-            w: 40,
+            w: 35,
             effects: { health: -45, sanity: -35, rep: +25, heat: +20 },
             scarsAdd: ['Thương tật từ Star of the City'],
             meritAdd: 30,
@@ -362,26 +363,53 @@ export const SUPERNATURAL_EVENTS = [
         ]
       },
       {
-        labelVi: "Phối hợp với Seven Association để tìm điểm yếu rồi ra đòn",
+        labelVi: "Phối hợp với Seven Association và thế chấp tài chính để lập thế trận",
         labelEn: "Work with Seven Association to find its weak point, then strike",
         need: { stat: { wealth: [15, 100], sanity: [30, 100] } },
         costAhn: 15,
         outcomes: [{
-        w: 75,
-        openColorModal: true,
-        flagsAdd: ['ColorFixer'],
-        recordsAdd: ['color_fixer'],
-        effects: { health: -18, sanity: -15, rep: +40 },
-        scarsAdd: ['Bản đồ giải phẫu Star of the City'],
-        meritAdd: 45,
-        resultVi: "Bạn trả một khoản lớn cho Seven Association để họ phân tích cấu trúc Singularity và những chỗ hở của mối họa. Một nhát đâm vào tim. Nest được giữ nguyên. Hana đóng dấu: một Color mới, đạt được bằng sự chính xác.",
-        resultEn: "You pay Seven Association a large sum to analyze the threat’s Singularity structure and its openings. One thrust to the heart. The Nest is spared. Hana stamps the card: a new Color, earned by precision."
+          w: 75,
+          openColorModal: true,
+          flagsAdd: ['ColorFixer', 'AssociationDebtObligation'],
+          recordsAdd: ['color_fixer'],
+          effects: { health: -16, sanity: -12, rep: +40 },
+          scarsAdd: ['Bản đồ giải phẫu Star of the City'],
+          later: [{ id: 'csq_seven_debt_reckoning', years: 2, reasonVi: 'Khoản nợ ân nghĩa và ràng buộc của Seven Association', reasonEn: 'Seven Association promissory obligation and intelligence debt' }],
+          meritAdd: 45,
+          resultVi: "Bạn trả 15 Ahn cho Seven Association để nhận bản đồ giải phẫu Singularity và sơ hở chí mạng. Một nhát đâm xuyên thẳng vào tâm hạch. Nest được giữ nguyên. Hana đóng dấu: một Color mới đạt được bằng sự chuẩn xác, nhưng Seven Association nay nắm giữ cam kết của bạn.",
+          resultEn: "You pay 15 Ahn to Seven Association for the Singularity anatomy map and openings. One thrust to the heart. The Nest is spared. Hana stamps the card: a new Color, earned by precision, but Seven now holds a binding agreement."
         }, {
           w: 25,
           effects: { health: -24, sanity: -18, rep: -5 },
           resultVi: 'Bản đồ của Seven bỏ sót một lõi phụ. Bạn ra hiệu rút lui trước khi vòng vây khép lại. Tiền điều tra đã mất; Hana yêu cầu ba năm hồi phục và bổ sung hồ sơ trước khi xét lại.',
           resultEn: 'Seven’s map missed a secondary core. You signal a retreat before the ring closes. The investigation fee is spent; Hana requires three years of recovery and further field work before reconsidering.'
         }]
+      },
+      {
+        labelVi: "Kề vai sát cánh cùng cộng sự: Dốc toàn lực nghênh chiến",
+        labelEn: "Fight alongside your companion: Put everything on the line",
+        need: { companionActive: true },
+        outcomes: [
+          {
+            w: 85,
+            openColorModal: true,
+            flagsAdd: ['ColorFixer', 'CompanionShieldedYou'],
+            recordsAdd: ['color_fixer'],
+            effects: { health: -18, sanity: -10, rep: +50, wealth: +45 },
+            scarsAdd: ['Ký ức đẫm máu cùng cộng sự'],
+            later: [{ id: 'csq_color_sponsor_aftermath', years: 1, reasonVi: 'Cộng sự trọng thương sau kỳ khảo thí Color cần được chữa trị', reasonEn: 'Companion critically injured during the Color trial requires care' }],
+            meritAdd: 65,
+            resultVi: "Cộng sự của bạn xông lên đỡ đòn cào xé từ thực thể Star of the City, che chắn góc chết trong tích tắc. Bạn chớp thời cơ vung vũ khí chém vỡ lõi năng lượng. Bạn cõng người đồng đội đẫm máu về trạm cứu trợ Hana. Tên Color được trao cho bạn, nhưng cái giá được tính bằng máu của người thân cận.",
+            resultEn: "Your companion leaps forward to shield your blind spot from the Star of the City monstrosity. You seize the split-second window to shatter its energy core. You carry your bleeding partner back to Hana's medics. The Color is granted, but its price was paid in your closest ally's blood."
+          },
+          {
+            w: 15,
+            effects: { health: -30, sanity: -25, rep: +10 },
+            scarsAdd: ['Cơn hoảng loạn tại vòng khảo thí'],
+            resultVi: "Phối hợp bị chệch nhịp trước đòn quét diện rộng của thực thể. Cả hai buộc phải rút lui trong biển khói. Kỳ phong Color tạm hoãn cho đến khi cả hai bình phục hoàn toàn.",
+            resultEn: "Coordination falters under the entity's sweeping strike. You both retreat through smoke. The Color investiture is postponed until both of you fully recover."
+          }
+        ]
       },
       {
         labelVi: "Từ chối vòng Color và ở lại làm Fixer Grade 1 tự do",

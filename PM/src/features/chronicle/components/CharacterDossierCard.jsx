@@ -7,7 +7,7 @@ import { useGameStore } from '../../../store/gameStore';
 import { useThemeStore } from '../../../store/themeStore';
 import { REGIONS, FAMILIES, FINGER_RANKS } from '../../../data/worldData';
 import { FATE_OMENS } from '../../../engine/weaverAI';
-import { SEASONS, WING_RANKS, getNextCareerMilestone } from '../../../engine/gameEngine';
+import { SEASONS, WING_RANKS, getNextCareerMilestone, getEgoReadiness } from '../../../engine/gameEngine';
 import { audioEngine } from '../../../engine/audioEngine';
 import { gameFeel } from '../../../engine/gameFeel';
 import { useT } from '../../../i18n';
@@ -342,6 +342,7 @@ const Nameplate = ({ char, region, omen, t, lang }) => {
 const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeTab = 'all', onOpenDepot }) => {
   const [activeNpcRole, setActiveNpcRole] = useState(null);
   const { health, sanity, wealth, network, rep } = char.stats;
+  const egoReadiness = getEgoReadiness(char);
 
   const showOverview = activeTab === 'all' || activeTab === 'overview';
   const showCareer = activeTab === 'all' || activeTab === 'career';
@@ -438,15 +439,58 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeT
             <i style={{ width: `${milestone.progressPct}%` }} />
           </div>}
           {milestone.category !== 'WORKSHOP' && <div className="career-obj-reqs">
-            {milestone.requirements.map((req, idx) => (
-              <div key={idx} className={`career-req-item ${req.met ? 'is-met' : ''}`}>
-                <span className="req-status">{req.met ? '✓' : '○'}</span> {/* taste-skill-ignore */}
-                <span className="req-label">{lang === 'en' ? req.labelEn : req.labelVi}</span>
-                <span className="req-val num">{req.current}/{req.target}</span>
-              </div>
-            ))}
+            {milestone.requirements.map((req, idx) => {
+              const deficit = !req.met && req.target != null && req.current != null ? Math.max(0, req.target - req.current) : 0;
+              return (
+                <div key={idx} className={`career-req-item ${req.met ? 'is-met' : ''}`}>
+                  <div className="career-req-row">
+                    <span className="req-status">{req.met ? '✓' : '○'}</span> {/* taste-skill-ignore */}
+                    <span className="req-label">{lang === 'en' ? req.labelEn : req.labelVi}</span>
+                    <span className="req-val num">
+                      {req.current}/{req.target}
+                      {deficit > 0 && (
+                        <span className="req-deficit">{lang === 'en' ? ` (Need ${deficit})` : ` (Thiếu ${deficit})`}</span>
+                      )}
+                    </span>
+                  </div>
+                  {!req.met && req.sources && req.sources.length > 0 && (
+                    <div className="career-req-sources">
+                      <span className="req-sources-label">{lang === 'en' ? 'Sources:' : 'Nguồn:'}</span>
+                      {req.sources.map((src, sIdx) => (
+                        <span key={sIdx} className="req-source-tag">{src}</span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>}
           <p className="career-obj-tip">{lang === 'en' ? milestone.tipEn : milestone.tipVi}</p>
+        </section>
+      )}
+
+      {showCareer && egoReadiness && (
+        <section className={`ego-horizon-card status-${egoReadiness.status}`}>
+          <div className="ego-horizon-header">
+            <span className="ego-horizon-tag">
+              {lang === 'en' ? 'PSYCHIC RESONANCE HORIZON' : 'TÂM THỨC CỘNG HƯỞNG & E.G.O'}
+            </span>
+            <span className="ego-horizon-status-badge">
+              {lang === 'en' ? egoReadiness.labelEn : egoReadiness.labelVi}
+            </span>
+          </div>
+          <div className="ego-horizon-bar">
+            <i style={{ width: `${egoReadiness.progressPct}%` }} />
+          </div>
+          <div className="ego-horizon-meta">
+            <span className="meta-item">
+              <strong>{lang === 'en' ? 'Resonance:' : 'Cộng hưởng:'}</strong> <span className="num">{char.resonance || 0}/100</span>
+            </span>
+            <span className="meta-item">
+              <strong>{lang === 'en' ? 'Mental Sanity:' : 'Tỉnh táo:'}</strong> <span className="num">{char.stats?.sanity ?? char.sanity ?? 0}/100</span>
+            </span>
+          </div>
+          <p className="ego-horizon-desc">{lang === 'en' ? egoReadiness.descEn : egoReadiness.descVi}</p>
         </section>
       )}
 

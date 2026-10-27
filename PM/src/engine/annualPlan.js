@@ -4,11 +4,11 @@ export const YEAR_PLAN_POINTS = 3;
 export { APEX_DIRECTIVES, isApexCommander };
 
 export const YEAR_ACTIVITIES = [
-  { id: 'train', vi: 'Luyện tập', en: 'Train', effectVi: '+2% cơ hội thăng cấp mỗi điểm trong năm', effectEn: '+2% promotion chance per point this year' },
-  { id: 'work', vi: 'Kiếm sống', en: 'Earn', effectVi: '+2 Ahn mỗi điểm', effectEn: '+2 Ahn per point' },
+  { id: 'train', vi: 'Luyện tập', en: 'Train', effectVi: '+2% cơ hội thăng cấp mỗi điểm (dồn >=2: -1 HP)', effectEn: '+2% promotion chance per point (2+ points: -1 HP)' },
+  { id: 'work', vi: 'Kiếm sống', en: 'Earn', effectVi: '+2 Ahn mỗi điểm (dồn >=2: -1 SP)', effectEn: '+2 Ahn per point (2+ points: -1 SP)' },
   { id: 'bond', vi: 'Gắn bó', en: 'Connect', effectVi: '+2 Quan hệ mỗi điểm', effectEn: '+2 Network per point' },
   { id: 'rest', vi: 'Nghỉ ngơi', en: 'Rest', effectVi: '+3 SP mỗi điểm', effectEn: '+3 SP per point' },
-  { id: 'scheme', vi: 'Mưu tính', en: 'Scheme', effectVi: '-2 Heat, +2 Leverage mỗi điểm', effectEn: '-2 Heat, +2 Leverage per point' }
+  { id: 'scheme', vi: 'Mưu tính', en: 'Scheme', effectVi: '-2 Heat, +2 Leverage mỗi điểm (dồn >=2: -1 Bond)', effectEn: '-2 Heat, +2 Leverage per point (2+ points: -1 Bond)' }
 ];
 
 export const AMBITIONS = [
@@ -46,6 +46,17 @@ export function applyAnnualPlan(char, points, ambitionId, directiveId = null) {
   stats.sanity = Math.min(100, (stats.sanity || 0) + p.rest * 3);
   char.heat = Math.max(0, (char.heat || 0) - p.scheme * 2);
   char.leverage = Math.min(100, (char.leverage || 0) + p.scheme * 2);
+
+  // Micro trade-offs for heavy point allocation (2+ points)
+  if (p.train >= 2) stats.health = Math.max(1, (stats.health || 0) - 1);
+  if (p.work >= 2) stats.sanity = Math.max(1, (stats.sanity || 0) - 1);
+  if (p.scheme >= 2) {
+    const activeCompanions = Object.values(char.npcs || {}).filter((n) => n && n.status === 'alive' && !n.deceased);
+    if (activeCompanions.length > 0) {
+      const targetComp = activeCompanions[0];
+      targetComp.bond = Math.max(0, (targetComp.bond || 0) - 1);
+    }
+  }
   if (directiveId && isApexCommander(char)) {
     applyApexDirective(char, directiveId);
   }

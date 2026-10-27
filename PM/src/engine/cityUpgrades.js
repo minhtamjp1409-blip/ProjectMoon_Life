@@ -331,6 +331,9 @@ export function transitCostFor(hub, char) {
 
 export function canBorderCrossFromOutskirts(char) {
   if (!char) return false;
+  // A minor or child cannot independently cross the Wall checkpoint into the City
+  if ((char.age || 0) < 18 || char.job === 'Child') return false;
+
   const flags = char.flags || [];
   if (
     flags.includes('EnteredCity') ||
@@ -348,7 +351,7 @@ export function canBorderCrossFromOutskirts(char) {
     'k_ampoule'
   ];
   if (inv.some((it) => PERMIT_ITEM_IDS.includes(it?.id || it))) return true;
-  if (char.age >= 18 && char.job !== 'Child' && ((char.stats?.network ?? 0) >= 25 || (char.stats?.rep ?? 0) >= 25)) return true;
+  if ((char.stats?.network ?? 0) >= 25 || (char.stats?.rep ?? 0) >= 25) return true;
   return false;
 }
 
