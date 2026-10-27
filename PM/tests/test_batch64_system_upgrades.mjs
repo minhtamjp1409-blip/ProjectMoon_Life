@@ -356,13 +356,20 @@ console.log('=== TEST SUITE: BATCH 64-68 SYSTEM UPGRADES (5 PILLARS) ===');
   stirringChar.stats.sanity = 60;
   assert.equal(getEgoReadiness(stirringChar).status, 'stirring');
 
+  // Resonance 70 with sanity 60 is stirring (opportunity has not opened yet, real trigger needs 74)
+  const notQuiteImminent = createNewCharacter({ seed: 'ego-stirring-70', startAge: 22 });
+  notQuiteImminent.resonance = 70;
+  notQuiteImminent.stats.sanity = 60;
+  assert.equal(getEgoReadiness(notQuiteImminent).status, 'stirring');
+
   const imminentResChar = createNewCharacter({ seed: 'ego-imminent-res', startAge: 22 });
-  imminentResChar.resonance = 72;
+  imminentResChar.resonance = 75; // Apex Resonance >= 74
   assert.equal(getEgoReadiness(imminentResChar).status, 'imminent');
 
   const imminentCrisisChar = createNewCharacter({ seed: 'ego-imminent-crisis', startAge: 22 });
-  imminentCrisisChar.resonance = 60;
-  imminentCrisisChar.stats.sanity = 30; // Sanity <= 38 + Resonance >= 58
+  imminentCrisisChar.resonance = 64; // Resonance >= 62
+  imminentCrisisChar.stats.sanity = 30; // Sanity <= 38
+  imminentCrisisChar.scars = ['Vết sẹo của Star of the City']; // Requires >= 1 active scar
   assert.equal(getEgoReadiness(imminentCrisisChar).status, 'imminent');
 
   const awakenedChar = createNewCharacter({ seed: 'ego-awakened', startAge: 22 });
@@ -407,17 +414,17 @@ console.log('=== TEST SUITE: BATCH 64-68 SYSTEM UPGRADES (5 PILLARS) ===');
   };
   plannerChar.pendingYearPlan = { age: 25 };
 
-  // 2 train + 1 work -> HP -1
+  // 2 train + 1 work -> HP -2
   applyAnnualPlan(plannerChar, { train: 2, work: 1, bond: 0, rest: 0, scheme: 0 }, 'rank');
-  assert.equal(plannerChar.stats.health, 49, 'Allocating 2 points in train must drain 1 HP');
+  assert.equal(plannerChar.stats.health, 48, 'Allocating 2 points in train must drain 2 HP');
 
   const plannerChar2 = createNewCharacter({ seed: 'plan-tradeoff-2', startAge: 26 });
   plannerChar2.job = 'Fixer';
   plannerChar2.stats.sanity = 50;
   plannerChar2.pendingYearPlan = { age: 26 };
-  // 2 work + 1 rest -> SP -1 (+3 from rest = net +2)
+  // 2 work + 1 rest -> SP -3 (+3 from rest = net +0)
   applyAnnualPlan(plannerChar2, { train: 0, work: 2, bond: 0, rest: 1, scheme: 0 }, 'fortune');
-  assert.equal(plannerChar2.stats.sanity, 52, 'Allocating 2 points in work must drain 1 SP');
+  assert.equal(plannerChar2.stats.sanity, 50, 'Allocating 2 points in work must drain 3 SP');
 
   const plannerChar3 = createNewCharacter({ seed: 'plan-tradeoff-3', startAge: 27 });
   plannerChar3.job = 'Fixer';
@@ -425,9 +432,9 @@ console.log('=== TEST SUITE: BATCH 64-68 SYSTEM UPGRADES (5 PILLARS) ===');
     partner: { role: 'partner', nameVi: 'Yuri', status: 'alive', bond: 40 }
   };
   plannerChar3.pendingYearPlan = { age: 27 };
-  // 2 scheme + 1 bond -> Companion bond -1
+  // 2 scheme + 1 bond -> Companion bond -2
   applyAnnualPlan(plannerChar3, { train: 0, work: 0, bond: 1, rest: 0, scheme: 2 }, 'survive');
-  assert.equal(plannerChar3.npcs.partner.bond, 39, 'Allocating 2 points in scheme must drain 1 companion bond');
+  assert.equal(plannerChar3.npcs.partner.bond, 38, 'Allocating 2 points in scheme must drain 2 companion bond');
 
   console.log('  ✓ Pillar 6: Batch 69 Failbetter Roadmap (Milestones, Color Trial & Distortion Regen) verified');
 }

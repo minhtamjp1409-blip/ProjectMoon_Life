@@ -393,7 +393,7 @@ export const SUPERNATURAL_EVENTS = [
           {
             w: 85,
             openColorModal: true,
-            flagsAdd: ['ColorFixer', 'CompanionShieldedYou'],
+            flagsAdd: ['ColorFixer', 'CompanionShieldedYou', 'PartnerShieldedYouInColorTrial'],
             recordsAdd: ['color_fixer'],
             effects: { health: -18, sanity: -10, rep: +50, wealth: +45 },
             scarsAdd: ['Ký ức đẫm máu cùng cộng sự'],

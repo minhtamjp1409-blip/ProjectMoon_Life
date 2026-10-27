@@ -1484,6 +1484,41 @@ Chủ dự án yêu cầu làm lại toàn bộ giao diện lần nữa: bỏ t�
     * `story_logic_audit.mjs 500 random` (80.338 khoảnh khắc, **0 vi phạm logic**, entropy `83.1%`).
     * `branch_experience.mjs 500`: Distortion đạt **11.3 năm/đời** (tăng 297% so với Đợt 68), Fixer `11.8` năm/đời, Wing Employee `9.8` năm/đời, Syndicate `8.2` năm/đời.
 
+* **Đợt 70: Hoàn Thiện Cơ Chế Theo Phản Hồi QA & Kiểm Định Chuyên Sâu (Ngưỡng E.G.O Cơ Học Thật, Ánh Xạ Sẹo Color, Khảo Thí Nhân Quả Toàn Vẹn, Thông Suốt 3 Hồi Distortion & Đánh Đổi Kế Hoạch Năm Thực Chất; đã kiểm định 100%):**
+  * **1. Chuẩn Hóa Ngưỡng Thức Tỉnh E.G.O Khớp 100% Cơ Chế Cốt Lõi (`src/engine/gameEngine.js`):**
+    * Đồng bộ ngưỡng `getEgoReadiness(char)` theo đúng điều kiện thực tại [`awakeningProgress.js`](file:///c:/Users/nguyenhuynhminhtam/Downloads/TestPM/TestPM/PM/src/engine/awakeningProgress.js#L7):
+      * Thêm kiểm tra nghiêm ngặt `char.age >= 18`: Người dưới 18 tuổi hiển thị trạng thái `dormant` ("Tâm Trí Trẻ Thơ: Chưa Đủ 18 Tuổi Để Thức Tỉnh E.G.O").
+      * Trạng thái `imminent` kích hoạt khi: đã mở cơ hội E.G.O (`hasEgoOpportunity`), hoặc Cộng hưởng cực đỉnh $\ge 74$, hoặc Khủng hoảng tâm trí ($\text{Resonance} \ge 62$ đi kèm $\ge 1$ sẹo và $\text{Sanity} \le 38$, hoặc $\ge 2$ sẹo và $\text{Sanity} \le 45$).
+      * Khắc phục trường hợp Resonance 70 và SP 60 hiển thị sai `imminent`: nay hiển thị chính xác là `stirring` (dao động), thanh tiến trình tính trên mốc chuẩn 74.
+    * Trong `getNextCareerMilestone`: Khắc phục lỗi Fixer Grade 2-3 đạt chuẩn Thần Đồng Đặc Cách (`isColorProdigyEligible`) bị ép hiển thị thăng hạng bậc tiếp theo. Nay hiển thị ưu tiên cột mốc: `Đại Khảo Thí Phong Color (Hana Đặc Cách Thần Đồng)`.
+  * **2. Ánh Xạ Đầy Đủ 100% Sẹo Color Vào Danh Mục Hiệu Ứng Hoạt Động (`src/engine/scarModel.js`):**
+    * Bổ sung luật nhận diện cho các vết sẹo từ vòng khảo thí Color:
+      * `Vết sẹo của Star of the City` $\to$ Hồ sơ `injury` (Thương tật: -1 HP/năm, -4 Fixer contract power, mở nhánh y tế).
+      * `Ký ức đẫm máu cùng cộng sự`, `Cơn hoảng loạn tại vòng khảo thí`, `Ký ức người cộng sự đã ngã xuống` $\to$ Hồ sơ `trauma` (Ám ảnh: -2 SP/năm, tăng floor resonance).
+      * `Người từ chối làm Color` $\to$ Hồ sơ `witness` (Nhân chứng: -1 SP/năm, mở bí mật Wing).
+    * Loại bỏ hoàn toàn tình trạng sẹo bị đánh dấu `UNMAPPED` và đẩy vào lịch sử vô dụng.
+  * **3. Khép Kín Chuỗi Nhân Quả Khảo Thí Color & Bảo Đảm Logic Sinh Tử Của Cộng Sự (`src/data/eventsSupernatural.js`, `src/data/eventsChildhood.js`, `src/engine/yearPlanner.js`, `src/engine/eventConditions.js`):**
+    * Lựa chọn 2 tại đại khảo thí Color gắn cờ định danh `PartnerShieldedYouInColorTrial`, yêu cầu có cộng sự còn sống (`need: { companionActive: true }`), hỗ trợ chính thức cờ `companionActive` trong `matchesNeed`.
+    * Sự kiện hậu quả năm sau chia làm 2 nhánh rẽ mạch lạc:
+      * Nếu cộng sự còn sống: Kích hoạt `csq_color_sponsor_aftermath`, hiển thị tên cụ thể của cộng sự `{partner}` tại phòng hồi sức Văn phòng, cho phép chọn tiêm phục hồi K Corp (15 Ahn) hoặc bổ nhiệm làm Cố Vấn Tối Cao.
+      * Nếu cộng sự đã hy sinh hoặc qua đời trong năm: `yearPlanner.js` tự động chuyển tiếp sang sự kiện tưởng niệm `csq_color_sponsor_aftermath_fallen` ("Tưởng Niệm Người Đã Đỡ Đòn"), cho phép khắc tên họ lên vũ khí Color hoặc lập quỹ bảo trợ hậu bối.
+  * **4. Khơi Thông Hoàn Toàn 3 Hồi Đại Mạch Carmen Distortion (`src/data/eventsDistortionPath.js`):**
+    * Gỡ bỏ rào cản gắt gao `need: { npc: 'friend' }` tại Hồi 2 (`distort_former_companion_encounter`), mở rộng biên độ tuổi sang `[18, 99]` và tinh chỉnh văn phong để chấp nhận bất kỳ người quen/cố nhân cũ nào từ tiền kiếp, tránh bị kẹt luồng narrative arc khi không có NPC bạn bè thuở nhỏ.
+    * Hồi 3 (`distort_star_of_city_rampage`) mở rộng biên độ tuổi sang `[18, 99]`, bảo đảm chuỗi tiến trình 3 hồi liên tục qua từng năm sau khi biến dị.
+    * Kiểm định bằng test chuyên sâu `test_audit_feedback_resolution.mjs`: xác nhận thực thể Distortion trải nghiệm và hoàn thành trọn vẹn cả 3 hồi đến kỷ lục `arc_completed_arc_carmen_distortion_abyss`.
+  * **5. Nâng Tầm Đánh Đổi Kế Hoạch Năm Thành Thách Thức Thực Sự (`src/engine/annualPlan.js`):**
+    * Thay thế các mức phạt nhẹ -1 bằng cái giá thể xác và tinh thần thực chất theo phong cách Darkest Dungeon / Failbetter:
+      * `train` (Luyện tập): Dồn 2 điểm mất **-2 HP**; dồn 3 điểm mất **-4 HP** (tổn thương cơ bắp và xương khớp).
+      * `work` (Kiếm sống): Dồn 2 điểm mất **-3 SP**; dồn 3 điểm mất **-6 SP** (nguy cơ kiệt quệ tâm lý/burnout).
+      * `scheme` (Mưu tính): Dồn 2 điểm làm sụt giảm **-2 Bond** với mọi cộng sự; dồn 3 điểm làm sụt giảm **-4 Bond** và gây **+2 Heat** do tai mắt thành phố đánh hơi.
+    * Cập nhật mô tả hoạt động trong `YEAR_ACTIVITIES` để người chơi cân nhắc kỹ lưỡng trước mỗi năm hành động.
+  * **6. Đo Kiểm & Triển Khai Hoàn Hảo (Đợt 70):**
+    * Thêm bộ kiểm thử toàn diện `tests/test_audit_feedback_resolution.mjs` bao phủ toàn bộ 6 khía cạnh trên: đạt 100% Pass.
+    * Toàn bộ test suite `npm test` đạt **54/54 test suites passed** (100%).
+    * Linter `lint_story.mjs` đạt **0 lỗi, 0 cảnh báo** (32.351 chuỗi kiểm tra).
+    * `npm run build` hoàn thành trong 7.22 giây, bundle tĩnh sạch bóng.
+
+
 
 
 

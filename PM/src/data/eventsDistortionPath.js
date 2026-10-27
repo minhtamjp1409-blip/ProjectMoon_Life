@@ -165,13 +165,13 @@ export const DISTORTION_PATH_EVENTS = [
 
   {
     id: 'distort_former_companion_encounter',
-    age: [20, 80],
+    age: [18, 99],
     major: true,
     weight: 65,
-    need: { jobs: ['Distortion'], npc: 'friend' },
+    need: { jobs: ['Distortion'] },
     forbids: ['distort_companion_done'],
-    vi: "[Người quen cũ] Bạn thuở nhỏ chặn đầu hẻm, tay cầm thanh kiếm cùn. Người ấy nhìn những chiếc gai trên người bạn, hỏi: \"Có thật là cậu không?\" Lưỡi kiếm run, nhưng chưa hạ xuống.",
-    en: "[An old friend] Your childhood friend blocks the mouth of the alley with a dull sword. They look at the thorns on your body and ask: “Is that really you?” The blade shakes but does not lower.",
+    vi: "[Người quen cũ] Một người quen cũ từ cuộc đời trước chặn đầu con hẻm, tay cầm thanh kiếm cùn. Người ấy nhìn những chiếc gai và khối dị hình trên người bạn, run giọng hỏi: \"Có thật... là cậu không?\" Lưỡi kiếm run bần bật, nhưng chưa chịu hạ xuống.",
+    en: "[A face from the past] A former companion from your past life blocks the alley, wielding a trembling dull sword. Looking upon your crystalline thorns and twisted visage, they stammer: “Is that... truly you?” The blade shakes, yet refuses to lower.",
     choices: [
       {
         labelVi: "Nén cơn khát máu, quay lưng chạy vào bóng tối để bảo vệ bạn mình",
@@ -184,20 +184,20 @@ export const DISTORTION_PATH_EVENTS = [
         recordsAdd: ['distortion_spared_companion']
       },
       {
-        labelVi: "Buông cho bản năng săn mồi, nuốt luôn cả ký ức cũ",
-        labelEn: "Let the hunting instinct go and devour the old memory too",
-        resultVi: "Máu nhuộm tường ngõ. Khi cơn cuồng qua đi, bạn đứng trên xác người bạn cũ. Không còn ai sống nhớ bạn từng là ai. Sức mạnh của bạn tăng vọt.",
-        resultEn: "Blood stained the alley wall. When the frenzy passed, you stood over your old friend’s body. No one living remembered who you had been. Your power surged.",
+        labelVi: "Buông cho bản năng săn mồi, nuốt luôn cả ký ức xưa",
+        labelEn: "Let the hunting instinct go and devour the ancient memory too",
+        resultVi: "Máu nhuộm đỏ tường ngõ. Khi cơn cuồng nộ qua đi, bạn đứng cô độc giữa con hẻm hoang tàn trên xác kẻ vừa gục xuống. Không còn ai sống sót nhớ bạn từng là ai. Sức mạnh của bạn tăng vọt.",
+        resultEn: "Blood stained the alley wall. When the frenzy passed, you stood alone over the fallen body. No one living remembered who you had been. Your power surged.",
         effects: { health: +35, sanity: -35, rep: +50, heat: +40 },
         meritAdd: 30,
         flagsAdd: ['distort_companion_done'],
-        scarsAdd: ['Bàn tay vấy máu người bạn cũ']
+        scarsAdd: ['Bàn tay vấy máu']
       }
     ]
   },
   {
     id: 'distort_star_of_city_rampage',
-    age: [22, 90],
+    age: [18, 99],
     major: true,
     weight: 70,
     need: { jobs: ['Distortion'] },

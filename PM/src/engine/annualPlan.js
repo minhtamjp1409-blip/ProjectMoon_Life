@@ -4,11 +4,11 @@ export const YEAR_PLAN_POINTS = 3;
 export { APEX_DIRECTIVES, isApexCommander };
 
 export const YEAR_ACTIVITIES = [
-  { id: 'train', vi: 'Luyện tập', en: 'Train', effectVi: '+2% cơ hội thăng cấp mỗi điểm (dồn >=2: -1 HP)', effectEn: '+2% promotion chance per point (2+ points: -1 HP)' },
-  { id: 'work', vi: 'Kiếm sống', en: 'Earn', effectVi: '+2 Ahn mỗi điểm (dồn >=2: -1 SP)', effectEn: '+2 Ahn per point (2+ points: -1 SP)' },
+  { id: 'train', vi: 'Luyện tập', en: 'Train', effectVi: '+2% cơ hội thăng cấp/điểm (dồn 2 điểm: -2 HP; dồn 3 điểm: -4 HP)', effectEn: '+2% promotion chance per point (2 pts: -2 HP; 3 pts: -4 HP)' },
+  { id: 'work', vi: 'Kiếm sống', en: 'Earn', effectVi: '+2 Ahn/điểm (dồn 2 điểm: -3 SP; dồn 3 điểm: -6 SP kiệt sức)', effectEn: '+2 Ahn per point (2 pts: -3 SP; 3 pts: -6 SP burnout)' },
   { id: 'bond', vi: 'Gắn bó', en: 'Connect', effectVi: '+2 Quan hệ mỗi điểm', effectEn: '+2 Network per point' },
   { id: 'rest', vi: 'Nghỉ ngơi', en: 'Rest', effectVi: '+3 SP mỗi điểm', effectEn: '+3 SP per point' },
-  { id: 'scheme', vi: 'Mưu tính', en: 'Scheme', effectVi: '-2 Heat, +2 Leverage mỗi điểm (dồn >=2: -1 Bond)', effectEn: '-2 Heat, +2 Leverage per point (2+ points: -1 Bond)' }
+  { id: 'scheme', vi: 'Mưu tính', en: 'Scheme', effectVi: '-2 Heat, +2 Leverage/điểm (dồn 2 điểm: -2 Bond; dồn 3 điểm: -4 Bond, +2 Heat)', effectEn: '-2 Heat, +2 Leverage per point (2 pts: -2 Bond; 3 pts: -4 Bond, +2 Heat)' }
 ];
 
 export const AMBITIONS = [
@@ -47,14 +47,21 @@ export function applyAnnualPlan(char, points, ambitionId, directiveId = null) {
   char.heat = Math.max(0, (char.heat || 0) - p.scheme * 2);
   char.leverage = Math.min(100, (char.leverage || 0) + p.scheme * 2);
 
-  // Micro trade-offs for heavy point allocation (2+ points)
-  if (p.train >= 2) stats.health = Math.max(1, (stats.health || 0) - 1);
-  if (p.work >= 2) stats.sanity = Math.max(1, (stats.sanity || 0) - 1);
+  // Tangible trade-offs for heavy point allocation (2+ points)
+  if (p.train === 2) stats.health = Math.max(1, (stats.health || 0) - 2);
+  else if (p.train >= 3) stats.health = Math.max(1, (stats.health || 0) - 4);
+
+  if (p.work === 2) stats.sanity = Math.max(1, (stats.sanity || 0) - 3);
+  else if (p.work >= 3) stats.sanity = Math.max(1, (stats.sanity || 0) - 6);
+
   if (p.scheme >= 2) {
+    const penalty = p.scheme >= 3 ? 4 : 2;
     const activeCompanions = Object.values(char.npcs || {}).filter((n) => n && n.status === 'alive' && !n.deceased);
-    if (activeCompanions.length > 0) {
-      const targetComp = activeCompanions[0];
-      targetComp.bond = Math.max(0, (targetComp.bond || 0) - 1);
+    for (const comp of activeCompanions) {
+      comp.bond = Math.max(0, (comp.bond || 0) - penalty);
+    }
+    if (p.scheme >= 3) {
+      char.heat = Math.min(100, (char.heat || 0) + 2);
     }
   }
   if (directiveId && isApexCommander(char)) {

@@ -38,6 +38,7 @@ export function matchesNeed(need, char) {
   if (need.noFlags?.some((f) => flags.includes(f))) return false;
   if (need.scarTag && !hasScarTag(char, need.scarTag)) return false;
   if (need.noScarTag && hasScarTag(char, need.noScarTag)) return false;
+  if (need.companionActive && !Object.values(char.npcs || {}).some(npcIsActive)) return false;
   if (need.npc && !npcIsActive(char.npcs?.[need.npc])) return false;
   if (need.noNpc && npcIsActive(char.npcs?.[need.noNpc])) return false;
   if (need.npcTag) {

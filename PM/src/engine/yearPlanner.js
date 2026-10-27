@@ -399,7 +399,11 @@ export function planYear(charState, rng) {
     }
 
     // Check if it matches a major story consequence
-    const storyDef = CONSEQUENCE_EVENTS.find((e) => e.id === th.eventId) || ALL_STORY_EVENTS.find((e) => e.id === th.eventId);
+    let targetEventId = th.eventId;
+    if (targetEventId === 'csq_color_sponsor_aftermath' && !npcIsActive(char.npcs?.partner)) {
+      targetEventId = 'csq_color_sponsor_aftermath_fallen';
+    }
+    const storyDef = CONSEQUENCE_EVENTS.find((e) => e.id === targetEventId) || ALL_STORY_EVENTS.find((e) => e.id === targetEventId);
     if (storyDef && isEventEligible(storyDef, char, { scripted: true })) {
       if (!scheduledKey.some((it) => it.forcedEventId === storyDef.id)) {
         scheduledKey.push({ kind: 'major', forcedEventId: storyDef.id, thread: th.id, isCausal: true });

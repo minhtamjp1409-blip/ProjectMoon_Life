@@ -77,6 +77,7 @@ import {
   fixerPromotionSuccessChance,
   fixerPromotionFailureEffects,
   checkColorFixerReadiness,
+  isColorProdigyEligible,
   getNextFingerPromotion,
   getNextWingPromotion,
   getOtherCareerPromotion,
@@ -1078,7 +1079,8 @@ export function getNextCareerMilestone(char) {
       };
     }
 
-    if (char.fixerGrade === 1) {
+    const isProdigy = isColorProdigyEligible(char);
+    if (char.fixerGrade === 1 || isProdigy) {
       const readiness = checkColorFixerReadiness(char);
       const targetMerit = readiness.targetMerit;
       const targetRep = readiness.targetRep;
@@ -1086,6 +1088,22 @@ export function getNextCareerMilestone(char) {
       const p1 = Math.min(100, ((char.merit || 0) / targetMerit) * 100);
       const p2 = Math.min(100, (curRep / targetRep) * 100);
       const progressPct = Math.round((p1 + p2) / 2);
+
+      if (isProdigy) {
+        return {
+          category: 'STAR OF THE CITY ORDEAL',
+          titleVi: 'Đại Khảo Thí Phong Color (Hana Đặc Cách Thần Đồng)',
+          titleEn: 'Hana Star of the City: Prodigy Color Investiture',
+          progressPct,
+          requirements: [
+            { labelVi: `Chiến công thần đồng (Merit >= ${targetMerit})`, labelEn: `Prodigy Merit (>= ${targetMerit})`, current: char.merit || 0, target: targetMerit, met: (char.merit || 0) >= targetMerit, sources: ['Hợp đồng đặc biệt', 'Chinh phục Dungeon', 'Tiêu diệt mối họa cấp cao'] },
+            { labelVi: `Danh tiếng vượt bậc (Rep >= ${targetRep})`, labelEn: `Prodigy Rep (>= ${targetRep})`, current: curRep, target: targetRep, met: curRep >= targetRep, sources: ['Uy danh The City', 'Nhiệm vụ chấn động'] },
+            { labelVi: `Tuổi xét hồ sơ thần đồng (>= ${readiness.targetAge || 26})`, labelEn: `Prodigy Age Review (>= ${readiness.targetAge || 26})`, current: char.age, target: readiness.targetAge || 26, met: char.age >= (readiness.targetAge || 26), sources: ['Tuổi từ 26 đến 34 kèm kỳ tích'] }
+          ],
+          tipVi: `Bạn đạt chuẩn Thần Đồng Đặc Cách (Fixer Grade ${char.fixerGrade} xuất chúng). Hana Association sẵn sàng mở đại khảo thí phong Color mà không cần thăng từng bậc!`,
+          tipEn: `You qualify for the Hana Prodigy Fast-Track (Grade ${char.fixerGrade} prodigy). Hana will convene the Color Investiture directly without climbing grade by grade!`
+        };
+      }
 
       return {
         category: 'STAR OF THE CITY ORDEAL',
@@ -1324,10 +1342,35 @@ export function getEgoReadiness(char) {
   }
   const res = char.resonance || 0;
   const sanity = (char.stats?.sanity ?? char.sanity) || 0;
-  // Critical triggers: Resonance >= 70 OR (Resonance >= 58 && Sanity <= 38)
-  const isImminent = res >= 70 || (res >= 58 && sanity <= 38);
+  const age = char.age || 0;
+
+  // Strict adulthood requirement for psychological crystallization
+  if (age < 18) {
+    return {
+      status: 'dormant',
+      progressPct: Math.min(50, Math.round((res / 74) * 50)),
+      resonance: res,
+      sanity,
+      labelVi: 'Tâm Trí Trẻ Thơ (Chưa Đủ 18 Tuổi Để Thức Tỉnh E.G.O)',
+      labelEn: 'Adolescent Mind (Must Reach Age 18 for E.G.O Awakening)',
+      descVi: 'Bản ngã chỉ có thể kết tinh hoàn chỉnh khi đã trưởng thành (từ 18 tuổi). Hãy bảo toàn sinh mạng qua những năm tháng niên thiếu.',
+      descEn: 'The ego can only fully crystallize in adulthood (from age 18). Preserve your life through your youth.',
+      sourcesVi: ['Trưởng thành theo thời gian (Tuổi >= 18)', 'Tích lũy kinh nghiệm sinh tử']
+    };
+  }
+
+  const scars = activeScarCount(char);
+  // Real E.G.O mechanics matching awakeningProgress.js line 7:
+  // Apex Resonance >= 74 OR (Resonance >= 62 && ((scars >= 1 && sanity <= 38) || (scars >= 2 && sanity <= 45)))
+  const isCrisisEligible = res >= 62 && ((scars >= 1 && sanity <= 38) || (scars >= 2 && sanity <= 45));
+  const isApexResonance = res >= 74;
+  const isImminent = hasEgoOpportunity(char) || isApexResonance || isCrisisEligible;
   const isStirring = res >= 40;
-  const progressPct = Math.min(100, Math.round(Math.max((res / 70) * 100, isImminent ? 100 : (res >= 58 ? 85 : (res / 40) * 50))));
+
+  const targetRes = isCrisisEligible ? 62 : 74;
+  const progressPct = isImminent
+    ? 100
+    : (isStirring ? Math.min(95, Math.round((res / targetRes) * 100)) : Math.round((res / 74) * 50));
 
   if (isImminent) {
     return {
@@ -1337,12 +1380,12 @@ export function getEgoReadiness(char) {
       sanity,
       labelVi: 'Giao Lộ Ngàn Cân Treo Sợi Tóc (E.G.O hoặc Distortion)',
       labelEn: 'Psychic Precipice: E.G.O or Distortion Crossroads',
-      descVi: sanity <= 38
-        ? 'Tâm trí rơi vào khủng hoảng trong khi tần số cộng hưởng cực cao. Giọng nói của Carmen đang thầm thì bên tai. Giữ vững niềm tin để thức tỉnh E.G.O, hoặc gục ngã thành Distortion.'
-        : 'Tần số Ánh Sáng đã đạt cực điểm. Một bài khảo nghiệm tinh thần có thể xuất hiện bất cứ lúc nào để tôi luyện vũ khí bản ngã E.G.O.',
-      descEn: sanity <= 38
-        ? 'Sanity has fractured while resonance peaks. Carmen whispers in your ear. Hold fast to awaken E.G.O, or surrender to Distortion.'
-        : 'Resonance has reached apex. A mental crucible may manifest at any moment to forge your personal E.G.O weapon.',
+      descVi: isCrisisEligible || sanity <= 38
+        ? `Tâm trí rơi vào khủng hoảng (Sanity: ${sanity}, Resonance: ${res} với ${scars} vết sẹo). Giọng nói của Carmen đang thầm thì bên tai. Giữ vững niềm tin để thức tỉnh E.G.O, hoặc gục ngã thành Distortion.`
+        : `Tần số Ánh Sáng đã đạt cực điểm (Resonance >= 74). Một bài khảo nghiệm tinh thần có thể xuất hiện bất cứ lúc nào để tôi luyện vũ khí bản ngã E.G.O.`,
+      descEn: isCrisisEligible || sanity <= 38
+        ? `Sanity has fractured under peak resonance with scars. Carmen whispers in your ear. Hold fast to awaken E.G.O, or surrender to Distortion.`
+        : `Resonance has reached apex (>= 74). A mental crucible may manifest at any moment to forge your personal E.G.O weapon.`,
       sourcesVi: ['Vượt qua khủng hoảng tâm trí', 'Đối diện chấn thương quá khứ', 'Kiên định với nguyên tắc']
     };
   }
@@ -1355,8 +1398,8 @@ export function getEgoReadiness(char) {
       sanity,
       labelVi: 'Bản Ngã Bắt Đầu Dao Động (Resonance Đang Tăng)',
       labelEn: 'Ego Awakening Stirring (Resonance Rising)',
-      descVi: 'Tần số Ánh Sáng đang cộng hưởng trong máu thịt. Khi Resonance đạt 70 (hoặc 58 khi gặp khủng hoảng tâm trí), cánh cửa E.G.O sẽ mở ra.',
-      descEn: 'The Light echoes in your pulse. Once Resonance reaches 70 (or 58 during a mental crisis), the E.G.O threshold opens.',
+      descVi: `Tần số Ánh Sáng đang cộng hưởng trong máu thịt. Khi Resonance đạt 74 (hoặc 62 khi mang sẹo và gặp khủng hoảng tâm trí), cánh cửa E.G.O sẽ mở ra.`,
+      descEn: `The Light echoes in your pulse. Once Resonance reaches 74 (or 62 with scars during a mental crisis), the E.G.O threshold opens.`,
       sourcesVi: ['Chiến đấu sinh tử', 'Chinh phục Dungeon Dị Thường', 'Khảo nghiệm số phận']
     };
   }
