@@ -7,7 +7,7 @@ import { audioEngine } from '../src/engine/audioEngine.js';
 console.log('--- Testing Generational Lineage & Legacy Narrative System ---');
 
 // 1. Structure & Registration
-assert.equal(LINEAGE_LEGACY_EVENTS.length, 3, 'Expected 3 adult lineage legacy events');
+assert.ok(LINEAGE_LEGACY_EVENTS.length >= 7, 'Expected at least 7 adult lineage legacy events');
 
 for (const event of LINEAGE_LEGACY_EVENTS) {
   assert.ok(event.id, 'Event must have an id');

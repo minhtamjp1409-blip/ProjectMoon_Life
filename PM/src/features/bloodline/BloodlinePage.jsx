@@ -1,5 +1,6 @@
 import React from 'react';
 import { localizeEnsembleName } from '../../data/ensembleNames.js';
+import { summarizeDynastyHallOfLegends } from '../../engine/cityUpgrades.js';
 import { Download, Play, Trash2 } from 'lucide-react';
 import { Modal } from 'antd';
 import { useNavigate } from 'react-router-dom';
@@ -23,6 +24,7 @@ export const BloodlinePage = () => {
   const highestGen = pastLives.reduce((m, l) => Math.max(m, l.generation || 0), 0);
   const endedLives = pastLives.filter((life) => !life.endingId);
   const avgAge = endedLives.length ? Math.round(endedLives.reduce((s, l) => s + (l.age || 0), 0) / endedLives.length) : 0;
+  const hall = summarizeDynastyHallOfLegends(pastLives);
 
   return (
     <div className="page">
@@ -53,101 +55,146 @@ export const BloodlinePage = () => {
           </button>
         </div>
       ) : (
-        <section className="panel" style={{ overflowX: 'auto' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px', borderBottom: '1px solid var(--border)' }}>
-            <span className="muted" style={{ fontSize: 14 }}>
-              {t('Danh sách các thế hệ đã qua', 'List of past generations in this dynasty')}
-            </span>
-            <button
-              type="button"
-              className="btn btn-ghost"
-              style={{ color: 'var(--bad)', display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13, height: 32 }}
-              onClick={() => {
-                Modal.confirm({
-                  title: lang === 'en' ? 'Clear Entire Bloodline Dynasty?' : 'Xóa toàn bộ cây gia phả?',
-                  content: lang === 'en'
-                    ? `All ${pastLives.length} past lives, epitaphs, and inherited heirlooms will be permanently removed.`
-                    : `Toàn bộ ${pastLives.length} kiếp sống, bia mộ và di vật gia truyền sẽ bị xóa vĩnh viễn khỏi gia phả.`,
-                  okText: lang === 'en' ? 'Delete All' : 'Xóa toàn bộ',
-                  cancelText: lang === 'en' ? 'Cancel' : 'Hủy',
-                  okButtonProps: { danger: true },
-                  onOk: () => clearBloodline()
-                });
-              }}
-            >
-              <Trash2 size={14} />
-              {t('Xóa toàn bộ gia phả', 'Clear Entire Bloodline')}
-            </button>
-          </div>
-          <table className="table stack-sm table-bloodline">
-            <thead>
-              <tr>
-                <th className="num" style={{ width: 64 }}>{t('Đời', 'Gen')}</th>
-                <th>{t('Tên & danh hiệu', 'Name & title')}</th>
-                <th className="num">{t('Tuổi khi khép hồ sơ', 'Age at record end')}</th>
-                <th>{t('Kết cục', 'Fate')}</th>
-                <th>{t('Di vật', 'Relic')}</th>
-                <th style={{ width: 220 }} />
-              </tr>
-            </thead>
-            <tbody>
-              {pastLives.map((life, idx) => (
-                <tr key={`${life.seed}_${idx}`}>
-                  <td className="num" data-label={t('Đời', 'Gen')}>#{life.generation}</td>
-                  <td data-label={t('Nhân vật', 'Character')}>
-                    <div style={{ fontWeight: 500 }}>{life.name}</div>
-                    <div className="cell-sub">
-                      {lang === 'en' ? life.epitaphTitleEn || life.epitaphTitleVi : life.epitaphTitleVi} · {life.rankTier}
-                    </div>
-                    <div className="cell-sub">{lang === 'en' ? life.regionNameEn || life.regionNameVi : life.regionNameVi}</div>
-                  </td>
-                  <td className="num" data-label={t('Tuổi khi khép hồ sơ', 'Age at record end')}>{life.age} {t('tuổi', 'yrs')}</td>
-                  <td style={{ maxWidth: 260 }} data-label={t('Kết cục', 'Fate')}>{lang === 'en' ? life.deathCauseEn || life.deathCauseVi : life.deathCauseVi}</td>
-                  <td className="muted" style={{ maxWidth: 200 }} data-label={t('Di vật', 'Relic')}>{t(life.relic, localizeEnsembleName(life.relic, 'en'))}</td>
-                  <td className="bloodline-action-td">
-                    <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end', flexWrap: 'wrap' }}>
-                      {!life.endingId && <button type="button" className="btn btn-primary" style={{ height: 32 }} onClick={() => handleInherit(life)}>
-                        <Play size={14} />
-                        {t('Chơi đời con', 'Play heir')}
-                      </button>}
-                      <button
-                        type="button"
-                        className="icon-btn"
-                        style={{ width: 32, height: 32 }}
-                        onClick={() => exportDossierCardPNG(life)}
-                        aria-label={t('Tải thẻ PNG', 'Download PNG')}
-                        title={t('Tải thẻ PNG', 'Download PNG')}
-                      >
-                        <Download size={15} />
-                      </button>
-                      <button
-                        type="button"
-                        className="icon-btn"
-                        style={{ width: 32, height: 32, color: 'var(--bad)' }}
-                        onClick={() => {
-                          Modal.confirm({
-                            title: lang === 'en' ? `Delete ${life.name} from Bloodline?` : `Xóa ${life.name} khỏi gia phả?`,
-                            content: lang === 'en'
-                              ? `Epitaph of Generation #${life.generation} (${life.name}, age ${life.age}) will be removed from this dynasty archive.`
-                              : `Bia mộ của Thế hệ #${life.generation} (${life.name}, thọ ${life.age} tuổi) sẽ bị xóa vĩnh viễn khỏi hồ sơ gia phả.`,
-                            okText: lang === 'en' ? 'Delete' : 'Xóa',
-                            cancelText: lang === 'en' ? 'Cancel' : 'Hủy',
-                            okButtonProps: { danger: true },
-                            onOk: () => deletePastLife(life.seed, life.age)
-                          });
-                        }}
-                        aria-label={t('Xóa khỏi gia phả', 'Delete from bloodline')}
-                        title={t('Xóa khỏi gia phả', 'Delete from bloodline')}
-                      >
-                        <Trash2 size={15} />
-                      </button>
-                    </div>
-                  </td>
+        <>
+          <section className="panel" style={{ padding: '14px 16px', marginBottom: 14 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10 }}>
+              <div>
+                <strong style={{ fontSize: 14 }}>
+                  {t('Đài Tưởng Niệm Dòng Tộc (Di Sản Sống)', 'Dynasty Hall of Legends (Living Echoes)')}
+                </strong>
+                <div className="cell-sub">
+                  {t(
+                    'Các tiền nhân đạt cấp bậc đỉnh cao sẽ để lại dấu ấn sự kiện trực tiếp trong thế giới của đời con cháu.',
+                    'Ancestors who reached apex status leave active Living Echo events in their descendants’ world.'
+                  )}
+                </div>
+              </div>
+              <div className="num" style={{ display: 'flex', gap: 14, flexWrap: 'wrap', fontSize: 13 }}>
+                <span>Color: <b>{hall.colorCount}</b></span>
+                <span>E.G.O: <b>{hall.egoCount}</b></span>
+                <span>Distortion: <b>{hall.distortionCount}</b></span>
+                <span>{t('Thủ lĩnh', 'Apex Leaders')}: <b>{hall.apexLeaderCount}</b></span>
+                <span>{t('Tổng di sản', 'Total Ahn')}: <b>{hall.totalWealth} Ahn</b></span>
+              </div>
+            </div>
+            {hall.legends.length > 0 && (
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 10 }}>
+                {hall.legends.map((leg, i) => (
+                  <span
+                    key={`${leg.name}_${i}`}
+                    style={{
+                      fontSize: 12,
+                      padding: '3px 8px',
+                      borderRadius: 4,
+                      border: '1px solid var(--border)',
+                      background: 'var(--surface-2, rgba(255,255,255,0.03))'
+                    }}
+                  >
+                    #{leg.generation} <b>{leg.name}</b> · {lang === 'en' ? leg.badgeEn : leg.badgeVi}
+                  </span>
+                ))}
+              </div>
+            )}
+          </section>
+
+          <section className="panel" style={{ overflowX: 'auto' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px', borderBottom: '1px solid var(--border)' }}>
+              <span className="muted" style={{ fontSize: 14 }}>
+                {t('Danh sách các thế hệ đã qua', 'List of past generations in this dynasty')}
+              </span>
+              <button
+                type="button"
+                className="btn btn-ghost"
+                style={{ color: 'var(--bad)', display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13, height: 32 }}
+                onClick={() => {
+                  Modal.confirm({
+                    title: lang === 'en' ? 'Clear Entire Bloodline Dynasty?' : 'Xóa toàn bộ cây gia phả?',
+                    content: lang === 'en'
+                      ? `All ${pastLives.length} past lives, epitaphs, and inherited heirlooms will be permanently removed.`
+                      : `Toàn bộ ${pastLives.length} kiếp sống, bia mộ và di vật gia truyền sẽ bị xóa vĩnh viễn khỏi gia phả.`,
+                    okText: lang === 'en' ? 'Delete All' : 'Xóa toàn bộ',
+                    cancelText: lang === 'en' ? 'Cancel' : 'Hủy',
+                    okButtonProps: { danger: true },
+                    onOk: () => clearBloodline()
+                  });
+                }}
+              >
+                <Trash2 size={14} />
+                {t('Xóa toàn bộ gia phả', 'Clear Entire Bloodline')}
+              </button>
+            </div>
+            <table className="table stack-sm table-bloodline">
+              <thead>
+                <tr>
+                  <th className="num" style={{ width: 64 }}>{t('Đời', 'Gen')}</th>
+                  <th>{t('Tên & danh hiệu', 'Name & title')}</th>
+                  <th className="num">{t('Tuổi khi khép hồ sơ', 'Age at record end')}</th>
+                  <th>{t('Kết cục', 'Fate')}</th>
+                  <th>{t('Di vật', 'Relic')}</th>
+                  <th style={{ width: 220 }} />
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </section>
+              </thead>
+              <tbody>
+                {pastLives.map((life, idx) => (
+                  <tr key={`${life.seed}_${idx}`}>
+                    <td className="num" data-label={t('Đời', 'Gen')}>#{life.generation}</td>
+                    <td data-label={t('Nhân vật', 'Character')}>
+                      <div style={{ fontWeight: 500 }}>{life.name}</div>
+                      <div className="cell-sub">
+                        {lang === 'en' ? life.epitaphTitleEn || life.epitaphTitleVi : life.epitaphTitleVi} · {life.rankTier}
+                      </div>
+                      <div className="cell-sub">{lang === 'en' ? life.regionNameEn || life.regionNameVi : life.regionNameVi}</div>
+                    </td>
+                    <td className="num" data-label={t('Tuổi khi khép hồ sơ', 'Age at record end')}>{life.age} {t('tuổi', 'yrs')}</td>
+                    <td style={{ maxWidth: 260 }} data-label={t('Kết cục', 'Fate')}>{lang === 'en' ? life.deathCauseEn || life.deathCauseVi : life.deathCauseVi}</td>
+                    <td className="muted" style={{ maxWidth: 200 }} data-label={t('Di vật', 'Relic')}>{t(life.relic, localizeEnsembleName(life.relic, 'en'))}</td>
+                    <td className="bloodline-action-td">
+                      <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end', flexWrap: 'wrap' }}>
+                        {!life.endingId && (
+                          <button type="button" className="btn btn-primary" style={{ height: 32 }} onClick={() => handleInherit(life)}>
+                            <Play size={14} />
+                            {t('Chơi đời con', 'Play heir')}
+                          </button>
+                        )}
+                        <button
+                          type="button"
+                          className="icon-btn"
+                          style={{ width: 32, height: 32 }}
+                          onClick={() => exportDossierCardPNG(life)}
+                          aria-label={t('Tải thẻ PNG', 'Download PNG')}
+                          title={t('Tải thẻ PNG', 'Download PNG')}
+                        >
+                          <Download size={15} />
+                        </button>
+                        <button
+                          type="button"
+                          className="icon-btn"
+                          style={{ width: 32, height: 32, color: 'var(--bad)' }}
+                          onClick={() => {
+                            Modal.confirm({
+                              title: lang === 'en' ? `Delete ${life.name} from Bloodline?` : `Xóa ${life.name} khỏi gia phả?`,
+                              content: lang === 'en'
+                                ? `Epitaph of Generation #${life.generation} (${life.name}, age ${life.age}) will be removed from this dynasty archive.`
+                                : `Bia mộ của Thế hệ #${life.generation} (${life.name}, thọ ${life.age} tuổi) sẽ bị xóa vĩnh viễn khỏi hồ sơ gia phả.`,
+                              okText: lang === 'en' ? 'Delete' : 'Xóa',
+                              cancelText: lang === 'en' ? 'Cancel' : 'Hủy',
+                              okButtonProps: { danger: true },
+                              onOk: () => deletePastLife(life.seed, life.age)
+                            });
+                          }}
+                          aria-label={t('Xóa khỏi gia phả', 'Delete from bloodline')}
+                          title={t('Xóa khỏi gia phả', 'Delete from bloodline')}
+                        >
+                          <Trash2 size={15} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </section>
+        </>
       )}
     </div>
   );

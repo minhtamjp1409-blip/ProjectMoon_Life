@@ -30,6 +30,7 @@ import { executeNpcInteraction, canInteractWithNpc } from '../engine/npcInteract
 import { CLAW_DUNGEON_ID } from '../data/dungeonClaw.js';
 import { applyAnnualPlan, ambitionsFor, defaultYearPoints } from '../engine/annualPlan.js';
 import { autoLeadIndex, tabooGainOf } from '../engine/forbiddenPath.js';
+import { relocateCharacterDistrict, imbueCharacterEquipment } from '../engine/cityUpgrades.js';
 
 const META_KEY = 'pm_city_chronicles_save_v3';
 const RUN_KEY = 'pm_city_chronicles_run_v1';
@@ -503,6 +504,28 @@ export const useGameStore = create((set, get) => ({
     get().saveRun(true);
   },
 
+  relocateDistrict: (targetRegionId) => {
+    const state = get();
+    const char = state.char;
+    if (!char || !char.alive) return { ok: false };
+    const nextChar = cloneChar(char);
+    const res = relocateCharacterDistrict(nextChar, targetRegionId);
+    if (!res.ok) return res;
+    get().commit(char, res.char);
+    return res;
+  },
+
+  imbueEquipment: (relicId) => {
+    const state = get();
+    const char = state.char;
+    if (!char || !char.alive) return { ok: false };
+    const nextChar = cloneChar(char);
+    const res = imbueCharacterEquipment(nextChar, relicId);
+    if (!res.ok) return res;
+    get().commit(char, res.char);
+    return res;
+  },
+
   // Throw the current run away and go back to the birth screen
   abandonRun: () => {
     if (get().inRun && get().char?.alive) reportGameplaySample(get().char, true);
@@ -839,11 +862,11 @@ export const useGameStore = create((set, get) => ({
   },
 
   // The year's plan and its lead are one decision: picking a lead also starts the year
-  chooseAnnualPlan: (points, ambitionId, leadIndex = null) => {
+  chooseAnnualPlan: (points, ambitionId, leadIndex = null, directiveId = null) => {
     const prev = get().char;
     if (!prev?.pendingYearPlan) return false;
     let next = cloneChar(prev);
-    if (!applyAnnualPlan(next, points, ambitionId)) return false;
+    if (!applyAnnualPlan(next, points, ambitionId, directiveId)) return false;
     if (!next.plan?.length) planYear(next, lifeRng);
     if (next.pendingLead && Number.isInteger(leadIndex)) next = chooseYearLead(next, leadIndex);
     get().commit(prev, next, { postChoicePauseMs: 0 });

@@ -1270,3 +1270,38 @@ Chủ dự án yêu cầu làm lại toàn bộ giao diện lần nữa: bỏ t�
   * Story logic audit 100 cuộc đời (16.388 khoảnh khắc): **0 vi phạm logic**.
   * Production Vite build biên dịch thành công 100% trong 6.97s.
 
+### Đợt 64 (27/10/2026): Nâng Cấp Hệ Thống Toàn Diện 5 Trụ Cột — Di Sản Sống Liên Thế Hệ, Du Hành Liên Quận & Đặc Tính Singularity, Chỉ Thị Thủ Lĩnh Đỉnh Cao, Lò Khảm Cổ Vật & Tối Ưu Hóa Code-Splitting
+
+* **1. Hệ Thống "Di Sản Sống" Liên Thế Hệ & Đài Tưởng Niệm Dòng Tộc (`src/engine/cityUpgrades.js`, `src/engine/gameEngine.js`, `src/data/eventsLineageLegacy.js`, `src/features/bloodline/BloodlinePage.jsx`):**
+  * **Lưu vết Đỉnh cao Tiền nhân (`extractAncestorEchoProfile`, `applyAncestorEchoInheritance`):** Khi một kiếp sống kết thúc ở vị thế đỉnh cao (**Color Fixer**, **Distortion**, **Finger Underboss/Maestro/Proxy**, **Wing Executive**, hoặc **Workshop Meister**), thế hệ kế thừa tiếp nhận trực tiếp cờ di sản (`AncestorWasColor`, `AncestorWasDistortion`, `AncestorWasFingerBoss`, `AncestorWasWingExec`, `AncestorWasMeister`), chỉ số khởi đầu cộng thêm và sự kiện nhân quả riêng biệt:
+    * `m_lineage_color_shadow_trial`: Khảo sát thực chiến tại sân tập Hana Association trước thanh tra lão niên từng biết danh hiệu Color của đời trước, mở khóa cơ hội nhận cờ thần đồng `ProdigyFixer`.
+    * `m_lineage_distortion_labyrinth_echo`: Bước vào vùng sương mù phong tỏa nơi dư chấn Distortion của tiền nhân vẫn lặp lại nỗi ám ảnh cuối đời, giải thoát ý thức người cũ (+28 Resonance, +30 Merit) hoặc thu hoạch tinh thể Enkephalin.
+    * `m_lineage_finger_turf_remnant`: Tiếp quản kho quỹ ngầm và toán cựu binh Syndicate trung thành còn giữ tín vật của đời trước.
+    * `m_lineage_wing_trust_vault`: Mở két sắt sinh trắc học tại trung tâm Nest để thanh khoản cổ phiếu ưu đãi hoặc nắm hồ sơ đen làm đòn bẩy chính trị.
+  * **Đài Tưởng Niệm Dòng Tộc (`summarizeDynastyHallOfLegends` trong `BloodlinePage.jsx`):** Hiển thị bảng tổng kết thành tựu xuyên thế hệ (số lượng Color, E.G.O, Distortion, Thủ lĩnh đỉnh cao, Tổng di sản Ahn) và huy hiệu các bậc tiền nhân huyền thoại ngay đầu trang Gia Phả.
+
+* **2. Du Hành Liên Quận Chủ Động & Đặc Tính Singularity Từng District (`TRANSIT_HUBS`, `relocateCharacterDistrict`, `applyRegionalSingularityPassive`):**
+  * Mở tab **Vé Tàu & Chuyển Quận (District Transit)** trong `WorkshopDepotModal.jsx` cho phép người chơi chủ động mua vé Tàu WARP hoặc Đoàn xe Devyat' (giảm 50% chi phí cho cư dân Nest, Color Fixer và Quản lý Wing) để di chuyển sang 6 trung tâm Singularity lớn:
+    * **District 11 (K Corp):** Bụi nanobot hồi phục +12 HP ngay khi đến và +3 HP mỗi cuối năm nếu bị thương.
+    * **District 10 (J Corp):** Bùa vận mệnh Wishpower cộng +8 Leverage, +4 Rep khi đến và sinh lời +2 Ahn, +2 Leverage mỗi cuối năm.
+    * **District 12 (L Corp Cũ):** Sương mù Enkephalin kích thích +8 Resonance, +6 Merit khi đến và +2 Resonance, +2 Merit mỗi cuối năm.
+    * **District 20 (T Corp):** Vay thời gian công nghiệp (`TCorpTimeBorrowed`) nhận +6 Merit, +4 Ahn khi đến và +2 Merit mỗi cuối năm.
+    * **District 16 (P Corp):** Vòm bảo tồn không gian hồi +10 SP, +6 HP, -6 Heat khi đến và +3 SP mỗi cuối năm.
+    * **District 19 (U Corp):** Cảng Đại Hồ cộng +8 Network, +4 Rep, gắn cờ `GreatLakeHardened` kháng hiểm họa Đại Hồ và +2 Network mỗi cuối năm.
+
+* **3. Bảng Chỉ Huy Thủ Lĩnh Đỉnh Cao (`APEX_DIRECTIVES`, `isApexCommander` trong `annualPlan.js` & `YearPlanDock.jsx`):**
+  * Khi nhân vật đạt cấp lãnh đạo (`Color Fixer`, `Fixer Grade 1–2`, `Chủ Office`, `Section Director`, `Finger Rank 2+`, `Wing Rank 2+`, hoặc `Thợ Rèn Meister`), màn hình Kế Hoạch Năm (`YearPlanDock.jsx`) mở khóa thêm **Chỉ Thị Thủ Lĩnh (Apex Command Directive)** song hành cùng 3 ô thời gian cá nhân:
+    * `dispatch_squad` (*Phái Đội Thực Chiến*): Cử thuộc hạ giải quyết ủy thác phụ (+5 Ahn, +6 Merit, +3 Danh tiếng).
+    * `fortify_turf` (*Củng Cố Lãnh Địa & Hậu Cần*): Siết chặt an ninh địa bàn và trạm y tế (-8 Heat, +5 HP, +5 SP, +4 Leverage).
+    * `mentor_network` (*Bồi Dưỡng Đệ Tử & Thế Lực*): Truyền dạy kỹ năng và mở rộng thế lực (+6 Network, +5 Resonance, +4 Merit, và +5 Bond cho toàn bộ đồng hành/người thân đang sống).
+
+* **4. Lò Khảm Cổ Vật Singularity (`IMBUEMENT_RECIPES`, `imbueCharacterEquipment` trong `WorkshopDepotModal.jsx`, `gameEngine.js`, `dungeonEngine.js`):**
+  * Mở tab **Khảm Singularity (Imbuement)** trong `WorkshopDepotModal.jsx`, cho phép dung hợp 5 Cổ vật Hầm ngục (`rel_qlippoth_core`, `rel_warp_shard`, `rel_pallid_oil`, `rel_ruin_monolith`, `rel_sweeper_fluid`) vào Vũ khí/Giáp Workshop hoặc tuyệt tác `craftWeapon`.
+  * Gia tăng trực tiếp Sức chiến đấu hợp đồng (`getImbuedCombatBonus`), tăng khả năng kháng sát thương & tỉ lệ kiểm định trong Hầm ngục (`getDungeonMastery` với nhãn `Khảm Singularity / Singularity Imbued`), và đổi tên vũ khí theo tiền tố Singularity.
+  * Đặc quyền riêng cho nhánh **Workshop Craftsman** (hoặc hậu duệ Meister `AncestorWasMeister`): miễn phí 100% chi phí dung hợp lò rèn, cộng thêm +6 Sức chiến đấu và +10 Merit mỗi lần khảm.
+
+* **5. Tối Ưu Hóa Kỹ Thuật & Phân Mảnh Gói Dữ Liệu (`vite.config.js`):**
+  * Tách gói `story-events` (trước đây nặng > 1.23 MB) thành 3 phân mảnh độc lập được bộ nhớ đệm trình duyệt lưu trữ riêng (`story-career`: 286 kB, `story-events`: 429 kB, `story-factions`: 493 kB), vượt qua kiểm định chống vòng lặp import `noChunkCycles`.
+  * Bộ kiểm thử mới `tests/test_batch64_system_upgrades.mjs` tích hợp vào `npm test`, nâng tổng số lên **53/53 bộ test suites** đạt 100%.
+
+

@@ -127,5 +127,131 @@ export const LINEAGE_LEGACY_EVENTS = [
         meritAdd: 15
       }
     ]
+  },
+
+  // 4. Living Ancestor Echo: Ancestor was a Color Fixer
+  {
+    id: 'm_lineage_color_shadow_trial',
+    age: [19, 36],
+    major: true,
+    weight: 16,
+    requires: ['AncestorWasColor'],
+    vi: "[Cái Bóng Của Sắc Màu] Tại phân khu địa phương của Hana Association, một thanh tra lão niên dừng bước trước bàn làm thủ tục của bạn. Ông ta nhìn chằm chằm vào 「{relic}」 bên hông bạn rồi đặt xuống tấm hồ sơ đóng dấu mật của {parentName}. \"Cả District này vẫn còn nhớ cái tên đó. Nhưng danh hiệu Color không phải là tước vị cha truyền con nối. Chứng minh cho ta thấy ngươi mang bản lĩnh của người đó, hay chỉ đang nấp dưới cái bóng quá lớn.\"",
+    en: "[Shadow of a Color] At the local Hana Association branch, an aging evaluator stops before your desk. He stares at 「{relic}」 at your hip and sets down {parentName}’s sealed dossier. “This entire District still remembers that name. Yet a Color title is no hereditary peerage. Show me whether you carry their edge, or merely hide beneath an oversized shadow.”",
+    choices: [
+      {
+        labelVi: "Chấp nhận bài khảo sát thực chiến ngay tại sân tập Hana",
+        labelEn: "Accept an immediate live-combat evaluation in the Hana courtyard",
+        resultVi: "Dưới ánh mắt của hàng chục Fixer, bạn đỡ trọn ba đòn sát thủ của viên thanh tra bằng kỹ pháp kế thừa từ {parentName} rồi phản kích chuẩn xác. Ông ta thu vũ khí, gật đầu ghi nhận công trạng đặc cách cho bạn.",
+        resultEn: "Under the gaze of dozens of Fixers, you parried three lethal strikes using {parentName}’s stance and countered cleanly. The evaluator sheathed his blade and logged a special merit commendation.",
+        effects: { health: -14, sanity: +10, rep: +24, resonance: +16 },
+        flagsAdd: ['ProdigyFixer'],
+        meritAdd: 28
+      },
+      {
+        labelVi: "Sử dụng uy tín của tiền nhân để mở rộng mạng lưới ủy thác cấp cao",
+        labelEn: "Leverage your predecessor's prestige to access upper-tier brokerage",
+        resultVi: "Bạn không cần đôi co bằng vũ lực. Chỉ riêng con dấu cũ của {parentName} đã đủ để các môi giới Section 3 mở cửa phòng riêng và chuyển giao những hợp đồng béo bở nhất.",
+        resultEn: "You had no need to prove yourself in a spar. {parentName}’s old seal alone was enough for Section 3 brokers to open their private parlors and hand over lucrative contracts.",
+        effects: { wealth: +28, network: +22, rep: +14 },
+        meritAdd: 18
+      },
+      {
+        labelVi: "Tuyên bố xóa bỏ liên hệ, tự đi con đường không mang tên người cũ",
+        labelEn: "Renounce the comparison and walk a path unbound by their name",
+        resultVi: "Bạn đẩy trả tập hồ sơ. Không dựa dẫm cũng không sợ hãi, sự lạnh lùng dứt khoát của bạn khiến tâm trí nhẹ nhõm và ý chí riêng càng thêm sắc bén.",
+        resultEn: "You pushed the dossier back across the counter. Neither leaning on nor fearing the past, your quiet resolve steadied your mind and sharpened your own identity.",
+        effects: { sanity: +20, resonance: +20, rep: +12 },
+        meritAdd: 20
+      }
+    ]
+  },
+
+  // 5. Living Ancestor Echo: Ancestor became a Distortion
+  {
+    id: 'm_lineage_distortion_labyrinth_echo',
+    age: [20, 38],
+    major: true,
+    weight: 16,
+    requires: ['AncestorWasDistortion'],
+    vi: "[Dư Chấn Distortion Tiền Kiếp] Một khu phố bỏ hoang ở rìa Backstreets bị phong tỏa bởi sương mù dị dạng suốt nhiều năm kể từ ngày {parentName} biến đổi thành Distortion. Khi bạn bước đến gần hàng rào cảnh báo của Hana, 「{relic}」 rung lên dữ dội và màn sương tự động tách làm đôi. Ở tâm điểm vùng dị biến, tàn dư ý thức méo mó của {parentName} vẫn đang lặp lại nỗi ám ảnh cuối đời.",
+    en: "[Ancestral Distortion Echo] A cordoned block on the Backstreets fringe has remained steeped in anomalous fog since the day {parentName} turned into a Distortion. As you approach the Hana barricade, 「{relic}」 vibrates fiercely and the mist parts. At the anomaly’s heart, {parentName}’s warped remnant still replays their final obsession.",
+    choices: [
+      {
+        labelVi: "Bước vào tâm vùng dị biến, đối mặt và giải thoát cho ý thức người cũ",
+        labelEn: "Step into the core, confront the remnant, and grant them release",
+        resultVi: "Giữa không gian bóp nghẹt lý trí, bạn chém tan lớp vỏ tuyệt vọng đang giam cầm hình bóng {parentName}. Khi bóng hình ấy tan thành những hạt sáng ấm áp, một nguồn cộng hưởng thuần khiết truyền thẳng vào tâm hồn bạn.",
+        resultEn: "Amidst mind-crushing pressure, you severed the shell of despair caging {parentName}’s echo. As the figure dissolved into warm motes of light, pure resonance surged into your soul.",
+        effects: { health: -18, sanity: +16, resonance: +28, rep: +20 },
+        scarsAdd: ['Người giải thoát dư ảnh Distortion'],
+        meritAdd: 30
+      },
+      {
+        labelVi: "Thu hoạch tinh thể Enkephalin kết tụ quanh lãnh địa rồi bán cho Wing",
+        labelEn: "Harvest the crystallized Enkephalin around the lair for a Wing buyer",
+        resultVi: "Bạn giữ khoảng cách an toàn, thu gom những khối tinh thể quý hiếm kết tủa từ nỗi đau của đời trước. Khoản tiền thu về rất lớn, dù đôi lúc tiếng vọng trong sương vẫn ám ảnh giấc ngủ của bạn.",
+        resultEn: "Keeping a cautious distance, you gathered rare crystals precipitated from your predecessor’s grief. The payout was immense, though echoes in the fog still trouble your sleep.",
+        effects: { wealth: +36, sanity: -10, resonance: +14, network: +12 },
+        meritAdd: 16
+      }
+    ]
+  },
+
+  // 6. Living Ancestor Echo: Ancestor was a Finger Underboss / Maestro / Proxy
+  {
+    id: 'm_lineage_finger_turf_remnant',
+    age: [18, 35],
+    major: true,
+    weight: 15,
+    requires: ['AncestorWasFingerBoss'],
+    vi: "[Di Sản Địa Bàn Ngón Tay] Khi bạn đi ngang qua một kho hàng ngầm từng thuộc quyền cai quản của {parentName}, một toán cựu binh Syndicate bước ra từ bóng tối. Nhận ra 「{relic}」, gã chỉ huy vết sẹo đầy mặt lập tức cúi đầu: \"Hậu nhân của ngài {parentName}. Địa bàn này đã đổi chủ nhiều lần, nhưng quỹ đen và mạng lưới mật báo mà ngài ấy cài lại vẫn chỉ mở theo tín vật trên tay ngài.\"",
+    en: "[Finger Turf Remnant] As you pass an underground depot once ruled by {parentName}, a squad of veteran Syndicate enforcers steps from the shadows. Recognizing 「{relic}」, their scarred captain bows low: “Heir of {parentName}. This turf has changed hands many times, yet the hidden war chest and informant web they planted still answer only to the token you carry.”",
+    choices: [
+      {
+        labelVi: "Tiếp quản mạng lưới mật báo và kho quỹ ngầm",
+        labelEn: "Claim the informant network and underground war chest",
+        resultVi: "Bạn nhận lấy sổ mật mã và các hòm bạc cất giấu dưới hầm lạnh. Quyền lực ngầm của {parentName} trở thành bàn đạp vững chắc cho con đường của bạn.",
+        resultEn: "You took the cipher ledgers and silver crates from the sub-vault. {parentName}’s underground dominion became a formidable springboard for your ascent.",
+        effects: { wealth: +30, network: +24, leverage: +16, heat: +10 },
+        meritAdd: 22
+      },
+      {
+        labelVi: "Tuyển mộ toán cựu binh làm đội hộ vệ trung thành",
+        labelEn: "Induct the veteran enforcers as your loyal retinue",
+        resultVi: "Những tay đao dày dạn kinh nghiệm nguyện đi theo bảo vệ bạn, giúp vị thế và sức chiến đấu của bạn tăng vọt trên khắp các ngõ ngách Backstreets.",
+        resultEn: "The battle-hardened enforcers swore themselves to your banner, bolstering your standing and reach across the Backstreets.",
+        effects: { health: +12, rep: +22, network: +16, leverage: +12 },
+        meritAdd: 24
+      }
+    ]
+  },
+
+  // 7. Living Ancestor Echo: Ancestor was a Wing Executive / Department Head
+  {
+    id: 'm_lineage_wing_trust_vault',
+    age: [18, 36],
+    major: true,
+    weight: 15,
+    requires: ['AncestorWasWingExec'],
+    vi: "[Két Sắt Sinh Trắc Học Tại Nest] Một ngân hàng lưu ký tự động tại trung tâm Nest gửi thông báo bảo mật khi quét thấy chuỗi gen của bạn trùng khớp với cố quản lý cấp cao {parentName}. Cánh cửa hợp kim mở ra, để lộ một két an toàn chứa cổ phiếu ưu đãi của Tập đoàn cùng tập hồ sơ đen ghi chép các dự án Singularity chưa từng công bố.",
+    en: "[Biometric Nest Vault] An automated depository in the Nest core issues a priority alert upon matching your genetic sequence to former executive {parentName}. The alloy vault parts, revealing preferred corporate shares alongside a black binder of undisclosed Singularity trials.",
+    choices: [
+      {
+        labelVi: "Thanh khoản cổ phiếu và kích hoạt quỹ tín thác gia tộc",
+        labelEn: "Liquidate the preferred shares and activate the family trust",
+        resultVi: "Tài khoản Ahn của bạn nhảy vọt lên mức thượng lưu, kèm theo quyền ưu tiên giao dịch tại các trạm cung ứng của Nest.",
+        resultEn: "Your Ahn balance surged into upper-class brackets, accompanied by priority clearance at Nest supply depots.",
+        effects: { wealth: +38, sanity: +10, rep: +14 },
+        meritAdd: 18
+      },
+      {
+        labelVi: "Sử dụng hồ sơ đen làm đòn bẩy chính trị với giới quản lý Wing",
+        labelEn: "Use the black binder as political leverage over Wing directors",
+        resultVi: "Những bí mật mà {parentName} để lại giúp bạn nắm thóp nhiều nhân vật tai to mặt lớn, mở toang cánh cửa thăng tiến và quan hệ cấp cao.",
+        resultEn: "The secrets {parentName} archived gave you ironclad leverage over senior directors, throwing open the doors to elite networks and advancement.",
+        effects: { network: +24, leverage: +22, rep: +18, heat: +8 },
+        meritAdd: 25
+      }
+    ]
   }
 ];

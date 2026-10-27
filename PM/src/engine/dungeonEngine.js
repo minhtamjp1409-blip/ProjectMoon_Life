@@ -975,6 +975,12 @@ export function getDungeonMastery(def, char) {
     reasonsVi.push('Vũ khí/Trang bị');
     reasonsEn.push('Equipped Gear');
   }
+  if (flags.includes('SingularityImbued') || (char.imbuedRelics || []).length > 0) {
+    dmgMult *= 0.9;
+    checkBonus += 0.06;
+    reasonsVi.push('Khảm Singularity');
+    reasonsEn.push('Singularity Imbued');
+  }
 
   if (def.theme === 'warp' && (flags.includes('GoreDesensitized') || flags.includes('WarpCleanupCrew') || char.regionId === 'W')) {
     dmgMult *= 0.75;

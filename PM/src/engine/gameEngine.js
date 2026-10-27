@@ -4,6 +4,11 @@ import { choiceIsAvailable, matchesEventContext, mergeEffects, npcIsActive } fro
 import { ITEMS_CATALOG } from '../data/itemsData.js';
 import { rollPerinatalFate } from './fateEngine.js';
 import { rollTraits, traitsOf, varyEffects, PRINTED_NUMBERS } from './variance.js';
+import {
+  extractAncestorEchoProfile,
+  applyAncestorEchoInheritance,
+  getImbuedCombatBonus
+} from './cityUpgrades.js';
 // ============================================================================
 // CORE LIFE-SIMULATION & GENERATIONAL BLOODLINE ENGINE
 // Connects World Data, Event Pools, Persistent NPCs, Tension Clocks & Weaver AI
@@ -559,6 +564,13 @@ export function createNewCharacter({
         impactEn: `The Syndicate will come to collect when you come of age`
       });
     }
+
+    const echoState = { wealth, rep, network, resonance, flags, inheritedEchoes };
+    applyAncestorEchoInheritance(parentLegacy, echoState);
+    wealth = echoState.wealth;
+    rep = echoState.rep;
+    network = echoState.network;
+    resonance = echoState.resonance;
   }
 
   let deathAtChildAge = 0;
@@ -832,6 +844,7 @@ export function cloneChar(char) {
     npcs: structuredClone(char.npcs || {}),
     weaver: structuredClone(char.weaver),
     inventory: structuredClone(char.inventory || []),
+    imbuedRelics: structuredClone(char.imbuedRelics || []),
     themes: { ...(char.themes || {}) },
     plan: structuredClone(char.plan || []),
     seenEvents: [...char.seenEvents],
@@ -1337,6 +1350,7 @@ export function generateFixerContract(char, rng) {
   power += (char.stats.sanity - 50) * 0.2;
   power += scarContractPower(char);
   if (char.flags.includes('고급장비') || char.flags.includes('유물') || char.craftWeapon) power += 12;
+  power += getImbuedCombatBonus(char) * 0.6;
   if (char.flags.includes('EGOAwakened') || char.flags.includes('ShinAwakened')) power += 18;
   const compSupport = evaluateCompanionSupport(char);
   power += compSupport.contractPower;
@@ -2816,7 +2830,8 @@ export function buildLifeSummaryAndLegacy(char) {
     hasChild: npcIsActive(char.npcs?.child),
     childName: char.npcs?.child?.nameVi || '',
     hasVendetta: (char.heat || 0) >= 40 || flags.includes('MiddleVendetta'),
-    npcs: char.npcs || {}
+    npcs: char.npcs || {},
+    ...extractAncestorEchoProfile(char)
   };
 }
 

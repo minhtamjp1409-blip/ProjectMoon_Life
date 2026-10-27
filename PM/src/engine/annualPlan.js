@@ -1,4 +1,7 @@
+import { APEX_DIRECTIVES, isApexCommander, applyApexDirective } from './cityUpgrades.js';
+
 export const YEAR_PLAN_POINTS = 3;
+export { APEX_DIRECTIVES, isApexCommander };
 
 export const YEAR_ACTIVITIES = [
   { id: 'train', vi: 'Luyện tập', en: 'Train', effectVi: '+2% cơ hội thăng cấp mỗi điểm trong năm', effectEn: '+2% promotion chance per point this year' },
@@ -16,7 +19,7 @@ export const AMBITIONS = [
 ];
 
 const inOutskirts = (char) => String(char?.regionId || '').toLowerCase().includes('outskirts') || Boolean(char?.flags?.includes('OutskirtsExile'));
-const LADDER_JOBS = new Set(['Fixer', 'Syndicate', 'Wing Employee', 'Workshop Craftsman']);
+const LADDER_JOBS = new Set(['Fixer', 'Color Fixer', 'Syndicate', 'Wing Employee', 'Workshop Craftsman']);
 
 /** The ambitions that still mean something for this life: no ladder to climb, no Outskirts to reach if already there. */
 export function ambitionsFor(char) {
@@ -30,11 +33,11 @@ export function validYearPoints(points) {
     YEAR_ACTIVITIES.reduce((sum, { id }) => sum + points[id], 0) === YEAR_PLAN_POINTS;
 }
 
-export function applyAnnualPlan(char, points, ambitionId) {
+export function applyAnnualPlan(char, points, ambitionId, directiveId = null) {
   if (!char?.pendingYearPlan || char.pendingYearPlan.age !== char.age || !validYearPoints(points)) return false;
   if (!char.ambition && !ambitionsFor(char).some((goal) => goal.id === ambitionId)) return false;
   const p = { ...points };
-  char.annualPlan = { age: char.age, points: p };
+  char.annualPlan = { age: char.age, points: p, directiveId: directiveId || null };
   char.lastYearPoints = p;
   if (!char.ambition) char.ambition = { id: ambitionId, chosenAge: char.age, complete: false };
   const stats = char.stats;
@@ -43,6 +46,9 @@ export function applyAnnualPlan(char, points, ambitionId) {
   stats.sanity = Math.min(100, (stats.sanity || 0) + p.rest * 3);
   char.heat = Math.max(0, (char.heat || 0) - p.scheme * 2);
   char.leverage = Math.min(100, (char.leverage || 0) + p.scheme * 2);
+  if (directiveId && isApexCommander(char)) {
+    applyApexDirective(char, directiveId);
+  }
   char.pendingYearPlan = null;
   return true;
 }

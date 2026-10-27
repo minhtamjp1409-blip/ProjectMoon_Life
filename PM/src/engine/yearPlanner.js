@@ -1,4 +1,5 @@
 import { advanceCityCondition } from './cityConditions.js';
+import { applyRegionalSingularityPassive } from './cityUpgrades.js';
 import { contractRouteOf } from '../data/careerContracts.js';
 import { affiliationYearTick } from './affiliation.js';
 import { planFirstGate } from './dungeonPacing.js';
@@ -1432,6 +1433,7 @@ export function endYear(charState, rng) {
     yearsSinceLastCrisis: (char.weaver?.yearsSinceLastCrisis || 0) + 1
   };
   if (reachedCareerAge(char) && (char.job === 'Fixer' || char.job === 'Color Fixer' || char.job === 'Syndicate')) applyFx(char, { merit: 2 });
+  if (char.lastRelocatedAge !== undefined) applyRegionalSingularityPassive(char);
   settle(char, 0, rng);
   char.weaver = updateDramaTension(char.weaver, char);
   if (char.alive) {
