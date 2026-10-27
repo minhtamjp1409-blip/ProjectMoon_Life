@@ -18,18 +18,18 @@ const LABELS = {
   leverage: ['Bí mật nắm giữ', 'Leverage']
 };
 
-const STAT_ICONS = {
-  health: '♥',
-  sanity: '✦',
-  wealth: '◆',
-  network: '❖',
-  rep: '★',
-  heat: '▲',
-  resonance: '◎',
-  taboo: '✖',
-  merit: '◈',
-  standing: '▣',
-  leverage: '◇'
+const STAT_COLORS = {
+  health: 'var(--s-health)',
+  sanity: 'var(--s-sanity)',
+  wealth: 'var(--s-wealth)',
+  network: 'var(--s-network)',
+  rep: 'var(--s-rep)',
+  heat: 'var(--s-heat)',
+  resonance: 'var(--s-reso)',
+  taboo: 'var(--bad)',
+  merit: 'var(--gold)',
+  standing: 'var(--s-network)',
+  leverage: 'var(--s-heat)'
 };
 
 // Stats whose rise is bad news
@@ -203,7 +203,7 @@ export const ChoicePreview = ({ choice, npcs, char, kind = 'major' }) => {
       )}
       {affected.map((k) => (
         <span key={k} className={`delta is-affected is-affected-${k} is-static`}>
-          <span className="delta-stat-icon">{STAT_ICONS[k] || '⚡'}</span>
+          <i className="delta-stat-dot" style={{ background: STAT_COLORS[k] || 'var(--muted)' }} aria-hidden="true" />
           {t(...LABELS[k])}
         </span>
       ))}

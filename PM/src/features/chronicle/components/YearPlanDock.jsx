@@ -11,6 +11,52 @@ import {
 import { YearLeadList } from './YearLeadDock';
 import { useT } from '../../../i18n';
 
+const DIRECTIVE_STAT_LABELS = {
+  wealth: ['Ahn', 'Ahn'],
+  merit: ['Merit', 'Merit'],
+  rep: ['Rep', 'Rep'],
+  health: ['HP', 'HP'],
+  sanity: ['SP', 'SP'],
+  network: ['Quan hệ', 'Network'],
+  resonance: ['Resonance', 'Resonance'],
+  leverage: ['Leverage', 'Leverage'],
+  heat: ['Heat', 'Heat'],
+  bondBoost: ['Gắn kết', 'Bond']
+};
+
+function renderDirectiveChips(fx = {}, t) {
+  const chips = [];
+  if (fx.costAhnOrRep) {
+    chips.push({
+      key: 'costAhnOrRep',
+      tone: 'down',
+      label: t('Chi phí', 'Upkeep'),
+      val: `-${fx.costAhnOrRep} Ahn`
+    });
+  }
+  for (const [k, v] of Object.entries(fx)) {
+    if (!v || !DIRECTIVE_STAT_LABELS[k]) continue;
+    const [vi, en] = DIRECTIVE_STAT_LABELS[k];
+    const isGood = k === 'heat' ? v < 0 : v > 0;
+    const tone = k === 'resonance' ? 'rare' : isGood ? 'up' : 'down';
+    chips.push({
+      key: k,
+      tone,
+      label: t(vi, en),
+      val: v > 0 ? `+${v}` : `${v}`
+    });
+  }
+  return (
+    <span className="directive-deltas">
+      {chips.map((c) => (
+        <span key={c.key} className={`delta is-${c.tone} is-static`}>
+          {c.label} <b className="num">{c.val}</b>
+        </span>
+      ))}
+    </span>
+  );
+}
+
 // One screen a year: where the time goes, the life's ambition the first time, Apex Command Directive for leaders, and the year's lead.
 export function YearPlanDock({ char, draft, onConfirm }) {
   const { t } = useT();
@@ -87,7 +133,7 @@ export function YearPlanDock({ char, draft, onConfirm }) {
           ))}
         </div>
         {apexEligible && (
-          <fieldset className="year-plan-ambitions" style={{ marginTop: 12 }}>
+          <fieldset className="year-plan-ambitions year-plan-directives">
             <legend>{t('Chỉ thị Thủ Lĩnh (Quyền điều hành năm nay)', 'Apex Command Directive (Leadership Order)')}</legend>
             {APEX_DIRECTIVES.map((dir) => (
               <label key={dir.id} className={directive === dir.id ? 'is-selected' : ''}>
@@ -101,6 +147,7 @@ export function YearPlanDock({ char, draft, onConfirm }) {
                 <span>
                   <strong>{t(dir.vi, dir.en)}</strong>
                   <small>{t(dir.detailVi, dir.detailEn)}</small>
+                  {renderDirectiveChips(dir.fx, t)}
                 </span>
               </label>
             ))}

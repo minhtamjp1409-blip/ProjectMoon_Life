@@ -28,10 +28,10 @@
   --page-rule: rgba(255, 255, 255, 0.075);
   --page-edge: rgba(255, 255, 255, 0.16);
 
-  --accent: #d23b3b;
-  --accent-hover: #e04848;
-  --accent-ink: #fff3ef;
-  --accent-soft: rgba(210, 59, 59, 0.16);
+  --accent: #c43232;
+  --accent-hover: #d83e3e;
+  --accent-ink: #fff6f2;
+  --accent-soft: rgba(196, 50, 50, 0.16);
   --glow: #3a0f12;
   --gold: #d8b265;
   --gold-soft: rgba(216, 178, 101, 0.14);

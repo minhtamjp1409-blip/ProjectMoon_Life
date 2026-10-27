@@ -79,7 +79,9 @@ console.log('   ok: all signature extraction relics exist in ITEMS_CATALOG with 
 
 // 5. Test Relic Acquisition on Dungeon Conquest
 console.log('5. Testing Relic Acquisition on Dungeon Conquest...');
-let testChar = createNewCharacter({ customName: 'RelicSeeker' });
+let testChar = createNewCharacter({ customName: 'RelicSeeker', seed: 'relic-seeker-test' });
+testChar.stats.health = 100;
+testChar.stats.sanity = 100;
 testChar.inventory = [];
 
 // Simulate solving all 4 stages of outskirts ruins to conquer

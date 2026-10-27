@@ -74,7 +74,7 @@
 .delta.is-bond { color: var(--text); }
 .delta.is-rare { color: var(--rare); border-color: color-mix(in srgb, var(--rare) 40%, transparent); }
 .delta.is-static { animation: none; }
-.delta-stat-icon { font-size: 11px; opacity: .8; }
+.delta-stat-dot { width: 6px; height: 6px; border-radius: 50%; flex: none; }
 .deltas-empty { font-size: 13.5px; color: var(--faint); }
 @keyframes deltaIn { from { opacity: 0; transform: translateY(3px); } }
 
@@ -407,6 +407,8 @@
 .year-plan-ambitions label { display: flex; gap: .65rem; padding: .75rem; border: 1px solid var(--border); border-radius: 8px; cursor: pointer; }
 .year-plan-ambitions label.is-selected { border-color: var(--accent); }
 .year-plan-ambitions input { accent-color: var(--accent); align-self: flex-start; margin-top: .25rem; }
+.year-plan-directives { margin-top: 1rem; grid-template-columns: 1fr; }
+.directive-deltas { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
 .year-plan-current-goal { color: var(--muted); margin: 1rem 0 0; }
 .year-plan-confirm { width: 100%; min-height: 44px; margin-top: 1rem; }
 @media (max-width: 600px) { .year-plan-activity { gap: .5rem; } .year-plan-ambitions { grid-template-columns: 1fr; } }

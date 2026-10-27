@@ -27,6 +27,27 @@
 /* Bloodline */
 .table-bloodline td { vertical-align: top; }
 .bloodline-action-td { width: 1%; white-space: nowrap; }
+.bloodline-empty-panel { padding: 20px; }
+.bloodline-empty-btn { margin-top: 14px; }
+.hall-panel { padding: 14px 18px; margin-bottom: 14px; }
+.hall-head { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+.hall-title { font-size: 14.5px; font-weight: 600; color: var(--text); }
+.hall-metrics { display: flex; gap: 14px; flex-wrap: wrap; font-size: 13px; color: var(--muted); }
+.hall-metrics b { color: var(--text); }
+.hall-badges { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+.hall-badge { font-size: 12.5px; padding: 3px 9px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--raised); color: var(--text); }
+.bloodline-table-panel { overflow-x: auto; }
+.bloodline-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 18px; border-bottom: 1px solid var(--border); }
+.bloodline-toolbar-label { font-size: 14px; }
+.bloodline-clear-btn { color: var(--bad); min-height: 40px; font-size: 13px; }
+.bloodline-gen-col { width: 64px; }
+.bloodline-actions-col { width: 220px; }
+.bloodline-name { font-weight: 600; }
+.bloodline-fate-td { max-width: 260px; }
+.bloodline-relic-td { max-width: 200px; }
+.bloodline-actions { display: flex; gap: 6px; justify-content: flex-end; flex-wrap: wrap; align-items: center; }
+.bloodline-play-btn { min-height: 40px; padding: 0 12px; font-size: 13.5px; }
+.bloodline-delete-btn { color: var(--bad); }
 
 @media (max-width: 860px) {
   .page { padding: 20px 16px 40px; }
@@ -35,6 +56,9 @@
   .record:nth-child(odd) { border-right: 0; }
   .panel > .toolbar { flex-direction: column; align-items: stretch; }
   .panel > .toolbar .search { width: 100% !important; }
+  .bloodline-toolbar { flex-direction: column; align-items: stretch; }
+  .bloodline-clear-btn { justify-content: center; min-height: 44px; }
+  .bloodline-play-btn { min-height: 44px; }
   /* A table on a phone becomes a list of labelled rows */
   .table.stack-sm { min-width: 0 !important; }
   .table.stack-sm thead { display: none; }

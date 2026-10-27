@@ -59,6 +59,11 @@
 .depot { display: flex; flex-direction: column; gap: 14px; margin-top: 8px; }
 .depot-lead { font-size: 14.5px; color: var(--muted); line-height: 1.55; }
 .depot-notice { padding: 8px 12px; border-left: 2px solid var(--warn); font-size: 14px; color: var(--text); }
+.depot-feedback { padding: 10px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border); border-left: 3px solid var(--gold); background: var(--surface); font-size: 13.5px; line-height: 1.5; color: var(--text); animation: overlayIn .2s ease; }
+.depot-feedback.is-imbue { border-left-color: var(--rare); background: color-mix(in srgb, var(--rare) 10%, var(--surface)); }
+.depot-feedback.is-transit { border-left-color: var(--gold); background: color-mix(in srgb, var(--gold) 10%, var(--surface)); }
+.depot-deltas { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.depot-subnote { display: block; margin-top: 6px; font-size: 13px; color: var(--muted); line-height: 1.45; }
 .depot-tabs { max-width: 100%; overflow-x: auto; flex-wrap: nowrap; }
 .depot-tabs button { white-space: nowrap; }
 .depot-list { max-height: 56vh; overflow-y: auto; border-top: 1px solid var(--border); }
@@ -140,14 +145,14 @@
 .settings-close-btn {
   display: grid;
   place-items: center;
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
   border-radius: 4px;
   background: transparent;
   color: var(--muted);
   border: none;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 .settings-close-btn:hover {
@@ -187,6 +192,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  min-height: 36px;
   padding: 4px 10px;
   border-radius: 4px;
   background: rgba(255, 255, 255, 0.04);
@@ -194,7 +200,7 @@
   color: var(--muted);
   font-size: 12px;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
 .settings-quick-mute:hover {
@@ -223,7 +229,7 @@
   justify-content: space-between;
   align-items: center;
   font-size: 13px;
-  color: var(--text-secondary, #cbd5e1);
+  color: var(--story);
 }
 
 .slider-num {
@@ -237,10 +243,15 @@
   width: 100%;
   height: 6px;
   border-radius: 3px;
-  background: var(--raised, #1e2430);
+  background: var(--raised);
   outline: none;
   cursor: pointer;
   accent-color: var(--accent);
+}
+
+.settings-slider:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
 }
 
 .settings-toggle-card {
@@ -282,6 +293,7 @@
 .settings-switch-btn {
   flex-shrink: 0;
   min-width: 64px;
+  min-height: 36px;
   padding: 6px 12px;
   border-radius: 4px;
   background: rgba(255, 255, 255, 0.04);
@@ -290,13 +302,13 @@
   font-size: 12.5px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
 .settings-switch-btn.is-on {
   background: var(--accent);
   border-color: var(--accent);
-  color: #0d1117;
+  color: var(--accent-ink);
 }
 
 .settings-pill-row {
@@ -317,6 +329,7 @@
 }
 
 .settings-pill-btn {
+  min-height: 36px;
   padding: 6px 14px;
   border-radius: 4px;
   background: rgba(255, 255, 255, 0.03);
@@ -324,7 +337,7 @@
   color: var(--text);
   font-size: 13px;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
 .settings-pill-btn:hover {
@@ -350,6 +363,13 @@
     border-radius: 14px 14px 0 0;
     border-bottom: none;
     border-inline: none;
+  }
+  .settings-close-btn {
+    width: 44px;
+    height: 44px;
+  }
+  .settings-body {
+    padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
   }
 }
 
@@ -383,8 +403,8 @@
 
 .npc-dossier-head {
   padding: 18px 20px 14px;
-  background: linear-gradient(180deg, color-mix(in srgb, var(--accent, #e5a93c) 10%, transparent), transparent), var(--surface, #14141a);
-  border-bottom: 1px solid var(--rule, #22222a);
+  background: var(--surface);
+  border-bottom: 1px solid var(--rule);
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -417,30 +437,30 @@
 }
 
 .npc-dossier-name {
-  font-family: var(--serif, 'Cinzel', serif);
+  font-family: var(--serif);
   font-size: 22px;
   font-weight: 700;
-  color: var(--text, #f0f0f5);
+  color: var(--text);
   margin: 0;
 }
 
 .npc-close-btn {
   background: transparent;
-  border: 1px solid var(--rule, #333340);
+  border: 1px solid var(--rule);
   border-radius: 6px;
-  color: var(--muted, #8a8a98);
-  width: 32px;
-  height: 32px;
+  color: var(--muted);
+  width: 40px;
+  height: 40px;
   display: grid;
   place-items: center;
   font-size: 14px;
   cursor: pointer;
-  transition: all .15s ease;
+  transition: border-color .15s ease, color .15s ease, background-color .15s ease;
 }
 
 .npc-close-btn:hover {
-  border-color: var(--text, #f0f0f5);
-  color: var(--text, #f0f0f5);
+  border-color: var(--text);
+  color: var(--text);
 }
 
 .npc-career-sub {
@@ -454,9 +474,9 @@
   font-size: 12px;
   padding: 2px 8px;
   border-radius: 4px;
-  background: color-mix(in srgb, var(--accent, #e5a93c) 14%, transparent);
-  color: var(--accent, #e5a93c);
-  border: 1px solid color-mix(in srgb, var(--accent, #e5a93c) 30%, transparent);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  color: var(--accent);
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
   font-weight: 500;
 }
 
@@ -468,15 +488,15 @@
 }
 
 .npc-status-pill.is-wounded {
-  background: rgba(220, 38, 38, 0.18);
-  color: #ef4444;
-  border: 1px solid rgba(220, 38, 38, 0.4);
+  background: color-mix(in srgb, var(--bad) 18%, transparent);
+  color: var(--bad);
+  border: 1px solid color-mix(in srgb, var(--bad) 40%, transparent);
 }
 
 .npc-status-pill.is-dead {
-  background: rgba(100, 116, 139, 0.18);
-  color: #94a3b8;
-  border: 1px solid rgba(100, 116, 139, 0.4);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--muted);
+  border: 1px solid var(--border);
 }
 
 .npc-dossier-body {
@@ -555,8 +575,8 @@
 }
 
 .crisis-alert-card {
-  border-color: rgba(239, 68, 68, 0.5);
-  background: radial-gradient(120% 80% at 0% 0%, rgba(239, 68, 68, 0.15), transparent 70%), var(--surface, #14141a);
+  border-color: color-mix(in srgb, var(--bad) 50%, transparent);
+  background: color-mix(in srgb, var(--bad) 10%, var(--surface));
 }
 
 .crisis-card-head {
@@ -567,32 +587,35 @@
 }
 
 .crisis-icon {
-  font-size: 18px;
+  display: inline-grid;
+  place-items: center;
+  color: var(--bad);
+  margin-top: 2px;
 }
 
 .crisis-title {
   margin: 0;
   font-size: 13.5px;
-  color: #ef4444;
+  color: var(--bad);
   font-weight: 700;
 }
 
 .crisis-desc {
   margin: 2px 0 0;
   font-size: 12px;
-  color: var(--text, #f0f0f5);
+  color: var(--text);
 }
 
 .crisis-severity-bar {
   height: 4px;
-  background: rgba(239, 68, 68, 0.2);
+  background: color-mix(in srgb, var(--bad) 20%, transparent);
   border-radius: 999px;
   overflow: hidden;
 }
 
 .crisis-severity-fill {
   height: 100%;
-  background: #ef4444;
+  background: var(--bad);
   transition: width .3s ease;
 }
 
@@ -655,9 +678,12 @@
 }
 
 .memory-bullet {
-  color: var(--accent, #e5a93c);
-  font-size: 9px;
-  padding-top: 4px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex: none;
+  margin-top: 6px;
 }
 
 .npc-action-feedback {
@@ -669,21 +695,21 @@
 }
 
 .npc-action-feedback.is-success {
-  background: rgba(34, 197, 94, 0.12);
-  border: 1px solid rgba(34, 197, 94, 0.4);
-  color: #4ade80;
+  background: color-mix(in srgb, var(--good) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--good) 40%, transparent);
+  color: var(--good);
 }
 
 .npc-action-feedback.is-error {
-  background: rgba(239, 68, 68, 0.12);
-  border: 1px solid rgba(239, 68, 68, 0.4);
-  color: #f87171;
+  background: color-mix(in srgb, var(--bad) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--bad) 40%, transparent);
+  color: var(--bad);
 }
 
 .npc-dossier-footer {
   padding: 14px 20px 18px;
-  background: var(--surface, #14141a);
-  border-top: 1px solid var(--rule, #22222a);
+  background: var(--surface);
+  border-top: 1px solid var(--rule);
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -693,7 +719,7 @@
   margin: 0;
   font-size: 11.5px;
   text-transform: uppercase;
-  color: var(--muted, #8a8a98);
+  color: var(--muted);
   letter-spacing: 0.05em;
 }
 
@@ -704,22 +730,23 @@
 }
 
 .npc-action-btn {
-  background: var(--surface-solid, #181820);
-  border: 1px solid var(--border, #2e2e3a);
+  background: var(--surface-solid);
+  border: 1px solid var(--border);
   border-radius: 6px;
+  min-height: 44px;
   padding: 10px 12px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 2px;
   cursor: pointer;
-  transition: all .15s ease;
+  transition: border-color .15s ease, background-color .15s ease;
   text-align: left;
 }
 
 .npc-action-btn:hover:not(:disabled) {
-  border-color: var(--accent, #e5a93c);
-  background: color-mix(in srgb, var(--accent, #e5a93c) 8%, var(--surface-solid, #181820));
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 8%, var(--surface-solid));
 }
 
 .npc-action-btn:disabled, .npc-action-btn.is-disabled {
@@ -730,12 +757,12 @@
 .action-name {
   font-size: 13px;
   font-weight: 600;
-  color: var(--text, #f0f0f5);
+  color: var(--text);
 }
 
 .action-cost {
   font-size: 11px;
-  color: var(--accent, #e5a93c);
+  color: var(--accent);
   font-weight: 500;
 }
 
@@ -750,6 +777,10 @@
     border-radius: 16px 16px 0 0;
     border-bottom: 0;
     padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+  }
+  .npc-close-btn {
+    width: 44px;
+    height: 44px;
   }
   .npc-action-grid {
     grid-template-columns: 1fr;

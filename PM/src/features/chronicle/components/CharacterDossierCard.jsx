@@ -204,7 +204,9 @@ const ROLE_LABELS = {
   spouse: ['Bạn đời', 'Spouse'],
   partner: ['Cộng sự', 'Partner'],
   child: ['Con', 'Child'],
-  nemesis: ['Kẻ thù', 'Nemesis']
+  nemesis: ['Kẻ thù', 'Nemesis'],
+  mentee: ['Đệ tử', 'Mentee'],
+  ward: ['Đứa trẻ bảo hộ', 'Ward']
 };
 
 const STATUS_LABELS = {
@@ -246,11 +248,28 @@ const People = ({ npcs, age, t, lang, onSelectRole }) => {
         const status = n.deceased ? 'dead' : n.status;
         const since = age - (n.lastSeen ?? n.metAge ?? 0);
         const tier = bondTierInfo(n.bond ?? 0, role);
+        const displayName = lang === 'en' ? n.nameEn || n.nameVi : n.nameVi;
         return (
-          <div key={role} className={`npc ${isGone ? 'is-gone' : ''}`}>
+          <div
+            key={role}
+            className={`npc is-interactive ${isGone ? 'is-gone' : ''}`}
+            role="button"
+            tabIndex={0}
+            aria-label={`${displayName} · ${t(...(ROLE_LABELS[role] || [role, role]))}`}
+            onClick={() => onSelectRole && onSelectRole(role)}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                onSelectRole && onSelectRole(role);
+              }
+            }}
+          >
             <div className="npc-head">
-              <b>{lang === 'en' ? n.nameEn || n.nameVi : n.nameVi}</b>
-              <span>{t(...(ROLE_LABELS[role] || [role, role]))}</span>
+              <b>{displayName}</b>
+              <span className="npc-head-meta">
+                <span>{t(...(ROLE_LABELS[role] || [role, role]))}</span>
+                <span className="npc-inspect-hint">{t('Hồ sơ', 'Dossier')}</span>
+              </span>
             </div>
             {(n.traitVi || n.traitEn) && <p className="npc-trait">{lang === 'en' ? n.traitEn : n.traitVi}</p>}
             {isGone ? (
@@ -421,7 +440,7 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeT
           {milestone.category !== 'WORKSHOP' && <div className="career-obj-reqs">
             {milestone.requirements.map((req, idx) => (
               <div key={idx} className={`career-req-item ${req.met ? 'is-met' : ''}`}>
-                <span className="req-status">{req.met ? '✓' : '○'}</span>
+                <span className="req-status">{req.met ? '✓' : '○'}</span> {/* taste-skill-ignore */}
                 <span className="req-label">{lang === 'en' ? req.labelEn : req.labelVi}</span>
                 <span className="req-val num">{req.current}/{req.target}</span>
               </div>

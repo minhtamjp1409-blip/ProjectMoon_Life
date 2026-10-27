@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { AlertTriangle, X } from 'lucide-react';
 import { useGameStore } from '../../../store/gameStore.js';
 import { NPC_INTERACTION_ACTIONS, canInteractWithNpc } from '../../../engine/npcInteractions.js';
 import { ensureNpcAgency, getNpcBondState } from '../../../data/npcPersonality.js';
@@ -11,6 +12,24 @@ export const NpcDossierModal = ({ npcRole, onClose }) => {
 
   const [feedback, setFeedback] = useState(null);
   const [loadingAction, setLoadingAction] = useState(null);
+  const closeBtnRef = useRef(null);
+
+  useEffect(() => {
+    const previous = document.activeElement;
+    closeBtnRef.current?.focus();
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        event.stopPropagation();
+        onClose();
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown, true);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown, true);
+      previous?.focus?.();
+    };
+  }, [onClose]);
 
   if (!char || !npcRole) return null;
   const rawNpc = char.npcs?.[npcRole];
@@ -34,7 +53,7 @@ export const NpcDossierModal = ({ npcRole, onClose }) => {
         });
       } else {
         setFeedback({
-          text: lang === 'en' ? res.log?.en || 'Interaction succeeded!' : res.log?.vi || 'Tương tác thành công!',
+          text: lang === 'en' ? res.log?.en || 'Interaction succeeded.' : res.log?.vi || 'Tương tác thành công.',
           isError: false
         });
       }
@@ -59,7 +78,13 @@ export const NpcDossierModal = ({ npcRole, onClose }) => {
   const roleText = t(...(ROLE_LABELS[npcRole] || [npcRole, npcRole]));
 
   return (
-    <div className="npc-dossier-overlay" onClick={onClose} role="dialog" aria-modal="true">
+    <div
+      className="npc-dossier-overlay"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="npc-dossier-title"
+    >
       <div className="npc-dossier-sheet" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
         <header className="npc-dossier-head">
@@ -68,9 +93,15 @@ export const NpcDossierModal = ({ npcRole, onClose }) => {
             <span className="npc-district-tag">{npc.district || 'District Backstreets'}</span>
           </div>
           <div className="npc-title-row">
-            <h2 className="npc-dossier-name">{name}</h2>
-            <button className="npc-close-btn" onClick={onClose} aria-label="Close">
-              ✕
+            <h2 className="npc-dossier-name" id="npc-dossier-title">{name}</h2>
+            <button
+              ref={closeBtnRef}
+              type="button"
+              className="npc-close-btn"
+              onClick={onClose}
+              aria-label={t('Đóng hồ sơ', 'Close dossier')}
+            >
+              <X size={16} aria-hidden="true" />
             </button>
           </div>
           <div className="npc-career-sub">
@@ -124,7 +155,9 @@ export const NpcDossierModal = ({ npcRole, onClose }) => {
           {npc.crisis && npc.crisis.type !== 'none' && npc.crisis.severity > 0 && (
             <section className="npc-dossier-section crisis-alert-card">
               <div className="crisis-card-head">
-                <span className="crisis-icon">⚠️</span>
+                <span className="crisis-icon" aria-hidden="true">
+                  <AlertTriangle size={16} />
+                </span>
                 <div>
                   <h4 className="crisis-title">{t('Khủng Hoảng Sinh Tử Đang Rình Rập', 'Acute Crisis Unfolding')}</h4>
                   <p className="crisis-desc">
@@ -156,7 +189,7 @@ export const NpcDossierModal = ({ npcRole, onClose }) => {
               <ul className="memories-list">
                 {npc.memories.map((m, idx) => (
                   <li key={idx} className="memory-item">
-                    <span className="memory-bullet">◆</span>
+                    <i className="memory-bullet" aria-hidden="true" />
                     <span className="memory-text">{lang === 'en' ? m.en : m.vi}</span>
                   </li>
                 ))}
@@ -182,6 +215,7 @@ export const NpcDossierModal = ({ npcRole, onClose }) => {
                 return (
                   <button
                     key={action.id}
+                    type="button"
                     className={`npc-action-btn ${!check.ok ? 'is-disabled' : ''}`}
                     disabled={!check.ok || loadingAction === action.id}
                     onClick={() => handleAction(action.id)}

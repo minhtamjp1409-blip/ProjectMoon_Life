@@ -29,7 +29,6 @@ export const BloodlinePage = () => {
   return (
     <div className="page">
       <PageBanner
-        tag="HANA_ARCHIVE // LINEAGE_DYNASTY"
         title={t('Gia phả', 'Bloodline')}
         sub={
           pastLives.length === 0
@@ -42,24 +41,24 @@ export const BloodlinePage = () => {
       />
 
       {pastLives.length === 0 ? (
-        <div className="panel" style={{ padding: 20 }}>
+        <div className="panel bloodline-empty-panel">
           <p className="empty">
             {t(
               'Khi một kiếp sống kết thúc, bia mộ và di vật của người đó sẽ nằm ở đây, và bạn có thể chơi tiếp đời con.',
               'When a life ends, its epitaph and relic rest here, and you can play on as the heir.'
             )}
           </p>
-          <button type="button" className="btn btn-primary" style={{ marginTop: 14 }} onClick={() => navigate('/')}>
+          <button type="button" className="btn btn-primary bloodline-empty-btn" onClick={() => navigate('/')}>
             <Play size={15} />
             {t('Bắt đầu kiếp sống đầu tiên', 'Start your first life')}
           </button>
         </div>
       ) : (
         <>
-          <section className="panel" style={{ padding: '14px 16px', marginBottom: 14 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10 }}>
+          <section className="panel hall-panel">
+            <div className="hall-head">
               <div>
-                <strong style={{ fontSize: 14 }}>
+                <strong className="hall-title">
                   {t('Đài Tưởng Niệm Dòng Tộc (Di Sản Sống)', 'Dynasty Hall of Legends (Living Echoes)')}
                 </strong>
                 <div className="cell-sub">
@@ -69,7 +68,7 @@ export const BloodlinePage = () => {
                   )}
                 </div>
               </div>
-              <div className="num" style={{ display: 'flex', gap: 14, flexWrap: 'wrap', fontSize: 13 }}>
+              <div className="num hall-metrics">
                 <span>Color: <b>{hall.colorCount}</b></span>
                 <span>E.G.O: <b>{hall.egoCount}</b></span>
                 <span>Distortion: <b>{hall.distortionCount}</b></span>
@@ -78,18 +77,9 @@ export const BloodlinePage = () => {
               </div>
             </div>
             {hall.legends.length > 0 && (
-              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 10 }}>
+              <div className="hall-badges">
                 {hall.legends.map((leg, i) => (
-                  <span
-                    key={`${leg.name}_${i}`}
-                    style={{
-                      fontSize: 12,
-                      padding: '3px 8px',
-                      borderRadius: 4,
-                      border: '1px solid var(--border)',
-                      background: 'var(--surface-2, rgba(255,255,255,0.03))'
-                    }}
-                  >
+                  <span key={`${leg.name}_${i}`} className="hall-badge num">
                     #{leg.generation} <b>{leg.name}</b> · {lang === 'en' ? leg.badgeEn : leg.badgeVi}
                   </span>
                 ))}
@@ -97,15 +87,14 @@ export const BloodlinePage = () => {
             )}
           </section>
 
-          <section className="panel" style={{ overflowX: 'auto' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px', borderBottom: '1px solid var(--border)' }}>
-              <span className="muted" style={{ fontSize: 14 }}>
+          <section className="panel bloodline-table-panel">
+            <div className="bloodline-toolbar">
+              <span className="muted bloodline-toolbar-label">
                 {t('Danh sách các thế hệ đã qua', 'List of past generations in this dynasty')}
               </span>
               <button
                 type="button"
-                className="btn btn-ghost"
-                style={{ color: 'var(--bad)', display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13, height: 32 }}
+                className="btn btn-ghost bloodline-clear-btn"
                 onClick={() => {
                   Modal.confirm({
                     title: lang === 'en' ? 'Clear Entire Bloodline Dynasty?' : 'Xóa toàn bộ cây gia phả?',
@@ -126,12 +115,12 @@ export const BloodlinePage = () => {
             <table className="table stack-sm table-bloodline">
               <thead>
                 <tr>
-                  <th className="num" style={{ width: 64 }}>{t('Đời', 'Gen')}</th>
+                  <th className="num bloodline-gen-col">{t('Đời', 'Gen')}</th>
                   <th>{t('Tên & danh hiệu', 'Name & title')}</th>
                   <th className="num">{t('Tuổi khi khép hồ sơ', 'Age at record end')}</th>
                   <th>{t('Kết cục', 'Fate')}</th>
                   <th>{t('Di vật', 'Relic')}</th>
-                  <th style={{ width: 220 }} />
+                  <th className="bloodline-actions-col" />
                 </tr>
               </thead>
               <tbody>
@@ -139,19 +128,19 @@ export const BloodlinePage = () => {
                   <tr key={`${life.seed}_${idx}`}>
                     <td className="num" data-label={t('Đời', 'Gen')}>#{life.generation}</td>
                     <td data-label={t('Nhân vật', 'Character')}>
-                      <div style={{ fontWeight: 500 }}>{life.name}</div>
+                      <div className="bloodline-name">{life.name}</div>
                       <div className="cell-sub">
                         {lang === 'en' ? life.epitaphTitleEn || life.epitaphTitleVi : life.epitaphTitleVi} · {life.rankTier}
                       </div>
                       <div className="cell-sub">{lang === 'en' ? life.regionNameEn || life.regionNameVi : life.regionNameVi}</div>
                     </td>
                     <td className="num" data-label={t('Tuổi khi khép hồ sơ', 'Age at record end')}>{life.age} {t('tuổi', 'yrs')}</td>
-                    <td style={{ maxWidth: 260 }} data-label={t('Kết cục', 'Fate')}>{lang === 'en' ? life.deathCauseEn || life.deathCauseVi : life.deathCauseVi}</td>
-                    <td className="muted" style={{ maxWidth: 200 }} data-label={t('Di vật', 'Relic')}>{t(life.relic, localizeEnsembleName(life.relic, 'en'))}</td>
+                    <td className="bloodline-fate-td" data-label={t('Kết cục', 'Fate')}>{lang === 'en' ? life.deathCauseEn || life.deathCauseVi : life.deathCauseVi}</td>
+                    <td className="muted bloodline-relic-td" data-label={t('Di vật', 'Relic')}>{t(life.relic, localizeEnsembleName(life.relic, 'en'))}</td>
                     <td className="bloodline-action-td">
-                      <div style={{ display: 'flex', gap: 6, justifyContent: 'flex-end', flexWrap: 'wrap' }}>
+                      <div className="bloodline-actions">
                         {!life.endingId && (
-                          <button type="button" className="btn btn-primary" style={{ height: 32 }} onClick={() => handleInherit(life)}>
+                          <button type="button" className="btn btn-primary bloodline-play-btn" onClick={() => handleInherit(life)}>
                             <Play size={14} />
                             {t('Chơi đời con', 'Play heir')}
                           </button>
@@ -159,7 +148,6 @@ export const BloodlinePage = () => {
                         <button
                           type="button"
                           className="icon-btn"
-                          style={{ width: 32, height: 32 }}
                           onClick={() => exportDossierCardPNG(life)}
                           aria-label={t('Tải thẻ PNG', 'Download PNG')}
                           title={t('Tải thẻ PNG', 'Download PNG')}
@@ -168,8 +156,7 @@ export const BloodlinePage = () => {
                         </button>
                         <button
                           type="button"
-                          className="icon-btn"
-                          style={{ width: 32, height: 32, color: 'var(--bad)' }}
+                          className="icon-btn bloodline-delete-btn"
                           onClick={() => {
                             Modal.confirm({
                               title: lang === 'en' ? `Delete ${life.name} from Bloodline?` : `Xóa ${life.name} khỏi gia phả?`,

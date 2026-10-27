@@ -4,6 +4,7 @@ import {
   TRANSIT_HUBS,
   canImbueEquipment,
   canRelocateDistrict,
+  hasVipTransitPass,
   imbuementCostFor,
   transitCostFor
 } from '../../../engine/cityUpgrades.js';
@@ -13,7 +14,44 @@ import { Check } from 'lucide-react';
 import { useGameStore } from '../../../store/gameStore';
 import { ITEMS_CATALOG, ITEM_TYPES } from '../../../data/itemsData';
 import { audioEngine } from '../../../engine/audioEngine';
+import { gameFeel } from '../../../engine/gameFeel';
 import { useT } from '../../../i18n';
+
+const STAT_CHIP_LABELS = {
+  health: ['HP', 'HP'],
+  sanity: ['SP', 'SP'],
+  wealth: ['Ahn', 'Ahn'],
+  network: ['Quan hệ', 'Network'],
+  rep: ['Danh tiếng', 'Rep'],
+  merit: ['Merit', 'Merit'],
+  resonance: ['Resonance', 'Resonance'],
+  leverage: ['Leverage', 'Leverage'],
+  heat: ['Heat', 'Heat']
+};
+
+function renderTradeoffChips(fx = {}, t, extra = []) {
+  const entries = Object.entries(fx).filter(([k, v]) => Boolean(v) && STAT_CHIP_LABELS[k]);
+  return (
+    <div className="depot-deltas">
+      {extra.map((chip, idx) => (
+        <span key={`extra_${idx}`} className={`delta is-${chip.tone} is-static`}>
+          {chip.label} {chip.val ? <b className="num">{chip.val}</b> : null}
+        </span>
+      ))}
+      {entries.map(([k, v]) => {
+        const [vi, en] = STAT_CHIP_LABELS[k];
+        const isGood = k === 'heat' ? v < 0 : v > 0;
+        const tone = k === 'resonance' ? 'rare' : isGood ? 'up' : 'down';
+        const signed = v > 0 ? `+${v}` : `${v}`;
+        return (
+          <span key={k} className={`delta is-${tone} is-static`}>
+            {t(vi, en)} <b className="num">{signed}</b>
+          </span>
+        );
+      })}
+    </div>
+  );
+}
 
 export const WorkshopDepotModal = ({ open, onClose }) => {
   const { t, lang } = useT();
@@ -25,12 +63,14 @@ export const WorkshopDepotModal = ({ open, onClose }) => {
   }));
 
   const [activeTab, setActiveTab] = useState('ALL');
+  const [depotFeedback, setDepotFeedback] = useState(null);
 
   if (!char) return null;
 
   const playerAhn = char.stats?.wealth ?? char.wealth ?? 0;
   const inventory = Array.isArray(char.inventory) ? char.inventory : [];
   const imbuedSet = new Set((char.imbuedRelics || []).map((r) => r.relicId));
+  const vipPass = hasVipTransitPass(char);
 
   const filterItems = () => {
     if (activeTab === 'ALL') return ITEMS_CATALOG;
@@ -46,18 +86,36 @@ export const WorkshopDepotModal = ({ open, onClose }) => {
   const handleImbue = (relicId) => {
     const check = canImbueEquipment(char, relicId);
     if (!check.ok) return;
-    audioEngine.playCoinChime();
-    imbueEquipment(relicId);
+    const res = imbueEquipment(relicId);
+    if (res?.ok) {
+      audioEngine.playBuff();
+      gameFeel.addTrauma(0.24);
+      setDepotFeedback({
+        tone: 'imbue',
+        text:
+          lang === 'en'
+            ? `Singularity Imbuement complete: ${res.recipe.prefixEn} (+${res.powerGain} Combat Power). ${res.recipe.bonusEn}`
+            : `Đã dung hợp Singularity: ${res.recipe.prefixVi} (+${res.powerGain} Sức chiến đấu). ${res.recipe.bonusVi}`
+      });
+    }
   };
 
   const handleRelocate = (regionId) => {
-    const check = canRelocateDistrict(char, targetRegionIdOf(regionId));
+    const check = canRelocateDistrict(char, regionId);
     if (!check.ok) return;
-    audioEngine.playCoinChime();
-    relocateDistrict(regionId);
+    const res = relocateDistrict(regionId);
+    if (res?.ok) {
+      audioEngine.playCoinChime();
+      gameFeel.addTrauma(0.14);
+      setDepotFeedback({
+        tone: 'transit',
+        text:
+          lang === 'en'
+            ? `Arrived at ${res.hub.nameEn} (-${res.cost} Ahn). ${res.hub.arrivalDescEn}`
+            : `Đã đặt chân tới ${res.hub.nameVi} (-${res.cost} Ahn). ${res.hub.arrivalDescVi}`
+      });
+    }
   };
-
-  const targetRegionIdOf = (rid) => rid;
 
   const isOwned = (item) => {
     return inventory.some((inv) => inv.id === item.id);
@@ -83,8 +141,8 @@ export const WorkshopDepotModal = ({ open, onClose }) => {
       <div className="depot">
         <p className="depot-lead">
           {t(
-            'Vũ khí Workshop, cấy ghép, khảm cổ vật Singularity và vé di chuyển liên Quận. Mỗi lựa chọn mở ra cơ hội sống sót mới.',
-            'Workshop weapons, grafts, Singularity imbuement, and inter-District transit passes. Each option reshapes your odds.'
+            'Vũ khí Workshop, cấy ghép, khảm cổ vật Singularity và vé di chuyển liên Quận. Mỗi lựa chọn mở ra cơ hội sống sót mới đi kèm cái giá tương xứng.',
+            'Workshop weapons, grafts, Singularity imbuement, and inter-District transit passes. Every edge carries a matching price.'
           )}
         </p>
         {activeCityCondition(char) && (
@@ -94,6 +152,11 @@ export const WorkshopDepotModal = ({ open, onClose }) => {
               'Supply cordon: medicine and equipment +15%, rounded up. Ends after age '
             )}
             {char.cityCondition.endAge}.
+          </p>
+        )}
+        {depotFeedback && (
+          <p role="status" className={`depot-feedback is-${depotFeedback.tone}`}>
+            {depotFeedback.text}
           </p>
         )}
         <div className="tabs depot-tabs" role="tablist">
@@ -112,7 +175,10 @@ export const WorkshopDepotModal = ({ open, onClose }) => {
               aria-selected={activeTab === tab.id}
               key={tab.id}
               className={activeTab === tab.id ? 'is-on' : ''}
-              onClick={() => setActiveTab(tab.id)}
+              onClick={() => {
+                setActiveTab(tab.id);
+                setDepotFeedback(null);
+              }}
             >
               {lang === 'en' ? tab.labelEn : tab.labelVi}
             </button>
@@ -126,6 +192,20 @@ export const WorkshopDepotModal = ({ open, onClose }) => {
               const alreadyImbued = imbuedSet.has(rec.relicId);
               const check = canImbueEquipment(char, rec.relicId);
               const cost = imbuementCostFor(char);
+              const isCraftsman = char.job === 'Workshop Craftsman';
+              const extraChips = [
+                {
+                  tone: 'up',
+                  label: t('Chiến lực', 'Combat Power'),
+                  val: `+${rec.combatPowerBonus + (isCraftsman ? 6 : 0)}`
+                },
+                ...(isCraftsman
+                  ? [
+                      { tone: 'up', label: t('Thợ rèn', 'Craftsman'), val: '+8 Merit' },
+                      { tone: 'down', label: t('Rèn tay', 'Forge toil'), val: '-3 HP' }
+                    ]
+                  : [])
+              ];
               return (
                 <li key={rec.relicId} className="depot-item is-special">
                   <div className="depot-item-main">
@@ -136,8 +216,9 @@ export const WorkshopDepotModal = ({ open, onClose }) => {
                       <span className="depot-tier">Singularity</span>
                     </h4>
                     <p>{lang === 'en' ? rec.bonusEn : rec.bonusVi}</p>
+                    {renderTradeoffChips(rec.statFx, t, extraChips)}
                     {!alreadyImbued && !check.ok && (
-                      <small className="muted" style={{ display: 'block', marginTop: 4 }}>
+                      <small className="depot-subnote">
                         {lang === 'en' ? check.reasonEn : check.reasonVi}
                       </small>
                     )}
@@ -171,6 +252,13 @@ export const WorkshopDepotModal = ({ open, onClose }) => {
               const isHere = char.regionId === hub.regionId;
               const check = canRelocateDistrict(char, hub.regionId);
               const cost = transitCostFor(hub, char);
+              const extraChips = [
+                ...(vipPass
+                  ? [{ tone: 'rare', label: t('Thẻ VIP', 'VIP Pass'), val: '-50% Ahn' }]
+                  : hub.isWarpEconomy
+                    ? [{ tone: 'down', label: t('Khoang WARP phổ thông', 'WARP Economy'), val: '-3 SP / +3 Resonance' }]
+                    : [])
+              ];
               return (
                 <li key={hub.regionId} className="depot-item is-special">
                   <div className="depot-item-main">
@@ -179,7 +267,8 @@ export const WorkshopDepotModal = ({ open, onClose }) => {
                       <span className="depot-tier">{lang === 'en' ? hub.carrierEn : hub.carrierVi}</span>
                     </h4>
                     <p>{lang === 'en' ? hub.arrivalDescEn : hub.arrivalDescVi}</p>
-                    <small className="muted" style={{ display: 'block', marginTop: 4 }}>
+                    {renderTradeoffChips(hub.arrivalFx, t, extraChips)}
+                    <small className="depot-subnote">
                       {lang === 'en' ? hub.passiveEn : hub.passiveVi}
                     </small>
                   </div>

@@ -1346,3 +1346,28 @@ Chủ dự án yêu cầu làm lại toàn bộ giao diện lần nữa: bỏ t�
 * **5. Chuẩn Hóa Nhánh Rủi Ro & Chống Lạm Phát Kinh Tế Ở Sự Kiện Đỉnh Cao (`eventsColorCareerArc.js`, `eventsWingParityExpansion.js`, `eventsDistortionParityExpansion.js`):**
   * Khắc phục các lựa chọn đại sự kiện trước đây chỉ có 1 nhánh `outcomes` đơn lẻ (`wing_arc_corporate_patent_warfare`, `distort_arc_star_calamity_ascension`, `distort_arc_ego_clash_manifestation`), bổ sung nhánh thất bại 35% với hậu quả thực tế để tổng trọng số luôn đạt chuẩn `100%`.
   * Điều chỉnh mức thưởng tiền mặt quá đà trong `color_arc_wing_proxy_war` (từ `+120 Ahn` xuống `+48 Ahn` kèm 30% rủi ro trúng vũ khí Singularity tự hủy của đối phương) và `wing_arc_singularity_meltdown` (từ `+80 Ahn` xuống `+42 Ahn` kèm `+8 Taboo`), giữ vững nhịp cân bằng kinh tế toàn game.
+
+
+### Đợt 66 (27/10/2026): Chuẩn Hóa UI/UX Toàn Diện 5 Trụ Cột — TasteSkill v2, AntiSlop, Tương Phản WCAG AA, Thao Tác Bàn Phím/Mobile & Game Feel
+
+* **1. Thanh Lọc Chi Tiết UI Theo `tasteskill v2` & `antislop-ui` + `design-system` (`src/features/chronicle/components/Deltas.jsx`, `src/features/chronicle/components/NpcDossierModal.jsx`, `src/features/bloodline/BloodlinePage.jsx`, `src/styles/ui/overlays.css`, `src/styles/ui/pages.css`):**
+  * Thay thế toàn bộ 11 ký tự dingbat/emoji trong `Deltas.jsx` (`STAT_ICONS`) bằng hệ thống chấm màu token ngữ nghĩa (`.delta-stat-dot` dùng `--s-health`, `--s-sanity`, `--s-wealth`, v.v.); thay thế các ký tự `⚠️`, `✕`, `◆` trong `NpcDossierModal.jsx` bằng icon nét mảnh `AlertTriangle`, `X` từ `lucide-react` và `.memory-bullet` CSS.
+  * Loại bỏ toàn bộ 6 quy tắc `transition: all`, 2 nền gradient thừa trên thẻ tĩnh, phông `'Cinzel'` không nạp, và các mã màu hex Tailwind viết cứng (`#ef4444`, `#94a3b8`, `#4ade80`, `#f87171`, `#0d1117`, `#cbd5e1`) trong `overlays.css`, quy chuẩn 100% về hệ token trong `tokens.css`.
+  * Chuyển toàn bộ inline style của Đài Tưởng Niệm Dòng Tộc và thanh công cụ trong `BloodlinePage.jsx` sang hệ class ngữ nghĩa trong `pages.css` (`.hall-panel`, `.hall-head`, `.hall-metrics`, `.hall-badges`, `.bloodline-toolbar`, `.bloodline-actions`).
+
+* **2. Khôi Phục Tương Tác Hồ Sơ NPC, Điều Hướng Bàn Phím & Chuẩn Tương Phản WCAG AA (`src/features/chronicle/components/CharacterDossierCard.jsx`, `src/features/chronicle/components/NpcDossierModal.jsx`, `src/styles/ui/tokens.css`):**
+  * Kết nối sự kiện click chuột và bàn phím (`Enter`/`Space`, `role="button"`, `tabIndex={0}`, `.npc.is-interactive`, nhãn gợi ý `Hồ sơ / Dossier`) cho từng thẻ NPC trong danh sách *Những người trong đời bạn* (`CharacterDossierCard.jsx`), giúp người chơi mở trực tiếp `NpcDossierModal.jsx` trên cả Desktop và Mobile.
+  * Bổ sung xử lý phím `Escape`, tự động đặt focus vào nút đóng khi mở modal và trả lại focus khi đóng cho `NpcDossierModal.jsx`, kèm `:focus-visible` rõ nét cho thanh trượt âm thanh `.settings-slider`.
+  * Tinh chỉnh `--accent` (`#c43232`) và `--accent-ink` (`#fff6f2`) trong `tokens.css`, nâng độ tương phản chữ trên nút chính lên **5.18:1** (vượt chuẩn WCAG 2.x AA `>= 4.5:1`).
+
+* **3. Chuẩn Hóa Vùng Chạm Cảm Ứng Mobile & Safe-Area (`antislop-layoutmobile` — `src/styles/ui/overlays.css`, `src/styles/ui/pages.css`):**
+  * Nâng kích thước vùng chạm của `.settings-close-btn`, `.npc-close-btn`, `.bloodline-clear-btn`, `.bloodline-play-btn` và các nút hành động trong bảng Gia Phả từ `32px` lên `40px–44px`, đảm bảo thao tác ngón tay chính xác trên màn hình hẹp `390px`.
+  * Bổ sung `padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px))` cho `.settings-body` khi hiển thị dạng bottom-sheet trên thiết bị di động.
+
+* **4. Hiển Thị Trực Quan Hóa Đánh Đổi Định Lượng "Hard But Fair" (`tasteskill v2` App-Screens — `src/features/chronicle/components/WorkshopDepotModal.jsx`, `src/features/chronicle/components/YearPlanDock.jsx`):**
+  * Tích hợp dải chip chỉ số định lượng `tabular-nums` (`.depot-deltas` và `.directive-deltas` với màu phân cực `.delta.is-up` / `.delta.is-down` / `.delta.is-rare`) ngay dưới mỗi công thức **Khảm Cổ Vật Singularity**, mỗi tuyến **Vé Tàu & Chuyển Quận**, và mỗi **Chỉ Thị Thủ Lĩnh (Apex Command Directive)** để người chơi đọc nhanh cả lợi ích lẫn phản chấn/chi phí mà không phải dò từng chữ trong đoạn mô tả.
+
+* **5. Phản Hồi Xúc Giác & Âm Thanh Đa Tầng (`game-feel` & `audio-design` — `src/features/chronicle/components/WorkshopDepotModal.jsx`):**
+  * Phân tầng hiệu ứng khi thực hiện hành động trọng đại trong Workshop: **Khảm Cổ Vật Singularity** kích hoạt `audioEngine.playBuff()` + rung chấn màn hình `gameFeel.addTrauma(0.24)` kèm băng rôn trạng thái `.depot-feedback.is-imbue`; **Khởi Hành Liên Quận** kích hoạt `audioEngine.playCoinChime()` + `gameFeel.addTrauma(0.14)` kèm băng rôn xác nhận `.depot-feedback.is-transit`.
+  * Bổ sung kiểm thử tự động Pillar 5 trong `tests/test_batch64_system_upgrades.mjs` và cố định seed kiểm thử trong `tests/test_dungeon_enhancements.mjs`; toàn bộ **53/53 bộ test suites** và bản build production đều đạt chuẩn 100%.
+

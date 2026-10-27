@@ -210,4 +210,29 @@ console.log('=== TEST SUITE: BATCH 64 SYSTEM UPGRADES (5 PILLARS) ===');
   console.log('  ✓ Pillar 4: Workshop Singularity Imbuement verified');
 }
 
-console.log('=== ALL BATCH 64 SYSTEM UPGRADE TESTS PASSED ===');
+// ----------------------------------------------------------------------------
+// 5. BATCH 66 UI UPGRADES (TASTESKILL V2, ANTISLOP, ACCESSIBILITY & GAME-FEEL)
+// ----------------------------------------------------------------------------
+{
+  const fs = await import('node:fs');
+  const tokensCss = fs.readFileSync('src/styles/ui/tokens.css', 'utf8');
+  const overlaysCss = fs.readFileSync('src/styles/ui/overlays.css', 'utf8');
+  const deltasSrc = fs.readFileSync('src/features/chronicle/components/Deltas.jsx', 'utf8');
+  const npcModalSrc = fs.readFileSync('src/features/chronicle/components/NpcDossierModal.jsx', 'utf8');
+  const dossierSrc = fs.readFileSync('src/features/chronicle/components/CharacterDossierCard.jsx', 'utf8');
+  const depotSrc = fs.readFileSync('src/features/chronicle/components/WorkshopDepotModal.jsx', 'utf8');
+  const yearPlanSrc = fs.readFileSync('src/features/chronicle/components/YearPlanDock.jsx', 'utf8');
+
+  assert(tokensCss.includes('--accent: #c43232;'), 'Primary accent token must meet WCAG AA contrast');
+  assert(!overlaysCss.includes('transition: all'), 'overlays.css must not use transition: all');
+  assert(!overlaysCss.includes('Cinzel'), 'overlays.css must not reference unloaded Cinzel font');
+  assert(overlaysCss.includes('.settings-slider:focus-visible'), 'Settings slider must have keyboard focus-visible ring');
+  assert(!deltasSrc.includes('STAT_ICONS'), 'Deltas.jsx must use semantic token dots instead of dingbat icons');
+  assert(npcModalSrc.includes("event.key === 'Escape'"), 'NpcDossierModal must close on Escape key');
+  assert(dossierSrc.includes('npc is-interactive') && dossierSrc.includes('onSelectRole(role)'), 'Dossier NPC cards must be interactive and keyboard-accessible');
+  assert(depotSrc.includes('renderTradeoffChips') && depotSrc.includes('gameFeel.addTrauma'), 'WorkshopDepotModal must render quantitative trade-off chips and gameFeel feedback');
+  assert(yearPlanSrc.includes('renderDirectiveChips'), 'YearPlanDock must render quantitative trade-off chips for Apex Directives');
+  console.log('  ✓ Pillar 5: Batch 66 UI Upgrades (tasteskill v2, antislop, WCAG AA, keyboard/mobile & game-feel) verified');
+}
+
+console.log('=== ALL BATCH 64 & 66 SYSTEM/UI UPGRADE TESTS PASSED ===');
