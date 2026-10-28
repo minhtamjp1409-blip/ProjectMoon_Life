@@ -182,6 +182,17 @@ export function CityBirthAtlas({ selected, displayRegion, viewport, moving, star
                   <MapInk selected={activeId} t={t} />
                 </g>
               </g>
+              {viewport.width < 900 && (
+                <g clipPath="url(#city-atlas-lens)" aria-hidden="true">
+                  {CITY_REGIONS.map((region) => (
+                    <g key={region.id} className={`atlas-district${activeId === region.id ? ' is-selected' : ''}`}>
+                      <text className="atlas-district-letter" x={DISTRICT_POINTS[region.id][0]} y={DISTRICT_POINTS[region.id][1]} textAnchor="middle" dominantBaseline="middle">{region.id}</text>
+                      <text className="atlas-district-number" x={DISTRICT_POINTS[region.id][0]} y={DISTRICT_POINTS[region.id][1] + 29} textAnchor="middle">District {region.ward}</text>
+                    </g>
+                  ))}
+                  <text className="atlas-lens-outskirts" x="905" y="615" textAnchor="middle">OUT</text>
+                </g>
+              )}
               <circle cx={lens[0]} cy={lens[1]} r={lensRadius} />
               <circle cx={lens[0]} cy={lens[1]} r={54 * lensScale} />
           </g>

@@ -1,6 +1,6 @@
 # The City Chronicles: Tài Liệu Tiến Trình & Kiến Trúc Kỹ Thuật Toàn Diện
 
-> **Cập nhật ghi chép: 27/10/2026 (Đợt 69: Nâng Cấp Thiết Kế Triết Lý Failbetter Games & Darkest Dungeon: Con Đường Mốc Lớn, Khảo Thí Color Có Sức Nặng, Tái Tạo Sinh Học Distortion, Đánh Đổi Kế Hoạch Năm & Đo Kiểm 500 Đời; đã push và deploy)**
+> **Cập nhật ghi chép: 28/10/2026 (Đợt 73: Khắc phục dứt điểm lỗi Bảng cuối năm, Rò rỉ gắn kết Chỉ thị Apex, Dự báo Kế hoạch năm và Kính lúp City Atlas khi zoom; đã push và deploy)**
 > **Phân biệt rõ số liệu kiểm thử tự động & số liệu mô phỏng 500 đời hiện hành (Đợt 69):**
 > - **Đã xác minh tự động bằng bộ test (`npm test`):** Toàn bộ **53/53 test suites** đạt 100%, parity cổng thăng tiến FE/BE khớp tuyệt đối, `lint_story.mjs` (745 major, 43 consequence, 866 minor, 572 daily, 36 contract) & `voice_lint.mjs --fail` (**32.337 chuỗi**) đạt 0 lỗi / 0 cảnh báo, `run_million_audit.mjs 500` (500 khoảnh khắc) đạt 5/5 nhóm quy tắc toàn vẹn, `npm run build` hoàn tất sạch bóng.
 > - **Đã đo mới trên codebase hiện tại qua mô phỏng 500 cuộc đời đầy đủ (Đợt 69):** `story_logic_audit.mjs 500 random` (**80.338 khoảnh khắc**, 500 đời, **0 vi phạm logic**, entropy `83.1%`), `balance_sim.mjs 500 random` (13.208 năm sống, phân bổ nghề: Fixer `31.0%`, Wing `29.9%`, Syndicate `31.9%`, Distortion `5.4%`), `balance_sim.mjs 500 focused` (21.749 năm sống, tuổi thọ TB `42.6`, đạt Color Fixer `9.6%` ở tuổi TB `55.4`, thức tỉnh E.G.O `12.6%` ở tuổi TB `45.5`), và `branch_experience.mjs 500` (tuổi thọ Distortion tăng vọt từ `3.8` lên **`11.3` năm/đời**, đại sự kiện trải nghiệm từ `16` lên **`40`**).
@@ -1639,3 +1639,4 @@ Chủ dự án yêu cầu làm lại toàn bộ giao diện lần nữa: bỏ t�
 
 * Kính lúp không còn biến mất khi `viewBox` thu nhỏ hoặc camera đang lia. Bán kính và độ dày viền thay đổi theo `viewport.width` để đường kính hiển thị gần như cố định trên desktop/mobile; trong lúc lia kính nằm ở tâm camera, sau khi dừng nằm ở nơi sinh được chọn hoặc theo chuột.
 * Khi đã phóng sâu, kính tập trung vào chi tiết phố thay vì phóng đại thêm chữ District. Vùng District được chọn có lớp tô bán trong suốt để mạng phố bên dưới còn thấy được. Logic chọn vùng và nơi sinh của nhân vật không thay đổi.
+* Sửa tiếp lỗi nhãn District bị lớp kính che khi zoom: kính vẫn phóng đại phố, sau đó vẽ lại chữ cái/số District tại đúng tọa độ và kích thước bản đồ bên trong vùng kính. Đã tái hiện bằng District R (18) trên mobile: chữ R còn thấy rõ trong kính khi camera phóng tới vùng này.

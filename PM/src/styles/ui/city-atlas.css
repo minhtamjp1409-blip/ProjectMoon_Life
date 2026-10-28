@@ -77,6 +77,7 @@
 .atlas-lens > circle:first-of-type { fill: none; stroke: var(--atlas-lens-fill); stroke-width: var(--atlas-lens-rim); }
 .atlas-lens > circle:last-of-type { fill: none; stroke: var(--atlas-lens-edge); stroke-width: var(--atlas-lens-line); }
 .atlas-lens-detail .atlas-district text { opacity: 0; }
+.atlas-lens-outskirts { fill: var(--atlas-label); stroke: var(--atlas-land); stroke-width: 2; paint-order: stroke; font-family: var(--font); font-size: 19px; font-weight: 700; }
 .atlas-corner-label { position: absolute; left: 16px; bottom: 16px; display: flex; flex-direction: column; gap: 2px; min-width: 160px; max-width: min(50%, 276px); padding: 8px 12px; background: var(--atlas-note); pointer-events: none; }
 .atlas-corner-label strong { font-size: 16px; font-weight: 700; color: var(--text); }
 .atlas-corner-label span { font-size: 13px; color: var(--muted); overflow-wrap: break-word; }
