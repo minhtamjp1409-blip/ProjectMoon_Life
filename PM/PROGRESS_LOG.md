@@ -1,6 +1,6 @@
 # The City Chronicles: Tài Liệu Tiến Trình & Kiến Trúc Kỹ Thuật Toàn Diện
 
-> **Cập nhật ghi chép: 28/10/2026 (Đợt 75: Tái thiết kế trải nghiệm gameplay Chronicle & Stage Feed theo chuẩn design-taste-frontend & hallmark cho cả PC và Mobile; đã kiểm thử 100%)**
+> **Cập nhật ghi chép: 28/10/2026 (Đợt 76: Tái thiết kế khung Mở hồ sơ mới BirthSetupPanel theo chuẩn Hana Bureaucracy Docket tách bạch Kiếp đang dở và Khai sinh mới; đã kiểm thử 100%)**
 > **Phân biệt rõ số liệu kiểm thử tự động & số liệu mô phỏng 500 đời hiện hành (Đợt 69):**
 > - **Đã xác minh tự động bằng bộ test (`npm test`):** Toàn bộ **53/53 test suites** đạt 100%, parity cổng thăng tiến FE/BE khớp tuyệt đối, `lint_story.mjs` (745 major, 43 consequence, 866 minor, 572 daily, 36 contract) & `voice_lint.mjs --fail` (**32.337 chuỗi**) đạt 0 lỗi / 0 cảnh báo, `run_million_audit.mjs 500` (500 khoảnh khắc) đạt 5/5 nhóm quy tắc toàn vẹn, `npm run build` hoàn tất sạch bóng.
 > - **Đã đo mới trên codebase hiện tại qua mô phỏng 500 cuộc đời đầy đủ (Đợt 69):** `story_logic_audit.mjs 500 random` (**80.338 khoảnh khắc**, 500 đời, **0 vi phạm logic**, entropy `83.1%`), `balance_sim.mjs 500 random` (13.208 năm sống, phân bổ nghề: Fixer `31.0%`, Wing `29.9%`, Syndicate `31.9%`, Distortion `5.4%`), `balance_sim.mjs 500 focused` (21.749 năm sống, tuổi thọ TB `42.6`, đạt Color Fixer `9.6%` ở tuổi TB `55.4`, thức tỉnh E.G.O `12.6%` ở tuổi TB `45.5`), và `branch_experience.mjs 500` (tuổi thọ Distortion tăng vọt từ `3.8` lên **`11.3` năm/đời**, đại sự kiện trải nghiệm từ `16` lên **`40`**).
@@ -1657,4 +1657,19 @@ Chủ dự án yêu cầu làm lại toàn bộ giao diện lần nữa: bỏ t�
 * **Kiểm định toàn vẹn:**
   * `npm run build` hoàn tất xuất sắc (7.38s), không phát sinh lỗi cảnh báo nào.
   * `npm test` vượt qua 100% toàn bộ 53 bộ kiểm thử hồi quy (Story Lint, Voice Lint, Causal Arcs, Career Paths, 500 Moments Million Audit).
+
+### Đợt 76 (28/10/2026): Tái thiết kế khung Mở hồ sơ mới (BirthSetupPanel) theo chuẩn Hana Bureaucracy Docket
+
+* **Phân luồng mục đích (Dual-Mode Tab Architecture):**
+  * Triệt tiêu hoàn toàn xung đột hiển thị giữa "Kiếp đang dở" và "Khai sinh kiếp mới". Khi có tiến trình lưu trữ (`savedRun`), khung trang bị thanh chuyển tab rõ ràng: `[Kiếp đang dở: {Tên}]` và `[Khai sinh kiếp mới]`.
+  * Tab "Kiếp đang dở" hiển thị dạng **Active Dossier Card** gọn gàng với mã số hồ sơ Hana (`REC // AGE · GEN`), cấp bậc nghề nghiệp, thanh sinh tồn tóm tắt (HP, SP, Ahn) và nút lớn `[Viết tiếp câu chuyện]`, vào game ngay lập tức mà không phải nhìn qua biểu mẫu dài.
+* **Chuẩn hóa chất liệu Project Moon (Hana Bureaucracy Aesthetic):**
+  * Tiêu đề nâng cấp với biểu tượng con dấu niêm phong `Stamp`, mã quản lý hồ sơ `HANA REGISTRY // FORM 0-A`, phông chữ và viền kính hun khói đen sâu (`#0a090d`) với ánh viền đồng thau cổ (`#d8b265`).
+  * Nút giới tính được dập nổi với ký hiệu sinh học (`♂ Nam`, `♀ Nữ`), có viền phát sáng khi chọn.
+  * Nút liên kết bản đồ nơi sinh được tinh chỉnh trực quan với icon `MapPin` đồng bộ với City Atlas.
+  * Nút hành động chính (CTA) mang chất niêm phong giao kèo số phận: `[Đóng dấu & Bước vào The City]`.
+* **Kiểm định toàn vẹn:**
+  * `npm run build` hoàn tất xuất sắc (7.08s), 0 lỗi đóng gói.
+  * `npm test` vượt qua 100% toàn bộ 53 bộ kiểm thử hồi quy, tuân thủ nghiêm ngặt vị trí `#birth-region` trước nút `hero-start-btn`.
+
 

@@ -61,24 +61,116 @@
   backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
   border: 1px solid var(--border); border-top: 3px solid var(--accent);
   border-radius: var(--radius);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 .birth-heading { display: flex; gap: 14px; align-items: flex-start; padding-bottom: 18px; border-bottom: 1px solid var(--page-rule); }
-.birth-symbol { display: grid; place-items: center; width: 38px; height: 38px; flex: none; border: 1px solid var(--page-edge); border-radius: 50%; color: var(--page-ink); }
+.birth-symbol { display: grid; place-items: center; width: 42px; height: 42px; flex: none; border: 1px solid var(--accent); border-radius: 50%; color: var(--accent); background: var(--accent-soft); }
+.birth-heading-text { display: flex; flex-direction: column; gap: 2px; }
+.birth-bureau-code { font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace; font-size: 11px; letter-spacing: 0.08em; color: var(--accent); opacity: 0.9; text-transform: uppercase; font-weight: 700; margin-bottom: 2px; }
 .birth-heading h2 { font-size: 24px; margin-bottom: 4px; color: var(--page-ink); }
-.birth-heading p { font-family: var(--serif); font-style: italic; color: var(--page-muted); font-size: 15px; }
+.birth-heading p { font-family: var(--serif); font-style: italic; color: var(--page-muted); font-size: 14.5px; line-height: 1.45; }
+
+/* Dual mode tab bar: Kiếp đang dở vs Khai sinh kiếp mới */
+.birth-tabs-bar {
+  display: flex; gap: 4px; padding: 4px;
+  background: rgba(0, 0, 0, 0.35); border: 1px solid var(--border); border-radius: var(--radius-sm);
+}
+.birth-tab {
+  flex: 1; min-height: 40px; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  border: 1px solid transparent; border-radius: var(--radius-sm);
+  font-size: 13.5px; font-weight: 600; color: var(--muted); cursor: pointer;
+  background: transparent;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.birth-tab:hover { color: var(--text); background: var(--raised); }
+.birth-tab.is-active {
+  background: var(--surface); color: var(--text); border-color: var(--accent);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3), 0 0 12px var(--accent-soft);
+}
+.tab-pill {
+  font-size: 11px; padding: 1px 7px; border-radius: 999px;
+  background: var(--accent-soft); color: var(--accent); font-weight: 700;
+  max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+/* Active Dossier Resume View */
+.birth-resume-view {
+  display: flex; flex-direction: column; gap: 18px;
+  animation: entryIn 0.4s ease both;
+}
+.resume-dossier-card {
+  display: flex; flex-direction: column; gap: 12px;
+  padding: 18px 20px;
+  border: 1px solid var(--border); border-left: 3px solid var(--accent);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.025);
+  box-shadow: inset 0 0 24px rgba(0, 0, 0, 0.2);
+}
+.resume-dossier-header {
+  display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 11.5px;
+}
+.resume-dossier-tag {
+  font-weight: 700; letter-spacing: 0.06em; color: var(--accent); text-transform: uppercase;
+}
+.resume-serial-code {
+  font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  color: var(--page-muted); opacity: 0.85; letter-spacing: 0.04em;
+}
+.resume-nameplate {
+  display: flex; flex-direction: column; gap: 3px;
+}
+.resume-name {
+  font-family: var(--serif); font-size: 26px; font-weight: 600; color: var(--text); margin: 0; line-height: 1.2;
+}
+.resume-post {
+  color: var(--page-muted); font-size: 14px; margin: 0;
+}
+.resume-stats-strip {
+  display: flex; gap: 20px; padding-top: 10px; border-top: 1px dashed var(--page-rule);
+}
+.resume-stat {
+  display: inline-flex; align-items: baseline; gap: 6px; font-size: 13.5px;
+}
+.resume-stat .stat-label {
+  color: var(--page-muted); font-weight: 600;
+}
+.resume-stat .stat-val {
+  font-family: var(--font); font-weight: 700; font-variant-numeric: tabular-nums; color: var(--text);
+}
+.resume-stat .text-gold {
+  color: var(--gold);
+}
+.resume-launch-btn {
+  font-size: 16px; font-weight: 700; letter-spacing: 0.02em; min-height: 48px;
+}
+.birth-text-action.is-abandon {
+  color: var(--bad); opacity: 0.85;
+}
+.birth-text-action.is-abandon:hover {
+  opacity: 1; text-decoration: underline;
+}
+
 .birth-fields { display: flex; flex-direction: column; gap: 18px; }
-.birth-gender { display: grid; grid-template-columns: 1fr 1fr; width: 100%; }
-.birth-gender button { min-height: 40px; }
+.birth-gender { display: grid; grid-template-columns: 1fr 1fr; width: 100%; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 2px; background: rgba(0, 0, 0, 0.2); }
+.birth-gender button { min-height: 40px; font-weight: 600; font-size: 14px; border-radius: var(--radius-sm); border: 1px solid transparent; color: var(--muted); }
+.birth-gender button:hover:not(.is-on) { color: var(--text); background: var(--raised); }
+.birth-gender button.is-on { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 700; box-shadow: 0 0 10px var(--accent-soft); }
 .birth-region-field label { display: flex; justify-content: space-between; align-items: center; }
 .birth-map-link {
-  display: inline-flex; align-items: center; gap: 3px;
-  font-size: 13px; font-weight: 600; color: var(--page-ink);
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 13px; font-weight: 600; color: var(--accent);
   text-decoration: underline; text-underline-offset: 3px;
+  cursor: pointer; background: none; border: none; padding: 0;
 }
-.birth-map-link:hover { color: var(--gold); }
+.birth-map-link:hover { color: var(--accent-hover); }
 .birth-region-select {
   appearance: auto; cursor: pointer;
   background-color: var(--surface); color: var(--text);
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  min-height: 42px; padding: 0 12px; font-size: 14px;
+}
+.birth-region-select:focus {
+  outline: none; border-color: var(--accent); box-shadow: 0 0 8px var(--accent-soft);
 }
 .birth-seed summary { display: flex; justify-content: space-between; align-items: center; min-height: 40px; font-size: 14px; font-weight: 600; color: var(--page-muted); border-top: 1px solid var(--page-rule); padding-top: 10px; }
 .birth-seed[open] summary svg { transform: rotate(180deg); }

@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { localizeEnsembleName } from '../../../data/ensembleNames.js';
-import { Dices, GitBranch, Play, ChevronDown, ArrowUpRight, Search, BookOpen, MapPin } from 'lucide-react';
+import { Dices, GitBranch, Play, ChevronDown, ArrowUpRight, Search, BookOpen, MapPin, Stamp, RotateCcw } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Modal } from 'antd';
 import { useGameStore } from '../../../store/gameStore';
@@ -13,6 +13,7 @@ import { audioEngine } from '../../../engine/audioEngine';
 import CityLoadingOverlay from './CityLoadingOverlay';
 import CityBirthAtlas, { ATLAS_VIEW, atlasTargetView } from './CityBirthAtlas';
 import { reducedMotion } from '../../../utils/motion';
+import { describeJob } from './CharacterDossierCard';
 
 const CAREERS = [
   [
@@ -45,6 +46,12 @@ export const BirthSetupPanel = () => {
   const globalCodex = useGameStore((s) => s.globalCodex);
   const savedRun = useGameStore((s) => s.savedRun);
   const { setConfigField, startLife, resumeRun, abandonRun, discardPendingLegacy } = useGameStore.getState();
+  const [activeTab, setActiveTab] = useState(savedRun ? 'resume' : 'new');
+  useEffect(() => {
+    if (!savedRun && activeTab === 'resume') {
+      setActiveTab('new');
+    }
+  }, [savedRun, activeTab]);
   const [spinning, setSpinning] = useState(false);
   const [search, setSearch] = useState('');
   const [isWheelSpinning, setIsWheelSpinning] = useState(false);
@@ -227,36 +234,108 @@ export const BirthSetupPanel = () => {
         </div>
         <section className="birth-panel" aria-labelledby="birth-title">
           <div className="birth-heading">
-            <span className="birth-symbol">
-              <BookOpen size={21} strokeWidth={1.4} aria-hidden="true" />
+            <span className="birth-symbol" aria-hidden="true">
+              <Stamp size={20} strokeWidth={1.5} />
             </span>
-            <div>
-              <h2 id="birth-title">{t('Mở một hồ sơ mới', 'Begin a new record')}</h2>
-              <p>{t('Mỗi cái tên là một đời chưa được kể.', 'Every name is a life yet to be told.')}</p>
+            <div className="birth-heading-text">
+              <span className="birth-bureau-code">HANA REGISTRY // FORM 0-A</span>
+              <h2 id="birth-title">
+                {savedRun && activeTab === 'resume'
+                  ? t('Hồ sơ kiếp đang dở', 'Dossier in progress')
+                  : t('Khai sinh một sinh mệnh mới', 'Begin a new record')}
+              </h2>
+              <p>
+                {savedRun && activeTab === 'resume'
+                  ? t('Tiến trình sống được bảo lưu an toàn bởi The City.', 'Active life safely preserved by The City.')
+                  : t('Mỗi cái tên là một đời chưa được kể giữa The City.', 'Every name is a life yet to be told in The City.')}
+              </p>
             </div>
           </div>
+
           {savedRun && (
-            <div className="birth-resume">
-              <div>
-                <span>{t('Kiếp đang dở', 'Life in progress')}</span>
-                <strong>
-                  {savedRun.char.name}
-                  <small>
-                    {' '}
-                    · {savedRun.char.age} {t('tuổi', 'yrs')}
-                  </small>
-                </strong>
-              </div>
-              <button className="btn btn-block" onClick={resumeRun}>
-                <Play size={15} />
-                {t('Viết tiếp câu chuyện', 'Continue this life')}
+            <div className="birth-tabs-bar" role="tablist" aria-label={t('Chế độ bắt đầu', 'Start mode')}>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={activeTab === 'resume'}
+                className={`birth-tab ${activeTab === 'resume' ? 'is-active' : ''}`}
+                onClick={() => {
+                  try { audioEngine.playClick(); } catch {}
+                  setActiveTab('resume');
+                }}
+              >
+                <Play size={14} />
+                <span>{t('Kiếp đang dở', 'In Progress')}</span>
+                <b className="tab-pill">{savedRun.char.name}</b>
               </button>
               <button
-                className="birth-text-action"
+                type="button"
+                role="tab"
+                aria-selected={activeTab === 'new'}
+                className={`birth-tab ${activeTab === 'new' ? 'is-active' : ''}`}
+                onClick={() => {
+                  try { audioEngine.playClick(); } catch {}
+                  setActiveTab('new');
+                }}
+              >
+                <Stamp size={14} />
+                <span>{t('Khai sinh kiếp mới', 'New Life')}</span>
+              </button>
+            </div>
+          )}
+
+          {savedRun && activeTab === 'resume' ? (
+            <div className="birth-resume-view">
+              <div className="resume-dossier-card">
+                <div className="resume-dossier-header">
+                  <span className="resume-dossier-tag">
+                    {t('HỒ SƠ ĐANG LƯU HÀNH', 'ACTIVE DOSSIER')}
+                  </span>
+                  <span className="resume-serial-code">
+                    REC // {savedRun.char.age}Y · GEN #{savedRun.char.generation || 1}
+                  </span>
+                </div>
+                <div className="resume-nameplate">
+                  <h3 className="resume-name">{savedRun.char.name}</h3>
+                  <p className="resume-post">
+                    {describeJob(savedRun.char, t)}
+                  </p>
+                </div>
+                {savedRun.char.stats && (
+                  <div className="resume-stats-strip">
+                    <div className="resume-stat">
+                      <span className="stat-label">HP</span>
+                      <b className="stat-val">{savedRun.char.stats.health}</b>
+                    </div>
+                    <div className="resume-stat">
+                      <span className="stat-label">SP</span>
+                      <b className="stat-val">{savedRun.char.stats.sanity}</b>
+                    </div>
+                    <div className="resume-stat">
+                      <span className="stat-label">Ahn</span>
+                      <b className="stat-val text-gold">{savedRun.char.stats.wealth}</b>
+                    </div>
+                  </div>
+                )}
+              </div>
+              <button
+                type="button"
+                className="btn btn-primary btn-lg btn-block resume-launch-btn"
+                onClick={() => {
+                  try { audioEngine.playClick(); } catch {}
+                  resumeRun();
+                }}
+              >
+                <Play size={17} />
+                <span>{t('Viết tiếp câu chuyện', 'Continue this life')}</span>
+              </button>
+              <button
+                type="button"
+                className="birth-text-action is-abandon"
                 onClick={() =>
                   Modal.confirm({
                     title: t('Bỏ kiếp đang dở?', 'Abandon this life?'),
-                    content: t('Tiến trình của kiếp này sẽ bị xóa.', 'This life’s progress will be deleted.'),
+                    content: t('Tiến trình của kiếp này sẽ bị xóa vĩnh viễn.', 'This life’s progress will be deleted permanently.'),
                     okText: t('Bỏ kiếp này', 'Abandon life'),
                     cancelText: t('Giữ lại', 'Keep it'),
                     okButtonProps: { danger: true },
@@ -264,164 +343,173 @@ export const BirthSetupPanel = () => {
                   })
                 }
               >
-                {t('Bỏ kiếp đang dở', 'Discard this progress')}
+                {t('Hủy bỏ kiếp đang dở', 'Discard this progress')}
               </button>
             </div>
-          )}
-          <div className="birth-fields">
-            <div className="field">
-              <label htmlFor="birth-name">
-                {t('Tên của bạn', 'Your name')}
-                <span>{t('Không bắt buộc', 'Optional')}</span>
-              </label>
-              <input
-                id="birth-name"
-                className="input"
-                placeholder={t('Để The City đặt tên', 'Let The City name you')}
-                value={customName}
-                onChange={(e) => setConfigField('customName', e.target.value)}
-                maxLength={60}
-                autoComplete="off"
-              />
-            </div>
-            <div className="field">
-              <span className="field-label" id="birth-gender-label">{t('Giới tính', 'Gender')}</span>
-              <div className="seg birth-gender" role="radiogroup" aria-labelledby="birth-gender-label">
-                {[['male', t('Nam', 'Male')], ['female', t('Nữ', 'Female')]].map(([id, label]) => (
-                  <button
-                    key={id}
-                    type="button"
-                    role="radio"
-                    aria-checked={gender === id}
-                    className={gender === id ? 'is-on' : ''}
-                    onClick={() => setConfigField('gender', id)}
-                  >
-                    {label}
-                  </button>
-                ))}
-              </div>
-              <p className="field-hint">{t('Gia cảnh khởi đầu do The City định đoạt. Lời kể vẫn gọi bạn là "bạn".', 'Your starting household is decided by The City. The story still addresses you as "you".')}</p>
-            </div>
-            <div className="field birth-region-field">
-              <label htmlFor="birth-region">
-                {t('Nơi sinh', 'Birthplace')}
-                <button
-                  type="button"
-                  className="birth-map-link"
-                  onClick={() =>
-                    mapRef.current?.scrollIntoView({
-                      behavior: reducedMotion() ? 'instant' : 'smooth'
-                    })
-                  }
-                >
-                  {t('Tra cứu bản đồ', 'Explore map')}
-                  <ArrowUpRight size={13} aria-hidden="true" />
-                </button>
-              </label>
-              <select
-                id="birth-region"
-                className="input birth-region-select"
-                value={selectedRegion || 'RANDOM'}
-                onChange={(e) => {
-                  const id = e.target.value;
-                  setRegion(id);
-                  const picked = REGIONS.find((r) => r.id === id);
-                  setDisplayRegion(picked || null);
-                  resetAtlas();
-                }}
-              >
-                <option value="RANDOM">
-                  {t('Ngẫu nhiên · Để The City định đoạt', 'Random · Let The City decide')}
-                </option>
-                {REGIONS.map((r) => (
-                  <option key={r.id} value={r.id}>
-                    {r.id === 'OUTSKIRTS'
-                      ? t('Outskirts · Ngoài Bức Tường', 'Outskirts · Beyond the Wall')
-                      : `District ${String(r.ward).padStart(2, '0')} (${r.id} Corp) · ${lang === 'en' ? r.aliasEn : r.aliasVi}`}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <details className="birth-seed">
-              <summary>
-                {t('Seed thế giới', 'World seed')}
-                <ChevronDown size={15} />
-              </summary>
-              <div>
-                <input
-                  className="input num"
-                  aria-label={t('Seed thế giới', 'World seed')}
-                  placeholder={t('Tự tạo nếu để trống', 'Generated if left empty')}
-                  value={customSeed}
-                  onChange={(e) => setConfigField('customSeed', e.target.value)}
-                />
-                <button
-                  className="app-tool"
-                  onClick={() => setConfigField('customSeed', freshSeed())}
-                  aria-label={t('Tạo seed mới', 'Generate a seed')}
-                >
-                  <Dices size={18} />
-                </button>
-              </div>
-            </details>
-          </div>
-          <button
-            className="btn btn-primary btn-lg btn-block hero-start-btn"
-            disabled={spinning}
-            aria-busy={spinning}
-            onClick={() => launch()}
-          >
-            <Play size={17} />
-            {spinning
-              ? t('Đang mở hồ sơ…', 'Opening your record…')
-              : t('Bước vào The City', 'Enter The City')}
-          </button>
-          <p className="birth-footnote">
-            {t(
-              'Một năm trong 30 giây. Tự lưu sau mỗi lựa chọn.',
-              'A year in 30 seconds. Saved after every choice.'
-            )}
-          </p>
-          {pendingLegacy && (
-            <details className="birth-legacy" open>
-              <summary>
-                <GitBranch size={17} />
-                {t(
-                  `Kế thừa thế hệ #${pendingLegacy.generation + 1}`,
-                  `Continue generation #${pendingLegacy.generation + 1}`
-                )}
-                <ChevronDown size={15} />
-              </summary>
-              <div className="birth-legacy-inner">
-                <div className="birth-legacy-header">
-                  <span className="successor-badge">
-                    {lang === 'en'
-                      ? (pendingLegacy.successorTitleEn || pendingLegacy.successorRelation || 'Successor')
-                      : (pendingLegacy.successorTitleVi || pendingLegacy.successorRelation || 'Người kế thừa')}
-                  </span>
+          ) : (
+            <>
+              <div className="birth-fields">
+                <div className="field">
+                  <label htmlFor="birth-name">
+                    {t('Tên của bạn', 'Your name')}
+                    <span>{t('Không bắt buộc', 'Optional')}</span>
+                  </label>
+                  <input
+                    id="birth-name"
+                    className="input"
+                    placeholder={t('Để The City đặt tên (ngẫu nhiên)', 'Let The City name you (random)')}
+                    value={customName}
+                    onChange={(e) => setConfigField('customName', e.target.value)}
+                    maxLength={60}
+                    autoComplete="off"
+                  />
                 </div>
-                <p className="birth-legacy-intro">
-                  {lang === 'en'
-                    ? (pendingLegacy.successorIntroEn || `You take up the legacy of ${pendingLegacy.name}.`)
-                    : (pendingLegacy.successorIntroVi || `Bạn tiếp nhận di sản của ${pendingLegacy.name}.`)}
-                </p>
-                <p className="birth-legacy-relic">
-                  {t('Kỷ vật truyền đời:', 'Relic passed down:')}{' '}
-                  <strong>{t(pendingLegacy.relic, localizeEnsembleName(pendingLegacy.relic, 'en'))}</strong>
-                </p>
-                <button className="btn btn-block btn-primary" disabled={spinning} onClick={() => launch(true, 0)}>
-                  {t('Bắt đầu kiếp này từ tuổi 0', 'Begin this life at age 0')}
-                </button>
-                {relation === 'child' && heirAge >= 14 && (
-                  <button className="btn btn-block" disabled={spinning} onClick={() => launch(true, heirAge)}>
-                    {t(`Tiếp quản ở tuổi ${heirAge}`, `Take over at age ${heirAge}`)}
-                  </button>
-                )}
-                <button className="birth-text-action" onClick={confirmDiscard}>
-                  {t('Bỏ di sản, bắt đầu độc lập', 'Discard heirloom and start fresh')}
-                </button>
+                <div className="field">
+                  <span className="field-label" id="birth-gender-label">{t('Giới tính khởi đầu', 'Starting Gender')}</span>
+                  <div className="seg birth-gender" role="radiogroup" aria-labelledby="birth-gender-label">
+                    {[['male', t('♂ Nam', '♂ Male')], ['female', t('♀ Nữ', '♀ Female')]].map(([id, label]) => (
+                      <button
+                        key={id}
+                        type="button"
+                        role="radio"
+                        aria-checked={gender === id}
+                        className={gender === id ? 'is-on' : ''}
+                        onClick={() => {
+                          try { audioEngine.playClick(); } catch {}
+                          setConfigField('gender', id);
+                        }}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                  <p className="field-hint">{t('Gia cảnh khởi đầu do The City định đoạt. Lời kể vẫn gọi bạn là "bạn".', 'Your starting household is decided by The City. The story still addresses you as "you".')}</p>
+                </div>
+                <div className="field birth-region-field">
+                  <label htmlFor="birth-region">
+                    {t('Nơi sinh', 'Birthplace')}
+                    <button
+                      type="button"
+                      className="birth-map-link"
+                      onClick={() =>
+                        mapRef.current?.scrollIntoView({
+                          behavior: reducedMotion() ? 'instant' : 'smooth'
+                        })
+                      }
+                    >
+                      <MapPin size={13} aria-hidden="true" />
+                      <span>{t('Tra cứu bản đồ', 'Explore map')}</span>
+                    </button>
+                  </label>
+                  <select
+                    id="birth-region"
+                    className="input birth-region-select"
+                    value={selectedRegion || 'RANDOM'}
+                    onChange={(e) => {
+                      const id = e.target.value;
+                      setRegion(id);
+                      const picked = REGIONS.find((r) => r.id === id);
+                      setDisplayRegion(picked || null);
+                      resetAtlas();
+                    }}
+                  >
+                    <option value="RANDOM">
+                      {t('Ngẫu nhiên · Để The City định đoạt', 'Random · Let The City decide')}
+                    </option>
+                    {REGIONS.map((r) => (
+                      <option key={r.id} value={r.id}>
+                        {r.id === 'OUTSKIRTS'
+                          ? t('Outskirts · Ngoài Bức Tường', 'Outskirts · Beyond the Wall')
+                          : `District ${String(r.ward).padStart(2, '0')} (${r.id} Corp) · ${lang === 'en' ? r.aliasEn : r.aliasVi}`}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <details className="birth-seed">
+                  <summary>
+                    {t('Seed thế giới', 'World seed')}
+                    <ChevronDown size={15} />
+                  </summary>
+                  <div>
+                    <input
+                      className="input num"
+                      aria-label={t('Seed thế giới', 'World seed')}
+                      placeholder={t('Tự tạo nếu để trống', 'Generated if left empty')}
+                      value={customSeed}
+                      onChange={(e) => setConfigField('customSeed', e.target.value)}
+                    />
+                    <button
+                      type="button"
+                      className="app-tool"
+                      onClick={() => setConfigField('customSeed', freshSeed())}
+                      aria-label={t('Tạo seed mới', 'Generate a seed')}
+                    >
+                      <Dices size={18} />
+                    </button>
+                  </div>
+                </details>
               </div>
-            </details>
+              <button
+                className="btn btn-primary btn-lg btn-block hero-start-btn"
+                disabled={spinning}
+                aria-busy={spinning}
+                onClick={() => launch()}
+              >
+                <Stamp size={17} />
+                <span>
+                  {spinning
+                    ? t('Đang mở hồ sơ…', 'Opening your record…')
+                    : t('Đóng dấu & Bước vào The City', 'Sign & Enter The City')}
+                </span>
+              </button>
+              <p className="birth-footnote">
+                {t(
+                  'Một năm trong 30 giây · Tự lưu sau mỗi lựa chọn.',
+                  'A year in 30 seconds · Saved after every choice.'
+                )}
+              </p>
+              {pendingLegacy && (
+                <details className="birth-legacy" open>
+                  <summary>
+                    <GitBranch size={17} />
+                    {t(
+                      `Kế thừa thế hệ #${pendingLegacy.generation + 1}`,
+                      `Continue generation #${pendingLegacy.generation + 1}`
+                    )}
+                    <ChevronDown size={15} />
+                  </summary>
+                  <div className="birth-legacy-inner">
+                    <div className="birth-legacy-header">
+                      <span className="successor-badge">
+                        {lang === 'en'
+                          ? (pendingLegacy.successorTitleEn || pendingLegacy.successorRelation || 'Successor')
+                          : (pendingLegacy.successorTitleVi || pendingLegacy.successorRelation || 'Người kế thừa')}
+                      </span>
+                    </div>
+                    <p className="birth-legacy-intro">
+                      {lang === 'en'
+                        ? (pendingLegacy.successorIntroEn || `You take up the legacy of ${pendingLegacy.name}.`)
+                        : (pendingLegacy.successorIntroVi || `Bạn tiếp nhận di sản của ${pendingLegacy.name}.`)}
+                    </p>
+                    <p className="birth-legacy-relic">
+                      {t('Kỷ vật truyền đời:', 'Relic passed down:')}{' '}
+                      <strong>{t(pendingLegacy.relic, localizeEnsembleName(pendingLegacy.relic, 'en'))}</strong>
+                    </p>
+                    <button className="btn btn-block btn-primary" disabled={spinning} onClick={() => launch(true, 0)}>
+                      {t('Bắt đầu kiếp này từ tuổi 0', 'Begin this life at age 0')}
+                    </button>
+                    {relation === 'child' && heirAge >= 14 && (
+                      <button className="btn btn-block" disabled={spinning} onClick={() => launch(true, heirAge)}>
+                        {t(`Tiếp quản ở tuổi ${heirAge}`, `Take over at age ${heirAge}`)}
+                      </button>
+                    )}
+                    <button className="birth-text-action" onClick={confirmDiscard}>
+                      {t('Bỏ di sản, bắt đầu độc lập', 'Discard heirloom and start fresh')}
+                    </button>
+                  </div>
+                </details>
+              )}
+            </>
           )}
         </section>
       </section>
