@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { REGIONS } from '../../../data/worldData';
 
 export const ATLAS_VIEW = { x: 0, y: 0, width: 1000, height: 760 };
@@ -128,21 +128,31 @@ function MapInk({ selected, onSelect, interactive = false, t }) {
 
 export function CityBirthAtlas({ selected, displayRegion, viewport, moving, starting, onSelect, onRandom, onReset, onStart, t, lang }) {
   const [pointer, setPointer] = useState(null);
+  useEffect(() => {
+    if (moving) setPointer(null);
+  }, [moving]);
   const activeId = displayRegion?.id || selected;
   const activeRegion = useMemo(() => REGIONS.find((region) => region.id === activeId), [activeId]);
   const center = DISTRICT_POINTS[activeId] || [545, 305];
-  const lens = pointer || center;
-  const showLens = !moving && viewport.width >= 900;
+  const lensScale = viewport.width / ATLAS_VIEW.width;
+  const lensRadius = 59 * lensScale;
+  const lensMagnification = 1 + 1.3 * lensScale;
+  const lens = moving
+    ? [viewport.x + viewport.width / 2, viewport.y + viewport.height / 2]
+    : pointer || center;
   const position = `${viewport.x} ${viewport.y} ${viewport.width} ${viewport.height}`;
 
   const moveLens = (event) => {
-    if (event.pointerType === 'touch' || moving || viewport.width < 900) return;
+    if (event.pointerType === 'touch' || moving) return;
     const svg = event.currentTarget;
     const point = svg.createSVGPoint();
     point.x = event.clientX;
     point.y = event.clientY;
     const mapped = point.matrixTransform(svg.getScreenCTM().inverse());
-    setPointer([Math.max(68, Math.min(932, mapped.x)), Math.max(68, Math.min(692, mapped.y))]);
+    setPointer([
+      Math.max(viewport.x + lensRadius, Math.min(viewport.x + viewport.width - lensRadius, mapped.x)),
+      Math.max(viewport.y + lensRadius, Math.min(viewport.y + viewport.height - lensRadius, mapped.y))
+    ]);
   };
 
   return (
@@ -151,7 +161,7 @@ export function CityBirthAtlas({ selected, displayRegion, viewport, moving, star
         <svg className="city-birth-atlas-svg" viewBox={position} role="group" aria-label={t('Bản đồ 26 District của The City và Outskirts', 'Map of the City’s 26 Districts and the Outskirts')} onPointerMove={moveLens} onPointerLeave={() => setPointer(null)}>
           <defs>
             <clipPath id="city-atlas-boundary"><path d={CITY_OUTLINE} /></clipPath>
-            <clipPath id="city-atlas-lens"><circle cx={lens[0]} cy={lens[1]} r="59" /></clipPath>
+            <clipPath id="city-atlas-lens"><circle cx={lens[0]} cy={lens[1]} r={lensRadius} /></clipPath>
             <pattern id="city-atlas-blocks" width="58" height="52" patternUnits="userSpaceOnUse" patternTransform="rotate(-11)">
               <path d="M 2 2 H 21 V 12 H 2 Z M 25 2 H 55 V 18 H 25 Z M 2 17 H 20 V 32 H 2 Z M 25 23 H 42 V 35 H 25 Z M 46 23 H 56 V 45 H 46 Z M 2 38 H 39 V 50 H 2 Z" />
             </pattern>
@@ -166,17 +176,15 @@ export function CityBirthAtlas({ selected, displayRegion, viewport, moving, star
             </pattern>
           </defs>
           <MapInk selected={activeId} onSelect={onSelect} interactive={!moving} t={t} />
-          {showLens && (
-            <g className="atlas-lens" aria-hidden="true" pointerEvents="none">
+          <g className="atlas-lens" aria-hidden="true" pointerEvents="none" style={{ '--atlas-lens-rim': `${14 * lensScale}px`, '--atlas-lens-line': `${2.5 * lensScale}px` }}>
               <g clipPath="url(#city-atlas-lens)">
-                <g transform={`translate(${-1.3 * lens[0]} ${-1.3 * lens[1]}) scale(2.3)`}>
+                <g className={viewport.width < 900 ? 'atlas-lens-detail' : undefined} transform={`translate(${(1 - lensMagnification) * lens[0]} ${(1 - lensMagnification) * lens[1]}) scale(${lensMagnification})`}>
                   <MapInk selected={activeId} t={t} />
                 </g>
               </g>
-              <circle cx={lens[0]} cy={lens[1]} r="59" />
-              <circle cx={lens[0]} cy={lens[1]} r="54" />
-            </g>
-          )}
+              <circle cx={lens[0]} cy={lens[1]} r={lensRadius} />
+              <circle cx={lens[0]} cy={lens[1]} r={54 * lensScale} />
+          </g>
         </svg>
         <div className="atlas-corner-label" aria-live="polite">
           <strong>{activeRegion ? activeRegion.id === 'OUTSKIRTS' ? 'Outskirts' : `District ${activeRegion.ward}` : 'The City'}</strong>

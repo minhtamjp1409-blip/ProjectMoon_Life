@@ -66,7 +66,7 @@
 .atlas-district.is-interactive:hover polygon, .atlas-district.is-interactive:focus-visible polygon { fill: var(--atlas-land-selected); stroke: var(--atlas-line-bright); stroke-width: 3; }
 .atlas-district:focus-visible { outline: none; }
 .atlas-district.is-interactive:focus-visible text { fill: var(--text); }
-.atlas-district.is-selected polygon { fill: var(--atlas-land-selected); stroke: var(--atlas-lens-edge); stroke-width: 3; }
+.atlas-district.is-selected polygon { fill: var(--atlas-land-selected); fill-opacity: .45; stroke: var(--atlas-lens-edge); stroke-width: 3; }
 .atlas-district.is-selected text { fill: var(--text); }
 .atlas-outskirts-label { fill: var(--atlas-quiet); font-family: var(--font); font-size: 15px; }
 .atlas-outskirts-hit { cursor: pointer; }
@@ -74,8 +74,9 @@
 .atlas-outskirts-hit text { fill: var(--atlas-label); font-family: var(--font); font-size: 19px; font-weight: 700; pointer-events: none; }
 .atlas-outskirts-hit:hover circle, .atlas-outskirts-hit:focus-visible circle, .atlas-outskirts-hit.is-selected circle { fill: var(--atlas-land-selected); stroke: var(--atlas-lens-edge); stroke-width: 4; }
 .atlas-outskirts-hit:focus-visible { outline: none; }
-.atlas-lens > circle:first-of-type { fill: none; stroke: var(--atlas-lens-fill); stroke-width: 14; }
-.atlas-lens > circle:last-of-type { fill: none; stroke: var(--atlas-lens-edge); stroke-width: 2.5; }
+.atlas-lens > circle:first-of-type { fill: none; stroke: var(--atlas-lens-fill); stroke-width: var(--atlas-lens-rim); }
+.atlas-lens > circle:last-of-type { fill: none; stroke: var(--atlas-lens-edge); stroke-width: var(--atlas-lens-line); }
+.atlas-lens-detail .atlas-district text { opacity: 0; }
 .atlas-corner-label { position: absolute; left: 16px; bottom: 16px; display: flex; flex-direction: column; gap: 2px; min-width: 160px; max-width: min(50%, 276px); padding: 8px 12px; background: var(--atlas-note); pointer-events: none; }
 .atlas-corner-label strong { font-size: 16px; font-weight: 700; color: var(--text); }
 .atlas-corner-label span { font-size: 13px; color: var(--muted); overflow-wrap: break-word; }
