@@ -302,6 +302,7 @@ async function testBackendHydrationIndiePromo() {
   const origPlanYear = cityArchiveAPI.planYear;
   cityArchiveAPI.planYear = async ({ char: snap }) => {
     assert.equal(snap.syndicateRank, 0, 'Snap must contain syndicateRank');
+    assert.equal(snap.finger, null, 'Independent Syndicate must not be serialized as Thumb');
     return {
       moments: [
         { kind: 'daily', id: 'daily_city_dawn', t: 0.1, season: 'Spring', seasonIdx: 0 },

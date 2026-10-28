@@ -279,6 +279,9 @@ console.log('8. Testing P0: Dynamic debt balance repayment and label interpolati
   assert.equal(choiceIsAvailable(dueEvent.choices[0], char10), true);
   const after10 = resolveEventChoice(char10, 0, () => 0.5);
   assert.equal(after10.stats.wealth, 5, 'Deducts 10 Ahn from wealth 15');
+  const log10 = after10.logs.find((log) => log.id === 'log_ev_20_csq_fixer_license_debt_due');
+  assert.match(log10.vi, /10 Ahn/);
+  assert.doesNotMatch(log10.vi, /\b0 Ahn/);
   const d10 = after10.debts.find((d) => d.id === 'fixer_license_debt');
   assert.equal(d10.status, 'settled');
   assert.equal(d10.balanceAhn, 0);
@@ -293,6 +296,7 @@ console.log('8. Testing P0: Dynamic debt balance repayment and label interpolati
   char5.pendingEvent = dueEvent;
   const after5 = resolveEventChoice(char5, 0, () => 0.5);
   assert.equal(after5.stats.wealth, 1, 'Deducts 5 Ahn from wealth 6');
+  assert.match(after5.logs.find((log) => log.id === 'log_ev_20_csq_fixer_license_debt_due').vi, /5 Ahn/);
   const d5 = after5.debts.find((d) => d.id === 'fixer_license_debt');
   assert.equal(d5.status, 'settled');
   assert.equal(d5.balanceAhn, 0);
@@ -306,6 +310,7 @@ console.log('8. Testing P0: Dynamic debt balance repayment and label interpolati
   char2.pendingEvent = dueEvent;
   const after2 = resolveEventChoice(char2, 0, () => 0.5);
   assert.equal(after2.stats.wealth, 2, 'Deducts 2 Ahn from wealth 4');
+  assert.match(after2.logs.find((log) => log.id === 'log_ev_20_csq_fixer_license_debt_due').vi, /2 Ahn/);
   const d2 = after2.debts.find((d) => d.id === 'fixer_license_debt');
   assert.equal(d2.status, 'settled');
   assert.equal(d2.balanceAhn, 0);
@@ -320,6 +325,10 @@ console.log('8. Testing P0: Dynamic debt balance repayment and label interpolati
   charPartial2.pendingEvent = dueEvent;
   const afterP2 = resolveEventChoice(charPartial2, 1, () => 0.5);
   assert.equal(afterP2.stats.wealth, 3, 'Deducts min(3, 2) = 2 Ahn');
+  const partialLog = afterP2.logs.find((log) => log.id === 'log_ev_20_csq_fixer_license_debt_due');
+  assert.match(partialLog.vi, /2 Ahn/);
+  assert.match(partialLog.vi, /Không còn khoản nào/);
+  assert.doesNotMatch(partialLog.vi, /sang năm sau/);
   const dP2 = afterP2.debts.find((d) => d.id === 'fixer_license_debt');
   assert.equal(dP2.status, 'settled', 'Debt settles when balance reaches 0 via partial payment');
   assert.equal(dP2.balanceAhn, 0);

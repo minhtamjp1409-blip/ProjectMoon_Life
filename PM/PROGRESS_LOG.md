@@ -1883,3 +1883,10 @@ Chủ dự án yêu cầu làm lại toàn bộ giao diện lần nữa: bỏ t�
   * `voice_lint.mjs --fail`: Quét toàn bộ **32.455 chuỗi văn bản**, 0 lỗi Han-Viet, 0 emoji, 0 em-dash, 0 placeholder chưa điền, 0 dấu chấm than ngoài hội thoại.
   * `npm run build`: Đóng gói production thành công trong 6.87s.
   * `npm test`: Đạt **100% 55/55 test suites** và **500 khoảnh khắc Million Audit** (0 vi phạm logic).
+
+### Đợt 85 (28/10/2026): Sửa lời kể trả nợ và đồng bộ Syndicate độc lập với backend
+
+* `resolveEventChoice` giữ số dư nợ và số tiền trả tại thời điểm chọn để điền vào kết quả. Trước đây việc tất toán diễn ra trước bước nội suy, khiến log kể đã trả `0 Ahn` dù game trừ tiền đúng. Test hiện kiểm tra cả câu trong log ở các mức nợ 10, 5 và 2 Ahn.
+* Lựa chọn trả vào món nợ dùng nhãn trung tính. Nếu khoản trả đủ xóa nợ, sự kiện dùng đoạn kết riêng xác nhận chủ nợ gạch tên và không còn khoản phải trả năm sau; nếu vẫn còn nợ, giữ đoạn gia hạn. Hai ngôn ngữ cùng một điều kiện.
+* `syncPlanWithBackend` gửi `finger: null` cho Syndicate chưa gia nhập Finger. DTO backend tiếp nhận giá trị này và `syndicateRank`; Director tách tiến trình Syndicate địa phương/độc lập với thang chức The Thumb. Kế hoạch server chỉ xét khảo thí Finger khi nhân vật thực sự thuộc một Finger.
+* Đã chạy `tests/test_fixer_debt_lifecycle.mjs`, `tests/test_independent_syndicate.mjs`, toàn bộ `npm test` (gồm 500 khoảnh khắc), `npm run build`, và `dotnet build` cho PM_BE: đều đạt. Gọi trực tiếp API backend xác nhận nhân vật độc lập nhận `INDEPENDENT SYNDICATE` cùng ba chỉ tiêu Merit/Rep/Heat và không nhận bài khảo thí Thumb; nhân vật Thumb vẫn nhận thang chức và khảo thí Thumb.

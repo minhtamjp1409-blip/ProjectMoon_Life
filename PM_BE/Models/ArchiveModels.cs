@@ -187,7 +187,7 @@ public sealed record CharacterSnapshotDto(
     int Taboo = 0,
     int Resonance = 0,
     int FixerGrade = 9,
-    string Finger = "Thumb",
+    string? Finger = null,
     int FingerRank = 0,
     int WingRank = 0,
     int WorkshopRank = 0,
@@ -203,7 +203,8 @@ public sealed record CharacterSnapshotDto(
     int AnnualBond = 0,
     int AnnualRest = 0,
     int AnnualScheme = 0,
-    string Ambition = ""
+    string Ambition = "",
+    int SyndicateRank = 0
 );
 
 public sealed record MilestoneRequirementDto(

@@ -284,7 +284,7 @@ export function clamp(val, min, max) {
 /**
  * Interpolates dynamic lore & NPC variables into event strings
  */
-export function interpolateText(text, char) {
+export function interpolateText(text, char, values = {}) {
   if (!text) return '';
   const parentName = char.lineage?.parentName || 'Tiền Nhân';
   const parentDeath = char.lineage?.parentDeathVi || 'tai ương The City';
@@ -302,8 +302,8 @@ export function interpolateText(text, char) {
   const trialCompanion = char.colorTrialCompanion?.nameVi || partner;
   const fixerDebt = (char.debts || []).find((d) => d.id === 'fixer_license_debt' && d.status === 'active') ||
     (char.debts || []).find((d) => d.status === 'active');
-  const debtBalance = fixerDebt ? fixerDebt.balanceAhn : 0;
-  const partialPay = fixerDebt ? Math.min(3, fixerDebt.balanceAhn) : 0;
+  const debtBalance = values.debtBalance ?? (fixerDebt ? fixerDebt.balanceAhn : 0);
+  const partialPay = values.partialPay ?? (fixerDebt ? Math.min(3, fixerDebt.balanceAhn) : 0);
   return text
     .replace(/\{debtBalance\}/g, String(debtBalance))
     .replace(/\{partialPay\}/g, String(partialPay))
@@ -2147,6 +2147,13 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random, dung
 
   const choice = event.choices?.[choiceIdx];
   if (!choiceIsAvailable(choice, char)) return char;
+  const debtAtChoice = choice.debtId
+    ? (char.debts || []).find((debt) => debt.id === choice.debtId && debt.status === 'active')
+    : null;
+  const debtBalanceAtChoice = debtAtChoice?.balanceAhn;
+  const debtTextValues = debtAtChoice
+    ? { debtBalance: debtBalanceAtChoice, partialPay: Math.min(3, debtBalanceAtChoice) }
+    : {};
   if (choice.useItem) {
     const index = char.inventory.findIndex(i => (i.id || i) === choice.useItem);
     char.inventory.splice(index, 1);
@@ -2678,8 +2685,11 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random, dung
   }
   if (event.id === ENSEMBLE_INVITE_ID || event.id === ENSEMBLE_LAST_CALL_ID) recordEnsembleInvitation(char, Boolean(startDungeonId));
 
-  let textVi = interpolateText(outcome.resultVi || outcome.rvi || choice.resultVi || choice.rvi || '', char);
-  let textEn = interpolateText(outcome.resultEn || outcome.ren || choice.resultEn || choice.ren || '', char);
+  const partialDebtSettled = choice.debtCost === 'partial' && debtBalanceAtChoice != null && debtBalanceAtChoice <= 3;
+  const resultVi = partialDebtSettled ? choice.resultViSettled : outcome.resultVi || outcome.rvi || choice.resultVi || choice.rvi;
+  const resultEn = partialDebtSettled ? choice.resultEnSettled : outcome.resultEn || outcome.ren || choice.resultEn || choice.ren;
+  let textVi = interpolateText(resultVi || '', char, debtTextValues);
+  let textEn = interpolateText(resultEn || '', char, debtTextValues);
   if (choice.ensembleDecline) {
     const final = char.ensemble.declines >= 2;
     textVi += final ? ` Lần tới, ở tuổi ${char.ensemble.nextAge}, buổi diễn sẽ bắt buộc bắt đầu. Bạn có một năm để chuẩn bị; lần đó không được rút lui.` : ` Lời mời sẽ trở lại sớm nhất ở tuổi ${char.ensemble.nextAge}. Bạn còn một lần từ chối.`;

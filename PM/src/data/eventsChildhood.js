@@ -520,13 +520,15 @@ export const CHILDHOOD_EVENTS = [
         effects: { rep: +6, sanity: +10 }
       },
       {
-        labelVi: "Trả trước một phần và xin gia hạn một năm ({partialPay} Ahn)",
-        labelEn: "Pay partial amount and extend for one year ({partialPay} Ahn)",
+        labelVi: "Đưa {partialPay} Ahn để giảm nợ",
+        labelEn: "Pay {partialPay} Ahn toward the debt",
         debtCost: 'partial',
         debtId: 'fixer_license_debt',
         debtRepay: { id: 'fixer_license_debt', amount: 'partial', deferYears: 1 },
         resultVi: "Bạn gom {partialPay} Ahn đưa cho gã đòi nợ, xin gia hạn nốt phần còn lại sang năm sau. Gã cân đo túi tiền rồi khạc nhổ xuống chân bạn: \"Một năm nữa, không thiếu một xu. Nếu trễ lần nữa tao sẽ tìm đến tận giường.\"",
         resultEn: "You scrape together {partialPay} Ahn for the collector, asking to defer the rest until next year. He weighs the pouch and spits at your feet: \"One more year, not an Ahn less. Miss it again and I visit your bedside.\"",
+        resultViSettled: "Bạn đặt {partialPay} Ahn còn thiếu lên cuốn sổ. Gã đòi nợ đếm từng đồng, gạch tên bạn rồi trả lại tờ giấy vay. Không còn khoản nào để hắn vin vào năm sau.",
+        resultEnSettled: "You put the remaining {partialPay} Ahn on the ledger. The collector counts each coin, crosses out your name, and returns the note. There is nothing left to collect next year.",
         effects: { sanity: -4, heat: +4 }
       },
       {

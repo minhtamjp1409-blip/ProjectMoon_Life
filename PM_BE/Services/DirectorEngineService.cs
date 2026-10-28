@@ -234,7 +234,49 @@ public sealed class DirectorEngineService
         // 3. Syndicate Career
         if (c.Job.Equals("Syndicate", StringComparison.OrdinalIgnoreCase))
         {
-            string finger = !string.IsNullOrWhiteSpace(c.Finger) ? c.Finger : "Thumb";
+            if (string.IsNullOrWhiteSpace(c.Finger))
+            {
+                string[] ranks = ["Street Enforcer", "Turf Lieutenant", "Independent Syndicate Boss", "Underground Kingpin"];
+                int rank = Math.Clamp(c.SyndicateRank, 0, 3);
+                bool independent = flags.Contains("IndependentSyndicate");
+                if (rank == 3)
+                {
+                    return new CareerMilestoneDto(
+                        Category: "INDEPENDENT SYNDICATE HEGEMONY",
+                        TitleVi: "Bá chủ ngõ tối",
+                        TitleEn: "Underground Kingpin",
+                        ProgressPct: 100,
+                        Requirements: [new("Chiến công Backstreets", "Street Merit", c.Merit, 90, true)],
+                        TipVi: "Băng của bạn giữ địa bàn mà không chịu lệnh một Finger nào.",
+                        TipEn: "Your crew holds its turf without answering to a Finger."
+                    );
+                }
+
+                int next = rank + 1;
+                int merit = next == 1 ? 20 : next == 2 ? 50 : 90;
+                int rep = next == 1 ? 20 : next == 2 ? 45 : 75;
+                int heat = next == 1 ? 15 : next == 2 ? 30 : 50;
+                int indieProgress = (Math.Min(100, c.Merit * 100 / merit) + Math.Min(100, c.Rep * 100 / rep) + Math.Min(100, c.Heat * 100 / heat)) / 3;
+                return new CareerMilestoneDto(
+                    Category: independent ? "INDEPENDENT SYNDICATE" : "LOCAL STREET SYNDICATE",
+                    TitleVi: $"Vị thế: {ranks[next]}",
+                    TitleEn: $"Station: {ranks[next]}",
+                    ProgressPct: indieProgress,
+                    Requirements:
+                    [
+                        new("Chiến công Backstreets", "Street Merit", c.Merit, merit, c.Merit >= merit),
+                        new("Danh tiếng hẻm tối", "Street Rep", c.Rep, rep, c.Rep >= rep),
+                        new("Độ khét tiếng (Heat)", "Street Heat", c.Heat, heat, c.Heat >= heat)
+                    ],
+                    TipVi: independent ? "Giữ địa bàn trước các cuộc truy quét và lời mời của Finger." : "Các Finger sẽ tìm đến khi băng của bạn đủ lớn.",
+                    TipEn: independent ? "Hold your turf against raids and Finger pressure." : "The Fingers will notice when your crew grows.",
+                    CanPromote: independent && c.Merit >= merit && c.Rep >= rep && c.Heat >= heat,
+                    NextRankTitleVi: ranks[next],
+                    NextRankTitleEn: ranks[next]
+                );
+            }
+
+            string finger = c.Finger;
             var ladder = FingerLadders.GetValueOrDefault(finger, FingerLadders["Thumb"]);
             int curRank = Math.Clamp(c.FingerRank, 0, ladder.Length - 1);
 
@@ -464,9 +506,9 @@ public sealed class DirectorEngineService
         {
             majorDue = true;
         }
-        else if (c.Job.Equals("Syndicate", StringComparison.OrdinalIgnoreCase) && !flags.Contains("Distorted"))
+        else if (c.Job.Equals("Syndicate", StringComparison.OrdinalIgnoreCase) && !flags.Contains("Distorted") && !string.IsNullOrWhiteSpace(c.Finger))
         {
-            string finger = string.IsNullOrEmpty(c.Finger) ? "Thumb" : c.Finger;
+            string finger = c.Finger;
             if (c.FingerRank == 0 && c.Merit >= 28 && c.Rep >= 18)
             {
                 majorDue = true;

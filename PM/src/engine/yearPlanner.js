@@ -709,7 +709,7 @@ export async function syncPlanWithBackend(charState, rng) {
       taboo: charState.taboo || 0,
       resonance: charState.resonance || 0,
       fixerGrade: charState.fixerGrade ?? 9,
-      finger: charState.finger || 'Thumb',
+      finger: charState.finger || null,
       fingerRank: charState.fingerRank || 0,
       wingRank: charState.wingRank || 0,
       workshopRank: charState.workshopRank || 0,
