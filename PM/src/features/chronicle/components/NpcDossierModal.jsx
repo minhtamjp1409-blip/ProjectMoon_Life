@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { AlertTriangle, X } from 'lucide-react';
 import { useGameStore } from '../../../store/gameStore.js';
@@ -55,7 +55,17 @@ export const NpcDossierModal = ({ npcRole, onClose }) => {
   const rawNpc = char.npcs?.[npcRole];
   if (!rawNpc) return null;
 
-  const npc = ensureNpcAgency(rawNpc);
+  const npc = useMemo(() => ensureNpcAgency(rawNpc), [
+    rawNpc?.id,
+    rawNpc?.nameVi,
+    rawNpc?.nameEn,
+    rawNpc?.role,
+    rawNpc?.bond,
+    rawNpc?.status,
+    rawNpc?.alive,
+    rawNpc?.archetype,
+    rawNpc?.district
+  ]);
   const name = lang === 'en' ? npc.nameEn || npc.nameVi : npc.nameVi;
   const isGone = (npc.alive === false) || npc.deceased || ['dead', 'missing', 'estranged', 'betrayer'].includes(npc.status);
   const bondState = getNpcBondState(npc);

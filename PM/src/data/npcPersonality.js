@@ -443,8 +443,21 @@ export function rollNpcCareer(archetype, role, rng = Math.random) {
   };
 }
 
-export function ensureNpcAgency(npc, rng = Math.random) {
+function seededRngFromStr(str) {
+  let h = 2166136261 >>> 0;
+  for (let i = 0; i < str.length; i++) {
+    h = Math.imul(h ^ str.charCodeAt(i), 16777619) >>> 0;
+  }
+  return () => {
+    h = Math.imul(h ^ (h >>> 15), 2246822507) >>> 0;
+    h = Math.imul(h ^ (h >>> 13), 3266489909) >>> 0;
+    return ((h ^= h >>> 16) >>> 0) / 4294967296;
+  };
+}
+
+export function ensureNpcAgency(npc, customRng = null) {
   if (!npc) return npc;
+  const rng = customRng || seededRngFromStr(`${npc.id || ''}:${npc.name || npc.nameVi || ''}:${npc.role || ''}`);
   const copy = { ...npc };
   if (!copy.archetype) {
     const arch = rollArchetype(rng);
@@ -475,6 +488,7 @@ export function ensureNpcAgency(npc, rng = Math.random) {
   if (!Array.isArray(copy.memories)) {
     copy.memories = [];
   }
+  Object.assign(npc, copy);
   return copy;
 }
 

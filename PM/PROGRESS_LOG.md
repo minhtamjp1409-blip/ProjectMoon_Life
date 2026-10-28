@@ -1,6 +1,6 @@
 # The City Chronicles: Tài Liệu Tiến Trình & Kiến Trúc Kỹ Thuật Toàn Diện
 
-> **Cập nhật ghi chép: 28/10/2026 (Đợt 79: Khắc phục triệt để lỗi ngoại lệ runtime "Không thể mở hồ sơ" do thiếu import EyeOff trong CharacterDossierCard; bổ sung nhãn quan hệ parent & kiểm định toàn vẹn 100%)**
+> **Cập nhật ghi chép: 28/10/2026 (Đợt 80: Khắc phục triệt để lỗi chữ nhảy/nhấp nháy liên tục khi mở chi tiết NPC lúc tiến trình game đang chạy bằng cơ chế Seeded Agency & React useMemo; khởi tạo chỉ số định mệnh cho NPC đời trước)**
 > **Phân biệt rõ số liệu kiểm thử tự động & số liệu mô phỏng 500 đời hiện hành (Đợt 69):**
 > - **Đã xác minh tự động bằng bộ test (`npm test`):** Toàn bộ **53/53 test suites** đạt 100%, parity cổng thăng tiến FE/BE khớp tuyệt đối, `lint_story.mjs` (745 major, 43 consequence, 866 minor, 572 daily, 36 contract) & `voice_lint.mjs --fail` (**32.337 chuỗi**) đạt 0 lỗi / 0 cảnh báo, `run_million_audit.mjs 500` (500 khoảnh khắc) đạt 5/5 nhóm quy tắc toàn vẹn, `npm run build` hoàn tất sạch bóng.
 > - **Đã đo mới trên codebase hiện tại qua mô phỏng 500 cuộc đời đầy đủ (Đợt 69):** `story_logic_audit.mjs 500 random` (**80.338 khoảnh khắc**, 500 đời, **0 vi phạm logic**, entropy `83.1%`), `balance_sim.mjs 500 random` (13.208 năm sống, phân bổ nghề: Fixer `31.0%`, Wing `29.9%`, Syndicate `31.9%`, Distortion `5.4%`), `balance_sim.mjs 500 focused` (21.749 năm sống, tuổi thọ TB `42.6`, đạt Color Fixer `9.6%` ở tuổi TB `55.4`, thức tỉnh E.G.O `12.6%` ở tuổi TB `45.5`), và `branch_experience.mjs 500` (tuổi thọ Distortion tăng vọt từ `3.8` lên **`11.3` năm/đời**, đại sự kiện trải nghiệm từ `16` lên **`40`**).
@@ -1726,6 +1726,29 @@ Chủ dự án yêu cầu làm lại toàn bộ giao diện lần nữa: bỏ t�
   * Mô phỏng SSR render thành công 100% toàn bộ 6 archetype người kế thừa (`child`, `sibling`, `companion`, `apprentice`, `debt_bearer`, `scavenger`) cả ở tuổi 0 và tuổi 14.
   * `npm run build` hoàn tất xuất sắc (7.61s), 0 lỗi đóng gói.
   * `npm test` vượt qua 100% toàn bộ 53/53 bộ kiểm thử hồi quy.
+
+### Đợt 80 (28/10/2026): Khắc phục lỗi chữ nhảy/nhấp nháy liên tục trong hồ sơ chi tiết NPC (NpcDossierModal) khi tiến trình game đang chạy
+
+* **Nguyên nhân cốt lõi gây hiện tượng chữ nhảy liên tục (Live Store Tick Re-roll Flaw):**
+  * Trong `NpcDossierModal.jsx`, hàm `ensureNpcAgency(rawNpc)` được gọi trực tiếp trong mỗi lượt render của component.
+  * Trong `src/data/npcPersonality.js`, hàm `ensureNpcAgency` sử dụng hàm ngẫu nhiên `Math.random()` mặc định để sinh các thuộc tính cá tính (hình mẫu `archetype`, Quận `district`, ước vọng `wantVi`, nỗi sợ `fearVi`, kỹ năng đồng hành `dungeonPerk`) trên một bản sao nông `copy = { ...npc }`, nhưng **không gán ngược các thuộc tính này vào đối tượng `npc` gốc**.
+  * Khi tiến trình game đang chạy với tốc độ `speed > 0`, hàm `tick()` trong `gameStore.js` chạy liên tục mỗi 100ms và cập nhật trạng thái `char`. Điều này kích hoạt re-render liên tục cho `NpcDossierModal`. Mỗi lần render, `rawNpc` chưa có các trường trên lại được sinh ngẫu nhiên mới hoàn toàn từ `Math.random()`, dẫn đến toàn bộ nội dung văn bản (Ước vọng, Nỗi sợ, Kỹ năng đồng hành, Quận) bị giật lắc, đổi chữ liên tục hàng chục lần mỗi giây.
+* **Giải pháp khắc phục toàn diện:**
+  * **Bộ sinh số giả ngẫu nhiên có hạt giống độc lập (`seededRngFromStr`):**
+    * Bổ sung thuật toán băm FNV-1a kết hợp xorshift32 độc lập cục bộ trong `npcPersonality.js` để tạo PRNG từ chuỗi định danh bất biến của NPC (`id:name:role`).
+    * Khi `customRng` không được truyền vào, `ensureNpcAgency` tự động sử dụng PRNG này thay vì `Math.random()`. Nhờ đó, cùng một NPC sẽ luôn luôn nhận được chính xác các thuộc tính định mệnh giống nhau 100% trong mọi lần gọi.
+    * Không phụ thuộc vào `createRNG` từ `gameEngine.js` để tránh triệt để lỗi phụ thuộc vòng tròn giữa các module (circular chunk import).
+  * **Cố định thuộc tính vào đối tượng gốc (`Object.assign(npc, copy)`):**
+    * Khi các thuộc tính cá tính và kỹ năng đồng hành được sinh ra lần đầu, chúng được ghi đè trực tiếp lên chính đối tượng `npc` gốc. Các lần gọi hoặc render sau sẽ nhận diện thuộc tính đã tồn tại và bỏ qua việc sinh lại.
+  * **Bọc `useMemo` trong `NpcDossierModal.jsx`:**
+    * Áp dụng `useMemo` với khóa phụ thuộc là các trường danh tính và trạng thái cốt lõi của NPC (`id`, `nameVi`, `nameEn`, `role`, `bond`, `status`, `alive`, `archetype`, `district`). Khi `char` cập nhật chỉ số sinh tồn (HP, SP, thời gian tick), component modal không tính toán lại dữ liệu cá tính nếu thông tin NPC không đổi.
+  * **Khởi tạo Agency ngay từ thời điểm tạo nhân vật (`gameEngine.js`):**
+    * Khi kế thừa di sản (`parentLegacy`), các NPC thế hệ trước (`parentNpc`, `mentor`, `nemesis`) được bọc qua `ensureNpcAgency(..., rng)` ngay từ `createNewCharacter`, đảm bảo các NPC huyết thống sở hữu đầy đủ hình mẫu, kỹ năng đồng hành và xuất xứ Quận nhất quán ngay từ đầu đời.
+* **Kiểm định toàn vẹn:**
+  * Kiểm tra tính tất định: Hai bản sao NPC độc lập gọi `ensureNpcAgency` cho kết quả trùng khớp 100%.
+  * `npm run build` hoàn tất xuất sắc (6.84s), 0 lỗi đóng gói.
+  * `npm test` vượt qua 100% toàn bộ 53/53 bộ kiểm thử hồi quy (bao gồm 500-moment Million Audit).
+
 
 
 

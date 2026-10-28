@@ -29,7 +29,7 @@ import { CHILDHOOD_EVENTS_2 } from '../data/eventsChildhood2.js';
 import { LINEAGE_LEGACY_EVENTS } from '../data/eventsLineageLegacy.js';
 import { BACKGROUND_OPENING_EVENTS } from '../data/eventsBackgroundOpening.js';
 import { composeBirth, makeNpc } from '../data/birthStories.js';
-import { evaluateCompanionSupport } from '../data/npcPersonality.js';
+import { evaluateCompanionSupport, ensureNpcAgency } from '../data/npcPersonality.js';
 import { generatePersonName } from '../data/nameGenerator.js';
 import { FACTION_EVENTS } from '../data/eventsFactions.js';
 import { EXPANSION_EVENTS } from '../data/eventsExpansion.js';
@@ -587,17 +587,18 @@ export function createNewCharacter({
     deathAtChildAge = Math.max(1, parentLegacy.age - parentChildBirthAge);
   }
 
-  const parentNpc = parentLegacy ? {
+  const parentNpc = parentLegacy ? ensureNpcAgency({
     id: 'npc_parent',
     name: parentLegacy.name,
     nameVi: parentLegacy.name,
     nameEn: parentLegacy.name,
     role: 'parent',
     job: parentLegacy.job,
+    district: parentLegacy.regionNameVi || null,
     relic: parentLegacy.relic,
     alive: isBiologicalChild && actualAge < deathAtChildAge,
     deathAgeInChildLife: deathAtChildAge
-  } : null;
+  }, rng) : null;
 
   if (actualAge >= 18) {
     health = clamp(health + 18, 20, 95);
@@ -794,7 +795,7 @@ export function createNewCharacter({
       friend: birth.friend ? { ...birth.friend, metAge: 0 } : null,
       parent: parentNpc,
       mentor: (parentLegacy && parentLegacy.successorRelation === 'apprentice' && parentLegacy.npcs?.partner && parentLegacy.npcs.partner.status !== 'dead')
-        ? {
+        ? ensureNpcAgency({
             ...parentLegacy.npcs.partner,
             role: 'mentor',
             metAge: 0,
@@ -802,20 +803,20 @@ export function createNewCharacter({
             traitVi: `Cộng sự cũ của ${parentLegacy.name}, nay trở thành người dìu dắt bạn`,
             traitEn: `Former comrade of ${parentLegacy.name}, now guiding you`,
             memories: [{ age: 0, vi: `Năm 0 tuổi: Nhận lời dìu dắt từ người bạn chiến đấu của ${parentLegacy.name}.`, en: `Age 0: Taken under the wing of ${parentLegacy.name}'s comrade.` }]
-          }
+          }, rng)
         : null,
       partner: null,
       spouse: null,
       child: null,
       nemesis: (parentLegacy?.npcs?.nemesis && parentLegacy.npcs.nemesis.status !== 'dead')
-        ? {
+        ? ensureNpcAgency({
             ...parentLegacy.npcs.nemesis,
             role: 'nemesis',
             metAge: 0,
             traitVi: `Kẻ thù truyền kiếp của ${parentLegacy.name}, nay chuyển tầm ngắm sang hậu bối`,
             traitEn: `Sworn nemesis of ${parentLegacy.name}, now hunting the heir`,
             memories: [{ age: 0, vi: `Năm 0 tuổi: Thừa kế mối thù sâu nặng từ thời ${parentLegacy.name}.`, en: `Age 0: Inherited the blood feud from ${parentLegacy.name}.` }]
-          }
+          }, rng)
         : null
     },
     lineage: lineageInfo,
