@@ -1,6 +1,6 @@
 # The City Chronicles: Tài Liệu Tiến Trình & Kiến Trúc Kỹ Thuật Toàn Diện
 
-> **Cập nhật ghi chép: 28/10/2026 (Đợt 76: Tái thiết kế khung Mở hồ sơ mới BirthSetupPanel theo chuẩn Hana Bureaucracy Docket tách bạch Kiếp đang dở và Khai sinh mới; đã kiểm thử 100%)**
+> **Cập nhật ghi chép: 28/10/2026 (Đợt 77: Tái thiết kế khung BirthSetupPanel chuẩn Hana Terminal Docket, xử lý triệt để lỗi lẹm chữ tab và tràn khung nhìn di sản; đã kiểm thử 100%)**
 > **Phân biệt rõ số liệu kiểm thử tự động & số liệu mô phỏng 500 đời hiện hành (Đợt 69):**
 > - **Đã xác minh tự động bằng bộ test (`npm test`):** Toàn bộ **53/53 test suites** đạt 100%, parity cổng thăng tiến FE/BE khớp tuyệt đối, `lint_story.mjs` (745 major, 43 consequence, 866 minor, 572 daily, 36 contract) & `voice_lint.mjs --fail` (**32.337 chuỗi**) đạt 0 lỗi / 0 cảnh báo, `run_million_audit.mjs 500` (500 khoảnh khắc) đạt 5/5 nhóm quy tắc toàn vẹn, `npm run build` hoàn tất sạch bóng.
 > - **Đã đo mới trên codebase hiện tại qua mô phỏng 500 cuộc đời đầy đủ (Đợt 69):** `story_logic_audit.mjs 500 random` (**80.338 khoảnh khắc**, 500 đời, **0 vi phạm logic**, entropy `83.1%`), `balance_sim.mjs 500 random` (13.208 năm sống, phân bổ nghề: Fixer `31.0%`, Wing `29.9%`, Syndicate `31.9%`, Distortion `5.4%`), `balance_sim.mjs 500 focused` (21.749 năm sống, tuổi thọ TB `42.6`, đạt Color Fixer `9.6%` ở tuổi TB `55.4`, thức tỉnh E.G.O `12.6%` ở tuổi TB `45.5`), và `branch_experience.mjs 500` (tuổi thọ Distortion tăng vọt từ `3.8` lên **`11.3` năm/đời**, đại sự kiện trải nghiệm từ `16` lên **`40`**).
@@ -1671,5 +1671,25 @@ Chủ dự án yêu cầu làm lại toàn bộ giao diện lần nữa: bỏ t�
 * **Kiểm định toàn vẹn:**
   * `npm run build` hoàn tất xuất sắc (7.08s), 0 lỗi đóng gói.
   * `npm test` vượt qua 100% toàn bộ 53 bộ kiểm thử hồi quy, tuân thủ nghiêm ngặt vị trí `#birth-region` trước nút `hero-start-btn`.
+
+### Đợt 77 (28/10/2026): Tái thiết kế khung BirthSetupPanel chuẩn Hana Terminal Docket, xử lý dứt điểm lỗi lẹm chữ và tràn khung nhìn
+
+* **Khắc phục triệt để lỗi lẹm chữ trên thanh Tab (Tab Bar Overflow & Squish Fix):**
+  * Đưa tên nhân vật ra khỏi tiêu đề nút tab; chuyển thanh tab sang hệ lưới 2 cột cố định (`grid-template-columns: 1fr 1fr; white-space: nowrap;`).
+  * Tab 1: `[ ⏵ TIẾP TỤC HỒ SƠ ]` (hoặc `[ ❖ KẾ THỪA GEN #X ]` khi có di sản huyết thống).
+  * Tab 2: `[ ✦ KHAI SINH MỚI ]` (hoặc `[ ✦ KHAI SINH ĐỘC LẬP ]`).
+  * Tên nhân vật, tuổi thọ, thế hệ, nghề nghiệp và chỉ số sinh tồn (HP, SP, Ahn) được gom gọn trang trọng bên trong thẻ hồ sơ mật `resume-dossier-card` bên dưới, triệt tiêu 100% hiện tượng xuống hàng gãy từ và ba chấm cụt ngủn (`Santiago Mend...`).
+* **Giải quyết dứt điểm lỗi tràn màn hình khi có di sản huyết thống (Legacy Succession Viewport Discipline):**
+  * Tách biệt chế độ kế thừa di sản (`legacy`) thành một luồng hiển thị ưu tiên độc lập thay vì nhồi nhét toàn bộ form tạo nhân vật mới kèm khối accordion dài ngoằng ở đáy làm trôi nút bấm xuống dưới thanh taskbar Windows.
+  * Khi có `pendingLegacy`, giao diện mở thẳng thẻ **Legacy Succession Docket** với huy hiệu quan hệ (`Người kế thừa` / `Môn đệ` / `Con cháu`), thông điệp tiếp nhận ý chí tiền nhân, kỷ vật gia truyền (`relic`) và nút bấm dập dấu tiếp quản từ tuổi 0 / tuổi trưởng thành hiển thị ngay trung tâm, hoàn toàn nằm gọn trong khung nhìn chuẩn laptop/mobile (~380px) mà không cần cuộn trang.
+  * Cho phép chuyển đổi linh hoạt sang tạo nhân vật độc lập bất cứ lúc nào qua tab hoặc nút liên kết kín đáo ở chân form.
+* **Nâng cấp độ độc đáo và tinh tế cơ học chuẩn Project Moon (Hallmark & design-taste-frontend):**
+  * Thêm 4 góc gá đồng thau cơ học (`.birth-panel::before`, `.birth-panel::after`) tạo cảm giác một thiết bị terminal lưu trữ hồ sơ bằng kim loại viền vàng thau cổ (`#d8b265`) của Hiệp hội Hana.
+  * Bổ sung thanh trạng thái kết nối terminal thời gian thực (`● CONNECTED`) đi kèm mã kiểm định hồ sơ `HANA ARCHIVE // LINEAGE TRANSFER` hoặc `HANA ARCHIVE // ACTIVE DOSSIER`.
+  * Nút niêm phong giao kèo (`hero-start-btn` & `legacy-start-btn`) được hoàn thiện bằng chất liệu dập nổi ánh kim vàng sa cơ học, đổ bóng xúc giác (`inset 0 1px 0 rgba(255, 255, 255, 0.35)`), phản hồi vật lý khi bấm (`active: translateY(1px)`).
+  * Tinh chỉnh khoảng cách trường nhập (`gap: 12px`), thu gọn độ cao các thành phần để tổng thể khung form thanh thoát, sắc nét và đạt chuẩn thẩm mỹ cao.
+* **Kiểm định toàn vẹn:**
+  * `npm run build` hoàn tất xuất sắc (7.38s), 0 lỗi đóng gói.
+  * `npm test` vượt qua 100% toàn bộ 53 bộ kiểm thử hồi quy (Story Lint, Voice Lint, Causal Arcs, Career Paths, 500 Moments Million Audit), bảo toàn điều kiện kiểm thử mobile `#birth-region` trước `hero-start-btn`.
 
 

@@ -46,12 +46,15 @@ export const BirthSetupPanel = () => {
   const globalCodex = useGameStore((s) => s.globalCodex);
   const savedRun = useGameStore((s) => s.savedRun);
   const { setConfigField, startLife, resumeRun, abandonRun, discardPendingLegacy } = useGameStore.getState();
-  const [activeTab, setActiveTab] = useState(savedRun ? 'resume' : 'new');
+  const [activeTab, setActiveTab] = useState(() => (savedRun ? 'resume' : (pendingLegacy ? 'legacy' : 'new')));
   useEffect(() => {
     if (!savedRun && activeTab === 'resume') {
-      setActiveTab('new');
+      setActiveTab(pendingLegacy ? 'legacy' : 'new');
     }
-  }, [savedRun, activeTab]);
+    if (!pendingLegacy && activeTab === 'legacy') {
+      setActiveTab(savedRun ? 'resume' : 'new');
+    }
+  }, [savedRun, pendingLegacy, activeTab]);
   const [spinning, setSpinning] = useState(false);
   const [search, setSearch] = useState('');
   const [isWheelSpinning, setIsWheelSpinning] = useState(false);
@@ -235,24 +238,43 @@ export const BirthSetupPanel = () => {
         <section className="birth-panel" aria-labelledby="birth-title">
           <div className="birth-heading">
             <span className="birth-symbol" aria-hidden="true">
-              <Stamp size={20} strokeWidth={1.5} />
+              {activeTab === 'legacy' ? (
+                <GitBranch size={20} strokeWidth={1.75} />
+              ) : activeTab === 'resume' ? (
+                <Play size={20} strokeWidth={1.75} />
+              ) : (
+                <Stamp size={20} strokeWidth={1.75} />
+              )}
             </span>
             <div className="birth-heading-text">
-              <span className="birth-bureau-code">HANA REGISTRY // FORM 0-A</span>
+              <div className="birth-bureau-row">
+                <span className="birth-bureau-code">
+                  {activeTab === 'legacy'
+                    ? 'HANA ARCHIVE // LINEAGE TRANSFER'
+                    : activeTab === 'resume'
+                      ? 'HANA ARCHIVE // ACTIVE DOSSIER'
+                      : 'HANA REGISTRY // FORM 0-A'}
+                </span>
+                <span className="birth-status-dot" aria-hidden="true">● CONNECTED</span>
+              </div>
               <h2 id="birth-title">
-                {savedRun && activeTab === 'resume'
-                  ? t('Hồ sơ kiếp đang dở', 'Dossier in progress')
-                  : t('Khai sinh một sinh mệnh mới', 'Begin a new record')}
+                {activeTab === 'legacy'
+                  ? t(`Kế thừa thế hệ #${pendingLegacy?.generation + 1}`, `Succession of Gen #${pendingLegacy?.generation + 1}`)
+                  : activeTab === 'resume'
+                    ? t('Hồ sơ kiếp đang dở', 'Dossier in progress')
+                    : t('Khai sinh một sinh mệnh mới', 'Begin a new record')}
               </h2>
               <p>
-                {savedRun && activeTab === 'resume'
-                  ? t('Tiến trình sống được bảo lưu an toàn bởi The City.', 'Active life safely preserved by The City.')
-                  : t('Mỗi cái tên là một đời chưa được kể giữa The City.', 'Every name is a life yet to be told in The City.')}
+                {activeTab === 'legacy'
+                  ? t('Tiếp nhận kỷ vật và ý chí của người đi trước giữa The City.', 'Inherit the relic and will of the predecessor in The City.')
+                  : activeTab === 'resume'
+                    ? t('Tiến trình sống được bảo lưu an toàn bởi The City.', 'Active life safely preserved by The City.')
+                    : t('Mỗi cái tên là một đời chưa được kể giữa The City.', 'Every name is a life yet to be told in The City.')}
               </p>
             </div>
           </div>
 
-          {savedRun && (
+          {savedRun ? (
             <div className="birth-tabs-bar" role="tablist" aria-label={t('Chế độ bắt đầu', 'Start mode')}>
               <button
                 type="button"
@@ -264,9 +286,8 @@ export const BirthSetupPanel = () => {
                   setActiveTab('resume');
                 }}
               >
-                <Play size={14} />
-                <span>{t('Kiếp đang dở', 'In Progress')}</span>
-                <b className="tab-pill">{savedRun.char.name}</b>
+                <Play size={13} />
+                <span>{t('Tiếp tục hồ sơ', 'Resume Dossier')}</span>
               </button>
               <button
                 type="button"
@@ -278,11 +299,40 @@ export const BirthSetupPanel = () => {
                   setActiveTab('new');
                 }}
               >
-                <Stamp size={14} />
-                <span>{t('Khai sinh kiếp mới', 'New Life')}</span>
+                <Stamp size={13} />
+                <span>{t('Khai sinh mới', 'New Life')}</span>
               </button>
             </div>
-          )}
+          ) : pendingLegacy ? (
+            <div className="birth-tabs-bar" role="tablist" aria-label={t('Chế độ bắt đầu', 'Start mode')}>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={activeTab === 'legacy'}
+                className={`birth-tab ${activeTab === 'legacy' ? 'is-active' : ''}`}
+                onClick={() => {
+                  try { audioEngine.playClick(); } catch {}
+                  setActiveTab('legacy');
+                }}
+              >
+                <GitBranch size={13} />
+                <span>{t(`Kế thừa Gen #${pendingLegacy.generation + 1}`, `Inherit Gen #${pendingLegacy.generation + 1}`)}</span>
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={activeTab === 'new'}
+                className={`birth-tab ${activeTab === 'new' ? 'is-active' : ''}`}
+                onClick={() => {
+                  try { audioEngine.playClick(); } catch {}
+                  setActiveTab('new');
+                }}
+              >
+                <Stamp size={13} />
+                <span>{t('Khai sinh độc lập', 'Fresh Life')}</span>
+              </button>
+            </div>
+          ) : null}
 
           {savedRun && activeTab === 'resume' ? (
             <div className="birth-resume-view">
@@ -345,6 +395,45 @@ export const BirthSetupPanel = () => {
               >
                 {t('Hủy bỏ kiếp đang dở', 'Discard this progress')}
               </button>
+            </div>
+          ) : pendingLegacy && activeTab === 'legacy' ? (
+            <div className="birth-legacy-view">
+              <div className="legacy-dossier-card">
+                <div className="legacy-badge-row">
+                  <span className="successor-badge">
+                    <GitBranch size={13} aria-hidden="true" />
+                    <span>
+                      {lang === 'en'
+                        ? (pendingLegacy.successorTitleEn || pendingLegacy.successorRelation || 'Successor')
+                        : (pendingLegacy.successorTitleVi || pendingLegacy.successorRelation || 'Người kế thừa')}
+                    </span>
+                  </span>
+                  <span className="legacy-gen-tag">GEN #{pendingLegacy.generation + 1}</span>
+                </div>
+                <p className="birth-legacy-intro">
+                  {lang === 'en'
+                    ? (pendingLegacy.successorIntroEn || `You take up the legacy of ${pendingLegacy.name}.`)
+                    : (pendingLegacy.successorIntroVi || `Bạn tiếp nhận di sản của ${pendingLegacy.name}.`)}
+                </p>
+                <div className="birth-legacy-relic">
+                  <span className="relic-label">{t('Kỷ vật truyền đời:', 'Relic passed down:')}</span>{' '}
+                  <strong className="relic-name">{t(pendingLegacy.relic, localizeEnsembleName(pendingLegacy.relic, 'en'))}</strong>
+                </div>
+                <div className="legacy-actions-grid">
+                  <button className="btn btn-primary btn-lg btn-block legacy-start-btn" disabled={spinning} onClick={() => launch(true, 0)}>
+                    <Stamp size={16} />
+                    <span>{t('Bắt đầu kiếp này từ tuổi 0', 'Begin this life at age 0')}</span>
+                  </button>
+                  {relation === 'child' && heirAge >= 14 && (
+                    <button className="btn btn-secondary btn-block" disabled={spinning} onClick={() => launch(true, heirAge)}>
+                      <span>{t(`Tiếp quản ở tuổi ${heirAge}`, `Take over at age ${heirAge}`)}</span>
+                    </button>
+                  )}
+                </div>
+                <button type="button" className="birth-text-action is-abandon" onClick={confirmDiscard}>
+                  {t('Bỏ di sản, bắt đầu độc lập', 'Discard heirloom and start fresh')}
+                </button>
+              </div>
             </div>
           ) : (
             <>
@@ -469,45 +558,12 @@ export const BirthSetupPanel = () => {
                 )}
               </p>
               {pendingLegacy && (
-                <details className="birth-legacy" open>
-                  <summary>
-                    <GitBranch size={17} />
-                    {t(
-                      `Kế thừa thế hệ #${pendingLegacy.generation + 1}`,
-                      `Continue generation #${pendingLegacy.generation + 1}`
-                    )}
-                    <ChevronDown size={15} />
-                  </summary>
-                  <div className="birth-legacy-inner">
-                    <div className="birth-legacy-header">
-                      <span className="successor-badge">
-                        {lang === 'en'
-                          ? (pendingLegacy.successorTitleEn || pendingLegacy.successorRelation || 'Successor')
-                          : (pendingLegacy.successorTitleVi || pendingLegacy.successorRelation || 'Người kế thừa')}
-                      </span>
-                    </div>
-                    <p className="birth-legacy-intro">
-                      {lang === 'en'
-                        ? (pendingLegacy.successorIntroEn || `You take up the legacy of ${pendingLegacy.name}.`)
-                        : (pendingLegacy.successorIntroVi || `Bạn tiếp nhận di sản của ${pendingLegacy.name}.`)}
-                    </p>
-                    <p className="birth-legacy-relic">
-                      {t('Kỷ vật truyền đời:', 'Relic passed down:')}{' '}
-                      <strong>{t(pendingLegacy.relic, localizeEnsembleName(pendingLegacy.relic, 'en'))}</strong>
-                    </p>
-                    <button className="btn btn-block btn-primary" disabled={spinning} onClick={() => launch(true, 0)}>
-                      {t('Bắt đầu kiếp này từ tuổi 0', 'Begin this life at age 0')}
-                    </button>
-                    {relation === 'child' && heirAge >= 14 && (
-                      <button className="btn btn-block" disabled={spinning} onClick={() => launch(true, heirAge)}>
-                        {t(`Tiếp quản ở tuổi ${heirAge}`, `Take over at age ${heirAge}`)}
-                      </button>
-                    )}
-                    <button className="birth-text-action" onClick={confirmDiscard}>
-                      {t('Bỏ di sản, bắt đầu độc lập', 'Discard heirloom and start fresh')}
-                    </button>
-                  </div>
-                </details>
+                <div className="legacy-switch-hint">
+                  <span>{t(`Có di sản thế hệ #${pendingLegacy.generation + 1} đang chờ chuyển giao.`, `Gen #${pendingLegacy.generation + 1} legacy is waiting to transfer.`)}</span>
+                  <button type="button" onClick={() => setActiveTab('legacy')}>
+                    {t('Chuyển sang kế thừa', 'Switch to succession')}
+                  </button>
+                </div>
               )}
             </>
           )}
