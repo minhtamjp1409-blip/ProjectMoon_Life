@@ -57,7 +57,7 @@ export const NpcDossierModal = ({ npcRole, onClose }) => {
 
   const npc = ensureNpcAgency(rawNpc);
   const name = lang === 'en' ? npc.nameEn || npc.nameVi : npc.nameVi;
-  const isGone = npc.deceased || ['dead', 'missing', 'estranged', 'betrayer'].includes(npc.status);
+  const isGone = (npc.alive === false) || npc.deceased || ['dead', 'missing', 'estranged', 'betrayer'].includes(npc.status);
   const bondState = getNpcBondState(npc);
   const perk = npc.dungeonPerk;
 

@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
 import {
   createNewCharacter,
   resolveEventChoice,
@@ -491,6 +492,17 @@ console.log('11. Testing Color Fixer dedicated gate quota post-promotion...');
   const plantedThread = colorFixer.weaver.pendingThreads.find(t => t.eventId.startsWith('gate_'));
   assert.ok(plantedThread, 'Planted gate thread must be present in weaver');
   console.log('  ✓ Color Fixer dedicated gate quota and thread planting verified.');
+}
+
+// ----------------------------------------------------------------------------
+// 12. CHARACTER DOSSIER COMPONENT INTEGRITY (STATIC CHECK)
+// ----------------------------------------------------------------------------
+console.log('12. Testing CharacterDossierCard component import & role integrity...');
+{
+  const code = fs.readFileSync('src/features/chronicle/components/CharacterDossierCard.jsx', 'utf8');
+  assert.ok(code.includes('EyeOff'), 'CharacterDossierCard must import EyeOff from lucide-react');
+  assert.ok(code.includes("parent: ['Cha/mẹ', 'Parent']"), 'CharacterDossierCard must define parent in ROLE_LABELS');
+  console.log('  ✓ CharacterDossierCard EyeOff and parent role label verified.');
 }
 
 console.log('\n=== ALL AUDIT FEEDBACK TESTS PASSED WITH 100% SUCCESS ===');

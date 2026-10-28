@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { NpcDossierModal } from './NpcDossierModal.jsx';
 import { Tooltip } from 'antd';
-import { ChevronDown, ChevronUp, User, Heart, Brain, Coins, Flame, Eye, Sparkles, X, ShieldAlert, ShoppingBag, HelpCircle, Crown, Star } from 'lucide-react';
+import { ChevronDown, ChevronUp, User, Heart, Brain, Coins, Flame, Eye, EyeOff, Sparkles, X, ShieldAlert, ShoppingBag, HelpCircle, Crown, Star } from 'lucide-react';
 import { WorkshopDepotModal } from './WorkshopDepotModal';
 import { useGameStore } from '../../../store/gameStore';
 import { useThemeStore } from '../../../store/themeStore';
@@ -234,6 +234,7 @@ const TabooStat = ({ value, tooltip = null, flag = null }) => {
 const ROLE_LABELS = {
   friend: ['Bạn thuở nhỏ', 'Childhood friend'],
   mentor: ['Người thầy', 'Mentor'],
+  parent: ['Cha/mẹ', 'Parent'],
   rival: ['Đối thủ', 'Rival'],
   lover: ['Người thương', 'Beloved'],
   spouse: ['Bạn đời', 'Spouse'],
@@ -273,7 +274,7 @@ const People = ({ npcs, age, t, lang, onSelectRole }) => {
       </section>
     );
   }
-  const gone = (n) => n.deceased || ['dead', 'missing', 'estranged', 'betrayer'].includes(n.status);
+  const gone = (n) => (n.alive === false) || n.deceased || ['dead', 'missing', 'estranged', 'betrayer'].includes(n.status);
   list.sort(([, a], [, b]) => Number(gone(a)) - Number(gone(b)));
   return (
     <section>

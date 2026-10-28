@@ -1,6 +1,6 @@
 # The City Chronicles: Tài Liệu Tiến Trình & Kiến Trúc Kỹ Thuật Toàn Diện
 
-> **Cập nhật ghi chép: 28/10/2026 (Đợt 78: Tối ưu hóa toàn diện Mobile UI cho cả Landing Page và Gameplay theo chuẩn design-taste-frontend & hallmark; đã kiểm thử 100%)**
+> **Cập nhật ghi chép: 28/10/2026 (Đợt 79: Khắc phục triệt để lỗi ngoại lệ runtime "Không thể mở hồ sơ" do thiếu import EyeOff trong CharacterDossierCard; bổ sung nhãn quan hệ parent & kiểm định toàn vẹn 100%)**
 > **Phân biệt rõ số liệu kiểm thử tự động & số liệu mô phỏng 500 đời hiện hành (Đợt 69):**
 > - **Đã xác minh tự động bằng bộ test (`npm test`):** Toàn bộ **53/53 test suites** đạt 100%, parity cổng thăng tiến FE/BE khớp tuyệt đối, `lint_story.mjs` (745 major, 43 consequence, 866 minor, 572 daily, 36 contract) & `voice_lint.mjs --fail` (**32.337 chuỗi**) đạt 0 lỗi / 0 cảnh báo, `run_million_audit.mjs 500` (500 khoảnh khắc) đạt 5/5 nhóm quy tắc toàn vẹn, `npm run build` hoàn tất sạch bóng.
 > - **Đã đo mới trên codebase hiện tại qua mô phỏng 500 cuộc đời đầy đủ (Đợt 69):** `story_logic_audit.mjs 500 random` (**80.338 khoảnh khắc**, 500 đời, **0 vi phạm logic**, entropy `83.1%`), `balance_sim.mjs 500 random` (13.208 năm sống, phân bổ nghề: Fixer `31.0%`, Wing `29.9%`, Syndicate `31.9%`, Distortion `5.4%`), `balance_sim.mjs 500 focused` (21.749 năm sống, tuổi thọ TB `42.6`, đạt Color Fixer `9.6%` ở tuổi TB `55.4`, thức tỉnh E.G.O `12.6%` ở tuổi TB `45.5`), và `branch_experience.mjs 500` (tuổi thọ Distortion tăng vọt từ `3.8` lên **`11.3` năm/đời**, đại sự kiện trải nghiệm từ `16` lên **`40`**).
@@ -1711,5 +1711,21 @@ Chủ dự án yêu cầu làm lại toàn bộ giao diện lần nữa: bỏ t�
 * **Kiểm định toàn vẹn:**
   * `npm run build` hoàn tất xuất sắc (6.99s), 0 lỗi đóng gói.
   * `npm test` vượt qua 100% toàn bộ 53/53 bộ kiểm thử hồi quy (Story Lint, Voice Lint, Causal Arcs, Career Paths, 500 Moments Million Audit).
+
+### Đợt 79 (28/10/2026): Khắc phục ngoại lệ runtime "Không thể mở hồ sơ" (ReferenceError: EyeOff is not defined) và hoàn thiện nhãn NPC quan hệ cha/mẹ
+
+* **Nguyên nhân cốt lõi của lỗi "Không thể mở hồ sơ" trên trang Production:**
+  * Trong component `CharacterDossierCard.jsx`, component con `TabooStat` (hiển thị 3 con mắt giám sát Điều Cấm Kỵ của The Head) sử dụng biểu tượng `<EyeOff size={14} />` khi mắt nhắm (`isActive = false`, mặc định khi sinh ra Taboo = 0). Tuy nhiên, `EyeOff` chưa được khai báo import từ thư viện `lucide-react` (chỉ mới có `Eye`).
+  * Khi người chơi bắt đầu một kiếp mới (dù là bắt đầu mới hay tiếp nhận di sản đời con qua `startLife(true)`), `TabooStat` render trong Desktop Sidebar hoặc Dossier Drawer ngay lập tức gây ra `ReferenceError: EyeOff is not defined`. Ngoại lệ này khiến component sập và kích hoạt `ErrorBoundary` hiển thị thông báo "Không thể mở hồ sơ".
+* **Giải pháp khắc phục & Hoàn thiện:**
+  * **Bổ sung import biểu tượng `EyeOff`:** Khai báo đầy đủ `EyeOff` từ `lucide-react` trong `CharacterDossierCard.jsx`, đảm bảo các trạng thái mắt nhắm và mở của `TabooStat` kết xuất mượt mà.
+  * **Bổ sung nhãn vai trò `parent` trong `ROLE_LABELS`:** Khai báo cặp nhãn song ngữ `parent: ['Cha/mẹ', 'Parent']` trong `CharacterDossierCard.jsx` để tránh trường hợp NPC cha/mẹ thừa kế bị hiển thị nhãn thô `parent`.
+  * **Đồng bộ hóa kiểm tra trạng thái NPC đã khuất (`gone`):** Cập nhật hàm `gone(n)` trong `CharacterDossierCard.jsx` và `isGone` trong `NpcDossierModal.jsx` bổ sung điều kiện `(n.alive === false)`, đảm bảo NPC đời trước qua đời được xếp đúng nhóm và không gây lỗi chỉ số gắn kết `bond`.
+  * **Bổ sung Unit Test tự động chống hồi quy:** Thêm Section 12 vào `tests/test_audit_feedback_resolution.mjs` kiểm tra tĩnh toàn vẹn các import biểu tượng và nhãn quan hệ trong `CharacterDossierCard.jsx`.
+* **Kiểm định toàn vẹn:**
+  * Mô phỏng SSR render thành công 100% toàn bộ 6 archetype người kế thừa (`child`, `sibling`, `companion`, `apprentice`, `debt_bearer`, `scavenger`) cả ở tuổi 0 và tuổi 14.
+  * `npm run build` hoàn tất xuất sắc (7.61s), 0 lỗi đóng gói.
+  * `npm test` vượt qua 100% toàn bộ 53/53 bộ kiểm thử hồi quy.
+
 
 
