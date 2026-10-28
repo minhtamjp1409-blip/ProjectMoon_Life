@@ -1,17 +1,36 @@
-/* Hallmark v2.0.0 | The City atlas | homepage redesign | dark cartographic sheet | signature: birthplace lens */
-/* Critique: the former dial named Districts without showing where they stood in the City. */
+/* Hallmark v2.0.0 | The City atlas | Project Moon red cartography | signature: birthplace lens */
+/* Critique: the charcoal map lost the original City's dense crimson streets and warning-red perimeter. */
 :root {
-  --atlas-surface: #110d10;
-  --atlas-land: #2b1014;
-  --atlas-land-selected: #5a2427;
-  --atlas-line: #9a393d;
-  --atlas-line-bright: #db6b65;
-  --atlas-street: #63272b;
-  --atlas-label: #e9aaa0;
-  --atlas-quiet: #a4938f;
-  --atlas-lens-fill: #170e10;
-  --atlas-lens-edge: #e2c179;
-  --atlas-note: #0c0a0c;
+  --atlas-surface: #050304;
+  --atlas-land: #1b0305;
+  --atlas-land-selected: #4d0d10;
+  --atlas-line: #8b2428;
+  --atlas-line-bright: #e34745;
+  --atlas-street: #5f0b10;
+  --atlas-block: #650b10;
+  --atlas-block-fine: #971217;
+  --atlas-artery: #b52228;
+  --atlas-label: #ef625c;
+  --atlas-letter-fill: #af2c30;
+  --atlas-quiet: #b25a58;
+  --atlas-lens-fill: #090305;
+  --atlas-lens-edge: #d8b265;
+  --atlas-note: #090405;
+  --atlas-core: #a92329;
+  --atlas-scan: #721016;
+  --atlas-eclipse: #a66063;
+  --atlas-eclipse-dark: #101013;
+  --atlas-sky-mid: #140d11;
+  --atlas-sky-low: #241217;
+  --atlas-haze: #51262b;
+}
+
+.world-scene[data-world='title'] { --sky-mid: var(--atlas-sky-mid); --sky-low: var(--atlas-sky-low); --haze: var(--atlas-haze); }
+.world-scene[data-world='title'] .world-sky::after {
+  top: 10%; left: 42%; width: 86px; height: 86px;
+  background: var(--atlas-eclipse);
+  box-shadow: inset -31px -4px 0 9px var(--atlas-eclipse-dark);
+  opacity: .68;
 }
 
 .home-opening { grid-template-columns: minmax(0, 7fr) minmax(320px, 5fr); gap: clamp(24px, 4vw, 56px); }
@@ -21,14 +40,28 @@
 .city-birth-atlas { min-width: 0; }
 .city-birth-atlas-frame { position: relative; overflow: hidden; background: var(--atlas-surface); border: 1px solid var(--atlas-line); }
 .city-birth-atlas-svg { width: 100%; height: auto; aspect-ratio: 1000 / 760; overflow: hidden; touch-action: manipulation; }
+.atlas-scanlines { fill: url(#city-atlas-scanlines); opacity: .38; }
+#city-atlas-scanlines path { fill: none; stroke: var(--atlas-scan); stroke-width: 1; }
 .atlas-ground { fill: var(--atlas-land); }
-.atlas-wall { fill: none; stroke: var(--atlas-line-bright); stroke-width: 8; stroke-dasharray: 8 7; opacity: .68; }
+#city-atlas-blocks path { fill: none; stroke: var(--atlas-block); stroke-width: 1.1; }
+#city-atlas-fine-blocks path { fill: none; stroke: var(--atlas-block-fine); stroke-width: .7; }
+#city-atlas-arteries path { fill: none; stroke: var(--atlas-artery); stroke-width: 1.5; }
+.atlas-blocks { fill: url(#city-atlas-blocks); opacity: .86; }
+.atlas-blocks-fine { fill: url(#city-atlas-fine-blocks); opacity: .55; }
+.atlas-blocks-large { fill: url(#city-atlas-arteries); opacity: .72; }
+.atlas-wall-shadow { fill: none; stroke: var(--atlas-line); stroke-width: 4; opacity: .75; }
+.atlas-wall { fill: none; stroke: var(--atlas-line-bright); stroke-width: 17; stroke-dasharray: 3 19; opacity: .82; }
 .atlas-boundary { fill: var(--atlas-land); }
-.atlas-boundary-line { fill: none; stroke: var(--atlas-line-bright); stroke-width: 3; }
-.atlas-streets path { fill: none; stroke: var(--atlas-street); stroke-width: 3; opacity: .7; }
-.atlas-streets path + path { stroke-width: 1.5; }
-.atlas-district polygon { fill: transparent; stroke: var(--atlas-line); stroke-width: 1.8; }
-.atlas-district text { fill: var(--atlas-label); font-family: var(--font); font-size: 25px; font-weight: 700; pointer-events: none; paint-order: stroke; stroke: var(--atlas-land); stroke-width: 3px; }
+.atlas-boundary-line { fill: none; stroke: var(--atlas-line-bright); stroke-width: 3.2; }
+.atlas-border-echo { fill: none; stroke: var(--atlas-line); stroke-width: 12; opacity: .35; }
+.atlas-streets path { fill: none; stroke: var(--atlas-street); stroke-width: 3.2; opacity: .85; }
+.atlas-streets path + path { stroke-width: 1.6; }
+.atlas-inner-ring { fill: none; stroke: var(--atlas-core); stroke-width: 1.5; stroke-dasharray: 3 9; opacity: .48; }
+.atlas-inner-ring.is-core { stroke-width: 2.2; opacity: .64; }
+.atlas-district polygon { fill: transparent; stroke: var(--atlas-line); stroke-width: 1.5; }
+.atlas-district text { font-family: var(--font); pointer-events: none; paint-order: stroke; }
+.atlas-district-letter { fill: var(--atlas-letter-fill); stroke: var(--atlas-label); stroke-width: 1.2; font-size: 40px; font-weight: 600; font-stretch: condensed; }
+.atlas-district-number { fill: var(--atlas-label); stroke: var(--atlas-land); stroke-width: 2; font-size: 14px; font-weight: 700; }
 .atlas-district.is-interactive { cursor: pointer; }
 .atlas-district.is-interactive:hover polygon, .atlas-district.is-interactive:focus-visible polygon { fill: var(--atlas-land-selected); stroke: var(--atlas-line-bright); stroke-width: 3; }
 .atlas-district:focus-visible { outline: none; }
@@ -41,8 +74,8 @@
 .atlas-outskirts-hit text { fill: var(--atlas-label); font-family: var(--font); font-size: 19px; font-weight: 700; pointer-events: none; }
 .atlas-outskirts-hit:hover circle, .atlas-outskirts-hit:focus-visible circle, .atlas-outskirts-hit.is-selected circle { fill: var(--atlas-land-selected); stroke: var(--atlas-lens-edge); stroke-width: 4; }
 .atlas-outskirts-hit:focus-visible { outline: none; }
-.atlas-lens > circle:first-of-type { fill: none; stroke: var(--atlas-lens-fill); stroke-width: 12; }
-.atlas-lens > circle:last-of-type { fill: none; stroke: var(--atlas-lens-edge); stroke-width: 3; }
+.atlas-lens > circle:first-of-type { fill: none; stroke: var(--atlas-lens-fill); stroke-width: 14; }
+.atlas-lens > circle:last-of-type { fill: none; stroke: var(--atlas-lens-edge); stroke-width: 2.5; }
 .atlas-corner-label { position: absolute; left: 16px; bottom: 16px; display: flex; flex-direction: column; gap: 2px; min-width: 160px; max-width: min(50%, 276px); padding: 8px 12px; background: var(--atlas-note); pointer-events: none; }
 .atlas-corner-label strong { font-size: 16px; font-weight: 700; color: var(--text); }
 .atlas-corner-label span { font-size: 13px; color: var(--muted); overflow-wrap: break-word; }
@@ -68,16 +101,18 @@
   .atlas-actions .atlas-start-action { display: inline-flex; align-items: center; justify-content: center; width: 100%; min-height: 44px; padding: 0 16px; background: var(--accent); color: var(--accent-ink); text-decoration: none; }
   .atlas-actions .atlas-start-action:hover { color: var(--accent-ink); background: var(--accent-hover); }
   .opening-story h1 { margin-bottom: 0; }
-  .atlas-corner-label { left: 8px; bottom: 8px; max-width: 55%; padding: 8px; }
+  .atlas-corner-label { position: relative; left: auto; bottom: auto; max-width: none; padding: 8px 12px 12px; }
   .atlas-corner-label strong { font-size: 14px; }
   .atlas-corner-label span { font-size: 12px; }
-  .atlas-district text { font-size: 29px; }
+  .atlas-district-letter { font-size: 40px; }
+  .atlas-district-number { display: none; }
 }
 
 @media (max-width: 520px) {
   .home-opening { gap: 20px; }
-  .opening-atlas .atlas-note { gap: 8px; }
+  .opening-atlas .atlas-note { display: none; }
   .atlas-corner-label { max-width: 62%; }
+  .world-scene[data-world='title'] .world-sky::after { top: 6%; left: auto; right: 4%; width: 58px; height: 58px; box-shadow: inset -21px -3px 0 6px var(--atlas-eclipse-dark); }
 }
 
 @media (prefers-reduced-motion: reduce) {
