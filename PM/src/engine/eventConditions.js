@@ -101,6 +101,7 @@ export function matchesNeed(need, char, contextEntry = null) {
   if (need.regions && !regionMatchesList(need.regions, char.regionId)) return false;
   if (need.finger && need.finger !== char.finger) return false;
   if (need.notFinger && need.notFinger === char.finger && char.job === 'Syndicate') return false;
+  if (need.noFinger && char.finger) return false;
   if (need.flags && !need.flags.every((f) => flags.includes(f))) return false;
   if (need.noFlags?.some((f) => flags.includes(f))) return false;
   if (need.scarTag && !hasScarTag(char, need.scarTag)) return false;
@@ -157,6 +158,9 @@ export function matchesNeed(need, char, contextEntry = null) {
   if (need.wingRankAtLeast != null && (char.wingRank || 0) < need.wingRankAtLeast) return false;
   if (need.wingRankAtMost != null && (char.wingRank || 0) > need.wingRankAtMost) return false;
   if (need.workshopRank != null && (char.workshopRank || 0) !== need.workshopRank) return false;
+  if (need.syndicateRank != null && (char.syndicateRank || 0) !== need.syndicateRank) return false;
+  if (need.syndicateRankAtLeast != null && (char.syndicateRank || 0) < need.syndicateRankAtLeast) return false;
+  if (need.syndicateRankAtMost != null && (char.syndicateRank || 0) > need.syndicateRankAtMost) return false;
   for (const [key, [lo, hi]] of Object.entries(need.stat || {})) {
     const value = char.stats?.[key] ?? char[key] ?? (key === 'standing' ? 50 : 0);
     if (!Number.isFinite(value) || value < lo || value > hi) return false;
@@ -187,6 +191,8 @@ export function matchesEventContext(entry, char) {
   if (entry.regions && !regionMatchesList(entry.regions, char.regionId)) return false;
   if (entry.jobs && !jobMatchesWithInheritance(entry.jobs, char, entry)) return false;
   if (entry.finger && entry.finger !== char.finger) return false;
+  if (entry.syndicateRank != null && (char.syndicateRank || 0) !== entry.syndicateRank) return false;
+  if (entry.syndicateRankAtLeast != null && (char.syndicateRank || 0) < entry.syndicateRankAtLeast) return false;
   if (entry.requires && !entry.requires.every((f) => char.flags.includes(f))) return false;
   if (entry.forbids?.some((f) => char.flags.includes(f))) return false;
   const distortionEntry = entry.requires?.includes('Distorted') || entry.need?.flags?.includes('Distorted') ||

@@ -105,6 +105,20 @@ export const CONTRACT_ROUTES = {
       ['Việc hành chính', 'Administrative task'], ['Kiểm định hiện trường', 'Field inspection'], ['Sự cố cấp phòng', 'A section-level incident'],
       ['Sự cố Singularity', 'A Singularity incident'], ['Hồ sơ mật cấp quản trị', 'An executive-level sealed file'], ['Việc The Head quan tâm', 'A matter the Head watches']
     )
+  },
+  independent_syndicate: {
+    jobKey: null,
+    tagVi: 'Hợp đồng băng nhóm', tagEn: 'Underground Contract',
+    kickerVi: 'Mối làm ăn ngầm', kickerEn: 'An underground job',
+    careful: ['Thương lượng kín đáo, tránh gây chú ý', 'Negotiate quietly, draw no eyes'],
+    bold: ['Giải quyết bằng bạo lực đường phố (thêm 50% Ahn và Merit)', 'Resolve it with street violence (50% more Ahn and Merit)'],
+    intel: ['Chi tiền mua tin ngầm từ kẻ chỉ điểm hẻm tối (8 Ahn)', 'Pay an alley informant for underground intel (8 Ahn)'],
+    okFx: { heat: 2, rep: 1 }, failFx: { heat: 4, rep: -2 },
+    declineVi: 'Bạn từ chối mối làm ăn. Kẻ trung gian tìm sang băng nhóm khác.', declineEn: 'You turn down the deal. The fixer takes it to a rival crew.',
+    tiers: tiers(
+      ['Bảo kê tiệm buôn nhỏ', 'Small shop protection'], ['Đòi nợ mướn khu phố', 'Alley debt enforcement'], ['Tranh chấp bến bãi', 'Turf dispute settlement'],
+      ['Hộ tống hàng buôn lậu', 'Smuggled cargo escort'], ['Đột kích kho đối thủ', 'Rival warehouse raid'], ['Bá chủ thế lực ngầm', 'Underground power hegemony']
+    )
   }
 };
 
@@ -112,9 +126,12 @@ export const CONTRACT_ROUTES = {
 export function contractRouteOf(char) {
   if (!char || char.flags?.includes('Distorted')) return null;
   if (char.job === 'Fixer' || char.job === 'Color Fixer' || char.flags?.includes('ColorFixer')) return 'fixer';
-  if (char.job === 'Syndicate' && char.finger) {
-    const key = String(char.finger).toLowerCase();
-    return CONTRACT_ROUTES[key] ? key : null;
+  if (char.job === 'Syndicate') {
+    if (char.finger) {
+      const key = String(char.finger).toLowerCase();
+      return CONTRACT_ROUTES[key] ? key : null;
+    }
+    return 'independent_syndicate';
   }
   if (char.job === 'Wing Employee') return 'wing';
   return null;
@@ -126,6 +143,8 @@ export function contractRouteOf(char) {
  */
 export function equivalentGrade(char, route) {
   if (route === 'fixer') return char.fixerGrade === 0 ? 0 : (char.fixerGrade ?? 9);
-  const rank = route === 'wing' ? (char.wingRank || 0) : (char.fingerRank || 0);
+  const rank = route === 'wing'
+    ? (char.wingRank || 0)
+    : (route === 'independent_syndicate' ? (char.syndicateRank || 0) : (char.fingerRank || 0));
   return [7, 5, 3, 1][Math.min(3, rank)];
 }

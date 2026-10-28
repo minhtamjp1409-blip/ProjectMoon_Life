@@ -34,6 +34,23 @@ export function migrateRun(raw) {
   if (run.char.annualPlan?.age !== run.char.age) run.char.annualPlan = null;
   if (run.char.annualPlan && !validYearPoints(run.char.annualPlan.points)) run.char.annualPlan = null;
   if (!validYearPoints(run.char.lastYearPoints)) run.char.lastYearPoints = null;
+  if (!Array.isArray(run.char.debts)) run.char.debts = [];
+  if (run.char.flags?.includes('FixerLicenseDebt') && !run.char.debts.some((d) => d.id === 'fixer_license_debt')) {
+    run.char.debts.push({
+      id: 'fixer_license_debt',
+      creditorId: 'backstreets_pawn_creditor',
+      principalAhn: 8,
+      balanceAhn: 8,
+      createdAge: run.char.age || 18,
+      nextDueAge: (run.char.age || 18) + 1,
+      missedPayments: 0,
+      status: 'active',
+      originEventId: 'ad_career_crossroad_18'
+    });
+  }
+  if (run.char.syndicateRank === undefined) {
+    run.char.syndicateRank = 0;
+  }
   run.version = SAVE_VERSION;
   if (!Array.isArray(run.rngState) || run.rngState.length !== 4 ||
       run.rngState.some((word) => !Number.isInteger(word) || word < 0 || word > 0xffffffff)) run.rngState = null;

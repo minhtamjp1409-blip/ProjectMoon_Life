@@ -3187,5 +3187,100 @@ export const FACTION_EVENTS = [
         effects: { wealth: +28, rep: +12 }
       }
     ]
+  },
+  {
+    id: 'syn_indie_promo_rank1',
+    age: [18, 90],
+    major: true,
+    weight: 800,
+    need: { jobs: ['Syndicate'], noFinger: true, syndicateRank: 0, stat: { rep: [20, 100] } },
+    vi: "[Đầu gấu khu phố] Uy danh thu nợ và dẹp loạn của bạn lan rộng khắp các ngõ hẹp. Lũ du đãng mới lớn bắt đầu tìm đến nép bóng, còn các chủ tiệm phải gật đầu chào mỗi khi bạn đi qua. Đã đến lúc khẳng định vị thế đầu lĩnh địa bàn.",
+    en: "[Turf Lieutenant] Word of your muscle and debt collection has spread through the alleys. Young thugs seek your shadow for protection, and shopkeepers bow when you walk past. It is time to cement your standing as turf lieutenant.",
+    choices: [
+      {
+        labelVi: "Cắm cờ ranh giới: Tuyên bố kiểm soát toàn bộ dãy phố",
+        labelEn: "Plant your markers: Claim full control over the street row",
+        setSyndicateRank: 1,
+        flagsAdd: ['TurfLieutenant'],
+        effects: { rep: +8, heat: +8, wealth: +12 },
+        meritAdd: 10,
+        resultVi: "Bạn triệu tập các nhóm vãng lai, cắm cọc phân định ranh giới kiếm ăn. Kể từ hôm nay, bất kỳ ai muốn kinh doanh hay hoạt động trong ba ngõ này đều phải nộp phần trăm cho bạn.",
+        resultEn: "You gather the wandering crews and stake out your boundaries. From today, anyone doing business across these three alleys pays a cut to your pocket."
+      },
+      {
+        labelVi: "Giữ mạng lưới ngầm kín tiếng: Không khoa trương quyền lực",
+        labelEn: "Keep a low profile network: Exercise power without public banners",
+        setSyndicateRank: 1,
+        flagsAdd: ['TurfLieutenant'],
+        effects: { network: +12, heat: -4, sanity: +6 },
+        meritAdd: 8,
+        resultVi: "Bạn không cắm mốc rùm beng mà lặng lẽ cài cắm người vào các góc khuất. Bạn vẫn nắm trọn quyền chỉ huy khu phố nhưng các toán tuần tra không chú ý tới bạn.",
+        resultEn: "You forgo flashy markers and quietly position enforcers in the shadows. You hold absolute command over the row, while patrols pass by without a second glance."
+      }
+    ]
+  },
+  {
+    id: 'syn_indie_promo_rank2',
+    age: [20, 90],
+    major: true,
+    weight: 850,
+    need: { jobs: ['Syndicate'], noFinger: true, syndicateRank: 1, stat: { rep: [45, 100] } },
+    vi: "[Đại ca băng đảng tự do] Băng của bạn nay đã có hàng chục tay đao kỳ cựu và ba kho hàng ngầm. Các sứ giả của Finger bắt đầu dè chừng, còn các Office Fixer quanh vùng hiểu rằng muốn giải quyết việc phải bước qua cửa của bạn.",
+    en: "[Independent Syndicate Boss] Your crew commands dozens of veteran blades and three underground caches. Finger envoys tread carefully, and local Fixer Offices know that any action in the district must clear your threshold.",
+    choices: [
+      {
+        labelVi: "Lập tổng hành dinh ngầm: Trở thành thế lực tự chủ Backstreets",
+        labelEn: "Found an underground fortress: Rise as an autonomous Backstreets power",
+        setSyndicateRank: 2,
+        flagsAdd: ['IndependentSyndicateBoss'],
+        effects: { rep: +14, heat: +10, wealth: +24 },
+        meritAdd: 15,
+        resultVi: "Bạn chiếm trọn một tầng hầm kiên cố dưới chân cầu vượt, cải tạo thành sào huyệt bất khả xâm phạm. Băng độc lập của bạn trở thành cái tên có trọng lượng thực sự trong thế giới ngầm.",
+        resultEn: "You seize a reinforced bunker beneath the overpass, turning it into an impregnable den. Your independent crew becomes a recognized force across the district underworld."
+      },
+      {
+        labelVi: "Dàn xếp mạng lưới bảo trợ: Mua chuộc người trung gian và kho vận",
+        labelEn: "Establish a patronage ring: Bribe fixers and secure logistics",
+        setSyndicateRank: 2,
+        flagsAdd: ['IndependentSyndicateBoss'],
+        effects: { network: +20, heat: -6, sanity: +8 },
+        meritAdd: 12,
+        resultVi: "Thay vì chỉ dựa vào đao kiếm, bạn dùng tiền bạc thâu tóm các đầu mối kho vận và mua chuộc kẻ chỉ điểm. Băng vận hành trơn tru như một cỗ máy kiếm tiền trong bóng tối.",
+        resultEn: "Rather than relying solely on steel, you deploy coin to control warehouses and buy informants. The syndicate hums along like a well-oiled shadow enterprise."
+      }
+    ]
+  },
+  {
+    id: 'syn_indie_promo_rank3',
+    age: [22, 95],
+    major: true,
+    weight: 900,
+    need: { jobs: ['Syndicate'], noFinger: true, syndicateRank: 2, stat: { rep: [75, 100] } },
+    vi: "[Bá chủ ngõ tối] Một cuộc thanh trừng đẫm máu vừa khép lại giữa các liên minh ngầm. Đứng trên đống đổ nát, không còn thế lực nào dám thách thức quyền uy của bạn. Một băng đảng độc lập vươn tới đỉnh cao thống trị mà không cần cúi đầu trước bất kỳ Finger nào.",
+    en: "[Underground Kingpin] A bloody purge has concluded among rival cartels. Standing atop the rubble, no force remains to question your dominion. An independent syndicate has reached absolute supremacy without kneeling to any Finger.",
+    choices: [
+      {
+        labelVi: "Hiệu triệu toàn bộ thế giới ngầm: Xưng vương bá chủ Backstreets",
+        labelEn: "Summon the entire underworld: Crown yourself Kingpin of the Backstreets",
+        setSyndicateRank: 3,
+        flagsAdd: ['UndergroundKingpin', 'IndependentSyndicateApex'],
+        recordsAdd: ['independent_syndicate_apex'],
+        effects: { rep: +22, wealth: +45, heat: +16 },
+        meritAdd: 25,
+        resultVi: "Tất cả các trùm sòng bạc, chủ lò mổ và thủ lĩnh băng nhóm nhỏ đều quỳ rạp dưới chân bạn dâng nộp phần trăm. Bạn là luật lệ duy nhất tại những ngõ ngách này.",
+        resultEn: "Every den boss, abattoir owner and street captain kneels before you to offer their cut. You are the sole law across these darkened avenues."
+      },
+      {
+        labelVi: "Trở thành người giật dây trong bóng tối: Nắm quyền sinh sát vô hình",
+        labelEn: "Become the shadow puppetmaster: Command life and death unseen",
+        setSyndicateRank: 3,
+        flagsAdd: ['UndergroundKingpin', 'IndependentSyndicateApex'],
+        recordsAdd: ['independent_syndicate_apex'],
+        effects: { network: +28, wealth: +38, heat: -12 },
+        meritAdd: 20,
+        resultVi: "Bạn lui về phía sau bức màn nhung, để các tay chân đắc lực ra mặt xử lý. Người ta có thể không thấy mặt bạn, nhưng từng đồng Ahn và từng giọt máu chảy ở đây đều tuân theo ý chí của bạn.",
+        resultEn: "You step back behind velvet drapes, letting trusted lieutenants handle the streetfront. The alleys may never see your face, but every Ahn and every drop of blood moves by your will."
+      }
+    ]
   }
 ];

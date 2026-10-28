@@ -768,11 +768,13 @@ export function createNewCharacter({
     finger: actualAge >= 18 && parentLegacy?.job === 'Syndicate' ? parentLegacy?.finger : null,
     fingerRank: actualAge >= 18 && parentLegacy?.job === 'Syndicate' ? 1 : 0,
     wingRank: 0,
+    syndicateRank: 0,
     org: null,
     customTitle: null,
     egoName: null,
     craftWeapon: null,
     inventory: parentLegacy?.ensembleScore ? [{ ...ENSEMBLE_SCORE_ITEM }] : [],
+    debts: [],
     stats: {
       health: perinatal ? 0 : health,
       sanity: perinatal ? 0 : sanity,
@@ -864,6 +866,7 @@ export function cloneChar(char) {
     npcs: structuredClone(char.npcs || {}),
     weaver: structuredClone(char.weaver),
     inventory: invClone,
+    debts: structuredClone(char.debts || []),
     ...(eqClone !== undefined ? { equipped: eqClone } : {}),
     ...(char.craftWeapon !== undefined ? { craftWeapon: structuredClone(char.craftWeapon) } : {}),
     imbuedRelics: structuredClone(char.imbuedRelics || []),
@@ -2424,6 +2427,11 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random, dung
     char.wingRank = setWingRank;
   }
 
+  const setSyndicateRank = outcome.setSyndicateRank ?? choice.setSyndicateRank;
+  if (setSyndicateRank !== undefined) {
+    char.syndicateRank = setSyndicateRank;
+  }
+
   const setOrg = outcome.setOrg || choice.setOrg;
   if (setOrg) {
     char.org = setOrg;
@@ -2564,6 +2572,68 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random, dung
   // Joining, leaving or standing in an Association or Office, and the junior under your wing
   applyAffiliationChoice(char, choice);
   if (outcome !== choice) applyAffiliationChoice(char, outcome);
+
+  // Structured Debts Management (Fixer license & street loans)
+  if (!char.debts) char.debts = [];
+  const debtsAdd = [...(choice.debtsAdd || []), ...(outcome.debtsAdd || [])];
+  debtsAdd.forEach((d) => {
+    if (!char.debts.some((existing) => existing.id === d.id)) {
+      char.debts.push({
+        id: d.id,
+        creditorId: d.creditorId || 'backstreets_pawn_creditor',
+        principalAhn: d.principalAhn ?? d.balanceAhn ?? 8,
+        balanceAhn: d.balanceAhn ?? d.principalAhn ?? 8,
+        createdAge: d.createdAge ?? char.age,
+        nextDueAge: d.nextDueAge ?? (char.age + 1),
+        missedPayments: d.missedPayments ?? 0,
+        status: d.status || 'active',
+        originEventId: d.originEventId || event.id
+      });
+    }
+  });
+
+  const debtsSettle = [...(choice.debtsSettle || []), ...(outcome.debtsSettle || [])];
+  debtsSettle.forEach((debtId) => {
+    const d = char.debts.find((item) => item.id === debtId);
+    if (d) {
+      d.status = 'settled';
+      d.balanceAhn = 0;
+    }
+    if (debtId === 'fixer_license_debt') {
+      char.flags = char.flags.filter((f) => f !== 'FixerLicenseDebt');
+    }
+  });
+
+  const debtRepay = outcome.debtRepay || choice.debtRepay;
+  if (debtRepay && debtRepay.id) {
+    const d = char.debts.find((item) => item.id === debtRepay.id && item.status === 'active');
+    if (d) {
+      const amount = Math.min(d.balanceAhn, debtRepay.amount || 0);
+      d.balanceAhn -= amount;
+      if (debtRepay.nextDueAge != null) d.nextDueAge = debtRepay.nextDueAge;
+      else if (debtRepay.deferYears) d.nextDueAge = char.age + debtRepay.deferYears;
+      if (d.balanceAhn <= 0) {
+        d.status = 'settled';
+        d.balanceAhn = 0;
+        if (d.id === 'fixer_license_debt') {
+          char.flags = char.flags.filter((f) => f !== 'FixerLicenseDebt');
+        }
+      }
+    }
+  }
+
+  const debtPenalty = outcome.debtPenalty || choice.debtPenalty;
+  if (debtPenalty && debtPenalty.id) {
+    const d = char.debts.find((item) => item.id === debtPenalty.id && item.status === 'active');
+    if (d) {
+      d.missedPayments = (d.missedPayments || 0) + 1;
+      if (debtPenalty.principalAdd) {
+        d.principalAhn += debtPenalty.principalAdd;
+        d.balanceAhn += debtPenalty.principalAdd;
+      }
+      if (debtPenalty.deferYears) d.nextDueAge = char.age + debtPenalty.deferYears;
+    }
+  }
 
   // Interactive Modals (Workshop Crafting / Naming E.G.O / Color Title)
   if (choice.openCraftModal || outcome.openCraftModal) {

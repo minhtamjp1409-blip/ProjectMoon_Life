@@ -6,6 +6,7 @@ import { RING_CONTRACTS } from './careerContractsRing.js';
 import { PINKY_CONTRACTS } from './careerContractsPinky.js';
 import { WING_CONTRACTS } from './careerContractsWing.js';
 import { MORE_CONTRACTS } from './careerContractsMore.js';
+import { INDEPENDENT_SYNDICATE_CONTRACTS } from './careerContractsIndependentSyndicate.js';
 
 export const CAREER_REQUESTS = {
   thumb: [...THUMB_CONTRACTS, ...MORE_CONTRACTS.thumb],
@@ -13,5 +14,6 @@ export const CAREER_REQUESTS = {
   middle: [...MIDDLE_CONTRACTS, ...MORE_CONTRACTS.middle],
   ring: [...RING_CONTRACTS, ...MORE_CONTRACTS.ring],
   pinky: [...PINKY_CONTRACTS, ...MORE_CONTRACTS.pinky],
-  wing: WING_CONTRACTS
+  wing: WING_CONTRACTS,
+  independent_syndicate: INDEPENDENT_SYNDICATE_CONTRACTS
 };

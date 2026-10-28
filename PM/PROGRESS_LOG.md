@@ -1,8 +1,8 @@
 # The City Chronicles: Tài Liệu Tiến Trình & Kiến Trúc Kỹ Thuật Toàn Diện
 
-> **Cập nhật ghi chép: 28/10/2026 (Đợt 82: Khắc phục triệt để các lỗ hổng logic hướng nghiệp theo phản hồi kiểm toán: tách biệt hồ sơ Syndicate độc lập khỏi The Thumb, bổ sung nhánh vay nợ nộp phí Hana, phân định bản ghi finger_initiate và gỡ bỏ ép Finger ở tuổi 22)**
+> **Cập nhật ghi chép: 28/10/2026 (Đợt 83: Hoàn thiện toàn diện gameplay Life Sim: vòng đời khoản nợ Fixer 8 Ahn, hợp đồng ngầm & thăng tiến cấp bậc cho Syndicate Độc Lập, phi cưỡng chế Finger summons)**
 > **Phân biệt rõ số liệu kiểm thử tự động & số liệu mô phỏng 500 đời hiện hành (Đợt 69):**
-> - **Đã xác minh tự động bằng bộ test (`npm test`):** Toàn bộ **53/53 test suites** đạt 100%, parity cổng thăng tiến FE/BE khớp tuyệt đối, `lint_story.mjs` (745 major, 43 consequence, 866 minor, 572 daily, 36 contract) & `voice_lint.mjs --fail` (**32.337 chuỗi**) đạt 0 lỗi / 0 cảnh báo, `run_million_audit.mjs 500` (500 khoảnh khắc) đạt 5/5 nhóm quy tắc toàn vẹn, `npm run build` hoàn tất sạch bóng.
+> - **Đã xác minh tự động bằng bộ test (`npm test`):** Toàn bộ **55/55 test suites** đạt 100%, parity cổng thăng tiến FE/BE khớp tuyệt đối, `lint_story.mjs` (745 major, 43 consequence, 866 minor, 572 daily, 36 contract) & `voice_lint.mjs --fail` (**32.337 chuỗi**) đạt 0 lỗi / 0 cảnh báo, `run_million_audit.mjs 500` (500 khoảnh khắc) đạt 5/5 nhóm quy tắc toàn vẹn, `npm run build` hoàn tất sạch bóng.
 > - **Đã đo mới trên codebase hiện tại qua mô phỏng 500 cuộc đời đầy đủ (Đợt 69):** `story_logic_audit.mjs 500 random` (**80.338 khoảnh khắc**, 500 đời, **0 vi phạm logic**, entropy `83.1%`), `balance_sim.mjs 500 random` (13.208 năm sống, phân bổ nghề: Fixer `31.0%`, Wing `29.9%`, Syndicate `31.9%`, Distortion `5.4%`), `balance_sim.mjs 500 focused` (21.749 năm sống, tuổi thọ TB `42.6`, đạt Color Fixer `9.6%` ở tuổi TB `55.4`, thức tỉnh E.G.O `12.6%` ở tuổi TB `45.5`), và `branch_experience.mjs 500` (tuổi thọ Distortion tăng vọt từ `3.8` lên **`11.3` năm/đời**, đại sự kiện trải nghiệm từ `16` lên **`40`**).
 > - **Cách đọc số liệu lịch sử:** Các kết quả mô phỏng ở Đợt 1–23 là ảnh chụp lịch sử tại thời điểm ghi nhận của từng đợt trước; xem mục **Đợt 69** ở cuối tài liệu để đọc bảng số liệu 500 cuộc đời hiện hành.
 
@@ -1810,8 +1810,37 @@ Chủ dự án yêu cầu làm lại toàn bộ giao diện lần nữa: bỏ t�
   * `npm run build`: Đóng gói thành công trong 6.89s.
   * `npm test`: Đạt **100% 53/53 test suites** và **500 khoảnh khắc Million Audit** (0 vi phạm logic).
 
+### Đợt 83 (28/10/2026): Hoàn thiện toàn diện gameplay Life Sim theo tài liệu kiểm toán sâu (`docs/KE_HOACH_GAMEPLAY_LIFE_SIM.md`)
 
+* **Khép kín vòng đời khoản nợ giấy phép Fixer (`Fixer License Debt Lifecycle`):**
+  * Thay thế cờ boolean đơn thuần `FixerLicenseDebt` bằng cấu trúc dữ liệu bản ghi nợ thực sự trong `char.debts`: `id, creditorId, principalAhn, balanceAhn, createdAge, nextDueAge, missedPayments, status, originEventId`.
+  * Quy định thời hạn ân hạn 1 năm rõ ràng (`nextDueAge = createdAge + 1`). Trong năm đầu khởi nghiệp, chủ nợ không quấy rầy.
+  * Tích hợp đại sự kiện đòi nợ định kỳ `csq_fixer_license_debt_due` với 4 nhánh quyết định bám sát thế giới ngầm:
+    * *Thanh toán dứt điểm (8 Ahn):* Nộp đủ tiền, chủ nợ xé giấy nợ, tất toán trạng thái nợ (`status: 'settled'`), xóa vĩnh viễn cờ `FixerLicenseDebt`, tăng tinh thần và danh tiếng, chấm dứt hoàn toàn sự kiện đòi nợ.
+    * *Trả trước một phần (3 Ahn):* Trả tiền lãi và trừ dần gốc còn 5 Ahn, hoãn hạn sang năm tiếp theo.
+    * *Khất nợ bằng quan hệ (`rep >= 25`):* Tận dụng uy tín Fixer và người quen bảo lãnh để lùi hạn nợ 1 năm, tăng nhẹ Heat.
+    * *Không đủ tiền trả / Chịu đòn dằn mặt:* Bị côn đồ đánh đập trọng thương (mất HP/SP), cộng dồn 2 Ahn tiền phạt quá hạn vào dư nợ gốc và dính vết sẹo thương tật `Vết thương từ kẻ đòi nợ ngầm`.
+  * Cập nhật cơ chế phòng thủ di trú dữ liệu trong `saveSchema.js`: tự động chuyển đổi cờ `FixerLicenseDebt` cũ sang bản ghi nợ tiêu chuẩn mà không tạo trùng lặp cho các save đã thanh toán.
+  * Kiểm định qua bộ test `tests/test_fixer_debt_lifecycle.mjs`.
 
+* **Mở rộng tuyến nghiệp và thăng tiến cho Syndicate Độc Lập (`Independent Syndicate Progression & Contracts`):**
+  * Tích hợp tuyến hợp đồng `independent_syndicate` vào `CONTRACT_ROUTES` (`src/data/careerContracts.js`) và `CAREER_REQUESTS` (`src/data/careerContractTemplates.js`).
+  * Sáng tác và bổ sung 12 mẫu hợp đồng ngầm chân thực trải dài qua 6 Threat Tiers trong `src/data/careerContractsIndependentSyndicate.js` (từ bảo kê dãy sạp, đòi nợ lò mổ, áp tải linh kiện Workshop cấm cho đến đột kích kho Finger, chủ trì hội nghị liên minh và huyết chiến xưng vương).
+  * Đồng bộ hóa thang lực chiến tương đương (`equivalentGrade`): Rank 0 tương đương Grade 7, Rank 1 tương đương Grade 5, Rank 2 tương đương Grade 3, Rank 3 tương đương Grade 1.
+  * Hiện thực hóa 3 đại sự kiện khảo nghiệm thăng bậc thế giới ngầm trong `src/data/eventsFactions.js`:
+    * `syn_indie_promo_rank1`: Thăng cấp Đầu Gấu Khu Phố (`Turf Lieutenant`), cắm cọc xác lập ranh giới dãy phố hoặc lập mạng lưới ngầm kín tiếng.
+    * `syn_indie_promo_rank2`: Thăng cấp Đại Ca Băng Đảng Tự Do (`Independent Syndicate Boss`), lập tổng hành dinh pháo đài hoặc mạng lưới bảo trợ kho vận.
+    * `syn_indie_promo_rank3`: Đăng quang Bá Chủ Ngõ Tối (`Underground Kingpin`), hiệu triệu toàn bộ thế giới ngầm hoặc trở thành kẻ giật dây vô hình, đạt 100% tiến độ Hegemony và mở khóa bản ghi thành tựu `independent_syndicate_apex`.
+  * Bổ sung điều kiện `syndicateRank`, `syndicateRankAtLeast`, `syndicateRankAtMost` và `noFinger` trong `src/engine/eventConditions.js`.
+  * Điều phối tự động việc xếp lịch sát hạch thăng bậc Syndicate độc lập trong `src/engine/yearPlanner.js`.
+  * Kiểm định qua bộ test `tests/test_independent_syndicate.mjs`.
 
+* **Phi cưỡng chế và tôn trọng quyết định từ chối Five Fingers:**
+  * Kiểm tra cờ `IndependentSyndicate`: một khi nhân vật đã từ chối quy phục, sự kiện `syn_choose_finger_allegiance` không bao giờ lặp lại để ép buộc người chơi.
+  * Syndicate độc lập có đường phát triển, sinh kế hợp đồng và đỉnh cao riêng biệt không lệ thuộc vào bất kỳ Finger nào.
 
-
+* **Kiểm định toàn vẹn:**
+  * `voice_lint.mjs --fail`: Quét toàn bộ **32.449 chuỗi văn bản**, 0 lỗi Han-Viet, 0 emoji, 0 em-dash, 0 dấu chấm than ngoài hội thoại.
+  * `npm run build`: Đóng gói thành công trong 6.91s.
+  * `npm test`: Đạt **100% toàn bộ 55/55 test suites** và **500 khoảnh khắc Million Audit** (0 vi phạm logic).
+  * Xóa bỏ hoàn tất tệp `docs/KE_HOACH_GAMEPLAY_LIFE_SIM.md` theo đúng chỉ thị.

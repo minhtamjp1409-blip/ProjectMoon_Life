@@ -348,6 +348,16 @@ function majorIsDue(char, rng) {
     const nextPromo = getNextFingerPromotion(char);
     if (nextPromo && nextPromo.isEligible) return true;
   }
+  if (char.job === 'Syndicate' && !char.finger) {
+    const rank = char.syndicateRank || 0;
+    const targetMerit = [0, 20, 50, 90][rank + 1];
+    const targetRep = [0, 20, 45, 75][rank + 1];
+    const targetHeat = [0, 15, 30, 50][rank + 1];
+    if (targetMerit != null && (char.merit || 0) >= targetMerit && (char.stats?.rep || 0) >= targetRep && (char.heat || 0) >= targetHeat) {
+      return true;
+    }
+  }
+  if ((char.debts || []).some((d) => d.id === 'fixer_license_debt' && d.status === 'active' && char.age >= d.nextDueAge)) return true;
   // If Wing Employee is eligible for next wing promotion, schedule major
   if (char.job === 'Wing Employee' && !char.flags.includes('Distorted')) {
     const nextPromo = getNextWingPromotion(char);
@@ -438,7 +448,7 @@ export function planYear(charState, rng) {
     if (!(char.seenEvents || []).includes(careerEventId) && !scheduledKey.some((it) => it.forcedEventId === careerEventId)) {
       scheduledKey.push({ kind: 'major', forcedEventId: careerEventId });
     }
-  } else if (char.job === 'Syndicate' && !char.finger && !(char.seenEvents || []).includes('syn_choose_finger_allegiance') &&
+  } else if (char.job === 'Syndicate' && !char.finger && !char.flags?.includes('IndependentSyndicate') && !(char.seenEvents || []).includes('syn_choose_finger_allegiance') &&
              ((char.merit || 0) >= 15 && ((char.stats?.rep || 0) >= 20 || (char.heat || 0) >= 25))) {
     if (!scheduledKey.some((it) => it.forcedEventId === 'syn_choose_finger_allegiance')) {
       scheduledKey.push({ kind: 'major', forcedEventId: 'syn_choose_finger_allegiance' });
@@ -469,6 +479,26 @@ export function planYear(charState, rng) {
   if (careerTrialRetryDue(char, nextOtherTrial) &&
       !scheduledKey.some((it) => it.kind === 'major' && !it.forcedEventId)) {
     scheduledKey.unshift({ kind: 'major' });
+  }
+
+  // Fixer license debt collection due (1-year grace period ended)
+  const activeDebt = (char.debts || []).find((d) => d.id === 'fixer_license_debt' && d.status === 'active' && char.age >= d.nextDueAge);
+  if (activeDebt && !scheduledKey.some((it) => it.forcedEventId === 'csq_fixer_license_debt_due')) {
+    scheduledKey.unshift({ kind: 'major', forcedEventId: 'csq_fixer_license_debt_due' });
+  }
+
+  // Independent Syndicate rank promotion when requirements are met
+  if (char.job === 'Syndicate' && !char.finger) {
+    const rank = char.syndicateRank || 0;
+    const targetMerit = [0, 20, 50, 90][rank + 1];
+    const targetRep = [0, 20, 45, 75][rank + 1];
+    const targetHeat = [0, 15, 30, 50][rank + 1];
+    if (targetMerit != null && (char.merit || 0) >= targetMerit && (char.stats?.rep || 0) >= targetRep && (char.heat || 0) >= targetHeat) {
+      const promoId = `syn_indie_promo_rank${rank + 1}`;
+      if (!(char.seenEvents || []).includes(promoId) && !scheduledKey.some((it) => it.forcedEventId === promoId)) {
+        scheduledKey.unshift({ kind: 'major', forcedEventId: promoId });
+      }
+    }
   }
 
   // Finger mission: a member is handed one of their Finger's own jobs in most years, as a Fixer is handed a Request

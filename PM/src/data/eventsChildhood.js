@@ -460,6 +460,16 @@ export const CHILDHOOD_EVENTS = [
             resultVi: "Không đủ 8 Ahn trả lệ phí Hana, bạn buộc phải cắn răng ký giấy vay nợ của tiệm cầm đồ Backstreets để lấy tấm thẻ Grade 9. Thư ký Hana trao thẻ, còn sau lưng bạn, những kẻ đòi nợ đã bắt đầu tính lãi từng tuần.",
             resultEn: "Lacking 8 Ahn for the Hana fee, you had to swallow your pride and sign a loan shark debt in the Backstreets to get the Grade 9 license. The Hana clerk handed over the card, while debt collectors began tracking your interest by the week.",
             flagsAdd: ['FixerLicenseDebt'],
+            debtsAdd: [
+              {
+                id: 'fixer_license_debt',
+                creditorId: 'backstreets_pawn_creditor',
+                principalAhn: 8,
+                balanceAhn: 8,
+                missedPayments: 0,
+                status: 'active'
+              }
+            ],
             effects: { rep: +6, heat: +14, sanity: -12 }
           }
         ]
@@ -485,6 +495,53 @@ export const CHILDHOOD_EVENTS = [
         meritAdd: 2,
         flagsAdd: ['Feather', 'Nest'],
         recordsAdd: ['nest_migration']
+      }
+    ]
+  },
+  {
+    id: 'csq_fixer_license_debt_due',
+    age: [19, 99],
+    major: true,
+    repeatable: true,
+    weight: 950,
+    vi: "[Hạn trả nợ thẻ Fixer] Kẻ đòi nợ của tiệm cầm đồ Backstreets cùng hai tay đao chặn bạn lại ở ngõ tối. Hắn mở cuốn sổ nợ đã ố vàng, gõ vào dòng ghi nợ tám Ahn: \"Thời hạn ân hạn một năm đã hết. Trả đủ tiền hoặc để lại ngón tay trên thớt.\"",
+    en: "[Fixer License Debt Due] The Backstreets pawn collector and two bladesmen corner you in a dim alley. He opens a yellowed ledger and taps the eight Ahn entry: \"Your one-year grace period is up. Pay in full or leave your fingers on the block.\"",
+    choices: [
+      {
+        labelVi: "Thanh toán dứt điểm toàn bộ món nợ (8 Ahn)",
+        labelEn: "Settle the full debt immediately (8 Ahn)",
+        costAhn: 8,
+        debtsSettle: ['fixer_license_debt'],
+        resultVi: "Bạn đếm đủ tám Ahn đặt vào tay gã chủ nợ. Gã gạch tên bạn khỏi sổ rồi xé đôi tờ giấy vay ném vào đống rác. Gánh nặng đè nặng lồng ngực bấy lâu nay tan biến.",
+        resultEn: "You count out eight Ahn into the collector's palm. He strikes your name from the ledger and tears your promissory note into the refuse. The suffocating weight on your chest dissolves.",
+        effects: { rep: +6, sanity: +10 }
+      },
+      {
+        labelVi: "Trả trước một phần và xin gia hạn một năm (3 Ahn)",
+        labelEn: "Pay partial amount and extend for one year (3 Ahn)",
+        costAhn: 3,
+        debtRepay: { id: 'fixer_license_debt', amount: 3, deferYears: 1 },
+        resultVi: "Bạn gom ba Ahn đưa cho gã đòi nợ, xin gia hạn nốt phần còn lại sang năm sau. Gã cân đo túi tiền rồi khạc nhổ xuống chân bạn: \"Một năm nữa, không thiếu một xu. Nếu trễ lần nữa tao sẽ tìm đến tận giường.\"",
+        resultEn: "You scrape together three Ahn for the collector, asking to defer the rest until next year. He weighs the pouch and spits at your feet: \"One more year, not an Ahn less. Miss it again and I visit your bedside.\"",
+        effects: { sanity: -4, heat: +4 }
+      },
+      {
+        labelVi: "Dùng quan hệ ngầm và danh tiếng Fixer để khất nợ",
+        labelEn: "Use underworld contacts and Fixer standing to defer",
+        need: { stat: { rep: [25, 100] } },
+        debtRepay: { id: 'fixer_license_debt', amount: 0, deferYears: 1 },
+        resultVi: "Bạn giơ thẻ Fixer và nhắc đến vài mối quen trong khu. Gã đòi nợ nhíu mày nhìn đồng bọn, biết ép quá sẽ chịu thiệt. Hắn gấp sổ lại: \"Được, nể mặt người quen cho mày thêm một năm. Nhưng nợ vẫn là nợ.\"",
+        resultEn: "You present your Fixer license and drop names respected in the district. The collector frowns, realizing violence carries too high a price. He shuts the book: \"Fine, a year for your connections. But the debt remains.\"",
+        effects: { heat: +8, sanity: -2 }
+      },
+      {
+        labelVi: "Không có tiền trả: Cắn răng chịu trận đòn dằn mặt",
+        labelEn: "Unable to pay: Endure a ruthless alley beating",
+        debtPenalty: { id: 'fixer_license_debt', principalAdd: 2, deferYears: 1 },
+        resultVi: "Không có tiền mặt, bạn bị hai tay đao lôi vào góc hẻm đánh bầm dập. Gã chủ nợ ghi thêm hai Ahn tiền phạt quá hạn vào sổ trước khi bỏ đi trong mưa: \"Năm sau tao quay lại. Liệu mà chuẩn bị lo hậu sự nếu vẫn rỗng túi.\"",
+        resultEn: "Penniless, you are dragged into the shadows and savagely beaten. The collector tacks on two Ahn penalty interest before walking away into the rain: \"I return next year. Prepare your funeral if your pockets are still dry.\"",
+        scarsAdd: ['Vết thương từ kẻ đòi nợ ngầm'],
+        effects: { health: -15, sanity: -12, heat: +12 }
       }
     ]
   },
