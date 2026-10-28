@@ -22,6 +22,126 @@
 }
 .log-col::before { content: ''; position: absolute; top: -1px; left: 24px; right: 24px; height: 2px; background: var(--accent); opacity: .9; transition: background-color 1.2s ease; }
 
+/* Tactile Hana District Docket Header */
+.chronicle-docket-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 12px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--page-rule);
+  color: var(--page-muted);
+}
+.docket-district-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.docket-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+}
+.docket-district-tag {
+  font-family: var(--font);
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--page-ink);
+  text-transform: uppercase;
+}
+.docket-serial-code {
+  font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--page-muted);
+  opacity: 0.8;
+}
+
+/* Atmospheric Horizon & Inner Drive Card */
+.chronicle-horizon-card {
+  margin-top: 48px;
+  padding: 18px 20px;
+  border: 1px dashed var(--page-edge);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.02);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  animation: entryIn 0.8s ease both;
+}
+.horizon-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.horizon-district-tag {
+  font-family: var(--font);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--accent);
+}
+.horizon-age-badge {
+  font-size: 12px;
+  font-family: var(--serif);
+  font-style: italic;
+  color: var(--page-muted);
+}
+.horizon-milestone-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.horizon-milestone-title-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 13.5px;
+}
+.horizon-milestone-label {
+  color: var(--page-muted);
+  font-size: 12.5px;
+}
+.horizon-milestone-title {
+  color: var(--page-ink);
+  font-weight: 600;
+  flex: 1;
+}
+.horizon-milestone-pct {
+  color: var(--gold);
+  font-weight: 700;
+}
+.horizon-bar {
+  height: 3px;
+  background: var(--raised);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.horizon-bar > i {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transition: width 0.5s ease;
+}
+.horizon-quote {
+  margin: 0;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--page-muted);
+}
+
+.mobile-thumb-bar {
+  display: none;
+}
+
 /* A new year opens like a new chapter */
 .yearline { display: flex; align-items: baseline; gap: 12px; margin: 44px 0 14px; padding-top: 14px; border-top: 1px solid var(--page-edge); }
 .yearline:first-child { margin-top: 0; }
@@ -304,14 +424,56 @@
 
 @media (max-width: 860px) {
   .log { padding: 0; }
-  .log-col { padding: 28px 20px 80px; min-height: 100%; border-radius: 0; }
+  .log-col { padding: 20px 18px 96px; min-height: 100%; border-radius: 0; }
   .log-col::before { display: none; }
   .entry.k-good::before, .entry.k-bad::before { left: -13px; }
   .yearline { margin-top: 34px; }
+  .chronicle-docket-header { margin-bottom: 16px; padding-bottom: 8px; }
+  .docket-serial-code { display: none; }
+  .chronicle-horizon-card { margin-top: 32px; padding: 14px 16px; }
+
+  /* Mobile floating thumb advance bar */
+  .mobile-thumb-bar {
+    display: flex;
+    position: fixed;
+    bottom: calc(var(--bottom, 0px) + 14px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 35;
+    pointer-events: auto;
+  }
+  .btn-mobile-thumb-step {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 44px;
+    padding: 0 22px;
+    background: var(--accent);
+    color: var(--accent-ink);
+    border: 1px solid var(--accent);
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 700;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 0 16px var(--accent-soft);
+    cursor: pointer;
+    transition: transform 0.14s ease, background-color 0.14s ease;
+  }
+  .btn-mobile-thumb-step:active {
+    transform: scale(0.95);
+  }
+
   /* On a phone the card sits between the play bar and the bottom tabs; bottom padding reserves dedicated space for the peek toggle */
-  .event-modal-backdrop { padding: calc(var(--top) + 68px) 10px calc(var(--bottom) + 60px); }
-  .event-modal-backdrop > .dock { max-height: calc(100dvh - var(--top) - 68px - var(--bottom) - 66px); border-radius: 14px; }
-  .event-peek-toggle { top: auto; right: 50%; transform: translateX(50%); bottom: calc(var(--bottom) + 12px); z-index: 10; }
+  .event-modal-backdrop {
+    place-items: end center;
+    padding: calc(var(--top) + 20px) 10px calc(var(--bottom) + 12px);
+  }
+  .event-modal-backdrop > .dock {
+    width: 100%;
+    max-height: calc(100dvh - var(--top) - 40px - var(--bottom));
+    border-radius: 16px 16px 8px 8px;
+    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.7);
+  }
+  .event-peek-toggle { top: auto; right: 50%; transform: translateX(50%); bottom: calc(var(--bottom) + 12px); z-index: 50; }
   .dock { padding: 18px 16px 22px; }
   .dock-title { font-size: 22px; }
   .dock-hotkey-hint { display: none; }

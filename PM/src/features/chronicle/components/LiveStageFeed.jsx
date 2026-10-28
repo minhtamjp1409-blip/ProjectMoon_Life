@@ -1,13 +1,14 @@
 import { choiceIsAvailable, charHasCombatGear } from '../../../engine/eventConditions.js';
 import { ITEMS_CATALOG } from '../../../data/itemsData.js';
+import { REGIONS } from '../../../data/worldData.js';
 import { localizeEnsembleName } from '../../../data/ensembleNames.js';
 import React, { useEffect, useRef, useState } from 'react';
 import { Modal } from 'antd';
-import { GitBranch, Download, RotateCcw, Hammer, ChevronDown, Eye, EyeOff, BookOpen, Copy, Check, House, Zap, Hourglass, ScrollText, Skull, History, Stamp } from 'lucide-react';
+import { GitBranch, Download, RotateCcw, Hammer, ChevronDown, Eye, EyeOff, BookOpen, Copy, Check, House, Zap, Hourglass, ScrollText, Skull, History, Stamp, SkipForward } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 import { useGameStore } from '../../../store/gameStore';
-import { buildLifeSummaryAndLegacy, getDungeonCurrentStage, isDungeonChoiceAvailable, DUNGEON_DEFINITIONS } from '../../../engine/gameEngine';
+import { buildLifeSummaryAndLegacy, getDungeonCurrentStage, isDungeonChoiceAvailable, DUNGEON_DEFINITIONS, getNextCareerMilestone } from '../../../engine/gameEngine';
 import { DungeonDock } from './DungeonDock';
 import { YearLeadDock } from './YearLeadDock';
 import { YearPlanDock } from './YearPlanDock';
@@ -947,7 +948,7 @@ const Epitaph = ({ summary, onInherit, onRestart, onViewRecord, onGoHome }) => {
 /* ---------- Stage ---------- */
 
 export const LiveStageFeed = () => {
-  const { t } = useT();
+  const { t, lang } = useT();
   const navigate = useNavigate();
   const {
     char,
@@ -976,7 +977,8 @@ export const LiveStageFeed = () => {
     postChoicePauseMs,
     clearPostChoicePause,
     revealNextBirthLog,
-    skipAllBirthLogs
+    skipAllBirthLogs,
+    stepYear
   } = useGameStore(
     useShallow((s) => ({
       char: s.char,
@@ -1005,7 +1007,8 @@ export const LiveStageFeed = () => {
       postChoicePauseMs: s.postChoicePauseMs,
       clearPostChoicePause: s.clearPostChoicePause,
       revealNextBirthLog: s.revealNextBirthLog,
-      skipAllBirthLogs: s.skipAllBirthLogs
+      skipAllBirthLogs: s.skipAllBirthLogs,
+      stepYear: s.stepYear
     }))
   );
 
@@ -1327,6 +1330,8 @@ export const LiveStageFeed = () => {
 
   const forgeQuality = strikes.length ? Math.round(strikes.reduce((a, b) => a + b, 0) / strikes.length) : 0;
   const lifeSummary = !char.alive ? buildLifeSummaryAndLegacy(char) : null;
+  const currentRegion = REGIONS.find((r) => r.id === char.regionId) || REGIONS[0];
+  const currentMilestone = getNextCareerMilestone(char);
   const hasDock = Boolean((char.pendingYearPlan && !isPrologueActive) || (char.pendingLead && !isPrologueActive) || char.pendingDungeon || char.pendingEvent || char.pendingContract || char.pendingMinor || activeResolution);
   const canPeek = Boolean(char.pendingDungeon || char.pendingEvent || char.pendingContract || activeResolution);
   useEffect(() => setPeekBehind(false), [char.pendingDungeon?.id, char.pendingEvent?.id, char.pendingContract?.id, activeResolution?.titleVi]);
@@ -1342,7 +1347,50 @@ export const LiveStageFeed = () => {
       <div className="chronicle-heading"><h1>{t('Biên niên', 'Chronicle')}</h1><span>{char.name}</span></div>
       <div className="log" ref={logRef}>
         <div className="log-col">
+          <div className="chronicle-docket-header" aria-hidden="true">
+            <div className="docket-district-badge">
+              <span className="docket-dot" />
+              <span className="docket-district-tag">
+                {currentRegion ? (lang === 'en' ? currentRegion.nameEn : currentRegion.nameVi) : t('The City', 'The City')}
+              </span>
+            </div>
+            <span className="docket-serial-code">
+              HANA // {char.name ? char.name.toUpperCase() : 'CITIZEN'} · GEN #{char.generation || 1} · {char.age}y
+            </span>
+          </div>
           <LogEntries logs={char.logs} />
+          {char.alive && !isPrologueActive && !lifeSummary && (
+            <aside className="chronicle-horizon-card">
+              <div className="horizon-card-top">
+                <span className="horizon-district-tag">
+                  {char.job === 'Child'
+                    ? t('Thời niên thiếu · Đô Thị thức giấc', 'Early Years · The City Awakens')
+                    : t('Định hướng sinh tồn & Khát vọng', 'Current Horizon & Drive')}
+                </span>
+                <span className="horizon-age-badge">
+                  {t(`Năm thứ ${char.age}`, `Year ${char.age}`)}
+                </span>
+              </div>
+              {currentMilestone && currentMilestone.category !== 'WORKSHOP' ? (
+                <div className="horizon-milestone-preview">
+                  <div className="horizon-milestone-title-row">
+                    <span className="horizon-milestone-label">{t('Mục tiêu hiện tại:', 'Current pursuit:')}</span>
+                    <b className="horizon-milestone-title">{lang === 'en' ? currentMilestone.titleEn : currentMilestone.titleVi}</b>
+                    <span className="horizon-milestone-pct num">{currentMilestone.progressPct}%</span>
+                  </div>
+                  <div className="horizon-bar">
+                    <i style={{ width: `${currentMilestone.progressPct}%` }} />
+                  </div>
+                </div>
+              ) : (
+                <p className="horizon-quote">
+                  {char.job === 'Child'
+                    ? t('Những con hẻm Backstreets không tha thứ cho kẻ yếu đuối. Mỗi ngày lớn lên là một ngày học cách sinh tồn.', 'The Backstreets show no mercy to the meek. Every passing day is a lesson in survival.')
+                    : t('Tiếng bước chân của các Fixer vọng qua màn sương đêm. Mọi sự lựa chọn tại The City đều có một cái giá.', 'Footsteps of Fixers echo through the nocturnal fog. Every choice in The City demands its price.')}
+                </p>
+              )}
+            </aside>
+          )}
           {isPrologueActive && (
             <div className="prologue-dock">
               <button
@@ -1375,6 +1423,22 @@ export const LiveStageFeed = () => {
           )}
         </div>
       </div>
+
+      {!hasDock && char.alive && !isPrologueActive && !lifeSummary && (
+        <div className="mobile-thumb-bar" role="region" aria-label={t('Thao tác nhanh di động', 'Mobile Quick Controls')}>
+          <button
+            type="button"
+            className="btn-mobile-thumb-step"
+            onClick={() => {
+              audioEngine.playYearTick();
+              stepYear();
+            }}
+          >
+            <SkipForward size={16} />
+            <span>{t('Sự kiện tiếp', 'Next Event')}</span>
+          </button>
+        </div>
+      )}
 
       {hasDock && canPeek && (
         <button type="button" className="event-peek-toggle" onClick={() => setPeekBehind((value) => !value)} aria-label={peekBehind ? t('Hiện quyết định', 'Show decision') : t('Ẩn quyết định để xem biên niên', 'Hide decision to read chronicle')} aria-pressed={peekBehind}>

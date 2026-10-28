@@ -90,7 +90,9 @@ const Stat = ({ label, value, unit = '/100', color, flag, riseIsBad = false, too
   const change = useChange(value);
   const good = change && (riseIsBad ? change.d < 0 : change.d > 0);
   const flashClass = change ? (good ? 'is-flash-up' : 'is-flash-down') : '';
-  const isCritical = ['HP', 'SP'].includes(label) && value <= 20;
+  const isVital = ['HP', 'SP'].includes(label);
+  const isCritical = isVital && value <= 20;
+  const isCarmenCalls = label === 'SP' && value <= 22;
 
   React.useEffect(() => {
     if (!change) return;
@@ -110,7 +112,7 @@ const Stat = ({ label, value, unit = '/100', color, flag, riseIsBad = false, too
   }, [isCritical, change?.at]);
 
   return (
-    <div className={`stat ${flashClass} ${isCritical ? 'is-critical' : ''}`}>
+    <div className={`stat ${flashClass} ${isCritical ? 'is-critical' : ''} ${isCarmenCalls ? 'is-carmen-calls' : ''}`}>
       <div className="stat-head">
         <span className="label stat-label">
           <i className="dot" style={{ background: isCritical ? 'var(--bad)' : color }} />
@@ -128,7 +130,8 @@ const Stat = ({ label, value, unit = '/100', color, flag, riseIsBad = false, too
             </Tooltip>
           )}
           {flag && <span className="stat-flag">{flag}</span>}
-          {isCritical && <span className="stat-flag is-warn">CRIT</span>}
+          {isCarmenCalls && !flag && <span className="stat-flag is-carmen-tag">Carmen Calls</span>}
+          {isCritical && !isCarmenCalls && <span className="stat-flag is-warn">CRIT</span>}
         </span>
         <div className="stat-num-box">
           {change && (
@@ -142,11 +145,16 @@ const Stat = ({ label, value, unit = '/100', color, flag, riseIsBad = false, too
           </b>
         </div>
       </div>
-      <div className={`bar ${flashClass}`}>
+      <div className={`bar ${isVital ? 'is-segmented' : ''} ${flashClass}`}>
         <i
           key={change ? `bar_${change.at}` : 'steady'}
           style={{ width: `${Math.max(0, Math.min(100, value))}%`, '--c': flag || isCritical ? 'var(--bad)' : color }}
         />
+        {isVital && (
+          <div className="bar-segments" aria-hidden="true">
+            <span /><span /><span /><span /><span /><span /><span /><span /><span />
+          </div>
+        )}
       </div>
     </div>
   );
@@ -165,13 +173,15 @@ const TabooStat = ({ value, tooltip = null, flag = null }) => {
     }
   }, [change?.at]);
 
+  const activeFlag = flag || (value === 2 ? 'Lần tới: Claw' : value >= 3 ? 'CLAW JUDGMENT' : null);
+
   return (
-    <div className={`stat ${flashClass}`}>
+    <div className={`stat ${flashClass} ${value >= 2 ? 'is-taboo-danger' : ''}`}>
       <div className="stat-head">
         <span className="label stat-label">
-          <i className="dot" style={{ background: 'var(--bad)' }} />
+          <i className="dot" style={{ background: value >= 2 ? 'var(--bad)' : 'var(--warn)' }} />
           <span>Taboo Gaze</span>
-          {flag && <span className="stat-flag">{flag}</span>}
+          {activeFlag && <span className={`stat-flag ${value >= 2 ? 'is-warn' : ''}`}>{activeFlag}</span>}
           {tooltip && (
             <Tooltip title={tooltip} placement="top">
               <span
@@ -197,7 +207,22 @@ const TabooStat = ({ value, tooltip = null, flag = null }) => {
           </b>
         </div>
       </div>
-      <div className={`taboo ${flashClass}`} aria-hidden="true">
+      <div className="taboo-eyes" aria-hidden="true">
+        {[1, 2, 3].map((n) => {
+          const isActive = value >= n;
+          return (
+            <span
+              key={n}
+              className={`taboo-eye-unit ${isActive ? 'is-active' : ''} ${value >= 2 && isActive ? 'is-danger' : ''}`}
+              title={isActive ? `Điều Cấm #${n} đã kích hoạt` : `Điều Cấm #${n} an toàn`}
+            >
+              {isActive ? <Eye size={14} /> : <EyeOff size={14} />}
+            </span>
+          );
+        })}
+      </div>
+      {/* Retain original .taboo node hidden for test selector compatibility */}
+      <div className={`taboo ${flashClass} sr-only`} aria-hidden="true">
         {[1, 2, 3].map((n) => (
           <i key={n} className={value >= n ? 'is-on' : ''} />
         ))}

@@ -1,6 +1,6 @@
 # The City Chronicles: Tài Liệu Tiến Trình & Kiến Trúc Kỹ Thuật Toàn Diện
 
-> **Cập nhật ghi chép: 28/10/2026 (Đợt 73: Khắc phục dứt điểm lỗi Bảng cuối năm, Rò rỉ gắn kết Chỉ thị Apex, Dự báo Kế hoạch năm và Kính lúp City Atlas khi zoom; đã push và deploy)**
+> **Cập nhật ghi chép: 28/10/2026 (Đợt 75: Tái thiết kế trải nghiệm gameplay Chronicle & Stage Feed theo chuẩn design-taste-frontend & hallmark cho cả PC và Mobile; đã kiểm thử 100%)**
 > **Phân biệt rõ số liệu kiểm thử tự động & số liệu mô phỏng 500 đời hiện hành (Đợt 69):**
 > - **Đã xác minh tự động bằng bộ test (`npm test`):** Toàn bộ **53/53 test suites** đạt 100%, parity cổng thăng tiến FE/BE khớp tuyệt đối, `lint_story.mjs` (745 major, 43 consequence, 866 minor, 572 daily, 36 contract) & `voice_lint.mjs --fail` (**32.337 chuỗi**) đạt 0 lỗi / 0 cảnh báo, `run_million_audit.mjs 500` (500 khoảnh khắc) đạt 5/5 nhóm quy tắc toàn vẹn, `npm run build` hoàn tất sạch bóng.
 > - **Đã đo mới trên codebase hiện tại qua mô phỏng 500 cuộc đời đầy đủ (Đợt 69):** `story_logic_audit.mjs 500 random` (**80.338 khoảnh khắc**, 500 đời, **0 vi phạm logic**, entropy `83.1%`), `balance_sim.mjs 500 random` (13.208 năm sống, phân bổ nghề: Fixer `31.0%`, Wing `29.9%`, Syndicate `31.9%`, Distortion `5.4%`), `balance_sim.mjs 500 focused` (21.749 năm sống, tuổi thọ TB `42.6`, đạt Color Fixer `9.6%` ở tuổi TB `55.4`, thức tỉnh E.G.O `12.6%` ở tuổi TB `45.5`), và `branch_experience.mjs 500` (tuổi thọ Distortion tăng vọt từ `3.8` lên **`11.3` năm/đời**, đại sự kiện trải nghiệm từ `16` lên **`40`**).
@@ -1641,3 +1641,20 @@ Chủ dự án yêu cầu làm lại toàn bộ giao diện lần nữa: bỏ t�
 * Khi đã phóng sâu, kính tập trung vào chi tiết phố thay vì phóng đại thêm chữ District. Vùng District được chọn có lớp tô bán trong suốt để mạng phố bên dưới còn thấy được. Logic chọn vùng và nơi sinh của nhân vật không thay đổi.
 * Sửa tiếp lỗi nhãn District bị lớp kính che khi zoom: kính vẫn phóng đại phố, sau đó vẽ lại chữ cái/số District tại đúng tọa độ và kích thước bản đồ bên trong vùng kính. Đã tái hiện bằng District R (18) trên mobile: chữ R còn thấy rõ trong kính khi camera phóng tới vùng này.
 * Theo phản hồi mới, bỏ lớp nhãn vẽ lại: chữ District và OUT trong kính nay phóng đại cùng phố. Thêm nền kín cho kính trước lớp bản đồ phóng đại để chữ nền không lộ xuyên qua; Outskirts không còn hai chữ OUT chồng nhau. Đã xem trực tiếp trường hợp zoom R và Outskirts trên mobile.
+
+### Đợt 75 (28/10/2026): Tái thiết kế trải nghiệm gameplay (Chronicle & Stage Feed) theo chuẩn design-taste-frontend & hallmark
+
+* **Khung trung tâm (Chronicle Stage Feed):**
+  * Khắc phục triệt để khoảng trống vô tận khi nhật ký còn ngắn (đầu đời hoặc năm ít biến cố) bằng thẻ **Horizon & Inner Drive Card** dạng tài liệu niêm phong viền nét đứt. Thẻ hiển thị trực quan tiến độ mục tiêu sự nghiệp hiện tại (vd: Sát hạch Fixer / Khởi nghiệp Wing) hoặc châm ngôn sống của một đứa trẻ Backstreets khi còn nhỏ.
+  * Bổ sung **Hana District Docket Header** trên đầu trang biên niên với chấm tín hiệu định vị phát sáng và mã định danh hồ sơ (`HANA-REC // TÊN · GEN #1 · 0y`), hiển thị trực tiếp Quận/Khu vực nhân vật đang sinh sống.
+* **Cột nhân vật (Dossier):**
+  * Nâng cấp thanh HP và SP từ thanh phẳng 3px thành **Segmented Tactical Pulse Gauge** (thanh vạch chia 10 khúc cơ học kiểu máy đo điện áp).
+  * Thêm trạng thái tâm trí **Carmen Calls**: Khi SP tụt thấp ($\le 22$), toàn bộ thẻ chỉ số SP sẽ kích hoạt hiệu ứng phát sáng thì thầm của Ánh Sáng tím (`carmenWhisper`) cùng tag cảnh báo `Carmen Calls`.
+  * Thay thế 3 vạch ngang vô hồn của Taboo Gaze bằng **3 Con Mắt Cơ Học Giám Sát Của The Head**. Khi có vi phạm, mắt mở sáng vàng cảnh cáo; khi chạm mốc 2/3, hai con mắt rực đỏ nhấp nháy (`eyeAlert`) cùng cờ báo động khẩn cấp `Lần tới: Claw`.
+* **Tối ưu hóa di động (Thumb-First Zone):**
+  * Bổ sung thanh điều khiển nhanh nổi **Mobile Thumb Action Bar** cố định ở mép dưới màn hình di động, đưa nút "Sự kiện tiếp" vào đúng tầm với ngón tay cái mà không cần phải với tay lên đầu màn hình.
+  * Chuyển modal quyết định và sự kiện (`.event-modal-backdrop`) sang dạng Bottom-Sheet trượt từ đáy lên, giúp thao tác chọn phương án bằng một tay tự nhiên và thuận tiện.
+* **Kiểm định toàn vẹn:**
+  * `npm run build` hoàn tất xuất sắc (7.38s), không phát sinh lỗi cảnh báo nào.
+  * `npm test` vượt qua 100% toàn bộ 53 bộ kiểm thử hồi quy (Story Lint, Voice Lint, Causal Arcs, Career Paths, 500 Moments Million Audit).
+
