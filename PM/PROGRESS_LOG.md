@@ -1890,3 +1890,10 @@ Chủ dự án yêu cầu làm lại toàn bộ giao diện lần nữa: bỏ t�
 * Lựa chọn trả vào món nợ dùng nhãn trung tính. Nếu khoản trả đủ xóa nợ, sự kiện dùng đoạn kết riêng xác nhận chủ nợ gạch tên và không còn khoản phải trả năm sau; nếu vẫn còn nợ, giữ đoạn gia hạn. Hai ngôn ngữ cùng một điều kiện.
 * `syncPlanWithBackend` gửi `finger: null` cho Syndicate chưa gia nhập Finger. DTO backend tiếp nhận giá trị này và `syndicateRank`; Director tách tiến trình Syndicate địa phương/độc lập với thang chức The Thumb. Kế hoạch server chỉ xét khảo thí Finger khi nhân vật thực sự thuộc một Finger.
 * Đã chạy `tests/test_fixer_debt_lifecycle.mjs`, `tests/test_independent_syndicate.mjs`, toàn bộ `npm test` (gồm 500 khoảnh khắc), `npm run build`, và `dotnet build` cho PM_BE: đều đạt. Gọi trực tiếp API backend xác nhận nhân vật độc lập nhận `INDEPENDENT SYNDICATE` cùng ba chỉ tiêu Merit/Rep/Heat và không nhận bài khảo thí Thumb; nhân vật Thumb vẫn nhận thang chức và khảo thí Thumb.
+
+### Đợt 86 (28/10/2026): Đồng bộ preview phí nợ với điều kiện chọn và engine
+
+* Thêm `getChoiceAhnCost` vào `src/engine/eventConditions.js`. Lựa chọn trả hết dùng đúng số dư nợ đang hoạt động; lựa chọn trả một phần dùng số nhỏ hơn giữa 3 Ahn và số dư. Phí `costAhn` cố định vẫn được giữ nguyên.
+* `choiceIsAvailable`, `resolveEventChoice`, `previewChoice` và `EventDock` dùng cùng phép tính. `EventDock` hiện đúng số Ahn cần có khi khóa lựa chọn, hoặc số Ahn sẽ tốn khi có thể chọn; `ChoicePreview` đánh dấu Ahn là tài nguyên bị tác động.
+* Thêm `choiceCostDisplay` để kiểm thử trực tiếp nhãn tiếng Việt/Anh của giao diện. `tests/test_choice_cost_parity.mjs` so sánh nhãn, preview, trạng thái khóa và số tiền engine trừ ở các mức nợ 10, 5, 2 Ahn, kể cả thiếu tiền và vừa đủ tiền. Nối test vào `npm test`.
+* Tạo `docs/CONG_VIEC_CON_LAI_SAU_PREVIEW_NO.md` ghi các đề xuất gameplay và bước kiểm chứng còn lại. Đã chạy `npm test` với audit 500 khoảnh khắc và `npm run build`: đều đạt. Chưa kiểm tra bằng mắt trong trình duyệt; bước này được ghi trong file công việc còn lại.

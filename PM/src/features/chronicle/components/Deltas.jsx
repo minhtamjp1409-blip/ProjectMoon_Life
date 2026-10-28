@@ -3,6 +3,7 @@ import { useT } from '../../../i18n';
 import { weightedOutcomes } from '../../../engine/outcomeOdds.js';
 import { fixerPromotionSuccessChance, isFixerPromotionChoice } from '../../../engine/careerPipeline.js';
 import { bringsClaw } from '../../../engine/forbiddenPath.js';
+import { getChoiceAhnCost } from '../../../engine/eventConditions.js';
 
 const LABELS = {
   health: ['HP', 'HP'],
@@ -147,13 +148,27 @@ const STAT_ORDER = Object.keys(LABELS);
 const fxOf = (x) => x?.fx || x?.effects || {};
 const outsOf = (c) => c?.out || c?.outcomes || null;
 
+export function choiceCostDisplay(choice, char) {
+  const costAhn = getChoiceAhnCost(choice, char);
+  const isShortAhn = costAhn > (char?.stats?.wealth ?? char?.wealth ?? 0);
+  return {
+    costAhn,
+    isShortAhn,
+    needVi: `Thiếu Ahn (Cần ${costAhn})`,
+    needEn: `Short Ahn (Needs ${costAhn})`,
+    costVi: `Tốn ${costAhn} Ahn`,
+    costEn: `Cost: ${costAhn} Ahn`
+  };
+}
+
 /**
  * What a choice will do: list of affected resources (without exact numbers to maintain
  * suspense and gamble), plus odds when multiple outcomes exist.
  */
 export function previewChoice(choice, char, kind = 'major') {
   const base = fxOf(choice);
-  const costOutsideEffects = choice.costAhn && base.wealth !== -choice.costAhn ? choice.costAhn : 0;
+  const costAhn = getChoiceAhnCost(choice, char);
+  const costOutsideEffects = costAhn && base.wealth !== -costAhn ? costAhn : 0;
   if (isFixerPromotionChoice(choice, char)) {
     const pass = Math.round(fixerPromotionSuccessChance(char, choice.setFixerGrade) * 100);
     return { affected: [...new Set([...STAT_ORDER.filter((key) => Boolean(base[key])), 'health', 'wealth', 'sanity'])],
@@ -162,8 +177,8 @@ export function previewChoice(choice, char, kind = 'major') {
   const weighted = char ? weightedOutcomes(choice, char, kind) : (outsOf(choice) || []).map((outcome) => ({ outcome, weight: outcome.w ?? 1 }));
   const outs = weighted.map((entry) => entry.outcome);
   if (!outs?.length) {
-    const affected = STAT_ORDER.filter((k) => Boolean(base[k]) || (k === 'wealth' && Boolean(choice.costAhn)));
-    const fixed = STAT_ORDER.filter((k) => base[k] || (k === 'wealth' && choice.costAhn)).map((k) => ({ k, v: base[k] || -choice.costAhn }));
+    const affected = STAT_ORDER.filter((k) => Boolean(base[k]) || (k === 'wealth' && Boolean(costAhn)));
+    const fixed = affected.map((k) => ({ k, v: (base[k] || 0) - (k === 'wealth' ? costOutsideEffects : 0) }));
     return { affected, fixed, ranges: [], odds: null };
   }
   const total = weighted.reduce((sum, entry) => sum + entry.weight, 0);
@@ -173,7 +188,7 @@ export function previewChoice(choice, char, kind = 'major') {
     const values = outs.map((o) => (base[k] || 0) + (fxOf(o)[k] || 0) - (k === 'wealth' ? costOutsideEffects : 0));
     const lo = Math.min(...values);
     const hi = Math.max(...values);
-    if (lo === 0 && hi === 0 && !base[k] && !(k === 'wealth' && choice.costAhn)) continue;
+    if (lo === 0 && hi === 0 && !base[k] && !(k === 'wealth' && costAhn)) continue;
     affected.push(k);
     ranges.push({ k, lo, hi });
   }

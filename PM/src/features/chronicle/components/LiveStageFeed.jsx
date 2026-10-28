@@ -17,7 +17,7 @@ import { exportDossierCardPNG } from '../../../utils/exportDossierCard';
 import { audioEngine } from '../../../engine/audioEngine';
 import { gameFeel } from '../../../engine/gameFeel';
 import { useT } from '../../../i18n';
-import { Deltas, ChoicePreview } from './Deltas';
+import { Deltas, ChoicePreview, choiceCostDisplay } from './Deltas';
 import { getPsycheInterjection, evaluateDiscoChoiceCheck } from '../../../engine/discoPsyche';
 import { bestowHanaColorTitle } from '../../../engine/colorRegistry';
 import { dungeonEntryForecast } from '../../../engine/dungeonEngine';
@@ -317,14 +317,13 @@ const EventDock = ({ event, char, onPick, dungeonStake, onDungeonStake }) => {
           {(event.choices || []).map((ch, idx) => {
             const label = splitTitle(lang === 'en' ? ch.labelEn || ch.labelVi : ch.labelVi).body;
             const check = evaluateDiscoChoiceCheck(ch, char);
-            const playerWealth = char.stats?.wealth ?? char.wealth ?? 0;
-            const isShortAhn = Boolean(ch.costAhn && ch.costAhn > playerWealth);
+            const costDisplay = choiceCostDisplay(ch, char);
             const blocked = !choiceIsAvailable(ch, char);
             const item = ITEMS_CATALOG.find(i => i.id === (ch.useItem || ch.need?.item));
             let blockedReason = null;
             if (blocked) {
-              if (isShortAhn) {
-                blockedReason = t(`Thiếu Ahn (Cần ${ch.costAhn})`, `Short Ahn (Needs ${ch.costAhn})`);
+              if (costDisplay.isShortAhn) {
+                blockedReason = t(costDisplay.needVi, costDisplay.needEn);
               } else if (ch.favorCost && (!char.npcs?.[ch.favorCost.role] || (char.npcs[ch.favorCost.role]?.bond || 0) < ch.favorCost.amount)) {
                 blockedReason = t(`Cần ${ch.favorCost.role} (${ch.favorCost.amount} gắn bó)`, `Needs ${ch.favorCost.role} (${ch.favorCost.amount} bond)`);
               } else if (ch.useItem && !(char.inventory || []).some(i => (i.id || i) === ch.useItem)) {
@@ -337,10 +336,10 @@ const EventDock = ({ event, char, onPick, dungeonStake, onDungeonStake }) => {
             }
             const extra = [];
             if (item && !ch.useItem) extra.push(<span className="delta is-static" key="item">{t('Cần trang bị: ', 'Requires: ')}{lang === 'en' ? item.nameEn : item.nameVi}</span>);
-            if (ch.costAhn && !isShortAhn) {
+            if (costDisplay.costAhn && !costDisplay.isShortAhn) {
               extra.push(
                 <span className="delta is-static" key="costAhn">
-                  {t(`Tốn ${ch.costAhn} Ahn`, `Cost: ${ch.costAhn} Ahn`)}
+                  {t(costDisplay.costVi, costDisplay.costEn)}
                 </span>
               );
             }

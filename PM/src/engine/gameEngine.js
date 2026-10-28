@@ -1,6 +1,6 @@
 import { rememberResonance, hasEgoOpportunity, colorTrialAvailable } from './awakeningProgress.js';
 import { advanceActiveNarrativeArcs } from './narrativeArcEngine.js';
-import { choiceIsAvailable, matchesEventContext, mergeEffects, npcIsActive, recordColorTrialCompanion, colorTrialCompanionOf, isIndependentSyndicateEligibleForRank } from './eventConditions.js';
+import { choiceIsAvailable, getChoiceAhnCost, matchesEventContext, mergeEffects, npcIsActive, recordColorTrialCompanion, colorTrialCompanionOf, isIndependentSyndicateEligibleForRank } from './eventConditions.js';
 import { ITEMS_CATALOG } from '../data/itemsData.js';
 import { rollPerinatalFate } from './fateEngine.js';
 import { rollTraits, traitsOf, varyEffects, PRINTED_NUMBERS } from './variance.js';
@@ -2360,15 +2360,7 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random, dung
   if (event.id.startsWith('gate_')) char.lastGateAge = char.age;
   const printsNumbers = PRINTED_NUMBERS.test(`${outcome.resultVi || outcome.rvi || ''}${choice.resultVi || choice.rvi || ''}`);
   const rolled = mergeEffects(choice, outcome);
-  let effectiveCostAhn = choice.costAhn;
-  if (choice.debtId) {
-    const debt = (char.debts || []).find((d) => d.id === choice.debtId && d.status === 'active');
-    if (choice.debtCost === 'full') {
-      effectiveCostAhn = debt ? debt.balanceAhn : 0;
-    } else if (choice.debtCost === 'partial') {
-      effectiveCostAhn = debt ? Math.min(3, debt.balanceAhn) : 0;
-    }
-  }
+  const effectiveCostAhn = getChoiceAhnCost(choice, char);
   if (effectiveCostAhn && (choice.fx?.wealth ?? choice.effects?.wealth ?? rolled.wealth) === -effectiveCostAhn) {
     rolled.wealth = (rolled.wealth || 0) + effectiveCostAhn;
   }

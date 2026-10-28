@@ -205,20 +205,21 @@ export function matchesEventContext(entry, char) {
   return matchesNeed(entry.need, char, entry) && hasNarrativeContext(entry, char);
 }
 
+export function getChoiceAhnCost(choice, char) {
+  if (!choice) return 0;
+  if (choice.debtId && (choice.debtCost === 'full' || choice.debtCost === 'partial')) {
+    const debt = (char?.debts || []).find((item) => item.id === choice.debtId && item.status === 'active');
+    if (!debt) return 0;
+    return choice.debtCost === 'full' ? debt.balanceAhn : Math.min(3, debt.balanceAhn);
+  }
+  return choice.costAhn ?? 0;
+}
+
 export function choiceIsAvailable(choice, char) {
   if (!choice || !matchesNeed(choice.need, char)) return false;
   if (choice.useItem && !(char.inventory || []).some(i => (i.id || i) === choice.useItem)) return false;
   if (choice.favorCost && (!npcIsActive(char.npcs?.[choice.favorCost.role]) || (char.npcs[choice.favorCost.role].bond || 0) < choice.favorCost.amount)) return false;
-  let cost = choice.costAhn;
-  if (choice.debtId) {
-    const debt = (char.debts || []).find((d) => d.id === choice.debtId && d.status === 'active');
-    if (choice.debtCost === 'full') {
-      cost = debt ? debt.balanceAhn : 0;
-    } else if (choice.debtCost === 'partial') {
-      cost = debt ? Math.min(3, debt.balanceAhn) : 0;
-    }
-  }
-  return cost == null || (char.stats?.wealth ?? char.wealth ?? 0) >= cost;
+  return (char.stats?.wealth ?? char.wealth ?? 0) >= getChoiceAhnCost(choice, char);
 }
 
 export function mergeEffects(...sources) {
