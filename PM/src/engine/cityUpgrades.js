@@ -7,6 +7,7 @@
 // ============================================================================
 
 import { REGIONS } from '../data/worldData.js';
+import { npcIsActive } from './eventConditions.js';
 
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
 
@@ -522,34 +523,140 @@ export function isApexCommander(char) {
   return false;
 }
 
+// Route-distinct leadership powers & organizational obligations (T19)
+export function getApexDirectiveEffects(char, directiveId) {
+  const dir = APEX_DIRECTIVES.find((d) => d.id === directiveId);
+  if (!dir) return null;
+  const isColor = char?.job === 'Color Fixer' || char?.flags?.includes('ColorFixer') || char?.fixerGrade === 0;
+  const finger = char?.finger;
+  const isWing = char?.job === 'Wing Employee' || (char?.wingRank || 0) >= 2;
+  const isWorkshop = char?.job === 'Workshop Craftsman' || (char?.workshopRank || 0) >= 2;
+
+  const fx = { ...(dir.fx || {}) };
+  const routeBonus = {};
+
+  if (directiveId === 'dispatch_squad') {
+    if (isColor) {
+      routeBonus.rep = 3;
+      routeBonus.bondBoost = 3;
+    } else if (finger === 'Thumb') {
+      routeBonus.wealth = 3;
+      routeBonus.leverage = 4;
+    } else if (finger === 'Index') {
+      routeBonus.resonance = 4;
+      routeBonus.heat = -3;
+    } else if (finger === 'Middle') {
+      routeBonus.bondBoost = 4;
+      routeBonus.rep = 2;
+    } else if (finger === 'Ring') {
+      routeBonus.wealth = 4;
+      routeBonus.resonance = 2;
+    } else if (finger === 'Pinky') {
+      routeBonus.leverage = 5;
+    } else if (isWing) {
+      routeBonus.standing = 4;
+    } else if (isWorkshop) {
+      routeBonus.wealth = 3;
+      routeBonus.merit = 4;
+    }
+  } else if (directiveId === 'fortify_turf') {
+    if (isColor) {
+      routeBonus.sanity = 4;
+      routeBonus.health = 3;
+      routeBonus.heat = -2;
+    } else if (finger === 'Thumb') {
+      routeBonus.leverage = 4;
+      routeBonus.heat = -3;
+    } else if (finger === 'Index') {
+      routeBonus.resonance = 3;
+      routeBonus.heat = -3;
+    } else if (finger === 'Middle') {
+      routeBonus.bondBoost = 4;
+      routeBonus.health = 3;
+    } else if (finger === 'Ring') {
+      routeBonus.resonance = 3;
+      routeBonus.wealth = 2;
+    } else if (finger === 'Pinky') {
+      routeBonus.leverage = 4;
+      routeBonus.heat = -2;
+    } else if (isWing) {
+      routeBonus.standing = 4;
+      routeBonus.heat = -2;
+    } else if (isWorkshop) {
+      routeBonus.wealth = 3;
+      routeBonus.heat = -2;
+    }
+  } else if (directiveId === 'mentor_network') {
+    if (isColor) {
+      routeBonus.bondBoost = 3;
+      routeBonus.resonance = 3;
+      routeBonus.rep = 3;
+    } else if (finger === 'Thumb') {
+      routeBonus.leverage = 3;
+      routeBonus.merit = 3;
+    } else if (finger === 'Index') {
+      routeBonus.resonance = 4;
+      routeBonus.network = 2;
+    } else if (finger === 'Middle') {
+      routeBonus.bondBoost = 4;
+      routeBonus.health = 2;
+    } else if (finger === 'Ring') {
+      routeBonus.resonance = 3;
+      routeBonus.merit = 3;
+    } else if (finger === 'Pinky') {
+      routeBonus.leverage = 4;
+      routeBonus.network = 2;
+    } else if (isWing) {
+      routeBonus.standing = 4;
+      routeBonus.network = 2;
+    } else if (isWorkshop) {
+      routeBonus.merit = 4;
+      routeBonus.wealth = 2;
+    }
+  }
+
+  return { dir, fx, routeBonus };
+}
+
 export function applyApexDirective(char, directiveId) {
   if (!char || !directiveId || !isApexCommander(char)) return false;
-  const dir = APEX_DIRECTIVES.find((d) => d.id === directiveId);
-  if (!dir) return false;
+  const effects = getApexDirectiveEffects(char, directiveId);
+  if (!effects) return false;
+  const { dir, fx, routeBonus } = effects;
 
-  const fx = dir.fx || {};
-  if (fx.costAhnOrRep) {
-    if ((char.stats.wealth || 0) >= fx.costAhnOrRep) {
-      char.stats.wealth = clamp((char.stats.wealth || 0) - fx.costAhnOrRep, 0, 100);
+  const combined = { ...fx };
+  for (const [k, v] of Object.entries(routeBonus)) {
+    if (k === 'bondBoost') {
+      combined.bondBoost = (combined.bondBoost || 0) + v;
+    } else {
+      combined[k] = (combined[k] || 0) + v;
+    }
+  }
+
+  if (combined.costAhnOrRep) {
+    if ((char.stats.wealth || 0) >= combined.costAhnOrRep) {
+      char.stats.wealth = clamp((char.stats.wealth || 0) - combined.costAhnOrRep, 0, 100);
     } else {
       char.stats.rep = clamp((char.stats.rep || 0) - 3, 0, 100);
     }
   }
-  if (fx.wealth) char.stats.wealth = clamp((char.stats.wealth || 0) + fx.wealth, 0, 100);
-  if (fx.health) char.stats.health = clamp((char.stats.health || 0) + fx.health, 1, 100);
-  if (fx.sanity) char.stats.sanity = clamp((char.stats.sanity || 0) + fx.sanity, 1, 100);
-  if (fx.network) char.stats.network = clamp((char.stats.network || 0) + fx.network, 0, 100);
-  if (fx.rep) char.stats.rep = clamp((char.stats.rep || 0) + fx.rep, 0, 100);
-  if (fx.merit) char.merit = Math.max(0, (char.merit || 0) + fx.merit);
-  if (fx.resonance) char.resonance = clamp((char.resonance || 0) + fx.resonance, 0, 100);
-  if (fx.leverage) char.leverage = clamp((char.leverage || 0) + fx.leverage, 0, 100);
-  if (fx.heat) char.heat = clamp((char.heat || 0) + fx.heat, 0, 100);
+  if (combined.wealth) char.stats.wealth = clamp((char.stats.wealth || 0) + combined.wealth, 0, 100);
+  if (combined.health) char.stats.health = clamp((char.stats.health || 0) + combined.health, 1, 100);
+  if (combined.sanity) char.stats.sanity = clamp((char.stats.sanity || 0) + combined.sanity, 1, 100);
+  if (combined.network) char.stats.network = clamp((char.stats.network || 0) + combined.network, 0, 100);
+  if (combined.rep) char.stats.rep = clamp((char.stats.rep || 0) + combined.rep, 0, 100);
+  if (combined.merit) char.merit = Math.max(0, (char.merit || 0) + combined.merit);
+  if (combined.resonance) char.resonance = clamp((char.resonance || 0) + combined.resonance, 0, 100);
+  if (combined.leverage) char.leverage = clamp((char.leverage || 0) + combined.leverage, 0, 100);
+  if (combined.standing) char.standing = clamp((char.standing ?? 50) + combined.standing, 0, 100);
+  if (combined.heat) char.heat = clamp((char.heat || 0) + combined.heat, 0, 100);
 
-  if (fx.bondBoost && char.npcs) {
-    for (const role of ['partner', 'child', 'spouse', 'friend']) {
+  if (combined.bondBoost && char.npcs) {
+    for (const role of Object.keys(char.npcs)) {
       const npc = char.npcs[role];
-      if (npc && !npc.deceased && npc.status !== 'dead') {
-        char.npcs[role] = { ...npc, bond: clamp((npc.bond || 40) + fx.bondBoost, 0, 100) };
+      if (npcIsActive(npc)) {
+        const currentBond = typeof npc.bond === 'number' ? npc.bond : 40;
+        char.npcs[role] = { ...npc, bond: clamp(currentBond + combined.bondBoost, 0, 100) };
       }
     }
   }

@@ -1,4 +1,4 @@
-import { choiceIsAvailable } from '../../../engine/eventConditions.js';
+import { choiceIsAvailable, charHasCombatGear } from '../../../engine/eventConditions.js';
 import { ITEMS_CATALOG } from '../../../data/itemsData.js';
 import { localizeEnsembleName } from '../../../data/ensembleNames.js';
 import React, { useEffect, useRef, useState } from 'react';
@@ -130,6 +130,21 @@ const LogEntries = React.memo(function LogEntries({ logs }) {
             </ol>
           </details>
         )}
+        {entry.breakdown?.length > 0 && (
+          <details className="entry-review year-end-breakdown">
+            <summary>{t('Chi tiết thu chi & hao mòn cuối năm', 'Year-end balance breakdown')}</summary>
+            <div className="breakdown-list">
+              {entry.breakdown.map((item, idx) => (
+                <div key={idx} className="breakdown-row">
+                  <span className="breakdown-label">{lang === 'en' ? item.labelEn : item.labelVi}</span>
+                  <span className={`delta is-${item.v > 0 ? 'up' : 'down'} is-static`}>
+                    <b className="num">{item.v > 0 ? `+${item.v}` : item.v}</b> {item.unit || ''}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </details>
+        )}
         <Deltas deltas={entry.deltas} />
       </article>
     );
@@ -198,15 +213,21 @@ const MinorDock = ({ prompt, char, npcs, wealth = 0, remainingMs, onPick, place 
                 key={idx}
                 className={`choice ${isShortAhn ? 'is-disabled' : ''}`}
                 disabled={isShortAhn}
-                style={isShortAhn ? { opacity: 0.55, cursor: 'not-allowed' } : undefined}
                 onClick={() => !isShortAhn && onPick(idx)}
               >
                 <span className="choice-badge">{idx + 1}</span>
                 <span>
-                  <span className="choice-label">{lang === 'en' ? ch.en : ch.vi}</span>
-                  {costAhn && (
-                    <span className={`delta ${isShortAhn ? 'is-down' : 'is-static'}`} style={{ marginLeft: 6 }}>
-                      {isShortAhn ? t(`Thiếu Ahn (Cần ${costAhn})`, `Short Ahn (Needs ${costAhn})`) : t(`Tốn ${costAhn} Ahn`, `Cost: ${costAhn} Ahn`)}
+                  <span className="choice-label">
+                    {lang === 'en' ? ch.en : ch.vi}
+                    {isShortAhn && (
+                      <span className="choice-need">
+                        {t(`Thiếu Ahn (Cần ${costAhn})`, `Short Ahn (Needs ${costAhn})`)}
+                      </span>
+                    )}
+                  </span>
+                  {costAhn && !isShortAhn && (
+                    <span className="delta is-static" style={{ marginLeft: 6 }}>
+                      {t(`Tốn ${costAhn} Ahn`, `Cost: ${costAhn} Ahn`)}
                     </span>
                   )}
                   <ChoicePreview choice={ch} npcs={npcs} char={char} kind="minor" />
@@ -299,14 +320,26 @@ const EventDock = ({ event, char, onPick, dungeonStake, onDungeonStake }) => {
             const isShortAhn = Boolean(ch.costAhn && ch.costAhn > playerWealth);
             const blocked = !choiceIsAvailable(ch, char);
             const item = ITEMS_CATALOG.find(i => i.id === (ch.useItem || ch.need?.item));
+            let blockedReason = null;
+            if (blocked) {
+              if (isShortAhn) {
+                blockedReason = t(`Thiếu Ahn (Cần ${ch.costAhn})`, `Short Ahn (Needs ${ch.costAhn})`);
+              } else if (ch.favorCost && (!char.npcs?.[ch.favorCost.role] || (char.npcs[ch.favorCost.role]?.bond || 0) < ch.favorCost.amount)) {
+                blockedReason = t(`Cần ${ch.favorCost.role} (${ch.favorCost.amount} gắn bó)`, `Needs ${ch.favorCost.role} (${ch.favorCost.amount} bond)`);
+              } else if (ch.useItem && !(char.inventory || []).some(i => (i.id || i) === ch.useItem)) {
+                blockedReason = t(`Cần vật phẩm: ${lang === 'en' ? item?.nameEn || ch.useItem : item?.nameVi || ch.useItem}`, `Needs item: ${lang === 'en' ? item?.nameEn || ch.useItem : item?.nameVi || ch.useItem}`);
+              } else if (ch.need?.hasGear && !charHasCombatGear(char)) {
+                blockedReason = t('Cần có vũ khí hoặc giáp', 'Requires weapon or armor');
+              } else {
+                blockedReason = t('Chưa đủ điều kiện', 'Requirements not met');
+              }
+            }
             const extra = [];
-            if (item) extra.push(<span className="delta is-static" key="item">{t(ch.useItem ? 'Dùng hết: ' : 'Cần trang bị: ', ch.useItem ? 'Consume: ' : 'Requires: ')}{lang === 'en' ? item.nameEn : item.nameVi}</span>);
-            if (ch.favorCost) extra.push(<span className="delta is-static" key="favor">{t('Cần một người quen còn sống, gắn bó tối thiểu: ', 'Needs an available contact with bond: ')}{ch.favorCost.amount}</span>);
-            if (blocked) extra.push(<span className="delta is-static" key="blocked">{t('Chưa đủ điều kiện', 'Requirements not met')}</span>);
-            if (ch.costAhn) {
+            if (item && !ch.useItem) extra.push(<span className="delta is-static" key="item">{t('Cần trang bị: ', 'Requires: ')}{lang === 'en' ? item.nameEn : item.nameVi}</span>);
+            if (ch.costAhn && !isShortAhn) {
               extra.push(
-                <span className={`delta ${isShortAhn ? 'is-down' : 'is-static'}`} key="costAhn" style={blocked ? { borderColor: 'rgba(239,68,68,0.5)', color: '#f87171' } : { borderColor: 'rgba(234,179,8,0.4)', color: '#facc15' }}>
-                  {isShortAhn ? t(`Thiếu Ahn (Cần ${ch.costAhn})`, `Short Ahn (Needs ${ch.costAhn})`) : t(`Tốn ${ch.costAhn} Ahn`, `Cost: ${ch.costAhn} Ahn`)}
+                <span className="delta is-static" key="costAhn">
+                  {t(`Tốn ${ch.costAhn} Ahn`, `Cost: ${ch.costAhn} Ahn`)}
                 </span>
               );
             }
@@ -331,12 +364,14 @@ const EventDock = ({ event, char, onPick, dungeonStake, onDungeonStake }) => {
                 key={idx}
                 className={`choice ${blocked ? 'is-disabled' : ''}`}
                 disabled={blocked}
-                style={isShortAhn ? { opacity: 0.55, cursor: 'not-allowed' } : undefined}
                 onClick={() => !blocked && onPick(idx)}
               >
                 <span className="choice-badge">{idx + 1}</span>
                 <span>
-                  <span className="choice-label">{label}</span>
+                  <span className="choice-label">
+                    {label}
+                    {blockedReason && <span className="choice-need">{blockedReason}</span>}
+                  </span>
                   {bilingual && ch.labelEn && ch.labelEn !== ch.labelVi && <span className="choice-alt">{splitTitle(ch.labelEn).body}</span>}
                   
                   {check && (
@@ -378,6 +413,11 @@ const ContractDock = ({ contract, wealth, onPick }) => {
                   {' · '}
                   {lang === 'en' ? contract.tierInfo.nameEn : contract.tierInfo.nameVi}
                 </span>
+                {contract.stakesTag && (
+                  <span className="contract-stakes-tag">
+                    {lang === 'en' ? contract.stakesTag.en : contract.stakesTag.vi}
+                  </span>
+                )}
               </p>
               <span className="dock-hotkey-hint">{t('Phím 1-9 để chọn', 'Keys 1-9')}</span>
             </div>
@@ -414,11 +454,24 @@ const ContractDock = ({ contract, wealth, onPick }) => {
           {contract.approaches.map((app, idx) => {
             const short = app.costAhn > wealth;
             return (
-              <button type="button" key={app.id} className="choice" disabled={short} onClick={() => onPick(app.id)}>
+              <button
+                type="button"
+                key={app.id}
+                className={`choice ${short ? 'is-disabled' : ''}`}
+                disabled={short}
+                onClick={() => !short && onPick(app.id)}
+              >
                 <span className="choice-badge">{idx + 1}</span>
                 <span>
                   <span style={{ display: 'flex', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
-                    <span className="choice-label">{lang === 'en' ? app.labelEn : app.labelVi}</span>
+                    <span className="choice-label">
+                      {lang === 'en' ? app.labelEn : app.labelVi}
+                      {short && (
+                        <span className="choice-need">
+                          {t(`Thiếu Ahn (Cần ${app.costAhn})`, `Short Ahn (Needs ${app.costAhn})`)}
+                        </span>
+                      )}
+                    </span>
                     <span className="num muted" style={{ fontSize: 14, whiteSpace: 'nowrap' }}>
                       {app.isDecline ? t('Không nhận việc', 'No commission') : `+${app.payAhn} Ahn · +${app.meritGain} Merit`}
                     </span>
@@ -566,6 +619,14 @@ const Epitaph = ({ summary, onInherit, onRestart, onViewRecord, onGoHome }) => {
     : (summary.lifeStoryParagraphsEn || []);
   const turningPoints = summary.turningPoints || [];
   const recordsList = summary.recordsList || [];
+  const apexRecords = recordsList.filter((rec) =>
+    rec.tier === 'miracle' ||
+    rec.tier === 'myth' ||
+    rec.tier === 'legend' ||
+    rec.tier === 'legendary' ||
+    ['ego_effloresced', 'color_bearer', 'distortion_metamorphosis_apex', 'star_of_the_city'].includes(rec.key)
+  );
+  const standardRecords = recordsList.filter((rec) => !apexRecords.includes(rec));
   const lifeTags = summary.lifeTags || [];
   const diff = summary.lifespanDiff ?? 0;
   const diffSign = diff >= 0 ? `+${diff}` : `${diff}`;
@@ -719,8 +780,43 @@ const Epitaph = ({ summary, onInherit, onRestart, onViewRecord, onGoHome }) => {
               </span>
             </div>
 
+            {apexRecords.length > 0 && (
+              <div className="epitaph-spotlight-section">
+                <p className="spotlight-section-kicker">
+                  {t('Đỉnh cao cuộc đời · Kỳ tích lưu danh', 'Life Pinnacle · Feats Etched into Memory')}
+                </p>
+                <div className="spotlight-milestones-grid">
+                  {apexRecords.map((rec) => (
+                    <div
+                      key={rec.key}
+                      className={`spotlight-milestone-card tier-${rec.tier || 'legend'} ${rec.isNew ? 'is-new-record' : ''}`}
+                    >
+                      <div className="spotlight-card-header">
+                        <span className="spotlight-rarity-pill">
+                          {lang === 'en' ? rec.rarityEn : rec.rarityVi}
+                        </span>
+                        {rec.isNew && <span className="record-new-badge">NEW</span>}
+                      </div>
+                      <h4 className="spotlight-record-title">
+                        {lang === 'en' ? rec.en : rec.vi}
+                      </h4>
+                      <p className="spotlight-record-hint">
+                        {lang === 'en' ? rec.hintEn : rec.hintVi}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {apexRecords.length > 0 && standardRecords.length > 0 && (
+              <p className="standard-records-kicker">
+                {t('Các dấu ấn khác:', 'Other Records:')}
+              </p>
+            )}
+
             <div className="epitaph-records-list">
-              {recordsList.map((rec) => (
+              {(apexRecords.length > 0 ? standardRecords : recordsList).map((rec) => (
                 <div
                   key={rec.key}
                   className={`epitaph-record-row tier-${rec.tier || 'common'} ${rec.isNew ? 'is-new-record' : ''}`}

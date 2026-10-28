@@ -306,7 +306,20 @@ console.log('=== TEST SUITE: BATCH 64-68 SYSTEM UPGRADES (5 PILLARS) ===');
   const yearPlanSrc = fs.readFileSync('src/features/chronicle/components/YearPlanDock.jsx', 'utf8');
   const birthSetupSrc = fs.readFileSync('src/features/chronicle/components/BirthSetupPanel.jsx', 'utf8');
 
-  assert(tokensCss.includes('--accent: #c43232;'), 'Primary accent token must meet WCAG AA contrast');
+  const tokenHex = (name) => tokensCss.match(new RegExp(`--${name}:\\s*(#[0-9a-f]{6})`, 'i'))?.[1];
+  const luminance = (hex) => {
+    assert(hex, 'Contrast check requires a concrete colour token');
+    const rgb = hex.slice(1).match(/.{2}/g).map((channel) => {
+      const value = parseInt(channel, 16) / 255;
+      return value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
+    });
+    return rgb[0] * 0.2126 + rgb[1] * 0.7152 + rgb[2] * 0.0722;
+  };
+  const contrast = (a, b) => (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+  assert(contrast(luminance(tokenHex('accent')), luminance(tokenHex('accent-ink'))) >= 4.5,
+    'Primary button text must meet WCAG AA contrast');
+  assert(contrast(luminance(tokenHex('text')), luminance(tokenHex('dialog-surface'))) >= 4.5,
+    'Dialog text must meet WCAG AA contrast');
   assert(!overlaysCss.includes('transition: all'), 'overlays.css must not use transition: all');
   assert(!overlaysCss.includes('Cinzel'), 'overlays.css must not reference unloaded Cinzel font');
   assert(overlaysCss.includes('.settings-slider:focus-visible'), 'Settings slider must have keyboard focus-visible ring');

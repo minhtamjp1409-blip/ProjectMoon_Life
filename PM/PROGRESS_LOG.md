@@ -1522,3 +1522,103 @@ Chủ dự án yêu cầu làm lại toàn bộ giao diện lần nữa: bỏ t�
 
 
 
+
+### Đợt 71 (27/10/2026): Đồng nhất màu UI, tách popup khỏi bối cảnh và kiểm tra production bằng taste-skill
+
+* **Yêu cầu:** Sửa BUG-47 (home tông đỏ trong khi màn chơi tông vàng), BUG-48 (popup bị lẫn vào background); tiếp tục review code Batch 70 và kiểm tra UI desktop/mobile theo taste-skill. Chi tiết đầy đủ: `docs/UI_REVIEW_BATCH_71.md`.
+* **Màu điều khiển:** Cố định `--accent: #d8b265`, hover `#ebc77f`, chữ nút `#1b1408`. Gỡ ghi đè accent theo route khỏi `MainLayout`; đồng bộ theme Ant Design. Đổi bầu trời/quầng sáng/mặt trăng màn mở đầu sang vàng nâu. Cảnh Wing/Finger/dungeon và phù hiệu Color vẫn dùng màu nhận diện riêng, không dùng chúng để đổi màu toàn bộ điều khiển.
+* **Popup:** Thêm token nền đặc `--dialog-surface: #252127`, viền `#746348`, lớp phủ `rgba(3,3,5,.76)`. Dùng chung cho sự kiện, kế hoạch năm, dungeon, Settings, hồ sơ NPC, drawer mobile và modal Ant Design. Gỡ nền trong suốt của card dungeon. Bổ sung selector `.ant-modal-container` cho DOM Ant Design 6, giữ tương thích `.ant-modal-content` cũ.
+* **Lỗi chức năng phát hiện khi bấm UI:** Nối state/modal Workshop còn thiếu; dùng `useShallow` cho selector object của Workshop để tránh vòng lặp React. Sửa hồ sơ NPC lấy hàm dịch sai store bằng `useT`. Đưa Settings, NPC và drawer nhân vật ra portal vào body để không bị thanh có `backdrop-filter` cắt mất hoặc bị bottom navigation đè lên. Focus trap của drawer nhường popup NPC khi có lớp con.
+* **Đo kiểm:** `npm run build`, `npm test`, `node tests/test_audit_feedback_resolution.mjs` và `git diff --check` đạt. Lệnh `npm test` hiện gọi trực tiếp 48 file test, kèm lint/parity và audit 500 khoảnh khắc; file audit-feedback mới chạy riêng và chưa được đưa vào script mặc định. Không chạy lại 500 cuộc đời cân bằng vì đợt này sửa UI.
+* **Browser QA production:** Thêm `tools/qa/theme_overlay_browser.mjs`, chạy với preview `http://127.0.0.1:5197`. 44 trạng thái tại 1440×900, 768×900, 390×900: home và bốn trang hồ sơ, ba route Fixer/Wing/Ring, Settings, Workshop, NPC, sự kiện Color, kế hoạch năm, dungeon WARP, drawer mobile/tablet. Tất cả đạt kiểm tra accent thống nhất, popup có nền đặc và nằm trong viewport, không tràn ngang cấp trang, không exception JS. Có bấm mở/đóng popup và mở Workshop từ menu mobile. Drawer phủ được bottom navigation qua kiểm tra hit-test.
+* **Tương phản:** Sửa test cũ chỉ so chuỗi mã đỏ thành tính tương phản WCAG thật: nút vàng/chữ tối 9.11:1; chữ chính/nền dialog 13.58:1. Không suy rộng thành chứng nhận accessibility toàn game.
+* **Taste-skill:** Đã chạy lint/inspector production, xem ảnh fold/page đủ ba kích thước và contact sheet các màn game. Inspector thô còn 6 nhóm FAIL về house style (eyebrow, numbering, gradient, shadow, hairline, few-pictures); không ghi nhận là 0 FAIL. Hướng City-at-night đã có trong `DESIGN.md` dùng SVG, glass và bối cảnh chuyển màu; báo cáo tách các cờ mỹ thuật này khỏi lỗi tương tác. Ảnh nằm ở `%TEMP%/pm-theme-overlay-qa` và `%TEMP%/pm-review-71/final-taste`, không commit ảnh vào repo.
+* **Các điểm cần lưu ý còn mở:** Nút “Xem phía sau” còn nằm trên vùng nội dung popup mobile; tab Workshop kéo ngang khó thấy mục cuối; kế hoạch năm còn nhiều chữ nhỏ. `READY`/tooltip Resonance trong phần chỉ số vẫn dùng ngưỡng 50–60 cũ. Logic callback Color còn nhận bất kỳ NPC active làm companion nhưng tra cố định partner, không ghi wounded/định danh người đỡ đòn; mentor/parent còn sống có thể bị kể là đã mất. Callback fallen chưa đóng thread gốc. Readiness vẫn có thể báo imminent sau khi giao lộ đã xem. Đã tái hiện và ghi hướng xử lý trong báo cáo, không sửa gameplay các mục này trong đợt UI.
+* **Tài liệu:** Cập nhật `DESIGN.md` về màu gold cố định và popup nền đặc. Chưa deploy; kết quả kiểm tra áp dụng cho production build local.
+
+### Bảng công việc sau feedback người chơi (27/10/2026, chỉ lập kế hoạch)
+
+* Gộp feedback người chơi về Color ít dungeon/ít đối đầu Dị thể, đường Taboo khó tiếp cận và cảm giác vẫn như người thường với các lỗi còn mở ở review Batch 71. Bảng tổng hợp 32 mục từng nằm ở `docs/BANG_TONG_HOP_VIEC_CAN_SUA.md`; file này đã được gỡ theo yêu cầu vì không còn phản ánh trạng thái sau Đợt 72. Phần kiểm tra BUG-36–50 hiện nằm ở `docs/KIEM_TRA_BUG_36_50.md`.
+* Tái hiện mới trên nhân vật đối chứng 40 tuổi: Fixer Grade 1 có 7 cửa `gate_*` phù hợp; đổi sang `Color Fixer`/Grade 0/cờ Color còn 0 cửa trong hai catalog gate. Một số event trực tiếp vẫn có lối vào dungeon, nên không kết luận toàn bộ dungeon engine bị khóa. `ensembleRoute` trả null cho nghề Color mới; WARP giảm tiếp tế 3→2 khi chưa có E.G.O; `egoChargesOf` lại trả 2 cho Color chưa thức tỉnh.
+* `forbiddenLeadOpen` trả true cho mẫu Color. Do đó feedback Taboo được phân loại cần đo số năm đủ điều kiện/lần offer/lần nhận, không ghi thành lỗi khóa hoàn toàn. Đề xuất tăng khả năng tiếp cận quyết định vi phạm có chủ đích, không tự cộng Taboo khi được phong Color.
+* Bảng ưu tiên sửa nhận dạng route, gate và trạng thái trước khi tăng tỷ lệ hoặc viết thêm event. Không sửa code gameplay trong lượt lập bảng này; các thay đổi UI Batch 71 đang có được giữ nguyên.
+
+### Đợt 72 (27/10/2026): Khắc Phục Toàn Diện 7 Điểm Nghẽn Sau Audit Feedback & Hài Hòa Hóa Cơ Chế Gameplay (Đã kiểm thử 100%)
+
+* **T01–T03 (Hạn mức & Cổng Dungeon dành riêng cho Color Fixer):**
+  * Trong `src/engine/dungeonPacing.js`, nâng quota `GATE_PROFILES['Color Fixer']` lên `guaranteed: 2`, khoảng cách `spacing: [5, 8]`, `cooldown: 4`.
+  * Trong `nextGateDueAge(char)`, bổ sung cơ chế bảo đảm: nếu nhân vật đã phong Color (`isColor` và có `lastColorTrialAge`), kiểm tra xem đã gặp cổng hầm ngục nào sau khi lên Color chưa (`char.lastGateAge >= char.lastColorTrialAge`). Nếu chưa, luôn lên lịch hẹn trong 1–3 năm tiếp theo, triệt tiêu hoàn toàn lỗi Fixer đã gặp 1 gate thời trẻ bị khóa vĩnh viễn không nhận được 7 gate cấp cao khi đã thành Color.
+* **T06–T08 (Cơ chế đồng hành che chắn trong kỳ khảo thí Color):**
+  * Snapshot đầy đủ nhân vật đồng hành qua `recordColorTrialCompanion` hỗ trợ cả `partner`, `mentor`, `friend`.
+  * Đồng hành che chắn bị thương nặng (`injured: true`), sang năm sau kích hoạt `csq_color_sponsor_aftermath`. Lựa chọn cứu chữa (ống tiêm K Corp) hồi phục thương tật và tăng mạnh gắn kết; lựa chọn bổ nhiệm làm Cố Vấn Tối Cao kích hoạt vai trò cố vấn trọn đời.
+  * Trong trường hợp người đồng hành hy sinh hoặc bị thay thế (`colorTrialCompanionAlive` trả về `false`), tự động chuyển nhánh sang sự kiện tưởng niệm `csq_color_sponsor_aftermath_fallen`.
+* **T11 (Tách bạch Vũ khí Color Đặt Riêng vs Cờ Tưởng Niệm):**
+  * Gỡ bỏ `ColorWeaponEngravedWithPartner` khỏi `COLOR_WEAPON_FLAGS` trong `src/engine/dungeonEngine.js`.
+  * Cờ khắc tên người đã khuất là di vật tưởng niệm mang giá trị tinh thần (+15 SP, +20 Rep), không còn vô tình cấp miễn phí +16 sức mạnh chiến đấu hợp đồng hay giảm 15% sát thương hầm ngục nếu người chơi chưa trả 80 Ahn rèn vũ khí đặc trưng tại Workshop (`CraftedColorWeapon` / `wpn_color_signature`).
+  * Khi người chơi sở hữu vũ khí thật và có thêm cờ khắc tên, nhãn hiển thị trong hầm ngục tôn vinh: *Vũ khí Color đặt riêng khắc tên cộng sự*.
+* **T19 (Đặc tính hóa Chiêu Lệnh Thủ Lĩnh theo từng Phân Nhánh Route):**
+  * Xây dựng hàm `getApexDirectiveEffects(char, directiveId)` trong `src/engine/cityUpgrades.js`.
+  * Từng chiêu lệnh (`dispatch_squad`, `fortify_turf`, `mentor_network`) phân nhánh hiệu ứng riêng biệt:
+    * *Color Fixer:* Tăng mạnh Danh tiếng, gắn kết đệ tử/cộng sự và thanh lọc biến dị/tâm thần.
+    * *Ngón Tay Thumb:* Kỷ luật sắt, tăng thu phí bảo hộ (Ahn), củng cố đòn bẩy uy quyền (Leverage).
+    * *Ngón Tay Index:* Hành quyết theo Chỉ thị (Prescript), gia tăng Cộng hưởng (Resonance), giảm Heat đô thị.
+    * *Ngón Tay Middle:* Nghĩa khí gia đình, tăng gắn kết toàn bộ mạng lưới anh em, tăng sinh lực giáp trụ (HP).
+    * *Ngón Tay Ring:* Xưởng sáng tạo nghệ thuật cấm kỵ, thu lợi Ahn và khai mở Cộng hưởng dị thường.
+    * *Ngón Tay Pinky:* Mạng lưới bóng tối, tích lũy Leverage và luồn lách thanh tra.
+    * *Wing Executive:* Thiết quân luật giữ vững Vị thế tập đoàn (Standing), điều động Feather và bảo hộ tài sản.
+    * *Workshop Meister:* Khảo nghiệm vũ khí, khảm Singularity và đào tạo thợ rèn tập sự (Merit + Ahn).
+* **T22 (Đồng bộ Phần Thưởng Cột Mốc Biến Dị Tối Thượng Distortion Apex):**
+  * Đồng nhất nội dung giữa Tooltip và Nhật ký sự kiện: ghi nhận chính xác `+14 Sức mạnh chiến đấu` thay vì lệch số `+8`.
+  * Vì Distortion không nhận hợp đồng Fixer thông thường (`contractRouteOf` trả `null`), tích hợp uy lực +14 này trực tiếp vào `getDungeonMastery` trong `src/engine/dungeonEngine.js`: cấp `+0.14 checkBonus` (tương đương +14 điểm kiểm tra) và giảm 15% sát thương nhận vào với nhãn hiệu ứng *Hình thái Dị Thường Vực Thẳm*.
+* **T25, T27–T28 (Chuẩn hóa Dự Báo Kế Hoạch Năm Theo Chỉ Số Thực Tế):**
+  * Viết lại `previewAnnualPlanDeltas` trong `src/engine/annualPlan.js`: mô phỏng chính xác dựa trên chỉ số hiện tại của nhân vật (`wealth`, `heat`, `rep`, `health`, v.v.) kết hợp hàm `clamp`.
+  * Khi nhân vật có 0 Ahn chọn `fortify_turf`, dự báo không còn báo sai `-5 Ahn` mà báo chính xác `0 Ahn, -3 Danh tiếng` do kích hoạt điều khoản trừ Rep khi cạn quỹ.
+  * Chỉ số Heat khi ở mức 0 không còn bị báo âm ảo (`-12 Heat`), mà được chặn đáy chính xác tại 0.
+  * Bổ sung hiển thị chip `Danh tiếng` (`netDeltas.rep`) trên giao diện `YearPlanDock.jsx` khi phát sinh thay đổi.
+* **Đo kiểm toàn diện:**
+  * Toàn bộ 11 test cases trong `tests/test_audit_feedback_resolution.mjs` đạt 100%.
+  * `npm test` bao gồm 53 test suites, lint story, voice lint, parity FE/BE và mô phỏng 500 khoảnh khắc đạt 100% không lỗi.
+  * `npm run build` hoàn tất thành công trong 8.52 giây không phát sinh lỗi cảnh báo.
+
+### Kiểm tra lại BUG-36–44 (27/10/2026, chỉ audit)
+
+* Báo cáo tiếp tục được mở rộng trong `docs/KIEM_TRA_BUG_36_50.md`. BUG-38/39 đạt theo mã và test hiện có; BUG-42/43 được tái hiện bằng engine và còn lỗi. BUG-36/37/41/44 cần thêm phép đo hoặc QA trình duyệt trước khi kết luận dứt điểm. BUG-40 đã tăng chỉ số nhận được nhưng lời kể bảo trì chưa gắn với cơ chế trang bị.
+* Chạy `node tests/test_reported_balance_bugs.mjs` đạt. Probe riêng trả `91.66666666666666` cho Great Sibling và cho phép trả 35 Ahn với số dư 19 Ahn; báo cáo ghi trạng thái, nguyên nhân, hướng sửa và tiêu chí hồi quy cho từng mục.
+* Đã gỡ `docs/BANG_TONG_HOP_VIEC_CAN_SUA.md` theo yêu cầu. Lượt này không thay mã gameplay/UI, không chạy browser QA hoặc audit tần suất 500 run.
+
+### Bổ sung BUG-45–50 vào cùng báo cáo (27/10/2026, chỉ audit)
+
+* Dùng một file `docs/KIEM_TRA_BUG_36_50.md` để theo dõi BUG-36–50, gồm trạng thái, chứng cứ, mức ưu tiên, cách tái hiện, hướng sửa và tiêu chí hồi quy. Ảnh BUG-44 mới là log net cuối năm; chưa có seed/ảnh lựa chọn +3 để kết luận phần thưởng bị đảo dấu.
+* BUG-49 tái hiện giá kiếm ghi 65 Ahn nhưng mất tới 84 Ahn khi RNG bất lợi; BUG-46 thiếu cấp record khi chinh phục WARP, dù catalog có record `warp_cleanup`. BUG-45 và 50 là các khoảng thiếu về phần thưởng/hậu quả contract và điểm nhấn thành tựu; BUG-47/48 đã được xử lý theo mã và QA Batch 71, cần so cùng build nếu người chơi còn gặp.
+* Probe engine riêng cho BUG-45/46/49 đã chạy; không chỉnh mã game, không chạy lại browser hoặc audit 500 run trong lượt cập nhật tài liệu này.
+
+### Đợt 73 (28/10/2026): Khắc phục dứt điểm 3 lỗi cân bằng cuối & Lỗ hổng kiểm thử hợp đồng hiểm nguy (Đã kiểm thử 100%)
+
+* **Điểm 1 (Bảng tổng kết cuối năm & Đối chiếu deltas tuyệt đối):**
+  * Trong `src/engine/yearPlanner.js`, ghi nhận đầy đủ biến động thị trường ngẫu nhiên `marketJitter = Math.round(rng() * 2 - 1)` vào `breakdown`.
+  * Bổ sung dòng giải thích chi tiết trong `breakdown` cho cơ chế hạ nhiệt Heat (`heat: -1`), tài liệu mật lỗi thời (`leverage: -1`), nghi ngờ nội bộ vì nắm quá nhiều bí mật (`standing: -1`), tiếng gọi Carmen từ cộng hưởng cực hạn (`sanity: -2`), cùng giám sát truy vết Distortion của Hana Association (`heat: +6`, `network: -2`).
+  * Xây dựng cơ chế tự động đối chiếu và điều chỉnh giới hạn (`cat: 'limit'`) giữa tổng các khoản trong `breakdown` và mảng `deltas` thực tế sau khi chạy qua hàm `clamp` trần/sàn chỉ số. Đảm bảo tổng giá trị từng chỉ số trong `breakdown` luôn bằng chính xác giá trị ghi nhận trong `deltas`.
+* **Điểm 2 (Ngăn rò rỉ gắn kết Chỉ thị Apex sang NPC đã khuất / không hoạt động):**
+  * Trong `src/engine/cityUpgrades.js`, nhập và áp dụng hàm kiểm tra chuẩn `npcIsActive(npc)`.
+  * Kiểm tra đúng kiểu `typeof npc.bond === 'number' ? npc.bond : 40` để không biến giá trị `0` của người đã mất thành `40` do điều kiện falsy `npc.bond || 40`.
+  * Đảm bảo NPC tử trận có `alive: false, bond: 0` tuyệt đối không bị cộng điểm gắn kết lên 47.
+* **Điểm 3 (Đồng bộ trừ gắn kết Kế hoạch năm "Mưu tính" & Chuẩn hóa dự báo Bond):**
+  * Trong `src/engine/annualPlan.js`, sử dụng đồng nhất `npcIsActive(npc)` cho cả hàm xem trước `previewAnnualPlanDeltas` lẫn hàm áp dụng `applyAnnualPlan`.
+  * Khắc phục tình trạng các NPC đồng hành hoạt động bình thường nhưng không có thuộc tính `status: 'alive'` bị bỏ sót, đảm bảo người chơi phân bổ 3 điểm Scheme thì gắn kết đồng hành giảm chính xác 4 điểm đúng như dự kiến hiển thị.
+  * Chuẩn hóa tính toán dự báo Bond trong `previewAnnualPlanDeltas`: tính toán dựa trên danh sách NPC còn hoạt động thực tế và giới hạn `0`–`100` của từng người. Triệt tiêu hoàn toàn lỗi dự báo ảo `+7 Bond` khi nhân vật không có NPC nào, và dự báo chính xác `-1 Bond` (thay vì `-4`) khi NPC chỉ còn `1 Bond` trước khi chạm sàn 0.
+  * Cung cấp mảng chi tiết `companionDetails` kèm nhãn tên và mức biến động từng người trên chip dự báo `YearPlanDock.jsx` (tooltip hiển thị rõ mức gắn kết trước → sau của từng đồng hành).
+* **Điểm 4 (Vá lỗ hổng kiểm thử BUG-45 cho hợp đồng nguy cơ cao):**
+  * Trong `src/engine/gameEngine.js`, mở rộng hàm `generateFixerContract(char, rng, overrideTemplate = null)` cho phép truyền template kiểm thử.
+  * Trong `tests/test_reported_balance_bugs.mjs`, truyền trực tiếp template `dangerReq` thực tế và xác nhận `stakesTag`, kiểm tra tiếp cận thưởng tối thiểu +25% Ahn và bonus Merit, đồng thời kích hoạt thất bại ủy thác để kiểm chứng sát thương phạt nặng tăng thêm (+4 HP, +3 SP) chính xác 100%.
+* **Kiểm định toàn vẹn:**
+  * Toàn bộ các ca kiểm thử trong `tests/test_reported_balance_bugs.mjs` vượt qua 100%.
+  * `npm test` (53 test suites, story lint, voice lint, scan rhythm, parity FE/BE, 500 moments audit) đạt 100% xanh.
+  * `npm run build` hoàn tất xuất sắc trong 8.33 giây, không phát sinh bất kỳ lỗi cảnh báo nào.
+
+### Đợt 74 (28/10/2026): Atlas nơi sinh trên trang chủ
+
+* Thay vòng quay chọn District ở màn khởi đầu bằng bản đồ SVG tự vẽ của The City. Bố cục 26 District giữ tương quan A–Z của bản đồ Project Moon; Outskirts nằm ngoài tường thành. Ranh giới District được chia thành vùng tương tác, có nhãn cho bàn phím và trình đọc màn hình. Bản đồ là bản diễn giải cho giao diện, không phải bản đồ địa lý chính thức hay ảnh gốc của game.
+* Thêm kính lúp nhỏ trên bản đồ khi xem toàn cảnh. Nút chọn ngẫu nhiên và nút bắt đầu dùng cùng hàm chọn nơi sinh hiện có; nhấn bắt đầu sẽ lia và phóng tới District hoặc Outskirts đã được chọn, sau đó mở lớp ghi nhận hồ sơ và tạo nhân vật. Lựa chọn cố định đi thẳng vào đúng District; lựa chọn ngẫu nhiên được quyết định cho lượt chơi đó, không khóa cấu hình cho đời sau.
+* Trên điện thoại, nút bắt đầu nằm ngay dưới bản đồ để không phải cuộn qua toàn bộ biểu mẫu. Giữ các mục tên, giới tính, gia cảnh và hạt giống ở phần thiết lập bên dưới. Nút “Toàn bản đồ” đưa góc nhìn về toàn cảnh; chọn lại “Ngẫu nhiên” cũng đưa góc nhìn về toàn cảnh.
+* Giao diện giữ nền đen, vàng và ngôn ngữ hồ sơ của trò chơi. Chỉ lấy ý tưởng tương tác bản đồ và kính lúp từ Furrow của Hallmark, không sao chép giao diện nông trại. Khu vực mới được tách thành `CityBirthAtlas.jsx` và `city-atlas.css`.
+* Kiểm tra Chrome ở 1440, 768 và 390 px: có 26 District tương tác, không tràn ngang; thử chọn K, ngẫu nhiên và Outskirts cho kết quả sinh đúng nơi đã hiển thị. `npm test`, `npm run build` và `tests/test_outskirts_journey.mjs` đều đạt trước chỉnh sửa cuối cùng về nút đặt lại ngẫu nhiên. Hallmark lint trên các file mới: 0 lỗi/cảnh báo. Taste inspector còn cảnh báo từ font tải ngoài và một lần ghi nhận favicon tải chậm trong Chrome headless; tải lại favicon thành công, chưa thấy lỗi ổn định để sửa asset.

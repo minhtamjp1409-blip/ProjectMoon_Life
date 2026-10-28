@@ -890,7 +890,8 @@ const COMPANION_ORDER = ['partner', 'mentee', 'friend', 'mentor'];
 export function pickDungeonCompanion(char) {
   for (const role of COMPANION_ORDER) {
     const raw = char?.npcs?.[role];
-    if (npcIsActive(raw) && (raw.bond ?? 0) >= 15) {
+    // An injured companion stays home to heal, and an advisor works from headquarters
+    if (npcIsActive(raw) && !raw.injured && !raw.advisor && (raw.bond ?? 0) >= 15) {
       const npc = ensureNpcAgency(raw);
       if (char.npcs) char.npcs[role] = npc;
       return {
@@ -922,7 +923,7 @@ function moveStanding(char, delta) {
 }
 
 /** What a run did to the people and the badge around you, written once at its end. */
-function settleRun(char, session, outcome) {
+export function settleRun(char, session, outcome) {
   const notes = [];
   const c = session.companion;
   if (c && npcIsActive(char.npcs?.[c.role])) {
@@ -936,6 +937,15 @@ function settleRun(char, session, outcome) {
     moveStanding(char, outcome === 'conquered' ? 10 : outcome === 'fled' ? -3 : -5);
   }
   if (outcome === 'conquered') {
+    if (session.id === 'dungeon_warp_train') {
+      if (!(char.unlockedRecords || []).includes('warp_cleanup')) {
+        char.unlockedRecords = [...(char.unlockedRecords || []), 'warp_cleanup'];
+        notes.push({
+          vi: '[Thành Tựu Mới] Mười giây, hai nghìn năm: Bạn đã sống sót và bước ra khỏi toa cuối của WARP Train.',
+          en: '[New Record] Ten Seconds, Two Thousand Years: You survived and walked out of the last car of the WARP Train.'
+        });
+      }
+    }
     const relicId = DUNGEON_EXTRACTION_REWARDS?.[session.id];
     if (relicId) {
       const hasItem = (char.inventory || []).some((it) => (it.id || it) === relicId);
@@ -960,20 +970,41 @@ function settleRun(char, session, outcome) {
 export function getDungeonMastery(def, char) {
   if (!def || !char) return { hasMastery: false, dmgMult: 1.0, checkBonus: 0, labelVi: '', labelEn: '' };
   const flags = char.flags || [];
-  const hasGear = Boolean(char.craftWeapon || (char.inventory || []).some((item) => item?.type === 'weapon' || item?.type === 'armor') || flags.includes('EGOAwakened') || flags.includes('ColorFixer'));
+  const color = isColorRank(char);
+  const hasGear = Boolean(char.craftWeapon || (char.inventory || []).some((item) => item?.type === 'weapon' || item?.type === 'armor') || flags.includes('EGOAwakened') || color);
   let dmgMult = hasGear ? 0.85 : 1.0;
   let checkBonus = hasGear ? 0.1 : 0;
   const reasonsVi = [];
   const reasonsEn = [];
-  if (flags.includes('ColorFixer')) {
+  if (color) {
     checkBonus += DUNGEON_BALANCE.ego.color.checkBonus;
     reasonsVi.push('Danh Color');
     reasonsEn.push('Color name');
+  }
+  if (hasColorSignatureWeapon(char)) {
+    dmgMult *= 0.9;
+    checkBonus += 0.04;
+    const engraved = flags.includes('ColorWeaponEngravedWithPartner');
+    reasonsVi.push(engraved ? 'Vũ khí Color đặt riêng khắc tên cộng sự' : 'Vũ khí Color đặt riêng');
+    reasonsEn.push(engraved ? 'Signature Color weapon engraved with fallen partner' : 'Signature Color weapon');
+  }
+
+  if (flags.includes('AbyssalDistortionApex')) {
+    dmgMult *= 0.85;
+    checkBonus += 0.14;
+    reasonsVi.push('Hình thái Dị Thường Vực Thẳm (+14 Sức mạnh chiến đấu)');
+    reasonsEn.push('Abyssal Apex Metamorphosis (+14 Combat Power)');
   }
 
   if (hasGear) {
     reasonsVi.push('Vũ khí/Trang bị');
     reasonsEn.push('Equipped Gear');
+  }
+  if (flags.includes('고급장비') && hasGear) {
+    dmgMult *= 0.95;
+    checkBonus += 0.05;
+    reasonsVi.push('Trang bị đại tu Workshop (+5% kiểm định)');
+    reasonsEn.push('Workshop Overhauled Gear (+5% checks)');
   }
   if (flags.includes('SingularityImbued') || (char.imbuedRelics || []).length > 0) {
     dmgMult *= 0.9;
@@ -1184,9 +1215,21 @@ export function evaluateDungeonChoiceOdds(choice, char, session) {
 /** Color Fixers carry two E.G.O surges into a dungeon, an awakened Fixer one, anyone else none. */
 export function egoChargesOf(char) {
   const flags = char?.flags || [];
-  if (flags.includes('ColorFixer')) return DUNGEON_BALANCE.ego.color.charges;
-  if (flags.includes('EGOAwakened')) return DUNGEON_BALANCE.ego.awakened.charges;
-  return 0;
+  // A Color name is skill, not an awakened E.G.O: without EGOAwakened there is nothing to surge
+  if (!flags.includes('EGOAwakened')) return 0;
+  return isColorRank(char) ? DUNGEON_BALANCE.ego.color.charges : DUNGEON_BALANCE.ego.awakened.charges;
+}
+
+/** Color rank, whether stored as the flag, the promoted job name or grade 0. */
+export function isColorRank(char) {
+  return Boolean(char && ((char.flags || []).includes('ColorFixer') || char.job === 'Color Fixer' || char.fixerGrade === 0));
+}
+
+const COLOR_WEAPON_FLAGS = ['CraftedColorWeapon'];
+/** The signature weapon forged for a Color name, as a flag from the commission or as the item itself. */
+export function hasColorSignatureWeapon(char) {
+  const flags = char?.flags || [];
+  return COLOR_WEAPON_FLAGS.some((f) => flags.includes(f)) || (char?.inventory || []).some((it) => (it?.id || it) === 'wpn_color_signature');
 }
 
 export function dungeonEgoState(char, session) {
@@ -1199,7 +1242,7 @@ export function dungeonEgoState(char, session) {
 /** Spends an E.G.O surge: the next stage is easier and hurts less, at a cost to strain, sanity and resonance. */
 export function useDungeonEgo(charState) {
   if (!charState?.pendingDungeon || !dungeonEgoState(charState, charState.pendingDungeon).ok) return charState;
-  const isColor = (charState.flags || []).includes('ColorFixer');
+  const isColor = isColorRank(charState);
   const price = isColor ? DUNGEON_BALANCE.ego.color : DUNGEON_BALANCE.ego.awakened;
   const session = { ...charState.pendingDungeon };
   const char = { ...charState, stats: { ...charState.stats } };
@@ -1219,7 +1262,8 @@ export function createDungeonSession(dungeonId, char) {
   const def = DUNGEON_DEFINITIONS[dungeonId];
   if (!def) return null;
 
-  const bonusSupply = ['Fixer', 'Wing Employee', 'Workshop Craftsman', 'Syndicate'].includes(char?.job) ||
+  // Promotion to Color keeps the field Fixer's supply kit
+  const bonusSupply = ['Fixer', 'Color Fixer', 'Wing Employee', 'Workshop Craftsman', 'Syndicate'].includes(char?.job) || isColorRank(char) ||
     (char?.flags || []).some((f) => ['OutskirtsAdaptability', 'GreatLakeHardened', 'GoreDesensitized', 'EGOAwakened'].includes(f));
   const synergySupply = activeScarSynergies(char).some((synergy) => synergy.id === 'field_repair') ? 1 : 0;
   const maxSupplies = (def.noRetreat ? (bonusSupply ? 2 : 1) : (bonusSupply ? 3 : 2)) + synergySupply;
@@ -1720,7 +1764,7 @@ export function resolveDungeonChoice(charState, choiceIndex, rng = Math.random) 
   session.accumulatedMerit = (session.accumulatedMerit || 0) + rewards.merit;
 
   const stance = STANCE[session.stance || 'balanced'];
-  const colorCalm = (char.flags || []).includes('ColorFixer') ? DUNGEON_BALANCE.ego.color.strainMult : 1;
+  const colorCalm = isColorRank(char) ? DUNGEON_BALANCE.ego.color.strainMult : 1;
   const rawStrain = ((stage.strainGain || 15) + (choice.strainDelta || 0)) * stance.strain * (session.stageScanned ? 0.5 : 1) * colorCalm;
   session.sanityStrain = clamp((session.sanityStrain || 0) + Math.round(rawStrain) + (success ? 0 : DUNGEON_BALANCE.failStrain) + companionStrain, 0, 100);
   if (session.id === ENSEMBLE_DUNGEON_ID) session.ensembleHarmony = Math.min(3, (session.ensembleHarmony || 0) + (choice.ensembleHarmony || 0));
@@ -1973,7 +2017,7 @@ const COMBAT_CTX = {
   traitFactor,
   mastery: (char, session) => getDungeonMastery(DUNGEON_DEFINITIONS[session.id], char),
   strainCheck: (session) => getStrainTier(session.sanityStrain || 0).check,
-  strainMult: (char, session) => STANCE[session.stance || 'balanced'].strain * ((char.flags || []).includes('ColorFixer') ? DUNGEON_BALANCE.ego.color.strainMult : 1),
+  strainMult: (char, session) => STANCE[session.stance || 'balanced'].strain * (isColorRank(char) ? DUNGEON_BALANCE.ego.color.strainMult : 1),
   lootMult: (session) => STANCE[session.stance || 'balanced'].loot,
   companionLeadChance,
   companionActive: (session) => Boolean(session.companion),

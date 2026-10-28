@@ -25,7 +25,8 @@ const enter = (c) => ({ ...c, pendingDungeon: { ...createDungeonSession('dungeon
 console.log('1. Charges depend on the title...');
 assert.strictEqual(egoChargesOf(withFlags('e1', [])), 0);
 assert.strictEqual(egoChargesOf(withFlags('e2', ['EGOAwakened'])), 1);
-assert.strictEqual(egoChargesOf(withFlags('e3', ['ColorFixer'])), 2);
+assert.strictEqual(egoChargesOf(withFlags('e3', ['ColorFixer'])), 0);
+assert.strictEqual(egoChargesOf(withFlags('e3b', ['ColorFixer', 'EGOAwakened'])), 2);
 assert.strictEqual(dungeonEgoState(enter(withFlags('e4', [])), enter(withFlags('e4', [])).pendingDungeon).reason, 'none');
 
 console.log('2. A surge makes the stage easier and bills the mind...');
@@ -56,7 +57,7 @@ if (session) {
 }
 
 console.log('4. Color pays less and holds two surges...');
-const color = enter(withFlags('e6', ['ColorFixer']));
+const color = enter(withFlags('e6', ['ColorFixer', 'EGOAwakened']));
 const awak = enter(withFlags('e7', ['EGOAwakened']));
 const colorUsed = useDungeonEgo(color);
 const awakUsed = useDungeonEgo(awak);
@@ -67,5 +68,7 @@ assert(DUNGEON_BALANCE.ego.checkBonus > 0 && DUNGEON_BALANCE.ego.damageMult < 1)
 console.log('5. Unawakened characters cannot use it...');
 const plain = enter(withFlags('e8', []));
 assert.strictEqual(useDungeonEgo(plain), plain);
+const unawakenedColor = enter(withFlags('e9', ['ColorFixer']));
+assert.strictEqual(useDungeonEgo(unawakenedColor), unawakenedColor);
 
 console.log('PASS: E.G.O / Color perk tests');

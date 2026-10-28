@@ -4,14 +4,31 @@ import {
   resolveEventChoice,
   getNextCareerMilestone,
   getEgoReadiness,
+  generateFixerContract,
   ALL_STORY_EVENTS
 } from '../src/engine/gameEngine.js';
+import {
+  createDungeonSession,
+  egoChargesOf,
+  getDungeonMastery,
+  hasColorSignatureWeapon,
+  DUNGEON_DEFINITIONS
+} from '../src/engine/dungeonEngine.js';
+import {
+  applyAnnualPlan,
+  previewAnnualPlanDeltas
+} from '../src/engine/annualPlan.js';
 import { getScarProfile } from '../src/engine/scarModel.js';
 import { isColorProdigyEligible, checkColorFixerReadiness, triggerDistortionTransformation } from '../src/engine/careerPipeline.js';
 import { hasEgoOpportunity, rememberResonance } from '../src/engine/awakeningProgress.js';
-import { applyAnnualPlan } from '../src/engine/annualPlan.js';
+import {
+  applyApexDirective,
+  APEX_DIRECTIVES
+} from '../src/engine/cityUpgrades.js';
 import { endYear, runPlanItem } from '../src/engine/yearPlanner.js';
 import { advanceActiveNarrativeArcs } from '../src/engine/narrativeArcEngine.js';
+import { nextGateDueAge, planFirstGate } from '../src/engine/dungeonPacing.js';
+import { colorTrialCompanionAlive } from '../src/engine/eventConditions.js';
 
 console.log('=== TEST SUITE: AUDIT FEEDBACK & HARMONIZATION RESOLUTION ===');
 
@@ -158,7 +175,47 @@ console.log('4. Testing Color trial companion shield & alive/fallen aftermath...
   assert.ok(withFallenEvent.pendingEvent, 'Fallen aftermath event must be loaded into pendingEvent');
   assert.equal(withFallenEvent.pendingEvent.id, 'csq_color_sponsor_aftermath_fallen');
   assert.ok(withFallenEvent.pendingEvent.titleVi.includes('Tưởng Niệm'));
-  console.log('  ✓ Living and fallen companion aftermath branches execute flawlessly.');
+
+  // Test branch with 'mentor' role shielding the player (T06-T08)
+  const playerMentor = createNewCharacter({ seed: 'trial-mentor-shield', startAge: 32 });
+  playerMentor.job = 'Fixer';
+  playerMentor.fixerGrade = 1;
+  playerMentor.npcs = {
+    mentor: { role: 'mentor', nameVi: 'Thầy Gerald', status: 'alive', bond: 50 }
+  };
+  playerMentor.pendingEvent = trialEvent;
+  const afterTrialMentor = resolveEventChoice(playerMentor, 2, () => 0.1);
+  assert.equal(afterTrialMentor.colorTrialCompanion?.role, 'mentor');
+  assert.equal(afterTrialMentor.npcs.mentor.injured, true, 'Mentor must be marked injured from shielding');
+
+  // Next year: mentor is healed via aftermath event choice 0
+  afterTrialMentor.pendingEvent = null;
+  const nextYearMentor = endYear(afterTrialMentor, () => 0.5);
+  const mentorPlanItem = nextYearMentor.plan.find(p => p.kind === 'major');
+  assert.equal(mentorPlanItem.forcedEventId, 'csq_color_sponsor_aftermath');
+  const withMentorEvent = runPlanItem(nextYearMentor, mentorPlanItem, () => 0.5);
+  const healedMentor = resolveEventChoice(withMentorEvent, 0, () => 0.5);
+  assert.equal(healedMentor.npcs.mentor.injured, false, 'Mentor must be healed after K Corp ampoule');
+  assert.ok(healedMentor.npcs.mentor.bond > 50, 'Mentor bond must increase');
+
+  // Test slot replacement: if slot is replaced with another NPC, falls back to fallen aftermath
+  const playerReplaced = createNewCharacter({ seed: 'trial-slot-replaced', startAge: 32 });
+  playerReplaced.job = 'Fixer';
+  playerReplaced.fixerGrade = 1;
+  playerReplaced.npcs = {
+    mentor: { role: 'mentor', nameVi: 'Thầy Gerald', status: 'alive', bond: 50 }
+  };
+  playerReplaced.pendingEvent = trialEvent;
+  const afterTrialReplaced = resolveEventChoice(playerReplaced, 2, () => 0.1);
+  // Gerald was replaced by a different mentor
+  afterTrialReplaced.npcs.mentor = { role: 'mentor', nameVi: 'Giáo sư Arin', status: 'alive', bond: 20 };
+  assert.equal(colorTrialCompanionAlive(afterTrialReplaced), false, 'Replaced companion must not be considered alive trial companion');
+  afterTrialReplaced.pendingEvent = null;
+  const nextYearReplaced = endYear(afterTrialReplaced, () => 0.5);
+  const replacedPlanItem = nextYearReplaced.plan.find(p => p.kind === 'major');
+  assert.equal(replacedPlanItem.forcedEventId, 'csq_color_sponsor_aftermath_fallen', 'Replaced companion must trigger fallen memorial');
+
+  console.log('  ✓ Living, mentor, replaced, and fallen companion aftermath branches execute flawlessly.');
 }
 
 // ----------------------------------------------------------------------------
@@ -265,6 +322,175 @@ console.log('6. Testing Annual Plan upgraded heavy allocation trade-offs...');
   assert.equal(pScheme3.npcs.partner.bond, 36);
   assert.equal(pScheme3.heat, 6);
   console.log('  ✓ Annual plan meaningful trade-offs verified.');
+}
+
+// ----------------------------------------------------------------------------
+// 7. COLOR FIXER SUPPLIES & E.G.O SEPARATION (T04, T05)
+// ----------------------------------------------------------------------------
+console.log('7. Testing Color Fixer supplies and E.G.O charge separation...');
+{
+  const fixer = createNewCharacter({ seed: 'supplies-fixer', startAge: 32 });
+  fixer.job = 'Fixer';
+  const colorFixerNoEgo = createNewCharacter({ seed: 'supplies-color-no-ego', startAge: 32 });
+  colorFixerNoEgo.job = 'Color Fixer';
+  colorFixerNoEgo.flags = ['ColorFixer'];
+
+  const sFixer = createDungeonSession('dungeon_warp_train', fixer);
+  const sColor = createDungeonSession('dungeon_warp_train', colorFixerNoEgo);
+  assert.equal(sFixer.maxSupplies, 3, 'Standard Fixer must receive 3 base supplies');
+  assert.equal(sColor.maxSupplies, 3, 'Color Fixer must retain Fixer base 3 supplies');
+
+  // E.G.O separation: Color Fixer without EGOAwakened has 0 E.G.O charges
+  assert.equal(egoChargesOf(colorFixerNoEgo), 0, 'Color without EGOAwakened must have 0 EGO charges');
+
+  const regularAwakened = createNewCharacter({ seed: 'awakened-only', startAge: 32 });
+  regularAwakened.flags = ['EGOAwakened'];
+  assert.equal(egoChargesOf(regularAwakened), 1, 'Regular Awakened must have 1 EGO charge');
+
+  const colorAwakened = createNewCharacter({ seed: 'color-awakened', startAge: 32 });
+  colorAwakened.job = 'Color Fixer';
+  colorAwakened.flags = ['ColorFixer', 'EGOAwakened'];
+  assert.equal(egoChargesOf(colorAwakened), 2, 'Awakened Color must have 2 EGO charges');
+  console.log('  ✓ Supplies parity and E.G.O separation verified.');
+}
+
+// ----------------------------------------------------------------------------
+// 8. SIGNATURE COLOR WEAPON POWER & MASTERY (T11)
+// ----------------------------------------------------------------------------
+console.log('8. Testing Signature Color Weapon contract power & dungeon mastery...');
+{
+  const baseColor = createNewCharacter({ seed: 'color-weapon-base', startAge: 35 });
+  baseColor.regionId = 'T';
+  baseColor.job = 'Color Fixer';
+  baseColor.flags = ['ColorFixer'];
+
+  const armedColor = createNewCharacter({ seed: 'color-weapon-base', startAge: 35 });
+  armedColor.regionId = 'T';
+  armedColor.job = 'Color Fixer';
+  armedColor.flags = ['ColorFixer', 'CraftedColorWeapon'];
+
+  // Contract combat power check
+  const baseContract = generateFixerContract(baseColor, () => 0.5);
+  const armedContract = generateFixerContract(armedColor, () => 0.5);
+  assert.ok(armedContract.combatPower > baseContract.combatPower, 'Signature weapon must increase contract combat power');
+
+  // Dungeon mastery check
+  const def = DUNGEON_DEFINITIONS.dungeon_warp_train;
+  const baseMastery = getDungeonMastery(def, baseColor);
+  const armedMastery = getDungeonMastery(def, armedColor);
+  assert.ok(armedMastery.dmgMult < baseMastery.dmgMult, 'Signature weapon must reduce incoming damage');
+  assert.ok(armedMastery.labelVi.includes('Vũ khí Color đặt riêng'));
+
+  // Memorial engraving check (T11): flag alone must NOT grant signature weapon
+  const memorialOnly = createNewCharacter({ seed: 'color-weapon-base', startAge: 35 });
+  memorialOnly.regionId = 'T';
+  memorialOnly.job = 'Color Fixer';
+  memorialOnly.flags = ['ColorFixer', 'ColorWeaponEngravedWithPartner'];
+  assert.equal(hasColorSignatureWeapon(memorialOnly), false, 'Memorial engraving alone must not qualify as signature weapon');
+  const memorialContract = generateFixerContract(memorialOnly, () => 0.5);
+  assert.equal(memorialContract.combatPower, baseContract.combatPower, 'Memorial engraving must not give free +16 combat power');
+  const memorialMastery = getDungeonMastery(def, memorialOnly);
+  assert.equal(memorialMastery.dmgMult, baseMastery.dmgMult, 'Memorial engraving alone must not grant weapon damage reduction');
+  console.log('  ✓ Signature Color weapon combat power and dungeon mastery verified.');
+}
+
+// ----------------------------------------------------------------------------
+// 9. DISTORTION APEX METAMORPHOSIS MILESTONE (T22)
+// ----------------------------------------------------------------------------
+console.log('9. Testing Distortion Apex Metamorphosis milestone payoff...');
+{
+  const distort = createNewCharacter({ seed: 'distort-apex', startAge: 30 });
+  distort.job = 'Distortion';
+  distort.flags = ['Distorted'];
+  distort.resonance = 100;
+  distort.stats.health = 80;
+
+  const ms = getNextCareerMilestone(distort);
+  assert.equal(ms.progressPct, 100);
+  assert.ok(ms.titleVi.includes('Đỉnh Cao Dị Thường'));
+
+  // End year awards AbyssalDistortionApex flag and records
+  distort.pendingYearPlan = null;
+  const nextY = endYear(distort, () => 0.5);
+  assert.ok(nextY.flags.includes('AbyssalDistortionApex'));
+  assert.ok(nextY.unlockedRecords.includes('distortion_metamorphosis_apex'));
+
+  // Dungeon mastery check (T22)
+  const def = DUNGEON_DEFINITIONS.dungeon_warp_train;
+  const apexMastery = getDungeonMastery(def, nextY);
+  assert.ok(apexMastery.checkBonus >= 0.14, 'AbyssalDistortionApex must grant +0.14 check bonus in dungeon');
+  assert.ok(apexMastery.dmgMult <= 0.85, 'AbyssalDistortionApex must reduce dungeon damage');
+  assert.ok(apexMastery.labelVi.includes('Hình thái Dị Thường Vực Thẳm'));
+
+  const apexMs = getNextCareerMilestone(nextY);
+  assert.ok(apexMs.tipVi.includes('+14 Sức mạnh chiến đấu'), 'Milestone tip must harmonize with +14 combat power');
+  console.log('  ✓ Distortion Apex Metamorphosis payoff verified.');
+}
+
+// ----------------------------------------------------------------------------
+// 10. ANNUAL PLAN PREVIEW & ROUTE-DISTINCT APEX DIRECTIVES (T18, T19, T27)
+// ----------------------------------------------------------------------------
+console.log('10. Testing Annual Plan net delta preview & route-distinct directives...');
+{
+  const char = createNewCharacter({ seed: 'preview-plan', startAge: 25 });
+  const preview = previewAnnualPlanDeltas(char, { train: 2, work: 1, rest: 0, bond: 0, scheme: 0 });
+  assert.equal(preview.health, -2);
+  assert.equal(preview.wealth, 2);
+  assert.equal(preview.trainingCheckBonus, 4);
+
+  // Clamp test with 0 Ahn, 0 Heat, scheme: 3 and fortify_turf (T25, T27-T28)
+  const brokeCommander = createNewCharacter({ seed: 'broke-commander', startAge: 35 });
+  brokeCommander.job = 'Color Fixer';
+  brokeCommander.flags = ['ColorFixer'];
+  brokeCommander.stats.wealth = 0;
+  brokeCommander.stats.rep = 40;
+  brokeCommander.heat = 0;
+
+  const brokePreview = previewAnnualPlanDeltas(brokeCommander, { train: 0, work: 0, rest: 0, bond: 0, scheme: 3 }, 'fortify_turf');
+  assert.equal(brokePreview.wealth, 0, 'Wealth cannot drop below 0');
+  assert.equal(brokePreview.rep, -3, 'Reputation must drop by 3 when wealth cannot pay 5 Ahn upkeep');
+  assert.equal(brokePreview.heat, 0, 'Heat cannot drop below 0');
+
+  // Route-distinct Apex directive check
+  const thumbBoss = createNewCharacter({ seed: 'thumb-boss', startAge: 40 });
+  thumbBoss.job = 'Syndicate';
+  thumbBoss.finger = 'Thumb';
+  thumbBoss.fingerRank = 3;
+  thumbBoss.stats.wealth = 20;
+  thumbBoss.leverage = 20;
+  applyApexDirective(thumbBoss, 'dispatch_squad');
+  assert.ok(thumbBoss.leverage > 20, 'Thumb Boss directive must grant extra leverage');
+
+  const wingExec = createNewCharacter({ seed: 'wing-exec', startAge: 40 });
+  wingExec.job = 'Wing Employee';
+  wingExec.wingRank = 3;
+  wingExec.standing = 50;
+  applyApexDirective(wingExec, 'fortify_turf');
+  assert.ok(wingExec.standing > 50, 'Wing Executive directive must grant standing');
+  console.log('  ✓ Annual plan delta preview and route-distinct apex directives verified.');
+}
+
+// ----------------------------------------------------------------------------
+// 11. COLOR FIXER DEDICATED DUNGEON GATE QUOTA (T01-T03)
+// ----------------------------------------------------------------------------
+console.log('11. Testing Color Fixer dedicated gate quota post-promotion...');
+{
+  const colorFixer = createNewCharacter({ seed: 'color-gate-quota', startAge: 35 });
+  colorFixer.job = 'Color Fixer';
+  colorFixer.flags = ['ColorFixer'];
+  colorFixer.lastColorTrialAge = 35;
+  colorFixer.lastGateAge = 22; // Had seen a gate earlier in career as regular Fixer
+  colorFixer.seenEvents = ['gate_warp_fixer_request'];
+
+  const due = nextGateDueAge(colorFixer);
+  assert.ok(due != null, 'Color Fixer must have a scheduled gate due even if quota was met as regular Fixer');
+  assert.ok(due >= 36, 'Gate should be due after promotion');
+
+  colorFixer.age = due - 1;
+  assert.equal(planFirstGate(colorFixer), true, 'Color Fixer must successfully plant a gate thread when due');
+  const plantedThread = colorFixer.weaver.pendingThreads.find(t => t.eventId.startsWith('gate_'));
+  assert.ok(plantedThread, 'Planted gate thread must be present in weaver');
+  console.log('  ✓ Color Fixer dedicated gate quota and thread planting verified.');
 }
 
 console.log('\n=== ALL AUDIT FEEDBACK TESTS PASSED WITH 100% SUCCESS ===');

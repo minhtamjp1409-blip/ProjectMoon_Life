@@ -685,6 +685,7 @@ export const CONSEQUENCE_EVENTS = [
       {
         labelVi: 'Trả 35 Ahn',
         labelEn: 'Pay the 35 Ahn',
+        costAhn: 35,
         resultVi: 'Tiền dành dụm của bạn biến mất trong một buổi chiều. Bàn tay cầm vũ khí của bạn vẫn còn đủ ngón.',
         resultEn: 'Your savings were gone in an afternoon. Your weapon hand still has all its fingers.',
         effects: { wealth: -35, heat: -20, sanity: -5 }
@@ -986,27 +987,24 @@ export const CONSEQUENCE_EVENTS = [
     major: true,
     isCausalCallback: true,
     weight: 45,
-    need: { npc: 'partner' },
-    vi: "[Người Đã Đỡ Đòn Cho Bạn] Một năm sau ngày bạn trở thành Color, vết thương của {partner} - người từng chắn đòn cho bạn tại kỳ khảo thí - vẫn tái phát. Họ nằm tại phòng hồi sức của Văn phòng, mỉm cười nhìn tấm thẻ Color của bạn treo trên tường.",
-    en: "[The One Who Shielded You] One year after you became a Color, the wounds suffered by {partner} taking the blow during your trial still flare up. They rest in the Office infirmary, smiling at your Color plate mounted on the wall.",
+    vi: "[Người Đã Đỡ Đòn Cho Bạn] Một năm sau ngày bạn trở thành Color, vết thương của {trialCompanion} - người từng chắn đòn cho bạn tại kỳ khảo thí - vẫn tái phát. Họ nằm tại phòng hồi sức của Văn phòng, mỉm cười nhìn tấm thẻ Color của bạn treo trên tường.",
+    en: "[The One Who Shielded You] One year after you became a Color, the wounds suffered by {trialCompanion} taking the blow during your trial still flare up. They rest in the Office infirmary, smiling at your Color plate mounted on the wall.",
     choices: [
       {
-        labelVi: "Mua ống tiêm phục hồi cao cấp K Corp (15 Ahn) để chữa lành triệt để cho {partner}",
-        labelEn: "Purchase advanced K Corp restorative ampoules (15 Ahn) for {partner}’s full recovery",
+        labelVi: "Mua ống tiêm phục hồi cao cấp K Corp (15 Ahn) để chữa lành triệt để cho {trialCompanion}",
+        labelEn: "Purchase advanced K Corp restorative ampoules (15 Ahn) for {trialCompanion}’s full recovery",
         costAhn: 15,
-        resultVi: "Dịch thể xanh lục của K Corp tái tạo hoàn toàn các bó cơ bị xé toạc. {partner} hồi phục nguyên vẹn và thề sẽ tiếp tục làm phó tướng quản lý Văn phòng trọn đời bên bạn.",
-        resultEn: "The green fluid of K Corp regenerates torn muscle fibers completely. {partner} makes a full recovery and vows to stand as your lifelong deputy director.",
+        resultVi: "Dịch thể xanh lục của K Corp tái tạo hoàn toàn các bó cơ bị xé toạc. {trialCompanion} hồi phục nguyên vẹn và thề sẽ tiếp tục làm phó tướng quản lý Văn phòng trọn đời bên bạn.",
+        resultEn: "The green fluid of K Corp regenerates torn muscle fibers completely. {trialCompanion} makes a full recovery and vows to stand as your lifelong deputy director.",
         effects: { wealth: -15, sanity: +25, rep: +15 },
-        bond: { partner: 40 },
         flagsAdd: ['CompanionFullyHealed']
       },
       {
-        labelVi: "Tận tâm chăm sóc và bổ nhiệm {partner} làm cố vấn tối cao của Văn phòng",
-        labelEn: "Care for {partner} personally and appoint them Senior Advisor of the Office",
-        resultVi: "Dù không thể cầm vũ khí ra trận như xưa, trí tuệ và sự thấu hiểu của {partner} giúp Văn phòng của bạn vận hành trơn tru. Tình cảm và lòng trung thành giữa cả hai đạt đến mức tuyệt đối.",
-        resultEn: "Though unable to wield heavy weapons as before, {partner}’s wisdom keeps your Office running smoothly. The bond between you reaches absolute devotion.",
+        labelVi: "Tận tâm chăm sóc và bổ nhiệm {trialCompanion} làm cố vấn tối cao của Văn phòng",
+        labelEn: "Care for {trialCompanion} personally and appoint them Senior Advisor of the Office",
+        resultVi: "Dù không thể cầm vũ khí ra trận như xưa, trí tuệ và sự thấu hiểu của {trialCompanion} giúp Văn phòng của bạn vận hành trơn tru. Tình cảm và lòng trung thành giữa cả hai đạt đến mức tuyệt đối.",
+        resultEn: "Though unable to wield heavy weapons as before, {trialCompanion}’s wisdom keeps your Office running smoothly. The bond between you reaches absolute devotion.",
         effects: { sanity: +15, network: +20, rep: +10 },
-        bond: { partner: 30 },
         flagsAdd: ['CompanionSeniorAdvisor']
       }
     ]
@@ -1016,11 +1014,11 @@ export const CONSEQUENCE_EVENTS = [
     major: true,
     isCausalCallback: true,
     weight: 45,
-    vi: "[Tưởng Niệm Người Đã Đỡ Đòn] Người cộng sự từng liều mình che chắn cho bạn trước thực thể Star of the City đã không thể qua khỏi vì thương tổn quá nặng sau trận chiến. Đứng trước bàn thờ tưởng niệm của họ trong Văn phòng, danh hiệu Color của bạn mang sức nặng ngút ngàn.",
+    vi: "[Tưởng Niệm Người Đã Đỡ Đòn] {trialCompanion}, người từng liều mình che chắn cho bạn trước thực thể Star of the City đã không thể qua khỏi vì thương tổn quá nặng sau trận chiến. Đứng trước bàn thờ tưởng niệm của họ trong Văn phòng, danh hiệu Color của bạn mang sức nặng ngút ngàn.",
     en: "[Epitaph for the Shield] The partner who took the blow for you against the Star of the City succumbed to their grievous injuries. Standing before their memorial altar in the Office, your Color title carries immense weight.",
     choices: [
       {
-        labelVi: "Khắc tên người cộng sự đã khuất lên mặt sau của vũ khí Color",
+        labelVi: "Khắc tên {trialCompanion} lên mặt sau của vũ khí Color",
         labelEn: "Engrave the fallen partner’s name onto the reverse of your Color weapon",
         resultVi: "Từng nét khắc sâu vào thân thép như lời thề không bao giờ lùi bước. Bạn mang theo ý chí của người đã ngã xuống bước tiếp trên đỉnh cao danh vọng The City.",
         resultEn: "Each groove in the steel cements a vow never to waver. You carry the resolve of the fallen as you stand atop the City.",

@@ -32,8 +32,8 @@
 }
 
 /* ---------- the worlds ---------- */
-.world-scene[data-world='title'] { --sky-top: #050409; --sky-mid: #130a12; --sky-low: #3a1016; --haze: rgba(220, 50, 50, .32); --far: #1a0c10; --near: #050407; --win: #f3c27c; }
-.world-scene[data-world='title'] .world-sky::after { content: ''; position: absolute; top: 9%; left: 44%; width: 110px; height: 110px; border-radius: 50%; background: radial-gradient(circle at 40% 40%, #ffb3a0, #c8323a 55%, #5a0f14 100%); box-shadow: 0 0 120px 30px rgba(200, 50, 58, .35); opacity: .85; }
+.world-scene[data-world='title'] { --sky-top: #070609; --sky-mid: #171109; --sky-low: #38280f; --haze: rgba(216, 178, 101, .22); --far: #1a140c; --near: #070605; --win: #e8bd70; }
+.world-scene[data-world='title'] .world-sky::after { content: ''; position: absolute; top: 9%; left: 44%; width: 110px; height: 110px; border-radius: 50%; background: radial-gradient(circle at 40% 40%, #f4dfac, #bd9850 55%, #54401f 100%); box-shadow: 0 0 120px 30px rgba(216, 178, 101, .22); opacity: .85; }
 /* searchlights sweeping over the skyline */
 .world-scene[data-world='title'] .world-glow::before,
 .world-scene[data-world='title'] .world-glow::after,

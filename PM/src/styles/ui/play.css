@@ -127,6 +127,8 @@
 .ego-horizon-card.status-distorted { border-left-color: var(--bad); }
 .ego-horizon-card.status-imminent { border-left-color: #d97706; }
 .ego-horizon-card.status-stirring { border-left-color: #0284c7; }
+.ego-horizon-card.status-incomplete { border-left-color: #a16207; }
+.ego-horizon-card.status-crossroad_passed { border-left-color: var(--line, #6b7280); }
 .ego-horizon-header { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
 .ego-horizon-tag { font-size: 11.5px; font-weight: 600; color: var(--muted); letter-spacing: 0.5px; }
 .ego-horizon-status-badge { font-size: 12.5px; font-weight: 600; color: var(--gold); }
@@ -141,9 +143,9 @@
 .kv.is-help { cursor: help; }
 .kv-strong { font-weight: 600; color: var(--text); text-align: right; }
 .dossier-context-card { gap: 8px; padding: 12px 0; border-bottom: 1px solid var(--rule); }
-.context-card-header { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
-.context-card-tag { font-size: 13px; color: var(--muted); }
-.context-card-val { font-family: var(--serif); font-size: 16px; font-weight: 600; text-align: right; }
+.context-card-header { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.context-card-tag { font-size: 13px; color: var(--muted); flex-shrink: 0; }
+.context-card-val { font-family: var(--serif); font-size: 16px; font-weight: 600; text-align: right; min-width: 0; overflow-wrap: anywhere; word-break: break-word; }
 .context-feature-box { padding: 8px 10px; border-left: 2px solid var(--border); background: var(--surface); line-height: 1.5; color: var(--muted); }
 .context-feature-box.is-gold { border-left-color: var(--gold); }
 .stat-bonus-badge { display: inline-block; margin-top: 4px; font-size: 12.5px; font-weight: 600; color: var(--gold); }
@@ -238,12 +240,12 @@
 
   .mobile-dossier-overlay {
     display: block; position: fixed; inset: 0; z-index: 60;
-    background: rgba(0, 0, 0, .55);
+    background: var(--dialog-scrim);
   }
   .mobile-dossier-sheet {
     position: absolute; left: 0; right: 0; bottom: 0;
     max-height: 88dvh; display: flex; flex-direction: column;
-    background: var(--surface-solid); border-top: 1px solid var(--border);
+    background: var(--dialog-surface); border-top: 3px solid var(--accent);
     border-radius: 10px 10px 0 0; box-shadow: var(--shadow-pop);
   }
   .mobile-dossier-sheet-head { padding: 8px 16px 0; border-bottom: 1px solid var(--border); }

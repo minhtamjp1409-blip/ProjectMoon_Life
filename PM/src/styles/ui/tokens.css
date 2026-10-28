@@ -1,8 +1,7 @@
 /*
   The City Chronicles, interface v4: "the City at night, seen through glass".
   The world (src/components/WorldBackdrop.jsx) fills the screen; every panel is dark smoked glass over it.
-  The accent is not fixed: MainLayout sets --accent from the world this life is in (amber for a Fixer,
-  ice blue in a Nest, the conferred colour of a Hana Color). Gold stays for milestones and Ahn.
+  Controls share a gold accent. Route colours belong to the world and earned nameplates.
   There is one theme, dark.
 */
 :root {
@@ -28,10 +27,10 @@
   --page-rule: rgba(255, 255, 255, 0.075);
   --page-edge: rgba(255, 255, 255, 0.16);
 
-  --accent: #c43232;
-  --accent-hover: #d83e3e;
-  --accent-ink: #fff6f2;
-  --accent-soft: rgba(196, 50, 50, 0.16);
+  --accent: #d8b265;
+  --accent-hover: #ebc77f;
+  --accent-ink: #1b1408;
+  --accent-soft: rgba(216, 178, 101, 0.16);
   --glow: #3a0f12;
   --gold: #d8b265;
   --gold-soft: rgba(216, 178, 101, 0.14);
@@ -50,6 +49,9 @@
   --s-reso: #ad9cf5;
 
   --shadow-pop: 0 18px 48px rgba(0, 0, 0, 0.6);
+  --dialog-surface: #252127;
+  --dialog-border: #746348;
+  --dialog-scrim: rgba(3, 3, 5, 0.76);
 
   --font: 'Archivo', system-ui, 'Segoe UI', sans-serif;
   --serif: 'Literata', Georgia, 'Times New Roman', serif;

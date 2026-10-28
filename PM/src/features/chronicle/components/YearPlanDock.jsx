@@ -6,7 +6,8 @@ import {
   YEAR_PLAN_POINTS,
   ambitionsFor,
   defaultYearPoints,
-  isApexCommander
+  isApexCommander,
+  previewAnnualPlanDeltas
 } from '../../../engine/annualPlan.js';
 import { YearLeadList } from './YearLeadDock';
 import { useT } from '../../../i18n';
@@ -76,6 +77,7 @@ export function YearPlanDock({ char, draft, onConfirm }) {
   const used = YEAR_ACTIVITIES.reduce((sum, activity) => sum + (points[activity.id] || 0), 0);
   const canConfirm = used === YEAR_PLAN_POINTS && Boolean(char.ambition || ambition);
   const current = AMBITIONS.find((goal) => goal.id === char.ambition?.id);
+  const netDeltas = previewAnnualPlanDeltas(char, points, apexEligible ? directive : null);
 
   function changePoint(id, amount) {
     setPoints((previous) => {
@@ -132,6 +134,72 @@ export function YearPlanDock({ char, draft, onConfirm }) {
             </div>
           ))}
         </div>
+        {used > 0 && (
+          <div className="year-plan-net-summary" aria-label={t('Tổng kết hiệu ứng dự kiến', 'Estimated Net Deltas')}>
+            <span className="net-summary-title">{t('Tổng kết dự kiến:', 'Estimated Net:')}</span>
+            <span className="net-summary-chips">
+              {netDeltas.wealth !== 0 && (
+                <span className={`delta is-${netDeltas.wealth > 0 ? 'up' : 'down'} is-static`}>
+                  {t('Ahn', 'Ahn')} {netDeltas.wealth > 0 ? `+${netDeltas.wealth}` : netDeltas.wealth}
+                </span>
+              )}
+              {netDeltas.health !== 0 && (
+                <span className={`delta is-${netDeltas.health > 0 ? 'up' : 'down'} is-static`}>
+                  {t('HP', 'HP')} {netDeltas.health > 0 ? `+${netDeltas.health}` : netDeltas.health}
+                </span>
+              )}
+              {netDeltas.sanity !== 0 && (
+                <span className={`delta is-${netDeltas.sanity > 0 ? 'up' : 'down'} is-static`}>
+                  {t('SP', 'SP')} {netDeltas.sanity > 0 ? `+${netDeltas.sanity}` : netDeltas.sanity}
+                </span>
+              )}
+              {netDeltas.trainingCheckBonus > 0 && (
+                <span className="delta is-rare is-static">
+                  {t('Luyện tập', 'Train')} +{netDeltas.trainingCheckBonus}%
+                </span>
+              )}
+              {netDeltas.network !== 0 && (
+                <span className={`delta is-${netDeltas.network > 0 ? 'up' : 'down'} is-static`}>
+                  {t('Quan hệ', 'Network')} {netDeltas.network > 0 ? `+${netDeltas.network}` : netDeltas.network}
+                </span>
+              )}
+              {netDeltas.rep !== 0 && (
+                <span className={`delta is-${netDeltas.rep > 0 ? 'up' : 'down'} is-static`}>
+                  {t('Danh tiếng', 'Rep')} {netDeltas.rep > 0 ? `+${netDeltas.rep}` : netDeltas.rep}
+                </span>
+              )}
+              {netDeltas.heat !== 0 && (
+                <span className={`delta is-${netDeltas.heat < 0 ? 'up' : 'down'} is-static`}>
+                  {t('Heat', 'Heat')} {netDeltas.heat > 0 ? `+${netDeltas.heat}` : netDeltas.heat}
+                </span>
+              )}
+              {netDeltas.leverage !== 0 && (
+                <span className={`delta is-${netDeltas.leverage > 0 ? 'up' : 'down'} is-static`}>
+                  {t('Leverage', 'Leverage')} +{netDeltas.leverage}
+                </span>
+              )}
+              {netDeltas.companionBond !== 0 && (
+                <span
+                  className={`delta is-${netDeltas.companionBond > 0 ? 'up' : 'down'} is-static`}
+                  title={
+                    netDeltas.companionDetails?.length
+                      ? netDeltas.companionDetails
+                          .map((c) => `${t(c.nameVi, c.nameEn)}: ${c.delta > 0 ? `+${c.delta}` : c.delta} (${c.initialBond} → ${c.nextBond})`)
+                          .join('\n')
+                      : undefined
+                  }
+                >
+                  {t('Gắn kết', 'Bond')} {netDeltas.companionBond > 0 ? `+${netDeltas.companionBond}` : netDeltas.companionBond}
+                  {netDeltas.companionDetails?.length === 1 && (
+                    <small style={{ marginLeft: 4, opacity: 0.85 }}>
+                      ({t(netDeltas.companionDetails[0].nameVi, netDeltas.companionDetails[0].nameEn)})
+                    </small>
+                  )}
+                </span>
+              )}
+            </span>
+          </div>
+        )}
         {apexEligible && (
           <fieldset className="year-plan-ambitions year-plan-directives">
             <legend>{t('Chỉ thị Thủ Lĩnh (Quyền điều hành năm nay)', 'Apex Command Directive (Leadership Order)')}</legend>

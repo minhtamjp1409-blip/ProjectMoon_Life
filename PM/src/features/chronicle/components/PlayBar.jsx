@@ -119,6 +119,7 @@ const YearStatus = () => {
 };
 
 export const PlayBar = () => {
+  const [shopOpen, setShopOpen] = useState(false);
   const { t, lang } = useT();
   const navigate = useNavigate();
   const { setMobileDossierOpen } = useThemeStore();
@@ -541,6 +542,7 @@ export const PlayBar = () => {
           </Dropdown>
         </div>
       </div>
+      <WorkshopDepotModal open={shopOpen} onClose={() => setShopOpen(false)} />
     </div>
   );
 };

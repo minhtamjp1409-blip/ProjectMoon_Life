@@ -91,6 +91,12 @@
       "skillPath": "skills/disciplines/game-ui-ux/SKILL.md",
       "computedHash": "4aeb677be89029728154d40bb1d98e07d809f019ff8cd0e9188fb4a1f9d51255"
     },
+    "hallmark": {
+      "source": "nutlope/hallmark",
+      "sourceType": "github",
+      "skillPath": "skills/hallmark/SKILL.md",
+      "computedHash": "a7e0f104af7f03882ac018f89f49185ed772742772f2cc96bb0e7e0dac0dd6a0"
+    },
     "input-systems": {
       "source": "gamedev-skills/awesome-gamedev-agent-skills",
       "sourceType": "github",

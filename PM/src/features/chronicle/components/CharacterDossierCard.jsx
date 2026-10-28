@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { NpcDossierModal } from './NpcDossierModal.jsx';
 import { Tooltip } from 'antd';
 import { ChevronDown, ChevronUp, User, Heart, Brain, Coins, Flame, Eye, Sparkles, X, ShieldAlert, ShoppingBag, HelpCircle, Crown, Star } from 'lucide-react';
@@ -38,6 +39,15 @@ export function describeJob(char, t) {
   const local = JOB_LABELS[char.job];
   return local ? t(local.vi, local.en) : char.job || t('Chưa có nghề', 'No trade yet');
 }
+
+// Short tag on the Resonance stat, read from the same readiness model as the horizon card
+const EGO_STAT_FLAG = {
+  awakened: 'E.G.O',
+  distorted: 'DISTORTED',
+  imminent: 'IMMINENT',
+  incomplete: 'INCOMPLETE',
+  crossroad_passed: 'PASSED'
+};
 
 function formatStatModSummary(statMod, t) {
   if (!statMod) return '';
@@ -410,10 +420,10 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeT
             value={char.resonance || 0}
             unit="%"
             color="var(--s-reso)"
-            flag={char.flags?.includes('EGOAwakened') ? 'E.G.O' : (char.resonance || 0) >= 50 ? 'READY' : null}
+            flag={EGO_STAT_FLAG[egoReadiness?.status] || null}
             tooltip={t(
-              'E.G.O Resonance: Mức cộng hưởng với Ánh Sáng (The Light). Đạt từ 50%–60% Cộng hưởng (hoặc có Vết sẹo + 50% Cộng hưởng) ở tuổi trưởng thành sẽ mở ra Ngã rẽ Ánh Sáng để thức tỉnh E.G.O.',
-              'E.G.O Resonance: Affinity with the Light. Reaching 50%–60% Resonance (or 50% with an active scar) in adulthood unlocks the Crossroads of the Light to awaken E.G.O.'
+              `E.G.O Resonance: Mức cộng hưởng với Ánh Sáng. Từ 18 tuổi, đạt 74% (hoặc 62% khi có vết sẹo và Tinh thần thấp) sẽ mở một cửa sổ để giao lộ có thể xuất hiện. Đó là cơ hội, không phải bảo đảm thức tỉnh.${egoReadiness ? ` Hiện tại: ${egoReadiness.labelVi}.` : ''}`,
+              `E.G.O Resonance: Affinity with the Light. From age 18, reaching 74% (or 62% with a scar and low Sanity) opens a window in which the crossroad may appear. It is a chance, not a guaranteed awakening.${egoReadiness ? ` Now: ${egoReadiness.labelEn}.` : ''}`
             )}
           />
           <TabooStat
@@ -646,6 +656,7 @@ export const CharacterDossierCard = () => {
     const sheet = sheetRef.current;
     sheet?.querySelector('button')?.focus();
     const handleKey = (event) => {
+      if (document.querySelector('.npc-dossier-overlay')) return;
       if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); setDrawerOpen(false); return; }
       if (event.key !== 'Tab') return;
       const controls = [...sheet.querySelectorAll('button:not(:disabled), a[href], input, select, [tabindex="0"]')].filter(el => el.getClientRects().length);
@@ -762,7 +773,7 @@ export const CharacterDossierCard = () => {
       </div>
 
       {/* 2. Mobile Dossier Drawer (Slides up when drawerOpen is true on mobile) */}
-      {drawerOpen && (
+      {drawerOpen && createPortal(
         <div 
           className="mobile-dossier-overlay" 
           onClick={() => setDrawerOpen(false)}
@@ -843,7 +854,8 @@ export const CharacterDossierCard = () => {
               />
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* 3. Desktop Sidebar (Visible only on > 820px) */}

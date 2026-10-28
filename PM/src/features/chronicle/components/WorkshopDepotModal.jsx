@@ -9,6 +9,7 @@ import {
   transitCostFor
 } from '../../../engine/cityUpgrades.js';
 import React, { useState } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 import { Modal } from 'antd';
 import { Check } from 'lucide-react';
 import { useGameStore } from '../../../store/gameStore';
@@ -55,12 +56,12 @@ function renderTradeoffChips(fx = {}, t, extra = []) {
 
 export const WorkshopDepotModal = ({ open, onClose }) => {
   const { t, lang } = useT();
-  const { char, buyItem, relocateDistrict, imbueEquipment } = useGameStore((s) => ({
+  const { char, buyItem, relocateDistrict, imbueEquipment } = useGameStore(useShallow((s) => ({
     char: s.char,
     buyItem: s.buyItem,
     relocateDistrict: s.relocateDistrict,
     imbueEquipment: s.imbueEquipment
-  }));
+  })));
 
   const [activeTab, setActiveTab] = useState('ALL');
   const [depotFeedback, setDepotFeedback] = useState(null);
@@ -73,8 +74,8 @@ export const WorkshopDepotModal = ({ open, onClose }) => {
   const vipPass = hasVipTransitPass(char);
 
   const filterItems = () => {
-    if (activeTab === 'ALL') return ITEMS_CATALOG;
-    return ITEMS_CATALOG.filter((item) => item.type === activeTab);
+    if (activeTab === 'ALL') return ITEMS_CATALOG.filter((item) => !item.commissionOnly);
+    return ITEMS_CATALOG.filter((item) => item.type === activeTab && !item.commissionOnly);
   };
 
   const handleBuy = (item) => {

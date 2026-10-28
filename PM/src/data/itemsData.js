@@ -29,6 +29,20 @@ export const ITEMS_CATALOG = [
     skillBonus: { combat: 10 }
   },
   {
+    id: 'wpn_color_signature',
+    type: ITEM_TYPES.WEAPON,
+    tier: 'Star of the City',
+    costAhn: 80,
+    commissionOnly: true,
+    nameVi: 'Vũ khí bản mệnh Color',
+    nameEn: 'Signature Color Weapon',
+    descVi: 'Rèn theo đơn đặt riêng của một Workshop cổ cho đúng một Color. Thêm sức nặng vào mọi hợp đồng và giảm thương tổn khi vào hầm.',
+    descEn: 'Forged on commission by an old Workshop for exactly one Color. Adds weight to every contract and softens the damage taken in dungeons.',
+    stats: { rep: +6 },
+    combatPower: 16,
+    skillBonus: { combat: 16 }
+  },
+  {
     id: 'wpn_stigma_blade',
     type: ITEM_TYPES.WEAPON,
     tier: 'Urban Legend',

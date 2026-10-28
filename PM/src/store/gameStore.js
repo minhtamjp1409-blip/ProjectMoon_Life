@@ -445,7 +445,7 @@ export const useGameStore = create((set, get) => ({
     const char = state.char;
     if (!char || !char.alive) return;
     const item = getItemById(itemId);
-    if (!item) return;
+    if (!item || item.commissionOnly) return;
     const wealth = char.stats?.wealth ?? char.wealth ?? 0;
     const price = workshopPrice(item, char);
     if (wealth < price) return;

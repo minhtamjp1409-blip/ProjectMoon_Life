@@ -146,8 +146,14 @@ export function getNpcBondState(npc) {
 export function evaluateCompanionSupport(char) {
   const npcs = char?.npcs || {};
   const isActive = (n) => Boolean(n) && n.alive !== false && !n.deceased && !['dead', 'missing', 'estranged', 'betrayer'].includes(n.status);
-  const role = isActive(npcs.partner) ? 'partner' : isActive(npcs.friend) ? 'friend' : isActive(npcs.mentor) ? 'mentor' : null;
-  if (!role) return { active: false, role: null, npc: null, state: null, contractPower: 0, dungeonOddsMod: 0, betrayalRisk: 0 };
+  // A wounded companion cannot fight, and an advisor helps from headquarters rather than on the field
+  const fit = (n) => isActive(n) && !n.injured && !n.advisor;
+  const role = fit(npcs.partner) ? 'partner' : fit(npcs.friend) ? 'friend' : fit(npcs.mentor) ? 'mentor' : null;
+  if (!role) {
+    const advisorRole = ['partner', 'friend', 'mentor', 'lover', 'spouse'].find((r) => isActive(npcs[r]) && npcs[r].advisor && !npcs[r].injured);
+    if (advisorRole) return { active: true, role: advisorRole, npc: npcs[advisorRole], state: getNpcBondState(npcs[advisorRole]), advisor: true, contractPower: 6, dungeonOddsMod: 4, betrayalRisk: 0 };
+    return { active: false, role: null, npc: null, state: null, contractPower: 0, dungeonOddsMod: 0, betrayalRisk: 0 };
+  }
   const npc = npcs[role];
   const state = getNpcBondState(npc);
   const roleScale = role === 'partner' ? 1.0 : 0.65;

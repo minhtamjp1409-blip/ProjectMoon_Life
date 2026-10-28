@@ -87,10 +87,6 @@ export const MainLayout = ({ children }) => {
     audioEngine.setScene(scene);
   }, [scene]);
   const sceneStyle = {
-    '--accent': scene.color || scene.accent,
-    '--accent-hover': scene.color || scene.accent,
-    '--accent-ink': scene.color ? '#fff' : scene.ink,
-    '--accent-soft': 'color-mix(in srgb, ' + (scene.color || scene.accent) + ' 16%, transparent)',
     '--glow': scene.glow,
     ...(dungeon ? { '--dg': dungeon.accentColor } : {})
   };

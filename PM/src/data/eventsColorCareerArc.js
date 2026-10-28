@@ -254,10 +254,11 @@ export const COLOR_CAREER_EVENTS = [
     en: "[Signature Color Forge] A master artisan from an ancient Workshop calls upon your office: “Your Color title echoes across districts, yet you lack a weapon forged in the likeness of your soul. Let our fires engrave your name into history.”",
     choices: [
       {
-        labelVi: "Chi 80 Ahn và cung cấp mẫu phôi Singularity để đúc vũ khí tối thượng",
-        labelEn: "Spend 80 Ahn and provide Singularity ore to forge your supreme armament",
+        labelVi: "Chi 80 Ahn để xưởng rèn đúc vũ khí bản mệnh theo đúng lối đánh của bạn",
+        labelEn: "Spend 80 Ahn for the forge to cast a signature weapon fitted to how you fight",
         costAhn: 80,
         flagsAdd: ['CraftedColorWeapon'],
+        itemAdd: 'wpn_color_signature',
         effects: { rep: +28, merit: +20, health: -10, heat: +10 },
         resultVi: "Sau bảy ngày trích máu hòa vào lò lửa áp suất cao, một thanh vũ khí mang ánh hào quang sắc Màu độc nhất của bạn ra lò. Cầm nó trong tay, uy lực của bạn tăng gấp bội nhưng sát khí cũng thu hút thêm vô số kẻ địch.",
         resultEn: "After seven days tempering high-pressure fires with your own blood, a masterpiece glowing with your signature Color emerges. Your lethality surges, alongside the scrutiny of every rival in the City."

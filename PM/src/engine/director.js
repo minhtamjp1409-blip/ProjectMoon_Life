@@ -211,12 +211,14 @@ export function dueMinorThreads(char) {
   return (char.weaver?.pendingThreads || []).filter((th) => (th.kind === 'minor' || !th.kind) && !th.fulfilled && char.age >= th.triggerAge);
 }
 
-export function closeThreads(char, eventId) {
-  if (!char.weaver?.pendingThreads?.some((th) => th.eventId === eventId && !th.fulfilled)) return;
+export function closeThreads(char, eventId, { threadId = null, playedEventId = null } = {}) {
+  // A swapped variant (alive / fallen) closes the thread planted under its original id, matched by thread id first
+  const matches = (th) => !th.fulfilled && (threadId ? th.id === threadId : th.eventId === eventId);
+  if (!char.weaver?.pendingThreads?.some(matches)) return;
   char.weaver = {
     ...char.weaver,
     pendingThreads: char.weaver.pendingThreads.map((th) =>
-      th.eventId === eventId && !th.fulfilled ? { ...th, fulfilled: true, fulfilledAtAge: char.age } : th
+      matches(th) ? { ...th, fulfilled: true, fulfilledAtAge: char.age, resolvedEventId: playedEventId || eventId } : th
     )
   };
 }

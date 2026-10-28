@@ -1,4 +1,5 @@
-import { APEX_DIRECTIVES, isApexCommander, applyApexDirective } from './cityUpgrades.js';
+import { APEX_DIRECTIVES, isApexCommander, applyApexDirective, getApexDirectiveEffects } from './cityUpgrades.js';
+import { npcIsActive } from './eventConditions.js';
 
 export const YEAR_PLAN_POINTS = 3;
 export { APEX_DIRECTIVES, isApexCommander };
@@ -56,9 +57,10 @@ export function applyAnnualPlan(char, points, ambitionId, directiveId = null) {
 
   if (p.scheme >= 2) {
     const penalty = p.scheme >= 3 ? 4 : 2;
-    const activeCompanions = Object.values(char.npcs || {}).filter((n) => n && n.status === 'alive' && !n.deceased);
+    const activeCompanions = Object.values(char.npcs || {}).filter(npcIsActive);
     for (const comp of activeCompanions) {
-      comp.bond = Math.max(0, (comp.bond || 0) - penalty);
+      const currentBond = typeof comp.bond === 'number' ? comp.bond : 40;
+      comp.bond = Math.max(0, currentBond - penalty);
     }
     if (p.scheme >= 3) {
       char.heat = Math.min(100, (char.heat || 0) + 2);
@@ -69,6 +71,134 @@ export function applyAnnualPlan(char, points, ambitionId, directiveId = null) {
   }
   char.pendingYearPlan = null;
   return true;
+}
+
+/** Previews the combined net effect of assigned plan points and chosen apex directive */
+export function previewAnnualPlanDeltas(char, points, directiveId = null) {
+  const p = points || {};
+  const stats = char?.stats || {};
+  const hasCharStats = Boolean(char && char.stats);
+
+  const initialWealth = hasCharStats && typeof stats.wealth === 'number' ? stats.wealth : 50;
+  const initialHealth = hasCharStats && typeof stats.health === 'number' ? stats.health : 50;
+  const initialSanity = hasCharStats && typeof stats.sanity === 'number' ? stats.sanity : 50;
+  const initialNetwork = hasCharStats && typeof stats.network === 'number' ? stats.network : 40;
+  const initialRep = hasCharStats && typeof stats.rep === 'number' ? stats.rep : 30;
+  const initialHeat = char && typeof char.heat === 'number' ? char.heat : 0;
+  const initialLeverage = char && typeof char.leverage === 'number' ? char.leverage : 0;
+  const initialMerit = char && typeof char.merit === 'number' ? char.merit : 0;
+  const initialResonance = char && typeof char.resonance === 'number' ? char.resonance : 0;
+  const initialStanding = char && typeof char.standing === 'number' ? char.standing : 50;
+
+  let w = initialWealth + (p.work || 0) * 2;
+  w = Math.min(100, Math.max(0, w));
+
+  let net = initialNetwork + (p.bond || 0) * 2;
+  net = Math.min(100, Math.max(0, net));
+
+  let san = initialSanity + (p.rest || 0) * 3;
+  if ((p.work || 0) === 2) san -= 3;
+  else if ((p.work || 0) >= 3) san -= 6;
+  san = Math.min(100, Math.max(1, san));
+
+  let hp = initialHealth;
+  if ((p.train || 0) === 2) hp -= 2;
+  else if ((p.train || 0) >= 3) hp -= 4;
+  hp = Math.min(100, Math.max(1, hp));
+
+  let h = initialHeat;
+  h = Math.max(0, h - (p.scheme || 0) * 2);
+  if ((p.scheme || 0) >= 3) h = Math.min(100, h + 2);
+
+  let lev = initialLeverage + (p.scheme || 0) * 2;
+  lev = Math.min(100, Math.max(0, lev));
+
+  let rep = initialRep;
+  let merit = initialMerit;
+  let res = initialResonance;
+  let standing = initialStanding;
+
+  let apexBondBoost = 0;
+  if (directiveId && isApexCommander(char)) {
+    const effects = getApexDirectiveEffects(char, directiveId);
+    if (effects) {
+      const combined = { ...effects.fx };
+      for (const [k, v] of Object.entries(effects.routeBonus)) {
+        if (k === 'bondBoost') {
+          combined.bondBoost = (combined.bondBoost || 0) + v;
+        } else {
+          combined[k] = (combined[k] || 0) + v;
+        }
+      }
+      apexBondBoost = combined.bondBoost || 0;
+
+      if (combined.costAhnOrRep) {
+        if (w >= combined.costAhnOrRep) {
+          w = Math.max(0, w - combined.costAhnOrRep);
+        } else {
+          rep = Math.max(0, rep - 3);
+        }
+      }
+      if (combined.wealth) w = Math.min(100, Math.max(0, w + combined.wealth));
+      if (combined.health) hp = Math.min(100, Math.max(1, hp + combined.health));
+      if (combined.sanity) san = Math.min(100, Math.max(1, san + combined.sanity));
+      if (combined.network) net = Math.min(100, Math.max(0, net + combined.network));
+      if (combined.rep) rep = Math.min(100, Math.max(0, rep + combined.rep));
+      if (combined.merit) merit = Math.max(0, merit + combined.merit);
+      if (combined.resonance) res = Math.min(100, Math.max(0, res + combined.resonance));
+      if (combined.leverage) lev = Math.min(100, Math.max(0, lev + combined.leverage));
+      if (combined.standing) standing = Math.min(100, Math.max(0, standing + combined.standing));
+      if (combined.heat) h = Math.min(100, Math.max(0, h + combined.heat));
+    }
+  }
+
+  // Exact companion bond calculation considering active NPCs, current individual bonds, and 0–100 clamping limits
+  const activeCompanions = Object.entries(char?.npcs || {}).filter(([, comp]) => npcIsActive(comp));
+  let bondDelta = 0;
+  const companionDetails = [];
+
+  if (activeCompanions.length > 0) {
+    let totalDelta = 0;
+    const penalty = (p.scheme || 0) >= 3 ? 4 : (p.scheme || 0) >= 2 ? 2 : 0;
+    for (const [role, comp] of activeCompanions) {
+      const initialBond = typeof comp.bond === 'number' ? comp.bond : 40;
+      let nextBond = initialBond;
+      if (penalty > 0) {
+        nextBond = Math.max(0, nextBond - penalty);
+      }
+      if (apexBondBoost > 0) {
+        nextBond = Math.min(100, Math.max(0, nextBond + apexBondBoost));
+      }
+      const d = nextBond - initialBond;
+      totalDelta += d;
+      companionDetails.push({
+        role,
+        nameVi: comp.nameVi || role,
+        nameEn: comp.nameEn || role,
+        initialBond,
+        nextBond,
+        delta: d
+      });
+    }
+    const allSame = companionDetails.every((d) => d.delta === companionDetails[0].delta);
+    bondDelta = allSame ? companionDetails[0].delta : Math.round(totalDelta / activeCompanions.length);
+  }
+
+  return {
+    wealth: w - initialWealth,
+    network: net - initialNetwork,
+    sanity: san - initialSanity,
+    health: hp - initialHealth,
+    heat: h - initialHeat,
+    leverage: lev - initialLeverage,
+    rep: rep - initialRep,
+    merit: merit - initialMerit,
+    resonance: res - initialResonance,
+    standing: standing - initialStanding,
+    trainingCheckBonus: Math.round(((p.train || 0) * 0.02) * 100),
+    companionBond: bondDelta,
+    companionDetails
+  };
 }
 
 export function annualTrainingBonus(char) {

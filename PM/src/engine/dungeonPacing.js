@@ -21,12 +21,13 @@ export const GATE_PROFILES = {
   Syndicate: { guaranteed: 3, spacing: [5, 8], cooldown: 3, weight: 1.8 },
   'Wing Employee': { guaranteed: 2, spacing: [7, 10], cooldown: 4, weight: 1.3 },
   Outcast: { guaranteed: 2, spacing: [7, 10], cooldown: 4, weight: 1.3 },
-  Fixer: { guaranteed: 1, spacing: [8, 12], cooldown: 5, weight: 1 }
+  Fixer: { guaranteed: 1, spacing: [8, 12], cooldown: 5, weight: 1 },
+  'Color Fixer': { guaranteed: 2, spacing: [5, 8], cooldown: 4, weight: 1.5 }
 };
 const DEFAULT_PROFILE = { guaranteed: 1, spacing: [8, 12], cooldown: 5, weight: 1 };
 export const GATE_COOLDOWN_YEARS = GATE_PROFILES.Fixer.cooldown;
 
-export const gateProfileOf = (char) => GATE_PROFILES[char?.job] || DEFAULT_PROFILE;
+export const gateProfileOf = (char) => GATE_PROFILES[char?.job] || (char?.flags?.includes('ColorFixer') ? GATE_PROFILES['Color Fixer'] : DEFAULT_PROFILE);
 export const gateWeightMult = (char) => gateProfileOf(char).weight;
 
 const fnv = (text) => {
@@ -47,6 +48,17 @@ export const hasSeenGate = (char) => gatesSeen(char) > 0;
 export function nextGateDueAge(char) {
   const profile = gateProfileOf(char);
   const seen = gatesSeen(char);
+  const isColor = char?.job === 'Color Fixer' || (char?.flags || []).includes('ColorFixer');
+
+  // Dedicated Color Fixer guarantee: if promoted to Color, ensure at least one gate post-promotion
+  if (isColor && Number.isFinite(char?.lastColorTrialAge)) {
+    const sawGateAfterColor = Number.isFinite(char.lastGateAge) && char.lastGateAge >= char.lastColorTrialAge;
+    if (!sawGateAfterColor) {
+      const colorDue = char.lastColorTrialAge + 2 + (fnv(`${char.seed ?? ''}|color-gate`) % 2);
+      return Math.max(char.lastColorTrialAge + 1, colorDue);
+    }
+  }
+
   if (seen >= profile.guaranteed) return null;
   if (seen === 0) return firstGateAge(char);
   const [lo, hi] = profile.spacing;
@@ -69,6 +81,8 @@ export function planFirstGate(char) {
   const due = nextGateDueAge(char);
   if (due == null || char.age + 1 < due) return false;
   const pending = char.weaver?.pendingThreads || [];
+  // Never crowd out a personal story consequence or climactic major thread due next year
+  if (pending.some((t) => !t.fulfilled && !isGateEvent(t.eventId) && t.triggerAge <= char.age + 1)) return false;
   const planted = pending.find((t) => !t.fulfilled && isGateEvent(t.eventId));
   if (planted && char.age - planted.plantedAtAge < 3) return false;
   const next = { ...char, age: char.age + 1 };

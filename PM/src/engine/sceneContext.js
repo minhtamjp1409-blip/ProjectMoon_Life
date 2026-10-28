@@ -1,10 +1,10 @@
-// One reading of "where is this life right now", shared by the backdrop, the interface accent and the ambience.
+// One reading of "where is this life right now", shared by the backdrop, route identity and ambience.
 // Pure: it takes plain state and returns plain data, so it can be tested in Node.
 
-// Each world has a palette the interface borrows (accent, its ink, a second hue for glows) and a
+// Each world has a palette for scene art and nameplates (accent, ink, a second hue for glows) and a
 // particle weather for the backdrop; ambienceScapes.js keys its soundscape on the same world id.
 export const WORLDS = {
-  title: { accent: '#d23b3b', ink: '#fff2ef', glow: '#5a1418', weather: 'ash' },
+  title: { accent: '#d8b265', ink: '#1b1408', glow: '#3d2a14', weather: 'ash' },
   library: { accent: '#c9a25a', ink: '#1b1308', glow: '#4a3218', weather: 'dust' },
   childhood: { accent: '#d9a35a', ink: '#1c1206', glow: '#3d2a14', weather: 'season' },
   nest: { accent: '#8fc6e8', ink: '#08151d', glow: '#16324a', weather: 'motes' },

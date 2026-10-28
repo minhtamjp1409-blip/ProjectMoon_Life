@@ -1,6 +1,6 @@
 import { rememberResonance, hasEgoOpportunity, colorTrialAvailable } from './awakeningProgress.js';
 import { advanceActiveNarrativeArcs } from './narrativeArcEngine.js';
-import { choiceIsAvailable, matchesEventContext, mergeEffects, npcIsActive } from './eventConditions.js';
+import { choiceIsAvailable, matchesEventContext, mergeEffects, npcIsActive, recordColorTrialCompanion, colorTrialCompanionOf } from './eventConditions.js';
 import { ITEMS_CATALOG } from '../data/itemsData.js';
 import { rollPerinatalFate } from './fateEngine.js';
 import { rollTraits, traitsOf, varyEffects, PRINTED_NUMBERS } from './variance.js';
@@ -127,6 +127,7 @@ import {
   useDungeonEgo,
   dungeonEgoState,
   egoChargesOf,
+  hasColorSignatureWeapon,
   resolveDungeonChoice,
   fleeDungeon
 } from './dungeonEngine.js';
@@ -298,8 +299,10 @@ export function interpolateText(text, char) {
       : 'Những đêm trắng chạy trốn trong hẻm tối';
 
   const npcName = (role, fallback) => char.npcs?.[role]?.nameVi || fallback;
+  const trialCompanion = char.colorTrialCompanion?.nameVi || partner;
   return text
     .replace(/\{name\}/g, char.name || '')
+    .replace(/\{trialCompanion\}/g, trialCompanion)
     .replace(/\{age\}/g, String(char.age ?? ''))
     .replace(/\{friend\}/g, npcName('friend', 'đứa bạn cùng hẻm'))
     .replace(/\{rival\}/g, npcName('rival', 'kẻ kia'))
@@ -927,7 +930,7 @@ export function evaluateCharacterAchievements(char) {
   if (char.seenEvents.some((id) => id.includes('night_in_backstreets') || id.includes('sweeper')) && char.alive) {
     unlock('survive_night');
   }
-  if (char.seenEvents.some((id) => id.includes('warp_train') || id.includes('w_corp')) && char.alive) {
+  if ((char.unlockedRecords || []).includes('warp_cleanup') && char.alive) {
     unlock('warp_cleanup');
   }
   if (char.seenEvents.some((id) => id.includes('hatchery') || id.includes('r_corp')) && char.alive) {
@@ -1186,7 +1189,7 @@ export function getNextCareerMilestone(char) {
     const pNet = targetNet > 0 ? Math.min(100, (curNet / targetNet) * 100) : 100;
     const p3 = minTenure > 0 ? Math.min(100, (yearsInRank / minTenure) * 100) : 100;
     const p4 = Math.min(100, (char.age / minAge) * 100);
-    const progressPct = Math.min(Math.round((p1 + p2 + (targetNet > 0 ? pNet : p1)) / 3), p3, p4);
+    const progressPct = Math.round(Math.min((p1 + p2 + (targetNet > 0 ? pNet : p1)) / 3, p3, p4));
 
     return {
       category: `THE ${finger.toUpperCase()} TRIAL`,
@@ -1257,19 +1260,20 @@ export function getNextCareerMilestone(char) {
     const p1 = Math.min(100, (curRes / targetRes) * 100);
     const p2 = Math.min(100, (curHp / targetHp) * 100);
     const progressPct = Math.round((p1 + p2) / 2);
+    const isApex = progressPct >= 100 || char.flags.includes('AbyssalDistortionApex');
 
     return {
       category: 'DISTORTION METAMORPHOSIS',
-      titleVi: 'Biến Dị Vực Thẳm (Distortion Metamorphosis)',
-      titleEn: 'Abyssal Distortion Metamorphosis',
-      progressPct,
+      titleVi: isApex ? 'Đỉnh Cao Dị Thường Vực Thẳm (Abyssal Apex Metamorphosed)' : 'Biến Dị Vực Thẳm (Distortion Metamorphosis)',
+      titleEn: isApex ? 'Abyssal Apex Metamorphosis Achieved' : 'Abyssal Distortion Metamorphosis',
+      progressPct: isApex ? 100 : progressPct,
       requirements: [
         {
           labelVi: 'Cộng hưởng Vực thẳm (Resonance >= 100)',
           labelEn: 'Abyssal Resonance (>= 100)',
           current: curRes,
           target: targetRes,
-          met: curRes >= targetRes,
+          met: curRes >= targetRes || isApex,
           sources: ['Tiếng gọi của Carmen', 'Giải phóng dục vọng bản ngã', 'Nghi thức bóng tối']
         },
         {
@@ -1277,12 +1281,16 @@ export function getNextCareerMilestone(char) {
           labelEn: 'Reinforced Anomaly Flesh (HP >= 80)',
           current: curHp,
           target: targetHp,
-          met: curHp >= targetHp,
+          met: curHp >= targetHp || isApex,
           sources: ['Tái tạo tế bào dị thường (Tissue Regen)', 'Hấp thụ tinh hoa bóng đêm', 'Đè bẹp thợ săn']
         }
       ],
-      tipVi: 'Bạn là một Distortion. Các mô thịt dị thường tự co bóp tái sinh hàng năm theo chỉ số Cộng hưởng. Vực thẳm không phục vụ The Head hay các Wing: bạn là bản ngã trần trụi nhất.',
-      tipEn: 'You are a Distortion. Anomalous tissues pulsate and knit together each year based on Resonance. The abyss answers neither Head nor Wings: you are the rawest self.'
+      tipVi: isApex
+        ? 'Bản ngã của bạn đã hoàn tất biến dị tột cùng. Các thớ thịt và giác quan cổ xưa hoàn toàn hòa làm một với dục vọng, ban tặng nội lực tái sinh mô thịt (+4 HP/năm) và áp đảo mọi kẻ săn đuổi (+14 Sức mạnh chiến đấu).'
+        : 'Bạn là một Distortion. Các mô thịt dị thường tự co bóp tái sinh hàng năm theo chỉ số Cộng hưởng. Vực thẳm không phục vụ The Head hay các Wing: bạn là bản ngã trần trụi nhất.',
+      tipEn: isApex
+        ? 'Your ego has achieved apex metamorphosis. Ancient sinews and senses are unified with pure desire, granting perpetual tissue regeneration (+4 HP/year) and overwhelming combat power (+14).'
+        : 'You are a Distortion. Anomalous tissues pulsate and knit together each year based on Resonance. The abyss answers neither Head nor Wings: you are the rawest self.'
     };
   }
 
@@ -1343,6 +1351,34 @@ export function getEgoReadiness(char) {
   const res = char.resonance || 0;
   const sanity = (char.stats?.sanity ?? char.sanity) || 0;
   const age = char.age || 0;
+
+  // An unfinished E.G.O has its own second road; the first crossroad is not offered again
+  if (flags.includes('IncompleteEGO')) {
+    return {
+      status: 'incomplete',
+      progressPct: 80,
+      resonance: res,
+      sanity,
+      labelVi: 'E.G.O Chưa Hoàn Chỉnh',
+      labelEn: 'Incomplete E.G.O',
+      descVi: 'Bản ngã đã thành hình nhưng còn vết rạn. Một cơn nguy biến về sau có thể cho bạn cơ hội hàn gắn nó, hoặc làm nó vỡ thành Distortion. Không có gì bảo đảm cơ hội ấy sẽ đến.',
+      descEn: 'The ego took shape but still carries a fissure. A later crisis may let you mend it, or break it into Distortion. Nothing guarantees that chance will come.',
+      sourcesVi: ['Sống sót qua nguy biến lớn', 'Giữ tâm trí đủ vững']
+    };
+  }
+  if (char.seenEvents?.includes('ego_carmen_crossroad')) {
+    return {
+      status: 'crossroad_passed',
+      progressPct: 100,
+      resonance: res,
+      sanity,
+      labelVi: 'Đã Đi Qua Giao Lộ',
+      labelEn: 'Crossroad Already Passed',
+      descVi: 'Bạn đã đứng trước giao lộ của Carmen và rời đi mà không mang theo E.G.O. Giao lộ ấy không mở lại, nên tích thêm Resonance không gọi nó trở về.',
+      descEn: 'You stood at Carmen’s crossroad and left without an E.G.O. It does not open again, so more Resonance will not call it back.',
+      sourcesVi: []
+    };
+  }
 
   // Strict adulthood requirement for psychological crystallization
   if (age < 18) {
@@ -1496,7 +1532,7 @@ export function checkPromotions(char) {
 /**
  * Generates an interactive Fixer Contract with 3 tactical choices (Methodical, Bold, Seven Intel)
  */
-export function generateFixerContract(char, rng) {
+export function generateFixerContract(char, rng, overrideTemplate = null) {
   const route = contractRouteOf(char) || 'fixer';
   // A Fixer's work comes by lane: an Association's own board, an Office's, or the open one
   const laneSet = route === 'fixer' ? laneContractSet(char) : null;
@@ -1517,9 +1553,23 @@ export function generateFixerContract(char, rng) {
   const recent = new Set((char.contractLog || []).slice(-6));
   const fresh = inBand.filter((r) => !recent.has(r.id));
   const candidateReqs = fresh.length >= 2 ? fresh : inBand;
-  const template = candidateReqs[Math.floor(rng() * candidateReqs.length)] || pool[0];
+  const template = overrideTemplate || candidateReqs[Math.floor(rng() * candidateReqs.length)] || pool[0];
   const baseTier = THREAT_TIERS[template.tier] || THREAT_TIERS[0];
   const tierInfo = cfg ? { ...baseTier, nameVi: cfg.tiers[template.tier].nameVi, nameEn: cfg.tiers[template.tier].nameEn } : baseTier;
+
+  // Specific stakes and danger scaling matching narrated peril
+  const isHighStakes = Boolean(
+    template.highDanger ||
+    template.tier >= 3 ||
+    (template.vi && /vòng vây|sát thủ|tử thủ|dị thể|thanh trừng|bắn tỉa|chợ đen|tử chiến|liều mạng/i.test(template.vi))
+  );
+  const stakePayBonus = template.payBonus ?? (isHighStakes ? Math.max(2, Math.round(tierInfo.basePay * 0.25)) : 0);
+  const stakeMeritBonus = template.meritBonus ?? (isHighStakes ? Math.max(1, Math.round(tierInfo.baseMerit * 0.2)) : 0);
+  const effectiveBasePay = tierInfo.basePay + stakePayBonus;
+  const effectiveBaseMerit = tierInfo.baseMerit + stakeMeritBonus;
+  const stakesTag = isHighStakes
+    ? { vi: 'Nguy cơ cao · Thù lao bổng lộc', en: 'High Peril · Premium Pay' }
+    : null;
 
   let power = 48 + (9 - effGrade) * 7.5;
   if (route === 'middle' || route === 'wing') power += ((char.stats.network ?? 40) - 40) * 0.12;
@@ -1527,9 +1577,21 @@ export function generateFixerContract(char, rng) {
   power += (char.stats.health - 50) * 0.25;
   power += (char.stats.sanity - 50) * 0.2;
   power += scarContractPower(char);
-  if (char.flags.includes('고급장비') || char.flags.includes('유물') || char.craftWeapon) power += 12;
+  const hasCombatGear = Boolean(
+    char.craftWeapon ||
+    (char.inventory || []).some((item) => item?.type === 'weapon' || item?.type === 'armor') ||
+    hasColorSignatureWeapon(char) ||
+    char.flags.includes('유물') ||
+    char.flags.includes('CraftedColorWeapon')
+  );
+  if (hasCombatGear && (char.flags.includes('고급장비') || char.flags.includes('유물') || char.craftWeapon)) {
+    power += 12;
+  }
+  // The Color commission and the engraved blade are carried into every contract after
+  if (hasColorSignatureWeapon(char)) power += 16;
   power += getImbuedCombatBonus(char) * 0.6;
   if (char.flags.includes('EGOAwakened') || char.flags.includes('ShinAwakened')) power += 18;
+  if (char.flags.includes('AbyssalDistortionApex')) power += 14;
   const compSupport = evaluateCompanionSupport(char);
   power += compSupport.contractPower;
 
@@ -1544,6 +1606,7 @@ export function generateFixerContract(char, rng) {
 
   return {
     id: `${template.id}_${char.age}`,
+    combatPower: power,
     route,
     lane: laneSet?.lane || null,
     affId: laneSet?.affId || null,
@@ -1551,6 +1614,7 @@ export function generateFixerContract(char, rng) {
     kickerEn: cfg?.kickerEn || null,
     template,
     tierInfo,
+    stakesTag,
     companionSupport: compSupport.active ? {
       role: compSupport.role,
       nameVi: compSupport.npc.nameVi,
@@ -1568,8 +1632,8 @@ export function generateFixerContract(char, rng) {
         labelVi: cfg?.careful[0] || 'Làm chậm mà chắc',
         labelEn: cfg?.careful[1] || 'Slow and careful',
         ...approachOdds(clamp(baseSuccess + 8, 25, 96), Math.max(1, Math.round(baseDeath * 0.55))),
-        payAhn: pay(tierInfo.basePay),
-        meritGain: tierInfo.baseMerit,
+        payAhn: pay(effectiveBasePay),
+        meritGain: effectiveBaseMerit,
         costAhn: 0
       },
       {
@@ -1577,8 +1641,8 @@ export function generateFixerContract(char, rng) {
         labelVi: cfg?.bold[0] || 'Xông vào, xong sớm (thêm 50% Ahn và Merit)',
         labelEn: cfg?.bold[1] || 'Go in hard, finish fast (50% more Ahn and Merit)',
         ...approachOdds(clamp(baseSuccess - 8, 15, 90), clamp(Math.round(baseDeath * 1.45), 4, 55)),
-        payAhn: pay(tierInfo.basePay * 1.5),
-        meritGain: Math.round(tierInfo.baseMerit * 1.5),
+        payAhn: pay(effectiveBasePay * 1.5),
+        meritGain: Math.round(effectiveBaseMerit * 1.5),
         costAhn: 0
       },
       {
@@ -1586,8 +1650,8 @@ export function generateFixerContract(char, rng) {
         labelVi: cfg?.intel[0] || 'Mua hồ sơ mục tiêu của Seven Association (8 Ahn)',
         labelEn: cfg?.intel[1] || 'Buy the target file from Seven Association (8 Ahn)',
         ...approachOdds(clamp(baseSuccess + 18, 35, 98), 1),
-        payAhn: pay(tierInfo.basePay),
-        meritGain: tierInfo.baseMerit + 3,
+        payAhn: pay(effectiveBasePay),
+        meritGain: effectiveBaseMerit + 3,
         costAhn: 8
       },
       {
@@ -1780,8 +1844,9 @@ export function resolveFixerContract(charState, approachId, rng = Math.random) {
     applyContractAftermath(char, cfg, template, true);
     appendStandingNote('ok');
   } else if (roll < approach.successPct + approach.failPct) {
-    const hpLoss = 10 + template.tier * 5;
-    const spLoss = 6 + template.tier * 3;
+    const isHighStakes = Boolean(contract.stakesTag);
+    const hpLoss = (10 + template.tier * 5) + (isHighStakes ? 4 : 0);
+    const spLoss = (6 + template.tier * 3) + (isHighStakes ? 3 : 0);
     char.stats.health = clamp(char.stats.health - hpLoss, 0, 100);
     char.stats.sanity = clamp(char.stats.sanity - spLoss, 0, 100);
     char.resonance = clamp((char.resonance || 0) + 8, 0, 100);
@@ -1974,6 +2039,33 @@ export function handleSanityBreakdown(char, rng = Math.random) {
       en: 'You endured weeks of sheer terror, screaming into the darkness before regaining composure, forever bearing deep psychological scars.'
     });
   }
+}
+
+/**
+ * The Color trial companion is a real NPC with a real wound: recorded by identity when they take the blow,
+ * marked injured so they cannot fight, then either healed or moved to an advisor post by the aftermath.
+ */
+export function applyColorTrialCompanionState(char, flagsAdd = []) {
+  if (!char.npcs) return;
+  if (flagsAdd.includes('PartnerShieldedYouInColorTrial') && !char.colorTrialCompanion) {
+    const rec = recordColorTrialCompanion(char);
+    if (rec) char.npcs[rec.role] = { ...char.npcs[rec.role], injured: true, injurySeverity: 'severe', injuredAtAge: char.age };
+  }
+  const healed = flagsAdd.includes('CompanionFullyHealed');
+  const advisor = flagsAdd.includes('CompanionSeniorAdvisor');
+  if (!healed && !advisor) return;
+  const npc = colorTrialCompanionOf(char) || (!char.colorTrialCompanion ? char.npcs.partner : null);
+  const role = char.colorTrialCompanion?.role || 'partner';
+  // Treatment never brings back someone who is already gone
+  if (!npcIsActive(npc)) return;
+  char.npcs[role] = {
+    ...npc,
+    injured: false,
+    injurySeverity: null,
+    ...(advisor ? { advisor: true, advisorSinceAge: char.age } : {}),
+    bond: clamp((npc.bond ?? 0) + (healed ? 40 : 30), 0, 100),
+    lastSeen: char.age
+  };
 }
 
 /**
@@ -2196,11 +2288,17 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random, dung
   if (event.id.startsWith('gate_')) char.lastGateAge = char.age;
   const printsNumbers = PRINTED_NUMBERS.test(`${outcome.resultVi || outcome.rvi || ''}${choice.resultVi || choice.rvi || ''}`);
   const rolled = mergeEffects(choice, outcome);
+  if (choice.costAhn && (choice.fx?.wealth ?? choice.effects?.wealth ?? rolled.wealth) === -choice.costAhn) {
+    rolled.wealth = (rolled.wealth || 0) + choice.costAhn;
+  }
   const effects = printsNumbers ? rolled : varyEffects(rolled, rng, traitsOf(char));
+  for (const key of [...(choice.exactFx || []), ...(outcome === choice ? [] : outcome.exactFx || [])]) {
+    if (key in rolled) effects[key] = rolled[key];
+  }
   if (/^fixer_promo_/.test(event.id) && effects.health < 0) effects.health = Math.ceil(effects.health * 0.65);
   // Entering a dungeon only sets the scene: the stages pay out, so the entry itself never pays twice
   if (startDungeonId) for (const key of Object.keys(effects)) effects[key] = 0;
-  if (choice.costAhn) effects.wealth = (effects.wealth || 0) - Math.max(0, choice.costAhn + Math.min(0, effects.wealth || 0));
+  if (choice.costAhn) effects.wealth = (effects.wealth || 0) - choice.costAhn;
   const itemId = outcome.itemAdd || choice.itemAdd;
   const purchasedItem = ITEMS_CATALOG.find(i => i.id === itemId);
   if (purchasedItem) char.inventory.push({ ...purchasedItem });
@@ -2332,6 +2430,7 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random, dung
     ...(choice.flagsRemove || []),
     ...(outcome.flagsRemove || [])
   ];
+  applyColorTrialCompanionState(char, flagsAdd);
   if (flagsRemove.length > 0) {
     char.flags = char.flags.filter(f => !flagsRemove.includes(f));
   }

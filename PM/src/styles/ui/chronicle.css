@@ -58,6 +58,43 @@
 .entry-review > p { margin: 6px 0; font-family: var(--serif); color: var(--page-muted); line-height: 1.6; }
 .entry-review ol { list-style: decimal; padding-left: 22px; display: flex; flex-direction: column; gap: 4px; color: var(--page-muted); }
 .entry-review li.is-selected { color: var(--page-ink); font-weight: 600; }
+.year-end-breakdown {
+  margin-top: 8px;
+  margin-bottom: 8px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+}
+.year-end-breakdown summary {
+  cursor: pointer;
+  font-size: 13px;
+  min-height: 24px;
+  color: var(--muted);
+  text-decoration: none;
+  user-select: none;
+}
+.year-end-breakdown summary:hover {
+  color: var(--text);
+}
+.breakdown-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 8px;
+  padding-top: 6px;
+  border-top: 1px solid var(--page-edge);
+}
+.breakdown-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12.5px;
+  padding: 2px 0;
+}
+.breakdown-label {
+  color: var(--muted);
+}
 
 /* Changes: small marks after the paragraph, a sign on every number */
 .deltas { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
@@ -87,7 +124,7 @@
   position: fixed; inset: 0; z-index: 45;
   display: grid; place-items: center;
   padding: calc(var(--top) + 76px) 20px 24px;
-  background: rgba(4, 4, 7, .58);
+  background: var(--dialog-scrim);
   backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
   animation: scrimIn .25s ease both;
 }
@@ -96,23 +133,17 @@
   width: min(640px, 100%);
   max-height: min(calc(100dvh - var(--top) - 100px), 860px);
   overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable;
-  background: rgba(13, 12, 16, .94);
-  border: 1px solid var(--border); border-top: 3px solid var(--accent);
+  background: var(--dialog-surface);
+  border: 1px solid var(--dialog-border); border-top: 3px solid var(--accent);
   border-radius: 12px;
-  box-shadow: 0 30px 90px rgba(0, 0, 0, .7), 0 0 0 1px rgba(0, 0, 0, .4), 0 0 60px color-mix(in srgb, var(--accent) 14%, transparent);
+  box-shadow: var(--shadow-pop);
 }
 .event-modal-backdrop > .dock.is-dungeon { width: min(820px, 100%); border-top-color: var(--dg); }
-/* Inside a dungeon the place itself is the backdrop: the chronicle steps aside, the scrim thins,
-   and the card turns to frosted glass so the scene still moves behind it */
+/* The dungeon scene stays visible around the card; its text has an opaque surface. */
 .stage.is-dungeon-stage:has(> .event-modal-backdrop) .log-col { opacity: 0; transition: opacity .5s ease; }
-.event-modal-backdrop:has(> .dock.is-dungeon) { background: rgba(4, 4, 7, .16); backdrop-filter: none; -webkit-backdrop-filter: none; }
+.event-modal-backdrop:has(> .dock.is-dungeon) { background: var(--dialog-scrim); }
 .event-modal-backdrop > .dock.is-dungeon {
-  background: rgba(10, 10, 14, .74);
-}
-/* On a phone the card covers the status strip, whose words would show through */
-@media (max-width: 860px) {
-  .event-modal-backdrop:has(> .dock.is-dungeon) { background: rgba(4, 4, 7, .4); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
-  .event-modal-backdrop > .dock.is-dungeon { background: rgba(10, 10, 14, .9); }
+  background: var(--dialog-surface);
 }
 .event-modal-backdrop > .dock.is-dead { border-top-color: var(--bad); }
 .dock { padding: 26px 28px 28px; animation: dockIn .34s cubic-bezier(.2, .9, .25, 1.1) both; }
@@ -176,7 +207,40 @@
 .choice-content > div:first-child { display: flex; justify-content: space-between; gap: 10px; }
 .choice-label { font-size: var(--choice-size); font-weight: 500; line-height: 1.45; }
 .choice-alt { font-size: 13.5px; color: var(--muted); font-style: italic; }
-.choice.is-disabled, .choice:disabled { opacity: .5; cursor: not-allowed; }
+.choice.is-disabled, .choice:disabled { opacity: .72; cursor: not-allowed; border-color: var(--page-edge); background: rgba(0, 0, 0, 0.18); }
+.choice.is-disabled .choice-label, .choice:disabled .choice-label { color: var(--page-muted); }
+.choice-need {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.3;
+  padding: 2px 7px;
+  border-radius: var(--radius-sm);
+  margin-left: 8px;
+  vertical-align: middle;
+  color: #fca5a5;
+  background: rgba(185, 28, 28, 0.18);
+  border: 1px solid rgba(248, 113, 113, 0.4);
+}
+.choice.is-disabled .choice-need, .choice:disabled .choice-need {
+  color: #fca5a5;
+  background: rgba(185, 28, 28, 0.22);
+  border-color: rgba(248, 113, 113, 0.5);
+  font-weight: 600;
+}
+.contract-stakes-tag {
+  display: inline-block;
+  font-size: 11.5px;
+  font-weight: 600;
+  line-height: 1.3;
+  padding: 1px 7px;
+  border-radius: var(--radius-sm);
+  margin-left: 8px;
+  vertical-align: middle;
+  color: #fca5a5;
+  background: rgba(185, 28, 28, 0.16);
+  border: 1px solid rgba(248, 113, 113, 0.35);
+}
 .choice.is-ghost { background: transparent; border-style: dashed; color: var(--muted); }
 .choice-badge.is-ghost { border-style: dashed; }
 .preview { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -244,10 +308,10 @@
   .log-col::before { display: none; }
   .entry.k-good::before, .entry.k-bad::before { left: -13px; }
   .yearline { margin-top: 34px; }
-  /* On a phone the card sits between the play bar and the bottom tabs, which stay above it; --bottom already holds the safe area */
-  .event-modal-backdrop { padding: calc(var(--top) + 68px) 10px calc(var(--bottom) + 10px); }
-  .event-modal-backdrop > .dock { max-height: calc(100dvh - var(--top) - 68px - var(--bottom) - 10px); border-radius: 14px; }
-  .event-peek-toggle { top: auto; right: 50%; transform: translateX(50%); bottom: calc(var(--bottom) + 12px); }
+  /* On a phone the card sits between the play bar and the bottom tabs; bottom padding reserves dedicated space for the peek toggle */
+  .event-modal-backdrop { padding: calc(var(--top) + 68px) 10px calc(var(--bottom) + 60px); }
+  .event-modal-backdrop > .dock { max-height: calc(100dvh - var(--top) - 68px - var(--bottom) - 66px); border-radius: 14px; }
+  .event-peek-toggle { top: auto; right: 50%; transform: translateX(50%); bottom: calc(var(--bottom) + 12px); z-index: 10; }
   .dock { padding: 18px 16px 22px; }
   .dock-title { font-size: 22px; }
   .dock-hotkey-hint { display: none; }
@@ -290,6 +354,94 @@
 .tp-age { font-size: 13px; font-weight: 600; color: var(--page-muted); font-variant-numeric: tabular-nums; }
 .tp-content { font-size: 14.5px; line-height: 1.5; }
 .tp-danger .tp-age, .tp-death .tp-age { color: var(--bad); }
+/* Spotlight Apex Milestones Card (BUG-50) */
+.epitaph-spotlight-section {
+  margin-bottom: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--page-rule);
+}
+.spotlight-section-kicker {
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+  color: var(--gold);
+  margin: 0 0 10px 0;
+}
+.spotlight-milestones-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 10px;
+}
+.spotlight-milestone-card {
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: relative;
+}
+.spotlight-milestone-card.tier-miracle {
+  border-color: rgba(234, 179, 8, 0.55);
+  background: rgba(40, 32, 10, 0.35);
+}
+.spotlight-milestone-card.tier-myth {
+  border-color: rgba(239, 68, 68, 0.5);
+  background: rgba(45, 12, 16, 0.35);
+}
+.spotlight-milestone-card.tier-legend,
+.spotlight-milestone-card.tier-legendary {
+  border-color: rgba(216, 178, 101, 0.45);
+  background: rgba(30, 26, 18, 0.35);
+}
+.spotlight-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.spotlight-rarity-pill {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text);
+}
+.spotlight-milestone-card.tier-miracle .spotlight-rarity-pill {
+  color: var(--gold);
+  background: rgba(234, 179, 8, 0.15);
+}
+.spotlight-milestone-card.tier-myth .spotlight-rarity-pill {
+  color: #f87171;
+  background: rgba(239, 68, 68, 0.15);
+}
+.spotlight-milestone-card.tier-legend .spotlight-rarity-pill,
+.spotlight-milestone-card.tier-legendary .spotlight-rarity-pill {
+  color: #d8b265;
+  background: rgba(216, 178, 101, 0.15);
+}
+.spotlight-record-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--page-ink);
+  margin: 0;
+  line-height: 1.35;
+}
+.spotlight-record-hint {
+  font-size: 12.5px;
+  color: var(--page-muted);
+  margin: 0;
+  line-height: 1.45;
+}
+.standard-records-kicker {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--muted);
+  margin: 4px 0 8px 0;
+}
 .records-new-count { font-family: var(--font); font-size: 12.5px; font-weight: 700; color: var(--accent); }
 .epitaph-records-list { display: flex; flex-direction: column; }
 .epitaph-record-row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--page-rule); }
@@ -298,7 +450,11 @@
 .record-new-badge { font-size: 11.5px; font-weight: 700; color: var(--accent); }
 .record-row-rarity { font-size: 12.5px; color: var(--page-muted); white-space: nowrap; }
 .epitaph-record-row.tier-rare .record-row-rarity, .epitaph-record-row.tier-epic .record-row-rarity { color: var(--rare); }
-.epitaph-record-row.tier-legendary .record-row-rarity { color: var(--gold); }
+.epitaph-record-row.tier-legendary .record-row-rarity, .epitaph-record-row.tier-legend .record-row-rarity { color: var(--gold); }
+.epitaph-record-row.tier-myth .record-row-rarity, .epitaph-record-row.tier-miracle .record-row-rarity { color: #e5a4ff; text-shadow: 0 0 6px rgba(229,164,255,0.4); }
+.epitaph-record-row.tier-legend, .epitaph-record-row.tier-legendary { border-left: 2px solid var(--gold); padding-left: 8px; }
+.epitaph-record-row.tier-myth, .epitaph-record-row.tier-miracle { border-left: 2px solid #e5a4ff; padding-left: 8px; }
+.epitaph-record-row.is-new-record { background: rgba(216, 178, 101, 0.05); }
 .epitaph-stat-bars { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 24px; }
 .epitaph-stat-row { display: flex; flex-direction: column; gap: 5px; }
 .epitaph-stat-head { display: flex; justify-content: space-between; font-size: 13.5px; color: var(--page-muted); }
@@ -395,6 +551,9 @@
 .year-plan-remaining { color: var(--accent); font-weight: 700; margin: 0 0 .75rem; }
 .year-plan-activities { display: grid; gap: .5rem; }
 .year-plan-activity { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: .7rem .8rem; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); }
+.year-plan-net-summary { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: .75rem; padding: 8px 12px; background: var(--surface-subtle, rgba(255, 255, 255, 0.03)); border: 1px dashed var(--border); border-radius: 8px; font-size: 13px; }
+.net-summary-title { font-weight: 600; color: var(--muted); margin-right: 4px; }
+.net-summary-chips { display: inline-flex; flex-wrap: wrap; gap: 6px; }
 .year-plan-activity strong, .year-plan-activity small, .year-plan-ambitions strong, .year-plan-ambitions small { display: block; }
 .year-plan-activity small, .year-plan-ambitions small { color: var(--muted); line-height: 1.35; margin-top: .2rem; }
 .year-plan-stepper { display: flex; align-items: center; gap: .25rem; flex: none; }

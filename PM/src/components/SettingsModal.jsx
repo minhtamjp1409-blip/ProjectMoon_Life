@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { X, Volume2, VolumeX, Sparkles, Sliders, Monitor, Shield, Zap } from 'lucide-react';
 import { useThemeStore } from '../store/themeStore';
 import { pick } from '../i18n';
@@ -42,17 +43,39 @@ export const SettingsModal = ({ open, onClose }) => {
     });
   }, []);
 
-  // Keyboard navigation & accessibility
+  // Keyboard navigation & accessibility: only this layer takes Escape and Tab while open, and focus returns to the opener
+  const panelRef = React.useRef(null);
   useEffect(() => {
     if (!open) return undefined;
+    const opener = document.activeElement;
+    const focusables = () => Array.from(panelRef.current?.querySelectorAll('button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])') || []);
+    const first = focusables()[0];
+    (first || panelRef.current)?.focus?.();
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') {
         e.preventDefault();
+        e.stopImmediatePropagation();
         onClose();
+        return;
       }
+      if (e.key === 'Tab') {
+        const items = focusables();
+        if (!items.length) { e.preventDefault(); return; }
+        const head = items[0];
+        const tail = items[items.length - 1];
+        const inside = panelRef.current?.contains(document.activeElement);
+        if (e.shiftKey && (document.activeElement === head || !inside)) { e.preventDefault(); tail.focus(); }
+        else if (!e.shiftKey && (document.activeElement === tail || !inside)) { e.preventDefault(); head.focus(); }
+        return;
+      }
+      // Keys meant for the game behind the modal (choice hotkeys) stop here
+      if (!panelRef.current?.contains(e.target)) e.stopImmediatePropagation();
     };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener('keydown', handleKeyDown, true);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown, true);
+      if (opener && typeof opener.focus === 'function' && document.contains(opener)) opener.focus();
+    };
   }, [open, onClose]);
 
   if (!open) return null;
@@ -72,9 +95,9 @@ export const SettingsModal = ({ open, onClose }) => {
     audioEngine.setSfxVolume(val);
   };
 
-  return (
+  return createPortal(
     <div className="city-modal-overlay" onClick={onClose} role="dialog" aria-modal="true" aria-label={pick(lang, 'Cài đặt hệ thống', 'System Settings')}>
-      <div className="settings-panel" onClick={(e) => e.stopPropagation()}>
+      <div className="settings-panel" ref={panelRef} tabIndex={-1} onClick={(e) => e.stopPropagation()}>
         <div className="settings-header">
           <div className="settings-title-wrap">
             <Sliders size={18} className="settings-icon" aria-hidden="true" />
@@ -280,6 +303,7 @@ export const SettingsModal = ({ open, onClose }) => {
           </section>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };

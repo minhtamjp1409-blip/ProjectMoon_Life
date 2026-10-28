@@ -10,7 +10,7 @@ import { useThemeStore } from './store/themeStore';
 // Ant Design is kept for modals, tooltips and notifications only; its tokens
 // mirror the CSS variables in styles/ui/tokens.css so those surfaces match the screens.
 const PALETTE = {
-  dark: { primary: '#d23b3b', bg: '#121115', elevated: '#18161b', border: '#2e2b33', text: '#f1ede6' },
+  dark: { primary: '#d8b265', bg: '#121115', elevated: '#252127', border: '#746348', text: '#f1ede6' },
 };
 
 export const App = () => {
@@ -23,6 +23,7 @@ export const App = () => {
       algorithm: AntdThemeLib.darkAlgorithm,
       token: {
         colorPrimary: p.primary,
+        colorTextLightSolid: '#1b1408',
         colorBgContainer: p.bg,
         colorBgElevated: p.elevated,
         colorBorder: p.border,
@@ -35,7 +36,7 @@ export const App = () => {
         boxShadow: '0 12px 32px rgba(0,0,0,.18)'
       },
       components: {
-        Modal: { titleFontSize: 17, contentBg: p.bg, headerBg: p.bg },
+        Modal: { titleFontSize: 17, contentBg: p.elevated, headerBg: p.elevated },
         Tooltip: { fontSize: 13 }
       }
     };

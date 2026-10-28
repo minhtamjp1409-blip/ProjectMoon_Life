@@ -1533,17 +1533,17 @@ export const LIFE_MINORS = [
   M(
     'm_wellness_workshop_tuneup',
     GROWN,
-    { notOut: true, jobs: ['Fixer', 'Syndicate', 'Workshop Craftsman'] },
+    { notOut: true, jobs: ['Fixer', 'Syndicate', 'Workshop Craftsman'], hasGear: true },
     '[Bảo Trì Trang Bị Tại Workshop] Áo khoác chống đạn rách tơi tả, các khớp trợ lực kêu cọt kẹt và lưỡi kiếm mẻ cạnh sau chuỗi giao tranh khốc liệt. Một xưởng rèn uy tín chào mời gói bảo trì toàn diện.',
     '[Workshop Gear Overhaul & Maintenance] Shredded ballistic fabric, creaking pneumatic joints, and notched weapon edges. A reputable workshop offers complete tuning.',
     [
       C(
         'Đại tu toàn diện giáp nano và mài sắc lưỡi cắt phân tử (-22 Ahn)',
         'Commission full armor nano-reinforcement & molecular hone (-22 Ahn)',
-        'Bộ giáp được vá kín, lưỡi kiếm mài lại. Bạn thử từng khớp cho đến khi không còn tiếng kẹt; chủ xưởng giới thiệu tên bạn với nhóm khách thường thuê người hộ tống.',
-        'The armor was patched and the blade honed. You tested every joint until the creaking stopped; the proprietor passed your name to clients who regularly hire escorts.',
+        'Bộ giáp được vá kín, lưỡi kiếm mài lại sắc lẹm, nâng cấp thành trang bị cao cấp (+12 Sức chiến đấu). Chủ xưởng giới thiệu tên bạn với nhóm khách thường thuê người hộ tống.',
+        'The armor was patched and the blade honed razor-sharp, upgrading to advanced combat gear (+12 Combat Power). The proprietor passed your name to clients who regularly hire escorts.',
         { sanity: 8, rep: 6, network: 12, wealth: -22 },
-        { costAhn: 22 }
+        { costAhn: 22, flags: ['고급장비'] }
       ),
       C(
         'Tra dầu giảm chấn và tán lại đinh chốt chịu lực (-6 Ahn)',

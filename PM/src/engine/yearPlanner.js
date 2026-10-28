@@ -6,7 +6,7 @@ import { planFirstGate } from './dungeonPacing.js';
 import { careerAgeOf, reachedCareerAge, effectiveMinAge } from './careerAge.js';
 import { rememberResonance, hasEgoOpportunity, colorTrialAvailable, rollEgoEncounter } from './awakeningProgress.js';
 import { simulateNpcAutonomousLife } from './narrativeArcEngine.js';
-import { matchesNeed, matchesEventContext, choiceIsAvailable, mergeEffects, isNestResident, isOutsideCity, npcIsActive } from './eventConditions.js';
+import { matchesNeed, matchesEventContext, choiceIsAvailable, mergeEffects, isNestResident, isOutsideCity, npcIsActive, colorTrialCompanionAlive } from './eventConditions.js';
 import {
   getNextFixerPromotion,
   contractOfferChance,
@@ -400,7 +400,7 @@ export function planYear(charState, rng) {
 
     // Check if it matches a major story consequence
     let targetEventId = th.eventId;
-    if (targetEventId === 'csq_color_sponsor_aftermath' && !npcIsActive(char.npcs?.partner)) {
+    if (targetEventId === 'csq_color_sponsor_aftermath' && !colorTrialCompanionAlive(char)) {
       targetEventId = 'csq_color_sponsor_aftermath_fallen';
     }
     const storyDef = CONSEQUENCE_EVENTS.find((e) => e.id === targetEventId) || ALL_STORY_EVENTS.find((e) => e.id === targetEventId);
@@ -414,7 +414,7 @@ export function planYear(charState, rng) {
 
     // Drop if far overdue and cannot be resolved
     if (age > th.triggerAge + 8) {
-      closeThreads(char, th.eventId);
+      closeThreads(char, th.eventId, { threadId: th.id });
     }
   }
 
@@ -975,7 +975,7 @@ export function runPlanItem(charState, item, rng) {
       if (candidate && isEventEligible(candidate, char, { scripted: true })) {
         event = candidate;
         if (item.thread) {
-          closeThreads(char, item.forcedEventId);
+          closeThreads(char, item.forcedEventId, { threadId: item.thread, playedEventId: item.forcedEventId });
           weaver = char.weaver;
         }
       }
@@ -1171,6 +1171,7 @@ export function endYear(charState, rng) {
   const region = REGIONS.find((r) => r.id === char.regionId) || REGIONS[0];
   const nest = isNest(char);
   const fx = {};
+  const breakdown = [];
   const vi = [];
   const en = [];
   const add = (k, v) => {
@@ -1211,7 +1212,18 @@ export function endYear(charState, rng) {
       line('asset_cost', assetCost);
     }
 
-    const net = JOB_INCOME(char) - livingCost + Math.round(rng() * 2 - 1);
+    const careerIncome = JOB_INCOME(char);
+    if (careerIncome > 0) {
+      breakdown.push({ cat: 'economy', labelVi: 'Thu nhập nghề nghiệp', labelEn: 'Career income', k: 'wealth', v: careerIncome, unit: 'Ahn' });
+    }
+    if (livingCost > 0) {
+      breakdown.push({ cat: 'economy', labelVi: 'Sinh hoạt, thuế & bảo dưỡng', labelEn: 'Living, taxes & maintenance', k: 'wealth', v: -livingCost, unit: 'Ahn' });
+    }
+    const marketJitter = Math.round(rng() * 2 - 1);
+    if (marketJitter !== 0) {
+      breakdown.push({ cat: 'economy', labelVi: 'Biến động thị trường & chi tiêu phát sinh', labelEn: 'Market fluctuations & miscellaneous expenses', k: 'wealth', v: marketJitter, unit: 'Ahn' });
+    }
+    const net = careerIncome - livingCost + marketJitter;
     add('wealth', net);
     if (net > 0) {
       line('income_up');
@@ -1225,37 +1237,50 @@ export function endYear(charState, rng) {
         const drain = Math.min(2, Math.max(1, Math.floor(char.stats.wealth * 0.15)));
         add('wealth', -drain);
         line('child_friction');
+        breakdown.push({ cat: 'economy', labelVi: 'Chi tiêu sinh hoạt gia đình', labelEn: 'Family necessities', k: 'wealth', v: -drain, unit: 'Ahn' });
       }
     } else {
       if (char.stats.wealth > 14 && rng() < 0.35) {
         const drain = Math.min(3, Math.max(1, Math.floor(char.stats.wealth * 0.12)));
         add('wealth', -drain);
         line('nest_tuition');
+        breakdown.push({ cat: 'economy', labelVi: 'Học phí & sinh hoạt Nest', labelEn: 'Nest tuition & living', k: 'wealth', v: -drain, unit: 'Ahn' });
       }
     }
   }
 
   // Healthcare & Wounds recovery vs Street clinic expenses vs Distortion anomaly tissue regeneration
   if (char.flags.includes('Distorted')) {
-    if (char.stats.health < BALANCE.heal.below) {
-      const anomalyRegen = Math.max(8, Math.round(((char.resonance || 50) * 0.16)));
+    if (char.stats.health < BALANCE.heal.below || char.flags.includes('AbyssalDistortionApex')) {
+      const bonus = char.flags.includes('AbyssalDistortionApex') ? 4 : 0;
+      const anomalyRegen = Math.max(8, Math.round(((char.resonance || 50) * 0.16))) + bonus;
       add('health', anomalyRegen);
       line('heal_distortion_tissue');
+      breakdown.push({ cat: 'recovery', labelVi: 'Tái tạo mô dị thường', labelEn: 'Anomalous regeneration', k: 'health', v: anomalyRegen, unit: 'HP' });
     }
   } else if (char.stats.health < BALANCE.heal.below) {
     if (char.flags.includes('KCorpAmpoule')) {
-      add('health', healAmount(char, 'ampoule'));
+      const amt = healAmount(char, 'ampoule');
+      add('health', amt);
       line('heal_ampoule');
+      breakdown.push({ cat: 'recovery', labelVi: 'Phục hồi huyết thanh K Corp', labelEn: 'K Corp Ampoule recovery', k: 'health', v: amt, unit: 'HP' });
     } else if (nest) {
-      add('health', healAmount(char, 'nest'));
+      const amt = healAmount(char, 'nest');
+      add('health', amt);
       line('heal_nest');
+      breakdown.push({ cat: 'recovery', labelVi: 'Điều dưỡng y tế Nest', labelEn: 'Nest medical recovery', k: 'health', v: amt, unit: 'HP' });
     } else if (char.stats.wealth >= 3 && reachedCareerAge(char)) {
       add('wealth', -2);
-      add('health', healAmount(char, 'clinic'));
+      const amt = healAmount(char, 'clinic');
+      add('health', amt);
       line('heal_clinic');
+      breakdown.push({ cat: 'economy', labelVi: 'Phí phòng khám hẻm', labelEn: 'Backstreet clinic fee', k: 'wealth', v: -2, unit: 'Ahn' });
+      breakdown.push({ cat: 'recovery', labelVi: 'Điều trị vết thương', labelEn: 'Wound treatment', k: 'health', v: amt, unit: 'HP' });
     } else {
-      add('health', healAmount(char, 'natural'));
+      const amt = healAmount(char, 'natural');
+      add('health', amt);
       line('heal_natural');
+      breakdown.push({ cat: 'recovery', labelVi: 'Tự phục hồi thể trạng', labelEn: 'Natural health recovery', k: 'health', v: amt, unit: 'HP' });
     }
   }
 
@@ -1263,35 +1288,49 @@ export function endYear(charState, rng) {
   const bond = ['spouse', 'partner', 'friend', 'mentor', 'child'].some((k) => npcIsActive(char.npcs?.[k]) && (char.npcs[k].bond || 0) >= 50);
   if (char.stats.sanity < BALANCE.calm.below && !char.flags.includes('Distorted')) {
     if (bond) {
-      add('sanity', calmAmount(char, 'bond'));
+      const amt = calmAmount(char, 'bond');
+      add('sanity', amt);
       line('calm_bond');
+      breakdown.push({ cat: 'recovery', labelVi: 'Sự an ủi từ người thân', labelEn: 'Companion comfort', k: 'sanity', v: amt, unit: 'SP' });
     } else if (char.stats.wealth >= 2 && reachedCareerAge(char)) {
       add('wealth', -1);
-      add('sanity', calmAmount(char, 'tavern'));
+      const amt = calmAmount(char, 'tavern');
+      add('sanity', amt);
       line('calm_tavern');
+      breakdown.push({ cat: 'economy', labelVi: 'Chi tiêu quán rượu', labelEn: 'Tavern comfort expense', k: 'wealth', v: -1, unit: 'Ahn' });
+      breakdown.push({ cat: 'recovery', labelVi: 'Xoa dịu tinh thần', labelEn: 'Sanity soothing', k: 'sanity', v: amt, unit: 'SP' });
     } else {
-      add('sanity', calmAmount(char, 'natural'));
+      const amt = calmAmount(char, 'natural');
+      add('sanity', amt);
       line('calm_natural');
+      breakdown.push({ cat: 'recovery', labelVi: 'Thời gian xoa dịu', labelEn: 'Natural sanity recovery', k: 'sanity', v: amt, unit: 'SP' });
     }
   }
 
   const scarEffects = scarAnnualEffects(char);
   if (Object.keys(scarEffects).length) {
-    for (const [key, value] of Object.entries(scarEffects)) add(key, value);
+    for (const [key, value] of Object.entries(scarEffects)) {
+      add(key, value);
+      breakdown.push({ cat: 'wear', labelVi: 'Ảnh hưởng từ vết sẹo', labelEn: 'Toll from permanent scars', k: key, v: value });
+    }
     vi.push('Những dấu tích còn mang đã đòi phần của chúng.');
     en.push('The marks you carry took their toll.');
   }
   if ((char.resonance || 0) >= 90 && !char.flags.includes('Distorted') && !char.flags.includes('EGOAwakened')) {
     add('sanity', -2);
+    breakdown.push({ cat: 'wear', labelVi: 'Tiếng gọi Carmen từ cộng hưởng cực hạn', labelEn: "Carmen's call from peak resonance", k: 'sanity', v: -2, unit: 'SP' });
     vi.push('Cộng hưởng quá cao khiến tiếng nói của Carmen khó lắng xuống.');
     en.push('High resonance made Carmen’s voice harder to quiet.');
   }
 
   if (reachedCareerAge(char) && ['Fixer', 'Color Fixer', 'Syndicate', 'Wing Employee', 'Workshop Craftsman'].includes(char.job) && !char.flags.includes('Distorted')) {
     const wear = char.job === 'Fixer' || char.job === 'Color Fixer' || char.job === 'Syndicate' ? 2 : 1;
+    const spStrain = char.job === 'Wing Employee' || char.job === 'Syndicate' ? 3 : 2;
     add('health', -wear);
-    add('sanity', -(char.job === 'Wing Employee' || char.job === 'Syndicate' ? 3 : 2));
+    add('sanity', -spStrain);
     line('job_wear');
+    breakdown.push({ cat: 'wear', labelVi: 'Hao mòn nghề nghiệp', labelEn: 'Career wear', k: 'health', v: -wear, unit: 'HP' });
+    breakdown.push({ cat: 'wear', labelVi: 'Căng thẳng công việc', labelEn: 'Career mental strain', k: 'sanity', v: -spStrain, unit: 'SP' });
   }
 
   // City environmental hazards (Smog in polluted districts, Crime in dangerous districts)
@@ -1299,23 +1338,36 @@ export function endYear(charState, rng) {
     if (region.pollution >= 5 && rng() < 0.35) {
       add('health', -2);
       line('smog');
+      breakdown.push({ cat: 'wear', labelVi: 'Khói độc công nghiệp', labelEn: 'Industrial smog', k: 'health', v: -2, unit: 'HP' });
     }
     if (region.safety <= 4 && rng() < 0.35) {
       add('sanity', -2);
       line('gunfire');
+      breakdown.push({ cat: 'wear', labelVi: 'Bạo lực đường phố', labelEn: 'Street violence', k: 'sanity', v: -2, unit: 'SP' });
     }
   }
 
-  if ((char.heat || 0) > 0) add('heat', -1);
+  if ((char.heat || 0) > 0) {
+    add('heat', -1);
+    breakdown.push({ cat: 'drift', labelVi: 'Dịu nhiệt truy vết', labelEn: 'Heat dissipation', k: 'heat', v: -1 });
+  }
   // Secrets go stale and a record that has been leaned on too long gets noticed
   if (char.job === 'Wing Employee') {
-    if ((char.leverage || 0) > 0 && char.age % 2 === 0) add('leverage', -1);
-    if ((char.leverage || 0) >= 60) add('standing', -1);
+    if ((char.leverage || 0) > 0 && char.age % 2 === 0) {
+      add('leverage', -1);
+      breakdown.push({ cat: 'drift', labelVi: 'Tài liệu mật lỗi thời', labelEn: 'Leverage depreciation', k: 'leverage', v: -1 });
+    }
+    if ((char.leverage || 0) >= 60) {
+      add('standing', -1);
+      breakdown.push({ cat: 'wear', labelVi: 'Nghi ngờ nội bộ vì nắm quá nhiều bí mật', labelEn: 'Internal suspicion from excessive leverage', k: 'standing', v: -1 });
+    }
   }
   // A Distortion is never off Hana's books, and people stop recognizing you
   if (char.flags.includes('Distorted')) {
     add('heat', 6);
     add('network', -2);
+    breakdown.push({ cat: 'drift', labelVi: 'Truy vết Distortion từ Hiệp hội Hana', labelEn: 'Hana Distortion surveillance', k: 'heat', v: 6 });
+    breakdown.push({ cat: 'drift', labelVi: 'Cô lập xã hội do Biến dị', labelEn: 'Social isolation from Distortion', k: 'network', v: -2 });
     vi.push('Hồ sơ theo dõi cá thể Distortion của bạn tại trụ sở Hana Association vẫn giữ nguyên trạng thái truy vết.');
     en.push('Your active Distortion dossier at Hana Association remained open under high-priority watch.');
   }
@@ -1334,12 +1386,15 @@ export function endYear(charState, rng) {
   for (const [k, v] of Object.entries(drift)) add(k, v);
   if (drift.network) {
     line(hasEstablishedStanding(char) || (char.age >= 60 && char.stats.rep >= 70) ? 'drift_network_established' : 'drift_network');
+    breakdown.push({ cat: 'drift', labelVi: 'Quan hệ phai nhạt theo thời gian', labelEn: 'Network drift over time', k: 'network', v: drift.network });
   }
   if (drift.rep) {
     line('drift_rep');
+    breakdown.push({ cat: 'drift', labelVi: 'Danh tiếng lắng xuống', labelEn: 'Reputation drift', k: 'rep', v: drift.rep });
   }
   if (drift.resonance) {
     line('drift_resonance');
+    breakdown.push({ cat: 'drift', labelVi: 'Cộng hưởng suy giảm', labelEn: 'Resonance fading', k: 'resonance', v: drift.resonance });
   }
 
   const wear = agingLoss(char);
@@ -1347,9 +1402,40 @@ export function endYear(charState, rng) {
   if (wear > 0) {
     add('health', -wear);
     line(char.flags.includes('FullBodyProsthetic') ? 'aging_prosthetic' : effectiveAge(char) >= 65 ? 'aging_late' : 'aging_early', wear);
+    breakdown.push({ cat: 'wear', labelVi: 'Hao mòn tuổi tác', labelEn: 'Aging physical loss', k: 'health', v: -wear, unit: 'HP' });
   }
 
   const deltas = applyFx(char, fx);
+
+  const statUnits = {
+    health: 'HP',
+    sanity: 'SP',
+    wealth: 'Ahn',
+    heat: 'Heat',
+    leverage: 'Lev',
+    rep: 'Rep',
+    merit: 'Merit',
+    resonance: 'Res',
+    standing: 'Stand',
+    network: 'Net'
+  };
+  const trackedKeys = new Set([...breakdown.map((b) => b.k), ...deltas.map((d) => d.k)]);
+  for (const k of trackedKeys) {
+    const bSum = breakdown.filter((b) => b.k === k).reduce((acc, b) => acc + (b.v || 0), 0);
+    const dVal = deltas.find((d) => d.k === k)?.v ?? 0;
+    const diff = dVal - bSum;
+    if (diff !== 0) {
+      breakdown.push({
+        cat: 'limit',
+        labelVi: diff > 0 ? 'Chặn giới hạn tối thiểu' : 'Chặn giới hạn tối đa',
+        labelEn: diff > 0 ? 'Clamped at lower bound' : 'Clamped at upper bound',
+        k,
+        v: diff,
+        unit: statUnits[k] || ''
+      });
+    }
+  }
+
   const npcAutonomyLogs = [...ageNpcCompanions(char, rng), ...simulateNpcAutonomousLife(char, rng)];
   for (const nlog of npcAutonomyLogs) {
     pushLog(
@@ -1367,7 +1453,21 @@ export function endYear(charState, rng) {
   for (const affLog of affiliationYearTick(char, rng)) pushLog(char, affLog, 0.985);
   planFirstGate(char);
 
-  if (deltas.some((d) => d.k !== 'heat')) {
+  // Distortion Apex Metamorphosis payoff (T22)
+  if (char.flags.includes('Distorted') && (char.resonance || 0) >= 100 && (char.stats?.health || 0) >= 80 && !char.flags.includes('AbyssalDistortionApex')) {
+    char.flags.push('AbyssalDistortionApex');
+    if (!(char.unlockedRecords || []).includes('distortion_metamorphosis_apex')) {
+      char.unlockedRecords = [...(char.unlockedRecords || []), 'distortion_metamorphosis_apex'];
+    }
+    pushLog(char, {
+      key: 'distortion_apex_achieved',
+      type: 'miracle',
+      vi: '[Biến Dị Vực Thẳm Hoàn Tất] Thể xác và dục vọng của bạn vượt qua ngưỡng giới hạn. Các mô thịt dị thường kết tinh thành hình thái tối thượng, giải phóng uy lực áp đảo (+4 HP/năm và +14 Sức chiến đấu).',
+      en: '[Abyssal Apex Metamorphosis Complete] Your flesh and desire breached the mortal threshold. Anomalous tissues crystallized into supreme form (+4 HP/year and +14 Combat Power).'
+    }, 0.99);
+  }
+
+  if (deltas.length > 0 || breakdown.length > 0) {
     const textVi = vi.length ? vi.join(' ') : 'Một năm nữa lặng lẽ trôi qua dưới màn đêm không bao giờ tắt của The City.';
     const textEn = en.length ? en.join(' ') : 'Another year quietly drifted by beneath the never-dimming lights of the City.';
     pushLog(
@@ -1377,7 +1477,8 @@ export function endYear(charState, rng) {
         type: 'summary',
         vi: `[Cuối năm] ${textVi}`,
         en: `[Year's end] ${textEn}`,
-        deltas
+        deltas,
+        breakdown
       },
       0.99
     );

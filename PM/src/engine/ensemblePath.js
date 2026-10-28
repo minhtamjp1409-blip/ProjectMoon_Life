@@ -5,7 +5,7 @@ export const ENSEMBLE_INVITE_ID = 'ensemble_first_invitation';
 export const ENSEMBLE_LAST_CALL_ID = 'ensemble_last_call';
 
 export function ensembleRoute(char) {
-  if (char?.job === 'Fixer' && char.flags?.includes('ColorFixer')) return 'color';
+  if ((char?.job === 'Fixer' || char?.job === 'Color Fixer') && (char.flags?.includes('ColorFixer') || char.isColorFixer || char.fixerGrade === 0)) return 'color';
   if (char?.job === 'Syndicate' && (char.fingerRank || 0) >= 3) return 'finger';
   if (char?.job === 'Wing Employee' && (char.wingRank || 0) >= 3) return 'wing';
   if (char?.job === 'Workshop Craftsman' && (char.workshopRank || 0) >= 3) return 'workshop';

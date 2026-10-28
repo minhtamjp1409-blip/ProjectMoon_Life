@@ -33,7 +33,7 @@
 .loading-skip-hint button { color: var(--text); text-decoration: underline; text-underline-offset: 3px; font-weight: 600; }
 
 /* The Hana certificate: dark glass lit by the conferred colour */
-.hana-decree-modal .ant-modal-content { padding: 0 !important; background: radial-gradient(120% 80% at 50% 0%, color-mix(in srgb, var(--conferred-color, var(--accent)) 28%, transparent), transparent 60%), var(--surface-solid) !important; border: 1px solid color-mix(in srgb, var(--conferred-color, var(--accent)) 50%, transparent) !important; overflow: hidden; }
+.hana-decree-modal :is(.ant-modal-container, .ant-modal-content) { padding: 0 !important; background: var(--dialog-surface) !important; border: 1px solid color-mix(in srgb, var(--conferred-color, var(--accent)) 70%, var(--dialog-border)) !important; overflow: hidden; }
 .hana-decree-scroll {
   display: flex; flex-direction: column; align-items: center; gap: 18px;
   padding: 36px 32px 28px; text-align: center; color: var(--page-ink);
@@ -66,6 +66,10 @@
 .depot-subnote { display: block; margin-top: 6px; font-size: 13px; color: var(--muted); line-height: 1.45; }
 .depot-tabs { max-width: 100%; overflow-x: auto; flex-wrap: nowrap; }
 .depot-tabs button { white-space: nowrap; }
+@media (max-width: 640px) {
+  .depot-tabs { flex-wrap: wrap; gap: 6px; overflow-x: visible; }
+  .depot-tabs button { padding: 6px 10px; font-size: 12.5px; }
+}
 .depot-list { max-height: 56vh; overflow-y: auto; border-top: 1px solid var(--border); }
 .depot-item { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px; align-items: center; padding: 14px 4px 14px 12px; border-bottom: 1px solid var(--rule); border-left: 2px solid var(--border); }
 .depot-item.is-weapon { border-left-color: var(--accent); }
@@ -97,7 +101,7 @@
   display: grid;
   place-items: center;
   padding: 16px;
-  background: rgba(5, 5, 8, 0.85);
+  background: var(--dialog-scrim);
   backdrop-filter: blur(8px);
   animation: overlayIn 0.2s ease;
 }
@@ -107,8 +111,9 @@
   max-height: min(88vh, 760px);
   display: flex;
   flex-direction: column;
-  background: rgba(13, 17, 24, 0.96);
-  border: 1px solid var(--border);
+  background: var(--dialog-surface);
+  border: 1px solid var(--dialog-border);
+  border-top: 3px solid var(--accent);
   border-radius: var(--radius-md, 8px);
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.7);
   overflow: hidden;
@@ -380,7 +385,7 @@
   position: fixed;
   inset: 0;
   z-index: 1000;
-  background: rgba(4, 4, 7, 0.82);
+  background: var(--dialog-scrim);
   backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
@@ -390,8 +395,9 @@
 }
 
 .npc-dossier-sheet {
-  background: var(--surface-solid, #101015);
-  border: 1px solid var(--border, #2c2c36);
+  background: var(--dialog-surface);
+  border: 1px solid var(--dialog-border);
+  border-top: 3px solid var(--accent);
   width: min(560px, 100%);
   max-height: min(90vh, 760px);
   border-radius: 12px;

@@ -1,13 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { AlertTriangle, X } from 'lucide-react';
 import { useGameStore } from '../../../store/gameStore.js';
 import { NPC_INTERACTION_ACTIONS, canInteractWithNpc } from '../../../engine/npcInteractions.js';
 import { ensureNpcAgency, getNpcBondState } from '../../../data/npcPersonality.js';
+import { useT } from '../../../i18n';
 
 export const NpcDossierModal = ({ npcRole, onClose }) => {
   const char = useGameStore((s) => s.char);
-  const lang = useGameStore((s) => s.lang);
-  const t = useGameStore((s) => s.t);
+  const { t, lang } = useT();
   const interactNpc = useGameStore((s) => s.interactNpc);
 
   const [feedback, setFeedback] = useState(null);
@@ -96,7 +97,7 @@ export const NpcDossierModal = ({ npcRole, onClose }) => {
 
   const roleText = t(...(ROLE_LABELS[npcRole] || [npcRole, npcRole]));
 
-  return (
+  return createPortal(
     <div
       className="npc-dossier-overlay"
       onClick={onClose}
@@ -255,6 +256,7 @@ export const NpcDossierModal = ({ npcRole, onClose }) => {
           </footer>
         )}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };

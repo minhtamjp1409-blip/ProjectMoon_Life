@@ -11,8 +11,8 @@ import { useT } from '../../../i18n';
 import { RegionMark } from '../../../components/RegionMark';
 import { audioEngine } from '../../../engine/audioEngine';
 import CityLoadingOverlay from './CityLoadingOverlay';
+import CityBirthAtlas, { ATLAS_VIEW, atlasTargetView } from './CityBirthAtlas';
 import { reducedMotion } from '../../../utils/motion';
-import { useThemeStore } from '../../../store/themeStore';
 
 const CAREERS = [
   [
@@ -32,133 +32,6 @@ const CAREERS = [
   ]
 ];
 
-const WHEEL_SECTORS = REGIONS.filter((r) => r.id !== 'OUTSKIRTS');
-const SECTOR_DEG = 360 / WHEEL_SECTORS.length;
-const hubName = (r) => (r ? (r.id === 'OUTSKIRTS' ? 'Outskirts' : `${r.id} Corp`) : 'The City');
-const hubCaption = (r, t) =>
-  r ? (r.ward ? `District ${r.ward}` : t('Ngoài bức tường', 'Beyond the wall')) : t('26 District · một kiếp sống', '26 Districts · one life');
-// Which sector sits under the needle at 12 o'clock for a given wheel rotation
-const sectorUnderNeedle = (deg) => WHEEL_SECTORS[Math.floor((((-deg % 360) + 360) % 360) / SECTOR_DEG) % WHEEL_SECTORS.length];
-
-function DistrictDial({ selected, onSelect, isSpinning, rotation, displayRegion, onTriggerSpin, spinnerRef, nameRef, captionRef, t }) {
-  const sectors = WHEEL_SECTORS;
-  const point = (radius, angle) => [180 + radius * Math.cos(angle), 180 + radius * Math.sin(angle)];
-  const region = displayRegion || REGIONS.find((r) => r.id === selected);
-
-  return (
-    <div className="district-dial-container">
-      <div className={`district-dial ${isSpinning ? 'is-spinning' : ''}`}>
-        <svg viewBox="0 0 360 360" aria-label={t('Chọn một District', 'Choose a District')}>
-          {/* Static outer ring & mid ring */}
-          <circle cx="180" cy="180" r="172" className="dial-outer-ring" />
-          <circle cx="180" cy="180" r="122" className="dial-mid-ring" />
-
-          {/* Rotating wheel group */}
-          {/* Turned frame by frame from BirthSetupPanel (requestAnimationFrame), not by a CSS
-              transition, so the spin still plays where transitions are globally shortened */}
-          <g
-            ref={spinnerRef}
-            className="dial-spinner-group"
-            style={{ transform: `rotate(${rotation}deg)`, transformOrigin: '180px 180px' }}
-          >
-            {sectors.map((r, i) => {
-              const a = (i * Math.PI * 2) / sectors.length - Math.PI / 2;
-              const b = ((i + 1) * Math.PI * 2) / sectors.length - Math.PI / 2;
-              const p = [
-                point(130, a + 0.012),
-                point(164, a + 0.012),
-                point(164, b - 0.012),
-                point(130, b - 0.012)
-              ];
-              const label = point(147, (a + b) / 2);
-              const isSelected = selected === r.id;
-
-              return (
-                <g
-                  key={r.id}
-                  className={`dial-sector ${isSelected ? 'is-selected' : ''}`}
-                  role="button"
-                  tabIndex={0}
-                  aria-label={r.nameEn}
-                  aria-pressed={isSelected}
-                  onClick={() => !isSpinning && onSelect(r.id)}
-                  onKeyDown={(e) => {
-                    if (!isSpinning && (e.key === 'Enter' || e.key === ' ')) {
-                      e.preventDefault();
-                      onSelect(r.id);
-                    }
-                  }}
-                >
-                  <path
-                    d={`M ${p[0]} L ${p[1]} A 164 164 0 0 1 ${p[2]} L ${p[3]} A 130 130 0 0 0 ${p[0]} Z`}
-                  />
-                  <text x={label[0]} y={label[1]} textAnchor="middle" dominantBaseline="middle">
-                    {r.id}
-                  </text>
-                  <title>{r.nameEn}</title>
-                </g>
-              );
-            })}
-          </g>
-
-          {/* Inner Static Hub */}
-          <circle cx="180" cy="180" r="110" className="dial-inner" />
-
-          {/* The pointer at twelve o'clock reads the letter under it */}
-          <g className="dial-pointer-needle">
-            <polygon points="180,26 171,6 189,6" />
-          </g>
-
-          {/* Center District Status */}
-          <text ref={nameRef} x="180" y="162" className="dial-name" textAnchor="middle">
-            {hubName(region)}
-          </text>
-          <text ref={captionRef} x="180" y="192" className="dial-caption" textAnchor="middle">
-            {hubCaption(region, t)}
-          </text>
-        </svg>
-
-        <span className="dial-instruction">
-          {isSpinning
-            ? t('Vận mệnh The City đang xoay vần…', 'The City wheel is turning…')
-            : t('Chọn ký tự hoặc quay ngẫu nhiên nơi sinh', 'Choose a letter or spin random birthplace')}
-        </span>
-      </div>
-
-      <button
-        type="button"
-        className="dial-spin-btn"
-        disabled={isSpinning}
-        onClick={onTriggerSpin}
-        title={t('Quay ngẫu nhiên District', 'Spin random district')}
-      >
-        <Dices size={16} className={isSpinning ? 'animate-spin' : ''} />
-        <span>{t('Quay ngẫu nhiên District', 'Spin random District')}</span>
-      </button>
-      <MotionHint t={t} />
-    </div>
-  );
-}
-
-// Shown only while the OS asks for reduced motion and the player has not chosen a setting
-function MotionHint({ t }) {
-  const motionMode = useThemeStore((s) => s.motionMode);
-  const cycleMotion = useThemeStore((s) => s.cycleMotion);
-  const osReduced = typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-  if (motionMode !== 'system' || !osReduced) return null;
-  return (
-    <p className="dial-motion-hint">
-      {t(
-        'Máy của bạn đang tắt hiệu ứng chuyển động, nên vòng quay được rút ngắn.',
-        'Your device has animations turned off, so the wheel spin is shortened.'
-      )}{' '}
-      <button type="button" onClick={cycleMotion}>
-        {t('Bật đầy đủ', 'Turn on full motion')}
-      </button>
-    </p>
-  );
-}
-
 export const BirthSetupPanel = () => {
   const { t, lang } = useT();
   const navigate = useNavigate();
@@ -174,68 +47,39 @@ export const BirthSetupPanel = () => {
   const { setConfigField, startLife, resumeRun, abandonRun, discardPendingLegacy } = useGameStore.getState();
   const [spinning, setSpinning] = useState(false);
   const [search, setSearch] = useState('');
-  const [wheelRotation, setWheelRotation] = useState(0);
   const [isWheelSpinning, setIsWheelSpinning] = useState(false);
+  const [atlasViewport, setAtlasViewport] = useState(ATLAS_VIEW);
   const [displayRegion, setDisplayRegion] = useState(null);
   const [loadingActive, setLoadingActive] = useState(false);
   const [targetLaunchParams, setTargetLaunchParams] = useState(null);
 
   const mapRef = useRef(null);
-  const spinnerRef = useRef(null);
-  const hubNameRef = useRef(null);
-  const hubCaptionRef = useRef(null);
-  const rotationRef = useRef(0);
+  const viewportRef = useRef(ATLAS_VIEW);
   const rafRef = useRef(0);
-  const lastTickRef = useRef(0);
 
   useEffect(() => () => cancelAnimationFrame(rafRef.current), []);
 
-  const sectors = WHEEL_SECTORS;
-
-  /**
-   * Turns the wheel so `target` stops under the needle, `turns` full turns first.
-   * Writes the transform and the hub text straight to the DOM each frame; React
-   * state is only set at the end. A region off the wheel (the Outskirts) stops
-   * on the seam between Z and A.
-   */
-  const spinTo = (target, { turns = 5, duration = 2600 } = {}) =>
+  // The atlas locates the birthplace before the existing registration overlay opens.
+  const spinTo = (target, { duration = 1500 } = {}) =>
     new Promise((resolve) => {
       cancelAnimationFrame(rafRef.current);
       const reduce = reducedMotion();
-      const spins = reduce ? 1 : turns;
-      const time = reduce ? Math.min(duration, 1100) : duration;
-      const idx = sectors.findIndex((r) => r.id === target?.id);
-      const stopAt = idx >= 0 ? -(idx + 0.5) * SECTOR_DEG : 0;
-      const from = rotationRef.current;
-      const forward = (((stopAt - from) % 360) + 360) % 360;
-      const to = from + spins * 360 + forward;
+      const time = reduce ? 1 : duration;
+      const from = viewportRef.current;
+      const to = atlasTargetView(target?.id);
       const start = performance.now();
-      let lastSector = null;
       setIsWheelSpinning(true);
 
       const frame = (now) => {
         const p = Math.min(1, (now - start) / time);
-        const eased = 1 - Math.pow(1 - p, 4);
-        const deg = from + (to - from) * eased;
-        rotationRef.current = deg;
-        if (spinnerRef.current) spinnerRef.current.style.transform = `rotate(${deg}deg)`;
-        const under = p < 1 ? sectorUnderNeedle(deg) : target;
-        if (under && under !== lastSector) {
-          lastSector = under;
-          if (hubNameRef.current) hubNameRef.current.textContent = hubName(under);
-          if (hubCaptionRef.current) hubCaptionRef.current.textContent = hubCaption(under, t);
-          if (p < 1 && now - lastTickRef.current > 45) {
-            lastTickRef.current = now;
-            try {
-              audioEngine.playClick();
-            } catch {}
-          }
-        }
+        const eased = reduce ? 1 : 1 - Math.pow(1 - p, 3);
+        const next = Object.fromEntries(Object.keys(ATLAS_VIEW).map((key) => [key, from[key] + (to[key] - from[key]) * eased]));
+        viewportRef.current = next;
+        setAtlasViewport(next);
         if (p < 1) {
           rafRef.current = requestAnimationFrame(frame);
           return;
         }
-        setWheelRotation(deg);
         setDisplayRegion(target);
         setIsWheelSpinning(false);
         try {
@@ -253,6 +97,13 @@ export const BirthSetupPanel = () => {
     spinTo(chosen).then(() => setRegion(chosen.id));
   };
 
+  const resetAtlas = () => {
+    cancelAnimationFrame(rafRef.current);
+    viewportRef.current = ATLAS_VIEW;
+    setAtlasViewport(ATLAS_VIEW);
+    setIsWheelSpinning(false);
+  };
+
   // Every start spins. "Random" stays random for the next life; only this birth is decided.
   const launch = (inherit = false, age = 0) => {
     if (spinning || isWheelSpinning) return;
@@ -261,7 +112,7 @@ export const BirthSetupPanel = () => {
     const chosen = fixed || rollBirthRegion(seed ? createRNG(seed) : Math.random, inherit ? pendingLegacy : null, selectedFamily);
     setTargetLaunchParams({ inherit, age, region: chosen, regionId: fixed ? null : chosen.id });
     setSpinning(true);
-    spinTo(chosen, fixed ? { turns: 3, duration: 1900 } : {}).then(() => {
+    spinTo(chosen, { duration: 1750 }).then(() => {
       setTimeout(() => setLoadingActive(true), 350);
     });
   };
@@ -275,6 +126,8 @@ export const BirthSetupPanel = () => {
   };
   const setRegion = (id) => {
     setConfigField('selectedRegion', id);
+    setDisplayRegion(REGIONS.find((r) => r.id === id) || null);
+    if (id === 'RANDOM') resetAtlas();
     if (id === 'OUTSKIRTS' && selectedFamily !== 'RANDOM' && selectedFamily !== 'outskirts_nomad') {
       setConfigField('selectedFamily', 'RANDOM');
     } else if (id !== 'OUTSKIRTS' && id !== 'RANDOM' && selectedFamily === 'outskirts_nomad') {
@@ -325,24 +178,24 @@ export const BirthSetupPanel = () => {
             {t('Một câu chuyện trong vũ trụ Project Moon', 'A life in the Project Moon universe')}
           </p>
           <h1 id="home-title">
-            The City <em className="the-city-title">Chronicles</em>
+            The City <span className="the-city-title">Chronicles</span>
           </h1>
           <div className={`opening-atlas ${spinning ? 'is-launch-spinning' : ''}`}>
-            <DistrictDial
+            <CityBirthAtlas
               selected={selectedRegion}
               onSelect={(id) => {
-                const picked = REGIONS.find((r) => r.id === id);
                 setRegion(id);
-                if (picked) spinTo(picked, { turns: 0, duration: 520 });
+                setDisplayRegion(REGIONS.find((r) => r.id === id));
               }}
-              isSpinning={isWheelSpinning}
-              rotation={wheelRotation}
-              spinnerRef={spinnerRef}
-              nameRef={hubNameRef}
-              captionRef={hubCaptionRef}
+              moving={isWheelSpinning}
+              starting={spinning}
+              viewport={atlasViewport}
               displayRegion={displayRegion}
-              onTriggerSpin={handleManualSpin}
+              onRandom={handleManualSpin}
+              onReset={resetAtlas}
+              onStart={() => launch()}
               t={t}
+              lang={lang}
             />
             <div className="atlas-note">
               <MapPin size={16} aria-hidden="true" />
@@ -473,7 +326,8 @@ export const BirthSetupPanel = () => {
                   const id = e.target.value;
                   setRegion(id);
                   const picked = REGIONS.find((r) => r.id === id);
-                  if (picked) spinTo(picked, { turns: 0, duration: 520 });
+                  setDisplayRegion(picked || null);
+                  resetAtlas();
                 }}
               >
                 <option value="RANDOM">

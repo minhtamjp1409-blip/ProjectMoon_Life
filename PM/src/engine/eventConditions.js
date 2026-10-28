@@ -6,6 +6,76 @@ export const npcIsActive = (npc) => Boolean(npc) && npc.alive !== false && !npc.
 export const isNestResident = (char) => ['Nest', 'NestResident', 'Feather'].some((f) => char.flags?.includes(f));
 export const isOutsideCity = (char) => char.regionId === 'OUTSKIRTS' || char.flags?.includes('Outskirts');
 
+export const FIELD_COMPANION_ROLES = ['partner', 'mentor', 'friend', 'lover', 'spouse'];
+
+export const charHasCombatGear = (char) => Boolean(
+  char?.craftWeapon ||
+  (char?.inventory || []).some((item) => item?.type === 'weapon' || item?.type === 'armor') ||
+  (char?.flags || []).some((f) => ['유물', 'CraftedColorWeapon', 'SingularityImbued'].includes(f))
+);
+
+export function getFieldCompanion(char) {
+  if (!char?.npcs) return null;
+  for (const role of FIELD_COMPANION_ROLES) {
+    const npc = char.npcs[role];
+    if (npcIsActive(npc) && !npc.injured && !npc.advisor) {
+      return { role, npc };
+    }
+  }
+  return null;
+}
+
+/** Snapshot of who stood beside the player in the Color trial, kept so later callbacks name the same person. */
+export function recordColorTrialCompanion(char) {
+  const found = getFieldCompanion(char);
+  if (!found) return null;
+  const { role, npc } = found;
+  char.colorTrialCompanion = { role, id: npc.id || `${role}:${npc.nameVi || npc.nameEn || ''}`, nameVi: npc.nameVi, nameEn: npc.nameEn || npc.nameVi };
+  return char.colorTrialCompanion;
+}
+
+/** The NPC recorded at the Color trial, only if that same person still holds the slot. */
+export function colorTrialCompanionOf(char) {
+  const rec = char?.colorTrialCompanion;
+  if (!rec) return null;
+  const npc = char.npcs?.[rec.role];
+  if (!npc) return null;
+  const sameId = npc.id ? npc.id === rec.id : `${rec.role}:${npc.nameVi || npc.nameEn || ''}` === rec.id || npc.nameVi === rec.nameVi;
+  return sameId ? npc : null;
+}
+
+/** Whether the person from the Color trial is still alive and present. Old saves without a record fall back to the partner slot. */
+export function colorTrialCompanionAlive(char) {
+  if (!char?.colorTrialCompanion) return npcIsActive(char?.npcs?.partner);
+  return npcIsActive(colorTrialCompanionOf(char));
+}
+
+export const isColorFixerChar = (char) =>
+  Boolean(
+    char &&
+      (char.job === 'Color Fixer' ||
+        char.flags?.includes('ColorFixer') ||
+        char.isColorFixer ||
+        (char.job === 'Fixer' && char.fixerGrade === 0))
+  );
+
+export function jobMatchesWithInheritance(jobs, char, entry = null) {
+  if (!Array.isArray(jobs) || jobs.length === 0) return true;
+  if (jobs.includes(char?.job)) return true;
+  if (char?.flags?.includes('Distorted') && char.finger && jobs.includes('Syndicate')) return true;
+  if (isColorFixerChar(char) && jobs.includes('Fixer')) {
+    const id = entry?.id || '';
+    if (id.startsWith('fixer_promo_') || id === 'hana_color_ascension_trial') return false;
+    const gradeBounds = entry?.need?.grade || entry?.grade;
+    if (Array.isArray(gradeBounds)) {
+      const min = Math.min(gradeBounds[0], gradeBounds[1]);
+      if (min > 1) return false;
+    }
+    return true;
+  }
+  return false;
+}
+
 function regionMatchesList(allowedRegions, regionId) {
   if (!Array.isArray(allowedRegions) || allowedRegions.length === 0) return true;
   if (!regionId) return false;
@@ -17,20 +87,17 @@ function regionMatchesList(allowedRegions, regionId) {
   return false;
 }
 
-export function matchesNeed(need, char) {
+export function matchesNeed(need, char, contextEntry = null) {
   if (!need) return true;
   const flags = char.flags || [];
   if (need.item && !(char.inventory || []).some(i => (i.id || i) === need.item)) return false;
+  if (need.hasGear && !charHasCombatGear(char)) return false;
   if (need.nest && !isNestResident(char)) return false;
   if (need.notNest && isNestResident(char)) return false;
   if (need.back && (isNestResident(char) || isOutsideCity(char))) return false;
   if (need.out && !isOutsideCity(char)) return false;
   if (need.notOut && isOutsideCity(char)) return false;
-  if (need.jobs) {
-    const jobAllowed = need.jobs.includes(char.job) ||
-      (char.flags?.includes('Distorted') && char.finger && need.jobs.includes('Syndicate'));
-    if (!jobAllowed) return false;
-  }
+  if (need.jobs && !jobMatchesWithInheritance(need.jobs, char, contextEntry || need)) return false;
   if (need.regions && !regionMatchesList(need.regions, char.regionId)) return false;
   if (need.finger && need.finger !== char.finger) return false;
   if (need.notFinger && need.notFinger === char.finger && char.job === 'Syndicate') return false;
@@ -38,7 +105,7 @@ export function matchesNeed(need, char) {
   if (need.noFlags?.some((f) => flags.includes(f))) return false;
   if (need.scarTag && !hasScarTag(char, need.scarTag)) return false;
   if (need.noScarTag && hasScarTag(char, need.noScarTag)) return false;
-  if (need.companionActive && !Object.values(char.npcs || {}).some(npcIsActive)) return false;
+  if (need.companionActive && !getFieldCompanion(char)) return false;
   if (need.npc && !npcIsActive(char.npcs?.[need.npc])) return false;
   if (need.noNpc && npcIsActive(char.npcs?.[need.noNpc])) return false;
   if (need.npcTag) {
@@ -67,9 +134,10 @@ export function matchesNeed(need, char) {
   if (need.grade) {
     const min = Math.min(need.grade[0], need.grade[1]);
     const max = Math.max(need.grade[0], need.grade[1]);
-    const isColorAllowed = min === 0 && char.job === 'Color Fixer';
-    if ((char.job !== 'Fixer' && !isColorAllowed) || char.fixerGrade == null) return false;
-    if (char.fixerGrade < min || char.fixerGrade > max) return false;
+    const isColor = isColorFixerChar(char);
+    if ((char.job !== 'Fixer' && !isColor) || char.fixerGrade == null) return false;
+    const effGrade = isColor && char.fixerGrade === 0 && min === 1 ? 1 : char.fixerGrade;
+    if (effGrade < min || effGrade > max) return false;
   }
   if (need.aff || need.affSection || need.affYears != null || need.affStanding) {
     const a = getAffiliation(char);
@@ -117,11 +185,7 @@ export function matchesEventContext(entry, char) {
   if (!entry || !char.alive) return false;
   if (entry.age && (char.age < effectiveMinAge(entry, char) || char.age > entry.age[1])) return false;
   if (entry.regions && !regionMatchesList(entry.regions, char.regionId)) return false;
-  if (entry.jobs) {
-    const jobMatches = entry.jobs.includes(char.job) ||
-      (char.flags?.includes('Distorted') && char.finger && entry.jobs.includes('Syndicate'));
-    if (!jobMatches) return false;
-  }
+  if (entry.jobs && !jobMatchesWithInheritance(entry.jobs, char, entry)) return false;
   if (entry.finger && entry.finger !== char.finger) return false;
   if (entry.requires && !entry.requires.every((f) => char.flags.includes(f))) return false;
   if (entry.forbids?.some((f) => char.flags.includes(f))) return false;
@@ -129,7 +193,7 @@ export function matchesEventContext(entry, char) {
     entry.jobs?.includes('Distortion') || entry.need?.jobs?.includes('Distortion') ||
     entry.allowDistorted || (char.finger && entry.finger === char.finger);
   if (char.flags.includes('Distorted') && !distortionEntry) return false;
-  return matchesNeed(entry.need, char) && hasNarrativeContext(entry, char);
+  return matchesNeed(entry.need, char, entry) && hasNarrativeContext(entry, char);
 }
 
 export function choiceIsAvailable(choice, char) {
