@@ -96,8 +96,8 @@
 }
 
 @media (max-width: 860px) {
-  .opening-atlas { order: 3; width: 100%; max-width: 680px; }
-  .birth-panel { order: 4; }
+  .birth-panel { order: 3; }
+  .opening-atlas { order: 4; width: 100%; max-width: 680px; }
   .atlas-actions { flex-wrap: wrap; justify-content: space-between; }
   .atlas-actions .atlas-start-action { display: inline-flex; align-items: center; justify-content: center; width: 100%; min-height: 44px; padding: 0 16px; background: var(--accent); color: var(--accent-ink); text-decoration: none; }
   .atlas-actions .atlas-start-action:hover { color: var(--accent-ink); background: var(--accent-hover); }
@@ -110,9 +110,17 @@
 }
 
 @media (max-width: 520px) {
-  .home-opening { gap: 20px; }
-  .opening-atlas .atlas-note { display: none; }
-  .atlas-corner-label { max-width: 62%; }
+  .home-opening { gap: 18px; }
+  .opening-atlas .atlas-note {
+    display: flex; gap: 8px; padding: 10px 12px; margin-top: 8px;
+    background: rgba(14, 13, 18, 0.7); border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+  }
+  .opening-atlas .atlas-note strong { font-size: 15px; margin-bottom: 2px; }
+  .opening-atlas .atlas-note p { font-size: 12.5px; line-height: 1.4; margin-bottom: 6px; }
+  .opening-atlas .atlas-note button { font-size: 12px; }
+  .atlas-corner-label { max-width: 68%; padding: 6px 10px 10px; }
+  .atlas-district-letter { font-size: 32px; }
   .world-scene[data-world='title'] .world-sky::after { top: 6%; left: auto; right: 4%; width: 58px; height: 58px; box-shadow: inset -21px -3px 0 6px var(--atlas-eclipse-dark); }
 }
 

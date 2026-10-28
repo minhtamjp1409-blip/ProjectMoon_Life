@@ -1,6 +1,6 @@
 # The City Chronicles: Tài Liệu Tiến Trình & Kiến Trúc Kỹ Thuật Toàn Diện
 
-> **Cập nhật ghi chép: 28/10/2026 (Đợt 77: Tái thiết kế khung BirthSetupPanel chuẩn Hana Terminal Docket, xử lý triệt để lỗi lẹm chữ tab và tràn khung nhìn di sản; đã kiểm thử 100%)**
+> **Cập nhật ghi chép: 28/10/2026 (Đợt 78: Tối ưu hóa toàn diện Mobile UI cho cả Landing Page và Gameplay theo chuẩn design-taste-frontend & hallmark; đã kiểm thử 100%)**
 > **Phân biệt rõ số liệu kiểm thử tự động & số liệu mô phỏng 500 đời hiện hành (Đợt 69):**
 > - **Đã xác minh tự động bằng bộ test (`npm test`):** Toàn bộ **53/53 test suites** đạt 100%, parity cổng thăng tiến FE/BE khớp tuyệt đối, `lint_story.mjs` (745 major, 43 consequence, 866 minor, 572 daily, 36 contract) & `voice_lint.mjs --fail` (**32.337 chuỗi**) đạt 0 lỗi / 0 cảnh báo, `run_million_audit.mjs 500` (500 khoảnh khắc) đạt 5/5 nhóm quy tắc toàn vẹn, `npm run build` hoàn tất sạch bóng.
 > - **Đã đo mới trên codebase hiện tại qua mô phỏng 500 cuộc đời đầy đủ (Đợt 69):** `story_logic_audit.mjs 500 random` (**80.338 khoảnh khắc**, 500 đời, **0 vi phạm logic**, entropy `83.1%`), `balance_sim.mjs 500 random` (13.208 năm sống, phân bổ nghề: Fixer `31.0%`, Wing `29.9%`, Syndicate `31.9%`, Distortion `5.4%`), `balance_sim.mjs 500 focused` (21.749 năm sống, tuổi thọ TB `42.6`, đạt Color Fixer `9.6%` ở tuổi TB `55.4`, thức tỉnh E.G.O `12.6%` ở tuổi TB `45.5`), và `branch_experience.mjs 500` (tuổi thọ Distortion tăng vọt từ `3.8` lên **`11.3` năm/đời**, đại sự kiện trải nghiệm từ `16` lên **`40`**).
@@ -1691,5 +1691,25 @@ Chủ dự án yêu cầu làm lại toàn bộ giao diện lần nữa: bỏ t�
 * **Kiểm định toàn vẹn:**
   * `npm run build` hoàn tất xuất sắc (7.38s), 0 lỗi đóng gói.
   * `npm test` vượt qua 100% toàn bộ 53 bộ kiểm thử hồi quy (Story Lint, Voice Lint, Causal Arcs, Career Paths, 500 Moments Million Audit), bảo toàn điều kiện kiểm thử mobile `#birth-region` trước `hero-start-btn`.
+
+### Đợt 78 (28/10/2026): Tối ưu hóa toàn diện Mobile UI cho cả Landing Page và Gameplay theo chuẩn design-taste-frontend & hallmark
+
+* **Tối ưu hóa Mobile Landing Page (CityHome, BirthSetupPanel & CityBirthAtlas):**
+  * **Trật tự phân luồng ngón cái (Thumb-first Visual Hierarchy):** Đồng bộ hóa thứ tự hiển thị trên màn hình di động: Tiêu đề -> `birth-panel` (Hồ sơ kiếp dở / Khai sinh mới) -> `opening-atlas` (Bản đồ đô thị) -> Thống kê kiếp sống -> Cẩm nang nghề nghiệp. Người chơi di động không còn phải cuộn qua 450px bản đồ chỉ để bấm nút vào game hay tiếp tục kiếp sống.
+  * **Chế độ ghi chú Quận thu gọn cho Atlas:** Thay vì ẩn hoàn toàn ghi chú khi thu nhỏ màn hình dưới 520px làm mất phản hồi người dùng, bổ sung chế độ card nổi thu nhỏ (`10px 12px`, phông 12.5px) hiển thị rõ tên Quận, công nghệ Corp và nút tra cứu ngay dưới bản đồ.
+  * **Tinh chỉnh mật độ hiển thị nhỏ ($\le 480\text{px}$ và $\le 400\text{px}$):** Cắt giảm padding thừa (`16px 14px`), điều chỉnh kích thước chữ tiêu đề bằng `clamp(28px, 9vw, 38px)`, bảo toàn chỉ số sinh tồn và nhãn nút bấm đạt kích thước chạm chuẩn công thái học ($\ge 44\text{px}$).
+* **Tối ưu hóa Mobile Gameplay (PlayBar, LiveStageFeed & CharacterDossierCard):**
+  * **Mở khóa nút bấm Workshop nhanh (`.btn-shop-mobile`):** Hiển thị nút biểu tượng Xưởng rèn & Chợ đen ánh kim vàng sa 40px ngay trên thanh điều khiển PlayBar di động, cho phép người chơi mở thẳng kho vũ khí và Singularity mà không cần mở menu phụ 3 chấm.
+  * **Cải tiến thanh chỉ số sinh tồn di động (Tactile Mobile Resource HUD):**
+    * Nâng cấp thanh HP và SP từ thanh đơn điệu thành vạch đo áp suất cơ học với bóng đổ phát sáng viền.
+    * Tích hợp hiệu ứng thì thầm ánh tím **Carmen Calls** khi SP $\le 22$ ngay trên HUD di động.
+    * Bổ sung **3 con mắt cơ học giám sát Taboo của The Head** (`hud2-taboo-eyes`): Mắt mở sáng vàng cảnh cáo khi vi phạm và nhấp nháy đỏ báo động cấp Claw khi chạm ngưỡng 2/3.
+  * **Nâng cấp nút nổi ngón cái (`.btn-mobile-thumb-step`):** Thiết kế dạng viên nang kim loại vàng dập nổi (`linear-gradient(180deg, #d8b265, #b89146)`), viền vàng kim, bóng đổ sâu và độ nảy cơ học khi nhấn, nằm ở vị trí trung tâm ngón cái trên thanh điều hướng đáy.
+  * **Tối ưu hóa bảng sự kiện Bottom-Sheet:**
+    * Bổ sung gờ kéo cảm ứng (`.dock::before`), bo góc trên 14px, viền kim loại 3px vàng đặc trưng.
+    * Các nút lựa chọn phương án (`.choice`) nâng lên chiều cao chuẩn $\ge 50\text{px}$, nhãn số thứ tự $28 \times 28\text{px}$, kích hoạt hiệu ứng nảy xúc giác khi chạm và chống vô tình bôi đen văn bản trên màn hình cảm ứng.
+* **Kiểm định toàn vẹn:**
+  * `npm run build` hoàn tất xuất sắc (6.99s), 0 lỗi đóng gói.
+  * `npm test` vượt qua 100% toàn bộ 53/53 bộ kiểm thử hồi quy (Story Lint, Voice Lint, Causal Arcs, Career Paths, 500 Moments Million Audit).
 
 

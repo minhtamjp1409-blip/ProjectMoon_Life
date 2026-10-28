@@ -436,7 +436,7 @@
   .mobile-thumb-bar {
     display: flex;
     position: fixed;
-    bottom: calc(var(--bottom, 0px) + 14px);
+    bottom: calc(var(--bottom, 0px) + 12px);
     left: 50%;
     transform: translateX(-50%);
     z-index: 35;
@@ -446,20 +446,24 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    height: 44px;
-    padding: 0 22px;
-    background: var(--accent);
-    color: var(--accent-ink);
-    border: 1px solid var(--accent);
+    height: 46px;
+    padding: 0 24px;
+    background: linear-gradient(180deg, #d8b265 0%, #b89146 100%);
+    color: #121316;
+    border: 1px solid #e6c57e;
     border-radius: 999px;
-    font-size: 14px;
+    font-size: 14.5px;
     font-weight: 700;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 0 16px var(--accent-soft);
+    letter-spacing: 0.02em;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6), 0 0 16px rgba(216, 178, 101, 0.35);
     cursor: pointer;
-    transition: transform 0.14s ease, background-color 0.14s ease;
+    transition: transform 0.14s ease, filter 0.14s ease;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
   .btn-mobile-thumb-step:active {
-    transform: scale(0.95);
+    transform: scale(0.96);
+    filter: brightness(0.95);
   }
 
   /* On a phone the card sits between the play bar and the bottom tabs; bottom padding reserves dedicated space for the peek toggle */
@@ -470,15 +474,53 @@
   .event-modal-backdrop > .dock {
     width: 100%;
     max-height: calc(100dvh - var(--top) - 40px - var(--bottom));
-    border-radius: 16px 16px 8px 8px;
-    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.7);
+    border-radius: 14px 14px 4px 4px;
+    border-top: 3px solid var(--accent);
+    box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.75);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .event-modal-backdrop > .dock::before {
+    content: '';
+    display: block;
+    width: 36px;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--control);
+    margin: 0 auto 10px;
   }
   .event-peek-toggle { top: auto; right: 50%; transform: translateX(50%); bottom: calc(var(--bottom) + 12px); z-index: 50; }
   .dock { padding: 18px 16px 22px; }
   .dock-title { font-size: 22px; }
   .dock-hotkey-hint { display: none; }
-  .choice { padding: 12px 12px 12px 10px; gap: 10px; grid-template-columns: 26px minmax(0, 1fr); }
-  .choice-badge { width: 26px; height: 26px; }
+  .choice {
+    padding: 12px 14px 12px 10px;
+    gap: 12px;
+    min-height: 50px;
+    grid-template-columns: 28px minmax(0, 1fr);
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    border-radius: 6px;
+    transition: background-color 0.12s ease, border-color 0.12s ease, transform 0.1s ease;
+  }
+  .choice:active:not(:disabled) {
+    transform: scale(0.985);
+    background: var(--raised);
+  }
+  .choice-badge { width: 28px; height: 28px; font-size: 13px; font-weight: 700; border-radius: 4px; }
+  .choice-label { font-size: 14px; font-weight: 600; line-height: 1.4; }
+  .resolution-actions .resolution-btn { min-height: 50px; font-size: 15.5px; font-weight: 700; }
+}
+
+@media (max-width: 480px) {
+  .log-col { padding: 16px 12px 88px; }
+  .chronicle-horizon-card { margin-top: 24px; padding: 12px 14px; }
+  .entry p { font-size: 15px; line-height: 1.6; }
+  .entry-title { font-size: 17px; }
+  .dock { padding: 14px 12px 18px; }
+  .dock-title { font-size: 20px; }
+  .dock-text { font-size: 14.5px; line-height: 1.55; }
+  .choice { padding: 10px 10px 10px 8px; gap: 8px; }
 }
 
 /* The scene behind the page is a tint of the room, never a picture competing with the words */

@@ -406,29 +406,49 @@
   .opening-atlas { max-width: 640px; }
 }
 @media (max-width: 860px) {
-  .home-opening { padding-top: 24px; gap: 28px; }
+  .home-opening { padding-top: 20px; gap: 24px; }
   .opening-story { display: contents; }
-  .opening-context { order: 1; margin-bottom: -18px; }
-  .opening-story h1 { order: 2; font-size: clamp(40px, 12vw, 56px); margin-bottom: 0; }
-  .birth-panel { order: 4; max-width: none; padding: 22px 18px 20px; }
-  .opening-atlas { order: 5; grid-template-columns: 1fr; }
+  .opening-context { order: 1; margin-bottom: -14px; }
+  .opening-story h1 { order: 2; font-size: clamp(34px, 10vw, 50px); margin-bottom: 0; line-height: 1.05; }
+  .birth-panel { order: 3; max-width: none; padding: 20px 18px 18px; }
+  .opening-atlas { order: 4; grid-template-columns: 1fr; }
   .district-dial-container { max-width: 300px; margin: 0 auto; }
-  .archive-strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-bottom: 44px; }
-  .archive-strip > div { flex-direction: column; gap: 4px; padding: 16px 10px 16px 0; margin-right: 0; border-right: 0; }
+  .archive-strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-bottom: 40px; }
+  .archive-strip > div { flex-direction: column; gap: 4px; padding: 14px 10px 14px 0; margin-right: 0; border-right: 0; }
   .archive-strip > div + div { padding-left: 12px; border-left: 1px solid var(--rule); }
-  .archive-strip b { font-size: 28px; }
-  .archive-strip span { font-size: 13px; }
+  .archive-strip b { font-size: 26px; }
+  .archive-strip span { font-size: 12.5px; }
   .archive-strip > button { grid-column: 1 / -1; justify-content: center; margin: 0 0 14px; }
-  .city-section { margin-bottom: 44px; }
-  .city-section-heading { flex-direction: column; align-items: stretch; }
+  .city-section { margin-bottom: 40px; }
+  .city-section-heading { flex-direction: column; align-items: stretch; gap: 10px; margin-bottom: 18px; }
   .career-list, .fate-grid { grid-template-columns: 1fr; }
   .district-browser { grid-template-columns: 1fr; }
   .district-selection { position: static; }
   .district-index { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .district-index button { min-height: 44px; padding: 10px 12px; }
   .city-footer a { margin-left: 0; }
 }
+
 @media (max-width: 480px) {
-  .birth-tab { font-size: 12px; padding: 0 6px; }
-  .resume-stats-strip { gap: 12px; }
-  .birth-bureau-code { font-size: 9.5px; }
+  .home-opening { padding-top: 14px; gap: 18px; }
+  .opening-story h1 { font-size: clamp(28px, 9vw, 38px); }
+  .birth-panel { padding: 16px 14px 16px; border-radius: 4px; }
+  .birth-tab { font-size: 12px; padding: 0 4px; min-height: 38px; }
+  .resume-name { font-size: 20px; }
+  .resume-stats-strip { gap: 10px; font-size: 12px; }
+  .birth-bureau-code { font-size: 9px; }
+  .hero-start-btn, .legacy-start-btn, .resume-launch-btn { min-height: 48px; font-size: 14.5px; }
+  .archive-strip { margin-bottom: 30px; }
+  .archive-strip b { font-size: 20px; }
+  .archive-strip span { font-size: 11px; }
+  .archive-strip > div { padding: 10px 4px 10px 0; }
+  .archive-strip > div + div { padding-left: 6px; }
+  .career-list article { padding: 14px 0; }
+  .career-list h3 { font-size: 17px; }
+  .career-list p { font-size: 13.5px; }
+  .district-selection { padding: 14px; }
+  .district-selection h3 { font-size: 20px; }
+  .district-index button { padding: 8px 10px; min-height: 44px; }
+  .district-index button strong { font-size: 13.5px; }
+  .district-index button small { font-size: 11.5px; }
 }

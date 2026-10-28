@@ -764,7 +764,7 @@ export const CharacterDossierCard = () => {
             <b className="hud2-v num">{health}</b>
             <i className="hud2-bar"><i style={{ width: `${Math.max(0, Math.min(100, health))}%` }} /></i>
           </div>
-          <div className={`hud2-stat is-sp ${isSpCritical ? 'is-critical' : ''}`} title={`SP: ${sanity}/100`}>
+          <div className={`hud2-stat is-sp ${isSpCritical ? 'is-critical' : ''} ${sanity <= 22 ? 'is-carmen-calls' : ''}`} title={`SP: ${sanity}/100`}>
             <span className="hud2-k"><Brain size={13} aria-hidden="true" />SP</span>
             <b className="hud2-v num">{sanity}</b>
             <i className="hud2-bar"><i style={{ width: `${Math.max(0, Math.min(100, sanity))}%` }} /></i>
@@ -780,7 +780,15 @@ export const CharacterDossierCard = () => {
           <span title={t('Danh tiếng', 'Reputation')} aria-label={t(`Danh tiếng ${rep}`, `Reputation ${rep}`)}><span>Rep</span><b>{rep}</b></span>
           <span title={t('Mức độ truy nã', 'Heat Level')} className={char.heat >= 65 ? 'is-danger' : ''}><span>Heat</span><b>{char.heat || 0}</b></span>
           <span title={t('Cộng hưởng E.G.O', 'E.G.O Resonance')}><span>E.G.O</span><b>{char.resonance || 0}%</b></span>
-          <span title={t('Ánh nhìn Taboo', 'Taboo Gaze')} className={tabooLevel >= 2 ? 'is-danger' : ''}><span>Taboo</span><b>{tabooLevel}/3</b></span>
+          <span title={t('Ánh nhìn Taboo', 'Taboo Gaze')} className={tabooLevel >= 2 ? 'is-danger' : ''}>
+            <span>Taboo</span>
+            <span className="hud2-taboo-eyes" aria-hidden="true">
+              {[0, 1, 2].map((idx) => (
+                <span key={idx} className={`hud2-eye ${idx < tabooLevel ? 'is-open' : ''} ${tabooLevel >= 2 ? 'is-claw-danger' : ''}`} />
+              ))}
+            </span>
+            <b>{tabooLevel}/3</b>
+          </span>
         </div>
 
         {/* Row 3: the year, and the next career goal */}
