@@ -178,21 +178,11 @@ export function CityBirthAtlas({ selected, displayRegion, viewport, moving, star
           <MapInk selected={activeId} onSelect={onSelect} interactive={!moving} t={t} />
           <g className="atlas-lens" aria-hidden="true" pointerEvents="none" style={{ '--atlas-lens-rim': `${14 * lensScale}px`, '--atlas-lens-line': `${2.5 * lensScale}px` }}>
               <g clipPath="url(#city-atlas-lens)">
-                <g className={viewport.width < 900 ? 'atlas-lens-detail' : undefined} transform={`translate(${(1 - lensMagnification) * lens[0]} ${(1 - lensMagnification) * lens[1]}) scale(${lensMagnification})`}>
+                <rect className="atlas-lens-ground" x="0" y="0" width="1000" height="760" />
+                <g transform={`translate(${(1 - lensMagnification) * lens[0]} ${(1 - lensMagnification) * lens[1]}) scale(${lensMagnification})`}>
                   <MapInk selected={activeId} t={t} />
                 </g>
               </g>
-              {viewport.width < 900 && (
-                <g clipPath="url(#city-atlas-lens)" aria-hidden="true">
-                  {CITY_REGIONS.map((region) => (
-                    <g key={region.id} className={`atlas-district${activeId === region.id ? ' is-selected' : ''}`}>
-                      <text className="atlas-district-letter" x={DISTRICT_POINTS[region.id][0]} y={DISTRICT_POINTS[region.id][1]} textAnchor="middle" dominantBaseline="middle">{region.id}</text>
-                      <text className="atlas-district-number" x={DISTRICT_POINTS[region.id][0]} y={DISTRICT_POINTS[region.id][1] + 29} textAnchor="middle">District {region.ward}</text>
-                    </g>
-                  ))}
-                  <text className="atlas-lens-outskirts" x="905" y="615" textAnchor="middle">OUT</text>
-                </g>
-              )}
               <circle cx={lens[0]} cy={lens[1]} r={lensRadius} />
               <circle cx={lens[0]} cy={lens[1]} r={54 * lensScale} />
           </g>
