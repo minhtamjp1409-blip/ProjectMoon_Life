@@ -3193,7 +3193,8 @@ export const FACTION_EVENTS = [
     age: [18, 90],
     major: true,
     weight: 800,
-    need: { jobs: ['Syndicate'], noFinger: true, syndicateRank: 0, stat: { rep: [20, 100] } },
+    requires: ['IndependentSyndicate'],
+    need: { jobs: ['Syndicate'], noFinger: true, flags: ['IndependentSyndicate'], syndicateRank: 0, meritAtLeast: 20, stat: { rep: [20, 100], heat: [15, 100] } },
     vi: "[Đầu gấu khu phố] Uy danh thu nợ và dẹp loạn của bạn lan rộng khắp các ngõ hẹp. Lũ du đãng mới lớn bắt đầu tìm đến nép bóng, còn các chủ tiệm phải gật đầu chào mỗi khi bạn đi qua. Đã đến lúc khẳng định vị thế đầu lĩnh địa bàn.",
     en: "[Turf Lieutenant] Word of your muscle and debt collection has spread through the alleys. Young thugs seek your shadow for protection, and shopkeepers bow when you walk past. It is time to cement your standing as turf lieutenant.",
     choices: [
@@ -3224,7 +3225,8 @@ export const FACTION_EVENTS = [
     age: [20, 90],
     major: true,
     weight: 850,
-    need: { jobs: ['Syndicate'], noFinger: true, syndicateRank: 1, stat: { rep: [45, 100] } },
+    requires: ['IndependentSyndicate'],
+    need: { jobs: ['Syndicate'], noFinger: true, flags: ['IndependentSyndicate'], syndicateRank: 1, meritAtLeast: 50, stat: { rep: [45, 100], heat: [30, 100] } },
     vi: "[Đại ca băng đảng tự do] Băng của bạn nay đã có hàng chục tay đao kỳ cựu và ba kho hàng ngầm. Các sứ giả của Finger bắt đầu dè chừng, còn các Office Fixer quanh vùng hiểu rằng muốn giải quyết việc phải bước qua cửa của bạn.",
     en: "[Independent Syndicate Boss] Your crew commands dozens of veteran blades and three underground caches. Finger envoys tread carefully, and local Fixer Offices know that any action in the district must clear your threshold.",
     choices: [
@@ -3255,7 +3257,8 @@ export const FACTION_EVENTS = [
     age: [22, 95],
     major: true,
     weight: 900,
-    need: { jobs: ['Syndicate'], noFinger: true, syndicateRank: 2, stat: { rep: [75, 100] } },
+    requires: ['IndependentSyndicate'],
+    need: { jobs: ['Syndicate'], noFinger: true, flags: ['IndependentSyndicate'], syndicateRank: 2, meritAtLeast: 90, stat: { rep: [75, 100], heat: [50, 100] } },
     vi: "[Bá chủ ngõ tối] Một cuộc thanh trừng đẫm máu vừa khép lại giữa các liên minh ngầm. Đứng trên đống đổ nát, không còn thế lực nào dám thách thức quyền uy của bạn. Một băng đảng độc lập vươn tới đỉnh cao thống trị mà không cần cúi đầu trước bất kỳ Finger nào.",
     en: "[Underground Kingpin] A bloody purge has concluded among rival cartels. Standing atop the rubble, no force remains to question your dominion. An independent syndicate has reached absolute supremacy without kneeling to any Finger.",
     choices: [

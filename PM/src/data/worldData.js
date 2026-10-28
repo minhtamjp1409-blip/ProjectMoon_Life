@@ -1019,6 +1019,7 @@ export const CODEX_RECORDS = [
 
   // ================= THE FIVE FINGERS & SYNDICATES =================
   { key: 'syndicate_initiate', category: 'syndicate', tier: 'common', vi: 'Bước chân vào ngõ tối', en: 'First Blood in the Alley', hintVi: 'Nhận việc đòi nợ hoặc bảo kê cho một băng nhóm ngầm địa phương.', hintEn: 'Take up debt-collection or protection work for a local syndicate.' },
+  { key: 'independent_syndicate_apex', category: 'syndicate', tier: 'legend', vi: 'Bá chủ ngõ tối', en: 'Underground Kingpin', hintVi: 'Thống nhất thế giới ngầm và trở thành bá chủ băng đảng độc lập mà không cần cúi đầu trước Finger.', hintEn: 'Rule the district underworld as an autonomous kingpin without kneeling to any Finger.' },
   { key: 'finger_initiate', category: 'syndicate', tier: 'uncommon', vi: 'Thề với một Finger', en: 'Sworn to a Finger', hintVi: 'Gia nhập một trong The Five Fingers.', hintEn: 'Join one of The Five Fingers.' },
   { key: 'thumb_underboss', category: 'syndicate', tier: 'legend', vi: 'Underboss của The Thumb', en: 'Thumb Underboss', hintVi: 'Lên Sottocapo hoặc cao hơn trong The Thumb.', hintEn: 'Rise to Sottocapo or Underboss in The Thumb.' },
   { key: 'index_proxy', category: 'syndicate', tier: 'legend', vi: 'Proxy của The Index', en: 'Proxy of the Index', hintVi: 'Trở thành Proxy của The Index.', hintEn: 'Unlock your blade and become a Proxy of The Index.' },

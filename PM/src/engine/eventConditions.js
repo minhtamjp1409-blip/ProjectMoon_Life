@@ -102,6 +102,8 @@ export function matchesNeed(need, char, contextEntry = null) {
   if (need.finger && need.finger !== char.finger) return false;
   if (need.notFinger && need.notFinger === char.finger && char.job === 'Syndicate') return false;
   if (need.noFinger && char.finger) return false;
+  if (need.hasActiveDebt && !(char.debts || []).some((d) => d.id === need.hasActiveDebt && d.status === 'active' && (char.age || 0) >= d.nextDueAge)) return false;
+  if (need.meritAtLeast != null && (char.merit || 0) < need.meritAtLeast) return false;
   if (need.flags && !need.flags.every((f) => flags.includes(f))) return false;
   if (need.noFlags?.some((f) => flags.includes(f))) return false;
   if (need.scarTag && !hasScarTag(char, need.scarTag)) return false;
@@ -193,6 +195,7 @@ export function matchesEventContext(entry, char) {
   if (entry.finger && entry.finger !== char.finger) return false;
   if (entry.syndicateRank != null && (char.syndicateRank || 0) !== entry.syndicateRank) return false;
   if (entry.syndicateRankAtLeast != null && (char.syndicateRank || 0) < entry.syndicateRankAtLeast) return false;
+  if (entry.activeDebt && !(char.debts || []).some((d) => d.id === entry.activeDebt && d.status === 'active' && (char.age || 0) >= d.nextDueAge)) return false;
   if (entry.requires && !entry.requires.every((f) => char.flags.includes(f))) return false;
   if (entry.forbids?.some((f) => char.flags.includes(f))) return false;
   const distortionEntry = entry.requires?.includes('Distorted') || entry.need?.flags?.includes('Distorted') ||
@@ -203,11 +206,19 @@ export function matchesEventContext(entry, char) {
 }
 
 export function choiceIsAvailable(choice, char) {
-  return Boolean(choice) && matchesNeed(choice.need, char) &&
-    (!choice.useItem || (char.inventory || []).some(i => (i.id || i) === choice.useItem)) &&
-    (!choice.favorCost || (npcIsActive(char.npcs?.[choice.favorCost.role]) &&
-      (char.npcs[choice.favorCost.role].bond || 0) >= choice.favorCost.amount)) &&
-    (choice.costAhn == null || char.stats.wealth >= choice.costAhn);
+  if (!choice || !matchesNeed(choice.need, char)) return false;
+  if (choice.useItem && !(char.inventory || []).some(i => (i.id || i) === choice.useItem)) return false;
+  if (choice.favorCost && (!npcIsActive(char.npcs?.[choice.favorCost.role]) || (char.npcs[choice.favorCost.role].bond || 0) < choice.favorCost.amount)) return false;
+  let cost = choice.costAhn;
+  if (choice.debtId) {
+    const debt = (char.debts || []).find((d) => d.id === choice.debtId && d.status === 'active');
+    if (choice.debtCost === 'full') {
+      cost = debt ? debt.balanceAhn : 0;
+    } else if (choice.debtCost === 'partial') {
+      cost = debt ? Math.min(3, debt.balanceAhn) : 0;
+    }
+  }
+  return cost == null || (char.stats?.wealth ?? char.wealth ?? 0) >= cost;
 }
 
 export function mergeEffects(...sources) {
@@ -219,3 +230,25 @@ export function mergeEffects(...sources) {
   }
   return effects;
 }
+
+export function isIndependentSyndicateEligibleForRank(char, nextRank) {
+  if (!char || char.job !== 'Syndicate' || char.finger) return false;
+  const flags = char.flags || [];
+  if (!flags.includes('IndependentSyndicate')) return false;
+  const currentRank = char.syndicateRank || 0;
+  if (currentRank !== nextRank - 1) return false;
+  const merit = char.merit || 0;
+  const rep = char.stats?.rep ?? char.rep ?? 0;
+  const heat = char.heat || 0;
+  if (nextRank === 1) {
+    return merit >= 20 && rep >= 20 && heat >= 15;
+  }
+  if (nextRank === 2) {
+    return merit >= 50 && rep >= 45 && heat >= 30;
+  }
+  if (nextRank === 3) {
+    return merit >= 90 && rep >= 75 && heat >= 50;
+  }
+  return false;
+}
+

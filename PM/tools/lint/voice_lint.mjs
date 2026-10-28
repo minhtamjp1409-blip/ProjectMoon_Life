@@ -35,7 +35,7 @@ const RULES = {
   exclaim: { test: bangOutsideQuotes, why: 'exclamation mark in narration (inside quoted speech is allowed)' },
   hanViet: { re: /Ngũ Chỉ|Huyết Quỷ|Sổ Thù Hận|Thiên Mệnh|Sát Tinh|Thành Phố|Thành phố/, why: 'translated canon term (UNIVERSE 4.4)' },
   moon: { re: /ánh trăng|mặt trăng|moonlight|\bmoon(?!\s?(?:project|light corp))\b/i, why: 'the City has no moon' },
-  placeholder: { re: /\{(?!(?:name|age|friend|rival|lover|nemesis|parentName|parentDeath|parent|relic|partner|spouse|child|ward|mentor|mentee|scars|trialCompanion)\})[a-zA-Z_]+\}|undefined|NaN|\[object/, why: 'placeholder interpolateText does not fill' },
+  placeholder: { re: /\{(?!(?:name|age|friend|rival|lover|nemesis|parentName|parentDeath|parent|relic|partner|spouse|child|ward|mentor|mentee|scars|trialCompanion|debtBalance|partialPay)\})[a-zA-Z_]+\}|undefined|NaN|\[object/, why: 'placeholder interpolateText does not fill' },
   doubleSpace: { re: /\S {2,}\S/, why: 'double space' },
 };
 

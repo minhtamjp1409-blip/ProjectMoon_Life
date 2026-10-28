@@ -1,6 +1,6 @@
 import { rememberResonance, hasEgoOpportunity, colorTrialAvailable } from './awakeningProgress.js';
 import { advanceActiveNarrativeArcs } from './narrativeArcEngine.js';
-import { choiceIsAvailable, matchesEventContext, mergeEffects, npcIsActive, recordColorTrialCompanion, colorTrialCompanionOf } from './eventConditions.js';
+import { choiceIsAvailable, matchesEventContext, mergeEffects, npcIsActive, recordColorTrialCompanion, colorTrialCompanionOf, isIndependentSyndicateEligibleForRank } from './eventConditions.js';
 import { ITEMS_CATALOG } from '../data/itemsData.js';
 import { rollPerinatalFate } from './fateEngine.js';
 import { rollTraits, traitsOf, varyEffects, PRINTED_NUMBERS } from './variance.js';
@@ -300,7 +300,13 @@ export function interpolateText(text, char) {
 
   const npcName = (role, fallback) => char.npcs?.[role]?.nameVi || fallback;
   const trialCompanion = char.colorTrialCompanion?.nameVi || partner;
+  const fixerDebt = (char.debts || []).find((d) => d.id === 'fixer_license_debt' && d.status === 'active') ||
+    (char.debts || []).find((d) => d.status === 'active');
+  const debtBalance = fixerDebt ? fixerDebt.balanceAhn : 0;
+  const partialPay = fixerDebt ? Math.min(3, fixerDebt.balanceAhn) : 0;
   return text
+    .replace(/\{debtBalance\}/g, String(debtBalance))
+    .replace(/\{partialPay\}/g, String(partialPay))
     .replace(/\{name\}/g, char.name || '')
     .replace(/\{trialCompanion\}/g, trialCompanion)
     .replace(/\{age\}/g, String(char.age ?? ''))
@@ -2347,8 +2353,17 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random, dung
   if (event.id.startsWith('gate_')) char.lastGateAge = char.age;
   const printsNumbers = PRINTED_NUMBERS.test(`${outcome.resultVi || outcome.rvi || ''}${choice.resultVi || choice.rvi || ''}`);
   const rolled = mergeEffects(choice, outcome);
-  if (choice.costAhn && (choice.fx?.wealth ?? choice.effects?.wealth ?? rolled.wealth) === -choice.costAhn) {
-    rolled.wealth = (rolled.wealth || 0) + choice.costAhn;
+  let effectiveCostAhn = choice.costAhn;
+  if (choice.debtId) {
+    const debt = (char.debts || []).find((d) => d.id === choice.debtId && d.status === 'active');
+    if (choice.debtCost === 'full') {
+      effectiveCostAhn = debt ? debt.balanceAhn : 0;
+    } else if (choice.debtCost === 'partial') {
+      effectiveCostAhn = debt ? Math.min(3, debt.balanceAhn) : 0;
+    }
+  }
+  if (effectiveCostAhn && (choice.fx?.wealth ?? choice.effects?.wealth ?? rolled.wealth) === -effectiveCostAhn) {
+    rolled.wealth = (rolled.wealth || 0) + effectiveCostAhn;
   }
   const effects = printsNumbers ? rolled : varyEffects(rolled, rng, traitsOf(char));
   for (const key of [...(choice.exactFx || []), ...(outcome === choice ? [] : outcome.exactFx || [])]) {
@@ -2357,7 +2372,7 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random, dung
   if (/^fixer_promo_/.test(event.id) && effects.health < 0) effects.health = Math.ceil(effects.health * 0.65);
   // Entering a dungeon only sets the scene: the stages pay out, so the entry itself never pays twice
   if (startDungeonId) for (const key of Object.keys(effects)) effects[key] = 0;
-  if (choice.costAhn) effects.wealth = (effects.wealth || 0) - choice.costAhn;
+  if (effectiveCostAhn) effects.wealth = (effects.wealth || 0) - effectiveCostAhn;
   const itemId = outcome.itemAdd || choice.itemAdd;
   const purchasedItem = ITEMS_CATALOG.find(i => i.id === itemId);
   if (purchasedItem) char.inventory.push({ ...purchasedItem });
@@ -2608,7 +2623,8 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random, dung
   if (debtRepay && debtRepay.id) {
     const d = char.debts.find((item) => item.id === debtRepay.id && item.status === 'active');
     if (d) {
-      const amount = Math.min(d.balanceAhn, debtRepay.amount || 0);
+      const repayAmount = debtRepay.amount === 'partial' ? Math.min(3, d.balanceAhn) : (debtRepay.amount || 0);
+      const amount = Math.min(d.balanceAhn, repayAmount);
       d.balanceAhn -= amount;
       if (debtRepay.nextDueAge != null) d.nextDueAge = debtRepay.nextDueAge;
       else if (debtRepay.deferYears) d.nextDueAge = char.age + debtRepay.deferYears;
@@ -3239,6 +3255,8 @@ export function buildLifeSummaryAndLegacy(char) {
     ...extractAncestorEchoProfile(char)
   };
 }
+
+export { isIndependentSyndicateEligibleForRank };
 
 export {
   DUNGEON_DEFINITIONS,

@@ -3,7 +3,7 @@ import { careerAgeOf, reachedCareerAge } from './careerAge.js';
 import { rememberResonance, hasEgoOpportunity, colorTrialAvailable, rollEgoEncounter } from './awakeningProgress.js';
 import { evaluateNarrativeArcProgression, computeEmotionalWaveConsideration } from './narrativeArcEngine.js';
 import { ENSEMBLE_INVITE_ID, ENSEMBLE_LAST_CALL_ID, ensembleEligible } from './ensemblePath.js';
-import { matchesEventContext } from './eventConditions.js';
+import { matchesEventContext, isIndependentSyndicateEligibleForRank } from './eventConditions.js';
 import { evaluateEventConsiderations } from './utilityCurves.js';
 import { createCityBlackboard } from './cityBlackboard.js';
 import { activeScarCount } from './scarModel.js';
@@ -351,6 +351,13 @@ export function isEventEligible(event, char, { scripted = false } = {}) {
     const prefix = next.route === 'finger' ? 'Finger' : 'Wing';
     if (char[`last${prefix}TrialAge`] === char.age) return false;
   }
+  if (event.id === 'csq_fixer_license_debt_due') {
+    const hasDueDebt = (char.debts || []).some((d) => d.id === 'fixer_license_debt' && d.status === 'active' && (char.age || 0) >= d.nextDueAge);
+    if (!hasDueDebt) return false;
+  }
+  if (event.id === 'syn_indie_promo_rank1' && !isIndependentSyndicateEligibleForRank(char, 1)) return false;
+  if (event.id === 'syn_indie_promo_rank2' && !isIndependentSyndicateEligibleForRank(char, 2)) return false;
+  if (event.id === 'syn_indie_promo_rank3' && !isIndependentSyndicateEligibleForRank(char, 3)) return false;
   if (event.id === 'ad_career_crossroad_18' && (!reachedCareerAge(char) || char.job !== 'Child' || char.regionId === 'OUTSKIRTS')) return false;
   if (event.id === 'ad_outskirts_crossroad_18' && (!reachedCareerAge(char) || char.job !== 'Child')) return false;
   if (isEgoLeapEvent(event.id) && getEgoLeap(char)?.eventId !== event.id) return false;

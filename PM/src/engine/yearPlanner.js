@@ -6,7 +6,7 @@ import { planFirstGate } from './dungeonPacing.js';
 import { careerAgeOf, reachedCareerAge, effectiveMinAge } from './careerAge.js';
 import { rememberResonance, hasEgoOpportunity, colorTrialAvailable, rollEgoEncounter } from './awakeningProgress.js';
 import { simulateNpcAutonomousLife } from './narrativeArcEngine.js';
-import { matchesNeed, matchesEventContext, choiceIsAvailable, mergeEffects, isNestResident, isOutsideCity, npcIsActive, colorTrialCompanionAlive } from './eventConditions.js';
+import { matchesNeed, matchesEventContext, choiceIsAvailable, mergeEffects, isNestResident, isOutsideCity, npcIsActive, colorTrialCompanionAlive, isIndependentSyndicateEligibleForRank } from './eventConditions.js';
 import {
   getNextFixerPromotion,
   contractOfferChance,
@@ -488,16 +488,11 @@ export function planYear(charState, rng) {
   }
 
   // Independent Syndicate rank promotion when requirements are met
-  if (char.job === 'Syndicate' && !char.finger) {
-    const rank = char.syndicateRank || 0;
-    const targetMerit = [0, 20, 50, 90][rank + 1];
-    const targetRep = [0, 20, 45, 75][rank + 1];
-    const targetHeat = [0, 15, 30, 50][rank + 1];
-    if (targetMerit != null && (char.merit || 0) >= targetMerit && (char.stats?.rep || 0) >= targetRep && (char.heat || 0) >= targetHeat) {
-      const promoId = `syn_indie_promo_rank${rank + 1}`;
-      if (!(char.seenEvents || []).includes(promoId) && !scheduledKey.some((it) => it.forcedEventId === promoId)) {
-        scheduledKey.unshift({ kind: 'major', forcedEventId: promoId });
-      }
+  const nextIndieRank = (char.syndicateRank || 0) + 1;
+  if (nextIndieRank <= 3 && isIndependentSyndicateEligibleForRank(char, nextIndieRank)) {
+    const promoId = `syn_indie_promo_rank${nextIndieRank}`;
+    if (!(char.seenEvents || []).includes(promoId) && !scheduledKey.some((it) => it.forcedEventId === promoId)) {
+      scheduledKey.unshift({ kind: 'major', forcedEventId: promoId });
     }
   }
 
@@ -718,6 +713,8 @@ export async function syncPlanWithBackend(charState, rng) {
       fingerRank: charState.fingerRank || 0,
       wingRank: charState.wingRank || 0,
       workshopRank: charState.workshopRank || 0,
+      syndicateRank: charState.syndicateRank || 0,
+      debts: charState.debts || [],
       flags: charState.flags || [],
       seenEvents: charState.seenEvents || [],
       recent: charState.recent || [],
@@ -882,6 +879,24 @@ export async function syncPlanWithBackend(charState, rng) {
         const replaceAt = hydrated.findIndex((item) => item.kind === 'major' && !item.forcedEventId);
         if (replaceAt >= 0) hydrated[replaceAt] = { ...localEnsemble, t: hydrated[replaceAt].t, season: hydrated[replaceAt].season, seasonIdx: hydrated[replaceAt].seasonIdx };
         else hydrated.push(localEnsemble);
+      }
+
+      // Preserve local fixer license debt collection due if scheduled locally
+      const localDebt = localPlan.find((item) => item.forcedEventId === 'csq_fixer_license_debt_due');
+      if (localDebt && !hydrated.some((item) => item.forcedEventId === 'csq_fixer_license_debt_due')) {
+        let replaceAt = hydrated.findIndex((item) => item.kind === 'major' && !item.forcedEventId);
+        if (replaceAt < 0) replaceAt = hydrated.findIndex((item) => item.kind === 'daily');
+        if (replaceAt >= 0) hydrated[replaceAt] = { ...localDebt, t: hydrated[replaceAt].t, season: hydrated[replaceAt].season, seasonIdx: hydrated[replaceAt].seasonIdx };
+        else hydrated.push(localDebt);
+      }
+
+      // Preserve local independent syndicate promotion if scheduled locally
+      const localIndiePromo = localPlan.find((item) => typeof item.forcedEventId === 'string' && item.forcedEventId.startsWith('syn_indie_promo_rank'));
+      if (localIndiePromo && !hydrated.some((item) => item.forcedEventId === localIndiePromo.forcedEventId)) {
+        let replaceAt = hydrated.findIndex((item) => item.kind === 'major' && !item.forcedEventId);
+        if (replaceAt < 0) replaceAt = hydrated.findIndex((item) => item.kind === 'daily');
+        if (replaceAt >= 0) hydrated[replaceAt] = { ...localIndiePromo, t: hydrated[replaceAt].t, season: hydrated[replaceAt].season, seasonIdx: hydrated[replaceAt].seasonIdx };
+        else hydrated.push(localIndiePromo);
       }
 
       // The server only knows daily/minor/major/contract. The mishap and medical-care

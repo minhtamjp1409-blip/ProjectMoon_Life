@@ -2,9 +2,13 @@ import assert from 'node:assert/strict';
 import {
   createNewCharacter,
   resolveEventChoice,
+  interpolateText,
   ALL_STORY_EVENTS
 } from '../src/engine/gameEngine.js';
-import { endYear, planYear } from '../src/engine/yearPlanner.js';
+import { isEventEligible } from '../src/engine/weaverAI.js';
+import { choiceIsAvailable } from '../src/engine/eventConditions.js';
+import { endYear, planYear, syncPlanWithBackend } from '../src/engine/yearPlanner.js';
+import { cityArchiveAPI } from '../src/services/api/cityArchiveAPI.js';
 import { migrateRun, SAVE_VERSION } from '../src/engine/saveSchema.js';
 
 console.log('=== TEST SUITE: FIXER LICENSE DEBT LIFECYCLE & RESOLUTION ===');
@@ -220,5 +224,143 @@ console.log('6. Testing saveSchema migration for legacy FixerLicenseDebt flag...
   assert.equal(migratedSettled.char.debts[0].status, 'settled');
   console.log('  ✓ Save migration upgrades legacy flag to structured record without duplicate re-creation.');
 }
+
+// 7. Audit P0: Debt event eligibility gating (isEventEligible)
+console.log('7. Testing P0: isEventEligible strict debt condition...');
+{
+  const dueEvent = ALL_STORY_EVENTS.find((e) => e.id === 'csq_fixer_license_debt_due');
+  assert.ok(dueEvent, 'csq_fixer_license_debt_due must exist');
+
+  // Case A: Wing employee with no debts
+  const wingChar = createNewCharacter({ seed: 'wing-no-debt', startAge: 25 });
+  wingChar.job = 'Wing';
+  assert.equal(isEventEligible(dueEvent, wingChar), false, 'Wing employee without debt must NOT be eligible');
+
+  // Case B: Fixer without debts
+  const fixerNoDebt = createNewCharacter({ seed: 'fixer-no-debt', startAge: 20 });
+  fixerNoDebt.job = 'Fixer';
+  assert.equal(isEventEligible(dueEvent, fixerNoDebt), false, 'Fixer without debt must NOT be eligible');
+
+  // Case C: Fixer with debt, but not due yet (nextDueAge: 22, age: 20)
+  const fixerNotDue = createNewCharacter({ seed: 'fixer-not-due', startAge: 20 });
+  fixerNotDue.job = 'Fixer';
+  fixerNotDue.debts = [{ id: 'fixer_license_debt', status: 'active', balanceAhn: 8, nextDueAge: 22 }];
+  assert.equal(isEventEligible(dueEvent, fixerNotDue), false, 'Fixer whose debt is not due must NOT be eligible');
+
+  // Case D: Fixer with settled debt
+  const fixerSettled = createNewCharacter({ seed: 'fixer-settled', startAge: 20 });
+  fixerSettled.job = 'Fixer';
+  fixerSettled.debts = [{ id: 'fixer_license_debt', status: 'settled', balanceAhn: 0, nextDueAge: 19 }];
+  assert.equal(isEventEligible(dueEvent, fixerSettled), false, 'Fixer with settled debt must NOT be eligible');
+
+  // Case E: Fixer with active debt due (age 20, nextDueAge: 20)
+  const fixerDue = createNewCharacter({ seed: 'fixer-due', startAge: 20 });
+  fixerDue.job = 'Fixer';
+  fixerDue.debts = [{ id: 'fixer_license_debt', status: 'active', balanceAhn: 8, nextDueAge: 20 }];
+  assert.equal(isEventEligible(dueEvent, fixerDue), true, 'Fixer with active due debt MUST be eligible');
+  console.log('  ✓ isEventEligible correctly rejects all characters without active due debt.');
+}
+
+// 8. Audit P0: Dynamic debt balance repayment (balances 10, 5, 2)
+console.log('8. Testing P0: Dynamic debt balance repayment and label interpolation...');
+{
+  const dueEvent = ALL_STORY_EVENTS.find((e) => e.id === 'csq_fixer_license_debt_due');
+
+  // Dynamic label & text interpolation
+  const char10 = createNewCharacter({ seed: 'char-10', startAge: 20 });
+  char10.job = 'Fixer';
+  char10.debts = [{ id: 'fixer_license_debt', status: 'active', balanceAhn: 10, nextDueAge: 20 }];
+  assert.equal(interpolateText('Nợ {debtBalance} Ahn, trả trước {partialPay} Ahn', char10), 'Nợ 10 Ahn, trả trước 3 Ahn');
+
+  // Full payment with balance 10: costs exactly 10 Ahn
+  char10.stats.wealth = 15;
+  char10.flags.push('FixerLicenseDebt');
+  char10.pendingEvent = dueEvent;
+  assert.equal(choiceIsAvailable(dueEvent.choices[0], char10), true);
+  const after10 = resolveEventChoice(char10, 0, () => 0.5);
+  assert.equal(after10.stats.wealth, 5, 'Deducts 10 Ahn from wealth 15');
+  const d10 = after10.debts.find((d) => d.id === 'fixer_license_debt');
+  assert.equal(d10.status, 'settled');
+  assert.equal(d10.balanceAhn, 0);
+  assert.equal(after10.flags.includes('FixerLicenseDebt'), false);
+
+  // Full payment with balance 5: costs exactly 5 Ahn
+  const char5 = createNewCharacter({ seed: 'char-5', startAge: 20 });
+  char5.job = 'Fixer';
+  char5.stats.wealth = 6;
+  char5.flags.push('FixerLicenseDebt');
+  char5.debts = [{ id: 'fixer_license_debt', status: 'active', balanceAhn: 5, nextDueAge: 20 }];
+  char5.pendingEvent = dueEvent;
+  const after5 = resolveEventChoice(char5, 0, () => 0.5);
+  assert.equal(after5.stats.wealth, 1, 'Deducts 5 Ahn from wealth 6');
+  const d5 = after5.debts.find((d) => d.id === 'fixer_license_debt');
+  assert.equal(d5.status, 'settled');
+  assert.equal(d5.balanceAhn, 0);
+
+  // Full payment with balance 2: costs exactly 2 Ahn
+  const char2 = createNewCharacter({ seed: 'char-2', startAge: 20 });
+  char2.job = 'Fixer';
+  char2.stats.wealth = 4;
+  char2.flags.push('FixerLicenseDebt');
+  char2.debts = [{ id: 'fixer_license_debt', status: 'active', balanceAhn: 2, nextDueAge: 20 }];
+  char2.pendingEvent = dueEvent;
+  const after2 = resolveEventChoice(char2, 0, () => 0.5);
+  assert.equal(after2.stats.wealth, 2, 'Deducts 2 Ahn from wealth 4');
+  const d2 = after2.debts.find((d) => d.id === 'fixer_license_debt');
+  assert.equal(d2.status, 'settled');
+  assert.equal(d2.balanceAhn, 0);
+
+  // Partial payment when balance <= 3 (e.g. balance 2): paying partial pays the remaining 2 and settles!
+  const charPartial2 = createNewCharacter({ seed: 'char-p2', startAge: 20 });
+  charPartial2.job = 'Fixer';
+  charPartial2.stats.wealth = 5;
+  charPartial2.flags.push('FixerLicenseDebt');
+  charPartial2.debts = [{ id: 'fixer_license_debt', status: 'active', balanceAhn: 2, nextDueAge: 20 }];
+  assert.equal(interpolateText('Trả trước {partialPay} Ahn', charPartial2), 'Trả trước 2 Ahn');
+  charPartial2.pendingEvent = dueEvent;
+  const afterP2 = resolveEventChoice(charPartial2, 1, () => 0.5);
+  assert.equal(afterP2.stats.wealth, 3, 'Deducts min(3, 2) = 2 Ahn');
+  const dP2 = afterP2.debts.find((d) => d.id === 'fixer_license_debt');
+  assert.equal(dP2.status, 'settled', 'Debt settles when balance reaches 0 via partial payment');
+  assert.equal(dP2.balanceAhn, 0);
+  assert.equal(afterP2.flags.includes('FixerLicenseDebt'), false);
+  console.log('  ✓ Dynamic costs, interpolation, and automatic settlement on balance 0 verified.');
+}
+
+// 9. Audit P1: Backend sync & plan hydration parity
+console.log('9. Testing P1: Backend sync preserves local debt due event across hydration...');
+async function testBackendHydrationParity() {
+  const char = createNewCharacter({ seed: 'sync-parity-debt', startAge: 19 });
+  char.job = 'Fixer';
+  char.flags.push('FixerLicenseDebt');
+  char.debts = [{ id: 'fixer_license_debt', status: 'active', balanceAhn: 8, nextDueAge: 19 }];
+  planYear(char, () => 0.5);
+  assert.ok(char.plan.some((p) => p.forcedEventId === 'csq_fixer_license_debt_due'), 'Local plan must schedule debt due');
+
+  // Mock cityArchiveAPI.planYear returning generic server moments without debt
+  const origPlanYear = cityArchiveAPI.planYear;
+  cityArchiveAPI.planYear = async ({ char: snap }) => {
+    assert.ok(Array.isArray(snap.debts), 'Snap must include debts');
+    assert.equal(snap.debts.length, 1);
+    return {
+      moments: [
+        { kind: 'daily', id: 'daily_city_dawn', t: 0.1, season: 'Spring', seasonIdx: 0 },
+        { kind: 'minor', id: 'minor_alley_crossroad', t: 0.4, season: 'Summer', seasonIdx: 1 },
+        { kind: 'daily', id: 'daily_city_dawn', t: 0.7, season: 'Autumn', seasonIdx: 2 },
+        { kind: 'daily', id: 'daily_city_dawn', t: 0.9, season: 'Winter', seasonIdx: 3 }
+      ]
+    };
+  };
+
+  try {
+    const synced = await syncPlanWithBackend(char, () => 0.5);
+    const hasDebtInHydrated = synced.plan.some((p) => p.forcedEventId === 'csq_fixer_license_debt_due');
+    assert.ok(hasDebtInHydrated, 'Hydrated plan must preserve local csq_fixer_license_debt_due');
+    console.log('  ✓ syncPlanWithBackend preserves local debt collection in hydrated plan.');
+  } finally {
+    cityArchiveAPI.planYear = origPlanYear;
+  }
+}
+await testBackendHydrationParity();
 
 console.log('\n=== ALL FIXER LICENSE DEBT TESTS PASSED SUCCESSFULLY ===');

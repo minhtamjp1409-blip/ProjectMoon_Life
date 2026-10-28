@@ -1,6 +1,6 @@
 # The City Chronicles: Tài Liệu Tiến Trình & Kiến Trúc Kỹ Thuật Toàn Diện
 
-> **Cập nhật ghi chép: 28/10/2026 (Đợt 83: Hoàn thiện toàn diện gameplay Life Sim: vòng đời khoản nợ Fixer 8 Ahn, hợp đồng ngầm & thăng tiến cấp bậc cho Syndicate Độc Lập, phi cưỡng chế Finger summons)**
+> **Cập nhật ghi chép: 28/10/2026 (Đợt 84: Khắc phục triệt để 5 phát hiện kiểm toán chuyên sâu: điều kiện nợ csq_fixer_license_debt_due, chi phí trả nợ động, điều kiện thăng bậc Syndicate độc lập, đồng bộ Backend hydration, và bản ghi Codex independent_syndicate_apex)**
 > **Phân biệt rõ số liệu kiểm thử tự động & số liệu mô phỏng 500 đời hiện hành (Đợt 69):**
 > - **Đã xác minh tự động bằng bộ test (`npm test`):** Toàn bộ **55/55 test suites** đạt 100%, parity cổng thăng tiến FE/BE khớp tuyệt đối, `lint_story.mjs` (745 major, 43 consequence, 866 minor, 572 daily, 36 contract) & `voice_lint.mjs --fail` (**32.337 chuỗi**) đạt 0 lỗi / 0 cảnh báo, `run_million_audit.mjs 500` (500 khoảnh khắc) đạt 5/5 nhóm quy tắc toàn vẹn, `npm run build` hoàn tất sạch bóng.
 > - **Đã đo mới trên codebase hiện tại qua mô phỏng 500 cuộc đời đầy đủ (Đợt 69):** `story_logic_audit.mjs 500 random` (**80.338 khoảnh khắc**, 500 đời, **0 vi phạm logic**, entropy `83.1%`), `balance_sim.mjs 500 random` (13.208 năm sống, phân bổ nghề: Fixer `31.0%`, Wing `29.9%`, Syndicate `31.9%`, Distortion `5.4%`), `balance_sim.mjs 500 focused` (21.749 năm sống, tuổi thọ TB `42.6`, đạt Color Fixer `9.6%` ở tuổi TB `55.4`, thức tỉnh E.G.O `12.6%` ở tuổi TB `45.5`), và `branch_experience.mjs 500` (tuổi thọ Distortion tăng vọt từ `3.8` lên **`11.3` năm/đời**, đại sự kiện trải nghiệm từ `16` lên **`40`**).
@@ -1844,3 +1844,42 @@ Chủ dự án yêu cầu làm lại toàn bộ giao diện lần nữa: bỏ t�
   * `npm run build`: Đóng gói thành công trong 6.91s.
   * `npm test`: Đạt **100% toàn bộ 55/55 test suites** và **500 khoảnh khắc Million Audit** (0 vi phạm logic).
   * Xóa bỏ hoàn tất tệp `docs/KE_HOACH_GAMEPLAY_LIFE_SIM.md` theo đúng chỉ thị.
+
+### Đợt 84 (28/10/2026): Khắc phục triệt để 5 phát hiện kiểm toán chuyên sâu (P0, P1, P2) từ commit d110745
+
+* **P0 - Khắc phục cổng điều kiện sự kiện đòi nợ Fixer (`csq_fixer_license_debt_due`):**
+  * Sửa lỗi sự kiện đòi nợ xuất hiện ngẫu nhiên cho nhân viên Wing hoặc người không hề mang nợ.
+  * Bổ sung trường `activeDebt: 'fixer_license_debt'` và `need: { hasActiveDebt: 'fixer_license_debt' }` trực tiếp vào sự kiện trong `src/data/eventsChildhood.js`.
+  * Mở rộng `matchesNeed` và `matchesEventContext` trong `src/engine/eventConditions.js` để kiểm tra chặt chẽ `d.id === need.hasActiveDebt && d.status === 'active' && char.age >= d.nextDueAge`.
+  * Bổ sung chốt chặn trong `weaverAI.js:isEventEligible` bảo đảm chỉ khi nhân vật có khoản nợ thực sự tới hạn mới đủ điều kiện xuất hiện.
+  * Mở rộng kiểm thử trong `tests/test_fixer_debt_lifecycle.mjs` xác minh từ chối nhân viên Wing, trẻ em, Fixer không nợ, Fixer nợ chưa đến hạn và nợ đã tất toán.
+
+* **P0 - Tính toán chi phí trả nợ động theo số dư nợ thực tế (`Dynamic Debt Repayment`):**
+  * Xóa bỏ hoàn toàn số tiền 8 Ahn và 3 Ahn bị gán cứng không phụ thuộc vào dư nợ.
+  * Trong `csq_fixer_license_debt_due`, chuyển nhãn lựa chọn và mô tả văn bản sang token động `{debtBalance}` và `{partialPay}`.
+  * Trong `src/engine/gameEngine.js`:
+    * `interpolateText` tự động điền giá trị `{debtBalance}` và `{partialPay}` (tối đa 3 Ahn hoặc bằng dư nợ nếu dư nợ $\le 3$).
+    * `choiceIsAvailable` và `resolveEventChoice` giải mã chi phí động `choice.debtCost === 'full'` và `choice.debtCost === 'partial'` theo `choice.debtId`, khấu trừ chính xác số tiền thực tế vào tài sản của nhân vật.
+    * Khi trả trước một phần mà số dư nợ giảm về 0 (ví dụ dư nợ còn 2 Ahn), khoản nợ tự động chuyển trạng thái `settled` và xóa cờ `FixerLicenseDebt`.
+  * Cập nhật danh sách từ khóa hợp lệ trong `tools/lint/voice_lint.mjs`.
+
+* **P0 - Đồng bộ hóa điều kiện thăng bậc Syndicate độc lập (`syn_indie_promo_rank*`):**
+  * Ngăn chặn tuyệt đối việc tay sai mới vào băng (Merit 0, Heat 0, chưa có cờ `IndependentSyndicate`) ngẫu nhiên bốc trúng sự kiện thăng bậc Rank 1 từ random pool.
+  * Xây dựng hàm kiểm định thống nhất `isIndependentSyndicateEligibleForRank(char, nextRank)` trong `src/engine/eventConditions.js` (và export qua `gameEngine.js`):
+    * Kiểm tra: `char.job === 'Syndicate'`, `!char.finger`, có cờ `IndependentSyndicate`, `syndicateRank === nextRank - 1`.
+    * Kiểm tra ngưỡng tài nguyên chính xác: Rank 1 (Merit 20, Rep 20, Heat 15); Rank 2 (Merit 50, Rep 45, Heat 30); Rank 3 (Merit 90, Rep 75, Heat 50).
+  * Đồng bộ hàm này vào `weaverAI.js:isEventEligible` và `yearPlanner.js:planYearMoments`.
+  * Cập nhật `requires: ['IndependentSyndicate']`, `flags: ['IndependentSyndicate']`, `meritAtLeast`, và dải chỉ số `rep` & `heat` trong `src/data/eventsFactions.js`.
+
+* **P1 - Bảo toàn sự kiện nợ và thăng cấp Syndicate độc lập qua Backend Hydration (`syncPlanWithBackend`):**
+  * Trong `src/engine/yearPlanner.js:syncPlanWithBackend`, bổ sung `debts: charState.debts || []` và `syndicateRank: charState.syndicateRank || 0` vào ảnh chụp trạng thái `snap` gửi lên backend.
+  * Bổ sung cơ chế bảo toàn moment nợ (`csq_fixer_license_debt_due`) và thăng chức (`syn_indie_promo_rank*`) từ `localPlan` khi nhận kết quả lịch năm từ backend.
+
+* **P2 - Bổ sung bản ghi Codex cho Bá Chủ Ngõ Tối (`independent_syndicate_apex`):**
+  * Khắc phục bản ghi thành tựu bị thiếu trong `CODEX_RECORDS` tại `src/data/worldData.js`.
+  * Khai báo đầy đủ hạng `legend`, danh mục `syndicate`, văn bản song ngữ Việt - Anh mô tả vị thế thống nhất thế giới ngầm mà không quỳ gối trước Finger.
+
+* **Kiểm định toàn vẹn:**
+  * `voice_lint.mjs --fail`: Quét toàn bộ **32.455 chuỗi văn bản**, 0 lỗi Han-Viet, 0 emoji, 0 em-dash, 0 placeholder chưa điền, 0 dấu chấm than ngoài hội thoại.
+  * `npm run build`: Đóng gói production thành công trong 6.87s.
+  * `npm test`: Đạt **100% 55/55 test suites** và **500 khoảnh khắc Million Audit** (0 vi phạm logic).
