@@ -1,6 +1,6 @@
 # The City Chronicles: Tài Liệu Tiến Trình & Kiến Trúc Kỹ Thuật Toàn Diện
 
-> **Cập nhật ghi chép: 28/10/2026 (Đợt 80: Khắc phục triệt để lỗi chữ nhảy/nhấp nháy liên tục khi mở chi tiết NPC lúc tiến trình game đang chạy bằng cơ chế Seeded Agency & React useMemo; khởi tạo chỉ số định mệnh cho NPC đời trước)**
+> **Cập nhật ghi chép: 28/10/2026 (Đợt 81: Cải tổ căn bản cơ chế hướng nghiệp từ Menu chọn Tuyến sang Sinh tồn Đô Thị đích thực; tháo dỡ định kiến đạo diễn, đa dạng hóa Syndicate độc lập và chuyển đổi Kế hoạch năm sang ngôn ngữ đời sống)**
 > **Phân biệt rõ số liệu kiểm thử tự động & số liệu mô phỏng 500 đời hiện hành (Đợt 69):**
 > - **Đã xác minh tự động bằng bộ test (`npm test`):** Toàn bộ **53/53 test suites** đạt 100%, parity cổng thăng tiến FE/BE khớp tuyệt đối, `lint_story.mjs` (745 major, 43 consequence, 866 minor, 572 daily, 36 contract) & `voice_lint.mjs --fail` (**32.337 chuỗi**) đạt 0 lỗi / 0 cảnh báo, `run_million_audit.mjs 500` (500 khoảnh khắc) đạt 5/5 nhóm quy tắc toàn vẹn, `npm run build` hoàn tất sạch bóng.
 > - **Đã đo mới trên codebase hiện tại qua mô phỏng 500 cuộc đời đầy đủ (Đợt 69):** `story_logic_audit.mjs 500 random` (**80.338 khoảnh khắc**, 500 đời, **0 vi phạm logic**, entropy `83.1%`), `balance_sim.mjs 500 random` (13.208 năm sống, phân bổ nghề: Fixer `31.0%`, Wing `29.9%`, Syndicate `31.9%`, Distortion `5.4%`), `balance_sim.mjs 500 focused` (21.749 năm sống, tuổi thọ TB `42.6`, đạt Color Fixer `9.6%` ở tuổi TB `55.4`, thức tỉnh E.G.O `12.6%` ở tuổi TB `45.5`), và `branch_experience.mjs 500` (tuổi thọ Distortion tăng vọt từ `3.8` lên **`11.3` năm/đời**, đại sự kiện trải nghiệm từ `16` lên **`40`**).
@@ -1748,6 +1748,40 @@ Chủ dự án yêu cầu làm lại toàn bộ giao diện lần nữa: bỏ t�
   * Kiểm tra tính tất định: Hai bản sao NPC độc lập gọi `ensureNpcAgency` cho kết quả trùng khớp 100%.
   * `npm run build` hoàn tất xuất sắc (6.84s), 0 lỗi đóng gói.
   * `npm test` vượt qua 100% toàn bộ 53/53 bộ kiểm thử hồi quy (bao gồm 500-moment Million Audit).
+
+### Đợt 81 (28/10/2026): Tái thiết kế trải nghiệm Hướng nghiệp & Sinh tồn Đô Thị theo tinh thần Life Simulator, xóa bỏ "thang máy tự động" và chuyển đổi ngôn ngữ Kế hoạch năm
+
+* **Bối cảnh & Phản hồi thiết kế (Critique on Visual Novelization & Artificial Railroading):**
+  * Nhận diện 3 yếu điểm cơ chế khiến game dần giống một sandbox tuyến tính chọn nhánh (Visual Novel Route Selection) thay vì mô phỏng sinh tồn đời người (Life Simulator):
+    1. Sự kiện ngã rẽ tuổi lao động (`ad_career_crossroad_18`) hoạt động như một menu chọn class RPG, trao thẻ và tặng tiền miễn phí (`wealth: +12`) thay vì đòi hỏi lệ phí và sinh kế thực tế.
+    2. Cảnh "Hội nghị 5 sứ giả" (`syn_choose_finger_allegiance`) ép người chơi chọn ngay 1 trong 5 Finger ngay năm đầu vào Syndicate, phá vỡ logic địa bàn ngầm và sự tồn tại của các băng đảng tự do.
+    3. `director.js` nhân trọng số lên tới 2.3x cho các sự kiện bù đắp chỉ số còn thiếu, kết hợp với cơ hội thăng cấp đẩy lên 68%–78% biến cuộc đời thành một "đường ray dọn sẵn".
+* **Các thay đổi kiến trúc & Trải nghiệm thực hiện:**
+  * **Tái thiết kế Giao lộ tuổi lao động (`src/data/eventsChildhood.js` - `ad_career_crossroad_18`):**
+    * Loại bỏ hoàn toàn việc tặng tiền/danh vọng miễn phí. Mọi lựa chọn đều là một canh bạc sinh tồn có chi phí và đánh đổi:
+      * *Làm Fixer Grade 9:* Đòi hỏi vét sạch tiền dành dụm nộp lệ phí cho Hiệp hội Hana (`wealth: -8`, `rep: +6`, `network: +4`, `sanity: -6`), Merit khởi đầu chỉ còn 2.
+      * *Làm Syndicate:* Chấp nhận làm chân đòi nợ, giao hàng đêm cho băng nhóm ngầm địa phương; nhận tiền mặt nhanh (`wealth: +14`) nhưng gánh chịu Heat tăng vọt (`heat: +12`) và mất Sanity.
+      * *Làm Wing Employee:* Ký vào bản cam kết cho phép Wing toàn quyền xử lý thể xác khi Singularity phát sinh sự cố để nhận thẻ thử việc Feather cấp 0; nhận trợ cấp nhỏ (`wealth: +6`) nhưng tổn thương tâm lý sâu sắc (`sanity: -12`).
+  * **Giải phóng Syndicate độc lập & Xóa bỏ cảnh 5 sứ giả (`src/data/eventsFactions.js`, `src/engine/yearPlanner.js`, `src/engine/weaverAI.js`):**
+    * Viết lại `syn_choose_finger_allegiance` thành tối hậu thư từ thế giới ngầm cấp cao, bổ sung lựa chọn thứ 6: **"Từ chối mọi phe phái: Giữ băng nhóm độc lập, chấp nhận đối đầu các thế lực lớn"** (`IndependentSyndicate`), tăng mạnh Rep và Heat nhưng giữ quyền tự do không chịu sự sai khiến của bất kỳ Finger nào.
+    * Hủy bỏ việc cưỡng chế sự kiện Finger ngay năm đầu gia nhập Syndicate trong `yearPlanner.js` và `weaverAI.js`. Sự kiện chỉ kích hoạt khi nhân vật thực sự tạo dựng được tiếng tăm hoặc hiểm họa trong thế giới ngầm (`merit >= 10 || rep >= 18 || heat >= 20 || age >= 22`).
+  * **Hạ nhiệt bộ điều phối sự kiện (`src/engine/director.js`):**
+    * Giảm trọng số thiên vị từ `2.3x / 2.1x / 1.9x` xuống mức tinh tế `1.35x / 1.25x / 1.2x`.
+    * Chỉ kích hoạt thiên vị khi nhân vật đã có vị thế hoặc mạng lưới quan hệ thực tế (`network >= 12 || rep >= 12 || heat >= 15`), chuyển hóa văn phong lý do sang góc nhìn thế giới ("Tin tức về một ủy thác phù hợp với bạn", "Tiếng tăm mở ra cơ hội việc làm mới").
+  * **Chuyển đổi Kế hoạch năm sang ngôn ngữ đời sống (`src/engine/annualPlan.js`):**
+    * Loại bỏ các câu chữ game hóa như "+2% cơ hội thăng cấp", "Vươn lên trong tổ chức".
+    * Thay bằng các hoạt động và tham vọng bám rễ vào đời sống thực tế của cư dân Đô Thị:
+      * *Rèn giũa kỹ năng:* Mài sắc vũ khí và phản xạ sinh tồn, sẵn sàng khi có cơ hội sát hạch.
+      * *Lao động mưu sinh:* Đổi mồ hôi lấy tiền trọ và chi phí sinh hoạt thường niên.
+      * *Nghỉ ngơi dưỡng thần:* Đóng chặt cửa sau giờ giới nghiêm 3:13 AM để hàn gắn tâm trí.
+      * *Tham vọng đời người:* Gầy dựng vị thế vững chắc, tích lũy tài sản phòng thân (tránh bị đuổi ra đường), tồn tại qua giông bão Đô Thị (sống đến 70 tuổi), rời bỏ Bức Tường về Outskirts.
+  * **Tinh chỉnh giao diện theo chuẩn design-taste-frontend & hallmark (`LiveStageFeed.jsx`):**
+    * Điều chỉnh nhãn hiển thị từ "Mục tiêu hiện tại" sang "Đích ngắm sinh kế" (`Current horizon`), thể hiện sự tích lũy điều kiện tự nhiên thay vì một danh sách nhiệm vụ video game.
+* **Kiểm định toàn vẹn:**
+  * `npm run build` hoàn tất sạch sẽ trong 6.89s.
+  * `voice_lint.mjs --fail` kiểm tra toàn bộ 32.357 chuỗi văn bản: 0 lỗi Han-Viet, 0 emoji, 0 em-dash, 0 dấu chấm than ngoài hội thoại.
+  * `npm test` vượt qua 100% toàn bộ 53/53 bộ kiểm thử hồi quy (bao gồm 500-moment Million Audit với 0 vi phạm logic).
+
 
 
 

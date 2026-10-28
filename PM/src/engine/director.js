@@ -134,24 +134,26 @@ export function directorWeight(entry, char) {
     reason = { vi: 'Thời khắc khảo thí đỉnh cao', en: 'A crucible of pinnacle ascension' };
   }
 
-  // Career Goal-Seeking Utility AI: weights events according to active promotion goals
+  // Organic Career Progression Utility: gently weights events when character has established presence
   try {
     const milestone = getNextCareerMilestone(char);
-    if (milestone && milestone.progressPct < 100) {
+    const hasStanding = char.job && char.job !== 'Child' && char.job !== 'Outcast' &&
+      ((char.stats?.network || 0) >= 12 || (char.stats?.rep || 0) >= 12 || (char.heat || 0) >= 15 || (char.fixerGrade && char.fixerGrade <= 8));
+    if (milestone && milestone.progressPct < 100 && hasStanding) {
       const unmet = milestone.requirements.filter((r) => !r.met);
       const needsMerit = unmet.some((r) => r.labelEn?.includes('Merit'));
       const needsRep = unmet.some((r) => r.labelEn?.includes('Rep'));
       const needsWealth = unmet.some((r) => r.labelEn?.includes('Wealth') || r.labelEn?.includes('Ahn'));
 
       if (needsMerit && (tags.includes('combat') || tags.includes('contract') || tags.includes('merit') || entry.id?.includes('contract') || entry.id?.includes('brawl'))) {
-        w *= 2.3;
-        reason = reason || { vi: 'Cơ hội lập công thăng tiến', en: 'Opportunity to earn promotion merit' };
+        w *= 1.35;
+        reason = reason || { vi: 'Tin tức về một ủy thác phù hợp với bạn', en: 'News of a commission matching your standing' };
       } else if (needsRep && (tags.includes('rep') || tags.includes('public') || tags.includes('heroic') || tags.includes('fame'))) {
-        w *= 2.1;
-        reason = reason || { vi: 'Tạo dựng danh tiếng trong khu vực', en: 'Building reputation across the District' };
+        w *= 1.25;
+        reason = reason || { vi: 'Tiếng tăm mở ra cơ hội việc làm mới', en: 'Reputation opens a new opportunity' };
       } else if (needsWealth && (tags.includes('money') || tags.includes('deal') || tags.includes('lucrative') || tags.includes('work'))) {
-        w *= 1.9;
-        reason = reason || { vi: 'Kiếm Ahn cho mục tiêu tiếp theo', en: 'Scraping Ahn for your next ambition' };
+        w *= 1.2;
+        reason = reason || { vi: 'Cơ hội kiếm thêm Ahn từ mối làm ăn kín', en: 'Chance to earn extra Ahn from a discreet deal' };
       }
     }
   } catch (err) {

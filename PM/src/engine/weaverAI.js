@@ -513,7 +513,8 @@ export function selectEventWithWeaverAI({
     chooseFingerEv &&
     char.job === 'Syndicate' &&
     !char.finger &&
-    !char.seenEvents.includes('syn_choose_finger_allegiance')
+    !char.seenEvents.includes('syn_choose_finger_allegiance') &&
+    ((char.merit || 0) >= 10 || (char.stats?.rep || 0) >= 18 || (char.heat || 0) >= 20 || char.age >= 22)
   ) {
     const logEntry = {
       age: char.age,

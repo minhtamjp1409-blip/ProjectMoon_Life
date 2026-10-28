@@ -5,18 +5,18 @@ export const YEAR_PLAN_POINTS = 3;
 export { APEX_DIRECTIVES, isApexCommander };
 
 export const YEAR_ACTIVITIES = [
-  { id: 'train', vi: 'Luyện tập', en: 'Train', effectVi: '+2% cơ hội thăng cấp/điểm (dồn 2 điểm: -2 HP; dồn 3 điểm: -4 HP)', effectEn: '+2% promotion chance per point (2 pts: -2 HP; 3 pts: -4 HP)' },
-  { id: 'work', vi: 'Kiếm sống', en: 'Earn', effectVi: '+2 Ahn/điểm (dồn 2 điểm: -3 SP; dồn 3 điểm: -6 SP kiệt sức)', effectEn: '+2 Ahn per point (2 pts: -3 SP; 3 pts: -6 SP burnout)' },
-  { id: 'bond', vi: 'Gắn bó', en: 'Connect', effectVi: '+2 Quan hệ mỗi điểm', effectEn: '+2 Network per point' },
-  { id: 'rest', vi: 'Nghỉ ngơi', en: 'Rest', effectVi: '+3 SP mỗi điểm', effectEn: '+3 SP per point' },
-  { id: 'scheme', vi: 'Mưu tính', en: 'Scheme', effectVi: '-2 Heat, +2 Leverage/điểm (dồn 2 điểm: -2 Bond; dồn 3 điểm: -4 Bond, +2 Heat)', effectEn: '-2 Heat, +2 Leverage per point (2 pts: -2 Bond; 3 pts: -4 Bond, +2 Heat)' }
+  { id: 'train', vi: 'Rèn giũa kỹ năng', en: 'Hone skills', effectVi: 'Mài sắc vũ khí và phản xạ: nâng cao tỷ lệ sống sót, tăng cơ hội được để mắt trong các kỳ sát hạch (dồn 2 điểm: -2 HP; dồn 3 điểm: -4 HP chấn thương cơ bắp)', effectEn: 'Sharpen weapons and reflexes: improves survivability, catches eyes during promotion exams (2 pts: -2 HP; 3 pts: -4 HP muscle strain)' },
+  { id: 'work', vi: 'Lao động mưu sinh', en: 'Scrape a living', effectVi: 'Đổi mồ hôi lấy tiền trọ và sinh hoạt: +2 Ahn/điểm (dồn 2 điểm: -3 SP; dồn 3 điểm: -6 SP kiệt sức)', effectEn: 'Sweat for rent and sustenance: +2 Ahn per point (2 pts: -3 SP; 3 pts: -6 SP burnout)' },
+  { id: 'bond', vi: 'Móc nối quan hệ', en: 'Build ties', effectVi: 'Tạo dựng chỗ đứng và lòng tin với người xung quanh: +2 Quan hệ mỗi điểm', effectEn: 'Build standing and trust with those around you: +2 Network per point' },
+  { id: 'rest', vi: 'Nghỉ ngơi dưỡng thần', en: 'Rest & recuperate', effectVi: 'Đóng chặt cửa sau giờ giới nghiêm, hàn gắn tâm trí: +3 SP mỗi điểm', effectEn: 'Bar the door after curfew, mend your mind: +3 SP per point' },
+  { id: 'scheme', vi: 'Mưu tính luồn lách', en: 'Underground schemes', effectVi: 'Xóa dấu vết, tìm kiếm đòn bẩy quyền lực từ bóng tối: -2 Heat, +2 Đòn bẩy/điểm (dồn 2 điểm: -2 Gắn kết; dồn 3 điểm: -4 Gắn kết, +2 Heat)', effectEn: 'Cover tracks, seek leverage in the shadows: -2 Heat, +2 Leverage per point (2 pts: -2 Bond; 3 pts: -4 Bond, +2 Heat)' }
 ];
 
 export const AMBITIONS = [
-  { id: 'rank', vi: 'Vươn lên trong tổ chức', en: 'Rise through the ranks', detailVi: 'Đạt cấp cao nhất trên con đường đang đi.', detailEn: 'Reach the highest rank on your path.' },
-  { id: 'fortune', vi: 'Tích lũy gia sản', en: 'Build a fortune', detailVi: 'Sở hữu ít nhất 80 Ahn.', detailEn: 'Hold at least 80 Ahn.' },
-  { id: 'survive', vi: 'Sống qua The City', en: 'Outlive the City', detailVi: 'Sống đến 70 tuổi.', detailEn: 'Live to age 70.' },
-  { id: 'outskirts', vi: 'Đến Outskirts', en: 'Reach the Outskirts', detailVi: 'Đặt chân tới Outskirts.', detailEn: 'Set foot in the Outskirts.' }
+  { id: 'rank', vi: 'Gầy dựng vị thế vững chắc', en: 'Carve out an unshakeable station', detailVi: 'Leo lên nấc thang cao nhất trên con đường đã chọn trong The City.', detailEn: 'Climb to the highest rung on your chosen path in the City.' },
+  { id: 'fortune', vi: 'Tích lũy tài sản phòng thân', en: 'Secure family savings', detailVi: 'Tích trữ ít nhất 80 Ahn để không bao giờ bị đuổi ra đường hay rơi vào cảnh bần cùng.', detailEn: 'Accumulate at least 80 Ahn to never face eviction or destitute ruin.' },
+  { id: 'survive', vi: 'Tồn tại qua giông bão Đô Thị', en: 'Outlive the City', detailVi: 'Bảo toàn mạng sống đến tuổi 70 giữa chốn Backstreets tàn khốc.', detailEn: 'Survive to age 70 amidst the brutal Backstreets.' },
+  { id: 'outskirts', vi: 'Rời bỏ Bức Tường về Outskirts', en: 'Exile beyond the Wall', detailVi: 'Thoát khỏi sự ngột ngạt của các Corp, tìm về vùng đất hoang tàn tự do.', detailEn: 'Escape corporate suffocation, seeking the free wasteland.' }
 ];
 
 const inOutskirts = (char) => String(char?.regionId || '').toLowerCase().includes('outskirts') || Boolean(char?.flags?.includes('OutskirtsExile'));

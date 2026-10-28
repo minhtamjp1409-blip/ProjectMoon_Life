@@ -101,8 +101,8 @@ export const FACTION_EVENTS = [
     weight: 95,
     jobs: ['Syndicate'],
     forbids: ['SwornFinger'],
-    vi: "[Chọn một Finger] Năm sứ giả ngồi quanh chiếc bàn dưới Backstreets. Mỗi người đưa ra một luật để sống theo và một giá phải trả khi phá luật. Họ chờ bạn chọn nơi sẽ nhận mình.",
-    en: '[Choosing a Finger] In a basement under the Backstreets, emissaries of the Fingers are recruiting. Once you are in, you never leave, and each Finger enforces its own iron law.',
+    vi: "[Tối hậu thư từ Five Fingers] Tiếng tăm và những phi vụ máu me của bạn ở Backstreets đã lọt vào tai các tổ chức cấp cao. Người môi giới ngầm dẫn bạn đến điểm hẹn kín, nơi các nhánh trực thuộc của các Finger gửi tối hậu thư yêu cầu băng đảng của bạn chọn một ngọn cờ để quy phục hoặc bị nghiền nát.",
+    en: "[Summons of the Five Fingers] Your notoriety and bloody work in the Backstreets have caught the attention of high syndicates. An underworld broker brings an ultimatum: your crew must swear allegiance to a Finger banner or be crushed as rogue vermin.",
     choices: [
       {
         labelVi: 'The Thumb: kỷ luật và tôn ti',
@@ -164,6 +164,15 @@ export const FACTION_EVENTS = [
         recordsAdd: ['finger_initiate'],
         effects: { wealth: +16, heat: +10, sanity: -8 },
         meritAdd: 12
+      },
+      {
+        labelVi: 'Từ chối mọi phe phái: Giữ băng nhóm độc lập, chấp nhận đối đầu các thế lực lớn',
+        labelEn: 'Refuse all allegiance: Keep your crew independent and face pressure from all sides',
+        resultVi: 'Bạn đập bàn từ chối ký vào bất kỳ bản giao kèo nào. Người môi giới lắc đầu lạnh ngắt: "Một con chó hoang từ chối vòng xích sẽ phải tự liếm máu của mình." Bạn giữ được tự do, nhưng từ nay các ngõ ngách trở nên nguy hiểm gấp bội.',
+        resultEn: 'You slammed your fist on the table, refusing every pact. The broker gave a chilled shake of his head: “A stray dog refusing a collar must lick its own blood.” You kept your freedom, but every Backstreets corner just became twice as lethal.',
+        flagsAdd: ['IndependentSyndicate'],
+        effects: { rep: +16, heat: +24, sanity: -10, health: -6 },
+        meritAdd: 6
       }
     ]
   },

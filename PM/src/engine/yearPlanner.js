@@ -354,7 +354,7 @@ function majorIsDue(char, rng) {
     if (nextPromo && nextPromo.isEligible) return true;
   }
   if ((reachedCareerAge(char) && char.job === 'Child') && !(char.seenEvents || []).includes('ad_career_crossroad_18')) return true;
-  if (char.job === 'Syndicate' && !char.finger && !(char.seenEvents || []).includes('syn_choose_finger_allegiance')) return true;
+  if (char.job === 'Syndicate' && !char.finger && !(char.seenEvents || []).includes('syn_choose_finger_allegiance') && ((char.merit || 0) >= 10 || (char.stats?.rep || 0) >= 18 || (char.heat || 0) >= 20 || char.age >= 22)) return true;
   if ((w.pendingThreads || []).some((th) => th.kind !== 'minor' && !th.fulfilled && char.age >= th.triggerAge)) return true;
   if (rollEgoEncounter(char, rng) && !(char.seenEvents || []).includes('ego_carmen_crossroad') && !char.flags.includes('EGOAwakened') && !char.flags.includes('Distorted')) return true;
   if ((char.job === 'Fixer' || char.job === 'Color Fixer') && !char.flags.includes('Distorted') && checkColorFixerReadiness(char).ready && !char.flags.includes('ColorFixer') && colorTrialAvailable(char)) return true;
@@ -438,7 +438,8 @@ export function planYear(charState, rng) {
     if (!(char.seenEvents || []).includes(careerEventId) && !scheduledKey.some((it) => it.forcedEventId === careerEventId)) {
       scheduledKey.push({ kind: 'major', forcedEventId: careerEventId });
     }
-  } else if (char.job === 'Syndicate' && !char.finger && !(char.seenEvents || []).includes('syn_choose_finger_allegiance')) {
+  } else if (char.job === 'Syndicate' && !char.finger && !(char.seenEvents || []).includes('syn_choose_finger_allegiance') &&
+             ((char.merit || 0) >= 10 || (char.stats?.rep || 0) >= 18 || (char.heat || 0) >= 20 || char.age >= 22)) {
     if (!scheduledKey.some((it) => it.forcedEventId === 'syn_choose_finger_allegiance')) {
       scheduledKey.push({ kind: 'major', forcedEventId: 'syn_choose_finger_allegiance' });
     }

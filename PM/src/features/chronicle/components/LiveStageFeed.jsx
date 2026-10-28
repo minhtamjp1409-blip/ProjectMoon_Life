@@ -1374,7 +1374,7 @@ export const LiveStageFeed = () => {
               {currentMilestone && currentMilestone.category !== 'WORKSHOP' ? (
                 <div className="horizon-milestone-preview">
                   <div className="horizon-milestone-title-row">
-                    <span className="horizon-milestone-label">{t('Mục tiêu hiện tại:', 'Current pursuit:')}</span>
+                    <span className="horizon-milestone-label">{t('Đích ngắm sinh kế:', 'Current horizon:')}</span>
                     <b className="horizon-milestone-title">{lang === 'en' ? currentMilestone.titleEn : currentMilestone.titleVi}</b>
                     <span className="horizon-milestone-pct num">{currentMilestone.progressPct}%</span>
                   </div>
