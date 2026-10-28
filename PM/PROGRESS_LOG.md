@@ -1,6 +1,6 @@
 # The City Chronicles: Tài Liệu Tiến Trình & Kiến Trúc Kỹ Thuật Toàn Diện
 
-> **Cập nhật ghi chép: 28/10/2026 (Đợt 81: Cải tổ căn bản cơ chế hướng nghiệp từ Menu chọn Tuyến sang Sinh tồn Đô Thị đích thực; tháo dỡ định kiến đạo diễn, đa dạng hóa Syndicate độc lập và chuyển đổi Kế hoạch năm sang ngôn ngữ đời sống)**
+> **Cập nhật ghi chép: 28/10/2026 (Đợt 82: Khắc phục triệt để các lỗ hổng logic hướng nghiệp theo phản hồi kiểm toán: tách biệt hồ sơ Syndicate độc lập khỏi The Thumb, bổ sung nhánh vay nợ nộp phí Hana, phân định bản ghi finger_initiate và gỡ bỏ ép Finger ở tuổi 22)**
 > **Phân biệt rõ số liệu kiểm thử tự động & số liệu mô phỏng 500 đời hiện hành (Đợt 69):**
 > - **Đã xác minh tự động bằng bộ test (`npm test`):** Toàn bộ **53/53 test suites** đạt 100%, parity cổng thăng tiến FE/BE khớp tuyệt đối, `lint_story.mjs` (745 major, 43 consequence, 866 minor, 572 daily, 36 contract) & `voice_lint.mjs --fail` (**32.337 chuỗi**) đạt 0 lỗi / 0 cảnh báo, `run_million_audit.mjs 500` (500 khoảnh khắc) đạt 5/5 nhóm quy tắc toàn vẹn, `npm run build` hoàn tất sạch bóng.
 > - **Đã đo mới trên codebase hiện tại qua mô phỏng 500 cuộc đời đầy đủ (Đợt 69):** `story_logic_audit.mjs 500 random` (**80.338 khoảnh khắc**, 500 đời, **0 vi phạm logic**, entropy `83.1%`), `balance_sim.mjs 500 random` (13.208 năm sống, phân bổ nghề: Fixer `31.0%`, Wing `29.9%`, Syndicate `31.9%`, Distortion `5.4%`), `balance_sim.mjs 500 focused` (21.749 năm sống, tuổi thọ TB `42.6`, đạt Color Fixer `9.6%` ở tuổi TB `55.4`, thức tỉnh E.G.O `12.6%` ở tuổi TB `45.5`), và `branch_experience.mjs 500` (tuổi thọ Distortion tăng vọt từ `3.8` lên **`11.3` năm/đời**, đại sự kiện trải nghiệm từ `16` lên **`40`**).
@@ -1781,6 +1781,35 @@ Chủ dự án yêu cầu làm lại toàn bộ giao diện lần nữa: bỏ t�
   * `npm run build` hoàn tất sạch sẽ trong 6.89s.
   * `voice_lint.mjs --fail` kiểm tra toàn bộ 32.357 chuỗi văn bản: 0 lỗi Han-Viet, 0 emoji, 0 em-dash, 0 dấu chấm than ngoài hội thoại.
   * `npm test` vượt qua 100% toàn bộ 53/53 bộ kiểm thử hồi quy (bao gồm 500-moment Million Audit với 0 vi phạm logic).
+
+### Đợt 82 (28/10/2026): Giải quyết triệt để 5 vấn đề logic hướng nghiệp theo kết quả kiểm toán sâu (Audit Feedback Resolution)
+
+* **Giải quyết lỗi logic hiển thị mục tiêu The Thumb cho Syndicate độc lập (`src/engine/gameEngine.js`):**
+  * Trong `getNextCareerMilestone(char)`, trước đây nhánh `char.job === 'Syndicate'` lấy giá trị mặc định `char.finger || 'Thumb'`. Do đó, người chơi chưa thề với Finger hoặc chọn `IndependentSyndicate` bị hiển thị nhầm danh hiệu, mục tiêu thăng bậc và nguồn Merit của The Thumb.
+  * Tách biệt hoàn toàn luồng hồ sơ cho Syndicate chưa có Finger / Syndicate độc lập:
+    * Thang cấp bậc riêng: `Kẻ bảo kê đường phố` -> `Đầu gấu khu phố` -> `Đại ca băng đảng tự do` -> `Bá chủ ngõ tối`.
+    * Bộ điều kiện thực tế của thế giới ngầm: `Chiến công Backstreets` (Street Merit), `Danh tiếng hẻm tối` (Street Rep), và `Độ khét tiếng` (Street Heat) thay vì các kỳ khảo hạch mang tính tôn ti của Ngón.
+* **Xử lý triệt để lỗ hổng 0 Ahn đăng ký Fixer bằng nhánh vay nợ ngầm (`src/data/eventsChildhood.js`):**
+  * Trước đây, lời kể nói "dồn hết vốn liếng" để xin cấp thẻ Fixer Grade 9 nhưng không kiểm tra điều kiện tài sản; nhân vật có 0 Ahn vẫn chọn được và chỉ số `wealth: -8` bị chặn ở 0 mà không chịu bất kỳ hệ quả nào.
+  * Tái cấu trúc lựa chọn thành hệ thống phân nhánh kết quả (`outcomes`):
+    * Nếu nhân vật có $\ge 8$ Ahn: Vét sạch 8 Ahn tiền dành dụm nộp lệ phí Hana (`wealth: -8`, `rep: +6`, `network: +4`, `sanity: -6`).
+    * Nếu nhân vật có $< 8$ Ahn: Buộc phải ký giấy vay nợ lãi cao từ tiệm cầm đồ Backstreets để lấy thẻ; ghi nhận cờ `FixerLicenseDebt`, tăng vọt Heat (`+14`) và tổn hao tinh thần (`sanity: -12`), mở ra hậu quả bị đòi nợ về sau.
+* **Tách biệt bản ghi `syndicate_initiate` khỏi `finger_initiate` (`src/data/worldData.js`, `src/data/eventsChildhood.js`):**
+  * Bổ sung bản ghi thành tựu `syndicate_initiate` ("Bước chân vào ngõ tối") trong `worldData.js` cho việc bắt đầu làm chân đòi nợ / bảo kê của băng đảng địa phương.
+  * Bản ghi `finger_initiate` ("Thề với một Finger") được bảo lưu chính xác, chỉ cấp khi nhân vật thực sự tuyên thệ với một trong 5 Finger trong `syn_choose_finger_allegiance`.
+* **Gỡ bỏ cưỡng chế Finger ở tuổi 22 & Bổ sung sự kiện riêng cho Syndicate độc lập (`src/engine/yearPlanner.js`, `src/engine/weaverAI.js`, `src/data/eventsFactions.js`):**
+  * Loại bỏ điều kiện ép buộc `char.age >= 22` trong `yearPlanner.js` và `weaverAI.js`. Một thành viên Syndicate giữ lối sống bình lặng, ít Heat/Rep sẽ không bao giờ bị cưỡng chế triệu tập.
+  * Bổ sung 2 sự kiện lớn chuyên biệt cho cờ `IndependentSyndicate`:
+    * `syn_indie_territory_defense`: Chiến tranh giữ đất trước áp lực thâu tóm của các nhánh tay sai Finger (tử thủ hẻm tối hoặc dùng Ahn đút lót người trung gian).
+    * `syn_indie_black_market_extortion`: Khai thác lợi thế không phải trích nộp phần trăm cho các Ngón bằng việc bảo kê chợ đen và xưởng ngầm địa phương.
+* **Đồng bộ hóa mô tả Kế hoạch năm với cơ chế thực tế (`src/engine/annualPlan.js`):**
+  * Sửa đổi mô tả `train` ("Rèn giũa kỹ năng") để khớp chính xác với hiệu ứng code (+2% tỷ lệ đậu khảo hạch thăng bậc mỗi điểm, dồn điểm gây quá tải cơ bắp trừ HP), loại bỏ hoàn toàn các tuyên bố sai lệch về khả năng sống sót.
+  * Giảm độ can thiệp của tham vọng `rank`, `fortune`, `survive` trong `ambitionWeight` từ 1.25–1.35 xuống mức tinh tế 1.15–1.20.
+* **Kiểm định toàn vẹn:**
+  * `voice_lint.mjs --fail`: Quét toàn bộ **32.386 chuỗi văn bản**, 0 lỗi / 0 cảnh báo.
+  * `npm run build`: Đóng gói thành công trong 6.89s.
+  * `npm test`: Đạt **100% 53/53 test suites** và **500 khoảnh khắc Million Audit** (0 vi phạm logic).
+
 
 
 

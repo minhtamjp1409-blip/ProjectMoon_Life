@@ -442,13 +442,27 @@ export const CHILDHOOD_EVENTS = [
       {
         labelVi: "Dồn hết vốn liếng xin cấp thẻ Fixer Grade 9 tại quầy Hana Association",
         labelEn: "Scrape together savings to apply for a Grade 9 Fixer license at the Hana desk",
-        resultVi: "Bạn nộp hết số tiền ít ỏi để trả lệ phí thi và cấp thẻ. Thư ký Hana lạnh lùng đóng dấu, đưa tấm thẻ đồng thau cọc cạch: \"Cố mà giữ mạng qua năm đầu.\" Không ai cho bạn tiền, bạn bắt đầu từ con số không dưới đáy chuỗi thức ăn.",
-        resultEn: "You handed over your meager savings for the licensing fee. The Hana clerk stamped the paper coldly: “Try to stay alive through your first year.” Nobody gives you Ahn; you start from the very bottom of the food chain.",
         setJob: 'Fixer',
         setFixerGrade: 9,
-        effects: { rep: +6, network: +4, wealth: -8, sanity: -6 },
         recordsAdd: ['fixer_license'],
-        meritAdd: 2
+        meritAdd: 2,
+        outcomes: [
+          {
+            need: { stat: { wealth: [8, 100] } },
+            w: 100,
+            resultVi: "Bạn vét sạch 8 Ahn tiền để dành trả lệ phí sát hạch. Thư ký Hana đóng dấu cộp cộp, đưa tấm thẻ đồng thau cọc cạch: \"Cố mà giữ mạng qua năm đầu.\" Bạn bắt đầu sự nghiệp Fixer từ con số không dưới đáy chuỗi thức ăn.",
+            resultEn: "You paid the 8 Ahn fee from your savings. The Hana clerk stamped the paper coldly: “Try to stay alive through your first year.” You begin your Fixer career from the very bottom of the food chain.",
+            effects: { wealth: -8, rep: +6, network: +4, sanity: -6 }
+          },
+          {
+            need: { stat: { wealth: [0, 7] } },
+            w: 100,
+            resultVi: "Không đủ 8 Ahn trả lệ phí Hana, bạn buộc phải cắn răng ký giấy vay nợ của tiệm cầm đồ Backstreets để lấy tấm thẻ Grade 9. Thư ký Hana trao thẻ, còn sau lưng bạn, những kẻ đòi nợ đã bắt đầu tính lãi từng tuần.",
+            resultEn: "Lacking 8 Ahn for the Hana fee, you had to swallow your pride and sign a loan shark debt in the Backstreets to get the Grade 9 license. The Hana clerk handed over the card, while debt collectors began tracking your interest by the week.",
+            flagsAdd: ['FixerLicenseDebt'],
+            effects: { rep: +6, heat: +14, sanity: -12 }
+          }
+        ]
       },
       {
         labelVi: "Nhận chân đòi nợ và chuyển hàng đêm cho Syndicate địa phương",
@@ -457,7 +471,7 @@ export const CHILDHOOD_EVENTS = [
         resultEn: "A Capo tossed you a rusted knife and a protection money collection ledger. “Collect before curfew, keep your cut.” You had quick cash in hand, but the cost was a spot on the watch list and the stench of iron on your fingers.",
         setJob: 'Syndicate',
         effects: { wealth: +14, rep: +6, heat: +12, sanity: -8 },
-        recordsAdd: ['finger_initiate'],
+        recordsAdd: ['syndicate_initiate'],
         meritAdd: 2
       },
       {

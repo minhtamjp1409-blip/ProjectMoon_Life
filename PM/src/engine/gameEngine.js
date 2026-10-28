@@ -1156,7 +1156,62 @@ export function getNextCareerMilestone(char) {
 
   // 3. Syndicate Career
   if (char.job === 'Syndicate') {
-    const finger = char.finger || 'Thumb';
+    if (!char.finger) {
+      const isIndependent = char.flags?.includes('IndependentSyndicate');
+      const rank = char.syndicateRank || 0;
+      const INDIE_RANKS = [
+        { vi: 'Kẻ bảo kê đường phố', en: 'Street Enforcer' },
+        { vi: 'Đầu gấu khu phố', en: 'Turf Lieutenant' },
+        { vi: 'Đại ca băng đảng tự do', en: 'Independent Syndicate Boss' },
+        { vi: 'Bá chủ ngõ tối', en: 'Underground Kingpin' }
+      ];
+      const curTitle = INDIE_RANKS[Math.min(rank, INDIE_RANKS.length - 1)];
+      const nextRank = rank + 1;
+      if (nextRank >= INDIE_RANKS.length) {
+        return {
+          category: 'INDEPENDENT SYNDICATE HEGEMONY',
+          titleVi: `Bá chủ hẻm tối: ${curTitle.vi}`,
+          titleEn: `Alley Hegemony: ${curTitle.en}`,
+          progressPct: 100,
+          requirements: [
+            { labelVi: 'Chiến công Backstreets', labelEn: 'Street Merit', current: char.merit || 0, target: 80, met: true, sources: ['Bảo vệ địa bàn', 'Chiến tranh băng đảng'] }
+          ],
+          tipVi: 'Băng đảng của bạn kiểm soát hoàn toàn khu vực ngầm mà không cần cúi đầu trước bất kỳ Ngón Tay nào.',
+          tipEn: 'Your syndicate firmly commands the underground turf without bowing to any Finger.'
+        };
+      }
+      const nextTitle = INDIE_RANKS[nextRank];
+      const targetMerit = [0, 20, 50, 90][nextRank];
+      const targetRep = [0, 20, 45, 75][nextRank];
+      const targetHeat = [0, 15, 30, 50][nextRank];
+      const curMerit = char.merit || 0;
+      const curRep = char.stats?.rep || 0;
+      const curHeat = char.heat || 0;
+      const meritPct = Math.min(100, (curMerit / targetMerit) * 100);
+      const repPct = Math.min(100, (curRep / targetRep) * 100);
+      const heatPct = Math.min(100, (curHeat / targetHeat) * 100);
+      const progressPct = Math.round((meritPct + repPct + heatPct) / 3);
+
+      return {
+        category: isIndependent ? 'INDEPENDENT SYNDICATE' : 'LOCAL STREET SYNDICATE',
+        titleVi: `Vị thế: ${nextTitle.vi}`,
+        titleEn: `Station: ${nextTitle.en}`,
+        progressPct,
+        requirements: [
+          { labelVi: 'Chiến công Backstreets', labelEn: 'Street Merit', current: curMerit, target: targetMerit, met: curMerit >= targetMerit, sources: ['Đòi nợ ngầm', 'Hỗn chiến bảo kê'] },
+          { labelVi: 'Danh tiếng hẻm tối', labelEn: 'Street Rep', current: curRep, target: targetRep, met: curRep >= targetRep, sources: ['Thanh toán đối thủ', 'Mở rộng địa bàn'] },
+          { labelVi: 'Độ khét tiếng (Heat)', labelEn: 'Street Heat', current: curHeat, target: targetHeat, met: curHeat >= targetHeat, sources: ['Đụng độ gác đêm', 'Chống lại áp lực thâu tóm'] }
+        ],
+        tipVi: isIndependent
+          ? 'Băng đảng độc lập tự chủ địa bàn, không đóng thuế cho Finger nhưng phải tự chịu áp lực truy quét và thanh trừng.'
+          : 'Băng nhóm đường phố địa phương. Khi danh tiếng và chiến công đủ lớn, các đại tổ chức sẽ gửi tối hậu thư.',
+        tipEn: isIndependent
+          ? 'An independent crew holds its own turf, paying no tribute to Fingers but facing constant raids and assimilation pressure.'
+          : 'A local street crew. When your reputation and merit grow enough, major syndicates will send an ultimatum.'
+      };
+    }
+
+    const finger = char.finger;
     const ladder = FINGER_RANKS[finger] || FINGER_RANKS.Thumb;
     const currentRank = char.fingerRank || 0;
 

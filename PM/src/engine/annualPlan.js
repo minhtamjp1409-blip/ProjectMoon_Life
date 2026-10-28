@@ -5,7 +5,7 @@ export const YEAR_PLAN_POINTS = 3;
 export { APEX_DIRECTIVES, isApexCommander };
 
 export const YEAR_ACTIVITIES = [
-  { id: 'train', vi: 'Rèn giũa kỹ năng', en: 'Hone skills', effectVi: 'Mài sắc vũ khí và phản xạ: nâng cao tỷ lệ sống sót, tăng cơ hội được để mắt trong các kỳ sát hạch (dồn 2 điểm: -2 HP; dồn 3 điểm: -4 HP chấn thương cơ bắp)', effectEn: 'Sharpen weapons and reflexes: improves survivability, catches eyes during promotion exams (2 pts: -2 HP; 3 pts: -4 HP muscle strain)' },
+  { id: 'train', vi: 'Rèn giũa kỹ năng', en: 'Hone skills', effectVi: 'Tập trung luyện thế kiếm và quy chuẩn tác chiến: +2% tỷ lệ đậu khảo hạch thăng bậc mỗi điểm (dồn 2 điểm: -2 HP; dồn 3 điểm: -4 HP quá tải cơ bắp)', effectEn: 'Focus on combat drills and protocols: +2% promotion exam pass rate per point (2 pts: -2 HP; 3 pts: -4 HP physical overstrain)' },
   { id: 'work', vi: 'Lao động mưu sinh', en: 'Scrape a living', effectVi: 'Đổi mồ hôi lấy tiền trọ và sinh hoạt: +2 Ahn/điểm (dồn 2 điểm: -3 SP; dồn 3 điểm: -6 SP kiệt sức)', effectEn: 'Sweat for rent and sustenance: +2 Ahn per point (2 pts: -3 SP; 3 pts: -6 SP burnout)' },
   { id: 'bond', vi: 'Móc nối quan hệ', en: 'Build ties', effectVi: 'Tạo dựng chỗ đứng và lòng tin với người xung quanh: +2 Quan hệ mỗi điểm', effectEn: 'Build standing and trust with those around you: +2 Network per point' },
   { id: 'rest', vi: 'Nghỉ ngơi dưỡng thần', en: 'Rest & recuperate', effectVi: 'Đóng chặt cửa sau giờ giới nghiêm, hàn gắn tâm trí: +3 SP mỗi điểm', effectEn: 'Bar the door after curfew, mend your mind: +3 SP per point' },
@@ -219,9 +219,9 @@ export function ambitionWeight(event, ambitionId) {
   if (!ambitionId) return 1;
   const effects = (event?.choices || []).flatMap((choice) => [choice.fx || choice.effects || {}, ...(choice.out || choice.outcomes || []).map((outcome) => outcome.fx || outcome.effects || {})]);
   const hasGain = (key) => effects.some((fx) => (fx[key] || 0) > 0);
-  if (ambitionId === 'rank' && (hasGain('merit') || hasGain('rep'))) return 1.25;
-  if (ambitionId === 'fortune' && hasGain('wealth')) return 1.25;
-  if (ambitionId === 'survive' && (hasGain('health') || hasGain('sanity'))) return 1.2;
-  if (ambitionId === 'outskirts' && (event.id?.includes('outskirts') || event.need?.regionId?.includes?.('outskirts'))) return 1.35;
+  if (ambitionId === 'rank' && (hasGain('merit') || hasGain('rep'))) return 1.15;
+  if (ambitionId === 'fortune' && hasGain('wealth')) return 1.15;
+  if (ambitionId === 'survive' && (hasGain('health') || hasGain('sanity'))) return 1.15;
+  if (ambitionId === 'outskirts' && (event.id?.includes('outskirts') || event.need?.regionId?.includes?.('outskirts'))) return 1.2;
   return 1;
 }

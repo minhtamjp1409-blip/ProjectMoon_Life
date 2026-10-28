@@ -177,6 +177,64 @@ export const FACTION_EVENTS = [
     ]
   },
   {
+    id: 'syn_indie_territory_defense',
+    age: [18, 65],
+    major: true,
+    weight: 18,
+    jobs: ['Syndicate'],
+    need: { flags: ['IndependentSyndicate'] },
+    forbids: ['SwornFinger'],
+    vi: "[Chiến tranh giữ đất] Một phân nhánh của Finger gửi côn đồ tới phong tỏa đầu ngõ, yêu cầu băng đảng tự do của bạn nộp ba phần mười tiền thu hàng tháng nếu không muốn bị san phẳng. Đàn em nhìn về phía bạn chờ lệnh.",
+    en: "[Turf defense war] A Finger subordinate crew barricaded the alley entrance, demanding thirty percent of your monthly protection earnings or threatened total annihilation. Your crew looks to you for the call.",
+    choices: [
+      {
+        labelVi: "Dẫn đầu đàn em cầm dao tử thủ ngõ ngách",
+        labelEn: "Lead your crew to hold the alleys with cold steel",
+        resultVi: "Một trận hỗn chiến nổ ra trong hẻm tối trước khi còi báo Sweeper vang lên. Băng của bạn đẩy lùi được đám tay sai, giữ vững thanh danh một tổ chức không chịu cúi đầu, dù vài người anh em phải khâu vết thương trong bóng tối.",
+        resultEn: "A brutal clash broke out in the dark alleys before the Sweeper siren wailed. Your crew repelled the invaders, cementing your reputation as an unbroken independent outfit, though several comrades had to sew up wounds in the dark.",
+        effects: { rep: +16, heat: +18, health: -12, sanity: -6 },
+        meritAdd: 14
+      },
+      {
+        labelVi: "Dùng Ahn và quan hệ ngầm đút lót người trung gian",
+        labelEn: "Bribe underworld intermediaries with Ahn and favors",
+        resultVi: "Bạn chi ra một món tiền lớn để người trung gian rỉ tai tên đội trưởng bên kia. Cuộc tấn công bị hoãn lại vô thời hạn, đổi lại ví tiền của băng hao hụt đáng kể.",
+        resultEn: "You shelled out a hefty sum to have an intermediary whisper in the enemy captain's ear. The raid was postponed indefinitely, at the cost of your crew's coffers.",
+        effects: { wealth: -16, heat: -10, sanity: -4 },
+        meritAdd: 4
+      }
+    ]
+  },
+  {
+    id: 'syn_indie_black_market_extortion',
+    age: [18, 65],
+    major: true,
+    weight: 16,
+    jobs: ['Syndicate'],
+    need: { flags: ['IndependentSyndicate'] },
+    forbids: ['SwornFinger'],
+    vi: "[Bảo kê chợ đen độc lập] Không phải trích nộp phần trăm cho các Finger bề trên, toàn bộ tiền bảo kê từ các sòng bạc ngầm và tiệm thuốc chui trong khu vực đều chảy thẳng vào túi băng của bạn. Một chủ xưởng lén đề nghị trả thêm Ahn để bạn dẹp yên một nhóm Fixer tọc mạch.",
+    en: "[Independent black market tribute] Free from paying tribute to the high Fingers, all protection fees from back-alley gambling dens and unlicensed clinics flow directly into your crew's lockbox. A workshop proprietor quietly offers extra Ahn to silence a snooping Fixer.",
+    choices: [
+      {
+        labelVi: "Đe dọa nhóm Fixer, bảo vệ hoạt động làm ăn của tiệm xưởng",
+        labelEn: "Intimidate the snooping Fixers and protect the clinic's trade",
+        resultVi: "Bạn chặn đầu tay Fixer ngoài ngõ, cho hắn thấy số lượng áp đảo của băng đảng tự do. Hắn hiểu chuyện và rời đi. Chủ xưởng vui vẻ trao đủ số Ahn đã hứa kèm lời cảm kích.",
+        resultEn: "You cornered the Fixer at the alley head, displaying your crew's sheer numbers. He took the hint and backed off. The clinic owner gratefully paid the promised Ahn with nods of respect.",
+        effects: { wealth: +22, rep: +12, heat: +8, sanity: -4 },
+        meritAdd: 10
+      },
+      {
+        labelVi: "Giữ đúng giới hạn bảo kê, từ chối can thiệp vào công việc của Fixer",
+        labelEn: "Keep to strict boundaries, refusing to tangle with Fixers",
+        resultVi: "Bạn chỉ thu đúng mức phí an ninh thường kỳ và từ chối nhúng tay vào việc thanh trừng Fixer. Tránh được việc bị Hiệp hội chú ý, nhưng uy thế của băng có phần chững lại.",
+        resultEn: "You collected only the standard security fee and declined to meddle in Fixer matters. You avoided Hana's radar, though your crew's street posture softened somewhat.",
+        effects: { wealth: +10, rep: +4, sanity: +6, heat: -6 },
+        meritAdd: 4
+      }
+    ]
+  },
+  {
     id: 'syn_thumb_tongue_etiquette',
     age: [20, 50],
     major: true,
