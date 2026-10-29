@@ -57,6 +57,7 @@ export const BirthSetupPanel = () => {
   }, [savedRun, pendingLegacy, activeTab]);
   const [spinning, setSpinning] = useState(false);
   const [search, setSearch] = useState('');
+  const [showWorldGuide, setShowWorldGuide] = useState(false);
   const [isWheelSpinning, setIsWheelSpinning] = useState(false);
   const [atlasViewport, setAtlasViewport] = useState(ATLAS_VIEW);
   const [displayRegion, setDisplayRegion] = useState(null);
@@ -68,6 +69,11 @@ export const BirthSetupPanel = () => {
   const rafRef = useRef(0);
 
   useEffect(() => () => cancelAnimationFrame(rafRef.current), []);
+
+  const openWorldGuide = () => {
+    setShowWorldGuide(true);
+    setTimeout(() => mapRef.current?.scrollIntoView({ behavior: reducedMotion() ? 'instant' : 'smooth' }), 0);
+  };
 
   // The atlas locates the birthplace before the existing registration overlay opens.
   const spinTo = (target, { duration = 1500 } = {}) =>
@@ -219,15 +225,7 @@ export const BirthSetupPanel = () => {
                         'Let The City decide, or choose your own District.'
                       )}
                 </p>
-                <button
-                  onClick={() =>
-                    mapRef.current?.scrollIntoView({
-                      behavior: reducedMotion()
-                        ? 'instant'
-                        : 'smooth'
-                    })
-                  }
-                >
+                <button type="button" onClick={openWorldGuide}>
                   {t('Xem các District', 'Explore the Districts')}{' '}
                   <ArrowUpRight size={14} aria-hidden="true" />
                 </button>
@@ -474,17 +472,15 @@ export const BirthSetupPanel = () => {
                   </div>
                   <p className="field-hint">{t('Gia cảnh khởi đầu do The City định đoạt. Lời kể vẫn gọi bạn là "bạn".', 'Your starting household is decided by The City. The story still addresses you as "you".')}</p>
                 </div>
-                <div className="field birth-region-field">
+                <details className="birth-advanced">
+                  <summary>{t('Tùy chỉnh nơi sinh và seed', 'Customize birthplace and seed')}<ChevronDown size={15} /></summary>
+                  <div className="field birth-region-field">
                   <label htmlFor="birth-region">
                     {t('Nơi sinh', 'Birthplace')}
                     <button
                       type="button"
                       className="birth-map-link"
-                      onClick={() =>
-                        mapRef.current?.scrollIntoView({
-                          behavior: reducedMotion() ? 'instant' : 'smooth'
-                        })
-                      }
+                      onClick={openWorldGuide}
                     >
                       <MapPin size={13} aria-hidden="true" />
                       <span>{t('Tra cứu bản đồ', 'Explore map')}</span>
@@ -513,7 +509,7 @@ export const BirthSetupPanel = () => {
                       </option>
                     ))}
                   </select>
-                </div>
+                  </div>
                 <details className="birth-seed">
                   <summary>
                     {t('Seed thế giới', 'World seed')}
@@ -537,6 +533,7 @@ export const BirthSetupPanel = () => {
                     </button>
                   </div>
                 </details>
+                </details>
               </div>
               <button
                 className="btn btn-primary btn-lg btn-block hero-start-btn"
@@ -548,7 +545,9 @@ export const BirthSetupPanel = () => {
                 <span>
                   {spinning
                     ? t('Đang mở hồ sơ…', 'Opening your record…')
-                    : t('Đóng dấu & Bước vào The City', 'Sign & Enter The City')}
+                    : region
+                      ? t(`Bắt đầu tại ${region.id === 'OUTSKIRTS' ? 'Outskirts' : `District ${region.ward}`}`, `Begin in ${region.id === 'OUTSKIRTS' ? 'the Outskirts' : `District ${region.ward}`}`)
+                      : t('Bắt đầu đời ngẫu nhiên', 'Begin a random life')}
                 </span>
               </button>
               <p className="birth-footnote">
@@ -592,6 +591,13 @@ export const BirthSetupPanel = () => {
         </button>
       </div>
 
+      {!showWorldGuide && (
+        <button type="button" className="world-guide-open" onClick={() => setShowWorldGuide(true)}>
+          {t('Xem các con đường và District', 'Explore paths and Districts')}
+          <ChevronDown size={17} aria-hidden="true" />
+        </button>
+      )}
+      {showWorldGuide && <>
       <section className="city-section" aria-labelledby="paths-title">
         <div className="city-section-heading">
           <div>
@@ -713,6 +719,7 @@ export const BirthSetupPanel = () => {
           </div>
         </details>
       </section>
+      </>}
       <footer className="city-footer">
         <span>The City Chronicles</span>
         <p>

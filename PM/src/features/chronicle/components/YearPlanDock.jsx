@@ -69,13 +69,16 @@ export function YearPlanDock({ char, draft, onConfirm }) {
   const [ambition, setAmbition] = useState(
     char.ambition?.id || (choices.some((goal) => goal.id === 'survive') ? 'survive' : choices[0]?.id)
   );
+  const [choosingAmbition, setChoosingAmbition] = useState(!char.ambition);
   const [directive, setDirective] = useState(
     () => char.lastApexDirective?.id || APEX_DIRECTIVES[0]?.id || 'dispatch_squad'
   );
   const firstButton = useRef(null);
+  const firstAmbition = useRef(null);
   useEffect(() => {
-    firstButton.current?.focus();
-  }, [char.pendingYearPlan?.age]);
+    if (choosingAmbition) firstAmbition.current?.focus();
+    else firstButton.current?.focus();
+  }, [char.pendingYearPlan?.age, choosingAmbition]);
   const used = YEAR_ACTIVITIES.reduce((sum, activity) => sum + (points[activity.id] || 0), 0);
   const canConfirm = used === YEAR_PLAN_POINTS && Boolean(char.ambition || ambition);
   const current = AMBITIONS.find((goal) => goal.id === char.ambition?.id);
@@ -94,12 +97,25 @@ export function YearPlanDock({ char, draft, onConfirm }) {
       <div className="dock-inner">
         <p className="dock-kicker">{t(`Tuổi ${char.age}`, `Age ${char.age}`)}</p>
         <h2 className="dock-title" id="year-plan-title">
-          {t('Bạn dành năm nay cho điều gì?', 'How will you spend this year?')}
+          {choosingAmbition ? t('Bạn muốn sống vì điều gì?', 'What will you live for?') : t('Bạn dành năm nay cho điều gì?', 'How will you spend this year?')}
         </h2>
+        {choosingAmbition ? <>
+          <p className="year-plan-intro">{t('Đây là mục tiêu của cả đời. Sau khi chọn, bạn sẽ phân thời gian cho năm đầu đi làm.', 'This is your goal for this life. After choosing, you will plan your first working year.')}</p>
+          <fieldset className="year-plan-ambitions">
+            <legend>{t('Tham vọng của đời này', 'Ambition for this life')}</legend>
+            {choices.map((goal, index) => (
+              <label key={goal.id} className={ambition === goal.id ? 'is-selected' : ''}>
+                <input ref={index === 0 ? firstAmbition : null} type="radio" name="life-ambition" value={goal.id} checked={ambition === goal.id} onChange={() => setAmbition(goal.id)} />
+                <span><strong>{t(goal.vi, goal.en)}</strong><small>{t(goal.detailVi, goal.detailEn)}</small></span>
+              </label>
+            ))}
+          </fieldset>
+          <button type="button" className="btn btn-primary year-plan-confirm" disabled={!ambition} onClick={() => setChoosingAmbition(false)}>
+            {t('Lập kế hoạch năm đầu', 'Plan the first working year')}
+          </button>
+        </> : <>
         <p className="year-plan-intro">
-          {draft
-            ? t('Phân 3 ô thời gian, rồi chọn một manh mối để bắt đầu năm.', 'Assign three time slots, then pick a lead to begin the year.')
-            : t('Phân 3 ô thời gian cho năm nay.', 'Assign three time slots for this year.')}
+          {t('Phân 3 ô thời gian cho định hướng năm nay.', 'Assign three time slots for this year.')}
         </p>
         <p className="year-plan-remaining" aria-live="polite">
           {t(`Còn ${YEAR_PLAN_POINTS - used} ô`, `${YEAR_PLAN_POINTS - used} slots left`)}
@@ -114,7 +130,13 @@ export function YearPlanDock({ char, draft, onConfirm }) {
             <div className="year-plan-activity" key={activity.id}>
               <div>
                 <strong>{t(activity.vi, activity.en)}</strong>
-                <small>{t(activity.effectVi, activity.effectEn)}</small>
+                <small>{t(activity.effectVi.split(' (')[0], activity.effectEn.split(' (')[0])}</small>
+                {activity.effectVi.includes(' (') && (
+                  <details className="year-plan-more">
+                    <summary>{t('Khi dồn nhiều ô', 'When stacking slots')}</summary>
+                    <p>{t(activity.effectVi, activity.effectEn)}</p>
+                  </details>
+                )}
               </div>
               <div className="year-plan-stepper">
                 <button
@@ -228,60 +250,23 @@ export function YearPlanDock({ char, draft, onConfirm }) {
             ))}
           </fieldset>
         )}
-        {!char.ambition && (
-          <fieldset className="year-plan-ambitions">
-            <legend>{t('Tham vọng của đời này', 'Ambition for this life')}</legend>
-            {choices.map((goal) => (
-              <label key={goal.id} className={ambition === goal.id ? 'is-selected' : ''}>
-                <input
-                  type="radio"
-                  name="life-ambition"
-                  value={goal.id}
-                  checked={ambition === goal.id}
-                  onChange={() => setAmbition(goal.id)}
-                />
-                <span>
-                  <strong>{t(goal.vi, goal.en)}</strong>
-                  <small>{t(goal.detailVi, goal.detailEn)}</small>
-                </span>
-              </label>
-            ))}
-          </fieldset>
-        )}
+        {!char.ambition && <p className="year-plan-current-goal">{t('Bạn đã chọn', 'Chosen ambition')}: {t(choices.find((goal) => goal.id === ambition)?.vi, choices.find((goal) => goal.id === ambition)?.en)}</p>}
         {current && (
           <p className="year-plan-current-goal">
             {t('Tham vọng', 'Ambition')}: {t(current.vi, current.en)}
           </p>
         )}
-        {draft ? (
-          <div className="year-plan-leads">
-            <h3>{t('Ba manh mối', 'Three leads')}</h3>
-            <p className="year-leads-intro">
-              {t('Bạn chỉ đủ thời gian theo một dấu vết. Hai chuyện còn lại sẽ trôi qua.', 'You have time to follow one lead. The other two will pass you by.')}
-            </p>
-            <YearLeadList
-              draft={draft}
-              char={char}
-              disabled={!canConfirm}
-              autoFocus={false}
-              onPick={(index) => onConfirm(points, ambition, index, apexEligible ? directive : null)}
-            />
-            {!canConfirm && (
-              <p className="year-leads-note">
-                {t('Phân đủ 3 ô để chọn manh mối.', 'Assign all three slots to pick a lead.')}
-              </p>
-            )}
-          </div>
-        ) : (
+        <div className="year-plan-confirm-wrap">
           <button
             className="btn btn-primary year-plan-confirm"
             type="button"
             disabled={!canConfirm}
             onClick={() => onConfirm(points, ambition, null, apexEligible ? directive : null)}
           >
-            {t('Bắt đầu năm', 'Begin year')}
+            {t('Bắt đầu năm mới', 'Begin New Year')}
           </button>
-        )}
+        </div>
+        </>}
       </div>
     </section>
   );

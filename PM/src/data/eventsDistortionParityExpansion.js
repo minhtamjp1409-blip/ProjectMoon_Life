@@ -176,11 +176,12 @@ export const DISTORTION_PARITY_DAILIES = [
 export const DISTORTION_PARITY_MAJORS = [
   {
     id: 'distort_arc_star_calamity_ascension',
-    age: [22, 99],
+    age: [28, 99],
     major: true,
     weight: 40,
+    need: { jobs: ['Distortion'], meritAtLeast: 100, stat: { rep: [65, 100], heat: [60, 100] } },
     requires: ['Distorted'],
-    forbids: ['distort_star_calamity_done'],
+    forbids: ['distort_star_calamity_done', 'distort_star_rampage_done', 'StarOfTheCityEntity'],
     vi: "[Khảo Thí Diệt Họa: Star of the City] Hana Association chính thức nâng cấp định danh của bạn lên hàng 'Star of the City', một Thảm Họa Cấp Tinh Tú. Một Giám đốc Section 1 của Liu Association cùng hai Fixer Grade 1 mang vũ khí rực lửa tiến vào phong tỏa toàn bộ khu phố nơi bạn cư ngụ.",
     en: "[Calamity Ordination: Star of the City] Hana Association officially designates you a 'Star of the City'. A Liu Association Section 1 Director flanked by two Grade 1 Fixers bearing blazing polearms seals the district around your lair.",
     choices: [

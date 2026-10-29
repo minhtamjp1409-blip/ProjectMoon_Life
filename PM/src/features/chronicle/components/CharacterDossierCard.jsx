@@ -711,8 +711,18 @@ export const CharacterDossierCard = () => {
   const isHpCritical = health <= 20;
   const isSpCritical = sanity <= 20;
   const tabooLevel = char.taboo || 0;
+  const urgentStatus = tabooLevel >= 2
+    ? { label: t('Taboo sắp chạm ngưỡng', 'Taboo near limit'), value: `${tabooLevel}/3`, danger: true }
+    : (char.heat || 0) >= 60
+      ? { label: t('Đang bị truy nã', 'Being hunted'), value: `${char.heat}%`, danger: true }
+      : char.job === 'Wing Employee' && (char.standing ?? 50) <= 25
+        ? { label: t('Hồ sơ Wing bị để mắt', 'Wing record under review'), value: `${char.standing ?? 50}%`, danger: true }
+        : (char.resonance || 0) >= 60 && !char.egoName
+          ? { label: t('Cộng hưởng E.G.O', 'E.G.O Resonance'), value: `${char.resonance}%` }
+          : null;
 
-  const isColor = Boolean(char.isColorFixer || char.fixerGrade === 0 || char.flags?.includes('ColorFixer') || char.customTitle);
+  const isColor = !char.flags?.includes('Distorted') && char.job !== 'Distortion' &&
+    Boolean(char.isColorFixer || char.fixerGrade === 0 || char.flags?.includes('ColorFixer') || char.customTitle);
   const isFingerApex = char.job === 'Syndicate' && (char.fingerRank || 0) >= 2;
   const isWingApex = char.job === 'Wing Employee' && (char.wingRank || 0) >= 2;
   const isApex = isColor || isFingerApex || isWingApex;
@@ -776,21 +786,11 @@ export const CharacterDossierCard = () => {
           </div>
         </div>
 
-        <div className="hud2-secondary" aria-label={t('Chỉ số bổ sung', 'Additional stats')}>
-          <span title={t('Quan hệ', 'Network')}><span>{t('Quan hệ', 'Network')}</span><b>{network}</b></span>
-          <span title={t('Danh tiếng', 'Reputation')} aria-label={t(`Danh tiếng ${rep}`, `Reputation ${rep}`)}><span>Rep</span><b>{rep}</b></span>
-          <span title={t('Mức độ truy nã', 'Heat Level')} className={char.heat >= 65 ? 'is-danger' : ''}><span>Heat</span><b>{char.heat || 0}</b></span>
-          <span title={t('Cộng hưởng E.G.O', 'E.G.O Resonance')}><span>E.G.O</span><b>{char.resonance || 0}%</b></span>
-          <span title={t('Ánh nhìn Taboo', 'Taboo Gaze')} className={tabooLevel >= 2 ? 'is-danger' : ''}>
-            <span>Taboo</span>
-            <span className="hud2-taboo-eyes" aria-hidden="true">
-              {[0, 1, 2].map((idx) => (
-                <span key={idx} className={`hud2-eye ${idx < tabooLevel ? 'is-open' : ''} ${tabooLevel >= 2 ? 'is-claw-danger' : ''}`} />
-              ))}
-            </span>
-            <b>{tabooLevel}/3</b>
-          </span>
-        </div>
+        {urgentStatus && (
+          <div className="hud2-secondary is-focused" aria-label={t('Cảnh báo hiện tại', 'Current warning')}>
+            <span className={urgentStatus.danger ? 'is-danger' : ''}><span>{urgentStatus.label}</span><b>{urgentStatus.value}</b></span>
+          </div>
+        )}
 
         {/* Row 3: the year, and the next career goal */}
         <div className="hud2-year">

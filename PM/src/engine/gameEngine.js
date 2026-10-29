@@ -29,7 +29,7 @@ import { CHILDHOOD_EVENTS_2 } from '../data/eventsChildhood2.js';
 import { LINEAGE_LEGACY_EVENTS } from '../data/eventsLineageLegacy.js';
 import { BACKGROUND_OPENING_EVENTS } from '../data/eventsBackgroundOpening.js';
 import { composeBirth, makeNpc } from '../data/birthStories.js';
-import { evaluateCompanionSupport, ensureNpcAgency } from '../data/npcPersonality.js';
+import { evaluateCompanionSupport, ensureNpcAgency, bondCapFor } from '../data/npcPersonality.js';
 import { generatePersonName } from '../data/nameGenerator.js';
 import { FACTION_EVENTS } from '../data/eventsFactions.js';
 import { EXPANSION_EVENTS } from '../data/eventsExpansion.js';
@@ -63,6 +63,7 @@ import { ENSEMBLE_EVENTS, ENSEMBLE_SCORE_ITEM } from '../data/dungeonEnsemble.js
 import { COLOR_CAREER_EVENTS } from '../data/eventsColorCareerArc.js';
 import { WING_PARITY_MAJORS } from '../data/eventsWingParityExpansion.js';
 import { DISTORTION_PARITY_MAJORS } from '../data/eventsDistortionParityExpansion.js';
+import { ROUTE_CONSEQUENCE_EVENTS } from '../data/eventsRouteConsequences.js';
 import { FINGERS_GAMBLE_EVENTS } from '../data/eventsFingersGambleSuite.js';
 import { localizeEnsembleName } from '../data/ensembleNames.js';
 import { ENSEMBLE_INVITE_ID, ENSEMBLE_LAST_CALL_ID, recordEnsembleInvitation } from './ensemblePath.js';
@@ -103,7 +104,7 @@ import {
   updateDramaTension
 } from './weaverAI.js';
 import { hasMemory, closeThreads, applyNpcFate, namesInUse, applyBonds } from './director.js';
-import { BALANCE, isFixerCareerEvent, reputationGain } from './economyModel.js';
+import { BALANCE, frailty, isFixerCareerEvent, reputationGain } from './economyModel.js';
 import { activeScarCount, addScar, normalizeScars, scarContractPower } from './scarModel.js';
 import { weightedOutcomes } from './outcomeOdds.js';
 import { dungeonWagerLevel } from './dungeonWager.js';
@@ -164,6 +165,7 @@ export const ALL_STORY_EVENTS = [
   ...COLOR_CAREER_EVENTS,
   ...WING_PARITY_MAJORS,
   ...DISTORTION_PARITY_MAJORS,
+  ...ROUTE_CONSEQUENCE_EVENTS,
   ...FINGERS_GAMBLE_EVENTS
 ];
 
@@ -741,6 +743,8 @@ export function createNewCharacter({
     name: defaultName,
     gender: gender === 'male' || gender === 'female' ? gender : 'unspecified',
     age: actualAge,
+    bodyAge: Number((actualAge * frailty({ regionId: region.id })).toFixed(2)),
+    bodyAgeRecordedAt: actualAge,
     seasonIdx: 0,
     alive: !perinatal,
     deathCauseVi: perinatal ? perinatal.deathVi : null,
@@ -774,6 +778,7 @@ export function createNewCharacter({
     finger: actualAge >= 18 && parentLegacy?.job === 'Syndicate' ? parentLegacy?.finger : null,
     fingerRank: actualAge >= 18 && parentLegacy?.job === 'Syndicate' ? 1 : 0,
     wingRank: 0,
+    wingEmployerId: actualAge >= 18 && parentLegacy?.job === 'Wing Employee' ? region.id : null,
     syndicateRank: 0,
     org: null,
     customTitle: null,
@@ -836,6 +841,8 @@ export function createNewCharacter({
     memory: [],
     motifs: {},
     unlockedRecords,
+    contractRecord: { fixer: 0, wing: 0, independent: 0, fingers: {}, highestFixerTier: 0 },
+    dungeonRecord: { clears: [] },
     logs: [],
     pendingBirthLogs: initialLogs,
     weaver,
@@ -898,6 +905,7 @@ export function cloneChar(char) {
 }
 
 export function evaluateCharacterAchievements(char) {
+  char.unlockedRecords ||= [];
   const unlock = (key) => {
     if (!char.unlockedRecords.includes(key)) {
       char.unlockedRecords.push(key);
@@ -905,20 +913,35 @@ export function evaluateCharacterAchievements(char) {
   };
 
   if (char.age >= 70 && char.alive) unlock('elder_survivor_70');
+  if (char.age >= 80) unlock('life_eighty');
+  if (char.age >= 100) unlock('life_century');
   if (char.stats.wealth >= 95) unlock('wealth_tycoon');
   if (char.flags.includes('Feather') || char.flags.includes('Nest')) unlock('nest_migration');
   if (char.npcs?.spouse) unlock('family_built');
   if (char.generation >= 3) unlock('dynasty_gen3');
   if (char.generation >= 5) unlock('dynasty_gen5');
 
-  if (char.job === 'Fixer') {
+  if (char.job === 'Fixer' || char.job === 'Color Fixer') {
     unlock('fixer_license');
     if (char.fixerGrade <= 5) unlock('fixer_grade5');
     if (char.fixerGrade <= 1) unlock('fixer_grade1');
     if (char.fixerGrade === 0 || char.flags.includes('ColorFixer')) unlock('color_fixer');
   }
   if (char.org?.type === 'assoc') unlock('assoc_joined');
-  if (char.merit >= 80) unlock('liu_warfare_flame');
+  if (char.affiliation?.kind === 'assoc' && char.affiliation.id === 'Liu' && char.merit >= 80) unlock('liu_warfare_flame');
+  if (char.flags.includes('AssocDirector') || char.affiliation?.director) unlock('association_director');
+  if (char.flags.includes('OwnFixerOffice')) unlock('office_owner');
+  if (char.flags.includes('ColorFixer') && (char.colorAwardAge ?? char.age) < 45) unlock('color_before_forty_five');
+  const work = char.contractRecord || {};
+  if ((work.fixer || 0) >= 3) unlock('three_requests');
+  if ((work.fixer || 0) >= 10) unlock('ten_requests');
+  if ((work.highestFixerTier || 0) >= 4) unlock('hard_request');
+  if ((work.wing || 0) >= 5) unlock('wing_five_assignments');
+  if ((work.independent || 0) >= 5) unlock('independent_five_jobs');
+  if (Object.values(work.fingers || {}).some((count) => count >= 5)) unlock('five_finger_jobs');
+  if (char.job === 'Wing Employee' && (char.wingRank || 0) >= 2) unlock('wing_section_chief');
+  if (char.job === 'Wing Employee' && (char.wingRank || 0) >= 3) unlock('wing_senior_executive');
+  if (char.finger && (char.fingerRank || 0) >= 3) unlock('finger_top_rank');
   if (char.craftWeapon) unlock('workshop_masterpiece');
 
   if (char.finger) {
@@ -937,9 +960,7 @@ export function evaluateCharacterAchievements(char) {
   if (char.flags.includes('Distorted')) unlock('distortion_awaken');
   if (char.flags.includes('EGOAwakened') || char.egoName) unlock('ego_effloresced');
 
-  if (char.seenEvents.some((id) => id.includes('night_in_backstreets') || id.includes('sweeper')) && char.alive) {
-    unlock('survive_night');
-  }
+  if (char.flags.includes('SurvivedBackstreetsNight')) unlock('survive_night');
   if ((char.unlockedRecords || []).includes('warp_cleanup') && char.alive) {
     unlock('warp_cleanup');
   }
@@ -1880,6 +1901,18 @@ export function resolveFixerContract(charState, approachId, rng = Math.random) {
 
   const roll = rng() * 100;
   if (roll < approach.successPct) {
+    const completed = char.contractRecord || { fixer: 0, wing: 0, independent: 0, fingers: {}, highestFixerTier: 0 };
+    const route = contractRouteOf(char);
+    char.contractRecord = {
+      ...completed,
+      fixer: (completed.fixer || 0) + (route === 'fixer' ? 1 : 0),
+      wing: (completed.wing || 0) + (route === 'wing' ? 1 : 0),
+      independent: (completed.independent || 0) + (route === 'independent_syndicate' ? 1 : 0),
+      fingers: ['thumb', 'index', 'middle', 'ring', 'pinky'].includes(route) && char.finger
+        ? { ...(completed.fingers || {}), [char.finger]: ((completed.fingers || {})[char.finger] || 0) + 1 }
+        : { ...(completed.fingers || {}) },
+      highestFixerTier: route === 'fixer' ? Math.max(completed.highestFixerTier || 0, template.tier || 0) : (completed.highestFixerTier || 0)
+    };
     if (char.stats.health <= 25 && !char.unlockedRecords.includes('shi_boundary_of_death')) {
       char.unlockedRecords.push('shi_boundary_of_death');
     }
@@ -2337,6 +2370,12 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random, dung
     if (choice.setFixerGrade != null) char.fixerTrialRetryGrade = null;
   }
   advanceActiveNarrativeArcs(char, event.id);
+  if (event.id === 'distort_arc_star_calamity_ascension' &&
+      char.activeArcs?.some((arc) => arc.id === 'arc_carmen_distortion_abyss' && arc.status === 'active' && arc.currentStage === 3)) {
+    advanceActiveNarrativeArcs(char, 'distort_star_of_city_rampage');
+    closeThreads(char, 'distort_star_of_city_rampage', { playedEventId: event.id });
+  }
+  if (event.id === 'ad_career_second_application') char.lastCareerApplicationAge = char.age;
 
   // Determine outcome (direct choice or weighted outcome roll)
   let outcome = choice;
@@ -2391,7 +2430,9 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random, dung
 
   // Career / Faction / Region mutations
   const setJob = outcome.setJob || choice.setJob;
+  if (event.id === 'ad_career_crossroad_18' && setJob === 'Outcast') char.lastCareerApplicationAge = char.age;
   if (char.job === 'Child' && setJob && setJob !== 'Child') char.merit = 0;
+  if (setJob === 'Wing Employee' && char.job !== 'Wing Employee') char.wingEmployerId = char.regionId;
   if (setJob) char.job = setJob;
   if (choice.clearFinger || outcome.clearFinger) {
     char.finger = null;
@@ -2412,6 +2453,7 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random, dung
   if (isColorPromote) {
     char.fixerGrade = 0;
     if (!char.flags.includes('ColorFixer')) char.flags.push('ColorFixer');
+    char.colorAwardAge ??= char.age;
   }
 
   const assignedTitle = outcome.customTitle || choice.customTitle ||
@@ -2556,6 +2598,36 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random, dung
 
   applyBonds(char, outcome === choice ? [choice] : [choice, outcome]);
 
+  const allSources = outcome === choice ? [choice] : [choice, outcome];
+
+  // Process companion personal quests (npcQuest) and relationship promotions
+  for (const src of allSources) {
+    if (src.npcQuest && Array.isArray(src.npcQuest)) {
+      for (const role of src.npcQuest) {
+        const key = char.npcs?.[role] ? role : role === 'lover' && char.npcs?.spouse ? 'spouse' : null;
+        const target = key && char.npcs[key];
+        if (!target || !npcIsActive(target)) continue;
+        const questsDone = (target.questsDone || 0) + 1;
+        const yearsTogether = Math.max(0, (char.age || 0) - Math.max(15, target.metAge || char.age || 0));
+        const lifted = { ...target, questsDone, lastSeen: char.age };
+        const cap = bondCapFor({ ...lifted, yearsTogether });
+        const bondNow = Math.min(cap, (lifted.bond || 0) + 14);
+        char.npcs = { ...char.npcs, [key]: { ...lifted, bond: Math.max(lifted.bond || 0, bondNow) } };
+        char.memory = [...(char.memory || []), { key: `quest_${key}_${questsDone}`, age: char.age }];
+      }
+    }
+    if (src.promote) {
+      const p = src.promote;
+      const from = char.npcs?.[p.from];
+      if (from && npcIsActive(from) && !npcIsActive(char.npcs?.[p.to])) {
+        char.npcs = { ...char.npcs, [p.to]: { ...from, role: p.to, lastSeen: char.age }, [p.from]: null };
+        if (p.to === 'spouse') {
+          char.flags = [...(char.flags || []).filter((x) => x !== 'Widowed' && x !== 'Separated'), ...(char.flags.includes('Married') ? [] : ['Married'])];
+        }
+      }
+    }
+  }
+
   const npcAdd = outcome.npcAdd || choice.npcAdd;
   if (npcAdd && npcAdd.role) {
     const lover = char.npcs?.lover;
@@ -2662,6 +2734,7 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random, dung
     char.fixerGrade = 0;
     char.job = 'Color Fixer';
     if (!char.flags.includes('ColorFixer')) char.flags.push('ColorFixer');
+    char.colorAwardAge ??= char.age;
   }
 
   // Micro-Dungeon Delve trigger
@@ -2760,6 +2833,12 @@ export function buildLifeSummaryAndLegacy(char) {
     occupationVi = 'Chưa kịp trưởng thành';
     occupationEn = 'Perished at Birth';
     rankTier = 'Canard';
+  } else if (char.job === 'Distortion' || flags.includes('Distorted')) {
+    epitaphTitleVi = 'Distortion';
+    epitaphTitleEn = 'Distortion';
+    occupationVi = 'Distortion';
+    occupationEn = 'Distortion';
+    rankTier = flags.includes('AbyssalDistortionApex') ? 'Star of the City' : 'Urban Nightmare';
   } else if (flags.includes('ColorFixer')) {
     epitaphTitleVi = char.customTitle || 'Color Fixer';
     epitaphTitleEn = char.customTitle || 'Color Fixer';
@@ -2859,12 +2938,12 @@ export function buildLifeSummaryAndLegacy(char) {
   } else if (char.age === 0) {
     poeticQuoteVi = '“Một sinh linh khép mắt trước khi ánh đèn neon ngoài cửa sổ kịp đổi màu.”';
     poeticQuoteEn = '“A fragile breath extinguished before the neon outside the window could even flicker.”';
+  } else if (flags.includes('Distorted') || char.job === 'Distortion') {
+    poeticQuoteVi = '“Khi hình hài con người trở nên quá chật hẹp cho nỗi tuyệt vọng, họ đã buông tay để hóa thành chính cơn ác mộng của mình.”';
+    poeticQuoteEn = '“When a human shell grew too narrow for their despair, they let go and became the shape of their own sorrow.”';
   } else if (flags.includes('ColorFixer') || flags.includes('EGOAwakened')) {
     poeticQuoteVi = '“Giữa một thành phố nghiền nát mọi linh hồn thành tro bụi, họ đã tự rèn nỗi đau của mình thành một sắc màu không thể phai mờ.”';
     poeticQuoteEn = '“In a City that grinds every soul to ash, they forged their own agony into an indelible radiance.”';
-  } else if (flags.includes('Distorted')) {
-    poeticQuoteVi = '“Khi hình hài con người trở nên quá chật hẹp cho nỗi tuyệt vọng, họ đã buông tay để hóa thành chính cơn ác mộng của mình.”';
-    poeticQuoteEn = '“When a human shell grew too narrow for their despair, they let go and became the shape of their own sorrow.”';
   } else if (char.age >= 70 || /tuổi già|lão|nhắm mắt|old age/i.test(`${deathCauseVi} ${deathCauseEn}`)) {
     poeticQuoteVi = '“Giữa một nơi mà tuổi già là thứ xa xỉ phẩm hiếm hoi nhất, họ đã lặng lẽ khép mắt sau khi chứng kiến biết bao mùa mưa máu đi qua.”';
     poeticQuoteEn = '“In a place where old age is the rarest luxury of all, they quietly closed their eyes after outliving a hundred storms.”';
@@ -2942,7 +3021,16 @@ export function buildLifeSummaryAndLegacy(char) {
     let careerArcVi = '';
     let careerArcEn = '';
 
-    if (char.job === 'Fixer') {
+    if (char.job === 'Distortion') {
+      const formerColor = char.colorTitleAtAward ||
+        ((char.unlockedRecords || []).includes('color_fixer') ? char.customTitle : null);
+      careerArcVi = formerColor
+        ? `Hana từng gọi bạn là Color Fixer 「${formerColor}」. Sau khi biến thành Distortion, danh hiệu ấy chỉ còn trong hồ sơ cũ.`
+        : 'Đời sống cũ khép lại khi bạn biến thành Distortion.';
+      careerArcEn = formerColor
+        ? `Hana once named you the Color Fixer "${formerColor}". After your Distortion, the title remained only in its old records.`
+        : 'Your former life ended when you became a Distortion.';
+    } else if (char.job === 'Fixer') {
       careerArcVi = `Đến tuổi phải tự kiếm sống, bạn dấn thân vào con đường Fixer chuyên nghiệp${char.org?.name ? ` thuộc ${char.org.name}` : ''}, từng bước leo lên tới cấp bậc Fixer Grade ${char.fixerGrade}${flags.includes('ColorFixer') ? ` và được Hana Association sắc phong danh hiệu huyền thoại 「${char.customTitle}」` : ''}.`;
       careerArcEn = `Old enough to work for your keep, you took up the Fixer’s license${char.org?.name ? ` with ${char.org.name}` : ''}, carving your way up to Grade ${char.fixerGrade}${flags.includes('ColorFixer') ? ` and claiming the legendary Color title "${char.customTitle}" from Hana Association` : ''}.`;
     } else if (char.job === 'Syndicate') {
@@ -3074,12 +3162,32 @@ export function buildLifeSummaryAndLegacy(char) {
       const def = CODEX_RECORDS.find((r) => r.key === key);
       if (!def) return null;
       const tier = def.tier || 'common';
+      const clearedDungeon = (char.dungeonRecord?.clears || []).find((clear) =>
+        (key === 'lobotomy_containment_clear' && clear.id === 'dungeon_lobotomy_ruin') ||
+        (key === 'outskirts_ruins_clear' && clear.id === 'dungeon_outskirts_ruins') ||
+        (key === 'great_lake_clear' && clear.id === 'dungeon_great_lake') ||
+        (key === 'dungeon_first_clear' && Boolean(clear.id))
+      );
+      const dungeonName = clearedDungeon && DUNGEON_DEFINITIONS[clearedDungeon.id];
+      const colorTitle = char.colorTitleAtAward || char.customTitle;
+      const directorName = char.directorAppointment?.name ||
+        (char.affiliation?.director ? char.affiliation.name : null);
       return {
         key,
-        vi: def.vi,
-        en: def.en,
+        vi: key === 'color_fixer' && colorTitle ? `Color Fixer: ${colorTitle}` : def.vi,
+        en: key === 'color_fixer' && colorTitle ? `Color Fixer: ${colorTitle}` : def.en,
         hintVi: def.hintVi,
         hintEn: def.hintEn,
+        evidenceVi: key === 'color_fixer' && char.colorAwardAge != null
+          ? `Hana trao sắc chỉ ở tuổi ${char.colorAwardAge}.`
+          : key === 'association_director' && directorName
+            ? `Đã giữ ghế Director của ${directorName}.`
+            : dungeonName ? `Tuổi ${clearedDungeon.age}: hoàn thành ${dungeonName.titleVi}.` : null,
+        evidenceEn: key === 'color_fixer' && char.colorAwardAge != null
+          ? `Hana conferred the title at age ${char.colorAwardAge}.`
+          : key === 'association_director' && directorName
+            ? `Held the Director's chair at ${directorName}.`
+            : dungeonName ? `Age ${clearedDungeon.age}: cleared ${dungeonName.titleEn}.` : null,
         tier,
         rarityVi: RARITY_LABELS[tier]?.vi || 'Phổ biến',
         rarityEn: RARITY_LABELS[tier]?.en || 'Common',
@@ -3088,45 +3196,6 @@ export function buildLifeSummaryAndLegacy(char) {
     })
     .filter(Boolean);
 
-  // Add dynamic contextual life records (matching reference screenshot style)
-  if (char.age >= 80 && !recordsList.some(r => r.key === 'lived_past_80')) {
-    recordsList.push({
-      key: 'lived_past_80',
-      vi: 'Sống qua tuổi bát tuần (80+)',
-      en: 'Lived past 80',
-      hintVi: 'Vượt qua tuổi 80 giữa The City.',
-      hintEn: 'Reached 80 years of age in The City.',
-      tier: 'uncommon',
-      rarityVi: 'Khá hiếm',
-      rarityEn: 'Uncommon',
-      isNew: char.age >= 80
-    });
-  }
-  if (char.job === 'Wing Employee' && (char.wingRank || 0) >= 2 && !recordsList.some(r => r.key === 'wing_dept_head')) {
-    recordsList.push({
-      key: 'wing_dept_head',
-      vi: 'Thăng tới Trưởng phòng / Giám đốc Wing',
-      en: 'Rose to Department Head of a Wing',
-      hintVi: 'Đạt cấp quản lý cấp cao trong một Tập đoàn Wing.',
-      hintEn: 'Reached executive management inside a Wing.',
-      tier: 'uncommon',
-      rarityVi: 'Khá hiếm',
-      rarityEn: 'Uncommon',
-      isNew: true
-    });
-  } else if (char.job === 'Wing Employee' && !recordsList.some(r => r.key === 'wing_emp_record')) {
-    recordsList.push({
-      key: 'wing_emp_record',
-      vi: 'Nhân viên tập đoàn Wing',
-      en: 'Wing employee',
-      hintVi: 'Làm việc cho một trong 26 Wing của The City.',
-      hintEn: 'Served as an employee of a Wing.',
-      tier: 'common',
-      rarityVi: 'Phổ biến',
-      rarityEn: 'Common',
-      isNew: false
-    });
-  }
   if (flags.includes('FullBodyProsthetic') && !recordsList.some(r => r.key === 'fine_prosthetic')) {
     recordsList.push({
       key: 'fine_prosthetic',
@@ -3142,8 +3211,10 @@ export function buildLifeSummaryAndLegacy(char) {
   }
 
   recordsList.sort((a, b) => {
+    const rarity = (RARITY_ORDER[b.tier] || 0) - (RARITY_ORDER[a.tier] || 0);
+    if (rarity) return rarity;
     if (a.isNew !== b.isNew) return a.isNew ? -1 : 1;
-    return (RARITY_ORDER[b.tier] || 0) - (RARITY_ORDER[a.tier] || 0);
+    return a.vi.localeCompare(b.vi, 'vi');
   });
 
   // Build Final State Tags (Traits, Relationships, Equipment, Encounters & Scars)
@@ -3216,6 +3287,7 @@ export function buildLifeSummaryAndLegacy(char) {
     familyNameVi: family.nameVi || 'Gia đình bình thường',
     familyNameEn: family.nameEn || 'Ordinary family',
     job: char.job,
+    signatureRecordKey: char.job === 'Distortion' || flags.includes('Distorted') ? 'distortion_awaken' : null,
     occupationVi,
     occupationEn,
     epitaphTitleVi,

@@ -20,24 +20,24 @@ export const NAV_ITEMS = [
     icon: ScrollText,
     vi: 'Biên niên',
     en: 'Chronicle',
-    shortVi: 'Biên niên',
-    shortEn: 'Chronicle'
+    shortVi: 'Chơi',
+    shortEn: 'Play'
   },
   {
     key: '/weaver-ai',
     icon: GitMerge,
     vi: 'Khung cửi',
     en: 'The Loom',
-    shortVi: 'Khung cửi',
-    shortEn: 'Loom'
+    shortVi: 'Mạch truyện',
+    shortEn: 'Threads'
   },
   {
     key: '/glossary',
     icon: BookOpen,
     vi: 'Từ điển thế giới',
     en: 'World archive',
-    shortVi: 'Thế giới',
-    shortEn: 'World'
+    shortVi: 'Từ điển',
+    shortEn: 'Glossary'
   },
   {
     key: '/bloodline',

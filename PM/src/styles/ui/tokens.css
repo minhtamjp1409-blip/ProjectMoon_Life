@@ -65,6 +65,10 @@
   --pad: clamp(16px, 3vw, 40px);
   --control-h: 44px;
 
+  --ambient-rim: rgba(216, 178, 101, 0.14);
+  --glow-accent: rgba(216, 178, 101, 0.22);
+  --ease-tactile: cubic-bezier(0.16, 1, 0.3, 1);
+
   --story-size: 17px;
   --story-lead: 1.72;
   --choice-size: 15.5px;
@@ -74,5 +78,10 @@ html[data-text='lg'] { --story-size: 18.5px; --story-lead: 1.74; --choice-size: 
 html[data-text='xl'] { --story-size: 20.5px; --story-lead: 1.72; --choice-size: 18px; }
 
 @media (max-width: 860px) {
-  :root { --top: 52px; --bottom: calc(60px + env(safe-area-inset-bottom, 0px)); --glass-blur: blur(10px); --page: rgba(9, 8, 11, .64); }
+  :root {
+    --top: calc(52px + env(safe-area-inset-top, 0px));
+    --bottom: calc(60px + env(safe-area-inset-bottom, 0px));
+    --glass-blur: blur(10px);
+    --page: rgba(9, 8, 11, .64);
+  }
 }

@@ -146,9 +146,9 @@
 .dg-companion-banter {
   margin: 6px 0 10px 0;
   padding: 7px 12px;
-  border-left: 2px solid color-mix(in srgb, var(--dg, var(--accent)) 65%, var(--border));
+  border: 1px solid color-mix(in srgb, var(--dg, var(--accent)) 35%, var(--border));
   background: color-mix(in srgb, var(--raised) 75%, transparent);
-  border-radius: 0 6px 6px 0;
+  border-radius: 6px;
   font-size: 0.82rem;
   line-height: 1.45;
   color: var(--muted);

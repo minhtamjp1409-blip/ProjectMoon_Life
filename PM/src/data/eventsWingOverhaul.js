@@ -101,7 +101,7 @@ export const WING_OVERHAUL_EVENTS = [
     age: [20, 60],
     major: true,
     weight: 22,
-    need: { jobs: ['Wing Employee'], regions: ['T'] },
+    need: { jobs: ['Wing Employee'], wingEmployerId: 'T', regions: ['T'] },
     vi: "[Chỉ Tiêu Sắc Tố Thời Gian] Trụ sở T Corp giao chỉ tiêu khẩn: thu hồi lượng thời gian tồn đọng từ các khu xóm đang nợ thuế. Chiếc máy nén sắc tố thời gian cầm tay trên bàn bạn rung lên bần bật: nếu ép van công suất cao, bạn có thể hoàn thành chỉ tiêu cả quý trong một đêm.",
     en: "[Time Pigment Quota] T Corp headquarters issues an urgent directive: harvest overdue time debts from delinquent quarters. The handheld pigment condenser on your desk rattles violently: running it at maximum compression could clear the quarterly quota in a single night.",
     choices: [
@@ -142,7 +142,7 @@ export const WING_OVERHAUL_EVENTS = [
     age: [22, 65],
     major: true,
     weight: 20,
-    need: { jobs: ['Wing Employee'], regions: ['W'], npc: 'friend' },
+    need: { jobs: ['Wing Employee'], wingEmployerId: 'W', regions: ['W'], npc: 'friend' },
     forbids: ['wing_warp_incident_done'],
     vi: "[Sự Cố Toa Tàu Số Bốn] Một chuyến tàu WARP cập ga District 23 sau hành trình kẹt chiều không gian. Khi mở cửa toa tàu số bốn, bạn bàng hoàng nhận ra trong khối thịt biến dạng gào thét có {friend}, người bạn thuở nhỏ của bạn. Cỗ máy phục hồi nguyên tử của W Corp sắp kích hoạt chế độ xóa sổ để tiêu hủy dấu vết.",
     en: "[The Car Four Anomaly] A WARP train docks at District 23 after being adrift between dimensions. When opening car four, you discover that among the screaming masses of flesh lies {friend}, your childhood companion. The W Corp atomic restorer is about to initiate full purge to erase all traces.",

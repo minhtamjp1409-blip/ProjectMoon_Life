@@ -242,8 +242,8 @@ export const SUPERNATURAL_EVENTS = [
         ]
       },
       {
-        labelVi: 'Nhắm mắt lại, đắm chìm vào vầng thái dương ấm áp (Distortion)',
-        labelEn: 'Close your eyes, immerse into the warm sun (Distort)',
+        labelVi: 'Nhắm mắt lại, buông xuôi ý chí và đắm chìm vào vầng thái dương ấm áp',
+        labelEn: 'Close your eyes, surrender your will and sink into the warm radiant sun',
         flagsAdd: ['Distorted'],
         recordsAdd: ['distortion_awaken'],
         effects: { health: -15, sanity: -70, rep: -25, heat: +60, resonance: +50 },

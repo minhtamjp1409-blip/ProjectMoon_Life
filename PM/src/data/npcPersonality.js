@@ -95,14 +95,40 @@ export function rollArchetype(rng) {
 export const hasTag = (npc, tag) => Boolean(npc && Array.isArray(npc.tags) && npc.tags.includes(tag));
 
 /**
- * How high a bond can climb right now. Trust is earned through the person's own
- * quest, not just time spent: 40 to begin, +20 for each quest done, 100 at three.
- * Family starts a little higher because blood and a shared roof count for something.
+ * How high a bond can climb right now. Trust is earned through shared trials,
+ * personal quests, and years of survival together in The City:
+ * - Spouses and family start with high mutual dedication (base 75/70).
+ * - Battle partners and mentors start with steady professional trust (base 65/60).
+ * - Friends start at base 50.
+ * - Each companion quest done adds +15.
+ * - Shared survival years in adulthood add up to +20.
+ * - Dungeon battles survived together add up to +20.
  */
 export function bondCapFor(npc) {
   if (!npc) return 40;
-  const base = ['spouse', 'child', 'parent'].includes(npc.role) ? 55 : 40;
-  return Math.min(100, base + 20 * (npc.questsDone || 0));
+  const isSpouse = npc.role === 'spouse';
+  const isChild = npc.role === 'child';
+  const isPartner = npc.role === 'partner';
+  const isMentor = npc.role === 'mentor';
+  const isParent = npc.role === 'parent';
+
+  let cap = isSpouse ? 75 : isChild ? 70 : isPartner ? 65 : isMentor ? 60 : isParent ? 60 : 50;
+
+  cap += 15 * (npc.questsDone || 0);
+
+  if (npc.yearsTogether != null) {
+    cap += Math.min(20, Math.floor(npc.yearsTogether / 3) * 5);
+  }
+
+  if (npc.dungeonsCleared || npc.dungeonsSurvived) {
+    cap += Math.min(20, 10 * (npc.dungeonsCleared || npc.dungeonsSurvived || 0));
+  }
+
+  if (npc.crisesAided) {
+    cap += Math.min(15, 15 * (npc.crisesAided || 0));
+  }
+
+  return Math.min(100, cap);
 }
 
 export function getNpcBondState(npc) {

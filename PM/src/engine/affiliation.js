@@ -466,7 +466,14 @@ export function applyAffiliationChoice(char, src) {
   }
   if (src.affDirector) {
     const cur = ensureAffiliation(char);
-    if (cur?.kind === 'assoc') { cur.director = true; cur.section = 1; cur.standing = Math.max(cur.standing, 70); addFlag(char, 'AssocDirector'); syncOrg(char); }
+    if (cur?.kind === 'assoc') {
+      cur.director = true;
+      cur.section = 1;
+      cur.standing = Math.max(cur.standing, 70);
+      char.directorAppointment = { name: cur.name, age: char.age };
+      addFlag(char, 'AssocDirector');
+      syncOrg(char);
+    }
   }
   if (src.affLeave) leaveAffiliation(char, src.affLeave === true ? 'resign' : src.affLeave);
   if (src.menteeStart) {

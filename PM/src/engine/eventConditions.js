@@ -98,6 +98,7 @@ export function matchesNeed(need, char, contextEntry = null) {
   if (need.out && !isOutsideCity(char)) return false;
   if (need.notOut && isOutsideCity(char)) return false;
   if (need.jobs && !jobMatchesWithInheritance(need.jobs, char, contextEntry || need)) return false;
+  if (need.wingEmployerId && (char.wingEmployerId || char.regionId) !== need.wingEmployerId) return false;
   if (need.regions && !regionMatchesList(need.regions, char.regionId)) return false;
   if (need.finger && need.finger !== char.finger) return false;
   if (need.notFinger && need.notFinger === char.finger && char.job === 'Syndicate') return false;

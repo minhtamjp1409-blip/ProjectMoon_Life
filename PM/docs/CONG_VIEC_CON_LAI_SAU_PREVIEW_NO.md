@@ -1,14 +1,14 @@
 # Việc còn lại sau khi sửa preview chi phí nợ
 
-> Cập nhật kiểm định 29/10/2026: Mục 1 (thay đổi cách vào route) được **để sau theo yêu cầu**. Mục 2 và 4 đã có bộ đo và kết quả 500 seed; xem [báo cáo nhịp game và phễu Color/E.G.O](./BAO_CAO_NHIP_GAME_500_SEED.md). Mục 3 đã có nút dùng lại kế hoạch bằng thao tác rõ ràng, preview trước khi xác nhận. Mục 5 đã kiểm thử trên trình duyệt thật ở 390px/1440px, VI/EN, các mức Ahn 2/3/5/15. Các đoạn “Hiện trạng” bên dưới được giữ như hồ sơ vấn đề ban đầu, không phải trạng thái hiện tại.
+> Cập nhật kiểm định 29/10/2026: Mục 1 đã sửa sau khi chủ dự án yêu cầu làm route; xem [báo cáo sửa route](./SUA_ROUTE_29_10_2026.md). Mục 2 và 4 đã có bộ đo và kết quả 500 seed; xem [báo cáo nhịp game và phễu Color/E.G.O](./BAO_CAO_NHIP_GAME_500_SEED.md). Mục 3 đã có nút dùng lại kế hoạch bằng thao tác rõ ràng, preview trước khi xác nhận. Mục 5 đã kiểm thử trên trình duyệt thật ở 390px/1440px, VI/EN, các mức Ahn 2/3/5/15. Các đoạn “Hiện trạng” bên dưới được giữ như hồ sơ vấn đề ban đầu, không phải trạng thái hiện tại.
 
 | Mục | Trạng thái 29/10 | Bằng chứng / việc tiếp theo |
 | --- | --- | --- |
-| 1. Điểm rẽ nghề nghiệp | Để sau | Không chỉnh điều kiện hay nội dung route trong đợt này. |
+| 1. Điểm rẽ nghề nghiệp | Đã sửa và kiểm thử | Nộp đơn có thể trượt; Outcast được nộp lại mỗi năm. Wing, Distortion và Syndicate độc lập có cổng/cảnh riêng. Xem [báo cáo sửa route](./SUA_ROUTE_29_10_2026.md). |
 | 2. Mật độ nội dung | Đã đo | `tools/sim/branch_experience.mjs 500 --json=<đường dẫn>`; 500 seed ngẫu nhiên, nhóm theo route và dải tuổi. Wing có 84,3% năm không đổi bậc nghề/quan hệ theo thước đo hiện tại; việc viết thêm chuỗi hậu quả thuộc đợt route sau. |
 | 3. Kế hoạch năm | Đã sửa và kiểm thử | `previousYearPoints`, `YearPlanDock`, `tests/test_annual_plan.mjs`, `tools/qa/remaining_tasks_browser.mjs`. Chỉ chế độ tự chơi đang bật mới tự chọn kế hoạch qua logic tự chơi cũ. |
 | 4. Color/E.G.O | Đã đo | `tools/sim/balance_sim.mjs 500 random` và `500 focused`; báo cáo tách sẵn sàng, được mời, đạt mốc, chết trước/sau sẵn sàng, tuổi và Ahn khởi đầu. Chưa đổi ngưỡng cân bằng. |
-| 5. Giao diện nợ Fixer | Đã kiểm thử | `tools/qa/remaining_tasks_browser.mjs`: 390px/1440px, VI/EN, thiếu/vừa đủ/dư Ahn, trạng thái khóa, focus bàn phím, tràn ngang, số phí trên nhãn. Test engine `tests/test_choice_cost_parity.mjs` đối chiếu tiền thực trừ. |
+| 5. Giao diện nợ Fixer | Đã sửa và kiểm thử | `EventDock` ẩn chip phí khi nhãn đã ghi đúng số Ahn. `tools/qa/remaining_tasks_browser.mjs`: 390px/1440px, VI/EN, thiếu/vừa đủ/dư Ahn, trạng thái khóa, focus bàn phím, tràn ngang và phí không lặp. Test engine `tests/test_choice_cost_parity.mjs` đối chiếu tiền thực trừ. |
 
 Cập nhật: 28/10/2026. Đây là danh sách để quyết định và sửa dần, không phải các lỗi đã được xác nhận bằng một lượt chơi thủ công.
 

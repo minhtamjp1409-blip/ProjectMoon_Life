@@ -10,8 +10,16 @@ import { M, C, I, D } from './storyKit.js';
 // 1. WING EMPLOYEE EXPANSION MINORS (15-second Dilemmas & Rapid Risk-Reward)
 // ============================================================================
 
+const WING_EMPLOYERS = {
+  m_wing_tcorp_time_tax_leak: 'T',
+  m_wing_kcorp_ampoule_defect: 'K',
+  m_wing_wcorp_dimension_cleanse: 'W',
+  m_wing_rcorp_hatchery_inspection: 'R'
+};
 const W = (id, lo, hi, vi, en, choices, ignore) =>
-  M(id, [19, 75], { jobs: ['Wing Employee'], wingRankAtLeast: lo, wingRankAtMost: hi }, vi, en, choices, ignore, { forbids: ['Distorted'] });
+  M(id, [19, 75], { jobs: ['Wing Employee'], wingRankAtLeast: lo, wingRankAtMost: hi,
+    ...(WING_EMPLOYERS[id] ? { wingEmployerId: WING_EMPLOYERS[id] } : {}) },
+  vi, en, choices, ignore, { forbids: ['Distorted'] });
 
 export const WING_PARITY_MINORS = [
   // Rank 0-1: Feather / Field Operations

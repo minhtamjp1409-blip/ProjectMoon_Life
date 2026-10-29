@@ -105,65 +105,135 @@ export const FACTION_EVENTS = [
     en: "[Summons of the Five Fingers] Your notoriety and bloody work in the Backstreets have caught the attention of high syndicates. An underworld broker brings an ultimatum: your crew must swear allegiance to a Finger banner or be crushed as rogue vermin.",
     choices: [
       {
-        labelVi: 'The Thumb: kỷ luật và tôn ti',
-        labelEn: 'The Thumb: discipline and rank',
-        resultVi: "Trong sảnh The Thumb, một tân binh lỡ nhìn thẳng Sottocapo liền quỳ xuống xin chịu phạt. Bạn nhận áo Soldato và khẩu súng. Từ giờ, mệnh lệnh của cấp trên đứng trước mọi lời giải thích.",
-        resultEn: 'During initiation, a recruit looked a Capo in the eye by mistake. Unbidden, he drew a knife and cut out his own tongue. They handed you a Soldato’s rifle.',
-        setFinger: 'Thumb',
-        setFingerRank: 0,
-        flagsAdd: ['SwornFinger'],
-        recordsAdd: ['finger_initiate'],
-        effects: { wealth: +18, rep: +12, sanity: -14 },
-        meritAdd: 12
+        labelVi: 'The Thumb: quỳ gối chấp nhận kỷ luật và tôn ti',
+        labelEn: 'The Thumb: kneel and accept discipline and rank',
+        outcomes: [
+          {
+            w: 75,
+            setFinger: 'Thumb',
+            setFingerRank: 0,
+            flagsAdd: ['SwornFinger'],
+            recordsAdd: ['finger_initiate'],
+            effects: { wealth: +18, rep: +12, sanity: -14 },
+            meritAdd: 12,
+            resultVi: "Trong sảnh The Thumb, bạn quỳ gối thực hiện đúng từng nghi thức chào Capo. Người lính gác trao cho bạn áo Soldato và khẩu súng. Từ giờ, mệnh lệnh của cấp trên đứng trước mọi lời giải thích.",
+            resultEn: "In the Thumb hall you knelt and executed every salute to the Capo without flaw. The guard handed you a Soldato coat and rifle. From now on, orders from above precede all explanation."
+          },
+          {
+            w: 25,
+            setJob: 'Outcast',
+            flagsAdd: ['CareerApplicationFailed'],
+            effects: { health: -14, sanity: -15, rep: -8 },
+            scarsAdd: ['Đốt ngón tay bị phạt của The Thumb'],
+            resultVi: "Một thoáng do dự khi quỳ gối khiến Capo nhíu mày. Hắn ra lệnh chặt một đốt ngón tay của bạn để răn đe rồi ném bạn ra đường cống. Băng đảng của bạn tan rã; bạn sống sót làm Outcast.",
+            resultEn: "A split-second hesitation in your kneel caught the Capo's frown. He ordered a finger joint severed as discipline and had you thrown into the sewer. Your crew scattered; you survive as an Outcast."
+          }
+        ]
       },
       {
-        labelVi: 'The Index: thực thi Prescript tuyệt đối',
-        labelEn: 'The Index: absolute Prescript execution',
-        resultVi: 'Sứ Giả của The Index với dải băng lụa trắng bịt mắt trao vào tay bạn cuộn chỉ vàng và thanh kiếm ngắn: "Không được nghi vấn Dòng Chảy. Chỉ Lệnh là ý chí của The City." Bạn chính thức trở thành một Giáo Đồ (Proselyte), sẵn sàng hành quyết bất cứ ai cản đường nhân quả.',
-        resultEn: 'A white-robed messenger handed you a folded paper slip. “Never ask why. Simply obey what the Prescript decrees.” You strapped a short blade to your hip.',
-        setFinger: 'Index',
-        setFingerRank: 0,
-        flagsAdd: ['SwornFinger'],
-        recordsAdd: ['finger_initiate'],
-        effects: { rep: +14, network: +12, sanity: -12 },
-        meritAdd: 12
+        labelVi: 'The Index: chấp nhận thực thi Prescript tuyệt đối',
+        labelEn: 'The Index: accept absolute Prescript execution',
+        outcomes: [
+          {
+            w: 70,
+            setFinger: 'Index',
+            setFingerRank: 0,
+            flagsAdd: ['SwornFinger'],
+            recordsAdd: ['finger_initiate'],
+            effects: { rep: +14, network: +12, sanity: -12 },
+            meritAdd: 12,
+            resultVi: 'Sứ Giả của The Index trao vào tay bạn cuộn chỉ vàng và thanh kiếm ngắn sau khi bạn chấp hành đúng Prescript đầu tiên. Bạn chính thức trở thành Proselyte, theo sát Dòng Chảy của The City.',
+            resultEn: 'A Messenger of the Index handed you golden thread and a short blade once you carried out the first Prescript. You are a Proselyte, walking within the City Flow.'
+          },
+          {
+            w: 30,
+            setJob: 'Outcast',
+            flagsAdd: ['CareerApplicationFailed'],
+            effects: { health: -16, sanity: -12, rep: -6 },
+            scarsAdd: ['Vết rạch trừng phạt của Proselyte'],
+            resultVi: "Bạn không thể giải mã Prescript kỳ quặc đúng hạn. Đội chấp pháp xuất hiện lúc nửa đêm san phẳng cứ điểm của bạn. Bạn chạy thoát vào cống ngầm với thương tích nặng nề.",
+            resultEn: "You failed to interpret the cryptic Prescript in time. Enforcers arrived at midnight and leveled your hideout. You fled into the drainage pipes severely wounded."
+          }
+        ]
       },
       {
-        labelVi: 'The Middle: anh em và báo thù',
-        labelEn: 'The Middle: family and revenge',
-        resultVi: 'Những người anh em của The Middle dùng kim nung khắc hình xích sắt chạy dọc cánh tay bạn. Họ ôm chặt lấy bạn giữa tiếng reo hò cuồng nhiệt: "Ai đụng đến một sợi tóc của người anh em này, cả gia tộc chúng sẽ phải trả giá bằng máu trong Book of Vengeance!"',
-        resultEn: 'They tattooed your arm with a heated needle. From now on, anyone who touches one of your brothers goes into the Book of Vengeance, and you will be the one who collects.',
-        setFinger: 'Middle',
-        setFingerRank: 0,
-        flagsAdd: ['SwornFinger'],
-        recordsAdd: ['finger_initiate'],
-        effects: { health: +10, rep: +14, heat: +20, sanity: -10 },
-        meritAdd: 12
+        labelVi: 'The Middle: tuyên thệ anh em và thù hận',
+        labelEn: 'The Middle: swear brotherhood and vengeance',
+        outcomes: [
+          {
+            w: 75,
+            setFinger: 'Middle',
+            setFingerRank: 0,
+            flagsAdd: ['SwornFinger'],
+            recordsAdd: ['finger_initiate'],
+            effects: { health: +10, rep: +14, heat: +20, sanity: -10 },
+            meritAdd: 12,
+            resultVi: 'Những người anh em của The Middle khắc xích sắt lên cánh tay bạn giữa tiếng reo hò. Tên của bạn được ghi vào Book of Vengeance; ai đụng đến bạn sẽ phải trả giá bằng máu.',
+            resultEn: 'Brothers of the Middle tattooed iron chains into your arm amidst loud cheers. Your name was entered into the Book of Vengeance; whoever touches you pays in blood.'
+          },
+          {
+            w: 25,
+            setJob: 'Outcast',
+            flagsAdd: ['CareerApplicationFailed'],
+            effects: { health: -18, sanity: -10, rep: -8 },
+            scarsAdd: ['Vết xích nung dở dang'],
+            resultVi: "Hồ sơ của The Middle chỉ ra một người thân của bạn từng đắc tội với gia tộc. Cuộc kết nạp biến thành trận ẩu đả đẫm máu. Bạn cắn răng phá cửa tháo chạy, trở thành kẻ lưu vong.",
+            resultEn: "The Middle ledger showed a relative of yours once wronged the family. The initiation turned into a bloody brawl. You broke through the door and fled into exile."
+          }
+        ]
       },
       {
-        labelVi: 'The Ring: nghệ thuật và giải phẫu',
-        labelEn: 'The Ring: art and anatomy',
-        resultVi: "Docent dẫn bạn qua phòng tranh làm từ da thịt người sống. Bạn nôn ở góc phòng. Họ đợi bạn lau miệng rồi trao thẻ học việc của The Ring.",
-        resultEn: 'They gave you an apron and showed you this year’s Student works. You threw up in the corner. A Docent nodded: “Everyone does at first. Then it becomes beautiful.”',
-        setFinger: 'Ring',
-        setFingerRank: 0,
-        flagsAdd: ['SwornFinger'],
-        recordsAdd: ['finger_initiate'],
-        effects: { sanity: -22, rep: +14, wealth: +16, resonance: +20 },
-        scarsAdd: ['Con mắt của The Ring'],
-        meritAdd: 14
+        labelVi: 'The Ring: dâng nộp tác phẩm giải phẫu',
+        labelEn: 'The Ring: present an anatomical work',
+        outcomes: [
+          {
+            w: 65,
+            setFinger: 'Ring',
+            setFingerRank: 0,
+            flagsAdd: ['SwornFinger'],
+            recordsAdd: ['finger_initiate'],
+            effects: { sanity: -22, rep: +14, wealth: +16, resonance: +20 },
+            scarsAdd: ['Con mắt của The Ring'],
+            meritAdd: 14,
+            resultVi: "Docent hài lòng trước tác phẩm giải phẫu đầu tay của bạn và trao thẻ học việc của The Ring. Bạn chính thức bước vào con đường nghệ thuật tàn bạo của District 8.",
+            resultEn: "A Docent approved your first anatomical work and handed you the Ring apprentice card. You entered the brutal artistic path of District 8."
+          },
+          {
+            w: 35,
+            setJob: 'Outcast',
+            flagsAdd: ['CareerApplicationFailed'],
+            effects: { health: -15, sanity: -20, rep: -10 },
+            scarsAdd: ['Vết rạch phê bình của Docent'],
+            resultVi: "Docent chê bai nhát dao của bạn là thô thiển và rạch một đường cảnh cáo dọc bả vai bạn trước khi đuổi ra ngoài. Bạn lê thân về Backstreets làm Outcast rách rưới.",
+            resultEn: "The Docent called your blade work crude and carved a warning slash across your shoulder before throwing you out. You dragged yourself into the Backstreets as an Outcast."
+          }
+        ]
       },
       {
-        labelVi: 'The Pinky: hợp đồng ngầm và lời thề ngón út',
-        labelEn: 'The Pinky: shadow pacts and pinky oaths',
-        resultVi: "Người của The Pinky móc ngón út vào tay bạn. \"Đã hứa thì giữ.\" Bạn nhận thanh đoản kiếm. Không có giấy tờ nào ghi lại buổi kết nạp.",
-        resultEn: 'In the deepest alley shadow, a velvet-gloved figure gripped your pinky finger. “In the Pinky, an oath is heavier than life. Break it, and you forfeit all.” A slender dagger was pressed into your grasp.',
-        setFinger: 'Pinky',
-        setFingerRank: 0,
-        flagsAdd: ['SwornFinger'],
-        recordsAdd: ['finger_initiate'],
-        effects: { wealth: +16, heat: +10, sanity: -8 },
-        meritAdd: 12
+        labelVi: 'The Pinky: lập khế ước ngầm trong hẻm tối',
+        labelEn: 'The Pinky: seal a shadow pact in the dark',
+        outcomes: [
+          {
+            w: 70,
+            setFinger: 'Pinky',
+            setFingerRank: 0,
+            flagsAdd: ['SwornFinger'],
+            recordsAdd: ['finger_initiate'],
+            effects: { wealth: +16, heat: +10, sanity: -8 },
+            meritAdd: 12,
+            resultVi: "Người của The Pinky móc ngón út vào tay bạn trong bóng tối hẻm sâu. Lời thề máu được phong ấn; bạn nhận đoản kiếm và bước vào mạng lưới ngầm.",
+            resultEn: "A Pinky agent linked pinkies with you in the alley shadow. The blood oath was sealed; you took the dagger and stepped into the shadow network."
+          },
+          {
+            w: 30,
+            setJob: 'Outcast',
+            flagsAdd: ['CareerApplicationFailed'],
+            effects: { health: -14, sanity: -12, heat: +15 },
+            scarsAdd: ['Vết kim độc của The Pinky'],
+            resultVi: "Người môi giới phát hiện nhịp tim bạn dao động trong lúc tuyên thệ. Một mũi kim tẩm độc cắm vào vai; bạn ngã gục trong mưa lạnh và mất toàn bộ địa bàn.",
+            resultEn: "The broker caught a tremor in your pulse during the vow. A poisoned needle struck your shoulder; you collapsed in the rain and lost all territory."
+          }
+        ]
       },
       {
         labelVi: 'Từ chối mọi phe phái: Giữ băng nhóm độc lập, chấp nhận đối đầu các thế lực lớn',
@@ -2244,7 +2314,7 @@ export const FACTION_EVENTS = [
     age: [20, 65],
     major: true,
     weight: 65,
-    need: { jobs: ['Wing Employee'] },
+    need: { jobs: ['Wing Employee'], wingEmployerId: 'T' },
     forbids: ['Distorted', 'tcorp_tax_done'],
     vi: "[Thu thuế thời gian] Bạn dẫn đội T Corp vào Backstreets District 20. Người thiếu Ahn xếp hàng trước máy hút thời gian; phía Nest đang chờ phần thu được. Một người đưa giấy xin hoãn, nhưng đồng hồ thu đã chạy.",
     en: '[Time Tax Enforcement · T Corp District 20] Ash-grey skies hang over District 20. You lead a T Corp temporal collection unit into the Backstreet tenements. Brass time-extractors whir with terrifying hunger, ready to drain the lifespan of destitute citizens who lack Ahn for the Nest’s perpetual daylight.',
@@ -2274,7 +2344,7 @@ export const FACTION_EVENTS = [
     age: [21, 65],
     major: true,
     weight: 70,
-    need: { jobs: ['Wing Employee'] },
+    need: { jobs: ['Wing Employee'], wingEmployerId: 'W' },
     forbids: ['Distorted', 'wcorp_cleanup_done'],
     vi: "[Ca dọn toa hạng nhất] Tàu WARP cập bến. Bên trong toa, hành khách đã hòa lẫn thành những khối thịt. Bạn có mười phút đưa họ về chỗ và chạy quy trình phục hồi trước khi cửa ga mở.",
     en: '[First-Class Bio-Cleanup · WARP Train Arrival] The WARP train docks at District 23 after 10 seconds of real time, two millennia of subjective isolation. Doors unseal, vomiting the stench of rotting plasma and writhing flesh masses of passengers who devoured each other across centuries. You have exactly 10 minutes to sanitize the car and restore them via W Corp rewind technology.',
@@ -2304,7 +2374,7 @@ export const FACTION_EVENTS = [
     age: [21, 65],
     major: true,
     weight: 65,
-    need: { jobs: ['Wing Employee'] },
+    need: { jobs: ['Wing Employee'], wingEmployerId: 'K' },
     forbids: ['Distorted', 'kcorp_harvest_done'],
     vi: "[Thu nước mắt K Corp] Trong buồng nuôi cấy, The Tearful Thing bị buộc xem cảnh người ta chịu đau. Nước mắt của nó chảy vào hệ thống làm HP Ampoule. Bạn được giao giữ máy chạy hết ca.",
     en: '[Biogel Extraction Chamber · K Corp Tears District 11] You are assigned to K Corp’s central containment sanctum. Suspended before you looms The Tearful Thing, the living fountain of all K Corp regenerative ampoules. To stimulate its tears, projectors loop the most heartbreaking mortal tragedies upon its retinas.',
@@ -2586,7 +2656,7 @@ export const FACTION_EVENTS = [
     age: [20, 70],
     major: true,
     weight: 46,
-    need: { jobs: ['Wing Employee'] },
+    need: { jobs: ['Wing Employee'], wingEmployerId: 'T' },
     forbids: ['Distorted'],
     vi: '[Thu Thuế Thời Gian T Corp · District 4] Đeo chiếc kính một tròng đo thời gian đặc chế của T Corp, bạn dẫn đầu đội thanh tra đến kiểm toán một xưởng rèn bị nghi ngờ ăn cắp 1,200 giờ thời gian chủ quan của công nhân để đẩy nhanh tiến độ sản xuất.',
     en: '[T Corp Time Tax Foreclosure · District 4] Adjusting your brass time-measuring monocle, you lead a T Corp audit squad to seize 1,200 hours of stolen subjective time from a rogue forge that exploited overtime workers.',
@@ -2614,7 +2684,7 @@ export const FACTION_EVENTS = [
     age: [21, 70],
     major: true,
     weight: 46,
-    need: { jobs: ['Wing Employee'] },
+    need: { jobs: ['Wing Employee'], wingEmployerId: 'W' },
     forbids: ['Distorted'],
     vi: '[Sự Cố Buồng Khoang WARP Train W Corp] Một chuyến tàu WARP vừa cập bến District 23 nhưng hệ thống tẩy não hành khách khoang hạng Nhất bị chập mạch. Một nhóm hành khách đột biến thành quái vật thịt vặn vẹo đang đập phá cửa toa tàu trước giờ công bố ga.',
     en: '[W Corp WARP Train Containment Breach] A WARP train docks in District 23, but the First-Class memory erasure manifold short-circuits. Mutated passenger horrors are battering the compartment bulkhead minutes before the public station doors open.',
@@ -2642,7 +2712,7 @@ export const FACTION_EVENTS = [
     age: [20, 72],
     major: true,
     weight: 45,
-    need: { jobs: ['Wing Employee'] },
+    need: { jobs: ['Wing Employee'], wingEmployerId: 'K' },
     forbids: ['Distorted'],
     vi: '[Kiểm Định Huyết Thanh K Corp · Nước Mắt Singularity] Một lô hàng Ống Tiêm K Corp cao cấp chuẩn bị xuất xưởng bị phát hiện có bọt khí bất thường. Bạn nhận nhiệm vụ kiểm tra buồng chứa Singularity Nước Mắt để tìm nguyên nhân rò rỉ.',
     en: '[K Corp Ampoule Quality Audit · Singularity Tears] A flagship crate of K Corp HP Ampoules exhibits erratic froth. You are dispatched into the subterranean tear-well chamber to diagnose the Singularity contamination.',
@@ -2673,7 +2743,7 @@ export const FACTION_EVENTS = [
     age: [21, 68],
     major: true,
     weight: 44,
-    need: { jobs: ['Wing Employee'] },
+    need: { jobs: ['Wing Employee'], wingEmployerId: 'R' },
     forbids: ['Distorted'],
     vi: '[Lò Ấp Nhân Bản R Corp · Tuyển Chọn Pack Thứ 4] Bạn được cử đến cơ sở huấn luyện R Corp để giám sát buồng đấu sinh tử của 5 bản sao nhân bản (Clones). Theo luật của R Corp, chỉ có 1 bản sao mạnh mẽ nhất được phép sống sót bước ra làm lính đánh thuê.',
     en: '[R Corp 4th Pack Hatchery · Clone Survival Protocol] Dispatched to an R Corp facility, you supervise the lethal battle arena between five identical genetic clones. By R Corp charter, only the single surviving apex clone may deploy into active service.',

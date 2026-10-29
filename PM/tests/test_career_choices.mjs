@@ -14,7 +14,9 @@ for (const e of ALL_STORY_EVENTS) {
 
 console.log('2. The age-18 crossroad offers three paths...');
 const cross = ALL_STORY_EVENTS.find((e) => e.id === 'ad_career_crossroad_18');
-assert.deepStrictEqual(cross.choices.flatMap(sets).sort(), ['Fixer', 'Syndicate', 'Wing Employee']);
+assert.deepStrictEqual([...new Set(cross.choices.flatMap(sets))].sort(), ['Fixer', 'Outcast', 'Syndicate', 'Wing Employee']);
+assert(cross.choices.every((choice) => !choice.setJob && choice.outcomes?.some((outcome) => outcome.setJob === 'Outcast')),
+  'The player chooses an application, with a playable failure outcome');
 assert(!/xưởng học nghề/.test(cross.vi), 'the intro must not mention a workshop path');
 
 console.log('3. The Outskirts crossroad never ends in a workshop job...');

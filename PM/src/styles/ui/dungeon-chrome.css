@@ -12,7 +12,7 @@
 }
 .dg-hazard { padding: 1px 7px; border: 1px solid var(--dg); border-radius: var(--radius-sm); color: var(--text); font-size: 12px; font-weight: 700; letter-spacing: .04em; }
 .dg-ambient { font-family: var(--serif); font-style: italic; font-size: 15px; line-height: 1.55; color: var(--muted); }
-.dg-judgment-warning { padding: 8px 12px; border-left: 2px solid var(--bad); color: var(--bad); font-size: 14px; line-height: 1.5; }
+.dg-judgment-warning { padding: 8px 12px; border: 1px solid rgba(255, 111, 102, 0.4); border-radius: var(--radius-sm); background: rgba(255, 111, 102, 0.08); color: var(--bad); font-size: 14px; line-height: 1.5; }
 .dg-harmony { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 12px; border: 1px solid var(--dg); color: var(--text); font-size: 13px; }
 .dg-harmony-marks { display: inline-flex; gap: 5px; }
 .dg-harmony-marks i { width: 12px; height: 12px; border: 1px solid var(--dg); transform: rotate(45deg); }
@@ -50,10 +50,10 @@
 .dg-haul .dg-need { margin-top: 6px; }
 
 /* What the last stage did */
-.dg-result { padding: 10px 14px; border-left: 3px solid var(--border); background: var(--surface); font-size: 14.5px; line-height: 1.55; animation: dgRise .3s ease; }
+.dg-result { padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); font-size: 14.5px; line-height: 1.55; animation: dgRise .3s ease; }
 .dg-result p { font-family: var(--serif); font-size: calc(var(--story-size) - 1.5px); line-height: 1.6; }
-.dg-result.is-check_ok, .dg-result.is-pass { border-left-color: var(--good); }
-.dg-result.is-check_fail, .dg-result.is-fail, .dg-result.is-hit { border-left-color: var(--bad); animation: dgRise .3s ease, dgShake .32s ease .05s; }
+.dg-result.is-check_ok, .dg-result.is-pass { border-color: rgba(143, 209, 156, 0.5); background: color-mix(in srgb, var(--good) 6%, var(--surface)); }
+.dg-result.is-check_fail, .dg-result.is-fail, .dg-result.is-hit { border-color: rgba(255, 111, 102, 0.5); background: color-mix(in srgb, var(--bad) 6%, var(--surface)); animation: dgRise .3s ease, dgShake .32s ease .05s; }
 @keyframes dgRise { from { opacity: 0; transform: translateY(6px); } }
 @keyframes dgShake { 20% { transform: translateX(-4px); } 45% { transform: translateX(3px); } 70% { transform: translateX(-2px); } }
 
@@ -62,7 +62,7 @@
 .dg-scene-title > span { font-family: var(--font); font-size: 13px; font-weight: 600; color: var(--muted); }
 
 /* The foe: its guard as pips, what it is about to do in large type */
-.dg-foe { display: flex; flex-direction: column; gap: 8px; padding: 12px 14px; border: 1px solid var(--border); border-left: 3px solid var(--dg); border-radius: var(--radius-sm); }
+.dg-foe { display: flex; flex-direction: column; gap: 8px; padding: 12px 14px; border: 1px solid color-mix(in srgb, var(--dg) 50%, var(--border)); border-radius: var(--radius-sm); background: color-mix(in srgb, var(--dg) 5%, transparent); }
 .dg-foe-guard { display: flex; align-items: center; gap: 4px; }
 .dg-foe-pip { width: 14px; height: 6px; background: var(--raised); }
 .dg-foe-pip.is-up { background: var(--text); }

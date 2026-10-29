@@ -1,4 +1,5 @@
 import { validYearPoints } from './annualPlan.js';
+import { frailty } from './economyModel.js';
 
 // Run saves carry a schema number so a changed character shape upgrades old saves instead of breaking them.
 export const SAVE_VERSION = 4;
@@ -50,6 +51,32 @@ export function migrateRun(raw) {
   }
   if (run.char.syndicateRank === undefined) {
     run.char.syndicateRank = 0;
+  }
+  if (run.char.job === 'Wing Employee' && !run.char.wingEmployerId) run.char.wingEmployerId = run.char.regionId;
+  if (!Number.isFinite(run.char.bodyAge)) {
+    run.char.bodyAge = Number((run.char.age * frailty(run.char)).toFixed(2));
+  }
+  if (!Number.isFinite(run.char.bodyAgeRecordedAt)) run.char.bodyAgeRecordedAt = run.char.age;
+  if (run.char.colorAwardAge == null && run.char.flags?.includes('ColorFixer')) {
+    const awardLog = Array.isArray(run.char.logs)
+      ? run.char.logs.find((log) => /^log_color_named_\d+$/.test(log?.id) && Number.isInteger(log.age))
+      : null;
+    if (awardLog) run.char.colorAwardAge = awardLog.age;
+  }
+  if (!run.char.directorAppointment && run.char.affiliation?.kind === 'assoc' && run.char.affiliation.director) {
+    run.char.directorAppointment = { name: run.char.affiliation.name };
+  }
+  if (!run.char.colorTitleAtAward && run.char.flags?.includes('ColorFixer') && run.char.customTitle) {
+    run.char.colorTitleAtAward = run.char.customTitle;
+  }
+  if (run.char.job === 'Distortion' && run.char.flags?.includes('ColorFixer')) {
+    run.char.unlockedRecords = Array.from(new Set([...(run.char.unlockedRecords || []), 'color_fixer']));
+    if (run.char.colorAwardAge != null && run.char.colorAwardAge < 45) {
+      run.char.unlockedRecords = Array.from(new Set([...run.char.unlockedRecords, 'color_before_forty_five']));
+    }
+    run.char.flags = run.char.flags.filter((flag) => flag !== 'ColorFixer');
+    run.char.isColorFixer = false;
+    run.char.customTitle = null;
   }
   run.version = SAVE_VERSION;
   if (!Array.isArray(run.rngState) || run.rngState.length !== 4 ||

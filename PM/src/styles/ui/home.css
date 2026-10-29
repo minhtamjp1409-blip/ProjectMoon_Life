@@ -55,11 +55,11 @@
 /* The birth record: Hana Bureaucracy Terminal Docket */
 .birth-panel {
   position: relative;
-  display: flex; flex-direction: column; gap: 16px;
+  display: flex; flex-direction: column; gap: 16px; min-width: 0; width: 100%;
   padding: 24px 26px 20px;
   background: var(--page); color: var(--text);
   backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid rgba(216, 178, 101, 0.28); border-top: 3px solid var(--accent);
+  border: 1px solid rgba(216, 178, 101, 0.45);
   border-radius: 4px;
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 0 1px rgba(216, 178, 101, 0.35);
 }
@@ -85,8 +85,8 @@
 }
 .birth-heading-text { display: flex; flex-direction: column; gap: 2px; width: 100%; min-width: 0; }
 .birth-bureau-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; width: 100%; }
-.birth-bureau-code { font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace; font-size: 10.5px; letter-spacing: 0.09em; color: var(--accent); opacity: 0.95; text-transform: uppercase; font-weight: 700; }
-.birth-status-dot { font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace; font-size: 9.5px; letter-spacing: 0.05em; color: #52c41a; font-weight: 600; opacity: 0.85; }
+.birth-bureau-code { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace; font-size: 10.5px; letter-spacing: 0.09em; color: var(--accent); opacity: 0.95; text-transform: uppercase; font-weight: 700; }
+.birth-status-dot { flex: none; font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace; font-size: 9.5px; letter-spacing: 0.05em; color: #52c41a; font-weight: 600; opacity: 0.85; }
 .birth-heading h2 { font-size: 22px; margin-bottom: 2px; color: var(--page-ink); line-height: 1.25; }
 .birth-heading p { font-family: var(--serif); font-style: italic; color: var(--page-muted); font-size: 13.5px; line-height: 1.4; margin: 0; }
 
@@ -121,7 +121,7 @@
 .resume-dossier-card {
   display: flex; flex-direction: column; gap: 10px;
   padding: 16px 18px;
-  border: 1px solid rgba(216, 178, 101, 0.25); border-left: 3px solid var(--accent);
+  border: 1px solid rgba(216, 178, 101, 0.4);
   border-radius: var(--radius-sm);
   background: rgba(255, 255, 255, 0.025);
   box-shadow: inset 0 0 24px rgba(0, 0, 0, 0.25);
@@ -177,7 +177,7 @@
 .legacy-dossier-card {
   display: flex; flex-direction: column; gap: 12px;
   padding: 16px 18px;
-  border: 1px solid rgba(216, 178, 101, 0.3); border-left: 3px solid var(--accent);
+  border: 1px solid rgba(216, 178, 101, 0.45);
   border-radius: var(--radius-sm);
   background: rgba(216, 178, 101, 0.035);
   box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.25);
@@ -234,6 +234,11 @@
 
 /* Fields & Form Flow (Clean Vertical Rhythm) */
 .birth-fields { display: flex; flex-direction: column; gap: 12px; }
+.birth-advanced { border-top: 1px solid var(--border); padding-top: 10px; }
+.birth-advanced > summary { display: flex; justify-content: space-between; align-items: center; min-height: 44px; color: var(--muted); font-weight: 600; cursor: pointer; }
+.birth-advanced[open] > summary svg { transform: rotate(180deg); }
+.birth-advanced .birth-region-field { margin: 10px 0 14px; }
+.birth-advanced summary:focus-visible, .world-guide-open:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .birth-gender {
   display: grid; grid-template-columns: 1fr 1fr; width: 100%;
   border: 1px solid var(--border); border-radius: var(--radius-sm);
@@ -328,7 +333,7 @@
 }
 .legacy-switch-hint button:hover { color: var(--accent-hover); }
 
-.birth-resume { display: flex; flex-direction: column; gap: 10px; padding: 14px 16px; border: 1px solid var(--page-edge); border-left: 3px solid var(--gold); border-radius: var(--radius-sm); }
+.birth-resume { display: flex; flex-direction: column; gap: 10px; padding: 14px 16px; border: 1px solid rgba(216, 178, 101, 0.4); border-radius: var(--radius-sm); background: color-mix(in srgb, var(--gold) 4%, var(--surface)); }
 .birth-resume > div > span { display: block; font-size: 13px; color: var(--page-muted); }
 .birth-resume strong { font-family: var(--serif); font-size: 19px; }
 .birth-resume small { font-family: var(--font); font-size: 14px; color: var(--page-muted); font-weight: 500; }
@@ -345,6 +350,8 @@
 .archive-strip span { color: var(--muted); font-size: 14.5px; }
 .archive-strip > button { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-weight: 600; font-size: 14px; }
 .archive-strip > button:hover { background: var(--raised); }
+.world-guide-open { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; min-height: 52px; margin-bottom: 42px; padding: 10px 16px; color: var(--text); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); font: inherit; font-weight: 650; cursor: pointer; }
+.world-guide-open:hover { border-color: var(--accent); }
 
 .city-section { margin-bottom: 64px; }
 .city-section-heading { display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; margin-bottom: 22px; }
@@ -357,7 +364,7 @@
 .career-list article::before { content: counter(path, upper-roman); grid-row: span 2; font-family: var(--serif); font-style: italic; color: var(--faint); font-size: 17px; padding-top: 2px; }
 .career-list h3 { font-size: 20px; margin-bottom: 6px; }
 .career-list p { color: var(--muted); font-size: 15px; line-height: 1.6; }
-.ego-note { margin-top: 28px; padding: 20px 24px; border-left: 3px solid var(--accent); background: var(--surface); }
+.ego-note { margin-top: 28px; padding: 20px 24px; border: 1px solid rgba(216, 178, 101, 0.35); border-radius: var(--radius-sm); background: color-mix(in srgb, var(--accent) 5%, var(--surface)); }
 .ego-note span { display: block; font-weight: 700; font-size: 14px; letter-spacing: .02em; color: var(--text); margin-bottom: 6px; }
 .ego-note p { font-family: var(--serif); font-size: 17px; line-height: 1.6; color: var(--story); }
 

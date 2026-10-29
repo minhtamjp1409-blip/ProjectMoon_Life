@@ -14,6 +14,7 @@ char.merit = 50;
 char.pendingYearPlan = { age: 30 };
 const beforeOdds = fixerPromotionSuccessChance(char, 7);
 assert.equal(previousYearPoints(char), null, 'the first plan has no reusable allocation');
+assert.equal(previousYearPoints({ lastYearPoints: { train: 9 } }), null, 'an incomplete legacy allocation is not reused');
 assert.equal(validYearPoints({ train: 3, work: 0, bond: 0, rest: 0, scheme: 0 }), true);
 assert.equal(validYearPoints({ train: 4, work: 0, bond: 0, rest: 0, scheme: 0 }), false);
 assert.equal(applyAnnualPlan(char, { train: 3, work: 0, bond: 0, rest: 0, scheme: 0 }, 'rank'), true);

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { createNewCharacter, createRNG, cloneChar, DUNGEON_DEFINITIONS } from '../src/engine/gameEngine.js';
-import { planYear, chooseYearLead, LIFE_MINORS } from '../src/engine/yearPlanner.js';
+import { planYear, chooseYearLead, runDueItems, resolveMinor, LIFE_MINORS, MINOR_WINDOW_MS, FIRST_MINOR_WINDOW_MS } from '../src/engine/yearPlanner.js';
 import { addScar, activeScarSynergies, scarAnnualEffects } from '../src/engine/scarModel.js';
 import { createDungeonSession, getDungeonCurrentStage, resolveDungeonChoice, evaluateDungeonChoiceOdds, playDungeonCard, CARD_BUDGET } from '../src/engine/dungeonEngine.js';
 
@@ -19,6 +19,22 @@ for (let i = 0; i < 30; i++) {
   assert.ok(LIFE_MINORS.some((entry) => entry.id === chosen.leadChoice.id));
   assert.equal(cloneChar(JSON.parse(JSON.stringify(chosen))).plan.filter((item) => item.lead).length, 1);
   assert.equal(chooseYearLead(chosen, 0), chosen, 'a year cannot be drafted twice');
+}
+
+{
+  const first = createNewCharacter({ seed: 'first-timed-encounter', startAge: 7, preferredRegionId: 'K' });
+  first.stats.health = 50;
+  first.plan = [{ kind: 'minor', id: 'm_med_child_remedy', t: 0.1 }];
+  first.planCursor = 0;
+  const opened = runDueItems(first, 10, createRNG('first-timed-encounter')).char;
+  assert.equal(opened.pendingMinor?.remainingMs, FIRST_MINOR_WINDOW_MS, 'the first timed encounter gives time to read');
+  const passed = resolveMinor(opened, -1, createRNG('first-timed-choice'));
+  assert.equal(passed.firstTimedMinorSeen, true, 'passing still counts as having seen the encounter');
+  passed.plan = [{ kind: 'minor', id: 'm_med_child_remedy', t: 0.1 }];
+  passed.planCursor = 0;
+  const next = runDueItems(passed, 10, createRNG('later-timed-encounter')).char;
+  assert.equal(next.pendingMinor?.remainingMs, MINOR_WINDOW_MS, 'later encounters keep the normal clock');
+  assert.equal(cloneChar(JSON.parse(JSON.stringify(passed))).firstTimedMinorSeen, true, 'the first encounter state survives saving');
 }
 
 const scarred = createNewCharacter({ seed: 'synergy', startAge: 25 });

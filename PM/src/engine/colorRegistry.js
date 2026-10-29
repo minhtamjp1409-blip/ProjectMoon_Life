@@ -141,7 +141,7 @@ export function getBranchSceneMeta(char) {
   ) || Boolean(char.flags?.includes('Distorted') || char.flags?.includes('Distortion') || (char.distortStage || 0) > 0);
 
   const isEgo = Boolean(char.flags?.includes('EGOAwakened') || char.egoName || char.egoWeapon);
-  const isColor = Boolean(char.isColorFixer || char.fixerGrade === 0 || char.flags?.includes('ColorFixer') || char.customTitle);
+  const isColor = !isDistorted && Boolean(char.isColorFixer || char.fixerGrade === 0 || char.flags?.includes('ColorFixer') || char.customTitle);
 
   // Apex checks
   const isFingerApex = char.job === 'Syndicate' && (char.fingerRank || 0) >= 2;

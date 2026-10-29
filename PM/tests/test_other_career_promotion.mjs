@@ -17,7 +17,7 @@ const cases = [
 ];
 
 const careerCrossroad = ALL_STORY_EVENTS.find((event) => event.id === 'ad_career_crossroad_18');
-const wingEntryChoice = careerCrossroad.choices.findIndex((choice) => choice.setJob === 'Wing Employee');
+const wingEntryChoice = careerCrossroad.choices.findIndex((choice) => choice.outcomes?.some((outcome) => outcome.setJob === 'Wing Employee'));
 const wingEntrant = createNewCharacter({ seed: 'wing-probation', startAge: 18 });
 wingEntrant.regionId = 'A';
 wingEntrant.pendingEvent = careerCrossroad;

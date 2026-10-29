@@ -186,7 +186,7 @@ details > summary::-webkit-details-marker { display: none; }
 
 /* Ant Design surfaces (modals, menus, tooltips, notices) speak the same language */
 .ant-modal-mask { background: var(--dialog-scrim) !important; }
-.ant-modal :is(.ant-modal-container, .ant-modal-content) { border: 1px solid var(--dialog-border); border-top: 3px solid var(--accent); border-radius: var(--radius) !important; background: var(--dialog-surface) !important; color: var(--text); max-height: calc(100dvh - 48px); overflow-y: auto; box-shadow: var(--shadow-pop) !important; }
+.ant-modal :is(.ant-modal-container, .ant-modal-content) { border: 1px solid var(--dialog-border); border-radius: var(--radius) !important; background: var(--dialog-surface) !important; color: var(--text); max-height: calc(100dvh - 48px); overflow-y: auto; box-shadow: 0 0 0 1px rgba(216, 178, 101, 0.2), var(--shadow-pop) !important; }
 .ant-modal .ant-modal-header { background: transparent !important; }
 .ant-modal-title { font-family: var(--serif) !important; font-weight: 600 !important; color: var(--text) !important; }
 .ant-modal .btn { white-space: normal; height: auto; min-height: 44px; line-height: 1.5; padding: 10px 16px; }

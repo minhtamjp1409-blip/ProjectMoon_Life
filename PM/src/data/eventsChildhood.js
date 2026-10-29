@@ -410,24 +410,51 @@ export const CHILDHOOD_EVENTS = [
       {
         labelVi: "Nhận lời người tuyển việc của một Office",
         labelEn: "Take an offer from an Office recruiter",
-        resultVi: "Người tuyển việc ghi bạn vào danh sách khuân vác có bảo lãnh. Qua cổng District J, hắn dẫn bạn tới quầy đăng ký Fixer. Lệ phí ngốn gần hết tiền công ứng trước. Thẻ Grade 9 có tên bạn, nhưng không ghi nơi bạn sinh ra.",
-        resultEn: "The recruiter put you on a sponsored labor list. Past the District J gate he took you to a Fixer registration desk. The fee ate most of your advance. The Grade 9 card carried your name, but not where you were born.",
         setRegion: 'J',
-        setJob: 'Fixer',
-        setFixerGrade: 9,
-        effects: { wealth: -5, network: 5, rep: 3 },
-        flagsAdd: ['EnteredCity'],
-        recordsAdd: ['fixer_license']
+        outcomes: [
+          {
+            w: 70,
+            setJob: 'Fixer',
+            setFixerGrade: 9,
+            effects: { wealth: -5, network: 5, rep: 3 },
+            flagsAdd: ['EnteredCity'],
+            recordsAdd: ['fixer_license'],
+            resultVi: "Người tuyển việc ghi bạn vào danh sách khuân vác có bảo lãnh. Qua cổng District J, hắn dẫn bạn tới quầy đăng ký Fixer. Lệ phí ngốn gần hết tiền công ứng trước. Thẻ Grade 9 có tên bạn, nhưng không ghi nơi bạn sinh ra.",
+            resultEn: "The recruiter put you on a sponsored labor list. Past the District J gate he took you to a Fixer registration desk. The fee ate most of your advance. The Grade 9 card carried your name, but not where you were born."
+          },
+          {
+            w: 30,
+            setJob: 'Outcast',
+            flagsAdd: ['EnteredCity', 'CareerApplicationFailed'],
+            effects: { wealth: -5, sanity: -6, rep: -2 },
+            resultVi: "Người tuyển việc cầm tiền cọc rồi biến mất vào dòng người trước trạm gác District J. Bị từ chối cấp thẻ, bạn dạt vào gầm cầu Backstreets làm cửu vạn không tên tuổi.",
+            resultEn: "The recruiter pocketed your deposit and vanished into the crowd before the District J checkpoint. Denied a license, you washed up beneath a Backstreets overpass as an unnamed laborer."
+          }
+        ]
       },
       {
         labelVi: "Đi theo kẻ buôn lậu qua lối khuất",
         labelEn: "Follow a smuggler through a hidden route",
-        resultVi: "Bạn bỏ xe hàng, theo hắn qua lối phục vụ dưới chân tường. Tới Backstreets của District K, hắn đưa bạn một con dao và nói tiền dẫn đường sẽ trừ vào việc đầu tiên. Bạn chưa hỏi việc đó là gì.",
-        resultEn: "You left the caravan and followed him through a service passage under the wall. In District K’s Backstreets he handed you a knife and said the passage fee would come out of your first job. You had not asked what the job was.",
         setRegion: 'K',
-        setJob: 'Syndicate',
-        effects: { wealth: 6, heat: 10, sanity: -6 },
-        flagsAdd: ['EnteredCity']
+        outcomes: [
+          {
+            w: 75,
+            setJob: 'Syndicate',
+            effects: { wealth: 6, heat: 10, sanity: -6 },
+            flagsAdd: ['EnteredCity'],
+            resultVi: "Bạn bỏ xe hàng, theo hắn qua lối phục vụ dưới chân tường. Tới Backstreets của District K, hắn đưa bạn một con dao và nói tiền dẫn đường sẽ trừ vào việc đầu tiên. Bạn chưa hỏi việc đó là gì.",
+            resultEn: "You left the caravan and followed him through a service passage under the wall. In District K’s Backstreets he handed you a knife and said the passage fee would come out of your first job. You had not asked what the job was."
+          },
+          {
+            w: 25,
+            setJob: 'Outcast',
+            flagsAdd: ['EnteredCity', 'CareerApplicationFailed'],
+            effects: { health: -10, sanity: -8, heat: 12 },
+            scarsAdd: ['Bỏng hóa chất đường hầm biên giới'],
+            resultVi: "Đội tuần tra biên giới phục kích trong đường cống ngầm District K. Kẻ buôn lậu bị bắn thủng ngực. Bạn nhảy qua ống rò rỉ hóa chất ăn mòn, bò vào Backstreets làm một kẻ sống sót rách rưới.",
+            resultEn: "Border guards ambushed the tunnel under District K. The smuggler took a slug to the chest. Leaping through a leaking caustic conduit, you crawled into the Backstreets as a scarred, destitute drifter."
+          }
+        ]
       }
     ]
   },
@@ -442,21 +469,19 @@ export const CHILDHOOD_EVENTS = [
       {
         labelVi: "Dồn hết vốn liếng xin cấp thẻ Fixer Grade 9 tại quầy Hana Association",
         labelEn: "Scrape together savings to apply for a Grade 9 Fixer license at the Hana desk",
-        setJob: 'Fixer',
-        setFixerGrade: 9,
-        recordsAdd: ['fixer_license'],
-        meritAdd: 2,
         outcomes: [
           {
             need: { stat: { wealth: [8, 100] } },
-            w: 100,
+            w: 85,
+            setJob: 'Fixer', setFixerGrade: 9, recordsAdd: ['fixer_license'], meritAdd: 2,
             resultVi: "Bạn vét sạch 8 Ahn tiền để dành trả lệ phí sát hạch. Thư ký Hana đóng dấu cộp cộp, đưa tấm thẻ đồng thau cọc cạch: \"Cố mà giữ mạng qua năm đầu.\" Bạn bắt đầu sự nghiệp Fixer từ con số không dưới đáy chuỗi thức ăn.",
             resultEn: "You paid the 8 Ahn fee from your savings. The Hana clerk stamped the paper coldly: “Try to stay alive through your first year.” You begin your Fixer career from the very bottom of the food chain.",
             effects: { wealth: -8, rep: +6, network: +4, sanity: -6 }
           },
           {
             need: { stat: { wealth: [0, 7] } },
-            w: 100,
+            w: 65,
+            setJob: 'Fixer', setFixerGrade: 9, recordsAdd: ['fixer_license'], meritAdd: 2,
             resultVi: "Không đủ 8 Ahn trả lệ phí Hana, bạn buộc phải cắn răng ký giấy vay nợ của tiệm cầm đồ Backstreets để lấy tấm thẻ Grade 9. Thư ký Hana trao thẻ, còn sau lưng bạn, những kẻ đòi nợ đã bắt đầu tính lãi từng tuần.",
             resultEn: "Lacking 8 Ahn for the Hana fee, you had to swallow your pride and sign a loan shark debt in the Backstreets to get the Grade 9 license. The Hana clerk handed over the card, while debt collectors began tracking your interest by the week.",
             flagsAdd: ['FixerLicenseDebt'],
@@ -471,6 +496,20 @@ export const CHILDHOOD_EVENTS = [
               }
             ],
             effects: { rep: +6, heat: +14, sanity: -12 }
+          },
+          {
+            need: { stat: { wealth: [8, 100] } }, w: 15,
+            resultVi: 'Quầy Hana đóng hồ sơ vì thiếu người bảo lãnh. Bạn giữ lại lệ phí và nhận ca khuân vác trong lúc tìm một Office khác.',
+            resultEn: 'The Hana desk rejects the file for lack of a sponsor. You keep the fee and take freight shifts while looking for another Office.',
+            setJob: 'Outcast', effects: { wealth: 3, network: 3, sanity: -4 },
+            flagsAdd: ['CareerApplicationFailed']
+          },
+          {
+            need: { stat: { wealth: [0, 7] } }, w: 35,
+            resultVi: 'Chủ tiệm cầm đồ không cho vay. Bạn nhận việc bốc hàng ở quầy bên cạnh và chờ dịp nộp đơn khác.',
+            resultEn: 'The pawnbroker refuses the loan. You take a loading job next door and wait for another chance to apply.',
+            setJob: 'Outcast', effects: { wealth: 3, network: 2, sanity: -5 },
+            flagsAdd: ['CareerApplicationFailed']
           }
         ]
       },
@@ -479,22 +518,29 @@ export const CHILDHOOD_EVENTS = [
         labelEn: "Take debt-collection and night-running jobs for a local Syndicate",
         resultVi: "Một tay Capo ném cho bạn con dao rỉ và danh sách thu tiền bảo kê. \"Thu đủ trước giờ giới nghiêm, giữ lại phần trăm của mày.\" Bạn có tiền mặt dằn túi ngay lập tức, nhưng cái giá là bị ghi tên vào sổ đen và mùi máu bám vào ngón tay.",
         resultEn: "A Capo tossed you a rusted knife and a protection money collection ledger. “Collect before curfew, keep your cut.” You had quick cash in hand, but the cost was a spot on the watch list and the stench of iron on your fingers.",
-        setJob: 'Syndicate',
-        effects: { wealth: +14, rep: +6, heat: +12, sanity: -8 },
-        recordsAdd: ['syndicate_initiate'],
-        meritAdd: 2
+        outcomes: [
+          { w: 75, setJob: 'Syndicate', effects: { wealth: 14, rep: 6, heat: 12, sanity: -8 },
+            recordsAdd: ['syndicate_initiate'], meritAdd: 2 },
+          { w: 25, setJob: 'Outcast', flagsAdd: ['CareerApplicationFailed'],
+            resultVi: 'Tay Capo thu lại con dao. Đêm nay họ đủ người. Bạn nhận tiền công chuyển một chuyến hàng, chưa có tên trong sổ.',
+            resultEn: 'The Capo takes back the knife. The crew is full tonight. You earn a courier fee, without a place in their ledger.',
+            effects: { wealth: 5, heat: 4, sanity: -3 } }
+        ]
       },
       {
         labelVi: "Ký hợp đồng thử việc rủi ro cao tại cổng tuyển dụng của Wing",
         labelEn: "Sign a high-risk probationary contract at a Wing recruitment gate",
         resultVi: "Hàng trăm người chen chúc trước cổng. Để vượt qua vòng sơ loại, bạn phải ký vào bản cam kết cho phép Wing toàn quyền xử lý thể xác nếu Singularity phát sinh lỗi. Bạn nhận thẻ Feather cấp 0 tạm thời, bước qua cổng Nest với nỗi ớn lạnh sống lưng.",
         resultEn: "Hundreds jostled before the iron gate. To pass probation, you signed a waiver granting the Wing full authority over your remains in case of a Singularity breach. You took your provisional Rank 0 Feather badge, stepping into the Nest with a cold chill down your spine.",
-        setJob: 'Wing Employee',
-        setWingRank: 0,
-        effects: { wealth: +6, network: +8, rep: +4, sanity: -12 },
-        meritAdd: 2,
-        flagsAdd: ['Feather', 'Nest'],
-        recordsAdd: ['nest_migration']
+        outcomes: [
+          { w: 55, setJob: 'Wing Employee', setWingRank: 0,
+            effects: { wealth: 6, network: 8, rep: 4, sanity: -12 }, meritAdd: 2,
+            flagsAdd: ['Feather', 'Nest'], recordsAdd: ['nest_migration'] },
+          { w: 45, setJob: 'Outcast', flagsAdd: ['CareerApplicationFailed'],
+            resultVi: 'Máy quét trả lại hồ sơ không có lý do. Bạn nhận ca dọn kho ngoài cổng; bảng tuyển dụng vẫn treo ở phía bên kia.',
+            resultEn: 'The scanner returns your file without a reason. You take a warehouse shift outside the gate; the recruitment board remains on the other side.',
+            effects: { wealth: 4, network: 3, sanity: -5 } }
+        ]
       }
     ]
   },

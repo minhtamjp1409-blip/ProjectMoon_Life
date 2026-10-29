@@ -258,8 +258,14 @@ console.log('5. Testing Distorted character traverses all 3 acts of Carmen saga.
   advanceActiveNarrativeArcs(afterAct2, 'distort_former_companion_encounter');
   assert.ok(afterAct2.activeArcs.some(a => a.id === 'arc_carmen_distortion_abyss' && a.currentStage === 3));
 
-  // Year + 3: Trigger Act 3
+  // Act 3 waits until Hana has reason to treat this Distortion as a citywide threat.
   afterAct2.pendingEvent = null;
+  const earlyPlan = endYear(afterAct2, () => 0.5);
+  assert.ok(!earlyPlan.plan.some(p => p.forcedEventId === 'distort_star_of_city_rampage'), 'An unproven Distortion cannot reach Star rank');
+  afterAct2.age = 32;
+  afterAct2.merit = 105;
+  afterAct2.stats.rep = 68;
+  afterAct2.heat = 65;
   const y3 = endYear(afterAct2, () => 0.5);
   const m3 = y3.plan.find(p => p.kind === 'major');
   assert.equal(m3.forcedEventId, 'distort_star_of_city_rampage', 'Year 3 must plan Act 3');

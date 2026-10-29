@@ -489,6 +489,17 @@ export function syndicateApexOpportunity(char) {
  */
 export function triggerDistortionTransformation(char) {
   if (char.job === 'Distortion') return [];
+  if (char.flags.includes('ColorFixer') || char.isColorFixer || char.job === 'Color Fixer') {
+    char.unlockedRecords ||= [];
+    if (!char.unlockedRecords.includes('color_fixer')) char.unlockedRecords.push('color_fixer');
+    if (char.colorAwardAge != null && char.colorAwardAge < 45 && !char.unlockedRecords.includes('color_before_forty_five')) {
+      char.unlockedRecords.push('color_before_forty_five');
+    }
+    char.colorTitleAtAward ||= char.customTitle || null;
+    char.flags = char.flags.filter((flag) => flag !== 'ColorFixer');
+    char.isColorFixer = false;
+    char.customTitle = null;
+  }
   if (!char.flags.includes('Distorted')) char.flags.push('Distorted');
   char.job = 'Distortion';
   char.stats.sanity = 0; // Absolute madness or inverted ego

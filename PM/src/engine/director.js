@@ -87,6 +87,22 @@ export function directorWeight(entry, char) {
     reason = { vi: 'Một lựa chọn cũ quay lại', en: 'An old choice comes back' };
   }
 
+  if (entry.id?.includes('carmen') || entry.id === 'ego_carmen_crossroad' || tags.includes('distortion_call')) {
+    const sp = char.stats?.sanity ?? 50;
+    const scarsCount = (char.scars || []).length;
+    if (sp <= 25 && scarsCount >= 3) {
+      w *= 3.5;
+      reason = { vi: 'Khi tâm trí rạn nứt dưới gánh nặng vết tích, tiếng thì thầm cất lên', en: 'As sanity fractures beneath accumulated scars, the whisper grows louder' };
+    }
+  }
+
+  if (char.age >= 36 && char.age <= 50) {
+    if (tags.includes('veteran') || tags.includes('attrition') || tags.includes('mentor') || entry.need?.midlife) {
+      w *= 1.15;
+      reason = reason || { vi: 'Năm tháng và ma sát đời sống trung niên', en: 'Years and the attrition of mid-life' };
+    }
+  }
+
   if (tags.includes('danger')) {
     if (tension >= 65) w *= 0.45;
     else if (tension <= 30 && (char.weaver?.yearsSinceLastCrisis || 0) >= 2) {
@@ -237,7 +253,8 @@ export function applyBonds(char, sources, deltas = []) {
       const key = char.npcs?.[role] ? role : role === 'lover' && char.npcs?.spouse ? 'spouse' : null;
       if (!key || !npcActive(target)) continue;
       const before = target.bond || 0;
-      const cap = bondCapFor(target);
+      const yearsTogether = Math.max(0, (char.age || 0) - Math.max(15, target.metAge || char.age || 0));
+      const cap = bondCapFor({ ...target, yearsTogether });
       const gain = v > 0 ? Math.max(1, Math.round(v * 0.7)) : v;
       const after = v > 0 ? Math.max(before, Math.min(cap, clamp(before + gain, 0, 100))) : clamp(before + gain, 0, 100);
       char.npcs = { ...char.npcs, [key]: { ...target, bond: after, lastSeen: char.age } };
@@ -404,13 +421,16 @@ export function ageNpcCompanions(char, rng = Math.random) {
 /**
  * People drift apart when you stop seeing them, but slowly: nothing happens for the first
  * years, close bonds cool one point a year at most, and nothing falls below a faint acquaintance.
+ * Childhood relationships (age < 16) do not decay from adult silence rules.
  */
 export function driftBonds(char) {
+  if ((char.age || 0) < 16) return;
   const next = { ...char.npcs };
   let changed = false;
   for (const [role, npc] of Object.entries(char.npcs || {})) {
     if (!npcActive(npc) || role === 'child' || role === 'nemesis') continue;
-    const yearsApart = char.age - (npc.lastSeen ?? npc.metAge ?? 0);
+    const effectiveLastSeen = npc.lastSeen ?? (char.age < 20 ? 15 : npc.metAge ?? char.age);
+    const yearsApart = char.age - effectiveLastSeen;
     if (yearsApart >= 4 && (npc.bond || 0) > 6) {
       const drop = (npc.bond || 0) >= 60 || yearsApart < 7 ? 1 : 2;
       next[role] = { ...npc, bond: Math.max(6, (npc.bond || 0) - drop) };
@@ -434,7 +454,9 @@ export function keepInTouch(char, rng = Math.random) {
     const npc = char.npcs?.[role];
     if (!npcActive(npc) || (npc.bond || 0) < 12 || rng() >= chance) continue;
     const before = npc.bond || 0;
-    const after = Math.max(before, Math.min(bondCapFor(npc), before + 1));
+    const yearsTogether = Math.max(0, (char.age || 0) - Math.max(15, npc.metAge || char.age || 0));
+    const cap = bondCapFor({ ...npc, yearsTogether });
+    const after = Math.max(before, Math.min(cap, before + 1));
     char.npcs = { ...char.npcs, [role]: { ...npc, bond: after, lastSeen: char.age } };
     if (after !== before && rng() < 0.2) {
       logs.push({

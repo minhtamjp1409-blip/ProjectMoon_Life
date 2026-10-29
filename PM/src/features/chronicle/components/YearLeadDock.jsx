@@ -15,6 +15,11 @@ const KEY = {
   merit: ['Công trạng', 'Merit'], heat: ['Truy nã', 'Heat'], resonance: ['Cộng hưởng', 'Resonance']
 };
 const BAD_WHEN_UP = new Set(['heat']);
+const RISK = {
+  health: ['bị thương', 'injury'], sanity: ['hao tổn tinh thần', 'mental strain'], wealth: ['tốn tiền', 'spending Ahn'],
+  network: ['mất quan hệ', 'lost ties'], rep: ['mất danh tiếng', 'lost reputation'], merit: ['mất công trạng', 'lost merit'],
+  heat: ['bị truy nã', 'drawing a bounty'], resonance: ['mất cộng hưởng', 'lost resonance']
+};
 
 // Which stats a lead can move either way across all of its answers. Direction only: the size stays a surprise.
 function outlook(event) {
@@ -51,7 +56,7 @@ export function YearLeadList({ draft, char, onPick, disabled = false, autoFocus 
             <span className="year-lead-copy">{t(vi.body, en.body)}</span>
             <span className="year-lead-outlook">
               {gain.length > 0 && <span className="is-gain">{t('Có thể được', 'May gain')}: {gain.map((k) => t(...KEY[k])).join(', ')}</span>}
-              {cost.length > 0 && <span className="is-cost">{t('Có thể mất', 'May cost')}: {cost.map((k) => t(...KEY[k])).join(', ')}</span>}
+              {cost.length > 0 && <span className="is-cost">{t('Một cách xử lý có thể khiến bạn', 'One approach may mean')}: {cost.map((k) => t(...RISK[k])).join(', ')}</span>}
             </span>
             {offer.tier === 'forbidden' && (
               <span className="year-lead-warning">

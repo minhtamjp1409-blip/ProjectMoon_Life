@@ -1,3 +1,5 @@
+import { CAREER_ACHIEVEMENT_RECORDS } from './achievementRecords.js';
+
 // ============================================================================
 // WORLD DATA: 26 DISTRICTS + OUTSKIRTS + RUINS, FACTIONS, OFFICES, WORKSHOPS, CODEX
 // ============================================================================
@@ -1055,6 +1057,7 @@ export const CODEX_RECORDS = [
   { key: 'love_town_amalgam', category: 'grimdark', tier: 'epic', vi: 'Ở lại toa cuối', en: 'Stayed in the Last Car', hintVi: 'Không bao giờ ra khỏi WARP Train.', hintEn: 'Become a fused flesh amalgam aboard a WARP Train for 2,000 years.' },
   { key: 'executed_by_claw', category: 'grimdark', tier: 'rare', vi: 'Bị The Claw xử lý', en: 'Disposed of by the Claw', hintVi: 'Chết vì vi phạm Taboo.', hintEn: 'Violate The Head’s Taboos and be executed by a C Corp Claw.' },
   { key: 'died_young_alley', category: 'grimdark', tier: 'common', vi: 'Chưa đến 18', en: 'Not Yet Eighteen', hintVi: 'Chết trước tuổi 18.', hintEn: 'Perish in the brutal alleys before reaching age 18.' },
-  { key: 'cannibal_survivor', category: 'grimdark', tier: 'epic', vi: 'Phố ẩm thực District 23', en: 'The Food Street of District 23', hintVi: 'Sống sót bằng thứ không nên ăn.', hintEn: 'Survive by consuming human flesh in District 23 or the Hatchery.' }
+  { key: 'cannibal_survivor', category: 'grimdark', tier: 'epic', vi: 'Phố ẩm thực District 23', en: 'The Food Street of District 23', hintVi: 'Sống sót bằng thứ không nên ăn.', hintEn: 'Survive by consuming human flesh in District 23 or the Hatchery.' },
+  ...CAREER_ACHIEVEMENT_RECORDS
 ];
 

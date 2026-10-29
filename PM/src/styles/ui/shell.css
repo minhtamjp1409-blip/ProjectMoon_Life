@@ -35,7 +35,7 @@
 .topbar-tools { display: flex; align-items: center; gap: 2px; margin-left: auto; }
 .topbar-life {
   display: flex; flex-direction: column; align-items: flex-start; margin-right: 10px; padding: 4px 12px;
-  border-left: 2px solid var(--accent); text-align: left; line-height: 1.25;
+  border: 1px solid rgba(216, 178, 101, 0.3); border-radius: var(--radius-sm); background: rgba(216, 178, 101, 0.05); text-align: left; line-height: 1.25;
 }
 .topbar-life span { font-size: 12px; color: var(--muted); }
 .topbar-life strong { font-size: 14px; color: var(--text); }
@@ -55,7 +55,7 @@
 
 @media (max-width: 860px) {
   .shell { grid-template-rows: var(--top) minmax(0, 1fr) var(--bottom); }
-  .topbar { gap: 10px; padding: 0 8px 0 14px; }
+  .topbar { gap: 10px; padding: env(safe-area-inset-top, 0px) 8px 0 14px; height: var(--top); box-sizing: border-box; }
   .topbar-word { display: none; }
   .topbar-here { display: block; font-family: var(--serif); font-size: 17px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .topbar-nav { display: none; }
@@ -70,11 +70,38 @@
     backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
   }
   .bottom-nav button {
+    position: relative;
     display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
     min-height: 60px; color: var(--faint); font-size: 11.5px; font-weight: 600;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    transition: color .14s ease;
   }
+  .bottom-nav button:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
   .bottom-nav button.is-current { color: var(--text); }
   .bottom-nav button.is-current svg { color: var(--accent); }
+  .bottom-nav button.is-current::after {
+    content: '';
+    position: absolute;
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+  }
+}
+
+.sheet-grab-handle {
+  width: 36px;
+  height: 4px;
+  margin: 0 auto 10px;
+  border-radius: 2px;
+  background: var(--border);
+  opacity: 0.8;
+  flex: none;
 }
 @media (max-width: 360px) {
   .topbar-tools .app-tool { min-width: 34px; padding: 0 6px; }

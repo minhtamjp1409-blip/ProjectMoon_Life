@@ -937,6 +937,25 @@ export function settleRun(char, session, outcome) {
     moveStanding(char, outcome === 'conquered' ? 10 : outcome === 'fled' ? -3 : -5);
   }
   if (outcome === 'conquered') {
+    const principalDungeons = [
+      'dungeon_warp_train', 'dungeon_lobotomy_ruin', 'dungeon_bloodfiend_carnival',
+      'dungeon_outskirts_ruins', 'dungeon_great_lake'
+    ];
+    if (principalDungeons.includes(session.id)) {
+      const clears = char.dungeonRecord?.clears || [];
+      char.dungeonRecord = { clears: [...clears, { id: session.id, age: char.age }] };
+      const unlock = (key) => {
+        if (!(char.unlockedRecords || []).includes(key)) {
+          char.unlockedRecords = [...(char.unlockedRecords || []), key];
+        }
+      };
+      unlock('dungeon_first_clear');
+      if (char.dungeonRecord.clears.length >= 3) unlock('dungeon_three_clear');
+      if (principalDungeons.every((id) => char.dungeonRecord.clears.some((clear) => clear.id === id))) unlock('dungeon_five_places');
+      if (session.id === 'dungeon_lobotomy_ruin') unlock('lobotomy_containment_clear');
+      if (session.id === 'dungeon_outskirts_ruins') unlock('outskirts_ruins_clear');
+      if (session.id === 'dungeon_great_lake') unlock('great_lake_clear');
+    }
     if (session.id === 'dungeon_warp_train') {
       if (!(char.unlockedRecords || []).includes('warp_cleanup')) {
         char.unlockedRecords = [...(char.unlockedRecords || []), 'warp_cleanup'];
@@ -1222,7 +1241,8 @@ export function egoChargesOf(char) {
 
 /** Color rank, whether stored as the flag, the promoted job name or grade 0. */
 export function isColorRank(char) {
-  return Boolean(char && ((char.flags || []).includes('ColorFixer') || char.job === 'Color Fixer' || char.fixerGrade === 0));
+  return Boolean(char && char.job !== 'Distortion' && !char.flags?.includes('Distorted') &&
+    ((char.flags || []).includes('ColorFixer') || char.job === 'Color Fixer' || char.fixerGrade === 0));
 }
 
 const COLOR_WEAPON_FLAGS = ['CraftedColorWeapon'];

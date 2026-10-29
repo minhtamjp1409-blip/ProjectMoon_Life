@@ -10,10 +10,12 @@
 import { npcIsActive } from './eventConditions.js';
 import { bondCapFor, ensureNpcAgency } from '../data/npcPersonality.js';
 import { plantThread } from './affiliation.js';
+import { cloneChar } from './gameEngine.js';
 
 export function isFactionLeader(char) {
   if (!char) return false;
   const flags = char.flags || [];
+  if (char.job === 'Distortion' || flags.includes('Distorted')) return false;
   if (char.job === 'Color Fixer' || char.fixerGrade === 0 || flags.includes('ColorFixer')) return true;
   if (char.job === 'Fixer' && ((char.fixerGrade ?? 9) <= 2 || flags.includes('AssocDirector') || flags.includes('OwnFixerOffice'))) return true;
   if (char.job === 'Wing Employee' && (char.wingRank || 0) >= 2) return true;
@@ -142,7 +144,7 @@ export function executeNpcInteraction(char, role, actionId, rng = Math.random) {
     return { success: false, reasonVi: check.reasonVi, reasonEn: check.reasonEn, nextChar: char };
   }
 
-  const nextChar = JSON.parse(JSON.stringify(char));
+  const nextChar = cloneChar(char);
   nextChar.stats = nextChar.stats || {};
   let npc = ensureNpcAgency(nextChar.npcs[role], rng);
   const name = npc.nameVi || npc.nameEn;

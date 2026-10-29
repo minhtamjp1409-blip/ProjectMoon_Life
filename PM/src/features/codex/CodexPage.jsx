@@ -4,22 +4,36 @@ import { CODEX_RECORDS, CODEX_CATEGORIES } from '../../data/worldData';
 import { useT } from '../../i18n';
 import PageBanner from '../../components/PageBanner';
 
-// Risk levels from Lobotomy Corporation, used as the rarity of each record
 const TIER_LABELS = {
-  common: 'ZAYIN',
-  uncommon: 'TETH',
-  rare: 'HE',
-  epic: 'WAW',
-  legend: 'ALEPH',
-  myth: 'Star of the City',
-  miracle: 'Impuritas'
+  common: ['Phổ biến', 'Common'],
+  uncommon: ['Khá hiếm', 'Uncommon'],
+  rare: ['Hiếm', 'Rare'],
+  epic: ['Sử thi', 'Epic'],
+  legend: ['Truyền thuyết', 'Legendary'],
+  myth: ['Huyền thoại', 'Mythic'],
+  miracle: ['Thần tích', 'Miracle']
+};
+
+const progressOf = (char, key) => {
+  const contracts = char?.contractRecord || {};
+  const clears = char?.dungeonRecord?.clears || [];
+  const goals = {
+    life_eighty: [char?.age || 0, 80], life_century: [char?.age || 0, 100],
+    three_requests: [contracts.fixer || 0, 3], ten_requests: [contracts.fixer || 0, 10],
+    five_finger_jobs: [Math.max(0, ...Object.values(contracts.fingers || {})), 5],
+    independent_five_jobs: [contracts.independent || 0, 5],
+    wing_five_assignments: [contracts.wing || 0, 5],
+    dungeon_first_clear: [clears.length, 1], dungeon_three_clear: [clears.length, 3],
+    dungeon_five_places: [new Set(clears.map((clear) => clear.id)).size, 5]
+  };
+  return goals[key] || null;
 };
 
 const stripCount = (label) => label.replace(/\s*\(\d+\)\s*$/, '');
 
 export const CodexPage = () => {
   const { t, lang, bilingual } = useT();
-  const { globalCodex } = useGameStore();
+  const { globalCodex, char, inRun } = useGameStore();
   const [filter, setFilter] = useState('all');
   const [category, setCategory] = useState('all');
 
@@ -102,6 +116,7 @@ export const CodexPage = () => {
           <div className="grid-2" style={{ gap: 0 }}>
             {records.map((rec) => {
               const unlocked = globalCodex.includes(rec.key);
+              const progress = inRun && !unlocked ? progressOf(char, rec.key) : null;
               return (
                 <div key={rec.key} className={`record ${unlocked ? '' : 'is-locked'}`} style={{ borderTop: '1px solid var(--rule)' }}>
                   <div style={{ minWidth: 0 }}>
@@ -110,9 +125,12 @@ export const CodexPage = () => {
                     <div className="record-sub" style={{ marginTop: 4 }}>
                       {lang === 'en' ? rec.hintEn || rec.hintVi : rec.hintVi}
                     </div>
+                    {progress && <div className="record-sub" aria-label={t(`Tiến độ đời này: ${Math.min(progress[0], progress[1])} trên ${progress[1]}`, `This life's progress: ${Math.min(progress[0], progress[1])} of ${progress[1]}`)}>
+                      {t('Đời này', 'This life')}: {Math.min(progress[0], progress[1])}/{progress[1]}
+                    </div>}
                   </div>
                   <div className="record-status" style={{ display: 'grid', justifyItems: 'end', gap: 6 }}>
-                    <span className="pill">{TIER_LABELS[rec.tier] || rec.tier}</span>
+                    <span className="pill">{TIER_LABELS[rec.tier]?.[lang === 'en' ? 1 : 0] || rec.tier}</span>
                     <span style={{ fontSize: 13, color: unlocked ? 'var(--good)' : 'var(--faint)' }}>
                       {unlocked ? t('Đã đạt', 'Unlocked') : t('Chưa mở', 'Locked')}
                     </span>

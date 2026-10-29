@@ -43,7 +43,7 @@ export function extractAncestorEchoProfile(char) {
 
   return {
     isColorAncestor,
-    colorTitle: char.customTitle || null,
+    colorTitle: char.colorTitleAtAward || char.customTitle || null,
     isDistortedAncestor,
     isEgoAncestor,
     egoName: char.egoName || null,

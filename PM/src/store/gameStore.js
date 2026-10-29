@@ -18,7 +18,7 @@ import {
   cloneChar,
   interpolateText
 } from '../engine/gameEngine.js';
-import { planYear, chooseYearLead, syncPlanWithBackend, runDueItems, resolveMinor, endYear, nextPlanItem, diffStats, MINOR_WINDOW_MS, splitTitle, LIFE_MINORS } from '../engine/yearPlanner.js';
+import { planYear, chooseYearLead, chooseDirectorPacedLead, syncPlanWithBackend, runDueItems, resolveMinor, endYear, nextPlanItem, diffStats, MINOR_WINDOW_MS, splitTitle, LIFE_MINORS } from '../engine/yearPlanner.js';
 import { CODEX_RECORDS } from '../data/worldData.js';
 import { getItemById } from '../data/itemsData.js';
 import { cityArchiveAPI } from '../services/api/cityArchiveAPI.js';
@@ -431,7 +431,7 @@ export const useGameStore = create((set, get) => ({
     const char = enforceTabooJudgment(cloneChar(run.char));
     lifeRng = run.rngState ? createRNG(`${char.seed}:life:${char.age}`, run.rngState) : lifeRngFor(char);
     lifeActiveMs = run.activePlayMs || 0;
-    set({ char, inRun: true, yearProgress: run.yearProgress || 0, speed: 1, stageFx: null, activeResolution: null, postChoicePauseMs: 0, minorRemainingMs: MINOR_WINDOW_MS });
+    set({ char, inRun: true, yearProgress: run.yearProgress || 0, speed: 1, stageFx: null, activeResolution: null, postChoicePauseMs: 0, minorRemainingMs: char.pendingMinor?.remainingMs || MINOR_WINDOW_MS });
   },
 
   // Leave the run without losing it
@@ -643,7 +643,7 @@ export const useGameStore = create((set, get) => ({
     set({
       char: withD,
       ...(fx ? { stageFx: { kind: fx, at: Date.now() } } : {}),
-      ...(withD.pendingMinor && !prev.pendingMinor ? { minorRemainingMs: MINOR_WINDOW_MS } : {}),
+      ...(withD.pendingMinor && !prev.pendingMinor ? { minorRemainingMs: withD.pendingMinor.remainingMs || MINOR_WINDOW_MS } : {}),
       ...meta,
       ...extra,
       ...(withD.pendingDungeon?.id === CLAW_DUNGEON_ID && !prev.pendingDungeon ? { postChoicePauseMs: 0, activeResolution: null } : {})
@@ -737,13 +737,13 @@ export const useGameStore = create((set, get) => ({
     if (s.activeResolution) return;
     if (c.pendingYearPlan) {
       if (s.autoPlay && s.speed > 0 && !(c.pendingBirthLogs || []).length) {
-        const leadIndex = c.pendingLead ? autoLeadIndex(c.pendingLead, lifeRng) : null;
-        get().chooseAnnualPlan(c.lastYearPoints || defaultYearPoints(), c.ambition?.id || ambitionsFor(c)[0].id, leadIndex);
+        get().chooseAnnualPlan(c.lastYearPoints || defaultYearPoints(), c.ambition?.id || ambitionsFor(c)[0].id);
       }
       return;
     }
     if (c.pendingLead) {
-      if (s.autoPlay && s.speed > 0 && !(c.pendingBirthLogs || []).length) get().chooseYearLead(autoLeadIndex(c.pendingLead, lifeRng));
+      const nextChar = chooseDirectorPacedLead(c, lifeRng);
+      get().commit(c, nextChar, { postChoicePauseMs: 0 });
       return;
     }
     if (c.pendingEvent || c.pendingContract || c.pendingDungeon || c.pendingModal) return;
@@ -760,7 +760,7 @@ export const useGameStore = create((set, get) => ({
     if (c.pendingMinor) {
       if (c.pendingMinor.annualMerit && !s.autoPlay) return;
       const remaining = s.minorRemainingMs - dtMs;
-      if (s.autoPlay && MINOR_WINDOW_MS - remaining >= AUTO_MINOR_MS) {
+      if (s.autoPlay && (c.pendingMinor.remainingMs || MINOR_WINDOW_MS) - remaining >= AUTO_MINOR_MS) {
         const def = LIFE_MINORS.find((event) => event.id === c.pendingMinor.id);
         // The autopilot never raises Taboo; that is the player's call alone
         const available = (def?.choices || []).map((choice, index) => choiceIsAvailable(choice, c) && !tabooGainOf(choice) ? index : -1).filter((index) => index >= 0);
@@ -869,7 +869,13 @@ export const useGameStore = create((set, get) => ({
     let next = cloneChar(prev);
     if (!applyAnnualPlan(next, points, ambitionId, directiveId)) return false;
     if (!next.plan?.length) planYear(next, lifeRng);
-    if (next.pendingLead && Number.isInteger(leadIndex)) next = chooseYearLead(next, leadIndex);
+    if (next.pendingLead) {
+      if (Number.isInteger(leadIndex)) {
+        next = chooseYearLead(next, leadIndex);
+      } else {
+        next = chooseDirectorPacedLead(next, lifeRng);
+      }
+    }
     get().commit(prev, next, { postChoicePauseMs: 0 });
     requestPlanSync(get);
     return true;
@@ -997,11 +1003,13 @@ export const useGameStore = create((set, get) => ({
       glow: 'rgba(225, 52, 30, 0.45)'
     };
     next.customTitle = title;
+    next.colorTitleAtAward = title;
     next.colorData = colorData;
     next.isColorFixer = true;
     next.job = 'Color Fixer';
     next.fixerGrade = 0;
     if (!next.flags.includes('ColorFixer')) next.flags.push('ColorFixer');
+    next.colorAwardAge ??= next.age;
     next.pendingModal = null;
     if (!next.unlockedRecords.includes('color_fixer')) next.unlockedRecords.push('color_fixer');
     next.logs.push({

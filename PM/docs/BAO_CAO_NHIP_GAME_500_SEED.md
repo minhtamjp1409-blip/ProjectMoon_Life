@@ -1,6 +1,6 @@
 # Nhịp đời chơi và phễu Color / E.G.O — 500 seed
 
-Cập nhật 29/10/2026. Các số dưới đây đo bot, không phải xác suất thắng của người chơi. Seed cố định (`branch_0…499`, `bal_fixed_0…499`) để so sánh sau khi sửa code. Không chỉnh route hoặc ngưỡng cân bằng trong đợt này.
+Cập nhật 29/10/2026. Các số dưới đây đo bot, không phải xác suất thắng của người chơi. Seed cố định (`branch_0…499`, `bal_fixed_0…499`) để so sánh sau khi sửa code. Đây là số liệu **trước đợt sửa route**; kết quả mới nằm ở [báo cáo sửa route](./SUA_ROUTE_29_10_2026.md).
 
 ## 1. Đời chơi theo route
 
@@ -17,6 +17,8 @@ Route được ghi theo nghề ở **đầu mỗi năm**. Một đời có thể
 | Outcast | 4 | 54 | 3,7 | 22,8 | 2–7–7 | 0/20 | 0% | 85,2% |
 
 209 đời có ít nhất một năm đã 18 tuổi mà `job` vẫn là `Child` (375 năm). Đây là một tín hiệu cần kiểm tra cùng điểm rẽ nghề nghiệp khi mở lại việc route. Không suy ra độ mỏng của Outcast từ 4 đời.
+
+Khi thoát run, có 52 thread còn mở ở đời kết thúc với Fixer, 38 với Wing, 63 với Syndicate và 7 với Distortion. Con số này gán thread theo **route cuối**, kể cả thread được mở ở route trước, nên dùng danh sách `lifeRows[].openThreadIds` trong JSON để đọc từng seed trước khi kết luận nhánh nào bỏ dở mạch truyện. JSON cũng giữ ID major/minor từng đời để tìm cảnh lặp.
 
 Theo tuổi, Wing có 1053 năm ở 18–29, 437 năm ở 30–44, 158 năm ở 45–59 và 55 năm từ 60 trở lên. Fixer tương ứng 832/360/90/8; Syndicate 1060/195/5/0. Mẫu già của Wing nhiều hơn, nên so sánh số sự kiện *mỗi năm* cùng tuổi ở lần cân route kế tiếp; không chỉ nhìn số sự kiện mỗi đời.
 
@@ -43,7 +45,7 @@ Nhóm xuất thân chỉ chia theo Ahn khởi đầu: `<10` có 174 đời, `≥
 
 ## 3. Kiểm thử UI và kế hoạch năm
 
-`node tools/qa/remaining_tasks_browser.mjs` chạy Chromium thật tại 390px và 1440px. Đã kiểm tra VI/EN, 2/3/5/15 Ahn, trả hết 10 Ahn và trả một phần 3 Ahn: trạng thái khóa/nhãn đúng, không tràn ngang, Tab đến lựa chọn kế tiếp có focus ring. Ảnh và `report.json` nằm trong thư mục tạm `pm-remaining-tasks-qa`. Bộ kiểm thử logic `tests/test_choice_cost_parity.mjs` xác nhận preview/điều kiện/số tiền engine trừ khớp cả ở các số dư nợ khác. Ở nút dùng lại kế hoạch, bản nháp đổi từ 1–1–0–1–0 sang 0–0–0–3–0, preview hiện `SP +9`, `pendingYearPlan` vẫn còn cho đến khi xác nhận; năm đầu không có nút dùng lại.
+`node tools/qa/remaining_tasks_browser.mjs` chạy Chromium thật tại 390px và 1440px. Đã kiểm tra VI/EN, 2/3/5/15 Ahn, trả hết 10 Ahn và trả một phần 3 Ahn: trạng thái khóa/nhãn đúng, không tràn ngang, Tab đến lựa chọn kế tiếp có focus ring. Nhãn đã ghi số tiền thì `EventDock` không thêm chip phí lặp; script đếm mỗi số phí một lần trong nút. Ảnh và `report.json` nằm trong thư mục tạm `pm-remaining-tasks-qa`. Bộ kiểm thử logic `tests/test_choice_cost_parity.mjs` xác nhận preview/điều kiện/số tiền engine trừ khớp cả ở các số dư nợ khác. Ở nút dùng lại kế hoạch, bản nháp đổi từ 1–1–0–1–0 sang 0–0–0–3–0, preview hiện `SP +9`, `pendingYearPlan` vẫn còn cho đến khi xác nhận; năm đầu không có nút dùng lại.
 
 `npm test` (gồm audit 500 khoảnh khắc) và `npm run build` đạt. Bộ kiểm thử UI dùng trạng thái nhân vật được đưa thẳng vào store, không mô phỏng toàn bộ hành trình nhập nghề qua giao diện. Cần một lượt chơi thủ công để kiểm tra nhịp đọc, nhất là năm Wing kéo dài và đoạn cuộn kế hoạch năm trên điện thoại.
 

@@ -197,11 +197,11 @@ export const DISTORTION_PATH_EVENTS = [
   },
   {
     id: 'distort_star_of_city_rampage',
-    age: [18, 99],
+    age: [28, 99],
     major: true,
     weight: 70,
-    need: { jobs: ['Distortion'] },
-    forbids: ['distort_star_rampage_done'],
+    need: { jobs: ['Distortion'], meritAtLeast: 100, stat: { rep: [65, 100], heat: [60, 100] } },
+    forbids: ['distort_star_rampage_done', 'distort_star_calamity_done', 'LivingStarOfCity'],
     vi: "[Cơn thịnh nộ của Star of the City] Sự méo mó trong tâm trí bạn chạm đỉnh. Cả khu phố quanh bạn biến thành sân khấu riêng: đá đường uốn cong, bầu trời đỏ như mắt Carmen. Ba đội Fixer Grade 1 cùng dàn pháo của Hana bao vây toàn bộ khu vực.",
     en: "[Wrath of a Star of the City] The warping in your mind peaks. The whole district around you becomes a stage of your own: the paving bends, the sky glows red like Carmen’s eye. Three Grade 1 Fixer teams and Hana’s artillery seal the entire area.",
     choices: [

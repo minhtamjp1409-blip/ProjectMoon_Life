@@ -7,7 +7,7 @@
 //     back with money; Cultist Simulator: recovery costs time or goods).
 //   - Recovery is a fraction of what is missing, so a nearly-whole character gains little
 //     and a broken one gains more, never a flat refill.
-//   - How long a life runs comes from the District's own avgLife, not from a global age.
+//   - District conditions accumulate on the body year by year; moving does not erase old wear.
 // Everything tunable lives in BALANCE. Pure functions, no randomness.
 // ============================================================================
 
@@ -16,7 +16,7 @@ import { traitsOf } from './variance.js';
 import { scarResonanceFloor } from './scarModel.js';
 
 export const BALANCE = {
-  refLife: 55,                    // the avgLife a District needs to age at the base rate
+  refLife: 55,
   // A Fixer event pays this share of the Merit it lists. The ladder's rungs sit far below what the
   // events add up to, so without this a Fixer would climb a rung a year.
   fixerMeritScale: 0.4,
@@ -33,9 +33,9 @@ export const BALANCE = {
   // A Color or a head of a Finger that accepted the City's care keeps its body about this much longer
   apexLongevityShift: 38,
   aging: {
-    start: 50,                    // effective age where the body starts to give
-    step: 0.32,
-    power: 1.08,
+    start: 52,
+    step: 0.25,
+    power: 1.06,
     floor: 1
   },
   drift: {
@@ -48,18 +48,22 @@ export const BALANCE = {
 
 const regionOf = (char) => REGIONS.find((r) => r.id === char.regionId) || REGIONS[0];
 
-/** >1 in a harsh District (shorter lives), <1 in a safe one. */
+/** Annual body-age gain stays bounded even in the harshest District. */
 export function frailty(char) {
   const avg = regionOf(char).avgLife || BALANCE.refLife;
-  return BALANCE.refLife / avg;
+  return Math.min(1.22, Math.max(0.88, 1 + 0.55 * (BALANCE.refLife / avg - 1)));
 }
 
-/** How old the body is, which is not the same as the calendar in a hard place. */
 /** Events that belong to the Fixer career; the Merit they list is scaled by BALANCE.fixerMeritScale. */
 export const isFixerCareerEvent = (event) =>
   /^(fixer_|hana_)/.test(event?.id || '') || (event?.jobs || event?.need?.jobs || []).includes('Fixer');
 
-export const effectiveAge = (char) => char.age * frailty(char);
+/** Saved body age is anchored to a calendar age so old and manually advanced runs remain readable. */
+export const effectiveAge = (char) => {
+  const savedBodyAge = Number.isFinite(char.bodyAge) ? char.bodyAge : char.age * frailty(char);
+  const recordedAt = Number.isFinite(char.bodyAgeRecordedAt) ? char.bodyAgeRecordedAt : char.age;
+  return Math.max(0, savedBodyAge + (char.age - recordedAt) * frailty(char));
+};
 
 export function reputationGain(current, gain) {
   if (gain <= 0 || current < 60) return gain;
@@ -76,6 +80,18 @@ export function agingLoss(char) {
   const over = effectiveAge(char) - start;
   if (over <= 0) return 0;
   return Math.round(a.floor + a.step * Math.pow(over, a.power));
+}
+
+/** Upkeep cost in Ahn for a scarred body in calendar ages 38-49. */
+export function midlifeMaintenanceLoss(char) {
+  const flags = char?.flags || [];
+  if (flags.includes('Bloodfiend') || flags.includes('ApexLongevity')) return 0;
+  if (hasEstablishedStanding(char)) return 0;
+  if (char.age < 38 || char.age >= 50 || effectiveAge(char) >= BALANCE.aging.start) return 0;
+  const scarCount = (char.scars || []).length;
+  const hasProsthetic = flags.includes('FullBodyProsthetic');
+  if (scarCount < 3 && !hasProsthetic) return 0;
+  return 1;
 }
 
 /** HP mended over a year by the best care available; `kind` is natural | nest | clinic | ampoule. */

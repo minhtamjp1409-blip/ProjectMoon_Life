@@ -95,13 +95,16 @@ import {
   hasMemory
 } from './director.js';
 import { freshness, varyEffects, traitsOf, PRINTED_NUMBERS } from './variance.js';
-import { BALANCE, healAmount, calmAmount, agingLoss, effectiveAge, driftOf, hasEstablishedStanding, reputationGain } from './economyModel.js';
+import { BALANCE, healAmount, calmAmount, agingLoss, midlifeMaintenanceLoss, effectiveAge, frailty, driftOf, hasEstablishedStanding, reputationGain } from './economyModel.js';
 import { activeScarCount, addScar, scarAnnualEffects } from './scarModel.js';
 import { ambitionComplete, ambitionWeight } from './annualPlan.js';
 import { ENSEMBLE_INVITE_ID, ENSEMBLE_LAST_CALL_ID, prepareEnsembleYear } from './ensemblePath.js';
 import { weightedOutcomes } from './outcomeOdds.js';
 
 export const MINOR_WINDOW_MS = 15000;
+export const FIRST_MINOR_WINDOW_MS = 30000;
+
+const minorWindowFor = (char) => char.firstTimedMinorSeen ? MINOR_WINDOW_MS : FIRST_MINOR_WINDOW_MS;
 // How many recent moments freshness looks back over (see variance.js)
 const RECENT_LIMIT = 120;
 
@@ -287,6 +290,99 @@ export function chooseYearLead(charState, index) {
   return char;
 }
 
+/**
+ * Director Pacing Governor:
+ * Automatically selects an emergent year lead with organic RNG while actively directing the dramatic tension curve.
+ * Guarantees a run does not experience only brutal/punishing events nor only trivial/flat cakewalks:
+ * - High stress / critical wounds / recent danger -> throttles danger to 0-5%, elevates steady/breathing room to 70%+.
+ * - Prolonged peace / high vitals / streak of easy years -> elevates danger/stakes up to 45-50%, throttles easy to 10%.
+ * - Normal baseline: balanced bell curve (~35% steady, ~40% uncertain, ~25% danger).
+ */
+export function chooseDirectorPacedLead(charState, rng = Math.random) {
+  const char = cloneChar(charState);
+  const draft = char.pendingLead;
+  if (!draft || !Array.isArray(draft.offers) || draft.offers.length === 0) return charState;
+  if (draft.age !== char.age) {
+    char.pendingLead = null;
+    return char;
+  }
+
+  const usableIndices = draft.offers
+    .map((offer, idx) => ({ offer, idx }))
+    .filter(({ offer }) => isYearLeadUsable(offer, char));
+
+  if (usableIndices.length === 0) {
+    char.pendingLead = null;
+    return char;
+  }
+
+  if (usableIndices.length === 1) {
+    return chooseYearLead(char, usableIndices[0].idx);
+  }
+
+  const hp = char.stats?.health ?? char.health ?? 50;
+  const sp = char.stats?.sanity ?? char.sanity ?? 50;
+  const tension = char.weaver?.tensionScore ?? 25;
+  const recentTiers = char.recentLeadTiers || [];
+
+  const recentDangerCount = recentTiers.slice(-3).filter((t) => t === 'danger' || t === 'forbidden').length;
+  const recentSteadyCount = recentTiers.slice(-3).filter((t) => t === 'steady').length;
+  const yearsSinceCrisis = char.weaver?.yearsSinceLastCrisis ?? 3;
+
+  const scoredOffers = usableIndices.map(({ offer, idx }) => {
+    let weight = 30;
+    const tier = offer.tier || 'uncertain';
+
+    if (tier === 'steady') {
+      weight = 35;
+      if (hp < 45) weight += 45;
+      if (sp < 40) weight += 40;
+      if (tension >= 65) weight += 35;
+      if (recentDangerCount >= 2) weight += 60; // Guarantee breathing room after consecutive danger
+      if (recentSteadyCount >= 2) weight = Math.max(5, weight - 25); // Throttle when on an easy streak
+    } else if (tier === 'uncertain') {
+      weight = 40;
+      if (recentSteadyCount >= 1 && recentDangerCount >= 1) weight += 20;
+    } else if (tier === 'danger') {
+      weight = 25;
+      if (recentSteadyCount >= 2) weight += 45; // Escalate stakes when life is too placid
+      if (yearsSinceCrisis >= 4) weight += 30;
+      if (hp >= 75 && sp >= 70 && tension <= 35) weight += 25;
+      // Survival safety: zero danger when already bleeding out or overwhelmed
+      if (hp < 40 || sp < 30 || recentDangerCount >= 2) weight = 0;
+      else if (tension >= 70 || recentDangerCount >= 1) weight = Math.max(5, weight - 15);
+    } else if (tier === 'forbidden') {
+      // Forbidden Taboo path: Only deliberate when conditions align, never forced recklessly
+      weight = 0;
+    }
+
+    return { idx, tier, weight: Math.max(0, weight) };
+  });
+
+  const totalWeight = scoredOffers.reduce((sum, item) => sum + item.weight, 0);
+  if (totalWeight <= 0) {
+    const fallback = scoredOffers.find((o) => o.tier === 'steady') || scoredOffers[0];
+    char.recentLeadTiers = [...recentTiers, fallback.tier].slice(-5);
+    return chooseYearLead(char, fallback.idx);
+  }
+
+  let roll = rng() * totalWeight;
+  let chosenIdx = scoredOffers[0].idx;
+  let chosenTier = scoredOffers[0].tier;
+
+  for (const item of scoredOffers) {
+    if (roll < item.weight) {
+      chosenIdx = item.idx;
+      chosenTier = item.tier;
+      break;
+    }
+    roll -= item.weight;
+  }
+
+  char.recentLeadTiers = [...recentTiers, chosenTier].slice(-5);
+  return chooseYearLead(char, chosenIdx);
+}
+
 const minorCanEarnMerit = (id) => LIFE_MINORS.some((entry) => entry.id === id &&
   entry.choices?.some((choice) => (choice.fx?.merit || 0) > 0 ||
     (choice.out || choice.outcomes || []).some((outcome) => (outcome.fx?.merit || 0) > 0)));
@@ -423,7 +519,8 @@ export function planYear(charState, rng) {
     }
 
     // Drop if far overdue and cannot be resolved
-    if (age > th.triggerAge + 8) {
+    const graceYears = th.eventId === 'distort_star_of_city_rampage' ? 20 : 8;
+    if (age > th.triggerAge + graceYears) {
       closeThreads(char, th.eventId, { threadId: th.id });
     }
   }
@@ -448,6 +545,9 @@ export function planYear(charState, rng) {
     if (!(char.seenEvents || []).includes(careerEventId) && !scheduledKey.some((it) => it.forcedEventId === careerEventId)) {
       scheduledKey.push({ kind: 'major', forcedEventId: careerEventId });
     }
+  } else if (char.job === 'Outcast' && char.flags?.includes('CareerApplicationFailed') &&
+             !isOutskirts(char) && age >= 16 && age <= 45 && char.lastCareerApplicationAge !== age) {
+    scheduledKey.push({ kind: 'major', forcedEventId: 'ad_career_second_application' });
   } else if (char.job === 'Syndicate' && !char.finger && !char.flags?.includes('IndependentSyndicate') && !(char.seenEvents || []).includes('syn_choose_finger_allegiance') &&
              ((char.merit || 0) >= 15 && ((char.stats?.rep || 0) >= 20 || (char.heat || 0) >= 25))) {
     if (!scheduledKey.some((it) => it.forcedEventId === 'syn_choose_finger_allegiance')) {
@@ -974,7 +1074,7 @@ export function runPlanItem(charState, item, rng) {
           en: interpolateText(care.en, char),
           choices: care.choices.map((choice) => ({ vi: interpolateText(choice.vi, char), en: interpolateText(choice.en, char), fx: choice.fx, out: choice.out, need: choice.need, costAhn: choice.costAhn })),
           ignore: care.ignore || null,
-          remainingMs: MINOR_WINDOW_MS
+          remainingMs: minorWindowFor(char)
         };
       }
     }
@@ -1007,7 +1107,7 @@ export function runPlanItem(charState, item, rng) {
       en: interpolateText(def.en, char),
       choices: def.choices.map((c) => ({ vi: interpolateText(c.vi, char), en: interpolateText(c.en, char), fx: c.fx, out: c.out, need: c.need, costAhn: c.costAhn })),
       ignore: def.ignore || null,
-      remainingMs: MINOR_WINDOW_MS
+      remainingMs: minorWindowFor(char)
     };
     return char;
   }
@@ -1116,6 +1216,7 @@ export function resolveMinor(charState, idx, rng) {
   const ignore = def?.ignore || { vi: 'Để nó trôi qua', en: 'Let it pass', rvi: 'Bạn không làm gì cả. Chuyện cũng qua.', ren: 'You did nothing. It passed.' };
   const choice = idx >= 0 ? def?.choices[idx] : ignore;
   if (!choiceIsAvailable(choice, char)) return cloneChar(charState);
+  if (!prompt.annualMerit) char.firstTimedMinorSeen = true;
 
   let outcome = choice;
   const traits = traitsOf(char);
@@ -1146,7 +1247,11 @@ export function resolveMinor(charState, idx, rng) {
     deltas.push({ k: 'scar', name: scar });
   }
   applyChoiceExtras(char, outcome === choice ? [choice] : [choice, outcome], deltas, rng);
-  if (outcome.setJob || choice.setJob) char.job = outcome.setJob || choice.setJob;
+  if (outcome.setJob || choice.setJob) {
+    const nextJob = outcome.setJob || choice.setJob;
+    if (nextJob === 'Wing Employee' && char.job !== 'Wing Employee') char.wingEmployerId = char.regionId;
+    char.job = nextJob;
+  }
 
   pushLog(
     char,
@@ -1174,12 +1279,13 @@ export function resolveMinor(charState, idx, rng) {
 
 /* ---------- the turn of the year ---------- */
 
-const JOB_INCOME = (char) => {
+export const JOB_INCOME = (char) => {
   if (char.flags?.includes('ColorFixer') || char.job === 'Color Fixer') return 12;
   switch (char.job) {
     case 'Fixer':
       return 2 + Math.round((9 - Math.min(9, char.fixerGrade)) * 0.7);
     case 'Syndicate':
+      if (!char.finger && char.flags?.includes('IndependentSyndicate')) return 3 + Math.min(3, Math.max(0, char.syndicateRank || 0)) * 2;
       return 3 + (char.fingerRank || 0) * 2 + ((char.fingerRank || 0) >= 3 ? 3 : 0);
     case 'Wing Employee':
       return 4 + (char.wingRank || 0);
@@ -1377,6 +1483,37 @@ export function endYear(charState, rng) {
     line('job_wear');
     breakdown.push({ cat: 'wear', labelVi: 'Hao mòn nghề nghiệp', labelEn: 'Career wear', k: 'health', v: -wear, unit: 'HP' });
     breakdown.push({ cat: 'wear', labelVi: 'Căng thẳng công việc', labelEn: 'Career mental strain', k: 'sanity', v: -spStrain, unit: 'SP' });
+  }
+
+  const maintenanceCost = midlifeMaintenanceLoss(char);
+  if (maintenanceCost > 0) {
+    if ((char.stats?.wealth || 0) >= maintenanceCost) {
+      add('wealth', -maintenanceCost);
+      breakdown.push({
+        cat: 'wear',
+        labelVi: 'Bảo trì thể trạng & thuốc ức chế đau',
+        labelEn: 'Body maintenance & pain suppression',
+        k: 'wealth',
+        v: -maintenanceCost,
+        unit: 'Ahn'
+      });
+      if (char.flags?.includes('PainSuppressantDeficit')) {
+        char.flags = char.flags.filter((f) => f !== 'PainSuppressantDeficit');
+      }
+    } else {
+      if (!char.flags?.includes('PainSuppressantDeficit')) {
+        char.flags = [...(char.flags || []), 'PainSuppressantDeficit'];
+        add('sanity', -1);
+        breakdown.push({
+          cat: 'wear',
+          labelVi: 'Thiếu thuốc ức chế đau & khớp sẹo nhức nhối',
+          labelEn: 'Pain suppressant deficit & aching scar tissue',
+          k: 'sanity',
+          v: -1,
+          unit: 'SP'
+        });
+      }
+    }
   }
 
   // City environmental hazards (Smog in polluted districts, Crime in dangerous districts)
@@ -1581,7 +1718,9 @@ export function endYear(charState, rng) {
   }
 
   // Birthday
+  char.bodyAge = Number((effectiveAge(char) + frailty(char)).toFixed(2));
   char.age += 1;
+  char.bodyAgeRecordedAt = char.age;
   char.seasonIdx = 0;
   if (char.ambition && !char.ambition.complete && ambitionComplete(char)) char.ambition.complete = true;
   char.weaver = {

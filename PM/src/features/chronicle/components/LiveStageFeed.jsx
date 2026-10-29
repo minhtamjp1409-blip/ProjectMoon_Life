@@ -100,7 +100,7 @@ const LogEntries = React.memo(function LogEntries({ logs }) {
     const { title, situation, result, reviewBody } = storyParts(entry, lang);
     const tag = entry.omen ? t('Điềm lúc chào đời', 'Omen at birth') : title || (kind?.vi ? t(kind.vi, kind.en) : null);
     out.push(
-      <article className={`entry ${kind?.cls || ''}`} key={entry.id}>
+      <article className={`entry ${kind?.cls || ''} ${entry.major ? 'is-major' : ''}`} key={entry.id}>
         {/* The yearline and season dividers above already say when; the card only says what */}
         {tag && (
           <div className="entry-header-row">
@@ -184,10 +184,13 @@ const MinorDock = ({ prompt, char, npcs, wealth = 0, remainingMs, onPick, place 
       <div className="dock-inner">
         {!prompt.annualMerit && <div className="countdown-wrap">
           <div className="countdown" aria-hidden="true">
-            <i style={{ transform: `scaleX(${Math.max(0, Math.min(1, remainingMs / MINOR_WINDOW_MS))})` }} />
+            <i style={{ transform: `scaleX(${Math.max(0, Math.min(1, remainingMs / (prompt.remainingMs || MINOR_WINDOW_MS)))})` }} />
           </div>
           <span className="countdown-badge">{Math.ceil(Math.max(0, remainingMs) / 1000)}s</span>
         </div>}
+        {prompt.remainingMs > MINOR_WINDOW_MS && !prompt.annualMerit && (
+          <p className="minor-first-hint">{t('Lần gặp gỡ đầu: bạn có 30 giây. Dùng nút tạm dừng hoặc Space để đọc kỹ.', 'First encounter: you have 30 seconds. Use Pause or Space to read.')}</p>
+        )}
         <div className="dock-banner">
           <div className="dock-banner-text">
             <div className="dock-kicker-row">
@@ -437,7 +440,7 @@ const ContractDock = ({ contract, wealth, onPick }) => {
               borderRadius: 4,
               fontSize: 12,
               lineHeight: 1.45,
-              borderLeft: `3px solid ${contract.companionSupport.powerMod < 0 ? 'var(--bad)' : 'var(--good)'}`,
+              border: `1px solid ${contract.companionSupport.powerMod < 0 ? 'rgba(229, 72, 77, 0.4)' : 'rgba(61, 154, 80, 0.4)'}`,
               background: contract.companionSupport.powerMod < 0 ? 'rgba(229, 72, 77, 0.09)' : 'rgba(61, 154, 80, 0.09)',
               color: 'var(--ink)'
             }}
@@ -620,14 +623,15 @@ const Epitaph = ({ summary, onInherit, onRestart, onViewRecord, onGoHome }) => {
     : (summary.lifeStoryParagraphsEn || []);
   const turningPoints = summary.turningPoints || [];
   const recordsList = summary.recordsList || [];
-  const apexRecords = recordsList.filter((rec) =>
-    rec.tier === 'miracle' ||
-    rec.tier === 'myth' ||
-    rec.tier === 'legend' ||
-    rec.tier === 'legendary' ||
-    ['ego_effloresced', 'color_bearer', 'distortion_metamorphosis_apex', 'star_of_the_city'].includes(rec.key)
-  );
-  const standardRecords = recordsList.filter((rec) => !apexRecords.includes(rec));
+  const signaturePriority = { color_fixer: 100, ego_effloresced: 96, association_director: 92, finger_top_rank: 90, independent_syndicate_apex: 89, dungeon_five_places: 88, wing_senior_executive: 87 };
+  if (summary.signatureRecordKey) signaturePriority[summary.signatureRecordKey] = 110;
+  const tierWeight = { miracle: 70, myth: 60, legend: 50, epic: 40, rare: 30, uncommon: 20, common: 10 };
+  const notableRecords = recordsList
+    .filter((rec) => (tierWeight[rec.tier] || 0) >= 30)
+    .sort((a, b) => (signaturePriority[b.key] || tierWeight[b.tier] || 0) - (signaturePriority[a.key] || tierWeight[a.tier] || 0));
+  const signatureRecord = notableRecords[0] || null;
+  const supportingRecords = notableRecords.slice(1, 3);
+  const archiveRecords = recordsList.filter((rec) => rec !== signatureRecord && !supportingRecords.includes(rec));
   const lifeTags = summary.lifeTags || [];
   const diff = summary.lifespanDiff ?? 0;
   const diffSign = diff >= 0 ? `+${diff}` : `${diff}`;
@@ -677,6 +681,15 @@ const Epitaph = ({ summary, onInherit, onRestart, onViewRecord, onGoHome }) => {
         <blockquote className="epitaph-poetic-quote">
           {lang === 'en' ? summary.poeticQuoteEn : summary.poeticQuoteVi}
         </blockquote>
+
+        {signatureRecord && (
+          <div className="epitaph-signature" role="group" aria-label={t('Dấu ấn nổi bật nhất', 'Defining record')}>
+            <span className="epitaph-signature-label">{t('Dấu ấn đời này', 'The mark of this life')}</span>
+            <strong>{lang === 'en' ? signatureRecord.en : signatureRecord.vi}</strong>
+            <p>{lang === 'en' ? (signatureRecord.evidenceEn || signatureRecord.hintEn) : (signatureRecord.evidenceVi || signatureRecord.hintVi)}</p>
+            <span className="epitaph-signature-tier">{lang === 'en' ? signatureRecord.rarityEn : signatureRecord.rarityVi}</span>
+          </div>
+        )}
 
         {/* Primary 3-Card Fact Grid (Born into / Occupation / vs. Local Avg Lifespan) */}
         <div className="epitaph-facts epitaph-facts-primary">
@@ -781,13 +794,13 @@ const Epitaph = ({ summary, onInherit, onRestart, onViewRecord, onGoHome }) => {
               </span>
             </div>
 
-            {apexRecords.length > 0 && (
+            {supportingRecords.length > 0 && (
               <div className="epitaph-spotlight-section">
                 <p className="spotlight-section-kicker">
-                  {t('Đỉnh cao cuộc đời · Kỳ tích lưu danh', 'Life Pinnacle · Feats Etched into Memory')}
+                  {t('Những dấu ấn khác', 'Other defining records')}
                 </p>
                 <div className="spotlight-milestones-grid">
-                  {apexRecords.map((rec) => (
+                  {supportingRecords.map((rec) => (
                     <div
                       key={rec.key}
                       className={`spotlight-milestone-card tier-${rec.tier || 'legend'} ${rec.isNew ? 'is-new-record' : ''}`}
@@ -796,13 +809,13 @@ const Epitaph = ({ summary, onInherit, onRestart, onViewRecord, onGoHome }) => {
                         <span className="spotlight-rarity-pill">
                           {lang === 'en' ? rec.rarityEn : rec.rarityVi}
                         </span>
-                        {rec.isNew && <span className="record-new-badge">NEW</span>}
+                        {rec.isNew && <span className="record-new-badge">{t('Mới', 'New')}</span>}
                       </div>
                       <h4 className="spotlight-record-title">
                         {lang === 'en' ? rec.en : rec.vi}
                       </h4>
                       <p className="spotlight-record-hint">
-                        {lang === 'en' ? rec.hintEn : rec.hintVi}
+                        {lang === 'en' ? (rec.evidenceEn || rec.hintEn) : (rec.evidenceVi || rec.hintVi)}
                       </p>
                     </div>
                   ))}
@@ -810,29 +823,29 @@ const Epitaph = ({ summary, onInherit, onRestart, onViewRecord, onGoHome }) => {
               </div>
             )}
 
-            {apexRecords.length > 0 && standardRecords.length > 0 && (
-              <p className="standard-records-kicker">
-                {t('Các dấu ấn khác:', 'Other Records:')}
-              </p>
-            )}
-
-            <div className="epitaph-records-list">
-              {(apexRecords.length > 0 ? standardRecords : recordsList).map((rec) => (
+            {archiveRecords.length > 0 && <details className="epitaph-records-disclosure">
+              <summary>{t(`Xem ${archiveRecords.length} dấu ấn còn lại`, `View ${archiveRecords.length} other records`)}</summary>
+              <div className="epitaph-records-list">
+              {archiveRecords.map((rec) => (
                 <div
                   key={rec.key}
                   className={`epitaph-record-row tier-${rec.tier || 'common'} ${rec.isNew ? 'is-new-record' : ''}`}
                   title={lang === 'en' ? rec.hintEn : rec.hintVi}
                 >
                   <div className="record-row-left">
-                    <span className="record-row-title">{lang === 'en' ? rec.en : rec.vi}</span>
-                    {rec.isNew && <span className="record-new-badge">NEW</span>}
+                    <div className="record-row-text">
+                      <span className="record-row-title">{lang === 'en' ? rec.en : rec.vi}</span>
+                      <span className="record-row-hint">{lang === 'en' ? (rec.evidenceEn || rec.hintEn) : (rec.evidenceVi || rec.hintVi)}</span>
+                    </div>
+                    {rec.isNew && <span className="record-new-badge">{t('Mới', 'New')}</span>}
                   </div>
                   <span className="record-row-rarity">
                     {lang === 'en' ? rec.rarityEn : rec.rarityVi}
                   </span>
                 </div>
               ))}
-            </div>
+              </div>
+            </details>}
           </div>
         )}
 

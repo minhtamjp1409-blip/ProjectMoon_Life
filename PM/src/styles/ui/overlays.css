@@ -58,8 +58,8 @@
 .depot-purse small { font-size: 13px; color: var(--muted); font-weight: 500; }
 .depot { display: flex; flex-direction: column; gap: 14px; margin-top: 8px; }
 .depot-lead { font-size: 14.5px; color: var(--muted); line-height: 1.55; }
-.depot-notice { padding: 8px 12px; border-left: 2px solid var(--warn); font-size: 14px; color: var(--text); }
-.depot-feedback { padding: 10px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border); border-left: 3px solid var(--gold); background: var(--surface); font-size: 13.5px; line-height: 1.5; color: var(--text); animation: overlayIn .2s ease; }
+.depot-notice { padding: 8px 12px; border: 1px solid rgba(240, 184, 90, 0.4); border-radius: var(--radius-sm); background: rgba(240, 184, 90, 0.06); font-size: 14px; color: var(--text); }
+.depot-feedback { padding: 10px 14px; border-radius: var(--radius-sm); border: 1px solid rgba(216, 178, 101, 0.4); background: rgba(216, 178, 101, 0.06); font-size: 13.5px; line-height: 1.5; color: var(--text); animation: overlayIn .2s ease; }
 .depot-feedback.is-imbue { border-left-color: var(--rare); background: color-mix(in srgb, var(--rare) 10%, var(--surface)); }
 .depot-feedback.is-transit { border-left-color: var(--gold); background: color-mix(in srgb, var(--gold) 10%, var(--surface)); }
 .depot-deltas { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
@@ -113,9 +113,8 @@
   flex-direction: column;
   background: var(--dialog-surface);
   border: 1px solid var(--dialog-border);
-  border-top: 3px solid var(--accent);
   border-radius: var(--radius-md, 8px);
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.7);
+  box-shadow: 0 0 0 1px rgba(216, 178, 101, 0.2), 0 16px 48px rgba(0, 0, 0, 0.7);
   overflow: hidden;
   color: var(--text);
 }
@@ -397,14 +396,13 @@
 .npc-dossier-sheet {
   background: var(--dialog-surface);
   border: 1px solid var(--dialog-border);
-  border-top: 3px solid var(--accent);
   width: min(560px, 100%);
   max-height: min(90vh, 760px);
   border-radius: 12px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.7);
+  box-shadow: 0 0 0 1px rgba(216, 178, 101, 0.2), 0 24px 48px rgba(0, 0, 0, 0.7);
 }
 
 .npc-dossier-head {
@@ -626,7 +624,9 @@
 }
 
 .perk-card {
-  border-left: 3px solid var(--accent, #e5a93c);
+  border: 1px solid rgba(216, 178, 101, 0.35);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--accent, #e5a93c) 5%, var(--surface));
 }
 
 .perk-card-head {

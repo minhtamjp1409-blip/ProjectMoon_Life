@@ -19,6 +19,7 @@
   backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
   border: 1px solid var(--rule); border-bottom: 0;
   border-radius: var(--radius) var(--radius) 0 0;
+  box-shadow: 0 0 40px -12px var(--ambient-rim), inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 .log-col::before { content: ''; position: absolute; top: -1px; left: 24px; right: 24px; height: 2px; background: var(--accent); opacity: .9; transition: background-color 1.2s ease; }
 
@@ -171,6 +172,34 @@
 .entry.k-good::before, .entry.k-bad::before { content: ''; position: absolute; left: -22px; top: 6px; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
 .entry.k-good::before { color: var(--gold); }
 .entry.k-bad::before { color: var(--bad); }
+
+/* Inscribed Major Turning Points & Milestones */
+.entry.is-major {
+  position: relative;
+  margin: 28px 0 24px;
+  padding: 18px 20px 20px;
+  background: rgba(255, 255, 255, 0.022);
+  border: 1px solid var(--page-edge);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+.entry.is-major .entry-tag {
+  color: var(--accent);
+  letter-spacing: 0.04em;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 13.5px;
+}
+.entry.is-major .entry-text:first-of-type::first-letter {
+  float: left;
+  font-family: var(--serif);
+  font-size: 2.6em;
+  line-height: 0.85;
+  padding-right: 8px;
+  padding-top: 3px;
+  color: var(--accent);
+  font-weight: 600;
+}
 .entry.k-summary { padding: 12px 14px; background: var(--surface); }
 .entry.k-summary .entry-text { font-size: calc(var(--story-size) - 1px); }
 .entry-review { margin-top: 10px; font-size: 14px; }
@@ -254,9 +283,9 @@
   max-height: min(calc(100dvh - var(--top) - 100px), 860px);
   overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable;
   background: var(--dialog-surface);
-  border: 1px solid var(--dialog-border); border-top: 3px solid var(--accent);
+  border: 1px solid var(--dialog-border);
   border-radius: 12px;
-  box-shadow: var(--shadow-pop);
+  box-shadow: 0 0 0 1px rgba(216, 178, 101, 0.2), var(--shadow-pop);
 }
 .event-modal-backdrop > .dock.is-dungeon { width: min(820px, 100%); border-top-color: var(--dg); }
 /* The dungeon scene stays visible around the card; its text has an opaque surface. */
@@ -287,12 +316,12 @@
 .countdown i { display: block; height: 100%; background: var(--accent); transform-origin: left; transition: transform .2s linear; }
 .countdown-badge { font-size: 12.5px; font-variant-numeric: tabular-nums; color: var(--muted); }
 
-.causal-echo-badge { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border-left: 2px solid var(--rare); background: var(--surface); font-size: 14px; line-height: 1.5; color: var(--muted); }
+.causal-echo-badge { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border: 1px solid rgba(156, 192, 240, 0.35); border-radius: var(--radius-sm); background: color-mix(in srgb, var(--rare) 7%, var(--surface)); font-size: 14px; line-height: 1.5; color: var(--muted); }
 .causal-icon { color: var(--rare); margin-top: 2px; }
 .companion-contract-banner { display: flex; gap: 10px; align-items: center; width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); text-align: left; font-size: 14px; color: var(--muted); background: var(--surface); }
 
 /* Inner voices (the Disco Elysium move): set as a margin note */
-.disco-psyche-card { border-left: 2px solid var(--rare); padding: 4px 0 4px 12px; }
+.disco-psyche-card { border: 1px solid rgba(156, 192, 240, 0.35); border-radius: var(--radius-sm); background: color-mix(in srgb, var(--rare) 5%, transparent); padding: 8px 12px; }
 .disco-psyche-header { display: flex; align-items: center; gap: 8px; min-height: 32px; font-size: 13.5px; font-weight: 600; color: var(--muted); }
 .disco-psyche-faculty { color: var(--rare); }
 .disco-psyche-voice { font-family: var(--serif); font-style: italic; font-size: 16px; line-height: 1.6; color: var(--story); margin-top: 4px; }
@@ -308,31 +337,56 @@
 .dungeon-entry-options button.is-selected { border-color: var(--accent); background: var(--raised); }
 .dungeon-entry-options button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .choice {
+  position: relative;
   display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 12px; align-items: start;
   width: 100%; padding: 14px 16px 14px 12px; text-align: left;
   border: 1px solid var(--border); border-radius: var(--radius-sm);
   background: var(--surface); color: var(--text);
-  transition: border-color .14s ease, background-color .14s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition: border-color .15s var(--ease-tactile), background-color .15s var(--ease-tactile), transform .15s var(--ease-tactile), box-shadow .15s var(--ease-tactile);
 }
-.choice:hover:not(:disabled):not(.is-disabled) { border-color: var(--text); background: var(--raised); }
+@media (hover: hover) {
+  .choice:hover:not(:disabled):not(.is-disabled) {
+    border-color: rgba(216, 178, 101, 0.4);
+    background: color-mix(in srgb, var(--surface) 92%, var(--gold));
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), 0 0 1px 1px var(--ambient-rim);
+    transform: translateY(-1px);
+  }
+}
 .choice:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.choice:active:not(:disabled) { background: var(--active); }
+.choice:active:not(:disabled) {
+  background: var(--active);
+  transform: translateY(1px);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
 .choice-badge {
   display: grid; place-items: center; width: 28px; height: 28px; margin-top: -2px;
   border: 1px solid var(--border); border-radius: 50%;
   font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--muted);
+  background: rgba(0, 0, 0, 0.2);
+  transition: border-color .15s ease, color .15s ease, background-color .15s ease;
 }
-.choice:hover:not(:disabled) .choice-badge { border-color: var(--text); color: var(--text); }
+@media (hover: hover) {
+  .choice:hover:not(:disabled) .choice-badge {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(216, 178, 101, 0.1);
+  }
+}
 .choice-content { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
 .choice-content > div:first-child { display: flex; justify-content: space-between; gap: 10px; }
 .choice-label { font-size: var(--choice-size); font-weight: 500; line-height: 1.45; }
 .choice-alt { font-size: 13.5px; color: var(--muted); font-style: italic; }
-.choice.is-disabled, .choice:disabled { opacity: .72; cursor: not-allowed; border-color: var(--page-edge); background: rgba(0, 0, 0, 0.18); }
+.choice.is-disabled, .choice:disabled { opacity: .72; cursor: not-allowed; border-color: var(--page-edge); background: rgba(0, 0, 0, 0.18); box-shadow: none; }
 .choice.is-disabled .choice-label, .choice:disabled .choice-label { color: var(--page-muted); }
 .choice-need {
   display: inline-block;
   font-size: 12px;
   font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
   line-height: 1.3;
   padding: 2px 7px;
   border-radius: var(--radius-sm);
@@ -352,6 +406,8 @@
   display: inline-block;
   font-size: 11.5px;
   font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
   line-height: 1.3;
   padding: 1px 7px;
   border-radius: var(--radius-sm);
@@ -360,6 +416,12 @@
   color: #fca5a5;
   background: rgba(185, 28, 28, 0.16);
   border: 1px solid rgba(248, 113, 113, 0.35);
+}
+@media (prefers-reduced-motion: reduce) {
+  .choice, .choice:active:not(:disabled) {
+    transform: none;
+    transition: none;
+  }
 }
 .choice.is-ghost { background: transparent; border-style: dashed; color: var(--muted); }
 .choice-badge.is-ghost { border-style: dashed; }
@@ -385,9 +447,9 @@
 .year-lead:hover { border-color: var(--text); background: var(--raised); }
 .year-lead-meta { display: flex; justify-content: space-between; gap: 12px; font-size: 12.5px; font-weight: 600; color: var(--muted); }
 .year-lead-meta span:first-child { font-variant-numeric: tabular-nums; }
-.year-lead.is-danger { border-left: 3px solid var(--bad); }
+.year-lead.is-danger { border-color: rgba(255, 111, 102, 0.45); background: color-mix(in srgb, var(--bad) 6%, var(--surface)); }
 .year-lead.is-danger .year-lead-meta span:last-child { color: var(--bad); }
-.year-lead.is-forbidden { border: 1px solid color-mix(in srgb, var(--bad) 55%, var(--border)); border-left: 3px solid var(--bad); background: color-mix(in srgb, var(--bad) 8%, var(--surface)); }
+.year-lead.is-forbidden { border: 1px solid color-mix(in srgb, var(--bad) 55%, var(--border)); background: color-mix(in srgb, var(--bad) 8%, var(--surface)); }
 .year-lead.is-forbidden .year-lead-meta span:last-child { color: var(--bad); }
 .year-lead-warning { font-size: 13px; line-height: 1.45; color: var(--text); padding-top: 6px; border-top: 1px solid var(--rule); }
 .year-lead strong { font-family: var(--serif); font-size: 18px; font-weight: 600; line-height: 1.3; }
@@ -410,7 +472,7 @@
 .resolution-deltas-section .deltas { margin-top: 0; }
 .resolution-death-banner { display: flex; gap: 10px; align-items: center; padding: 12px 14px; border: 1px solid var(--bad); color: var(--bad); font-size: 14.5px; line-height: 1.5; }
 .dock.is-dead .dock-title { color: var(--bad); }
-.dock.is-dead { border-top: 3px solid var(--bad); }
+.dock.is-dead { border: 1px solid var(--bad); }
 .resolution-actions { margin-top: 4px; }
 .resolution-btn { justify-content: space-between; }
 
@@ -475,7 +537,8 @@
     width: 100%;
     max-height: calc(100dvh - var(--top) - 40px - var(--bottom));
     border-radius: 14px 14px 4px 4px;
-    border-top: 3px solid var(--accent);
+    border: 1px solid var(--dialog-border);
+    border-top: 1px solid var(--accent);
     box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.75);
     overflow-y: auto;
     overscroll-behavior: contain;
@@ -491,6 +554,7 @@
   }
   .event-peek-toggle { top: auto; right: 50%; transform: translateX(50%); bottom: calc(var(--bottom) + 12px); z-index: 50; }
   .dock { padding: 18px 16px 22px; }
+  .dock .choices { padding-bottom: 24px; }
   .dock-title { font-size: 22px; }
   .dock-hotkey-hint { display: none; }
   .choice {
@@ -531,10 +595,21 @@
 .epitaph { margin-top: 56px; padding-top: 28px; border-top: 3px double var(--page-edge); }
 .epitaph-body { display: flex; flex-direction: column; gap: 22px; }
 .epitaph-kicker-origin { text-align: center; font-family: var(--serif); font-style: italic; font-size: 16px; color: var(--page-muted); }
-.epitaph-age { display: flex; justify-content: center; align-items: baseline; gap: 10px; font-family: var(--serif); font-size: clamp(64px, 10vw, 96px); font-weight: 600; line-height: .9; color: var(--page-ink); font-variant-numeric: lining-nums; }
+.epitaph-age { display: flex; justify-content: center; align-items: baseline; gap: 10px; font-family: var(--serif); font-size: clamp(58px, 7vw, 76px); font-weight: 600; line-height: .9; color: var(--page-ink); font-variant-numeric: lining-nums; }
 .epitaph-age span { font-size: 22px; font-weight: 400; color: var(--page-muted); }
 .epitaph-cause { text-align: center; font-size: 15.5px; font-weight: 600; color: var(--bad); }
 .epitaph-poetic-quote { margin: 0 auto; max-width: 34em; text-align: center; font-family: var(--serif); font-style: italic; font-size: calc(var(--story-size) + 1px); line-height: 1.6; color: var(--page-ink); }
+.epitaph-signature { position: relative; display: grid; justify-items: center; gap: 7px; padding: 24px 18px 20px; border-block: 1px solid var(--gold); text-align: center; background: var(--gold-soft); }
+.epitaph-signature::before { content: ''; position: absolute; inset: 5px 0; border-block: 1px solid var(--page-edge); pointer-events: none; }
+.epitaph-signature-label, .epitaph-signature-tier { font-size: 12px; color: var(--gold); }
+.epitaph-signature strong { max-width: 22ch; font-family: var(--serif); font-size: clamp(24px, 4vw, 38px); font-weight: 600; line-height: 1.15; overflow-wrap: break-word; }
+.epitaph-signature p { max-width: 48ch; margin: 0; font-size: 14px; line-height: 1.5; color: var(--page-muted); }
+.epitaph-records-disclosure { border-top: 1px solid var(--page-rule); }
+.epitaph-records-disclosure > summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; color: var(--gold); font-size: 14px; font-weight: 600; list-style: none; }
+.epitaph-records-disclosure > summary::-webkit-details-marker { display: none; }
+.epitaph-records-disclosure > summary::before { content: '+'; display: inline-block; width: 22px; font-size: 20px; font-weight: 400; }
+.epitaph-records-disclosure[open] > summary::before { content: '−'; }
+.epitaph-records-disclosure > summary:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 .epitaph-facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-block: 1px solid var(--page-rule); }
 .epitaph-facts + .epitaph-facts { border-top: 0; margin-top: -22px; }
 .epitaph-fact-card { display: flex; flex-direction: column; gap: 4px; padding: 12px 14px 12px 0; }
@@ -650,15 +725,17 @@
 .epitaph-records-list { display: flex; flex-direction: column; }
 .epitaph-record-row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--page-rule); }
 .record-row-left { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+.record-row-text { display: grid; gap: 3px; min-width: 0; }
 .record-row-title { font-size: 14.5px; font-weight: 600; }
+.record-row-hint { font-size: 12.5px; line-height: 1.4; color: var(--page-muted); }
 .record-new-badge { font-size: 11.5px; font-weight: 700; color: var(--accent); }
 .record-row-rarity { font-size: 12.5px; color: var(--page-muted); white-space: nowrap; }
 .epitaph-record-row.tier-rare .record-row-rarity, .epitaph-record-row.tier-epic .record-row-rarity { color: var(--rare); }
 .epitaph-record-row.tier-legendary .record-row-rarity, .epitaph-record-row.tier-legend .record-row-rarity { color: var(--gold); }
 .epitaph-record-row.tier-myth .record-row-rarity, .epitaph-record-row.tier-miracle .record-row-rarity { color: #e5a4ff; text-shadow: 0 0 6px rgba(229,164,255,0.4); }
-.epitaph-record-row.tier-legend, .epitaph-record-row.tier-legendary { border-left: 2px solid var(--gold); padding-left: 8px; }
-.epitaph-record-row.tier-myth, .epitaph-record-row.tier-miracle { border-left: 2px solid #e5a4ff; padding-left: 8px; }
-.epitaph-record-row.is-new-record { background: rgba(216, 178, 101, 0.05); }
+.epitaph-record-row.tier-legend, .epitaph-record-row.tier-legendary { border-bottom-color: rgba(216, 178, 101, 0.28); background: rgba(216, 178, 101, 0.05); }
+.epitaph-record-row.tier-myth, .epitaph-record-row.tier-miracle { border-bottom-color: rgba(229, 164, 255, 0.35); background: rgba(229, 164, 255, 0.06); }
+.epitaph-record-row.is-new-record { background: rgba(216, 178, 101, 0.08); }
 .epitaph-stat-bars { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 24px; }
 .epitaph-stat-row { display: flex; flex-direction: column; gap: 5px; }
 .epitaph-stat-head { display: flex; justify-content: space-between; font-size: 13.5px; color: var(--page-muted); }
@@ -671,10 +748,10 @@
 /* Successor of Fate Archetype Display */
 .epitaph-successor-card {
   padding: 16px 18px;
-  border: 1px solid var(--page-edge);
-  border-left: 3px solid var(--accent);
+  border: 1px solid rgba(216, 178, 101, 0.35);
   border-radius: 4px;
-  background: rgba(0, 0, 0, 0.14);
+  background: rgba(216, 178, 101, 0.05);
+  box-shadow: inset 0 0 16px rgba(216, 178, 101, 0.03);
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -749,6 +826,29 @@
   .epitaph-fact-card + .epitaph-fact-card { padding-left: 0; border-left: 0; border-top: 1px solid var(--page-rule); }
   .epitaph-facts + .epitaph-facts { margin-top: -22px; }
   .epitaph-stat-bars { grid-template-columns: 1fr; }
+  .epitaph-record-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 10px 4px;
+  }
+  .record-row-left {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .record-row-rarity {
+    font-size: 11.5px;
+    align-self: flex-start;
+  }
+  .epitaph-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .epitaph-actions .btn {
+    width: 100%;
+    flex: none;
+    min-height: 48px;
+  }
 }
 .year-plan .dock-inner { max-width: 600px; }
 .year-plan-intro { color: var(--muted); margin: 0 0 1rem; line-height: 1.5; }
@@ -763,6 +863,12 @@
 .net-summary-chips { display: inline-flex; flex-wrap: wrap; gap: 6px; }
 .year-plan-activity strong, .year-plan-activity small, .year-plan-ambitions strong, .year-plan-ambitions small { display: block; }
 .year-plan-activity small, .year-plan-ambitions small { color: var(--muted); line-height: 1.35; margin-top: .2rem; }
+.year-plan-activity > div:first-child { min-width: 0; }
+.year-plan-more { margin-top: .35rem; font-size: 12px; color: var(--muted); }
+.year-plan-more summary { display: inline-block; min-height: 28px; color: var(--accent); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.year-plan-more p { margin: .25rem 0 0; line-height: 1.45; }
+.year-plan-more summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.minor-first-hint { margin: .5rem 0 .8rem; color: var(--muted); font-size: 13px; line-height: 1.45; }
 .year-plan-stepper { display: flex; align-items: center; gap: .25rem; flex: none; }
 .year-plan-stepper button { min-width: 44px; min-height: 44px; border: 1px solid var(--border); border-radius: 6px; color: var(--text); background: var(--surface); cursor: pointer; }
 .year-plan-stepper button:hover:not(:disabled), .year-plan-stepper button:focus-visible { border-color: var(--accent); }

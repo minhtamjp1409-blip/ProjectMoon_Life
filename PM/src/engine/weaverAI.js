@@ -327,6 +327,12 @@ export function recordChoiceInGraph(weaver, char, event, choice, outcomeTextVi, 
 }
 
 export function isEventEligible(event, char, { scripted = false } = {}) {
+  if (event.id === 'ad_career_second_application' && char.lastCareerApplicationAge === char.age) return false;
+  if (['distort_star_of_city_rampage', 'distort_arc_star_calamity_ascension'].includes(event.id)) {
+    const arc = char.activeArcs?.find((entry) => entry.id === 'arc_carmen_distortion_abyss' && entry.status === 'active');
+    const waitingForFirstChapter = char.weaver?.pendingThreads?.some((thread) => !thread.fulfilled && thread.eventId === 'distort_carmen_communion_1');
+    if (waitingForFirstChapter || (arc && arc.currentStage < 3)) return false;
+  }
   if (event.id === 'ego_carmen_crossroad' &&
       (char.egoEncounterRollAge !== char.age || char.egoEncounterOffered !== true)) return false;
   if (event.id === 'fixer_seven_unclaimed_dossier' && !scripted) return false;
