@@ -7,6 +7,7 @@ import {
   ambitionsFor,
   defaultYearPoints,
   isApexCommander,
+  previousYearPoints,
   previewAnnualPlanDeltas
 } from '../../../engine/annualPlan.js';
 import { YearLeadList } from './YearLeadDock';
@@ -63,7 +64,8 @@ export function YearPlanDock({ char, draft, onConfirm }) {
   const { t } = useT();
   const choices = ambitionsFor(char);
   const apexEligible = isApexCommander(char);
-  const [points, setPoints] = useState(() => char.lastYearPoints || defaultYearPoints());
+  const [points, setPoints] = useState(defaultYearPoints);
+  const priorPoints = previousYearPoints(char);
   const [ambition, setAmbition] = useState(
     char.ambition?.id || (choices.some((goal) => goal.id === 'survive') ? 'survive' : choices[0]?.id)
   );
@@ -102,6 +104,11 @@ export function YearPlanDock({ char, draft, onConfirm }) {
         <p className="year-plan-remaining" aria-live="polite">
           {t(`Còn ${YEAR_PLAN_POINTS - used} ô`, `${YEAR_PLAN_POINTS - used} slots left`)}
         </p>
+        {priorPoints && (
+          <button className="year-plan-reuse" type="button" onClick={() => setPoints(priorPoints)}>
+            {t('Dùng lại kế hoạch năm trước', 'Use last year’s plan')}
+          </button>
+        )}
         <div className="year-plan-activities">
           {YEAR_ACTIVITIES.map((activity, index) => (
             <div className="year-plan-activity" key={activity.id}>

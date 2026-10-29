@@ -21,7 +21,8 @@ Read the relevant installed `SKILL.md` under `.agents/skills/` before applying i
 - Narrative branches, NPC decisions, event scoring and seeded generation: `dialogue-systems`, `game-ai`, `ai-behavior-trees-utility-ai`, `procedural-gen`.
 - Save/load, migrations and measured performance: `save-systems`, `performance-optimization`.
 - Feedback and sound: `game-feel`, `audio-design`.
-- Interface composition, responsive styling and tokens: `design-taste-frontend`, `ui-ux-pro-max`, `ui-styling`, `design-system`.
+- Interface composition, responsive styling and tokens: `design-taste-frontend`, `ui-ux-pro-max`, `ui-styling`, `design-system`, `impeccable`.
+- Frontend design craft, anti-pattern audit & refinement: `impeccable` (`.agents/skills/impeccable/SKILL.md`, CLI: `npx impeccable detect src/`).
 - Visual identity and assets: `brand`, `design`, `create-game-assets`.
 - Banners and presentations: `banner-design`, `slides`.
 - Spatial gameplay when needed: `camera-systems`, `physics-tuning`, `level-design`, `shader-programming`.

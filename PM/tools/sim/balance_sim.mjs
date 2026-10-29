@@ -10,11 +10,15 @@ import { createNewCharacter, resolveEventChoice, resolveDungeonChoice, getDungeo
 import { planYear, runDueItems, resolveMinor, endYear, LIFE_MINORS } from '../../src/engine/yearPlanner.js';
 import { REGIONS } from '../../src/data/worldData.js';
 import { choiceIsAvailable } from '../../src/engine/eventConditions.js';
+import { checkColorFixerReadiness } from '../../src/engine/careerPipeline.js';
+import { hasEgoOpportunity } from '../../src/engine/awakeningProgress.js';
+import { writeFileSync } from 'node:fs';
 
 const LIVES = Number(process.argv[2]) || 1500;
 const POLICY = ['greedy', 'focused'].includes(process.argv[3]) ? process.argv[3] : 'random';
 const SHOW_REGIONS = process.argv.includes('--regions');
 const FORCE_FIXER = process.argv.includes('--fixers');
+const FUNNEL_JSON = (process.argv.find((arg) => arg.startsWith('--funnel-json=')) || '').slice(14);
 
 const KEYS = ['health', 'sanity', 'wealth', 'network', 'rep', 'heat', 'taboo', 'resonance', 'merit'];
 const AGES = [10, 18, 25, 35, 50, 65];
@@ -73,12 +77,17 @@ const endState = {};
 const ladder = { fixers: 0, g5: [], g3: [], g1: [], color: [] };
 const outcomes = { distorted: 0, ego: 0, color: 0, grade1: 0, adults: 0, jobs: {}, carmen: 0, married: 0, child: 0 };
 const milestones = { colorAges: [], egoAges: [], sameYearAges: [], bothLives: 0, sameActionLives: 0, fixerEgoLives: 0, colorTrialLives: 0 };
+const funnelLives = [];
 let years = 0;
 const bucketOf = (age) => (age < 1 ? '0' : age < 5 ? '1-4' : age < 12 ? '5-11' : age < 18 ? '12-17' : age < 30 ? '18-29' : age < 45 ? '30-44' : age < 60 ? '45-59' : '60+');
 
 for (let i = 0; i < LIVES; i++) {
   const seed = `bal_fixed_${i}`;
   let char = createNewCharacter({ customName: `S${i}`, seed });
+  const initialWealth = char.stats.wealth;
+  const cohort = initialWealth >= 10 ? 'startingAhn>=10' : 'startingAhn<10';
+  const funnel = { seed, cohort, initialWealth, colorReadyAge: null, colorOfferAge: null, colorAge: null,
+    egoReadyAge: null, egoOfferAge: null, egoAge: null, deathAge: null, censored: false };
   const rng = createRNG(`${seed}:life`);
   let guard = 0;
   const seenG = new Set();
@@ -86,12 +95,20 @@ for (let i = 0; i < LIVES; i++) {
   let firstColorAge = null;
   let firstEgoAge = null;
   let sameAction = false;
+  const observeReadiness = () => {
+    if (!char.alive) return;
+    if (funnel.colorReadyAge === null && checkColorFixerReadiness(char).ready) funnel.colorReadyAge = char.age;
+    if (funnel.egoReadyAge === null && hasEgoOpportunity(char) && !char.flags.includes('EGOAwakened') && !char.flags.includes('Distorted')) funnel.egoReadyAge = char.age;
+  };
   const observeMilestones = (beforeFlags) => {
     const colorNow = char.flags.includes('ColorFixer');
     const egoNow = char.flags.includes('EGOAwakened');
     if (beforeFlags && colorNow && egoNow && !beforeFlags.includes('ColorFixer') && !beforeFlags.includes('EGOAwakened')) sameAction = true;
     if (colorNow && firstColorAge === null) firstColorAge = char.age;
     if (egoNow && firstEgoAge === null) firstEgoAge = char.age;
+    if (colorNow && funnel.colorAge === null) funnel.colorAge = char.age;
+    if (egoNow && funnel.egoAge === null) funnel.egoAge = char.age;
+    observeReadiness();
   };
   while (char.alive && char.age < 120 && guard++ < 200) {
     if (FORCE_FIXER && char.age >= 18 && !wasFixer) {
@@ -101,6 +118,7 @@ for (let i = 0; i < LIVES; i++) {
     if (char.job === 'Fixer') wasFixer = true;
     years++;
     planYear(char, rng);
+    observeReadiness();
     for (let t = 0; t <= 100 && char.alive; t += 2) {
       let before = snap(char);
       const planned = char.plan?.[char.planCursor || 0];
@@ -114,6 +132,8 @@ for (let i = 0; i < LIVES; i++) {
         before = snap(char);
         const resolutionFlags = [...char.flags];
         if (char.pendingEvent) {
+          if (char.pendingEvent.id === 'hana_color_ascension_trial' && funnel.colorOfferAge === null) funnel.colorOfferAge = char.age;
+          if (['ego_carmen_crossroad', 'ego_second_efflorescence_trial'].includes(char.pendingEvent.id) && funnel.egoOfferAge === null) funnel.egoOfferAge = char.age;
           char = resolveEventChoice(char, Math.max(0, pickIndex(char.pendingEvent.choices, rng, char, char.pendingEvent.id)), rng);
           addFlow('major', before, snap(char));
         } else if (char.pendingDungeon) {
@@ -164,7 +184,7 @@ for (let i = 0; i < LIVES; i++) {
         observeMilestones(resolutionFlags);
       }
     }
-    if (char.alive && char.job === 'Fixer') {
+    if (char.alive && (char.job === 'Fixer' || char.job === 'Color Fixer')) {
       const g = char.fixerGrade;
       if (g <= 5 && !seenG.has(5)) { seenG.add(5); ladder.g5.push(char.age); }
       if (g <= 3 && !seenG.has(3)) { seenG.add(3); ladder.g3.push(char.age); }
@@ -185,6 +205,9 @@ for (let i = 0; i < LIVES; i++) {
     }
   }
   if (wasFixer || char.job === 'Fixer') ladder.fixers++;
+  funnel.deathAge = char.alive ? null : char.age;
+  funnel.censored = char.alive;
+  funnelLives.push(funnel);
   if (firstColorAge !== null) milestones.colorAges.push(firstColorAge);
   if (firstEgoAge !== null) milestones.egoAges.push(firstEgoAge);
   if (firstColorAge !== null && firstEgoAge !== null) {
@@ -243,6 +266,35 @@ console.log(`First attainment: Color ${milestones.colorAges.length}/${LIVES} (${
 console.log(`Both in one life ${milestones.bothLives}/${LIVES} (${pc(milestones.bothLives)}); first attained in the same age/year ${milestones.sameYearAges.length}/${LIVES} (${pc(milestones.sameYearAges.length)}), mean age ${milestones.sameYearAges.length ? f1(mean(milestones.sameYearAges)) : '-'}; same resolution/action ${milestones.sameActionLives}/${LIVES} (${pc(milestones.sameActionLives)}); E.G.O among Fixers ${milestones.fixerEgoLives}/${ladder.fixers} (${pc(milestones.fixerEgoLives, ladder.fixers)})`);
 console.log('Color age distribution:', JSON.stringify({ min: milestones.colorAges.length ? Math.min(...milestones.colorAges) : null, median: med(milestones.colorAges), before45: milestones.colorAges.filter(a => a < 45).length, egoMin: milestones.egoAges.length ? Math.min(...milestones.egoAges) : null }));
 console.log(`Color trial seen ${milestones.colorTrialLives}/${LIVES} (${pc(milestones.colorTrialLives)}); Color among trial lives ${milestones.colorAges.length}/${milestones.colorTrialLives} (${milestones.colorTrialLives ? pc(milestones.colorAges.length, milestones.colorTrialLives) : '-'})`);
+const funnelSummary = (lives) => {
+  const summarizePath = (prefix) => {
+    const ready = lives.filter((life) => life[`${prefix}ReadyAge`] !== null);
+    const offered = lives.filter((life) => life[`${prefix}OfferAge`] !== null);
+    const attained = lives.filter((life) => life[`${prefix}Age`] !== null);
+    const ages = attained.map((life) => life[`${prefix}Age`]);
+    return { ready: ready.length, offered: offered.length, attained: attained.length,
+      offerAmongReadyPct: ready.length ? +((offered.length / ready.length) * 100).toFixed(1) : null,
+      attainmentAmongOfferedPct: offered.length ? +((attained.length / offered.length) * 100).toFixed(1) : null,
+      diedBeforeReady: lives.filter((life) => life.deathAge !== null && life[`${prefix}ReadyAge`] === null && life[`${prefix}Age`] === null).length,
+      diedAfterReadyBeforeAttainment: lives.filter((life) => life.deathAge !== null && life[`${prefix}ReadyAge`] !== null && life[`${prefix}Age`] === null).length,
+      ageMin: ages.length ? Math.min(...ages) : null, ageP10: ages.length ? q(ages, 0.1) : null,
+      ageMedian: ages.length ? q(ages, 0.5) : null, ageP90: ages.length ? q(ages, 0.9) : null };
+  };
+  return { lives: lives.length, color: summarizePath('color'), ego: summarizePath('ego'),
+    bothSameYear: lives.filter((life) => life.colorAge !== null && life.colorAge === life.egoAge).length };
+};
+const funnels = { all: funnelSummary(funnelLives) };
+for (const cohort of ['startingAhn<10', 'startingAhn>=10']) funnels[cohort] = funnelSummary(funnelLives.filter((life) => life.cohort === cohort));
+console.log('Color/E.G.O funnel (ready -> offered -> attained; deaths before/after readiness):');
+console.table(Object.fromEntries(Object.entries(funnels).flatMap(([cohort, row]) => ['color', 'ego'].map((path) => [`${cohort} ${path}`, {
+  n: row.lives, ready: row[path].ready, offered: row[path].offered, attained: row[path].attained,
+  'offer/ready %': row[path].offerAmongReadyPct, 'attain/offer %': row[path].attainmentAmongOfferedPct,
+  'dead pre/post': `${row[path].diedBeforeReady}/${row[path].diedAfterReadyBeforeAttainment}`,
+  'age p10/med/p90': `${row[path].ageP10}/${row[path].ageMedian}/${row[path].ageP90}`
+}]))));
+if (FUNNEL_JSON) writeFileSync(FUNNEL_JSON, `${JSON.stringify({ seedPrefix: 'bal_fixed_', policy: POLICY, forcedFixer: FORCE_FIXER,
+  cohortRule: 'Starting Ahn >=10 versus <10', note: 'Offer is actual pending event; readiness observed after state transitions. Living at age 120 is censored.',
+  summary: funnels, lives: funnelLives }, null, 2)}\n`);
 console.log('Adult jobs:', Object.entries(outcomes.jobs).map(([j, n]) => `${j} ${pc(n, outcomes.adults)}`).join('  '));
 console.log(`Dungeons: ${pc(dungeons.lives)} of lives enter one;`, Object.entries(dungeons.byId).map(([id, r]) => `${id.replace('dungeon_', '')} ${r.runs} runs (dead ${pc(r.dead, r.runs)}, broken ${pc(r.broken, r.runs)}, fled ${pc(r.fled, r.runs)}, through ${pc(r.conquered, r.runs)})`).join(' | ') || 'none');
 console.log('\nResource by age (mean [p10-p90]) among the living');

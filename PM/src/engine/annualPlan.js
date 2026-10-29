@@ -34,6 +34,10 @@ export function validYearPoints(points) {
     YEAR_ACTIVITIES.reduce((sum, { id }) => sum + points[id], 0) === YEAR_PLAN_POINTS;
 }
 
+export function previousYearPoints(char) {
+  return validYearPoints(char?.lastYearPoints) ? { ...char.lastYearPoints } : null;
+}
+
 export function applyAnnualPlan(char, points, ambitionId, directiveId = null) {
   if (!char?.pendingYearPlan || char.pendingYearPlan.age !== char.age || !validYearPoints(points)) return false;
   if (!char.ambition && !ambitionsFor(char).some((goal) => goal.id === ambitionId)) return false;

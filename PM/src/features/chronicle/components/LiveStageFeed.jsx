@@ -318,6 +318,7 @@ const EventDock = ({ event, char, onPick, dungeonStake, onDungeonStake }) => {
             const label = splitTitle(lang === 'en' ? ch.labelEn || ch.labelVi : ch.labelVi).body;
             const check = evaluateDiscoChoiceCheck(ch, char);
             const costDisplay = choiceCostDisplay(ch, char);
+            const labelShowsCost = costDisplay.costAhn > 0 && label.includes(`${costDisplay.costAhn} Ahn`);
             const blocked = !choiceIsAvailable(ch, char);
             const item = ITEMS_CATALOG.find(i => i.id === (ch.useItem || ch.need?.item));
             let blockedReason = null;
@@ -336,7 +337,7 @@ const EventDock = ({ event, char, onPick, dungeonStake, onDungeonStake }) => {
             }
             const extra = [];
             if (item && !ch.useItem) extra.push(<span className="delta is-static" key="item">{t('Cần trang bị: ', 'Requires: ')}{lang === 'en' ? item.nameEn : item.nameVi}</span>);
-            if (costDisplay.costAhn && !costDisplay.isShortAhn) {
+            if (costDisplay.costAhn && !costDisplay.isShortAhn && !labelShowsCost) {
               extra.push(
                 <span className="delta is-static" key="costAhn">
                   {t(costDisplay.costVi, costDisplay.costEn)}
