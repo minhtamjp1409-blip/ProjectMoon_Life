@@ -1,24 +1,28 @@
 /**
- * Promotion gates (Fixer ladder, Color gate, Finger ranks, Wing ladder) live in PM_BE/Data/career_gates.json.
+ * Promotion gates (Fixer ladder, Color gate, Finger ranks, Wing ladder) live in PM_BE/Config/career_gates.json.
  * The backend embeds that file; the frontend reads the copy at src/data/careerGates.json.
  * This fails when the copy drifts from the source, when an engine table stops following the file,
  * or when the backend goes back to hard-coding a gate number.
  * Usage: node tools/lint/check_be_parity.mjs   (fix a stale copy with: node tools/sync_career_gates.mjs)
  */
 import fs from 'fs';
+import { spawnSync } from 'child_process';
 import { FIXER_LADDER, COLOR_FIXER_REQ, FINGER_LADDERS, WING_LADDER_PROMOTIONS } from '../../src/engine/careerPipeline.js';
 import { FINGER_RANKS } from '../../src/data/worldData.js';
 
 const read = (path) => fs.readFileSync(new URL(path, import.meta.url), 'utf8');
-const source = read('../../../PM_BE/Data/career_gates.json');
+const source = read('../../../PM_BE/Config/career_gates.json');
 const copy = read('../../src/data/careerGates.json');
 const cs = read('../../../PM_BE/Services/DirectorEngineService.cs');
 const csproj = read('../../../PM_BE/ProjectMoon.Api.csproj');
 const gates = JSON.parse(source);
 const problems = [];
+// A gitignored source never reaches the Docker build, so the backend would fail to embed it
+const ignored = spawnSync('git', ['check-ignore', '-q', 'PM_BE/Config/career_gates.json'], { cwd: new URL('../../../', import.meta.url) });
+if (ignored.status === 0) problems.push('PM_BE/Config/career_gates.json is gitignored');
 
-if (source.replace(/\r\n/g, '\n') !== copy.replace(/\r\n/g, '\n')) problems.push('src/data/careerGates.json differs from PM_BE/Data/career_gates.json (run node tools/sync_career_gates.mjs)');
-if (!/EmbeddedResource Include="Data\/career_gates\.json"/.test(csproj)) problems.push('The backend project does not embed Data/career_gates.json');
+if (source.replace(/\r\n/g, '\n') !== copy.replace(/\r\n/g, '\n')) problems.push('src/data/careerGates.json differs from PM_BE/Config/career_gates.json (run node tools/sync_career_gates.mjs)');
+if (!/EmbeddedResource Include="Config\/career_gates\.json"/.test(csproj)) problems.push('The backend project does not embed Config/career_gates.json');
 
 for (const row of gates.fixer) {
   const step = FIXER_LADDER.find((s) => s.grade === row.grade);

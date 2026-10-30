@@ -4,7 +4,7 @@ using System.Text.Json;
 namespace ProjectMoon.Api.Services;
 
 /// <summary>
-/// Promotion gates, read from the embedded Data/career_gates.json.
+/// Promotion gates, read from the embedded Config/career_gates.json.
 /// The frontend reads a copy of the same file (PM/src/data/careerGates.json), so both sides always agree.
 /// </summary>
 public static class CareerGates

@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Data/career_gates.json" LogicalName="career_gates.json" />
+    <EmbeddedResource Include="Config/career_gates.json" LogicalName="career_gates.json" />
   </ItemGroup>
 
 </Project>
