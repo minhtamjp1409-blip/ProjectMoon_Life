@@ -131,7 +131,7 @@ const Stat = ({ label, value, unit = '/100', color, flag, riseIsBad = false, too
           )}
           {flag && <span className="stat-flag">{flag}</span>}
           {isCarmenCalls && !flag && <span className="stat-flag is-carmen-tag">Carmen Calls</span>}
-          {isCritical && !isCarmenCalls && <span className="stat-flag is-warn">CRIT</span>}
+          {isCritical && !isCarmenCalls && !flag && <span className="stat-flag is-warn">CRIT</span>}
         </span>
         <div className="stat-num-box">
           {change && (

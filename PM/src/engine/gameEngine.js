@@ -862,6 +862,9 @@ export function createNewCharacter({
 /**
  * Helper to clone and normalize character object so getters stay intact
  */
+/** A cause of death often already ends in a full stop; adding another printed two. */
+const endSentence = (text) => (/[.!?…”"’)]$/.test(text) ? text : `${text}.`);
+
 /** Records how a Color name was reached, so the years after it can speak to that: young, or grown from an E.G.O. */
 function markColorInvestiture(char) {
   if (char.colorAwardAge !== char.age) return;
@@ -2076,8 +2079,8 @@ export function applyFatalOrCompanionSave(char, deathCauseVi, deathCauseEn) {
     age: char.age,
     season: SEASONS[char.seasonIdx],
     type: 'death',
-    vi: `${char.deathCauseVi}.`,
-    en: `${char.deathCauseEn}.`
+    vi: endSentence(char.deathCauseVi),
+    en: endSentence(char.deathCauseEn)
   });
   evaluateCharacterAchievements(char);
 }
