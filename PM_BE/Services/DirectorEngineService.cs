@@ -33,14 +33,14 @@ public sealed class DirectorEngineService
         new(6, 38, 26, "Fixer Grade 6", "Grade 6 Fixer"),
         new(5, 56, 38, "Fixer Grade 5", "Grade 5 Fixer"),
         new(4, 78, 52, "Fixer Grade 4", "Grade 4 Fixer"),
-        new(3, 105, 68, "Fixer Grade 3", "Grade 3 Fixer"),
-        new(2, 150, 82, "Fixer Grade 2", "Grade 2 Fixer"),
-        new(1, 200, 95, "Fixer Grade 1", "Grade 1 Fixer")
+        new(3, 96, 68, "Fixer Grade 3", "Grade 3 Fixer"),
+        new(2, 135, 82, "Fixer Grade 2", "Grade 2 Fixer"),
+        new(1, 180, 95, "Fixer Grade 1", "Grade 1 Fixer")
     ];
 
     // Both tables mirror careerPipeline.js (FIXER_LADDER, COLOR_FIXER_REQ), which gates the exams
-    private const int ColorMerit = 300;
-    private const int ColorRep = 95;
+    private const int ColorMerit = 260;
+    private const int ColorRep = 90;
 
     private static double FixerContractOfferChance(CharacterSnapshotDto c)
     {

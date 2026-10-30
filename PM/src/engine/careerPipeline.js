@@ -63,7 +63,7 @@ export const FIXER_LADDER = [
   },
   {
     grade: 3,
-    meritReq: 105,
+    meritReq: 96,
     repReq: 68,
     titleVi: 'Chuyên gia Cấp cao (Fixer Grade 3)',
     titleEn: 'Senior Specialist Commission (Grade 3 Fixer)',
@@ -72,7 +72,7 @@ export const FIXER_LADDER = [
   },
   {
     grade: 2,
-    meritReq: 150,
+    meritReq: 135,
     repReq: 82,
     titleVi: 'Át Chủ Bài Section 1 (Fixer Grade 2)',
     titleEn: 'Section 1 Ace Operative (Grade 2 Fixer)',
@@ -81,7 +81,7 @@ export const FIXER_LADDER = [
   },
   {
     grade: 1,
-    meritReq: 200,
+    meritReq: 180,
     repReq: 95,
     titleVi: 'Đỉnh cao Fixer: Đại Khảo Hạch Grade 1 (Hana Supreme)',
     titleEn: 'Apex of Fixers: Grade 1 Supreme Evaluation',
@@ -192,19 +192,34 @@ export function fixerPromotionFailureEffects(targetGrade) {
  * Strictly requires Grade 1, Merit >= 210, Rep >= 100, E.G.O Awakening / Resonance >= 50,
  * and surviving an Urban Nightmare / Star of the City ordeal.
  */
-export const COLOR_FIXER_REQ = { merit: 300, rep: 95 };
+export const COLOR_FIXER_REQ = { merit: 260, rep: 90 };
 
 // Hana draws its Colors from Grade 1. A Fixer whose E.G.O has taken shape is already past what the
 // grading system measures, so Hana looks sooner; the trial itself is the same and can still be failed.
-export const COLOR_FIXER_REQ_EGO = { merit: 240, rep: 88, age: 28 };
+export const COLOR_FIXER_REQ_EGO = { merit: 215, rep: 85, age: 28 };
 
-// Prodigy Fast-Track: extraordinary feats / early E.G.O allow Color ascension around age 26-32
-export const COLOR_FIXER_REQ_PRODIGY = { merit: 140, rep: 78, age: 26 };
+// Prodigy Fast-Track: extraordinary feats / early E.G.O allow Color ascension between age 26 and 40
+export const COLOR_FIXER_REQ_PRODIGY = { merit: 130, rep: 75, age: 26 };
+
+// The E.G.O road to Color. Hana does not wait for Grade 1 when the wielder's own weapon already outruns the grading
+// scale: Grade 4 or better, an Awakened E.G.O that has settled (Resonance 55+), and a record Hana can defend.
+export const COLOR_FIXER_REQ_EGO_ROAD = { merit: 85, rep: 70, age: 26 };
+
+export const isColorEgoRoadEligible = (char) => {
+  if (!char || char.flags?.includes('Distorted') || char.flags?.includes('ColorFixer')) return false;
+  if (char.job !== 'Fixer' && char.job !== 'Color Fixer') return false;
+  if (char.age < COLOR_FIXER_REQ_EGO_ROAD.age || char.age > 46) return false;
+  if (![1, 2, 3, 4].includes(char.fixerGrade) || !hasAwakenedEgo(char)) return false;
+  const rep = (char.stats?.rep ?? char.rep) || 0;
+  return rep >= COLOR_FIXER_REQ_EGO_ROAD.rep && (char.merit || 0) >= COLOR_FIXER_REQ_EGO_ROAD.merit && (char.resonance || 0) >= 55;
+};
 
 export const isColorProdigyEligible = (char) => {
   if (!char || char.flags?.includes('Distorted') || char.flags?.includes('ColorFixer')) return false;
   if (char.job !== 'Fixer' && char.job !== 'Color Fixer') return false;
-  if (char.age < 26 || char.age > 34) return false;
+  if (char.age < 26 || char.age > 46) return false;
+  if (isColorEgoRoadEligible(char)) return true;
+  if (char.age > 40) return false;
   if (![1, 2, 3].includes(char.fixerGrade)) return false;
 
   const rep = (char.stats?.rep ?? char.rep) || 0;
@@ -223,6 +238,7 @@ export const isColorProdigyEligible = (char) => {
 };
 
 export const colorRequirementFor = (char) => {
+  if (isColorEgoRoadEligible(char)) return COLOR_FIXER_REQ_EGO_ROAD;
   if (isColorProdigyEligible(char)) return COLOR_FIXER_REQ_PRODIGY;
   return hasAwakenedEgo(char) ? COLOR_FIXER_REQ_EGO : { ...COLOR_FIXER_REQ, age: 30 };
 };

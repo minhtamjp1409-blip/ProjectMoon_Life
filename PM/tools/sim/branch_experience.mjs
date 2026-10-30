@@ -4,7 +4,8 @@
  * Usage: node tools/sim/branch_experience.mjs [lives=500] [--watch=id,id] [--json=path]
  */
 import { createNewCharacter, resolveEventChoice, resolveDungeonChoice, getDungeonCurrentStage, isDungeonChoiceAvailable, createRNG, resolveFixerContract } from '../../src/engine/gameEngine.js';
-import { planYear, runDueItems, resolveMinor, endYear, LIFE_MINORS } from '../../src/engine/yearPlanner.js';
+import { planYear, chooseDirectorPacedLead, runDueItems, resolveMinor, endYear, LIFE_MINORS } from '../../src/engine/yearPlanner.js';
+import { tabooGainOf } from '../../src/engine/forbiddenPath.js';
 import { choiceIsAvailable } from '../../src/engine/eventConditions.js';
 import { writeFileSync } from 'node:fs';
 
@@ -36,7 +37,8 @@ for (let i = 0; i < LIVES; i++) {
   let guard = 0;
   const seenWatch = new Set();
   while (char.alive && char.age < 120 && guard++ < 200) {
-    planYear(char, rng);
+    if (!char.plan?.length) planYear(char, rng);
+    if (char.pendingLead) char = chooseDirectorPacedLead(char, rng);
     const yearAge = char.age;
     const job = char.age >= 18 ? (char.flags.includes('Distorted') ? 'Distortion' : char.job || 'none') : 'youth';
     if (job !== 'youth') jobYears[job] = (jobYears[job] || 0) + 1;
@@ -74,7 +76,8 @@ for (let i = 0; i < LIVES; i++) {
           if (seenMinor.has(id)) detail.repeatedMinor++;
           seenMinor.add(id);
           const def = LIFE_MINORS.find((m) => m.id === char.pendingMinor.id);
-          char = resolveMinor(char, pick(def?.choices, rng, char), rng);
+          const safeChoices = (def?.choices || []).map((choice, index) => choiceIsAvailable(choice, char) && !tabooGainOf(choice) ? index : -1).filter((index) => index >= 0);
+          char = resolveMinor(char, safeChoices.length ? safeChoices[Math.floor(rng() * safeChoices.length)] : -1, rng);
         } else if (char.pendingContract) {
           yearOther++;
           const ap = char.pendingContract.approaches;

@@ -1107,9 +1107,9 @@ export const DUNGEON_BALANCE = {
 };
 
 const STANCE = {
-  guarded: { damage: 0.75, strain: 0.7, loot: 0.85, check: 0.1 },
+  guarded: { damage: 0.75, strain: 0.7, loot: 0.7, check: 0.07 },
   balanced: { damage: 1, strain: 1, loot: 1, check: 0 },
-  reckless: { damage: 1.25, strain: 1.15, loot: 1.3, check: 0 }
+  reckless: { damage: 1.2, strain: 1.1, loot: 1.6, check: 0.02 }
 };
 
 export function getStrainTier(strain) {

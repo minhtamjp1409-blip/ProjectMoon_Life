@@ -10,7 +10,6 @@ import {
   previousYearPoints,
   previewAnnualPlanDeltas
 } from '../../../engine/annualPlan.js';
-import { YearLeadList } from './YearLeadDock';
 import { useT } from '../../../i18n';
 
 const DIRECTIVE_STAT_LABELS = {
@@ -59,8 +58,8 @@ function renderDirectiveChips(fx = {}, t) {
   );
 }
 
-// One screen a year: where the time goes, the life's ambition the first time, Apex Command Directive for leaders, and the year's lead.
-export function YearPlanDock({ char, draft, onConfirm }) {
+// One screen a year: time allocation, lifelong ambition, and the Apex directive when available.
+export function YearPlanDock({ char, onConfirm }) {
   const { t } = useT();
   const choices = ambitionsFor(char);
   const apexEligible = isApexCommander(char);
@@ -261,7 +260,7 @@ export function YearPlanDock({ char, draft, onConfirm }) {
             className="btn btn-primary year-plan-confirm"
             type="button"
             disabled={!canConfirm}
-            onClick={() => onConfirm(points, ambition, null, apexEligible ? directive : null)}
+            onClick={() => onConfirm(points, ambition, apexEligible ? directive : null)}
           >
             {t('Bắt đầu năm mới', 'Begin New Year')}
           </button>

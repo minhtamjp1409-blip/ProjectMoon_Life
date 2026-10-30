@@ -111,7 +111,7 @@ const g1 = (flags, over) => fixer(1, flags, { age: 29, merit: 250, stats: { heal
 assert.equal(checkColorFixerReadiness(g1([])).ready, false);
 assert.equal(checkColorFixerReadiness(g1(['EGOAwakened'])).ready, true, 'lower merit, rep and age with E.G.O');
 assert.equal(checkColorFixerReadiness(g1(['EGOAwakened'], { merit: 200 })).ready, false, 'still has to be earned');
-assert.equal(COLOR_FIXER_REQ.merit, 300, 'the ordinary gate is unchanged (backend parity)');
+assert.equal(COLOR_FIXER_REQ.merit, 260, 'the ordinary gate lowered in batch 95 (backend parity)');
 
 console.log('8. Awakening is harder than before but not out of reach...');
 const carmen = byId('ego_carmen_crossroad');
@@ -146,7 +146,7 @@ rememberResonance(near);
 assert(Number.isFinite(near.egoOpportunityUntil));
 let offered = 0;
 for (let i = 0; i < 400; i++) {
-  const c = base(`roll-${i}`, { job: 'Fixer', fixerGrade: 6, resonance: 80, age: 30, flags: [], egoOpportunityUntil: 31 });
+  const c = base(`roll-${i}`, { job: 'Fixer', fixerGrade: 6, resonance: 80, age: 30, flags: [], egoOpportunityUntil: 33 });
   c.stats.sanity = 60;
   if (rollEgoEncounter(c, createRngFromIndex(i))) offered++;
 }

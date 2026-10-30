@@ -136,7 +136,7 @@ export const BloodlinePage = () => {
                     </td>
                     <td className="num" data-label={t('Tuổi khi khép hồ sơ', 'Age at record end')}>{life.age} {t('tuổi', 'yrs')}</td>
                     <td className="bloodline-fate-td" data-label={t('Kết cục', 'Fate')}>{lang === 'en' ? life.deathCauseEn || life.deathCauseVi : life.deathCauseVi}</td>
-                    <td className="muted bloodline-relic-td" data-label={t('Di vật', 'Relic')}>{t(life.relic, localizeEnsembleName(life.relic, 'en'))}</td>
+                    <td className="muted bloodline-relic-td" data-label={t('Di vật', 'Relic')}>{t(life.relic, life.relicEn || localizeEnsembleName(life.relic, 'en'))}</td>
                     <td className="bloodline-action-td">
                       <div className="bloodline-actions">
                         {!life.endingId && (

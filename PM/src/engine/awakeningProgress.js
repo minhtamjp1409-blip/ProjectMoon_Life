@@ -7,7 +7,7 @@ export function rememberResonance(char, gain = 0) {
   const ready = char.age >= 18 && ((char.resonance || 0) >= 74 ||
     ((char.resonance || 0) >= 62 && ((scars >= 1 && char.stats.sanity <= 38) || (scars >= 2 && char.stats.sanity <= 45))));
   if (ready && !char.flags?.some(f => ['EGOAwakened', 'Distorted'].includes(f)) && !char.seenEvents?.includes('ego_carmen_crossroad')) {
-    if (!hasEgoOpportunity(char)) char.egoOpportunityUntil = char.age + 2;
+    if (!hasEgoOpportunity(char)) char.egoOpportunityUntil = char.age + 3;
   }
 }
 
@@ -21,9 +21,9 @@ export function rollEgoEncounter(char, rng) {
   rememberResonance(char);
   if (!hasEgoOpportunity(char) && char.stats.sanity > 12) return false;
   if (char.egoEncounterRollAge !== char.age) {
-    const elapsed = hasEgoOpportunity(char) ? Math.max(0, char.age - (char.egoOpportunityUntil - 2)) : 0;
+    const elapsed = hasEgoOpportunity(char) ? Math.max(0, char.age - (char.egoOpportunityUntil - 3)) : 0;
     char.egoEncounterRollAge = char.age;
-    char.egoEncounterOffered = rng() < Math.min(0.4, 0.16 + elapsed * 0.12);
+    char.egoEncounterOffered = rng() < Math.min(0.5, 0.24 + elapsed * 0.14);
   }
   return char.egoEncounterOffered === true;
 }

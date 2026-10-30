@@ -105,7 +105,7 @@ try {
   cityArchiveAPI.planYear = originalPlanYear;
 }
 
-assert.deepEqual(FIXER_LADDER.map((step) => step.meritReq), [10, 22, 38, 56, 78, 105, 150, 200]);
+assert.deepEqual(FIXER_LADDER.map((step) => step.meritReq), [10, 22, 38, 56, 78, 96, 135, 180]);
 for (const ladder of Object.values(FINGER_LADDERS)) assert.deepEqual(ladder.map((step) => step.meritReq), [28, 68, 155]);
 assert.deepEqual(WING_LADDER_PROMOTIONS.map((step) => step.meritReq), [25, 65, 125]);
 

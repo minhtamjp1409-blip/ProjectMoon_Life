@@ -597,8 +597,13 @@ export function selectEventWithWeaverAI({
     }
   }
 
+  // A Color trial that is due comes before the next Grade exam: a wielder who is ready at Grade 4 would otherwise sit
+  // through one exam after another, and Hana's offer would wait until old age.
+  const colorTrialDue = char.job === 'Fixer' && !char.flags.includes('Distorted') && colorTrialAvailable(char) &&
+    checkColorFixerReadiness(char).ready && allPools.some((e) => e.id === 'hana_color_ascension_trial');
+
   // Prioritize sequential Fixer Grade Promotion exams (Multi-track Association trials)
-  if (char.job === 'Fixer' && !char.flags.includes('Distorted')) {
+  if (char.job === 'Fixer' && !char.flags.includes('Distorted') && !colorTrialDue) {
     const FIXER_PROMOTION_POOLS = {
       9: ['fixer_promo_g8_exam', 'fixer_promo_g8_seven', 'fixer_promo_g8_zwei'],
       8: ['fixer_promo_g7_exam', 'fixer_promo_g7_shi', 'fixer_promo_g7_tres'],

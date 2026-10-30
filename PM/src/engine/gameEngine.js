@@ -3,6 +3,7 @@ import { advanceActiveNarrativeArcs } from './narrativeArcEngine.js';
 import { choiceIsAvailable, getChoiceAhnCost, matchesEventContext, mergeEffects, npcIsActive, recordColorTrialCompanion, colorTrialCompanionOf, isIndependentSyndicateEligibleForRank } from './eventConditions.js';
 import { ITEMS_CATALOG } from '../data/itemsData.js';
 import { rollPerinatalFate } from './fateEngine.js';
+import { keepsakeForLife, normalizeLegacyRecord } from './legacyKeepsake.js';
 import { rollTraits, traitsOf, varyEffects, PRINTED_NUMBERS } from './variance.js';
 import {
   extractAncestorEchoProfile,
@@ -61,13 +62,14 @@ import { EGO_LEAP_EVENTS } from '../data/eventsEgoLeap.js';
 import { AFFILIATION_EVENTS } from '../data/eventsAffiliation.js';
 import { ENSEMBLE_EVENTS, ENSEMBLE_SCORE_ITEM } from '../data/dungeonEnsemble.js';
 import { COLOR_CAREER_EVENTS } from '../data/eventsColorCareerArc.js';
+import { COLOR_ERA_EVENTS } from '../data/eventsColorEras.js';
 import { WING_PARITY_MAJORS } from '../data/eventsWingParityExpansion.js';
 import { DISTORTION_PARITY_MAJORS } from '../data/eventsDistortionParityExpansion.js';
 import { ROUTE_CONSEQUENCE_EVENTS } from '../data/eventsRouteConsequences.js';
 import { FINGERS_GAMBLE_EVENTS } from '../data/eventsFingersGambleSuite.js';
 import { localizeEnsembleName } from '../data/ensembleNames.js';
 import { ENSEMBLE_INVITE_ID, ENSEMBLE_LAST_CALL_ID, recordEnsembleInvitation } from './ensemblePath.js';
-import { egoEdge } from './egoEdge.js';
+import { egoEdge, hasAwakenedEgo } from './egoEdge.js';
 import { laneContractSet, laneContractMods, noteAffiliationContract, applyAffiliationChoice, ensureAffiliation, getAffiliation } from './affiliation.js';
 import {
   FIXER_LADDER,
@@ -163,6 +165,7 @@ export const ALL_STORY_EVENTS = [
   ...AFFILIATION_EVENTS,
   ...ENSEMBLE_EVENTS,
   ...COLOR_CAREER_EVENTS,
+  ...COLOR_ERA_EVENTS,
   ...WING_PARITY_MAJORS,
   ...DISTORTION_PARITY_MAJORS,
   ...ROUTE_CONSEQUENCE_EVENTS,
@@ -417,6 +420,7 @@ export function createNewCharacter({
   parentLegacy = null,
   startAge = 0
 } = {}) {
+  parentLegacy = normalizeLegacyRecord(parentLegacy);
   const actualSeed = seed.trim() || freshSeed();
   const rng = createRNG(actualSeed);
   const actualAge = Math.max(0, startAge);
@@ -475,6 +479,7 @@ export function createNewCharacter({
     flags.push('HuyếtThốngKếThừa');
     if (!unlockedRecords.includes('lineage_heir')) unlockedRecords.push('lineage_heir');
     if (parentLegacy.ensembleScore) resonance = clamp(resonance + 3, 0, 100);
+    const inheritedRelicEn = parentLegacy.relicEn || localizeEnsembleName(parentLegacy.relic, 'en');
 
     const succRel = parentLegacy.successorRelation || (parentLegacy.age < 14 ? 'sibling' : parentLegacy.age < 18 ? 'companion' : parentLegacy.hasChild ? 'child' : 'scavenger');
 
@@ -484,7 +489,7 @@ export function createNewCharacter({
       network = clamp(network + Math.round((parentLegacy.network || 0) * 0.18), 1, 50);
       inheritedEchoes.push({
         labelVi: `Huyết tử thừa kế từ ${parentLegacy.name}: ${parentLegacy.relic}`,
-        labelEn: `Biological inheritance from ${parentLegacy.name} (${localizeEnsembleName(parentLegacy.relic, 'en')})`,
+        labelEn: `Biological inheritance from ${parentLegacy.name} (${inheritedRelicEn})`,
         impactVi: `Thêm Ahn lúc đầu, người cũ của ${parentLegacy.name} có thể tìm đến`,
         impactEn: `+Starting Ahn, unlocks Heirloom & Old Comrade causal events`
       });
@@ -495,7 +500,7 @@ export function createNewCharacter({
       scars.push('Nỗi đau kẻ sống sót');
       inheritedEchoes.push({
         labelVi: `Kỷ vật của người ngã xuống tuổi thơ: ${parentLegacy.relic}`,
-        labelEn: `Keepsake of one fallen young (${localizeEnsembleName(parentLegacy.relic, 'en')})`,
+        labelEn: `Keepsake of one fallen young (${inheritedRelicEn})`,
         impactVi: `+6 Resonance, mang Vết sẹo Nỗi đau kẻ sống sót kiên cường khi nguy cấp`,
         impactEn: `+6 Resonance, Survivor's Guilt scar grants resilience in crisis`
       });
@@ -505,7 +510,7 @@ export function createNewCharacter({
       resonance = clamp(resonance + 4, 0, 100);
       inheritedEchoes.push({
         labelVi: `Di nguyện của bạn đồng hành: ${parentLegacy.relic}`,
-        labelEn: `Companion's parting vow (${localizeEnsembleName(parentLegacy.relic, 'en')})`,
+        labelEn: `Companion's parting vow (${inheritedRelicEn})`,
         impactVi: `+Mạng lưới Backstreets và Resonance từ lời thề đồng hành`,
         impactEn: `+Starting Network and Resonance from shared youthful vows`
       });
@@ -515,7 +520,7 @@ export function createNewCharacter({
       health = clamp(health + 8, 20, 95);
       inheritedEchoes.push({
         labelVi: `Truyền nhân ý chí của ${parentLegacy.name}: ${parentLegacy.relic}`,
-        labelEn: `Protege inheritor of ${parentLegacy.name} (${localizeEnsembleName(parentLegacy.relic, 'en')})`,
+        labelEn: `Protege inheritor of ${parentLegacy.name} (${inheritedRelicEn})`,
         impactVi: `+Khởi điểm Danh tiếng, Mạng lưới và Thân pháp võ học được rèn giũa`,
         impactEn: `+Higher starting Rep, Network and trained physical fortitude`
       });
@@ -538,7 +543,7 @@ export function createNewCharacter({
       flags.push('BảnLĩnhNgõCùng');
       inheritedEchoes.push({
         labelVi: `Di vật nhặt từ đống đổ nát của ${parentLegacy.name}: ${parentLegacy.relic}`,
-        labelEn: `Scavenged relic of ${parentLegacy.name} (${localizeEnsembleName(parentLegacy.relic, 'en')})`,
+        labelEn: `Scavenged relic of ${parentLegacy.name} (${inheritedRelicEn})`,
         impactVi: `Nhận di vật vô chủ, tiềm năng thức tỉnh vũ khí bí mật`,
         impactEn: `Found unowned relic, hidden weapon awakening potential`
       });
@@ -552,7 +557,8 @@ export function createNewCharacter({
       parentJob: parentLegacy.job,
       parentDeathVi: parentLegacy.deathCauseVi,
       parentDeathEn: parentLegacy.deathCauseEn,
-      relic: parentLegacy.ensembleScore ? 'Bản tổng phổ viết dở' : (parentLegacy.relic || (parentLegacy.age < 16 ? `Kỷ vật của ${parentLegacy.name}` : `Di vật của ${parentLegacy.name}`)),
+      relic: parentLegacy.relic || keepsakeForLife(parentLegacy).vi,
+      relicEn: inheritedRelicEn || keepsakeForLife(parentLegacy).en,
       inheritedDebt: Boolean(parentLegacy.hasVendetta || succRel === 'debt_bearer'),
       successorRelation: succRel,
       successorTitleVi: parentLegacy.successorTitleVi,
@@ -671,8 +677,8 @@ export function createNewCharacter({
         ? `Năm bạn ${actualAge} tuổi, đoàn xe dừng bên ngoài bức tường The City. Bạn mang theo 「${lineageInfo?.relic || 'kỷ vật cũ'}」 của ${parentLegacy?.name || 'người đi trước'} và tự chọn đường đi tiếp.`
         : `Năm bạn ${actualAge} tuổi, ${parentLegacy ? parentLegacy.name : 'người đi trước'} đã ngã xuống trong biến cố The City. Bạn tiếp nhận di vật 「${lineageInfo?.relic || 'Kỷ vật cũ'}」 và chính thức bắt đầu hành trình của riêng mình.`,
       en: region.id === 'OUTSKIRTS'
-        ? `At age ${actualAge}, the caravan stops beyond the City wall. You carry 「${localizeEnsembleName(lineageInfo?.relic, 'en') || 'an old keepsake'}」 from ${parentLegacy?.name || 'the one before you'} and choose your next road.`
-        : `At age ${actualAge}, ${parentLegacy ? parentLegacy.name : 'your predecessor'} fell in the perils of The City. You take up 「${localizeEnsembleName(lineageInfo?.relic, 'en') || 'Relic'}」 and begin your own path.`
+        ? `At age ${actualAge}, the caravan stops beyond the City wall. You carry 「${lineageInfo?.relicEn || 'an old keepsake'}」 from ${parentLegacy?.name || 'the one before you'} and choose your next road.`
+        : `At age ${actualAge}, ${parentLegacy ? parentLegacy.name : 'your predecessor'} fell in the perils of The City. You take up 「${lineageInfo?.relicEn || 'a keepsake'}」 and begin your own path.`
     });
   } else {
     initialLogs = birth.lines.map((line, i) => ({
@@ -694,23 +700,23 @@ export function createNewCharacter({
         });
       } else {
         let legacyVi = `Bạn là con của ${lineageInfo.parentName}. Thứ duy nhất người ấy để lại là 「${lineageInfo.relic}」${lineageInfo.inheritedDebt ? ', và một món nợ máu với Syndicate.' : '.'}`;
-        let legacyEn = `You are the child of ${lineageInfo.parentName}. All they left you was 「${localizeEnsembleName(lineageInfo.relic, 'en')}」${lineageInfo.inheritedDebt ? ', and a blood debt to a Syndicate.' : '.'}`;
+        let legacyEn = `You are the child of ${lineageInfo.parentName}. All they left you was 「${lineageInfo.relicEn}」${lineageInfo.inheritedDebt ? ', and a blood debt to a Syndicate.' : '.'}`;
 
         if (lineageInfo.successorRelation === 'sibling' || (lineageInfo.parentAge > 0 && lineageInfo.parentAge < 14)) {
           legacyVi = `${lineageInfo.parentName} ngã xuống năm ${lineageInfo.parentAge} tuổi khi chưa kịp lớn. Bạn là đứa trẻ trốn cùng buồng trọ lúc 3:13 AM nhặt lại 「${lineageInfo.relic}」${lineageInfo.inheritedDebt ? ', cùng món nợ máu dở dang với Syndicate.' : '.'}`;
-          legacyEn = `${lineageInfo.parentName} perished young at age ${lineageInfo.parentAge}. You are the room-child who hid beside them at 3:13 AM, clutching 「${localizeEnsembleName(lineageInfo.relic, 'en')}」${lineageInfo.inheritedDebt ? ', along with an unsettled Syndicate blood debt.' : '.'}`;
+          legacyEn = `${lineageInfo.parentName} perished young at age ${lineageInfo.parentAge}. You are the room-child who hid beside them at 3:13 AM, clutching 「${lineageInfo.relicEn}」${lineageInfo.inheritedDebt ? ', along with an unsettled Syndicate blood debt.' : '.'}`;
         } else if (lineageInfo.successorRelation === 'companion' || (lineageInfo.parentAge >= 14 && lineageInfo.parentAge < 18)) {
           legacyVi = `${lineageInfo.parentName} ngã xuống giữa tuổi thiếu niên (${lineageInfo.parentAge} tuổi). Bạn là người bạn cùng ngõ hẻm tiếp bước mang theo 「${lineageInfo.relic}」${lineageInfo.inheritedDebt ? ', cùng món nợ máu dở dang với Syndicate.' : '.'}`;
-          legacyEn = `${lineageInfo.parentName} fell at age ${lineageInfo.parentAge}. You are the alley companion who took up their 「${localizeEnsembleName(lineageInfo.relic, 'en')}」${lineageInfo.inheritedDebt ? ', along with an unsettled Syndicate blood debt.' : '.'}`;
+          legacyEn = `${lineageInfo.parentName} fell at age ${lineageInfo.parentAge}. You are the alley companion who took up their 「${lineageInfo.relicEn}」${lineageInfo.inheritedDebt ? ', along with an unsettled Syndicate blood debt.' : '.'}`;
         } else if (lineageInfo.successorRelation === 'apprentice') {
           legacyVi = `${lineageInfo.parentName} qua đời năm ${lineageInfo.parentAge} tuổi. Bạn là môn sinh được người ấy dìu dắt, tiếp nhận 「${lineageInfo.relic}」 và ý chí chiến đấu chưa hoàn tất.`;
-          legacyEn = `${lineageInfo.parentName} passed away at age ${lineageInfo.parentAge}. You are the protégé they mentored, taking up 「${localizeEnsembleName(lineageInfo.relic, 'en')}」 and their martial will.`;
+          legacyEn = `${lineageInfo.parentName} passed away at age ${lineageInfo.parentAge}. You are the protégé they mentored, taking up 「${lineageInfo.relicEn}」 and their martial will.`;
         } else if (lineageInfo.successorRelation === 'debt_bearer') {
           legacyVi = `${lineageInfo.parentName} qua đời năm ${lineageInfo.parentAge} tuổi khi nợ máu chưa trả hết. Bạn bị Syndicate ép gánh cuốn sổ nợ cùng di vật 「${lineageInfo.relic}」.`;
-          legacyEn = `${lineageInfo.parentName} died at age ${lineageInfo.parentAge} with an unsettled blood debt. The Syndicate forced their ledger and 「${localizeEnsembleName(lineageInfo.relic, 'en')}」 into your hands.`;
+          legacyEn = `${lineageInfo.parentName} died at age ${lineageInfo.parentAge} with an unsettled blood debt. The Syndicate forced their ledger and 「${lineageInfo.relicEn}」 into your hands.`;
         } else if (lineageInfo.successorRelation === 'scavenger' || lineageInfo.successorRelation === 'heir') {
           legacyVi = `${lineageInfo.parentName} qua đời cô độc năm ${lineageInfo.parentAge} tuổi. Bạn là kẻ nhặt rác Backstreets tình cờ đào được 「${lineageInfo.relic}」 từ đống gạch vụn trước giờ Sweeper dọn sạch.`;
-          legacyEn = `${lineageInfo.parentName} died alone at age ${lineageInfo.parentAge}. You are a Backstreet scavenger who unearthed 「${localizeEnsembleName(lineageInfo.relic, 'en')}」 before the Sweepers arrived.`;
+          legacyEn = `${lineageInfo.parentName} died alone at age ${lineageInfo.parentAge}. You are a Backstreet scavenger who unearthed 「${lineageInfo.relicEn}」 before the Sweepers arrived.`;
         }
 
         initialLogs.push({
@@ -856,6 +862,13 @@ export function createNewCharacter({
 /**
  * Helper to clone and normalize character object so getters stay intact
  */
+/** Records how a Color name was reached, so the years after it can speak to that: young, or grown from an E.G.O. */
+function markColorInvestiture(char) {
+  if (char.colorAwardAge !== char.age) return;
+  if (char.age < 45 && !char.flags.includes('ColorYoung')) char.flags.push('ColorYoung');
+  if (hasAwakenedEgo(char) && !char.flags.includes('ColorFromEGO')) char.flags.push('ColorFromEGO');
+}
+
 export function cloneChar(char) {
   const scarState = normalizeScars(char);
   const invClone = structuredClone(char.inventory || []);
@@ -2454,6 +2467,7 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random, dung
     char.fixerGrade = 0;
     if (!char.flags.includes('ColorFixer')) char.flags.push('ColorFixer');
     char.colorAwardAge ??= char.age;
+    markColorInvestiture(char);
   }
 
   const assignedTitle = outcome.customTitle || choice.customTitle ||
@@ -2735,6 +2749,7 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random, dung
     char.job = 'Color Fixer';
     if (!char.flags.includes('ColorFixer')) char.flags.push('ColorFixer');
     char.colorAwardAge ??= char.age;
+    markColorInvestiture(char);
   }
 
   // Micro-Dungeon Delve trigger
@@ -2897,15 +2912,11 @@ export function buildLifeSummaryAndLegacy(char) {
     occupationEn = 'Child of the City';
   }
 
-  const relicName =
-    (char.ensembleScore ? 'Bản tổng phổ viết dở' : null) ||
-    char.craftWeapon?.name ||
-    (char.egoName ? `Mảnh E.G.O 「${char.egoName}」` : null) ||
-    (char.customTitle ? `Huy hiệu Color 「${char.customTitle}」` : null) ||
-    (char.lineage?.relic ? char.lineage.relic : (char.age < 16 ? `Kỷ vật của ${char.name}` : `Di vật của ${char.name}`));
+  const keepsake = keepsakeForLife(char);
+  const relicName = keepsake.vi;
 
   const succInfo = determineSuccessorType(char);
-  const relicNameEn = localizeEnsembleName(relicName, 'en');
+  const relicNameEn = keepsake.en;
   const successorRelation = succInfo.type;
   let childAgeWhenParentDied = 0;
   if (succInfo.type === 'child') {
@@ -2994,7 +3005,7 @@ export function buildLifeSummaryAndLegacy(char) {
     ? `Mang trong mình huyết thống thế hệ thứ #${char.generation} và kế thừa di vật 「${char.lineage.relic}」 từ ${char.lineage.parentName}, `
     : '';
   const lineageIntroEn = char.lineage?.parentName
-    ? `Carrying the bloodline of Generation #${char.generation} and inheriting "${localizeEnsembleName(char.lineage.relic, 'en')}" from ${char.lineage.parentName}, `
+    ? `Carrying the bloodline of Generation #${char.generation} and inheriting "${char.lineage.relicEn || localizeEnsembleName(char.lineage.relic, 'en')}" from ${char.lineage.parentName}, `
     : '';
 
   const childhoodLog = majorLogs.find(l => l.age >= 5 && l.age < 18);
@@ -3308,6 +3319,7 @@ export function buildLifeSummaryAndLegacy(char) {
     merit: char.merit || 0,
     scars: [...(char.scars || [])],
     relic: relicName,
+    relicEn: relicNameEn,
     lifeStoryParagraphsVi,
     lifeStoryParagraphsEn,
     turningPoints: turningPoints.slice(0, 8),

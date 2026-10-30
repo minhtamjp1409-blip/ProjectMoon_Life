@@ -7,7 +7,8 @@
  * resource sits on its floor or cap, and which kind of moment moves each resource.
  */
 import { createNewCharacter, resolveEventChoice, resolveDungeonChoice, getDungeonCurrentStage, isDungeonChoiceAvailable, evaluateDungeonChoiceOdds, createRNG, resolveFixerContract } from '../../src/engine/gameEngine.js';
-import { planYear, runDueItems, resolveMinor, endYear, LIFE_MINORS } from '../../src/engine/yearPlanner.js';
+import { planYear, chooseDirectorPacedLead, runDueItems, resolveMinor, endYear, LIFE_MINORS } from '../../src/engine/yearPlanner.js';
+import { tabooGainOf } from '../../src/engine/forbiddenPath.js';
 import { REGIONS } from '../../src/data/worldData.js';
 import { choiceIsAvailable } from '../../src/engine/eventConditions.js';
 import { checkColorFixerReadiness } from '../../src/engine/careerPipeline.js';
@@ -117,7 +118,8 @@ for (let i = 0; i < LIVES; i++) {
     }
     if (char.job === 'Fixer') wasFixer = true;
     years++;
-    planYear(char, rng);
+    if (!char.plan?.length) planYear(char, rng);
+    if (char.pendingLead) char = chooseDirectorPacedLead(char, rng);
     observeReadiness();
     for (let t = 0; t <= 100 && char.alive; t += 2) {
       let before = snap(char);
@@ -171,7 +173,8 @@ for (let i = 0; i < LIVES; i++) {
           addFlow('dungeon', before, snap(char));
         } else if (char.pendingMinor) {
           const def = LIFE_MINORS.find((m) => m.id === char.pendingMinor.id);
-          char = resolveMinor(char, pickIndex(def?.choices, rng, char), rng);
+          const safeChoices = (def?.choices || []).map((choice, index) => choiceIsAvailable(choice, char) && !tabooGainOf(choice) ? index : -1).filter((index) => index >= 0);
+          char = resolveMinor(char, safeChoices.length ? safeChoices[Math.floor(rng() * safeChoices.length)] : -1, rng);
           addFlow('minor', before, snap(char));
         } else if (char.pendingContract) {
           const ap = char.pendingContract.approaches;

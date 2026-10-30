@@ -81,7 +81,7 @@
 .stat { display: flex; flex-direction: column; gap: 6px; padding: 4px 0; }
 .stat-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
 .stat-label { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; color: var(--text); min-width: 0; flex-wrap: wrap; }
-.stat-help { display: inline-flex; align-items: center; color: var(--faint); cursor: help; }
+.stat-help { display: inline-flex; align-items: center; justify-content: center; min-width: 24px; min-height: 24px; margin: -6px; color: var(--faint); cursor: help; }
 .stat-flag { font-size: 11.5px; font-weight: 700; color: var(--bad); padding: 1px 6px; border: 1px solid currentColor; border-radius: var(--radius-sm); }
 .stat-flag.is-warn { color: var(--bad); }
 .stat-num-box { display: inline-flex; align-items: baseline; gap: 8px; }
@@ -218,8 +218,8 @@
 .req-val { font-variant-numeric: tabular-nums; }
 .req-deficit { color: var(--gold); font-size: 12px; font-weight: 500; }
 .career-req-sources { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; margin-left: 22px; margin-top: 2px; }
-.req-sources-label { font-size: 11px; color: var(--faint); }
-.req-source-tag { font-size: 11px; color: var(--muted); background: var(--raised); padding: 1px 6px; border: 1px solid var(--border); border-radius: 2px; }
+.req-sources-label { font-size: 12px; color: var(--faint); }
+.req-source-tag { font-size: 12px; color: var(--muted); background: var(--raised); padding: 1px 6px; border: 1px solid var(--border); border-radius: 2px; }
 .career-obj-tip { font-size: 13.5px; color: var(--faint); line-height: 1.5; }
 
 /* E.G.O Awakening & Distortion Psychic Horizon Card */
@@ -231,7 +231,7 @@
 .ego-horizon-card.status-incomplete { border-color: rgba(161, 98, 7, 0.45); }
 .ego-horizon-card.status-crossroad_passed { border-color: var(--line, #6b7280); }
 .ego-horizon-header { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
-.ego-horizon-tag { font-size: 11.5px; font-weight: 600; color: var(--muted); letter-spacing: 0.5px; }
+.ego-horizon-tag { font-size: 12px; font-weight: 600; color: var(--muted); letter-spacing: 0.5px; }
 .ego-horizon-status-badge { font-size: 12.5px; font-weight: 600; color: var(--gold); }
 .ego-horizon-bar { height: 3px; background: var(--raised); }
 .ego-horizon-bar i { display: block; height: 100%; background: var(--gold); transition: width 0.3s ease; }
@@ -301,18 +301,18 @@
   .yearbar-meta { font-size: 12.5px; gap: 8px; }
   .yearbar-meta .phase, .career-obj-pill { display: none; }
   .playbar-desktop-speeds, .playbar-desktop-actions, .playbar-controls > .divider { display: none; }
-  .btn-speed-mobile { display: inline-grid; place-items: center; min-width: 38px; height: 40px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 13.5px; font-weight: 600; color: var(--text); }
-  .btn-step-season { min-height: 40px; padding: 0 10px; }
+  .btn-speed-mobile { display: inline-grid; place-items: center; min-width: 44px; height: 44px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 13.5px; font-weight: 600; color: var(--text); }
+  .btn-step-season { min-height: 44px; min-width: 44px; padding: 0 10px; }
   .btn-step-season span { display: none; }
   .btn-shop-mobile {
-    display: inline-grid; place-items: center; min-width: 40px; height: 40px;
+    display: inline-grid; place-items: center; min-width: 44px; height: 44px;
     border: 1px solid rgba(216, 178, 101, 0.4); border-radius: var(--radius-sm);
     background: rgba(216, 178, 101, 0.08); color: var(--gold);
     cursor: pointer; transition: transform 0.12s ease, background 0.15s ease;
   }
   .btn-shop-mobile:active { transform: scale(0.95); background: rgba(216, 178, 101, 0.18); }
   .playbar-mobile-more { display: block; }
-  .play-pause-btn { width: 40px; height: 40px; }
+  .play-pause-btn { width: 44px; height: 44px; }
 
   .play-body { display: flex; flex-direction: column; }
   .desktop-dossier-side { display: none; }
@@ -329,7 +329,7 @@
   .hud2-when b { font-weight: 600; color: var(--text); }
   .hud2-name { font-family: var(--serif); font-size: 17px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .hud2-gen, .hud2-when { font-size: 12.5px; color: var(--muted); white-space: nowrap; }
-  .hud2-open { white-space: nowrap; flex: none; display: inline-flex; align-items: center; gap: 4px; min-height: 34px; padding: 0 10px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; }
+  .hud2-open { white-space: nowrap; flex: none; display: inline-flex; align-items: center; gap: 4px; min-height: 44px; padding: 0 10px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; }
   .hud2-stats { display: grid; grid-template-columns: 1fr 1fr auto; gap: 14px; align-items: end; }
   .hud2-stat { display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto 4px; column-gap: 8px; row-gap: 5px; align-items: baseline; }
   .hud2-k { display: inline-flex; align-items: center; gap: 4px; font-size: 12.5px; font-weight: 600; color: var(--muted); }
@@ -405,11 +405,11 @@
 @media (max-width: 400px) {
   .playbar { gap: 6px; min-height: 54px; padding: 4px 8px; }
   .playbar-age b { font-size: 22px; }
-  .play-pause-btn { width: 42px; height: 42px; touch-action: manipulation; }
-  .btn-speed-mobile { min-width: 38px; height: 42px; font-size: 13px; touch-action: manipulation; }
-  .btn-step-season { min-height: 42px; padding: 0 10px; touch-action: manipulation; }
-  .btn-shop-mobile { min-width: 40px; height: 42px; touch-action: manipulation; }
-  .playbar-mobile-more .icon-btn { width: 40px; height: 42px; touch-action: manipulation; }
+  .play-pause-btn { width: 44px; height: 44px; touch-action: manipulation; }
+  .btn-speed-mobile { min-width: 44px; height: 44px; font-size: 13px; touch-action: manipulation; }
+  .btn-step-season { min-height: 44px; padding: 0 10px; touch-action: manipulation; }
+  .btn-shop-mobile { min-width: 44px; height: 44px; touch-action: manipulation; }
+  .playbar-mobile-more .icon-btn { width: 44px; height: 44px; touch-action: manipulation; }
   .mobile-resource-hud { padding: 6px 10px 8px; }
   .hud2-name { font-size: 15px; }
 }
@@ -544,3 +544,25 @@
 .dossier-fold > summary:hover { color: var(--accent); }
 .dossier-fold-body { display: flex; flex-direction: column; gap: 8px; padding-bottom: 12px; animation: entryIn .3s ease both; }
 .side > *, .mobile-dossier-sheet-body > * { flex-shrink: 0; }
+
+/* A phone held sideways has about 390px of height: the top bar, play bar, resource strip and bottom bar
+   together took 60% of it and left the story about 100px. Fold them into thinner rows and put the
+   resource strip on one line; the year goal moves to the dossier, and a warning stays in the strip. */
+@media (max-width: 960px) and (max-height: 480px) and (orientation: landscape) {
+  :root {
+    --top: calc(40px + env(safe-area-inset-top, 0px));
+    --bottom: calc(44px + env(safe-area-inset-bottom, 0px));
+  }
+  .topbar-here { font-size: 15px; }
+  .bottom-nav button { flex-direction: row; gap: 6px; min-height: 44px; font-size: 12px; }
+  .bottom-nav button.is-current::after { bottom: 3px; }
+  .playbar { min-height: 44px; padding: 2px 10px 2px 14px; }
+  .playbar-age b { font-size: 24px; }
+  .play-pause-btn, .btn-speed-mobile, .btn-step-season, .btn-shop-mobile { height: 36px; }
+  .mobile-resource-hud { flex-direction: row; align-items: center; gap: 14px; padding: 4px 14px; }
+  .hud2-top { flex: 1 1 auto; min-width: 0; }
+  .hud2-stats { flex: 2 1 auto; min-width: 0; }
+  .hud2-secondary.is-focused { flex: none; padding: 0; }
+  .hud2-year { display: none; }
+  .hud2-open { min-height: 36px; }
+}

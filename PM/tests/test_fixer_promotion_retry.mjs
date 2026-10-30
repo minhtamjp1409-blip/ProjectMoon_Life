@@ -10,7 +10,7 @@ import { cityArchiveAPI } from '../src/services/api/cityArchiveAPI.js';
 const fixer = createNewCharacter({ seed: 'fixer-exam-retry', startAge: 45 });
 fixer.job = 'Fixer';
 fixer.fixerGrade = 3;
-fixer.merit = 150;
+fixer.merit = 135;
 fixer.stats.rep = 82;
 fixer.stats.health = 100;
 fixer.stats.sanity = 100;

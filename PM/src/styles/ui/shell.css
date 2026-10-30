@@ -19,7 +19,7 @@
   background: rgba(7, 7, 10, .6);
   backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
 }
-.topbar-brand { display: flex; align-items: center; gap: 10px; min-width: 0; color: var(--text); }
+.topbar-brand { display: flex; align-items: center; gap: 10px; min-width: 0; min-height: 44px; color: var(--text); }
 .topbar-brand img { flex: none; border-radius: 2px; }
 .topbar-word { font-family: var(--serif); font-size: 17px; font-weight: 600; letter-spacing: -0.01em; white-space: nowrap; }
 .topbar-word em { font-style: normal; font-weight: 400; color: var(--muted); }
@@ -60,6 +60,7 @@
   .topbar-here { display: block; font-family: var(--serif); font-size: 17px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .topbar-nav { display: none; }
   .topbar-tools .app-tool span { display: none; }
+  .topbar-tools .app-tool { min-width: 44px; min-height: 44px; }
   .topbar-sync { display: none; }
   .bottom-nav {
     position: relative; z-index: 20;
@@ -72,7 +73,7 @@
   .bottom-nav button {
     position: relative;
     display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
-    min-height: 60px; color: var(--faint); font-size: 11.5px; font-weight: 600;
+    min-height: 60px; color: var(--faint); font-size: 12px; font-weight: 600;
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
     transition: color .14s ease;
@@ -104,5 +105,5 @@
   flex: none;
 }
 @media (max-width: 360px) {
-  .topbar-tools .app-tool { min-width: 34px; padding: 0 6px; }
+  .topbar-tools .app-tool { min-width: 44px; min-height: 44px; padding: 0 6px; }
 }

@@ -240,7 +240,14 @@ function leadRisk(event) {
 }
 
 function offerYearLeads(char, rng) {
-  if (!char.alive || char.age < 15) {
+  if (!char.alive || char.age < 15 || (char.plan || []).some((item) => item.id === FORBIDDEN_LEAD_ID)) {
+    char.pendingLead = null;
+    return;
+  }
+  const plannedMinors = (char.plan || []).filter((item) => item.kind === 'minor').length;
+  const busyYear = (char.plan || []).some((item) => item.kind === 'major' || item.kind === 'contract' || item.kind === 'dungeon');
+  const chance = plannedMinors >= 2 ? 0.18 : busyYear ? 0.35 : 0.65;
+  if (rng() >= chance) {
     char.pendingLead = null;
     return;
   }
@@ -254,13 +261,20 @@ function offerYearLeads(char, rng) {
     // The label is the event's real risk, not the slot it was drawn for, so a fallback pick is never sold as something it is not
     if (pick) selected.push({ id: pick.id, tier: leadRisk(pick) });
   }
-  // A life strong enough is sometimes offered the forbidden path in place of the dangerous lead
-  const hasEnsemble = (char.plan || []).some((item) => item.forcedEventId === ENSEMBLE_INVITE_ID || item.forcedEventId === ENSEMBLE_LAST_CALL_ID);
-  if (selected.length === 3 && !hasEnsemble && forbiddenLeadOpen(char) && rng() < FORBIDDEN_OFFER_CHANCE) {
-    selected[2] = { id: FORBIDDEN_LEAD_ID, tier: 'forbidden' };
-    char.forbiddenOfferAge = char.age;
-  }
   char.pendingLead = selected.length === 3 ? { age: char.age, offers: selected } : null;
+}
+
+function scheduleForbiddenEncounter(char, rng) {
+  const hasEnsemble = (char.plan || []).some((item) => item.forcedEventId === ENSEMBLE_INVITE_ID || item.forcedEventId === ENSEMBLE_LAST_CALL_ID);
+  if (hasEnsemble || !forbiddenLeadOpen(char) || rng() >= FORBIDDEN_OFFER_CHANCE) return;
+  const event = LIFE_MINORS.find((entry) => entry.id === FORBIDDEN_LEAD_ID);
+  if (!event || !matchesEventContext(event, char)) return;
+  const t = 0.275;
+  const seasonIdx = seasonIdxAt(t);
+  char.plan.push({ kind: 'minor', id: event.id, t, seasonIdx, season: SEASONS[seasonIdx], extra: true, forbiddenEncounter: true });
+  char.plan.sort((a, b) => a.t - b.t);
+  char.forbiddenOfferAge = char.age;
+  remember(char, event.id);
 }
 
 export function isYearLeadUsable(offer, char) {
@@ -290,14 +304,7 @@ export function chooseYearLead(charState, index) {
   return char;
 }
 
-/**
- * Director Pacing Governor:
- * Automatically selects an emergent year lead with organic RNG while actively directing the dramatic tension curve.
- * Guarantees a run does not experience only brutal/punishing events nor only trivial/flat cakewalks:
- * - High stress / critical wounds / recent danger -> throttles danger to 0-5%, elevates steady/breathing room to 70%+.
- * - Prolonged peace / high vitals / streak of easy years -> elevates danger/stakes up to 45-50%, throttles easy to 10%.
- * - Normal baseline: balanced bell curve (~35% steady, ~40% uncertain, ~25% danger).
- */
+/** Select an optional extra encounter while protecting a wounded life from another dangerous lead. */
 export function chooseDirectorPacedLead(charState, rng = Math.random) {
   const char = cloneChar(charState);
   const draft = char.pendingLead;
@@ -316,9 +323,12 @@ export function chooseDirectorPacedLead(charState, rng = Math.random) {
     return char;
   }
 
-  if (usableIndices.length === 1) {
-    return chooseYearLead(char, usableIndices[0].idx);
+  const safeIndices = usableIndices.filter(({ offer }) => offer.id !== FORBIDDEN_LEAD_ID);
+  if (safeIndices.length === 0) {
+    char.pendingLead = null;
+    return char;
   }
+  if (safeIndices.length === 1) return chooseYearLead(char, safeIndices[0].idx);
 
   const hp = char.stats?.health ?? char.health ?? 50;
   const sp = char.stats?.sanity ?? char.sanity ?? 50;
@@ -327,9 +337,8 @@ export function chooseDirectorPacedLead(charState, rng = Math.random) {
 
   const recentDangerCount = recentTiers.slice(-3).filter((t) => t === 'danger' || t === 'forbidden').length;
   const recentSteadyCount = recentTiers.slice(-3).filter((t) => t === 'steady').length;
-  const yearsSinceCrisis = char.weaver?.yearsSinceLastCrisis ?? 3;
 
-  const scoredOffers = usableIndices.map(({ offer, idx }) => {
+  const scoredOffers = safeIndices.map(({ offer, idx }) => {
     let weight = 30;
     const tier = offer.tier || 'uncertain';
 
@@ -338,22 +347,16 @@ export function chooseDirectorPacedLead(charState, rng = Math.random) {
       if (hp < 45) weight += 45;
       if (sp < 40) weight += 40;
       if (tension >= 65) weight += 35;
-      if (recentDangerCount >= 2) weight += 60; // Guarantee breathing room after consecutive danger
-      if (recentSteadyCount >= 2) weight = Math.max(5, weight - 25); // Throttle when on an easy streak
+      if (recentDangerCount >= 2) weight += 60;
+      if (recentSteadyCount >= 2) weight = Math.max(20, weight - 10);
     } else if (tier === 'uncertain') {
       weight = 40;
       if (recentSteadyCount >= 1 && recentDangerCount >= 1) weight += 20;
     } else if (tier === 'danger') {
       weight = 25;
-      if (recentSteadyCount >= 2) weight += 45; // Escalate stakes when life is too placid
-      if (yearsSinceCrisis >= 4) weight += 30;
-      if (hp >= 75 && sp >= 70 && tension <= 35) weight += 25;
-      // Survival safety: zero danger when already bleeding out or overwhelmed
+      if (recentSteadyCount >= 2) weight += 15;
       if (hp < 40 || sp < 30 || recentDangerCount >= 2) weight = 0;
       else if (tension >= 70 || recentDangerCount >= 1) weight = Math.max(5, weight - 15);
-    } else if (tier === 'forbidden') {
-      // Forbidden Taboo path: Only deliberate when conditions align, never forced recklessly
-      weight = 0;
     }
 
     return { idx, tier, weight: Math.max(0, weight) };
@@ -784,6 +787,7 @@ export function planYear(charState, rng) {
 
   char.plan = planItems;
   char.planCursor = 0;
+  scheduleForbiddenEncounter(char, rng);
   offerYearLeads(char, rng);
   return char;
 }
@@ -1107,7 +1111,7 @@ export function runPlanItem(charState, item, rng) {
       en: interpolateText(def.en, char),
       choices: def.choices.map((c) => ({ vi: interpolateText(c.vi, char), en: interpolateText(c.en, char), fx: c.fx, out: c.out, need: c.need, costAhn: c.costAhn })),
       ignore: def.ignore || null,
-      remainingMs: minorWindowFor(char)
+      remainingMs: item.forbiddenEncounter ? FIRST_MINOR_WINDOW_MS : minorWindowFor(char)
     };
     return char;
   }

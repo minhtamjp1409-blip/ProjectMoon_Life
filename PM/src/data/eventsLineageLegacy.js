@@ -88,43 +88,68 @@ export const LINEAGE_LEGACY_EVENTS = [
     ]
   },
 
-  // 3. Spiritual resonance and awakening of the inherited relic
+  // 3. The predecessor's record can guide a choice; it carries no E.G.O of its own.
   {
     id: 'm_lineage_relic_resonance',
     age: [20, 36],
     major: true,
     weight: 12,
     requires: ['HuyếtThốngKếThừa'],
-    vi: "[Hơi Thở Của Di Vật] Trong đêm mưa lạnh giữa lòng City, 「{relic}」 bỗng phát ra tiếng ngân rung nhẹ như nhịp đập của quả tim thứ hai. Vết máu khô nhiều năm trước trên chuôi vũ khí khẽ ánh lên tia sáng mờ nhạt: ký ức và khát vọng chưa thành của {parentName} đang tìm cách cộng hưởng với cảm xúc của bạn.",
-    en: "[Resonance of the Relic] On a cold, rain-soaked night in the City, 「{relic}」 emits a low chime like a second pulse. Dried blood along the hilt catches a pale shimmer: {parentName}’s unresolved memories and will stir, seeking alignment with your heartbeat.",
+    vi: "[Địa chỉ bị gạch] Kèm theo 「{relic}」 là một mẩu giấy ghi tên {parentName} và địa chỉ đã bị gạch đi. Không có lời giải thích. Địa chỉ ấy vẫn còn trên bản đồ.",
+    en: "[The Crossed-Out Address] A scrap of paper came with the keepsake. It bears {parentName}’s name and a crossed-out address, with no explanation. The address is still on the map.",
     choices: [
       {
-        labelVi: "Mở rộng tâm trí, hòa nhịp cảm xúc để đánh thức toàn bộ tiềm năng",
-        labelEn: "Open your mind and synchronize your spirit to awaken its full power",
-        resultVi: "Một luồng nhiệt sắc bén truyền thẳng từ cán 「{relic}」 vào lồng ngực bạn. Trong giây lát bạn nhìn thấy mọi trận tử chiến mà {parentName} từng trải qua. Khi cơn choáng qua đi, ánh sáng E.G.O mờ ảo bao phủ lưỡi dao.",
-        resultEn: "A sharp surge of heat flooded from 「{relic}」’s hilt directly into your chest. For a fleeting second you witnessed every lethal clash {parentName} survived. When the vertigo subsided, a faint E.G.O glow enveloped the edge.",
-        effects: { sanity: -14, resonance: +28, rep: +16 },
-        flagsAdd: ['CộngHưởngDiVật'],
-        scarsAdd: ['Dấu ấn linh hồn tiền nhân'],
-        meritAdd: 25
+        labelVi: "Tìm đến địa chỉ ấy",
+        labelEn: "Go to the address",
+        resultVi: "Căn phòng đã đổi chủ. Người gác cửa nhớ {parentName}, nhưng chỉ chịu nói sau khi bạn trả tiền cho hồ sơ cũ. Bạn mang về một cái tên để hỏi tiếp.",
+        resultEn: "The room has a new tenant. The doorman remembers {parentName}, but asks for payment before showing you the old register. You leave with one name to follow up.",
+        effects: { wealth: -5, network: +6, sanity: -2 },
+        flagsAdd: ['DiHuấnĐãĐọc']
       },
       {
-        labelVi: "Đưa di vật đến xưởng vũ khí để tinh chỉnh và bọc hợp kim mới",
-        labelEn: "Bring the relic to an armory to reinforce it with modern alloy",
-        resultVi: "Thợ rèn gia cố cấu trúc kim loại và lắp thêm bộ hãm lực thế hệ mới, biến 「{relic}」 thành một món trang bị thực dụng và chết chóc hơn mà vẫn giữ nguyên hồn cốt cũ.",
-        resultEn: "The smith reinforced the frame with modern shock-absorbers, turning 「{relic}」 into a deadlier, more utilitarian weapon while preserving its original core.",
-        effects: { wealth: -22, health: +16, rep: +18, resonance: +12 },
-        flagsAdd: ['KhíTàiTáiSinh'],
-        meritAdd: 20
+        labelVi: "Nhờ người của Seven tra hồ sơ",
+        labelEn: "Ask Seven to trace the record",
+        resultVi: "Seven tìm được tên người thuê cũ và một biên bản đã bị niêm phong. Họ giữ bản gốc. Bạn nhận bản sao có hai dòng bị bôi đen.",
+        resultEn: "Seven finds the former tenant and a sealed report. They keep the original. Your copy has two lines blacked out.",
+        effects: { wealth: -10, network: +4 },
+        flagsAdd: ['HồSơTiềnNhân']
       },
       {
-        labelVi: "Cất vào hộp nhung như một lời nhắc nhở tĩnh lặng về quá khứ",
-        labelEn: "Rest it inside a velvet box as a quiet tribute to the past",
-        resultVi: "Bạn lau sạch bụi đường trên 「{relic}」 rồi khép nắp hộp. Bạn không cần mượn sức mạnh của người đã khuất; việc nhớ về họ đã là đủ điểm tựa để bạn giữ vững tinh thần giữa thành phố tàn khốc này.",
-        resultEn: "You wiped the road grime from 「{relic}」 and closed the lid. You did not need to borrow the strength of the dead; remembering them was anchor enough to hold your mind intact in this cruel City.",
-        effects: { sanity: +25, health: +12 },
-        flagsAdd: ['KỷVậtNgủYên'],
-        meritAdd: 15
+        labelVi: "Cất mẩu giấy đi",
+        labelEn: "Put the scrap away",
+        resultVi: "Bạn cất mẩu giấy cùng 「{relic}」 vào ngăn tủ. Nếu có câu trả lời, người đã khuất không để lại ở đây.",
+        resultEn: "You put the scrap and the keepsake in a drawer. If the dead had an answer, they did not leave it here.",
+        effects: { sanity: +6 },
+        flagsAdd: ['KỷVậtNgủYên']
+      }
+    ]
+  },
+
+  {
+    id: 'm_lineage_ego_witness',
+    age: [18, 48],
+    major: true,
+    once: true,
+    weight: 14,
+    requires: ['AncestorHadEGO'],
+    vi: '[Người từng chứng kiến] Một người từng làm cùng {parentName} tìm đến bạn. Họ kể về lần người ấy bộc lộ E.G.O, rồi đặt lên bàn bản sao lời khai. Họ hỏi bạn có muốn giữ nó không.',
+    en: '[The Witness] A former colleague of {parentName} finds you. They recount the day your predecessor manifested E.G.O, then place a copy of their statement on the table. They ask if you want it.',
+    choices: [
+      {
+        labelVi: 'Nhận bản sao và hỏi thêm',
+        labelEn: 'Take the copy and ask more',
+        resultVi: 'Người ấy kể thêm một việc {parentName} đã làm sau hôm đó. Bạn ghi lại lời kể, kể cả chỗ họ không nhớ rõ.',
+        resultEn: 'They tell you what {parentName} did afterward. You write it down, including the parts they cannot recall clearly.',
+        effects: { network: 5, sanity: -2 },
+        flagsAdd: ['ĐãNgheChuyệnEGOĐờiTrước']
+      },
+      {
+        labelVi: 'Để bản sao lại',
+        labelEn: 'Leave the copy behind',
+        resultVi: 'Bạn cảm ơn họ. Chuyện của {parentName} vẫn là chuyện của người ấy; bạn còn việc của mình.',
+        resultEn: 'You thank them. {parentName}’s story remains theirs; you have your own life to attend to.',
+        effects: { sanity: 5 },
+        flagsAdd: ['KhướcTừCáiBóngEGO']
       }
     ]
   },
@@ -137,8 +162,8 @@ export const LINEAGE_LEGACY_EVENTS = [
     weight: 16,
     requires: ['AncestorWasColor'],
     forbids: ['Distorted'],
-    vi: "[Cái Bóng Của Sắc Màu] Tại phân khu địa phương của Hana Association, một thanh tra lão niên dừng bước trước bàn làm thủ tục của bạn. Ông ta nhìn chằm chằm vào 「{relic}」 bên hông bạn rồi đặt xuống tấm hồ sơ đóng dấu mật của {parentName}. \"Cả District này vẫn còn nhớ cái tên đó. Nhưng danh hiệu Color không phải là tước vị cha truyền con nối. Chứng minh cho ta thấy ngươi mang bản lĩnh của người đó, hay chỉ đang nấp dưới cái bóng quá lớn.\"",
-    en: "[Shadow of a Color] At the local Hana Association branch, an aging evaluator stops before your desk. He stares at 「{relic}」 at your hip and sets down {parentName}’s sealed dossier. “This entire District still remembers that name. Yet a Color title is no hereditary peerage. Show me whether you carry their edge, or merely hide beneath an oversized shadow.”",
+    vi: "[Cái bóng của Color] Một thanh tra Hana đặt hồ sơ của {parentName} lên bàn. Ông nhìn tên bạn rồi nói: \"Danh hiệu Color không truyền đời. Muốn được xét, hãy nộp việc của chính mình.\"",
+    en: "[A Color's Shadow] A Hana evaluator sets {parentName}’s file on the desk. He reads your name and says, “A Color title is not inherited. Submit your own record if you want to be considered.”",
     choices: [
       {
         labelVi: "Chấp nhận bài khảo sát thực chiến ngay tại sân tập Hana (Thử thách sinh tử)",
@@ -154,8 +179,8 @@ export const LINEAGE_LEGACY_EVENTS = [
           },
           {
             w: 35,
-            resultVi: "Áp lực từ cái bóng của {parentName} khiến nhịp chân bạn chậm nửa nhịp. Lưỡi kiếm khảo sát đánh bật 「{relic}」 khỏi tay bạn, để lại vết thương sâu trên vai và những tiếng xì xầm thất vọng quanh sân tập.",
-            resultEn: "The weight of {parentName}’s shadow slowed your footwork by half a beat. The evaluator’s blade knocked 「{relic}」 from your grip, leaving a deep gash across your shoulder and disappointed murmurs around the yard.",
+            resultVi: "Áp lực từ cái tên {parentName} khiến bạn chậm nửa nhịp. Đòn khảo sát đánh bật vũ khí khỏi tay; vai bạn rách một đường sâu.",
+            resultEn: "The weight of {parentName}’s name slows you by half a beat. The evaluator knocks your weapon aside and cuts deep into your shoulder.",
             effects: { health: -24, sanity: -12, rep: -6, resonance: +8 },
             scarsAdd: ['Thất bại dưới bóng Color tiền bối'],
             meritAdd: 8
@@ -188,8 +213,8 @@ export const LINEAGE_LEGACY_EVENTS = [
     major: true,
     weight: 16,
     requires: ['AncestorWasDistortion'],
-    vi: "[Dư Chấn Distortion Tiền Kiếp] Một khu phố bỏ hoang ở rìa Backstreets bị phong tỏa bởi sương mù dị dạng suốt nhiều năm kể từ ngày {parentName} biến đổi thành Distortion. Khi bạn bước đến gần hàng rào cảnh báo của Hana, 「{relic}」 rung lên dữ dội và màn sương tự động tách làm đôi. Ở tâm điểm vùng dị biến, tàn dư ý thức méo mó của {parentName} vẫn đang lặp lại nỗi ám ảnh cuối đời.",
-    en: "[Ancestral Distortion Echo] A cordoned block on the Backstreets fringe has remained steeped in anomalous fog since the day {parentName} turned into a Distortion. As you approach the Hana barricade, 「{relic}」 vibrates fiercely and the mist parts. At the anomaly’s heart, {parentName}’s warped remnant still replays their final obsession.",
+    vi: "[Dư chấn Distortion] Khu phố nơi {parentName} biến đổi vẫn bị Hana phong tỏa. Bạn tìm được tên người ấy trong biên bản trực chốt. Đêm đó, sương dị dạng lại tràn qua hàng rào.",
+    en: "[Distortion Aftermath] Hana still cordons off the block where {parentName} transformed. Their name appears in the checkpoint log. That night, the altered fog spills across the barricade again.",
     choices: [
       {
         labelVi: "Bước vào tâm vùng dị biến, đối mặt và giải thoát cho ý thức người cũ",
@@ -223,8 +248,8 @@ export const LINEAGE_LEGACY_EVENTS = [
       {
         labelVi: "Báo cáo tọa độ điểm yếu của vùng sương cho đội phong tỏa Hana",
         labelEn: "Report the fog's structural weak point to the Hana containment squad",
-        resultVi: "Bạn giao nộp bản đồ dao động của 「{relic}」 cho đội xử lý hiện trường rồi lặng lẽ quay lưng. Bạn nhận được khoản phí hỗ trợ nhỏ và giữ được sự tỉnh táo, dù cơ hội tiếp cận sức mạnh dị biến đã khép lại.",
-        resultEn: "You handed the oscillation readings of 「{relic}」 to the containment squad and walked away. You received a modest stipend and preserved your sanity, though the anomaly's power was sealed off forever.",
+        resultVi: "Bạn giao bản phác đường sương tràn cho đội phong tỏa rồi rời khỏi hiện trường. Họ trả phí cung cấp tin.",
+        resultEn: "You hand the containment squad a sketch of the fog's path and leave. They pay you for the information.",
         effects: { wealth: +10, sanity: +8, rep: +8, resonance: -6 },
         meritAdd: 12
       }

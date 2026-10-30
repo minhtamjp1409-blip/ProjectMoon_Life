@@ -174,7 +174,7 @@ const OMEN_LINE = {
   bloodline_echo: [
     { vi: 'Sáng hôm sau ngày bạn chào đời, có ai đó đã để lại trước cửa một chiếc hộp sắt không tên. Bên trong là một tấm thẻ bài đã mẻ cạnh dính máu khô của đời trước.', en: 'The morning after your birth, a rusted lockbox sat on the doorstep. Inside lay a chipped identification plate crusted with ancestral blood.' },
     { vi: 'Bà của bạn nhìn vào bàn tay bạn rồi thở dài: "Nét chỉ tay này giống hệt người ấy... Mối thù ghi trong Book of Vengeance lại có kẻ phải gánh tiếp rồi."', en: 'Your elder stared at your palm and sighed: “Identical lines... The vendetta inscribed in the Book of Vengeance has found its next debtor.”' },
-    { vi: 'Kỷ vật của một người đã khuất trong gia tộc bỗng nhiên phát ra tiếng ngân rung nhẹ khi bạn vừa cất tiếng khóc, như thể linh hồn cũ vừa tìm thấy người thừa kế.', en: 'An old heirloom of a fallen ancestor hummed with faint resonance as you cried, as if the old ghost recognized its true heir.' },
+    { vi: 'Khi bạn cất tiếng khóc, bà đặt cuốn sổ tay cũ của người đã khuất lên bàn. Bà nói sau này bạn có thể đọc, nếu muốn.', en: 'When you cried, your grandmother set a dead relative’s old notebook on the table. She said you could read it someday, if you wished.' },
     { vi: 'Một lá thư niêm phong bằng sáp đỏ đề tên cha/mẹ bạn được gửi tới đúng ngày sinh nhật đầu tiên, nhắc nhở về một món nợ máu chưa bao giờ được xóa bỏ ở The City.', en: 'A wax-sealed crimson letter addressed to your bloodline arrived on your first birthday, reminding that no City blood debt is ever wiped clean.' }
   ]
 };

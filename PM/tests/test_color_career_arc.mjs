@@ -53,8 +53,8 @@ assert.equal(isColorProdigyEligible(prodigyResonance), true, 'High resonance Gra
 const tooYoung = makeChar({ age: 24, fixerGrade: 2, merit: 200, flags: ['EGOAwakened'] });
 assert.equal(isColorProdigyEligible(tooYoung), false, 'Under minimum prodigy age 26 should not be eligible');
 
-const tooOldForProdigy = makeChar({ age: 38, fixerGrade: 2, merit: 200, flags: ['EGOAwakened'] });
-assert.equal(isColorProdigyEligible(tooOldForProdigy), false, 'Over age 34 must follow standard Grade 1 ascension');
+const tooOldForProdigy = makeChar({ age: 48, fixerGrade: 2, merit: 200, flags: ['EGOAwakened'] });
+assert.equal(isColorProdigyEligible(tooOldForProdigy), false, 'Over age 46 must follow standard Grade 1 ascension');
 
 const tooLowGrade = makeChar({ age: 28, fixerGrade: 5, merit: 200, flags: ['EGOAwakened'] });
 assert.equal(isColorProdigyEligible(tooLowGrade), false, 'Fixer grade lower than 3 is not eligible for prodigy fast-track');

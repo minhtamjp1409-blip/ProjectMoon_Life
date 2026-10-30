@@ -253,7 +253,6 @@ export const BirthSetupPanel = () => {
                       ? 'HANA ARCHIVE // ACTIVE DOSSIER'
                       : 'HANA REGISTRY // FORM 0-A'}
                 </span>
-                <span className="birth-status-dot" aria-hidden="true">● CONNECTED</span>
               </div>
               <h2 id="birth-title">
                 {activeTab === 'legacy'
@@ -415,7 +414,7 @@ export const BirthSetupPanel = () => {
                 </p>
                 <div className="birth-legacy-relic">
                   <span className="relic-label">{t('Kỷ vật truyền đời:', 'Relic passed down:')}</span>{' '}
-                  <strong className="relic-name">{t(pendingLegacy.relic, localizeEnsembleName(pendingLegacy.relic, 'en'))}</strong>
+                  <strong className="relic-name">{t(pendingLegacy.relic, pendingLegacy.relicEn || localizeEnsembleName(pendingLegacy.relic, 'en'))}</strong>
                 </div>
                 <div className="legacy-actions-grid">
                   <button className="btn btn-primary btn-lg btn-block legacy-start-btn" disabled={spinning} onClick={() => launch(true, 0)}>

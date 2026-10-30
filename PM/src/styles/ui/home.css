@@ -85,8 +85,7 @@
 }
 .birth-heading-text { display: flex; flex-direction: column; gap: 2px; width: 100%; min-width: 0; }
 .birth-bureau-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; width: 100%; }
-.birth-bureau-code { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace; font-size: 10.5px; letter-spacing: 0.09em; color: var(--accent); opacity: 0.95; text-transform: uppercase; font-weight: 700; }
-.birth-status-dot { flex: none; font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace; font-size: 9.5px; letter-spacing: 0.05em; color: #52c41a; font-weight: 600; opacity: 0.85; }
+.birth-bureau-code { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace; font-size: 12px; letter-spacing: 0.04em; color: var(--accent); text-transform: uppercase; font-weight: 700; }
 .birth-heading h2 { font-size: 22px; margin-bottom: 2px; color: var(--page-ink); line-height: 1.25; }
 .birth-heading p { font-family: var(--serif); font-style: italic; color: var(--page-muted); font-size: 13.5px; line-height: 1.4; margin: 0; }
 
@@ -96,7 +95,7 @@
   background: rgba(8, 10, 14, 0.7); border: 1px solid rgba(216, 178, 101, 0.22); border-radius: var(--radius-sm);
 }
 .birth-tab {
-  min-height: 38px; display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+  min-height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: 7px;
   border: 1px solid transparent; border-radius: var(--radius-sm);
   font-size: 13px; font-weight: 700; letter-spacing: 0.02em; color: var(--muted); cursor: pointer;
   background: transparent; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 0 10px;
@@ -220,7 +219,7 @@
 .legacy-start-btn:hover:not(:disabled) { filter: brightness(1.08); box-shadow: 0 6px 20px rgba(216, 178, 101, 0.35); }
 .legacy-start-btn:active:not(:disabled) { transform: translateY(1px); }
 .legacy-actions-grid .btn-secondary {
-  min-height: 38px; font-size: 13.5px; background: rgba(255, 255, 255, 0.05);
+  min-height: 44px; font-size: 13.5px; background: rgba(255, 255, 255, 0.05);
   border: 1px solid var(--border); color: var(--text);
 }
 .legacy-actions-grid .btn-secondary:hover { background: var(--raised); }
@@ -245,7 +244,7 @@
   padding: 2px; background: rgba(0, 0, 0, 0.3);
 }
 .birth-gender button {
-  min-height: 38px; font-weight: 600; font-size: 13.5px;
+  min-height: 44px; font-weight: 600; font-size: 13.5px;
   border-radius: var(--radius-sm); border: 1px solid transparent; color: var(--muted);
   transition: all 0.15s ease;
 }
@@ -263,7 +262,7 @@
   display: inline-flex; align-items: center; gap: 5px;
   font-size: 12.5px; font-weight: 600; color: var(--accent);
   text-decoration: underline; text-underline-offset: 3px;
-  cursor: pointer; background: none; border: none; padding: 0;
+  cursor: pointer; background: none; border: none; padding: 0; min-height: 44px;
 }
 .birth-map-link:hover { color: var(--accent-hover); }
 .birth-region-select {
@@ -285,7 +284,7 @@
 .birth-seed[open] summary svg { transform: rotate(180deg); }
 .birth-seed > div { display: flex; gap: 8px; margin-top: 6px; }
 .birth-seed .num { font-size: 13px; min-height: 36px; }
-.birth-seed .app-tool { color: var(--page-ink); border: 1px solid var(--page-edge); width: 38px; height: 38px; }
+.birth-seed .app-tool { color: var(--page-ink); border: 1px solid var(--page-edge); width: 44px; height: 44px; }
 
 /* Stamped Physical Action Seal */
 .hero-start-btn {
@@ -348,7 +347,7 @@
 .archive-strip b { font-family: var(--font); font-size: 34px; font-weight: 600; font-stretch: 85%; font-variant-numeric: tabular-nums; line-height: 1; color: var(--text); }
 .archive-strip b small { font-size: 16px; color: var(--muted); font-weight: 500; }
 .archive-strip span { color: var(--muted); font-size: 14.5px; }
-.archive-strip > button { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-weight: 600; font-size: 14px; }
+.archive-strip > button { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-weight: 600; font-size: 14px; }
 .archive-strip > button:hover { background: var(--raised); }
 .world-guide-open { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; min-height: 52px; margin-bottom: 42px; padding: 10px 16px; color: var(--text); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); font: inherit; font-weight: 650; cursor: pointer; }
 .world-guide-open:hover { border-color: var(--accent); }
@@ -405,7 +404,7 @@
 
 .city-footer { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px; padding-top: 22px; border-top: 1px solid var(--border); color: var(--muted); font-size: 14px; }
 .city-footer > span { font-family: var(--serif); font-weight: 600; color: var(--text); }
-.city-footer a { display: inline-flex; align-items: center; gap: 4px; margin-left: auto; font-weight: 600; color: var(--text); text-underline-offset: 4px; }
+.city-footer a { display: inline-flex; align-items: center; gap: 4px; min-height: 44px; margin-left: auto; font-weight: 600; color: var(--text); text-underline-offset: 4px; }
 
 @media (max-width: 1100px) {
   .home-opening { grid-template-columns: minmax(0, 1fr); }
@@ -440,14 +439,14 @@
   .home-opening { padding-top: 14px; gap: 18px; }
   .opening-story h1 { font-size: clamp(28px, 9vw, 38px); }
   .birth-panel { padding: 16px 14px 16px; border-radius: 4px; }
-  .birth-tab { font-size: 12px; padding: 0 4px; min-height: 38px; }
+  .birth-tab { font-size: 12px; padding: 0 4px; min-height: 44px; }
   .resume-name { font-size: 20px; }
   .resume-stats-strip { gap: 10px; font-size: 12px; }
-  .birth-bureau-code { font-size: 9px; }
+  .birth-bureau-code { font-size: 12px; letter-spacing: 0.02em; }
   .hero-start-btn, .legacy-start-btn, .resume-launch-btn { min-height: 48px; font-size: 14.5px; }
   .archive-strip { margin-bottom: 30px; }
   .archive-strip b { font-size: 20px; }
-  .archive-strip span { font-size: 11px; }
+  .archive-strip span { font-size: 12px; }
   .archive-strip > div { padding: 10px 4px 10px 0; }
   .archive-strip > div + div { padding-left: 6px; }
   .career-list article { padding: 14px 0; }
@@ -459,3 +458,5 @@
   .district-index button strong { font-size: 13.5px; }
   .district-index button small { font-size: 11.5px; }
 }
+
+.atlas-note button { display: inline-flex; align-items: center; gap: 4px; min-height: 44px; }

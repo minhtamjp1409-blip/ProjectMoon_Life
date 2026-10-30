@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { createNewCharacter, createRNG, cloneChar, resolveEventChoice } from '../src/engine/gameEngine.js';
-import { planYear, chooseYearLead, runDueItems, resolveMinor, endYear, LIFE_MINORS } from '../src/engine/yearPlanner.js';
+import { planYear, chooseDirectorPacedLead, runDueItems, resolveMinor, endYear, LIFE_MINORS } from '../src/engine/yearPlanner.js';
 import { isEventEligible } from '../src/engine/weaverAI.js';
 import { CONSEQUENCE_EVENTS } from '../src/data/eventsChildhood.js';
 import { FORBIDDEN_LEAD_ID, FORBIDDEN_ACT_IDS } from '../src/data/eventsForbidden.js';
@@ -18,7 +18,7 @@ const lifeAt = (seed, age, setup) => {
   char.flags = [...(char.flags || []), ...(setup.flags || [])];
   return char;
 };
-// Plans each year from `from` to `to` and returns the ages at which the forbidden lead was on offer
+// Plans each year from `from` to `to` and returns the ages of the optional encounter.
 const offersOver = (char, from, to, seed) => {
   const ages = [];
   for (let age = from; age <= to; age++) {
@@ -26,7 +26,7 @@ const offersOver = (char, from, to, seed) => {
     quiet(char);
     char.plan = [];
     planYear(char, createRNG(`${seed}:${age}`));
-    if (char.pendingLead?.offers?.some((offer) => offer.id === FORBIDDEN_LEAD_ID)) ages.push(age);
+    if (char.plan.some((item) => item.id === FORBIDDEN_LEAD_ID)) ages.push(age);
   }
   return ages;
 };
@@ -51,7 +51,7 @@ const plainYear = lifeAt('forbidden-plain', 40, { job: 'Fixer', fixerGrade: 1, f
 for (let i = 0; i < 30; i++) {
   plainYear.plan = [];
   planYear(plainYear, createRNG(`plain:${i}`));
-  assert(!plainYear.plan.some((item) => item.id === FORBIDDEN_LEAD_ID && !item.lead), 'the lead never arrives as an ordinary minor');
+  assert(!plainYear.pendingLead?.offers?.some((offer) => offer.id === FORBIDDEN_LEAD_ID), 'the forbidden encounter is never selected by the director');
 }
 
 // 3. The autopilot never picks it, and never raises Taboo
@@ -63,16 +63,22 @@ assert.equal(tabooGainOf(leadDef.choices[1]), 0);
 
 // 4. Walking the path: the lead, then two chapters a year apart, each one Taboo, then the Claw's threshold
 let char = lifeAt('forbidden-walk', 32, { job: 'Fixer', fixerGrade: 1, flags: ['EGOAwakened'] });
-char.plan = [];
-planYear(char, createRNG('walk'));
-char.pendingLead = { age: char.age, offers: [{ id: 'x' }, { id: 'y' }, { id: FORBIDDEN_LEAD_ID, tier: 'forbidden' }] };
-char = chooseYearLead(char, 2);
-assert(char.plan.some((item) => item.id === FORBIDDEN_LEAD_ID && item.lead), 'the chosen lead is on this year’s plan');
+for (let attempt = 0; attempt < 100; attempt++) {
+  char.plan = [];
+  planYear(char, createRNG(`walk:${attempt}`));
+  if (char.plan.some((item) => item.id === FORBIDDEN_LEAD_ID)) break;
+}
+assert(char.plan.some((item) => item.id === FORBIDDEN_LEAD_ID && item.forbiddenEncounter), 'the encounter is scheduled without the old lead picker');
+if (char.pendingLead) char = chooseDirectorPacedLead(char, createRNG('walk-director'));
+assert(!char.leadChoice || char.leadChoice.id !== FORBIDDEN_LEAD_ID, 'the director never selects Taboo');
 for (let guard = 0; guard < 40 && char.pendingMinor?.id !== FORBIDDEN_LEAD_ID; guard++) {
   quiet(char);
   char = runDueItems(char, 100, createRNG(`walk:${guard}`)).char;
 }
 assert.equal(char.pendingMinor?.id, FORBIDDEN_LEAD_ID);
+assert.equal(char.pendingMinor.remainingMs, 30000, 'the Taboo decision gives the player 30 seconds');
+const refused = resolveMinor(cloneChar(char), 1, createRNG('walk-refuse'));
+assert.equal(refused.taboo, 0, 'refusing the case does not add Taboo');
 char = resolveMinor(char, 0, createRNG('walk-accept'));
 assert.equal(char.taboo, 1, 'taking the case is the first Taboo');
 const act2Thread = char.weaver.pendingThreads.find((th) => th.eventId === FORBIDDEN_ACT_IDS[0] && !th.fulfilled);
@@ -103,4 +109,4 @@ const stopped = resolveEventChoice(cloneChar(char), 1, createRNG('walk-stop'));
 assert.equal(stopped.taboo, 2, 'stopping keeps what was done but adds nothing');
 assert(stopped.flags.includes('forbidden_path_closed'));
 
-console.log('Forbidden path: offered only to strong lives, gap, lead-only, autopilot guard, three chapters and the Claw threshold passed.');
+console.log('Forbidden path: rare in-year encounter, refusal, autopilot guard, three chapters and the Claw threshold passed.');

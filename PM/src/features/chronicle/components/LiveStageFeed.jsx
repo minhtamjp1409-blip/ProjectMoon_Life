@@ -10,7 +10,6 @@ import { useShallow } from 'zustand/react/shallow';
 import { useGameStore } from '../../../store/gameStore';
 import { buildLifeSummaryAndLegacy, getDungeonCurrentStage, isDungeonChoiceAvailable, DUNGEON_DEFINITIONS, getNextCareerMilestone } from '../../../engine/gameEngine';
 import { DungeonDock } from './DungeonDock';
-import { YearLeadDock } from './YearLeadDock';
 import { YearPlanDock } from './YearPlanDock';
 import { LIFE_MINORS, MINOR_WINDOW_MS, splitTitle } from '../../../engine/yearPlanner';
 import { exportDossierCardPNG } from '../../../utils/exportDossierCard';
@@ -969,7 +968,6 @@ export const LiveStageFeed = () => {
     minorRemainingMs,
     setSpeed,
     chooseMinor,
-    chooseYearLead,
     chooseAnnualPlan,
     selectEventChoice,
     selectContractApproach,
@@ -999,7 +997,6 @@ export const LiveStageFeed = () => {
       minorRemainingMs: s.minorRemainingMs,
       setSpeed: s.setSpeed,
       chooseMinor: s.chooseMinor,
-      chooseYearLead: s.chooseYearLead,
       chooseAnnualPlan: s.chooseAnnualPlan,
       selectEventChoice: s.selectEventChoice,
       selectContractApproach: s.selectContractApproach,
@@ -1201,16 +1198,6 @@ export const LiveStageFeed = () => {
       // The year plan screen holds its own buttons; number keys there would skip the plan
       if (char.pendingYearPlan) return;
 
-      if (char.pendingLead) {
-        const leadIndex = Number(e.key) - 1;
-        if (Number.isInteger(leadIndex) && leadIndex >= 0 && leadIndex < char.pendingLead.offers.length) {
-          e.preventDefault();
-          audioEngine.playClick();
-          chooseYearLead(leadIndex);
-        }
-        return;
-      }
-
       if (e.code === 'Space') {
         if (!char.alive) return;
         e.preventDefault();
@@ -1282,7 +1269,7 @@ export const LiveStageFeed = () => {
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [char.alive, char.pendingYearPlan, char.pendingLead, char.pendingDungeon, char.pendingEvent, char.pendingContract, char.pendingMinor, char.stats.wealth, activeResolution, dismissResolution, postChoicePauseMs, clearPostChoicePause, speed, setSpeed, chooseYearLead, chooseMinor, selectEventChoice, selectContractApproach, chooseDungeonAction, fleeDungeon, isPrologueActive, revealNextBirthLog, peekBehind]);
+  }, [char.alive, char.pendingYearPlan, char.pendingDungeon, char.pendingEvent, char.pendingContract, char.pendingMinor, char.stats.wealth, activeResolution, dismissResolution, postChoicePauseMs, clearPostChoicePause, speed, setSpeed, chooseMinor, selectEventChoice, selectContractApproach, chooseDungeonAction, fleeDungeon, isPrologueActive, revealNextBirthLog, peekBehind]);
 
   // Forge mini-game: the cursor sweeps while the craft modal is open
   useEffect(() => {
@@ -1345,7 +1332,7 @@ export const LiveStageFeed = () => {
   const lifeSummary = !char.alive ? buildLifeSummaryAndLegacy(char) : null;
   const currentRegion = REGIONS.find((r) => r.id === char.regionId) || REGIONS[0];
   const currentMilestone = getNextCareerMilestone(char);
-  const hasDock = Boolean((char.pendingYearPlan && !isPrologueActive) || (char.pendingLead && !isPrologueActive) || char.pendingDungeon || char.pendingEvent || char.pendingContract || char.pendingMinor || activeResolution);
+  const hasDock = Boolean((char.pendingYearPlan && !isPrologueActive) || char.pendingDungeon || char.pendingEvent || char.pendingContract || char.pendingMinor || activeResolution);
   const canPeek = Boolean(char.pendingDungeon || char.pendingEvent || char.pendingContract || activeResolution);
   useEffect(() => setPeekBehind(false), [char.pendingDungeon?.id, char.pendingEvent?.id, char.pendingContract?.id, activeResolution?.titleVi]);
 
@@ -1471,8 +1458,7 @@ export const LiveStageFeed = () => {
             />
           ) : (
             <>
-              {char.pendingYearPlan && <YearPlanDock char={char} draft={char.pendingLead} onConfirm={chooseAnnualPlan} />}
-              {!char.pendingYearPlan && char.pendingLead && <YearLeadDock draft={char.pendingLead} char={char} onPick={chooseYearLead} />}
+              {char.pendingYearPlan && <YearPlanDock char={char} onConfirm={chooseAnnualPlan} />}
               {!char.pendingYearPlan && !char.pendingLead && char.pendingDungeon && (
                 <DungeonDock
                   session={char.pendingDungeon}

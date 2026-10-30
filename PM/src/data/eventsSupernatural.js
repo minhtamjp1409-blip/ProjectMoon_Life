@@ -412,6 +412,33 @@ export const SUPERNATURAL_EVENTS = [
         ]
       },
       {
+        labelVi: "Để E.G.O đi trước, theo nhịp thở đã học",
+        labelEn: "Let the E.G.O go first, on the breathing you learned",
+        need: { flags: ['EGOAttuned'], stat: { sanity: [30, 100] } },
+        outcomes: [
+          {
+            w: 82,
+            openColorModal: true,
+            flagsAdd: ['ColorFixer'],
+            recordsAdd: ['color_fixer'],
+            effects: { health: -20, sanity: -14, rep: +46, wealth: +38, resonance: +8 },
+            scarsAdd: ['Nhịp thở của Star of the City'],
+            later: [{ id: 'csq_color_first_mandate', years: 1, reasonVi: 'Chỉ thị tối mật đầu tiên của Hana dành cho tân Color Fixer', reasonEn: 'First high-stakes Hana mandate for the new Color Fixer' }],
+            meritAdd: 60,
+            resultVi: 'Thanh E.G.O hiện ra trước khi bạn rút tay khỏi túi. Hai nhịp thở trùng nhau, và mối họa chậm lại đúng một nhịp, đủ để lưỡi kiếm đi qua. Khi bạn trở về, hội đồng không đứng dậy. Họ chỉ xoay ghế để nhìn bạn đi qua.',
+            resultEn: 'The E.G.O appears before your hand leaves your pocket. The two breaths coincide, and the threat slows by exactly one beat, enough for the blade to pass. When you return the council does not rise. They only turn their chairs to watch you walk past.'
+          },
+          {
+            w: 18,
+            effects: { health: -34, sanity: -26, rep: +12, resonance: +4 },
+            scarsAdd: ['Tiếng thở thứ hai trong bài thử'],
+            meritAdd: 25,
+            resultVi: 'Nhịp chung đến quá sớm. Thanh E.G.O lao đi trước khi bạn kịp quyết định mục tiêu, và thứ bạn đánh trúng là bức tường. Bạn rút lui khi tiếng thở thứ hai vẫn còn trong tai.',
+            resultEn: 'The shared rhythm arrives too early. The E.G.O lunges before you can pick a target, and what you strike is the wall. You retreat with the second breath still in your ears.'
+          }
+        ]
+      },
+      {
         labelVi: "Từ chối vòng Color và ở lại làm Fixer Grade 1 tự do",
         labelEn: "Refuse the Color and stay a free Fixer Grade 1",
         flagsAdd: ['ColorRefused'],

@@ -392,7 +392,7 @@ console.log('=== TEST SUITE: BATCH 64-68 SYSTEM UPGRADES (5 PILLARS) ===');
   // Test 3: Color Ascension Trial (Hana Council) choices & consequences
   const colorTrial = ALL_STORY_EVENTS.find((e) => e.id === 'hana_color_ascension_trial');
   assert.ok(colorTrial, 'hana_color_ascension_trial must exist');
-  assert.equal(colorTrial.choices.length, 4, 'Color trial must have 4 choices (Alone, Seven, Companion, Refuse)');
+  assert.equal(colorTrial.choices.length, 5, 'Color trial must have 5 choices (Alone, Seven, Companion, Attuned E.G.O, Refuse)');
   assert(colorTrial.choices[0].outcomes[0].later?.some((l) => l.id === 'csq_color_first_mandate'), 'Alone win must schedule csq_color_first_mandate');
   assert.equal(colorTrial.choices[1].costAhn, 15, 'Seven Association must cost 15 Ahn');
   assert(colorTrial.choices[1].outcomes[0].flagsAdd?.includes('AssociationDebtObligation'), 'Seven route must add AssociationDebtObligation flag');

@@ -85,6 +85,14 @@ const POLICIES = {
   }
 };
 
+// Takes risk only while healthy and steps back when hurt, the way a player who reads the board would.
+POLICIES.measured = (stage, char, sess, rng) => {
+  const hurt = char.stats.health < 40 || char.stats.sanity < 30;
+  const ok = stage.choices.map((c, i) => [c, i]).filter(([c]) => isDungeonChoiceAvailable(c, char, sess));
+  if (hurt) { const f = ok.find(([c]) => c.isFlee); if (f) return f[1]; }
+  return (hurt ? POLICIES.careful : POLICIES.push)(stage, char, sess, rng);
+};
+
 const rows = [];
 for (const id of Object.keys(DUNGEON_DEFINITIONS)) {
   for (const [pname, pol] of Object.entries(POLICIES)) {
@@ -105,6 +113,11 @@ for (const id of Object.keys(DUNGEON_DEFINITIONS)) {
           if (char.pendingDungeon.supplyCharges > 0 && stage.choices.some((c) => c.checkTrait) && pname === 'careful') char = useDungeonSupply(char, 'scan');
           if (pname === 'careful' && char.pendingDungeon.stance !== 'guarded') char = setDungeonStance(char, 'guarded');
           if (pname === 'push' && char.pendingDungeon.stance !== 'reckless') char = setDungeonStance(char, 'reckless');
+          if (pname === 'measured') {
+            const want = char.stats.health >= 70 && char.stats.sanity >= 55 ? 'reckless' : 'guarded';
+            if (char.pendingDungeon.stance !== want) char = setDungeonStance(char, want);
+            if (char.pendingDungeon.supplyCharges > 0 && stage.choices.some((c) => c.checkTrait)) char = useDungeonSupply(char, 'scan');
+          }
         }
         const idx = pol(stage, char, char.pendingDungeon, rng);
         const r = resolveDungeonChoice(char, idx, rng);

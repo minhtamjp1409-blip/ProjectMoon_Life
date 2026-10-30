@@ -704,7 +704,7 @@ export const CharacterDossierCard = () => {
   const items = [
     char.egoName && { k: 'E.G.O', v: t(char.egoName, localizeEnsembleName(char.egoName, 'en')) },
     char.craftWeapon && { k: t('Thần binh', 'Weapon'), v: char.craftWeapon.name },
-    char.lineage?.relic && !char.craftWeapon && { k: t('Di vật', 'Relic'), v: t(char.lineage.relic, localizeEnsembleName(char.lineage.relic, 'en')) }
+    char.lineage?.relic && !char.craftWeapon && { k: t('Di vật', 'Relic'), v: t(char.lineage.relic, char.lineage.relicEn || localizeEnsembleName(char.lineage.relic, 'en')) }
   ].filter(Boolean);
 
   const jobDesc = describeJob(char, t);

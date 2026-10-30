@@ -56,10 +56,9 @@
 }
 .docket-serial-code {
   font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace;
-  font-size: 11px;
-  letter-spacing: 0.06em;
+  font-size: 12px;
+  letter-spacing: 0.04em;
   color: var(--page-muted);
-  opacity: 0.8;
 }
 
 /* Atmospheric Horizon & Inner Drive Card */

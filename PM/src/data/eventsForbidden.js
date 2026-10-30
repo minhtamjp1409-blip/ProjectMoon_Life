@@ -1,5 +1,5 @@
 // The forbidden path: a way to the Head's judgment for a life strong enough to ask for it.
-// It opens only as one of the year's leads (leadOnly keeps it out of the ordinary draw), and each of
+// It opens as a rare in-year encounter (leadOnly keeps it out of the ordinary draw), and each of
 // its three chapters adds one Taboo and offers a way out. At three, the Claw comes (gameStore).
 // Who is offered it and how often: forbiddenLeadOpen in engine/forbiddenPath.js.
 

@@ -60,7 +60,8 @@ export function checkState(char) {
   if ((char.job === 'Fixer' || char.job === 'Color Fixer') && !(Number.isInteger(char.fixerGrade) && char.fixerGrade >= 0 && char.fixerGrade <= 9)) add('fixer-grade', `Fixer grade ${char.fixerGrade}`);
   if (char.job === 'Color Fixer' && !flags.includes('ColorFixer')) add('color-job-flag', 'job is Color Fixer but lacks ColorFixer flag');
   if (char.job === 'Child' && char.age > 20) add('child-adult', `still Child at ${char.age}`);
-  if (char.job === 'Syndicate' && char.age >= 22 && !char.finger) add('syndicate-no-finger', 'Syndicate without a Finger');
+  // A Syndicate member with no Finger works the independent route and climbs syndicateRank instead.
+  if (char.job === 'Syndicate' && !char.finger && char.syndicateRank != null && !(Number.isInteger(char.syndicateRank) && char.syndicateRank >= 0 && char.syndicateRank <= 3)) add('syndicate-rank', `independent Syndicate rank ${char.syndicateRank}`);
 
   for (const k of ['health', 'sanity', 'wealth', 'network', 'rep']) {
     const v = char.stats?.[k];

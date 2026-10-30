@@ -87,7 +87,7 @@ Sinh lực về 0 thì chết, trừ khi một người gắn bó từ 65 trở 
 
 ### 2.4. E.G.O
 
-Hai thứ có tên giống nhau: Abnormality E.G.O (vỏ mượn từ một Abnormality, trả giá bằng Corrosion) và Effloresced E.G.O (nở ra từ ý chí của chính người cầm). Game chỉ viết về loại thứ hai. Carmen hỏi người sắp gục có nghe giọng cô không: đồng ý thì thành Distortion, từ chối thì có E.G.O. Cờ `EGOAwakened` là bản hoàn chỉnh; `IncompleteEGO` là Volatile E.G.O, chưa ổn định, không chống được Distortion và chỉ đem lại một phần lợi ích.
+Hai thứ có tên giống nhau: Abnormality E.G.O (vỏ mượn từ một Abnormality, trả giá bằng Corrosion) và Effloresced E.G.O (nở ra từ ý chí của chính người cầm). Game chỉ viết về loại thứ hai. Carmen hỏi người sắp gục có nghe giọng cô không: đồng ý thì thành Distortion, từ chối thì có E.G.O. Cờ `EGOAwakened` là bản hoàn chỉnh; `IncompleteEGO` là Volatile E.G.O, chưa ổn định, không chống được Distortion và chỉ đem lại một phần lợi ích. Sau khi người mang E.G.O chết, tên E.G.O thuộc hồ sơ đời ấy; đời sau chỉ nhận kỷ vật hoặc lời kể, không nhận E.G.O của họ.
 
 Thức tỉnh phụ thuộc vào thứ giữ người ta đứng vững: Resonance làm nguyên liệu, Sanity, sẹo và một người thân gắn bó làm chỗ đứng. Không ai chắc chắn, không ai mất hẳn đường.
 

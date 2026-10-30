@@ -19,10 +19,12 @@ import {
   planYear,
   endYear,
   runPlanItem,
-  resolveMinor
+  resolveMinor,
+  chooseDirectorPacedLead
 } from '../../src/engine/yearPlanner.js';
 
 import { choiceIsAvailable } from '../../src/engine/eventConditions.js';
+import { tabooGainOf } from '../../src/engine/forbiddenPath.js';
 
 // Usage: node tools/sim/run_million_audit.mjs [scenarios]. Only a full run rewrites the report file.
 const FULL_RUN = 1000000;
@@ -105,6 +107,7 @@ while (STATS.totalScenariosExecuted < TARGET_SCENARIOS) {
     }
 
     if (!char.plan?.length) planYear(char, lifeRng);
+    if (char.pendingLead) char = chooseDirectorPacedLead(char, lifeRng);
     const plan = char.plan || [];
 
     for (const item of plan) {
@@ -136,7 +139,7 @@ while (STATS.totalScenariosExecuted < TARGET_SCENARIOS) {
         }
 
         const choices = ev.choices || [];
-        const available = choices.map((_, index) => index).filter((index) => choiceIsAvailable(choices[index], char));
+        const available = choices.map((_, index) => index).filter((index) => choiceIsAvailable(choices[index], char) && !tabooGainOf(choices[index]));
         if (!available.length) {
           STATS.noAvailableMajorChoices++;
           throw new Error(`No available choice in ${ev.id} at age ${char.age}, seed ${seed}`);
@@ -169,7 +172,7 @@ while (STATS.totalScenariosExecuted < TARGET_SCENARIOS) {
       if (char.pendingMinor) {
         const prompt = char.pendingMinor;
         const choices = prompt.choices || [];
-        const available = choices.map((_, index) => index).filter((index) => choiceIsAvailable(choices[index], char));
+        const available = choices.map((_, index) => index).filter((index) => choiceIsAvailable(choices[index], char) && !tabooGainOf(choices[index]));
         const pickIdx = available.length ? available[Math.floor(lifeRng() * available.length)] : -1;
         char = resolveMinor(char, pickIdx, lifeRng);
         noteGrade();

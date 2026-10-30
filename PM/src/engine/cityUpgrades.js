@@ -14,6 +14,7 @@ const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
 // Declared so tools/lint/lint_story.mjs registers flags granted by this module
 export const CITY_UPGRADE_FLAGS = [
   { flagGranted: 'AncestorWasColor' },
+  { flagGranted: 'AncestorHadEGO' },
   { flagGranted: 'AncestorWasDistortion' },
   { flagGranted: 'AncestorWasFingerBoss' },
   { flagGranted: 'AncestorWasWingExec' },
@@ -75,6 +76,7 @@ export function applyAncestorEchoInheritance(parentLegacy, state) {
     parentLegacy.job === 'Distortion' ||
     (parentLegacy.epitaphTitleEn && String(parentLegacy.epitaphTitleEn).includes('Distortion'))
   );
+  const isEgoAncestor = Boolean(parentLegacy.isEgoAncestor || parentLegacy.egoName);
   const isFingerBoss = Boolean(
     parentLegacy.isApexSyndicateAncestor || (parentLegacy.fingerRank || 0) >= 2
   );
@@ -95,6 +97,16 @@ export function applyAncestorEchoInheritance(parentLegacy, state) {
       labelEn: `Color Legacy of ${parentLegacy.name}${parentLegacy.colorTitle ? ` ("${parentLegacy.colorTitle}")` : ''}`,
       impactVi: '+8 Danh tiếng nhưng +8 Heat (kẻ thù cũ và thanh tra Hana luôn dò xét bạn)',
       impactEn: '+8 starting Rep, +8 Heat (old rivals and Hana evaluators scrutinize you)'
+    });
+  }
+
+  if (isEgoAncestor) {
+    addFlag('AncestorHadEGO');
+    inheritedEchoes.push({
+      labelVi: `Hồ sơ E.G.O của ${parentLegacy.name}`,
+      labelEn: `${parentLegacy.name}'s E.G.O record`,
+      impactVi: 'Có thể gặp người từng chứng kiến lần thức tỉnh của người đi trước',
+      impactEn: 'May meet someone who witnessed the predecessor awaken'
     });
   }
 

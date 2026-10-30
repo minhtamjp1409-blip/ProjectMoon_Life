@@ -4,12 +4,16 @@ import { planYear, chooseYearLead, runDueItems, resolveMinor, LIFE_MINORS, MINOR
 import { addScar, activeScarSynergies, scarAnnualEffects } from '../src/engine/scarModel.js';
 import { createDungeonSession, getDungeonCurrentStage, resolveDungeonChoice, evaluateDungeonChoiceOdds, playDungeonCard, CARD_BUDGET } from '../src/engine/dungeonEngine.js';
 
-for (let i = 0; i < 30; i++) {
+let offeredLeads = 0;
+let quietLeads = 0;
+for (let i = 0; i < 100; i++) {
   const char = createNewCharacter({ seed: `lead-${i}`, startAge: 25 });
   char.job = ['Fixer', 'Syndicate', 'Wing Employee', 'Outcast', 'Distortion'][i % 5];
   if (char.job === 'Distortion') char.flags.push('Distorted');
   planYear(char, createRNG(`${char.seed}:year`));
   const draft = char.pendingLead;
+  if (!draft) { quietLeads++; continue; }
+  offeredLeads++;
   assert.equal(draft?.offers.length, 3, `${char.job} has three offers`);
   assert.equal(new Set(draft.offers.map((offer) => offer.id)).size, 3);
   const chosen = chooseYearLead(char, i % 3);
@@ -20,6 +24,7 @@ for (let i = 0; i < 30; i++) {
   assert.equal(cloneChar(JSON.parse(JSON.stringify(chosen))).plan.filter((item) => item.lead).length, 1);
   assert.equal(chooseYearLead(chosen, 0), chosen, 'a year cannot be drafted twice');
 }
+assert(offeredLeads > 0 && quietLeads > 0, 'extra leads appear sometimes, not every year');
 
 {
   const first = createNewCharacter({ seed: 'first-timed-encounter', startAge: 7, preferredRegionId: 'K' });
@@ -74,6 +79,7 @@ console.log('Roguelike loop: seeded annual offers, single commitment, saved draf
 {
   const stale = createNewCharacter({ seed: 'lead-stale', startAge: 25 });
   planYear(stale, createRNG(`${stale.seed}:year`));
+  stale.pendingLead ||= { age: stale.age, offers: [{ id: 'm_med_backstreet_clinic', tier: 'steady' }] };
   const old = cloneChar(stale);
   old.age += 1;
   assert.equal(chooseYearLead(old, 0).pendingLead, null, 'a draft left over from another year is dropped');
@@ -93,7 +99,7 @@ console.log('Roguelike loop: seeded annual offers, single commitment, saved draf
   for (let i = 0; i < 40; i++) {
     const c = createNewCharacter({ seed: `tier-${i}`, startAge: 25 });
     planYear(c, createRNG(`${c.seed}:year`));
-    assert.equal(c.pendingLead.offers.length, 3);
+    if (c.pendingLead) assert.equal(c.pendingLead.offers.length, 3);
   }
 }
 
