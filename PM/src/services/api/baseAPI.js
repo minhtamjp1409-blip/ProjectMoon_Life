@@ -1,4 +1,6 @@
-const RAW_URL = (import.meta.env && import.meta.env.VITE_API_URL) || 'http://localhost:5080/api';
+// Defaults to the deployed backend; set VITE_API_URL (e.g. in .env.local) to point at a local server instead
+const DEPLOYED_API_URL = 'https://projectmoon-life.onrender.com/api';
+const RAW_URL = (import.meta.env && import.meta.env.VITE_API_URL) || DEPLOYED_API_URL;
 // Normalize URL: remove trailing slashes and ensure it ends with /api
 const cleanUrl = RAW_URL.replace(/\/+$/, '');
 const API_BASE_URL = cleanUrl.endsWith('/api') ? cleanUrl : `${cleanUrl}/api`;

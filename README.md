@@ -160,6 +160,8 @@ dotnet run
 ```
 Default API port: `http://localhost:5080`.
 
+The frontend calls the deployed backend (`https://projectmoon-life.onrender.com/api`) by default, so `npm run dev` works without running the backend. To use a local backend, create `PM/.env.local` with `VITE_API_URL=http://localhost:5080/api`.
+
 ### Saved progress on a hosted server
 
 The browser keeps its own save and a random player token in local storage. The API uses that token to keep each player's archive and active run separate. It is an anonymous device identity, not a login: clearing browser storage loses access to that server archive.
