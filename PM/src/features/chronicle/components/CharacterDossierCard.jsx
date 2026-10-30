@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { NpcDossierModal } from './NpcDossierModal.jsx';
 import { Tooltip } from 'antd';
-import { ChevronDown, ChevronUp, User, Heart, Brain, Coins, Flame, Eye, EyeOff, Sparkles, X, ShieldAlert, ShoppingBag, HelpCircle, Crown, Star } from 'lucide-react';
+import { ChevronDown, ChevronUp, User, Heart, Brain, Coins, Flame, Eye, EyeOff, Sparkles, X, ShieldAlert, ShoppingBag, Crown, Star } from 'lucide-react';
 import { WorkshopDepotModal } from './WorkshopDepotModal';
 import { useGameStore } from '../../../store/gameStore';
 import { useThemeStore } from '../../../store/themeStore';
@@ -39,6 +39,22 @@ export function describeJob(char, t) {
   const local = JOB_LABELS[char.job];
   return local ? t(local.vi, local.en) : char.job || t('Chưa có nghề', 'No trade yet');
 }
+
+const MILESTONE_LABELS = {
+  'CHILDHOOD SURVIVAL': ['Sinh tồn thơ ấu', 'Childhood survival'],
+  'STREET APPRENTICESHIP': ['Học việc đường phố', 'Street apprenticeship'],
+  'CAREER CROSSROADS': ['Ngã rẽ nghề nghiệp', 'Career crossroads'],
+  'COLOR FIXER ASCENSION': ['Đường lên Color', 'Color Fixer ascension'],
+  'STAR OF THE CITY ORDEAL': ['Thử thách Ngôi sao Thành phố', 'Star of the City ordeal'],
+  'HANA EVALUATION': ['Sát hạch của Hana', 'Hana evaluation'],
+  'INDEPENDENT SYNDICATE': ['Syndicate độc lập', 'Independent Syndicate'],
+  'INDEPENDENT SYNDICATE HEGEMONY': ['Bá quyền Syndicate độc lập', 'Independent Syndicate hegemony'],
+  'WING EXECUTIVE': ['Lãnh đạo Wing', 'Wing executive'],
+  'WING ADVANCEMENT': ['Thăng tiến ở Wing', 'Wing advancement'],
+  'DISTORTION METAMORPHOSIS': ['Biến thái Distortion', 'Distortion metamorphosis'],
+  MEMORIAL: ['Tưởng niệm', 'Memorial'],
+  SURVIVAL: ['Sinh tồn', 'Survival']
+};
 
 // Short tag on the Resonance stat, read from the same readiness model as the horizon card
 const EGO_STAT_FLAG = {
@@ -116,19 +132,11 @@ const Stat = ({ label, value, unit = '/100', color, flag, riseIsBad = false, too
       <div className="stat-head">
         <span className="label stat-label">
           <i className="dot" style={{ background: isCritical ? 'var(--bad)' : color }} />
-          <span>{label}</span>
-          {tooltip && (
+          {tooltip ? (
             <Tooltip title={tooltip} placement="top">
-              <span
-                role="button"
-                tabIndex={0}
-                aria-label="Thông tin chỉ số"
-                className="stat-help"
-              >
-                <HelpCircle size={12} />
-              </span>
+              <span tabIndex={0} className="stat-name has-help">{label}</span>
             </Tooltip>
-          )}
+          ) : <span>{label}</span>}
           {flag && <span className="stat-flag">{flag}</span>}
           {isCarmenCalls && !flag && <span className="stat-flag is-carmen-tag">Carmen Calls</span>}
           {isCritical && !isCarmenCalls && !flag && <span className="stat-flag is-warn">CRIT</span>}
@@ -180,20 +188,12 @@ const TabooStat = ({ value, tooltip = null, flag = null }) => {
       <div className="stat-head">
         <span className="label stat-label">
           <i className="dot" style={{ background: value >= 2 ? 'var(--bad)' : 'var(--warn)' }} />
-          <span>Taboo Gaze</span>
-          {activeFlag && <span className={`stat-flag ${value >= 2 ? 'is-warn' : ''}`}>{activeFlag}</span>}
-          {tooltip && (
+          {tooltip ? (
             <Tooltip title={tooltip} placement="top">
-              <span
-                role="button"
-                tabIndex={0}
-                aria-label="Thông tin chỉ số"
-                className="stat-help"
-              >
-                <HelpCircle size={12} />
-              </span>
+              <span tabIndex={0} className="stat-name has-help">Taboo Gaze</span>
             </Tooltip>
-          )}
+          ) : <span>Taboo Gaze</span>}
+          {activeFlag && <span className={`stat-flag ${value >= 2 ? 'is-warn' : ''}`}>{activeFlag}</span>}
         </span>
         <div className="stat-num-box">
           {change && (
@@ -207,20 +207,23 @@ const TabooStat = ({ value, tooltip = null, flag = null }) => {
           </b>
         </div>
       </div>
-      <div className="taboo-eyes" aria-hidden="true">
-        {[1, 2, 3].map((n) => {
-          const isActive = value >= n;
-          return (
-            <span
-              key={n}
-              className={`taboo-eye-unit ${isActive ? 'is-active' : ''} ${value >= 2 && isActive ? 'is-danger' : ''}`}
-              title={isActive ? `Điều Cấm #${n} đã kích hoạt` : `Điều Cấm #${n} an toàn`}
-            >
-              {isActive ? <Eye size={14} /> : <EyeOff size={14} />}
-            </span>
-          );
-        })}
-      </div>
+      {/* Three empty eyes say nothing until the first Taboo lands */}
+      {value > 0 && (
+        <div className="taboo-eyes" aria-hidden="true">
+          {[1, 2, 3].map((n) => {
+            const isActive = value >= n;
+            return (
+              <span
+                key={n}
+                className={`taboo-eye-unit ${isActive ? 'is-active' : ''} ${value >= 2 && isActive ? 'is-danger' : ''}`}
+                title={isActive ? `Điều Cấm #${n} đã kích hoạt` : `Điều Cấm #${n} an toàn`}
+              >
+                {isActive ? <Eye size={14} /> : <EyeOff size={14} />}
+              </span>
+            );
+          })}
+        </div>
+      )}
       {/* Retain original .taboo node hidden for test selector compatibility */}
       <div className={`taboo ${flashClass} sr-only`} aria-hidden="true">
         {[1, 2, 3].map((n) => (
@@ -275,11 +278,9 @@ const People = ({ npcs, age, t, lang, onSelectRole }) => {
     );
   }
   const gone = (n) => (n.alive === false) || n.deceased || ['dead', 'missing', 'estranged', 'betrayer'].includes(n.status);
-  list.sort(([, a], [, b]) => Number(gone(a)) - Number(gone(b)));
-  return (
-    <section>
-      <h3 className="section-title">{t('Những người trong đời bạn', 'The people in your life')}</h3>
-      {list.map(([role, n]) => {
+  const present = list.filter(([, n]) => !gone(n));
+  const absent = list.filter(([, n]) => gone(n));
+  const row = ([role, n]) => {
         const isGone = gone(n);
         const status = n.deceased ? 'dead' : n.status;
         const since = age - (n.lastSeen ?? n.metAge ?? 0);
@@ -327,7 +328,20 @@ const People = ({ npcs, age, t, lang, onSelectRole }) => {
             )}
           </div>
         );
-      })}
+  };
+  return (
+    <section>
+      <h3 className="section-title">{t('Những người trong đời bạn', 'The people in your life')}</h3>
+      {present.map(row)}
+      {/* The dead and the departed are history, not company; they fold into one line */}
+      {absent.length > 0 && (
+        <details className="dossier-fold is-quiet">
+          <summary>
+            <span>{t(`${absent.length} người đã khuất hoặc rời đi`, `${absent.length} gone from your life`)}</span>
+          </summary>
+          <div className="dossier-fold-body">{absent.map(row)}</div>
+        </details>
+      )}
     </section>
   );
 };
@@ -379,6 +393,8 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeT
   const [activeNpcRole, setActiveNpcRole] = useState(null);
   const { health, sanity, wealth, network, rep } = char.stats;
   const egoReadiness = getEgoReadiness(char);
+  const pressureNotable = (char.heat || 0) >= 30 || (char.resonance || 0) >= 50 || (char.taboo || 0) >= 1
+    || (char.job === 'Wing Employee' && ((char.standing ?? 50) <= 40 || (char.leverage || 0) >= 40));
 
   const showOverview = activeTab === 'all' || activeTab === 'overview';
   const showCareer = activeTab === 'all' || activeTab === 'career';
@@ -394,14 +410,27 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeT
           <Stat label="HP" value={health} color="var(--s-health)" flag={health <= 25 ? 'CRITICAL' : null} tooltip={t('Sinh lực. Về 0 có thể chết vì thương tích; được hồi bằng điều trị và nghỉ cuối năm.', 'Vitality. Reaching 0 can be fatal; treatment and year-end rest restore it.')} />
           <Stat label="SP" value={sanity} color="var(--s-sanity)" flag={sanity <= 22 ? 'Carmen Calls' : null} tooltip={t('Tinh thần. Về 0 dẫn tới khủng hoảng; chỗ dựa và nghỉ ngơi giúp hồi phục.', 'Sanity. Reaching 0 triggers a crisis; support and rest help restore it.')} />
           <Stat label={t('Tiền mặt', 'Wealth')} value={wealth} unit="Ahn" color="var(--s-wealth)" flag={wealth <= 5 ? t('Cạn tiền', 'Near ruin') : null} tooltip={t('Ahn dùng cho sinh hoạt, mua tin và điều trị.', 'Ahn pays for living costs, intelligence, and treatment.')} />
-          <Stat label={t('Quan hệ', 'Network')} value={network} color="var(--s-network)" />
-          <Stat label={t('Danh tiếng', 'Reputation')} value={rep} color="var(--s-rep)" />
+          <details className="dossier-fold is-inline">
+            <summary>
+              <span>{t('Quan hệ & danh tiếng', 'Network & reputation')}</span>
+              <small>{network} · {rep}</small>
+            </summary>
+            <div className="dossier-fold-body">
+              <Stat label={t('Quan hệ', 'Network')} value={network} color="var(--s-network)" />
+              <Stat label={t('Danh tiếng', 'Reputation')} value={rep} color="var(--s-rep)" />
+            </div>
+          </details>
         </section>
       )}
 
+      {/* Pressure stays one quiet line until something is actually closing in */}
       {showOverview && (
-        <section>
-          <h3 className="section-title">{t('Áp lực', 'Causal pressure')}</h3>
+        <details className="dossier-fold" open={pressureNotable}>
+          <summary>
+            <span>{t('Áp lực', 'Causal pressure')}</span>
+            <small className={pressureNotable ? 'is-warn' : ''}>{pressureNotable ? t('Cần để ý', 'Needs attention') : t('Bình thường', 'Calm')}</small>
+          </summary>
+          <div className="dossier-fold-body">
           {char.job === 'Wing Employee' && (
             <>
               <Stat
@@ -460,21 +489,25 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeT
               'Taboo Gaze: Violations of the Head’s Taboos. At 3/3, a C Corp Claw arrives at once. There is no retreat: collapse means death; survival unlocks a special Outskirts ending.'
             )}
           />
-        </section>
+          </div>
+        </details>
       )}
 
       {/* Tab: Career & Equipment */}
       {showCareer && milestone && (
         <section className="career-objective-card">
           <div className="career-obj-header">
-            <span className="career-obj-tag">{milestone.category}</span>
+            <span className="career-obj-tag">{t(...(MILESTONE_LABELS[milestone.category] || [milestone.category, milestone.category]))}</span>
             {milestone.category !== 'WORKSHOP' && <span className="career-obj-pct num">{milestone.progressPct}%</span>}
           </div>
           <h4 className="career-obj-title">{lang === 'en' ? milestone.titleEn : milestone.titleVi}</h4>
           {milestone.category !== 'WORKSHOP' && <div className="career-obj-bar">
             <i style={{ width: `${milestone.progressPct}%` }} />
           </div>}
-          {milestone.category !== 'WORKSHOP' && <div className="career-obj-reqs">
+          {milestone.category !== 'WORKSHOP' && (
+          <details className="career-obj-detail">
+            <summary>{t('Điều kiện', 'Requirements')} <span className="num">{milestone.requirements.filter((r) => r.met).length}/{milestone.requirements.length}</span></summary>
+          <div className="career-obj-reqs">
             {milestone.requirements.map((req, idx) => {
               const deficit = !req.met && req.target != null && req.current != null ? Math.max(0, req.target - req.current) : 0;
               return (
@@ -500,34 +533,35 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeT
                 </div>
               );
             })}
-          </div>}
+          </div>
+          </details>
+          )}
           <p className="career-obj-tip">{lang === 'en' ? milestone.tipEn : milestone.tipVi}</p>
         </section>
       )}
 
+      {/* The E.G.O horizon is a second goal; folded, with its state in the summary, so two goal cards do not compete */}
       {showCareer && egoReadiness && (
-        <section className={`ego-horizon-card status-${egoReadiness.status}`}>
-          <div className="ego-horizon-header">
-            <span className="ego-horizon-tag">
-              {lang === 'en' ? 'PSYCHIC RESONANCE HORIZON' : 'TÂM THỨC CỘNG HƯỞNG & E.G.O'}
-            </span>
-            <span className="ego-horizon-status-badge">
-              {lang === 'en' ? egoReadiness.labelEn : egoReadiness.labelVi}
-            </span>
+        <details className={`dossier-fold ego-horizon-fold status-${egoReadiness.status}`}>
+          <summary>
+            <span>{t('Cộng hưởng E.G.O', 'E.G.O resonance')}</span>
+            <small>{lang === 'en' ? egoReadiness.labelEn : egoReadiness.labelVi}</small>
+          </summary>
+          <div className="dossier-fold-body">
+            <div className="ego-horizon-bar">
+              <i style={{ width: `${egoReadiness.progressPct}%` }} />
+            </div>
+            <div className="ego-horizon-meta">
+              <span className="meta-item">
+                <strong>{lang === 'en' ? 'Resonance:' : 'Cộng hưởng:'}</strong> <span className="num">{char.resonance || 0}/100</span>
+              </span>
+              <span className="meta-item">
+                <strong>{lang === 'en' ? 'Mental Sanity:' : 'Tỉnh táo:'}</strong> <span className="num">{char.stats?.sanity ?? char.sanity ?? 0}/100</span>
+              </span>
+            </div>
+            <p className="ego-horizon-desc">{lang === 'en' ? egoReadiness.descEn : egoReadiness.descVi}</p>
           </div>
-          <div className="ego-horizon-bar">
-            <i style={{ width: `${egoReadiness.progressPct}%` }} />
-          </div>
-          <div className="ego-horizon-meta">
-            <span className="meta-item">
-              <strong>{lang === 'en' ? 'Resonance:' : 'Cộng hưởng:'}</strong> <span className="num">{char.resonance || 0}/100</span>
-            </span>
-            <span className="meta-item">
-              <strong>{lang === 'en' ? 'Mental Sanity:' : 'Tỉnh táo:'}</strong> <span className="num">{char.stats?.sanity ?? char.sanity ?? 0}/100</span>
-            </span>
-          </div>
-          <p className="ego-horizon-desc">{lang === 'en' ? egoReadiness.descEn : egoReadiness.descVi}</p>
-        </section>
+        </details>
       )}
 
       {/* Tab: Overview & Stats */}
@@ -651,18 +685,19 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeT
             {char.scars.map((s, i) => {
               const profile = getScarProfile(s);
               if (!profile) return null;
-              return <article className="scar-card" key={`${s}_${i}`}>
-                <div className="scar-card-heading"><strong>{s}</strong><span>{t(profile.labelVi, profile.labelEn)}</span></div>
+              // The name and kind show at a glance; what the mark gives and costs opens on a tap
+              return <details className="scar-card" key={`${s}_${i}`}>
+                <summary className="scar-card-heading"><strong>{s}</strong><span>{t(profile.labelVi, profile.labelEn)}</span></summary>
                 <p className="scar-boon">+ {t(profile.boonVi, profile.boonEn)}</p>
                 <p className="scar-cost">− {t(profile.costVi, profile.costEn)}</p>
-              </article>;
+              </details>;
             })}
           </div>
-          {activeScarSynergies(char).map((synergy) => <article className="scar-card" key={synergy.id}>
-            <div className="scar-card-heading"><strong>{t(synergy.labelVi, synergy.labelEn)}</strong><span>{t('Kết hợp', 'Synergy')}</span></div>
+          {activeScarSynergies(char).map((synergy) => <details className="scar-card" key={synergy.id}>
+            <summary className="scar-card-heading"><strong>{t(synergy.labelVi, synergy.labelEn)}</strong><span>{t('Kết hợp', 'Synergy')}</span></summary>
             <p className="scar-boon">+ {t(synergy.boonVi, synergy.boonEn)}</p>
             <p className="scar-cost">− {t(synergy.costVi, synergy.costEn)}</p>
-          </article>)}
+          </details>)}
           {(char.scarHistory?.length || 0) > 0 && <details><summary>{t(`${char.scarHistory.length} dấu tích cũ`, `${char.scarHistory.length} older marks`)}</summary><div className="chips">{char.scarHistory.map((scar, index) => <span className="chip" key={`${scar}_${index}`}>{scar}</span>)}</div></details>}
         </section>
       )}

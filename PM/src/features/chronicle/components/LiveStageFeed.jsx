@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 import { useGameStore } from '../../../store/gameStore';
 import { useThemeStore } from '../../../store/themeStore';
-import { entryTier, framesAsMajor, splitLead } from '../entryTiers.js';
+import { entryTier, foldsInCompact, framesAsMajor, splitLead } from '../entryTiers.js';
 import { buildLifeSummaryAndLegacy, getDungeonCurrentStage, isDungeonChoiceAvailable, DUNGEON_DEFINITIONS, getNextCareerMilestone } from '../../../engine/gameEngine';
 import { DungeonDock } from './DungeonDock';
 import { YearPlanDock } from './YearPlanDock';
@@ -73,6 +73,7 @@ const LogEntries = React.memo(function LogEntries({ logs }) {
   const { t, lang, bilingual } = useT();
   const readMode = useThemeStore((s) => s.readMode);
   const out = [];
+  const currentAge = logs.length ? logs[logs.length - 1].age : 0;
   let lastAge = null;
   let lastSeasonId = null;
 
@@ -102,8 +103,14 @@ const LogEntries = React.memo(function LogEntries({ logs }) {
     const { title, situation, result, reviewBody } = storyParts(entry, lang);
     const tag = entry.omen ? t('Điềm lúc chào đời', 'Omen at birth') : title || (kind?.vi ? t(kind.vi, kind.en) : null);
     const tier = entryTier(entry);
-    // Compact reading folds a routine entry to its first sentence; the rest opens in place
-    const fold = readMode === 'compact' && tier === 'quiet' && !situation ? splitLead(result) : null;
+    // Compact reading keeps the first sentence of the outcome; the situation and the rest open in place
+    let fold = null;
+    if (readMode === 'compact' && result && foldsInCompact(entry, tier, currentAge)) {
+      const split = splitLead(result);
+      const lead = split ? split.lead : result;
+      const rest = split ? split.rest : '';
+      if (rest || situation) fold = { lead, rest };
+    }
     const alt = bilingual && entry.en && entry.en !== entry.vi ? splitTitle(entry.en).body : '';
     out.push(
       <article className={`entry t-${tier} ${kind?.cls || ''} ${framesAsMajor(entry) ? 'is-major' : ''}`} key={entry.id}>
@@ -120,11 +127,12 @@ const LogEntries = React.memo(function LogEntries({ logs }) {
           </p>
         )}
         {entry.passed && <p className="entry-choice is-muted">{t('Bạn để nó trôi qua.', 'You let it pass.')}</p>}
-        {situation && <p className="entry-text">{situation}</p>}
+        {situation && !fold && <p className="entry-text">{situation}</p>}
         {fold ? (
           <details className="entry-fold">
             <summary data-more={t('đọc tiếp', 'read on')}><span className="entry-lead">{fold.lead}</span></summary>
-            <p className="entry-text">{fold.rest}</p>
+            {fold.rest && <p className="entry-text">{fold.rest}</p>}
+            {situation && <p className="entry-alt">{t('Tình huống: ', 'The situation: ')}{situation}</p>}
             {alt && <p className="entry-alt">{alt}</p>}
           </details>
         ) : (

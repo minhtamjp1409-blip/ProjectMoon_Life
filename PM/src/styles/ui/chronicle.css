@@ -502,7 +502,8 @@
 
 @media (max-width: 860px) {
   .log { padding: 0; }
-  .log-col { padding: 20px 18px 96px; min-height: 100%; border-radius: 0; }
+  /* The floating advance button sits 12px above the bottom bar and is 46px tall; the last card must clear it */
+  .log-col { padding: 20px 18px calc(var(--bottom, 0px) + 84px); min-height: 100%; border-radius: 0; }
   .log-col::before { display: none; }
   .entry.k-good::before, .entry.k-bad::before { left: -13px; }
   .yearline { margin-top: 34px; }

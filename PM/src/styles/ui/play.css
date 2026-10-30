@@ -56,7 +56,7 @@
   border-right: 1px solid var(--border);
   background: rgba(8, 7, 10, .72);
   backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
-  display: flex; flex-direction: column; gap: 26px;
+  display: flex; flex-direction: column; gap: 14px;
 }
 .side > section { display: flex; flex-direction: column; gap: 10px; }
 .side .section-title { font-family: var(--font); font-size: 13px; font-weight: 600; color: var(--muted); letter-spacing: 0; text-transform: none; padding-bottom: 8px; border-bottom: 1px solid var(--rule); margin: 0; }
@@ -81,7 +81,6 @@
 .stat { display: flex; flex-direction: column; gap: 6px; padding: 4px 0; }
 .stat-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
 .stat-label { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; color: var(--text); min-width: 0; flex-wrap: wrap; }
-.stat-help { display: inline-flex; align-items: center; justify-content: center; min-width: 24px; min-height: 24px; margin: -6px; color: var(--faint); cursor: help; }
 .stat-flag { font-size: 11.5px; font-weight: 700; color: var(--bad); padding: 1px 6px; border: 1px solid currentColor; border-radius: var(--radius-sm); }
 .stat-flag.is-warn { color: var(--bad); }
 .stat-num-box { display: inline-flex; align-items: baseline; gap: 8px; }
@@ -280,6 +279,29 @@
 .scar-boon { font-size: 13.5px; color: var(--good); line-height: 1.45; }
 .scar-cost { font-size: 13.5px; color: var(--bad); line-height: 1.45; }
 .side details summary { font-size: 13.5px; font-weight: 600; color: var(--muted); min-height: 36px; display: flex; align-items: center; }
+
+/* Sidebar folds: what is not needed this turn gives up its height and keeps a one-line state */
+.dossier-fold > summary > small.is-warn { color: var(--gold); }
+.dossier-fold.is-inline { border-top: 0; margin-top: 2px; }
+.dossier-fold.is-quiet > summary { font-weight: 500; color: var(--faint); }
+.ego-horizon-fold .ego-horizon-bar i { background: var(--gold); }
+.ego-horizon-fold.status-distorted .ego-horizon-bar i { background: var(--bad); }
+.ego-horizon-fold.status-imminent .ego-horizon-bar i { background: #d97706; }
+.ego-horizon-fold.status-stirring .ego-horizon-bar i { background: #0284c7; }
+.stat-name.has-help { cursor: help; text-decoration: underline dotted; text-decoration-color: var(--faint); text-underline-offset: 4px; }
+.stat-name.has-help:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
+.career-obj-detail > summary { min-height: 32px; gap: 8px; font-size: 13px; }
+.career-obj-detail > summary::after { content: ''; width: 6px; height: 6px; margin-left: auto; border-right: 1.5px solid var(--muted); border-bottom: 1.5px solid var(--muted); transform: rotate(45deg) translateY(-2px); transition: transform .2s ease; }
+.career-obj-detail[open] > summary::after { transform: rotate(-135deg) translateY(-2px); }
+.scar-card > summary { cursor: pointer; list-style: none; min-height: 32px; }
+.scar-card > summary::-webkit-details-marker { display: none; }
+.scar-card > summary::after { content: ''; flex: none; width: 6px; height: 6px; border-right: 1.5px solid var(--muted); border-bottom: 1.5px solid var(--muted); transform: rotate(45deg) translateY(-2px); transition: transform .2s ease; }
+.scar-card[open] > summary::after { transform: rotate(-135deg) translateY(-2px); }
+.scar-card[open] > summary { margin-bottom: 4px; }
+.scar-card > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+@media (pointer: coarse), (max-width: 860px) {
+  .scar-card > summary, .career-obj-detail > summary { min-height: 44px; }
+}
 
 /* Phone: the dossier becomes a two-line status strip that opens a sheet */
 .mobile-resource-hud, .mobile-dossier-overlay { display: none; }

@@ -31,7 +31,7 @@ Các cổng Color riêng (E.G.O, thần đồng, E.G.O road) nằm trong `career
 
 ## Nhật ký và NPC
 
-- Mỗi mục nhật ký có một tầng (`entryTier`): quiet, decision hoặc turn. Chế độ "Đọc gọn" trong Cài đặt chỉ gấp mục quiet về câu đầu; không bao giờ gấp thứ người chơi đang chờ chọn hay đã chọn.
+- Mỗi mục nhật ký có một tầng (`entryTier`): quiet, decision hoặc turn. Chế độ "Đọc gọn" trong Cài đặt gấp mục quiet về câu đầu, và gấp mục lựa chọn của các năm đã qua về dòng "Bạn chọn" cộng câu đầu của kết quả (tình huống và phần còn lại mở tại chỗ). Không bao giờ gấp thứ đang chờ chọn, năm đang sống, hậu quả, nguy hiểm hay bước ngoặt (`foldsInCompact`).
 - Hành động với NPC (`npcInteractions.js`) có cooldown theo năm cho mỗi NPC và mỗi hành động. Số liệu của một hành động đi vào `deltas`, không viết trong câu.
 
 ## Kiểm tra

@@ -1,7 +1,8 @@
 // How loudly a chronicle entry reads. The log mixes a daily errand with a promotion, and one card style made both look alike.
 // quiet: routine that has already resolved, decision: a choice the player made or a consequence of one, turn: a turning point.
 const QUIET_TYPES = new Set(['daily', 'lore', 'summary']);
-const TURN_TYPES = new Set(['promo', 'miracle', 'death']);
+// 'major' is what an event flagged major leaves in the log: the career crossroad, a Grade exam, a life ending
+const TURN_TYPES = new Set(['major', 'promo', 'miracle', 'death']);
 
 export function entryTier(entry) {
   if (entry.major || TURN_TYPES.has(entry.type)) return 'turn';
@@ -9,8 +10,15 @@ export function entryTier(entry) {
   return 'decision';
 }
 
+// Compact reading folds routine entries, and the choices of years already lived. The year in progress and every turning point stay whole.
+export function foldsInCompact(entry, tier, currentAge) {
+  if (tier === 'quiet') return true;
+  if (tier !== 'decision') return false;
+  return Boolean(entry.choiceVi || entry.passed) && entry.age < currentAge;
+}
+
 // A promotion or a miracle gets the framed turning-point card; a death keeps its own rule
-export const framesAsMajor = (entry) => Boolean(entry.major) || entry.type === 'promo' || entry.type === 'miracle';
+export const framesAsMajor = (entry) => Boolean(entry.major) || entry.type === 'major' || entry.type === 'promo' || entry.type === 'miracle';
 
 // First sentence of a paragraph, for the compact reading mode. Returns null when there is nothing to fold away.
 export function splitLead(text) {

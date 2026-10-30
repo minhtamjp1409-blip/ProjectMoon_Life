@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { entryTier, framesAsMajor, splitLead } from '../src/features/chronicle/entryTiers.js';
+import { entryTier, foldsInCompact, framesAsMajor, splitLead } from '../src/features/chronicle/entryTiers.js';
 
 console.log('--- RUNNING CHRONICLE TIER TESTS ---');
 
@@ -17,9 +17,10 @@ assert.strictEqual(entryTier({ type: 'daily', choiceVi: 'Giúp anh ta' }), 'deci
 assert.strictEqual(entryTier({ type: 'daily', passed: true }), 'decision');
 
 console.log('3. Turning points are marked, whatever their type...');
-for (const type of ['promo', 'miracle', 'death']) assert.strictEqual(entryTier({ type }), 'turn');
+for (const type of ['major', 'promo', 'miracle', 'death']) assert.strictEqual(entryTier({ type }), 'turn');
+assert.strictEqual(entryTier({ type: 'major', choiceVi: 'Nhận lời' }), 'turn', 'an answered major event is still a turning point');
 assert.strictEqual(entryTier({ type: 'choice', major: true }), 'turn');
-assert(framesAsMajor({ type: 'promo' }) && framesAsMajor({ type: 'miracle' }) && framesAsMajor({ major: true }));
+assert(framesAsMajor({ type: 'promo' }) && framesAsMajor({ type: 'miracle' }) && framesAsMajor({ major: true }) && framesAsMajor({ type: 'major' }));
 assert(!framesAsMajor({ type: 'death' }), 'a death keeps its own rule, not the framed card');
 assert(!framesAsMajor({ type: 'daily' }));
 
@@ -32,5 +33,15 @@ assert.strictEqual(splitLead('Một câu duy nhất và không còn gì để g�
 assert.strictEqual(splitLead(''), null);
 const quoted = splitLead('Hắn nói: "Đi đi." Rồi quay lưng bỏ đi.');
 assert(quoted && `${quoted.lead} ${quoted.rest}` === 'Hắn nói: "Đi đi." Rồi quay lưng bỏ đi.', 'quotes stay whole across the split');
+
+console.log('5. Compact folds the choices of past years, never the year in progress or a turning point...');
+const past = { type: 'choice', choiceVi: 'Nhận việc', age: 12 };
+assert(foldsInCompact({ type: 'daily', age: 15 }, 'quiet', 15), 'routine always folds');
+assert(foldsInCompact(past, 'decision', 15), 'a past year choice folds');
+assert(!foldsInCompact({ ...past, age: 15 }, 'decision', 15), 'this year choice stays whole');
+assert(foldsInCompact({ type: 'daily', passed: true, age: 9 }, 'decision', 15));
+assert(!foldsInCompact({ type: 'danger', age: 9 }, 'decision', 15), 'a danger with no choice stays whole');
+assert(!foldsInCompact({ type: 'causal', age: 9 }, 'decision', 15), 'a consequence stays whole');
+assert(!foldsInCompact({ ...past, type: 'major' }, 'turn', 15), 'a turning point never folds');
 
 console.log('PASS: chronicle tier tests');
