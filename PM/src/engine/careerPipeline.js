@@ -202,43 +202,49 @@ export const COLOR_FIXER_REQ = { merit: GATES.color.merit, rep: GATES.color.rep 
 
 // Hana draws its Colors from Grade 1. A Fixer whose E.G.O has taken shape is already past what the
 // grading system measures, so Hana looks sooner; the trial itself is the same and can still be failed.
-export const COLOR_FIXER_REQ_EGO = { merit: 215, rep: 85, age: 28 };
+export const COLOR_FIXER_REQ_EGO = { merit: GATES.color.ego.merit, rep: GATES.color.ego.rep, age: GATES.color.ego.age };
 
 // Prodigy Fast-Track: extraordinary feats / early E.G.O allow Color ascension between age 26 and 40
-export const COLOR_FIXER_REQ_PRODIGY = { merit: 130, rep: 75, age: 26 };
+export const COLOR_FIXER_REQ_PRODIGY = { merit: GATES.color.prodigy.merit, rep: GATES.color.prodigy.rep, age: GATES.color.prodigy.age };
 
 // The E.G.O road to Color. Hana does not wait for Grade 1 when the wielder's own weapon already outruns the grading
 // scale: Grade 4 or better, an Awakened E.G.O that has settled (Resonance 55+), and a record Hana can defend.
-export const COLOR_FIXER_REQ_EGO_ROAD = { merit: 85, rep: 70, age: 26 };
+export const COLOR_FIXER_REQ_EGO_ROAD = { merit: GATES.color.egoRoad.merit, rep: GATES.color.egoRoad.rep, age: GATES.color.egoRoad.age };
+
+// Every number above comes from career_gates.json, which the backend reads too. The backend cannot see the
+// inventory, so the client sends this one fact (a relic or a forged weapon in the pack) with the plan request.
+export const hasColorRelic = (char) => (char?.inventory || []).some((it) => String(it?.id || it).startsWith('rel_') || String(it?.id || it).startsWith('wpn_'));
 
 export const isColorEgoRoadEligible = (char) => {
+  const road = GATES.color.egoRoad;
   if (!char || char.flags?.includes('Distorted') || char.flags?.includes('ColorFixer')) return false;
   if (char.job !== 'Fixer' && char.job !== 'Color Fixer') return false;
-  if (char.age < COLOR_FIXER_REQ_EGO_ROAD.age || char.age > 46) return false;
-  if (![1, 2, 3, 4].includes(char.fixerGrade) || !hasAwakenedEgo(char)) return false;
+  if (char.age < road.age || char.age > GATES.color.oldestAge) return false;
+  if (!road.grades.includes(char.fixerGrade) || !hasAwakenedEgo(char)) return false;
   const rep = (char.stats?.rep ?? char.rep) || 0;
-  return rep >= COLOR_FIXER_REQ_EGO_ROAD.rep && (char.merit || 0) >= COLOR_FIXER_REQ_EGO_ROAD.merit && (char.resonance || 0) >= 55;
+  return rep >= road.rep && (char.merit || 0) >= road.merit && (char.resonance || 0) >= road.resonance;
 };
 
 export const isColorProdigyEligible = (char) => {
+  const prodigy = GATES.color.prodigy;
   if (!char || char.flags?.includes('Distorted') || char.flags?.includes('ColorFixer')) return false;
   if (char.job !== 'Fixer' && char.job !== 'Color Fixer') return false;
-  if (char.age < 26 || char.age > 46) return false;
+  if (char.age < prodigy.age || char.age > GATES.color.oldestAge) return false;
   if (isColorEgoRoadEligible(char)) return true;
-  if (char.age > 40) return false;
-  if (![1, 2, 3].includes(char.fixerGrade)) return false;
+  if (char.age > prodigy.latestAge) return false;
+  if (!prodigy.grades.includes(char.fixerGrade)) return false;
 
   const rep = (char.stats?.rep ?? char.rep) || 0;
   const merit = char.merit || 0;
   const flags = char.flags || [];
-  const hasRelic = (char.inventory || []).some((it) => String(it?.id || it).startsWith('rel_') || String(it?.id || it).startsWith('wpn_'));
-  const hasFeat = flags.some((f) => ['ProdigyFixer', 'KeptDungeonTrophy', 'StarConqueror', 'SoloStarConqueror', 'TabooHunter'].includes(f));
+  const hasFeat = flags.some((f) => prodigy.feats.includes(f));
 
   // Feat / Impossible Trial Conqueror (all grades 1-3)
-  if ((hasRelic || hasFeat || (char.resonance || 0) >= 50) && rep >= 75 && merit >= 130) return true;
+  if ((hasColorRelic(char) || hasFeat || (char.resonance || 0) >= prodigy.resonance) && rep >= prodigy.rep && merit >= prodigy.merit) return true;
 
   // Track A: Awakened E.G.O Prodigy (specifically for exceptional under-grade Fixers Grade 2-3)
-  if ([2, 3].includes(char.fixerGrade) && hasAwakenedEgo(char) && rep >= 72 && merit >= 120) return true;
+  const track = prodigy.egoTrack;
+  if (track.grades.includes(char.fixerGrade) && hasAwakenedEgo(char) && rep >= track.rep && merit >= track.merit) return true;
 
   return false;
 };
@@ -246,7 +252,7 @@ export const isColorProdigyEligible = (char) => {
 export const colorRequirementFor = (char) => {
   if (isColorEgoRoadEligible(char)) return COLOR_FIXER_REQ_EGO_ROAD;
   if (isColorProdigyEligible(char)) return COLOR_FIXER_REQ_PRODIGY;
-  return hasAwakenedEgo(char) ? COLOR_FIXER_REQ_EGO : { ...COLOR_FIXER_REQ, age: 30 };
+  return hasAwakenedEgo(char) ? COLOR_FIXER_REQ_EGO : { ...COLOR_FIXER_REQ, age: GATES.color.age };
 };
 
 export function checkColorFixerReadiness(char) {

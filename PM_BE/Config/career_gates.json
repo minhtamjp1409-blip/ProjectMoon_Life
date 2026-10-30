@@ -9,7 +9,16 @@
     { "grade": 2, "merit": 135, "rep": 82 },
     { "grade": 1, "merit": 180, "rep": 95 }
   ],
-  "color": { "merit": 260, "rep": 90 },
+  "color": {
+    "merit": 260, "rep": 90, "age": 30, "oldestAge": 46,
+    "ego": { "merit": 215, "rep": 85, "age": 28 },
+    "prodigy": {
+      "merit": 130, "rep": 75, "age": 26, "latestAge": 40, "grades": [1, 2, 3], "resonance": 50,
+      "feats": ["ProdigyFixer", "KeptDungeonTrophy", "StarConqueror", "SoloStarConqueror", "TabooHunter"],
+      "egoTrack": { "grades": [2, 3], "merit": 120, "rep": 72 }
+    },
+    "egoRoad": { "merit": 85, "rep": 70, "age": 26, "grades": [1, 2, 3, 4], "resonance": 55 }
+  },
   "finger": [
     { "rank": 1, "merit": 28, "rep": 18, "network": 0 },
     { "rank": 2, "merit": 68, "rep": 46, "network": 0 },

@@ -204,7 +204,8 @@ public sealed record CharacterSnapshotDto(
     int AnnualRest = 0,
     int AnnualScheme = 0,
     string Ambition = "",
-    int SyndicateRank = 0
+    int SyndicateRank = 0,
+    bool HasRelic = false
 );
 
 public sealed record MilestoneRequirementDto(

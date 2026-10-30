@@ -11,6 +11,7 @@ import { planYear, chooseDirectorPacedLead, runDueItems, resolveMinor, endYear, 
 import { tabooGainOf } from '../../src/engine/forbiddenPath.js';
 import { REGIONS } from '../../src/data/worldData.js';
 import { choiceIsAvailable } from '../../src/engine/eventConditions.js';
+import { makePicker } from './lib/choicePolicy.mjs';
 import { checkColorFixerReadiness } from '../../src/engine/careerPipeline.js';
 import { hasEgoOpportunity } from '../../src/engine/awakeningProgress.js';
 import { writeFileSync } from 'node:fs';
@@ -31,36 +32,7 @@ const mean = (a) => (a.length ? a.reduce((s, x) => s + x, 0) / a.length : 0);
 const q = (arr, p) => (arr.length ? [...arr].sort((a, b) => a - b)[Math.min(arr.length - 1, Math.floor(arr.length * p))] : 0);
 const f1 = (x) => (Math.round(x * 10) / 10).toString();
 
-const WEIGHT = { health: 1.2, sanity: 1, wealth: 0.8, network: 0.5, rep: 0.6, heat: -0.7, taboo: -3, resonance: -0.3, merit: 0.4 };
-const fxScore = (fx = {}) => Object.entries(fx).reduce((s, [k, v]) => s + (WEIGHT[k] || 0) * v, 0);
-function choiceScore(ch) {
-  const rows = ch.out || ch.outcomes;
-  if (Array.isArray(rows) && rows.length) {
-    const total = rows.reduce((s, o) => s + (o.w ?? 50), 0) || 1;
-    return rows.reduce((s, o) => s + ((o.w ?? 50) / total) * fxScore(o.fx || o.effects), 0) + fxScore(ch.fx || ch.effects);
-  }
-  return fxScore(ch.fx || ch.effects);
-}
-// A player can only pick what the screen offers
-const pickIndex = (choices, rng, char, eventId = '') => {
-  const ok = (choices || []).map((c, i) => i).filter((i) => choiceIsAvailable(choices[i], char));
-  if (!ok.length) return -1;
-  if (POLICY === 'random') return ok[Math.floor(rng() * ok.length)];
-  if (POLICY === 'focused') {
-    if (eventId.startsWith('fixer_seven_')) return ok[0];
-    if (eventId === 'hana_color_ascension_trial') return ok.includes(1) ? 1 : 0;
-    if (eventId === 'ego_carmen_crossroad' || eventId === 'ego_second_efflorescence_trial') return ok[0];
-    if (['ad_career_crossroad_18', 'ad_nest_crossroad_18', 'ad_outskirts_crossroad_18'].includes(eventId)) {
-      const fixer = ok.find((i) => choices[i].setJob === 'Fixer');
-      if (fixer !== undefined) return fixer;
-    }
-    if (eventId.startsWith('fixer_promo_')) {
-      const promotion = ok.find((i) => choices[i].setFixerGrade != null);
-      if (promotion !== undefined) return promotion;
-    }
-  }
-  return ok.reduce((b, i) => (choiceScore(choices[i]) > choiceScore(choices[b]) ? i : b), ok[0]);
-};
+const pickIndex = makePicker(POLICY);
 
 const dungeons = { lives: 0, byId: {} };
 const dunLives = new Set();

@@ -19,7 +19,7 @@ Một nguồn duy nhất: `PM_BE/Config/career_gates.json` (Fixer Grade 8 đến
 
 Không đặt file nguồn trong `PM_BE/Data/`: thư mục đó bị `.gitignore` và không tới được bản build Docker.
 
-Các cổng Color riêng (E.G.O, thần đồng, E.G.O road) nằm trong `careerPipeline.js` (`COLOR_FIXER_REQ_*`), chỉ phía FE dùng.
+Cổng Color có bốn đường, tất cả trong `color` của file nguồn: chuẩn (Grade 1, 260 Merit, 90 Rep, từ 30 tuổi), E.G.O (`ego`), thần đồng (`prodigy`, gồm nhánh `egoTrack`) và E.G.O road (`egoRoad`, Grade 4 trở lên). FE đọc qua `COLOR_FIXER_REQ_*` và `isColorEgoRoadEligible`/`isColorProdigyEligible` trong `careerPipeline.js`; BE đọc qua `ColorTrialGate.cs`. FE gửi thêm `hasRelic` trong snapshot vì BE không thấy túi đồ. `node tools/sim/color_gate_parity.mjs [base] [vectors]` so hai bên bằng BE đang chạy (không nằm trong `npm test`).
 
 ## Viết event
 
@@ -39,5 +39,5 @@ Các cổng Color riêng (E.G.O, thần đồng, E.G.O road) nằm trong `career
 ## Kiểm tra
 
 - `npm test`: toàn bộ lint, test hồi quy và mô phỏng 500 khoảnh khắc.
-- `node tools/sim/event_reach.mjs [lives] [--routes] [--events=prefix]`: độ phủ event và tỷ lệ năm không đổi vị thế theo route. Đây là phép dò với người chơi ngẫu nhiên, không chứng minh cân bằng.
+- `node tools/sim/event_reach.mjs [lives] [--routes] [--policy=random|greedy|focused] [--events=prefix]`: độ phủ event và tỷ lệ năm không đổi vị thế theo route. `--routes` ép nghề đúng tuổi vào nghề của nhân vật, gỡ ngã rẽ nghề khỏi kế hoạch, và in số đời giữ được route qua ba năm đầu. Chính sách người chơi dùng chung với `balance_sim` (`tools/sim/lib/choicePolicy.mjs`). Đây là phép dò, không chứng minh cân bằng.
 - `node tools/sim/balance_sim.mjs [lives] [random|greedy|focused] [--fixers]`: cân bằng chỉ số và đường lên Color.

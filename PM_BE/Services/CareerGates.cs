@@ -13,7 +13,14 @@ public static class CareerGates
     public readonly record struct FingerGate(int Rank, int Merit, int Rep, int Network);
     public readonly record struct WingGate(int Rank, int Merit, int Wealth, int Network);
 
-    private sealed record ColorGate(int Merit, int Rep);
+    public readonly record struct ColorTier(int Merit, int Rep, int Age);
+    public sealed record ColorGate(
+        int Merit, int Rep, int Age, int OldestAge,
+        ColorTier Ego, ProdigyGate Prodigy, EgoRoadGate EgoRoad);
+    public sealed record ProdigyGate(
+        int Merit, int Rep, int Age, int LatestAge, int[] Grades, int Resonance, string[] Feats, EgoTrackGate EgoTrack);
+    public sealed record EgoTrackGate(int[] Grades, int Merit, int Rep);
+    public sealed record EgoRoadGate(int Merit, int Rep, int Age, int[] Grades, int Resonance);
 
     private sealed record Document(
         FixerGate[] Fixer,
@@ -28,6 +35,7 @@ public static class CareerGates
     public static IReadOnlyList<FingerGate> Finger => Doc.Finger;
     public static IReadOnlyList<WingGate> Wing => Doc.Wing;
     public static IReadOnlyDictionary<string, string[]> FingerRanks => Doc.FingerRanks;
+    public static ColorGate Color => Doc.Color;
     public static int ColorMerit => Doc.Color.Merit;
     public static int ColorRep => Doc.Color.Rep;
 

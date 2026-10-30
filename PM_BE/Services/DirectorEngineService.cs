@@ -177,10 +177,11 @@ public sealed class DirectorEngineService
             {
                 bool defeatedCalamity = flags.Contains("StarOfCityOvercome") || flags.Contains("ColorFixer");
 
-                int p1 = Math.Min(100, (c.Merit * 100) / ColorMerit);
-                int p2 = Math.Min(100, (c.Rep * 100) / ColorRep);
+                var colorReq = ColorTrialGate.RequirementFor(c, flags);
+                int p1 = Math.Min(100, (c.Merit * 100) / colorReq.Merit);
+                int p2 = Math.Min(100, (c.Rep * 100) / colorReq.Rep);
                 int progress = (p1 + p2) / 2;
-                bool canPromote = c.Merit >= ColorMerit && c.Rep >= ColorRep;
+                bool canPromote = ColorTrialGate.Ready(c, flags);
 
                 return new CareerMilestoneDto(
                     Category: "STAR OF THE CITY ORDEAL",
@@ -189,8 +190,8 @@ public sealed class DirectorEngineService
                     ProgressPct: progress,
                     Requirements:
                     [
-                        new($"Chiến công (Merit >= {ColorMerit})", $"Merit (>= {ColorMerit})", c.Merit, ColorMerit, c.Merit >= ColorMerit),
-                        new($"Danh tiếng (Rep >= {ColorRep})", $"Reputation (>= {ColorRep})", c.Rep, ColorRep, c.Rep >= ColorRep),
+                        new($"Chiến công (Merit >= {colorReq.Merit})", $"Merit (>= {colorReq.Merit})", c.Merit, colorReq.Merit, c.Merit >= colorReq.Merit),
+                        new($"Danh tiếng (Rep >= {colorReq.Rep})", $"Reputation (>= {colorReq.Rep})", c.Rep, colorReq.Rep, c.Rep >= colorReq.Rep),
                         new("Vượt qua mối họa Star of the City", "Overcome Star of the City Calamity", defeatedCalamity ? 1 : 0, 1, defeatedCalamity)
                     ],
                     TipVi: "Đủ Merit và Rep thì Hana Association triệu tập đại khảo thí phong Color. E.G.O không phải điều kiện bắt buộc.",
@@ -494,7 +495,7 @@ public sealed class DirectorEngineService
             majorTitleVi = "Tiếng Gọi Giữa Vầng Thái Dương (Carmen's Voice)";
             majorTitleEn = "Voices in the Blinding Sun (Carmen)";
         }
-        else if (c.Job.Equals("Fixer", StringComparison.OrdinalIgnoreCase) && c.FixerGrade == 1 && c.Merit >= ColorMerit && c.Rep >= ColorRep && !flags.Contains("ColorFixer") && !seen.Contains("hana_color_ascension_trial"))
+        else if (ColorTrialGate.Ready(c, flags) && !seen.Contains("hana_color_ascension_trial"))
         {
             majorDue = true;
             majorId = "hana_color_ascension_trial";
@@ -770,7 +771,7 @@ public sealed class DirectorEngineService
 
         if (req.TrialType.Equals("COLOR_FIXER", StringComparison.OrdinalIgnoreCase))
         {
-            bool hasPrereqs = c.FixerGrade <= 1 && c.Merit >= ColorMerit && c.Rep >= ColorRep;
+            bool hasPrereqs = ColorTrialGate.Ready(c, flags);
 
             if (hasPrereqs)
             {

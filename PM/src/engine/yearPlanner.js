@@ -21,7 +21,8 @@ import {
   syndicateApexOpportunity,
   careerTrialForEvent,
   careerPromotionSuccessChance,
-  careerPromotionFailureEffects
+  careerPromotionFailureEffects,
+  hasColorRelic
 } from './careerPipeline.js';
 import { rollSeasonMishap } from './fateEngine.js';
 // ============================================================================
@@ -818,6 +819,7 @@ export async function syncPlanWithBackend(charState, rng) {
       wingRank: charState.wingRank || 0,
       workshopRank: charState.workshopRank || 0,
       syndicateRank: charState.syndicateRank || 0,
+      hasRelic: hasColorRelic(charState),
       debts: charState.debts || [],
       flags: charState.flags || [],
       seenEvents: charState.seenEvents || [],

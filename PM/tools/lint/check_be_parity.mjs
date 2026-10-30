@@ -7,7 +7,7 @@
  */
 import fs from 'fs';
 import { spawnSync } from 'child_process';
-import { FIXER_LADDER, COLOR_FIXER_REQ, FINGER_LADDERS, WING_LADDER_PROMOTIONS } from '../../src/engine/careerPipeline.js';
+import { FIXER_LADDER, COLOR_FIXER_REQ, COLOR_FIXER_REQ_EGO, COLOR_FIXER_REQ_PRODIGY, COLOR_FIXER_REQ_EGO_ROAD, FINGER_LADDERS, WING_LADDER_PROMOTIONS } from '../../src/engine/careerPipeline.js';
 import { FINGER_RANKS } from '../../src/data/worldData.js';
 
 const read = (path) => fs.readFileSync(new URL(path, import.meta.url), 'utf8');
@@ -15,6 +15,7 @@ const source = read('../../../PM_BE/Config/career_gates.json');
 const copy = read('../../src/data/careerGates.json');
 const cs = read('../../../PM_BE/Services/DirectorEngineService.cs');
 const csproj = read('../../../PM_BE/ProjectMoon.Api.csproj');
+const colorGateCs = read('../../../PM_BE/Services/ColorTrialGate.cs');
 const gates = JSON.parse(source);
 const problems = [];
 // A gitignored source never reaches the Docker build, so the backend would fail to embed it
@@ -30,6 +31,14 @@ for (const row of gates.fixer) {
 }
 if (FIXER_LADDER.length !== gates.fixer.length) problems.push('FIXER_LADDER and the gates file list a different number of grades');
 if (COLOR_FIXER_REQ.merit !== gates.color.merit || COLOR_FIXER_REQ.rep !== gates.color.rep) problems.push('COLOR_FIXER_REQ does not follow the gates file');
+for (const [name, req, row] of [['ego', COLOR_FIXER_REQ_EGO, gates.color.ego], ['prodigy', COLOR_FIXER_REQ_PRODIGY, gates.color.prodigy], ['egoRoad', COLOR_FIXER_REQ_EGO_ROAD, gates.color.egoRoad]]) {
+  if (req.merit !== row.merit || req.rep !== row.rep || req.age !== row.age) problems.push(`The ${name} Color requirement in the engine does not follow the gates file`);
+}
+// The backend decides when the Color trial is convened from the same file; a literal there would drift from the client
+if (!/CareerGates\.Color/.test(colorGateCs)) problems.push('ColorTrialGate.cs does not read CareerGates.Color');
+if (/(>=|<=|<|>|==)\s*\d{2,}/.test(colorGateCs)) problems.push('ColorTrialGate.cs compares against a literal number; use career_gates.json');
+if (!/ColorTrialGate\.Ready\(/.test(cs)) problems.push('DirectorEngineService.cs does not use ColorTrialGate.Ready for the Color trial');
+if (/FixerGrade == 1 && c\.Merit >= ColorMerit/.test(cs)) problems.push('DirectorEngineService.cs gates the Color trial on Grade 1 and the standard numbers only');
 
 for (const [finger, names] of Object.entries(FINGER_RANKS)) {
   if ((gates.fingerRanks[finger] || []).join('|') !== names.join('|')) problems.push(`${finger} rank names differ from the gates file`);
