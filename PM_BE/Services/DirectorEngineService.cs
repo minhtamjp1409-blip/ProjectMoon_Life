@@ -26,21 +26,13 @@ public sealed class DirectorEngineService
 
     private readonly record struct FixerThreshold(int Grade, int Merit, int Rep, string TitleVi, string TitleEn);
 
-    private static readonly FixerThreshold[] FixerThresholds =
-    [
-        new(8, 10, 8, "Fixer Grade 8", "Grade 8 Fixer"),
-        new(7, 22, 16, "Fixer Grade 7", "Grade 7 Fixer"),
-        new(6, 38, 26, "Fixer Grade 6", "Grade 6 Fixer"),
-        new(5, 56, 38, "Fixer Grade 5", "Grade 5 Fixer"),
-        new(4, 78, 52, "Fixer Grade 4", "Grade 4 Fixer"),
-        new(3, 96, 68, "Fixer Grade 3", "Grade 3 Fixer"),
-        new(2, 135, 82, "Fixer Grade 2", "Grade 2 Fixer"),
-        new(1, 180, 95, "Fixer Grade 1", "Grade 1 Fixer")
-    ];
+    // Gates come from Data/career_gates.json, the same file the frontend reads (careerPipeline.js)
+    private static readonly FixerThreshold[] FixerThresholds = CareerGates.Fixer
+        .Select(g => new FixerThreshold(g.Grade, g.Merit, g.Rep, $"Fixer Grade {g.Grade}", $"Grade {g.Grade} Fixer"))
+        .ToArray();
 
-    // Both tables mirror careerPipeline.js (FIXER_LADDER, COLOR_FIXER_REQ), which gates the exams
-    private const int ColorMerit = 260;
-    private const int ColorRep = 90;
+    private static readonly int ColorMerit = CareerGates.ColorMerit;
+    private static readonly int ColorRep = CareerGates.ColorRep;
 
     private static double FixerContractOfferChance(CharacterSnapshotDto c)
     {
@@ -56,25 +48,23 @@ public sealed class DirectorEngineService
     }
 
     private static readonly FrozenDictionary<string, string[]> FingerLadders =
-        new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase)
-        {
-            // Same names and order as FINGER_RANKS in PM/src/data/worldData.js
-            ["Thumb"] = ["Soldato", "Capo", "Sottocapo", "Underboss"],
-            ["Index"] = ["Proselyte", "Messenger", "Proxy", "Weaver"],
-            ["Middle"] = ["Little Sibling", "Big Sibling", "Great Elder", "Great Sibling"],
-            ["Ring"] = ["Student", "Docent", "Maestro", "Grand Curator"],
-            ["Pinky"] = ["Initiate", "Sworn Blade", "Star of the Sky", "Sovereign"]
-        }.ToFrozenDictionary(StringComparer.OrdinalIgnoreCase);
+        CareerGates.FingerRanks.ToFrozenDictionary(StringComparer.OrdinalIgnoreCase);
 
     private readonly record struct WingRankDef(int Rank, string TitleVi, string TitleEn, int Merit, int Wealth, int Network);
 
     private static readonly WingRankDef[] WingRanks =
     [
         new(0, "Nhân viên tập sự (Contract Intern)", "Contract Intern", 0, 0, 0),
-        new(1, "Feather chính thức (Feather Agent)", "Feather Agent", 25, 18, 14),
-        new(2, "Trưởng phòng ban (Section Chief)", "Section Chief", 65, 45, 32),
-        new(3, "Giám đốc cấp cao (Senior Executive)", "Senior Executive", 125, 85, 60)
+        WingDef(1, "Feather chính thức (Feather Agent)", "Feather Agent"),
+        WingDef(2, "Trưởng phòng ban (Section Chief)", "Section Chief"),
+        WingDef(3, "Giám đốc cấp cao (Senior Executive)", "Senior Executive")
     ];
+
+    private static WingRankDef WingDef(int rank, string titleVi, string titleEn)
+    {
+        var gate = CareerGates.WingAt(rank);
+        return new(rank, titleVi, titleEn, gate.Merit, gate.Wealth, gate.Network);
+    }
 
     /// <summary>
     /// Evaluates current character career milestone, requirements, progress, and promotion state.
@@ -298,9 +288,10 @@ public sealed class DirectorEngineService
 
             int nextRank = curRank + 1;
             string nextTitle = ladder[nextRank];
-            int reqMerit = nextRank == 3 ? 155 : nextRank == 2 ? 68 : 28;
-            int reqRep = nextRank == 3 ? 84 : nextRank == 2 ? 46 : 18;
-            int reqNet = 0;
+            var fingerGate = CareerGates.FingerAt(nextRank);
+            int reqMerit = fingerGate.Merit;
+            int reqRep = fingerGate.Rep;
+            int reqNet = fingerGate.Network;
             int pM = Math.Min(100, (c.Merit * 100) / reqMerit);
             int pR = Math.Min(100, (c.Rep * 100) / reqRep);
             int pN = reqNet > 0 ? Math.Min(100, (c.Network * 100) / reqNet) : pM;
@@ -509,7 +500,7 @@ public sealed class DirectorEngineService
         else if (c.Job.Equals("Syndicate", StringComparison.OrdinalIgnoreCase) && !flags.Contains("Distorted") && !string.IsNullOrWhiteSpace(c.Finger))
         {
             string finger = c.Finger;
-            if (c.FingerRank == 0 && c.Merit >= 28 && c.Rep >= 18)
+            if (c.FingerRank == 0 && c.Merit >= CareerGates.FingerAt(1).Merit && c.Rep >= CareerGates.FingerAt(1).Rep)
             {
                 majorDue = true;
                 majorId = finger.ToLowerInvariant() switch
@@ -523,7 +514,7 @@ public sealed class DirectorEngineService
                 majorTitleVi = $"Khảo thí thăng bậc The {finger} (Rank 1)";
                 majorTitleEn = $"The {finger} Promotion Trial (Rank 1)";
             }
-            else if (c.FingerRank == 1 && c.Merit >= 68 && c.Rep >= 46)
+            else if (c.FingerRank == 1 && c.Merit >= CareerGates.FingerAt(2).Merit && c.Rep >= CareerGates.FingerAt(2).Rep)
             {
                 majorDue = true;
                 majorId = finger.ToLowerInvariant() switch
@@ -537,7 +528,7 @@ public sealed class DirectorEngineService
                 majorTitleVi = $"Khảo thí thăng bậc The {finger} (Rank 2)";
                 majorTitleEn = $"The {finger} Promotion Trial (Rank 2)";
             }
-            else if (c.FingerRank == 2 && c.Merit >= 155 && c.Rep >= 84)
+            else if (c.FingerRank == 2 && c.Merit >= CareerGates.FingerAt(3).Merit && c.Rep >= CareerGates.FingerAt(3).Rep)
             {
                 majorDue = true;
                 majorId = finger.ToLowerInvariant() switch
@@ -554,21 +545,21 @@ public sealed class DirectorEngineService
         }
         else if (c.Job.Equals("Wing Employee", StringComparison.OrdinalIgnoreCase) && !flags.Contains("Distorted"))
         {
-            if (c.WingRank == 0 && c.Merit >= 25 && c.Wealth >= 18 && c.Network >= 14 && !seen.Contains("wing_promo_feather_r1"))
+            if (c.WingRank == 0 && c.Merit >= CareerGates.WingAt(1).Merit && c.Wealth >= CareerGates.WingAt(1).Wealth && c.Network >= CareerGates.WingAt(1).Network && !seen.Contains("wing_promo_feather_r1"))
             {
                 majorDue = true;
                 majorId = "wing_promo_feather_r1";
                 majorTitleVi = "Bổ Nhiệm Feather Chính Thức (Nest Feather)";
                 majorTitleEn = "Official Feather Commission";
             }
-            else if (c.WingRank == 1 && c.Merit >= 65 && c.Wealth >= 45 && c.Network >= 32 && !seen.Contains("wing_promo_specialist_r2"))
+            else if (c.WingRank == 1 && c.Merit >= CareerGates.WingAt(2).Merit && c.Wealth >= CareerGates.WingAt(2).Wealth && c.Network >= CareerGates.WingAt(2).Network && !seen.Contains("wing_promo_specialist_r2"))
             {
                 majorDue = true;
                 majorId = "wing_promo_specialist_r2";
                 majorTitleVi = "Trưởng Phòng Ban Singularity (Section Chief)";
                 majorTitleEn = "Section Chief / Singularity Specialist";
             }
-            else if (c.WingRank == 2 && c.Merit >= 125 && c.Wealth >= 85 && c.Network >= 60 && !seen.Contains("wing_singularity_classified_audit"))
+            else if (c.WingRank == 2 && c.Merit >= CareerGates.WingAt(3).Merit && c.Wealth >= CareerGates.WingAt(3).Wealth && c.Network >= CareerGates.WingAt(3).Network && !seen.Contains("wing_singularity_classified_audit"))
             {
                 majorDue = true;
                 majorId = "wing_singularity_classified_audit";

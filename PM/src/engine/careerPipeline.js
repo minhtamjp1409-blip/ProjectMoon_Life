@@ -14,12 +14,18 @@ import { contractRouteOf } from '../data/careerContracts.js';
 import { laneContractMods } from './affiliation.js';
 import { egoEdge, hasAwakenedEgo } from './egoEdge.js';
 import { annualTrainingBonus } from './annualPlan.js';
+import GATES from '../data/careerGates.json' with { type: 'json' };
+
+// Promotion gates come from careerGates.json, the same file the backend embeds
+const fixerGate = (grade) => GATES.fixer.find((row) => row.grade === grade);
+const fingerGate = (rank) => GATES.finger.find((row) => row.rank === rank);
+const wingGate = (rank) => GATES.wing.find((row) => row.rank === rank);
 
 export const FIXER_LADDER = [
   {
     grade: 8,
-    meritReq: 10,
-    repReq: 8,
+    meritReq: fixerGate(8).merit,
+    repReq: fixerGate(8).rep,
     titleVi: 'Kỳ thi Thăng cấp Fixer Grade 8 (Hana Section 6)',
     titleEn: 'Grade 8 Fixer Promotion Exam (Hana Section 6)',
     descVi: 'Hana Association Section 6 gửi thông báo triệu tập: Bạn đã tích lũy đủ chiến tích ban đầu ở Backstreets. Hãy làm thủ tục kiểm tra năng lực để tháo bỏ tấm thẻ Grade 9 tập sự.',
@@ -27,8 +33,8 @@ export const FIXER_LADDER = [
   },
   {
     grade: 7,
-    meritReq: 22,
-    repReq: 16,
+    meritReq: fixerGate(7).merit,
+    repReq: fixerGate(7).rep,
     titleVi: 'Khảo sát Gia nhập Văn phòng (Fixer Grade 7)',
     titleEn: 'Office Affiliation Certification (Grade 7 Fixer)',
     descVi: 'Các Văn phòng Fixer độc lập và phân hội Zwei bắt đầu để mắt đến bạn. Hana yêu cầu bạn vượt qua bài thẩm định Grade 7 để nhận thù lao tiêu chuẩn.',
@@ -36,8 +42,8 @@ export const FIXER_LADDER = [
   },
   {
     grade: 6,
-    meritReq: 38,
-    repReq: 26,
+    meritReq: fixerGate(6).merit,
+    repReq: fixerGate(6).rep,
     titleVi: 'Bổ nhiệm Fixer Thực chiến (Grade 6)',
     titleEn: 'Field Combat Operative Commission (Grade 6)',
     descVi: 'Vượt qua vô số vụ huyết chiến Backstreets và thanh trừng chuột cống, bạn được cấp chứng chỉ Fixer Grade 6, đủ tư cách chỉ huy đội nhỏ đối đầu hiểm họa Urban Legend.',
@@ -45,8 +51,8 @@ export const FIXER_LADDER = [
   },
   {
     grade: 5,
-    meritReq: 56,
-    repReq: 38,
+    meritReq: fixerGate(5).merit,
+    repReq: fixerGate(5).rep,
     titleVi: 'Đại hội Thăng cấp Trung cấp (Fixer Grade 5)',
     titleEn: 'Mid-Tier Rank Exam (Grade 5 Fixer)',
     descVi: 'Tại ngưỡng Grade 5, bạn bước vào hàng ngũ Fixer kỳ cựu. Hana Association yêu cầu bài kiểm tra đối kháng thực địa với các Capo cấp thấp của Syndicate.',
@@ -54,8 +60,8 @@ export const FIXER_LADDER = [
   },
   {
     grade: 4,
-    meritReq: 78,
-    repReq: 52,
+    meritReq: fixerGate(4).merit,
+    repReq: fixerGate(4).rep,
     titleVi: 'Phó Chỉ Huy Section (Fixer Grade 4)',
     titleEn: 'Section Vice-Captaincy (Grade 4 Fixer)',
     descVi: 'Đạt Grade 4, tên tuổi bạn bắt đầu được các Hiệp hội lớn (Shi, Liu, Seven, Dieci) săn đón. Mức phí ủy thác tăng vọt, đối mặt trực diện hiểm họa Urban Plague.',
@@ -63,8 +69,8 @@ export const FIXER_LADDER = [
   },
   {
     grade: 3,
-    meritReq: 96,
-    repReq: 68,
+    meritReq: fixerGate(3).merit,
+    repReq: fixerGate(3).rep,
     titleVi: 'Chuyên gia Cấp cao (Fixer Grade 3)',
     titleEn: 'Senior Specialist Commission (Grade 3 Fixer)',
     descVi: 'Chỉ 3% số Fixer ở The City đạt tới Grade 3. Bạn đủ thẩm quyền tiếp cận vũ khí Workshop cấp cao và điều tra các vụ án bí mật của Wing.',
@@ -72,8 +78,8 @@ export const FIXER_LADDER = [
   },
   {
     grade: 2,
-    meritReq: 135,
-    repReq: 82,
+    meritReq: fixerGate(2).merit,
+    repReq: fixerGate(2).rep,
     titleVi: 'Át Chủ Bài Section 1 (Fixer Grade 2)',
     titleEn: 'Section 1 Ace Operative (Grade 2 Fixer)',
     descVi: 'Bạn là cánh tay phải của các Đội trưởng Section 1. Mọi bước đi đều phải đối đầu với quái vật Urban Nightmare và những bản án tử hình của The Head.',
@@ -81,8 +87,8 @@ export const FIXER_LADDER = [
   },
   {
     grade: 1,
-    meritReq: 180,
-    repReq: 95,
+    meritReq: fixerGate(1).merit,
+    repReq: fixerGate(1).rep,
     titleVi: 'Đỉnh cao Fixer: Đại Khảo Hạch Grade 1 (Hana Supreme)',
     titleEn: 'Apex of Fixers: Grade 1 Supreme Evaluation',
     descVi: 'Bạn đứng trên đỉnh cao của giới Fixer toàn The City. Hội đồng Hana đích thân ký quyết định công nhận Grade 1 — bước đệm cuối cùng trước khi trở thành huyền thoại Color.',
@@ -192,7 +198,7 @@ export function fixerPromotionFailureEffects(targetGrade) {
  * Strictly requires Grade 1, Merit >= 210, Rep >= 100, E.G.O Awakening / Resonance >= 50,
  * and surviving an Urban Nightmare / Star of the City ordeal.
  */
-export const COLOR_FIXER_REQ = { merit: 260, rep: 90 };
+export const COLOR_FIXER_REQ = { merit: GATES.color.merit, rep: GATES.color.rep };
 
 // Hana draws its Colors from Grade 1. A Fixer whose E.G.O has taken shape is already past what the
 // grading system measures, so Hana looks sooner; the trial itself is the same and can still be failed.
@@ -275,29 +281,29 @@ export function checkColorFixerReadiness(char) {
 
 export const FINGER_LADDERS = {
   Thumb: [
-    { rank: 1, meritReq: 28, repReq: 18, eventId: 'syn_thumb_promo_capo', eventIds: ['syn_thumb_promo_capo', 'syn_thumb_promo_capo_convoy', 'syn_thumb_promo_capo_ledger'], titleVi: 'Thăng cấp Capo (The Thumb)', titleEn: 'Thumb Capo Promotion Trial' },
-    { rank: 2, meritReq: 68, repReq: 46, eventId: 'syn_thumb_promo_sottocapo', eventIds: ['syn_thumb_promo_sottocapo', 'syn_thumb_promo_sottocapo_armory', 'syn_thumb_promo_sottocapo_envoy'], titleVi: 'Khảo thí Sottocapo (The Thumb)', titleEn: 'Thumb Sottocapo Promotion Trial' },
-    { rank: 3, meritReq: 155, repReq: 84, eventId: 'syn_thumb_underboss_purge', eventIds: ['syn_thumb_underboss_purge', 'syn_thumb_apex_godfather', 'syn_thumb_underboss_succession'], titleVi: 'Đại Lễ Tuyên Thệ Underboss (The Thumb)', titleEn: 'Thumb Underboss Pinnacle Trial' }
+    { rank: 1, meritReq: fingerGate(1).merit, repReq: fingerGate(1).rep, eventId: 'syn_thumb_promo_capo', eventIds: ['syn_thumb_promo_capo', 'syn_thumb_promo_capo_convoy', 'syn_thumb_promo_capo_ledger'], titleVi: 'Thăng cấp Capo (The Thumb)', titleEn: 'Thumb Capo Promotion Trial' },
+    { rank: 2, meritReq: fingerGate(2).merit, repReq: fingerGate(2).rep, eventId: 'syn_thumb_promo_sottocapo', eventIds: ['syn_thumb_promo_sottocapo', 'syn_thumb_promo_sottocapo_armory', 'syn_thumb_promo_sottocapo_envoy'], titleVi: 'Khảo thí Sottocapo (The Thumb)', titleEn: 'Thumb Sottocapo Promotion Trial' },
+    { rank: 3, meritReq: fingerGate(3).merit, repReq: fingerGate(3).rep, eventId: 'syn_thumb_underboss_purge', eventIds: ['syn_thumb_underboss_purge', 'syn_thumb_apex_godfather', 'syn_thumb_underboss_succession'], titleVi: 'Đại Lễ Tuyên Thệ Underboss (The Thumb)', titleEn: 'Thumb Underboss Pinnacle Trial' }
   ],
   Index: [
-    { rank: 1, meritReq: 28, repReq: 18, eventId: 'syn_index_promo_messenger', eventIds: ['syn_index_promo_messenger', 'syn_index_promo_messenger_conduit', 'syn_index_promo_messenger_night'], titleVi: 'Sứ Giả Chỉ Lệnh (Index Messenger Trial)', titleEn: 'Index Messenger Promotion Trial' },
-    { rank: 2, meritReq: 68, repReq: 46, eventId: 'syn_index_promo_proxy', eventIds: ['syn_index_promo_proxy', 'syn_index_promo_proxy_sword', 'syn_index_promo_proxy_silence'], titleVi: 'Đại Kiếm Proxy (Index Proxy Trial)', titleEn: 'Index Proxy Promotion Trial' },
-    { rank: 3, meritReq: 155, repReq: 84, eventId: 'syn_index_weaver_prescript', eventIds: ['syn_index_weaver_prescript', 'syn_index_grand_proxy_flow', 'syn_index_weaver_blank'], titleVi: 'Ý Chỉ Thần Dệt (Index Weaver Pinnacle)', titleEn: 'Index Weaver Pinnacle Trial' }
+    { rank: 1, meritReq: fingerGate(1).merit, repReq: fingerGate(1).rep, eventId: 'syn_index_promo_messenger', eventIds: ['syn_index_promo_messenger', 'syn_index_promo_messenger_conduit', 'syn_index_promo_messenger_night'], titleVi: 'Sứ Giả Chỉ Lệnh (Index Messenger Trial)', titleEn: 'Index Messenger Promotion Trial' },
+    { rank: 2, meritReq: fingerGate(2).merit, repReq: fingerGate(2).rep, eventId: 'syn_index_promo_proxy', eventIds: ['syn_index_promo_proxy', 'syn_index_promo_proxy_sword', 'syn_index_promo_proxy_silence'], titleVi: 'Đại Kiếm Proxy (Index Proxy Trial)', titleEn: 'Index Proxy Promotion Trial' },
+    { rank: 3, meritReq: fingerGate(3).merit, repReq: fingerGate(3).rep, eventId: 'syn_index_weaver_prescript', eventIds: ['syn_index_weaver_prescript', 'syn_index_grand_proxy_flow', 'syn_index_weaver_blank'], titleVi: 'Ý Chỉ Thần Dệt (Index Weaver Pinnacle)', titleEn: 'Index Weaver Pinnacle Trial' }
   ],
   Middle: [
-    { rank: 1, meritReq: 28, repReq: 18, eventId: 'syn_middle_promo_big_sibling', eventIds: ['syn_middle_promo_big_sibling', 'syn_middle_promo_big_sibling_rescue', 'syn_middle_promo_big_sibling_dinner'], titleVi: 'Lễ Khắc Xích Vàng: Big Sibling (The Middle)', titleEn: 'Middle Big Sibling Promotion Trial' },
-    { rank: 2, meritReq: 68, repReq: 46, eventId: 'syn_middle_promo_great_elder', eventIds: ['syn_middle_promo_great_elder', 'syn_middle_promo_great_elder_clan', 'syn_middle_promo_great_elder_ledger'], titleVi: 'Đại Trưởng Lão (Middle Great Elder)', titleEn: 'Middle Great Elder Promotion Trial' },
-    { rank: 3, meritReq: 155, repReq: 84, eventId: 'syn_middle_great_brother_vendetta', eventIds: ['syn_middle_great_brother_vendetta', 'syn_middle_apex_patriarch', 'syn_middle_great_sibling_forgiveness'], titleVi: 'Đại Huyết Nợ: Great Brother/Sister (The Middle)', titleEn: 'Middle Great Sibling Pinnacle Trial' }
+    { rank: 1, meritReq: fingerGate(1).merit, repReq: fingerGate(1).rep, eventId: 'syn_middle_promo_big_sibling', eventIds: ['syn_middle_promo_big_sibling', 'syn_middle_promo_big_sibling_rescue', 'syn_middle_promo_big_sibling_dinner'], titleVi: 'Lễ Khắc Xích Vàng: Big Sibling (The Middle)', titleEn: 'Middle Big Sibling Promotion Trial' },
+    { rank: 2, meritReq: fingerGate(2).merit, repReq: fingerGate(2).rep, eventId: 'syn_middle_promo_great_elder', eventIds: ['syn_middle_promo_great_elder', 'syn_middle_promo_great_elder_clan', 'syn_middle_promo_great_elder_ledger'], titleVi: 'Đại Trưởng Lão (Middle Great Elder)', titleEn: 'Middle Great Elder Promotion Trial' },
+    { rank: 3, meritReq: fingerGate(3).merit, repReq: fingerGate(3).rep, eventId: 'syn_middle_great_brother_vendetta', eventIds: ['syn_middle_great_brother_vendetta', 'syn_middle_apex_patriarch', 'syn_middle_great_sibling_forgiveness'], titleVi: 'Đại Huyết Nợ: Great Brother/Sister (The Middle)', titleEn: 'Middle Great Sibling Pinnacle Trial' }
   ],
   Ring: [
-    { rank: 1, meritReq: 28, repReq: 18, eventId: 'syn_ring_promo_docent', eventIds: ['syn_ring_promo_docent', 'syn_ring_promo_docent_gallery', 'syn_ring_promo_docent_restoration'], titleVi: 'Triển Lãm Giải Phẫu: Docent (The Ring)', titleEn: 'Ring Docent Promotion Trial' },
-    { rank: 2, meritReq: 68, repReq: 46, eventId: 'syn_ring_promo_maestro', eventIds: ['syn_ring_promo_maestro', 'syn_ring_promo_maestro_symphony', 'syn_ring_maestro_gallery'], titleVi: 'Đại Nhạc Trưởng: Maestro (The Ring)', titleEn: 'Ring Maestro Promotion Trial' },
-    { rank: 3, meritReq: 155, repReq: 84, eventId: 'syn_ring_curator_monument', eventIds: ['syn_ring_curator_monument', 'syn_ring_apex_grand_master', 'syn_ring_curator_unsigned'], titleVi: 'Đại Quản Trưởng: Grand Curator (The Ring)', titleEn: 'Ring Grand Curator Pinnacle Trial' }
+    { rank: 1, meritReq: fingerGate(1).merit, repReq: fingerGate(1).rep, eventId: 'syn_ring_promo_docent', eventIds: ['syn_ring_promo_docent', 'syn_ring_promo_docent_gallery', 'syn_ring_promo_docent_restoration'], titleVi: 'Triển Lãm Giải Phẫu: Docent (The Ring)', titleEn: 'Ring Docent Promotion Trial' },
+    { rank: 2, meritReq: fingerGate(2).merit, repReq: fingerGate(2).rep, eventId: 'syn_ring_promo_maestro', eventIds: ['syn_ring_promo_maestro', 'syn_ring_promo_maestro_symphony', 'syn_ring_maestro_gallery'], titleVi: 'Đại Nhạc Trưởng: Maestro (The Ring)', titleEn: 'Ring Maestro Promotion Trial' },
+    { rank: 3, meritReq: fingerGate(3).merit, repReq: fingerGate(3).rep, eventId: 'syn_ring_curator_monument', eventIds: ['syn_ring_curator_monument', 'syn_ring_apex_grand_master', 'syn_ring_curator_unsigned'], titleVi: 'Đại Quản Trưởng: Grand Curator (The Ring)', titleEn: 'Ring Grand Curator Pinnacle Trial' }
   ],
   Pinky: [
-    { rank: 1, meritReq: 28, repReq: 18, eventId: 'syn_pinky_promo_blade', eventIds: ['syn_pinky_promo_blade', 'syn_pinky_promo_blade_oath', 'syn_pinky_promo_blade_ferry'], titleVi: 'Lưỡi Đao Lập Thệ: Sworn Blade (The Pinky)', titleEn: 'Pinky Sworn Blade Promotion Trial' },
-    { rank: 2, meritReq: 68, repReq: 46, eventId: 'syn_pinky_star_blade_pinnacle', eventIds: ['syn_pinky_star_blade_pinnacle', 'syn_pinky_promo_shadow_arbiter', 'pinky_star_blade_oath'], titleVi: 'Thiên Tinh: Star of the Sky (The Pinky)', titleEn: 'Pinky Star of the Sky Promotion Trial' },
-    { rank: 3, meritReq: 155, repReq: 84, eventId: 'syn_pinky_promo_sovereign', eventIds: ['syn_pinky_promo_sovereign', 'syn_pinky_apex_monarch', 'syn_pinky_sovereign_empty_yard'], titleVi: 'Chúa Tể Ngón Út: Sovereign (The Pinky)', titleEn: 'Pinky Sovereign Pinnacle Trial' }
+    { rank: 1, meritReq: fingerGate(1).merit, repReq: fingerGate(1).rep, eventId: 'syn_pinky_promo_blade', eventIds: ['syn_pinky_promo_blade', 'syn_pinky_promo_blade_oath', 'syn_pinky_promo_blade_ferry'], titleVi: 'Lưỡi Đao Lập Thệ: Sworn Blade (The Pinky)', titleEn: 'Pinky Sworn Blade Promotion Trial' },
+    { rank: 2, meritReq: fingerGate(2).merit, repReq: fingerGate(2).rep, eventId: 'syn_pinky_star_blade_pinnacle', eventIds: ['syn_pinky_star_blade_pinnacle', 'syn_pinky_promo_shadow_arbiter', 'pinky_star_blade_oath'], titleVi: 'Thiên Tinh: Star of the Sky (The Pinky)', titleEn: 'Pinky Star of the Sky Promotion Trial' },
+    { rank: 3, meritReq: fingerGate(3).merit, repReq: fingerGate(3).rep, eventId: 'syn_pinky_promo_sovereign', eventIds: ['syn_pinky_promo_sovereign', 'syn_pinky_apex_monarch', 'syn_pinky_sovereign_empty_yard'], titleVi: 'Chúa Tể Ngón Út: Sovereign (The Pinky)', titleEn: 'Pinky Sovereign Pinnacle Trial' }
   ]
 };
 
@@ -332,9 +338,9 @@ export function getNextFingerPromotion(char) {
 }
 
 export const WING_LADDER_PROMOTIONS = [
-  { rank: 1, meritReq: 25, wealthReq: 18, networkReq: 14, eventId: 'wing_promo_feather_r1', eventIds: ['wing_promo_feather_r1', 'wing_promo_feather_vetting', 'wing_promo_feather_witness', 'wing_promo_feather_ledger'], titleVi: 'Bổ Nhiệm Feather Chính Thức (Nest Feather)', titleEn: 'Official Feather Commission' },
-  { rank: 2, meritReq: 65, wealthReq: 45, networkReq: 32, eventId: 'wing_promo_specialist_r2', eventIds: ['wing_promo_specialist_r2', 'wing_promo_chief_reorg', 'wing_promo_chief_inheritance', 'wing_promo_chief_oversight'], titleVi: 'Trưởng Phòng Ban Singularity (Section Chief)', titleEn: 'Section Chief / Singularity Specialist' },
-  { rank: 3, meritReq: 125, wealthReq: 85, networkReq: 60, eventId: 'wing_singularity_classified_audit', eventIds: ['wing_singularity_classified_audit', 'wing_promo_exec_board_vote', 'wing_promo_exec_quiet_room', 'wing_promo_exec_the_list'], titleVi: 'Đại Hội Đồng Quản Trị (Senior Executive Audit)', titleEn: 'Senior Executive Board Audit' }
+  { rank: 1, meritReq: wingGate(1).merit, wealthReq: wingGate(1).wealth, networkReq: wingGate(1).network, eventId: 'wing_promo_feather_r1', eventIds: ['wing_promo_feather_r1', 'wing_promo_feather_vetting', 'wing_promo_feather_witness', 'wing_promo_feather_ledger'], titleVi: 'Bổ Nhiệm Feather Chính Thức (Nest Feather)', titleEn: 'Official Feather Commission' },
+  { rank: 2, meritReq: wingGate(2).merit, wealthReq: wingGate(2).wealth, networkReq: wingGate(2).network, eventId: 'wing_promo_specialist_r2', eventIds: ['wing_promo_specialist_r2', 'wing_promo_chief_reorg', 'wing_promo_chief_inheritance', 'wing_promo_chief_oversight'], titleVi: 'Trưởng Phòng Ban Singularity (Section Chief)', titleEn: 'Section Chief / Singularity Specialist' },
+  { rank: 3, meritReq: wingGate(3).merit, wealthReq: wingGate(3).wealth, networkReq: wingGate(3).network, eventId: 'wing_singularity_classified_audit', eventIds: ['wing_singularity_classified_audit', 'wing_promo_exec_board_vote', 'wing_promo_exec_quiet_room', 'wing_promo_exec_the_list'], titleVi: 'Đại Hội Đồng Quản Trị (Senior Executive Audit)', titleEn: 'Senior Executive Board Audit' }
 ];
 
 export function getNextWingPromotion(char) {

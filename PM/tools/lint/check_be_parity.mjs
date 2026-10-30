@@ -1,67 +1,59 @@
 /**
- * The backend mirrors a few tables from the frontend engine (Fixer ladder, Color gate, Finger rank names).
- * This fails when the two disagree, so the milestone a player sees can never differ from the gate that opens the exam.
- * Usage: node tools/lint/check_be_parity.mjs
+ * Promotion gates (Fixer ladder, Color gate, Finger ranks, Wing ladder) live in PM_BE/Data/career_gates.json.
+ * The backend embeds that file; the frontend reads the copy at src/data/careerGates.json.
+ * This fails when the copy drifts from the source, when an engine table stops following the file,
+ * or when the backend goes back to hard-coding a gate number.
+ * Usage: node tools/lint/check_be_parity.mjs   (fix a stale copy with: node tools/sync_career_gates.mjs)
  */
 import fs from 'fs';
 import { FIXER_LADDER, COLOR_FIXER_REQ, FINGER_LADDERS, WING_LADDER_PROMOTIONS } from '../../src/engine/careerPipeline.js';
 import { FINGER_RANKS } from '../../src/data/worldData.js';
 
-const cs = fs.readFileSync('../PM_BE/Services/DirectorEngineService.cs', 'utf8');
+const read = (path) => fs.readFileSync(new URL(path, import.meta.url), 'utf8');
+const source = read('../../../PM_BE/Data/career_gates.json');
+const copy = read('../../src/data/careerGates.json');
+const cs = read('../../../PM_BE/Services/DirectorEngineService.cs');
+const csproj = read('../../../PM_BE/ProjectMoon.Api.csproj');
+const gates = JSON.parse(source);
 const problems = [];
 
-const be = [...cs.matchAll(/new\((\d), (\d+), (\d+), "Fixer Grade/g)].map((m) => ({ grade: +m[1], merit: +m[2], rep: +m[3] }));
-for (const step of FIXER_LADDER) {
-  const row = be.find((b) => b.grade === step.grade);
-  if (!row) problems.push(`Grade ${step.grade} missing in the backend`);
-  else if (row.merit !== step.meritReq || row.rep !== step.repReq) problems.push(`Grade ${step.grade}: frontend ${step.meritReq}/${step.repReq}, backend ${row.merit}/${row.rep}`);
+if (source.replace(/\r\n/g, '\n') !== copy.replace(/\r\n/g, '\n')) problems.push('src/data/careerGates.json differs from PM_BE/Data/career_gates.json (run node tools/sync_career_gates.mjs)');
+if (!/EmbeddedResource Include="Data\/career_gates\.json"/.test(csproj)) problems.push('The backend project does not embed Data/career_gates.json');
+
+for (const row of gates.fixer) {
+  const step = FIXER_LADDER.find((s) => s.grade === row.grade);
+  if (!step || step.meritReq !== row.merit || step.repReq !== row.rep) problems.push(`Fixer Grade ${row.grade} in the engine does not follow the gates file`);
 }
-const colorMerit = Number(/ColorMerit = (\d+);/.exec(cs)?.[1]);
-const colorRep = Number(/ColorRep = (\d+);/.exec(cs)?.[1]);
-if (colorMerit !== COLOR_FIXER_REQ.merit || colorRep !== COLOR_FIXER_REQ.rep) problems.push(`Color: frontend ${COLOR_FIXER_REQ.merit}/${COLOR_FIXER_REQ.rep}, backend ${colorMerit}/${colorRep}`);
+if (FIXER_LADDER.length !== gates.fixer.length) problems.push('FIXER_LADDER and the gates file list a different number of grades');
+if (COLOR_FIXER_REQ.merit !== gates.color.merit || COLOR_FIXER_REQ.rep !== gates.color.rep) problems.push('COLOR_FIXER_REQ does not follow the gates file');
 
 for (const [finger, names] of Object.entries(FINGER_RANKS)) {
-  const line = new RegExp(String.raw`\["${finger}"\] = \[([^\]]*)\]`).exec(cs)?.[1];
-  const beNames = line ? [...line.matchAll(/"([^"]+)"/g)].map((m) => m[1]) : [];
-  if (beNames.join('|') !== names.join('|')) problems.push(`${finger} ranks: frontend [${names.join(', ')}], backend [${beNames.join(', ')}]`);
+  if ((gates.fingerRanks[finger] || []).join('|') !== names.join('|')) problems.push(`${finger} rank names differ from the gates file`);
 }
-
-const apex = FINGER_LADDERS.Thumb[2];
 for (const [finger, ladder] of Object.entries(FINGER_LADDERS)) {
   for (const step of ladder) {
-    const shared = FINGER_LADDERS.Thumb[step.rank - 1];
-    if (step.meritReq !== shared.meritReq || step.repReq !== shared.repReq || (step.networkReq || 0) !== (shared.networkReq || 0))
-      problems.push(`${finger} rank ${step.rank} differs from the shared backend gate`);
+    const row = gates.finger.find((g) => g.rank === step.rank);
+    if (!row || step.meritReq !== row.merit || step.repReq !== row.rep || (step.networkReq || 0) !== row.network)
+      problems.push(`${finger} rank ${step.rank} differs from the gates file`);
   }
 }
-const backendApexMerit = Number(/reqMerit = nextRank == 3 \? (\d+)/.exec(cs)?.[1]);
-const backendApexRep = Number(/reqRep = nextRank == 3 \? (\d+)/.exec(cs)?.[1]);
-if (backendApexMerit !== apex.meritReq || backendApexRep !== apex.repReq) problems.push(`Finger apex: frontend ${apex.meritReq}/${apex.repReq}, backend ${backendApexMerit}/${backendApexRep}`);
-const finger = FINGER_LADDERS.Thumb;
-if (!cs.includes(`reqMerit = nextRank == 3 ? ${finger[2].meritReq} : nextRank == 2 ? ${finger[1].meritReq} : ${finger[0].meritReq}`))
-  problems.push('Backend Finger Merit milestones differ from frontend');
-if (!cs.includes(`reqRep = nextRank == 3 ? ${finger[2].repReq} : nextRank == 2 ? ${finger[1].repReq} : ${finger[0].repReq}`))
-  problems.push('Backend Finger Reputation milestones differ from frontend');
-if (!cs.includes('reqNet = 0;')) problems.push('Backend Finger Network milestone differs from frontend');
-for (const step of finger) {
-  if (!cs.includes(`c.FingerRank == ${step.rank - 1} && c.Merit >= ${step.meritReq} && c.Rep >= ${step.repReq}`))
-    problems.push(`Backend Finger rank ${step.rank} plan gate differs from the milestone gate`);
-}
-const wingRows = [...cs.matchAll(/new\((\d), "[^"]+", "[^"]+", (\d+), (\d+), (\d+)\)/g)]
-  .map((match) => ({ rank: +match[1], merit: +match[2], wealth: +match[3], network: +match[4] }));
 for (const step of WING_LADDER_PROMOTIONS) {
-  const row = wingRows.find((item) => item.rank === step.rank);
-  if (!row || row.merit !== step.meritReq || row.wealth !== step.wealthReq || row.network !== step.networkReq)
-    problems.push(`Wing rank ${step.rank} milestone differs from frontend`);
-  if (!cs.includes(`c.WingRank == ${step.rank - 1} && c.Merit >= ${step.meritReq} && c.Wealth >= ${step.wealthReq} && c.Network >= ${step.networkReq}`))
-    problems.push(`Wing rank ${step.rank} plan gate differs from the milestone gate`);
+  const row = gates.wing.find((g) => g.rank === step.rank);
+  if (!row || step.meritReq !== row.merit || step.wealthReq !== row.wealth || step.networkReq !== row.network)
+    problems.push(`Wing rank ${step.rank} differs from the gates file`);
 }
+
+// The backend must read the file, not repeat its numbers
+const gateLines = cs.split('\n').filter((line) => /(?:FingerRank|WingRank) == \d/.test(line) && />= \d/.test(line));
+if (gateLines.length) problems.push(`The backend repeats promotion numbers: ${gateLines.map((l) => l.trim().slice(0, 70)).join(' | ')}`);
+
+if (/new\(\d, \d+, \d+, "Fixer Grade/.test(cs)) problems.push('The backend still lists the Fixer ladder by hand');
 if (/WorkshopRankDef|WorkshopRanks|ws_promo_journeyman_r1|ws_promo_master_r2|workshop_legendary_forge_trial/.test(cs)) problems.push('Backend still schedules retired Workshop ranks');
 
 if (problems.length) {
-  console.log('FRONTEND / BACKEND MISMATCH');
+  console.log('PROMOTION GATES OUT OF SYNC');
   problems.forEach((p) => console.log('  - ' + p));
   process.exitCode = 1;
 } else {
-  console.log('Frontend and backend agree on Fixer, Finger and Wing promotion gates.');
+  console.log('Frontend and backend read the same promotion gates (career_gates.json).');
 }

@@ -1,4 +1,5 @@
 import { CAREER_ACHIEVEMENT_RECORDS } from './achievementRecords.js';
+import GATES from './careerGates.json' with { type: 'json' };
 
 // ============================================================================
 // WORLD DATA: 26 DISTRICTS + OUTSKIRTS + RUINS, FACTIONS, OFFICES, WORKSHOPS, CODEX
@@ -967,13 +968,7 @@ export const WORKSHOPS = [
 ];
 
 // Four names per Finger, one for each rank 0 to 3, in the order of the promotion events in careerPipeline
-export const FINGER_RANKS = {
-  Thumb: ['Soldato', 'Capo', 'Sottocapo', 'Underboss'],
-  Index: ['Proselyte', 'Messenger', 'Proxy', 'Weaver'],
-  Middle: ['Little Sibling', 'Big Sibling', 'Great Elder', 'Great Sibling'],
-  Ring: ['Student', 'Docent', 'Maestro', 'Grand Curator'],
-  Pinky: ['Initiate', 'Sworn Blade', 'Star of the Sky', 'Sovereign']
-};
+export const FINGER_RANKS = GATES.fingerRanks;
 
 export const THREAT_TIERS = [
   { level: 0, id: 'canard', nameVi: 'Canard', nameEn: 'Canard', reqGrade: 9, basePay: 6, baseMerit: 2 },

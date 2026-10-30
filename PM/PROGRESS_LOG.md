@@ -607,7 +607,7 @@ Mô phỏng 1.000 sinh mệnh độc lập (tuổi thọ trung bình 52.0 tuổi
 1. Sau khi thêm hoặc sửa event, cập nhật `docs/events/DANH_SACH_TAT_CA_EVENTS.txt` và `.json` bằng `node tools/export_all_events.mjs`; số đếm hiện tại là 259 major + 36 consequence + 219 minor + 302 daily + 24 contract = 840.
 2. Với lựa chọn có giá cố định, dùng `costAhn` để khóa UI và engine, rồi kiểm tra số Ahn thực trừ trên cả đường có và không có `fx.wealth`. Không chỉ ghi giá trong nhãn. Phần thưởng hoặc mất tiền ngẫu nhiên ngoài phí được tính riêng.
 3. Bất kỳ đường tạo log lựa chọn mới nào muốn hỗ trợ xem lại phải lưu snapshot `review` (đề bài, nhãn phương án song ngữ, phương án đã chọn); log cũ không được tự suy diễn từ dữ liệu event mới.
-4. Bảng tiến độ Wing và cổng thăng cấp phải đọc cùng các mốc bậc. Khi thay đổi ngưỡng, kiểm tra cả `gameEngine.js`, `careerPipeline.js`, bản tương ứng trong `PM_BE/Services/DirectorEngineService.cs` và `tools/lint/check_be_parity.mjs`.
+4. Ngưỡng thăng cấp (Fixer, Color, Finger, Wing, tên bậc Finger) chỉ sửa ở `PM_BE/Data/career_gates.json`, rồi chạy `node tools/sync_career_gates.mjs` để cập nhật bản sao `src/data/careerGates.json` của FE. Không gõ lại con số trong `careerPipeline.js` hay `DirectorEngineService.cs`; `tools/lint/check_be_parity.mjs` sẽ báo lỗi nếu bản sao lệch, engine không theo file, hoặc BE lại ghi cứng số.
 5. Bộ 500 khoảnh khắc là phép dò nhanh, không phải kiểm thử phân phối dài hạn. Trước khi chốt cân bằng Wing, nên đo nhiều seed cho thời gian đạt bậc, số lần event cơ hội xuất hiện, tỷ lệ trượt và chết; không diễn giải 0 vi phạm trong mẫu ngắn thành bảo đảm tuyệt đối.
 6. Trước khi phát hành giao diện xem lại, kiểm tra trực tiếp các trạng thái mở/đóng, tiếng Việt/Anh, save mới/save cũ, màn hình hẹp và bàn phím. Lượt build hiện tại chỉ xác nhận biên dịch, chưa xác nhận cách hiển thị trong trình duyệt.
 
@@ -1995,6 +1995,14 @@ Chủ dự án yêu cầu làm lại toàn bộ giao diện lần nữa: bỏ t�
 * Test mới `tests/test_color_eras.mjs` (đường E.G.O, cờ phong, điều kiện từng sự kiện, nội dung đủ). `npm test` đạt, `vite build` đạt.
 
 ---
+
+## Đợt 97: Ngưỡng thăng cấp dùng chung FE và BE (30/10/2026)
+
+* Gom mọi ngưỡng thăng cấp vào một file: `PM_BE/Data/career_gates.json` (thang Fixer Grade 8 đến 1, cổng Color, mốc Finger rank 1 đến 3, tên bậc 5 Finger, thang Wing). BE nhúng file này vào assembly (`CareerGates.cs`, `EmbeddedResource`), nên Docker trên Render không cần thêm thư mục nào.
+* FE đọc bản sao `src/data/careerGates.json` (Vercel chỉ build thư mục PM nên không import thẳng từ PM_BE). `FIXER_LADDER`, `COLOR_FIXER_REQ`, `FINGER_LADDERS`, `WING_LADDER_PROMOTIONS`, `FINGER_RANKS` đều lấy số từ file này; chữ hiển thị và id event vẫn nằm trong code.
+* `DirectorEngineService.cs` bỏ toàn bộ số ghi cứng (bảng Fixer, `ColorMerit/ColorRep`, mốc Finger, mốc Wing, tên bậc). Số liệu giữ nguyên nên hành vi không đổi; đã gọi thử `/director/milestone` cho Fixer, Syndicate, Wing và Color ở đúng ngưỡng.
+* `tools/lint/check_be_parity.mjs` viết lại: báo lỗi khi bản sao FE lệch nguồn, engine không theo file, csproj không nhúng file, hoặc BE lại ghi cứng số thăng cấp. Đã thử sửa số trong bản sao để xác nhận lint bắt được.
+* Thêm `tools/sync_career_gates.mjs` để chép nguồn sang FE.
 
 ## Phụ lục A: Bản tổng hợp thiết kế ngày 29/10/2026
 

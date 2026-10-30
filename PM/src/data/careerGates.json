@@ -1,0 +1,30 @@
+{
+  "fixer": [
+    { "grade": 8, "merit": 10, "rep": 8 },
+    { "grade": 7, "merit": 22, "rep": 16 },
+    { "grade": 6, "merit": 38, "rep": 26 },
+    { "grade": 5, "merit": 56, "rep": 38 },
+    { "grade": 4, "merit": 78, "rep": 52 },
+    { "grade": 3, "merit": 96, "rep": 68 },
+    { "grade": 2, "merit": 135, "rep": 82 },
+    { "grade": 1, "merit": 180, "rep": 95 }
+  ],
+  "color": { "merit": 260, "rep": 90 },
+  "finger": [
+    { "rank": 1, "merit": 28, "rep": 18, "network": 0 },
+    { "rank": 2, "merit": 68, "rep": 46, "network": 0 },
+    { "rank": 3, "merit": 155, "rep": 84, "network": 0 }
+  ],
+  "fingerRanks": {
+    "Thumb": ["Soldato", "Capo", "Sottocapo", "Underboss"],
+    "Index": ["Proselyte", "Messenger", "Proxy", "Weaver"],
+    "Middle": ["Little Sibling", "Big Sibling", "Great Elder", "Great Sibling"],
+    "Ring": ["Student", "Docent", "Maestro", "Grand Curator"],
+    "Pinky": ["Initiate", "Sworn Blade", "Star of the Sky", "Sovereign"]
+  },
+  "wing": [
+    { "rank": 1, "merit": 25, "wealth": 18, "network": 14 },
+    { "rank": 2, "merit": 65, "wealth": 45, "network": 32 },
+    { "rank": 3, "merit": 125, "wealth": 85, "network": 60 }
+  ]
+}
