@@ -130,7 +130,7 @@ Nguyên tắc: mọi lựa chọn đều có giá, và nhiều lựa chọn quay
 
 ## 5. Hướng đi tiếp
 
-Xếp theo mức đáng làm, bám cấu trúc trong `implementation_plan.md`.
+Xếp theo mức đáng làm. Luật đang áp dụng nằm ở `docs/LUAT_HIEN_HANH.md`, lịch sử thay đổi ở `PROGRESS_LOG.md`.
 
 ### 5.1. Nội dung (dễ, tác động lớn)
 

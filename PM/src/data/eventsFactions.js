@@ -101,12 +101,13 @@ export const FACTION_EVENTS = [
     weight: 95,
     jobs: ['Syndicate'],
     forbids: ['SwornFinger'],
-    vi: "[Tối hậu thư từ Five Fingers] Tiếng tăm và những phi vụ máu me của bạn ở Backstreets đã lọt vào tai các tổ chức cấp cao. Người môi giới ngầm dẫn bạn đến điểm hẹn kín, nơi các nhánh trực thuộc của các Finger gửi tối hậu thư yêu cầu băng đảng của bạn chọn một ngọn cờ để quy phục hoặc bị nghiền nát.",
-    en: "[Summons of the Five Fingers] Your notoriety and bloody work in the Backstreets have caught the attention of high syndicates. An underworld broker brings an ultimatum: your crew must swear allegiance to a Finger banner or be crushed as rogue vermin.",
+    vi: "[Thư từ các Finger] Có người đã ghi lại những việc bạn làm. Người môi giới ngầm dẫn bạn tới một căn phòng kín. Trên bàn chỉ có vài lá thư, không đủ năm: Finger nào thấy bạn hữu dụng thì gửi lời, Finger nào chưa để mắt tới thì im lặng. Chọn một ngọn cờ, hoặc ở lại làm băng độc lập và chịu sức ép của cả năm.",
+    en: "[Letters from the Fingers] Someone has been keeping track of your work. An underworld broker leads you to a closed room. The table holds a few letters, not five: a Finger writes only if it finds you useful, and stays silent if it has not noticed you. Pick a banner, or stay independent and take the pressure of all five.",
     choices: [
       {
         labelVi: 'The Thumb: quỳ gối chấp nhận kỷ luật và tôn ti',
         labelEn: 'The Thumb: kneel and accept discipline and rank',
+        need: { fingerInvited: 'Thumb' },
         outcomes: [
           {
             w: 75,
@@ -133,6 +134,7 @@ export const FACTION_EVENTS = [
       {
         labelVi: 'The Index: chấp nhận thực thi Prescript tuyệt đối',
         labelEn: 'The Index: accept absolute Prescript execution',
+        need: { fingerInvited: 'Index' },
         outcomes: [
           {
             w: 70,
@@ -159,6 +161,7 @@ export const FACTION_EVENTS = [
       {
         labelVi: 'The Middle: tuyên thệ anh em và thù hận',
         labelEn: 'The Middle: swear brotherhood and vengeance',
+        need: { fingerInvited: 'Middle' },
         outcomes: [
           {
             w: 75,
@@ -185,6 +188,7 @@ export const FACTION_EVENTS = [
       {
         labelVi: 'The Ring: dâng nộp tác phẩm giải phẫu',
         labelEn: 'The Ring: present an anatomical work',
+        need: { fingerInvited: 'Ring' },
         outcomes: [
           {
             w: 65,
@@ -212,6 +216,7 @@ export const FACTION_EVENTS = [
       {
         labelVi: 'The Pinky: lập khế ước ngầm trong hẻm tối',
         labelEn: 'The Pinky: seal a shadow pact in the dark',
+        need: { fingerInvited: 'Pinky' },
         outcomes: [
           {
             w: 70,

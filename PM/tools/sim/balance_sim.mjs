@@ -50,7 +50,7 @@ const pickIndex = (choices, rng, char, eventId = '') => {
     if (eventId.startsWith('fixer_seven_')) return ok[0];
     if (eventId === 'hana_color_ascension_trial') return ok.includes(1) ? 1 : 0;
     if (eventId === 'ego_carmen_crossroad' || eventId === 'ego_second_efflorescence_trial') return ok[0];
-    if (eventId === 'ad_career_crossroad_18' || eventId === 'ad_outskirts_crossroad_18') {
+    if (['ad_career_crossroad_18', 'ad_nest_crossroad_18', 'ad_outskirts_crossroad_18'].includes(eventId)) {
       const fixer = ok.find((i) => choices[i].setJob === 'Fixer');
       if (fixer !== undefined) return fixer;
     }

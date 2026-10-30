@@ -545,6 +545,80 @@ export const CHILDHOOD_EVENTS = [
     ]
   },
   {
+    id: 'ad_nest_crossroad_18',
+    age: [15, 99],
+    major: true,
+    weight: 999,
+    vi: "[Đến tuổi phải chọn đường] Gia đình giữ bạn ở trường lâu hơn bọn trẻ ngoài Backstreets, nhưng khoản học phí cuối đã đóng xong. Trên bàn ăn trong Nest có ba thứ: một giấy giới thiệu gửi quầy Hana, một lời nhắn của người quen ở cổng tuyển dụng Wing, và một địa chỉ ở Backstreets mà không ai trong nhà muốn nhắc tên. Cả nhà chờ bạn chọn, và không ai hứa giữ chỗ cho bạn nếu bạn bước ra ngoài.",
+    en: "[Working age] Your family kept you in school longer than the children outside the Backstreets, but the last tuition is paid. On the dinner table in the Nest lie three things: a letter of introduction for the Hana desk, a message from an acquaintance at the Wing recruitment gate, and an address in the Backstreets that nobody in the house wants to name. The family waits for your answer, and no one promises to keep your place if you walk out.",
+    choices: [
+      {
+        labelVi: "Mang giấy giới thiệu của gia đình tới quầy Hana xin thẻ Fixer Grade 9",
+        labelEn: "Take the family letter to the Hana desk and apply for a Grade 9 Fixer license",
+        outcomes: [
+          {
+            w: 85,
+            setJob: 'Fixer', setFixerGrade: 9, recordsAdd: ['fixer_license'], meritAdd: 2,
+            effects: { wealth: -4, rep: 4, network: 4, sanity: -4 },
+            resultVi: "Thư ký Hana đọc tên người bảo lãnh trước khi đọc tên bạn. Lệ phí được trừ vào khoản gia đình để lại cho bạn, không có giấy nợ nào. Tấm thẻ Grade 9 đến tay bạn nhanh hơn với mọi người xếp hàng phía sau, và họ nhìn thấy điều đó.",
+            resultEn: "The Hana clerk read your sponsor's name before yours. The fee came out of the allowance your family set aside, and no loan note was signed. The Grade 9 card reached you faster than anyone in the line behind you, and they saw it."
+          },
+          {
+            w: 15,
+            setJob: 'Outcast', flagsAdd: ['CareerApplicationFailed'],
+            effects: { wealth: 2, network: -2, sanity: -6 },
+            resultVi: "Người bảo lãnh rút tên khỏi giấy giới thiệu vào phút cuối. Quầy Hana trả hồ sơ, còn ở nhà không ai nhắc lại chuyện đó. Bạn nhận một ca bốc hàng ngoài khu Nest và để lại căn phòng cũ.",
+            resultEn: "Your sponsor withdrew from the letter at the last minute. The Hana desk returned the file, and at home no one spoke of it again. You took a loading shift outside the Nest and left your old room behind."
+          }
+        ]
+      },
+      {
+        labelVi: "Nhận lời người quen ở cổng tuyển dụng Wing",
+        labelEn: "Accept the acquaintance's offer at the Wing recruitment gate",
+        outcomes: [
+          {
+            w: 75,
+            setJob: 'Wing Employee', setWingRank: 0, meritAdd: 2,
+            effects: { wealth: 6, network: 8, rep: 4, sanity: -6 },
+            flagsAdd: ['Feather', 'Nest'], recordsAdd: ['nest_migration'],
+            resultVi: "Người quen đứng chờ ở cổng và đi trước bạn nửa bước qua máy quét. Bản cam kết cho Wing xử lý mọi sự cố Singularity vẫn dài như với mọi người, chỉ khác là có người đọc hộ bạn từng điều khoản. Bạn nhận thẻ Feather cấp thấp nhất.",
+            resultEn: "The acquaintance waited at the gate and walked half a step ahead of you through the scanner. The waiver covering any Singularity breach was as long as everyone else's, but someone read each clause aloud for you. You took the lowest Feather badge."
+          },
+          {
+            w: 25,
+            setJob: 'Outcast', flagsAdd: ['CareerApplicationFailed'],
+            effects: { wealth: 3, network: 2, sanity: -5 },
+            resultVi: "Vòng sơ loại không nhận hồ sơ của bạn. Người quen gọi tới xin lỗi, rồi cúp máy trước khi bạn kịp hỏi lý do. Bạn nhận ca dọn kho ngoài cổng, nơi bảng tuyển dụng vẫn treo ở phía bên kia.",
+            resultEn: "The first screening turned your file away. The acquaintance called to apologize and hung up before you could ask why. You took a warehouse shift outside the gate, where the recruitment board still hung on the other side."
+          }
+        ]
+      },
+      {
+        labelVi: "Cầm địa chỉ ở Backstreets và rời Nest",
+        labelEn: "Take the Backstreets address and leave the Nest",
+        outcomes: [
+          {
+            w: 70,
+            setJob: 'Syndicate', meritAdd: 2,
+            effects: { wealth: 10, rep: 4, heat: 14, sanity: -10 },
+            recordsAdd: ['syndicate_initiate'],
+            flagsRemove: ['Nest', 'Feather', 'NestResident'],
+            resultVi: "Địa chỉ dẫn tới một quầy rượu sau khu chợ. Người ngồi trong đó biết tên họ gia đình bạn và biết nó đáng giá bao nhiêu. Hắn đưa bạn một con dao và danh sách thu tiền bảo kê. Tối đó bạn không về nhà ăn cơm.",
+            resultEn: "The address led to a bar behind the market. The man inside knew your family name and what it was worth. He handed you a knife and a protection ledger. You did not come home for dinner that night."
+          },
+          {
+            w: 30,
+            setJob: 'Outcast', flagsAdd: ['CareerApplicationFailed'],
+            flagsRemove: ['Nest', 'Feather', 'NestResident'],
+            effects: { health: -8, sanity: -8, heat: 8 },
+            resultVi: "Quầy rượu đã đóng cửa, chủ mới không biết người bạn tìm. Bạn đi bộ về phía Nest thì cổng đã khóa theo giờ giới nghiêm. Đêm đó bạn ngủ dưới mái hiên bên ngoài, lần đầu tiên không có tên mình trong sổ nhà.",
+            resultEn: "The bar had closed and the new owner did not know the person you were looking for. You walked back toward the Nest and found the gate locked for curfew. That night you slept under an awning outside, your name missing from the household ledger for the first time."
+          }
+        ]
+      }
+    ]
+  },
+  {
     id: 'csq_fixer_license_debt_due',
     age: [19, 99],
     major: true,

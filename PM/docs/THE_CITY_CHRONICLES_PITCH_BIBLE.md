@@ -12,7 +12,7 @@
 **The City Chronicles** là một tựa game mô phỏng đời sống (Life-Simulator) kết hợp chất nhập vai sinh tồn khắc nghiệt (Roguelite RPG) đặt trong thế giới tàn khốc, huyền ảo và ngột ngạt của **Project Moon Universe**.
 
 Thay vì chỉ đọc một cuốn tiểu thuyết hình ảnh tuyến tính (Visual Novel) hay chơi một game thẻ bài chiến đấu đơn thuần, người chơi sẽ:
-* **Hóa thân vào một sinh mệnh vô danh:** Sinh ra tại một trong 25 Quận (Districts) của The City hoặc dạt vào từ Ngoài Bờ Cõi (Outskirts).
+* **Hóa thân vào một sinh mệnh vô danh:** Sinh ra tại một trong 26 Quận (Districts) của The City hoặc dạt vào từ Ngoài Bờ Cõi (Outskirts).
 * **Trải qua từng năm tháng cuộc đời (từ 0 đến 80+ tuổi):** Trải nghiệm 4 mùa trong năm, đối mặt với nghèo đói, nợ nần, bạo lực băng đảng, sự nghiền nát của các tập đoàn Wings và bóng ma tâm lý cá nhân.
 * **Tự kiến tạo số phận thông qua Nhân Quả Tự Nhiên (Emergent Causality):** Không có menu "chọn sẵn tương lai" kiểu sandbox. Mọi cơ hội, thảm kịch, con đường thăng tiến hay sự biến dị đều bắt nguồn hữu cơ từ những gì bạn đã trải qua, những vết sẹo bạn mang và cách bạn phản ứng trước nghịch cảnh.
 
@@ -23,11 +23,10 @@ flowchart LR
     C -->|Hiệp Hội Hana| D["Fixer Chuyên Nghiệp<br/>(Hạng 9 ➔ Hạng 1 ➔ Color)"]
     C -->|Thế Giới Ngầm| E["Năm Ngón Tay / Syndicate<br/>(Thumb, Index, Middle...)"]
     C -->|Trụ Sở Cánh| F["Tập Đoàn Lông Vũ (Wings)<br/>(K Corp, T Corp, W Corp...)"]
-    C -->|Kỹ Nghệ| G["Thợ Xưởng (Workshops)<br/>(Độ chi giả, vũ khí cấm)"]
-    D & E & F & G --> H{"Ngưỡng Khủng Hoảng<br/>(Sanity < 25 / Bi Kịch)"}
+    D & E & F --> H{"Ngưỡng Khủng Hoảng<br/>(Sanity < 25 / Bi Kịch)"}
     H -->|Đầu hàng nỗi đau| I["Biến Dị Sa Ngã<br/>(Distortion)"]
     H -->|Giữ vững bản ngã| J["Thức Tỉnh E.G.O<br/>(Bản Ngã Huyền Thoại)"]
-    D & E & F & G --> K["Tuổi Già & Di Sản<br/>(Truyền thừa gia tộc / Con nuôi)"]
+    D & E & F --> K["Tuổi Già & Di Sản<br/>(Truyền thừa gia tộc / Con nuôi)"]
 ```
 
 ---
@@ -78,7 +77,8 @@ Thế giới ngầm được cai trị bởi 5 đại Syndicate khổng lồ, m�
   * **W Corp (Quận 23):** Tàu Siêu Tốc WARP Train dịch chuyển tức thời — nơi che đậy sự tra tấn kéo dài hàng thiên niên kỷ giữa các chiều không gian.
   * **L Corp (Quận 12):** Tàn tích tập đoàn Năng lượng tiền nhiệm với các Dị thể (Abnormalities).
 
-### 2.5. Nhánh 5: Thợ Xưởng Công Nghệ (Workshops)
+### 2.5. Nhánh 5: Thợ Xưởng Công Nghệ (Workshops, đã khép lại)
+* **Hiện trạng:** Workshop không còn là nghề người chơi chọn được. Phần còn lại là thiết bị, vật phẩm và NPC thợ trong các nghề khác. Mô tả dưới đây giữ lại như thiết kế cũ.
 * **Bản chất:** Kỹ sư chế tác trang bị, độ chi giả cơ khí (Augmentations), nghiên cứu hợp kim nano và vũ khí đặc chủng cho Fixer.
 * **Rủi ro:** Cám dỗ nghiên cứu Công nghệ Cấm (Taboo), nguy cơ bị thanh tra của The Eye và The Claw ghé thăm.
 
@@ -199,7 +199,7 @@ Bầu không khí: "The City at night, seen through smoked glass"
 1. **Khởi chạy ứng dụng:** Chạy lệnh `npm run dev` trên terminal và mở trình duyệt tại `http://localhost:5173`.
 2. **Khởi tạo sinh mệnh:** 
    - Đặt tên hoặc nhận tên ngẫu nhiên theo phong cách City.
-   - Quay xúc xắc số phận để nhận Quận xuất thân (District 1 đến 25 hoặc Outskirts).
+   - Quay xúc xắc số phận để nhận Quận xuất thân (District 1 đến 26 hoặc Outskirts).
 3. **Quản lý tài nguyên sống:**
    - Luôn để ý chỉ số **Ahn** (tiền bạc) để không bị tịch thu tài sản hoặc bán nội tạng.
    - Giữ **Sanity** ở mức an toàn nếu không muốn Carmen ghé thăm biến bạn thành Distortion.

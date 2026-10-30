@@ -3,7 +3,7 @@ import { applyRegionalSingularityPassive } from './cityUpgrades.js';
 import { contractRouteOf } from '../data/careerContracts.js';
 import { affiliationYearTick } from './affiliation.js';
 import { planFirstGate } from './dungeonPacing.js';
-import { careerAgeOf, reachedCareerAge, effectiveMinAge } from './careerAge.js';
+import { careerAgeOf, reachedCareerAge, effectiveMinAge, careerCrossroadIdFor } from './careerAge.js';
 import { rememberResonance, hasEgoOpportunity, colorTrialAvailable, rollEgoEncounter } from './awakeningProgress.js';
 import { simulateNpcAutonomousLife } from './narrativeArcEngine.js';
 import { matchesNeed, matchesEventContext, choiceIsAvailable, mergeEffects, isNestResident, isOutsideCity, npcIsActive, colorTrialCompanionAlive, isIndependentSyndicateEligibleForRank } from './eventConditions.js';
@@ -462,7 +462,7 @@ function majorIsDue(char, rng) {
     const nextPromo = getNextWingPromotion(char);
     if (nextPromo && nextPromo.isEligible) return true;
   }
-  if ((reachedCareerAge(char) && char.job === 'Child') && !(char.seenEvents || []).includes('ad_career_crossroad_18')) return true;
+  if ((reachedCareerAge(char) && char.job === 'Child') && !(char.seenEvents || []).includes(careerCrossroadIdFor(char))) return true;
   if (char.job === 'Syndicate' && !char.finger && !(char.seenEvents || []).includes('syn_choose_finger_allegiance') && ((char.merit || 0) >= 15 && ((char.stats?.rep || 0) >= 20 || (char.heat || 0) >= 25))) return true;
   if ((w.pendingThreads || []).some((th) => th.kind !== 'minor' && !th.fulfilled && char.age >= th.triggerAge)) return true;
   if (rollEgoEncounter(char, rng) && !(char.seenEvents || []).includes('ego_carmen_crossroad') && !char.flags.includes('EGOAwakened') && !char.flags.includes('Distorted')) return true;
@@ -544,7 +544,7 @@ export function planYear(charState, rng) {
 
   // The career crossroads comes at the character's own working age (15 to 20), not a fixed 18
   if (reachedCareerAge(char) && char.job === 'Child') {
-    const careerEventId = isOutskirts(char) ? 'ad_outskirts_crossroad_18' : 'ad_career_crossroad_18';
+    const careerEventId = careerCrossroadIdFor(char);
     if (!(char.seenEvents || []).includes(careerEventId) && !scheduledKey.some((it) => it.forcedEventId === careerEventId)) {
       scheduledKey.push({ kind: 'major', forcedEventId: careerEventId });
     }
@@ -965,7 +965,7 @@ export async function syncPlanWithBackend(charState, rng) {
 
       // The server forces the career crossroads at 18. A character whose working age came sooner
       // (15 to 20) keeps the crossroads the local planner scheduled.
-      const crossroadId = isOutskirts(charState) ? 'ad_outskirts_crossroad_18' : 'ad_career_crossroad_18';
+      const crossroadId = careerCrossroadIdFor(charState);
       if (reachedCareerAge(charState) && charState.job === 'Child' && !(charState.seenEvents || []).includes(crossroadId) &&
           !hydrated.some((item) => item.forcedEventId === crossroadId)) {
         const localCross = localPlan.find((item) => item.forcedEventId === crossroadId);

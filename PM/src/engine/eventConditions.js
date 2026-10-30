@@ -1,6 +1,7 @@
 import { effectiveMinAge } from './careerAge.js';
 import { hasScarTag } from './scarModel.js';
 import { getAffiliation, laneOf } from './affiliation.js';
+import { fingersReachingOut } from './fingerPull.js';
 
 export const npcIsActive = (npc) => Boolean(npc) && npc.alive !== false && !npc.deceased && !['dead', 'missing', 'estranged', 'betrayer'].includes(npc.status);
 export const isNestResident = (char) => ['Nest', 'NestResident', 'Feather'].some((f) => char.flags?.includes(f));
@@ -101,6 +102,7 @@ export function matchesNeed(need, char, contextEntry = null) {
   if (need.wingEmployerId && (char.wingEmployerId || char.regionId) !== need.wingEmployerId) return false;
   if (need.regions && !regionMatchesList(need.regions, char.regionId)) return false;
   if (need.finger && need.finger !== char.finger) return false;
+  if (need.fingerInvited && !fingersReachingOut(char).includes(need.fingerInvited)) return false;
   if (need.notFinger && need.notFinger === char.finger && char.job === 'Syndicate') return false;
   if (need.noFinger && char.finger) return false;
   if (need.hasActiveDebt && !(char.debts || []).some((d) => d.id === need.hasActiveDebt && d.status === 'active' && (char.age || 0) >= d.nextDueAge)) return false;

@@ -74,7 +74,7 @@ Hệ thống gameplay được hợp nhất từ 4 trường phái thiết kế 
   ├──► [4. TUYẾN CÁNH TẬP ĐOÀN (THE WINGS)]:
   │      [Nhân Viên Thử Việc] ──► [Chạy Chỉ Tiêu KPI] ──► [Trưởng Phòng] ──► [Giám Đốc Chi Nhánh]
   │
-  └──► [5. TUYẾN THỢ XƯỞNG (WORKSHOPS)]:
+  └──► [5. TUYẾN THỢ XƯỞNG (WORKSHOPS), ĐÃ KHÉP LẠI, KHÔNG CÒN LÀ NGHỀ CHỌN ĐƯỢC]:
          [Học Việc Cơ Khí] ──► [Chế Tác Chi Giả & Nano] ──► [Bậc Thầy Xưởng Vũ Khí]
 
                 │ (Khi gặp bi kịch / SP ≤ 25 / Scars ≥ 3 ➔ Carmen Whisper kích hoạt)

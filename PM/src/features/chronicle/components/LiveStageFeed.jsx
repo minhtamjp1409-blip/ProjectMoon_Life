@@ -331,6 +331,8 @@ const EventDock = ({ event, char, onPick, dungeonStake, onDungeonStake }) => {
                 blockedReason = t(`Cần ${ch.favorCost.role} (${ch.favorCost.amount} gắn bó)`, `Needs ${ch.favorCost.role} (${ch.favorCost.amount} bond)`);
               } else if (ch.useItem && !(char.inventory || []).some(i => (i.id || i) === ch.useItem)) {
                 blockedReason = t(`Cần vật phẩm: ${lang === 'en' ? item?.nameEn || ch.useItem : item?.nameVi || ch.useItem}`, `Needs item: ${lang === 'en' ? item?.nameEn || ch.useItem : item?.nameVi || ch.useItem}`);
+              } else if (ch.need?.fingerInvited) {
+                blockedReason = t('Finger này chưa để mắt tới bạn', 'This Finger has not noticed you yet');
               } else if (ch.need?.hasGear && !charHasCombatGear(char)) {
                 blockedReason = t('Cần có vũ khí hoặc giáp', 'Requires weapon or armor');
               } else {

@@ -34,6 +34,14 @@ public sealed class DirectorEngineService
     private static readonly int ColorMerit = CareerGates.ColorMerit;
     private static readonly int ColorRep = CareerGates.ColorRep;
 
+    // Mirrors careerCrossroadIdFor in careerAge.js: the livelihood choice depends on where the child grew up
+    private static string CareerCrossroadId(CharacterSnapshotDto c, List<string> flags)
+    {
+        if (c.RegionId == "OUTSKIRTS" || flags.Contains("Outskirts")) return "ad_outskirts_crossroad_18";
+        if (flags.Contains("Nest") || flags.Contains("NestResident") || flags.Contains("Feather")) return "ad_nest_crossroad_18";
+        return "ad_career_crossroad_18";
+    }
+
     private static double FixerContractOfferChance(CharacterSnapshotDto c)
     {
         var step = FixerThresholds.FirstOrDefault(t => t.Grade == c.FixerGrade - 1);
@@ -464,10 +472,11 @@ public sealed class DirectorEngineService
         string majorTitleVi = "";
         string majorTitleEn = "";
 
-        if ((c.Age == 18 || (c.Age > 18 && c.Job.Equals("Child", StringComparison.OrdinalIgnoreCase))) && !seen.Contains("ad_career_crossroad_18"))
+        string crossroadId = CareerCrossroadId(c, flags);
+        if ((c.Age == 18 || (c.Age > 18 && c.Job.Equals("Child", StringComparison.OrdinalIgnoreCase))) && !seen.Contains(crossroadId))
         {
             majorDue = true;
-            majorId = "ad_career_crossroad_18";
+            majorId = crossroadId;
             majorTitleVi = "Bước Ngoặt The City (Tuổi 18)";
             majorTitleEn = "Age 18 Career Crossroads";
         }

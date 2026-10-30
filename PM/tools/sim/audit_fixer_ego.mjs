@@ -21,7 +21,7 @@ function choose(choices, char, rng, context = '') {
   const available = (choices || []).map((_, i) => i).filter(i => choiceIsAvailable(choices[i], char));
   if (!available.length) return -1;
   if (mode === 'random') return available[Math.floor(rng() * available.length)];
-  if (context === 'ad_career_crossroad_18' || context === 'ad_outskirts_crossroad_18') {
+  if (['ad_career_crossroad_18', 'ad_nest_crossroad_18', 'ad_outskirts_crossroad_18'].includes(context)) {
     const fixer = available.find(i => choices[i].setJob === 'Fixer');
     if (fixer != null) return fixer;
   }

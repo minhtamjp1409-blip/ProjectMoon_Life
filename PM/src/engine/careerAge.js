@@ -58,3 +58,12 @@ export function effectiveMinAge(entry, char) {
 }
 
 export const reachedCareerAge = (char) => (char?.age ?? 0) >= careerAgeOf(char);
+
+export const CAREER_CROSSROAD_IDS = ['ad_career_crossroad_18', 'ad_nest_crossroad_18', 'ad_outskirts_crossroad_18'];
+
+/** The livelihood choice a child meets at working age depends on where they grew up. */
+export function careerCrossroadIdFor(char) {
+  if (char?.regionId === 'OUTSKIRTS' || char?.flags?.includes('Outskirts')) return 'ad_outskirts_crossroad_18';
+  if (['Nest', 'NestResident', 'Feather'].some((flag) => char?.flags?.includes(flag))) return 'ad_nest_crossroad_18';
+  return 'ad_career_crossroad_18';
+}

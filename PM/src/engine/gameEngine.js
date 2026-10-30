@@ -37,7 +37,7 @@ import { EXPANSION_EVENTS } from '../data/eventsExpansion.js';
 import { SUPERNATURAL_EVENTS, FIXER_REQUESTS } from '../data/eventsSupernatural.js';
 import { FIXER_PATH_EVENTS } from '../data/eventsFixerPath.js';
 import { CONTRACT_ROUTES, contractRouteOf, equivalentGrade } from '../data/careerContracts.js';
-import { rollCareerAge, careerAgeOf } from './careerAge.js';
+import { rollCareerAge, careerAgeOf, CAREER_CROSSROAD_IDS } from './careerAge.js';
 import { AMBITIONS, ambitionComplete } from './annualPlan.js';
 import { CAREER_REQUESTS } from '../data/careerContractTemplates.js';
 import { DISTORTION_PATH_EVENTS } from '../data/eventsDistortionPath.js';
@@ -63,6 +63,7 @@ import { AFFILIATION_EVENTS } from '../data/eventsAffiliation.js';
 import { ENSEMBLE_EVENTS, ENSEMBLE_SCORE_ITEM } from '../data/dungeonEnsemble.js';
 import { COLOR_CAREER_EVENTS } from '../data/eventsColorCareerArc.js';
 import { COLOR_ERA_EVENTS } from '../data/eventsColorEras.js';
+import { WING_THREAD_EVENTS } from '../data/eventsWingThreads.js';
 import { WING_PARITY_MAJORS } from '../data/eventsWingParityExpansion.js';
 import { DISTORTION_PARITY_MAJORS } from '../data/eventsDistortionParityExpansion.js';
 import { ROUTE_CONSEQUENCE_EVENTS } from '../data/eventsRouteConsequences.js';
@@ -166,6 +167,7 @@ export const ALL_STORY_EVENTS = [
   ...ENSEMBLE_EVENTS,
   ...COLOR_CAREER_EVENTS,
   ...COLOR_ERA_EVENTS,
+  ...WING_THREAD_EVENTS,
   ...WING_PARITY_MAJORS,
   ...DISTORTION_PARITY_MAJORS,
   ...ROUTE_CONSEQUENCE_EVENTS,
@@ -2446,7 +2448,7 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random, dung
 
   // Career / Faction / Region mutations
   const setJob = outcome.setJob || choice.setJob;
-  if (event.id === 'ad_career_crossroad_18' && setJob === 'Outcast') char.lastCareerApplicationAge = char.age;
+  if (CAREER_CROSSROAD_IDS.includes(event.id) && setJob === 'Outcast') char.lastCareerApplicationAge = char.age;
   if (char.job === 'Child' && setJob && setJob !== 'Child') char.merit = 0;
   if (setJob === 'Wing Employee' && char.job !== 'Wing Employee') char.wingEmployerId = char.regionId;
   if (setJob) char.job = setJob;

@@ -1,5 +1,5 @@
 import { cityEventMultiplier } from './cityConditions.js';
-import { careerAgeOf, reachedCareerAge } from './careerAge.js';
+import { careerAgeOf, reachedCareerAge, careerCrossroadIdFor, CAREER_CROSSROAD_IDS } from './careerAge.js';
 import { rememberResonance, hasEgoOpportunity, colorTrialAvailable, rollEgoEncounter } from './awakeningProgress.js';
 import { evaluateNarrativeArcProgression, computeEmotionalWaveConsideration } from './narrativeArcEngine.js';
 import { ENSEMBLE_INVITE_ID, ENSEMBLE_LAST_CALL_ID, ensembleEligible } from './ensemblePath.js';
@@ -364,13 +364,12 @@ export function isEventEligible(event, char, { scripted = false } = {}) {
   if (event.id === 'syn_indie_promo_rank1' && !isIndependentSyndicateEligibleForRank(char, 1)) return false;
   if (event.id === 'syn_indie_promo_rank2' && !isIndependentSyndicateEligibleForRank(char, 2)) return false;
   if (event.id === 'syn_indie_promo_rank3' && !isIndependentSyndicateEligibleForRank(char, 3)) return false;
-  if (event.id === 'ad_career_crossroad_18' && (!reachedCareerAge(char) || char.job !== 'Child' || char.regionId === 'OUTSKIRTS')) return false;
-  if (event.id === 'ad_outskirts_crossroad_18' && (!reachedCareerAge(char) || char.job !== 'Child')) return false;
+  if (CAREER_CROSSROAD_IDS.includes(event.id) && (!reachedCareerAge(char) || char.job !== 'Child' || careerCrossroadIdFor(char) !== event.id)) return false;
   if (isEgoLeapEvent(event.id) && getEgoLeap(char)?.eventId !== event.id) return false;
   if (isAffInviteEvent(event.id) && getAffiliationInvite(char) !== event.id) return false;
   if (isGateEvent(event.id) && gateOnCooldown(char)) return false;
   if (event.id === 'ego_carmen_crossroad' && !(char.age >= 18 && (hasEgoOpportunity(char) || char.stats.sanity <= 15 || (char.resonance || 0) >= 50))) return false;
-  const milestones = ['ad_career_crossroad_18', 'ad_outskirts_crossroad_18', 'ego_carmen_crossroad', 'ego_second_efflorescence_trial', 'hana_color_ascension_trial'];
+  const milestones = [...CAREER_CROSSROAD_IDS, 'ego_carmen_crossroad', 'ego_second_efflorescence_trial', 'hana_color_ascension_trial'];
   return scripted || (!milestones.includes(event.id) && !isEgoLeapEvent(event.id));
 }
 
@@ -440,7 +439,7 @@ export function scoreEventUtility(event, char, weaver) {
     }
   }
 
-  if (event.id === 'ad_career_crossroad_18' && char.age === careerAgeOf(char)) {
+  if (CAREER_CROSSROAD_IDS.includes(event.id) && char.age === careerAgeOf(char)) {
     pacingScore += 120;
     reasonsVi.push('Đến tuổi phải chọn đường');
     reasonsEn.push('Working-age career crossroad milestone');
@@ -498,7 +497,7 @@ export function selectEventWithWeaverAI({
 
   // Career crossroad at the character's own working age
   if (reachedCareerAge(char) && char.job === 'Child') {
-    const crossroadId = char.regionId === 'OUTSKIRTS' ? 'ad_outskirts_crossroad_18' : 'ad_career_crossroad_18';
+    const crossroadId = careerCrossroadIdFor(char);
     const crossroadEv = allPools.find(e => e.id === crossroadId);
     if (crossroadEv && isEventEligible(crossroadEv, char, { scripted: true })) {
       const logEntry = {
