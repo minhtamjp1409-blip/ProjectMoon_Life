@@ -52,7 +52,7 @@ export const DUNGEON_GATE_EVENTS = [
   gate({
     id: 'gate_warp_fixer_request',
     done: 'gate_warp_fixer_done',
-    age: [24, 62],
+    age: [20, 62],
     weight: 52,
     need: { jobs: ['Fixer'] },
     vi: '[Request mở của W Corp] Bảng Request ở Office của bạn có một dòng in đậm: W Corp cần một Fixer đứng cạnh đội dọn tàu WARP. Lần trước đội dọn mất hai người, và đồng nghiệp của họ không còn nhớ tên hai người ấy. Tiền công trả trước một nửa.',
@@ -151,7 +151,7 @@ export const DUNGEON_GATE_EVENTS = [
   gate({
     id: 'gate_lobotomy_fixer_survey',
     done: 'gate_lobotomy_fixer_done',
-    age: [24, 65],
+    age: [20, 65],
     weight: 38,
     need: { jobs: ['Fixer'] },
     vi: '[Khảo sát chi nhánh niêm phong] Một Wing thuê qua Office của bạn: khảo sát chi nhánh Lobotomy Corporation bị niêm phong dưới lòng đất, lấy hộp đen và đo mật độ Enkephalin. Bản đồ cũ chỉ còn một trục thông gió, và ở lề có ai đó viết: đừng nghe.',
@@ -201,7 +201,7 @@ export const DUNGEON_GATE_EVENTS = [
   gate({
     id: 'gate_bloodfiend_zwei_bounty',
     done: 'gate_bloodfiend_fixer_done',
-    age: [22, 60],
+    age: [20, 60],
     weight: 36,
     need: { jobs: ['Fixer'] },
     vi: '[Tiền thưởng của Zwei] Zwei Association treo giải cho bất kỳ Fixer nào mang được người mất tích ra khỏi một công viên ngầm ở District 16. Ba đội đã xuống và không đội nào gửi tin lên. Một người từng thoát ra nói rằng nhạc kèn chỉ ngừng khi bạn đã trả tiền vé.',
@@ -301,7 +301,7 @@ export const DUNGEON_GATE_EVENTS = [
   gate({
     id: 'gate_lake_open_hunt',
     done: 'gate_lake_fixer_done',
-    age: [22, 62],
+    age: [20, 62],
     weight: 36,
     need: { jobs: ['Fixer'] },
     vi: '[Request mở của U Corp] U Corp đăng Request cho mọi Fixer chịu ra Great Lake: chặn một con Whale dị thể đang lùa tàu hàng vào sương. Phí rời bến trả ngay tại cảng. Phần thưởng chỉ trả cho người còn đứng trên boong lúc tàu về.',

@@ -40,4 +40,5 @@ Cổng Color có bốn đường, tất cả trong `color` của file nguồn: c
 
 - `npm test`: toàn bộ lint, test hồi quy và mô phỏng 500 khoảnh khắc.
 - `node tools/sim/event_reach.mjs [lives] [--routes] [--policy=random|greedy|focused] [--events=prefix]`: độ phủ event và tỷ lệ năm không đổi vị thế theo route. `--routes` ép nghề đúng tuổi vào nghề của nhân vật, gỡ ngã rẽ nghề khỏi kế hoạch, và in số đời giữ được route qua ba năm đầu. Chính sách người chơi dùng chung với `balance_sim` (`tools/sim/lib/choicePolicy.mjs`). Đây là phép dò, không chứng minh cân bằng.
+- `node tools/sim/dungeon_reach.mjs [lives] [--route=Fixer|Syndicate|Wing Employee] [--policy=random|greedy|focused]`: mỗi hầm ngục được vào qua event nào, và tỷ lệ chết trong từng kỳ sát hạch Hana theo Grade. Mặc định `random`: greedy và focused từ chối cổng hầm ngục mỗi khi từ chối có lợi nên làm lệch phân bố.
 - `node tools/sim/balance_sim.mjs [lives] [random|greedy|focused] [--fixers]`: cân bằng chỉ số và đường lên Color.
