@@ -51,21 +51,12 @@ export const NpcDossierModal = ({ npcRole, onClose }) => {
     };
   }, [onClose]);
 
-  if (!char || !npcRole) return null;
-  const rawNpc = char.npcs?.[npcRole];
-  if (!rawNpc) return null;
-
-  const npc = useMemo(() => ensureNpcAgency(rawNpc), [
-    rawNpc?.id,
-    rawNpc?.nameVi,
-    rawNpc?.nameEn,
-    rawNpc?.role,
-    rawNpc?.bond,
-    rawNpc?.status,
-    rawNpc?.alive,
-    rawNpc?.archetype,
-    rawNpc?.district
-  ]);
+  const rawNpc = char?.npcs?.[npcRole];
+  // Every interaction writes a new npc object, so its identity is the right key: crisis, debts and memories
+  // change without bond or status moving (rescuing someone whose bond is already at the cap). The hook runs
+  // before the early returns so the hook order never depends on the data.
+  const npc = useMemo(() => ensureNpcAgency(rawNpc), [rawNpc]);
+  if (!char || !npcRole || !rawNpc) return null;
   const name = lang === 'en' ? npc.nameEn || npc.nameVi : npc.nameVi;
   const isGone = (npc.alive === false) || npc.deceased || ['dead', 'missing', 'estranged', 'betrayer'].includes(npc.status);
   const bondState = getNpcBondState(npc);

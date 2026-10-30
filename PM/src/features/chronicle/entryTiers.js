@@ -1,11 +1,15 @@
 // How loudly a chronicle entry reads. The log mixes a daily errand with a promotion, and one card style made both look alike.
 // quiet: routine that has already resolved, decision: a choice the player made or a consequence of one, turn: a turning point.
 const QUIET_TYPES = new Set(['daily', 'lore', 'summary']);
-// 'major' is what an event flagged major leaves in the log: the career crossroad, a Grade exam, a life ending
-const TURN_TYPES = new Set(['major', 'promo', 'miracle', 'death']);
+const TURN_TYPES = new Set(['promo', 'miracle', 'death']);
+
+// type 'major' is a weight class: hundreds of events carry it. A resolved event (it keeps its `review`) is a
+// turning point only when the choice moved the life (`turning`: path, rank, E.G.O, Distortion, Color). A 'major'
+// the engine writes on its own (a dungeon ending, a cordon) is a landmark by itself.
+const isTurn = (entry) => Boolean(entry.major || entry.turning) || TURN_TYPES.has(entry.type) || (entry.type === 'major' && !entry.review);
 
 export function entryTier(entry) {
-  if (entry.major || TURN_TYPES.has(entry.type)) return 'turn';
+  if (isTurn(entry)) return 'turn';
   if (QUIET_TYPES.has(entry.type) && !entry.choiceVi && !entry.passed) return 'quiet';
   return 'decision';
 }
@@ -18,7 +22,7 @@ export function foldsInCompact(entry, tier, currentAge) {
 }
 
 // A promotion or a miracle gets the framed turning-point card; a death keeps its own rule
-export const framesAsMajor = (entry) => Boolean(entry.major) || entry.type === 'major' || entry.type === 'promo' || entry.type === 'miracle';
+export const framesAsMajor = (entry) => isTurn(entry) && entry.type !== 'death';
 
 // First sentence of a paragraph, for the compact reading mode. Returns null when there is nothing to fold away.
 export function splitLead(text) {

@@ -2187,6 +2187,11 @@ export function applyColorTrialCompanionState(char, flagsAdd = []) {
 /**
  * Resolves a player's choice on a Story / Causal Event
  */
+// What a reader would call a changed life: the path, a rank, or a supernatural state
+const TURNING_FLAGS = ['EGOAwakened', 'Distorted', 'ColorFixer'];
+const lifeStandingSignature = (char) =>
+  [char.job, char.fixerGrade, char.fingerRank, char.wingRank, ...TURNING_FLAGS.map((f) => char.flags?.includes(f))].join('|');
+
 export function resolveEventChoice(charState, choiceIdx, rng = Math.random, dungeonStake = 0) {
   const char = cloneChar(charState);
   const event = char.pendingEvent;
@@ -2198,6 +2203,7 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random, dung
 
   const choice = event.choices?.[choiceIdx];
   if (!choiceIsAvailable(choice, char)) return char;
+  const standingBefore = lifeStandingSignature(char);
   const debtAtChoice = choice.debtId
     ? (char.debts || []).find((debt) => debt.id === choice.debtId && debt.status === 'active')
     : null;
@@ -2786,6 +2792,8 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random, dung
     age: char.age,
     season: SEASONS[char.seasonIdx],
     type: event.isCausalCallback ? 'causal' : (event.major ? 'major' : 'choice'),
+    // 'major' is a weight class for events, hundreds of them; only a choice that moved the life is a turning point
+    ...(lifeStandingSignature(char) !== standingBefore ? { turning: true } : {}),
     choiceVi: choice.labelVi,
     choiceEn: choice.labelEn,
     review,

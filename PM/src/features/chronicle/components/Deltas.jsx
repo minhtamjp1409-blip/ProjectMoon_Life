@@ -64,6 +64,13 @@ export function DeltaChip({ d, i = 0 }) {
       </span>
     );
   }
+  if (d.k === 'favour') {
+    return (
+      <span className={`delta is-${d.v > 0 ? 'bond' : 'down'}`} style={style}>
+        {t('Ân nghĩa', 'Favour')} · {d.name} <b className="num">{sign(d.v)}</b>
+      </span>
+    );
+  }
   if (d.k === 'meet') {
     return (
       <span className="delta is-bond" style={style}>

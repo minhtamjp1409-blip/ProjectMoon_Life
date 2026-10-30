@@ -32,6 +32,8 @@ Các cổng Color riêng (E.G.O, thần đồng, E.G.O road) nằm trong `career
 ## Nhật ký và NPC
 
 - Mỗi mục nhật ký có một tầng (`entryTier`): quiet, decision hoặc turn. Chế độ "Đọc gọn" trong Cài đặt gấp mục quiet về câu đầu, và gấp mục lựa chọn của các năm đã qua về dòng "Bạn chọn" cộng câu đầu của kết quả (tình huống và phần còn lại mở tại chỗ). Không bao giờ gấp thứ đang chờ chọn, năm đang sống, hậu quả, nguy hiểm hay bước ngoặt (`foldsInCompact`).
+- `type: 'major'` chỉ là hạng trọng lượng của event (hàng trăm event mang nó). Một lựa chọn event chỉ là bước ngoặt khi làm đổi đời: nghề, Grade, Finger rank, Wing rank, E.G.O, Distortion hay Color; `resolveEventChoice` ghi `turning: true` vào log. Log `major` do engine tự ghi (kết thúc hầm ngục, phong tỏa) không có `review` nên vẫn là bước ngoặt.
+- Mọi mục nhật ký phải có `id`, `age`, `season`, `type`: feed nhóm theo năm bằng `age` và đặt key bằng `id`.
 - Hành động với NPC (`npcInteractions.js`) có cooldown theo năm cho mỗi NPC và mỗi hành động. Số liệu của một hành động đi vào `deltas`, không viết trong câu.
 
 ## Kiểm tra

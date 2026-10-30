@@ -69,11 +69,10 @@ const storyParts = (entry, lang) => {
 
 /* ---------- Story log ---------- */
 
-const LogEntries = React.memo(function LogEntries({ logs }) {
+const LogEntries = React.memo(function LogEntries({ logs, currentAge }) {
   const { t, lang, bilingual } = useT();
   const readMode = useThemeStore((s) => s.readMode);
   const out = [];
-  const currentAge = logs.length ? logs[logs.length - 1].age : 0;
   let lastAge = null;
   let lastSeasonId = null;
 
@@ -1385,7 +1384,7 @@ export const LiveStageFeed = () => {
               HANA // {char.name ? char.name.toUpperCase() : 'CITIZEN'} · GEN #{char.generation || 1} · {char.age}y
             </span>
           </div>
-          <LogEntries logs={char.logs} />
+          <LogEntries logs={char.logs} currentAge={char.age} />
           {char.alive && !isPrologueActive && !lifeSummary && (
             <aside className="chronicle-horizon-card">
               <div className="horizon-card-top">

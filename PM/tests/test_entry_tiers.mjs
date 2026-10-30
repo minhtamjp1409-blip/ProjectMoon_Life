@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { entryTier, foldsInCompact, framesAsMajor, splitLead } from '../src/features/chronicle/entryTiers.js';
+import { ALL_STORY_EVENTS, createNewCharacter, resolveEventChoice } from '../src/engine/gameEngine.js';
 
 console.log('--- RUNNING CHRONICLE TIER TESTS ---');
 
@@ -43,5 +44,26 @@ assert(foldsInCompact({ type: 'daily', passed: true, age: 9 }, 'decision', 15));
 assert(!foldsInCompact({ type: 'danger', age: 9 }, 'decision', 15), 'a danger with no choice stays whole');
 assert(!foldsInCompact({ type: 'causal', age: 9 }, 'decision', 15), 'a consequence stays whole');
 assert(!foldsInCompact({ ...past, type: 'major' }, 'turn', 15), 'a turning point never folds');
+
+console.log('6. A resolved major event is a turning point only when the life moved...');
+assert.strictEqual(entryTier({ type: 'major', review: { choices: [] }, choiceVi: 'Chuyển nhà' }), 'decision', 'an ordinary major event with a choice is a decision');
+assert.strictEqual(entryTier({ type: 'major', review: { choices: [] }, choiceVi: 'Nộp đơn', turning: true }), 'turn', 'a choice that moved the life is a turn');
+assert.strictEqual(entryTier({ type: 'major' }), 'turn', 'an engine-written landmark without a review is a turn');
+assert(!framesAsMajor({ type: 'major', review: {}, choiceVi: 'x' }));
+assert(framesAsMajor({ type: 'major', review: {}, choiceVi: 'x', turning: true }));
+
+console.log('7. The real career crossroad marks the choice as a turning point, a side event does not...');
+const base = createNewCharacter({ seed: 'tier-turn', startAge: 18 });
+base.job = 'Child'; base.alive = true; base.age = 18; base.careerAge = 18; base.flags = []; base.seenEvents = [];
+const crossroad = ALL_STORY_EVENTS.find((e) => e.id === 'ad_career_crossroad_18');
+const taken = { ...base, pendingEvent: crossroad };
+const resolved = resolveEventChoice(taken, 0, () => 0.1);
+const turnLog = resolved.logs.at(-1);
+assert(resolved.job !== 'Child', 'the first application changed the path');
+assert.strictEqual(turnLog.turning, true, 'the log says so');
+assert.strictEqual(entryTier(turnLog), 'turn');
+const side = ALL_STORY_EVENTS.find((e) => e.major && !e.choices.some((c) => c.setJob || c.setFixerGrade || (c.outcomes || []).some((o) => o.setJob || o.setFixerGrade)) && e.choices.length);
+const sideResolved = resolveEventChoice({ ...base, pendingEvent: side }, 0, () => 0.1);
+assert.notStrictEqual(sideResolved.logs.at(-1).turning, true, `a major event that changes nothing about the path is not a turning point (${side.id})`);
 
 console.log('PASS: chronicle tier tests');

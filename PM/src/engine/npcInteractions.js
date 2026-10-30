@@ -10,7 +10,7 @@
 import { npcIsActive } from './eventConditions.js';
 import { bondCapFor, ensureNpcAgency } from '../data/npcPersonality.js';
 import { plantThread } from './affiliation.js';
-import { cloneChar } from './gameEngine.js';
+import { cloneChar, SEASONS } from './gameEngine.js';
 
 export function isFactionLeader(char) {
   if (!char) return false;
@@ -174,6 +174,7 @@ export function executeNpcInteraction(char, role, actionId, rng = Math.random) {
   let log = null;
   const before = { health: nextChar.stats.health, sanity: nextChar.stats.sanity, wealth: nextChar.stats.wealth, network: nextChar.stats.network, rep: nextChar.stats.rep, merit: nextChar.merit, heat: nextChar.heat };
   const bondBefore = npc.bond || 0;
+  const favourBefore = npc.debts?.toPlayer || 0;
   if (ACTION_BY_ID[actionId]?.cooldownYears) npc.lastActionAge = { ...(npc.lastActionAge || {}), [actionId]: age };
 
   if (actionId === 'drink_confide') {
@@ -353,7 +354,17 @@ export function executeNpcInteraction(char, role, actionId, rng = Math.random) {
     }
     const bondChange = (npc.bond || 0) - bondBefore;
     if (bondChange) deltas.push({ k: 'bond', name: name, v: bondChange });
-    nextChar.logs = [...(nextChar.logs || []), { ...log, deltas }];
+    // Every feed entry needs an id, an age and a season: the feed groups by year and keys by id
+    const favour = (npc.debts?.toPlayer || 0) - favourBefore;
+    if (favour) deltas.push({ k: 'favour', name, v: favour });
+    nextChar.logs = [...(nextChar.logs || []), {
+      id: `npc_${role}_${actionId}_${age}_${(nextChar.logs || []).length}`,
+      age,
+      season: SEASONS[nextChar.seasonIdx || 0],
+      type: 'choice',
+      ...log,
+      deltas
+    }];
   }
 
   return {
