@@ -66,4 +66,20 @@ const side = ALL_STORY_EVENTS.find((e) => e.major && !e.choices.some((c) => c.se
 const sideResolved = resolveEventChoice({ ...base, pendingEvent: side }, 0, () => 0.1);
 assert.notStrictEqual(sideResolved.logs.at(-1).turning, true, `a major event that changes nothing about the path is not a turning point (${side.id})`);
 
+console.log('8. Every independent Syndicate promotion is a turning point...');
+for (const [id, rank] of [['syn_indie_promo_rank1', 0], ['syn_indie_promo_rank2', 1], ['syn_indie_promo_rank3', 2]]) {
+  const ev = ALL_STORY_EVENTS.find((e) => e.id === id);
+  let rose = null;
+  for (let ci = 0; ci < ev.choices.length && !rose; ci++) {
+    for (const roll of [0.05, 0.5, 0.95]) {
+      const c = { ...base, job: 'Syndicate', age: 30, flags: ['IndependentSyndicate'], syndicateRank: rank, finger: null, pendingEvent: ev };
+      const after = resolveEventChoice(c, ci, () => roll);
+      if ((after.syndicateRank || 0) > rank) { rose = after; break; }
+    }
+  }
+  assert(rose, `${id}: some choice raises the rank`);
+  assert.strictEqual(rose.logs.at(-1).turning, true, `${id}: logged as a turning point`);
+  assert.strictEqual(entryTier(rose.logs.at(-1)), 'turn', `${id}: reads as a turn, so compact never folds it`);
+}
+
 console.log('PASS: chronicle tier tests');

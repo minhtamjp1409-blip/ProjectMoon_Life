@@ -362,6 +362,9 @@ export function executeNpcInteraction(char, role, actionId, rng = Math.random) {
       age,
       season: SEASONS[nextChar.seasonIdx || 0],
       type: 'choice',
+      // The player chose this, so it reads and folds like any other answered choice
+      choiceVi: `${ACTION_BY_ID[actionId]?.nameVi || actionId} · ${name}`,
+      choiceEn: `${ACTION_BY_ID[actionId]?.nameEn || actionId} · ${npc.nameEn || name}`,
       ...log,
       deltas
     }];

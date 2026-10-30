@@ -83,6 +83,12 @@ for (const id of ['drink_confide', 'spar_coordinate']) { play = executeNpcIntera
 assert.strictEqual(keys.size, 2, 'two interactions in one year do not share a key');
 const past = { type: 'choice', choiceVi: 'Nhận việc', age: play.age - 1 };
 assert(foldsInCompact(past, entryTier(past), play.age), 'a last-year choice still folds after an NPC interaction');
+// The entry the engine really wrote, a year on
+const written = play.logs.at(-1);
+assert(written.choiceVi && written.choiceEn, 'the NPC action is recorded as the player\'s choice');
+assert.strictEqual(entryTier(written), 'decision');
+assert(foldsInCompact(written, entryTier(written), play.age + 1), 'the real NPC log folds once the year has passed');
+assert(!foldsInCompact(written, entryTier(written), play.age), 'and stays whole in the year it happened');
 
 console.log('8. A rescue and a favour move the favour count, and the log chips say so...');
 c = fresh('npc-aid');

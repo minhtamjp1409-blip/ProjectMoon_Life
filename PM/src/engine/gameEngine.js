@@ -2190,7 +2190,7 @@ export function applyColorTrialCompanionState(char, flagsAdd = []) {
 // What a reader would call a changed life: the path, a rank, or a supernatural state
 const TURNING_FLAGS = ['EGOAwakened', 'Distorted', 'ColorFixer'];
 const lifeStandingSignature = (char) =>
-  [char.job, char.fixerGrade, char.fingerRank, char.wingRank, ...TURNING_FLAGS.map((f) => char.flags?.includes(f))].join('|');
+  [char.job, char.fixerGrade, char.fingerRank, char.syndicateRank, char.wingRank, ...TURNING_FLAGS.map((f) => char.flags?.includes(f))].join('|');
 
 export function resolveEventChoice(charState, choiceIdx, rng = Math.random, dungeonStake = 0) {
   const char = cloneChar(charState);
