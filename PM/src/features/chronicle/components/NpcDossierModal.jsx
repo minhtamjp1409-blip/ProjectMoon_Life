@@ -253,11 +253,12 @@ export const NpcDossierModal = ({ npcRole, onClose }) => {
                   >
                     <span className="action-name">{lang === 'en' ? action.nameEn : action.nameVi}</span>
                     <span className="action-cost">
-                      {action.id === 'drink_confide' && '-4 Ahn'}
-                      {action.id === 'spar_coordinate' && '-2 HP'}
-                      {action.id === 'emergency_aid' && (lang === 'en' ? 'Aid Crisis' : 'Cứu viện')}
-                      {action.id === 'call_favor' && (lang === 'en' ? 'Use Favor' : 'Đòi ân nghĩa')}
-                      {action.id === 'delegate_command' && (lang === 'en' ? '-6 Bond · 35% Risk' : '-6 Gắn kết · 35% Rủi ro')}
+                      {check.cooldown && (lang === 'en' ? 'Done recently' : 'Vừa làm xong')}
+                      {!check.cooldown && action.id === 'drink_confide' && '-4 Ahn'}
+                      {!check.cooldown && action.id === 'spar_coordinate' && '-2 HP'}
+                      {!check.cooldown && action.id === 'emergency_aid' && (lang === 'en' ? 'Aid Crisis' : 'Cứu viện')}
+                      {!check.cooldown && action.id === 'call_favor' && (lang === 'en' ? 'Use Favor' : 'Đòi ân nghĩa')}
+                      {!check.cooldown && action.id === 'delegate_command' && (lang === 'en' ? '-6 Bond · 35% Risk' : '-6 Gắn kết · 35% Rủi ro')}
                     </span>
                   </button>
                 );

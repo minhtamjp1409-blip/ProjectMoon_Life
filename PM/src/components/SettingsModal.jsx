@@ -12,6 +12,8 @@ export const SettingsModal = ({ open, onClose }) => {
     setLang,
     textSize,
     setTextSize,
+    readMode,
+    setReadMode,
     motionMode,
     setMotion,
     perfMode,
@@ -251,6 +253,28 @@ export const SettingsModal = ({ open, onClose }) => {
                 ))}
               </div>
             </div>
+
+            {/* Chronicle reading mode */}
+            <div className="settings-pill-row">
+              <span className="settings-sublabel">{pick(lang, 'Nhật ký:', 'Chronicle:')}</span>
+              <div className="pill-options">
+                {[
+                  ['full', 'Đọc đầy đủ', 'Read in full'],
+                  ['compact', 'Đọc gọn', 'Read compact']
+                ].map(([k, vi, en]) => (
+                  <button
+                    key={k}
+                    type="button"
+                    className={`settings-pill-btn ${readMode === k ? 'is-active' : ''}`}
+                    aria-pressed={readMode === k}
+                    onClick={() => setReadMode(k)}
+                  >
+                    {pick(lang, vi, en)}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <p className="settings-note">{pick(lang, 'Đọc gọn chỉ thu nhật ký đã qua về câu đầu. Tình huống đang chờ bạn chọn luôn hiện đầy đủ.', 'Compact folds past entries to their first sentence. A situation waiting for your choice always shows in full.')}</p>
 
             {/* Motion */}
             <div className="settings-pill-row">

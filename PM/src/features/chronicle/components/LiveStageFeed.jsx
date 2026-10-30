@@ -8,6 +8,8 @@ import { GitBranch, Download, RotateCcw, Hammer, ChevronDown, Eye, EyeOff, BookO
 import { useNavigate } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 import { useGameStore } from '../../../store/gameStore';
+import { useThemeStore } from '../../../store/themeStore';
+import { entryTier, framesAsMajor, splitLead } from '../entryTiers.js';
 import { buildLifeSummaryAndLegacy, getDungeonCurrentStage, isDungeonChoiceAvailable, DUNGEON_DEFINITIONS, getNextCareerMilestone } from '../../../engine/gameEngine';
 import { DungeonDock } from './DungeonDock';
 import { YearPlanDock } from './YearPlanDock';
@@ -69,6 +71,7 @@ const storyParts = (entry, lang) => {
 
 const LogEntries = React.memo(function LogEntries({ logs }) {
   const { t, lang, bilingual } = useT();
+  const readMode = useThemeStore((s) => s.readMode);
   const out = [];
   let lastAge = null;
   let lastSeasonId = null;
@@ -98,8 +101,12 @@ const LogEntries = React.memo(function LogEntries({ logs }) {
     const kind = ENTRY_KIND[entry.type];
     const { title, situation, result, reviewBody } = storyParts(entry, lang);
     const tag = entry.omen ? t('Điềm lúc chào đời', 'Omen at birth') : title || (kind?.vi ? t(kind.vi, kind.en) : null);
+    const tier = entryTier(entry);
+    // Compact reading folds a routine entry to its first sentence; the rest opens in place
+    const fold = readMode === 'compact' && tier === 'quiet' && !situation ? splitLead(result) : null;
+    const alt = bilingual && entry.en && entry.en !== entry.vi ? splitTitle(entry.en).body : '';
     out.push(
-      <article className={`entry ${kind?.cls || ''} ${entry.major ? 'is-major' : ''}`} key={entry.id}>
+      <article className={`entry t-${tier} ${kind?.cls || ''} ${framesAsMajor(entry) ? 'is-major' : ''}`} key={entry.id}>
         {/* The yearline and season dividers above already say when; the card only says what */}
         {tag && (
           <div className="entry-header-row">
@@ -114,8 +121,18 @@ const LogEntries = React.memo(function LogEntries({ logs }) {
         )}
         {entry.passed && <p className="entry-choice is-muted">{t('Bạn để nó trôi qua.', 'You let it pass.')}</p>}
         {situation && <p className="entry-text">{situation}</p>}
-        {result && <p className={`entry-text ${entry.choiceVi || entry.passed ? 'is-result' : ''}`}>{result}</p>}
-        {bilingual && entry.en && entry.en !== entry.vi && <p className="entry-alt">{splitTitle(entry.en).body}</p>}
+        {fold ? (
+          <details className="entry-fold">
+            <summary data-more={t('đọc tiếp', 'read on')}><span className="entry-lead">{fold.lead}</span></summary>
+            <p className="entry-text">{fold.rest}</p>
+            {alt && <p className="entry-alt">{alt}</p>}
+          </details>
+        ) : (
+          <>
+            {result && <p className={`entry-text ${entry.choiceVi || entry.passed ? 'is-result' : ''}`}>{result}</p>}
+            {alt && <p className="entry-alt">{alt}</p>}
+          </>
+        )}
         {entry.review && (
           <details className="entry-review">
             <summary>{t('Xem lại sự kiện và lựa chọn', 'Review event and choices')}</summary>

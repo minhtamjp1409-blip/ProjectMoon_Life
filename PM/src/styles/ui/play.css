@@ -566,3 +566,8 @@
   .hud2-year { display: none; }
   .hud2-open { min-height: 36px; }
 }
+
+/* A 280px fold cover: five 44px controls and the age label need a tighter gap to stay inside the screen */
+@media (max-width: 300px) {
+  .playbar-controls { gap: 1px; }
+}

@@ -7,6 +7,7 @@ export const useThemeStore = create((set) => {
   const initialLang = readSetting('pm-lang-mode') || 'vi';
   const initialMotion = readSetting('pm-motion-mode') || 'system';
   const initialText = readSetting('pm-text-size') || 'md';
+  const initialReadMode = readSetting('pm-read-mode') === 'compact' ? 'compact' : 'full';
   const initialGameplayMetrics = readSetting('pm-gameplay-metrics') === 'on';
   const initialPerfMode = readSetting('pm-perf-mode') === 'on';
 
@@ -32,6 +33,12 @@ export const useThemeStore = create((set) => {
       }),
     // Reading size for story text: 'md' | 'lg' | 'xl'
     textSize: initialText,
+    // Chronicle reading: 'full' shows every entry in full, 'compact' folds resolved routine entries to their first sentence
+    readMode: initialReadMode,
+    setReadMode: (next) => {
+      localStorage.setItem('pm-read-mode', next);
+      set({ readMode: next });
+    },
     perfMode: initialPerfMode,
     setPerfMode: (enabled) => {
       localStorage.setItem('pm-perf-mode', enabled ? 'on' : 'off');

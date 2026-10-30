@@ -56,7 +56,8 @@ export const NPC_INTERACTION_ACTIONS = [
     nameVi: 'Nhờ cậy đặc quyền',
     nameEn: 'Call In A Favor',
     descVi: 'Nhờ vả ân nghĩa để họ tận dụng vị trí trong Wing, Syndicate hoặc mạng lưới Fixer giúp đỡ bạn.',
-    descEn: 'Call in owed gratitude, leveraging their rank in a Wing, Syndicate, or Fixer network to aid you.'
+    descEn: 'Call in owed gratitude, leveraging their rank in a Wing, Syndicate, or Fixer network to aid you.',
+    cooldownYears: 2
   },
   {
     id: 'delegate_command',
@@ -68,6 +69,15 @@ export const NPC_INTERACTION_ACTIONS = [
   }
 ];
 
+const ACTION_BY_ID = Object.fromEntries(NPC_INTERACTION_ACTIONS.map((action) => [action.id, action]));
+
+// cooldownYears was declared on the actions but only delegation ever checked it, so a cheap action could be repeated all year
+function onCooldown(npc, actionId, age) {
+  const years = ACTION_BY_ID[actionId]?.cooldownYears;
+  const last = npc.lastActionAge?.[actionId];
+  return Boolean(years) && last != null && age - last < years;
+}
+
 export function canInteractWithNpc(char, role, actionId) {
   if (!char || !role) return { ok: false, reasonVi: 'Nhân vật không hợp lệ', reasonEn: 'Invalid character' };
   const rawNpc = char.npcs?.[role];
@@ -78,6 +88,13 @@ export function canInteractWithNpc(char, role, actionId) {
   const wealth = char.stats?.wealth ?? char.wealth ?? 0;
   const rep = char.stats?.rep ?? char.rep ?? 0;
   const hp = char.stats?.health ?? char.health ?? 50;
+
+  if (actionId !== 'delegate_command' && onCooldown(npc, actionId, char.age || 0)) {
+    const years = ACTION_BY_ID[actionId].cooldownYears;
+    return years > 1
+      ? { ok: false, cooldown: true, reasonVi: `Việc này bạn vừa làm với họ. Đợi ${years} năm giữa hai lần.`, reasonEn: `You just did this with them. Wait ${years} years between times.` }
+      : { ok: false, cooldown: true, reasonVi: 'Việc này bạn đã làm với họ trong năm nay. Đợi sang năm.', reasonEn: 'You already did this with them this year. Wait until next year.' };
+  }
 
   if (actionId === 'drink_confide') {
     if (wealth < 4) {
@@ -108,6 +125,10 @@ export function canInteractWithNpc(char, role, actionId) {
   }
 
   if (actionId === 'call_favor') {
+    // Goodwill is not capability: someone in trouble cannot lend what they do not have
+    if (npc.status === 'wounded' || (npc.crisis && npc.crisis.severity > 0 && npc.crisis.type !== 'none')) {
+      return { ok: false, reasonVi: 'Họ đang gặp nạn, không thể giúp bạn lúc này', reasonEn: 'They are in trouble and cannot help you right now' };
+    }
     const hasDebt = (npc.debts?.toPlayer || 0) > 0;
     const isSworn = (npc.bond || 0) >= 70;
     if (!hasDebt && !isSworn) {
@@ -151,6 +172,9 @@ export function executeNpcInteraction(char, role, actionId, rng = Math.random) {
   const cap = bondCapFor(npc);
   const age = nextChar.age || 0;
   let log = null;
+  const before = { health: nextChar.stats.health, sanity: nextChar.stats.sanity, wealth: nextChar.stats.wealth, network: nextChar.stats.network, rep: nextChar.stats.rep, merit: nextChar.merit, heat: nextChar.heat };
+  const bondBefore = npc.bond || 0;
+  if (ACTION_BY_ID[actionId]?.cooldownYears) npc.lastActionAge = { ...(npc.lastActionAge || {}), [actionId]: age };
 
   if (actionId === 'drink_confide') {
     nextChar.stats.wealth = Math.max(0, (nextChar.stats.wealth || 0) - 4);
@@ -169,8 +193,8 @@ export function executeNpcInteraction(char, role, actionId, rng = Math.random) {
     npc.memories = [...(npc.memories || []), { age, vi: memoryTextVi, en: memoryTextEn }].slice(-6);
 
     log = {
-      vi: `[Tri kỷ giãi bày] Bạn cùng ${name} ngồi bên chiếc bàn gỗ ẩm mốc ở quán rượu Backstreets. Men rượu cay xua tan giá lạnh; ${name} kể cho bạn nghe về 「${npc.wantVi || 'ước vọng sống còn'}」 và nỗi sợ 「${npc.fearVi || 'tiếng còi nửa đêm'}」. Lòng bạn nhẹ nhõm hơn nhiều. (+10 Sanity, +6 Gắn kết)`,
-      en: `[Confiding in Drinks] You sat with ${npc.nameEn} over a damp wooden table in a Backstreet tavern. Cheap liquor thawed the frost; ${npc.nameEn} spoke of longing for "${npc.wantEn || 'survival'}" and fearing "${npc.fearEn || 'midnight sirens'}". Your mind feels far clearer. (+10 Sanity, +6 Bond)`
+      vi: `[Tri kỷ giãi bày] Bạn cùng ${name} ngồi bên chiếc bàn gỗ ẩm mốc ở quán rượu Backstreets. Men rượu cay xua tan giá lạnh; ${name} kể cho bạn nghe về 「${npc.wantVi || 'ước vọng sống còn'}」 và nỗi sợ 「${npc.fearVi || 'tiếng còi nửa đêm'}」. Lòng bạn nhẹ nhõm hơn nhiều.`,
+      en: `[Confiding in Drinks] You sat with ${npc.nameEn} over a damp wooden table in a Backstreet tavern. Cheap liquor thawed the frost; ${npc.nameEn} spoke of longing for "${npc.wantEn || 'survival'}" and fearing "${npc.fearEn || 'midnight sirens'}". Your mind feels far clearer.`
     };
   } else if (actionId === 'spar_coordinate') {
     nextChar.stats.health = Math.max(1, (nextChar.stats.health || 50) - 2);
@@ -189,8 +213,8 @@ export function executeNpcInteraction(char, role, actionId, rng = Math.random) {
     npc.memories = [...(npc.memories || []), { age, vi: memoryTextVi, en: memoryTextEn }].slice(-6);
 
     log = {
-      vi: `[Luyện kiếm hiệp lực] Lưỡi thép va vào nhau chan chát trong con hẻm cụt. ${name} đọc được nhịp thở và cách chuyển trọng tâm của bạn, cả hai ăn ý đến mức không cần nhìn cũng biết đối phương bọc lót ở đâu. Kích hoạt hiệu ứng Hiệp lực Hầm ngục cho mùa săn này! (-2 HP, +4 Gắn kết)`,
-      en: `[Combat Poise] Steel clashed in the dead-end alley. ${npc.nameEn} read your footwork and breathing shifts; the two of you moved in fluid synchronization. Companion Dungeon Synergy activated for this season! (-2 HP, +4 Bond)`
+      vi: `[Luyện kiếm hiệp lực] Lưỡi thép va vào nhau chan chát trong con hẻm cụt. ${name} đọc được nhịp thở và cách chuyển trọng tâm của bạn, cả hai ăn ý đến mức không cần nhìn cũng biết đối phương bọc lót ở đâu. Hiệp lực Hầm ngục có hiệu lực cho mùa săn này.`,
+      en: `[Combat Poise] Steel clashed in the dead-end alley. ${npc.nameEn} read your footwork and breathing shifts; the two of you moved in fluid synchronization. Companion Dungeon Synergy holds for this season.`
     };
   } else if (actionId === 'emergency_aid') {
     const costWealth = (nextChar.stats.wealth || 0) >= 15;
@@ -211,8 +235,8 @@ export function executeNpcInteraction(char, role, actionId, rng = Math.random) {
     npc.memories = [...(npc.memories || []), { age, vi: memoryTextVi, en: memoryTextEn }].slice(-6);
 
     log = {
-      vi: `[Cứu viện sinh tử] Bạn đứng ra dàn xếp dứt điểm ${oldCrisisLabel} cho ${name}. Nhìn món nợ bị xé toạc trước mắt, ${name} nắm chặt tay bạn, ánh mắt trĩu nặng ơn nghĩa thề sẽ đền đáp bằng cả mạng sống nếu có ngày bạn cần. (+20 Gắn kết, Nợ ân huệ +1)`,
-      en: `[Mortal Salvation] You settled ${npc.nameEn}'s crisis once and for all. Watching the death warrant torn in half, ${npc.nameEn} gripped your hand tightly, swearing a debt of blood and honor whenever you call. (+20 Bond, Owed Favor +1)`
+      vi: `[Cứu viện sinh tử] Bạn đứng ra dàn xếp dứt điểm ${oldCrisisLabel} cho ${name}. Nhìn món nợ bị xé toạc trước mắt, ${name} nắm chặt tay bạn, ánh mắt trĩu nặng ơn nghĩa thề sẽ đền đáp bằng cả mạng sống nếu có ngày bạn cần.`,
+      en: `[Mortal Salvation] You settled ${npc.nameEn}'s crisis once and for all. Watching the death warrant torn in half, ${npc.nameEn} gripped your hand tightly, swearing a debt of blood and honor whenever you call.`
     };
   } else if (actionId === 'call_favor') {
     if ((npc.debts?.toPlayer || 0) > 0) {
@@ -227,23 +251,23 @@ export function executeNpcInteraction(char, role, actionId, rng = Math.random) {
 
     if (job === 'Wing Employee') {
       nextChar.stats.health = Math.min(100, (nextChar.stats.health || 50) + 35);
-      rewardVi = `${name} bí mật tuồn cho bạn một ống tiêm tinh chất phục hồi sinh học K Corp, chữa lành các vết rách trên cơ thể. (+35 HP)`;
-      rewardEn = `${npc.nameEn} smuggled a classified K Corp regenerative ampule to you, sewing together deep tissue tears. (+35 HP)`;
+      rewardVi = `${name} bí mật tuồn cho bạn một ống tiêm tinh chất phục hồi sinh học K Corp, chữa lành các vết rách trên cơ thể.`;
+      rewardEn = `${npc.nameEn} smuggled a classified K Corp regenerative ampule to you, sewing together deep tissue tears.`;
     } else if (job === 'Syndicate') {
       nextChar.heat = Math.max(0, (nextChar.heat || 0) - 25);
-      rewardVi = `${name} liên hệ các đầu nậu của Ngón tay để xóa tên bạn khỏi danh sách truy quét ngầm. (-25 Heat)`;
-      rewardEn = `${npc.nameEn} leveraged Finger contacts to scratch your name off backstreet hit-lists. (-25 Heat)`;
+      rewardVi = `${name} liên hệ các đầu nậu của Ngón tay để xóa tên bạn khỏi danh sách truy quét ngầm.`;
+      rewardEn = `${npc.nameEn} leveraged Finger contacts to scratch your name off backstreet hit-lists.`;
     } else if (job === 'Fixer') {
       nextChar.stats.network = Math.min(100, (nextChar.stats.network || 0) + 14);
       nextChar.stats.rep = Math.min(100, (nextChar.stats.rep || 0) + 10);
       nextChar.merit = (nextChar.merit || 0) + 4;
-      rewardVi = `${name} chia sẻ hồ sơ tình báo nội bộ của Hiệp hội, giúp bạn mở rộng tầm ảnh hưởng và uy tín. (+14 Mạng lưới, +10 Rep, +4 Merit)`;
-      rewardEn = `${npc.nameEn} shared classified Association dossiers, broadening your reach and standing. (+14 Network, +10 Rep, +4 Merit)`;
+      rewardVi = `${name} chia sẻ hồ sơ tình báo nội bộ của Hiệp hội, giúp bạn mở rộng tầm ảnh hưởng và uy tín.`;
+      rewardEn = `${npc.nameEn} shared classified Association dossiers, broadening your reach and standing.`;
     } else {
       nextChar.stats.sanity = Math.min(100, (nextChar.stats.sanity || 50) + 15);
       nextChar.stats.health = Math.min(100, (nextChar.stats.health || 50) + 8);
-      rewardVi = `${name} mở cửa căn hầm bí mật an toàn cho bạn trú ẩn qua đêm, tránh xa mọi cặp mắt dò xét. (+15 Sanity, +8 HP)`;
-      rewardEn = `${npc.nameEn} sheltered you in a secluded cellar sanctuary, safe from prying eyes. (+15 Sanity, +8 HP)`;
+      rewardVi = `${name} mở cửa căn hầm bí mật an toàn cho bạn trú ẩn qua đêm, tránh xa mọi cặp mắt dò xét.`;
+      rewardEn = `${npc.nameEn} sheltered you in a secluded cellar sanctuary, safe from prying eyes.`;
     }
 
     const memoryTextVi = `Năm ${age} tuổi: Đền đáp ân nghĩa, tương trợ bạn trong cơn bĩ cực.`;
@@ -300,8 +324,8 @@ export function executeNpcInteraction(char, role, actionId, rng = Math.random) {
       npc.memories = [...(npc.memories || []), { age, vi: memoryTextVi, en: memoryTextEn }].slice(-6);
 
       log = {
-        vi: `[Ủy thác trả giá đắt] Bạn giao phần việc gai góc của tổ chức cho ${name} xử lý. Nhiệm vụ hoàn tất trót lọt, hồ sơ của bạn sạch dấu vết, nhưng ${name} rơi vào ổ phục kích và đang lâm vào khủng hoảng cần cứu viện. (+6 Merit, +6 Ahn, -10 Heat, -6 Gắn kết · Cảnh báo khủng hoảng)`,
-        en: `[Costly Delegation] You assigned a thorny organizational operation to ${npc.nameEn}. The task succeeded and your ledger stays clean, but ${npc.nameEn} walked into an ambush and now faces an acute crisis. (+6 Merit, +6 Ahn, -10 Heat, -6 Bond · Crisis Alert)`
+        vi: `[Ủy thác trả giá đắt] Bạn giao phần việc gai góc của tổ chức cho ${name} xử lý. Nhiệm vụ hoàn tất trót lọt, hồ sơ của bạn sạch dấu vết, nhưng ${name} rơi vào ổ phục kích và đang lâm vào khủng hoảng cần cứu viện.`,
+        en: `[Costly Delegation] You assigned a thorny organizational operation to ${npc.nameEn}. The task succeeded and your ledger stays clean, but ${npc.nameEn} walked into an ambush and now faces an acute crisis.`
       };
     } else {
       const memoryTextVi = `Năm ${age} tuổi: Thay mặt bạn giải quyết gọn gàng công việc của tổ chức.`;
@@ -309,15 +333,27 @@ export function executeNpcInteraction(char, role, actionId, rng = Math.random) {
       npc.memories = [...(npc.memories || []), { age, vi: memoryTextVi, en: memoryTextEn }].slice(-6);
 
       log = {
-        vi: `[Ủy thác việc tổ chức] ${name} thay mặt bạn đứng mũi chịu sào xử lý êm thấm phần việc nhạy cảm của tổ chức, mang về cả chiến công lẫn lợi tức mà không để lại dấu vết trên hồ sơ của bạn. (+6 Merit, +6 Ahn, -10 Heat, -6 Gắn kết)`,
-        en: `[Delegated Operation] ${npc.nameEn} handled a sensitive organizational assignment in your stead, securing both Merit and profit while keeping your own hands clean. (+6 Merit, +6 Ahn, -10 Heat, -6 Bond)`
+        vi: `[Ủy thác việc tổ chức] ${name} thay mặt bạn đứng mũi chịu sào xử lý êm thấm phần việc nhạy cảm của tổ chức, mang về cả chiến công lẫn lợi tức mà không để lại dấu vết trên hồ sơ của bạn.`,
+        en: `[Delegated Operation] ${npc.nameEn} handled a sensitive organizational assignment in your stead, securing both Merit and profit while keeping your own hands clean.`
       };
     }
   }
 
   nextChar.npcs[role] = npc;
   if (log) {
-    nextChar.logs = [...(nextChar.logs || []), log];
+    // The numbers belong in the chips, not in the sentence
+    const deltas = [];
+    for (const key of ['health', 'sanity', 'wealth', 'network', 'rep']) {
+      const change = (nextChar.stats[key] || 0) - (before[key] || 0);
+      if (change) deltas.push({ k: key, v: change });
+    }
+    for (const key of ['merit', 'heat']) {
+      const change = (nextChar[key] || 0) - (before[key] || 0);
+      if (change) deltas.push({ k: key, v: change });
+    }
+    const bondChange = (npc.bond || 0) - bondBefore;
+    if (bondChange) deltas.push({ k: 'bond', name: name, v: bondChange });
+    nextChar.logs = [...(nextChar.logs || []), { ...log, deltas }];
   }
 
   return {

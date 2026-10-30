@@ -172,6 +172,25 @@
 .entry.k-good::before { color: var(--gold); }
 .entry.k-bad::before { color: var(--bad); }
 
+/* Reading tiers: routine recedes, decisions read in full, turning points stand apart */
+.entry.t-quiet { margin-bottom: 14px; }
+.entry.t-quiet .entry-text { font-size: calc(var(--story-size) - 1.5px); line-height: calc(var(--story-lead) - 0.06); }
+.entry.t-quiet .entry-tag { font-weight: 500; }
+.entry.t-decision { margin-bottom: 24px; }
+
+/* Compact reading: the first sentence stays, the rest opens in place */
+.entry-fold > summary {
+  display: block; min-height: 32px; cursor: pointer; list-style: none;
+  font-family: var(--serif); font-size: calc(var(--story-size) - 1.5px); line-height: calc(var(--story-lead) - 0.06); color: var(--page-ink);
+}
+.entry-fold > summary::-webkit-details-marker { display: none; }
+.entry-fold > summary::after { content: attr(data-more); margin-left: 8px; white-space: nowrap; color: var(--page-muted); font-family: var(--font); font-size: 13px; text-decoration: underline; text-underline-offset: 3px; }
+.entry-fold[open] > summary::after { content: none; }
+.entry-fold > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+.entry-fold > .entry-text { margin-top: 4px; }
+@media (pointer: coarse), (max-width: 860px) { .entry-fold > summary { min-height: 44px; } }
+.settings-note { margin: -4px 0 12px; font-size: 13px; line-height: 1.5; color: var(--page-muted); }
+
 /* Inscribed Major Turning Points & Milestones */
 .entry.is-major {
   position: relative;
@@ -184,10 +203,8 @@
 }
 .entry.is-major .entry-tag {
   color: var(--accent);
-  letter-spacing: 0.04em;
   font-weight: 700;
-  text-transform: uppercase;
-  font-size: 13.5px;
+  font-size: 14px;
 }
 .entry.is-major .entry-text:first-of-type::first-letter {
   float: left;

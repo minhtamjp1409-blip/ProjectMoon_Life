@@ -2014,6 +2014,17 @@ Chủ dự án yêu cầu làm lại toàn bộ giao diện lần nữa: bỏ t�
 * **Dọn tài liệu:** thêm `docs/LUAT_HIEN_HANH.md`; sửa "25 District" thành 26 và đánh dấu nhánh Workshop đã khép lại trong hai file thiết kế; `UNIVERSE.md` hết trỏ tới `implementation_plan.md`. Các file báo cáo cũ trong `docs/` (`KIEM_TRA_BUG_36_50`, `CONG_VIEC_CON_LAI_SAU_PREVIEW_NO`, `SUA_ROUTE_29_10_2026`, `UI_REVIEW_BATCH_71`, `BAO_CAO_NHIP_GAME_500_SEED`, `ENSEMBLE_DUNGEON`) đã bị xóa ở Đợt 96; các dòng cũ trong log vẫn nhắc tên chúng và chỉ còn là lịch sử.
 * **Chưa làm:** lazy-load chunk truyện (cần đo mở trang trên mạng chậm trước), người mới chơi thử 5 đến 8 đời, chuỗi nhiều năm cho Distortion (số đo mới cho thấy ít cấp bách hơn Wing).
 
+## Đợt 99: Nhật ký phân tầng, NPC có giới hạn, kiểm tra Android (30/10/2026)
+
+* **Góp ý ngoài:** một bản đánh giá nêu mỏi mắt vì chữ, thiếu cảm giác địa điểm, NPC thụ động, trang bị thiếu chiều sâu. Đợt này làm A (nhật ký) và C (NPC); B và D để sau.
+* **Nhật ký phân tầng:** `src/features/chronicle/entryTiers.js` chia mục nhật ký thành ba tầng. Quiet (daily, lore, summary chưa có lựa chọn của người chơi) nhỏ hơn và sát hơn; decision (lựa chọn đã chọn, hậu quả, nguy hiểm) đọc đầy đủ; turn (event major, thăng bậc, phép màu, cái chết) nổi bật, thăng bậc và phép màu dùng thẻ khung của `is-major`. Trong 60 đời mô phỏng có khoảng 7.900 mục: daily 38%, decision hơn 30%, summary 17%, turn khoảng 7%.
+* **Đọc gọn / Đọc đầy đủ:** cài đặt mới `readMode` (`pm-read-mode`, mặc định đầy đủ) trong Cài đặt. Chế độ gọn chỉ gấp mục quiet đã xảy ra về câu đầu, kèm "đọc tiếp"; mở ra là hết, không câu nào bị cắt. Lựa chọn đang chờ và các mục có lựa chọn của người chơi không bao giờ bị gấp. Chip chỉ số vẫn hiện.
+* **Nhãn:** thẻ turning point bỏ chữ hoa và giãn chữ (DESIGN.md yêu cầu nhãn viết thường); các nhãn tương tự trong Cài đặt và hồ sơ NPC cũng đổi, sàn chữ 12px.
+* **NPC:** `cooldownYears` trước đây chỉ có ủy thác kiểm tra, nên uống rượu (4 Ahn, +10 Sanity) và luyện tập lặp được vô hạn trong năm. Nay mọi hành động có cooldown đều bị giữ (`npc.lastActionAge`), "Nhờ cậy đặc quyền" chờ 2 năm giữa hai lần, và người đang gặp nạn hoặc bị thương không thể giúp. Log tương tác đưa số vào chip (`deltas`) thay vì trong câu, bỏ dấu chấm than. Nút bị khóa vì cooldown ghi "Vừa làm xong".
+* **Kiểm tra Android:** 15 kích thước (320x568 đến 800x1280, tỉ lệ 16:9, 18.5:9, 19.5:9, 20:9, gập 280 và 673, ngang 640x360 đến 915x412), cả nhật ký ở hai chế độ, Cài đặt và hồ sơ NPC. Không có tràn ngang. Sửa: thanh điều khiển tràn 6px ở màn gập 280; nút và thanh trượt Cài đặt cao 36px và 6px nay đạt 44px; dock NPC từ một cột sang hai cột (không còn che nửa màn hình). Chưa sửa: các nút điều khiển ở chế độ ngang điện thoại cao 34 đến 40px (đã chấp nhận ở Đợt 95 vì thiếu chiều cao dọc, vẫn trên mức tối thiểu 24px của WCAG 2.5.8).
+* **Test mới:** `test_entry_tiers.mjs`, `test_npc_cooldowns.mjs`.
+* **Chưa làm:** B (cảnh theo địa điểm tách khỏi nghề trong `sceneContext.js`), D (trang bị có công dụng riêng), phản bội hoặc bỏ mặc của NPC chỉ trong tình huống phù hợp, người mới chơi thử.
+
 ## Phụ lục A: Bản tổng hợp thiết kế ngày 29/10/2026
 
 > Đây là nội dung lịch sử của `process.md`. Các mô tả cơ chế và kết quả kiểm thử phản ánh thời điểm 29/10/2026; những thay đổi và phép đo ở các đợt sau trong nhật ký chính được ưu tiên khi có khác biệt.

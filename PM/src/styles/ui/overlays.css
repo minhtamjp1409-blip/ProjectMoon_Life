@@ -185,10 +185,8 @@
 }
 
 .settings-section-tag {
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
   color: var(--accent);
 }
 
@@ -256,6 +254,13 @@
 .settings-slider:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
+}
+
+/* Touch screens and phones: every control in the settings panel is at least 44px, and a slider's hit area is taller than its 6px track */
+@media (pointer: coarse), (max-width: 860px) {
+  .settings-panel .settings-pill-btn, .settings-panel .settings-switch-btn, .settings-panel .settings-quick-mute { min-height: 44px; }
+  .settings-panel .settings-close-btn { min-width: 44px; min-height: 44px; flex-shrink: 0; }
+  .settings-panel .settings-slider { box-sizing: content-box; padding-block: 19px; background-clip: content-box; }
 }
 
 .settings-toggle-card {
@@ -424,8 +429,6 @@
 .npc-role-tag {
   color: var(--accent, #e5a93c);
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
 }
 
 .npc-district-tag {
@@ -536,11 +539,9 @@
 
 .wf-label {
   display: block;
-  font-size: 11px;
-  text-transform: uppercase;
+  font-size: 12px;
   color: var(--muted, #8a8a98);
   margin-bottom: 2px;
-  letter-spacing: 0.04em;
 }
 
 .wf-val {
@@ -637,10 +638,8 @@
 }
 
 .perk-badge {
-  font-size: 10.5px;
-  text-transform: uppercase;
+  font-size: 12px;
   color: var(--accent, #e5a93c);
-  letter-spacing: 0.05em;
   font-weight: 600;
 }
 
@@ -661,9 +660,7 @@
 .memories-title {
   margin: 0 0 8px;
   font-size: 12px;
-  text-transform: uppercase;
   color: var(--muted, #8a8a98);
-  letter-spacing: 0.04em;
 }
 
 .memories-list {
@@ -723,10 +720,8 @@
 
 .action-dock-title {
   margin: 0;
-  font-size: 11.5px;
-  text-transform: uppercase;
+  font-size: 12px;
   color: var(--muted);
-  letter-spacing: 0.05em;
 }
 
 .npc-action-grid {
@@ -756,7 +751,7 @@
 }
 
 .npc-action-btn:disabled, .npc-action-btn.is-disabled {
-  opacity: 0.45;
+  opacity: 0.6;
   cursor: not-allowed;
 }
 
@@ -767,7 +762,7 @@
 }
 
 .action-cost {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--accent);
   font-weight: 500;
 }
@@ -788,7 +783,9 @@
     width: 44px;
     height: 44px;
   }
+  /* Two columns keep the action dock short, so the dossier above it stays readable on a phone */
   .npc-action-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+  .npc-action-btn:last-child:nth-child(odd) { grid-column: 1 / -1; }
 }

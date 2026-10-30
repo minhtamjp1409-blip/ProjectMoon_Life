@@ -29,6 +29,11 @@ Các cổng Color riêng (E.G.O, thần đồng, E.G.O road) nằm trong `career
 - Hậu quả nhiều năm dùng `scheduleConsequences` với event `causalOnly: true, weight: 0`, mỗi event kế tiếp `requires` một cờ mà lựa chọn trước thật sự đặt. Xem `eventsWingThreads.js` làm mẫu và `tests/test_wing_threads.mjs` làm test mẫu.
 - Điều kiện lựa chọn dùng `need`. `need.fingerInvited` khóa một lựa chọn Finger cho tới khi Finger đó "gửi thư" (`fingerPull.js`).
 
+## Nhật ký và NPC
+
+- Mỗi mục nhật ký có một tầng (`entryTier`): quiet, decision hoặc turn. Chế độ "Đọc gọn" trong Cài đặt chỉ gấp mục quiet về câu đầu; không bao giờ gấp thứ người chơi đang chờ chọn hay đã chọn.
+- Hành động với NPC (`npcInteractions.js`) có cooldown theo năm cho mỗi NPC và mỗi hành động. Số liệu của một hành động đi vào `deltas`, không viết trong câu.
+
 ## Kiểm tra
 
 - `npm test`: toàn bộ lint, test hồi quy và mô phỏng 500 khoảnh khắc.
