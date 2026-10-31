@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { useShallow } from 'zustand/react/shallow';
 import { useGameStore } from '../../store/gameStore';
 import { useT } from '../../i18n';
+import { audioEngine } from '../../engine/audioEngine';
 import { DUNGEON_DEFINITIONS } from '../../engine/dungeonEngine';
 import { CUTSCENES } from './registry';
 import { ClawScene } from './scenes/ClawScene';
@@ -65,6 +66,12 @@ export default function CutsceneLayer() {
     if (!cutscene) return undefined;
     cutsceneStarted(key);
     skipRef.current?.focus({ preventScroll: true });
+    // The scene's own sound, timed to its timeline; it fades when the scene ends or is skipped
+    try {
+      audioEngine.playCutscene(cutscene.id, cutscene.cut, cutscene.durationMs);
+    } catch {
+      // Audio may be blocked
+    }
     const done = setTimeout(() => endCutscene('done', key), cutscene.durationMs);
     const onKey = (e) => {
       if (e.key === 'Tab') return;
@@ -79,6 +86,7 @@ export default function CutsceneLayer() {
     window.addEventListener('keydown', onKey, { capture: true });
     document.addEventListener('visibilitychange', onHidden);
     return () => {
+      audioEngine.stopCutscene();
       clearTimeout(done);
       window.removeEventListener('keydown', onKey, { capture: true });
       document.removeEventListener('visibilitychange', onHidden);

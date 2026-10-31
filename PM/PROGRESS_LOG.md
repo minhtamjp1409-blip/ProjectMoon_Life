@@ -2305,6 +2305,35 @@ Lỗi 2/500 ở check 5 của `run_million_audit` ghi ở Đợt 105.
   * `test_color_career_arc.mjs` có ca cố định cho thần đồng Grade 2 và 3.
   * Audit chạy 6 lần × 3000 khoảnh khắc: 0 lỗi ở cả năm nhóm.
 
+## Đợt 110: Âm thanh cho các cảnh (31/10/2026)
+
+* **`audioEngine.playCutscene(id, cut, durationMs)`:**
+  * Mỗi cảnh có một chuỗi âm tổng hợp bằng Web Audio, khớp với timeline CSS của cảnh, không dùng file âm thanh.
+  * Mọi âm đi qua một bus riêng; `stopCutscene` hạ bus xuống im lặng trong 120 ms khi cảnh kết thúc hoặc bị bỏ qua.
+  * Âm nền được hạ xuống còn 8% trong suốt cảnh.
+* **Từng cảnh:**
+  * Claw: tiếng xé không khí theo đường cắt, một nốt trầm khi tâm ngắm xoay, một tiếng kim loại sắc đúng lúc chớp.
+  * Chết: hai nhịp tim chậm dần, rồi một tiếng chuông xa khi hiện "Rồi im.".
+  * Color: một hợp âm dâng lên theo khe sáng, rồi một hợp âm sáng ngân đúng lúc tên được đọc.
+  * Carmen: bốn nhịp tim trùng bốn vòng sáng, một lớp tiếng thì thầm (nhiễu lọc) dày dần, rồi lặng đi và một nốt ấm khi câu chính hiện ra.
+  * Cổng hầm ngục: một luồng gió khi giao diện mờ đi, một tiếng cổng trầm khi tên hiện ra.
+* **Theo bản cắt:**
+  * lite và still chỉ giữ tiếng chính, phát gần như ngay lập tức. Still dùng nhịp ngắn vì bản still ngắn hơn bản full; nếu dùng nhịp full thì tiếng chính sẽ rơi sau khi cảnh đã đóng.
+  * caption (tắt cảnh) không phát thêm gì. Tắt tiếng thì không phát gì.
+* **Không chồng âm:**
+  * Khi một cảnh có âm thanh mở cùng lúc với sự kiện, Request hay hầm ngục, các âm báo cũ trong `LiveStageFeed` nhường cho cảnh.
+  * Tiếng chuông chết cũ chỉ còn phát khi tắt cảnh.
+* **Kiểm tra:**
+  * `tests/test_cutscene_audio.mjs` (đã nối vào `npm test`) chạy `audioEngine` với một `AudioContext` giả ghi lại mọi lệnh lập lịch. Với cả năm cảnh ở ba bản full, lite, still, nó kiểm tra:
+    * không lỗi;
+    * không có lệnh exponential ramp tới giá trị ≤ 0 (Web Audio sẽ báo lỗi với các giá trị này, và lỗi trong layer bị nuốt nên không thấy được);
+    * mọi âm bắt đầu trong thời lượng của bản cắt đó;
+    * caption và tắt tiếng không tạo âm;
+    * bỏ qua thì bus tắt dần.
+  * Test cổng kiểm tra các đường nối.
+  * Chạy bốn cảnh trên Chrome thật: 0 lỗi console.
+  * Chưa nghe thử bằng tai; cần chủ dự án nghe và chỉnh âm lượng nếu cần.
+
 ## Phụ lục A: Bản tổng hợp thiết kế ngày 29/10/2026
 
 > Đây là nội dung lịch sử của `process.md`. Các mô tả cơ chế và kết quả kiểm thử phản ánh thời điểm 29/10/2026; những thay đổi và phép đo ở các đợt sau trong nhật ký chính được ưu tiên khi có khác biệt.

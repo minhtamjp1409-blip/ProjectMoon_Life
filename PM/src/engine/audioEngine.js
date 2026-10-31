@@ -978,6 +978,132 @@ class AudioEngine {
       osc.stop(t + 0.5);
     });
   }
+
+  /* ---------- Cutscene cues (src/features/cutscene) ---------- */
+
+  // One tone on the scene's own bus: a pitch (optionally gliding), a quick rise and an exponential fall
+  cueTone(bus, t, { freq, to = null, type = 'sine', peak = 0.12, attack = 0.02, decay = 0.6 }) {
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, t);
+    if (to) osc.frequency.exponentialRampToValueAtTime(to, t + attack + decay);
+    gain.gain.setValueAtTime(0.0001, t);
+    gain.gain.linearRampToValueAtTime(peak, t + attack);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + attack + decay);
+    osc.connect(gain);
+    gain.connect(bus);
+    osc.start(t);
+    osc.stop(t + attack + decay + 0.05);
+  }
+
+  // A band of filtered noise that swells and falls: a cut through the air, a crowd of whispers, a gust at a gate
+  cueNoise(bus, t, { dur = 1, type = 'bandpass', freq = 1200, to = null, q = 1, peak = 0.08, attack = 0.3 }) {
+    const src = this.ctx.createBufferSource();
+    src.buffer = this.getNoiseBuffer('pink', Math.max(1, Math.ceil(dur + 0.2)));
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = type;
+    filter.frequency.setValueAtTime(freq, t);
+    if (to) filter.frequency.exponentialRampToValueAtTime(to, t + dur);
+    filter.Q.setValueAtTime(q, t);
+    const gain = this.ctx.createGain();
+    gain.gain.setValueAtTime(0.0001, t);
+    gain.gain.linearRampToValueAtTime(peak, t + Math.min(attack, dur * 0.8));
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    src.connect(filter);
+    filter.connect(gain);
+    gain.connect(bus);
+    src.start(t);
+    src.stop(t + dur + 0.05);
+  }
+
+  // Lub-dub, quieter with each call when the caller lowers amp
+  cueBeat(bus, t, amp = 0.32) {
+    this.cueTone(bus, t, { freq: 62, to: 36, peak: amp, attack: 0.02, decay: 0.14 });
+    this.cueTone(bus, t + 0.15, { freq: 54, to: 30, peak: amp * 0.75, attack: 0.02, decay: 0.12 });
+  }
+
+  // A bell from partials of one root, like the death toll, at any loudness
+  cueBell(bus, t, { root = 65.41, peak = 0.22, decay = 2.2 } = {}) {
+    [1, 2, 2.756, 3.82].forEach((partial, i) => this.cueTone(bus, t, { freq: root * partial, peak: peak / (i + 1), attack: 0.01, decay }));
+  }
+
+  /**
+   * Plays the cue for a scene, timed to its CSS timeline (cutscene.css). Lite keeps only the key hit; a caption
+   * (scenes off) plays nothing extra. The ambience ducks for the length of the scene, and everything runs on one bus
+   * so a skip can fade the lot (stopCutscene).
+   */
+  playCutscene(id, cut = 'full', durationMs = 3000) {
+    if (this.isMuted || cut === 'caption') return;
+    this.init();
+    if (!this.ctx) return;
+    this.stopCutscene();
+    const bus = this.ctx.createGain();
+    bus.gain.setValueAtTime(1, this.ctx.currentTime);
+    bus.connect(this.sfxGain);
+    this.cutsceneBus = bus;
+    this.duckAmbience(0.08, durationMs);
+    const t = this.ctx.currentTime + 0.02;
+    const at = (ms) => t + ms / 1000;
+    // The still cut (reduced motion) is short too, so it takes the lite cue: the key hit right away
+    const lite = cut !== 'full';
+
+    if (id === 'claw') {
+      // the cut runs across the room, the sight turns over a low drone, one hard flash
+      if (!lite) {
+        this.cueNoise(bus, at(400), { dur: 1.1, type: 'bandpass', freq: 700, to: 3200, q: 3, peak: 0.07, attack: 0.9 });
+        this.cueTone(bus, at(900), { freq: 55, peak: 0.1, attack: 0.5, decay: 1.6 });
+      }
+      const hit = lite ? 480 : 3000;
+      this.cueTone(bus, at(hit), { freq: 1900, to: 700, type: 'triangle', peak: 0.16, attack: 0.005, decay: 0.3 });
+      this.cueNoise(bus, at(hit), { dur: 0.25, type: 'highpass', freq: 2400, peak: 0.12, attack: 0.01 });
+    } else if (id === 'death') {
+      // the heart slows and stops, then one distant toll on "Then nothing"
+      if (!lite) {
+        this.cueBeat(bus, at(150), 0.34);
+        this.cueBeat(bus, at(1250), 0.2);
+      }
+      this.cueBell(bus, at(lite ? 300 : 2000), { peak: 0.16, decay: lite ? 1.4 : 2.2 });
+    } else if (id === 'color') {
+      // a swell rises with the slit, and the name rings out with the flash
+      if (!lite) {
+        [261.63, 392.0, 523.25].forEach((f, i) => this.cueTone(bus, at(300 + i * 120), { freq: f, type: i % 2 ? 'triangle' : 'sine', peak: 0.06, attack: 1.6, decay: 0.8 }));
+      }
+      const ring = lite ? 450 : 2500;
+      [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => this.cueTone(bus, at(ring + i * 25), { freq: f, peak: 0.1 / (1 + i * 0.4), attack: 0.01, decay: lite ? 0.9 : 1.6 }));
+    } else if (id === 'carmen') {
+      // four slow beats under a crowd of whispers that thickens, then quiet and one warm note for the sentence
+      if (!lite) {
+        [672, 1488, 2440, 3460].forEach((ms, i) => this.cueBeat(bus, at(ms), 0.18 + i * 0.03));
+        this.cueNoise(bus, at(500), { dur: 3.2, type: 'bandpass', freq: 900, to: 1600, q: 2, peak: 0.06, attack: 2.6 });
+      } else {
+        this.cueNoise(bus, at(0), { dur: 0.6, type: 'bandpass', freq: 1200, q: 2, peak: 0.05, attack: 0.3 });
+      }
+      const say = lite ? 100 : 3800;
+      [220, 329.63, 440].forEach((f) => this.cueTone(bus, at(say), { freq: f, peak: 0.05, attack: 0.5, decay: lite ? 0.6 : 1.8 }));
+    } else if (id === 'dungeon') {
+      // a gust as the room falls away, a low gate falling shut as the name appears
+      if (!lite) this.cueNoise(bus, at(0), { dur: 0.9, type: 'lowpass', freq: 300, to: 1400, q: 0.8, peak: 0.08, attack: 0.6 });
+      const thud = lite ? 100 : 400;
+      this.cueTone(bus, at(thud), { freq: 90, to: 40, peak: 0.26, attack: 0.01, decay: 0.7 });
+      this.cueNoise(bus, at(thud), { dur: 0.35, type: 'bandpass', freq: 180, q: 1.5, peak: 0.1, attack: 0.02 });
+    }
+  }
+
+  // Fades whatever a scene still has playing; called when a scene ends or is skipped
+  stopCutscene() {
+    const bus = this.cutsceneBus;
+    if (!bus || !this.ctx) return;
+    this.cutsceneBus = null;
+    const now = this.ctx.currentTime;
+    bus.gain.setValueAtTime(bus.gain.value, now);
+    bus.gain.linearRampToValueAtTime(0.0001, now + 0.12);
+    setTimeout(() => {
+      try {
+        bus.disconnect();
+      } catch {}
+    }, 200);
+  }
 }
 
 export const audioEngine = new AudioEngine();

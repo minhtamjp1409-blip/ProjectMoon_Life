@@ -216,6 +216,12 @@ const LogEntries = React.memo(function LogEntries({ logs, currentAge }) {
   return out;
 });
 
+// A scene that plays with sound (any cut but the caption) owns the moment's audio
+const sceneOwnsSound = () => {
+  const cs = useGameStore.getState().cutscene;
+  return Boolean(cs && cs.cut !== 'caption');
+};
+
 const StageFx = () => {
   const { t } = useT();
   const fx = useGameStore((s) => s.stageFx);
@@ -1256,7 +1262,8 @@ export const LiveStageFeed = () => {
         audioEngine.playPageFlip();
         gameFeel.haptic(30);
       } else {
-        audioEngine.playDeath();
+        // The death scene plays its own slowing heart and toll; the plain toll is for scenes off
+        if (!sceneOwnsSound()) audioEngine.playDeath();
         gameFeel.haptic([80, 50, 160]);
         gameFeel.addTrauma(0.85);
         gameFeel.triggerHitStop(220);
@@ -1496,6 +1503,8 @@ export const LiveStageFeed = () => {
 
   // Sound cues and camera trauma when an event, contract, or dungeon delve stops time
   useEffect(() => {
+    // A scene opening on the same moment (the Claw, Carmen, a dungeon gate) brings its own sound
+    if (sceneOwnsSound()) return;
     if (char.pendingDungeon) {
       audioEngine.playDanger();
       gameFeel.addTrauma(0.32);
