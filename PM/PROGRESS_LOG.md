@@ -1353,7 +1353,7 @@ Chủ dự án yêu cầu làm lại toàn bộ giao diện lần nữa: bỏ t�
 
 ### Đợt 66 (27/10/2026): Chuẩn Hóa UI/UX Toàn Diện 5 Trụ Cột — TasteSkill v2, AntiSlop, Tương Phản WCAG AA, Thao Tác Bàn Phím/Mobile & Game Feel
 
-* **1. Thanh Lọc Chi Tiết UI Theo `tasteskill v2` & `antislop-ui` + `design-system` (`src/features/chronicle/components/Deltas.jsx`, `src/features/chronicle/components/NpcDossierModal.jsx`, `src/features/bloodline/BloodlinePage.jsx`, `src/styles/ui/overlays.css`, `src/styles/ui/pages.css`):**
+* **1. Thanh Lọc Chi Tiết UI Theo `tasteskill v2` + `design-system` (`src/features/chronicle/components/Deltas.jsx`, `src/features/chronicle/components/NpcDossierModal.jsx`, `src/features/bloodline/BloodlinePage.jsx`, `src/styles/ui/overlays.css`, `src/styles/ui/pages.css`):**
   * Thay thế toàn bộ 11 ký tự dingbat/emoji trong `Deltas.jsx` (`STAT_ICONS`) bằng hệ thống chấm màu token ngữ nghĩa (`.delta-stat-dot` dùng `--s-health`, `--s-sanity`, `--s-wealth`, v.v.); thay thế các ký tự `⚠️`, `✕`, `◆` trong `NpcDossierModal.jsx` bằng icon nét mảnh `AlertTriangle`, `X` từ `lucide-react` và `.memory-bullet` CSS.
   * Loại bỏ toàn bộ 6 quy tắc `transition: all`, 2 nền gradient thừa trên thẻ tĩnh, phông `'Cinzel'` không nạp, và các mã màu hex Tailwind viết cứng (`#ef4444`, `#94a3b8`, `#4ade80`, `#f87171`, `#0d1117`, `#cbd5e1`) trong `overlays.css`, quy chuẩn 100% về hệ token trong `tokens.css`.
   * Chuyển toàn bộ inline style của Đài Tưởng Niệm Dòng Tộc và thanh công cụ trong `BloodlinePage.jsx` sang hệ class ngữ nghĩa trong `pages.css` (`.hall-panel`, `.hall-head`, `.hall-metrics`, `.hall-badges`, `.bloodline-toolbar`, `.bloodline-actions`).
@@ -2030,6 +2030,54 @@ Chủ dự án yêu cầu làm lại toàn bộ giao diện lần nữa: bỏ t�
 * **Đo hầm ngục và sát hạch Hana (bước 3):** công cụ mới `tools/sim/dungeon_reach.mjs` (cùng `lib/playYear.mjs`, `forceRoute`). (1) Con số 59% vào `backstreets_night` là của bot: greedy và focused chọn lựa chọn có điểm cao nhất, và ở hầu hết cổng "từ chối" có hiệu ứng dương nên bot từ chối, riêng `gate_night_body_retrieval` từ chối mất 6 SP nên bot vào. Với người chơi ngẫu nhiên, Fixer vào các hầm khá đều. (2) Vẫn có một lệch thật: cổng đầu tiên của một Fixer rơi vào khoảng 17 đến 25 tuổi, nhưng bốn cổng "Request mở" dành riêng cho Fixer (`gate_warp_fixer_request`, `gate_lobotomy_fixer_survey` mở từ 24; `gate_bloodfiend_zwei_bounty`, `gate_lake_open_hunt` từ 22) chưa mở, nên `warp_train` chỉ chiếm 9% lượt vào. Hạ tuổi mở của bốn cổng xuống 20; với 400 đời Fixer ngẫu nhiên, `warp_train` 9% lên 24%, `backstreets_night` 22% xuống 14%, mức thấp nhất 9% lên 10%. (3) Sát hạch Hana: người chơi ngẫu nhiên chết 6 đến 8,5% mỗi lần ngồi ở Grade 8 đến 5, 10 đến 12% ở Grade 4 và 3, 13 đến 18% ở Grade 2 và 1; chiếm 29% số ca chết. Chính sách focused (luôn chọn thăng cấp) chỉ chết 2 đến 5% ở Grade 8 đến 5. Chưa đổi hình phạt: độ chết ở Grade thấp phụ thuộc vào cách chọn trong kỳ thi, không chỉ vào Grade. Quyết định mềm hóa Grade 8 đến 6 cần chủ dự án.
 * **Test mới:** `test_entry_tiers.mjs`, `test_npc_cooldowns.mjs`.
 * **Chưa làm:** B (cảnh theo địa điểm tách khỏi nghề trong `sceneContext.js`), D (trang bị có công dụng riêng), phản bội hoặc bỏ mặc của NPC chỉ trong tình huống phù hợp, người mới chơi thử.
+
+## Đợt 100: Cutscene Director và cảnh Claw (31/10/2026)
+
+Đợt 1 của `docs/KE_HOACH_CHUYEN_CANH_VA_CUTSCENE.md`.
+
+* **Hạ tầng:**
+  * `src/engine/cutsceneTriggers.js` (`cutsceneFor`, `outranks`) chọn cảnh cho một lần `commit`: chết, Color, Claw, Carmen, hầm ngục, theo thứ tự ưu tiên. Không xếp hàng cảnh: cảnh mạnh hơn thay cảnh đang chạy, cảnh yếu hơn bị bỏ.
+  * `src/features/cutscene/registry.js` giữ thời lượng của bốn bản cắt và chữ của từng cảnh. Bốn bản là full, lite, still (giảm chuyển động) và caption (tắt cảnh).
+  * Store có `cutscene`, `cutsceneStarted` và `endCutscene(reason, key)`. Khi có cảnh, cảnh thay luôn chớp `stageFx` của cùng khoảnh khắc. Không có `document` (test, sim) thì không phát cảnh.
+* **Cổng giữ thời gian:**
+  * Khi `cutscene` khác null:
+    * `tick`, `stepYear` và `skipQuietTime` đứng yên;
+    * effect đồng hồ trong `MainLayout` dừng, và vì có `cutsceneKey` trong mảng phụ thuộc nên auto-choose đếm lại đủ thời gian kể từ lúc dock hiện;
+    * dock bị giữ.
+  * Phím Space, Enter, Esc được bắt ở pha capture, kèm một guard thứ hai trong `onKeyDown` của `LiveStageFeed`. Phím giữ chỉ bỏ qua cảnh một lần.
+  * Sau cảnh, dock bỏ qua phím chọn và chạm trong 250 ms, và tiêu điểm rơi vào nền dock chứ không vào một phương án. Chạm để bỏ qua dùng `click`.
+* **Chống kẹt:**
+  * Một mốc an toàn kết thúc cảnh sau `durationMs + 1500` ms, đếm lại từ lúc lớp cảnh hiện thật.
+  * Chunk tải lỗi thì cảnh kết thúc ngay.
+  * Tab bị ẩn thì cảnh kết thúc.
+  * Rời ván, bỏ ván, bắt đầu đời mới hay nạp save đều xóa cảnh.
+* **Cảnh Claw (C1):**
+  * Bản full dài 3,6 giây:
+    * màn tối;
+    * đường cắt xanh chạy từ trái sang;
+    * tầm nhìn lục giác của Claw xoay một lần;
+    * màn tách làm hai theo đường cắt, để lộ lớp nền mờ của dock;
+    * một lần chớp màu Claw, khoảng 120 ms gần đỉnh.
+  * Có ba dòng chữ; hai dòng đầu nằm trên vòng lục giác.
+  * Bản lite dài 0,9 giây: đường cắt, một lần chớp, một dòng chữ.
+  * Bản still là thẻ tĩnh, không gì chuyển động.
+  * Bản caption chỉ có lớp nền mờ và một dòng chữ.
+  * Cảnh kết thúc trên đúng nền mờ có blur 3px của dock, nên dock hiện ra không có khoảng sáng chen giữa.
+  * Màu đi qua token mới `--claw`, `--claw-core`, `--claw-veil`.
+  * Lớp cảnh tải bằng `import()` thành chunk riêng (2,6 kB JS, 4,9 kB CSS) và được tải trước khi vào ván.
+* **Cài đặt:**
+  * Mục "Cảnh chuyển" (`pm-cutscene`) có ba lựa chọn: Đầy đủ, Rút gọn (mặc định), Tắt.
+  * Với Rút gọn, lần đầu mỗi cảnh vẫn chiếu đầy đủ (`pm-cutscene-seen:{id}`). Ở x3, khi bật auto-choose, hoặc khi máy yếu (chế độ tiết kiệm pin, CPU từ 2 lõi trở xuống, RAM từ 2 GB trở xuống), cảnh chiếu bản rút gọn.
+  * Kế hoạch ban đầu đặt ngưỡng máy yếu là 4 lõi; mình hạ xuống 2 để laptop 4 lõi vẫn xem được cảnh đầy đủ.
+* **Kiểm tra:**
+  * Thêm `test_cutscene_triggers.mjs`, `test_cutscene_gate.mjs` và lint `tools/lint/check_cutscenes.mjs`. Lint kiểm tra:
+    * cảnh nào cũng có hình và đủ bốn bản;
+    * keyframes chỉ động `transform` và `opacity`;
+    * không có vòng lặp;
+    * không có màu viết cứng.
+  * Chữ của cảnh đi qua `voice_lint`.
+  * Đã quay filmstrip bằng `tools/film/film_cutscene.mjs` ở 320x568, 390x844, 412x915, 800x1280 và 1440x900, cả bốn bản. Kết quả: không tràn ngang, 0 lỗi console, dock hiện sau cảnh.
+* **Chưa làm:** âm thanh cho cảnh (sau tầng A); C2 cái chết hai bước và C4 Color (đợt 2).
 
 ## Phụ lục A: Bản tổng hợp thiết kế ngày 29/10/2026
 

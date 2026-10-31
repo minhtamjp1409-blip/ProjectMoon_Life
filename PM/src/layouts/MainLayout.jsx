@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { Suspense, lazy, useEffect, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import Header, { BottomNav } from './Header';
 import { WorldBackdrop } from '../components/world/WorldBackdrop';
@@ -10,13 +10,25 @@ import { useGameStore } from '../store/gameStore';
 
 const TICK_MS = 100;
 
+// Scenes load on their own chunk; if it cannot load, the scene ends at once and the game goes on
+const loadCutsceneLayer = () => import('../features/cutscene/CutsceneLayer');
+const CutsceneLoadFailed = () => {
+  const endCutscene = useGameStore((s) => s.endCutscene);
+  useEffect(() => {
+    endCutscene('error');
+  }, [endCutscene]);
+  return null;
+};
+const CutsceneLayer = lazy(() => loadCutsceneLayer().catch(() => ({ default: CutsceneLoadFailed })));
+
 export const MainLayout = ({ children }) => {
   const location = useLocation();
   // Only the fields the loop needs; yearProgress is left out so the layout doesn't re-render each tick
-  const { inRun, alive, pendingEvent, pendingContract, pendingMinor, pendingModal, activeResolution, speed, autoPlay, tick, selectEventChoice, selectContractApproach, dismissResolution, hydrateFromBackend, dungeonId, dungeonFx, dungeonNonce } =
+  const { inRun, alive, pendingEvent, pendingContract, pendingMinor, pendingModal, activeResolution, speed, autoPlay, tick, selectEventChoice, selectContractApproach, dismissResolution, hydrateFromBackend, dungeonId, dungeonFx, dungeonNonce, cutsceneKey } =
     useGameStore(
       useShallow((s) => ({
         inRun: s.inRun,
+        cutsceneKey: s.cutscene?.key || null,
         alive: s.char.alive,
         pendingEvent: s.char.pendingEvent,
         pendingContract: s.char.pendingContract,
@@ -40,9 +52,15 @@ export const MainLayout = ({ children }) => {
     hydrateFromBackend();
   }, [hydrateFromBackend]);
 
-  // The year's clock: real elapsed time, capped so a background tab doesn't skip a decade
+  // Fetch the scene chunk early in a run, so the first scene does not wait on the network
   useEffect(() => {
-    if (!inRun || !alive || speed === 0 || pendingModal) return undefined;
+    if (inRun) loadCutsceneLayer().catch(() => {});
+  }, [inRun]);
+
+  // The year's clock: real elapsed time, capped so a background tab doesn't skip a decade.
+  // A scene stops every timer here; when it ends the effect re-runs, so autoplay counts its full delay from the moment the dock shows.
+  useEffect(() => {
+    if (!inRun || !alive || speed === 0 || pendingModal || cutsceneKey) return undefined;
 
     if (activeResolution) {
       if (!autoPlay) return undefined;
@@ -71,12 +89,12 @@ export const MainLayout = ({ children }) => {
       tick(dt);
     }, TICK_MS);
     return () => clearInterval(timer);
-  }, [inRun, alive, pendingEvent, pendingContract, pendingModal, activeResolution, speed, autoPlay, tick, selectEventChoice, selectContractApproach, dismissResolution]);
+  }, [inRun, alive, pendingEvent, pendingContract, pendingModal, activeResolution, speed, autoPlay, tick, selectEventChoice, selectContractApproach, dismissResolution, cutsceneKey]);
 
   // The play screen manages its own scrolling regions; other screens scroll as a page
   const isPlay = location.pathname === '/' && inRun;
   const isHome = location.pathname === '/' && !inRun;
-  const hasDock = isPlay && Boolean(pendingEvent || pendingContract || pendingMinor || activeResolution);
+  const hasDock = isPlay && !cutsceneKey && Boolean(pendingEvent || pendingContract || pendingMinor || activeResolution);
   const dungeon = isPlay && dungeonId ? DUNGEON_DEFINITIONS[dungeonId] : null;
 
   // The world this life is in right now: one string, so the layout re-renders only when it changes
@@ -102,6 +120,11 @@ export const MainLayout = ({ children }) => {
       <Header isPlay={isPlay} />
       <main className={`main ${isHome ? 'is-home' : ''}`} id="main-content">{isPlay ? children : <div className="main-scroll">{children}</div>}</main>
       <BottomNav />
+      {isPlay && cutsceneKey && (
+        <Suspense fallback={null}>
+          <CutsceneLayer />
+        </Suspense>
+      )}
     </div>
   );
 };

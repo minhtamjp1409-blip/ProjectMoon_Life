@@ -294,6 +294,9 @@
   animation: scrimIn .25s ease both;
 }
 @keyframes scrimIn { from { opacity: 0; } }
+/* Focus lands on the backdrop after a scene, not on an option; the first quarter second ignores taps */
+.event-modal-backdrop:focus { outline: none; }
+.event-modal-backdrop.is-arming { pointer-events: none; animation: none; }
 .event-modal-backdrop > .dock {
   width: min(640px, 100%);
   max-height: min(calc(100dvh - var(--top) - 100px), 860px);

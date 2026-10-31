@@ -1015,7 +1015,8 @@ export const LiveStageFeed = () => {
     clearPostChoicePause,
     revealNextBirthLog,
     skipAllBirthLogs,
-    stepYear
+    stepYear,
+    cutsceneKey
   } = useGameStore(
     useShallow((s) => ({
       char: s.char,
@@ -1044,7 +1045,8 @@ export const LiveStageFeed = () => {
       clearPostChoicePause: s.clearPostChoicePause,
       revealNextBirthLog: s.revealNextBirthLog,
       skipAllBirthLogs: s.skipAllBirthLogs,
-      stepYear: s.stepYear
+      stepYear: s.stepYear,
+      cutsceneKey: s.cutscene?.key || null
     }))
   );
 
@@ -1071,6 +1073,27 @@ export const LiveStageFeed = () => {
   const [cursorPos, setCursorPos] = useState(50);
   const [strikes, setStrikes] = useState([]);
   const [peekBehind, setPeekBehind] = useState(false);
+  // For 250 ms after a scene the dock ignores choice keys and taps, so a hurried skip cannot pick an option
+  const [dockArming, setDockArming] = useState(false);
+  const armedAtRef = useRef(0);
+  const dockRef = useRef(null);
+  const hadCutsceneRef = useRef(false);
+  useEffect(() => {
+    if (cutsceneKey) {
+      hadCutsceneRef.current = true;
+      return undefined;
+    }
+    if (!hadCutsceneRef.current) return undefined;
+    hadCutsceneRef.current = false;
+    armedAtRef.current = performance.now() + 250;
+    setDockArming(true);
+    const frame = requestAnimationFrame(() => dockRef.current?.focus({ preventScroll: true }));
+    const timer = setTimeout(() => setDockArming(false), 250);
+    return () => {
+      cancelAnimationFrame(frame);
+      clearTimeout(timer);
+    };
+  }, [cutsceneKey]);
   const [dungeonStake, setDungeonStake] = useState(0);
   useEffect(() => setDungeonStake(0), [char.pendingEvent?.id]);
   const dirRef = useRef(1);
@@ -1188,6 +1211,12 @@ export const LiveStageFeed = () => {
     const onKeyDown = (e) => {
       if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) return;
       if (char.pendingModal) return;
+      // A scene owns the keys while it plays (its own capture listener stops them first; this is the second lock)
+      if (useGameStore.getState().cutscene) return;
+      if (performance.now() < armedAtRef.current) {
+        if (e.key === 'Enter' || e.code === 'Space' || /^[0-9]$/.test(e.key)) e.preventDefault();
+        return;
+      }
       if (peekBehind) {
         if (e.key === 'Escape') { e.preventDefault(); setPeekBehind(false); }
         return;
@@ -1358,7 +1387,7 @@ export const LiveStageFeed = () => {
   const lifeSummary = !char.alive ? buildLifeSummaryAndLegacy(char) : null;
   const currentRegion = REGIONS.find((r) => r.id === char.regionId) || REGIONS[0];
   const currentMilestone = getNextCareerMilestone(char);
-  const hasDock = Boolean((char.pendingYearPlan && !isPrologueActive) || char.pendingDungeon || char.pendingEvent || char.pendingContract || char.pendingMinor || activeResolution);
+  const hasDock = !cutsceneKey && Boolean((char.pendingYearPlan && !isPrologueActive) || char.pendingDungeon || char.pendingEvent || char.pendingContract || char.pendingMinor || activeResolution);
   const canPeek = Boolean(char.pendingDungeon || char.pendingEvent || char.pendingContract || activeResolution);
   useEffect(() => setPeekBehind(false), [char.pendingDungeon?.id, char.pendingEvent?.id, char.pendingContract?.id, activeResolution?.titleVi]);
 
@@ -1473,7 +1502,7 @@ export const LiveStageFeed = () => {
         </button>
       )}
       {hasDock && !peekBehind && (
-        <div className="event-modal-backdrop" role="dialog" aria-modal="true" aria-label={t('Sự kiện & Kết quả', 'Event & Outcome')}>
+        <div ref={dockRef} tabIndex={-1} className={`event-modal-backdrop ${dockArming ? 'is-arming' : ''}`} role="dialog" aria-modal="true" aria-label={t('Sự kiện & Kết quả', 'Event & Outcome')}>
           {activeResolution ? (
             <ResultDock
               resolution={activeResolution}

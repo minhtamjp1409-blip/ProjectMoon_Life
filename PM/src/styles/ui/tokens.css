@@ -48,6 +48,11 @@
   --s-heat: #ff6f66;
   --s-reso: #ad9cf5;
 
+  /* the Head's judgment: the Claw's cold cyan, its white cut, the dark it brings */
+  --claw: #7fe0ec;
+  --claw-core: #e8fbff;
+  --claw-veil: rgba(3, 8, 10, 0.95);
+
   --shadow-pop: 0 18px 48px rgba(0, 0, 0, 0.6);
   --dialog-surface: #252127;
   --dialog-border: #746348;

@@ -32,6 +32,8 @@ import { CLAW_DUNGEON_ID } from '../data/dungeonClaw.js';
 import { applyAnnualPlan, ambitionsFor, defaultYearPoints } from '../engine/annualPlan.js';
 import { autoLeadIndex, tabooGainOf } from '../engine/forbiddenPath.js';
 import { relocateCharacterDistrict, imbueCharacterEquipment } from '../engine/cityUpgrades.js';
+import { cutsceneFor, outranks } from '../engine/cutsceneTriggers.js';
+import { CUTSCENES, resolveCutsceneCut, hasSeenCutscene, markCutsceneSeen, prefersReducedMotion, isLowPowerDevice } from '../features/cutscene/registry.js';
 
 const META_KEY = 'pm_city_chronicles_save_v3';
 const RUN_KEY = 'pm_city_chronicles_run_v1';
@@ -157,6 +159,36 @@ function stageFxFor(prev, next) {
   if (fresh.some((l) => l.type === 'danger')) return 'blood';
   if (fresh.some((l) => l.type === 'causal')) return 'echo';
   return null;
+}
+
+// A scene that never reports its end (a chunk that failed to load, a stalled tab) is ended by this timer, so time never stays frozen
+const CUTSCENE_GRACE_MS = 1500;
+let cutsceneWatchdog = null;
+const clearCutsceneWatchdog = () => {
+  clearTimeout(cutsceneWatchdog);
+  cutsceneWatchdog = null;
+};
+const armCutsceneWatchdog = (get, cs) => {
+  clearCutsceneWatchdog();
+  cutsceneWatchdog = setTimeout(() => get().endCutscene('watchdog', cs.key), cs.durationMs + CUTSCENE_GRACE_MS);
+  // Node (tests, sims) should not wait on a scene nobody is watching
+  cutsceneWatchdog?.unref?.();
+};
+
+// The scene a commit should play, or null when there is none, it is not built yet, or a stronger one is already running
+function nextCutscene(prev, next, state) {
+  // No screen (tests, sims): nothing to watch, so time is never held for a scene
+  if (typeof document === 'undefined') return null;
+  const id = cutsceneFor(prev, next);
+  if (!id || !CUTSCENES[id] || !outranks(id, state.cutscene?.id)) return null;
+  const cut = resolveCutsceneCut({
+    setting: useThemeStore.getState().cutsceneMode,
+    reduced: prefersReducedMotion(),
+    seen: hasSeenCutscene(id),
+    fast: state.speed >= 3 || state.autoPlay,
+    lowPower: isLowPowerDevice()
+  });
+  return { id, key: `${id}_${next.age}_${next.logs.length}_${Date.now()}`, cut, durationMs: CUTSCENES[id].ms[cut] };
 }
 
 function enforceTabooJudgment(char) {
@@ -330,6 +362,8 @@ export const useGameStore = create((set, get) => ({
   yearProgress: 0,
   minorRemainingMs: 0,
   stageFx: null,
+  // The scene playing right now; while it is set the dock waits and the year's clock stands still
+  cutscene: null,
   activeResolution: null,
   postChoicePauseMs: 0,
   backendOnline: false,
@@ -355,6 +389,19 @@ export const useGameStore = create((set, get) => ({
   toggleAutoPlay: () => set((s) => ({ autoPlay: !s.autoPlay })),
   dismissResolution: () => set({ activeResolution: null, postChoicePauseMs: 0 }),
   clearPostChoicePause: () => set({ postChoicePauseMs: 0 }),
+  // The layer calls this once it is on screen: the watchdog then counts from the real start, not from the request
+  cutsceneStarted: (key) => {
+    const cs = get().cutscene;
+    if (!cs || cs.key !== key) return;
+    armCutsceneWatchdog(get, cs);
+  },
+  // reason: 'done' | 'skip' | 'hidden' | 'error' | 'watchdog'. A key that no longer matches is a late call from an old scene.
+  endCutscene: (reason, key) => {
+    const cs = get().cutscene;
+    if (!cs || (key && cs.key !== key)) return;
+    clearCutsceneWatchdog();
+    set({ cutscene: null });
+  },
   setPendingLegacy: (legacy) => set({ pendingLegacy: normalizeLegacyRecord(legacy) }),
 
   discardPendingLegacy: (deleteFromArchive = false) => {
@@ -433,13 +480,15 @@ export const useGameStore = create((set, get) => ({
     lifeRng = run.rngState ? createRNG(`${char.seed}:life:${char.age}`, run.rngState) : lifeRngFor(char);
     if (char.pendingLead && !char.pendingYearPlan) char = chooseDirectorPacedLead(char, lifeRng);
     lifeActiveMs = run.activePlayMs || 0;
-    set({ char, inRun: true, yearProgress: run.yearProgress || 0, speed: 1, stageFx: null, activeResolution: null, postChoicePauseMs: 0, minorRemainingMs: char.pendingMinor?.remainingMs || MINOR_WINDOW_MS });
+    clearCutsceneWatchdog();
+    set({ char, inRun: true, yearProgress: run.yearProgress || 0, speed: 1, stageFx: null, cutscene: null, activeResolution: null, postChoicePauseMs: 0, minorRemainingMs: char.pendingMinor?.remainingMs || MINOR_WINDOW_MS });
   },
 
   // Leave the run without losing it
   exitToSetup: () => {
     get().saveRun(true);
-    set({ inRun: false, speed: 1, activeResolution: null, postChoicePauseMs: 0 });
+    clearCutsceneWatchdog();
+    set({ inRun: false, speed: 1, cutscene: null, activeResolution: null, postChoicePauseMs: 0 });
   },
 
   buyItem: (itemId) => {
@@ -534,7 +583,8 @@ export const useGameStore = create((set, get) => ({
     if (get().inRun && get().char?.alive) reportGameplaySample(get().char, true);
     clearTimeout(saveTimer);
     clearSavedRun();
-    set({ inRun: false, speed: 1, yearProgress: 0, savedRun: null, activeResolution: null, postChoicePauseMs: 0 });
+    clearCutsceneWatchdog();
+    set({ inRun: false, speed: 1, yearProgress: 0, savedRun: null, cutscene: null, activeResolution: null, postChoicePauseMs: 0 });
   },
 
   /* ---------- archive ---------- */
@@ -641,10 +691,17 @@ export const useGameStore = create((set, get) => ({
         prev.pendingDungeon.id === (withD.firstDungeonId || prev.firstDungeonId)) {
       withD.firstDungeonOutcome = extra.activeResolution?.outcome || (!withD.alive ? 'dead' : 'broken');
     }
-    const fx = stageFxFor(prev, withD);
+    // A scene replaces the stage flash for the same moment, so the two never stack
+    const cutscene = nextCutscene(prev, withD, get());
+    const fx = cutscene ? null : stageFxFor(prev, withD);
     const meta = get().syncMetaFromChar(withD);
+    if (cutscene) {
+      if (cutscene.cut === 'full') markCutsceneSeen(cutscene.id);
+      armCutsceneWatchdog(get, cutscene);
+    }
     set({
       char: withD,
+      ...(cutscene ? { cutscene } : {}),
       ...(fx ? { stageFx: { kind: fx, at: Date.now() } } : {}),
       ...(withD.pendingMinor && !prev.pendingMinor ? { minorRemainingMs: withD.pendingMinor.remainingMs || MINOR_WINDOW_MS } : {}),
       ...meta,
@@ -721,6 +778,7 @@ export const useGameStore = create((set, get) => ({
       speed: hasBirthLogs ? 0 : 1,
       yearProgress: 0,
       stageFx: null,
+      cutscene: null,
       activeResolution: null,
       postChoicePauseMs: 0,
       ...metaUpdates
@@ -738,7 +796,7 @@ export const useGameStore = create((set, get) => ({
     const c = s.char;
     if (!s.inRun || !c.alive) return;
     if (s.speed > 0) lifeActiveMs += Math.max(0, Math.min(1000, dtMs));
-    if (s.activeResolution) return;
+    if (s.cutscene || s.activeResolution) return;
     if (c.pendingYearPlan) {
       if (s.autoPlay && s.speed > 0 && !(c.pendingBirthLogs || []).length) {
         get().chooseAnnualPlan(c.lastYearPoints || defaultYearPoints(), c.ambition?.id || ambitionsFor(c)[0].id);
@@ -812,7 +870,7 @@ export const useGameStore = create((set, get) => ({
   stepYear: () => {
     const s = get();
     const c = s.char;
-    if (!c.alive || c.pendingYearPlan || c.pendingLead || c.pendingEvent || c.pendingContract || c.pendingDungeon || c.pendingModal || c.pendingMinor || s.activeResolution) return;
+    if (s.cutscene || !c.alive || c.pendingYearPlan || c.pendingLead || c.pendingEvent || c.pendingContract || c.pendingDungeon || c.pendingModal || c.pendingMinor || s.activeResolution) return;
 
     const curP = s.yearProgress;
     const nextItem = nextPlanItem(c);
@@ -857,7 +915,7 @@ export const useGameStore = create((set, get) => ({
     const startAge = get().char?.age;
     for (let step = 0; step < 5; step++) {
       const before = get();
-      if (!before.char?.alive || before.char.age !== startAge || before.char.pendingYearPlan || before.char.pendingLead || before.char.pendingEvent || before.char.pendingContract || before.char.pendingDungeon || before.char.pendingMinor || before.char.pendingModal || before.activeResolution) break;
+      if (before.cutscene || !before.char?.alive || before.char.age !== startAge || before.char.pendingYearPlan || before.char.pendingLead || before.char.pendingEvent || before.char.pendingContract || before.char.pendingDungeon || before.char.pendingMinor || before.char.pendingModal || before.activeResolution) break;
       const cursor = before.char.planCursor;
       const progress = before.yearProgress;
       get().stepYear();

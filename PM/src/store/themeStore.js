@@ -10,6 +10,7 @@ export const useThemeStore = create((set) => {
   const initialReadMode = readSetting('pm-read-mode') === 'compact' ? 'compact' : 'full';
   const initialGameplayMetrics = readSetting('pm-gameplay-metrics') === 'on';
   const initialPerfMode = readSetting('pm-perf-mode') === 'on';
+  const initialCutscene = ['full', 'short', 'off'].includes(readSetting('pm-cutscene')) ? readSetting('pm-cutscene') : 'short';
 
   if (typeof document !== 'undefined') {
     if (initialMode === 'dark') document.documentElement.classList.add('dark');
@@ -38,6 +39,12 @@ export const useThemeStore = create((set) => {
     setReadMode: (next) => {
       localStorage.setItem('pm-read-mode', next);
       set({ readMode: next });
+    },
+    // Cutscenes: 'full' always in full, 'short' in full the first time then cut short, 'off' leaves a one-line caption
+    cutsceneMode: initialCutscene,
+    setCutsceneMode: (next) => {
+      localStorage.setItem('pm-cutscene', next);
+      set({ cutsceneMode: next });
     },
     perfMode: initialPerfMode,
     setPerfMode: (enabled) => {

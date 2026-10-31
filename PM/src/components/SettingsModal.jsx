@@ -16,6 +16,8 @@ export const SettingsModal = ({ open, onClose }) => {
     setReadMode,
     motionMode,
     setMotion,
+    cutsceneMode,
+    setCutsceneMode,
     perfMode,
     setPerfMode,
     gameplayMetricsEnabled,
@@ -296,6 +298,29 @@ export const SettingsModal = ({ open, onClose }) => {
                 ))}
               </div>
             </div>
+
+            {/* Cutscenes */}
+            <div className="settings-pill-row">
+              <span className="settings-sublabel">{pick(lang, 'Cảnh chuyển:', 'Cutscenes:')}</span>
+              <div className="pill-options">
+                {[
+                  ['full', 'Đầy đủ', 'Full'],
+                  ['short', 'Rút gọn', 'Short'],
+                  ['off', 'Tắt', 'Off']
+                ].map(([k, vi, en]) => (
+                  <button
+                    key={k}
+                    type="button"
+                    className={`settings-pill-btn ${cutsceneMode === k ? 'is-active' : ''}`}
+                    aria-pressed={cutsceneMode === k}
+                    onClick={() => setCutsceneMode(k)}
+                  >
+                    {pick(lang, vi, en)}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <p className="settings-note">{pick(lang, 'Rút gọn vẫn chiếu đầy đủ ở lần đầu mỗi cảnh. Tắt chỉ còn một dòng chữ. Chạm, Space hoặc Esc để bỏ qua.', 'Short still plays each scene in full the first time. Off leaves a single line. Tap, Space or Esc skips.')}</p>
           </section>
 
           {/* Section: Privacy / Metrics */}

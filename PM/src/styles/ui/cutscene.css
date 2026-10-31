@@ -1,0 +1,198 @@
+/*
+  Cutscene Director: one full-screen scene at a time (src/features/cutscene/).
+  Each cut is a fixed timeline of animation delays; JS only mounts the layer and removes it when the time is up.
+  Only transform and opacity move. Cuts: is-full, is-lite, is-still (reduced motion, nothing moves), is-caption (scenes off).
+  A scene ends on the dock's own scrim, so the decision card rises on the same dimmed City the scene left behind.
+*/
+.cutscene {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  overflow: clip;
+  color: var(--text);
+}
+.cs-scrim,
+.cs-art,
+.cs-lines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.cs-scrim { background: var(--dialog-scrim); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); }
+
+/* ---------- the dark, in two halves that part along the cut ---------- */
+.cs-half {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: calc(50% + 1px);
+  background: var(--claw-veil);
+}
+.cs-half.is-top { top: 0; }
+.cs-half.is-bottom { bottom: 0; }
+
+/* ---------- the cut ---------- */
+.cs-cut {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 0;
+  transform-origin: left center;
+}
+.cs-cut-band,
+.cs-cut-core {
+  position: absolute;
+  left: 0;
+  right: 0;
+}
+.cs-cut-band { top: -7px; height: 14px; background: var(--claw); opacity: 0.22; }
+.cs-cut-core { top: -1px; height: 2px; background: var(--claw-core); }
+
+/* ---------- the Claw's sight ---------- */
+.cs-sight {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(58vmin, 440px);
+  height: min(58vmin, 440px);
+  margin: calc(min(58vmin, 440px) / -2) 0 0 calc(min(58vmin, 440px) / -2);
+  opacity: 0;
+  fill: none;
+  stroke: var(--claw);
+  stroke-width: 1.2;
+}
+.cs-sight polygon { transform-box: fill-box; transform-origin: center; }
+.cs-sight-outer { stroke-dasharray: 10 7; }
+.cs-sight-mid { opacity: 0.55; }
+.cs-sight-inner { stroke: var(--claw-core); opacity: 0.8; }
+
+.cs-flash {
+  position: absolute;
+  inset: 0;
+  background: var(--claw);
+  opacity: 0;
+}
+
+/* ---------- words ---------- */
+.cs-lines {
+  display: grid;
+  place-items: center;
+  padding: 0 16px;
+}
+.cs-line {
+  grid-area: 1 / 1;
+  max-width: 30ch;
+  margin: 0;
+  font-family: var(--serif);
+  font-size: clamp(19px, 2.4vw, 26px);
+  line-height: 1.35;
+  text-align: center;
+  text-wrap: balance;
+  color: var(--text);
+  opacity: 0;
+  /* above the Claw's sight, never across its lines */
+  translate: 0 calc(-1 * min(29vmin, 220px) - 44px);
+}
+.cs-line.is-key {
+  max-width: 16ch;
+  font-size: clamp(32px, 5.6vw, 64px);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  color: var(--claw-core);
+  translate: none;
+}
+
+.cs-skip {
+  position: absolute;
+  right: 16px;
+  bottom: calc(var(--bottom, 0px) + 16px);
+  min-width: var(--control-h);
+  min-height: var(--control-h);
+  padding: 0 20px;
+  font: 500 14px/1 var(--font);
+  color: var(--text);
+  background: var(--raised);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  opacity: 0;
+  animation: cs-in 240ms ease-out 300ms forwards;
+  transition: background-color 150ms ease, transform 120ms ease;
+}
+.cs-skip:hover { background: var(--active); }
+.cs-skip:active { transform: scale(0.97); }
+.cs-skip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; transition: none; }
+
+/* ---------- full, 3600 ms ---------- */
+.is-full .cs-scrim { animation: cs-in 400ms ease-out both; }
+.is-full .cs-half.is-top { animation: cs-in 400ms ease-out both, cs-part-up 800ms cubic-bezier(0.7, 0, 0.84, 0) 2200ms forwards; }
+.is-full .cs-half.is-bottom { animation: cs-in 400ms ease-out both, cs-part-down 800ms cubic-bezier(0.7, 0, 0.84, 0) 2200ms forwards; }
+.is-full .cs-cut { animation: cs-cut 1100ms var(--ease-tactile) 400ms both, cs-out 300ms ease-in 2200ms forwards; }
+.is-full .cs-sight { animation: cs-sight-in 800ms var(--ease-tactile) 900ms both, cs-sight-out 400ms ease-in 2200ms forwards; }
+.is-full .cs-sight-outer { animation: cs-turn 1500ms linear 900ms both; }
+.is-full .cs-sight-inner { animation: cs-turn-back 1500ms linear 900ms both; }
+.is-full .cs-flash { animation: cs-flash 240ms linear 3000ms both; }
+.is-full .cs-line-1 { animation: cs-line 1000ms ease-out 400ms both; }
+.is-full .cs-line-2 { animation: cs-line 1000ms ease-out 1400ms both; }
+.is-full .cs-line.is-key { animation: cs-key 1300ms var(--ease-tactile) 2300ms both; }
+
+/* ---------- lite, 900 ms: the cut, one flash, one line ---------- */
+.is-lite .cs-sight { display: none; }
+.is-lite .cs-scrim { animation: cs-in 150ms ease-out both; }
+.is-lite .cs-half.is-top { animation: cs-in 150ms ease-out both, cs-part-up 350ms cubic-bezier(0.7, 0, 0.84, 0) 500ms forwards; }
+.is-lite .cs-half.is-bottom { animation: cs-in 150ms ease-out both, cs-part-down 350ms cubic-bezier(0.7, 0, 0.84, 0) 500ms forwards; }
+.is-lite .cs-cut { animation: cs-cut 350ms var(--ease-tactile) 100ms both, cs-out 150ms ease-in 450ms forwards; }
+.is-lite .cs-flash { animation: cs-flash 240ms linear 480ms both; }
+.is-lite .cs-line.is-key { animation: cs-key 760ms var(--ease-tactile) 100ms both; }
+
+/* ---------- still, reduced motion: the judgment as a card, nothing moves ---------- */
+.is-still,
+.is-still * { animation: none !important; }
+.is-still .cs-sight { opacity: 0.45; }
+.is-still .cs-flash,
+.is-still .cs-cut { display: none; }
+.is-still .cs-line.is-key,
+.is-still .cs-skip { opacity: 1; }
+
+/* ---------- caption, scenes off: the dock's scrim and one line, no drawing ---------- */
+.is-caption .cs-scrim { animation: cs-in 150ms ease-out both; }
+.is-caption .cs-line.is-key {
+  font-size: clamp(24px, 3.4vw, 36px);
+  animation: cs-key var(--cs-total) ease-out both;
+}
+/* Scenes off with reduced motion: base.css collapses every animation to its end, which would hide the line */
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-motion='full']) .is-caption .cs-line.is-key { animation: none; opacity: 1; }
+}
+:root[data-motion='reduced'] .is-caption .cs-line.is-key { animation: none; opacity: 1; }
+
+@keyframes cs-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes cs-out { to { opacity: 0; } }
+@keyframes cs-part-up { to { transform: translateY(-100%); } }
+@keyframes cs-part-down { to { transform: translateY(100%); } }
+@keyframes cs-cut { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes cs-sight-in {
+  from { opacity: 0; transform: scale(1.08) rotate(-14deg); }
+  to { opacity: 0.7; transform: none; }
+}
+@keyframes cs-sight-out { to { opacity: 0; transform: scale(1.18); } }
+@keyframes cs-turn { to { transform: rotate(30deg); } }
+@keyframes cs-turn-back { to { transform: rotate(-24deg); } }
+/* one flash, about 120 ms near its peak, never repeated */
+@keyframes cs-flash {
+  0% { opacity: 0; }
+  25%, 70% { opacity: 0.3; }
+  100% { opacity: 0; }
+}
+@keyframes cs-line {
+  0% { opacity: 0; transform: translateY(8px); }
+  30%, 80% { opacity: 1; transform: none; }
+  100% { opacity: 0; transform: none; }
+}
+@keyframes cs-key {
+  0% { opacity: 0; transform: translateY(10px) scale(0.98); }
+  25%, 88% { opacity: 1; transform: none; }
+  100% { opacity: 0; transform: none; }
+}

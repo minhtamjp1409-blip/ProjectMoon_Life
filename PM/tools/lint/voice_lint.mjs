@@ -11,6 +11,7 @@ import { FIXER_REQUESTS } from '../../src/data/eventsSupernatural.js';
 import { DUNGEON_DEFINITIONS } from '../../src/engine/dungeonEngine.js';
 import { ASSOCIATIONS, OFFICE_REQUESTS } from '../../src/data/associations.js';
 import { GAUNTLETS, REST_TEXT } from '../../src/data/dungeonGauntlets.js';
+import { CUTSCENES } from '../../src/features/cutscene/registry.js';
 
 const arg = (name, dflt) => (process.argv.find((a) => a.startsWith(`--${name}=`)) || '').split('=')[1] ?? dflt;
 const EXAMPLES = Number(arg('examples', 0));
@@ -52,6 +53,7 @@ for (const [pool, list] of poolOf) for (const e of list) walk(pool, e.id, '', e)
 for (const d of Object.values(DUNGEON_DEFINITIONS)) walk('dungeon', d.id, '', d);
 for (const [id, g] of Object.entries(GAUNTLETS)) walk('dungeon', id, '.gauntlet', g);
 walk('dungeon', 'rest', '', REST_TEXT);
+for (const [id, scene] of Object.entries(CUTSCENES)) walk('cutscene', id, '', scene.lines);
 
 const tally = {};
 const shown = {};
