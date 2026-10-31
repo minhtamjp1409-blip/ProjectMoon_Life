@@ -56,6 +56,7 @@ walk('dungeon', 'rest', '', REST_TEXT);
 for (const [id, scene] of Object.entries(CUTSCENES)) {
   walk('cutscene', id, '', scene.lines);
   if (scene.whispers) walk('cutscene', id, '.whispers', scene.whispers);
+  if (scene.lastWords) walk('cutscene', id, '.lastWords', Object.values(scene.lastWords));
 }
 
 const tally = {};

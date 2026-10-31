@@ -57,7 +57,29 @@ assert.equal(outranks('claw', null), true);
 assert.equal(outranks('death', 'claw'), true);
 assert.equal(outranks('claw', 'death'), false);
 assert.equal(outranks('claw', 'claw'), false);
-assert.deepEqual(Object.keys(CUTSCENE_RANK).sort((a, b) => CUTSCENE_RANK[b] - CUTSCENE_RANK[a]), ['death', 'color', 'claw', 'carmen', 'dungeon']);
+assert.deepEqual(Object.keys(CUTSCENE_RANK).sort((a, b) => CUTSCENE_RANK[b] - CUTSCENE_RANK[a]), ['death', 'color', 'savior', 'finger', 'claw', 'carmen', 'dungeon']);
+assert.equal(outranks('savior', 'claw'), true, 'a companion dying for you outranks the Claw');
+assert.equal(outranks('finger', 'color'), false, 'equal ranks never replace each other');
+
+// 3b. A companion dies in your place once a life; the top seat of a Finger plays when it is reached
+const saved = cloneChar(base);
+saved.usedDeathSave = true;
+saved.npcs = { ...saved.npcs, friend: { nameVi: 'Mira', nameEn: 'Mira', deceased: true, status: 'dead', fateAge: saved.age } };
+assert.equal(cutsceneFor(base, saved), 'savior');
+assert.equal(cutsceneFor(saved, cloneChar(saved)), null, 'the save plays once');
+const savedButDead = cloneChar(saved);
+savedButDead.alive = false;
+assert.equal(cutsceneFor(base, savedButDead), 'death', 'death still outranks');
+const capo = cloneChar(base);
+Object.assign(capo, { job: 'Syndicate', finger: 'Thumb', fingerRank: 2 });
+const underboss = cloneChar(capo);
+underboss.fingerRank = 3;
+assert.equal(cutsceneFor(capo, underboss), 'finger');
+assert.equal(cutsceneFor(underboss, cloneChar(underboss)), null, 'the seat plays once');
+const notTop = cloneChar(capo);
+notTop.fingerRank = 2;
+assert.equal(cutsceneFor({ ...capo, fingerRank: 1 }, notTop), null, 'a lower Finger rank has no scene');
+assert(Object.values(CUTSCENES.savior.lastWords).every((w) => w.vi && w.en), 'every last word is written in both languages');
 
 // 4. Which cut plays
 assert.equal(resolveCutsceneCut({}), 'full', 'first viewing plays in full');

@@ -265,14 +265,15 @@ body:has(> .cutscene.cs-dungeon.is-still) .shell > :not(.world) { opacity: 0; }
   background: radial-gradient(ellipse at center, color-mix(in srgb, var(--dusk) 82%, transparent) 0, transparent 70%);
   opacity: 0;
 }
-.cs-dungeon .cs-lines {
+/* the gate, the savior and the Finger set their words as one column: a lead line, the name, the line under it */
+:is(.cs-dungeon, .cs-savior, .cs-finger) .cs-lines {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 18px;
 }
-.cs-dungeon .cs-line { translate: none; }
+:is(.cs-dungeon, .cs-savior, .cs-finger) .cs-line { translate: none; }
 .cs-dungeon .cs-line.is-key {
   max-width: 18ch;
   color: var(--text);
@@ -313,6 +314,118 @@ body:has(> .cutscene.cs-dungeon.is-still) .shell > :not(.world) { opacity: 0; }
 .cs-dungeon.is-still .cs-band,
 .cs-dungeon.is-still .cs-sub { opacity: 1; }
 .cs-dungeon.is-still .cs-sub::before { transform: none; }
+
+/* ---------- savior: a companion dies in your place; their name, a candle that goes out, their last words ---------- */
+.cs-savior { animation: cs-out 300ms ease-in calc(var(--cs-total) - 300ms) forwards; }
+.cs-savior .cs-scrim { background: var(--dusk); }
+.cs-savior .cs-line.is-key { max-width: 16ch; color: var(--text); }
+.cs-savior .cs-sub { font-family: var(--serif); font-style: italic; color: var(--lamp); }
+.cs-savior .cs-sub::before { display: none; }
+.cs-candle {
+  position: absolute;
+  left: 50%;
+  bottom: 14%;
+  width: 60px;
+  height: 120px;
+  margin-left: -30px;
+}
+.cs-candle-stick { position: absolute; left: 22px; bottom: 0; width: 16px; height: 64px; border-radius: 2px; background: var(--lamp); opacity: 0.55; }
+.cs-flame {
+  position: absolute;
+  left: 22px;
+  bottom: 66px;
+  width: 16px;
+  height: 30px;
+  border-radius: 50% 50% 50% 50% / 62% 62% 38% 38%;
+  background: var(--lamp);
+  transform-origin: center bottom;
+}
+.cs-candle-glow {
+  position: absolute;
+  left: 50%;
+  bottom: 50px;
+  width: 220px;
+  height: 220px;
+  margin: 0 0 -110px -110px;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--lamp) 26%, transparent) 0, transparent 65%);
+}
+.cs-savior.is-full .cs-scrim { animation: cs-in 400ms ease-out both; }
+.cs-savior.is-full .cs-candle { animation: cs-in 500ms ease-out 300ms both; }
+.cs-savior.is-full .cs-flame { animation: cs-flame-out 700ms ease-in 2500ms forwards; }
+.cs-savior.is-full .cs-candle-glow { animation: cs-out 800ms ease-in 2500ms forwards; }
+.cs-savior.is-full .cs-line-1 { animation: cs-line 1100ms ease-out 300ms both; }
+.cs-savior.is-full .cs-line.is-key { animation: cs-key 2100ms var(--ease-tactile) 1300ms both; }
+.cs-savior.is-full .cs-sub { animation: cs-key 1600ms ease-out 1800ms both; }
+.cs-savior.is-lite .cs-scrim { animation: cs-in 150ms ease-out both; }
+.cs-savior.is-lite .cs-flame { animation: cs-flame-out 300ms ease-in 450ms forwards; }
+.cs-savior.is-lite .cs-candle-glow { animation: cs-out 300ms ease-in 450ms forwards; }
+.cs-savior.is-lite .cs-line.is-key { animation: cs-key 800ms var(--ease-tactile) 100ms both; }
+.cs-savior.is-lite .cs-sub { animation: cs-key 760ms ease-out 150ms both; }
+.cs-savior.is-still .cs-flame,
+.cs-savior.is-still .cs-candle-glow { opacity: 0; }
+.cs-savior.is-still .cs-sub { opacity: 1; }
+
+/* ---------- finger: the Finger's own mark in its colour, then the title the whole Finger now uses ---------- */
+.cs-finger { animation: cs-out 300ms ease-in calc(var(--cs-total) - 300ms) forwards; }
+.cs-finger .cs-scrim { background: var(--dusk); }
+.cs-finger .cs-line.is-key {
+  max-width: 14ch;
+  color: var(--text);
+  text-shadow: 0 0 28px var(--cs-color, var(--accent)), 0 2px 12px var(--dusk);
+}
+.cs-finger .cs-sub { font-family: var(--serif); font-style: italic; }
+.cs-mark { position: absolute; left: 50%; top: 50%; opacity: 0.4; }
+/* Index: a prescript slip unfolds from its top edge, its lines written one after another */
+.cs-slip {
+  width: 150px;
+  height: 230px;
+  margin: -115px 0 0 -75px;
+  padding: 34px 22px;
+  border: 1px solid var(--cs-color, var(--accent));
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transform-origin: center top;
+}
+.cs-slip-line { height: 3px; background: var(--cs-color, var(--accent)); transform-origin: left center; }
+.cs-slip-line:nth-child(even) { width: 70%; }
+/* Middle: the ruled lines of the book of vengeance, entered one by one */
+.cs-ledger { width: min(70vw, 520px); margin: -90px 0 0 calc(min(70vw, 520px) / -2); display: flex; flex-direction: column; gap: 30px; }
+.cs-ledger-line { height: 1px; background: var(--cs-color, var(--accent)); transform-origin: left center; }
+/* Ring: one wide brush stroke laid across */
+.cs-stroke {
+  width: min(84vw, 680px);
+  height: 64px;
+  margin: -32px 0 0 calc(min(84vw, 680px) / -2);
+  border-radius: 32px 6px 40px 8px;
+  background: var(--cs-color, var(--accent));
+  transform-origin: left center;
+}
+/* Pinky: an eight-pointed star */
+.cs-star { width: min(56vmin, 420px); height: min(56vmin, 420px); margin: calc(min(56vmin, 420px) / -2) 0 0 calc(min(56vmin, 420px) / -2); fill: none; stroke: var(--cs-color, var(--accent)); stroke-width: 1.4; }
+/* Thumb: a heavy bar brought down once */
+.cs-bar { width: min(70vw, 560px); height: 22px; margin: -11px 0 0 calc(min(70vw, 560px) / -2); background: var(--cs-color, var(--accent)); }
+
+.cs-finger.is-full .cs-scrim { animation: cs-in 400ms ease-out both; }
+.cs-finger.is-full .cs-line-1 { animation: cs-line 1300ms ease-out 300ms both; }
+.cs-finger.is-full .cs-slip { animation: cs-unfold 700ms var(--ease-tactile) 800ms both; }
+.cs-finger.is-full .cs-slip-line { animation: cs-cut 260ms ease-out calc(1300ms + var(--i) * 160ms) both; }
+.cs-finger.is-full .cs-ledger-line { animation: cs-cut 380ms ease-out calc(800ms + var(--i) * 220ms) both; }
+.cs-finger.is-full .cs-stroke { animation: cs-cut 900ms cubic-bezier(0.7, 0, 0.2, 1) 900ms both; }
+.cs-finger.is-full .cs-star { animation: cs-sight-in 1200ms var(--ease-tactile) 800ms both; }
+.cs-finger.is-full .cs-bar { animation: cs-drop 600ms cubic-bezier(0.6, 0, 1, 1) 1700ms both; }
+.cs-finger.is-full .cs-flash { animation: cs-flash 240ms linear 2600ms both; }
+.cs-finger.is-full .cs-line.is-key { animation: cs-key 1800ms var(--ease-tactile) 2600ms both; }
+.cs-finger.is-full .cs-sub { animation: cs-key 1500ms ease-out 2900ms both; }
+.cs-finger.is-full .cs-sub::before { animation: cs-cut 600ms var(--ease-tactile) 2900ms both; }
+.cs-finger.is-lite .cs-scrim { animation: cs-in 150ms ease-out both; }
+.cs-finger.is-lite .cs-mark { opacity: 0.3; }
+.cs-finger.is-lite .cs-line.is-key { animation: cs-key 860ms var(--ease-tactile) 100ms both; }
+.cs-finger.is-lite .cs-sub { animation: cs-key 800ms ease-out 150ms both; }
+.cs-finger.is-lite .cs-sub::before { animation: cs-cut 300ms var(--ease-tactile) 150ms both; }
+.cs-finger.is-still .cs-sub { opacity: 1; }
+.cs-finger.is-still .cs-sub::before { transform: none; }
 
 /* ---------- full, 3600 ms ---------- */
 .is-full .cs-scrim { animation: cs-in 400ms ease-out both; }
@@ -415,6 +528,9 @@ body:has(> .cutscene.cs-dungeon.is-still) .shell > :not(.world) { opacity: 0; }
   35% { opacity: 0.85; }
   100% { opacity: 0; transform: translate(calc(var(--wx) * min(24vw, 290px)), calc(var(--wy) * min(26vh, 220px))); }
 }
+@keyframes cs-flame-out { 0% { opacity: 1; transform: none; } 30% { opacity: 1; transform: scale(1.1, 0.8); } 100% { opacity: 0; transform: scale(0.3, 0.1); } }
+@keyframes cs-unfold { from { opacity: 0; transform: scaleY(0); } to { opacity: 0.4; transform: scaleY(1); } }
+@keyframes cs-drop { from { opacity: 0; transform: translateY(-40vh); } to { opacity: 0.4; transform: none; } }
 @keyframes cs-in { from { opacity: 0; } to { opacity: 1; } }
 @keyframes cs-out { to { opacity: 0; } }
 @keyframes cs-part-up { to { transform: translateY(-100%); } }

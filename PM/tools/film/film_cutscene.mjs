@@ -1,6 +1,6 @@
 /**
  * Films a cutscene as a strip of screenshots, for checking timing and layout by eye. Run by hand, not in npm test.
- * Usage: node tools/film/film_cutscene.mjs <base url> <out dir> [--sizes=1440x900,390x844] [--every=250] [--cut=full|lite|still|caption] [--scene=claw|death|color|carmen|dungeon] [--dungeon=dungeon_warp_train]
+ * Usage: node tools/film/film_cutscene.mjs <base url> <out dir> [--sizes=1440x900,390x844] [--every=250] [--cut=full|lite|still|caption] [--scene=claw|death|color|carmen|dungeon|savior|finger] [--dungeon=dungeon_warp_train] [--finger=Ring]
  * The dungeon gate needs the Vite dev server (npm run dev), where the page can import createDungeonSession.
  * Uses the CDP helper in .agents/skills/design-taste-frontend; needs Chrome or Edge.
  */
@@ -15,6 +15,7 @@ const every = Number(arg('every', 250));
 const cut = arg('cut', 'full');
 const scene = arg('scene', 'claw');
 const dungeonId = arg('dungeon', 'dungeon_warp_train');
+const fingerName = arg('finger', 'Ring');
 if (!base || !out) {
   console.error('usage: node tools/film/film_cutscene.mjs <base url> <out dir> [--sizes=] [--every=] [--cut=]');
   process.exit(1);
@@ -30,8 +31,8 @@ try {
     await sleep(1500);
     // Scene settings for this take: full plays as a first viewing, lite as a repeat, caption as scenes off
     await page.eval((c) => {
-      for (const id of ['claw', 'death', 'color', 'carmen', 'dungeon']) localStorage.removeItem(`pm-cutscene-seen:${id}`);
-      if (c === 'lite') for (const id of ['claw', 'death', 'color', 'carmen', 'dungeon']) localStorage.setItem(`pm-cutscene-seen:${id}`, '1');
+      for (const id of ['claw', 'death', 'color', 'carmen', 'dungeon', 'savior', 'finger']) localStorage.removeItem(`pm-cutscene-seen:${id}`);
+      if (c === 'lite') for (const id of ['claw', 'death', 'color', 'carmen', 'dungeon', 'savior', 'finger']) localStorage.setItem(`pm-cutscene-seen:${id}`, '1');
       localStorage.setItem('pm-cutscene', c === 'caption' ? 'off' : c === 'full' ? 'full' : 'short');
       if (c === 'still') localStorage.setItem('pm-motion-mode', 'reduced');
     }, cut);
@@ -61,12 +62,19 @@ try {
     }
     await sleep(800);
     // The moment each scene is made for: Taboo reaches 3, the heart stops, the Hana decree opens, a dungeon opens
-    await page.eval(async ({ which, dungeonId }) => {
+    await page.eval(async ({ which, dungeonId, fingerName }) => {
       const store = window.__gameStore;
       const st = store.getState();
       const prev = st.char;
       const base = { ...prev, pendingYearPlan: null, pendingEvent: null, pendingMinor: null, pendingContract: null };
-      const next = which === 'dungeon'
+      // The savior and the Finger need the moment before: a living companion, a Finger one seat below the top
+      if (which === 'finger') store.setState({ char: { ...prev, job: 'Syndicate', finger: fingerName, fingerRank: 2 } });
+      const from = store.getState().char;
+      const next = which === 'savior'
+        ? { ...base, usedDeathSave: true, npcs: { ...(prev.npcs || {}), friend: { ...(prev.npcs?.friend || {}), nameVi: 'Mira Kestrel', nameEn: 'Mira Kestrel', deceased: true, status: 'dead', fateAge: prev.age } } }
+        : which === 'finger'
+        ? { ...from, pendingYearPlan: null, pendingEvent: null, pendingMinor: null, pendingContract: null, fingerRank: 3 }
+        : which === 'dungeon'
         ? { ...base, pendingDungeon: (await import('/src/engine/dungeonEngine.js')).createDungeonSession(dungeonId, prev) }
         : which === 'death'
         ? { ...base, alive: false, stats: { ...prev.stats, health: 0 }, deathCauseVi: 'Bạn gục xuống trên bậc thềm lạnh.', deathCauseEn: 'You went down on a cold step.' }
@@ -84,8 +92,8 @@ try {
                 ]
               } }
             : { ...base, taboo: 3, stats: { ...prev.stats, health: 90, sanity: 90 } };
-      st.commit(prev, next);
-    }, { which: scene, dungeonId });
+      st.commit(which === 'finger' ? from : prev, next);
+    }, { which: scene, dungeonId, fingerName });
     const t0 = Date.now();
     const frames = Math.ceil((cut === 'full' ? 7200 : 2400) / every);
     for (let i = 0; i < frames; i++) {

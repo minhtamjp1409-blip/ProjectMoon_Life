@@ -222,11 +222,11 @@ Thời lượng là mục tiêu thiết kế của mình. Dòng chữ là bản 
 - **Hình:** nền `DungeonBackdrop` của chính hầm ngục đó lộ ra trọn vẹn trong lúc UI mờ đi; tên hầm ngục hiện giữa màn như thẻ tiêu đề; một dòng phụ.
 - **Mục đích:** biến mỗi lần xuống hầm thành một sự kiện nhớ được, dùng lại đồ họa đã có (WARP, hồ, Lobotomy, Bloodfiend, Outskirts, đêm Backstreets).
 
-### C6. Ngón Tay lên bậc đỉnh, 4 đến 5,6 giây (đợt sau)
+### C6. Ngón Tay lên bậc đỉnh, 4 đến 5,6 giây (đã xong ngày 31/10/2026, `PROGRESS_LOG.md` Đợt 111)
 - **Kích hoạt:** `turning` kèm `fingerRank` lên bậc cao nhất; mỗi Ngón có motif riêng (mình đã có `finger-*` trong `FAMILY` của `WorldBackdrop`).
 - **Làm sau cùng:** nhiều hình riêng, ít giá trị so với chi phí ở giai đoạn đầu.
 
-### C7. Đồng đội hy sinh cứu bạn, khoảng 3,5 giây (đợt sau)
+### C7. Đồng đội hy sinh cứu bạn, khoảng 3,5 giây (đã xong ngày 31/10/2026, `PROGRESS_LOG.md` Đợt 111)
 - **Kích hoạt:** mạng NPC cứu người chơi (cơ chế Death Save đã có). Tên NPC trên nền tối, một ngọn nến tắt, một lời cuối của NPC.
 
 ### C8. Chương mới trong nhật ký (không phải toàn màn, khoảng 1,8 giây)

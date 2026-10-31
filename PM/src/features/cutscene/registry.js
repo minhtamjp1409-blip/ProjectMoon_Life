@@ -30,6 +30,29 @@ export const CUTSCENES = {
     ],
     keyDynamic: 'color'
   },
+  // A companion dies in your place: the name on the dark, a candle that goes out, their last words
+  savior: {
+    ms: { full: 3600, lite: 900, still: 1600, caption: 1200 },
+    lines: [
+      { vi: 'Đòn đó lẽ ra đã giết bạn.', en: 'That blow should have killed you.' }
+    ],
+    keyDynamic: 'savior',
+    // What each of them says last, by the role they held in the life
+    lastWords: {
+      spouse: { vi: 'Sống tiếp đi. Vì cả hai ta.', en: 'Keep living. For both of us.' },
+      partner: { vi: 'Đừng quay lại nhìn tôi.', en: 'Don’t turn back to look at me.' },
+      friend: { vi: 'Lần này để tôi.', en: 'Let me take this one.' },
+      mentor: { vi: 'Đến lượt con rồi.', en: 'Your turn now.' }
+    }
+  },
+  // The top seat of a Finger: the Finger's own mark in its colour, then the title the whole Finger now uses
+  finger: {
+    ms: { full: 4600, lite: 1000, still: 1800, caption: 1200 },
+    lines: [
+      { vi: 'Cả Ngón Tay im lặng chờ.', en: 'The whole Finger waits in silence.' }
+    ],
+    keyDynamic: 'finger'
+  },
   // A dungeon gate: the interface fades away, the dungeon's own backdrop shows whole, its name is set like a title card.
   // The name and the line under it come from the dungeon definition.
   dungeon: {

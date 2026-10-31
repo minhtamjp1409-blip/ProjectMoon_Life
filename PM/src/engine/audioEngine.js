@@ -1081,6 +1081,19 @@ class AudioEngine {
       }
       const say = lite ? 100 : 3800;
       [220, 329.63, 440].forEach((f) => this.cueTone(bus, at(say), { freq: f, peak: 0.05, attack: 0.5, decay: lite ? 0.6 : 1.8 }));
+    } else if (id === 'savior') {
+      // your own heart still beating, a low note under their name, the candle snuffed
+      if (!lite) this.cueBeat(bus, at(150), 0.3);
+      this.cueTone(bus, at(lite ? 100 : 1300), { freq: 146.83, peak: 0.08, attack: 0.4, decay: lite ? 0.6 : 1.6 });
+      this.cueNoise(bus, at(lite ? 450 : 2500), { dur: 0.4, type: 'highpass', freq: 3000, peak: 0.05, attack: 0.03 });
+    } else if (id === 'finger') {
+      // a low chord gathers while the Finger's mark is laid down, then the title lands with one heavy strike
+      if (!lite) {
+        [55, 82.41, 110].forEach((f) => this.cueTone(bus, at(800), { freq: f, type: 'sawtooth', peak: 0.035, attack: 1.4, decay: 0.5 }));
+      }
+      const strike = lite ? 100 : 2600;
+      this.cueTone(bus, at(strike), { freq: 110, to: 45, peak: 0.24, attack: 0.01, decay: 0.8 });
+      this.cueTone(bus, at(strike), { freq: 880, to: 620, type: 'triangle', peak: 0.07, attack: 0.01, decay: 1.2 });
     } else if (id === 'dungeon') {
       // a gust as the room falls away, a low gate falling shut as the name appears
       if (!lite) this.cueNoise(bus, at(0), { dur: 0.9, type: 'lowpass', freq: 300, to: 1400, q: 0.8, peak: 0.08, attack: 0.6 });

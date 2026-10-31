@@ -2334,6 +2334,43 @@ Lỗi 2/500 ở check 5 của `run_million_audit` ghi ở Đợt 105.
   * Chạy bốn cảnh trên Chrome thật: 0 lỗi console.
   * Chưa nghe thử bằng tai; cần chủ dự án nghe và chỉnh âm lượng nếu cần.
 
+## Đợt 111: Hai cảnh cuối, Ngón Tay lên bậc đỉnh (C6) và đồng đội chết thay bạn (C7) (31/10/2026)
+
+Hai cảnh mà kế hoạch để "sau". Từ đây danh mục cảnh C1 đến C8 đã đủ.
+
+* **C7, cảnh `savior` (3,6 giây):**
+  * Kích hoạt khi cơ chế Death Save trong `applyFatalOrCompanionSave` vừa được dùng (`usedDeathSave` chuyển sang bật) mà nhân vật vẫn sống. Mỗi đời chỉ có một lần.
+  * Diễn biến: "Đòn đó lẽ ra đã giết bạn.", rồi tên người đã chết thay, một ngọn nến cháy rồi tắt, và lời cuối của người đó.
+  * Lời cuối theo vai:
+    * vợ/chồng: "Sống tiếp đi. Vì cả hai ta."
+    * người yêu: "Đừng quay lại nhìn tôi."
+    * bạn: "Lần này để tôi."
+    * thầy: "Đến lượt con rồi."
+  * Tên người lấy từ NPC vừa mất trong năm đó.
+* **C6, cảnh `finger` (4,6 giây):**
+  * Kích hoạt khi `fingerRank` của một thành viên Syndicate thuộc một Ngón vừa đạt 3, tức bậc cao nhất.
+  * Diễn biến: "Cả Ngón Tay im lặng chờ.", rồi dấu riêng của Ngón đó hiện lên bằng màu của nó, một lần chớp màu, và tước hiệu đỉnh xuất hiện kèm tên Ngón bên dưới.
+  * Dấu riêng từng Ngón:
+    * Index: tờ chỉ thị mở ra, các dòng được viết lần lượt.
+    * Middle: các dòng kẻ của Sổ Thù Hận.
+    * Ring: một nét cọ.
+    * Pinky: ngôi sao tám cánh.
+    * Thumb: một thanh nặng giáng xuống.
+  * Tước hiệu đỉnh: Underboss, Weaver, Great Sibling, Grand Curator, Sovereign.
+* **Thứ hạng:**
+  * Cả hai đứng hạng 4, ngang Color: trên Claw, Carmen và hầm ngục, dưới cái chết.
+  * Hai cảnh cùng hạng không thay nhau.
+* **Âm thanh:**
+  * savior: nhịp tim của chính bạn vẫn còn, một nốt trầm dưới tên người, tiếng nến tắt.
+  * finger: một hợp âm trầm gom lại trong lúc dấu hiện ra, rồi một tiếng giáng nặng khi tước hiệu xuất hiện.
+* **Chữ:** lời cuối nằm trong registry (`lastWords`) và đi qua voice_lint.
+* **Kiểm tra:**
+  * Test kích hoạt: savior phát một lần; cái chết vẫn thắng savior; finger chỉ phát ở bậc đỉnh và chỉ một lần; thứ hạng mới.
+  * Lint cảnh: 7 cảnh, đủ bốn bản cắt, chỉ dùng transform và opacity, chỉ dùng token màu.
+  * Test âm thanh chạy cả 7 cảnh.
+  * Công cụ quay có thêm `--scene=savior|finger --finger=<Ngón>`.
+  * Đã quay savior và Ring ở 1440x900 và 390x844, và bốn Ngón còn lại ở 1440x900: không tràn ngang, 0 lỗi console, chữ đọc rõ trên mọi dấu.
+
 ## Phụ lục A: Bản tổng hợp thiết kế ngày 29/10/2026
 
 > Đây là nội dung lịch sử của `process.md`. Các mô tả cơ chế và kết quả kiểm thử phản ánh thời điểm 29/10/2026; những thay đổi và phép đo ở các đợt sau trong nhật ký chính được ưu tiên khi có khác biệt.
