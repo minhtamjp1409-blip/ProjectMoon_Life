@@ -185,7 +185,6 @@ export const BirthSetupPanel = () => {
         active={loadingActive}
         region={targetLaunchParams?.region || region}
         charName={customName || t('Cư dân The City', 'City Citizen')}
-        seed={customSeed}
         onComplete={handleLoadingComplete}
       />
       <section className="home-opening" aria-labelledby="home-title">

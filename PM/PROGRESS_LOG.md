@@ -2275,6 +2275,23 @@ C5 của Đợt 3 trong `docs/KE_HOACH_CHUYEN_CANH_VA_CUTSCENE.md`. Đây là c�
   * C6 (Ngón Tay lên bậc đỉnh) và C7 (đồng đội hy sinh), để "sau";
   * lỗi hiếm ở check 5 của audit nghề Fixer (Đợt 105).
 
+## Đợt 108: Thẻ District lúc chào đời (31/10/2026)
+
+Phần đầu của "làm nốt phần còn thiếu": thẻ District ghi nhận ở Đợt 107.
+
+* **Bỏ khỏi thẻ:**
+  * dòng chữ hoa giãn cách phía trên tên District ("GHI NHẬN HỒ SƠ SINH MỆNH MỚI");
+  * dấu `>` kiểu terminal và ba chấm cuối dòng;
+  * con số phần trăm và "Đang đồng bộ...", vốn chạy theo đồng hồ chứ không phải tiến độ thật.
+* **Giữ lại:** chữ cái District, tên, dòng phụ, tên nhân vật (nhãn đổi từ "Định danh" thành "Tên"), bốn dòng diễn biến, và một nét tiến trình chạy hết trong đúng thời gian thẻ hiện.
+* **Chuyển động:**
+  * Vòng quanh chữ cái quay đúng một lần trong thời gian thẻ hiện, rồi dừng. Nó không quay mãi như biểu tượng đang tải, vì không có gì đang tải.
+  * Bản still không có chuyển động.
+  * Dòng diễn biến đổi theo bốn mốc hẹn giờ, nét tiến trình chạy bằng CSS transform, nên không còn cập nhật state mỗi khung hình (trước đây dùng `requestAnimationFrame` + `setState`).
+* **Sửa lỗi có sẵn:** tiêu đề lặp chữ "District 8 · District 8 · H Corp", vì tên vùng đã có sẵn số District. Nay chỉ thêm số khi tên chưa có.
+* **Trợ năng:** thẻ có `aria-label`, dòng diễn biến nằm trong vùng `role="status"`.
+* **Kiểm tra:** chụp ở 1440x900 và 390x844: không tràn ngang, 0 lỗi console. Toàn bộ `npm test` qua.
+
 ## Phụ lục A: Bản tổng hợp thiết kế ngày 29/10/2026
 
 > Đây là nội dung lịch sử của `process.md`. Các mô tả cơ chế và kết quả kiểm thử phản ánh thời điểm 29/10/2026; những thay đổi và phép đo ở các đợt sau trong nhật ký chính được ưu tiên khi có khác biệt.

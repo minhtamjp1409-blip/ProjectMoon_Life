@@ -1,29 +1,31 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { Compass, Sparkles, Shield, Eye, Flame } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 import { audioEngine } from '../../../engine/audioEngine';
 import { useT } from '../../../i18n';
 import { useThemeStore } from '../../../store/themeStore';
 import { BIRTH_OPENING, birthOpeningCut, prefersReducedMotion } from '../../cutscene/registry';
 
-// The District card that opens a life. How long it holds comes from the opening's cut (registry BIRTH_OPENING):
+// The District card that opens a life: the District's letter, its name, the new name, one line of what is happening,
+// and a rule that runs out as the card holds. How long it holds comes from the opening's cut (registry BIRTH_OPENING):
 // scenes off skip it, reduced motion holds it still at its last line, Full lets it run longer.
-export const CityLoadingOverlay = ({ active, region, charName, seed, onComplete }) => {
+// The lines step on four timers and the rule is a CSS transform, so nothing re-renders frame by frame.
+const LINE_AT = [0, 0.3, 0.65, 0.9];
+
+export const CityLoadingOverlay = ({ active, region, charName, onComplete }) => {
   const { t } = useT();
-  const [progress, setProgress] = useState(0);
   const [stageIndex, setStageIndex] = useState(0);
-  const timerRef = useRef(null);
   const cutsceneMode = useThemeStore((s) => s.cutsceneMode);
   const cut = birthOpeningCut({ setting: cutsceneMode, reduced: prefersReducedMotion() });
+  const duration = BIRTH_OPENING.cardMs[cut];
 
-  const telemetryLines = region?.id === 'OUTSKIRTS'
+  const lines = region?.id === 'OUTSKIRTS'
     ? [
-        t('Ghi lại một ca sinh ngoài bức tường...', 'Recording a birth beyond the wall...'),
+        t('Ghi lại một ca sinh ngoài bức tường.', 'Recording a birth beyond the wall.'),
         t('Không có District nào ghi tên vào sổ cư trú.', 'No District lists this child as a resident.'),
         t('Đoàn người dựng trại trước khi trời tối.', 'The caravan makes camp before dark.'),
         t('Ánh đèn The City vẫn ở phía bên kia tường.', 'The City lights remain on the other side of the wall.')
       ]
     : [
-        t('Ghi lại một ca sinh trong The City...', 'Recording a birth in the City...'),
+        t('Ghi lại một ca sinh trong The City.', 'Recording a birth in the City.'),
         t('Xác định District và khu cư trú.', 'Identifying District and residential quarter.'),
         t('Tên mới được ghi vào hồ sơ.', 'A new name enters the record.'),
         t('Cuộc đời bắt đầu.', 'A life begins.')
@@ -31,64 +33,36 @@ export const CityLoadingOverlay = ({ active, region, charName, seed, onComplete 
 
   useEffect(() => {
     if (!active) {
-      setProgress(0);
       setStageIndex(0);
-      return;
+      return undefined;
     }
-
-    const duration = BIRTH_OPENING.cardMs[cut];
     if (!duration) {
       onComplete?.();
       return undefined;
     }
-
     try {
       audioEngine.playBuff();
     } catch {
       // Audio may be muted
     }
-
     if (cut === 'still') {
-      setProgress(100);
       setStageIndex(3);
       const id = setTimeout(() => onComplete?.(), duration);
       return () => clearTimeout(id);
     }
-
-    const startTime = performance.now();
-
-    const updateFrame = (now) => {
-      const elapsed = now - startTime;
-      const pct = Math.min(100, Math.floor((elapsed / duration) * 100));
-      setProgress(pct);
-
-      if (pct < 30) setStageIndex(0);
-      else if (pct < 65) setStageIndex(1);
-      else if (pct < 90) setStageIndex(2);
-      else setStageIndex(3);
-
-      if (pct < 100) {
-        timerRef.current = requestAnimationFrame(updateFrame);
-      } else {
-        setTimeout(() => {
-          if (onComplete) onComplete();
-        }, 180);
-      }
-    };
-
-    timerRef.current = requestAnimationFrame(updateFrame);
-
-    return () => {
-      if (timerRef.current) cancelAnimationFrame(timerRef.current);
-    };
+    setStageIndex(0);
+    const timers = LINE_AT.slice(1).map((at, i) => setTimeout(() => setStageIndex(i + 1), at * duration));
+    timers.push(setTimeout(() => onComplete?.(), duration + 180));
+    return () => timers.forEach(clearTimeout);
   }, [active]);
 
-  if (!active || !BIRTH_OPENING.cardMs[cut]) return null;
+  if (!active || !duration) return null;
 
+  // Region names already start with their District ("District 8 · H Corp"), so the number is only added when missing
   const districtTitle = region
     ? region.id === 'OUTSKIRTS'
       ? 'The Outskirts'
-      : region.ward
+      : region.ward && !String(region.nameVi).startsWith('District')
         ? `District ${region.ward} · ${region.nameVi}`
         : `${region.nameVi}`
     : 'The City';
@@ -99,64 +73,43 @@ export const CityLoadingOverlay = ({ active, region, charName, seed, onComplete 
 
   return (
     <div
-      className="city-loading-overlay"
+      className={`city-loading-overlay is-${cut}`}
       role="dialog"
       aria-modal="true"
+      aria-label={t('Một cuộc đời bắt đầu', 'A life begins')}
+      style={{ '--card-ms': `${duration}ms` }}
       onClick={() => onComplete && onComplete()}
     >
-      <div className="loading-scanlines" aria-hidden="true" />
-      <div className="loading-vignette" aria-hidden="true" />
-
       <div className="loading-modal-card">
-        {/* District Crest Emblem */}
-        <div className="loading-emblem-wrap">
+        <div className="loading-emblem-wrap" aria-hidden="true">
           <div className="loading-emblem-ring" />
           <div className="loading-emblem-core">
             <span className="loading-emblem-letter">{region ? region.id : 'PM'}</span>
           </div>
-          <Sparkles className="loading-sparkle sparkle-1" size={16} />
-          <Sparkles className="loading-sparkle sparkle-2" size={14} />
-        </div>
-
-        {/* Header tags */}
-        <div className="loading-header-tag">
-          <Eye size={13} className="text-accent" />
-          <span>{t('GHI NHẬN HỒ SƠ SINH MỆNH MỚI', 'NEW LIFE REGISTRATION PROTOCOL')}</span>
         </div>
 
         <h2 className="loading-district-title">{districtTitle}</h2>
         <p className="loading-district-sub">{districtSub}</p>
 
         {charName && (
-          <div className="loading-name-pill">
-            <span className="pill-label">{t('Định danh:', 'Identity:')}</span>
+          <p className="loading-name-pill">
+            <span className="pill-label">{t('Tên:', 'Name:')}</span>
             <span className="pill-name">{charName}</span>
-          </div>
+          </p>
         )}
 
-        {/* Telemetry terminal line */}
-        <div className="loading-terminal-box">
+        <div className="loading-terminal-box" role="status" aria-live="polite">
           <p className="loading-terminal-text" key={stageIndex}>
-            <span className="terminal-prefix">&gt; </span>
-            {telemetryLines[stageIndex] || telemetryLines[0]}
+            {lines[stageIndex] || lines[0]}
           </p>
         </div>
 
-        {/* Golden Progress Bar */}
-        <div className="loading-progress-wrap">
-          <div className="loading-progress-track">
-            <div className="loading-progress-fill" style={{ width: `${progress}%` }}>
-              <div className="loading-progress-glow" />
-            </div>
-          </div>
-          <div className="loading-progress-meta">
-            <span className="meta-sync">{t('Đang đồng bộ...', 'Synchronizing...')}</span>
-            <span className="meta-pct">{progress}%</span>
-          </div>
+        <div className="loading-progress-track" aria-hidden="true">
+          <div className="loading-progress-fill" />
         </div>
 
         <p className="loading-skip-hint">
-          {t('Nhấp chuột bất kỳ đâu để vào ngay [Bỏ qua]', 'Click anywhere to enter immediately [Skip]')}
+          {t('Chạm vào bất kỳ đâu để vào ngay', 'Tap anywhere to go straight in')}
         </p>
       </div>
     </div>
