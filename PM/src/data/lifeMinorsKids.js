@@ -10,7 +10,7 @@ const C = (vi, en, rvi, ren, fx = {}, extra = {}) => ({ vi, en, rvi, ren, fx, ..
 const O = (w, rvi, ren, fx = {}, extra = {}) => ({ w, rvi, ren, fx, ...extra });
 const I = (rvi, ren, fx = {}, extra = {}) => ({ vi: 'Để nó trôi qua', en: 'Let it pass', rvi, ren, fx, ...extra });
 
-const KID = [4, 6];
+const KID = [3, 6];
 const CHILD = [7, 11];
 
 export const LIFE_MINORS_KIDS = [

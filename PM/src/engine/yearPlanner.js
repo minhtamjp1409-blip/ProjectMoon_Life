@@ -651,7 +651,7 @@ export function planYear(charState, rng) {
   const roll = rng();
   const noneP = Math.min(0.45, Math.max(0.08, 0.25 / drama));
   const twoP = Math.min(0.45, Math.max(0.12, 0.25 * drama));
-  const targetMinorCount = age <= 4 ? 0 : age < 7 ? (roll < 0.45 * drama ? 1 : 0) : roll < noneP ? 0 : roll < 1 - twoP ? 1 : 2;
+  const targetMinorCount = age <= 2 ? 0 : age < 7 ? (roll < 0.45 * drama ? 1 : 0) : roll < noneP ? 0 : roll < 1 - twoP ? 1 : 2;
   const scheduledMinors = scheduledKey.filter((it) => it.kind === 'minor').length;
   const pickedMinors = [];
   for (let i = scheduledMinors; i < targetMinorCount; i++) {
@@ -722,7 +722,9 @@ export function planYear(charState, rng) {
     if (existingCount === 0) {
       // Rotate natural seasons: age 0 -> slot 1 (Summer), age 1 -> slot 2 (Autumn), age 2 -> slot 3 (Winter), etc.
       const targetSlot = (char.age + 1) % 4;
-      const pick = pickWeighted(poolDailies, weightOf(char), rng) || poolDailies[0];
+      const unseen = poolDailies.filter((d) => !char.seenEvents?.includes(d.id) && !char.recent?.includes(d.id));
+      const pool = unseen.length > 0 ? unseen : poolDailies;
+      const pick = pickWeighted(pool, weightOf(char), rng) || pool[0];
       if (pick) {
         slots[targetSlot] = { kind: 'daily', id: pick.id };
         remember(char, pick.id);
