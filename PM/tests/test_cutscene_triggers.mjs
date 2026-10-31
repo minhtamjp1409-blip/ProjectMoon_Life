@@ -14,7 +14,12 @@ assert.equal(cutsceneFor(base, judged), 'claw', 'the judgment opening plays the 
 assert.equal(cutsceneFor(judged, cloneChar(judged)), null, 'a later stage of the same judgment plays nothing');
 const otherDungeon = cloneChar(base);
 otherDungeon.pendingDungeon = { id: 'dungeon_warp_train' };
-assert.equal(cutsceneFor(base, otherDungeon), null, 'an ordinary dungeon has no scene yet');
+assert.equal(cutsceneFor(base, otherDungeon), 'dungeon', 'an ordinary dungeon opens with its gate');
+assert.equal(cutsceneFor(otherDungeon, cloneChar(otherDungeon)), null, 'a later stage of the same dungeon plays nothing');
+assert.equal(cutsceneFor(otherDungeon, base), null, 'leaving a dungeon plays nothing');
+const fromWarpToLake = cloneChar(otherDungeon);
+fromWarpToLake.pendingDungeon = { id: 'dungeon_great_lake' };
+assert.equal(cutsceneFor(otherDungeon, fromWarpToLake), 'dungeon', 'a different dungeon opening gets its own gate');
 
 // 2. Death outranks everything; the Library ending is not a death
 const dead = cloneChar(judged);
@@ -72,4 +77,4 @@ for (const [id, scene] of Object.entries(CUTSCENES)) {
   assert(scene.keyDynamic || (scene.lines[scene.keyLine]?.vi && scene.lines[scene.keyLine]?.en), `${id} key line is written in both languages or taken from the roll`);
 }
 
-console.log('Cutscene triggers: Claw on the judgment only, Carmen on her call, death outranks, ranks never queue, cut selection and scene budgets passed.');
+console.log('Cutscene triggers: Claw on the judgment only, Carmen on her call, a gate for every other dungeon, death outranks, ranks never queue, cut selection and scene budgets passed.');

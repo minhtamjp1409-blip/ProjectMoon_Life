@@ -1,6 +1,7 @@
 /**
  * Films a cutscene as a strip of screenshots, for checking timing and layout by eye. Run by hand, not in npm test.
- * Usage: node tools/film/film_cutscene.mjs <base url> <out dir> [--sizes=1440x900,390x844] [--every=250] [--cut=full|lite|still|caption] [--scene=claw|death|color|carmen]
+ * Usage: node tools/film/film_cutscene.mjs <base url> <out dir> [--sizes=1440x900,390x844] [--every=250] [--cut=full|lite|still|caption] [--scene=claw|death|color|carmen|dungeon] [--dungeon=dungeon_warp_train]
+ * The dungeon gate needs the Vite dev server (npm run dev), where the page can import createDungeonSession.
  * Uses the CDP helper in .agents/skills/design-taste-frontend; needs Chrome or Edge.
  */
 import { mkdirSync, writeFileSync } from 'node:fs';
@@ -13,6 +14,7 @@ const sizes = arg('sizes', '320x568,390x844,412x915,800x1280,1440x900').split(',
 const every = Number(arg('every', 250));
 const cut = arg('cut', 'full');
 const scene = arg('scene', 'claw');
+const dungeonId = arg('dungeon', 'dungeon_warp_train');
 if (!base || !out) {
   console.error('usage: node tools/film/film_cutscene.mjs <base url> <out dir> [--sizes=] [--every=] [--cut=]');
   process.exit(1);
@@ -28,8 +30,8 @@ try {
     await sleep(1500);
     // Scene settings for this take: full plays as a first viewing, lite as a repeat, caption as scenes off
     await page.eval((c) => {
-      for (const id of ['claw', 'death', 'color', 'carmen']) localStorage.removeItem(`pm-cutscene-seen:${id}`);
-      if (c === 'lite') for (const id of ['claw', 'death', 'color', 'carmen']) localStorage.setItem(`pm-cutscene-seen:${id}`, '1');
+      for (const id of ['claw', 'death', 'color', 'carmen', 'dungeon']) localStorage.removeItem(`pm-cutscene-seen:${id}`);
+      if (c === 'lite') for (const id of ['claw', 'death', 'color', 'carmen', 'dungeon']) localStorage.setItem(`pm-cutscene-seen:${id}`, '1');
       localStorage.setItem('pm-cutscene', c === 'caption' ? 'off' : c === 'full' ? 'full' : 'short');
       if (c === 'still') localStorage.setItem('pm-motion-mode', 'reduced');
     }, cut);
@@ -58,13 +60,15 @@ try {
       await sleep(400);
     }
     await sleep(800);
-    // The moment each scene is made for: Taboo reaches 3, the heart stops, the Hana decree opens
-    await page.eval((which) => {
+    // The moment each scene is made for: Taboo reaches 3, the heart stops, the Hana decree opens, a dungeon opens
+    await page.eval(async ({ which, dungeonId }) => {
       const store = window.__gameStore;
       const st = store.getState();
       const prev = st.char;
       const base = { ...prev, pendingYearPlan: null, pendingEvent: null, pendingMinor: null, pendingContract: null };
-      const next = which === 'death'
+      const next = which === 'dungeon'
+        ? { ...base, pendingDungeon: (await import('/src/engine/dungeonEngine.js')).createDungeonSession(dungeonId, prev) }
+        : which === 'death'
         ? { ...base, alive: false, stats: { ...prev.stats, health: 0 }, deathCauseVi: 'Bạn gục xuống trên bậc thềm lạnh.', deathCauseEn: 'You went down on a cold step.' }
         : which === 'color'
           ? { ...base, pendingModal: 'color_title' }
@@ -81,7 +85,7 @@ try {
               } }
             : { ...base, taboo: 3, stats: { ...prev.stats, health: 90, sanity: 90 } };
       st.commit(prev, next);
-    }, scene);
+    }, { which: scene, dungeonId });
     const t0 = Date.now();
     const frames = Math.ceil((cut === 'full' ? 7200 : 2400) / every);
     for (let i = 0; i < frames; i++) {

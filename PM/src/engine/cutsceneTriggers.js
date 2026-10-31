@@ -12,6 +12,8 @@ export function cutsceneFor(prev, next) {
   if (next.pendingModal === 'color_title' && prev.pendingModal !== 'color_title') return 'color';
   if (next.pendingDungeon?.id === CLAW_DUNGEON_ID && prev.pendingDungeon?.id !== CLAW_DUNGEON_ID) return 'claw';
   if (next.pendingEvent?.id === CARMEN_EVENT_ID && prev.pendingEvent?.id !== CARMEN_EVENT_ID) return 'carmen';
+  // Every other dungeon gets its gate the moment its session opens (the Claw has its own scene above)
+  if (next.pendingDungeon?.id && next.pendingDungeon.id !== prev.pendingDungeon?.id) return 'dungeon';
   return null;
 }
 

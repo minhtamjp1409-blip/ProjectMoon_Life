@@ -2142,6 +2142,29 @@ Xem lại hai cảnh của Đợt 102 qua chuỗi ảnh, sửa những gì thấ
   * Đã quay các bản full, lite, still, caption ở 1440x900 và 390x844: không tràn ngang, 0 lỗi console.
 * **Chưa làm:** C5 cổng hầm ngục; âm thanh cho cảnh.
 
+## Đợt 104: Cổng hầm ngục, khép lại Tầng A (31/10/2026)
+
+C5 của Đợt 3 trong `docs/KE_HOACH_CHUYEN_CANH_VA_CUTSCENE.md`. Đây là cảnh cuối cùng của Tầng A (cảnh toàn màn hình).
+
+* **Cảnh `dungeon`:**
+  * Phát khi một phiên hầm ngục mở, với mọi hầm trừ Claw (Claw có cảnh riêng). Áp dụng cho sáu hầm (WARP, Lobotomy, Bloodfiend, Outskirts, Great Lake, đêm Backstreets) và cả Reverberation Ensemble. Không phát lại ở các tầng sau của cùng một hầm.
+  * Không vẽ lại hậu cảnh. `DungeonBackdrop` vốn đã nằm sau giao diện, nên cảnh chỉ làm mờ mọi phần của `.shell` trừ `.world` để hậu cảnh lộ ra trọn vẹn.
+  * Tên hầm ngục hiện giữa màn như thẻ tiêu đề. Bên dưới là một nét kẻ màu `accentColor` của hầm đó và một dòng phụ. Dòng phụ là phần sau dấu ":" trong tên, hoặc kicker nếu tên không có dấu ":". Không có dòng nhỏ phía trên tên.
+  * Cuối cảnh, lớp tối của dock phủ lên, nên dock hầm ngục nhận tiếp mà không bị giật.
+  * Bản full 2,4 giây, lite 0,9 giây. Bản still là thẻ tĩnh trên hậu cảnh. Bản caption chỉ có tên.
+* **Mã:**
+  * `CutsceneLayer` chọn dòng khóa động qua một bảng `DYNAMIC`: Color lấy danh hiệu từ lần gieo, hầm ngục lấy từ định nghĩa. Mỗi mục trả về dòng khóa, dòng phụ và màu nhấn.
+  * `film_cutscene.mjs` có `--scene=dungeon --dungeon=<id>`; cảnh này phải quay trên dev server.
+* **Đo** (390x844, CPU chậm 4 lần, dev server chưa bundle nên chậm hơn bản thật):
+  * Cảnh có 7 phần tử.
+  * Từ 0,3 đến 2,6 giây không có long task.
+  * Long task chỉ rơi vào hai đầu cảnh. Lúc mở hầm 110 ms (dựng hậu cảnh và phiên hầm ngục), ngay sau đó thêm một lần 52 đến 59 ms. Lúc dock nhận tiếp khoảng 155 ms. Hai việc dựng hầm và dựng dock vốn đã có trước đây; nay chỉ tách ra hai đầu cảnh. Lần 52 đến 59 ms nhỉnh hơn ngưỡng 50 ms của tiêu chí, nhưng đo trên dev chưa bundle; chưa đo được trên bản build vì trang build không gọi được `createDungeonSession`.
+* **Kiểm tra:**
+  * Test kích hoạt: hầm thường mở thì có cảnh; tầng sau của cùng hầm và lúc rời hầm thì không; đổi sang hầm khác thì có cảnh mới.
+  * Test đường nối kiểm tra quy tắc làm mờ giao diện.
+  * Đã quay cả bảy hầm ở 390x844 và Great Lake ở bốn bản (full, lite, still, caption) ở 1440x900: không tràn ngang, 0 lỗi console, tên đọc rõ trên mọi hậu cảnh.
+* **Tiếp theo:** Tầng B, Đợt 4 (thẻ chương trong nhật ký, C8). Âm thanh cho cảnh vẫn chưa làm.
+
 ## Phụ lục A: Bản tổng hợp thiết kế ngày 29/10/2026
 
 > Đây là nội dung lịch sử của `process.md`. Các mô tả cơ chế và kết quả kiểm thử phản ánh thời điểm 29/10/2026; những thay đổi và phép đo ở các đợt sau trong nhật ký chính được ưu tiên khi có khác biệt.

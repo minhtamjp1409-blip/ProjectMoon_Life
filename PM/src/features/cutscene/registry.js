@@ -28,7 +28,14 @@ export const CUTSCENES = {
       { vi: 'Phòng họp của Hana im bặt.', en: 'The Hana hall goes quiet.' },
       { vi: 'Một cái tên được đọc lên.', en: 'A name is read aloud.' }
     ],
-    keyDynamic: 'title'
+    keyDynamic: 'color'
+  },
+  // A dungeon gate: the interface fades away, the dungeon's own backdrop shows whole, its name is set like a title card.
+  // The name and the line under it come from the dungeon definition.
+  dungeon: {
+    ms: { full: 2400, lite: 900, still: 1600, caption: 1200 },
+    lines: [],
+    keyDynamic: 'dungeon'
   },
   // Carmen's call (event ego_carmen_crossroad): a slow heartbeat of warm light, whispers drift in from the edges
   // and thicken, then go quiet for the one sentence. The choice dock rises only after it.
