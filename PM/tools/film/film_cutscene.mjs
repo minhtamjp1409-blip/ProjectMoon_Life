@@ -1,6 +1,6 @@
 /**
  * Films a cutscene as a strip of screenshots, for checking timing and layout by eye. Run by hand, not in npm test.
- * Usage: node tools/film/film_cutscene.mjs <base url> <out dir> [--sizes=1440x900,390x844] [--every=250] [--cut=full|lite|still|caption]
+ * Usage: node tools/film/film_cutscene.mjs <base url> <out dir> [--sizes=1440x900,390x844] [--every=250] [--cut=full|lite|still|caption] [--scene=claw|death|color]
  * Uses the CDP helper in .agents/skills/design-taste-frontend; needs Chrome or Edge.
  */
 import { mkdirSync, writeFileSync } from 'node:fs';
@@ -12,6 +12,7 @@ const arg = (name, dflt) => (process.argv.find((a) => a.startsWith(`--${name}=`)
 const sizes = arg('sizes', '320x568,390x844,412x915,800x1280,1440x900').split(',').map((s) => s.split('x').map(Number));
 const every = Number(arg('every', 250));
 const cut = arg('cut', 'full');
+const scene = arg('scene', 'claw');
 if (!base || !out) {
   console.error('usage: node tools/film/film_cutscene.mjs <base url> <out dir> [--sizes=] [--every=] [--cut=]');
   process.exit(1);
@@ -27,8 +28,8 @@ try {
     await sleep(1500);
     // Scene settings for this take: full plays as a first viewing, lite as a repeat, caption as scenes off
     await page.eval((c) => {
-      localStorage.removeItem('pm-cutscene-seen:claw');
-      if (c === 'lite') localStorage.setItem('pm-cutscene-seen:claw', '1');
+      for (const id of ['claw', 'death', 'color']) localStorage.removeItem(`pm-cutscene-seen:${id}`);
+      if (c === 'lite') for (const id of ['claw', 'death', 'color']) localStorage.setItem(`pm-cutscene-seen:${id}`, '1');
       localStorage.setItem('pm-cutscene', c === 'caption' ? 'off' : c === 'full' ? 'full' : 'short');
       if (c === 'still') localStorage.setItem('pm-motion-mode', 'reduced');
     }, cut);
@@ -57,16 +58,21 @@ try {
       await sleep(400);
     }
     await sleep(800);
-    // Taboo reaches 3: the next commit opens the judgment
-    await page.eval(() => {
+    // The moment each scene is made for: Taboo reaches 3, the heart stops, the Hana decree opens
+    await page.eval((which) => {
       const store = window.__gameStore;
-      const s = store.getState();
-      const prev = s.char;
-      const next = { ...prev, taboo: 3, pendingYearPlan: null, pendingEvent: null, pendingMinor: null, pendingContract: null, stats: { ...prev.stats, health: 90, sanity: 90 } };
-      s.commit(prev, next);
-    });
+      const st = store.getState();
+      const prev = st.char;
+      const base = { ...prev, pendingYearPlan: null, pendingEvent: null, pendingMinor: null, pendingContract: null };
+      const next = which === 'death'
+        ? { ...base, alive: false, stats: { ...prev.stats, health: 0 }, deathCauseVi: 'Bạn gục xuống trên bậc thềm lạnh.', deathCauseEn: 'You went down on a cold step.' }
+        : which === 'color'
+          ? { ...base, pendingModal: 'color_title' }
+          : { ...base, taboo: 3, stats: { ...prev.stats, health: 90, sanity: 90 } };
+      st.commit(prev, next);
+    }, scene);
     const t0 = Date.now();
-    const frames = Math.ceil((cut === 'full' ? 4200 : 1800) / every);
+    const frames = Math.ceil((cut === 'full' ? 5200 : 2400) / every);
     for (let i = 0; i < frames; i++) {
       const ms = Date.now() - t0;
       await page.screenshot({ path: join(out, `${width}x${height}-${String(i).padStart(2, '0')}-${ms}ms.jpg`), quality: 60 });
@@ -78,6 +84,8 @@ try {
         cutscene: s.cutscene?.cut || null,
         dungeon: s.char.pendingDungeon?.id || null,
         dock: Boolean(document.querySelector('.event-modal-backdrop')),
+        deathCard: Boolean(document.querySelector('.life-end-card')),
+        decree: Boolean(document.querySelector('.hana-decree-modal')),
         overflowX: document.documentElement.scrollWidth > window.innerWidth
       };
     });

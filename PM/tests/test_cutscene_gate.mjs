@@ -65,15 +65,30 @@ store().endCutscene('done', 'gate-hold');
 store().tick(400);
 assert(store().yearProgress > 20, 'time runs again once the scene ends');
 
-// 5. A scene ranked lower, or not built yet, never replaces the one playing; nothing queues
+// 5. A stronger scene replaces the one playing, a weaker or equal one is dropped; nothing queues
 const playing = accused('gate-rank');
 useGameStore.setState({ char: playing, cutscene: { id: 'claw', key: 'gate-rank', cut: 'full', durationMs: 3600 } });
-const dying = cloneChar(playing);
+const decreeCrossed = cloneChar(playing);
+decreeCrossed.pendingModal = 'color_title';
+store().commit(playing, decreeCrossed);
+assert.equal(store().cutscene?.id, 'color', 'the Color decree outranks the Claw');
+assert.equal(store().bestowedColor?.title && typeof store().bestowedColor.color, 'string', 'the decree rolls its title once, for the scene and the modal');
+const rolled = store().bestowedColor.title;
+store().commit(decreeCrossed, cloneChar(decreeCrossed));
+assert.equal(store().bestowedColor.title, rolled, 'the roll holds while the decree stays open');
+const dying = cloneChar(decreeCrossed);
 dying.alive = false;
 dying.stats.health = 0;
-store().commit(playing, dying);
-assert.equal(store().cutscene?.key, 'gate-rank', 'death has no scene yet, so the Claw keeps playing');
-store().endCutscene('done', 'gate-rank');
+dying.pendingModal = null;
+store().commit(decreeCrossed, dying);
+assert.equal(store().cutscene?.id, 'death', 'death outranks everything');
+assert.equal(store().bestowedColor, null, 'the roll is dropped with the decree');
+const keyNow = store().cutscene.key;
+const weaker = cloneChar(playing);
+weaker.pendingModal = 'color_title';
+store().commit(playing, weaker);
+assert.equal(store().cutscene?.key, keyNow, 'a weaker scene never replaces death');
+store().endCutscene('done', keyNow);
 
 // 6. Scenes off: a caption only, still holding the dock for its short time
 localStorage.setItem('pm-cutscene', 'off');

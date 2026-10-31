@@ -11,6 +11,24 @@ export const CUTSCENES = {
     ],
     // The one line kept when the scene is cut short
     keyLine: 2
+  },
+  // Death: the light closes in from the edges and the last lamp goes out; the card that follows says who and why
+  death: {
+    ms: { full: 3200, lite: 900, still: 1600, caption: 1200 },
+    lines: [
+      { vi: 'Mọi tiếng động chậm lại.', en: 'Every sound slows down.' },
+      { vi: 'Rồi im.', en: 'Then nothing.' }
+    ],
+    keyLine: 1
+  },
+  // Hana's Color bestowal: the conferred title is the key line, taken from the roll (bestowedColor in the store)
+  color: {
+    ms: { full: 4200, lite: 1000, still: 1800, caption: 1200 },
+    lines: [
+      { vi: 'Phòng họp của Hana im bặt.', en: 'The Hana hall goes quiet.' },
+      { vi: 'Một cái tên được đọc lên.', en: 'A name is read aloud.' }
+    ],
+    keyDynamic: 'title'
   }
 };
 

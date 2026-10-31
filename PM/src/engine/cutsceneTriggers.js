@@ -7,6 +7,7 @@ export const CUTSCENE_RANK = { death: 5, color: 4, claw: 3, carmen: 2, dungeon: 
 export function cutsceneFor(prev, next) {
   if (!prev || !next) return null;
   if (prev.alive && !next.alive && next.endingId !== 'library_threshold') return 'death';
+  if (next.pendingModal === 'color_title' && prev.pendingModal !== 'color_title') return 'color';
   if (next.pendingDungeon?.id === CLAW_DUNGEON_ID && prev.pendingDungeon?.id !== CLAW_DUNGEON_ID) return 'claw';
   return null;
 }

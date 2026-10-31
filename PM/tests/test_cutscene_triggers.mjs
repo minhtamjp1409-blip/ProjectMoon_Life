@@ -27,6 +27,12 @@ assert.equal(cutsceneFor(base, library), null);
 assert.equal(cutsceneFor(dead, cloneChar(dead)), null, 'a death plays once');
 assert.equal(cutsceneFor(null, base), null);
 
+// 2b. The Color decree plays once, when it opens
+const decree = cloneChar(base);
+decree.pendingModal = 'color_title';
+assert.equal(cutsceneFor(base, decree), 'color');
+assert.equal(cutsceneFor(decree, cloneChar(decree)), null, 'the decree scene plays once');
+
 // 3. Ranks: a stronger scene replaces a weaker one, a weaker or equal one is dropped
 assert.equal(outranks('claw', null), true);
 assert.equal(outranks('death', 'claw'), true);
@@ -50,7 +56,7 @@ for (const [id, scene] of Object.entries(CUTSCENES)) {
   assert(scene.ms.full <= 8000, `${id} full cut stays under 8 s`);
   assert(scene.ms.lite <= 1000, `${id} lite cut stays under 1 s`);
   assert.equal(scene.ms.caption, 1200, `${id} caption holds 1.2 s`);
-  assert(scene.lines[scene.keyLine]?.vi && scene.lines[scene.keyLine]?.en, `${id} key line is written in both languages`);
+  assert(scene.keyDynamic || (scene.lines[scene.keyLine]?.vi && scene.lines[scene.keyLine]?.en), `${id} key line is written in both languages or taken from the roll`);
 }
 
 console.log('Cutscene triggers: Claw on the judgment only, death outranks, ranks never queue, cut selection and scene budgets passed.');

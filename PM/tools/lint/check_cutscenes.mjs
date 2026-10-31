@@ -19,7 +19,7 @@ for (const [id, scene] of Object.entries(CUTSCENES)) {
   for (const cut of ['full', 'lite', 'still', 'caption']) if (!(scene.ms?.[cut] > 0)) fail(`${id}: missing ${cut} cut`);
   if (scene.ms?.full > 8000) fail(`${id}: full cut runs ${scene.ms.full} ms, over 8 s`);
   if (scene.ms?.lite > 1000) fail(`${id}: lite cut runs ${scene.ms.lite} ms, over 1 s`);
-  if (!scene.lines?.[scene.keyLine]) fail(`${id}: key line ${scene.keyLine} does not exist`);
+  if (!scene.keyDynamic && !scene.lines?.[scene.keyLine]) fail(`${id}: key line ${scene.keyLine} does not exist`);
   if (scene.ms?.full && scene.lines?.length * 700 > scene.ms.full) fail(`${id}: too many lines to read in ${scene.ms.full} ms`);
 }
 

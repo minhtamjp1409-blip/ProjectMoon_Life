@@ -53,6 +53,10 @@
   --claw-core: #e8fbff;
   --claw-veil: rgba(3, 8, 10, 0.95);
 
+  /* death: the dark that closes in, and the last lamp */
+  --dusk: rgba(4, 3, 5, 0.97);
+  --lamp: #e9d9b4;
+
   --shadow-pop: 0 18px 48px rgba(0, 0, 0, 0.6);
   --dialog-surface: #252127;
   --dialog-border: #746348;

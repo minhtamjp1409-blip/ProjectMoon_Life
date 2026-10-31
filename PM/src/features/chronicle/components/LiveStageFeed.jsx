@@ -13,6 +13,7 @@ import { entryTier, foldsInCompact, framesAsMajor, splitLead } from '../entryTie
 import { buildLifeSummaryAndLegacy, getDungeonCurrentStage, isDungeonChoiceAvailable, DUNGEON_DEFINITIONS } from '../../../engine/gameEngine';
 import { DungeonDock } from './DungeonDock';
 import { YearPlanDock } from './YearPlanDock';
+import { LifeEndStep } from './LifeEndStep';
 import { LIFE_MINORS, MINOR_WINDOW_MS, splitTitle } from '../../../engine/yearPlanner';
 import { exportDossierCardPNG } from '../../../utils/exportDossierCard';
 import { audioEngine } from '../../../engine/audioEngine';
@@ -1105,6 +1106,7 @@ export const LiveStageFeed = () => {
     chooseDungeonAction,
     fleeDungeon,
     confirmColorTitle,
+    storedColor,
     confirmEgoName,
     completeWorkshopCraft,
     startLife,
@@ -1136,6 +1138,7 @@ export const LiveStageFeed = () => {
       chooseDungeonAction: s.chooseDungeonAction,
       fleeDungeon: s.fleeDungeon,
       confirmColorTitle: s.confirmColorTitle,
+      storedColor: s.bestowedColor,
       confirmEgoName: s.confirmEgoName,
       completeWorkshopCraft: s.completeWorkshopCraft,
       startLife: s.startLife,
@@ -1160,17 +1163,17 @@ export const LiveStageFeed = () => {
   const stageRef = useRef(null);
   const prevAliveRef = useRef(char.alive);
   const [titleInput, setTitleInput] = useState('The Crimson Dusk');
-  const [bestowedColor, setBestowedColor] = useState(null);
+  const [localColor, setBestowedColor] = useState(null);
+  const bestowedColor = storedColor || localColor;
   const [egoInput, setEgoInput] = useState('Penitence of Ash');
 
   useEffect(() => {
-    if (char.pendingModal === 'color_title' && !bestowedColor) {
-      const rolled = bestowHanaColorTitle(char);
-      setBestowedColor(rolled);
-    } else if (char.pendingModal !== 'color_title' && bestowedColor) {
+    if (char.pendingModal === 'color_title' && !storedColor && !localColor) {
+      setBestowedColor(bestowHanaColorTitle(char));
+    } else if (char.pendingModal !== 'color_title' && localColor) {
       setBestowedColor(null);
     }
-  }, [char.pendingModal, char]);
+  }, [char.pendingModal, char, storedColor, localColor]);
   const [weaponName, setWeaponName] = useState('Atelier Crimson Edge');
   const [weaponStyle, setWeaponStyle] = useState(WORKSHOP_STYLES[0]);
   const [cursorPos, setCursorPos] = useState(50);
@@ -1549,22 +1552,6 @@ export const LiveStageFeed = () => {
             </span>
           </div>
           <LogEntries logs={char.logs} currentAge={char.age} />
-          {char.alive && !isPrologueActive && !lifeSummary && (
-            <aside className="chronicle-horizon-card">
-              <div className="horizon-card-top">
-                <span className="horizon-district-tag">
-                  {char.job === 'Child'
-                    ? t('Thời niên thiếu · The City', 'Early years · The City')
-                    : t('Chân trời phía trước', 'Ahead')}
-                </span>
-              </div>
-              <p className="horizon-quote">
-                {char.job === 'Child'
-                  ? t('Ngoài kia đèn đường vừa bật. Bạn lớn thêm một ngày dưới luật của khu phố.', 'Streetlamps click on outside. You grow one day older under the district’s rules.')
-                  : t('Đêm xuống trên các dãy mái tôn. Tờ lịch năm nay vẫn chưa viết xong.', 'Night settles over the tin roofs. This year’s page is not finished yet.')}
-              </p>
-            </aside>
-          )}
           {isPrologueActive && (
             <div className="prologue-dock">
               <button
@@ -1580,20 +1567,22 @@ export const LiveStageFeed = () => {
             </div>
           )}
           {lifeSummary && !isPrologueActive && !cutsceneKey && (
-            <Epitaph
-              summary={lifeSummary}
-              onInherit={() => startLife(true)}
-              onRestart={abandonRun}
-              onViewRecord={() => {
-                if (logRef.current) {
-                  logRef.current.scrollTo({ top: 0, behavior: 'smooth' });
-                }
-              }}
-              onGoHome={() => {
-                exitToSetup();
-                navigate('/');
-              }}
-            />
+            <LifeEndStep summary={lifeSummary} onInherit={() => startLife(true)}>
+              <Epitaph
+                summary={lifeSummary}
+                onInherit={() => startLife(true)}
+                onRestart={abandonRun}
+                onViewRecord={() => {
+                  if (logRef.current) {
+                    logRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+                  }
+                }}
+                onGoHome={() => {
+                  exitToSetup();
+                  navigate('/');
+                }}
+              />
+            </LifeEndStep>
           )}
         </div>
       </div>
@@ -1704,7 +1693,7 @@ export const LiveStageFeed = () => {
       )}
 
       <Modal
-        open={char.pendingModal === 'color_title'}
+        open={char.pendingModal === 'color_title' && !cutsceneKey}
         footer={null}
         closable={false}
         centered

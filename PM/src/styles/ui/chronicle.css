@@ -60,39 +60,6 @@
   color: var(--page-muted);
 }
 
-/* Atmospheric Horizon Footer (un-nested colophon rule at the foot of the page) */
-.chronicle-horizon-card {
-  margin-top: 40px;
-  padding: 16px 0 0;
-  border: 0;
-  border-top: 1px solid var(--page-rule);
-  border-radius: 0;
-  background: transparent;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  animation: entryIn 0.8s ease both;
-}
-.horizon-card-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-}
-.horizon-district-tag {
-  font-family: var(--font);
-  font-size: 12.5px;
-  font-weight: 600;
-  color: var(--accent);
-}
-.horizon-quote {
-  margin: 0;
-  font-family: var(--serif);
-  font-style: italic;
-  font-size: 14px;
-  line-height: 1.6;
-  color: var(--page-muted);
-}
 
 .mobile-thumb-bar {
   display: none;
@@ -619,6 +586,11 @@
 /* The end of a life: the colophon of the book. Age as the large figure, the cause under it, then the record */
 .epitaph { margin-top: 56px; padding-top: 28px; border-top: 3px double var(--page-edge); }
 .epitaph-body { display: flex; flex-direction: column; gap: 22px; }
+.life-end-card { margin-top: 56px; padding: 40px 0 32px; border-top: 3px double var(--page-edge); display: grid; justify-items: center; gap: 14px; text-align: center; animation: entryIn .6s ease both; }
+.life-end-card .epitaph-poetic-quote { max-width: 46ch; margin: 6px 0 14px; }
+.life-end-actions { display: grid; justify-items: center; gap: 10px; width: min(100%, 360px); }
+.life-end-actions .btn { width: 100%; justify-content: center; }
+.life-end-record { outline: none; }
 .epitaph-kicker-origin { text-align: center; font-family: var(--serif); font-style: italic; font-size: 16px; color: var(--page-muted); }
 .epitaph-age { display: flex; justify-content: center; align-items: baseline; gap: 10px; font-family: var(--serif); font-size: clamp(58px, 7vw, 76px); font-weight: 600; line-height: .9; color: var(--page-ink); font-variant-numeric: lining-nums; }
 .epitaph-age span { font-size: 22px; font-weight: 400; color: var(--page-muted); }

@@ -33,6 +33,7 @@ import { applyAnnualPlan, ambitionsFor, defaultYearPoints } from '../engine/annu
 import { autoLeadIndex, tabooGainOf } from '../engine/forbiddenPath.js';
 import { relocateCharacterDistrict, imbueCharacterEquipment } from '../engine/cityUpgrades.js';
 import { cutsceneFor, outranks } from '../engine/cutsceneTriggers.js';
+import { bestowHanaColorTitle } from '../engine/colorRegistry.js';
 import { CUTSCENES, resolveCutsceneCut, hasSeenCutscene, markCutsceneSeen, prefersReducedMotion, isLowPowerDevice } from '../features/cutscene/registry.js';
 
 const META_KEY = 'pm_city_chronicles_save_v3';
@@ -405,6 +406,8 @@ export const useGameStore = create((set, get) => ({
   stageFx: null,
   // The scene playing right now; while it is set the dock waits and the year's clock stands still
   cutscene: null,
+  // The Color title rolled when the decree opens; the scene and the decree modal read the same roll
+  bestowedColor: null,
   activeResolution: null,
   postChoicePauseMs: 0,
   backendOnline: false,
@@ -731,6 +734,9 @@ export const useGameStore = create((set, get) => ({
     }
     // A scene replaces the stage flash for the same moment, so the two never stack
     const cutscene = nextCutscene(prev, withD, get());
+    const bestowedColor = withD.pendingModal === 'color_title'
+      ? (prev.pendingModal === 'color_title' && get().bestowedColor) || bestowHanaColorTitle(withD)
+      : null;
     const fx = cutscene ? null : stageFxFor(prev, withD);
     const meta = get().syncMetaFromChar(withD);
     if (cutscene) {
@@ -739,6 +745,7 @@ export const useGameStore = create((set, get) => ({
     }
     set({
       char: withD,
+      bestowedColor,
       ...(cutscene ? { cutscene } : {}),
       ...(fx ? { stageFx: { kind: fx, at: Date.now() } } : {}),
       ...(withD.pendingMinor && !prev.pendingMinor ? { minorRemainingMs: withD.pendingMinor.remainingMs || MINOR_WINDOW_MS } : {}),

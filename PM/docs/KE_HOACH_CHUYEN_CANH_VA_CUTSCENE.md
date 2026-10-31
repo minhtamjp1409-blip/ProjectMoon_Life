@@ -261,7 +261,7 @@ Hai chỗ khác với kế hoạch:
   - nhấn Space hoặc Enter để bỏ qua cảnh không chọn phương án nào và không bỏ qua khoảng nghỉ đọc;
   - tải chunk lỗi thì trò chơi tự chạy tiếp trong vòng `durationMs + 1500` ms.
 
-**Đợt 2, cái chết và Color**
+**Đợt 2, cái chết và Color** (đã xong ngày 31/10/2026, xem `PROGRESS_LOG.md` Đợt 102)
 1. C2 hai bước, chuyển trang di cảo hiện tại thành bước 2 (tiểu sử tự viết và Records ở đầu, phần còn lại gấp). Làm theo E3.
 2. C4 phong Color dùng `colorData`.
 - **Nghiệm thu:**

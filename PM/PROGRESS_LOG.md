@@ -2100,6 +2100,23 @@ Thực hiện toàn bộ các điểm cải tiến từ báo cáo `docs/CRITIQUE
   * Dọn toàn bộ quầng sáng trang trí (`[dark-glow]`, `[radial-halo]`, kể cả vầng tròn mặt trăng trên màn tiêu đề) để vượt qua bộ quét tự động `impeccable detect` với 0 anti-pattern.
 * **Kiểm định:** `npm test` đạt 55/55 test suites, `npm run build` hoàn tất sạch sẽ, và 235 lượt tương tác click-through trên Chrome CDP đạt 69/69 assertion PASS, 0 console error.
 
+## Đợt 102: Cái chết hai bước và cảnh phong Color (31/10/2026)
+
+Đợt 2 của `docs/KE_HOACH_CHUYEN_CANH_VA_CUTSCENE.md`, làm trên bản của Đợt 101.
+
+* **Cái chết (C2):**
+  * Cảnh `death` dài 3,2 giây: bóng tối khép từ rìa vào một ngọn đèn nhỏ, đèn tắt, hai dòng chữ ("Mọi tiếng động chậm lại.", "Rồi im."). Bản lite 0,9 giây, bản still là thẻ tĩnh, bản caption một dòng.
+  * `LifeEndStep.jsx` chia cuối đời thành hai bước. Bước 1 là thẻ ngắn: tuổi, nguyên nhân, một câu, nút "Nhìn lại cuộc đời này" (tự nhận focus) và "Kế thừa ngay". Bước 2 là `Epitaph` nguyên vẹn với đủ bốn hành động.
+  * Mỗi cái chết mới mở lại từ bước 1 (khóa theo seed và tuổi). Kết thúc đặc biệt (Library) không phải cái chết nên vào thẳng bước 2.
+  * Dữ liệu kế thừa không đổi: store vẫn ghi `pastLives`, `pendingLegacy` và bia tưởng niệm ngay lúc chết.
+* **Phong Color (C4):**
+  * Cảnh `color` dài 4,2 giây: một khe sáng màu Color mở ra trong tối, hai vòng tỏa ra, một lần chớp màu 120 ms, rồi tên danh hiệu hiện ra. Bản lite 1 giây.
+  * Store gieo danh hiệu một lần khi sắc lệnh mở (`bestowedColor`); cảnh và hộp sắc lệnh đọc cùng một lần gieo, nên màu và tên khớp nhau. Hộp sắc lệnh chờ cảnh xong rồi mới hiện.
+  * Thứ hạng: chết, Color, Claw. Cảnh mạnh hơn thay cảnh đang chạy, cảnh yếu hơn bị bỏ.
+* **Kiểm tra:** test thêm ca sắc lệnh Color (kích hoạt một lần, thay Claw, giữ nguyên lần gieo, bị cái chết thay thế, không bị cảnh yếu thay lại). Lint cảnh chấp nhận dòng khóa lấy từ lần gieo. Đã quay chuỗi ảnh 1440x900 và 390x844: không tràn ngang, 0 lỗi console, thẻ chết hiện sau cảnh, hộp sắc lệnh hiện sau cảnh.
+* **Sửa sau khi xem ảnh:** khe sáng ban đầu nở thành một dải đặc cùng màu với tên danh hiệu nên không đọc được; nay khe chỉ nở thành dải mảnh và tên đặt bằng màu chữ chính với quầng sáng màu Color.
+* **Chưa làm:** âm thanh cho cảnh; đợt 3 (Carmen, cổng hầm ngục).
+
 ## Phụ lục A: Bản tổng hợp thiết kế ngày 29/10/2026
 
 > Đây là nội dung lịch sử của `process.md`. Các mô tả cơ chế và kết quả kiểm thử phản ánh thời điểm 29/10/2026; những thay đổi và phép đo ở các đợt sau trong nhật ký chính được ưu tiên khi có khác biệt.
