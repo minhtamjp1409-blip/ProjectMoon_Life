@@ -2,12 +2,18 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Compass, Sparkles, Shield, Eye, Flame } from 'lucide-react';
 import { audioEngine } from '../../../engine/audioEngine';
 import { useT } from '../../../i18n';
+import { useThemeStore } from '../../../store/themeStore';
+import { BIRTH_OPENING, birthOpeningCut, prefersReducedMotion } from '../../cutscene/registry';
 
+// The District card that opens a life. How long it holds comes from the opening's cut (registry BIRTH_OPENING):
+// scenes off skip it, reduced motion holds it still at its last line, Full lets it run longer.
 export const CityLoadingOverlay = ({ active, region, charName, seed, onComplete }) => {
   const { t } = useT();
   const [progress, setProgress] = useState(0);
   const [stageIndex, setStageIndex] = useState(0);
   const timerRef = useRef(null);
+  const cutsceneMode = useThemeStore((s) => s.cutsceneMode);
+  const cut = birthOpeningCut({ setting: cutsceneMode, reduced: prefersReducedMotion() });
 
   const telemetryLines = region?.id === 'OUTSKIRTS'
     ? [
@@ -30,14 +36,26 @@ export const CityLoadingOverlay = ({ active, region, charName, seed, onComplete 
       return;
     }
 
+    const duration = BIRTH_OPENING.cardMs[cut];
+    if (!duration) {
+      onComplete?.();
+      return undefined;
+    }
+
     try {
       audioEngine.playBuff();
     } catch {
       // Audio may be muted
     }
 
+    if (cut === 'still') {
+      setProgress(100);
+      setStageIndex(3);
+      const id = setTimeout(() => onComplete?.(), duration);
+      return () => clearTimeout(id);
+    }
+
     const startTime = performance.now();
-    const duration = 1500; // 1.5 seconds loading time
 
     const updateFrame = (now) => {
       const elapsed = now - startTime;
@@ -65,7 +83,7 @@ export const CityLoadingOverlay = ({ active, region, charName, seed, onComplete 
     };
   }, [active]);
 
-  if (!active) return null;
+  if (!active || !BIRTH_OPENING.cardMs[cut]) return null;
 
   const districtTitle = region
     ? region.id === 'OUTSKIRTS'

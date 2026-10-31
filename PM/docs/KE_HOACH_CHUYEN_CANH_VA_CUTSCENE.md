@@ -291,7 +291,7 @@ Hai chỗ khác với kế hoạch:
 - Lớp `mood-*` trên gốc màn chơi làm mờ cột bên (`.side`, thanh trên) bằng `opacity` và một lớp phủ xám, tối đa 0,3 giây vào và 1,2 giây ra; không animate `filter`.
 - **Nghiệm thu:** đổi `mood` không gây reflow (CLS 0); chữ nhật ký vẫn đạt tương phản; điện thoại 320 đến 412px không tràn.
 
-### Tầng C: hoàn thiện thẻ quyết định (đợt 6)
+### Tầng C: hoàn thiện thẻ quyết định (đợt 6) (đã xong ngày 31/10/2026, xem `PROGRESS_LOG.md` Đợt 107; mục 1 và 3 đã có sẵn từ trước)
 1. Sự kiện lớn (major) hiện nhãn "Thời gian dừng" trong `dock-kicker`; sự kiện nhỏ giữ đồng hồ đếm ngược như hiện nay. Nhãn viết thường, không giãn chữ.
 2. Khi bật "Xem phía sau": giao diện còn lại sáng lên, nền hiện rõ; thoát bằng Esc hoặc chạm lại.
 3. Thanh tỉ lệ thành bại cho Request: kiểm tra `ChoicePreview`/`Deltas.jsx` có đủ ba mức (thành công, thất bại, tử vong) trước khi thêm; chỉ làm nếu thiếu.

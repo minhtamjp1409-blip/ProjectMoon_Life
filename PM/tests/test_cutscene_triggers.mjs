@@ -2,7 +2,8 @@ import assert from 'node:assert/strict';
 import { createNewCharacter, cloneChar, createDungeonSession } from '../src/engine/gameEngine.js';
 import { CLAW_DUNGEON_ID } from '../src/data/dungeonClaw.js';
 import { cutsceneFor, outranks, CUTSCENE_RANK } from '../src/engine/cutsceneTriggers.js';
-import { CUTSCENES, resolveCutsceneCut } from '../src/features/cutscene/registry.js';
+import { readFileSync } from 'node:fs';
+import { CUTSCENES, resolveCutsceneCut, BIRTH_OPENING, birthOpeningCut } from '../src/features/cutscene/registry.js';
 
 const base = createNewCharacter({ seed: 'cutscene-triggers', startAge: 30 });
 base.pendingDungeon = null;
@@ -77,4 +78,18 @@ for (const [id, scene] of Object.entries(CUTSCENES)) {
   assert(scene.keyDynamic || (scene.lines[scene.keyLine]?.vi && scene.lines[scene.keyLine]?.en), `${id} key line is written in both languages or taken from the roll`);
 }
 
-console.log('Cutscene triggers: Claw on the judgment only, Carmen on her call, a gate for every other dungeon, death outranks, ranks never queue, cut selection and scene budgets passed.');
+// 6. The opening of a life is paced from the same registry: lite by default (the timing the game always had)
+assert.equal(birthOpeningCut({}), 'lite');
+assert.equal(birthOpeningCut({ setting: 'full' }), 'full');
+assert.equal(birthOpeningCut({ setting: 'full', reduced: true }), 'still', 'reduced motion holds the card still');
+assert.equal(birthOpeningCut({ setting: 'off', reduced: true }), 'caption', 'scenes off skip the card');
+assert.equal(BIRTH_OPENING.cardMs.lite, 1500);
+assert.deepEqual(BIRTH_OPENING.entryGapMs.lite, [550, 1250]);
+assert.equal(BIRTH_OPENING.cardMs.caption, 0);
+for (const cut of ['full', 'lite', 'still', 'caption']) assert.equal(BIRTH_OPENING.entryGapMs[cut].length, 2, `${cut} has both entry gaps`);
+const read = (path) => readFileSync(new URL(path, import.meta.url), 'utf8');
+assert(read('../src/features/chronicle/components/CityLoadingOverlay.jsx').includes('BIRTH_OPENING.cardMs[cut]'), 'the District card holds for its cut');
+assert(read('../src/features/chronicle/components/LiveStageFeed.jsx').includes('BIRTH_OPENING.entryGapMs[cut]'), 'the birth entries are paced by the cut');
+assert(read('../src/styles/ui/play.css').includes(".shell[data-mood='hush']:has(.event-peek-toggle)"), 'See behind lights the room up during a hush');
+
+console.log('Cutscene triggers: Claw on the judgment only, Carmen on her call, a gate for every other dungeon, death outranks, ranks never queue, cut selection, scene budgets and the opening pace passed.');

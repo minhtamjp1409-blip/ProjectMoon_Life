@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 import { useGameStore } from '../../../store/gameStore';
 import { useThemeStore } from '../../../store/themeStore';
+import { BIRTH_OPENING, birthOpeningCut, prefersReducedMotion } from '../../cutscene/registry';
 import { entryTier, foldsInCompact, framesAsMajor, splitLead } from '../entryTiers.js';
 import { buildLifeSummaryAndLegacy, getDungeonCurrentStage, isDungeonChoiceAvailable, DUNGEON_DEFINITIONS } from '../../../engine/gameEngine';
 import { DungeonDock } from './DungeonDock';
@@ -1219,11 +1220,13 @@ export const LiveStageFeed = () => {
   useEffect(() => setDungeonStake(0), [char.pendingEvent?.id]);
   const dirRef = useRef(1);
 
-  // Auto-reveal birth prologue events sequentially with cinematic pacing
+  // Auto-reveal birth prologue events one by one, paced by the opening's cut (registry BIRTH_OPENING)
   useEffect(() => {
     if (!isPrologueActive) return;
 
-    const delay = (char.logs?.length || 0) === 0 ? 550 : 1250;
+    const cut = birthOpeningCut({ setting: useThemeStore.getState().cutsceneMode, reduced: prefersReducedMotion() });
+    const [first, next] = BIRTH_OPENING.entryGapMs[cut];
+    const delay = (char.logs?.length || 0) === 0 ? first : next;
     const timer = setTimeout(() => {
       revealNextBirthLog();
       try {

@@ -2231,6 +2231,50 @@ C5 của Đợt 3 trong `docs/KE_HOACH_CHUYEN_CANH_VA_CUTSCENE.md`. Đây là c�
 * **Kiểm tra:** `test_scene_context.mjs` kiểm tra mọi loại `place`, ba mood theo District, hush khi có sự kiện lớn (và không có với sự kiện thường), không có mood khi trong hầm ngục hay đã chết.
 * **Tiếp theo:** Tầng C, Đợt 6.
 
+## Đợt 107: Hoàn thiện thẻ quyết định và cảnh mở đầu, khép lại kế hoạch chuyển cảnh (31/10/2026)
+
+Đợt 6 (Tầng C) trong `docs/KE_HOACH_CHUYEN_CANH_VA_CUTSCENE.md`. Đây là đợt cuối của kế hoạch sáu đợt.
+
+* **Mục 1, nhãn "Thời gian dừng":** đã có từ trước, không sửa.
+  * Mọi sự kiện trong dock đều có "Tuổi X · Thời gian dừng lại" (hoặc "Tiếng vọng nhân quả · Thời gian dừng lại"), viết thường, không giãn chữ.
+  * Sự kiện nhỏ vẫn có đồng hồ đếm ngược riêng.
+  * Đồng hồ dừng cho mọi `pendingEvent`, nên nhãn đúng với mọi sự kiện, không riêng sự kiện lớn.
+* **Mục 2, "Xem phía sau":**
+  * Khi đang xem phía sau trong lúc có sự kiện lớn, cột bên và hai thanh trên sáng trở lại; mood hush của Đợt 106 làm mờ chúng.
+  * Khi quyết định hiện lại, chúng mờ lại như cũ.
+  * Thoát bằng Esc, phím V, hoặc chạm nút "Hiện quyết định" như trước.
+  * Đo trong trình duyệt: độ đục của cột bên đi từ 0,42 lên 1 rồi về 0,42.
+* **Mục 3, thanh tỉ lệ Request:** đã có từ trước, không thêm. Mỗi cách nhận việc đã có thanh ba mức (thành công, thất bại, tử trận) và chú thích phần trăm.
+* **Mục 4, cảnh mở đầu:**
+  * `registry.js` có thêm `BIRTH_OPENING` và `birthOpeningCut`. Mở đầu không phải cảnh của Director (đồng hồ chưa chạy nên không có gì cần giữ), nhưng dùng chung cài đặt "Cảnh chuyển" và chế độ chuyển động.
+  * Thời gian giữ của thẻ District (`CityLoadingOverlay`) và khoảng cách giữa các dòng nhật ký lúc sinh lấy theo bản cắt:
+    * lite (mặc định) giữ đúng nhịp cũ: thẻ 1,5 giây, rồi 550 ms và 1250 ms;
+    * full chậm hơn: 2,4 giây, rồi 700 ms và 1600 ms;
+    * still (giảm chuyển động) giữ thẻ đứng yên ở dòng cuối 0,9 giây;
+    * caption (tắt cảnh) bỏ thẻ, hiện các dòng nhanh.
+  * Đo trong trình duyệt:
+    * Khoảng chờ trước dòng đầu tiên: lite 528 ms, full 687 ms, still 280 ms.
+    * Thẻ ở full giữ lâu hơn lite khoảng 900 ms.
+    * Chế độ tắt cảnh không hiện thẻ.
+  * Đoạn bản đồ bay tới District (khoảng 2 giây) có từ trước và không đổi.
+* **Kiểm tra:**
+  * `test_cutscene_triggers.mjs` kiểm tra:
+    * cách chọn bản cắt mở đầu;
+    * bản lite giữ đúng nhịp cũ;
+    * caption bỏ thẻ;
+    * hai file giao diện đọc thời gian từ registry;
+    * quy tắc sáng lại khi xem phía sau.
+  * Toàn bộ `npm test` qua.
+* **Ghi nhận, chưa sửa (cần chủ dự án quyết vì đổi chữ hiển thị):** thẻ District lúc sinh vẫn giữ kiểu "giao thức" cũ.
+  * Dòng tiêu đề viết hoa giãn chữ "GHI NHẬN HỒ SƠ SINH MỆNH MỚI".
+  * Dấu `>` kiểu terminal.
+  * Thanh phần trăm "Đang đồng bộ..." chạy theo đồng hồ chứ không phải tiến độ thật.
+  * Đây là các mẫu mà các skill thiết kế của dự án khuyên bỏ.
+* **Kế hoạch chuyển cảnh sáu đợt đã xong.** Còn lại ngoài kế hoạch:
+  * âm thanh cho các cảnh;
+  * C6 (Ngón Tay lên bậc đỉnh) và C7 (đồng đội hy sinh), để "sau";
+  * lỗi hiếm ở check 5 của audit nghề Fixer (Đợt 105).
+
 ## Phụ lục A: Bản tổng hợp thiết kế ngày 29/10/2026
 
 > Đây là nội dung lịch sử của `process.md`. Các mô tả cơ chế và kết quả kiểm thử phản ánh thời điểm 29/10/2026; những thay đổi và phép đo ở các đợt sau trong nhật ký chính được ưu tiên khi có khác biệt.

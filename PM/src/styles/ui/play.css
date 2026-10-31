@@ -640,3 +640,5 @@
 .is-in-play :is(.side, .topbar, .playbar) { transition: opacity 1.2s ease; }
 .shell[data-mood='hush'] :is(.side, .topbar, .playbar) { opacity: 0.42; transition-duration: 0.3s; }
 .shell[data-mood='hush'] :is(.side, .topbar, .playbar):is(:hover, :focus-within) { opacity: 1; }
+/* "See behind" puts the decision away to read the room, so the room lights up again until the decision returns */
+.shell[data-mood='hush']:has(.event-peek-toggle) :is(.side, .topbar, .playbar) { opacity: 1; }
