@@ -34,6 +34,7 @@ import { autoLeadIndex, tabooGainOf } from '../engine/forbiddenPath.js';
 import { relocateCharacterDistrict, imbueCharacterEquipment } from '../engine/cityUpgrades.js';
 import { cutsceneFor, outranks } from '../engine/cutsceneTriggers.js';
 import { bestowHanaColorTitle } from '../engine/colorRegistry.js';
+import { chapterFor } from '../engine/chapters.js';
 import { CUTSCENES, resolveCutsceneCut, hasSeenCutscene, markCutsceneSeen, prefersReducedMotion, isLowPowerDevice } from '../features/cutscene/registry.js';
 
 const META_KEY = 'pm_city_chronicles_save_v3';
@@ -727,6 +728,9 @@ export const useGameStore = create((set, get) => ({
   commit: (prev, next, extra = {}) => {
     if (next.pendingLead && !next.pendingYearPlan) next = chooseDirectorPacedLead(next, lifeRng);
     const withD = withDeltas(prev, enforceTabooJudgment(next));
+    // A life that turned (a trade, a rank, E.G.O, Distortion, a Color) opens a new chapter in the chronicle
+    const chapter = chapterFor(prev, withD);
+    if (chapter) withD.logs = [...withD.logs, chapter];
     if (!withD.firstDungeonId && withD.pendingDungeon?.id) withD.firstDungeonId = withD.pendingDungeon.id;
     if (!withD.firstDungeonOutcome && prev.pendingDungeon && !withD.pendingDungeon &&
         prev.pendingDungeon.id === (withD.firstDungeonId || prev.firstDungeonId)) {

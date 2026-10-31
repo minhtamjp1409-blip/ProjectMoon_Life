@@ -99,6 +99,21 @@ const LogEntries = React.memo(function LogEntries({ logs, currentAge }) {
         </div>
       );
     }
+    // A chapter card heads what follows: the new title set large between two rules, one line under it.
+    // Only this year's card plays its entrance; older ones are already part of the record.
+    if (entry.type === 'chapter') {
+      out.push(
+        <section className={`chapter-card ${entry.age === currentAge ? 'is-new' : ''}`} key={entry.id}>
+          <div className="chapter-head">
+            <span className="chapter-rule is-left" aria-hidden="true" />
+            <h3 className="chapter-title">{t(entry.titleVi, entry.titleEn)}</h3>
+            <span className="chapter-rule is-right" aria-hidden="true" />
+          </div>
+          <p className="chapter-sub">{t(entry.subVi, entry.subEn)}</p>
+        </section>
+      );
+      return;
+    }
     const kind = ENTRY_KIND[entry.type];
     const { title, situation, result, reviewBody } = storyParts(entry, lang);
     const tag = entry.omen ? t('Điềm lúc chào đời', 'Omen at birth') : title || (kind?.vi ? t(kind.vi, kind.en) : null);

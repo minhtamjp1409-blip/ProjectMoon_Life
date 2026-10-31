@@ -74,6 +74,31 @@
 .season-divider-line { flex: 1; height: 1px; background: var(--page-rule); }
 .season-divider-badge { font-family: var(--serif); font-style: italic; font-size: 14.5px; color: var(--page-muted); }
 
+/* A chapter card: the life has turned (a trade, a rank, E.G.O, Distortion, a Color). The new title set large between
+   two rules, one italic line under it; no box, no shadow. This year's card draws itself in about 1.8 s. */
+.chapter-card { margin: 44px 0 32px; text-align: center; }
+.chapter-head { display: flex; align-items: center; gap: 18px; }
+.chapter-rule { flex: 1; min-width: 24px; height: 1px; background: var(--accent); opacity: 0.6; }
+.chapter-rule.is-left { transform-origin: right center; }
+.chapter-rule.is-right { transform-origin: left center; }
+.chapter-title {
+  margin: 0;
+  max-width: 16ch;
+  font-family: var(--serif);
+  font-size: clamp(26px, 3.2vw, 36px);
+  font-weight: 600;
+  line-height: 1.12;
+  color: var(--page-ink);
+  text-wrap: balance;
+  overflow-wrap: break-word;
+}
+.chapter-sub { margin: 10px auto 0; max-width: 40ch; font-family: var(--serif); font-style: italic; font-size: calc(var(--story-size) - 1px); line-height: 1.5; color: var(--page-muted); text-wrap: balance; }
+.chapter-card.is-new .chapter-title { animation: chapterIn 800ms cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+.chapter-card.is-new .chapter-rule { animation: chapterRule 900ms cubic-bezier(0.2, 0.8, 0.2, 1) 300ms both; }
+.chapter-card.is-new .chapter-sub { animation: chapterIn 700ms ease-out 1000ms both; }
+@keyframes chapterIn { from { opacity: 0; transform: translateY(8px); } }
+@keyframes chapterRule { from { transform: scaleX(0); } }
+
 .entry { margin: 0 0 22px; animation: entryIn .55s cubic-bezier(.2, .8, .2, 1) both; }
 @keyframes entryIn { from { opacity: 0; transform: translateY(10px); filter: blur(2px); } }
 .yearline, .season-divider { animation: entryIn .7s ease both; }

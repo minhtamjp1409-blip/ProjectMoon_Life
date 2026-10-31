@@ -2165,6 +2165,40 @@ C5 của Đợt 3 trong `docs/KE_HOACH_CHUYEN_CANH_VA_CUTSCENE.md`. Đây là c�
   * Đã quay cả bảy hầm ở 390x844 và Great Lake ở bốn bản (full, lite, still, caption) ở 1440x900: không tràn ngang, 0 lỗi console, tên đọc rõ trên mọi hậu cảnh.
 * **Tiếp theo:** Tầng B, Đợt 4 (thẻ chương trong nhật ký, C8). Âm thanh cho cảnh vẫn chưa làm.
 
+## Đợt 105: Thẻ chương trong nhật ký (31/10/2026)
+
+Đợt 4 (Tầng B, mục 6.2) trong `docs/KE_HOACH_CHUYEN_CANH_VA_CUTSCENE.md`.
+
+* **Khi nào có thẻ chương:**
+  * Một loại log mới `chapter` được chèn vào nhật ký khi đời nhân vật đổi hướng.
+  * Các trường hợp: bước vào nghề lúc hết tuổi Child; đổi nghề; lên Fixer Grade; lên Finger rank; lên Wing rank; lên rank Syndicate độc lập; thức tỉnh E.G.O; Distortion; thành Color.
+  * Mỗi lần `commit` chỉ có tối đa một thẻ, cho thay đổi lớn nhất (Color, rồi Distortion, rồi E.G.O, rồi nghề, rồi rank). Rank giảm thì không có thẻ.
+* **Cách làm:**
+  * `src/engine/chapters.js` có hàm thuần `chapterFor(prev, next)`. Hàm này được gọi trong `commit` của store, chỗ mọi thay đổi của nhân vật đều đi qua, nên không phải móc vào từng nơi trong engine làm đổi nghề hay rank.
+  * Thẻ nằm cùng mùa với dòng nhật ký vừa làm đời đổi hướng, và có kèm một câu thường cho những chỗ đọc log nhưng không biết đến thẻ chương.
+  * Nhãn rank Syndicate độc lập được đưa ra thành `INDEPENDENT_SYNDICATE_RANKS`, để thẻ chương và mốc nghề nghiệp dùng chung một bảng.
+* **Hiển thị:**
+  * Tên mới cỡ lớn nằm giữa hai nét kẻ vàng đối xứng, bên dưới là một dòng in nghiêng (ví dụ "Năm 24 tuổi, Hana ghi Grade mới vào hồ sơ."). Không hộp, không bóng.
+  * Thẻ của năm đang chơi hiện ra trong khoảng 1,8 giây: tên, rồi hai nét kẻ kéo ra từ giữa, rồi dòng phụ. Thẻ của các năm trước hiện tĩnh.
+  * `entryTiers`: thẻ chương thuộc tầng `turn`, không bao giờ bị gấp ở chế độ Đọc gọn. Nó không được vẽ như khung bước ngoặt, và không chen vào danh sách bước ngoặt của trang di cảo.
+* **Kiểm tra:**
+  * `tests/test_chapters.mjs` (đã nối vào `npm test`) kiểm tra:
+    * vào nghề, đổi nghề;
+    * Grade lên thì có thẻ, Grade xuống thì không;
+    * từng rank Syndicate độc lập 1, 2, 3 ra đúng một thẻ;
+    * Finger, Wing, E.G.O, Distortion, Color;
+    * khi có nhiều thay đổi cùng lúc thì thay đổi lớn nhất thắng;
+    * chết thì không có thẻ;
+    * qua `commit`: một lần thăng ra một thẻ, commit lặp lại không thêm thẻ;
+    * tầng đọc và trang di cảo.
+  * Đã chụp ở 1440x900 và 390x844 (thăng Grade và thăng rank Syndicate độc lập), cả lúc đang hiện và lúc đã xong: không tràn ngang, 0 lỗi console.
+* **Ghi nhận khi chạy test:**
+  * Một lần `npm test` báo 2 ca lệch trên 500 ở check 5 của `run_million_audit` (danh sách điều kiện Fixer so với cổng mở kỳ sát hạch).
+  * Check này chỉ xét nhánh Fixer và mỗi lần chạy dùng seed mới. Chạy riêng 9 lần × 500 và thêm 8 lần × 2000 với bản in chi tiết đều không lặp lại, nên chưa tìm được seed để sửa. `npm test` chạy lại thì qua.
+  * Lỗi này hiếm và có từ trước; cần theo dõi tiếp.
+* **Một lần chụp desktop** thấy dấu tiếng Việt bị tách rời trong toàn bộ chữ nhật ký (không riêng thẻ chương). Đó là lúc gói font tiếng Việt của Literata chưa tải kịp và trình duyệt dùng Georgia; các lần chụp khác hiển thị đúng.
+* **Tiếp theo:** Đợt 5 (hậu cảnh lộ ra qua cột nhật ký, `place` và `mood`).
+
 ## Phụ lục A: Bản tổng hợp thiết kế ngày 29/10/2026
 
 > Đây là nội dung lịch sử của `process.md`. Các mô tả cơ chế và kết quả kiểm thử phản ánh thời điểm 29/10/2026; những thay đổi và phép đo ở các đợt sau trong nhật ký chính được ưu tiên khi có khác biệt.

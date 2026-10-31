@@ -279,7 +279,7 @@ Hai chỗ khác với kế hoạch:
 
 ### Tầng B: không khí tại chỗ (đợt 4 đến 5)
 
-**6.2 Thẻ chương trong nhật ký (đợt 4)**
+**6.2 Thẻ chương trong nhật ký (đợt 4)** (đã xong ngày 31/10/2026, xem `PROGRESS_LOG.md` Đợt 105; móc vào `commit` của store qua `chapterFor`, không móc từng chỗ trong engine)
 - Loại log mới `chapter`, xếp tầng `turn` trong `entryTiers.js`, không bao giờ bị gấp ở chế độ Đọc gọn.
 - Hiển thị: một khối chữ trình bày cỡ lớn, hai đường kẻ mảnh đối xứng, một dòng phụ nghiêng; không hộp, không bóng.
 - Móc: mục có `turning: true` (nghề, Grade, Finger rank, Wing rank, Syndicate rank, E.G.O, Distortion, Color) và tuổi vào nghề.

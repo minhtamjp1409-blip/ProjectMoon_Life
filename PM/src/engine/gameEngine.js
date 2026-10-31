@@ -1002,6 +1002,14 @@ export function evaluateCharacterAchievements(char) {
   }
 }
 
+// A Syndicate member with no Finger climbs these instead (syndicateRank 0 to 3)
+export const INDEPENDENT_SYNDICATE_RANKS = [
+  { vi: 'Kẻ bảo kê đường phố', en: 'Street Enforcer' },
+  { vi: 'Đầu gấu khu phố', en: 'Turf Lieutenant' },
+  { vi: 'Đại ca băng đảng tự do', en: 'Independent Syndicate Boss' },
+  { vi: 'Bá chủ ngõ tối', en: 'Underground Kingpin' }
+];
+
 export const WING_RANKS = [
   { rank: 0, titleVi: 'Nhân viên tập sự (Contract Intern)', titleEn: 'Contract Intern', merit: 0, wealth: 0, network: 0 },
   { rank: 1, titleVi: 'Feather chính thức (Feather Agent)', titleEn: 'Feather Agent', merit: 25, wealth: 18, network: 14 },
@@ -1208,12 +1216,7 @@ export function getNextCareerMilestone(char) {
     if (!char.finger) {
       const isIndependent = char.flags?.includes('IndependentSyndicate');
       const rank = char.syndicateRank || 0;
-      const INDIE_RANKS = [
-        { vi: 'Kẻ bảo kê đường phố', en: 'Street Enforcer' },
-        { vi: 'Đầu gấu khu phố', en: 'Turf Lieutenant' },
-        { vi: 'Đại ca băng đảng tự do', en: 'Independent Syndicate Boss' },
-        { vi: 'Bá chủ ngõ tối', en: 'Underground Kingpin' }
-      ];
+      const INDIE_RANKS = INDEPENDENT_SYNDICATE_RANKS;
       const curTitle = INDIE_RANKS[Math.min(rank, INDIE_RANKS.length - 1)];
       const nextRank = rank + 1;
       if (nextRank >= INDIE_RANKS.length) {
