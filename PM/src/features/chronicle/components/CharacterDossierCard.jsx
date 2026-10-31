@@ -103,6 +103,7 @@ function useChange(value) {
 
 // One stat: its own hue on the bar; a critical level turns the bar red and names it
 const Stat = ({ label, value, unit = '/100', color, flag, riseIsBad = false, tooltip = null }) => {
+  const { t } = useT();
   const change = useChange(value);
   const good = change && (riseIsBad ? change.d < 0 : change.d > 0);
   const flashClass = change ? (good ? 'is-flash-up' : 'is-flash-down') : '';
@@ -133,13 +134,13 @@ const Stat = ({ label, value, unit = '/100', color, flag, riseIsBad = false, too
         <span className="label stat-label">
           <i className="dot" style={{ background: isCritical ? 'var(--bad)' : color }} />
           {tooltip ? (
-            <Tooltip title={tooltip} placement="top">
+            <Tooltip title={tooltip} placement="top" trigger={['hover', 'focus', 'click']}>
               <span tabIndex={0} className="stat-name has-help">{label}</span>
             </Tooltip>
           ) : <span>{label}</span>}
           {flag && <span className="stat-flag">{flag}</span>}
-          {isCarmenCalls && !flag && <span className="stat-flag is-carmen-tag">Carmen Calls</span>}
-          {isCritical && !isCarmenCalls && !flag && <span className="stat-flag is-warn">CRIT</span>}
+          {isCarmenCalls && !flag && <span className="stat-flag is-carmen-tag">{t('Tiếng gọi Carmen', 'Carmen calls')}</span>}
+          {isCritical && !isCarmenCalls && !flag && <span className="stat-flag is-warn">{t('Nguy kịch', 'Critical')}</span>}
         </span>
         <div className="stat-num-box">
           {change && (
@@ -189,7 +190,7 @@ const TabooStat = ({ value, tooltip = null, flag = null }) => {
         <span className="label stat-label">
           <i className="dot" style={{ background: value >= 2 ? 'var(--bad)' : 'var(--warn)' }} />
           {tooltip ? (
-            <Tooltip title={tooltip} placement="top">
+            <Tooltip title={tooltip} placement="top" trigger={['hover', 'focus', 'click']}>
               <span tabIndex={0} className="stat-name has-help">Taboo Gaze</span>
             </Tooltip>
           ) : <span>Taboo Gaze</span>}
@@ -378,8 +379,8 @@ const Nameplate = ({ char, region, omen, t, lang }) => {
           <span>{t('Tổ chức', 'Faction')}</span>
           <span className="kv-val-wrap">{faction}</span>
         </div>
-        <Tooltip title={lang === 'en' ? omen.descEn : omen.descVi} placement="right">
-          <div className="kv is-help">
+        <Tooltip title={lang === 'en' ? omen.descEn : omen.descVi} placement="right" trigger={['hover', 'focus', 'click']}>
+          <div className="kv is-help" tabIndex={0}>
             <span>{t('Điềm báo', 'Fate omen')}</span>
             <span className="text-accent">{(lang === 'en' ? omen.nameEn : omen.nameVi).split(' · ')[0]}</span>
           </div>
@@ -407,8 +408,8 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeT
       {showOverview && (
         <section>
           <h3 className="section-title">{t('Chỉ số', 'Vitals')}</h3>
-          <Stat label="HP" value={health} color="var(--s-health)" flag={health <= 25 ? 'CRITICAL' : null} tooltip={t('Sinh lực. Về 0 có thể chết vì thương tích; được hồi bằng điều trị và nghỉ cuối năm.', 'Vitality. Reaching 0 can be fatal; treatment and year-end rest restore it.')} />
-          <Stat label="SP" value={sanity} color="var(--s-sanity)" flag={sanity <= 22 ? 'Carmen Calls' : null} tooltip={t('Tinh thần. Về 0 dẫn tới khủng hoảng; chỗ dựa và nghỉ ngơi giúp hồi phục.', 'Sanity. Reaching 0 triggers a crisis; support and rest help restore it.')} />
+          <Stat label="HP" value={health} color="var(--s-health)" flag={health <= 25 ? t('Nguy kịch', 'Critical') : null} tooltip={t('Sinh lực. Về 0 có thể chết vì thương tích; được hồi bằng điều trị và nghỉ cuối năm.', 'Vitality. Reaching 0 can be fatal; treatment and year-end rest restore it.')} />
+          <Stat label="SP" value={sanity} color="var(--s-sanity)" flag={sanity <= 22 ? t('Tiếng gọi Carmen', 'Carmen calls') : null} tooltip={t('Tinh thần. Về 0 dẫn tới khủng hoảng; chỗ dựa và nghỉ ngơi giúp hồi phục.', 'Sanity. Reaching 0 triggers a crisis; support and rest help restore it.')} />
           <Stat label={t('Tiền mặt', 'Wealth')} value={wealth} unit="Ahn" color="var(--s-wealth)" flag={wealth <= 5 ? t('Cạn tiền', 'Near ruin') : null} tooltip={t('Ahn dùng cho sinh hoạt, mua tin và điều trị.', 'Ahn pays for living costs, intelligence, and treatment.')} />
           <details className="dossier-fold is-inline">
             <summary>
@@ -738,7 +739,7 @@ export const CharacterDossierCard = () => {
   const currentSeason = SEASONS[char.seasonIdx] || SEASONS[0];
   const items = [
     char.egoName && { k: 'E.G.O', v: t(char.egoName, localizeEnsembleName(char.egoName, 'en')) },
-    char.craftWeapon && { k: t('Thần binh', 'Weapon'), v: char.craftWeapon.name },
+    char.craftWeapon && { k: t('Vũ khí rèn', 'Forged weapon'), v: char.craftWeapon.name },
     char.lineage?.relic && !char.craftWeapon && { k: t('Di vật', 'Relic'), v: t(char.lineage.relic, char.lineage.relicEn || localizeEnsembleName(char.lineage.relic, 'en')) }
   ].filter(Boolean);
 
@@ -786,7 +787,7 @@ export const CharacterDossierCard = () => {
             <span className={`hud2-name is-${plate.tier}${plate.route ? ` route-${plate.route}` : ''}`} style={plate.color ? { '--plate': plate.color } : undefined}>{char.name}{char.flags?.includes('EnsembleSurvivor') && <Star className="ensemble-mark" size={13} aria-label={t('Sống sót qua Ensemble', 'Ensemble survivor')} />}</span>
             <span className="hud2-gen">#{char.generation}</span>
             <span className="hud2-when">
-              {jobDesc.split(' · ')[0]} · <b>{t(`Tuổi ${char.age}`, `Age ${char.age}`)}</b> · {t(currentSeason?.vi, currentSeason?.en)}
+              {jobDesc.split(' · ')[0]} · {lang === 'en' ? region.nameEn : region.nameVi}
             </span>
           </div>
           <button
@@ -861,7 +862,7 @@ export const CharacterDossierCard = () => {
               <div className="sheet-title-row">
                 <div className="sheet-title-info">
                   <b>{char.name}</b>
-                  <span>Gen #{char.generation} · {jobDesc}</span>
+                  <span>{t('Thế hệ', 'Gen')} #{char.generation} · {jobDesc}</span>
                 </div>
                 <button
                   type="button"

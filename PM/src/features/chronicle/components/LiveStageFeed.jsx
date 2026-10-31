@@ -1,16 +1,16 @@
-import { choiceIsAvailable, charHasCombatGear } from '../../../engine/eventConditions.js';
+import { choiceIsAvailable, describeChoiceBlock } from '../../../engine/eventConditions.js';
 import { ITEMS_CATALOG } from '../../../data/itemsData.js';
 import { REGIONS } from '../../../data/worldData.js';
 import { localizeEnsembleName } from '../../../data/ensembleNames.js';
 import React, { useEffect, useRef, useState } from 'react';
 import { Modal } from 'antd';
-import { GitBranch, Download, RotateCcw, Hammer, ChevronDown, Eye, EyeOff, BookOpen, Copy, Check, House, Zap, Hourglass, ScrollText, Skull, History, Stamp, SkipForward } from 'lucide-react';
+import { GitBranch, Download, RotateCcw, Hammer, ChevronDown, Eye, EyeOff, BookOpen, Copy, Check, House, Zap, Hourglass, ScrollText, Skull, History, Stamp, SkipForward, Pause, Play } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
 import { useGameStore } from '../../../store/gameStore';
 import { useThemeStore } from '../../../store/themeStore';
 import { entryTier, foldsInCompact, framesAsMajor, splitLead } from '../entryTiers.js';
-import { buildLifeSummaryAndLegacy, getDungeonCurrentStage, isDungeonChoiceAvailable, DUNGEON_DEFINITIONS, getNextCareerMilestone } from '../../../engine/gameEngine';
+import { buildLifeSummaryAndLegacy, getDungeonCurrentStage, isDungeonChoiceAvailable, DUNGEON_DEFINITIONS } from '../../../engine/gameEngine';
 import { DungeonDock } from './DungeonDock';
 import { YearPlanDock } from './YearPlanDock';
 import { LIFE_MINORS, MINOR_WINDOW_MS, splitTitle } from '../../../engine/yearPlanner';
@@ -24,16 +24,16 @@ import { bestowHanaColorTitle } from '../../../engine/colorRegistry';
 import { dungeonEntryForecast } from '../../../engine/dungeonEngine';
 
 const ENTRY_KIND = {
-  causal: { cls: 'k-causal', vi: 'Causal Echo', en: 'Causal Echo' },
-  miracle: { cls: 'k-good', vi: 'Turning Point', en: 'Turning Point' },
-  promo: { cls: 'k-good', vi: 'Promotion', en: 'Promotion' },
-  danger: { cls: 'k-bad', vi: 'Danger', en: 'Danger' },
-  death: { cls: 'k-death', vi: 'Death', en: 'Death' },
-  summary: { cls: 'k-summary', vi: 'Year-End Reckoning', en: 'Year-End Reckoning' },
-  choice: { cls: 'k-choice', vi: 'Decision', en: 'Decision' },
-  lore: { cls: 'k-lore', vi: 'Chronicle Lore', en: 'Chronicle Lore' },
-  daily: { cls: 'k-daily', vi: 'Life Friction', en: 'Life Friction' },
-  contract: { cls: 'k-contract', vi: 'Contract', en: 'Contract' }
+  causal: { cls: 'k-causal', vi: 'Tiếng vọng nhân quả', en: 'Causal echo' },
+  miracle: { cls: 'k-good', vi: 'Bước ngoặt', en: 'Turning point' },
+  promo: { cls: 'k-good', vi: 'Thăng tiến', en: 'Promotion' },
+  danger: { cls: 'k-bad', vi: 'Hiểm nguy', en: 'Danger' },
+  death: { cls: 'k-death', vi: 'Tử vong', en: 'Death' },
+  summary: { cls: 'k-summary', vi: 'Tổng kết cuối năm', en: 'Year-end reckoning' },
+  choice: { cls: 'k-choice', vi: 'Quyết định', en: 'Decision' },
+  lore: { cls: 'k-lore', vi: 'Chuyện thường ngày', en: 'Chronicle note' },
+  daily: { cls: 'k-daily', vi: 'Va chạm đời thường', en: 'Life friction' },
+  contract: { cls: 'k-contract', vi: 'Request', en: 'Request' }
 };
 
 const WORKSHOP_STYLES = [
@@ -102,44 +102,19 @@ const LogEntries = React.memo(function LogEntries({ logs, currentAge }) {
     const { title, situation, result, reviewBody } = storyParts(entry, lang);
     const tag = entry.omen ? t('Điềm lúc chào đời', 'Omen at birth') : title || (kind?.vi ? t(kind.vi, kind.en) : null);
     const tier = entryTier(entry);
-    // Compact reading keeps the first sentence of the outcome; the situation and the rest open in place
+    // Compact reading folds past routine and decision entries to one lead sentence; tag, chips and review open on demand
     let fold = null;
     if (readMode === 'compact' && result && foldsInCompact(entry, tier, currentAge)) {
       const split = splitLead(result);
       const lead = split ? split.lead : result;
       const rest = split ? split.rest : '';
-      if (rest || situation) fold = { lead, rest };
+      if (rest || situation || tag || entry.deltas?.length || entry.review || entry.breakdown?.length) {
+        fold = { lead, rest };
+      }
     }
     const alt = bilingual && entry.en && entry.en !== entry.vi ? splitTitle(entry.en).body : '';
-    out.push(
-      <article className={`entry t-${tier} ${kind?.cls || ''} ${framesAsMajor(entry) ? 'is-major' : ''}`} key={entry.id}>
-        {/* The yearline and season dividers above already say when; the card only says what */}
-        {tag && (
-          <div className="entry-header-row">
-            <p className="entry-tag">{tag}</p>
-          </div>
-        )}
-        {entry.choiceVi && (
-          <p className="entry-choice">
-            {t('Bạn chọn: ', 'You chose: ')}
-            {lang === 'en' ? entry.choiceEn || entry.choiceVi : entry.choiceVi}
-          </p>
-        )}
-        {entry.passed && <p className="entry-choice is-muted">{t('Bạn để nó trôi qua.', 'You let it pass.')}</p>}
-        {situation && !fold && <p className="entry-text">{situation}</p>}
-        {fold ? (
-          <details className="entry-fold">
-            <summary data-more={t('đọc tiếp', 'read on')}><span className="entry-lead">{fold.lead}</span></summary>
-            {fold.rest && <p className="entry-text">{fold.rest}</p>}
-            {situation && <p className="entry-alt">{t('Tình huống: ', 'The situation: ')}{situation}</p>}
-            {alt && <p className="entry-alt">{alt}</p>}
-          </details>
-        ) : (
-          <>
-            {result && <p className={`entry-text ${entry.choiceVi || entry.passed ? 'is-result' : ''}`}>{result}</p>}
-            {alt && <p className="entry-alt">{alt}</p>}
-          </>
-        )}
+    const renderReviewAndDeltas = () => (
+      <>
         {entry.review && (
           <details className="entry-review">
             <summary>{t('Xem lại sự kiện và lựa chọn', 'Review event and choices')}</summary>
@@ -170,6 +145,53 @@ const LogEntries = React.memo(function LogEntries({ logs, currentAge }) {
           </details>
         )}
         <Deltas deltas={entry.deltas} />
+      </>
+    );
+    out.push(
+      <article className={`entry t-${tier} ${kind?.cls || ''} ${framesAsMajor(entry) ? 'is-major' : ''} ${fold ? 'is-compact-folded' : ''}`} key={entry.id}>
+        {/* The yearline and season dividers above already say when; the card only says what */}
+        {fold ? (
+          <details className="entry-fold">
+            <summary data-more={t('chi tiết', 'details')}><span className="entry-lead">{fold.lead}</span></summary>
+            <div className="entry-fold-extra">
+              {tag && (
+                <div className="entry-header-row">
+                  <p className="entry-tag">{tag}</p>
+                </div>
+              )}
+              {entry.choiceVi && (
+                <p className="entry-choice">
+                  {t('Bạn chọn: ', 'You chose: ')}
+                  {lang === 'en' ? entry.choiceEn || entry.choiceVi : entry.choiceVi}
+                </p>
+              )}
+              {entry.passed && <p className="entry-choice is-muted">{t('Bạn để nó trôi qua.', 'You let it pass.')}</p>}
+              {fold.rest && <p className="entry-text">{fold.rest}</p>}
+              {situation && <p className="entry-alt">{t('Tình huống: ', 'The situation: ')}{situation}</p>}
+              {alt && <p className="entry-alt">{alt}</p>}
+              {renderReviewAndDeltas()}
+            </div>
+          </details>
+        ) : (
+          <>
+            {tag && (
+              <div className="entry-header-row">
+                <p className="entry-tag">{tag}</p>
+              </div>
+            )}
+            {entry.choiceVi && (
+              <p className="entry-choice">
+                {t('Bạn chọn: ', 'You chose: ')}
+                {lang === 'en' ? entry.choiceEn || entry.choiceVi : entry.choiceVi}
+              </p>
+            )}
+            {entry.passed && <p className="entry-choice is-muted">{t('Bạn để nó trôi qua.', 'You let it pass.')}</p>}
+            {situation && <p className="entry-text">{situation}</p>}
+            {result && <p className={`entry-text ${entry.choiceVi || entry.passed ? 'is-result' : ''}`}>{result}</p>}
+            {alt && <p className="entry-alt">{alt}</p>}
+            {renderReviewAndDeltas()}
+          </>
+        )}
       </article>
     );
   });
@@ -197,20 +219,44 @@ const DockNavigation = () => null;
 const placeOf = (char) =>
   char.flags?.includes('Nest') || char.flags?.includes('Feather') ? 'Nest' : char.flags?.includes('Outskirts') || char.regionId === 'OUTSKIRTS' ? 'Outskirts' : 'Backstreets';
 
-const MinorDock = ({ prompt, char, npcs, wealth = 0, remainingMs, onPick, place = 'Backstreets' }) => {
+const MinorDock = ({ prompt, char, npcs, wealth = 0, remainingMs, paused = false, onTogglePause, onPick, onPeek, place = 'Backstreets' }) => {
   const { t, lang, bilingual } = useT();
   const raw = lang === 'en' ? prompt.en : prompt.vi;
   const { title, body } = splitTitle(raw);
   const sourceChoices = LIFE_MINORS.find((entry) => entry.id === prompt.id)?.choices || [];
+  const secs = Math.ceil(Math.max(0, remainingMs) / 1000);
+  const fallbackTitle = prompt.annualMerit
+    ? t(`Nhiệm vụ Công trạng · ${place}`, `Merit commission · ${place}`)
+    : t(`Gặp gỡ bất chợt · ${place}`, `Encounter · ${place}`);
   return (
     <div className="dock is-minor" role="document">
       <div className="dock-inner">
-        {!prompt.annualMerit && <div className="countdown-wrap">
-          <div className="countdown" aria-hidden="true">
-            <i style={{ transform: `scaleX(${Math.max(0, Math.min(1, remainingMs / (prompt.remainingMs || MINOR_WINDOW_MS)))})` }} />
+        {!prompt.annualMerit && (
+          <div
+            className="countdown-wrap"
+            role="timer"
+            aria-label={paused
+              ? t(`Đã tạm dừng ở ${secs} giây`, `Paused at ${secs} seconds`)
+              : t(`Còn ${secs} giây để chọn. Có thể tạm dừng bằng phím Space`, `${secs} seconds left to choose. Press Space to pause`)}
+          >
+            <div className="countdown" aria-hidden="true">
+              <i style={{ transform: `scaleX(${Math.max(0, Math.min(1, remainingMs / (prompt.remainingMs || MINOR_WINDOW_MS)))})` }} />
+            </div>
+            <span className="countdown-badge">{paused ? t(`Tạm dừng · ${secs}s`, `Paused · ${secs}s`) : `${secs}s`}</span>
+            {onTogglePause && (
+              <button
+                type="button"
+                className="countdown-pause-btn"
+                onClick={onTogglePause}
+                aria-pressed={paused}
+                aria-label={paused ? t('Tiếp tục đếm ngược (Space)', 'Resume timer (Space)') : t('Tạm dừng đếm ngược (Space)', 'Pause timer (Space)')}
+              >
+                {paused ? <Play size={13} aria-hidden="true" /> : <Pause size={13} aria-hidden="true" />}
+                <span>{paused ? t('Tiếp tục', 'Resume') : t('Tạm dừng', 'Pause')}</span>
+              </button>
+            )}
           </div>
-          <span className="countdown-badge">{Math.ceil(Math.max(0, remainingMs) / 1000)}s</span>
-        </div>}
+        )}
         {prompt.remainingMs > MINOR_WINDOW_MS && !prompt.annualMerit && (
           <p className="minor-first-hint">{t('Lần gặp gỡ đầu: bạn có 30 giây. Dùng nút tạm dừng hoặc Space để đọc kỹ.', 'First encounter: you have 30 seconds. Use Pause or Space to read.')}</p>
         )}
@@ -219,13 +265,29 @@ const MinorDock = ({ prompt, char, npcs, wealth = 0, remainingMs, onPick, place 
             <div className="dock-kicker-row">
               <p className="dock-kicker">
                 <span className="dock-kicker-icon" aria-hidden="true"><Zap size={14} /></span>
-                <span>{prompt.annualMerit
-                  ? t(`Nhiệm vụ Công trạng · ${place}`, `Merit commission · ${place}`)
-                  : t(`Gặp gỡ bất chợt · ${place}`, `Encounter · ${place}`)}</span>
+                <span>{fallbackTitle}</span>
               </p>
-              <span className="dock-hotkey-hint">{t('0 / Esc: bỏ qua', '0 / Esc: pass')}</span>
+              <div className="dock-kicker-actions">
+                <span className="dock-hotkey-hint">{t('0 / Esc: bỏ qua · Space: tạm dừng', '0 / Esc: pass · Space: pause')}</span>
+                {onPeek && (
+                  <button
+                    type="button"
+                    className="dock-peek-btn"
+                    onClick={onPeek}
+                    aria-label={t('Xem biên niên phía sau (phím V)', 'See chronicle behind (V key)')}
+                    title={t('Xem biên niên phía sau (V)', 'See chronicle behind (V)')}
+                  >
+                    <EyeOff size={15} aria-hidden="true" />
+                    <span>{t('Xem phía sau', 'See behind')}</span>
+                  </button>
+                )}
+              </div>
             </div>
-            {title && <h3 className="dock-title">{title}</h3>}
+            {title ? (
+              <h2 className="dock-title" id="active-dock-title">{title}</h2>
+            ) : (
+              <h2 className="sr-only" id="active-dock-title">{fallbackTitle}</h2>
+            )}
           </div>
         </div>
         <p className="dock-text">{body}</p>
@@ -253,7 +315,7 @@ const MinorDock = ({ prompt, char, npcs, wealth = 0, remainingMs, onPick, place 
                     )}
                   </span>
                   {costAhn && !isShortAhn && (
-                    <span className="delta is-static" style={{ marginLeft: 6 }}>
+                    <span className="delta is-static choice-cost-chip">
                       {t(`Tốn ${costAhn} Ahn`, `Cost: ${costAhn} Ahn`)}
                     </span>
                   )}
@@ -272,7 +334,7 @@ const MinorDock = ({ prompt, char, npcs, wealth = 0, remainingMs, onPick, place 
   );
 };
 
-const EventDock = ({ event, char, onPick, dungeonStake, onDungeonStake }) => {
+const EventDock = ({ event, char, onPick, dungeonStake, onDungeonStake, onPeek, isUnseen = false }) => {
   const { t, lang, bilingual } = useT();
   const causal = event.isCausalCallback;
   const title = lang === 'en' ? event.titleEn || event.titleVi : event.titleVi;
@@ -290,11 +352,34 @@ const EventDock = ({ event, char, onPick, dungeonStake, onDungeonStake }) => {
             <div className="dock-kicker-row">
               <p className={`dock-kicker ${causal ? 'is-causal' : ''}`}>
                 <span className="dock-kicker-icon" aria-hidden="true">{causal ? <History size={14} /> : <Hourglass size={14} />}</span>
-                <span>{causal ? 'Causal Echo · Time stops' : t(`Tuổi ${char.age} · thời gian dừng lại`, `Age ${char.age} · time stops`)}</span>
+                <span>
+                  {causal
+                    ? t('Tiếng vọng nhân quả · Thời gian dừng lại', 'Causal echo · Time stops')
+                    : t(`Tuổi ${char.age} · Thời gian dừng lại`, `Age ${char.age} · Time stops`)}
+                </span>
+                {isUnseen && (
+                  <span className="dock-unseen-note">
+                    {t('· Chưa từng gặp', '· First encounter')}
+                  </span>
+                )}
               </p>
-              <span className="dock-hotkey-hint">{t('Phím 1-9 để chọn', 'Keys 1-9')}</span>
+              <div className="dock-kicker-actions">
+                <span className="dock-hotkey-hint">{t('Phím 1-9 · V: biên niên', 'Keys 1-9 · V: chronicle')}</span>
+                {onPeek && (
+                  <button
+                    type="button"
+                    className="dock-peek-btn"
+                    onClick={onPeek}
+                    aria-label={t('Xem biên niên phía sau (phím V)', 'See chronicle behind (V key)')}
+                    title={t('Xem biên niên phía sau (V)', 'See chronicle behind (V)')}
+                  >
+                    <EyeOff size={15} aria-hidden="true" />
+                    <span>{t('Xem phía sau', 'See behind')}</span>
+                  </button>
+                )}
+              </div>
             </div>
-            <h3 className="dock-title">{title || t('Bạn sẽ làm gì?', 'What will you do?')}</h3>
+            <h2 className="dock-title" id="active-dock-title">{title || t('Bạn sẽ làm gì?', 'What will you do?')}</h2>
           </div>
         </div>
 
@@ -351,20 +436,13 @@ const EventDock = ({ event, char, onPick, dungeonStake, onDungeonStake }) => {
             if (blocked) {
               if (costDisplay.isShortAhn) {
                 blockedReason = t(costDisplay.needVi, costDisplay.needEn);
-              } else if (ch.favorCost && (!char.npcs?.[ch.favorCost.role] || (char.npcs[ch.favorCost.role]?.bond || 0) < ch.favorCost.amount)) {
-                blockedReason = t(`Cần ${ch.favorCost.role} (${ch.favorCost.amount} gắn bó)`, `Needs ${ch.favorCost.role} (${ch.favorCost.amount} bond)`);
-              } else if (ch.useItem && !(char.inventory || []).some(i => (i.id || i) === ch.useItem)) {
-                blockedReason = t(`Cần vật phẩm: ${lang === 'en' ? item?.nameEn || ch.useItem : item?.nameVi || ch.useItem}`, `Needs item: ${lang === 'en' ? item?.nameEn || ch.useItem : item?.nameVi || ch.useItem}`);
-              } else if (ch.need?.fingerInvited) {
-                blockedReason = t('Finger này chưa để mắt tới bạn', 'This Finger has not noticed you yet');
-              } else if (ch.need?.hasGear && !charHasCombatGear(char)) {
-                blockedReason = t('Cần có vũ khí hoặc giáp', 'Requires weapon or armor');
               } else {
-                blockedReason = t('Chưa đủ điều kiện', 'Requirements not met');
+                const detail = describeChoiceBlock(ch, char);
+                blockedReason = detail ? (lang === 'en' ? detail.en : detail.vi) : t('Chưa đủ điều kiện', 'Requirements not met');
               }
             }
             const extra = [];
-            if (item && !ch.useItem) extra.push(<span className="delta is-static" key="item">{t('Cần trang bị: ', 'Requires: ')}{lang === 'en' ? item.nameEn : item.nameVi}</span>);
+            if (item && !ch.useItem && !blocked) extra.push(<span className="delta is-static" key="item">{t('Cần trang bị: ', 'Requires: ')}{lang === 'en' ? item.nameEn : item.nameVi}</span>);
             if (costDisplay.costAhn && !costDisplay.isShortAhn && !labelShowsCost) {
               extra.push(
                 <span className="delta is-static" key="costAhn">
@@ -402,19 +480,8 @@ const EventDock = ({ event, char, onPick, dungeonStake, onDungeonStake }) => {
                     {blockedReason && <span className="choice-need">{blockedReason}</span>}
                   </span>
                   {bilingual && ch.labelEn && ch.labelEn !== ch.labelVi && <span className="choice-alt">{splitTitle(ch.labelEn).body}</span>}
-                  
-                  {check && (
-                    <div className={`disco-check-pill ${check.isRedCheck ? 'is-red' : 'is-white'}`}>
-                      <span className="check-tag">{lang === 'en' ? check.badgeEn : check.badgeVi}: <b>{check.successPct}%</b></span>
-                      {check.modifiers.map((m, mIdx) => (
-                        <span key={mIdx} className={`check-mod ${m.pos ? 'is-pos' : 'is-neg'}`}>
-                          {lang === 'en' ? m.labelEn : m.labelVi}
-                        </span>
-                      ))}
-                    </div>
-                  )}
 
-                  <ChoicePreview choice={ch} npcs={char.npcs} char={char} />
+                  <ChoicePreview choice={ch} npcs={char.npcs} char={char} check={check} />
                   {extra.length > 0 && <span className="preview">{extra}</span>}
                 </span>
               </button>
@@ -426,8 +493,9 @@ const EventDock = ({ event, char, onPick, dungeonStake, onDungeonStake }) => {
   );
 };
 
-const ContractDock = ({ contract, wealth, onPick }) => {
+const ContractDock = ({ contract, wealth, onPick, onPeek }) => {
   const { t, lang } = useT();
+  const isFriction = (contract.companionSupport?.powerMod || 0) < 0;
 
   return (
     <div className="dock is-contract" role="document">
@@ -448,32 +516,34 @@ const ContractDock = ({ contract, wealth, onPick }) => {
                   </span>
                 )}
               </p>
-              <span className="dock-hotkey-hint">{t('Phím 1-9 để chọn', 'Keys 1-9')}</span>
+              <div className="dock-kicker-actions">
+                <span className="dock-hotkey-hint">{t('Phím 1-9 · V: biên niên', 'Keys 1-9 · V: chronicle')}</span>
+                {onPeek && (
+                  <button
+                    type="button"
+                    className="dock-peek-btn"
+                    onClick={onPeek}
+                    aria-label={t('Xem biên niên phía sau (phím V)', 'See chronicle behind (V key)')}
+                    title={t('Xem biên niên phía sau (V)', 'See chronicle behind (V)')}
+                  >
+                    <EyeOff size={15} aria-hidden="true" />
+                    <span>{t('Xem phía sau', 'See behind')}</span>
+                  </button>
+                )}
+              </div>
             </div>
-            <h3 className="dock-title">{lang === 'en' ? contract.template.typeEn : contract.template.typeVi}</h3>
+            <h2 className="dock-title" id="active-dock-title">{lang === 'en' ? contract.template.typeEn : contract.template.typeVi}</h2>
           </div>
         </div>
 
         <p className="dock-text">{lang === 'en' ? contract.template.en : contract.template.vi}</p>
 
         {contract.companionSupport && (contract.companionSupport.noteVi || contract.companionSupport.noteEn) && (
-          <div
-            className="companion-contract-banner"
-            style={{
-              margin: '0 0 12px 0',
-              padding: '8px 12px',
-              borderRadius: 4,
-              fontSize: 12,
-              lineHeight: 1.45,
-              border: `1px solid ${contract.companionSupport.powerMod < 0 ? 'rgba(229, 72, 77, 0.4)' : 'rgba(61, 154, 80, 0.4)'}`,
-              background: contract.companionSupport.powerMod < 0 ? 'rgba(229, 72, 77, 0.09)' : 'rgba(61, 154, 80, 0.09)',
-              color: 'var(--ink)'
-            }}
-          >
-            <strong style={{ color: contract.companionSupport.powerMod < 0 ? 'var(--bad)' : 'var(--good)', marginRight: 6 }}>
-              {contract.companionSupport.powerMod < 0
-                ? t(`⚠ Bất hòa đồng đội (${contract.companionSupport.powerMod} Power)`, `⚠ Companion Friction (${contract.companionSupport.powerMod} Power)`)
-                : t(`✦ Phối hợp đồng đội (+${contract.companionSupport.powerMod} Power)`, `✦ Companion Synergy (+${contract.companionSupport.powerMod} Power)`)}
+          <div className={`companion-contract-banner ${isFriction ? 'is-friction' : 'is-synergy'}`}>
+            <strong>
+              {isFriction
+                ? t(`Bất hòa đồng đội (${contract.companionSupport.powerMod} Power)`, `Companion friction (${contract.companionSupport.powerMod} Power)`)
+                : t(`Phối hợp đồng đội (+${contract.companionSupport.powerMod} Power)`, `Companion synergy (+${contract.companionSupport.powerMod} Power)`)}
             </strong>
             <span>{lang === 'en' ? contract.companionSupport.noteEn : contract.companionSupport.noteVi}</span>
           </div>
@@ -492,7 +562,7 @@ const ContractDock = ({ contract, wealth, onPick }) => {
               >
                 <span className="choice-badge">{idx + 1}</span>
                 <span>
-                  <span style={{ display: 'flex', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
+                  <span className="contract-choice-top">
                     <span className="choice-label">
                       {lang === 'en' ? app.labelEn : app.labelVi}
                       {short && (
@@ -501,7 +571,7 @@ const ContractDock = ({ contract, wealth, onPick }) => {
                         </span>
                       )}
                     </span>
-                    <span className="num muted" style={{ fontSize: 14, whiteSpace: 'nowrap' }}>
+                    <span className="num muted contract-choice-pay">
                       {app.isDecline ? t('Không nhận việc', 'No commission') : `+${app.payAhn} Ahn · +${app.meritGain} Merit`}
                     </span>
                   </span>
@@ -539,7 +609,7 @@ const ContractDock = ({ contract, wealth, onPick }) => {
 };
 
 const DUNGEON_KICKER = {
-  library: ['Kết thúc đặc biệt · Ngưỡng cửa The Library', 'Special ending · The Library Threshold'],
+  library: ['Kết thúc đặc biệt · Ngưỡng cửa The Library', 'Special ending · The Library threshold'],
   conquered: ['Hầm ngục · Đã đi hết', 'Dungeon · Cleared'],
   fled: ['Hầm ngục · Đã rút lui', 'Dungeon · Withdrawn'],
   broken: ['Hầm ngục · Tinh thần gục ngã', 'Dungeon · Broken'],
@@ -547,13 +617,16 @@ const DUNGEON_KICKER = {
   distorted: ['Hầm ngục · Một giọng khác trong dàn diễn', 'Dungeon · Another voice in the ensemble']
 };
 
-const ResultDock = ({ resolution, onDismiss }) => {
+const ResultDock = ({ resolution, fallbackDeathCauseVi, fallbackDeathCauseEn, onDismiss, onPeek }) => {
   const { t, lang, bilingual } = useT();
 
   const title = lang === 'en' ? resolution.titleEn || resolution.titleVi : resolution.titleVi;
   const choiceLabel = lang === 'en' ? resolution.choiceLabelEn || resolution.choiceLabelVi : resolution.choiceLabelVi;
   const narrativeBody = lang === 'en' ? resolution.narrativeEn || resolution.narrativeVi : resolution.narrativeVi;
   const narrativeAlt = lang === 'en' ? resolution.narrativeVi : resolution.narrativeEn;
+  const deathCause = lang === 'en'
+    ? (resolution.deathCauseEn || fallbackDeathCauseEn)
+    : (resolution.deathCauseVi || fallbackDeathCauseVi);
 
   return (
     <div className={`dock is-resolution ${resolution.isDead ? 'is-dead' : ''} ${resolution.isCausal ? 'is-causal' : ''} ${resolution.isEnding ? 'is-library-ending' : ''}`} role="document">
@@ -565,17 +638,30 @@ const ResultDock = ({ resolution, onDismiss }) => {
                 <span className="dock-kicker-icon" aria-hidden="true">{resolution.isDead ? <Skull size={14} /> : resolution.isCausal ? <History size={14} /> : <Check size={14} />}</span>
                 <span>
                   {resolution.isDead
-                    ? t('Tử trận · Số mệnh khép lại', 'Fallen · Fate Sealed')
+                    ? t('Tử trận · Số mệnh khép lại', 'Fallen · Fate sealed')
                     : resolution.kind === 'dungeon'
                     ? t(...(DUNGEON_KICKER[resolution.outcome] || DUNGEON_KICKER.fled))
                     : resolution.isCausal
-                    ? t('Causal Echo · Nhân quả khắc ghi', 'Causal Echo · Causality Imprinted')
-                    : t(`Kết quả quyết định · Tuổi ${resolution.age}`, `Decision Outcome · Age ${resolution.age}`)}
+                    ? t('Tiếng vọng nhân quả · Nhân quả khắc ghi', 'Causal echo · Causality imprinted')
+                    : t(`Kết quả quyết định · Tuổi ${resolution.age}`, `Decision outcome · Age ${resolution.age}`)}
                 </span>
               </p>
-              <span className="dock-hotkey-hint">{t('Phím Space / Enter để tiếp tục', 'Space / Enter to continue')}</span>
+              <div className="dock-kicker-actions">
+                {onPeek && (
+                  <button
+                    type="button"
+                    className="dock-peek-btn"
+                    onClick={onPeek}
+                    aria-label={t('Xem biên niên phía sau (phím V)', 'See chronicle behind (V key)')}
+                    title={t('Xem biên niên phía sau (V)', 'See chronicle behind (V)')}
+                  >
+                    <EyeOff size={15} aria-hidden="true" />
+                    <span>{t('Xem phía sau', 'See behind')}</span>
+                  </button>
+                )}
+              </div>
             </div>
-            <h3 className="dock-title">{title}</h3>
+            <h2 className="dock-title" id="active-dock-title">{title}</h2>
           </div>
         </div>
 
@@ -597,12 +683,12 @@ const ResultDock = ({ resolution, onDismiss }) => {
         <div className="resolution-narrative">
           <p className="dock-text">{narrativeBody}</p>
           {bilingual && narrativeAlt && narrativeAlt !== narrativeBody && (
-            <p className="entry-alt" style={{ marginTop: 8 }}>{narrativeAlt}</p>
+            <p className="entry-alt">{narrativeAlt}</p>
           )}
         </div>
 
         <div className="resolution-deltas-section">
-          <span className="deltas-title">{t('Ảnh hưởng & Thay đổi:', 'Impact & Consequences:')}</span>
+          <span className="deltas-title">{t('Ảnh hưởng & thay đổi:', 'Impact & consequences:')}</span>
           {resolution.deltas && resolution.deltas.length > 0 ? (
             <Deltas deltas={resolution.deltas} />
           ) : (
@@ -613,7 +699,11 @@ const ResultDock = ({ resolution, onDismiss }) => {
         {resolution.isDead && (
           <div className="resolution-death-banner">
             <span className="death-icon" aria-hidden="true"><Skull size={18} /></span>
-            <span>{t('Quyết định này đã đưa bạn đến cái chết giữa The City lạnh lùng.', 'This choice led you to death in the cold expanse of The City.')}</span>
+            <span>
+              {deathCause
+                ? t(`Nguyên nhân tử vong: ${deathCause}`, `Cause of death: ${deathCause}`)
+                : t('Sinh mạng chấm dứt tại đây.', 'Your life ends here.')}
+            </span>
           </div>
         )}
 
@@ -624,7 +714,7 @@ const ResultDock = ({ resolution, onDismiss }) => {
             onClick={onDismiss}
             autoFocus
           >
-            <span>{resolution.isEnding ? t('Xem kết thúc ➔', 'View Ending ➔') : resolution.isDead ? t('Xem Bia Mộ ➔', 'View Epitaph ➔') : t('Tiếp tục hành trình ➔', 'Continue Journey ➔')}</span>
+            <span>{resolution.isEnding ? t('Xem kết thúc', 'View ending') : resolution.isDead ? t('Xem di cảo', 'View epitaph') : t('Tiếp tục hành trình', 'Continue journey')}</span>
             <span className="key-badge">Space / Enter</span>
           </button>
         </div>
@@ -662,18 +752,18 @@ const Epitaph = ({ summary, onInherit, onRestart, onViewRecord, onGoHome }) => {
   const diffSign = diff >= 0 ? `+${diff}` : `${diff}`;
 
   const finalStatBars = [
-    { key: 'health', labelVi: 'Sinh lực (Health)', labelEn: 'Health', val: summary.health ?? 0, cls: 'bar-hp' },
-    { key: 'sanity', labelVi: 'Tỉnh táo (Sanity)', labelEn: 'Sanity', val: summary.sanity ?? 0, cls: 'bar-sp' },
-    { key: 'wealth', labelVi: 'Tài sản (Wealth)', labelEn: 'Wealth', val: summary.wealth ?? 0, cls: 'bar-wealth' },
-    { key: 'network', labelVi: 'Mạng lưới (Network)', labelEn: 'Network', val: summary.network ?? 0, cls: 'bar-net' },
-    { key: 'rep', labelVi: 'Danh tiếng (Reputation)', labelEn: 'Reputation', val: summary.rep ?? 0, cls: 'bar-rep' },
-    { key: 'resonance', labelVi: 'Cộng hưởng (Resonance)', labelEn: 'Resonance', val: summary.resonance ?? 0, cls: 'bar-res' }
+    { key: 'health', labelVi: 'Sinh lực', labelEn: 'Health', val: summary.health ?? 0, cls: 'bar-hp' },
+    { key: 'sanity', labelVi: 'Tinh thần', labelEn: 'Sanity', val: summary.sanity ?? 0, cls: 'bar-sp' },
+    { key: 'wealth', labelVi: 'Tài sản', labelEn: 'Wealth', val: summary.wealth ?? 0, cls: 'bar-wealth' },
+    { key: 'network', labelVi: 'Quan hệ', labelEn: 'Network', val: summary.network ?? 0, cls: 'bar-net' },
+    { key: 'rep', labelVi: 'Danh tiếng', labelEn: 'Reputation', val: summary.rep ?? 0, cls: 'bar-rep' },
+    { key: 'resonance', labelVi: 'Cộng hưởng', labelEn: 'Resonance', val: summary.resonance ?? 0, cls: 'bar-res' }
   ];
 
   const handleCopySummary = () => {
     const header = lang === 'en'
-      ? `${summary.name}, born in ${summary.birthRegionNameEn || summary.regionNameEn} — ${summary.age} yrs (${summary.deathCauseEn})`
-      : `${summary.name}, sinh ra tại ${summary.birthRegionNameVi || summary.regionNameVi} — ${summary.age} tuổi (${summary.deathCauseVi})`;
+      ? `${summary.name}, born in ${summary.birthRegionNameEn || summary.regionNameEn} · ${summary.age} yrs (${summary.deathCauseEn})`
+      : `${summary.name}, sinh ra tại ${summary.birthRegionNameVi || summary.regionNameVi} · ${summary.age} tuổi (${summary.deathCauseVi})`;
     const quote = lang === 'en' ? summary.poeticQuoteEn : summary.poeticQuoteVi;
     const story = paragraphs.join('\n\n');
     const statsLine = `HP ${summary.health ?? 0} | SP ${summary.sanity ?? 0} | Ahn ${summary.wealth ?? 0} | Net ${summary.network ?? 0} | Rep ${summary.rep ?? 0} | Resonance ${summary.resonance ?? 0}%`;
@@ -757,7 +847,7 @@ const Epitaph = ({ summary, onInherit, onRestart, onViewRecord, onGoHome }) => {
         {/* Deep Narrative Life Story Card */}
         <div className="epitaph-panel epitaph-story-panel">
           <div className="epitaph-panel-head">
-            <h3>{t('Tiểu sử cuộc đời', 'Life story')}</h3>
+            <h2>{t('Tiểu sử cuộc đời', 'Life story')}</h2>
             {turningPoints.length > 0 && (
               <button
                 type="button"
@@ -788,15 +878,19 @@ const Epitaph = ({ summary, onInherit, onRestart, onViewRecord, onGoHome }) => {
                 {t('Các bước ngoặt định mệnh theo năm tuổi:', 'Pivotal turning points by age:')}
               </p>
               <ul className="turning-points-list">
-                {turningPoints.map((tp, idx) => (
-                  <li key={`${tp.age}_${idx}`} className={`tp-item tp-${tp.type || 'major'}`}>
-                    <span className="tp-age">{t(`Tuổi ${tp.age}`, `Age ${tp.age}`)}</span>
-                    <div className="tp-content">
-                      <strong>{lang === 'en' ? tp.titleEn : tp.titleVi}</strong>
-                      <span>{lang === 'en' ? tp.summaryEn : tp.summaryVi}</span>
-                    </div>
-                  </li>
-                ))}
+                {turningPoints.map((tp, idx) => {
+                  const tpTitle = lang === 'en' ? tp.titleEn : tp.titleVi;
+                  const tpSummary = lang === 'en' ? tp.summaryEn : tp.summaryVi;
+                  return (
+                    <li key={`${tp.age}_${idx}`} className={`tp-item tp-${tp.type || 'major'}`}>
+                      <span className="tp-age">{t(`Tuổi ${tp.age}`, `Age ${tp.age}`)}</span>
+                      <div className="tp-content">
+                        {tpTitle && <strong className="tp-title">{tpTitle}</strong>}
+                        <span className="tp-summary">{tpSummary}</span>
+                      </div>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           )}
@@ -806,14 +900,14 @@ const Epitaph = ({ summary, onInherit, onRestart, onViewRecord, onGoHome }) => {
         {recordsList.length > 0 && (
           <div className="epitaph-panel epitaph-records-panel">
             <div className="epitaph-panel-head">
-              <h3>
+              <h2>
                 {t('Dấu ấn & Thành tựu', 'Records')}
                 {summary.newRecordsCount > 0 && (
                   <span className="records-new-count">
                     {summary.newRecordsCount} {t('mới', 'new')}
                   </span>
                 )}
-              </h3>
+              </h2>
               <span className="epitaph-panel-sub">
                 {t(`${recordsList.length} dấu ấn được ghi nhận`, `${recordsList.length} records logged`)}
               </span>
@@ -836,9 +930,9 @@ const Epitaph = ({ summary, onInherit, onRestart, onViewRecord, onGoHome }) => {
                         </span>
                         {rec.isNew && <span className="record-new-badge">{t('Mới', 'New')}</span>}
                       </div>
-                      <h4 className="spotlight-record-title">
+                      <h3 className="spotlight-record-title">
                         {lang === 'en' ? rec.en : rec.vi}
-                      </h4>
+                      </h3>
                       <p className="spotlight-record-hint">
                         {lang === 'en' ? (rec.evidenceEn || rec.hintEn) : (rec.evidenceVi || rec.hintVi)}
                       </p>
@@ -877,9 +971,9 @@ const Epitaph = ({ summary, onInherit, onRestart, onViewRecord, onGoHome }) => {
         {/* Final State (Stat Bars + Life Tags) Card */}
         <div className="epitaph-panel epitaph-final-panel">
           <div className="epitaph-panel-head">
-            <h3>{summary.endingId ? t('Trạng thái ở ngưỡng cửa', 'At the threshold') : t('Trạng thái cuối đời', 'Final state')}</h3>
+            <h2>{summary.endingId ? t('Trạng thái ở ngưỡng cửa', 'At the threshold') : t('Trạng thái cuối đời', 'Final state')}</h2>
             <span className="epitaph-panel-sub">
-              {t(`Chiến công (Merit): ${summary.merit || 0}`, `Merit: ${summary.merit || 0}`)}
+              {t(`Công trạng (Merit): ${summary.merit || 0}`, `Merit: ${summary.merit || 0}`)}
             </span>
           </div>
 
@@ -929,42 +1023,49 @@ const Epitaph = ({ summary, onInherit, onRestart, onViewRecord, onGoHome }) => {
           </div>
         )}
 
-        {/* Action Buttons */}
+        {/* Action Buttons: one primary step forward, two share utilities, quiet navigation links */}
         <div className="epitaph-actions epitaph-actions-v2">
-          {!summary.endingId && (
+          {!summary.endingId ? (
             <button type="button" className="btn btn-primary btn-lg epitaph-btn-reborn" onClick={onInherit}>
               <GitBranch size={16} />
               {summary.successorType === 'sibling'
-                ? t(`Tiếp bước: Đồng lứa Sống sót · thế hệ #${summary.generation + 1}`, `Continue as Surviving Sibling · gen #${summary.generation + 1}`)
+                ? t(`Tiếp bước: Đồng lứa sống sót · thế hệ #${summary.generation + 1}`, `Continue as surviving sibling · gen #${summary.generation + 1}`)
                 : summary.successorType === 'companion'
-                  ? t(`Tiếp bước: Bạn đồng hành · thế hệ #${summary.generation + 1}`, `Continue as Companion · gen #${summary.generation + 1}`)
+                  ? t(`Tiếp bước: Bạn đồng hành · thế hệ #${summary.generation + 1}`, `Continue as companion · gen #${summary.generation + 1}`)
                   : summary.successorType === 'child'
-                    ? t(`Tiếp bước: Huyết tử Thừa kế · thế hệ #${summary.generation + 1}`, `Continue as Biological Heir · gen #${summary.generation + 1}`)
+                    ? t(`Tiếp bước: Huyết tử thừa kế · thế hệ #${summary.generation + 1}`, `Continue as biological heir · gen #${summary.generation + 1}`)
                     : summary.successorType === 'apprentice'
-                      ? t(`Tiếp bước: Truyền nhân Ý chí · thế hệ #${summary.generation + 1}`, `Continue as Successor Apprentice · gen #${summary.generation + 1}`)
+                      ? t(`Tiếp bước: Truyền nhân ý chí · thế hệ #${summary.generation + 1}`, `Continue as successor apprentice · gen #${summary.generation + 1}`)
                       : summary.successorType === 'debt_bearer'
-                        ? t(`Gánh nợ: Thế thân Syndicate · thế hệ #${summary.generation + 1}`, `Take up Ledger: Bound Debt · gen #${summary.generation + 1}`)
-                        : t(`Nhặt tàn dư: Kẻ sống sót Backstreets · thế hệ #${summary.generation + 1}`, `Scavenge Relic: Backstreet Heir · gen #${summary.generation + 1}`)}
+                        ? t(`Gánh nợ: Thế thân Syndicate · thế hệ #${summary.generation + 1}`, `Take up ledger: bound debt · gen #${summary.generation + 1}`)
+                        : t(`Nhặt tàn dư: Kẻ sống sót Backstreets · thế hệ #${summary.generation + 1}`, `Scavenge relic: Backstreet heir · gen #${summary.generation + 1}`)}
+            </button>
+          ) : (
+            <button type="button" className="btn btn-primary btn-lg epitaph-btn-reborn" onClick={onViewRecord}>
+              <BookOpen size={16} />
+              {t('Xem lại biên niên sử', 'View life record')}
             </button>
           )}
 
-          <button type="button" className="btn btn-lg" onClick={onViewRecord}>
-            <BookOpen size={16} />
-            {t('Xem lại biên niên sử', 'View life record')}
-          </button>
-
-          <button type="button" className="btn btn-lg" onClick={handleCopySummary}>
-            {copied ? <Check size={16} /> : <Copy size={16} />}
-            {copied ? t('Đã sao chép!', 'Copied!') : t('Sao chép tóm tắt', 'Copy summary')}
-          </button>
-
-          <button type="button" className="btn btn-lg" onClick={() => exportDossierCardPNG(summary)}>
-            <Download size={16} />
-            {t('Lưu ảnh thẻ', 'Save image')}
-          </button>
+          <div className="epitaph-utility-row">
+            <button type="button" className="btn" onClick={handleCopySummary}>
+              {copied ? <Check size={16} /> : <Copy size={16} />}
+              {copied ? t('Đã sao chép', 'Copied') : t('Sao chép tóm tắt', 'Copy summary')}
+            </button>
+            <button type="button" className="btn" onClick={() => exportDossierCardPNG(summary)}>
+              <Download size={16} />
+              {t('Lưu ảnh thẻ', 'Save image')}
+            </button>
+          </div>
         </div>
 
         <div className="epitaph-secondary-actions">
+          {!summary.endingId && (
+            <button type="button" className="btn btn-ghost btn-sm" onClick={onViewRecord}>
+              <BookOpen size={14} />
+              {t('Xem lại biên niên sử', 'View life record')}
+            </button>
+          )}
           <button type="button" className="btn btn-ghost btn-sm" onClick={onGoHome}>
             <House size={14} />
             {t('Về trang chủ', 'Home')}
@@ -1016,7 +1117,8 @@ export const LiveStageFeed = () => {
     revealNextBirthLog,
     skipAllBirthLogs,
     stepYear,
-    cutsceneKey
+    cutsceneKey,
+    globalSeenEvents
   } = useGameStore(
     useShallow((s) => ({
       char: s.char,
@@ -1046,7 +1148,8 @@ export const LiveStageFeed = () => {
       revealNextBirthLog: s.revealNextBirthLog,
       skipAllBirthLogs: s.skipAllBirthLogs,
       stepYear: s.stepYear,
-      cutsceneKey: s.cutscene?.key || null
+      cutsceneKey: s.cutscene?.key || null,
+      globalSeenEvents: s.globalSeenEvents
     }))
   );
 
@@ -1218,7 +1321,18 @@ export const LiveStageFeed = () => {
         return;
       }
       if (peekBehind) {
-        if (e.key === 'Escape') { e.preventDefault(); setPeekBehind(false); }
+        if (e.key === 'Escape' || e.key === 'v' || e.key === 'V') {
+          e.preventDefault();
+          audioEngine.playClick();
+          setPeekBehind(false);
+        }
+        return;
+      }
+
+      if ((e.key === 'v' || e.key === 'V') && (activeResolution || char.pendingDungeon || char.pendingEvent || char.pendingContract || char.pendingMinor)) {
+        e.preventDefault();
+        audioEngine.playClick();
+        setPeekBehind(true);
         return;
       }
 
@@ -1250,7 +1364,7 @@ export const LiveStageFeed = () => {
         return;
       }
 
-      // The year plan screen holds its own buttons; number keys there would skip the plan
+      // The year plan screen handles its own slot and ambition shortcuts
       if (char.pendingYearPlan) return;
 
       if (e.code === 'Space') {
@@ -1258,6 +1372,13 @@ export const LiveStageFeed = () => {
         e.preventDefault();
         audioEngine.playClick();
         setSpeed(speed === 0 ? 1 : 0);
+        return;
+      }
+      if ((e.key === '[' || e.key === ']') && char.alive && !char.pendingDungeon && !char.pendingEvent && !char.pendingContract) {
+        e.preventDefault();
+        audioEngine.playClick();
+        const nextSpd = e.key === ']' ? Math.min(3, speed + 1) : Math.max(0, speed - 1);
+        setSpeed(nextSpd);
         return;
       }
       if (e.key === 'm' || e.key === 'M') {
@@ -1386,10 +1507,21 @@ export const LiveStageFeed = () => {
   const forgeQuality = strikes.length ? Math.round(strikes.reduce((a, b) => a + b, 0) / strikes.length) : 0;
   const lifeSummary = !char.alive ? buildLifeSummaryAndLegacy(char) : null;
   const currentRegion = REGIONS.find((r) => r.id === char.regionId) || REGIONS[0];
-  const currentMilestone = getNextCareerMilestone(char);
   const hasDock = !cutsceneKey && Boolean((char.pendingYearPlan && !isPrologueActive) || char.pendingDungeon || char.pendingEvent || char.pendingContract || char.pendingMinor || activeResolution);
-  const canPeek = Boolean(char.pendingDungeon || char.pendingEvent || char.pendingContract || activeResolution);
-  useEffect(() => setPeekBehind(false), [char.pendingDungeon?.id, char.pendingEvent?.id, char.pendingContract?.id, activeResolution?.titleVi]);
+  const canPeek = Boolean((char.pendingYearPlan && !isPrologueActive) || char.pendingDungeon || char.pendingEvent || char.pendingContract || char.pendingMinor || activeResolution);
+  useEffect(() => setPeekBehind(false), [char.pendingYearPlan?.age, char.pendingDungeon?.id, char.pendingEvent?.id, char.pendingContract?.id, char.pendingMinor?.id, activeResolution?.titleVi]);
+
+  const isUnseenEvent = Boolean(
+    char.pendingEvent?.id &&
+    !(char.seenEvents || []).includes(char.pendingEvent.id) &&
+    !(globalSeenEvents || []).includes(char.pendingEvent.id)
+  );
+  const latestLog = char.logs?.[char.logs.length - 1];
+  const latestAnnouncement = latestLog
+    ? `${t(`Tuổi ${latestLog.age}`, `Age ${latestLog.age}`)}. ${splitTitle(lang === 'en' ? latestLog.en || latestLog.vi : latestLog.vi).body}`
+    : '';
+  const openPeek = canPeek ? () => { audioEngine.playClick(); setPeekBehind(true); } : undefined;
+  const dialogLabelId = !activeResolution && char.pendingYearPlan ? 'year-plan-title' : 'active-dock-title';
 
   const dungeonTheme = char.pendingDungeon ? DUNGEON_DEFINITIONS[char.pendingDungeon.id]?.theme || 'warp' : null;
 
@@ -1400,6 +1532,9 @@ export const LiveStageFeed = () => {
     >
       <StageFx />
       <div className="chronicle-heading"><h1>{t('Biên niên', 'Chronicle')}</h1><span>{char.name}</span></div>
+      <div className="sr-only" aria-live="polite" aria-atomic="true">
+        {!hasDock && !cutsceneKey ? latestAnnouncement : ''}
+      </div>
       <div className="log" ref={logRef}>
         <div className="log-col">
           <div className="chronicle-docket-header" aria-hidden="true">
@@ -1410,7 +1545,7 @@ export const LiveStageFeed = () => {
               </span>
             </div>
             <span className="docket-serial-code">
-              HANA // {char.name ? char.name.toUpperCase() : 'CITIZEN'} · GEN #{char.generation || 1} · {char.age}y
+              HANA // {char.name ? char.name.toUpperCase() : 'CITIZEN'} · {t('THẾ HỆ', 'GEN')} #{char.generation || 1}
             </span>
           </div>
           <LogEntries logs={char.logs} currentAge={char.age} />
@@ -1419,31 +1554,15 @@ export const LiveStageFeed = () => {
               <div className="horizon-card-top">
                 <span className="horizon-district-tag">
                   {char.job === 'Child'
-                    ? t('Thời niên thiếu · Đô Thị thức giấc', 'Early Years · The City Awakens')
-                    : t('Định hướng sinh tồn & Khát vọng', 'Current Horizon & Drive')}
-                </span>
-                <span className="horizon-age-badge">
-                  {t(`Năm thứ ${char.age}`, `Year ${char.age}`)}
+                    ? t('Thời niên thiếu · The City', 'Early years · The City')
+                    : t('Chân trời phía trước', 'Ahead')}
                 </span>
               </div>
-              {currentMilestone && currentMilestone.category !== 'WORKSHOP' ? (
-                <div className="horizon-milestone-preview">
-                  <div className="horizon-milestone-title-row">
-                    <span className="horizon-milestone-label">{t('Đích ngắm sinh kế:', 'Current horizon:')}</span>
-                    <b className="horizon-milestone-title">{lang === 'en' ? currentMilestone.titleEn : currentMilestone.titleVi}</b>
-                    <span className="horizon-milestone-pct num">{currentMilestone.progressPct}%</span>
-                  </div>
-                  <div className="horizon-bar">
-                    <i style={{ width: `${currentMilestone.progressPct}%` }} />
-                  </div>
-                </div>
-              ) : (
-                <p className="horizon-quote">
-                  {char.job === 'Child'
-                    ? t('Những con hẻm Backstreets không tha thứ cho kẻ yếu đuối. Mỗi ngày lớn lên là một ngày học cách sinh tồn.', 'The Backstreets show no mercy to the meek. Every passing day is a lesson in survival.')
-                    : t('Tiếng bước chân của các Fixer vọng qua màn sương đêm. Mọi sự lựa chọn tại The City đều có một cái giá.', 'Footsteps of Fixers echo through the nocturnal fog. Every choice in The City demands its price.')}
-                </p>
-              )}
+              <p className="horizon-quote">
+                {char.job === 'Child'
+                  ? t('Ngoài kia đèn đường vừa bật. Bạn lớn thêm một ngày dưới luật của khu phố.', 'Streetlamps click on outside. You grow one day older under the district’s rules.')
+                  : t('Đêm xuống trên các dãy mái tôn. Tờ lịch năm nay vẫn chưa viết xong.', 'Night settles over the tin roofs. This year’s page is not finished yet.')}
+              </p>
             </aside>
           )}
           {isPrologueActive && (
@@ -1460,7 +1579,7 @@ export const LiveStageFeed = () => {
               </button>
             </div>
           )}
-          {lifeSummary && !isPrologueActive && (
+          {lifeSummary && !isPrologueActive && !cutsceneKey && (
             <Epitaph
               summary={lifeSummary}
               onInherit={() => startLife(true)}
@@ -1479,8 +1598,8 @@ export const LiveStageFeed = () => {
         </div>
       </div>
 
-      {!hasDock && char.alive && !isPrologueActive && !lifeSummary && (
-        <div className="mobile-thumb-bar" role="region" aria-label={t('Thao tác nhanh di động', 'Mobile Quick Controls')}>
+      {!hasDock && !cutsceneKey && char.alive && !isPrologueActive && !lifeSummary && (
+        <div className="mobile-thumb-bar" role="region" aria-label={t('Thao tác nhanh di động', 'Mobile quick controls')}>
           <button
             type="button"
             className="btn-mobile-thumb-step"
@@ -1490,22 +1609,38 @@ export const LiveStageFeed = () => {
             }}
           >
             <SkipForward size={16} />
-            <span>{t('Sự kiện tiếp', 'Next Event')}</span>
+            <span>{t('Sự kiện tiếp', 'Next event')}</span>
           </button>
         </div>
       )}
 
-      {hasDock && canPeek && (
-        <button type="button" className="event-peek-toggle" onClick={() => setPeekBehind((value) => !value)} aria-label={peekBehind ? t('Hiện quyết định', 'Show decision') : t('Ẩn quyết định để xem biên niên', 'Hide decision to read chronicle')} aria-pressed={peekBehind}>
-          {peekBehind ? <Eye size={17} /> : <EyeOff size={17} />}
-          <span>{peekBehind ? t('Hiện quyết định', 'Show decision') : t('Xem phía sau', 'See behind')}</span>
+      {hasDock && canPeek && peekBehind && (
+        <button
+          type="button"
+          className="event-peek-toggle"
+          onClick={() => { audioEngine.playClick(); setPeekBehind(false); }}
+          aria-label={t('Hiện quyết định (phím V hoặc Esc)', 'Show decision (V or Esc)')}
+          aria-pressed={peekBehind}
+        >
+          <Eye size={17} aria-hidden="true" />
+          <span>{t('Hiện quyết định', 'Show decision')}</span>
         </button>
       )}
       {hasDock && !peekBehind && (
-        <div ref={dockRef} tabIndex={-1} className={`event-modal-backdrop ${dockArming ? 'is-arming' : ''}`} role="dialog" aria-modal="true" aria-label={t('Sự kiện & Kết quả', 'Event & Outcome')}>
+        <div
+          ref={dockRef}
+          tabIndex={-1}
+          className={`event-modal-backdrop ${dockArming ? 'is-arming' : ''}`}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby={dialogLabelId}
+        >
           {activeResolution ? (
             <ResultDock
               resolution={activeResolution}
+              fallbackDeathCauseVi={char.deathCauseVi}
+              fallbackDeathCauseEn={char.deathCauseEn}
+              onPeek={openPeek}
               onDismiss={() => {
                 audioEngine.playClick();
                 dismissResolution();
@@ -1513,7 +1648,7 @@ export const LiveStageFeed = () => {
             />
           ) : (
             <>
-              {char.pendingYearPlan && <YearPlanDock char={char} onConfirm={chooseAnnualPlan} />}
+              {char.pendingYearPlan && <YearPlanDock char={char} onConfirm={chooseAnnualPlan} onPeek={openPeek} />}
               {!char.pendingYearPlan && !char.pendingLead && char.pendingDungeon && (
                 <DungeonDock
                   session={char.pendingDungeon}
@@ -1524,12 +1659,44 @@ export const LiveStageFeed = () => {
                   onUseSupply={handleUseDungeonSupply}
                   onPlayCard={handlePlayDungeonCard}
                   onUseEgo={handleUseDungeonEgo}
+                  onPeek={openPeek}
                 />
               )}
-              {!char.pendingYearPlan && !char.pendingLead && !char.pendingDungeon && char.pendingEvent && <EventDock event={char.pendingEvent} char={char} onPick={handleSelectEvent} dungeonStake={dungeonStake} onDungeonStake={setDungeonStake} />}
-              {!char.pendingYearPlan && !char.pendingLead && !char.pendingDungeon && !char.pendingEvent && char.pendingContract && <ContractDock contract={char.pendingContract} wealth={char.stats.wealth} onPick={handleSelectContract} />}
+              {!char.pendingYearPlan && !char.pendingLead && !char.pendingDungeon && char.pendingEvent && (
+                <EventDock
+                  event={char.pendingEvent}
+                  char={char}
+                  onPick={handleSelectEvent}
+                  dungeonStake={dungeonStake}
+                  onDungeonStake={setDungeonStake}
+                  onPeek={openPeek}
+                  isUnseen={isUnseenEvent}
+                />
+              )}
+              {!char.pendingYearPlan && !char.pendingLead && !char.pendingDungeon && !char.pendingEvent && char.pendingContract && (
+                <ContractDock
+                  contract={char.pendingContract}
+                  wealth={char.stats.wealth}
+                  onPick={handleSelectContract}
+                  onPeek={openPeek}
+                />
+              )}
               {!char.pendingYearPlan && !char.pendingLead && !char.pendingDungeon && !char.pendingEvent && !char.pendingContract && char.pendingMinor && (
-                <MinorDock prompt={char.pendingMinor} char={char} npcs={char.npcs} wealth={char.stats.wealth} place={placeOf(char)} remainingMs={minorRemainingMs} onPick={handleChooseMinor} />
+                <MinorDock
+                  prompt={char.pendingMinor}
+                  char={char}
+                  npcs={char.npcs}
+                  wealth={char.stats.wealth}
+                  place={placeOf(char)}
+                  remainingMs={minorRemainingMs}
+                  paused={speed === 0}
+                  onTogglePause={() => {
+                    audioEngine.playClick();
+                    setSpeed(speed === 0 ? 1 : 0);
+                  }}
+                  onPick={handleChooseMinor}
+                  onPeek={openPeek}
+                />
               )}
             </>
           )}
@@ -1579,7 +1746,7 @@ export const LiveStageFeed = () => {
 
           <p className="hana-decree-proclamation">
             {t(
-              `Theo nghị định tối cao của Hội Đồng Hana, chiến tích và khí chất của bạn đã đạt tới cảnh giới huyền thoại của Thành Phố. Kể từ giây phút này, cả 26 Quận sẽ mãi mãi kính sợ và xướng tên bạn dưới danh hiệu độc nhất: `,
+              `Theo nghị định tối cao của Hội Đồng Hana, chiến tích và khí chất của bạn đã đạt tới cảnh giới huyền thoại của The City. Kể từ giây phút này, cả 26 Quận sẽ mãi mãi kính sợ và xướng tên bạn dưới danh hiệu độc nhất: `,
               `By supreme decree of the Hana Association Council, your prowess and essence have attained the legendary zenith of the City. From this moment onward, all 26 Districts shall revere and know you solely by the title: `
             )}
             <b>「{bestowedColor?.title || 'Vermilion Gale'}」</b>.

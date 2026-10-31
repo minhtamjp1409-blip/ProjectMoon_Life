@@ -225,6 +225,145 @@ export function choiceIsAvailable(choice, char) {
   return (char.stats?.wealth ?? char.wealth ?? 0) >= getChoiceAhnCost(choice, char);
 }
 
+const ROLE_LABELS = {
+  friend: ['bạn thân', 'friend'],
+  partner: ['cộng sự', 'partner'],
+  mentor: ['người thầy', 'mentor'],
+  lover: ['người thương', 'lover'],
+  spouse: ['bạn đời', 'spouse'],
+  child: ['con cái', 'child'],
+  ward: ['đứa trẻ bảo trợ', 'ward'],
+  parent: ['cha/mẹ', 'parent'],
+  rival: ['đối thủ', 'rival'],
+  nemesis: ['kẻ thù', 'nemesis'],
+  mentee: ['đàn em', 'mentee']
+};
+
+const NEED_STAT_LABELS = {
+  health: ['Sinh lực', 'HP'],
+  sanity: ['Tinh thần', 'SP'],
+  wealth: ['Ahn', 'Ahn'],
+  network: ['Quan hệ', 'Network'],
+  rep: ['Danh tiếng', 'Reputation'],
+  resonance: ['Cộng hưởng', 'Resonance'],
+  heat: ['Heat', 'Heat'],
+  leverage: ['Đòn bẩy', 'Leverage'],
+  standing: ['Tín nhiệm', 'Standing'],
+  merit: ['Công trạng', 'Merit']
+};
+
+/** Explain the first unmet condition blocking an event choice so disabled buttons never hide the reason. */
+export function describeChoiceBlock(choice, char) {
+  if (!choice || !char || choiceIsAvailable(choice, char)) return null;
+  const cost = getChoiceAhnCost(choice, char);
+  if ((char.stats?.wealth ?? char.wealth ?? 0) < cost) {
+    return { vi: `Thiếu Ahn (cần ${cost} Ahn)`, en: `Short Ahn (needs ${cost} Ahn)` };
+  }
+  if (choice.useItem && !(char.inventory || []).some((i) => (i.id || i) === choice.useItem)) {
+    return { vi: 'Thiếu vật phẩm yêu cầu', en: 'Missing required item' };
+  }
+  if (choice.favorCost) {
+    const [rVi, rEn] = ROLE_LABELS[choice.favorCost.role] || [choice.favorCost.role, choice.favorCost.role];
+    const target = char.npcs?.[choice.favorCost.role];
+    if (!npcIsActive(target)) return { vi: `Cần ${rVi} đang đồng hành`, en: `Requires active ${rEn}` };
+    return { vi: `Cần gắn kết ${rVi} ≥ ${choice.favorCost.amount}`, en: `Requires ${rEn} bond ≥ ${choice.favorCost.amount}` };
+  }
+  const need = choice.need;
+  if (!need) return { vi: 'Chưa đủ điều kiện', en: 'Requirements not met' };
+  const flags = char.flags || [];
+  if (need.item && !(char.inventory || []).some((i) => (i.id || i) === need.item)) {
+    return { vi: 'Thiếu vật phẩm yêu cầu', en: 'Missing required item' };
+  }
+  if (need.hasGear && !charHasCombatGear(char)) {
+    return { vi: 'Cần trang bị chiến đấu', en: 'Requires combat gear' };
+  }
+  if (need.nest && !isNestResident(char)) return { vi: 'Cần cư trú trong Nest', en: 'Requires Nest residency' };
+  if (need.notNest && isNestResident(char)) return { vi: 'Chỉ mở cho người ngoài Nest', en: 'Requires living outside the Nest' };
+  if (need.back && (isNestResident(char) || isOutsideCity(char))) return { vi: 'Cần đang ở Backstreets', en: 'Requires Backstreets residency' };
+  if (need.out && !isOutsideCity(char)) return { vi: 'Cần đang ở Outskirts', en: 'Requires being in the Outskirts' };
+  if (need.notOut && isOutsideCity(char)) return { vi: 'Cần đang ở trong The City', en: 'Requires being inside The City' };
+  if (need.jobs && !jobMatchesWithInheritance(need.jobs, char, need)) {
+    return { vi: `Cần nghề: ${need.jobs.join(' / ')}`, en: `Requires role: ${need.jobs.join(' / ')}` };
+  }
+  if (need.finger && need.finger !== char.finger) {
+    return { vi: `Cần thuộc ${need.finger}`, en: `Requires ${need.finger} membership` };
+  }
+  if (need.meritAtLeast != null && (char.merit || 0) < need.meritAtLeast) {
+    return { vi: `Cần Công trạng ≥ ${need.meritAtLeast}`, en: `Requires Merit ≥ ${need.meritAtLeast}` };
+  }
+  if (need.companionActive && !getFieldCompanion(char)) {
+    return { vi: 'Cần đồng đội lành lặn đi cùng', en: 'Requires an uninjured companion' };
+  }
+  if (need.npc && !npcIsActive(char.npcs?.[need.npc])) {
+    const [rVi, rEn] = ROLE_LABELS[need.npc] || [need.npc, need.npc];
+    return { vi: `Cần có ${rVi}`, en: `Requires active ${rEn}` };
+  }
+  if (need.bondAtLeast) {
+    const [bRole, min] = need.bondAtLeast;
+    const [rVi, rEn] = ROLE_LABELS[bRole] || [bRole, bRole];
+    return { vi: `Cần gắn kết ${rVi} ≥ ${min}`, en: `Requires ${rEn} bond ≥ ${min}` };
+  }
+  if (need.grade) {
+    const min = Math.min(need.grade[0], need.grade[1]);
+    const max = Math.max(need.grade[0], need.grade[1]);
+    if (min === 1 && max < 9) {
+      return { vi: `Cần Fixer Grade ${max} trở lên`, en: `Requires Fixer Grade ${max} or higher` };
+    }
+    return { vi: `Cần Fixer Grade ${max}–${min}`, en: `Requires Fixer Grade ${max}–${min}` };
+  }
+  if (need.aff || need.affSection || need.affYears != null || need.affStanding) {
+    const a = getAffiliation(char);
+    if (need.aff === 'free' && !['free', 'owner'].includes(laneOf(char))) {
+      return { vi: 'Cần là Fixer tự do hoặc chủ Office', en: 'Requires independent Fixer or Office owner' };
+    }
+    if (need.aff === 'assoc' && a?.kind !== 'assoc') {
+      return { vi: 'Cần thuộc một Association', en: 'Requires Association membership' };
+    }
+    if (need.aff === 'office' && a?.kind !== 'office') {
+      return { vi: 'Cần thuộc một Office', en: 'Requires Office membership' };
+    }
+    if (need.aff && !['free', 'any', 'assoc', 'office'].includes(need.aff) && (!a || a.id !== need.aff)) {
+      return { vi: `Cần thuộc ${need.aff}`, en: `Requires ${need.aff} affiliation` };
+    }
+    if (need.affSection && (a?.kind !== 'assoc' || a.section < need.affSection[0] || a.section > need.affSection[1])) {
+      return { vi: `Cần ở Section ${need.affSection[1]} trở lên`, en: `Requires Section ${need.affSection[1]} or higher` };
+    }
+    if (need.affYears != null && (!a || char.age - a.joinedAge < need.affYears)) {
+      return { vi: `Cần ≥ ${need.affYears} năm thâm niên`, en: `Requires ${need.affYears}+ years tenure` };
+    }
+    if (need.affStanding && (!a || a.standing < need.affStanding[0] || a.standing > need.affStanding[1])) {
+      return { vi: `Cần Tín nhiệm ≥ ${need.affStanding[0]}`, en: `Requires Standing ≥ ${need.affStanding[0]}` };
+    }
+  }
+  if (need.fingerRankAtLeast != null && (char.fingerRank || 0) < need.fingerRankAtLeast) {
+    return { vi: `Cần bậc Finger ≥ ${need.fingerRankAtLeast}`, en: `Requires Finger rank ≥ ${need.fingerRankAtLeast}` };
+  }
+  if (need.wingRankAtLeast != null && (char.wingRank || 0) < need.wingRankAtLeast) {
+    return { vi: `Cần bậc Wing ≥ ${need.wingRankAtLeast}`, en: `Requires Wing rank ≥ ${need.wingRankAtLeast}` };
+  }
+  if (need.syndicateRankAtLeast != null && (char.syndicateRank || 0) < need.syndicateRankAtLeast) {
+    return { vi: `Cần bậc Syndicate ≥ ${need.syndicateRankAtLeast}`, en: `Requires Syndicate rank ≥ ${need.syndicateRankAtLeast}` };
+  }
+  for (const [key, [lo, hi]] of Object.entries(need.stat || {})) {
+    const value = char.stats?.[key] ?? char[key] ?? (key === 'standing' ? 50 : 0);
+    const [sVi, sEn] = NEED_STAT_LABELS[key] || [key, key];
+    if (!Number.isFinite(value) || value < lo) return { vi: `Cần ${sVi} ≥ ${lo}`, en: `Requires ${sEn} ≥ ${lo}` };
+    if (value > hi) return { vi: `Cần ${sVi} ≤ ${hi}`, en: `Requires ${sEn} ≤ ${hi}` };
+  }
+  if (need.flags && !need.flags.every((f) => flags.includes(f))) {
+    if (need.flags.includes('EGOAwakened')) return { vi: 'Cần thức tỉnh E.G.O', en: 'Requires awakened E.G.O' };
+    if (need.flags.includes('ColorFixer')) return { vi: 'Cần danh hiệu Color Fixer', en: 'Requires Color Fixer title' };
+    return { vi: 'Thiếu điều kiện tuyến truyện trước đó', en: 'Missing prior story flag' };
+  }
+  if (need.scarTag && !hasScarTag(char, need.scarTag)) {
+    return { vi: 'Cần vết sẹo trải nghiệm tương ứng', en: 'Requires matching scar' };
+  }
+  if (need.mem && !(char.memory || []).some((m) => m.key === need.mem)) {
+    return { vi: 'Cần ký ức từ lựa chọn trước', en: 'Requires memory from a prior choice' };
+  }
+  return { vi: 'Chưa đủ điều kiện tuyến này', en: 'Prerequisites not met' };
+}
+
 export function mergeEffects(...sources) {
   const effects = {};
   for (const source of new Set(sources.filter(Boolean))) {

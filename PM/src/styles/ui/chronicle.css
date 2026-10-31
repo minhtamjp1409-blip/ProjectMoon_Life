@@ -44,7 +44,6 @@
   height: 6px;
   border-radius: 50%;
   background: var(--accent);
-  box-shadow: 0 0 8px var(--accent);
 }
 .docket-district-tag {
   font-family: var(--font);
@@ -61,16 +60,17 @@
   color: var(--page-muted);
 }
 
-/* Atmospheric Horizon & Inner Drive Card */
+/* Atmospheric Horizon Footer (un-nested colophon rule at the foot of the page) */
 .chronicle-horizon-card {
-  margin-top: 48px;
-  padding: 18px 20px;
-  border: 1px dashed var(--page-edge);
-  border-radius: var(--radius-sm);
-  background: rgba(255, 255, 255, 0.02);
+  margin-top: 40px;
+  padding: 16px 0 0;
+  border: 0;
+  border-top: 1px solid var(--page-rule);
+  border-radius: 0;
+  background: transparent;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 6px;
   animation: entryIn 0.8s ease both;
 }
 .horizon-card-top {
@@ -81,53 +81,9 @@
 }
 .horizon-district-tag {
   font-family: var(--font);
-  font-size: 12px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--accent);
-}
-.horizon-age-badge {
-  font-size: 12px;
-  font-family: var(--serif);
-  font-style: italic;
-  color: var(--page-muted);
-}
-.horizon-milestone-preview {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.horizon-milestone-title-row {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  font-size: 13.5px;
-}
-.horizon-milestone-label {
-  color: var(--page-muted);
   font-size: 12.5px;
-}
-.horizon-milestone-title {
-  color: var(--page-ink);
   font-weight: 600;
-  flex: 1;
-}
-.horizon-milestone-pct {
-  color: var(--gold);
-  font-weight: 700;
-}
-.horizon-bar {
-  height: 3px;
-  background: var(--raised);
-  border-radius: 2px;
-  overflow: hidden;
-}
-.horizon-bar > i {
-  display: block;
-  height: 100%;
-  background: var(--accent);
-  transition: width 0.5s ease;
+  color: var(--accent);
 }
 .horizon-quote {
   margin: 0;
@@ -188,6 +144,8 @@
 .entry-fold[open] > summary::after { content: none; }
 .entry-fold > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
 .entry-fold > .entry-text { margin-top: 4px; }
+.entry-fold-extra { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--page-rule); }
+.entry.is-compact-folded { margin-bottom: 10px; }
 @media (pointer: coarse), (max-width: 860px) { .entry-fold > summary { min-height: 44px; } }
 .settings-note { margin: -4px 0 12px; font-size: 13px; line-height: 1.5; color: var(--page-muted); }
 
@@ -304,7 +262,7 @@
   background: var(--dialog-surface);
   border: 1px solid var(--dialog-border);
   border-radius: 12px;
-  box-shadow: 0 0 0 1px rgba(216, 178, 101, 0.2), var(--shadow-pop);
+  box-shadow: var(--shadow-pop);
 }
 .event-modal-backdrop > .dock.is-dungeon { width: min(820px, 100%); border-top-color: var(--dg); }
 /* The dungeon scene stays visible around the card; its text has an opaque surface. */
@@ -319,13 +277,25 @@
 .dock-inner { display: flex; flex-direction: column; gap: 16px; }
 .dock-banner { display: flex; flex-direction: column; gap: 8px; }
 .dock-kicker-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-.dock-kicker { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 8px; font-size: 13.5px; font-weight: 600; color: var(--muted); }
+.dock-kicker { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 8px; font-size: 13.5px; font-weight: 600; color: var(--muted); min-width: 0; }
+.dock-kicker-actions { display: inline-flex; align-items: center; gap: 8px; flex: none; }
+.dock-unseen-note { color: var(--gold); font-weight: 600; }
+.dock-peek-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  min-height: 32px; min-width: 32px; padding: 0 10px;
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  background: var(--surface); color: var(--muted);
+  font-size: 12.5px; font-weight: 600; white-space: nowrap; cursor: pointer;
+  transition: color .15s ease, border-color .15s ease, background-color .15s ease;
+}
+.dock-peek-btn:hover, .dock-peek-btn:focus-visible { color: var(--text); border-color: var(--accent); background: var(--raised); }
+.dock-peek-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .dock-kicker-icon { display: inline-grid; place-items: center; color: var(--accent); }
 .dock-kicker.is-causal .dock-kicker-icon { color: var(--rare); }
 .dock-kicker.is-outcome .dock-kicker-icon { color: var(--good); }
 .dock-kicker.is-dead, .dock-kicker.is-dead .dock-kicker-icon { color: var(--bad); }
-.dock-hotkey-hint { font-size: 12.5px; color: var(--faint); white-space: nowrap; }
-.dock-title { font-family: var(--serif); font-size: 26px; font-weight: 600; line-height: 1.2; text-wrap: balance; }
+.dock-hotkey-hint { font-size: 12.5px; color: var(--muted); white-space: nowrap; }
+.dock-title { font-family: var(--serif); font-size: 26px; font-weight: 600; line-height: 1.2; text-wrap: balance; margin: 0; }
 .dock-text { font-family: var(--serif); font-size: var(--story-size); line-height: var(--story-lead); color: var(--story); text-wrap: pretty; white-space: pre-line; }
 .dock .entry-alt { color: var(--muted); }
 .year-leads-intro { font-family: var(--serif); font-size: 16px; line-height: 1.6; color: var(--story); }
@@ -333,11 +303,39 @@
 .countdown-wrap { display: flex; align-items: center; gap: 10px; }
 .countdown { flex: 1; height: 2px; background: var(--raised); overflow: hidden; }
 .countdown i { display: block; height: 100%; background: var(--accent); transform-origin: left; transition: transform .2s linear; }
-.countdown-badge { font-size: 12.5px; font-variant-numeric: tabular-nums; color: var(--muted); }
+.countdown-badge { font-size: 12.5px; font-variant-numeric: tabular-nums; color: var(--muted); white-space: nowrap; }
+.countdown-pause-btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  min-height: 28px; padding: 0 9px;
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  background: var(--surface); color: var(--text);
+  font-size: 12px; font-weight: 600; white-space: nowrap; cursor: pointer;
+}
+.countdown-pause-btn:hover, .countdown-pause-btn:focus-visible { border-color: var(--accent); background: var(--raised); }
+.countdown-pause-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.choice-cost-chip { margin-left: 6px; }
 
 .causal-echo-badge { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border: 1px solid rgba(156, 192, 240, 0.35); border-radius: var(--radius-sm); background: color-mix(in srgb, var(--rare) 7%, var(--surface)); font-size: 14px; line-height: 1.5; color: var(--muted); }
 .causal-icon { color: var(--rare); margin-top: 2px; }
-.companion-contract-banner { display: flex; gap: 10px; align-items: center; width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); text-align: left; font-size: 14px; color: var(--muted); background: var(--surface); }
+.companion-contract-banner {
+  display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline;
+  width: 100%; padding: 10px 12px;
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  text-align: left; font-size: 13px; line-height: 1.5;
+  color: var(--text); background: var(--surface);
+}
+.companion-contract-banner.is-friction {
+  border-color: color-mix(in srgb, var(--bad) 45%, var(--border));
+  background: color-mix(in srgb, var(--bad) 9%, var(--surface));
+}
+.companion-contract-banner.is-friction strong { color: var(--bad); }
+.companion-contract-banner.is-synergy {
+  border-color: color-mix(in srgb, var(--good) 45%, var(--border));
+  background: color-mix(in srgb, var(--good) 9%, var(--surface));
+}
+.companion-contract-banner.is-synergy strong { color: var(--good); }
+.contract-choice-top { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: baseline; }
+.contract-choice-pay { font-size: 13.5px; white-space: nowrap; }
 
 /* Inner voices (the Disco Elysium move): set as a margin note */
 .disco-psyche-card { border: 1px solid rgba(156, 192, 240, 0.35); border-radius: var(--radius-sm); background: color-mix(in srgb, var(--rare) 5%, transparent); padding: 8px 12px; }
@@ -350,7 +348,7 @@
 .dungeon-entry-wager { border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px; margin: 0 0 16px; color: var(--story); }
 .dungeon-entry-wager legend { padding: 0 5px; color: var(--text); font-weight: 600; }
 .dungeon-entry-wager p { margin: 3px 0 10px; line-height: 1.45; }
-.dungeon-entry-wager small { display: block; margin-top: 9px; color: var(--muted); line-height: 1.4; }
+.dungeon-entry-wager small { display: block; margin-top: 9px; font-size: 12.5px; color: var(--muted); line-height: 1.4; }
 .dungeon-entry-options { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
 .dungeon-entry-options button { min-height: 44px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); color: var(--text); cursor: pointer; }
 .dungeon-entry-options button.is-selected { border-color: var(--accent); background: var(--raised); }
@@ -423,7 +421,7 @@
 }
 .contract-stakes-tag {
   display: inline-block;
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.02em;
@@ -432,9 +430,9 @@
   border-radius: var(--radius-sm);
   margin-left: 8px;
   vertical-align: middle;
-  color: #fca5a5;
-  background: rgba(185, 28, 28, 0.16);
-  border: 1px solid rgba(248, 113, 113, 0.35);
+  color: var(--bad);
+  background: color-mix(in srgb, var(--bad) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--bad) 38%, transparent);
 }
 @media (prefers-reduced-motion: reduce) {
   .choice, .choice:active:not(:disabled) {
@@ -512,7 +510,7 @@
   .yearline { margin-top: 34px; }
   .chronicle-docket-header { margin-bottom: 16px; padding-bottom: 8px; }
   .docket-serial-code { display: none; }
-  .chronicle-horizon-card { margin-top: 32px; padding: 14px 16px; }
+  .chronicle-horizon-card { margin-top: 28px; padding: 14px 0 0; }
 
   /* Mobile floating thumb advance bar */
   .mobile-thumb-bar {
@@ -537,7 +535,7 @@
     font-size: 14.5px;
     font-weight: 700;
     letter-spacing: 0.02em;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6), 0 0 16px rgba(216, 178, 101, 0.35);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.35);
     cursor: pointer;
     transition: transform 0.14s ease, filter 0.14s ease;
     touch-action: manipulation;
@@ -572,11 +570,13 @@
     background: var(--control);
     margin: 0 auto 10px;
   }
-  .event-peek-toggle { top: auto; right: 50%; transform: translateX(50%); bottom: calc(var(--bottom) + 12px); z-index: 50; }
+  .event-peek-toggle { top: auto; right: 50%; transform: translateX(50%); bottom: calc(var(--bottom) + 12px); z-index: 50; min-height: 44px; padding: 0 18px; }
   .dock { padding: 18px 16px 22px; }
-  .dock .choices { padding-bottom: 24px; }
+  .dock .choices { padding-bottom: 12px; }
   .dock-title { font-size: 22px; }
   .dock-hotkey-hint { display: none; }
+  .dock-peek-btn { min-height: 44px; min-width: 44px; padding: 0 12px; }
+  .countdown-pause-btn { min-height: 44px; padding: 0 12px; }
   .choice {
     padding: 12px 14px 12px 10px;
     gap: 12px;
@@ -592,19 +592,24 @@
     background: var(--raised);
   }
   .choice-badge { width: 28px; height: 28px; font-size: 13px; font-weight: 700; border-radius: 4px; }
-  .choice-label { font-size: 14px; font-weight: 600; line-height: 1.4; }
+  .choice-label { font-size: calc(var(--choice-size) - 1px); font-weight: 600; line-height: 1.45; }
   .resolution-actions .resolution-btn { min-height: 50px; font-size: 15.5px; font-weight: 700; }
 }
 
 @media (max-width: 480px) {
   .log-col { padding: 16px 12px 88px; }
-  .chronicle-horizon-card { margin-top: 24px; padding: 12px 14px; }
-  .entry p { font-size: 15px; line-height: 1.6; }
-  .entry-title { font-size: 17px; }
+  .chronicle-horizon-card { margin-top: 24px; padding: 12px 0 0; }
+  .entry-text { font-size: calc(var(--story-size) - 1.5px); line-height: 1.62; }
+  .entry.t-quiet .entry-text,
+  .entry-fold > summary { font-size: calc(var(--story-size) - 2.5px); }
+  .entry-title { font-size: calc(var(--story-size) + 1px); }
   .dock { padding: 14px 12px 18px; }
   .dock-title { font-size: 20px; }
-  .dock-text { font-size: 14.5px; line-height: 1.55; }
+  .dock-text { font-size: calc(var(--story-size) - 2px); line-height: 1.58; }
+  .dock-peek-btn { padding: 0 10px; }
+  .dock-peek-btn span { display: none; }
   .choice { padding: 10px 10px 10px 8px; gap: 8px; }
+  .choice-label { font-size: calc(var(--choice-size) - 1.5px); }
 }
 
 /* The scene behind the page is a tint of the room, never a picture competing with the words */
@@ -640,7 +645,7 @@
 .epitaph-fact-card .is-neg-life { color: var(--bad); }
 .epitaph-panel { display: flex; flex-direction: column; gap: 12px; }
 .epitaph-panel-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--page-edge); }
-.epitaph-panel-head h3 { display: flex; align-items: baseline; gap: 8px; font-size: 20px; color: var(--page-ink); }
+.epitaph-panel-head h2, .epitaph-panel-head h3 { display: flex; align-items: baseline; gap: 8px; font-size: 20px; color: var(--page-ink); margin: 0; }
 .epitaph-panel-sub { font-size: 13px; color: var(--page-muted); }
 .epitaph-subtoggle { font-size: 13.5px; font-weight: 600; color: var(--page-muted); text-decoration: underline; text-underline-offset: 4px; min-height: 32px; }
 .epitaph-story-paragraphs { display: flex; flex-direction: column; gap: 12px; }
@@ -649,9 +654,12 @@
 .epitaph-turning-points { margin-top: 6px; }
 .turning-points-heading { font-size: 13.5px; font-weight: 600; color: var(--page-muted); margin-bottom: 8px; }
 .turning-points-list { display: flex; flex-direction: column; }
-.tp-item { display: grid; grid-template-columns: 70px minmax(0, 1fr); gap: 12px; padding: 8px 0; border-top: 1px solid var(--page-rule); }
-.tp-age { font-size: 13px; font-weight: 600; color: var(--page-muted); font-variant-numeric: tabular-nums; }
-.tp-content { font-size: 14.5px; line-height: 1.5; }
+.tp-item { display: grid; grid-template-columns: 70px minmax(0, 1fr); gap: 12px; padding: 10px 0; border-top: 1px solid var(--page-rule); }
+.tp-age { font-size: 13px; font-weight: 600; color: var(--page-muted); font-variant-numeric: tabular-nums; padding-top: 1px; }
+.tp-content { display: flex; flex-direction: column; gap: 3px; font-size: 14.5px; line-height: 1.5; }
+.tp-title { color: var(--page-ink); font-weight: 600; }
+.tp-summary { color: var(--page-ink); }
+.tp-title + .tp-summary { color: var(--page-muted); }
 .tp-danger .tp-age, .tp-death .tp-age { color: var(--bad); }
 /* Spotlight Apex Milestones Card (BUG-50) */
 .epitaph-spotlight-section {
@@ -660,7 +668,7 @@
   border-bottom: 1px solid var(--page-rule);
 }
 .spotlight-section-kicker {
-  font-size: 11.5px;
+  font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   font-weight: 700;
@@ -701,7 +709,7 @@
   align-items: center;
 }
 .spotlight-rarity-pill {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
   padding: 2px 7px;
@@ -736,7 +744,7 @@
   line-height: 1.45;
 }
 .standard-records-kicker {
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--muted);
   margin: 4px 0 8px 0;
@@ -748,7 +756,7 @@
 .record-row-text { display: grid; gap: 3px; min-width: 0; }
 .record-row-title { font-size: 14.5px; font-weight: 600; }
 .record-row-hint { font-size: 12.5px; line-height: 1.4; color: var(--page-muted); }
-.record-new-badge { font-size: 11.5px; font-weight: 700; color: var(--accent); }
+.record-new-badge { font-size: 12px; font-weight: 700; color: var(--accent); }
 .record-row-rarity { font-size: 12.5px; color: var(--page-muted); white-space: nowrap; }
 .epitaph-record-row.tier-rare .record-row-rarity, .epitaph-record-row.tier-epic .record-row-rarity { color: var(--rare); }
 .epitaph-record-row.tier-legendary .record-row-rarity, .epitaph-record-row.tier-legend .record-row-rarity { color: var(--gold); }
@@ -771,7 +779,6 @@
   border: 1px solid rgba(216, 178, 101, 0.35);
   border-radius: 4px;
   background: rgba(216, 178, 101, 0.05);
-  box-shadow: inset 0 0 16px rgba(216, 178, 101, 0.03);
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -835,13 +842,15 @@
   margin: 0;
 }
 
-.epitaph-actions { display: flex; flex-wrap: wrap; gap: 8px; padding-top: 6px; }
-.epitaph-actions .btn { flex: 1 1 180px; }
-.epitaph-btn-reborn { flex-basis: 100% !important; }
-.epitaph-secondary-actions { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+.epitaph-actions { display: flex; flex-direction: column; gap: 10px; padding-top: 6px; }
+.epitaph-btn-reborn { width: 100%; min-height: 48px; justify-content: center; }
+.epitaph-utility-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; width: 100%; }
+.epitaph-utility-row .btn { min-height: 44px; justify-content: center; }
+.epitaph-secondary-actions { display: flex; flex-wrap: wrap; gap: 6px 10px; justify-content: center; }
 .epitaph-seed-footer { text-align: center; font-size: 12.5px; color: var(--page-muted); }
 .epitaph.is-special-ending { border-top-color: var(--gold); }
 @media (max-width: 860px) {
+  .epitaph-subtoggle { min-height: 44px; }
   .epitaph-facts { grid-template-columns: 1fr; }
   .epitaph-fact-card + .epitaph-fact-card { padding-left: 0; border-left: 0; border-top: 1px solid var(--page-rule); }
   .epitaph-facts + .epitaph-facts { margin-top: -22px; }
@@ -857,35 +866,35 @@
     justify-content: space-between;
   }
   .record-row-rarity {
-    font-size: 11.5px;
+    font-size: 12px;
     align-self: flex-start;
   }
-  .epitaph-actions {
-    flex-direction: column;
-    gap: 10px;
-  }
-  .epitaph-actions .btn {
-    width: 100%;
-    flex: none;
-    min-height: 48px;
-  }
+  .epitaph-secondary-actions .btn { min-height: 44px; }
+}
+@media (max-width: 420px) {
+  .epitaph-utility-row { grid-template-columns: 1fr; }
 }
 .year-plan .dock-inner { max-width: 600px; }
-.year-plan-intro { color: var(--muted); margin: 0 0 1rem; line-height: 1.5; }
-.year-plan-remaining { color: var(--accent); font-weight: 700; margin: 0 0 .75rem; }
-.year-plan-reuse { min-height: 44px; margin: 0 0 .75rem; padding: .55rem .8rem; color: var(--text); background: var(--surface-solid); border: 1px solid var(--control); border-radius: var(--radius); font: inherit; cursor: pointer; }
+.year-plan-intro { color: var(--muted); margin: 0 0 .75rem; line-height: 1.5; }
+.year-plan-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; margin: 0 0 .75rem; }
+.year-plan-remaining { color: var(--accent); font-weight: 700; margin: 0; }
+.year-plan-quick-btns { display: inline-flex; flex-wrap: wrap; gap: 6px; }
+.year-plan-reuse { min-height: 36px; margin: 0; padding: .4rem .75rem; color: var(--text); background: var(--surface-solid); border: 1px solid var(--control); border-radius: var(--radius); font: inherit; font-size: 13px; cursor: pointer; }
+.year-plan-reuse.is-quiet { background: transparent; color: var(--muted); border-color: var(--border); }
 .year-plan-reuse:hover { border-color: var(--accent); color: var(--accent); }
 .year-plan-reuse:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .year-plan-activities { display: grid; gap: .5rem; }
 .year-plan-activity { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: .7rem .8rem; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); }
+.year-plan-slot-idx { color: var(--muted); font-variant-numeric: tabular-nums; margin-right: 2px; }
 .year-plan-net-summary { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: .75rem; padding: 8px 12px; background: var(--surface-subtle, rgba(255, 255, 255, 0.03)); border: 1px dashed var(--border); border-radius: 8px; font-size: 13px; }
 .net-summary-title { font-weight: 600; color: var(--muted); margin-right: 4px; }
 .net-summary-chips { display: inline-flex; flex-wrap: wrap; gap: 6px; }
+.delta-companion-sub { margin-left: 4px; font-size: 12px; opacity: 0.88; }
 .year-plan-activity strong, .year-plan-activity small, .year-plan-ambitions strong, .year-plan-ambitions small { display: block; }
-.year-plan-activity small, .year-plan-ambitions small { color: var(--muted); line-height: 1.35; margin-top: .2rem; }
+.year-plan-activity small, .year-plan-ambitions small { font-size: 12.5px; color: var(--muted); line-height: 1.4; margin-top: .2rem; }
 .year-plan-activity > div:first-child { min-width: 0; }
-.year-plan-more { margin-top: .35rem; font-size: 12px; color: var(--muted); }
-.year-plan-more summary { display: inline-block; min-height: 28px; color: var(--accent); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.year-plan-more { margin-top: .35rem; font-size: 12.5px; color: var(--muted); }
+.year-plan-more summary { display: inline-flex; align-items: center; min-height: 28px; color: var(--accent); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
 .year-plan-more p { margin: .25rem 0 0; line-height: 1.45; }
 .year-plan-more summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .minor-first-hint { margin: .5rem 0 .8rem; color: var(--muted); font-size: 13px; line-height: 1.45; }
@@ -903,4 +912,5 @@
 .directive-deltas { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
 .year-plan-current-goal { color: var(--muted); margin: 1rem 0 0; }
 .year-plan-confirm { width: 100%; min-height: 44px; margin-top: 1rem; }
+@media (max-width: 860px) { .year-plan-reuse, .year-plan-more summary { min-height: 44px; } }
 @media (max-width: 600px) { .year-plan-activity { gap: .5rem; } .year-plan-ambitions { grid-template-columns: 1fr; } }

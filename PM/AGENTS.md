@@ -2,7 +2,6 @@
 ## antislop
 For UI, copy, people, mobile layout, or code comments work, read these installed skill files directly (use these paths even if a same-named global skill exists):
 - Core filter, always on: `antislop`: `.agents/skills/antislop/SKILL.md`
-- UI / visual: `.agents/skills/antislop-ui/SKILL.md`
 - Copy / narrative text: `.agents/skills/antislop-copywriting/SKILL.md`
 - Accessibility / UI states: `.agents/skills/antislop-human/SKILL.md`
 - Mobile / responsive layout: `.agents/skills/antislop-layoutmobile/SKILL.md`

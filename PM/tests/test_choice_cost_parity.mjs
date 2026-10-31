@@ -3,7 +3,7 @@ import { createServer } from 'vite';
 import { choiceIsAvailable, getChoiceAhnCost } from '../src/engine/eventConditions.js';
 import { createNewCharacter, resolveEventChoice, ALL_STORY_EVENTS } from '../src/engine/gameEngine.js';
 
-const server = await createServer({ server: { middlewareMode: true }, appType: 'custom', logLevel: 'error' });
+const server = await createServer({ server: { middlewareMode: true, watch: null }, appType: 'custom', logLevel: 'error' });
 
 try {
   const { previewChoice, choiceCostDisplay } = await server.ssrLoadModule('/src/features/chronicle/components/Deltas.jsx');

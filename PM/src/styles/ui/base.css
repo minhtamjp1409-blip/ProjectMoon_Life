@@ -67,7 +67,7 @@ h3 { font-size: 16.5px; }
 .btn:active:not(:disabled) { background: var(--active); }
 .btn:disabled { opacity: .5; }
 .btn-primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
-.btn-primary:hover:not(:disabled) { background: var(--accent-hover); border-color: var(--accent-hover); color: var(--accent-ink); filter: brightness(1.1); box-shadow: 0 0 24px var(--accent-soft); }
+.btn-primary:hover:not(:disabled) { background: var(--accent-hover); border-color: var(--accent-hover); color: var(--accent-ink); filter: brightness(1.08); box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35); }
 .btn-primary:active:not(:disabled) { background: var(--accent); }
 .btn-danger { background: transparent; border-color: var(--bad); color: var(--bad); }
 .btn-danger:hover:not(:disabled) { background: var(--accent-soft); border-color: var(--bad); }

@@ -155,31 +155,35 @@ export function rollRandomFateOmen(rng = Math.random, hasParentLegacy = false) {
 export const DRAMA_PHASES = {
   INCUBATION: {
     id: 'INCUBATION',
-    labelVi: 'Incubation',
+    labelVi: 'Ủ mầm',
     labelEn: 'Incubation',
     color: 'var(--state-info)',
-    descVi: 'Chưa có gì xảy ra. Những lựa chọn bây giờ sẽ quay lại về sau.'
+    descVi: 'Chưa có biến cố trực diện. Những lựa chọn lúc này sẽ quay lại về sau.',
+    descEn: 'Nothing overt yet. Quiet choices made now return later.'
   },
   RISING_TENSION: {
     id: 'RISING_TENSION',
-    labelVi: 'Rising Tension',
-    labelEn: 'Rising Tension',
+    labelVi: 'Dồn nén',
+    labelEn: 'Rising tension',
     color: 'var(--accent-gold)',
-    descVi: 'Có người đang để ý đến bạn, hoặc có chuyện cũ chưa xong.'
+    descVi: 'Có người đang để mắt tới bạn, hoặc một chuyện cũ chưa khép lại.',
+    descEn: 'Eyes are turning toward you, or an old debt is stirring.'
   },
   CLIMAX: {
     id: 'CLIMAX',
-    labelVi: 'Climax',
+    labelVi: 'Đỉnh điểm',
     labelEn: 'Climax',
     color: 'var(--state-danger)',
-    descVi: 'Một món nợ đến hạn, một bước lên, hoặc giọng nói của Carmen. Chuyện lớn sắp xảy ra.'
+    descVi: 'Một món nợ đến hạn, một bước chuyển bậc, hoặc giọng nói của Carmen.',
+    descEn: 'A debt falls due, a threshold opens, or Carmen begins to speak.'
   },
   AFTERMATH: {
     id: 'AFTERMATH',
-    labelVi: 'Aftermath',
+    labelVi: 'Dư chấn',
     labelEn: 'Aftermath',
     color: 'var(--state-Chill)',
-    descVi: 'Sau một chuyện lớn. Thời gian để băng bó và sống tiếp.'
+    descVi: 'Khoảng lặng sau biến cố lớn. Thời gian để băng bó và sống tiếp.',
+    descEn: 'Quiet after a major shock. Time to bind wounds and endure.'
   }
 };
 

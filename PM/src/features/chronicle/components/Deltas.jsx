@@ -117,7 +117,7 @@ export function DeltaChip({ d, i = 0 }) {
   if (d.k === 'fingerRank') {
     return (
       <span className="delta is-rare" style={style}>
-        {t(`Cấp bậc Ngón Tay: Bậc ${d.v}`, `Finger Rank: Tier ${d.v}`)}
+        {t(`Cấp bậc Finger: Bậc ${d.v}`, `Finger Rank: Tier ${d.v}`)}
       </span>
     );
   }
@@ -178,19 +178,30 @@ export function previewChoice(choice, char, kind = 'major') {
   const costOutsideEffects = costAhn && base.wealth !== -costAhn ? costAhn : 0;
   if (isFixerPromotionChoice(choice, char)) {
     const pass = Math.round(fixerPromotionSuccessChance(char, choice.setFixerGrade) * 100);
-    return { affected: [...new Set([...STAT_ORDER.filter((key) => Boolean(base[key])), 'health', 'wealth', 'sanity'])],
-      fixed: [], ranges: [], odds: null, examOdds: { pass, fail: 100 - pass } };
+    const affected = [...new Set([...STAT_ORDER.filter((key) => Boolean(base[key])), 'health', 'wealth', 'sanity'])];
+    const directions = {};
+    for (const k of affected) {
+      const v = (base[k] || 0) - (k === 'wealth' ? costOutsideEffects : 0);
+      if (v > 0) directions[k] = 'rise';
+      else if (v < 0) directions[k] = 'fall';
+      else if (k === 'health') directions[k] = 'fall';
+      else if (k === 'wealth') directions[k] = costAhn ? 'fall' : 'rise';
+      else directions[k] = 'vary';
+    }
+    return { affected, fixed: [], ranges: [], directions, odds: null, examOdds: { pass, fail: 100 - pass } };
   }
   const weighted = char ? weightedOutcomes(choice, char, kind) : (outsOf(choice) || []).map((outcome) => ({ outcome, weight: outcome.w ?? 1 }));
   const outs = weighted.map((entry) => entry.outcome);
   if (!outs?.length) {
     const affected = STAT_ORDER.filter((k) => Boolean(base[k]) || (k === 'wealth' && Boolean(costAhn)));
     const fixed = affected.map((k) => ({ k, v: (base[k] || 0) - (k === 'wealth' ? costOutsideEffects : 0) }));
-    return { affected, fixed, ranges: [], odds: null };
+    const directions = Object.fromEntries(fixed.map(({ k, v }) => [k, v > 0 ? 'rise' : v < 0 ? 'fall' : 'vary']));
+    return { affected, fixed, ranges: [], directions, odds: null };
   }
   const total = weighted.reduce((sum, entry) => sum + entry.weight, 0);
   const affected = [];
   const ranges = [];
+  const directions = {};
   for (const k of STAT_ORDER) {
     const values = outs.map((o) => (base[k] || 0) + (fxOf(o)[k] || 0) - (k === 'wealth' ? costOutsideEffects : 0));
     const lo = Math.min(...values);
@@ -198,37 +209,51 @@ export function previewChoice(choice, char, kind = 'major') {
     if (lo === 0 && hi === 0 && !base[k] && !(k === 'wealth' && costAhn)) continue;
     affected.push(k);
     ranges.push({ k, lo, hi });
+    directions[k] = lo >= 0 && hi > 0 ? 'rise' : hi <= 0 && lo < 0 ? 'fall' : 'vary';
   }
   const odds = weighted.map((entry) => Math.round((entry.weight / total) * 100));
-  return { affected, fixed: [], ranges, odds };
+  return { affected, fixed: [], ranges, directions, odds };
 }
 
-export const ChoicePreview = ({ choice, npcs, char, kind = 'major' }) => {
-  const { t } = useT();
-  const { affected, odds, examOdds } = previewChoice(choice, char, kind);
+export const ChoicePreview = ({ choice, npcs, char, kind = 'major', check = null }) => {
+  const { t, lang } = useT();
+  const { affected, directions, odds, examOdds } = previewChoice(choice, char, kind);
   const bonds = Object.entries(choice.bond || {})
     .map(([role]) => ({ name: npcs?.[role]?.nameVi || npcs?.spouse?.nameVi }))
     .filter((b) => b.name);
-  if (!affected?.length && !bonds.length && !choice.later && !choice.scar && !choice.npcFate && !bringsClaw(choice, char)) return null;
+  if (!affected?.length && !bonds.length && !check && !odds && !examOdds && !choice.later && !choice.scar && !choice.npcFate && !bringsClaw(choice, char)) return null;
 
   return (
     <span className="preview">
-      {odds && (
+      {examOdds ? (
         <span className="preview-odds">
-          {t('May rủi', 'A gamble')} {odds.join(' / ')}%
+          {t(`Đỗ ${examOdds.pass}%`, `Pass ${examOdds.pass}%`)}
         </span>
-      )}
-      {examOdds && (
+      ) : check ? (
+        <span className={`disco-check-pill ${check.isRedCheck ? 'is-red' : 'is-white'}`}>
+          <span className="check-tag">{t(`Trót lọt ${check.successPct}%`, `${check.successPct}% chance`)}</span>
+          {(check.modifiers || []).map((m, mIdx) => (
+            <span key={mIdx} className={`check-mod ${m.pos ? 'is-pos' : 'is-neg'}`}>
+              {lang === 'en' ? m.labelEn : m.labelVi}
+            </span>
+          ))}
+        </span>
+      ) : odds ? (
         <span className="preview-odds">
-          {t('Đỗ', 'Pass')} {examOdds.pass}% · {t('Trượt', 'Fail')} {examOdds.fail}%
+          {t(`Trót lọt ${odds[0]}%`, `${odds[0]}% chance`)}
         </span>
-      )}
-      {affected.map((k) => (
-        <span key={k} className={`delta is-affected is-affected-${k} is-static`}>
-          <i className="delta-stat-dot" style={{ background: STAT_COLORS[k] || 'var(--muted)' }} aria-hidden="true" />
-          {t(...LABELS[k])}
-        </span>
-      ))}
+      ) : null}
+      {affected.map((k) => {
+        const dir = directions?.[k] || 'vary';
+        const tone = dir === 'rise' ? toneOf(k, 1) : dir === 'fall' ? toneOf(k, -1) : 'affected';
+        const dirMark = dir === 'rise' ? '+' : dir === 'fall' ? '−' : '±';
+        return (
+          <span key={k} className={`delta is-${tone} is-affected is-affected-${k} is-static`}>
+            <i className="delta-stat-dot" style={{ background: STAT_COLORS[k] || 'var(--muted)' }} aria-hidden="true" />
+            {t(...LABELS[k])} <b className="num">{dirMark}</b>
+          </span>
+        );
+      })}
       {bonds.map((b) => (
         <span key={b.name} className="delta is-bond is-static">
           {t('Quan hệ', 'Bond')} · {b.name}

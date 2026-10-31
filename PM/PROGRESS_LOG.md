@@ -2079,6 +2079,27 @@ Chủ dự án yêu cầu làm lại toàn bộ giao diện lần nữa: bỏ t�
   * Đã quay filmstrip bằng `tools/film/film_cutscene.mjs` ở 320x568, 390x844, 412x915, 800x1280 và 1440x900, cả bốn bản. Kết quả: không tràn ngang, 0 lỗi console, dock hiện sau cảnh.
 * **Chưa làm:** âm thanh cho cảnh (sau tầng A); C2 cái chết hai bước và C4 Color (đợt 2).
 
+## Đợt 101: Đánh bóng màn chơi theo Impeccable critique và kiểm định Antislop (31/10/2026)
+
+Thực hiện toàn bộ các điểm cải tiến từ báo cáo `docs/CRITIQUE_MAN_CHOI.md` (giữ nguyên quyết định chưa gộp năm yên ả theo ý chủ dự án).
+
+* **[P1] Trang di cảo (Epitaph) & dock tử vong:**
+  * `generateDeathSummary` phân tầng bước ngoặt bằng `entryTier` và `framesAsMajor`, gộp các chặng hầm ngục WARP thành một mốc lớn duy nhất, bỏ lặp tiêu đề "Tuổi N" và tiền tố ngoặc vuông `[...]`.
+  * `.tp-content` trong `LiveStageFeed.jsx` và `chronicle.css` tách rõ `.tp-title` xếp dọc phía trên `.tp-summary`, xử lý dứt điểm lỗi dính chữ.
+  * Lọc sạch số chỉ số thô và dấu gạch dài khỏi văn xuôi tiểu sử cuộc đời, giữ nguyên viết hoa của các danh từ riêng canon (`Backstreets`, `Nest`, `Outskirts`, `Fixer`, `Syndicate`, `Wing`).
+  * `ResultDock` nêu rõ nguyên nhân tử vong cụ thể; chân trang Epitaph tinh giản thành 2 nút tiện ích; `PlayBar` ẩn các nút điều khiển thời gian vô hiệu sau khi chết.
+* **[P1] Auto-choose chống kẹt:** `pickSafeEventChoiceIndex` duyệt lựa chọn hợp lệ đầu tiên không làm tăng Taboo, giải quyết tình trạng kẹt lặp khi lựa chọn 0 bị khóa.
+* **[P1] Lớp nổi & thông báo:**
+  * Chuyển "Xem phía sau" thành nút biểu tượng `.dock-peek-btn` trên hàng kicker của mọi dock (đạt độ cao tối thiểu 44px trên cảm ứng, phím tắt `V`), chỉ hiện nút nổi khi dock đã ẩn.
+  * Hoãn thông báo thành tựu khi đang mở dock/cutscene, chỉ hiển thị sau khi đóng dock kết quả.
+* **[P1] Cỡ chữ di động:** thay toàn bộ cỡ chữ viết cứng trong media query `<= 480px` bằng công thức tính theo `var(--story-size)`, cho phép tỉ lệ chữ co giãn chính xác theo cài đặt Vừa / Lớn / Rất lớn trên màn hình 390px.
+* **[P2] & Trợ năng, Heuristics:**
+  * Việt hóa toàn bộ nhãn `ENTRY_KIND`, giai đoạn nhịp truyện (`Ủ mầm`, `Dồn nén`, `Đỉnh điểm`, `Dư chấn`), thuật ngữ thế giới ("The City"), gộp hiển thị xác suất thành một dòng duy nhất ("Trót lọt X%"), bổ sung dấu biến động chỉ số `+`/`−`/`±`, và `describeChoiceBlock` nêu cụ thể điều kiện chưa thỏa ("Cần nghề: Fixer").
+  * Gauntlet hầm ngục hiển thị đúng tổng tầng (Tầng 1/7), gỡ nút bước mùa lặp trên mobile, đưa thanh công cụ `.dg-tools` (thế đánh, vật phẩm, gấp bài) lên trên danh sách lựa chọn.
+  * Bổ sung phím tắt toàn cục cho kế hoạch năm (`1-9`, `0`, `R`, `Enter`), tốc độ (`[`/`]`), xem phía sau (`V`), tiêu đề `h2` khớp `aria-labelledby`, `role="timer"` kèm nút tạm dừng đếm ngược (WCAG 2.2.1), nâng tương phản `.dock-hotkey-hint` đạt 6.91:1, mở rộng vùng chạm chỉ số/giai đoạn (WCAG 2.5.8).
+  * Dọn toàn bộ quầng sáng trang trí (`[dark-glow]`, `[radial-halo]`, kể cả vầng tròn mặt trăng trên màn tiêu đề) để vượt qua bộ quét tự động `impeccable detect` với 0 anti-pattern.
+* **Kiểm định:** `npm test` đạt 55/55 test suites, `npm run build` hoàn tất sạch sẽ, và 235 lượt tương tác click-through trên Chrome CDP đạt 69/69 assertion PASS, 0 console error.
+
 ## Phụ lục A: Bản tổng hợp thiết kế ngày 29/10/2026
 
 > Đây là nội dung lịch sử của `process.md`. Các mô tả cơ chế và kết quả kiểm thử phản ánh thời điểm 29/10/2026; những thay đổi và phép đo ở các đợt sau trong nhật ký chính được ưu tiên khi có khác biệt.

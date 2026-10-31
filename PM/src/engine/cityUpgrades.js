@@ -376,7 +376,7 @@ export function canRelocateDistrict(char, targetRegionId) {
   if (outside && !canBorderCrossFromOutskirts(char)) {
     return {
       ok: false,
-      reasonVi: 'Đang ở Outskirts ngoài Bức Tường: cần đủ 18 tuổi kèm giấy thông hành hoặc Mạng lưới/Danh tiếng >= 25 để vượt tường vào The City',
+      reasonVi: 'Đang ở Outskirts ngoài tường The City: cần đủ 18 tuổi kèm giấy thông hành hoặc Mạng lưới/Danh tiếng >= 25 để vượt tường vào The City',
       reasonEn: 'Currently in the Outskirts beyond the Wall: requires age 18+ with a permit or Network/Rep >= 25 to cross into The City'
     };
   }
@@ -438,7 +438,7 @@ export function relocateCharacterDistrict(char, targetRegionId) {
   }
 
   const reg = REGIONS.find((r) => r.id === hub.regionId);
-  const crossVi = wasOutside ? 'Bạn vượt qua cổng kiểm soát Bức Tường từ Outskirts để tiến vào nội thành The City. ' : '';
+  const crossVi = wasOutside ? 'Bạn vượt qua cổng kiểm soát từ Outskirts để tiến vào nội thành The City. ' : '';
   const crossEn = wasOutside ? 'You cleared the City Wall border checkpoint from the Outskirts, entering The City proper. ' : '';
   char.logs.push({
     id: `log_relocate_${hub.regionId}_${char.age}_${Date.now()}`,

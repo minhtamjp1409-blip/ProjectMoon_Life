@@ -503,7 +503,7 @@ export const BirthSetupPanel = () => {
                     {REGIONS.map((r) => (
                       <option key={r.id} value={r.id}>
                         {r.id === 'OUTSKIRTS'
-                          ? t('Outskirts · Ngoài Bức Tường', 'Outskirts · Beyond the Wall')
+                          ? t('Outskirts · Ngoài tường The City', 'Outskirts · Beyond the Wall')
                           : `District ${String(r.ward).padStart(2, '0')} (${r.id} Corp) · ${lang === 'en' ? r.aliasEn : r.aliasVi}`}
                       </option>
                     ))}

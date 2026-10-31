@@ -27,6 +27,8 @@ lerna-debug.log*
 # IDE / OS files
 .vscode/
 .idea/
+.codex/
+.impeccable/
 *.swp
 *.swo
 .DS_Store

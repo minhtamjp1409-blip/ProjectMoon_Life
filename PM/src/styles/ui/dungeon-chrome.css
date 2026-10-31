@@ -1,7 +1,7 @@
-/* Dungeon dock. Where you are, what the stage says, what you can do, and the tactics at the foot.
+/* Dungeon dock. Where you are, what the stage says, tactics above your choices, and the card hand folded until needed.
    --dg is the dungeon's own accent from its definition, so a new dungeon needs no CSS. */
 .dock.is-dungeon { --dg: #8fb3e6; border-top: 3px solid var(--dg); }
-.dg { gap: 18px; }
+.dg { gap: 16px; }
 .dg-head {
   display: flex;
   flex-direction: column;
@@ -58,7 +58,7 @@
 @keyframes dgShake { 20% { transform: translateX(-4px); } 45% { transform: translateX(3px); } 70% { transform: translateX(-2px); } }
 
 .dg-scene { display: flex; flex-direction: column; gap: 12px; }
-.dg-scene-title { display: flex; flex-direction: column; gap: 2px; font-family: var(--serif); font-size: 21px; font-weight: 600; line-height: 1.25; }
+.dg-scene-title { display: flex; flex-direction: column; gap: 2px; font-family: var(--serif); font-size: 21px; font-weight: 600; line-height: 1.25; margin: 0; }
 .dg-scene-title > span { font-family: var(--font); font-size: 13px; font-weight: 600; color: var(--muted); }
 
 /* The foe: its guard as pips, what it is about to do in large type */
@@ -85,27 +85,65 @@
 .dg-chip.is-good { color: var(--good); }
 .dg-chip.is-bad { color: var(--bad); }
 
-/* Tactics: stances as one segmented row, supplies as plain buttons, then the hand */
-.dg-tools { display: flex; flex-direction: column; gap: 12px; padding-top: 16px; border-top: 1px solid var(--rule); }
-.dg-stances { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2px; padding: 3px; border: 1px solid var(--border); border-radius: var(--radius-sm); }
-.dg-stance { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 38px; border-radius: var(--radius-sm); color: var(--muted); font-size: 14px; font-weight: 600; }
+/* Tactics sit right above the choices: stance + supplies in a compact bar, tactic cards folded until opened */
+.dg-tools {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 0;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+.dg-tactics-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.dg-stances { flex: 1 1 240px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2px; padding: 3px; border: 1px solid var(--border); border-radius: var(--radius-sm); }
+.dg-stance { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 36px; border-radius: var(--radius-sm); color: var(--muted); font-size: 13.5px; font-weight: 600; }
 .dg-stance:hover { color: var(--text); background: var(--raised); }
 .dg-stance.is-on { background: var(--dg); color: #06080c; }
-.dg-supplies { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
-.dg-supply { display: inline-flex; align-items: center; gap: 6px; min-height: 38px; padding: 0 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 14px; font-weight: 600; color: var(--text); }
+.dg-supplies { flex: 1 1 280px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.dg-supply { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 11px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 13.5px; font-weight: 600; color: var(--text); }
 .dg-supply:hover:not(:disabled) { background: var(--raised); border-color: var(--control); }
 .dg-supply:disabled { opacity: .45; }
 .dg-supply small { font-weight: 500; color: var(--gold); font-size: 12.5px; }
-.dg-supply kbd, .dg-leave-btn kbd { font-family: var(--font); font-size: 11.5px; color: var(--faint); padding: 0 5px; border: 1px solid var(--border); border-radius: var(--radius-sm); }
+.dg-supply kbd, .dg-leave-btn kbd { font-family: var(--font); font-size: 12px; color: var(--muted); padding: 0 5px; border: 1px solid var(--border); border-radius: var(--radius-sm); }
 .dg-supply.is-used { color: var(--muted); }
 .dg-supply--ego { border-color: var(--s-reso); }
 .dg-supply-count { margin-left: auto; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
-.dg-tools-note { font-size: 13.5px; color: var(--muted); line-height: 1.5; }
+.dg-tools-note { font-size: 13px; color: var(--muted); line-height: 1.5; margin: 0; }
 .dg-mastery { display: inline-flex; align-items: center; gap: 4px; margin-left: 8px; color: var(--gold); font-weight: 600; }
-.dg-hand-spent { font-size: 13.5px; color: var(--faint); }
+.dg-hand-spent { font-size: 13px; color: var(--faint); margin: 0; }
+
+/* Collapsible card hand */
+.dg-hand-fold { border-top: 1px dashed var(--rule); padding-top: 6px; }
+.dg-hand-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 36px;
+  cursor: pointer;
+  list-style: none;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text);
+}
+.dg-hand-summary::-webkit-details-marker { display: none; }
+.dg-hand-summary > span { flex: 1; }
+.dg-hand-summary > small { font-size: 12.5px; font-weight: 500; color: var(--muted); }
+.dg-hand-summary::after {
+  content: '';
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-right: 1.5px solid var(--muted);
+  border-bottom: 1.5px solid var(--muted);
+  transform: rotate(45deg) translateY(-2px);
+  transition: transform .2s ease;
+}
+.dg-hand-fold[open] > .dg-hand-summary::after { transform: rotate(-135deg) translateY(-2px); }
+.dg-hand-summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
 
 /* The hand: real cards, portrait, a type and its colour at the top, the price at the foot */
-.dg-hand { display: flex; flex-direction: column; gap: 10px; }
+.dg-hand { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
 .dg-hand-label { font-size: 13px; font-weight: 600; color: var(--muted); }
 .dg-hand-cards { display: flex; gap: 10px; overflow-x: auto; padding: 10px 2px 12px; margin: -10px -2px 0; scroll-snap-type: x proximity; overscroll-behavior-x: contain; }
 .dg-card {
@@ -138,7 +176,7 @@
 .dg-card-price .is-gain { color: var(--good); }
 .dg-card:focus-visible { outline: 2px solid var(--kc); outline-offset: 3px; }
 .dg-card:disabled { opacity: .45; cursor: not-allowed; box-shadow: none; }
-.dg-card-active { font-size: 13.5px; font-weight: 600; color: var(--text); }
+.dg-card-active { font-size: 12.5px; font-weight: 600; color: var(--gold); }
 @media (hover: hover) {
   .dg-card:hover:not(:disabled) { transform: translateY(-6px); border-color: var(--kc); box-shadow: 0 3px 0 var(--kc), 0 12px 22px rgba(0, 0, 0, .3); }
 }
@@ -151,14 +189,13 @@
     padding-bottom: 12px;
   }
   .dg-hazard {
-    font-size: 11px;
+    font-size: 12px;
     padding: 1px 6px;
   }
   .dg-status { grid-template-columns: 1fr; gap: 12px; }
   .dg-supply kbd, .dg-leave-btn kbd { display: none; }
-  .dg-stance, .dg-supply { min-height: 44px; }
+  .dg-stance, .dg-supply, .dg-hand-summary, .dg-leave-btn, .dg-foe-help summary { min-height: 44px; }
   .dg-stance { font-size: 13px; gap: 4px; padding: 0 4px; }
-  .dg-leave-btn { min-height: 40px; }
   .dg-card { flex-basis: 144px; min-height: 210px; }
   .dg-hand-cards { -webkit-overflow-scrolling: touch; }
 }

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { EyeOff } from 'lucide-react';
 import {
   AMBITIONS,
   APEX_DIRECTIVES,
@@ -10,6 +11,8 @@ import {
   previousYearPoints,
   previewAnnualPlanDeltas
 } from '../../../engine/annualPlan.js';
+import { audioEngine } from '../../../engine/audioEngine.js';
+import { useGameStore } from '../../../store/gameStore.js';
 import { useT } from '../../../i18n';
 
 const DIRECTIVE_STAT_LABELS = {
@@ -58,8 +61,10 @@ function renderDirectiveChips(fx = {}, t) {
   );
 }
 
+const emptyYearPoints = () => Object.fromEntries(YEAR_ACTIVITIES.map((a) => [a.id, 0]));
+
 // One screen a year: time allocation, lifelong ambition, and the Apex directive when available.
-export function YearPlanDock({ char, onConfirm }) {
+export function YearPlanDock({ char, onConfirm, onPeek }) {
   const { t } = useT();
   const choices = ambitionsFor(char);
   const apexEligible = isApexCommander(char);
@@ -72,11 +77,11 @@ export function YearPlanDock({ char, onConfirm }) {
   const [directive, setDirective] = useState(
     () => char.lastApexDirective?.id || APEX_DIRECTIVES[0]?.id || 'dispatch_squad'
   );
-  const firstButton = useRef(null);
-  const firstAmbition = useRef(null);
+  const confirmButtonRef = useRef(null);
+  const selectedAmbitionRef = useRef(null);
   useEffect(() => {
-    if (choosingAmbition) firstAmbition.current?.focus();
-    else firstButton.current?.focus();
+    if (choosingAmbition) selectedAmbitionRef.current?.focus();
+    else confirmButtonRef.current?.focus();
   }, [char.pendingYearPlan?.age, choosingAmbition]);
   const used = YEAR_ACTIVITIES.reduce((sum, activity) => sum + (points[activity.id] || 0), 0);
   const canConfirm = used === YEAR_PLAN_POINTS && Boolean(char.ambition || ambition);
@@ -91,10 +96,85 @@ export function YearPlanDock({ char, onConfirm }) {
     });
   }
 
+  useEffect(() => {
+    const onKeyDown = (e) => {
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName) && document.activeElement?.type !== 'radio') return;
+      if (useGameStore.getState().cutscene) return;
+      if ((e.key === 'v' || e.key === 'V') && onPeek) {
+        e.preventDefault();
+        audioEngine.playClick();
+        onPeek();
+        return;
+      }
+      if (choosingAmbition) {
+        const idx = parseInt(e.key, 10) - 1;
+        if (!Number.isNaN(idx) && idx >= 0 && idx < choices.length) {
+          e.preventDefault();
+          audioEngine.playClick();
+          setAmbition(choices[idx].id);
+          return;
+        }
+        if (e.key === 'Enter' && ambition && document.activeElement?.tagName !== 'BUTTON') {
+          e.preventDefault();
+          audioEngine.playClick();
+          setChoosingAmbition(false);
+        }
+        return;
+      }
+      if (e.key === '0' || e.key === 'Backspace') {
+        e.preventDefault();
+        audioEngine.playClick();
+        setPoints(emptyYearPoints());
+        return;
+      }
+      if ((e.key === 'r' || e.key === 'R') && priorPoints) {
+        e.preventDefault();
+        audioEngine.playClick();
+        setPoints(priorPoints);
+        return;
+      }
+      const actIdx = parseInt(e.key, 10) - 1;
+      if (!Number.isNaN(actIdx) && actIdx >= 0 && actIdx < YEAR_ACTIVITIES.length) {
+        e.preventDefault();
+        audioEngine.playClick();
+        changePoint(YEAR_ACTIVITIES[actIdx].id, e.shiftKey ? -1 : 1);
+        return;
+      }
+      if (e.key === 'Enter' && canConfirm && !['BUTTON', 'SUMMARY'].includes(document.activeElement?.tagName)) {
+        e.preventDefault();
+        audioEngine.playClick();
+        onConfirm(points, ambition, apexEligible ? directive : null);
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [choosingAmbition, choices, ambition, priorPoints, canConfirm, points, apexEligible, directive, onConfirm, onPeek]);
+
   return (
     <section className="dock year-plan" aria-labelledby="year-plan-title">
       <div className="dock-inner">
-        <p className="dock-kicker">{t(`Tuổi ${char.age}`, `Age ${char.age}`)}</p>
+        <div className="dock-kicker-row">
+          <p className="dock-kicker">{t(`Tuổi ${char.age}`, `Age ${char.age}`)}</p>
+          <div className="dock-kicker-actions">
+            <span className="dock-hotkey-hint">
+              {choosingAmbition
+                ? t('Phím 1-4 chọn · Enter tiếp tục', 'Keys 1-4 pick · Enter continue')
+                : t('Phím 1-5 thêm · 0 xóa · Enter xác nhận', 'Keys 1-5 add · 0 clear · Enter confirm')}
+            </span>
+            {onPeek && (
+              <button
+                type="button"
+                className="dock-peek-btn"
+                onClick={onPeek}
+                aria-label={t('Xem biên niên phía sau (phím V)', 'See chronicle behind (V key)')}
+                title={t('Xem biên niên phía sau (V)', 'See chronicle behind (V)')}
+              >
+                <EyeOff size={15} aria-hidden="true" />
+                <span>{t('Xem phía sau', 'See behind')}</span>
+              </button>
+            )}
+          </div>
+        </div>
         <h2 className="dock-title" id="year-plan-title">
           {choosingAmbition ? t('Bạn muốn sống vì điều gì?', 'What will you live for?') : t('Bạn dành năm nay cho điều gì?', 'How will you spend this year?')}
         </h2>
@@ -102,12 +182,15 @@ export function YearPlanDock({ char, onConfirm }) {
           <p className="year-plan-intro">{t('Đây là mục tiêu của cả đời. Sau khi chọn, bạn sẽ phân thời gian cho năm đầu đi làm.', 'This is your goal for this life. After choosing, you will plan your first working year.')}</p>
           <fieldset className="year-plan-ambitions">
             <legend>{t('Tham vọng của đời này', 'Ambition for this life')}</legend>
-            {choices.map((goal, index) => (
-              <label key={goal.id} className={ambition === goal.id ? 'is-selected' : ''}>
-                <input ref={index === 0 ? firstAmbition : null} type="radio" name="life-ambition" value={goal.id} checked={ambition === goal.id} onChange={() => setAmbition(goal.id)} />
-                <span><strong>{t(goal.vi, goal.en)}</strong><small>{t(goal.detailVi, goal.detailEn)}</small></span>
-              </label>
-            ))}
+            {choices.map((goal, index) => {
+              const isSelected = ambition === goal.id || (!ambition && index === 0);
+              return (
+                <label key={goal.id} className={ambition === goal.id ? 'is-selected' : ''}>
+                  <input ref={isSelected ? selectedAmbitionRef : null} type="radio" name="life-ambition" value={goal.id} checked={ambition === goal.id} onChange={() => setAmbition(goal.id)} />
+                  <span><strong>{t(goal.vi, goal.en)}</strong><small>{t(goal.detailVi, goal.detailEn)}</small></span>
+                </label>
+              );
+            })}
           </fieldset>
           <button type="button" className="btn btn-primary year-plan-confirm" disabled={!ambition} onClick={() => setChoosingAmbition(false)}>
             {t('Lập kế hoạch năm đầu', 'Plan the first working year')}
@@ -116,19 +199,28 @@ export function YearPlanDock({ char, onConfirm }) {
         <p className="year-plan-intro">
           {t('Phân 3 ô thời gian cho định hướng năm nay.', 'Assign three time slots for this year.')}
         </p>
-        <p className="year-plan-remaining" aria-live="polite">
-          {t(`Còn ${YEAR_PLAN_POINTS - used} ô`, `${YEAR_PLAN_POINTS - used} slots left`)}
-        </p>
-        {priorPoints && (
-          <button className="year-plan-reuse" type="button" onClick={() => setPoints(priorPoints)}>
-            {t('Dùng lại kế hoạch năm trước', 'Use last year’s plan')}
-          </button>
-        )}
+        <div className="year-plan-toolbar">
+          <p className="year-plan-remaining" aria-live="polite">
+            {t(`Còn ${YEAR_PLAN_POINTS - used} ô`, `${YEAR_PLAN_POINTS - used} slots left`)}
+          </p>
+          <div className="year-plan-quick-btns">
+            {used > 0 && (
+              <button className="year-plan-reuse is-quiet" type="button" onClick={() => setPoints(emptyYearPoints())}>
+                {t('Đặt lại về 0', 'Clear slots')}
+              </button>
+            )}
+            {priorPoints && (
+              <button className="year-plan-reuse" type="button" onClick={() => setPoints(priorPoints)}>
+                {t('Dùng lại năm trước', 'Use last year’s plan')}
+              </button>
+            )}
+          </div>
+        </div>
         <div className="year-plan-activities">
           {YEAR_ACTIVITIES.map((activity, index) => (
             <div className="year-plan-activity" key={activity.id}>
               <div>
-                <strong>{t(activity.vi, activity.en)}</strong>
+                <strong><span className="year-plan-slot-idx">{index + 1}.</span> {t(activity.vi, activity.en)}</strong>
                 <small>{t(activity.effectVi.split(' (')[0], activity.effectEn.split(' (')[0])}</small>
                 {activity.effectVi.includes(' (') && (
                   <details className="year-plan-more">
@@ -143,7 +235,6 @@ export function YearPlanDock({ char, onConfirm }) {
                   aria-label={t(`Giảm ${activity.vi}`, `Reduce ${activity.en}`)}
                   onClick={() => changePoint(activity.id, -1)}
                   disabled={!points[activity.id]}
-                  ref={index === 0 ? firstButton : null}
                 >
                   −
                 </button>
@@ -219,9 +310,9 @@ export function YearPlanDock({ char, onConfirm }) {
                 >
                   {t('Gắn kết', 'Bond')} {netDeltas.companionBond > 0 ? `+${netDeltas.companionBond}` : netDeltas.companionBond}
                   {netDeltas.companionDetails?.length === 1 && (
-                    <small style={{ marginLeft: 4, opacity: 0.85 }}>
+                    <span className="delta-companion-sub">
                       ({t(netDeltas.companionDetails[0].nameVi, netDeltas.companionDetails[0].nameEn)})
-                    </small>
+                    </span>
                   )}
                 </span>
               )}
@@ -257,12 +348,13 @@ export function YearPlanDock({ char, onConfirm }) {
         )}
         <div className="year-plan-confirm-wrap">
           <button
+            ref={confirmButtonRef}
             className="btn btn-primary year-plan-confirm"
             type="button"
             disabled={!canConfirm}
             onClick={() => onConfirm(points, ambition, apexEligible ? directive : null)}
           >
-            {t('Bắt đầu năm mới', 'Begin New Year')}
+            {t('Bắt đầu năm mới', 'Begin new year')}
           </button>
         </div>
         </>}

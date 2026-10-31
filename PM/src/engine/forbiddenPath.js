@@ -3,6 +3,7 @@
 // offered to the top of a branch, a Color or an awakened E.G.O, and never to the autopilot.
 
 import { FORBIDDEN_LEAD_ID } from '../data/eventsForbidden.js';
+import { choiceIsAvailable } from './eventConditions.js';
 
 export const FORBIDDEN_MIN_AGE = 25;
 export const FORBIDDEN_OFFER_GAP = 4;
@@ -50,3 +51,25 @@ export const bringsClaw = (choice, char) => {
   const gain = tabooGainOf(choice);
   return gain > 0 && (char?.taboo || 0) + gain >= TABOO_LIMIT;
 };
+
+/** Pick the first available event choice that does not raise Taboo; fall back to any available choice. */
+export function autoEventChoiceIndex(event, char) {
+  const choices = event?.choices || [];
+  const safeIdx = choices.findIndex((choice) => choiceIsAvailable(choice, char) && tabooGainOf(choice) <= 0);
+  if (safeIdx !== -1) return safeIdx;
+  const openIdx = choices.findIndex((choice) => choiceIsAvailable(choice, char));
+  return openIdx !== -1 ? openIdx : 0;
+}
+
+/** Pick an affordable contract approach for autoplay, preferring careful work before decline. */
+export function autoContractApproachId(contract, char) {
+  const approaches = contract?.approaches || [];
+  const wealth = char?.stats?.wealth ?? char?.wealth ?? 0;
+  const canAfford = (app) => (app?.costAhn ?? 0) <= wealth;
+  const careful = approaches.find((app) => app.id === 'careful' && canAfford(app));
+  if (careful) return careful.id;
+  const working = approaches.find((app) => !app.isDecline && canAfford(app));
+  if (working) return working.id;
+  const fallback = approaches.find((app) => canAfford(app));
+  return fallback?.id || approaches[0]?.id || 'careful';
+}

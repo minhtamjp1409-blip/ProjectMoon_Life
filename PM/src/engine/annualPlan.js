@@ -15,8 +15,8 @@ export const YEAR_ACTIVITIES = [
 export const AMBITIONS = [
   { id: 'rank', vi: 'Gầy dựng vị thế vững chắc', en: 'Carve out an unshakeable station', detailVi: 'Leo lên nấc thang cao nhất trên con đường đã chọn trong The City.', detailEn: 'Climb to the highest rung on your chosen path in the City.' },
   { id: 'fortune', vi: 'Tích lũy tài sản phòng thân', en: 'Secure family savings', detailVi: 'Tích trữ ít nhất 80 Ahn để không bao giờ bị đuổi ra đường hay rơi vào cảnh bần cùng.', detailEn: 'Accumulate at least 80 Ahn to never face eviction or destitute ruin.' },
-  { id: 'survive', vi: 'Tồn tại qua giông bão Đô Thị', en: 'Outlive the City', detailVi: 'Bảo toàn mạng sống đến tuổi 70 giữa chốn Backstreets tàn khốc.', detailEn: 'Survive to age 70 amidst the brutal Backstreets.' },
-  { id: 'outskirts', vi: 'Rời bỏ Bức Tường về Outskirts', en: 'Exile beyond the Wall', detailVi: 'Thoát khỏi sự ngột ngạt của các Corp, tìm về vùng đất hoang tàn tự do.', detailEn: 'Escape corporate suffocation, seeking the free wasteland.' }
+  { id: 'survive', vi: 'Tồn tại qua giông bão The City', en: 'Outlive the City', detailVi: 'Bảo toàn mạng sống đến tuổi 70 giữa chốn Backstreets tàn khốc.', detailEn: 'Survive to age 70 amidst the brutal Backstreets.' },
+  { id: 'outskirts', vi: 'Vượt tường ra Outskirts', en: 'Exile beyond the Wall', detailVi: 'Thoát khỏi sự ngột ngạt của các Corp, tìm về vùng đất hoang bên ngoài The City.', detailEn: 'Escape corporate suffocation, seeking the free wasteland.' }
 ];
 
 const inOutskirts = (char) => String(char?.regionId || '').toLowerCase().includes('outskirts') || Boolean(char?.flags?.includes('OutskirtsExile'));

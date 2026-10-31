@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { ShieldAlert, LogOut, Shield, Scale, Flame, HeartPulse, Radar, Package, Award, Sparkles, Zap } from 'lucide-react';
+import { ShieldAlert, LogOut, Shield, Scale, Flame, HeartPulse, Radar, Package, Award, Sparkles, Zap, EyeOff } from 'lucide-react';
 import { useT } from '../../../i18n';
 import { audioEngine } from '../../../engine/audioEngine.js';
 import {
@@ -142,7 +142,7 @@ const cardPrice = (card, t) => {
   return out;
 };
 
-export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseSupply, onUseEgo, onPlayCard }) => {
+export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseSupply, onUseEgo, onPlayCard, onPeek }) => {
   const { t, lang, bilingual } = useT();
   const def = session ? DUNGEON_DEFINITIONS[session.id] : null;
   const stage = getDungeonCurrentStage(session);
@@ -188,8 +188,23 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
               <span className="dg-hazard">{def.hazard}</span>
               <span>{pick(def.kickerVi, def.kickerEn)}</span>
             </p>
+            <div className="dock-kicker-actions">
+              <span className="dock-hotkey-hint">{t('Phím 1-4 · V: biên niên', 'Keys 1-4 · V: chronicle')}</span>
+              {onPeek && (
+                <button
+                  type="button"
+                  className="dock-peek-btn"
+                  onClick={onPeek}
+                  aria-label={t('Xem biên niên phía sau (phím V)', 'See chronicle behind (V key)')}
+                  title={t('Xem biên niên phía sau (V)', 'See chronicle behind (V)')}
+                >
+                  <EyeOff size={15} aria-hidden="true" />
+                  <span>{t('Xem phía sau', 'See behind')}</span>
+                </button>
+              )}
+            </div>
           </div>
-          <h3 className="dock-title">{pick(def.titleVi, def.titleEn)}</h3>
+          <h2 className="dock-title" id="active-dock-title">{pick(def.titleVi, def.titleEn)}</h2>
           {!session.ensembleCoda && <p className="dg-ambient">{t(ambient[0], ambient[1])}</p>}
           {def.noRetreat && <p className="dg-judgment-warning">{t('Không có lối rút. HP hoặc SP cạn sẽ chết. Trượt kiểm định cuối cũng chết.', 'No retreat. Reaching zero HP or SP kills you. Failing the final check also kills you.')}</p>}
           {def.theme === 'ensemble' && <p className="dg-judgment-warning">{session.ensembleCoda
@@ -260,10 +275,10 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
         )}
 
         <section key={session.combat ? `f${session.combat.floor}-${session.combat.phase || 1}` : currentIdx} className="dg-scene">
-          <h4 className="dg-scene-title">
+          <h3 className="dg-scene-title">
             <span>{stage.sceneLabelVi ? t(stage.sceneLabelVi, stage.sceneLabelEn) : route ? t('Sau trận cuối', 'After the last fight') : t(`Chặng ${currentIdx + 1} / ${stages.length}`, `Stage ${currentIdx + 1} / ${stages.length}`)}</span>
             {pick(stage.nameVi, stage.nameEn)}
-          </h4>
+          </h3>
           {fight && (
             <div className="dg-foe" aria-label={t('Kẻ thù', 'Enemy')}>
               <div className="dg-foe-guard" role="meter" aria-valuemin={0} aria-valuemax={fight.guardMax} aria-valuenow={fight.guard} aria-label={t('Thế thủ còn lại', 'Guard left')}>
@@ -286,6 +301,151 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
             </div>
           )}
           <p className="dock-text">{pick(stage.descVi, stage.descEn)}</p>
+        </section>
+
+        <section className="dg-tools" aria-label={t('Chiến thuật', 'Tactics')}>
+          <div className="dg-tactics-bar">
+            <div className="dg-stances" role="radiogroup" aria-label={t('Thế chiến thuật', 'Stance')}>
+              {STANCES.map((st) => {
+                const Icon = st.icon;
+                const on = st.id === activeStance.id;
+                return (
+                  <button
+                    key={st.id}
+                    type="button"
+                    role="radio"
+                    aria-checked={on}
+                    className={`dg-stance stance-${st.id} ${on ? 'is-on' : ''}`}
+                    onClick={() => {
+                      audioEngine.playClick();
+                      onSetStance?.(st.id);
+                    }}
+                    title={def.noRetreat
+                      ? st.id === 'guarded'
+                        ? t('Giảm sát thương và áp lực; không tăng xác suất kiểm định.', 'Less damage and strain; no bonus to check odds.')
+                        : st.id === 'balanced'
+                          ? t('Sát thương bình thường, xác suất kiểm định nhỉnh hơn.', 'Normal damage and slightly better check odds.')
+                          : t('Tăng cơ hội kiểm định, nhưng chịu nhiều sát thương và áp lực hơn.', 'Better check odds, but more damage and strain.')
+                      : pick(st.noteVi, st.noteEn)}
+                  >
+                    <Icon size={14} aria-hidden="true" />
+                    <span>{pick(st.vi, st.en)}</span>
+                  </button>
+                );
+              })}
+            </div>
+            <div className="dg-supplies">
+              <button
+                type="button"
+                className="dg-supply"
+                disabled={!breather.ok}
+                onClick={() => {
+                  audioEngine.playBuff();
+                  onUseSupply?.('breather');
+                }}
+                title={t(`Nghỉ thở: hồi máu và tinh thần, giảm áp lực. Tốn ${DUNGEON_BALANCE.breather.cost} Ahn và một lần tiếp tế.`, `Catch breath: restores HP and SP, eases strain. Costs ${DUNGEON_BALANCE.breather.cost} Ahn and one supply.`)}
+              >
+                <HeartPulse size={14} aria-hidden="true" />
+                <span>{t('Nghỉ thở', 'Catch breath')}</span>
+                <small>{DUNGEON_BALANCE.breather.cost} Ahn</small>
+                <kbd>Q</kbd>
+              </button>
+              <button
+                type="button"
+                className={`dg-supply ${scan.reason === 'scanned' ? 'is-used' : ''}`}
+                disabled={!scan.ok}
+                onClick={() => {
+                  audioEngine.playPrescriptTick();
+                  onUseSupply?.('scan');
+                }}
+                title={def.noRewards ? t('Đọc nhịp của đối thủ: tăng cơ hội kiểm định và giảm sát thương trong chặng này.', 'Read the opponent’s rhythm: better odds and less damage this stage.') : t('Dò đường: đọc quy luật của chặng này. Dễ qua kiểm định hơn, nhận ít thương tổn hơn, tìm thêm được chút hàng.', 'Read the stage: better check odds, less damage, a little extra haul.')}
+              >
+                <Radar size={14} aria-hidden="true" />
+                <span>{scan.reason === 'scanned' ? t('Đã dò', 'Read') : t('Dò đường', 'Read stage')}</span>
+                <kbd>E</kbd>
+              </button>
+              {ego.reason !== 'none' && (
+                <button
+                  type="button"
+                  className={`dg-supply dg-supply--ego ${ego.reason === 'active' ? 'is-used' : ''}`}
+                  disabled={!ego.ok}
+                  onClick={() => {
+                    audioEngine.playEgo();
+                    onUseEgo?.();
+                  }}
+                  title={t('Kích hoạt E.G.O: chặng này dễ qua kiểm định hơn nhiều và nhận ít thương tổn hơn. Đổi lại áp lực, tinh thần và Resonance đều tăng. Mỗi lần vào hầm có số lần giới hạn.', 'Awaken the E.G.O: this stage is far easier and hurts less. In exchange strain, sanity and Resonance all take a hit. Limited uses per run.')}
+                >
+                  <Zap size={14} aria-hidden="true" />
+                  <span>{ego.reason === 'active' ? t('E.G.O đang mở', 'E.G.O open') : t('Kích hoạt E.G.O', 'Awaken E.G.O')}</span>
+                  <small>{session.egoCharges ?? 0}</small>
+                  <kbd>R</kbd>
+                </button>
+              )}
+              <span className="dg-supply-count" title={t('Số lần tiếp tế còn lại', 'Supplies left')}>
+                {t('Tiếp tế', 'Supplies')} {session.supplyCharges ?? 0}/{session.maxSupplies ?? 2}
+              </span>
+            </div>
+          </div>
+          {Array.isArray(session.cardHand) && session.cardHand.length > 0 && cardBudgetLeft(session) <= 0 && !session.cardActive && (
+            <p className="dg-hand-spent">{t('Đã dùng hết bài chiến thuật.', 'Tactic cards spent.')}</p>
+          )}
+          {Array.isArray(session.cardHand) && session.cardHand.length > 0 && (cardBudgetLeft(session) > 0 || session.cardActive) && (
+            <details className="dg-hand-fold" open={Boolean(session.cardActive)}>
+              <summary className="dg-hand-summary">
+                <span>{t(`Bài (${cardBudgetLeft(session)})`, `Cards (${cardBudgetLeft(session)})`)}</span>
+                {session.cardActive && DUNGEON_CARDS[session.cardActive] ? (
+                  <small className="dg-card-active">{t('Đang dùng', 'In play')}: {t(DUNGEON_CARDS[session.cardActive].vi, DUNGEON_CARDS[session.cardActive].en)}</small>
+                ) : (
+                  <small>{t(`${session.cardHand.length} lá trên tay`, `${session.cardHand.length} in hand`)}</small>
+                )}
+              </summary>
+              <div className="dg-hand" role="group" aria-label={t('Bài chiến thuật', 'Tactic cards')}>
+                <div className="dg-hand-cards">
+                {session.cardHand.map((id, slot) => {
+                  const card = DUNGEON_CARDS[id];
+                  if (!card) return null;
+                  const face = cardFace(card);
+                  const price = cardPrice(card, t);
+                  return (
+                    <button
+                      key={`${id}-${slot}`}
+                      type="button"
+                      className={`dg-card dg-card--${face.kind}`}
+                      disabled={Boolean(session.cardActive) || cardBudgetLeft(session) <= 0 || !cardPlayable(id, char)}
+                      onClick={() => onPlayCard?.(id)}
+                    >
+                      <span className="dg-card-kind">{t(face.vi, face.en)}</span>
+                      <svg className="dg-card-emblem" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                        <path d={face.path} />
+                      </svg>
+                      <strong className="dg-card-name">{t(card.vi, card.en)}</strong>
+                      <small className="dg-card-text">{t(card.textVi, card.textEn)}</small>
+                      {price.length > 0 && (
+                        <span className="dg-card-price">
+                          {price.map((p) => <i key={p.key} className={p.good ? 'is-gain' : 'is-cost'}>{p.label}</i>)}
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+                </div>
+              </div>
+            </details>
+          )}
+          <p className="dg-tools-note">
+            {def.noRewards
+              ? activeStance.id === 'guarded'
+                ? t('Thận trọng: ít thương tổn, không cộng tỉ lệ kiểm định.', 'Guarded: less damage, no check bonus.')
+                : activeStance.id === 'balanced'
+                  ? t('Cân bằng: thương tổn vừa phải, tỉ lệ kiểm định tăng nhẹ.', 'Balanced: normal damage, slightly better odds.')
+                  : t('Xung kích: tỉ lệ kiểm định tăng, thương tổn và áp lực cũng tăng.', 'Reckless: better odds, more damage and strain.')
+              : pick(activeStance.noteVi, activeStance.noteEn)}
+            {mastery.hasMastery && (
+              <span className="dg-mastery" title={t('Xuất thân và trang bị giúp bạn nhận ít thương tổn hơn và dễ qua kiểm định hơn.', 'Your background and gear mean less damage and better odds on checks.')}>
+                <Award size={13} aria-hidden="true" /> {pick(mastery.labelVi, mastery.labelEn)}
+              </span>
+            )}
+          </p>
         </section>
 
         <ul className="choices dg-choices">
@@ -383,145 +543,6 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
             </button>
           </div>
         )}
-
-        <section className="dg-tools" aria-label={t('Chiến thuật', 'Tactics')}>
-          <div className="dg-stances" role="radiogroup" aria-label={t('Thế chiến thuật', 'Stance')}>
-            {STANCES.map((st) => {
-              const Icon = st.icon;
-              const on = st.id === activeStance.id;
-              return (
-                <button
-                  key={st.id}
-                  type="button"
-                  role="radio"
-                  aria-checked={on}
-                  className={`dg-stance stance-${st.id} ${on ? 'is-on' : ''}`}
-                  onClick={() => {
-                    audioEngine.playClick();
-                    onSetStance?.(st.id);
-                  }}
-                  title={def.noRetreat
-                    ? st.id === 'guarded'
-                      ? t('Giảm sát thương và áp lực; không tăng xác suất kiểm định.', 'Less damage and strain; no bonus to check odds.')
-                      : st.id === 'balanced'
-                        ? t('Sát thương bình thường, xác suất kiểm định nhỉnh hơn.', 'Normal damage and slightly better check odds.')
-                        : t('Tăng cơ hội kiểm định, nhưng chịu nhiều sát thương và áp lực hơn.', 'Better check odds, but more damage and strain.')
-                    : pick(st.noteVi, st.noteEn)}
-                >
-                  <Icon size={14} aria-hidden="true" />
-                  <span>{pick(st.vi, st.en)}</span>
-                </button>
-              );
-            })}
-          </div>
-          <div className="dg-supplies">
-            <button
-              type="button"
-              className="dg-supply"
-              disabled={!breather.ok}
-              onClick={() => {
-                audioEngine.playBuff();
-                onUseSupply?.('breather');
-              }}
-              title={t(`Nghỉ thở: hồi máu và tinh thần, giảm áp lực. Tốn ${DUNGEON_BALANCE.breather.cost} Ahn và một lần tiếp tế.`, `Catch breath: restores HP and SP, eases strain. Costs ${DUNGEON_BALANCE.breather.cost} Ahn and one supply.`)}
-            >
-              <HeartPulse size={14} aria-hidden="true" />
-              <span>{t('Nghỉ thở', 'Catch breath')}</span>
-              <small>{DUNGEON_BALANCE.breather.cost} Ahn</small>
-              <kbd>Q</kbd>
-            </button>
-            <button
-              type="button"
-              className={`dg-supply ${scan.reason === 'scanned' ? 'is-used' : ''}`}
-              disabled={!scan.ok}
-              onClick={() => {
-                audioEngine.playPrescriptTick();
-                onUseSupply?.('scan');
-              }}
-              title={def.noRewards ? t('Đọc nhịp của đối thủ: tăng cơ hội kiểm định và giảm sát thương trong chặng này.', 'Read the opponent’s rhythm: better odds and less damage this stage.') : t('Dò đường: đọc quy luật của chặng này. Dễ qua kiểm định hơn, nhận ít thương tổn hơn, tìm thêm được chút hàng.', 'Read the stage: better check odds, less damage, a little extra haul.')}
-            >
-              <Radar size={14} aria-hidden="true" />
-              <span>{scan.reason === 'scanned' ? t('Đã dò', 'Read') : t('Dò đường', 'Read stage')}</span>
-              <kbd>E</kbd>
-            </button>
-            {ego.reason !== 'none' && (
-              <button
-                type="button"
-                className={`dg-supply dg-supply--ego ${ego.reason === 'active' ? 'is-used' : ''}`}
-                disabled={!ego.ok}
-                onClick={() => {
-                  audioEngine.playEgo();
-                  onUseEgo?.();
-                }}
-                title={t('Kích hoạt E.G.O: chặng này dễ qua kiểm định hơn nhiều và nhận ít thương tổn hơn. Đổi lại áp lực, tinh thần và Resonance đều tăng. Mỗi lần vào hầm có số lần giới hạn.', 'Awaken the E.G.O: this stage is far easier and hurts less. In exchange strain, sanity and Resonance all take a hit. Limited uses per run.')}
-              >
-                <Zap size={14} aria-hidden="true" />
-                <span>{ego.reason === 'active' ? t('E.G.O đang mở', 'E.G.O open') : t('Kích hoạt E.G.O', 'Awaken E.G.O')}</span>
-                <small>{session.egoCharges ?? 0}</small>
-                <kbd>R</kbd>
-              </button>
-            )}
-            <span className="dg-supply-count" title={t('Số lần tiếp tế còn lại', 'Supplies left')}>
-              {t('Tiếp tế', 'Supplies')} {session.supplyCharges ?? 0}/{session.maxSupplies ?? 2}
-            </span>
-          </div>
-          {Array.isArray(session.cardHand) && session.cardHand.length > 0 && cardBudgetLeft(session) <= 0 && !session.cardActive && (
-            <p className="dg-hand-spent">{t('Đã dùng hết bài chiến thuật.', 'Tactic cards spent.')}</p>
-          )}
-          {Array.isArray(session.cardHand) && session.cardHand.length > 0 && (cardBudgetLeft(session) > 0 || session.cardActive) && (
-            <div className="dg-hand" role="group" aria-label={t('Bài chiến thuật', 'Tactic cards')}>
-              <span className="dg-hand-label">
-                {t('Bài trên tay', 'Hand')} · {t('còn', 'plays left')} {cardBudgetLeft(session)}
-              </span>
-              <div className="dg-hand-cards">
-              {session.cardHand.map((id, slot) => {
-                const card = DUNGEON_CARDS[id];
-                if (!card) return null;
-                const face = cardFace(card);
-                const price = cardPrice(card, t);
-                return (
-                  <button
-                    key={`${id}-${slot}`}
-                    type="button"
-                    className={`dg-card dg-card--${face.kind}`}
-                    disabled={Boolean(session.cardActive) || cardBudgetLeft(session) <= 0 || !cardPlayable(id, char)}
-                    onClick={() => onPlayCard?.(id)}
-                  >
-                    <span className="dg-card-kind">{t(face.vi, face.en)}</span>
-                    <svg className="dg-card-emblem" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                      <path d={face.path} />
-                    </svg>
-                    <strong className="dg-card-name">{t(card.vi, card.en)}</strong>
-                    <small className="dg-card-text">{t(card.textVi, card.textEn)}</small>
-                    {price.length > 0 && (
-                      <span className="dg-card-price">
-                        {price.map((p) => <i key={p.key} className={p.good ? 'is-gain' : 'is-cost'}>{p.label}</i>)}
-                      </span>
-                    )}
-                  </button>
-                );
-              })}
-              </div>
-              {session.cardActive && DUNGEON_CARDS[session.cardActive] && (
-                <span className="dg-card-active">{t('Đang dùng', 'In play')}: {t(DUNGEON_CARDS[session.cardActive].vi, DUNGEON_CARDS[session.cardActive].en)}</span>
-              )}
-            </div>
-          )}
-          <p className="dg-tools-note">
-            {def.noRewards
-              ? activeStance.id === 'guarded'
-                ? t('Thận trọng: ít thương tổn, không cộng tỉ lệ kiểm định.', 'Guarded: less damage, no check bonus.')
-                : activeStance.id === 'balanced'
-                  ? t('Cân bằng: thương tổn vừa phải, tỉ lệ kiểm định tăng nhẹ.', 'Balanced: normal damage, slightly better odds.')
-                  : t('Xung kích: tỉ lệ kiểm định tăng, thương tổn và áp lực cũng tăng.', 'Reckless: better odds, more damage and strain.')
-              : pick(activeStance.noteVi, activeStance.noteEn)}
-            {mastery.hasMastery && (
-              <span className="dg-mastery" title={t('Xuất thân và trang bị giúp bạn nhận ít thương tổn hơn và dễ qua kiểm định hơn.', 'Your background and gear mean less damage and better odds on checks.')}>
-                <Award size={13} aria-hidden="true" /> {pick(mastery.labelVi, mastery.labelEn)}
-              </span>
-            )}
-          </p>
-        </section>
       </div>
     </div>
   );

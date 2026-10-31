@@ -1,5 +1,6 @@
 import { rememberResonance, hasEgoOpportunity, colorTrialAvailable } from './awakeningProgress.js';
 import { advanceActiveNarrativeArcs } from './narrativeArcEngine.js';
+import { entryTier, framesAsMajor } from '../features/chronicle/entryTiers.js';
 import { choiceIsAvailable, getChoiceAhnCost, matchesEventContext, mergeEffects, npcIsActive, recordColorTrialCompanion, colorTrialCompanionOf, isIndependentSyndicateEligibleForRank } from './eventConditions.js';
 import { ITEMS_CATALOG } from '../data/itemsData.js';
 import { rollPerinatalFate } from './fateEngine.js';
@@ -2982,32 +2983,94 @@ export function buildLifeSummaryAndLegacy(char) {
     poeticQuoteEn = '“Blood spilled on wet cobblestones washes away with the rain, yet the mark they carved into the chronicle remains.”';
   }
 
-  // Extract pivotal turning points from logs for the timeline & deep narrative synthesis
+  // Extract pivotal turning points using chronicle entry tiers plus collapsed dungeon delves
   const logs = Array.isArray(char.logs) ? char.logs : [];
-  const majorLogs = logs.filter(l => l.age > 0 && ['major', 'promo', 'miracle', 'causal', 'choice', 'danger'].includes(l.type) && !l.passed);
-  const turningPoints = [];
-  const seenMilestoneAges = new Set();
-
-  for (const entry of majorLogs) {
-    const rawVi = entry.vi || '';
-    const rawEn = entry.en || '';
+  const capFirst = (str) => {
+    const clean = String(str || '').trim();
+    return clean ? clean.charAt(0).toUpperCase() + clean.slice(1) : '';
+  };
+  const isBareAgeTitle = (str) => /^(tuổi|age)\s+\d+$/i.test(String(str || '').trim());
+  const formatLandmark = (entry, idx, overrideType = null) => {
+    const rawVi = String(entry.vi || '').trim();
+    const rawEn = String(entry.en || '').trim();
     const titleMatchVi = /^\s*\[([^\]]{2,80})\]\s*/.exec(rawVi);
     const titleMatchEn = /^\s*\[([^\]]{2,80})\]\s*/.exec(rawEn);
-    const cleanBodyVi = (titleMatchVi ? rawVi.slice(titleMatchVi[0].length) : rawVi).split(/(?<=[.!?])\s+/)[0] || rawVi;
-    const cleanBodyEn = (titleMatchEn ? rawEn.slice(titleMatchEn[0].length) : rawEn).split(/(?<=[.!?])\s+/)[0] || rawEn;
-    const isPriority = ['promo', 'miracle', 'causal'].includes(entry.type) || entry.age === 18;
-    if (isPriority || !seenMilestoneAges.has(entry.age)) {
-      seenMilestoneAges.add(entry.age);
-      turningPoints.push({
-        age: entry.age,
-        type: entry.type,
-        titleVi: titleMatchVi ? titleMatchVi[1] : (entry.choiceVi || `Tuổi ${entry.age}`),
-        titleEn: titleMatchEn ? titleMatchEn[1] : (entry.choiceEn || `Age ${entry.age}`),
-        summaryVi: cleanBodyVi,
-        summaryEn: cleanBodyEn
-      });
+    const cleanBodyVi = ((titleMatchVi ? rawVi.slice(titleMatchVi[0].length) : rawVi).split(/(?<=[.!?])\s+/)[0] || rawVi).trim();
+    const cleanBodyEn = ((titleMatchEn ? rawEn.slice(titleMatchEn[0].length) : rawEn).split(/(?<=[.!?])\s+/)[0] || rawEn).trim();
+    const rawTitleVi = titleMatchVi ? titleMatchVi[1] : (entry.choiceVi || '');
+    const rawTitleEn = titleMatchEn ? titleMatchEn[1] : (entry.choiceEn || '');
+    return {
+      order: idx,
+      age: entry.age,
+      type: overrideType || entry.type,
+      titleVi: isBareAgeTitle(rawTitleVi) ? '' : capFirst(rawTitleVi),
+      titleEn: isBareAgeTitle(rawTitleEn) ? '' : capFirst(rawTitleEn),
+      summaryVi: cleanBodyVi,
+      summaryEn: cleanBodyEn
+    };
+  };
+
+  const primaryLandmarks = [];
+  const echoLandmarks = [];
+  const fallbackDecisions = [];
+  let activeDelveKey = null;
+  let activeDelveLandmark = null;
+  const flushDelve = () => {
+    if (activeDelveLandmark) {
+      primaryLandmarks.push(activeDelveLandmark);
+      activeDelveLandmark = null;
+      activeDelveKey = null;
+    }
+  };
+
+  logs.forEach((entry, idx) => {
+    if (!entry || !(entry.age > 0) || entry.passed) return;
+    const id = String(entry.id || '');
+    const type = String(entry.type || '');
+    if (id.startsWith('log_dungeon_') || type.startsWith('log_dungeon_')) {
+      const bracket = /^\s*\[([^\]]+)\]/.exec(String(entry.vi || ''))?.[1] || '';
+      const dungeonHead = bracket.split(' · ')[0] || 'dungeon_delve';
+      const delveKey = `${entry.age}:${dungeonHead}`;
+      if (activeDelveKey && activeDelveKey !== delveKey) flushDelve();
+      activeDelveKey = delveKey;
+      activeDelveLandmark = formatLandmark(entry, idx, 'major');
+      return;
+    }
+    flushDelve();
+    if (framesAsMajor(entry)) {
+      primaryLandmarks.push(formatLandmark(entry, idx));
+    } else if (entry.type === 'causal') {
+      echoLandmarks.push(formatLandmark(entry, idx));
+    } else if (entryTier(entry) === 'decision' && (entry.type === 'danger' || /^\s*\[/.test(entry.vi || '') || entry.choiceVi)) {
+      fallbackDecisions.push(formatLandmark(entry, idx));
+    }
+  });
+  flushDelve();
+
+  const chosenLandmarks = [...primaryLandmarks];
+  const ageCounts = new Map();
+  for (const item of chosenLandmarks) ageCounts.set(item.age, (ageCounts.get(item.age) || 0) + 1);
+  for (const echo of echoLandmarks) {
+    if ((ageCounts.get(echo.age) || 0) < 2) {
+      chosenLandmarks.push(echo);
+      ageCounts.set(echo.age, (ageCounts.get(echo.age) || 0) + 1);
     }
   }
+  if (chosenLandmarks.length < 2) {
+    const prioritizedFallbacks = [
+      ...fallbackDecisions.filter((item) => item.type === 'danger' || item.titleVi),
+      ...fallbackDecisions.filter((item) => item.type !== 'danger' && !item.titleVi)
+    ];
+    for (const item of prioritizedFallbacks) {
+      if (chosenLandmarks.length >= 3) break;
+      if (!ageCounts.has(item.age)) {
+        chosenLandmarks.push(item);
+        ageCounts.set(item.age, 1);
+      }
+    }
+  }
+  chosenLandmarks.sort((a, b) => a.order - b.order);
+  const turningPoints = chosenLandmarks.map(({ order: _order, ...rest }) => rest);
 
   // Synthesize Deep Multi-Paragraph Life Story (Vi & En)
   const lifeStoryParagraphsVi = [];
@@ -3015,29 +3078,49 @@ export function buildLifeSummaryAndLegacy(char) {
 
   // Paragraph 1: Origins, Family, Fate Omen & Childhood
   const lineageIntroVi = char.lineage?.parentName
-    ? `Mang trong mình huyết thống thế hệ thứ #${char.generation} và kế thừa di vật 「${char.lineage.relic}」 từ ${char.lineage.parentName}, `
+    ? `Mang trong mình huyết thống thế hệ thứ ${char.generation} và kế thừa di vật 「${char.lineage.relic}」 từ ${char.lineage.parentName}, `
     : '';
   const lineageIntroEn = char.lineage?.parentName
-    ? `Carrying the bloodline of Generation #${char.generation} and inheriting "${char.lineage.relicEn || localizeEnsembleName(char.lineage.relic, 'en')}" from ${char.lineage.parentName}, `
+    ? `Carrying the bloodline of Generation ${char.generation} and inheriting "${char.lineage.relicEn || localizeEnsembleName(char.lineage.relic, 'en')}" from ${char.lineage.parentName}, `
     : '';
 
-  const childhoodLog = majorLogs.find(l => l.age >= 5 && l.age < 18);
+  const lowerLead = (str) => {
+    const clean = String(str || '').trim();
+    if (!clean || /^[A-Z]{2,}\b/.test(clean)) return clean;
+    return clean.charAt(0).toLowerCase() + clean.slice(1);
+  };
+  const rawFamilyVi = String(family?.nameVi || '').trim();
+  const familyClauseVi = !rawFamilyVi
+    ? 'trong một gia đình bình thường'
+    : /^(Gia đình|Gia quyến)\b/i.test(rawFamilyVi)
+      ? `trong một ${lowerLead(rawFamilyVi)}`
+      : /^Dòng dõi\b/i.test(rawFamilyVi)
+        ? `trong ${lowerLead(rawFamilyVi)}`
+        : `, mang thân phận ${lowerLead(rawFamilyVi)}`;
+  const rawFamilyEn = String(family?.nameEn || '').trim();
+  const familyClauseEn = !rawFamilyEn
+    ? 'into a humble household'
+    : /\b(Family|Household|Lineage|Elite)\b/i.test(rawFamilyEn)
+      ? `into a ${rawFamilyEn}`
+      : `as ${/^[aeiou]/i.test(rawFamilyEn) ? 'an' : 'a'} ${rawFamilyEn}`;
+
+  const childhoodLog = logs.find((l) => l.age >= 5 && l.age < 18 && !l.passed && (framesAsMajor(l) || l.type === 'causal' || l.choiceVi));
   const childhoodSnippetVi = childhoodLog
-    ? ` Năm ${childhoodLog.age} tuổi, biến cố đầu đời ập đến khi ${childhoodLog.choiceVi ? `bạn chọn "${childhoodLog.choiceVi.toLowerCase()}"` : 'bạn phải tự mình đối mặt với sự khắc nghiệt của khu phố'}, sớm định hình bản lĩnh sinh tồn trước tuổi trưởng thành.`
+    ? ` Năm ${childhoodLog.age} tuổi, biến cố đầu đời ập đến khi ${childhoodLog.choiceVi ? `bạn chọn "${lowerLead(childhoodLog.choiceVi)}"` : 'bạn phải tự mình đối mặt với sự khắc nghiệt của khu phố'}, sớm định hình bản lĩnh sinh tồn trước tuổi trưởng thành.`
     : (char.age < 18
-      ? ' Tuy nhiên, những năm tháng thơ ấu ngắn ngủi đã sớm khép lại giữa vòng xoáy tàn nhẫn của thành phố.'
-      : ' Vượt qua những năm tháng thơ ấu đầy bất trắc giữa khói bụi và tiếng còi báo động, bạn từng bước trưởng thành với đôi mắt không còn biết sợ hãi.');
+      ? ' Tuy nhiên, những năm tháng thơ ấu ngắn ngủi sớm khép lại giữa guồng quay của The City.'
+      : ' Đi qua những năm tháng thơ ấu giữa khói bụi và tiếng còi giới nghiêm, bạn trưởng thành với ánh mắt không còn bỡ ngỡ.');
   const childhoodSnippetEn = childhoodLog
-    ? ` At age ${childhoodLog.age}, an early crucible arrived when ${childhoodLog.choiceEn ? `you chose to "${childhoodLog.choiceEn.toLowerCase()}"` : 'you confronted the brutality of the streets firsthand'}, tempering your instincts long before adulthood.`
+    ? ` At age ${childhoodLog.age}, an early crucible arrived when ${childhoodLog.choiceEn ? `you chose to "${lowerLead(childhoodLog.choiceEn)}"` : 'you confronted the brutality of the streets firsthand'}, tempering your instincts long before adulthood.`
     : (char.age < 18
-      ? ' Yet those fragile early years were cut tragically short by the merciless gears of the City.'
-      : ' Surviving a perilous youth amidst industrial smog and distant sirens, you came of age with hardened resolve.');
+      ? ' Yet those fragile early years closed quickly beneath the gears of The City.'
+      : ' Surviving a perilous youth amidst industrial smog and distant sirens, you came of age with steady resolve.');
 
   lifeStoryParagraphsVi.push(
-    `${lineageIntroVi}${char.name} cất tiếng khóc chào đời tại ${birthRegion.nameVi} trong một ${family.nameVi?.toLowerCase() || 'gia đình bình thường'}, dưới điềm báo định mệnh 「${omen?.nameVi || 'Ngôi Sao Mờ'}」.${childhoodSnippetVi}`
+    `${lineageIntroVi}${char.name} cất tiếng khóc chào đời tại ${birthRegion.nameVi}${familyClauseVi.startsWith(',') ? familyClauseVi : ` ${familyClauseVi}`}, dưới điềm báo định mệnh 「${omen?.nameVi || 'Ngôi Sao Mờ'}」.${childhoodSnippetVi}`
   );
   lifeStoryParagraphsEn.push(
-    `${lineageIntroEn}${char.name} was born in ${birthRegion.nameEn} into a ${family.nameEn || 'humble household'}, under the natal omen of "${omen?.nameEn || 'Faint Star'}".${childhoodSnippetEn}`
+    `${lineageIntroEn}${char.name} was born in ${birthRegion.nameEn} ${familyClauseEn}, under the natal omen of "${omen?.nameEn || 'Faint Star'}".${childhoodSnippetEn}`
   );
 
   // Paragraph 2: Adulthood Career, Promotions, Dungeons & Masterworks
@@ -3055,45 +3138,57 @@ export function buildLifeSummaryAndLegacy(char) {
         ? `Hana once named you the Color Fixer "${formerColor}". After your Distortion, the title remained only in its old records.`
         : 'Your former life ended when you became a Distortion.';
     } else if (char.job === 'Fixer') {
-      careerArcVi = `Đến tuổi phải tự kiếm sống, bạn dấn thân vào con đường Fixer chuyên nghiệp${char.org?.name ? ` thuộc ${char.org.name}` : ''}, từng bước leo lên tới cấp bậc Fixer Grade ${char.fixerGrade}${flags.includes('ColorFixer') ? ` và được Hana Association sắc phong danh hiệu huyền thoại 「${char.customTitle}」` : ''}.`;
-      careerArcEn = `Old enough to work for your keep, you took up the Fixer’s license${char.org?.name ? ` with ${char.org.name}` : ''}, carving your way up to Grade ${char.fixerGrade}${flags.includes('ColorFixer') ? ` and claiming the legendary Color title "${char.customTitle}" from Hana Association` : ''}.`;
+      careerArcVi = `Đến tuổi tự kiếm sống, bạn bước vào nghề Fixer${char.org?.name ? ` thuộc ${char.org.name}` : ''}, từng bước leo lên bậc Fixer Grade ${char.fixerGrade}${flags.includes('ColorFixer') ? ` và được Hana Association trao danh hiệu Color 「${char.customTitle}」` : ''}.`;
+      careerArcEn = `Old enough to work for your keep, you took up a Fixer license${char.org?.name ? ` with ${char.org.name}` : ''}, carving your way up to Grade ${char.fixerGrade}${flags.includes('ColorFixer') ? ` and claiming the Color title "${char.customTitle}" from Hana Association` : ''}.`;
     } else if (char.job === 'Syndicate') {
       const fRankName = char.finger && FINGER_RANKS[char.finger] ? FINGER_RANKS[char.finger][char.fingerRank || 0] : 'thành viên Syndicate';
-      careerArcVi = `Ở tuổi trưởng thành, bạn bước vào thế giới ngầm của ${char.finger ? `Ngón Tay The ${char.finger}` : 'Syndicate'}, dùng máu và kỷ luật sắt để vươn lên địa vị ${fRankName} với ${char.merit || 0} điểm công trạng giang hồ.`;
-      careerArcEn = `In adulthood, you swore yourself to the underworld of ${char.finger ? `The ${char.finger}` : 'the Backstreets Syndicates'}, rising through blood and iron discipline to the rank of ${fRankName} with ${char.merit || 0} Merit.`;
+      const syndicateStandingVi = (char.merit || 0) >= 60
+        ? 'với bảng chiến tích khiến các hẻm đều dè chừng'
+        : (char.merit || 0) >= 25
+          ? 'với nhiều vụ thanh toán ghi tên trong sổ nội bộ'
+          : 'qua những đêm trực gác và đòi nợ';
+      const syndicateStandingEn = (char.merit || 0) >= 60
+        ? 'backed by a heavy ledger of collected debts'
+        : (char.merit || 0) >= 25
+          ? 'earning a feared name across syndicate turf'
+          : 'through night watches and collections';
+      careerArcVi = `Ở tuổi trưởng thành, bạn bước vào thế giới ngầm của ${char.finger ? `The ${char.finger}` : 'Syndicate'}, dùng máu và kỷ luật để vươn lên vị trí ${fRankName} ${syndicateStandingVi}.`;
+      careerArcEn = `In adulthood, you swore yourself to ${char.finger ? `The ${char.finger}` : 'the Backstreets Syndicates'}, rising through iron discipline to the rank of ${fRankName}, ${syndicateStandingEn}.`;
     } else if (char.job === 'Wing Employee') {
       const wRank = Math.min(WING_RANKS.length - 1, char.wingRank || 0);
-      careerArcVi = `Từ tuổi trưởng thành, bạn khoác lên mình tấm áo Feather của tập đoàn Wing tại ${region.nameVi}, thăng tiến qua các cuộc thanh trừng nội bộ để đạt chức vụ ${WING_RANKS[wRank]?.titleVi || 'Nhân viên Wing'}.`;
-      careerArcEn = `Upon coming of age, you entered corporate service as a Wing Feather in ${region.nameEn}, navigating boardroom purges and Singularity quotas to rise to ${WING_RANKS[wRank]?.titleEn || 'Wing Operative'}.`;
+      careerArcVi = `Từ tuổi trưởng thành, bạn khoác tấm áo Feather tại ${region.nameVi}, đi qua các đợt thanh lọc nội bộ để giữ chức ${WING_RANKS[wRank]?.titleVi || 'Nhân viên Wing'}.`;
+      careerArcEn = `Upon coming of age, you entered corporate service as a Wing Feather in ${region.nameEn}, surviving internal purges and Singularity quotas to reach ${WING_RANKS[wRank]?.titleEn || 'Wing Operative'}.`;
     } else if (char.job === 'Workshop Craftsman') {
-      careerArcVi = `Bạn chọn gắn đời mình với lửa lò và búa sắt của một nghệ nhân Workshop, tích lũy ${char.merit || 0} điểm danh tiếng chế tác${char.craftWeapon ? ` và tự tay rèn nên tuyệt tác vũ khí 「${char.craftWeapon.name}」 được Tres Association đóng dấu công nhận` : ''}.`;
-      careerArcEn = `You dedicated your adulthood to the furnace and anvil as a Workshop Craftsman, earning ${char.merit || 0} Merit${char.craftWeapon ? ` and forging the registered masterpiece "${char.craftWeapon.name}"` : ''}.`;
+      const craftStandingVi = (char.merit || 0) >= 50 ? 'gây dựng tiếng tăm khắp các khu xưởng' : 'bền bỉ giữ đỏ lửa lò qua từng đơn đặt hàng';
+      const craftStandingEn = (char.merit || 0) >= 50 ? 'earning renown across the district workshops' : 'keeping the forge lit through steady commissions';
+      careerArcVi = `Bạn gắn đời mình với búa sắt của một thợ rèn Workshop, ${craftStandingVi}${char.craftWeapon ? ` và tự tay rèn nên vũ khí 「${char.craftWeapon.name}」 được Tres Association đóng dấu đăng ký` : ''}.`;
+      careerArcEn = `You dedicated your adulthood to the furnace and anvil as a Workshop Craftsman, ${craftStandingEn}${char.craftWeapon ? ` and forging the registered weapon "${char.craftWeapon.name}"` : ''}.`;
     } else {
-      careerArcVi = `Trong suốt những năm tháng trưởng thành tại ${region.nameVi}, bạn vật lộn mưu sinh qua từng mùa biến động của The City.`;
-      careerArcEn = `Throughout your adult years in ${region.nameEn}, you fought to carve out a living across the shifting seasons of the City.`;
+      careerArcVi = `Trong suốt những năm trưởng thành tại ${region.nameVi}, bạn xoay xở mưu sinh qua từng mùa biến động của The City.`;
+      careerArcEn = `Throughout your adult years in ${region.nameEn}, you fought to carve out a living across the shifting seasons of The City.`;
     }
 
-    const promoMoments = turningPoints.filter(tp => tp.type === 'promo' || tp.type === 'miracle').slice(0, 3);
+    const promoMoments = turningPoints.filter((tp) => (tp.type === 'promo' || tp.type === 'miracle') && tp.titleVi).slice(0, 3);
     const milestoneTextVi = promoMoments.length > 0
-      ? ` Những cột mốc chói lọi nhất trong sự nghiệp của bạn được ghi dấu vào các năm tuổi ${promoMoments.map(m => `${m.age} (${m.titleVi})`).join(', ')}.`
+      ? ` Những dấu mốc lớn nhất của chặng đường ấy nằm ở các năm tuổi ${promoMoments.map((m) => `${m.age} (${m.titleVi})`).join(', ')}.`
       : '';
     const milestoneTextEn = promoMoments.length > 0
-      ? ` Defining milestones marked your ascent at ages ${promoMoments.map(m => `${m.age} (${m.titleEn})`).join(', ')}.`
+      ? ` Defining milestones marked your path at ages ${promoMoments.map((m) => `${m.age} (${m.titleEn || m.titleVi})`).join(', ')}.`
       : '';
 
     const egoOrDistortVi = flags.includes('EGOAwakened')
-      ? ` Trước ánh mặt trời chói lòa của Carmen, bạn đã khước từ sự buông xuôi để kết tinh nỗi đau thành E.G.O 「${char.egoName || 'Bất Khuất'}」.`
+      ? ` Trước ánh mặt trời của Carmen, bạn khước từ buông xuôi để kết tinh nỗi đau thành E.G.O 「${char.egoName || 'Bất Khuất'}」.`
       : flags.includes('Distorted')
-        ? ' Giữa tột cùng bi kịch và độ cộng hưởng tâm thức chạm ngưỡng, bạn đã nghe theo lời thì thầm của Carmen và biến đổi thành một thực thể Distortion.'
+        ? ' Khi tâm thức chạm ngưỡng rạn vỡ, bạn nghe theo lời thì thầm của Carmen và biến đổi thành Distortion.'
         : (char.resonance || 0) >= 40
-          ? ` Tâm thức bạn nhiều lần rung chuyển dữ dội trước tiếng gọi của Ánh Sáng với độ Cộng hưởng (Resonance) lên tới ${char.resonance}%.`
+          ? ' Tâm thức bạn nhiều lần rung chuyển trước tiếng gọi của Ánh Sáng khi Resonance dâng sát ngưỡng rạn vỡ.'
           : '';
     const egoOrDistortEn = flags.includes('EGOAwakened')
-      ? ` Standing before Carmen’s blinding sun, you refused to yield and crystallized your soul into the Effloresced E.G.O "${localizeEnsembleName(char.egoName, 'en') || 'Unbowed'}".`
+      ? ` Standing before Carmen’s sun, you refused to yield and crystallized your resolve into the Effloresced E.G.O "${localizeEnsembleName(char.egoName, 'en') || 'Unbowed'}".`
       : flags.includes('Distorted')
-        ? ' At the breaking point of grief and psychic resonance, you surrendered to Carmen’s whisper and transformed into a Distortion.'
+        ? ' At the breaking point of grief and resonance, you surrendered to Carmen’s whisper and transformed into a Distortion.'
         : (char.resonance || 0) >= 40
-          ? ` Your psyche resonated deeply with the Light, reaching ${char.resonance}% Resonance amidst the City’s horrors.`
+          ? ' Your psyche trembled repeatedly before the Light as Resonance surged toward the breaking point.'
           : '';
 
     lifeStoryParagraphsVi.push(`${careerArcVi}${milestoneTextVi}${egoOrDistortVi}`);
@@ -3111,46 +3206,50 @@ export function buildLifeSummaryAndLegacy(char) {
   if (spouseOrLover) {
     const spName = spouseOrLover.nameVi || spouseOrLover.name || 'người thương';
     if (spouseOrLover.deceased || spouseOrLover.status === 'dead') {
-      bondPartsVi.push(`Bạn từng tìm thấy hơi ấm hiếm hoi bên cạnh ${spName}, nhưng bi kịch đã cướp mất người ấy, để lại khoảng trống không gì bù đắp nổi`);
-      bondPartsEn.push(`You once found rare warmth beside ${spName}, before tragedy tore them away and left an aching void`);
+      bondPartsVi.push(`Bạn từng tìm thấy hơi ấm hiếm hoi bên cạnh ${spName}, trước khi biến cố cướp mất người ấy và để lại khoảng trống khó lấp`);
+      bondPartsEn.push(`You once found rare warmth beside ${spName}, before loss tore them away and left a quiet void`);
     } else {
-      bondPartsVi.push(`Giữa thành phố lạnh lùng, bạn đã xây dựng được một mái nhà bình yên bên cạnh ${spName}`);
-      bondPartsEn.push(`Amidst a merciless metropolis, you built a quiet sanctuary beside ${spName}`);
+      bondPartsVi.push(`Sau những giờ giới nghiêm của The City, bạn giữ được một mái nhà yên tĩnh bên cạnh ${spName}`);
+      bondPartsEn.push(`Behind barred doors after curfew in The City, you kept a quiet home beside ${spName}`);
     }
   }
   if (childNpc) {
     const chName = childNpc.nameVi || childNpc.name || 'con của bạn';
-    bondPartsVi.push(`truyền lại ngọn lửa sinh tồn cho người con ${chName}`);
-    bondPartsEn.push(`passing the torch of survival to your child, ${chName}`);
+    bondPartsVi.push(`truyền lại cách sống sót cho người con ${chName}`);
+    bondPartsEn.push(`passing on how to survive to your child, ${chName}`);
   }
   if (partnerOrFriend) {
     const pfName = partnerOrFriend.nameVi || partnerOrFriend.name || 'người đồng hành';
-    bondPartsVi.push(`sát cánh cùng tri kỷ ${pfName} qua những đêm dài hiểm nguy`);
-    bondPartsEn.push(`standing shoulder to shoulder with ${pfName} through the darkest nights`);
+    bondPartsVi.push(`sát cánh cùng ${pfName} qua những đêm hiểm nguy`);
+    bondPartsEn.push(`standing beside ${pfName} through dangerous nights`);
   }
 
   const scarCount = (char.scars || []).length;
   const scarSentenceVi = scarCount > 0
-    ? ` Trên cơ thể và tâm hồn bạn khắc sâu ${scarCount} vết sẹo không thể xóa nhòa (${char.scars.slice(0, 3).join(', ')}) — minh chứng sống động cho cái giá phải trả để tồn tại.`
-    : ' Bạn khéo léo đi qua những cơn bão ngầm mà vẫn giữ được tâm hồn mình không bị vấy bẩn bởi những vết sẹo tâm thức.';
+    ? ` Trên cơ thể và tâm thức bạn hằn lại những vết sẹo không phai (${char.scars.slice(0, 3).join(', ')}), cái giá phải trả để đi hết chặng đường ấy.`
+    : ' Bạn đi qua những cơn sóng ngầm mà vẫn giữ được tâm thức không hằn sẹo vĩnh viễn.';
   const scarSentenceEn = scarCount > 0
-    ? ` Etched across your flesh and psyche were ${scarCount} permanent Karma Scars (${char.scars.slice(0, 3).join(', ')}) — living proof of the price paid to endure.`
-    : ' Through caution and resilience, you navigated the storms while keeping your psyche unmarred by permanent scars.';
+    ? ` Etched across your flesh and psyche were permanent scars (${char.scars.slice(0, 3).join(', ')}), the price paid to endure.`
+    : ' Through caution and steadiness, you navigated the storms while keeping your psyche unmarred by permanent scars.';
 
   if (bondPartsVi.length > 0 || scarCount > 0) {
     const bondLeadVi = bondPartsVi.length > 0 ? `${bondPartsVi.join(', ')}.` : 'Bạn bước đi độc hành giữa hàng triệu bóng người xa lạ của The City.';
-    const bondLeadEn = bondPartsEn.length > 0 ? `${bondPartsEn.join(', ')}.` : 'You walked a solitary road amidst the millions of strangers in the City.';
+    const bondLeadEn = bondPartsEn.length > 0 ? `${bondPartsEn.join(', ')}.` : 'You walked a solitary road amidst the millions of strangers in The City.';
     lifeStoryParagraphsVi.push(`${bondLeadVi}${scarSentenceVi}`);
     lifeStoryParagraphsEn.push(`${bondLeadEn}${scarSentenceEn}`);
   }
 
-  // Paragraph 4: Final Reckoning, Lifespan Comparison & Heirloom
-  const lifeCompVi = lifespanDiff >= 0
-    ? `thọ hơn mức tuổi trung bình của cư dân ${region.nameVi} (${localAvgLife} tuổi) tới +${lifespanDiff} năm`
-    : `ngắn hơn mức tuổi thọ trung bình của ${region.nameVi} (${localAvgLife} tuổi) ${Math.abs(lifespanDiff)} năm`;
-  const lifeCompEn = lifespanDiff >= 0
-    ? `outliving the local average lifespan of ${region.nameEn} (${localAvgLife} yrs) by +${lifespanDiff} years`
-    : `falling ${Math.abs(lifespanDiff)} years short of ${region.nameEn}’s average lifespan (${localAvgLife} yrs)`;
+  // Paragraph 4: Final Reckoning, Lifespan Context & Heirloom
+  const lifeCompVi = lifespanDiff >= 10
+    ? `vượt xa tuổi thọ thường thấy ở ${region.nameVi}`
+    : lifespanDiff >= 0
+      ? `đi trọn tuổi thọ thường thấy của cư dân ${region.nameVi}`
+      : `khép lại sớm hơn tuổi thọ thường thấy ở ${region.nameVi}`;
+  const lifeCompEn = lifespanDiff >= 10
+    ? `far outliving the usual lifespan in ${region.nameEn}`
+    : lifespanDiff >= 0
+      ? `reaching a full span of years for ${region.nameEn}`
+      : `cut short before the usual lifespan in ${region.nameEn}`;
 
   if (char.endingId === 'library_threshold') {
     lifeStoryParagraphsVi.push(`Ở tuổi ${char.age}, bạn sống sót qua án của The Head và bị đẩy ra Outskirts. Nhiều ngày sau, giữa vùng đất không tên, bạn tìm thấy The Library. Bạn đặt tay lên tay nắm và đẩy cửa bước vào. Hồ sơ của bạn dừng ở đó.`);
@@ -3160,11 +3259,17 @@ export function buildLifeSummaryAndLegacy(char) {
     lifeStoryParagraphsVi.push(closing.vi);
     lifeStoryParagraphsEn.push(closing.en.replaceAll(relicName, relicNameEn));
   } else {
+    const wealthEnd = char.stats?.wealth ?? 0;
+    const repEnd = char.stats?.rep ?? 0;
+    const estateVi = wealthEnd >= 60 ? 'một gia sản vững vàng' : wealthEnd >= 20 ? 'khoản tích cóp vừa đủ che chở người đi sau' : 'vài đồng tích cóp ít ỏi';
+    const standingVi = repEnd >= 60 ? 'danh tiếng vang khắp các khu phố' : repEnd >= 25 ? 'chút tiếng tăm còn người nhắc nhớ' : 'một cái tên lặng lẽ trong sổ cư trú';
+    const estateEn = wealthEnd >= 60 ? 'a substantial estate' : wealthEnd >= 20 ? 'modest savings to shelter an heir' : 'meager savings';
+    const standingEn = repEnd >= 60 ? 'a name remembered across the districts' : repEnd >= 25 ? 'a quiet measure of renown' : 'an unheralded name in the ward registry';
     lifeStoryParagraphsVi.push(
-      `Ở tuổi ${char.age} (${lifeCompVi}), hành trình ấy khép lại: ${deathCauseVi}. Khi tấm màn sinh mệnh hạ xuống, bạn để lại 「${relicName}」, ${char.stats?.wealth ?? 0} Ahn tài sản cùng ${char.stats?.rep ?? 0} điểm uy danh cho thế hệ kế tiếp viết tiếp câu chuyện còn dang dở.`
+      `Ở tuổi ${char.age}, ${lifeCompVi}, hành trình ấy dừng lại: ${deathCauseVi}. Khi tấm màn hạ xuống, bạn để lại 「${relicName}」, ${estateVi} cùng ${standingVi} cho thế hệ kế tiếp.`
     );
     lifeStoryParagraphsEn.push(
-      `At age ${char.age} (${lifeCompEn}), your chronicle reached its final page: ${deathCauseEn}. When the curtain fell, you left behind "${relicNameEn}", ${char.stats?.wealth ?? 0} Ahn in wealth, and ${char.stats?.rep ?? 0} Reputation for the next generation to carry forward.`
+      `At age ${char.age}, ${lifeCompEn}, your chronicle reached its final page: ${deathCauseEn}. When the curtain fell, you left behind "${relicNameEn}", ${estateEn}, and ${standingEn} for the next generation to carry forward.`
     );
   }
 

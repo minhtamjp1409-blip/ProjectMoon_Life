@@ -6,6 +6,7 @@ import { sceneContextOf } from '../engine/sceneContext';
 import { audioEngine } from '../engine/audioEngine';
 import { useShallow } from 'zustand/react/shallow';
 import { DUNGEON_DEFINITIONS } from '../engine/gameEngine';
+import { autoContractApproachId, autoEventChoiceIndex } from '../engine/forbiddenPath';
 import { useGameStore } from '../store/gameStore';
 
 const TICK_MS = 100;
@@ -75,8 +76,9 @@ export const MainLayout = ({ children }) => {
       if (!autoPlay) return undefined;
       const autoDelay = speed === 3 ? 4000 : speed === 2 ? 6000 : 9000;
       const timer = setTimeout(() => {
-        if (pendingEvent) selectEventChoice(0);
-        else if (pendingContract) selectContractApproach('careful');
+        const latestChar = useGameStore.getState().char;
+        if (latestChar.pendingEvent) selectEventChoice(autoEventChoiceIndex(latestChar.pendingEvent, latestChar));
+        else if (latestChar.pendingContract) selectContractApproach(autoContractApproachId(latestChar.pendingContract, latestChar));
       }, autoDelay);
       return () => clearTimeout(timer);
     }
@@ -94,6 +96,10 @@ export const MainLayout = ({ children }) => {
   // The play screen manages its own scrolling regions; other screens scroll as a page
   const isPlay = location.pathname === '/' && inRun;
   const isHome = location.pathname === '/' && !inRun;
+  const endCutscene = useGameStore((s) => s.endCutscene);
+  useEffect(() => {
+    if (!isPlay && cutsceneKey) endCutscene('hidden');
+  }, [isPlay, cutsceneKey, endCutscene]);
   const hasDock = isPlay && !cutsceneKey && Boolean(pendingEvent || pendingContract || pendingMinor || activeResolution);
   const dungeon = isPlay && dungeonId ? DUNGEON_DEFINITIONS[dungeonId] : null;
 

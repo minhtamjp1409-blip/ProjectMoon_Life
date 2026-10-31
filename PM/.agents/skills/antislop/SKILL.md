@@ -15,7 +15,7 @@ allowed-tools: Read Write Edit Glob Grep
 
 ## First-Run Install Wizard
 
-antislop is a system: this core file plus optional **skills**, one per concern (`antislop-ui`, `antislop-copywriting`, and so on, each a folder with a `SKILL.md`). This section installs them once. It is an **offer, not a requirement**: if the user prefers, this file alone remains a complete filter.
+antislop is a system: this core file plus optional **skills**, one per concern (`antislop-copywriting`, and so on, each a folder with a `SKILL.md`). This section installs them once. It is an **offer, not a requirement**: if the user prefers, this file alone remains a complete filter.
 
 **Skip this section** if the project's entry file (`AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, or the equivalent the running tool reads at session start) already contains an antislop pointer block. That means antislop is already installed. Come back only when the user asks to add or remove a skill.
 
@@ -26,7 +26,6 @@ If no antislop pointer exists and this file is being read for the first time, ru
 1. **Declare the setup before doing anything.** Tell the user you will (a) get the chosen skill(s) in place in `skills/<name>/` subfolders next to this file (the user fetches them; the agent never downloads from the network, see step 4), and (b) append an antislop pointer block at the end of the project's entry file. Get approval. Never modify the entry file silently.
 2. **Ask which skills to install** (multi-select, in the user's chat language). List only the skills that exist in this version of antislop:
    - **1. All** (recommended): install every available skill. Choose this when the work spans UI, copy, people, or mobile layout.
-   - **2. `antislop-ui`** (UI / visual): pick this for building or editing a website, web app, or interface: color, layout, components, decoration, motion.
    - **3. `antislop-copywriting`** (copy & text): pick this for writing or editing copy: headlines, CTAs, value propositions, tone, landing-page text, product prose.
    - **4. `antislop-human`** (people): pick this for making sure a UI works for people with different eyes, hands, and setups: contrast, keyboard, focus, states.
    - **5. `antislop-layoutmobile`** (mobile / responsive): pick this for layouts that have to reflow across screen sizes, phone to desktop: breakpoints, scale, grids, overflow, tap targets.
@@ -44,7 +43,6 @@ If no antislop pointer exists and this file is being read for the first time, ru
    <!-- antislop:start -->
    ## antislop
    For UI, copy, people, mobile layout, or code comments work, read `antislop.md` (core) and then the skill for the task:
-   - UI / visual: `skills/antislop-ui/SKILL.md`
    - Copy & text: `skills/antislop-copywriting/SKILL.md`
    - People: `skills/antislop-human/SKILL.md`
    - Mobile / responsive: `skills/antislop-layoutmobile/SKILL.md`

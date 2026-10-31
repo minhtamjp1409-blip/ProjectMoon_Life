@@ -15,7 +15,7 @@
 .playbar-age span { font-family: var(--serif); font-size: 15px; color: var(--muted); }
 .yearbar { display: flex; flex-direction: column; gap: 7px; min-width: 0; }
 .yearbar-track { position: relative; height: 4px; background: var(--raised); overflow: hidden; }
-.yearbar-fill { position: absolute; inset: 0; transform-origin: left center; transform: scaleX(0); background: var(--accent); box-shadow: 0 0 12px var(--accent); transition: background-color 1.2s ease; }
+.yearbar-fill { position: absolute; inset: 0; transform-origin: left center; transform: scaleX(0); background: var(--accent); transition: background-color 1.2s ease; }
 .yearbar-track.is-paused .yearbar-fill { background: var(--muted); }
 .yearbar-quarter-ticks { position: absolute; inset: 0; pointer-events: none; }
 .yearbar-quarter-ticks .tick { position: absolute; top: 0; bottom: 0; width: 2px; background: rgba(7, 7, 10, .9); }
@@ -26,12 +26,31 @@
 .yearbar-meta .is-wait { color: var(--text); font-weight: 600; }
 .yearbar-meta .is-wait::before { content: ''; display: inline-block; width: 7px; height: 7px; margin-right: 7px; border-radius: 50%; background: var(--accent); vertical-align: 1px; }
 .yearbar-dungeon { color: var(--text); font-weight: 600; }
-.career-obj-pill { display: inline-flex; align-items: baseline; gap: 6px; min-width: 0; margin-left: auto; overflow: hidden; }
-.career-obj-pill .obj-text { overflow: hidden; text-overflow: ellipsis; }
-.career-obj-pill .obj-pct { color: var(--gold); font-variant-numeric: tabular-nums; }
-.yearbar-meta .phase { color: var(--faint); font-size: 12.5px; }
-.career-obj-pill + .phase { margin-left: 0; }
-.yearbar-meta > .phase:only-of-type { margin-left: auto; }
+.yearbar-meta .phase {
+  display: inline-flex;
+  align-items: center;
+  margin-left: auto;
+  min-height: 24px;
+  min-width: 24px;
+  padding: 0 8px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--muted);
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: help;
+}
+.yearbar-meta .phase:hover,
+.yearbar-meta .phase:focus-visible {
+  color: var(--text);
+  border-color: var(--border);
+  background: var(--raised);
+}
+.yearbar-meta .phase:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
 
 .playbar-controls { display: flex; align-items: center; gap: 6px; }
 .playbar-controls > .divider { width: 1px; height: 26px; margin: 0 6px; background: var(--border); }
@@ -44,6 +63,18 @@
 .btn-step-season { min-height: 40px; }
 .playbar-desktop-actions { display: flex; align-items: center; gap: 2px; margin-left: 4px; }
 .playbar-desktop-actions .icon-btn.is-on { color: var(--text); }
+.playbar-desktop-actions .icon-btn.is-good { color: var(--good); }
+.playbar-desktop-actions .icon-btn.is-bad,
+.playbar-mobile-more .icon-btn.is-bad { color: var(--bad); }
+.playbar-ended-actions { display: inline-flex; align-items: center; gap: 8px; }
+.playbar-newlife-btn { min-height: 38px; }
+.playbar-menu-phase { display: flex; flex-direction: column; gap: 2px; max-width: 240px; white-space: normal; line-height: 1.35; }
+.playbar-menu-phase strong { font-size: 13px; color: var(--text); }
+.playbar-menu-phase small { font-size: 12px; color: var(--muted); }
+.playbar-menu-row { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+.playbar-menu-row b { font-size: 12px; font-weight: 700; }
+.playbar-menu-row b.is-on { color: var(--good); }
+.playbar-menu-row b.is-off { color: var(--muted); }
 .playbar-ahn { margin-right: 6px; }
 .playbar-ahn .num { color: var(--gold); }
 .btn-speed-mobile, .btn-shop-mobile, .playbar-mobile-more { display: none; }
@@ -81,7 +112,7 @@
 .stat { display: flex; flex-direction: column; gap: 6px; padding: 4px 0; }
 .stat-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
 .stat-label { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; color: var(--text); min-width: 0; flex-wrap: wrap; }
-.stat-flag { font-size: 11.5px; font-weight: 700; color: var(--bad); padding: 1px 6px; border: 1px solid currentColor; border-radius: var(--radius-sm); }
+.stat-flag { font-size: 12px; font-weight: 700; color: var(--bad); padding: 1px 6px; border: 1px solid currentColor; border-radius: var(--radius-sm); }
 .stat-flag.is-warn { color: var(--bad); }
 .stat-num-box { display: inline-flex; align-items: baseline; gap: 8px; }
 .stat-num-box b { font-size: 17px; font-weight: 600; font-variant-numeric: tabular-nums; }
@@ -164,7 +195,6 @@
   color: var(--warn);
   border-color: var(--warn);
   background: rgba(240, 184, 90, 0.14);
-  box-shadow: 0 0 8px rgba(240, 184, 90, 0.2);
 }
 .taboo-eye-unit.is-active.is-danger {
   color: var(--bad);
@@ -240,7 +270,8 @@
 .ego-horizon-meta { display: flex; gap: 16px; font-size: 12.5px; color: var(--muted); }
 .ego-horizon-desc { font-size: 13px; color: var(--faint); line-height: 1.5; margin: 0; }
 
-.kv.is-help { cursor: help; }
+.kv.is-help { cursor: help; min-height: 28px; align-items: center; }
+.kv.is-help:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
 .kv-strong { font-weight: 600; color: var(--text); text-align: right; }
 .dossier-context-card { gap: 8px; padding: 12px 0; border-bottom: 1px solid var(--rule); }
 .context-card-header { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
@@ -262,7 +293,7 @@
 .npc.is-interactive:focus-visible { outline: 2px solid var(--accent, #e5a93c); outline-offset: 1px; }
 .npc-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
 .npc-head-meta { display: flex; align-items: baseline; gap: 8px; }
-.npc-inspect-hint { font-size: 11.5px; color: var(--accent, #e5a93c); opacity: .85; font-weight: 600; letter-spacing: 0.03em; }
+.npc-inspect-hint { font-size: 12px; color: var(--accent, #e5a93c); opacity: .85; font-weight: 600; letter-spacing: 0.03em; }
 .npc-head strong, .npc-head b { font-family: var(--serif); font-size: 15.5px; font-weight: 600; }
 .npc-head span { font-size: 13px; color: var(--muted); }
 .npc-trait { font-size: 13.5px; color: var(--muted); line-height: 1.5; }
@@ -288,7 +319,18 @@
 .ego-horizon-fold.status-distorted .ego-horizon-bar i { background: var(--bad); }
 .ego-horizon-fold.status-imminent .ego-horizon-bar i { background: #d97706; }
 .ego-horizon-fold.status-stirring .ego-horizon-bar i { background: #0284c7; }
-.stat-name.has-help { cursor: help; text-decoration: underline dotted; text-decoration-color: var(--faint); text-underline-offset: 4px; }
+.stat-name.has-help {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  min-width: 28px;
+  padding: 2px 4px;
+  margin: -2px -4px;
+  cursor: help;
+  text-decoration: underline dotted;
+  text-decoration-color: var(--faint);
+  text-underline-offset: 4px;
+}
 .stat-name.has-help:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
 .career-obj-detail > summary { min-height: 32px; gap: 8px; font-size: 13px; }
 .career-obj-detail > summary::after { content: ''; width: 6px; height: 6px; margin-left: auto; border-right: 1.5px solid var(--muted); border-bottom: 1.5px solid var(--muted); transform: rotate(45deg) translateY(-2px); transition: transform .2s ease; }
@@ -321,11 +363,10 @@
   .playbar-age b { font-size: 28px; }
   .playbar-age span { display: none; }
   .yearbar-meta { font-size: 12.5px; gap: 8px; }
-  .yearbar-meta .phase, .career-obj-pill { display: none; }
-  .playbar-desktop-speeds, .playbar-desktop-actions, .playbar-controls > .divider { display: none; }
+  .yearbar-meta .phase { display: none; }
+  .playbar-desktop-speeds, .playbar-desktop-actions, .playbar-controls > .divider, .btn-step-season { display: none; }
   .btn-speed-mobile { display: inline-grid; place-items: center; min-width: 44px; height: 44px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 13.5px; font-weight: 600; color: var(--text); }
-  .btn-step-season { min-height: 44px; min-width: 44px; padding: 0 10px; }
-  .btn-step-season span { display: none; }
+  .playbar-newlife-btn { min-height: 44px; }
   .btn-shop-mobile {
     display: inline-grid; place-items: center; min-width: 44px; height: 44px;
     border: 1px solid rgba(216, 178, 101, 0.4); border-radius: var(--radius-sm);
@@ -357,7 +398,8 @@
   .hud2-k { display: inline-flex; align-items: center; gap: 4px; font-size: 12.5px; font-weight: 600; color: var(--muted); }
   .hud2-v { justify-self: end; font-size: 15px; font-weight: 600; }
   .hud2-bar { grid-column: 1 / -1; display: block; height: 4px; background: rgba(0, 0, 0, 0.5); border-radius: 1px; overflow: hidden; }
-  .hud2-bar > i { display: block; height: 100%; background: var(--c, var(--text)); transition: width .5s cubic-bezier(.2, .8, .2, 1); box-shadow: 0 0 6px var(--c); }
+  .hud2-bar > i { display: block; height: 100%; background: var(--c, var(--text)); transition: width .5s cubic-bezier(.2, .8, .2, 1); }
+  .hud2-stat.is-critical .hud2-bar > i { box-shadow: 0 0 8px var(--bad); }
   .hud2-stat.is-hp { --c: var(--s-health); }
   .hud2-stat.is-sp { --c: var(--s-sanity); }
   .hud2-stat.is-carmen-calls .hud2-k { color: #bf7af0; text-shadow: 0 0 8px rgba(191, 122, 240, 0.6); }
@@ -387,7 +429,7 @@
   .hud2-secondary.is-focused .is-danger b { color: var(--bad); }
   .hud2-taboo-eyes { display: inline-flex; align-items: center; gap: 3px; margin: 0 2px; }
   .hud2-eye { width: 6px; height: 6px; border-radius: 50%; border: 1px solid var(--border); background: transparent; }
-  .hud2-eye.is-open { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 5px var(--accent); }
+  .hud2-eye.is-open { background: var(--accent); border-color: var(--accent); }
   .hud2-eye.is-claw-danger { background: var(--bad); border-color: var(--bad); box-shadow: 0 0 8px var(--bad); animation: eyeAlert 0.8s ease-in-out infinite; }
   .hud2-year { display: none; }
 
@@ -435,7 +477,6 @@
   .mobile-resource-hud { padding: 6px 10px 8px; }
   .hud2-name { font-size: 15px; }
 }
-@media (max-width: 1439px) { .yearbar-meta .phase { display: none; } }
 
 /* Nameplate: plain for most lives; the top of a branch gets a frame in its own colour, one step below a rule */
 .nameplate-post { color: var(--muted); font-size: 14.5px; }

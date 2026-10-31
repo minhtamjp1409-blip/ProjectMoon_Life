@@ -91,16 +91,17 @@ function loadSavedMeta() {
     const raw = JSON.parse(localStorage.getItem(META_KEY) || '{}');
     return {
       pastLives: Array.isArray(raw.pastLives) ? raw.pastLives.map(normalizeLegacyRecord) : [],
-      globalCodex: Array.isArray(raw.globalCodex) ? raw.globalCodex : []
+      globalCodex: Array.isArray(raw.globalCodex) ? raw.globalCodex : [],
+      globalSeenEvents: Array.isArray(raw.globalSeenEvents) ? raw.globalSeenEvents : []
     };
   } catch {
-    return { pastLives: [], globalCodex: [] };
+    return { pastLives: [], globalCodex: [], globalSeenEvents: [] };
   }
 }
 
-function saveMeta(pastLives, globalCodex) {
+function saveMeta(pastLives, globalCodex, globalSeenEvents = []) {
   try {
-    localStorage.setItem(META_KEY, JSON.stringify({ pastLives: pastLives.map(normalizeLegacyRecord), globalCodex }));
+    localStorage.setItem(META_KEY, JSON.stringify({ pastLives: pastLives.map(normalizeLegacyRecord), globalCodex, globalSeenEvents }));
   } catch {
     // storage full or blocked: the run continues in memory
   }
@@ -226,6 +227,8 @@ function dungeonResolution(prevChar, nextChar, resolution) {
     deltas: dungeonDeltas(prevChar.pendingDungeon, nextChar),
     isDead: Boolean(resolution.isDead),
     isEnding: Boolean(resolution.isEnding),
+    deathCauseVi: nextChar.deathCauseVi || '',
+    deathCauseEn: nextChar.deathCauseEn || '',
     isCausal: false
   };
 }
@@ -328,6 +331,8 @@ export function buildResolutionPayload({
     narrativeEn: interpolateText(splitEn.body || rawEn, nextChar),
     deltas,
     isDead: !nextChar.alive,
+    deathCauseVi: nextChar.deathCauseVi || '',
+    deathCauseEn: nextChar.deathCauseEn || '',
     isCausal: Boolean(prevChar.pendingEvent?.isCausalCallback)
   };
 }
@@ -353,6 +358,42 @@ const reportGameplaySample = (char, abandoned = false) => {
     abandoned
   }).catch(() => {});
 };
+
+const pendingAchievementToasts = [];
+
+function isToastBlocked(state) {
+  const c = state?.char;
+  return Boolean(
+    state?.cutscene ||
+    state?.activeResolution ||
+    c?.pendingEvent ||
+    c?.pendingContract ||
+    c?.pendingDungeon ||
+    c?.pendingYearPlan ||
+    c?.pendingMinor ||
+    c?.pendingModal ||
+    (c?.pendingBirthLogs || []).length > 0
+  );
+}
+
+function flushAchievementToasts(state) {
+  if (!pendingAchievementToasts.length || isToastBlocked(state)) return;
+  const lang = useThemeStore.getState().lang;
+  while (pendingAchievementToasts.length) {
+    const rec = pendingAchievementToasts.shift();
+    try {
+      notification.open({
+        title: lang === 'en' ? `Record unlocked · ${rec.en || rec.vi}` : `Mở khóa thành tựu · ${rec.vi}`,
+        description: lang === 'en' ? (rec.hintEn || rec.hintVi) : rec.hintVi,
+        placement: typeof window !== 'undefined' && window.innerWidth <= 820 ? 'top' : 'bottomLeft',
+        className: 'achievement-toast',
+        duration: 3.2
+      });
+    } catch {
+      // ignore in headless / test environment
+    }
+  }
+}
 
 export const useGameStore = create((set, get) => ({
   inRun: false,
@@ -382,12 +423,16 @@ export const useGameStore = create((set, get) => ({
   // Meta progression
   pastLives: savedMeta.pastLives,
   globalCodex: savedMeta.globalCodex,
+  globalSeenEvents: savedMeta.globalSeenEvents,
   pendingLegacy: savedMeta.pastLives.find((life) => !life.endingId) || null,
 
   setConfigField: (field, value) => set({ [field]: value }),
   setSpeed: (speed) => set((s) => ({ speed, ...(speed === 0 ? { postChoicePauseMs: 0 } : {}) })),
   toggleAutoPlay: () => set((s) => ({ autoPlay: !s.autoPlay })),
-  dismissResolution: () => set({ activeResolution: null, postChoicePauseMs: 0 }),
+  dismissResolution: () => {
+    set({ activeResolution: null, postChoicePauseMs: 0 });
+    flushAchievementToasts(get());
+  },
   clearPostChoicePause: () => set({ postChoicePauseMs: 0 }),
   // The layer calls this once it is on screen: the watchdog then counts from the real start, not from the request
   cutsceneStarted: (key) => {
@@ -401,6 +446,7 @@ export const useGameStore = create((set, get) => ({
     if (!cs || (key && cs.key !== key)) return;
     clearCutsceneWatchdog();
     set({ cutscene: null });
+    flushAchievementToasts(get());
   },
   setPendingLegacy: (legacy) => set({ pendingLegacy: normalizeLegacyRecord(legacy) }),
 
@@ -413,7 +459,7 @@ export const useGameStore = create((set, get) => ({
       nextPastLives = state.pastLives.filter((l) => !(l.seed === legacy.seed && l.age === legacy.age));
       cityArchiveAPI.deleteMemorial(legacy.seed, legacy.age).catch(() => {});
     }
-    saveMeta(nextPastLives, state.globalCodex);
+    saveMeta(nextPastLives, state.globalCodex, state.globalSeenEvents);
     set({ pendingLegacy: null, pastLives: nextPastLives });
   },
 
@@ -422,14 +468,14 @@ export const useGameStore = create((set, get) => ({
     const nextPastLives = state.pastLives.filter((l) => !(l.seed === seed && l.age === age));
     const isCurrentLegacy = state.pendingLegacy?.seed === seed && state.pendingLegacy?.age === age;
     const nextLegacy = isCurrentLegacy ? (nextPastLives[0] || null) : state.pendingLegacy;
-    saveMeta(nextPastLives, state.globalCodex);
+    saveMeta(nextPastLives, state.globalCodex, state.globalSeenEvents);
     set({ pastLives: nextPastLives, pendingLegacy: nextLegacy });
     cityArchiveAPI.deleteMemorial(seed, age).catch(() => {});
   },
 
   clearBloodline: () => {
     const state = get();
-    saveMeta([], state.globalCodex);
+    saveMeta([], state.globalCodex, state.globalSeenEvents);
     set({ pastLives: [], pendingLegacy: null });
     cityArchiveAPI.clearMemorials().catch(() => {});
   },
@@ -584,6 +630,7 @@ export const useGameStore = create((set, get) => ({
     clearTimeout(saveTimer);
     clearSavedRun();
     clearCutsceneWatchdog();
+    pendingAchievementToasts.length = 0;
     set({ inRun: false, speed: 1, yearProgress: 0, savedRun: null, cutscene: null, activeResolution: null, postChoicePauseMs: 0 });
   },
 
@@ -595,7 +642,7 @@ export const useGameStore = create((set, get) => ({
       const state = get();
       const mergedCodex = Array.from(new Set([...state.globalCodex, ...(snapshot.globalCodex || [])]));
       const mergedLives = (snapshot.pastLives && snapshot.pastLives.length > 0 ? snapshot.pastLives : state.pastLives).map(normalizeLegacyRecord);
-      saveMeta(mergedLives, mergedCodex);
+      saveMeta(mergedLives, mergedCodex, state.globalSeenEvents);
 
       const nextChar = cloneChar(state.char);
       if (Array.isArray(snapshot.customEvents) && snapshot.customEvents.length > 0) {
@@ -639,19 +686,8 @@ export const useGameStore = create((set, get) => ({
     if (newlyUnlocked.length > 0) {
       newlyUnlocked.forEach((key) => {
         const rec = CODEX_RECORDS.find((r) => r.key === key);
-        if (rec) {
-          try {
-            // On a phone the bottom edge is the decision dock, so the toast goes to the top
-            notification.open({
-              title: `Mở khóa thành tựu · ${rec.vi}`,
-              description: rec.hintVi,
-              placement: typeof window !== 'undefined' && window.innerWidth <= 820 ? 'top' : 'bottomLeft',
-              className: 'achievement-toast',
-              duration: 3.2
-            });
-          } catch {
-            // ignore in headless / test environment
-          }
+        if (rec && !pendingAchievementToasts.some((item) => item.key === rec.key)) {
+          pendingAchievementToasts.push(rec);
         }
       });
       cityArchiveAPI.syncCodex(mergedCodex).catch(() => {});
@@ -673,9 +709,11 @@ export const useGameStore = create((set, get) => ({
       clearSavedRun();
     }
 
-    saveMeta(nextPastLives, mergedCodex);
+    const mergedSeenEvents = Array.from(new Set([...(state.globalSeenEvents || []), ...(nextChar.seenEvents || [])]));
+    saveMeta(nextPastLives, mergedCodex, mergedSeenEvents);
     return {
       globalCodex: mergedCodex,
+      globalSeenEvents: mergedSeenEvents,
       pastLives: nextPastLives,
       pendingLegacy: nextPendingLegacy,
       ...(nextChar.alive ? {} : { savedRun: null })
@@ -708,6 +746,7 @@ export const useGameStore = create((set, get) => ({
       ...extra,
       ...(withD.pendingDungeon?.id === CLAW_DUNGEON_ID && !prev.pendingDungeon ? { postChoicePauseMs: 0, activeResolution: null } : {})
     });
+    flushAchievementToasts(get());
     if (withD.alive) get().saveRun();
   },
 
@@ -731,6 +770,7 @@ export const useGameStore = create((set, get) => ({
     });
     if (isDone) {
       get().saveRun(true);
+      flushAchievementToasts(get());
     }
     return true;
   },
@@ -750,10 +790,12 @@ export const useGameStore = create((set, get) => ({
       speed: nextChar.alive ? 1 : 0
     });
     get().saveRun(true);
+    flushAchievementToasts(get());
   },
 
   // regionId: where the home screen's wheel landed, when the birthplace was left to chance
   startLife: (useLegacy = false, startAge = 0, regionId = null) => {
+    pendingAchievementToasts.length = 0;
     const state = get();
     const legacyPkg = useLegacy ? state.pendingLegacy : null;
     const nextChar = createNewCharacter({
