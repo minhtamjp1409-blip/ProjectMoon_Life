@@ -131,6 +131,10 @@ assert.match(layer, /if \(!e\.repeat\)/, 'a held key skips once');
 assert.match(layer, /visibilitychange/, 'a hidden tab ends the scene');
 assert.match(layer, /className="cs-skip"/);
 assert.doesNotMatch(layer, /onPointerDown/, 'tap-to-skip uses click, so the rest of the tap cannot land on the dock');
+assert.match(layer, /createPortal\(/, 'the layer is portalled to body, above the decree modal and toasts');
+assert.match(read('../src/styles/ui/cutscene.css'), /body:has\(> \.cutscene\) \.ant-notification/, 'toasts wait out the scene');
+assert.match(feed, /open=\{char\.pendingModal === 'color_title'\}/, 'the decree opens beneath the Color scene, so the scene fades onto it');
+assert.match(feed, /<LifeEndStep summary=\{lifeSummary\} held=\{Boolean\(cutsceneKey\)\}/, 'the death card waits beneath the scene and takes focus after it');
 assert.match(read('../src/store/gameStore.js'), /if \(!nextChar\.alive\) \{\s*const summary = buildLifeSummaryAndLegacy\(nextChar\);/, 'the legacy is written by the store at death, not by the death screen');
 
 console.log('Cutscene gate: Claw plays with the judgment, keys and stale ends ignored, time frozen, ranks, caption, watchdog and wiring passed.');

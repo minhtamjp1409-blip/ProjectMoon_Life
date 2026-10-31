@@ -1250,7 +1250,7 @@ export const LiveStageFeed = () => {
   useEffect(() => {
     const el = logRef.current;
     if (!el) return;
-    const epitaph = el.querySelector('.epitaph');
+    const epitaph = el.querySelector('.life-end-card, .epitaph');
     // At death, bring the epitaph's top into view rather than its last button
     if (epitaph) el.scrollTo({ top: Math.min(el.scrollHeight, epitaph.offsetTop - 24), behavior: 'smooth' });
     else el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
@@ -1566,8 +1566,9 @@ export const LiveStageFeed = () => {
               </button>
             </div>
           )}
-          {lifeSummary && !isPrologueActive && !cutsceneKey && (
-            <LifeEndStep summary={lifeSummary} onInherit={() => startLife(true)}>
+          {/* Mounted under the death scene, so the scene fades out onto the card rather than onto the old feed */}
+          {lifeSummary && !isPrologueActive && (
+            <LifeEndStep summary={lifeSummary} held={Boolean(cutsceneKey)} onInherit={() => startLife(true)}>
               <Epitaph
                 summary={lifeSummary}
                 onInherit={() => startLife(true)}
@@ -1692,8 +1693,9 @@ export const LiveStageFeed = () => {
         </div>
       )}
 
+      {/* Opens beneath the Color scene (the scene sits above every modal), so the scene fades out onto the decree */}
       <Modal
-        open={char.pendingModal === 'color_title' && !cutsceneKey}
+        open={char.pendingModal === 'color_title'}
         footer={null}
         closable={false}
         centered

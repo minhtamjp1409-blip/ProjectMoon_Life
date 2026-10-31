@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { useShallow } from 'zustand/react/shallow';
 import { useGameStore } from '../../store/gameStore';
 import { useT } from '../../i18n';
@@ -10,6 +11,14 @@ import '../../styles/ui/cutscene.css';
 
 const SCENE_ART = { claw: ClawScene, death: DeathScene, color: ColorScene };
 const SKIP_KEYS = new Set(['Enter', 'Escape', ' ']);
+
+// A Color too dark to see on the scene's dark (Black) draws its slit in the text colour instead
+function sceneColor(hex) {
+  const m = /^#([0-9a-f]{6})$/i.exec(hex || '');
+  if (!m) return null;
+  const [r, g, b] = [0, 2, 4].map((i) => parseInt(m[1].slice(i, i + 2), 16) / 255);
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b < 0.12 ? 'var(--text)' : hex;
+}
 
 // The full-screen layer for the scene in the store. JS only mounts it, ends it on time and lets the player skip;
 // the timeline itself is CSS. Keys are caught on the capture phase so a skip never reaches the choice hotkeys behind.
@@ -58,12 +67,15 @@ export default function CutsceneLayer() {
     endCutscene('skip', key);
   };
 
-  return (
+  const color = cutscene.id === 'color' ? sceneColor(bestowedColor?.color) : null;
+
+  // Portalled to body: inside the layout it shared a stacking context and the decree modal and toasts showed through
+  return createPortal(
     <div
       className={`cutscene cs-${cutscene.id} is-${cutscene.cut}`}
       style={{
         '--cs-total': `${cutscene.durationMs}ms`,
-        ...(bestowedColor?.color && cutscene.id === 'color' ? { '--cs-color': bestowedColor.color } : {})
+        ...(color ? { '--cs-color': color } : {})
       }}
       onClick={skip}
     >
@@ -79,6 +91,7 @@ export default function CutsceneLayer() {
       <button type="button" ref={skipRef} className="cs-skip" onClick={skip}>
         {t('Bỏ qua', 'Skip')}
       </button>
-    </div>
+    </div>,
+    document.body
   );
 }
