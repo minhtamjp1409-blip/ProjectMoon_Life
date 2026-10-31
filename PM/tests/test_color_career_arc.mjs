@@ -146,5 +146,17 @@ assert.equal(equivalentGrade(resolvedChar, 'fixer'), 0, 'Equivalent grade for Co
 const milestone = getNextCareerMilestone(resolvedChar);
 assert.equal(milestone.category, 'COLOR FIXER ASCENSION', 'Milestone should show COLOR FIXER ASCENSION');
 
+// A Color prodigy below Grade 1 is shown the Color trial, and its checklist agrees with the Color gate, not with the
+// next Grade's exam (the rare check 5 failure in run_million_audit, Đợt 105 to 109)
+for (const grade of [2, 3]) {
+  const prodigy = createNewCharacter({ seed: `prodigy-checklist-${grade}`, startAge: 30 });
+  Object.assign(prodigy, { job: 'Fixer', fixerGrade: grade, merit: 135, age: 30, flags: [...prodigy.flags.filter((f) => f !== 'Distorted'), 'ProdigyFixer'] });
+  prodigy.stats = { ...prodigy.stats, rep: 76 };
+  assert.ok(isColorProdigyEligible(prodigy), `Grade ${grade} with a feat, Merit 135 and Rep 76 is a prodigy`);
+  const shown = getNextCareerMilestone(prodigy);
+  assert.equal(shown.category, 'STAR OF THE CITY ORDEAL', `Grade ${grade} prodigy is shown the Color trial`);
+  assert.equal(shown.requirements.every((r) => r.met), checkColorFixerReadiness(prodigy).ready, `Grade ${grade} prodigy checklist matches the Color gate`);
+}
+
 console.log('✓ Color Career Arc events, contracts, and milestones are solid.');
 console.log('\nALL COLOR CAREER ARC TESTS PASSED SUCCESSFULLY! (100% OK)');

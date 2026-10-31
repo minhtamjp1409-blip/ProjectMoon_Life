@@ -13,7 +13,7 @@ import {
   getNextCareerMilestone
 } from '../../src/engine/gameEngine.js';
 
-import { getNextFixerPromotion, checkColorFixerReadiness } from '../../src/engine/careerPipeline.js';
+import { getNextFixerPromotion, checkColorFixerReadiness, isColorProdigyEligible } from '../../src/engine/careerPipeline.js';
 
 import {
   planYear,
@@ -101,8 +101,11 @@ while (STATS.totalScenariosExecuted < TARGET_SCENARIOS) {
     if (char.job === 'Fixer' && !char.flags.includes('Distorted') && !char.flags.includes('ColorFixer') && char.fixerGrade >= 1) {
       const ms = getNextCareerMilestone(char);
       const promo = getNextFixerPromotion(char);
-      const gate = promo ? promo.isEligible : checkColorFixerReadiness(char).ready;
-      const shown = (promo ? ms.requirements : ms.requirements.slice(0, 2)).every((r) => r.met);
+      // Grade 1 and a Color prodigy (Grade 1 to 3, or the E.G.O road) are shown the Color trial, so they are held to
+      // the Color gate, all three lines (Merit, Rep, age); everyone else to the next Grade's exam
+      const colorRoute = !promo || isColorProdigyEligible(char);
+      const gate = colorRoute ? checkColorFixerReadiness(char).ready : promo.isEligible;
+      const shown = ms.requirements.every((r) => r.met);
       if (shown !== gate) STATS.milestoneGateMismatches++;
     }
 

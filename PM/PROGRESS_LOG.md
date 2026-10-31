@@ -2292,6 +2292,19 @@ Phần đầu của "làm nốt phần còn thiếu": thẻ District ghi nhận 
 * **Trợ năng:** thẻ có `aria-label`, dòng diễn biến nằm trong vùng `role="status"`.
 * **Kiểm tra:** chụp ở 1440x900 và 390x844: không tràn ngang, 0 lỗi console. Toàn bộ `npm test` qua.
 
+## Đợt 109: Lỗi hiếm ở audit nghề Fixer (31/10/2026)
+
+Lỗi 2/500 ở check 5 của `run_million_audit` ghi ở Đợt 105.
+
+* **Nguyên nhân:** lỗi nằm ở audit, không phải ở trò chơi.
+  * Một Fixer Grade 2 hoặc 3 đủ điều kiện thần đồng (`isColorProdigyEligible`) được giao diện cho xem danh sách điều kiện của kỳ phong Color (Merit, Rep, tuổi). Danh sách này khớp với cổng thật mở kỳ phong Color, tức `checkColorFixerReadiness`, cổng mà `yearPlanner` và `weaverAI` dùng.
+  * Audit lại so danh sách đó với cổng thăng Grade thường kế tiếp. Vì vậy chỉ những đời hiếm đạt chuẩn thần đồng nhưng chưa đủ cho Grade kế mới bị báo lệch.
+  * Tái hiện chắc chắn: Grade 3, Merit 135, Rep 76, 30 tuổi, có `ProdigyFixer`. Danh sách lên Color đã đủ và cổng Color đã mở, trong khi Grade 2 cần Rep 82.
+* **Sửa:** khi nhân vật ở Grade 1 hoặc là thần đồng, audit so danh sách với cổng Color và so đủ cả ba dòng. Trước đây nó bỏ dòng tuổi.
+* **Kiểm tra:**
+  * `test_color_career_arc.mjs` có ca cố định cho thần đồng Grade 2 và 3.
+  * Audit chạy 6 lần × 3000 khoảnh khắc: 0 lỗi ở cả năm nhóm.
+
 ## Phụ lục A: Bản tổng hợp thiết kế ngày 29/10/2026
 
 > Đây là nội dung lịch sử của `process.md`. Các mô tả cơ chế và kết quả kiểm thử phản ánh thời điểm 29/10/2026; những thay đổi và phép đo ở các đợt sau trong nhật ký chính được ưu tiên khi có khác biệt.
