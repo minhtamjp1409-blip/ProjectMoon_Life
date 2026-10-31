@@ -25,6 +25,22 @@
 .world-weather-layer.is-leaving { opacity: 0; }
 .world-sun { fill: var(--sun, #d9a463); opacity: .5; filter: blur(2px); }
 
+/* The kind of District under a street world (sceneContext place): the Great Lake shore lies over its water */
+.world-water {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 15%;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--haze) 80%, transparent), color-mix(in srgb, var(--sky-top) 94%, transparent) 70%);
+}
+/* mood: WARP's corridors, the Great Lake, K Corp's clinics each lay a faint tint over the world; it fades, nothing moves */
+.world-mood { position: absolute; inset: 0; opacity: 0; transition: opacity 1.2s ease; }
+.world-mood[data-mood='warp'] {
+  opacity: 1;
+  background:
+    repeating-linear-gradient(180deg, transparent 0 46px, rgba(95, 210, 255, .045) 46px 47px),
+    linear-gradient(90deg, rgba(95, 210, 255, .07), transparent 28%, transparent 72%, rgba(95, 210, 255, .07));
+}
+.world-mood[data-mood='lake'] { opacity: 1; background: linear-gradient(0deg, rgba(79, 214, 200, .13), transparent 45%); }
+.world-mood[data-mood='kx'] { opacity: 1; background: radial-gradient(80% 60% at 50% 0%, rgba(170, 232, 196, .09), transparent 70%); }
+
 .world-vignette { position: absolute; inset: 0; background: radial-gradient(120% 90% at 50% 40%, transparent 45%, rgba(0, 0, 0, .65) 100%); }
 .world-grain {
   position: absolute; inset: -50%; opacity: .07; mix-blend-mode: overlay;

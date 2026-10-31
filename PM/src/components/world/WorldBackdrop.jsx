@@ -46,15 +46,30 @@ function towers(rnd, { count, minH, maxH, minW, maxW, windows, spire = false }) 
   return { d: shapes.join(' '), lights: lights.slice(0, 260) };
 }
 
-function Silhouette({ world }) {
+// The street skyline by the kind of District: the head Districts in spires, the industrial ones low and wide,
+// the commercial ones tall and lit, the clinics in even blocks, the lake shore low over the water, the fallen L Corp dark
+const CITY_SHAPE = {
+  city: { far: [150, 340, 24, 64], near: [50, 190, 40, 120], lit: 0.12 },
+  head: { far: [220, 400, 26, 56], near: [90, 240, 36, 90], lit: 0.16, spire: true },
+  industrial: { far: [110, 250, 40, 96], near: [40, 140, 70, 160], lit: 0.06 },
+  commercial: { far: [180, 370, 22, 58], near: [70, 230, 36, 100], lit: 0.2 },
+  medical: { far: [190, 260, 34, 60], near: [80, 150, 50, 90], lit: 0.14 },
+  lake: { far: [90, 210, 28, 70], near: [30, 110, 40, 110], lit: 0.1 },
+  fallen: { far: [70, 300, 24, 80], near: [30, 160, 40, 130], lit: 0.01 }
+};
+
+function Silhouette({ world, place }) {
   const family = FAMILY[world];
   const art = useMemo(() => {
     if (!family) return null;
-    const rnd = seeded(world);
+    const rnd = seeded(`${world}:${place}`);
     if (family === 'city') {
+      const shape = CITY_SHAPE[place] || CITY_SHAPE.city;
+      const [fMinH, fMaxH, fMinW, fMaxW] = shape.far;
+      const [nMinH, nMaxH, nMinW, nMaxW] = shape.near;
       return {
-        far: towers(rnd, { count: 60, minH: 150, maxH: 340, minW: 24, maxW: 64, windows: 0.03 }),
-        near: towers(rnd, { count: 40, minH: 50, maxH: 190, minW: 40, maxW: 120, windows: world === 'fixer' ? 0.22 : world === 'dead' ? 0.02 : 0.12 })
+        far: towers(rnd, { count: 60, minH: fMinH, maxH: fMaxH, minW: fMinW, maxW: fMaxW, windows: 0.03, spire: shape.spire }),
+        near: towers(rnd, { count: 40, minH: nMinH, maxH: nMaxH, minW: nMinW, maxW: nMaxW, windows: world === 'fixer' ? shape.lit + 0.1 : world === 'dead' ? 0.02 : shape.lit })
       };
     }
     if (family === 'spires') {
@@ -64,7 +79,7 @@ function Silhouette({ world }) {
       };
     }
     return null;
-  }, [world, family]);
+  }, [world, family, place]);
 
   if (family === 'dunes') {
     return (
@@ -132,15 +147,18 @@ function WeatherStack({ kind, color }) {
 
 function Scene({ scene, session, leaving }) {
   return (
-    <div className={`world-scene ${leaving ? 'is-leaving' : ''}`} data-world={scene.world}>
+    <div className={`world-scene ${leaving ? 'is-leaving' : ''}`} data-world={scene.world} data-place={scene.place}>
       <div className="world-sky" />
       <div className="world-glow" />
-      <Silhouette world={scene.world} />
+      <Silhouette world={scene.world} place={scene.place} />
+      {scene.place === 'lake' && FAMILY[scene.world] === 'city' && <div className="world-water" />}
       {session && <DungeonBackdrop session={session} />}
       <WeatherStack kind={scene.weather} color={scene.accent} />
     </div>
   );
 }
+
+const sceneId = (s) => `${s?.world}|${s?.place || 'city'}`;
 
 /**
  * The world behind the whole interface. A change of world crossfades: the old scene stays a moment
@@ -162,12 +180,12 @@ export function WorldBackdrop({ scene, session }) {
     const id = setTimeout(() => setBurst(null), 2800);
     return () => clearTimeout(id);
   }, [scene.color, scene.ego]);
-  // Only a new world crossfades the whole scene; weather and accent update the scene already showing
+  // Only a new world or a new kind of District crossfades the whole scene; weather and accent update the scene already showing
   useEffect(() => {
-    setShown((prev) => (prev[prev.length - 1]?.world === scene.world ? [...prev.slice(0, -1), scene] : [...prev.slice(-1), scene]));
+    setShown((prev) => (sceneId(prev[prev.length - 1]) === sceneId(scene) ? [...prev.slice(0, -1), scene] : [...prev.slice(-1), scene]));
     const id = setTimeout(() => setShown((prev) => prev.slice(-1)), 1700);
     return () => clearTimeout(id);
-  }, [scene.world, scene.weather, scene.accent]);
+  }, [scene.world, scene.place, scene.weather, scene.accent]);
 
   return (
     <div
@@ -179,8 +197,10 @@ export function WorldBackdrop({ scene, session }) {
       aria-hidden="true"
     >
       {shown.map((s, i) => (
-        <Scene key={s.world} scene={s} session={s.world.startsWith('dungeon-') ? session : null} leaving={i < shown.length - 1} />
+        <Scene key={sceneId(s)} scene={s} session={s.world.startsWith('dungeon-') ? session : null} leaving={i < shown.length - 1} />
       ))}
+      {/* WARP, the Great Lake and K Corp lay a tint of their own over whatever world stands there */}
+      <div className="world-mood" data-mood={scene.mood || 'normal'} />
       <div className="world-color" />
       <div className="world-ego" />
       <div className="world-danger" />

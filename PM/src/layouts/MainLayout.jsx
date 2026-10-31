@@ -119,6 +119,7 @@ export const MainLayout = ({ children }) => {
     <div
       className={`shell interface-v2 ${isPlay ? 'is-in-play' : ''} ${hasDock ? 'has-dock' : ''} ${dungeon ? `in-dungeon dg-shell-${dungeon.theme}` : ''}`}
       data-world={scene.world}
+      data-mood={scene.mood}
       style={sceneStyle}
     >
       <WorldBackdrop scene={scene} session={session} />

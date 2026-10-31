@@ -2199,6 +2199,38 @@ C5 của Đợt 3 trong `docs/KE_HOACH_CHUYEN_CANH_VA_CUTSCENE.md`. Đây là c�
 * **Một lần chụp desktop** thấy dấu tiếng Việt bị tách rời trong toàn bộ chữ nhật ký (không riêng thẻ chương). Đó là lúc gói font tiếng Việt của Literata chưa tải kịp và trình duyệt dùng Georgia; các lần chụp khác hiển thị đúng.
 * **Tiếp theo:** Đợt 5 (hậu cảnh lộ ra qua cột nhật ký, `place` và `mood`).
 
+## Đợt 106: Nơi chốn, không khí và cột nhật ký (31/10/2026)
+
+Đợt 5 (Tầng B, mục 6.3) trong `docs/KE_HOACH_CHUYEN_CANH_VA_CUTSCENE.md`, cùng hai thay đổi nhịp tuổi thơ của chủ dự án được gom vào đợt này.
+
+* **Nhịp tuổi thơ** (thay đổi của chủ dự án, commit riêng):
+  * Sự kiện nhỏ bắt đầu từ 3 tuổi thay vì 5 (`yearPlanner.js`).
+  * Việc thường ngày ở những năm không có gì ưu tiên chuyện chưa gặp.
+  * Sửa một câu trong `lifeMinorsKids.js`.
+* **`place`:**
+  * `sceneContextOf` trả thêm `place`, suy từ `tags` của District: head, industrial (gồm agriculture), commercial (gồm entertainment), medical, lake, fallen, outskirts, mặc định city.
+  * Các thế giới phố dựng đường chân trời theo `place`: head có tháp nhọn cao, industrial thấp và rộng, commercial cao và nhiều đèn, medical là các khối đều, lake thấp với một dải nước, fallen tối gần như không đèn.
+  * Đổi sang loại District khác thì cảnh crossfade như khi đổi thế giới.
+* **`mood`:**
+  * Các giá trị: normal; hush khi có sự kiện lớn đang chờ; warp, lake, kx ở District W, U, K.
+  * hush làm mờ cột bên, thanh trên và thanh chơi xuống độ đục 0,42. Vào trong 0,3 giây, ra trong 1,2 giây, chỉ dùng opacity. Rê chuột hoặc Tab vào thì vùng đó sáng lại.
+  * warp, lake, kx phủ một lớp tint tĩnh lên nền thế giới.
+  * Trong hầm ngục hoặc khi đã chết thì không có mood.
+* **Cột nhật ký:**
+  * `--page` nay dựa trên token `--page-alpha`: 0,8 trên desktop, 0,64 trên điện thoại (bằng giá trị trước đây).
+  * Kế hoạch đề xuất 0,86 đến 0,94 tùy thế giới, vì lúc viết cột nhật ký còn là nền đặc. Thực tế nó đã là kính mờ, và phép đo dưới đây cho thấy không thế giới nào cần đục hơn. Tăng độ đục chỉ che bớt thế giới, nên mình không áp dụng mức đó.
+* **Đo** (`tools/film/page_contrast.mjs`, công cụ mới):
+  * Cách đo: ẩn chữ trong cột nhật ký, chụp phần nền còn lại, lấy độ sáng ở mức phân vị 95, mỗi thế giới chụp 3 lần và giữ lần tệ nhất.
+  * Đo trên 21 trường hợp (mọi thế giới và mọi loại District), ở 390x844 và 1440x900. Chữ chính luôn trên 13:1, chữ phụ (`--page-muted`) luôn trên 6,7:1. Thấp nhất là Nest trên điện thoại: 13,3:1 và 6,8:1.
+  * Chỉ đổi mood: CLS bằng 0 ở cả 390x844 và 1440x900.
+  * Không tràn ngang ở 320, 390, 412 và 1440.
+* **Font dự phòng:**
+  * Lỗi dấu tiếng Việt bị tách rời ghi ở Đợt 105 có nguyên nhân thật: khi Literata tải lỗi từ Google Fonts, trình duyệt dùng Georgia, mà Georgia trên Windows không có chữ tiếng Việt dựng sẵn.
+  * `--serif` nay thử Noto Serif và Times New Roman trước Georgia.
+  * Đã kiểm tra bằng cách chặn hẳn Google Fonts: chữ hiển thị đúng bằng Noto Serif.
+* **Kiểm tra:** `test_scene_context.mjs` kiểm tra mọi loại `place`, ba mood theo District, hush khi có sự kiện lớn (và không có với sự kiện thường), không có mood khi trong hầm ngục hay đã chết.
+* **Tiếp theo:** Tầng C, Đợt 6.
+
 ## Phụ lục A: Bản tổng hợp thiết kế ngày 29/10/2026
 
 > Đây là nội dung lịch sử của `process.md`. Các mô tả cơ chế và kết quả kiểm thử phản ánh thời điểm 29/10/2026; những thay đổi và phép đo ở các đợt sau trong nhật ký chính được ưu tiên khi có khác biệt.

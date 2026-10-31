@@ -634,3 +634,9 @@
 @media (max-width: 300px) {
   .playbar-controls { gap: 1px; }
 }
+
+/* hush (sceneContext mood): a major event holds the room, so the interface around the page steps back.
+   In quickly (0.3 s), out slowly (1.2 s), opacity only so nothing reflows. Pointing at it or tabbing into it brings it back. */
+.is-in-play :is(.side, .topbar, .playbar) { transition: opacity 1.2s ease; }
+.shell[data-mood='hush'] :is(.side, .topbar, .playbar) { opacity: 0.42; transition-duration: 0.3s; }
+.shell[data-mood='hush'] :is(.side, .topbar, .playbar):is(:hover, :focus-within) { opacity: 1; }

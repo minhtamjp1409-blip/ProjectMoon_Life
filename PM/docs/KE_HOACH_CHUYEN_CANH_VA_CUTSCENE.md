@@ -285,7 +285,7 @@ Hai chỗ khác với kế hoạch:
 - Móc: mục có `turning: true` (nghề, Grade, Finger rank, Wing rank, Syndicate rank, E.G.O, Distortion, Color) và tuổi vào nghề.
 - Thêm test: mỗi thăng cấp Syndicate độc lập (rank 1 đến 3) và ngã rẽ nghề sinh đúng một thẻ chương.
 
-**6.3 Hậu cảnh lộ ra (đợt 5, nối mục B "cảm giác nơi chốn")**
+**6.3 Hậu cảnh lộ ra (đợt 5, nối mục B "cảm giác nơi chốn")** (đã xong ngày 31/10/2026, xem `PROGRESS_LOG.md` Đợt 106. Cột nhật ký đã là kính mờ ở độ đục 0,8 trên desktop và 0,64 trên điện thoại, đạt tương phản ở mọi thế giới, nên không nâng lên 0,86 đến 0,94)
 - `.log-col` đổi nền đặc thành biến `--page-alpha` theo cảnh (0,86 đến 0,94 tùy `scene.world`); không giảm tương phản chữ dưới 4,5:1.
 - `sceneContextOf` (`sceneContext.js`) trả thêm `place` (nơi chốn theo District/vùng) và `mood` (bình thường, hush, warp, lake, kx), để `WorldBackdrop` chọn biến thể theo nơi chứ không chỉ theo nghề. Bản đồ District sang họ cảnh dùng các thẻ `tags` đã có của `REGIONS`.
 - Lớp `mood-*` trên gốc màn chơi làm mờ cột bên (`.side`, thanh trên) bằng `opacity` và một lớp phủ xám, tối đa 0,3 giây vào và 1,2 giây ra; không animate `filter`.

@@ -20,8 +20,10 @@
   --faint: #8f877c;
   --glass-blur: blur(14px) saturate(1.2);
 
-  /* the chronicle column: the darkest glass, the story's own ink */
-  --page: rgba(9, 8, 11, 0.8);
+  /* the chronicle column: the darkest glass, the story's own ink. --page-alpha is how much of the world shows
+     through; at 0.8 (0.64 on phones) every world keeps ink and muted text above 4.5:1 (tools/film/page_contrast.mjs) */
+  --page-alpha: 0.8;
+  --page: rgba(9, 8, 11, var(--page-alpha));
   --page-ink: #efe9e0;
   --page-muted: #b0a79b;
   --page-rule: rgba(255, 255, 255, 0.075);
@@ -67,7 +69,9 @@
   --dialog-scrim: rgba(3, 3, 5, 0.76);
 
   --font: 'Archivo', system-ui, 'Segoe UI', sans-serif;
-  --serif: 'Literata', Georgia, 'Times New Roman', serif;
+  /* If Literata fails to load, fall back to faces with full Vietnamese: Georgia has no precomposed Vietnamese
+     letters on Windows, so its marks come apart ("Tiê´ng") */
+  --serif: 'Literata', 'Noto Serif', 'Times New Roman', Georgia, serif;
   --font-serif: var(--serif);
 
   --radius: 6px;
@@ -95,6 +99,6 @@ html[data-text='xl'] { --story-size: 20.5px; --story-lead: 1.72; --choice-size: 
     --top: calc(52px + env(safe-area-inset-top, 0px));
     --bottom: calc(60px + env(safe-area-inset-bottom, 0px));
     --glass-blur: blur(10px);
-    --page: rgba(9, 8, 11, .64);
+    --page-alpha: 0.64;
   }
 }

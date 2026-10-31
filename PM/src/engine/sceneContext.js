@@ -1,5 +1,6 @@
 // One reading of "where is this life right now", shared by the backdrop, route identity and ambience.
 // Pure: it takes plain state and returns plain data, so it can be tested in Node.
+import { REGIONS } from '../data/worldData.js';
 
 // Each world has a palette for scene art and nameplates (accent, ink, a second hue for glows) and a
 // particle weather for the backdrop; ambienceScapes.js keys its soundscape on the same world id.
@@ -33,6 +34,29 @@ export const WORLDS = {
 
 const SEASON_WEATHER = ['drizzle', 'haze', 'rain', 'snow'];
 
+// Where in The City the life stands, read from the District's tags: it picks the skyline under a street world
+const PLACE_BY_TAG = [
+  ['outskirts', 'outskirts'],
+  ['lake', 'lake'],
+  ['head', 'head'],
+  ['fallen_wing', 'fallen'],
+  ['industrial', 'industrial'],
+  ['agriculture', 'industrial'],
+  ['medical', 'medical'],
+  ['commercial', 'commercial'],
+  ['entertainment', 'commercial']
+];
+
+export function placeOf(char) {
+  if (!char) return 'city';
+  if (char.regionId === 'OUTSKIRTS') return 'outskirts';
+  const tags = REGIONS.find((r) => r.id === char.regionId)?.tags || [];
+  return PLACE_BY_TAG.find(([tag]) => tags.includes(tag))?.[1] || 'city';
+}
+
+// Three Districts carry a feel of their own on the backdrop: the WARP corridors, the Great Lake, K Corp's clinics
+const MOOD_BY_REGION = { W: 'warp', U: 'lake', K: 'kx' };
+
 const routeWorldOf = (char) => {
   if (char.job === 'Syndicate' && char.finger) return `finger-${String(char.finger).toLowerCase()}`;
   if (char.job === 'Syndicate') return 'syndicate';
@@ -52,8 +76,12 @@ const isDistorted = (char) =>
 const isColorFixer = (char) => Boolean(char.isColorFixer || char.flags?.includes('ColorFixer') || char.customTitle);
 
 /**
+ * place: the District's kind of street (city, head, industrial, commercial, medical, lake, fallen, outskirts).
+ * mood: normal; hush while a major event holds the room (the interface around the page steps back);
+ * warp, lake or kx in those three Districts (a tint over the backdrop).
  * @returns {{ world: string, accent: string, ink: string, glow: string, weather: string,
- *   intensity: number, ego: 'none'|'awakened'|'active', color: string|null, danger: boolean, carmen: boolean, season: number }}
+ *   intensity: number, ego: 'none'|'awakened'|'active', color: string|null, danger: boolean, carmen: boolean, season: number,
+ *   place: string, mood: 'normal'|'hush'|'warp'|'lake'|'kx' }}
  */
 export function sceneContextOf({ inRun = false, path = '/', char = null } = {}) {
   let world = 'title';
@@ -62,6 +90,8 @@ export function sceneContextOf({ inRun = false, path = '/', char = null } = {}) 
   let color = null;
   let danger = false;
   let carmen = false;
+  let place = 'city';
+  let mood = 'normal';
   const season = char?.seasonIdx ?? 0;
 
   if (path !== '/') world = 'library';
@@ -92,12 +122,14 @@ export function sceneContextOf({ inRun = false, path = '/', char = null } = {}) 
       if (session?.egoActive) ego = 'active';
       else if (char.flags?.includes('EGOAwakened') || char.egoName) ego = 'awakened';
       if (isColorFixer(char)) color = char.colorData?.color || '#e1341e';
+      place = placeOf(char);
+      if (!session) mood = ev?.major ? 'hush' : MOOD_BY_REGION[char.regionId] || 'normal';
     }
   }
 
   const base = WORLDS[world] || WORLDS.title;
   const weather = base.weather === 'season' ? SEASON_WEATHER[season] || 'rain' : base.weather;
-  return { world, ...base, weather, intensity, ego, color, danger, carmen, season };
+  return { world, ...base, weather, intensity, ego, color, danger, carmen, season, place, mood };
 }
 
 // The nameplate a life has earned. The top of a branch gets its own frame: a Hana Color carries the

@@ -41,6 +41,27 @@ assert.deepEqual([0, 1, 2, 3].map((s) => at(life({ seasonIdx: s })).weather), ['
 assert.equal(at(life({ job: 'Wing Employee', seasonIdx: 3 })).weather, 'data');
 console.log('Scene context: worlds, routes, overlays and weather passed.');
 
+console.log('4b. The District sets the place, three Districts and a major event set the mood...');
+assert.equal(at(life({ regionId: 'A' })).place, 'head');
+assert.equal(at(life({ regionId: 'D' })).place, 'industrial');
+assert.equal(at(life({ regionId: 'S' })).place, 'industrial', 'agriculture reads as industrial');
+assert.equal(at(life({ regionId: 'J' })).place, 'commercial');
+assert.equal(at(life({ regionId: 'K' })).place, 'medical');
+assert.equal(at(life({ regionId: 'L' })).place, 'fallen');
+assert.equal(at(life({ regionId: 'U' })).place, 'lake');
+assert.equal(at(life({ regionId: 'OUTSKIRTS' })).place, 'outskirts');
+assert.equal(at(life({ regionId: 'nowhere' })).place, 'city', 'an unknown District falls back');
+assert.equal(sceneContextOf({ inRun: false }).place, 'city');
+assert.equal(at(life({ regionId: 'W' })).mood, 'warp');
+assert.equal(at(life({ regionId: 'U' })).mood, 'lake');
+assert.equal(at(life({ regionId: 'K' })).mood, 'kx');
+assert.equal(at(life({ regionId: 'F' })).mood, 'normal');
+assert.equal(at(life({ regionId: 'W', pendingEvent: { id: 'x', major: true } })).mood, 'hush', 'a major event hushes the room, whatever the District');
+assert.equal(at(life({ regionId: 'F', pendingEvent: { id: 'x' } })).mood, 'normal', 'an ordinary event does not');
+assert.equal(at(life({ regionId: 'W', pendingDungeon: { theme: 'warp' } })).mood, 'normal', 'a dungeon has its own backdrop and no mood');
+assert.equal(at(life({ alive: false, regionId: 'W' })).mood, 'normal');
+console.log('Place and mood passed.');
+
 console.log('5. The nameplate marks the top of each branch...');
 const { rankPlateOf } = await import('../src/engine/sceneContext.js');
 assert.equal(rankPlateOf(life({ customTitle: 'Vermilion Gale', colorData: { color: '#e1341e' } })).tier, 'color');

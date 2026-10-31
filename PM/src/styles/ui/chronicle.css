@@ -10,7 +10,8 @@
 
 .log { position: relative; z-index: 1; min-height: 0; overflow-y: auto; scrollbar-gutter: stable; padding: 28px clamp(12px, 3vw, 40px) 0; scroll-behavior: smooth; }
 
-/* The chronicle column: the darkest glass, so the world shows around it and the words stay legible */
+/* The chronicle column: the darkest glass, so the world shows around it and the words stay legible.
+   tools/film/page_contrast.mjs measures the page text over every world; rerun it when a world gets brighter. */
 .log-col {
   position: relative;
   max-width: 740px; min-height: calc(100% - 28px); margin: 0 auto;
