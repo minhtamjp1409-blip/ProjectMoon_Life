@@ -272,8 +272,8 @@ Hai chỗ khác với kế hoạch:
   - đời chết tiếp theo lại mở từ bước 1;
   - `pastLives` và trang `/bloodline` có đời vừa chết ngay cả khi người chơi chưa bấm gì.
 
-**Đợt 3, Carmen và cổng hầm ngục**
-1. C3 Carmen với kho thì thầm.
+**Đợt 3, Carmen và cổng hầm ngục** (C3 xong ngày 31/10/2026, xem `PROGRESS_LOG.md` Đợt 103; C5 chưa làm)
+1. C3 Carmen với kho thì thầm. Đã đo trên 390x844, CPU chậm 4 lần: 32 phần tử, không có long task trong lúc cảnh chạy.
 2. C5 cổng hầm ngục cho cả sáu hầm.
 - **Nghiệm thu:** mật độ phần tử đo được dưới 40 trên điện thoại; không long task quá 50 ms trong lúc cảnh chạy (đo bằng `PerformanceObserver`).
 

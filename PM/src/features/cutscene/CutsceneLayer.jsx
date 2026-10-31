@@ -7,9 +7,10 @@ import { CUTSCENES } from './registry';
 import { ClawScene } from './scenes/ClawScene';
 import { DeathScene } from './scenes/DeathScene';
 import { ColorScene } from './scenes/ColorScene';
+import { CarmenScene } from './scenes/CarmenScene';
 import '../../styles/ui/cutscene.css';
 
-const SCENE_ART = { claw: ClawScene, death: DeathScene, color: ColorScene };
+const SCENE_ART = { claw: ClawScene, death: DeathScene, color: ColorScene, carmen: CarmenScene };
 const SKIP_KEYS = new Set(['Enter', 'Escape', ' ']);
 
 // A Color too dark to see on the scene's dark (Black) draws its slit in the text colour instead
@@ -80,7 +81,7 @@ export default function CutsceneLayer() {
       onClick={skip}
     >
       <div className="cs-scrim" aria-hidden="true" />
-      {Art && cutscene.cut !== 'caption' && <Art />}
+      {Art && cutscene.cut !== 'caption' && <Art cut={cutscene.cut} />}
       <div className="cs-lines" role="status" aria-live="polite">
         {lines.map((line, i) => (
           <p key={i} className={`cs-line cs-line-${i + 1} ${i === lines.length - 1 ? 'is-key' : ''}`}>

@@ -29,6 +29,30 @@ export const CUTSCENES = {
       { vi: 'Một cái tên được đọc lên.', en: 'A name is read aloud.' }
     ],
     keyDynamic: 'title'
+  },
+  // Carmen's call (event ego_carmen_crossroad): a slow heartbeat of warm light, whispers drift in from the edges
+  // and thicken, then go quiet for the one sentence. The choice dock rises only after it.
+  carmen: {
+    ms: { full: 6000, lite: 900, still: 1800, caption: 1200 },
+    lines: [
+      { vi: 'Có ai đang gọi tên bạn bằng chính giọng của bạn.', en: 'Someone is calling your name in your own voice.' }
+    ],
+    keyLine: 0,
+    // Drawn as up to 24 fragments in the full cut and 6 in the lite one, cycling through this list
+    whispers: [
+      { vi: 'đừng quay đầu', en: "don't look back" },
+      { vi: 'ở đây sáng hơn', en: "it's brighter here" },
+      { vi: 'bạn mệt rồi', en: "you're tired" },
+      { vi: 'buông ra đi', en: 'let go' },
+      { vi: 'không ai trách bạn', en: 'no one will blame you' },
+      { vi: 'đau lắm, đúng không', en: "it hurts, doesn't it" },
+      { vi: 'lại gần đây', en: 'come closer' },
+      { vi: 'bạn chịu đủ rồi', en: "you've endured enough" },
+      { vi: 'tôi nghe thấy bạn', en: 'I can hear you' },
+      { vi: 'không cần giữ nữa', en: 'no need to hold on' },
+      { vi: 'họ chưa từng hiểu bạn', en: 'they never understood you' },
+      { vi: 'thành điều bạn muốn', en: 'become what you want' }
+    ]
   }
 };
 

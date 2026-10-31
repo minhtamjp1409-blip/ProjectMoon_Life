@@ -1,6 +1,6 @@
 /**
  * Films a cutscene as a strip of screenshots, for checking timing and layout by eye. Run by hand, not in npm test.
- * Usage: node tools/film/film_cutscene.mjs <base url> <out dir> [--sizes=1440x900,390x844] [--every=250] [--cut=full|lite|still|caption] [--scene=claw|death|color]
+ * Usage: node tools/film/film_cutscene.mjs <base url> <out dir> [--sizes=1440x900,390x844] [--every=250] [--cut=full|lite|still|caption] [--scene=claw|death|color|carmen]
  * Uses the CDP helper in .agents/skills/design-taste-frontend; needs Chrome or Edge.
  */
 import { mkdirSync, writeFileSync } from 'node:fs';
@@ -28,8 +28,8 @@ try {
     await sleep(1500);
     // Scene settings for this take: full plays as a first viewing, lite as a repeat, caption as scenes off
     await page.eval((c) => {
-      for (const id of ['claw', 'death', 'color']) localStorage.removeItem(`pm-cutscene-seen:${id}`);
-      if (c === 'lite') for (const id of ['claw', 'death', 'color']) localStorage.setItem(`pm-cutscene-seen:${id}`, '1');
+      for (const id of ['claw', 'death', 'color', 'carmen']) localStorage.removeItem(`pm-cutscene-seen:${id}`);
+      if (c === 'lite') for (const id of ['claw', 'death', 'color', 'carmen']) localStorage.setItem(`pm-cutscene-seen:${id}`, '1');
       localStorage.setItem('pm-cutscene', c === 'caption' ? 'off' : c === 'full' ? 'full' : 'short');
       if (c === 'still') localStorage.setItem('pm-motion-mode', 'reduced');
     }, cut);
@@ -68,11 +68,22 @@ try {
         ? { ...base, alive: false, stats: { ...prev.stats, health: 0 }, deathCauseVi: 'Bạn gục xuống trên bậc thềm lạnh.', deathCauseEn: 'You went down on a cold step.' }
         : which === 'color'
           ? { ...base, pendingModal: 'color_title' }
-          : { ...base, taboo: 3, stats: { ...prev.stats, health: 90, sanity: 90 } };
+          : which === 'carmen'
+            // A stand-in for the event as the planner hands it over: the dock needs a title, a body and two choices
+            ? { ...base, pendingEvent: {
+                id: 'ego_carmen_crossroad', major: true, t: 0.5,
+                titleVi: 'Giọng nói trong ánh sáng', titleEn: 'Can you hear my voice?',
+                displayVi: 'The City mờ đi; một giọng phụ nữ cất lên trong ánh sáng.', displayEn: 'The City fades; a woman speaks from the light.',
+                choices: [
+                  { labelVi: 'Nỗi đau này là của tôi.', labelEn: 'This pain is mine.', outcomes: [] },
+                  { labelVi: 'Buông xuôi.', labelEn: 'Let go.', outcomes: [] }
+                ]
+              } }
+            : { ...base, taboo: 3, stats: { ...prev.stats, health: 90, sanity: 90 } };
       st.commit(prev, next);
     }, scene);
     const t0 = Date.now();
-    const frames = Math.ceil((cut === 'full' ? 5200 : 2400) / every);
+    const frames = Math.ceil((cut === 'full' ? 7200 : 2400) / every);
     for (let i = 0; i < frames; i++) {
       const ms = Date.now() - t0;
       await page.screenshot({ path: join(out, `${width}x${height}-${String(i).padStart(2, '0')}-${ms}ms.jpg`), quality: 60 });

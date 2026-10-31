@@ -2117,6 +2117,31 @@ Thực hiện toàn bộ các điểm cải tiến từ báo cáo `docs/CRITIQUE
 * **Sửa sau khi xem ảnh:** khe sáng ban đầu nở thành một dải đặc cùng màu với tên danh hiệu nên không đọc được; nay khe chỉ nở thành dải mảnh và tên đặt bằng màu chữ chính với quầng sáng màu Color.
 * **Chưa làm:** âm thanh cho cảnh; đợt 3 (Carmen, cổng hầm ngục).
 
+## Đợt 103: Xem lại cảnh chết và Color, cảnh Carmen (31/10/2026)
+
+Xem lại hai cảnh của Đợt 102 qua chuỗi ảnh, sửa những gì thấy được, rồi làm C3 của Đợt 3 trong `docs/KE_HOACH_CHUYEN_CANH_VA_CUTSCENE.md`.
+
+* **Sửa sau khi xem lại:**
+  * Lớp cảnh được portal ra `body` (z-index 1100). Trước đó nó nằm chung stacking context với layout, nên hộp sắc lệnh và toast thành tựu hiện đè lên cảnh. Toast có sẵn từ trước cảnh được ẩn cho tới khi cảnh xong.
+  * Cảnh kết thúc vào đúng thứ đến sau nó. Thẻ chết và hộp sắc lệnh được dựng sẵn bên dưới cảnh, nên khi cảnh mờ đi chúng đã ở đúng chỗ. Trước đó có khoảng nửa giây người chơi thấy nhật ký cũ, chưa cuộn tới thẻ. Nút "Nhìn lại cuộc đời này" chỉ nhận focus khi cảnh đã xong.
+  * Cảnh chết có nền tối đặc, thứ thu nhỏ dần là quầng sáng của ngọn đèn. Vì thẻ chết nằm sẵn bên dưới, nền trong suốt cũ để lộ chữ của thẻ đè lên dòng của cảnh trên điện thoại.
+  * Khe sáng của cảnh Color bắt đầu bên dưới các dòng chữ, không còn cắt ngang chữ. Color quá tối để nhìn thấy trên nền tối (Black) vẽ khe sáng bằng màu chữ.
+* **Carmen (C3):**
+  * Cảnh `carmen` dài 6 giây, phát khi sự kiện `ego_carmen_crossroad` mở, trước khi dock lựa chọn hiện ra.
+  * Diễn biến: một quầng sáng ấm ở tâm và bốn nhịp tim chậm. Các mảnh thì thầm trôi vào từ mép màn hình, dày dần (khoảng cách thời gian giữa các mảnh theo căn bậc hai nên ngắn dần). Sau đó tất cả lặng đi để hiện một câu duy nhất: "Có ai đang gọi tên bạn bằng chính giọng của bạn."
+  * Bản full có 24 mảnh, bản lite 6 mảnh (0,9 giây). Bản still có 6 mảnh đứng yên mờ và không có vòng nhịp tim. Bản caption chỉ có một câu.
+  * Kho 12 mảnh thì thầm có đủ hai ngôn ngữ, nằm trong registry và đi qua voice_lint. Màu lấy từ hai token mới `--carmen` và `--carmen-whisper`.
+  * Thứ hạng của Carmen thấp hơn chết, Color và Claw.
+* **Đo theo tiêu chí nghiệm thu đợt 3** (390x844, CPU chậm 4 lần):
+  * Cảnh có 32 phần tử, dưới mức 40.
+  * Trong 6 giây cảnh chạy không có long task nào. Riêng khung commit mở cảnh mất 82 ms, so với 64 ms khi một sự kiện thường mở dock.
+* **Kiểm tra:**
+  * Test kích hoạt có thêm các ca: Carmen phát một lần, sự kiện thường không có cảnh, cái chết thắng Carmen.
+  * Lint cảnh chặn quá 24/6 mảnh thì thầm.
+  * Test đường nối kiểm tra portal, việc ẩn toast, hộp sắc lệnh nằm dưới cảnh và thẻ chết chờ dưới cảnh.
+  * Đã quay các bản full, lite, still, caption ở 1440x900 và 390x844: không tràn ngang, 0 lỗi console.
+* **Chưa làm:** C5 cổng hầm ngục; âm thanh cho cảnh.
+
 ## Phụ lục A: Bản tổng hợp thiết kế ngày 29/10/2026
 
 > Đây là nội dung lịch sử của `process.md`. Các mô tả cơ chế và kết quả kiểm thử phản ánh thời điểm 29/10/2026; những thay đổi và phép đo ở các đợt sau trong nhật ký chính được ưu tiên khi có khác biệt.

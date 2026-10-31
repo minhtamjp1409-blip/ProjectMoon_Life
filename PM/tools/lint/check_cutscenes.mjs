@@ -23,6 +23,12 @@ for (const [id, scene] of Object.entries(CUTSCENES)) {
   if (scene.ms?.full && scene.lines?.length * 700 > scene.ms.full) fail(`${id}: too many lines to read in ${scene.ms.full} ms`);
 }
 
+// Carmen's whispers are many small moving texts: capped at 24 in full and 6 in lite (plan, section C3)
+const carmen = read('src/features/cutscene/scenes/CarmenScene.jsx');
+const count = carmen.match(/COUNT = \{ full: (\d+), lite: (\d+)/);
+if (!count) fail('CarmenScene: no COUNT table for the whispers');
+else if (Number(count[1]) > 24 || Number(count[2]) > 6) fail(`CarmenScene: ${count[1]} / ${count[2]} whispers, over 24 / 6`);
+
 for (const cut of ['is-full', 'is-lite', 'is-still', 'is-caption']) if (!css.includes(`.${cut}`)) fail(`cutscene.css has no .${cut} rules`);
 if (!/\.is-still,\s*\.is-still \* \{ animation: none !important; \}/.test(css)) fail('the still cut must stop every animation');
 if (/infinite/.test(css)) fail('a scene animation loops; scenes play once');

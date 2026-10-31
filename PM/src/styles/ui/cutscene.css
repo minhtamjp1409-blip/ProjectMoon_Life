@@ -186,6 +186,70 @@ body:has(> .cutscene) .ant-notification { visibility: hidden; }
   text-shadow: 0 0 28px var(--cs-color, var(--accent)), 0 2px 12px var(--dusk);
 }
 
+/* ---------- Carmen: a slow heartbeat of warm light, whispers from the edges, then one sentence ---------- */
+.cs-carmen .cs-scrim { background: var(--dusk); }
+.cs-carmen .cs-art { animation: cs-out 500ms ease-in calc(var(--cs-total) - 500ms) forwards; }
+.cs-sun {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(90vmin, 720px);
+  height: min(90vmin, 720px);
+  margin: calc(min(90vmin, 720px) / -2) 0 0 calc(min(90vmin, 720px) / -2);
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--carmen) 22%, transparent) 0, transparent 62%);
+  opacity: 0;
+}
+.cs-beat {
+  --beat: min(34vmin, 260px);
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--beat);
+  height: var(--beat);
+  margin: calc(var(--beat) / -2) 0 0 calc(var(--beat) / -2);
+  border: 1px solid var(--carmen);
+  border-radius: 50%;
+  opacity: 0;
+}
+.cs-beat.is-wide { --beat: min(56vmin, 430px); border-color: var(--carmen-whisper); }
+.cs-whisper {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 18ch;
+  margin-left: -9ch;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: clamp(14px, 1.5vw, 17px);
+  line-height: 1.3;
+  text-align: center;
+  color: var(--carmen-whisper);
+  opacity: 0;
+  transform: translate(calc(var(--wx) * min(46vw, 560px)), calc(var(--wy) * min(46vh, 380px)));
+}
+.cs-carmen .cs-line.is-key {
+  max-width: 22ch;
+  font-size: clamp(24px, 3.4vw, 40px);
+  font-weight: 500;
+  line-height: 1.25;
+  color: var(--text);
+  text-shadow: 0 0 32px color-mix(in srgb, var(--carmen) 45%, transparent);
+}
+
+.cs-carmen.is-full .cs-scrim { animation: cs-in 500ms ease-out both; }
+.cs-carmen.is-full .cs-sun { animation: cs-sun 5000ms ease-out 300ms both; }
+.cs-carmen.is-full .cs-beat { animation: cs-beat 3400ms ease-in-out 400ms both; }
+.cs-carmen.is-full .cs-beat.is-wide { animation-delay: 520ms; }
+.cs-carmen.is-full .cs-whisper { animation: cs-whisper 1500ms ease-out var(--wd) both; }
+.cs-carmen.is-full .cs-line.is-key { animation: cs-key 2100ms var(--ease-tactile) 3800ms both; }
+
+.cs-carmen.is-lite .cs-scrim { animation: cs-in 150ms ease-out both; }
+.cs-carmen.is-lite .cs-sun { animation: cs-sun 900ms ease-out both; }
+.cs-carmen.is-lite .cs-beat { display: none; }
+.cs-carmen.is-lite .cs-whisper { animation: cs-whisper 600ms ease-out var(--wd) both; }
+.cs-carmen.is-lite .cs-line.is-key { animation: cs-key 800ms var(--ease-tactile) 100ms both; }
+
 /* ---------- full, 3600 ms ---------- */
 .is-full .cs-scrim { animation: cs-in 400ms ease-out both; }
 .is-full .cs-half.is-top { animation: cs-in 400ms ease-out both, cs-part-up 800ms cubic-bezier(0.7, 0, 0.84, 0) 2200ms forwards; }
@@ -239,6 +303,13 @@ body:has(> .cutscene) .ant-notification { visibility: hidden; }
 .is-still .cs-iris { transform: scale(0.6); }
 .is-still .cs-slit { opacity: 1; transform: scaleY(1) scaleX(6); }
 .is-still .cs-ring { display: none; }
+.is-still .cs-sun { opacity: 1; }
+.is-still .cs-beat { display: none; }
+/* still: the whispers rest half way in, faint */
+.is-still .cs-whisper {
+  opacity: 0.35;
+  transform: translate(calc(var(--wx) * min(30vw, 360px)), calc(var(--wy) * min(30vh, 250px)));
+}
 .is-still .cs-flash,
 .is-still .cs-cut { display: none; }
 .is-still .cs-line.is-key,
@@ -261,6 +332,25 @@ body:has(> .cutscene) .ant-notification { visibility: hidden; }
 @keyframes cs-slit { from { opacity: 0; transform: scaleY(0); } to { opacity: 1; transform: scaleY(1); } }
 @keyframes cs-widen { from { transform: scaleY(1) scaleX(1); } to { transform: scaleY(1) scaleX(12); opacity: 0.4; } }
 @keyframes cs-ring { from { opacity: 0.7; transform: scale(0.2); } to { opacity: 0; transform: scale(1.5); } }
+@keyframes cs-sun { from { opacity: 0; transform: scale(0.4); } to { opacity: 1; transform: scale(1); } }
+/* four slow beats, each a little wider, then gone: one keyframe run, not a loop */
+@keyframes cs-beat {
+  0% { opacity: 0; transform: scale(0.7); }
+  8% { opacity: 0.6; transform: scale(1); }
+  20% { opacity: 0.12; transform: scale(0.92); }
+  32% { opacity: 0.6; transform: scale(1.06); }
+  46% { opacity: 0.12; transform: scale(0.96); }
+  60% { opacity: 0.6; transform: scale(1.12); }
+  76% { opacity: 0.12; transform: scale(1); }
+  90% { opacity: 0.5; transform: scale(1.2); }
+  100% { opacity: 0; transform: scale(1.3); }
+}
+/* a whisper drifts in from the edge toward the light, and fades before it arrives */
+@keyframes cs-whisper {
+  0% { opacity: 0; transform: translate(calc(var(--wx) * min(46vw, 560px)), calc(var(--wy) * min(46vh, 380px))); }
+  35% { opacity: 0.85; }
+  100% { opacity: 0; transform: translate(calc(var(--wx) * min(24vw, 290px)), calc(var(--wy) * min(26vh, 220px))); }
+}
 @keyframes cs-in { from { opacity: 0; } to { opacity: 1; } }
 @keyframes cs-out { to { opacity: 0; } }
 @keyframes cs-part-up { to { transform: translateY(-100%); } }

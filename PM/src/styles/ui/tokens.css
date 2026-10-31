@@ -57,6 +57,10 @@
   --dusk: rgba(4, 3, 5, 0.97);
   --lamp: #e9d9b4;
 
+  /* Carmen's call: the warm white sun of the Light, and the whispers it sends */
+  --carmen: #ffe7b8;
+  --carmen-whisper: #f1d7a6;
+
   --shadow-pop: 0 18px 48px rgba(0, 0, 0, 0.6);
   --dialog-surface: #252127;
   --dialog-border: #746348;

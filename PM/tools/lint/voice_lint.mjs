@@ -53,7 +53,10 @@ for (const [pool, list] of poolOf) for (const e of list) walk(pool, e.id, '', e)
 for (const d of Object.values(DUNGEON_DEFINITIONS)) walk('dungeon', d.id, '', d);
 for (const [id, g] of Object.entries(GAUNTLETS)) walk('dungeon', id, '.gauntlet', g);
 walk('dungeon', 'rest', '', REST_TEXT);
-for (const [id, scene] of Object.entries(CUTSCENES)) walk('cutscene', id, '', scene.lines);
+for (const [id, scene] of Object.entries(CUTSCENES)) {
+  walk('cutscene', id, '', scene.lines);
+  if (scene.whispers) walk('cutscene', id, '.whispers', scene.whispers);
+}
 
 const tally = {};
 const shown = {};

@@ -33,6 +33,19 @@ decree.pendingModal = 'color_title';
 assert.equal(cutsceneFor(base, decree), 'color');
 assert.equal(cutsceneFor(decree, cloneChar(decree)), null, 'the decree scene plays once');
 
+// 2c. Carmen's call plays once, when her event opens, and gives way to death
+const called = cloneChar(base);
+called.pendingEvent = { id: 'ego_carmen_crossroad', choices: [] };
+assert.equal(cutsceneFor(base, called), 'carmen');
+assert.equal(cutsceneFor(called, cloneChar(called)), null, 'the call plays once');
+const otherEvent = cloneChar(base);
+otherEvent.pendingEvent = { id: 'some_other_event', choices: [] };
+assert.equal(cutsceneFor(base, otherEvent), null, 'an ordinary event has no scene');
+const calledDead = cloneChar(called);
+calledDead.alive = false;
+assert.equal(cutsceneFor(base, calledDead), 'death');
+assert(CUTSCENES.carmen.whispers.length >= 6 && CUTSCENES.carmen.whispers.every((w) => w.vi && w.en), 'every whisper is written in both languages');
+
 // 3. Ranks: a stronger scene replaces a weaker one, a weaker or equal one is dropped
 assert.equal(outranks('claw', null), true);
 assert.equal(outranks('death', 'claw'), true);
@@ -59,4 +72,4 @@ for (const [id, scene] of Object.entries(CUTSCENES)) {
   assert(scene.keyDynamic || (scene.lines[scene.keyLine]?.vi && scene.lines[scene.keyLine]?.en), `${id} key line is written in both languages or taken from the roll`);
 }
 
-console.log('Cutscene triggers: Claw on the judgment only, death outranks, ranks never queue, cut selection and scene budgets passed.');
+console.log('Cutscene triggers: Claw on the judgment only, Carmen on her call, death outranks, ranks never queue, cut selection and scene budgets passed.');
