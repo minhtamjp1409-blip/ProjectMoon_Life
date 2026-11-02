@@ -82,13 +82,15 @@ console.log('=== RUNNING CHOICE COST LABEL & BIRTH SETUP TESTS (ĐỢT 114) ==='
   console.log(`✓ Data sweep passed: ${eventCostChoices} event choices and ${minorCostChoices} minor choices checked. All trailing cost suffixes cleanly stripped.`);
 }
 
-// 3. Verify LiveStageFeed.jsx integrates stripCostSuffix
+// 3. Verify LiveStageFeed.jsx integrates stripCostSuffix and labelShowsCost
 {
   const liveFeedSource = fs.readFileSync(path.resolve('src/features/chronicle/components/LiveStageFeed.jsx'), 'utf-8');
   assert.ok(liveFeedSource.includes('stripCostSuffix'), 'LiveStageFeed.jsx must import stripCostSuffix');
   assert.ok(liveFeedSource.includes('costAhn > 0 ? stripCostSuffix('), 'MinorDock must use stripCostSuffix when costAhn > 0');
   assert.ok(liveFeedSource.includes('costDisplay.costAhn > 0 ? stripCostSuffix('), 'EventDock must use stripCostSuffix when costDisplay.costAhn > 0');
   assert.ok(liveFeedSource.includes('app.costAhn > 0 ? stripCostSuffix('), 'ContractDock must use stripCostSuffix when app.costAhn > 0');
+  assert.ok(liveFeedSource.includes('costAhn && !isShortAhn && !labelShowsCost'), 'MinorDock must hide badge when label already states cost');
+  assert.ok(liveFeedSource.includes('costDisplay.costAhn && !costDisplay.isShortAhn && !labelShowsCost'), 'EventDock must hide badge when label already states cost');
   console.log('✓ LiveStageFeed.jsx integration verified for Minor, Event, and Contract choices.');
 }
 
@@ -124,10 +126,16 @@ console.log('=== RUNNING CHOICE COST LABEL & BIRTH SETUP TESTS (ĐỢT 114) ==='
   assert.ok(atlasSource.includes('export function CityBirthAtlasStrip'), 'CityBirthAtlas.jsx must export CityBirthAtlasStrip');
   assert.ok(atlasSource.includes('export function CityAtlasDefs'), 'CityBirthAtlas.jsx must export CityAtlasDefs');
   assert.ok(atlasSource.includes('export function MapInk'), 'CityBirthAtlas.jsx must export MapInk');
+  assert.ok(atlasSource.includes('prefix="atlas-strip"'), 'CityBirthAtlasStrip must use unique defs prefix "atlas-strip"');
+  assert.ok(atlasSource.includes('idPrefix="atlas-strip"'), 'CityBirthAtlasStrip must use unique MapInk idPrefix "atlas-strip"');
+  assert.ok(atlasSource.includes('prefix="city-atlas"'), 'CityBirthAtlas main must use defs prefix "city-atlas"');
+  assert.ok(atlasSource.includes('idPrefix="city-atlas"'), 'CityBirthAtlas main must use MapInk idPrefix "city-atlas"');
 
   const cssSource = fs.readFileSync(path.resolve('src/styles/ui/city-atlas.css'), 'utf-8');
   assert.ok(cssSource.includes('.birth-atlas-strip { display: none; }'), 'city-atlas.css must hide strip on desktop');
   assert.ok(cssSource.includes('@media (max-width: 720px)'), 'city-atlas.css must show strip on mobile <= 720px');
+  assert.ok(cssSource.includes('order: 3;'), 'city-atlas.css must use valid integer order: 3;');
+  assert.ok(!cssSource.includes('order: 2.5;'), 'city-atlas.css must not use invalid fractional order: 2.5;');
 
   console.log('✓ BirthSetupPanel footnote rules and mobile atlas strip verified.');
 }

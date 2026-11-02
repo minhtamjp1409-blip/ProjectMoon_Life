@@ -50,20 +50,20 @@ function districtCell(id) {
 
 const CELLS = Object.fromEntries(CITY_REGIONS.map((region) => [region.id, districtCell(region.id)]));
 
-export function CityAtlasDefs() {
+export function CityAtlasDefs({ prefix = 'city-atlas' }) {
   return (
     <defs>
-      <clipPath id="city-atlas-boundary"><path d={CITY_OUTLINE} /></clipPath>
-      <pattern id="city-atlas-blocks" width="58" height="52" patternUnits="userSpaceOnUse" patternTransform="rotate(-11)">
+      <clipPath id={`${prefix}-boundary`}><path d={CITY_OUTLINE} /></clipPath>
+      <pattern id={`${prefix}-blocks`} width="58" height="52" patternUnits="userSpaceOnUse" patternTransform="rotate(-11)">
         <path d="M 2 2 H 21 V 12 H 2 Z M 25 2 H 55 V 18 H 25 Z M 2 17 H 20 V 32 H 2 Z M 25 23 H 42 V 35 H 25 Z M 46 23 H 56 V 45 H 46 Z M 2 38 H 39 V 50 H 2 Z" />
       </pattern>
-      <pattern id="city-atlas-fine-blocks" width="29" height="27" patternUnits="userSpaceOnUse" patternTransform="rotate(9)">
+      <pattern id={`${prefix}-fine-blocks`} width="29" height="27" patternUnits="userSpaceOnUse" patternTransform="rotate(9)">
         <path d="M 1 2 H 11 V 8 H 1 Z M 14 1 H 27 V 11 H 14 Z M 2 12 H 10 V 24 H 2 Z M 13 15 H 27 V 25 H 13 Z" />
       </pattern>
-      <pattern id="city-atlas-arteries" width="148" height="130" patternUnits="userSpaceOnUse" patternTransform="rotate(-11)">
+      <pattern id={`${prefix}-arteries`} width="148" height="130" patternUnits="userSpaceOnUse" patternTransform="rotate(-11)">
         <path d="M 0 69 H 148 M 79 0 V 130 M 80 6 H 128 V 23 H 80 M 12 82 H 65 V 113 H 12" />
       </pattern>
-      <pattern id="city-atlas-scanlines" width="1000" height="5" patternUnits="userSpaceOnUse">
+      <pattern id={`${prefix}-scanlines`} width="1000" height="5" patternUnits="userSpaceOnUse">
         <path d="M 0 4.5 H 1000" />
       </pattern>
     </defs>
@@ -82,18 +82,18 @@ export function atlasTargetView(regionId) {
   };
 }
 
-export function MapInk({ selected, onSelect, interactive = false, t }) {
+export function MapInk({ selected, onSelect, interactive = false, idPrefix = 'city-atlas', t }) {
   return (
     <>
-      <rect className="atlas-scanlines" x="0" y="0" width="1000" height="760" />
+      <rect className="atlas-scanlines" x="0" y="0" width="1000" height="760" style={{ fill: `url(#${idPrefix}-scanlines)` }} />
       <path className="atlas-wall-shadow" d={WALL_PATH} />
       <path className="atlas-wall" d={WALL_PATH} />
       <path className="atlas-boundary" d={CITY_OUTLINE} />
-      <g clipPath="url(#city-atlas-boundary)">
+      <g clipPath={`url(#${idPrefix}-boundary)`}>
         <rect className="atlas-ground" x="0" y="0" width="1000" height="760" />
-        <rect className="atlas-blocks" x="0" y="0" width="1000" height="760" fill="url(#city-atlas-blocks)" />
-        <rect className="atlas-blocks-fine" x="0" y="0" width="1000" height="760" fill="url(#city-atlas-fine-blocks)" />
-        <rect className="atlas-blocks-large" x="0" y="0" width="1000" height="760" fill="url(#city-atlas-arteries)" />
+        <rect className="atlas-blocks" x="0" y="0" width="1000" height="760" style={{ fill: `url(#${idPrefix}-blocks)` }} />
+        <rect className="atlas-blocks-fine" x="0" y="0" width="1000" height="760" style={{ fill: `url(#${idPrefix}-fine-blocks)` }} />
+        <rect className="atlas-blocks-large" x="0" y="0" width="1000" height="760" style={{ fill: `url(#${idPrefix}-arteries)` }} />
         <g className="atlas-streets" aria-hidden="true">
           <path d="M 72 240 C 320 300 615 208 856 352 M 69 370 C 330 313 605 452 883 422 M 112 520 C 360 452 615 582 858 536 M 220 93 C 280 292 440 460 409 694 M 446 43 C 417 275 576 470 540 709 M 663 145 C 592 346 768 475 739 678" />
           <path d="M 111 315 C 273 380 497 190 825 287 M 142 565 C 389 538 592 361 854 477 M 291 52 C 370 222 302 484 297 665 M 576 101 C 509 303 635 542 630 681" />
@@ -180,16 +180,16 @@ export function CityBirthAtlas({ selected, displayRegion, viewport, moving, star
     <div className="city-birth-atlas">
       <div className="city-birth-atlas-frame">
         <svg className="city-birth-atlas-svg" viewBox={position} role="group" aria-label={t('Bản đồ 26 District của The City và Outskirts', 'Map of the City’s 26 Districts and the Outskirts')} onPointerMove={moveLens} onPointerLeave={() => setPointer(null)}>
-          <CityAtlasDefs />
+          <CityAtlasDefs prefix="city-atlas" />
           <defs>
             <clipPath id="city-atlas-lens"><circle cx={lens[0]} cy={lens[1]} r={lensRadius} /></clipPath>
           </defs>
-          <MapInk selected={activeId} onSelect={onSelect} interactive={!moving} t={t} />
+          <MapInk selected={activeId} onSelect={onSelect} interactive={!moving} idPrefix="city-atlas" t={t} />
           <g className="atlas-lens" aria-hidden="true" pointerEvents="none" style={{ '--atlas-lens-rim': `${14 * lensScale}px`, '--atlas-lens-line': `${2.5 * lensScale}px` }}>
               <g clipPath="url(#city-atlas-lens)">
                 <rect className="atlas-lens-ground" x="0" y="0" width="1000" height="760" />
                 <g transform={`translate(${(1 - lensMagnification) * lens[0]} ${(1 - lensMagnification) * lens[1]}) scale(${lensMagnification})`}>
-                  <MapInk selected={activeId} t={t} />
+                  <MapInk selected={activeId} idPrefix="city-atlas" t={t} />
                 </g>
               </g>
               <circle cx={lens[0]} cy={lens[1]} r={lensRadius} />
@@ -235,8 +235,8 @@ export function CityBirthAtlasStrip({ selectedRegion, region, onClick, t, lang }
     : t('Để The City định đoạt', 'Let The City decide');
 
   const ariaLabel = t(
-    `Bản đồ nơi xuất thân: ${title}. Chạm để cuộn xuống bản đồ đầy đủ.`,
-    `Birthplace map: ${title}. Tap to view full map.`
+    `Xem bản đồ nơi xuất thân: ${title}. Chạm để cuộn xuống bản đồ chi tiết.`,
+    `View map of birthplace: ${title}. Tap to view full map.`
   );
 
   return (
@@ -247,8 +247,8 @@ export function CityBirthAtlasStrip({ selectedRegion, region, onClick, t, lang }
       aria-label={ariaLabel}
     >
       <svg className="birth-atlas-strip-svg" viewBox={viewBox} aria-hidden="true" preserveAspectRatio="xMidYMid slice">
-        <CityAtlasDefs />
-        <MapInk selected={isRandom ? null : activeId} interactive={false} t={t} />
+        <CityAtlasDefs prefix="atlas-strip" />
+        <MapInk selected={isRandom ? null : activeId} interactive={false} idPrefix="atlas-strip" t={t} />
       </svg>
       <div className="birth-atlas-strip-content">
         <div className="birth-atlas-strip-info">

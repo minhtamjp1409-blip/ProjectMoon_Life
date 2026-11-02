@@ -158,23 +158,42 @@ function createMockCharacter(age, logs) {
 
 // 5. Thẻ chương cũ không có trường `kind` (Legacy save backward compatibility)
 {
+  // Đời có 9 mốc cạnh tranh cho 8 chỗ (1 Death + 1 Capo tuổi 25 + 7 mốc job ở các tuổi muộn hơn 26..32).
+  // Nếu Capo không có kind bị nhận diện nhầm là 'job' (400đ), luật hòa điểm lấy mốc muộn hơn sẽ loại tuổi 25
+  // để giữ 7 mốc 26..32 (cùng 400đ).
+  // Chỉ khi Capo được phân loại đúng là 'rank' (500đ), tuổi 25 mới vượt qua các mốc 400đ và được giữ lại trong 8 mốc.
   const logsLegacy = [
     { age: 18, type: 'chapter', titleEn: 'The Thumb', vi: 'The Thumb.', en: 'The Thumb.' },
     { age: 18, type: 'major', id: 'syn_join_18', vi: '[Gia nhập The Thumb] Trở thành thành viên Thumb.', en: '[Joined The Thumb] Joined.' },
     { age: 25, type: 'chapter', titleEn: 'Capo', vi: 'Capo.', en: 'Capo.' }, // Không có `kind`, phải nhận diện là 'rank' (500đ)
     { age: 25, type: 'major', id: 'thumb_capo_25', vi: '[Thăng chức Capo] Lãnh đạo một phân nhánh.', en: '[Promoted Capo] Led a branch.' },
-    { age: 30, type: 'danger', id: 'danger_30', vi: '[Thanh trừng] Sống sót.', en: '[Purge] Survived.' },
-    { age: 35, type: 'death', id: 'log_death_35', vi: '[Kết thúc] Ngã xuống.', en: '[End] Fallen.' }
+    // 7 mốc job cạnh tranh ở các tuổi muộn hơn (mỗi mốc 400đ)
+    { age: 26, type: 'chapter', titleEn: 'Fixer', kind: 'job', vi: 'Fixer.', en: 'Fixer.' },
+    { age: 26, type: 'major', id: 'job_26', vi: '[Công việc 26] Làm việc.', en: '[Job 26] Work.' },
+    { age: 27, type: 'chapter', titleEn: 'Fixer', kind: 'job', vi: 'Fixer.', en: 'Fixer.' },
+    { age: 27, type: 'major', id: 'job_27', vi: '[Công việc 27] Làm việc.', en: '[Job 27] Work.' },
+    { age: 28, type: 'chapter', titleEn: 'Fixer', kind: 'job', vi: 'Fixer.', en: 'Fixer.' },
+    { age: 28, type: 'major', id: 'job_28', vi: '[Công việc 28] Làm việc.', en: '[Job 28] Work.' },
+    { age: 29, type: 'chapter', titleEn: 'Fixer', kind: 'job', vi: 'Fixer.', en: 'Fixer.' },
+    { age: 29, type: 'major', id: 'job_29', vi: '[Công việc 29] Làm việc.', en: '[Job 29] Work.' },
+    { age: 30, type: 'chapter', titleEn: 'Fixer', kind: 'job', vi: 'Fixer.', en: 'Fixer.' },
+    { age: 30, type: 'major', id: 'job_30', vi: '[Công việc 30] Làm việc.', en: '[Job 30] Work.' },
+    { age: 31, type: 'chapter', titleEn: 'Fixer', kind: 'job', vi: 'Fixer.', en: 'Fixer.' },
+    { age: 31, type: 'major', id: 'job_31', vi: '[Công việc 31] Làm việc.', en: '[Job 31] Work.' },
+    { age: 32, type: 'chapter', titleEn: 'Fixer', kind: 'job', vi: 'Fixer.', en: 'Fixer.' },
+    { age: 32, type: 'major', id: 'job_32', vi: '[Công việc 32] Làm việc.', en: '[Job 32] Work.' },
+    { age: 40, type: 'death', id: 'log_death_40', vi: '[Kết thúc] Ngã xuống.', en: '[End] Fallen.' }
   ];
 
-  const charLegacy = createMockCharacter(35, logsLegacy);
+  const charLegacy = createMockCharacter(40, logsLegacy);
   const summaryLegacy = buildLifeSummaryAndLegacy(charLegacy);
   const tpsLegacy = summaryLegacy.turningPoints;
 
-  // Capo ở tuổi 25 phải có mặt trong turning points
-  assert.ok(tpsLegacy.some(tp => tp.age === 25), 'Legacy chapter without kind { titleEn: "Capo" } must be classified as rank and kept');
+  assert.equal(tpsLegacy.length, 8, 'Summary must select exactly 8 turning points under competition');
+  // Capo ở tuổi 25 phải có mặt trong turning points vì được 500 điểm (rank), đánh bại các mốc 400 điểm muộn hơn
+  assert.ok(tpsLegacy.some(tp => tp.age === 25), 'Legacy chapter without kind { titleEn: "Capo" } must score 500 (rank) and beat 400-point jobs');
 
-  console.log('✓ Legacy chapter fallback verified: titles like "Capo" without kind are correctly recognized as rank.');
+  console.log('✓ Legacy chapter fallback verified under competition: titles like "Capo" without kind are correctly scored as rank (500 pts).');
 }
 
 console.log('=== ALL LIFE SUMMARY LANDMARKS TESTS PASSED (100%) ===');

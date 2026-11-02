@@ -319,6 +319,13 @@ const MinorDock = ({ prompt, char, npcs, wealth = 0, remainingMs, paused = false
           {prompt.choices.map((ch, idx) => {
             const costAhn = ch.costAhn ?? sourceChoices[idx]?.costAhn;
             const isShortAhn = Boolean(costAhn && costAhn > wealth);
+            const rawBody = lang === 'en' ? ch.en : ch.vi;
+            const label = costAhn > 0 ? stripCostSuffix(rawBody) : rawBody;
+            const labelShowsCost = costAhn > 0 && (
+              label.includes(`${costAhn} Ahn`) ||
+              (ch.vi && stripCostSuffix(ch.vi).includes(`${costAhn} Ahn`)) ||
+              (ch.en && stripCostSuffix(ch.en).includes(`${costAhn} Ahn`))
+            );
             return (
               <button
                 type="button"
@@ -330,14 +337,14 @@ const MinorDock = ({ prompt, char, npcs, wealth = 0, remainingMs, paused = false
                 <span className="choice-badge">{idx + 1}</span>
                 <span>
                   <span className="choice-label">
-                    {costAhn > 0 ? stripCostSuffix(lang === 'en' ? ch.en : ch.vi) : (lang === 'en' ? ch.en : ch.vi)}
+                    {label}
                     {isShortAhn && (
                       <span className="choice-need">
                         {t(`Thiếu Ahn (Cần ${costAhn})`, `Short Ahn (Needs ${costAhn})`)}
                       </span>
                     )}
                   </span>
-                  {costAhn && !isShortAhn && (
+                  {costAhn && !isShortAhn && !labelShowsCost && (
                     <span className="delta is-static choice-cost-chip">
                       {t(`Tốn ${costAhn} Ahn`, `Cost: ${costAhn} Ahn`)}
                     </span>
@@ -453,6 +460,11 @@ const EventDock = ({ event, char, onPick, dungeonStake, onDungeonStake, onPeek, 
             const check = evaluateDiscoChoiceCheck(ch, char);
             const costDisplay = choiceCostDisplay(ch, char);
             const label = costDisplay.costAhn > 0 ? stripCostSuffix(rawBody) : rawBody;
+            const labelShowsCost = costDisplay.costAhn > 0 && (
+              label.includes(`${costDisplay.costAhn} Ahn`) ||
+              (ch.labelVi && stripCostSuffix(splitTitle(ch.labelVi).body).includes(`${costDisplay.costAhn} Ahn`)) ||
+              (ch.labelEn && stripCostSuffix(splitTitle(ch.labelEn).body).includes(`${costDisplay.costAhn} Ahn`))
+            );
             const blocked = !choiceIsAvailable(ch, char);
             const item = ITEMS_CATALOG.find(i => i.id === (ch.useItem || ch.need?.item));
             let blockedReason = null;
@@ -466,7 +478,7 @@ const EventDock = ({ event, char, onPick, dungeonStake, onDungeonStake, onPeek, 
             }
             const extra = [];
             if (item && !ch.useItem && !blocked) extra.push(<span className="delta is-static" key="item">{t('Cần trang bị: ', 'Requires: ')}{lang === 'en' ? item.nameEn : item.nameVi}</span>);
-            if (costDisplay.costAhn && !costDisplay.isShortAhn) {
+            if (costDisplay.costAhn && !costDisplay.isShortAhn && !labelShowsCost) {
               extra.push(
                 <span className="delta is-static" key="costAhn">
                   {t(costDisplay.costVi, costDisplay.costEn)}

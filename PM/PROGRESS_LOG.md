@@ -2436,23 +2436,26 @@ Hai cảnh mà kế hoạch để "sau". Từ đây danh mục cảnh C1 đến 
   * Đảo điều kiện nhận diện nghề cũ: phân loại theo tập `LEGACY_JOB_TITLES` (`'Fixer'`, `'Syndicate'`, `'Wing Employee'`, `'Workshop Craftsman'`, `'Outcast'`) hoặc `/^The /` -> `'job'` (400đ); toàn bộ các thẻ tước hiệu còn lại (`Capo`, `Underboss`, `Feather Agent`, v.v. không có trường `kind`) mặc định nhận diện chính xác là `'rank'` (500đ).
   * Bổ sung test kiểm chứng trong `test_life_summary_landmarks.mjs` bảo đảm save cũ có thẻ `{ titleEn: 'Capo' }` không bị xếp nhầm thành `'job'`.
 * **114a. Bỏ chi phí hiện hai lần trên nhãn lựa chọn (`src/engine/eventConditions.js`, `LiveStageFeed.jsx`):**
-  * **Vấn đề:** Nhiều lựa chọn trong dữ liệu sự kiện (`ALL_STORY_EVENTS`) và lựa chọn nhỏ (`LIFE_MINORS`) đã có sẵn giá tiền trong ngoặc ở cuối nhãn (ví dụ `(-1 Ahn)`, `(Tốn 40 Ahn)`, `(Cost 40 Ahn)`). Khi lựa chọn có `costAhn`, giao diện hiển thị thêm badge chi phí khiến người chơi đọc cùng một giá hai lần.
-  * **Giải pháp:** Thẻ badge là nơi duy nhất hiển thị chi phí.
+  * **Vấn đề:** Nhiều lựa chọn trong dữ liệu sự kiện (`ALL_STORY_EVENTS`) và lựa chọn nhỏ (`LIFE_MINORS`) đã có sẵn giá tiền trong ngoặc ở cuối nhãn (ví dụ `(-1 Ahn)`, `(Tốn 40 Ahn)`, `(Cost 40 Ahn)`). Khi lựa chọn có `costAhn`, giao diện hiển thị thêm badge chi phí khiến người chơi đọc cùng một giá hai lần. Đồng thời, có 146 nhãn viết giá trực tiếp trong câu ("Chi 25 Ahn...", "Spend 20 Ahn...").
+  * **Giải pháp:** Thẻ badge là nơi duy nhất hiển thị chi phí khi nhãn chưa có giá.
     * Xây dựng hàm `stripCostSuffix(label)` trong `eventConditions.js` để lọc bỏ phần ngoặc cuối nhãn khi chứa giá tiền Ahn: `/\s*\(\s*(?:tốn\s+|cost\s+)?-?\s*(?:\d+|\{debtBalance\})\s*ahn\s*\)\s*$/i`.
     * Chỉ kích hoạt khi lựa chọn có `costAhn > 0`. Giữ nguyên 100% nhãn không có giá máy đọc được hoặc có ngoặc ghi chú không phải giá tiền (ví dụ `(nếu còn sức)`).
-    * Áp dụng tại toàn bộ các dock hiển thị lựa chọn: `MinorDock`, `EventDock` (kể cả nhãn song ngữ), và `ContractDock` trong `LiveStageFeed.jsx`. Bỏ điều kiện chặn chip giá để badge luôn xuất hiện đồng nhất.
+    * Áp dụng tại toàn bộ các dock hiển thị lựa chọn: `MinorDock`, `EventDock` (kể cả nhãn song ngữ), và `ContractDock` trong `LiveStageFeed.jsx`.
+    * Khôi phục kiểm tra `labelShowsCost` trên nhãn sau khi đã cắt đuôi giá: nếu câu văn đã chứa giá tiền (146 nhãn Finger/Syndicate...), chip badge không hiện thêm để tránh lặp hai lần; nếu câu văn chỉ có giá ở ngoặc đuôi, ngoặc bị cắt và chip badge hiển thị giá chuẩn mực.
 * **114b. Luật thời gian và dải bản đồ di động ở màn khai sinh (`BirthSetupPanel.jsx`, `CityBirthAtlas.jsx`, `city-atlas.css`):**
   * **Luật thời gian:** Thay thế dòng chú thích cũ dưới nút bắt đầu bằng hai câu ngắn chuẩn xác theo cơ chế thực tế của engine:
     - Tiếng Việt: *"Một năm trôi trong 30 giây. Lựa chọn lớn dừng đồng hồ chờ bạn; lựa chọn nhỏ có hạn giờ, hết giờ thì đời đi tiếp."* và *"Tự lưu sau mỗi lựa chọn."*
     - Tiếng Anh: *"A year passes in 30 seconds. Major choices pause the clock to wait for you; minor choices have a timer, and when time runs out life moves on."* và *"Saved after every choice."*
   * **Dải bản đồ thu nhỏ trên di động (`CityBirthAtlasStrip`):**
-    - Màn hình nhỏ (≤ 720px): Đặt một dải ngang thấp (~116px) cắt ngang từ SVG bản đồ The City tại vị trí `order: 2.5` (ngay dưới tiêu đề trang và trên form khai sinh).
-    - Tái sử dụng 100% hình học SVG của `CityBirthAtlas` qua `CityAtlasDefs` và `MapInk`, không vẽ thêm hình mới.
-    - Tự động căn tâm và tô sáng District đang chọn (hoặc khu vực trung tâm nếu "Ngẫu nhiên"), hiển thị tên District, tên hiệu và nút điều hướng rõ ràng.
-    - Chạm vào dải sẽ cuộn mượt xuống bản đồ lớn (`.opening-atlas`) và đưa focus vào đó. Đặt nhãn ARIA đầy đủ cho trình đọc màn hình.
+    - Màn hình nhỏ (≤ 720px): Đặt một dải ngang thấp (~116px) cắt ngang từ SVG bản đồ The City tại vị trí `order: 3;` (hợp lệ theo CSS specification; nhờ đứng trước trong DOM nên nằm ngay dưới tiêu đề trang và trên form khai sinh).
+    - Tách biệt bộ SVG Defs prefix (`city-atlas` cho bản đồ lớn, `atlas-strip` cho dải): bảo đảm trên desktop khi dải bị `display: none` thì bản đồ lớn và kính lúp vẫn hiển thị 100% hoa văn lưới khối nhà và đường xá.
+    - Màu nền và nút bấm trong dải chuyển hoàn toàn sang design token bằng `color-mix(in srgb, var(--atlas-surface) ..., transparent)`.
+    - Chuẩn hóa `aria-label` bắt đầu bằng đúng chữ hiển thị "Xem bản đồ" / "View map" (đáp ứng trọn vẹn WCAG 2.5.3 Label in Name).
+    - Chạm vào dải sẽ cuộn mượt xuống bản đồ lớn (`.opening-atlas`) và đưa focus vào đó.
     - Màn hình desktop (> 720px): Ẩn hoàn toàn (`display: none;`), giữ nguyên bố cục nguyên bản.
 * **Kiểm định toàn bộ:**
-  - Viết mới `tests/test_choice_cost_label.mjs`: quét 104 lựa chọn sự kiện và 14 lựa chọn nhỏ có `costAhn`, kiểm tra các mẫu ngoặc và bảo đảm không còn giá thừa; xác nhận tích hợp ở `LiveStageFeed.jsx` và nội dung luật/strip ở `BirthSetupPanel.jsx`.
+  - Viết mới `tests/test_choice_cost_label.mjs`: quét 104 lựa chọn sự kiện và 14 lựa chọn nhỏ có `costAhn`, kiểm tra các mẫu ngoặc và bảo đảm không còn giá thừa; xác nhận `labelShowsCost` hoạt động đồng nhất, `order: 3;` hợp lệ và phân tách ID prefix an toàn.
+  - Nâng cấp Test 5 trong `tests/test_life_summary_landmarks.mjs`: thiết lập 9 mốc cạnh tranh cho 8 chỗ (1 Death + Capo tuổi 25 + 7 mốc job 400đ ở các tuổi muộn hơn 26..32), chứng minh bằng toán học Capo không có `kind` đạt 500 điểm (`rank`) và đánh bại các mốc 400đ muộn hơn.
   - Toàn bộ 74+ test suites chạy qua 100% (bao gồm 500-khoảnh khắc audit).
   - Voice lint: 33.293 chuỗi đạt 0 lỗi, 0 cảnh báo.
   - Build Vite hoàn tất sạch bóng.
