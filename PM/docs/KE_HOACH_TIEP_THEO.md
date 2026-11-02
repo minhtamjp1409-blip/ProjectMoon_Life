@@ -17,7 +17,7 @@ Mỗi đợt dưới đây được commit riêng, ghi vào `PROGRESS_LOG.md`, p
 | 115 | Gộp daily của năm yên ả | lớn | đã xong |
 | 115 | Tự lướt năm yên ả | vừa | đã xong |
 | 116 | Thẻ chương khi mất một NPC thân thiết | vừa | đã xong |
-| 117 | Đo và gọn dock hầm ngục trên điện thoại | vừa | đo trước, làm sau |
+| 117 | Đo và gọn dock hầm ngục trên điện thoại | vừa | đã xong |
 | 118 | Gọn thẻ minor, thẻ chương khi trượt kỳ thi, thử trình đọc màn hình | vừa | chưa làm |
 | (chủ dự án) | Nghe thử âm thanh trên điện thoại và tai nghe | nhỏ | chờ chủ dự án |
 

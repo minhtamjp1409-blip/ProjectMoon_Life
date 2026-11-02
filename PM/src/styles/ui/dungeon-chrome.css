@@ -186,21 +186,85 @@
   .dg-head {
     gap: 6px;
     padding-top: 4px;
-    padding-bottom: 12px;
+    padding-bottom: 10px;
   }
   .dg-hazard {
     font-size: 12px;
     padding: 1px 6px;
   }
-  .dg-status { grid-template-columns: 1fr; gap: 12px; }
+  /* Đợt 117: Giữ strain và haul trên cùng 1 hàng ngang để tiết kiệm ~50px chiều cao */
+  .dg-status {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .dg-status > .dg-strain { flex: 1 1 auto; }
+  .dg-status > .dg-haul { flex: 0 0 auto; text-align: right; }
+  .dg-status > .dg-haul .dg-label { margin-bottom: 2px; }
+  .dg-status > .dg-haul-val b { font-size: 18px; }
+  .dg-judgment-note { text-align: right; }
+  .dg-judgment-warning { padding: 5px 8px; font-size: 12.5px; line-height: 1.4; }
+
   .dg-supply kbd, .dg-leave-btn kbd { display: none; }
   .dg-stance, .dg-supply, .dg-hand-summary, .dg-leave-btn, .dg-foe-help summary { min-height: 44px; }
   .dg-stance { font-size: 13px; gap: 4px; padding: 0 4px; }
   .dg-card { flex-basis: 144px; min-height: 210px; }
   .dg-hand-cards { -webkit-overflow-scrolling: touch; }
+
+  /* Đợt 117: Gom thế đánh và vật phẩm vào một hàng ngang trên cùng, vùng chạm tối thiểu 44px */
+  .dg-tools { padding: 6px 0; gap: 6px; }
+  .dg-tactics-bar {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    align-items: center;
+    gap: 8px;
+    padding: 2px 0;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .dg-tactics-bar::-webkit-scrollbar { display: none; }
+  .dg-stances {
+    flex: 0 0 auto;
+    display: inline-flex;
+    gap: 2px;
+  }
+  .dg-supplies {
+    flex: 0 0 auto;
+    display: inline-flex;
+    flex-wrap: nowrap;
+    gap: 6px;
+    align-items: center;
+  }
+  .dg-supply {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+  .dg-supply-count {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+  .dg-tools-note { display: none; }
 }
 
 @media (max-width: 480px) {
-  .dg-head .dock-title { font-size: 20px; }
+  .dg { gap: 10px; }
+  .dg-head {
+    gap: 4px;
+    padding-top: 2px;
+    padding-bottom: 6px;
+  }
+  .dg-head .dock-title { font-size: 18px; line-height: 1.2; }
+  .dg-ambient { font-size: 13px; line-height: 1.4; }
+  .dg-status { gap: 8px; }
+  .dg-scene { gap: 6px; }
+  .dg-scene-title { font-size: 17px; }
+  .dg-scene .dock-text { font-size: 13.5px; line-height: 1.45; margin: 0; }
+  .dg-foe { padding: 8px 10px; gap: 4px; }
+  .dg-foe-guard { gap: 3px; }
+  .dg-intent-name { font-size: 16px; }
+  .dg-choices { gap: 6px; margin-top: 4px; }
+  .dg-choice { min-height: 44px; padding: 8px 10px; }
   .dg-card { flex-basis: 136px; min-height: 200px; padding: 10px; }
 }

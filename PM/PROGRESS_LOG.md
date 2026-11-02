@@ -2509,21 +2509,51 @@ Hai cảnh mà kế hoạch để "sau". Từ đây danh mục cảnh C1 đến 
       + `partner`: *"Một chiếc bóng quen thuộc không còn bước cạnh bạn trên đường về."* / *"A familiar shadow no longer walks beside you on the way home."*
       + `mentor`: *"Người dẫn đường của bạn đã nằm lại trong lòng The City."* / *"Your guide has fallen into the belly of the City."*
       + `friend`: *"Chiếc ghế quen ở quán ăn cũ từ nay bỏ trống."* / *"A familiar seat at the old diner now sits empty."*
+      + `lover`: *"Lời hẹn cùng nhau rời đi đã vĩnh viễn dang dở."* / *"The promise to leave together is left forever unfinished."*
+      + `child`: *"Đứa trẻ bạn từng che chở đã không thể lớn lên giữa The City."* / *"The child you once shielded could not grow up in the City."*
+    - Ngưỡng gắn kết: `spouse`, `lover`, `mentor`, `child` kích hoạt từ Bond ≥ 40 (do quan hệ thân thuộc bản chất); `friend`, `partner` giữ ngưỡng Bond ≥ 50.
     - Loại thẻ `kind: 'loss'`, chỉ là một mục trong dòng sự kiện biên niên sử, không có nút dừng và không làm nghẽn nhịp chơi.
   * **Thứ tự ưu tiên (Thẻ lớn nhất thắng):**
     - Luật một commit tối đa một thẻ được bảo toàn tuyệt đối: `Color Fixer > Distortion > E.G.O > Job > Rank > Loss`. Nếu lên Color hoặc thăng cấp trong cùng commit, thẻ lớn hơn sẽ được ưu tiên.
   * **Điểm mốc di cảo (`gameEngine.js`):**
     - `getLandmarkScore` tích hợp `kinds?.has('loss') || deceasedAges.has(lm.age)` đạt 300 điểm, bảo toàn sự kiện mất người thân trong danh sách các mốc bước ngoặt cuộc đời.
   * **Kiểm định văn phong (`voice_lint.mjs`):**
-    - Tích hợp `CHAPTER_LOSS_LINES` vào bộ quét `voice_lint.mjs`: Toàn bộ 33.301 chuỗi văn bản đạt 0 lỗi (không em-dash, không emoji, không dấu than ngoài thoại, chuẩn hóa thuật ngữ The City).
+    - Tích hợp `CHAPTER_LOSS_LINES` vào bộ quét `voice_lint.mjs`: Toàn bộ 33.305 chuỗi văn bản đạt 0 lỗi (không em-dash, không emoji, không dấu than ngoài thoại, chuẩn hóa thuật ngữ The City).
 * **Kiểm thử chuyên sâu (`tests/test_chapters.mjs`):**
   * Mentor Bond 70 mất: sinh thẻ chương loại `loss` với đúng tên và câu chia ly của mentor.
   * Friend Bond 30 mất: không sinh thẻ vì Bond < 50.
+  * Lover Bond 45 và Child Bond 42: sinh thẻ chương chính xác với ngưỡng 40.
   * Cứu mạng Savior trong cùng commit: không sinh thẻ trùng lặp.
   * NPC đã mất từ các commit trước: không sinh lại thẻ ở các năm sau.
   * Color Fixer trong cùng commit: Color Fixer thắng, không sinh thẻ loss.
-  * Kiểm chứng đầy đủ câu chia ly cho cả 4 vai (`spouse`, `partner`, `mentor`, `friend`).
+  * Kiểm chứng đầy đủ câu chia ly cho cả 6 vai (`spouse`, `lover`, `partner`, `mentor`, `friend`, `child`).
   * Toàn bộ 76 test suites và mô phỏng audit 500 khoảnh khắc đạt 100% thành công.
+
+## Đợt 117: Đo và gọn dock hầm ngục trên điện thoại (02/11/2026)
+
+* **Mục tiêu & Phương pháp:**
+  * Đảm bảo trên màn hình hẹp điện thoại chuẩn (viewport `390x844`), lựa chọn đầu tiên của hầm ngục luôn nằm trọn vẹn trong màn đầu (không cần cuộn màn hình để thấy lựa chọn).
+  * Thực hiện theo nguyên tắc "đo trước, làm sau" cho 3 hầm ngục tiêu biểu: WARP Train (`dungeon_warp_train`), Great Lake (`dungeon_great_lake`), và Claw Judgment (`dungeon_claw_judgment`).
+* **Bước 1 - Đo đạc hiện trạng (trên viewport 390x844):**
+  * Sử dụng công cụ đo thực tế Chrome CDP (`tools/qa/measure_dungeon_mobile.mjs`):
+    - `WARP Train`: Choice 1 bottom = **1058px** (vượt màn đầu **+214px**, CẦN CUỘN).
+    - `Great Lake`: Choice 1 bottom = **1017px** (vượt màn đầu **+173px**, CẦN CUỘN).
+    - `Claw Judgment`: Choice 1 bottom = **1079px** (vượt màn đầu **+235px**, CẦN CUỘN).
+  * Nguyên nhân: Khối trạng thái `.dg-status` xếp chồng 2 hàng (cao ~98px), thanh thao tác `.dg-tactics-bar` để `flex-wrap: wrap` khiến thế đánh và vật phẩm rơi thành nhiều hàng xếp chồng (cao 160px - 221px), đẩy lựa chọn xuống sâu dưới đáy màn hình.
+* **Bước 2 - Tối ưu gọn dock trên mobile (`src/styles/ui/dungeon-chrome.css`):**
+  * Trong breakpoint `@media (max-width: 860px)` và `@media (max-width: 480px)`:
+    - Gom `.dg-tactics-bar` thành 1 hàng ngang duy nhất (`flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch;`). Thế đánh (`.dg-stances`) và vật phẩm (`.dg-supplies`) nằm cùng hàng, cuộn ngang mượt mà.
+    - Đảm bảo vùng chạm tối thiểu chuẩn WCAG/mobile **44px** (`min-height: 44px; min-width: 44px;`).
+    - Ẩn dòng chú thích thừa trên mobile (`.dg-tools-note { display: none; }`).
+    - Chuyển `.dg-status` sang flex 1 hàng (`display: flex; justify-content: space-between; align-items: center;`) để thanh áp lực tâm thần và phần Ahn thu hoạch nằm cùng 1 dòng, giảm hơn 50px chiều cao.
+    - Tinh chỉnh padding, gap và cỡ chữ dòng tiêu đề/nội dung cảnh trên màn hình nhỏ `<= 480px`.
+    - **Desktop giữ nguyên 100%**: Không ảnh hưởng layout desktop (`> 860px`).
+* **Kết quả kiểm chứng thực nghiệm sau tối ưu (Viewport 390x844):**
+  * `WARP Train`: Choice 1 bottom = **797px** (dư **47px**, **ĐẠT**).
+  * `Great Lake`: Choice 1 bottom = **782px** (dư **62px**, **ĐẠT**).
+  * `Claw Judgment`: Choice 1 bottom = **839px** (dư **5px**, **ĐẠT**).
+  * Toàn bộ 3 hầm ngục đều đưa lựa chọn đầu tiên vào trọn vẹn màn đầu mà không cần cuộn, không tràn ngang, thanh cuộn ẩn sạch sẽ.
+  * Độ tương phản văn bản đạt chuẩn Đợt 107. Build Vite và toàn bộ 76 test suites qua 100%.
 
 
 
