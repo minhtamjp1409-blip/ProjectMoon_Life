@@ -287,7 +287,7 @@
 .dock-kicker.is-causal .dock-kicker-icon { color: var(--rare); }
 .dock-kicker.is-outcome .dock-kicker-icon { color: var(--good); }
 .dock-kicker.is-dead, .dock-kicker.is-dead .dock-kicker-icon { color: var(--bad); }
-.dock-hotkey-hint { font-size: 12.5px; color: var(--muted); white-space: nowrap; }
+.dock-hotkey-hint { font-size: 12.5px; color: var(--page-muted, #c4baa9); white-space: nowrap; }
 .dock-title { font-family: var(--serif); font-size: 26px; font-weight: 600; line-height: 1.2; text-wrap: balance; margin: 0; }
 .dock-text { font-family: var(--serif); font-size: var(--story-size); line-height: var(--story-lead); color: var(--story); text-wrap: pretty; white-space: pre-line; }
 .dock .entry-alt { color: var(--muted); }
@@ -503,7 +503,6 @@
   .yearline { margin-top: 34px; }
   .chronicle-docket-header { margin-bottom: 16px; padding-bottom: 8px; }
   .docket-serial-code { display: none; }
-  .chronicle-horizon-card { margin-top: 28px; padding: 14px 0 0; }
 
   /* Mobile floating thumb advance bar */
   .mobile-thumb-bar {
@@ -591,7 +590,6 @@
 
 @media (max-width: 480px) {
   .log-col { padding: 16px 12px 88px; }
-  .chronicle-horizon-card { margin-top: 24px; padding: 12px 0 0; }
   .entry-text { font-size: calc(var(--story-size) - 1.5px); line-height: 1.62; }
   .entry.t-quiet .entry-text,
   .entry-fold > summary { font-size: calc(var(--story-size) - 2.5px); }
