@@ -3121,7 +3121,7 @@ export function buildLifeSummaryAndLegacy(char) {
     if (kinds?.has('job') || entry.id?.startsWith('ad_career_')) {
       return 400;
     }
-    if (deceasedAges.has(lm.age)) {
+    if (kinds?.has('loss') || deceasedAges.has(lm.age)) {
       return 300;
     }
     if (lm.type === 'danger' || entry.type === 'danger') {

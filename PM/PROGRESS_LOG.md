@@ -2496,6 +2496,36 @@ Hai cảnh mà kế hoạch để "sau". Từ đây danh mục cảnh C1 đến 
   * Voice lint: 33.293 chuỗi đạt 0 lỗi, 0 cảnh báo.
   * Build Vite thành công sạch sẽ.
 
+## Đợt 116: Thẻ chương khi mất một NPC thân thiết (02/11/2026)
+
+* **Mục tiêu & Thiết kế (`src/engine/chapters.js`, `src/engine/gameEngine.js`, `tools/lint/voice_lint.mjs`):**
+  * **Nhận diện NPC thân thiết mất trong lần commit:**
+    - Khi một NPC thuộc các vai gắn bó mật thiết (`partner`, `spouse`, `mentor`, `friend`) có mức gắn kết cao (`bond >= 50`), chuyển trạng thái sang `deceased: true` hoặc `status: 'dead'` trong commit hiện tại (`!isDead(prevNpc) && isDead(nextNpc)`).
+    - Tự động bỏ qua nếu cùng commit đó đã phát cảnh savior C7 (`next.usedDeathSave && !prev.usedDeathSave`), tránh lặp lại vì cảnh savior toàn màn hình đã nói thay biến cố này.
+  * **Nội dung thẻ chương trang trọng theo vai:**
+    - Thẻ mang tiêu đề là tên người đã mất (`titleVi: npc.nameVi || npc.name`, `titleEn: npc.nameEn || npc.name`).
+    - Dòng phụ (`subVi` / `subEn`) mang âm hưởng Project Moon, chiêm nghiệm nỗi mất mát theo từng vai trò:
+      + `spouse`: *"Người từng thức cùng bạn qua những đêm dài đã không còn thức giấc."* / *"The one who kept watch through long nights with you will not wake again."*
+      + `partner`: *"Một chiếc bóng quen thuộc không còn bước cạnh bạn trên đường về."* / *"A familiar shadow no longer walks beside you on the way home."*
+      + `mentor`: *"Người dẫn đường của bạn đã nằm lại trong lòng The City."* / *"Your guide has fallen into the belly of the City."*
+      + `friend`: *"Chiếc ghế quen ở quán ăn cũ từ nay bỏ trống."* / *"A familiar seat at the old diner now sits empty."*
+    - Loại thẻ `kind: 'loss'`, chỉ là một mục trong dòng sự kiện biên niên sử, không có nút dừng và không làm nghẽn nhịp chơi.
+  * **Thứ tự ưu tiên (Thẻ lớn nhất thắng):**
+    - Luật một commit tối đa một thẻ được bảo toàn tuyệt đối: `Color Fixer > Distortion > E.G.O > Job > Rank > Loss`. Nếu lên Color hoặc thăng cấp trong cùng commit, thẻ lớn hơn sẽ được ưu tiên.
+  * **Điểm mốc di cảo (`gameEngine.js`):**
+    - `getLandmarkScore` tích hợp `kinds?.has('loss') || deceasedAges.has(lm.age)` đạt 300 điểm, bảo toàn sự kiện mất người thân trong danh sách các mốc bước ngoặt cuộc đời.
+  * **Kiểm định văn phong (`voice_lint.mjs`):**
+    - Tích hợp `CHAPTER_LOSS_LINES` vào bộ quét `voice_lint.mjs`: Toàn bộ 33.301 chuỗi văn bản đạt 0 lỗi (không em-dash, không emoji, không dấu than ngoài thoại, chuẩn hóa thuật ngữ The City).
+* **Kiểm thử chuyên sâu (`tests/test_chapters.mjs`):**
+  * Mentor Bond 70 mất: sinh thẻ chương loại `loss` với đúng tên và câu chia ly của mentor.
+  * Friend Bond 30 mất: không sinh thẻ vì Bond < 50.
+  * Cứu mạng Savior trong cùng commit: không sinh thẻ trùng lặp.
+  * NPC đã mất từ các commit trước: không sinh lại thẻ ở các năm sau.
+  * Color Fixer trong cùng commit: Color Fixer thắng, không sinh thẻ loss.
+  * Kiểm chứng đầy đủ câu chia ly cho cả 4 vai (`spouse`, `partner`, `mentor`, `friend`).
+  * Toàn bộ 76 test suites và mô phỏng audit 500 khoảnh khắc đạt 100% thành công.
+
+
 
 ## Phụ lục A: Bản tổng hợp thiết kế ngày 29/10/2026
 

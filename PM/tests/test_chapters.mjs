@@ -95,4 +95,84 @@ assert.equal(framesAsMajor(card), false, 'a chapter is not drawn as a framed tur
 const dead = step(store().char, { alive: false });
 assert(!buildLifeSummaryAndLegacy(dead).turningPoints.some((tp) => tp.type === 'chapter'), 'chapters are not epitaph landmarks');
 
-console.log('Chapters: trades taken up and left, Grades, Finger, Wing and independent Syndicate ranks 1-3, E.G.O, Distortion and Color each write one card; store, tiers and epitaph passed.');
+// 10. Đợt 116: Thẻ chương khi mất một NPC thân thiết (Bond >= 50)
+// a. Mentor Bond 70 mất thì có thẻ chương với câu chia ly theo vai
+const cMentor = adult('chapter-mentor');
+cMentor.npcs = {
+  mentor: { id: 'npc_mentor', nameVi: 'Sư Phụ Gwan', nameEn: 'Master Gwan', bond: 70, deceased: false, status: 'active' }
+};
+const mentorDied = step(cMentor, {
+  npcs: {
+    mentor: { ...cMentor.npcs.mentor, deceased: true, status: 'dead', fateAge: cMentor.age }
+  }
+});
+const mentorLossCard = chapterFor(cMentor, mentorDied);
+assert.equal(mentorLossCard?.type, 'chapter');
+assert.equal(mentorLossCard?.kind, 'loss');
+assert.equal(mentorLossCard?.titleVi, 'Sư Phụ Gwan');
+assert.equal(mentorLossCard?.titleEn, 'Master Gwan');
+assert.match(mentorLossCard?.subVi, /Người dẫn đường của bạn đã nằm lại trong lòng The City/);
+assert.match(mentorLossCard?.subEn, /Your guide has fallen into the belly of the City/);
+
+// b. Friend Bond 30 mất: Bond < 50 không sinh thẻ
+const cFriendLow = adult('chapter-friend-low');
+cFriendLow.npcs = {
+  friend: { id: 'npc_friend', nameVi: 'Bong-pal', nameEn: 'Bong-pal', bond: 30, deceased: false, status: 'active' }
+};
+const friendDied = step(cFriendLow, {
+  npcs: {
+    friend: { ...cFriendLow.npcs.friend, deceased: true, status: 'dead', fateAge: cFriendLow.age }
+  }
+});
+assert.equal(chapterFor(cFriendLow, friendDied), null, 'friend with bond 30 writes no chapter card');
+
+// c. Savior cùng commit thì không ghi thẻ (cảnh C7 savior đã nói thay)
+const cSavior = adult('chapter-savior');
+cSavior.usedDeathSave = false;
+cSavior.npcs = {
+  partner: { id: 'npc_partner', nameVi: 'So-yeon', nameEn: 'So-yeon', bond: 85, deceased: false, status: 'active' }
+};
+const saviorCommit = step(cSavior, {
+  usedDeathSave: true,
+  npcs: {
+    partner: { ...cSavior.npcs.partner, deceased: true, status: 'dead', fateAge: cSavior.age }
+  }
+});
+assert.equal(chapterFor(cSavior, saviorCommit), null, 'savior death save writes no loss chapter card');
+
+// d. NPC đã mất từ commit trước không ghi lại
+const nextYear = step(mentorDied, { age: mentorDied.age + 1 });
+assert.equal(chapterFor(mentorDied, nextYear), null, 'already deceased companion writes no card on subsequent commits');
+
+// e. Thẻ lớn hơn cùng commit thắng: Color Fixer thăng cấp cùng lúc với người thân mất -> Color Fixer thắng
+const colorAndLoss = step(mentorDied, {
+  flags: [...mentorDied.flags, 'ColorFixer'],
+  fixerGrade: 0
+});
+const colorCard = chapterFor(cMentor, colorAndLoss);
+assert.equal(colorCard?.kind, 'color', 'Color Fixer outranks companion loss card');
+assert.equal(colorCard?.titleVi, 'Color Fixer');
+
+// f. Các vai spouse, partner, friend (Bond >= 50) có câu tương ứng
+const cSpouse = adult('chapter-spouse');
+cSpouse.npcs = { spouse: { nameVi: 'Eun-ji', nameEn: 'Eun-ji', bond: 60, deceased: false, status: 'active' } };
+const spouseDied = step(cSpouse, { npcs: { spouse: { ...cSpouse.npcs.spouse, deceased: true, status: 'dead' } } });
+const spouseCard = chapterFor(cSpouse, spouseDied);
+assert.equal(spouseCard?.kind, 'loss');
+assert.match(spouseCard?.subVi, /Người từng thức cùng bạn qua những đêm dài/);
+
+const cPartner = adult('chapter-partner');
+cPartner.npcs = { partner: { nameVi: 'Jin-woo', nameEn: 'Jin-woo', bond: 55, deceased: false, status: 'active' } };
+const partnerDied = step(cPartner, { npcs: { partner: { ...cPartner.npcs.partner, deceased: true, status: 'dead' } } });
+const partnerCard = chapterFor(cPartner, partnerDied);
+assert.equal(partnerCard?.kind, 'loss');
+assert.match(partnerCard?.subVi, /Một chiếc bóng quen thuộc không còn bước cạnh bạn/);
+
+const cFriendHigh = adult('chapter-friend-high');
+cFriendHigh.npcs = { friend: { nameVi: 'Min-ho', nameEn: 'Min-ho', bond: 50, deceased: false, status: 'active' } };
+const friendHighDied = step(cFriendHigh, { npcs: { friend: { ...cFriendHigh.npcs.friend, deceased: true, status: 'dead' } } });
+const friendCard = chapterFor(cFriendHigh, friendHighDied);
+assert.equal(friendCard?.kind, 'loss');
+assert.match(friendCard?.subVi, /Chiếc ghế quen ở quán ăn cũ từ nay bỏ trống/);
+
+console.log('Chapters: trades taken up and left, Grades, Finger, Wing, independent Syndicate, E.G.O, Distortion, Color, companion loss, store, tiers and epitaph passed.');

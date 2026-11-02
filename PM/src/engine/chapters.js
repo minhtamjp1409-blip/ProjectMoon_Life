@@ -2,8 +2,27 @@ import { FINGER_RANKS } from '../data/worldData.js';
 import { INDEPENDENT_SYNDICATE_RANKS, WING_RANKS } from './gameEngine.js';
 
 // A chapter card in the chronicle: the life has turned (a trade taken up or left, a rank climbed, an E.G.O,
-// a Distortion, a Color). One commit writes at most one card, for the biggest change in it. A rank that falls,
-// or a trade kept, writes none.
+// a Distortion, a Color, or a close companion fallen). One commit writes at most one card, for the biggest
+// change in it. A rank that falls, or a trade kept, writes none.
+
+export const CHAPTER_LOSS_LINES = {
+  spouse: {
+    vi: 'Người từng thức cùng bạn qua những đêm dài đã không còn thức giấc.',
+    en: 'The one who kept watch through long nights with you will not wake again.'
+  },
+  partner: {
+    vi: 'Một chiếc bóng quen thuộc không còn bước cạnh bạn trên đường về.',
+    en: 'A familiar shadow no longer walks beside you on the way home.'
+  },
+  mentor: {
+    vi: 'Người dẫn đường của bạn đã nằm lại trong lòng The City.',
+    en: 'Your guide has fallen into the belly of the City.'
+  },
+  friend: {
+    vi: 'Chiếc ghế quen ở quán ăn cũ từ nay bỏ trống.',
+    en: 'A familiar seat at the old diner now sits empty.'
+  }
+};
 
 const JOBS = {
   Fixer: { vi: 'Fixer', en: 'Fixer' },
@@ -76,5 +95,30 @@ export function chapterFor(prev, next) {
     if (rank) return card({ vi: rank.titleVi.split(' (')[0], en: rank.titleEn },
       `Năm ${age} tuổi, Wing ghi tên bạn ở một tầng cao hơn.`, `At ${age}, the Wing writes your name one floor higher.`, 'rank');
   }
+
+  // A close companion fallen (partner, spouse, mentor, friend) with Bond >= 50
+  // Dropped if a savior death save played in the same commit (cutscene savior already spoke)
+  if (!(next.usedDeathSave && !prev.usedDeathSave)) {
+    const CLOSE_ROLES = ['spouse', 'partner', 'mentor', 'friend'];
+    const isDead = (n) => Boolean(n) && (n.deceased === true || n.status === 'dead' || n.alive === false);
+    for (const role of CLOSE_ROLES) {
+      const nextNpc = next.npcs?.[role];
+      const prevNpc = prev.npcs?.[role];
+      if (!nextNpc) continue;
+      const justDied = !isDead(prevNpc) && isDead(nextNpc);
+      const bond = prevNpc?.bond ?? nextNpc.bond ?? 0;
+      if (justDied && bond >= 50) {
+        const title = {
+          vi: nextNpc.nameVi || nextNpc.name || (role === 'spouse' ? 'Người bạn đời' : role === 'mentor' ? 'Người dẫn đường' : role === 'friend' ? 'Người bạn cũ' : 'Cộng sự'),
+          en: nextNpc.nameEn || nextNpc.name || (role === 'spouse' ? 'Spouse' : role === 'mentor' ? 'Mentor' : role === 'friend' ? 'Friend' : 'Partner')
+        };
+        const lines = CHAPTER_LOSS_LINES[role];
+        if (lines) {
+          return card(title, lines.vi, lines.en, 'loss');
+        }
+      }
+    }
+  }
+
   return null;
 }

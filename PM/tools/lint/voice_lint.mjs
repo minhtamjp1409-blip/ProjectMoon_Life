@@ -12,6 +12,7 @@ import { DUNGEON_DEFINITIONS } from '../../src/engine/dungeonEngine.js';
 import { ASSOCIATIONS, OFFICE_REQUESTS } from '../../src/data/associations.js';
 import { GAUNTLETS, REST_TEXT } from '../../src/data/dungeonGauntlets.js';
 import { CUTSCENES } from '../../src/features/cutscene/registry.js';
+import { CHAPTER_LOSS_LINES } from '../../src/engine/chapters.js';
 
 const arg = (name, dflt) => (process.argv.find((a) => a.startsWith(`--${name}=`)) || '').split('=')[1] ?? dflt;
 const EXAMPLES = Number(arg('examples', 0));
@@ -58,6 +59,7 @@ for (const [id, scene] of Object.entries(CUTSCENES)) {
   if (scene.whispers) walk('cutscene', id, '.whispers', scene.whispers);
   if (scene.lastWords) walk('cutscene', id, '.lastWords', Object.values(scene.lastWords));
 }
+walk('chapter', 'loss', '', Object.values(CHAPTER_LOSS_LINES));
 
 const tally = {};
 const shown = {};
