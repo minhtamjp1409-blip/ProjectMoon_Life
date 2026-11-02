@@ -1,4 +1,4 @@
-import { choiceIsAvailable, describeChoiceBlock } from '../../../engine/eventConditions.js';
+import { choiceIsAvailable, describeChoiceBlock, stripCostSuffix } from '../../../engine/eventConditions.js';
 import { ITEMS_CATALOG } from '../../../data/itemsData.js';
 import { REGIONS } from '../../../data/worldData.js';
 import { localizeEnsembleName } from '../../../data/ensembleNames.js';
@@ -330,7 +330,7 @@ const MinorDock = ({ prompt, char, npcs, wealth = 0, remainingMs, paused = false
                 <span className="choice-badge">{idx + 1}</span>
                 <span>
                   <span className="choice-label">
-                    {lang === 'en' ? ch.en : ch.vi}
+                    {costAhn > 0 ? stripCostSuffix(lang === 'en' ? ch.en : ch.vi) : (lang === 'en' ? ch.en : ch.vi)}
                     {isShortAhn && (
                       <span className="choice-need">
                         {t(`Thiếu Ahn (Cần ${costAhn})`, `Short Ahn (Needs ${costAhn})`)}
@@ -449,10 +449,10 @@ const EventDock = ({ event, char, onPick, dungeonStake, onDungeonStake, onPeek, 
 
         <div className="choices">
           {(event.choices || []).map((ch, idx) => {
-            const label = splitTitle(lang === 'en' ? ch.labelEn || ch.labelVi : ch.labelVi).body;
+            const rawBody = splitTitle(lang === 'en' ? ch.labelEn || ch.labelVi : ch.labelVi).body;
             const check = evaluateDiscoChoiceCheck(ch, char);
             const costDisplay = choiceCostDisplay(ch, char);
-            const labelShowsCost = costDisplay.costAhn > 0 && label.includes(`${costDisplay.costAhn} Ahn`);
+            const label = costDisplay.costAhn > 0 ? stripCostSuffix(rawBody) : rawBody;
             const blocked = !choiceIsAvailable(ch, char);
             const item = ITEMS_CATALOG.find(i => i.id === (ch.useItem || ch.need?.item));
             let blockedReason = null;
@@ -466,7 +466,7 @@ const EventDock = ({ event, char, onPick, dungeonStake, onDungeonStake, onPeek, 
             }
             const extra = [];
             if (item && !ch.useItem && !blocked) extra.push(<span className="delta is-static" key="item">{t('Cần trang bị: ', 'Requires: ')}{lang === 'en' ? item.nameEn : item.nameVi}</span>);
-            if (costDisplay.costAhn && !costDisplay.isShortAhn && !labelShowsCost) {
+            if (costDisplay.costAhn && !costDisplay.isShortAhn) {
               extra.push(
                 <span className="delta is-static" key="costAhn">
                   {t(costDisplay.costVi, costDisplay.costEn)}
@@ -502,7 +502,11 @@ const EventDock = ({ event, char, onPick, dungeonStake, onDungeonStake, onPeek, 
                     {label}
                     {blockedReason && <span className="choice-need">{blockedReason}</span>}
                   </span>
-                  {bilingual && ch.labelEn && ch.labelEn !== ch.labelVi && <span className="choice-alt">{splitTitle(ch.labelEn).body}</span>}
+                  {bilingual && ch.labelEn && ch.labelEn !== ch.labelVi && (
+                    <span className="choice-alt">
+                      {costDisplay.costAhn > 0 ? stripCostSuffix(splitTitle(ch.labelEn).body) : splitTitle(ch.labelEn).body}
+                    </span>
+                  )}
 
                   <ChoicePreview choice={ch} npcs={char.npcs} char={char} check={check} />
                   {extra.length > 0 && <span className="preview">{extra}</span>}
@@ -587,7 +591,7 @@ const ContractDock = ({ contract, wealth, onPick, onPeek }) => {
                 <span>
                   <span className="contract-choice-top">
                     <span className="choice-label">
-                      {lang === 'en' ? app.labelEn : app.labelVi}
+                      {app.costAhn > 0 ? stripCostSuffix(lang === 'en' ? app.labelEn : app.labelVi) : (lang === 'en' ? app.labelEn : app.labelVi)}
                       {short && (
                         <span className="choice-need">
                           {t(`Thiếu Ahn (Cần ${app.costAhn})`, `Short Ahn (Needs ${app.costAhn})`)}

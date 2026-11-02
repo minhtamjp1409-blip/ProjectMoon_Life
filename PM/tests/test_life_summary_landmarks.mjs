@@ -156,4 +156,25 @@ function createMockCharacter(age, logs) {
   console.log('✓ False-positive prevention verified: flavor text mentions of Color/EGO/Grade/NPC are never misclassified.');
 }
 
+// 5. Thẻ chương cũ không có trường `kind` (Legacy save backward compatibility)
+{
+  const logsLegacy = [
+    { age: 18, type: 'chapter', titleEn: 'The Thumb', vi: 'The Thumb.', en: 'The Thumb.' },
+    { age: 18, type: 'major', id: 'syn_join_18', vi: '[Gia nhập The Thumb] Trở thành thành viên Thumb.', en: '[Joined The Thumb] Joined.' },
+    { age: 25, type: 'chapter', titleEn: 'Capo', vi: 'Capo.', en: 'Capo.' }, // Không có `kind`, phải nhận diện là 'rank' (500đ)
+    { age: 25, type: 'major', id: 'thumb_capo_25', vi: '[Thăng chức Capo] Lãnh đạo một phân nhánh.', en: '[Promoted Capo] Led a branch.' },
+    { age: 30, type: 'danger', id: 'danger_30', vi: '[Thanh trừng] Sống sót.', en: '[Purge] Survived.' },
+    { age: 35, type: 'death', id: 'log_death_35', vi: '[Kết thúc] Ngã xuống.', en: '[End] Fallen.' }
+  ];
+
+  const charLegacy = createMockCharacter(35, logsLegacy);
+  const summaryLegacy = buildLifeSummaryAndLegacy(charLegacy);
+  const tpsLegacy = summaryLegacy.turningPoints;
+
+  // Capo ở tuổi 25 phải có mặt trong turning points
+  assert.ok(tpsLegacy.some(tp => tp.age === 25), 'Legacy chapter without kind { titleEn: "Capo" } must be classified as rank and kept');
+
+  console.log('✓ Legacy chapter fallback verified: titles like "Capo" without kind are correctly recognized as rank.');
+}
+
 console.log('=== ALL LIFE SUMMARY LANDMARKS TESTS PASSED (100%) ===');

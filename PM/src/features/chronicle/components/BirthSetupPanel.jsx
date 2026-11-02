@@ -11,7 +11,7 @@ import { useT } from '../../../i18n';
 import { RegionMark } from '../../../components/RegionMark';
 import { audioEngine } from '../../../engine/audioEngine';
 import CityLoadingOverlay from './CityLoadingOverlay';
-import CityBirthAtlas, { ATLAS_VIEW, atlasTargetView } from './CityBirthAtlas';
+import CityBirthAtlas, { ATLAS_VIEW, atlasTargetView, CityBirthAtlasStrip } from './CityBirthAtlas';
 import { reducedMotion } from '../../../utils/motion';
 import { describeJob } from './CharacterDossierCard';
 
@@ -65,6 +65,7 @@ export const BirthSetupPanel = () => {
   const [targetLaunchParams, setTargetLaunchParams] = useState(null);
 
   const mapRef = useRef(null);
+  const atlasRef = useRef(null);
   const viewportRef = useRef(ATLAS_VIEW);
   const rafRef = useRef(0);
 
@@ -73,6 +74,14 @@ export const BirthSetupPanel = () => {
   const openWorldGuide = () => {
     setShowWorldGuide(true);
     setTimeout(() => mapRef.current?.scrollIntoView({ behavior: reducedMotion() ? 'instant' : 'smooth' }), 0);
+  };
+
+  const handleStripClick = () => {
+    try { audioEngine.playClick(); } catch {}
+    if (atlasRef.current) {
+      atlasRef.current.scrollIntoView({ behavior: reducedMotion() ? 'instant' : 'smooth', block: 'start' });
+      atlasRef.current.focus?.({ preventScroll: true });
+    }
   };
 
   // The atlas locates the birthplace before the existing registration overlay opens.
@@ -195,7 +204,19 @@ export const BirthSetupPanel = () => {
           <h1 id="home-title">
             The City <span className="the-city-title">Chronicles</span>
           </h1>
-          <div className={`opening-atlas ${spinning ? 'is-launch-spinning' : ''}`}>
+          <CityBirthAtlasStrip
+            selectedRegion={selectedRegion}
+            region={region}
+            onClick={handleStripClick}
+            t={t}
+            lang={lang}
+          />
+          <div
+            className={`opening-atlas ${spinning ? 'is-launch-spinning' : ''}`}
+            ref={atlasRef}
+            tabIndex={-1}
+            aria-label={t('Bản đồ The City chi tiết', 'Detailed map of The City')}
+          >
             <CityBirthAtlas
               selected={selectedRegion}
               onSelect={(id) => {
@@ -549,10 +570,18 @@ export const BirthSetupPanel = () => {
                 </span>
               </button>
               <p className="birth-footnote">
-                {t(
-                  'Một năm trong 30 giây · Tự lưu sau mỗi lựa chọn.',
-                  'A year in 30 seconds · Saved after every choice.'
-                )}
+                <span>
+                  {t(
+                    'Một năm trôi trong 30 giây. Lựa chọn lớn dừng đồng hồ chờ bạn; lựa chọn nhỏ có hạn giờ, hết giờ thì đời đi tiếp.',
+                    'A year passes in 30 seconds. Major choices pause the clock to wait for you; minor choices have a timer, and when time runs out life moves on.'
+                  )}
+                </span>{' '}
+                <span>
+                  {t(
+                    'Tự lưu sau mỗi lựa chọn.',
+                    'Saved after every choice.'
+                  )}
+                </span>
               </p>
               {pendingLegacy && (
                 <div className="legacy-switch-hint">

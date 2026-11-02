@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { ArrowUpRight } from 'lucide-react';
 import { REGIONS } from '../../../data/worldData';
 
 export const ATLAS_VIEW = { x: 0, y: 0, width: 1000, height: 760 };
@@ -49,6 +50,26 @@ function districtCell(id) {
 
 const CELLS = Object.fromEntries(CITY_REGIONS.map((region) => [region.id, districtCell(region.id)]));
 
+export function CityAtlasDefs() {
+  return (
+    <defs>
+      <clipPath id="city-atlas-boundary"><path d={CITY_OUTLINE} /></clipPath>
+      <pattern id="city-atlas-blocks" width="58" height="52" patternUnits="userSpaceOnUse" patternTransform="rotate(-11)">
+        <path d="M 2 2 H 21 V 12 H 2 Z M 25 2 H 55 V 18 H 25 Z M 2 17 H 20 V 32 H 2 Z M 25 23 H 42 V 35 H 25 Z M 46 23 H 56 V 45 H 46 Z M 2 38 H 39 V 50 H 2 Z" />
+      </pattern>
+      <pattern id="city-atlas-fine-blocks" width="29" height="27" patternUnits="userSpaceOnUse" patternTransform="rotate(9)">
+        <path d="M 1 2 H 11 V 8 H 1 Z M 14 1 H 27 V 11 H 14 Z M 2 12 H 10 V 24 H 2 Z M 13 15 H 27 V 25 H 13 Z" />
+      </pattern>
+      <pattern id="city-atlas-arteries" width="148" height="130" patternUnits="userSpaceOnUse" patternTransform="rotate(-11)">
+        <path d="M 0 69 H 148 M 79 0 V 130 M 80 6 H 128 V 23 H 80 M 12 82 H 65 V 113 H 12" />
+      </pattern>
+      <pattern id="city-atlas-scanlines" width="1000" height="5" patternUnits="userSpaceOnUse">
+        <path d="M 0 4.5 H 1000" />
+      </pattern>
+    </defs>
+  );
+}
+
 export function atlasTargetView(regionId) {
   const [x, y] = DISTRICT_POINTS[regionId] || DISTRICT_POINTS.A;
   const width = regionId === 'OUTSKIRTS' ? 490 : 370;
@@ -61,7 +82,7 @@ export function atlasTargetView(regionId) {
   };
 }
 
-function MapInk({ selected, onSelect, interactive = false, t }) {
+export function MapInk({ selected, onSelect, interactive = false, t }) {
   return (
     <>
       <rect className="atlas-scanlines" x="0" y="0" width="1000" height="760" />
@@ -159,21 +180,9 @@ export function CityBirthAtlas({ selected, displayRegion, viewport, moving, star
     <div className="city-birth-atlas">
       <div className="city-birth-atlas-frame">
         <svg className="city-birth-atlas-svg" viewBox={position} role="group" aria-label={t('Bản đồ 26 District của The City và Outskirts', 'Map of the City’s 26 Districts and the Outskirts')} onPointerMove={moveLens} onPointerLeave={() => setPointer(null)}>
+          <CityAtlasDefs />
           <defs>
-            <clipPath id="city-atlas-boundary"><path d={CITY_OUTLINE} /></clipPath>
             <clipPath id="city-atlas-lens"><circle cx={lens[0]} cy={lens[1]} r={lensRadius} /></clipPath>
-            <pattern id="city-atlas-blocks" width="58" height="52" patternUnits="userSpaceOnUse" patternTransform="rotate(-11)">
-              <path d="M 2 2 H 21 V 12 H 2 Z M 25 2 H 55 V 18 H 25 Z M 2 17 H 20 V 32 H 2 Z M 25 23 H 42 V 35 H 25 Z M 46 23 H 56 V 45 H 46 Z M 2 38 H 39 V 50 H 2 Z" />
-            </pattern>
-            <pattern id="city-atlas-fine-blocks" width="29" height="27" patternUnits="userSpaceOnUse" patternTransform="rotate(9)">
-              <path d="M 1 2 H 11 V 8 H 1 Z M 14 1 H 27 V 11 H 14 Z M 2 12 H 10 V 24 H 2 Z M 13 15 H 27 V 25 H 13 Z" />
-            </pattern>
-            <pattern id="city-atlas-arteries" width="148" height="130" patternUnits="userSpaceOnUse" patternTransform="rotate(-11)">
-              <path d="M 0 69 H 148 M 79 0 V 130 M 80 6 H 128 V 23 H 80 M 12 82 H 65 V 113 H 12" />
-            </pattern>
-            <pattern id="city-atlas-scanlines" width="1000" height="5" patternUnits="userSpaceOnUse">
-              <path d="M 0 4.5 H 1000" />
-            </pattern>
           </defs>
           <MapInk selected={activeId} onSelect={onSelect} interactive={!moving} t={t} />
           <g className="atlas-lens" aria-hidden="true" pointerEvents="none" style={{ '--atlas-lens-rim': `${14 * lensScale}px`, '--atlas-lens-line': `${2.5 * lensScale}px` }}>
@@ -198,6 +207,61 @@ export function CityBirthAtlas({ selected, displayRegion, viewport, moving, star
         <button type="button" className="atlas-start-action" onClick={onStart} disabled={starting || moving}>{starting ? t('Đang mở hồ sơ…', 'Opening your record…') : t('Bước vào The City', 'Enter The City')}</button>
       </div>
     </div>
+  );
+}
+
+export function CityBirthAtlasStrip({ selectedRegion, region, onClick, t, lang }) {
+  const activeId = region?.id || selectedRegion;
+  const isRandom = !region || selectedRegion === 'RANDOM';
+
+  // Focused panoramic crop across the City (width 720, height 240)
+  const stripWidth = 720;
+  const stripHeight = 240;
+  let sx = (1000 - stripWidth) / 2;
+  let sy = (760 - stripHeight) / 2;
+  if (!isRandom && activeId && DISTRICT_POINTS[activeId]) {
+    const [px, py] = DISTRICT_POINTS[activeId];
+    sx = Math.max(0, Math.min(1000 - stripWidth, px - stripWidth / 2));
+    sy = Math.max(0, Math.min(760 - stripHeight, py - stripHeight / 2));
+  }
+  const viewBox = `${sx} ${sy} ${stripWidth} ${stripHeight}`;
+
+  const title = !isRandom && region
+    ? (region.id === 'OUTSKIRTS' ? 'Outskirts' : `District ${region.ward}`)
+    : t('Ngẫu nhiên', 'Random');
+
+  const subtitle = !isRandom && region
+    ? (lang === 'en' ? region.aliasEn : region.aliasVi)
+    : t('Để The City định đoạt', 'Let The City decide');
+
+  const ariaLabel = t(
+    `Bản đồ nơi xuất thân: ${title}. Chạm để cuộn xuống bản đồ đầy đủ.`,
+    `Birthplace map: ${title}. Tap to view full map.`
+  );
+
+  return (
+    <button
+      type="button"
+      className="birth-atlas-strip"
+      onClick={onClick}
+      aria-label={ariaLabel}
+    >
+      <svg className="birth-atlas-strip-svg" viewBox={viewBox} aria-hidden="true" preserveAspectRatio="xMidYMid slice">
+        <CityAtlasDefs />
+        <MapInk selected={isRandom ? null : activeId} interactive={false} t={t} />
+      </svg>
+      <div className="birth-atlas-strip-content">
+        <div className="birth-atlas-strip-info">
+          <span className="birth-atlas-strip-tag">{t('Nơi xuất thân', 'Birthplace')}</span>
+          <strong className="birth-atlas-strip-title">{title}</strong>
+          <span className="birth-atlas-strip-sub">{subtitle}</span>
+        </div>
+        <span className="birth-atlas-strip-action">
+          {t('Xem bản đồ', 'View map')}
+          <ArrowUpRight size={13} aria-hidden="true" />
+        </span>
+      </div>
+    </button>
   );
 }
 

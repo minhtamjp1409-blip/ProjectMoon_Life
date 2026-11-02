@@ -3075,6 +3075,7 @@ export function buildLifeSummaryAndLegacy(char) {
   chosenLandmarks.sort((a, b) => a.order - b.order);
 
   // Score and select the 8 most important turning points (Đợt 113a: chấm bằng dữ liệu có cấu trúc)
+  const LEGACY_JOB_TITLES = new Set(['Fixer', 'Syndicate', 'Wing Employee', 'Workshop Craftsman', 'Outcast']);
   const chapterKindsByAge = new Map();
   for (const entry of logs) {
     if (entry && entry.type === 'chapter' && entry.age) {
@@ -3083,8 +3084,8 @@ export function buildLifeSummaryAndLegacy(char) {
         entry.titleEn === 'Color Fixer' ? 'color' :
         entry.titleEn === 'E.G.O' ? 'ego' :
         entry.titleEn === 'Distortion' ? 'distortion' :
-        /Grade|Rank/i.test(entry.titleEn || '') ? 'rank' :
-        'job'
+        (LEGACY_JOB_TITLES.has(entry.titleEn) || /^The /.test(entry.titleEn || '')) ? 'job' :
+        'rank'
       );
       if (kind) chapterKindsByAge.get(entry.age).add(kind);
     }

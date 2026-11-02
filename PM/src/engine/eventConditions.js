@@ -218,6 +218,12 @@ export function getChoiceAhnCost(choice, char) {
   return choice.costAhn ?? 0;
 }
 
+/** Strip trailing cost parentheses like (-1 Ahn), (Tốn 40 Ahn), (cost 40 Ahn), (8 Ahn) when cost is displayed on badge */
+export function stripCostSuffix(label) {
+  if (typeof label !== 'string' || !label) return label;
+  return label.replace(/\s*\(\s*(?:tốn\s+|cost\s+)?-?\s*(?:\d+|\{debtBalance\})\s*ahn\s*\)\s*$/i, '').trim();
+}
+
 export function choiceIsAvailable(choice, char) {
   if (!choice || !matchesNeed(choice.need, char)) return false;
   if (choice.useItem && !(char.inventory || []).some(i => (i.id || i) === choice.useItem)) return false;

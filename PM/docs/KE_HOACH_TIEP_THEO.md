@@ -12,8 +12,8 @@ Mỗi đợt dưới đây được commit riêng, ghi vào `PROGRESS_LOG.md`, p
 |---|---|---|---|
 | 113 | Sửa di cảo mất mốc cuối đời | nhỏ | đã xong |
 | 113 | Sửa lý do khóa báo sai Bond | nhỏ | đã xong |
-| 114 | Bỏ chi phí hiện hai lần trên lựa chọn | nhỏ | chưa làm |
-| 114 | Nói rõ luật thời gian ở màn khai sinh | nhỏ | chưa làm |
+| 114 | Bỏ chi phí hiện hai lần trên lựa chọn | nhỏ | đã xong |
+| 114 | Nói rõ luật thời gian ở màn khai sinh | nhỏ | đã xong |
 | 115 | Gộp daily của năm yên ả | lớn | chưa làm |
 | 115 | Tự lướt năm yên ả | vừa | chưa làm |
 | 116 | Thẻ chương khi mất một NPC thân thiết | vừa | chưa làm |
