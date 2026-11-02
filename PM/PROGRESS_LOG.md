@@ -2555,6 +2555,88 @@ Hai cảnh mà kế hoạch để "sau". Từ đây danh mục cảnh C1 đến 
   * Toàn bộ 3 hầm ngục đều đưa lựa chọn đầu tiên vào trọn vẹn màn đầu mà không cần cuộn, không tràn ngang, thanh cuộn ẩn sạch sẽ.
   * Độ tương phản văn bản đạt chuẩn Đợt 107. Build Vite và toàn bộ 76 test suites qua 100%.
 
+## Đợt 118: Gọn thẻ minor, thẻ chương khi trượt kỳ thi Fixer, kiểm thử trình đọc màn hình (02/11/2026)
+
+* **118a. Thẻ minor gọn hơn trên điện thoại (Viewport 390x844):**
+  * **Bước 1 - Đo đạc trước khi sửa (`tools/qa/measure_minor_mobile.mjs`):**
+    - Minor có giá (`m_med_backstreet_clinic`, wealth = 50): Chiều cao thẻ = **692px**, Lựa chọn cuối bottom = **920px** (vượt màn đầu **+76px**, CẦN CUỘN). Mỗi lựa chọn cao 94px do gánh 4-5 chips tác động (`HP +`, `SP +`, `Ahn −`).
+    - Minor có NPC (`m_k_candy`, wealth = 10): Chiều cao thẻ = 572px, Lựa chọn cuối bottom = 741px (dư 103px, ĐẠT).
+    - Minor có điều kiện khóa (`m_med_backstreet_clinic`, wealth = 5): Chiều cao thẻ = **692px**, Lựa chọn cuối bottom = **920px** (vượt màn đầu **+76px**, CẦN CUỘN).
+  * **Bước 2 - Tinh gọn thẻ trên mobile (`LiveStageFeed.jsx`, `Deltas.jsx`, `chronicle.css`):**
+    - Mỗi lựa chọn giữ tối đa 3 thành phần: (1) Nhãn lựa chọn (`choice-label`), (2) Giá / Lý do khóa (`choice-cost-chip` hoặc `choice-need`), (3) Một dòng tác động chính (`preview-primary`, lấy stat biến động đầu tiên).
+    - Các chi tiết bổ sung (chỉ số phụ, thay đổi Bond với NPC, rủi ro, hậu quả `later`, `scar`, `bringsClaw`) được gộp vào `.preview-secondary` và ẩn trên mobile (`is-hidden-mobile`).
+    - Thêm nút chạm chuyển đổi `.choice-detail-toggle` (`+` / `▲`, vùng chạm tối thiểu đạt chuẩn) cho phép người chơi mở hoặc gấp lại toàn bộ chi tiết chỉ sau một chạm (`onToggleExpand`, `e.stopPropagation()`).
+    - Lý do khóa (`choice-need`: "Thiếu Ahn (Cần N)") luôn luôn hiển thị đầy đủ, không bao giờ bị ẩn.
+    - **Desktop giữ nguyên 100%**: Trên màn hình rộng (`> 860px`), `.choice-detail-toggle` ẩn hoàn toàn và mọi chi tiết hiển thị dàn ngang tự nhiên như trước.
+  * **Kết quả đo đạc sau khi sửa (Viewport 390x844):**
+    - Minor có giá (`m_med_backstreet_clinic`): Lựa chọn cuối bottom = **753px** (dư **91px**, **ĐẠT**). Chiều cao lựa chọn giảm từ 94px xuống **64px** (regular) và **44px** (ghost).
+    - Minor có NPC (`m_k_candy`): Lựa chọn cuối bottom = **753px** (dư **91px**, **ĐẠT**).
+    - Minor có điều kiện khóa: Lựa chọn cuối bottom = **753px** (dư **91px**, **ĐẠT**). Hiện rõ dòng `Thiếu Ahn (Cần 20)`.
+    - Cả 3 minor đưa lựa chọn cuối cùng vào trọn vẹn màn đầu ở 390x844!
+
+* **118b. Thẻ chương khi trượt kỳ thi Fixer (`src/engine/chapters.js`):**
+  * **Bổ sung nhánh `exam_fail` vào `chapterFor`:**
+    - Theo dõi biến động của `char.fixerExamFailures`: Khi tổng số lần trượt tăng trong commit hiện tại, sinh thẻ chương nhỏ gọn.
+    - Tiêu đề thẻ: `Fixer Grade N` (`kind: 'exam_fail'`).
+    - Câu thẻ ngắn hơn thẻ thăng hạng và phân biệt rõ thứ tự:
+      + Lần đầu trượt Grade N: *"Hana từ chối công nhận Grade N."* / *"Hana denied Grade N."*
+      + Lần 2 trở đi cùng Grade N: *"Hana lại từ chối Grade N."* / *"Hana denied Grade N once more."*
+    - Luật ưu tiên được bảo toàn tuyệt đối: Không sinh thẻ trượt nếu nhân vật qua đời trong cùng commit (cái chết thắng), hoặc nếu có biến cố lớn hơn (Color, Distortion, E.G.O, Job change, Thăng hạng đỗ, hoặc Mất người thân).
+    - Tích hợp `CHAPTER_EXAM_FAIL_LINES` vào `tools/lint/voice_lint.mjs`: Quét 33.309 chuỗi đạt 0 lỗi, 0 cảnh báo.
+  * **Kiểm thử tự động (`tests/test_chapters.mjs`):**
+    - Trượt lần đầu: sinh thẻ `exam_fail` với câu từ chối chuẩn.
+    - Trượt lần hai cùng Grade: sinh thẻ với câu từ chối lặp lại khác biệt.
+    - Thi đỗ: sinh thẻ thăng hạng `rank`, không sinh thẻ trượt.
+    - Chết trong cùng commit: không sinh thẻ trượt, cái chết thắng hoàn toàn.
+
+* **118c. Kiểm thử và hoàn thiện cho Trình đọc màn hình (Screen Reader / NVDA):**
+  * **Khắc phục thông báo hậu cutscene (`LiveStageFeed.jsx`, `CutsceneLayer.jsx`, `registry.js`):**
+    - Bổ sung hàm `getCutsceneKeyAnnouncement(id, state, lang)` trả câu then chốt của cảnh (ví dụ Claw: *"Claw đã đến."*, Cái chết: *"Rồi im."*).
+    - Khi cảnh kết thúc, câu chính được phát tự động một lần qua vùng thông báo ẩn (`.sr-only[aria-live="polite"]`), giúp người dùng khiếm thị không bị mất mạch câu chuyện.
+    - Bản `caption` cũng xuất câu này qua `role="status"` và `aria-live="polite"`.
+  * **Sửa thứ tự đọc DOM cho Cái chết và Di cảo (`LifeEndStep.jsx`):**
+    - Thay vì đưa focus thẳng vào nút "Nhìn lại cuộc đời này" ở cuối trang làm bỏ qua nội dung, thiết lập focus tự động vào vùng chứa `SECTION.life-end-card` (`tabIndex="-1"`).
+    - Trình đọc đọc tuần tự và trang trọng: *Cái chết -> Tên & Nơi xuất thân -> Số tuổi -> Nguyên nhân tử vong -> Câu thơ tiễn biệt -> Các nút hành động*.
+  * **Đính kèm nhãn `aria-label` cho Thẻ chương (`chapter-card`):**
+    - Đọc rõ ràng: *"Thẻ chương: Fixer Grade N"*, sau đó đến tiêu đề và câu dẫn chuyện.
+  * **Bản ghi âm đọc thực tế từ NVDA / Chrome Accessibility Tree (`tools/qa/test_screen_reader_order.mjs`):**
+    ```
+    [NVDA Spoken :: MinorDock] TIMER: Còn 30 giây để chọn. Có thể tạm dừng bằng phím Space
+    [NVDA Spoken :: MinorDock] TEXT: 30s
+    [NVDA Spoken :: MinorDock] BUTTON: Tạm dừng đếm ngược (Space)
+    [NVDA Spoken :: MinorDock] TEXT: Tạm dừng
+    [NVDA Spoken :: MinorDock] TEXT: Lần gặp gỡ đầu: bạn có 30 giây. Dùng nút tạm dừng hoặc Space để đọc kỹ.
+    [NVDA Spoken :: MinorDock] TEXT: Gặp gỡ bất chợt · Backstreets
+    [NVDA Spoken :: MinorDock] BUTTON: Xem biên niên phía sau (phím V)
+    [NVDA Spoken :: MinorDock] TEXT: Phòng khám chui Backstreets
+    [NVDA Spoken :: MinorDock] TEXT: Vết thương chém xé và cơn sốt sau chuỗi ngày lăn lộn khiến bước chân bạn nặng trĩu. Trước mặt bạn là ánh đèn neon nhấp nháy của một phòng khám ngầm do một cựu y sĩ Nest đào thoát mở.
+    [NVDA Spoken :: MinorDock] TEXT: 1
+    [NVDA Spoken :: MinorDock] TEXT: Chi 20 Ahn tiêm ống K Corp Ampoule chính hãng nguyên tem
+    [NVDA Spoken :: MinorDock] TEXT: Thiếu Ahn (Cần 20)
+    [NVDA Spoken :: MinorDock] TEXT: HP +
+    [NVDA Spoken :: MinorDock] BUTTON: Xem thêm chi tiết
+    [NVDA Spoken :: MinorDock] TEXT: 2
+    [NVDA Spoken :: MinorDock] TEXT: Chi 6 Ahn tiêm dung dịch huyết thanh K Corp pha loãng
+    [NVDA Spoken :: MinorDock] TEXT: Thiếu Ahn (Cần 6)
+    [NVDA Spoken :: MinorDock] TEXT: HP +
+    [NVDA Spoken :: MinorDock] BUTTON: Xem thêm chi tiết
+    [NVDA Spoken :: MinorDock] TEXT: 0
+    [NVDA Spoken :: MinorDock] TEXT: Để nó trôi qua
+    [NVDA Spoken :: Cutscene Caption] Claw đã đến.
+    [NVDA Spoken :: Vùng thông báo ẩn (Hậu Cutscene)] Claw đã đến.
+    [NVDA Spoken :: ChapterCard] SECTION: Thẻ chương: Fixer Grade 6
+    [NVDA Spoken :: ChapterCard] TEXT: Fixer Grade 6
+    [NVDA Spoken :: ChapterCard] TEXT: Năm 25 tuổi, Hana ghi Grade mới vào hồ sơ.
+    [NVDA Spoken :: LifeEndCard] SECTION: Cái chết
+    [NVDA Spoken :: LifeEndCard] TEXT: Rémy, sinh ra tại District 15 · O Corp
+    [NVDA Spoken :: LifeEndCard] TEXT: 25 tuổi
+    [NVDA Spoken :: LifeEndCard] TEXT: Gục ngã trước lưỡi kiếm Sweeper lúc 3:13 AM tại Backstreets.
+    [NVDA Spoken :: LifeEndCard] TEXT: “Máu rơi trên mặt đường ướt lạnh rồi sẽ trôi theo nước mưa, nhưng vết cắt họ để lại trong biên niên sử vẫn còn nguyên vẹn.”
+    [NVDA Spoken :: LifeEndCard] TEXT: Nhìn lại cuộc đời này
+    [NVDA Spoken :: LifeEndCard] TEXT: Kế thừa ngay
+    ```
+  * Toàn bộ 76 test suites và mô phỏng audit 500 khoảnh khắc đạt 100% thành công. Build Vite sạch sẽ (6.68s).
+
 
 
 ## Phụ lục A: Bản tổng hợp thiết kế ngày 29/10/2026

@@ -651,6 +651,90 @@
   .choice-badge { width: 28px; height: 28px; font-size: 13px; font-weight: 700; border-radius: 4px; }
   .choice-label { font-size: calc(var(--choice-size) - 1px); font-weight: 600; line-height: 1.45; }
   .resolution-actions .resolution-btn { min-height: 50px; font-size: 15.5px; font-weight: 700; }
+
+  /* Đợt 118a: Thẻ minor gọn hơn trên mobile (390x844) */
+  .dock.is-minor {
+    padding: 12px 10px 14px;
+  }
+  .dock.is-minor .countdown-wrap {
+    margin-bottom: 4px;
+  }
+  .dock.is-minor .dock-banner {
+    margin-bottom: 2px;
+  }
+  .dock.is-minor .dock-kicker-row {
+    margin-bottom: 2px;
+  }
+  .dock.is-minor .dock-title {
+    font-size: 18px;
+    line-height: 1.25;
+    margin-bottom: 3px;
+  }
+  .dock.is-minor .dock-text {
+    font-size: 13.5px;
+    line-height: 1.45;
+    margin: 3px 0 8px;
+  }
+  .dock.is-minor .choices {
+    gap: 6px;
+    padding-bottom: 6px;
+  }
+  .dock.is-minor .choice {
+    padding: 8px 10px;
+    min-height: 44px;
+    gap: 8px;
+  }
+  .dock.is-minor .choice-badge {
+    width: 24px;
+    height: 24px;
+    font-size: 12px;
+  }
+  .dock.is-minor .choice-label {
+    font-size: 13.5px;
+    line-height: 1.35;
+  }
+  .preview.is-minor-preview {
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .preview-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .preview-secondary.is-hidden-mobile {
+    display: none !important;
+  }
+  .preview-secondary.is-open {
+    display: flex !important;
+    flex-wrap: wrap;
+    gap: 4px;
+    width: 100%;
+    margin-top: 4px;
+    padding-top: 4px;
+    border-top: 1px dashed rgba(255, 255, 255, 0.08);
+  }
+  .choice-detail-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 4px;
+    margin-left: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--gold);
+    border: 1px solid rgba(216, 178, 101, 0.4);
+    border-radius: 3px;
+    background: rgba(216, 178, 101, 0.08);
+    cursor: pointer;
+    vertical-align: middle;
+    user-select: none;
+    touch-action: manipulation;
+  }
 }
 
 @media (max-width: 480px) {
@@ -666,6 +750,18 @@
   .dock-peek-btn span { display: none; }
   .choice { padding: 10px 10px 10px 8px; gap: 8px; }
   .choice-label { font-size: calc(var(--choice-size) - 1.5px); }
+
+  .dock.is-minor { padding: 10px 8px 12px; }
+  .dock.is-minor .dock-title { font-size: 17px; line-height: 1.2; }
+  .dock.is-minor .dock-text { font-size: 13px; line-height: 1.4; margin: 2px 0 6px; }
+  .dock.is-minor .choices { gap: 5px; }
+  .dock.is-minor .choice { padding: 6px 8px; min-height: 44px; }
+  .dock.is-minor .choice-label { font-size: 13px; }
+}
+
+@media (min-width: 861px) {
+  .choice-detail-toggle { display: none !important; }
+  .preview-secondary { display: inline-flex !important; }
 }
 
 /* The scene behind the page is a tint of the room, never a picture competing with the words */

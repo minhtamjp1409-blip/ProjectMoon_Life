@@ -24,6 +24,7 @@ import { Deltas, ChoicePreview, choiceCostDisplay } from './Deltas';
 import { getPsycheInterjection, evaluateDiscoChoiceCheck } from '../../../engine/discoPsyche';
 import { bestowHanaColorTitle } from '../../../engine/colorRegistry';
 import { dungeonEntryForecast } from '../../../engine/dungeonEngine';
+import { getCutsceneKeyAnnouncement } from '../../cutscene/registry';
 
 const ENTRY_KIND = {
   causal: { cls: 'k-causal', vi: 'Tiếng vọng nhân quả', en: 'Causal echo' },
@@ -105,7 +106,11 @@ const LogEntries = React.memo(function LogEntries({ logs, currentAge }) {
     // Only this year's card plays its entrance; older ones are already part of the record.
     if (entry.type === 'chapter') {
       out.push(
-        <section className={`chapter-card ${entry.age === currentAge ? 'is-new' : ''}`} key={entry.id}>
+        <section
+          className={`chapter-card ${entry.age === currentAge ? 'is-new' : ''}`}
+          key={entry.id}
+          aria-label={t(`Thẻ chương: ${entry.titleVi}`, `Chapter card: ${entry.titleEn}`)}
+        >
           <div className="chapter-head">
             <span className="chapter-rule is-left" aria-hidden="true" />
             <h3 className="chapter-title">{t(entry.titleVi, entry.titleEn)}</h3>
@@ -283,6 +288,16 @@ const placeOf = (char) =>
 
 const MinorDock = ({ prompt, char, npcs, wealth = 0, remainingMs, paused = false, onTogglePause, onPick, onPeek, place = 'Backstreets' }) => {
   const { t, lang, bilingual } = useT();
+  const [expandedChoices, setExpandedChoices] = useState({});
+  const toggleExpand = (idx, e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setExpandedChoices((prev) => ({ ...prev, [idx]: !prev[idx] }));
+  };
+  useEffect(() => {
+    setExpandedChoices({});
+  }, [prompt.id]);
+
   const raw = lang === 'en' ? prompt.en : prompt.vi;
   const { title, body } = splitTitle(raw);
   const sourceChoices = LIFE_MINORS.find((entry) => entry.id === prompt.id)?.choices || [];
@@ -365,11 +380,12 @@ const MinorDock = ({ prompt, char, npcs, wealth = 0, remainingMs, paused = false
               (ch.vi && stripCostSuffix(ch.vi).includes(`${costAhn} Ahn`)) ||
               (ch.en && stripCostSuffix(ch.en).includes(`${costAhn} Ahn`))
             );
+            const isExpanded = Boolean(expandedChoices[idx]);
             return (
               <button
                 type="button"
                 key={idx}
-                className={`choice ${isShortAhn ? 'is-disabled' : ''}`}
+                className={`choice ${isShortAhn ? 'is-disabled' : ''} ${isExpanded ? 'is-expanded' : ''}`}
                 disabled={isShortAhn}
                 onClick={() => !isShortAhn && onPick(idx)}
               >
@@ -388,7 +404,14 @@ const MinorDock = ({ prompt, char, npcs, wealth = 0, remainingMs, paused = false
                       {t(`Tốn ${costAhn} Ahn`, `Cost: ${costAhn} Ahn`)}
                     </span>
                   )}
-                  <ChoicePreview choice={ch} npcs={npcs} char={char} kind="minor" />
+                  <ChoicePreview
+                    choice={ch}
+                    npcs={npcs}
+                    char={char}
+                    kind="minor"
+                    expanded={isExpanded}
+                    onToggleExpand={(e) => toggleExpand(idx, e)}
+                  />
                 </span>
               </button>
             );
@@ -1596,6 +1619,22 @@ export const LiveStageFeed = () => {
   const canPeek = Boolean((char.pendingYearPlan && !isPrologueActive) || char.pendingDungeon || char.pendingEvent || char.pendingContract || char.pendingMinor || activeResolution);
   useEffect(() => setPeekBehind(false), [char.pendingYearPlan?.age, char.pendingDungeon?.id, char.pendingEvent?.id, char.pendingContract?.id, char.pendingMinor?.id, activeResolution?.titleVi]);
 
+  const prevCutsceneKeyRef = useRef(null);
+  const [sceneAnnouncement, setSceneAnnouncement] = useState('');
+
+  useEffect(() => {
+    if (prevCutsceneKeyRef.current && !cutsceneKey) {
+      const sceneId = prevCutsceneKeyRef.current.split('_')[0];
+      const text = getCutsceneKeyAnnouncement(sceneId, useGameStore.getState(), lang);
+      if (text) {
+        setSceneAnnouncement(text);
+        const timer = setTimeout(() => setSceneAnnouncement(''), 4500);
+        return () => clearTimeout(timer);
+      }
+    }
+    prevCutsceneKeyRef.current = cutsceneKey;
+  }, [cutsceneKey, lang]);
+
   const isUnseenEvent = Boolean(
     char.pendingEvent?.id &&
     !(char.seenEvents || []).includes(char.pendingEvent.id) &&
@@ -1618,7 +1657,7 @@ export const LiveStageFeed = () => {
       <StageFx />
       <div className="chronicle-heading"><h1>{t('Biên niên', 'Chronicle')}</h1><span>{char.name}</span></div>
       <div className="sr-only" aria-live="polite" aria-atomic="true">
-        {!hasDock && !cutsceneKey ? latestAnnouncement : ''}
+        {sceneAnnouncement ? sceneAnnouncement : (!hasDock && !cutsceneKey ? latestAnnouncement : '')}
       </div>
       <div className="log" ref={logRef}>
         <div className="log-col">

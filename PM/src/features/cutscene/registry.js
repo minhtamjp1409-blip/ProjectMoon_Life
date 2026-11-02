@@ -143,3 +143,38 @@ export function isLowPowerDevice() {
   if (typeof navigator === 'undefined') return false;
   return (navigator.hardwareConcurrency || 8) <= 2 || (navigator.deviceMemory || 8) <= 2;
 }
+
+// Đợt 118c: Trả câu chính của cảnh để đọc qua vùng thông báo khi cảnh kết thúc hoặc khi ở bản caption
+export function getCutsceneKeyAnnouncement(id, state = null, lang = 'vi') {
+  const scene = CUTSCENES[id];
+  if (!scene) return '';
+  if (id === 'carmen') {
+    return lang === 'en' ? 'Listen to your own voice.' : 'Hãy lắng nghe giọng nói của chính bạn.';
+  }
+  if (id === 'claw') {
+    return lang === 'en' ? 'The Claw has arrived.' : 'Claw đã đến.';
+  }
+  if (id === 'death') {
+    return lang === 'en' ? 'Then nothing.' : 'Rồi im.';
+  }
+  if (id === 'color') {
+    const c = state?.bestowedColor;
+    return lang === 'en' ? `Hana conferred title: ${c?.titleEn || 'Color Fixer'}` : `Hana sắc phong danh hiệu: ${c?.titleVi || 'Color Fixer'}`;
+  }
+  if (id === 'savior') {
+    const role = state?.char?.lastSaviorRole || 'friend';
+    const w = scene.lastWords?.[role];
+    if (w) return lang === 'en' ? w.en : w.vi;
+    return lang === 'en' ? 'A companion took the blow in your place.' : 'Một người thân đã đỡ đòn thay bạn.';
+  }
+  if (id === 'finger') {
+    return lang === 'en' ? 'The whole Finger waits in silence.' : 'Cả Ngón Tay im lặng chờ.';
+  }
+  if (id === 'dungeon') {
+    return lang === 'en' ? 'Dungeon gate opened.' : 'Cổng hầm ngục đã mở.';
+  }
+  if (scene.keyLine !== undefined && scene.lines?.[scene.keyLine]) {
+    return lang === 'en' ? scene.lines[scene.keyLine].en : scene.lines[scene.keyLine].vi;
+  }
+  return '';
+}

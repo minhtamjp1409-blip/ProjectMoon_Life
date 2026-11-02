@@ -12,7 +12,7 @@ import { DUNGEON_DEFINITIONS } from '../../src/engine/dungeonEngine.js';
 import { ASSOCIATIONS, OFFICE_REQUESTS } from '../../src/data/associations.js';
 import { GAUNTLETS, REST_TEXT } from '../../src/data/dungeonGauntlets.js';
 import { CUTSCENES } from '../../src/features/cutscene/registry.js';
-import { CHAPTER_LOSS_LINES } from '../../src/engine/chapters.js';
+import { CHAPTER_LOSS_LINES, CHAPTER_EXAM_FAIL_LINES } from '../../src/engine/chapters.js';
 
 const arg = (name, dflt) => (process.argv.find((a) => a.startsWith(`--${name}=`)) || '').split('=')[1] ?? dflt;
 const EXAMPLES = Number(arg('examples', 0));
@@ -37,7 +37,7 @@ const RULES = {
   exclaim: { test: bangOutsideQuotes, why: 'exclamation mark in narration (inside quoted speech is allowed)' },
   hanViet: { re: /Ngũ Chỉ|Huyết Quỷ|Sổ Thù Hận|Thiên Mệnh|Sát Tinh|Thành Phố|Thành phố/, why: 'translated canon term (UNIVERSE 4.4)' },
   moon: { re: /ánh trăng|mặt trăng|moonlight|\bmoon(?!\s?(?:project|light corp))\b/i, why: 'the City has no moon' },
-  placeholder: { re: /\{(?!(?:name|age|friend|rival|lover|nemesis|parentName|parentDeath|parent|relic|partner|spouse|child|ward|mentor|mentee|scars|trialCompanion|debtBalance|partialPay)\})[a-zA-Z_]+\}|undefined|NaN|\[object/, why: 'placeholder interpolateText does not fill' },
+  placeholder: { re: /\{(?!(?:name|age|friend|rival|lover|nemesis|parentName|parentDeath|parent|relic|partner|spouse|child|ward|mentor|mentee|scars|trialCompanion|debtBalance|partialPay|grade)\})[a-zA-Z_]+\}|undefined|NaN|\[object/, why: 'placeholder interpolateText does not fill' },
   doubleSpace: { re: /\S {2,}\S/, why: 'double space' },
 };
 
@@ -60,6 +60,7 @@ for (const [id, scene] of Object.entries(CUTSCENES)) {
   if (scene.lastWords) walk('cutscene', id, '.lastWords', Object.values(scene.lastWords));
 }
 walk('chapter', 'loss', '', Object.values(CHAPTER_LOSS_LINES));
+walk('chapter', 'exam_fail', '', Object.values(CHAPTER_EXAM_FAIL_LINES));
 
 const tally = {};
 const shown = {};

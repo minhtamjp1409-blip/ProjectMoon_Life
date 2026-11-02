@@ -11,6 +11,7 @@ export function LifeEndStep({ summary, held = false, onInherit, children }) {
   const [looked, setLooked] = useState(Boolean(summary.endingId));
   const recordRef = useRef(null);
   const lookRef = useRef(null);
+  const cardRef = useRef(null);
   const key = `${summary.seed}-${summary.age}`;
 
   // Each new death starts again from the card
@@ -19,7 +20,10 @@ export function LifeEndStep({ summary, held = false, onInherit, children }) {
   }, [key, summary.endingId]);
 
   useEffect(() => {
-    if (!held && !looked) lookRef.current?.focus({ preventScroll: true });
+    if (!held && !looked) {
+      if (cardRef.current) cardRef.current.focus({ preventScroll: true });
+      else lookRef.current?.focus({ preventScroll: true });
+    }
   }, [held, looked, key]);
 
   useEffect(() => {
@@ -40,7 +44,7 @@ export function LifeEndStep({ summary, held = false, onInherit, children }) {
     : `${summary.name}, sinh ra tại ${summary.birthRegionNameVi || summary.regionNameVi}`;
 
   return (
-    <section className="life-end-card" key={key} aria-label={t('Cái chết', 'The end')}>
+    <section className="life-end-card" ref={cardRef} tabIndex={-1} key={key} aria-label={t('Cái chết', 'The end')}>
       <p className="epitaph-kicker-origin">{origin}</p>
       <p className="epitaph-age">
         {summary.age}

@@ -215,7 +215,7 @@ export function previewChoice(choice, char, kind = 'major') {
   return { affected, fixed: [], ranges, directions, odds };
 }
 
-export const ChoicePreview = ({ choice, npcs, char, kind = 'major', check = null }) => {
+export const ChoicePreview = ({ choice, npcs, char, kind = 'major', check = null, expanded = false, onToggleExpand = null }) => {
   const { t, lang } = useT();
   const { affected, directions, odds, examOdds } = previewChoice(choice, char, kind);
   const bonds = Object.entries(choice.bond || {})
@@ -223,13 +223,42 @@ export const ChoicePreview = ({ choice, npcs, char, kind = 'major', check = null
     .filter((b) => b.name);
   if (!affected?.length && !bonds.length && !check && !odds && !examOdds && !choice.later && !choice.scar && !choice.npcFate && !bringsClaw(choice, char)) return null;
 
-  return (
-    <span className="preview">
-      {examOdds ? (
+  const renderStatChip = (k) => {
+    const dir = directions?.[k] || 'vary';
+    const tone = dir === 'rise' ? toneOf(k, 1) : dir === 'fall' ? toneOf(k, -1) : 'affected';
+    const dirMark = dir === 'rise' ? '+' : dir === 'fall' ? '−' : '±';
+    return (
+      <span key={k} className={`delta is-${tone} is-affected is-affected-${k} is-static`}>
+        <i className="delta-stat-dot" style={{ background: STAT_COLORS[k] || 'var(--muted)' }} aria-hidden="true" />
+        {t(...LABELS[k])} <b className="num">{dirMark}</b>
+      </span>
+    );
+  };
+
+  const renderBondChips = () => bonds.map((b) => (
+    <span key={b.name} className="delta is-bond is-static">
+      {t('Quan hệ', 'Bond')} · {b.name}
+    </span>
+  ));
+
+  const renderRiskChips = () => (
+    <>
+      {bringsClaw(choice, char) && <span className="delta is-down is-static">{t('Đủ 3 Taboo: Claw đến ngay, không có đường rút', 'Reaches 3 Taboo: the Claw arrives at once, no retreat')}</span>}
+      {choice.later && <span className="delta is-rare is-static">{t('Sẽ có hậu quả', 'Has consequences')}</span>}
+      {choice.scar && <span className="delta is-rare is-static">{t('Để lại dấu tích', 'Leaves a mark')}</span>}
+    </>
+  );
+
+  const renderOdds = () => {
+    if (examOdds) {
+      return (
         <span className="preview-odds">
           {t(`Đỗ ${examOdds.pass}%`, `Pass ${examOdds.pass}%`)}
         </span>
-      ) : check ? (
+      );
+    }
+    if (check) {
+      return (
         <span className={`disco-check-pill ${check.isRedCheck ? 'is-red' : 'is-white'}`}>
           <span className="check-tag">{t(`Trót lọt ${check.successPct}%`, `${check.successPct}% chance`)}</span>
           {(check.modifiers || []).map((m, mIdx) => (
@@ -238,30 +267,60 @@ export const ChoicePreview = ({ choice, npcs, char, kind = 'major', check = null
             </span>
           ))}
         </span>
-      ) : odds ? (
+      );
+    }
+    if (odds) {
+      return (
         <span className="preview-odds">
           {t(`Trót lọt ${odds[0]}%`, `${odds[0]}% chance`)}
         </span>
-      ) : null}
-      {affected.map((k) => {
-        const dir = directions?.[k] || 'vary';
-        const tone = dir === 'rise' ? toneOf(k, 1) : dir === 'fall' ? toneOf(k, -1) : 'affected';
-        const dirMark = dir === 'rise' ? '+' : dir === 'fall' ? '−' : '±';
-        return (
-          <span key={k} className={`delta is-${tone} is-affected is-affected-${k} is-static`}>
-            <i className="delta-stat-dot" style={{ background: STAT_COLORS[k] || 'var(--muted)' }} aria-hidden="true" />
-            {t(...LABELS[k])} <b className="num">{dirMark}</b>
-          </span>
-        );
-      })}
-      {bonds.map((b) => (
-        <span key={b.name} className="delta is-bond is-static">
-          {t('Quan hệ', 'Bond')} · {b.name}
+      );
+    }
+    return null;
+  };
+
+  if (kind !== 'minor') {
+    return (
+      <span className="preview">
+        {renderOdds()}
+        {affected.map(renderStatChip)}
+        {renderBondChips()}
+        {renderRiskChips()}
+      </span>
+    );
+  }
+
+  // Minor choices (Đợt 118a):
+  // Main impact: first affected stat, or odds if no stats
+  const primaryStat = affected[0];
+  const secondaryStats = affected.slice(1);
+  const hasExtra = secondaryStats.length > 0 || bonds.length > 0 || Boolean(choice.later || choice.scar || bringsClaw(choice, char));
+
+  return (
+    <span className={`preview is-minor-preview ${expanded ? 'is-expanded' : 'is-folded'}`}>
+      <span className="preview-primary">
+        {!primaryStat && renderOdds()}
+        {primaryStat && renderStatChip(primaryStat)}
+      </span>
+      {hasExtra && onToggleExpand && (
+        <span
+          className="choice-detail-toggle"
+          role="button"
+          tabIndex={0}
+          onClick={onToggleExpand}
+          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onToggleExpand(e); }}
+          aria-label={expanded ? t('Gấp lại chi tiết', 'Collapse details') : t('Xem thêm chi tiết', 'Expand details')}
+          aria-expanded={expanded}
+        >
+          {expanded ? '▲' : '+'}
         </span>
-      ))}
-      {bringsClaw(choice, char) && <span className="delta is-down is-static">{t('Đủ 3 Taboo: Claw đến ngay, không có đường rút', 'Reaches 3 Taboo: the Claw arrives at once, no retreat')}</span>}
-      {choice.later && <span className="delta is-rare is-static">{t('Sẽ có hậu quả', 'Has consequences')}</span>}
-      {choice.scar && <span className="delta is-rare is-static">{t('Để lại dấu tích', 'Leaves a mark')}</span>}
+      )}
+      <span className={`preview-secondary ${expanded ? 'is-open' : 'is-hidden-mobile'}`}>
+        {primaryStat && renderOdds()}
+        {secondaryStats.map(renderStatChip)}
+        {renderBondChips()}
+        {renderRiskChips()}
+      </span>
     </span>
   );
 };

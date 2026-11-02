@@ -192,4 +192,36 @@ assert.equal(childCard?.kind, 'loss');
 assert.equal(childCard?.titleVi, 'Ha-neul');
 assert.match(childCard?.subVi, /Đứa trẻ bạn từng che chở đã không thể lớn lên giữa The City/);
 
-console.log('Chapters: trades taken up and left, Grades, Finger, Wing, independent Syndicate, E.G.O, Distortion, Color, companion loss, store, tiers and epitaph passed.');
+// 11. Đợt 118b: Thẻ chương khi trượt kỳ thi Fixer
+// a. Trượt lần đầu có thẻ chương nói rõ Grade
+const cExam1 = adult('chapter-exam-1');
+cExam1.fixerGrade = 7;
+const examFailed1 = step(cExam1, { fixerExamFailures: { 6: 1 } });
+const failCard1 = chapterFor(cExam1, examFailed1);
+assert.equal(failCard1?.type, 'chapter');
+assert.equal(failCard1?.kind, 'exam_fail');
+assert.equal(failCard1?.titleVi, 'Fixer Grade 6');
+assert.equal(failCard1?.subVi, 'Hana từ chối công nhận Grade 6.');
+assert.equal(failCard1?.subEn, 'Hana denied Grade 6.');
+
+// b. Trượt lần hai cùng Grade có câu khác
+const cExam2 = step(cExam1, { fixerExamFailures: { 6: 1 } });
+const examFailed2 = step(cExam2, { fixerExamFailures: { 6: 2 } });
+const failCard2 = chapterFor(cExam2, examFailed2);
+assert.equal(failCard2?.kind, 'exam_fail');
+assert.equal(failCard2?.titleVi, 'Fixer Grade 6');
+assert.equal(failCard2?.subVi, 'Hana lại từ chối Grade 6.');
+assert.equal(failCard2?.subEn, 'Hana denied Grade 6 once more.');
+
+// c. Thi đỗ không có thẻ trượt (có thẻ thăng hạng)
+const cPass = step(cExam1, { fixerGrade: 6 });
+const passCard = chapterFor(cExam1, cPass);
+assert.equal(passCard?.kind, 'rank');
+assert.equal(passCard?.titleVi, 'Fixer Grade 6');
+assert.match(passCard?.subVi, /Hana ghi Grade mới vào hồ sơ/);
+
+// d. Trượt trong cùng commit với cái chết thì không có thẻ, vì cái chết thắng
+const failAndDead = step(cExam1, { fixerExamFailures: { 6: 1 }, alive: false });
+assert.equal(chapterFor(cExam1, failAndDead), null, 'death outranks exam failure');
+
+console.log('Chapters: trades taken up and left, Grades, Finger, Wing, independent Syndicate, E.G.O, Distortion, Color, companion loss, exam failure, store, tiers and epitaph passed.');

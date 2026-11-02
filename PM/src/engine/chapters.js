@@ -32,6 +32,17 @@ export const CHAPTER_LOSS_LINES = {
   }
 };
 
+export const CHAPTER_EXAM_FAIL_LINES = {
+  first: {
+    vi: 'Hana từ chối công nhận Grade {grade}.',
+    en: 'Hana denied Grade {grade}.'
+  },
+  repeat: {
+    vi: 'Hana lại từ chối Grade {grade}.',
+    en: 'Hana denied Grade {grade} once more.'
+  }
+};
+
 const JOBS = {
   Fixer: { vi: 'Fixer', en: 'Fixer' },
   Syndicate: { vi: 'Syndicate', en: 'Syndicate' },
@@ -136,6 +147,32 @@ export function chapterFor(prev, next) {
         }
       }
     }
+  }
+
+  // Fixer exam failure card (Đợt 118b)
+  // Dropped if companion died, promotion, color, distortion, ego, or death in same commit
+  const prevFailures = prev.fixerExamFailures || {};
+  const nextFailures = next.fixerExamFailures || {};
+  let failedGrade = null;
+  let failCountForGrade = 0;
+  for (const [gradeStr, count] of Object.entries(nextFailures)) {
+    const prevCount = prevFailures[gradeStr] || 0;
+    if (count > prevCount) {
+      failedGrade = Number(gradeStr);
+      failCountForGrade = count;
+      break;
+    }
+  }
+
+  if (failedGrade !== null) {
+    const title = {
+      vi: `Fixer Grade ${failedGrade}`,
+      en: `Fixer Grade ${failedGrade}`
+    };
+    const lines = failCountForGrade === 1 ? CHAPTER_EXAM_FAIL_LINES.first : CHAPTER_EXAM_FAIL_LINES.repeat;
+    const subVi = lines.vi.replace('{grade}', failedGrade);
+    const subEn = lines.en.replace('{grade}', failedGrade);
+    return card(title, subVi, subEn, 'exam_fail');
   }
 
   return null;
