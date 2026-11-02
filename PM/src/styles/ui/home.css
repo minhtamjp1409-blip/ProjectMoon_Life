@@ -191,7 +191,7 @@
   padding: 3px 8px; border-radius: var(--radius-sm);
 }
 .legacy-gen-tag {
-  font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  font-family: var(--mono);
   font-size: 12px; font-weight: 700; color: var(--gold);
 }
 .birth-legacy-intro {

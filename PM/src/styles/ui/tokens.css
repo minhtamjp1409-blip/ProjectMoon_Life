@@ -50,6 +50,9 @@
   --s-heat: #ff6f66;
   --s-reso: #ad9cf5;
 
+  --ego-imminent: #d97706;
+  --ego-stirring: var(--s-sanity);
+
   /* the Head's judgment: the Claw's cold cyan, its white cut, the dark it brings */
   --claw: #7fe0ec;
   --claw-core: #e8fbff;
@@ -73,6 +76,8 @@
      letters on Windows, so its marks come apart ("Tiê´ng") */
   --serif: 'Literata', 'Noto Serif', 'Times New Roman', Georgia, serif;
   --font-serif: var(--serif);
+  --mono: ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  --font-mono: var(--mono);
 
   --radius: 6px;
   --radius-sm: 4px;
