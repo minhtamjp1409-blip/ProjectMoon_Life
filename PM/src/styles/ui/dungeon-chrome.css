@@ -39,7 +39,7 @@
 .dg-strain.is-calm .dg-strain-tier { color: var(--good); }
 .dg-strain.is-shaken .dg-strain-tier, .dg-strain.is-panic .dg-strain-tier { color: var(--warn); }
 .dg-strain.is-breaking .dg-strain-tier { color: var(--bad); }
-.dg-meter { position: relative; height: 4px; background: var(--raised); overflow: hidden; }
+.dg-meter { position: relative; height: 4px; background: var(--raised); }
 .dg-meter-fill { position: absolute; inset: 0; width: 100%; height: 100%; background: var(--warn); transform-origin: left; transition: transform .4s ease; }
 .dg-strain.is-calm .dg-meter-fill { background: var(--good); }
 .dg-strain.is-breaking .dg-meter-fill, .dg-strain.is-panic .dg-meter-fill { background: var(--bad); }

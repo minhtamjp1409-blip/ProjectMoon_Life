@@ -262,11 +262,11 @@
 .ego-horizon-header { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
 .ego-horizon-tag { font-size: 12px; font-weight: 600; color: var(--muted); }
 .ego-horizon-status-badge { font-size: 12.5px; font-weight: 600; color: var(--gold); }
-.ego-horizon-bar { height: 3px; background: var(--raised); overflow: hidden; }
+.ego-horizon-bar { height: 3px; background: var(--raised); }
 .ego-horizon-bar i { display: block; width: 100%; height: 100%; background: var(--gold); transform-origin: left; transition: transform 0.3s ease; }
 .ego-horizon-card.status-distorted .ego-horizon-bar i { background: var(--bad); }
-.ego-horizon-card.status-imminent .ego-horizon-bar i { background: #d97706; }
-.ego-horizon-card.status-stirring .ego-horizon-bar i { background: #0284c7; }
+.ego-horizon-card.status-imminent .ego-horizon-bar i { background: var(--warn); }
+.ego-horizon-card.status-stirring .ego-horizon-bar i { background: var(--s-sanity); }
 .ego-horizon-meta { display: flex; gap: 16px; font-size: 12.5px; color: var(--muted); }
 .ego-horizon-desc { font-size: 13px; color: var(--faint); line-height: 1.5; margin: 0; }
 
@@ -317,8 +317,8 @@
 .dossier-fold.is-quiet > summary { font-weight: 500; color: var(--faint); }
 .ego-horizon-fold .ego-horizon-bar i { background: var(--gold); }
 .ego-horizon-fold.status-distorted .ego-horizon-bar i { background: var(--bad); }
-.ego-horizon-fold.status-imminent .ego-horizon-bar i { background: #d97706; }
-.ego-horizon-fold.status-stirring .ego-horizon-bar i { background: #0284c7; }
+.ego-horizon-fold.status-imminent .ego-horizon-bar i { background: var(--warn); }
+.ego-horizon-fold.status-stirring .ego-horizon-bar i { background: var(--s-sanity); }
 .stat-name.has-help {
   display: inline-flex;
   align-items: center;

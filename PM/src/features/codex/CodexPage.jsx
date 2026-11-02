@@ -59,7 +59,7 @@ export const CodexPage = () => {
 
       <div className="panel" style={{ padding: '16px 20px', marginBottom: 16 }}>
         <div className="bar is-accent" style={{ height: 6 }} role="progressbar" aria-valuenow={unlockedCount} aria-valuemin={0} aria-valuemax={total}>
-          <i style={{ width: `${pct}%` }} />
+          <i style={{ transform: `scaleX(${Math.max(0, Math.min(100, pct)) / 100})` }} />
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 8, fontSize: 13 }} className="muted num">
           <span>

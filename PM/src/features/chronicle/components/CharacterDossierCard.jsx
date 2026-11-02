@@ -323,7 +323,7 @@ const People = ({ npcs, age, t, lang, onSelectRole }) => {
                   <b>{n.bond ?? 0}</b>
                 </div>
                 <div className="bar is-thin">
-                  <i style={{ width: `${n.bond ?? 0}%`, '--c': tier.color }} />
+                  <i style={{ transform: `scaleX(${Math.max(0, Math.min(100, n.bond ?? 0)) / 100})`, '--c': tier.color }} />
                 </div>
               </>
             )}

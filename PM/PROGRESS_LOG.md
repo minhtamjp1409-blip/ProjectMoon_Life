@@ -2397,13 +2397,16 @@ Hai cảnh mà kế hoạch để "sau". Từ đây danh mục cảnh C1 đến 
 * **Loại bỏ Button FX & Hiệu ứng đổ bóng giả lập (Taste Skill):**
   * Thay thế dải màu chuyển sắc gradient vàng giả lập (`linear-gradient(180deg, #d8b265, #b89146)`) và viền bóng trắng phản quang (`inset 0 1px 0 rgba(255, 255, 255, 0.35)`) trên `.hero-start-btn`, `.resume-launch-btn`, `.legacy-start-btn` bằng màu nền phẳng nguyên khối `var(--accent)`, chữ `var(--accent-ink)`, viền xúc giác 1px và đổ bóng nhẹ 0 2px 6px.
   * Hạ độ chói các đường viền panel (`.birth-panel`, `.legacy-dossier-card`, `.birth-resume`, `.ego-note`) từ vàng chói `rgba(216, 178, 101, 0.45)` về `color-mix(in srgb, var(--accent) 26%, var(--border))`, triệt tiêu hoàn toàn cảm giác "lưới các hộp chữ nhật" (grid of boxes).
-* **Mở rộng GPU scaleX cho toàn bộ thanh chỉ số cốt lõi (Hallmark Floor Rule 2):**
-  * Chuyển `.hud2-bar > i` (HP, SP trong `CharacterDossierCard.jsx`), `.ego-horizon-bar i` (tiến trình cộng hưởng E.G.O) và `.dg-meter-fill` (áp lực tâm thần hầm ngục trong `DungeonDock.jsx` & `dungeon-chrome.css`) sang GPU `transform: scaleX(...)` với `transform-origin: left; width: 100%`. Triệt tiêu hoàn toàn layout recalculation/reflow trong quá trình chơi game.
+  * Token hóa triệt để các màu viết cứng còn sót lại: chuyển nền `rgba(216, 178, 101, ...)` của `.legacy-dossier-card` và `.successor-badge` sang `color-mix`, quy chuẩn màu `#d97706` và `#0284c7` của `.ego-horizon-*` sang token `var(--warn)` và `var(--s-sanity)`.
+* **Mở rộng GPU scaleX cho 100% thanh tiến trình và chỉ số (Hallmark Floor Rule 2):**
+  * Chuyển `.hud2-bar > i` (HP, SP trong `CharacterDossierCard.jsx`), thanh Bond hồ sơ (`CharacterDossierCard.jsx:326`), thanh tiến độ mở khóa Codex (`CodexPage.jsx:62`), thanh Stat chung (`fc384cf`, `.bar > i`), `.ego-horizon-bar i` (tiến trình cộng hưởng E.G.O) và `.dg-meter-fill` (áp lực tâm thần hầm ngục trong `DungeonDock.jsx` & `dungeon-chrome.css`) sang GPU `transform: scaleX(...)` với `transform-origin: left; width: 100%`. Triệt tiêu 100% layout recalculation/reflow (`FAIL 10a` về 0 lỗi).
+  * Giữ nguyên thiết kế vạch mốc hầm ngục `.dg-meter-tick` thò 2px trên dưới bằng cách bỏ `overflow: hidden` không cần thiết trên `.dg-meter` và `.ego-horizon-bar`.
   * Xóa bỏ các khai báo `transition: all` vi phạm quy tắc Floor (thay bằng khai báo thuộc tính tường minh tại `.birth-gender button` và `.taboo-eye-unit`).
 * **Hoàn thiện phản hồi trạng thái vô hiệu hóa (Hallmark Floor Rule 39a):**
   * Bổ sung `cursor: not-allowed;` chuẩn hóa cho tất cả các nút bấm disabled (`.btn:disabled`, `.icon-btn:disabled`, `.app-tool:disabled`, `.dial-spin-btn:disabled`, `.dg-supply:disabled`, `.year-plan-stepper button:disabled`, `.atlas-actions button:disabled`).
-* **Làm sạch chữ tracked trên nhãn nhỏ (Hallmark Floor Rule 67):**
-  * Bỏ `letter-spacing` nhân tạo trên các nhãn nhỏ `.dg-hazard` và `.ego-horizon-tag`, giữ nguyên tỷ lệ chữ tự nhiên của typography The City.
+* **Làm sạch chữ tracked và chữ in hoa trên nhãn nhỏ (Hallmark Floor Rule 67):**
+  * Bỏ `letter-spacing` nhân tạo trên các nhãn nhỏ `.dg-hazard` và `.ego-horizon-tag`.
+  * Bỏ `text-transform: uppercase` trên `.successor-badge` để giữ đúng tỷ lệ chữ tự nhiên và đồng bộ với quy tắc nhãn của hệ thống.
 
 ## Phụ lục A: Bản tổng hợp thiết kế ngày 29/10/2026
 

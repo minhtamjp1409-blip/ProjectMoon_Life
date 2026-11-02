@@ -177,7 +177,7 @@
   padding: 16px 18px;
   border: 1px solid color-mix(in srgb, var(--accent) 26%, var(--border));
   border-radius: var(--radius-sm);
-  background: rgba(216, 178, 101, 0.035);
+  background: color-mix(in srgb, var(--accent) 3.5%, transparent);
   box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.25);
 }
 .legacy-badge-row {
@@ -186,10 +186,9 @@
 .successor-badge {
   display: inline-flex; align-items: center; gap: 6px;
   font-size: 12px; font-weight: 700;
-  color: var(--accent); background: rgba(216, 178, 101, 0.12);
+  color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent);
   border: 1px solid color-mix(in srgb, var(--accent) 26%, var(--border));
   padding: 3px 8px; border-radius: var(--radius-sm);
-  text-transform: uppercase;
 }
 .legacy-gen-tag {
   font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace;
