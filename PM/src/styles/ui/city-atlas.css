@@ -38,7 +38,7 @@
 .opening-story h1 { margin-bottom: 24px; overflow-wrap: break-word; text-wrap: balance; min-width: 0; }
 .opening-atlas { display: block; max-width: 690px; }
 .city-birth-atlas { min-width: 0; }
-.city-birth-atlas-frame { position: relative; overflow: hidden; background: var(--atlas-surface); border: 1px solid var(--atlas-line); }
+.city-birth-atlas-frame { position: relative; overflow: hidden; background: var(--atlas-surface); border: 1px solid color-mix(in srgb, var(--atlas-line) 45%, var(--atlas-surface)); }
 .city-birth-atlas-svg { width: 100%; height: auto; aspect-ratio: 1000 / 760; overflow: hidden; touch-action: manipulation; }
 .atlas-scanlines { fill: url(#city-atlas-scanlines); opacity: .38; }
 #city-atlas-scanlines path { fill: none; stroke: var(--atlas-scan); stroke-width: 1; }
