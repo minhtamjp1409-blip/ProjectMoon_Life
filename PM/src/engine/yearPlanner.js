@@ -194,8 +194,9 @@ export function diffStats(prev, next) {
 
 function pushLog(char, entry, t) {
   const idx = seasonIdxAt(t);
+  char.logSerial = (char.logSerial ?? char.logs.length) + 1;
   char.logs.push({
-    id: `log_${char.age}_${char.logs.length}_${entry.key || 'x'}`,
+    id: `log_${char.age}_${char.logSerial}_${entry.key || 'x'}`,
     age: char.age,
     season: entry.season || SEASONS[idx],
     ...entry
@@ -1820,7 +1821,7 @@ export function isQuietYear(plan, char) {
 /**
  * Creates a year_digest log entry from a list of routine daily log entries.
  */
-export function createYearDigest(dailyEntries, age) {
+export function createYearDigest(dailyEntries, age, { quiet = true } = {}) {
   if (!dailyEntries || dailyEntries.length === 0) return null;
   const ids = dailyEntries.map((e) => e.id);
 
@@ -1859,14 +1860,19 @@ export function createYearDigest(dailyEntries, age) {
 
   const introVi = 'Một năm trôi qua bình lặng.';
   const introEn = 'A quiet year passes.';
-  const vi = viBodies.length ? `${introVi} ${viBodies.join(' ')}` : introVi;
-  const en = enBodies.length ? `${introEn} ${enBodies.join(' ')}` : introEn;
+  const vi = quiet
+    ? (viBodies.length ? `${introVi} ${viBodies.join(' ')}` : introVi)
+    : viBodies.join(' ');
+  const en = quiet
+    ? (enBodies.length ? `${introEn} ${enBodies.join(' ')}` : introEn)
+    : enBodies.join(' ');
 
   return {
     id: `log_${age}_digest`,
     key: 'year_digest',
     type: 'year_digest',
     age,
+    quiet: Boolean(quiet),
     season: { vi: 'Cả năm', en: 'All year' },
     vi,
     en,
@@ -1913,7 +1919,11 @@ export function consolidateYearDailies(charOrLogs, targetAge) {
   // Only consolidate if there are at least 2 routine dailies
   if (dailyEntries.length < 2) return charOrLogs;
 
-  const digest = createYearDigest(dailyEntries, targetAge);
+  const hasOthers = logs.some(
+    (e) => e && e.age === targetAge && !isPureDaily(e) && !['summary', 'year_end'].includes(e.type)
+  );
+
+  const digest = createYearDigest(dailyEntries, targetAge, { quiet: !hasOthers });
   if (!digest) return charOrLogs;
 
   const firstIdx = dailyIndices[0];

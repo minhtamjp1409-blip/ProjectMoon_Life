@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { isQuietYear, createYearDigest, consolidateYearDailies } from '../src/engine/yearPlanner.js';
-import { buildLifeSummaryAndLegacy } from '../src/engine/gameEngine.js';
+import { buildLifeSummaryAndLegacy, createNewCharacter, createRNG } from '../src/engine/gameEngine.js';
+import { planYear } from '../src/engine/yearPlanner.js';
 
 console.log('--- Test Đợt 115: Năm yên ả đọc ít, đi nhanh ---');
 
@@ -108,6 +109,9 @@ const mixedConsolidated = consolidateYearDailies([...mixedLogs], 12);
 assert.equal(mixedConsolidated.length, 3, '5 log ban đầu gồm 3 daily + 1 minor + 1 year-end -> thành 1 digest + 1 minor + 1 year-end');
 assert.equal(mixedConsolidated[0].type, 'year_digest', 'Vị trí daily đầu tiên thành year_digest');
 assert.equal(mixedConsolidated[0].items.length, 3, 'Digest gom 3 daily');
+assert.equal(mixedConsolidated[0].quiet, false, 'Năm có minor thì digest.quiet phải là false');
+assert.ok(!mixedConsolidated[0].vi.includes('Một năm trôi qua bình lặng.'), 'Năm có minor không có câu mở đầu êm dịu');
+assert.ok(mixedConsolidated[0].vi.includes('Gió xuân thổi.'), 'Vẫn chứa các câu ngắn nối nhau');
 assert.equal(mixedConsolidated[1].type, 'choice', 'Minor vẫn đứng riêng ở vị trí của nó');
 assert.equal(mixedConsolidated[1].id, 'log_12_1_m1');
 assert.equal(mixedConsolidated[2].type, 'summary', 'Year-end summary vẫn đứng riêng ở cuối');
@@ -163,84 +167,88 @@ const legacyChar = {
 const legacySummary = buildLifeSummaryAndLegacy(legacyChar);
 assert.ok(legacySummary, 'Save cũ mở ra và tính toán tóm tắt thành công 100%');
 
-// 7. Test tự lướt năm yên ả (tính toán effectiveSpeed)
-console.log('7. Kiểm tra tính toán tốc độ tự lướt...');
+// 7. Test tự lướt theo "đoạn yên ả" (quietStretch)
+console.log('7. Kiểm tra tính toán tốc độ tự lướt theo đoạn yên ả...');
 
-function getEffectiveSpeed(settings, plan, char) {
-  const isQuiet = settings.autoSkipQuietYears && isQuietYear(plan, char);
-  return isQuiet && settings.speed > 0 ? 4 : settings.speed;
+function getEffectiveSpeed(settings, age, upcoming) {
+  const autoSkip = settings.autoSkipQuietYears;
+  const quietStretch = autoSkip && age >= 5 && (!upcoming || upcoming.kind === 'daily');
+  return quietStretch && settings.speed > 0 ? Math.max(4, settings.speed) : settings.speed;
 }
 
 // Khi tắt autoSkipQuietYears:
-assert.equal(getEffectiveSpeed({ autoSkipQuietYears: false, speed: 1 }, quietPlan, baseChar), 1);
-assert.equal(getEffectiveSpeed({ autoSkipQuietYears: false, speed: 2 }, quietPlan, baseChar), 2);
-assert.equal(getEffectiveSpeed({ autoSkipQuietYears: false, speed: 3 }, quietPlan, baseChar), 3);
+assert.equal(getEffectiveSpeed({ autoSkipQuietYears: false, speed: 1 }, 10, { kind: 'daily' }), 1);
+assert.equal(getEffectiveSpeed({ autoSkipQuietYears: false, speed: 2 }, 10, { kind: 'daily' }), 2);
+assert.equal(getEffectiveSpeed({ autoSkipQuietYears: false, speed: 3 }, 10, { kind: 'daily' }), 3);
 
 // Khi bật autoSkipQuietYears:
-// Năm yên ả -> tốc độ 4x
-assert.equal(getEffectiveSpeed({ autoSkipQuietYears: true, speed: 1 }, quietPlan, baseChar), 4, 'Năm yên ả tự nhảy lên 4x');
-assert.equal(getEffectiveSpeed({ autoSkipQuietYears: true, speed: 2 }, quietPlan, baseChar), 4, 'Năm yên ả tự nhảy lên 4x');
+// Mục kế tiếp là daily -> tốc độ 4x
+assert.equal(getEffectiveSpeed({ autoSkipQuietYears: true, speed: 1 }, 10, { kind: 'daily' }), 4, 'Đoạn daily tự nhảy lên 4x');
+assert.equal(getEffectiveSpeed({ autoSkipQuietYears: true, speed: 2 }, 10, { kind: 'daily' }), 4, 'Đoạn daily tự nhảy lên 4x');
 
-// Năm có minor -> trở về tốc độ người chơi chọn
-assert.equal(getEffectiveSpeed({ autoSkipQuietYears: true, speed: 1 }, planWithMinor, baseChar), 1, 'Năm có minor chạy đúng 1x');
-assert.equal(getEffectiveSpeed({ autoSkipQuietYears: true, speed: 2 }, planWithMinor, baseChar), 2, 'Năm có minor chạy đúng 2x');
+// Mục kế tiếp là minor/major/contract -> tốc độ trở về mức người chơi chọn
+assert.equal(getEffectiveSpeed({ autoSkipQuietYears: true, speed: 1 }, 10, { kind: 'minor' }), 1, 'Trước minor chạy đúng 1x');
+assert.equal(getEffectiveSpeed({ autoSkipQuietYears: true, speed: 2 }, 10, { kind: 'minor' }), 2, 'Trước minor chạy đúng 2x');
+assert.equal(getEffectiveSpeed({ autoSkipQuietYears: true, speed: 1 }, 10, { kind: 'major' }), 1, 'Trước major chạy đúng 1x');
+
+// Hết plan trong năm (upcoming null) -> lướt 4x sang năm mới
+assert.equal(getEffectiveSpeed({ autoSkipQuietYears: true, speed: 1 }, 10, null), 4, 'Cuối năm lướt 4x');
+
+// Tuổi < 5 không tự lướt
+assert.equal(getEffectiveSpeed({ autoSkipQuietYears: true, speed: 1 }, 3, { kind: 'daily' }), 1, 'Tuổi < 5 chạy tốc độ thường');
 
 // Đang pause (speed = 0) -> vẫn là 0
-assert.equal(getEffectiveSpeed({ autoSkipQuietYears: true, speed: 0 }, quietPlan, baseChar), 0, 'Đang pause thì tốc độ là 0');
+assert.equal(getEffectiveSpeed({ autoSkipQuietYears: true, speed: 0 }, 10, { kind: 'daily' }), 0, 'Đang pause thì tốc độ là 0');
 
-// 8. Mô phỏng đời 40 năm để đo đạc thời gian chơi và tính nguyên vẹn của lựa chọn
-console.log('8. Mô phỏng đời 40 năm đo thời gian và số lựa chọn...');
+// 8. Mô phỏng đời 40 năm bằng planYear thật để đo đạc thời gian chơi và tính nguyên vẹn của lựa chọn
+console.log('8. Mô phỏng đời 40 năm bằng planYear thật đo thời gian và số lựa chọn...');
 
-function simulate40Years(autoSkip) {
-  // Tạo 40 năm: tuổi 1 đến 40
-  // Một số năm có minor/event (khoảng 50%), một số năm yên ả (khoảng 50%)
+function simulate40YearsReal(autoSkip) {
+  const char = createNewCharacter({ seed: 'sim-life-measure', startAge: 0 });
+  char.job = 'Fixer';
   let totalTimeUnits = 0;
   let totalChoicesSeen = 0;
-  let quietYearsCount = 0;
+  let quietMomentsCount = 0;
+  let totalMoments = 0;
 
   for (let age = 1; age <= 40; age++) {
-    const char = { age, alive: true, npcs: {} };
-    // Tuổi 5, 8, 11, 14, 18, 22, 25, 29, 33, 37 có minor / event
-    const hasEvent = age < 5 || [5, 8, 11, 14, 18, 22, 25, 29, 33, 37].includes(age);
-    let plan;
-    if (hasEvent) {
-      plan = [
-        { kind: 'daily', t: 0.2 },
-        { kind: 'minor', id: `m_${age}`, t: 0.5 },
-        { kind: 'daily', t: 0.8 }
-      ];
-      totalChoicesSeen += 1;
-    } else {
-      plan = [
-        { kind: 'daily', t: 0.15 },
-        { kind: 'daily', t: 0.38 },
-        { kind: 'daily', t: 0.62 },
-        { kind: 'daily', t: 0.85 }
-      ];
+    char.age = age;
+    planYear(char, createRNG(`test-life-${age}`));
+    const plan = char.plan || [];
+    totalMoments += plan.length;
+
+    let prevT = 0;
+    for (let i = 0; i < plan.length; i++) {
+      const it = plan[i];
+      const deltaT = it.t - prevT;
+      const isQuietStretch = age >= 5 && it.kind === 'daily';
+      if (isQuietStretch) quietMomentsCount++;
+      const speed = autoSkip && isQuietStretch ? 4 : 1;
+      totalTimeUnits += (deltaT * 30) / speed;
+      prevT = it.t;
+      if (it.kind !== 'daily') totalChoicesSeen++;
     }
-
-    const quiet = isQuietYear(plan, char);
-    if (quiet) quietYearsCount++;
-
-    const speed = autoSkip && quiet ? 4 : 1;
-    // Mỗi năm chuẩn = 30s = 30 đơn vị thời gian
-    const yearDuration = 30 / speed;
-    totalTimeUnits += yearDuration;
+    // Đoạn cuối sau moment cuối cùng đến hết năm (t=1.0)
+    const endDeltaT = 1.0 - prevT;
+    const endQuiet = age >= 5;
+    totalTimeUnits += (endDeltaT * 30) / (autoSkip && endQuiet ? 4 : 1);
   }
 
-  return { totalTimeUnits, totalChoicesSeen, quietYearsCount };
+  return { totalTimeUnits, totalChoicesSeen, quietMomentsCount, totalMoments };
 }
 
-const runWithoutFastForward = simulate40Years(false);
-const runWithFastForward = simulate40Years(true);
+const runWithoutFastForward = simulate40YearsReal(false);
+const runWithFastForward = simulate40YearsReal(true);
 
 assert.equal(runWithoutFastForward.totalChoicesSeen, runWithFastForward.totalChoicesSeen, 'Số lượng lựa chọn đưa ra không đổi 100%');
 assert.ok(runWithFastForward.totalTimeUnits < runWithoutFastForward.totalTimeUnits, 'Thời gian chơi giảm rõ rệt');
 
 const timeSavedPercent = Math.round(((runWithoutFastForward.totalTimeUnits - runWithFastForward.totalTimeUnits) / runWithoutFastForward.totalTimeUnits) * 100);
-console.log(`- Năm yên ả trong 40 năm: ${runWithFastForward.quietYearsCount}/40 năm`);
-console.log(`- Thời gian chế độ chuẩn (1x): ${runWithoutFastForward.totalTimeUnits}s`);
-console.log(`- Thời gian khi bật Tự lướt: ${runWithFastForward.totalTimeUnits}s`);
-console.log(`- Thời gian tiết kiệm được: ${timeSavedPercent}% (vẫn giữ trọn vẹn ${runWithFastForward.totalChoicesSeen} lựa chọn)`);
+console.log(`- Tổng moments trong 40 năm: ${runWithFastForward.totalMoments}`);
+console.log(`- Số đoạn daily yên ả chạy 4x: ${runWithFastForward.quietMomentsCount}`);
+console.log(`- Số lựa chọn (minor, major, contract): ${runWithFastForward.totalChoicesSeen} (bảo toàn 100%)`);
+console.log(`- Thời gian chế độ chuẩn (1x): ${Math.round(runWithoutFastForward.totalTimeUnits)}s`);
+console.log(`- Thời gian khi bật Tự lướt: ${Math.round(runWithFastForward.totalTimeUnits)}s`);
+console.log(`- Thời gian tiết kiệm được: ${timeSavedPercent}%`);
 
 console.log('--- Tất cả 8 bài kiểm tra Đợt 115 đều ĐẠT (PASS) ---');

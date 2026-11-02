@@ -133,7 +133,7 @@ function clearSavedRun() {
 }
 
 // The life's own random stream, separate from the one that built the character
-const lifeRngFor = (char) => createRNG(`${char.seed}:life:${char.age}:${char.logs.length}`);
+const lifeRngFor = (char) => createRNG(`${char.seed}:life:${char.age}:${char.logSerial ?? char.logs.length}`);
 
 /* ---------- what changed, for the screen ---------- */
 
@@ -734,7 +734,10 @@ export const useGameStore = create((set, get) => ({
     }
     // A life that turned (a trade, a rank, E.G.O, Distortion, a Color) opens a new chapter in the chronicle
     const chapter = chapterFor(prev, withD);
-    if (chapter) withD.logs = [...withD.logs, chapter];
+    if (chapter) {
+      withD.logSerial = (withD.logSerial ?? withD.logs.length) + 1;
+      withD.logs = [...withD.logs, chapter];
+    }
     if (!withD.firstDungeonId && withD.pendingDungeon?.id) withD.firstDungeonId = withD.pendingDungeon.id;
     if (!withD.firstDungeonOutcome && prev.pendingDungeon && !withD.pendingDungeon &&
         prev.pendingDungeon.id === (withD.firstDungeonId || prev.firstDungeonId)) {
@@ -897,10 +900,11 @@ export const useGameStore = create((set, get) => ({
       return;
     }
 
-    // Đợt 115b: Tự lướt năm yên ả ở tốc độ 4x nếu bật trong cài đặt
+    // Đợt 115b: Tự lướt các đoạn yên ả ở tốc độ 4x nếu bật trong cài đặt
     const autoSkip = Boolean(useThemeStore.getState().autoSkipQuietYears);
-    const isQuiet = autoSkip && isQuietYear(c.plan, c);
-    const effectiveSpeed = isQuiet && s.speed > 0 ? 4 : s.speed;
+    const upcoming = nextPlanItem(c);
+    const quietStretch = autoSkip && c.age >= 5 && (!upcoming || upcoming.kind === 'daily');
+    const effectiveSpeed = quietStretch && s.speed > 0 ? Math.max(4, s.speed) : s.speed;
     const progress = Math.min(100, s.yearProgress + (dtMs / YEAR_MS) * 100 * effectiveSpeed);
     const { char, changed } = runDueItems(c, progress, lifeRng);
     if (changed) {

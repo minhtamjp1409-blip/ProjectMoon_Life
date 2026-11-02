@@ -211,10 +211,6 @@
 
 /* Đợt 115a: Thẻ gộp daily của năm yên ả */
 .entry.is-year-digest {
-  padding: 12px 14px;
-  background: color-mix(in srgb, var(--surface) 92%, transparent);
-  border-left: 2px solid color-mix(in srgb, var(--page-muted) 35%, transparent);
-  border-radius: var(--radius-sm);
   margin-bottom: 16px;
 }
 .entry.is-year-digest .entry-tag {

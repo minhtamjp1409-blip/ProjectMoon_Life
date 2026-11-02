@@ -120,10 +120,13 @@ const LogEntries = React.memo(function LogEntries({ logs, currentAge }) {
     if (entry.type === 'year_digest') {
       const digestText = lang === 'en' ? entry.en || entry.vi : entry.vi;
       const alt = bilingual && entry.en && entry.en !== entry.vi ? entry.en : '';
+      const tagText = entry.quiet !== false
+        ? t('Năm yên ả', 'Quiet year')
+        : t('Đời thường trong năm', 'Everyday life this year');
       out.push(
         <article className="entry t-quiet k-digest is-year-digest" key={entry.id}>
           <div className="entry-header-row">
-            <p className="entry-tag">{t('Năm yên ả', 'Quiet year')}</p>
+            <p className="entry-tag">{tagText}</p>
           </div>
           <p className="entry-text">{digestText}</p>
           {alt && <p className="entry-alt">{alt}</p>}
