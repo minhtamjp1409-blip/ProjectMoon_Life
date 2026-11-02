@@ -160,7 +160,13 @@ export const NpcDossierModal = ({ npcRole, onClose }) => {
               </span>
             </div>
             <div className="bond-progress-track">
-              <div className="bond-progress-fill" style={{ width: `${npc.bond ?? 0}%`, backgroundColor: bondState.color }} />
+              <div
+                className="bond-progress-fill"
+                style={{
+                  transform: `scaleX(${Math.max(0, Math.min(100, npc.bond ?? 0)) / 100})`,
+                  backgroundColor: bondState.color
+                }}
+              />
             </div>
             <div className="ledger-sub-row">
               <span className="ledger-stat">
@@ -187,7 +193,12 @@ export const NpcDossierModal = ({ npcRole, onClose }) => {
                 </div>
               </div>
               <div className="crisis-severity-bar">
-                <div className="crisis-severity-fill" style={{ width: `${npc.crisis.severity}%` }} />
+                <div
+                  className="crisis-severity-fill"
+                  style={{
+                    transform: `scaleX(${Math.max(0, Math.min(100, npc.crisis.severity ?? 0)) / 100})`
+                  }}
+                />
               </div>
             </section>
           )}

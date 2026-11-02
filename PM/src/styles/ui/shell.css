@@ -65,7 +65,7 @@
   .bottom-nav {
     position: relative; z-index: 20;
     display: grid; grid-template-columns: repeat(5, minmax(0, 1fr));
-    padding: 0 4px env(safe-area-inset-bottom, 0px);
+    padding: 0 8px env(safe-area-inset-bottom, 0px);
     border-top: 1px solid var(--border);
     background: rgba(7, 7, 10, .82);
     backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
@@ -73,7 +73,8 @@
   .bottom-nav button {
     position: relative;
     display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
-    min-height: 60px; color: var(--faint); font-size: 12px; font-weight: 600;
+    min-height: 60px; color: var(--faint); font-size: 11.5px; font-weight: 600;
+    letter-spacing: -0.015em;
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
     transition: color .14s ease;

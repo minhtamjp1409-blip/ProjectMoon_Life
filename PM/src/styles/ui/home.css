@@ -61,7 +61,7 @@
   backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
   border: 1px solid rgba(216, 178, 101, 0.45);
   border-radius: 4px;
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 .birth-panel::before {
   content: ''; position: absolute; top: -1px; left: -1px;

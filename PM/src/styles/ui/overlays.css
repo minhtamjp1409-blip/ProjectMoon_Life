@@ -46,7 +46,7 @@
 .hana-title-name { font-family: var(--serif); font-size: 30px; font-weight: 600; color: var(--page-ink); }
 .hana-title-heraldry { font-size: 13.5px; color: var(--page-muted); }
 .hana-decree-proclamation { font-family: var(--serif); font-size: 16px; line-height: 1.65; color: var(--page-ink); }
-.hana-decree-action-btn { width: 100%; min-height: 48px; border-radius: var(--radius-sm); background: var(--conferred-color, var(--accent)); color: #fff; font-weight: 600; font-size: 15px; text-shadow: 0 1px 2px rgba(0,0,0,.4); }
+.hana-decree-action-btn { width: 100%; min-height: 48px; border-radius: var(--radius-sm); background: var(--conferred-color, var(--accent)); color: var(--text); font-weight: 600; font-size: 15px; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4); }
 .hana-decree-action-btn:hover { filter: brightness(1.1); }
 
 /* Workshop counter: a price list, not a shop window */
@@ -56,8 +56,8 @@
 .depot-purse small { font-size: 13px; color: var(--muted); font-weight: 500; }
 .depot { display: flex; flex-direction: column; gap: 14px; margin-top: 8px; }
 .depot-lead { font-size: 14.5px; color: var(--muted); line-height: 1.55; }
-.depot-notice { padding: 8px 12px; border: 1px solid rgba(240, 184, 90, 0.4); border-radius: var(--radius-sm); background: rgba(240, 184, 90, 0.06); font-size: 14px; color: var(--text); }
-.depot-feedback { padding: 10px 14px; border-radius: var(--radius-sm); border: 1px solid rgba(216, 178, 101, 0.4); background: rgba(216, 178, 101, 0.06); font-size: 13.5px; line-height: 1.5; color: var(--text); animation: overlayIn .2s ease; }
+.depot-notice { padding: 8px 12px; border: 1px solid color-mix(in srgb, var(--accent) 40%, var(--border)); border-radius: var(--radius-sm); background: color-mix(in srgb, var(--accent) 6%, var(--surface)); font-size: 14px; color: var(--text); }
+.depot-feedback { padding: 10px 14px; border-radius: var(--radius-sm); border: 1px solid color-mix(in srgb, var(--gold) 40%, var(--border)); background: color-mix(in srgb, var(--gold) 6%, var(--surface)); font-size: 13.5px; line-height: 1.5; color: var(--text); animation: overlayIn .2s ease; }
 .depot-feedback.is-imbue { border-left-color: var(--rare); background: color-mix(in srgb, var(--rare) 10%, var(--surface)); }
 .depot-feedback.is-transit { border-left-color: var(--gold); background: color-mix(in srgb, var(--gold) 10%, var(--surface)); }
 .depot-deltas { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
@@ -425,12 +425,12 @@
 }
 
 .npc-role-tag {
-  color: var(--accent, #e5a93c);
+  color: var(--accent);
   font-weight: 600;
 }
 
 .npc-district-tag {
-  color: var(--muted, #8a8a98);
+  color: var(--muted);
   font-size: 11.5px;
 }
 
@@ -516,13 +516,13 @@
 .npc-dossier-section {
   padding: 12px 14px;
   border-radius: 8px;
-  background: var(--surface, #14141a);
-  border: 1px solid var(--rule, #22222a);
+  background: var(--surface);
+  border: 1px solid var(--rule);
 }
 
 .npc-trait-quote {
   font-size: 13.5px;
-  color: var(--text, #f0f0f5);
+  color: var(--text);
   margin-bottom: 8px;
   line-height: 1.5;
 }
@@ -532,19 +532,19 @@
   grid-template-columns: 1fr 1fr;
   gap: 10px;
   padding-top: 8px;
-  border-top: 1px dashed var(--rule, #282832);
+  border-top: 1px dashed var(--rule);
 }
 
 .wf-label {
   display: block;
   font-size: 12px;
-  color: var(--muted, #8a8a98);
+  color: var(--muted);
   margin-bottom: 2px;
 }
 
 .wf-val {
   font-size: 12.5px;
-  color: var(--story, #dcdce6);
+  color: var(--story);
   line-height: 1.4;
 }
 
@@ -564,9 +564,12 @@
 }
 
 .bond-progress-fill {
+  width: 100%;
   height: 100%;
   border-radius: 999px;
-  transition: width .3s ease;
+  transform-origin: left;
+  will-change: transform;
+  transition: transform .3s ease;
 }
 
 .ledger-sub-row {
@@ -617,15 +620,18 @@
 }
 
 .crisis-severity-fill {
+  width: 100%;
   height: 100%;
   background: var(--bad);
-  transition: width .3s ease;
+  transform-origin: left;
+  will-change: transform;
+  transition: transform .3s ease;
 }
 
 .perk-card {
-  border: 1px solid rgba(216, 178, 101, 0.35);
+  border: 1px solid color-mix(in srgb, var(--gold) 35%, var(--border));
   border-radius: var(--radius-sm);
-  background: color-mix(in srgb, var(--accent, #e5a93c) 5%, var(--surface));
+  background: color-mix(in srgb, var(--accent) 5%, var(--surface));
 }
 
 .perk-card-head {
@@ -637,7 +643,7 @@
 
 .perk-badge {
   font-size: 12px;
-  color: var(--accent, #e5a93c);
+  color: var(--accent);
   font-weight: 600;
 }
 
@@ -645,20 +651,20 @@
   margin: 0;
   font-size: 14px;
   font-weight: 700;
-  color: var(--text, #f0f0f5);
+  color: var(--text);
 }
 
 .perk-desc {
   margin: 0;
   font-size: 12.5px;
-  color: var(--muted, #8a8a98);
+  color: var(--muted);
   line-height: 1.45;
 }
 
 .memories-title {
   margin: 0 0 8px;
   font-size: 12px;
-  color: var(--muted, #8a8a98);
+  color: var(--muted);
 }
 
 .memories-list {
@@ -674,7 +680,7 @@
   display: flex;
   gap: 8px;
   font-size: 12.5px;
-  color: var(--story, #dcdce6);
+  color: var(--story);
   line-height: 1.4;
 }
 

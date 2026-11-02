@@ -452,7 +452,7 @@ export const BirthSetupPanel = () => {
                 <div className="field">
                   <span className="field-label" id="birth-gender-label">{t('Giới tính khởi đầu', 'Starting Gender')}</span>
                   <div className="seg birth-gender" role="radiogroup" aria-labelledby="birth-gender-label">
-                    {[['male', t('♂ Nam', '♂ Male')], ['female', t('♀ Nữ', '♀ Female')]].map(([id, label]) => (
+                    {[['male', t('Nam', 'Male')], ['female', t('Nữ', 'Female')]].map(([id, label]) => (
                       <button
                         key={id}
                         type="button"
