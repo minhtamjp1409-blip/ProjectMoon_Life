@@ -157,7 +157,7 @@ const Stat = ({ label, value, unit = '/100', color, flag, riseIsBad = false, too
       <div className={`bar ${isVital ? 'is-segmented' : ''} ${flashClass}`}>
         <i
           key={change ? `bar_${change.at}` : 'steady'}
-          style={{ width: `${Math.max(0, Math.min(100, value))}%`, '--c': flag || isCritical ? 'var(--bad)' : color }}
+          style={{ transform: `scaleX(${Math.max(0, Math.min(100, value)) / 100})`, '--c': flag || isCritical ? 'var(--bad)' : color }}
         />
         {isVital && (
           <div className="bar-segments" aria-hidden="true">
