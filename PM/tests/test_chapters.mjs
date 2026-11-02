@@ -175,4 +175,21 @@ const friendCard = chapterFor(cFriendHigh, friendHighDied);
 assert.equal(friendCard?.kind, 'loss');
 assert.match(friendCard?.subVi, /Chiếc ghế quen ở quán ăn cũ từ nay bỏ trống/);
 
+// g. Vai lover (người yêu) và child (con cái)
+const cLover = adult('chapter-lover');
+cLover.npcs = { lover: { nameVi: 'Yeon-hee', nameEn: 'Yeon-hee', bond: 45, deceased: false, status: 'active' } };
+const loverDied = step(cLover, { npcs: { lover: { ...cLover.npcs.lover, deceased: true, status: 'dead' } } });
+const loverCard = chapterFor(cLover, loverDied);
+assert.equal(loverCard?.kind, 'loss');
+assert.equal(loverCard?.titleVi, 'Yeon-hee');
+assert.match(loverCard?.subVi, /Lời hẹn cùng nhau rời đi đã vĩnh viễn dang dở/);
+
+const cChild = adult('chapter-child-loss');
+cChild.npcs = { child: { nameVi: 'Ha-neul', nameEn: 'Ha-neul', bond: 42, deceased: false, status: 'active' } };
+const childDied = step(cChild, { npcs: { child: { ...cChild.npcs.child, deceased: true, status: 'dead' } } });
+const childCard = chapterFor(cChild, childDied);
+assert.equal(childCard?.kind, 'loss');
+assert.equal(childCard?.titleVi, 'Ha-neul');
+assert.match(childCard?.subVi, /Đứa trẻ bạn từng che chở đã không thể lớn lên giữa The City/);
+
 console.log('Chapters: trades taken up and left, Grades, Finger, Wing, independent Syndicate, E.G.O, Distortion, Color, companion loss, store, tiers and epitaph passed.');

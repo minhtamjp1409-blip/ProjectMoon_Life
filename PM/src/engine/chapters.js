@@ -10,6 +10,10 @@ export const CHAPTER_LOSS_LINES = {
     vi: 'Người từng thức cùng bạn qua những đêm dài đã không còn thức giấc.',
     en: 'The one who kept watch through long nights with you will not wake again.'
   },
+  lover: {
+    vi: 'Lời hẹn cùng nhau rời đi đã vĩnh viễn dang dở.',
+    en: 'The promise to leave together is left forever unfinished.'
+  },
   partner: {
     vi: 'Một chiếc bóng quen thuộc không còn bước cạnh bạn trên đường về.',
     en: 'A familiar shadow no longer walks beside you on the way home.'
@@ -21,6 +25,10 @@ export const CHAPTER_LOSS_LINES = {
   friend: {
     vi: 'Chiếc ghế quen ở quán ăn cũ từ nay bỏ trống.',
     en: 'A familiar seat at the old diner now sits empty.'
+  },
+  child: {
+    vi: 'Đứa trẻ bạn từng che chở đã không thể lớn lên giữa The City.',
+    en: 'The child you once shielded could not grow up in the City.'
   }
 };
 
@@ -96,21 +104,31 @@ export function chapterFor(prev, next) {
       `Năm ${age} tuổi, Wing ghi tên bạn ở một tầng cao hơn.`, `At ${age}, the Wing writes your name one floor higher.`, 'rank');
   }
 
-  // A close companion fallen (partner, spouse, mentor, friend) with Bond >= 50
+  // A close companion fallen (spouse, lover, partner, mentor, friend, child)
   // Dropped if a savior death save played in the same commit (cutscene savior already spoke)
   if (!(next.usedDeathSave && !prev.usedDeathSave)) {
-    const CLOSE_ROLES = ['spouse', 'partner', 'mentor', 'friend'];
+    const CLOSE_ROLES = ['spouse', 'lover', 'partner', 'mentor', 'friend', 'child'];
     const isDead = (n) => Boolean(n) && (n.deceased === true || n.status === 'dead' || n.alive === false);
+    const fallbackTitles = {
+      spouse: { vi: 'Người bạn đời', en: 'Spouse' },
+      lover: { vi: 'Người thương', en: 'Lover' },
+      partner: { vi: 'Cộng sự', en: 'Partner' },
+      mentor: { vi: 'Người dẫn đường', en: 'Mentor' },
+      friend: { vi: 'Người bạn cũ', en: 'Friend' },
+      child: { vi: 'Đứa con', en: 'Child' }
+    };
     for (const role of CLOSE_ROLES) {
       const nextNpc = next.npcs?.[role];
       const prevNpc = prev.npcs?.[role];
       if (!nextNpc) continue;
       const justDied = !isDead(prevNpc) && isDead(nextNpc);
       const bond = prevNpc?.bond ?? nextNpc.bond ?? 0;
-      if (justDied && bond >= 50) {
+      // Close kin/mentor/lover naturally qualify at 40; friends/partners need 50
+      const minBond = ['spouse', 'lover', 'mentor', 'child'].includes(role) ? 40 : 50;
+      if (justDied && bond >= minBond) {
         const title = {
-          vi: nextNpc.nameVi || nextNpc.name || (role === 'spouse' ? 'Người bạn đời' : role === 'mentor' ? 'Người dẫn đường' : role === 'friend' ? 'Người bạn cũ' : 'Cộng sự'),
-          en: nextNpc.nameEn || nextNpc.name || (role === 'spouse' ? 'Spouse' : role === 'mentor' ? 'Mentor' : role === 'friend' ? 'Friend' : 'Partner')
+          vi: nextNpc.nameVi || nextNpc.name || fallbackTitles[role]?.vi || 'Người thân',
+          en: nextNpc.nameEn || nextNpc.name || fallbackTitles[role]?.en || 'Companion'
         };
         const lines = CHAPTER_LOSS_LINES[role];
         if (lines) {
