@@ -2378,6 +2378,20 @@ Hai cảnh mà kế hoạch để "sau". Từ đây danh mục cảnh C1 đến 
 * Bổ sung theo bản góp ý thứ ba: dải bản đồ thu nhỏ trên điện thoại ở 114b; Đợt 118 (gọn thẻ minor, thẻ chương khi thi trượt, thử bằng NVDA); buổi nghe thử âm thanh giao cho chủ dự án; âm báo đổi nơi và cảnh E.G.O để sau buổi nghe. Không gộp hai nút tạm dừng, vì đọc code thấy cả hai cùng đặt `speed = 0`.
 * `docs/LUAT_HIEN_HANH.md` giữ lại vì `PRODUCT.md` và `UNIVERSE.md` trỏ tới nó.
 
+## Đợt 112b: Tinh chỉnh thiết kế theo Taste & Hallmark (02/11/2026)
+
+* **Thanh tiến trình GPU (Performance):**
+  * `.bond-progress-fill` và `.crisis-severity-fill` chuyển sang GPU `transform: scaleX(...)` với `transform-origin: left` trong `NpcDossierModal.jsx` và `overlays.css`, loại bỏ hoàn toàn animation trên thuộc tính layout `width` (Hallmark Floor Rule 2).
+  * Bỏ `border-radius` khỏi `.bond-progress-fill` để đầu thanh vuông đều gọn gàng, tránh bị bẹp góc khi Bond thấp (track đã có `border-radius: 999px` và `overflow: hidden` cắt đầu trái). Bỏ `will-change: transform` để không giữ lớp GPU thừa khi modal mở.
+* **Làm sạch biểu tượng & Token hóa:**
+  * Bỏ ký hiệu emoji `♂` `♀` ở bộ chọn giới tính màn khai sinh `BirthSetupPanel.jsx`, chuyển sang nhãn chữ `Nam` / `Male` và `Nữ` / `Female`.
+  * Thay màu trắng tinh `#fff` trên nút sắc phong Hana bằng `var(--text)`.
+  * Quy chuẩn các màu viết cứng (`#e5a93c`, `#8a8a98`, `#f0f0f5`, `#14141a`, `#22222a`) và màu viền/nền `depot-notice`, `perk-card` sang `color-mix` với token.
+  * Giảm đổ bóng của `.birth-panel` trong `home.css` từ `0 16px 48px` về `0 4px 16px rgba(0, 0, 0, 0.35)` cho cảm giác bám sàn chắc chắn.
+* **Chống vỡ dòng thanh điều hướng di động (320px):**
+  * Đổi nhãn `shortVi` của Weaver AI trong `Sidebar.jsx` từ `Mạch truyện` thành `Truyện` (1 từ đồng bộ với `Chơi`, `Từ điển`, `Gia phả`, `Thành tựu`).
+  * Trả lại cỡ chữ `font-size: 12px`, bỏ `letter-spacing: -0.015em`, tăng lề `padding: 0 8px` trong `shell.css`. Thanh điều hướng giữ thẳng hàng 1 dòng tuyệt đối trên mọi độ phân giải từ 320px đến 390px.
+
 ## Phụ lục A: Bản tổng hợp thiết kế ngày 29/10/2026
 
 > Đây là nội dung lịch sử của `process.md`. Các mô tả cơ chế và kết quả kiểm thử phản ánh thời điểm 29/10/2026; những thay đổi và phép đo ở các đợt sau trong nhật ký chính được ưu tiên khi có khác biệt.

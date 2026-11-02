@@ -28,7 +28,7 @@ export const NAV_ITEMS = [
     icon: GitMerge,
     vi: 'Khung cửi',
     en: 'The Loom',
-    shortVi: 'Mạch truyện',
+    shortVi: 'Truyện',
     shortEn: 'Threads'
   },
   {
