@@ -27,6 +27,7 @@ const child = adult('chapter-child', 'Child');
 const fixer = step(child, { job: 'Fixer', fixerGrade: 9 });
 const entered = chapterFor(child, fixer);
 assert.equal(entered?.type, 'chapter');
+assert.equal(entered?.kind, 'job');
 assert.equal(entered.titleVi, 'Fixer');
 assert.match(entered.subVi, /bước vào nghề/);
 assert(entered.vi && entered.en, 'a chapter also carries one plain sentence for readers that know nothing of chapters');
@@ -34,6 +35,7 @@ assert(entered.vi && entered.en, 'a chapter also carries one plain sentence for 
 // 2. A Fixer Grade climbed is a chapter; a Grade lost is not
 const f9 = adult('chapter-grade');
 assert.equal(chapterFor(f9, step(f9, { fixerGrade: 8 }))?.titleEn, 'Fixer Grade 8');
+assert.equal(chapterFor(f9, step(f9, { fixerGrade: 8 }))?.kind, 'rank');
 assert.equal(chapterFor(step(f9, { fixerGrade: 8 }), f9), null, 'a Grade lost writes no chapter');
 assert.equal(chapterFor(f9, cloneChar(f9)), null, 'nothing changed, no chapter');
 
@@ -43,24 +45,31 @@ for (const rank of [1, 2, 3]) {
   const next = step(indie, { syndicateRank: rank });
   const card = chapterFor(indie, next);
   assert.equal(card?.titleVi, INDEPENDENT_SYNDICATE_RANKS[rank].vi, `independent Syndicate rank ${rank}`);
+  assert.equal(card?.kind, 'rank');
   indie = next;
 }
 
 // 4. A Finger rank and a Wing rank
 const thumb = step(adult('chapter-thumb', 'Syndicate'), { finger: 'Thumb' });
 assert.equal(chapterFor(thumb, step(thumb, { fingerRank: 1 }))?.titleEn, 'Capo');
+assert.equal(chapterFor(thumb, step(thumb, { fingerRank: 1 }))?.kind, 'rank');
 const wing = adult('chapter-wing', 'Wing Employee');
 assert.equal(chapterFor(wing, step(wing, { wingRank: 1 }))?.titleEn, 'Feather Agent');
+assert.equal(chapterFor(wing, step(wing, { wingRank: 1 }))?.kind, 'rank');
 
 // 5. E.G.O, Distortion and a Color; the biggest change in one commit wins
 const plain = adult('chapter-flags');
 assert.equal(chapterFor(plain, step(plain, { flags: [...plain.flags, 'EGOAwakened'] }))?.titleEn, 'E.G.O');
+assert.equal(chapterFor(plain, step(plain, { flags: [...plain.flags, 'EGOAwakened'] }))?.kind, 'ego');
 assert.equal(chapterFor(plain, step(plain, { flags: [...plain.flags, 'Distorted'], job: 'Distortion' }))?.titleEn, 'Distortion');
+assert.equal(chapterFor(plain, step(plain, { flags: [...plain.flags, 'Distorted'], job: 'Distortion' }))?.kind, 'distortion');
 assert.equal(chapterFor(plain, step(plain, { flags: [...plain.flags, 'ColorFixer', 'EGOAwakened'], fixerGrade: 0 }))?.titleEn, 'Color Fixer');
+assert.equal(chapterFor(plain, step(plain, { flags: [...plain.flags, 'ColorFixer', 'EGOAwakened'], fixerGrade: 0 }))?.kind, 'color');
 
 // 6. A career crossroad: leaving one trade for another is one card
 const leaving = chapterFor(plain, step(plain, { job: 'Wing Employee' }));
 assert.equal(leaving?.titleVi, 'Nhân viên Wing');
+assert.equal(leaving?.kind, 'job');
 assert.match(leaving.subVi, /rời con đường cũ/);
 
 // 7. Death writes no chapter

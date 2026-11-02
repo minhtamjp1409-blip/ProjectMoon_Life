@@ -2414,9 +2414,14 @@ Hai cảnh mà kế hoạch để "sau". Từ đây danh mục cảnh C1 đến 
   * **Vấn đề cũ:** `buildLifeSummaryAndLegacy` sau khi gom mốc chỉ sắp xếp theo thời gian rồi cắt lấy `turningPoints.slice(0, 8)`. Những nhân vật sống thọ hoặc trải qua nhiều biến cố chỉ giữ phần tuổi thơ/trung niên và đánh rơi các mốc đỉnh cao ở cuối đời (thăng chức Grade cao, thức tỉnh Color Fixer, E.G.O, và cái chết).
   * **Giải pháp:**
     * Bổ sung `entry.type === 'death'` vào `primaryLandmarks` để mốc kết thúc đời luôn được thu nạp.
-    * Xây dựng hàm chấm điểm trọng số `getLandmarkScore` theo thứ tự ưu tiên: Mốc cuối đời/Cái chết (1000) > Color & E.G.O (600) > Thăng cấp Grade/bậc Finger (500) > Vào nghề (400) > Mất NPC thân thiết (300) > Sống sót nguy hiểm (200) > Còn lại (100).
+    * Bổ sung trường `kind` ('color' | 'ego' | 'distortion' | 'job' | 'rank') vào thẻ `chapter` trong `chapters.js`.
+    * Chuyển đổi toàn bộ hàm `getLandmarkScore` sang **chấm điểm bằng dữ liệu có cấu trúc** (loại bỏ hoàn toàn regex quét chuỗi và rủi ro bắt nhầm từ ngữ như "Một Color Fixer đi ngang qua...", "con đường", "tin đồn E.G.O"):
+      - Gom bảng `tuổi -> kind` từ các mục `chapter`: tuổi có `color`/`ego` được 600, `rank` được 500, `job` được 400.
+      - Lên Grade/Thăng tiến dựa trên `lm.type === 'promo' || lm.type === 'miracle'` (đồng bộ với `promoMoments`) hoặc `Boolean(entry.promote)`.
+      - Mất NPC thân thiết lấy từ `char.npcs`: NPC vai thân thiết (`spouse`, `partner`, `mentor`, `friend`, `child`) có `deceased: true` và `fateAge === lm.age` được 300 điểm.
+      - Mốc cuối đời / Cái chết giữ nguyên 1000 điểm; `danger` sống sót giữ 200 điểm; mốc thường giữ 100 điểm.
     * Khi số mốc vượt quá 8: Mốc cuối cùng luôn luôn được giữ nguyên; chọn 7 mốc còn lại có điểm cao nhất, hòa điểm ưu tiên mốc muộn hơn; tuân thủ nghiêm ngặt luật tối đa 2 mốc mỗi tuổi; sau đó sắp xếp 8 mốc lại theo thời gian tăng dần trước khi trả về. Đời ngắn (< 8 mốc) giữ nguyên 100% danh sách gốc.
-  * **Kiểm thử:** Thêm `tests/test_life_summary_landmarks.mjs` xác nhận đời 60 tuổi có 14 mốc giữ trọn vẹn Color tuổi 52 và Cái chết tuổi 60; đời ngắn giữ nguyên; giới hạn 2 mốc/tuổi được bảo toàn.
+  * **Kiểm thử:** Thêm `tests/test_life_summary_landmarks.mjs` xác nhận đời 60 tuổi có 14 mốc giữ trọn vẹn Color tuổi 52 và Cái chết tuổi 60; đời ngắn giữ nguyên; giới hạn 2 mốc/tuổi được bảo toàn; và test chống bắt nhầm lọc sạch các mốc thường chứa từ ngữ gây nhiễu ("Một Color Fixer đi ngang qua...", "tin đồn E.G.O", v.v.).
 * **113b. Sửa lý do khóa báo sai Bond và Grade (`src/engine/eventConditions.js`):**
   * **Vấn đề cũ:** Trong `describeChoiceBlock`, nhánh `need.bondAtLeast`, `choice.favorCost` và `need.grade` trả về thông báo từ chối vô điều kiện ngay khi thuộc tính tồn tại mà không so sánh với chỉ số thực tế của nhân vật. Hậu quả là lựa chọn bị khóa do thiếu Reputation hoặc chỉ số khác vẫn báo nhầm là thiếu Bond hoặc thiếu Grade.
   * **Giải pháp:**

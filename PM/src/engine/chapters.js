@@ -27,11 +27,12 @@ export function chapterFor(prev, next) {
   const age = next.age;
   // The card sits in the season of the entry that turned the life, so it opens no season divider of its own
   const season = next.logs?.[next.logs.length - 1]?.season;
-  const card = (title, subVi, subEn) => ({
+  const card = (title, subVi, subEn, kind = null) => ({
     id: `chapter_${age}_${next.logs?.length || 0}`,
     age,
     ...(season ? { season } : {}),
     type: 'chapter',
+    ...(kind ? { kind } : {}),
     titleVi: title.vi,
     titleEn: title.en,
     subVi,
@@ -42,38 +43,38 @@ export function chapterFor(prev, next) {
   });
 
   if (has(next, 'ColorFixer') && !has(prev, 'ColorFixer')) {
-    return card({ vi: 'Color Fixer', en: 'Color Fixer' }, 'Hana đã đọc tên bạn.', 'Hana has read your name.');
+    return card({ vi: 'Color Fixer', en: 'Color Fixer' }, 'Hana đã đọc tên bạn.', 'Hana has read your name.', 'color');
   }
   if (has(next, 'Distorted') && !has(prev, 'Distorted')) {
-    return card({ vi: 'Distortion', en: 'Distortion' }, 'Bạn không còn giữ hình dạng cũ.', 'You no longer keep your old shape.');
+    return card({ vi: 'Distortion', en: 'Distortion' }, 'Bạn không còn giữ hình dạng cũ.', 'You no longer keep your old shape.', 'distortion');
   }
   if (has(next, 'EGOAwakened') && !has(prev, 'EGOAwakened')) {
-    return card({ vi: 'E.G.O', en: 'E.G.O' }, 'Nỗi đau của bạn đã thành hình.', 'Your pain has taken shape.');
+    return card({ vi: 'E.G.O', en: 'E.G.O' }, 'Nỗi đau của bạn đã thành hình.', 'Your pain has taken shape.', 'ego');
   }
   if (next.job !== prev.job && JOBS[next.job]) {
     return prev.job === 'Child'
-      ? card(jobTitle(next), `Năm ${age} tuổi, bạn bước vào nghề.`, `At ${age}, you take up the trade.`)
-      : card(jobTitle(next), `Năm ${age} tuổi, bạn rời con đường cũ.`, `At ${age}, you leave the old road.`);
+      ? card(jobTitle(next), `Năm ${age} tuổi, bạn bước vào nghề.`, `At ${age}, you take up the trade.`, 'job')
+      : card(jobTitle(next), `Năm ${age} tuổi, bạn rời con đường cũ.`, `At ${age}, you leave the old road.`, 'job');
   }
   if (next.job !== prev.job) return null;
 
   // Fixer Grades count down: Grade 7 is above Grade 8. Grade 0 is the Color, handled above.
   if (next.job === 'Fixer' && next.fixerGrade > 0 && next.fixerGrade < prev.fixerGrade) {
     return card({ vi: `Fixer Grade ${next.fixerGrade}`, en: `Fixer Grade ${next.fixerGrade}` },
-      `Năm ${age} tuổi, Hana ghi Grade mới vào hồ sơ.`, `At ${age}, Hana enters a new Grade on your file.`);
+      `Năm ${age} tuổi, Hana ghi Grade mới vào hồ sơ.`, `At ${age}, Hana enters a new Grade on your file.`, 'rank');
   }
   if (next.job === 'Syndicate' && next.finger && rose(prev.fingerRank, next.fingerRank)) {
     const title = FINGER_RANKS[next.finger]?.[next.fingerRank];
-    if (title) return card({ vi: title, en: title }, `Năm ${age} tuổi, The ${next.finger} gọi bạn bằng tước mới.`, `At ${age}, the ${next.finger} calls you by a new title.`);
+    if (title) return card({ vi: title, en: title }, `Năm ${age} tuổi, The ${next.finger} gọi bạn bằng tước mới.`, `At ${age}, the ${next.finger} calls you by a new title.`, 'rank');
   }
   if (next.job === 'Syndicate' && !next.finger && rose(prev.syndicateRank, next.syndicateRank)) {
     const title = INDEPENDENT_SYNDICATE_RANKS[next.syndicateRank];
-    if (title) return card(title, `Năm ${age} tuổi, khu phố đổi cách gọi bạn.`, `At ${age}, the block calls you something new.`);
+    if (title) return card(title, `Năm ${age} tuổi, khu phố đổi cách gọi bạn.`, `At ${age}, the block calls you something new.`, 'rank');
   }
   if (next.job === 'Wing Employee' && rose(prev.wingRank, next.wingRank)) {
     const rank = WING_RANKS[next.wingRank];
     if (rank) return card({ vi: rank.titleVi.split(' (')[0], en: rank.titleEn },
-      `Năm ${age} tuổi, Wing ghi tên bạn ở một tầng cao hơn.`, `At ${age}, the Wing writes your name one floor higher.`);
+      `Năm ${age} tuổi, Wing ghi tên bạn ở một tầng cao hơn.`, `At ${age}, the Wing writes your name one floor higher.`, 'rank');
   }
   return null;
 }

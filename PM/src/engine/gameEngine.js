@@ -3074,61 +3074,49 @@ export function buildLifeSummaryAndLegacy(char) {
   }
   chosenLandmarks.sort((a, b) => a.order - b.order);
 
-  // Score and select the 8 most important turning points (Đợt 113a: di cảo giữ các mốc quan trọng nhất và mốc cuối đời)
+  // Score and select the 8 most important turning points (Đợt 113a: chấm bằng dữ liệu có cấu trúc)
+  const chapterKindsByAge = new Map();
+  for (const entry of logs) {
+    if (entry && entry.type === 'chapter' && entry.age) {
+      if (!chapterKindsByAge.has(entry.age)) chapterKindsByAge.set(entry.age, new Set());
+      const kind = entry.kind || (
+        entry.titleEn === 'Color Fixer' ? 'color' :
+        entry.titleEn === 'E.G.O' ? 'ego' :
+        entry.titleEn === 'Distortion' ? 'distortion' :
+        /Grade|Rank/i.test(entry.titleEn || '') ? 'rank' :
+        'job'
+      );
+      if (kind) chapterKindsByAge.get(entry.age).add(kind);
+    }
+  }
+
+  const closeRoles = new Set(['spouse', 'partner', 'mentor', 'friend', 'child']);
+  const deceasedAges = new Set(
+    Object.entries(char.npcs || {})
+      .filter(([role, npc]) => closeRoles.has(role) && npc && (npc.deceased || npc.status === 'dead') && npc.fateAge != null)
+      .map(([, npc]) => npc.fateAge)
+  );
+
   const getLandmarkScore = (lm, isLast) => {
     if (isLast || lm.type === 'death') return 1000;
+    const kinds = chapterKindsByAge.get(lm.age);
     const entry = logs[lm.order] || {};
-    const textAll = `${lm.titleVi || ''} ${lm.summaryVi || ''} ${lm.titleEn || ''} ${lm.summaryEn || ''} ${entry.vi || ''} ${entry.en || ''}`;
 
-    // Color & E.G.O
-    if (
-      entry.id?.includes('color') || entry.id?.includes('ego') ||
-      entry.tags?.includes('color') || entry.tags?.includes('ego') ||
-      entry.turning === 'color' || entry.turning === 'ego' ||
-      entry.flagsAdd?.includes('ColorFixer') || entry.flagsAdd?.includes('EGOAwakened') ||
-      entry.flags?.includes('ColorFixer') || entry.flags?.includes('EGOAwakened') ||
-      entry.promote === 'ColorFixer' || entry.promote === 'EGOAwakened' ||
-      /\b(Color Fixer|Color\b|E\.G\.O|Thức tỉnh E\.G\.O|Awakened E\.G\.O)\b/i.test(textAll)
-    ) {
+    if (kinds?.has('color') || kinds?.has('ego') || entry.id === 'hana_color_ascension_trial' || entry.flagsAdd?.includes('ColorFixer') || entry.flagsAdd?.includes('EGOAwakened')) {
       return 600;
     }
-
-    // Lên Grade hoặc bậc Finger
-    if (
-      lm.type === 'promo' || entry.type === 'promo' || Boolean(entry.promote) ||
-      entry.id?.includes('promo') || entry.id?.includes('finger_rank') || entry.id?.includes('syn_indie_promo') ||
-      /\b(Fixer Grade\s*\d|Grade\s*\d|Cấp\s*\d|Bậc\s*\d|thăng cấp|thăng hạng|bậc Finger|Finger Rank|Syndicate Rank|thăng bậc)\b/i.test(textAll)
-    ) {
+    if (lm.type === 'promo' || lm.type === 'miracle' || kinds?.has('rank') || Boolean(entry.promote)) {
       return 500;
     }
-
-    // Vào nghề
-    if (
-      entry.id?.startsWith('ad_career_') || entry.id?.includes('choose_finger') ||
-      entry.id?.includes('first_license') || entry.id?.includes('career_choice') ||
-      entry.id?.includes('ad_outskirts_crossroad') ||
-      /\b(vào nghề|bước vào nghề|chọn nghề|nhận giấy phép|khởi đầu sự nghiệp|đoàn xe dừng)\b/i.test(textAll) ||
-      /gia nhập (Hana|Wing|Syndicate|Ngón|Tập đoàn|Văn phòng)/i.test(textAll)
-    ) {
+    if (kinds?.has('job') || entry.id?.startsWith('ad_career_')) {
       return 400;
     }
-
-    // NPC thân thiết mất
-    if (
-      entry.id?.includes('npc_death') || entry.id?.includes('companion_death') ||
-      entry.id?.includes('savior') || entry.id?.includes('c7_') || entry.tags?.includes('sacrificed') ||
-      (/\b(hy sinh|qua đời|ngã xuống|trút hơi thở|bỏ mình|mất đi|vĩnh viễn ra đi)\b/i.test(textAll) &&
-       /\b(bạn đời|sư phụ|đồng đội|người bạn|con|con cái|spouse|mentor|partner|friend|child)\b/i.test(textAll))
-    ) {
+    if (deceasedAges.has(lm.age)) {
       return 300;
     }
-
-    // danger sống sót
     if (lm.type === 'danger' || entry.type === 'danger') {
       return 200;
     }
-
-    // Còn lại
     return 100;
   };
 
