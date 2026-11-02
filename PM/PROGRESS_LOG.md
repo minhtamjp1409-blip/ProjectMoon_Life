@@ -2371,6 +2371,12 @@ Hai cảnh mà kế hoạch để "sau". Từ đây danh mục cảnh C1 đến 
   * Công cụ quay có thêm `--scene=savior|finger --finger=<Ngón>`.
   * Đã quay savior và Ring ở 1440x900 và 390x844, và bốn Ngón còn lại ở 1440x900: không tràn ngang, 0 lỗi console, chữ đọc rõ trên mọi dấu.
 
+## Đợt 112: Dọn tài liệu, một kế hoạch mới (02/11/2026)
+
+* Xóa bốn file trong `docs/`: `CRITIQUE_MAN_CHOI.md` và `KE_HOACH_CHUYEN_CANH_VA_CUTSCENE.md` (đã làm xong hết), `THE_CITY_CHRONICLES_GAMEPLAY_DEEP_DIVE.md` (bản cũ do công cụ sinh ra, chạy lại công cụ sẽ có bản mới) và `THE_CITY_CHRONICLES_PITCH_BIBLE.md` (trùng với `PRODUCT.md` và `UNIVERSE.md`). Các dòng log cũ vẫn nhắc tên chúng và chỉ còn là lịch sử.
+* Thêm `docs/KE_HOACH_TIEP_THEO.md`: Đợt 113 đến 117, đã đối chiếu với code. Hai lỗi đã xác nhận khi đọc code: di cảo cắt 8 mốc đầu sau khi xếp theo thời gian (`gameEngine.js:3446`), và lý do khóa Bond không so với Bond thật (`eventConditions.js:301`).
+* `docs/LUAT_HIEN_HANH.md` giữ lại vì `PRODUCT.md` và `UNIVERSE.md` trỏ tới nó.
+
 ## Phụ lục A: Bản tổng hợp thiết kế ngày 29/10/2026
 
 > Đây là nội dung lịch sử của `process.md`. Các mô tả cơ chế và kết quả kiểm thử phản ánh thời điểm 29/10/2026; những thay đổi và phép đo ở các đợt sau trong nhật ký chính được ưu tiên khi có khác biệt.
