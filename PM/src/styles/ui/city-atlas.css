@@ -85,7 +85,7 @@
 .atlas-actions button:hover { color: var(--accent-hover); }
 .atlas-actions button:active { transform: translateY(1px); }
 .atlas-actions button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-.atlas-actions button:disabled { opacity: .55; }
+.atlas-actions button:disabled { opacity: .55; cursor: not-allowed; }
 .atlas-actions .atlas-start-action { display: none; }
 .opening-atlas .atlas-note { padding-top: 8px; }
 

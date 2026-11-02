@@ -65,7 +65,7 @@ h3 { font-size: 16.5px; }
 }
 .btn:hover:not(:disabled) { background: var(--raised); border-color: var(--control); }
 .btn:active:not(:disabled) { background: var(--active); }
-.btn:disabled { opacity: .5; }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
 .btn-primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
 .btn-primary:hover:not(:disabled) { background: var(--accent-hover); border-color: var(--accent-hover); color: var(--accent-ink); filter: brightness(1.08); box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35); }
 .btn-primary:active:not(:disabled) { background: var(--accent); }
@@ -85,7 +85,7 @@ h3 { font-size: 16.5px; }
   background: transparent; color: var(--muted); font-size: 13px; font-weight: 600;
 }
 .icon-btn:hover:not(:disabled), .app-tool:hover:not(:disabled) { background: var(--raised); color: var(--text); }
-.icon-btn:disabled { opacity: .4; }
+.icon-btn:disabled, .app-tool:disabled { opacity: .4; cursor: not-allowed; }
 .key-badge { font-size: 12px; font-weight: 500; opacity: .75; padding: 2px 6px; border: 1px solid currentColor; border-radius: var(--radius-sm); }
 
 /* Fields */

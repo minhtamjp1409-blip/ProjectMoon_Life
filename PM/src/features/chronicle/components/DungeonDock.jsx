@@ -101,7 +101,7 @@ const StrainMeter = ({ strain, t }) => {
         aria-valuetext={`${strain}, ${t(vi, en)}`}
         aria-label={t('Áp lực tâm thần', 'Mental strain')}
       >
-        <span className="dg-meter-fill" style={{ width: `${strain}%` }} />
+        <span className="dg-meter-fill" style={{ transform: `scaleX(${Math.max(0, Math.min(100, strain)) / 100})` }} />
         {[45, 70, 90].map((at) => <span key={at} className="dg-meter-tick" style={{ left: `${at}%` }} aria-hidden="true" />)}
       </div>
     </div>

@@ -550,7 +550,7 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeT
           </summary>
           <div className="dossier-fold-body">
             <div className="ego-horizon-bar">
-              <i style={{ width: `${egoReadiness.progressPct}%` }} />
+              <i style={{ transform: `scaleX(${Math.max(0, Math.min(100, egoReadiness.progressPct || 0)) / 100})` }} />
             </div>
             <div className="ego-horizon-meta">
               <span className="meta-item">
@@ -809,12 +809,12 @@ export const CharacterDossierCard = () => {
           <div className={`hud2-stat is-hp ${isHpCritical ? 'is-critical' : ''}`} title={`HP: ${health}/100`}>
             <span className="hud2-k"><Heart size={13} aria-hidden="true" />HP</span>
             <b className="hud2-v num">{health}</b>
-            <i className="hud2-bar"><i style={{ width: `${Math.max(0, Math.min(100, health))}%` }} /></i>
+            <i className="hud2-bar"><i style={{ transform: `scaleX(${Math.max(0, Math.min(100, health)) / 100})` }} /></i>
           </div>
           <div className={`hud2-stat is-sp ${isSpCritical ? 'is-critical' : ''} ${sanity <= 22 ? 'is-carmen-calls' : ''}`} title={`SP: ${sanity}/100`}>
             <span className="hud2-k"><Brain size={13} aria-hidden="true" />SP</span>
             <b className="hud2-v num">{sanity}</b>
-            <i className="hud2-bar"><i style={{ width: `${Math.max(0, Math.min(100, sanity))}%` }} /></i>
+            <i className="hud2-bar"><i style={{ transform: `scaleX(${Math.max(0, Math.min(100, sanity)) / 100})` }} /></i>
           </div>
           <div className="hud2-stat is-ahn" title={t('Tiền mặt Ahn', 'Ahn Wealth')}>
             <span className="hud2-k"><Coins size={13} aria-hidden="true" />Ahn</span>

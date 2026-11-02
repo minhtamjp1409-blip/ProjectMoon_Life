@@ -2392,6 +2392,19 @@ Hai cảnh mà kế hoạch để "sau". Từ đây danh mục cảnh C1 đến 
   * Đổi nhãn `shortVi` của Weaver AI trong `Sidebar.jsx` từ `Mạch truyện` thành `Truyện` (1 từ đồng bộ với `Chơi`, `Từ điển`, `Gia phả`, `Thành tựu`).
   * Trả lại cỡ chữ `font-size: 12px`, bỏ `letter-spacing: -0.015em`, tăng lề `padding: 0 8px` trong `shell.css`. Thanh điều hướng giữ thẳng hàng 1 dòng tuyệt đối trên mọi độ phân giải từ 320px đến 390px.
 
+## Đợt 112c: Chuẩn hóa toàn diện theo Design Taste & Hallmark Floor (02/11/2026)
+
+* **Loại bỏ Button FX & Hiệu ứng đổ bóng giả lập (Taste Skill):**
+  * Thay thế dải màu chuyển sắc gradient vàng giả lập (`linear-gradient(180deg, #d8b265, #b89146)`) và viền bóng trắng phản quang (`inset 0 1px 0 rgba(255, 255, 255, 0.35)`) trên `.hero-start-btn`, `.resume-launch-btn`, `.legacy-start-btn` bằng màu nền phẳng nguyên khối `var(--accent)`, chữ `var(--accent-ink)`, viền xúc giác 1px và đổ bóng nhẹ 0 2px 6px.
+  * Hạ độ chói các đường viền panel (`.birth-panel`, `.legacy-dossier-card`, `.birth-resume`, `.ego-note`) từ vàng chói `rgba(216, 178, 101, 0.45)` về `color-mix(in srgb, var(--accent) 26%, var(--border))`, triệt tiêu hoàn toàn cảm giác "lưới các hộp chữ nhật" (grid of boxes).
+* **Mở rộng GPU scaleX cho toàn bộ thanh chỉ số cốt lõi (Hallmark Floor Rule 2):**
+  * Chuyển `.hud2-bar > i` (HP, SP trong `CharacterDossierCard.jsx`), `.ego-horizon-bar i` (tiến trình cộng hưởng E.G.O) và `.dg-meter-fill` (áp lực tâm thần hầm ngục trong `DungeonDock.jsx` & `dungeon-chrome.css`) sang GPU `transform: scaleX(...)` với `transform-origin: left; width: 100%`. Triệt tiêu hoàn toàn layout recalculation/reflow trong quá trình chơi game.
+  * Xóa bỏ các khai báo `transition: all` vi phạm quy tắc Floor (thay bằng khai báo thuộc tính tường minh tại `.birth-gender button` và `.taboo-eye-unit`).
+* **Hoàn thiện phản hồi trạng thái vô hiệu hóa (Hallmark Floor Rule 39a):**
+  * Bổ sung `cursor: not-allowed;` chuẩn hóa cho tất cả các nút bấm disabled (`.btn:disabled`, `.icon-btn:disabled`, `.app-tool:disabled`, `.dial-spin-btn:disabled`, `.dg-supply:disabled`, `.year-plan-stepper button:disabled`, `.atlas-actions button:disabled`).
+* **Làm sạch chữ tracked trên nhãn nhỏ (Hallmark Floor Rule 67):**
+  * Bỏ `letter-spacing` nhân tạo trên các nhãn nhỏ `.dg-hazard` và `.ego-horizon-tag`, giữ nguyên tỷ lệ chữ tự nhiên của typography The City.
+
 ## Phụ lục A: Bản tổng hợp thiết kế ngày 29/10/2026
 
 > Đây là nội dung lịch sử của `process.md`. Các mô tả cơ chế và kết quả kiểm thử phản ánh thời điểm 29/10/2026; những thay đổi và phép đo ở các đợt sau trong nhật ký chính được ưu tiên khi có khác biệt.

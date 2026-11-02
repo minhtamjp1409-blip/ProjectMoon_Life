@@ -43,7 +43,7 @@
   border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-size: 14px; font-weight: 600;
 }
 .dial-spin-btn:hover:not(:disabled) { background: var(--raised); }
-.dial-spin-btn:disabled { opacity: .55; }
+.dial-spin-btn:disabled { opacity: .55; cursor: not-allowed; }
 .dial-motion-hint { max-width: 300px; font-size: 13px; color: var(--faint); text-align: center; line-height: 1.5; }
 .dial-motion-hint button { color: var(--text); text-decoration: underline; text-underline-offset: 3px; font-weight: 600; }
 .atlas-note { display: flex; gap: 12px; padding-top: 14px; border-top: 1px solid var(--border); }
@@ -59,9 +59,9 @@
   padding: 24px 26px 20px;
   background: var(--page); color: var(--text);
   backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid rgba(216, 178, 101, 0.45);
+  border: 1px solid color-mix(in srgb, var(--accent) 26%, var(--border));
   border-radius: 4px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
 }
 .birth-panel::before {
   content: ''; position: absolute; top: -1px; left: -1px;
@@ -160,11 +160,11 @@
 }
 .resume-launch-btn {
   font-size: 15.5px; font-weight: 700; letter-spacing: 0.02em; min-height: 46px;
-  background: linear-gradient(180deg, #d8b265 0%, #b89146 100%);
-  color: #121316; border: 1px solid #e6c57e;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  background: var(--accent);
+  color: var(--accent-ink); border: 1px solid var(--accent);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
 }
-.resume-launch-btn:hover { filter: brightness(1.08); box-shadow: 0 8px 22px rgba(0, 0, 0, 0.55); }
+.resume-launch-btn:hover { filter: brightness(1.08); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45); }
 .resume-launch-btn:active { transform: translateY(1px); }
 
 /* Legacy Dossier View (Inherit Bloodline) */
@@ -175,7 +175,7 @@
 .legacy-dossier-card {
   display: flex; flex-direction: column; gap: 12px;
   padding: 16px 18px;
-  border: 1px solid rgba(216, 178, 101, 0.45);
+  border: 1px solid color-mix(in srgb, var(--accent) 26%, var(--border));
   border-radius: var(--radius-sm);
   background: rgba(216, 178, 101, 0.035);
   box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.25);
@@ -185,9 +185,9 @@
 }
 .successor-badge {
   display: inline-flex; align-items: center; gap: 6px;
-  font-size: 12px; font-weight: 700; letter-spacing: 0.05em;
+  font-size: 12px; font-weight: 700;
   color: var(--accent); background: rgba(216, 178, 101, 0.12);
-  border: 1px solid rgba(216, 178, 101, 0.35);
+  border: 1px solid color-mix(in srgb, var(--accent) 26%, var(--border));
   padding: 3px 8px; border-radius: var(--radius-sm);
   text-transform: uppercase;
 }
@@ -210,12 +210,12 @@
 }
 .legacy-start-btn {
   min-height: 46px; font-size: 15px; font-weight: 700; letter-spacing: 0.02em;
-  background: linear-gradient(180deg, #d8b265 0%, #b89146 100%);
-  color: #121316; border: 1px solid #e6c57e;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  background: var(--accent);
+  color: var(--accent-ink); border: 1px solid var(--accent);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
 }
-.legacy-start-btn:hover:not(:disabled) { filter: brightness(1.08); box-shadow: 0 8px 22px rgba(0, 0, 0, 0.55); }
+.legacy-start-btn:hover:not(:disabled) { filter: brightness(1.08); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45); }
 .legacy-start-btn:active:not(:disabled) { transform: translateY(1px); }
 .legacy-actions-grid .btn-secondary {
   min-height: 44px; font-size: 13.5px; background: rgba(255, 255, 255, 0.05);
@@ -245,13 +245,13 @@
 .birth-gender button {
   min-height: 44px; font-weight: 600; font-size: 13.5px;
   border-radius: var(--radius-sm); border: 1px solid transparent; color: var(--muted);
-  transition: all 0.15s ease;
+  transition: color .15s ease, background-color .15s ease, border-color .15s ease;
 }
 .birth-gender button:hover:not(.is-on) { color: var(--text); background: var(--raised); }
 .birth-gender button.is-on {
   background: var(--accent); color: var(--accent-ink);
   border-color: var(--accent); font-weight: 700;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
 }
 
 .birth-region-field label {
@@ -291,23 +291,23 @@
   min-height: 48px;
   font-size: 15.5px;
   font-weight: 700;
-  letter-spacing: 0.03em;
-  background: linear-gradient(180deg, #d8b265 0%, #b89146 100%);
-  color: #121316;
-  border: 1px solid #e6c57e;
+  letter-spacing: 0.02em;
+  background: var(--accent);
+  color: var(--accent-ink);
+  border: 1px solid var(--accent);
   border-radius: var(--radius-sm);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   transition: transform 0.1s ease, box-shadow 0.15s ease, filter 0.15s ease;
   cursor: pointer;
 }
 .hero-start-btn:hover:not(:disabled) {
   filter: brightness(1.08);
-  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
 }
 .hero-start-btn:active:not(:disabled) {
   transform: translateY(1px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4), inset 0 1px 2px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
 }
 
 .birth-footnote { font-size: 12.5px; color: var(--page-muted); text-align: center; margin: 0; }
@@ -331,7 +331,7 @@
 }
 .legacy-switch-hint button:hover { color: var(--accent-hover); }
 
-.birth-resume { display: flex; flex-direction: column; gap: 10px; padding: 14px 16px; border: 1px solid rgba(216, 178, 101, 0.4); border-radius: var(--radius-sm); background: color-mix(in srgb, var(--gold) 4%, var(--surface)); }
+.birth-resume { display: flex; flex-direction: column; gap: 10px; padding: 14px 16px; border: 1px solid color-mix(in srgb, var(--accent) 26%, var(--border)); border-radius: var(--radius-sm); background: color-mix(in srgb, var(--gold) 4%, var(--surface)); }
 .birth-resume > div > span { display: block; font-size: 13px; color: var(--page-muted); }
 .birth-resume strong { font-family: var(--serif); font-size: 19px; }
 .birth-resume small { font-family: var(--font); font-size: 14px; color: var(--page-muted); font-weight: 500; }
@@ -362,7 +362,7 @@
 .career-list article::before { content: counter(path, upper-roman); grid-row: span 2; font-family: var(--serif); font-style: italic; color: var(--faint); font-size: 17px; padding-top: 2px; }
 .career-list h3 { font-size: 20px; margin-bottom: 6px; }
 .career-list p { color: var(--muted); font-size: 15px; line-height: 1.6; }
-.ego-note { margin-top: 28px; padding: 20px 24px; border: 1px solid rgba(216, 178, 101, 0.35); border-radius: var(--radius-sm); background: color-mix(in srgb, var(--accent) 5%, var(--surface)); }
+.ego-note { margin-top: 28px; padding: 20px 24px; border: 1px solid color-mix(in srgb, var(--accent) 26%, var(--border)); border-radius: var(--radius-sm); background: color-mix(in srgb, var(--accent) 5%, var(--surface)); }
 .ego-note span { display: block; font-weight: 700; font-size: 14px; letter-spacing: .02em; color: var(--text); margin-bottom: 6px; }
 .ego-note p { font-family: var(--serif); font-size: 17px; line-height: 1.6; color: var(--story); }
 

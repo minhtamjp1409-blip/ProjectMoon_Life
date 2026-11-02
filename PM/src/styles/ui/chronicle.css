@@ -897,7 +897,7 @@
 .year-plan-stepper { display: flex; align-items: center; gap: .25rem; flex: none; }
 .year-plan-stepper button { min-width: 44px; min-height: 44px; border: 1px solid var(--border); border-radius: 6px; color: var(--text); background: var(--surface); cursor: pointer; }
 .year-plan-stepper button:hover:not(:disabled), .year-plan-stepper button:focus-visible { border-color: var(--accent); }
-.year-plan-stepper button:disabled { opacity: .35; cursor: default; }
+.year-plan-stepper button:disabled { opacity: .35; cursor: not-allowed; }
 .year-plan-stepper output { min-width: 1.2rem; text-align: center; font-variant-numeric: tabular-nums; }
 .year-plan-ambitions { border: 0; margin: 1.25rem 0 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; }
 .year-plan-ambitions legend { font-weight: 700; margin-bottom: .6rem; }

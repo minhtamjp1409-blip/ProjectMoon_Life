@@ -10,7 +10,7 @@
   padding-bottom: 14px;
   border-bottom: 1px solid var(--rule);
 }
-.dg-hazard { padding: 1px 7px; border: 1px solid var(--dg); border-radius: var(--radius-sm); color: var(--text); font-size: 12px; font-weight: 700; letter-spacing: .04em; }
+.dg-hazard { padding: 1px 7px; border: 1px solid var(--dg); border-radius: var(--radius-sm); color: var(--text); font-size: 12px; font-weight: 700; }
 .dg-ambient { font-family: var(--serif); font-style: italic; font-size: 15px; line-height: 1.55; color: var(--muted); }
 .dg-judgment-warning { padding: 8px 12px; border: 1px solid rgba(255, 111, 102, 0.4); border-radius: var(--radius-sm); background: rgba(255, 111, 102, 0.08); color: var(--bad); font-size: 14px; line-height: 1.5; }
 .dg-harmony { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 12px; border: 1px solid var(--dg); color: var(--text); font-size: 13px; }
@@ -39,8 +39,8 @@
 .dg-strain.is-calm .dg-strain-tier { color: var(--good); }
 .dg-strain.is-shaken .dg-strain-tier, .dg-strain.is-panic .dg-strain-tier { color: var(--warn); }
 .dg-strain.is-breaking .dg-strain-tier { color: var(--bad); }
-.dg-meter { position: relative; height: 4px; background: var(--raised); }
-.dg-meter-fill { position: absolute; inset: 0 auto 0 0; background: var(--warn); transition: width .4s ease; }
+.dg-meter { position: relative; height: 4px; background: var(--raised); overflow: hidden; }
+.dg-meter-fill { position: absolute; inset: 0; width: 100%; height: 100%; background: var(--warn); transform-origin: left; transition: transform .4s ease; }
 .dg-strain.is-calm .dg-meter-fill { background: var(--good); }
 .dg-strain.is-breaking .dg-meter-fill, .dg-strain.is-panic .dg-meter-fill { background: var(--bad); }
 .dg-meter-tick { position: absolute; top: -2px; bottom: -2px; width: 1px; background: var(--ground); }
@@ -102,7 +102,7 @@
 .dg-supplies { flex: 1 1 280px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
 .dg-supply { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 11px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 13.5px; font-weight: 600; color: var(--text); }
 .dg-supply:hover:not(:disabled) { background: var(--raised); border-color: var(--control); }
-.dg-supply:disabled { opacity: .45; }
+.dg-supply:disabled { opacity: .45; cursor: not-allowed; }
 .dg-supply small { font-weight: 500; color: var(--gold); font-size: 12.5px; }
 .dg-supply kbd, .dg-leave-btn kbd { font-family: var(--font); font-size: 12px; color: var(--muted); padding: 0 5px; border: 1px solid var(--border); border-radius: var(--radius-sm); }
 .dg-supply.is-used { color: var(--muted); }
