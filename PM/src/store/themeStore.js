@@ -10,6 +10,7 @@ export const useThemeStore = create((set) => {
   const initialReadMode = readSetting('pm-read-mode') === 'compact' ? 'compact' : 'full';
   const initialGameplayMetrics = readSetting('pm-gameplay-metrics') === 'on';
   const initialPerfMode = readSetting('pm-perf-mode') === 'on';
+  const initialAutoSkipQuietYears = readSetting('pm-auto-skip-quiet') === 'on';
   const initialCutscene = ['full', 'short', 'off'].includes(readSetting('pm-cutscene')) ? readSetting('pm-cutscene') : 'short';
 
   if (typeof document !== 'undefined') {
@@ -58,6 +59,11 @@ export const useThemeStore = create((set) => {
     setGameplayMetrics: (enabled) => {
       localStorage.setItem('pm-gameplay-metrics', enabled ? 'on' : 'off');
       set({ gameplayMetricsEnabled: enabled });
+    },
+    autoSkipQuietYears: initialAutoSkipQuietYears,
+    setAutoSkipQuietYears: (enabled) => {
+      localStorage.setItem('pm-auto-skip-quiet', enabled ? 'on' : 'off');
+      set({ autoSkipQuietYears: enabled });
     },
     cycleTextSize: () =>
       set((state) => {

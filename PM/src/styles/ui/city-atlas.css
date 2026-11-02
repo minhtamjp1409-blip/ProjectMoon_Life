@@ -41,11 +41,11 @@
 .city-birth-atlas-frame { position: relative; overflow: hidden; background: var(--atlas-surface); border: 1px solid color-mix(in srgb, var(--atlas-line) 45%, var(--atlas-surface)); }
 .city-birth-atlas-svg { width: 100%; height: auto; aspect-ratio: 1000 / 760; overflow: hidden; touch-action: manipulation; }
 .atlas-scanlines { fill: url(#city-atlas-scanlines); opacity: .38; }
-#city-atlas-scanlines path, [id$="-scanlines"] path { fill: none; stroke: var(--atlas-scan); stroke-width: 1; }
+#city-atlas-scanlines path, #atlas-strip-scanlines path { fill: none; stroke: var(--atlas-scan); stroke-width: 1; }
 .atlas-ground { fill: var(--atlas-land); }
-#city-atlas-blocks path, [id$="-blocks"] path { fill: none; stroke: var(--atlas-block); stroke-width: 1.1; }
-#city-atlas-fine-blocks path, [id$="-fine-blocks"] path { fill: none; stroke: var(--atlas-block-fine); stroke-width: .7; }
-#city-atlas-arteries path, [id$="-arteries"] path { fill: none; stroke: var(--atlas-artery); stroke-width: 1.5; }
+#city-atlas-blocks path, #atlas-strip-blocks path { fill: none; stroke: var(--atlas-block); stroke-width: 1.1; }
+#city-atlas-fine-blocks path, #atlas-strip-fine-blocks path { fill: none; stroke: var(--atlas-block-fine); stroke-width: .7; }
+#city-atlas-arteries path, #atlas-strip-arteries path { fill: none; stroke: var(--atlas-artery); stroke-width: 1.5; }
 .atlas-blocks { fill: url(#city-atlas-blocks); opacity: .86; }
 .atlas-blocks-fine { fill: url(#city-atlas-fine-blocks); opacity: .55; }
 .atlas-blocks-large { fill: url(#city-atlas-arteries); opacity: .72; }

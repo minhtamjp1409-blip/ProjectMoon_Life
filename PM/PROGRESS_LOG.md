@@ -2460,6 +2460,32 @@ Hai cảnh mà kế hoạch để "sau". Từ đây danh mục cảnh C1 đến 
   - Voice lint: 33.293 chuỗi đạt 0 lỗi, 0 cảnh báo.
   - Build Vite hoàn tất sạch bóng.
 
+## Đợt 115: Gộp daily năm yên ả và tùy chọn tự lướt 4x (02/11/2026)
+
+* **Sửa phản hồi người dùng: Thu hẹp phạm vi selector CSS bản đồ (`src/styles/ui/city-atlas.css`):**
+  * Thay thế selector toàn trang `[id$="-blocks"] path`, `[id$="-scanlines"] path` thành selector đích danh `#city-atlas-... path, #atlas-strip-... path` cho cả 4 lớp mẫu (scanlines, blocks, fine-blocks, arteries). Ngăn chặn triệt để nguy cơ vô tình tô màu các phần tử khác trong tương lai có id kết thúc bằng tiền tố tương tự.
+* **115a. Gộp daily của năm yên ả (`yearPlanner.js`, `gameStore.js`, `gameEngine.js`, `LiveStageFeed.jsx`, `entryTiers.js`, `chronicle.css`):**
+  * **Định nghĩa năm yên ả (`isQuietYear(plan, char)`):** Một năm là yên ả khi kế hoạch năm chỉ gồm các slot `kind === 'daily'`, không có minor, mishap, event lớn, hợp đồng, hầm ngục, cutscene hay thẻ chương, không có tương tác chờ (`pending*`), và không có NPC nào qua đời hay đổi trạng thái ở tuổi hiện tại (tuổi ≥ 5).
+  * **Gom nhật ký (`consolidateYearDailies`, `createYearDigest`):** Các daily thuần trong một năm (≥ 2 daily) được gom thành một mục `year_digest` duy nhất:
+    - Câu mở đầu êm dịu: *"Một năm trôi qua bình lặng."* / *"A quiet year passes."*
+    - Nối các câu daily ngắn (đã lọc bỏ tiêu đề ngoặc vuông `[...]`), kết thúc bằng dấu chấm chuẩn mực.
+    - Cộng dồn chính xác tổng deltas thay đổi chỉ số của cả năm.
+    - Chứa đủ `ids` và toàn bộ object gốc trong `items`.
+  * **Bảo toàn lựa chọn và biến cố:** Các mục có lựa chọn (`minor`), hậu quả (`csq`), nguy hiểm (`danger`) hay rủi ro (`mishap`) không bao giờ bị gộp và giữ nguyên vị trí mùa ban đầu. Trong năm có minor, minor đứng riêng tại mùa của nó, các daily còn lại trong năm vẫn được gộp thành `year_digest`.
+  * **Xem từng mùa:** Mục gộp hiển thị nút mở rộng `<details className="year-digest-fold">` với nhãn *"Xem từng mùa"* / *"View each season"*, cho phép người chơi mở lại chi tiết từng mùa gốc kèm huy hiệu mùa và chỉ số riêng. Dữ liệu gốc nằm trọn vẹn trong log, chỉ phần hiển thị mặc định là gộp.
+  * **Tuổi 0 đến 4 giữ nguyên:** Không áp dụng gộp vì giai đoạn ấu thơ vốn chỉ có 1 daily mỗi năm.
+  * **Di cảo & Tóm tắt cuộc đời (`buildLifeSummaryAndLegacy`):** Giải phẳng log qua `entry.items` khi gặp `year_digest`, đảm bảo việc đọc mốc và tạo di cảo luôn dựa trên dòng gốc 100%, kết quả di cảo hoàn toàn bất biến.
+* **115b. Tự lướt năm yên ả (`themeStore.js`, `gameStore.js`, `SettingsModal.jsx`):**
+  * **Tùy chọn cài đặt:** Thêm cờ `autoSkipQuietYears` (mặc định tắt, lưu `localStorage`) và toggle trực quan trong menu Cài đặt (`SettingsModal.jsx`) với biểu tượng `FastForward`.
+  * **Tăng tốc 4x tự động:** Trong vòng lặp `tick(dtMs)`, khi tính năng được bật và năm thỏa mãn `isQuietYear(c.plan, c)`, tiến trình năm tự động chạy ở tốc độ 4x (`effectiveSpeed = 4`). Ngay khi sang năm có biến cố/lựa chọn hoặc có bất kỳ tương tác nào chờ, tiến trình tự động trả về đúng tốc độ người chơi đã chọn (`1x`, `2x`, `3x` hoặc tạm dừng `0x`).
+  * Tuyệt đối không thêm nấc 4x/8x chung vào thanh điều khiển tốc độ để đảm bảo người chơi luôn đọc kịp các lựa chọn có hạn giờ.
+* **Kiểm định toàn bộ:**
+  * Xây dựng `tests/test_quiet_year_digest.mjs` với 8 bài kiểm tra chuyên sâu: `isQuietYear` với các trường hợp biên, gộp daily, bảo toàn vị trí minor, giữ nguyên tuổi 0-4, `buildLifeSummary` đọc qua `items`, save cũ không có `year_digest` tải mượt mà, tính toán tốc độ tự lướt, và mô phỏng 40 năm.
+  * **Kết quả đo đạc đời 40 năm:** 26/40 năm là năm yên ả; thời gian chơi giảm **49%** (từ 1.200s xuống 615s) trong khi số lựa chọn minor/event đưa ra cho người chơi giữ nguyên trọn vẹn **100% (14/14 lựa chọn)**.
+  * Toàn bộ 75 test suites + 500-khoảnh khắc audit chạy qua 100%.
+  * Voice lint: 33.293 chuỗi đạt 0 lỗi, 0 cảnh báo.
+  * Build Vite thành công sạch sẽ.
+
 
 ## Phụ lục A: Bản tổng hợp thiết kế ngày 29/10/2026
 

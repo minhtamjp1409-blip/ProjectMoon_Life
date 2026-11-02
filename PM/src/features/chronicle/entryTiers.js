@@ -1,6 +1,6 @@
 // How loudly a chronicle entry reads. The log mixes a daily errand with a promotion, and one card style made both look alike.
 // quiet: routine that has already resolved, decision: a choice the player made or a consequence of one, turn: a turning point.
-const QUIET_TYPES = new Set(['daily', 'lore', 'summary']);
+const QUIET_TYPES = new Set(['daily', 'lore', 'summary', 'year_digest']);
 const TURN_TYPES = new Set(['promo', 'miracle', 'death', 'chapter']);
 
 // type 'major' is a weight class: hundreds of events carry it. A resolved event (it keeps its `review`) is a

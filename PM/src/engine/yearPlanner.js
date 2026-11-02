@@ -1772,3 +1772,165 @@ export function runDueItems(charState, progress, rng) {
   }
   return { char, changed };
 }
+
+/**
+ * A year is quiet when its plan contains only routine daily slots:
+ * no minor choices, mishaps, major events, contracts, dungeons, cutscenes, or chapter turns,
+ * and no NPC changes state (death / historic passing).
+ * Early childhood (ages 0-4) is excluded since it already has only one daily per year.
+ */
+export function isQuietYear(plan, char) {
+  if (!plan || !Array.isArray(plan) || plan.length === 0) return false;
+  if (!char || (char.age ?? 0) < 5) return false;
+
+  // Plan must contain only 'daily' moments with no forced events or causal hooks
+  const onlyDailies = plan.every((it) => it && it.kind === 'daily' && !it.forcedEventId && !it.isCausal && !it.thread);
+  if (!onlyDailies) return false;
+
+  // No pending interactions
+  if (
+    char.pendingMinor ||
+    char.pendingEvent ||
+    char.pendingContract ||
+    char.pendingDungeon ||
+    char.pendingModal ||
+    char.pendingLead ||
+    char.pendingYearPlan
+  ) {
+    return false;
+  }
+
+  // No close NPC passed away or changed state at this age
+  if (char.npcs) {
+    for (const npc of Object.values(char.npcs)) {
+      if (!npc) continue;
+      if ((npc.deceased || npc.status === 'dead') && npc.fateAge === char.age) return false;
+      if (npc.statusChangedAge === char.age) return false;
+    }
+  }
+
+  // Parent historic passing milestone
+  if (char.npcs?.parent?.alive && char.age >= char.npcs.parent.deathAgeInChildLife) {
+    return false;
+  }
+
+  return true;
+}
+
+/**
+ * Creates a year_digest log entry from a list of routine daily log entries.
+ */
+export function createYearDigest(dailyEntries, age) {
+  if (!dailyEntries || dailyEntries.length === 0) return null;
+  const ids = dailyEntries.map((e) => e.id);
+
+  // Sum deltas across all merged dailies
+  const deltaMap = {};
+  for (const e of dailyEntries) {
+    if (Array.isArray(e.deltas)) {
+      for (const d of e.deltas) {
+        if (d && d.k && typeof d.v === 'number') {
+          deltaMap[d.k] = (deltaMap[d.k] || 0) + d.v;
+        }
+      }
+    }
+  }
+  const STAT_ORDER = ['health', 'sanity', 'wealth', 'network', 'rep', 'merit', 'heat', 'taboo', 'resonance'];
+  const deltas = [];
+  for (const k of STAT_ORDER) {
+    if (deltaMap[k]) deltas.push({ k, v: deltaMap[k] });
+  }
+  for (const [k, v] of Object.entries(deltaMap)) {
+    if (v && !STAT_ORDER.includes(k)) deltas.push({ k, v });
+  }
+
+  // Concatenate short sentences without titles
+  const viBodies = dailyEntries.map((e) => {
+    const b = splitTitle(e.vi || '').body.trim();
+    if (!b) return '';
+    return /[.!?]$/.test(b) ? b : `${b}.`;
+  }).filter(Boolean);
+
+  const enBodies = dailyEntries.map((e) => {
+    const b = splitTitle(e.en || '').body.trim();
+    if (!b) return '';
+    return /[.!?]$/.test(b) ? b : `${b}.`;
+  }).filter(Boolean);
+
+  const introVi = 'Một năm trôi qua bình lặng.';
+  const introEn = 'A quiet year passes.';
+  const vi = viBodies.length ? `${introVi} ${viBodies.join(' ')}` : introVi;
+  const en = enBodies.length ? `${introEn} ${enBodies.join(' ')}` : introEn;
+
+  return {
+    id: `log_${age}_digest`,
+    key: 'year_digest',
+    type: 'year_digest',
+    age,
+    season: { vi: 'Cả năm', en: 'All year' },
+    vi,
+    en,
+    deltas,
+    ids,
+    items: dailyEntries
+  };
+}
+
+/**
+ * Consolidates routine daily logs of a given age (>= 5) into a single year_digest entry.
+ * Routine entries: type === 'daily' || type === 'lore', no choices, no danger/mishap/story.
+ * Items with choices, consequences, danger, or mishaps are NEVER consolidated and keep their season positions.
+ */
+export function consolidateYearDailies(charOrLogs, targetAge) {
+  const isChar = charOrLogs && Array.isArray(charOrLogs.logs);
+  const logs = isChar ? charOrLogs.logs : (Array.isArray(charOrLogs) ? charOrLogs : []);
+  if (targetAge < 5) return charOrLogs;
+
+  const isPureDaily = (e) =>
+    e &&
+    e.age === targetAge &&
+    (e.type === 'daily' || e.type === 'lore') &&
+    !e.choiceVi &&
+    !e.choices &&
+    !e.passed &&
+    e.key !== 'year_digest' &&
+    e.type !== 'danger' &&
+    e.type !== 'mishap' &&
+    e.type !== 'summary' &&
+    e.type !== 'year_end' &&
+    e.type !== 'chapter' &&
+    e.key !== 'npc_autonomy';
+
+  const dailyIndices = [];
+  const dailyEntries = [];
+  logs.forEach((e, idx) => {
+    if (isPureDaily(e)) {
+      dailyIndices.push(idx);
+      dailyEntries.push(e);
+    }
+  });
+
+  // Only consolidate if there are at least 2 routine dailies
+  if (dailyEntries.length < 2) return charOrLogs;
+
+  const digest = createYearDigest(dailyEntries, targetAge);
+  if (!digest) return charOrLogs;
+
+  const firstIdx = dailyIndices[0];
+  const removeSet = new Set(dailyIndices.slice(1));
+  const newLogs = [];
+
+  for (let i = 0; i < logs.length; i++) {
+    if (i === firstIdx) {
+      newLogs.push(digest);
+    } else if (!removeSet.has(i)) {
+      newLogs.push(logs[i]);
+    }
+  }
+
+  if (isChar) {
+    charOrLogs.logs = newLogs;
+    return charOrLogs;
+  }
+  return newLogs;
+}

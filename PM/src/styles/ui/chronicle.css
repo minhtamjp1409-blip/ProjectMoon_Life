@@ -208,6 +208,75 @@
   font-size: 12.5px;
   padding: 2px 0;
 }
+
+/* Đợt 115a: Thẻ gộp daily của năm yên ả */
+.entry.is-year-digest {
+  padding: 12px 14px;
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  border-left: 2px solid color-mix(in srgb, var(--page-muted) 35%, transparent);
+  border-radius: var(--radius-sm);
+  margin-bottom: 16px;
+}
+.entry.is-year-digest .entry-tag {
+  color: var(--page-muted);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.year-digest-fold {
+  margin-top: 8px;
+  font-size: 13px;
+  border-top: 1px dashed var(--page-rule);
+  padding-top: 6px;
+}
+.year-digest-fold summary {
+  cursor: pointer;
+  color: var(--page-muted);
+  font-size: 12.5px;
+  min-height: 28px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  user-select: none;
+}
+.year-digest-fold summary:hover {
+  color: var(--page-ink);
+}
+.year-digest-seasons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+  padding-left: 4px;
+}
+.year-digest-season-row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid color-mix(in srgb, var(--page-rule) 60%, transparent);
+}
+.year-digest-season-row:last-child {
+  border-bottom: none;
+}
+.season-row-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.season-badge {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--page-muted);
+  background: color-mix(in srgb, var(--page-edge) 80%, transparent);
+  padding: 1px 6px;
+  border-radius: 3px;
+}
+.season-row-text {
+  font-size: 13px;
+  color: var(--page-muted);
+  line-height: 1.5;
+  margin: 0;
+}
 .breakdown-label {
   color: var(--muted);
 }

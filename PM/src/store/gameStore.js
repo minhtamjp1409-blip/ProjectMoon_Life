@@ -18,7 +18,7 @@ import {
   cloneChar,
   interpolateText
 } from '../engine/gameEngine.js';
-import { planYear, chooseDirectorPacedLead, syncPlanWithBackend, runDueItems, resolveMinor, endYear, nextPlanItem, diffStats, MINOR_WINDOW_MS, splitTitle, LIFE_MINORS } from '../engine/yearPlanner.js';
+import { planYear, chooseDirectorPacedLead, syncPlanWithBackend, runDueItems, resolveMinor, endYear, nextPlanItem, diffStats, MINOR_WINDOW_MS, splitTitle, LIFE_MINORS, isQuietYear, consolidateYearDailies } from '../engine/yearPlanner.js';
 import { CODEX_RECORDS } from '../data/worldData.js';
 import { getItemById } from '../data/itemsData.js';
 import { cityArchiveAPI } from '../services/api/cityArchiveAPI.js';
@@ -728,6 +728,10 @@ export const useGameStore = create((set, get) => ({
   commit: (prev, next, extra = {}) => {
     if (next.pendingLead && !next.pendingYearPlan) next = chooseDirectorPacedLead(next, lifeRng);
     const withD = withDeltas(prev, enforceTabooJudgment(next));
+    // Đợt 115a: Khi vừa bước qua tuổi mới, gom các daily thuần của tuổi vừa qua vào mục year_digest
+    if (prev && prev.age != null && withD.age != null && withD.age > prev.age && prev.age >= 5) {
+      consolidateYearDailies(withD, prev.age);
+    }
     // A life that turned (a trade, a rank, E.G.O, Distortion, a Color) opens a new chapter in the chronicle
     const chapter = chapterFor(prev, withD);
     if (chapter) withD.logs = [...withD.logs, chapter];
@@ -893,7 +897,11 @@ export const useGameStore = create((set, get) => ({
       return;
     }
 
-    const progress = Math.min(100, s.yearProgress + (dtMs / YEAR_MS) * 100 * s.speed);
+    // Đợt 115b: Tự lướt năm yên ả ở tốc độ 4x nếu bật trong cài đặt
+    const autoSkip = Boolean(useThemeStore.getState().autoSkipQuietYears);
+    const isQuiet = autoSkip && isQuietYear(c.plan, c);
+    const effectiveSpeed = isQuiet && s.speed > 0 ? 4 : s.speed;
+    const progress = Math.min(100, s.yearProgress + (dtMs / YEAR_MS) * 100 * effectiveSpeed);
     const { char, changed } = runDueItems(c, progress, lifeRng);
     if (changed) {
       const waiting = char.pendingMinor || char.pendingEvent || char.pendingContract || char.pendingDungeon || char.pendingModal;

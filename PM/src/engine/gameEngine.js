@@ -2987,7 +2987,16 @@ export function buildLifeSummaryAndLegacy(char) {
   }
 
   // Extract pivotal turning points using chronicle entry tiers plus collapsed dungeon delves
-  const logs = Array.isArray(char.logs) ? char.logs : [];
+  // Đợt 115a: Di cảo và buildLifeSummary luôn đọc dòng gốc từ items nếu gặp year_digest
+  const rawLogs = Array.isArray(char.logs) ? char.logs : [];
+  const logs = [];
+  for (const entry of rawLogs) {
+    if (entry?.type === 'year_digest' && Array.isArray(entry.items)) {
+      logs.push(...entry.items);
+    } else {
+      logs.push(entry);
+    }
+  }
   const capFirst = (str) => {
     const clean = String(str || '').trim();
     return clean ? clean.charAt(0).toUpperCase() + clean.slice(1) : '';

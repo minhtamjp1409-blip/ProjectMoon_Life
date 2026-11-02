@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { X, Volume2, VolumeX, Sparkles, Sliders, Monitor, Shield, Zap } from 'lucide-react';
+import { X, Volume2, VolumeX, Sparkles, Sliders, Monitor, Shield, Zap, FastForward } from 'lucide-react';
 import { useThemeStore } from '../store/themeStore';
 import { pick } from '../i18n';
 import { audioEngine } from '../engine/audioEngine';
@@ -21,7 +21,9 @@ export const SettingsModal = ({ open, onClose }) => {
     perfMode,
     setPerfMode,
     gameplayMetricsEnabled,
-    setGameplayMetrics
+    setGameplayMetrics,
+    autoSkipQuietYears,
+    setAutoSkipQuietYears
   } = useThemeStore();
 
   const lang = preferredLang;
@@ -185,9 +187,9 @@ export const SettingsModal = ({ open, onClose }) => {
             </div>
           </section>
 
-          {/* Section: Performance Mode */}
+          {/* Section: Performance Mode & Pacing */}
           <section className="settings-section">
-            <span className="settings-section-tag">{pick(lang, 'Hiệu năng & Thiết bị di động', 'Performance & Mobile Optimization')}</span>
+            <span className="settings-section-tag">{pick(lang, 'Hiệu năng & Nhịp độ', 'Performance & Pacing')}</span>
             <div className="settings-toggle-card">
               <div className="toggle-card-info">
                 <div className="toggle-card-title-row">
@@ -210,6 +212,32 @@ export const SettingsModal = ({ open, onClose }) => {
                 onClick={() => setPerfMode(!perfMode)}
               >
                 <span>{perfMode ? pick(lang, 'Bật', 'On') : pick(lang, 'Tắt', 'Off')}</span>
+              </button>
+            </div>
+
+            {/* Đợt 115b: Tự lướt năm yên ả */}
+            <div className="settings-toggle-card" style={{ marginTop: '10px' }}>
+              <div className="toggle-card-info">
+                <div className="toggle-card-title-row">
+                  <FastForward size={15} className="toggle-card-icon" />
+                  <strong>{pick(lang, 'Tự lướt năm yên ả', 'Auto-fast-forward quiet years')}</strong>
+                </div>
+                <p className="toggle-card-desc">
+                  {pick(
+                    lang,
+                    'Năm chỉ có chuyện đời thường sẽ tự động trôi nhanh gấp 4 lần. Năm có biến cố hoặc lựa chọn luôn chạy đúng tốc độ bạn chọn.',
+                    'Years with only everyday routine automatically pass at 4x speed. Years with events or choices always run at your chosen speed.'
+                  )}
+                </p>
+              </div>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={autoSkipQuietYears}
+                className={`settings-switch-btn ${autoSkipQuietYears ? 'is-on' : ''}`}
+                onClick={() => setAutoSkipQuietYears(!autoSkipQuietYears)}
+              >
+                <span>{autoSkipQuietYears ? pick(lang, 'Bật', 'On') : pick(lang, 'Tắt', 'Off')}</span>
               </button>
             </div>
           </section>

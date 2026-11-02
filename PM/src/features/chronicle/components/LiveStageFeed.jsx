@@ -35,6 +35,7 @@ const ENTRY_KIND = {
   choice: { cls: 'k-choice', vi: 'Quyết định', en: 'Decision' },
   lore: { cls: 'k-lore', vi: 'Chuyện thường ngày', en: 'Chronicle note' },
   daily: { cls: 'k-daily', vi: 'Va chạm đời thường', en: 'Life friction' },
+  year_digest: { cls: 'k-digest', vi: 'Năm yên ả', en: 'Quiet year' },
   contract: { cls: 'k-contract', vi: 'Request', en: 'Request' }
 };
 
@@ -112,6 +113,41 @@ const LogEntries = React.memo(function LogEntries({ logs, currentAge }) {
           </div>
           <p className="chapter-sub">{t(entry.subVi, entry.subEn)}</p>
         </section>
+      );
+      return;
+    }
+    // Đợt 115a: Thẻ gộp daily của năm yên ả với nút mở lại các dòng gốc
+    if (entry.type === 'year_digest') {
+      const digestText = lang === 'en' ? entry.en || entry.vi : entry.vi;
+      const alt = bilingual && entry.en && entry.en !== entry.vi ? entry.en : '';
+      out.push(
+        <article className="entry t-quiet k-digest is-year-digest" key={entry.id}>
+          <div className="entry-header-row">
+            <p className="entry-tag">{t('Năm yên ả', 'Quiet year')}</p>
+          </div>
+          <p className="entry-text">{digestText}</p>
+          {alt && <p className="entry-alt">{alt}</p>}
+          <Deltas deltas={entry.deltas} />
+          {Array.isArray(entry.items) && entry.items.length > 0 && (
+            <details className="entry-review year-digest-fold">
+              <summary>{t('Xem từng mùa', 'View each season')}</summary>
+              <div className="year-digest-seasons">
+                {entry.items.map((sub, sIdx) => {
+                  const subText = lang === 'en' ? sub.en || sub.vi : sub.vi;
+                  return (
+                    <div className="year-digest-season-row" key={sub.id || sIdx}>
+                      <div className="season-row-head">
+                        <span className="season-badge">{t(sub.season?.vi || 'Mùa', sub.season?.en || 'Season')}</span>
+                        <Deltas deltas={sub.deltas} />
+                      </div>
+                      <p className="season-row-text">{subText}</p>
+                    </div>
+                  );
+                })}
+              </div>
+            </details>
+          )}
+        </article>
       );
       return;
     }
