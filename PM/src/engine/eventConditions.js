@@ -266,7 +266,9 @@ export function describeChoiceBlock(choice, char) {
     const [rVi, rEn] = ROLE_LABELS[choice.favorCost.role] || [choice.favorCost.role, choice.favorCost.role];
     const target = char.npcs?.[choice.favorCost.role];
     if (!npcIsActive(target)) return { vi: `Cần ${rVi} đang đồng hành`, en: `Requires active ${rEn}` };
-    return { vi: `Cần gắn kết ${rVi} ≥ ${choice.favorCost.amount}`, en: `Requires ${rEn} bond ≥ ${choice.favorCost.amount}` };
+    if ((target.bond || 0) < choice.favorCost.amount) {
+      return { vi: `Cần gắn kết ${rVi} ≥ ${choice.favorCost.amount}`, en: `Requires ${rEn} bond ≥ ${choice.favorCost.amount}` };
+    }
   }
   const need = choice.need;
   if (!need) return { vi: 'Chưa đủ điều kiện', en: 'Requirements not met' };
@@ -300,16 +302,31 @@ export function describeChoiceBlock(choice, char) {
   }
   if (need.bondAtLeast) {
     const [bRole, min] = need.bondAtLeast;
-    const [rVi, rEn] = ROLE_LABELS[bRole] || [bRole, bRole];
-    return { vi: `Cần gắn kết ${rVi} ≥ ${min}`, en: `Requires ${rEn} bond ≥ ${min}` };
+    const bTarget = char.npcs?.[bRole] || (bRole === 'lover' ? char.npcs?.spouse : null);
+    if (!npcIsActive(bTarget) || (bTarget.bond || 0) < min) {
+      const [rVi, rEn] = ROLE_LABELS[bRole] || [bRole, bRole];
+      return { vi: `Cần gắn kết ${rVi} ≥ ${min}`, en: `Requires ${rEn} bond ≥ ${min}` };
+    }
+  }
+  if (need.bondAtMost) {
+    const [bRole, max] = need.bondAtMost;
+    const bTarget = char.npcs?.[bRole] || (bRole === 'lover' ? char.npcs?.spouse : null);
+    if (!npcIsActive(bTarget) || (bTarget.bond || 0) > max) {
+      const [rVi, rEn] = ROLE_LABELS[bRole] || [bRole, bRole];
+      return { vi: `Cần gắn kết ${rVi} ≤ ${max}`, en: `Requires ${rEn} bond ≤ ${max}` };
+    }
   }
   if (need.grade) {
     const min = Math.min(need.grade[0], need.grade[1]);
     const max = Math.max(need.grade[0], need.grade[1]);
-    if (min === 1 && max < 9) {
-      return { vi: `Cần Fixer Grade ${max} trở lên`, en: `Requires Fixer Grade ${max} or higher` };
+    const isColor = isColorFixerChar(char);
+    const effGrade = isColor && char.fixerGrade === 0 && min === 1 ? 1 : char.fixerGrade;
+    if ((char.job !== 'Fixer' && !isColor) || effGrade == null || effGrade < min || effGrade > max) {
+      if (min === 1 && max < 9) {
+        return { vi: `Cần Fixer Grade ${max} trở lên`, en: `Requires Fixer Grade ${max} or higher` };
+      }
+      return { vi: `Cần Fixer Grade ${max}–${min}`, en: `Requires Fixer Grade ${max}–${min}` };
     }
-    return { vi: `Cần Fixer Grade ${max}–${min}`, en: `Requires Fixer Grade ${max}–${min}` };
   }
   if (need.aff || need.affSection || need.affYears != null || need.affStanding) {
     const a = getAffiliation(char);

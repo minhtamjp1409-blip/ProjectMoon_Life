@@ -10,8 +10,8 @@ Mỗi đợt dưới đây được commit riêng, ghi vào `PROGRESS_LOG.md`, p
 
 | Đợt | Việc | Cỡ | Trạng thái |
 |---|---|---|---|
-| 113 | Sửa di cảo mất mốc cuối đời | nhỏ | chưa làm |
-| 113 | Sửa lý do khóa báo sai Bond | nhỏ | chưa làm |
+| 113 | Sửa di cảo mất mốc cuối đời | nhỏ | đã xong |
+| 113 | Sửa lý do khóa báo sai Bond | nhỏ | đã xong |
 | 114 | Bỏ chi phí hiện hai lần trên lựa chọn | nhỏ | chưa làm |
 | 114 | Nói rõ luật thời gian ở màn khai sinh | nhỏ | chưa làm |
 | 115 | Gộp daily của năm yên ả | lớn | chưa làm |

@@ -2408,6 +2408,24 @@ Hai cảnh mà kế hoạch để "sau". Từ đây danh mục cảnh C1 đến 
   * Bỏ `letter-spacing` nhân tạo trên các nhãn nhỏ `.dg-hazard` và `.ego-horizon-tag`.
   * Bỏ `text-transform: uppercase` trên `.successor-badge` để giữ đúng tỷ lệ chữ tự nhiên và đồng bộ với quy tắc nhãn của hệ thống.
 
+## Đợt 113: Sửa hai lỗi làm sai ký ức của đời (02/11/2026)
+
+* **113a. Di cảo giữ các mốc quan trọng nhất và mốc cuối đời (`src/engine/gameEngine.js`):**
+  * **Vấn đề cũ:** `buildLifeSummaryAndLegacy` sau khi gom mốc chỉ sắp xếp theo thời gian rồi cắt lấy `turningPoints.slice(0, 8)`. Những nhân vật sống thọ hoặc trải qua nhiều biến cố chỉ giữ phần tuổi thơ/trung niên và đánh rơi các mốc đỉnh cao ở cuối đời (thăng chức Grade cao, thức tỉnh Color Fixer, E.G.O, và cái chết).
+  * **Giải pháp:**
+    * Bổ sung `entry.type === 'death'` vào `primaryLandmarks` để mốc kết thúc đời luôn được thu nạp.
+    * Xây dựng hàm chấm điểm trọng số `getLandmarkScore` theo thứ tự ưu tiên: Mốc cuối đời/Cái chết (1000) > Color & E.G.O (600) > Thăng cấp Grade/bậc Finger (500) > Vào nghề (400) > Mất NPC thân thiết (300) > Sống sót nguy hiểm (200) > Còn lại (100).
+    * Khi số mốc vượt quá 8: Mốc cuối cùng luôn luôn được giữ nguyên; chọn 7 mốc còn lại có điểm cao nhất, hòa điểm ưu tiên mốc muộn hơn; tuân thủ nghiêm ngặt luật tối đa 2 mốc mỗi tuổi; sau đó sắp xếp 8 mốc lại theo thời gian tăng dần trước khi trả về. Đời ngắn (< 8 mốc) giữ nguyên 100% danh sách gốc.
+  * **Kiểm thử:** Thêm `tests/test_life_summary_landmarks.mjs` xác nhận đời 60 tuổi có 14 mốc giữ trọn vẹn Color tuổi 52 và Cái chết tuổi 60; đời ngắn giữ nguyên; giới hạn 2 mốc/tuổi được bảo toàn.
+* **113b. Sửa lý do khóa báo sai Bond và Grade (`src/engine/eventConditions.js`):**
+  * **Vấn đề cũ:** Trong `describeChoiceBlock`, nhánh `need.bondAtLeast`, `choice.favorCost` và `need.grade` trả về thông báo từ chối vô điều kiện ngay khi thuộc tính tồn tại mà không so sánh với chỉ số thực tế của nhân vật. Hậu quả là lựa chọn bị khóa do thiếu Reputation hoặc chỉ số khác vẫn báo nhầm là thiếu Bond hoặc thiếu Grade.
+  * **Giải pháp:**
+    * Nhánh `need.bondAtLeast` chỉ trả lý do khi NPC không hoạt động hoặc `bond < min`. Bổ sung nhánh `need.bondAtMost` kiểm tra `bond > max`.
+    * Nhánh `choice.favorCost` chỉ trả lý do khi NPC không hoạt động hoặc `bond < amount`.
+    * Nhánh `need.grade` kiểm tra chính xác `effGrade < min || effGrade > max` (tính cả Color Fixer), không chặn nhầm Fixer đã đạt cấp.
+  * **Kiểm thử:** Thêm `tests/test_lock_reasons.mjs` kiểm tra trường hợp đủ Bond thiếu Rep báo Rep, thiếu Bond báo Bond, đủ Grade thiếu Rep báo Rep, và quét toàn bộ 3.873 lựa chọn trong kho dữ liệu (11.535 trường hợp thỏa mãn) đảm bảo khi `choiceIsAvailable` trả `true` thì `describeChoiceBlock` luôn trả về `null`.
+
+
 ## Phụ lục A: Bản tổng hợp thiết kế ngày 29/10/2026
 
 > Đây là nội dung lịch sử của `process.md`. Các mô tả cơ chế và kết quả kiểm thử phản ánh thời điểm 29/10/2026; những thay đổi và phép đo ở các đợt sau trong nhật ký chính được ưu tiên khi có khác biệt.

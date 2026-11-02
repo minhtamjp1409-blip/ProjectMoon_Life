@@ -3040,7 +3040,7 @@ export function buildLifeSummaryAndLegacy(char) {
       return;
     }
     flushDelve();
-    if (framesAsMajor(entry)) {
+    if (framesAsMajor(entry) || entry.type === 'death') {
       primaryLandmarks.push(formatLandmark(entry, idx));
     } else if (entry.type === 'causal') {
       echoLandmarks.push(formatLandmark(entry, idx));
@@ -3073,7 +3073,109 @@ export function buildLifeSummaryAndLegacy(char) {
     }
   }
   chosenLandmarks.sort((a, b) => a.order - b.order);
-  const turningPoints = chosenLandmarks.map(({ order: _order, ...rest }) => rest);
+
+  // Score and select the 8 most important turning points (Đợt 113a: di cảo giữ các mốc quan trọng nhất và mốc cuối đời)
+  const getLandmarkScore = (lm, isLast) => {
+    if (isLast || lm.type === 'death') return 1000;
+    const entry = logs[lm.order] || {};
+    const textAll = `${lm.titleVi || ''} ${lm.summaryVi || ''} ${lm.titleEn || ''} ${lm.summaryEn || ''} ${entry.vi || ''} ${entry.en || ''}`;
+
+    // Color & E.G.O
+    if (
+      entry.id?.includes('color') || entry.id?.includes('ego') ||
+      entry.tags?.includes('color') || entry.tags?.includes('ego') ||
+      entry.turning === 'color' || entry.turning === 'ego' ||
+      entry.flagsAdd?.includes('ColorFixer') || entry.flagsAdd?.includes('EGOAwakened') ||
+      entry.flags?.includes('ColorFixer') || entry.flags?.includes('EGOAwakened') ||
+      entry.promote === 'ColorFixer' || entry.promote === 'EGOAwakened' ||
+      /\b(Color Fixer|Color\b|E\.G\.O|Thức tỉnh E\.G\.O|Awakened E\.G\.O)\b/i.test(textAll)
+    ) {
+      return 600;
+    }
+
+    // Lên Grade hoặc bậc Finger
+    if (
+      lm.type === 'promo' || entry.type === 'promo' || Boolean(entry.promote) ||
+      entry.id?.includes('promo') || entry.id?.includes('finger_rank') || entry.id?.includes('syn_indie_promo') ||
+      /\b(Fixer Grade\s*\d|Grade\s*\d|Cấp\s*\d|Bậc\s*\d|thăng cấp|thăng hạng|bậc Finger|Finger Rank|Syndicate Rank|thăng bậc)\b/i.test(textAll)
+    ) {
+      return 500;
+    }
+
+    // Vào nghề
+    if (
+      entry.id?.startsWith('ad_career_') || entry.id?.includes('choose_finger') ||
+      entry.id?.includes('first_license') || entry.id?.includes('career_choice') ||
+      entry.id?.includes('ad_outskirts_crossroad') ||
+      /\b(vào nghề|bước vào nghề|chọn nghề|nhận giấy phép|khởi đầu sự nghiệp|đoàn xe dừng)\b/i.test(textAll) ||
+      /gia nhập (Hana|Wing|Syndicate|Ngón|Tập đoàn|Văn phòng)/i.test(textAll)
+    ) {
+      return 400;
+    }
+
+    // NPC thân thiết mất
+    if (
+      entry.id?.includes('npc_death') || entry.id?.includes('companion_death') ||
+      entry.id?.includes('savior') || entry.id?.includes('c7_') || entry.tags?.includes('sacrificed') ||
+      (/\b(hy sinh|qua đời|ngã xuống|trút hơi thở|bỏ mình|mất đi|vĩnh viễn ra đi)\b/i.test(textAll) &&
+       /\b(bạn đời|sư phụ|đồng đội|người bạn|con|con cái|spouse|mentor|partner|friend|child)\b/i.test(textAll))
+    ) {
+      return 300;
+    }
+
+    // danger sống sót
+    if (lm.type === 'danger' || entry.type === 'danger') {
+      return 200;
+    }
+
+    // Còn lại
+    return 100;
+  };
+
+  let finalLandmarks = chosenLandmarks;
+  if (chosenLandmarks.length > 8) {
+    const lastItem = chosenLandmarks[chosenLandmarks.length - 1];
+    const scored = chosenLandmarks.map((lm) => ({
+      item: lm,
+      score: getLandmarkScore(lm, lm === lastItem),
+      order: lm.order
+    }));
+
+    // Sắp xếp điểm giảm dần; nếu hòa điểm lấy mốc muộn hơn (order lớn hơn)
+    scored.sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      return b.order - a.order;
+    });
+
+    const selected = [lastItem];
+    const selAgeCounts = new Map();
+    selAgeCounts.set(lastItem.age, 1);
+
+    for (const entry of scored) {
+      if (selected.length >= 8) break;
+      if (entry.item === lastItem) continue;
+      const count = selAgeCounts.get(entry.item.age) || 0;
+      if (count < 2) {
+        selected.push(entry.item);
+        selAgeCounts.set(entry.item.age, count + 1);
+      }
+    }
+
+    // Nếu chưa đủ 8 mốc do ràng buộc 2 mốc/tuổi, bổ sung nốt các mốc còn lại
+    if (selected.length < 8) {
+      for (const entry of scored) {
+        if (selected.length >= 8) break;
+        if (!selected.includes(entry.item)) {
+          selected.push(entry.item);
+        }
+      }
+    }
+
+    selected.sort((a, b) => a.order - b.order);
+    finalLandmarks = selected;
+  }
+
+  const turningPoints = finalLandmarks.map(({ order: _order, ...rest }) => rest);
 
   // Synthesize Deep Multi-Paragraph Life Story (Vi & En)
   const lifeStoryParagraphsVi = [];
