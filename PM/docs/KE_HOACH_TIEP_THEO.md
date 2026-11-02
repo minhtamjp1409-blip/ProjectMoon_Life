@@ -18,6 +18,10 @@ Mỗi đợt dưới đây được commit riêng, ghi vào `PROGRESS_LOG.md`, p
 | 115 | Tự lướt năm yên ả | vừa | chưa làm |
 | 116 | Thẻ chương khi mất một NPC thân thiết | vừa | chưa làm |
 | 117 | Đo và gọn dock hầm ngục trên điện thoại | vừa | đo trước, làm sau |
+| 118 | Gọn thẻ minor, thẻ chương khi trượt kỳ thi, thử trình đọc màn hình | vừa | chưa làm |
+| (chủ dự án) | Nghe thử âm thanh trên điện thoại và tai nghe | nhỏ | chờ chủ dự án |
+
+Đợt 114b có thêm dải bản đồ thu nhỏ trên điện thoại, theo bản góp ý thứ ba (ngày 02/11/2026). Đợt 118 và buổi nghe thử âm thanh cũng đến từ bản góp ý đó.
 
 ---
 
@@ -83,9 +87,17 @@ Không sửa từng file data. Cách này gọn hơn và không đụng tới vo
 - "Một năm trôi trong 30 giây. Lựa chọn lớn dừng đồng hồ chờ bạn; lựa chọn nhỏ có hạn giờ, hết giờ thì đời đi tiếp."
 - "Tự lưu sau mỗi lựa chọn."
 
-Có bản tiếng Anh tương ứng. Trên điện thoại, bản đồ District nằm dưới phần khai sinh. Thêm một dòng nối tới bản đồ ("Chọn District trên bản đồ bên dưới"), chỉ hiện ở màn hẹp.
+Có bản tiếng Anh tương ứng.
 
-**Kiểm tra.** Quay ảnh ở 1440x900 và 390x844: nút bắt đầu và hai câu vẫn nằm trong màn đầu, không tràn ngang. Chạy voice lint.
+**Dải bản đồ trên điện thoại.** Ở màn hẹp, bản đồ District (`CityBirthAtlas.jsx`) nằm dưới form khai sinh, nên ấn tượng đầu tiên chỉ là một cái form. Cách sửa:
+1. Dưới 720px, đặt lên đầu màn một dải ngang thấp (khoảng 120px) cắt từ chính bản đồ đó. Dải có District đang chọn được tô sáng và tên nơi xuất thân. Nếu đang chọn ngẫu nhiên thì ghi "Ngẫu nhiên".
+2. Chạm vào dải thì cuộn xuống bản đồ đầy đủ và đưa focus vào đó. Dải là một nút thật, có nhãn cho trình đọc màn hình.
+3. Dùng lại SVG của bản đồ, không vẽ hình mới. Desktop giữ nguyên.
+
+**Kiểm tra.** Quay ảnh ở 1440x900 và 390x844:
+- Trên điện thoại, dải bản đồ, nút bắt đầu và hai câu luật vẫn nằm trong màn đầu.
+- Không tràn ngang; desktop không đổi.
+- Chạy voice lint.
 
 ---
 
@@ -159,15 +171,75 @@ Có bản tiếng Anh tương ứng. Trên điện thoại, bản đồ District
 
 ---
 
+## Đợt 118: thẻ minor gọn hơn, thất bại có tên, đọc được bằng tai
+
+### 118a. Thẻ minor gọn hơn
+
+**Giả thuyết cần đo.** Trên điện thoại, thẻ minor (`MinorDock` trong `LiveStageFeed.jsx`) có nhiều nhãn, chip và nút: số thứ tự, nhãn, chip giá, phần xem trước tác động (`ChoicePreview`), đồng hồ đếm ngược, nút tạm dừng, nút "Xem phía sau". Đợt 114a mới bỏ được chỗ giá hiện hai lần.
+
+**Bước 1, đo.** Quay ba minor ở 390x844: một minor có giá, một minor có NPC, một minor có điều kiện khóa. Với mỗi minor ghi lại:
+- số chip và nhãn trên mỗi lựa chọn;
+- chiều cao của thẻ;
+- lựa chọn cuối có nằm trong màn đầu không.
+
+**Bước 2, gọn lại.** Mỗi lựa chọn giữ tối đa ba thứ: nhãn, giá (nếu có) và một dòng tác động chính. Phần xem trước chi tiết (thay đổi Bond, rủi ro) gấp lại sau một chạm. Lý do khóa vẫn luôn hiện, vì người chơi cần biết vì sao không chọn được.
+
+**Xong khi.** Cả ba minor để lựa chọn cuối nằm trong màn đầu ở 390x844; lựa chọn bị khóa vẫn đọc được lý do; desktop không đổi bố cục.
+
+### 118b. Thẻ chương khi trượt kỳ thi Fixer
+
+**Hiện tại.** Mỗi lần trượt, game tăng `char.fixerExamFailures` (`gameEngine.js:2369`), nhưng `chapterFor` cố ý không ghi thẻ cho những lần đi xuống. Một lần trượt vì vậy chỉ là một dòng log thường, dễ trôi qua.
+
+**Cách làm.** Thêm một nhánh vào `chapterFor`: khi tổng `fixerExamFailures` tăng trong lần commit đó, ghi một thẻ chương nhỏ, chữ ít hơn thẻ thăng hạng. Câu thẻ nói rõ Grade vừa trượt, và nếu là lần trượt thứ hai cùng một Grade thì câu khác đi. Không làm cảnh riêng: thi trượt hay gặp, dựng cảnh sẽ làm cảnh mất giá. Luật "mỗi commit một thẻ, thẻ lớn nhất thắng" vẫn giữ nguyên.
+
+**Test.** Thêm vào `tests/test_chapters.mjs`:
+- trượt lần đầu có thẻ;
+- trượt lần hai cùng Grade có câu khác;
+- thi đỗ không có thẻ trượt;
+- trượt trong cùng commit với cái chết thì không có thẻ, vì cái chết thắng.
+
+### 118c. Thử bằng trình đọc màn hình
+
+**Rủi ro.** Vùng thông báo ẩn (`LiveStageFeed.jsx:1565`) để trống khi có dock hoặc đang có cảnh. Khi cảnh kết thúc, người dùng trình đọc có thể không được nghe chuyện gì vừa xảy ra. Thứ tự đọc của thẻ chương và di cảo cũng chưa được kiểm.
+
+**Cách làm.**
+1. Chạy một đời ngắn bằng NVDA trên Chrome, đi qua một minor, một cảnh (Claw hoặc dungeon gate), một thẻ chương và cái chết. Ghi lại những gì được đọc và theo thứ tự nào.
+2. Khi cảnh kết thúc, đọc câu chính của cảnh một lần qua vùng thông báo. Bản `caption` cũng đọc câu đó.
+3. Sửa thứ tự DOM ở những chỗ trình đọc đọc sai thứ tự so với mắt nhìn.
+
+**Xong khi.** Bản ghi NVDA được đưa vào `PROGRESS_LOG.md` và mỗi biến cố trên được đọc đúng một lần, đúng thứ tự.
+
+---
+
+## Việc của chủ dự án: nghe thử âm thanh
+
+Âm thanh của 7 cảnh (Đợt 110) chỉ mới được kiểm bằng test và Chrome, chưa ai nghe bằng tai. Nên nghe một lượt trên điện thoại có tai nghe, rồi trên loa máy tính. Danh sách cần nghe:
+- Âm chọn lựa chọn bấm liên tiếp mười lần có gây mệt không.
+- Âm nền có lấn chữ hoặc lấn khoảnh khắc quan trọng không, nhất là Great Lake và distortion.
+- Lúc vào cảnh và lúc bỏ qua cảnh, âm có bị hụt hoặc to vọt không.
+- Mỗi cảnh trong 7 cảnh có nhận ra được mà không cần nhìn không.
+
+Công cụ quay đã có lệnh mở từng cảnh: `node tools/film/film_cutscene.mjs --scene=<tên>`. Ghi lại cảnh nào quá to, quá nhỏ hay khó chịu; mình sẽ chỉnh theo danh sách đó.
+
+## Để sau buổi nghe thử
+
+- **Âm báo ngắn khi đổi nơi.** Nền âm theo nơi đã có (`ambienceScapes.js:193`, riêng cho Nest, Backstreets, Wing và từng Finger), nhưng nền đổi dần nên người chơi khó nhận ra mình vừa đổi chỗ. Thêm một âm khoảng một giây lúc đổi nơi, dùng `cueTone` và `cueNoise` của Đợt 110. Chỉ làm khi buổi nghe thử cho thấy mức âm hiện tại đã ổn.
+- **Cảnh thức tỉnh E.G.O.** E.G.O hiếm và lớn, nhưng hiện mới có thẻ chương. Nếu thêm một cảnh nữa thì đây là ứng viên đúng nhất, xếp hạng ngang Claw. Trước khi làm, đo xem bao nhiêu đời trong audit 500 đời có E.G.O.
+
+---
+
 ## Những việc không làm, và lý do
 
 - **Lớp canvas hạt chạy liên tục (mưa, tàn tro, bụi).** Tốn pin trên điện thoại và đi ngược luật "không lặp vô hạn" mà các cảnh đang giữ. Mood và skyline theo nơi chốn (Đợt 106) đã cho chiều sâu. Nếu sau này muốn thêm, chỉ làm một lớp tĩnh vẽ một lần cho Great Lake hoặc Backstreets.
 - **Nấc tốc độ x4/x8 chung.** Thay bằng tự lướt năm yên ả (115b).
 - **Nút "Tiếp tục" trên thẻ chương.** Xem 116, mục 4.
 - **Làm mới cache PWA.** Không phải việc code. Người chơi kéo làm mới hoặc xóa dữ liệu trang để nhận bản mới.
+- **Gộp hai nút tạm dừng.** Nút tạm dừng ở thẻ minor và nút Pause ở thanh trên cùng điều khiển một trạng thái (`speed === 0`; vòng `tick` ở `gameStore.js` dừng cả đồng hồ minor khi tốc độ bằng 0). Chúng không mâu thuẫn nhau. Nút trong thẻ nằm gần ngón cái và có phím Space, nên giữ cả hai.
+- **Cảnh riêng cho thi trượt.** Thay bằng thẻ chương (118b).
+- **Viết thêm chuỗi hậu quả sau biến cố lớn.** Đã có các chuỗi `csq_` trong `narrativeArcEngine.js`. Nếu sau này muốn viết thêm, trước hết đo xem một đời thật gặp bao nhiêu chuỗi.
 
 ## Việc còn treo từ các đợt trước
 
-- Âm thanh của 7 cảnh (Đợt 110) chưa ai nghe bằng tai. Cần chủ dự án nghe một lượt để chỉnh âm lượng và chất âm.
+- Âm thanh của 7 cảnh: xem mục nghe thử phía trên.
 - Bốn lời cuối của C7 là chữ mình tự viết. Chủ dự án nên đọc lại.
 - `tools/build_gameplay_bible.mjs` và `build_gameplay_deep_dive_v2.mjs` vẫn ghi ra `docs/THE_CITY_CHRONICLES_GAMEPLAY_DEEP_DIVE.md` mỗi lần chạy. File đã bị xóa vì nội dung cũ; chạy lại công cụ sẽ sinh lại bản theo code hiện tại.

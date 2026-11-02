@@ -2375,6 +2375,7 @@ Hai cảnh mà kế hoạch để "sau". Từ đây danh mục cảnh C1 đến 
 
 * Xóa bốn file trong `docs/`: `CRITIQUE_MAN_CHOI.md` và `KE_HOACH_CHUYEN_CANH_VA_CUTSCENE.md` (đã làm xong hết), `THE_CITY_CHRONICLES_GAMEPLAY_DEEP_DIVE.md` (bản cũ do công cụ sinh ra, chạy lại công cụ sẽ có bản mới) và `THE_CITY_CHRONICLES_PITCH_BIBLE.md` (trùng với `PRODUCT.md` và `UNIVERSE.md`). Các dòng log cũ vẫn nhắc tên chúng và chỉ còn là lịch sử.
 * Thêm `docs/KE_HOACH_TIEP_THEO.md`: Đợt 113 đến 117, đã đối chiếu với code. Hai lỗi đã xác nhận khi đọc code: di cảo cắt 8 mốc đầu sau khi xếp theo thời gian (`gameEngine.js:3446`), và lý do khóa Bond không so với Bond thật (`eventConditions.js:301`).
+* Bổ sung theo bản góp ý thứ ba: dải bản đồ thu nhỏ trên điện thoại ở 114b; Đợt 118 (gọn thẻ minor, thẻ chương khi thi trượt, thử bằng NVDA); buổi nghe thử âm thanh giao cho chủ dự án; âm báo đổi nơi và cảnh E.G.O để sau buổi nghe. Không gộp hai nút tạm dừng, vì đọc code thấy cả hai cùng đặt `speed = 0`.
 * `docs/LUAT_HIEN_HANH.md` giữ lại vì `PRODUCT.md` và `UNIVERSE.md` trỏ tới nó.
 
 ## Phụ lục A: Bản tổng hợp thiết kế ngày 29/10/2026
