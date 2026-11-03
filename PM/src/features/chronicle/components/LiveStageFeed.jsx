@@ -73,6 +73,20 @@ const storyParts = (entry, lang) => {
 
 /* ---------- Story log ---------- */
 
+const isExtraBirthEntry = (entry) => {
+  if (!entry || entry.age !== 0) return false;
+  if (entry.id === 'log_birth_3') return true;
+  if (typeof entry.id === 'string') {
+    if (entry.id.startsWith('log_birth_')) {
+      const idx = Number(entry.id.replace('log_birth_', ''));
+      if (!Number.isNaN(idx) && idx >= 3) return true;
+    }
+    if (entry.id.startsWith('log_legacy_')) return true;
+    if (entry.id.startsWith('log_parent_')) return true;
+  }
+  return false;
+};
+
 const LogEntries = React.memo(function LogEntries({ logs, currentAge }) {
   const { t, lang, bilingual } = useT();
   const readMode = useThemeStore((s) => s.readMode);
@@ -80,7 +94,49 @@ const LogEntries = React.memo(function LogEntries({ logs, currentAge }) {
   let lastAge = null;
   let lastSeasonId = null;
 
-  logs.forEach((entry) => {
+  const extraBirthLogs = [];
+  const displayLogs = [];
+  (logs || []).forEach((entry) => {
+    if (isExtraBirthEntry(entry)) {
+      extraBirthLogs.push(entry);
+    } else {
+      displayLogs.push(entry);
+    }
+  });
+
+  let extraBirthRendered = false;
+  const pushExtraBirthFold = () => {
+    if (extraBirthRendered || extraBirthLogs.length === 0) return;
+    out.push(
+      <article className="entry t-quiet birth-extra-fold-card" key="birth_extra_fold">
+        <details className="entry-review birth-extra-fold">
+          <summary>{t('Chi tiết thời thơ ấu & nguồn cội', 'Childhood & heritage details')}</summary>
+          <div className="birth-extra-rows">
+            {extraBirthLogs.map((item) => {
+              const rawText = lang === 'en' ? item.en || item.vi : item.vi;
+              const { title, body } = splitTitle(rawText);
+              const altRaw = bilingual && item.en && item.en !== item.vi ? item.en : '';
+              const altBody = altRaw ? splitTitle(altRaw).body : '';
+              return (
+                <div className="birth-extra-row" key={item.id}>
+                  {title && <span className="birth-extra-tag">{title}</span>}
+                  <p className="birth-extra-text">{body || rawText}</p>
+                  {altBody ? <p className="birth-extra-alt">{altBody}</p> : null}
+                  <Deltas deltas={item.deltas} />
+                </div>
+              );
+            })}
+          </div>
+        </details>
+      </article>
+    );
+    extraBirthRendered = true;
+  };
+
+  displayLogs.forEach((entry) => {
+    if (entry.age > 0 && !extraBirthRendered) {
+      pushExtraBirthFold();
+    }
     if (entry.age !== lastAge) {
       lastAge = entry.age;
       lastSeasonId = entry.season?.id || null;
@@ -256,6 +312,9 @@ const LogEntries = React.memo(function LogEntries({ logs, currentAge }) {
       </article>
     );
   });
+
+  // If the game is still at age 0, render the fold after the age 0 default logs
+  pushExtraBirthFold();
 
   return out;
 });
@@ -1322,7 +1381,7 @@ export const LiveStageFeed = () => {
 
     const cut = birthOpeningCut({ setting: useThemeStore.getState().cutsceneMode, reduced: prefersReducedMotion() });
     const [first, next] = BIRTH_OPENING.entryGapMs[cut];
-    const delay = (char.logs?.length || 0) === 0 ? first : next;
+    const delay = (char.logs?.length || 0) <= 1 ? first : next;
     const timer = setTimeout(() => {
       revealNextBirthLog();
       try {

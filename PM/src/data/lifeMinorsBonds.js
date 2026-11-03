@@ -7,10 +7,10 @@ const KEEP = (role) => ({ w: 1.7, keepRole: role });
 
 export const LIFE_MINORS_BONDS = [
   M('mk_friend_cold_noodles', AGE.GROWN, { npc: 'friend' },
-    '[Bát mì trước cửa] Bạn về muộn sau một ngày dài. Trước cửa phòng có một bát mì úp dưới cái đĩa, hơi còn ấm. Không có giấy nhắn, chỉ có mùi hành quen thuộc của {friend}.',
-    '[A bowl at the door] You come home late after a long day. At your door sits a bowl of noodles under a plate, still warm. No note, only the familiar smell of scallions that means {friend}.',
+    '[Bát mì trước cửa] Về phòng muộn sau một ngày dài, bạn thấy bát mì còn ấm úp dưới cái đĩa đặt trước cửa. Không có giấy nhắn, chỉ có mùi hành quen thuộc của {friend}.',
+    '[A bowl at the door] Coming home late after a long day, you find a bowl of warm noodles under a plate at your door. No note, only the familiar smell of scallions that means {friend}.',
     [
-      C('Ngồi ăn ngay trên bậc thang, đợi người ấy ra', 'Eat right there on the step and wait for them', 'Bạn ăn chậm. {friend} xuất hiện ở đầu cầu thang khi bát đã cạn một nửa, giả vờ đi ngang qua. Hai người không nói chuyện làm ăn nào.', 'You eat slowly. {friend} appears at the head of the stairs when the bowl is half gone, pretending to be passing. Neither of you mentions work.', { sanity: +2 }, { bond: { friend: 6 } }),
+      C('Ngồi ăn ngay trên bậc thang, đợi người ấy ra', 'Eat right there on the step and wait for them', 'Bạn ăn chậm trên bậc thang, và {friend} vờ đi ngang qua khi bát đã vơi một nửa. Hai người ngồi bên nhau, không nhắc chuyện làm ăn nào.', 'You eat slowly on the steps as {friend} pretends to pass by with the bowl half empty. Sitting together, neither of you mentions work.', { sanity: +2 }, { bond: { friend: 6 } }),
       C('Mang vào phòng, mai trả bát', 'Take it inside and return the bowl tomorrow', 'Bạn ăn một mình, và rửa bát cẩn thận hơn cần thiết. Hôm sau {friend} nhận lại cái bát, gật đầu một lần.', 'You eat alone, and wash the bowl more carefully than needed. The next day {friend} takes it back and nods once.', {}, { bond: { friend: 2 } })
     ],
     I('Bạn quá mệt và để bát mì nguội ngoài cửa. Sáng hôm sau cái bát đã được lấy đi, không để lại lời nào.', 'You are too tired and leave the noodles to go cold. By morning the bowl is gone, with no word left behind.', {})),

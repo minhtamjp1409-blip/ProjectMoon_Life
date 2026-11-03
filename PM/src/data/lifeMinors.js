@@ -230,8 +230,8 @@ export const LIFE_MINORS = [
       C(
         'Ngoan ngoãn làm theo chỉ thị',
         'Obey the instruction',
-        'Người gõ cửa là một kẻ mặc áo choàng trắng toát của Index. Hắn đón lấy chiếc giày, cúi đầu tạ lễ rồi lẳng lặng rời đi. Mẹ bạn phải đi tìm chiếc giày thất lạc suốt cả tháng trời.',
-        'The knocker was a white-robed Index Proselyte. Taking the shoe, he bowed with solemn grace and departed. Mother searched in vain for a month.',
+        'Người gõ cửa là một kẻ mặc áo choàng trắng toát của Index, đón lấy chiếc giày và cúi đầu lẳng lặng rời đi. Mẹ bạn phải đi tìm chiếc giày thất lạc suốt cả tháng trời.',
+        'The knocker was a white-robed Index Proselyte, taking the shoe with a solemn bow before silently departing. Mother searched in vain for that missing shoe for an entire month.',
         { resonance: 5 },
         { mem: 'obeyed_prescript', motif: { faith: 1 } }
       ),
@@ -897,8 +897,8 @@ export const LIFE_MINORS = [
     'm_a_friend_debt',
     [18, 60],
     { npc: 'friend', stat: { wealth: [10, 100] } },
-    '[Tin nhắn khẩn cấp lúc 2:50 AM] {friend} nhắn một dòng tin tuyệt vọng: "Tao đang cần gấp 20 Ahn để cứu mạng. Đừng hỏi lý do. Tao nhất định sẽ trả." Tin nhắn được gửi lúc đúng 2 giờ 50 sáng.',
-    '[The 2:50 AM Emergency Dispatch] {friend} transmitted a frantic message: “I need twenty Ahn instantly to save my skin. Ask no questions. I will repay every coin.” Logged at 2:50 AM.',
+    '[Tin nhắn khẩn cấp lúc 2:50 AM] Đúng 2 giờ 50 sáng, {friend} gửi một tin nhắn tuyệt vọng: "Tao cần gấp 20 Ahn để cứu mạng, đừng hỏi lý do."',
+    '[The 2:50 AM Emergency Dispatch] At exactly 2:50 AM, {friend} sent a frantic message: “I need twenty Ahn instantly to save my skin, ask no questions.”',
     [
       C(
         'Lập tức chuyển tiền cứu bạn',

@@ -583,6 +583,22 @@ export const BirthSetupPanel = () => {
                   )}
                 </span>
               </p>
+              <p className="birth-footnote">
+                <span>
+                  {t(
+                    'Trò chơi có tiết lộ nội dung cốt truyện Project Moon, khuyến nghị độ tuổi 15+.',
+                    'Contains Project Moon story spoilers, recommended for ages 15+.'
+                  )}
+                </span>
+              </p>
+              <p className="birth-footnote birth-shortcut-hint">
+                <span>
+                  {t(
+                    'Phím tắt máy tính: Space dừng, [ ] đổi tốc độ, 1-4 chọn.',
+                    'Keyboard shortcuts: Space to pause, [ ] to change speed, 1-4 to choose.'
+                  )}
+                </span>
+              </p>
               {pendingLegacy && (
                 <div className="legacy-switch-hint">
                   <span>{t(`Có di sản thế hệ #${pendingLegacy.generation + 1} đang chờ chuyển giao.`, `Gen #${pendingLegacy.generation + 1} legacy is waiting to transfer.`)}</span>

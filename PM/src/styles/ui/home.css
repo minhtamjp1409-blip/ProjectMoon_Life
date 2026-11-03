@@ -304,7 +304,11 @@
   transform: translateY(1px);
 }
 
-.birth-footnote { font-size: 12.5px; color: var(--page-muted); text-align: center; margin: 0; }
+.birth-footnote { font-size: 12.5px; color: var(--page-muted); text-align: center; margin: 0; line-height: 1.5; }
+.birth-shortcut-hint { display: none; }
+@media (hover: hover) and (pointer: fine) {
+  .birth-shortcut-hint { display: block; }
+}
 .birth-text-action {
   align-self: center; display: inline-flex; align-items: center; gap: 4px;
   min-height: 34px; font-size: 13.5px; font-weight: 600; color: var(--muted);

@@ -87,12 +87,28 @@ assert.equal(healthDelta?.v, 1, 'Tổng delta health = 1');
 assert.equal(sanityDelta?.v, 3, 'Tổng delta sanity = 3');
 assert.equal(wealthDelta, undefined, 'Delta bằng 0 không xuất hiện trong deltas');
 
-// Kiểm tra câu văn: có câu mở đầu và các câu ngắn nối nhau không còn title [ ]
-assert.ok(digest.vi.startsWith('Một năm trôi qua bình lặng.'), 'Câu mở đầu tiếng Việt chuẩn');
-assert.ok(digest.vi.includes('Bạn ra quán ăn một bát canh nóng.'), 'Chứa nội dung body daily 1');
-assert.ok(digest.vi.includes('Cơn mưa rào làm mát mái tôn rỉ sét.'), 'Chứa nội dung body daily 2');
+// Kiểm tra câu văn Đợt 120a: mục gộp có đúng 1 câu duy nhất (chọn daily có delta lớn nhất, hòa thì dùng RNG tất định)
+const viSentenceCount = (digest.vi.match(/[.!?](\s|$)/g) || []).length;
+assert.equal(viSentenceCount, 1, `Mục gộp tiếng Việt phải có đúng 1 câu duy nhất, thực tế: ${viSentenceCount} ("${digest.vi}")`);
+const enSentenceCount = (digest.en.match(/[.!?](\s|$)/g) || []).length;
+assert.equal(enSentenceCount, 1, `Mục gộp tiếng Anh phải có đúng 1 câu duy nhất, thực tế: ${enSentenceCount} ("${digest.en}")`);
 assert.ok(!digest.vi.includes('[Buổi sáng]'), 'Đã bỏ tiêu đề vuông');
-assert.ok(digest.en.startsWith('A quiet year passes.'), 'Câu mở đầu tiếng Anh chuẩn');
+assert.ok(digest.vi.includes('Bạn ra quán ăn một bát canh nóng.') || digest.vi.includes('Cơn mưa rào làm mát mái tôn rỉ sét.'), 'Chọn một trong hai daily có delta lớn nhất (hòa mag = 3)');
+
+// Kiểm tra tính tất định: cùng dữ liệu và seed ra cùng một câu
+const repeatDigest = consolidateYearDailies([...mockDailies], 10)[0];
+assert.equal(digest.vi, repeatDigest.vi, 'Cùng seed ra cùng câu tiếng Việt');
+assert.equal(digest.en, repeatDigest.en, 'Cùng seed ra cùng câu tiếng Anh');
+
+// Kiểm tra năm không có biến động delta nào thì chọn câu ambient theo nơi chốn
+const zeroDeltas = [
+  { id: 'z1', age: 10, type: 'daily', vi: '[Sáng] Không có gì lạ.', en: '[Morning] Nothing unusual.', deltas: [] },
+  { id: 'z2', age: 10, type: 'daily', vi: '[Trưa] Gió thổi nhẹ.', en: '[Noon] Gentle breeze.', deltas: [] }
+];
+const ambientDigest = consolidateYearDailies([...zeroDeltas], 10)[0];
+const ambientViCount = (ambientDigest.vi.match(/[.!?](\s|$)/g) || []).length;
+assert.equal(ambientViCount, 1, 'Câu ambient của năm không delta phải có đúng 1 câu duy nhất');
+assert.ok(ambientDigest.vi.length > 10, 'Có câu ambient hợp lệ theo nơi chốn');
 
 // 3. Test năm có Minor: Minor đứng riêng, các daily còn lại vẫn gộp
 console.log('3. Kiểm tra năm có minor: minor đứng riêng, daily vẫn gộp...');
@@ -111,7 +127,8 @@ assert.equal(mixedConsolidated[0].type, 'year_digest', 'Vị trí daily đầu t
 assert.equal(mixedConsolidated[0].items.length, 3, 'Digest gom 3 daily');
 assert.equal(mixedConsolidated[0].quiet, false, 'Năm có minor thì digest.quiet phải là false');
 assert.ok(!mixedConsolidated[0].vi.includes('Một năm trôi qua bình lặng.'), 'Năm có minor không có câu mở đầu êm dịu');
-assert.ok(mixedConsolidated[0].vi.includes('Gió xuân thổi.'), 'Vẫn chứa các câu ngắn nối nhau');
+assert.equal((mixedConsolidated[0].vi.match(/[.!?](\s|$)/g) || []).length, 1, 'Digest năm có minor cũng có đúng 1 câu duy nhất');
+assert.ok(mixedConsolidated[0].vi.includes('Tuyết rơi trên mái.'), 'Chọn daily d3 có delta lớn nhất (wealth +5)');
 assert.equal(mixedConsolidated[1].type, 'choice', 'Minor vẫn đứng riêng ở vị trí của nó');
 assert.equal(mixedConsolidated[1].id, 'log_12_1_m1');
 assert.equal(mixedConsolidated[2].type, 'summary', 'Year-end summary vẫn đứng riêng ở cuối');

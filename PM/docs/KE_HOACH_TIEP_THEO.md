@@ -19,9 +19,16 @@ Mỗi đợt dưới đây được commit riêng, ghi vào `PROGRESS_LOG.md`, p
 | 116 | Thẻ chương khi mất một NPC thân thiết | vừa | đã xong |
 | 117 | Đo và gọn dock hầm ngục trên điện thoại | vừa | đã xong |
 | 118 | Gọn thẻ minor, thẻ chương khi trượt kỳ thi, thử trình đọc màn hình | vừa | đã xong |
+| 119 | Sửa hai lỗi mở đầu và thông báo trên điện thoại, thêm thông tin ở màn khai sinh | nhỏ | chưa làm |
+| 120 | Năm yên ả một dòng, chuẩn độ dài câu chữ, gọn phần khai sinh | vừa | chưa làm |
+| 121 | Đặt tên người thân, NPC quay lại nhắc lựa chọn cũ | lớn | chưa làm |
+| 122 | Hậu quả kéo dài nói bằng lời, tiến độ thăng chức | vừa | chưa làm |
+| 123 | Lướt nhanh đời thường khi chơi lại | vừa | chưa làm |
 | (chủ dự án) | Nghe thử âm thanh trên điện thoại và tai nghe | nhỏ | chờ chủ dự án |
 
 Đợt 114b có thêm dải bản đồ thu nhỏ trên điện thoại, theo bản góp ý thứ ba (ngày 02/11/2026). Đợt 118 và buổi nghe thử âm thanh cũng đến từ bản góp ý đó.
+
+Đợt 119 đến 123 đến từ lần so sánh với web mẫu "Born as an Individual in the City" (ngày 03/11/2026), gộp với một bản góp ý ngoài. Kết luận của lần so sánh: web mẫu thắng ở chỗ người chơi bắt đầu nhanh và muốn chơi tiếp; game mình thắng ở địa điểm, hệ thống và cao trào. Các đợt này học nhịp chơi và cách gắn người chơi với nhân vật, không đụng tới chiều sâu đã có.
 
 ---
 
@@ -211,6 +218,108 @@ Có bản tiếng Anh tương ứng.
 
 ---
 
+## Đợt 119: lỗi mở đầu trên điện thoại, thông tin ở màn khai sinh (ĐÃ HOÀN THÀNH)
+
+### 119a. Vùng nội dung trống lúc mới vào (ĐÃ XONG)
+
+**Hiện tại.** Đã sửa: `startLife` trong `src/store/gameStore.js` lập tức bóc tách dòng log đầu tiên vào `logs = [firstLog]` ngay tại frame 0 (0ms), phần còn lại đưa vào `pendingBirthLogs`. Khắc phục hoàn toàn độ trễ render feed trống. Đo đạc CDP thực tế trên 390x844: `firstLogTime = 0ms` (<500ms).
+
+### 119b. Thông báo thành tựu đè tên nhân vật và HUD (ĐÃ XONG)
+
+**Hiện tại.** Đã sửa: `flushAchievementToasts` chuyển `placement` thành `bottom` trên màn hình hẹp (<=820px), bổ sung CSS định vị `bottom: calc(68px + env(safe-area-inset-bottom, 0px)) !important` để nổi trên thanh điều hướng dưới và không che khuất HUD hay lựa chọn; thêm `role="status"` và `aria-live="polite"`.
+
+### 119c. Thêm thông tin ở màn khai sinh (ĐÃ XONG)
+
+**Hiện tại.** Đã sửa: Thêm 2 dòng chú thích trong `BirthSetupPanel.jsx`: (1) Cảnh báo cốt truyện Project Moon 15+, (2) Phím tắt máy tính với CSS `@media (hover: hover) and (pointer: fine)` tự ẩn trên thiết bị cảm ứng di động. Test `test_choice_cost_label.mjs` kiểm tra đầy đủ cả 2 dòng song ngữ.
+
+---
+
+## Đợt 120: đọc ít chữ hơn (ĐÃ HOÀN THÀNH)
+
+### 120a. Năm yên ả chỉ một dòng (ĐÃ XONG)
+
+**Hiện tại.** Đã sửa: `createYearDigest` trong `src/engine/yearPlanner.js` rút gọn mục gộp về đúng 1 câu duy nhất. Chọn daily có delta lớn nhất hoặc có NPC (hòa phá bằng RNG tất định qua `createRNG`), không có biến động thì chọn từ bộ 30 câu văn cảnh canon (`AMBIENT_YEAR_LINES`) cho Backstreets, Nest, Outskirts. Tổng deltas và nút "Xem từng mùa" giữ nguyên 100%.
+
+### 120b. Chuẩn độ dài câu chữ (ĐÃ XONG)
+
+**Hiện tại.** Đã sửa: Xây dựng công cụ kiểm tra `tools/lint/check_sentence_length.mjs` chạy mô phỏng 500 đời để xếp hạng tần suất xuất hiện và kiểm soát độ dài câu (minor/daily: 1-2 câu tình huống, 1-2 câu kết quả; year-end: max 2 câu). Đã tinh gọn toàn bộ 14 mục vượt chuẩn trong 100 mục hay gặp nhất từ audit 500 đời, tích hợp `--fail` vào `npm test`.
+
+### 120c. Gọn phần khai sinh hiện mặc định (ĐÃ XONG)
+
+**Hiện tại.** Đã sửa: Trong `src/features/chronicle/components/LiveStageFeed.jsx`, phần khai sinh mặc định hiển thị 3 dòng chính (nơi sinh, gia cảnh & đêm sinh, điềm định mệnh). Các chi tiết phụ (bạn thời thơ ấu / tuổi thơ đơn độc, di vật thừa kế, nợ máu, cha mẹ) được gom gọn vào fold `<details className="entry-review birth-extra-fold">`. Đo đạc CDP trên 390x844: màn đầu sau khai sinh chứa đủ 3 dòng và sự kiện đầu tiên với `bottom = 684.8px < 844px`, không phải cuộn. Test `tests/test_birth_extra_fold.mjs` kiểm tra độ bao phủ 100%.
+
+---
+
+## Đợt 121: người chơi gắn với người thân
+
+### 121a. Đặt tên người thân
+
+**Lý do.** Web mẫu hỏi tên bạn thuở nhỏ và thú nuôi ("để trống để ngẫu nhiên"). Tên do chính người chơi đặt làm thẻ chương mất người thân (Đợt 116) nặng hơn nhiều.
+
+**Cách làm.**
+1. Ở lần đầu một NPC `friend`, `lover` hoặc `spouse` xuất hiện, dừng thời gian như một major và hỏi một câu theo vai, ví dụ với bạn thuở nhỏ: "Đứa trẻ đó tên gì? (để trống để ngẫu nhiên)".
+2. Ô nhập giới hạn 24 ký tự và cắt khoảng trắng. Để trống thì giữ tên ngẫu nhiên như hiện nay.
+3. Tên lưu vào `nameVi` và `nameEn` của NPC. Save cũ không có cờ hỏi tên thì không hỏi lại.
+4. Khi bật tự chọn, bỏ qua câu hỏi và giữ tên ngẫu nhiên.
+
+**Test.**
+- Có tên thì log và thẻ chương dùng tên đó.
+- Để trống thì giữ tên ngẫu nhiên.
+- Mỗi NPC chỉ hỏi một lần.
+- Load save cũ không lỗi.
+
+### 121b. NPC quay lại bằng cảnh ngắn nhắc lựa chọn cũ
+
+**Lý do.** Một nhân vật xuất hiện nhiều lần đáng giá hơn nhiều nhân vật chỉ xuất hiện một lần.
+
+**Cách làm.**
+1. Đây là tinh chỉnh tần suất và điều kiện của hệ NPC đang có, không dựng hệ mới.
+2. Ghi lại một số lựa chọn có NPC tham gia, kèm id lựa chọn và tuổi.
+3. Thêm khoảng 12 cảnh ngắn, mỗi cảnh 1–2 câu, nhắc lại đúng lựa chọn đó vài năm sau, kiểu "Hana vẫn giữ cây kẹo năm ấy cậu chia cho".
+4. Trước khi viết, đo bằng audit 500 đời: một đời trung bình gặp lại cùng một NPC bao nhiêu lần.
+
+**Xong khi.** Trong audit, một đời có NPC thân trung bình gặp ít nhất 3 cảnh nhắc lại, và không cảnh nào lặp trong cùng một đời.
+
+---
+
+## Đợt 122: hậu quả và đích đến
+
+### 122a. Hậu quả kéo dài nói bằng lời
+
+**Hiện tại.** `ChoicePreview` (`Deltas.jsx:229`) chỉ hiện chip +/−, nên người chơi không biết tác động kéo dài bao lâu.
+
+**Cách làm.** Với lựa chọn có tác động nhiều năm (Bond, nợ, hợp đồng, NPC đi theo), cho phép data khai một trường `lasting: { vi, en }`. Trường này hiện thành một dòng ngắn dưới nhãn lựa chọn, ví dụ "Mỗi năm SP +2, kéo dài tới khi chia tay". Lựa chọn không có trường này thì không đổi gì.
+
+**Xong khi.** Có ít nhất 15 lựa chọn dài hạn được viết dòng này. Thẻ minor ở 390x844 vẫn đạt chuẩn của Đợt 118a: dòng `lasting` nằm trong phần mở bằng nút gập.
+
+### 122b. Tiến độ thăng chức
+
+**Hiện tại.** Merit chỉ là một con số nằm trong mục gập của hồ sơ (`CharacterDossierCard.jsx:650`). Người chơi không biết còn bao xa mới tới lần thăng chức hoặc kỳ thi Grade tiếp theo.
+
+**Cách làm.**
+1. Hiện ở cột trái, ngoài mục gập, một thanh "Tới thăng chức: 6/8", hoặc "Tới kỳ thi Grade 6" cho Fixer.
+2. Lấy ngưỡng từ đúng hàm mà engine dùng để thăng chức, không viết lại ngưỡng ở UI.
+
+**Test.** Ngưỡng UI khớp với ngưỡng engine cho mọi nghề có thăng chức.
+
+---
+
+## Đợt 123: lướt nhanh khi chơi lại
+
+**Lý do.** Web mẫu có x1 đến x32, nhưng chép nguyên x32 sẽ nuốt mất chi tiết của game mình. Hướng học là tăng tốc rõ rệt cho phần đời thường khi chơi lại.
+
+**Cách làm.**
+1. Thêm một mức "Lướt" (khoảng 8x). Mức này chỉ hiện từ đời thứ hai trở đi, đọc từ lịch sử đời của Huyết thống, hoặc khi đã bật tự chọn.
+2. Mức "Lướt" chỉ chạy trong `quietStretch` (`gameStore.js:906`). Gặp major, minor, mốc NPC hoặc thẻ chương thì tự về tốc độ người chơi đã chọn trước đó.
+3. Minor không bị rút ngắn thời gian chờ. Luật hẹn giờ giữ nguyên.
+
+**Test.**
+- Đời đầu không thấy nút "Lướt".
+- Đang lướt mà gặp minor thì tốc độ về lại mức cũ.
+- Đồng hồ minor không chạy nhanh hơn bình thường.
+
+---
+
 ## Việc của chủ dự án: nghe thử âm thanh
 
 Âm thanh của 7 cảnh (Đợt 110) chỉ mới được kiểm bằng test và Chrome, chưa ai nghe bằng tai. Nên nghe một lượt trên điện thoại có tai nghe, rồi trên loa máy tính. Danh sách cần nghe:
@@ -236,6 +345,9 @@ Công cụ quay đã có lệnh mở từng cảnh: `node tools/film/film_cutsce
 - **Làm mới cache PWA.** Không phải việc code. Người chơi kéo làm mới hoặc xóa dữ liệu trang để nhận bản mới.
 - **Gộp hai nút tạm dừng.** Nút tạm dừng ở thẻ minor và nút Pause ở thanh trên cùng điều khiển một trạng thái (`speed === 0`; vòng `tick` ở `gameStore.js` dừng cả đồng hồ minor khi tốc độ bằng 0). Chúng không mâu thuẫn nhau. Nút trong thẻ nằm gần ngón cái và có phím Space, nên giữ cả hai.
 - **Cảnh riêng cho thi trượt.** Thay bằng thẻ chương (118b).
+- **Ba ngôn ngữ như web mẫu (Hàn, Anh, Nhật).** Đó là lựa chọn theo cộng đồng người chơi của họ. Giữ Việt và Anh.
+- **Tốc độ x32 cho mọi người.** Thay bằng mức "Lướt" chỉ khi chơi lại (Đợt 123).
+- **Gói toàn bộ JS vào một file như web mẫu (8,4 MB).** Bản mình chia chunk, tải đầu nhẹ hơn.
 - **Viết thêm chuỗi hậu quả sau biến cố lớn.** Đã có các chuỗi `csq_` trong `narrativeArcEngine.js`. Nếu sau này muốn viết thêm, trước hết đo xem một đời thật gặp bao nhiêu chuỗi.
 
 ## Việc còn treo từ các đợt trước

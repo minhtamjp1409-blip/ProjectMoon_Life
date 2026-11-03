@@ -141,4 +141,12 @@ formerDirector.alive = false;
 const directorSummary = buildLifeSummaryAndLegacy(formerDirector);
 assert.ok(directorSummary.recordsList.some((record) => record.key === 'association_director' && record.evidenceEn.includes('Liu Association')));
 
+// Đợt 119: Kiểm tra static integrity của flushAchievementToasts và startLife
+import fs from 'node:fs';
+import path from 'node:path';
+const storeSource = fs.readFileSync(path.resolve('src/store/gameStore.js'), 'utf-8');
+assert.ok(storeSource.includes("window.innerWidth <= 820 ? 'bottom' : 'bottomLeft'"), 'Mobile placement must be bottom');
+assert.ok(storeSource.includes("'aria-live': 'polite'"), 'Toast must have aria-live polite');
+assert.ok(storeSource.includes("nextChar.logs = [firstLog];"), 'startLife must immediately reveal first birth log on frame 0');
+
 console.log('Achievement records: evidence, route gates, summary and false positives passed.');

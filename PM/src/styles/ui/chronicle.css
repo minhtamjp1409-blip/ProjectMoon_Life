@@ -273,6 +273,70 @@
   line-height: 1.5;
   margin: 0;
 }
+
+/* Đợt 120c: Gọn phần khai sinh - mục mở rộng cho chi tiết thời thơ ấu & nguồn cội */
+.entry.birth-extra-fold-card {
+  margin-bottom: 12px;
+}
+.birth-extra-fold {
+  margin-top: 4px;
+  font-size: 13px;
+  border-top: 1px dashed var(--page-rule);
+  padding-top: 6px;
+}
+.birth-extra-fold summary {
+  cursor: pointer;
+  color: var(--page-muted);
+  font-size: 12.5px;
+  min-height: 28px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  user-select: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.birth-extra-fold summary:hover {
+  color: var(--page-ink);
+}
+.birth-extra-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 8px;
+  padding-left: 4px;
+}
+.birth-extra-row {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid color-mix(in srgb, var(--page-rule) 60%, transparent);
+}
+.birth-extra-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+.birth-extra-tag {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--page-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.birth-extra-text {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--page-ink);
+  margin: 0;
+}
+.birth-extra-alt {
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--page-muted);
+  margin: 0;
+  font-style: italic;
+}
 .breakdown-label {
   color: var(--muted);
 }

@@ -114,6 +114,22 @@ console.log('=== RUNNING CHOICE COST LABEL & BIRTH SETUP TESTS (ĐỢT 114) ==='
     'BirthSetupPanel.jsx must state auto-save rule (En)'
   );
   assert.ok(
+    birthSource.includes('Trò chơi có tiết lộ nội dung cốt truyện Project Moon, khuyến nghị độ tuổi 15+.'),
+    'BirthSetupPanel.jsx must include spoiler warning (Vi)'
+  );
+  assert.ok(
+    birthSource.includes('Contains Project Moon story spoilers, recommended for ages 15+.'),
+    'BirthSetupPanel.jsx must include spoiler warning (En)'
+  );
+  assert.ok(
+    birthSource.includes('Phím tắt máy tính: Space dừng, [ ] đổi tốc độ, 1-4 chọn.'),
+    'BirthSetupPanel.jsx must include keyboard shortcuts (Vi)'
+  );
+  assert.ok(
+    birthSource.includes('Keyboard shortcuts: Space to pause, [ ] to change speed, 1-4 to choose.'),
+    'BirthSetupPanel.jsx must include keyboard shortcuts (En)'
+  );
+  assert.ok(
     birthSource.includes('CityBirthAtlasStrip'),
     'BirthSetupPanel.jsx must include CityBirthAtlasStrip'
   );

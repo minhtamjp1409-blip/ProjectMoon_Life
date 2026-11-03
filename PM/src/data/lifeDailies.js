@@ -631,8 +631,8 @@ export const LIFE_DAILIES = [
     't_back_friend_dream',
     TEEN,
     { back: true, npc: 'friend' },
-    '[Giấc mơ Nest] {friend} muốn làm Fixer, dành tiền đưa cả nhà vào Nest. Hai người ngồi trên mái tôn tính số năm phải làm việc. Khi ra con số, {friend} gấp tờ giấy lại.',
-    '[Rooftop Nest Ambition] {friend} confided their dream of becoming a renowned Fixer to buy a permanent residence visa into a Nest. Sitting on the tin roof calculating the required centuries of work, the astronomical sum made you both laugh in bitter irony.',
+    '[Giấc mơ Nest] {friend} muốn làm Fixer để dành tiền đưa cả nhà vào Nest, và hai người ngồi trên mái tôn tính số năm phải làm việc. Khi ra con số, {friend} lặng lẽ gấp tờ giấy lại.',
+    '[Rooftop Nest Ambition] {friend} dreamed of becoming a Fixer to buy entry into a Nest, calculating the required years together on the tin roof. When the number came out, {friend} quietly folded the paper.',
     { sanity: 3 },
     { bond: { friend: 5 } }
   ),
@@ -918,8 +918,8 @@ export const LIFE_DAILIES = [
     'r_k_ampoule',
     [6, 140],
     { regions: ['K'] },
-    '[Ống tiêm K Corp] Ở District 11, người ta mang theo huyết thanh K Corp như mang chìa khóa. Một người tiêm thuốc ngay trước mặt bạn; vết thương khép lại. Không ai trong hàng chờ hỏi dịch xanh ấy lấy từ đâu.',
-    '[District 11 Green Vials] In District 11, nearly every citizen carried a spare K Corp HP ampoule in their coat pocket. People injected the luminescent green fluid as casually as drinking water, never daring to question what horrific source K Corp distilled it from.',
+    '[Ống tiêm K Corp] Ở District 11, người ta mang theo huyết thanh K Corp như mang chìa khóa. Một người tiêm thuốc ngay trước mặt bạn khiến vết thương khép lại, và không ai trong hàng chờ hỏi dịch xanh ấy lấy từ đâu.',
+    '[District 11 Green Vials] In District 11, citizens carry spare K Corp ampoules like keys in their pockets. A person injects the green fluid right before you to close a wound, and no one in the queue asks where it comes from.',
     { health: 3 }
   ),
   D(

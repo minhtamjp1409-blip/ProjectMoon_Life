@@ -384,12 +384,18 @@ function flushAchievementToasts(state) {
   while (pendingAchievementToasts.length) {
     const rec = pendingAchievementToasts.shift();
     try {
+      // Đợt 119b: Trên mobile chuyển toast xuống bottom để không đè character name & HUD, thêm aria-live="polite"
       notification.open({
         title: lang === 'en' ? `Record unlocked · ${rec.en || rec.vi}` : `Mở khóa thành tựu · ${rec.vi}`,
         description: lang === 'en' ? (rec.hintEn || rec.hintVi) : rec.hintVi,
-        placement: typeof window !== 'undefined' && window.innerWidth <= 820 ? 'top' : 'bottomLeft',
+        placement: typeof window !== 'undefined' && window.innerWidth <= 820 ? 'bottom' : 'bottomLeft',
         className: 'achievement-toast',
-        duration: 3.2
+        duration: 3.2,
+        role: 'status',
+        props: {
+          role: 'status',
+          'aria-live': 'polite'
+        }
       });
     } catch {
       // ignore in headless / test environment
@@ -831,7 +837,14 @@ export const useGameStore = create((set, get) => ({
     if (nextChar.job !== 'Child') nextChar.pendingYearPlan = { age: nextChar.age };
     else if (nextChar.pendingLead) Object.assign(nextChar, chooseDirectorPacedLead(nextChar, lifeRng));
     const metaUpdates = get().syncMetaFromChar(nextChar);
-    const hasBirthLogs = Boolean(nextChar.pendingBirthLogs && nextChar.pendingBirthLogs.length > 0);
+    let hasBirthLogs = Boolean(nextChar.pendingBirthLogs && nextChar.pendingBirthLogs.length > 0);
+    // Đợt 119a: Hiển thị ngay dòng khai sinh đầu tiên tại frame 0, không chờ nhịp tick
+    if (hasBirthLogs) {
+      const [firstLog, ...remaining] = nextChar.pendingBirthLogs;
+      nextChar.logs = [firstLog];
+      nextChar.pendingBirthLogs = remaining;
+      hasBirthLogs = remaining.length > 0;
+    }
     set({
       char: nextChar,
       inRun: true,

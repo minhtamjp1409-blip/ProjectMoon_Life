@@ -44,7 +44,8 @@ import {
   applyFatalOrCompanionSave,
   handleSanityBreakdown,
   woundDeath,
-  generateFixerContract
+  generateFixerContract,
+  createRNG
 } from './gameEngine.js';
 import { selectEventWithWeaverAI, updateDramaTension, FATE_OMENS, isEventEligible } from './weaverAI.js';
 import { CONSEQUENCE_EVENTS } from '../data/eventsChildhood.js';
@@ -1818,10 +1819,50 @@ export function isQuietYear(plan, char) {
   return true;
 }
 
+export const AMBIENT_YEAR_LINES = {
+  backstreets: [
+    { vi: 'Một năm lặng lẽ trôi qua giữa những con ngõ Backstreets không biến cố.', en: 'A quiet year passes through the Backstreets without incident.' },
+    { vi: 'Nhịp sống trong ngõ hẻm vẫn tiếp diễn ngày này qua ngày khác.', en: 'Life in the alleys continues from one day to the next.' },
+    { vi: 'Khói từ các ống xả và tiếng còi ca kíp lấp đầy một năm bình lặng.', en: 'Exhaust smoke and shift whistles fill an uneventful year.' },
+    { vi: 'Những ngày tháng êm đềm trôi qua dưới ánh đèn đường Backstreets.', en: 'Peaceful days slip by beneath the Backstreets streetlamps.' },
+    { vi: 'Bạn trải qua một năm bình dị, nhịp bước quen thuộc trên hè phố cũ.', en: 'You spend an ordinary year, walking familiar pavements.' },
+    { vi: 'Thời gian trôi êm ả giữa những dãy nhà xám và mùi dầu máy quen thuộc.', en: 'Time flows quietly among grey tenements and the familiar scent of machine oil.' },
+    { vi: 'Một năm không có xáo trộn lớn, chỉ có nhịp sinh hoạt thường nhật lặp lại.', en: 'A year without upheaval, only the repeating rhythm of daily life.' },
+    { vi: 'Những mùa mưa nắng Backstreets lặng lẽ đi qua khung cửa sổ.', en: 'Seasons of rain and sun pass quietly beyond your Backstreets window.' },
+    { vi: 'Cuộc sống ngõ hẻm trôi đi đều đặn, không biến cố nào gõ cửa.', en: 'Alley life rolls on steadily, with no sudden turns at your door.' },
+    { vi: 'Một năm trôi qua bình ổn giữa lòng The City náo nhiệt.', en: 'A steady year passes in the heart of the bustling City.' }
+  ],
+  nest: [
+    { vi: 'Một năm trôi qua êm ả dưới trật tự quy củ của Nest.', en: 'A tranquil year passes beneath the strict order of the Nest.' },
+    { vi: 'Những tiếng chuông đổi ca và dòng người đều đặn đánh dấu một năm bình yên.', en: 'Shift bells and punctual crowds mark a peaceful year.' },
+    { vi: 'Cuộc sống trong Tổ diễn ra trật tự, không một gợn sóng bất thường.', en: 'Life in the Nest moves orderly, without a ripple of unrest.' },
+    { vi: 'Thời gian trôi đi êm đềm sau những dãy kính phản quang của Cánh.', en: 'Time glides smoothly behind the Wing reflection glass.' },
+    { vi: 'Một năm bình ổn trôi qua theo đúng lịch trình định sẵn.', en: 'A stable year unfolds precisely on schedule.' },
+    { vi: 'Bạn trải qua những ngày tháng thanh thản giữa khuôn viên sạch sẽ của Nest.', en: 'You spend calm days along the clean avenues of the Nest.' },
+    { vi: 'Mọi thứ diễn ra đúng như quy định trong suốt một năm qua.', en: 'Everything proceeded by the book over the past year.' },
+    { vi: 'Mùa tiếp mùa trôi qua yên ắng dưới sự bảo hộ của Cánh.', en: 'Season follows season in quiet safety under the Wing wing.' },
+    { vi: 'Một năm bình thản với những thói quen chuẩn mực mỗi ngày.', en: 'A peaceful year shaped by daily punctuality.' },
+    { vi: 'Không có biến động nào làm xáo trộn cuộc sống ngăn nắp nơi đây.', en: 'No disruptions disturbed the neat routine of this place.' }
+  ],
+  outskirts: [
+    { vi: 'Một năm lặng lẽ trôi qua giữa vùng hoang tàn của Outskirts.', en: 'A quiet year passes across the windswept Outskirts.' },
+    { vi: 'Gió cát và tro bụi hoang dã trôi qua từng mùa một cách bình lặng.', en: 'Dust and wild winds blow through the seasons in quiet succession.' },
+    { vi: 'Bạn trải qua một năm yên ắng bên ngoài bức tường The City.', en: 'You spend an undisturbed year beyond the City walls.' },
+    { vi: 'Thời gian chậm rãi trôi qua giữa những tàn tích không người.', en: 'Time drifts slowly past the empty ruins.' },
+    { vi: 'Một năm sống sót bình thản giữa bầu trời u trầm miền biên viễn.', en: 'A year of quiet survival beneath the dim frontier sky.' },
+    { vi: 'Không có quái vật hay hiểm họa lớn nào xuất hiện trong năm nay.', en: 'Neither monsters nor major perils troubled you this year.' },
+    { vi: 'Những ngày tháng nơi vùng Rìa trôi qua chậm chạp và tĩnh mịch.', en: 'Days in the Outskirts slip by slow and silent.' },
+    { vi: 'Bạn gom góp từng ngày bình yên giữa khung cảnh thô ráp ngoài vòng rào.', en: 'You gather peaceful days amidst the rough expanse beyond the fence.' },
+    { vi: 'Một năm êm ả trôi qua mà không có cơn bão cát nào quét tới.', en: 'A calm year passes without a dust storm upon your shelter.' },
+    { vi: 'Cuộc sống tự do nhưng đơn độc lặng lẽ đi qua thêm một vòng tuổi.', en: 'A solitary, untroubled life marks another year lived.' }
+  ]
+};
+
 /**
  * Creates a year_digest log entry from a list of routine daily log entries.
+ * Đợt 120a: Năm yên ả chỉ đúng 1 dòng (daily đáng nhớ nhất hoặc câu ambient theo nơi chốn).
  */
-export function createYearDigest(dailyEntries, age, { quiet = true } = {}) {
+export function createYearDigest(dailyEntries, age, { quiet = true, char = null, rng = null } = {}) {
   if (!dailyEntries || dailyEntries.length === 0) return null;
   const ids = dailyEntries.map((e) => e.id);
 
@@ -1845,27 +1886,46 @@ export function createYearDigest(dailyEntries, age, { quiet = true } = {}) {
     if (v && !STAT_ORDER.includes(k)) deltas.push({ k, v });
   }
 
-  // Concatenate short sentences without titles
-  const viBodies = dailyEntries.map((e) => {
-    const b = splitTitle(e.vi || '').body.trim();
-    if (!b) return '';
-    return /[.!?]$/.test(b) ? b : `${b}.`;
-  }).filter(Boolean);
+  // Đợt 120a: Chọn một câu duy nhất cho năm yên ả (tình huống đáng nhớ nhất hoặc câu ambient theo nơi chốn)
+  const r = typeof rng === 'function' ? rng : createRNG(`${char?.seed || 'digest'}:${age}:${ids.join(':')}`);
 
-  const enBodies = dailyEntries.map((e) => {
-    const b = splitTitle(e.en || '').body.trim();
-    if (!b) return '';
-    return /[.!?]$/.test(b) ? b : `${b}.`;
-  }).filter(Boolean);
+  // Tìm daily đáng nhớ nhất: có tên NPC hoặc có tổng delta (độ lớn) lớn nhất
+  const scored = dailyEntries.map((e) => {
+    const mag = (e.deltas || []).reduce((acc, d) => acc + Math.abs(d.v || 0), 0);
+    let hasNpc = Boolean(e.npc || e.npcId || e.npcRole || e.hasNpc);
+    if (!hasNpc && char?.npcs) {
+      for (const role of Object.keys(char.npcs)) {
+        const npc = char.npcs[role];
+        if (npc?.nameVi && (e.vi || '').includes(npc.nameVi)) { hasNpc = true; break; }
+        if (npc?.nameEn && (e.en || '').includes(npc.nameEn)) { hasNpc = true; break; }
+      }
+    }
+    const score = (hasNpc ? 100 : 0) + mag;
+    return { entry: e, score, mag };
+  });
 
-  const introVi = 'Một năm trôi qua bình lặng.';
-  const introEn = 'A quiet year passes.';
-  const vi = quiet
-    ? (viBodies.length ? `${introVi} ${viBodies.join(' ')}` : introVi)
-    : viBodies.join(' ');
-  const en = quiet
-    ? (enBodies.length ? `${introEn} ${enBodies.join(' ')}` : introEn)
-    : enBodies.join(' ');
+  const bestScore = Math.max(...scored.map((s) => s.score));
+  const candidates = scored.filter((s) => s.score === bestScore && s.score > 0);
+
+  let vi = '';
+  let en = '';
+
+  if (candidates.length > 0) {
+    const chosen = candidates[Math.floor(r() * candidates.length)].entry;
+    const bVi = splitTitle(chosen.vi || '').body.trim();
+    const bEn = splitTitle(chosen.en || '').body.trim();
+    vi = /[.!?]$/.test(bVi) ? bVi : `${bVi}.`;
+    en = /[.!?]$/.test(bEn) ? bEn : `${bEn}.`;
+  } else {
+    // Không có daily nào có delta hoặc NPC: dùng câu ambient theo nơi chốn
+    const isOutskirts = char?.regionId === 'OUTSKIRTS' || char?.flags?.includes('Outskirts');
+    const isNest = Boolean(char?.inNest || char?.job === 'Wing Employee' || char?.family?.tier === 'nest');
+    const regionKey = isOutskirts ? 'outskirts' : (isNest ? 'nest' : 'backstreets');
+    const pool = AMBIENT_YEAR_LINES[regionKey] || AMBIENT_YEAR_LINES.backstreets;
+    const chosen = pool[Math.floor(r() * pool.length)];
+    vi = chosen.vi;
+    en = chosen.en;
+  }
 
   return {
     id: `log_${age}_digest`,
@@ -1889,6 +1949,7 @@ export function createYearDigest(dailyEntries, age, { quiet = true } = {}) {
  */
 export function consolidateYearDailies(charOrLogs, targetAge) {
   const isChar = charOrLogs && Array.isArray(charOrLogs.logs);
+  const char = isChar ? charOrLogs : null;
   const logs = isChar ? charOrLogs.logs : (Array.isArray(charOrLogs) ? charOrLogs : []);
   if (targetAge < 5) return charOrLogs;
 
@@ -1923,7 +1984,7 @@ export function consolidateYearDailies(charOrLogs, targetAge) {
     (e) => e && e.age === targetAge && !isPureDaily(e) && !['summary', 'year_end'].includes(e.type)
   );
 
-  const digest = createYearDigest(dailyEntries, targetAge, { quiet: !hasOthers });
+  const digest = createYearDigest(dailyEntries, targetAge, { quiet: !hasOthers, char });
   if (!digest) return charOrLogs;
 
   const firstIdx = dailyIndices[0];
