@@ -118,8 +118,8 @@ try {
     };
   });
   console.log('Feed Layout:', feedLayout);
-  assert.ok(feedLayout.hasFold, 'Phải có fold chi tiết thời thơ ấu & nguồn cội');
-  assert.ok(feedLayout.foldSummary?.includes('thời thơ ấu') || feedLayout.foldSummary?.includes('Childhood'), 'Tiêu đề fold đúng');
+  assert.ok(feedLayout.hasFold, 'Phải có fold chi tiết gia cảnh & đêm sinh');
+  assert.ok(feedLayout.foldSummary?.includes('Gia cảnh') || feedLayout.foldSummary?.includes('Family'), 'Tiêu đề fold đúng');
 
   // Chụp ảnh màn đầu tuổi 1
   await page.screenshot(join(outDir, 'birth_first_screen_age1.png'));

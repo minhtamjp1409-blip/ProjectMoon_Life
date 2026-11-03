@@ -246,7 +246,7 @@ Có bản tiếng Anh tương ứng.
 
 ### 120c. Gọn phần khai sinh hiện mặc định (ĐÃ XONG)
 
-**Hiện tại.** Đã sửa: Trong `src/features/chronicle/components/LiveStageFeed.jsx` và `src/data/birthStories.js`, `log_birth_3` (Bạn thời thơ ấu - cần cho Đợt 121) và `log_legacy_0` (Di sản thế hệ) hiển thị trực tiếp trong chronicle. Chỉ gập phần mô tả dài đêm sinh & gia cảnh (`log_birth_1`) vào fold `<details className="entry-review birth-extra-fold">`. Trong `startLife`, nạp ngay các dòng gập vào `logs` ở frame 0 để triệt tiêu hoàn toàn khoảng chờ rỗng 1.3s. Nâng cấp overlay với `z-index: 9999` và nền đục 98% chống lộ form bên dưới. Test `tests/test_birth_extra_fold.mjs` kiểm tra độ bao phủ 100%.
+**Hiện tại.** Đã sửa: Trong `src/features/chronicle/components/LiveStageFeed.jsx` và `src/data/birthStories.js`, các dòng Nơi sinh (`log_birth_0`), Điềm định mệnh (`log_birth_2`), Bạn thời thơ ấu (`log_birth_3` - cần cho Đợt 121) và Di sản thế hệ (`log_legacy_0`) hiển thị trực tiếp trong chronicle. Chỉ gập phần mô tả dài đêm sinh & gia cảnh (`log_birth_1`) vào fold với tiêu đề song ngữ "Gia cảnh & đêm sinh" / "Family & birth night". Trong `startLife`, nạp ngay các dòng gập vào `logs` ở frame 0 để triệt tiêu hoàn toàn khoảng chờ rỗng 1.3s. Loading overlay đặt `z-index: 1100` và nền đục 98% chống lộ form bên dưới mà không che modal báo lỗi. Test `tests/test_birth_extra_fold.mjs` kiểm tra độ bao phủ 100%.
 
 ---
 

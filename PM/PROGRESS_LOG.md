@@ -2866,21 +2866,22 @@ Chạy kiểm định mô phỏng 500 vòng đời với chiến lược ngườ
   8. Lint độ dài câu chỉ đếm dấu chấm khiến nhiều chỗ nối câu thô bằng ", và", thiếu kiểm tra số từ (<= 45 từ tiếng Việt) và các nhánh `out`, `ignore`.
 * **Giải pháp kiến trúc toàn diện đã hoàn thiện:**
   1. `src/styles/ui/base.css` & `src/store/gameStore.js`:
-     - Toast mobile định vị tại `top: calc(185px + env(safe-area-inset-top, 0px)) !important; bottom: auto !important;`, nằm gọn dưới HUD và giải phóng hoàn toàn khu vực thao tác đáy màn hình.
+     - Toast mobile định vị linh hoạt theo chiều cao HUD thật: `top: calc(var(--hud-bottom, 206px) + env(safe-area-inset-top, 0px)) !important; bottom: auto !important;`, với `--hud-bottom` được cập nhật liên tục qua `ResizeObserver` trong `CharacterDossierCard.jsx`. Hiệu ứng `toastFadeIn` nhẹ nhàng tại chỗ ngăn toast trượt qua HUD từ đỉnh màn hình.
   2. `src/engine/yearPlanner.js`:
      - Phân định vùng chuẩn bằng `isNest(char)` và `isOutskirts(char)`.
      - Trong `createYearDigest`: Khi năm có daily thật (`dailyEntries.length > 0`), bốc ngẫu nhiên 1 daily thật bằng seed (`r()`) thay vì dùng câu ambient chung chung; ambient chỉ dùng khi hoàn toàn không có daily (`dailyEntries.length === 0`).
      - Sửa lỗi gõ `"under the Wing wing"` -> `"under the protection of the Wing"`. Toàn bộ 30 câu `AMBIENT_YEAR_LINES` được chuẩn hóa theo đúng từ vựng canon Project Moon (Nest, Wing, Outskirts), bổ sung chi tiết đậm chất thế giới (mưa axit, giờ Quét dọn 3:13 AM, còi ca kíp).
   3. `src/data/birthStories.js`, `LiveStageFeed.jsx` & `gameStore.js`:
-     - `isExtraBirthEntry`: Không gập `log_birth_3` (Bạn thời thơ ấu) và `log_legacy_0` (Di sản thế hệ). Chỉ gập phần mô tả dài đêm sinh & gia cảnh (`log_birth_1`).
+     - `LiveStageFeed.jsx` import `isExtraBirthEntry` tập trung từ `birthStories.js`, trả lại comment JSDoc cho `composeBirth`.
+     - `isExtraBirthEntry`: Không gập `log_birth_3` (Bạn thời thơ ấu) và `log_legacy_0` (Di sản thế hệ). Chỉ gập phần mô tả dài đêm sinh & gia cảnh (`log_birth_1`) vào fold với tiêu đề chuẩn xác "Gia cảnh & đêm sinh" / "Family & birth night".
      - Trong `startLife`: Tách `pendingBirthLogs` thành `visibleLogs` và `foldedLogs`. Đưa ngay `firstLog` và toàn bộ `foldedLogs` vào `nextChar.logs` ở frame 0; `pendingBirthLogs` chỉ giữ các dòng hiển thị tiếp theo. Triệt tiêu hoàn toàn khoảng chờ rỗng 1.3s!
   4. `src/features/chronicle/components/BirthSetupPanel.jsx` & `src/styles/ui/overlays.css`:
      - Rút ngắn thời gian hoạt cảnh `spinTo` từ 1750ms xuống 750ms, bỏ 350ms delay, bổ sung `skipSpinIfActive` cho phép chạm/click để hoàn tất ngay tức thì.
-     - Nâng cấp `.city-loading-overlay`: `z-index: 9999`, nền đục `rgba(5, 5, 8, .98)` và `backdrop-filter: blur(8px)`, ngăn chặn 100% tình trạng chữ form bên dưới bị lộ hay đè lên overlay.
+     - Nâng cấp `.city-loading-overlay`: `z-index: 1100`, nền đục `rgba(5, 5, 8, .98)` và `backdrop-filter: blur(8px)`, ngăn 100% tình trạng chữ form bên dưới bị lộ hay đè lên overlay mà không che khuất modal báo lỗi.
   5. `tools/lint/check_sentence_length.mjs`:
-     - Bổ sung hàm đếm từ `countWords(text)` kiểm tra giới hạn 45 từ tiếng Việt cho tình huống và kết quả lựa chọn của minor. Quét sâu toàn bộ nhánh `out` (kết quả có điều kiện) và `ignore`.
+     - Coi số từ là giới hạn chính (≤ 45 từ tiếng Việt), cho phép 3 câu khi tổng số từ gọn dưới 30 từ để giữ câu văn ngắn, đanh thép, đúng giọng Project Moon. Quét sâu toàn bộ nhánh `out` và `ignore`.
      - Giảm số đời mô phỏng từ 500 xuống 150 đời, rút ngắn thời gian chạy từ 10s xuống ~1.5s.
-     - Tinh gọn câu chữ tự nhiên không dùng ", và" trong `lifeMinorsKids.js`, `lifeMinors.js`, `lifeDailies.js`.
+     - Phục hồi câu chữ tự nhiên, gãy gọn, không drama sến trong `lifeMinorsKids.js` (`mk_any_lost_shoe`, `mc_nest_answers`, `mk_back_stair_man`).
   6. `tools/qa/measure_birth_mobile.mjs`:
      - Chuyển sang kích hoạt thành tựu thật (`fixer_license`), đo đạc và assert trực tiếp tọa độ `toastLayout.top >= 180 && toastLayout.top <= 230` và `toastLayout.found === true`.
 * **Kết quả đo đạc & kiểm thử toàn diện:**

@@ -2,7 +2,7 @@
 
 /* Loading: a dark room, the District's letter, one line of what is happening, one rule of progress */
 .city-loading-overlay {
-  position: fixed; inset: 0; z-index: 9999;
+  position: fixed; inset: 0; z-index: 1100;
   display: grid; place-items: center; padding: 24px;
   background: rgba(5, 5, 8, .98); backdrop-filter: blur(8px);
   animation: overlayIn .2s ease;

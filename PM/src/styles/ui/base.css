@@ -214,7 +214,7 @@ details > summary::-webkit-details-marker { display: none; }
 .ant-notification-notice { padding: 14px 16px !important; }
 .ant-notification-notice-message { font-family: var(--serif) !important; font-size: 16px !important; font-weight: 600; margin-bottom: 2px !important; }
 .ant-notification-notice-description { font-size: 14px !important; line-height: 1.5 !important; color: var(--muted) !important; }
-/* Đợt 119b: Toast thành tựu trên điện thoại đặt dưới HUD, không đè tên nhân vật hay các nút điều khiển chính */
+/* Đợt 119b: Toast thành tựu trên điện thoại đặt dưới HUD thật qua --hud-bottom, không đè tên nhân vật hay nút chính */
 @media (max-width: 820px) {
   .ant-notification-top,
   .ant-notification-topLeft,
@@ -222,13 +222,22 @@ details > summary::-webkit-details-marker { display: none; }
   .ant-notification-bottom,
   .ant-notification-bottomLeft,
   .ant-notification-bottomRight {
-    top: calc(185px + env(safe-area-inset-top, 0px)) !important;
+    top: calc(var(--hud-bottom, 206px) + env(safe-area-inset-top, 0px)) !important;
     bottom: auto !important;
     left: 12px !important;
     right: 12px !important;
     transform: none !important;
     max-width: calc(100vw - 24px) !important;
   }
+
+  .ant-notification-notice {
+    animation: toastFadeIn 0.22s ease-out !important;
+  }
+}
+
+@keyframes toastFadeIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .ant-app { color: var(--text); font-family: var(--font); }

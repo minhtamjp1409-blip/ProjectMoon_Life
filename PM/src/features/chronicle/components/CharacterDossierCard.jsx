@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { NpcDossierModal } from './NpcDossierModal.jsx';
 import { Tooltip } from 'antd';
@@ -712,6 +712,25 @@ export const CharacterDossierCard = () => {
   const { mobileDossierOpen: drawerOpen, setMobileDossierOpen: setDrawerOpen } = useThemeStore();
   const [mobileTab, setMobileTab] = React.useState('overview');
   const sheetRef = React.useRef(null);
+  const hudRef = useRef(null);
+
+  useEffect(() => {
+    if (!hudRef.current) return;
+    const updateHudBottom = () => {
+      const rect = hudRef.current?.getBoundingClientRect();
+      if (rect && rect.bottom > 0) {
+        document.documentElement.style.setProperty('--hud-bottom', `${Math.ceil(rect.bottom + 4)}px`);
+      }
+    };
+    updateHudBottom();
+    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(updateHudBottom) : null;
+    if (ro && hudRef.current) ro.observe(hudRef.current);
+    window.addEventListener('resize', updateHudBottom);
+    return () => {
+      ro?.disconnect();
+      window.removeEventListener('resize', updateHudBottom);
+    };
+  }, []);
   React.useEffect(() => {
     if (!drawerOpen) return;
     const previous = document.activeElement;
@@ -774,6 +793,7 @@ export const CharacterDossierCard = () => {
     <>
       {/* 1. Dedicated Mobile Status Header (Safe-Area Protected, All Vitals + Timeline in View) */}
       <div 
+        ref={hudRef}
         className="mobile-resource-hud" 
         onClick={() => setDrawerOpen(true)}
         role="button"

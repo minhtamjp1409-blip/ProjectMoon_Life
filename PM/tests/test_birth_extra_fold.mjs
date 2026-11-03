@@ -12,8 +12,8 @@ const chronicleCss = fs.readFileSync(path.resolve('src/styles/ui/chronicle.css')
 assert.ok(liveStageSource.includes('isExtraBirthEntry'), 'LiveStageFeed phải định nghĩa hàm isExtraBirthEntry');
 assert.ok(liveStageSource.includes('birth-extra-fold'), 'LiveStageFeed phải sử dụng class birth-extra-fold');
 assert.ok(
-  liveStageSource.includes("t('Chi tiết thời thơ ấu & nguồn cội', 'Childhood & heritage details')"),
-  'LiveStageFeed phải có tiêu đề fold song ngữ cho thời thơ ấu & nguồn cội'
+  liveStageSource.includes("t('Gia cảnh & đêm sinh', 'Family & birth night')"),
+  'LiveStageFeed phải có tiêu đề fold song ngữ cho gia cảnh & đêm sinh'
 );
 assert.ok(liveStageSource.includes('pushExtraBirthFold'), 'LiveStageFeed phải có cơ chế pushExtraBirthFold sau 3 dòng mặc định');
 

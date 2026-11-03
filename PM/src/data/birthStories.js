@@ -249,10 +249,6 @@ const OUTSKIRTS_FRIEND = [
 
 const fill = (s, map) => Object.entries(map).reduce((acc, [k, v]) => acc.replaceAll(`{${k}}`, v), s);
 
-/**
- * Returns the opening log lines and the childhood friend for a newborn.
- * `kind` is 'nest' | 'back' | 'out'.
- */
 export function isExtraBirthEntry(entry) {
   if (!entry || entry.age !== 0) return false;
   // Đợt 120/121: log_birth_3 (Bạn thời thơ ấu) và log_legacy_0 (Di sản thế hệ) không bị gập
@@ -262,6 +258,10 @@ export function isExtraBirthEntry(entry) {
   return false;
 }
 
+/**
+ * Returns the opening log lines and the childhood friend for a newborn.
+ * `kind` is 'nest' | 'back' | 'out'.
+ */
 export function composeBirth({ kind, familyId, omenId, regionVi, regionEn, regionId = null, name, generation, rng }) {
   const place = pick(PLACE[kind] || PLACE.back, rng);
   const fam = pick(FAMILY[familyId] || FAMILY.backstreet_worker, rng);

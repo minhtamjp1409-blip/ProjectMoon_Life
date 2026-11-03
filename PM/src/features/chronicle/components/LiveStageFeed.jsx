@@ -25,6 +25,7 @@ import { getPsycheInterjection, evaluateDiscoChoiceCheck } from '../../../engine
 import { bestowHanaColorTitle } from '../../../engine/colorRegistry';
 import { dungeonEntryForecast } from '../../../engine/dungeonEngine';
 import { getCutsceneKeyAnnouncement } from '../../cutscene/registry';
+import { isExtraBirthEntry } from '../../../data/birthStories.js';
 
 const ENTRY_KIND = {
   causal: { cls: 'k-causal', vi: 'Tiếng vọng nhân quả', en: 'Causal echo' },
@@ -73,14 +74,7 @@ const storyParts = (entry, lang) => {
 
 /* ---------- Story log ---------- */
 
-export const isExtraBirthEntry = (entry) => {
-  if (!entry || entry.age !== 0) return false;
-  // Đợt 120/121: log_birth_3 (Bạn thời thơ ấu) và log_legacy_0 (Di sản thế hệ) không bị gập
-  if (entry.id === 'log_birth_3' || entry.id === 'log_legacy_0' || entry.id === 'log_parent_living') return false;
-  // Gập phần mô tả dài đêm sinh & gia cảnh (log_birth_1)
-  if (entry.id === 'log_birth_1') return true;
-  return false;
-};
+export { isExtraBirthEntry };
 
 const LogEntries = React.memo(function LogEntries({ logs, currentAge }) {
   const { t, lang, bilingual } = useT();
@@ -105,7 +99,7 @@ const LogEntries = React.memo(function LogEntries({ logs, currentAge }) {
     out.push(
       <article className="entry t-quiet birth-extra-fold-card" key="birth_extra_fold">
         <details className="entry-review birth-extra-fold">
-          <summary>{t('Chi tiết thời thơ ấu & nguồn cội', 'Childhood & heritage details')}</summary>
+          <summary>{t('Gia cảnh & đêm sinh', 'Family & birth night')}</summary>
           <div className="birth-extra-rows">
             {extraBirthLogs.map((item) => {
               const rawText = lang === 'en' ? item.en || item.vi : item.vi;

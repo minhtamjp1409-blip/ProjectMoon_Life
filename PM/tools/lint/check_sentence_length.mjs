@@ -21,6 +21,29 @@ export function countWords(text) {
   return body.split(/\s+/).filter(Boolean).length;
 }
 
+export function checkSentenceStandard(textVi, textEn, label, issues) {
+  if (textVi) {
+    const sVi = countSentences(textVi);
+    const wVi = countWords(textVi);
+    if (wVi > 45) {
+      issues.push(`${label} Vi has ${wVi} words (>45)`);
+    } else if (sVi > 3) {
+      issues.push(`${label} Vi has ${sVi} sentences (>3)`);
+    } else if (sVi === 3 && wVi > 30) {
+      issues.push(`${label} Vi has 3 sentences with ${wVi} words (>30)`);
+    }
+  }
+  if (textEn) {
+    const sEn = countSentences(textEn);
+    const wEn = countWords(textEn);
+    if (sEn > 3) {
+      issues.push(`${label} En has ${sEn} sentences (>3)`);
+    } else if (sEn === 3 && wEn > 35) {
+      issues.push(`${label} En has 3 sentences with ${wEn} words (>35)`);
+    }
+  }
+}
+
 // 1. Gather all data pools
 const minorMap = new Map();
 for (const m of LIFE_MINORS) {
@@ -75,23 +98,13 @@ const violations = [];
 for (const [id, count] of top100) {
   if (minorMap.has(id)) {
     const m = minorMap.get(id);
-    const sitVi = countSentences(m.vi);
-    const sitEn = countSentences(m.en);
-    const sitWordsVi = countWords(m.vi);
     const issues = [];
-    if (sitVi > 2) issues.push(`situation Vi has ${sitVi} sentences (>2)`);
-    if (sitEn > 2) issues.push(`situation En has ${sitEn} sentences (>2)`);
-    if (sitWordsVi > 45) issues.push(`situation Vi has ${sitWordsVi} words (>45)`);
+    checkSentenceStandard(m.vi, m.en, 'situation', issues);
 
     for (let i = 0; i < (m.choices || []).length; i++) {
       const c = m.choices[i];
       if (c.rvi || c.resultVi) {
-        const rvi = countSentences(c.rvi || c.resultVi);
-        const ren = countSentences(c.ren || c.resultEn);
-        const wvi = countWords(c.rvi || c.resultVi);
-        if (rvi > 2) issues.push(`choice ${i} result Vi has ${rvi} sentences (>2)`);
-        if (ren > 2) issues.push(`choice ${i} result En has ${ren} sentences (>2)`);
-        if (wvi > 45) issues.push(`choice ${i} result Vi has ${wvi} words (>45)`);
+        checkSentenceStandard(c.rvi || c.resultVi, c.ren || c.resultEn, `choice ${i} result`, issues);
       }
       // Check conditional outcomes array (out)
       if (Array.isArray(c.out)) {
@@ -99,16 +112,7 @@ for (const [id, count] of top100) {
           const o = c.out[j];
           const textVi = o.rvi || o.resultVi || o.vi;
           const textEn = o.ren || o.resultEn || o.en;
-          if (textVi) {
-            const ovi = countSentences(textVi);
-            const wovi = countWords(textVi);
-            if (ovi > 2) issues.push(`choice ${i} outcome ${j} Vi has ${ovi} sentences (>2)`);
-            if (wovi > 45) issues.push(`choice ${i} outcome ${j} Vi has ${wovi} words (>45)`);
-          }
-          if (textEn) {
-            const oen = countSentences(textEn);
-            if (oen > 2) issues.push(`choice ${i} outcome ${j} En has ${oen} sentences (>2)`);
-          }
+          checkSentenceStandard(textVi, textEn, `choice ${i} outcome ${j}`, issues);
         }
       }
     }
@@ -117,16 +121,7 @@ for (const [id, count] of top100) {
     if (m.ignore) {
       const ignVi = m.ignore.rvi || m.ignore.resultVi || m.ignore.vi;
       const ignEn = m.ignore.ren || m.ignore.resultEn || m.ignore.en;
-      if (ignVi) {
-        const ivi = countSentences(ignVi);
-        const wivi = countWords(ignVi);
-        if (ivi > 2) issues.push(`ignore outcome Vi has ${ivi} sentences (>2)`);
-        if (wivi > 45) issues.push(`ignore outcome Vi has ${wivi} words (>45)`);
-      }
-      if (ignEn) {
-        const ien = countSentences(ignEn);
-        if (ien > 2) issues.push(`ignore outcome En has ${ien} sentences (>2)`);
-      }
+      checkSentenceStandard(ignVi, ignEn, 'ignore outcome', issues);
     }
 
     if (issues.length > 0) {
@@ -134,9 +129,9 @@ for (const [id, count] of top100) {
     }
   } else if (dailyMap.has(id)) {
     const d = dailyMap.get(id);
+    const issues = [];
     const vi = countSentences(d.vi);
     const en = countSentences(d.en);
-    const issues = [];
     if (vi > 2) issues.push(`daily Vi has ${vi} sentences (>2)`);
     if (en > 2) issues.push(`daily En has ${en} sentences (>2)`);
     if (issues.length > 0) {
