@@ -25,7 +25,7 @@ export const EXPANSION_LIFE_MINORS = [
         '{partner} nhìn chằm chằm vào mắt bạn một lúc rồi trả lại một băng đạn tốt. Căng thẳng lắng xuống nhưng vẻ mặt họ lạnh ngắt.',
         '{partner} held your stare a long beat before sliding one good clip across. Tension deflated, leaving cold eyes.',
         { rep: 1 },
-        { bond: { partner: -4 } }
+        { bond: { partner: -4 }, mem: 'npc_exp_partner_ammo' }
       ),
       C(
         'Nhận số đạn cũ mà không phàn nàn một lời',
@@ -33,7 +33,7 @@ export const EXPANSION_LIFE_MINORS = [
         'Bạn ngồi lau từng viên đạn cũ cho sáng bóng. {partner} liếc nhìn bạn một lát rồi quay đi châm thuốc.',
         'You sat polishing each oxidized casing till it caught light. {partner} glanced your way once, then turned away to strike a match.',
         { sanity: -1 },
-        { bond: { partner: 2 } }
+        { bond: { partner: 2 }, mem: 'npc_exp_partner_ammo' }
       )
     ],
     I('Bạn không bận tâm đến đạn dược và nhét vội vào túi.', 'You paid no heed to the ammunition and shoved it into your webbing.', { sanity: -1 })
@@ -52,7 +52,7 @@ export const EXPANSION_LIFE_MINORS = [
         '{partner} cất túi tiền vào áo, thái độ hòa hoãn hơn hẳn: "Lần sau tôi sẽ nhường bạn phần lớn hơn."',
         '{partner} tucked the pouch inside their duster, tone softening: "Next run, you take the lion’s share."',
         { wealth: 2, sanity: 1 },
-        { bond: { partner: 8 } }
+        { bond: { partner: 8 }, mem: 'npc_exp_partner_bounty' }
       ),
       C(
         'Kiên quyết chia 50-50, không khoan nhượng',
@@ -60,7 +60,7 @@ export const EXPANSION_LIFE_MINORS = [
         '{partner} đập mạnh túi tiền xuống bàn, nhận đúng một nửa rồi bỏ đi mà không thèm chào một câu.',
         '{partner} slammed the purse against the counter, snatched exact half, and walked out without goodbye.',
         { wealth: 5, sanity: -2 },
-        { bond: { partner: -8 } }
+        { bond: { partner: -8 }, mem: 'npc_exp_partner_bounty' }
       )
     ],
     I('Hai người im lặng cất phần của mình rồi rời quán.', 'Both pocketed their respective cuts in cold silence and departed.', { sanity: -1 })
@@ -79,7 +79,7 @@ export const EXPANSION_LIFE_MINORS = [
         '{partner} gắt gỏng chửi thề rồi quay lưng tựa vào tường gác. Sự bất mãn giữa hai người ngày một dày thêm.',
         '{partner} spat a coarse curse and leaned against the watchtower railing. Grudges thickened between you.',
         { sanity: -2 },
-        { bond: { partner: -6 } }
+        { bond: { partner: -6 }, mem: 'npc_exp_partner_guard' }
       ),
       C(
         'Đưa cho họ một ngụm trà nóng rồi lẳng lặng về phòng',
@@ -87,7 +87,7 @@ export const EXPANSION_LIFE_MINORS = [
         '{partner} ngượng ngùng nhận lấy cốc trà nóng, khẽ lẩm bẩm lời xin lỗi trong cổ họng.',
         '{partner} took the steaming mug with sheepish gaze, muttering a raspy apology into their collar.',
         { health: -1, sanity: 1 },
-        { bond: { partner: 6 } }
+        { bond: { partner: 6 }, mem: 'npc_exp_partner_guard' }
       )
     ],
     I('Bạn buông vũ khí xuống rồi bước thẳng về giường ngủ.', 'You racked your firearm and walked straight to your cot.', {})
@@ -106,7 +106,7 @@ export const EXPANSION_LIFE_MINORS = [
         '{friend} thở phào nhẹ nhõm vỗ vai bạn rồi biến mất vào bóng tối. Nhờ đó bạn tránh được một trận thảm sát.',
         '{friend} breathed a relieved sigh, squeezed your arm, and melted into darkness. You skirted a massacre.',
         { sanity: 2, wealth: -2 },
-        { bond: { friend: 8 } }
+        { bond: { friend: 8 }, mem: 'npc_exp_friend_warn' }
       ),
       C(
         'Khuyên {friend} nhân cơ hội này rời bỏ tổ chức cùng bạn',
@@ -114,7 +114,7 @@ export const EXPANSION_LIFE_MINORS = [
         '{friend} lắc đầu cay đắng chỉ vào hình xăm trên cổ: "Đã vào đây thì chỉ có chết mới ra được." Họ vội vã bỏ đi.',
         '{friend} shook their head bitterly, tapping the collar tattoo: "Only a coffin exits this firm." They vanished.',
         { sanity: -2 },
-        { bond: { friend: 4 } }
+        { bond: { friend: 4 }, mem: 'npc_exp_friend_warn' }
       )
     ],
     I('Bạn nghe xong rồi khóa chặt cửa, nằm thao thức suốt đêm.', 'You absorbed the warning, locked the bolts, and lay awake till dawn.', { sanity: -2 })
@@ -133,7 +133,7 @@ export const EXPANSION_LIFE_MINORS = [
         '{friend} rùng mình tỉnh rượu, ngồi bệt xuống vỉa hè cúi mặt xin lỗi vì những lời ghen tị nông nổi.',
         '{friend} shuddered awake, slumped against the damp curb, and apologized for ugly, envious slips.',
         { sanity: 1 },
-        { bond: { friend: 6 } }
+        { bond: { friend: 6 }, mem: 'npc_exp_friend_bar' }
       ),
       C(
         'Để lại tiền thanh toán bàn rượu rồi quay lưng bỏ đi',
@@ -141,7 +141,7 @@ export const EXPANSION_LIFE_MINORS = [
         '{friend} gào thét tên bạn sau lưng trong sự cười cợt của thực khách xung quanh. Khoảng cách giữa hai người thêm xa.',
         '{friend} shouted your name at your back amid the patrons’ snickers. The distance widened.',
         { wealth: -2, sanity: -3 },
-        { bond: { friend: -8 } }
+        { bond: { friend: -8 }, mem: 'npc_exp_friend_bar' }
       )
     ],
     I('Bạn giả vờ không nghe thấy và rời khỏi quán.', 'You feigned deaf ears and slipped out the side exit.', { sanity: -1 })
@@ -160,7 +160,7 @@ export const EXPANSION_LIFE_MINORS = [
         '{mentor} gật đầu mỉm cười; ngọn lửa truyền thừa giữa hai thế hệ Fixer bừng sáng trong căn phòng nhỏ.',
         '{mentor} nodded warmly; the lineage flame between two Fixer generations burned bright in the alcove.',
         { sanity: 4, rep: 2 },
-        { bond: { mentor: 10 } }
+        { bond: { mentor: 10 }, mem: 'npc_exp_mentor_scabbard' }
       ),
       C(
         'Xin phép gửi lại một khoản Ahn biếu sư phụ dưỡng già',
@@ -168,7 +168,7 @@ export const EXPANSION_LIFE_MINORS = [
         '{mentor} xua tay từ chối nhưng ánh mắt ánh lên vẻ ấm lòng trước lòng hiếu nghĩa của đứa đệ tử.',
         '{mentor} brushed the purse aside with a hand-wave, eyes softening at their pupil’s filial devotion.',
         { wealth: -3, sanity: 2 },
-        { bond: { mentor: 8 } }
+        { bond: { mentor: 8 }, mem: 'npc_exp_mentor_scabbard' }
       )
     ],
     I('Bạn cất chiếc bao kiếm vào túi rồi cúi chào ra về.', 'You stowed the scabbard in your rucksack and bowed out.', { sanity: 1 })
@@ -187,7 +187,7 @@ export const EXPANSION_LIFE_MINORS = [
         'Từng nhịp đá mài đều đặn vang lên; {mentor} thỉnh thoảng chỉnh lại góc cầm tay cho bạn. Tay nghề bạn thêm vững.',
         'Steady strokes whispered across the whetstone; {mentor} nudged your wrist angle periodically. Your hand steadied.',
         { sanity: 2, rep: 1 },
-        { bond: { mentor: 6 } }
+        { bond: { mentor: 6 }, mem: 'npc_exp_mentor_hone' }
       ),
       C(
         'Biện bạch rằng hợp đồng quá bận rộn không có thời gian',
@@ -195,7 +195,7 @@ export const EXPANSION_LIFE_MINORS = [
         '{mentor} lắc đầu thất vọng, đứng dậy quay lưng không nói thêm lời nào suốt buổi chiều.',
         '{mentor} shook their head in disappointment, turning away in silence for the rest of the dusk.',
         { sanity: -3 },
-        { bond: { mentor: -8 } }
+        { bond: { mentor: -8 }, mem: 'npc_exp_mentor_hone' }
       )
     ],
     I('Bạn cất vũ khí vào bao rồi lảng tránh ánh mắt của thầy.', 'You slid the blade into leather and avoided your master’s eyes.', { sanity: -1 })
@@ -214,7 +214,7 @@ export const EXPANSION_LIFE_MINORS = [
         'Mùi khét hòa cùng tiếng cười đùa ấm áp xua tan cái lạnh cắt da ngoài ô cửa sổ. Mái ấm bình dị giữa lòng The City.',
         'The burnt scent dissolved into shared laughter, keeping the biting freeze beyond the pane. A humble hearth in The City.',
         { sanity: 5, health: 1 },
-        { bond: { spouse: 8 } }
+        { bond: { spouse: 8 }, mem: 'npc_exp_spouse_stew' }
       ),
       C(
         'Cau mày càu nhàu vì vừa mệt vừa đói mà cơm không ngon',
@@ -222,7 +222,7 @@ export const EXPANSION_LIFE_MINORS = [
         '{spouse} im lặng đổ nồi canh vào xô rác rồi ngồi bó gối bên góc giường. Căn phòng chìm vào sự nặng nề.',
         '{spouse} dumped the pot into the bin without a word and pulled knees to chest by the cot. Silence turned leaden.',
         { sanity: -4 },
-        { bond: { spouse: -8 } }
+        { bond: { spouse: -8 }, mem: 'npc_exp_spouse_stew' }
       )
     ],
     I('Bạn ăn vội mẩu bánh mì khô rồi đi ngủ.', 'You chewed stale crusts and turned in.', {})
@@ -241,7 +241,7 @@ export const EXPANSION_LIFE_MINORS = [
         'Những hạt mưa axit rào rào gõ trên mặt ô nhưng trong lòng bạn ấm áp lạ thường. Hai người kề sát bên nhau qua từng vũng nước.',
         'Acid pellets clattered upon the canopy, but an uncommon warmth filled your chest as you dodged puddles shoulder to shoulder.',
         { sanity: 6, health: 2 },
-        { bond: { spouse: 10 } }
+        { bond: { spouse: 10 }, mem: 'npc_exp_spouse_umbrella' }
       ),
       C(
         'Trách {spouse} không nên mạo hiểm ra đường khi trời mưa độc',
@@ -249,7 +249,7 @@ export const EXPANSION_LIFE_MINORS = [
         '{spouse} mỉm cười nhẹ: "Ở nhà một mình lo cho anh/em còn khó chịu hơn." Hai người rảo bước nhanh về nhà.',
         '{spouse} smiled faintly: "Pacing the floor alone was far worse." You hurried home together.',
         { sanity: 3 },
-        { bond: { spouse: 6 } }
+        { bond: { spouse: 6 }, mem: 'npc_exp_spouse_umbrella' }
       )
     ],
     I('Bạn nhận lấy chiếc ô rồi che về nhà trong im lặng.', 'You took the handle and walked home in quiet rhythm.', { sanity: 1 })
@@ -433,7 +433,7 @@ export const EXPANSION_LIFE_MINORS = [
         'Khói thuốc cuộn bay trong góc tối ẩm thấp; vết băng được quấn rất chặt và khéo léo. Tình đồng chí gắn kết.',
         'Smoke curled in the damp recess; the gauze was tied tight and expert. Camaraderie forged in lead.',
         { health: 2, sanity: 3 },
-        { bond: { partner: 8 } }
+        { bond: { partner: 8 }, mem: 'npc_exp_partner_gauze' }
       ),
       C(
         'Bảo họ giữ lấy gạc phòng khi bản thân bị thương nặng hơn',
@@ -441,7 +441,7 @@ export const EXPANSION_LIFE_MINORS = [
         '{partner} cau mày gạt tay bạn ra: "Đừng nói nhảm. Người đứng vững mới gánh được người kia." Họ băng tiếp.',
         '{partner} brushed your palm aside with a scowl: "Shut it. The one standing carries the unit." They finished the knot.',
         { health: 2, sanity: 1 },
-        { bond: { partner: 6 } }
+        { bond: { partner: 6 }, mem: 'npc_exp_partner_gauze' }
       )
     ],
     I('Bạn để họ băng bó mà không nói gì.', 'You let them bind the wound in silence.', { health: 1 })
@@ -460,7 +460,7 @@ export const EXPANSION_LIFE_MINORS = [
         'Cả hai phối hợp ăn ý như hai bánh răng khớp nối; mục tiêu bị khống chế nhanh gọn.',
         'Both moved in tandem like interlocked cogs; the breach succeeded without a wasted step.',
         { rep: 2, sanity: 2 },
-        { bond: { partner: 6 } }
+        { bond: { partner: 6 }, mem: 'npc_exp_partner_plan' }
       ),
       C(
         'Đề xuất tự mình làm mồi nhử để họ đột nhập từ phía sau',
@@ -468,7 +468,7 @@ export const EXPANSION_LIFE_MINORS = [
         '{partner} nhìn bạn với ánh mắt kính nể; nhiệm vụ hoàn thành xuất sắc.',
         '{partner} caught your gaze with quiet respect; the operation resolved cleanly.',
         { rep: 3, health: -2 },
-        { bond: { partner: 8 } }
+        { bond: { partner: 8 }, mem: 'npc_exp_partner_plan' }
       )
     ],
     I('Hai người giữ nguyên phương án cũ.', 'Both stuck to the original breach line.', {})
@@ -487,7 +487,7 @@ export const EXPANSION_LIFE_MINORS = [
         'Vị chát ngọt đọng lại nơi đầu lưỡi; những nhọc nhằn của cuộc sống mưu sinh dường như tan biến trong chốc lát.',
         'Sweet bitterness lingered on your tongue; the grinding exhaustion of survival lifted for an hour.',
         { sanity: 5, health: 1 },
-        { bond: { friend: 8 } }
+        { bond: { friend: 8 }, mem: 'npc_exp_friend_tea' }
       ),
       C(
         'Gửi tặng họ một hộp trà ngon mua từ Nest',
@@ -495,7 +495,7 @@ export const EXPANSION_LIFE_MINORS = [
         '{friend} ngỡ ngàng mừng rỡ, ôm chặt lấy hộp trà như một báu vật hiếm hoi.',
         '{friend} gasped in delight, clutching the tin like an uncommon relic.',
         { wealth: -2, sanity: 4 },
-        { bond: { friend: 10 } }
+        { bond: { friend: 10 }, mem: 'npc_exp_friend_tea' }
       )
     ],
     I('Bạn vẫy tay chào rồi rảo bước qua.', 'You waved in greeting and walked on.', { sanity: 1 })
@@ -514,7 +514,7 @@ export const EXPANSION_LIFE_MINORS = [
         '{friend} ngẩng cao đầu tự hào; sự tôn trọng giữa hai người bạn cũ càng thêm bền chặt.',
         '{friend} lifted their chin with proud eyes; mutual respect solidified between lifelong comrades.',
         { wealth: 10, sanity: 3 },
-        { bond: { friend: 8 } }
+        { bond: { friend: 8 }, mem: 'npc_exp_friend_repay' }
       ),
       C(
         'Chỉ lấy một nửa, bảo họ giữ phần còn lại làm vốn mưu sinh',
@@ -522,7 +522,7 @@ export const EXPANSION_LIFE_MINORS = [
         '{friend} rưng rưng xúc động, cúi đầu cảm tạ tấm lòng trượng nghĩa của bạn.',
         '{friend} blinked back tears, bowing low in gratitude for your steadfast benevolence.',
         { wealth: 5, sanity: 5 },
-        { bond: { friend: 12 } }
+        { bond: { friend: 12 }, mem: 'npc_exp_friend_repay' }
       )
     ],
     I('Bạn cất túi tiền vào túi áo.', 'You pocketed the purse without fanfare.', { wealth: 10 })
@@ -541,7 +541,7 @@ export const EXPANSION_LIFE_MINORS = [
         'Một luồng kình lực mới mẻ chạy dọc sống lưng; đường kiếm của bạn trở nên thanh thoát và uy lực hơn.',
         'Fresh kinetic torque coursed along your spine; your strikes gained effortless poise and lethal bite.',
         { sanity: 3, rep: 2 },
-        { bond: { mentor: 8 } }
+        { bond: { mentor: 8 }, mem: 'npc_exp_mentor_breath' }
       ),
       C(
         'Thử vận kình xuất hết toàn lực vào cột gỗ tập luyện',
@@ -549,7 +549,7 @@ export const EXPANSION_LIFE_MINORS = [
         'Cột gỗ nứt toác; {mentor} khẽ mỉm cười hài lòng trước tiến bộ vượt bậc của học trò.',
         'The timber cracked clean through; {mentor} smiled faintly at their pupil’s explosive stride.',
         { sanity: 2, rep: 3 },
-        { bond: { mentor: 6 } }
+        { bond: { mentor: 6 }, mem: 'npc_exp_mentor_breath' }
       )
     ],
     I('Bạn tiếp tục tập các bài quyền cơ bản.', 'You finished routine forms in quiet rhythm.', { health: 1 })

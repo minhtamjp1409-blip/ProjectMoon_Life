@@ -3,7 +3,7 @@
 // `keepRole` lets the planner lean toward the person you have not seen in a while.
 import { M, C, O, I, AGE } from './storyKit.js';
 
-const KEEP = (role) => ({ w: 2.2, keepRole: role, once: true, tags: ['npc'] });
+const KEEP = (role) => ({ w: 1.7, keepRole: role, once: true, tags: ['npc'] });
 
 export const LIFE_MINORS_BONDS = [
   M('mk_friend_cold_noodles', [14, 140], { npc: 'friend' },
@@ -64,11 +64,11 @@ export const LIFE_MINORS_BONDS = [
     '[Buổi kể lại] {partner} rót hai ly và hỏi bạn việc hôm qua thế nào. Bản báo cáo bạn nộp chỉ có hai trang. Họ biết đó không phải toàn bộ.',
     '[The retelling] {partner} pours two glasses and asks how yesterday’s job really went. The report you filed was two pages. They know that is not all of it.',
     [
-      C('Kể cả phần bạn đã bỏ ra khỏi báo cáo', 'Tell them the part you left out of the report', null, null, {}, { out: [
+      C('Kể cả phần bạn đã bỏ ra khỏi báo cáo', 'Tell them the part you left out of the report', null, null, {}, { mem: 'npc_partner_debrief', out: [
         O(75, '{partner} nghe hết mà không ngắt lời. Khi bạn dừng, họ chỉ nói "ừ", và rót thêm. Bạn thấy nhẹ đi theo cách không giải thích được.', '{partner} listens to the end without cutting in. When you stop they only say “yes,” and pour more. You feel lighter in a way you cannot explain.', { sanity: +4 }, { bond: { partner: 7 } }),
         O(25, 'Họ im lặng quá lâu. Rồi nói rằng họ sẽ không làm cùng bạn một việc như thế nữa. Họ vẫn ở lại uống hết ly.', 'They stay silent too long. Then they say they will not do a job like that with you again. They still stay until the glass is empty.', { sanity: +1 }, { bond: { partner: 3 } })
       ] }),
-      C('Chỉ nhắc lại báo cáo', 'Just repeat the report', 'Họ gật đầu, nâng ly, và không hỏi nữa. Bạn nhận ra họ vừa tha cho bạn.', 'They nod, raise the glass, and ask no more. You realize they have just let you off.', {}, { bond: { partner: 2 } })
+      C('Chỉ nhắc lại báo cáo', 'Just repeat the report', 'Họ gật đầu, nâng ly, và không hỏi nữa. Bạn nhận ra họ vừa tha cho bạn.', 'They nod, raise the glass, and ask no more. You realize they have just let you off.', {}, { bond: { partner: 2 }, mem: 'npc_partner_debrief' })
     ],
     I('Bạn bảo mình mệt. {partner} cất chai, và không nhắc lại chuyện đó thêm lần nữa.', 'You say you are tired. {partner} puts the bottle away and does not raise it again.', {})),
 

@@ -1966,7 +1966,7 @@ export const LiveStageFeed = () => {
               className="input"
               maxLength={24}
               value={npcNameInput}
-              placeholder={lang === 'en' ? char.pendingNpcNaming?.defaultNameEn : char.pendingNpcNaming?.defaultNameVi}
+              placeholder={t('Để trống để giữ tên này', 'Leave blank to keep this name')}
               onChange={(e) => setNpcNameInput(e.target.value.slice(0, 24))}
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {

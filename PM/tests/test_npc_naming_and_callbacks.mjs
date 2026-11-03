@@ -3,15 +3,22 @@ import {
   createNewCharacter,
   createRNG,
   sanitizeNpcName,
+  formatNpcTrait,
+  replaceWholeName,
   getNpcNamingPrompt,
   syncNpcNamingPrompt,
   applyNpcName,
-  interpolateText
+  interpolateText,
+  resolveEventChoice,
+  resolveDungeonChoice,
+  getDungeonCurrentStage,
+  isDungeonChoiceAvailable,
+  resolveFixerContract
 } from '../src/engine/gameEngine.js';
 import { makeNpc } from '../src/data/birthStories.js';
 import { applyChoiceExtras, applyNpcFate } from '../src/engine/director.js';
-import { matchesEventContext } from '../src/engine/eventConditions.js';
-import { resolveMinor, runDueItems, LIFE_MINORS } from '../src/engine/yearPlanner.js';
+import { matchesEventContext, choiceIsAvailable } from '../src/engine/eventConditions.js';
+import { planYear, resolveMinor, runDueItems, endYear, LIFE_MINORS } from '../src/engine/yearPlanner.js';
 import { NPC_CHOICE_CALLBACKS } from '../src/data/lifeNpcCallbacks.js';
 import { chapterFor } from '../src/engine/chapters.js';
 
@@ -121,6 +128,37 @@ import { chapterFor } from '../src/engine/chapters.js';
   delete oldSaveChar.npcs.spouse;
   syncNpcNamingPrompt(oldSaveChar, { autoPlay: false });
   assert.equal(oldSaveChar.pendingNpcNaming, null, 'Old save NPC without needsNaming must not prompt');
+
+  // 8. Trait line in naming modal is prefixed and capitalized ("Đặc điểm: Ngủ ngồi...")
+  assert.equal(formatNpcTrait('ngủ ngồi, tay luôn đặt trên cán', 'vi'), 'Đặc điểm: Ngủ ngồi, tay luôn đặt trên cán');
+  assert.equal(formatNpcTrait('sleeps sitting up, hand on the hilt', 'en'), 'Trait: Sleeps sitting up, hand on the hilt');
+
+  // 9. replaceWholeName replaces only whole words and updates logs from metAge onward
+  assert.equal(replaceWholeName('An đứng ở chỗ an toàn cùng Bình An và An.', 'An', 'Minh'), 'Minh đứng ở chỗ an toàn cùng Bình Minh và Minh.');
+  assert.equal(replaceWholeName('Kim giữ thanh kim loại của Kim.', 'Kim', 'Hải'), 'Hải giữ thanh kim loại của Hải.');
+  const multiYearChar = createNewCharacter({ customName: 'MultiYear', seed: 'multi_year' });
+  multiYearChar.alive = true;
+  multiYearChar.age = 20;
+  multiYearChar.npcs.lover = {
+    ...makeNpc('lover', createRNG('lover_multi'), { metAge: 18 }),
+    nameVi: 'An',
+    nameEn: 'An',
+    needsNaming: true,
+    namedPrompted: false
+  };
+  delete multiYearChar.npcs.friend;
+  multiYearChar.logs = [
+    { id: 'early_log', age: 10, vi: 'An ở tuổi 10 là người khác.', en: 'An at age 10 is someone else.' },
+    { id: 'met_log', age: 18, vi: 'Bạn gặp An ở chỗ an toàn.', en: 'You met An in a safe place.' },
+    { id: 'curr_log', age: 20, vi: 'An mỉm cười với bạn.', en: 'An smiled at you.' }
+  ];
+  syncNpcNamingPrompt(multiYearChar, { autoPlay: false });
+  assert.ok(multiYearChar.pendingNpcNaming?.traitVi.startsWith('Đặc điểm: '), 'Naming prompt traitVi must start with "Đặc điểm: "');
+  assert.ok(multiYearChar.pendingNpcNaming?.traitEn.startsWith('Trait: '), 'Naming prompt traitEn must start with "Trait: "');
+  applyNpcName(multiYearChar, 'Bảo Châu');
+  assert.equal(multiYearChar.logs[0].vi, 'An ở tuổi 10 là người khác.', 'Logs before metAge must not be modified');
+  assert.equal(multiYearChar.logs[1].vi, 'Bạn gặp Bảo Châu ở chỗ an toàn.', 'Logs at metAge should update whole word only');
+  assert.equal(multiYearChar.logs[2].vi, 'Bảo Châu mỉm cười với bạn.', 'Logs at current age should update');
 }
 
 // ---------------------------------------------------------------------------
@@ -186,6 +224,71 @@ import { chapterFor } from '../src/engine/chapters.js';
   const awningCb = NPC_CHOICE_CALLBACKS.find((d) => d.id === 'cb_npc_lover_awning');
   assert.equal(matchesEventContext(awningCb, char), true, 'Lover callback should still match after marrying into spouse');
   assert.ok(interpolateText(awningCb.vi, char).includes('Mai'), 'Lover placeholder should resolve to spouse name');
+
+  // 5. 100-life simulation: avg >= 3.0 callbacks per life with close NPCs, < 10% over 8, 0 duplicates
+  const cbIds = new Set(NPC_CHOICE_CALLBACKS.map((d) => d.id));
+  const N = 100;
+  let closeLives = 0;
+  let totalNpcCb = 0;
+  let over8 = 0;
+  let dup = 0;
+  for (let i = 0; i < N; i++) {
+    const seed = `logic_${i}`;
+    let c = createNewCharacter({ customName: `L${i}`, seed });
+    const lifeRng = createRNG(`${seed}:life`);
+    let guard = 0;
+    while (c.alive && c.age < 120 && guard++ < 200) {
+      if (!c.plan?.length) planYear(c, lifeRng);
+      for (let t = 0; t <= 100 && c.alive; t += 2) {
+        c = runDueItems(c, t, lifeRng).char;
+        let spin = 0;
+        while (c.alive && (c.pendingEvent || c.pendingMinor || c.pendingContract || c.pendingDungeon || c.pendingModal) && spin++ < 8) {
+          if (c.pendingEvent) {
+            const ok = (c.pendingEvent.choices || []).map((ch, idx) => idx).filter((idx) => choiceIsAvailable(c.pendingEvent.choices[idx], c));
+            const pick = ok.length ? ok[Math.floor(lifeRng() * ok.length)] : 0;
+            c = resolveEventChoice(c, pick, lifeRng);
+          } else if (c.pendingDungeon) {
+            const sess = c.pendingDungeon;
+            const stage = getDungeonCurrentStage(sess);
+            const usable = stage.choices.map((ch, k) => k).filter((k) => isDungeonChoiceAvailable(stage.choices[k], c));
+            c = resolveDungeonChoice(c, usable[0] ?? 0, lifeRng).char;
+          } else if (c.pendingMinor) {
+            const def = LIFE_MINORS.find((m) => m.id === c.pendingMinor.id);
+            const ok = (def?.choices || []).map((ch, idx) => idx).filter((idx) => choiceIsAvailable(def.choices[idx], c));
+            const pick = ok.length ? ok[Math.floor(lifeRng() * ok.length)] : -1;
+            c = resolveMinor(c, pick, lifeRng);
+          } else if (c.pendingContract) {
+            const ap = c.pendingContract.approaches;
+            c = resolveFixerContract(c, ap[Math.floor(lifeRng() * ap.length)].id, lifeRng);
+          } else {
+            c.pendingModal = null;
+          }
+        }
+      }
+      if (c.alive) c = endYear(c, lifeRng);
+    }
+    const seenCb = new Set();
+    let cbCount = 0;
+    for (const l of c.logs) {
+      const id = l.key || l.id;
+      if (cbIds.has(id)) {
+        cbCount++;
+        if (seenCb.has(id)) dup++;
+        seenCb.add(id);
+      }
+    }
+    const hasClose = Object.values(c.npcs || {}).some((n) => n && ((n.bond || 0) >= 35 || n.metAge != null));
+    if (hasClose) {
+      closeLives++;
+      totalNpcCb += cbCount;
+      if (cbCount > 8) over8++;
+    }
+  }
+  const avgCb = totalNpcCb / Math.max(1, closeLives);
+  const over8Pct = (over8 * 100) / Math.max(1, closeLives);
+  assert.ok(avgCb >= 3.0, `Expected average >= 3.0 NPC callbacks per close-NPC life, got ${avgCb.toFixed(2)}`);
+  assert.ok(over8Pct < 10, `Expected < 10% lives with > 8 NPC callbacks, got ${over8Pct.toFixed(1)}%`);
+  assert.equal(dup, 0, `Expected 0 duplicate NPC callbacks in the same life, got ${dup}`);
 }
 
 console.log('test_npc_naming_and_callbacks: OK');

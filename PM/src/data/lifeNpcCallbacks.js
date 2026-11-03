@@ -314,5 +314,187 @@ export const NPC_CHOICE_CALLBACKS = [
     '[Strong Tea and Machine Oil] {mentor} pours you the same dark tea from your visit years ago, asking whether you have kept their old advice or gone your own way again.',
     { sanity: 1 },
     CB('mentor')
+  ),
+
+  // 32-38. Expansion NPC callbacks
+  D(
+    'cb_npc_exp_partner_ammo',
+    [20, 140],
+    { npc: 'partner', mem: 'npc_exp_partner_ammo', memMinYears: 2 },
+    '[Hộp đạn chia phần] Trước ca trực đêm nay, {partner} tự tay đẩy băng đạn nguyên niêm phong sang phía bạn để bù cho lần chia đạn năm cũ.',
+    '[The Shared Magazine Crate] Before tonight’s shift, {partner} slides the factory-sealed clip to your side of the table to make up for that old ammo split.',
+    { sanity: 1 },
+    CB('partner')
+  ),
+  D(
+    'cb_npc_exp_friend_warn',
+    [20, 140],
+    { npc: 'friend', mem: 'npc_exp_friend_warn', memMinYears: 2 },
+    '[Ba tiếng gõ cửa rạng sáng] {friend} gõ đúng ba nhịp quen thuộc lên khung cửa sổ như đêm từng báo tin giúp bạn thoát cuộc thanh trừng năm trước.',
+    '[Three Knocks at Dawn] {friend} taps the same three-beat signal on your window frame from the night they warned you ahead of the lane sweep.',
+    { sanity: 1 },
+    CB('friend')
+  ),
+  D(
+    'cb_npc_exp_friend_bar',
+    [20, 140],
+    { npc: 'friend', mem: 'npc_exp_friend_bar', memMinYears: 2 },
+    '[Ly nước lọc ở quán rượu] Ngồi xuống bàn rượu cùng bạn, {friend} tự gọi thêm một ly nước lạnh và cười trừ nhắc lại đêm say khướt năm xưa.',
+    '[A Glass of Cold Water at the Bar] Sitting down at the tavern table, {friend} orders a glass of cold water with a sheepish grin, recalling that drunken quarrel years ago.',
+    { sanity: 1 },
+    CB('friend')
+  ),
+  D(
+    'cb_npc_exp_mentor_scabbard',
+    [20, 140],
+    { npc: 'mentor', mem: 'npc_exp_mentor_scabbard', memMinYears: 2 },
+    '[Vân da trên bao kiếm cũ] {mentor} nhìn vết sờn trên chiếc bao kiếm da thuộc từng trao cho bạn trong xưởng riêng, gật đầu vì bạn vẫn giữ nó bên người.',
+    '[Worn Leather of the Old Scabbard] {mentor} glances at the wear on the leather scabbard they once handed you in the smithy, nodding to see it still at your hip.',
+    { sanity: 1 },
+    CB('mentor')
+  ),
+  D(
+    'cb_npc_exp_spouse_stew',
+    [20, 140],
+    { npc: 'spouse', mem: 'npc_exp_spouse_stew', memMinYears: 2 },
+    '[Canh chừng nồi súp trên bếp] Thấy bạn bước vào bếp, {spouse} vội hạ nhỏ lửa rồi bật cười nhắc lại nồi canh cháy đen ngày mưa dầm năm trước.',
+    '[Watching the Stew Pot] Seeing you step into the kitchen, {spouse} hurries to turn down the flame and laughs about that scorched stew pot on a rainy evening years ago.',
+    { sanity: 1 },
+    CB('spouse')
+  ),
+  D(
+    'cb_npc_exp_friend_tea',
+    [20, 140],
+    { npc: 'friend', mem: 'npc_exp_friend_tea', memMinYears: 2 },
+    '[Bếp than vụn trước hiên trọ] Đi ngang hiên nhà trọ cũ, {friend} lại nâng bát trà thảo mộc ấm áp mời bạn như buổi chiều ngồi ôn chuyện xưa.',
+    '[The Brazier on the Old Stoop] Passing the tenement stoop, {friend} raises a warm bowl of herb tea toward you just like that afternoon trading old memories.',
+    { sanity: 1 },
+    CB('friend')
+  ),
+  D(
+    'cb_npc_exp_friend_repay',
+    [20, 140],
+    { npc: 'friend', mem: 'npc_exp_friend_repay', memMinYears: 2 },
+    '[Chữ tín từ món nợ cũ] {friend} khoe công việc dạo này đã khấm khá hơn nhờ khoản tiền năm xưa bạn cho mượn lúc gia đình họ ngặt nghèo.',
+    '[Good Standing from an Old Debt] {friend} shares that work has steadied lately thanks to the sum you trusted them with when their family fell ill years ago.',
+    { sanity: 1 },
+    CB('friend')
+  ),
+  D(
+    'cb_npc_exp_partner_bounty',
+    [20, 140],
+    { npc: 'partner', mem: 'npc_exp_partner_bounty', memMinYears: 2 },
+    '[Phần thưởng chia đều] Nhận khoản thưởng ngoài hợp đồng hôm nay, {partner} chia thẳng làm hai phần bằng nhau trên bàn mà không còn tranh cãi như năm trước.',
+    '[An Even Split on the Table] Collecting today’s bonus payout, {partner} divides the Ahn into two equal piles without repeating that old argument.',
+    { sanity: 1 },
+    CB('partner')
+  ),
+  D(
+    'cb_npc_exp_partner_guard',
+    [20, 140],
+    { npc: 'partner', mem: 'npc_exp_partner_guard', memMinYears: 2 },
+    '[Đổi ca đúng giờ] Đêm mưa tuyết năm nay, {partner} có mặt ở vọng gác sớm mười phút cùng bình trà nóng, không còn trễ ca như đêm cũ.',
+    '[Early for the Watch] On tonight’s sleet watch, {partner} arrives ten minutes early with a thermos of hot tea, making good on that late relief years ago.',
+    { sanity: 1 },
+    CB('partner')
+  ),
+  D(
+    'cb_npc_exp_mentor_hone',
+    [20, 140],
+    { npc: 'mentor', mem: 'npc_exp_mentor_hone', memMinYears: 2 },
+    '[Lưỡi thép không vết mẻ] {mentor} liếc qua lưỡi vũ khí được mài bóng của bạn rồi khẽ gật đầu, không cần gõ tẩu thuốc nhắc nhở như buổi chiều năm trước.',
+    '[A Clean Edge] {mentor} glances along your freshly honed blade and gives a quiet nod, needing no pipe-rap reprimand like years ago.',
+    { sanity: 1 },
+    CB('mentor')
+  ),
+  D(
+    'cb_npc_exp_spouse_umbrella',
+    [20, 140],
+    { npc: 'spouse', mem: 'npc_exp_spouse_umbrella', memMinYears: 2 },
+    '[Chiếc ô chống mưa axit bên cửa] Nghe đài báo mưa độc chiều nay, {spouse} đặt sẵn chiếc ô bọc nhựa quen thuộc ngay cạnh giày của bạn trước giờ ra cửa.',
+    '[The Vinyl Umbrella by the Door] Hearing the acid-rain forecast, {spouse} sets that familiar vinyl umbrella right beside your boots before you head out.',
+    { sanity: 1 },
+    CB('spouse')
+  ),
+  D(
+    'cb_npc_exp_partner_gauze',
+    [20, 140],
+    { npc: 'partner', mem: 'npc_exp_partner_gauze', memMinYears: 2 },
+    '[Cuộn gạc dự phòng trong túi] Trước khi xuất phát, {partner} vỗ nhẹ vào túi cứu thương đã nhét sẵn hai cuộn gạc mới từ sau lần băng bó dã chiến năm cũ.',
+    '[Two Rolls of Sterile Gauze] Before moving out, {partner} pats the med-pouch stocked with two fresh rolls since that field dressing years ago.',
+    { sanity: 1 },
+    CB('partner')
+  ),
+  D(
+    'cb_npc_exp_partner_plan',
+    [20, 140],
+    { npc: 'partner', mem: 'npc_exp_partner_plan', memMinYears: 2 },
+    '[Ám hiệu bọc lót góc khuất] Chỉ bằng một cái liếc mắt trước cổng mục tiêu, {partner} đã vào đúng vị trí bọc lót như lần mật đàm đột kích năm trước.',
+    '[The Blind-Spot Signal] With a single glance outside the target gate, {partner} slips into the exact flanking angle from your old breach plan.',
+    { sanity: 1 },
+    CB('partner')
+  ),
+  D(
+    'cb_npc_exp_mentor_breath',
+    [20, 140],
+    { npc: 'mentor', mem: 'npc_exp_mentor_breath', memMinYears: 2 },
+    '[Nhịp thở trước đòn nặng] Nghe tiếng thở đều của bạn trên sân tập, {mentor} mỉm cười vì bạn đã giữ vững nhịp cơ hoành họ từng chỉnh cho năm xưa.',
+    '[Steady Breath Before the Strike] Hearing your even breathing on the training ground, {mentor} smiles to see the diaphragm cadence they taught you years ago.',
+    { sanity: 1 },
+    CB('mentor')
+  ),
+  D(
+    'cb_npc_partner_debrief',
+    [20, 140],
+    { npc: 'partner', mem: 'npc_partner_debrief', memMinYears: 2 },
+    '[Phần không ghi trong báo cáo] Đặt bản báo cáo mới lên bàn, {partner} rót sẵn hai ly như đêm hai người ngồi nhắc lại những chuyện không viết trên giấy năm trước.',
+    '[What Left the Report] Setting the new file on the desk, {partner} pours two glasses just like the night you talked through what never went on paper.',
+    { sanity: 1 },
+    CB('partner')
+  ),
+  D(
+    'cb_npc_spouse_cold_dinner',
+    [22, 140],
+    { npc: 'spouse', mem: 'npc_spouse_cold_dinner', memMinYears: 2 },
+    '[Nồi canh hâm lại] Đêm nay cả hai cùng về muộn, {spouse} bắc nồi canh lên bếp hâm lại rồi khẽ cười nhắc đến bữa tối nguội ngắt năm xưa.',
+    '[Reheated Soup] Coming home late together tonight, {spouse} puts the soup pot back on the burner with a quiet smile for that cold dinner years ago.',
+    { sanity: 1 },
+    CB('spouse')
+  ),
+  D(
+    'cb_npc_spouse_unopened_letter',
+    [22, 140],
+    { npc: 'spouse', mem: 'npc_spouse_unopened_letter', memMinYears: 2 },
+    '[Phong bì trên bàn bếp] Có thư từ Office gửi tới, lần này {spouse} bóc ra đọc ngay bên bàn ăn với bạn chứ không còn để nguyên ba ngày như năm cũ.',
+    '[Envelope on the Kitchen Table] When a letter from an Office arrives today, {spouse} opens it right at the table with you instead of leaving it three days like before.',
+    { sanity: 1 },
+    CB('spouse')
+  ),
+  D(
+    'cb_npc_spouse_old_scar',
+    [25, 140],
+    { npc: 'spouse', mem: 'npc_spouse_old_scar', memMinYears: 2 },
+    '[Bàn tay đặt lên vết sẹo vai] Lúc thay áo giúp bạn, ngón tay {spouse} chạm nhẹ lên vết sẹo cũ trên vai như đêm đầu tiên họ hỏi chuyện năm xưa.',
+    '[A Hand on the Old Shoulder Scar] Helping you with your coat, {spouse} brushes a hand over the old scar on your shoulder just like the night they first asked its story.',
+    { sanity: 1 },
+    CB('spouse')
+  ),
+  D(
+    'cb_npc_mentor_three_locks',
+    [21, 140],
+    { npc: 'mentor', mem: 'npc_mentor_three_locks', memMinYears: 2 },
+    '[Tiếng chốt cửa lần thứ ba] Trước khi tắt đèn, bạn bất giác kiểm tra chốt cửa đúng ba lần như thói quen cẩn trọng học được từ {mentor} năm trước.',
+    '[The Third Turn of the Lock] Before turning out the lamp, you catch yourself checking the door bolt three times in the exact habit learned from {mentor}.',
+    { sanity: 1 },
+    CB('mentor')
+  ),
+  D(
+    'cb_npc_mentor_small_debt',
+    [21, 140],
+    { npc: 'mentor', mem: 'npc_mentor_small_debt', memMinYears: 2 },
+    '[Tiệm tạp hóa đầu hẻm] Đi ngang tiệm tạp hóa đầu hẻm cùng {mentor}, người bán hàng gật đầu chào cả hai mà không ai nhắc lại món nợ cũ năm xưa.',
+    '[The Grocer at the End of the Alley] Walking past the corner shop with {mentor}, the grocer nods to you both without a word about that old debt settled years ago.',
+    { sanity: 1 },
+    CB('mentor')
   )
 ];

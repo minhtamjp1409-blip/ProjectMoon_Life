@@ -433,12 +433,12 @@ const weightOf = (char) => (e) => {
   if (e.keepRole) {
     const npc = char.npcs?.[e.keepRole] || (e.keepRole === 'lover' && e.need?.allowSpouseFallback ? char.npcs?.spouse : null);
     const apart = npc ? Math.max(0, char.age - (npc.lastSceneAge ?? npc.metAge ?? char.age)) : 0;
-    weight *= 1 + Math.min(3.5, apart * 0.85);
+    weight *= 1 + Math.min(3, apart * 0.75);
   }
   if (e.need?.npc && !(char.seenEvents || []).includes(e.id) && e.choices) {
     const npc = char.npcs?.[e.need.npc];
     if (npc && npcActive(npc) && (char.age - (npc.lastSceneAge ?? -99)) >= 2) {
-      weight *= 12;
+      weight *= 1.25;
     }
   }
   const opportunity = careerOpportunity(char);
@@ -663,15 +663,7 @@ export function planYear(charState, rng) {
   const roll = rng();
   const noneP = Math.min(0.45, Math.max(0.08, 0.25 / drama));
   const twoP = Math.min(0.45, Math.max(0.12, 0.25 * drama));
-  const closeActiveRoles = ['friend', 'lover', 'spouse', 'partner', 'mentor'].filter((r) => npcActive(char.npcs?.[r]));
-  const unseenNpcMinors = age >= 4
-    ? eligibleMinors(char).filter((m) => m.need?.npc && closeActiveRoles.includes(m.need.npc) && !(char.seenEvents || []).includes(m.id) && !scheduledKey.some((it) => it.id === m.id))
-    : [];
-  const dueCloseNpcScene = unseenNpcMinors.some((m) => {
-    const npc = char.npcs?.[m.need.npc];
-    return npc && (age - (npc.lastSceneAge ?? -99)) >= 2;
-  });
-  const targetMinorCount = age <= 2 ? 0 : age < 7 ? ((roll < 0.45 * drama || (dueCloseNpcScene && roll < 0.85)) ? 1 : 0) : roll < noneP ? 0 : roll < 1 - twoP ? 1 : 2;
+  const targetMinorCount = age <= 2 ? 0 : age < 7 ? (roll < 0.45 * drama ? 1 : 0) : roll < noneP ? 0 : roll < 1 - twoP ? 1 : 2;
   const scheduledMinors = scheduledKey.filter((it) => it.kind === 'minor').length;
   const pickedMinors = [];
   for (let i = scheduledMinors; i < targetMinorCount; i++) {
@@ -751,6 +743,7 @@ export function planYear(charState, rng) {
       }
     }
   } else {
+    const canScheduleNpcCallback = (char.npcCallbackCount || 0) < 6 && (char.age - (char.lastCallbackAge ?? -99)) >= 2;
     let scheduledNpcCallback = false;
     for (let s = 0; s < 4; s++) {
       if (slots[s] === null) {
@@ -760,7 +753,10 @@ export function planYear(charState, rng) {
           const allAgeDailies = LIFE_DAILIES.filter((d) => !(d.once && (char.seenEvents || []).includes(d.id)) && matchesEventContext(d, char));
           available = allAgeDailies.filter((d) => !alreadyPickedIds.includes(d.id));
         }
-        const callbackCandidates = !scheduledNpcCallback ? available.filter((d) => d.tags?.includes('npc_callback')) : [];
+        if (!canScheduleNpcCallback || scheduledNpcCallback) {
+          available = available.filter((d) => !d.tags?.includes('npc_callback'));
+        }
+        const callbackCandidates = (canScheduleNpcCallback && !scheduledNpcCallback) ? available.filter((d) => d.tags?.includes('npc_callback')) : [];
         const pickPool = callbackCandidates.length > 0 ? callbackCandidates : available;
         const pick = pickWeighted(pickPool, weightOf(char), rng) || pickPool[0];
         if (pick) {
@@ -785,7 +781,7 @@ export function planYear(charState, rng) {
       if (!slots[s] || rng() >= 0.14 * drama) continue;
       const taken = new Set([...slots.filter(Boolean).map((sl) => sl.id), ...Object.values(extras).map((e) => e.id)]);
       const useMinor = rng() < 0.3;
-      const pool = (useMinor ? eligibleMinors(char) : poolDailies).filter((e) => !taken.has(e.id));
+      const pool = (useMinor ? eligibleMinors(char) : poolDailies).filter((e) => !taken.has(e.id) && (useMinor || !e.tags?.includes('npc_callback')));
       const pick = pickWeighted(pool, weightOf(char), rng);
       if (pick) {
         extras[s] = { kind: useMinor ? 'minor' : 'daily', id: pick.id, extra: true };
@@ -1117,6 +1113,11 @@ export function runPlanItem(charState, item, rng) {
   if (item.kind === 'daily') {
     const def = LIFE_DAILIES.find((d) => d.id === item.id);
     if (!def || !matchesEventContext(def, char) || (def.once && (char.seenEvents || []).includes(def.id))) return char;
+    if (def.tags?.includes('npc_callback')) {
+      if ((char.npcCallbackCount || 0) >= 6 || (char.age - (char.lastCallbackAge ?? -99)) < 2) return char;
+      char.lastCallbackAge = char.age;
+      char.npcCallbackCount = (char.npcCallbackCount || 0) + 1;
+    }
     if (def.once) {
       char.seenEvents = [...(char.seenEvents || []), def.id];
     }

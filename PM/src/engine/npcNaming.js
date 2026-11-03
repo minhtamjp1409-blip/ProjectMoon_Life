@@ -11,6 +11,26 @@ export function sanitizeNpcName(rawInput) {
   return rawInput.trim().slice(0, 24).trim();
 }
 
+export function formatNpcTrait(trait, lang = 'vi') {
+  if (!trait || typeof trait !== 'string') return '';
+  const trimmed = trait.trim();
+  if (!trimmed) return '';
+  const prefix = lang === 'en' ? 'Trait: ' : 'Đặc điểm: ';
+  if (trimmed.toLowerCase().startsWith(prefix.toLowerCase())) return trimmed;
+  const cap = trimmed.charAt(0).toUpperCase() + trimmed.slice(1);
+  return `${prefix}${cap}`;
+}
+
+function escapeRegExp(str) {
+  return String(str).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+export function replaceWholeName(text, oldName, newName) {
+  if (typeof text !== 'string' || !text || !oldName || !newName || oldName === newName) return text;
+  const pattern = new RegExp(`(?<![\\p{L}\\p{N}_])${escapeRegExp(oldName)}(?![\\p{L}\\p{N}_])`, 'gu');
+  return text.replace(pattern, newName);
+}
+
 export function getNpcNamingPrompt(role, char) {
   if (role === 'friend') {
     const isChildhood = (char?.age ?? 0) < 15 && (char?.npcs?.friend?.metAge ?? 0) < 15;
@@ -88,8 +108,8 @@ export function syncNpcNamingPrompt(char, { autoPlay = false, waitForBirthProlog
       role,
       defaultNameVi: npc.nameVi || '',
       defaultNameEn: npc.nameEn || npc.nameVi || '',
-      traitVi: npc.traitVi || '',
-      traitEn: npc.traitEn || npc.traitVi || '',
+      traitVi: formatNpcTrait(npc.traitVi || '', 'vi'),
+      traitEn: formatNpcTrait(npc.traitEn || npc.traitVi || '', 'en'),
       ...prompt
     };
     return char;
@@ -102,28 +122,28 @@ function replaceLogNpcName(entry, role, oldVi, oldEn, newVi, newEn) {
   if (!entry) return entry;
   const next = { ...entry };
   if (oldVi && typeof next.vi === 'string' && next.vi.includes(oldVi)) {
-    next.vi = next.vi.replaceAll(oldVi, newVi);
+    next.vi = replaceWholeName(next.vi, oldVi, newVi);
   }
   if (oldEn && typeof next.en === 'string' && next.en.includes(oldEn)) {
-    next.en = next.en.replaceAll(oldEn, newEn);
+    next.en = replaceWholeName(next.en, oldEn, newEn);
   }
   if (oldVi && typeof next.choiceVi === 'string' && next.choiceVi.includes(oldVi)) {
-    next.choiceVi = next.choiceVi.replaceAll(oldVi, newVi);
+    next.choiceVi = replaceWholeName(next.choiceVi, oldVi, newVi);
   }
   if (oldEn && typeof next.choiceEn === 'string' && next.choiceEn.includes(oldEn)) {
-    next.choiceEn = next.choiceEn.replaceAll(oldEn, newEn);
+    next.choiceEn = replaceWholeName(next.choiceEn, oldEn, newEn);
   }
   if (next.review) {
     next.review = {
       ...next.review,
-      ...(oldVi && typeof next.review.vi === 'string' ? { vi: next.review.vi.replaceAll(oldVi, newVi) } : {}),
-      ...(oldEn && typeof next.review.en === 'string' ? { en: next.review.en.replaceAll(oldEn, newEn) } : {}),
+      ...(oldVi && typeof next.review.vi === 'string' ? { vi: replaceWholeName(next.review.vi, oldVi, newVi) } : {}),
+      ...(oldEn && typeof next.review.en === 'string' ? { en: replaceWholeName(next.review.en, oldEn, newEn) } : {}),
       ...(Array.isArray(next.review.choices)
         ? {
             choices: next.review.choices.map((c) => ({
               ...c,
-              ...(oldVi && typeof c.vi === 'string' ? { vi: c.vi.replaceAll(oldVi, newVi) } : {}),
-              ...(oldEn && typeof c.en === 'string' ? { en: c.en.replaceAll(oldEn, newEn) } : {})
+              ...(oldVi && typeof c.vi === 'string' ? { vi: replaceWholeName(c.vi, oldVi, newVi) } : {}),
+              ...(oldEn && typeof c.en === 'string' ? { en: replaceWholeName(c.en, oldEn, newEn) } : {})
             }))
           }
         : {})
@@ -172,9 +192,10 @@ export function applyNpcName(char, rawInput = '', roleOverride = null) {
   };
 
   if (custom && (finalVi !== oldVi || finalEn !== oldEn)) {
+    const minAge = npc.metAge ?? 0;
     if (Array.isArray(char.logs)) {
       char.logs = char.logs.map((entry) => {
-        if (entry && (entry.age === char.age || entry.id === 'log_birth_3')) {
+        if (entry && ((entry.age ?? 0) >= minAge || entry.id === 'log_birth_3')) {
           return replaceLogNpcName(entry, role, oldVi, oldEn, finalVi, finalEn);
         }
         return entry;

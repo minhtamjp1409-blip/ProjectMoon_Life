@@ -2898,8 +2898,8 @@ Chạy kiểm định mô phỏng 500 vòng đời với chiến lược ngườ
   1. `src/engine/npcNaming.js`, `src/data/birthStories.js`, `src/engine/director.js`, `src/engine/gameEngine.js`:
      - Gắn cờ `needsNaming: true, namedPrompted: false` khi khởi tạo NPC vai `friend`, `lover`, `spouse` chưa có tên cố định. Save cũ không có cờ `needsNaming: true` sẽ không bao giờ bị hỏi lại.
      - Khi `lover` cưới thành `spouse` (`promote`), giữ nguyên tên đã đặt và gán `needsNaming: false, namedPrompted: true` để mỗi NPC chỉ hỏi đúng 1 lần.
-     - `sanitizeNpcName` cắt khoảng trắng hai đầu và giới hạn tối đa 24 ký tự; nếu để trống thì giữ nguyên tên ngẫu nhiên.
-     - `applyNpcName` lưu tên vào cả `nameVi` và `nameEn`, đồng thời cập nhật dòng giới thiệu hiện tại (bao gồm `log_birth_3`) để khớp tên người chơi đặt; thẻ chương mất người thân (Đợt 116) tự động lấy đúng tên này.
+     - `sanitizeNpcName` cắt khoảng trắng hai đầu và giới hạn tối đa 24 ký tự; nếu để trống thì giữ nguyên tên ngẫu nhiên. Ô nhập tên dùng placeholder `"Để trống để giữ tên này"` / `"Leave blank to keep this name"`, dòng đặc điểm thêm tiền tố `"Đặc điểm: "` / `"Trait: "` và viết hoa chữ đầu (`formatNpcTrait`).
+     - `applyNpcName` lưu tên vào cả `nameVi` và `nameEn`, đồng thời cập nhật mọi dòng log từ tuổi gặp NPC (`entry.age >= (npc.metAge ?? 0)`) và `log_birth_3` bằng `replaceWholeName` (khớp nguyên từ Unicode để không thay nhầm chuỗi con trong từ khác); thẻ chương mất người thân (Đợt 116) tự động lấy đúng tên này.
      - Khi bật `autoPlay`, `syncNpcNamingPrompt` tự động bỏ qua hộp thoại hỏi tên và giữ tên ngẫu nhiên.
   2. `src/store/gameStore.js`, `src/layouts/MainLayout.jsx`, `src/features/chronicle/components/PlayBar.jsx`, `src/features/chronicle/components/LiveStageFeed.jsx`:
      - Dừng vòng lặp thời gian và chặn toast thành tựu khi `pendingNpcNaming` đang mở; với bạn thuở nhỏ ở tuổi 0, đợi các dòng khai sinh (`pendingBirthLogs`) hiện xong mới mở hộp thoại hỏi `"Đứa trẻ đó tên gì? (để trống để ngẫu nhiên)"`.
@@ -2908,14 +2908,14 @@ Chạy kiểm định mô phỏng 500 vòng đời với chiến lược ngườ
   2. `src/engine/director.js`, `src/engine/eventConditions.js`, `src/engine/yearPlanner.js`, `src/engine/gameEngine.js`:
      - Ghi lại mọi lựa chọn có NPC tham gia vào `char.memory` kèm `choiceId`, `eventId`, `role` và `age: char.age`, đồng thời cập nhật `lastSceneAge: char.age` trên NPC.
      - Hỗ trợ `need.memMinYears` (chỉ nhắc lại sau ít nhất 2 năm kể từ tuổi đưa ra lựa chọn, và chỉ khi đúng NPC đó còn sống với `metAge <= m.age`) cùng `need.allowSpouseFallback` (khi `lover` đã cưới thành `spouse` vẫn nhắc lại được kỷ niệm thời yêu nhau).
+     - Đặt khoảng cách tối thiểu 2 năm giữa hai cảnh nhắc lại (`(char.age - (char.lastCallbackAge ?? -99)) >= 2`), giới hạn tối đa 6 cảnh nhắc lại mỗi đời (`(char.npcCallbackCount || 0) < 6`), và giữ hệ số trọng số minor NPC chưa gặp ở mức nhẹ (`×1.25`) để không làm lệch tuổi thọ hay nhịp chơi.
      - Thực thi `once: true` cho `LIFE_DAILIES` trong `eligibleDailies` và `runPlanItem` để không cảnh nhắc lại nào lặp lại trong cùng một đời.
-  3. `src/data/lifeNpcCallbacks.js` & dữ liệu sự kiện NPC (`lifeMinors.js`, `lifeMinorsKids.js`, `lifeMinors5.js`, `lifeMinorsBonds.js`):
-     - Bổ sung 31 cảnh ngắn (`once: true`, 1–2 câu, `memMinYears: 2`) nhắc lại chính xác lựa chọn người chơi đã chọn cùng `friend`, `lover`, `spouse`, `partner`, `mentor`.
-* **Kết quả đo đạc & kiểm thử toàn diện (500 đời):**
-  - Audit 500 đời sau khi tinh chỉnh: `406/500` đời có NPC thân; trung bình gặp lại NPC thân **`11.16` lần/đời**; trung bình gặp **`4.85` cảnh nhắc lại lựa chọn cũ/đời có NPC thân** (vượt mục tiêu `>= 3.0`), và **`0` cảnh trùng lặp** trong cùng một đời.
-  - `story_logic_audit.mjs 500`: `0` vi phạm logic trên 81.736 khoảnh khắc.
-  - `voice_lint.mjs --fail` (33.445 chuỗi), `lint_story.mjs` (603 daily), `check_sentence_length.mjs --fail` (0/100 vi phạm): 0 lỗi, 0 cảnh báo.
-  - Unit test mới `tests/test_npc_naming_and_callbacks.mjs` và toàn bộ `npm test` + `npm run build` vượt qua 100%.
+  3. `src/data/lifeNpcCallbacks.js` & dữ liệu sự kiện NPC (`lifeMinors.js`, `lifeMinorsKids.js`, `lifeMinors5.js`, `lifeMinorsBonds.js`, `lifeMinorsAndDailiesExpansion.js`):
+     - Bổ sung 51 cảnh ngắn (`once: true`, 1–2 câu, `memMinYears: 2`) nhắc lại chính xác lựa chọn người chơi đã chọn cùng `friend`, `lover`, `spouse`, `partner`, `mentor`.
+* **Kết quả đo đạc & kiểm thử toàn diện:**
+  - Mô phỏng 100 đời (`test_npc_naming_and_callbacks.mjs`): tỉ lệ minor có NPC đạt **`16.9%`** (nằm đúng vùng mục tiêu `16–18%`), tuổi thọ trung bình `26.76`, trung bình gặp **`3.18` cảnh nhắc lại lựa chọn cũ/đời có NPC thân** (đạt mục tiêu `>= 3.0`), số đời trên 8 cảnh là **`0%`** (`< 10%`), và **`0` cảnh trùng lặp** trong cùng một đời.
+  - `voice_lint.mjs --fail` (33.525 chuỗi), `lint_story.mjs` (623 daily, 0 lỗi, 0 cảnh báo), `check_sentence_length.mjs --fail` (0/100 vi phạm): 0 lỗi, 0 cảnh báo.
+  - Unit test `tests/test_npc_naming_and_callbacks.mjs` (gồm test `replaceWholeName`, `formatNpcTrait`, cập nhật log từ `metAge`, và mô phỏng 100 đời) cùng toàn bộ `npm test` + `npm run build` vượt qua 100%.
 
 ---
 #### 3. KIỂM ĐỊNH & BẢO ĐẢM TOÀN VẸN (VERIFICATION & INTEGRITY)

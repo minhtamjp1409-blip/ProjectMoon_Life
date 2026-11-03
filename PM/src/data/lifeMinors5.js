@@ -21,7 +21,7 @@ export const LIFE_MINORS_5 = [
         'Nồi canh hâm hai lần có vị cháy ở đáy, và {spouse} ăn hết mà không phàn nàn. Khi rửa bát, hai người đứng sát nhau hơn mức cần.',
         'The twice-reheated soup tastes scorched at the bottom, and {spouse} finishes it without complaint. Washing up, you stand closer than you need to.',
         { sanity: 3, wealth: -1 },
-        { bond: { spouse: 6 } }
+        { bond: { spouse: 6 }, mem: 'npc_spouse_cold_dinner' }
       ),
       C(
         'Hỏi thẳng {spouse} đã ở đâu',
@@ -30,6 +30,7 @@ export const LIFE_MINORS_5 = [
         null,
         {},
         {
+          mem: 'npc_spouse_cold_dinner',
           out: [
             O(55, '{spouse} kể hết, chậm, kèm cả phần khó nghe. Bạn không thích câu trả lời, nhưng bạn biết nó là thật.', '{spouse} tells all of it, slowly, including the hard part. You do not like the answer, but you know it is true.', { sanity: -1 }, { bond: { spouse: 5 } }),
             O(45, '{spouse} đặt đũa xuống và bảo bạn đừng hỏi bằng giọng ấy. Cả hai đều không ăn nốt bữa tối.', '{spouse} sets down the chopsticks and tells you not to ask in that tone. Neither of you finishes dinner.', { sanity: -3 }, { bond: { spouse: -6 } })
@@ -42,7 +43,7 @@ export const LIFE_MINORS_5 = [
         'Sáng ra bát đĩa đã được rửa, xếp rất ngay ngắn. Không ai trong hai người nói gì về chuyện đó.',
         'In the morning the dishes are washed and stacked very neatly. Neither of you says anything about it.',
         { sanity: -1 },
-        { bond: { spouse: -3 } }
+        { bond: { spouse: -3 }, mem: 'npc_spouse_cold_dinner' }
       )
     ],
     I('Bạn nhìn bữa tối một lúc rồi đẩy nó sang một bên. {spouse} làm điều tương tự, cùng lúc.', 'You look at dinner a while and push it aside. {spouse} does the same, at the same moment.'),
@@ -62,7 +63,7 @@ export const LIFE_MINORS_5 = [
         '{spouse} nhìn phong bì một lúc lâu. "Của người tôi từng làm cùng," họ nói, và đó là tất cả. Nhưng tối đó họ mở thư ngay trước mặt bạn.',
         '{spouse} looks at the envelope a long while. "Someone I used to work with," they say, and that is all. But that evening they open it right in front of you.',
         { sanity: 1 },
-        { bond: { spouse: 4 } }
+        { bond: { spouse: 4 }, mem: 'npc_spouse_unopened_letter' }
       ),
       C(
         'Đưa lá thư cho {spouse} và đi ra ngoài',
@@ -70,7 +71,7 @@ export const LIFE_MINORS_5 = [
         'Bạn đứng ngoài hành lang gần mười phút. Khi vào lại, lá thư đã mở, và {spouse} đang nhìn ra cửa sổ.',
         'You stand in the corridor nearly ten minutes. When you go back in the letter is open, and {spouse} is looking out of the window.',
         { sanity: -1 },
-        { bond: { spouse: 2 } }
+        { bond: { spouse: 2 }, mem: 'npc_spouse_unopened_letter' }
       ),
       C(
         'Tự mở thư khi {spouse} đi vắng',
@@ -78,7 +79,7 @@ export const LIFE_MINORS_5 = [
         'Bên trong chỉ có một dòng chữ và một con số. Bạn đặt lại phong bì đúng chỗ cũ, nhưng cả ngày hôm đó bạn không nhìn thẳng vào mắt {spouse} được.',
         'Inside is one line of writing and a number. You put the envelope back exactly where it was, but all day you cannot look {spouse} straight in the eye.',
         { sanity: -3, resonance: 2 },
-        { bond: { spouse: -4 } }
+        { bond: { spouse: -4 }, mem: 'npc_spouse_unopened_letter' }
       )
     ],
     I('Bạn để nguyên lá thư. Hôm sau nó vẫn ở đó, và hôm sau nữa, như một người khách chưa được mời ngồi.', 'You leave the letter alone. The next day it is still there, and the day after, like a guest who has not been invited to sit.'),
@@ -98,7 +99,7 @@ export const LIFE_MINORS_5 = [
         'Bạn kể mất gần cả đêm, và {spouse} không ngắt lời một lần nào. Sáng ra bạn thấy nhẹ, như vừa đặt xuống một thứ đã mang quá lâu.',
         'It takes most of the night, and {spouse} does not interrupt once. By morning you feel lighter, as if you have set down something carried too long.',
         { sanity: 4, resonance: -3 },
-        { bond: { spouse: 7 } }
+        { bond: { spouse: 7 }, mem: 'npc_spouse_old_scar' }
       ),
       C(
         'Kể một nửa, bỏ đoạn khó nhất',
@@ -106,7 +107,7 @@ export const LIFE_MINORS_5 = [
         '{spouse} gật, và bạn biết họ nhận ra chỗ bị bỏ. Họ không hỏi tiếp, và sự im lặng đó nặng hơn mọi câu hỏi.',
         '{spouse} nods, and you know they have noticed the gap. They do not ask further, and that silence weighs more than any question.',
         { sanity: -1 },
-        { bond: { spouse: 1 } }
+        { bond: { spouse: 1 }, mem: 'npc_spouse_old_scar' }
       ),
       C(
         'Nói đó là chuyện cũ, không đáng kể',
@@ -114,7 +115,7 @@ export const LIFE_MINORS_5 = [
         '{spouse} rút tay về chậm rãi. Vết sẹo vẫn ở đó, và bạn thấy nó rõ hơn trước.',
         '{spouse} withdraws their hand slowly. The scar is still there, and you see it more clearly than before.',
         { sanity: -2 },
-        { bond: { spouse: -3 } }
+        { bond: { spouse: -3 }, mem: 'npc_spouse_old_scar' }
       )
     ],
     I('Bạn cười cho qua. {spouse} cười lại, nhưng ngón tay họ vẫn chạm vào vết sẹo thêm một lúc.', 'You laugh it off. {spouse} laughs back, but their fingers stay on the scar a little longer.'),
@@ -244,7 +245,7 @@ export const LIFE_MINORS_5 = [
         '{mentor} nghe xong, đứng dậy và kiểm tra khóa lần thứ tư. Rồi ông chỉ cho bạn hai lối thoát mà bạn chưa từng để ý trong chính nhà mình.',
         '{mentor} hears you out, stands, and checks the lock a fourth time. Then they show you two ways out you had never noticed in their own house.',
         { sanity: 1, network: 1 },
-        { bond: { mentor: 6 } }
+        { bond: { mentor: 6 }, mem: 'npc_mentor_three_locks' }
       ),
       C(
         'Nói không có ai',
@@ -252,7 +253,7 @@ export const LIFE_MINORS_5 = [
         '{mentor} nhìn bạn rất lâu. "Vậy thì tốt," ông nói, bằng giọng của người biết bạn đang nói dối nhưng quyết định để bạn giữ lời nói ấy.',
         '{mentor} looks at you a long time. "Good, then," they say, in the voice of someone who knows you are lying and decides to let you keep it.',
         { sanity: -1 },
-        { bond: { mentor: -2 } }
+        { bond: { mentor: -2 }, mem: 'npc_mentor_three_locks' }
       ),
       C(
         'Hỏi ngược lại vì sao ông phải kiểm tra ba lần',
@@ -260,7 +261,7 @@ export const LIFE_MINORS_5 = [
         'Ông trả lời bằng một câu chuyện về một đêm ông chỉ kiểm tra một lần. Ông không kể đoạn kết, và bạn không hỏi.',
         'They answer with a story about a night they checked only once. They do not tell the ending, and you do not ask.',
         { sanity: -2, resonance: 2 },
-        { bond: { mentor: 5 } }
+        { bond: { mentor: 5 }, mem: 'npc_mentor_three_locks' }
       )
     ],
     I('Bạn ngồi nghe tiếng chốt khóa lần thứ ba. Ông nói chúc ngủ ngon, và cả hai đều thức khuya hơn dự định.', 'You sit listening to the third turn of the lock. They wish you good night, and both of you stay up later than planned.'),
@@ -280,7 +281,7 @@ export const LIFE_MINORS_5 = [
         'Người bán tạp hóa đếm tiền và chỉ nói rằng nợ này đã hai mươi năm rồi. Bạn không hỏi thêm, và hôm sau {mentor} đưa bạn một thứ gì đó nhỏ, gói trong khăn.',
         'The grocer counts the coins and says only that the debt is twenty years old. You do not ask more, and the next day {mentor} hands you something small wrapped in cloth.',
         { wealth: -3, network: 2 },
-        { bond: { mentor: 6 }, costAhn: 3 }
+        { bond: { mentor: 6 }, costAhn: 3, mem: 'npc_mentor_small_debt' }
       ),
       C(
         'Hỏi {mentor} vì sao không tự trả',
@@ -288,7 +289,7 @@ export const LIFE_MINORS_5 = [
         'Ông nhìn xuống tay mình. "Người ấy chỉ nhận tiền từ người lạ," ông nói. Bạn không biết đó là lòng tự trọng hay một lời nguyền.',
         'They look down at their hands. "He only takes money from strangers," they say. You cannot tell whether it is pride or a curse.',
         { sanity: -1 },
-        { bond: { mentor: 3 } }
+        { bond: { mentor: 3 }, mem: 'npc_mentor_small_debt' }
       ),
       C(
         'Từ chối vì không muốn dính vào',
@@ -296,7 +297,7 @@ export const LIFE_MINORS_5 = [
         '{mentor} gật, không giận. Nhưng hôm sau ông tự đi, chân đau hơn mọi ngày, và bạn nhìn ông qua cửa sổ cho đến khi khuất.',
         '{mentor} nods, not angry. But the next day they go themselves, leg hurting more than usual, and you watch from the window until they are out of sight.',
         { sanity: -2 },
-        { bond: { mentor: -4 } }
+        { bond: { mentor: -4 }, mem: 'npc_mentor_small_debt' }
       )
     ],
     I('Bạn nói sẽ lo, rồi quên mất. Ba ngày sau người bán tạp hóa nhìn bạn khi bạn đi ngang, không nói gì.', 'You say you will see to it, then forget. Three days later the grocer looks at you as you walk past, and says nothing.', { sanity: -1 }),
