@@ -36,6 +36,8 @@ Thumbs.db
 
 # Test & Scratch
 scratch/
+output/
+**/output/
 /Data/
 /PM/Data/
 /PM_BE/Data/
