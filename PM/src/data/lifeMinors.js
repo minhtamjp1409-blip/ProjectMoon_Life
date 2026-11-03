@@ -23,7 +23,7 @@ export const LIFE_MINORS = [
   M(
     'm_k_candy',
     KID,
-    {},
+    { npc: 'friend' },
     '[Thanh kẹo của {friend}] Một đứa trẻ lớn con và ngổ ngáo hơn ở đầu hẻm bất ngờ lao tới giật phăng thanh kẹo trên tay {friend} ngay trước mắt bạn.',
     '[The Candy of {friend}] An older bully from the end of the alley lunged forward and snatched the candy right out of {friend}’s hand in front of you.',
     [
@@ -33,7 +33,7 @@ export const LIFE_MINORS = [
         'Bạn bị giáng một cú đấm thấu trời vào hốc mắt, nhưng đứa bắt nạt đau đớn buông tay làm rơi thanh kẹo xuống đất.',
         'You took a bruising blow straight to the eye, but the bully yelped in pain and dropped the candy upon the cobbles.',
         { health: -2 },
-        { bond: { friend: 10 }, motif: { violence: 1 } }
+        { bond: { friend: 10 }, motif: { violence: 1 }, mem: 'npc_candy_bite' }
       ),
       C(
         'Bẻ đôi thanh kẹo của mình chia cho {friend}',
@@ -41,11 +41,11 @@ export const LIFE_MINORS = [
         '{friend} nghẹn ngào ăn một nửa thanh kẹo, rồi cẩn thận nhét nửa còn lại vào túi áo bạn như một lời cảm ơn thầm lặng.',
         '{friend} sniffled, eating half the candy, then gently slipped the remaining piece back into your pocket.',
         { sanity: 2 },
-        { bond: { friend: 6 }, motif: { mercy: 1 } }
+        { bond: { friend: 6 }, motif: { mercy: 1 }, mem: 'npc_candy_share' }
       )
     ],
     I('Bạn sợ hãi đứng nhìn trơ mắt. {friend} không khóc thành tiếng, chỉ lặng lẽ nhìn bạn bằng ánh mắt trĩu nặng.', 'Paralyzed, you merely watched. {friend} shed no tears, only gazing at you with a heavy, distant silence.', {}, { bond: { friend: -6 } }),
-    { tags: ['npc'] }
+    { tags: ['npc'], once: true }
   ),
 
   M(
@@ -137,7 +137,7 @@ export const LIFE_MINORS = [
   M(
     'm_c_shoplift',
     CHILD,
-    { notNest: true },
+    { notNest: true, npc: 'friend' },
     '[Vụ trộm ở tiệm tạp hóa] {friend} rủ rê bạn cùng lẻn vào đánh cắp mấy hộp đồ ăn trong tiệm tạp hóa nhỏ của một ông lão mù lòa neo đơn.',
     '[Shoplifting the Blind Grocer] {friend} urged you to help steal canned goods from the modest corner pantry run by a blind elder.',
     [
@@ -148,6 +148,7 @@ export const LIFE_MINORS = [
         null,
         {},
         {
+          mem: 'npc_shoplift_join',
           out: [
             O(70, 'Hai đứa trót lọt ôm một túi đầy đồ hộp thơm ngon chạy thục mạng về nhà. Ông lão mù lòa không hề hay biết chuyện gì đã xảy ra.', 'You made off with a satchel of rations undetected. The blind elder never realized what had gone missing.', { health: 2, wealth: 2 }, { bond: { friend: 6 }, motif: { greed: 1 }, mem: 'stole_from_blind' }),
             O(30, 'Ông lão bất thình lình túm chặt lấy cổ tay bạn. Ông không đánh đập hay hô hoán, chỉ buồn bã hỏi: "Con đang đói lắm phải không?" Bạn xấu hổ đến mức muốn chui xuống đất.', 'The old man seized your wrist with surprising speed. He didn’t strike, merely asking softly: “Are you that starved, child?” You burned with deep shame.', { sanity: -3 }, { bond: { friend: 3 }, mem: 'blind_shopkeeper' })
@@ -160,11 +161,11 @@ export const LIFE_MINORS = [
         '{friend} tức tối mắng bạn là kẻ hèn nhát rồi tự mình bỏ đi hành động một mình. Phải mất ba ngày sau người bạn ấy mới chịu mở lời nói chuyện lại với bạn.',
         '{friend} cursed you as a coward, storming off to do it alone. It was three cold days before they spoke a word to you again.',
         { sanity: 1, rep: 1 },
-        { bond: { friend: -8 }, motif: { mercy: 1 } }
+        { bond: { friend: -8 }, motif: { mercy: 1 }, mem: 'npc_shoplift_stop' }
       )
     ],
     I('Bạn kiếm cớ bận việc nhà rồi lủi thủi đi về. {friend} một mình tiến vào con ngõ.', 'You muttered an excuse and walked away. {friend} slipped into the shop alone.'),
-    { bond: { friend: -3 }, tags: ['npc'] }
+    { bond: { friend: -3 }, tags: ['npc'], once: true }
   ),
 
   M(
@@ -491,8 +492,8 @@ export const LIFE_MINORS = [
         {},
         {
           out: [
-            O(60, 'Bạn tìm thấy {lover} đang co ro nấp sau một chiếc xe rác và kéo người ấy chạy thục mạng về nhà đúng 3 giờ 09. Cả hai ngồi run rẩy trong bóng tối cho tới sáng.', 'You found {lover} huddled behind a dumpster and hauled them through the door at 3:09. You shivered together until dawn.', { sanity: -2, health: -2 }, { bond: { lover: 20 }, motif: { loyalty: 1 } }),
-            O(40, 'Bạn bị mắc kẹt ngoài đường khi tiếng còi vang lên. Một bầy Sweeper lướt qua cách bạn chỉ hai bước chân; bạn sống sót trở về nhưng vĩnh viễn không dám kể lại những gì đã thấy.', 'The siren trapped you outside. Sweepers glided two paces past your hiding spot. You survived, but never spoke of the nightmare you witnessed.', { sanity: -10, resonance: 6 }, { bond: { lover: 15 }, scar: 'Đêm ở ngoài lúc 3:13' })
+            O(60, 'Bạn tìm thấy {lover} đang co ro nấp sau một chiếc xe rác và kéo người ấy chạy thục mạng về nhà đúng 3 giờ 09. Cả hai ngồi run rẩy trong bóng tối cho tới sáng.', 'You found {lover} huddled behind a dumpster and hauled them through the door at 3:09. You shivered together until dawn.', { sanity: -2, health: -2 }, { bond: { lover: 20 }, motif: { loyalty: 1 }, mem: 'npc_lover_305_search' }),
+            O(40, 'Bạn bị mắc kẹt ngoài đường khi tiếng còi vang lên. Một bầy Sweeper lướt qua cách bạn chỉ hai bước chân; bạn sống sót trở về nhưng vĩnh viễn không dám kể lại những gì đã thấy.', 'The siren trapped you outside. Sweepers glided two paces past your hiding spot. You survived, but never spoke of the nightmare you witnessed.', { sanity: -10, resonance: 6 }, { bond: { lover: 15 }, scar: 'Đêm ở ngoài lúc 3:13', mem: 'npc_lover_305_search' })
           ]
         }
       ),
@@ -504,7 +505,7 @@ export const LIFE_MINORS = [
         {},
         {
           out: [
-            O(65, '{lover} vội vã đập cửa lúc 3 giờ 08. Bạn giật mở chốt ôm chầm lấy người ấy, cả hai nghẹn ngào không thốt nên lời.', '{lover} pounded the door at 3:08. You pulled them inside and held them tight, trembling without speech.', { sanity: 2 }, { bond: { lover: 6 } }),
+            O(65, '{lover} vội vã đập cửa lúc 3 giờ 08. Bạn giật mở chốt ôm chầm lấy người ấy, cả hai nghẹn ngào không thốt nên lời.', '{lover} pounded the door at 3:08. You pulled them inside and held them tight, trembling without speech.', { sanity: 2 }, { bond: { lover: 6 }, mem: 'npc_lover_305_lock' }),
             O(35, 'Sáng hôm sau người ta nhìn thấy đôi giày nhuốm máu của {lover} nằm trơ trọi ở đầu hẻm. Chỉ còn lại duy nhất đôi giày ấy mà thôi.', 'At daybreak, neighbors discovered {lover}’s bloody shoes abandoned at the alley corner. Only the shoes remained.', { sanity: -18 }, { npcFate: { lover: 'dead' }, scar: 'Đôi giày ở đầu hẻm' })
           ]
         }

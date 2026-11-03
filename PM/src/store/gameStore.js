@@ -36,6 +36,7 @@ import { cutsceneFor, outranks } from '../engine/cutsceneTriggers.js';
 import { bestowHanaColorTitle } from '../engine/colorRegistry.js';
 import { chapterFor } from '../engine/chapters.js';
 import { isExtraBirthEntry } from '../data/birthStories.js';
+import { syncNpcNamingPrompt, applyNpcName } from '../engine/npcNaming.js';
 import { CUTSCENES, resolveCutsceneCut, hasSeenCutscene, markCutsceneSeen, prefersReducedMotion, isLowPowerDevice } from '../features/cutscene/registry.js';
 
 const META_KEY = 'pm_city_chronicles_save_v3';
@@ -375,6 +376,7 @@ function isToastBlocked(state) {
     c?.pendingYearPlan ||
     c?.pendingMinor ||
     c?.pendingModal ||
+    c?.pendingNpcNaming ||
     (c?.pendingBirthLogs || []).length > 0
   );
 }
@@ -439,7 +441,15 @@ export const useGameStore = create((set, get) => ({
 
   setConfigField: (field, value) => set({ [field]: value }),
   setSpeed: (speed) => set((s) => ({ speed, ...(speed === 0 ? { postChoicePauseMs: 0 } : {}) })),
-  toggleAutoPlay: () => set((s) => ({ autoPlay: !s.autoPlay })),
+  toggleAutoPlay: () => set((s) => {
+    const nextAuto = !s.autoPlay;
+    if (nextAuto && s.char?.pendingNpcNaming) {
+      const nextChar = cloneChar(s.char);
+      syncNpcNamingPrompt(nextChar, { autoPlay: true });
+      return { autoPlay: nextAuto, char: nextChar };
+    }
+    return { autoPlay: nextAuto };
+  }),
   dismissResolution: () => {
     set({ activeResolution: null, postChoicePauseMs: 0 });
     flushAchievementToasts(get());
@@ -735,6 +745,10 @@ export const useGameStore = create((set, get) => ({
   commit: (prev, next, extra = {}) => {
     if (next.pendingLead && !next.pendingYearPlan) next = chooseDirectorPacedLead(next, lifeRng);
     const withD = withDeltas(prev, enforceTabooJudgment(next));
+    syncNpcNamingPrompt(withD, {
+      autoPlay: get().autoPlay,
+      waitForBirthPrologue: (withD.pendingBirthLogs || []).length > 0
+    });
     // Đợt 115a: Khi vừa bước qua tuổi mới, gom các daily thuần của tuổi vừa qua vào mục year_digest
     if (prev && prev.age != null && withD.age != null && withD.age > prev.age && prev.age >= 5) {
       consolidateYearDailies(withD, prev.age);
@@ -769,6 +783,7 @@ export const useGameStore = create((set, get) => ({
       ...(withD.pendingMinor && !prev.pendingMinor ? { minorRemainingMs: withD.pendingMinor.remainingMs || MINOR_WINDOW_MS } : {}),
       ...meta,
       ...extra,
+      ...(withD.pendingNpcNaming && !prev.pendingNpcNaming ? { postChoicePauseMs: 0 } : {}),
       ...(withD.pendingDungeon?.id === CLAW_DUNGEON_ID && !prev.pendingDungeon ? { postChoicePauseMs: 0, activeResolution: null } : {})
     });
     flushAchievementToasts(get());
@@ -788,6 +803,10 @@ export const useGameStore = create((set, get) => ({
       ...c,
       logs: nextLogs,
       pendingBirthLogs: remaining
+    });
+    syncNpcNamingPrompt(nextChar, {
+      autoPlay: s.autoPlay,
+      waitForBirthPrologue: remaining.length > 0
     });
     set({
       char: nextChar,
@@ -809,6 +828,10 @@ export const useGameStore = create((set, get) => ({
       ...c,
       logs: nextLogs,
       pendingBirthLogs: []
+    });
+    syncNpcNamingPrompt(nextChar, {
+      autoPlay: s.autoPlay,
+      waitForBirthPrologue: false
     });
     set({
       char: nextChar,
@@ -855,6 +878,10 @@ export const useGameStore = create((set, get) => ({
       nextChar.pendingBirthLogs = remainingVisible;
       hasBirthLogs = remainingVisible.length > 0;
     }
+    syncNpcNamingPrompt(nextChar, {
+      autoPlay: state.autoPlay,
+      waitForBirthPrologue: hasBirthLogs
+    });
     set({
       char: nextChar,
       inRun: true,
@@ -891,7 +918,7 @@ export const useGameStore = create((set, get) => ({
       get().commit(c, nextChar, { postChoicePauseMs: 0 });
       return;
     }
-    if (c.pendingEvent || c.pendingContract || c.pendingDungeon || c.pendingModal) return;
+    if (c.pendingEvent || c.pendingContract || c.pendingDungeon || c.pendingModal || c.pendingNpcNaming) return;
 
     // Post-choice reading pause: gives ~3 seconds on outer screen before timeline flows
     if (s.postChoicePauseMs > 0) {
@@ -931,7 +958,7 @@ export const useGameStore = create((set, get) => ({
     const progress = Math.min(100, s.yearProgress + (dtMs / YEAR_MS) * 100 * effectiveSpeed);
     const { char, changed } = runDueItems(c, progress, lifeRng);
     if (changed) {
-      const waiting = char.pendingMinor || char.pendingEvent || char.pendingContract || char.pendingDungeon || char.pendingModal;
+      const waiting = char.pendingMinor || char.pendingEvent || char.pendingContract || char.pendingDungeon || char.pendingModal || char.pendingNpcNaming;
       const item = char.plan?.[(char.planCursor || 1) - 1];
       get().commit(c, char, { yearProgress: waiting && item ? Math.max(s.yearProgress, item.t * 100) : progress });
       if (waiting || !char.alive) return;
@@ -958,7 +985,7 @@ export const useGameStore = create((set, get) => ({
   stepYear: () => {
     const s = get();
     const c = s.char;
-    if (s.cutscene || !c.alive || c.pendingYearPlan || c.pendingLead || c.pendingEvent || c.pendingContract || c.pendingDungeon || c.pendingModal || c.pendingMinor || s.activeResolution) return;
+    if (s.cutscene || !c.alive || c.pendingYearPlan || c.pendingLead || c.pendingEvent || c.pendingContract || c.pendingDungeon || c.pendingModal || c.pendingNpcNaming || c.pendingMinor || s.activeResolution) return;
 
     const curP = s.yearProgress;
     const nextItem = nextPlanItem(c);
@@ -974,7 +1001,7 @@ export const useGameStore = create((set, get) => ({
     }
 
     const { char, changed } = runDueItems(c, targetP, lifeRng);
-    const waiting = char.pendingMinor || char.pendingEvent || char.pendingContract || char.pendingDungeon || char.pendingModal;
+    const waiting = char.pendingMinor || char.pendingEvent || char.pendingContract || char.pendingDungeon || char.pendingModal || char.pendingNpcNaming;
     if (waiting || !char.alive) {
       const item = char.plan?.[(char.planCursor || 1) - 1];
       get().commit(c, char, { yearProgress: item ? item.t * 100 : targetP, postChoicePauseMs: 0 });
@@ -1003,7 +1030,7 @@ export const useGameStore = create((set, get) => ({
     const startAge = get().char?.age;
     for (let step = 0; step < 5; step++) {
       const before = get();
-      if (before.cutscene || !before.char?.alive || before.char.age !== startAge || before.char.pendingYearPlan || before.char.pendingLead || before.char.pendingEvent || before.char.pendingContract || before.char.pendingDungeon || before.char.pendingMinor || before.char.pendingModal || before.activeResolution) break;
+      if (before.cutscene || !before.char?.alive || before.char.age !== startAge || before.char.pendingYearPlan || before.char.pendingLead || before.char.pendingEvent || before.char.pendingContract || before.char.pendingDungeon || before.char.pendingMinor || before.char.pendingModal || before.char.pendingNpcNaming || before.activeResolution) break;
       const cursor = before.char.planCursor;
       const progress = before.yearProgress;
       get().stepYear();
@@ -1190,6 +1217,21 @@ export const useGameStore = create((set, get) => ({
       en: `You finished forging 「${weaponObj.name}」 (${weaponObj.gradeLabel}). Tres Association stamped its registration.`
     });
     get().commit(prev, next);
+  },
+
+  confirmNpcName: (inputName = '') => {
+    const prev = get().char;
+    if (!prev?.pendingNpcNaming) return false;
+    const next = cloneChar(prev);
+    if (!applyNpcName(next, inputName)) return false;
+    syncNpcNamingPrompt(next, {
+      autoPlay: get().autoPlay,
+      waitForBirthPrologue: (next.pendingBirthLogs || []).length > 0
+    });
+    set({ char: next, postChoicePauseMs: 0 });
+    if (next.alive) get().saveRun(true);
+    flushAchievementToasts(get());
+    return true;
   },
 
   addCustomEvent: (customEv) => {

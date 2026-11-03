@@ -31,6 +31,8 @@ import { CHILDHOOD_EVENTS_2 } from '../data/eventsChildhood2.js';
 import { LINEAGE_LEGACY_EVENTS } from '../data/eventsLineageLegacy.js';
 import { BACKGROUND_OPENING_EVENTS } from '../data/eventsBackgroundOpening.js';
 import { composeBirth, makeNpc } from '../data/birthStories.js';
+import { NAMING_ROLES, sanitizeNpcName, getNpcNamingPrompt, syncNpcNamingPrompt, applyNpcName } from './npcNaming.js';
+export { NAMING_ROLES, sanitizeNpcName, getNpcNamingPrompt, syncNpcNamingPrompt, applyNpcName };
 import { evaluateCompanionSupport, ensureNpcAgency, bondCapFor } from '../data/npcPersonality.js';
 import { generatePersonName } from '../data/nameGenerator.js';
 import { FACTION_EVENTS } from '../data/eventsFactions.js';
@@ -814,7 +816,7 @@ export function createNewCharacter({
     activeArcs: [],
     scars,
     npcs: {
-      friend: birth.friend ? { ...birth.friend, metAge: 0 } : null,
+      friend: birth.friend ? { ...birth.friend, metAge: 0, ...(perinatal ? { needsNaming: false, namedPrompted: true } : {}) } : null,
       parent: parentNpc,
       mentor: (parentLegacy && parentLegacy.successorRelation === 'apprentice' && parentLegacy.npcs?.partner && parentLegacy.npcs.partner.status !== 'dead')
         ? ensureNpcAgency({
@@ -858,6 +860,7 @@ export function createNewCharacter({
     pendingEvent: null,
     pendingContract: null,
     pendingDungeon: null,
+    pendingNpcNaming: null,
     pendingModal: null
   };
 }
@@ -2616,7 +2619,7 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random, dung
   ].filter(Boolean);
   memList.forEach(m => {
     if (!hasMemory(char, m)) {
-      char.memory = [...(char.memory || []), { key: m, age: char.age }];
+      char.memory = [...(char.memory || []), { key: m, choiceId: `${event.id}_c${choiceIdx}`, eventId: event.id, role: event.need?.npc || Object.keys(choice.bond || outcome.bond || {})[0] || null, age: char.age }];
     }
   });
 
@@ -2626,6 +2629,8 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random, dung
   });
 
   applyBonds(char, outcome === choice ? [choice] : [choice, outcome]);
+  const majorNpcRole = event.need?.npc || Object.keys(choice.bond || outcome.bond || {})[0] || null;
+  if (majorNpcRole && !hasMemory(char, `${event.id}_c${choiceIdx}`)) char.memory = [...(char.memory || []), { key: `${event.id}_c${choiceIdx}`, choiceId: `${event.id}_c${choiceIdx}`, eventId: event.id, role: majorNpcRole, age: char.age }];
 
   const allSources = outcome === choice ? [choice] : [choice, outcome];
 
@@ -2649,7 +2654,7 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random, dung
       const p = src.promote;
       const from = char.npcs?.[p.from];
       if (from && npcIsActive(from) && !npcIsActive(char.npcs?.[p.to])) {
-        char.npcs = { ...char.npcs, [p.to]: { ...from, role: p.to, lastSeen: char.age }, [p.from]: null };
+        char.npcs = { ...char.npcs, [p.to]: { ...from, role: p.to, lastSeen: char.age, needsNaming: false, namedPrompted: true }, [p.from]: null };
         if (p.to === 'spouse') {
           char.flags = [...(char.flags || []).filter((x) => x !== 'Widowed' && x !== 'Separated'), ...(char.flags.includes('Married') ? [] : ['Married'])];
         }
@@ -2661,13 +2666,13 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random, dung
   if (npcAdd && npcAdd.role) {
     const lover = char.npcs?.lover;
     if (npcAdd.role === 'spouse' && npcIsActive(lover)) {
-      char.npcs.spouse = { ...lover, role: 'spouse', bond: Math.max(lover.bond || 0, npcAdd.bond || 0), lastSeen: char.age };
+      char.npcs.spouse = { ...lover, role: 'spouse', bond: Math.max(lover.bond || 0, npcAdd.bond || 0), lastSeen: char.age, needsNaming: false, namedPrompted: true };
       char.npcs.lover = null;
     } else if (!char.npcs[npcAdd.role] || char.npcs[npcAdd.role].deceased) {
       const base = makeNpc(npcAdd.role, rng, { metAge: char.age, lastSeen: char.age, ...(npcAdd.ageAtMeet == null ? {} : { ageAtMeet: npcAdd.ageAtMeet }), avoidNames: namesInUse(char) });
       char.npcs[npcAdd.role] = {
         ...base,
-        ...(npcAdd.nameVi ? { nameVi: npcAdd.nameVi, nameEn: npcAdd.nameEn || npcAdd.nameVi } : {}),
+        ...(npcAdd.nameVi ? { nameVi: npcAdd.nameVi, nameEn: npcAdd.nameEn || npcAdd.nameVi, needsNaming: false, namedPrompted: true } : {}),
         ...(npcAdd.traitVi ? { traitVi: npcAdd.traitVi, traitEn: npcAdd.traitEn || npcAdd.traitVi } : {}),
         bond: Math.abs(npcAdd.bond || 70)
       };

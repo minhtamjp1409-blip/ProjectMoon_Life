@@ -122,12 +122,16 @@ export function directorWeight(entry, char) {
   }
 
   if (n.npc) {
-    const npc = char.npcs?.[n.npc];
-    const since = char.age - (npc?.lastSeen ?? npc?.metAge ?? 0);
-    if (since >= 3) {
-      w *= 2.6;
+    const npc = char.npcs?.[n.npc] || (n.npc === 'lover' && n.allowSpouseFallback ? char.npcs?.spouse : null);
+    const since = char.age - (npc?.lastSceneAge ?? npc?.metAge ?? 0);
+    if (since >= 2) {
+      w *= 2.8;
       reason = reason || { vi: `Đã lâu không gặp ${npc?.nameVi || ''}`.trim(), en: `You haven't seen ${npc?.nameEn || 'them'} in a while` };
     } else if (since <= 0) w *= 0.5;
+    if (tags.includes('npc_callback')) {
+      w *= 2.5;
+      reason = { vi: `${npc?.nameVi || 'Người thân'} nhắc lại một lựa chọn cũ`, en: `${npc?.nameEn || 'Someone close'} recalls an old choice` };
+    }
     const bondVal = npc?.bond ?? 35;
     if (bondVal <= 28 && (tags.includes('friction') || tags.includes('betrayal') || n.bondAtMost)) {
       w *= 2.8;
@@ -257,7 +261,7 @@ export function applyBonds(char, sources, deltas = []) {
       const cap = bondCapFor({ ...target, yearsTogether });
       const gain = v > 0 ? Math.max(1, Math.round(v * 0.7)) : v;
       const after = v > 0 ? Math.max(before, Math.min(cap, clamp(before + gain, 0, 100))) : clamp(before + gain, 0, 100);
-      char.npcs = { ...char.npcs, [key]: { ...target, bond: after, lastSeen: char.age } };
+      char.npcs = { ...char.npcs, [key]: { ...target, bond: after, lastSeen: char.age, lastSceneAge: char.age } };
       if (after !== before) deltas.push({ k: 'bond', role: key, name: target.nameVi, v: after - before });
     }
   }
@@ -267,7 +271,7 @@ export function applyBonds(char, sources, deltas = []) {
  * Applies everything a choice does besides plain stats. Pushes readable deltas
  * (bonds, meetings, fates) next to the stat deltas.
  */
-export function applyChoiceExtras(char, sources, deltas, rng) {
+export function applyChoiceExtras(char, sources, deltas, rng, meta = {}) {
   const all = sources.filter(Boolean);
   const pickField = (f) => all.map((s) => s[f]).filter(Boolean);
 
@@ -292,7 +296,7 @@ export function applyChoiceExtras(char, sources, deltas, rng) {
   for (const p of pickField('promote')) {
     const from = char.npcs?.[p.from];
     if (!npcActive(from) || npcActive(char.npcs?.[p.to])) continue;
-    char.npcs = { ...char.npcs, [p.to]: { ...from, role: p.to, lastSeen: char.age }, [p.from]: null };
+    char.npcs = { ...char.npcs, [p.to]: { ...from, role: p.to, lastSeen: char.age, needsNaming: false, namedPrompted: true }, [p.from]: null };
     deltas.push({ k: 'promote', role: p.to, name: from.nameVi });
     if (p.to === 'spouse') {
       char.flags = [...(char.flags || []).filter((x) => x !== 'Widowed' && x !== 'Separated'), ...(char.flags.includes('Married') ? [] : ['Married'])];
@@ -328,8 +332,29 @@ export function applyChoiceExtras(char, sources, deltas, rng) {
   }
 
   // Memories, consequences, nature
+  const involvedRole = meta.role || Object.keys(all.find((s) => s?.bond)?.bond || {})[0] || null;
+  if (involvedRole && char.npcs?.[involvedRole]) {
+    char.npcs = { ...char.npcs, [involvedRole]: { ...char.npcs[involvedRole], lastSeen: char.age, lastSceneAge: char.age } };
+  }
   for (const key of pickField('mem')) {
-    if (!hasMemory(char, key)) char.memory = [...(char.memory || []), { key, age: char.age }];
+    if (!hasMemory(char, key)) {
+      char.memory = [...(char.memory || []), {
+        key,
+        ...(meta.choiceId ? { choiceId: meta.choiceId } : {}),
+        ...(meta.eventId ? { eventId: meta.eventId } : {}),
+        ...(involvedRole ? { role: involvedRole } : {}),
+        age: char.age
+      }];
+    }
+  }
+  if (meta.choiceId && involvedRole && !hasMemory(char, meta.choiceId)) {
+    char.memory = [...(char.memory || []), {
+      key: meta.choiceId,
+      choiceId: meta.choiceId,
+      ...(meta.eventId ? { eventId: meta.eventId } : {}),
+      role: involvedRole,
+      age: char.age
+    }];
   }
   for (const list of pickField('later')) {
     const threads = list.map((l, i) => ({

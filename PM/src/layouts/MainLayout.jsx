@@ -25,7 +25,7 @@ const CutsceneLayer = lazy(() => loadCutsceneLayer().catch(() => ({ default: Cut
 export const MainLayout = ({ children }) => {
   const location = useLocation();
   // Only the fields the loop needs; yearProgress is left out so the layout doesn't re-render each tick
-  const { inRun, alive, pendingEvent, pendingContract, pendingMinor, pendingModal, activeResolution, speed, autoPlay, tick, selectEventChoice, selectContractApproach, dismissResolution, hydrateFromBackend, dungeonId, dungeonFx, dungeonNonce, cutsceneKey } =
+  const { inRun, alive, pendingEvent, pendingContract, pendingMinor, pendingModal, pendingNpcNaming, activeResolution, speed, autoPlay, tick, selectEventChoice, selectContractApproach, dismissResolution, hydrateFromBackend, dungeonId, dungeonFx, dungeonNonce, cutsceneKey } =
     useGameStore(
       useShallow((s) => ({
         inRun: s.inRun,
@@ -35,6 +35,7 @@ export const MainLayout = ({ children }) => {
         pendingContract: s.char.pendingContract,
         pendingMinor: s.char.pendingMinor,
         pendingModal: s.char.pendingModal,
+        pendingNpcNaming: s.char.pendingNpcNaming,
         activeResolution: s.activeResolution,
         speed: s.speed,
         autoPlay: s.autoPlay,
@@ -61,7 +62,7 @@ export const MainLayout = ({ children }) => {
   // The year's clock: real elapsed time, capped so a background tab doesn't skip a decade.
   // A scene stops every timer here; when it ends the effect re-runs, so autoplay counts its full delay from the moment the dock shows.
   useEffect(() => {
-    if (!inRun || !alive || speed === 0 || pendingModal || cutsceneKey) return undefined;
+    if (!inRun || !alive || speed === 0 || pendingNpcNaming || pendingModal || cutsceneKey) return undefined;
 
     if (activeResolution) {
       if (!autoPlay) return undefined;
@@ -91,7 +92,7 @@ export const MainLayout = ({ children }) => {
       tick(dt);
     }, TICK_MS);
     return () => clearInterval(timer);
-  }, [inRun, alive, pendingEvent, pendingContract, pendingModal, activeResolution, speed, autoPlay, tick, selectEventChoice, selectContractApproach, dismissResolution, cutsceneKey]);
+  }, [inRun, alive, pendingEvent, pendingContract, pendingModal, pendingNpcNaming, activeResolution, speed, autoPlay, tick, selectEventChoice, selectContractApproach, dismissResolution, cutsceneKey]);
 
   // The play screen manages its own scrolling regions; other screens scroll as a page
   const isPlay = location.pathname === '/' && inRun;

@@ -112,7 +112,7 @@ export function matchesNeed(need, char, contextEntry = null) {
   if (need.scarTag && !hasScarTag(char, need.scarTag)) return false;
   if (need.noScarTag && hasScarTag(char, need.noScarTag)) return false;
   if (need.companionActive && !getFieldCompanion(char)) return false;
-  if (need.npc && !npcIsActive(char.npcs?.[need.npc])) return false;
+  if (need.npc && !(npcIsActive(char.npcs?.[need.npc]) || (need.npc === 'lover' && need.allowSpouseFallback && npcIsActive(char.npcs?.spouse)))) return false;
   if (need.noNpc && npcIsActive(char.npcs?.[need.noNpc])) return false;
   if (need.npcTag) {
     const [tagRole, tag] = need.npcTag;
@@ -134,9 +134,17 @@ export function matchesNeed(need, char, contextEntry = null) {
     if (!npcIsActive(bTarget) || (bTarget.bond || 0) > max) return false;
   }
   if (need.deadNpc && (!char.npcs?.[need.deadNpc] || !char.npcs[need.deadNpc].deceased)) return false;
-  const remembers = (key) => (char.memory || []).some((m) => m.key === key);
+  const remembers = (key) => (char.memory || []).some((m) => {
+    if (m.key !== key) return false;
+    if (need.memMinYears != null && (char.age || 0) < (m.age || 0) + need.memMinYears) return false;
+    if (need.npc) {
+      const targetNpc = char.npcs?.[need.npc] || (need.npc === 'lover' && need.allowSpouseFallback ? char.npcs?.spouse : null);
+      if (targetNpc && m.age != null && (targetNpc.metAge || 0) > m.age) return false;
+    }
+    return true;
+  });
   if (need.mem && !remembers(need.mem)) return false;
-  if (need.noMem && remembers(need.noMem)) return false;
+  if (need.noMem && (char.memory || []).some((m) => m.key === need.noMem)) return false;
   if (need.grade) {
     const min = Math.min(need.grade[0], need.grade[1]);
     const max = Math.max(need.grade[0], need.grade[1]);

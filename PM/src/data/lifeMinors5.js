@@ -317,7 +317,7 @@ export const LIFE_MINORS_5 = [
         'Họ để yên cho bạn khoác, và áo bạn có mùi họ suốt một tuần. Hai người đi bộ về mà không cần nói gì.',
         'They let you, and your coat smells of them for a week. You walk back together without needing to say anything.',
         { sanity: 3 },
-        { bond: { lover: 7 } }
+        { bond: { lover: 7 }, mem: 'npc_lover_awning_coat' }
       ),
       C(
         'Trêu {lover} vì đến sớm quá',
@@ -325,7 +325,7 @@ export const LIFE_MINORS_5 = [
         'Họ cười, nhưng nụ cười đến muộn nửa nhịp. Bạn nhận ra họ đã đợi vì sợ bạn không đến, và câu đùa của mình rơi xuống chỗ ấy.',
         'They laugh, but the laugh comes half a beat late. You realise they waited out of fear you would not come, and your joke has landed on that.',
         { sanity: 1 },
-        { bond: { lover: -2 } }
+        { bond: { lover: -2 }, mem: 'npc_lover_awning_wait' }
       ),
       C(
         'Nói thẳng rằng bạn gần như không đến',
@@ -333,7 +333,7 @@ export const LIFE_MINORS_5 = [
         '{lover} im lặng, rồi bảo cảm ơn vì đã nói thật. Họ nắm tay bạn chặt hơn, như sợ bạn thật sự đã không đến.',
         '{lover} is silent, then says thank you for telling the truth. They hold your hand tighter, as if afraid you really might not have come.',
         { sanity: -1 },
-        { bond: { lover: 5 } }
+        { bond: { lover: 5 }, mem: 'npc_lover_awning_wait' }
       )
     ],
     I('Bạn đứng cạnh họ dưới mái hiên. Giọt nước cuối cùng từ mái rơi xuống đúng giữa hai người.', 'You stand beside them under the awning. The last drop from the edge falls exactly between the two of you.'),
@@ -416,7 +416,7 @@ export const LIFE_MINORS_5 = [
   // ------------------------------------------------------------ friend
   M(
     'm5_friend_old_nickname',
-    [16, 70],
+    [12, 70],
     { npc: 'friend' },
     '[Biệt danh cũ] {friend} gọi bạn bằng biệt danh hồi nhỏ ngay trước mặt những người lạ. Cả nhóm quay lại nhìn, và bạn đã nghĩ mình quên cái tên ấy từ lâu.',
     '[The Old Nickname] {friend} calls you by your childhood nickname in front of strangers. The whole group turns to look, and you had thought you had long forgotten that name.',
@@ -427,7 +427,7 @@ export const LIFE_MINORS_5 = [
         'Cả hai cười đến chảy nước mắt, và nhóm người lạ nhìn như xem một trò lạ. Đêm đó bạn ngủ ngon hơn cả tháng nay.',
         'You both laugh until you cry, and the strangers watch as if at an odd show. That night you sleep better than you have in a month.',
         { sanity: 4 },
-        { bond: { friend: 6 } }
+        { bond: { friend: 6 }, mem: 'npc_nickname_laugh' }
       ),
       C(
         'Bảo {friend} đừng dùng cái tên đó ở đây',
@@ -435,7 +435,7 @@ export const LIFE_MINORS_5 = [
         '{friend} im một lúc, rồi xin lỗi bằng giọng đã quen với việc xin lỗi. Biệt danh không bao giờ được dùng lại, và hai người cũng ít gặp nhau hơn.',
         '{friend} is quiet a moment, then apologises in the voice of someone used to apologising. The nickname is never used again, and the two of you meet less often.',
         { rep: 1, sanity: -2 },
-        { bond: { friend: -5 } }
+        { bond: { friend: -5 }, mem: 'npc_nickname_drop' }
       ),
       C(
         'Giả vờ không nghe thấy',
@@ -443,7 +443,7 @@ export const LIFE_MINORS_5 = [
         '{friend} gọi lại lần nữa, to hơn, và lần này bạn nghe thấy. Cả nhóm đã nghe, và không ai nói gì.',
         '{friend} calls again, louder, and this time you hear it. The whole group has heard, and no one says anything.',
         { sanity: -2 },
-        { bond: { friend: -2 } }
+        { bond: { friend: -2 }, mem: 'npc_nickname_drop' }
       )
     ],
     I('Bạn quay lại nhìn {friend} một lúc. Cái tên ấy treo trong không khí, nhẹ, như một chiếc lá chưa chạm đất.', 'You turn and look at {friend} a while. The name hangs in the air, light, like a leaf that has not yet reached the ground.'),

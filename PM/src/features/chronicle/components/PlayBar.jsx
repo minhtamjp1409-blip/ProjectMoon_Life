@@ -17,7 +17,7 @@ const SPEEDS = [
   { spd: 3, secs: 10 }
 ];
 
-const isWaiting = (s) => Boolean(s?.char?.pendingYearPlan || s?.char?.pendingLead || s?.char?.pendingEvent || s?.char?.pendingContract || s?.char?.pendingDungeon || s?.char?.pendingModal || s?.char?.pendingMinor || s?.activeResolution);
+const isWaiting = (s) => Boolean(s?.char?.pendingYearPlan || s?.char?.pendingLead || s?.char?.pendingEvent || s?.char?.pendingContract || s?.char?.pendingDungeon || s?.char?.pendingModal || s?.char?.pendingNpcNaming || s?.char?.pendingMinor || s?.activeResolution);
 const isRunning = (s) => s.inRun && s.char?.alive && s.speed > 0 && !isWaiting(s) && !(s.postChoicePauseMs > 0);
 
 /*

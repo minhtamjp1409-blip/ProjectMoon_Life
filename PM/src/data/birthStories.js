@@ -195,6 +195,7 @@ export function makeNpc(role, rng, extra = {}) {
     id = generatePersonName(rng, { regionId, nest });
   }
   const arch = rollArchetype(rng);
+  const shouldPromptName = ['friend', 'lover', 'spouse'].includes(role) && !rest.nameVi && !rest.namedPrompted;
   return ensureNpcAgency({
     role,
     nameVi: id.name,
@@ -217,6 +218,8 @@ export function makeNpc(role, rng, extra = {}) {
     lastSeen: rest.lastSeen ?? (rest.metAge || 0),
     ageAtMeet: role === 'mentor' ? (rest.metAge || 0) + 20 : role === 'child' ? 0 : (rest.metAge || 0),
     memories: [],
+    needsNaming: shouldPromptName,
+    namedPrompted: Boolean(rest.namedPrompted),
     ...rest
   }, rng);
 }

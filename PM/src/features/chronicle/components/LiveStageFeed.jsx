@@ -1268,6 +1268,7 @@ export const LiveStageFeed = () => {
     confirmColorTitle,
     storedColor,
     confirmEgoName,
+    confirmNpcName,
     completeWorkshopCraft,
     startLife,
     abandonRun,
@@ -1300,6 +1301,7 @@ export const LiveStageFeed = () => {
       confirmColorTitle: s.confirmColorTitle,
       storedColor: s.bestowedColor,
       confirmEgoName: s.confirmEgoName,
+      confirmNpcName: s.confirmNpcName,
       completeWorkshopCraft: s.completeWorkshopCraft,
       startLife: s.startLife,
       abandonRun: s.abandonRun,
@@ -1326,6 +1328,10 @@ export const LiveStageFeed = () => {
   const [localColor, setBestowedColor] = useState(null);
   const bestowedColor = storedColor || localColor;
   const [egoInput, setEgoInput] = useState('Penitence of Ash');
+  const [npcNameInput, setNpcNameInput] = useState('');
+  useEffect(() => {
+    setNpcNameInput('');
+  }, [char.pendingNpcNaming?.role, char.pendingNpcNaming?.defaultNameVi]);
 
   useEffect(() => {
     if (char.pendingModal === 'color_title' && !storedColor && !localColor) {
@@ -1479,7 +1485,7 @@ export const LiveStageFeed = () => {
   useEffect(() => {
     const onKeyDown = (e) => {
       if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) return;
-      if (char.pendingModal) return;
+      if (char.pendingModal || char.pendingNpcNaming) return;
       // A scene owns the keys while it plays (its own capture listener stops them first; this is the second lock)
       if (useGameStore.getState().cutscene) return;
       if (performance.now() < armedAtRef.current) {
@@ -1611,7 +1617,7 @@ export const LiveStageFeed = () => {
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [char.alive, char.pendingYearPlan, char.pendingDungeon, char.pendingEvent, char.pendingContract, char.pendingMinor, char.stats.wealth, activeResolution, dismissResolution, postChoicePauseMs, clearPostChoicePause, speed, setSpeed, chooseMinor, selectEventChoice, selectContractApproach, chooseDungeonAction, fleeDungeon, isPrologueActive, revealNextBirthLog, peekBehind]);
+  }, [char.alive, char.pendingYearPlan, char.pendingDungeon, char.pendingEvent, char.pendingContract, char.pendingMinor, char.pendingModal, char.pendingNpcNaming, char.stats.wealth, activeResolution, dismissResolution, postChoicePauseMs, clearPostChoicePause, speed, setSpeed, chooseMinor, selectEventChoice, selectContractApproach, chooseDungeonAction, fleeDungeon, isPrologueActive, revealNextBirthLog, peekBehind]);
 
   // Forge mini-game: the cursor sweeps while the craft modal is open
   useEffect(() => {
@@ -1932,6 +1938,74 @@ export const LiveStageFeed = () => {
           >
             {t('Tiếp nhận Sắc Chỉ Hana', 'Accept Hana Decree')}
           </button>
+        </div>
+      </Modal>
+
+      <Modal
+        open={Boolean(char.pendingNpcNaming)}
+        footer={null}
+        closable={false}
+        centered
+        title={lang === 'en' ? (char.pendingNpcNaming?.titleEn || 'Name this person') : (char.pendingNpcNaming?.titleVi || 'Đặt tên người thân')}
+      >
+        <div className="stack" style={{ paddingTop: 4 }}>
+          <p className="muted">
+            {lang === 'en' ? char.pendingNpcNaming?.questionEn : char.pendingNpcNaming?.questionVi}
+          </p>
+          {(char.pendingNpcNaming?.traitVi || char.pendingNpcNaming?.traitEn) && (
+            <p className="muted" style={{ fontSize: 13 }}>
+              {lang === 'en' ? char.pendingNpcNaming?.traitEn : char.pendingNpcNaming?.traitVi}
+            </p>
+          )}
+          <div className="field">
+            <label htmlFor="npc-name-input">
+              {t('Tên (tối đa 24 ký tự)', 'Name (max 24 characters)')}
+            </label>
+            <input
+              id="npc-name-input"
+              className="input"
+              maxLength={24}
+              value={npcNameInput}
+              placeholder={lang === 'en' ? char.pendingNpcNaming?.defaultNameEn : char.pendingNpcNaming?.defaultNameVi}
+              onChange={(e) => setNpcNameInput(e.target.value.slice(0, 24))}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  audioEngine.playClick();
+                  confirmNpcName(npcNameInput);
+                }
+              }}
+            />
+          </div>
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            <button
+              type="button"
+              className="btn btn-primary btn-lg"
+              style={{ flex: 1, minHeight: 44 }}
+              onClick={() => {
+                audioEngine.playClick();
+                confirmNpcName(npcNameInput);
+              }}
+            >
+              {npcNameInput.trim()
+                ? t('Lưu tên này', 'Save this name')
+                : t(`Giữ tên ${char.pendingNpcNaming?.defaultNameVi || ''}`.trim(), `Keep ${char.pendingNpcNaming?.defaultNameEn || 'random name'}`.trim())}
+            </button>
+            {npcNameInput.trim() && (
+              <button
+                type="button"
+                className="btn btn-ghost btn-lg"
+                style={{ minHeight: 44 }}
+                onClick={() => {
+                  audioEngine.playClick();
+                  setNpcNameInput('');
+                  confirmNpcName('');
+                }}
+              >
+                {t('Để ngẫu nhiên', 'Keep random')}
+              </button>
+            )}
+          </div>
         </div>
       </Modal>
 

@@ -2891,6 +2891,32 @@ Chạy kiểm định mô phỏng 500 vòng đời với chiến lược ngườ
   - Kiểm toán 500 khoảnh khắc (`run_million_audit.mjs 500`): 0 lỗi / 5 nhóm toàn vẹn.
   - Production build: `npm run build` hoàn thành 100% sạch trong ~7.2s.
 
+##### 2.13. Đợt 121 (121a & 121b) & Dọn Biến `--hud-bottom`: Đặt Tên Người Thân & Cảnh Ngắn Nhắc Lại Lựa Chọn Cũ Của NPC
+* **Khắc phục điểm nhỏ sau review Đợt 120:**
+  - Trong `src/features/chronicle/components/CharacterDossierCard.jsx`: Thêm `document.documentElement.style.removeProperty('--hud-bottom');` vào hàm cleanup của `useEffect` để khi rời màn chơi sang trang Từ điển/Gia phả, biến `--hud-bottom` được xóa sạch, không giữ giá trị `209px` cũ.
+* **Giải pháp kiến trúc Đợt 121a (Đặt tên người thân `friend`, `lover`, `spouse`):**
+  1. `src/engine/npcNaming.js`, `src/data/birthStories.js`, `src/engine/director.js`, `src/engine/gameEngine.js`:
+     - Gắn cờ `needsNaming: true, namedPrompted: false` khi khởi tạo NPC vai `friend`, `lover`, `spouse` chưa có tên cố định. Save cũ không có cờ `needsNaming: true` sẽ không bao giờ bị hỏi lại.
+     - Khi `lover` cưới thành `spouse` (`promote`), giữ nguyên tên đã đặt và gán `needsNaming: false, namedPrompted: true` để mỗi NPC chỉ hỏi đúng 1 lần.
+     - `sanitizeNpcName` cắt khoảng trắng hai đầu và giới hạn tối đa 24 ký tự; nếu để trống thì giữ nguyên tên ngẫu nhiên.
+     - `applyNpcName` lưu tên vào cả `nameVi` và `nameEn`, đồng thời cập nhật dòng giới thiệu hiện tại (bao gồm `log_birth_3`) để khớp tên người chơi đặt; thẻ chương mất người thân (Đợt 116) tự động lấy đúng tên này.
+     - Khi bật `autoPlay`, `syncNpcNamingPrompt` tự động bỏ qua hộp thoại hỏi tên và giữ tên ngẫu nhiên.
+  2. `src/store/gameStore.js`, `src/layouts/MainLayout.jsx`, `src/features/chronicle/components/PlayBar.jsx`, `src/features/chronicle/components/LiveStageFeed.jsx`:
+     - Dừng vòng lặp thời gian và chặn toast thành tựu khi `pendingNpcNaming` đang mở; với bạn thuở nhỏ ở tuổi 0, đợi các dòng khai sinh (`pendingBirthLogs`) hiện xong mới mở hộp thoại hỏi `"Đứa trẻ đó tên gì? (để trống để ngẫu nhiên)"`.
+* **Giải pháp kiến trúc Đợt 121b (NPC quay lại bằng cảnh ngắn nhắc lựa chọn cũ):**
+  1. **Đo baseline 500 đời trước khi viết:** Trong 500 đời (`story_logic_audit.mjs`), có `404/500` đời có NPC thân; trung bình gặp lại NPC thân `4.43` lần/đời; trung bình cảnh nhắc lại lựa chọn cũ của NPC là `0.00` lần/đời.
+  2. `src/engine/director.js`, `src/engine/eventConditions.js`, `src/engine/yearPlanner.js`, `src/engine/gameEngine.js`:
+     - Ghi lại mọi lựa chọn có NPC tham gia vào `char.memory` kèm `choiceId`, `eventId`, `role` và `age: char.age`, đồng thời cập nhật `lastSceneAge: char.age` trên NPC.
+     - Hỗ trợ `need.memMinYears` (chỉ nhắc lại sau ít nhất 2 năm kể từ tuổi đưa ra lựa chọn, và chỉ khi đúng NPC đó còn sống với `metAge <= m.age`) cùng `need.allowSpouseFallback` (khi `lover` đã cưới thành `spouse` vẫn nhắc lại được kỷ niệm thời yêu nhau).
+     - Thực thi `once: true` cho `LIFE_DAILIES` trong `eligibleDailies` và `runPlanItem` để không cảnh nhắc lại nào lặp lại trong cùng một đời.
+  3. `src/data/lifeNpcCallbacks.js` & dữ liệu sự kiện NPC (`lifeMinors.js`, `lifeMinorsKids.js`, `lifeMinors5.js`, `lifeMinorsBonds.js`):
+     - Bổ sung 31 cảnh ngắn (`once: true`, 1–2 câu, `memMinYears: 2`) nhắc lại chính xác lựa chọn người chơi đã chọn cùng `friend`, `lover`, `spouse`, `partner`, `mentor`.
+* **Kết quả đo đạc & kiểm thử toàn diện (500 đời):**
+  - Audit 500 đời sau khi tinh chỉnh: `406/500` đời có NPC thân; trung bình gặp lại NPC thân **`11.16` lần/đời**; trung bình gặp **`4.85` cảnh nhắc lại lựa chọn cũ/đời có NPC thân** (vượt mục tiêu `>= 3.0`), và **`0` cảnh trùng lặp** trong cùng một đời.
+  - `story_logic_audit.mjs 500`: `0` vi phạm logic trên 81.736 khoảnh khắc.
+  - `voice_lint.mjs --fail` (33.445 chuỗi), `lint_story.mjs` (603 daily), `check_sentence_length.mjs --fail` (0/100 vi phạm): 0 lỗi, 0 cảnh báo.
+  - Unit test mới `tests/test_npc_naming_and_callbacks.mjs` và toàn bộ `npm test` + `npm run build` vượt qua 100%.
+
 ---
 #### 3. KIỂM ĐỊNH & BẢO ĐẢM TOÀN VẸN (VERIFICATION & INTEGRITY)
 * Tất cả các bộ kiểm thử tự động (`npm test`) bao gồm lint văn phong (`voice_lint.mjs`), chuẩn canon Project Moon (`lint_story.mjs`), và mô phỏng 500 khoảnh khắc đời người (`run_million_audit.mjs`) phải vượt qua 100% với 0 lỗi, 0 cảnh báo.

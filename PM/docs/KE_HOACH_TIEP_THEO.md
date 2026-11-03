@@ -250,9 +250,9 @@ Có bản tiếng Anh tương ứng.
 
 ---
 
-## Đợt 121: người chơi gắn với người thân
+## Đợt 121: người chơi gắn với người thân (ĐÃ HOÀN THÀNH)
 
-### 121a. Đặt tên người thân
+### 121a. Đặt tên người thân (ĐÃ XONG)
 
 **Lý do.** Web mẫu hỏi tên bạn thuở nhỏ và thú nuôi ("để trống để ngẫu nhiên"). Tên do chính người chơi đặt làm thẻ chương mất người thân (Đợt 116) nặng hơn nhiều.
 
@@ -268,17 +268,17 @@ Có bản tiếng Anh tương ứng.
 - Mỗi NPC chỉ hỏi một lần.
 - Load save cũ không lỗi.
 
-### 121b. NPC quay lại bằng cảnh ngắn nhắc lựa chọn cũ
+### 121b. NPC quay lại bằng cảnh ngắn nhắc lựa chọn cũ (ĐÃ XONG — TB 4,85 cảnh nhắc lại/đời có NPC thân, 0 trùng lặp)
 
 **Lý do.** Một nhân vật xuất hiện nhiều lần đáng giá hơn nhiều nhân vật chỉ xuất hiện một lần.
 
 **Cách làm.**
 1. Đây là tinh chỉnh tần suất và điều kiện của hệ NPC đang có, không dựng hệ mới.
 2. Ghi lại một số lựa chọn có NPC tham gia, kèm id lựa chọn và tuổi.
-3. Thêm khoảng 12 cảnh ngắn, mỗi cảnh 1–2 câu, nhắc lại đúng lựa chọn đó vài năm sau, kiểu "Hana vẫn giữ cây kẹo năm ấy cậu chia cho".
-4. Trước khi viết, đo bằng audit 500 đời: một đời trung bình gặp lại cùng một NPC bao nhiêu lần.
+3. Thêm khoảng 12 cảnh ngắn (đã viết 31 cảnh trong `src/data/lifeNpcCallbacks.js`), mỗi cảnh 1–2 câu, nhắc lại đúng lựa chọn đó vài năm sau, kiểu "Hana vẫn giữ cây kẹo năm ấy cậu chia cho".
+4. Trước khi viết, đo bằng audit 500 đời: một đời trung bình gặp lại cùng một NPC bao nhiêu lần (baseline trước khi viết: `4,43` lần gặp/đời, `0,00` cảnh nhắc lại/đời; sau khi hoàn thiện: `11,16` lần gặp/đời, **`4,85` cảnh nhắc lại/đời**, `0` trùng lặp).
 
-**Xong khi.** Trong audit, một đời có NPC thân trung bình gặp ít nhất 3 cảnh nhắc lại, và không cảnh nào lặp trong cùng một đời.
+**Xong khi.** Trong audit, một đời có NPC thân trung bình gặp ít nhất 3 cảnh nhắc lại (`4,85 >= 3,0`), và không cảnh nào lặp trong cùng một đời (`0`).
 
 ---
 

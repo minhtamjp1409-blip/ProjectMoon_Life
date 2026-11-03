@@ -729,6 +729,7 @@ export const CharacterDossierCard = () => {
     return () => {
       ro?.disconnect();
       window.removeEventListener('resize', updateHudBottom);
+      document.documentElement.style.removeProperty('--hud-bottom');
     };
   }, []);
   React.useEffect(() => {

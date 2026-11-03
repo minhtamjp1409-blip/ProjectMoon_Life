@@ -77,12 +77,13 @@ import { EXPANSION_LIFE_MINORS, EXPANSION_LIFE_DAILIES } from '../data/lifeMinor
 import { WING_PARITY_MINORS, WING_PARITY_DAILIES } from '../data/eventsWingParityExpansion.js';
 import { DISTORTION_PARITY_MINORS, DISTORTION_PARITY_DAILIES } from '../data/eventsDistortionParityExpansion.js';
 import { COLOR_EXPANSION_MINORS, COLOR_EXPANSION_DAILIES } from '../data/eventsColorExpansionSuite.js';
+import { NPC_CHOICE_CALLBACKS } from '../data/lifeNpcCallbacks.js';
 import { cityArchiveAPI } from '../services/api/cityArchiveAPI.js';
 
 const FINGER_MISSION_CHANCE = 0.4;
 
 export const LIFE_MINORS = [...MINORS_FIRST, ...LIFE_MINORS_2, ...LIFE_MINORS_3, ...LIFE_MINORS_4, ...LIFE_MINORS_5, ...LIFE_MINORS_WING, ...LIFE_MINORS_SEEDS, ...WORKSHOP_VISIT_MINORS, ...FINGER_MINORS, ...LIFE_MINORS_KIDS, ...LIFE_MINORS_CONTRACTS, ...LIFE_MINORS_BONDS, ...THREAD_MINORS, ...FORBIDDEN_MINORS, ...SCAR_CALLBACKS, ...LIFE_CAREER_OPPORTUNITIES, ...ANNUAL_MERIT_OPPORTUNITIES, ...EXPANSION_LIFE_MINORS, ...WING_PARITY_MINORS, ...DISTORTION_PARITY_MINORS, ...COLOR_EXPANSION_MINORS];
-export const LIFE_DAILIES = [...DAILIES_FIRST, ...LIFE_DAILIES_3, ...EXPANDED_DAILIES, ...DAILIES_2, ...EXPANSION_LIFE_DAILIES, ...WORKSHOP_VISIT_DAILIES, ...FINGER_DAILIES, ...WING_PARITY_DAILIES, ...DISTORTION_PARITY_DAILIES, ...COLOR_EXPANSION_DAILIES];
+export const LIFE_DAILIES = [...DAILIES_FIRST, ...LIFE_DAILIES_3, ...EXPANDED_DAILIES, ...DAILIES_2, ...EXPANSION_LIFE_DAILIES, ...WORKSHOP_VISIT_DAILIES, ...FINGER_DAILIES, ...WING_PARITY_DAILIES, ...DISTORTION_PARITY_DAILIES, ...COLOR_EXPANSION_DAILIES, ...NPC_CHOICE_CALLBACKS];
 import {
   directorWeight,
   markTheme,
@@ -220,7 +221,10 @@ export function splitTitle(text) {
 // Everything that fits the character. Repeats are discouraged by weight (see weightOf), not forbidden,
 // so a small pool still draws at random instead of cycling in a fixed order.
 function eligibleDailies(char) {
-  return LIFE_DAILIES.filter((d) => matchesEventContext(d, char));
+  return LIFE_DAILIES.filter((d) => {
+    if (d.once && (char.seenEvents || []).includes(d.id)) return false;
+    return matchesEventContext(d, char);
+  });
 }
 
 function eligibleMinors(char) {
@@ -427,9 +431,15 @@ const weightOf = (char) => (e) => {
   }
   // The longer you have not seen someone, the more likely a quiet moment with them comes up
   if (e.keepRole) {
-    const npc = char.npcs?.[e.keepRole];
-    const apart = npc ? Math.max(0, char.age - (npc.lastSeen ?? npc.metAge ?? char.age)) : 0;
-    weight *= 1 + Math.min(3, apart * 0.75);
+    const npc = char.npcs?.[e.keepRole] || (e.keepRole === 'lover' && e.need?.allowSpouseFallback ? char.npcs?.spouse : null);
+    const apart = npc ? Math.max(0, char.age - (npc.lastSceneAge ?? npc.metAge ?? char.age)) : 0;
+    weight *= 1 + Math.min(3.5, apart * 0.85);
+  }
+  if (e.need?.npc && !(char.seenEvents || []).includes(e.id) && e.choices) {
+    const npc = char.npcs?.[e.need.npc];
+    if (npc && npcActive(npc) && (char.age - (npc.lastSceneAge ?? -99)) >= 2) {
+      weight *= 12;
+    }
   }
   const opportunity = careerOpportunity(char);
   if (opportunity?.ids?.includes(e.id)) weight *= 1.5 + opportunity.shortage;
@@ -653,7 +663,15 @@ export function planYear(charState, rng) {
   const roll = rng();
   const noneP = Math.min(0.45, Math.max(0.08, 0.25 / drama));
   const twoP = Math.min(0.45, Math.max(0.12, 0.25 * drama));
-  const targetMinorCount = age <= 2 ? 0 : age < 7 ? (roll < 0.45 * drama ? 1 : 0) : roll < noneP ? 0 : roll < 1 - twoP ? 1 : 2;
+  const closeActiveRoles = ['friend', 'lover', 'spouse', 'partner', 'mentor'].filter((r) => npcActive(char.npcs?.[r]));
+  const unseenNpcMinors = age >= 4
+    ? eligibleMinors(char).filter((m) => m.need?.npc && closeActiveRoles.includes(m.need.npc) && !(char.seenEvents || []).includes(m.id) && !scheduledKey.some((it) => it.id === m.id))
+    : [];
+  const dueCloseNpcScene = unseenNpcMinors.some((m) => {
+    const npc = char.npcs?.[m.need.npc];
+    return npc && (age - (npc.lastSceneAge ?? -99)) >= 2;
+  });
+  const targetMinorCount = age <= 2 ? 0 : age < 7 ? ((roll < 0.45 * drama || (dueCloseNpcScene && roll < 0.85)) ? 1 : 0) : roll < noneP ? 0 : roll < 1 - twoP ? 1 : 2;
   const scheduledMinors = scheduledKey.filter((it) => it.kind === 'minor').length;
   const pickedMinors = [];
   for (let i = scheduledMinors; i < targetMinorCount; i++) {
@@ -733,17 +751,22 @@ export function planYear(charState, rng) {
       }
     }
   } else {
+    let scheduledNpcCallback = false;
     for (let s = 0; s < 4; s++) {
       if (slots[s] === null) {
         const alreadyPickedIds = slots.filter(Boolean).map((sl) => sl.id);
         let available = poolDailies.filter((d) => !alreadyPickedIds.includes(d.id));
         if (available.length === 0) {
-          const allAgeDailies = LIFE_DAILIES.filter((d) => matchesEventContext(d, char));
+          const allAgeDailies = LIFE_DAILIES.filter((d) => !(d.once && (char.seenEvents || []).includes(d.id)) && matchesEventContext(d, char));
           available = allAgeDailies.filter((d) => !alreadyPickedIds.includes(d.id));
         }
-        const pick = pickWeighted(available, weightOf(char), rng) || available[0];
+        const callbackCandidates = !scheduledNpcCallback ? available.filter((d) => d.tags?.includes('npc_callback')) : [];
+        const pickPool = callbackCandidates.length > 0 ? callbackCandidates : available;
+        const pick = pickWeighted(pickPool, weightOf(char), rng) || pickPool[0];
         if (pick) {
-          slots[s] = { kind: 'daily', id: pick.id };
+          const isCallback = Boolean(pick.tags?.includes('npc_callback'));
+          if (isCallback) scheduledNpcCallback = true;
+          slots[s] = { kind: 'daily', id: pick.id, callback: isCallback };
           remember(char, pick.id);
         }
       }
@@ -751,7 +774,7 @@ export function planYear(charState, rng) {
   }
 
   // A quiet year may leave one plain slot empty; a busy one adds a second small moment to a season
-  const isPlain = (it) => it && (it.kind === 'daily');
+  const isPlain = (it) => it && (it.kind === 'daily') && !it.callback;
   const extras = {};
   if (age > 4) {
     const plainSlots = [0, 1, 2, 3].filter((s) => isPlain(slots[s]));
@@ -1093,10 +1116,13 @@ export function runPlanItem(charState, item, rng) {
 
   if (item.kind === 'daily') {
     const def = LIFE_DAILIES.find((d) => d.id === item.id);
-    if (!def || !matchesEventContext(def, char)) return char;
+    if (!def || !matchesEventContext(def, char) || (def.once && (char.seenEvents || []).includes(def.id))) return char;
+    if (def.once) {
+      char.seenEvents = [...(char.seenEvents || []), def.id];
+    }
     const dailyFx = PRINTED_NUMBERS.test(def.vi || '') ? def.fx : varyEffects(def.fx, rng, traitsOf(char));
     const deltas = applyFx(char, dailyFx);
-    applyChoiceExtras(char, [def], deltas, rng);
+    applyChoiceExtras(char, [def], deltas, rng, { eventId: def.id, role: def.need?.npc || def.keepRole || null });
     markTheme(char, def);
     const isPureLore = !def.fx || Object.keys(def.fx).length === 0;
     const logType = def.tone || (isPureLore ? 'lore' : 'daily');
@@ -1256,7 +1282,11 @@ export function resolveMinor(charState, idx, rng) {
   if (addScar(char, scar)) {
     deltas.push({ k: 'scar', name: scar });
   }
-  applyChoiceExtras(char, outcome === choice ? [choice] : [choice, outcome], deltas, rng);
+  applyChoiceExtras(char, outcome === choice ? [choice] : [choice, outcome], deltas, rng, {
+    eventId: prompt.id,
+    choiceId: idx >= 0 ? `${prompt.id}_c${idx}` : `${prompt.id}_ignore`,
+    role: currentDef?.need?.npc || null
+  });
   if (outcome.setJob || choice.setJob) {
     const nextJob = outcome.setJob || choice.setJob;
     if (nextJob === 'Wing Employee' && char.job !== 'Wing Employee') char.wingEmployerId = char.regionId;
