@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Tooltip, Modal, Dropdown } from 'antd';
 import { Play, Pause, SkipForward, Bot, RotateCcw, Save, Check, AlertTriangle, Volume2, VolumeX, MoreHorizontal, ShoppingBag, Sparkles } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
-import { useGameStore } from '../../../store/gameStore';
+import { useGameStore, canSkimSpeed } from '../../../store/gameStore';
 import { SEASONS, DUNGEON_DEFINITIONS } from '../../../engine/gameEngine';
 import { gauntletRoute } from '../../../engine/dungeonCombat';
 import { WorkshopDepotModal } from './WorkshopDepotModal';
@@ -11,11 +11,13 @@ import { DRAMA_PHASES } from '../../../engine/weaverAI';
 import { audioEngine } from '../../../engine/audioEngine';
 import { useT } from '../../../i18n';
 
-const SPEEDS = [
+export const BASE_SPEEDS = [
   { spd: 1, secs: 30 },
   { spd: 2, secs: 15 },
   { spd: 3, secs: 10 }
 ];
+export const SKIM_SPEED = { spd: 8, secs: 4 };
+export const SPEEDS = BASE_SPEEDS;
 
 const isWaiting = (s) => Boolean(s?.char?.pendingYearPlan || s?.char?.pendingLead || s?.char?.pendingEvent || s?.char?.pendingContract || s?.char?.pendingDungeon || s?.char?.pendingModal || s?.char?.pendingNpcNaming || s?.char?.pendingMinor || s?.activeResolution);
 const isRunning = (s) => s.inRun && s.char?.alive && s.speed > 0 && !isWaiting(s) && !(s.postChoicePauseMs > 0);
@@ -228,6 +230,8 @@ export const PlayBar = () => {
   const itemP = nextItem ? nextItem.t * 100 : null;
   const isNextEvent = itemP !== null && itemP > (yearProgress || 0) + 0.2 && itemP <= nextSeasonBoundary;
   const isNextYear = !isNextEvent && nextSeasonBoundary >= 100;
+  const allowSkim = useGameStore(canSkimSpeed);
+  const speeds = allowSkim ? [...BASE_SPEEDS, SKIM_SPEED] : BASE_SPEEDS;
 
   const nextSeasonObj = SEASONS[Math.min(3, curSeasonIdx + 1)];
   const stepLabel = isNextEvent
@@ -244,7 +248,11 @@ export const PlayBar = () => {
 
   const cycleSpeed = () => {
     audioEngine.playClick();
-    const next = speed === 1 ? 2 : (speed === 2 ? 3 : 1);
+    let next;
+    if (speed === 1) next = 2;
+    else if (speed === 2) next = 3;
+    else if (speed === 3) next = allowSkim ? 8 : 1;
+    else next = 1;
     handleSetSpeed(next);
   };
 
@@ -384,16 +392,18 @@ export const PlayBar = () => {
             </button>
 
             <div className="speeds playbar-desktop-speeds" role="group" aria-label={t('Tốc độ', 'Speed')}>
-              {SPEEDS.map((s) => (
+              {speeds.map((s) => (
                 <button
                   key={s.spd}
                   type="button"
                   className={speed === s.spd ? 'is-on' : ''}
                   aria-pressed={speed === s.spd}
                   onClick={() => handleSetSpeed(s.spd)}
-                  title={t(`${s.secs} giây mỗi năm (phím [ / ])`, `${s.secs}s per year ([ / ] keys)`)}
+                  title={s.spd === 8
+                    ? t('Lướt nhanh 8× khi chơi lại (chỉ chạy trong năm yên ả)', 'Skim speed 8× for replays (only runs during quiet stretches)')
+                    : t(`${s.secs} giây mỗi năm (phím [ / ])`, `${s.secs}s per year ([ / ] keys)`)}
                 >
-                  {s.spd}×
+                  {s.spd === 8 ? (lang === 'en' ? 'Skim' : 'Lướt') : `${s.spd}×`}
                 </button>
               ))}
             </div>
@@ -402,10 +412,12 @@ export const PlayBar = () => {
               type="button"
               className="btn-speed-mobile"
               onClick={cycleSpeed}
-              aria-label={t(`Tốc độ ${speed || 1}x. Bấm để đổi tốc độ`, `Speed ${speed || 1}x. Tap to cycle speed`)}
-              title={t('Bấm để đổi tốc độ (1x/2x/3x)', 'Tap to cycle speed (1x/2x/3x)')}
+              aria-label={t(`Tốc độ ${speed === 8 ? (lang === 'en' ? 'Skim' : 'Lướt') : `${speed || 1}×`}. Bấm để đổi tốc độ`, `Speed ${speed === 8 ? 'Skim' : `${speed || 1}×`}. Tap to cycle speed`)}
+              title={allowSkim
+                ? t('Bấm để đổi tốc độ (1x/2x/3x/Lướt)', 'Tap to cycle speed (1x/2x/3x/Skim)')
+                : t('Bấm để đổi tốc độ (1x/2x/3x)', 'Tap to cycle speed (1x/2x/3x)')}
             >
-              {speed || 1}×
+              {speed === 8 ? (lang === 'en' ? 'Skim' : 'Lướt') : `${speed || 1}×`}
             </button>
 
             <span className="divider" />

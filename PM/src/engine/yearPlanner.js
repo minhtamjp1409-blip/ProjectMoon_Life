@@ -1101,7 +1101,7 @@ export function runPlanItem(charState, item, rng) {
           t: item.t,
           vi: interpolateText(care.vi, char),
           en: interpolateText(care.en, char),
-          choices: care.choices.map((choice) => ({ vi: interpolateText(choice.vi, char), en: interpolateText(choice.en, char), fx: choice.fx, out: choice.out, need: choice.need, costAhn: choice.costAhn })),
+          choices: care.choices.map((choice) => ({ vi: interpolateText(choice.vi, char), en: interpolateText(choice.en, char), fx: choice.fx, out: choice.out, need: choice.need, costAhn: choice.costAhn, ...(choice.lasting ? { lasting: { vi: interpolateText(choice.lasting.vi, char), en: interpolateText(choice.lasting.en, char) } } : {}) })),
           ignore: care.ignore || null,
           remainingMs: minorWindowFor(char)
         };
@@ -1142,7 +1142,7 @@ export function runPlanItem(charState, item, rng) {
       annualMerit: Boolean(item.annualMerit),
       vi: interpolateText(def.vi, char),
       en: interpolateText(def.en, char),
-      choices: def.choices.map((c) => ({ vi: interpolateText(c.vi, char), en: interpolateText(c.en, char), fx: c.fx, out: c.out, need: c.need, costAhn: c.costAhn })),
+      choices: def.choices.map((c) => ({ vi: interpolateText(c.vi, char), en: interpolateText(c.en, char), fx: c.fx, out: c.out, need: c.need, costAhn: c.costAhn, ...(c.lasting ? { lasting: { vi: interpolateText(c.lasting.vi, char), en: interpolateText(c.lasting.en, char) } } : {}) })),
       ignore: def.ignore || null,
       remainingMs: item.forbiddenEncounter ? FIRST_MINOR_WINDOW_MS : minorWindowFor(char)
     };
@@ -1198,7 +1198,7 @@ export function runPlanItem(charState, item, rng) {
       char.pendingEvent = {
         ...event,
         // Choice labels name people too ({spouse}, {parentName}), so they get the same treatment as the text
-        choices: (event.choices || []).map((c) => ({ ...c, labelVi: interpolateText(c.labelVi, char), labelEn: interpolateText(c.labelEn, char) })),
+        choices: (event.choices || []).map((c) => ({ ...c, labelVi: interpolateText(c.labelVi, char), labelEn: interpolateText(c.labelEn, char), ...(c.lasting ? { lasting: { vi: interpolateText(c.lasting.vi, char), en: interpolateText(c.lasting.en, char) } } : {}) })),
         titleVi: vi.title,
         titleEn: en.title,
         displayVi: vi.body + examNoteVi,

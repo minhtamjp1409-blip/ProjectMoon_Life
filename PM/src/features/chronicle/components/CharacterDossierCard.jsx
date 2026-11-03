@@ -8,7 +8,7 @@ import { useGameStore } from '../../../store/gameStore';
 import { useThemeStore } from '../../../store/themeStore';
 import { REGIONS, FAMILIES, FINGER_RANKS } from '../../../data/worldData';
 import { FATE_OMENS } from '../../../engine/weaverAI';
-import { SEASONS, WING_RANKS, getNextCareerMilestone, getEgoReadiness } from '../../../engine/gameEngine';
+import { SEASONS, WING_RANKS, getNextCareerMilestone, getEgoReadiness, getPromotionProgress } from '../../../engine/gameEngine';
 import { audioEngine } from '../../../engine/audioEngine';
 import { gameFeel } from '../../../engine/gameFeel';
 import { useT } from '../../../i18n';
@@ -165,6 +165,52 @@ const Stat = ({ label, value, unit = '/100', color, flag, riseIsBad = false, too
           </div>
         )}
       </div>
+    </div>
+  );
+};
+
+// Đợt 122b: Thanh tiến độ thăng chức nằm ngoài mục gập
+export const PromotionProgressBar = ({ progress, t, lang }) => {
+  if (!progress) return null;
+  const title = lang === 'en' ? progress.titleEn : progress.titleVi;
+  const summary = lang === 'en' ? progress.summaryEn : progress.summaryVi;
+  const labelText = lang === 'en' ? progress.labelEn : progress.labelVi;
+  return (
+    <div
+      className={`promo-progress-stat ${progress.isEligible ? 'is-ready' : ''}`}
+      aria-label={`${title}: ${progress.meritCurrent}/${progress.meritTarget}`}
+    >
+      <div className="promo-progress-head">
+        <span className="promo-progress-label">
+          <i
+            className="dot"
+            style={{ background: progress.isEligible ? 'var(--gold)' : 'var(--s-rep)' }}
+          />
+          <span className="promo-progress-heading">{title}</span>
+          {progress.isEligible && (
+            <span className="stat-flag is-ready-tag">{t('Đủ điều kiện', 'Eligible')}</span>
+          )}
+        </span>
+        <b className="promo-progress-num num">
+          {progress.meritCurrent}/{progress.meritTarget}
+        </b>
+      </div>
+      <div
+        className="bar is-thin"
+        role="progressbar"
+        aria-valuenow={progress.pct}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-label={labelText}
+      >
+        <i
+          style={{
+            transform: `scaleX(${Math.max(0, Math.min(100, progress.pct)) / 100})`,
+            '--c': progress.isEligible ? 'var(--gold)' : 'var(--s-rep)'
+          }}
+        />
+      </div>
+      {summary && <div className="promo-progress-sub">{summary}</div>}
     </div>
   );
 };
@@ -394,6 +440,7 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeT
   const [activeNpcRole, setActiveNpcRole] = useState(null);
   const { health, sanity, wealth, network, rep } = char.stats;
   const egoReadiness = getEgoReadiness(char);
+  const promoProgress = getPromotionProgress(char);
   const pressureNotable = (char.heat || 0) >= 30 || (char.resonance || 0) >= 50 || (char.taboo || 0) >= 1
     || (char.job === 'Wing Employee' && ((char.standing ?? 50) <= 40 || (char.leverage || 0) >= 40));
 
@@ -421,6 +468,10 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeT
               <Stat label={t('Danh tiếng', 'Reputation')} value={rep} color="var(--s-rep)" />
             </div>
           </details>
+
+          {promoProgress && (
+            <PromotionProgressBar progress={promoProgress} t={t} lang={lang} />
+          )}
         </section>
       )}
 

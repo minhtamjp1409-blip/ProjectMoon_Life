@@ -244,6 +244,10 @@ export const LIFE_MINORS = [
         { sanity: -3 },
         {
           mem: 'burned_prescript',
+          lasting: {
+            vi: 'Trái lệnh Prescript, sứ giả The Index sẽ tìm đến đòi nợ sau 6 năm',
+            en: 'Defies a Prescript; an Index Proselyte will come to collect the debt in 6 years'
+          },
           later: [{ id: 'm_index_remembers', years: 6, reasonVi: 'Index nhớ tờ Prescript bị đốt', reasonEn: 'The Index remembers the burned Prescript' }]
         }
       )
@@ -308,6 +312,10 @@ export const LIFE_MINORS = [
         { rep: 2, sanity: -3 },
         {
           mem: 'reported_maid',
+          lasting: {
+            vi: 'Đẩy gia đình người giúp việc ra Backstreets, oán thù sẽ quay lại sau 9 năm',
+            en: 'Exiles the maid’s family to the Backstreets; the grudge returns in 9 years'
+          },
           later: [{ id: 'm_maid_child', years: 9, reasonVi: 'Đứa con của người giúp việc bị đuổi', reasonEn: 'The dismissed maid’s child' }]
         }
       )
@@ -373,6 +381,10 @@ export const LIFE_MINORS = [
         {},
         {
           bond: { friend: -4 },
+          lasting: {
+            vi: '{friend} tự đi nhận việc nguy hiểm một mình, biến cố sẽ ập đến sau 2 năm',
+            en: '{friend} takes on dangerous Office work alone, leading to a crisis in 2 years'
+          },
           later: [{ id: 'm_friend_injured', years: 2, reasonVi: '{friend} đi làm cho Office một mình', reasonEn: '{friend} went to work for the Office alone' }]
         }
       )
@@ -443,7 +455,13 @@ export const LIFE_MINORS = [
         'Sự thờ ơ lạnh lùng của bạn càng khiến nó tức tối lồng lộn hơn. Kể từ đó, nó luôn rình rập và để mắt soi mói từng đường đi nước bước của bạn.',
         'Your icy indifference infuriated them further. From that day on, they tracked your every move with bitter obsession.',
         { sanity: 1 },
-        { npc: { role: 'rival', bond: 30 } }
+        {
+          npc: { role: 'rival', bond: 30 },
+          lasting: {
+            vi: 'Tạo kẻ đối đầu bám theo cạnh tranh với bạn trong nhiều năm tới',
+            en: 'Creates a persistent rival who competes with you in the years ahead'
+          }
+        }
       )
     ],
     I('Bạn chưa kịp có phản ứng gì thì nó đã tự coi bạn là kẻ thù không đội trời chung.', 'Before you could react, they had already branded you their sworn adversary.'),
@@ -463,7 +481,13 @@ export const LIFE_MINORS = [
         'Hai người say sưa trò chuyện về đủ thứ trên đời cho đến tận khi xưởng giặt đóng cửa. Lần đầu tiên bạn quên bẵng đi giờ giới nghiêm nguy hiểm.',
         'You talked until the steam vats cooled and doors locked. For the first time in memory, you forgot all about curfew.',
         { sanity: 4 },
-        { npc: { role: 'lover', bond: 55 } }
+        {
+          npc: { role: 'lover', bond: 55 },
+          lasting: {
+            vi: 'Có người thương đồng hành; khi tâm trí mỏi mệt mỗi năm hồi thêm SP cho tới khi chia tay',
+            en: 'Gains a lover companion; restores extra SP each year when strained until parting'
+          }
+        }
       ),
       C(
         'Ngại ngùng chọn ngồi chỗ khác',
@@ -757,7 +781,14 @@ export const LIFE_MINORS = [
         'Căn phòng trọ chật chội đến mức hai người phải thay phiên nhau đứng. Nhưng bạn cảm thấy hạnh phúc và bình yên hơn bất kỳ lúc nào trong đời.',
         'The room was so narrow you took turns standing, yet your heart overflowed with rare, sacred warmth.',
         { sanity: 8, wealth: 2 },
-        { promote: { from: 'lover', to: 'spouse' }, bond: { lover: 10 } }
+        {
+          promote: { from: 'lover', to: 'spouse' },
+          bond: { lover: 10 },
+          lasting: {
+            vi: 'Gắn kết thành bạn đời; mỗi năm đỡ hao hụt tâm trí và nâng đỡ nhau qua biến cố tới khi chia lìa',
+            en: 'Becomes your spouse; eases yearly mental strain and stands by you through crises until parted'
+          }
+        }
       ),
       C(
         'Ngập ngừng bảo chưa phải lúc',
@@ -785,7 +816,13 @@ export const LIFE_MINORS = [
         'Bạn lập tức đăng ký làm thêm các ca đêm và chắt bóp từng đồng Ahn một. Lần đầu tiên trong đời, bạn thực sự sợ hãi cái chết.',
         'You took on overtime shifts, counting every single coin. For the first time in memory, you truly feared death.',
         { sanity: 5, wealth: -4 },
-        { npc: { role: 'child', bond: 80 } }
+        {
+          npc: { role: 'child', bond: 80 },
+          lasting: {
+            vi: 'Đón con chào đời; gắn bó suốt đời và mỗi năm xoa dịu tâm trí khi mỏi mệt',
+            en: 'Welcomes a child into your life; a lifelong bond that soothes your mind each year'
+          }
+        }
       ),
       C(
         'Lo lắng cho tương lai',
@@ -793,7 +830,13 @@ export const LIFE_MINORS = [
         'Bạn ngồi đếm đi đếm lại số then khóa trên cánh cửa suốt cả đêm dài. Đến sáng, bạn quyết định trích tiền mua thêm hai chiếc khóa nữa.',
         'You spent all night counting the iron bolts on the door. By sunrise, you resolved to purchase two more padlocks.',
         { sanity: -2, wealth: -2 },
-        { npc: { role: 'child', bond: 65 } }
+        {
+          npc: { role: 'child', bond: 65 },
+          lasting: {
+            vi: 'Đón con chào đời; thêm người thân đi cùng bạn qua các năm sau',
+            en: 'Welcomes a child into your life; a family companion across the years ahead'
+          }
+        }
       )
     ],
     I('Bạn chỉ lặng lẽ ôm chặt lấy {lover} vào lòng trong im lặng nghẹn ngào.', 'You held {lover} tight in your arms without speaking a single word.'),

@@ -114,6 +114,10 @@ export const EXPANSION_STORY_EVENTS = [
       {
         labelVi: 'Cắt máu ăn thề, kết nghĩa huynh đệ vào sinh ra tử cùng {partner}',
         labelEn: 'Cut palms and swear a blood oath of brotherhood with {partner}',
+        lasting: {
+          vi: 'Kết nghĩa sinh tử với {partner}; giữ Bond bền vững và đồng hành qua các hợp đồng tới cuối đời',
+          en: 'Swears a life-and-death pact with {partner}; anchors Bond and stands together across contracts'
+        },
         resultVi: 'Hai bàn tay nắm chặt rỉ máu; sự tin tưởng tuyệt đối giữa The City lạnh giá là thứ tài sản quý giá hơn vạn lượng Ahn. Từ nay, hiểm nguy nào cũng có hai người cùng gánh.',
         resultEn: 'Clasping bleeding palms, absolute trust in this frozen City proved more precious than ten thousand Ahn. From now on, every danger is met together.',
         effects: { sanity: +18, rep: +15 },
@@ -269,6 +273,10 @@ export const EXPANSION_STORY_EVENTS = [
       {
         labelVi: 'Lạnh lùng đáp trả rằng thời thế đã đổi và đạo lý của họ đã lỗi thời',
         labelEn: 'Coldly reply that times have changed and their ethics are obsolete',
+        lasting: {
+          vi: 'Đoạn tuyệt vĩnh viễn với {mentor}, khép lại chuỗi chỉ dẫn của sư phụ',
+          en: 'Severs ties permanently with {mentor}, ending all future mentor guidance'
+        },
         resultVi: '{mentor} nhìn bạn bằng ánh mắt cay đắng tột cùng rồi quay lưng bước đi: "Từ nay, đừng bao giờ nhận là đệ tử của ta." Mối quan hệ thầy trò chính thức tan vỡ.',
         resultEn: '{mentor} stared with bitter sorrow, then turned their back: "From this hour, never claim to be my student." The bond between master and disciple shattered.',
         effects: { sanity: -15, rep: +10 },
@@ -393,6 +401,10 @@ export const EXPANSION_STORY_EVENTS = [
       {
         labelVi: 'Bỏ vũ khí xuống, ôm chặt lấy {spouse} và hứa sẽ dành nhiều thời gian hơn',
         labelEn: 'Set weapons down, hold {spouse} close, and promise more presence',
+        lasting: {
+          vi: 'Giữ lại mái ấm với {spouse}, tiếp tục đồng hành và hồi phục SP mỗi năm',
+          en: 'Preserves your marriage with {spouse}, keeping yearly companionship and SP recovery'
+        },
         resultVi: 'Vòng tay ấm áp xoa dịu những tủi hờn chất chứa bấy lâu. {spouse} bật khóc trên vai bạn và dỡ lại đồ đạc vào tủ. Mái ấm mong manh tạm thời được cứu vãn.',
         resultEn: 'A warm embrace softened months of neglected sorrow. {spouse} wept against your shoulder and unpacked the luggage. The fragile hearth was saved for now.',
         effects: { sanity: +12, rep: -2 },
@@ -402,6 +414,10 @@ export const EXPANSION_STORY_EVENTS = [
       {
         labelVi: 'Lặng lẽ gật đầu đồng ý chia tay, chúc họ tìm được bình yên',
         labelEn: 'Quietly nod in agreement to part ways, wishing them peaceful days',
+        lasting: {
+          vi: 'Chia tay vĩnh viễn với {spouse}, mất chỗ dựa tinh thần mỗi năm từ người bạn đời',
+          en: 'Parts ways permanently with {spouse}, losing yearly companion comfort'
+        },
         resultVi: '{spouse} kéo vali bước ra khỏi ngõ, không một lần ngoái lại. Căn phòng trở nên rộng thênh thang và lạnh ngắt trong tiếng mưa rả rích.',
         resultEn: '{spouse} rolled the suitcase down the alley without looking back. The room turned cavernous and freezing beneath steady rain.',
         effects: { sanity: -20 },

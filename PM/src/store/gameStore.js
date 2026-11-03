@@ -406,10 +406,20 @@ function flushAchievementToasts(state) {
   }
 }
 
+export const canSkimSpeed = (state) => {
+  if (!state) return false;
+  if (state.autoPlay) return true;
+  if (state.pastLives && state.pastLives.length >= 1) return true;
+  if ((state.char?.generation || 1) > 1) return true;
+  if ((state.char?.lineage?.generation || 1) > 1) return true;
+  return false;
+};
+
 export const useGameStore = create((set, get) => ({
   inRun: false,
   char: initialChar,
   speed: 1,
+  preSkimSpeed: 1,
   autoPlay: false,
   yearProgress: 0,
   minorRemainingMs: 0,
@@ -440,7 +450,19 @@ export const useGameStore = create((set, get) => ({
   pendingLegacy: savedMeta.pastLives.find((life) => !life.endingId) || null,
 
   setConfigField: (field, value) => set({ [field]: value }),
-  setSpeed: (speed) => set((s) => ({ speed, ...(speed === 0 ? { postChoicePauseMs: 0 } : {}) })),
+  setSpeed: (speed) => set((s) => {
+    let preSkimSpeed = s.preSkimSpeed || 1;
+    if (speed === 8) {
+      if (s.speed > 0 && s.speed !== 8) preSkimSpeed = s.speed;
+    } else if (speed > 0) {
+      preSkimSpeed = speed;
+    }
+    return {
+      speed,
+      preSkimSpeed,
+      ...(speed === 0 ? { postChoicePauseMs: 0 } : {})
+    };
+  }),
   toggleAutoPlay: () => set((s) => {
     const nextAuto = !s.autoPlay;
     if (nextAuto && s.char?.pendingNpcNaming) {
@@ -775,8 +797,21 @@ export const useGameStore = create((set, get) => ({
       if (cutscene.cut === 'full') markCutsceneSeen(cutscene.id);
       armCutsceneWatchdog(get, cutscene);
     }
+    const isMajorOrMinorOrNpc = Boolean(
+      withD.pendingMinor ||
+      withD.pendingEvent ||
+      withD.pendingContract ||
+      withD.pendingDungeon ||
+      withD.pendingModal ||
+      withD.pendingNpcNaming
+    );
+    const hasChapter = Boolean(chapter);
+    const curSpeed = extra.speed ?? get().speed;
+    const shouldRevertSkim = curSpeed === 8 && (isMajorOrMinorOrNpc || hasChapter);
+    const nextSpeed = shouldRevertSkim ? (get().preSkimSpeed || 1) : curSpeed;
     set({
       char: withD,
+      speed: nextSpeed,
       bestowedColor,
       ...(cutscene ? { cutscene } : {}),
       ...(fx ? { stageFx: { kind: fx, at: Date.now() } } : {}),
@@ -886,6 +921,7 @@ export const useGameStore = create((set, get) => ({
       char: nextChar,
       inRun: true,
       speed: hasBirthLogs ? 0 : 1,
+      preSkimSpeed: 1,
       yearProgress: 0,
       stageFx: null,
       cutscene: null,
@@ -918,7 +954,12 @@ export const useGameStore = create((set, get) => ({
       get().commit(c, nextChar, { postChoicePauseMs: 0 });
       return;
     }
-    if (c.pendingEvent || c.pendingContract || c.pendingDungeon || c.pendingModal || c.pendingNpcNaming) return;
+    if (c.pendingEvent || c.pendingContract || c.pendingDungeon || c.pendingModal || c.pendingNpcNaming) {
+      if (s.speed === 8) {
+        set({ speed: s.preSkimSpeed || 1 });
+      }
+      return;
+    }
 
     // Post-choice reading pause: gives ~3 seconds on outer screen before timeline flows
     if (s.postChoicePauseMs > 0) {
@@ -930,6 +971,9 @@ export const useGameStore = create((set, get) => ({
     if (s.speed === 0) return;
 
     if (c.pendingMinor) {
+      if (s.speed === 8) {
+        set({ speed: s.preSkimSpeed || 1 });
+      }
       if (c.pendingMinor.annualMerit && !s.autoPlay) return;
       const remaining = s.minorRemainingMs - dtMs;
       if (s.autoPlay && (c.pendingMinor.remainingMs || MINOR_WINDOW_MS) - remaining >= AUTO_MINOR_MS) {
@@ -950,11 +994,19 @@ export const useGameStore = create((set, get) => ({
       return;
     }
 
-    // Đợt 115b: Tự lướt các đoạn yên ả ở tốc độ 4x nếu bật trong cài đặt
+    // Đợt 115b & 123: Tự lướt các đoạn yên ả ở tốc độ 4x (hoặc mức Lướt 8x nếu đang chọn 8x)
     const autoSkip = Boolean(useThemeStore.getState().autoSkipQuietYears);
     const upcoming = nextPlanItem(c);
-    const quietStretch = autoSkip && c.age >= 5 && (!upcoming || upcoming.kind === 'daily');
-    const effectiveSpeed = quietStretch && s.speed > 0 ? Math.max(4, s.speed) : s.speed;
+    const isQuiet = c.age >= 5 && (!upcoming || upcoming.kind === 'daily');
+    const quietStretch = isQuiet;
+    // Mức "Lướt" (8x) chỉ chạy trong quietStretch; nếu không còn yên ả thì tự về tốc độ cũ
+    if (s.speed === 8 && !quietStretch) {
+      set({ speed: s.preSkimSpeed || 1 });
+      return;
+    }
+    const effectiveSpeed = s.speed === 8
+      ? 8
+      : (autoSkip && quietStretch && s.speed > 0 ? Math.max(4, s.speed) : s.speed);
     const progress = Math.min(100, s.yearProgress + (dtMs / YEAR_MS) * 100 * effectiveSpeed);
     const { char, changed } = runDueItems(c, progress, lifeRng);
     if (changed) {

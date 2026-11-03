@@ -225,12 +225,36 @@ import { chapterFor } from '../src/engine/chapters.js';
   assert.equal(matchesEventContext(awningCb, char), true, 'Lover callback should still match after marrying into spouse');
   assert.ok(interpolateText(awningCb.vi, char).includes('Mai'), 'Lover placeholder should resolve to spouse name');
 
-  // 5. 100-life simulation: avg >= 3.0 callbacks per life with close NPCs, < 10% over 8, 0 duplicates
+  // 5. No callback mem key mixes positive Bond (> 0) and negative Bond (< 0) choices
+  for (const cb of NPC_CHOICE_CALLBACKS) {
+    const memKey = cb.need?.mem;
+    let hasPosBond = false;
+    let hasNegBond = false;
+    for (const m of LIFE_MINORS) {
+      for (const ch of m.choices || []) {
+        const mems = (ch.extra || []).map((x) => x.mem).filter(Boolean);
+        if (!mems.includes(memKey)) continue;
+        for (const x of ch.extra || []) {
+          if (x.bond && typeof x.bond.delta === 'number') {
+            if (x.bond.delta > 0) hasPosBond = true;
+            if (x.bond.delta < 0) hasNegBond = true;
+          }
+        }
+      }
+    }
+    assert.equal(
+      hasPosBond && hasNegBond,
+      false,
+      `Callback mem key "${memKey}" (${cb.id}) must not mix Bond+ and Bond- choices`
+    );
+  }
+
+  // 6. 100-life simulation: avg >= 3.0 callbacks per life with close NPCs, max <= 6 per life, 0 duplicates
   const cbIds = new Set(NPC_CHOICE_CALLBACKS.map((d) => d.id));
   const N = 100;
   let closeLives = 0;
   let totalNpcCb = 0;
-  let over8 = 0;
+  let maxCb = 0;
   let dup = 0;
   for (let i = 0; i < N; i++) {
     const seed = `logic_${i}`;
@@ -277,17 +301,16 @@ import { chapterFor } from '../src/engine/chapters.js';
         seenCb.add(id);
       }
     }
+    if (cbCount > maxCb) maxCb = cbCount;
     const hasClose = Object.values(c.npcs || {}).some((n) => n && ((n.bond || 0) >= 35 || n.metAge != null));
     if (hasClose) {
       closeLives++;
       totalNpcCb += cbCount;
-      if (cbCount > 8) over8++;
     }
   }
   const avgCb = totalNpcCb / Math.max(1, closeLives);
-  const over8Pct = (over8 * 100) / Math.max(1, closeLives);
   assert.ok(avgCb >= 3.0, `Expected average >= 3.0 NPC callbacks per close-NPC life, got ${avgCb.toFixed(2)}`);
-  assert.ok(over8Pct < 10, `Expected < 10% lives with > 8 NPC callbacks, got ${over8Pct.toFixed(1)}%`);
+  assert.ok(maxCb <= 6, `Expected no life to exceed 6 NPC callbacks, got maxCb=${maxCb}`);
   assert.equal(dup, 0, `Expected 0 duplicate NPC callbacks in the same life, got ${dup}`);
 }
 

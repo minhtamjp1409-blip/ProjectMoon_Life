@@ -1,4 +1,4 @@
-import { npcIsActive } from './eventConditions.js';
+import { npcIsActive, getNextIndependentSyndicatePromotion } from './eventConditions.js';
 /**
  * Project Moon Universe - Career Progression, Distortion Lifecycle & Inheritance Engine
  * Enforces strict, canonical milestones:
@@ -329,6 +329,7 @@ export function getNextFingerPromotion(char) {
   const netReq = nextStep.networkReq || 0;
   const earliestAge = [0, 22, 28, 35][nextStep.rank];
   const minTenure = [0, 0, 4, 5][nextStep.rank];
+  const yearsInRank = curRank === 0 || char.lastFingerPromotionAge == null ? minTenure : Math.max(0, char.age - char.lastFingerPromotionAge);
   const tenureOk = curRank === 0 || char.lastFingerPromotionAge == null || char.age - char.lastFingerPromotionAge >= minTenure;
   const fingerPacingOk = tenureOk && char.age >= earliestAge;
   const isEligible = (char.merit || 0) >= nextStep.meritReq && curRep >= nextStep.repReq && curNet >= netReq && fingerPacingOk;
@@ -339,7 +340,10 @@ export function getNextFingerPromotion(char) {
     isEligible,
     currentMerit: char.merit || 0,
     currentRep: curRep,
-    currentNetwork: curNet
+    currentNetwork: curNet,
+    earliestAge,
+    minTenure,
+    yearsInRank
   };
 }
 
@@ -359,6 +363,8 @@ export function getNextWingPromotion(char) {
 
   const curWealth = (char.stats?.wealth ?? char.wealth) || 0;
   const curNet = (char.stats?.network ?? char.network) || 0;
+  const minTenure = curRank > 0 ? 3 : 0;
+  const yearsInRank = curRank === 0 || char.lastWingPromotionAge == null ? 3 : Math.max(0, char.age - char.lastWingPromotionAge);
   const tenureOk = curRank === 0 || char.lastWingPromotionAge == null || char.age - char.lastWingPromotionAge >= 3;
   const isEligible = (char.merit || 0) >= nextStep.meritReq && curWealth >= nextStep.wealthReq && curNet >= nextStep.networkReq && tenureOk;
 
@@ -368,8 +374,154 @@ export function getNextWingPromotion(char) {
     currentMerit: char.merit || 0,
     currentWealth: curWealth,
     currentNetwork: curNet,
-    currentStanding: char.standing ?? 50
+    currentStanding: char.standing ?? 50,
+    minTenure,
+    yearsInRank
   };
+}
+
+/**
+ * Đợt 122b: Single source-of-truth promotion progress summary for UI & tests.
+ * Reads thresholds strictly from the engine's promotion evaluators (`getNextFixerPromotion`,
+ * `checkColorFixerReadiness`, `getOtherCareerPromotion`, `getNextIndependentSyndicatePromotion`).
+ */
+export function getPromotionProgress(char) {
+  if (!char || !char.alive) return null;
+  const flags = char.flags || [];
+
+  // 1. Fixer career (Grade 9 -> 1 -> Color Fixer)
+  if ((char.job === 'Fixer' || char.job === 'Color Fixer') && !flags.includes('Distorted')) {
+    if (char.fixerGrade === 0 || char.job === 'Color Fixer' || flags.includes('ColorFixer')) {
+      return null;
+    }
+    const isProdigy = isColorProdigyEligible(char);
+    if (char.fixerGrade === 1 || isProdigy) {
+      const readiness = checkColorFixerReadiness(char);
+      const curMerit = char.merit || 0;
+      const curRep = (char.stats?.rep ?? char.rep) || 0;
+      const p1 = Math.min(1, curMerit / readiness.targetMerit);
+      const p2 = Math.min(1, curRep / readiness.targetRep);
+      return {
+        route: 'color',
+        targetGrade: 0,
+        meritCurrent: curMerit,
+        meritTarget: readiness.targetMerit,
+        repCurrent: curRep,
+        repTarget: readiness.targetRep,
+        ageTarget: readiness.targetAge,
+        isEligible: Boolean(readiness.ready),
+        pct: Math.min(100, Math.round(((p1 + p2) / 2) * 100)),
+        titleVi: 'Tới khảo thí Color',
+        titleEn: 'To Color trial',
+        labelVi: `Tới khảo thí Color: ${curMerit}/${readiness.targetMerit}`,
+        labelEn: `To Color trial: ${curMerit}/${readiness.targetMerit}`,
+        summaryVi: `Merit ${curMerit}/${readiness.targetMerit} · Rep ${curRep}/${readiness.targetRep}`,
+        summaryEn: `Merit ${curMerit}/${readiness.targetMerit} · Rep ${curRep}/${readiness.targetRep}`
+      };
+    }
+
+    const step = getNextFixerPromotion(char);
+    if (!step) return null;
+    const p1 = Math.min(1, step.currentMerit / step.meritReq);
+    const p2 = Math.min(1, step.currentRep / step.repReq);
+    return {
+      route: 'fixer',
+      targetGrade: step.grade,
+      meritCurrent: step.currentMerit,
+      meritTarget: step.meritReq,
+      repCurrent: step.currentRep,
+      repTarget: step.repReq,
+      isEligible: Boolean(step.isEligible),
+      pct: Math.min(100, Math.round(((p1 + p2) / 2) * 100)),
+      titleVi: `Tới kỳ thi Grade ${step.grade}`,
+      titleEn: `To Grade ${step.grade} exam`,
+      labelVi: `Tới kỳ thi Grade ${step.grade}: ${step.currentMerit}/${step.meritReq}`,
+      labelEn: `To Grade ${step.grade} exam: ${step.currentMerit}/${step.meritReq}`,
+      summaryVi: `Merit ${step.currentMerit}/${step.meritReq} · Rep ${step.currentRep}/${step.repReq}`,
+      summaryEn: `Merit ${step.currentMerit}/${step.meritReq} · Rep ${step.currentRep}/${step.repReq}`
+    };
+  }
+
+  // 2. Finger Syndicate or Wing Employee
+  const other = getOtherCareerPromotion(char);
+  if (other?.route === 'finger') {
+    const p1 = Math.min(1, other.currentMerit / other.meritReq);
+    const p2 = Math.min(1, other.currentRep / other.repReq);
+    return {
+      route: 'finger',
+      finger: other.finger,
+      targetRank: other.rank,
+      meritCurrent: other.currentMerit,
+      meritTarget: other.meritReq,
+      repCurrent: other.currentRep,
+      repTarget: other.repReq,
+      networkCurrent: other.currentNetwork,
+      networkTarget: other.networkReq || 0,
+      ageTarget: other.earliestAge,
+      tenureTarget: other.minTenure,
+      isEligible: Boolean(other.isEligible),
+      pct: Math.min(100, Math.round(((p1 + p2) / 2) * 100)),
+      titleVi: 'Tới thăng chức',
+      titleEn: 'To promotion',
+      labelVi: `Tới thăng chức: ${other.currentMerit}/${other.meritReq}`,
+      labelEn: `To promotion: ${other.currentMerit}/${other.meritReq}`,
+      summaryVi: `Merit ${other.currentMerit}/${other.meritReq} · Rep ${other.currentRep}/${other.repReq}`,
+      summaryEn: `Merit ${other.currentMerit}/${other.meritReq} · Rep ${other.currentRep}/${other.repReq}`
+    };
+  }
+
+  if (other?.route === 'wing') {
+    const p1 = Math.min(1, other.currentMerit / other.meritReq);
+    const p2 = Math.min(1, other.currentWealth / other.wealthReq);
+    const p3 = Math.min(1, other.currentNetwork / other.networkReq);
+    return {
+      route: 'wing',
+      targetRank: other.rank,
+      meritCurrent: other.currentMerit,
+      meritTarget: other.meritReq,
+      wealthCurrent: other.currentWealth,
+      wealthTarget: other.wealthReq,
+      networkCurrent: other.currentNetwork,
+      networkTarget: other.networkReq,
+      tenureTarget: other.minTenure,
+      isEligible: Boolean(other.isEligible),
+      pct: Math.min(100, Math.round(((p1 + p2 + p3) / 3) * 100)),
+      titleVi: 'Tới thăng chức',
+      titleEn: 'To promotion',
+      labelVi: `Tới thăng chức: ${other.currentMerit}/${other.meritReq}`,
+      labelEn: `To promotion: ${other.currentMerit}/${other.meritReq}`,
+      summaryVi: `Merit ${other.currentMerit}/${other.meritReq} · Ahn ${other.currentWealth}/${other.wealthReq} · Net ${other.currentNetwork}/${other.networkReq}`,
+      summaryEn: `Merit ${other.currentMerit}/${other.meritReq} · Ahn ${other.currentWealth}/${other.wealthReq} · Net ${other.currentNetwork}/${other.networkReq}`
+    };
+  }
+
+  // 3. Independent / Street Syndicate (no Finger)
+  const indie = getNextIndependentSyndicatePromotion(char);
+  if (indie) {
+    const p1 = Math.min(1, indie.currentMerit / indie.meritReq);
+    const p2 = Math.min(1, indie.currentRep / indie.repReq);
+    const p3 = Math.min(1, indie.currentHeat / indie.heatReq);
+    return {
+      route: 'independent_syndicate',
+      targetRank: indie.rank,
+      meritCurrent: indie.currentMerit,
+      meritTarget: indie.meritReq,
+      repCurrent: indie.currentRep,
+      repTarget: indie.repReq,
+      heatCurrent: indie.currentHeat,
+      heatTarget: indie.heatReq,
+      isEligible: Boolean(indie.isEligible),
+      pct: Math.min(100, Math.round(((p1 + p2 + p3) / 3) * 100)),
+      titleVi: 'Tới thăng chức',
+      titleEn: 'To promotion',
+      labelVi: `Tới thăng chức: ${indie.currentMerit}/${indie.meritReq}`,
+      labelEn: `To promotion: ${indie.currentMerit}/${indie.meritReq}`,
+      summaryVi: `Merit ${indie.currentMerit}/${indie.meritReq} · Rep ${indie.currentRep}/${indie.repReq} · Heat ${indie.currentHeat}/${indie.heatReq}`,
+      summaryEn: `Merit ${indie.currentMerit}/${indie.meritReq} · Rep ${indie.currentRep}/${indie.repReq} · Heat ${indie.currentHeat}/${indie.heatReq}`
+    };
+  }
+
+  return null;
 }
 
 export const RETIRED_WORKSHOP_TRIAL_IDS = new Set([

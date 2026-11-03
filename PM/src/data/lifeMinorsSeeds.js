@@ -18,6 +18,10 @@ export const LIFE_MINORS_SEEDS = [
         'You sign the last line without reading the other half. The courier nods for the first time all week, and the envelope outside the contract is thicker than usual.',
         { wealth: 4, rep: 1 },
         {
+          lasting: {
+            vi: 'Để lại hồ sơ sai lệch, Hana sẽ mở cuộc thanh tra truy cứu sau 4 năm',
+            en: 'Leaves a flawed record; Hana will open an audit investigation in 4 years'
+          },
           later: [{
             id: 'csq_hana_corruption_audit',
             years: 4,

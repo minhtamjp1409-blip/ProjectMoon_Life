@@ -56,7 +56,7 @@ export const LIFE_MINORS_BONDS = [
     '[Tea on the roof] After a night in which no one died, {partner} carries a pot of tea up to the boarding house roof and taps the pot twice, your old signal. The wind blows toward the chimneys.',
     [
       C('Lên mái, ngồi cạnh nhau', 'Go up and sit beside them', 'Hai người nhìn ánh đèn của các District xa mà không nhắc tên chỗ nào. Trà đã nguội khi cả hai nhớ ra mình chưa uống.', 'You watch the lights of the far Districts without naming any of them. The tea is cold when you both remember you never drank it.', { sanity: +3 }, { bond: { partner: 6 }, mem: 'npc_partner_roof_tea' }),
-      C('Gõ lại hai lần từ cửa sổ, nhưng ở trong', 'Tap back twice from the window, staying inside', '{partner} nhìn xuống, giơ ấm trà một cái rồi uống một mình. Có lẽ vậy cũng là đủ cho đêm nay.', '{partner} looks down, raises the pot once, then drinks alone. Perhaps that is enough for tonight.', {}, { bond: { partner: 2 }, mem: 'npc_partner_roof_tea' })
+      C('Gõ lại hai lần từ cửa sổ, nhưng ở trong', 'Tap back twice from the window, staying inside', '{partner} nhìn xuống, giơ ấm trà một cái rồi uống một mình. Có lẽ vậy cũng là đủ cho đêm nay.', '{partner} looks down, raises the pot once, then drinks alone. Perhaps that is enough for tonight.', {}, { bond: { partner: 2 }, mem: 'npc_partner_roof_window' })
     ],
     I('Bạn ngủ quên trước khi nghe tín hiệu. Sáng ra, một ấm trà nguội nằm ngoài cửa sổ.', 'You fall asleep before hearing the signal. By morning a cold pot of tea sits outside the window.', {})),
 
@@ -68,7 +68,7 @@ export const LIFE_MINORS_BONDS = [
         O(75, '{partner} nghe hết mà không ngắt lời. Khi bạn dừng, họ chỉ nói "ừ", và rót thêm. Bạn thấy nhẹ đi theo cách không giải thích được.', '{partner} listens to the end without cutting in. When you stop they only say “yes,” and pour more. You feel lighter in a way you cannot explain.', { sanity: +4 }, { bond: { partner: 7 } }),
         O(25, 'Họ im lặng quá lâu. Rồi nói rằng họ sẽ không làm cùng bạn một việc như thế nữa. Họ vẫn ở lại uống hết ly.', 'They stay silent too long. Then they say they will not do a job like that with you again. They still stay until the glass is empty.', { sanity: +1 }, { bond: { partner: 3 } })
       ] }),
-      C('Chỉ nhắc lại báo cáo', 'Just repeat the report', 'Họ gật đầu, nâng ly, và không hỏi nữa. Bạn nhận ra họ vừa tha cho bạn.', 'They nod, raise the glass, and ask no more. You realize they have just let you off.', {}, { bond: { partner: 2 }, mem: 'npc_partner_debrief' })
+      C('Chỉ nhắc lại báo cáo', 'Just repeat the report', 'Họ gật đầu, nâng ly, và không hỏi nữa. Bạn nhận ra họ vừa tha cho bạn.', 'They nod, raise the glass, and ask no more. You realize they have just let you off.', {}, { bond: { partner: 2 }, mem: 'npc_partner_debrief_brief' })
     ],
     I('Bạn bảo mình mệt. {partner} cất chai, và không nhắc lại chuyện đó thêm lần nữa.', 'You say you are tired. {partner} puts the bottle away and does not raise it again.', {})),
 
@@ -95,7 +95,7 @@ export const LIFE_MINORS_BONDS = [
     '[Visiting your teacher] It has been a while since you went to {mentor}’s place. The house still smells of machine oil and strong tea. They do not ask why you stayed away, only whether you kept their last piece of advice.',
     [
       C('Nói thật rằng bạn đã không làm theo', 'Admit honestly that you did not', '{mentor} cười như thể đã biết trước. Hai người ngồi đến tối, và họ chỉ lại đúng chỗ bạn sai, nhẹ nhàng như đang chỉ đường.', '{mentor} smiles as if they knew. You sit until evening, and they point out exactly where you went wrong, as gently as giving directions.', { sanity: +3, rep: +1 }, { bond: { mentor: 7 }, mem: 'npc_mentor_tea_visit' }),
-      C('Nói bạn đã làm theo, dù không hẳn', 'Say you did, though not quite', '{mentor} gật đầu và rót thêm trà, nhưng bạn thấy họ nhìn sang chỗ khác một khoảnh khắc trước khi cười.', '{mentor} nods and pours more tea, but you see them look away for a moment before smiling.', {}, { bond: { mentor: 2 }, mem: 'npc_mentor_tea_visit' })
+      C('Nói bạn đã làm theo, dù không hẳn', 'Say you did, though not quite', '{mentor} gật đầu và rót thêm trà, nhưng bạn thấy họ nhìn sang chỗ khác một khoảnh khắc trước khi cười.', '{mentor} nods and pours more tea, but you see them look away for a moment before smiling.', {}, { bond: { mentor: 2 }, mem: 'npc_mentor_tea_half' })
     ],
     I('Bạn đứng ở cửa lâu hơn cần thiết, rồi quay về. Lần sau bạn sẽ vào, bạn tự nhủ.', 'You stand at the door longer than necessary, then turn back. Next time you will go in, you tell yourself.', {})),
 

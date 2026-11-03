@@ -2917,6 +2917,37 @@ Chạy kiểm định mô phỏng 500 vòng đời với chiến lược ngườ
   - `voice_lint.mjs --fail` (33.525 chuỗi), `lint_story.mjs` (623 daily, 0 lỗi, 0 cảnh báo), `check_sentence_length.mjs --fail` (0/100 vi phạm): 0 lỗi, 0 cảnh báo.
   - Unit test `tests/test_npc_naming_and_callbacks.mjs` (gồm test `replaceWholeName`, `formatNpcTrait`, cập nhật log từ `metAge`, và mô phỏng 100 đời) cùng toàn bộ `npm test` + `npm run build` vượt qua 100%.
 
+##### 2.14. Hoàn Thành Toàn Diện Đợt 121b, 122 (122a & 122b) & Đợt 123
+* **Khắc phục toàn diện phản hồi Đợt 121b (Cảnh nhắc lại lựa chọn cũ của NPC theo hướng "Đầy đủ hơn"):**
+  1. `src/data/lifeMinors5.js`, `src/data/lifeMinorsBonds.js`, `src/data/lifeMinorsAndDailiesExpansion.js`:
+     - Tách khóa `mem` riêng biệt cho từng hành động / hướng Bond trái chiều. Không còn tình trạng lựa chọn tốt (Bond+) và lựa chọn xấu (Bond-) dùng chung một khóa ký ức (ví dụ: `npc_spouse_cold_dinner_warm` vs `npc_spouse_cold_dinner_cold`, `npc_lover_awning_wait_hug` vs `npc_lover_awning_wait_leave`, v.v.).
+  2. `src/data/lifeNpcCallbacks.js`:
+     - Bổ sung 20 cảnh nhắc lại mới (nâng tổng số cảnh nhắc lại từ 51 lên **71 cảnh**) dành riêng cho các lựa chọn hành động khác biệt và lựa chọn xấu, thể hiện sắc thái lạnh lùng, xa cách, hoài niệm u buồn đúng chuẩn tâm lý con người trong thế giới The City.
+  3. `tests/test_npc_naming_and_callbacks.mjs`:
+     - Cập nhật bộ test tự động xác thực: không có khóa `mem` nào dùng chung giữa Bond+ và Bond-, số đời vượt quá 6 cảnh là 0 (`max <= 6`), trung bình đạt ít nhất 3.0 cảnh nhắc lại/đời có NPC thân (`3.18 >= 3.0`), và không có cảnh nào trùng lặp trong cùng một đời.
+* **Giải pháp kiến trúc Đợt 122a (Hậu quả kéo dài nói bằng lời — `lasting: { vi, en }`):**
+  1. `src/features/chronicle/choicePreviewModel.js` & `src/features/chronicle/components/Deltas.jsx`:
+     - Hỗ trợ khai báo trường `lasting: { vi, en }` trên mọi lựa chọn có tác động nhiều năm.
+     - Hiển thị dòng mô tả hậu quả `.choice-lasting` trong `ChoicePreview`. Trên mobile (390×844), theo đúng chuẩn Đợt 118a, dòng `lasting` được đưa vào phần mở rộng thông qua nút gập phụ (`+` / `.preview-secondary`) giúp giữ màn hình gọn gàng, nút bấm tối thiểu 44×44px không bị đẩy khỏi màn đầu tiên.
+     - Bổ sung `lasting: { vi, en }` cho 20 lựa chọn dài hạn (nợ nần, khế ước xưởng rèn, bạn đồng hành, cam kết sống còn) trong `eventsChildhood.js`, `lifeMinorsSeeds.js`, `lifeMinors.js`, `eventsNpcAndWorldExpansion.js`.
+     - `tools/lint/voice_lint.mjs`: Miễn trừ quy tắc cấm số liệu trần `statNumber` riêng cho trường `.lasting.` (do hậu quả kéo dài cần nêu rõ "Mỗi năm SP +2", "Trừ 5 Ahn mỗi năm", v.v.), vẫn bảo đảm nghiêm ngặt mọi quy chuẩn từ ngữ canon khác.
+* **Giải pháp kiến trúc Đợt 122b (Thanh tiến độ thăng chức ngoài mục gập):**
+  1. `src/engine/careerPipeline.js`:
+     - Xây dựng hàm chuẩn `getPromotionProgress(char)` đọc trực tiếp từ các hàm engine gốc (`getNextFixerPromotion`, `checkColorFixerReadiness`, `getOtherCareerPromotion`, `getNextIndependentSyndicatePromotion`), đảm bảo tính nhất quán tuyệt đối giữa logic tiến trình và giao diện người dùng.
+  2. `src/features/chronicle/components/CharacterDossierCard.jsx` & `src/styles/ui/play.css`:
+     - Tạo component `PromotionProgressBar` đặt ngay trong khu vực chỉ số sinh tồn (vitals) ở cột trái, hiển thị trực quan dạng thanh tiến độ (ví dụ: "Tới kỳ thi Grade 8: 6/8", "Tới thăng chức: 12/20", "Thẩm định Color Fixer").
+* **Giải pháp kiến trúc Đợt 123 (Lướt nhanh khi chơi lại — Tốc độ 8x "Lướt"):**
+  1. `src/store/gameStore.js`, `src/features/chronicle/components/PlayBar.jsx`, `src/features/chronicle/components/LiveStageFeed.jsx`:
+     - Thêm helper `canSkimSpeed(state)`: Mức tốc độ 8x ("Lướt" / "Skim") chỉ mở khóa và hiển thị từ đời thứ 2 trở đi (`pastLives.length >= 1` hoặc `char.generation > 1`) hoặc khi người chơi kích hoạt chế độ tự chơi (`autoPlay`).
+     - Tốc độ 8x chỉ vận hành trong các năm yên ả (`quietStretch`). Khi gặp major event, minor choice, mốc hỏi tên NPC (`pendingNpcNaming`), hoặc thẻ chương (`chapterFor`), hệ thống lập tức tự động hoàn trả về tốc độ trước đó (`preSkimSpeed`).
+     - Thời gian đếm ngược của minor (`minorRemainingMs`) được trừ theo đúng thời gian thực (`dtMs`), hoàn toàn không bị co ngắn hay tua nhanh bởi hệ số tốc độ lướt, đảm bảo người chơi có đủ thời gian đọc và quyết định.
+* **Kết quả đo đạc & kiểm thử toàn diện:**
+  - Unit test chuyên biệt `tests/test_batches_122_123.mjs` kiểm tra 100% các tiêu chí của Đợt 122a, 122b và 123 -> **PASS 100%**.
+  - `voice_lint.mjs --fail`: 33.645 chuỗi, 0 lỗi, 0 cảnh báo.
+  - `check_sentence_length.mjs --fail`: 100/100 mục đạt chuẩn 1–2 câu, giới hạn từ chuẩn xác.
+  - `test_npc_naming_and_callbacks.mjs`: Đạt mọi tiêu chuẩn cân bằng (tỉ lệ minor NPC 16.9%, TB 3.18 cảnh/đời, 0 trùng lặp, max <= 6, 0 khóa mem dùng chung Bond+/Bond-).
+  - Toàn bộ suite `npm test` và `npm run build` hoàn thành không lỗi.
+
 ---
 #### 3. KIỂM ĐỊNH & BẢO ĐẢM TOÀN VẸN (VERIFICATION & INTEGRITY)
 * Tất cả các bộ kiểm thử tự động (`npm test`) bao gồm lint văn phong (`voice_lint.mjs`), chuẩn canon Project Moon (`lint_story.mjs`), và mô phỏng 500 khoảnh khắc đời người (`run_million_audit.mjs`) phải vượt qua 100% với 0 lỗi, 0 cảnh báo.

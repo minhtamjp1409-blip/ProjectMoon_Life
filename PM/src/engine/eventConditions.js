@@ -405,24 +405,35 @@ export function mergeEffects(...sources) {
   return effects;
 }
 
+export const INDEPENDENT_SYNDICATE_PROMOTIONS = [
+  { rank: 1, meritReq: 20, repReq: 20, heatReq: 15 },
+  { rank: 2, meritReq: 50, repReq: 45, heatReq: 30 },
+  { rank: 3, meritReq: 90, repReq: 75, heatReq: 50 }
+];
+
+export function getNextIndependentSyndicatePromotion(char) {
+  if (!char || char.job !== 'Syndicate' || char.finger || char.flags?.includes('Distorted')) return null;
+  const curRank = char.syndicateRank || 0;
+  const nextStep = INDEPENDENT_SYNDICATE_PROMOTIONS.find((s) => s.rank === curRank + 1);
+  if (!nextStep) return null;
+  const currentMerit = char.merit || 0;
+  const currentRep = char.stats?.rep ?? char.rep ?? 0;
+  const currentHeat = char.heat || 0;
+  const isIndependent = Boolean(char.flags?.includes('IndependentSyndicate'));
+  const isEligible = isIndependent && currentMerit >= nextStep.meritReq && currentRep >= nextStep.repReq && currentHeat >= nextStep.heatReq;
+  return {
+    ...nextStep,
+    route: 'independent_syndicate',
+    isIndependent,
+    isEligible,
+    currentMerit,
+    currentRep,
+    currentHeat
+  };
+}
+
 export function isIndependentSyndicateEligibleForRank(char, nextRank) {
-  if (!char || char.job !== 'Syndicate' || char.finger) return false;
-  const flags = char.flags || [];
-  if (!flags.includes('IndependentSyndicate')) return false;
-  const currentRank = char.syndicateRank || 0;
-  if (currentRank !== nextRank - 1) return false;
-  const merit = char.merit || 0;
-  const rep = char.stats?.rep ?? char.rep ?? 0;
-  const heat = char.heat || 0;
-  if (nextRank === 1) {
-    return merit >= 20 && rep >= 20 && heat >= 15;
-  }
-  if (nextRank === 2) {
-    return merit >= 50 && rep >= 45 && heat >= 30;
-  }
-  if (nextRank === 3) {
-    return merit >= 90 && rep >= 75 && heat >= 50;
-  }
-  return false;
+  const step = getNextIndependentSyndicatePromotion(char);
+  return Boolean(step && step.rank === nextRank && step.isEligible);
 }
 

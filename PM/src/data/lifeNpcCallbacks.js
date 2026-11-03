@@ -290,8 +290,8 @@ export const NPC_CHOICE_CALLBACKS = [
     'cb_npc_partner_strap',
     [20, 140],
     { npc: 'partner', mem: 'npc_partner_strap', memMinYears: 2 },
-    '[Quai đeo đã thay] Trước giờ lên đường, {partner} gõ nhẹ vào chiếc quai đeo họ từng kiểm tra và thay giúp bạn năm trước. Chỉ một cử chỉ ngắn cũng đủ thay lời dặn giữ mạng.',
-    '[The Replaced Strap] Before heading out, {partner} taps the kit strap they once checked and replaced for you years ago. That single gesture says enough about coming back alive.',
+    '[Quai đeo trước giờ xuất phát] Trước khi lên đường, {partner} lại gõ nhẹ vào chiếc quai đeo họ từng phát hiện vết rách năm trước. Chỉ một cử chỉ ngắn cũng đủ thay lời dặn giữ mạng.',
+    '[The Strap Before Departure] Before heading out, {partner} taps the kit strap where they once spotted a tear years ago. That single gesture says enough about coming back alive.',
     { sanity: 1 },
     CB('partner')
   ),
@@ -494,6 +494,186 @@ export const NPC_CHOICE_CALLBACKS = [
     { npc: 'mentor', mem: 'npc_mentor_small_debt', memMinYears: 2 },
     '[Tiệm tạp hóa đầu hẻm] Đi ngang tiệm tạp hóa đầu hẻm cùng {mentor}, người bán hàng gật đầu chào cả hai mà không ai nhắc lại món nợ cũ năm xưa.',
     '[The Grocer at the End of the Alley] Walking past the corner shop with {mentor}, the grocer nods to you both without a word about that old debt settled years ago.',
+    { sanity: 1 },
+    CB('mentor')
+  ),
+  D(
+    'cb_npc_lover_awning_tease',
+    [19, 140],
+    { npc: 'lover', allowSpouseFallback: true, mem: 'npc_lover_awning_tease', memMinYears: 2 },
+    '[Mái hiên ngày mưa tạt] Đi ngang mái hiên cũ lúc trời chuyển mưa, {lover} cố ý bước dịch ra nửa bước rồi liếc bạn với ánh mắt nửa giận nửa buồn cười như buổi chiều năm trước.',
+    '[The Awning in Driving Rain] Passing the old awning as rain starts up, {lover} pointedly steps half a pace aside and shoots you the same half-annoyed look from years ago.',
+    {},
+    CB('lover', { allowSpouseFallback: true })
+  ),
+  D(
+    'cb_npc_spouse_cold_dinner_ask',
+    [22, 140],
+    { npc: 'spouse', mem: 'npc_spouse_cold_dinner_ask', memMinYears: 2 },
+    '[Câu báo giờ về ngắn gọn] Mỗi lần có việc về trễ, {spouse} giờ đều để lại một dòng nhắn rõ đi đâu từ sớm, không để bữa tối nguội lạnh chờ câu hỏi như năm trước.',
+    '[A Short Note Before Running Late] Whenever work runs late now, {spouse} leaves a short note saying where they went ahead of time, sparing the table another cold dinner question.',
+    { sanity: 1 },
+    CB('spouse')
+  ),
+  D(
+    'cb_npc_spouse_cold_dinner_cold',
+    [22, 140],
+    { npc: 'spouse', mem: 'npc_spouse_cold_dinner_cold', memMinYears: 2 },
+    '[Đĩa thức ăn đậy lồng bàn] Về muộn giữa đêm, bạn thấy {spouse} đã cất phần cơm của họ vào tủ lạnh từ sớm, trên bàn chỉ còn chiếc lồng bàn nguội ngắt như đêm cũ.',
+    '[A Covered Plate on the Table] Coming home late at night, you find {spouse} has already put their own dinner away, leaving only a cold covered plate on the table like before.',
+    {},
+    CB('spouse')
+  ),
+  D(
+    'cb_npc_spouse_unopened_letter_cold',
+    [22, 140],
+    { npc: 'spouse', mem: 'npc_spouse_unopened_letter_cold', memMinYears: 2 },
+    '[Ngăn kéo khóa riêng] Mỗi khi có thư từ gửi tới nhà, {spouse} giờ cất thẳng vào ngăn kéo riêng trước khi bạn kịp hỏi, giữ khoảng cách lặng lẽ từ chuyện phong thư năm trước.',
+    '[The Separate Drawer] Whenever mail arrives at the flat now, {spouse} puts it straight into their own drawer before you can ask, keeping the quiet distance left by that old letter.',
+    {},
+    CB('spouse')
+  ),
+  D(
+    'cb_npc_spouse_old_scar_cold',
+    [25, 140],
+    { npc: 'spouse', mem: 'npc_spouse_old_scar_cold', memMinYears: 2 },
+    '[Ánh mắt dừng lại trước vết sẹo] Lúc bạn thay áo, ánh mắt {spouse} thoáng dừng ở vết sẹo trên vai rồi lặng lẽ quay đi, không hỏi thêm câu nào như đêm bạn từng khép chuyện năm xưa.',
+    '[Eyes Turning Away from the Scar] While you change your coat, {spouse} pauses briefly on your shoulder scar and quietly looks away, asking nothing just like after that night.',
+    {},
+    CB('spouse')
+  ),
+  D(
+    'cb_npc_mentor_three_locks_cold',
+    [21, 140],
+    { npc: 'mentor', mem: 'npc_mentor_three_locks_cold', memMinYears: 2 },
+    '[Chốt cửa kiểm lại một mình] Tới giờ đóng cửa xưởng, {mentor} vẫn tự tay xoay lại cả ba ổ khóa mà không buồn nhắc bạn một lời kể từ lần bạn chê họ đa nghi năm trước.',
+    '[Checking the Bolts Alone] At closing time, {mentor} still turns all three locks by hand without saying a word to you since the night you called them paranoid.',
+    {},
+    CB('mentor')
+  ),
+  D(
+    'cb_npc_mentor_small_debt_cold',
+    [21, 140],
+    { npc: 'mentor', mem: 'npc_mentor_small_debt_cold', memMinYears: 2 },
+    '[Đi vòng qua tiệm tạp hóa] Mỗi lần đi cùng bạn ra đầu hẻm, {mentor} đều rẽ sang ngõ phụ để tránh tiệm tạp hóa cũ, nơi bạn từng khuyên họ cứ mặc kệ món nợ năm xưa.',
+    '[Detour Around the Corner Shop] Walking out of the alley with you, {mentor} takes the side lane past the old grocer where you once told them to ignore the debt.',
+    {},
+    CB('mentor')
+  ),
+  D(
+    'cb_npc_partner_roof_window',
+    [20, 140],
+    { npc: 'partner', mem: 'npc_partner_roof_window', memMinYears: 2 },
+    '[Chén trà để lại bên bậu cửa] Sau giờ làm, {partner} đặt một chén trà nóng ở bậu cửa sổ hành lang chỗ bạn hay đứng, thay vì rủ bạn lên mái nhà như buổi chiều năm trước.',
+    '[A Cup Left on the Sill] After hours, {partner} sets a warm cup of tea on the hallway windowsill where you usually stand instead of calling you up to the roof.',
+    { sanity: 1 },
+    CB('partner')
+  ),
+  D(
+    'cb_npc_partner_debrief_brief',
+    [20, 140],
+    { npc: 'partner', mem: 'npc_partner_debrief_brief', memMinYears: 2 },
+    '[Bản báo cáo đóng lại đúng giờ] Ký xong hồ sơ vụ mới, {partner} gấp tập giấy lại ngay rồi gật đầu chào bạn ra về, giữ đúng thói quen chỉ nói chuyện công việc từ đêm năm cũ.',
+    '[Closing the File on Time] Once the new report is signed, {partner} closes the folder right away and nods goodbye, keeping strictly to business since that night.',
+    {},
+    CB('partner')
+  ),
+  D(
+    'cb_npc_mentor_tea_half',
+    [16, 140],
+    { npc: 'mentor', mem: 'npc_mentor_tea_half', memMinYears: 2 },
+    '[Chén trà rót lưng nửa tách] Mỗi khi bạn ghé qua xưởng có việc gấp, {mentor} chỉ rót sẵn nửa tách trà nguội nhanh để bạn uống vội rồi đi như buổi chiều năm trước.',
+    '[A Cup Poured Half Full] Whenever you drop by the workshop on urgent business, {mentor} pours only half a cup of cooled tea so you can drink quickly and leave like before.',
+    {},
+    CB('mentor')
+  ),
+  D(
+    'cb_npc_exp_partner_ammo_cold',
+    [20, 140],
+    { npc: 'partner', mem: 'npc_exp_partner_ammo_cold', memMinYears: 2 },
+    '[Phần đạn tự đếm riêng] Trước giờ xuất kích, {partner} lặng lẽ kiểm đếm từng viên đạn dự phòng của riêng họ trên bàn, không còn trông chờ chia phần từ sau đêm năm trước.',
+    '[Counting Spare Rounds Alone] Before rolling out, {partner} quietly counts their own spare rounds on the table, expecting no shared clip after that night years ago.',
+    {},
+    CB('partner')
+  ),
+  D(
+    'cb_npc_exp_partner_bounty_cold',
+    [20, 140],
+    { npc: 'partner', mem: 'npc_exp_partner_bounty_cold', memMinYears: 2 },
+    '[Biên lai chia thưởng đặt trước] Vừa nhận khoản thưởng mới, {partner} đặt tờ biên lai ghi rõ phần trăm của từng người lên bàn trước khi mở phong bì, tránh lặp lại chuyện ép phần năm cũ.',
+    '[The Written Split Slip] Before opening today’s payout envelope, {partner} sets a written percentage slip on the table, leaving no room for another lopsided split.',
+    {},
+    CB('partner')
+  ),
+  D(
+    'cb_npc_exp_partner_guard_cold',
+    [20, 140],
+    { npc: 'partner', mem: 'npc_exp_partner_guard_cold', memMinYears: 2 },
+    '[Bàn giao ca trực không lời] Đúng giờ đổi gác đêm mưa, {partner} chỉ đưa cuốn sổ trực cho bạn ký rồi khoác áo bước đi ngay, vẫn giữ vẻ lạnh nhạt từ lần bị mắng trễ ca năm trước.',
+    '[A Silent Watch Handover] At the exact minute of relief, {partner} hands over the watch log for your signature and walks off without a word, still cool since that old reprimand.',
+    {},
+    CB('partner')
+  ),
+  D(
+    'cb_npc_exp_friend_bar_cold',
+    [20, 140],
+    { npc: 'friend', mem: 'npc_exp_friend_bar_cold', memMinYears: 2 },
+    '[Ngồi khác bàn ở quán rượu] Chạm mặt trong quán rượu cuối phố, {friend} chỉ nâng ly gật đầu từ góc bàn xa chứ không ngồi chung, giữ khoảng cách từ đêm bị bỏ lại năm xưa.',
+    '[A Nod from Across the Tavern] Crossing paths at the corner tavern, {friend} only raises a glass from a distant table instead of joining you after the night you walked out.',
+    {},
+    CB('friend')
+  ),
+  D(
+    'cb_npc_exp_mentor_hone_cold',
+    [20, 140],
+    { npc: 'mentor', mem: 'npc_exp_mentor_hone_cold', memMinYears: 2 },
+    '[Đá mài để sẵn ở góc xưởng] Đi ngang bàn rèn của bạn, {mentor} chỉ đặt viên đá mài xuống góc bàn mà không nói câu nào, tránh nhắc lại cuộc cãi vã chuyện lưỡi vũ khí mẻ năm trước.',
+    '[A Whetstone Left on the Corner] Passing your workbench, {mentor} sets a whetstone on the corner without a word, sparing you both another argument over a chipped edge.',
+    {},
+    CB('mentor')
+  ),
+  D(
+    'cb_npc_exp_spouse_stew_cold',
+    [20, 140],
+    { npc: 'spouse', mem: 'npc_exp_spouse_stew_cold', memMinYears: 2 },
+    '[Bữa tối nấu vừa một phần] Những chiều mưa dầm, {spouse} giờ chỉ nấu món khô đơn giản và tắt bếp thật sớm, không còn thử hầm canh như buổi tối bạn bỏ ra ngoài ăn năm trước.',
+    '[A Simple Dry Meal on Rainy Nights] On rainy evenings now, {spouse} cooks only a quick dry dish and turns off the stove early after the night you walked out over burned stew.',
+    {},
+    CB('spouse')
+  ),
+  D(
+    'cb_npc_exp_partner_gauze_keep',
+    [20, 140],
+    { npc: 'partner', mem: 'npc_exp_partner_gauze_keep', memMinYears: 2 },
+    '[Vết khâu tự băng trên cánh tay] Nhìn vết sẹo hơi lệch trên cánh tay họ từ lần nhường cuộn gạc cho bạn giữ năm trước, {partner} vẫn thản nhiên bảo miễn cả hai còn sống là đủ.',
+    '[A Crooked Scar on the Forearm] Glancing at the slightly uneven scar from the day they let you keep the last gauze roll, {partner} shrugs that surviving was enough.',
+    { sanity: 1 },
+    CB('partner')
+  ),
+  D(
+    'cb_npc_exp_partner_plan_decoy',
+    [20, 140],
+    { npc: 'partner', mem: 'npc_exp_partner_plan_decoy', memMinYears: 2 },
+    '[Vết đạn sượt trên giáp vai] Chỉ vào vết đạn sượt trên giáp vai từ lần làm mồi nhử thu hút hỏa lực cho bạn năm trước, {partner} cười khẩy bảo bạn vẫn nợ họ một chầu trà nóng.',
+    '[The Graze Mark on the Pauldron] Tapping the bullet graze on their shoulder guard from drawing fire for you years ago, {partner} grins that you still owe them hot tea.',
+    { sanity: 1 },
+    CB('partner')
+  ),
+  D(
+    'cb_npc_exp_friend_tea_gift',
+    [20, 140],
+    { npc: 'friend', mem: 'npc_exp_friend_tea_gift', memMinYears: 2 },
+    '[Gói trà mới đáp lễ] Gặp bạn đầu ngõ, {friend} dúi vào tay bạn một gói lá trà sấy khô nhỏ để đáp lại gói đồ ăn khô bạn từng tặng bên bếp than năm trước.',
+    '[A Small Packet of Dried Tea Leaves] Meeting you at the lane mouth, {friend} presses a packet of dried tea leaves into your hand in return for the rations you shared years ago.',
+    { sanity: 1 },
+    CB('friend')
+  ),
+  D(
+    'cb_npc_exp_mentor_breath_post',
+    [20, 140],
+    { npc: 'mentor', mem: 'npc_exp_mentor_breath_post', memMinYears: 2 },
+    '[Vết lõm trên cọc gỗ sân tập] Đi ngang chiếc cọc gỗ hằn sâu vết đòn từ buổi bạn tập thêm một mình năm xưa, {mentor} khẽ gật đầu công nhận sức bền bạn đã tự rèn.',
+    '[The Deep Dent in the Training Post] Passing the wooden post scarred from the afternoon you stayed to strike fifty more times alone, {mentor} gives a quiet nod to your grit.',
     { sanity: 1 },
     CB('mentor')
   )

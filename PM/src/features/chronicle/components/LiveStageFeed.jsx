@@ -7,7 +7,7 @@ import { Modal } from 'antd';
 import { GitBranch, Download, RotateCcw, Hammer, ChevronDown, Eye, EyeOff, BookOpen, Copy, Check, House, Zap, Hourglass, ScrollText, Skull, History, Stamp, SkipForward, Pause, Play } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useShallow } from 'zustand/react/shallow';
-import { useGameStore } from '../../../store/gameStore';
+import { useGameStore, canSkimSpeed } from '../../../store/gameStore';
 import { useThemeStore } from '../../../store/themeStore';
 import { BIRTH_OPENING, birthOpeningCut, prefersReducedMotion } from '../../cutscene/registry';
 import { entryTier, foldsInCompact, framesAsMajor, splitLead } from '../entryTiers.js';
@@ -428,8 +428,11 @@ const MinorDock = ({ prompt, char, npcs, wealth = 0, remainingMs, paused = false
               (ch.vi && stripCostSuffix(ch.vi).includes(`${costAhn} Ahn`)) ||
               (ch.en && stripCostSuffix(ch.en).includes(`${costAhn} Ahn`))
             );
+            const choiceWithMeta = ch.lasting || !sourceChoices[idx]?.lasting
+              ? ch
+              : { ...ch, lasting: sourceChoices[idx].lasting };
             const isExpanded = Boolean(expandedChoices[idx]);
-            const hasExtra = hasMinorExtraDetails(ch, char, npcs);
+            const hasExtra = hasMinorExtraDetails(choiceWithMeta, char, npcs);
             return (
               <div className={`minor-choice-wrapper ${isExpanded ? 'is-expanded' : ''}`} key={idx}>
                 <button
@@ -454,7 +457,7 @@ const MinorDock = ({ prompt, char, npcs, wealth = 0, remainingMs, paused = false
                       </span>
                     )}
                     <ChoicePreview
-                      choice={ch}
+                      choice={choiceWithMeta}
                       npcs={npcs}
                       char={char}
                       kind="minor"
@@ -1549,7 +1552,16 @@ export const LiveStageFeed = () => {
       if ((e.key === '[' || e.key === ']') && char.alive && !char.pendingDungeon && !char.pendingEvent && !char.pendingContract) {
         e.preventDefault();
         audioEngine.playClick();
-        const nextSpd = e.key === ']' ? Math.min(3, speed + 1) : Math.max(0, speed - 1);
+        const allowSkim = canSkimSpeed(useGameStore.getState());
+        let nextSpd;
+        if (e.key === ']') {
+          if (speed === 3) nextSpd = allowSkim ? 8 : 3;
+          else if (speed === 8) nextSpd = 8;
+          else nextSpd = Math.min(3, speed + 1);
+        } else {
+          if (speed === 8) nextSpd = 3;
+          else nextSpd = Math.max(0, speed - 1);
+        }
         setSpeed(nextSpd);
         return;
       }

@@ -69,6 +69,7 @@ for (const { pool, id, field, s } of strings) {
   for (const [name, rule] of Object.entries(RULES)) {
     if (ONLY && ONLY !== name) continue;
     if (name === 'moon' && MOON_OK.has(id)) continue;
+    if (name === 'statNumber' && field.includes('.lasting.')) continue;
     if (rule.test ? rule.test(s) : rule.re.test(s)) {
       tally[name] = (tally[name] || 0) + 1;
       (byPool[name] ||= {})[pool] = (byPool[name]?.[pool] || 0) + 1;

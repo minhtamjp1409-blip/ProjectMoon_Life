@@ -1,11 +1,12 @@
 import { rememberResonance, hasEgoOpportunity, colorTrialAvailable } from './awakeningProgress.js';
 import { advanceActiveNarrativeArcs } from './narrativeArcEngine.js';
 import { entryTier, framesAsMajor } from '../features/chronicle/entryTiers.js';
-import { choiceIsAvailable, getChoiceAhnCost, matchesEventContext, mergeEffects, npcIsActive, recordColorTrialCompanion, colorTrialCompanionOf, isIndependentSyndicateEligibleForRank } from './eventConditions.js';
+import { choiceIsAvailable, getChoiceAhnCost, matchesEventContext, mergeEffects, npcIsActive, recordColorTrialCompanion, colorTrialCompanionOf, isIndependentSyndicateEligibleForRank, getNextIndependentSyndicatePromotion } from './eventConditions.js';
 import { ITEMS_CATALOG } from '../data/itemsData.js';
 import { rollPerinatalFate } from './fateEngine.js';
 import { keepsakeForLife, normalizeLegacyRecord } from './legacyKeepsake.js';
 import { rollTraits, traitsOf, varyEffects, PRINTED_NUMBERS } from './variance.js';
+import GATES from '../data/careerGates.json' with { type: 'json' };
 import {
   extractAncestorEchoProfile,
   applyAncestorEchoInheritance,
@@ -87,7 +88,7 @@ import {
   isColorProdigyEligible,
   getNextFingerPromotion,
   getNextWingPromotion,
-  getOtherCareerPromotion,
+  getOtherCareerPromotion, getPromotionProgress,
   careerTrialForEvent,
   careerPromotionSuccessChance,
   careerPromotionFailureEffects,
@@ -1015,9 +1016,9 @@ export const INDEPENDENT_SYNDICATE_RANKS = [
 
 export const WING_RANKS = [
   { rank: 0, titleVi: 'Nhân viên tập sự (Contract Intern)', titleEn: 'Contract Intern', merit: 0, wealth: 0, network: 0 },
-  { rank: 1, titleVi: 'Feather chính thức (Feather Agent)', titleEn: 'Feather Agent', merit: 25, wealth: 18, network: 14 },
-  { rank: 2, titleVi: 'Trưởng phòng ban (Section Chief)', titleEn: 'Section Chief', merit: 65, wealth: 45, network: 32 },
-  { rank: 3, titleVi: 'Giám đốc cấp cao (Senior Executive)', titleEn: 'Senior Executive', merit: 125, wealth: 85, network: 60 }
+  { rank: 1, titleVi: 'Feather chính thức (Feather Agent)', titleEn: 'Feather Agent', merit: GATES.wing[0].merit, wealth: GATES.wing[0].wealth, network: GATES.wing[0].network },
+  { rank: 2, titleVi: 'Trưởng phòng ban (Section Chief)', titleEn: 'Section Chief', merit: GATES.wing[1].merit, wealth: GATES.wing[1].wealth, network: GATES.wing[1].network },
+  { rank: 3, titleVi: 'Giám đốc cấp cao (Senior Executive)', titleEn: 'Senior Executive', merit: GATES.wing[2].merit, wealth: GATES.wing[2].wealth, network: GATES.wing[2].network }
 ];
 
 /**
@@ -1236,9 +1237,9 @@ export function getNextCareerMilestone(char) {
         };
       }
       const nextTitle = INDIE_RANKS[nextRank];
-      const targetMerit = [0, 20, 50, 90][nextRank];
-      const targetRep = [0, 20, 45, 75][nextRank];
-      const targetHeat = [0, 15, 30, 50][nextRank];
+      const indiePromo = getNextIndependentSyndicatePromotion(char); const targetMerit = indiePromo?.meritReq ?? 20;
+      const targetRep = indiePromo?.repReq ?? 20;
+      const targetHeat = indiePromo?.heatReq ?? 15;
       const curMerit = char.merit || 0;
       const curRep = char.stats?.rep || 0;
       const curHeat = char.heat || 0;
@@ -1286,7 +1287,7 @@ export function getNextCareerMilestone(char) {
 
     const nextRank = currentRank + 1;
     const nextTitle = ladder[nextRank];
-    const minAge = [0, 22, 28, 36][nextRank];
+    const minAge = [0, 22, 28, 35][nextRank];
     const minTenure = [0, 0, 4, 5][nextRank];
     const yearsInRank = currentRank === 0 || char.lastFingerPromotionAge == null ? minTenure : Math.max(0, char.age - char.lastFingerPromotionAge);
     const nextStep = FINGER_LADDERS[finger]?.[nextRank - 1];
@@ -3568,7 +3569,7 @@ export function buildLifeSummaryAndLegacy(char) {
   };
 }
 
-export { isIndependentSyndicateEligibleForRank };
+export { isIndependentSyndicateEligibleForRank, getNextIndependentSyndicatePromotion, getPromotionProgress };
 
 export {
   DUNGEON_DEFINITIONS,

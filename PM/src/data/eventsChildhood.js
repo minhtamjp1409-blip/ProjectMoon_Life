@@ -469,6 +469,10 @@ export const CHILDHOOD_EVENTS = [
       {
         labelVi: "Dồn hết vốn liếng xin cấp thẻ Fixer Grade 9 tại quầy Hana Association",
         labelEn: "Scrape together savings to apply for a Grade 9 Fixer license at the Hana desk",
+        lasting: {
+          vi: 'Nếu thiếu 8 Ahn: mang nợ 8 Ahn, chủ nợ sẽ tìm đòi vào năm sau',
+          en: 'If under 8 Ahn: incurs an 8 Ahn debt due next year'
+        },
         outcomes: [
           {
             need: { stat: { wealth: [8, 100] } },
@@ -516,6 +520,10 @@ export const CHILDHOOD_EVENTS = [
       {
         labelVi: "Nhận chân đòi nợ và chuyển hàng đêm cho Syndicate địa phương",
         labelEn: "Take debt-collection and night-running jobs for a local Syndicate",
+        lasting: {
+          vi: 'Bắt đầu đời Syndicate: mỗi năm có thu nhập ngầm nhưng chịu thêm hao mòn HP và SP',
+          en: 'Begins Syndicate life: provides yearly street income at the cost of annual HP and SP wear'
+        },
         resultVi: "Một tay Capo ném cho bạn con dao rỉ và danh sách thu tiền bảo kê. \"Thu đủ trước giờ giới nghiêm, giữ lại phần trăm của mày.\" Bạn có tiền mặt dằn túi ngay lập tức, nhưng cái giá là bị ghi tên vào sổ đen và mùi máu bám vào ngón tay.",
         resultEn: "A Capo tossed you a rusted knife and a protection money collection ledger. “Collect before curfew, keep your cut.” You had quick cash in hand, but the cost was a spot on the watch list and the stench of iron on your fingers.",
         outcomes: [
@@ -530,6 +538,10 @@ export const CHILDHOOD_EVENTS = [
       {
         labelVi: "Ký hợp đồng thử việc rủi ro cao tại cổng tuyển dụng của Wing",
         labelEn: "Sign a high-risk probationary contract at a Wing recruitment gate",
+        lasting: {
+          vi: 'Vào biên chế Wing tại Nest: mỗi năm có lương ổn định và y tế Nest nhưng chịu áp lực SP',
+          en: 'Enters Wing service in the Nest: grants steady yearly salary and Nest healthcare with annual SP strain'
+        },
         resultVi: "Hàng trăm người chen chúc trước cổng. Để vượt qua vòng sơ loại, bạn phải ký vào bản cam kết cho phép Wing toàn quyền xử lý thể xác nếu Singularity phát sinh lỗi. Bạn nhận thẻ Feather cấp 0 tạm thời, bước qua cổng Nest với nỗi ớn lạnh sống lưng.",
         resultEn: "Hundreds jostled before the iron gate. To pass probation, you signed a waiver granting the Wing full authority over your remains in case of a Singularity breach. You took your provisional Rank 0 Feather badge, stepping into the Nest with a cold chill down your spine.",
         outcomes: [
@@ -632,6 +644,10 @@ export const CHILDHOOD_EVENTS = [
       {
         labelVi: "Thanh toán dứt điểm toàn bộ món nợ ({debtBalance} Ahn)",
         labelEn: "Settle the full debt immediately ({debtBalance} Ahn)",
+        lasting: {
+          vi: 'Xóa dứt điểm khoản nợ thẻ Fixer, không còn bị đòi nợ các năm sau',
+          en: 'Clears the Fixer license debt permanently, ending yearly collection'
+        },
         debtCost: 'full',
         debtId: 'fixer_license_debt',
         debtsSettle: ['fixer_license_debt'],
@@ -642,6 +658,10 @@ export const CHILDHOOD_EVENTS = [
       {
         labelVi: "Đưa {partialPay} Ahn để giảm nợ",
         labelEn: "Pay {partialPay} Ahn toward the debt",
+        lasting: {
+          vi: 'Hoãn phần nợ còn lại sang năm sau, chủ nợ sẽ quay lại sau 1 năm',
+          en: 'Defers the remaining balance; the collector returns in 1 year'
+        },
         debtCost: 'partial',
         debtId: 'fixer_license_debt',
         debtRepay: { id: 'fixer_license_debt', amount: 'partial', deferYears: 1 },
@@ -654,6 +674,10 @@ export const CHILDHOOD_EVENTS = [
       {
         labelVi: "Dùng quan hệ ngầm và danh tiếng Fixer để khất nợ",
         labelEn: "Use underworld contacts and Fixer standing to defer",
+        lasting: {
+          vi: 'Khất nợ thêm 1 năm, khoản nợ gốc giữ nguyên tới năm sau',
+          en: 'Defers collection by 1 year; principal remains due next year'
+        },
         need: { stat: { rep: [25, 100] } },
         debtRepay: { id: 'fixer_license_debt', amount: 0, deferYears: 1 },
         resultVi: "Bạn giơ thẻ Fixer và nhắc đến vài mối quen trong khu. Gã đòi nợ nhíu mày nhìn đồng bọn, biết ép quá sẽ chịu thiệt. Hắn gấp sổ lại: \"Được, nể mặt người quen cho mày thêm một năm. Nhưng nợ vẫn là nợ.\"",
@@ -663,6 +687,10 @@ export const CHILDHOOD_EVENTS = [
       {
         labelVi: "Không có tiền trả: Cắn răng chịu trận đòn dằn mặt",
         labelEn: "Unable to pay: Endure a ruthless alley beating",
+        lasting: {
+          vi: 'Nợ gốc cộng thêm 2 Ahn phạt và mỗi năm mất 1 HP vì vết thương, đòi lại sau 1 năm',
+          en: 'Adds 2 Ahn penalty to debt and costs 1 HP/year from the wound, due again in 1 year'
+        },
         debtPenalty: { id: 'fixer_license_debt', principalAdd: 2, deferYears: 1 },
         resultVi: "Không có tiền mặt, bạn bị hai tay đao lôi vào góc hẻm đánh bầm dập. Gã chủ nợ ghi thêm hai Ahn tiền phạt quá hạn vào sổ trước khi bỏ đi trong mưa: \"Năm sau tao quay lại. Liệu mà chuẩn bị lo hậu sự nếu vẫn rỗng túi.\"",
         resultEn: "Penniless, you are dragged into the shadows and savagely beaten. The collector tacks on two Ahn penalty interest before walking away into the rain: \"I return next year. Prepare your funeral if your pockets are still dry.\"",

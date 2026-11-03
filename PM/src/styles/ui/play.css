@@ -125,6 +125,58 @@
 @keyframes deltaFade { 0% { opacity: 0; transform: translateY(3px); } 12% { opacity: 1; transform: none; } 80% { opacity: 1; } 100% { opacity: 0; } }
 .bar { height: 3px; background: var(--raised); overflow: hidden; }
 .bar.is-thin { height: 2px; }
+
+/* Đợt 122b: Thanh tiến độ thăng chức ngoài mục gập */
+.promo-progress-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  margin-top: 4px;
+}
+.promo-progress-stat.is-ready {
+  border-color: color-mix(in srgb, var(--gold) 45%, transparent);
+  background: color-mix(in srgb, var(--gold) 6%, var(--surface));
+}
+.promo-progress-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+.promo-progress-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  min-width: 0;
+  flex-wrap: wrap;
+}
+.promo-progress-heading {
+  font-weight: 600;
+}
+.promo-progress-label .stat-flag.is-ready-tag {
+  color: var(--gold);
+  border-color: color-mix(in srgb, var(--gold) 60%, transparent);
+  font-size: 11px;
+  padding: 0 5px;
+}
+.promo-progress-num {
+  font-size: 14.5px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+.promo-progress-sub {
+  font-size: 11.5px;
+  color: var(--muted);
+  line-height: 1.35;
+}
 .bar > i { display: block; width: 100%; height: 100%; background: var(--c, var(--text)); transform-origin: left; transition: transform .5s cubic-bezier(.2, .8, .2, 1); }
 .bar.is-segmented {
   position: relative;

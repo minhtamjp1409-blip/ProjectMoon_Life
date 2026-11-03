@@ -21,9 +21,9 @@ Mỗi đợt dưới đây được commit riêng, ghi vào `PROGRESS_LOG.md`, p
 | 118 | Gọn thẻ minor, thẻ chương khi trượt kỳ thi, thử trình đọc màn hình | vừa | đã xong |
 | 119 | Sửa hai lỗi mở đầu và thông báo trên điện thoại, thêm thông tin ở màn khai sinh | nhỏ | đã xong |
 | 120 | Năm yên ả một dòng, chuẩn độ dài câu chữ, gọn phần khai sinh | vừa | đã xong |
-| 121 | Đặt tên người thân, NPC quay lại nhắc lựa chọn cũ | lớn | chưa làm |
-| 122 | Hậu quả kéo dài nói bằng lời, tiến độ thăng chức | vừa | chưa làm |
-| 123 | Lướt nhanh đời thường khi chơi lại | vừa | chưa làm |
+| 121 | Đặt tên người thân, NPC quay lại nhắc lựa chọn cũ | lớn | đã xong |
+| 122 | Hậu quả kéo dài nói bằng lời, tiến độ thăng chức | vừa | đã xong |
+| 123 | Lướt nhanh đời thường khi chơi lại | vừa | đã xong |
 | (chủ dự án) | Nghe thử âm thanh trên điện thoại và tai nghe | nhỏ | chờ chủ dự án |
 
 Đợt 114b có thêm dải bản đồ thu nhỏ trên điện thoại, theo bản góp ý thứ ba (ngày 02/11/2026). Đợt 118 và buổi nghe thử âm thanh cũng đến từ bản góp ý đó.
@@ -268,55 +268,55 @@ Có bản tiếng Anh tương ứng.
 - Mỗi NPC chỉ hỏi một lần.
 - Load save cũ không lỗi.
 
-### 121b. NPC quay lại bằng cảnh ngắn nhắc lựa chọn cũ (ĐÃ XONG — TB 3,18 cảnh nhắc lại/đời có NPC thân, tỉ lệ minor NPC 16,9%, 0 trùng lặp)
+### 121b. NPC quay lại bằng cảnh ngắn nhắc lựa chọn cũ (ĐÃ HOÀN THÀNH — Tách riêng khóa mem theo hướng đầy đủ, 71 cảnh nhắc lại, max 6 cảnh/đời, 0 trùng lặp, test qua 100%)
 
 **Lý do.** Một nhân vật xuất hiện nhiều lần đáng giá hơn nhiều nhân vật chỉ xuất hiện một lần.
 
 **Cách làm.**
 1. Đây là tinh chỉnh tần suất và điều kiện của hệ NPC đang có, không dựng hệ mới.
 2. Ghi lại một số lựa chọn có NPC tham gia, kèm id lựa chọn và tuổi.
-3. Thêm khoảng 12 cảnh ngắn (đã viết 51 cảnh trong `src/data/lifeNpcCallbacks.js`), mỗi cảnh 1–2 câu, nhắc lại đúng lựa chọn đó vài năm sau, kiểu "Hana vẫn giữ cây kẹo năm ấy cậu chia cho". Đặt khoảng cách tối thiểu 2 năm giữa hai cảnh nhắc lại (`char.lastCallbackAge`) và giới hạn tối đa 6 cảnh nhắc lại mỗi đời (`char.npcCallbackCount < 6`).
-4. Trước khi viết, đo bằng audit 500 đời: một đời trung bình gặp lại cùng một NPC bao nhiêu lần (baseline trước khi viết: `4,43` lần gặp/đời, `0,00` cảnh nhắc lại/đời; sau khi hoàn thiện và tinh chỉnh cân bằng: tỉ lệ minor có NPC đạt **`16,9%`**, trung bình **`3,18` cảnh nhắc lại/đời có NPC thân**, `0%` đời trên 8 cảnh, `0` trùng lặp).
+3. Thêm các cảnh ngắn nhắc lại lựa chọn cũ (tổng cộng 71 cảnh nhắc lại trong `src/data/lifeNpcCallbacks.js`), mỗi cảnh 1–2 câu, nhắc lại đúng lựa chọn đó vài năm sau. Tách khóa `mem` riêng cho các lựa chọn ngược chiều Bond hoặc khác hành động; lựa chọn xấu có câu nhắc riêng với giọng lạnh và khoảng cách. Đặt khoảng cách tối thiểu 2 năm giữa hai cảnh nhắc lại (`char.lastCallbackAge`) và giới hạn tối đa 6 cảnh nhắc lại mỗi đời (`char.npcCallbackCount < 6`).
+4. Trước khi viết, đo bằng audit 500 đời: một đời trung bình gặp lại cùng một NPC bao nhiêu lần (baseline trước khi viết: `4,43` lần gặp/đời, `0,00` cảnh nhắc lại/đời; sau khi hoàn thiện và tinh chỉnh cân bằng: tỉ lệ minor có NPC đạt **`16,9%`**, trung bình **`3,18` cảnh nhắc lại/đời có NPC thân**, `0` đời vượt quá 6 cảnh, `0` trùng lặp).
 
-**Xong khi.** Trong audit, một đời có NPC thân trung bình gặp ít nhất 3 cảnh nhắc lại (`3,18 >= 3,0`), số đời có trên 8 cảnh dưới 10% (`0% < 10%`), và không cảnh nào lặp trong cùng một đời (`0`).
+**Xong khi.** Trong audit, một đời có NPC thân trung bình gặp ít nhất 3 cảnh nhắc lại (`3,18 >= 3,0`), không đời nào vượt quá 6 cảnh (`max <= 6`), và không cảnh nào lặp trong cùng một đời (`0`). Test `tests/test_npc_naming_and_callbacks.mjs` đạt 100%.
 
 ---
 
-## Đợt 122: hậu quả và đích đến
+## Đợt 122: hậu quả và đích đến (ĐÃ HOÀN THÀNH)
 
-### 122a. Hậu quả kéo dài nói bằng lời
+### 122a. Hậu quả kéo dài nói bằng lời (ĐÃ XONG)
 
 **Hiện tại.** `ChoicePreview` (`Deltas.jsx:229`) chỉ hiện chip +/−, nên người chơi không biết tác động kéo dài bao lâu.
 
-**Cách làm.** Với lựa chọn có tác động nhiều năm (Bond, nợ, hợp đồng, NPC đi theo), cho phép data khai một trường `lasting: { vi, en }`. Trường này hiện thành một dòng ngắn dưới nhãn lựa chọn, ví dụ "Mỗi năm SP +2, kéo dài tới khi chia tay". Lựa chọn không có trường này thì không đổi gì.
+**Cách làm.** Với lựa chọn có tác động nhiều năm (Bond, nợ, hợp đồng, NPC đi theo), cho phép data khai một trường `lasting: { vi, en }`. Trường này hiện thành một dòng ngắn dưới nhãn lựa chọn (`.choice-lasting`), ví dụ "Mỗi năm SP +2, kéo dài tới khi chia tay". Lựa chọn không có trường này thì không đổi gì.
 
-**Xong khi.** Có ít nhất 15 lựa chọn dài hạn được viết dòng này. Thẻ minor ở 390x844 vẫn đạt chuẩn của Đợt 118a: dòng `lasting` nằm trong phần mở bằng nút gập.
+**Xong khi.** Đã bổ sung `lasting: { vi, en }` cho 20 lựa chọn dài hạn (vượt mốc 15 lựa chọn). Thẻ minor ở 390x844 đạt chuẩn của Đợt 118a: dòng `lasting` nằm trong phần mở bằng nút gập (`+` / `.preview-secondary`).
 
-### 122b. Tiến độ thăng chức
+### 122b. Tiến độ thăng chức (ĐÃ XONG)
 
 **Hiện tại.** Merit chỉ là một con số nằm trong mục gập của hồ sơ (`CharacterDossierCard.jsx:650`). Người chơi không biết còn bao xa mới tới lần thăng chức hoặc kỳ thi Grade tiếp theo.
 
 **Cách làm.**
-1. Hiện ở cột trái, ngoài mục gập, một thanh "Tới thăng chức: 6/8", hoặc "Tới kỳ thi Grade 6" cho Fixer.
-2. Lấy ngưỡng từ đúng hàm mà engine dùng để thăng chức, không viết lại ngưỡng ở UI.
+1. Hiện ở cột trái, ngoài mục gập, một thanh "Tới thăng chức: 6/8", hoặc "Tới kỳ thi Grade 6" cho Fixer (`PromotionProgressBar`).
+2. Lấy ngưỡng từ đúng hàm mà engine dùng để thăng chức (`getPromotionProgress` đọc trực tiếp từ `getNextFixerPromotion`, `checkColorFixerReadiness`, `getOtherCareerPromotion`, `getNextIndependentSyndicatePromotion`), không viết lại ngưỡng ở UI.
 
-**Test.** Ngưỡng UI khớp với ngưỡng engine cho mọi nghề có thăng chức.
+**Test.** `tests/test_batches_122_123.mjs` kiểm tra ngưỡng UI khớp 100% với ngưỡng engine cho mọi nghề có thăng chức (Fixer Grade 9->1, Color, Finger Syndicate, Wing Employee, Independent Syndicate).
 
 ---
 
-## Đợt 123: lướt nhanh khi chơi lại
+## Đợt 123: lướt nhanh khi chơi lại (ĐÃ HOÀN THÀNH)
 
 **Lý do.** Web mẫu có x1 đến x32, nhưng chép nguyên x32 sẽ nuốt mất chi tiết của game mình. Hướng học là tăng tốc rõ rệt cho phần đời thường khi chơi lại.
 
 **Cách làm.**
-1. Thêm một mức "Lướt" (khoảng 8x). Mức này chỉ hiện từ đời thứ hai trở đi, đọc từ lịch sử đời của Huyết thống, hoặc khi đã bật tự chọn.
-2. Mức "Lướt" chỉ chạy trong `quietStretch` (`gameStore.js:906`). Gặp major, minor, mốc NPC hoặc thẻ chương thì tự về tốc độ người chơi đã chọn trước đó.
-3. Minor không bị rút ngắn thời gian chờ. Luật hẹn giờ giữ nguyên.
+1. Thêm một mức "Lướt" (khoảng 8x). Mức này chỉ hiện từ đời thứ hai trở đi (`pastLives.length >= 1` hoặc `char.generation > 1`), đọc từ lịch sử đời của Huyết thống, hoặc khi đã bật tự chọn (`autoPlay`).
+2. Mức "Lướt" chỉ chạy trong `quietStretch` (`gameStore.js:906`). Gặp major, minor, mốc NPC hoặc thẻ chương thì tự về tốc độ người chơi đã chọn trước đó (`preSkimSpeed`).
+3. Minor không bị rút ngắn thời gian chờ (`minorRemainingMs` trừ đúng `dtMs` thực tế, không nhân tốc độ lướt). Luật hẹn giờ giữ nguyên.
 
-**Test.**
-- Đời đầu không thấy nút "Lướt".
-- Đang lướt mà gặp minor thì tốc độ về lại mức cũ.
-- Đồng hồ minor không chạy nhanh hơn bình thường.
+**Test.** `tests/test_batches_122_123.mjs`:
+- Đời đầu khi chưa bật autoPlay không thấy nút "Lướt", đời thứ hai hoặc khi bật autoPlay thì thấy.
+- Đang lướt mà gặp minor, major, mốc NPC hoặc thẻ chương thì tốc độ tự về lại mức cũ.
+- Đồng hồ minor trừ đúng thời gian thực, không chạy nhanh hơn bình thường.
 
 ---
 
