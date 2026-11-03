@@ -20,7 +20,7 @@ import { exportDossierCardPNG } from '../../../utils/exportDossierCard';
 import { audioEngine } from '../../../engine/audioEngine';
 import { gameFeel } from '../../../engine/gameFeel';
 import { useT } from '../../../i18n';
-import { Deltas, ChoicePreview, choiceCostDisplay } from './Deltas';
+import { Deltas, ChoicePreview, choiceCostDisplay, hasMinorExtraDetails } from './Deltas';
 import { getPsycheInterjection, evaluateDiscoChoiceCheck } from '../../../engine/discoPsyche';
 import { bestowHanaColorTitle } from '../../../engine/colorRegistry';
 import { dungeonEntryForecast } from '../../../engine/dungeonEngine';
@@ -381,39 +381,51 @@ const MinorDock = ({ prompt, char, npcs, wealth = 0, remainingMs, paused = false
               (ch.en && stripCostSuffix(ch.en).includes(`${costAhn} Ahn`))
             );
             const isExpanded = Boolean(expandedChoices[idx]);
+            const hasExtra = hasMinorExtraDetails(ch, char, npcs);
             return (
-              <button
-                type="button"
-                key={idx}
-                className={`choice ${isShortAhn ? 'is-disabled' : ''} ${isExpanded ? 'is-expanded' : ''}`}
-                disabled={isShortAhn}
-                onClick={() => !isShortAhn && onPick(idx)}
-              >
-                <span className="choice-badge">{idx + 1}</span>
-                <span>
-                  <span className="choice-label">
-                    {label}
-                    {isShortAhn && (
-                      <span className="choice-need">
-                        {t(`Thiếu Ahn (Cần ${costAhn})`, `Short Ahn (Needs ${costAhn})`)}
+              <div className={`minor-choice-wrapper ${isExpanded ? 'is-expanded' : ''}`} key={idx}>
+                <button
+                  type="button"
+                  className={`choice ${isShortAhn ? 'is-disabled' : ''} ${isExpanded ? 'is-expanded' : ''}`}
+                  disabled={isShortAhn}
+                  onClick={() => !isShortAhn && onPick(idx)}
+                >
+                  <span className="choice-badge">{idx + 1}</span>
+                  <span>
+                    <span className="choice-label">
+                      {label}
+                      {isShortAhn && (
+                        <span className="choice-need">
+                          {t(`Thiếu Ahn (Cần ${costAhn})`, `Short Ahn (Needs ${costAhn})`)}
+                        </span>
+                      )}
+                    </span>
+                    {costAhn && !isShortAhn && !labelShowsCost && (
+                      <span className="delta is-static choice-cost-chip">
+                        {t(`Tốn ${costAhn} Ahn`, `Cost: ${costAhn} Ahn`)}
                       </span>
                     )}
+                    <ChoicePreview
+                      choice={ch}
+                      npcs={npcs}
+                      char={char}
+                      kind="minor"
+                      expanded={isExpanded}
+                    />
                   </span>
-                  {costAhn && !isShortAhn && !labelShowsCost && (
-                    <span className="delta is-static choice-cost-chip">
-                      {t(`Tốn ${costAhn} Ahn`, `Cost: ${costAhn} Ahn`)}
-                    </span>
-                  )}
-                  <ChoicePreview
-                    choice={ch}
-                    npcs={npcs}
-                    char={char}
-                    kind="minor"
-                    expanded={isExpanded}
-                    onToggleExpand={(e) => toggleExpand(idx, e)}
-                  />
-                </span>
-              </button>
+                </button>
+                {hasExtra && (
+                  <button
+                    type="button"
+                    className={`choice-detail-toggle ${isExpanded ? 'is-expanded' : ''}`}
+                    onClick={(e) => toggleExpand(idx, e)}
+                    aria-label={isExpanded ? t(`Gấp lại chi tiết lựa chọn ${idx + 1}`, `Collapse details for choice ${idx + 1}`) : t(`Xem thêm chi tiết lựa chọn ${idx + 1}`, `Expand details for choice ${idx + 1}`)}
+                    aria-expanded={isExpanded}
+                  >
+                    <span aria-hidden="true">{isExpanded ? '▲' : '+'}</span>
+                  </button>
+                )}
+              </div>
             );
           })}
           <button type="button" className="choice is-ghost" onClick={() => onPick(-1)}>
@@ -1623,8 +1635,10 @@ export const LiveStageFeed = () => {
   const [sceneAnnouncement, setSceneAnnouncement] = useState('');
 
   useEffect(() => {
-    if (prevCutsceneKeyRef.current && !cutsceneKey) {
-      const sceneId = prevCutsceneKeyRef.current.split('_')[0];
+    const prevKey = prevCutsceneKeyRef.current;
+    prevCutsceneKeyRef.current = cutsceneKey;
+    if (prevKey && !cutsceneKey) {
+      const sceneId = prevKey.split('_')[0];
       const text = getCutsceneKeyAnnouncement(sceneId, useGameStore.getState(), lang);
       if (text) {
         setSceneAnnouncement(text);
@@ -1632,7 +1646,6 @@ export const LiveStageFeed = () => {
         return () => clearTimeout(timer);
       }
     }
-    prevCutsceneKeyRef.current = cutsceneKey;
   }, [cutsceneKey, lang]);
 
   const isUnseenEvent = Boolean(

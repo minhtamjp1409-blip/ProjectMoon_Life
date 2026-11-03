@@ -4,10 +4,10 @@ import { LIFE_MINORS } from '../../src/data/lifeMinors.js';
 import { existsSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 
-const outDir = 'C:/Users/nguyenhuynhminhtam/.gemini/antigravity/brain/e7e90694-7d57-4cea-90c8-403b1d3593ff';
+const outDir = process.env.ARTIFACT_DIR || join(process.cwd(), 'output');
 if (!existsSync(outDir)) mkdirSync(outDir, { recursive: true });
 
-const BASE = process.argv[2] || 'https://project-moon-life-five.vercel.app';
+const BASE = process.env.DEV_URL || process.argv[2] || 'http://localhost:5173';
 
 const scenarios = [
   {

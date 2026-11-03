@@ -2565,9 +2565,10 @@ Hai cảnh mà kế hoạch để "sau". Từ đây danh mục cảnh C1 đến 
   * **Bước 2 - Tinh gọn thẻ trên mobile (`LiveStageFeed.jsx`, `Deltas.jsx`, `chronicle.css`):**
     - Mỗi lựa chọn giữ tối đa 3 thành phần: (1) Nhãn lựa chọn (`choice-label`), (2) Giá / Lý do khóa (`choice-cost-chip` hoặc `choice-need`), (3) Một dòng tác động chính (`preview-primary`, lấy stat biến động đầu tiên).
     - Các chi tiết bổ sung (chỉ số phụ, thay đổi Bond với NPC, rủi ro, hậu quả `later`, `scar`, `bringsClaw`) được gộp vào `.preview-secondary` và ẩn trên mobile (`is-hidden-mobile`).
-    - Thêm nút chạm chuyển đổi `.choice-detail-toggle` (`+` / `▲`, vùng chạm tối thiểu đạt chuẩn) cho phép người chơi mở hoặc gấp lại toàn bộ chi tiết chỉ sau một chạm (`onToggleExpand`, `e.stopPropagation()`).
+    - **Nút gấp/mở chi tiết độc lập (`.choice-detail-toggle`, chuẩn 44x44px):** Đưa nút gấp ra làm phần tử cùng cấp với nút lựa chọn, bọc cả hai trong container `.minor-choice-wrapper` với `position: relative`. Nút là một `<button type="button">` thực thụ, có vùng chạm tối thiểu đạt chuẩn WCAG (44x44px), vị trí tuyệt đối ở góc trên bên phải, có padding bù 48px trên `.choice` để không đè chữ. Cấu trúc hợp lệ (không lồng nút trong nút), ngăn chặn tuyệt đối nguy cơ chạm lệch làm kích hoạt lựa chọn có hạn giờ, thân thiện với trình đọc màn hình.
+    - Dùng token CSS `color-mix(in srgb, var(--gold) 40%, transparent)` và `color-mix(in srgb, var(--gold) 8%, transparent)` cho nút và đường gạch đứt thay cho các giá trị `rgba(...)` viết thẳng.
     - Lý do khóa (`choice-need`: "Thiếu Ahn (Cần N)") luôn luôn hiển thị đầy đủ, không bao giờ bị ẩn.
-    - **Desktop giữ nguyên 100%**: Trên màn hình rộng (`> 860px`), `.choice-detail-toggle` ẩn hoàn toàn và mọi chi tiết hiển thị dàn ngang tự nhiên như trước.
+    - **Desktop giữ nguyên 100%**: Trên màn hình rộng (`> 860px`), `.choice-detail-toggle` ẩn hoàn toàn (`display: none !important`) và mọi chi tiết hiển thị dàn ngang tự nhiên như trước.
   * **Kết quả đo đạc sau khi sửa (Viewport 390x844):**
     - Minor có giá (`m_med_backstreet_clinic`): Lựa chọn cuối bottom = **753px** (dư **91px**, **ĐẠT**). Chiều cao lựa chọn giảm từ 94px xuống **64px** (regular) và **44px** (ghost).
     - Minor có NPC (`m_k_candy`): Lựa chọn cuối bottom = **753px** (dư **91px**, **ĐẠT**).
@@ -2577,29 +2578,39 @@ Hai cảnh mà kế hoạch để "sau". Từ đây danh mục cảnh C1 đến 
 * **118b. Thẻ chương khi trượt kỳ thi Fixer (`src/engine/chapters.js`):**
   * **Bổ sung nhánh `exam_fail` vào `chapterFor`:**
     - Theo dõi biến động của `char.fixerExamFailures`: Khi tổng số lần trượt tăng trong commit hiện tại, sinh thẻ chương nhỏ gọn.
-    - Tiêu đề thẻ: `Fixer Grade N` (`kind: 'exam_fail'`).
+    - Tiêu đề thẻ: `Kỳ thi Grade N` / `Grade N exam` (`kind: 'exam_fail'`), phân biệt rõ với thẻ thăng hạng đỗ (`Fixer Grade N`) khi lướt nhanh qua nhật ký.
     - Câu thẻ ngắn hơn thẻ thăng hạng và phân biệt rõ thứ tự:
       + Lần đầu trượt Grade N: *"Hana từ chối công nhận Grade N."* / *"Hana denied Grade N."*
       + Lần 2 trở đi cùng Grade N: *"Hana lại từ chối Grade N."* / *"Hana denied Grade N once more."*
     - Luật ưu tiên được bảo toàn tuyệt đối: Không sinh thẻ trượt nếu nhân vật qua đời trong cùng commit (cái chết thắng), hoặc nếu có biến cố lớn hơn (Color, Distortion, E.G.O, Job change, Thăng hạng đỗ, hoặc Mất người thân).
     - Tích hợp `CHAPTER_EXAM_FAIL_LINES` vào `tools/lint/voice_lint.mjs`: Quét 33.309 chuỗi đạt 0 lỗi, 0 cảnh báo.
   * **Kiểm thử tự động (`tests/test_chapters.mjs`):**
-    - Trượt lần đầu: sinh thẻ `exam_fail` với câu từ chối chuẩn.
+    - Trượt lần đầu: sinh thẻ `exam_fail` với tiêu đề `Kỳ thi Grade 6` và câu từ chối chuẩn.
     - Trượt lần hai cùng Grade: sinh thẻ với câu từ chối lặp lại khác biệt.
     - Thi đỗ: sinh thẻ thăng hạng `rank`, không sinh thẻ trượt.
     - Chết trong cùng commit: không sinh thẻ trượt, cái chết thắng hoàn toàn.
 
-* **118c. Kiểm thử và hoàn thiện cho Trình đọc màn hình (Screen Reader / NVDA):**
+* **118c. Kiểm thử và hoàn thiện cho Trình đọc màn hình (Screen Reader / Cây Accessibility của Chrome):**
   * **Khắc phục thông báo hậu cutscene (`LiveStageFeed.jsx`, `CutsceneLayer.jsx`, `registry.js`):**
-    - Bổ sung hàm `getCutsceneKeyAnnouncement(id, state, lang)` trả câu then chốt của cảnh (ví dụ Claw: *"Claw đã đến."*, Cái chết: *"Rồi im."*).
+    - Bổ sung hàm `getCutsceneKeyAnnouncement(id, state, lang)` đọc chính xác câu then chốt của cảnh từ định nghĩa gốc `scene.lines[scene.keyLine]` (ví dụ Carmen: *"Có ai đang gọi tên bạn bằng chính giọng của bạn."*, Claw: *"Claw đã đến."*, Cái chết: *"Rồi im."*, Finger: *"Cả Ngón Tay im lặng chờ."*).
+    - Cảnh Savior quét đúng vai của NPC qua đời trong năm (`spouse`, `partner`, `friend`, `mentor`) theo `fateAge === age` để phát đúng câu trăn trối của từng vai, loại bỏ lỗi rơi mặc định về `friend`.
+    - Cảnh Color Fixer đọc đúng tên danh hiệu phong tặng từ `bestowedColor.title`.
+    - Cảnh Dungeon đọc tên hầm ngục từ `DUNGEON_DEFINITIONS`.
+    - Tránh phát lặp lại thông báo khi đổi ngôn ngữ (`lang`): Cập nhật `prevCutsceneKeyRef.current = cutsceneKey` ngay đầu `useEffect`.
     - Khi cảnh kết thúc, câu chính được phát tự động một lần qua vùng thông báo ẩn (`.sr-only[aria-live="polite"]`), giúp người dùng khiếm thị không bị mất mạch câu chuyện.
     - Bản `caption` cũng xuất câu này qua `role="status"` và `aria-live="polite"`.
+  * **Mô tả thế đánh hầm ngục cho trình đọc màn hình (`DungeonDock.jsx`):**
+    - Đính kèm `aria-label` và `title` chi tiết giải thích tác dụng từng thế đánh (Thận trọng / Cân bằng / Xung kích) cho các nút thế đánh, giúp người dùng điện thoại và khiếm thị nắm rõ cơ chế mà không làm phình dock hầm ngục (bảo toàn 5px an toàn của Claw Judgment).
   * **Sửa thứ tự đọc DOM cho Cái chết và Di cảo (`LifeEndStep.jsx`):**
     - Thay vì đưa focus thẳng vào nút "Nhìn lại cuộc đời này" ở cuối trang làm bỏ qua nội dung, thiết lập focus tự động vào vùng chứa `SECTION.life-end-card` (`tabIndex="-1"`).
     - Trình đọc đọc tuần tự và trang trọng: *Cái chết -> Tên & Nơi xuất thân -> Số tuổi -> Nguyên nhân tử vong -> Câu thơ tiễn biệt -> Các nút hành động*.
   * **Đính kèm nhãn `aria-label` cho Thẻ chương (`chapter-card`):**
     - Đọc rõ ràng: *"Thẻ chương: Fixer Grade N"*, sau đó đến tiêu đề và câu dẫn chuyện.
-  * **Bản ghi âm đọc thực tế từ NVDA / Chrome Accessibility Tree (`tools/qa/test_screen_reader_order.mjs`):**
+  * **Script QA & Phương pháp kiểm thử (`tools/qa/test_screen_reader_order.mjs`):**
+    - Phương pháp kiểm thử: Đọc cây accessibility của Chrome (Chrome Accessibility Tree qua giao thức CDP), kiểm tra cấu trúc DOM, nhãn `aria-label`, vùng thông báo `aria-live` và thứ tự duyệt tiêu điểm.
+    - Việc nghe thử âm thanh thực tế bằng NVDA được chuyển vào danh mục kiểm nghiệm của chủ dự án cùng buổi nghe thử âm thanh cutscene.
+    - Script QA loại bỏ đường dẫn tuyệt đối ghi cứng, cho phép cấu hình qua `ARTIFACT_DIR` và `DEV_URL` (mặc định localhost:5173).
+  * **Bản trích xuất thứ tự cây Accessibility Chrome (`tools/qa/test_screen_reader_order.mjs`):**
     ```
     [NVDA Spoken :: MinorDock] TIMER: Còn 30 giây để chọn. Có thể tạm dừng bằng phím Space
     [NVDA Spoken :: MinorDock] TEXT: 30s

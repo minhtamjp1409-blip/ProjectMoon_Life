@@ -166,8 +166,8 @@ export function chapterFor(prev, next) {
 
   if (failedGrade !== null) {
     const title = {
-      vi: `Fixer Grade ${failedGrade}`,
-      en: `Fixer Grade ${failedGrade}`
+      vi: `Kỳ thi Grade ${failedGrade}`,
+      en: `Grade ${failedGrade} exam`
     };
     const lines = failCountForGrade === 1 ? CHAPTER_EXAM_FAIL_LINES.first : CHAPTER_EXAM_FAIL_LINES.repeat;
     const subVi = lines.vi.replace('{grade}', failedGrade);

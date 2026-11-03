@@ -215,7 +215,18 @@ export function previewChoice(choice, char, kind = 'major') {
   return { affected, fixed: [], ranges, directions, odds };
 }
 
-export const ChoicePreview = ({ choice, npcs, char, kind = 'major', check = null, expanded = false, onToggleExpand = null }) => {
+// Helper to determine if a minor choice has secondary details (bonds, risks, extra stats)
+export function hasMinorExtraDetails(choice, char, npcs) {
+  if (!choice) return false;
+  const { affected } = previewChoice(choice, char, 'minor');
+  const bonds = Object.entries(choice.bond || {})
+    .map(([role]) => ({ name: npcs?.[role]?.nameVi || npcs?.spouse?.nameVi }))
+    .filter((b) => b.name);
+  const secondaryStats = (affected || []).slice(1);
+  return secondaryStats.length > 0 || bonds.length > 0 || Boolean(choice.later || choice.scar || bringsClaw(choice, char));
+}
+
+export const ChoicePreview = ({ choice, npcs, char, kind = 'major', check = null, expanded = false }) => {
   const { t, lang } = useT();
   const { affected, directions, odds, examOdds } = previewChoice(choice, char, kind);
   const bonds = Object.entries(choice.bond || {})
@@ -294,27 +305,13 @@ export const ChoicePreview = ({ choice, npcs, char, kind = 'major', check = null
   // Main impact: first affected stat, or odds if no stats
   const primaryStat = affected[0];
   const secondaryStats = affected.slice(1);
-  const hasExtra = secondaryStats.length > 0 || bonds.length > 0 || Boolean(choice.later || choice.scar || bringsClaw(choice, char));
 
   return (
     <span className={`preview is-minor-preview ${expanded ? 'is-expanded' : 'is-folded'}`}>
       <span className="preview-primary">
         {!primaryStat && renderOdds()}
         {primaryStat && renderStatChip(primaryStat)}
-      </span>
-      {hasExtra && onToggleExpand && (
-        <span
-          className="choice-detail-toggle"
-          role="button"
-          tabIndex={0}
-          onClick={onToggleExpand}
-          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onToggleExpand(e); }}
-          aria-label={expanded ? t('Gấp lại chi tiết', 'Collapse details') : t('Xem thêm chi tiết', 'Expand details')}
-          aria-expanded={expanded}
-        >
-          {expanded ? '▲' : '+'}
-        </span>
-      )}
+      </span>
       <span className={`preview-secondary ${expanded ? 'is-open' : 'is-hidden-mobile'}`}>
         {primaryStat && renderOdds()}
         {secondaryStats.map(renderStatChip)}

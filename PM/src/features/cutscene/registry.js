@@ -1,3 +1,5 @@
+import { DUNGEON_DEFINITIONS } from '../../engine/dungeonEngine.js';
+
 // Every scene the Cutscene Director can play. The timeline itself lives in cutscene.css; this table holds what the
 // store needs to hold the dock (how long each cut runs) and the words the scene says.
 // Cuts: full (first viewing), lite (repeat viewings, x3, autoplay), still (reduced motion), caption (scenes switched off).
@@ -51,6 +53,7 @@ export const CUTSCENES = {
     lines: [
       { vi: 'Cả Ngón Tay im lặng chờ.', en: 'The whole Finger waits in silence.' }
     ],
+    keyLine: 0,
     keyDynamic: 'finger'
   },
   // A dungeon gate: the interface fades away, the dungeon's own backdrop shows whole, its name is set like a title card.
@@ -148,30 +151,23 @@ export function isLowPowerDevice() {
 export function getCutsceneKeyAnnouncement(id, state = null, lang = 'vi') {
   const scene = CUTSCENES[id];
   if (!scene) return '';
-  if (id === 'carmen') {
-    return lang === 'en' ? 'Listen to your own voice.' : 'Hãy lắng nghe giọng nói của chính bạn.';
-  }
-  if (id === 'claw') {
-    return lang === 'en' ? 'The Claw has arrived.' : 'Claw đã đến.';
-  }
-  if (id === 'death') {
-    return lang === 'en' ? 'Then nothing.' : 'Rồi im.';
-  }
   if (id === 'color') {
     const c = state?.bestowedColor;
-    return lang === 'en' ? `Hana conferred title: ${c?.titleEn || 'Color Fixer'}` : `Hana sắc phong danh hiệu: ${c?.titleVi || 'Color Fixer'}`;
+    const title = c?.title || 'Color Fixer';
+    return lang === 'en' ? `Hana conferred title: ${title}` : `Hana sắc phong danh hiệu: ${title}`;
   }
   if (id === 'savior') {
-    const role = state?.char?.lastSaviorRole || 'friend';
-    const w = scene.lastWords?.[role];
-    if (w) return lang === 'en' ? w.en : w.vi;
+    const life = state?.char;
+    const role = ['spouse', 'partner', 'friend', 'mentor'].find((k) => life?.npcs?.[k]?.deceased && life.npcs[k].fateAge === life.age);
+    const words = role ? scene.lastWords?.[role] : null;
+    if (words) return lang === 'en' ? words.en : words.vi;
     return lang === 'en' ? 'A companion took the blow in your place.' : 'Một người thân đã đỡ đòn thay bạn.';
   }
-  if (id === 'finger') {
-    return lang === 'en' ? 'The whole Finger waits in silence.' : 'Cả Ngón Tay im lặng chờ.';
-  }
   if (id === 'dungeon') {
-    return lang === 'en' ? 'Dungeon gate opened.' : 'Cổng hầm ngục đã mở.';
+    const dungeonId = state?.char?.pendingDungeon?.id || state?.dungeonId;
+    const def = dungeonId ? DUNGEON_DEFINITIONS[dungeonId] : null;
+    if (def) return lang === 'en' ? (def.titleEn || def.titleVi) : (def.titleVi || def.titleEn);
+    return lang === 'en' ? 'Dungeon' : 'Hầm ngục';
   }
   if (scene.keyLine !== undefined && scene.lines?.[scene.keyLine]) {
     return lang === 'en' ? scene.lines[scene.keyLine].en : scene.lines[scene.keyLine].vi;

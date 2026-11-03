@@ -714,26 +714,46 @@
     width: 100%;
     margin-top: 4px;
     padding-top: 4px;
-    border-top: 1px dashed rgba(255, 255, 255, 0.08);
+    border-top: 1px dashed color-mix(in srgb, var(--gold) 20%, transparent);
+  }
+  .minor-choice-wrapper {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    width: 100%;
+  }
+  .minor-choice-wrapper .choice {
+    flex: 1;
+    width: 100%;
+    padding-right: 48px;
   }
   .choice-detail-toggle {
-    display: inline-flex;
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
     align-items: center;
     justify-content: center;
-    min-width: 22px;
-    height: 22px;
-    padding: 0 4px;
-    margin-left: 4px;
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 700;
     color: var(--gold);
-    border: 1px solid rgba(216, 178, 101, 0.4);
-    border-radius: 3px;
-    background: rgba(216, 178, 101, 0.08);
+    border: 1px solid color-mix(in srgb, var(--gold) 40%, transparent);
+    border-radius: 4px;
+    background: color-mix(in srgb, var(--gold) 8%, transparent);
     cursor: pointer;
     vertical-align: middle;
     user-select: none;
     touch-action: manipulation;
+    z-index: 2;
+  }
+  .choice-detail-toggle:hover,
+  .choice-detail-toggle:focus-visible {
+    border-color: var(--gold);
+    background: color-mix(in srgb, var(--gold) 16%, transparent);
   }
 }
 
@@ -755,11 +775,19 @@
   .dock.is-minor .dock-title { font-size: 17px; line-height: 1.2; }
   .dock.is-minor .dock-text { font-size: 13px; line-height: 1.4; margin: 2px 0 6px; }
   .dock.is-minor .choices { gap: 5px; }
-  .dock.is-minor .choice { padding: 6px 8px; min-height: 44px; }
+  .dock.is-minor .choice { padding: 6px 48px 6px 8px; min-height: 44px; }
   .dock.is-minor .choice-label { font-size: 13px; }
 }
 
 @media (min-width: 861px) {
+  .minor-choice-wrapper {
+    position: relative;
+    display: block;
+    width: 100%;
+  }
+  .minor-choice-wrapper .choice {
+    padding-right: 12px;
+  }
   .choice-detail-toggle { display: none !important; }
   .preview-secondary { display: inline-flex !important; }
 }

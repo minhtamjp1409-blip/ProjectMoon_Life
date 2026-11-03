@@ -309,24 +309,26 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
               {STANCES.map((st) => {
                 const Icon = st.icon;
                 const on = st.id === activeStance.id;
+                const stanceDesc = def.noRetreat
+                  ? st.id === 'guarded'
+                    ? t('Giảm sát thương và áp lực; không tăng xác suất kiểm định.', 'Less damage and strain; no bonus to check odds.')
+                    : st.id === 'balanced'
+                      ? t('Sát thương bình thường, xác suất kiểm định nhỉnh hơn.', 'Normal damage and slightly better check odds.')
+                      : t('Tăng cơ hội kiểm định, nhưng chịu nhiều sát thương và áp lực hơn.', 'Better check odds, but more damage and strain.')
+                  : pick(st.noteVi, st.noteEn);
                 return (
                   <button
                     key={st.id}
                     type="button"
                     role="radio"
                     aria-checked={on}
+                    aria-label={`${pick(st.vi, st.en)}: ${stanceDesc}`}
                     className={`dg-stance stance-${st.id} ${on ? 'is-on' : ''}`}
                     onClick={() => {
                       audioEngine.playClick();
                       onSetStance?.(st.id);
                     }}
-                    title={def.noRetreat
-                      ? st.id === 'guarded'
-                        ? t('Giảm sát thương và áp lực; không tăng xác suất kiểm định.', 'Less damage and strain; no bonus to check odds.')
-                        : st.id === 'balanced'
-                          ? t('Sát thương bình thường, xác suất kiểm định nhỉnh hơn.', 'Normal damage and slightly better check odds.')
-                          : t('Tăng cơ hội kiểm định, nhưng chịu nhiều sát thương và áp lực hơn.', 'Better check odds, but more damage and strain.')
-                      : pick(st.noteVi, st.noteEn)}
+                    title={stanceDesc}
                   >
                     <Icon size={14} aria-hidden="true" />
                     <span>{pick(st.vi, st.en)}</span>

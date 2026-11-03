@@ -3,7 +3,7 @@ import { createNewCharacter, interpolateText } from '../../src/engine/gameEngine
 import { LIFE_MINORS } from '../../src/data/lifeMinors.js';
 import { chapterFor } from '../../src/engine/chapters.js';
 
-const BASE = process.argv[2] || 'http://localhost:5173';
+const BASE = process.env.DEV_URL || process.argv[2] || 'http://localhost:5173';
 
 console.log(`Connecting to browser at ${BASE} to test Screen Reader (NVDA) traversal order...`);
 const browser = await Browser.launch();

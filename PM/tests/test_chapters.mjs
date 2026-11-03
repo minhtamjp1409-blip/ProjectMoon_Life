@@ -200,7 +200,8 @@ const examFailed1 = step(cExam1, { fixerExamFailures: { 6: 1 } });
 const failCard1 = chapterFor(cExam1, examFailed1);
 assert.equal(failCard1?.type, 'chapter');
 assert.equal(failCard1?.kind, 'exam_fail');
-assert.equal(failCard1?.titleVi, 'Fixer Grade 6');
+assert.equal(failCard1?.titleVi, 'Kỳ thi Grade 6');
+assert.equal(failCard1?.titleEn, 'Grade 6 exam');
 assert.equal(failCard1?.subVi, 'Hana từ chối công nhận Grade 6.');
 assert.equal(failCard1?.subEn, 'Hana denied Grade 6.');
 
@@ -209,7 +210,8 @@ const cExam2 = step(cExam1, { fixerExamFailures: { 6: 1 } });
 const examFailed2 = step(cExam2, { fixerExamFailures: { 6: 2 } });
 const failCard2 = chapterFor(cExam2, examFailed2);
 assert.equal(failCard2?.kind, 'exam_fail');
-assert.equal(failCard2?.titleVi, 'Fixer Grade 6');
+assert.equal(failCard2?.titleVi, 'Kỳ thi Grade 6');
+assert.equal(failCard2?.titleEn, 'Grade 6 exam');
 assert.equal(failCard2?.subVi, 'Hana lại từ chối Grade 6.');
 assert.equal(failCard2?.subEn, 'Hana denied Grade 6 once more.');
 
