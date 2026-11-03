@@ -253,6 +253,15 @@ const fill = (s, map) => Object.entries(map).reduce((acc, [k, v]) => acc.replace
  * Returns the opening log lines and the childhood friend for a newborn.
  * `kind` is 'nest' | 'back' | 'out'.
  */
+export function isExtraBirthEntry(entry) {
+  if (!entry || entry.age !== 0) return false;
+  // Đợt 120/121: log_birth_3 (Bạn thời thơ ấu) và log_legacy_0 (Di sản thế hệ) không bị gập
+  if (entry.id === 'log_birth_3' || entry.id === 'log_legacy_0' || entry.id === 'log_parent_living') return false;
+  // Gập phần mô tả dài đêm sinh & gia cảnh (log_birth_1)
+  if (entry.id === 'log_birth_1') return true;
+  return false;
+}
+
 export function composeBirth({ kind, familyId, omenId, regionVi, regionEn, regionId = null, name, generation, rng }) {
   const place = pick(PLACE[kind] || PLACE.back, rng);
   const fam = pick(FAMILY[familyId] || FAMILY.backstreet_worker, rng);

@@ -35,6 +35,7 @@ import { relocateCharacterDistrict, imbueCharacterEquipment } from '../engine/ci
 import { cutsceneFor, outranks } from '../engine/cutsceneTriggers.js';
 import { bestowHanaColorTitle } from '../engine/colorRegistry.js';
 import { chapterFor } from '../engine/chapters.js';
+import { isExtraBirthEntry } from '../data/birthStories.js';
 import { CUTSCENES, resolveCutsceneCut, hasSeenCutscene, markCutsceneSeen, prefersReducedMotion, isLowPowerDevice } from '../features/cutscene/registry.js';
 
 const META_KEY = 'pm_city_chronicles_save_v3';
@@ -384,11 +385,11 @@ function flushAchievementToasts(state) {
   while (pendingAchievementToasts.length) {
     const rec = pendingAchievementToasts.shift();
     try {
-      // Đợt 119b: Trên mobile chuyển toast xuống bottom để không đè character name & HUD, thêm aria-live="polite"
+      // Đợt 119b: Trên mobile đặt toast ở top nhưng hạ thấp dưới HUD (top: 185px) để không đè HUD lẫn nút chính
       notification.open({
         title: lang === 'en' ? `Record unlocked · ${rec.en || rec.vi}` : `Mở khóa thành tựu · ${rec.vi}`,
         description: lang === 'en' ? (rec.hintEn || rec.hintVi) : rec.hintVi,
-        placement: typeof window !== 'undefined' && window.innerWidth <= 820 ? 'bottom' : 'bottomLeft',
+        placement: typeof window !== 'undefined' && window.innerWidth <= 820 ? 'top' : 'bottomLeft',
         className: 'achievement-toast',
         duration: 3.2,
         role: 'status',
@@ -838,12 +839,21 @@ export const useGameStore = create((set, get) => ({
     else if (nextChar.pendingLead) Object.assign(nextChar, chooseDirectorPacedLead(nextChar, lifeRng));
     const metaUpdates = get().syncMetaFromChar(nextChar);
     let hasBirthLogs = Boolean(nextChar.pendingBirthLogs && nextChar.pendingBirthLogs.length > 0);
-    // Đợt 119a: Hiển thị ngay dòng khai sinh đầu tiên tại frame 0, không chờ nhịp tick
+    // Đợt 119a & 120c: Hiển thị ngay dòng khai sinh đầu tiên tại frame 0, nạp các dòng gập ngay để tránh nhịp chờ rỗng
     if (hasBirthLogs) {
-      const [firstLog, ...remaining] = nextChar.pendingBirthLogs;
-      nextChar.logs = [firstLog];
-      nextChar.pendingBirthLogs = remaining;
-      hasBirthLogs = remaining.length > 0;
+      const visibleLogs = [];
+      const foldedLogs = [];
+      for (const log of nextChar.pendingBirthLogs) {
+        if (isExtraBirthEntry(log)) {
+          foldedLogs.push(log);
+        } else {
+          visibleLogs.push(log);
+        }
+      }
+      const [firstLog, ...remainingVisible] = visibleLogs;
+      nextChar.logs = [firstLog, ...foldedLogs].filter(Boolean);
+      nextChar.pendingBirthLogs = remainingVisible;
+      hasBirthLogs = remainingVisible.length > 0;
     }
     set({
       char: nextChar,

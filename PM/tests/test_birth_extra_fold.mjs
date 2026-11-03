@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
+import { isExtraBirthEntry } from '../src/data/birthStories.js';
 
 console.log('=== TEST ĐỢT 120c: GỌN PHẦN KHAI SINH HIỆN MẶC ĐỊNH ===');
 
@@ -24,39 +25,24 @@ assert.ok(chronicleCss.includes('.birth-extra-row'), 'chronicle.css phải có c
 assert.ok(chronicleCss.includes('.birth-extra-tag'), 'chronicle.css phải có class .birth-extra-tag');
 assert.ok(chronicleCss.includes('.birth-extra-text'), 'chronicle.css phải có class .birth-extra-text');
 
-// 3. Kiểm tra logic phân loại entry khai sinh
-// Trích xuất logic isExtraBirthEntry để test độc lập
-const isExtraBirth = (entry) => {
-  if (!entry || entry.age !== 0) return false;
-  if (entry.id === 'log_birth_3') return true;
-  if (typeof entry.id === 'string') {
-    if (entry.id.startsWith('log_birth_')) {
-      const idx = Number(entry.id.replace('log_birth_', ''));
-      if (!Number.isNaN(idx) && idx >= 3) return true;
-    }
-    if (entry.id.startsWith('log_legacy_')) return true;
-    if (entry.id.startsWith('log_parent_')) return true;
-  }
-  return false;
-};
+// 3. Kiểm tra logic phân loại entry khai sinh (Đợt 120/121)
+// log_birth_0 (Nơi sinh), log_birth_2 (Điềm báo), log_birth_3 (Bạn thơ ấu) và log_legacy_0 (Di sản) hiện trực tiếp
+assert.equal(isExtraBirthEntry({ id: 'log_birth_0', age: 0 }), false, 'Nơi sinh không bị gộp');
+assert.equal(isExtraBirthEntry({ id: 'log_birth_2', age: 0 }), false, 'Điềm báo không bị gộp');
+assert.equal(isExtraBirthEntry({ id: 'log_birth_3', age: 0 }), false, 'Bạn thời thơ ấu không bị gộp (Đợt 121)');
+assert.equal(isExtraBirthEntry({ id: 'log_legacy_0', age: 0 }), false, 'Kế thừa di sản không bị gộp');
+assert.equal(isExtraBirthEntry({ id: 'log_parent_living', age: 0 }), false, 'Cha mẹ còn sống không bị gộp');
 
-// Ba dòng mặc định không được gộp vào fold
-assert.equal(isExtraBirth({ id: 'log_birth_0', age: 0 }), false, 'Nơi sinh không bị gộp');
-assert.equal(isExtraBirth({ id: 'log_birth_1', age: 0 }), false, 'Chi tiết gia đình không bị gộp');
-assert.equal(isExtraBirth({ id: 'log_birth_2', age: 0 }), false, 'Điềm báo không bị gộp');
-
-// Các dòng bổ sung ở tuổi 0 phải được gộp vào fold
-assert.equal(isExtraBirth({ id: 'log_birth_3', age: 0 }), true, 'Bạn thời thơ ấu / đơn độc phải được gộp');
-assert.equal(isExtraBirth({ id: 'log_legacy_0', age: 0 }), true, 'Kế thừa di sản phải được gộp');
-assert.equal(isExtraBirth({ id: 'log_parent_living', age: 0 }), true, 'Cha mẹ còn sống phải được gộp');
+// Phần mô tả dài đêm sinh & gia cảnh (log_birth_1) được gộp vào fold
+assert.equal(isExtraBirthEntry({ id: 'log_birth_1', age: 0 }), true, 'Mô tả dài đêm sinh & gia cảnh được gộp vào fold');
 
 // Tử vong lúc mới sinh (perinatal) hoặc bắt đầu người lớn không bị gộp
-assert.equal(isExtraBirth({ id: 'log_birth_perinatal_0', age: 0 }), false, 'Perinatal không bị gộp');
-assert.equal(isExtraBirth({ id: 'log_birth_perinatal_1', age: 0 }), false, 'Perinatal không bị gộp');
-assert.equal(isExtraBirth({ id: 'log_adult_start_0', age: 18 }), false, 'Adult start không bị gộp');
+assert.equal(isExtraBirthEntry({ id: 'log_birth_perinatal_0', age: 0 }), false, 'Perinatal không bị gộp');
+assert.equal(isExtraBirthEntry({ id: 'log_birth_perinatal_1', age: 0 }), false, 'Perinatal không bị gộp');
+assert.equal(isExtraBirthEntry({ id: 'log_adult_start_0', age: 18 }), false, 'Adult start không bị gộp');
 
 // Bất kỳ sự kiện nào từ tuổi 1 trở lên không bao giờ bị coi là extra birth
-assert.equal(isExtraBirth({ id: 'log_1_0_d1', age: 1 }), false, 'Sự kiện tuổi 1 không bị gộp');
-assert.equal(isExtraBirth({ id: 'log_birth_3', age: 1 }), false, 'Sai lệch age không bị gộp');
+assert.equal(isExtraBirthEntry({ id: 'log_1_0_d1', age: 1 }), false, 'Sự kiện tuổi 1 không bị gộp');
+assert.equal(isExtraBirthEntry({ id: 'log_birth_1', age: 1 }), false, 'Sai lệch age không bị gộp');
 
 console.log('Test 120c: Tất cả kiểm tra gọn phần khai sinh mặc định ĐẠT 100%.');

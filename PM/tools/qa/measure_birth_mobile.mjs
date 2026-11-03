@@ -137,19 +137,20 @@ try {
   // 5. Kiểm tra notification toast placement trên mobile (119b)
   console.log('--- 4. Kiểm tra Achievement Toast placement trên mobile (119b) ---');
   await page.eval(() => {
-    // Kích hoạt một toast notification bằng logic flushAchievementToasts
-    const rec = { key: 'test_rec', vi: 'Giấy phép Fixer', en: 'Fixer License', hintVi: 'Đạt Grade 9', hintEn: 'Reach Grade 9' };
-    const { notification } = window.antd || {};
-    // Hoặc gọi trực tiếp thông qua gameStore logic
     const s = window.__gameStore?.getState?.();
     if (s?.char) {
-      s.commit(s.char, { ...s.char, unlockedRecords: ['test_achievement'] });
+      // Kích hoạt thành tựu thật có trong CODEX_RECORDS (fixer_license)
+      s.commit(s.char, {
+        ...s.char,
+        unlockedRecords: [...(s.char.unlockedRecords || []), 'fixer_license']
+      });
+      if (s.dismissResolution) s.dismissResolution();
     }
   });
   await sleep(600);
 
   const toastLayout = await page.eval(() => {
-    const notice = document.querySelector('.ant-notification, .ant-notification-notice, .achievement-toast');
+    const notice = document.querySelector('.ant-notification-notice, .ant-notification');
     if (!notice) return { found: false };
     const wrapper = notice.closest('.ant-notification') || notice;
     const rect = wrapper.getBoundingClientRect();
@@ -158,11 +159,17 @@ try {
       found: true,
       top: rect.top,
       bottom: rect.bottom,
+      cssTop: style.top,
       cssBottom: style.bottom,
       role: notice.getAttribute('role') || notice.querySelector('[role]')?.getAttribute('role')
     };
   });
   console.log('Toast Layout:', toastLayout);
+  assert.ok(toastLayout.found, 'Phải tìm thấy notification toast thành tựu');
+  assert.ok(
+    toastLayout.top >= 180 && toastLayout.top <= 230,
+    `Toast mobile phải nằm dưới HUD (top: 180-230px) để không che nút đáy, thực tế top: ${toastLayout.top}`
+  );
 
   console.log('=== TẤT CẢ ĐO ĐẠC CDP TRÊN MOBILE ĐÃ HOÀN TẤT THÀNH CÔNG ===');
 } finally {

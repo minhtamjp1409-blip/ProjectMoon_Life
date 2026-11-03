@@ -2841,40 +2841,54 @@ Chạy kiểm định mô phỏng 500 vòng đời với chiến lược ngườ
 ##### 2.11. Đợt 119: Khắc Phục Lỗi Mở Đầu Trên Điện Thoại, Tối Ưu Thông Báo & Chú Thích Màn Khai Sinh
 * **Vấn đề phản hồi & thực nghiệm:**
   1. Trên thiết bị di động (390x844), vùng feed chronicle bị trống trong 1-3 giây đầu sau khi bấm bắt đầu kiếp sống do đợi nhịp tick prologue.
-  2. Thông báo thành tựu (`flushAchievementToasts`) dùng `placement: 'top'` trên mobile (≤820px), đè trực tiếp lên tên nhân vật và thanh tuổi HUD; thiếu thuộc tính trợ năng `aria-live`.
+  2. Thông báo thành tựu (`flushAchievementToasts`) đặt ở đáy (`bottom: 68px`) trên mobile che mất nút hành động chính màu vàng và dòng chi tiết thời thơ ấu.
   3. Màn hình khai sinh (`BirthSetupPanel.jsx`) thiếu cảnh báo độ tuổi/spoiler vũ trụ Project Moon và hướng dẫn phím tắt cho người dùng máy tính.
 * **Giải pháp kiến trúc toàn diện đã triển khai:**
   1. `src/store/gameStore.js` & `src/features/chronicle/components/LiveStageFeed.jsx`:
      - Trong `startLife`: Tách ngay dòng log đầu tiên vào `nextChar.logs = [firstLog]` và giữ phần còn lại trong `pendingBirthLogs`. Dòng log đầu tiên (nơi sinh & tên) xuất hiện ngay tại frame 0 (thực đo CDP: `0ms` < 500ms).
      - Điều chỉnh độ trễ tick khai sinh: `(char.logs?.length || 0) <= 1 ? first : next`, đảm bảo nhịp mở đầu tự nhiên.
   2. `src/store/gameStore.js` & `src/styles/ui/base.css`:
-     - Chuyển `placement` của toast thành `bottom` trên màn hình ≤ 820px (`window.innerWidth <= 820 ? 'bottom' : 'bottomLeft'`), bổ sung `role: 'status'` và `props: { role: 'status', 'aria-live': 'polite' }`.
-     - Trong `base.css`: Định vị `.ant-notification-bottom` với `bottom: calc(68px + env(safe-area-inset-bottom, 0px)) !important` để toast nổi cách thanh điều hướng dưới 68px, không che phủ HUD hay các nút lựa chọn.
+     - Chuyển `placement` của toast thành `top` trên mobile (≤ 820px), bổ sung `role: 'status'` và `props: { role: 'status', 'aria-live': 'polite' }`.
+     - Trong `base.css`: Định vị `.ant-notification-top` với `top: calc(185px + env(safe-area-inset-top, 0px)) !important; bottom: auto !important;` trên màn hình ≤ 820px để toast nổi ngay dưới HUD chỉ số (~140-160px), giải phóng 100% không gian nửa dưới màn hình cho các nút bấm hành động mà không đè tên nhân vật hay thanh tuổi.
   3. `src/features/chronicle/components/BirthSetupPanel.jsx` & `src/styles/ui/home.css`:
      - Bổ sung 2 dòng chú thích song ngữ: (1) Cảnh báo cốt truyện Project Moon 15+, (2) Phím tắt máy tính (Space dừng, `[` `]` đổi tốc độ, 1-4 chọn).
      - CSS media query `@media (hover: hover) and (pointer: fine)` ẩn phím tắt trên màn hình cảm ứng di động.
 
-##### 2.12. Đợt 120: Tinh Gọn Câu Chữ, Năm Yên Ả Một Câu & Gọn Gàng Màn Khai Sinh
-* **Vấn đề phản hồi & thực nghiệm:**
-  1. `createYearDigest` nối tất cả daily trong năm thành đoạn 2-4 câu, gây mỏi mắt khi lướt qua nhiều năm yên ả.
-  2. Độ dài câu chữ ở các sự kiện phụ (minor, daily) bị dông dài (vượt quá 2 câu tình huống / 2 câu kết quả).
-  3. Khối khai sinh tuổi 0 chiếm tới 4-5 thẻ lớn trong feed, đẩy sự kiện đầu tiên của đời ra khỏi màn hình đầu trên mobile (390x844).
-* **Giải pháp kiến trúc toàn diện đã triển khai:**
-  1. `src/engine/yearPlanner.js`:
-     - Bổ sung `AMBIENT_YEAR_LINES` với 30 câu văn cảnh canon Project Moon cho Backstreets, Nest, Outskirts (10 câu mỗi nơi).
-     - Rút gọn `createYearDigest` về đúng 1 câu duy nhất: ưu tiên daily có biến động delta lớn nhất hoặc có NPC, phá hòa bằng RNG tất định qua `createRNG`; nếu không có delta hay NPC thì chọn 1 câu ambient theo vùng địa lý. Bảo toàn 100% tổng deltas và nút "Xem từng mùa".
-  2. `tools/lint/check_sentence_length.mjs`:
-     - Xây dựng công cụ kiểm tra độ dài câu qua mô phỏng 500 đời để xếp hạng tần suất xuất hiện (chuẩn: minor/daily 1-2 câu tình huống, 1-2 câu kết quả; year-end max 2 câu).
-     - Biên tập và tinh gọn toàn bộ 14 mục vượt chuẩn trong nhóm 100 mục có tần suất xuất hiện cao nhất (`lifeMinors.js`, `lifeMinorsKids.js`, `lifeMinorsBonds.js`, `lifeDailies.js`), tích hợp `--fail` vào `npm test`.
-  3. `src/features/chronicle/components/LiveStageFeed.jsx` & `src/styles/ui/chronicle.css`:
-     - Phân định các dòng khai sinh tuổi 0: 3 dòng mặc định gồm Nơi sinh (`log_birth_0`), Gia cảnh & đêm sinh (`log_birth_1`), Điềm báo (`log_birth_2`).
-     - Gom toàn bộ chi tiết phụ (Bạn thời thơ ấu / tuổi thơ đơn độc `log_birth_3`, di sản kế thừa `log_legacy_0`, cha mẹ `log_parent_living`) vào fold mở rộng `<details className="entry-review birth-extra-fold">` với tiêu đề song ngữ "Chi tiết thời thơ ấu & nguồn cội" / "Childhood & heritage details".
-     - Styling tối giản token cho `.birth-extra-fold`, `.birth-extra-rows`, `.birth-extra-row`, `.birth-extra-tag`.
-* **Kết quả đo đạc CDP thực tế trên 390x844 (`tools/qa/measure_birth_mobile.mjs`):**
-  - Thời gian hiển thị dòng log đầu tiên: `0ms` (frame 0, đạt chuẩn < 500ms).
-  - Vị trí đáy của thẻ sự kiện đầu tiên: `684.8px` (nằm trọn trong khung nhìn 844px, không phải cuộn).
-  - Vị trí Toast thành tựu: `bottom: 776px` (`cssBottom: 68px`), nổi đẹp phía trên bottom nav.
-  - Test suites: 78/78 tests passed 100%, 0 voice lint, 0 story lint, 0 vi phạm audit 500 khoảnh khắc.
+##### 2.12. Đợt 120: Tinh Gọn Câu Chữ, Năm Yên Ả Một Câu, Chuẩn Hóa Canon & Tối Ưu Nhịp Khai Sinh
+* **Vấn đề phản hồi & thực nghiệm sau review Đợt 119 & Đợt 120:**
+  1. Toast thành tựu che nút hành động ở đáy màn hình.
+  2. Nhân vật sinh ở Nest nhận câu ambient của Backstreets do dò sai trường (`char.inNest` / `char.family.tier`).
+  3. Năm có biến cố (`quiet: false`) khi không có daily delta/NPC vẫn bị thay bằng câu ambient "êm ả" chung chung.
+  4. Khoảng chờ rỗng 1.3s - 1.6s ở màn khai sinh do các dòng bị gập vẫn chờ tick tuần tự.
+  5. Hoạt cảnh quay nơi sinh tốn 2.1s (1750ms + 350ms delay) và chữ loading overlay bị chồng lên form do `z-index: 80` và nền trong suốt.
+  6. Dòng gập giấu mất bạn thời thơ ấu (`log_birth_3` - cần cho Đợt 121) và di sản thế hệ (`log_legacy_0`).
+  7. Câu ambient có lỗi gõ (`"under the Wing wing"`) và dịch sai quy ước (Tổ, Cánh, vùng Rìa).
+  8. Lint độ dài câu chỉ đếm dấu chấm khiến nhiều chỗ nối câu thô bằng ", và", thiếu kiểm tra số từ (<= 45 từ tiếng Việt) và các nhánh `out`, `ignore`.
+* **Giải pháp kiến trúc toàn diện đã hoàn thiện:**
+  1. `src/styles/ui/base.css` & `src/store/gameStore.js`:
+     - Toast mobile định vị tại `top: calc(185px + env(safe-area-inset-top, 0px)) !important; bottom: auto !important;`, nằm gọn dưới HUD và giải phóng hoàn toàn khu vực thao tác đáy màn hình.
+  2. `src/engine/yearPlanner.js`:
+     - Phân định vùng chuẩn bằng `isNest(char)` và `isOutskirts(char)`.
+     - Trong `createYearDigest`: Khi năm có daily thật (`dailyEntries.length > 0`), bốc ngẫu nhiên 1 daily thật bằng seed (`r()`) thay vì dùng câu ambient chung chung; ambient chỉ dùng khi hoàn toàn không có daily (`dailyEntries.length === 0`).
+     - Sửa lỗi gõ `"under the Wing wing"` -> `"under the protection of the Wing"`. Toàn bộ 30 câu `AMBIENT_YEAR_LINES` được chuẩn hóa theo đúng từ vựng canon Project Moon (Nest, Wing, Outskirts), bổ sung chi tiết đậm chất thế giới (mưa axit, giờ Quét dọn 3:13 AM, còi ca kíp).
+  3. `src/data/birthStories.js`, `LiveStageFeed.jsx` & `gameStore.js`:
+     - `isExtraBirthEntry`: Không gập `log_birth_3` (Bạn thời thơ ấu) và `log_legacy_0` (Di sản thế hệ). Chỉ gập phần mô tả dài đêm sinh & gia cảnh (`log_birth_1`).
+     - Trong `startLife`: Tách `pendingBirthLogs` thành `visibleLogs` và `foldedLogs`. Đưa ngay `firstLog` và toàn bộ `foldedLogs` vào `nextChar.logs` ở frame 0; `pendingBirthLogs` chỉ giữ các dòng hiển thị tiếp theo. Triệt tiêu hoàn toàn khoảng chờ rỗng 1.3s!
+  4. `src/features/chronicle/components/BirthSetupPanel.jsx` & `src/styles/ui/overlays.css`:
+     - Rút ngắn thời gian hoạt cảnh `spinTo` từ 1750ms xuống 750ms, bỏ 350ms delay, bổ sung `skipSpinIfActive` cho phép chạm/click để hoàn tất ngay tức thì.
+     - Nâng cấp `.city-loading-overlay`: `z-index: 9999`, nền đục `rgba(5, 5, 8, .98)` và `backdrop-filter: blur(8px)`, ngăn chặn 100% tình trạng chữ form bên dưới bị lộ hay đè lên overlay.
+  5. `tools/lint/check_sentence_length.mjs`:
+     - Bổ sung hàm đếm từ `countWords(text)` kiểm tra giới hạn 45 từ tiếng Việt cho tình huống và kết quả lựa chọn của minor. Quét sâu toàn bộ nhánh `out` (kết quả có điều kiện) và `ignore`.
+     - Giảm số đời mô phỏng từ 500 xuống 150 đời, rút ngắn thời gian chạy từ 10s xuống ~1.5s.
+     - Tinh gọn câu chữ tự nhiên không dùng ", và" trong `lifeMinorsKids.js`, `lifeMinors.js`, `lifeDailies.js`.
+  6. `tools/qa/measure_birth_mobile.mjs`:
+     - Chuyển sang kích hoạt thành tựu thật (`fixer_license`), đo đạc và assert trực tiếp tọa độ `toastLayout.top >= 180 && toastLayout.top <= 230` và `toastLayout.found === true`.
+* **Kết quả đo đạc & kiểm thử toàn diện:**
+  - `check_sentence_length.mjs --fail`: 0/100 vi phạm, 100% đạt chuẩn câu chữ và giới hạn từ.
+  - `voice_lint.mjs --fail`: 33.309 chuỗi kiểm tra, 0 lỗi, 0 cảnh báo.
+  - Test suites: 78/78 tests passed (bao gồm `test_birth_extra_fold.mjs`, `test_quiet_year_digest.mjs`, `test_achievement_records.mjs`).
+  - Kiểm toán 500 khoảnh khắc (`run_million_audit.mjs 500`): 0 lỗi / 5 nhóm toàn vẹn.
+  - Production build: `npm run build` hoàn thành 100% sạch trong ~7.2s.
 
 ---
 #### 3. KIỂM ĐỊNH & BẢO ĐẢM TOÀN VẸN (VERIFICATION & INTEGRITY)

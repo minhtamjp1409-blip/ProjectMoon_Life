@@ -631,8 +631,8 @@ export const LIFE_DAILIES = [
     't_back_friend_dream',
     TEEN,
     { back: true, npc: 'friend' },
-    '[Giấc mơ Nest] {friend} muốn làm Fixer để dành tiền đưa cả nhà vào Nest, và hai người ngồi trên mái tôn tính số năm phải làm việc. Khi ra con số, {friend} lặng lẽ gấp tờ giấy lại.',
-    '[Rooftop Nest Ambition] {friend} dreamed of becoming a Fixer to buy entry into a Nest, calculating the required years together on the tin roof. When the number came out, {friend} quietly folded the paper.',
+    '[Giấc mơ Nest] {friend} muốn làm Fixer để đưa cả nhà vào Nest. Tính xong số năm làm việc trên mái tôn, {friend} lặng lẽ gấp tờ giấy lại.',
+    '[Rooftop Nest Ambition] {friend} dreamed of becoming a Fixer to buy entry into a Nest. Calculating the required years on the tin roof, {friend} quietly folded the paper away.',
     { sanity: 3 },
     { bond: { friend: 5 } }
   ),
@@ -918,8 +918,8 @@ export const LIFE_DAILIES = [
     'r_k_ampoule',
     [6, 140],
     { regions: ['K'] },
-    '[Ống tiêm K Corp] Ở District 11, người ta mang theo huyết thanh K Corp như mang chìa khóa. Một người tiêm thuốc ngay trước mặt bạn khiến vết thương khép lại, và không ai trong hàng chờ hỏi dịch xanh ấy lấy từ đâu.',
-    '[District 11 Green Vials] In District 11, citizens carry spare K Corp ampoules like keys in their pockets. A person injects the green fluid right before you to close a wound, and no one in the queue asks where it comes from.',
+    '[Ống tiêm K Corp] Ở District 11, người ta mang theo huyết thanh K Corp như mang chìa khóa. Một người tiêm thuốc ngay trước mắt khiến vết thương khép lại, không ai hỏi dịch xanh ấy lấy từ đâu.',
+    '[District 11 Green Vials] In District 11, citizens carry K Corp ampoules like keys in their coats. Someone injects the green fluid before you to close a wound; no one asks where it comes from.',
     { health: 3 }
   ),
   D(

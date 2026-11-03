@@ -73,17 +73,12 @@ const storyParts = (entry, lang) => {
 
 /* ---------- Story log ---------- */
 
-const isExtraBirthEntry = (entry) => {
+export const isExtraBirthEntry = (entry) => {
   if (!entry || entry.age !== 0) return false;
-  if (entry.id === 'log_birth_3') return true;
-  if (typeof entry.id === 'string') {
-    if (entry.id.startsWith('log_birth_')) {
-      const idx = Number(entry.id.replace('log_birth_', ''));
-      if (!Number.isNaN(idx) && idx >= 3) return true;
-    }
-    if (entry.id.startsWith('log_legacy_')) return true;
-    if (entry.id.startsWith('log_parent_')) return true;
-  }
+  // Đợt 120/121: log_birth_3 (Bạn thời thơ ấu) và log_legacy_0 (Di sản thế hệ) không bị gập
+  if (entry.id === 'log_birth_3' || entry.id === 'log_legacy_0' || entry.id === 'log_parent_living') return false;
+  // Gập phần mô tả dài đêm sinh & gia cảnh (log_birth_1)
+  if (entry.id === 'log_birth_1') return true;
   return false;
 };
 

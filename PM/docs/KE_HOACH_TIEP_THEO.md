@@ -19,8 +19,8 @@ Mỗi đợt dưới đây được commit riêng, ghi vào `PROGRESS_LOG.md`, p
 | 116 | Thẻ chương khi mất một NPC thân thiết | vừa | đã xong |
 | 117 | Đo và gọn dock hầm ngục trên điện thoại | vừa | đã xong |
 | 118 | Gọn thẻ minor, thẻ chương khi trượt kỳ thi, thử trình đọc màn hình | vừa | đã xong |
-| 119 | Sửa hai lỗi mở đầu và thông báo trên điện thoại, thêm thông tin ở màn khai sinh | nhỏ | chưa làm |
-| 120 | Năm yên ả một dòng, chuẩn độ dài câu chữ, gọn phần khai sinh | vừa | chưa làm |
+| 119 | Sửa hai lỗi mở đầu và thông báo trên điện thoại, thêm thông tin ở màn khai sinh | nhỏ | đã xong |
+| 120 | Năm yên ả một dòng, chuẩn độ dài câu chữ, gọn phần khai sinh | vừa | đã xong |
 | 121 | Đặt tên người thân, NPC quay lại nhắc lựa chọn cũ | lớn | chưa làm |
 | 122 | Hậu quả kéo dài nói bằng lời, tiến độ thăng chức | vừa | chưa làm |
 | 123 | Lướt nhanh đời thường khi chơi lại | vừa | chưa làm |
@@ -226,11 +226,11 @@ Có bản tiếng Anh tương ứng.
 
 ### 119b. Thông báo thành tựu đè tên nhân vật và HUD (ĐÃ XONG)
 
-**Hiện tại.** Đã sửa: `flushAchievementToasts` chuyển `placement` thành `bottom` trên màn hình hẹp (<=820px), bổ sung CSS định vị `bottom: calc(68px + env(safe-area-inset-bottom, 0px)) !important` để nổi trên thanh điều hướng dưới và không che khuất HUD hay lựa chọn; thêm `role="status"` và `aria-live="polite"`.
+**Hiện tại.** Đã sửa: `flushAchievementToasts` chuyển `placement` thành `top` trên mobile (≤ 820px), bổ sung CSS định vị `top: calc(185px + env(safe-area-inset-top, 0px)) !important; bottom: auto !important;` để toast nổi ngay dưới HUD chỉ số (~140-160px), giải phóng 100% các nút hành động ở đáy màn hình; thêm `role="status"` và `aria-live="polite"`.
 
 ### 119c. Thêm thông tin ở màn khai sinh (ĐÃ XONG)
 
-**Hiện tại.** Đã sửa: Thêm 2 dòng chú thích trong `BirthSetupPanel.jsx`: (1) Cảnh báo cốt truyện Project Moon 15+, (2) Phím tắt máy tính với CSS `@media (hover: hover) and (pointer: fine)` tự ẩn trên thiết bị cảm ứng di động. Test `test_choice_cost_label.mjs` kiểm tra đầy đủ cả 2 dòng song ngữ.
+**Hiện tại.** Đã sửa: Thêm 2 dòng chú thích trong `BirthSetupPanel.jsx`: (1) Cảnh báo cốt truyện Project Moon 15+, (2) Phím tắt máy tính với CSS `@media (hover: hover) and (pointer: fine)` tự ẩn trên thiết bị cảm ứng di động. Rút ngắn hoạt cảnh quay nơi sinh `spinTo` còn 750ms và hỗ trợ chạm để bỏ qua ngay. Test `test_choice_cost_label.mjs` kiểm tra đầy đủ cả 2 dòng song ngữ.
 
 ---
 
@@ -238,15 +238,15 @@ Có bản tiếng Anh tương ứng.
 
 ### 120a. Năm yên ả chỉ một dòng (ĐÃ XONG)
 
-**Hiện tại.** Đã sửa: `createYearDigest` trong `src/engine/yearPlanner.js` rút gọn mục gộp về đúng 1 câu duy nhất. Chọn daily có delta lớn nhất hoặc có NPC (hòa phá bằng RNG tất định qua `createRNG`), không có biến động thì chọn từ bộ 30 câu văn cảnh canon (`AMBIENT_YEAR_LINES`) cho Backstreets, Nest, Outskirts. Tổng deltas và nút "Xem từng mùa" giữ nguyên 100%.
+**Hiện tại.** Đã sửa: `createYearDigest` trong `src/engine/yearPlanner.js` rút gọn mục gộp về đúng 1 câu duy nhất. Chọn daily có delta lớn nhất hoặc có NPC (hòa phá bằng RNG tất định qua `createRNG`), không có biến động thì chọn từ bộ 30 câu văn cảnh canon (`AMBIENT_YEAR_LINES`) cho Backstreets, Nest, Outskirts (dò đúng qua `isNest` / `isOutskirts`). Nếu năm có daily thật (`dailyEntries.length > 0`) thì ưu tiên daily thật bằng seed, không thay bằng câu ambient chung chung. Tổng deltas và nút "Xem từng mùa" giữ nguyên 100%.
 
 ### 120b. Chuẩn độ dài câu chữ (ĐÃ XONG)
 
-**Hiện tại.** Đã sửa: Xây dựng công cụ kiểm tra `tools/lint/check_sentence_length.mjs` chạy mô phỏng 500 đời để xếp hạng tần suất xuất hiện và kiểm soát độ dài câu (minor/daily: 1-2 câu tình huống, 1-2 câu kết quả; year-end: max 2 câu). Đã tinh gọn toàn bộ 14 mục vượt chuẩn trong 100 mục hay gặp nhất từ audit 500 đời, tích hợp `--fail` vào `npm test`.
+**Hiện tại.** Đã sửa: Xây dựng công cụ kiểm tra `tools/lint/check_sentence_length.mjs` chạy mô phỏng 150 đời để xếp hạng tần suất xuất hiện và kiểm soát độ dài câu lẫn số từ (tình huống minor tối đa 45 từ tiếng Việt, kết quả lựa chọn tối đa 45 từ tiếng Việt; quét sâu nhánh `out` và `ignore`; daily 1-2 câu; year-end max 2 câu). Tinh gọn tự nhiên không dùng ", và" trong `lifeMinorsKids.js`, `lifeMinors.js`, `lifeDailies.js`, tích hợp `--fail` vào `npm test`.
 
 ### 120c. Gọn phần khai sinh hiện mặc định (ĐÃ XONG)
 
-**Hiện tại.** Đã sửa: Trong `src/features/chronicle/components/LiveStageFeed.jsx`, phần khai sinh mặc định hiển thị 3 dòng chính (nơi sinh, gia cảnh & đêm sinh, điềm định mệnh). Các chi tiết phụ (bạn thời thơ ấu / tuổi thơ đơn độc, di vật thừa kế, nợ máu, cha mẹ) được gom gọn vào fold `<details className="entry-review birth-extra-fold">`. Đo đạc CDP trên 390x844: màn đầu sau khai sinh chứa đủ 3 dòng và sự kiện đầu tiên với `bottom = 684.8px < 844px`, không phải cuộn. Test `tests/test_birth_extra_fold.mjs` kiểm tra độ bao phủ 100%.
+**Hiện tại.** Đã sửa: Trong `src/features/chronicle/components/LiveStageFeed.jsx` và `src/data/birthStories.js`, `log_birth_3` (Bạn thời thơ ấu - cần cho Đợt 121) và `log_legacy_0` (Di sản thế hệ) hiển thị trực tiếp trong chronicle. Chỉ gập phần mô tả dài đêm sinh & gia cảnh (`log_birth_1`) vào fold `<details className="entry-review birth-extra-fold">`. Trong `startLife`, nạp ngay các dòng gập vào `logs` ở frame 0 để triệt tiêu hoàn toàn khoảng chờ rỗng 1.3s. Nâng cấp overlay với `z-index: 9999` và nền đục 98% chống lộ form bên dưới. Test `tests/test_birth_extra_fold.mjs` kiểm tra độ bao phủ 100%.
 
 ---
 

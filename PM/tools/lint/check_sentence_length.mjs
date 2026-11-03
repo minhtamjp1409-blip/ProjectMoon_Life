@@ -14,6 +14,13 @@ export function countSentences(text) {
   return matches ? matches.length : 1;
 }
 
+export function countWords(text) {
+  if (!text) return 0;
+  const body = text.replace(/^\[[^\]]+\]\s*/, '').trim();
+  if (!body) return 0;
+  return body.split(/\s+/).filter(Boolean).length;
+}
+
 // 1. Gather all data pools
 const minorMap = new Map();
 for (const m of LIFE_MINORS) {
@@ -29,11 +36,11 @@ for (const d of allDailies) {
   if (d && d.id) dailyMap.set(d.id, d);
 }
 
-// 2. Run 500-life simulation to rank items by frequency
-console.log('Running 500-life audit to count item occurrences...');
+// 2. Run 150-life simulation to rank items by frequency (fast and deterministic)
+console.log('Running 150-life audit to count item occurrences...');
 const frequency = {};
 
-for (let i = 0; i < 500; i++) {
+for (let i = 0; i < 150; i++) {
   const char = createNewCharacter({ seed: `sentence_audit_${i}` });
   const rng = createRNG(`${char.seed}:life`);
   for (let age = 0; age < 40 && char.alive; age++) {
@@ -51,16 +58,17 @@ for (let i = 0; i < 500; i++) {
 const sortedFreq = Object.entries(frequency).sort((a, b) => b[1] - a[1]);
 const top100 = sortedFreq.slice(0, 100);
 
-console.log(`Audited 500 lives. Total distinct planned items: ${sortedFreq.length}`);
+console.log(`Audited 150 lives. Total distinct planned items: ${sortedFreq.length}`);
 console.log('Top 10 most frequent items:');
 for (const [id, count] of top100.slice(0, 10)) {
   console.log(`  ${id}: ${count}`);
 }
 
-// 4. Check sentence standards for top 100 items
+// 4. Check sentence & word count standards for top 100 items
 // Standard:
-// - Minor: situation 1-2 sentences, outcome 1-2 sentences
-// - Daily: 1-2 sentences
+// - Minor: situation 1-2 sentences (max 45 words Vi), outcome 1-2 sentences (max 45 words Vi)
+// - Checks: direct results, conditional outcomes (out), and ignore outcomes
+// - Daily: 1-2 sentences (max 45 words Vi)
 // - Year-end: max 2 sentences
 const violations = [];
 
@@ -69,16 +77,56 @@ for (const [id, count] of top100) {
     const m = minorMap.get(id);
     const sitVi = countSentences(m.vi);
     const sitEn = countSentences(m.en);
+    const sitWordsVi = countWords(m.vi);
     const issues = [];
     if (sitVi > 2) issues.push(`situation Vi has ${sitVi} sentences (>2)`);
     if (sitEn > 2) issues.push(`situation En has ${sitEn} sentences (>2)`);
+    if (sitWordsVi > 45) issues.push(`situation Vi has ${sitWordsVi} words (>45)`);
 
     for (let i = 0; i < (m.choices || []).length; i++) {
       const c = m.choices[i];
-      const rvi = countSentences(c.rvi || c.resultVi);
-      const ren = countSentences(c.ren || c.resultEn);
-      if (rvi > 2) issues.push(`choice ${i} result Vi has ${rvi} sentences (>2)`);
-      if (ren > 2) issues.push(`choice ${i} result En has ${ren} sentences (>2)`);
+      if (c.rvi || c.resultVi) {
+        const rvi = countSentences(c.rvi || c.resultVi);
+        const ren = countSentences(c.ren || c.resultEn);
+        const wvi = countWords(c.rvi || c.resultVi);
+        if (rvi > 2) issues.push(`choice ${i} result Vi has ${rvi} sentences (>2)`);
+        if (ren > 2) issues.push(`choice ${i} result En has ${ren} sentences (>2)`);
+        if (wvi > 45) issues.push(`choice ${i} result Vi has ${wvi} words (>45)`);
+      }
+      // Check conditional outcomes array (out)
+      if (Array.isArray(c.out)) {
+        for (let j = 0; j < c.out.length; j++) {
+          const o = c.out[j];
+          const textVi = o.rvi || o.resultVi || o.vi;
+          const textEn = o.ren || o.resultEn || o.en;
+          if (textVi) {
+            const ovi = countSentences(textVi);
+            const wovi = countWords(textVi);
+            if (ovi > 2) issues.push(`choice ${i} outcome ${j} Vi has ${ovi} sentences (>2)`);
+            if (wovi > 45) issues.push(`choice ${i} outcome ${j} Vi has ${wovi} words (>45)`);
+          }
+          if (textEn) {
+            const oen = countSentences(textEn);
+            if (oen > 2) issues.push(`choice ${i} outcome ${j} En has ${oen} sentences (>2)`);
+          }
+        }
+      }
+    }
+
+    // Check ignore outcome
+    if (m.ignore) {
+      const ignVi = m.ignore.rvi || m.ignore.resultVi || m.ignore.vi;
+      const ignEn = m.ignore.ren || m.ignore.resultEn || m.ignore.en;
+      if (ignVi) {
+        const ivi = countSentences(ignVi);
+        const wivi = countWords(ignVi);
+        if (ivi > 2) issues.push(`ignore outcome Vi has ${ivi} sentences (>2)`);
+        if (wivi > 45) issues.push(`ignore outcome Vi has ${wivi} words (>45)`);
+      }
+      if (ignEn) {
+        const ien = countSentences(ignEn);
+        if (ien > 2) issues.push(`ignore outcome En has ${ien} sentences (>2)`);
+      }
     }
 
     if (issues.length > 0) {

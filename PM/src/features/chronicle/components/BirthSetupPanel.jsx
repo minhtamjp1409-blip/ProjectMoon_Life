@@ -68,6 +68,7 @@ export const BirthSetupPanel = () => {
   const atlasRef = useRef(null);
   const viewportRef = useRef(ATLAS_VIEW);
   const rafRef = useRef(0);
+  const spinResolverRef = useRef(null);
 
   useEffect(() => () => cancelAnimationFrame(rafRef.current), []);
 
@@ -85,9 +86,22 @@ export const BirthSetupPanel = () => {
   };
 
   // The atlas locates the birthplace before the existing registration overlay opens.
-  const spinTo = (target, { duration = 1500 } = {}) =>
+  const spinTo = (target, { duration = 750 } = {}) =>
     new Promise((resolve) => {
       cancelAnimationFrame(rafRef.current);
+      spinResolverRef.current = () => {
+        cancelAnimationFrame(rafRef.current);
+        const to = atlasTargetView(target?.id);
+        viewportRef.current = to;
+        setAtlasViewport(to);
+        setDisplayRegion(target);
+        setIsWheelSpinning(false);
+        spinResolverRef.current = null;
+        try {
+          audioEngine.playBuff();
+        } catch {}
+        resolve(target);
+      };
       const reduce = reducedMotion();
       const time = reduce ? 1 : duration;
       const from = viewportRef.current;
@@ -107,6 +121,7 @@ export const BirthSetupPanel = () => {
         }
         setDisplayRegion(target);
         setIsWheelSpinning(false);
+        spinResolverRef.current = null;
         try {
           audioEngine.playBuff();
         } catch {}
@@ -117,13 +132,17 @@ export const BirthSetupPanel = () => {
 
   // The dice button picks a birthplace and keeps it selected
   const handleManualSpin = () => {
-    if (isWheelSpinning) return;
+    if (isWheelSpinning) {
+      if (spinResolverRef.current) spinResolverRef.current();
+      return;
+    }
     const chosen = rollBirthRegion(Math.random, null, selectedFamily);
     spinTo(chosen).then(() => setRegion(chosen.id));
   };
 
   const resetAtlas = () => {
     cancelAnimationFrame(rafRef.current);
+    if (spinResolverRef.current) spinResolverRef.current = null;
     viewportRef.current = ATLAS_VIEW;
     setAtlasViewport(ATLAS_VIEW);
     setIsWheelSpinning(false);
@@ -131,14 +150,17 @@ export const BirthSetupPanel = () => {
 
   // Every start spins. "Random" stays random for the next life; only this birth is decided.
   const launch = (inherit = false, age = 0) => {
-    if (spinning || isWheelSpinning) return;
+    if (spinning || isWheelSpinning) {
+      if (spinResolverRef.current) spinResolverRef.current();
+      return;
+    }
     const fixed = selectedRegion && selectedRegion !== 'RANDOM' ? REGIONS.find((r) => r.id === selectedRegion) : null;
     const seed = customSeed?.trim();
     const chosen = fixed || rollBirthRegion(seed ? createRNG(seed) : Math.random, inherit ? pendingLegacy : null, selectedFamily);
     setTargetLaunchParams({ inherit, age, region: chosen, regionId: fixed ? null : chosen.id });
     setSpinning(true);
-    spinTo(chosen, { duration: 1750 }).then(() => {
-      setTimeout(() => setLoadingActive(true), 350);
+    spinTo(chosen, { duration: 750 }).then(() => {
+      setLoadingActive(true);
     });
   };
 

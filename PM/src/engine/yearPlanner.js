@@ -1821,40 +1821,40 @@ export function isQuietYear(plan, char) {
 
 export const AMBIENT_YEAR_LINES = {
   backstreets: [
-    { vi: 'Một năm lặng lẽ trôi qua giữa những con ngõ Backstreets không biến cố.', en: 'A quiet year passes through the Backstreets without incident.' },
-    { vi: 'Nhịp sống trong ngõ hẻm vẫn tiếp diễn ngày này qua ngày khác.', en: 'Life in the alleys continues from one day to the next.' },
-    { vi: 'Khói từ các ống xả và tiếng còi ca kíp lấp đầy một năm bình lặng.', en: 'Exhaust smoke and shift whistles fill an uneventful year.' },
-    { vi: 'Những ngày tháng êm đềm trôi qua dưới ánh đèn đường Backstreets.', en: 'Peaceful days slip by beneath the Backstreets streetlamps.' },
-    { vi: 'Bạn trải qua một năm bình dị, nhịp bước quen thuộc trên hè phố cũ.', en: 'You spend an ordinary year, walking familiar pavements.' },
-    { vi: 'Thời gian trôi êm ả giữa những dãy nhà xám và mùi dầu máy quen thuộc.', en: 'Time flows quietly among grey tenements and the familiar scent of machine oil.' },
-    { vi: 'Một năm không có xáo trộn lớn, chỉ có nhịp sinh hoạt thường nhật lặp lại.', en: 'A year without upheaval, only the repeating rhythm of daily life.' },
-    { vi: 'Những mùa mưa nắng Backstreets lặng lẽ đi qua khung cửa sổ.', en: 'Seasons of rain and sun pass quietly beyond your Backstreets window.' },
-    { vi: 'Cuộc sống ngõ hẻm trôi đi đều đặn, không biến cố nào gõ cửa.', en: 'Alley life rolls on steadily, with no sudden turns at your door.' },
-    { vi: 'Một năm trôi qua bình ổn giữa lòng The City náo nhiệt.', en: 'A steady year passes in the heart of the bustling City.' }
+    { vi: 'Một năm trôi qua giữa tiếng mưa axit rơi đều đều trên mái tôn Backstreets.', en: 'A year passes beneath the steady drone of acid rain upon Backstreets roofs.' },
+    { vi: 'Khói xả công nghiệp và tiếng còi ca kíp lấp đầy một năm không biến cố lớn.', en: 'Industrial exhaust and shift whistles fill a year free of major turmoil.' },
+    { vi: 'Sau 3:13 AM, cửa phòng trọ đóng chặt, nhịp sống ngõ hẻm vẫn lặp lại từng ngày.', en: 'Past 3:13 AM, tenement doors stay bolted as the alley rhythm repeats day by day.' },
+    { vi: 'Ánh đèn neon nhấp nháy trên mặt đường ướt đánh dấu những ngày tháng thường nhật.', en: 'Flickering neon over wet asphalt marks the passage of routine days.' },
+    { vi: 'Tiếng búa đập từ các xưởng cơ khí nhỏ vang vọng qua bốn mùa bình lặng.', en: 'Hammer strikes from small machine workshops echo through four quiet seasons.' },
+    { vi: 'Bạn quen dần với nhịp bước trên hè phố cũ và mùi dầu máy Backstreets.', en: 'You walk the familiar pavements amid the customary scent of Backstreets machine oil.' },
+    { vi: 'Một năm trôi qua không xáo trộn, chỉ có những bữa ăn đạm bạc sau giờ làm.', en: 'An undisturbed year drifts by, marked only by frugal meals after work.' },
+    { vi: 'Những mùa mưa nắng Backstreets lặng lẽ đi qua khung cửa sổ gỉ sét.', en: 'Seasons of rain and haze slip quietly past your rusted window.' },
+    { vi: 'Cuộc sống ngõ ngách trôi đi đều đặn, không có hợp đồng rắc rối nào gõ cửa.', en: 'Alley life rolls on steadily, with no troubled contracts at your door.' },
+    { vi: 'Một năm trôi qua bình ổn giữa nhịp thở không ngừng của The City.', en: 'A steady year passes within the ceaseless pulse of The City.' }
   ],
   nest: [
-    { vi: 'Một năm trôi qua êm ả dưới trật tự quy củ của Nest.', en: 'A tranquil year passes beneath the strict order of the Nest.' },
+    { vi: 'Một năm trôi qua êm ả dưới trật tự kỷ luật nghiêm ngặt của Nest.', en: 'A tranquil year passes beneath the strict disciplinary order of the Nest.' },
     { vi: 'Những tiếng chuông đổi ca và dòng người đều đặn đánh dấu một năm bình yên.', en: 'Shift bells and punctual crowds mark a peaceful year.' },
-    { vi: 'Cuộc sống trong Tổ diễn ra trật tự, không một gợn sóng bất thường.', en: 'Life in the Nest moves orderly, without a ripple of unrest.' },
-    { vi: 'Thời gian trôi đi êm đềm sau những dãy kính phản quang của Cánh.', en: 'Time glides smoothly behind the Wing reflection glass.' },
-    { vi: 'Một năm bình ổn trôi qua theo đúng lịch trình định sẵn.', en: 'A stable year unfolds precisely on schedule.' },
-    { vi: 'Bạn trải qua những ngày tháng thanh thản giữa khuôn viên sạch sẽ của Nest.', en: 'You spend calm days along the clean avenues of the Nest.' },
-    { vi: 'Mọi thứ diễn ra đúng như quy định trong suốt một năm qua.', en: 'Everything proceeded by the book over the past year.' },
-    { vi: 'Mùa tiếp mùa trôi qua yên ắng dưới sự bảo hộ của Cánh.', en: 'Season follows season in quiet safety under the Wing wing.' },
-    { vi: 'Một năm bình thản với những thói quen chuẩn mực mỗi ngày.', en: 'A peaceful year shaped by daily punctuality.' },
-    { vi: 'Không có biến động nào làm xáo trộn cuộc sống ngăn nắp nơi đây.', en: 'No disruptions disturbed the neat routine of this place.' }
+    { vi: 'Cuộc sống trong Nest diễn ra chuẩn mực, không một gợn sóng bất thường.', en: 'Life in the Nest moves orderly, without a ripple of unrest.' },
+    { vi: 'Thời gian trôi đi ngăn nắp sau những tòa cao ốc kính phản quang của Wing.', en: 'Time glides smoothly behind the reflective glass towers of the Wing.' },
+    { vi: 'Một năm bình ổn trôi qua theo đúng biểu đồ điều phối công việc định sẵn.', en: 'A stable year unfolds precisely according to corporate scheduling.' },
+    { vi: 'Bạn trải qua những ngày tháng trật tự giữa khuôn viên sạch sẽ của Nest.', en: 'You spend orderly days along the pristine avenues of the Nest.' },
+    { vi: 'Mọi thủ tục sinh hoạt đều tuân thủ quy chuẩn của Wing trong suốt một năm qua.', en: 'Every daily routine complied with Wing regulations over the past year.' },
+    { vi: 'Mùa tiếp mùa trôi qua yên ắng dưới sự bảo hộ của Wing.', en: 'Season follows season in quiet safety under the protection of the Wing.' },
+    { vi: 'Tiếng máy điều hòa trung tâm rì rầm lấp đầy một năm làm việc chuẩn mực.', en: 'The hum of central climate control fills a year of standard shifts.' },
+    { vi: 'Không có sự cố an ninh nào làm xáo trộn cuộc sống ngăn nắp nơi đây.', en: 'No security alarms disturbed the neat routine of this quarter.' }
   ],
   outskirts: [
     { vi: 'Một năm lặng lẽ trôi qua giữa vùng hoang tàn của Outskirts.', en: 'A quiet year passes across the windswept Outskirts.' },
-    { vi: 'Gió cát và tro bụi hoang dã trôi qua từng mùa một cách bình lặng.', en: 'Dust and wild winds blow through the seasons in quiet succession.' },
-    { vi: 'Bạn trải qua một năm yên ắng bên ngoài bức tường The City.', en: 'You spend an undisturbed year beyond the City walls.' },
-    { vi: 'Thời gian chậm rãi trôi qua giữa những tàn tích không người.', en: 'Time drifts slowly past the empty ruins.' },
-    { vi: 'Một năm sống sót bình thản giữa bầu trời u trầm miền biên viễn.', en: 'A year of quiet survival beneath the dim frontier sky.' },
-    { vi: 'Không có quái vật hay hiểm họa lớn nào xuất hiện trong năm nay.', en: 'Neither monsters nor major perils troubled you this year.' },
-    { vi: 'Những ngày tháng nơi vùng Rìa trôi qua chậm chạp và tĩnh mịch.', en: 'Days in the Outskirts slip by slow and silent.' },
-    { vi: 'Bạn gom góp từng ngày bình yên giữa khung cảnh thô ráp ngoài vòng rào.', en: 'You gather peaceful days amidst the rough expanse beyond the fence.' },
-    { vi: 'Một năm êm ả trôi qua mà không có cơn bão cát nào quét tới.', en: 'A calm year passes without a dust storm upon your shelter.' },
-    { vi: 'Cuộc sống tự do nhưng đơn độc lặng lẽ đi qua thêm một vòng tuổi.', en: 'A solitary, untroubled life marks another year lived.' }
+    { vi: 'Gió cát và tro bụi trôi qua từng mùa một cách bình lặng ngoài Bức Tường.', en: 'Dust and wild winds blow through the seasons beyond the Wall.' },
+    { vi: 'Bạn trải qua một năm yên ắng bên ngoài bức tường The City.', en: 'You spend an undisturbed year outside the City walls.' },
+    { vi: 'Thời gian chậm rãi trôi qua giữa những tàn tích đổ nát không bóng người.', en: 'Time drifts slowly past the desolate ruins without a living soul.' },
+    { vi: 'Một năm sinh tồn bình thản dưới vòm trời u trầm của Outskirts.', en: 'A year of quiet survival beneath the overcast Outskirts sky.' },
+    { vi: 'Không có quái vật hay bão tro bụi nào ập đến nơi dựng lều trong năm nay.', en: 'Neither monsters nor ash storms swept over your shelter this year.' },
+    { vi: 'Những ngày tháng nơi Outskirts trôi qua chậm chạp bên ánh lửa trại.', en: 'Days in the Outskirts slip by slow and silent beside the campfire.' },
+    { vi: 'Bạn gom góp thêm một năm bình yên giữa bãi đất hoang ngoài vòng rào.', en: 'You gather another peaceful year amid the rough expanse outside the perimeter.' },
+    { vi: 'Một năm êm ả trôi qua mà không có toán cướp hay dị thể nào quấy phá.', en: 'A calm year passes with no marauders or entities disturbing your path.' },
+    { vi: 'Cuộc sống tự do nhưng đơn độc lặng lẽ đi qua thêm một vòng tuổi.', en: 'A solitary, untroubled life marks another year lived in the wastes.' }
   ]
 };
 
@@ -1916,11 +1916,18 @@ export function createYearDigest(dailyEntries, age, { quiet = true, char = null,
     const bEn = splitTitle(chosen.en || '').body.trim();
     vi = /[.!?]$/.test(bVi) ? bVi : `${bVi}.`;
     en = /[.!?]$/.test(bEn) ? bEn : `${bEn}.`;
+  } else if (dailyEntries.length > 0) {
+    // Có daily thật: luôn lấy một daily thật bằng seed, không thay bằng câu ambient chung chung
+    const chosen = dailyEntries[Math.floor(r() * dailyEntries.length)];
+    const bVi = splitTitle(chosen.vi || '').body.trim();
+    const bEn = splitTitle(chosen.en || '').body.trim();
+    vi = /[.!?]$/.test(bVi) ? bVi : `${bVi}.`;
+    en = /[.!?]$/.test(bEn) ? bEn : `${bEn}.`;
   } else {
-    // Không có daily nào có delta hoặc NPC: dùng câu ambient theo nơi chốn
-    const isOutskirts = char?.regionId === 'OUTSKIRTS' || char?.flags?.includes('Outskirts');
-    const isNest = Boolean(char?.inNest || char?.job === 'Wing Employee' || char?.family?.tier === 'nest');
-    const regionKey = isOutskirts ? 'outskirts' : (isNest ? 'nest' : 'backstreets');
+    // Chỉ dùng câu ambient khi hoàn toàn không có daily nào (dùng hàm canon isNest & isOutskirts)
+    const out = isOutskirts(char);
+    const nest = isNest(char);
+    const regionKey = out ? 'outskirts' : (nest ? 'nest' : 'backstreets');
     const pool = AMBIENT_YEAR_LINES[regionKey] || AMBIENT_YEAR_LINES.backstreets;
     const chosen = pool[Math.floor(r() * pool.length)];
     vi = chosen.vi;

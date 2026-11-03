@@ -22,8 +22,8 @@ export const LIFE_MINORS_KIDS = [
 
   M('mk_back_stair_man', KID, { back: true }, '[Người ngủ ở cầu thang] Một người đàn ông đã nằm ở chiếu nghỉ cầu thang ba đêm nay, và mẹ dặn bạn đi qua đừng nhìn. Trong túi bạn vẫn còn mẩu bánh mì để dành.', '[The man on the stairs] A stranger has slept on the stair landing for three nights, and your mother warned you not to look. In your pocket, a saved bread crust remains.', [
     C('Đặt mẩu bánh cạnh ông ấy', 'Leave the crust beside him', null, null, {}, { out: [
-      O(65, 'Sáng hôm sau mẩu bánh không còn, và ông ta khẽ gật đầu khi bạn đi ngang qua. Một tuần sau ông đi mất, để lại một chiếc cúc áo bằng đồng trên bậc thang.', 'The next morning the crust was gone, and he gave you a nod as you passed. A week later he had left, leaving a single brass button on the step.', { sanity: +3 }, { motif: { mercy: 1 } }),
-      O(35, 'Ông ta túm lấy cổ tay bạn, rất chặt, rồi buông ra và quay mặt vào tường. Bạn chạy lên nhà. Cổ tay bầm mất mấy ngày.', 'He grabbed your wrist, hard, then let go and turned to the wall. You ran upstairs. The bruise lasted days.', { health: -1, sanity: -3 })
+      O(65, 'Sáng hôm sau mẩu bánh không còn, và ông ta khẽ gật đầu khi bạn đi qua. Một tuần sau ông đi mất, để lại một chiếc cúc đồng trên bậc thang.', 'The next morning the crust was gone, and he gave you a small nod as you passed. A week later he had left, leaving a brass button on the step.', { sanity: +3 }, { motif: { mercy: 1 } }),
+      O(35, 'Ông ta siết chặt cổ tay bạn rồi buông ra, quay mặt vào tường. Bạn hoảng sợ chạy vội lên nhà với vết bầm tím mấy ngày.', 'He clamped hard on your wrist before turning to the wall. You dashed upstairs with a bruise that lingered for days.', { health: -1, sanity: -3 })
     ] }),
     C('Mách mẹ', 'Tell your mother', 'Mẹ gọi chủ nhà. Chiều hôm đó chiếu nghỉ đã sạch trơn, và không ai nói ông ta đi đâu.', 'Your mother called the landlord. By afternoon the landing was bare, and no one said where he went.', { sanity: -1, rep: +1 })
   ], I('Bạn đi qua, mắt nhìn xuống chân, đúng như mẹ dặn.', 'You walked past with your eyes on your feet, as you were told.')),
@@ -38,10 +38,10 @@ export const LIFE_MINORS_KIDS = [
     C('Nhìn chằm chằm vào thanh kiếm của anh ta', 'Stare at his sword', 'Anh ta để yên cho bạn nhìn. Cả chuyến đi bạn đếm được ba vết mẻ trên lưỡi kiếm.', 'He let you look. By the end of the ride you had counted three nicks in the blade.', { resonance: +2 }, { flags: ['해결사동경'] })
   ], I('Bạn úp mặt vào áo mẹ cho đến khi anh ta xuống tàu.', 'You buried your face in your mother’s coat until he got off.', { sanity: -1 })),
 
-  M('mk_any_lost_shoe', KID, { notNest: true }, '[Chiếc giày] Giữa chợ đông, ai đó giẫm lên chân bạn làm tuột mất chiếc giày phải đi thêm hai năm nữa. Mẹ bạn lúc này đã bước đi trước một đoạn.', '[The shoe] In the crowded market, someone stepped on your foot and tore off a shoe meant to last two more years. Your mother was already walking ahead.', [
+  M('mk_any_lost_shoe', KID, { notNest: true }, '[Chiếc giày] Giữa chợ đông, ai đó giẫm vào gót làm tuột mất chiếc giày bạn phải đi thêm hai năm nữa. Mẹ bạn lúc này đã bước đi trước một đoạn.', '[The shoe] In the crowded market, someone stepped on your heel and stripped off your shoe, an oversized pair meant to last two winters. Your mother was already walking ahead.', [
     C('Chui vào đám đông tìm', 'Crawl back into the crowd for it', null, null, {}, { out: [
-      O(55, 'Bạn tìm thấy nó dưới một sạp cá, dính đầy nhớt. Mẹ mắng bạn cả đường về, nhưng tối đó lau chiếc giày rất kỹ.', 'You found it under a fish stall, slimy. Your mother scolded you all the way home, but that night she cleaned the shoe very carefully.', { health: -1, sanity: +1 }),
-      O(45, 'Bạn không tìm thấy giày, mà lạc mất mẹ suốt hai tiếng. Một bà bán rau dắt bạn ra đầu chợ. Mẹ ôm bạn, rồi tát bạn, rồi lại ôm.', 'You didn’t find the shoe, and lost your mother for two hours. A vegetable seller walked you to the market gate. Your mother hugged you, slapped you, then hugged you again.', { sanity: -4, wealth: -1 })
+      O(55, 'Bạn tìm thấy nó dưới một sạp cá dính đầy nhớt. Mẹ mắng bạn cả đường về, nhưng tối đó vẫn lau chiếc giày rất kỹ.', 'You found it under a fish stall, coated in slime. Your mother scolded you all the way home, yet cleaned the shoe carefully that night.', { health: -1, sanity: +1 }),
+      O(45, 'Bạn không tìm thấy giày, mà lạc mất mẹ suốt hai tiếng trước khi được dắt ra đầu chợ. Mẹ ôm chầm lấy bạn, tát một cái đau điếng rồi lại ôm khóc.', 'You never found the shoe, wandering lost for two hours before someone led you to the market gate. Your mother hugged you tight, slapped you once, then held you crying.', { sanity: -4, wealth: -1 })
     ] }),
     C('Đi chân trần chạy theo mẹ', 'Run after your mother barefoot', 'Bạn về nhà với bàn chân rướm máu. Suốt mùa đông đó bạn đi một chiếc giày và một chiếc dép.', 'You got home with a bleeding foot. All that winter you wore one shoe and one sandal.', { health: -3, wealth: -1 })
   ], I('Bạn đứng khóc giữa chợ cho đến khi mẹ quay lại tìm.', 'You stood crying in the market until your mother came back for you.', { sanity: -2 })),
@@ -149,10 +149,10 @@ export const LIFE_MINORS_KIDS = [
 
   M('mc_nest_answers', CHILD, { nest: true }, '[Đáp án] Một bạn cùng lớp chuyền cho bạn tờ đáp án bài kiểm tra xếp hạng. Ai cũng biết thứ hạng năm nay quyết định trường cấp hai.', '[The answers] A classmate slipped you the answers to the ranking exam. Everyone knows this year’s rank decides which secondary school you get.', [
     C('Dùng', 'Use them', null, null, {}, { out: [
-      O(65, 'Bạn đứng hạng nhì. Cha mẹ mở tiệc. Bạn không dám nhìn đứa đã đưa đáp án.', 'You placed second. Your parents threw a party. You couldn’t look at the kid who gave you the answers.', { rep: +5, sanity: -3 }, { mem: 'cheated_exam' }),
-      O(35, 'Giám thị phát hiện. Cả hai bị hạ hạng. Cha bạn không nói chuyện với bạn suốt một tháng.', 'The proctor caught it. You were both dropped in rank. Your father didn’t speak to you for a month.', { rep: -5, sanity: -6 })
+      O(65, 'Bạn đứng hạng nhì và cha mẹ mở tiệc mừng lớn. Bạn không dám ngẩng đầu nhìn đứa đã đưa đáp án.', 'You placed second to a celebratory family dinner. You never dared look at the kid who handed you the sheet.', { rep: +5, sanity: -3 }, { mem: 'cheated_exam' }),
+      O(35, 'Giám thị phát hiện gian lận khiến cả hai bị hạ hạng. Cha không nói chuyện với bạn suốt một tháng ròng.', 'The proctor caught the cheating and dropped both your ranks. Your father went a full month without speaking to you.', { rep: -5, sanity: -6 })
     ] }),
-    C('Báo giám thị', 'Report it', 'Bạn cùng lớp bị đuổi ngay trong tuần, và bạn được ghi một dòng "đáng tin cậy" vào hồ sơ. Từ đó không ai trong lớp dám ngồi cạnh bạn nữa.', 'Your classmate was expelled that week, earning you a "reliable" mark in your file. After that, no one in class would sit next to you.', { rep: +3, sanity: -4, network: -2 }),
+    C('Báo giám thị', 'Report it', 'Bạn được ghi điểm "đáng tin cậy" vào hồ sơ sau khi bạn cùng lớp bị đuổi. Từ đó không đứa nào trong lớp dám ngồi gần bạn nữa.', 'You earned a "reliable" mark in your file as your classmate was expelled. After that, no one in class would sit near you.', { rep: +3, sanity: -4, network: -2 }),
     C('Xé tờ giấy, làm bài bằng sức mình', 'Tear it up and do it yourself', 'Bạn đứng hạng mười một. Đủ, nhưng không hơn.', 'You placed eleventh. Enough, and no more.', { sanity: +2 })
   ], I('Bạn để tờ giấy trong ngăn bàn và quên mất. Hôm sau nó không còn ở đó.', 'You left it in your desk and forgot. The next day it was gone.')),
 

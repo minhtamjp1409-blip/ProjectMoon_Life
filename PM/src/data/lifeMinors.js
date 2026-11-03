@@ -972,8 +972,8 @@ export const LIFE_MINORS = [
     'm_a_mentor_meet',
     [16, 40],
     { noNpc: 'mentor' },
-    '[Vị Fixer một tay trong quán rượu] Một vị Fixer lão thành bị cụt một cánh tay ngồi ở quầy bar chăm chú quan sát bạn tay đôi hạ gục hai gã say rượu. Ông cất giọng khàn đục: "Mày ra đòn như một con chó dại. Muốn học kiếm pháp thực thụ không?"',
-    '[The One-Armed Veteran Fixer] A one-armed veteran Fixer at the tavern counter observed you brawl with two drunks. He rasped: “You strike like a rabid street cur. Want to learn real steel?”',
+    '[Vị Fixer một tay trong quán rượu] Một Fixer lão thành cụt tay ngồi ở quầy bar quan sát bạn hạ gục hai gã say rượu. Ông cất giọng khàn đục: "Mày ra đòn như một con chó dại. Muốn học kiếm pháp thực thụ không?"',
+    '[The One-Armed Veteran Fixer] A one-armed veteran Fixer at the tavern counter watched you brawl with two drunks. He rasped: “You strike like a rabid street cur. Want to learn real steel?”',
     [
       C(
         'Kính cẩn nhận lời bái sư',
