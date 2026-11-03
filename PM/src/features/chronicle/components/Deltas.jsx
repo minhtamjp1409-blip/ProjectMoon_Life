@@ -311,7 +311,7 @@ export const ChoicePreview = ({ choice, npcs, char, kind = 'major', check = null
       <span className="preview-primary">
         {!primaryStat && renderOdds()}
         {primaryStat && renderStatChip(primaryStat)}
-      </span>
+      </span>
       <span className={`preview-secondary ${expanded ? 'is-open' : 'is-hidden-mobile'}`}>
         {primaryStat && renderOdds()}
         {secondaryStats.map(renderStatChip)}
