@@ -10,7 +10,7 @@ import {
   getPromotionProgress
 } from '../src/engine/careerPipeline.js';
 import { getNextIndependentSyndicatePromotion } from '../src/engine/eventConditions.js';
-import { canSkimSpeed, useGameStore } from '../src/store/gameStore.js';
+import { canSkimSpeed, getEffectiveSpeed, useGameStore } from '../src/store/gameStore.js';
 
 console.log('--- TEST BATCH 122a: Lasting Consequences in Choices ---');
 
@@ -48,6 +48,16 @@ for (const item of choicesWithLasting) {
     typeof choice.lasting.en === 'string' && choice.lasting.en.trim().length > 0,
     `Choice in event ${eventId} has invalid lasting.en`
   );
+}
+
+// Verify accuracy of lasting mechanics per review:
+for (const item of choicesWithLasting) {
+  const { choice } = item;
+  assert(!choice.lasting.vi.includes('mất 1 HP'), 'Lasting text must not claim HP loss for scars');
+  assert(!choice.lasting.vi.includes('sau 6 năm') && !choice.lasting.vi.includes('sau 9 năm') && !choice.lasting.vi.includes('sau 4 năm'), 'Lasting text must not disclose exact year offsets');
+  if (choice.npc?.role === 'lover') {
+    assert(!choice.lasting.vi.includes('hồi thêm SP'), 'Lover role does not grant annual SP recovery');
+  }
 }
 
 // Verify hasMinorExtraDetails returns true for minor with lasting
@@ -104,20 +114,38 @@ function makeMockChar(overrides = {}) {
 
 // Test Color Fixer candidacy for Grade 1
 {
-  const char = makeMockChar({
+  // Underage candidate: age 28 < 30, but Merit and Rep are already high
+  const charUnderage = makeMockChar({
+    job: 'Fixer',
+    fixerGrade: 1,
+    age: 28,
+    merit: 265,
+    stats: { rep: 95, health: 90, sanity: 90, wealth: 100, network: 80 }
+  });
+  const colorReadyUnderage = checkColorFixerReadiness(charUnderage);
+  const progressUnderage = getPromotionProgress(charUnderage);
+  assert(progressUnderage, 'Grade 1 should have promotion progress to Color');
+  assert.equal(progressUnderage.route, 'color');
+  assert.equal(progressUnderage.meritTarget, colorReadyUnderage.targetMerit);
+  assert.equal(progressUnderage.repTarget, colorReadyUnderage.targetRep);
+  assert.equal(progressUnderage.isEligible, false);
+  assert(progressUnderage.pct <= 95, 'Progress percentage must cap at 95% when not eligible');
+  assert(progressUnderage.missingReq, 'Progress must detail missing requirement');
+  assert.equal(progressUnderage.missingReq.vi, 'Chờ tới 30 tuổi');
+
+  // Fully eligible candidate: age 32 >= 30, Merit 265 >= 260, Rep 95 >= 90
+  const charEligible = makeMockChar({
     job: 'Fixer',
     fixerGrade: 1,
     age: 32,
     merit: 265,
     stats: { rep: 95, health: 90, sanity: 90, wealth: 100, network: 80 }
   });
-  const colorReady = checkColorFixerReadiness(char);
-  const progress = getPromotionProgress(char);
-  assert(progress, 'Grade 1 should have promotion progress to Color');
-  assert.equal(progress.route, 'color');
-  assert.equal(progress.meritTarget, colorReady.targetMerit);
-  assert.equal(progress.repTarget, colorReady.targetRep);
-  assert.equal(progress.isEligible, colorReady.ready);
+  const colorReadyEligible = checkColorFixerReadiness(charEligible);
+  const progressEligible = getPromotionProgress(charEligible);
+  assert.equal(progressEligible.isEligible, true);
+  assert.equal(colorReadyEligible.ready, true);
+  assert.equal(progressEligible.pct, 100);
 }
 
 // Test Finger Syndicate promotion thresholds
@@ -210,72 +238,90 @@ console.log('--- TEST BATCH 123: Skim Speed Replays & Minor Timing ---');
   assert.equal(canSkimSpeed(stateGen2), true, 'Generation 2 with past lives must allow skim speed');
 }
 
-// Test 2: Speed revert on encountering major, minor, NPC naming or chapter
+// Test 2: Sticky skimOn mode, effectiveSpeed during quiet stretch and resume after resolving minor
 {
   useGameStore.setState({
-    speed: 8,
+    speed: 1,
     preSkimSpeed: 2,
-    char: makeMockChar({ age: 10 }),
+    skimOn: false,
+    char: makeMockChar({ age: 10, plan: [{ kind: 'daily', t: 0.5 }], planCursor: 0 }),
     inRun: true
   });
 
-  // Encounter minor via tick or commit
+  // Set regular speed to 2x, then turn on Skim speed (8x)
+  useGameStore.getState().setSpeed(2);
+  useGameStore.getState().setSpeed(8);
+  assert.equal(useGameStore.getState().speed, 8);
+  assert.equal(useGameStore.getState().skimOn, true);
+  assert.equal(useGameStore.getState().preSkimSpeed, 2);
+
+  // In a quiet stretch (age >= 5, next item daily, no blockers): effective speed is 8
+  assert.equal(
+    getEffectiveSpeed(useGameStore.getState()),
+    8,
+    'During a quiet stretch, getEffectiveSpeed must be 8'
+  );
+
+  // Encounter minor choice
   const cMinor = makeMockChar({
     age: 10,
+    plan: [{ kind: 'minor', t: 0.5 }, { kind: 'daily', t: 0.8 }],
+    planCursor: 0,
     pendingMinor: { id: 'm_test', remainingMs: 30000 }
   });
   useGameStore.getState().commit(useGameStore.getState().char, cMinor);
+
+  // While minor is waiting, effectiveSpeed drops to preSkimSpeed (2), but skimOn STAYS TRUE!
+  assert.equal(useGameStore.getState().skimOn, true, 'skimOn must remain true when minor appears');
   assert.equal(
-    useGameStore.getState().speed,
+    getEffectiveSpeed(useGameStore.getState()),
     2,
-    'Encountering a minor must revert speed 8 back to preSkimSpeed (2)'
+    'While minor is waiting, getEffectiveSpeed must drop to preSkimSpeed (2)'
   );
 
-  // Set speed back to 8
-  useGameStore.getState().setSpeed(8);
-  assert.equal(useGameStore.getState().speed, 8);
-  assert.equal(useGameStore.getState().preSkimSpeed, 2);
+  // Resolving minor moves to next plan item (daily)
+  const cAfterMinor = makeMockChar({
+    age: 10,
+    plan: [{ kind: 'minor', t: 0.5 }, { kind: 'daily', t: 0.8 }],
+    planCursor: 1,
+    pendingMinor: null
+  });
+  useGameStore.getState().commit(useGameStore.getState().char, cAfterMinor);
 
-  // Encounter major event
+  // After resolving minor, entering quiet stretch: effectiveSpeed AUTOMATICALLY resumes to 8!
+  assert.equal(useGameStore.getState().skimOn, true, 'skimOn remains true after resolving minor');
+  assert.equal(
+    getEffectiveSpeed(useGameStore.getState()),
+    8,
+    'After minor is resolved, effective speed must automatically return to 8x without player re-clicking'
+  );
+
+  // Encounter major event: blocker lowers effective speed to preSkimSpeed, skimOn stays true
   const cMajor = makeMockChar({
     age: 10,
+    plan: [{ kind: 'daily', t: 0.8 }],
+    planCursor: 0,
     pendingEvent: { id: 'ev_test' }
   });
   useGameStore.getState().commit(useGameStore.getState().char, cMajor);
-  assert.equal(
-    useGameStore.getState().speed,
-    2,
-    'Encountering a major event must revert speed 8 back to preSkimSpeed (2)'
-  );
+  assert.equal(useGameStore.getState().skimOn, true);
+  assert.equal(getEffectiveSpeed(useGameStore.getState()), 2);
 
-  // Set speed back to 8
-  useGameStore.getState().setSpeed(8);
-  // Encounter NPC naming prompt
-  const cNpc = makeMockChar({
+  // Resolving major restores 8x
+  const cAfterMajor = makeMockChar({
     age: 10,
-    npcs: {
-      friend: { nameVi: 'Minh', needsNaming: true, namedPrompted: false, alive: true }
-    },
-    pendingNpcNaming: { role: 'friend', defaultNameVi: 'Minh' }
+    plan: [{ kind: 'daily', t: 0.8 }],
+    planCursor: 0,
+    pendingEvent: null
   });
-  useGameStore.getState().commit(useGameStore.getState().char, cNpc);
-  assert.equal(
-    useGameStore.getState().speed,
-    2,
-    'Encountering an NPC naming prompt must revert speed 8 back to preSkimSpeed (2)'
-  );
+  useGameStore.getState().commit(useGameStore.getState().char, cAfterMajor);
+  assert.equal(getEffectiveSpeed(useGameStore.getState()), 8);
 
-  // Set speed back to 8
-  useGameStore.getState().setSpeed(8);
-  // Encounter a chapter card (e.g. fixer grade promotion 8 -> 7)
-  const cPrevGrade = makeMockChar({ age: 20, job: 'Fixer', fixerGrade: 8 });
-  const cNextGrade = makeMockChar({ age: 20, job: 'Fixer', fixerGrade: 7 });
-  useGameStore.getState().commit(cPrevGrade, cNextGrade);
-  assert.equal(
-    useGameStore.getState().speed,
-    2,
-    'Encountering a chapter card must revert speed 8 back to preSkimSpeed (2)'
-  );
+  // Player explicitly chooses speed 2x: skimOn turns off
+  useGameStore.getState().setSpeed(2);
+  assert.equal(useGameStore.getState().skimOn, false);
+  assert.equal(useGameStore.getState().speed, 2);
+  assert.equal(getEffectiveSpeed(useGameStore.getState()), 2);
 }
 
 // Test 3: Minor countdown timer is untouched by speed

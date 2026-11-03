@@ -401,6 +401,27 @@ export function getPromotionProgress(char) {
       const curRep = (char.stats?.rep ?? char.rep) || 0;
       const p1 = Math.min(1, curMerit / readiness.targetMerit);
       const p2 = Math.min(1, curRep / readiness.targetRep);
+      let missingReq = null;
+      if (!readiness.ready) {
+        if (curMerit >= readiness.targetMerit && curRep >= readiness.targetRep && char.age < readiness.targetAge) {
+          missingReq = {
+            vi: `Chờ tới ${readiness.targetAge} tuổi`,
+            en: `Wait until age ${readiness.targetAge}`
+          };
+        } else if (curRep < readiness.targetRep) {
+          missingReq = {
+            vi: `Cần thêm ${readiness.targetRep - curRep} Rep`,
+            en: `Need ${readiness.targetRep - curRep} more Rep`
+          };
+        } else if (curMerit < readiness.targetMerit) {
+          missingReq = {
+            vi: `Cần thêm ${readiness.targetMerit - curMerit} Merit`,
+            en: `Need ${readiness.targetMerit - curMerit} more Merit`
+          };
+        }
+      }
+      const rawPct = Math.round(((p1 + p2) / 2) * 100);
+      const pct = readiness.ready ? 100 : Math.min(95, rawPct);
       return {
         route: 'color',
         targetGrade: 0,
@@ -410,7 +431,8 @@ export function getPromotionProgress(char) {
         repTarget: readiness.targetRep,
         ageTarget: readiness.targetAge,
         isEligible: Boolean(readiness.ready),
-        pct: Math.min(100, Math.round(((p1 + p2) / 2) * 100)),
+        missingReq,
+        pct,
         titleVi: 'Tới khảo thí Color',
         titleEn: 'To Color trial',
         labelVi: `Tới khảo thí Color: ${curMerit}/${readiness.targetMerit}`,
@@ -424,6 +446,22 @@ export function getPromotionProgress(char) {
     if (!step) return null;
     const p1 = Math.min(1, step.currentMerit / step.meritReq);
     const p2 = Math.min(1, step.currentRep / step.repReq);
+    let missingReq = null;
+    if (!step.isEligible) {
+      if (step.currentMerit >= step.meritReq && step.currentRep < step.repReq) {
+        missingReq = {
+          vi: `Cần thêm ${step.repReq - step.currentRep} Rep`,
+          en: `Need ${step.repReq - step.currentRep} more Rep`
+        };
+      } else if (step.currentRep >= step.repReq && step.currentMerit < step.meritReq) {
+        missingReq = {
+          vi: `Cần thêm ${step.meritReq - step.currentMerit} Merit`,
+          en: `Need ${step.meritReq - step.currentMerit} more Merit`
+        };
+      }
+    }
+    const rawPct = Math.round(((p1 + p2) / 2) * 100);
+    const pct = step.isEligible ? 100 : Math.min(95, rawPct);
     return {
       route: 'fixer',
       targetGrade: step.grade,
@@ -432,7 +470,8 @@ export function getPromotionProgress(char) {
       repCurrent: step.currentRep,
       repTarget: step.repReq,
       isEligible: Boolean(step.isEligible),
-      pct: Math.min(100, Math.round(((p1 + p2) / 2) * 100)),
+      missingReq,
+      pct,
       titleVi: `Tới kỳ thi Grade ${step.grade}`,
       titleEn: `To Grade ${step.grade} exam`,
       labelVi: `Tới kỳ thi Grade ${step.grade}: ${step.currentMerit}/${step.meritReq}`,
@@ -447,6 +486,48 @@ export function getPromotionProgress(char) {
   if (other?.route === 'finger') {
     const p1 = Math.min(1, other.currentMerit / other.meritReq);
     const p2 = Math.min(1, other.currentRep / other.repReq);
+    let missingReq = null;
+    if (!other.isEligible) {
+      const meritOk = other.currentMerit >= other.meritReq;
+      const repOk = other.currentRep >= other.repReq;
+      const netOk = other.currentNetwork >= (other.networkReq || 0);
+      const tenureOk = (other.yearsInRank || 0) >= (other.minTenure || 0);
+      const ageOk = char.age >= (other.earliestAge || 0);
+      if (meritOk && repOk && netOk) {
+        if (!ageOk) {
+          missingReq = {
+            vi: `Chờ tới ${other.earliestAge} tuổi`,
+            en: `Wait until age ${other.earliestAge}`
+          };
+        } else if (!tenureOk) {
+          const rem = (other.minTenure || 0) - (other.yearsInRank || 0);
+          missingReq = {
+            vi: `Cần thêm ${rem} năm ở cấp này`,
+            en: `Need ${rem} more year${rem > 1 ? 's' : ''} in rank`
+          };
+        }
+      } else if (!netOk && meritOk && repOk) {
+        const rem = (other.networkReq || 0) - other.currentNetwork;
+        missingReq = {
+          vi: `Cần thêm ${rem} Network`,
+          en: `Need ${rem} more Network`
+        };
+      } else if (!meritOk && repOk) {
+        const rem = other.meritReq - other.currentMerit;
+        missingReq = {
+          vi: `Cần thêm ${rem} Merit`,
+          en: `Need ${rem} more Merit`
+        };
+      } else if (!repOk && meritOk) {
+        const rem = other.repReq - other.currentRep;
+        missingReq = {
+          vi: `Cần thêm ${rem} Rep`,
+          en: `Need ${rem} more Rep`
+        };
+      }
+    }
+    const rawPct = Math.round(((p1 + p2) / 2) * 100);
+    const pct = other.isEligible ? 100 : Math.min(95, rawPct);
     return {
       route: 'finger',
       finger: other.finger,
@@ -460,7 +541,8 @@ export function getPromotionProgress(char) {
       ageTarget: other.earliestAge,
       tenureTarget: other.minTenure,
       isEligible: Boolean(other.isEligible),
-      pct: Math.min(100, Math.round(((p1 + p2) / 2) * 100)),
+      missingReq,
+      pct,
       titleVi: 'Tới thăng chức',
       titleEn: 'To promotion',
       labelVi: `Tới thăng chức: ${other.currentMerit}/${other.meritReq}`,
@@ -474,6 +556,40 @@ export function getPromotionProgress(char) {
     const p1 = Math.min(1, other.currentMerit / other.meritReq);
     const p2 = Math.min(1, other.currentWealth / other.wealthReq);
     const p3 = Math.min(1, other.currentNetwork / other.networkReq);
+    let missingReq = null;
+    if (!other.isEligible) {
+      const meritOk = other.currentMerit >= other.meritReq;
+      const wealthOk = other.currentWealth >= other.wealthReq;
+      const netOk = other.currentNetwork >= other.networkReq;
+      const tenureOk = (other.yearsInRank || 0) >= (other.minTenure || 0);
+      if (meritOk && wealthOk && netOk && !tenureOk) {
+        const rem = (other.minTenure || 0) - (other.yearsInRank || 0);
+        missingReq = {
+          vi: `Cần thêm ${rem} năm ở cấp này`,
+          en: `Need ${rem} more year${rem > 1 ? 's' : ''} in rank`
+        };
+      } else if (!meritOk && wealthOk && netOk) {
+        const rem = other.meritReq - other.currentMerit;
+        missingReq = {
+          vi: `Cần thêm ${rem} Merit`,
+          en: `Need ${rem} more Merit`
+        };
+      } else if (!wealthOk && meritOk && netOk) {
+        const rem = other.wealthReq - other.currentWealth;
+        missingReq = {
+          vi: `Cần thêm ${rem} Ahn`,
+          en: `Need ${rem} more Ahn`
+        };
+      } else if (!netOk && meritOk && wealthOk) {
+        const rem = other.networkReq - other.currentNetwork;
+        missingReq = {
+          vi: `Cần thêm ${rem} Network`,
+          en: `Need ${rem} more Network`
+        };
+      }
+    }
+    const rawPct = Math.round(((p1 + p2 + p3) / 3) * 100);
+    const pct = other.isEligible ? 100 : Math.min(95, rawPct);
     return {
       route: 'wing',
       targetRank: other.rank,
@@ -485,7 +601,8 @@ export function getPromotionProgress(char) {
       networkTarget: other.networkReq,
       tenureTarget: other.minTenure,
       isEligible: Boolean(other.isEligible),
-      pct: Math.min(100, Math.round(((p1 + p2 + p3) / 3) * 100)),
+      missingReq,
+      pct,
       titleVi: 'Tới thăng chức',
       titleEn: 'To promotion',
       labelVi: `Tới thăng chức: ${other.currentMerit}/${other.meritReq}`,
@@ -501,6 +618,33 @@ export function getPromotionProgress(char) {
     const p1 = Math.min(1, indie.currentMerit / indie.meritReq);
     const p2 = Math.min(1, indie.currentRep / indie.repReq);
     const p3 = Math.min(1, indie.currentHeat / indie.heatReq);
+    let missingReq = null;
+    if (!indie.isEligible) {
+      const meritOk = indie.currentMerit >= indie.meritReq;
+      const repOk = indie.currentRep >= indie.repReq;
+      const heatOk = indie.currentHeat >= indie.heatReq;
+      if (meritOk && repOk && !heatOk) {
+        const rem = indie.heatReq - indie.currentHeat;
+        missingReq = {
+          vi: `Cần thêm ${rem} Heat`,
+          en: `Need ${rem} more Heat`
+        };
+      } else if (!meritOk && repOk && heatOk) {
+        const rem = indie.meritReq - indie.currentMerit;
+        missingReq = {
+          vi: `Cần thêm ${rem} Merit`,
+          en: `Need ${rem} more Merit`
+        };
+      } else if (!repOk && meritOk && heatOk) {
+        const rem = indie.repReq - indie.currentRep;
+        missingReq = {
+          vi: `Cần thêm ${rem} Rep`,
+          en: `Need ${rem} more Rep`
+        };
+      }
+    }
+    const rawPct = Math.round(((p1 + p2 + p3) / 3) * 100);
+    const pct = indie.isEligible ? 100 : Math.min(95, rawPct);
     return {
       route: 'independent_syndicate',
       targetRank: indie.rank,
@@ -511,7 +655,8 @@ export function getPromotionProgress(char) {
       heatCurrent: indie.currentHeat,
       heatTarget: indie.heatReq,
       isEligible: Boolean(indie.isEligible),
-      pct: Math.min(100, Math.round(((p1 + p2 + p3) / 3) * 100)),
+      missingReq,
+      pct,
       titleVi: 'Tới thăng chức',
       titleEn: 'To promotion',
       labelVi: `Tới thăng chức: ${indie.currentMerit}/${indie.meritReq}`,

@@ -19,8 +19,8 @@ export const LIFE_MINORS_SEEDS = [
         { wealth: 4, rep: 1 },
         {
           lasting: {
-            vi: 'Để lại hồ sơ sai lệch, Hana sẽ mở cuộc thanh tra truy cứu sau 4 năm',
-            en: 'Leaves a flawed record; Hana will open an audit investigation in 4 years'
+            vi: 'Để lại hồ sơ sai lệch, vài năm sau Hana sẽ mở cuộc thanh tra truy cứu',
+            en: 'Leaves a flawed record; years later Hana will open an audit investigation'
           },
           later: [{
             id: 'csq_hana_corruption_audit',

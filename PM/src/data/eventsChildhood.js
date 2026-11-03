@@ -688,8 +688,8 @@ export const CHILDHOOD_EVENTS = [
         labelVi: "Không có tiền trả: Cắn răng chịu trận đòn dằn mặt",
         labelEn: "Unable to pay: Endure a ruthless alley beating",
         lasting: {
-          vi: 'Nợ gốc cộng thêm 2 Ahn phạt và mỗi năm mất 1 HP vì vết thương, đòi lại sau 1 năm',
-          en: 'Adds 2 Ahn penalty to debt and costs 1 HP/year from the wound, due again in 1 year'
+          vi: 'Nợ gốc tăng thêm 2 Ahn phạt và để lại sẹo sâu, chủ nợ quay lại sau 1 năm',
+          en: 'Debt increases by 2 Ahn penalty and leaves a deep scar; collector returns in 1 year'
         },
         debtPenalty: { id: 'fixer_license_debt', principalAdd: 2, deferYears: 1 },
         resultVi: "Không có tiền mặt, bạn bị hai tay đao lôi vào góc hẻm đánh bầm dập. Gã chủ nợ ghi thêm hai Ahn tiền phạt quá hạn vào sổ trước khi bỏ đi trong mưa: \"Năm sau tao quay lại. Liệu mà chuẩn bị lo hậu sự nếu vẫn rỗng túi.\"",

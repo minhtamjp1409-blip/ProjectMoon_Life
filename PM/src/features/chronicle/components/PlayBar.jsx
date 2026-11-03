@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Tooltip, Modal, Dropdown } from 'antd';
 import { Play, Pause, SkipForward, Bot, RotateCcw, Save, Check, AlertTriangle, Volume2, VolumeX, MoreHorizontal, ShoppingBag, Sparkles } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
-import { useGameStore, canSkimSpeed } from '../../../store/gameStore';
+import { useGameStore, canSkimSpeed, getEffectiveSpeed } from '../../../store/gameStore';
 import { SEASONS, DUNGEON_DEFINITIONS } from '../../../engine/gameEngine';
 import { gauntletRoute } from '../../../engine/dungeonCombat';
 import { WorkshopDepotModal } from './WorkshopDepotModal';
@@ -17,7 +17,6 @@ export const BASE_SPEEDS = [
   { spd: 3, secs: 10 }
 ];
 export const SKIM_SPEED = { spd: 8, secs: 4 };
-export const SPEEDS = BASE_SPEEDS;
 
 const isWaiting = (s) => Boolean(s?.char?.pendingYearPlan || s?.char?.pendingLead || s?.char?.pendingEvent || s?.char?.pendingContract || s?.char?.pendingDungeon || s?.char?.pendingModal || s?.char?.pendingNpcNaming || s?.char?.pendingMinor || s?.activeResolution);
 const isRunning = (s) => s.inRun && s.char?.alive && s.speed > 0 && !isWaiting(s) && !(s.postChoicePauseMs > 0);
@@ -53,7 +52,8 @@ const YearTrack = () => {
         // Time creeps on at 1x while a small choice waits; follow the store exactly
         shown = Math.max(shown, s.yearProgress);
       } else if (isRunning(s)) {
-        const est = anchorP + ((now - anchorT) / (30000 / s.speed)) * 100;
+        const effSpeed = getEffectiveSpeed(s) || 1;
+        const est = anchorP + ((now - anchorT) / (30000 / effSpeed)) * 100;
         shown = Math.min(100, Math.max(shown, est));
       } else {
         shown = s.yearProgress;
@@ -143,6 +143,8 @@ export const PlayBar = () => {
         alive: s.char.alive,
         waiting: isWaiting(s) || Boolean(s.char.pendingMinor),
         speed: s.speed,
+        preSkimSpeed: s.preSkimSpeed,
+        skimOn: s.skimOn,
         autoPlay: s.autoPlay,
         setSpeed: s.setSpeed,
         toggleAutoPlay: s.toggleAutoPlay,
@@ -249,7 +251,8 @@ export const PlayBar = () => {
   const cycleSpeed = () => {
     audioEngine.playClick();
     let next;
-    if (speed === 1) next = 2;
+    if (skimOn) next = 1;
+    else if (speed === 1) next = 2;
     else if (speed === 2) next = 3;
     else if (speed === 3) next = allowSkim ? 8 : 1;
     else next = 1;
@@ -383,7 +386,7 @@ export const PlayBar = () => {
                 if (useGameStore.getState().postChoicePauseMs > 0) {
                   useGameStore.getState().clearPostChoicePause();
                 }
-                handleSetSpeed(speed === 0 ? 1 : 0);
+                handleSetSpeed(speed === 0 ? (skimOn ? 8 : (preSkimSpeed || 1)) : 0);
               }}
               aria-label={speed === 0 ? t('Tiếp tục (Space)', 'Resume (Space)') : t('Tạm dừng (Space)', 'Pause (Space)')}
               title={speed === 0 ? t('Tiếp tục (Space)', 'Resume (Space)') : t('Tạm dừng (Space)', 'Pause (Space)')}
@@ -392,32 +395,35 @@ export const PlayBar = () => {
             </button>
 
             <div className="speeds playbar-desktop-speeds" role="group" aria-label={t('Tốc độ', 'Speed')}>
-              {speeds.map((s) => (
-                <button
-                  key={s.spd}
-                  type="button"
-                  className={speed === s.spd ? 'is-on' : ''}
-                  aria-pressed={speed === s.spd}
-                  onClick={() => handleSetSpeed(s.spd)}
-                  title={s.spd === 8
-                    ? t('Lướt nhanh 8× khi chơi lại (chỉ chạy trong năm yên ả)', 'Skim speed 8× for replays (only runs during quiet stretches)')
-                    : t(`${s.secs} giây mỗi năm (phím [ / ])`, `${s.secs}s per year ([ / ] keys)`)}
-                >
-                  {s.spd === 8 ? (lang === 'en' ? 'Skim' : 'Lướt') : `${s.spd}×`}
-                </button>
-              ))}
+              {speeds.map((s) => {
+                const isSelected = s.spd === 8 ? Boolean(skimOn) : (!skimOn && speed === s.spd);
+                return (
+                  <button
+                    key={s.spd}
+                    type="button"
+                    className={isSelected ? 'is-on' : ''}
+                    aria-pressed={isSelected}
+                    onClick={() => handleSetSpeed(s.spd)}
+                    title={s.spd === 8
+                      ? t('Lướt nhanh 8× khi chơi lại (chỉ chạy trong năm yên ả)', 'Skim speed 8× for replays (only runs during quiet stretches)')
+                      : t(`${s.secs} giây mỗi năm (phím [ / ])`, `${s.secs}s per year ([ / ] keys)`)}
+                  >
+                    {s.spd === 8 ? (lang === 'en' ? 'Skim' : 'Lướt') : `${s.spd}×`}
+                  </button>
+                );
+              })}
             </div>
 
             <button
               type="button"
               className="btn-speed-mobile"
               onClick={cycleSpeed}
-              aria-label={t(`Tốc độ ${speed === 8 ? (lang === 'en' ? 'Skim' : 'Lướt') : `${speed || 1}×`}. Bấm để đổi tốc độ`, `Speed ${speed === 8 ? 'Skim' : `${speed || 1}×`}. Tap to cycle speed`)}
+              aria-label={t(`Tốc độ ${skimOn ? (lang === 'en' ? 'Skim' : 'Lướt') : `${speed || 1}×`}. Bấm để đổi tốc độ`, `Speed ${skimOn ? 'Skim' : `${speed || 1}×`}. Tap to cycle speed`)}
               title={allowSkim
                 ? t('Bấm để đổi tốc độ (1x/2x/3x/Lướt)', 'Tap to cycle speed (1x/2x/3x/Skim)')
                 : t('Bấm để đổi tốc độ (1x/2x/3x)', 'Tap to cycle speed (1x/2x/3x)')}
             >
-              {speed === 8 ? (lang === 'en' ? 'Skim' : 'Lướt') : `${speed || 1}×`}
+              {skimOn ? (lang === 'en' ? 'Skim' : 'Lướt') : `${speed || 1}×`}
             </button>
 
             <span className="divider" />

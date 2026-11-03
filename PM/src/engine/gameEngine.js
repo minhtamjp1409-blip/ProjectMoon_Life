@@ -1237,7 +1237,8 @@ export function getNextCareerMilestone(char) {
         };
       }
       const nextTitle = INDIE_RANKS[nextRank];
-      const indiePromo = getNextIndependentSyndicatePromotion(char); const targetMerit = indiePromo?.meritReq ?? 20;
+      const indiePromo = getNextIndependentSyndicatePromotion(char);
+      const targetMerit = indiePromo?.meritReq ?? 20;
       const targetRep = indiePromo?.repReq ?? 20;
       const targetHeat = indiePromo?.heatReq ?? 15;
       const curMerit = char.merit || 0;

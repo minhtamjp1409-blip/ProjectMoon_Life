@@ -284,38 +284,43 @@ Có bản tiếng Anh tương ứng.
 
 ## Đợt 122: hậu quả và đích đến (ĐÃ HOÀN THÀNH)
 
-### 122a. Hậu quả kéo dài nói bằng lời (ĐÃ XONG)
+### 122a. Hậu quả kéo dài nói bằng lời (ĐÃ XONG & ĐÃ CHUẨN HÓA CƠ CHẾ)
 
 **Hiện tại.** `ChoicePreview` (`Deltas.jsx:229`) chỉ hiện chip +/−, nên người chơi không biết tác động kéo dài bao lâu.
 
 **Cách làm.** Với lựa chọn có tác động nhiều năm (Bond, nợ, hợp đồng, NPC đi theo), cho phép data khai một trường `lasting: { vi, en }`. Trường này hiện thành một dòng ngắn dưới nhãn lựa chọn (`.choice-lasting`), ví dụ "Mỗi năm SP +2, kéo dài tới khi chia tay". Lựa chọn không có trường này thì không đổi gì.
 
-**Xong khi.** Đã bổ sung `lasting: { vi, en }` cho 20 lựa chọn dài hạn (vượt mốc 15 lựa chọn). Thẻ minor ở 390x844 đạt chuẩn của Đợt 118a: dòng `lasting` nằm trong phần mở bằng nút gập (`+` / `.preview-secondary`).
+**Xong khi.** Đã bổ sung `lasting: { vi, en }` cho 20 lựa chọn dài hạn (vượt mốc 15 lựa chọn). Chuẩn hóa chính xác theo cơ chế engine: sẹo không trừ HP hằng năm (chỉ tính chi phí Ahn ở tuổi già), vai lover không tính hồi SP hằng năm của companion, và giấu số năm chính xác của các biến cố sau đó ("vài năm sau", "trong những năm tới") để giữ tính hồi hộp. Thẻ minor ở 390x844 đạt chuẩn của Đợt 118a: dòng `lasting` nằm trong phần mở bằng nút gập (`+` / `.preview-secondary`).
 
-### 122b. Tiến độ thăng chức (ĐÃ XONG)
+### 122b. Tiến độ thăng chức (ĐÃ XONG & BỔ SUNG ĐIỀU KIỆN CÒN THIẾU)
 
 **Hiện tại.** Merit chỉ là một con số nằm trong mục gập của hồ sơ (`CharacterDossierCard.jsx:650`). Người chơi không biết còn bao xa mới tới lần thăng chức hoặc kỳ thi Grade tiếp theo.
 
 **Cách làm.**
 1. Hiện ở cột trái, ngoài mục gập, một thanh "Tới thăng chức: 6/8", hoặc "Tới kỳ thi Grade 6" cho Fixer (`PromotionProgressBar`).
 2. Lấy ngưỡng từ đúng hàm mà engine dùng để thăng chức (`getPromotionProgress` đọc trực tiếp từ `getNextFixerPromotion`, `checkColorFixerReadiness`, `getOtherCareerPromotion`, `getNextIndependentSyndicatePromotion`), không viết lại ngưỡng ở UI.
+3. Khi thanh điểm cao nhưng chưa đủ điều kiện (tuổi, thâm niên trong cấp, Network), thanh giới hạn tối đa 95% và hiển thị nhãn điều kiện còn thiếu (ví dụ "Chờ tới 30 tuổi", "Cần thêm 2 năm ở cấp này").
 
-**Test.** `tests/test_batches_122_123.mjs` kiểm tra ngưỡng UI khớp 100% với ngưỡng engine cho mọi nghề có thăng chức (Fixer Grade 9->1, Color, Finger Syndicate, Wing Employee, Independent Syndicate).
+**Test.** `tests/test_batches_122_123.mjs` kiểm tra ngưỡng UI khớp 100% với ngưỡng engine cho mọi nghề có thăng chức (Fixer Grade 9->1, Color, Finger Syndicate, Wing Employee, Independent Syndicate) và kiểm tra đúng nhãn điều kiện thiếu khi chưa đủ điều kiện.
 
 ---
 
-## Đợt 123: lướt nhanh khi chơi lại (ĐÃ HOÀN THÀNH)
+## Đợt 123: lướt nhanh khi chơi lại (ĐÃ HOÀN THÀNH — Chế độ bám skimOn)
 
 **Lý do.** Web mẫu có x1 đến x32, nhưng chép nguyên x32 sẽ nuốt mất chi tiết của game mình. Hướng học là tăng tốc rõ rệt cho phần đời thường khi chơi lại.
 
 **Cách làm.**
 1. Thêm một mức "Lướt" (khoảng 8x). Mức này chỉ hiện từ đời thứ hai trở đi (`pastLives.length >= 1` hoặc `char.generation > 1`), đọc từ lịch sử đời của Huyết thống, hoặc khi đã bật tự chọn (`autoPlay`).
-2. Mức "Lướt" chỉ chạy trong `quietStretch` (`gameStore.js:906`). Gặp major, minor, mốc NPC hoặc thẻ chương thì tự về tốc độ người chơi đã chọn trước đó (`preSkimSpeed`).
+2. Chế độ Lướt hoạt động theo cơ chế bám (`skimOn: true`):
+   - Đang yên ả thì `effectiveSpeed = 8`.
+   - Gặp major, minor, mốc NPC hay thẻ chương thì tạm hạ về `preSkimSpeed` để người chơi đọc/chọn mà không ghi đè mất chế độ Lướt.
+   - Giải quyết xong minor/sự kiện thì tự động vút lên 8x lại, người chơi không phải bấm lại nhiều lần mỗi năm.
+   - Khi người chơi chủ động bấm các nấc tốc độ 1x/2x/3x thì mới tắt `skimOn`.
 3. Minor không bị rút ngắn thời gian chờ (`minorRemainingMs` trừ đúng `dtMs` thực tế, không nhân tốc độ lướt). Luật hẹn giờ giữ nguyên.
 
 **Test.** `tests/test_batches_122_123.mjs`:
 - Đời đầu khi chưa bật autoPlay không thấy nút "Lướt", đời thứ hai hoặc khi bật autoPlay thì thấy.
-- Đang lướt mà gặp minor, major, mốc NPC hoặc thẻ chương thì tốc độ tự về lại mức cũ.
+- Đang lướt mà gặp minor, major, mốc NPC hoặc thẻ chương thì tốc độ hiệu dụng tạm về lại mức cũ, giải xong minor thì tự chạy 8x lại.
 - Đồng hồ minor trừ đúng thời gian thực, không chạy nhanh hơn bình thường.
 
 ---

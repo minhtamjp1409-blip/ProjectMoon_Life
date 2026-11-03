@@ -245,8 +245,8 @@ export const LIFE_MINORS = [
         {
           mem: 'burned_prescript',
           lasting: {
-            vi: 'Trái lệnh Prescript, sứ giả The Index sẽ tìm đến đòi nợ sau 6 năm',
-            en: 'Defies a Prescript; an Index Proselyte will come to collect the debt in 6 years'
+            vi: 'Trái lệnh Prescript, vài năm sau sứ giả The Index sẽ tìm đến đòi nợ',
+            en: 'Defies a Prescript; years later an Index Proselyte will come to collect the debt'
           },
           later: [{ id: 'm_index_remembers', years: 6, reasonVi: 'Index nhớ tờ Prescript bị đốt', reasonEn: 'The Index remembers the burned Prescript' }]
         }
@@ -313,8 +313,8 @@ export const LIFE_MINORS = [
         {
           mem: 'reported_maid',
           lasting: {
-            vi: 'Đẩy gia đình người giúp việc ra Backstreets, oán thù sẽ quay lại sau 9 năm',
-            en: 'Exiles the maid’s family to the Backstreets; the grudge returns in 9 years'
+            vi: 'Đẩy gia đình người giúp việc ra Backstreets, mối oán thù sẽ tìm về trong những năm tới',
+            en: 'Exiles the maid’s family to the Backstreets; the grudge will return in the years ahead'
           },
           later: [{ id: 'm_maid_child', years: 9, reasonVi: 'Đứa con của người giúp việc bị đuổi', reasonEn: 'The dismissed maid’s child' }]
         }
@@ -484,8 +484,8 @@ export const LIFE_MINORS = [
         {
           npc: { role: 'lover', bond: 55 },
           lasting: {
-            vi: 'Có người thương đồng hành; khi tâm trí mỏi mệt mỗi năm hồi thêm SP cho tới khi chia tay',
-            en: 'Gains a lover companion; restores extra SP each year when strained until parting'
+            vi: 'Có người thương gắn bó bên đời, cùng sẻ chia năm tháng và mở ra các bước ngoặt tình cảm về sau',
+            en: 'Gains a devoted lover companion, sharing life and opening future relationship milestones'
           }
         }
       ),

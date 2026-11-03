@@ -1546,20 +1546,23 @@ export const LiveStageFeed = () => {
         if (!char.alive) return;
         e.preventDefault();
         audioEngine.playClick();
-        setSpeed(speed === 0 ? 1 : 0);
+        const curSkimOn = useGameStore.getState().skimOn;
+        const curPre = useGameStore.getState().preSkimSpeed || 1;
+        setSpeed(speed === 0 ? (curSkimOn ? 8 : curPre) : 0);
         return;
       }
       if ((e.key === '[' || e.key === ']') && char.alive && !char.pendingDungeon && !char.pendingEvent && !char.pendingContract) {
         e.preventDefault();
         audioEngine.playClick();
+        const curSkimOn = useGameStore.getState().skimOn;
         const allowSkim = canSkimSpeed(useGameStore.getState());
         let nextSpd;
         if (e.key === ']') {
-          if (speed === 3) nextSpd = allowSkim ? 8 : 3;
-          else if (speed === 8) nextSpd = 8;
+          if (curSkimOn || speed === 8) nextSpd = 8;
+          else if (speed === 3) nextSpd = allowSkim ? 8 : 3;
           else nextSpd = Math.min(3, speed + 1);
         } else {
-          if (speed === 8) nextSpd = 3;
+          if (curSkimOn || speed === 8) nextSpd = 3;
           else nextSpd = Math.max(0, speed - 1);
         }
         setSpeed(nextSpd);
@@ -1882,7 +1885,9 @@ export const LiveStageFeed = () => {
                   paused={speed === 0}
                   onTogglePause={() => {
                     audioEngine.playClick();
-                    setSpeed(speed === 0 ? 1 : 0);
+                    const curSkimOn = useGameStore.getState().skimOn;
+                    const curPre = useGameStore.getState().preSkimSpeed || 1;
+                    setSpeed(speed === 0 ? (curSkimOn ? 8 : curPre) : 0);
                   }}
                   onPick={handleChooseMinor}
                   onPeek={openPeek}

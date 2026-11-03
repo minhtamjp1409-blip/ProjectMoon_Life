@@ -2948,6 +2948,29 @@ Chạy kiểm định mô phỏng 500 vòng đời với chiến lược ngườ
   - `test_npc_naming_and_callbacks.mjs`: Đạt mọi tiêu chuẩn cân bằng (tỉ lệ minor NPC 16.9%, TB 3.18 cảnh/đời, 0 trùng lặp, max <= 6, 0 khóa mem dùng chung Bond+/Bond-).
   - Toàn bộ suite `npm test` và `npm run build` hoàn thành không lỗi.
 
+##### 2.15. Tinh Chỉnh Hoàn Thiện Sau Đợt Review: Chế Độ Bám SkimOn, Chuẩn Hóa Cơ Chế Lasting & Báo Điều Kiện Thăng Chức
+* **Khắc phục triệt để các phản hồi:**
+  1. **Lướt tự tắt quá sớm (Đợt 123):**
+     - Thay đổi kiến trúc: Chuyển Lướt thành chế độ bám qua cờ `skimOn: true` và hàm `getEffectiveSpeed(state)` trong `src/store/gameStore.js`.
+     - Trong đoạn yên ả (`quietStretch`): `effectiveSpeed = 8`. Khi có minor, major, hỏi tên NPC hoặc thẻ chương, tốc độ hiệu dụng tạm hạ về `preSkimSpeed` (1x..3x) cho người chơi đọc/chọn mà KHÔNG xóa cờ `skimOn` hay ghi đè `speed`.
+     - Sau khi giải quyết xong minor/sự kiện, thời gian tự động vút lên 8x lại ngay khi vào đoạn yên ả tiếp theo, người chơi không phải bấm lại liên tục mỗi năm.
+     - Đồng bộ phím nóng Space, `[`, `]`, `btn-speed-mobile` và thanh tiến độ `YearTrack` extrapolator hoạt động mượt mà với `getEffectiveSpeed`.
+  2. **Chuẩn hóa cơ chế câu lasting (Đợt 122a):**
+     - `src/data/eventsChildhood.js`: Sửa dòng sẹo nợ ngầm: sẹo không trừ HP hằng năm (chỉ tốn chi phí y tế ở tuổi già khi có nhiều sẹo), chuẩn hóa câu: *"Nợ gốc tăng thêm 2 Ahn phạt và để lại sẹo sâu, chủ nợ quay lại sau 1 năm"*.
+     - `src/data/lifeMinors.js`: Vai `lover` không nằm trong danh sách hồi SP hằng năm của companion (dành cho spouse/partner/friend/mentor/child), sửa thành: *"Có người thương gắn bó bên đời, cùng sẻ chia năm tháng và mở ra các bước ngoặt tình cảm về sau"*.
+     - Giấu số năm chính xác của các biến cố sau đó trong `lifeMinors.js` và `lifeMinorsSeeds.js` ("sau 6 năm", "sau 9 năm", "sau 4 năm") thành *"vài năm sau"*, *"trong những năm tới"* để bảo toàn sự hồi hộp cho người chơi.
+  3. **Thanh thăng chức báo điều kiện còn thiếu (Đợt 122b):**
+     - `src/engine/careerPipeline.js`: Bổ sung `missingReq: { vi, en }` khi nhân vật có điểm cao nhưng chưa đủ điều kiện (chờ đủ tuổi cho Color/Finger, cần thêm thâm niên cấp bậc cho Finger/Wing, cần thêm Network).
+     - Giới hạn thanh tiến độ tối đa `95%` khi chưa đủ điều kiện (`!isEligible`), ngăn tình trạng thanh đầy 100% gây hiểu lầm.
+     - `CharacterDossierCard.jsx` & `play.css`: Hiển thị nhãn `.stat-flag.is-pending-tag` báo rõ điều kiện cần (ví dụ: *"Chờ tới 30 tuổi"*, *"Cần thêm 2 năm ở cấp này"*).
+  4. **Dọn dẹp code:**
+     - Tách hai câu lệnh dồn dòng ở `gameEngine.js:1240`.
+     - Bỏ export `SPEEDS = BASE_SPEEDS` không còn dùng trong `PlayBar.jsx`.
+* **Kiểm thử tự động:**
+  - `tests/test_batches_122_123.mjs` kiểm tra chế độ bám `skimOn`, sự tự động phục hồi tốc độ 8x sau khi giải quyết minor, cơ chế `missingReq` và kiểm tra độ chính xác của mọi câu `lasting` -> **PASS 100%**.
+  - `voice_lint.mjs --fail`, `lint_story.mjs`, `check_sentence_length.mjs --fail`, `test_npc_naming_and_callbacks.mjs` đạt 100% không lỗi.
+  - `npm test` và `npm run build` hoàn tất sạch sẽ.
+
 ---
 #### 3. KIỂM ĐỊNH & BẢO ĐẢM TOÀN VẸN (VERIFICATION & INTEGRITY)
 * Tất cả các bộ kiểm thử tự động (`npm test`) bao gồm lint văn phong (`voice_lint.mjs`), chuẩn canon Project Moon (`lint_story.mjs`), và mô phỏng 500 khoảnh khắc đời người (`run_million_audit.mjs`) phải vượt qua 100% với 0 lỗi, 0 cảnh báo.

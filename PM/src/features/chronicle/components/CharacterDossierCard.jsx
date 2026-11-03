@@ -175,6 +175,7 @@ export const PromotionProgressBar = ({ progress, t, lang }) => {
   const title = lang === 'en' ? progress.titleEn : progress.titleVi;
   const summary = lang === 'en' ? progress.summaryEn : progress.summaryVi;
   const labelText = lang === 'en' ? progress.labelEn : progress.labelVi;
+  const missingText = progress.missingReq ? (lang === 'en' ? progress.missingReq.en : progress.missingReq.vi) : null;
   return (
     <div
       className={`promo-progress-stat ${progress.isEligible ? 'is-ready' : ''}`}
@@ -187,9 +188,11 @@ export const PromotionProgressBar = ({ progress, t, lang }) => {
             style={{ background: progress.isEligible ? 'var(--gold)' : 'var(--s-rep)' }}
           />
           <span className="promo-progress-heading">{title}</span>
-          {progress.isEligible && (
+          {progress.isEligible ? (
             <span className="stat-flag is-ready-tag">{t('Đủ điều kiện', 'Eligible')}</span>
-          )}
+          ) : missingText ? (
+            <span className="stat-flag is-pending-tag">{missingText}</span>
+          ) : null}
         </span>
         <b className="promo-progress-num num">
           {progress.meritCurrent}/{progress.meritTarget}
