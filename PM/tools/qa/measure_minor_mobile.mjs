@@ -1,6 +1,7 @@
 import { Browser, sleep } from '../../.agents/skills/design-taste-frontend/scripts/lib/cdp.mjs';
 import { createNewCharacter, interpolateText } from '../../src/engine/gameEngine.js';
 import { LIFE_MINORS } from '../../src/data/lifeMinors.js';
+import { LIFE_MINORS_KIDS } from '../../src/data/lifeMinorsKids.js';
 import { existsSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -45,6 +46,17 @@ const scenarios = [
     }
   },
   {
+    key: 'minor_odds',
+    name: 'Minor có tỉ lệ trót lọt (Người ngủ ở cầu thang)',
+    minorId: 'mk_back_stair_man',
+    wealth: 10,
+    setupChar: (char) => {
+      char.age = 8;
+      char.job = 'Child';
+      char.regionId = 'backstreets';
+    }
+  },
+  {
     key: 'minor_locked',
     name: 'Minor có điều kiện khóa (Thiếu Ahn)',
     minorId: 'm_med_backstreet_clinic',
@@ -63,7 +75,9 @@ console.log(`Connecting to browser and loading app at ${BASE} (390x844 mobile)..
 const browser = await Browser.launch();
 
 try {
-  const page = await browser.newPage({ width: 390, height: 844, mobile: true });
+  // VIEWPORT=1280x800 measures a desktop width; EXPAND=1 opens each choice detail before the shot
+  const [vw, vh] = (process.env.VIEWPORT || '390x844').split('x').map(Number);
+  const page = await browser.newPage({ width: vw, height: vh, mobile: vw < 600 });
   await page.goto(BASE, { timeoutMs: 30000, settleMs: 3000 });
 
   const results = [];
@@ -80,7 +94,7 @@ try {
     char.pendingYearPlan = null;
     char.pendingDungeon = null;
 
-    const def = LIFE_MINORS.find((m) => m.id === sc.minorId);
+    const def = [...LIFE_MINORS, ...LIFE_MINORS_KIDS].find((m) => m.id === sc.minorId);
     if (!def) throw new Error(`Minor not found: ${sc.minorId}`);
 
     const promptObj = {
@@ -191,6 +205,7 @@ try {
     });
 
     const shotPath = join(outDir, `minor_measure_${sc.key}.png`);
+    if (process.env.EXPAND) { await page.eval(() => document.querySelectorAll('.choice-detail-toggle').forEach((b) => b.click())); await sleep(400); }
     await page.screenshot({ path: shotPath });
     console.log(`Screenshot saved: ${shotPath}`);
 

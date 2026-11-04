@@ -3018,6 +3018,8 @@ Chạy kiểm định mô phỏng 500 vòng đời với chiến lược ngườ
 * **Kiểm tra.** `tests/test_dungeon_clash.mjs` (thêm vào `npm test`), `npm test` và `npm run build` qua.
 * **Sửa sau review.** Nút "Rút lại" không còn hiện chip mất máu (rút lại không tốn gì). Đồng đội thua Clash giờ mang `injured: true` thay cho `status: 'wounded'` (trạng thái này không có chỗ nào hồi lại, và `pickDungeonCompanion` không loại nó): họ ở nhà ở dungeon kế tiếp, `endYear` cho hồi sau một năm (`healsAtAge`). Không mời cược sẹo khi Sanity ≤ 4. Mặt xúc xắc thấp nhất của người chơi là 1. Mô phỏng: hai kiểu chơi tránh sát thương bỏ qua "Rút lại" để không lặp. Mục `.replay-goals` không cần cắt dòng: ở 390×844 nó nằm ở y≈1880, dưới nút bắt đầu (y≈861), mỗi gợi ý một dòng.
 
+##### 2.20. Chip tỉ lệ trên thẻ lựa chọn (04/11/2026)
+* `Deltas.jsx` `oddsChip`: "Trót lọt 62%" (và "Đỗ x%" khi thi) thành một chip 24px cùng viền và bo góc với chip chỉ số. Nhãn nhỏ và nhạt, số 14px đậm, màu theo mức: từ 70% xanh, 40 đến 69% vàng, dưới 40% đỏ. Chụp 390 (đã mở chi tiết) và 1280: cùng chiều cao với các chip khác, không tràn. `tools/qa/measure_minor_mobile.mjs` thêm minor có tỉ lệ, `VIEWPORT` và `EXPAND`.
 ---
 #### 3. KIỂM ĐỊNH & BẢO ĐẢM TOÀN VẸN (VERIFICATION & INTEGRITY)
 * Tất cả các bộ kiểm thử tự động (`npm test`) bao gồm lint văn phong (`voice_lint.mjs`), chuẩn canon Project Moon (`lint_story.mjs`), và mô phỏng 500 khoảnh khắc đời người (`run_million_audit.mjs`) phải vượt qua 100% với 0 lỗi, 0 cảnh báo.

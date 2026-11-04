@@ -214,14 +214,16 @@ export const ChoicePreview = ({ choice, npcs, char, kind = 'major', check = null
     lastingText ? <span className="choice-lasting">{lastingText}</span> : null
   );
 
+  // One chip for a chance: the label quiet, the number carrying the tone of the risk
+  const oddsChip = (pct, labelVi, labelEn) => (
+    <span className={`preview-odds is-${pct >= 70 ? 'high' : pct >= 40 ? 'mid' : 'low'}`}>
+      <span className="preview-odds-label">{t(labelVi, labelEn)}</span>
+      <b className="num">{pct}%</b>
+    </span>
+  );
+
   const renderOdds = () => {
-    if (examOdds) {
-      return (
-        <span className="preview-odds">
-          {t(`Đỗ ${examOdds.pass}%`, `Pass ${examOdds.pass}%`)}
-        </span>
-      );
-    }
+    if (examOdds) return oddsChip(examOdds.pass, 'Đỗ', 'Pass');
     if (check) {
       return (
         <span className={`disco-check-pill ${check.isRedCheck ? 'is-red' : 'is-white'}`}>
@@ -234,13 +236,7 @@ export const ChoicePreview = ({ choice, npcs, char, kind = 'major', check = null
         </span>
       );
     }
-    if (odds) {
-      return (
-        <span className="preview-odds">
-          {t(`Trót lọt ${odds[0]}%`, `${odds[0]}% chance`)}
-        </span>
-      );
-    }
+    if (odds) return oddsChip(odds[0], 'Trót lọt', 'Chance');
     return null;
   };
 
