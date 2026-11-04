@@ -133,7 +133,7 @@ export const PlayBar = () => {
   const [shopOpen, setShopOpen] = useState(false);
   const { t, lang } = useT();
   const char = useGameStore((s) => s.char);
-  const { age, seasonIdx, yearProgress, dramaPhase, alive, waiting, speed, autoPlay, setSpeed, toggleAutoPlay, stepYear, skipQuietTime, abandonRun, saveRun, lastSavedAt, saveError } =
+  const { age, seasonIdx, yearProgress, dramaPhase, alive, waiting, speed, preSkimSpeed, skimOn, autoPlay, setSpeed, toggleAutoPlay, stepYear, skipQuietTime, abandonRun, saveRun, lastSavedAt, saveError } =
     useGameStore(
       useShallow((s) => ({
         age: s.char.age,

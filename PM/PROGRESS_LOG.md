@@ -2992,6 +2992,12 @@ Chạy kiểm định mô phỏng 500 vòng đời với chiến lược ngườ
   - Chặn âm báo chuyển nơi khi quay về từ `/library` hoặc khi đã chết (`prevWorld !== 'library' && prevWorld !== 'dead'`) trong `audioEngine.js`.
   - Bổ sung hiển thị tĩnh cho lăng kính E.G.O ở chế độ giảm chuyển động (`.cs-ego.is-still .cs-ego-prism { opacity: 0.8; }`, `.cs-ego.is-still .cs-ego-core { opacity: 0.5; }`) trong `cutscene.css`.
 
+##### 2.17. Sửa gấp: bắt đầu đời mới làm sập trang chơi (04/11/2026)
+* **Lỗi.** Từ commit `f85026d`, `PlayBar.jsx` dùng `skimOn` và `preSkimSpeed` nhưng không lấy hai biến này ra khỏi `useShallow`. Mỗi khi thanh chơi hiện lên, React báo `skimOn is not defined` và ErrorBoundary hiện "Không thể mở hồ sơ". Production không chơi được từ lúc bấm bắt đầu đời. `npm test` và `npm run build` không bắt được vì không test nào render `PlayBar`.
+* **Phát hiện.** Lúc đo so sánh với web mẫu trên trình duyệt thật (390×844), cả tiếng Việt lẫn tiếng Anh đều sập sau khoảng 3 giây.
+* **Sửa.** Thêm `preSkimSpeed, skimOn` vào phần destructuring ở `PlayBar.jsx:136`.
+* **Kiểm tra.** Bản build cục bộ chơi qua tuổi 1 không lỗi. `npm test` và `npm run build` vẫn qua.
+
 ---
 #### 3. KIỂM ĐỊNH & BẢO ĐẢM TOÀN VẸN (VERIFICATION & INTEGRITY)
 * Tất cả các bộ kiểm thử tự động (`npm test`) bao gồm lint văn phong (`voice_lint.mjs`), chuẩn canon Project Moon (`lint_story.mjs`), và mô phỏng 500 khoảnh khắc đời người (`run_million_audit.mjs`) phải vượt qua 100% với 0 lỗi, 0 cảnh báo.
