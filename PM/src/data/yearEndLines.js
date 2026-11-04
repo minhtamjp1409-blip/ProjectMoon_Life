@@ -28,7 +28,7 @@ export const YEAR_END_LINES = {
   heal_distortion_tissue: {
     adult: [
       ['Các thớ thịt dị thường tự co bóp và đan kết lại dưới tần số cộng hưởng của Vực thẳm.', 'Anomalous tissues pulsate and knit together under abyssal resonance frequencies.'],
-      ['Vết thương thịt nát xương tan tự bù đắp bằng các tế bào biến dị sau mỗi đêm trăng.', 'Flesh and bone wounds regenerate with anomalous cellular growth beneath the night sky.'],
+      ['Vết thương thịt nát xương tan tự bù đắp bằng các tế bào biến dị sau những đêm vắng lặng.', 'Flesh and bone wounds knit together with anomalous cellular growth beneath the quiet dark.'],
       ['Tần số của Carmen nâng đỡ bản ngã dị dạng của bạn, bù đắp mọi thương tổn thể xác.', 'Carmen’s frequency cradles your deformed self, repairing physical wounds without human clinics.']
     ]
   },
@@ -133,15 +133,15 @@ export const YEAR_END_LINES = {
   asset_cost: {
     adult: [
       ['Giữ tiền cũng tốn tiền: {n} Ahn phí cất giữ, giấy phép và người canh.', 'Keeping money costs money: {n} Ahn for storage, permits and guards.'],
-      ['{n} Ahn đi vào phí bảo kê cho số tiền bạn đang có.', '{n} Ahn went on protection for the savings you hold.'],
+      ['Mất {n} Ahn trả phí bảo an cho số tiền bạn đang tích cóp.', '{n} Ahn went on protection for the savings you hold.'],
       ['Ngân hàng của Wing thu {n} Ahn phí giữ hộ, đều như thuế.', 'The Wing bank took {n} Ahn in custody fees, regular as tax.']
     ]
   },
   child_friction: {
     adult: [
-      ['Cả nhà chắt bóp từng Ahn cho bữa ăn và tiền bảo kê của băng đầu ngõ.', 'The family pinched every Ahn for food and the protection money for the gang at the corner.'],
-      ['Số tiền bạn để dành được lấy ra để mua than cho mùa đông.', 'The money you had saved went on coal for the winter.'],
-      ['Cha mẹ mượn tiền tiết kiệm của bạn và hứa sẽ trả. Bạn biết là không.', 'Your parents borrowed your savings and promised to pay it back. You knew they wouldn’t.']
+      ['Cả nhà phải dè sẻn từng đồng Ahn cho bữa cháo loãng và khoản tiền nộp cho lũ côn đồ đầu ngõ.', 'The family pinched every Ahn for thin porridge and the tribute demanded by alley thugs.'],
+      ['Cha mẹ vét sạch số Ahn bạn dành dụm để đổi lấy ít than sưởi mùa đông.', 'Your parents spent your saved Ahn on charcoal to endure the winter.'],
+      ['Người lớn mượn sạch số Ahn bạn chắt chiu kèm lời hứa sẽ trả, dù ai cũng biết ngày đó không bao giờ đến.', 'The adults borrowed all your saved Ahn promising to repay it, though both knew that day would never come.']
     ]
   },
   nest_tuition: {

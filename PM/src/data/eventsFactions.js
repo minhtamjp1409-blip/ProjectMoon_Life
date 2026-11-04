@@ -3099,7 +3099,7 @@ export const FACTION_EVENTS = [
       {
         labelVi: 'Cấp ấn bảo chứng cho các phòng tranh thượng lưu để thu phí thẩm định hàng năm',
         labelEn: 'Grant sanctuary seals to elite galleries in exchange for annual appraisal fees',
-        resultVi: 'Nguồn tiền tài trợ nghệ thuật chảy vào két sắt của bạn không ngừng nghỉ.',
+        resultVi: 'Các phòng tranh thượng lưu nườm nượp đổ Ahn vào két sắt của bạn để đổi lấy dấu ấn quyền lực.',
         resultEn: 'Art patronage royalties flowed ceaselessly into your vault.',
         meritAdd: 20,
         effects: { wealth: +38, rep: +18, network: +15 }

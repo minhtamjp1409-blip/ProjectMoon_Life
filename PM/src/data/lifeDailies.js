@@ -119,7 +119,7 @@ export const LIFE_DAILIES = [
     'i_any_lullaby',
     INF,
     {},
-    '[Khúc ca không tên] Có một giọng hát êm đềm cất lên ru bạn ngủ giữa đêm sâu bằng thứ ngôn ngữ cổ xưa không ai rõ nguồn gốc. Dù không hiểu từng ca từ, giai điệu da diết ấy khắc sâu vào tâm khảm bạn suốt cuộc đời.',
+    '[Khúc ru đêm sâu] Giọng hát nghẹn ngào cất lên giữa bóng tối ngõ hẻm ru bạn vào giấc ngủ. Tiếng hát át đi tiếng còi hú báo động và bước chân rình rập ngoài cửa sổ.',
     '[The Nameless Lullaby] A gentle voice sang you to sleep in the dead of night with an ancient melody of forgotten origins. Though you understood no lyrics, its haunting cadence stayed rooted in your spirit forever.',
     { sanity: 1, resonance: 1 }
   ),
@@ -175,7 +175,7 @@ export const LIFE_DAILIES = [
     'i_any_crawl',
     INF,
     {},
-    '[Hành trình bò qua sàn] Bạn kiên nhẫn bò một mạch từ góc phòng này sang góc phòng kia mà không một lần ngã gục. Không ai có thời gian ghi chép lại chiến tích nhỏ nhoi ấy, nhưng cảm giác lạnh ngắt của nền sàn gỗ đã in sâu vào xúc giác bạn.',
+    '[Tập bò trên sàn gỗ] Bạn lẫm chẫm bò từ góc này sang góc kia của căn phòng trọ. Nền gỗ ghép mục nát và lạnh buốt, nhưng đôi bàn tay nhỏ bé vẫn bám chặt từng thớ sàn.',
     '[Crawling Across the Floor] You steadily crawled across the drafty floorboards from corner to corner without tumbling once. Nobody had the leisure to note such a small feat, but the biting chill of bare wood was stamped into your memory.',
     { health: 1 }
   ),
@@ -821,7 +821,7 @@ export const LIFE_DAILIES = [
     'j_syn_collect',
     GROWN,
     { jobs: ['Syndicate'] },
-    '[Thu phí bảo kê băng đảng] Bạn nhận lệnh đi thu tiền bảo kê dọc theo tuyến phố buôn bán của tổ chức Syndicate. Một lão chủ tiệm tạp hóa già quỳ sụp xuống khóc lóc van xin khất nợ; bạn lạnh lùng bẻ gãy hai ngón tay của lão như đúng bài học mà tổ chức đã rèn dạy.',
+    '[Thu tiền bảo kê Syndicate] Bạn nhận lệnh thu tiền bảo kê dọc dãy phố buôn bán. Lão chủ tiệm tạp hóa già quỳ khóc xin khất nợ, bạn lạnh lùng bẻ gãy hai ngón tay của lão đúng theo luật ngầm tổ chức rèn dạy.',
     '[Protection Fee Collection] You were deployed down the commercial avenue to enforce the syndicate’s protection tribute. An elderly grocer wept and groveled for an extension; you broke two of his fingers without hesitation, exactly as you were drilled.',
     { wealth: 4, sanity: -3, heat: 3 }
   ),
@@ -829,7 +829,7 @@ export const LIFE_DAILIES = [
     'j_syn_tattoo',
     GROWN,
     { jobs: ['Syndicate'] },
-    '[Hình xăm ấn ký tổ chức] Bạn được khắc thêm một hình xăm ấn ký mới trên bả vai sau khi hoàn thành các chiến tích cho băng nhóm. Những tay giang hồ kỳ cựu trong tổ chức nhìn vào hình xăm ấy rồi khẽ gật đầu công nhận, như thể nó đã nói thay cho bạn tất cả vị thế và lòng trung thành.',
+    '[Khắc ấn Syndicate] Mũi kim xăm rạch lên bả vai bạn vết mực mới sau vụ thanh trừng thành công. Những kẻ thâm niên chỉ liếc qua vết sẹo mực rồi khẽ gật đầu công nhận vị thế.',
     '[Syndicate Mark Tattoo] You received a fresh ritual tattoo branded across your shoulder blades to mark your ascent. Veteran enforcers glanced at the ink and gave respectful nods, knowing the insignia spoke louder than any oath of allegiance.',
     { rep: 2, network: 1 }
   ),
@@ -845,7 +845,7 @@ export const LIFE_DAILIES = [
     'j_wing_overtime',
     GROWN,
     { jobs: ['Wing Employee'] },
-    '[Tăng ca 140 giờ Wing] Trong tháng này bạn phải làm việc thêm tổng cộng 140 giờ tăng ca không ngừng nghỉ để kịp tiến độ dự án của Wing. Chiếc thẻ nhân viên gắn chip điện tử ghi nhận chuẩn xác từng giây từng phút lao động cật lực, nhưng bảng lương cuối tháng thì tuyệt nhiên không tăng thêm một xu.',
+    '[Tăng ca 140 giờ Wing] Bạn vắt kiệt sức cày thêm 140 giờ tăng ca trong tháng để kịp hạn ngạch của Wing. Thẻ nhân viên ghi nhận từng phút lao lực, nhưng phiếu lương cuối tháng chẳng dôi thêm một đồng Ahn nào.',
     '[140 Hours Corporate Overtime] You logged 140 brutal hours of mandatory overtime this month to meet the Wing’s unforgiving production quotas. Your bio-badge recorded every exhausted minute, but your paycheck reflected not a single extra cent.',
     { wealth: 2, sanity: -3, health: -1 }
   ),

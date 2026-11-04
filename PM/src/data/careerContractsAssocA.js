@@ -232,7 +232,7 @@ export const CINQ_CONTRACTS = [
     'A wealthy client wants Cinq to prove that a Grade 1 Fixer’s reputation is not fabricated. They pay both sides. You are chosen as the one standing opposite.',
     'Bạn không thắng, nhưng bạn đứng được đến hiệp thứ năm. Người đối diện chào bạn trước khi rời sàn. Cinq ghi thù lao gấp đôi.',
     'You do not win, but you last to the fifth round. The one opposite salutes you before leaving the floor. Cinq records double pay.',
-    'Bạn chỉ trụ được một hiệp. Khách hàng thấy điều họ muốn thấy, và bạn là một khoản trong hóa đơn.',
+    'Bạn chỉ trụ được một hiệp đấu. Khách hàng đã thấy điều họ muốn thấy, còn bạn chỉ là một khoản phí tổn được tính gộp vào hợp đồng.',
     'You last only one round. The client sees what they wanted to see, and you are a line in the invoice.',
     'Fixer Grade 1 không cần giết bạn để thắng, nhưng đôi khi họ không dừng lại kịp.',
     'A Grade 1 Fixer does not need to kill you to win, but sometimes they do not stop in time.'),

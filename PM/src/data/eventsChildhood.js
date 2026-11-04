@@ -19,7 +19,7 @@ export const CHILDHOOD_EVENTS = [
       {
         labelVi: "Cứa tay, nhỏ máu lên lưỡi và thề tìm ra kẻ đã giết họ",
         labelEn: "Cut your palm, bleed on the edge and swear to find whoever killed them",
-        resultVi: "Máu bạn chảy dọc rãnh lưỡi, hòa vào vệt cũ. Bạn mười tuổi. Từ hôm đó bạn thôi chơi với lũ trẻ trong dãy trọ, và học cách nhìn người lạ để đoán xem họ giấu dao ở đâu. 「{relic}」 vẫn nằm trong hộp, đã quen thêm một bàn tay.",
+        resultVi: "Máu bạn chảy dọc rãnh lưỡi, hòa vào vệt cũ. Bạn mười tuổi. Từ hôm đó bạn thôi chơi với lũ trẻ trong dãy trọ, và học cách nhìn người lạ để dò xét xem họ giấu vũ khí ở đâu. 「{relic}」 vẫn nằm trong hộp, đã quen thêm một bàn tay.",
         resultEn: "Your blood ran along the groove and joined the old stain. You were ten. From that day you stopped playing with the other children in the boarding house, and learned to look at strangers and guess where they kept their knives. 「{relic}」 stayed in its box, used to one more hand.",
         effects: { health: -6, sanity: -8, rep: +10, resonance: +14 },
         flagsAdd: ['유물', '해결사동경'],

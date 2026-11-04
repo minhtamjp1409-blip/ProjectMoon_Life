@@ -53,13 +53,13 @@ export const DAILIES_2 = [
 
   // ------------------------------------------------------------ Districts with no daily of their own
   ...rows('region', ANY, { regions: ['A'] }, [
-    ['own_echo', 'Hành lang ở tòa nhà của bạn không có tiếng chân ai khác, chỉ có tiếng của chính bạn dội lại muộn nửa nhịp. Bạn nhận ra mình đã bước chậm lại để nghe nó.', 'The corridor of your building has no one else’s footsteps, only your own, returning half a beat late. You realise you have slowed down to listen to it.', { sanity: -1 }]
+    ['own_echo', 'Hành lang khu trọ vắng lặng không một bóng người, chỉ có tiếng bước chân bạn dội lại muộn nửa nhịp. Bạn vô thức bước chậm lại để lắng nghe chính mình.', 'The corridor of your building has no one else’s footsteps, only your own, returning half a beat late. You slow down to listen to it.', { sanity: -1 }]
   ]),
   ...rows('region', ANY, { regions: ['B'] }, [
-    ['lift_bow', 'Một người lạ cúi chào bạn trong thang máy mà không nói lý do, rồi cúi chào lần nữa ở tầng dưới. Bạn không biết mình vừa được tôn trọng hay vừa được ghi nhận.', 'A stranger bows to you in the lift without a reason, then bows again on the floor below. You cannot tell whether you have been respected or merely recorded.', { sanity: -1 }]
+    ['lift_bow', 'Một người lạ gập người cúi chào bạn trong thang máy rồi lại cúi chào lần nữa ở tầng dưới. Ở Nest, một cái cúi đầu có thể là tôn trọng, hoặc là dấu hiệu bạn vừa bị đưa vào tầm ngắm.', 'A stranger bows to you in the lift without a reason, then bows again below. In the Nest, a bow can mean respect, or that you are already being targeted.', { sanity: -1 }]
   ]),
   ...rows('region', ANY, { regions: ['C'] }, [
-    ['drill_rhythm', 'Tiếng bước chân đều của một đội tuần từ sân tập vọng vào căn hộ mỗi buổi trưa. Đến ngày thứ ba bạn nhận ra mình ăn theo nhịp ấy.', 'The measured tread of a patrol drifts in from the practice ground every noon. By the third day you realise you are eating to its rhythm.', { sanity: -1 }]
+    ['drill_rhythm', 'Tiếng dậm chân rập rờn của đội tuần tra dưới sân vọng vào căn hộ mỗi buổi trưa. Đến ngày thứ ba, bạn vô thức nhai cơm theo đúng nhịp bước ấy.', 'The measured tread of a patrol drifts in from the practice ground every noon. By the third day you are eating to its exact rhythm.', { sanity: -1 }]
   ]),
   ...rows('region', ANY, { regions: ['G'] }, [
     ['dried_wings', 'Một người bán hàng rong ở phố chợ quận G bày những cánh côn trùng khô lên tấm khăn trải, giá theo cân. Không ai dám hỏi chúng từ đâu ra.', 'A peddler in the District 7 market lays dried insect wings on a cloth, priced by weight. No one dares ask where they came from.', {}]
@@ -82,7 +82,7 @@ export const DAILIES_2 = [
   ]),
   ...rows('region', ANY, { regions: ['I'] }, [
     ['stringless', 'Các cửa hàng nhạc cụ trong khu phố nhạc treo những chiếc đàn đã tháo dây. Khách vẫn đến xem, và không ai hỏi vì sao.', 'The instrument shops in the music quarter hang guitars with their strings removed. Customers still come to look, and no one asks why.', { sanity: -1 }],
-    ['blind_tapper', 'Một người mù ngồi trước quán trà ở phố nhạc, tay gõ nhẹ lên đầu gối một nhịp mà bạn nhận ra mình đã nghe ở đâu đó rất lâu về trước.', 'A blind man sits before a teahouse in the music quarter, tapping a rhythm on his knee that you realise you have heard somewhere very long ago.', { resonance: 1 }]
+    ['blind_tapper', 'Người mù ngồi trước quán trà gõ nhẹ ngón tay lên đầu gối. Tiết tấu kỳ lạ ấy trùng khớp với một giai điệu cũ bạn từng nghe thuở nhỏ.', 'A blind man sits before a teahouse, tapping a rhythm on his knee matching an ancient tune from your childhood.', { resonance: 1 }]
   ]),
   ...rows('region', ANY, { regions: ['M'] }, [
     ['stone_glow', 'Trong phòng khám khu M, ánh sáng từ khối đá trăng làm khuôn mặt mọi người trông bớt mệt. Bạn đứng cạnh nó thêm vài phút sau khi đã khám xong.', 'In a District 13 clinic, the glow of the moonstone makes everyone’s faces look less tired. You stand beside it a few minutes after your examination is done.', { sanity: 1 }],
