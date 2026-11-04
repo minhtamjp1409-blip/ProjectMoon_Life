@@ -64,11 +64,6 @@ const DYNAMIC = {
     if (!title) return null;
     const route = String(finger).toLowerCase();
     return { key: { vi: title, en: title }, sub: { vi: `The ${finger}`, en: `The ${finger}` }, color: sceneColor(WORLDS[`finger-${route}`]?.accent), variant: route };
-  },
-  // E.G.O awakening: display the personal weapon or E.G.O title as subtitle when forged
-  ego: ({ life }) => {
-    const egoName = life?.egoName || life?.egoWeapon;
-    return egoName ? { sub: { vi: `“${egoName}”`, en: `“${egoName}”` } } : null;
   }
 };
 

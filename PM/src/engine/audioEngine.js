@@ -285,7 +285,7 @@ class AudioEngine {
     if (!scene || this.isMuted || this.isAmbienceMuted) return;
 
     // Location transition audio cue (~1s) when moving between distinct areas in-run
-    if (prevWorld && nextWorld && prevWorld !== nextWorld && prevWorld !== 'title' && !this.isMuted) {
+    if (prevWorld && nextWorld && prevWorld !== nextWorld && prevWorld !== 'title' && prevWorld !== 'library' && prevWorld !== 'dead' && !this.isMuted) {
       try {
         this.playLocationCue(nextWorld, prevWorld);
       } catch {}
@@ -313,6 +313,7 @@ class AudioEngine {
 
     // Do not play cue when entering title, dead, library or dungeon gates (dungeons have their own gate scene)
     if (!world || world === 'title' || world === 'dead' || world === 'library') return;
+    if (prevWorld === 'title' || prevWorld === 'dead' || prevWorld === 'library') return;
     if (world.startsWith('dungeon-') || (prevWorld && prevWorld.startsWith('dungeon-'))) return;
 
     const t = this.ctx.currentTime;

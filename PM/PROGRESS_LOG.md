@@ -2987,6 +2987,10 @@ Chạy kiểm định mô phỏng 500 vòng đời với chiến lược ngườ
   - `tests/test_cutscene_triggers.mjs`: Kiểm tra kích hoạt cảnh E.G.O, thứ hạng ưu tiên và tính chất 1 lần trong đời -> **PASS 100%**.
   - `tools/lint/check_cutscenes.mjs`: 8/8 cảnh cutscene đạt chuẩn 100%.
   - Toàn bộ suite `npm test` và `npm run build` hoàn tất sạch sẽ.
+* **Tinh chỉnh theo phản hồi thẩm định:**
+  - Xóa bỏ `DYNAMIC.ego` thừa trong `CutsceneLayer.jsx` (vì cảnh dùng `keyLine: 2` tĩnh và tên E.G.O chỉ được chọn sau ở modal).
+  - Chặn âm báo chuyển nơi khi quay về từ `/library` hoặc khi đã chết (`prevWorld !== 'library' && prevWorld !== 'dead'`) trong `audioEngine.js`.
+  - Bổ sung hiển thị tĩnh cho lăng kính E.G.O ở chế độ giảm chuyển động (`.cs-ego.is-still .cs-ego-prism { opacity: 0.8; }`, `.cs-ego.is-still .cs-ego-core { opacity: 0.5; }`) trong `cutscene.css`.
 
 ---
 #### 3. KIỂM ĐỊNH & BẢO ĐẢM TOÀN VẸN (VERIFICATION & INTEGRITY)

@@ -324,6 +324,10 @@ body:has(> .cutscene) .ant-notification { visibility: hidden; }
 .cs-ego.is-lite .cs-flash { animation: cs-flash 500ms ease-out both; }
 .cs-ego.is-lite .cs-line.is-key { animation: cs-key 800ms var(--ease-tactile) 100ms both; }
 
+.cs-ego.is-still .cs-ego-prism { opacity: 0.8; }
+.cs-ego.is-still .cs-ego-core { opacity: 0.5; }
+.cs-ego.is-still .cs-ego-ring { display: none; }
+
 /* ---------- dungeon gate: the interface fades, the dungeon's own backdrop shows whole, its name as a title card ---------- */
 /* The backdrop lives in .world behind the shell; every other part of the shell steps aside while the gate plays */
 body:has(> .cutscene.cs-dungeon.is-full) .shell > :not(.world) { animation: cs-out 400ms ease-in forwards; }

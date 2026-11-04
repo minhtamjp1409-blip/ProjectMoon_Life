@@ -68,4 +68,11 @@ log.starts = []; log.nodes = 0;
 audioEngine.playLocationCue('dungeon-warp', 'backstreets');
 assert.equal(log.starts.length, 0, 'dungeon gate relies on its own scene, not location cue');
 
+// Returning from library or dead does not play location cue
+log.starts = []; log.nodes = 0;
+audioEngine.playLocationCue('backstreets', 'library');
+assert.equal(log.starts.length, 0, 'returning from library does not play location cue');
+audioEngine.playLocationCue('backstreets', 'dead');
+assert.equal(log.starts.length, 0, 'returning from dead does not play location cue');
+
 console.log(`Cutscene audio: ${Object.keys(CUTSCENES).length} scenes cue inside their timelines in full, lite and still, captions and mute stay silent, a skip fades the bus, and location transition cues passed.`);
