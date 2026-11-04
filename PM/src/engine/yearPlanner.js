@@ -1361,6 +1361,12 @@ function yearLine(char, rng, key, n) {
 export function endYear(charState, rng) {
   const char = cloneChar(charState);
   if (!char.alive) return char;
+  // A companion hurt in a dungeon clash sits out a year, then can walk with you again
+  for (const [role, npc] of Object.entries(char.npcs || {})) {
+    if (npc?.injured && npc.healsAtAge != null && (char.age || 0) >= npc.healsAtAge) {
+      char.npcs = { ...char.npcs, [role]: { ...npc, injured: false, injurySeverity: null, healsAtAge: null } };
+    }
+  }
   const region = REGIONS.find((r) => r.id === char.regionId) || REGIONS[0];
   const nest = isNest(char);
   const fx = {};

@@ -88,8 +88,9 @@ export function clashStakes(ctx, char, session) {
     const streets = profile.twist === 'streets';
     out.push({ id: 'ahn', lo: 1, hi: streets ? 3 : 2, cost });
   }
+  // Reopening a scar costs Sanity; a mind that would break on the price is not offered it
   const scars = (char.scars || []).filter((s) => typeof s === 'string');
-  if (scars.length) out.push({ id: 'scar', lo: 1, hi: 3, scar: scars.at(-1) });
+  if (scars.length && (char.stats?.sanity ?? 0) > CLASH_BALANCE.scarSanity) out.push({ id: 'scar', lo: 1, hi: 3, scar: scars.at(-1) });
   if (session.companion && ctx.companionActive(session)) out.push({ id: 'npc', lo: 2, hi: 2, companion: session.companion });
   return out;
 }
@@ -109,7 +110,7 @@ export function playerDie(ctx, char, session, stake = null) {
   if (session.egoActive) { lo += 2; hi += 2; }
   if (profile?.twist === 'chaos') { lo -= 1; hi += 1; }
   if (stake) { lo += stake.lo; hi += stake.hi; }
-  lo = Math.max(0, lo);
+  lo = Math.max(1, lo);
   return [lo, Math.max(lo + 1, hi)];
 }
 
@@ -203,7 +204,8 @@ export function settleStake(ctx, char, session, stake, outcome) {
     }
     ctx.moveCompanionBond(char, comp, CLASH_BALANCE.npcLoseBond);
     const npc = char.npcs?.[role];
-    if (npc && npc.status !== 'dead') char.npcs = { ...char.npcs, [role]: { ...npc, status: 'wounded' } };
+    // Hurt, not lost: they sit out the next dungeon and endYear lets them walk again a year on
+    if (npc && npc.status !== 'dead') char.npcs = { ...char.npcs, [role]: { ...npc, injured: true, injurySeverity: 'moderate', injuredAtAge: char.age || 0, healsAtAge: (char.age || 0) + 1 } };
     session.companion = null;
     return { vi: `${comp.nameVi} đỡ phần đòn trượt khỏi bạn và ngã xuống. Họ còn sống, nhưng phải rời khỏi đây.`, en: `${comp.nameEn} takes the part of the blow that slid off you and goes down. They live, but they have to leave.` };
   }

@@ -3016,6 +3016,7 @@ Chạy kiểm định mô phỏng 500 vòng đời với chiến lược ngườ
 * **Giao diện.** Lựa chọn Clash và bước cược dùng thẻ lựa chọn sẵn có; chip "Thắng nhịp x%" và "Xúc xắc của bạn a–b". Kết quả hiện hai viên xúc xắc và lời phán. Âm: `playBladeClash` + `playClashSpark` khi thắng. Chụp 390 và 1440 bằng `tools/qa/clash_browser.mjs`, không tràn ngang.
 * **Công cụ.** `tools/sim/dungeon_sim.mjs`: giới hạn 20 bước nâng lên 60 (giới hạn cũ cắt ngang các lượt chạy dài nên số "đi hết" cũ thấp giả), thêm kiểu chơi `clasher` và `reader`.
 * **Kiểm tra.** `tests/test_dungeon_clash.mjs` (thêm vào `npm test`), `npm test` và `npm run build` qua.
+* **Sửa sau review.** Nút "Rút lại" không còn hiện chip mất máu (rút lại không tốn gì). Đồng đội thua Clash giờ mang `injured: true` thay cho `status: 'wounded'` (trạng thái này không có chỗ nào hồi lại, và `pickDungeonCompanion` không loại nó): họ ở nhà ở dungeon kế tiếp, `endYear` cho hồi sau một năm (`healsAtAge`). Không mời cược sẹo khi Sanity ≤ 4. Mặt xúc xắc thấp nhất của người chơi là 1. Mô phỏng: hai kiểu chơi tránh sát thương bỏ qua "Rút lại" để không lặp. Mục `.replay-goals` không cần cắt dòng: ở 390×844 nó nằm ở y≈1880, dưới nút bắt đầu (y≈861), mỗi gợi ý một dòng.
 
 ---
 #### 3. KIỂM ĐỊNH & BẢO ĐẢM TOÀN VẸN (VERIFICATION & INTEGRITY)

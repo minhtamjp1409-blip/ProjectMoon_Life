@@ -2,7 +2,8 @@
 // stake from the player's life to raise their die. Calling it spends no turn; the odds shown are exact.
 import assert from 'node:assert/strict';
 import { createNewCharacter } from '../src/engine/gameEngine.js';
-import { createDungeonSession, getDungeonCurrentStage, resolveDungeonChoice, evaluateDungeonChoiceOdds, isDungeonChoiceAvailable } from '../src/engine/dungeonEngine.js';
+import { createDungeonSession, getDungeonCurrentStage, resolveDungeonChoice, evaluateDungeonChoiceOdds, isDungeonChoiceAvailable, pickDungeonCompanion } from '../src/engine/dungeonEngine.js';
+import { endYear } from '../src/engine/yearPlanner.js';
 import { CLASH_PROFILES, CLASH_BALANCE, clashOdds, enemyDie, playerDie } from '../src/engine/dungeonClash.js';
 import { GAUNTLETS } from '../src/data/dungeonGauntlets.js';
 
@@ -49,6 +50,9 @@ assert.equal(c.pendingDungeon.combat.turn, turn0, 'no turn spent on calling a cl
 assert.equal(c.stats.health, hp0, 'no damage from calling a clash');
 assert.ok(stageOf(c).isClash, 'the stake step is shown');
 assert.deepEqual(stageOf(c).choices.map((x) => x.stakeId || x.combatAction), ['none', 'ahn', 'clashBack'], 'no scar or companion: only Ahn can be staked');
+const back = evaluateDungeonChoiceOdds(stageOf(c).choices[idxOf(c, (x) => x.combatAction === 'clashBack')], c, c.pendingDungeon);
+assert.equal(back.estHp, 0, 'stepping back previews no damage');
+assert.equal(back.estSp, 0);
 c = resolveDungeonChoice(c, idxOf(c, (x) => x.combatAction === 'clashBack'), () => 0.5).char;
 assert.equal(c.pendingDungeon.combat.turn, turn0, 'stepping back spends no turn');
 assert.ok(!stageOf(c).isClash && idxOf(c, (x) => x.combatAction === 'guard') >= 0, 'back to the ordinary answers');
@@ -90,6 +94,14 @@ s = resolveDungeonChoice(s, scarIdx, seq(0, 0.99)).char;
 assert.equal(s.pendingDungeon.lastStageResult.clash.outcome, 'lose');
 assert.ok(sp0 - s.stats.sanity >= CLASH_BALANCE.scarSanity, 'the scar costs Sanity');
 assert.ok(hpS - s.stats.health > guardHit('clash-guard'), 'a lost clash hurts more than guarding');
+// A scar is not offered when its Sanity price would break the mind
+let low = fighter('clash-low-sp', { scars: ['Vết chém trên vai'] });
+low.stats.sanity = CLASH_BALANCE.scarSanity;
+low.pendingDungeon = createDungeonSession('dungeon_warp_train', low);
+atBoss(low, 'dungeon_warp_train');
+low = resolveDungeonChoice(low, idxOf(low, (x) => x.combatAction === 'clash'), () => 0.5).char;
+assert.equal(idxOf(low, (x) => x.stakeId === 'scar'), -1, 'no scar stake at 4 SP or less');
+assert.ok(stageOf(low).choices.every((x) => x.combatAction !== 'clashStake' || evaluateDungeonChoiceOdds(x, low, low.pendingDungeon).clashDie[0] >= 1), 'no die face below 1');
 // One stake per fight
 atBoss(s, 'dungeon_warp_train', ['heavy', 'quick']);
 s.pendingDungeon.combat.stakeUsed = true;
@@ -106,9 +118,17 @@ n = resolveDungeonChoice(n, idxOf(n, (x) => x.combatAction === 'clash'), () => 0
 const npcIdx = idxOf(n, (x) => x.stakeId === 'npc');
 assert.ok(npcIdx >= 0, 'a companion in the run can be staked');
 n = resolveDungeonChoice(n, npcIdx, seq(0, 0.99)).char;
-assert.equal(n.npcs.partner.status, 'wounded', 'the companion is wounded');
+assert.equal(n.pendingDungeon.companion, null, 'the companion leaves the run');
+assert.equal(n.npcs.partner.injured, true, 'the companion is injured');
+assert.equal(pickDungeonCompanion(n), null, 'an injured companion stays home from the next dungeon');
+n.pendingDungeon = null;
+n = endYear(n, () => 0.5);
+assert.equal(n.npcs.partner.injured, true, 'still healing the same year');
+n.age += 1;
+n = endYear(n, () => 0.5);
+assert.equal(n.npcs.partner.injured, false, 'a year on, the wound has healed');
+assert.equal(pickDungeonCompanion(n)?.role, 'partner', 'and they can come along again');
 assert.ok(n.npcs.partner.bond < 60, 'and trusts you a little less');
-assert.equal(n.pendingDungeon.companion, null, 'and leaves the run');
 
 // 8. The Head takes no money; a boss allows three clashes and no more
 let j = fighter('clash-claw', { stats: { health: 95, sanity: 55, wealth: 90, rep: 40, network: 40 } });

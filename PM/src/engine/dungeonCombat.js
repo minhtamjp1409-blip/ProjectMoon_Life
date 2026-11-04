@@ -143,8 +143,8 @@ export function previewCombatAction(ctx, choice, char, session) {
     const odds = ctx.companionLeadChance(char, session);
     return { hasCheck: true, trait: 'bond', successPct: Math.round(odds * 100), estHp: 0, estSp: 0, estWealth: 0, estLoot: 0, estRep: 0, estMerit: 0, estResonance: 0 };
   }
-  // Backing out of a clash leaves the guard as the answer, so it is previewed as one
-  if (action === 'clashBack') return previewCombatAction(ctx, { combatAction: 'guard' }, char, session);
+  // Backing out of a clash costs nothing and spends no turn: no chip, so it never reads as taking a hit
+  if (action === 'clashBack') return { hasCheck: false, estHp: 0, estSp: 0, estWealth: 0, estLoot: 0, estRep: 0, estMerit: 0, estResonance: 0 };
   if (action === 'clash' || action === 'clashStake') {
     const stake = action === 'clashStake' ? stakeById(ctx, char, session, choice.stakeId) : null;
     const odds = clashOdds(playerDie(ctx, char, session, stake), enemyDie(session));
