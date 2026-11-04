@@ -2998,6 +2998,16 @@ Chạy kiểm định mô phỏng 500 vòng đời với chiến lược ngườ
 * **Sửa.** Thêm `preSkimSpeed, skimOn` vào phần destructuring ở `PlayBar.jsx:136`.
 * **Kiểm tra.** Bản build cục bộ chơi qua tuổi 1 không lỗi. `npm test` và `npm run build` vẫn qua.
 
+##### 2.18. Đợt 124: sau lần đo cạnh web mẫu (04/11/2026)
+* **Test khói màn chơi.** `tests/test_play_screen_smoke.mjs` nạp các component thật qua `ssrLoadModule` của Vite và `renderToString` ở 5 trạng thái (đời mới, đang Lướt, đang chờ minor, đang hỏi tên NPC, đã chết) cùng trang chủ trước và sau đời đầu. `tests/support/zustand-live-snapshot.mjs` cho zustand đọc trạng thái hiện tại khi render phía server. Gỡ bản sửa `skimOn` thì test báo lỗi.
+* **Đời đầu không chết lúc sinh.** `createNewCharacter({ sparePerinatal })`, store bật khi chưa có đời nào và không phải đời kế thừa. Vẫn tung xúc xắc để seed giữ nguyên. Test: 0/1500 so với 115/1500.
+* **Mở đầu nhanh hơn.** `spinTo` 450ms, `BIRTH_OPENING.cardMs.lite` 800ms. Trình duyệt (390×844, bản build): thẻ District sau khoảng 510ms, dòng nhật ký đầu sau khoảng 1,5 giây (trước: 2,6 giây).
+* **Ít chữ năm đầu.** `endYear` giữ một câu cuối năm cho tuổi 0 đến 4. Tuổi 1 đến 4: 47,5 chữ tiếng Anh mỗi năm (trước khoảng 58).
+* **Đời sau còn có thể mở.** `src/features/chronicle/replayGoals.js` và mục `.replay-goals` dưới dải số liệu ở trang chủ. Chỉ dùng bản ghi codex thật và gợi ý có sẵn.
+* **Giọng người cho Distortion.** `src/data/eventsDistortionVoice.js`, cờ `HumanVoice` làm nhẹ chi phí hằng năm trong `endYear`. Mô phỏng 300 đời Distortion, chọn ngẫu nhiên: 75 đời gặp event mở, 6 đời tới `HumanVoice`. Test `tests/test_distortion_voice.mjs`.
+* **Đo âm.** `tools/qa/audio_levels.mjs` (`npm run audio:levels`). Không âm nào gần vỡ tiếng (đỉnh lớn nhất khoảng −17 dBFS). Âm nền Library, Index, Ring và dungeon Ensemble nhỏ hơn nhóm 14 đến 18 dB; `playWarpSurge` to hơn nhóm 13,5 dB. Chưa chỉnh, chờ chủ dự án nghe.
+* **Kiểm tra.** `npm test` (thêm 5 test mới) và `npm run build` qua. `story_logic_audit 300`: 0 vi phạm.
+
 ---
 #### 3. KIỂM ĐỊNH & BẢO ĐẢM TOÀN VẸN (VERIFICATION & INTEGRITY)
 * Tất cả các bộ kiểm thử tự động (`npm test`) bao gồm lint văn phong (`voice_lint.mjs`), chuẩn canon Project Moon (`lint_story.mjs`), và mô phỏng 500 khoảnh khắc đời người (`run_million_audit.mjs`) phải vượt qua 100% với 0 lỗi, 0 cảnh báo.

@@ -68,6 +68,7 @@ import { ENSEMBLE_EVENTS, ENSEMBLE_SCORE_ITEM } from '../data/dungeonEnsemble.js
 import { COLOR_CAREER_EVENTS } from '../data/eventsColorCareerArc.js';
 import { COLOR_ERA_EVENTS } from '../data/eventsColorEras.js';
 import { WING_THREAD_EVENTS } from '../data/eventsWingThreads.js';
+import { DISTORTION_VOICE_EVENTS } from '../data/eventsDistortionVoice.js';
 import { WING_PARITY_MAJORS } from '../data/eventsWingParityExpansion.js';
 import { DISTORTION_PARITY_MAJORS } from '../data/eventsDistortionParityExpansion.js';
 import { ROUTE_CONSEQUENCE_EVENTS } from '../data/eventsRouteConsequences.js';
@@ -172,6 +173,7 @@ export const ALL_STORY_EVENTS = [
   ...COLOR_CAREER_EVENTS,
   ...COLOR_ERA_EVENTS,
   ...WING_THREAD_EVENTS,
+  ...DISTORTION_VOICE_EVENTS,
   ...WING_PARITY_MAJORS,
   ...DISTORTION_PARITY_MAJORS,
   ...ROUTE_CONSEQUENCE_EVENTS,
@@ -424,7 +426,9 @@ export function createNewCharacter({
   preferredRegionId = 'RANDOM',
   preferredFamilyId = 'RANDOM',
   parentLegacy = null,
-  startAge = 0
+  startAge = 0,
+  // A player's very first life is never lost in the womb: they have not made a single choice yet
+  sparePerinatal = false
 } = {}) {
   parentLegacy = normalizeLegacyRecord(parentLegacy);
   const actualSeed = seed.trim() || freshSeed();
@@ -643,13 +647,15 @@ export function createNewCharacter({
   });
 
   // Check Pre-Birth / Perinatal Mortality (District medicine, pollution, safety, poverty)
-  const perinatal = actualAge === 0 ? rollPerinatalFate({
+  // Rolled even when spared, so the rest of the seed plays out the same
+  const perinatalRoll = actualAge === 0 ? rollPerinatalFate({
     region,
     familyId: family.id,
     omenId: fateOmen.id,
     flags,
     wealth
   }, rng) : null;
+  const perinatal = sparePerinatal ? null : perinatalRoll;
 
   let initialLogs = [];
   if (perinatal) {

@@ -116,7 +116,7 @@ assert.equal(birthOpeningCut({}), 'lite');
 assert.equal(birthOpeningCut({ setting: 'full' }), 'full');
 assert.equal(birthOpeningCut({ setting: 'full', reduced: true }), 'still', 'reduced motion holds the card still');
 assert.equal(birthOpeningCut({ setting: 'off', reduced: true }), 'caption', 'scenes off skip the card');
-assert.equal(BIRTH_OPENING.cardMs.lite, 1500);
+assert.equal(BIRTH_OPENING.cardMs.lite, 800);
 assert.deepEqual(BIRTH_OPENING.entryGapMs.lite, [550, 1250]);
 assert.equal(BIRTH_OPENING.cardMs.caption, 0);
 for (const cut of ['full', 'lite', 'still', 'caption']) assert.equal(BIRTH_OPENING.entryGapMs[cut].length, 2, `${cut} has both entry gaps`);

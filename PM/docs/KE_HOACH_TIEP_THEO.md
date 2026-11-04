@@ -24,6 +24,7 @@ Mỗi đợt dưới đây được commit riêng, ghi vào `PROGRESS_LOG.md`, p
 | 121 | Đặt tên người thân, NPC quay lại nhắc lựa chọn cũ | lớn | đã xong |
 | 122 | Hậu quả kéo dài nói bằng lời, tiến độ thăng chức | vừa | đã xong |
 | 123 | Lướt nhanh đời thường khi chơi lại | vừa | đã xong |
+| 124 | Sau lần đo cạnh web mẫu: test khói, mở đầu nhanh, ít chữ năm đầu, giọng người cho Distortion, đo âm | vừa | đã xong |
 | (chủ dự án) | Nghe thử âm thanh trên điện thoại và tai nghe | nhỏ | chờ chủ dự án |
 
 Đợt 114b có thêm dải bản đồ thu nhỏ trên điện thoại, theo bản góp ý thứ ba (ngày 02/11/2026). Đợt 118 và buổi nghe thử âm thanh cũng đến từ bản góp ý đó.
@@ -339,6 +340,24 @@ Công cụ quay đã có lệnh mở từng cảnh: `node tools/film/film_cutsce
 
 - **Âm báo ngắn khi đổi nơi (ĐÃ XONG).** Thêm âm thanh ~1 giây lúc đổi giữa Nest, Backstreets, Wing, Outskirts, Finger, Workshop và Fixer Office bằng `cueTone` và `cueNoise` trên `sfxGain` trong `audioEngine.js:283` (`playLocationCue`). Không kích hoạt khi chuyển sang title hay dungeon gates. Kiểm thử tự động qua `tests/test_cutscene_audio.mjs`.
 - **Cảnh thức tỉnh E.G.O (ĐÃ XONG).** Dựng cảnh cutscene thứ 8 `ego` ngang hạng Claw (`CUTSCENE_RANK.ego = 3`), tự động kích hoạt khi nhân vật thức tỉnh E.G.O (`next.flags` có `EGOAwakened`). Trình diễn vầng hào quang lăng kính rực rỡ `EgoScene.jsx` (`cs-ego`), 4 nhát cắt (`full`, `lite`, `still`, `caption`), âm thanh tiếng vỡ giọng Carmen cùng hợp âm khai mở E.G.O. Đạt chuẩn `check_cutscenes.mjs` (chỉ di chuyển transform & opacity, 0 màu cứng, token E.G.O) và kiểm thử qua `tests/test_cutscene_triggers.mjs` & `tests/test_cutscene_audio.mjs`.
+
+---
+
+## Đợt 124: sau lần đo cạnh web mẫu (ĐÃ XONG, 04/11/2026)
+
+**Lý do.** Đo cạnh nhau trên production (390×844, mỗi bên 3 đời, 150 giây): web mẫu hiện chữ sau 0,04 giây và cần khoảng 35 chữ mỗi năm; game mình hiện dòng đầu sau 2,6 giây, cần khoảng 60 chữ mỗi năm và 274 chữ trước lựa chọn thật đầu tiên. Cũng trong lần đo đó, production sập khi bắt đầu đời (`skimOn is not defined`, đã sửa ở `cab347d`).
+
+**Đã làm.**
+1. Test khói `tests/test_play_screen_smoke.mjs`: nạp đúng các file JSX qua Vite, render PlayBar, LiveStageFeed, CharacterDossierCard ở 5 trạng thái và trang chủ ở 2 trạng thái. Gỡ bản sửa `skimOn` thì test báo lỗi.
+2. Đời đầu tiên của người chơi không chết lúc sinh (`sparePerinatal`). Các đời sau giữ nguyên tỉ lệ (khoảng 6,5%), và phần còn lại của seed không đổi.
+3. Mở đầu: vòng quay nơi sinh 750 xuống 450ms, thẻ District (lite) 1500 xuống 800ms. Đo lại: thẻ có chữ sau 0,5 giây, dòng nhật ký đầu sau 1,5 giây.
+4. Tuổi 0 đến 4: dòng cuối năm chỉ giữ câu đầu, chip và phần chi tiết vẫn đủ. Tuổi 1 đến 4 còn 47,5 chữ mỗi năm (`tests/test_early_years_reading.mjs`, ngưỡng 55).
+5. Đo nhịp giữa đời (300 đời): tuổi 15 đến 59, khoảng 97% số năm có lựa chọn, khoảng 3 lựa chọn mỗi năm, không có quá 1 năm liền trống. Không cần sửa.
+6. Trang chủ sau đời đầu có mục "Đời sau còn có thể mở": hai thành tựu thật chưa mở và gợi ý có sẵn, một theo nghề của đời gần nhất (`replayGoals.js`).
+7. Distortion có đường tìm lại giọng người (`eventsDistortionVoice.js`, phóng tác): ba event nối bằng cờ, kết thúc ở `HumanVoice`. Vẫn là Distortion; Hana vẫn giữ hồ sơ nhưng Heat hằng năm còn một nửa và Network thôi mòn.
+8. `npm run audio:levels` đo độ to mọi âm qua OfflineAudioContext, chỉ ra các âm nên nghe trước. Chưa chỉnh mức âm nào khi chưa có người nghe.
+
+**Còn treo.** `event_reach` (300 đời): 450 trên 794 event lớn chưa từng gặp, nhiều nhất là Syndicate (200). Cần một đợt riêng.
 
 ---
 

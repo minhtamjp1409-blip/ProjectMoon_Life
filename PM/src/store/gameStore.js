@@ -916,7 +916,8 @@ export const useGameStore = create((set, get) => ({
       preferredRegionId: regionId || state.selectedRegion,
       preferredFamilyId: state.selectedFamily || 'RANDOM',
       parentLegacy: legacyPkg,
-      startAge
+      startAge,
+      sparePerinatal: !legacyPkg && (state.pastLives?.length || 0) === 0
     });
     lifeRng = createRNG(`${nextChar.seed}:life:${nextChar.age}`);
     lifeActiveMs = 0;

@@ -144,7 +144,7 @@ Xếp theo mức đáng làm. Luật đang áp dụng nằm ở `docs/LUAT_HIEN_
 - **The Great Lake**: luật của mặt hồ thành một danh sách mà người chơi học dần qua sự kiện; trả lời sai luật thì có hậu quả.
 - **Hongyuan**: Ji, Yong, In rèn từ 5 đến 30 tuổi, dẫn đến kỳ chọn Gia chủ.
 - **Workshop**: thông số xưởng (thiết bị, nguyên liệu, nhân công, cảnh cáo của Tres).
-- **Distortion** (đã có phần đầu): sau khi buông theo Carmen, mỗi năm Heat tăng vì Hana giữ hồ sơ mở, Network mòn dần, và director ưu tiên năm sự kiện riêng (người bạn tìm đến, đội Fixer săn, căn nhà cũ, cơn đói, giọng nói quay lại). Phục kích do Heat cao và cái chết vì vết thương đều có lời riêng cho Distortion. Còn thiếu: đường tìm lại giọng người.
+- **Distortion** (đã có phần đầu): sau khi buông theo Carmen, mỗi năm Heat tăng vì Hana giữ hồ sơ mở, Network mòn dần, và director ưu tiên năm sự kiện riêng (người bạn tìm đến, đội Fixer săn, căn nhà cũ, cơn đói, giọng nói quay lại). Phục kích do Heat cao và cái chết vì vết thương đều có lời riêng cho Distortion. Đường tìm lại giọng người (phóng tác, `src/data/eventsDistortionVoice.js`): một người gọi tên cũ, những mẩu giấy dưới chân cầu thang, rồi một tổ Fixer của Hana dồn bạn vào cuối hẻm. Nói được tên mình bằng giọng người thì có cờ `HumanVoice`: thân thể vẫn Distorted và Hana vẫn giữ hồ sơ, nhưng Heat hằng năm còn một nửa và Network thôi mòn. Canon không có Distortion nào được chữa khỏi, nên đường này không chữa.
 
 ### 5.3. Director (khó hơn)
 

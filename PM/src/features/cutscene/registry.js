@@ -101,10 +101,11 @@ export const CUTSCENES = {
 
 // The opening of a life: the District card (CityLoadingOverlay), then the birth entries one by one.
 // Not a Director scene (the clock has not started, nothing to hold), but paced from the same settings and cuts.
-// lite is the default and keeps the timing the game always had; full is slower, still holds the card without
+// lite is the default and is short because a player sees it at the start of every life (800ms since 04/11/2026,
+// when the opening was measured at 2.6s against 0.04s on the sample site); full is slower, still holds the card without
 // motion, caption (scenes off) skips the card and lays the entries down quickly.
 export const BIRTH_OPENING = {
-  cardMs: { full: 2400, lite: 1500, still: 900, caption: 0 },
+  cardMs: { full: 2400, lite: 800, still: 900, caption: 0 },
   // [before the first entry, between the next ones]
   entryGapMs: { full: [700, 1600], lite: [550, 1250], still: [300, 700], caption: [150, 400] }
 };

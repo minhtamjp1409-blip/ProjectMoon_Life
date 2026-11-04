@@ -14,6 +14,7 @@ import CityLoadingOverlay from './CityLoadingOverlay';
 import CityBirthAtlas, { ATLAS_VIEW, atlasTargetView, CityBirthAtlasStrip } from './CityBirthAtlas';
 import { reducedMotion } from '../../../utils/motion';
 import { describeJob } from './CharacterDossierCard';
+import { replayGoalsFor } from '../replayGoals';
 
 const CAREERS = [
   [
@@ -159,7 +160,7 @@ export const BirthSetupPanel = () => {
     const chosen = fixed || rollBirthRegion(seed ? createRNG(seed) : Math.random, inherit ? pendingLegacy : null, selectedFamily);
     setTargetLaunchParams({ inherit, age, region: chosen, regionId: fixed ? null : chosen.id });
     setSpinning(true);
-    spinTo(chosen, { duration: 750 }).then(() => {
+    spinTo(chosen, { duration: 450 }).then(() => {
       setLoadingActive(true);
     });
   };
@@ -187,6 +188,7 @@ export const BirthSetupPanel = () => {
   );
   const omenTotal = FATE_OMENS.reduce((sum, o) => sum + o.chanceWeight, 0);
   const highestGeneration = Math.max(1, ...pastLives.map((life) => life.generation || 1));
+  const replayGoals = replayGoalsFor(pastLives, globalCodex, CODEX_RECORDS);
   const relation =
     pendingLegacy?.successorRelation ||
     (pendingLegacy?.age < 14
@@ -655,6 +657,20 @@ export const BirthSetupPanel = () => {
           <ArrowUpRight size={17} />
         </button>
       </div>
+
+      {replayGoals.length > 0 && (
+        <section className="replay-goals" aria-labelledby="replay-goals-title">
+          <h2 id="replay-goals-title">{t('Đời sau còn có thể mở', 'Still open for the next life')}</h2>
+          <ul>
+            {replayGoals.map((goal) => (
+              <li key={goal.key}>
+                <strong>{t(goal.vi, goal.en)}</strong>
+                <span>{t(goal.hintVi, goal.hintEn)}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       {!showWorldGuide && (
         <button type="button" className="world-guide-open" onClick={() => setShowWorldGuide(true)}>

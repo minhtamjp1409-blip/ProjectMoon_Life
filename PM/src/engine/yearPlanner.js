@@ -1586,14 +1586,23 @@ export function endYear(charState, rng) {
       breakdown.push({ cat: 'wear', labelVi: 'Nghi ngờ nội bộ vì nắm quá nhiều bí mật', labelEn: 'Internal suspicion from excessive leverage', k: 'standing', v: -1 });
     }
   }
-  // A Distortion is never off Hana's books, and people stop recognizing you
+  // A Distortion is never off Hana's books, and people stop recognizing you.
+  // One who found a human voice again (eventsDistortionVoice.js) is still on the books, but recognized.
   if (char.flags.includes('Distorted')) {
-    add('heat', 6);
-    add('network', -2);
-    breakdown.push({ cat: 'drift', labelVi: 'Truy vết Distortion từ Hiệp hội Hana', labelEn: 'Hana Distortion surveillance', k: 'heat', v: 6 });
-    breakdown.push({ cat: 'drift', labelVi: 'Cô lập xã hội do Biến dị', labelEn: 'Social isolation from Distortion', k: 'network', v: -2 });
-    vi.push('Hồ sơ theo dõi cá thể Distortion của bạn tại trụ sở Hana Association vẫn giữ nguyên trạng thái truy vết.');
-    en.push('Your active Distortion dossier at Hana Association remained open under high-priority watch.');
+    const humanVoice = char.flags.includes('HumanVoice');
+    const watch = humanVoice ? 3 : 6;
+    add('heat', watch);
+    breakdown.push({ cat: 'drift', labelVi: 'Truy vết Distortion từ Hiệp hội Hana', labelEn: 'Hana Distortion surveillance', k: 'heat', v: watch });
+    if (!humanVoice) {
+      add('network', -2);
+      breakdown.push({ cat: 'drift', labelVi: 'Cô lập xã hội do Biến dị', labelEn: 'Social isolation from Distortion', k: 'network', v: -2 });
+    }
+    vi.push(humanVoice
+      ? 'Hana vẫn giữ hồ sơ của bạn, nhưng trong đó giờ ghi tên bạn bằng chữ.'
+      : 'Hồ sơ theo dõi cá thể Distortion của bạn tại trụ sở Hana Association vẫn giữ nguyên trạng thái truy vết.');
+    en.push(humanVoice
+      ? 'Hana still keeps your file, but it now carries your name in writing.'
+      : 'Your active Distortion dossier at Hana Association remained open under high-priority watch.');
   }
   for (const meet of keepInTouch(char, rng)) pushLog(char, { key: 'keep_in_touch', type: 'story', ...meet }, 0.97);
   driftBonds(char);
@@ -1692,8 +1701,10 @@ export function endYear(charState, rng) {
   }
 
   if (deltas.length > 0 || breakdown.length > 0) {
-    const textVi = vi.length ? vi.join(' ') : 'Một năm nữa lặng lẽ trôi qua dưới màn đêm không bao giờ tắt của The City.';
-    const textEn = en.length ? en.join(' ') : 'Another year quietly drifted by beneath the never-dimming lights of the City.';
+    // Up to age 4 a year closes on its first line only; the chips and the breakdown still list every reason
+    const keep = char.age <= 4 ? 1 : vi.length;
+    const textVi = vi.length ? vi.slice(0, keep).join(' ') : 'Một năm nữa lặng lẽ trôi qua dưới màn đêm không bao giờ tắt của The City.';
+    const textEn = en.length ? en.slice(0, keep).join(' ') : 'Another year quietly drifted by beneath the never-dimming lights of the City.';
     pushLog(
       char,
       {

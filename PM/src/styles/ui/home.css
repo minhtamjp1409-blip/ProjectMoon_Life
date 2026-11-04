@@ -346,6 +346,17 @@
 .archive-strip span { color: var(--muted); font-size: 14.5px; }
 .archive-strip > button { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-weight: 600; font-size: 14px; }
 .archive-strip > button:hover { background: var(--raised); }
+/* What the codex still holds for the next life: two real records and their hints, ruled like the strip above */
+.archive-strip:has(+ .replay-goals) { margin-bottom: 20px; }
+.replay-goals { margin-bottom: 48px; }
+.replay-goals h2 { font-size: 15px; font-family: var(--font); font-weight: 600; color: var(--muted); margin-bottom: 4px; }
+.replay-goals ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 32px; }
+.replay-goals li { display: flex; flex-direction: column; gap: 4px; padding: 14px 0; border-bottom: 1px solid var(--rule); min-width: 0; }
+.replay-goals strong { font-family: var(--serif); font-size: 18px; font-weight: 600; color: var(--text); overflow-wrap: break-word; }
+.replay-goals span { font-size: 14.5px; line-height: 1.5; color: var(--muted); }
+@media (max-width: 640px) {
+  .replay-goals ul { grid-template-columns: minmax(0, 1fr); }
+}
 .world-guide-open { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; min-height: 52px; margin-bottom: 42px; padding: 10px 16px; color: var(--text); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); font: inherit; font-weight: 650; cursor: pointer; }
 .world-guide-open:hover { border-color: var(--accent); }
 
