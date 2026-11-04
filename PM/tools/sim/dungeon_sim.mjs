@@ -93,6 +93,34 @@ POLICIES.measured = (stage, char, sess, rng) => {
   return (hurt ? POLICIES.careful : POLICIES.push)(stage, char, sess, rng);
 };
 
+// Meets every named heavy or quick blow head-on and stakes whatever it can, the most it can
+POLICIES.clasher = (stage, char, sess, rng) => {
+  const ok = stage.choices.map((c, i) => [c, i]).filter(([c]) => isDungeonChoiceAvailable(c, char, sess));
+  if (stage.isClash) {
+    const order = ['npc', 'scar', 'ahn', 'none'];
+    for (const id of order) { const hit = ok.find(([c]) => c.stakeId === id); if (hit) return hit[1]; }
+  }
+  const clash = ok.find(([c]) => c.combatAction === 'clash');
+  if (clash) return clash[1];
+  return POLICIES.measured(stage, char, sess, rng);
+};
+
+// Calls a clash, then only rolls when the best stake shows 60% or better; otherwise steps back and plays measured
+const declined = new Set();
+POLICIES.reader = (stage, char, sess, rng) => {
+  const ok = stage.choices.map((c, i) => [c, i]).filter(([c]) => isDungeonChoiceAvailable(c, char, sess));
+  const key = `${char.seed}|${sess.combat?.floor}|${sess.combat?.turn}|${sess.combat?.phase}`;
+  if (stage.isClash) {
+    const best = ok.filter(([c]) => c.combatAction === 'clashStake').map(([c, i]) => [evaluateDungeonChoiceOdds(c, char, sess).successPct, i]).sort((x, y) => y[0] - x[0])[0];
+    if (best && best[0] >= 60) return best[1];
+    declined.add(key);
+    return ok.find(([c]) => c.combatAction === 'clashBack')[1];
+  }
+  const clash = ok.find(([c]) => c.combatAction === 'clash');
+  if (clash && !declined.has(key)) return clash[1];
+  return POLICIES.measured(stage, char, sess, rng);
+};
+
 const rows = [];
 for (const id of Object.keys(DUNGEON_DEFINITIONS)) {
   for (const [pname, pol] of Object.entries(POLICIES)) {
@@ -104,7 +132,7 @@ for (const id of Object.keys(DUNGEON_DEFINITIONS)) {
       const before = { w: char.stats.wealth, m: char.merit, r: char.resonance, rep: char.stats.rep, hp: char.stats.health, sp: char.stats.sanity };
       char.pendingDungeon = createDungeonSession(id, char, rng);
       let guard = 0, finished = false, resolution = null, maxStrain = 0;
-      while (char.pendingDungeon && guard++ < 20) {
+      while (char.pendingDungeon && guard++ < 60) {
         const sess = char.pendingDungeon;
         const stage = getDungeonCurrentStage(sess);
         // light tactical play: guarded when hurt, scan on checks, breather when low

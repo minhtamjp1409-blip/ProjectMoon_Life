@@ -10,6 +10,7 @@ import { cardEffectOf, dungeonUsesCards, nextHand } from './dungeonCards.js';
 import { GAUNTLETS, INTENT_KINDS, REST_TEXT } from '../data/dungeonGauntlets.js';
 import { activeScarSynergies } from './scarModel.js';
 import { dungeonWagerDamage, dungeonWagerLoot } from './dungeonWager.js';
+import { CLASH_BALANCE, TWIST_TEXT, clashOdds, clashOffered, clashStakes, clashesLeft, enemyDie, expectedTaken, playerDie, profileOf, rollClash, settleStake } from './dungeonClash.js';
 
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
 const fnv = (text) => {
@@ -62,6 +63,10 @@ function enterFloor(session, char, index) {
   c.floor = index;
   c.turn = 0;
   c.floorPlays = 0;
+  c.clashes = 0;
+  c.clashWins = 0;
+  c.stakeUsed = false;
+  c.clashOpen = false;
   // A card played before a rest has done its work; it must not follow the player into the next fight
   session.cardActive = null;
   const floor = c.plan[index];
@@ -125,6 +130,9 @@ export function evadeChance(ctx, char, session) {
   return clamp(chance, 0.25, session.egoActive ? 0.95 : 0.9);
 }
 
+const stakeById = (ctx, char, session, id) => (id && id !== 'none' ? clashStakes(ctx, char, session).find((s) => s.id === id) || null : null);
+const dieText = ([lo, hi]) => `${lo}–${hi}`;
+
 /** What the screen shows before a choice: success odds and the wound you should expect. */
 export function previewCombatAction(ctx, choice, char, session) {
   const def = ctx.def(session);
@@ -134,6 +142,19 @@ export function previewCombatAction(ctx, choice, char, session) {
   if (action === 'ally') {
     const odds = ctx.companionLeadChance(char, session);
     return { hasCheck: true, trait: 'bond', successPct: Math.round(odds * 100), estHp: 0, estSp: 0, estWealth: 0, estLoot: 0, estRep: 0, estMerit: 0, estResonance: 0 };
+  }
+  // Backing out of a clash leaves the guard as the answer, so it is previewed as one
+  if (action === 'clashBack') return previewCombatAction(ctx, { combatAction: 'guard' }, char, session);
+  if (action === 'clash' || action === 'clashStake') {
+    const stake = action === 'clashStake' ? stakeById(ctx, char, session, choice.stakeId) : null;
+    const odds = clashOdds(playerDie(ctx, char, session, stake), enemyDie(session));
+    const expected = expectedTaken(session, odds, stake);
+    return {
+      hasCheck: true, trait: 'clash', successPct: Math.round(odds[0] * 100), clashDie: playerDie(ctx, char, session, stake),
+      estHp: -damageOf(ctx, def, char, session, intent, expected, 'health'),
+      estSp: -damageOf(ctx, def, char, session, intent, expected, 'sanity') - (stake?.id === 'scar' ? 4 : 0),
+      estWealth: stake?.id === 'ahn' ? -stake.cost : 0, estLoot: 0, estRep: 0, estMerit: 0, estResonance: 0
+    };
   }
   const [taken] = ANSWERS[action][intent.kind];
   const ok = action === 'evade' ? evadeChance(ctx, char, session) : 1;
@@ -189,11 +210,42 @@ export function gauntletStage(ctx, session) {
     const cmp = session.companion;
     choices.push({ labelVi: `Để ${cmp.nameVi} đỡ đòn này thay bạn`, labelEn: `Let ${cmp.nameEn} take this one for you`, combatAction: 'ally', resultVi: '', resultEn: '' });
   }
+  const offered = clashOffered(session, intent);
+  const theirs = offered ? dieText(enemyDie(session)) : '';
+  // The stage has no character in hand: the player's own die is shown by the odds preview, next to each label
+  if (offered && !c.clashOpen) {
+    choices.push({ labelVi: `Clash: đọ ${intent.nameVi.toLowerCase()} trực diện, xúc xắc của nó ${theirs}`, labelEn: `Clash: meet the ${intent.nameEn.toLowerCase()} head-on, its die ${theirs}`, combatAction: 'clash', checkTrait: 'clash', resultVi: '', resultEn: '' });
+  }
+  let descVi = `${c.turn === 0 && c.phase === 1 ? `${enemy.introVi} ` : ''}${intent.tellVi}`;
+  let descEn = `${c.turn === 0 && c.phase === 1 ? `${enemy.introEn} ` : ''}${intent.tellEn}`;
+  let stageChoices = choices;
+  if (offered && c.clashOpen) {
+    // The stake step: the same turn and the same intent, with the stakes listed when the clash was called
+    const stakes = c.stakeList || [];
+    const left = clashesLeft(session);
+    const [twistVi, twistEn] = TWIST_TEXT[profileOf(session.id).twist];
+    descVi = `${intent.nameVi} đã giơ lên, xúc xắc của ${enemy.nameVi} là ${theirs}. ${stakes.length ? 'Bạn có thể cược một thứ của đời mình để nâng xúc xắc, mỗi trận một lần. ' : c.stakeUsed ? 'Bạn đã cược trong trận này rồi. ' : ''}${twistVi} Còn ${left} lần Clash trong trận này.`;
+    descEn = `The ${intent.nameEn.toLowerCase()} is raised; ${enemy.nameEn}’s die is ${theirs}. ${stakes.length ? 'You may stake one thing from your life to raise your die, once per fight. ' : c.stakeUsed ? 'You have already staked in this fight. ' : ''}${twistEn} ${left} clash${left === 1 ? '' : 'es'} left in this fight.`;
+    const STAKE_LABEL = {
+      ahn: (s) => [`Cược ${s.cost} Ahn: thuốc kích và một góc đánh`, `Stake ${s.cost} Ahn: a stimulant and an angle`],
+      scar: (s) => [`Cược vết sẹo "${s.scar}": nhớ lại lần chết hụt`, `Stake the scar "${s.scar}": remember the near death`],
+      npc: (s) => [`Cược ${s.nameVi}: cùng ra đòn, họ có thể bị thương`, `Stake ${s.nameEn}: strike together, they may be hurt`]
+    };
+    stageChoices = [
+      { labelVi: 'Gieo, không cược gì', labelEn: 'Roll with no stake', combatAction: 'clashStake', stakeId: 'none', checkTrait: 'clash', resultVi: '', resultEn: '' },
+      ...stakes.map((s) => {
+        const [labelVi, labelEn] = STAKE_LABEL[s.id](s);
+        return { labelVi, labelEn, combatAction: 'clashStake', stakeId: s.id, checkTrait: 'clash', costAhn: s.id === 'ahn' ? s.cost : undefined, resultVi: '', resultEn: '' };
+      }),
+      { labelVi: 'Rút lại, chọn cách đáp khác', labelEn: 'Step back and answer another way', combatAction: 'clashBack', resultVi: '', resultEn: '' }
+    ];
+  }
   return {
     stageIndex: c.floor,
     nameVi: enemy.nameVi, nameEn: enemy.nameEn,
-    descVi: `${c.turn === 0 && c.phase === 1 ? `${enemy.introVi} ` : ''}${intent.tellVi}`,
-    descEn: `${c.turn === 0 && c.phase === 1 ? `${enemy.introEn} ` : ''}${intent.tellEn}`,
+    descVi,
+    descEn,
+    isClash: Boolean(offered && c.clashOpen),
     canFlee: false,
     isCombat: true,
     sceneLabelVi: `Tầng ${c.floor + 1} / ${total}${floor.kind === 'boss' ? ' · Trùm' : floor.elite ? ' · Tinh nhuệ' : ''}`,
@@ -203,7 +255,7 @@ export function gauntletStage(ctx, session) {
       intent: { nameVi: intent.nameVi, nameEn: intent.nameEn, kind: intent.kind, kindVi: kind.vi, kindEn: kind.en },
       next: next ? { nameVi: next.nameVi, nameEn: next.nameEn, kindVi: INTENT_KINDS[next.kind].vi, kindEn: INTENT_KINDS[next.kind].en } : null
     },
-    choices
+    choices: stageChoices
   };
 }
 
@@ -285,11 +337,42 @@ export function resolveGauntletChoice(char, session, choiceIndex, rng, ctx) {
 
   const intent = intentAt(session);
   const action = choice.combatAction;
+  // Calling a clash or stepping back from one spends no turn: the same intent is still in the air
+  if (action === 'clash' || action === 'clashBack') {
+    c.clashOpen = action === 'clash';
+    c.stakeList = action === 'clash'
+      ? clashStakes(ctx, char, session).map((s) => ({ id: s.id, cost: s.cost, scar: s.scar, nameVi: s.companion?.nameVi, nameEn: s.companion?.nameEn }))
+      : [];
+    return { char, session, isFinished: false, resolution: null };
+  }
   let taken;
   let breaks;
   let quality;
   let line;
-  if (action === 'ally') {
+  let clash = null;
+  if (action === 'clashStake') {
+    const stake = c.stakeList?.some((s) => s.id === choice.stakeId) ? stakeById(ctx, char, session, choice.stakeId) : null;
+    clash = rollClash(ctx, char, session, stake, rng);
+    c.clashes = (c.clashes || 0) + 1;
+    if (clash.outcome === 'win') c.clashWins = (c.clashWins || 0) + 1;
+    c.clashOpen = false;
+    c.stakeList = [];
+    if (stake) c.stakeUsed = true;
+    ({ taken, breaks } = clash);
+    if (cardEffectOf(session).noBreak && breaks > 0) breaks = 0;
+    quality = clash.outcome === 'win' ? 'good' : clash.outcome === 'tie' ? 'mid' : 'poor';
+    const dice = { vi: `Bạn gieo ${clash.mine}, ${c.enemy.nameVi} gieo ${clash.theirs}.`, en: `You roll ${clash.mine}, ${c.enemy.nameEn} rolls ${clash.theirs}.` };
+    const OUTCOME = {
+      win: ['Lưỡi của bạn tới trước. Nó mất thế và lỡ mất nhịp kế tiếp.', 'Your edge arrives first. It loses its footing and its next move.'],
+      tie: ['Hai đòn chạm nhau và cùng bật ra. Không ai bị thương.', 'The blows meet and both rebound. No one is hurt.'],
+      dragged: ['Hai đòn chạm nhau, nhưng nước dưới chân kéo bạn đi trước.', 'The blows meet, but the water underfoot drags you first.'],
+      lose: [`${intent.nameVi} đè qua lưỡi của bạn và trúng thẳng.`, `The ${intent.nameEn.toLowerCase()} rides over your edge and lands full.`]
+    };
+    const [ovi, oen] = OUTCOME[clash.outcome];
+    const settled = settleStake(ctx, char, session, stake, clash.outcome);
+    line = { vi: [dice.vi, ovi, settled?.vi].filter(Boolean).join(' '), en: [dice.en, oen, settled?.en].filter(Boolean).join(' ') };
+    fx = clash.outcome === 'win' ? 'clash-win' : clash.outcome === 'tie' ? 'clash-tie' : 'clash-lose';
+  } else if (action === 'ally') {
     c.allyCalls += 1;
     const ok = rng() < ctx.companionLeadChance(char, session);
     if (ok) {
@@ -329,13 +412,14 @@ export function resolveGauntletChoice(char, session, choiceIndex, rng, ctx) {
   char.stats.health = clamp(char.stats.health - hp, 0, 100);
   char.stats.sanity = clamp(char.stats.sanity - sp, 0, 100);
   if (intent.kind === 'mind' && sp > 0) fx = 'mind';
-  if (intent.kind === 'heavy' && hp >= 10) fx = 'heavyhit';
+  if (intent.kind === 'heavy' && hp >= 10 && !clash) fx = 'heavyhit';
   const strain = (COMBAT_BALANCE.strainBase + floor.tier * COMBAT_BALANCE.strainPerTier + (intent.kind === 'mind' ? COMBAT_BALANCE.strainMind : 0) - (action === 'guard' ? 2 : 0))
     * (session.stageScanned ? 0.5 : 1) * ctx.strainMult(char, session);
   session.sanityStrain = clamp((session.sanityStrain || 0) + Math.round(strain), 0, 100);
   notes.push(line);
 
-  c.guard = Math.max(0, c.guard - breaks);
+  c.guard = Math.min(c.guardMax, Math.max(0, c.guard - breaks));
+  if (clash?.outcome === 'lose' && breaks < 0) notes.push({ vi: `${c.enemy.nameVi} liếm máu trên lưỡi của nó và đứng vững hơn.`, en: `${c.enemy.nameEn} licks the blood from its edge and stands steadier.` });
   c.sealed = null;
   if (intent.heal && action !== 'strike' && c.guard > 0) {
     c.guard = Math.min(c.guardMax, c.guard + intent.heal);
@@ -350,7 +434,8 @@ export function resolveGauntletChoice(char, session, choiceIndex, rng, ctx) {
       ? { vi: 'Chiếc lồng giữ tay bạn lại. Lượt sau bạn không thể phản công.', en: 'The cage holds your arms. Next turn you cannot strike.' }
       : { vi: 'Chỗ bạn định bước tới đã bị đánh dấu. Lượt sau bạn không thể né.', en: 'Where you meant to step has been marked. Next turn you cannot evade.' });
   }
-  c.turn += 1;
+  // A won clash staggers the enemy: the move it showed next never comes
+  c.turn += clash?.stagger ? 2 : 1;
   session.stageScanned = false;
   session.egoActive = false;
   const playedCard = cardEffectOf(session);
@@ -363,7 +448,7 @@ export function resolveGauntletChoice(char, session, choiceIndex, rng, ctx) {
     const meritBase = COMBAT_BALANCE.clearMerit;
     const extraLoot = floor.kind === 'boss' ? lootBase.boss : floor.elite ? lootBase.elite : 0;
     const extraMerit = floor.kind === 'boss' ? meritBase.boss : floor.elite ? meritBase.elite : 0;
-    const loot = Math.round((lootBase.base + floor.tier * lootBase.perTier + extraLoot) * ctx.lootMult(session) * dungeonWagerLoot(session.delveStake) * (playedCard.loot ?? 1) * (playedCard.reward ?? 1));
+    const loot = Math.round((lootBase.base + floor.tier * lootBase.perTier + extraLoot) * ctx.lootMult(session) * dungeonWagerLoot(session.delveStake) * (playedCard.loot ?? 1) * (playedCard.reward ?? 1) * (1 + CLASH_BALANCE.winLoot * (c.clashWins || 0)));
     const merit = meritBase.base + floor.tier * meritBase.perTier + extraMerit;
     session.accumulatedLootAhn = (session.accumulatedLootAhn || 0) + (def.noRewards ? 0 : loot);
     if (!def.noRewards) {
@@ -392,7 +477,8 @@ export function resolveGauntletChoice(char, session, choiceIndex, rng, ctx) {
   const en = notes.map((n) => n.en).join(' ');
   session.lastStageResult = {
     type: quality === 'poor' ? 'check_fail' : 'check_ok', stageNum: c.floor + 1, stageNameVi: stage.nameVi, stageNameEn: stage.nameEn,
-    vi, en, hpDelta: -hp, spDelta: -sp, fx, nonce: session.fxNonce
+    vi, en, hpDelta: -hp, spDelta: -sp, fx, nonce: session.fxNonce,
+    clash: clash ? { mine: clash.mine, theirs: clash.theirs, outcome: clash.outcome } : undefined
   };
   ctx.log(char, session, def, stage, session.lastStageResult);
 

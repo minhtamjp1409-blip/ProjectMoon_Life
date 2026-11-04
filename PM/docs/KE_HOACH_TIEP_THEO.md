@@ -25,6 +25,7 @@ Mỗi đợt dưới đây được commit riêng, ghi vào `PROGRESS_LOG.md`, p
 | 122 | Hậu quả kéo dài nói bằng lời, tiến độ thăng chức | vừa | đã xong |
 | 123 | Lướt nhanh đời thường khi chơi lại | vừa | đã xong |
 | 124 | Sau lần đo cạnh web mẫu: test khói, mở đầu nhanh, ít chữ năm đầu, giọng người cho Distortion, đo âm | vừa | đã xong |
+| 125 | Clash có đặt cược đời sống trong dungeon, luật riêng từng dungeon | vừa | đã xong |
 | (chủ dự án) | Nghe thử âm thanh trên điện thoại và tai nghe | nhỏ | chờ chủ dự án |
 
 Đợt 114b có thêm dải bản đồ thu nhỏ trên điện thoại, theo bản góp ý thứ ba (ngày 02/11/2026). Đợt 118 và buổi nghe thử âm thanh cũng đến từ bản góp ý đó.
@@ -358,6 +359,16 @@ Công cụ quay đã có lệnh mở từng cảnh: `node tools/film/film_cutsce
 8. `npm run audio:levels` đo độ to mọi âm qua OfflineAudioContext, chỉ ra các âm nên nghe trước. Chưa chỉnh mức âm nào khi chưa có người nghe.
 
 **Còn treo.** `event_reach` (300 đời): 450 trên 794 event lớn chưa từng gặp, nhiều nhất là Syndicate (200). Cần một đợt riêng.
+
+---
+
+## Đợt 125: Clash có đặt cược đời sống (ĐÃ XONG, 04/11/2026)
+
+**Lý do.** Trận boss trong dungeon chỉ có đáp đúng hoặc sai theo bảng ý đồ. Thêm một khoảnh khắc liều có tính toán, nối trận đánh với đời nhân vật (sẹo, tiền, người đồng hành).
+
+**Đã làm.** Clash ở trận có tên, tỉ lệ hiện trước, một lần cược mỗi trận, luật riêng cho từng dungeon, thắng nhịp trả thêm chiến lợi phẩm. Chi tiết và số đo ở `PROGRESS_LOG.md` mục 2.19.
+
+**Còn treo.** Chủ dự án chơi thử và nghe âm. Có thể nối tiếp: hợp đồng trấn áp Abnormality (luật trong hồ sơ cho biết khi nào không nên Clash).
 
 ---
 

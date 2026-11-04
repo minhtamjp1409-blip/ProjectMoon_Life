@@ -51,7 +51,15 @@ const TRAIT_NAMES = {
   vigor: ['Thể lực', 'Vigor'],
   nerve: ['Thần kinh', 'Nerve'],
   luck: ['Vận may', 'Luck'],
-  bond: ['Gắn bó', 'Bond']
+  bond: ['Gắn bó', 'Bond'],
+  clash: ['Thắng nhịp', 'Win the clash']
+};
+
+const CLASH_OUTCOME = {
+  win: ['Bạn thắng nhịp', 'You win the clash'],
+  tie: ['Hòa nhịp', 'Even clash'],
+  dragged: ['Hòa, nhưng bị kéo đi', 'Even, but dragged'],
+  lose: ['Bạn thua nhịp', 'You lose the clash']
 };
 
 const TIER_NAMES = {
@@ -155,7 +163,9 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
     if (fx === 'heavyhit') audioEngine.playDamage(1.6);
     else if (fx === 'hit') audioEngine.playDamage(1.2);
     else if (fx === 'mind' || fx === 'phase') audioEngine.playDanger();
-    else if (fx === 'block' || fx === 'counter' || fx === 'clash') audioEngine.playBladeClash();
+    else if (fx === 'clash-win') { audioEngine.playBladeClash(); audioEngine.playClashSpark(); }
+    else if (fx === 'clash-lose') audioEngine.playDamage(1.4);
+    else if (fx === 'block' || fx === 'counter' || fx === 'clash' || fx === 'clash-tie') audioEngine.playBladeClash();
     else if (fx === 'break' || fx === 'boss-down' || fx === 'rest') audioEngine.playBuff();
     else if (fx === 'evade' || fx === 'ally' || fx === 'shortcut' || fx === 'door') audioEngine.playClick();
     else if (result.type === 'check_fail') audioEngine.playDamage(1.3);
@@ -270,6 +280,13 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
 
         {result && (
           <aside key={`${result.stageNum}-${result.type}-${strain}`} className={`dg-result is-${result.type || 'pass'}`} aria-live="polite">
+            {result.clash && (
+              <p className={`dg-clash is-${result.clash.outcome}`}>
+                <span className="dg-clash-die" aria-hidden="true">{result.clash.mine}</span>
+                <span className="dg-clash-verdict">{t(...CLASH_OUTCOME[result.clash.outcome])}</span>
+                <span className="dg-clash-die is-foe" aria-hidden="true">{result.clash.theirs}</span>
+              </p>
+            )}
             <p>{pick(result.vi, result.en)}</p>
           </aside>
         )}
@@ -296,7 +313,7 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
               )}
               <details className="dg-foe-help">
                 <summary>{t('Cách đáp đòn', 'How to answer')}</summary>
-                <p>{t('Thủ hợp với đòn nặng và tấn công tâm trí. Phản công hợp với đòn nhanh. Né hợp với đòn quét và túm giữ, nhưng có thể trượt. Đáp đúng thì kẻ thù mất thế; phản công đúng lúc làm mất hai nấc.', 'Guard suits heavy blows and mind attacks. Strike suits quick attacks. Evade suits sweeps and grabs, but can miss. The right answer breaks a notch of guard; a well-timed strike breaks two.')}</p>
+                <p>{t('Thủ hợp với đòn nặng và tấn công tâm trí. Phản công hợp với đòn nhanh. Né hợp với đòn quét và túm giữ, nhưng có thể trượt. Đáp đúng thì kẻ thù mất thế; phản công đúng lúc làm mất hai nấc. Ở trận có tên, Clash đọ thẳng xúc xắc với đòn nặng hoặc đòn nhanh: thắng thì không mất máu và kẻ thù lỡ nhịp sau, thua thì đòn trúng mạnh hơn.', 'Guard suits heavy blows and mind attacks. Strike suits quick attacks. Evade suits sweeps and grabs, but can miss. The right answer breaks a notch of guard; a well-timed strike breaks two. In a named fight, Clash pits your die against a heavy or quick blow: win and you take nothing while it loses its next move, lose and the blow lands harder.')}</p>
               </details>
             </div>
           )}
@@ -492,6 +509,7 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
                           {t(trait[0], trait[1])} {odds.successPct}%
                         </span>
                       )}
+                      {odds?.clashDie && <span className="dg-need is-met">{t(`Xúc xắc của bạn ${odds.clashDie[0]}–${odds.clashDie[1]}`, `Your die ${odds.clashDie[0]}–${odds.clashDie[1]}`)}</span>}
                       {ch.side && <span className="dg-need is-met">{t('Ngõ phụ, thêm một chặng', 'Side room, one more stage')}</span>}
                       {Number.isInteger(ch.goto) && <span className="dg-need is-met">{t('Lối tắt, bỏ qua một chặng', 'Shortcut, skips a stage')}</span>}
                       {ch.companionLead && <span className="dg-need is-met">{t('Người đi cùng chịu rủi ro thay bạn', 'Your companion takes the risk')}</span>}

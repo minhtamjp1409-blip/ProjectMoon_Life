@@ -3008,6 +3008,15 @@ Chạy kiểm định mô phỏng 500 vòng đời với chiến lược ngườ
 * **Đo âm.** `tools/qa/audio_levels.mjs` (`npm run audio:levels`). Không âm nào gần vỡ tiếng (đỉnh lớn nhất khoảng −17 dBFS). Âm nền Library, Index, Ring và dungeon Ensemble nhỏ hơn nhóm 14 đến 18 dB; `playWarpSurge` to hơn nhóm 13,5 dB. Chưa chỉnh, chờ chủ dự án nghe.
 * **Kiểm tra.** `npm test` (thêm 5 test mới) và `npm run build` qua. `story_logic_audit 300`: 0 vi phạm.
 
+##### 2.19. Đợt 125: Clash có đặt cược đời sống trong dungeon (04/11/2026)
+* **Cơ chế.** `src/engine/dungeonClash.js`, gắn vào `dungeonCombat.js`. Chỉ ở trận có tên (tinh nhuệ, boss, mọi tầng của Claw judgment), chỉ khi kẻ thù ra đòn nặng hoặc đòn nhanh. Người chơi chủ động chọn Clash; gọi Clash hay rút lại không tốn lượt. Hai bên gieo một viên xúc xắc, khoảng số và tỉ lệ thắng chính xác hiện trước khi gieo. Thắng: không mất máu, thế thủ vỡ 2 nấc, kẻ thù mất nhịp kế tiếp, và trận đó trả thêm 20% chiến lợi phẩm mỗi nhịp thắng. Hòa: không ai bị thương. Thua: ăn trọn đòn. Boss có 3 lần Clash, tinh nhuệ 1 lần, tầng Claw 2 lần.
+* **Đặt cược (mỗi trận một lần).** Ahn (thuốc kích), một vết sẹo đang mang (tốn 4 SP, thua thì đòn đau gấp rưỡi), hoặc người đồng hành đang đi cùng (thắng: thêm gắn bó và một ký ức; thua: họ bị thương và rời khỏi dungeon).
+* **Mỗi dungeon bẻ một luật.** WARP: cả hai viên lăn rộng hơn. Lobotomy: Sanity tính gấp đôi. Bloodfiend: thua thì nó hồi 1 nấc thế thủ. Great Lake: hòa tính là thua nửa đòn. Backstreets: cược Ahn rẻ và mạnh hơn. Claw: không nhận tiền, thắng vỡ thêm 1 nấc.
+* **Cân bằng (tham khảo cách các game roguelike cho thấy tỉ lệ thật và đổi máu lấy phần thưởng).** Boss pha 1, có vũ khí, không cược: thắng 42 đến 50%; có cược: 60 đến 76%. Claw Arbiter pha 2: 27% không cược, khoảng 50% có cược. Đo riêng trận boss (1500 lần mỗi dungeon, 80 HP): Clash khi có cược và tỉ lệ ≥60% tốn thêm 0 đến 2 HP và tăng chiến lợi phẩm 12 đến 14%; lúc nào cũng Clash tốn thêm 2 đến 10 HP, tăng chiến lợi phẩm tới 28%. `dungeon_sim 300`: các kiểu chơi cẩn thận không đổi vì không chọn Clash.
+* **Giao diện.** Lựa chọn Clash và bước cược dùng thẻ lựa chọn sẵn có; chip "Thắng nhịp x%" và "Xúc xắc của bạn a–b". Kết quả hiện hai viên xúc xắc và lời phán. Âm: `playBladeClash` + `playClashSpark` khi thắng. Chụp 390 và 1440 bằng `tools/qa/clash_browser.mjs`, không tràn ngang.
+* **Công cụ.** `tools/sim/dungeon_sim.mjs`: giới hạn 20 bước nâng lên 60 (giới hạn cũ cắt ngang các lượt chạy dài nên số "đi hết" cũ thấp giả), thêm kiểu chơi `clasher` và `reader`.
+* **Kiểm tra.** `tests/test_dungeon_clash.mjs` (thêm vào `npm test`), `npm test` và `npm run build` qua.
+
 ---
 #### 3. KIỂM ĐỊNH & BẢO ĐẢM TOÀN VẸN (VERIFICATION & INTEGRITY)
 * Tất cả các bộ kiểm thử tự động (`npm test`) bao gồm lint văn phong (`voice_lint.mjs`), chuẩn canon Project Moon (`lint_story.mjs`), và mô phỏng 500 khoảnh khắc đời người (`run_million_audit.mjs`) phải vượt qua 100% với 0 lỗi, 0 cảnh báo.
