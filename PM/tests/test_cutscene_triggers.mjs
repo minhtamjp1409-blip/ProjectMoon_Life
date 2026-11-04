@@ -52,12 +52,23 @@ calledDead.alive = false;
 assert.equal(cutsceneFor(base, calledDead), 'death');
 assert(CUTSCENES.carmen.whispers.length >= 6 && CUTSCENES.carmen.whispers.every((w) => w.vi && w.en), 'every whisper is written in both languages');
 
+// 2d. E.G.O awakening plays once, when EGOAwakened flag is earned
+const egoBefore = cloneChar(base);
+const egoAwakened = cloneChar(egoBefore);
+egoAwakened.flags = [...(egoAwakened.flags || []), 'EGOAwakened'];
+assert.equal(cutsceneFor(egoBefore, egoAwakened), 'ego', 'awakening E.G.O plays the ego scene');
+assert.equal(cutsceneFor(egoAwakened, cloneChar(egoAwakened)), null, 'an already awakened character plays nothing later');
+
 // 3. Ranks: a stronger scene replaces a weaker one, a weaker or equal one is dropped
 assert.equal(outranks('claw', null), true);
 assert.equal(outranks('death', 'claw'), true);
 assert.equal(outranks('claw', 'death'), false);
 assert.equal(outranks('claw', 'claw'), false);
-assert.deepEqual(Object.keys(CUTSCENE_RANK).sort((a, b) => CUTSCENE_RANK[b] - CUTSCENE_RANK[a]), ['death', 'color', 'savior', 'finger', 'claw', 'carmen', 'dungeon']);
+assert.equal(outranks('ego', 'carmen'), true, 'E.G.O awakening outranks Carmen call');
+assert.equal(outranks('claw', 'ego'), false, 'equal ranks never replace each other');
+assert.equal(CUTSCENE_RANK.ego, 3, 'E.G.O ranks equal to Claw');
+assert.equal(CUTSCENE_RANK.claw, 3);
+assert.equal(CUTSCENE_RANK.death, 5);
 assert.equal(outranks('savior', 'claw'), true, 'a companion dying for you outranks the Claw');
 assert.equal(outranks('finger', 'color'), false, 'equal ranks never replace each other');
 

@@ -31,8 +31,8 @@ try {
     await sleep(1500);
     // Scene settings for this take: full plays as a first viewing, lite as a repeat, caption as scenes off
     await page.eval((c) => {
-      for (const id of ['claw', 'death', 'color', 'carmen', 'dungeon', 'savior', 'finger']) localStorage.removeItem(`pm-cutscene-seen:${id}`);
-      if (c === 'lite') for (const id of ['claw', 'death', 'color', 'carmen', 'dungeon', 'savior', 'finger']) localStorage.setItem(`pm-cutscene-seen:${id}`, '1');
+      for (const id of ['claw', 'death', 'color', 'carmen', 'dungeon', 'savior', 'finger', 'ego']) localStorage.removeItem(`pm-cutscene-seen:${id}`);
+      if (c === 'lite') for (const id of ['claw', 'death', 'color', 'carmen', 'dungeon', 'savior', 'finger', 'ego']) localStorage.setItem(`pm-cutscene-seen:${id}`, '1');
       localStorage.setItem('pm-cutscene', c === 'caption' ? 'off' : c === 'full' ? 'full' : 'short');
       if (c === 'still') localStorage.setItem('pm-motion-mode', 'reduced');
     }, cut);
@@ -80,7 +80,9 @@ try {
         ? { ...base, alive: false, stats: { ...prev.stats, health: 0 }, deathCauseVi: 'Bạn gục xuống trên bậc thềm lạnh.', deathCauseEn: 'You went down on a cold step.' }
         : which === 'color'
           ? { ...base, pendingModal: 'color_title' }
-          : which === 'carmen'
+          : which === 'ego'
+            ? { ...base, flags: [...(prev.flags || []), 'EGOAwakened'], egoName: 'Huyết Nguyệt Tàn Trảm' }
+            : which === 'carmen'
             // A stand-in for the event as the planner hands it over: the dock needs a title, a body and two choices
             ? { ...base, pendingEvent: {
                 id: 'ego_carmen_crossroad', major: true, t: 0.5,

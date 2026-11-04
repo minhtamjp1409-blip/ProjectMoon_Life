@@ -250,6 +250,80 @@ body:has(> .cutscene) .ant-notification { visibility: hidden; }
 .cs-carmen.is-lite .cs-whisper { animation: cs-whisper 600ms ease-out var(--wd) both; }
 .cs-carmen.is-lite .cs-line.is-key { animation: cs-key 800ms var(--ease-tactile) 100ms both; }
 
+/* ---------- E.G.O awakening: Carmen's whispers shatter, inner will erupts in crystalline light ---------- */
+.cs-ego .cs-scrim {
+  background: radial-gradient(circle, color-mix(in srgb, var(--ego-gold) 18%, transparent) 0, var(--ego-veil) 72%);
+}
+.cs-ego-core {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(28vmin, 200px);
+  height: min(28vmin, 200px);
+  margin: calc(min(28vmin, 200px) / -2) 0 0 calc(min(28vmin, 200px) / -2);
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--ego-core) 0%, var(--ego-bloom) 55%, transparent 75%);
+  opacity: 0;
+}
+.cs-ego-ring {
+  --ring: min(44vmin, 340px);
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--ring);
+  height: var(--ring);
+  margin: calc(var(--ring) / -2) 0 0 calc(var(--ring) / -2);
+  border: 1.5px solid var(--ego-gold);
+  border-radius: 50%;
+  opacity: 0;
+}
+.cs-ego-ring.is-outer {
+  --ring: min(68vmin, 520px);
+  border-style: dashed;
+  border-color: color-mix(in srgb, var(--ego-gold) 40%, transparent);
+}
+.cs-ego-prism {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(38vmin, 280px);
+  height: min(38vmin, 280px);
+  margin: calc(min(38vmin, 280px) / -2) 0 0 calc(min(38vmin, 280px) / -2);
+  opacity: 0;
+}
+.cs-ego-prism polygon {
+  transform-box: fill-box;
+  transform-origin: center;
+  stroke: var(--ego-gold);
+  stroke-width: 1.5;
+  fill: color-mix(in srgb, var(--ego-gold) 12%, transparent);
+}
+.cs-ego .cs-line.is-key {
+  max-width: 24ch;
+  font-size: clamp(26px, 3.6vw, 42px);
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--ego-core);
+  text-shadow: 0 0 28px color-mix(in srgb, var(--ego-gold) 65%, transparent);
+}
+
+.cs-ego.is-full .cs-scrim { animation: cs-in 500ms ease-out both; }
+.cs-ego.is-full .cs-ego-prism { animation: cs-ego-prism 4200ms var(--ease-tactile) 300ms both; }
+.cs-ego.is-full .cs-ego-core { animation: cs-ego-core 2400ms ease-out 2200ms both; }
+.cs-ego.is-full .cs-ego-ring { animation: cs-ego-ring 1800ms ease-out 2400ms both; }
+.cs-ego.is-full .cs-ego-ring.is-outer { animation-delay: 2550ms; }
+.cs-ego.is-full .cs-flash { animation: cs-flash 1200ms ease-out 2400ms both; }
+.cs-ego.is-full .cs-line-1 { animation: cs-line 1700ms ease-out 400ms both; }
+.cs-ego.is-full .cs-line-2 { animation: cs-line 1700ms ease-out 1800ms both; }
+.cs-ego.is-full .cs-line.is-key { animation: cs-key 2000ms var(--ease-tactile) 2600ms both; }
+
+.cs-ego.is-lite .cs-scrim { animation: cs-in 150ms ease-out both; }
+.cs-ego.is-lite .cs-ego-core { animation: cs-ego-core 800ms ease-out both; }
+.cs-ego.is-lite .cs-ego-prism { animation: cs-ego-prism 800ms ease-out both; }
+.cs-ego.is-lite .cs-ego-ring { display: none; }
+.cs-ego.is-lite .cs-flash { animation: cs-flash 500ms ease-out both; }
+.cs-ego.is-lite .cs-line.is-key { animation: cs-key 800ms var(--ease-tactile) 100ms both; }
+
 /* ---------- dungeon gate: the interface fades, the dungeon's own backdrop shows whole, its name as a title card ---------- */
 /* The backdrop lives in .world behind the shell; every other part of the shell steps aside while the gate plays */
 body:has(> .cutscene.cs-dungeon.is-full) .shell > :not(.world) { animation: cs-out 400ms ease-in forwards; }
@@ -558,4 +632,20 @@ body:has(> .cutscene.cs-dungeon.is-still) .shell > :not(.world) { opacity: 0; }
   0% { opacity: 0; transform: translateY(10px) scale(0.98); }
   25%, 88% { opacity: 1; transform: none; }
   100% { opacity: 0; transform: none; }
+}
+@keyframes cs-ego-core {
+  0% { opacity: 0; transform: scale(0.3); }
+  40% { opacity: 0.95; transform: scale(1.15); }
+  80% { opacity: 0.8; transform: scale(1); }
+  100% { opacity: 0.6; transform: scale(1.05); }
+}
+@keyframes cs-ego-ring {
+  0% { opacity: 0; transform: scale(0.25); }
+  50% { opacity: 0.85; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.4); }
+}
+@keyframes cs-ego-prism {
+  0% { opacity: 0; transform: scale(0.6) rotate(-20deg); }
+  40% { opacity: 0.95; transform: scale(1.05) rotate(0deg); }
+  100% { opacity: 0.75; transform: scale(1) rotate(12deg); }
 }

@@ -15,9 +15,10 @@ import { CarmenScene } from './scenes/CarmenScene';
 import { DungeonGateScene } from './scenes/DungeonGateScene';
 import { SaviorScene } from './scenes/SaviorScene';
 import { FingerScene } from './scenes/FingerScene';
+import { EgoScene } from './scenes/EgoScene';
 import '../../styles/ui/cutscene.css';
 
-const SCENE_ART = { claw: ClawScene, death: DeathScene, color: ColorScene, carmen: CarmenScene, dungeon: DungeonGateScene, savior: SaviorScene, finger: FingerScene };
+const SCENE_ART = { claw: ClawScene, death: DeathScene, color: ColorScene, carmen: CarmenScene, dungeon: DungeonGateScene, savior: SaviorScene, finger: FingerScene, ego: EgoScene };
 const SKIP_KEYS = new Set(['Enter', 'Escape', ' ']);
 
 // A Color too dark to see on the scene's dark (Black) draws its slit in the text colour instead
@@ -63,6 +64,11 @@ const DYNAMIC = {
     if (!title) return null;
     const route = String(finger).toLowerCase();
     return { key: { vi: title, en: title }, sub: { vi: `The ${finger}`, en: `The ${finger}` }, color: sceneColor(WORLDS[`finger-${route}`]?.accent), variant: route };
+  },
+  // E.G.O awakening: display the personal weapon or E.G.O title as subtitle when forged
+  ego: ({ life }) => {
+    const egoName = life?.egoName || life?.egoWeapon;
+    return egoName ? { sub: { vi: `“${egoName}”`, en: `“${egoName}”` } } : null;
   }
 };
 

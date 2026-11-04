@@ -86,6 +86,16 @@ export const CUTSCENES = {
       { vi: 'họ chưa từng hiểu bạn', en: 'they never understood you' },
       { vi: 'thành điều bạn muốn', en: 'become what you want' }
     ]
+  },
+  // E.G.O awakening: Carmen's voice shatters, inner light erupts from the deepest wound, E.G.O takes physical form
+  ego: {
+    ms: { full: 4600, lite: 1000, still: 1800, caption: 1200 },
+    lines: [
+      { vi: 'Giọng nói trong tâm trí bạn vụn vỡ.', en: 'The voice in your mind shatters.' },
+      { vi: 'Một luồng sáng bùng lên từ nơi sâu thẳm nhất.', en: 'Light erupts from the deepest fracture.' },
+      { vi: 'E.G.O đã thành hình.', en: 'E.G.O has taken shape.' }
+    ],
+    keyLine: 2
   }
 };
 

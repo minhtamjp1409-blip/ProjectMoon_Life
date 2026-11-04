@@ -56,4 +56,16 @@ log.nodes = 0;
 audioEngine.playCutscene('death', 'full', CUTSCENES.death.ms.full);
 assert.equal(log.nodes, 0, 'muted plays nothing');
 
-console.log(`Cutscene audio: ${Object.keys(CUTSCENES).length} scenes cue inside their timelines in full, lite and still, captions and mute stay silent, a skip fades the bus.`);
+// Location transition cues: moving between distinct areas plays ~1s cue
+audioEngine.setMuted(false);
+for (const world of ['nest', 'backstreets', 'wing', 'outskirts', 'syndicate', 'finger-thumb', 'workshop', 'fixer']) {
+  log.starts = []; log.nodes = 0;
+  assert.doesNotThrow(() => audioEngine.playLocationCue(world, 'backstreets'), `${world} location transition schedules cleanly`);
+  assert(log.starts.length > 0, `${world} location transition makes a sound`);
+}
+// Moving to dungeon gate or title does not play location cue (dungeons have their own scene)
+log.starts = []; log.nodes = 0;
+audioEngine.playLocationCue('dungeon-warp', 'backstreets');
+assert.equal(log.starts.length, 0, 'dungeon gate relies on its own scene, not location cue');
+
+console.log(`Cutscene audio: ${Object.keys(CUTSCENES).length} scenes cue inside their timelines in full, lite and still, captions and mute stay silent, a skip fades the bus, and location transition cues passed.`);

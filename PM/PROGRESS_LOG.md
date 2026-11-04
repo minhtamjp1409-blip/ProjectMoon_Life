@@ -2971,6 +2971,23 @@ Chạy kiểm định mô phỏng 500 vòng đời với chiến lược ngườ
   - `voice_lint.mjs --fail`, `lint_story.mjs`, `check_sentence_length.mjs --fail`, `test_npc_naming_and_callbacks.mjs` đạt 100% không lỗi.
   - `npm test` và `npm run build` hoàn tất sạch sẽ.
 
+##### 2.16. Hoàn Thành 2 Tính Năng Còn Lại Trong Kế Hoạch: Âm Báo Đổi Nơi & Cảnh Cutscene Thức Tỉnh E.G.O
+* **1. Âm báo ngắn khi đổi nơi (`Location Transition Audio Cue`):**
+  - Trong `src/engine/audioEngine.js`, cài đặt phương thức `playLocationCue(nextWorld, prevWorld)` và kết nối tự động trong `setScene(scene)`.
+  - Khi nhân vật di chuyển giữa các địa danh trong đời (Nest, Backstreets, Wing, Outskirts, Finger/Syndicate, Workshop, Fixer Office), hệ thống phát một âm báo ngắn ~1 giây được thiết kế âm sắc riêng biệt qua `cueTone` và `cueNoise` trên `sfxGain` (âm thanh cao trong trẻo cho Nest, trầm đục kim khí cho Backstreets, click dữ liệu điện tử cho Wing, gió rít sa mạc cho Outskirts, chimes chuông nghi lễ cho Finger, tiếng đe búa cho Workshop, chuông cửa văn phòng cho Fixer).
+  - Không phát khi vào Title, Dead, Library hay các cổng hầm ngục (vì hầm ngục đã có cảnh mở cổng riêng).
+* **2. Cảnh thức tỉnh E.G.O (`E.G.O Awakening Cutscene`):**
+  - Xếp hạng ngang Claw (`CUTSCENE_RANK.ego = 3`), tự động kích hoạt khi cờ `EGOAwakened` xuất hiện trong đời người (`cutsceneTriggers.js`).
+  - Dựng component hoạt họa `EgoScene.jsx` (`cs-ego`): Vầng sáng trung tâm (`cs-ego-core`), vòng sóng ý chí lan tỏa (`cs-ego-ring`), lăng kính đa giác thức tỉnh (`cs-ego-prism`) và chớp sáng bùng nổ (`cs-flash`).
+  - Âm thanh thức tỉnh điện ảnh trong `audioEngine.js`: Tiếng vỡ vụn giọng Carmen (`cueNoise` highpass sweep), hợp âm ánh sáng nội tại dâng tràn (`cueTone` đa âm sắc), và nhát búa thức tỉnh E.G.O vang vọng (`cueTone` sub 110Hz->55Hz + hợp âm chuông 554Hz/880Hz/1108Hz/1318Hz).
+  - Khai báo token màu E.G.O chuẩn trong `tokens.css`: `--ego-gold`, `--ego-core`, `--ego-bloom`, `--ego-veil`, `--ego-ray`.
+  - Đáp ứng 100% tiêu chuẩn `check_cutscenes.mjs` (chỉ di chuyển transform & opacity, không lặp vô hạn, 0 màu cứng, đủ 4 cut `full` 4600ms, `lite` 1000ms, `still` 1800ms, `caption` 1200ms).
+* **Kiểm thử tự động:**
+  - `tests/test_cutscene_audio.mjs`: Kiểm tra âm thanh cho cả 8 cảnh cutscene và kiểm tra âm báo chuyển vùng cho tất cả các địa danh -> **PASS 100%**.
+  - `tests/test_cutscene_triggers.mjs`: Kiểm tra kích hoạt cảnh E.G.O, thứ hạng ưu tiên và tính chất 1 lần trong đời -> **PASS 100%**.
+  - `tools/lint/check_cutscenes.mjs`: 8/8 cảnh cutscene đạt chuẩn 100%.
+  - Toàn bộ suite `npm test` và `npm run build` hoàn tất sạch sẽ.
+
 ---
 #### 3. KIỂM ĐỊNH & BẢO ĐẢM TOÀN VẸN (VERIFICATION & INTEGRITY)
 * Tất cả các bộ kiểm thử tự động (`npm test`) bao gồm lint văn phong (`voice_lint.mjs`), chuẩn canon Project Moon (`lint_story.mjs`), và mô phỏng 500 khoảnh khắc đời người (`run_million_audit.mjs`) phải vượt qua 100% với 0 lỗi, 0 cảnh báo.

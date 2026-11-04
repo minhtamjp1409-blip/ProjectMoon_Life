@@ -58,6 +58,7 @@ class AudioEngine {
 
     // Ambience state
     this.currentAmbienceType = null;
+    this.currentWorld = null;
     this.activeAmbienceNodes = [];
     this.noiseBuffers = {};
     this.isDucked = false;
@@ -273,10 +274,22 @@ class AudioEngine {
     if (this.currentAmbienceType === key) return;
     this.init();
     if (!this.ctx) return;
+
+    const prevWorld = this.currentWorld;
+    const nextWorld = scene?.world || null;
+
     this.stopAmbience();
     this.currentAmbienceType = key;
+    this.currentWorld = nextWorld;
     this.notify();
     if (!scene || this.isMuted || this.isAmbienceMuted) return;
+
+    // Location transition audio cue (~1s) when moving between distinct areas in-run
+    if (prevWorld && nextWorld && prevWorld !== nextWorld && prevWorld !== 'title' && !this.isMuted) {
+      try {
+        this.playLocationCue(nextWorld, prevWorld);
+      } catch {}
+    }
 
     const t = this.ctx.currentTime;
     const groupGain = this.ctx.createGain();
@@ -286,6 +299,59 @@ class AudioEngine {
     const noise = { pink: this.getNoiseBuffer('pink', 4), brown: this.getNoiseBuffer('brown', 5), white: this.getNoiseBuffer('white', 2) };
     const { sources, handles } = startScape(this.ctx, groupGain, noise, scene.world, scene);
     this.activeAmbienceNodes.push({ gain: groupGain, sources, handles });
+  }
+
+  /**
+   * Location Transition Audio Cue: ~1s atmospheric audio signature when moving between distinct areas
+   * (Nest, Backstreets, Wing, Outskirts, Finger, Workshop, Fixer Office).
+   * Uses cueTone and cueNoise directly on sfxGain so it stays balanced and respects SFX settings.
+   */
+  playLocationCue(world, prevWorld) {
+    if (this.isMuted || this.sfxVolume <= 0) return;
+    this.init();
+    if (!this.ctx || !this.sfxGain) return;
+
+    // Do not play cue when entering title, dead, library or dungeon gates (dungeons have their own gate scene)
+    if (!world || world === 'title' || world === 'dead' || world === 'library') return;
+    if (world.startsWith('dungeon-') || (prevWorld && prevWorld.startsWith('dungeon-'))) return;
+
+    const t = this.ctx.currentTime;
+    const bus = this.sfxGain;
+
+    if (world === 'nest') {
+      // Nest: Pristine high-tech corporate serenity (two gentle ascending chimes + soft airy noise)
+      this.cueTone(bus, t, { freq: 523.25, to: 659.25, type: 'sine', peak: 0.08, attack: 0.05, decay: 0.8 });
+      this.cueTone(bus, t + 0.15, { freq: 783.99, type: 'triangle', peak: 0.05, attack: 0.02, decay: 0.7 });
+      this.cueNoise(bus, t, { dur: 0.8, type: 'bandpass', freq: 1600, q: 2, peak: 0.04, attack: 0.2 });
+    } else if (world === 'backstreets' || world === 'childhood') {
+      // Backstreets: Alley grit, low rumble and metallic scrape
+      this.cueTone(bus, t, { freq: 110, to: 73.42, type: 'sawtooth', peak: 0.07, attack: 0.02, decay: 0.8 });
+      this.cueNoise(bus, t, { dur: 0.9, type: 'bandpass', freq: 550, to: 240, q: 2, peak: 0.06, attack: 0.1 });
+    } else if (world === 'wing') {
+      // Wing: Clinical corporate humming and electronic data chime
+      this.cueTone(bus, t, { freq: 440, to: 880, type: 'sine', peak: 0.08, attack: 0.02, decay: 0.6 });
+      this.cueNoise(bus, t, { dur: 0.6, type: 'highpass', freq: 2800, q: 1, peak: 0.04, attack: 0.05 });
+    } else if (world === 'outskirts') {
+      // Outskirts: Desolate wasteland low wind drone & sandy gust
+      this.cueTone(bus, t, { freq: 65.41, to: 48.99, type: 'sine', peak: 0.1, attack: 0.1, decay: 1.0 });
+      this.cueNoise(bus, t, { dur: 1.2, type: 'lowpass', freq: 400, to: 220, q: 1.2, peak: 0.08, attack: 0.3 });
+    } else if (world.startsWith('finger-') || world === 'syndicate') {
+      // Finger / Syndicate: Resonant underworld oath strike
+      this.cueTone(bus, t, { freq: 130.81, to: 98, type: 'triangle', peak: 0.1, attack: 0.01, decay: 0.9 });
+      this.cueTone(bus, t, { freq: 392, type: 'sine', peak: 0.06, attack: 0.02, decay: 0.7 });
+      this.cueNoise(bus, t, { dur: 0.7, type: 'bandpass', freq: 800, to: 300, q: 2.5, peak: 0.05, attack: 0.05 });
+    } else if (world === 'workshop') {
+      // Workshop: Forge tap ping and steam
+      this.cueTone(bus, t, { freq: 880, to: 440, type: 'triangle', peak: 0.09, attack: 0.005, decay: 0.5 });
+      this.cueNoise(bus, t, { dur: 0.5, type: 'bandpass', freq: 1400, q: 1.5, peak: 0.05, attack: 0.02 });
+    } else if (world === 'fixer') {
+      // Fixer: Street bell / office door chime
+      this.cueTone(bus, t, { freq: 392, to: 523.25, type: 'sine', peak: 0.07, attack: 0.02, decay: 0.8 });
+      this.cueNoise(bus, t, { dur: 0.5, type: 'bandpass', freq: 1200, q: 1, peak: 0.03, attack: 0.05 });
+    } else {
+      // Subtle atmospheric shift
+      this.cueTone(bus, t, { freq: 220, to: 261.63, type: 'sine', peak: 0.05, attack: 0.1, decay: 0.7 });
+    }
   }
 
   /** Kept for callers that still name a scape directly. */
@@ -1100,6 +1166,20 @@ class AudioEngine {
       const thud = lite ? 100 : 400;
       this.cueTone(bus, at(thud), { freq: 90, to: 40, peak: 0.26, attack: 0.01, decay: 0.7 });
       this.cueNoise(bus, at(thud), { dur: 0.35, type: 'bandpass', freq: 180, q: 1.5, peak: 0.1, attack: 0.02 });
+    } else if (id === 'ego') {
+      // Carmen's voice shatters, inner will surges into a radiant harmonic chord and crystalline strike
+      if (!lite) {
+        this.cueNoise(bus, at(200), { dur: 0.6, type: 'highpass', freq: 3600, to: 1200, q: 2, peak: 0.08, attack: 0.01 });
+        [220, 277.18, 329.63, 440, 554.37].forEach((f, i) => {
+          this.cueTone(bus, at(600 + i * 140), { freq: f, type: i % 2 ? 'triangle' : 'sine', peak: 0.05, attack: 1.2, decay: 0.8 });
+        });
+      }
+      const burst = lite ? 200 : 2500;
+      this.cueTone(bus, at(burst), { freq: 110, to: 55, peak: 0.22, attack: 0.01, decay: 1.0 });
+      [554.37, 880, 1108.73, 1318.51].forEach((f, i) => {
+        this.cueTone(bus, at(burst + i * 20), { freq: f, type: 'triangle', peak: 0.12 / (1 + i * 0.35), attack: 0.005, decay: lite ? 0.8 : 1.6 });
+      });
+      this.cueNoise(bus, at(burst), { dur: 0.45, type: 'bandpass', freq: 2600, q: 1.5, peak: 0.09, attack: 0.01 });
     }
   }
 

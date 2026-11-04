@@ -335,10 +335,10 @@ Có bản tiếng Anh tương ứng.
 
 Công cụ quay đã có lệnh mở từng cảnh: `node tools/film/film_cutscene.mjs --scene=<tên>`. Ghi lại cảnh nào quá to, quá nhỏ hay khó chịu; mình sẽ chỉnh theo danh sách đó.
 
-## Để sau buổi nghe thử
+## Các hạng mục đã bổ sung hoàn thiện (ĐÃ HOÀN THÀNH)
 
-- **Âm báo ngắn khi đổi nơi.** Nền âm theo nơi đã có (`ambienceScapes.js:193`, riêng cho Nest, Backstreets, Wing và từng Finger), nhưng nền đổi dần nên người chơi khó nhận ra mình vừa đổi chỗ. Thêm một âm khoảng một giây lúc đổi nơi, dùng `cueTone` và `cueNoise` của Đợt 110. Chỉ làm khi buổi nghe thử cho thấy mức âm hiện tại đã ổn.
-- **Cảnh thức tỉnh E.G.O.** E.G.O hiếm và lớn, nhưng hiện mới có thẻ chương. Nếu thêm một cảnh nữa thì đây là ứng viên đúng nhất, xếp hạng ngang Claw. Trước khi làm, đo xem bao nhiêu đời trong audit 500 đời có E.G.O.
+- **Âm báo ngắn khi đổi nơi (ĐÃ XONG).** Thêm âm thanh ~1 giây lúc đổi giữa Nest, Backstreets, Wing, Outskirts, Finger, Workshop và Fixer Office bằng `cueTone` và `cueNoise` trên `sfxGain` trong `audioEngine.js:283` (`playLocationCue`). Không kích hoạt khi chuyển sang title hay dungeon gates. Kiểm thử tự động qua `tests/test_cutscene_audio.mjs`.
+- **Cảnh thức tỉnh E.G.O (ĐÃ XONG).** Dựng cảnh cutscene thứ 8 `ego` ngang hạng Claw (`CUTSCENE_RANK.ego = 3`), tự động kích hoạt khi nhân vật thức tỉnh E.G.O (`next.flags` có `EGOAwakened`). Trình diễn vầng hào quang lăng kính rực rỡ `EgoScene.jsx` (`cs-ego`), 4 nhát cắt (`full`, `lite`, `still`, `caption`), âm thanh tiếng vỡ giọng Carmen cùng hợp âm khai mở E.G.O. Đạt chuẩn `check_cutscenes.mjs` (chỉ di chuyển transform & opacity, 0 màu cứng, token E.G.O) và kiểm thử qua `tests/test_cutscene_triggers.mjs` & `tests/test_cutscene_audio.mjs`.
 
 ---
 
