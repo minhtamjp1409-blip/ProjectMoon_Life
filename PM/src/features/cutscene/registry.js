@@ -146,6 +146,16 @@ export const CUTSCENES = {
       { vi: 'Món nợ với Gia Đình của The Middle phải được hoàn trả.', en: 'Every debt against the Family must be repaid.' }
     ],
     keyLine: 2
+  },
+  // Complete E.G.O Awakening (Effloresced E.G.O): absolute personal will, prismatic radiance, ego weapon blooming
+  ego_full: {
+    ms: { full: 5000, lite: 1000, still: 1800, caption: 1200 },
+    lines: [
+      { vi: 'Mọi do dự và tổn thương kết tinh thành ý chí tuyệt đối.', en: 'Every doubt and wound crystallizes into absolute resolve.' },
+      { vi: 'Ánh sáng của riêng bạn bừng nở, xua tan mọi bóng tối và cám dỗ.', en: 'Your own light blooms, sweeping away all shadows and whispers.' },
+      { vi: 'E.G.O hoàn chỉnh đã khai hoa.', en: 'The Effloresced E.G.O has fully blossomed.' }
+    ],
+    keyLine: 2
   }
 };
 

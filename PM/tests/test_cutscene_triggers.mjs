@@ -67,18 +67,26 @@ distorted.flags = [...(distorted.flags || []), 'Distorted'];
 assert.equal(cutsceneFor(humanBefore, distorted), 'distort', 'yielding to Carmen plays the distort scene');
 assert.equal(cutsceneFor(distorted, cloneChar(distorted)), null, 'an already distorted character plays nothing later');
 
+// 2f. Complete E.G.O Awakening (Effloresced E.G.O) plays when egoName is bestowed
+const egoNamed = cloneChar(egoAwakened);
+egoNamed.egoName = 'Penitence of Ash';
+assert.equal(cutsceneFor(egoAwakened, egoNamed), 'ego_full', 'bestowing an E.G.O name plays complete ego cutscene');
+assert.equal(cutsceneFor(egoNamed, cloneChar(egoNamed)), null, 'already effloresced ego plays nothing later');
+
 // 3. Ranks: a stronger scene replaces a weaker one, a weaker or equal one is dropped
 assert.equal(outranks('claw', null), true);
 assert.equal(outranks('death', 'claw'), true);
 assert.equal(outranks('claw', 'death'), false);
 assert.equal(outranks('claw', 'claw'), false);
 assert.equal(outranks('ego', 'carmen'), true, 'E.G.O awakening outranks Carmen call');
+assert.equal(outranks('ego_full', 'ego'), true, 'Complete E.G.O outranks initial E.G.O');
 assert.equal(outranks('distort', 'ego'), true, 'Distortion manifestation outranks E.G.O and Carmen');
 assert.equal(outranks('distort', 'claw'), true);
 assert.equal(outranks('library', 'distort'), true, 'Library threshold outranks Distortion');
 assert.equal(outranks('claw', 'ego'), false, 'equal ranks never replace each other');
 assert.equal(CUTSCENE_RANK.library, 5, 'Library ranks equal to Death');
 assert.equal(CUTSCENE_RANK.distort, 4, 'Distortion ranks equal to Color');
+assert.equal(CUTSCENE_RANK.ego_full, 4, 'Complete E.G.O ranks equal to Color');
 assert.equal(CUTSCENE_RANK.prescript, 4, 'Prescript ranks equal to Color');
 assert.equal(CUTSCENE_RANK.ironrule, 4, 'Ironrule ranks equal to Color');
 assert.equal(CUTSCENE_RANK.vengeance, 4, 'Vengeance ranks equal to Color');

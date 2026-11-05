@@ -81,6 +81,7 @@ body:has(> .cutscene) .ant-notification { visibility: hidden; }
 .cs-flash.is-silver { background: var(--prescript-silver); }
 .cs-flash.is-bronze { background: var(--thumb-bronze); }
 .cs-flash.is-violet { background: var(--middle-violet); }
+.cs-flash.is-gold { background: var(--ego-gold); }
 
 /* ---------- words ---------- */
 .cs-lines {
@@ -816,6 +817,117 @@ body:has(> .cutscene) .ant-notification { visibility: hidden; }
 .cs-vengeance.is-still .cs-vengeance-chain-ring { opacity: 0.5; }
 .cs-vengeance.is-still .cs-vengeance-mark { opacity: 0.8; }
 
+/* ---------- ego_full: complete E.G.O efflorescence, prismatic halo, radiant light wings ---------- */
+.cs-egofull .cs-scrim { background: var(--ego-veil); }
+.cs-egofull-veil { position: absolute; inset: 0; background: var(--ego-veil); }
+.cs-egofull-radiance {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, var(--ego-bloom) 0%, transparent 70%);
+  opacity: 0;
+}
+.cs-egofull-stage {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(78vmin, 380px);
+  height: min(78vmin, 380px);
+  margin: calc(min(78vmin, 380px) / -2) 0 0 calc(min(78vmin, 380px) / -2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cs-egofull-halo {
+  position: absolute;
+  width: min(72vmin, 320px);
+  height: min(72vmin, 320px);
+  color: var(--ego-gold);
+  opacity: 0;
+}
+.cs-egofull-halo-svg { width: 100%; height: 100%; }
+.cs-egofull-wings {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  pointer-events: none;
+}
+.cs-egofull-wing {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 42%;
+  opacity: 0;
+}
+.cs-egofull-wing.is-left {
+  align-items: flex-end;
+  transform-origin: right center;
+}
+.cs-egofull-wing.is-right {
+  align-items: flex-start;
+  transform-origin: left center;
+}
+.cs-egofull-feather {
+  height: 4px;
+  background: linear-gradient(90deg, var(--ego-gold), transparent);
+  border-radius: 2px;
+  width: calc(100% - var(--i) * 18%);
+}
+.cs-egofull-wing.is-left .cs-egofull-feather {
+  background: linear-gradient(-90deg, var(--ego-gold), transparent);
+}
+.cs-egofull-core-container {
+  position: absolute;
+  width: 60px;
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cs-egofull-blade {
+  width: 50px;
+  height: 150px;
+  color: var(--ego-gold);
+  opacity: 0;
+}
+.cs-egofull-blade-svg { width: 100%; height: 100%; }
+.cs-egofull-sigil {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--ego-core) 25%, var(--ego-bloom) 80%);
+  opacity: 0;
+}
+.cs-egofull .cs-line.is-key {
+  color: var(--ego-core);
+  text-shadow: 0 0 32px var(--ego-gold), 0 2px 14px var(--dusk);
+}
+
+.cs-egofull.is-full .cs-scrim { animation: cs-in 500ms ease-out both; }
+.cs-egofull.is-full .cs-egofull-halo { animation: cs-egofull-halo 4600ms var(--ease-tactile) 200ms both; }
+.cs-egofull.is-full .cs-egofull-wings .cs-egofull-wing { animation: cs-egofull-wings 4200ms var(--ease-tactile) 600ms both; }
+.cs-egofull.is-full .cs-egofull-blade { animation: cs-egofull-blade 4000ms var(--ease-tactile) 1200ms both; }
+.cs-egofull.is-full .cs-egofull-sigil { animation: cs-egofull-sigil 2400ms ease-out 2200ms both; }
+.cs-egofull.is-full .cs-egofull-radiance { animation: cs-egofull-radiance 3200ms ease-out 2400ms both; }
+.cs-egofull.is-full .cs-flash { animation: cs-flash 1100ms ease-out 2500ms both; }
+.cs-egofull.is-full .cs-line-1 { animation: cs-line 1700ms ease-out 400ms both; }
+.cs-egofull.is-full .cs-line-2 { animation: cs-line 1700ms ease-out 1800ms both; }
+.cs-egofull.is-full .cs-line.is-key { animation: cs-key 2200ms var(--ease-tactile) 2600ms both; }
+
+.cs-egofull.is-lite .cs-scrim { animation: cs-in 150ms ease-out both; }
+.cs-egofull.is-lite .cs-egofull-halo { animation: cs-egofull-halo 800ms ease-out both; }
+.cs-egofull.is-lite .cs-egofull-blade { animation: cs-egofull-blade 800ms ease-out both; }
+.cs-egofull.is-lite .cs-egofull-wings { display: none; }
+.cs-egofull.is-lite .cs-flash { animation: cs-flash 500ms ease-out both; }
+.cs-egofull.is-lite .cs-line.is-key { animation: cs-key 800ms var(--ease-tactile) 100ms both; }
+
+.cs-egofull.is-still .cs-egofull-halo { opacity: 0.85; }
+.cs-egofull.is-still .cs-egofull-blade { opacity: 0.95; }
+.cs-egofull.is-still .cs-egofull-wings .cs-egofull-wing { opacity: 0.6; }
+.cs-egofull.is-still .cs-egofull-radiance { opacity: 0.35; }
+
 /* ---------- dungeon gate: the interface fades, the dungeon's own backdrop shows whole, its name as a title card ---------- */
 /* The backdrop lives in .world behind the shell; every other part of the shell steps aside while the gate plays */
 body:has(> .cutscene.cs-dungeon.is-full) .shell > :not(.world) { animation: cs-out 400ms ease-in forwards; }
@@ -1242,6 +1354,32 @@ body:has(> .cutscene.cs-dungeon.is-still) .shell > :not(.world) { opacity: 0; }
   100% { opacity: 0.8; transform: scale(1); }
 }
 
+@keyframes cs-egofull-halo {
+  0% { opacity: 0; transform: scale(0.4) rotate(-30deg); }
+  45% { opacity: 0.95; transform: scale(1.05) rotate(0deg); }
+  100% { opacity: 0.75; transform: scale(1.15) rotate(15deg); }
+}
+@keyframes cs-egofull-wings {
+  0% { opacity: 0; transform: scaleX(0.2) scaleY(0.6); }
+  45% { opacity: 0.95; transform: scaleX(1) scaleY(1); }
+  100% { opacity: 0.7; transform: scaleX(1.08) scaleY(1.04); }
+}
+@keyframes cs-egofull-blade {
+  0% { opacity: 0; transform: translateY(24px) scale(0.85); }
+  40% { opacity: 1; transform: translateY(0) scale(1.06); }
+  100% { opacity: 0.85; transform: translateY(0) scale(1); }
+}
+@keyframes cs-egofull-sigil {
+  0% { opacity: 0; transform: scale(0.2); }
+  50% { opacity: 1; transform: scale(1.3); }
+  100% { opacity: 0.8; transform: scale(1); }
+}
+@keyframes cs-egofull-radiance {
+  0% { opacity: 0; transform: scale(0.4); }
+  50% { opacity: 0.85; transform: scale(1.1); }
+  100% { opacity: 0.55; transform: scale(1.3); }
+}
+
 @media (max-width: 640px) {
   .cutscene {
     height: 100dvh;
@@ -1256,5 +1394,19 @@ body:has(> .cutscene.cs-dungeon.is-still) .shell > :not(.world) { opacity: 0; }
     bottom: max(14px, env(safe-area-inset-bottom, 14px));
     padding: 0 16px;
     font-size: 13px;
+  }
+}
+
+@media (max-height: 500px) {
+  .cs-line {
+    font-size: 15px;
+    translate: 0 calc(-1 * min(30vmin, 90px) - 14px);
+  }
+  .cs-skip {
+    bottom: 8px;
+    right: 12px;
+    min-height: 36px;
+    padding: 0 12px;
+    font-size: 12px;
   }
 }

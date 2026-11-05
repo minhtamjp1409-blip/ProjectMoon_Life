@@ -21,6 +21,7 @@ import { LibraryScene } from './scenes/LibraryScene';
 import { PrescriptScene } from './scenes/PrescriptScene';
 import { IronruleScene } from './scenes/IronruleScene';
 import { VengeanceScene } from './scenes/VengeanceScene';
+import { EgoFullScene } from './scenes/EgoFullScene';
 import '../../styles/ui/cutscene.css';
 
 const SCENE_ART = {
@@ -36,7 +37,8 @@ const SCENE_ART = {
   library: LibraryScene,
   prescript: PrescriptScene,
   ironrule: IronruleScene,
-  vengeance: VengeanceScene
+  vengeance: VengeanceScene,
+  ego_full: EgoFullScene
 };
 const SKIP_KEYS = new Set(['Enter', 'Escape', ' ']);
 

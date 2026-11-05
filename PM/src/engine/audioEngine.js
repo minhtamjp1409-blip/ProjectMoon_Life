@@ -1235,6 +1235,20 @@ class AudioEngine {
         this.cueTone(bus, at(oath + i * 30), { freq: f, type: 'sawtooth', peak: 0.09 / (1 + i * 0.35), attack: 0.01, decay: lite ? 0.8 : 1.9 });
       });
       this.cueTone(bus, at(oath), { freq: 48, to: 28, peak: 0.22, attack: 0.01, decay: 0.9 });
+    } else if (id === 'ego_full') {
+      // Effloresced E.G.O: radiant triad ascent, augmented-fourth prismatic resonance, crystalline will
+      if (!lite) {
+        this.cueNoise(bus, at(200), { dur: 0.8, type: 'bandpass', freq: 3200, to: 1600, q: 2.5, peak: 0.08, attack: 0.05 });
+        [261.63, 329.63, 392.0, 523.25].forEach((f, i) => {
+          this.cueTone(bus, at(600 + i * 180), { freq: f, type: 'triangle', peak: 0.06, attack: 0.8, decay: 0.8 });
+        });
+      }
+      const burst = lite ? 250 : 2500;
+      this.cueTone(bus, at(burst), { freq: 110, to: 55, peak: 0.24, attack: 0.005, decay: 0.9 });
+      [523.25, 659.25, 739.99, 1046.5, 1318.51].forEach((f, i) => {
+        this.cueTone(bus, at(burst + i * 25), { freq: f, type: 'triangle', peak: 0.12 / (1 + i * 0.3), attack: 0.005, decay: lite ? 0.8 : 2.0 });
+      });
+      this.cueNoise(bus, at(burst), { dur: 0.5, type: 'bandpass', freq: 3000, q: 1.8, peak: 0.1, attack: 0.01 });
     }
   }
 

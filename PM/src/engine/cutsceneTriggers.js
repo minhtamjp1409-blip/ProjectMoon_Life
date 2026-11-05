@@ -4,7 +4,7 @@ const CARMEN_EVENT_ID = 'ego_carmen_crossroad';
 
 // Which full-screen scene a change of state deserves. The engine only asks; the screen decides how it looks and how long it runs.
 // One commit plays at most one scene: the higher rank wins and a lower one is dropped, never queued.
-export const CUTSCENE_RANK = { death: 5, library: 5, color: 4, savior: 4, finger: 4, distort: 4, prescript: 4, ironrule: 4, vengeance: 4, ego: 3, claw: 3, carmen: 2, dungeon: 1 };
+export const CUTSCENE_RANK = { death: 5, library: 5, color: 4, savior: 4, finger: 4, distort: 4, prescript: 4, ironrule: 4, vengeance: 4, ego_full: 4, ego: 3, claw: 3, carmen: 2, dungeon: 1 };
 
 export function cutsceneFor(prev, next) {
   if (!prev || !next) return null;
@@ -34,6 +34,10 @@ export function cutsceneFor(prev, next) {
   if (next.finger === 'Middle' && next.pendingEvent?.id && next.pendingEvent.id !== prev.pendingEvent?.id &&
       (next.pendingEvent.id === 'm_middle_empty_chair_vigil' || next.pendingEvent.id === 'm_middle_night_visit' || next.pendingEvent.id === 'm_career_middle_promotion')) {
     return 'vengeance';
+  }
+  // Complete E.G.O efflorescence (effloresced ego / named ego)
+  if ((next.egoName && !prev.egoName) || (next.flags?.includes('EGOEffloresced') && !prev.flags?.includes('EGOEffloresced')) || (next.unlockedRecords?.includes('ego_effloresced') && !prev.unlockedRecords?.includes('ego_effloresced'))) {
+    return 'ego_full';
   }
   // Distortion manifestation: yielding to Carmen / distortion transformation
   if (next.flags?.includes('Distorted') && !prev.flags?.includes('Distorted')) return 'distort';
