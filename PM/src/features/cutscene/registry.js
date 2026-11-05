@@ -116,6 +116,36 @@ export const CUTSCENES = {
       { vi: 'Chào mừng bạn đến với Thư Viện.', en: 'Welcome to the Library.' }
     ],
     keyLine: 2
+  },
+  // The Index Prescript: celestial scroll descending, broken wax seal, divine silver directives
+  prescript: {
+    ms: { full: 4800, lite: 1000, still: 1800, caption: 1200 },
+    lines: [
+      { vi: 'Từ trần nhà rạn nứt, một cuộn giấy sớ buông rơi.', en: 'From the fractured ceiling, a prescript scroll drifts downward.' },
+      { vi: 'Dấu niêm sáp vỡ vụn, và những dòng chữ bạc hiện ra.', en: 'The wax seal breaks, revealing silver-glowing script.' },
+      { vi: 'Mệnh lệnh của The Index đã ban xuống.', en: 'The Index has delivered its Prescript.' }
+    ],
+    keyLine: 2
+  },
+  // The Thumb Iron Rule: loaded muzzle, stamped discipline bullet, rigid obedience
+  ironrule: {
+    ms: { full: 4600, lite: 1000, still: 1800, caption: 1200 },
+    lines: [
+      { vi: 'Căn phòng chìm vào sự phục tùng tuyệt đối.', en: 'The chamber falls into absolute subjugation.' },
+      { vi: 'Tiếng lên đạn kim loại khô khốc vang lên bên tai.', en: 'A cold metallic slide racks beside your ear.' },
+      { vi: 'Thiết luật của The Thumb là bất khả lay chuyển.', en: 'The iron rule of the Thumb is absolute.' }
+    ],
+    keyLine: 2
+  },
+  // The Middle Vengeance: ledger of grudges turning, indelible violet ink, debt to the Family
+  vengeance: {
+    ms: { full: 4800, lite: 1000, still: 1800, caption: 1200 },
+    lines: [
+      { vi: 'Từng trang sổ thù hận lật mở trong bóng tối.', en: 'The pages of the ledger turn in the dark.' },
+      { vi: 'Mực tím thấm sâu vào da thịt như lời thề không bao giờ phai.', en: 'Violet ink seeps into flesh like an unfading vow.' },
+      { vi: 'Món nợ với Gia Đình của The Middle phải được hoàn trả.', en: 'Every debt against the Family must be repaid.' }
+    ],
+    keyLine: 2
   }
 };
 

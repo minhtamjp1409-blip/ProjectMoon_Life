@@ -1200,6 +1200,41 @@ class AudioEngine {
       [261.63, 329.63, 392.0, 587.33].forEach((f, i) => {
         this.cueTone(bus, at(ring + i * 40), { freq: f, type: 'sine', peak: 0.09 / (1 + i * 0.3), attack: 0.05, decay: lite ? 0.9 : 2.4 });
       });
+    } else if (id === 'prescript') {
+      // Index Prescript: soft parchment rustle, silver bell chime, wax seal crack resonance
+      if (!lite) {
+        this.cueNoise(bus, at(200), { dur: 1.2, type: 'bandpass', freq: 1400, to: 700, q: 1.8, peak: 0.06, attack: 0.1 });
+        [1320, 1760].forEach((f, i) => {
+          this.cueTone(bus, at(600 + i * 220), { freq: f, type: 'sine', peak: 0.05, attack: 0.02, decay: 1.0 });
+        });
+      }
+      const chime = lite ? 250 : 2300;
+      [1760, 2640, 3520].forEach((f, i) => {
+        this.cueTone(bus, at(chime + i * 30), { freq: f, type: 'triangle', peak: 0.11 / (1 + i * 0.4), attack: 0.005, decay: lite ? 0.8 : 1.8 });
+      });
+      this.cueTone(bus, at(chime), { freq: 220, to: 110, peak: 0.14, attack: 0.01, decay: 0.7 });
+    } else if (id === 'ironrule') {
+      // Thumb Discipline: metallic slide rack, heavy percussive anvil strike, cold brass resonance
+      if (!lite) {
+        this.cueNoise(bus, at(200), { dur: 0.35, type: 'bandpass', freq: 2400, to: 1100, q: 3, peak: 0.12, attack: 0.01 });
+        this.cueTone(bus, at(500), { freq: 75, peak: 0.08, attack: 0.3, decay: 1.0 });
+      }
+      const strike = lite ? 250 : 2200;
+      this.cueTone(bus, at(strike), { freq: 90, to: 35, peak: 0.28, attack: 0.005, decay: 0.7 });
+      this.cueTone(bus, at(strike), { freq: 1480, to: 880, type: 'triangle', peak: 0.14, attack: 0.005, decay: 0.35 });
+      this.cueNoise(bus, at(strike), { dur: 0.25, type: 'highpass', freq: 2800, peak: 0.12, attack: 0.005 });
+    } else if (id === 'vengeance') {
+      // Middle Vengeance: heavy pulse beats, grinding chains, deep violet oath gong
+      if (!lite) {
+        this.cueBeat(bus, at(150), 0.32);
+        this.cueNoise(bus, at(800), { dur: 0.6, type: 'bandpass', freq: 1800, to: 2600, q: 2.2, peak: 0.08, attack: 0.02 });
+        this.cueBeat(bus, at(1400), 0.22);
+      }
+      const oath = lite ? 250 : 2400;
+      [55, 110, 164.81].forEach((f, i) => {
+        this.cueTone(bus, at(oath + i * 30), { freq: f, type: 'sawtooth', peak: 0.09 / (1 + i * 0.35), attack: 0.01, decay: lite ? 0.8 : 1.9 });
+      });
+      this.cueTone(bus, at(oath), { freq: 48, to: 28, peak: 0.22, attack: 0.01, decay: 0.9 });
     }
   }
 

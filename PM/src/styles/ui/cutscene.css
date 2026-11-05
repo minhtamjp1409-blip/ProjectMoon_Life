@@ -78,6 +78,9 @@ body:has(> .cutscene) .ant-notification { visibility: hidden; }
 }
 .cs-flash.is-crimson { background: var(--distort-crimson); }
 .cs-flash.is-amber { background: var(--library-amber); }
+.cs-flash.is-silver { background: var(--prescript-silver); }
+.cs-flash.is-bronze { background: var(--thumb-bronze); }
+.cs-flash.is-violet { background: var(--middle-violet); }
 
 /* ---------- words ---------- */
 .cs-lines {
@@ -494,6 +497,325 @@ body:has(> .cutscene) .ant-notification { visibility: hidden; }
 .cs-library.is-still .cs-library-portal { opacity: 0.7; }
 .cs-library.is-still .cs-library-glow { opacity: 0.4; }
 
+/* ---------- prescript: celestial scroll descending, broken wax seal, silver directives ---------- */
+.cs-prescript .cs-scrim { background: var(--prescript-veil); }
+.cs-prescript-veil { position: absolute; inset: 0; background: var(--prescript-veil); }
+.cs-prescript-aura {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, var(--prescript-bloom) 0%, transparent 64%);
+  opacity: 0;
+}
+.cs-prescript-scroll {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(72vmin, 320px);
+  height: min(88vmin, 390px);
+  margin: calc(min(88vmin, 390px) / -2) 0 0 calc(min(72vmin, 320px) / -2);
+  display: flex;
+  flex-direction: column;
+  transform-origin: center top;
+  opacity: 0;
+}
+.cs-prescript-rod {
+  height: 8px;
+  background: var(--prescript-silver);
+  border-radius: 4px;
+}
+.cs-prescript-parchment {
+  flex: 1;
+  background: var(--prescript-parchment);
+  border-left: 2px solid var(--prescript-silver);
+  border-right: 2px solid var(--prescript-silver);
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-shadow: var(--shadow-pop);
+}
+.cs-prescript-body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.cs-prescript-script-line {
+  height: 3px;
+  background: var(--prescript-silver);
+  transform-origin: left center;
+  opacity: 0;
+}
+.cs-prescript-script-line:nth-child(even) { width: 68%; }
+.cs-prescript-seal-container {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 60px;
+}
+.cs-prescript-seal {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--prescript-seal) 35%, var(--prescript-seal-dark) 100%);
+  box-shadow: 0 4px 14px var(--prescript-seal-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--prescript-silver);
+  opacity: 0;
+}
+.cs-prescript-insignia { width: 44px; height: 44px; }
+.cs-prescript-shards {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.cs-prescript-shard {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  background: var(--prescript-seal);
+  border-radius: 2px;
+  opacity: 0;
+}
+.cs-prescript .cs-line.is-key {
+  color: var(--prescript-core);
+  text-shadow: 0 0 28px var(--prescript-silver), 0 2px 14px var(--dusk);
+}
+
+.cs-prescript.is-full .cs-scrim { animation: cs-in 500ms ease-out both; }
+.cs-prescript.is-full .cs-prescript-scroll { animation: cs-prescript-scroll 4600ms var(--ease-tactile) 200ms both; }
+.cs-prescript.is-full .cs-prescript-aura { animation: cs-prescript-aura 3200ms ease-out 1800ms both; }
+.cs-prescript.is-full .cs-prescript-script-line { animation: cs-prescript-line 400ms ease-out calc(800ms + var(--i) * 160ms) both; }
+.cs-prescript.is-full .cs-prescript-seal { animation: cs-prescript-seal 2800ms var(--ease-tactile) 1600ms both; }
+.cs-prescript.is-full .cs-prescript-shard { animation: cs-prescript-shard 1200ms ease-out 2300ms both; }
+.cs-prescript.is-full .cs-flash { animation: cs-flash 1000ms ease-out 2300ms both; }
+.cs-prescript.is-full .cs-line-1 { animation: cs-line 1700ms ease-out 400ms both; }
+.cs-prescript.is-full .cs-line-2 { animation: cs-line 1700ms ease-out 1800ms both; }
+.cs-prescript.is-full .cs-line.is-key { animation: cs-key 2000ms var(--ease-tactile) 2500ms both; }
+
+.cs-prescript.is-lite .cs-scrim { animation: cs-in 150ms ease-out both; }
+.cs-prescript.is-lite .cs-prescript-scroll { animation: cs-prescript-scroll 800ms ease-out both; }
+.cs-prescript.is-lite .cs-prescript-seal { animation: cs-prescript-seal 800ms ease-out both; }
+.cs-prescript.is-lite .cs-prescript-aura { display: none; }
+.cs-prescript.is-lite .cs-flash { animation: cs-flash 500ms ease-out both; }
+.cs-prescript.is-lite .cs-line.is-key { animation: cs-key 800ms var(--ease-tactile) 100ms both; }
+
+.cs-prescript.is-still .cs-prescript-scroll { opacity: 0.9; }
+.cs-prescript.is-still .cs-prescript-seal { opacity: 0.9; }
+.cs-prescript.is-still .cs-prescript-aura { opacity: 0.3; }
+
+/* ---------- ironrule: loaded muzzle, stamped discipline bullet, rigid obedience ---------- */
+.cs-ironrule .cs-scrim { background: var(--thumb-veil); }
+.cs-ironrule-veil { position: absolute; inset: 0; background: var(--thumb-veil); }
+.cs-ironrule-stage {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(72vmin, 340px);
+  height: min(72vmin, 340px);
+  margin: calc(min(72vmin, 340px) / -2) 0 0 calc(min(72vmin, 340px) / -2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cs-ironrule-muzzle {
+  position: absolute;
+  width: min(52vmin, 220px);
+  height: min(52vmin, 220px);
+  color: var(--thumb-steel);
+  opacity: 0;
+}
+.cs-ironrule-rifling { width: 100%; height: 100%; }
+.cs-ironrule-bullet {
+  position: absolute;
+  width: 28px;
+  height: 84px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  opacity: 0;
+}
+.cs-ironrule-bullet-tip {
+  width: 22px;
+  height: 24px;
+  border-radius: 11px 11px 0 0;
+  background: var(--thumb-bronze);
+}
+.cs-ironrule-bullet-body {
+  width: 22px;
+  height: 52px;
+  background: var(--thumb-dark-steel);
+  border-left: 2px solid var(--thumb-steel);
+  border-right: 2px solid var(--thumb-steel);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  padding: 6px 0;
+}
+.cs-ironrule-stamp {
+  height: 2px;
+  background: var(--thumb-bronze);
+  margin: 0 4px;
+}
+.cs-ironrule-bullet-rim {
+  width: 26px;
+  height: 8px;
+  background: var(--thumb-steel);
+  border-radius: 1px;
+}
+.cs-ironrule-bar-container {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(85vw, 440px);
+  height: 24px;
+}
+.cs-ironrule-bar {
+  width: 100%;
+  height: 18px;
+  background: var(--thumb-steel);
+  border-top: 2px solid var(--thumb-core);
+  border-bottom: 2px solid var(--thumb-dark-steel);
+  box-shadow: 0 4px 16px var(--dusk);
+  opacity: 0;
+}
+.cs-ironrule-sparks {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.cs-ironrule-spark {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--thumb-spark);
+  opacity: 0;
+}
+.cs-ironrule .cs-line.is-key {
+  color: var(--thumb-core);
+  text-shadow: 0 0 28px var(--thumb-bronze), 0 2px 14px var(--dusk);
+}
+
+.cs-ironrule.is-full .cs-scrim { animation: cs-in 500ms ease-out both; }
+.cs-ironrule.is-full .cs-ironrule-muzzle { animation: cs-ironrule-muzzle 4200ms var(--ease-tactile) 200ms both; }
+.cs-ironrule.is-full .cs-ironrule-bullet { animation: cs-ironrule-bullet 3600ms ease-out 800ms both; }
+.cs-ironrule.is-full .cs-ironrule-bar { animation: cs-ironrule-bar 2400ms var(--ease-tactile) 2000ms both; }
+.cs-ironrule.is-full .cs-ironrule-spark { animation: cs-ironrule-spark 800ms ease-out 2200ms both; }
+.cs-ironrule.is-full .cs-flash { animation: cs-flash 1000ms ease-out 2200ms both; }
+.cs-ironrule.is-full .cs-line-1 { animation: cs-line 1600ms ease-out 400ms both; }
+.cs-ironrule.is-full .cs-line-2 { animation: cs-line 1600ms ease-out 1700ms both; }
+.cs-ironrule.is-full .cs-line.is-key { animation: cs-key 1900ms var(--ease-tactile) 2400ms both; }
+
+.cs-ironrule.is-lite .cs-scrim { animation: cs-in 150ms ease-out both; }
+.cs-ironrule.is-lite .cs-ironrule-muzzle { animation: cs-ironrule-muzzle 800ms ease-out both; }
+.cs-ironrule.is-lite .cs-ironrule-bar { animation: cs-ironrule-bar 800ms ease-out both; }
+.cs-ironrule.is-lite .cs-ironrule-bullet { display: none; }
+.cs-ironrule.is-lite .cs-flash { animation: cs-flash 500ms ease-out both; }
+.cs-ironrule.is-lite .cs-line.is-key { animation: cs-key 800ms var(--ease-tactile) 100ms both; }
+
+.cs-ironrule.is-still .cs-ironrule-muzzle { opacity: 0.7; }
+.cs-ironrule.is-still .cs-ironrule-bar { opacity: 0.9; }
+.cs-ironrule.is-still .cs-ironrule-bullet { opacity: 0.6; }
+
+/* ---------- vengeance: ledger turning, violet ink, debt to the Family ---------- */
+.cs-vengeance .cs-scrim { background: var(--middle-veil); }
+.cs-vengeance-veil { position: absolute; inset: 0; background: var(--middle-veil); }
+.cs-vengeance-stage {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(75vmin, 350px);
+  height: min(75vmin, 350px);
+  margin: calc(min(75vmin, 350px) / -2) 0 0 calc(min(75vmin, 350px) / -2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cs-vengeance-chain-ring {
+  position: absolute;
+  width: min(68vmin, 300px);
+  height: min(68vmin, 300px);
+  color: var(--middle-chain);
+  opacity: 0;
+}
+.cs-vengeance-chains { width: 100%; height: 100%; }
+.cs-vengeance-tome {
+  position: absolute;
+  width: min(62vmin, 260px);
+  height: min(44vmin, 180px);
+  display: flex;
+  border: 1px solid var(--middle-violet);
+  background: var(--surface-solid);
+  box-shadow: var(--shadow-pop);
+  opacity: 0;
+}
+.cs-vengeance-spine {
+  width: 6px;
+  background: var(--middle-violet);
+}
+.cs-vengeance-page {
+  flex: 1;
+  padding: 16px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+}
+.cs-vengeance-page.is-left { border-right: 1px solid var(--border); }
+.cs-vengeance-row {
+  height: 2px;
+  background: var(--middle-ink);
+  opacity: 0.65;
+}
+.cs-vengeance-ink-blot {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--middle-violet) 0%, transparent 70%);
+  opacity: 0;
+}
+.cs-vengeance-mark {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  color: var(--middle-core);
+  opacity: 0;
+}
+.cs-vengeance .cs-line.is-key {
+  color: var(--middle-core);
+  text-shadow: 0 0 28px var(--middle-violet), 0 2px 14px var(--dusk);
+}
+
+.cs-vengeance.is-full .cs-scrim { animation: cs-in 500ms ease-out both; }
+.cs-vengeance.is-full .cs-vengeance-chain-ring { animation: cs-vengeance-chain 4400ms var(--ease-tactile) 200ms both; }
+.cs-vengeance.is-full .cs-vengeance-tome { animation: cs-vengeance-tome 4000ms var(--ease-tactile) 600ms both; }
+.cs-vengeance.is-full .cs-vengeance-ink-blot { animation: cs-vengeance-ink 2200ms ease-out 1800ms both; }
+.cs-vengeance.is-full .cs-vengeance-mark { animation: cs-vengeance-ink 2000ms var(--ease-tactile) 2200ms both; }
+.cs-vengeance.is-full .cs-flash { animation: cs-flash 1000ms ease-out 2400ms both; }
+.cs-vengeance.is-full .cs-line-1 { animation: cs-line 1700ms ease-out 400ms both; }
+.cs-vengeance.is-full .cs-line-2 { animation: cs-line 1700ms ease-out 1800ms both; }
+.cs-vengeance.is-full .cs-line.is-key { animation: cs-key 2000ms var(--ease-tactile) 2500ms both; }
+
+.cs-vengeance.is-lite .cs-scrim { animation: cs-in 150ms ease-out both; }
+.cs-vengeance.is-lite .cs-vengeance-tome { animation: cs-vengeance-tome 800ms ease-out both; }
+.cs-vengeance.is-lite .cs-vengeance-chain-ring { display: none; }
+.cs-vengeance.is-lite .cs-flash { animation: cs-flash 500ms ease-out both; }
+.cs-vengeance.is-lite .cs-line.is-key { animation: cs-key 800ms var(--ease-tactile) 100ms both; }
+
+.cs-vengeance.is-still .cs-vengeance-tome { opacity: 0.9; }
+.cs-vengeance.is-still .cs-vengeance-chain-ring { opacity: 0.5; }
+.cs-vengeance.is-still .cs-vengeance-mark { opacity: 0.8; }
+
 /* ---------- dungeon gate: the interface fades, the dungeon's own backdrop shows whole, its name as a title card ---------- */
 /* The backdrop lives in .world behind the shell; every other part of the shell steps aside while the gate plays */
 body:has(> .cutscene.cs-dungeon.is-full) .shell > :not(.world) { animation: cs-out 400ms ease-in forwards; }
@@ -856,4 +1178,83 @@ body:has(> .cutscene.cs-dungeon.is-still) .shell > :not(.world) { opacity: 0; }
   0% { opacity: 0; transform: scaleY(0.1); }
   40% { opacity: 0.95; transform: scaleY(1); }
   100% { opacity: 0.8; transform: scaleY(1.05); }
+}
+
+@keyframes cs-prescript-scroll {
+  0% { opacity: 0; transform: translateY(-36px) scale(0.92); }
+  35% { opacity: 0.95; transform: translateY(0) scale(1); }
+  100% { opacity: 0.85; transform: translateY(0) scale(1.02); }
+}
+@keyframes cs-prescript-aura {
+  0% { opacity: 0; transform: scale(0.6); }
+  50% { opacity: 0.8; transform: scale(1.1); }
+  100% { opacity: 0.5; transform: scale(1.25); }
+}
+@keyframes cs-prescript-line {
+  0% { opacity: 0; transform: scaleX(0); }
+  100% { opacity: 0.85; transform: scaleX(1); }
+}
+@keyframes cs-prescript-seal {
+  0% { opacity: 0; transform: scale(0.3); }
+  40% { opacity: 1; transform: scale(1.12); }
+  60% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0.85; transform: scale(1); }
+}
+@keyframes cs-prescript-shard {
+  0% { opacity: 0; transform: translate(0, 0) scale(0.4); }
+  100% { opacity: 0.8; transform: translate(calc(var(--i) * 16px - 24px), calc(var(--i) * 12px - 8px)) rotate(calc(var(--i) * 45deg)) scale(1); }
+}
+
+@keyframes cs-ironrule-muzzle {
+  0% { opacity: 0; transform: scale(0.7) rotate(-15deg); }
+  45% { opacity: 0.85; transform: scale(1) rotate(0deg); }
+  100% { opacity: 0.55; transform: scale(1.06) rotate(6deg); }
+}
+@keyframes cs-ironrule-bullet {
+  0% { opacity: 0; transform: translateY(-28px) scale(0.85); }
+  45% { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0.75; transform: translateY(0) scale(1); }
+}
+@keyframes cs-ironrule-bar {
+  0% { opacity: 0; transform: translateY(-70px) scale(0.9); }
+  35% { opacity: 1; transform: translateY(0) scale(1.02); }
+  100% { opacity: 0.85; transform: translateY(0) scale(1); }
+}
+@keyframes cs-ironrule-spark {
+  0% { opacity: 0; transform: translate(0, 0) scale(0.2); }
+  40% { opacity: 1; transform: translate(calc(var(--i) * 20px - 40px), calc(var(--i) * -12px - 6px)) scale(1); }
+  100% { opacity: 0; transform: translate(calc(var(--i) * 32px - 64px), calc(var(--i) * -16px + 8px)) scale(0.4); }
+}
+
+@keyframes cs-vengeance-chain {
+  0% { opacity: 0; transform: rotate(-25deg) scale(0.8); }
+  45% { opacity: 0.85; transform: rotate(0deg) scale(1); }
+  100% { opacity: 0.6; transform: rotate(12deg) scale(1.05); }
+}
+@keyframes cs-vengeance-tome {
+  0% { opacity: 0; transform: rotateX(20deg) scale(0.88); }
+  40% { opacity: 1; transform: rotateX(0deg) scale(1); }
+  100% { opacity: 0.85; transform: rotateX(0deg) scale(1.03); }
+}
+@keyframes cs-vengeance-ink {
+  0% { opacity: 0; transform: scale(0.25); }
+  50% { opacity: 0.95; transform: scale(1.15); }
+  100% { opacity: 0.8; transform: scale(1); }
+}
+
+@media (max-width: 640px) {
+  .cutscene {
+    height: 100dvh;
+  }
+  .cs-line {
+    font-size: clamp(16px, 4.2vw, 21px);
+    max-width: min(88vw, 30ch);
+    translate: 0 calc(-1 * min(24vmin, 140px) - 28px);
+  }
+  .cs-skip {
+    right: max(14px, env(safe-area-inset-right, 14px));
+    bottom: max(14px, env(safe-area-inset-bottom, 14px));
+    padding: 0 16px;
+    font-size: 13px;
+  }
 }

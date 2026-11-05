@@ -79,6 +79,9 @@ assert.equal(outranks('library', 'distort'), true, 'Library threshold outranks D
 assert.equal(outranks('claw', 'ego'), false, 'equal ranks never replace each other');
 assert.equal(CUTSCENE_RANK.library, 5, 'Library ranks equal to Death');
 assert.equal(CUTSCENE_RANK.distort, 4, 'Distortion ranks equal to Color');
+assert.equal(CUTSCENE_RANK.prescript, 4, 'Prescript ranks equal to Color');
+assert.equal(CUTSCENE_RANK.ironrule, 4, 'Ironrule ranks equal to Color');
+assert.equal(CUTSCENE_RANK.vengeance, 4, 'Vengeance ranks equal to Color');
 assert.equal(CUTSCENE_RANK.ego, 3, 'E.G.O ranks equal to Claw');
 assert.equal(CUTSCENE_RANK.claw, 3);
 assert.equal(CUTSCENE_RANK.death, 5);
@@ -102,7 +105,21 @@ assert.equal(cutsceneFor(capo, underboss), 'finger');
 assert.equal(cutsceneFor(underboss, cloneChar(underboss)), null, 'the seat plays once');
 const notTop = cloneChar(capo);
 notTop.fingerRank = 2;
-assert.equal(cutsceneFor({ ...capo, fingerRank: 1 }, notTop), null, 'a lower Finger rank has no scene');
+assert.equal(cutsceneFor({ ...capo, fingerRank: 1 }, notTop), 'ironrule', 'Thumb promotion plays ironrule');
+
+// Index promotion plays prescript
+const indexProselyte = cloneChar(base);
+Object.assign(indexProselyte, { job: 'Syndicate', finger: 'Index', fingerRank: 0 });
+const indexMessenger = cloneChar(indexProselyte);
+indexMessenger.fingerRank = 1;
+assert.equal(cutsceneFor(indexProselyte, indexMessenger), 'prescript', 'Index promotion plays prescript');
+
+// Middle promotion plays vengeance
+const middleLittle = cloneChar(base);
+Object.assign(middleLittle, { job: 'Syndicate', finger: 'Middle', fingerRank: 0 });
+const middleBig = cloneChar(middleLittle);
+middleBig.fingerRank = 1;
+assert.equal(cutsceneFor(middleLittle, middleBig), 'vengeance', 'Middle promotion plays vengeance');
 assert(Object.values(CUTSCENES.savior.lastWords).every((w) => w.vi && w.en), 'every last word is written in both languages');
 
 // 4. Which cut plays

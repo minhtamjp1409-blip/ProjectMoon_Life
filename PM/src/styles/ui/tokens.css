@@ -73,6 +73,31 @@
   --library-veil: rgba(7, 6, 8, 0.95);
   --library-wood: #8c5d38;
 
+  /* The Index Prescript: celestial silver, red wax seal, cryptic script */
+  --prescript-silver: #d6e2ec;
+  --prescript-core: #f5f9fc;
+  --prescript-seal: #a82020;
+  --prescript-seal-dark: #6e1111;
+  --prescript-parchment: #ece2d0;
+  --prescript-veil: rgba(6, 9, 14, 0.96);
+  --prescript-bloom: rgba(214, 226, 236, 0.28);
+
+  /* The Thumb Iron Rule: heavy gunmetal steel, discipline bullet bronze, rigid smoke */
+  --thumb-bronze: #c6944e;
+  --thumb-core: #ffe8b8;
+  --thumb-steel: #8a9ba8;
+  --thumb-dark-steel: #2e353b;
+  --thumb-veil: rgba(10, 11, 13, 0.96);
+  --thumb-spark: rgba(255, 220, 140, 0.45);
+
+  /* The Middle Vengeance: blood-violet ink, chain steel, tattoo crimson-violet */
+  --middle-violet: #9b51e0;
+  --middle-core: #e4c4ff;
+  --middle-ink: #5c1e96;
+  --middle-chain: #a788c7;
+  --middle-veil: rgba(11, 5, 16, 0.96);
+  --middle-bloom: rgba(155, 81, 224, 0.28);
+
   /* the Head's judgment: the Claw's cold cyan, its white cut, the dark it brings */
   --claw: #7fe0ec;
   --claw-core: #e8fbff;
