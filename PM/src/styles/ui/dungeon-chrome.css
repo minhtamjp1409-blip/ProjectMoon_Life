@@ -50,6 +50,17 @@
 .dg-haul .dg-need { margin-top: 6px; }
 
 /* What the last stage did */
+/* The dungeon's own rule (dungeonSignature.js): a label, where it stands, and one line on how it works */
+.dg-signature { padding: 8px 12px; border: 1px solid var(--border); border-left-width: 3px; border-radius: var(--radius-sm); background: var(--surface); }
+.dg-signature.is-ok { border-left-color: color-mix(in srgb, var(--dg) 70%, var(--border)); }
+.dg-signature.is-warn { border-left-color: var(--warn); }
+.dg-signature.is-bad { border-left-color: var(--bad); }
+.dg-signature-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.dg-signature-label { font-size: 13px; font-weight: 600; color: var(--text); }
+.dg-signature-value { font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--text); }
+.dg-signature.is-warn .dg-signature-value { color: var(--warn); }
+.dg-signature.is-bad .dg-signature-value { color: var(--bad); }
+.dg-signature-note { margin-top: 2px; font-size: 13px; line-height: 1.45; color: var(--muted); }
 .dg-result { padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); font-size: 14.5px; line-height: 1.55; animation: dgRise .3s ease; }
 .dg-result p { font-family: var(--serif); font-size: calc(var(--story-size) - 1.5px); line-height: 1.6; }
 /* A clash result: both rolls side by side, the verdict between them */

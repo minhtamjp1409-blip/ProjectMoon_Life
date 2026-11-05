@@ -11,6 +11,7 @@ import { GAUNTLETS, INTENT_KINDS, REST_TEXT } from '../data/dungeonGauntlets.js'
 import { activeScarSynergies } from './scarModel.js';
 import { dungeonWagerDamage, dungeonWagerLoot } from './dungeonWager.js';
 import { difficultyOf } from '../data/dungeonDifficulty.js';
+import { afterFightTurn, onFloorEnter, onShortcut, previewSignatureCombat, resolveSignatureCombat, resolveSignatureRest, signatureChoices, signatureDamageMult, signatureIntent, signatureRestChoices, workChoices } from './dungeonSignature.js';
 import { CLASH_BALANCE, TWIST_TEXT, clashOdds, clashOffered, clashStakes, clashesLeft, enemyDie, expectedTaken, playerDie, profileOf, rollClash, settleStake } from './dungeonClash.js';
 
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
@@ -81,6 +82,8 @@ function enterFloor(session, char, index) {
   c.guard = c.guardMax;
   c.phase = 1;
   c.offset = fnv(`${char?.seed ?? ''}|${session.id}|${index}|${enemy.nameEn}`) % enemy.intents.length;
+  c.workOpen = false;
+  onFloorEnter(session, char, floor, c);
 }
 
 const intentsNow = (c) => (c.phase === 2 && c.enemy?.phase2 ? c.enemy.phase2 : c.enemy?.intents || []);
@@ -89,7 +92,7 @@ const intentAt = (session, step = 0) => {
   const list = intentsNow(c);
   if (!list.length) return null;
   const id = list[(c.offset + c.turn + step) % list.length];
-  return { id, ...GAUNTLETS[session.id].intents[id] };
+  return signatureIntent(session, { id, ...GAUNTLETS[session.id].intents[id] }, step);
 };
 
 /** Turns a fresh session for a gauntlet dungeon into a combat run. */
@@ -117,7 +120,7 @@ function damageOf(ctx, def, char, session, intent, taken, kind) {
   const scale = (1 + (tier - 1) * COMBAT_BALANCE.tierScale) * (def.hazard === 'ALEPH' ? COMBAT_BALANCE.aleph : 1);
   // The same multiplier stage choices use: mastery, stance, traits, scan, E.G.O and strain
   const mult = ctx.damageMult(def, char, session, kind === 'sanity' ? 'sanity' : 'health') / (ctx.hazardOf(def) || 1);
-  return Math.max(1, Math.ceil(base * taken * scale * mult * COMBAT_BALANCE.damageScale * dungeonWagerDamage(session.delveStake) * difficultyOf(session.id).damage));
+  return Math.max(1, Math.ceil(base * taken * scale * mult * COMBAT_BALANCE.damageScale * dungeonWagerDamage(session.delveStake) * difficultyOf(session.id).damage * signatureDamageMult(session)));
 }
 
 export function evadeChance(ctx, char, session) {
@@ -143,6 +146,16 @@ export function previewCombatAction(ctx, choice, char, session) {
   if (action === 'ally') {
     const odds = ctx.companionLeadChance(char, session);
     return { hasCheck: true, trait: 'bond', successPct: Math.round(odds * 100), estHp: 0, estSp: 0, estWealth: 0, estLoot: 0, estRep: 0, estMerit: 0, estResonance: 0 };
+  }
+  // A Lake omen, a kind of work or an ally before the Head: the signature knows what it costs
+  const sig = previewSignatureCombat(session, choice, intent);
+  if (sig) {
+    return {
+      hasCheck: false, successPct: 100,
+      estHp: sig.taken > 0 ? -damageOf(ctx, def, char, session, intent, sig.taken, 'health') : 0,
+      estSp: sig.taken > 0 ? -damageOf(ctx, def, char, session, intent, sig.taken, 'sanity') : 0,
+      estWealth: 0, estLoot: 0, estRep: 0, estMerit: 0, estResonance: 0
+    };
   }
   // Backing out of a clash costs nothing and spends no turn: no chip, so it never reads as taking a hit
   if (action === 'clashBack') return { hasCheck: false, estHp: 0, estSp: 0, estWealth: 0, estLoot: 0, estRep: 0, estMerit: 0, estResonance: 0 };
@@ -194,6 +207,7 @@ export function gauntletStage(ctx, session) {
       choices.push({ labelVi: 'Mở cánh cửa phụ: một kẻ mạnh hơn, phần thưởng lớn hơn', labelEn: 'Open the side door: a stronger foe, a bigger reward', restAction: 'side', resultVi: 'Bạn đẩy cánh cửa phụ. Thứ phía sau đã nghe thấy bạn từ trước.', resultEn: 'You push the side door. What is behind it heard you long before.' });
       choices.push({ labelVi: 'Đi lối tắt, bỏ qua tầng kế tiếp', labelEn: 'Take the shortcut and skip the next floor', restAction: 'shortcut', checkTrait: 'luck', resultVi: 'Lối tắt hẹp và nguy hiểm, nhưng bạn qua được và tránh hẳn một tầng.', resultEn: 'The shortcut is narrow and dangerous, but you get through and skip a whole floor.', failVi: 'Lối tắt sụp dưới chân bạn. Bạn rơi xuống đúng tầng mình định tránh, người đầy vết xước.', failEn: 'The shortcut gives way beneath you. You fall right onto the floor you meant to avoid, scraped all over.' });
     }
+    signatureRestChoices(session, choices);
     if (!noRetreat && !ctx.def(session).locked) choices.push({ labelVi: 'Rời đi với những gì đã gom được', labelEn: 'Leave with what you have gathered', restAction: 'leave', isFlee: true, resultVi: 'Bạn quay lưng về phía lối ra. Phần còn lại của nơi này sẽ chờ một người khác.', resultEn: 'You turn toward the way out. The rest of this place will wait for someone else.' });
     return { stageIndex: c.floor, nameVi: REST_TEXT.nameVi, nameEn: REST_TEXT.nameEn, descVi: ctx.def(session).locked ? g.locked.vi : noRetreat ? REST_TEXT.judgmentVi : REST_TEXT.descVi, descEn: ctx.def(session).locked ? g.locked.en : noRetreat ? REST_TEXT.judgmentEn : REST_TEXT.descEn, canFlee: !noRetreat, isRest: true, sceneLabelVi: `Tầng ${c.floor + 1} / ${total}`, sceneLabelEn: `Floor ${c.floor + 1} / ${total}`, choices };
   }
@@ -219,7 +233,8 @@ export function gauntletStage(ctx, session) {
   }
   let descVi = `${c.turn === 0 && c.phase === 1 ? `${enemy.introVi} ` : ''}${intent.tellVi}`;
   let descEn = `${c.turn === 0 && c.phase === 1 ? `${enemy.introEn} ` : ''}${intent.tellEn}`;
-  let stageChoices = choices;
+  signatureChoices(session, intent, choices);
+  let stageChoices = c.workOpen ? workChoices(session) : choices;
   if (offered && c.clashOpen) {
     // The stake step: the same turn and the same intent, with the stakes listed when the clash was called
     const stakes = c.stakeList || [];
@@ -253,7 +268,7 @@ export function gauntletStage(ctx, session) {
     sceneLabelEn: `Floor ${c.floor + 1} / ${total}${floor.kind === 'boss' ? ' · Boss' : floor.elite ? ' · Elite' : ''}`,
     combat: {
       guard: c.guard, guardMax: c.guardMax, phase: c.phase, isBoss: floor.kind === 'boss', tier: floor.tier,
-      intent: { nameVi: intent.nameVi, nameEn: intent.nameEn, kind: intent.kind, kindVi: kind.vi, kindEn: kind.en },
+      intent: { nameVi: intent.nameVi, nameEn: intent.nameEn, kind: intent.kind, kindVi: kind.vi, kindEn: kind.en, law: intent.law },
       next: next ? { nameVi: next.nameVi, nameEn: next.nameEn, kindVi: INTENT_KINDS[next.kind].vi, kindEn: INTENT_KINDS[next.kind].en } : null
     },
     choices: stageChoices
@@ -320,6 +335,7 @@ export function resolveGauntletChoice(char, session, choiceIndex, rng, ctx) {
       c.sideUsed = true;
       if (rng() < evadeChance(ctx, char, session)) {
         skip = 1;
+        onShortcut(session, true);
         session.sanityStrain = clamp((session.sanityStrain || 0) + 18, 0, 100);
         fx = 'shortcut';
       } else {
@@ -329,6 +345,12 @@ export function resolveGauntletChoice(char, session, choiceIndex, rng, ctx) {
         fx = 'hit';
       }
     }
+    // The lull as this dungeon keeps it: the clock, the blood stalls, a passenger led along
+    const sigRest = resolveSignatureRest(char, session, choice, COMBAT_BALANCE.rest);
+    if (choice.restAction === 'blood_wine' || choice.restAction === 'blood_gold') fx = 'hit';
+    if (choice.restAction === 'passenger') fx = 'rest';
+    if (sigRest.insertElite && !c.marketElite) { c.marketElite = true; c.plan.splice(c.floor + 1, 0, { kind: 'fight', tier: 3, elite: true }); }
+    if (sigRest.notes.length) text = { vi: [text.vi, ...sigRest.notes.map((n) => n.vi)].join(' '), en: [text.en, ...sigRest.notes.map((n) => n.en)].join(' ') };
     session.lastStageResult = { type: 'stage_clear', stageNum: c.floor + 1, stageNameVi: stage.nameVi, stageNameEn: stage.nameEn, vi: text.vi, en: text.en, fx, nonce: session.fxNonce };
     ctx.log(char, session, def, stage, session.lastStageResult);
     if (char.stats.health <= 0) return ctx.finishDead(char, session, def, stage);
@@ -339,6 +361,10 @@ export function resolveGauntletChoice(char, session, choiceIndex, rng, ctx) {
   const intent = intentAt(session);
   const action = choice.combatAction;
   // Calling a clash or stepping back from one spends no turn: the same intent is still in the air
+  if (action === 'workOpen' || action === 'workBack') {
+    c.workOpen = action === 'workOpen';
+    return { char, session, isFinished: false, resolution: null };
+  }
   if (action === 'clash' || action === 'clashBack') {
     c.clashOpen = action === 'clash';
     c.stakeList = action === 'clash'
@@ -351,7 +377,12 @@ export function resolveGauntletChoice(char, session, choiceIndex, rng, ctx) {
   let quality;
   let line;
   let clash = null;
-  if (action === 'clashStake') {
+  const sig = resolveSignatureCombat(ctx, char, session, choice, intent, rng);
+  if (sig) {
+    ({ taken, breaks, quality, line, fx } = sig);
+    if (sig.sanity) char.stats.sanity = clamp(char.stats.sanity - sig.sanity, 0, 100);
+    if (sig.strain) session.sanityStrain = clamp((session.sanityStrain || 0) + sig.strain, 0, 100);
+  } else if (action === 'clashStake') {
     const stake = c.stakeList?.some((s) => s.id === choice.stakeId) ? stakeById(ctx, char, session, choice.stakeId) : null;
     clash = rollClash(ctx, char, session, stake, rng);
     c.clashes = (c.clashes || 0) + 1;
@@ -413,11 +444,12 @@ export function resolveGauntletChoice(char, session, choiceIndex, rng, ctx) {
   char.stats.health = clamp(char.stats.health - hp, 0, 100);
   char.stats.sanity = clamp(char.stats.sanity - sp, 0, 100);
   if (intent.kind === 'mind' && sp > 0) fx = 'mind';
-  if (intent.kind === 'heavy' && hp >= 10 && !clash) fx = 'heavyhit';
+  if (intent.kind === 'heavy' && hp >= 10 && !clash && !sig) fx = 'heavyhit';
   const strain = (COMBAT_BALANCE.strainBase + floor.tier * COMBAT_BALANCE.strainPerTier + (intent.kind === 'mind' ? COMBAT_BALANCE.strainMind : 0) - (action === 'guard' ? 2 : 0))
     * (session.stageScanned ? 0.5 : 1) * ctx.strainMult(char, session);
-  session.sanityStrain = clamp((session.sanityStrain || 0) + Math.round(strain), 0, 100);
-  notes.push(line);
+  const tick = afterFightTurn(session);
+  session.sanityStrain = clamp((session.sanityStrain || 0) + Math.round(strain) + tick.strain, 0, 100);
+  notes.push(line, ...tick.notes);
 
   c.guard = Math.min(c.guardMax, Math.max(0, c.guard - breaks));
   if (clash?.outcome === 'lose' && breaks < 0) notes.push({ vi: `${c.enemy.nameVi} liếm máu trên lưỡi của nó và đứng vững hơn.`, en: `${c.enemy.nameEn} licks the blood from its edge and stands steadier.` });

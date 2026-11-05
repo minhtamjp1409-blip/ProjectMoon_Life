@@ -6,16 +6,17 @@
 // damage multiplies every wound the dungeon deals; guard adds notches to each enemy's guard in a chain of
 // fights; check moves the odds of every check and evasion inside the dungeon. The bands each rung must land
 // in are pinned by tests/test_dungeon_difficulty.mjs against tools/sim/dungeon_sim.mjs.
+// Đợt 128: the Head lost its second lull and the Lake gained its omens, so both were retuned to stay on their rungs.
 // The Reverberation Ensemble is a story stage, not a rung, and keeps its own balance.
 
 export const DUNGEON_DIFFICULTY = {
-  dungeon_claw_judgment: { rung: 1, damage: 1.8, guard: 1, check: 0 },
-  dungeon_great_lake: { rung: 2, damage: 1, guard: 0, check: 0 },
+  dungeon_claw_judgment: { rung: 1, damage: 1.45, guard: 1, check: 0 },
+  dungeon_great_lake: { rung: 2, damage: 0.8, guard: 0, check: 0 },
   dungeon_warp_train: { rung: 3, damage: 1.6, guard: 0, check: 0 },
   dungeon_lobotomy_ruin: { rung: 3, damage: 1.1, guard: 0, check: 0 },
   dungeon_bloodfiend_carnival: { rung: 3, damage: 0.7, guard: 0, check: 0 },
   dungeon_backstreets_night: { rung: 3, damage: 0.95, guard: 0, check: 0 },
-  dungeon_outskirts_ruins: { rung: 4, damage: 2.6, guard: 0, check: -0.38 }
+  dungeon_outskirts_ruins: { rung: 4, damage: 2.8, guard: 0, check: -0.25 }
 };
 
 const NEUTRAL = { rung: 0, damage: 1, guard: 0, check: 0 };

@@ -28,6 +28,7 @@ import { dealCards, cardEffectOf, nextHand, dungeonUsesCards } from './dungeonCa
 export { playDungeonCard, cardPlayable, cardBudgetLeft, DUNGEON_CARDS, CARD_BUDGET } from './dungeonCards.js';
 import { initGauntlet, isGauntlet, gauntletStage, previewCombatAction, resolveGauntletChoice, canLeaveGauntlet } from './dungeonCombat.js';
 import { difficultyOf } from '../data/dungeonDifficulty.js';
+import { initSignature, afterOilStage, signatureCheckBonus, settleSignature } from './dungeonSignature.js';
 
 
 export const DUNGEON_GIMMICKS = {
@@ -928,7 +929,7 @@ function moveStanding(char, delta) {
 
 /** What a run did to the people and the badge around you, written once at its end. */
 export function settleRun(char, session, outcome) {
-  const notes = [];
+  const notes = [...settleSignature(char, session, outcome)];
   const c = session.companion;
   if (c && npcIsActive(char.npcs?.[c.role])) {
     const delta = outcome === 'conquered' ? 4 : outcome === 'fled' ? 1 : -2;
@@ -1141,7 +1142,7 @@ function checkChanceOf(choice, char, session, mastery) {
   chance += tier.check;
   if (session?.egoActive) chance += DUNGEON_BALANCE.ego.checkBonus;
   chance -= choice.checkPenalty || 0;
-  chance += (cardEffectOf(session).check || 0) + difficultyOf(session?.id).check;
+  chance += (cardEffectOf(session).check || 0) + difficultyOf(session?.id).check + signatureCheckBonus(session, choice);
   chance *= choice.checkScale ?? 1;
   return clamp(chance, choice.checkFloor ?? DUNGEON_BALANCE.checkFloor, session?.egoActive ? DUNGEON_BALANCE.ego.ceiling : DUNGEON_BALANCE.checkCeiling);
 }
@@ -1204,7 +1205,11 @@ export function evaluateDungeonChoiceOdds(choice, char, session) {
     const pct = choice.checkTrait ? Math.round(clamp(0.58 * traitFactor(char, 'luck') + mastery.checkBonus, 0.25, 0.9) * 100) : 100;
     const rest = choice.restAction === 'rest';
     const push = choice.restAction === 'push';
-    return { hasCheck: Boolean(choice.checkTrait), trait: choice.checkTrait || null, successPct: pct, estHp: rest ? 12 : 0, estSp: rest ? 10 : 0, estWealth: 0, estLoot: push ? 8 : 0, estRep: 0, estMerit: push ? 2 : 0, estResonance: 0 };
+    // The signature lulls: a blood stall is paid in HP, a passenger led along still lets you rest a little
+    const passenger = choice.restAction === 'passenger';
+    const estHp = rest ? 12 : passenger ? 6 : choice.costHp ? -choice.costHp : 0;
+    const estLoot = push ? 8 : choice.restAction === 'blood_gold' ? 15 : 0;
+    return { hasCheck: Boolean(choice.checkTrait), trait: choice.checkTrait || null, successPct: pct, estHp, estSp: rest || passenger ? 10 : 0, estWealth: 0, estLoot, estRep: 0, estMerit: push ? 2 : 0, estResonance: 0 };
   }
   if (choice.companionLead) {
     const r = stageRewards(choice, session || {}, true);
@@ -1342,6 +1347,9 @@ export function createDungeonSession(dungeonId, char) {
     session.supplyCharges = Math.min(1, session.supplyCharges);
     session.maxSupplies = session.supplyCharges;
   }
+  // Each dungeon keeps one rule of its own (dungeonSignature.js); set up before the first floor opens
+  session.seed = char?.seed ?? '';
+  initSignature(session, char);
   // Five of the dungeons are a chain of fights floor by floor; the rest keep their exploration stages
   const ready = isGauntlet(def.id) ? initGauntlet(session, char) : session;
   return dungeonUsesCards(def) ? dealCards(ready, char) : ready;
@@ -1793,7 +1801,7 @@ export function resolveDungeonChoice(charState, choiceIndex, rng = Math.random) 
   session.sanityStrain = clamp((session.sanityStrain || 0) + Math.round(rawStrain) + (success ? 0 : DUNGEON_BALANCE.failStrain) + companionStrain, 0, 100);
   if (session.id === ENSEMBLE_DUNGEON_ID) session.ensembleHarmony = Math.min(3, (session.ensembleHarmony || 0) + (choice.ensembleHarmony || 0));
 
-  const notes = [];
+  const notes = [...afterOilStage(char, session, choice)];
   if (leadText) {
     notes.push(leadText);
   } else if (!success) {

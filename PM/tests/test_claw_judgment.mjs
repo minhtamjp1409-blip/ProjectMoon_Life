@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { createNewCharacter, buildLifeSummaryAndLegacy, cloneChar } from '../src/engine/gameEngine.js';
 import { DUNGEON_DEFINITIONS, createDungeonSession, fleeDungeon, getDungeonCurrentStage, isDungeonChoiceAvailable, resolveDungeonChoice } from '../src/engine/dungeonEngine.js';
 import { CLAW_DUNGEON_ID } from '../src/data/dungeonClaw.js';
+import { GAUNTLETS } from '../src/data/dungeonGauntlets.js';
 
 globalThis.localStorage = { getItem: () => null, setItem: () => {}, removeItem: () => {} };
 const { useGameStore } = await import('../src/store/gameStore.js');
@@ -55,7 +56,8 @@ assert.equal(useGameStore.getState().char.heat, 15);
 // The judgment is a chain of three: a Beholder of the Eye, an Executioner of the Claw, an Arbiter
 const plan = accused('claw-plan').pendingDungeon;
 assert.equal(plan.mode, 'gauntlet');
-assert.deepEqual(plan.combat.plan.map((f) => f.kind), ['fight', 'rest', 'fight', 'rest', 'boss']);
+// The Head gives no breath between the Claw and the Arbiter (Đợt 128)
+assert.deepEqual(plan.combat.plan.map((f) => f.kind), ['fight', 'rest', 'fight', 'boss']);
 assert.equal(getDungeonCurrentStage(plan).nameEn, 'Beholder of the Eye');
 const breath = { ...plan, combat: { ...plan.combat, floor: 1, enemy: null } };
 const breathStage = getDungeonCurrentStage(breath);
@@ -126,10 +128,10 @@ assert.equal(cut.char.pendingDungeon.combat.guard, before - 1, 'a strike cuts th
 // The Arbiter's Birdcage locks the strike for a turn when it lands
 const caged = accused('claw-cage');
 const cs = caged.pendingDungeon;
-caged.pendingDungeon = { ...cs, combat: { ...cs.combat, plan: cs.combat.plan.map((f) => ({ ...f })), floor: 4, guard: 8, guardMax: 8, phase: 1, turn: 0, offset: 0, enemy: null } };
-// enter the Arbiter floor through the engine's own route: finish the rest before it
-caged.pendingDungeon.combat.floor = 3;
-let cageRun = resolveDungeonChoice(caged, 0, () => 0).char;
+// No lull before the Arbiter any more (Đợt 128): stand the run on the boss floor directly
+const arbiter = GAUNTLETS.dungeon_claw_judgment.floors.at(-1).enemies[0];
+caged.pendingDungeon = { ...cs, combat: { ...cs.combat, plan: cs.combat.plan.map((f) => ({ ...f })), floor: cs.combat.plan.length - 1, guard: 8, guardMax: 8, phase: 1, turn: 0, offset: 0, enemy: arbiter } };
+let cageRun = caged;
 let cageStage = getDungeonCurrentStage(cageRun.pendingDungeon);
 for (let i = 0; i < 6 && cageStage.combat.intent.nameEn !== 'Birdcage'; i++) {
   const want = best[cageStage.combat.intent.kind];

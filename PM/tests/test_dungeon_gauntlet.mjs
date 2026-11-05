@@ -6,6 +6,7 @@ import {
 } from '../src/engine/dungeonEngine.js';
 import { ANSWERS, gauntletRoute } from '../src/engine/dungeonCombat.js';
 import { GAUNTLETS, INTENT_KINDS } from '../src/data/dungeonGauntlets.js';
+import { lawOf } from '../src/engine/dungeonSignature.js';
 
 const best = { heavy: 'guard', quick: 'strike', sweep: 'evade', mind: 'guard', grab: 'evade', heal: 'strike' };
 function fighter(seed, extra = {}) {
@@ -21,7 +22,8 @@ const stageOf = (c) => getDungeonCurrentStage(c.pendingDungeon);
 const idxOf = (c, pred) => stageOf(c).choices.findIndex(pred);
 const answer = (c, rng = () => 0) => {
   const st = stageOf(c);
-  const want = best[st.combat.intent.kind];
+  // A Lake omen asks for its law's answer (dungeonSignature.js)
+  const want = st.combat.intent.kind === 'law' ? lawOf(st.combat.intent.law).answer : best[st.combat.intent.kind];
   return resolveDungeonChoice(c, st.choices.findIndex((x) => x.combatAction === want && !x.sealed), rng);
 };
 
@@ -157,7 +159,7 @@ for (const id of fighting) {
         let k = open[Math.floor(rng() * open.length)][1];
         if (style === 'careful') {
           if (st.isRest) k = (open.find(([x]) => x.restAction === (c.stats.health < 32 ? 'leave' : c.stats.health < 70 ? 'rest' : 'push')) || open[0])[1];
-          else if (st.isCombat) k = (open.find(([x]) => x.combatAction === best[st.combat.intent.kind]) || open[0])[1];
+          else if (st.isCombat) k = (open.find(([x]) => x.combatAction === (st.combat.intent.kind === 'law' ? lawOf(st.combat.intent.law).answer : best[st.combat.intent.kind])) || open[0])[1];
           else k = open[0][1];
         }
         const r = resolveDungeonChoice(c, k, rng);

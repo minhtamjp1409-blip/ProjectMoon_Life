@@ -18,6 +18,7 @@ import {
   evaluateDungeonChoiceOdds
 } from '../../../engine/gameEngine.js';
 import { gauntletRoute } from '../../../engine/dungeonCombat.js';
+import { signatureMeter } from '../../../engine/dungeonSignature.js';
 import { getCompanionStageBanter } from '../../../data/dungeonExtras.js';
 
 const STANCES = [
@@ -186,6 +187,7 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
   const ambient = AMBIENT[def.theme] || AMBIENT.warp;
   const route = session.mode === 'gauntlet' ? gauntletRoute(session) : null;
   const fight = stage.combat || null;
+  const meter = signatureMeter(session);
 
   return (
     <div className={`dock is-dungeon theme-${def.theme}${fight?.isBoss ? ' is-boss' : ''}${fight?.phase === 2 ? ' is-phase-2' : ''}${strain >= 70 ? ' is-panic-high' : ''}`} style={{ '--dg': def.accentColor }} role="document">
@@ -276,6 +278,16 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
 
         {session.companion && (
           <p className="dg-ambient">{t(`Đi cùng: ${session.companion.nameVi}`, `With you: ${session.companion.nameEn}`)}</p>
+        )}
+
+        {meter && (
+          <section className={`dg-signature is-${meter.tone}`} aria-label={pick(meter.labelVi, meter.labelEn)}>
+            <p className="dg-signature-head">
+              <span className="dg-signature-label">{pick(meter.labelVi, meter.labelEn)}</span>
+              <b className="dg-signature-value">{meter.text ?? (meter.max != null ? `${meter.value} / ${meter.max}` : meter.value)}</b>
+            </p>
+            <p className="dg-signature-note">{pick(meter.noteVi, meter.noteEn)}</p>
+          </section>
         )}
 
         {result && (

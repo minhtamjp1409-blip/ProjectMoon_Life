@@ -31,7 +31,7 @@ const POLICIES = {
   },
   push: (stage, char, sess) => {
     // Backing out of a clash costs nothing, so a damage-minimiser would bounce on it forever
-    const ok = stage.choices.map((c, i) => [c, i]).filter(([c]) => isDungeonChoiceAvailable(c, char, sess) && !c.isFlee && c.combatAction !== 'clashBack');
+    const ok = stage.choices.map((c, i) => [c, i]).filter(([c]) => isDungeonChoiceAvailable(c, char, sess) && !c.isFlee && c.combatAction !== 'clashBack' && c.combatAction !== 'workBack');
     if (stage.isCombat) {
       let best = ok[0];
       let bestScore = -999999;
@@ -55,7 +55,7 @@ const POLICIES = {
     return ok[0][1];
   },
   careful: (stage, char, sess) => {
-    const ok = stage.choices.map((c, i) => [c, i]).filter(([c]) => isDungeonChoiceAvailable(c, char, sess) && c.combatAction !== 'clashBack');
+    const ok = stage.choices.map((c, i) => [c, i]).filter(([c]) => isDungeonChoiceAvailable(c, char, sess) && c.combatAction !== 'clashBack' && c.combatAction !== 'workBack');
     if (stage.isCombat) {
       let best = ok[0];
       let bestScore = -999999;

@@ -203,6 +203,7 @@ export const GAUNTLETS = {
 // R hits blunt, W closes distance in a single cut, all three together a Tri-serum Cocktail);
 // an Arbiter of the Head (Zena) fights with Line, Thick Line, Thin Line, Birdcage, which locks
 // one of the target's moves, and Shockwave. No retreat, no reward; surviving it is the reward.
+// The Head gives no breath between the Claw and the Arbiter (Đợt 128): one lull, after the Beholder.
 // ---------------------------------------------------------------------------
 GAUNTLETS.dungeon_claw_judgment = {
   intents: {
@@ -227,7 +228,6 @@ GAUNTLETS.dungeon_claw_judgment = {
     { kind: 'fight', tier: 5, enemies: [
       foe('Executioner of the Claw', 'Executioner of the Claw', 'Một đường xanh mảnh chia đôi bức tường. Claw bước qua, áo choàng đen, mũ sắt gỉ, ba ống huyết thanh trên găng tay còn nguyên. Hắn đọc tên bạn, rồi xóa nó khỏi màn hình.', 'A thin blue line divides the wall. A Claw steps through in a black coat and a rusted helmet, three serum vials intact on the gauntlet. He reads your name, then erases it from the display.', 5, ['serumW', 'serumR', 'serumK', 'cocktail', 'serumW'])
     ] },
-    { kind: 'rest' },
     { kind: 'boss', tier: 5, enemies: [
       foe('Arbiter of the Head', 'Arbiter of the Head', 'Claw lùi sang một bên. Người bước vào sau hắn không mang vũ khí. Arbiter nói rất nhiều, như thể việc này đã xong và chỉ còn phần giải thích.', 'The Claw steps aside. Whoever enters after him carries no weapon. The Arbiter talks a great deal, as if this were already over and only the explanation remained.', 8, ['line', 'thinLine', 'birdcage', 'thickLine', 'line'],
         { phase2: ['shockwave', 'birdcage', 'thickLine', 'shockwave', 'line'], phaseVi: 'Arbiter thôi nói. Lần đầu tiên, người ấy nhìn bạn như nhìn một đối thủ.', phaseEn: 'The Arbiter stops talking. For the first time, they look at you as at an opponent.' })
@@ -235,3 +235,5 @@ GAUNTLETS.dungeon_claw_judgment = {
   ]
 };
 INTENT_KINDS.heal = { vi: 'Hồi phục', en: 'Recovery' };
+// A Great Lake omen (dungeonSignature.js): one law, one answer
+INTENT_KINDS.law = { vi: 'Điềm báo của Hồ', en: 'Lake omen' };

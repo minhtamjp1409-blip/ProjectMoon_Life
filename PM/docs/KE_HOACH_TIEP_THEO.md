@@ -28,7 +28,7 @@ Mỗi đợt dưới đây được commit riêng, ghi vào `PROGRESS_LOG.md`, p
 | 125 | Clash có đặt cược đời sống trong dungeon, luật riêng từng dungeon | vừa | đã xong |
 | 126 | Bốn bậc độ khó dungeon (The Head, Great Lake, nhóm giữa, Outskirts) | vừa | đã xong |
 | 127 | Fixer vào dungeon nhiều hơn, đường tới The Head dễ thấy hơn | vừa | đã xong |
-| 128 | Mỗi dungeon một cơ chế riêng: The Head trấn áp, Outskirts đèn dầu, Backstreets đồng hồ, Great Lake sổ luật, Bloodfiend chợ máu, WARP hành khách, Lobotomy loại công việc | lớn | chưa làm |
+| 128 | Mỗi dungeon một cơ chế riêng: The Head trấn áp, Outskirts đèn dầu, Backstreets đồng hồ, Great Lake sổ luật, Bloodfiend chợ máu, WARP hành khách, Lobotomy loại công việc | lớn | đã xong |
 | (chủ dự án) | Nghe thử âm thanh trên điện thoại và tai nghe | nhỏ | chờ chủ dự án |
 
 Đợt 114b có thêm dải bản đồ thu nhỏ trên điện thoại, theo bản góp ý thứ ba (ngày 02/11/2026). Đợt 118 và buổi nghe thử âm thanh cũng đến từ bản góp ý đó.

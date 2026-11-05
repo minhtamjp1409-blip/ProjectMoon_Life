@@ -141,7 +141,7 @@ Xếp theo mức đáng làm. Luật đang áp dụng nằm ở `docs/LUAT_HIEN_
 ### 5.2. Cơ chế theo tuyến (vừa)
 
 - **Bloodfiend**: thêm chỉ số Thirst và Withering như kế hoạch; mỗi năm chọn uống Blood Bar hay cắn người.
-- **The Great Lake**: luật của mặt hồ thành một danh sách mà người chơi học dần qua sự kiện; trả lời sai luật thì có hậu quả.
+- **The Great Lake** (đã có trong dungeon, Đợt 128): sáu Luật Đại Hồ phóng tác, học qua điềm báo và giữ qua các đời. Còn có thể làm: đưa luật ra các sự kiện trên Hồ ngoài dungeon.
 - **Hongyuan**: Ji, Yong, In rèn từ 5 đến 30 tuổi, dẫn đến kỳ chọn Gia chủ.
 - **Workshop**: thông số xưởng (thiết bị, nguyên liệu, nhân công, cảnh cáo của Tres).
 - **Distortion** (đã có phần đầu): sau khi buông theo Carmen, mỗi năm Heat tăng vì Hana giữ hồ sơ mở, Network mòn dần, và director ưu tiên năm sự kiện riêng (người bạn tìm đến, đội Fixer săn, căn nhà cũ, cơn đói, giọng nói quay lại). Phục kích do Heat cao và cái chết vì vết thương đều có lời riêng cho Distortion. Đường tìm lại giọng người (phóng tác, `src/data/eventsDistortionVoice.js`): một người gọi tên cũ, những mẩu giấy dưới chân cầu thang, rồi một tổ Fixer của Hana dồn bạn vào cuối hẻm. Nói được tên mình bằng giọng người thì có cờ `HumanVoice`: thân thể vẫn Distorted và Hana vẫn giữ hồ sơ, nhưng Heat hằng năm còn một nửa và Network thôi mòn. Canon không có Distortion nào được chữa khỏi, nên đường này không chữa.
