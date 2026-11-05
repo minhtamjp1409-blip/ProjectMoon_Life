@@ -284,7 +284,7 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
           <section className={`dg-signature is-${meter.tone}`} aria-label={pick(meter.labelVi, meter.labelEn)}>
             <p className="dg-signature-head">
               <span className="dg-signature-label">{pick(meter.labelVi, meter.labelEn)}</span>
-              <b className="dg-signature-value">{meter.text ?? (meter.max != null ? `${meter.value} / ${meter.max}` : meter.value)}</b>
+              <b className="dg-signature-value">{meter.textVi ? pick(meter.textVi, meter.textEn) : meter.text ?? (meter.max != null ? `${meter.value} / ${meter.max}` : meter.value)}</b>
             </p>
             <p className="dg-signature-note">{pick(meter.noteVi, meter.noteEn)}</p>
           </section>

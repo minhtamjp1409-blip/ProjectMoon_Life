@@ -153,7 +153,7 @@ export function previewCombatAction(ctx, choice, char, session) {
     return {
       hasCheck: false, successPct: 100,
       estHp: sig.taken > 0 ? -damageOf(ctx, def, char, session, intent, sig.taken, 'health') : 0,
-      estSp: sig.taken > 0 ? -damageOf(ctx, def, char, session, intent, sig.taken, 'sanity') : 0,
+      estSp: (sig.taken > 0 ? -damageOf(ctx, def, char, session, intent, sig.taken, 'sanity') : 0) - (sig.sanity || 0),
       estWealth: 0, estLoot: 0, estRep: 0, estMerit: 0, estResonance: 0
     };
   }
@@ -221,7 +221,8 @@ export function gauntletStage(ctx, session) {
     combatAction: action, sealed: c.sealed === action,
     checkTrait: action === 'evade' ? 'luck' : undefined, resultVi: '', resultEn: ''
   }));
-  if (session.companion && c.allyCalls < MAX_ALLY_CALLS && ctx.companionActive(session)) {
+  // A Lake omen is a test of your own: no one can take it for you
+  if (session.companion && c.allyCalls < MAX_ALLY_CALLS && ctx.companionActive(session) && intent?.kind !== 'law') {
     const cmp = session.companion;
     choices.push({ labelVi: `Để ${cmp.nameVi} đỡ đòn này thay bạn`, labelEn: `Let ${cmp.nameEn} take this one for you`, combatAction: 'ally', resultVi: '', resultEn: '' });
   }

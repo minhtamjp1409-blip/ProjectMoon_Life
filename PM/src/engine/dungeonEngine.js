@@ -28,7 +28,7 @@ import { dealCards, cardEffectOf, nextHand, dungeonUsesCards } from './dungeonCa
 export { playDungeonCard, cardPlayable, cardBudgetLeft, DUNGEON_CARDS, CARD_BUDGET } from './dungeonCards.js';
 import { initGauntlet, isGauntlet, gauntletStage, previewCombatAction, resolveGauntletChoice, canLeaveGauntlet } from './dungeonCombat.js';
 import { difficultyOf } from '../data/dungeonDifficulty.js';
-import { initSignature, afterOilStage, signatureCheckBonus, settleSignature } from './dungeonSignature.js';
+import { initSignature, afterOilStage, darkWayOut, signatureCheckBonus, settleSignature } from './dungeonSignature.js';
 
 
 export const DUNGEON_GIMMICKS = {
@@ -1501,6 +1501,8 @@ export function isDungeonChoiceAvailable(choice, char) {
     const playerWealth = char.stats?.wealth ?? char.wealth ?? 0;
     if (playerWealth < choice.costAhn) return false;
   }
+  // A blood stall will not take the last of you
+  if (choice.costHp && (char.stats?.health ?? 0) <= choice.costHp) return false;
   return true;
 }
 
@@ -2019,6 +2021,9 @@ export function fleeDungeon(charState) {
     return { char, session: null, isFinished: true, resolution: ensembleResolution(char, session, 'fled', stage) };
   }
   if (def?.noRetreat || def?.locked || (session.mode === 'gauntlet' && !canLeaveGauntlet(session))) return { char: charState, session, isFinished: false, resolution: null };
+  // Leaving by the dock button costs the same in the dark as leaving by the stage's own way out
+  const dark = darkWayOut(char, session);
+  if (dark && char.stats.health <= 0) return COMBAT_CTX.finishDead(char, session, def, getDungeonCurrentStage(session));
   const haul = session.accumulatedLootAhn || 0;
   if (haul > 0) char.stats.wealth = clamp((char.stats.wealth || 0) + haul, 0, 100);
   settleRun(char, session, 'fled');
@@ -2033,8 +2038,12 @@ export function fleeDungeon(charState) {
       outcome: 'fled',
       titleVi: title.vi,
       titleEn: title.en,
-      resultVi: ENDING_TEXT.fled.body.vi,
-      resultEn: ENDING_TEXT.fled.body.en,
+      resultVi: dark ? `${dark.vi}
+
+${ENDING_TEXT.fled.body.vi}` : ENDING_TEXT.fled.body.vi,
+      resultEn: dark ? `${dark.en}
+
+${ENDING_TEXT.fled.body.en}` : ENDING_TEXT.fled.body.en,
       haul: { ahn: haul, merit: session.accumulatedMerit || 0 },
       isDead: false
     }

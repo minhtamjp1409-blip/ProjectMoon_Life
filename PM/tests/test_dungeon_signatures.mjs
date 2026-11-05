@@ -2,7 +2,7 @@
 // the blood market, passengers, L Corp work types, and the Head's suppression. Each is checked doing its one job.
 import assert from 'node:assert/strict';
 import { createNewCharacter } from '../src/engine/gameEngine.js';
-import { createDungeonSession, getDungeonCurrentStage, resolveDungeonChoice, evaluateDungeonChoiceOdds } from '../src/engine/dungeonEngine.js';
+import { createDungeonSession, getDungeonCurrentStage, resolveDungeonChoice, evaluateDungeonChoiceOdds, fleeDungeon, isDungeonChoiceAvailable } from '../src/engine/dungeonEngine.js';
 import { SIGNATURE_BALANCE as B, SIGNATURE_OF, signatureMeter, signatureCheckBonus, signatureDamageMult, lawOf, preferredWork, knownLore, settleSignature } from '../src/engine/dungeonSignature.js';
 import { DUNGEON_LAWS } from '../src/data/dungeonSignatureText.js';
 import { GAUNTLETS } from '../src/data/dungeonGauntlets.js';
@@ -52,6 +52,9 @@ o.pendingDungeon.oil = 0;
 const hpDark = o.stats.health;
 const out = resolveDungeonChoice(o, idxOf(o, (x) => x.isFlee), () => 0.5);
 assert.ok(out.isFinished && out.char.stats.health <= hpDark - B.oil.darkFleeHp, 'walking out in the dark costs blood');
+const dockLeave = fleeDungeon({ ...o, stats: { ...o.stats }, pendingDungeon: { ...o.pendingDungeon, oil: 0 } });
+assert.equal(dockLeave.char.stats.health, o.stats.health - B.oil.darkFleeHp, 'the dock button out costs the same in the dark');
+assert.match(dockLeave.resolution.resultVi, /bóng tối/);
 
 // 3. Backstreets: every turn costs minutes; past 4:34 the Sweepers make every blow harder
 let n = enter(person('sig-clock'), 'dungeon_backstreets_night');
@@ -70,6 +73,8 @@ l = answer(l);
 const omen = stageOf(l).combat.intent;
 assert.equal(omen.kind, 'law', 'the second turn brings an omen');
 const law = lawOf(omen.law);
+const withFriend = { ...l, pendingDungeon: { ...l.pendingDungeon, companion: { role: 'partner', nameVi: 'Yan', nameEn: 'Yan' } }, npcs: { partner: { nameVi: 'Yan', bond: 60, status: 'alive' } } };
+assert.equal(getDungeonCurrentStage(withFriend.pendingDungeon).choices.some((x) => x.combatAction === 'ally'), false, 'no one can take a Lake omen for you');
 const wrong = ['guard', 'strike', 'evade'].find((a) => a !== law.answer);
 const hp0 = l.stats.health;
 l = pick(l, (x) => x.combatAction === wrong);
@@ -103,6 +108,8 @@ assert.ok(DUNGEON_LAWS.every((x) => ['guard', 'strike', 'evade'].includes(x.answ
 let b = enter(person('sig-blood'), 'dungeon_bloodfiend_carnival');
 b = until(b, (c) => stageOf(c).isRest);
 assert.ok(idxOf(b, (x) => x.restAction === 'blood_wine') >= 0 && idxOf(b, (x) => x.restAction === 'blood_gold') >= 0, 'the stalls are open at a lull');
+const poor = { ...b, stats: { ...b.stats, health: B.market.wineHp } };
+assert.equal(isDungeonChoiceAvailable(stageOf(b).choices.find((x) => x.restAction === 'blood_wine'), poor), false, 'a stall will not take the last of you');
 const hpB = b.stats.health;
 const floorsBefore = b.pendingDungeon.combat.plan.length;
 b = pick(b, (x) => x.restAction === 'blood_wine');
@@ -140,7 +147,9 @@ const missed = pick(a, (x) => x.workType === wrongWork);
 assert.ok(missed.stats.sanity < spA, 'the wrong work costs the mind');
 assert.ok([...knownLore(missed)].some((id) => id.endsWith(`_not_${wrongWork}`)), 'the log notes what does not work');
 let hit = pick(missed, (x) => x.combatAction === 'workOpen');
-assert.match(stageOf(hit).choices.find((x) => x.workType === wrongWork).labelVi, /không phù hợp/);
+const knownWrong = stageOf(hit).choices.find((x) => x.workType === wrongWork);
+assert.match(knownWrong.labelVi, /không phù hợp/);
+assert.ok(evaluateDungeonChoiceOdds(knownWrong, hit, hit.pendingDungeon).estSp <= -B.work.wrongSanity, 'the preview carries the fixed cost to the mind');
 hit = pick(hit, (x) => x.workType === right);
 assert.equal(hit.pendingDungeon.combat.guard, Math.max(0, guardA - B.work.rightBreaks), 'the right work costs it two notches');
 assert.equal(idxOf(hit, (x) => x.combatAction === 'workOpen'), -1, 'two works a fight, no more');
@@ -161,5 +170,10 @@ assert.equal(h.npcs.partner.injured, true, 'and do not walk away from it');
 assert.equal(idxOf(h, (x) => x.combatAction === 'headAlly'), -1, 'once each');
 const lost = resolveDungeonChoice(enter(person('sig-head-2', { taboo: 3, npcs: { partner: { ...friend } } }), 'dungeon_claw_judgment'), 3, () => 0).char;
 assert.equal(lost.npcs.partner.status, 'dead', 'and may not come back');
+
+const alone = enter(person('sig-head-alone', { taboo: 3 }), 'dungeon_claw_judgment');
+const aloneMeter = signatureMeter(alone.pendingDungeon);
+assert.equal(aloneMeter.textVi, 'Chưa có ai đủ thân', 'no one close is said plainly');
+assert.notEqual(aloneMeter.tone, 'bad');
 
 console.log('Dungeon signatures: oil, the 4:34 clock, Lake Laws across lives, the blood market, passengers, work types, the Head suppression');

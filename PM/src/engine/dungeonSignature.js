@@ -103,8 +103,11 @@ export function signatureMeter(session) {
     const files = (session.lore || []).filter((id) => id.startsWith(`${LORE}abno_`) && !id.includes('_not_')).length;
     return { kind, labelVi: T.labelVi, labelEn: T.labelEn, value: files, tone: 'ok', noteVi: T.noteVi, noteEn: T.noteEn };
   }
-  const left = (session.headAllies || []).filter((a) => !a.used).length;
-  return { kind, labelVi: T.labelVi, labelEn: T.labelEn, value: left, max: (session.headAllies || []).length, tone: left ? 'ok' : 'bad', noteVi: T.noteVi, noteEn: T.noteEn };
+  const allies = session.headAllies || [];
+  const left = allies.filter((a) => !a.used).length;
+  // No one close enough is a fact of this life, not a fault: say so instead of showing 0 / 0 in red
+  if (!allies.length) return { kind, labelVi: T.labelVi, labelEn: T.labelEn, textVi: T.noneVi, textEn: T.noneEn, tone: 'warn', noteVi: T.noteVi, noteEn: T.noteEn };
+  return { kind, labelVi: T.labelVi, labelEn: T.labelEn, value: left, max: allies.length, tone: left ? 'ok' : 'bad', noteVi: T.noteVi, noteEn: T.noteEn };
 }
 
 // ---- Outskirts: lamp oil (stage dungeon) ------------------------------------
@@ -113,17 +116,21 @@ const oilCost = (choice) => (choice?.checkTrait ? SIGNATURE_BALANCE.oil.checked 
 /** A check done with less oil than it burns is done half in the dark. */
 export const signatureCheckBonus = (session, choice) => (signatureOf(session) === 'oil' && (session.oil ?? 0) < oilCost(choice) ? SIGNATURE_BALANCE.oil.darkCheck : 0);
 
+/** Walking out of the Outskirts with the lamp out costs blood, whichever way the player leaves. Returns the note, or null. */
+export function darkWayOut(char, session) {
+  if (!isDark(session)) return null;
+  char.stats.health = clamp((char.stats.health || 0) - SIGNATURE_BALANCE.oil.darkFleeHp, 0, 100);
+  return SIGNATURE_TEXT.oil.darkWayOut;
+}
+
 /** After an Outskirts stage: burn the oil the choice took; walking out in the dark costs blood. Returns notes. */
 export function afterOilStage(char, session, choice) {
   if (signatureOf(session) !== 'oil') return [];
-  const O = SIGNATURE_BALANCE.oil;
   const notes = [];
-  if (choice.isFlee && isDark(session)) {
-    char.stats.health = clamp((char.stats.health || 0) - O.darkFleeHp, 0, 100);
-    notes.push(SIGNATURE_TEXT.oil.darkWayOut);
-    return notes;
+  if (choice.isFlee) {
+    const dark = darkWayOut(char, session);
+    return dark ? [dark] : notes;
   }
-  if (choice.isFlee) return notes;
   const before = session.oil;
   session.oil = Math.max(0, session.oil - oilCost(choice));
   if (before > 0 && session.oil === 0) notes.push(SIGNATURE_TEXT.oil.out);
@@ -256,15 +263,17 @@ export function previewSignatureCombat(session, choice, intent) {
   if (choice.combatAction === 'workBack' || choice.combatAction === 'headAlly') return { taken: 0 };
   // Opening the work step shows the best the duty log can promise, so it never reads as free when nothing is known
   if (choice.combatAction === 'workOpen') {
-    const best = Math.min(...WORK_TYPES.map((w) => previewSignatureCombat(session, { combatAction: 'work', workType: w.id }, intent).taken));
-    return { taken: best };
+    const options = WORK_TYPES.map((w) => previewSignatureCombat(session, { combatAction: 'work', workType: w.id }, intent));
+    return options.reduce((a, b) => (b.taken < a.taken ? b : a));
   }
   if (choice.combatAction === 'work') {
     const lore = new Set(session.lore || []);
     const key = abnoKey(session.combat.enemy);
-    if (lore.has(`${LORE}${key}`)) return { taken: choice.workType === preferredWork(session.combat.enemy) ? 0 : SIGNATURE_BALANCE.work.wrongTaken };
-    if (lore.has(`${LORE}${key}_not_${choice.workType}`)) return { taken: SIGNATURE_BALANCE.work.wrongTaken };
-    return { taken: SIGNATURE_BALANCE.work.wrongTaken * 0.75 };
+    const W = SIGNATURE_BALANCE.work;
+    // A wrong work also costs a fixed share of the mind, so the preview carries it
+    if (lore.has(`${LORE}${key}`)) return choice.workType === preferredWork(session.combat.enemy) ? { taken: 0 } : { taken: W.wrongTaken, sanity: W.wrongSanity };
+    if (lore.has(`${LORE}${key}_not_${choice.workType}`)) return { taken: W.wrongTaken, sanity: W.wrongSanity };
+    return { taken: W.wrongTaken * 0.75, sanity: Math.round(W.wrongSanity * 0.75) };
   }
   return null;
 }
