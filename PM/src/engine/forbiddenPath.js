@@ -6,8 +6,9 @@ import { FORBIDDEN_LEAD_ID } from '../data/eventsForbidden.js';
 import { choiceIsAvailable } from './eventConditions.js';
 
 export const FORBIDDEN_MIN_AGE = 25;
-export const FORBIDDEN_OFFER_GAP = 4;
-export const FORBIDDEN_OFFER_CHANCE = 0.5;
+// A strong life should meet the door to the Head, not miss it by a coin flip every four years (Đợt 127)
+export const FORBIDDEN_OFFER_GAP = 3;
+export const FORBIDDEN_OFFER_CHANCE = 0.75;
 export const TABOO_LIMIT = 3;
 
 const has = (char, flag) => Boolean(char?.flags?.includes(flag));

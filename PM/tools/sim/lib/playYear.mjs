@@ -3,6 +3,7 @@
 import { resolveEventChoice, resolveDungeonChoice, getDungeonCurrentStage, isDungeonChoiceAvailable, resolveFixerContract } from '../../../src/engine/gameEngine.js';
 import { planYear, chooseDirectorPacedLead, runDueItems, resolveMinor, endYear } from '../../../src/engine/yearPlanner.js';
 import { careerAgeOf, CAREER_CROSSROAD_IDS } from '../../../src/engine/careerAge.js';
+import { enforceTabooJudgment } from '../../../src/engine/tabooJudgment.js';
 
 export function playYear(charState, rng, pickIndex, onResolve = () => {}) {
   let char = charState;
@@ -10,6 +11,8 @@ export function playYear(charState, rng, pickIndex, onResolve = () => {}) {
   if (char.pendingLead) char = chooseDirectorPacedLead(char, rng);
   for (let t = 0; t <= 100 && char.alive; t += 2) {
     char = runDueItems(char, t, rng).char;
+    // As in the store: at three Taboo the Claw comes before anything else is answered
+    char = enforceTabooJudgment(char);
     let spin = 0;
     while (char.alive && (char.pendingEvent || char.pendingMinor || char.pendingContract || char.pendingDungeon || char.pendingModal) && spin++ < 8) {
       if (char.pendingEvent) {

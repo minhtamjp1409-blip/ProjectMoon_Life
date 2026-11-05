@@ -74,7 +74,6 @@ for (const [job, firstId] of branchCases) {
     return event.id.startsWith('gate_') && isEventEligible(event, char);
   }).map(dungeonOf));
   assert.ok(reachable.size >= 4, `${job} can reach ${reachable.size} distinct dungeons`);
-  if (job === 'Fixer') continue;
   const offered = new Set();
   for (let i = 0; i < 150; i++) {
     const char = worker(`gate-variety-${job}-${i}`, job);

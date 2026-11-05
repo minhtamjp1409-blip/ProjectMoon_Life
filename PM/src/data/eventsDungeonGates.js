@@ -70,7 +70,7 @@ export const DUNGEON_GATE_EVENTS = [
         'Từ chối: những chuyến tàu đó không có hồ sơ lúc quay lại', 'Decline: nothing about those trains is on file when they come back',
         'Bạn gạch tên khỏi bảng. Hai tuần sau, bản tin khu có một dòng nhỏ về một đội dọn tàu thiếu người.',
         'You strike your name from the board. Two weeks later a small line in the district bulletin mentions a cleanup crew short of hands.',
-        { sanity: +3 })
+        { sanity: +1, rep: -2 })
     ]
   }),
   gate({
@@ -169,7 +169,7 @@ export const DUNGEON_GATE_EVENTS = [
         'Bán bản đồ cho một người môi giới Wing rồi rút lui', 'Sell the map to a Wing broker and walk away',
         'Người môi giới đếm tiền, không hỏi tại sao bạn không xuống. Có lẽ ông ta đã biết câu trả lời.',
         'The broker counts out the coins and does not ask why you are not going down. Perhaps he already knows the answer.',
-        { wealth: +10, network: +2 })
+        { wealth: +2, rep: -3 })
     ]
   }),
   gate({
@@ -193,7 +193,7 @@ export const DUNGEON_GATE_EVENTS = [
         'Chỉ nhận tiền môi giới để chỉ đường cho ông', 'Take only a finder’s fee for pointing him to the shaft',
         'Ông trả bằng tiền lẻ và đi một mình. Ba tuần sau, bạn thấy một chiếc áo giống áo ông treo ở sạp đồ cũ.',
         'He pays in small coins and goes alone. Three weeks later you see a coat like his hanging at a secondhand stall.',
-        { wealth: +10, sanity: -2 })
+        { wealth: +2, sanity: -2 })
     ]
   }),
 
@@ -219,7 +219,7 @@ export const DUNGEON_GATE_EVENTS = [
         'Chỉ báo vị trí công viên cho Zwei để lấy tiền công tin', 'Only report the park’s location to Zwei for the tip fee',
         'Zwei ghi tọa độ vào sổ rồi cử người khác đi. Bạn nhận tiền công và không hỏi đội nào được cử.',
         'Zwei writes the coordinates in a ledger and sends someone else. You take the fee and do not ask which crew.',
-        { wealth: +8, rep: +2 })
+        { wealth: +2, rep: -3 })
     ]
   }),
   gate({
@@ -269,7 +269,7 @@ export const DUNGEON_GATE_EVENTS = [
         'Chỉ cho họ chỗ mua dụng cụ rồi lấy tiền môi giới', 'Point them to where tools are sold and keep the finder’s fee',
         'Bạn dẫn họ ra hai dãy nhà, tới chỗ người bán dây và búa. Họ đi trước khi trời sáng, và bạn không đếm xem có mấy người trở về.',
         'You walk them two blocks to the man who sells rope and hammers. They leave before dawn, and you do not count how many return.',
-        { wealth: +6, network: +2 })
+        { wealth: +2, network: -1, rep: -2 })
     ]
   }),
   gate({
@@ -319,7 +319,7 @@ export const DUNGEON_GATE_EVENTS = [
         'Chỉ nhận phí rời bến và để tàu đi mà không có bạn', 'Take only the departure fee and let the ship sail without you',
         'Bạn nhận phí ở bàn cảng và đứng nhìn con tàu tách bến. Một thủy thủ trên boong vẫy tay với bạn, và bạn không biết có nên vẫy lại không.',
         'You collect the fee at the dock desk and watch the ship pull away. A sailor on deck waves at you, and you do not know whether to wave back.',
-        { wealth: +6, rep: -4 })
+        { wealth: +2, rep: -4 })
     ]
   }),
   gate({

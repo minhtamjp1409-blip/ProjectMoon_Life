@@ -1,8 +1,8 @@
 // ============================================================================
 // DUNGEON PACING: every working life meets dungeon gates, how many depends on the branch,
-// and none come back to back. A Fixer already has Requests, exams and an Association, so a
-// Fixer gets one guaranteed gate; a Finger member has fewer scenes of their own, so they get
-// three, sooner and closer together. Gate events live in data/eventsDungeonGates*.js and
+// and none come back to back. Going into the places others will not is a Fixer's trade, so a
+// Fixer gets three guaranteed gates, as a Finger member does (Đợt 127: with one, a Fixer met
+// fewer dungeons than any other branch); a Wing or an Outcast gets two. Gate events live in data/eventsDungeonGates*.js and
 // each can be seen once.
 // ============================================================================
 import { DUNGEON_GATE_EVENTS } from '../data/eventsDungeonGates.js';
@@ -21,11 +21,11 @@ export const GATE_PROFILES = {
   Syndicate: { guaranteed: 3, spacing: [5, 8], cooldown: 3, weight: 1.8 },
   'Wing Employee': { guaranteed: 2, spacing: [7, 10], cooldown: 4, weight: 1.3 },
   Outcast: { guaranteed: 2, spacing: [7, 10], cooldown: 4, weight: 1.3 },
-  Fixer: { guaranteed: 1, spacing: [8, 12], cooldown: 5, weight: 1 },
-  'Color Fixer': { guaranteed: 2, spacing: [5, 8], cooldown: 4, weight: 1.5 }
+  Fixer: { guaranteed: 3, spacing: [6, 10], cooldown: 4, weight: 1.3 },
+  'Color Fixer': { guaranteed: 3, spacing: [5, 8], cooldown: 3, weight: 1.5 }
 };
 const DEFAULT_PROFILE = { guaranteed: 1, spacing: [8, 12], cooldown: 5, weight: 1 };
-export const GATE_COOLDOWN_YEARS = GATE_PROFILES.Fixer.cooldown;
+export const GATE_COOLDOWN_YEARS = DEFAULT_PROFILE.cooldown;
 
 export const gateProfileOf = (char) => GATE_PROFILES[char?.job] || (char?.flags?.includes('ColorFixer') ? GATE_PROFILES['Color Fixer'] : DEFAULT_PROFILE);
 export const gateWeightMult = (char) => gateProfileOf(char).weight;

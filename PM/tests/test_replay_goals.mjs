@@ -17,6 +17,12 @@ for (const goal of fixerGoals) {
 const wingGoals = replayGoalsFor([{ job: 'Wing Employee' }, { job: 'Fixer' }], [], CODEX_RECORDS);
 assert.equal(wingGoals[0].category, 'wing', 'the newest life decides the trade');
 
+// After a Color life, the road to the Head is named first while it is still unopened
+const colorGoals = replayGoalsFor([{ job: 'Color Fixer' }], [], CODEX_RECORDS);
+assert.equal(colorGoals[0].key, 'defied_the_claw', 'a Color life is pointed at the Head');
+assert.match(colorGoals[0].hintVi, /hộp chì/, 'the hint names the way in');
+assert.notEqual(replayGoalsFor([{ job: 'Color Fixer' }], ['defied_the_claw'], CODEX_RECORDS)[0].key, 'defied_the_claw', 'once opened, it is not named again');
+
 const allKeys = CODEX_RECORDS.map((r) => r.key);
 assert.deepEqual(replayGoalsFor([{ job: 'Fixer' }], allKeys, CODEX_RECORDS), [], 'a full codex shows nothing');
 assert(!replayGoalsFor([{ job: 'Fixer' }], allKeys.slice(1), CODEX_RECORDS).some((g) => allKeys.slice(1).includes(g.key)), 'unlocked records never come back');

@@ -161,14 +161,15 @@ assert.ok(kept.flags.includes('KeptDungeonTrophy'));
 assert.ok(kept.weaver.pendingThreads.some((t) => t.eventId === 'csq_dungeon_trophy_kept'));
 assert.ok(ALL_STORY_EVENTS.some((e) => e.id === 'csq_dungeon_trophy_kept'));
 
-// Every Finger has its own Night gate; a Finger member is guaranteed more gates than a Fixer
+// Every Finger has its own Night gate; going into dungeons is a Fixer's trade, so a Fixer is guaranteed
+// at least as many gates as any branch and more than a Wing (owner's call, Đợt 127)
 for (const finger of ['Thumb', 'Index', 'Middle', 'Ring', 'Pinky']) {
   const m = delver(`dg-finger-${finger}`, { job: 'Syndicate', finger, fingerRank: 0 });
   const own = ALL_STORY_EVENTS.filter((e) => e.id.startsWith('gate_night_') && matchesEventContext(e, m));
   assert.equal(own.length, 1, `${finger} has one Night gate`);
 }
-assert.ok(gateProfileOf({ job: 'Syndicate' }).guaranteed > gateProfileOf({ job: 'Fixer' }).guaranteed);
-assert.ok(gateProfileOf({ job: 'Syndicate' }).cooldown < gateProfileOf({ job: 'Fixer' }).cooldown);
+for (const job of ['Syndicate', 'Wing Employee', 'Outcast']) assert.ok(gateProfileOf({ job: 'Fixer' }).guaranteed >= gateProfileOf({ job }).guaranteed, `a Fixer gets at least as many gates as ${job}`);
+assert.ok(gateProfileOf({ job: 'Fixer' }).guaranteed > gateProfileOf({ job: 'Wing Employee' }).guaranteed);
 const member = delver('dg-quota', { job: 'Syndicate', finger: 'Ring', fingerRank: 0 });
 member.weaver.pendingThreads = [];
 member.seenEvents = ['gate_night_ring_material'];
@@ -181,7 +182,9 @@ member.seenEvents = [...member.seenEvents, 'gate_bloodfiend_syndicate_hostage', 
 assert.equal(nextGateDueAge(member), null, 'three gates fill the quota');
 const fixerDone = delver('dg-fixer-quota');
 fixerDone.seenEvents = ['gate_warp_fixer_request'];
-assert.equal(nextGateDueAge(fixerDone), null, 'a Fixer is guaranteed one');
+assert.notEqual(nextGateDueAge(fixerDone), null, 'after one gate a Fixer still has more to come');
+fixerDone.seenEvents = ['gate_warp_fixer_request', 'gate_lobotomy_fixer_survey', 'gate_lake_open_hunt'];
+assert.equal(nextGateDueAge(fixerDone), null, 'a Fixer is guaranteed three');
 
 // The Night itself: four stages, three waves, and the Backstreets know it best
 const night = DUNGEON_DEFINITIONS.dungeon_backstreets_night;

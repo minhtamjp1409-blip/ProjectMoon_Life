@@ -275,7 +275,9 @@ import { chapterFor } from '../src/engine/chapters.js';
             const sess = c.pendingDungeon;
             const stage = getDungeonCurrentStage(sess);
             const usable = stage.choices.map((ch, k) => k).filter((k) => isDungeonChoiceAvailable(stage.choices[k], c));
-            c = resolveDungeonChoice(c, usable[0] ?? 0, lifeRng).char;
+            // This sim measures NPC callbacks, not dungeon odds: it leaves at the first way out (tests/test_dungeon_difficulty.mjs owns the odds)
+            const out = usable.find((k) => stage.choices[k].isFlee);
+            c = resolveDungeonChoice(c, out ?? usable[0] ?? 0, lifeRng).char;
           } else if (c.pendingMinor) {
             const def = LIFE_MINORS.find((m) => m.id === c.pendingMinor.id);
             const ok = (def?.choices || []).map((ch, idx) => idx).filter((idx) => choiceIsAvailable(def.choices[idx], c));

@@ -13,7 +13,6 @@ import {
   useDungeonEgo,
   resolveDungeonChoice,
   fleeDungeon,
-  createDungeonSession,
   buildLifeSummaryAndLegacy,
   cloneChar,
   interpolateText
@@ -29,6 +28,7 @@ import { useThemeStore } from './themeStore.js';
 import { choiceIsAvailable } from '../engine/eventConditions.js';
 import { executeNpcInteraction, canInteractWithNpc } from '../engine/npcInteractions.js';
 import { CLAW_DUNGEON_ID } from '../data/dungeonClaw.js';
+import { enforceTabooJudgment } from '../engine/tabooJudgment.js';
 import { applyAnnualPlan, ambitionsFor, defaultYearPoints } from '../engine/annualPlan.js';
 import { autoLeadIndex, tabooGainOf } from '../engine/forbiddenPath.js';
 import { relocateCharacterDistrict, imbueCharacterEquipment } from '../engine/cityUpgrades.js';
@@ -196,23 +196,6 @@ function nextCutscene(prev, next, state) {
   return { id, key: `${id}_${next.age}_${next.logs.length}_${Date.now()}`, cut, durationMs: CUTSCENES[id].ms[cut] };
 }
 
-function enforceTabooJudgment(char) {
-  if (!char?.alive || (char.taboo || 0) < 3 || char.pendingDungeon) return char;
-  const next = cloneChar(char);
-  next.pendingEvent = null;
-  next.pendingMinor = null;
-  next.pendingContract = null;
-  next.pendingModal = null;
-  next.pendingDungeon = createDungeonSession(CLAW_DUNGEON_ID, next);
-  next.logs.push({
-    id: `claw_arrival_${next.age}_${next.logs.length}`,
-    age: next.age,
-    type: 'danger',
-    vi: '[Án của The Head] Taboo Gaze đã chạm 3/3. Một đường cắt xanh mở ra ngay trước mặt bạn. Claw đã đến.',
-    en: '[The Head’s Judgment] Taboo Gaze has reached 3/3. A blue cut opens before you. The Claw has arrived.'
-  });
-  return next;
-}
 
 // A finished delve is summarized once, against the state the player went in with
 function dungeonResolution(prevChar, nextChar, resolution) {

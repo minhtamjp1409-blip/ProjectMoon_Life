@@ -25,7 +25,9 @@ export function replayGoalsFor(pastLives = [], unlocked = [], records = [], coun
   if (!open.length) return [];
   const lastCategory = CATEGORY_OF_JOB[pastLives[0]?.job] || 'survival';
   const picks = [];
-  const route = open.find((r) => r.category === lastCategory);
+  // A life that reached Color was strong enough to be offered the road to the Head: point at it while it is unopened
+  const headRoad = pastLives[0]?.job === 'Color Fixer' ? open.find((r) => r.key === 'defied_the_claw') : null;
+  const route = headRoad || open.find((r) => r.category === lastCategory);
   if (route) picks.push(route);
   for (const r of open) {
     if (picks.length >= count) break;
