@@ -84,8 +84,8 @@ export const FINGER_CANON_EVENTS = [
     '[The pager at three] The old pager you were issued sounds at three in the morning, and the screen holds only one sentence: Speak to no one for five days. The deadline starts now. You look around the room, then at the calendar, and realize the day after tomorrow holds a meeting where you must speak.',
     [
       fc('Im lặng năm ngày, mặc cuộc họp', 'Stay silent five days, meeting or no',
-        'Bạn viết ra giấy mọi thứ cần nói, và đưa cho từng người. Cuộc họp trôi qua với một bầu không khí kỳ lạ, và đồng nghiệp nhìn bạn như một người đang cầm một món đồ dễ vỡ. Đến ngày thứ năm, máy nhắn tin im lặng, và bạn nói chữ đầu tiên rất khẽ.',
-        'You write down everything you need to say and hand it to each person. The meeting passes in a strange hush, and colleagues regard you as someone carrying something fragile. On the fifth day the pager goes quiet, and you say your first word softly.',
+        'Bạn viết lời cần nói ra giấy. Trong cuộc họp, từng tờ giấy được chuyền tay thay cho tiếng bạn. Hết ngày thứ năm, bạn mới cất lời; không ai hỏi vì sao.',
+        'You write down what you need to say. At the meeting, the pages pass from hand to hand in place of your voice. After the fifth day, you speak again; nobody asks why.',
         { rep: 6, sanity: -4, network: -2 }, { flagsAdd: ['index_obeyed'] }),
       fg('Nói đúng ba câu trong cuộc họp và giữ im lặng phần còn lại', 'Say exactly three sentences at the meeting and stay silent otherwise', [
         [50, 'Cuộc họp trôi qua. Máy nhắn tin không kêu thêm lần nào, và đến ngày thứ sáu bạn nhận ra mình chưa bao giờ biết liệu mình đã làm đúng hay không. Không có ai nói gì cả.', 'The meeting passes. The pager never sounds again, and on the sixth day you realize you never learn whether you did right. No one says anything at all.', { sanity: -3, rep: 2 }, { flagsAdd: ['index_deviated'] }],
@@ -339,8 +339,8 @@ export const FINGER_CANON_EVENTS = [
     '[The gathering call] No order is sent, no one shouts. Only a small sign: three evening bell strokes, a red chalk circle on the wall of an alley, and a cloak hung at the tower door. The conditions are met. The Pinky’s members, hiding across the city, begin to arrive one by one, and no one looks at another.',
     [
       fc('Đến tháp theo tiếng gọi và ngồi vào chỗ không ai ngồi', 'Go to the tower at the call and take the seat nobody sits in',
-        'Phòng họp đầy người im lặng. Không ai nói tên, không ai nói việc. Bạn ngồi trong bóng tối của một cái cột, nghe một giọng nói rất thấp đặt ra một câu hỏi, và nhận ra mọi người đang nghe cùng một thứ. Khi cuộc họp tan, mỗi người rời theo một cửa khác nhau.',
-        'The meeting room fills with silent people. No one gives a name, no one a task. You sit in the shadow of a pillar, hear a very low voice pose a question, and realize everyone is listening to the same thing. When it disperses each leaves by a different door.',
+        'Bạn ngồi vào chiếc ghế trống. Một giọng thấp đặt câu hỏi từ sau cột; không ai trả lời thành tiếng. Khi cuộc họp tan, mỗi người ra bằng một cửa khác.',
+        'You take the empty seat. A low voice asks a question from behind the pillar; nobody answers aloud. When the meeting ends, each person leaves by a different door.',
         { rep: 7, sanity: -3, network: 5 }, { flagsAdd: ['pinky_kept_word'] }),
       fg('Đến muộn, và chỉ đứng ngoài cửa', 'Come late and stand only at the door', [
         [50, 'Bạn thấy ánh sáng nến dưới khe cửa, nghe tiếng thì thầm. Rồi cánh cửa mở ra và người đầu tiên đi ra nhìn bạn một lần rất lâu. Họ không nói gì, và bạn không hỏi, và cả hai biết bạn đã bỏ lỡ điều quan trọng.', 'You see candlelight under the door and hear whispers. Then the door opens and the first out looks at you a very long time. They say nothing, you ask nothing, and both know you missed something important.', { rep: -4, sanity: -4 }, { flagsAdd: ['pinky_bent_word'] }],

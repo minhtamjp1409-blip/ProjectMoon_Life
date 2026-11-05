@@ -524,14 +524,14 @@ export const CHILDHOOD_EVENTS = [
           vi: 'Bắt đầu đời Syndicate: mỗi năm có thu nhập ngầm nhưng chịu thêm hao mòn HP và SP',
           en: 'Begins Syndicate life: provides yearly street income at the cost of annual HP and SP wear'
         },
-        resultVi: "Một tay Capo ném cho bạn con dao rỉ và danh sách thu tiền bảo kê. \"Thu đủ trước giờ giới nghiêm, giữ lại phần trăm của mày.\" Bạn có tiền mặt dằn túi ngay lập tức, nhưng cái giá là bị ghi tên vào sổ đen và mùi máu bám vào ngón tay.",
-        resultEn: "A Capo tossed you a rusted knife and a protection money collection ledger. “Collect before curfew, keep your cut.” You had quick cash in hand, but the cost was a spot on the watch list and the stench of iron on your fingers.",
         outcomes: [
           { w: 75, setJob: 'Syndicate', effects: { wealth: 14, rep: 6, heat: 12, sanity: -8 },
-            recordsAdd: ['syndicate_initiate'], meritAdd: 2 },
+            recordsAdd: ['syndicate_initiate'], meritAdd: 2,
+            resultVi: 'Người giữ sổ đưa bạn danh sách các khoản phải thu. "Xong trước giờ giới nghiêm, giữ phần của mày." Tiền vào túi ngay đêm đầu. Tên bạn cũng vào sổ của băng.',
+            resultEn: 'The ledger keeper hands you a list of collections. “Finish before curfew. Keep your cut.” You earn cash that first night. The crew enters your name in its book.' },
           { w: 25, setJob: 'Outcast', flagsAdd: ['CareerApplicationFailed'],
-            resultVi: 'Tay Capo thu lại con dao. Đêm nay họ đủ người. Bạn nhận tiền công chuyển một chuyến hàng, chưa có tên trong sổ.',
-            resultEn: 'The Capo takes back the knife. The crew is full tonight. You earn a courier fee, without a place in their ledger.',
+            resultVi: 'Đêm nay băng đã đủ người. Bạn chỉ được trả tiền chuyển một chuyến hàng; tên bạn chưa vào sổ.',
+            resultEn: 'The crew is full tonight. You get paid for one delivery; your name stays out of the book.',
             effects: { wealth: 5, heat: 4, sanity: -3 } }
         ]
       },
@@ -542,12 +542,12 @@ export const CHILDHOOD_EVENTS = [
           vi: 'Vào biên chế Wing tại Nest: mỗi năm có lương ổn định và y tế Nest nhưng chịu áp lực SP',
           en: 'Enters Wing service in the Nest: grants steady yearly salary and Nest healthcare with annual SP strain'
         },
-        resultVi: "Hàng trăm người chen chúc trước cổng. Để vượt qua vòng sơ loại, bạn phải ký vào bản cam kết cho phép Wing toàn quyền xử lý thể xác nếu Singularity phát sinh lỗi. Bạn nhận thẻ Feather cấp 0 tạm thời, bước qua cổng Nest với nỗi ớn lạnh sống lưng.",
-        resultEn: "Hundreds jostled before the iron gate. To pass probation, you signed a waiver granting the Wing full authority over your remains in case of a Singularity breach. You took your provisional Rank 0 Feather badge, stepping into the Nest with a cold chill down your spine.",
         outcomes: [
           { w: 55, setJob: 'Wing Employee', setWingRank: 0,
             effects: { wealth: 6, network: 8, rep: 4, sanity: -12 }, meritAdd: 2,
-            flagsAdd: ['Feather', 'Nest'], recordsAdd: ['nest_migration'] },
+            flagsAdd: ['Feather', 'Nest'], recordsAdd: ['nest_migration'],
+            resultVi: 'Bạn ký bản cam kết xử lý sự cố Singularity. Máy quét nhận hồ sơ; nhân viên trao thẻ Feather thử việc. Qua cổng Nest, bạn thấy tên mình trên bảng ca ngày mai.',
+            resultEn: 'You sign the Singularity incident waiver. The scanner accepts your file, and a clerk hands you a probationary Feather badge. Beyond the Nest gate, your name appears on tomorrow’s roster.' },
           { w: 45, setJob: 'Outcast', flagsAdd: ['CareerApplicationFailed'],
             resultVi: 'Máy quét trả lại hồ sơ không có lý do. Bạn nhận ca dọn kho ngoài cổng; bảng tuyển dụng vẫn treo ở phía bên kia.',
             resultEn: 'The scanner returns your file without a reason. You take a warehouse shift outside the gate; the recruitment board remains on the other side.',
@@ -561,26 +561,26 @@ export const CHILDHOOD_EVENTS = [
     age: [15, 99],
     major: true,
     weight: 999,
-    vi: "[Đến tuổi phải chọn đường] Gia đình giữ bạn ở trường lâu hơn bọn trẻ ngoài Backstreets, nhưng khoản học phí cuối đã đóng xong. Trên bàn ăn trong Nest có ba thứ: một giấy giới thiệu gửi quầy Hana, một lời nhắn của người quen ở cổng tuyển dụng Wing, và một địa chỉ ở Backstreets mà không ai trong nhà muốn nhắc tên. Cả nhà chờ bạn chọn, và không ai hứa giữ chỗ cho bạn nếu bạn bước ra ngoài.",
-    en: "[Working age] Your family kept you in school longer than the children outside the Backstreets, but the last tuition is paid. On the dinner table in the Nest lie three things: a letter of introduction for the Hana desk, a message from an acquaintance at the Wing recruitment gate, and an address in the Backstreets that nobody in the house wants to name. The family waits for your answer, and no one promises to keep your place if you walk out.",
+    vi: '[Đến tuổi phải chọn đường] Thời gian được nuôi ăn trong Nest đã hết. Bạn có tên một người bảo lãnh ở quầy Hana, lời nhắn từ cổng tuyển dụng Wing và địa chỉ một quầy rượu ngoài Backstreets. Mỗi nơi chỉ nhận bạn theo điều kiện của họ.',
+    en: '[Working age] Your time living on Nest support is over. You have the name of a sponsor at the Hana desk, a message from a Wing recruiter, and the address of a Backstreets bar. Each place will take you on its own terms.',
     choices: [
       {
-        labelVi: "Mang giấy giới thiệu của gia đình tới quầy Hana xin thẻ Fixer Grade 9",
-        labelEn: "Take the family letter to the Hana desk and apply for a Grade 9 Fixer license",
+        labelVi: 'Mang tên người bảo lãnh tới quầy Hana xin thẻ Fixer Grade 9',
+        labelEn: 'Take your sponsor’s name to Hana and apply for a Grade 9 Fixer license',
         outcomes: [
           {
             w: 85,
             setJob: 'Fixer', setFixerGrade: 9, recordsAdd: ['fixer_license'], meritAdd: 2,
             effects: { wealth: -4, rep: 4, network: 4, sanity: -4 },
-            resultVi: "Thư ký Hana đọc tên người bảo lãnh trước khi đọc tên bạn. Lệ phí được trừ vào khoản gia đình để lại cho bạn, không có giấy nợ nào. Tấm thẻ Grade 9 đến tay bạn nhanh hơn với mọi người xếp hàng phía sau, và họ nhìn thấy điều đó.",
-            resultEn: "The Hana clerk read your sponsor's name before yours. The fee came out of the allowance your family set aside, and no loan note was signed. The Grade 9 card reached you faster than anyone in the line behind you, and they saw it."
+            resultVi: 'Thư ký Hana kiểm tên người bảo lãnh rồi thu lệ phí. Bạn nhận thẻ Grade 9 trước những người còn xếp hàng. Họ nhìn tấm thẻ, rồi nhìn bạn.',
+            resultEn: 'The Hana clerk checks your sponsor’s name and takes the fee. You receive your Grade 9 license ahead of the people still waiting. They look at the card, then at you.'
           },
           {
             w: 15,
             setJob: 'Outcast', flagsAdd: ['CareerApplicationFailed'],
             effects: { wealth: 2, network: -2, sanity: -6 },
-            resultVi: "Người bảo lãnh rút tên khỏi giấy giới thiệu vào phút cuối. Quầy Hana trả hồ sơ, còn ở nhà không ai nhắc lại chuyện đó. Bạn nhận một ca bốc hàng ngoài khu Nest và để lại căn phòng cũ.",
-            resultEn: "Your sponsor withdrew from the letter at the last minute. The Hana desk returned the file, and at home no one spoke of it again. You took a loading shift outside the Nest and left your old room behind."
+            resultVi: 'Người bảo lãnh rút tên trước khi hồ sơ được đóng dấu. Hana trả lại đơn. Bạn nhận ca bốc hàng bên ngoài Nest, rồi tìm chỗ ngủ cho đêm đầu.',
+            resultEn: 'Your sponsor withdraws before the file is stamped. Hana returns the application. You take a loading shift outside the Nest, then look for somewhere to sleep.'
           }
         ]
       },
@@ -615,16 +615,16 @@ export const CHILDHOOD_EVENTS = [
             effects: { wealth: 10, rep: 4, heat: 14, sanity: -10 },
             recordsAdd: ['syndicate_initiate'],
             flagsRemove: ['Nest', 'Feather', 'NestResident'],
-            resultVi: "Địa chỉ dẫn tới một quầy rượu sau khu chợ. Người ngồi trong đó biết tên họ gia đình bạn và biết nó đáng giá bao nhiêu. Hắn đưa bạn một con dao và danh sách thu tiền bảo kê. Tối đó bạn không về nhà ăn cơm.",
-            resultEn: "The address led to a bar behind the market. The man inside knew your family name and what it was worth. He handed you a knife and a protection ledger. You did not come home for dinner that night."
+            resultVi: 'Quầy rượu nằm sau khu chợ. Người giữ sổ biết bạn vừa rời Nest; hắn đưa danh sách các khoản phải thu. Đêm ấy, bạn ngủ phía ngoài cổng.',
+            resultEn: 'The bar is behind the market. The ledger keeper knows you have left the Nest and hands you a list of collections. That night you sleep outside the gate.'
           },
           {
             w: 30,
             setJob: 'Outcast', flagsAdd: ['CareerApplicationFailed'],
             flagsRemove: ['Nest', 'Feather', 'NestResident'],
             effects: { health: -8, sanity: -8, heat: 8 },
-            resultVi: "Quầy rượu đã đóng cửa, chủ mới không biết người bạn tìm. Bạn đi bộ về phía Nest thì cổng đã khóa theo giờ giới nghiêm. Đêm đó bạn ngủ dưới mái hiên bên ngoài, lần đầu tiên không có tên mình trong sổ nhà.",
-            resultEn: "The bar had closed and the new owner did not know the person you were looking for. You walked back toward the Nest and found the gate locked for curfew. That night you slept under an awning outside, your name missing from the household ledger for the first time."
+            resultVi: 'Quầy rượu đã đổi chủ; không ai nhận địa chỉ bạn mang tới. Cổng Nest khóa trước khi bạn quay lại. Bạn ngủ dưới mái hiên, không còn thẻ để vào.',
+            resultEn: 'The bar has changed hands; no one recognizes the address you carry. The Nest gate closes before you return. You sleep under an awning without a pass back in.'
           }
         ]
       }
@@ -991,6 +991,7 @@ export const CONSEQUENCE_EVENTS = [
       {
         labelVi: "Nộp 42 Ahn để khép lại vụ việc",
         labelEn: "Pay 42 Ahn to close the case",
+        costAhn: 42,
         resultVi: "Thanh tra đóng dấu đỏ lên hồ sơ rồi đem cái lọ đi đốt. Bạn mất sạch tiền dành dụm, nhưng không phải bước lên toa đó lần nữa.",
         resultEn: "The inspector stamped the file in red and burned the jar. Your savings were gone, but you did not have to step into that car a second time.",
         effects: { wealth: -42, sanity: +5, taboo: -2 }
@@ -1135,6 +1136,7 @@ export const CONSEQUENCE_EVENTS = [
       {
         labelVi: "Trả 35 Ahn để mua lại cuộn phim và sự im lặng",
         labelEn: "Pay 35 Ahn to buy the film and their silence",
+        costAhn: 35,
         resultVi: "Bạn đốt tấm ảnh ngay trước mặt hắn. Hắn nhếch mép, nhận tiền, biến mất. Bạn tạm yên, dù biết bí mật ở The City không bao giờ chôn sâu.",
         resultEn: "You burned the photo in front of him. He smirked, took the Ahn and vanished. You were safe for now, though secrets in the City never stay buried.",
         effects: { wealth: -35, sanity: -8 }

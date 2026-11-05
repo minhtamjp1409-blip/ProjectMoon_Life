@@ -90,11 +90,11 @@ export const DUNGEON_GATE_EVENTS = [
         'Chi 12 Ahn mua thêm bình dưỡng khí và thuốc kích thích từ sạp đầu ga', 'Spend 12 Ahn on a spare rebreather and stimulants from the stall at the station gate',
         'Bạn trả bằng tiền lẻ gom từ ba cái túi áo. Người bán không đếm lại, và điều đó làm bạn lo hơn là nếu ông ta đếm.',
         'You pay in small coins gathered from three pockets. The vendor does not recount them, and that worries you more than if he had.'),
-      decline('gate_warp_shift_done',
+      { ...decline('gate_warp_shift_done',
         'Trả 10 Ahn cho một người hàng xóm đi thay bạn', 'Pay a neighbor 10 Ahn to go in your place',
         'Người hàng xóm đếm tiền, gật đầu và ra ga với đôi vai chùng xuống. Bạn ở nhà nghe còi hú đến sáng.',
         'The neighbor counts the coins, nods and walks to the platform with sagging shoulders. You stay home and listen to the horn until morning.',
-        { sanity: -3, wealth: -10 })
+        { sanity: -3, wealth: -10 }), costAhn: 10 }
     ]
   }),
 

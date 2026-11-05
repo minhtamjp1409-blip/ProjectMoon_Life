@@ -17,13 +17,13 @@ export const COMPANION_QUEST_EVENTS = [
     need: { npcTag: ['friend', 'gambler'], noQuest: { role: 'friend', max: 3 } },
     forbids: ['Distorted'],
     vi: "[Nợ sòng bạc] Bảo kê ép {friend} vào thùng rác sau sòng bạc. Tên cầm đầu giơ sổ nợ: \"Tiền cược đã mất. Trả trước nửa đêm, hoặc bọn tao lấy hai bàn tay.\" {friend} không dám nhìn bạn.",
-    en: '[The Gambler’s Reckoning] Down a slime-slick alley behind District 9’s subterranean dice den, flickering neon fractures across oily puddles. Three greasy syndicate enforcers have {friend} pinned against a rusted dumpster, blood dripping from split lips. The boss brandishes a rodent-chewed ledger:\n“Your pal staked next month’s tenement rations and lost clean to the house. Fifteen Ahn before midnight, or we take it in severed hands.”',
+    en: '[Casino debt] The protection crew pins {friend} against a dumpster behind the casino. Their leader raises a ledger: “The wager is gone. Pay by midnight, or we take both hands.” {friend} cannot meet your eyes.',
     choices: [
       {
         labelVi: 'Đặt 15 Ahn lên mặt thùng phi, chuộc người bạn ra',
         labelEn: 'Slap fifteen Ahn onto the drum to settle the debt',
         resultVi: "Bạn trả tiền. Bọn bảo kê gạch nợ rồi đẩy {friend} về phía bạn. Hai bàn tay người ấy vẫn còn nguyên. {friend} nói sẽ không quay lại sòng bạc.",
-        resultEn: 'You slapped fifteen Ahn with a sharp metallic clatter onto the drum lid. The enforcers bared yellowed teeth, scooped the coin, and shoved {friend} into the mud at your feet. {friend} knelt shivering, bloody fingers clutching your hem: “I swear... I’ll never touch the dice or cards again...”',
+        resultEn: 'You pay. The enforcers cross out the debt and push {friend} toward you. Both hands remain intact. {friend} says they will not return to the casino.',
         costAhn: 15,
         effects: { rep: +8, sanity: +6 },
         npcQuest: ['friend'],
@@ -33,7 +33,7 @@ export const COMPANION_QUEST_EVENTS = [
         labelVi: 'Tuốt vũ khí rạch gió, dùng sát khí đè bẹp đám chủ nợ',
         labelEn: 'Draw steel and break their perimeter through lethal intent',
         resultVi: "Bạn chém gãy xà beng của tên cầm đầu. Đám bảo kê lùi khỏi {friend}, nhưng cuốn sổ nợ vẫn nằm trong tay chúng. {friend} theo bạn ra khỏi ngõ, im lặng suốt đường về.",
-        resultEn: 'Your blade parted the rain, shearing clean through the leader’s prybar with a bone-chilling shriek, the razor tip halting a millimeter from his jugular. Overwhelmed by the icy aura of a killer who had breathed too much slaughter, the thugs cursed and melted into shadows. {friend} stared up at you with awe and reverence.',
+        resultEn: 'You break the leader’s crowbar with your blade. The enforcers back away from {friend}, but keep the ledger. {friend} follows you out of the alley without a word.',
         effects: { health: -8, rep: +12, heat: +10 },
         npcQuest: ['friend'],
         meritAdd: 10
@@ -41,8 +41,8 @@ export const COMPANION_QUEST_EVENTS = [
       {
         labelVi: 'Khoanh tay đứng nhìn, để bạn mình tự trả giá cho sự ngu muội',
         labelEn: 'Fold your arms and let them face the consequences of folly',
-        resultVi: 'Tiếng xương ngón tay gãy giòn vang lên chát chúa trong con ngõ cụt. Đám bảo kê bỏ đi sau khi trút cơn thịnh nộ. {friend} ôm bàn tay nát vụn lê bước trong bóng tối, cúi gằm mặt không dám nhìn bạn. Mối liên kết ngầm giữa hai người vĩnh viễn đứt đoạn.',
-        resultEn: 'A sharp, sickening snap of shattered knuckles echoed off the brick cul-de-sac. The enforcers dispersed. {friend} dragged their ruined hand through the muck, head bowed, refusing to meet your eyes. The unspoken bond between you withered into ash.',
+        resultVi: 'Tiếng ngón tay gãy vang lên trong ngõ. Đám bảo kê bỏ đi; {friend} ôm bàn tay bị thương và bước qua bạn, không ngẩng đầu.',
+        resultEn: 'Fingers snap in the alley. The enforcers leave; {friend} cradles their injured hand and walks past you without looking up.',
         effects: { sanity: -8, rep: -4 },
         bond: { friend: -20 }
       }
@@ -60,13 +60,13 @@ export const COMPANION_QUEST_EVENTS = [
     need: { back: true, npcTag: ['friend', 'sickly'], noQuest: { role: 'friend', max: 3 } },
     forbids: ['Distorted'],
     vi: "[Thuốc giữa mùa đông] {friend} ho ra máu trong căn gác lạnh. Một phòng khám chui có ống huyết thanh K Corp đủ giữ người ấy qua đêm, nhưng đòi trả tiền trước. Bạn nghe tiếng ho phía sau cánh cửa.",
-    en: '[The Backstreet Winter Fever] The drafty attic shivers under howling winter gales reeking of coal smoke. {friend}’s dry hacking now coughs dark clotted blood onto floorboards. They lie curled beneath three damp, moldy blankets, chest rattling with shallow breaths. An underground apothecary offers a filtered sediment vial extracted from K Corp regenerative culture for twelve Ahn.',
+    en: '[Medicine in winter] {friend} coughs blood in the cold attic. An unlicensed clinic has a K Corp serum that could keep them alive tonight, but demands payment first. You hear another cough behind the door.',
     choices: [
       {
         labelVi: 'Chi 12 Ahn mua lọ huyết thanh cứu mạng bạn mình',
         labelEn: 'Spend twelve Ahn on the regenerative serum vial',
-        resultVi: 'Dung dịch màu lục nhạt thấm vào tĩnh mạch cổ tay {friend}. Cơn co giật dịu dần sau hai canh giờ; sắc mặt tái mét dần ấm trở lại. Khi đôi mắt mệt mỏi mở ra, {friend} nắm chặt lấy bàn tay bạn, giọng thều thào nhưng ánh mắt rực sáng sự sống: "Mày đã kéo tao từ miệng cống trở về..."',
-        resultEn: 'Pale green fluid seeped into {friend}’s wrist veins. Within two hours the violent spasms subsided, warmth returning to sunken cheeks. When tired eyes opened, fingers gripped your hand with fierce resolve: “You dragged me back from the grave...”',
+        resultVi: 'Cơn co giật của {friend} dịu xuống sau khi tiêm thuốc. Người ấy mở mắt, nắm lấy tay bạn rồi ngủ tiếp. Y tá bảo đêm nay đã qua cơn nguy.',
+        resultEn: 'The spasms ease after the injection. {friend} opens their eyes, grips your hand, and falls asleep again. The nurse says they will make it through tonight.',
         costAhn: 12,
         effects: { sanity: +12, rep: +6 },
         npcQuest: ['friend'],
@@ -75,8 +75,8 @@ export const COMPANION_QUEST_EVENTS = [
       {
         labelVi: 'Thức trắng bốn đêm chườm nước ấm và tận tụy chăm sóc',
         labelEn: 'Vigil through four sleepless nights with herbal compresses',
-        resultVi: 'Không có tiền mua thuốc đắt đỏ, bạn dùng cả sức lực và sự kiên nhẫn để thay khăn, đun từng thìa nước rễ cây hạ sốt. Đến rạng sáng ngày thứ năm, cơn sốt cắt hẳn. {friend} rơi nước mắt trong ánh ban mai xám xịt, khắc sâu ân tình này vào tim.',
-        resultEn: 'Lacking coin for expensive serum, you guarded with iron will, boiling bitter root broths through four sleepless nights. On the fifth dawn, the fever broke. {friend} wept softly in the gray light, your devotion etched forever in memory.',
+        resultVi: 'Bạn thay khăn và đun nước suốt bốn đêm. Đến rạng sáng ngày thứ năm, cơn sốt hạ. {friend} xin nước uống rồi hỏi bạn đã ngủ lúc nào.',
+        resultEn: 'You change cloths and boil water through four nights. At dawn on the fifth day, the fever breaks. {friend} asks for a drink, then asks when you last slept.',
         effects: { health: -6, sanity: +8, rep: +8 },
         npcQuest: ['friend'],
         meritAdd: 8
@@ -103,13 +103,13 @@ export const COMPANION_QUEST_EVENTS = [
     need: { npcTag: ['friend', 'proud'], noQuest: { role: 'friend', max: 3 } },
     forbids: ['Distorted'],
     vi: "[Lời thách ở chợ] Một tay Syndicate hất canh lên áo {friend}, rồi tát người ấy trước đám đông. {friend} rút dao gấp; đối thủ mặc giáp và đã gọi đàn em lại. Bạn đứng đủ gần để ngăn trận đấu.",
-    en: '[The Duel for Pride] In the crowded morning market smelling of frying grease and sewage, a towering syndicate bouncer purposely hurls hot grease across {friend}’s ragged coat, then backhands them into the muck to entertain his cronies. Humiliated before the jeering crowd, {friend} spits blood and snaps open a rusted folding knife, eyes ablaze with suicidal defiance against an armored brute twice their size.',
+    en: '[A challenge at the market] A Syndicate man spills soup on {friend}’s coat, then slaps them in front of the crowd. {friend} draws a folding knife; the man wears armor and has called his crew. You are close enough to stop the fight.',
     choices: [
       {
         labelVi: 'Bước lên đứng kề vai, cùng bạn mình tuốt kiếm đối đầu',
         labelEn: 'Step shoulder-to-shoulder, drawing your blade in unison',
-        resultVi: 'Hai lưỡi đao cùng rút ra trong một nhịp thở lạnh ngắt. Sát khí của hai kẻ liều mạng sẵn sàng cùng chết khiến nụ cười trên môi tên đao phủ vụt tắt. Gã chột dạ, lùi lại nửa bước rồi hậm hực dẫn đàn em lẩn vào đám đông. {friend} lau vệt máu trên cằm, khẽ gật đầu: "Tao nợ mày một mạng và một danh dự."',
-        resultEn: 'Two blades drew breath with bone-cold synchronized clicks. The quiet madness of two wolves ready to die together froze the laughter in the bully’s throat. Intimidated, he spat and melted into the bazaar. {friend} wiped crimson from their jaw, nodding firmly: “I owe you my life and my name.”',
+        resultVi: 'Bạn đứng cạnh {friend}, cùng rút dao. Gã kia đếm lại số người trong đám đông rồi ra hiệu cho đàn em lùi. {friend} gấp dao, nhìn bạn: "Lần sau để tao trả phần này."',
+        resultEn: 'You stand beside {friend} and draw your blade. The man counts the people watching, then signals his crew to back off. {friend} folds their knife. “Next time, let me repay this.”',
         effects: { health: -6, rep: +14, resonance: +10 },
         npcQuest: ['friend'],
         meritAdd: 12
@@ -231,13 +231,13 @@ export const COMPANION_QUEST_EVENTS = [
     need: { npc: 'partner', noQuest: { role: 'partner', max: 3 } },
     forbids: ['Distorted'],
     vi: "[Lưng kề lưng] Syndicate vây bạn và {partner} trong xưởng bỏ hoang. {partner} bị thương ở đùi nhưng vẫn chặn lối sau. Đạn đã lên nòng; hai người chỉ còn một đường phá vây.",
-    en: '[Back-to-Back in the Rain] Inside an abandoned factory floor amidst a thundering storm, you and {partner} are cornered by a syndicate kill-squad armed with automatic subguns and machetes. Sparks shower from derelict conduits; {partner} bleeds from the thigh yet locks their back firmly against yours, breaths ragged beneath the thunder.',
+    en: '[Back to back] A Syndicate crew corners you and {partner} in an abandoned factory. {partner} has a cut on the thigh but holds the rear exit. The crew has loaded its guns; you have one route through them.',
     choices: [
       {
         labelVi: 'Lao vào đứng tựa lưng cùng {partner}, chém tan vòng vây',
         labelEn: 'Fight back-to-back, carving through the murderous ring',
-        resultVi: 'Máu tanh hòa lẫn nước mưa buốt giá. Nhát chém của bạn gạt phăng đường đao chí mạng nhắm vào cổ {partner}, trong khi lưỡi kiếm của {partner} đâm xuyên tim kẻ mai phục sau lưng bạn. Cả hai đứng vững giữa đống xác kẻ thù, trở thành tri kỷ sinh tử không thể tách rời.',
-        resultEn: 'Blood mingled with biting rain. Your parry deflected a lethal machete stroke aimed at {partner}’s jugular, while their blade impaled the flanker behind your shoulder. Standing battered amidst fallen foes, you forged a bond sealed in blood and steel.',
+        resultVi: 'Bạn gạt lưỡi dao nhắm vào {partner}; người ấy đẩy kẻ phía sau khỏi lối ra. Hai người chạy được qua cửa xưởng. Đến lúc dừng lại, {partner} mới chịu cho bạn băng vết thương.',
+        resultEn: 'You parry a blade aimed at {partner}; they push the attacker behind you away from the exit. You both get through the factory door. Only when you stop does {partner} let you bandage the wound.',
         effects: { health: -10, rep: +18, resonance: +12 },
         npcQuest: ['partner'],
         meritAdd: 16
@@ -300,13 +300,13 @@ export const COMPANION_QUEST_EVENTS = [
     need: { npcTag: ['friend', 'cynical'], noQuest: { role: 'friend', max: 3 } },
     forbids: ['Distorted'],
     vi: "[Ổ cứng của {friend}] {friend} ôm ổ cứng ghi các giao dịch đen của Syndicate, mắc kẹt trong bốt điện thoại vỡ kính. Tay súng của Middle đã chặn hai đầu ngõ. Lần này, người bán tin phải nhờ bạn.",
-    en: '[The Informant’s Trap] {friend}, the cynical rumor-broker who never trusted a living soul in the City, is trapped inside a shattered phone booth. Their nimble fingers now tremble violently around a hard drive listing illicit syndicate transactions. Both ends of the alley are sealed by Middle enforcers.',
+    en: '[{friend}’s drive] {friend} is trapped in a broken phone booth with a drive of Syndicate transactions. Middle gunmen block both ends of the alley. The information broker has to ask you for help.',
     choices: [
       {
         labelVi: 'Đột phá vòng vây của đám sát thủ, giải cứu kẻ buôn tin',
         labelEn: 'Breach the kill-box to extract the cornered broker',
-        resultVi: 'Bạn chém gục hai tên đao phủ giữ cửa ngõ, kéo {friend} chạy thục mạng qua mạng lưới ống thông gió. An toàn trong căn cứ ngầm, {friend} nhìn bạn sững sờ: "Mày bị điên à? Tao chỉ là kẻ bán tin... Sao lại liều mạng vì tao?" Từ đêm đó, chiếc mặt nạ hoài nghi của người bạn rụng xuống.',
-        resultEn: 'Cleaving two sentries at the mouth of the alley, you dragged {friend} through grease vents to safety. Panting in the basement hideout, they stared in disbelief: “Are you mad? I’m just a snitch... Why bleed for me?” From that night on, their cynical mask crumbled.',
+        resultVi: 'Bạn đánh bật hai tay súng rồi kéo {friend} qua đường thông gió. Trong chỗ trú, người ấy ôm ổ cứng nhìn bạn: "Mày biết nó chứa gì mà vẫn quay lại?" Lần đầu, {friend} kể bạn nghe một phần.',
+        resultEn: 'You drive back the two gunmen and pull {friend} through a service duct. In the safe room, they clutch the drive. “You knew what was on it and came back?” For once, {friend} tells you part of the answer.',
         effects: { health: -10, rep: +14, network: +15 },
         npcQuest: ['friend'],
         meritAdd: 14
@@ -378,7 +378,7 @@ export const COMPANION_QUEST_EVENTS = [
     need: { npcTag: ['friend', 'mentor'], noQuest: { role: 'friend', max: 3 } },
     forbids: ['Distorted'],
     vi: "[Bài học cuối của người thầy] Người thầy Fixer ngồi trong xưởng, các khớp tay giả kêu rít. Ông mở rương, lấy ra thanh đao Workshop đã mòn: \"Ta sắp không cầm nổi nó. Nếu muốn nhận, hãy cho ta thấy bạn dùng nó thế nào.\"",
-    en: '[The Old Master’s Final Lesson] The veteran Fixer who guided your rookie steps sits alone on a wooden crate in his dim forge. His prosthetic valves hiss with rusted friction; his rasping cough reeks of Smoke War fallout. Unlocking a brass coffer, he reveals a weathered yet razor-sharp Workshop blade:\n“My grip is failing me, kid. In this City, the truest legacy isn’t Ahn, it’s passing your steel to hands that won’t waver.”',
+    en: '[The mentor’s last lesson] The veteran Fixer sits in the workshop, prosthetic joints creaking. He opens a case and lifts out a worn Workshop blade. “Soon I won’t be able to hold it. If you want it, show me how you would use it.”',
     choices: [
       {
         labelVi: 'Quỳ xuống hai tay đón nhận thanh đao, thề kế tục ý chí của người thầy',

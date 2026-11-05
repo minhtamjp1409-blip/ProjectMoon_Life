@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { createServer } from 'vite';
 import { choiceIsAvailable, getChoiceAhnCost } from '../src/engine/eventConditions.js';
 import { createNewCharacter, resolveEventChoice, ALL_STORY_EVENTS } from '../src/engine/gameEngine.js';
+import { LIFE_MINORS } from '../src/engine/yearPlanner.js';
 
 const server = await createServer({ server: { middlewareMode: true, watch: null }, appType: 'custom', logLevel: 'error' });
 
@@ -53,6 +54,32 @@ try {
   assert.equal(getChoiceAhnCost(fixed, char), 8);
   assert.equal(previewChoice(fixed, char).fixed.find((entry) => entry.k === 'wealth')?.v, -8);
   assert.equal(previewChoice(extra, char).fixed.find((entry) => entry.k === 'wealth')?.v, -8);
+
+  const prescript = ALL_STORY_EVENTS.find((entry) => entry.id === 'syn_index_prescript_bizarre');
+  assert.ok(prescript);
+  for (const wealth of [19, 25]) {
+    const indexMember = createNewCharacter({ seed: `prescript-price-${wealth}`, startAge: 25 });
+    indexMember.job = 'Syndicate';
+    indexMember.finger = 'Index';
+    indexMember.flags.push('FingerIndex');
+    indexMember.stats.wealth = wealth;
+    indexMember.pendingEvent = prescript;
+    const choice = prescript.choices[0];
+    assert.equal(getChoiceAhnCost(choice, indexMember), 20);
+    assert.equal(choiceIsAvailable(choice, indexMember), wealth >= 20);
+    assert.equal(previewChoice(choice, indexMember).fixed.find((entry) => entry.k === 'wealth')?.v, -20);
+    const resolved = resolveEventChoice(indexMember, 0, () => 0.5);
+    assert.equal(resolved.stats.wealth, wealth >= 20 ? wealth - 20 : wealth);
+    assert.equal(resolved.pendingEvent?.id, wealth >= 20 ? undefined : prescript.id);
+  }
+
+  for (const [id, amount] of [['m_c_dog', 2], ['m_t_nest_exam_cheat', 4]]) {
+    const choice = LIFE_MINORS.find((entry) => entry.id === id)?.choices[0];
+    assert.ok(choice);
+    assert.equal(getChoiceAhnCost(choice, char), amount);
+    const preview = previewChoice(choice, char, 'minor');
+    assert.deepEqual(preview.ranges.find((entry) => entry.k === 'wealth'), { k: 'wealth', lo: -amount, hi: -amount });
+  }
 
   console.log('Choice cost preview, availability, and engine deduction agree.');
 } finally {

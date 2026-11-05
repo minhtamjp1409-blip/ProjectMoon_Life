@@ -3021,5 +3021,17 @@ Chạy kiểm định mô phỏng 500 vòng đời với chiến lược ngườ
 ##### 2.20. Chip tỉ lệ trên thẻ lựa chọn (04/11/2026)
 * `Deltas.jsx` `oddsChip`: "Trót lọt 62%" (và "Đỗ x%" khi thi) thành một chip 24px cùng viền và bo góc với chip chỉ số. Nhãn nhỏ và nhạt, số 14px đậm, màu theo mức: từ 70% xanh, 40 đến 69% vàng, dưới 40% đỏ. Chụp 390 (đã mở chi tiết) và 1280: cùng chiều cao với các chip khác, không tràn. `tools/qa/measure_minor_mobile.mjs` thêm minor có tỉ lệ, `VIEWPORT` và `EXPAND`.
 ---
+##### 2.21. Rà soát toàn bộ kho sự kiện và sửa lời kể có lỗi ngữ cảnh (05/11/2026)
+* Nạp 797 sự kiện lớn, 44 hệ quả, 866 sự kiện nhỏ, 643 dòng thường ngày, 36 hợp đồng Fixer. Báo cáo phạm vi, số liệu độ dài và việc còn cần đọc bằng tay: `docs/EVENT_NARRATIVE_AUDIT_2026_11_05.md`.
+* `lint_story.mjs` bắt buộc kết quả Việt/Anh ở lựa chọn, mọi nhánh ngẫu nhiên và lựa chọn bỏ qua. Nhánh ngẫu nhiên phải có lời kết riêng, không trùng nguyên văn. Kết quả: 0 lỗi, 0 cảnh báo.
+* Viết riêng kết quả đỗ/trượt của ngã rẽ Syndicate và Wing. Sửa cách gọi `Capo` sai tổ chức, bỏ giả định gia đình luôn có mặt ở ngã rẽ Nest và bốn event tuổi nhỏ. Hoàn chỉnh 7 kết quả “bỏ qua” của callback sẹo.
+* Rút gọn event chó bị đầu độc, đề thi Wing, lời mời Hook/Shi, ngã rẽ E.G.O và vài kết quả sát hạch Color/Big Sibling; đồng bộ nghĩa Việt/Anh. Giá đề Wing 4 Ahn và phòng khám thú y 2 Ahn đã dùng `costAhn` để preview, khóa lựa chọn và engine cùng một số.
+* `npm test` (gồm 500 khoảnh khắc mô phỏng, 0 vi phạm toàn vẹn), `npm run build` qua. Lưu ý: đây là kiểm tra cấu trúc trên toàn kho cộng đọc sửa các điểm xác nhận; các event dài, hiếm còn danh sách biên tập trong báo cáo.
+
+##### 2.22. Biên tập tiếp lời kể và đối chiếu giá lựa chọn (05/11/2026)
+* Đọc sửa thêm các cảnh Finger, Wing, Ring, La Mancha, Blade Lineage, Sweeper, Distortion Detective, NPC, Ensemble và đời thường. Rút câu dài, bỏ giả định cha mẹ, giới tính hoặc nghề nghiệp không được điều kiện sự kiện bảo đảm; đồng bộ kết quả Việt/Anh. Prescript của Index không còn có nhánh kết quả trái mệnh lệnh đã nêu.
+* Sửa khoản tiền ghi trên lựa chọn nhưng `costAhn` chưa được khai báo ở các sự kiện NPC, Finger, Workshop, Fixer và tuổi nhỏ. Thêm lựa chọn miễn phí có rủi ro cho ca người thân ốm để tránh khóa mọi hướng khi hết Ahn. `lint_story.mjs` kiểm tra khoản phí ghi rõ với phí engine; `test_choice_cost_parity.mjs` kiểm tra một số trường hợp giá và khóa lựa chọn.
+* Thêm `tools/lint/audit_event_prose.mjs`: thống kê từng ID (`--json`), gắn cờ cảnh/kết quả dài và bản Anh dài bất thường so với bản Việt. Sau các sửa xác nhận: 0 cờ theo ngưỡng hiện tại. Báo cáo chi tiết và giới hạn của việc đọc thủ công: `docs/EVENT_NARRATIVE_AUDIT_2026_11_05.md`. Đây chưa phải chứng nhận từng câu trong hơn 2.300 mục đã được đọc riêng bằng mắt.
+
 #### 3. KIỂM ĐỊNH & BẢO ĐẢM TOÀN VẸN (VERIFICATION & INTEGRITY)
 * Tất cả các bộ kiểm thử tự động (`npm test`) bao gồm lint văn phong (`voice_lint.mjs`), chuẩn canon Project Moon (`lint_story.mjs`), và mô phỏng 500 khoảnh khắc đời người (`run_million_audit.mjs`) phải vượt qua 100% với 0 lỗi, 0 cảnh báo.

@@ -325,7 +325,7 @@ export const EXPANSION_LIFE_MINORS = [
         'Sáng hôm sau chiếc áo khô ráo thơm mùi khói than; bạn bước ra đường với sự thoải mái và ấm áp.',
         'By dawn the duster was crisp with charcoal fragrance; you stepped out into the frost with dry shoulders.',
         { wealth: -2, health: 1, sanity: 2 },
-        {}
+        { costAhn: 2 }
       ),
       C(
         'Chịu lạnh mặc áo ẩm để tiết kiệm tiền',
@@ -352,7 +352,7 @@ export const EXPANSION_LIFE_MINORS = [
         'Người thợ khóa gia cố thêm một lớp thép non; bao dao của bạn nay gắn chặt vào thắt lưng không chút xộc xệch.',
         'The smith welded a reinforcement collar; your holster anchored snug against your hip without wobble.',
         { wealth: -3, rep: 1 },
-        {}
+        { costAhn: 3 }
       ),
       C(
         'Dùng dây kẽm tự buộc tạm để đỡ tốn tiền',

@@ -383,7 +383,8 @@ export const LIFE_MINORS_3 = [
         'Pay a lawyer to read it (5 Ahn)',
         'Vị luật sư già dùng kính lúp soi xét hồi lâu rồi đặt gọng kính xuống bàn, nghiêm giọng bảo: "Đừng ký." Bà không tính thêm phí giải thích, và bạn quyết định hủy bỏ ý định.',
         'The veteran lawyer scrutinized it under a loupe, set down her spectacles, and warned: “Do not sign.” She charged nothing to explain, and you tore the application.',
-        { wealth: -5, network: 2 }
+        { wealth: -5, network: 2 },
+        { costAhn: 5 }
       ),
       C(
         'Từ chối ký hợp đồng mập mờ',

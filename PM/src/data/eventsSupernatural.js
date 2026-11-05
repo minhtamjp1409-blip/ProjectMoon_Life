@@ -151,7 +151,7 @@ export const SUPERNATURAL_EVENTS = [
     weight: 999,
     forbids: ['EGOAwakened', 'Distorted'],
     vi: "[Giọng nói trong ánh sáng] Những vết sẹo cũ ({scars}) đau trở lại. The City mờ đi; một giọng phụ nữ cất lên trong ánh sáng: \"Bạn đã chịu đủ rồi. Đừng ép mình mang hình dạng người khác mong muốn.\" Bàn tay bạn run. Bạn có thể nghe theo, hoặc tự chọn mình sẽ là ai.",
-    en: '[Can you hear my voice? · The Scorching Sun of The Light] Everything you ever lost returned at once ({scars}). The surrounding room dissolved into a blinding white sun, an ocean of radiant, scorching light. From the center of the brilliant sun, a woman with piercing eyes and a gentle smile tilted her head:\n“It hurts so much, doesn’t it? In this City, clinging to a human shape only gets you torn apart. Love yourself. You can let go, and become what you truly desire.”',
+    en: '[A voice in the Light] Your old scars ({scars}) begin to ache. The City fades, and a woman speaks from the Light: “You have endured enough. Stop wearing the shape others demand of you.” Your hand shakes. You can listen, or decide for yourself who you will be.',
     choices: [
       {
         labelVi: '"Nỗi đau này là của tôi. Những vết sẹo này thuộc về tôi. Tôi sẽ không khuất phục trước sự an ủi dối trá của người!"',
@@ -166,7 +166,7 @@ export const SUPERNATURAL_EVENTS = [
             scarsAdd: ['Người không cúi đầu trước Carmen'],
             meritAdd: 45,
             resultVi: "Bạn giữ lấy ký ức của mình, cả phần đau đớn. Ánh sáng lùi lại; E.G.O thành hình quanh cơ thể bạn như giáp và vũ khí. Nó mang hình dạng do chính bạn chọn.",
-            resultEn: 'You held firm to every memory and scar, refusing to yield before Carmen’s radiant sun. The blinding light fractured against your unbending resolve. From the depths of your psyche, armor and a weapon forged from your agony manifested. It is your E.G.O.'
+            resultEn: 'You hold on to your memories, including the pain. The Light recedes; E.G.O takes shape around you as armor and a weapon. Its form is yours to choose.'
           },
           {
             w: 38,
@@ -183,7 +183,7 @@ export const SUPERNATURAL_EVENTS = [
               }
             ],
             resultVi: "E.G.O vừa hiện ra đã nứt. Mảnh giáp rơi xuống, để lại vết bỏng trên tay bạn. Bạn vẫn tỉnh táo, nhưng sức mạnh ấy chưa ổn định; một ngày khác bạn sẽ phải đối diện nó lần nữa.",
-            resultEn: 'You roared in resistance, but your inner philosophy was not yet forged enough to bear the full weight of the light. The E.G.O half-manifested then cracked, emotion scorch marks searing your flesh. You did not break, but your soul bears a fissure: an Incomplete E.G.O.'
+            resultEn: 'E.G.O takes shape, then cracks. A piece of armor falls away and leaves a burn on your hand. You remain yourself, but the power is unstable; another day you will have to face it again.'
           },
           {
             w: 22,
@@ -249,8 +249,8 @@ export const SUPERNATURAL_EVENTS = [
         effects: { health: -15, sanity: -70, rep: -25, heat: +60, resonance: +50 },
         scarsAdd: ['Distortion'],
         meritAdd: 25,
-        resultVi: 'Không còn đau nữa. Đó là điều đầu tiên bạn nhận ra. Vầng thái dương của Carmen bao trùm lấy bạn, cảm giác ấm áp lan tỏa khi cơ thể bạn biến đổi thành hình dạng của nỗi ám ảnh sâu kín nhất. Sáng hôm sau, Hana Association phát lệnh phong tỏa khu vực: Một Distortion cấp độ cao đã xuất hiện.',
-        resultEn: 'It no longer hurt. That was the first thing you noticed. Carmen’s blazing sun enveloped you; a soothing warmth spread as your flesh morphed into the shape of your deepest obsession. The next morning Hana Association opened a new file: Distortion, unrated.'
+        resultVi: 'Cơn đau ngừng lại. Cơ thể bạn đổi hình theo điều bạn vừa buông ra trong ánh sáng. Sáng hôm sau, Hana mở một hồ sơ Distortion mới; ô phân hạng vẫn để trống.',
+        resultEn: 'The pain stops. Your body changes shape around what you released into the Light. The next morning, Hana opens a new Distortion file; its rating is left blank.'
       },
       {
         labelVi: 'Cắn chặt răng quay lưng, dùng ý chí sắt đá và lời thề níu lấy sự tỉnh táo phàm trần',
@@ -349,16 +349,16 @@ export const SUPERNATURAL_EVENTS = [
             scarsAdd: ['Vết sẹo của Star of the City'],
             later: [{ id: 'csq_color_first_mandate', years: 1, reasonVi: 'Chỉ thị tối mật đầu tiên của Hana dành cho tân Color Fixer', reasonEn: 'First high-stakes Hana mandate for the newly designated Color Fixer' }],
             meritAdd: 60,
-            resultVi: "Bạn phá lõi của mối họa sau một trận chiến dài và tàn khốc. Khi trở về với thương tích đầy mình, hội đồng Hana đứng dậy nghênh đón. Tên Color mới được khắc ngay tại chỗ. Nhưng gánh nặng của The City lập tức giáng xuống vai: một ủy thác tối mật của Hana sẽ tìm đến vào năm sau.",
-            resultEn: "You break the threat's core after a long, agonizing fight. When you return covered in blood, the Hana council stands in silent respect. Your new Color is engraved right there. But the City's burdens fall upon your shoulders: a high-stakes mandate awaits you next year."
+            resultVi: 'Bạn phá được lõi mối họa và trở về Hana với đầy thương tích. Hội đồng khắc danh xưng Color lên thẻ. Trước khi bạn rời phòng, họ đã đặt sẵn một hồ sơ niêm phong cho năm sau.',
+            resultEn: 'You break the threat’s core and return to Hana wounded. The council engraves your Color on the card. Before you leave, they set aside a sealed file for next year.'
           },
           {
             w: 35,
             effects: { health: -45, sanity: -35, rep: +25, heat: +20 },
             scarsAdd: ['Thương tật từ Star of the City'],
             meritAdd: 30,
-            resultVi: 'Sức mạnh của mối họa vượt xa dự tính. Bạn chém đứt được một chi của nó nhưng bị đánh văng qua ba dãy tường bê tông, nát vụn xương sườn. Bạn sống sót nhưng bất tỉnh ba tuần. Hana Association ghi nhận chiến công nhưng hoãn kỳ phong Color cho đến khi bạn bình phục.',
-            resultEn: "The threat is far stronger than anyone estimated. You cut off one of its limbs but are thrown through three concrete walls, ribs shattered. You survive but lie unconscious for three weeks. Hana records the deed and postpones the Color ceremony until you recover."
+            resultVi: 'Bạn cắt được một phần lõi nhưng bị đánh bật khỏi trận địa. Hana ghi nhận trận đánh; thẻ Color vẫn để trống. Họ chỉ mở kỳ xét tiếp khi bạn hồi phục.',
+            resultEn: 'You sever part of the core but are driven from the field. Hana records the fight; the Color card remains blank. They will review you again after you recover.'
           }
         ]
       },
@@ -376,8 +376,8 @@ export const SUPERNATURAL_EVENTS = [
           scarsAdd: ['Bản đồ giải phẫu Star of the City'],
           later: [{ id: 'csq_seven_debt_reckoning', years: 2, reasonVi: 'Khoản nợ ân nghĩa và ràng buộc của Seven Association', reasonEn: 'Seven Association promissory obligation and intelligence debt' }],
           meritAdd: 45,
-          resultVi: "Bạn trả 15 Ahn cho Seven Association để nhận bản đồ giải phẫu Singularity và sơ hở chí mạng. Một nhát đâm xuyên thẳng vào tâm hạch. Nest được giữ nguyên. Hana đóng dấu: một Color mới đạt được bằng sự chuẩn xác, nhưng Seven Association nay nắm giữ cam kết của bạn.",
-          resultEn: "You pay 15 Ahn to Seven Association for the Singularity anatomy map and openings. One thrust to the heart. The Nest is spared. Hana stamps the card: a new Color, earned by precision, but Seven now holds a binding agreement."
+          resultVi: 'Seven đưa bản đồ điểm yếu; bạn đánh trúng lõi trước khi mối họa lan tới Nest. Hana đóng dấu thẻ Color. Seven giữ lại bản cam kết đã ký của bạn.',
+          resultEn: 'Seven supplies a map of weak points; you strike the core before the threat reaches the Nest. Hana stamps your Color card. Seven keeps the agreement you signed.'
         }, {
           w: 25,
           effects: { health: -24, sanity: -18, rep: -5 },
@@ -399,8 +399,8 @@ export const SUPERNATURAL_EVENTS = [
             scarsAdd: ['Ký ức đẫm máu cùng cộng sự'],
             later: [{ id: 'csq_color_sponsor_aftermath', years: 1, reasonVi: 'Cộng sự trọng thương sau kỳ khảo thí Color cần được chữa trị', reasonEn: 'Companion critically injured during the Color trial requires care' }],
             meritAdd: 65,
-            resultVi: "Cộng sự của bạn xông lên đỡ đòn cào xé từ thực thể Star of the City, che chắn góc chết trong tích tắc. Bạn chớp thời cơ vung vũ khí chém vỡ lõi năng lượng. Bạn cõng người đồng đội đẫm máu về trạm cứu trợ Hana. Tên Color được trao cho bạn, nhưng cái giá được tính bằng máu của người thân cận.",
-            resultEn: "Your companion leaps forward to shield your blind spot from the Star of the City monstrosity. You seize the split-second window to shatter its energy core. You carry your bleeding partner back to Hana's medics. The Color is granted, but its price was paid in your closest ally's blood."
+            resultVi: 'Cộng sự đỡ đòn ở góc khuất; bạn chém vỡ lõi mối họa. Bạn cõng người ấy đến trạm cứu trợ Hana trước khi nhận thẻ Color. Hana ghi tên họ vào hồ sơ điều trị.',
+            resultEn: 'Your partner covers your blind spot; you break the threat’s core. You carry them to Hana’s medics before accepting the Color card. Hana opens a treatment file for them.'
           },
           {
             w: 15,
@@ -504,7 +504,7 @@ export const SUPERNATURAL_EVENTS = [
     regions: ['16'],
     weight: 5.0,
     vi: "[Vòng quay La Mancha] Công viên dưới District 16 mở cửa lúc đêm muộn. Máu dính trên quầy bánh; nhạc đu quay vẫn phát. Một hiệp sĩ áo giáp gỉ hỏi bạn có muốn giúp ông giữ nơi này cho cả người và Bloodfiend.",
-    en: '[Beneath P Corp · The Rusted Carousel of La Mancha] In District 16 · P Corp, a brilliant yet eerie amusement park awakened in the dead of night. Carousel organ tunes mingled with the scent of blood churros. A knight in rusted plate with a gleaming lance stood before the carousel, eyes blazing with naive conviction:\n“Hail, traveler! Wilt thou mount a steed beside us, riding toward a world where Bloodfiend and mankind share a single smile?”',
+    en: '[The La Mancha carousel] The park beneath District 16 opens late at night. Blood marks the pastry counter; the carousel music keeps playing. A knight in rusted armor asks whether you will help keep this place open to humans and Bloodfiends alike.',
     choices: [
       {
         labelVi: 'Đồng hành cùng lý tưởng hiệp sĩ: "Công lý và giấc mơ thuần khiết"',
@@ -517,7 +517,7 @@ export const SUPERNATURAL_EVENTS = [
             recordsAdd: ['lamancha_dreamer'],
             meritAdd: 30,
             resultVi: "Bạn đứng cùng hiệp sĩ trên bục gỗ. Bloodfiend phía dưới nhìn lên, chưa ai hạ vũ khí. Buổi tối trôi qua mà không có tiếng kêu từ khu đu quay.",
-            resultEn: 'You stood beside the rusted knight upon the creaking dais. His lance trembled in the wind; the reek of blood from the churros rose thick and heavy. The kindred below looked up, crimson eyes blinking beneath stuttering neon. No one smiled. Yet for this single night, no flesh was torn in the dark.'
+            resultEn: 'You stand beside the knight on the wooden platform. The Bloodfiends below look up; nobody lowers a weapon. The evening passes without a cry from the carousel.'
           },
           {
             w: 40,
@@ -550,11 +550,11 @@ export const SUPERNATURAL_EVENTS = [
     weight: 4.5,
     jobs: ['Syndicate', 'Fixer', 'Workshop Craftsman'],
     vi: "[Phòng tranh của The Ring] Docent chỉ bức tượng ghép từ mười hai kẻ phản bội. Một kiếm sĩ ngậm điếu thuốc đỏ hỏi bạn muốn đứng trong khung tranh hay nhìn từ ngoài. Cửa phòng sau lưng vừa khép.",
-    en: '[The Ring’s Gallery · Brushstroke of Carnage] In a subterranean gallery of District 8, a Docent of The Ring greeted you before a sculpture twisted from the living flesh of 12 traitors. A swordswoman with a burning cigarette and a cloth-wrapped sheath stepped forward:\n“A.R.T., Absolute Ruin Transcends. Dost thou wish to be a brushstroke in this canvas, or a connoisseur with discerning eyes?”',
+    en: '[The Ring’s gallery] A Docent points out a sculpture made from twelve traitors. A swordswoman with a red cigarette asks whether you want to stand inside the frame or watch from outside. The door closes behind you.',
     choices: [
       {
-        labelVi: 'Rút kiếm phác họa một tuyệt tác kiếm thuật đối lập (I.M.P.A.C.T)',
-        labelEn: 'Draw your blade and slash an opposing masterpiece (I.M.P.A.C.T)',
+        labelVi: 'Rút kiếm, chém vào thớ gân giữ bức tượng',
+        labelEn: 'Draw your blade and cut the tendons holding the sculpture',
         outcomes: [
           {
             w: 55,
@@ -562,8 +562,8 @@ export const SUPERNATURAL_EVENTS = [
             scarsAdd: ['Nét kiếm của Tuyệt Tác'],
             recordsAdd: ['ring_master_curator'],
             meritAdd: 40,
-            resultVi: 'Bạn vung kiếm. Ba nhát gọn gàng chém đứt các thớ gân đang co giật, để máu phun thành một vệt đối xứng trên bức tường trắng. Người phụ nữ đứng cạnh nhả một làn khói xám, ngón tay gõ nhẹ lên chuôi kiếm: "K.K.T.H, Khá khen cho kẻ biết vung dao." The Ring đóng dấu thông hành cho bạn qua khu trưng bày.',
-            resultEn: 'You swung your steel. Three surgical strokes severed the twitching tendons, letting the crimson spray form an immaculate bilateral arc against the plaster. The woman beside you exhaled a thread of gray smoke and tapped her sheath: “N.B.T., Not bad at all.” The Ring stamped your safe-conduct pass.'
+            resultVi: 'Ba nhát kiếm cắt đứt các thớ gân. Bức tượng đổ xuống, che lối lao tới của Docent. Người phụ nữ quan sát vết cắt rồi đóng dấu cho bạn đi qua phòng tranh.',
+            resultEn: 'Three cuts sever the tendons. The sculpture falls across the Docent’s path. The swordswoman studies the cuts, then stamps your pass through the gallery.'
           },
           {
             w: 45,

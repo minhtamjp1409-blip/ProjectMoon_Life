@@ -17,13 +17,13 @@ export const DERIVATIVE_LORE_EVENTS = [
     requires: [],
     forbids: ['Distorted', 'dd_investigation_done'],
     vi: "[Ống tẩu chỉ đường] Moses đến cùng Ezra, gõ tẩu lên bàn bạn. Khói bạc không bay lên mà trườn về bức tường phía sau. \"Ở đây có thứ gì đang méo đi,\" Moses nói. \"Bạn nghe thấy nó chưa?\"",
-    en: '[Distortion Detective Agency] A dry rap at the door at midnight. An older woman with clouded blind eyes steps inside, smoking a silver pipe exhaling bone-chilling smoke (Moses), shadowed by a burly young assistant with heavy goggles carrying a colossal workshop hammer (Ezra). Moses taps her pipe: "This alley stinks of twisted egos. My smoke drifts straight behind your walls. Tell me, what voice have you been hearing?"',
+    en: '[The pipe points the way] Moses arrives with Ezra and taps her pipe against your table. Silver smoke creeps toward the wall behind you. “Something here is changing shape,” she says. “Have you heard it?”',
     choices: [
       {
-        labelVi: 'Thành thật mô tả âm thanh đàn piano và vầng thái dương của Carmen',
-        labelEn: 'Describe the broken piano notes and Carmen’s solar whispers honestly',
-        resultVi: 'Moses nhả một ngụm khói dày bao bọc lấy bạn, làm dịu đi những vết nứt trong tâm trí. Ezra dúi vào tay bạn một lọ thuốc an thần của xưởng YuRia: "Uống đi bạn tôi! Lần sau nghe thấy tiếng đàn bà thầm thì thì bịt tai lại ngay!" Bạn lấy lại được sự tỉnh táo và kết giao với Văn phòng Thám tử.',
-        resultEn: 'Moses exhaled a thick cloud that wrapped around you, calming the fissures in your psyche. Ezra shoved a YuRia Workshop sedative phial into your coat: "Drink up, pal! Next time a lady whispers from the sun, plug your ears!" You stabilized your sanity and gained a rare connection.',
+        labelVi: 'Kể cho Moses nghe về tiếng đàn và giọng phụ nữ',
+        labelEn: 'Tell Moses about the piano notes and the woman’s voice',
+        resultVi: 'Moses nghe hết rồi thổi khói qua căn phòng. Ezra đưa bạn thuốc an thần của xưởng YuRia và ghi địa chỉ Văn phòng Thám tử lên nhãn lọ. "Nếu giọng ấy quay lại, tìm chúng tôi."',
+        resultEn: 'Moses listens, then blows smoke through the room. Ezra gives you a YuRia Workshop sedative and writes the Detective Agency’s address on its label. “If the voice returns, find us.”',
         effects: { sanity: +35, resonance: +15, network: +18 },
         flagsAdd: ['dd_investigation_done', 'MosesSmokeBlessing'],
         recordsAdd: ['distortion_detective_ally'],
@@ -32,8 +32,8 @@ export const DERIVATIVE_LORE_EVENTS = [
       {
         labelVi: 'Cảnh giác rút vũ khí, từ chối chia sẻ bí mật của bản thân',
         labelEn: 'Draw your weapon warily, refusing to divulge inner vulnerabilities',
-        resultVi: 'Cây chùy của Ezra nện xuống sàn nhà làm rung chuyển cả gian phòng trong tích tắc. Moses xua tay ngăn trợ lý: "Một kẻ tự ôm lấy sự tha hóa của chính mình. Khi bạn vỡ vụn thành quái vật, đừng trách chúng tôi không báo trước." Họ rời đi, để lại bạn trong sự cô lập rợn ngợp.',
-        resultEn: 'Ezra’s hammer slammed the floorboards, shaking the room in a microsecond. Moses waved her off: "Another fool cradling their own corrosion. When you shatter into an aberration, don’t say we didn’t warn you." They departed, leaving you in chilling isolation.',
+        resultVi: 'Ezra đặt tay lên cán chùy. Moses ra hiệu dừng lại rồi gõ tẩu vào mép bàn: "Nếu đổi ý, anh biết tìm chúng tôi ở đâu." Cả hai rời phòng; vệt khói trên tường cũng tan.',
+        resultEn: 'Ezra reaches for the hammer. Moses stops him and taps her pipe against the table. “If you change your mind, you know where to find us.” They leave; the smoke against the wall fades.',
         effects: { sanity: -15, heat: +12, rep: +10 },
         flagsAdd: ['dd_investigation_done'],
         recordsAdd: ['distortion_detective_clash'],
@@ -53,7 +53,7 @@ export const DERIVATIVE_LORE_EVENTS = [
     need: { jobs: ['Fixer', 'Syndicate'] },
     forbids: ['Distorted', 'blade_lineage_sworn', 'kurokumo_tattooed'],
     vi: "[Bài học của Kim] Bamboo-hatted Kim lau máu khỏi đao, bên cạnh là xác người Kurokumo. \"Muốn lấy xương đối thủ, trước hết phải dám nhận lưỡi kiếm của hắn.\" Ông đưa bạn một thanh đao tập.",
-    en: '[To Claim Their Bones · Blade Lineage] Amid a blood-soaked Backstreet alley, a lone swordsman in a frayed bamboo hat (Bamboo-hatted Kim) wipes a curved blade stained with Kurokumo ichor. Without turning, he speaks: "Cutting flesh is simple. But yielding your flesh so you may crush their bone is the swordsman’s true path. Dare you let your skin tear to sever their marrow?"',
+    en: '[Kim’s lesson] Bamboo-hatted Kim wipes blood from his blade beside a fallen Kurokumo fighter. “To claim an opponent’s bones, you must first risk their blade.” He hands you a practice sword.',
     choices: [
       {
         labelVi: 'Quỳ xuống xin lĩnh hội tuyệt kỹ "To Claim Their Bones"',
@@ -124,7 +124,7 @@ export const DERIVATIVE_LORE_EVENTS = [
     weight: 10,
     forbids: ['Distorted'],
     vi: "[Đêm của Sweepers] Cửa hầm trú kẹt cứng. Sweepers tiến tới từ hai đầu hẻm, móc sắt gõ vào thùng chứa. Kẻ đi đầu dừng trước bạn, lặp từng tiếng: \"Súp... cho gia đình.\"",
-    en: '[3:13 AM · Mother’s Sweeper Cauldron] Sirens shriek through the fog: Night in the Backstreets has commenced. Your tenement bulkhead jammed shut. From both ends of the alley, dozens of faceless figures in airtight rubber hazmat suits exhaling rattling hiss through filters (Sweepers) emerge, dragging fluid barrels and butchering hooks. A matriarch Sweeper clinks her hook rhythmically, clicking in synthesized static: "We... brew... soup... for... the... children..."',
+    en: '[The Sweeper night] The shelter door has jammed. Sweepers approach from both ends of the alley, hooks tapping against their tanks. The one in front stops before you and repeats, word by word: “Soup... for the family.”',
     choices: [
       {
         labelVi: 'Dốc toàn lực chiến đấu phá vỡ vòng vây trước 4:34 AM',

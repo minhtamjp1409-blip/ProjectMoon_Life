@@ -113,8 +113,24 @@ for (const [kind, list] of pools) {
     for (const c of choicesOf(e)) {
       const outs = outcomesOf(c);
       if (outs.length && outs.every((o) => (o.w ?? 50) <= 0)) err(`${kind} ${e.id}: all outcomes have zero weight`);
-      const noText = !(c.resultVi || c.rvi) && !outs.length;
-      if (noText && kind !== 'daily') warn(`${kind} ${e.id}: a choice has no result text`);
+      if (kind !== 'daily') {
+        const choiceVi = c.resultVi || c.rvi;
+        const choiceEn = c.resultEn || c.ren;
+        if (!outs.length && !choiceVi) err(`${kind} ${e.id}: choice has no Vietnamese result`);
+        if (!outs.length && !choiceEn) err(`${kind} ${e.id}: choice has no English result`);
+        for (const [index, outcome] of outs.entries()) {
+          if (!(outcome.resultVi || outcome.rvi || choiceVi)) err(`${kind} ${e.id}: outcome ${index + 1} has no Vietnamese result`);
+          if (!(outcome.resultEn || outcome.ren || choiceEn)) err(`${kind} ${e.id}: outcome ${index + 1} has no English result`);
+          if (outs.length > 1 && !(outcome.resultVi || outcome.rvi)) err(`${kind} ${e.id}: outcome ${index + 1} needs its own Vietnamese result`);
+          if (outs.length > 1 && !(outcome.resultEn || outcome.ren)) err(`${kind} ${e.id}: outcome ${index + 1} needs its own English result`);
+        }
+        if (outs.length > 1) {
+          for (const lang of ['Vi', 'En']) {
+            const texts = outs.map((outcome) => (outcome[`result${lang}`] || outcome[lang === 'Vi' ? 'rvi' : 'ren'] || c[`result${lang}`] || c[lang === 'Vi' ? 'rvi' : 'ren'] || '').trim());
+            if (new Set(texts).size !== texts.length) err(`${kind} ${e.id}: distinct outcomes share the same ${lang} result`);
+          }
+        }
+      }
       for (const src of [c, ...outs]) {
         for (const k of Object.keys(src.effects || src.fx || {})) if (!EFFECT_KEYS.has(k)) err(`${kind} ${e.id}: unknown effect key "${k}"`);
       }
@@ -125,10 +141,18 @@ for (const [kind, list] of pools) {
         if (pays) err(`${kind} ${e.id}: a choice that starts a dungeon also pays out, so the player is paid twice`);
       }
       // A price written in the label has to be the price the engine charges
-      const label = `${c.labelVi || ''} ${c.labelEn || ''}`;
+      const label = `${c.labelVi || c.vi || ''} ${c.labelEn || c.en || ''}`;
+      const choiceWealth = (c.effects || c.fx || {}).wealth || 0;
       for (const m of label.matchAll(/(\d+)\s*Ahn/g)) {
-        if (/(Chi|Spend|Pay|Trả|Mua|Purchase|Đóng)/i.test(label) && c.costAhn && Number(m[1]) !== c.costAhn) warn(`${kind} ${e.id}: label says ${m[1]} Ahn but costAhn is ${c.costAhn}`);
+        if (choiceWealth <= 0 && /(Chi|Spend|Pay|Trả|Mua|Purchase|Đóng|Thuê|Hire|Bế nó đến)/i.test(label)) {
+          if (!c.costAhn) err(`${kind} ${e.id}: label charges ${m[1]} Ahn without costAhn`);
+          else if (Number(m[1]) !== c.costAhn) err(`${kind} ${e.id}: label says ${m[1]} Ahn but costAhn is ${c.costAhn}`);
+        }
       }
+    }
+    if (e.ignore && kind !== 'daily') {
+      if (!(e.ignore.rvi || e.ignore.resultVi)) err(`${kind} ${e.id}: ignore has no Vietnamese result`);
+      if (!(e.ignore.ren || e.ignore.resultEn)) err(`${kind} ${e.id}: ignore has no English result`);
     }
     if (e.choices?.length && !e.ignore && e.choices.every((choice) => (choice.costAhn || 0) > 0)) {
       err(`${kind} ${e.id}: every choice costs Ahn, so an insolvent player cannot continue`);

@@ -356,8 +356,9 @@ export const EXPANSION_STORY_EVENTS = [
       {
         labelVi: 'Trả đủ 35 Ahn mua mũi huyết thanh tốt nhất để cứu {spouse}',
         labelEn: 'Pay the full 35 Ahn for the best serum to save {spouse}',
-        resultVi: 'Mũi huyết thanh màu xanh phát huy tác dụng thần kỳ; cơn sốt của {spouse} hạ dần và hơi thở trở lại đều đặn. Ngồi bên giường bệnh suốt đêm, bạn thấy ánh mắt họ nhìn bạn tràn đầy tình cảm sâu đậm.',
-        resultEn: 'The emerald serum worked wonders; the fever subsided and steady breathing returned. Sitting by the cot through the night, you found their gaze full of deep tenderness.',
+        resultVi: 'Sau mũi tiêm, cơn sốt của {spouse} hạ dần. Bạn ngồi bên giường đến khi nhịp thở đều lại; sáng ra, họ đủ sức gọi tên bạn.',
+        resultEn: 'After the injection, {spouse}’s fever begins to fall. You sit beside the bed until their breathing steadies; by morning, they can call your name.',
+        costAhn: 35,
         effects: { wealth: -35, sanity: +15 },
         bond: { spouse: 25 },
         flagsAdd: ['spouse_illness_resolved']
@@ -365,6 +366,7 @@ export const EXPANSION_STORY_EVENTS = [
       {
         labelVi: 'Mua thuốc an thần giá rẻ 10 Ahn và thức trắng đêm lau người hạ nhiệt',
         labelEn: 'Buy cheap 10 Ahn sedatives and spend the night cooling their brow',
+        costAhn: 10,
         outcomes: [
           {
             w: 60,
@@ -383,6 +385,24 @@ export const EXPANSION_STORY_EVENTS = [
             flagsAdd: ['spouse_illness_resolved']
           }
         ]
+      },
+      {
+        labelVi: 'Xin y tá chỉ cách chăm {spouse} tại nhà',
+        labelEn: 'Ask the nurse how to care for {spouse} at home',
+        outcomes: [
+          {
+            w: 55,
+            resultVi: 'Bạn làm theo từng lời dặn, thay khăn và cho {spouse} uống nước suốt đêm. Đến sáng, cơn sốt bắt đầu hạ; người ấy nắm tay bạn trước khi ngủ tiếp.',
+            resultEn: 'You follow the instructions, changing cloths and giving {spouse} water through the night. By morning the fever begins to fall; they hold your hand before sleeping again.',
+            effects: { health: -6, sanity: -4 }, bond: { spouse: 8 }, flagsAdd: ['spouse_illness_resolved']
+          },
+          {
+            w: 45,
+            resultVi: 'Cơn sốt kéo dài thêm hai ngày. {spouse} qua cơn nguy nhưng kiệt sức; bạn phải bỏ việc để ở lại chăm người ấy.',
+            resultEn: 'The fever lasts two more days. {spouse} survives but is exhausted; you miss work to stay and care for them.',
+            effects: { health: -10, sanity: -10, wealth: -3 }, bond: { spouse: 3 }, flagsAdd: ['spouse_illness_resolved']
+          }
+        ]
       }
     ]
   },
@@ -395,8 +415,8 @@ export const EXPANSION_STORY_EVENTS = [
     requires: ['Married'],
     forbids: ['spouse_estrangement_resolved'],
     tags: ['family', 'friction', 'npc'],
-    vi: '[Chiếc vali trước cửa] Trở về nhà sau nhiều ngày bôn ba, bạn thấy một chiếc vali đã đóng gói đặt ngay cửa. {spouse} ngồi bên bàn, đôi mắt mệt mỏi không còn giọt nước mắt: "Chúng ta không thể sống thế này mãi. Anh/Em chỉ coi căn nhà này như một trạm nghỉ chân."',
-    en: '[The Packed Suitcase] Returning home after days in the field, you found a packed suitcase by the door. {spouse} sat at the table with exhausted, tearless eyes: "We cannot go on like this. You treat this room like a mere refueling post."',
+    vi: '[Chiếc vali trước cửa] Bạn về nhà sau nhiều ngày vắng mặt. Một chiếc vali đã đóng đặt cạnh cửa. {spouse} ngồi bên bàn: “Chúng ta không thể sống thế này mãi. Bạn chỉ về đây để ngủ.”',
+    en: '[The suitcase by the door] You come home after days away. A packed suitcase stands by the door. {spouse} sits at the table: “We cannot go on like this. You only come here to sleep.”',
     choices: [
       {
         labelVi: 'Bỏ vũ khí xuống, ôm chặt lấy {spouse} và hứa sẽ dành nhiều thời gian hơn',
@@ -496,10 +516,11 @@ export const EXPANSION_STORY_EVENTS = [
         ]
       },
       {
-        labelVi: 'Vay mượn giao đủ 40 Ahn để đón con về trong an toàn',
-        labelEn: 'Scrape together 40 Ahn to buy the child’s safe return',
-        resultVi: 'Toán côn đồ đếm tiền rồi thả đứa trẻ ra. Hai cha con ôm chặt lấy nhau khóc nức nở giữa đêm sương lạnh.',
-        resultEn: 'The toughs counted the coins and handed the child over. You embraced tightly on the cold misty pavement.',
+        labelVi: 'Giao 40 Ahn để đón con về',
+        labelEn: 'Pay 40 Ahn to bring your child home',
+        costAhn: 40,
+        resultVi: 'Toán côn đồ đếm đủ tiền rồi đẩy đứa trẻ qua cửa. Bạn ôm con, kiểm tra vết thương trước khi rời nhà máy.',
+        resultEn: 'The kidnappers count the money and push your child through the door. You hold them and check for injuries before leaving the mill.',
         effects: { wealth: -40, sanity: +5 },
         bond: { child: 18 },
         flagsAdd: ['child_ransom_resolved']

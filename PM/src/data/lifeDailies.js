@@ -531,8 +531,8 @@ export const LIFE_DAILIES = [
     'c_back_fixer_watch',
     CHILD,
     { back: true },
-    '[Toán Fixer dọn dẹp quán rượu] Bạn đứng nấp sau cột điện chứng kiến một đội Fixer có vũ trang dọn dẹp một quán rượu náo loạn đầu phố. Động tác của họ lạnh lùng, dứt khoát và gọn gàng đến rợn người, chỉ để lại một vệt máu đỏ tươi kéo dài ngoằng ra tận lòng đường.',
-    '[Fixer Enforcement Team] You hid behind a light pole watching an armed Fixer squad purge an unruly tavern down the street. Their clean, ruthless efficiency was terrifying, leaving behind a long, gleaming streak of crimson on the asphalt.',
+    '[Toán Fixer trước quán rượu] Bạn nấp sau cột điện khi một đội Fixer kéo người gây loạn khỏi quán. Họ đi rồi, người chủ quán phải lau một vệt máu kéo tới tận lòng đường.',
+    '[Fixers at the tavern] You hide behind a pole as a Fixer crew drags a troublemaker from the tavern. After they leave, the owner has to wash a trail of blood reaching the road.',
     { rep: 1, sanity: -1 },
     { flags: ['해결사동경'] }
   ),
@@ -540,8 +540,8 @@ export const LIFE_DAILIES = [
     'c_back_friend_secret',
     CHILD,
     { back: true, npc: 'friend' },
-    '[Bí mật ngón cái của {friend}] Trong góc khuất sau miếu hoang, {friend} ghé sát tai thì thầm với bạn một bí mật kinh hoàng: cha của nó đang là tay sai phục vụ cho Thumb. Bạn nghiêm nghị đặt tay lên ngực thề sống thề chết sẽ giữ kín bí mật này.',
-    '[The Thumb Secret of {friend}] In a shadowed courtyard, {friend} whispered a dangerous confession: their father was a sworn enforcer for the Thumb syndicate. You placed your hand over your heart, swearing never to speak a word of it.',
+    '[Bí mật của {friend}] Sau bức tường miếu, {friend} kể một người của Thumb đã đến chỗ họ ở và gọi đúng tên họ. Bạn hứa không kể với ai.',
+    '[{friend}’s secret] Behind the shrine wall, {friend} says a Thumb member came to their home and called them by name. You promise not to tell anyone.',
     { sanity: 1 },
     { bond: { friend: 6 } }
   ),
@@ -772,8 +772,8 @@ export const LIFE_DAILIES = [
     'j_fx_cat',
     GROWN,
     { jobs: ['Fixer'], grade: [9, 7] },
-    '[Ủy thác tìm mèo District 11] Bạn nhận một bản hợp đồng ủy thác đơn giản: tìm kiếm chú mèo cưng thất lạc cho một quý bà ở District 11. Sau nửa ngày lùng sục, bạn tìm thấy nó nằm bất động trong mõm một con chó săn khổng lồ; bạn quay về và nói dối thân chủ rằng con mèo đã chạy trốn.',
-    '[Lost Feline Request] You took on a mundane contract: track down an elderly lady’s lost tabby in District 11. After hours of searching, you found its remains clamped in the jaws of a feral hound; you pocketed the fee and lied to the weeping client.',
+    '[Ủy thác tìm mèo] Một thân chủ ở District 11 nhờ tìm mèo. Bạn thấy nó chết bên hàm một con chó hoang, rồi về báo rằng chưa tìm được. Bà vẫn trả tiền công buổi tìm kiếm.',
+    '[Lost cat Request] A client in District 11 asks you to find her cat. You find it dead beside a stray dog, then report that you could not locate it. She still pays for the search.',
     { wealth: 2, merit: 2, sanity: -1 }
   ),
   D(
@@ -788,8 +788,8 @@ export const LIFE_DAILIES = [
     'j_fx_unpaid',
     GROWN,
     { jobs: ['Fixer'] },
-    '[Thân chủ quỵt tiền thù lao] Tên thân chủ thuê bạn hoàn thành một phi vụ nguy hiểm đã nhanh chân bỏ trốn quỵt sạch tiền công. Bạn nộp đơn khiếu nại lên Hiệp hội Hana để yêu cầu can thiệp; họ lạnh lùng đóng dấu thụ lý và bảo "đang xem xét", ba tháng sau hồ sơ vẫn nằm im dưới đáy tủ.',
-    '[Defaulted Contract Commission] The shady patron who commissioned a dangerous assassination vanished into thin air without settling payment. You filed a formal grievance with Hana Association; they stamped it “under review,” where it gathered dust three months later.',
+    '[Thân chủ quỵt tiền] Bạn hoàn thành Request, nhưng thân chủ đã bỏ trốn. Hana nhận đơn khiếu nại và đóng dấu “đang xem xét”. Ba tháng sau, hồ sơ vẫn nằm trên cùng một kệ.',
+    '[Unpaid Request] You complete the Request, but the client has fled. Hana accepts your complaint and stamps it “under review.” Three months later, the file is still on the same shelf.',
     { wealth: -3, sanity: -1 }
   ),
   D(
@@ -837,8 +837,8 @@ export const LIFE_DAILIES = [
     'j_syn_rival',
     GROWN,
     { jobs: ['Syndicate'] },
-    '[Lời chào của băng đối thủ] Một băng đảng đối địch ném thủ cấp đầy máu của một con chó săn ngay trước cửa căn cứ nơi bạn ở. Gã đại ca của bạn cười gằn bảo rằng đó chỉ là một "lời chào hỏi thân mật", nhưng bạn thừa hiểu đó là tối hậu thư báo hiệu một cuộc thanh trừng sắp nổ ra.',
-    '[Rival Syndicate Calling Card] A competing gang dumped the severed, bloody head of a hound directly on your front doorstep. Your boss scoffed that it was merely a polite greeting, but you knew bloodshed and warfare were imminent.',
+    '[Lời chào của băng đối thủ] Một đầu chó bị ném trước cửa căn cứ. Có người gọi đó là “lời chào”; mọi người kiểm lại đạn. Bạn trực ca gác đầu tiên.',
+    '[A rival crew’s greeting] A dog’s head lands outside the hideout. Someone calls it a “greeting”; everyone checks their ammunition. You take the first watch.',
     { sanity: -2, heat: 4 }
   ),
   D(
@@ -926,16 +926,16 @@ export const LIFE_DAILIES = [
     'r_h_restructure',
     [6, 140],
     { regions: ['H'] },
-    '[Ngày tái cấu trúc District 8] Ngày hội Tái cấu trúc đô thị diễn ra ở District 8: toàn bộ các khối nhà và đường phố tự động trượt dịch chuyển rầm rộ trong đêm tối. Sáng hôm sau tỉnh dậy bước ra cửa, bạn bàng hoàng nhận ra căn nhà trọ của mình đã bị đẩy cách xa chợ thêm bốn con phố.',
-    '[District 8 Restructuring Day] Restructuring Day arrived in District 8: whole blocks of tenements mechanically shifted across the subterranean rail grid overnight. Stepping outside at dawn, you found your rented room displaced four avenues further from the central market.',
+    '[Ngày tái cấu trúc] District 8 dời các dãy nhà trong đêm. Sáng ra, đường từ nhà đến chợ dài thêm bốn con phố. Chuyến xe thường ngày cũng tăng giá.',
+    '[Restructuring Day] District 8 moves whole rows of buildings overnight. By morning, the market is four streets farther from home. The usual ride costs more, too.',
     { sanity: -1, wealth: -1 }
   ),
   D(
     'r_l_fog',
     [6, 140],
     { regions: ['L'] },
-    '[Màn sương tàn tích L Corp] Màn sương khói dày đặc rỉ ra từ tàn tích của tập đoàn sụp đổ L Corp tràn ngập khắp các ngả đường xung quanh. Hai thế lực Thumb và Index đã giao tranh ác liệt ở khu vực này suốt ba tháng nay; đêm nào tiếng đạn pháo và tiếng la hét cũng rền rĩ không ngớt.',
-    '[L Corp Ruin Mists] Choking chemical mists leaked continuously from the ruins of old L Corp, blanketing surrounding avenues. The Thumb and the Index have waged bloody warfare over this sector for three months; every midnight echoes with gunshots and dying screams.',
+    '[Sương quanh tàn tích L Corp] Sương che kín con đường cạnh khu L Corp bỏ hoang. Thumb và Index giành nhau lối đi ấy; đêm nay tiếng súng lại bắt đầu trước giờ giới nghiêm.',
+    '[Fog near the L Corp ruins] Fog covers the road beside an abandoned L Corp site. The Thumb and Index contest that passage; tonight the gunfire starts before curfew.',
     { sanity: -3, heat: 1 }
   ),
   D(
@@ -1000,8 +1000,8 @@ export const LIFE_DAILIES = [
     'm_any_photo',
     MID,
     {},
-    '[Tấm ảnh tuổi mười tám] Bạn lục tìm thấy một bức ảnh ố vàng chụp chính bản thân mình vào năm tròn 18 tuổi trong đáy hòm cũ. Đôi mắt trong bức ảnh sáng ngời và tràn đầy nhiệt huyết, tựa như ánh mắt của một kẻ xa lạ nào đó từng dám mơ mộng và hy vọng giữa thế giới tàn khốc.',
-    '[Photograph at Eighteen] You unearthed a faded photograph of yourself at age eighteen hidden in an old chest. The gaze captured in the print was vibrant with hope, the look of an absolute stranger who once dared to believe in a future.',
+    '[Tấm ảnh tuổi mười tám] Trong hòm cũ có một tấm ảnh chụp bạn năm mười tám tuổi. Mép ảnh đã ố. Bạn mất một lúc mới nhận ra chiếc áo mình từng mặc.',
+    '[A photograph at eighteen] An old chest holds a photograph of you at eighteen. Its edges have yellowed. It takes you a moment to recognize the coat you once wore.',
     { sanity: 1, resonance: 1 }
   ),
   D(
@@ -1024,8 +1024,8 @@ export const LIFE_DAILIES = [
     'o_any_hands',
     OLD,
     {},
-    '[Đôi bàn tay run rẩy] Đôi bàn tay gầy guộc đầy sẹo của bạn bắt đầu run rẩy run bần bật mỗi khi nâng cốc nước uống. Bạn nhìn chăm chú vào những khớp ngón tay ấy, nhớ lại rằng trong những năm tháng xưa cũ, chính đôi tay này đã từng gây ra những tội lỗi mà giờ đây bạn không bao giờ muốn nhớ lại nữa.',
-    '[Trembling Scarred Hands] Your scarred hands trembled slightly as you lifted a cup to your lips. Staring at those weathered knuckles, you remembered that decades ago, these very fingers committed deeds you would give anything to forget.',
+    '[Đôi bàn tay run] Chiếc cốc chạm vào đĩa hai lần trước khi bạn nhấc được nó lên. Bạn đặt tay còn lại dưới đáy cốc. Hôm nay cách đó vẫn đủ để uống hết nước.',
+    '[Trembling hands] The cup knocks against its saucer twice before you can lift it. You steady its base with your other hand. Today that is still enough to finish the drink.',
     { health: -2, sanity: -1 }
   )
 ];

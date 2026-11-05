@@ -52,14 +52,14 @@ export const LIFE_MINORS = [
     'm_k_pipe_noise',
     KID,
     { back: true },
-    '[Tiếng cào trong ống nước] Đêm khuya thanh vắng, có âm thanh cào cấu sột soạt rợn người phát ra từ sâu bên trong đường ống nước rỉ sét. Cha mẹ bạn đang ngủ say sau một ngày làm việc kiệt sức.',
-    '[Scratching Inside the Conduit] In the dead of night, an ominous, rhythmic scratching echoed from deep within the rusted drainage pipe. Your parents were fast asleep from exhaustion.',
+    '[Tiếng cào trong ống nước] Đêm khuya, tiếng móng cào vọng lên từ đường ống rỉ sét dưới sàn. Những căn phòng quanh bạn đã tắt đèn.',
+    '[Scratching Inside the Conduit] Late at night, claws scrape inside the rusted pipe beneath the floor. The rooms around you have gone dark.',
     [
       C(
-        'Đánh thức cha mẹ dậy',
-        'Wake your parents',
-        'Cha bạn bật dậy dỏng tai lắng nghe một thoáng, rồi lẳng lặng nhét một búi giẻ rách bịt chặt miệng ống nước. Tiếng cào cấu lập tức im bặt.',
-        'Father sat up, listening closely in the dark before firmly jamming a wad of rags into the pipe’s opening. The scratching abruptly ceased.',
+        'Gọi người lớn đến xem',
+        'Call an adult over',
+        'Một người lớn nhét giẻ vào miệng ống rồi kê tủ lên trên. Tiếng cào dừng lại. Không ai dám kéo tủ ra.',
+        'An adult stuffs rags into the pipe and pushes a cabinet over it. The scratching stops. Nobody moves the cabinet again.',
         { sanity: 1 }
       ),
       C(
@@ -78,14 +78,14 @@ export const LIFE_MINORS = [
     'm_k_coin',
     KID,
     {},
-    '[Đồng Ahn dưới gầm ghế] Bạn tình cờ nhặt được một đồng xu Ahn kim loại sáng loáng nằm lăn lóc dưới gầm ghế gỗ ở khu chợ đông đúc.',
-    '[Shiny Ahn Coin under the Bench] You discovered a gleaming Ahn coin resting quietly beneath a wooden bench in the crowded alley market.',
+    '[Đồng Ahn dưới gầm ghế] Bạn nhặt được một đồng Ahn dưới ghế ở khu chợ. Người bán bánh mì đang dọn hàng.',
+    '[An Ahn under the bench] You find an Ahn coin under a market bench. The bread seller is packing up.',
     [
       C(
-        'Mang về đưa cho mẹ',
-        'Hand it to your mother',
-        'Mẹ bạn dùng đồng xu ấy mua thêm được một ổ bánh mì nóng giòn. Cả gia đình có được một bữa tối no nê ấm cúng hơn thường lệ.',
-        'Mother used the coin to purchase an extra warm loaf. The family enjoyed a far more comforting dinner than usual.',
+        'Đổi lấy bánh mì',
+        'Buy some bread',
+        'Người bán đưa bạn ổ bánh cuối cùng. Bạn ăn một nửa rồi gói phần còn lại mang về.',
+        'The seller gives you the last loaf. You eat half and wrap the rest to take home.',
         { health: 1, sanity: 1 }
       ),
       C(
@@ -104,19 +104,20 @@ export const LIFE_MINORS = [
     'm_c_dog',
     CHILD,
     { back: true },
-    '[Con chó hoang sau thùng rác] Có kẻ độc ác nào đó đã rải bả đầu độc đàn chó hoang trong khu phố. Chú chó nhỏ hay quấn quýt chạy theo bạn đang nằm co giật sùi bọt mép sau thùng rác rỉ sét.',
-    '[Poisoned Pup Behind the Bins] A heartless wretch scattered poisoned bait among the block’s strays. The friendly pup that always trailed your heels lay twitching and foaming behind the dumpster.',
+    '[Con chó sau thùng rác] Con chó vẫn theo bạn ra chợ nay nằm co giật sau thùng rác. Bên cạnh nó là mẩu thức ăn có mùi thuốc.',
+    '[The dog behind the bins] The dog that follows you to the market lies twitching behind the bins. A scrap of food nearby smells of chemicals.',
     [
       C(
-        'Ôm chặt nó chạy đến phòng khám',
-        'Sprint to the backstreet clinic',
+        'Bế nó đến phòng khám thú y (2 Ahn)',
+        'Carry it to the veterinary clinic (2 Ahn)',
         null,
         null,
         { wealth: -2 },
         {
+          costAhn: 2,
           out: [
-            O(55, 'Bác sĩ thú y dùng thuốc gây nôn cứu sống nó kịp thời. Chú chó hồi phục thần kỳ, và kể từ đó không bao giờ rời xa bạn nửa bước.', 'The back-alley vet pumped its stomach just in time. It survived, remaining your steadfast companion forever after.', { sanity: 4 }, { mem: 'saved_dog' }),
-            O(45, 'Nó trút hơi thở cuối cùng trong vòng tay bạn trước khi kịp đến phòng khám. Bạn gạt nước mắt chôn cất nó dưới gốc cột điện đầu ngõ.', 'It drew its last breath in your arms along the way. Weeping, you buried it beneath the lamppost at the alley entrance.', { sanity: -4 })
+            O(55, 'Bác sĩ cho nó nôn ra mẩu bả. Vài ngày sau, nó lại xuất hiện ở đầu ngõ khi bạn đi chợ.', 'The vet makes it vomit up the bait. A few days later, it waits for you at the alley entrance.', { sanity: 4 }, { mem: 'saved_dog' }),
+            O(45, 'Nó chết trước khi bác sĩ kịp xử lý. Bạn chôn nó dưới cột đèn đầu ngõ.', 'It dies before the vet can treat it. You bury it beneath the lamp at the alley entrance.', { sanity: -4 })
           ],
           motif: { mercy: 1 }
         }
@@ -124,13 +125,13 @@ export const LIFE_MINORS = [
       C(
         'Truy lùng xem kẻ nào đã làm',
         'Track down who scattered the bait',
-        'Bạn nhìn thấy lão chủ quán thịt nướng đầu phố đang lén lút rải thêm bả độc. Lão bắt gặp ánh mắt bạn trừng trừng nhìn, và nở một nụ cười lạnh tanh ghê rợn.',
-        'You caught the corner grill-master scattering poisonous scraps. Noticing your glare, he offered only a chilling, sinister grin.',
+        'Bạn thấy chủ quán thịt nướng rải thêm mồi gần thùng rác. Ông ta nhận ra bạn đã nhìn thấy.',
+        'You see the grill owner leave more bait near the bins. He notices that you saw him.',
         { sanity: -2 },
         { mem: 'grill_owner' }
       )
     ],
-    I('Bạn quay mặt bước đi trong cay đắng. Sáng hôm sau xác chú chó đã biến mất; quán thịt nướng đầu phố lại có thêm món mới.', 'You turned away. Come morning the carcass had vanished; the butcher shop posted a fresh meat special.'),
+    I('Sáng hôm sau con chó không còn ở đó. Chủ quán thịt nướng đang dọn hàng như mọi khi.', 'The dog is gone by morning. The grill owner opens his stall as usual.'),
     { sanity: -3, theme: 'animals' }
   ),
 
@@ -225,14 +226,14 @@ export const LIFE_MINORS = [
     'm_c_index_slip',
     CHILD,
     { back: true },
-    '[Mảnh giấy Prescript rơi vào cửa] Một mảnh giấy nhỏ bay qua khung cửa sổ rơi vào phòng bạn, trên đó nắn nót dòng chữ mực đen: "Hãy trao chiếc giày bên trái của mẹ ngươi cho người đầu tiên gõ cửa."',
-    '[The Prescript on the Sill] A parchment slip drifted through the window frame, inked in precise calligraphy: “Deliver your mother’s left shoe to the first soul who knocks upon your door.”',
+    '[Mảnh giấy Prescript rơi vào cửa] Một mảnh giấy bay qua cửa sổ: "Hãy trao chiếc giày bên trái của ngươi cho người đầu tiên gõ cửa."',
+    '[The Prescript on the sill] A slip blows through the window: “Give your left shoe to the first person who knocks.”',
     [
       C(
         'Ngoan ngoãn làm theo chỉ thị',
         'Obey the instruction',
-        'Người gõ cửa là một kẻ mặc áo choàng trắng toát của Index, đón lấy chiếc giày và cúi đầu lẳng lặng rời đi. Mẹ bạn phải đi tìm chiếc giày thất lạc suốt cả tháng trời.',
-        'The knocker was a white-robed Index Proselyte, taking the shoe with a solemn bow before silently departing. Mother searched in vain for that missing shoe for an entire month.',
+        'Người gõ cửa mặc áo của Index. Họ nhận chiếc giày, cúi đầu rồi đi. Sáng hôm sau bạn phải tập đi với một chiếc giày.',
+        'An Index Proselyte takes the shoe, bows and leaves. The next morning you learn to walk with only one shoe.',
         { resonance: 5 },
         { mem: 'obeyed_prescript', motif: { faith: 1 } }
       ),
@@ -548,8 +549,8 @@ export const LIFE_MINORS = [
     'm_t_nest_exam_cheat',
     TEEN,
     { nest: true },
-    '[Đề thi nội bộ Wing] Một học viên khóa trên lén lút chào bán cho bạn bộ đề thi tuyển dụng thực tập sinh Wing bí mật với mức giá 12 đồng Ahn.',
-    '[Leaked Wing Examination] A senior scholar discreetly offered to sell you stolen question keys for the Wing internship assessment for twelve Ahn.',
+    '[Đề thi nội bộ Wing] Một học viên khóa trên chào bán bộ đề thi thực tập sinh Wing với giá 4 Ahn. Họ không cho bạn xem trước trang nào.',
+    '[Leaked Wing exam] A senior trainee offers the Wing internship test papers for 4 Ahn. You cannot inspect them before paying.',
     [
       C(
         'Bỏ tiền mua bộ đề thi',
@@ -558,17 +559,18 @@ export const LIFE_MINORS = [
         null,
         { wealth: -4 },
         {
+          costAhn: 4,
           out: [
-            O(70, 'Điểm số của bạn đứng thứ hai toàn khu vực Nest. Ban giám sát không hề nghi ngờ bất cứ điều gì.', 'You placed second across the entire Nest sector. Examiners raised no inquiries.', { network: 6, rep: 3 }, { mem: 'cheated_exam', motif: { greed: 1 } }),
-            O(30, 'Đó là bộ đề giả mạo. Bạn trượt kỳ thi thảm hại và bị liệt vào danh sách những kẻ "cần theo dõi tư cách đạo đức".', 'The papers were counterfeit. You failed disgracefully, landing on an administrative watch-list.', { rep: -4, sanity: -3 }, { mem: 'cheated_exam' })
+            O(70, 'Đề khớp với bài thi. Bạn đỗ, nhưng từ hôm ấy người bán cứ tìm cách bắt chuyện mỗi khi gặp bạn.', 'The papers match the exam. You pass, but the seller starts seeking you out whenever you meet.', { network: 6, rep: 3 }, { mem: 'cheated_exam', motif: { greed: 1 } }),
+            O(30, 'Đề giả. Bạn trượt kỳ thi; giám thị giữ lại tờ đáp án bạn mang vào phòng.', 'The papers are fake. You fail, and the proctor keeps the answer sheet you brought in.', { rep: -4, sanity: -3 }, { mem: 'cheated_exam' })
           ]
         }
       ),
       C(
         'Tự mình vùi đầu ôn luyện',
         'Study by your own grit',
-        'Bạn vượt qua kỳ thi sát nút với số điểm vừa đủ đỗ. Cha bạn không buông lời khen ngợi, chỉ khẽ gật đầu công nhận.',
-        'You scraped through the threshold by your own wits. Father offered no praise, merely a stiff nod.',
+        'Bạn đỗ sát điểm sàn. Người coi thi đóng dấu lên hồ sơ rồi gọi thí sinh tiếp theo.',
+        'You pass by one point. The examiner stamps your file and calls the next candidate.',
         { network: 3, sanity: -2 }
       )
     ],
@@ -750,6 +752,7 @@ export const LIFE_MINORS = [
         null,
         { wealth: -15 },
         {
+          costAhn: 15,
           out: [
             O(70, 'Kẻ lạ mặt không bao giờ xuất hiện trở lại nữa. Bạn khôn ngoan không tò mò hỏi xem toán Fixer đã xử lý hắn bằng cách nào.', 'The watcher never returned. You wisely asked no questions regarding how the Fixers resolved it.', { sanity: 4 }),
             O(30, 'Văn phòng Fixer cầm trọn tiền cọc rồi ôm tiền chuồn mất. Kẻ lạ mặt vẫn đứng đó mỗi tối, và giờ đây còn giơ tay vẫy chào bạn.', 'The Office absconded with your coin. The stranger remained across the street, now waving politely toward your window.', { sanity: -5 })

@@ -14,13 +14,13 @@ export const FACTION_EVENTS = [
     jobs: ['Fixer'],
     forbids: ['HasAffiliation'],
     vi: "[Ba lời mời] Sau vài Request, ba nơi gửi giấy mời đến phòng trọ: Hook Office săn tiền thưởng trong hẻm; Shi Association nhận việc ám sát; Öufi Association xử tranh chấp hợp đồng. Mỗi giấy đều ghi ngày phải có mặt.",
-    en: '[Three offers] A Fixer with no Office or Association behind them can be killed by anyone at no cost. This week, three places want you.',
+    en: '[Three offers] After several Requests, three invitations reach your room: Hook Office hunts bounties, Shi Association takes assassination work, and Öufi Association settles contract disputes. Each letter gives you a date to report.',
     choices: [
       {
         labelVi: 'Hook Office: nhận việc săn tiền thưởng ở Backstreets',
         labelEn: 'Hook Office: bounty work in the Backstreets',
-        resultVi: 'Người điều phối Hook Office ném xuống bàn chiếc móc câu bọc xích sắt còn vương vệt mỡ máy và máu khô: "Thù lao tính theo đầu lâu mang về. Cố mà sống sót cho đến khi thanh toán xong tiền mua vũ khí." Người cộng sự mới bước tới, vỗ mạnh vào vai bạn với nụ cười lạnh lùng.',
-        resultEn: 'The operator tossed you an iron hook with something dried on it. “Paid by the head. Don’t die before your gear is paid off.” The Fixer assigned as your partner held out a hand.',
+        resultVi: 'Người điều phối Hook đặt một chiếc móc xích lên bàn. "Tiền tính theo mục tiêu. Giá vũ khí trừ vào thù lao đầu." Cộng sự được phân cho bạn kiểm lại lưỡi móc rồi đưa tay ra.',
+        resultEn: 'The Hook operator sets a chained hook on the table. “Pay is per target. We deduct the weapon from your first fee.” Your assigned partner checks the blade, then offers a hand.',
         setOrg: { type: 'office', name: 'Hook Office' },
         flagsAdd: ['HasAffiliation'],
         npcAdd: { role: 'partner', bond: 60 },
@@ -30,8 +30,8 @@ export const FACTION_EVENTS = [
       {
         labelVi: 'Shi Association: làm sát thủ theo hợp đồng',
         labelEn: 'Shi Association: contract killing',
-        resultVi: "Shi cho bạn tập liên tục trong những vết thương chưa kịp khép. Cuối buổi, người hướng dẫn khắc dấu của Association lên ngực bạn. Request đầu tiên đã nằm trên bàn.",
-        resultEn: 'Shi teaches that you cut cleanest when you are about to die. They worked you 96 hours without sleep on unstitched wounds, so you would learn it in your body.',
+        resultVi: 'Buổi tập của Shi kéo dài qua đêm. Khi bạn còn chưa thay băng, người hướng dẫn giao Request đầu tiên và ghi tên bạn vào lịch trực.',
+        resultEn: 'Shi training runs through the night. Before you can change your bandages, the instructor assigns your first Request and adds your name to the duty roster.',
         setOrg: { type: 'assoc', name: 'Shi Association' },
         flagsAdd: ['HasAffiliation', 'ShiOverdrive'],
         recordsAdd: ['assoc_joined'],
@@ -755,13 +755,13 @@ export const FACTION_EVENTS = [
     need: { finger: 'Thumb', fingerRank: 0 },
     forbids: ['promo_thumb_capo_done'],
     vi: "[Bài thử Capo] Sottocapo giao bạn chỉ huy một đội Soldato lấy lại xe đạn bị Rat cướp. \"Capo chịu trách nhiệm cả đạn lẫn người,\" ông nói. Trên bàn là sơ đồ tuyến đường và danh sách đội viên.",
-    en: '[Capo Promotion Trial · The Thumb] Dense cigar smoke hangs in the mahogany bunker. The Sottocapo slams the ammunition ledger: "A common Soldato merely pulls the trigger on command. A Capo must calculate every single bullet, weigh each drop of blood, and command the rank-and-file with unwavering etiquette." A gang of Backstreet rats hijacked a Thumb ammunition convoy; you are commissioned to lead the firing squad.',
+    en: '[Capo trial] A Sottocapo orders you to lead Soldato against Rats who stole an ammunition truck. “A Capo answers for the rounds and the people,” he says. The route map and crew roster lie on the table.',
     choices: [
       {
         labelVi: 'Chỉ huy hàng súng hỏa mai bắn đồng loạt theo nhịp đếm lễ nghi',
         labelEn: 'Command synchronized volley-fire according to metronomed etiquette',
-        resultVi: 'Tiếng nổ rền vang như sấm sét. Đội Soldato dưới sự chỉ huy gãy gọn của bạn xả đạn nhịp nhàng như một cỗ máy hoàn hảo, tiêu diệt toàn bộ quân địch mà không lãng phí một viên đạn thừa. Sottocapo gật đầu tán thưởng, trao chiếc áo choàng viền lông và bổ nhiệm bạn làm Capo.',
-        resultEn: 'The discharge rumbled like rolling thunder. Under your precise rhythm, the firing squad operated with the mechanical grace of a clockwork executioner, annihilating the raiders without a single wasted round. The Sottocapo pinned the bronze epaulets to your chest: You are now a Thumb Capo.',
+        resultVi: 'Theo nhịp đếm của bạn, đội Soldato chặn được xe đạn và bắt sống kẻ cầm lái. Sottocapo kiểm lại số đạn còn trong băng trước khi trao phù hiệu Capo.',
+        resultEn: 'At your count, the Soldato stop the truck and capture its driver. The Sottocapo checks the ammunition left in their magazines before handing you the Capo insignia.',
         setFingerRank: 1,
         flagsAdd: ['promo_thumb_capo_done'],
         meritAdd: 20,
@@ -923,13 +923,13 @@ export const FACTION_EVENTS = [
     need: { finger: 'Index', fingerRank: 0 },
     forbids: ['promo_index_messenger_done'],
     vi: "[Dải lụa của Messenger] Khung cửi nhả ra một Prescript. Để rời hàng Proselyte, bạn phải bịt mắt và mang nó qua vùng tranh chấp. Các Proxy đứng chờ ở cửa, còn tuyến đường đã có người chết.",
-    en: '[Blindfold Investiture of the Messenger · The Index] The titanic subterranean mechanical loom spits forth a shimmering parchment scroll. White-robed Proxies flank the nave in chilling silence. To rise from a sword-bearing Proselyte to an ordained Messenger, you must kneel to receive the ceremonial silk blindfold and deliver an absurd Prescript across active warzones.',
+    en: '[Messenger’s blindfold] The loom releases a Prescript. To leave the Proselyte ranks, you must carry it blindfolded through contested streets. Proxies wait at the door; people have died on this route.',
     choices: [
       {
         labelVi: 'Đeo dải lụa bịt mắt, cảm nhận Dòng Chảy để vượt qua làn đạn phục kích',
         labelEn: 'Don the blindfold, navigating the crossfire purely through the Flow',
-        resultVi: 'Mắt bạn không nhìn thấy gì, nhưng trực giác kiếm thuật và tiếng xào xạc của cuộn chỉ vàng dẫn dắt bạn qua từng làn đạn. Bạn giao cuộn Chỉ Lệnh tận tay người nhận đúng vào giây thứ 32 của canh ba. Một Proxy mỉm cười gật đầu: Bạn đã là Sứ Giả chính thức của The Index.',
-        resultEn: 'Blind to the physical world, your blade senses and the hum of golden threads carried you effortlessly through the crossfire. You delivered the Prescript at the precise 32nd second of midnight. A Proxy bowed: You are now an ordained Messenger of the Index.',
+        resultVi: 'Bạn lần theo mép tường, dừng lại mỗi khi tiếng súng gần hơn. Tờ Prescript đến tay người nhận còn nguyên niêm. Proxy tháo dải lụa bịt mắt cho bạn và trao áo Messenger.',
+        resultEn: 'You follow the wall and stop whenever the gunfire draws near. The recipient gets the Prescript with its seal intact. A Proxy removes your blindfold and hands you a Messenger’s coat.',
         setFingerRank: 1,
         flagsAdd: ['promo_index_messenger_done'],
         meritAdd: 20,
@@ -1007,27 +1007,27 @@ export const FACTION_EVENTS = [
     need: { finger: 'Index', fingerRank: 1 },
     forbids: ['promo_index_proxy_done'],
     vi: "[Bản án của khung cửi] Prescript gọi tên người từng cứu bạn. Họ đã đốt một Chỉ Lệnh; trước bình minh, bạn phải lấy đầu họ hoặc bị xử thay. Đây là bài thử cuối trước khi trở thành Proxy.",
-    en: '[Judgement of the Loom · The Proxy Greatsword] A Prescript inscribed in pitch-black ink drops into your hands: An old benefactor who once saved your life burned an Index Prescript. The text decrees: "Decapitate the heretic before sunrise, or dangle from the loom’s gallows." This is your final crucible to become a Proxy, the absolute enforcer of City destiny.',
+    en: '[The loom’s sentence] A Prescript names the person who once saved you. They burned an order. Before sunrise, you must take their head or be executed in their place. This is your final Proxy trial.',
     choices: [
       {
         labelVi: 'Vung Đại Kiếm Proxy thi hành án không một tia cảm xúc cá nhân',
         labelEn: 'Cleave the transgressor with the Proxy Greatsword without a trace of hesitation',
-        resultVi: 'Lưỡi đại kiếm xé toạc không khí, kết thúc sinh mệnh người ân nhân trong tích tắc không đau đớn. Nước mắt bạn hòa tan vào màn sương lạnh. Các Weaver từ sâu trong lòng đất ban phước cho bạn: Bạn chính thức trở thành Proxy của The Index, mang trên vai Đại Kiếm Chấp Pháp.',
-        resultEn: 'The colossal blade parted the nocturnal fog, severing the benefactor’s life in a painless instant. Your tears dissolved into the mist. Deep within the City’s underbelly, the Weavers sang: You are now a revered Proxy of the Index.',
+        resultVi: 'Bạn thi hành án trước bình minh. Một Proxy nhận đầu người ấy và đối chiếu tên trên Prescript. Sáng đó, họ giao cho bạn thanh đại kiếm của cấp bậc mới.',
+        resultEn: 'You carry out the sentence before sunrise. A Proxy takes the head and checks the name against the Prescript. That morning, they issue you the greatsword of your new rank.',
         setFingerRank: 2,
         flagsAdd: ['promo_index_proxy_done'],
         meritAdd: 32,
         effects: { sanity: -14, rep: +35, resonance: +25, wealth: +25 }
       },
       {
-        labelVi: 'Tìm ra sơ hở ngôn từ trong bản Chỉ Lệnh, hướng dẫn ân nhân hoàn thành điều khoản thay thế',
-        labelEn: 'Exploit a semantic paradox in the Prescript, guiding your benefactor into an alternative sacrifice',
-        resultVi: 'Bằng tư duy uyên bác về Dòng Chảy, bạn yêu cầu người ân nhân nuốt trọn chiếc nhẫn vàng và hiến tế cánh tay trái cho khung cửi. Chỉ Lệnh tự động đổi màu công nhận hoàn thành án. Các Proxy kinh ngạc trước trí tuệ của bạn và tôn bạn lên ngôi Proxy.',
-        resultEn: 'Through deep comprehension of the Flow, you instructed your benefactor to swallow their gold signet and offer their left forearm to the loom. The Prescript flared green, signaling satisfaction. Stunned by your profound insight, the Proxies elevated you to Proxy rank.',
+        labelVi: 'Xin ân nhân tự bước ra, giữ lời cuối cùng họ muốn nói',
+        labelEn: 'Ask your benefactor to come forward and hear their last words',
+        resultVi: 'Người ấy ra gặp bạn trước bình minh và không xin tha. Bạn nghe hết điều họ muốn nói rồi thi hành án. Proxy đứng chờ ở cửa trao đại kiếm; lời cuối vẫn ở lại với bạn.',
+        resultEn: 'They come to you before sunrise and do not ask for mercy. You hear their last words, then carry out the sentence. The Proxy waiting outside hands you the greatsword; the words stay with you.',
         setFingerRank: 2,
         flagsAdd: ['promo_index_proxy_done'],
         meritAdd: 30,
-        effects: { sanity: +10, rep: +30, network: +25, resonance: +20 }
+        effects: { sanity: -8, rep: +30, network: +10, resonance: +20 }
       },
       {
         labelVi: 'Tạm lùi lại phân tích sâu hơn các tầng nghĩa ẩn của bản Chỉ Lệnh',
@@ -1091,13 +1091,13 @@ export const FACTION_EVENTS = [
     need: { finger: 'Middle', fingerRank: 0 },
     forbids: ['promo_middle_big_sibling_done'],
     vi: "[Mắt xích vàng] Một Little Sibling bị cướp tiền và đánh gãy xương sườn. Book of Vengeance đã ghi tên băng đảng gây ra việc ấy. Bạn muốn nhận vai Big Sibling thì phải dẫn đầu cuộc đòi nợ.",
-    en: '[Golden Chain Tattoo: Becoming Big Sibling · The Middle] A fragile Little Sibling in your crew was mugged, robbed of all Ahn, and left with three cracked ribs. Inside the Middle hideout, the Book of Vengeance lies open. Crimson ink burns like fresh arterial blood. To ascend to Big Sibling, you must lead the reprisal and inscribe another glowing link onto your arm.',
+    en: '[The golden link] A Little Sibling is robbed and left with broken ribs. The Book of Vengeance names the crew responsible. To become a Big Sibling, you must lead the reprisal.',
     choices: [
       {
         labelVi: 'Quấn xích sắt quanh nắm đấm, đập nát toàn bộ sào huyệt kẻ thù',
         labelEn: 'Wrap heavy iron chains around bare knuckles, flattening the enemy lair',
-        resultVi: 'Không một tên côn đồ nào đứng vững sau ba phút cuồng nộ của bạn. Bạn thu hồi từng xu Ahn bị cướp và quỳ trước bàn thờ gia tộc gạch tên kẻ thù trong Sách Phục Thù. Tiếng kim xăm nung đỏ rít lên trên da thịt bạn: Bạn chính thức là Big Brother / Big Sister của The Middle.',
-        resultEn: 'Not a single thug stood after three minutes of chain-wrapped fury. You recovered every stolen coin and struck through the enemy’s name in the Book of Vengeance. White-hot needles etched the glowing golden chain into your skin: You are now a Big Sibling of the Middle.',
+        resultVi: 'Bạn phá cửa sào huyệt và thu lại số tiền bị cướp. Tên băng kia được gạch khỏi Book of Vengeance. Khi trở về, một mắt xích mới được xăm lên tay bạn: dấu của Big Sibling.',
+        resultEn: 'You break into the hideout and recover the stolen money. The crew’s name is struck from the Book of Vengeance. Back home, a new link is tattooed on your arm: the mark of a Big Sibling.',
         setFingerRank: 1,
         flagsAdd: ['promo_middle_big_sibling_done'],
         meritAdd: 20,
@@ -1106,8 +1106,8 @@ export const FACTION_EVENTS = [
       {
         labelVi: 'Lấy thân mình che chắn làn mưa tên nỏ để toàn bộ đàn em an toàn',
         labelEn: 'Shield your Little Siblings with your own body against a hail of crossbow bolts',
-        resultVi: 'Bảy mũi tên cắm sâu vào vai và lưng bạn, nhưng bạn không lùi nửa bước, dùng song quyền đấm gục toàn bộ kẻ địch. Đàn em vừa khóc vừa băng bó cho bạn. Toàn thể gia tộc cúi đầu kính phục tấm lòng bao bọc của một Big Sibling đích thực.',
-        resultEn: 'Seven bolts pierced your shoulders and back, yet you refused to yield an inch, pummeling the foes into submission. Weeping with gratitude, your siblings bandaged your wounds. The entire Family cheered: A true Big Sibling has risen.',
+        resultVi: 'Bạn che đường rút cho Little Siblings và trúng hai mũi tên. Họ đưa bạn về, băng vết thương rồi gọi bạn là Big Sibling. Tên bạn được ghi vào sổ của gia tộc.',
+        resultEn: 'You cover the Little Siblings’ retreat and take two bolts. They bring you home, dress the wounds, and call you Big Sibling. Your name enters the Family ledger.',
         setFingerRank: 1,
         flagsAdd: ['promo_middle_big_sibling_done'],
         meritAdd: 22,
@@ -2103,7 +2103,7 @@ export const FACTION_EVENTS = [
     weight: 930,
     jobs: ['Wing Employee'],
     vi: "[Cửa hầm của Wing] Ban giám đốc cho bạn xem bí mật vận hành Singularity. Muốn vào ban điều hành, bạn phải chứng kiến nó mà vẫn giữ được bình tĩnh. Nếu không, Wing sẽ xóa ký ức buổi hôm nay.",
-    en: '[Wing Board · Singularity Classified Audit] The Board summoned you to the deepest vault beneath the Nest. The singularity blast doors opened, revealing the grotesque truth powering the corporation. A Senior Executive looked upon you:\n“Every Feather seeking a seat on the executive board must gaze upon this truth without losing their mind. If you endure, you are a Senior Executive. If you falter, your memory will be purged.”',
+    en: '[The Wing vault] The board shows you the secret behind its Singularity. A seat among the executives requires you to witness it and remain composed. If you cannot, the Wing will erase your memory of today.',
     choices: [
       {
         labelVi: 'Nhìn thẳng vào vực thẳm Singularity: Đứng vững và bước vào ban điều hành',
@@ -2166,14 +2166,15 @@ export const FACTION_EVENTS = [
     weight: 60,
     need: { jobs: ['Syndicate'], flags: ['FingerIndex'] },
     forbids: ['Distorted', 'index_prescript_bizarre_done'],
-    vi: '[Chỉ Lệnh Kỳ Quái của The Index] Một sứ giả mang mặt nạ lụa trắng (Proselyte) trao tận tay bạn tờ Prescript viết bằng mực đỏ rực: "Vào đúng 2:45 PM, hãy cởi chiếc ủng chân trái, đi lùi qua ngã tư District 10 và trao toàn bộ số Ahn bạn có cho người thứ bảy bạn nhìn thấy."',
-    en: '[The Index’s Absurd Prescript] A white-masked Proselyte delivers a Prescript inked in vivid cinnabar: "At exactly 2:45 PM, remove your left boot, walk backwards through District 10’s crossroad, and surrender all Ahn you carry to the seventh soul you behold."',
+    vi: '[Prescript ở ngã tư] Một Proselyte trao bạn tờ lệnh: "Lúc 2:45 chiều, cởi ủng trái, đi lùi qua ngã tư District 10 và đưa 20 Ahn cho người thứ bảy ngươi gặp."',
+    en: '[The crossroads Prescript] A Proselyte hands you an order: “At 2:45 PM, remove your left boot, walk backward through the District 10 crossroads, and give 20 Ahn to the seventh person you meet.”',
     choices: [
       {
         labelVi: 'Tuân thủ tuyệt đối chỉ lệnh không một lời thắc mắc',
         labelEn: 'Follow the Prescript to the letter without hesitation',
-        resultVi: 'Bạn đi lùi qua ngã tư chân trần, trao sạch tiền cho một bà lão ăn xin mù. Ngay tích tắc sau đó, một vụ sập cầu vượt kinh hoàng diễn ra đè nát toàn bộ người đi xuôi chiều. Bạn thoát chết trong gang tấc nhờ đi lùi. Dệt mạng số phận của Index thật đáng sợ.',
-        resultEn: 'Walking backwards barefoot, you handed your purse to a blind beggar. Seconds later, an overpass collapsed, crushing everyone advancing forward. The Loom’s unfathomable weaving spared you.',
+        costAhn: 20,
+        resultVi: 'Bạn đếm đến người thứ bảy, trao họ 20 Ahn rồi tiếp tục đi lùi. Một nhịp sau, lan can cầu vượt đổ xuống làn người trước mặt. Bạn thoát khỏi chỗ đó, nhưng không biết ai đã viết lệnh.',
+        resultEn: 'You count to the seventh person, hand over 20 Ahn, and keep walking backward. A moment later, the overpass railing falls into the crowd ahead. You get clear, still unsure who wrote the order.',
         effects: { sanity: +15, resonance: +25, wealth: -20, rep: +25 },
         meritAdd: 28,
         flagsAdd: ['index_prescript_bizarre_done', 'IndexDevotee']
@@ -2352,22 +2353,22 @@ export const FACTION_EVENTS = [
     need: { jobs: ['Wing Employee'], wingEmployerId: 'W' },
     forbids: ['Distorted', 'wcorp_cleanup_done'],
     vi: "[Ca dọn toa hạng nhất] Tàu WARP cập bến. Bên trong toa, hành khách đã hòa lẫn thành những khối thịt. Bạn có mười phút đưa họ về chỗ và chạy quy trình phục hồi trước khi cửa ga mở.",
-    en: '[First-Class Bio-Cleanup · WARP Train Arrival] The WARP train docks at District 23 after 10 seconds of real time, two millennia of subjective isolation. Doors unseal, vomiting the stench of rotting plasma and writhing flesh masses of passengers who devoured each other across centuries. You have exactly 10 minutes to sanitize the car and restore them via W Corp rewind technology.',
+    en: '[First-class cleanup] A WARP train arrives. Inside, the passengers have fused into masses of flesh. You have ten minutes to put them back in place and run the restoration procedure before the station doors open.',
     choices: [
       {
-        labelVi: 'Dùng cưa xích và công cụ tái cấu trúc thịt, gom xác và kích hoạt cỗ máy đảo ngược thời gian',
-        labelEn: 'Wield chain-saws and bio-rakes, gathering tissue and triggering the temporal rollback anchor',
-        resultVi: 'Bạn làm việc điên cuồng như một con robot không cảm xúc. Ánh sáng Singularity W Corp bùng nổ, các khối thịt tái tạo hoàn hảo thành những hành khách ăn mặc bảnh bao bước ra ngoài với nụ cười sảng khoái như vừa ngủ một giấc ngắn. Bạn nhận tiền bồi dưỡng độc hại khổng lồ.',
-        resultEn: 'You worked like a detached automaton. W Corp’s Singularity flared: Writhing flesh snapped back into impeccably suited passengers who disembarked smiling as if waking from a pleasant nap. You pocketed massive hazardous duty hazard bonuses.',
+        labelVi: 'Dùng công cụ gom từng hành khách và chạy quy trình phục hồi',
+        labelEn: 'Separate the passengers with cleanup tools and start restoration',
+        resultVi: 'Bạn đưa từng người về đúng ghế rồi khởi động quy trình. Khi cửa ga mở, họ bước xuống với ký ức của mười giây vừa qua. Phiếu lương của bạn có thêm phụ cấp ca dọn toa.',
+        resultEn: 'You return each passenger to their seat and start restoration. When the station doors open, they disembark with only ten seconds to remember. Your pay slip includes a cleanup allowance.',
         meritAdd: 28,
         effects: { health: -15, sanity: -24, wealth: +85, rep: +25 },
         flagsAdd: ['wcorp_cleanup_done']
       },
       {
-        labelVi: 'Lén thu thập mẫu mô tế bào bất tử của hành khách để bán cho chợ đen Workshop',
-        labelEn: 'Harvest immortal cellular samples from the flesh masses for black-market Workshop sale',
-        resultVi: 'Mẫu mô sinh học chịu được 2000 năm phân rã được bạn giấu kín trong bình bảo quản nitơ lỏng. Một xưởng rèn trả giá cực cao để nghiên cứu hợp kim sinh học, giúp bạn giàu to.',
-        resultEn: 'Biological tissue that survived two millennia of subjective decay was sealed in your liquid nitrogen thermos. An underground Workshop paid a fortune for bio-alloy research.',
+        labelVi: 'Giấu một mẫu mô chưa phục hồi để bán cho Workshop chợ đen',
+        labelEn: 'Hide an unrestored tissue sample for sale to a black-market Workshop',
+        resultVi: 'Bạn giấu mẫu mô trong hộp dụng cụ trước khi đội kiểm tra tới. Một Workshop chợ đen trả tiền mặt và dặn bạn xóa tên trên hộp niêm phong.',
+        resultEn: 'You hide the sample in your tool case before inspection. A black-market Workshop pays in cash and tells you to remove the name from its sealed container.',
         meritAdd: 18,
         effects: { sanity: -15, wealth: +140, heat: +25 },
         flagsAdd: ['wcorp_cleanup_done']
@@ -2503,8 +2504,8 @@ export const FACTION_EVENTS = [
       {
         labelVi: 'Tuân thủ tuyệt đối không thắc mắc, ngồi xoay con quay đúng 15 phút',
         labelEn: 'Obey without question, spinning the brass top for precisely 15 minutes',
-        resultVi: 'Bạn ngồi xoay con quay giữa ánh nhìn ngơ ngác của người qua đường. Đúng 12:14, một quả bom của phe địch phát nổ ở góc phố đối diện, chính hành động xoay con quay đã khiến toán ám sát bị chậm lại và tự hủy diệt. Dòng chảy nhân quả của The Index là tuyệt đối.',
-        resultEn: 'You spun the top under baffled civilian stares. At 12:14, an ambush bomb detonated across the boulevard, your trivial delay caused the rival hit squad to mistime and destroy themselves. The causal flow of the Index is omniscient.',
+        resultVi: 'Bạn xoay con quay suốt mười lăm phút. Lúc 12:14, một tiếng nổ vang ở góc phố đối diện; toán phục kích đã đến sai thời điểm. Bạn cất con quay đi mà không biết Prescript nhắm vào ai.',
+        resultEn: 'You spin the top for fifteen minutes. At 12:14, an explosion sounds across the street; the ambushers arrived at the wrong time. You put the top away, unsure whom the Prescript was meant to affect.',
         meritAdd: 25,
         effects: { sanity: +18, rep: +22, network: +18, resonance: +16 }
       },
