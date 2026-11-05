@@ -89,7 +89,8 @@ let s = createDungeonSession('dungeon_outskirts_ruins', testChar);
 testChar.pendingDungeon = s;
 
 for (let stage = 0; stage < 4; stage++) {
-  const res = resolveDungeonChoice(testChar, 0, () => 0.5);
+  // Every check passes: this is about the relic on a clear, not about the Outskirts odds (tests/test_dungeon_difficulty.mjs)
+  const res = resolveDungeonChoice(testChar, 0, () => 0.05);
   testChar = res.char;
   s = res.session;
   if (res.isFinished) {

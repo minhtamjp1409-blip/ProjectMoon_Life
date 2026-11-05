@@ -10,6 +10,7 @@ import { cardEffectOf, dungeonUsesCards, nextHand } from './dungeonCards.js';
 import { GAUNTLETS, INTENT_KINDS, REST_TEXT } from '../data/dungeonGauntlets.js';
 import { activeScarSynergies } from './scarModel.js';
 import { dungeonWagerDamage, dungeonWagerLoot } from './dungeonWager.js';
+import { difficultyOf } from '../data/dungeonDifficulty.js';
 import { CLASH_BALANCE, TWIST_TEXT, clashOdds, clashOffered, clashStakes, clashesLeft, enemyDie, expectedTaken, playerDie, profileOf, rollClash, settleStake } from './dungeonClash.js';
 
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
@@ -76,8 +77,8 @@ function enterFloor(session, char, index) {
   }
   const enemy = floor.elite ? g.elite : pickEnemy(g, floor, char?.seed ?? '', session.id, char?.age ?? 0);
   c.enemy = enemy;
-  c.guardMax = enemy.guard;
-  c.guard = enemy.guard;
+  c.guardMax = Math.max(2, enemy.guard + difficultyOf(session.id).guard);
+  c.guard = c.guardMax;
   c.phase = 1;
   c.offset = fnv(`${char?.seed ?? ''}|${session.id}|${index}|${enemy.nameEn}`) % enemy.intents.length;
 }
@@ -116,7 +117,7 @@ function damageOf(ctx, def, char, session, intent, taken, kind) {
   const scale = (1 + (tier - 1) * COMBAT_BALANCE.tierScale) * (def.hazard === 'ALEPH' ? COMBAT_BALANCE.aleph : 1);
   // The same multiplier stage choices use: mastery, stance, traits, scan, E.G.O and strain
   const mult = ctx.damageMult(def, char, session, kind === 'sanity' ? 'sanity' : 'health') / (ctx.hazardOf(def) || 1);
-  return Math.max(1, Math.ceil(base * taken * scale * mult * COMBAT_BALANCE.damageScale * dungeonWagerDamage(session.delveStake)));
+  return Math.max(1, Math.ceil(base * taken * scale * mult * COMBAT_BALANCE.damageScale * dungeonWagerDamage(session.delveStake) * difficultyOf(session.id).damage));
 }
 
 export function evadeChance(ctx, char, session) {
@@ -126,7 +127,7 @@ export function evadeChance(ctx, char, session) {
   chance += (cardEffectOf(session).evade || 0) + (cardEffectOf(session).check || 0);
   if (session.stance === 'guarded') chance += 0.05;
   if ((char.stats?.health ?? 100) <= 40 && activeScarSynergies(char).some((synergy) => synergy.id === 'cornered_blade')) chance += 0.06;
-  chance += ctx.strainCheck(session);
+  chance += ctx.strainCheck(session) + difficultyOf(session.id).check;
   return clamp(chance, 0.25, session.egoActive ? 0.95 : 0.9);
 }
 

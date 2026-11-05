@@ -4,6 +4,7 @@
  * Usage: node tools/sim/dungeon_sim.mjs [runs=600]
  */
 import { createNewCharacter, createRNG, DUNGEON_DEFINITIONS, createDungeonSession, getDungeonCurrentStage, isDungeonChoiceAvailable, evaluateDungeonChoiceOdds, setDungeonStance, useDungeonSupply, resolveDungeonChoice } from '../../src/engine/gameEngine.js';
+import { pathToFileURL } from 'node:url';
 
 const RUNS = Number(process.argv[2] || 600);
 const mean = (a) => (a.length ? a.reduce((x, y) => x + y, 0) / a.length : 0);
@@ -122,49 +123,56 @@ POLICIES.reader = (stage, char, sess, rng) => {
   return POLICIES.measured(stage, char, sess, rng);
 };
 
-const rows = [];
-for (const id of Object.keys(DUNGEON_DEFINITIONS)) {
-  for (const [pname, pol] of Object.entries(POLICIES)) {
-    const acc = { broken: 0, dead: 0, full: 0, fled: 0, wealth: [], merit: [], res: [], rep: [], hp: [], sp: [], stages: [], capHit: 0, strainMax: [] };
-    for (let i = 0; i < RUNS; i++) {
-      const seed = `dun_${id}_${pname}_${i}`;
-      const rng = createRNG(seed);
-      let char = startChar(seed, rng);
-      const before = { w: char.stats.wealth, m: char.merit, r: char.resonance, rep: char.stats.rep, hp: char.stats.health, sp: char.stats.sanity };
-      char.pendingDungeon = createDungeonSession(id, char, rng);
-      let guard = 0, finished = false, resolution = null, maxStrain = 0;
-      while (char.pendingDungeon && guard++ < 60) {
-        const sess = char.pendingDungeon;
-        const stage = getDungeonCurrentStage(sess);
-        // light tactical play: guarded when hurt, scan on checks, breather when low
-        if (pname !== 'random') {
-          if (char.stats.health < 50 && sess.supplyCharges > 0) char = useDungeonSupply(char, 'breather');
-          if (char.pendingDungeon.supplyCharges > 0 && stage.choices.some((c) => c.checkTrait) && pname === 'careful') char = useDungeonSupply(char, 'scan');
-          if (pname === 'careful' && char.pendingDungeon.stance !== 'guarded') char = setDungeonStance(char, 'guarded');
-          if (pname === 'push' && char.pendingDungeon.stance !== 'reckless') char = setDungeonStance(char, 'reckless');
-          if (pname === 'measured') {
-            const want = char.stats.health >= 70 && char.stats.sanity >= 55 ? 'reckless' : 'guarded';
-            if (char.pendingDungeon.stance !== want) char = setDungeonStance(char, want);
-            if (char.pendingDungeon.supplyCharges > 0 && stage.choices.some((c) => c.checkTrait)) char = useDungeonSupply(char, 'scan');
+/** Runs every dungeon with every play style; returns one row per dungeon and style. `only` limits the dungeons and styles. */
+export function runDungeonSim(RUNS, { ids = Object.keys(DUNGEON_DEFINITIONS), policies = Object.keys(POLICIES) } = {}) {
+  const rows = [];
+  for (const id of ids) {
+    for (const [pname, pol] of Object.entries(POLICIES).filter(([p]) => policies.includes(p))) {
+      const acc = { broken: 0, dead: 0, full: 0, fled: 0, wealth: [], merit: [], res: [], rep: [], hp: [], sp: [], stages: [], capHit: 0, strainMax: [] };
+      for (let i = 0; i < RUNS; i++) {
+        const seed = `dun_${id}_${pname}_${i}`;
+        const rng = createRNG(seed);
+        let char = startChar(seed, rng);
+        const before = { w: char.stats.wealth, m: char.merit, r: char.resonance, rep: char.stats.rep, hp: char.stats.health, sp: char.stats.sanity };
+        char.pendingDungeon = createDungeonSession(id, char, rng);
+        let guard = 0, finished = false, resolution = null, maxStrain = 0;
+        while (char.pendingDungeon && guard++ < 60) {
+          const sess = char.pendingDungeon;
+          const stage = getDungeonCurrentStage(sess);
+          // light tactical play: guarded when hurt, scan on checks, breather when low
+          if (pname !== 'random') {
+            if (char.stats.health < 50 && sess.supplyCharges > 0) char = useDungeonSupply(char, 'breather');
+            if (char.pendingDungeon.supplyCharges > 0 && stage.choices.some((c) => c.checkTrait) && pname === 'careful') char = useDungeonSupply(char, 'scan');
+            if (pname === 'careful' && char.pendingDungeon.stance !== 'guarded') char = setDungeonStance(char, 'guarded');
+            if (pname === 'push' && char.pendingDungeon.stance !== 'reckless') char = setDungeonStance(char, 'reckless');
+            if (pname === 'measured') {
+              const want = char.stats.health >= 70 && char.stats.sanity >= 55 ? 'reckless' : 'guarded';
+              if (char.pendingDungeon.stance !== want) char = setDungeonStance(char, want);
+              if (char.pendingDungeon.supplyCharges > 0 && stage.choices.some((c) => c.checkTrait)) char = useDungeonSupply(char, 'scan');
+            }
           }
+          const idx = pol(stage, char, char.pendingDungeon, rng);
+          const r = resolveDungeonChoice(char, idx, rng);
+          char = r.char; maxStrain = Math.max(maxStrain, r.session?.sanityStrain ?? 0);
+          if (r.isFinished) { finished = true; resolution = r.resolution; break; }
         }
-        const idx = pol(stage, char, char.pendingDungeon, rng);
-        const r = resolveDungeonChoice(char, idx, rng);
-        char = r.char; maxStrain = Math.max(maxStrain, r.session?.sanityStrain ?? 0);
-        if (r.isFinished) { finished = true; resolution = r.resolution; break; }
+        const stagesDone = (char.logs || []).filter((l) => String(l.id).startsWith(`log_dungeon_${id}`)).length;
+        acc.stages.push(stagesDone);
+        // Surviving the Head ends the life at the Library threshold: an ending, not a death
+        if (resolution?.isEnding && !resolution?.isDead) acc.full++;
+        else if (!char.alive) acc.dead++;
+        else if (resolution?.outcome === 'conquered') acc.full++;
+  else if (resolution?.outcome === 'broken') acc.broken++;
+        else acc.fled++;
+        acc.wealth.push(char.stats.wealth - before.w); acc.merit.push(char.merit - before.m); acc.res.push(char.resonance - before.r);
+        acc.rep.push(char.stats.rep - before.rep); acc.hp.push(char.stats.health - before.hp); acc.sp.push(char.stats.sanity - before.sp);
+        if (char.stats.wealth >= 100) acc.capHit++;
+        acc.strainMax.push(maxStrain);
       }
-      const stagesDone = (char.logs || []).filter((l) => String(l.id).startsWith(`log_dungeon_${id}`)).length;
-      acc.stages.push(stagesDone);
-      if (!char.alive) acc.dead++;
-      else if (resolution?.outcome === 'conquered') acc.full++;
-else if (resolution?.outcome === 'broken') acc.broken++;
-      else acc.fled++;
-      acc.wealth.push(char.stats.wealth - before.w); acc.merit.push(char.merit - before.m); acc.res.push(char.resonance - before.r);
-      acc.rep.push(char.stats.rep - before.rep); acc.hp.push(char.stats.health - before.hp); acc.sp.push(char.stats.sanity - before.sp);
-      if (char.stats.wealth >= 100) acc.capHit++;
-      acc.strainMax.push(maxStrain);
+      rows.push({ id: id.replace('dungeon_', ''), pol: pname, dead: (acc.dead / RUNS * 100).toFixed(1) + '%', full: (acc.full / RUNS * 100).toFixed(1) + '%', broke: (acc.broken / RUNS * 100).toFixed(1) + '%', fled: (acc.fled / RUNS * 100).toFixed(1) + '%', stages: mean(acc.stages).toFixed(1), Ahn: mean(acc.wealth).toFixed(0), merit: mean(acc.merit).toFixed(0), reson: mean(acc.res).toFixed(0), rep: mean(acc.rep).toFixed(0), hp: mean(acc.hp).toFixed(0), sp: mean(acc.sp).toFixed(0), wCap: (acc.capHit / RUNS * 100).toFixed(0) + '%', strain: mean(acc.strainMax).toFixed(0) });
     }
-    rows.push({ id: id.replace('dungeon_', ''), pol: pname, dead: (acc.dead / RUNS * 100).toFixed(1) + '%', full: (acc.full / RUNS * 100).toFixed(1) + '%', broke: (acc.broken / RUNS * 100).toFixed(1) + '%', fled: (acc.fled / RUNS * 100).toFixed(1) + '%', stages: mean(acc.stages).toFixed(1), Ahn: mean(acc.wealth).toFixed(0), merit: mean(acc.merit).toFixed(0), reson: mean(acc.res).toFixed(0), rep: mean(acc.rep).toFixed(0), hp: mean(acc.hp).toFixed(0), sp: mean(acc.sp).toFixed(0), wCap: (acc.capHit / RUNS * 100).toFixed(0) + '%', strain: mean(acc.strainMax).toFixed(0) });
   }
+  return rows;
 }
-console.table(rows);
+
+if (import.meta.url === pathToFileURL(process.argv[1] || '').href) console.table(runDungeonSim(RUNS));

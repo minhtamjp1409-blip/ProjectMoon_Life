@@ -27,6 +27,7 @@ import { applyNpcFate } from './director.js';
 import { dealCards, cardEffectOf, nextHand, dungeonUsesCards } from './dungeonCards.js';
 export { playDungeonCard, cardPlayable, cardBudgetLeft, DUNGEON_CARDS, CARD_BUDGET } from './dungeonCards.js';
 import { initGauntlet, isGauntlet, gauntletStage, previewCombatAction, resolveGauntletChoice, canLeaveGauntlet } from './dungeonCombat.js';
+import { difficultyOf } from '../data/dungeonDifficulty.js';
 
 
 export const DUNGEON_GIMMICKS = {
@@ -582,16 +583,18 @@ export const DUNGEON_DEFINITIONS = {
             checkTrait: 'luck',
             resultVi: "Bạn gỡ ngòi nổ kịp lúc và lấy ra những thỏi kim loại cổ cứng đến khó tin.",
             resultEn: "You defuse the trigger in time and take out ancient ingots of unbelievable hardness.",
-            fx: { wealth: 40, merit: 6, health: -6 },
+            fx: { wealth: 40, merit: 6, health: -14 },
             lootAhn: 30,
             strainDelta: +5
           },
           {
             labelVi: "Chép các ký tự Singularity cổ vào sổ tay",
             labelEn: "Copy the ancient Singularity characters into your notebook",
+            // The easiest dungeon still bites: staring into the old script is a test of nerve, not a free pass (Đợt 126)
+            checkTrait: 'nerve',
             resultVi: "Những đồ hình cổ làm bạn hiểu thêm một chút về cách The City vận hành.",
             resultEn: "The old diagrams teach you a little more about how The City runs.",
-            fx: { resonance: 15, sanity: -6, rep: 8 },
+            fx: { resonance: 15, sanity: -12, rep: 8 },
             strainDelta: +10
           },
           {
@@ -626,9 +629,10 @@ export const DUNGEON_DEFINITIONS = {
           {
             labelVi: "Ném đá mồi lửa dụ nó đi xa rồi luồn qua cửa đền",
             labelEn: "Throw a flaming stone to draw it away, then slip through the temple door",
+            checkTrait: 'luck',
             resultVi: "Bạn trườn qua kẽ đá hẹp trong khi hàm răng của nó ngoạm hụt ngay sau lưng.",
             resultEn: "You wriggle through the narrow gap as its jaws snap shut just behind you.",
-            fx: { health: -8, sanity: -6, merit: 6 },
+            fx: { health: -16, sanity: -6, merit: 6 },
             strainDelta: +5
           },
           {
@@ -1137,7 +1141,7 @@ function checkChanceOf(choice, char, session, mastery) {
   chance += tier.check;
   if (session?.egoActive) chance += DUNGEON_BALANCE.ego.checkBonus;
   chance -= choice.checkPenalty || 0;
-  chance += cardEffectOf(session).check || 0;
+  chance += (cardEffectOf(session).check || 0) + difficultyOf(session?.id).check;
   chance *= choice.checkScale ?? 1;
   return clamp(chance, choice.checkFloor ?? DUNGEON_BALANCE.checkFloor, session?.egoActive ? DUNGEON_BALANCE.ego.ceiling : DUNGEON_BALANCE.checkCeiling);
 }
@@ -1155,7 +1159,7 @@ function damageMultOf(def, char, session, mastery, kind) {
   if (session?.egoActive) mult *= DUNGEON_BALANCE.ego.damageMult;
   if (kind === 'sanity') mult *= tier.sanityMult;
   mult *= cardEffectOf(session).damage ?? 1;
-  if (!session?.combat) mult *= dungeonWagerDamage(session?.delveStake);
+  if (!session?.combat) mult *= dungeonWagerDamage(session?.delveStake) * difficultyOf(session?.id).damage;
   return mult;
 }
 
