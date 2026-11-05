@@ -1181,6 +1181,25 @@ class AudioEngine {
         this.cueTone(bus, at(burst + i * 20), { freq: f, type: 'triangle', peak: 0.12 / (1 + i * 0.35), attack: 0.005, decay: lite ? 0.8 : 1.6 });
       });
       this.cueNoise(bus, at(burst), { dur: 0.45, type: 'bandpass', freq: 2600, q: 1.5, peak: 0.09, attack: 0.01 });
+    } else if (id === 'distort') {
+      // heartbeat slows and halts, glass fractures sweep upward, then a sub-bass rumble
+      if (!lite) {
+        this.cueBeat(bus, at(100), 0.3);
+        this.cueBeat(bus, at(1100), 0.18);
+        this.cueNoise(bus, at(1800), { dur: 0.8, type: 'bandpass', freq: 1100, to: 3800, q: 3, peak: 0.14, attack: 0.02 });
+      }
+      const hit = lite ? 450 : 2600;
+      this.cueTone(bus, at(hit), { freq: 42, to: 32, type: 'triangle', peak: 0.24, attack: 0.05, decay: lite ? 0.8 : 2.0 });
+      this.cueNoise(bus, at(hit), { dur: 0.4, type: 'lowpass', freq: 400, peak: 0.1, attack: 0.01 });
+    } else if (id === 'library') {
+      // Outskirts wind fades, a warm major-ninth chord opens, then quiet bell resonance
+      if (!lite) {
+        this.cueNoise(bus, at(200), { dur: 1.8, type: 'bandpass', freq: 450, to: 250, q: 1, peak: 0.08, attack: 0.1 });
+      }
+      const ring = lite ? 300 : 2200;
+      [261.63, 329.63, 392.0, 587.33].forEach((f, i) => {
+        this.cueTone(bus, at(ring + i * 40), { freq: f, type: 'sine', peak: 0.09 / (1 + i * 0.3), attack: 0.05, decay: lite ? 0.9 : 2.4 });
+      });
     }
   }
 

@@ -96,6 +96,26 @@ export const CUTSCENES = {
       { vi: 'E.G.O đã thành hình.', en: 'E.G.O has taken shape.' }
     ],
     keyLine: 2
+  },
+  // Distortion manifestation: your mind shatters, Carmen's light floods the core, the human frame gives way
+  distort: {
+    ms: { full: 4600, lite: 1000, still: 1800, caption: 1200 },
+    lines: [
+      { vi: 'Tâm trí bạn không còn gồng gánh nữa.', en: 'Your mind no longer struggles to hold on.' },
+      { vi: 'Mặt kính vỡ ra, và ánh dương của Carmen nuốt chửng bản ngã.', en: 'The glass shatters, and Carmen’s light swallows your self.' },
+      { vi: 'Biến dị đã thành hình.', en: 'Distortion has taken shape.' }
+    ],
+    keyLine: 2
+  },
+  // The Library threshold: the City wall falls behind, amid the Outskirts ash a plain wooden door stands open
+  library: {
+    ms: { full: 5200, lite: 1000, still: 1800, caption: 1200 },
+    lines: [
+      { vi: 'Bức Tường thành đã lùi lại phía sau.', en: 'The City wall has fallen far behind.' },
+      { vi: 'Giữa đống tro tàn Outskirts, một cánh cửa gỗ mộc mạc đang mở.', en: 'Amid the Outskirts ash, a plain wooden door stands open.' },
+      { vi: 'Chào mừng bạn đến với Thư Viện.', en: 'Welcome to the Library.' }
+    ],
+    keyLine: 2
   }
 };
 

@@ -22,14 +22,15 @@ const fromWarpToLake = cloneChar(otherDungeon);
 fromWarpToLake.pendingDungeon = { id: 'dungeon_great_lake' };
 assert.equal(cutsceneFor(otherDungeon, fromWarpToLake), 'dungeon', 'a different dungeon opening gets its own gate');
 
-// 2. Death outranks everything; the Library ending is not a death
+// 2. Death outranks everything; the Library ending has its own scene
 const dead = cloneChar(judged);
 dead.alive = false;
 assert.equal(cutsceneFor(base, dead), 'death', 'dying as the judgment opens plays death, not the Claw');
 const library = cloneChar(base);
 library.alive = false;
 library.endingId = 'library_threshold';
-assert.equal(cutsceneFor(base, library), null);
+assert.equal(cutsceneFor(base, library), 'library', 'the Library threshold ending plays its own scene');
+assert.equal(cutsceneFor(library, cloneChar(library)), null, 'the Library ending plays once');
 assert.equal(cutsceneFor(dead, cloneChar(dead)), null, 'a death plays once');
 assert.equal(cutsceneFor(null, base), null);
 
@@ -59,13 +60,25 @@ egoAwakened.flags = [...(egoAwakened.flags || []), 'EGOAwakened'];
 assert.equal(cutsceneFor(egoBefore, egoAwakened), 'ego', 'awakening E.G.O plays the ego scene');
 assert.equal(cutsceneFor(egoAwakened, cloneChar(egoAwakened)), null, 'an already awakened character plays nothing later');
 
+// 2e. Distortion manifestation plays once, when Distorted flag is earned
+const humanBefore = cloneChar(base);
+const distorted = cloneChar(humanBefore);
+distorted.flags = [...(distorted.flags || []), 'Distorted'];
+assert.equal(cutsceneFor(humanBefore, distorted), 'distort', 'yielding to Carmen plays the distort scene');
+assert.equal(cutsceneFor(distorted, cloneChar(distorted)), null, 'an already distorted character plays nothing later');
+
 // 3. Ranks: a stronger scene replaces a weaker one, a weaker or equal one is dropped
 assert.equal(outranks('claw', null), true);
 assert.equal(outranks('death', 'claw'), true);
 assert.equal(outranks('claw', 'death'), false);
 assert.equal(outranks('claw', 'claw'), false);
 assert.equal(outranks('ego', 'carmen'), true, 'E.G.O awakening outranks Carmen call');
+assert.equal(outranks('distort', 'ego'), true, 'Distortion manifestation outranks E.G.O and Carmen');
+assert.equal(outranks('distort', 'claw'), true);
+assert.equal(outranks('library', 'distort'), true, 'Library threshold outranks Distortion');
 assert.equal(outranks('claw', 'ego'), false, 'equal ranks never replace each other');
+assert.equal(CUTSCENE_RANK.library, 5, 'Library ranks equal to Death');
+assert.equal(CUTSCENE_RANK.distort, 4, 'Distortion ranks equal to Color');
 assert.equal(CUTSCENE_RANK.ego, 3, 'E.G.O ranks equal to Claw');
 assert.equal(CUTSCENE_RANK.claw, 3);
 assert.equal(CUTSCENE_RANK.death, 5);

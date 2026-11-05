@@ -76,6 +76,8 @@ body:has(> .cutscene) .ant-notification { visibility: hidden; }
   background: var(--cs-color, var(--claw));
   opacity: 0;
 }
+.cs-flash.is-crimson { background: var(--distort-crimson); }
+.cs-flash.is-amber { background: var(--library-amber); }
 
 /* ---------- words ---------- */
 .cs-lines {
@@ -327,6 +329,170 @@ body:has(> .cutscene) .ant-notification { visibility: hidden; }
 .cs-ego.is-still .cs-ego-prism { opacity: 0.8; }
 .cs-ego.is-still .cs-ego-core { opacity: 0.5; }
 .cs-ego.is-still .cs-ego-ring { display: none; }
+
+/* ---------- Distortion manifestation: Carmen's corrupted crimson light, shattered glass shards ---------- */
+.cs-distort .cs-scrim {
+  background: radial-gradient(circle, color-mix(in srgb, var(--distort-crimson) 22%, transparent) 0, var(--distort-veil) 72%);
+}
+.cs-distort-abyss {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(34vmin, 260px);
+  height: min(34vmin, 260px);
+  margin: calc(min(34vmin, 260px) / -2) 0 0 calc(min(34vmin, 260px) / -2);
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--distort-abyss) 0%, transparent 75%);
+  opacity: 0;
+}
+.cs-distort-core {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(26vmin, 180px);
+  height: min(26vmin, 180px);
+  margin: calc(min(26vmin, 180px) / -2) 0 0 calc(min(26vmin, 180px) / -2);
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--distort-core) 0%, var(--distort-bloom) 60%, transparent 80%);
+  opacity: 0;
+}
+.cs-distort-pulse {
+  --pulse: min(48vmin, 380px);
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--pulse);
+  height: var(--pulse);
+  margin: calc(var(--pulse) / -2) 0 0 calc(var(--pulse) / -2);
+  border: 1.5px solid var(--distort-crimson);
+  border-radius: 50%;
+  opacity: 0;
+}
+.cs-distort-fracture {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(44vmin, 320px);
+  height: min(44vmin, 320px);
+  margin: calc(min(44vmin, 320px) / -2) 0 0 calc(min(44vmin, 320px) / -2);
+  opacity: 0;
+}
+.cs-distort-shard {
+  transform-box: fill-box;
+  transform-origin: center;
+  stroke: var(--distort-crimson);
+  stroke-width: 1.5;
+  fill: color-mix(in srgb, var(--distort-crimson) 15%, transparent);
+}
+.cs-distort .cs-line.is-key {
+  max-width: 24ch;
+  font-size: clamp(26px, 3.6vw, 42px);
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--distort-core);
+  text-shadow: 0 0 28px color-mix(in srgb, var(--distort-crimson) 65%, transparent);
+}
+
+.cs-distort.is-full .cs-scrim { animation: cs-in 500ms ease-out both; }
+.cs-distort.is-full .cs-distort-fracture { animation: cs-distort-shatter 4200ms var(--ease-tactile) 300ms both; }
+.cs-distort.is-full .cs-distort-abyss { animation: cs-distort-abyss 3000ms ease-out 1800ms both; }
+.cs-distort.is-full .cs-distort-core { animation: cs-distort-core 2400ms ease-out 2200ms both; }
+.cs-distort.is-full .cs-distort-pulse { animation: cs-distort-pulse 1800ms ease-out 2400ms both; }
+.cs-distort.is-full .cs-flash { animation: cs-flash 1200ms ease-out 2400ms both; }
+.cs-distort.is-full .cs-line-1 { animation: cs-line 1700ms ease-out 400ms both; }
+.cs-distort.is-full .cs-line-2 { animation: cs-line 1700ms ease-out 1800ms both; }
+.cs-distort.is-full .cs-line.is-key { animation: cs-key 2000ms var(--ease-tactile) 2600ms both; }
+
+.cs-distort.is-lite .cs-scrim { animation: cs-in 150ms ease-out both; }
+.cs-distort.is-lite .cs-distort-fracture { animation: cs-distort-shatter 800ms ease-out both; }
+.cs-distort.is-lite .cs-distort-core { animation: cs-distort-core 800ms ease-out both; }
+.cs-distort.is-lite .cs-distort-abyss { display: none; }
+.cs-distort.is-lite .cs-distort-pulse { display: none; }
+.cs-distort.is-lite .cs-flash { animation: cs-flash 500ms ease-out both; }
+.cs-distort.is-lite .cs-line.is-key { animation: cs-key 800ms var(--ease-tactile) 100ms both; }
+
+.cs-distort.is-still .cs-distort-fracture { opacity: 0.8; }
+.cs-distort.is-still .cs-distort-core { opacity: 0.6; }
+.cs-distort.is-still .cs-distort-abyss { opacity: 0.4; }
+.cs-distort.is-still .cs-distort-pulse { display: none; }
+
+/* ---------- The Library threshold: wooden door open in the Outskirts ash, amber light pouring out ---------- */
+.cs-library .cs-scrim {
+  background: radial-gradient(circle, color-mix(in srgb, var(--library-amber) 20%, transparent) 0, var(--library-veil) 75%);
+}
+.cs-library-glow {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(38vmin, 280px);
+  height: min(48vmin, 360px);
+  margin: calc(min(48vmin, 360px) / -2) 0 0 calc(min(38vmin, 280px) / -2);
+  background: radial-gradient(ellipse at center, var(--library-bloom) 0%, transparent 75%);
+  opacity: 0;
+}
+.cs-library-portal {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(16vmin, 120px);
+  height: min(34vmin, 240px);
+  margin: calc(min(34vmin, 240px) / -2) 0 0 calc(min(16vmin, 120px) / -2);
+  border-radius: 2px;
+  background: radial-gradient(ellipse at center, var(--library-glow) 0%, var(--library-amber) 55%, transparent 85%);
+  opacity: 0;
+}
+.cs-library-door {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(30vmin, 220px);
+  height: min(42vmin, 300px);
+  margin: calc(min(42vmin, 300px) / -2) 0 0 calc(min(30vmin, 220px) / -2);
+  opacity: 0;
+}
+.cs-library-frame {
+  stroke: var(--library-wood);
+  stroke-width: 3;
+  fill: transparent;
+}
+.cs-library-leaf {
+  stroke: var(--library-wood);
+  stroke-width: 1.5;
+  fill: color-mix(in srgb, var(--library-wood) 25%, transparent);
+}
+.cs-library-beam {
+  stroke: var(--library-amber);
+  stroke-width: 2;
+  opacity: 0.9;
+}
+.cs-library .cs-line.is-key {
+  max-width: 26ch;
+  font-size: clamp(26px, 3.6vw, 42px);
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--library-glow);
+  text-shadow: 0 0 28px color-mix(in srgb, var(--library-amber) 70%, transparent);
+}
+
+.cs-library.is-full .cs-scrim { animation: cs-in 600ms ease-out both; }
+.cs-library.is-full .cs-library-door { animation: cs-library-door 4800ms var(--ease-tactile) 200ms both; }
+.cs-library.is-full .cs-library-glow { animation: cs-library-glow 3400ms ease-out 1800ms both; }
+.cs-library.is-full .cs-library-portal { animation: cs-library-portal 2800ms ease-out 2200ms both; }
+.cs-library.is-full .cs-flash { animation: cs-flash 1200ms ease-out 2200ms both; }
+.cs-library.is-full .cs-line-1 { animation: cs-line 1700ms ease-out 400ms both; }
+.cs-library.is-full .cs-line-2 { animation: cs-line 1700ms ease-out 1900ms both; }
+.cs-library.is-full .cs-line.is-key { animation: cs-key 2200ms var(--ease-tactile) 2800ms both; }
+
+.cs-library.is-lite .cs-scrim { animation: cs-in 150ms ease-out both; }
+.cs-library.is-lite .cs-library-door { animation: cs-library-door 800ms ease-out both; }
+.cs-library.is-lite .cs-library-portal { animation: cs-library-portal 800ms ease-out both; }
+.cs-library.is-lite .cs-library-glow { display: none; }
+.cs-library.is-lite .cs-flash { animation: cs-flash 500ms ease-out both; }
+.cs-library.is-lite .cs-line.is-key { animation: cs-key 800ms var(--ease-tactile) 100ms both; }
+
+.cs-library.is-still .cs-library-door { opacity: 0.85; }
+.cs-library.is-still .cs-library-portal { opacity: 0.7; }
+.cs-library.is-still .cs-library-glow { opacity: 0.4; }
 
 /* ---------- dungeon gate: the interface fades, the dungeon's own backdrop shows whole, its name as a title card ---------- */
 /* The backdrop lives in .world behind the shell; every other part of the shell steps aside while the gate plays */
@@ -652,4 +818,42 @@ body:has(> .cutscene.cs-dungeon.is-still) .shell > :not(.world) { opacity: 0; }
   0% { opacity: 0; transform: scale(0.6) rotate(-20deg); }
   40% { opacity: 0.95; transform: scale(1.05) rotate(0deg); }
   100% { opacity: 0.75; transform: scale(1) rotate(12deg); }
+}
+
+@keyframes cs-distort-shatter {
+  0% { opacity: 0; transform: scale(0.6) rotate(15deg); }
+  35% { opacity: 0.95; transform: scale(1.05) rotate(0deg); }
+  75% { opacity: 0.9; transform: scale(1.12) rotate(-8deg); }
+  100% { opacity: 0.65; transform: scale(1.2) rotate(-15deg); }
+}
+@keyframes cs-distort-abyss {
+  0% { opacity: 0; transform: scale(0.2); }
+  50% { opacity: 0.85; transform: scale(1); }
+  100% { opacity: 0.55; transform: scale(1.35); }
+}
+@keyframes cs-distort-core {
+  0% { opacity: 0; transform: scale(0.3); }
+  45% { opacity: 0.95; transform: scale(1.2); }
+  100% { opacity: 0.7; transform: scale(1.05); }
+}
+@keyframes cs-distort-pulse {
+  0% { opacity: 0; transform: scale(0.35); }
+  50% { opacity: 0.85; transform: scale(1); }
+  100% { opacity: 0.8; transform: scale(1.5); }
+}
+
+@keyframes cs-library-door {
+  0% { opacity: 0; transform: translateY(16px) scale(0.92); }
+  35% { opacity: 0.95; transform: translateY(0) scale(1); }
+  100% { opacity: 0.8; transform: translateY(0) scale(1.04); }
+}
+@keyframes cs-library-glow {
+  0% { opacity: 0; transform: scale(0.5); }
+  50% { opacity: 0.85; transform: scale(1.1); }
+  100% { opacity: 0.6; transform: scale(1.2); }
+}
+@keyframes cs-library-portal {
+  0% { opacity: 0; transform: scaleY(0.1); }
+  40% { opacity: 0.95; transform: scaleY(1); }
+  100% { opacity: 0.8; transform: scaleY(1.05); }
 }

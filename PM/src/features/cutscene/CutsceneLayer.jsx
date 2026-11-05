@@ -16,9 +16,11 @@ import { DungeonGateScene } from './scenes/DungeonGateScene';
 import { SaviorScene } from './scenes/SaviorScene';
 import { FingerScene } from './scenes/FingerScene';
 import { EgoScene } from './scenes/EgoScene';
+import { DistortScene } from './scenes/DistortScene';
+import { LibraryScene } from './scenes/LibraryScene';
 import '../../styles/ui/cutscene.css';
 
-const SCENE_ART = { claw: ClawScene, death: DeathScene, color: ColorScene, carmen: CarmenScene, dungeon: DungeonGateScene, savior: SaviorScene, finger: FingerScene, ego: EgoScene };
+const SCENE_ART = { claw: ClawScene, death: DeathScene, color: ColorScene, carmen: CarmenScene, dungeon: DungeonGateScene, savior: SaviorScene, finger: FingerScene, ego: EgoScene, distort: DistortScene, library: LibraryScene };
 const SKIP_KEYS = new Set(['Enter', 'Escape', ' ']);
 
 // A Color too dark to see on the scene's dark (Black) draws its slit in the text colour instead
