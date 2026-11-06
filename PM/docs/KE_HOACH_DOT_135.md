@@ -1,6 +1,11 @@
-# Kế hoạch Đợt 135–138: sửa logic theo bản rà soát ngày 06/11/2026
+# Kế hoạch Đợt 135–139: sửa logic và nâng cấp đạo diễn
 
-Bản rà soát ngoài đưa ra 6 nhóm phát hiện. File này ghi lại kết quả đối chiếu từng điểm với code ở commit `349d745`: điểm nào đúng, điểm nào đã cũ, điểm nào sai. Từ đó chia thành các đợt để làm.
+File này gom hai nguồn:
+
+- **Bản rà soát logic ngày 06/11/2026**, gồm 6 nhóm phát hiện. Từng điểm đã được đối chiếu với code ở commit `349d745`.
+- **Lời khuyên nâng cấp đạo diễn (AI Director)**, cùng ngày, kèm phần đo nhịp Dungeon theo tuổi.
+
+Đợt 135–138 sửa lỗi. Đợt 139 nâng cấp đạo diễn, và chỉ bật sau khi đã chạy thử ở chế độ shadow.
 
 Ký hiệu: **Đúng** là đã tái hiện trong code. **Đã xong** là đã sửa từ trước. **Sai** là không làm theo, kèm lý do. **Một phần** là đúng một nửa.
 
@@ -17,7 +22,7 @@ Ký hiệu: **Đúng** là đã tái hiện trong code. **Đã xong** là đã s
 | 2.2 | Điểm `scheme` luôn cộng Leverage | **Đúng** | `annualPlan.js:53` cộng `leverage` cho mọi nghề, nhưng chỉ Wing dùng chỉ số này. |
 | 2.3 | Biến động thành phố dừng sau 40 tuổi | **Đúng** | `cityConditions.js:22`: `char.age < 25 \|\| char.age > 40`. |
 | 3.1 | Phần lớn perk đồng đội không có tác dụng | **Đúng** | Engine không đọc 9 loại `loot`, `salvage`, `merit`, `clash`, `flee`, `trap_mitigation`, `sanity_shield`, `check_bonus`, `strain_reduction` (lưu ý: chữ `'clash'` trong `dungeonCombat.js` là tên hành động, không phải perk). `parry` và `calm` chỉ chạy ở chế độ chặng. |
-| 3.2 | Thẻ `ego` thiếu né, Great Lake không có thẻ riêng | **Một phần** | `evadeChance` đã đọc `cardEffectOf(session).check`, nên thẻ `ego` có cộng né. Việc Great Lake chưa có bộ thẻ riêng thì cần xem tiếp trong `dungeonCards.js`. |
+| 3.2 | Thẻ `ego` thiếu né, Great Lake không có thẻ riêng | **Một phần** | Thẻ `ego` đã có cộng né, vì `evadeChance` đọc `cardEffectOf(session).check`. Great Lake đúng là chưa có thẻ riêng: `themeOf` (`dungeonCards.js:42`) chỉ có `warp`, `lcorp`, `blood`, `alley`. |
 | 3.3 | Gauntlet bỏ qua chặng 0–2 và `STAGE_VARIANTS` | **Đúng** | `dungeonCombat.js:565` nhảy thẳng tới chặng cuối. Các lựa chọn dùng vật phẩm ở chặng đầu (như `con_kcorp_ampoule`) không bao giờ hiện. |
 | 4.1 | Chỉ số do NPC tự sống không có chip delta | **Đúng** | `yearPlanner.js:1694` ghi log `npc_autonomy` mà không kèm `deltas`. |
 | 4.2 | `child`/`ward` không có hành động lúc nhỏ, không đổi nghề lúc 18 | **Đúng** | `child_play` xét tuổi người chơi; đổi nghề lúc 18 chỉ áp dụng cho `friend`. |
@@ -36,7 +41,7 @@ Những lỗi này làm người chơi mất hẳn một nội dung, không ch�
 
 1. **Chuỗi Middle (6.1).** Đổi chặng 2 của `arc_middle_vengeance_saga` sang một event không phải kỳ thi, ví dụ `syn_middle_book_of_vengeance` phần hai, hoặc bỏ `_rescue` khỏi `eventIds` rank 1. Chặng 3 giữ là kỳ thi rank 1.
 2. **Hạn chờ của thread chặng 3 (6.1b).** Thread nào trỏ tới kỳ thi thăng cấp thì không hết hạn theo năm, chỉ hết khi nhân vật đổi nghề hoặc chết. Lưu thêm `waitsForGate: true` trên thread, và `yearPlanner.js:547` bỏ qua hạn 8 năm khi có cờ này.
-3. **Hàng đợi thread (1.2).** Đổi `.find` ở `weaverAI.js:845` thành vòng lặp: chọn thread đầu tiên vừa đến hạn, vừa không phải `minor`, vừa có `isEventEligible(…, { scripted: true })`.
+3. **Hàng đợi thread (1.2).** Đổi `.find` ở `weaverAI.js:845` thành vòng lặp: chọn thread đầu tiên vừa đến hạn, vừa không phải `minor`, vừa có `isEventEligible(…, { scripted: true })`. Đây là bước đầu của mục "trạng thái thread" ở Đợt 139.
 4. **Kết thúc `ripe_age` (6.2).** Gán `char.lifeEnding = 'ripe_age'` khi điều kiện đúng, để `closing` hiện ra. `topOfCareer` tính thêm Wing rank ≥ 3 và `syndicateRank` ≥ 3.
 5. **Syndicate độc lập (5.1b).** `economyModel.js:121` và `:160` đọc `Math.max(fingerRank, syndicateRank)`. Thêm danh hiệu tổng kết đời cho `syndicateRank` 3.
 6. **Workshop (5.2).** Ba minor kể trên lọc theo cờ `WorkshopTinkerer` hoặc vũ khí Workshop thay vì nghề `Workshop Craftsman`.
@@ -57,9 +62,9 @@ Những lỗi này làm người chơi mất hẳn một nội dung, không ch�
    - `parry`, `calm`: thêm vào `resolveGauntletChoice`.
 2. **Hiện số.** Preview trên dock phải tính cả perk, để số trên màn hình không lệch số engine trừ. Mở rộng `test_dungeon_fail_preview.mjs` với một đồng đội có perk.
 3. **Chặng đầu của Gauntlet (3.3).** Cho chặng 0 của mỗi hầm Gauntlet hiện trước tầng giao tranh đầu tiên, để lựa chọn dùng vật phẩm có chỗ xuất hiện. Không bật lại toàn bộ chặng 0–2, vì như vậy chuyến đi dài gấp đôi.
-4. **Thẻ Great Lake (3.2).** Xem `dungeonCards.js`. Nếu Great Lake thật sự chưa có thẻ riêng, thêm 2 thẻ đi theo luật sổ luật của hầm này.
+4. **Thẻ Great Lake (3.2).** Thêm `dungeon_great_lake: 'lake'` vào `themeOf`, cùng 2 thẻ đi theo luật sổ luật của hầm này, ví dụ `lake_harpoon` và `lake_chart`.
 
-**Đo lại:** `node tools/sim/dungeon_sim.mjs 400 --stake=0,2 --policies=careful,informed`, có và không có đồng đội. Perk không được làm tỷ lệ chết của bot `informed` giảm xuống 0 ở mọi hầm.
+**Đo lại:** `node tools/sim/dungeon_sim.mjs 400 --stake=0,2 --policies=careful,informed`, chạy cả khi có và khi không có đồng đội. Mục tiêu: có đồng đội thì tỷ lệ chết giảm rõ, nhưng hầm khó vẫn còn rủi ro thật. Nếu bot `informed` có đồng đội mà tỷ lệ chết về 0 ở mọi hầm, perk đang quá mạnh.
 
 ---
 
@@ -84,7 +89,72 @@ Những lỗi này làm người chơi mất hẳn một nội dung, không ch�
 
    Cần chủ dự án chọn trước khi làm.
 
-**Đo lại:** `balance_sim.mjs 500 focused`, theo dõi tỷ lệ chạm trần 100 Ahn và Rep sau tuổi 40 (hiện là 17,5% với Rep).
+**Đo lại:** `balance_sim.mjs 500 focused`, theo dõi tỷ lệ chạm trần 100 Ahn và Rep sau tuổi 40. Con số 17,5% chạm trần Rep là của bản rà soát; mình chưa tự đo lại.
+
+---
+
+## Đợt 139 — Nâng cấp đạo diễn (AI Director)
+
+### Hiện trạng đã đo
+
+- **Vẫn giữ hệ cũ, phát triển tiếp.** Hệ hiện tại đã có tác dụng. `director_shadow_audit.mjs 500`: trong tình huống khủng hoảng, event nguy hiểm giảm từ 41 xuống 25; lúc yên ổn, tăng từ 72 lên 99. Không thay bằng model AI ngoài.
+- **Dungeon không vào quá sớm.**
+  - Mọi event cổng `gate_*` yêu cầu từ 18 tuổi trở lên. Cổng đầu tiên đến 2–7 năm sau tuổi vào nghề (`firstGateAge`).
+  - Ngoại lệ duy nhất là `ch_outskirts_ruins_expedition` (12–17 tuổi). Event này chỉ có ở xuất thân Outskirts, dẫn vào hầm dễ nhất, và người chơi tự chọn có vào hay không.
+  - Không có đường nào đưa một nhân vật 16 tuổi lên WARP.
+- **Dungeon được xếp theo lịch, không theo tình trạng.** `GATE_PROFILES` (`dungeonPacing.js:22`) đảm bảo mỗi nghề có 2–3 cổng, cách nhau 5–10 năm. Lịch này không xét HP, SP, năm đó yên hay biến cố, hay mạch truyện nào đang cao trào. Ngoài cổng, có 8 event khác mở Dungeon; phần lớn mở từ 19–22 tuổi.
+- **Kho major theo lứa tuổi:**
+
+  | Lứa tuổi | Số major |
+  |---|---|
+  | 18–30 | 633 |
+  | 31–60 | 643–665 |
+  | 61–70 | 570 |
+  | 71–90 | 436 |
+  | 91 trở lên | 150 |
+
+  Kho không thưa đi sau 40 tuổi; nó thưa rõ sau 70. Số event người chơi thực sự gặp mỗi năm thì phải đo bằng `tools/sim/pacing_by_age.mjs`; kết quả sẽ được điền vào đây.
+- **Blackboard bị bỏ qua.** `evaluateEventConsiderations(event, char, blackboard)` (`utilityCurves.js:74`) nhận `createCityBlackboard(char)` nhưng không dùng tới.
+
+### Việc cần làm
+
+1. **Một lịch chung cho cả năm.**
+   - Gom vào một hàng đợi mọi thứ có thể xảy ra trong năm: hậu quả đã hẹn, mạch NPC, thăng tiến, event thường và lời mời Dungeon.
+   - Luật cứng lọc trước: tuổi, nghề, District, NPC còn sống, trạng thái truyện. Sau đó mới tính điểm.
+   - Event bắt buộc có suất ưu tiên riêng, nhưng vẫn phải hợp lệ.
+   - Mục tiêu: tránh việc `yearPlanner` xếp một đằng rồi `weaverAI` chọn một nẻo, và tránh nhiều biến cố lớn dồn vào cùng một năm.
+2. **Gắn thẻ event bằng tay.** Event quan trọng khai báo `route`, `location`, `danger`, `relief`, `npcRole`, `arc`, `riskTier`, `dungeonTheme`.
+   - `directorTags` chỉ đoán từ ID và câu chữ khi event không có thẻ.
+   - Lý do: hiện chỉ cần đổi câu văn là có thể đổi nhịp chọn event. Một event nguy hiểm nhưng không trừ HP ngay cũng bị đoán sai.
+   - Làm thử trên một nhóm mẫu (Fixer, Finger, Wing, NPC, Dungeon) trước khi mở rộng.
+3. **Trạng thái thread.** Mỗi thread ghi `ready`, `waitingForGate`, `temporarilyBlocked` hoặc `invalid`, kèm tuổi chờ và lý do.
+   - Khi người chơi đủ điều kiện, tăng dần cơ hội xuất hiện.
+   - Khi đổi nghề hoặc NPC liên quan chết, đóng thread hoặc chuyển sang nhánh hậu quả phù hợp.
+   - Mục này gộp lỗi `.find()` và hạn 8 năm của Đợt 135.
+4. **Lời mời Dungeon theo cơ hội.** Tách "thế giới đưa ra lời mời" khỏi "người chơi bước xuống hầm".
+   - Giữ hạn mức tối thiểu của `GATE_PROFILES`, nhưng thời điểm do điểm số quyết định.
+   - Tăng cơ hội khi năm đó yên, HP và SP ổn, hoặc có lý do cụ thể: nghề, nơi ở, hợp đồng, NPC hay vật phẩm.
+   - Giảm cơ hội khi vừa xuống hầm, đang bị thương nặng (HP dưới 40), hoặc có mạch truyện khác đang cao trào.
+   - Giữ mức sàn 18 tuổi và tuổi vào nghề cộng 2.
+   - Mở rộng tuổi trần của cổng (hiện là 55–75) cho Color và các bậc cao, để cuối đời vẫn có lời mời.
+5. **Nhớ theo chủ đề, không chỉ theo ID.** Sau một cảnh NPC phản bội, tạm giảm các cảnh phản bội khác. Sau nhiều năm làm Fixer, ưu tiên một hậu quả liên quan tới Office còn dang dở hơn một cảnh nghề chung chung. Dùng cửa sổ vài năm với mức phạt giảm dần.
+6. **Độ khó tách khỏi nhịp kể.** Director chỉ được đổi *tần suất* hiểm họa và khoảng nghỉ. Nó không được ngầm hạ xác suất thất bại hay sát thương sau khi người chơi đã chọn, giống nguyên tắc của AI Director trong Left 4 Dead. Viết một test khóa nguyên tắc này: cùng seed và cùng lựa chọn thì kết quả không phụ thuộc `directorPolicy`.
+7. **Một ảnh chụp trạng thái đầu năm.** Dùng `createCityBlackboard` để làm ảnh chụp đầu năm, và để event thường, NPC và Dungeon cùng đọc nó. Sửa `evaluateEventConsiderations` cho dùng blackboard.
+8. **Năm cuối đời (sau 70).** Kho major thưa sau 70 tuổi. Thêm một nhóm event về di sản, người kế nghiệp, sức khỏe và lời mời cuối, gắn thẻ `relief`/`legacy`, để những đời sống thọ không trôi qua nhiều năm im lặng.
+
+### Thứ tự và cách bật
+
+1. Làm xong Đợt 135 trước, vì nó sửa luồng ưu tiên và thread.
+2. Thêm thẻ cho nhóm event mẫu.
+3. Cho Director mới chạy ở chế độ `shadow` trên cùng seed. So với bản hiện tại qua 500 đời, theo các số sau:
+   - event sai ngữ cảnh;
+   - thread chờ quá lâu;
+   - số lần lặp chủ đề trong 5 năm;
+   - số lời mời và số lần thực sự vào Dungeon;
+   - tuổi và HP lúc vào hầm;
+   - tỷ lệ chết theo độ rủi ro;
+   - tỷ lệ năm im lặng theo lứa tuổi (`pacing_by_age.mjs`).
+4. Chỉ bật `active` khi số lỗi logic bằng 0, phân bố nội dung tốt hơn, và độ khó không bị làm phẳng.
 
 ---
 
