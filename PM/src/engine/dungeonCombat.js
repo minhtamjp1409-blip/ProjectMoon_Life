@@ -140,6 +140,8 @@ const stakeById = (ctx, char, session, id) => (id && id !== 'none' ? clashStakes
 const dieText = ([lo, hi]) => `${lo}–${hi}`;
 
 /** What the screen shows before a choice: success odds and the wound you should expect. */
+const missLethal = (char, hp, sp) => ((hp ?? 0) < 0 && (char.stats?.health ?? 0) + hp <= 0) || ((sp ?? 0) < 0 && (char.stats?.sanity ?? 0) + sp <= 0);
+
 export function previewCombatAction(ctx, choice, char, session) {
   const def = ctx.def(session);
   const intent = intentAt(session);
@@ -165,8 +167,13 @@ export function previewCombatAction(ctx, choice, char, session) {
     const stake = action === 'clashStake' ? stakeById(ctx, char, session, choice.stakeId) : null;
     const odds = clashOdds(playerDie(ctx, char, session, stake), enemyDie(session));
     const expected = expectedTaken(session, odds, stake);
+    // A lost clash takes the loser's share of the blow, not the average
+    const loseShare = CLASH_BALANCE.loseTaken * (stake?.id === 'scar' ? CLASH_BALANCE.scarLoseMult : 1);
+    const failHp = -damageOf(ctx, def, char, session, intent, loseShare, 'health');
+    const failSp = -damageOf(ctx, def, char, session, intent, loseShare, 'sanity') - (stake?.id === 'scar' ? 4 : 0);
     return {
       hasCheck: true, trait: 'clash', successPct: Math.round(odds[0] * 100), clashDie: playerDie(ctx, char, session, stake),
+      failHp: failHp < 0 ? failHp : null, failSp: failSp < 0 ? failSp : null, failLethal: missLethal(char, failHp, failSp),
       estHp: -damageOf(ctx, def, char, session, intent, expected, 'health'),
       estSp: -damageOf(ctx, def, char, session, intent, expected, 'sanity') - (stake?.id === 'scar' ? 4 : 0),
       estWealth: stake?.id === 'ahn' ? -stake.cost : 0, estLoot: 0, estRep: 0, estMerit: 0, estResonance: 0
@@ -175,8 +182,12 @@ export function previewCombatAction(ctx, choice, char, session) {
   const [taken] = ANSWERS[action][intent.kind];
   const ok = action === 'evade' ? evadeChance(ctx, char, session) : 1;
   const expected = action === 'evade' ? ok * taken + (1 - ok) * EVADE_MISS * (cardEffectOf(session).missMult || 1) : taken;
+  const missShare = EVADE_MISS * (cardEffectOf(session).missMult || 1);
+  const failHp = action === 'evade' ? -damageOf(ctx, def, char, session, intent, missShare, 'health') : null;
+  const failSp = action === 'evade' ? -damageOf(ctx, def, char, session, intent, missShare, 'sanity') : null;
   return {
     hasCheck: action === 'evade', trait: action === 'evade' ? 'luck' : null, successPct: Math.round(ok * 100),
+    failHp: failHp < 0 ? failHp : null, failSp: failSp < 0 ? failSp : null, failLethal: action === 'evade' && ok < 1 && missLethal(char, failHp, failSp),
     estHp: -damageOf(ctx, def, char, session, intent, expected, 'health'),
     estSp: -damageOf(ctx, def, char, session, intent, expected, 'sanity'),
     estWealth: 0, estLoot: 0, estRep: 0, estMerit: 0, estResonance: 0

@@ -1223,10 +1223,19 @@ export function evaluateDungeonChoiceOdds(choice, char, session) {
   const hpMult = damageMultOf(def, char, session, mastery, 'health') * DUNGEON_BALANCE.successDamage;
   const spMult = damageMultOf(def, char, session, mastery, 'sanity') * DUNGEON_BALANCE.successDamage;
   const rewards = stageRewards(choice, session || {}, true);
+  // A failed check hits harder (failDamage instead of successDamage); show that price too
+  const failScale = DUNGEON_BALANCE.failDamage / DUNGEON_BALANCE.successDamage;
+  const failHp = choice.checkTrait && fx.health < 0 ? Math.min(-1, Math.ceil(fx.health * hpMult * failScale)) : null;
+  const failSp = choice.checkTrait && fx.sanity < 0 ? Math.min(-1, Math.ceil(fx.sanity * spMult * failScale)) : null;
+  const hpNow = char.stats?.health ?? 0;
+  const spNow = char.stats?.sanity ?? 0;
   return {
     hasCheck: Boolean(choice.checkTrait),
     trait: choice.checkTrait || null,
     successPct,
+    failHp,
+    failSp,
+    failLethal: Boolean(choice.checkTrait && successPct < 100 && ((failHp != null && hpNow + failHp <= 0) || (failSp != null && spNow + failSp <= 0))),
     estHp: fx.health < 0 ? Math.min(-1, Math.ceil(fx.health * hpMult)) : healOf(fx.health),
     estSp: fx.sanity < 0 ? Math.min(-1, Math.ceil(fx.sanity * spMult)) : healOf(fx.sanity),
     estWealth: rewards.wealth,
@@ -1361,14 +1370,31 @@ export function dungeonEntryForecast(dungeonId, char, stake = 0) {
   const level = def.noRetreat || def.noWager ? 0 : dungeonWagerLevel(stake);
   const session = createDungeonSession(dungeonId, char);
   session.delveStake = level;
-  const stage = getDungeonCurrentStage(session);
-  const losses = (stage?.choices || []).filter((choice) => !choice.isFlee).map((choice) => evaluateDungeonChoiceOdds(choice, char, session)).filter(Boolean);
-  const hp = Math.max(1, char.stats?.health || 1);
-  const sp = Math.max(1, char.stats?.sanity || 1);
-  const lossRatio = Math.max(0, ...losses.map((loss) => Math.max(-(loss.estHp || 0) / hp, -(loss.estSp || 0) / sp)));
-  const pressure = Math.max(lossRatio, (def.hazard === 'ALEPH' ? 0.27 : 0.16) * damageMultOf(def, char, session, getDungeonMastery(def, char), 'health'));
+  const hp = Math.max(1, char.stats?.health ?? 1);
+  const sp = Math.max(1, char.stats?.sanity ?? 1);
+  // Per floor, the cheapest way through if the check fails; the forecast is the heaviest floor, not the first
+  const lossOf = (odds) => ({ hp: Math.max(0, -(odds.failHp ?? odds.estHp ?? 0)), sp: Math.max(0, -(odds.failSp ?? odds.estSp ?? 0)) });
+  const stages = def.stages?.length ? def.stages : [getDungeonCurrentStage(session)].filter(Boolean);
+  const floors = stages.map((stage, index) => {
+    const options = (stage?.choices || []).filter((choice) => !choice.isFlee).map((choice) => evaluateDungeonChoiceOdds(choice, char, session)).filter(Boolean).map(lossOf);
+    if (!options.length) return null;
+    const best = options.reduce((a, b) => (Math.max(a.hp / hp, a.sp / sp) <= Math.max(b.hp / hp, b.sp / sp) ? a : b));
+    return { index, ...best, ratio: Math.max(best.hp / hp, best.sp / sp) };
+  }).filter(Boolean);
+  const worst = floors.reduce((a, b) => (!a || b.ratio > a.ratio ? b : a), null);
+  const first = getDungeonCurrentStage(session);
+  const firstLosses = (first?.choices || []).filter((choice) => !choice.isFlee).map((choice) => evaluateDungeonChoiceOdds(choice, char, session)).filter(Boolean);
+  const pressure = Math.max(worst?.ratio ?? 0, (def.hazard === 'ALEPH' ? 0.27 : 0.16) * damageMultOf(def, char, session, getDungeonMastery(def, char), 'health'));
   const risk = def.noRetreat || pressure >= 0.48 ? 'critical' : pressure >= 0.27 ? 'high' : pressure >= 0.14 ? 'severe' : 'uncertain';
-  return { level, risk, damagePercent: Math.round((dungeonWagerDamage(level) - 1) * 100), lootPercent: Math.round((dungeonWagerLoot(level) - 1) * 100), firstEncounter: losses.length ? { hp: Math.max(0, ...losses.map((loss) => -(loss.estHp || 0))), sp: Math.max(0, ...losses.map((loss) => -(loss.estSp || 0))) } : null };
+  return {
+    level, risk,
+    canRetreat: !def.noRetreat,
+    floors: stages.length,
+    worstFloor: worst ? { floor: worst.index + 1, hp: worst.hp, sp: worst.sp, lethal: worst.hp >= (char.stats?.health ?? 0) || worst.sp >= (char.stats?.sanity ?? 0) } : null,
+    damagePercent: Math.round((dungeonWagerDamage(level) - 1) * 100),
+    lootPercent: Math.round((dungeonWagerLoot(level) - 1) * 100),
+    firstEncounter: firstLosses.length ? { hp: Math.max(0, ...firstLosses.map((loss) => -(loss.estHp || 0))), sp: Math.max(0, ...firstLosses.map((loss) => -(loss.estSp || 0))) } : null
+  };
 }
 
 /**

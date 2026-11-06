@@ -1,7 +1,7 @@
 /**
  * Dungeon balance: sends many characters through each dungeon with a few play styles and reports
  * how often they die, how much they earn, and what it does to the resources the rest of the game balances.
- * Usage: node tools/sim/dungeon_sim.mjs [runs=600]
+ * Usage: node tools/sim/dungeon_sim.mjs [runs=600] [--stake=0,1,2] [--policies=random,measured,informed]
  */
 import { createNewCharacter, createRNG, DUNGEON_DEFINITIONS, createDungeonSession, getDungeonCurrentStage, isDungeonChoiceAvailable, evaluateDungeonChoiceOdds, setDungeonStance, useDungeonSupply, resolveDungeonChoice } from '../../src/engine/gameEngine.js';
 import { pathToFileURL } from 'node:url';
@@ -123,18 +123,34 @@ POLICIES.reader = (stage, char, sess, rng) => {
   return POLICIES.measured(stage, char, sess, rng);
 };
 
+// Reads the miss price the dock now shows: never takes a check whose miss can drop it, leaves when every way on can
+POLICIES.informed = (stage, char, sess, rng) => {
+  const ok = stage.choices.map((c, i) => [c, i]).filter(([c]) => isDungeonChoiceAvailable(c, char, sess) && c.combatAction !== 'clashBack' && c.combatAction !== 'workBack');
+  // At a rest, the door out is open: leave when hurt, the way the dock's warnings tell a player to
+  if (stage.isRest && (char.stats.health < 45 || char.stats.sanity < 30)) { const f = ok.find(([c]) => c.isFlee); if (f) return f[1]; }
+  const onward = ok.filter(([c]) => !c.isFlee);
+  const drops = (o) => o?.failLethal || (o?.estHp < 0 && char.stats.health + o.estHp <= 0) || (o?.estSp < 0 && char.stats.sanity + o.estSp <= 0);
+  const safe = onward.filter(([c]) => !drops(evaluateDungeonChoiceOdds(c, char, sess)));
+  if (!safe.length) { const f = ok.find(([c]) => c.isFlee); if (f) return f[1]; }
+  const pool = safe.length ? safe : onward.length ? onward : ok;
+  const score = ([c]) => { const o = evaluateDungeonChoiceOdds(c, char, sess) || {}; const p = (o.successPct ?? 100) / 100; return p * ((o.estHp || 0) * 1.5 + (o.estSp || 0)) + (1 - p) * ((o.failHp ?? o.estHp ?? 0) * 1.5 + (o.failSp ?? o.estSp ?? 0)) + ((o.estLoot || 0) + (o.estWealth || 0)) * 0.3; };
+  return [...pool].sort((a, b) => score(b) - score(a))[0][1];
+};
+
 /** Runs every dungeon with every play style; returns one row per dungeon and style. `only` limits the dungeons and styles. */
-export function runDungeonSim(RUNS, { ids = Object.keys(DUNGEON_DEFINITIONS), policies = Object.keys(POLICIES) } = {}) {
+export function runDungeonSim(RUNS, { ids = Object.keys(DUNGEON_DEFINITIONS), policies = Object.keys(POLICIES), stakes = [0] } = {}) {
   const rows = [];
   for (const id of ids) {
-    for (const [pname, pol] of Object.entries(POLICIES).filter(([p]) => policies.includes(p))) {
+    for (const stake of stakes) for (const [pname, pol] of Object.entries(POLICIES).filter(([p]) => policies.includes(p))) {
       const acc = { broken: 0, dead: 0, full: 0, fled: 0, wealth: [], merit: [], res: [], rep: [], hp: [], sp: [], stages: [], capHit: 0, strainMax: [] };
       for (let i = 0; i < RUNS; i++) {
-        const seed = `dun_${id}_${pname}_${i}`;
+        const seed = `dun_${id}_${pname}_${i}`; // same seeds across stakes, so a stake row differs only by the stake
         const rng = createRNG(seed);
         let char = startChar(seed, rng);
         const before = { w: char.stats.wealth, m: char.merit, r: char.resonance, rep: char.stats.rep, hp: char.stats.health, sp: char.stats.sanity };
         char.pendingDungeon = createDungeonSession(id, char, rng);
+        const def = DUNGEON_DEFINITIONS[id];
+        if (stake && !def.noRetreat && !def.noWager) char.pendingDungeon.delveStake = stake;
         let guard = 0, finished = false, resolution = null, maxStrain = 0;
         while (char.pendingDungeon && guard++ < 60) {
           const sess = char.pendingDungeon;
@@ -169,10 +185,13 @@ export function runDungeonSim(RUNS, { ids = Object.keys(DUNGEON_DEFINITIONS), po
         if (char.stats.wealth >= 100) acc.capHit++;
         acc.strainMax.push(maxStrain);
       }
-      rows.push({ id: id.replace('dungeon_', ''), pol: pname, dead: (acc.dead / RUNS * 100).toFixed(1) + '%', full: (acc.full / RUNS * 100).toFixed(1) + '%', broke: (acc.broken / RUNS * 100).toFixed(1) + '%', fled: (acc.fled / RUNS * 100).toFixed(1) + '%', stages: mean(acc.stages).toFixed(1), Ahn: mean(acc.wealth).toFixed(0), merit: mean(acc.merit).toFixed(0), reson: mean(acc.res).toFixed(0), rep: mean(acc.rep).toFixed(0), hp: mean(acc.hp).toFixed(0), sp: mean(acc.sp).toFixed(0), wCap: (acc.capHit / RUNS * 100).toFixed(0) + '%', strain: mean(acc.strainMax).toFixed(0) });
+      rows.push({ id: id.replace('dungeon_', ''), pol: pname, stake, dead: (acc.dead / RUNS * 100).toFixed(1) + '%', full: (acc.full / RUNS * 100).toFixed(1) + '%', broke: (acc.broken / RUNS * 100).toFixed(1) + '%', fled: (acc.fled / RUNS * 100).toFixed(1) + '%', stages: mean(acc.stages).toFixed(1), Ahn: mean(acc.wealth).toFixed(0), merit: mean(acc.merit).toFixed(0), reson: mean(acc.res).toFixed(0), rep: mean(acc.rep).toFixed(0), hp: mean(acc.hp).toFixed(0), sp: mean(acc.sp).toFixed(0), wCap: (acc.capHit / RUNS * 100).toFixed(0) + '%', strain: mean(acc.strainMax).toFixed(0) });
     }
   }
   return rows;
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1] || '').href) console.table(runDungeonSim(RUNS));
+const argList = (name) => (process.argv.find((a) => a.startsWith(`--${name}=`)) || '').split('=')[1]?.split(',').filter(Boolean);
+if (import.meta.url === pathToFileURL(process.argv[1] || '').href) {
+  console.table(runDungeonSim(RUNS, { stakes: (argList('stake') || ['0']).map(Number), ...(argList('policies') ? { policies: argList('policies') } : {}) }));
+}

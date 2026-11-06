@@ -32,6 +32,8 @@ Mỗi đợt dưới đây được commit riêng, ghi vào `PROGRESS_LOG.md`, p
 | 129 | Cắt cảnh Biến dị Distortion và Ngưỡng cửa Thư Viện Outskirts | vừa | đã xong |
 | 130 | Bộ 3 Cắt cảnh biểu tượng Ngón Tay The Fingers & kiểm định hiển thị Mobile đa màn hình | vừa | đã xong |
 | 131 | Cắt cảnh Thức tỉnh E.G.O Hoàn chỉnh (ego_full) & tối ưu hóa hiển thị Mobile Landscape | vừa | đã xong |
+| 132 | Dungeon báo giá khi trượt, chặng nặng nhất trước cửa, đo lại theo bot và mức cược | vừa | đã xong |
+| 133 | Event hồi âm sau Dungeon; đo Ahn trước trần 100 rồi chỉnh thưởng mức cược | vừa | chưa làm |
 | (chủ dự án) | Nghe thử âm thanh trên điện thoại và tai nghe | nhỏ | chờ chủ dự án |
 
 Đợt 114b có thêm dải bản đồ thu nhỏ trên điện thoại, theo bản góp ý thứ ba (ngày 02/11/2026). Đợt 118 và buổi nghe thử âm thanh cũng đến từ bản góp ý đó.

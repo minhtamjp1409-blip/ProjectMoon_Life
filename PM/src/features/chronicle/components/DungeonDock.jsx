@@ -548,6 +548,15 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
                       {odds?.estHp > 0 && <Chip stat="health" tone="up">HP</Chip>}
                       {odds?.estSp < 0 && <Chip stat="sanity" tone="down">SP · {t(...SEVERITY[severityOf(-odds.estSp)])}</Chip>}
                       {odds?.estSp > 0 && <Chip stat="sanity" tone="up">SP</Chip>}
+                      {odds?.hasCheck && odds.successPct < 100 && (odds.failHp < 0 || odds.failSp < 0) && (
+                        <span className="dg-need is-unmet dg-fail-cost">
+                          {t('Trượt', 'Miss')}{odds.failHp < 0 && ` · HP ${t(...SEVERITY[severityOf(-odds.failHp)])}`}{odds.failSp < 0 && ` · SP ${t(...SEVERITY[severityOf(-odds.failSp)])}`}
+                        </span>
+                      )}
+                      {odds?.failLethal && <span className="dg-need is-unmet">{t('Trượt lần này có thể gục', 'A miss here can drop you')}</span>}
+                      {!ch.isFlee && ((odds?.estHp < 0 && (char.stats?.health ?? 0) + odds.estHp <= 0) || (odds?.estSp < 0 && (char.stats?.sanity ?? 0) + odds.estSp <= 0)) && (
+                        <span className="dg-need is-unmet">{t('Đòn này đủ để gục', 'This blow can drop you')}</span>
+                      )}
                       {ahn > 0 && <Chip stat="wealth" tone="up">Ahn</Chip>}
                       {odds?.estMerit > 0 && <Chip stat="merit" tone="up">{t('Công trạng', 'Merit')}</Chip>}
                       {odds?.estResonance > 0 && <Chip stat="resonance" tone="up">{t('Cộng hưởng', 'Resonance')}</Chip>}

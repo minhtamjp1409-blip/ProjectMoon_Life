@@ -554,6 +554,12 @@ const EventDock = ({ event, char, onPick, dungeonStake, onDungeonStake, onPeek, 
           <fieldset className="dungeon-entry-wager">
             <legend>{t('Mức cược trước cửa', 'Wager at the door')}</legend>
             <p>{t(`Nguy cơ với thể trạng hiện tại: ${riskNames[forecast.risk][0]}. Mức cược ${forecast.level}: đòn nhận thêm ${forecast.damagePercent}%, thu hoạch thêm ${forecast.lootPercent}%.`, `Risk with your current condition: ${riskNames[forecast.risk][1]}. Wager ${forecast.level}: incoming damage +${forecast.damagePercent}%, haul +${forecast.lootPercent}%.`)}</p>
+            {forecast.worstFloor && (
+              <p>{t(
+                `Chặng nặng nhất là chặng ${forecast.worstFloor.floor}/${forecast.floors}: trượt ở đó mất khoảng ${forecast.worstFloor.hp} HP và ${forecast.worstFloor.sp} SP${forecast.worstFloor.lethal ? ', đủ để gục với thể trạng này' : ''}. ${forecast.canRetreat ? 'Có thể rút lui giữa chừng.' : 'Đã vào thì không rút lui được.'}`,
+                `Heaviest floor: ${forecast.worstFloor.floor}/${forecast.floors}. A miss there costs about ${forecast.worstFloor.hp} HP and ${forecast.worstFloor.sp} SP${forecast.worstFloor.lethal ? ', enough to drop you as you are' : ''}. ${forecast.canRetreat ? 'You can retreat mid-run.' : 'Once inside, there is no retreat.'}`
+              )}</p>
+            )}
             <div className="dungeon-entry-options" role="group" aria-label={t('Chọn mức cược', 'Choose wager')}>
               {[0, 1, 2].map((level) => (
                 <button type="button" key={level} className={dungeonStake === level ? 'is-selected' : ''} aria-pressed={dungeonStake === level} onClick={() => onDungeonStake(level)}>
