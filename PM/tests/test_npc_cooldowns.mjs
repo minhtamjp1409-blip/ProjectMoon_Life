@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
-import { createNewCharacter } from '../src/engine/gameEngine.js';
+import { createNewCharacter, createRNG } from '../src/engine/gameEngine.js';
+import { endYear } from '../src/engine/yearPlanner.js';
 import { canInteractWithNpc, executeNpcInteraction, NPC_INTERACTION_ACTIONS } from '../src/engine/npcInteractions.js';
 import { ensureNpcAgency } from '../src/data/npcPersonality.js';
 import { entryTier, foldsInCompact } from '../src/features/chronicle/entryTiers.js';
@@ -52,6 +53,16 @@ assert(/gặp nạn/.test(trouble.reasonVi));
 c.npcs.partner.crisis = { type: 'none', severity: 0 };
 c.npcs.partner.status = 'wounded';
 assert.strictEqual(canInteractWithNpc(c, 'partner', 'call_favor').ok, false, 'a wounded friend cannot help either');
+// An older save's 'wounded' companion becomes an injury that heals, instead of a status that never clears
+c.pendingEvent = null; c.pendingMinor = null; c.pendingContract = null; c.pendingDungeon = null; c.pendingLead = null;
+const age0 = c.age || 0;
+let healing = endYear(c, createRNG('npc-heal-1'));
+assert.notEqual(healing.npcs.partner.status, 'wounded', 'the old status is migrated at year end');
+assert.equal(healing.npcs.partner.injured, true, 'still hurt the year it is migrated');
+assert.equal(healing.npcs.partner.healsAtAge, age0 + 1);
+healing.age = age0 + 1;
+healing = endYear(healing, createRNG('npc-heal-2'));
+assert.equal(healing.npcs.partner.injured, false, 'healed a year later');
 
 console.log('6. The log carries the numbers as chips and none in the prose...');
 c = fresh('npc-log');

@@ -7,7 +7,7 @@
 // 4. Call In A Favor (Nhờ cậy đặc quyền)
 // ============================================================================
 
-import { npcIsActive } from './eventConditions.js';
+import { npcIsActive, npcIsHurt } from './eventConditions.js';
 import { bondCapFor, ensureNpcAgency } from '../data/npcPersonality.js';
 import { plantThread } from './affiliation.js';
 import { cloneChar, SEASONS } from './gameEngine.js';
@@ -126,7 +126,7 @@ export function canInteractWithNpc(char, role, actionId) {
 
   if (actionId === 'call_favor') {
     // Goodwill is not capability: someone in trouble cannot lend what they do not have
-    if (npc.status === 'wounded' || (npc.crisis && npc.crisis.severity > 0 && npc.crisis.type !== 'none')) {
+    if (npcIsHurt(npc) || (npc.crisis && npc.crisis.severity > 0 && npc.crisis.type !== 'none')) {
       return { ok: false, reasonVi: 'Họ đang gặp nạn, không thể giúp bạn lúc này', reasonEn: 'They are in trouble and cannot help you right now' };
     }
     const hasDebt = (npc.debts?.toPlayer || 0) > 0;
@@ -144,7 +144,7 @@ export function canInteractWithNpc(char, role, actionId) {
     if (!isFactionLeader(char)) {
       return { ok: false, reasonVi: 'Cần giữ vị trí chỉ huy (Grade 2+, Chủ Office, Director, Wing Rank 2+, hoặc Finger Rank 2+)', reasonEn: 'Requires command rank (Grade 2+, Office Owner, Director, Wing Rank 2+, or Finger Rank 2+)' };
     }
-    if (npc.status === 'wounded' || (npc.crisis && npc.crisis.severity > 0 && npc.crisis.type !== 'none')) {
+    if (npcIsHurt(npc) || (npc.crisis && npc.crisis.severity > 0 && npc.crisis.type !== 'none')) {
       return { ok: false, reasonVi: 'Họ đang mang thương tích hoặc khủng hoảng, không thể gánh thêm lệnh ủy thác', reasonEn: 'They are wounded or in crisis and cannot take on another assignment' };
     }
     if ((npc.bond || 0) < 35) {

@@ -151,7 +151,9 @@ const dungRes = resolveDungeonChoice(dungChar, 0, () => 0.99);
 // Shield should trigger!
 assert.equal(dungRes.isFinished, false, 'Shield should prevent death');
 assert.equal(dungRes.char.stats.health, 5, 'Player should be left at 5 HP by shield intervention');
-assert.equal(dungRes.char.npcs.partner.status, 'wounded', 'Companion should become wounded after shielding');
+assert.equal(dungRes.char.npcs.partner.injured, true, 'Companion should be injured after shielding');
+assert.equal(dungRes.char.npcs.partner.healsAtAge, (dungChar.age || 0) + 2, 'A shielding companion heals after two years');
+assert.notEqual(dungRes.char.npcs.partner.status, 'wounded', 'The shield no longer leaves a status that never clears');
 assert.ok(dungRes.session.companionShieldUsed, 'Shield flag must be marked used');
 
 // 5. Cross-Generational Lineage & Legacy Connection

@@ -4,6 +4,7 @@ import { AlertTriangle, X } from 'lucide-react';
 import { useGameStore } from '../../../store/gameStore.js';
 import { NPC_INTERACTION_ACTIONS, canInteractWithNpc } from '../../../engine/npcInteractions.js';
 import { ensureNpcAgency, getNpcBondState } from '../../../data/npcPersonality.js';
+import { npcIsHurt } from '../../../engine/eventConditions.js';
 import { useT } from '../../../i18n';
 
 export const NpcDossierModal = ({ npcRole, onClose }) => {
@@ -127,7 +128,7 @@ export const NpcDossierModal = ({ npcRole, onClose }) => {
           </div>
           <div className="npc-career-sub">
             <span className="npc-career-pill">{lang === 'en' ? npc.rankLabelEn || npc.job : npc.rankLabelVi || npc.job}</span>
-            {npc.status === 'wounded' && <span className="npc-status-pill is-wounded">{t('Trọng thương', 'Wounded')}</span>}
+            {npcIsHurt(npc) && <span className="npc-status-pill is-wounded">{t('Trọng thương', 'Wounded')}</span>}
             {isGone && <span className="npc-status-pill is-dead">{t('Đã khuất / Mất tích', 'Deceased / Gone')}</span>}
           </div>
         </header>

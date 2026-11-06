@@ -1362,7 +1362,14 @@ export function endYear(charState, rng) {
   const char = cloneChar(charState);
   if (!char.alive) return char;
   // A companion hurt in a dungeon clash sits out a year, then can walk with you again
-  for (const [role, npc] of Object.entries(char.npcs || {})) {
+  for (const [role, raw] of Object.entries(char.npcs || {})) {
+    let npc = raw;
+    // Older saves marked a shielding companion `status: 'wounded'` with no way back; give them a year to heal
+    if (npc?.status === 'wounded') {
+      const { status, ...rest } = npc;
+      npc = { ...rest, injured: true, injurySeverity: 'severe', injuredAtAge: char.age || 0, healsAtAge: (char.age || 0) + 1 };
+      char.npcs = { ...char.npcs, [role]: npc };
+    }
     if (npc?.injured && npc.healsAtAge != null && (char.age || 0) >= npc.healsAtAge) {
       char.npcs = { ...char.npcs, [role]: { ...npc, injured: false, injurySeverity: null, healsAtAge: null } };
     }

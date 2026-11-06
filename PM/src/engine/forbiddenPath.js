@@ -10,15 +10,21 @@ export const FORBIDDEN_MIN_AGE = 25;
 export const FORBIDDEN_OFFER_GAP = 3;
 export const FORBIDDEN_OFFER_CHANCE = 0.75;
 export const TABOO_LIMIT = 3;
+// The second rung of a branch (Sottocapo, Section Chief) or a Grade 1 Fixer is already strong enough to be tempted;
+// waiting for the pinnacle left the path closed to almost every life that did not reach a Color
+export const STRONG_BRANCH_RANK = 2;
+export const STRONG_FIXER_GRADE = 1;
 
 const has = (char, flag) => Boolean(char?.flags?.includes(flag));
 
 export function isStrongLife(char) {
   if (!char) return false;
-  return has(char, 'EGOAwakened') || has(char, 'ColorFixer') || Boolean(char.isColorFixer) || char.fixerGrade === 0 ||
-    (char.job === 'Syndicate' && (char.fingerRank || 0) >= 3) ||
-    (char.job === 'Wing Employee' && (char.wingRank || 0) >= 3) ||
-    (char.job === 'Workshop Craftsman' && (char.workshopRank || 0) >= 3);
+  const grade = char.fixerGrade;
+  return has(char, 'EGOAwakened') || has(char, 'ColorFixer') || Boolean(char.isColorFixer) ||
+    (char.job === 'Fixer' && grade != null && grade <= STRONG_FIXER_GRADE) || grade === 0 ||
+    (char.job === 'Syndicate' && (char.fingerRank || 0) >= STRONG_BRANCH_RANK) ||
+    (char.job === 'Wing Employee' && (char.wingRank || 0) >= STRONG_BRANCH_RANK) ||
+    (char.job === 'Workshop Craftsman' && (char.workshopRank || 0) >= STRONG_BRANCH_RANK);
 }
 
 /** One chain per life, offered at most once every few years, and only while there is still a Taboo to break. */

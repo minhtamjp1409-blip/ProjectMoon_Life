@@ -4,7 +4,11 @@ import { getAffiliation, laneOf } from './affiliation.js';
 import { fingersReachingOut } from './fingerPull.js';
 
 export const npcIsActive = (npc) => Boolean(npc) && npc.alive !== false && !npc.deceased && !['dead', 'missing', 'estranged', 'betrayer'].includes(npc.status);
-export const isNestResident = (char) => ['Nest', 'NestResident', 'Feather'].some((f) => char.flags?.includes(f));
+// A companion who took a mortal strike for you heals like any other injury; `status: 'wounded'` is how older saves recorded it
+export const SHIELD_HEAL_YEARS = 2;
+export const npcIsHurt = (npc) => Boolean(npc?.injured) || npc?.status === 'wounded';
+export const woundByShield = (npc, age = 0) => ({ ...npc, injured: true, injurySeverity: 'severe', injuredAtAge: age, healsAtAge: age + SHIELD_HEAL_YEARS });
+export const isNestResident =(char) => ['Nest', 'NestResident', 'Feather'].some((f) => char.flags?.includes(f));
 export const isOutsideCity = (char) => char.regionId === 'OUTSKIRTS' || char.flags?.includes('Outskirts');
 
 export const FIELD_COMPANION_ROLES = ['partner', 'mentor', 'friend', 'lover', 'spouse'];

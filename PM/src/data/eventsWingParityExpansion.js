@@ -271,7 +271,7 @@ export const WING_PARITY_MAJORS = [
             w: 65,
             resultVi: "Bạn thoát ra ngoài an toàn với lọ mẫu phẩm quý giá. Khu vực bị phong tỏa; một tổ chức tài chính ngầm trả bạn 42 Ahn để sở hữu dữ liệu giải phẫu của Singularity này, dù đội thanh trừng nội bộ đã bắt đầu truy dấu.",
             resultEn: "You escape safely with the precious vial. The sector is purged; a shadow syndicate pays you 42 Ahn for the unredacted Singularity blueprints, though internal purgers have begun tracking the leak.",
-            effects: { wealth: +42, leverage: +15, sanity: -10, heat: +20, taboo: +8 },
+            effects: { wealth: +42, leverage: +15, sanity: -10, heat: +20, taboo: +1 },
             flagsAdd: ['wing_singularity_meltdown_done', 'SingularitySmuggler']
           },
           {
@@ -326,7 +326,7 @@ export const WING_PARITY_MAJORS = [
             w: 65,
             resultVi: "Giao dịch bí mật hoàn tất trong đêm. Bạn nhận một vali kim phiếu và đường dây bảo hộ ngầm của Wing đối thủ, nhưng bộ phận phản gián của tập đoàn bắt đầu rà soát danh sách đặc sứ.",
             resultEn: "The secret exchange concludes by midnight. You secure a briefcase of bearer drafts and rival covert backing, though corporate counter-intelligence begins auditing the envoy roster.",
-            effects: { wealth: +45, leverage: +16, sanity: -10, heat: +18, taboo: +12 },
+            effects: { wealth: +45, leverage: +16, sanity: -10, heat: +18, taboo: +1 },
             flagsAdd: ['wing_patent_warfare_done', 'DoubleAgentFeather']
           },
           {

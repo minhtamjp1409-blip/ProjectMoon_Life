@@ -6,6 +6,7 @@
 // Shared dungeon helpers (damage scaling, endings, companions) come in through `ctx` from
 // dungeonEngine.js, so this module never imports it back.
 // ============================================================================
+import { woundByShield } from './eventConditions.js';
 import { cardEffectOf, dungeonUsesCards, nextHand } from './dungeonCards.js';
 import { GAUNTLETS, INTENT_KINDS, REST_TEXT } from '../data/dungeonGauntlets.js';
 import { activeScarSynergies } from './scarModel.js';
@@ -523,7 +524,7 @@ export function resolveGauntletChoice(char, session, choiceIndex, rng, ctx) {
     if ((perk?.type === 'shield' || char.companionSynergy?.active) && companionNpc && companionNpc.status !== 'dead') {
       session.companionShieldUsed = true;
       char.stats.health = 5;
-      companionNpc.status = 'wounded';
+      Object.assign(companionNpc, woundByShield(companionNpc, char.age || 0));
       companionNpc.bond = Math.min(100, (companionNpc.bond || 50) + 15);
       const shieldMemVi = `Năm ${char.age || 0} tuổi: Đỡ đòn chí mạng thay bạn trong ${def.titleVi}.`;
       const shieldMemEn = `Age ${char.age || 0}: Absorbed a mortal strike for you in ${def.titleEn}.`;

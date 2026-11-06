@@ -45,6 +45,13 @@ offers.slice(1).forEach((age, i) => assert(age - offers[i] >= FORBIDDEN_OFFER_GA
 for (const profile of [{ job: 'Syndicate', finger: 'Ring', fingerRank: 3 }, { job: 'Wing Employee', wingRank: 3, flags: ['Nest'] }, { job: 'Fixer', fixerGrade: 0, flags: ['ColorFixer'] }]) {
   assert.equal(forbiddenLeadOpen(lifeAt('forbidden-apex', 35, profile)), true, `${profile.job} at the top is offered the path`);
 }
+// The second rung of a branch and a Grade 1 Fixer already count; the rung below does not
+for (const profile of [{ job: 'Syndicate', finger: 'Ring', fingerRank: 2 }, { job: 'Wing Employee', wingRank: 2, flags: ['Nest'] }, { job: 'Workshop Craftsman', workshopRank: 2 }, { job: 'Fixer', fixerGrade: 1 }]) {
+  assert.equal(forbiddenLeadOpen(lifeAt('forbidden-second', 35, profile)), true, `${profile.job} on the second rung is offered the path`);
+}
+for (const profile of [{ job: 'Syndicate', finger: 'Ring', fingerRank: 1 }, { job: 'Wing Employee', wingRank: 1, flags: ['Nest'] }, { job: 'Fixer', fixerGrade: 2 }]) {
+  assert.equal(forbiddenLeadOpen(lifeAt('forbidden-low', 35, profile)), false, `${profile.job} below the second rung is not`);
+}
 assert.equal(forbiddenLeadOpen(lifeAt('forbidden-young', 22, { job: 'Fixer', fixerGrade: 1, flags: ['EGOAwakened'] })), false, 'too young');
 assert.equal(forbiddenLeadOpen(lifeAt('forbidden-distorted', 35, { job: 'Fixer', flags: ['EGOAwakened', 'Distorted'] })), false, 'not for a Distortion');
 const plainYear = lifeAt('forbidden-plain', 40, { job: 'Fixer', fixerGrade: 1, flags: ['EGOAwakened'] });

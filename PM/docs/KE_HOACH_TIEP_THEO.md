@@ -378,6 +378,13 @@ Công cụ quay đã có lệnh mở từng cảnh: `node tools/film/film_cutsce
 
 ---
 
+## Bốn quyết định còn treo (ĐÃ XONG, 06/11/2026)
+
+- Ngưỡng "đời mạnh" của con đường cấm hạ xuống bậc 2 của nhánh và Fixer Grade 1.
+- Taboo +6 đến +12 ở Wing arc và lineage legacy thành +1.
+- Đồng đội đỡ đòn chí mạng lành sau 2 năm thay vì bị thương mãi.
+- Nút bắt đầu trên điện thoại bám đáy vùng cuộn, không còn nằm dưới thanh tab.
+
 ## Những việc không làm, và lý do
 
 - **Lớp canvas hạt chạy liên tục (mưa, tàn tro, bụi).** Tốn pin trên điện thoại và đi ngược luật "không lặp vô hạn" mà các cảnh đang giữ. Mood và skyline theo nơi chốn (Đợt 106) đã cho chiều sâu. Nếu sau này muốn thêm, chỉ làm một lớp tĩnh vẽ một lần cho Great Lake hoặc Backstreets.
@@ -392,6 +399,7 @@ Công cụ quay đã có lệnh mở từng cảnh: `node tools/film/film_cutsce
 - **Viết thêm chuỗi hậu quả sau biến cố lớn.** Đã có các chuỗi `csq_` trong `narrativeArcEngine.js`. Nếu sau này muốn viết thêm, trước hết đo xem một đời thật gặp bao nhiêu chuỗi.
 
 ## Việc còn treo từ các đợt trước
+- `tools/qa/measure_birth_mobile.mjs` mục 4 không tìm thấy toast thành tựu trên mobile (có từ trước 06/11/2026, chưa rõ do test hay do giao diện).
 
 - Âm thanh của 7 cảnh: xem mục nghe thử phía trên.
 - Bốn lời cuối của C7 là chữ mình tự viết. Chủ dự án nên đọc lại.

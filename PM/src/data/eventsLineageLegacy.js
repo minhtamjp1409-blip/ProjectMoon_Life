@@ -232,7 +232,7 @@ export const LINEAGE_LEGACY_EVENTS = [
             w: 40,
             resultVi: "Tiếng gào khóc của {parentName} trong tâm bão dị biến quá sức chịu đựng. Bạn bị luồng sóng âm dị dạng đánh văng ra ngoài hàng rào phong tỏa, máu mũi tuôn trào và tâm trí rạn nứt dữ dội.",
             resultEn: "The anguished wail of {parentName} inside the anomaly proved overwhelming. A distorted shockwave hurled you back across the barricade with a bleeding nose and a fractured psyche.",
-            effects: { health: -22, sanity: -20, resonance: +10, taboo: +6 },
+            effects: { health: -22, sanity: -20, resonance: +10, taboo: +1 },
             scarsAdd: ['Ám ảnh tiếng gào tiền kiếp']
           }
         ]
@@ -242,7 +242,7 @@ export const LINEAGE_LEGACY_EVENTS = [
         labelEn: "Harvest the crystallized Enkephalin around the lair for black-market buyers",
         resultVi: "Bạn giữ khoảng cách ở vòng ngoài, thu gom những khối tinh thể kết tủa từ nỗi đau của đời trước. Khoản tiền thu về khá hậu hĩnh, nhưng mặc cảm tội lỗi và sự theo dõi của đội thanh trừng Hana lập tức bám riết lấy bạn.",
         resultEn: "Keeping to the outer perimeter, you gathered crystals precipitated from your predecessor’s grief. The payout was substantial, yet guilt and the scrutiny of Hana purgers immediately latched onto you.",
-        effects: { wealth: +24, sanity: -14, heat: +10, taboo: +8 },
+        effects: { wealth: +24, sanity: -14, heat: +10, taboo: +1 },
         meritAdd: 10
       },
       {
@@ -340,7 +340,7 @@ export const LINEAGE_LEGACY_EVENTS = [
             w: 40,
             resultVi: "Các dữ liệu trong hồ sơ đã bị ban giám đốc đương nhiệm chuẩn bị sẵn phương án phản đòn. Đội an ninh doanh nghiệp tịch thu tài liệu, đóng băng tài khoản phụ của bạn và ghi án phạt vi phạm bảo mật.",
             resultEn: "The sitting board had already prepared countermeasures for the archived files. Corporate security confiscated the binder, froze your secondary accounts, and logged a confidentiality penalty.",
-            effects: { wealth: -18, sanity: -14, rep: -10, heat: +16, taboo: +10 },
+            effects: { wealth: -18, sanity: -14, rep: -10, heat: +16, taboo: +1 },
             scarsAdd: ['Án phạt rò rỉ mật vụ Wing']
           }
         ]

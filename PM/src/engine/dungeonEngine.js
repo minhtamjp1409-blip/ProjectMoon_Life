@@ -21,7 +21,7 @@ import { CLAW_DUNGEON, CLAW_DUNGEON_ID } from '../data/dungeonClaw.js';
 import { ENSEMBLE_DUNGEON, ENSEMBLE_ROUTE_SCENES, ENSEMBLE_SCORE_ITEM } from '../data/dungeonEnsemble.js';
 import { ENSEMBLE_DUNGEON_ID, ensembleRoute, ensembleWitness, recordEnsembleRetreat, finishEnsembleRun } from './ensemblePath.js';
 import { triggerDistortionTransformation } from './careerPipeline.js';
-import { npcIsActive } from './eventConditions.js';
+import { npcIsActive, woundByShield } from './eventConditions.js';
 import { ensureAffiliation, getAffiliation } from './affiliation.js';
 import { applyNpcFate } from './director.js';
 import { dealCards, cardEffectOf, nextHand, dungeonUsesCards } from './dungeonCards.js';
@@ -1773,7 +1773,7 @@ export function resolveDungeonChoice(charState, choiceIndex, rng = Math.random) 
     if (canShield) {
       session.companionShieldUsed = true;
       char.stats.health = 5;
-      companionNpc.status = 'wounded';
+      Object.assign(companionNpc, woundByShield(companionNpc, char.age || 0));
       companionNpc.bond = Math.min(100, (companionNpc.bond || 50) + 15);
       const shieldMemVi = `Năm ${char.age || 0} tuổi: Đỡ đòn chí mạng thay bạn trong ${def.titleVi}.`;
       const shieldMemEn = `Age ${char.age || 0}: Absorbed a mortal strike for you in ${def.titleEn}.`;
