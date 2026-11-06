@@ -1,4 +1,4 @@
-# Kế hoạch Đợt 135–139: sửa logic và nâng cấp đạo diễn
+# Kế hoạch Đợt 135–140: sửa logic, nâng cấp đạo diễn, event cuối đời
 
 File này gom hai nguồn:
 
@@ -174,6 +174,58 @@ Những lỗi này làm người chơi mất hẳn một nội dung, không ch�
    - tỷ lệ chết theo độ rủi ro;
    - tỷ lệ năm im lặng theo lứa tuổi (`pacing_by_age.mjs`).
 4. Chỉ bật `active` khi số lỗi logic bằng 0, phân bố nội dung tốt hơn, và độ khó không bị làm phẳng.
+
+---
+
+## Đợt 140 — Event sau 60 tuổi và đời sống thọ
+
+### Vì sao cần
+
+Sau 60 tuổi, nhân vật thường đang ở bậc cao nhất. Các event kéo dài tuổi thọ (`apex_longevity_*`, mở từ 38–42 tuổi tới 120) có thể đưa đời sống lên trên 100. Nhưng kho event lại thưa đi đúng lúc này.
+
+**Số major theo nghề và lứa tuổi** (đếm event mà khung tuổi chạm vào lứa đó):
+
+| Nghề | 61–70 | 71–85 | 86–100 | 101+ |
+|---|---|---|---|---|
+| Syndicate (cả 5 Finger cộng lại) | 283 | 240 | 219 | 17 |
+| Dùng chung mọi nghề | 89 | 63 | 34 | 13 |
+| Fixer và Color | 84 | 77 | 59 | 36 |
+| Wing (cả nhóm) | 79 | 24 | 11 | 10 |
+| Distortion | 29 | 27 | 21 | 3 |
+| Outcast | 3 | 0 | 0 | 0 |
+
+**Ba nguyên nhân:**
+1. **Tuổi trần đặt cứng.** 291 major có tuổi trần từ 90 đến 99 (195 event dừng đúng ở 90). Riêng các event đỉnh cao của Finger dừng ở 95. Một đời đã kéo dài tới 120 sẽ mất gần hết kho này sau 90–95 tuổi.
+2. **Đa số event cuối đời là kết thúc.** `eventsApexTwilight.js` và `eventsWingApex.js` (từ 76–90 tuổi) phần lớn là lựa chọn kết thúc đời: trao lại ghế, bị lật đổ, ra đi. Chọn xong là hết đời, nên chúng không lấp được những năm ở giữa.
+3. **Có nghề không có gì cho cuối đời.** Wing chưa lên bậc 3 chỉ còn 7 event ở tuổi 71–85 và 0 sau 85. Outcast không có event nào sau 70. Fixer không lên Color cũng thưa dần.
+
+### Đề xuất, từ rẻ tới đắt
+
+1. **Kéo dài tuổi trần cho người sống thọ (rẻ, tác dụng lớn nhất).**
+   - Khi nhân vật có `ApexLongevity`, `FullBodyProsthetic`, `Bloodfiend` hoặc `Distorted`, event có tuổi trần từ 85 trở lên được tính thêm 30 năm.
+   - Event có tuổi trần thấp hơn 85 (cảnh của tuổi trẻ) giữ nguyên.
+   - Làm bằng một luật trong `matchesEventContext`, không phải sửa từng event.
+   - Trước khi bật, rà một lượt 291 event này: event nào kể chuyện thể chất của người trẻ thì gắn `elderOk: false`.
+2. **Một chương "cuối đời" cho mọi nghề.** Viết 6 khung event dùng chung, mỗi khung có biến thể cho Fixer, Finger, Wing, Workshop và Outcast:
+   - **Người kế nghiệp:** chọn giữa đệ tử, con cái hoặc người ngoài. Nối vào hệ `lineage` sẵn có, để lựa chọn này ảnh hưởng tới đời sau.
+   - **Kẻ thách thức trẻ:** một người trẻ muốn chiếm chỗ bạn. Có thể giải quyết bằng một trận ngắn, một cuộc đàm phán hoặc nhường lại.
+   - **Hồ sơ đời:** Hana, Index hoặc Wing muốn ghi chép lại đời bạn. Bạn chọn kể thật, kể đẹp đi, hay đốt bỏ.
+   - **Cái giá của sống lâu:** bảo trì chân tay giả, cơn đói của Bloodfiend, phụ thuộc ampoule K Corp. Cảnh khác nhau theo cách bạn kéo dài tuổi thọ.
+   - **Tiễn người quen:** NPC già đi và chết (`director.js:436`, từ 74 tuổi), nhưng hiện chưa có cảnh tiễn biệt. Viết minor đám tang theo vai: sư phụ, bạn thân, đối thủ.
+   - **Thế hệ thứ ba:** cháu, hoặc đệ tử của đệ tử, tìm đến bạn.
+3. **Event gọi lại chính đời người chơi.** Viết vài khung đọc bộ nhớ nhân quả của Weaver (`weaver.nodes`) để nhắc lại lựa chọn từ 30–50 năm trước: người được cứu ở WARP, kẻ bị phản bội, Office cũ. Một khung có thể cho ra nhiều cảnh khác nhau tùy đời, nên được nhiều nội dung nhất trên mỗi dòng viết.
+4. **Kết thúc chủ động cho mọi nghề từ 90 tuổi.**
+   - Distortion có `distort_arc_century_calamity_climax`. Color, Finger bậc 3 và Wing bậc 3 có event twilight.
+   - Fixer chưa lên Color, Workshop và Outcast thì chưa có. Viết cho mỗi nghề một event 3 lựa chọn: kết thúc êm, một lần cuối liều mạng, hoặc tiếp tục sống.
+5. **Luật đạo diễn cho người già.** Sau 60 tuổi, giảm trọng số event `danger` và tăng `relief` cùng `legacy`. Vẫn giữ khoảng một event "đe dọa di sản" mỗi 5 năm, để cuối đời không thành chuỗi năm phẳng. Thẻ `legacy` lấy từ mục 2 của Đợt 139.
+
+### Đo
+
+- Thêm tùy chọn vào `pacing_by_age.mjs` để bắt đầu đời ở tuổi 60 với nhân vật đã ở đỉnh (Color, Finger bậc 3 hoặc Wing bậc 3) và có `ApexLongevity`, chạy tới 120.
+- Mục tiêu: ở tuổi 60–120, có ít nhất 0,4 event lớn mỗi năm, năm im lặng dưới 5%, và không event nào lặp trong 10 năm.
+- Hiện trạng: 0,49 mỗi năm ở tuổi 61–75, 0,21 sau 75, và sau 90 thì chưa đo được vì mẫu quá nhỏ.
+
+**Thứ tự đề xuất:** làm mục 1 trước, vì mục này chỉ cần một luật và đo được ngay. Tiếp theo là mục 4, rồi mục 2. Mục 3 làm sau cùng, khi Đợt 139 đã có thẻ chủ đề.
 
 ---
 
