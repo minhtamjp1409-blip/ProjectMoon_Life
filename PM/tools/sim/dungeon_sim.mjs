@@ -5,6 +5,7 @@
  */
 import { createNewCharacter, createRNG, DUNGEON_DEFINITIONS, createDungeonSession, getDungeonCurrentStage, isDungeonChoiceAvailable, evaluateDungeonChoiceOdds, setDungeonStance, useDungeonSupply, resolveDungeonChoice } from '../../src/engine/gameEngine.js';
 import { pathToFileURL } from 'node:url';
+import { DUNGEON_BALANCE } from '../../src/engine/dungeonEngine.js';
 
 const RUNS = Number(process.argv[2] || 600);
 const mean = (a) => (a.length ? a.reduce((x, y) => x + y, 0) / a.length : 0);
@@ -142,7 +143,7 @@ export function runDungeonSim(RUNS, { ids = Object.keys(DUNGEON_DEFINITIONS), po
   const rows = [];
   for (const id of ids) {
     for (const stake of stakes) for (const [pname, pol] of Object.entries(POLICIES).filter(([p]) => policies.includes(p))) {
-      const acc = { broken: 0, dead: 0, full: 0, fled: 0, wealth: [], merit: [], res: [], rep: [], hp: [], sp: [], stages: [], capHit: 0, strainMax: [] };
+      const acc = { broken: 0, dead: 0, full: 0, fled: 0, wealth: [], merit: [], res: [], rep: [], hp: [], sp: [], stages: [], capHit: 0, strainMax: [], haul: [], clipped: [] };
       for (let i = 0; i < RUNS; i++) {
         const seed = `dun_${id}_${pname}_${i}`; // same seeds across stakes, so a stake row differs only by the stake
         const rng = createRNG(seed);
@@ -151,7 +152,7 @@ export function runDungeonSim(RUNS, { ids = Object.keys(DUNGEON_DEFINITIONS), po
         char.pendingDungeon = createDungeonSession(id, char, rng);
         const def = DUNGEON_DEFINITIONS[id];
         if (stake && !def.noRetreat && !def.noWager) char.pendingDungeon.delveStake = stake;
-        let guard = 0, finished = false, resolution = null, maxStrain = 0;
+        let guard = 0, finished = false, resolution = null, maxStrain = 0, lastLoot = 0;
         while (char.pendingDungeon && guard++ < 60) {
           const sess = char.pendingDungeon;
           const stage = getDungeonCurrentStage(sess);
@@ -170,6 +171,7 @@ export function runDungeonSim(RUNS, { ids = Object.keys(DUNGEON_DEFINITIONS), po
           const idx = pol(stage, char, char.pendingDungeon, rng);
           const r = resolveDungeonChoice(char, idx, rng);
           char = r.char; maxStrain = Math.max(maxStrain, r.session?.sanityStrain ?? 0);
+          lastLoot = Math.max(lastLoot, r.session?.accumulatedLootAhn ?? char.pendingDungeon?.accumulatedLootAhn ?? 0);
           if (r.isFinished) { finished = true; resolution = r.resolution; break; }
         }
         const stagesDone = (char.logs || []).filter((l) => String(l.id).startsWith(`log_dungeon_${id}`)).length;
@@ -184,8 +186,12 @@ export function runDungeonSim(RUNS, { ids = Object.keys(DUNGEON_DEFINITIONS), po
         acc.rep.push(char.stats.rep - before.rep); acc.hp.push(char.stats.health - before.hp); acc.sp.push(char.stats.sanity - before.sp);
         if (char.stats.wealth >= 100) acc.capHit++;
         acc.strainMax.push(maxStrain);
+        // The haul before the 100 Ahn cap: loot carried out plus the conquest purse
+        const haul = char.alive ? lastLoot + (resolution?.outcome === 'conquered' ? (DUNGEON_BALANCE.conquest?.ahn || 0) : 0) : 0;
+        acc.haul.push(haul);
+        acc.clipped.push(Math.max(0, before.w + haul - 100));
       }
-      rows.push({ id: id.replace('dungeon_', ''), pol: pname, stake, dead: (acc.dead / RUNS * 100).toFixed(1) + '%', full: (acc.full / RUNS * 100).toFixed(1) + '%', broke: (acc.broken / RUNS * 100).toFixed(1) + '%', fled: (acc.fled / RUNS * 100).toFixed(1) + '%', stages: mean(acc.stages).toFixed(1), Ahn: mean(acc.wealth).toFixed(0), merit: mean(acc.merit).toFixed(0), reson: mean(acc.res).toFixed(0), rep: mean(acc.rep).toFixed(0), hp: mean(acc.hp).toFixed(0), sp: mean(acc.sp).toFixed(0), wCap: (acc.capHit / RUNS * 100).toFixed(0) + '%', strain: mean(acc.strainMax).toFixed(0) });
+      rows.push({ id: id.replace('dungeon_', ''), pol: pname, stake, dead: (acc.dead / RUNS * 100).toFixed(1) + '%', full: (acc.full / RUNS * 100).toFixed(1) + '%', broke: (acc.broken / RUNS * 100).toFixed(1) + '%', fled: (acc.fled / RUNS * 100).toFixed(1) + '%', stages: mean(acc.stages).toFixed(1), Ahn: mean(acc.wealth).toFixed(0), merit: mean(acc.merit).toFixed(0), reson: mean(acc.res).toFixed(0), rep: mean(acc.rep).toFixed(0), hp: mean(acc.hp).toFixed(0), sp: mean(acc.sp).toFixed(0), wCap: (acc.capHit / RUNS * 100).toFixed(0) + '%', haul: mean(acc.haul).toFixed(0), clip: mean(acc.clipped).toFixed(0), strain: mean(acc.strainMax).toFixed(0) });
     }
   }
   return rows;

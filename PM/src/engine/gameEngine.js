@@ -72,6 +72,7 @@ import { DISTORTION_VOICE_EVENTS } from '../data/eventsDistortionVoice.js';
 import { WING_PARITY_MAJORS } from '../data/eventsWingParityExpansion.js';
 import { DISTORTION_PARITY_MAJORS } from '../data/eventsDistortionParityExpansion.js';
 import { ROUTE_CONSEQUENCE_EVENTS } from '../data/eventsRouteConsequences.js';
+import { DUNGEON_ECHO_EVENTS } from '../data/eventsDungeonEchoes.js';
 import { FINGERS_GAMBLE_EVENTS } from '../data/eventsFingersGambleSuite.js';
 import { localizeEnsembleName } from '../data/ensembleNames.js';
 import { ENSEMBLE_INVITE_ID, ENSEMBLE_LAST_CALL_ID, recordEnsembleInvitation } from './ensemblePath.js';
@@ -177,6 +178,7 @@ export const ALL_STORY_EVENTS = [
   ...WING_PARITY_MAJORS,
   ...DISTORTION_PARITY_MAJORS,
   ...ROUTE_CONSEQUENCE_EVENTS,
+  ...DUNGEON_ECHO_EVENTS,
   ...FINGERS_GAMBLE_EVENTS
 ];
 

@@ -33,7 +33,8 @@ Mỗi đợt dưới đây được commit riêng, ghi vào `PROGRESS_LOG.md`, p
 | 130 | Bộ 3 Cắt cảnh biểu tượng Ngón Tay The Fingers & kiểm định hiển thị Mobile đa màn hình | vừa | đã xong |
 | 131 | Cắt cảnh Thức tỉnh E.G.O Hoàn chỉnh (ego_full) & tối ưu hóa hiển thị Mobile Landscape | vừa | đã xong |
 | 132 | Dungeon báo giá khi trượt, chặng nặng nhất trước cửa, đo lại theo bot và mức cược | vừa | đã xong |
-| 133 | Event hồi âm sau Dungeon; đo Ahn trước trần 100 rồi chỉnh thưởng mức cược | vừa | chưa làm |
+| 133 | Event hồi âm sau Dungeon; đo Ahn trước trần 100 | vừa | đã xong |
+| 134 | Dùng phần Ahn vượt trần khi cược cao (chờ chủ dự án chọn cách) | nhỏ | chờ chủ dự án |
 | (chủ dự án) | Nghe thử âm thanh trên điện thoại và tai nghe | nhỏ | chờ chủ dự án |
 
 Đợt 114b có thêm dải bản đồ thu nhỏ trên điện thoại, theo bản góp ý thứ ba (ngày 02/11/2026). Đợt 118 và buổi nghe thử âm thanh cũng đến từ bản góp ý đó.
@@ -402,7 +403,7 @@ Công cụ quay đã có lệnh mở từng cảnh: `node tools/film/film_cutsce
 
 ## Việc còn treo từ các đợt trước
 
-- Lời Việt: còn 2.288 chỗ ", và" (nhiều nhất ở bộ Fingers, Expansion, lifeMinors4/5). Làm theo file bằng `node tools/lint/vi_worklist.mjs <file> --va` rồi `apply_vi_rewrites.mjs`, mỗi lần hạ ngưỡng `vaClause` trong `package.json`.
+- Lời Việt: còn 2.280 chỗ ", và" (nhiều nhất ở bộ Fingers, Expansion, lifeMinors4/5). Làm theo file bằng `node tools/lint/vi_worklist.mjs <file> --va` rồi `apply_vi_rewrites.mjs`, mỗi lần hạ ngưỡng `vaClause` trong `package.json`.
 - `tools/qa/measure_birth_mobile.mjs` mục 4 không tìm thấy toast thành tựu trên mobile (có từ trước 06/11/2026, chưa rõ do test hay do giao diện).
 
 - Âm thanh của 7 cảnh: xem mục nghe thử phía trên.

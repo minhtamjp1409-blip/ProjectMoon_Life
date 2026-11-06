@@ -22,7 +22,7 @@ import { ENSEMBLE_DUNGEON, ENSEMBLE_ROUTE_SCENES, ENSEMBLE_SCORE_ITEM } from '..
 import { ENSEMBLE_DUNGEON_ID, ensembleRoute, ensembleWitness, recordEnsembleRetreat, finishEnsembleRun } from './ensemblePath.js';
 import { triggerDistortionTransformation } from './careerPipeline.js';
 import { npcIsActive, woundByShield, hasSynergyWith } from './eventConditions.js';
-import { ensureAffiliation, getAffiliation } from './affiliation.js';
+import { ensureAffiliation, getAffiliation, plantThread } from './affiliation.js';
 import { applyNpcFate } from './director.js';
 import { dealCards, cardEffectOf, nextHand, dungeonUsesCards } from './dungeonCards.js';
 export { playDungeonCard, cardPlayable, cardBudgetLeft, DUNGEON_CARDS, CARD_BUDGET } from './dungeonCards.js';
@@ -985,7 +985,21 @@ export function settleRun(char, session, outcome) {
       }
     }
   }
+  plantDungeonEcho(char, session, outcome);
   return notes;
+}
+
+/** One echo a run at most, the strongest thing that happened; the year after, it comes back as a scene. */
+function plantDungeonEcho(char, session, outcome) {
+  if (!char.alive || session.id === CLAW_DUNGEON_ID || session.id === ENSEMBLE_DUNGEON_ID) return;
+  const firstClear = outcome === 'conquered' && (char.dungeonRecord?.clears || []).filter((c) => c.id === session.id).length === 1;
+  const pick = session.companionShieldUsed && session.companion ? ['echo_dungeon_shield_debt', 'Người từng đỡ đòn thay bạn đã lành vết thương', 'The one who took a blow for you has healed']
+    : session.npcStaked ? ['echo_dungeon_staked_companion', 'Người đồng đội vẫn nhớ lần bị đem ra cược', 'Your companion remembers being the stake']
+    : session.passengers > 0 && outcome === 'conquered' ? ['echo_dungeon_warp_witness', 'Hành khách bạn đưa ra khỏi toa cuối vẫn nhớ mặt bạn', 'A passenger you brought out remembers your face']
+    : session.passengers > 0 ? ['echo_dungeon_warp_left_behind', 'Hành khách bị bỏ lại trên tàu có người thân đang tìm', 'Someone is looking for the passenger left on the train']
+    : firstClear ? ['echo_dungeon_route_notes', 'Tin bạn đi hết một hầm đã tới tai các Office', 'Word that you cleared a dungeon has reached the Offices']
+    : null;
+  if (pick) plantThread(char, pick[0], 1, pick[1], pick[2]);
 }
 
 /**

@@ -58,7 +58,7 @@ export const RING_DEPTH = [
     ], 8),
 
   mission('ring_patron_wants_a_face', [2, 3],
-    '[Người bảo trợ muốn một khuôn mặt] Nhà bảo trợ giàu có đặt Ring vẽ chân dung người bạn đời đã khuất. Trong tay họ chỉ có tấm ảnh nhòe và lọn tóc. Họ muốn khuôn mặt giống đến mức họ không phân biệt được.',
+    '[Người bảo trợ muốn một khuôn mặt] Nhà bảo trợ giàu có đặt Ring vẽ chân dung người họ từng chung sống, nay đã khuất. Trong tay họ chỉ có tấm ảnh nhòe và lọn tóc. Họ muốn khuôn mặt giống đến mức họ không phân biệt được.',
     '[A patron wants a face] A wealthy patron commissions the Ring for a portrait of their late partner. They have only a blurred photograph and a lock of hair. They want a likeness so exact they cannot tell the difference.',
     [
       fc('Vẽ đúng như ảnh nhòe, để nó cũng nhòe', 'Paint exactly as the blurred photograph, so it is blurred too',

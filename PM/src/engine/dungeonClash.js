@@ -195,6 +195,7 @@ export function settleStake(ctx, char, session, stake, outcome) {
   if (stake.id === 'npc') {
     const comp = stake.companion;
     const role = comp.role;
+    session.npcStaked = role;
     if (won) {
       ctx.moveCompanionBond(char, comp, CLASH_BALANCE.npcWinBond);
       const npc = char.npcs?.[role];
