@@ -7,6 +7,7 @@ import {
 import { joinAffiliation } from '../src/engine/affiliation.js';
 import { gateProfileOf, nextGateDueAge, planFirstGate } from '../src/engine/dungeonPacing.js';
 import { matchesEventContext } from '../src/engine/eventConditions.js';
+import { NIGHT_DUNGEON, STAGE_VARIANTS, SIDE_ROOMS, SHORTCUTS } from '../src/data/dungeonExtras.js';
 
 function delver(seed, extra = {}) {
   const c = createNewCharacter({ seed, startAge: 30 });
@@ -30,6 +31,17 @@ for (const id of ids) {
   assert.ok(def.stages[1].choices.some((c) => c.goto === 3), `${id} shortcut`);
   assert.ok(def.stages[3].choices.some((c) => c.reportAff), `${id} report`);
   assert.ok(def.variants?.[2]?.choices?.length >= 2, `${id} variant`);
+}
+for (const [id, stages] of [
+  ['night', NIGHT_DUNGEON.stages],
+  ...Object.entries(STAGE_VARIANTS).map(([key, variants]) => [key, Object.values(variants)]),
+  ...Object.entries(SIDE_ROOMS).map(([key, side]) => [key, [{ choices: [side.door, ...side.room.choices] }]]),
+  ['shortcuts', [{ choices: Object.values(SHORTCUTS) }]]
+]) {
+  for (const stage of stages) for (const choice of stage.choices) {
+    if (!choice.checkTrait && !Object.values(SHORTCUTS).includes(choice)) continue;
+    assert.ok(choice.failVi && choice.failEn, `${id}: checked choices need VI/EN failure narration`);
+  }
 }
 
 // Exploration stages (side room, shortcut, variant, companion sent ahead) are the Outskirts' own now;

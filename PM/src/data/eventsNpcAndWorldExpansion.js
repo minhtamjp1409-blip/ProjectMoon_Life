@@ -15,7 +15,7 @@ export const EXPANSION_STORY_EVENTS = [
     need: { npc: 'partner', bondAtMost: ['partner', 28] },
     tags: ['friction', 'combat', 'npc'],
     forbids: ['partner_ambush_fallout_done'],
-    vi: '[Vết nứt giữa làn đạn] Trong một cuộc phục kích tại khu nhà kho bỏ hoang, {partner} không bọc sườn cho bạn như đã giao ước mà lùi lại giữ khoảng cách an toàn. Bạn phải tự chống đỡ ba tay súng trước khi đẩy lùi được chúng. Khi khói súng tan, {partner} tra vũ khí vào bao với vẻ mặt lạnh tanh.',
+    vi: '[Vết nứt giữa làn đạn] Giữa trận phục kích trong khu nhà kho bỏ hoang, {partner} không bọc sườn cho bạn như đã giao ước mà lùi lại giữ khoảng cách an toàn. Bạn phải tự chống đỡ ba tay súng trước khi đẩy lùi được chúng. Khi khói súng tan, {partner} tra vũ khí vào bao với vẻ mặt lạnh tanh.',
     en: '[Friction in the Crossfire] During an ambush at an abandoned warehouse, {partner} did not cover your flank as agreed, stepping back to hold a safe distance. You had to fend off three gunmen alone before driving them off. When the smoke cleared, {partner} sheathed their weapon with a cold, unreadable face.',
     choices: [
       {
@@ -176,7 +176,7 @@ export const EXPANSION_STORY_EVENTS = [
     requires: ['FriendInSyndicate'],
     forbids: ['friend_extortion_done'],
     tags: ['friction', 'syndicate', 'npc'],
-    vi: '[Món nợ bảo kê] {friend} dẫn một toán côn đồ Syndicate đến trước cửa nhà bạn. Trên mặt họ không còn chút nét thân quen thuở nhỏ, chỉ có sự lạnh lùng của một tay đòi nợ thuê: "Luật khu vực này vừa đổi. Nộp 30 Ahn tiền bảo kê tháng này, hoặc chúng tôi phải đập nát đồ đạc."',
+    vi: '[Món nợ bảo kê] {friend} dẫn một toán côn đồ Syndicate đến trước cửa nhà bạn. Trên mặt họ không còn chút nét thân quen thuở nhỏ, chỉ còn vẻ lạnh tanh của dân đòi nợ thuê: "Luật khu vực này vừa đổi. Nộp 30 Ahn tiền bảo kê tháng này, hoặc chúng tôi phải đập nát đồ đạc."',
     en: '[Protection Extortion] {friend} brought a squad of syndicate enforcers right to your door. No trace of childhood warmth remained on their face, only the callous chill of a collector: "District rules changed. Pay 30 Ahn in protection dues this month, or we tear this flat apart."',
     choices: [
       {
@@ -239,7 +239,7 @@ export const EXPANSION_STORY_EVENTS = [
           },
           {
             w: 45,
-            resultVi: '{mentor} vẫn nhỉnh hơn bạn nửa nhịp kiếm, để lại một vết rạch nông trên vai bạn. Dẫu thua, bạn đã cảm nhận được cảnh giới cao nhất của đường kiếm.',
+            resultVi: '{mentor} vẫn nhỉnh hơn bạn nửa nhịp kiếm, để lại một vết rạch nông trên vai bạn. Dẫu thua, bạn đã chạm tới cảnh giới cao nhất của đường kiếm.',
             resultEn: '{mentor} still held a half-beat edge, leaving a shallow line across your shoulder. Though bested, you touched the highest horizon of the blade.',
             effects: { health: -22, sanity: +15, rep: +18, resonance: +12 },
             meritAdd: 20,
@@ -592,7 +592,7 @@ export const EXPANSION_STORY_EVENTS = [
     major: true,
     weight: 30,
     forbids: ['fixer_recruiter_seen'],
-    vi: '[Mắt Nhìn Của Văn Phòng Fixer] Một Fixer Grade 6 của một văn phòng nhỏ ghé qua hẻm tuyển thiếu niên phụ việc khuân đồ và lau dọn vũ khí. Ông bảo bạn thử giơ nắm đấm và nhận xét thể lực của bạn.',
+    vi: '[Mắt Nhìn Của Văn Phòng Fixer] Ông Fixer Grade 6 của văn phòng nhỏ đầu phố ghé hẻm tuyển đám thiếu niên phụ khuân đồ, lau chùi vũ khí. Ông bảo bạn thử giơ nắm đấm và nhận xét thể lực của bạn.',
     en: '[A Fixer Office’s Eye] A Grade 6 Fixer from a minor office stopped by the alley recruiting adolescents for porter work and weapon scrubbing. He ordered you to hold up your fists and sized up your frame.',
     choices: [
       {
@@ -620,13 +620,13 @@ export const EXPANSION_STORY_EVENTS = [
     major: true,
     weight: 28,
     forbids: ['workshop_manual_read'],
-    vi: '[Cuốn Sổ Tay Thợ Rèn Vô Danh] Trong ngăn kéo của một tiệm rèn Workshop bỏ hoang sau hỏa hoạn, bạn tìm thấy một tập ghi chép về công thức tôi luyện hợp kim chịu nhiệt và bản vẽ cơ cấu lò xo giảm chấn.',
+    vi: '[Cuốn Sổ Tay Thợ Rèn Vô Danh] Trong ngăn kéo tiệm rèn Workshop bỏ hoang sau trận hỏa hoạn, bạn tìm thấy tập ghi chép công thức tôi hợp kim chịu nhiệt cùng bản vẽ lò xo giảm chấn.',
     en: '[Nameless Smith’s Notebook] Inside a charred drawer of a fire-gutted Workshop forge, you unearthed a manual outlining heat-treated alloy tempering and dampening spring mechanics.',
     choices: [
       {
         labelVi: 'Dành từng đêm dưới ánh nến để nghiền ngẫm các sơ đồ cơ khí',
         labelEn: 'Spend every night by candlelight studying the schematics',
-        resultVi: 'Những nguyên lý đúc thép và mài cạnh lưỡi dao ngấm sâu vào đầu bạn. Đôi mắt bạn bắt đầu nhìn vũ khí với sự thấu hiểu của một thợ thủ công.',
+        resultVi: 'Những nguyên lý đúc thép và mài cạnh lưỡi dao ngấm sâu vào đầu bạn. Giờ bạn nhìn vũ khí bằng con mắt người thợ.',
         resultEn: 'Principles of casting and edge-geometry settled into your mind. Your eyes began reading steel with a craftsman’s literacy.',
         effects: { sanity: +8, resonance: +6 },
         flagsAdd: ['workshop_manual_read', 'SelfTaughtCraftsman']
@@ -763,7 +763,7 @@ export const EXPANSION_STORY_EVENTS = [
     need: { jobs: ['Fixer'] },
     forbids: ['zwei_standoff_done'],
     tags: ['combat', 'contract'],
-    vi: '[Lời Thề Lá Chắn Zwei] Phối hợp tác chiến cùng Zwei Association Section 4, đội của bạn bị bao vây bởi một nhóm đánh thuê vũ trang hạng nặng. Viên Đội trưởng Zwei cắm đại khiên xuống đất, lệnh cho bạn cùng dựng chiến lũy giữ vững hành lang.',
+    vi: '[Lời Thề Lá Chắn Zwei] Phối hợp tác chiến cùng Zwei Association Section 4, đội của bạn bị toán lính đánh thuê vũ trang hạng nặng vây kín. Viên Đội trưởng Zwei cắm đại khiên xuống đất, lệnh cho bạn cùng dựng chiến lũy giữ vững hành lang.',
     en: '[Zwei Shield Wall Protocol] Deployed alongside Zwei Association Section 4, your unit was pinned by heavy mercs. The Zwei captain rammed his tower shield into the cobbles, ordering you to form a bulwark to hold the evacuation corridor.',
     choices: [
       {
@@ -870,7 +870,7 @@ export const EXPANSION_STORY_EVENTS = [
     need: { jobs: ['Fixer'] },
     forbids: ['seven_auction_done'],
     tags: ['investigation'],
-    vi: '[Mật Báo Của Seven Association] Một chuyên viên tình báo của Seven Association tiếp cận bạn tại quán cà phê kín, cung cấp hồ sơ tham nhũng của một quan chức Nest với giá hời nếu bạn chịu thâm nhập xác thực.',
+    vi: '[Mật Báo Của Seven Association] Người tình báo của Seven Association tìm gặp bạn trong quán cà phê kín, chào bán giá hời hồ sơ tham nhũng của viên chức Nest, với điều kiện bạn chịu thâm nhập kiểm chứng.',
     en: "[Seven Association Tip] An analyst from Seven Association approaches you in a back-room café with a corruption file on a Nest official, cheap, if you will verify it by getting into his vault.",
     choices: [
       {
@@ -913,7 +913,7 @@ export const EXPANSION_STORY_EVENTS = [
     need: { jobs: ['Fixer'] },
     forbids: ['cinq_duel_done'],
     tags: ['combat'],
-    vi: '[Lời Thách Đấu Của Kiếm Sĩ Cinq] Một kiếm sĩ tài hoa của Cinq Association Section 4 gửi thư thách đấu một mất một còn tại sàn đấu danh dự của quận nhằm phân định cao thấp giữa hai trường phái.',
+    vi: '[Lời Thách Đấu Của Kiếm Sĩ Cinq] Tay kiếm tài hoa của Cinq Association Section 4 gửi thư thách đấu một mất một còn trên sàn đấu danh dự của quận, phân định cao thấp giữa hai trường phái.',
     en: '[Cinq Association Duel Challenge] An agile duelist from Cinq Association Section 4 tendered an honorable challenge at the district pavilion to test finesse between opposing doctrines.',
     choices: [
       {
@@ -956,7 +956,7 @@ export const EXPANSION_STORY_EVENTS = [
     need: { jobs: ['Fixer'] },
     forbids: ['dieci_retrieval_done'],
     tags: ['investigation', 'combat'],
-    vi: '[Cổ Thư Của Dieci Association] Dieci Association Section 4 thuê văn phòng bạn hỗ trợ thu hồi một cuốn đại thư bị đánh cắp bởi một tà giáo bí mật trong khu ổ chuột ngầm District 4.',
+    vi: '[Cổ Thư Của Dieci Association] Dieci Association Section 4 thuê văn phòng bạn đi thu hồi cuốn đại thư bị giáo phái bí mật đánh cắp, giấu trong khu ổ chuột ngầm District 4.',
     en: '[Dieci Association Tome Recovery] Dieci Association Section 4 contracted your office to reclaim a heavy consecrated archive stolen by a secretive occult sect in District 4 catacombs.',
     choices: [
       {
@@ -1065,7 +1065,7 @@ export const EXPANSION_STORY_EVENTS = [
     need: { jobs: ['Syndicate'], finger: 'Thumb' },
     forbids: ['thumb_discipline_done'],
     tags: ['syndicate'],
-    vi: '[Kỷ Luật Thép Của The Thumb] Một Capo của Thumb gọi bạn lên thẩm vấn vì một thuộc hạ dưới quyền bạn đã có lời lẽ vô lễ với một Sotto-Capo. Theo quân luật, hoặc bạn tự chặt một ngón tay của kẻ đó, hoặc tự lãnh phạt.',
+    vi: '[Kỷ Luật Thép Của The Thumb] Capo của Thumb gọi bạn lên tra hỏi, vì thuộc hạ dưới quyền bạn đã hỗn láo với Sotto-Capo. Theo quân luật, hoặc bạn tự tay chặt một ngón tay kẻ đó, hoặc tự mình lãnh phạt.',
     en: '[The Thumb’s Iron Protocol] A Thumb Capo summoned you because a subordinate under your watch spoke out of line before a Sotto-Capo. Under code, either you sever the underling’s finger, or accept reprimand yourself.',
     choices: [
       {
@@ -1127,7 +1127,7 @@ export const EXPANSION_STORY_EVENTS = [
     need: { jobs: ['Syndicate'], finger: 'Middle' },
     forbids: ['middle_blood_debt_done'],
     tags: ['combat', 'syndicate'],
-    vi: '[Món Nợ Trong Cuốn Sổ Hận Thù] Cuốn Book of Vengeance gọi tên một nhóm cướp vừa làm trầy xước cánh tay của một em nhỏ trong khu phố của The Middle. Đại Ca ra lệnh cho bạn dẫn đầu đội trừng phạt.',
+    vi: '[Món Nợ Trong Cuốn Sổ Hận Thù] Book of Vengeance gọi tên toán cướp vừa làm trầy tay đứa nhỏ trong khu phố The Middle. Đại Ca ra lệnh cho bạn dẫn đầu đội trừng phạt.',
     en: "[A Debt in the Book of Vengeance] The Book of Vengeance names a crew who scraped the arm of a small child in the Middle’s neighborhood. The Big Brother orders you to lead the punishment squad.",
     choices: [
       {
@@ -1189,7 +1189,7 @@ export const EXPANSION_STORY_EVENTS = [
     need: { jobs: ['Syndicate'], finger: 'Pinky' },
     forbids: ['pinky_whisper_done'],
     tags: ['syndicate'],
-    vi: '[Mạng Lưới Dây Tơ Của The Pinky] Người đưa tin của The Pinky giao cho bạn một phong thư niêm bằng sáp đen không chữ, bảo bạn chuyển đến tay một kẻ ăn mày ở ngã tư mà không được nhìn vào mặt người đó.',
+    vi: '[Mạng Lưới Dây Tơ Của The Pinky] Người đưa tin của The Pinky giao cho bạn một phong thư niêm bằng sáp đen không chữ, dặn bạn trao tận tay kẻ ăn mày ngoài ngã tư, tuyệt đối không được nhìn mặt.',
     en: '[The Pinky’s Silk Filament Network] A Pinky courier handed you a blank black-wax sealed envelope, instructing you to deliver it to a beggar at the crossroads without looking at their face.',
     choices: [
       {
@@ -1204,7 +1204,7 @@ export const EXPANSION_STORY_EVENTS = [
       {
         labelVi: 'Liếc nhìn vào đôi mắt người ăn mày trong khoảnh khắc giao thư',
         labelEn: 'Glance into the beggar’s eyes during the handoff moment',
-        resultVi: 'Đằng sau lớp bùn đất là ánh mắt của một điệp viên Wing cấp cao. Sự tò mò suýt khiến bạn trả giá bằng mạng sống nhưng mang lại tin tức mật.',
+        resultVi: 'Sau lớp bùn đất là ánh mắt của điệp viên Wing cấp cao. Sự tò mò suýt khiến bạn trả giá bằng mạng sống nhưng mang lại tin tức mật.',
         resultEn: 'Beneath the grime lay the cold eyes of a senior Wing operative. Curiosity nearly cost your life but earned priceless intel.',
         effects: { sanity: -14, resonance: +20, network: +15 },
         meritAdd: 22,
@@ -1267,7 +1267,7 @@ export const EXPANSION_STORY_EVENTS = [
     need: { jobs: ['Syndicate'] },
     forbids: ['contraband_heist_done'],
     tags: ['syndicate'],
-    vi: '[Vụ Cướp Hàng Buôn Lậu Của Corp] Syndicate của bạn lên kế hoạch đánh cướp một đoàn xe vận chuyển linh kiện Singularity thử nghiệm của một Wing khi xe đi qua vùng tối Backstreets.',
+    vi: '[Vụ Cướp Hàng Buôn Lậu Của Corp] Syndicate của bạn tính chặn cướp đoàn xe chở linh kiện Singularity thử nghiệm của Wing khi xe băng qua vùng tối Backstreets.',
     en: '[Wing Prototype Shipment Heist] Your syndicate drafted an ambush against an armored convoy hauling prototype Singularity components through Backstreet blind spots.',
     choices: [
       {
@@ -1438,7 +1438,7 @@ export const EXPANSION_STORY_EVENTS = [
       {
         labelVi: 'Đề xuất cải thiện điều kiện làm việc để nâng cao năng suất tự nhiên',
         labelEn: 'Advocate improving workstation ergonomics for organic output',
-        resultVi: 'Hội đồng im lặng một thoáng; kế hoạch được duyệt một phần vì tính khả thi thực tế, nhân viên cấp dưới tôn sùng bạn như một vị cứu tinh.',
+        resultVi: 'Hội đồng im lặng một thoáng; kế hoạch được duyệt phần nhiều nhờ làm được thật, còn đám nhân viên cấp dưới tôn bạn như vị cứu tinh.',
         resultEn: 'The board fell silent; the initiative passed in part for practical yield, winning you deep loyalty from frontline staff.',
         effects: { sanity: +15, rep: +18, network: +20 },
         meritAdd: 22,
@@ -1452,7 +1452,7 @@ export const EXPANSION_STORY_EVENTS = [
     major: true,
     weight: 22,
     forbids: ['d20_mirage_seen'],
-    vi: "[Gương kính District 20] Đi ngang khu trung tâm T Corp ở District 20, bạn thấy mặt kính các tòa tháp phản chiếu những phiên bản khác của mình: một người giàu hơn, một người tàn nhẫn hơn, và một người đã chết từ lâu.",
+    vi: "[Gương kính District 20] Đi ngang khu trung tâm T Corp ở District 20, bạn thấy mặt kính các tòa tháp phản chiếu những bản khác của chính mình: kẻ giàu hơn, kẻ tàn nhẫn hơn, và kẻ đã chết từ lâu.",
     en: "[District 20 Glass] Crossing the T Corp center in District 20, you see the tower glass reflect other versions of you: a richer one, a crueler one, and one long dead.",
     choices: [
       {
@@ -1479,7 +1479,7 @@ export const EXPANSION_STORY_EVENTS = [
     major: true,
     weight: 22,
     forbids: ['d23_banquet_attended'],
-    vi: '[Tấm Vé Đại Tiệc District 23] Bạn nhận được một tấm thiệp mạ vàng mời tham dự bữa tiệc đêm của một câu lạc bộ ẩm thực ngầm tại District 23. Món khai vị được đồn là chế biến từ nội tạng của các võ sư danh tiếng.',
+    vi: '[Tấm Vé Đại Tiệc District 23] Bạn nhận tấm thiệp mạ vàng mời dự tiệc đêm của câu lạc bộ ẩm thực ngầm ở District 23. Món khai vị được đồn là chế biến từ nội tạng của các võ sư danh tiếng.',
     en: '[District 23 Gastronomic Soiree Ticket] You received a gilt-edged invitation to an elite midnight dining salon in District 23. The opening course was rumored to be prepared from the liver of a renowned martial artist.',
     choices: [
       {
@@ -1491,7 +1491,7 @@ export const EXPANSION_STORY_EVENTS = [
         flagsAdd: ['d23_banquet_attended', 'GourmetInitiate']
       },
       {
-        labelVi: 'Bán tấm vé cho một gã nhà giàu sành ăn ở Backstreets lấy 30 Ahn',
+        labelVi: 'Bán tấm vé lấy 30 Ahn cho tay nhà giàu sành ăn ở Backstreets',
         labelEn: 'Sell the golden ticket to a wealthy Backstreet foodie for 30 Ahn',
         resultVi: 'Gã nhà giàu mừng rỡ trả đủ 30 Ahn tiền tươi. Bạn dùng số tiền đó mua một bữa ăn ấm cúng bình dị và an toàn.',
         resultEn: 'The buyer paid 30 Ahn in fresh banknotes. You spent the proceeds on a warm, safe, ordinary stew dinner.',
@@ -1506,7 +1506,7 @@ export const EXPANSION_STORY_EVENTS = [
     major: true,
     weight: 23,
     forbids: ['d11_smoke_shift_done'],
-    vi: '[Ca Làm Việc Trong Màn Khói District 11] Bạn nhận một ca phụ việc tại nhà máy lọc khói khổng lồ của District 11. Khói đen kịt phủ kín không gian, đòi hỏi công nhân phải thay màng lọc độc hại mỗi 30 phút.',
+    vi: '[Ca Làm Việc Trong Màn Khói District 11] Bạn nhận ca làm phụ trong nhà máy lọc khói khổng lồ của District 11. Khói đen kịt phủ kín không gian, đòi hỏi công nhân phải thay màng lọc độc hại mỗi 30 phút.',
     en: '[District 11 Smoke Refinery Shift] You took a relief contract at District 11’s industrial refinery. Choking soot blanketed the bays, requiring workers to swap toxin filters every thirty minutes.',
     choices: [
       {
@@ -1682,7 +1682,7 @@ export const EXPANSION_CONSEQUENCE_EVENTS = [
     major: true,
     isCausalCallback: true,
     tags: ['combat', 'nemesis'],
-    vi: '[Phục Kích Của Kẻ Phản Bội] Trong đêm tối, {nemesis} dẫn theo một toán sát thủ bịt mặt chặn đứng đường về của bạn. Ánh mắt kẻ từng kề vai tác chiến rực lên tia hận thù điên dại: "Hôm nay, một trong hai ta phải nằm lại ở con ngõ này."',
+    vi: '[Phục Kích Của Kẻ Phản Bội] Trong đêm tối, {nemesis} dẫn toán sát thủ bịt mặt chặn đứng đường về của bạn. Ánh mắt kẻ từng kề vai tác chiến rực lên tia hận thù điên dại: "Hôm nay, một trong hai ta phải nằm lại ở con ngõ này."',
     en: '[The Betrayer’s Ambush] In pitch darkness, {nemesis} and masked cutthroats barred your way home. Eyes that once watched your flank flared with frantic hatred: "Tonight, only one of us leaves this alley breathing."',
     choices: [
       {
@@ -1913,7 +1913,7 @@ export const EXPANSION_FIXER_REQUESTS = [
   {
     id: 'req_exp_syndicate_armory_demolition',
     tier: 3,
-    typeVi: 'Phá hủy kho vũ khí lậu của một Syndicate ở District 17',
+    typeVi: 'Phá kho vũ khí lậu của Syndicate ở District 17',
     typeEn: 'Demolish an illicit syndicate armory in District 17',
     vi: 'Một băng nhóm đang tích trữ súng cấm tự động để chuẩn bị cho một cuộc thanh trừng đẫm máu.',
     en: 'A rogue gang was stockpiling forbidden automatic rifles ahead of a bloody territorial purge.',

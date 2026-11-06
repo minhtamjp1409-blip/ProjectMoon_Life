@@ -81,7 +81,7 @@ export const THUMB_EVENTS = [
     ]),
 
   fe('thumb_bridge_swap', T, [1, 3],
-    '[Đổi con tin trên cầu] Một Soldato của The Thumb bị Middle giữ, và một người của Middle bị Thumb giữ. Hai bên đồng ý đổi trên một cây cầu ở rìa District 12 lúc bình minh, mỗi bên đưa ba người không mang vũ khí. Bạn là một trong ba, và bạn biết Underboss chỉ muốn lấy lại một người trong đó.',
+    '[Đổi con tin trên cầu] Middle giữ một Soldato của The Thumb, Thumb giữ một người của Middle. Hai bên hẹn đổi người trên cây cầu rìa District 12 lúc bình minh, mỗi bên ba người tay không. Bạn là một trong ba, và bạn biết Underboss chỉ muốn lấy lại đúng một người.',
     '[Hostage swap on the bridge] A Thumb Soldato is held by the Middle, and a Middle member by the Thumb. Both sides agree to exchange on a bridge at the edge of District 12 at dawn, each bringing three unarmed people. You are one of the three, and you know the Underboss only wants one of them back.',
     [
       fc('Làm đúng thỏa thuận, đưa cả hai bên về', 'Honor the deal and bring everyone back',
@@ -99,7 +99,7 @@ export const THUMB_EVENTS = [
     ], { age: [24, 90] }),
 
   fe('thumb_bar_protection', T, [0, 2],
-    '[Quán bar không chịu nộp] Chủ một quán bar ở District 8 từ chối khoản bảo kê, vì đã nộp cho một băng khác. Cô gái hát ở đó là con gái ông, và cô đã nhìn bạn từ sau quầy cả buổi tối. Capo cần một lời trả lời trước thứ Sáu.',
+    '[Quán bar không chịu nộp] Ông chủ quán bar ở District 8 không chịu nộp tiền bảo kê, vì đã nộp cho băng khác rồi. Cô gái hát ở đó là con gái ông, và cô đã nhìn bạn từ sau quầy cả buổi tối. Capo cần một lời trả lời trước thứ Sáu.',
     '[The bar that will not pay] The owner of a District 8 bar refuses protection money, having already paid another crew. The girl who sings there is his daughter, and she has watched you from behind the bar all evening. Your Capo needs an answer by Friday.',
     [
       fg('Đập vỡ vài chai và nói rõ luật', 'Smash a few bottles and spell out the rule', [
@@ -135,7 +135,7 @@ export const THUMB_EVENTS = [
     ], { age: [24, 90] }),
 
   fe('thumb_nest_debt', T, [0, 3],
-    '[Món nợ ở Nest] Một người ở Nest, làm việc cho Wing, nợ The Thumb từ một ván bài hai năm trước. Hắn đã cầm cố cả hợp đồng làm việc để trả. Nếu Thumb đòi, Wing sẽ biết nhân viên của họ chơi bài với băng nhóm, và hắn có thể mất cả chỗ ở. Capo bảo bạn xử.',
+    '[Món nợ ở Nest] Gã nhân viên Wing sống ở Nest nợ The Thumb từ ván bài hai năm trước. Hắn đã cầm cố cả hợp đồng làm việc để trả. Nếu Thumb đòi, Wing sẽ biết nhân viên của họ chơi bài với băng nhóm, và hắn có thể mất cả chỗ ở. Capo bảo bạn xử.',
     '[Debt in the Nest] A Nest resident who works for a Wing owes the Thumb from a card game two years ago. He has pledged his work contract to pay. If the Thumb collects, the Wing will learn its employee gambles with gangs, and he may lose his housing. Your Capo tells you to deal with it.',
     [
       fc('Đòi nợ đúng hạn, báo luôn với Wing', 'Collect on time and tell the Wing as well',
@@ -171,7 +171,7 @@ export const THUMB_EVENTS = [
     ], { age: [24, 90] }),
 
   fe('thumb_envelope_bullet', T, [0, 3],
-    '[Phong bì có một viên đạn] Capo đưa bạn một phong bì dày, bên trong có đúng một viên đạn và một mảnh giấy ghi tên. Theo lệ của The Thumb, đây là lời báo trước cuối cùng, và người đưa phải tận tay đặt vào tay người nhận. Cái tên ấy bạn đã ngồi chung bàn ăn với họ ba lần.',
+    '[Phong bì có một viên đạn] Capo đưa bạn chiếc phong bì dày, bên trong có đúng một viên đạn với mảnh giấy ghi tên. Theo lệ của The Thumb, đây là lời báo trước cuối cùng, và người đưa phải tận tay đặt vào tay người nhận. Cái tên ấy bạn đã ngồi chung bàn ăn với họ ba lần.',
     '[An envelope with a bullet] Your Capo hands you a thick envelope holding exactly one bullet and a slip with a name. By Thumb custom this is the final warning, and the carrier must place it in the recipient’s own hand. You have sat at the same table with that name three times.',
     [
       fc('Giao tận tay như đúng lệ', 'Deliver it by hand as custom demands',
@@ -193,7 +193,7 @@ export const THUMB_EVENTS = [
     '[Redrawing the lines] The Sottocapo spreads a district map on the table and redraws the turf with a red pencil. Two blocks, a school and a small church are circled into the new tribute zone. You are the one who must tell them, and every household has someone who knows your face.',
     [
       fc('Đến từng nhà báo luật mới, không giấu', 'Go door to door with the new rule, hiding nothing',
-        'Bạn đứng trước cánh cửa của thầy giáo, của vị linh mục, của một chủ tiệm bánh, và nói đúng những gì được giao. Không ai cãi. Khi bạn bước ra khỏi nhà cuối, trời đã tối và tay bạn lạnh một cách lạ.',
+        'Bạn đứng trước cửa nhà thầy giáo, nhà vị linh mục, nhà ông chủ tiệm bánh, nói đúng từng chữ được giao. Không ai cãi. Lúc bước khỏi nhà cuối cùng, trời đã tối, tay bạn lạnh ngắt lạ thường.',
         'You stand at the teacher’s door, the priest’s, a baker’s, and say exactly what you were given. Nobody argues. When you step out of the last house it is dark and your hands are strangely cold.',
         { rep: 5, wealth: 7, sanity: -8, network: -3 }),
       fg('Xin Sottocapo miễn trường học và nhà thờ', 'Ask the Sottocapo to exempt the school and the church', [
@@ -243,7 +243,7 @@ export const THUMB_EVENTS = [
     ]),
 
   fe('thumb_rival_dinner', T, [2, 3],
-    '[Bữa tối với đối thủ] Một Capo của băng Thumb khác ở District khác mời Underboss của bạn dùng bữa, và ông cử bạn thay mặt. Trên bàn có sáu món, ba loại rượu, và một cái ghế để trống dành cho ai không rõ. Người chủ nhà luôn rót rượu cho cả hai trước khi uống của mình.',
+    '[Bữa tối với đối thủ] Capo của băng Thumb bên District khác mời Underboss của bạn dùng bữa, và ông cử bạn đi thay. Trên bàn có sáu món, ba loại rượu, cùng chiếc ghế để trống chẳng rõ dành cho ai. Người chủ nhà luôn rót rượu cho cả hai trước khi uống của mình.',
     '[Dinner with a rival] A Capo of another Thumb crew in another District invites your Underboss to dine, and he sends you in his place. The table holds six dishes, three wines, and an empty chair for someone unnamed. The host always pours for both before drinking his own.',
     [
       fg('Uống rượu họ rót, ăn mọi món', 'Drink what is poured and eat every dish', [
@@ -334,7 +334,7 @@ export const THUMB_EVENTS = [
     ]),
 
   fe('thumb_daughter_match', T, [2, 3],
-    '[Hôn sự cho con gái] Underboss muốn gả con gái cho con trai một Capo ở District khác để củng cố liên minh. Cô gái đã đến tìm bạn, không nói gì về hôn sự, chỉ hỏi bạn từng thấy ai thoát khỏi The Thumb mà không chết chưa. Bạn biết nghe câu ấy là đã vượt quá lệ.',
+    '[Hôn sự cho con gái] Underboss muốn gả con gái cho con trai vị Capo bên District khác để củng cố liên minh. Cô gái đã đến tìm bạn, không nói gì về hôn sự, chỉ hỏi bạn từng thấy ai thoát khỏi The Thumb mà không chết chưa. Bạn biết nghe câu ấy là đã vượt quá lệ.',
     '[A daughter’s match] The Underboss wants to marry his daughter to a Capo’s son in another District to cement an alliance. The girl has come to you, saying nothing about the match, only asking whether you have ever seen anyone leave the Thumb without dying. You know that hearing the question already oversteps custom.',
     [
       fc('Nói thật, rằng có và không nhiều', 'Answer truthfully: yes, and not many',
@@ -346,13 +346,13 @@ export const THUMB_EVENTS = [
         [50, 'Underboss lặng đi một lúc, rồi nói ông đã biết. Ông không nói biết từ khi nào. Bạn ra khỏi phòng với cảm giác vừa bị thử.', 'The Underboss is silent for a long time, then says he already knew. He does not say since when. You leave the room feeling you have just been tested.', { rep: 3, sanity: -6, network: -3 }]
       ]),
       fc('Nói rằng việc này không phải việc của bạn', 'Say this is not your business',
-        'Cô gật đầu một cách bình thản. Hôn sự diễn ra, và cô đứng giữa hai gia đình mà không nhìn đâu cả. Bạn đứng ở hàng sau và không tìm được lý do để rời mắt khỏi sàn.',
+        'Cô bình thản gật đầu. Hôn sự diễn ra, và cô đứng giữa hai gia đình mà không nhìn đâu cả. Bạn đứng ở hàng sau và không tìm được lý do để rời mắt khỏi sàn.',
         'She nods calmly. The wedding takes place, and she stands between two families looking nowhere. You stand in the back row and cannot find a reason to lift your eyes from the floor.',
         { sanity: -5, rep: 1 })
     ], { age: [28, 90] }),
 
   fe('thumb_old_blood', T, [2, 3],
-    '[Máu cũ trên sổ nợ] Khi dọn kho hồ sơ của một Capo đã khuất, bạn tìm thấy một cuốn sổ kẹp giữa hai tấm ván. Bên trong là danh sách những khoản tiền mà The Thumb nhận từ một Wing suốt mười lăm năm qua, và một cột bên cạnh ghi tên những người đã chết để giữ cho khoản ấy tiếp tục.',
+    '[Máu cũ trên sổ nợ] Dọn kho hồ sơ của vị Capo đã khuất, bạn tìm thấy cuốn sổ kẹp giữa hai tấm ván. Bên trong liệt kê những khoản tiền The Thumb nhận từ Wing suốt mười lăm năm, cột bên cạnh ghi tên những người đã chết để dòng tiền ấy không đứt.',
     '[Old blood in the ledger] While clearing a dead Capo’s archive, you find a notebook wedged between two boards. It lists sums the Thumb has taken from a Wing for fifteen years, and a column beside it names the dead who kept the payments flowing.',
     [
       fg('Đưa cuốn sổ lên Underboss', 'Bring the ledger to the Underboss', [
@@ -365,7 +365,7 @@ export const THUMB_EVENTS = [
         { sanity: -7, heat: -3 }),
       fg('Dùng cuốn sổ để tống tiền Wing', 'Use the ledger to squeeze the Wing', [
         [50, 'Wing trả một khoản đủ để bạn sống thoải mái nhiều năm. Một tuần sau, bạn thấy hai Fixer đứng cuối con hẻm ngoài nhà, không làm gì cả.', 'The Wing pays enough to keep you comfortable for years. A week later you see two Fixers at the end of the alley outside your home, doing nothing.', { wealth: 28, heat: 14, sanity: -8, rep: -4 }, { flagsAdd: ['thumb_blackmailed_wing'] }],
-        [50, 'Wing gọi bạn đến một cuộc họp ở tầng thượng. Bạn không ra khỏi đó trong bộ dạng như lúc vào.', 'The Wing summons you to a meeting on a roof.', { health: -24, wealth: -10, rep: -8, heat: 10 }]
+        [50, 'Wing gọi bạn lên họp ở tầng thượng. Bạn không ra khỏi đó trong bộ dạng như lúc vào.', 'The Wing summons you to a meeting on a roof.', { health: -24, wealth: -10, rep: -8, heat: 10 }]
       ])
     ], { age: [30, 90] })
 ];
@@ -382,7 +382,7 @@ export const THUMB_MINORS = [
     [C('Học theo, đánh cả đôi giày của người ngồi cạnh', 'Learn it and polish the neighbor’s pair too', 'Người ngồi cạnh nhìn đôi giày sáng của mình. Hôm sau anh ta đưa bạn một điếu xì gà lẻ.', 'The neighbor stares at his gleaming shoes for a long while. The next day he hands you a single cigar.', { network: 3, rep: 1 }), C('Tự lo phần mình, giữ bí quyết', 'Mind your own pair and keep the trick', 'Đôi giày bạn sáng đến mức Sottocapo nhìn xuống lần thứ hai. Không ai biết chuyện nhỏ này đã làm hài lòng ai.', 'Your shoes shine so much that the Sottocapo looks down a second time. Nobody knows whom this small matter pleased.', { rep: 2 })],
     I('Bạn chỉnh lại giày và quên đi.', 'You straighten your shoes and forget it.'), { theme: 'work' }),
   M('m_thumb_ledger_typo', AGE.GROWN, fneed(T, 0),
-    '[Con số lệch một chữ số] Bạn nhận ra sổ cống nạp tháng này có một con số bị ghi lệch một chữ số, và chữ số ấy có lợi cho một Capo cụ thể. Có thể chỉ là lỗi tay. Cũng có thể không.',
+    '[Con số lệch một chữ số] Bạn phát hiện sổ cống nạp tháng này có con số bị ghi lệch một chữ số, mà chữ số ấy lại có lợi cho đúng một Capo. Có thể chỉ là lỗi tay. Cũng có thể không.',
     '[One digit off] You notice this month’s tribute ledger has a figure written one digit off, and the digit favors a specific Capo. It could be a slip of the pen. It could also not be.',
     [C('Sửa lại im lặng, không báo ai', 'Fix it quietly and tell no one', 'Con số được sửa và sổ cân lại. Không ai hỏi, và bạn tự hỏi mình có vừa tha một tội hay chỉ gạt đi một lời nhắc.', 'The figure is corrected and the ledger balances. Nobody asks, and you wonder if you just spared an offense or only brushed away a warning.', { sanity: -1, network: 2 }), C('Báo lên Sottocapo kèm bằng chứng', 'Report it to the Sottocapo with evidence', 'Sottocapo ghi nhận và nhờ bạn không nói với ai. Một tháng sau, người Capo ấy được chuyển sang khu khác.', 'The Sottocapo acknowledges it and asks you to tell no one. A month later that Capo is moved to another district.', { rep: 4, network: -3 })],
     I('Bạn đóng sổ và không nghĩ thêm.', 'You close the book and think no more.'), { theme: 'work' }),
@@ -392,7 +392,7 @@ export const THUMB_MINORS = [
     [C('Mang nó về nhà', 'Take it home', 'Con chó đi cạnh bạn qua hai con phố mà không cần dây. Nó ngủ dưới giường và thức mỗi khi có ai bước qua cửa.', 'The dog walks beside you through two streets with no leash. It sleeps under your bed and wakes whenever anyone passes the door.', { sanity: 4, wealth: -2 }), C('Cho nó ăn, để nó ở lại', 'Feed it and let it stay', 'Capo không nhắc lại chuyện đó. Con chó ở lại, và cả hội dần quen đến mức ghi tên nó vào bảng trực.', 'The Capo never mentions it again. The dog stays, and the crew grows so used to it that they pencil its name on the duty board.', { sanity: 2, network: 3 })],
     I('Bạn đi qua con chó và không nhìn.', 'You pass the dog without looking.'), { theme: 'work' }),
   M('m_thumb_pistol_clean', AGE.GROWN, fneed(T, 0),
-    '[Lau súng đêm khuya] Bạn lau súng lúc hai giờ sáng như mọi lần, và nhận ra đã gần một năm bạn chưa bắn ai. Cũng không rõ đó là điều tốt hay xấu cho một người ở vị trí này.',
+    '[Lau súng đêm khuya] Bạn lau súng lúc hai giờ sáng như mọi lần, và nhận ra đã gần một năm bạn chưa bắn ai. Ở vị trí này, chẳng rõ đó là điềm lành hay dữ.',
     '[Cleaning the pistol at night] You clean your pistol at two in the morning as always, and realize it has been nearly a year since you shot anyone. It is not clear whether that is good or bad for someone in your position.',
     [C('Tập bắn thêm một buổi cho khỏi rỉ', 'Do another practice session to keep sharp', 'Bạn bắn mười hai viên vào bia ở trường bắn. Tay bạn không run, và đó là điều làm bạn ngồi nhìn bàn tay hồi lâu.', 'You fire twelve rounds at the range target. Your hand does not shake, and that is what makes you sit looking at your hand for a long while.', { sanity: -3, rep: 1 }), C('Cất súng vào ngăn kéo, ngủ sớm', 'Put the pistol in the drawer and sleep early', 'Giấc ngủ đến nhanh hơn thường lệ. Sáng hôm sau trời nắng, và bạn thấy lạ vì mình nhớ đã nhìn thấy nắng.', 'Sleep comes faster than usual. The morning is sunny, and you find it strange that you noticed the sun at all.', { sanity: 4 })],
     I('Bạn lau súng xong và đi ngủ.', 'You finish cleaning and go to bed.'), { theme: 'work' }),
@@ -414,7 +414,7 @@ export const THUMB_MINORS = [
   M('m_thumb_tongue_slip', AGE.GROWN, fneed(T, 0),
     '[Lỡ miệng trong buổi họp] Bạn lỡ gọi một Capo bằng tên riêng trong một buổi họp có Sottocapo. Không ai cười, không ai nói gì, nhưng bạn nhận ra mười người đều đã ghi nhớ khoảnh khắc ấy.',
     '[A slip of the tongue] In a meeting with the Sottocapo present, you call a Capo by his first name. Nobody laughs, nobody speaks, but you realize ten people have just committed the moment to memory.',
-    [C('Xin lỗi trước toàn thể, đúng nghi thức', 'Apologize before everyone, by the book', 'Capo gật đầu, buổi họp tiếp tục, và một trong số họ để lại cho bạn một mẩu giấy ghi một câu tục ngữ cũ. Bạn hiểu mình vừa được tha.', 'The Capo nods, the meeting goes on, and one of them leaves you a slip of paper with an old proverb. You understand you have just been forgiven.', { rep: -1, sanity: 2 }), C('Giữ im lặng, không xin lỗi', 'Stay silent and do not apologize', 'Không ai nhắc. Nhưng ba tuần liền bạn không được mời vào các buổi họp nhỏ, và bạn đoán đó là cái giá.', 'Nobody mentions it. But for three weeks you are not invited to small meetings, and you guess that is the price.', { rep: -4, sanity: -2 })],
+    [C('Xin lỗi trước toàn thể, đúng nghi thức', 'Apologize before everyone, by the book', 'Capo gật đầu, buổi họp tiếp tục, rồi có người để lại cho bạn mẩu giấy ghi câu tục ngữ cũ. Bạn hiểu mình vừa được tha.', 'The Capo nods, the meeting goes on, and one of them leaves you a slip of paper with an old proverb. You understand you have just been forgiven.', { rep: -1, sanity: 2 }), C('Giữ im lặng, không xin lỗi', 'Stay silent and do not apologize', 'Không ai nhắc. Nhưng ba tuần liền bạn không được mời vào các buổi họp nhỏ, và bạn đoán đó là cái giá.', 'Nobody mentions it. But for three weeks you are not invited to small meetings, and you guess that is the price.', { rep: -4, sanity: -2 })],
     I('Bạn cúi đầu và tránh nhìn ai.', 'You bow your head and avoid every eye.'), { theme: 'work' }),
   M('m_thumb_letter_home', AGE.GROWN, fneed(T, 0),
     '[Thư gửi về nhà] Bạn viết một lá thư cho người thân đã lâu không gặp, và nhận ra mình không có chuyện gì nói được thật. Mỗi câu bạn viết đều bị gạch, vì nó nghe như điều bạn không được phép nói.',
@@ -422,12 +422,12 @@ export const THUMB_MINORS = [
     [C('Gửi lá thư ngắn nhất có thể', 'Send the shortest letter possible', 'Bạn gửi ba dòng và một chút tiền. Một tháng sau nhận được hồi âm cũng ba dòng. Hai bên giữ nhau như hai sợi dây buộc lỏng.', 'You send three lines and some money. A month later you receive an answer, also three lines. The two of you hold on like loosely tied cords.', { wealth: -3, sanity: 2 }), C('Xé lá thư và không viết nữa', 'Tear it up and write no more', 'Bạn ngồi nhìn những mảnh giấy trong thùng rác. Có một câu chưa bị gạch, và bạn không nhặt nó lên.', 'You sit looking at the scraps in the bin. One sentence was never crossed out, and you do not pick it up.', { sanity: -4 })],
     I('Bạn đặt bút xuống và nhìn ra cửa sổ.', 'You set the pen down and look out the window.'), { theme: 'work' }),
   M('m_thumb_new_vest', AGE.GROWN, fneed(T, 1),
-    '[Chiếc áo vest mới] Sottocapo tặng mỗi Capo một chiếc áo vest may đo vào dịp cuối năm. Bạn mặc thử và thấy nó vừa một cách đáng ngờ, như thể có ai đã đo bạn từ lâu mà bạn không biết.',
+    '[Chiếc áo vest mới] Sottocapo tặng mỗi Capo một chiếc áo vest may đo vào dịp cuối năm. Bạn mặc thử, vừa khít đến đáng ngờ, như có ai lén đo người bạn từ lâu.',
     '[A new vest] The Sottocapo gives each Capo a tailored vest at year end. You try it on and find it fits suspiciously well, as if someone measured you long ago without your knowing.',
     [C('Hỏi thợ may ai đã đo', 'Ask the tailor who took your measurements', 'Thợ may cười và nói ông chỉ làm theo bản số liệu của hội.', 'The tailor laughs and says he only follows the crew’s measurement sheet.', { sanity: -3, network: 2 }), C('Mặc nó đi họp, không nói gì', 'Wear it to the meeting and say nothing', 'Mọi người đều nhìn chiếc áo trước khi nhìn bạn. Bạn bắt đầu hiểu một chiếc áo vest có thể là một lời nhắc rất lịch sự.', 'Everyone looks at the vest before they look at you. You begin to understand that a vest can be a very polite reminder.', { rep: 3, sanity: -1 })],
     I('Bạn treo chiếc áo vào tủ và để đó.', 'You hang the vest in the closet and leave it there.'), { theme: 'work' }),
   M('m_thumb_alley_cat', AGE.GROWN, fneed(T, 0),
-    '[Con mèo đường hẻm] Một đứa trẻ bán diêm cứ đứng ở cuối hẻm khi bạn đi thu cống nạp. Nó không xin gì, chỉ đếm bước chân. Hôm nay nó hỏi bạn có phải người làm cho The Thumb không, và liệu mẹ nó có phải đóng tiền hay không.',
+    '[Con mèo đường hẻm] Mỗi lần bạn đi thu cống nạp, đứa trẻ bán diêm lại đứng cuối hẻm. Nó không xin gì, chỉ đếm bước chân. Hôm nay nó hỏi bạn có phải người làm cho The Thumb không, và liệu mẹ nó có phải đóng tiền hay không.',
     '[The child at the alley end] A matchbox seller keeps standing at the end of the alley when you collect tribute. It asks nothing, only counts your steps. Today it asks whether you work for the Thumb, and whether its mother must pay.',
     [C('Nói thật, mẹ nó có phải đóng', 'Answer truthfully: its mother must pay', 'Đứa trẻ cúi đầu rất chậm, rồi chạy mất. Hôm sau mẹ nó đứng đợi bạn với phong bì đã sẵn, và tay bà không run.', 'The child nods slowly, then runs. The next day its mother waits with the envelope ready, and her hand does not shake.', { sanity: -3, rep: 1 }), C('Nói bạn sẽ hỏi lại Capo', 'Say you will ask the Capo again', 'Đứa trẻ nhìn bạn rồi cười, như đã nghe câu này nhiều lần. Bạn hỏi Capo, và câu trả lời vẫn như cũ.', 'The child looks at you then smiles, as if it has heard this answer many times. You ask the Capo, and the answer stays the same.', { sanity: -2, network: 2 })],
     I('Bạn mỉm cười mệt mỏi và bước tiếp.', 'You smile wearily and walk on.'), { theme: 'work' }),
@@ -442,17 +442,17 @@ export const THUMB_MINORS = [
     [C('Tung đồng xu, chấp nhận kết quả', 'Flip the coin and accept the result', 'Đồng xu rơi xuống bàn, nảy hai lần, và nằm yên. Người thua nhún vai. Người thắng gật đầu, và cả hai đều không nhìn bạn trong ba ngày.', 'The coin hits the table, bounces twice, and lies still. The loser shrugs. The winner nods, and neither looks at you for three days.', { rep: 2, sanity: -1 }), C('Chia ca đêm cho cả hai, mỗi người nửa tuần', 'Split the night shift, half a week each', 'Cả hai đều bất mãn một chút, và vì thế không ai thấy mình bị lừa. Bạn bắt đầu hiểu cách hòa giải thực sự vận hành.', 'Both are a little unhappy, and so neither feels cheated. You start to understand how mediation really works.', { network: 5, rep: 3 })],
     I('Bạn trả lại đồng xu và bước đi.', 'You give back the coin and walk away.'), { theme: 'work' }),
   M('m_thumb_tobacco_tax', AGE.GROWN, fneed(T, 0),
-    '[Thuế thuốc lá] Một chủ sạp thuốc lá hỏi vì sao The Thumb tính thuế thuốc cao hơn thuế rượu, vì thuốc không làm ai nổi điên. Ông hỏi một cách rất nghiêm túc, và bạn không có câu trả lời nào ngoài việc đó là lệ.',
+    '[Thuế thuốc lá] Ông chủ sạp thuốc lá hỏi sao The Thumb đánh thuế thuốc cao hơn rượu, trong khi thuốc đâu làm ai nổi điên. Ông hỏi nghiêm túc lắm, và bạn không có câu trả lời nào ngoài việc đó là lệ.',
     '[The tobacco tax] A tobacco stall owner asks why the Thumb taxes cigarettes higher than liquor, since cigarettes make no one go mad. He asks very seriously, and you have no answer except that it is custom.',
     [C('Nói thật rằng bạn không biết', 'Say honestly that you do not know', 'Ông gật đầu và trả đủ. Hai người đứng im một lát, rồi ông đưa bạn một gói thuốc mà không tính tiền.', 'He nods and pays in full. The two of you stand silent a moment, then he hands you a pack, free of charge.', { network: 4, sanity: 1 }), C('Hứa hỏi Capo và trả lời lại', 'Promise to ask the Capo and answer later', 'Capo cười lớn rồi bảo bạn đừng bận tâm.', 'The Capo laughs aloud and tells you not to bother.', { sanity: -2, rep: -1 })],
     I('Bạn lấy phong bì và đi.', 'You take the envelope and leave.'), { theme: 'work' }),
   M('m_thumb_stolen_gun', AGE.GROWN, fneed(T, 0),
-    '[Khẩu súng bị mất] Súng của một Soldato đồng cấp biến mất khỏi tủ khóa, và hắn nài bạn đừng báo Capo. Hắn nói mình sẽ tự tìm lại trong ba ngày, và đã bắt đầu đổ mồ hôi lạnh từ lúc nào không rõ.',
+    '[Khẩu súng bị mất] Súng của tay Soldato cùng cấp biến khỏi tủ khóa, và hắn nài bạn đừng báo Capo. Hắn nói mình sẽ tự tìm lại trong ba ngày, và đã bắt đầu đổ mồ hôi lạnh từ lúc nào không rõ.',
     '[The missing gun] A peer’s pistol vanishes from the locked cabinet, and he begs you not to tell the Capo. He says he will find it himself in three days, and has already begun to sweat cold without knowing when it started.',
     [C('Giữ kín và giúp hắn tìm', 'Keep quiet and help him look', 'Hai ngày sau bạn tìm thấy khẩu súng trong ngăn tủ của người dọn dẹp. Hắn không biết nói gì và chỉ nắm tay bạn một lúc lâu.', 'Two days later you find the gun in the cleaner’s locker. He does not know what to say and only holds your hand a long while.', { network: 6, sanity: 2 }), C('Báo Capo ngay, đúng quy định', 'Report to the Capo at once, by the book', 'Capo mừng vì bạn báo, và hắn bị phạt nặng. Hắn không nói gì với bạn trong cả năm sau đó.', 'The Capo is pleased you reported, and he is fined heavily. He says nothing to you for the following year.', { rep: 4, network: -6, sanity: -3 })],
     I('Bạn lắc đầu và nói bạn không biết gì.', 'You shake your head and say you know nothing.'), { theme: 'work' }),
   M('m_thumb_night_watch_radio', AGE.GROWN, fneed(T, 0),
-    '[Máy thu thanh ca đêm] Trong ca đêm ở kho, bạn bắt được một bài hát cũ từ một đài xa. Người trong bài hát hát về một nơi có mặt trời lặn ở hướng khác. Bạn tắt đi trước khi người đứng gác tiếp theo đến.',
+    '[Máy thu thanh ca đêm] Ca đêm trong kho, bạn dò được bài hát cũ từ đài phát xa. Bài hát kể về nơi mặt trời lặn ở hướng khác. Bạn tắt đi trước khi người đứng gác tiếp theo đến.',
     '[Radio on the night watch] On the night shift at the store, you catch an old song from a distant station. The singer sings of a place where the sun sets in another direction. You switch it off before the next guard arrives.',
     [C('Ghi lại tên bài hát trên mu bàn tay', 'Write the song’s name on the back of your hand', 'Bạn không bao giờ tìm lại được bài hát ấy, nhưng dấu mực vẫn ở đó cho đến khi tay bạn bị bẩn đi.', 'You never find the song again, but the ink stays until your hand gets dirty.', { sanity: 3 }), C('Quên bài hát', 'Forget the song', 'Bạn tập trung vào cửa kho. Khi sáng đến, bạn thấy thật khó chịu vì còn nhớ giai điệu.', 'You focus on the store door. By morning it irritates you how much of the tune you still remember.', { sanity: -1 })],
     I('Bạn tắt đài và ngồi lặng.', 'You switch off the radio and sit still.'), { theme: 'work' }),
@@ -462,7 +462,7 @@ export const THUMB_MINORS = [
     [C('Báo dư và nộp lại', 'Report the surplus and hand it in', 'Sottocapo ghi nhận và không phạt, nhưng lần sau ông cho người đến đếm bất ngờ ở tổ bạn nhiều hơn các tổ khác.', 'The Sottocapo notes it and does not fine you, but next time he sends surprise counters to your team more often than to others.', { rep: 3, sanity: 1 }), C('Giấu mười hai viên vào một chỗ khác', 'Hide the twelve rounds somewhere else', 'Số đạn khớp, kiểm kê đạt. Mười hai viên nằm ở một nơi chỉ bạn biết, và bạn bắt đầu sống với cảm giác có một thứ không có trong sổ.', 'The count matches, the audit passes. The twelve rounds lie where only you know, and you begin living with something that is not in the ledger.', { sanity: -3, heat: 2 })],
     I('Bạn ký xác nhận và để cho Sottocapo đếm.', 'You sign and let the Sottocapo count.'), { theme: 'work' }),
   M('m_thumb_apology_gift', AGE.GROWN, fneed(T, 1),
-    '[Quà xin lỗi] Một Capo trẻ gửi bạn một chai rượu và một lời xin lỗi vì đã nói xấu bạn sau lưng. Người truyền tin nói thêm rằng anh ta rất tha thiết, và chai rượu đó đắt hơn một tháng lương anh.',
+    '[Quà xin lỗi] Tay Capo trẻ gửi bạn chai rượu kèm lời xin lỗi vì đã nói xấu sau lưng. Người truyền tin nói thêm rằng anh ta rất tha thiết, và chai rượu đó đắt hơn một tháng lương anh.',
     '[An apology gift] A young Capo sends you a bottle of liquor and an apology for speaking ill of you behind your back. The messenger adds that he is very sincere, and the bottle costs more than a month of his pay.',
     [C('Nhận và mời anh ta uống chung', 'Accept and invite him to share it', 'Hai người uống hết chai trong một buổi chiều, và anh ta kể về lý do thật.', 'The two of you finish the bottle in one afternoon, and he tells the real reason.', { network: 7, sanity: 2, rep: 2 }), C('Gửi trả, nói lời xin lỗi là đủ', 'Send it back, saying the apology is enough', 'Anh ta nhận lại với vẻ nhẹ nhõm kỳ lạ. Từ đó anh ta luôn chào bạn trước, và không bao giờ nhìn thẳng.', 'He takes it back with a strange relief. From then on he always greets you first, and never looks you in the eye.', { rep: 3, sanity: 1 })],
     I('Bạn đặt chai rượu lên kệ và để đó.', 'You set the bottle on a shelf and leave it.'), { theme: 'work' }),
@@ -472,17 +472,17 @@ export const THUMB_MINORS = [
     [C('Tìm cơ hội hỏi trực tiếp sau buổi họp', 'Seek a chance to ask him directly afterward', 'Ông trả lời rằng câu hỏi chỉ đáng hỏi khi bạn chưa biết đáp án. Bạn đứng nhìn cánh cửa khép lại và không nhận ra mình đang giữ hơi thở.', 'He replies that a question is only worth asking when you do not yet know the answer. You watch the door close and do not notice you are holding your breath.', { sanity: -3, rep: 3 }), C('Đợi, xem ông có hỏi lần nữa không', 'Wait to see if he asks again', 'Ông không hỏi lại. Suốt một năm sau đó bạn nhìn lại cái liếc ấy hàng trăm lần mà không tìm ra đáp án nào.', 'He does not ask again. For a year afterward you replay that glance hundreds of times without finding any answer.', { sanity: -4 })],
     I('Bạn giả vờ không nhận ra.', 'You pretend not to notice.'), { theme: 'work' }),
   M('m_thumb_charity_envelope', AGE.GROWN, fneed(T, 2),
-    '[Phong bì từ thiện] Underboss yêu cầu mỗi Capo đóng một phong bì cho quỹ nuôi trẻ mồ côi của The Thumb mỗi quý. Lần này, bạn nhận được danh sách những đứa trẻ cụ thể, và có một đứa mang tên một người bạn từng cùng ngồi một bàn.',
+    '[Phong bì từ thiện] Quý nào Underboss cũng bắt mỗi Capo đóng phong bì cho quỹ nuôi trẻ mồ côi của The Thumb. Lần này bạn nhận được danh sách từng đứa trẻ, và có đứa mang tên người bạn từng ngồi chung bàn.',
     '[Charity envelope] The Underboss requires each Capo to give an envelope to the Thumb’s orphan fund each quarter. This time you receive a list of specific children, and one carries the name of someone you once knew.',
     [C('Đến thăm đứa trẻ, đưa phong bì tận tay', 'Visit the child and hand over the envelope yourself', 'Đứa trẻ có đôi mắt giống hệt người ấy. Nó đón phong bì mà không biết bạn là ai. Bạn không nói cho nó biết.', 'The child has exactly the same eyes as your old friend. It takes the envelope without knowing who you are.', { wealth: -6, sanity: 5, network: 3 }), C('Gửi qua quỹ như thường lệ', 'Send it through the fund as usual', 'Số tiền đến đúng nơi. Không ai cảm ơn bạn, và bạn không mong ai làm vậy.', 'The money reaches its destination. Nobody thanks you, and you do not expect anyone to.', { wealth: -4, sanity: 1 })],
     I('Bạn đặt phong bì lên bàn và quay đi.', 'You set the envelope on the desk and turn away.'), { theme: 'work' }),
   M('m_thumb_corner_table', AGE.GROWN, fneed(T, 1),
-    '[Chiếc bàn ở góc quán] Quán cà phê quen của hội luôn giữ một chiếc bàn ở góc, nơi chỉ Capo trở lên mới ngồi. Hôm nay có một người lạ ngồi đó, uống cà phê chậm như thể không biết gì. Chủ quán nhìn bạn với ánh mắt cầu cứu.',
+    '[Chiếc bàn ở góc quán] Quán cà phê quen của hội luôn giữ chiếc bàn trong góc, chỉ Capo trở lên mới được ngồi. Hôm nay có người lạ ngồi đó, uống cà phê chậm như thể không biết gì. Chủ quán nhìn bạn với ánh mắt cầu cứu.',
     '[The corner table] The crew’s usual cafe always keeps a corner table for Capo and above. Today a stranger sits there sipping coffee slowly as if knowing nothing. The owner glances at you pleadingly.',
     [C('Mời người ấy sang bàn khác, lịch sự', 'Politely invite them to another table', 'Người ấy nhún vai và đổi chỗ. Chủ quán đặt thêm một đĩa bánh cho bạn mà không tính tiền.', 'They shrug and move. The owner sets down an extra plate of pastry for you at no charge.', { rep: 2, network: 2 }), C('Ngồi xuống cùng người ấy, nói chuyện', 'Sit down with them and talk', 'Hóa ra họ là một người mới đến thành phố và chưa nghe nói về The Thumb. Cuộc nói chuyện kéo dài hai giờ, và bạn thấy mình quên bẵng vai trò của mình.', 'It turns out they are new to the City and have never heard of the Thumb. The talk runs two hours, and you find you have forgotten your role entirely.', { sanity: 4, network: 3 })],
     I('Bạn chọn một bàn khác và uống cà phê một mình.', 'You pick another table and drink your coffee alone.'), { theme: 'work' }),
   M('m_thumb_inheritance_dispute', AGE.GROWN, fneed(T, 1),
-    '[Tranh chấp thừa kế] Hai con trai của một Soldato đã khuất cãi nhau về khoản tiền tuất và căn nhà ông để lại. Theo lệ của The Thumb, tranh chấp trong gia đình hội viên do Capo phân xử, và hôm nay Capo bận nên giao cho bạn.',
+    '[Tranh chấp thừa kế] Hai người con trai của Soldato đã khuất cãi nhau về khoản tiền tuất và căn nhà cha để lại. Theo lệ của The Thumb, tranh chấp trong gia đình hội viên do Capo phân xử, và hôm nay Capo bận nên giao cho bạn.',
     '[A dispute over inheritance] Two sons of a late Soldato quarrel over his pension and the house he left. By Thumb custom, disputes within a member’s family are judged by the Capo, and today the Capo is busy, so the task falls to you.',
     [C('Chia đôi, bất kể lý lẽ', 'Split in half regardless of argument', 'Cả hai đều bất mãn một chút.', 'Both are slightly dissatisfied.', { rep: 3, network: 4 }), C('Hỏi từng người về ông già lúc còn sống rồi mới quyết', 'Ask each about the old man’s life before deciding', 'Cả hai khóc trước khi nói hết. Cuối buổi họ tự đề nghị chia đều, và bạn chỉ cần cúi đầu để đóng sổ.', 'Both cry before finishing. By the end they propose an even split themselves, and you need only nod to close the book.', { sanity: 3, rep: 4, network: 5 })],
     I('Bạn đưa vụ việc về Capo xử lý.', 'You pass the matter back to the Capo.'), { theme: 'work' }),
@@ -524,10 +524,10 @@ export const THUMB_DAILIES = [
   D('d_thumb_ash_tray', AGE.GROWN, fneed(T, 1), 'Chiếc gạt tàn trên bàn họp luôn chất đầy tàn thuốc từ trước giờ hẹn, ngập ngụa mùi khói nồng nặc che giấu sự căng thẳng của những cái đầu sỏi đá.', 'The ashtray on the meeting table is already full of stubs before the session begins, heavy smoke masking the tension in the room.', {}),
   D('d_thumb_nest_gate', AGE.GROWN, fneed(T, 0), 'Lính gác ở cổng Nest nhìn thẻ của bạn quá lâu rồi trả lại mà không nói. Bạn nghe tiếng họ thì thầm khi bạn quay đi, và không quay lại.', 'The guard at the Nest gate studies your pass too long and returns it without a word. You hear them whisper as you turn away, and do not turn back.', {}),
   D('d_thumb_birthday_card', AGE.GROWN, fneed(T, 0), 'Trong ngăn kéo của bạn có một tấm thiệp sinh nhật không rõ ai gửi, chỉ ghi một dòng. Nét chữ ấy bạn đã thấy ở đâu đó trong sổ.', 'In your drawer lies a birthday card from an unknown sender with a single line. You have seen that handwriting somewhere in the ledger.', {}),
-  D('d_thumb_dark_window', AGE.GROWN, fneed(T, 1), 'Cửa sổ tầng ba của một nhà trọ trong khu bạn thu cống nạp tối đen mỗi tháng đúng ngày bạn đến, rồi sáng lên khi bạn rời. Bạn chưa bao giờ biết ai ở trong đó.', 'The third-floor window of a boarding house in the district where you collect goes dark each month the day you come and lights up when you leave. You have never known who lives inside.', {}),
+  D('d_thumb_dark_window', AGE.GROWN, fneed(T, 1), 'Tháng nào cũng vậy, đúng ngày bạn tới thu cống nạp, ô cửa sổ tầng ba nhà trọ nọ tối om, bạn đi rồi mới sáng đèn. Bạn chưa bao giờ biết ai ở trong đó.', 'The third-floor window of a boarding house in the district where you collect goes dark each month the day you come and lights up when you leave. You have never known who lives inside.', {}),
   D('d_thumb_knot_tie', AGE.GROWN, fneed(T, 0), 'Dây giày bạn buộc theo kiểu nút cũ mà ông già dạy nghi thức chỉ. Một người lạ nhìn thấy và gật đầu thật khẽ, như đã nhận ra điều gì.', 'You tie your shoelaces in the old knot the etiquette teacher showed you. A stranger notices and nods very slightly, as if recognizing something.', {}),
-  D('d_thumb_dock_foghorn', AGE.GROWN, fneed(T, 0), 'Còi sương mù ngoài bến vang lên ba lần, dài, ngắn, dài. Đó là tín hiệu của một băng khác, và bạn thấy các Soldato quanh bạn cùng lúc dừng nói chuyện.', 'The fog horn at the pier sounds three times, long, short, long. It is another crew’s signal, and you see the Soldato around you stop talking at once.', {}),
-  D('d_thumb_ink_blot', AGE.GROWN, fneed(T, 1), 'Bạn làm đổ một giọt mực lên biên bản họp. Không ai nhận ra, nhưng bạn biết giọt mực nằm đúng trên tên một người sẽ không còn ở đây tuần sau.', 'You spill a drop of ink on the meeting minutes. No one notices, but you know the drop lies right on the name of someone who will not be here next week.', {}),
+  D('d_thumb_dock_foghorn', AGE.GROWN, fneed(T, 0), 'Còi sương mù ngoài bến vang lên ba lần, dài, ngắn, dài. Đó là ám hiệu của băng khác, và bạn thấy các Soldato quanh bạn cùng lúc dừng nói chuyện.', 'The fog horn at the pier sounds three times, long, short, long. It is another crew’s signal, and you see the Soldato around you stop talking at once.', {}),
+  D('d_thumb_ink_blot', AGE.GROWN, fneed(T, 1), 'Bạn lỡ nhỏ giọt mực lên biên bản họp. Chẳng ai để ý, nhưng bạn biết giọt mực rơi đúng lên tên người tuần sau sẽ không còn ở đây.', 'You spill a drop of ink on the meeting minutes. No one notices, but you know the drop lies right on the name of someone who will not be here next week.', {}),
   D('d_thumb_quiet_corridor', AGE.GROWN, fneed(T, 2), 'Hành lang dẫn đến phòng Underboss im đến mức bạn nghe được tiếng giày của chính mình. Bạn đếm đúng mười bảy bước và dừng ở cửa.', 'The corridor leading to the Underboss’s room is so quiet you hear your own shoes. You count exactly seventeen steps and stop at the door.', {}),
   D('d_thumb_wire_service', AGE.GROWN, fneed(T, 0), 'Một bức điện đến văn phòng chỉ có ba chữ và một số. Cả tổ nhìn nhau rất nhanh, rồi mỗi người quay về việc của mình như chưa thấy gì.', 'A wire arrives at the office carrying three words and a number. The whole team glances at one another very quickly, then each returns to their work as if nothing had been seen.', {})
 ];

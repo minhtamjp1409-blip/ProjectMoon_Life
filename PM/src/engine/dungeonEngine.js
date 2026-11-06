@@ -842,8 +842,8 @@ DUNGEON_DEFINITIONS[ENSEMBLE_DUNGEON_ID] = ENSEMBLE_DUNGEON;
 const REPORT_CHOICE = {
   labelVi: 'Mang những gì thấy được về báo cho Association của bạn',
   labelEn: 'Carry what you saw back to your Association',
-  resultVi: 'Bạn viết bản báo cáo ngay trong đêm, đủ chi tiết để người khác đi lại con đường ấy mà không phải trả giá như bạn. Association nhận nó mà không hỏi thêm, và ghi tên bạn ở dòng đầu.',
-  resultEn: 'You write the report that same night, detailed enough for someone else to walk that route without paying what you paid. The Association takes it without further questions and puts your name on the first line.',
+  resultVi: 'Bạn nộp bản tường trình, ghi rõ lối đi và những chỗ đã trả giá. Người trực ban nhận hồ sơ, đóng dấu và trả tiền công.',
+  resultEn: 'You file a report marking the route and where it cost you. The duty clerk stamps it and pays your fee.',
   fx: { wealth: 30, rep: 10, sanity: 8, merit: 12 },
   reportAff: true,
   needAff: true

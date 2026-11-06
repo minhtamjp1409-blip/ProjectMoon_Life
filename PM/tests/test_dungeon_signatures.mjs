@@ -56,16 +56,18 @@ const dockLeave = fleeDungeon({ ...o, stats: { ...o.stats }, pendingDungeon: { .
 assert.equal(dockLeave.char.stats.health, o.stats.health - B.oil.darkFleeHp, 'the dock button out costs the same in the dark');
 assert.match(dockLeave.resolution.resultVi, /bóng tối/);
 
-// 3. Backstreets: every turn costs minutes; past 4:34 the Sweepers make every blow harder
+// 3. Backstreets: the last sweep presses before 4:34 and withdraws at the deadline
 let n = enter(person('sig-clock'), 'dungeon_backstreets_night');
 n = answer(n);
 assert.equal(n.pendingDungeon.clockMin, B.clock.turn, 'a turn costs minutes');
 assert.equal(signatureDamageMult(n.pendingDungeon), 1);
-n.pendingDungeon.clockMin = B.clock.deadline;
+n.pendingDungeon.clockMin = B.clock.dangerAt;
+assert.equal(signatureDamageMult(n.pendingDungeon), B.clock.sweptDamage, 'the final sweep hits harder before 4:34');
+n.pendingDungeon.clockMin = B.clock.deadline - B.clock.turn;
 n = answer(n);
-assert.equal(signatureDamageMult(n.pendingDungeon), B.clock.sweptDamage, 'past 4:34 the blows land harder');
+assert.equal(signatureDamageMult(n.pendingDungeon), 1, 'the sweep ends at 4:34');
 assert.match(n.pendingDungeon.lastStageResult.vi, /4:34/, 'the moment is told');
-assert.equal(signatureMeter(n.pendingDungeon).tone, 'bad');
+assert.match(signatureMeter(n.pendingDungeon).noteVi, /rút xuống cống/);
 
 // 4. Great Lake: the second turn of a fight is an omen; a wrong answer writes the law down, the same law broken twice wakes what is below
 let l = enter(person('sig-lake'), 'dungeon_great_lake');

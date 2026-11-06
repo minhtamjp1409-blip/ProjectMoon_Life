@@ -48,7 +48,7 @@ export const COLOR_ERA_EVENTS = [
   {
     id: 'color_new_name_etiquette', age: [26, 90], jobs: ['Color Fixer'], major: true, weight: 75,
     requires: ['ColorFixer'], forbids: ['Distorted', 'color_etiquette_done'],
-    vi: '[Cách người ta gọi một Color] Người ở Văn phòng ngừng gọi bạn bằng tên và bắt đầu gọi bằng màu. Quầy tiếp tân đổi lời chào. Người môi giới ngồi thẳng lưng khi bạn bước vào. Một nhân viên trẻ hỏi thẳng bạn có thích thế không, vì anh ta chưa biết nên theo bên nào.',
+    vi: '[Cách người ta gọi một Color] Người ở Văn phòng ngừng gọi bạn bằng tên và bắt đầu gọi bằng màu. Quầy tiếp tân đổi lời chào. Người môi giới ngồi thẳng lưng khi bạn bước vào. Cậu nhân viên trẻ hỏi thẳng bạn có thích vậy không, vì anh ta chưa biết nên gọi kiểu nào.',
     en: 'How people address a Color. Staff at the Office stop using your name and start using your color. The front desk changes its greeting. The broker sits upright when you enter. A young clerk asks outright whether you like it, since they have not decided which side to take.',
     choices: [
       { labelVi: 'Bảo mọi người cứ gọi tên như trước', labelEn: 'Tell everyone to keep using your name',
@@ -111,7 +111,7 @@ export const COLOR_ERA_EVENTS = [
     choices: [
       { labelVi: 'Nói màu là của bạn, thanh E.G.O chỉ là công cụ', labelEn: 'Say the color is yours and the E.G.O is a tool',
         effects: { sanity: -4, rep: 5 }, flagsAdd: ['color_whose_name_done', 'ColorOwnsEGO'],
-        resultVi: 'Chị ghi vào mục chủ sở hữu. Đêm đó thanh E.G.O không hiện ra, kể cả khi bạn cần nó cho một việc nhỏ ở bếp. Sáng sau nó có mặt như chưa có chuyện gì.',
+        resultVi: 'Chị ghi vào mục chủ sở hữu. Đêm ấy thanh E.G.O không hiện ra, kể cả khi bạn cần nó cho việc vặt trong bếp. Sáng hôm sau nó lại có mặt như chưa có chuyện gì.',
         resultEn: 'She writes it under owner. That night the E.G.O does not appear, even when you need it for a small thing in the kitchen. The next morning it is there as if nothing happened.' },
       { labelVi: 'Nói bạn không chắc, và xin họ để trống mục đó', labelEn: 'Say you are not sure and ask them to leave the line empty',
         effects: { sanity: 3, resonance: 6 }, flagsAdd: ['color_whose_name_done', 'ColorSharesEGO'],
@@ -122,7 +122,7 @@ export const COLOR_ERA_EVENTS = [
   {
     id: 'color_ego_street_fear', age: [26, 90], jobs: ['Color Fixer'], major: true, weight: 80,
     requires: ['ColorFixer', 'ColorFromEGO'], forbids: ['Distorted', 'color_street_fear_done'],
-    vi: '[Con phố tránh bạn] Ở khu bạn ở, một người bán rau dọn quầy sang vỉa hè bên kia khi bạn đi qua. Nhà đối diện kéo rèm sớm hơn mọi tối. Chẳng ai ghét bạn. Họ đã nghe một thanh E.G.O đã từng xuất hiện trong một vụ ở cuối phố, và họ không muốn là người đứng gần khi nó xuất hiện lần nữa.',
+    vi: '[Con phố tránh bạn] Trong khu bạn ở, người bán rau dọn quầy sang vỉa hè bên kia mỗi lần bạn đi qua. Nhà đối diện kéo rèm sớm hơn mọi tối. Chẳng ai ghét bạn. Chỉ là họ nghe kể thanh E.G.O từng hiện ra trong vụ cuối phố, và họ không muốn là người đứng gần khi nó xuất hiện lần nữa.',
     en: 'The street steps aside. In your neighborhood a vegetable seller moves the stall to the far pavement when you pass. The house opposite draws its curtains earlier than ever. Nobody hates you. They heard an E.G.O once appeared in a case at the end of the street, and nobody wants to be the one nearby when it appears again.',
     choices: [
       { labelVi: 'Đứng ở đầu phố và trả tiền mua hết rau của người bán', labelEn: 'Stand at the head of the street and buy out the seller’s vegetables',
@@ -151,7 +151,7 @@ export const COLOR_ERA_EVENTS = [
             resultVi: 'Thứ đó bị chặn lại cách một con hẻm so với cửa sổ đầu tiên có đèn. Khi bạn quay về, các bóng đèn trong hẻm được bật lên cùng lúc, như một tiếng vỗ tay không ai dám phát ra.',
             resultEn: 'It is stopped one alley short of the first lit window. When you walk back, the lamps in the alley come on together, like applause nobody dares make.' },
           { w: 34, effects: { health: -34, sanity: -16, rep: 6, wealth: 10 }, meritAdd: 15, scarsAdd: ['Vết thương của chỉ thị niên độ'],
-            resultVi: 'Bạn giữ được con hẻm nhưng mất một nhịp ở lần đỡ cuối. Chỗ trống trong phong bì được điền bằng tên của một người mà bạn không kịp đến gần.',
+            resultVi: 'Bạn giữ được con hẻm nhưng mất một nhịp ở lần đỡ cuối. Chỗ trống trong phong bì được điền tên người bạn không kịp chạy tới.',
             resultEn: 'You hold the alley but lose a beat on the final parry. The space in the envelope is filled by the name of someone you were too late to reach.' }
         ] },
       { labelVi: 'Nói lý do không chọn: các vụ đều có người khác làm tốt hơn', labelEn: 'Give a reason for choosing none: others are better suited to all three',
@@ -179,7 +179,7 @@ export const COLOR_ERA_EVENTS = [
   {
     id: 'color_name_forged', age: [28, 90], jobs: ['Color Fixer'], major: true, weight: 70,
     requires: ['ColorFixer'], forbids: ['Distorted', 'color_forged_done'],
-    vi: '[Màu bị mượn] Một chủ nợ ở Backstreets nhận được một lá thư xin gia hạn, ký bằng danh xưng của bạn. Bạn chưa từng viết nó. Chữ ký giống đến mức công chứng viên chịu xác nhận. Người cầm lá thư không tố cáo ai. Ông chỉ hỏi bạn có định trả khoản này không.',
+    vi: '[Màu bị mượn] Ông chủ nợ ở Backstreets nhận lá thư xin gia hạn, ký bằng danh xưng của bạn. Bạn chưa từng viết nó. Chữ ký giống đến mức công chứng viên chịu xác nhận. Người cầm lá thư không tố cáo ai. Ông chỉ hỏi bạn có định trả khoản này không.',
     en: 'The borrowed color. A moneylender in the Backstreets receives an extension request signed with your title. You never wrote it. The signature is close enough for a notary to confirm. The man holding the letter accuses nobody. He only asks whether you plan to pay this.',
     choices: [
       { labelVi: 'Trả khoản nợ và bảo ông cho biết ai đã mang lá thư đến', labelEn: 'Pay the debt and ask him who brought the letter',
@@ -246,7 +246,7 @@ export const COLOR_ERA_EVENTS = [
         resultEn: 'You fill both sides of the sheet with words you have never said aloud. The operator skims it, then puts it in a drawer and locks it.' },
       { labelVi: 'Để trống, chỉ ký tên', labelEn: 'Leave it blank and just sign',
         effects: { sanity: 2, rep: -1 }, flagsAdd: ['color_resonance_audit_done'],
-        resultVi: 'Anh ta ghi một chữ x vào góc tờ giấy trắng. Bạn thấy nó hơi giống dấu cần xem lại, hơi giống chữ ký của một người không biết đọc.',
+        resultVi: 'Anh ta ghi một chữ x vào góc tờ giấy trắng. Bạn thấy nó hơi giống dấu cần xem lại, hơi giống chữ ký của người không biết chữ.',
         resultEn: 'He pencils an x in the corner of the blank sheet. It looks a little like a mark to revisit, a little like the signature of someone who cannot read.' }
     ]
   },
@@ -287,7 +287,7 @@ export const COLOR_ERA_EVENTS = [
   {
     id: 'color_hana_hands_slowing', age: [55, 95], jobs: ['Color Fixer'], major: true, weight: 85,
     requires: ['ColorFixer'], forbids: ['Distorted', 'color_hands_slowing_done'],
-    vi: '[Khi tay chậm lại] Một Director của Hana mời bạn uống cà phê, loại hẹn gặp mà người ta nhận ra ngay từ cái nhìn đầu tiên. Ông hỏi, bằng giọng không có ác ý, bạn định giữ danh xưng đến khi nào. Danh xưng của một Color có thể giữ đến chết, nhưng chỉ khi người mang nó còn có thể gánh việc của nó.',
+    vi: '[Khi tay chậm lại] Vị Director của Hana mời bạn uống cà phê, kiểu hẹn gặp liếc qua là biết chuyện gì. Ông hỏi, bằng giọng không có ác ý, bạn định giữ danh xưng đến khi nào. Danh xưng Color có thể giữ tới chết, nhưng chỉ khi người mang nó còn gánh nổi việc của nó.',
     en: 'When the hands slow. A Hana Director invites you for coffee, the kind of appointment you recognize from the first glance. He asks, without malice, how long you plan to keep your title. A Color’s title can be held until death, but only while the holder can still carry its work.',
     choices: [
       { labelVi: 'Nói bạn sẽ giữ đến khi không còn cầm nổi vũ khí', labelEn: 'Say you will hold it until you can no longer lift a weapon',

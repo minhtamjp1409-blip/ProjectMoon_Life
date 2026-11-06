@@ -125,7 +125,8 @@ assert(wc.stats.health > 0, 'a wanderer is not a corpse');
 const sum = buildLifeSummaryAndLegacy(wc);
 assert.equal(sum.lifeEnding, 'wander');
 assert.equal(sum.endingId, null, 'a chosen ending does not lock inheritance');
-assert.match(sum.lifeStoryParagraphsEn.at(-1), /side gate/);
+assert.match(sum.lifeStoryParagraphsEn.at(-1), /checkpoint/);
+assert.match(sum.lifeStoryParagraphsEn.at(-1), /destination/);
 assert.equal(sum.poeticQuoteEn, LIFE_ENDINGS.wander.quoteEn);
 
 const bedside = buildLifeSummaryAndLegacy({ ...wc, lifeEnding: null, age: 118, deathCauseVi: 'Ra đi vì tuổi già', deathCauseEn: 'Passed of old age' });

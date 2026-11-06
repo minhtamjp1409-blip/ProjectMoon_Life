@@ -43,11 +43,11 @@ export const DUNGEON_LAWS = [
   },
   {
     id: 'ring_of_fish', answer: 'evade', nameVi: 'Luật 26', nameEn: 'Law 26',
-    ruleVi: 'khi cá chết nổi lên thành vòng, bước ra khỏi vòng.', ruleEn: 'when dead fish surface in a ring, step out of the ring.',
+    ruleVi: 'khi cá chết nổi lên thành vòng, đưa thuyền ra trước khi vòng khép.', ruleEn: 'when dead fish surface in a ring, move the boat out before it closes.',
     omenNameVi: 'Vòng cá chết', omenNameEn: 'The ring of dead fish',
     tellVi: 'Cá chết nổi lên thành một vòng tròn hoàn hảo, và thuyền của bạn trôi đúng vào giữa. Vòng tròn đang khép lại.',
     tellEn: 'Dead fish surface in a perfect ring, and your boat drifts into its middle. The ring is closing.',
-    rightVi: 'Bạn nhảy sang chiếc xuồng buộc bên mạn, ra ngoài vòng. Vòng cá chìm xuống cùng lúc.', rightEn: 'You jump into the skiff tied alongside, out of the ring. The ring of fish sinks at the same moment.',
+    rightVi: 'Bạn kéo bánh lái, cho thuyền lách qua khe hở cuối cùng. Vòng cá khép lại sau đuôi tàu.', rightEn: 'You turn the rudder and slip through the last gap. The ring closes behind the stern.',
     wrongVi: 'Vòng tròn khép lại quanh bạn. Nước bên trong sôi lên và bỏng rát như axit.', wrongEn: 'The ring closes around you. The water inside boils and burns like acid.'
   },
   {
@@ -72,7 +72,7 @@ export const WORK_TYPES = [
 export const SIGNATURE_TEXT = {
   meter: {
     oil: { labelVi: 'Dầu đèn', labelEn: 'Lamp oil', noteVi: 'Mỗi chặng đốt 1 dầu, chặng có kiểm định đốt 2. Làm một việc khi dầu không đủ thì kiểm định khó hơn; hết dầu thì đường ra phải trả bằng máu.', noteEn: 'Every stage burns 1 oil, a checked one 2. Doing it with too little oil makes the check harder; with none left, the way out costs blood.', darkVi: 'Đèn đã tắt. Kiểm định khó hơn, và quay ra lúc này sẽ mất máu.', darkEn: 'The lamp is out. Checks are harder, and turning back now costs blood.' },
-    clock: { labelVi: 'Đồng hồ', labelEn: 'The clock', noteVi: 'Mỗi lượt đánh tốn 4 phút, nghỉ băng bó tốn 14. Sau 4:34 Sweeper ra đường: đòn đau hơn và áp lực tăng mỗi lượt.', noteEn: 'Each turn of a fight costs 4 minutes, binding wounds costs 14. After 4:34 the Sweepers are out: blows land harder and strain rises every turn.', sweptVi: 'Đã quá 4:34. Sweeper đang quét qua hẻm.', sweptEn: 'Past 4:34. The Sweepers are sweeping the alleys.' },
+    clock: { labelVi: 'Đồng hồ', labelEn: 'The clock', noteVi: 'Mỗi lượt đánh tốn 4 phút, nghỉ băng bó tốn 14. Từ 4:13 đến trước 4:34, đợt quét cuối đánh gấp hơn; sau đó Sweepers rút xuống cống.', noteEn: 'Each fight turn costs 4 minutes, binding wounds costs 14. From 4:13 until 4:34, the last sweep hits harder; then the Sweepers withdraw.', dangerVi: 'Đợt quét cuối đang gấp rút. Đòn đau hơn và áp lực tăng mỗi lượt.', dangerEn: 'The last sweep is pressing hard. Blows hurt more and strain rises each turn.', sweptVi: 'Đã qua 4:34. Sweepers rút xuống cống.', sweptEn: 'Past 4:34. The Sweepers have withdrawn into the drains.' },
     law: { labelVi: 'Sổ Luật Đại Hồ (phóng tác)', labelEn: 'Lake Law book (adaptation)', noteVi: 'Mỗi trận trên Hồ có một điềm báo. Đọc kỹ lời kể; đáp sai thì luật được ghi vào sổ, giữ qua các đời. Sai cùng một luật hai lần thì thứ dưới đáy thức dậy.', noteEn: 'Every fight on the Lake brings one omen. Read the telling closely; a wrong answer writes the law in the book, kept across lives. The same law broken twice wakes what is below.' },
     market: { labelVi: 'Chủ hội chợ để ý (phóng tác)', labelEn: 'The ringmaster’s notice (adaptation)', noteVi: 'Quầy máu ở các khoảng lặng bán lợi thế đổi lấy HP. Mua hai lần, người quản trò sẽ tự tìm tới bạn.', noteEn: 'The blood stalls at the lulls sell an edge for HP. Buy twice and the ringmaster comes looking for you.' },
     passenger: { labelVi: 'Hành khách đi cùng', labelEn: 'Passengers with you', noteVi: 'Mỗi người dẫn theo làm đòn đánh vào bạn đau hơn 10%. Ra được tới cuối, mỗi người là thêm Network và Danh tiếng; bỏ dở thì họ ở lại, và bạn mang theo nỗi đó.', noteEn: 'Each one you lead makes the blows on you land 10% harder. Out at the end, each is more Network and Reputation; give up, and they stay behind, and you carry that.' },
@@ -84,7 +84,7 @@ export const SIGNATURE_TEXT = {
     out: { vi: 'Ngọn đèn tắt. Bóng tối của Outskirts dày tới mức bạn nghe được nó.', en: 'The lamp goes out. The dark of the Outskirts is thick enough to hear.' },
     darkWayOut: { vi: 'Bạn dò đường ra trong bóng tối bằng hai tay, và để lại máu trên những bậc đá.', en: 'You feel your way out in the dark with both hands, and leave blood on the stone steps.' }
   },
-  clock: { swept: { vi: 'Đồng hồ trên tường điểm 4:34. Ở cuối hẻm, những bóng áo khoác dài bắt đầu bước ra.', en: 'The clock on the wall strikes 4:34. At the end of the alley, long-coated shapes begin to step out.' } },
+  clock: { pressure: { vi: 'Đã 4:13. Đợt quét cuối thúc nhanh qua hẻm.', en: 'It is 4:13. The last sweep hurries through the alley.' }, swept: { vi: 'Đồng hồ điểm 4:34. Những bộ vest còn lại rút xuống cống.', en: 'The clock strikes 4:34. The remaining suits retreat into the drains.' } },
   law: { woken: { vi: 'Bạn phạm cùng một luật lần thứ hai. Mặt hồ phồng lên, và thứ nằm dưới đáy mở mắt.', en: 'You break the same law a second time. The lake swells, and what lies at the bottom opens its eyes.' } },
   market: {
     wineVi: 'Quầy máu: đổi 10 HP lấy một chén rượu máu (trận tới kẻ thù mất 1 nấc thế thủ)', wineEn: 'Blood stall: trade 10 HP for a cup of blood wine (next fight, the enemy starts a notch of guard down)',
@@ -95,17 +95,17 @@ export const SIGNATURE_TEXT = {
   },
   passenger: {
     takeVi: 'Nghỉ một lúc và dẫn theo một hành khách còn sống (đòn đau hơn 10%)', takeEn: 'Rest a while and lead a surviving passenger along (blows 10% harder)',
-    takeResultVi: 'Một người phụ nữ ôm chiếc vali bám theo bạn. Bà không nói gì, chỉ đi đúng vào chỗ bạn vừa bước.', takeResultEn: 'A woman clutching a suitcase follows you. She says nothing, and steps exactly where you have stepped.',
+    takeResultVi: 'Một hành khách ôm hành lý bước theo dấu chân bạn. Họ không hỏi toa kế tiếp còn xa không.', takeResultEn: 'A passenger carrying their luggage follows your steps. They do not ask how far the next car is.',
     outVi: (n) => `Bạn dẫn ${n} hành khách ra khỏi toa cuối. Họ sẽ kể lại chuyện này, và tên bạn đi theo câu chuyện.`, outEn: (n) => `You lead ${n} passenger${n > 1 ? 's' : ''} out of the last car. They will tell this story, and your name goes with it.`,
-    lostVi: (n) => `${n} hành khách bạn dẫn theo không ra được tới cuối. Bạn vẫn nhớ người phụ nữ ôm vali.`, lostEn: (n) => `The ${n} passenger${n > 1 ? 's' : ''} you led did not make it to the end. You still remember the woman with the suitcase.`
+    lostVi: (n) => `${n} hành khách bạn dẫn theo không ra được tới cuối. Tiếng bước chân sau lưng bạn dừng lại ở toa trước.`, lostEn: (n) => `The ${n} passenger${n > 1 ? 's' : ''} you led did not make it to the end. The footsteps behind you stopped in an earlier car.`
   },
   work: {
     openVi: 'Làm việc với nó theo quy trình L Corp', openEn: 'Work with it by L Corp procedure',
     backVi: 'Thôi, đáp đòn theo cách thường', backEn: 'Never mind, answer the blow the usual way'
   },
   head: {
-    allyHurtVi: (name) => `${name} bước ra trước bạn và đỡ trọn nhát đó. Họ còn sống, nhưng không đứng dậy được nữa.`,
-    allyHurtEn: (name) => `${name} steps in front of you and takes the whole blow. They live, but they cannot stand again.`,
+    allyHurtVi: (name) => `${name} bước ra trước bạn và đỡ trọn nhát đó. Họ còn sống, nhưng phải được kéo khỏi trận đấu.`,
+    allyHurtEn: (name) => `${name} steps in front of you and takes the whole blow. They survive, but must be pulled out of the fight.`,
     allyDiesVi: (name) => `${name} bước ra trước bạn. The Head không phân biệt hai người. Bạn đứng dậy một mình.`,
     allyDiesEn: (name) => `${name} steps in front of you. The Head does not tell the two of you apart. You get up alone.`
   }

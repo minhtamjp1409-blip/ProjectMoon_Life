@@ -117,8 +117,8 @@ export const FACTION_EVENTS = [
             recordsAdd: ['finger_initiate'],
             effects: { wealth: +18, rep: +12, sanity: -14 },
             meritAdd: 12,
-            resultVi: "Trong sảnh The Thumb, bạn quỳ gối thực hiện đúng từng nghi thức chào Capo. Người lính gác trao cho bạn áo Soldato và khẩu súng. Từ giờ, mệnh lệnh của cấp trên đứng trước mọi lời giải thích.",
-            resultEn: "In the Thumb hall you knelt and executed every salute to the Capo without flaw. The guard handed you a Soldato coat and rifle. From now on, orders from above precede all explanation."
+            resultVi: "Bạn hoàn tất nghi thức nhập hội và được nhận vào The Thumb với cấp bậc Soldato. Người giám sát đọc tên cấp trên trực tiếp của bạn. Từ hôm nay, mệnh lệnh được ghi lại; lời giải thích thì không.",
+            resultEn: "You complete the initiation and enter the Thumb as a Soldato. The overseer reads out your immediate superior's name. From today, orders are recorded. Explanations are not."
           },
           {
             w: 25,
@@ -126,8 +126,8 @@ export const FACTION_EVENTS = [
             flagsAdd: ['CareerApplicationFailed'],
             effects: { health: -14, sanity: -15, rep: -8 },
             scarsAdd: ['Đốt ngón tay bị phạt của The Thumb'],
-            resultVi: "Một thoáng do dự khi quỳ gối khiến Capo nhíu mày. Hắn ra lệnh chặt một đốt ngón tay của bạn để răn đe rồi ném bạn ra đường cống. Băng đảng của bạn tan rã; bạn sống sót làm Outcast.",
-            resultEn: "A split-second hesitation in your kneel caught the Capo's frown. He ordered a finger joint severed as discipline and had you thrown into the sewer. Your crew scattered; you survive as an Outcast."
+            resultVi: "Bạn chậm một nhịp trong nghi thức. Người giám sát cho rằng bạn không đủ kỷ luật; đòn phạt làm gãy một đốt ngón tay trước khi họ đuổi bạn khỏi sảnh. Băng của bạn tan rã trong đêm.",
+            resultEn: "You fall a beat behind the ritual. The overseer deems you undisciplined; a punishment blow breaks one finger joint before they throw you out. Your crew scatters that night."
           }
         ]
       },
@@ -144,8 +144,8 @@ export const FACTION_EVENTS = [
             recordsAdd: ['finger_initiate'],
             effects: { rep: +14, network: +12, sanity: -12 },
             meritAdd: 12,
-            resultVi: 'Sứ Giả của The Index trao vào tay bạn cuộn chỉ vàng và thanh kiếm ngắn sau khi bạn chấp hành đúng Prescript đầu tiên. Bạn chính thức trở thành Proselyte, theo sát Dòng Chảy của The City.',
-            resultEn: 'A Messenger of the Index handed you golden thread and a short blade once you carried out the first Prescript. You are a Proselyte, walking within the City Flow.'
+            resultVi: 'Bạn làm theo Prescript đầu tiên. Một Messenger ghi tên bạn vào sổ của The Index và nhận bạn làm Proselyte. Mệnh lệnh kế tiếp được giao ngay trong đêm.',
+            resultEn: 'You carry out the first Prescript. A Messenger enters your name in the Index ledger and accepts you as a Proselyte. The next instruction arrives that night.'
           },
           {
             w: 30,
@@ -171,8 +171,8 @@ export const FACTION_EVENTS = [
             recordsAdd: ['finger_initiate'],
             effects: { health: +10, rep: +14, heat: +20, sanity: -10 },
             meritAdd: 12,
-            resultVi: 'Những người anh em của The Middle khắc xích sắt lên cánh tay bạn giữa tiếng reo hò. Tên của bạn được ghi vào Book of Vengeance; ai đụng đến bạn sẽ phải trả giá bằng máu.',
-            resultEn: 'Brothers of the Middle tattooed iron chains into your arm amidst loud cheers. Your name was entered into the Book of Vengeance; whoever touches you pays in blood.'
+            resultVi: 'Bạn vượt qua nghi thức của The Middle. Tên bạn được ghi vào Book of Vengeance cùng mối thù mà cả nhóm nhận giữ. Từ nay, ai tìm họ cũng có thể tìm đến bạn.',
+            resultEn: 'You pass the Middle\'s initiation. Your name enters the Book of Vengeance beside a grudge the group has agreed to carry. From now on, anyone looking for them can find you too.'
           },
           {
             w: 25,
@@ -199,8 +199,8 @@ export const FACTION_EVENTS = [
             effects: { sanity: -22, rep: +14, wealth: +16, resonance: +20 },
             scarsAdd: ['Con mắt của The Ring'],
             meritAdd: 14,
-            resultVi: "Docent hài lòng trước tác phẩm giải phẫu đầu tay của bạn và trao thẻ học việc của The Ring. Bạn chính thức bước vào con đường nghệ thuật tàn bạo của District 8.",
-            resultEn: "A Docent approved your first anatomical work and handed you the Ring apprentice card. You entered the brutal artistic path of District 8."
+            resultVi: "Docent xem tác phẩm, rồi ghi tên bạn vào danh sách học việc của The Ring. Ông không khen. Người phụ tá chỉ đưa bạn tấm tạp dề sạch và chỉ căn phòng kế tiếp.",
+            resultEn: "The Docent studies your work, then adds your name to the Ring's apprentice list. He offers no praise. An assistant hands you a clean apron and points to the next room."
           },
           {
             w: 35,
@@ -226,8 +226,8 @@ export const FACTION_EVENTS = [
             recordsAdd: ['finger_initiate'],
             effects: { wealth: +16, heat: +10, sanity: -8 },
             meritAdd: 12,
-            resultVi: "Người của The Pinky móc ngón út vào tay bạn trong bóng tối hẻm sâu. Lời thề máu được phong ấn; bạn nhận đoản kiếm và bước vào mạng lưới ngầm.",
-            resultEn: "A Pinky agent linked pinkies with you in the alley shadow. The blood oath was sealed; you took the dagger and stepped into the shadow network."
+            resultVi: "Bạn chấp nhận điều khoản của The Pinky. Người môi giới ghi tên bạn vào sổ kín rồi giao việc đầu tiên cho băng.",
+            resultEn: "You accept the Pinky's terms. The broker enters your name in a private ledger and gives your crew its first assignment."
           },
           {
             w: 30,
@@ -243,8 +243,8 @@ export const FACTION_EVENTS = [
       {
         labelVi: 'Từ chối mọi phe phái: Giữ băng nhóm độc lập, chấp nhận đối đầu các thế lực lớn',
         labelEn: 'Refuse all allegiance: Keep your crew independent and face pressure from all sides',
-        resultVi: 'Bạn đập bàn từ chối ký vào bất kỳ bản giao kèo nào. Người môi giới lắc đầu lạnh ngắt: "Một con chó hoang từ chối vòng xích sẽ phải tự liếm máu của mình." Bạn giữ được tự do, nhưng từ nay các ngõ ngách trở nên nguy hiểm gấp bội.',
-        resultEn: 'You slammed your fist on the table, refusing every pact. The broker gave a chilled shake of his head: “A stray dog refusing a collar must lick its own blood.” You kept your freedom, but every Backstreets corner just became twice as lethal.',
+        resultVi: 'Bạn từ chối cả năm lời mời. Người môi giới cất những lá thư vào túi. Băng của bạn vẫn độc lập, nhưng không còn quyền dựa vào thế lực nào khi tranh chấp nổ ra.',
+        resultEn: 'You refuse all five offers. The broker pockets the letters. Your crew remains independent, but has no larger power to call on when a dispute breaks out.',
         flagsAdd: ['IndependentSyndicate'],
         effects: { rep: +16, heat: +24, sanity: -10, health: -6 },
         meritAdd: 6
@@ -484,7 +484,7 @@ export const FACTION_EVENTS = [
     en: '[The last car of the WARP Train] The trip took ten seconds. For those in the last car it took two thousand years. When the doors opened, no one stood like a person anymore. Two hundred passengers had sewn themselves together into one mass on the ceiling, and they were still talking:\n“Don’t go. Stay with us.”',
     choices: [
       {
-        labelVi: 'Làm việc của một Cleanup Agent: cắt họ ra, đặt lại vào ghế',
+        labelVi: 'Làm đúng phận sự Cleanup Agent: cắt họ ra, đặt lại vào ghế',
         labelEn: 'Do a Cleanup Agent’s job: cut them apart, put them back in their seats',
         resultVi: "Bạn đưa hành khách về đúng ghế trước khi máy phục hồi chạy. Họ xuống tàu, chỉnh lại áo như vừa ngủ một giấc ngắn. Bạn ở lại toa trống, uống thuốc an thần rồi mới cởi găng tay.",
         resultEn: 'It took four hours. When W Corp flipped the restoration switch, each passenger stood, straightened their coat, and stepped onto the platform as if nothing had happened. Only you remember.',
@@ -636,7 +636,7 @@ export const FACTION_EVENTS = [
       {
         labelVi: 'Cưới',
         labelEn: 'Marry',
-        resultVi: 'Không có tiệc. Chỉ có hai chiếc nhẫn rẻ tiền và một bữa tối ở quán mì quen. Đêm đó còi báo động vang ở xa, và lần đầu tiên bạn không để ý đến nó.',
+        resultVi: 'Không có tiệc. Chỉ có hai chiếc nhẫn rẻ tiền với bữa tối ở quán mì quen. Đêm đó còi báo động vang ở xa, và lần đầu tiên bạn không để ý đến nó.',
         resultEn: 'No party. Just two cheap rings and dinner at the usual noodle shop. Sirens sounded far off that night, and for the first time you didn’t notice.',
         flagsAdd: ['Married'],
         recordsAdd: ['family_built'],
@@ -724,7 +724,7 @@ export const FACTION_EVENTS = [
       {
         labelVi: 'Nằm lên bàn mổ',
         labelEn: 'Lie down on the table',
-        resultVi: 'Ca mổ kéo dài sáu tiếng. Khi tỉnh dậy, bạn mạnh hơn bao giờ hết, và không còn cảm nhận được hơi ấm của bàn tay mình hay vị của thức ăn.',
+        resultVi: 'Ca mổ kéo dài sáu tiếng. Khi tỉnh dậy, bạn mạnh hơn bao giờ hết, nhưng không còn thấy hơi ấm bàn tay mình, cũng chẳng nếm được vị thức ăn.',
         resultEn: 'The operation took six hours. When you woke you were stronger than ever, and could no longer feel the warmth of your own hands or taste food.',
         flagsAdd: ['FullBodyProsthetic', '고급장비'],
         effects: { health: +35, sanity: -26, wealth: -25, rep: +14, resonance: +22 },
@@ -802,7 +802,7 @@ export const FACTION_EVENTS = [
       {
         labelVi: 'Thiết lập trận địa súng máy cao áp, dội bão lửa đúng theo nhịp trống lễ nghi',
         labelEn: 'Deploy high-pressure machine gun batteries, delivering synchronized suppression fire',
-        resultVi: 'Từng tràng đạn xé toạc màn sương Backstreets. Bạn chỉ huy các Soldato nạp đạn và khai hỏa với sự chuẩn xác lạnh lùng của một chiếc đồng hồ quả lắc. Kẻ địch tan tác hoàn toàn. Vị Sottocapo trao huy hiệu Capo và giao cho bạn quyền cai quản tuyến quân nhu huyết mạch.',
+        resultVi: 'Từng tràng đạn xé toạc màn sương Backstreets. Bạn chỉ huy các Soldato nạp đạn và khai hỏa, đều đặn lạnh lùng như chiếc đồng hồ quả lắc. Kẻ địch tan tác hoàn toàn. Vị Sottocapo trao huy hiệu Capo và giao cho bạn quyền cai quản tuyến quân nhu huyết mạch.',
         resultEn: 'Disciplined volleys tore the alley mist to shreds. Your firing line operated with clockwork ferocity, shattering the raiders. The Sottocapo pinned the Capo insignia to your chest, entrusting you with the vital supply route.',
         setFingerRank: 1,
         flagsAdd: ['promo_thumb_capo_done'],
@@ -1306,7 +1306,7 @@ export const FACTION_EVENTS = [
       {
         labelVi: 'Sắp đặt trận địa gương lăng kính, tạo ảo ảnh mê cung vô cực làm mê hoặc người xem',
         labelEn: 'Assemble an infinity mirror labyrinth, enchanting observers with kaleidoscopic illusion',
-        resultVi: 'Ánh sáng phản chiếu liên hồi qua hàng ngàn mảnh gương vỡ, biến gian phòng thành một vũ trụ sao rơi lộng lẫy. Khán giả hoàn toàn bị thôi miên bởi vẻ đẹp thị giác siêu thực. Bạn được nhất trí trao chứng chỉ Docent xuất sắc.',
+        resultVi: 'Ánh sáng phản chiếu liên hồi qua hàng ngàn mảnh gương vỡ, biến gian phòng thành một vũ trụ sao rơi lộng lẫy. Vẻ đẹp siêu thực ấy thôi miên trọn cả khán phòng. Bạn được nhất trí trao chứng chỉ Docent xuất sắc.',
         resultEn: 'Refracted beams bounced across ten thousand mirror facets, transforming the chamber into a dazzling galaxy. Spectators wept in optical wonder. You were unanimously crowned an exceptional Ring Docent.',
         setFingerRank: 1,
         flagsAdd: ['promo_ring_docent_done'],
@@ -1484,7 +1484,7 @@ export const FACTION_EVENTS = [
       {
         labelVi: "Mở một trường phái dạy người ta thả lỏng đầu óc",
         labelEn: "Open a school that teaches people to loosen their minds",
-        resultVi: "Quan điểm nghệ thuật của bạn giúp hàng nghìn cư dân Backstreets tìm được một chút bình yên giữa thực tại. Họ gọi bạn là Grand Curator bằng giọng nhỏ hơn thường lệ.",
+        resultVi: "Cách nhìn nghệ thuật của bạn cho hàng nghìn cư dân Backstreets tìm được chút bình yên giữa đời thực. Họ gọi bạn là Grand Curator bằng giọng nhỏ hơn thường lệ.",
         resultEn: "Your view of art gives thousands of Backstreets residents a little peace in a harsh reality. They call you Grand Curator in a lower voice than usual.",
         setFingerRank: 3,
         flagsAdd: ['promo_ring_curator_done'],
@@ -1842,7 +1842,7 @@ export const FACTION_EVENTS = [
     allowDistorted: true,
     need: { finger: 'Index', fingerRank: 2 },
     forbids: ['promo_index_weaver_done'],
-    vi: "[Prescript dát vàng] Yan Vismok gửi bạn lệnh đến District 11 lúc 2:45 sáng: chặt tay cầm vũ khí của một Fixer đang uống trà, nuốt một đồng xu gỉ, rồi bước lên thềm Proxy và Weaver. Bạn còn một đêm.",
+    vi: "[Prescript dát vàng] Yan Vismok gửi bạn lệnh đến District 11 lúc 2:45 sáng: chặt bàn tay cầm vũ khí của tay Fixer đang uống trà, nuốt một đồng xu gỉ, rồi bước lên thềm Proxy và Weaver. Bạn còn một đêm.",
     en: '[The Index · The Golden Prescript] A gilded Prescript from Yan Vismok fluttered down before you. The calligraphy cut like a blade:\n“Walk to District 11 at 2:45 AM. Sever the weapon-arm of the Fixer sipping tea, and swallow a rusted coin. Thereafter, ascend the Proxy steps.”',
     choices: [
       {
@@ -2060,7 +2060,7 @@ export const FACTION_EVENTS = [
     allowDistorted: true,
     need: { finger: 'Pinky', fingerRank: 1 },
     forbids: ['promo_pinky_star_done'],
-    vi: '[Phán Quan Bóng Đêm · Khảo Thí Thiên Tinh The Pinky] Một bản hợp đồng máu cổ đại bị đánh cắp bởi một tổ chức buôn lậu công nghệ Singularity. The Pinky yêu cầu một Sworn Blade tài năng phải truy vết và thu hồi bản hợp đồng mà không để rò rỉ bất kỳ thông tin nào ra bên ngoài.',
+    vi: '[Phán Quan Bóng Đêm · Khảo Thí Thiên Tinh The Pinky] Bản hợp đồng máu cổ xưa bị đường dây buôn lậu công nghệ Singularity đánh cắp. The Pinky giao cho Sworn Blade có tài truy vết và thu hồi bản hợp đồng mà không để rò rỉ bất kỳ thông tin nào ra bên ngoài.',
     en: '[Shadow Arbiter · Pinky Star of the Sky Crucible] An ancient blood pact was stolen by singularity smugglers. The Pinky commissions an elite Sworn Blade to track and recover the dossier without a whisper leaking to the outside world.',
     choices: [
       {
@@ -2113,7 +2113,7 @@ export const FACTION_EVENTS = [
         effects: { health: -15, sanity: -32, wealth: +85, rep: +42 },
         scarsAdd: ['Bí mật đen tối của Wing'],
         meritAdd: 55,
-        resultVi: 'Bạn nhìn thẳng vào cỗ máy kinh hoàng của Singularity. Mắt bạn rỉ máu, nhưng nụ cười của bạn vẫn giữ nguyên vẻ điềm tĩnh của một kẻ lọc lõi. Ban giám đốc vỗ tay chào đón: "Chào mừng Giám đốc cấp cao mới của Wing."',
+        resultVi: 'Bạn nhìn thẳng vào cỗ máy kinh hoàng của Singularity. Mắt bạn rỉ máu, nhưng nụ cười vẫn điềm tĩnh như kẻ lọc lõi. Ban giám đốc vỗ tay chào đón: "Chào mừng Giám đốc cấp cao mới của Wing."',
         resultEn: 'You stared into the monstrosity of the Singularity. Your eyes bled, yet your expression retained the cold composure of an apex corporate survivor. The Board applauded: “Welcome, our newest Senior Executive.”'
       },
       {
@@ -2198,7 +2198,7 @@ export const FACTION_EVENTS = [
     weight: 60,
     need: { jobs: ['Syndicate'], flags: ['FingerMiddle'] },
     forbids: ['Distorted', 'middle_vengeance_done'],
-    vi: '[Book of Vengeance của The Middle] Một Big Brother bắp tay cuồn cuộn vết xăm xích sắt bước vào sào huyệt, giở cuốn sách da dày cộp (Book of Vengeance): "Một gã Fixer Grade 4 vừa chém đứt ngón tay của một đứa em út trong xóm. Tên hắn đã viết bằng mực đỏ trên trang này. Ai sẽ đi đòi nợ máu?"',
+    vi: '[Book of Vengeance của The Middle] Gã Big Brother bắp tay cuồn cuộn hình xăm xích sắt bước vào sào huyệt, giở cuốn sách da dày cộp (Book of Vengeance): "Thằng Fixer Grade 4 vừa chém đứt ngón tay đứa em út trong xóm. Tên hắn đã viết bằng mực đỏ trên trang này. Ai sẽ đi đòi nợ máu?"',
     en: '[The Middle’s Book of Vengeance] A Big Brother with iron-chain tattoos slaps down the heavy leather tome: "A Grade 4 Fixer just severed the finger of an initiate in our ward. His name is inked in red. Who will collect the blood debt?"',
     choices: [
       {
@@ -2292,7 +2292,7 @@ export const FACTION_EVENTS = [
     weight: 55,
     need: { jobs: ['Wing Employee'] },
     forbids: ['Distorted', 'wing_bribe_done'],
-    vi: '[Món Tiền Hối Lộ từ Tập đoàn Cạnh Tranh] Một đặc vụ ngầm của một Wing đối thủ tiếp cận bạn tại quán cà phê sang trọng trong Nest. Hắn đặt lên bàn một chiếc thẻ tài khoản chứa 200 Ahn vàng ròng: "Chỉ cần bạn copy dữ liệu tài chính quý này của Wing bạn cho chúng tôi, số tiền này là của bạn."',
+    vi: '[Món Tiền Hối Lộ từ Tập đoàn Cạnh Tranh] Gã đặc vụ ngầm của Wing đối thủ tìm gặp bạn trong quán cà phê sang trọng ở Nest. Hắn đặt lên bàn chiếc thẻ tài khoản chứa 200 Ahn vàng ròng: "Chỉ cần bạn copy dữ liệu tài chính quý này của Wing bạn cho chúng tôi, số tiền này là của bạn."',
     en: '[Bribe from a Rival Wing] An operative from a rival Megacorp corners you inside an upscale Nest café, sliding a certified ledger bearing 200 Ahn: "Simply mirror your division’s quarterly balance sheet. The gold is yours."',
     choices: [
       {
@@ -2504,7 +2504,7 @@ export const FACTION_EVENTS = [
       {
         labelVi: 'Tuân thủ tuyệt đối không thắc mắc, ngồi xoay con quay đúng 15 phút',
         labelEn: 'Obey without question, spinning the brass top for precisely 15 minutes',
-        resultVi: 'Bạn xoay con quay suốt mười lăm phút. Lúc 12:14, một tiếng nổ vang ở góc phố đối diện; toán phục kích đã đến sai thời điểm. Bạn cất con quay đi mà không biết Prescript nhắm vào ai.',
+        resultVi: 'Bạn xoay con quay suốt mười lăm phút. 12:14, tiếng nổ vang lên ở góc phố đối diện; toán phục kích đã tới sai giờ. Bạn cất con quay đi mà không biết Prescript nhắm vào ai.',
         resultEn: 'You spin the top for fifteen minutes. At 12:14, an explosion sounds across the street; the ambushers arrived at the wrong time. You put the top away, unsure whom the Prescript was meant to affect.',
         meritAdd: 25,
         effects: { sanity: +18, rep: +22, network: +18, resonance: +16 }
@@ -2578,7 +2578,7 @@ export const FACTION_EVENTS = [
     major: true,
     weight: 44,
     need: { jobs: ['Syndicate'], flags: ['FingerMiddle'] },
-    vi: "[Phiếu giảm giá tiệm tóc · The Middle] Một tiệm làm tóc ở ranh giới quận phát tập phiếu giảm giá đặc biệt, thứ mà Big Brother Ricardo rất quý để giữ mái tóc bóng. Một nhóm côn đồ giật xấp phiếu ngay trước cửa tiệm.",
+    vi: "[Phiếu giảm giá tiệm tóc · The Middle] Tiệm làm tóc nơi ranh giới quận phát tập phiếu giảm giá đặc biệt, thứ Big Brother Ricardo quý như vàng để giữ mái tóc bóng mượt. Đám côn đồ giật phăng xấp phiếu ngay trước cửa tiệm.",
     en: "[The Hair Salon Coupons · The Middle] A salon on the district border issues special discount coupons, which Big Brother Ricardo values for keeping his hair glossy. A street gang snatches the stack right outside the door.",
     choices: [
       {
@@ -2617,7 +2617,7 @@ export const FACTION_EVENTS = [
         effects: { rep: +32, wealth: +50, sanity: -6, resonance: +18 }
       },
       {
-        labelVi: 'Dùng con mắt nghệ thuật hướng dẫn quan khách thưởng thức tranh một cách tinh tế',
+        labelVi: 'Dùng con mắt nghệ thuật dẫn quan khách thưởng tranh cho tinh tế',
         labelEn: 'Subtly guide bewildered patrons into appreciating the grotesque aesthetics',
         resultVi: 'Quan khách trầm trồ trước sự am hiểu hội họa và phong thái tao nhã của bạn. Buổi triển lãm thành công rực rỡ, mang về bộn tiền bán vé cho viện bảo tàng.',
         resultEn: 'Patrons marveled at your refined critique and cultured aura. The gala triumphed commercially, yielding hefty ticket royalties.',

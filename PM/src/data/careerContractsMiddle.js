@@ -15,7 +15,7 @@ export const MIDDLE_CONTRACTS = [
     'He was waiting for you, and the new dryer does not work like a dryer.'),
 
   rq('middle_cart_thief', 0, 'Một tên trộm xe đẩy', 'A cart thief',
-    'Một đứa trẻ lấy xe đẩy bán bánh của một người trong gia đình và đem bán lại ở chợ đồ cũ. Tên nó đã nằm trong sổ ba ngày. Người mất xe không ăn được bữa nào.',
+    'Đứa nhóc lấy trộm xe đẩy bán bánh của người trong gia đình, đem bán lại ngoài chợ đồ cũ. Tên nó đã nằm trong sổ ba ngày. Người mất xe không ăn được bữa nào.',
     'A child took a family member’s bun cart and sold it at the second-hand market. Its name has been in the book three days. The cart’s owner has not eaten.',
     'Bạn tìm ra đứa trẻ, chuộc xe về, và để nó làm cho người chủ ba tuần để trả. Đến tuần thứ hai nó đã đẩy xe giỏi hơn chủ cũ.',
     'You find the child, buy the cart back, and let them work for the owner three weeks to pay. By the second week they push the cart better than its owner.',
@@ -24,8 +24,8 @@ export const MIDDLE_CONTRACTS = [
     'Dãy nhà trống không trống. Bạn không ra khỏi đó.',
     'The empty row is not empty. You do not come out of it.'),
 
-  rq('middle_landlord_mother', 0, 'Chủ nhà đã đánh mẹ của một người anh em', 'The landlord who struck a sibling’s mother',
-    'Chủ nhà đẩy bà cụ ngã ngoài cầu thang khi đòi tiền thuê. Bà là mẹ của một người anh em Middle. Cái tên ông ta nằm trong sổ, và không ai muốn thấy một cái xác ở đó.',
+  rq('middle_landlord_mother', 0, 'Chủ nhà đánh mẹ người anh em', 'The landlord who struck a sibling’s mother',
+    'Chủ nhà đẩy bà cụ ngã ngoài cầu thang khi đòi tiền thuê. Bà là mẹ của người anh em trong Middle. Tên ông ta đã nằm trong sổ, và chẳng ai muốn thấy cái xác nằm ở đó.',
     'A landlord pushed an old woman down the stairs over the rent. She is the mother of a Middle sibling. His name sits in the book, and no one wants to see a corpse at the end of it.',
     'Bạn đến vào ngày thu tiền. Không đánh, không dọa: bạn đứng sau lưng ông ta khi ông ta đếm từng đồng trả lại bà cụ, cho đến đồng cuối.',
     'You come on collection day. No blows, no threats: you stand behind him while he counts every coin back to the old woman, down to the last.',
@@ -46,7 +46,7 @@ export const MIDDLE_CONTRACTS = [
     'He is cheap, but his blade is not. You see that when it is too late.',
     { mem: 'book_grade9_fixer', later: { id: 'mx_middle_book_kin', years: 3, reasonVi: 'Người nhà của tên trong Book of Vengeance mà bạn đã xử vẫn còn ở đâu đó', reasonEn: 'Kin of the name in the Book you settled are still out there somewhere' } }),
 
-  rq('middle_workshop_hand', 1, 'Thợ phụ của một Workshop đã bán bản vẽ', 'A Workshop hand who sold a blueprint',
+  rq('middle_workshop_hand', 1, 'Thợ phụ Workshop bán bản vẽ', 'A Workshop hand who sold a blueprint',
     'Một thợ phụ bán bản vẽ vũ khí của người anh em Middle cho đối thủ của họ. Cái tên nằm trong sổ, kèm ghi chú: "đừng giết, hắn còn con nhỏ".',
     'A Workshop hand sold a Middle sibling’s weapon design to their rivals. The name is in the book with a note: “don’t kill, he has a small child.”',
     'Bạn lấy lại bản vẽ và bắt hắn đặt tên mình lên một văn bản thú nhận. Hắn nhìn tờ giấy nhiều hơn nhìn bạn. Không ai chết.',
@@ -57,7 +57,7 @@ export const MIDDLE_CONTRACTS = [
     'His small child opens the door. Behind the child stands the father holding a hammer.'),
 
   rq('middle_grade9_cut', 1, 'Một vết cắt trong Request', 'A cut taken during a Request',
-    'Một Fixer Grade 9 cắt tay một người anh em Middle trong lúc cả hai cùng làm một Request, vì nghĩ rằng người kia đang cướp phần của mình. Chuyện kết thúc bằng một xung đột nhỏ, và một cái tên mới trong sổ.',
+    'Tay Fixer Grade 9 chém tay người anh em Middle khi hai bên cùng làm chung Request, vì tưởng người kia giành phần. Chuyện khép lại bằng một trận xô xát nhỏ, và thêm cái tên mới trong sổ.',
     'A Grade 9 Fixer cut a Middle sibling’s hand during a joint Request, thinking the other was cutting into their share. It ended as a small quarrel and a new name in the book.',
     'Bạn gặp hắn ở nơi công cộng và chỉ nói một câu: "Mười ngày, tôi trở lại." Mười ngày sau hắn đặt tiền thuốc cho bàn tay lên bàn.',
     'You meet him in a public place and say only one sentence: “Ten days, I’ll be back.” Ten days later he sets the medicine money for the hand on the table.',
@@ -68,7 +68,7 @@ export const MIDDLE_CONTRACTS = [
 
   // ------------------------------------------------------------ tier 2: Grade 6 to 7
   rq('middle_withheld_pay', 2, 'Người đứng đầu Office giữ tiền công', 'An Office head who withheld wages',
-    'Người đứng đầu một Office giữ tiền công của một Fixer đã chết, người từng được Middle nhận làm em. Bà quả phụ đến Middle xin sổ ghi lại món nợ ấy.',
+    'Người đứng đầu Office nọ ôm tiền công của tay Fixer đã chết, người từng được Middle nhận làm em. Bà quả phụ đến Middle xin sổ ghi lại món nợ ấy.',
     'The head of an Office kept the wages of a dead Fixer whom the Middle had taken as kin. The widow came to the Middle asking that the debt be written down.',
     'Bạn đến Office với một cuốn sổ trên tay và đọc to số tiền. Người đứng đầu im lặng một lúc, rồi trả từng đồng, cả phần mà hắn có thể đã giữ.',
     'You walk into the Office with a book in your hand and read the sum aloud. The head is silent a while, then pays out every coin, even the part he could have kept.',
@@ -120,7 +120,7 @@ export const MIDDLE_CONTRACTS = [
     { mem: 'book_old_war_name' }),
 
   rq('middle_rival_capo', 3, 'Một Capo của Syndicate khác', 'A Capo from another Syndicate',
-    'Một Capo của Syndicate khác bắt cóc con của một người anh em Middle để ép trả nợ. Đứa bé đã được trả lại, nhưng trong sổ cái tên ấy ghi hai chữ: "chưa xong".',
+    'Tay Capo bên Syndicate khác bắt cóc con của người anh em Middle để ép trả nợ. Đứa bé đã được trả lại, nhưng trong sổ cái tên ấy ghi hai chữ: "chưa xong".',
     'A Capo from another Syndicate took a Middle sibling’s child to force a debt. The child was returned, but the book carries two words beside the Capo’s name: “not finished.”',
     'Bạn gặp Capo giữa ban ngày, ở nơi có nhiều người, và nhắc hắn hai chữ trong sổ. Hắn chuyển lại ba lần số tiền nợ, và một lời xin lỗi bằng văn bản.',
     'You meet the Capo in daylight among many people and remind him of the two words in the book. He sends back three times what he owed, and a written apology.',
@@ -141,9 +141,9 @@ export const MIDDLE_CONTRACTS = [
     'They sat at the table before you. The knife on it is not for cutting bread.'),
 
   rq('middle_burned_safehouse', 4, 'Người đã đốt nơi trú ẩn', 'The one who burned the safehouse',
-    'Một Fixer Grade 2 của Section 1 đốt nơi trú ẩn của Middle với mười một người ở trong, vì nghĩ rằng đó là sào huyệt Syndicate. Hana công nhận đó là sai sót. Sổ không công nhận.',
+    'Tay Fixer Grade 2 thuộc Section 1 đốt chỗ trú của Middle khi bên trong còn mười một người, vì nghĩ rằng đó là sào huyệt Syndicate. Hana công nhận đó là sai sót. Sổ không công nhận.',
     'A Grade 2 Fixer of Section 1 burned a Middle safehouse with eleven people inside, believing it a Syndicate den. Hana calls it a mistake. The book does not.',
-    'Bạn không đòi máu. Bạn đòi tên mười một người được đọc to ở buổi lễ của Hana. Họ đọc, từng người một, và Fixer ấy đứng nghe cho tới tên cuối.',
+    'Bạn không đòi máu. Bạn đòi mười một cái tên phải được đọc to trong buổi lễ của Hana. Họ đọc, từng người một, và Fixer ấy đứng nghe cho tới tên cuối.',
     'You do not ask for blood. You ask for the eleven names to be read aloud at a Hana ceremony. They are read, one by one, and the Fixer stands and hears them to the last.',
     'Hana cấm buổi lễ. Bạn bị ghi vào danh sách theo dõi, và tên mười một người vẫn chưa được ai đọc to.',
     'Hana bars the ceremony. You are put on a watch list, and the eleven names remain unspoken.',
@@ -153,7 +153,7 @@ export const MIDDLE_CONTRACTS = [
   rq('middle_nest_hider', 4, 'Kẻ trốn trong một Nest', 'The one hiding in a Nest',
     'Một Fixer Grade 2 về hưu sống trong một Nest sạch sẽ, có bảo vệ và camera. Sổ của Middle biết hắn ở đâu, nhưng Nest thì không cho ai vào đòi nợ.',
     'A retired Grade 2 Fixer lives in a clean Nest with guards and cameras. The Middle’s book knows where he is, but the Nest lets no one in to collect.',
-    'Bạn mượn thẻ của một người giao hàng và đứng chờ ở hành lang cho tới khi hắn tự mở cửa. Hắn thấy cuốn sổ, và không đóng cửa lại.',
+    'Bạn mượn thẻ người giao hàng, đứng chờ ngoài hành lang cho tới khi hắn tự mở cửa. Hắn thấy cuốn sổ, và không đóng cửa lại.',
     'You borrow a delivery worker’s pass and wait in the corridor until he opens his door himself. He sees the book and does not shut it.',
     'Bảo vệ của Nest tìm ra bạn ở tầng bảy. Bạn bị tiễn ra cổng, và hắn không còn ở địa chỉ đó khi bạn trở lại.',
     'The Nest guards find you on the seventh floor. You are escorted out the gate, and he is no longer at that address when you return.',
@@ -164,13 +164,13 @@ export const MIDDLE_CONTRACTS = [
   rq('middle_grade1_twenty_years', 5, 'Một Grade 1 từ hai mươi năm trước', 'A Grade 1 from twenty years back',
     'Một Fixer giờ là Grade 1 từng khiến một Great Sibling của Middle mất mạng khi còn là kẻ vô danh. Sổ đã đổi chủ ba lần mà cái tên vẫn không bị gạch.',
     'A Fixer now at Grade 1 once cost a Great Sibling of the Middle their life as an unknown. The book has changed hands three times and the name is still not struck.',
-    'Bạn gặp họ trên một mái nhà, không mang vũ khí. Họ nghe hết, rồi đưa tay ra nhận cuốn sổ. Cái tên được gạch bởi chính bàn tay họ.',
+    'Bạn gặp họ trên mái nhà, tay không vũ khí. Họ nghe hết, rồi đưa tay nhận cuốn sổ. Chính tay họ gạch cái tên ấy đi.',
     'You meet them on a rooftop, unarmed. They hear it through, then hold out a hand for the book. The name is struck by their own hand.',
     'Họ nghe hết và từ chối. Lời từ chối không có tức giận trong đó, chỉ có sự mệt mỏi, và bạn xuống mái nhà với cả hai bàn tay trắng.',
     'They hear it through and refuse. There is no anger in the refusal, only fatigue, and you come down from the roof empty-handed.',
     'Họ nghe hết, và nhẹ nhàng đứng dậy.',
     'They hear it through, and quietly stand up.',
-    { mem: 'book_grade1_name', later: { id: 'mx_middle_book_kin', years: 4, reasonVi: 'Người nhà của một tên trong Book of Vengeance vẫn nhớ', reasonEn: 'Kin of a name in the Book of Vengeance still remember' } }),
+    { mem: 'book_grade1_name', later: { id: 'mx_middle_book_kin', years: 4, reasonVi: 'Người nhà của cái tên trong Book of Vengeance vẫn nhớ', reasonEn: 'Kin of a name in the Book of Vengeance still remember' } }),
 
   rq('middle_color_blood', 5, 'Một Color mắc nợ máu', 'A Color who owes blood',
     'Một Color Fixer từng giết ba người anh em của Middle trong một Request mà họ không biết mình là mục tiêu. Great Elder không muốn chiến tranh. Great Elder muốn một cái cớ để không cần.',
@@ -182,7 +182,7 @@ export const MIDDLE_CONTRACTS = [
     'Họ không đọc đề nghị. Họ đọc tên bạn.',
     'They do not read the offer. They read your name.'),
 
-  rq('middle_last_names', 5, 'Những tên cuối cùng của một cuốn sổ', 'The last names in a book',
+  rq('middle_last_names', 5, 'Những cái tên cuối cùng trong sổ', 'The last names in a book',
     'Great Elder muốn một cuốn Book of Vengeance cũ được khép lại trước khi người cuối cùng của thế hệ ấy chết. Còn ba tên chưa gạch. Tất cả đều nằm sau cordon của Hana.',
     'The Great Elder wants an old Book of Vengeance closed before the last of that generation dies. Three names remain. All of them lie behind Hana’s cordon.',
     'Bạn đi qua cordon bằng một lá thư thật và một lời nói dối chuẩn xác. Cuốn sổ cũ được khép lại với ba cái gạch, không giọt máu.',

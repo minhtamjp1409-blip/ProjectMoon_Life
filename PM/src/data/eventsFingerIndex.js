@@ -10,7 +10,7 @@ const X = 'Index';
 export const INDEX_EVENTS = [
   // ------------------------------------------------------------------ missions
   fe('index_red_umbrella', X, [0, 3],
-    '[Chiếc ô đỏ] Prescript của đêm nay chỉ có ba dòng: mua một chiếc ô đỏ ở sạp đầu phố, đứng dưới cột đèn số bảy lúc 11:20, và đưa nó cho người đầu tiên bước ra khỏi con hẻm đối diện. Trời không mưa, và bạn thấy trên giấy một vệt sáp niêm đã khô.',
+    '[Chiếc ô đỏ] Prescript đêm nay chỉ có ba dòng: mua chiếc ô đỏ ở sạp đầu phố, đứng dưới cột đèn số bảy lúc 11:20, và đưa nó cho người đầu tiên bước ra khỏi con hẻm đối diện. Trời không mưa. Trên tờ giấy còn vệt sáp niêm đã khô.',
     '[The red umbrella] Tonight’s Prescript has three lines: buy a red umbrella at the stall at the head of the street, stand under lamp post number seven at 11:20, and hand it to the first person who steps out of the alley opposite. It is not raining, and you see a dried seal of wax on the paper.',
     [
       fc('Làm đúng từng dòng, không thêm gì', 'Do each line exactly, adding nothing',
@@ -28,7 +28,7 @@ export const INDEX_EVENTS = [
     ], { weight: 10 }),
 
   fe('index_two_prescripts', X, [1, 3],
-    '[Hai Prescript trong một đêm] Hai tờ Prescript nằm trên bàn bạn, cùng một chữ ký, cùng một sợi chỉ vàng. Tờ thứ nhất bảo bạn ở nhà đến sáng. Tờ thứ hai bảo bạn có mặt ở cổng bến lúc nửa đêm. Không tờ nào ghi giờ phát hành, và bạn biết chỉ một tờ có thể là thật.',
+    '[Hai Prescript trong một đêm] Hai tờ Prescript nằm trên bàn bạn, chung chữ ký, chung sợi chỉ vàng. Tờ thứ nhất bảo bạn ở nhà đến sáng. Tờ thứ hai bảo bạn có mặt ở cổng bến lúc nửa đêm. Không tờ nào ghi giờ phát hành, và bạn biết chỉ một tờ có thể là thật.',
     '[Two Prescripts in one night] Two Prescripts lie on your desk, same signature, same golden thread. The first tells you to stay home until morning. The second tells you to be at the pier gate at midnight. Neither records an issue time, and you know only one can be real.',
     [
       fg('Ở nhà như tờ thứ nhất', 'Stay home as the first one says', [
@@ -64,7 +64,7 @@ export const INDEX_EVENTS = [
     ]),
 
   fe('index_golden_letter', X, [0, 3],
-    '[Lá thư tơ vàng] Một lá thư cuộn trong ống tre, buộc bằng chỉ vàng, phải đến tay một người ở District 14 trước khi chuông tối điểm. Trên đường, ba người lạ lần lượt hỏi bạn đang mang gì, và cả ba đều biết tên bạn.',
+    '[Lá thư tơ vàng] Lá thư cuộn trong ống tre, buộc chỉ vàng, phải tới tay người nhận ở District 14 trước khi chuông tối điểm. Trên đường, ba người lạ lần lượt hỏi bạn đang mang gì, và cả ba đều biết tên bạn.',
     '[The golden letter] A letter rolled in a bamboo tube, tied with golden thread, must reach someone in District 14 before the evening bell. On the way three strangers in turn ask what you are carrying, and all three know your name.',
     [
       fc('Không trả lời ai, đi thẳng', 'Answer no one and walk straight through',
@@ -95,12 +95,12 @@ export const INDEX_EVENTS = [
         { rep: 5, sanity: -5, network: -4 }, { flagsAdd: ['index_obeyed'] }),
       fg('Giúp cậu ta trốn khỏi khu vực', 'Help him slip out of the district', [
         [50, 'Bạn chỉ cho cậu một cửa sau đến tàu hàng. Cậu không bao giờ quay lại, và hai tháng sau bạn nhận được một tấm bưu thiếp không đề tên, chỉ vẽ một chiếc ô nhỏ.', 'You show him a back way to a freight train. He never returns, and two months later you receive an unsigned postcard with a small drawn umbrella.', { sanity: 3, network: 6, rep: -3 }, { flagsAdd: ['index_deviated'] }],
-        [50, 'Một Proxy đã đứng ở cổng tàu hàng từ trước. Cậu bị giữ, và tên bạn xuất hiện trên một tờ Prescript sáng hôm sau.', 'A Proxy was already standing at the freight gate. He is held, and your name appears on a Prescript the next morning.', { rep: -10, sanity: -8, heat: 8 }, { flagsAdd: ['index_deviated'] }]
+        [50, 'Có Proxy đứng chờ sẵn ở cổng tàu hàng. Cậu bị giữ lại, và sáng hôm sau tên bạn hiện trên tờ Prescript.', 'A Proxy was already standing at the freight gate. He is held, and your name appears on a Prescript the next morning.', { rep: -10, sanity: -8, heat: 8 }, { flagsAdd: ['index_deviated'] }]
       ])
     ], { age: [24, 90] }),
 
   fe('index_return_lost_item', X, [0, 2],
-    '[Vật phải trả lại] Prescript: tìm người sở hữu một chiếc đồng hồ bỏ túi hỏng và trả lại trước ba ngày. Không có tên, chỉ một chữ cái khắc phía sau nắp, và một bức ảnh bị cắt mất một nửa. Bạn lần theo từng nhà ở bảy con phố.',
+    '[Vật phải trả lại] Prescript: tìm chủ chiếc đồng hồ bỏ túi hỏng, trả lại trong vòng ba ngày. Không tên tuổi, chỉ có một chữ cái khắc sau nắp và tấm ảnh bị cắt mất nửa. Bạn lần theo từng nhà ở bảy con phố.',
     '[An item to return] A Prescript: find the owner of a broken pocket watch and return it within three days. No name, only a letter engraved inside the lid, and a photograph cut in half. You trace it through seven streets, house by house.',
     [
       fc('Tìm đúng người, trả đúng cách', 'Find the right person and return it properly',
@@ -127,7 +127,7 @@ export const INDEX_EVENTS = [
         { rep: 4, sanity: -3, network: 2 }, { flagsAdd: ['index_obeyed'] }),
       fg('Mở chiếc hộp sau khi người ấy đi', 'Open the box after they leave', [
         [50, 'Bên trong là một lọn tóc trẻ con và một mảnh giấy ghi ngày sinh. Bạn đặt lại hộp, nhưng bản báo cáo của bạn trống ở dòng cuối cùng, lần đầu tiên.', 'Inside lie a lock of a child’s hair and a slip with a birthday. You set the box back, but your report is blank on the last line for the first time.', { sanity: -6, rep: 1 }, { flagsAdd: ['index_deviated'] }],
-        [50, 'Một người khác đứng ở lối vào tối, ghi lại việc bạn mở hộp. Tuần sau Proxy gọi bạn lên và đưa một bản kê dài hơn bản báo cáo của chính bạn.', 'Another stands in the dark doorway, recording that you opened the box. The next week the Proxy calls you up and hands over a list longer than your own report.', { rep: -8, sanity: -5, heat: 4 }, { flagsAdd: ['index_deviated'] }]
+        [50, 'Có người đứng khuất trong lối vào tối, ghi lại cảnh bạn mở hộp. Tuần sau Proxy gọi bạn lên và đưa một bản kê dài hơn bản báo cáo của chính bạn.', 'Another stands in the dark doorway, recording that you opened the box. The next week the Proxy calls you up and hands over a list longer than your own report.', { rep: -8, sanity: -5, heat: 4 }, { flagsAdd: ['index_deviated'] }]
       ]),
       fc('Tiến đến và nói chuyện với người ấy', 'Approach and speak to them',
         'Người ấy quay lại và không ngạc nhiên. Họ nói đã biết bạn theo từ sáng, và hỏi bạn có muốn ăn tối không. Bạn từ chối, nhưng bạn nghĩ về lời mời ấy suốt tuần.',
@@ -136,7 +136,7 @@ export const INDEX_EVENTS = [
     ], { age: [22, 90] }),
 
   fe('index_flower_for_grave', X, [0, 3],
-    '[Hoa cho một ngôi mộ] Prescript đưa bạn đến nghĩa địa phía bắc District 12 với một bó hoa trắng và địa chỉ của một ngôi mộ không bia. Bạn phải để hoa lúc 5:50 sáng, và không ai được thấy bạn. Khi bạn đến, đã có một bó hoa khác ở đó, còn tươi.',
+    '[Hoa cho ngôi mộ] Prescript đưa bạn tới nghĩa địa phía bắc District 12, tay ôm bó hoa trắng, tìm ngôi mộ không bia. Phải đặt hoa lúc 5:50 sáng, không ai được thấy bạn. Tới nơi, đã có bó hoa khác nằm sẵn, còn tươi rói.',
     '[Flowers for a grave] A Prescript sends you to the northern cemetery of District 12 with white flowers and the address of a grave with no marker. You must lay them at 5:50 a.m. unseen. When you arrive, another bunch is already there, still fresh.',
     [
       fc('Đặt hoa của bạn cạnh bó hoa kia', 'Lay your flowers beside the other bunch',
@@ -166,7 +166,7 @@ export const INDEX_EVENTS = [
         'You note the exact position to the step and leave. That night it rains, and the next morning the thread is gone. Nobody says who took it.',
         { rep: 4, sanity: 1 }, { flagsAdd: ['index_obeyed'] }),
       fg('Đi theo sợi chỉ thay vì dừng đúng bước', 'Follow the thread instead of stopping on the step', [
-        [45, 'Sợi chỉ dẫn qua ba con hẻm đến một cánh cửa bằng gỗ, và sau cánh cửa là một phòng nhỏ có một chiếc ghế và một cuộn Prescript trắng. Bạn không biết ai để lại. Bạn ngồi đợi, và không ai đến.', 'The thread leads through three alleys to a wooden door, and behind the door is a small room with a chair and a blank scroll of Prescript. You do not know who left it. You sit and wait, and no one comes.', { sanity: -5, rep: 5, network: 3 }, { flagsAdd: ['index_deviated'] }],
+        [45, 'Sợi chỉ dẫn qua ba con hẻm tới cánh cửa gỗ, sau cửa là căn phòng nhỏ chỉ có chiếc ghế và cuộn Prescript trắng. Bạn không biết ai để lại. Bạn ngồi đợi, và không ai đến.', 'The thread leads through three alleys to a wooden door, and behind the door is a small room with a chair and a blank scroll of Prescript. You do not know who left it. You sit and wait, and no one comes.', { sanity: -5, rep: 5, network: 3 }, { flagsAdd: ['index_deviated'] }],
         [55, 'Sợi chỉ chấm dứt ở một bức tường trơn. Bạn đứng đó cho đến khi trời tối, rồi quay về với cảm giác vừa bị chơi một trò đùa.', 'The thread ends at a bare wall. You stand there until dark, then head home feeling you have been played with.', { sanity: -4, rep: -2 }, { flagsAdd: ['index_deviated'] }]
       ])
     ]),
@@ -208,7 +208,7 @@ export const INDEX_EVENTS = [
     ], { age: [18, 70] }),
 
   fe('index_weight_of_prescript', X, [2, 3],
-    '[Sức nặng của một Prescript] Một Prescript đến tay bạn, và lần đầu tiên bạn hiểu nó. Nó bảo đưa một người lạ vào một căn phòng, và người ấy sẽ không bước ra. Bạn biết lý do, vì bạn đã đọc đủ nhiều Prescript để thấy sợi dây nối chúng với nhau. Bạn biết điều đó không đáng là điều bạn muốn biết.',
+    '[Sức nặng của Prescript] Tờ Prescript tới tay, và lần đầu tiên bạn hiểu nó. Nó bảo bạn đưa người lạ vào căn phòng, và người ấy sẽ không bước ra nữa. Bạn biết lý do, vì bạn đã đọc đủ nhiều Prescript để thấy sợi dây nối chúng với nhau. Bạn biết điều đó không đáng là điều bạn muốn biết.',
     '[The weight of a Prescript] A Prescript reaches you, and for the first time you understand it. It tells you to lead a stranger into a room, and that person will not come out. You know why, because you have read enough Prescripts to see the thread connecting them. You know it is not something you wanted to know.',
     [
       fc('Làm đúng như Prescript', 'Do exactly as the Prescript says',
@@ -216,8 +216,8 @@ export const INDEX_EVENTS = [
         'The person looks at you as they enter, very calm, as if having waited long. The door closes, and you stand in the corridor for a long time afterward. You do not cry, but you no longer hear the day’s last bell clearly.',
         { rep: 7, sanity: -14, heat: 4 }, { flagsAdd: ['index_obeyed', 'index_led_the_stranger'] }),
       fg('Đưa người ấy vào phòng, nhưng cho họ biết trước', 'Lead them in, but tell them beforehand', [
-        [55, 'Người ấy nghe xong, cười một nụ cười rất mệt, và nói đã đoán trước. Họ đưa bạn một phong bì, nhờ gửi đến một địa chỉ, rồi bước vào phòng một mình. Bạn gửi phong bì đúng ngày.', 'The person listens, smiles a very tired smile, and says they had guessed. They hand you an envelope, asking you to send it to an address, then step into the room alone. You send the envelope the same day.', { sanity: -8, rep: 3, network: 4 }, { flagsAdd: ['index_deviated', 'index_led_the_stranger'] }],
-        [45, 'Người ấy hoảng sợ và bỏ chạy ra cửa. Hai Proxy đứng sẵn bên ngoài giữ họ lại, và bạn bị gọi vào văn phòng với giọng nói rất dịu của một người đã thất vọng.', 'The person panics and bolts for the door. Two Proxies waiting outside hold them back, and you are summoned to an office with the very gentle voice of someone disappointed.', { rep: -10, sanity: -9, heat: 6 }, { flagsAdd: ['index_deviated'] }]
+        [55, 'Nghe xong, người ấy cười mệt mỏi, nói mình đã đoán trước. Họ đưa bạn phong bì, nhờ gửi tới địa chỉ ghi trên đó, rồi một mình bước vào phòng. Bạn gửi phong bì đúng ngày.', 'The person listens, smiles a very tired smile, and says they had guessed. They hand you an envelope, asking you to send it to an address, then step into the room alone. You send the envelope the same day.', { sanity: -8, rep: 3, network: 4 }, { flagsAdd: ['index_deviated', 'index_led_the_stranger'] }],
+        [45, 'Người ấy hoảng sợ và bỏ chạy ra cửa. Hai Proxy đứng sẵn bên ngoài giữ họ lại, còn bạn bị gọi vào văn phòng, nghe giọng nói rất dịu của người đã thất vọng.', 'The person panics and bolts for the door. Two Proxies waiting outside hold them back, and you are summoned to an office with the very gentle voice of someone disappointed.', { rep: -10, sanity: -9, heat: 6 }, { flagsAdd: ['index_deviated'] }]
       ]),
       fc('Từ chối thi hành Prescript này', 'Refuse to carry out this Prescript',
         'Bạn đặt tờ giấy xuống bàn và nói bạn không làm được. Người nhận im lặng một lúc, rồi cất tờ giấy vào một chiếc phong bì khác. Không ai trừng phạt bạn. Nhưng suốt một năm sau đó không có Prescript nào đến tay bạn nữa.',
@@ -230,7 +230,7 @@ export const INDEX_EVENTS = [
     '[A Proxy like you] A new Proxy joins your team, and you notice they tilt their head when thinking, bite their lower lip when reading a Prescript, just as you do. A colleague whispers that the Index sometimes chooses similar people to replace one another. No one says who is replacing whom.',
     [
       fc('Làm quen và hỏi họ về quá khứ', 'Befriend them and ask about their past',
-        'Họ kể về một ngôi nhà bên cạnh một nhà ga, một con chó và một người em gái. Bạn nhận ra mọi chi tiết, trừ một chi tiết: tên con chó. Bạn không hỏi thêm.',
+        'Họ kể về ngôi nhà cạnh nhà ga, con chó và đứa em gái. Bạn nhận ra mọi chi tiết, trừ một chi tiết: tên con chó. Bạn không hỏi thêm.',
         'They tell of a house beside a train station, a dog, and a younger sister. You recognize every detail except one: the dog’s name. You ask no more.',
         { sanity: -6, network: 5 }),
       fc('Giữ khoảng cách, làm việc riêng', 'Keep your distance and work alone',
@@ -293,7 +293,7 @@ export const INDEX_EVENTS = [
         { sanity: -2, network: -2 }),
       fg('Mở cuộn Prescript ngay trước mặt ông', 'Open the scroll right before him', [
         [50, 'Ông thở rất nhẹ khi bạn đọc. Dòng chữ ấy chỉ có ba từ, và bạn thấy nước mắt chảy xuống mặt ông mà ông không đưa tay lên lau.', 'He breathes very lightly as you read. The line is only three words, and you watch tears run down his face without his lifting a hand to wipe them.', { sanity: -3, network: 6, rep: 2 }],
-        [50, 'Cuộn Prescript rỗng, chỉ có một vệt mực khô. Ông nhìn nó và cười một cách rất lạ. Ông nói hai mươi năm qua ông đã làm theo một tờ giấy trắng.', 'The scroll is empty, only a dried streak of ink. He looks at it and laughs very strangely. He says for twenty years he has been following a blank sheet.', { sanity: -8, rep: -2, network: 3 }]
+        [50, 'Cuộn Prescript rỗng, chỉ có một vệt mực khô. Ông nhìn nó, bật cười lạ lùng. Ông nói hai mươi năm qua ông đã làm theo một tờ giấy trắng.', 'The scroll is empty, only a dried streak of ink. He looks at it and laughs very strangely. He says for twenty years he has been following a blank sheet.', { sanity: -8, rep: -2, network: 3 }]
       ])
     ], { age: [26, 90] }),
 
@@ -343,7 +343,7 @@ export const INDEX_EVENTS = [
         'You burn it, but the next sheet arrives the following morning, identical. This time you keep it in a drawer, and for the first time you ask yourself what you are living for.',
         { sanity: -6, rep: -3 }),
       fg('Mang tờ giấy đến gặp Weaver', 'Take the sheet to the Weaver', [
-        [55, 'Weaver nhìn tờ giấy và cười nhẹ. Họ nói đó chỉ là một bản lưu, không ai dùng nó để phạt ai. Họ khuyên bạn chọn một Prescript trong danh sách và làm lại cho đúng, như một cách chuộc lại.', 'The Weaver looks at the sheet and smiles faintly. They say it is just an archive, and nobody uses it to punish anyone. They suggest you pick one Prescript on the list and redo it properly, as a form of atonement.', { rep: 6, sanity: 3, network: 4 }],
+        [55, 'Weaver nhìn tờ giấy và cười nhẹ. Họ bảo đó chỉ là bản lưu, chẳng ai đem ra phạt ai. Họ khuyên bạn chọn một Prescript trong danh sách mà làm lại cho đúng, coi như chuộc lỗi.', 'The Weaver looks at the sheet and smiles faintly. They say it is just an archive, and nobody uses it to punish anyone. They suggest you pick one Prescript on the list and redo it properly, as a form of atonement.', { rep: 6, sanity: 3, network: 4 }],
         [45, 'Weaver nhìn tờ giấy và không cười. Họ nói không ai gửi tờ ấy từ Index, và bạn nhận ra có ai đó ngoài Index đang theo dõi bạn.', 'The Weaver looks at the sheet and does not smile. They say no one at the Index sent it, and you realize someone outside the Index has been watching you.', { sanity: -10, heat: 8, rep: -2 }]
       ]),
       fc('Làm lại đúng một Prescript đã làm lệch', 'Redo exactly one Prescript you had bent',
@@ -353,7 +353,7 @@ export const INDEX_EVENTS = [
     ], { requires: ['index_deviated'], age: [26, 90], weight: 8 }),
 
   fe('index_reward_of_obedience', X, [1, 3],
-    '[Phần thưởng của sự tuân phục] Nhiều năm qua bạn gần như chưa bao giờ làm lệch một Prescript, và một Weaver cuối cùng gọi bạn đến để nói rằng đó là lý do bạn được chọn cho một nhiệm vụ đặc biệt. Họ cho biết nhiệm vụ ấy không phải một vinh dự, mà là một sự tin cậy, và hai thứ đó nặng khác nhau.',
+    '[Phần thưởng của sự tuân phục] Nhiều năm nay bạn gần như chưa làm lệch Prescript nào, và rốt cuộc có Weaver gọi bạn tới, nói chính vì thế bạn được chọn cho nhiệm vụ đặc biệt. Họ bảo nhiệm vụ ấy không phải vinh dự mà là lòng tin, và hai thứ ấy nặng nhẹ khác nhau.',
     '[The reward of obedience] For years you have almost never bent a Prescript, and a Weaver finally summons you to say that is why you were chosen for a special task. They say the task is not an honor but a trust, and the two weigh differently.',
     [
       fc('Nhận nhiệm vụ, không hỏi chi tiết', 'Accept the task and ask no details',
@@ -361,7 +361,7 @@ export const INDEX_EVENTS = [
         'The task turns out to be carrying a seal to a person who is dying. You sit by their bed three nights, and nobody tells you that is what was needed.',
         { rep: 8, sanity: -4, network: 5 }, { meritAdd: 5 }),
       fc('Hỏi rõ trước khi nhận', 'Ask for specifics before accepting',
-        'Weaver nhìn bạn rất lâu, rồi nói họ đã chọn nhầm người. Nhưng họ vẫn đưa bạn nhiệm vụ, kèm một ghi chú rằng hỏi cũng là một cách tuân phục.',
+        'Weaver nhìn bạn rất lâu, rồi nói họ đã chọn nhầm người. Nhưng họ vẫn giao nhiệm vụ, kèm ghi chú rằng hỏi cũng là một kiểu tuân phục.',
         'The Weaver looks at you a long while and says they have chosen the wrong person. But they hand you the task anyway, with a note that asking, too, is a form of obedience.',
         { rep: 4, sanity: -3, network: 3 }),
       fc('Từ chối để giữ sự tuân phục không bị thử thêm', 'Decline so your obedience is not tested further',
@@ -385,7 +385,7 @@ export const INDEX_MINORS = [
   M('m_index_stairwell_whisper', AGE.GROWN, fneed(X, 0),
     '[Tiếng thì thầm ở cầu thang] Ở cầu thang tòa nhà Index, bạn nghe hai Proxy thì thầm. Chúng ngừng khi thấy bạn, rồi cùng gật đầu. Có một cái tên bạn nghe được trước khi chúng ngừng, và nó là tên một người bạn đã biết.',
     '[A whisper on the stairs] On the stairs of the Index building, you overhear two Proxies whispering. They stop when they see you and both nod. There was a name you caught before they stopped, and it belongs to someone you know.',
-    [C('Hỏi thẳng họ về cái tên', 'Ask them directly about the name', 'Họ nhìn nhau và nói đó là một lỗi nghe nhầm. Một người trong số họ chạm vào tay áo mình theo một cách bạn đã học nhận ra.', 'They look at each other and say you misheard. One touches their sleeve in a way you have learned to recognize.', { sanity: -3, network: -1 }), C('Giả vờ không nghe và đi tiếp', 'Pretend not to have heard and walk on', 'Cả ngày bạn nhớ cái tên ấy, và chiều đến bạn gửi một lời nhắn ngắn cho người mang tên đó. Không có hồi âm.', 'All day you recall that name, and by evening you send a short note to the person who bears it. No reply comes.', { sanity: -2, network: 2 })],
+    [C('Hỏi thẳng họ về cái tên', 'Ask them directly about the name', 'Họ nhìn nhau, bảo chỉ là nghe nhầm. Một người trong số họ chạm vào tay áo, đúng kiểu ám hiệu bạn đã học được.', 'They look at each other and say you misheard. One touches their sleeve in a way you have learned to recognize.', { sanity: -3, network: -1 }), C('Giả vờ không nghe và đi tiếp', 'Pretend not to have heard and walk on', 'Cả ngày bạn nhớ cái tên ấy, và chiều đến bạn gửi một lời nhắn ngắn cho người mang tên đó. Không có hồi âm.', 'All day you recall that name, and by evening you send a short note to the person who bears it. No reply comes.', { sanity: -2, network: 2 })],
     I('Bạn đi tiếp lên tầng trên.', 'You continue up to the next floor.'), { theme: 'work' }),
   M('m_index_hourglass', AGE.GROWN, fneed(X, 1),
     '[Chiếc đồng hồ cát nhỏ] Một Proxy tặng bạn chiếc đồng hồ cát nhỏ làm bằng thủy tinh dày. Cát bên trong chảy rất chậm, và bạn đo thử: nó chảy đúng mười một phút, rồi ngừng dù chưa hết. Anh ta nói đó là món quà nhắc bạn dừng đúng lúc.',
@@ -423,7 +423,7 @@ export const INDEX_MINORS = [
     [C('Ở lại thêm một lúc nhìn trời sáng', 'Stay a while watching the sky brighten', 'Bầu trời lên màu cam rồi vàng.', 'The sky turns orange then yellow.', { sanity: 4 }), C('Quay vào ngay và ghi lại vào sổ', 'Go back in at once and write it in the ledger', 'Bạn ghi lại đúng từng chi tiết, và Messenger khen bản báo cáo gọn gàng. Nhưng bạn nhớ rằng đàn chim đã nhìn bạn, không nhìn thứ gì khác.', 'You record every detail precisely, and the Messenger praises the tidy report. But you remember that the birds were looking at you, not at anything else.', { rep: 2, sanity: -2 })],
     I('Bạn quay vào và uống nước.', 'You step back inside and drink water.'), { theme: 'work' }),
   M('m_index_second_hand', AGE.GROWN, fneed(X, 1),
-    '[Kim giây đi ngược] Đồng hồ trong phòng Prescript của bạn có kim giây chạy ngược trong đúng một phút mỗi đêm. Bạn đã theo dõi nó nhiều tuần, và phút ấy luôn trùng với lúc bạn đọc dòng đầu tiên của một Prescript mới.',
+    '[Kim giây đi ngược] Đồng hồ trong phòng Prescript của bạn có kim giây chạy ngược trong đúng một phút mỗi đêm. Bạn đã canh nó nhiều tuần, và phút ấy luôn rơi đúng lúc bạn đọc dòng đầu của tờ Prescript mới.',
     '[The second hand runs backward] The clock in your Prescript room has a second hand that runs backward for exactly one minute each night. You have watched for weeks, and that minute always coincides with reading the first line of a new Prescript.',
     [C('Ghi lại mỗi đêm vào một cuốn sổ riêng', 'Log it each night in a private notebook', 'Sau ba tháng bạn thấy một quy luật mà bạn không dám nói với ai. Quy luật ấy dự báo Prescript sẽ nói gì, và bạn chưa bao giờ sai.', 'After three months you see a pattern you dare not mention to anyone. The pattern predicts what the Prescript will say, and you have never been wrong.', { sanity: -4, rep: 1 }), C('Tháo kim giây ra', 'Remove the second hand', 'Bạn gỡ kim giây ra khỏi mặt đồng hồ. Đêm đó đồng hồ vẫn chạy, nhưng bạn cảm thấy một thứ gì đó đang nhìn bạn từ chỗ kim giây đã ở.', 'You pry the second hand off the dial. That night the clock still runs, but you feel something watching you from where the hand used to be.', { sanity: -3 })],
     I('Bạn ngừng nhìn đồng hồ.', 'You stop looking at the clock.'), { theme: 'work' }),
@@ -438,12 +438,12 @@ export const INDEX_MINORS = [
     [C('Quàng khăn đi làm', 'Wear the scarf to work', 'Mùa đông ấy lạnh đến mức sông đóng băng mỏng hai ngày. Bạn không bao giờ bị cóng, và đồng nghiệp ghen tị mà không nói ra.', 'That winter is so cold the river freezes thinly for two days. You are never chilled, and colleagues envy you without saying.', { health: 3, sanity: 2 }), C('Cất khăn vào tủ, không dùng', 'Put the scarf away unused', 'Bạn đứng nhìn tủ quần áo thật lâu mỗi sáng, và không bao giờ mở ngăn có chiếc khăn. Đến mùa xuân, nó không còn ở đó nữa.', 'Each morning you stand staring at the wardrobe a long while and never open the compartment holding the scarf. By spring it is no longer there.', { sanity: -2 })],
     I('Bạn đặt chiếc khăn lên ghế và quên nó.', 'You leave the scarf on a chair and forget it.'), { theme: 'work' }),
   M('m_index_prescript_pun', AGE.GROWN, fneed(X, 1),
-    '[Prescript đùa] Một Prescript đến, và dòng cuối là một câu đùa nhỏ về một con vịt và một chiếc giày. Cả tổ đọc nó, và không ai cười. Rồi một Proselyte già nhất bật ra một tiếng ngắn, và cả phòng nín thở.',
+    '[Prescript đùa] Tờ Prescript mới gửi tới, dòng cuối là câu đùa nho nhỏ về con vịt với chiếc giày. Cả tổ đọc, không ai cười. Rồi người Proselyte già nhất bật ra một tiếng ngắn, và cả phòng nín thở.',
     '[A joking Prescript] A Prescript arrives, and its last line is a small joke about a duck and a shoe. The whole team reads it, and no one laughs. Then the oldest Proselyte lets out one short sound, and the whole room holds its breath.',
     [C('Cười theo, rất khẽ', 'Laugh along, very quietly', 'Một vài người khác cũng cười, và căn phòng đột nhiên nhẹ như thể ai đó mở cửa sổ. Prescript chiều hôm đó không có câu đùa nào, và cả phòng thấy hơi tiếc.', 'A few others laugh too, and the room suddenly feels lighter, as if someone opened a window. That afternoon’s Prescript holds no joke, and the whole room is mildly sorry.', { sanity: 3, network: 3 }), C('Giữ nét mặt trống rỗng', 'Keep your face blank', 'Bạn giữ vẻ mặt như đá. Không ai nhận xét, nhưng người ngồi cạnh nhìn bạn ngắn một cái và lặng lẽ dịch ghế ra xa.', 'You keep a face like stone. No one comments, but the person beside you glances briefly and quietly slides their chair away.', { sanity: -1, rep: 1 })],
     I('Bạn đọc xong và gấp tờ giấy.', 'You finish reading and fold the paper.'), { theme: 'work' }),
   M('m_index_second_hand_watch', AGE.GROWN, fneed(X, 0),
-    '[Người đứng ở góc đường] Có một người đàn ông đứng ở một góc đường mỗi sáng bạn đi làm, mặc áo khoác dài màu nâu. Hôm nay ông ta không đứng ở đó. Bạn dừng lại ở chỗ ấy, và thấy trên đá lát có một vòng tròn phấn trắng, nhỏ và hơi khuyết.',
+    '[Người đứng ở góc đường] Sáng nào đi làm bạn cũng thấy người đàn ông khoác áo dài màu nâu đứng nơi góc đường. Hôm nay ông ta không có đó. Bạn dừng lại đúng chỗ ấy, và thấy trên đá lát có một vòng tròn phấn trắng, nhỏ và hơi khuyết.',
     '[The man at the corner] A man in a long brown coat stands at one street corner every morning you go to work. Today he is not there. You stop at that spot and see on the paving a small white chalk circle with a gap.',
     [C('Bước vào trong vòng tròn phấn', 'Step into the chalk circle', 'Không có gì xảy ra. Nhưng bạn cảm thấy một thứ yên tĩnh lạ lùng, như đang đứng trong mắt một cơn bão. Một người đi ngang qua nhìn bạn, và tránh sang bên khác.', 'Nothing happens. But you feel a strange quiet, as if standing in the eye of a storm. A passerby looks at you and steps aside.', { sanity: 3, rep: -1 }), C('Đi vòng qua vòng tròn', 'Walk around the circle', 'Bạn đi vòng, và trong suốt quãng đường tới văn phòng, bạn cảm thấy một đôi mắt theo dõi từ đâu đó phía trên.', 'You walk around, and the whole way to the office you feel eyes on you from somewhere above.', { sanity: -2 })],
     I('Bạn nhìn vòng tròn rồi đi tiếp.', 'You glance at the circle and walk on.'), { theme: 'work' }),
@@ -500,7 +500,7 @@ export const INDEX_DAILIES = [
   D('d_index_empty_lobby', AGE.GROWN, fneed(X, 0), 'Sảnh Index hôm nay vắng đến mức tiếng giày của bạn dội lại ba lần. Bảng chỉ dẫn bị lật ngược, và không ai đến sửa nó.', 'The Index lobby is so empty today that your shoes echo three times. The directory board has been turned upside down, and no one comes to fix it.', {}),
   D('d_index_unfinished_sentence', AGE.GROWN, fneed(X, 1), 'Đồng nghiệp bắt đầu một câu và không bao giờ kết thúc nó. Cả phòng chờ, và không ai thúc giục. Cuối cùng cô ngồi xuống và gật đầu như đã nói xong.', 'A colleague begins a sentence and never finishes it. The whole room waits, and no one urges her on. At last she sits and nods as if she had finished.', {}),
   D('d_index_street_mirror', AGE.GROWN, fneed(X, 0), 'Trong gương lồi ở ngã tư, bạn thấy mình đi chậm hơn một nhịp so với thực tế. Bạn đợi, rồi đi nhanh, và cái bóng trong gương bắt kịp.', 'In the convex mirror at the crossing you see yourself moving a beat slower than reality. You wait, then hurry, and the reflection catches up.', {}),
-  D('d_index_ledger_gap', AGE.GROWN, fneed(X, 1), 'Cuốn sổ Prescript của bạn có một trang trắng ở giữa, mà bạn chắc chắn đã dùng. Bạn lật qua lại, và không tìm được đoạn bị mất.', 'Your Prescript ledger has a blank page in the middle that you are sure you used. You flip back and forth and cannot find the missing passage.', {}),
+  D('d_index_ledger_gap', AGE.GROWN, fneed(X, 1), 'Giữa cuốn sổ Prescript của bạn có trang trắng, mà bạn chắc chắn mình đã viết vào. Bạn lật qua lại, và không tìm được đoạn bị mất.', 'Your Prescript ledger has a blank page in the middle that you are sure you used. You flip back and forth and cannot find the missing passage.', {}),
   D('d_index_stairs_hum', AGE.GROWN, fneed(X, 0), 'Cầu thang gỗ trong tòa nhà ngân nga một nốt thấp mỗi khi bạn bước lên bậc thứ bảy. Bạn thôi không bước lên bậc ấy, và đi cách một bậc.', 'The wooden stairs in the building hum one low note each time you step on the seventh tread. You stop stepping there, and skip a stair.', {}),
   D('d_index_pressed_flower', AGE.GROWN, fneed(X, 0), 'Một cánh hoa ép khô rơi ra khỏi cuốn sổ cũ. Bạn không nhớ đã ép nó, và không nhớ ai đã tặng bạn bông hoa ấy.', 'A dried pressed petal falls from an old notebook.', {}),
   D('d_index_envelope_weight', AGE.GROWN, fneed(X, 0), 'Phong bì chỉ lệnh hôm nay nặng trịch dù bên trong vỏn vẹn một mảnh giấy. Sức nặng vô hình của những sinh mệnh sắp sửa bị đoạt mạng.', 'Today’s Prescript envelope feels heavy though it holds only one sheet. The unseen weight of lives destined to be severed.', {}),

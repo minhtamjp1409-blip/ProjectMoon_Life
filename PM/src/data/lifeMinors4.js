@@ -73,7 +73,7 @@ export const LIFE_MINORS_4 = [
       C(
         'Mượn máy hàn và tự hàn lại',
         'Borrow a welder and seal it yourself',
-        'Mối hàn mới xấu nhưng chắc. Đêm đó bạn ngủ ngon một cách lạ lùng, và sáng ra tay bạn có mùi đất.',
+        'Mối hàn mới xấu nhưng chắc. Đêm ấy bạn ngủ ngon lạ thường, sáng ra tay còn vương mùi đất.',
         'The new weld is ugly but firm. You sleep strangely well that night, and in the morning your hands smell of soil.',
         { health: -2, resonance: -4, rep: 1 }
       )
@@ -120,7 +120,7 @@ export const LIFE_MINORS_4 = [
     'm4_f_self_opening_lock',
     YOUNG,
     { regions: ['F'] },
-    '[Ổ khóa tự bật] Ổ khóa đồng trên cổng khu nhà bật mở mỗi khi bạn đi ngang, rồi tự đóng lại khi bạn quay đầu nhìn. Bà bán rau gần đó bảo đó là lỗi của một thợ khóa vụng.',
+    '[Ổ khóa tự bật] Ổ khóa đồng trên cổng khu nhà bật mở mỗi khi bạn đi ngang, rồi tự đóng lại khi bạn quay đầu nhìn. Bà bán rau gần đó bảo tại tay thợ khóa vụng.',
     '[A Lock That Opens by Itself] The brass lock on your building’s gate clicks open whenever you pass, then shuts again when you turn to look. The vegetable seller nearby says it is the fault of a clumsy locksmith.',
     [
       C(
@@ -154,7 +154,7 @@ export const LIFE_MINORS_4 = [
     'm4_f_locksmith_offer',
     [16, 45],
     { regions: ['F'] },
-    '[Lời mời của tiệm khóa] Một thợ khóa lớn tuổi ở quận F hỏi bạn có muốn học nghề. Ông nói tay bạn đủ vững, và ông cần một người nghe được tiếng chốt trượt qua lớp sắt dày.',
+    '[Lời mời của tiệm khóa] Ông thợ khóa già ở quận F hỏi bạn có muốn học nghề không. Ông bảo tay bạn đủ vững, mà ông đang cần người nghe ra tiếng chốt trượt sau lớp sắt dày.',
     '[The Locksmith’s Offer] An older locksmith in District 6 asks if you want to learn the trade. He says your hands are steady enough, and he needs someone who can hear a bolt slide through thick iron.',
     [
       C(
@@ -255,7 +255,7 @@ export const LIFE_MINORS_4 = [
     'm4_i_busker_last_note',
     ANY,
     { regions: ['I'] },
-    '[Nốt cuối bỏ lửng] Một người hát rong ở phố nhạc luôn dừng trước nốt cuối của mỗi bài. Có người bỏ tiền vào hộp, có người quay mặt đi như vừa thấy ai đó làm điều xấu.',
+    '[Nốt cuối bỏ lửng] Người hát rong ở phố nhạc bài nào cũng dừng ngay trước nốt cuối. Có người bỏ tiền vào hộp, có người quay mặt đi như vừa thấy ai làm chuyện xấu.',
     '[The Unsung Last Note] A street singer in the music quarter always stops before the final note of every song. Some drop coins in the box; others turn away as if they have seen someone do something wrong.',
     [
       C(
@@ -428,7 +428,7 @@ export const LIFE_MINORS_4 = [
     'm4_v_two_signs',
     GROWN,
     { regions: ['V'], jobs: ['Fixer'] },
-    '[Hai tấm biển một bức tường] Hai Office treo biển cạnh nhau trên cùng một bức tường ở quận V, và mỗi sáng biển của bên này lại bị che bởi biển của bên kia. Hôm nay mỗi bên cử một người đến mời bạn nhận Request.',
+    '[Hai tấm biển một bức tường] Hai Office treo biển sát nhau trên cùng bức tường ở quận V, sáng nào biển bên này cũng bị biển bên kia che mất. Hôm nay mỗi bên cử người tới mời bạn nhận Request.',
     '[Two Signs, One Wall] Two Offices in District 22 hang their signs side by side on one wall, and each morning one sign is covered by the other. Today each sends someone to offer you a Request.',
     [
       C(
@@ -667,7 +667,7 @@ export const LIFE_MINORS_4 = [
     'm4_g_half_wing',
     GROWN,
     { regions: ['G'] },
-    '[Nửa bộ khung cánh] Một cựu binh ở Backstreets quận G vẫn mang bộ khung cánh côn trùng, nhưng chỉ còn một nửa. Ông nhờ bạn giữ nửa kia trong lúc chợp mắt và dặn đừng để nó chạm đất.',
+    '[Nửa bộ khung cánh] Ông cựu binh ở Backstreets quận G vẫn đeo bộ khung cánh côn trùng, nhưng chỉ còn một nửa. Ông nhờ bạn giữ nửa kia trong lúc chợp mắt và dặn đừng để nó chạm đất.',
     '[Half a Wing Frame] A veteran in the District 7 Backstreets still wears his insect-wing frame, but only half of it remains. He asks you to hold the other half while he naps, and warns you not to let it touch the ground.',
     [
       C(
@@ -756,12 +756,12 @@ export const LIFE_MINORS_4 = [
       C(
         'Kéo rèm và coi như không có hành lang',
         'Draw the curtain and pretend the corridor is not there',
-        'Căn phòng nhỏ lại, ấm lên, và đêm đó bạn ngủ ngon một cách đáng ngờ. Sáng ra rèm bị kéo hé, từ phía bên trong cửa sổ.',
+        'Căn phòng thu nhỏ lại, ấm lên, và đêm ấy bạn ngủ ngon đến đáng ngờ. Sáng ra rèm bị kéo hé, từ phía bên trong cửa sổ.',
         'The room shrinks and warms, and you sleep suspiciously well that night. In the morning the curtain is drawn open a little, from the inside of the window.',
         { sanity: 2, resonance: 2 }
       )
     ],
-    I('Bạn nhìn dọc hành lang một lúc. Một ngọn đèn ở xa tắt, và một ngọn khác, gần hơn, bật lên.', 'You look along the corridor a while. A lamp far off goes out, and another, closer, comes on.'),
+    I('Bạn nhìn dọc hành lang hồi lâu. Ngọn đèn đằng xa tắt, rồi ngọn khác gần hơn bật sáng.', 'You look along the corridor a while. A lamp far off goes out, and another, closer, comes on.'),
     { once: true }
   ),
 
@@ -769,7 +769,7 @@ export const LIFE_MINORS_4 = [
     'm4_p_cold_deposit',
     [20, 70],
     { regions: ['P'] },
-    '[Ngăn lạnh số bảy] Một người họ hàng xa gửi bạn chìa khóa một ngăn bảo quản đông lạnh ở quận P và không nói trong đó có gì. Kèm theo chỉ có một tờ giấy ghi giờ mở cửa.',
+    '[Ngăn lạnh số bảy] Người họ hàng xa gửi bạn chìa khóa ngăn đông lạnh ở quận P, không nói bên trong có gì. Kèm theo chỉ có tờ giấy ghi giờ mở cửa.',
     '[Cold Locker Seven] A distant relative sends you the key to a cryo-preservation locker in District 16 and does not say what is inside. The only note names the opening hours.',
     [
       C(
@@ -814,7 +814,7 @@ export const LIFE_MINORS_4 = [
         {},
         {
           out: [
-            O(50, 'Bên trong chỉ có một mẩu giấy ghi một cái tên và một ngày đã qua từ rất lâu. Bạn đọc nó đến lần thứ ba mới nhận ra nét chữ giống chữ của mình.', 'Inside is only a slip of paper with a name and a date long past. You read it a third time before you notice the handwriting resembles your own.', { sanity: -6, resonance: 6 }),
+            O(50, 'Bên trong chỉ có mẩu giấy ghi cái tên cùng một ngày đã qua từ rất lâu. Bạn đọc nó đến lần thứ ba mới nhận ra nét chữ giống chữ của mình.', 'Inside is only a slip of paper with a name and a date long past. You read it a third time before you notice the handwriting resembles your own.', { sanity: -6, resonance: 6 }),
             O(50, 'Hộp trống, nhưng lót bằng thứ vải còn ấm mùi người. Bạn đóng nắp lại thật nhẹ, như sợ đánh thức ai.', 'The box is empty, but lined with cloth still warm and smelling of a person. You close the lid very gently, as if afraid to wake someone.', { sanity: -2, resonance: 2 })
           ]
         }
@@ -870,7 +870,7 @@ export const LIFE_MINORS_4 = [
       C(
         'Nộp biểu mẫu để trống như được phát',
         'File it blank as issued',
-        'Ba ngày sau biểu mẫu quay lại với một dấu đỏ ở góc, cạnh dòng bạn không điền. Bên dưới có một dòng chữ nhỏ: cảm ơn sự trung thực của bạn.',
+        'Ba ngày sau, tờ biểu mẫu quay về, góc có dấu đỏ ngay cạnh dòng bạn bỏ trống. Bên dưới có một dòng chữ nhỏ: cảm ơn sự trung thực của bạn.',
         'After three days the form returns with a red mark in the corner beside the line you did not fill. Beneath it, in small print: thank you for your honesty.',
         { sanity: -1 }
       )

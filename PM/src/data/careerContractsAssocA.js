@@ -24,7 +24,7 @@ export const ZWEI_CONTRACTS = [
     'The shipment was not the only thing they came for. The person behind the counter was what remained.'),
 
   rq('zwei_witness_shelter', 1, 'Giữ một nhân chứng qua đêm', 'Shelter a witness overnight',
-    'Một người thấy rõ mặt kẻ giết người trong một vụ ở khu chợ cá. Ngày mai họ phải ra khai trước Öufi. Zwei cần ai đó ngồi với họ ở một căn phòng không có cửa sổ.',
+    'Có người nhìn rõ mặt hung thủ vụ án ngoài chợ cá. Ngày mai họ phải ra khai trước Öufi. Zwei cần người ngồi canh họ trong căn phòng không cửa sổ.',
     'Someone saw the killer’s face clearly at a fish-market murder. Tomorrow they must testify before Öufi. Zwei needs someone to sit with them in a room with no windows.',
     'Bạn đưa nhân chứng đến phòng khai trước giờ mở cửa. Trên đường, họ hỏi bạn một câu về việc làm sao ngủ được, và bạn trả lời thật.',
     'You deliver the witness to the hearing room before it opens. On the way they ask how you manage to sleep, and you answer honestly.',
@@ -36,7 +36,7 @@ export const ZWEI_CONTRACTS = [
   rq('zwei_family_shield', 2, 'Bảo vệ một gia đình bị đe dọa', 'Shield a threatened family',
     'Cả nhà một thợ sửa đồng hồ bị một Office đòi tiền bảo kê gấp đôi. Họ có hai đứa nhỏ và một bà cụ. Zwei giao bạn ở lại căn nhà một tuần và dọa ngược lại bất cứ ai đến gõ cửa.',
     'A watchmaker’s family is being squeezed for double protection money by an Office. There are two small children and an old woman. Zwei assigns you to stay in the house a week and turn back whoever knocks.',
-    'Đến ngày thứ ba, người của Office đến, thấy một Fixer của Zwei ngồi ở bậc cửa, và quay đi. Hai đứa nhỏ ngồi cạnh bạn ăn bánh.',
+    'Sang ngày thứ ba, người của Office kéo tới, thấy Fixer của Zwei ngồi chắn bậc cửa thì quay về. Hai đứa nhỏ ngồi cạnh bạn ăn bánh.',
     'On the third day the Office’s people arrive, see a Zwei Fixer on the doorstep, and turn around. The two children sit beside you eating buns.',
     'Bạn giữ được cửa chính nhưng không giữ được cửa sổ tầng hai. Gia đình ở yên, nhưng bà cụ không ngủ lại căn nhà ấy nữa.',
     'You hold the front door and miss the second-floor window. The family is unharmed, but the old woman does not sleep in that house again.',
@@ -86,7 +86,7 @@ export const ZWEI_CONTRACTS = [
 
 export const SHI_CONTRACTS = [
   rq('shi_turncoat_clerk', 0, 'Một thư ký phản bội', 'A turncoat clerk',
-    'Một thư ký nhỏ của một Office bán danh sách khách quen cho đối thủ. Shi không cần người ấy chết ngay, chỉ cần hắn không bao giờ nói được nữa. Hồ sơ ghi đường về nhà và giờ đóng cửa.',
+    'Tay thư ký quèn của Office nọ bán danh sách khách quen cho đối thủ. Shi không cần người ấy chết ngay, chỉ cần hắn không bao giờ nói được nữa. Hồ sơ ghi đường về nhà và giờ đóng cửa.',
     'A junior clerk at an Office sold the list of regular clients to a rival. Shi does not need them dead tonight, only unable to speak ever again. The file lists the route home and closing time.',
     'Bạn theo dõi hai đêm. Đêm thứ ba, mọi thứ diễn ra trong chưa đầy một phút, và tiếng bước chân của bạn là âm thanh duy nhất trên đường về.',
     'You follow for two nights. On the third, it is over in under a minute, and your own footsteps are the only sound on the way back.',
@@ -95,8 +95,8 @@ export const SHI_CONTRACTS = [
     'Người thư ký không đi một mình. Người đi cùng có một lưỡi dao và thói quen không nói chuyện.',
     'The clerk does not walk alone. The companion has a blade and a habit of not talking.'),
 
-  rq('shi_gang_bookkeeper', 1, 'Người giữ sổ của một băng', 'A gang’s bookkeeper',
-    'Một băng ở Backstreets chỉ có một người biết nó nợ ai và ai nợ nó. Một khách hàng của Shi muốn sổ ấy biến mất cùng người giữ nó. Căn phòng có hai lối ra và một chó canh.',
+  rq('shi_gang_bookkeeper', 1, 'Người giữ sổ của băng đảng', 'A gang’s bookkeeper',
+    'Cả băng ở Backstreets chỉ có đúng một người biết băng nợ ai, ai nợ băng. Khách của Shi muốn cuốn sổ biến mất cùng người giữ nó. Căn phòng có hai lối ra và một con chó canh.',
     'A Backstreets gang has exactly one person who knows who it owes and who owes it. A Shi client wants that ledger gone along with its keeper. The room has two exits and a guard dog.',
     'Con chó quen mùi thịt khô trong túi bạn trước khi quen mùi lạ. Cuốn sổ đi vào lò than cùng tờ giấy ghi lệnh. Shi không giữ biên nhận.',
     'The dog grows used to the dried meat in your pocket before it grows used to a stranger. The ledger goes into the stove along with the order slip. Shi keeps no receipts.',
@@ -126,7 +126,7 @@ export const SHI_CONTRACTS = [
     'None of the bodyguards leave the table. All three stay seated, and the broker smiles as you stand.'),
 
   rq('shi_association_target', 3, 'Một người của Association khác', 'A member of another Association',
-    'Một Fixer của một Association khác đã biết quá nhiều về một khách của Shi. Hai Association không công khai gây chiến vì một người, nên việc này phải trông như chuyện của một đêm xui xẻo.',
+    'Tay Fixer bên Association khác biết quá nhiều về khách của Shi. Hai Association không thể công khai gây chiến vì một người, nên việc này phải trông như chuyện xui xẻo trong đêm.',
     'A Fixer from another Association has learned too much about a Shi client. Two Associations do not go to open war over one person, so this has to look like one unlucky night.',
     'Bạn để người ấy tự đi vào một con hẻm không đèn. Sáng hôm sau, tin tức nói về một vụ cướp thất bại. Shi trả đủ và không hỏi gì thêm.',
     'You let them walk into an unlit alley by themselves. By morning the news speaks of a robbery gone wrong. Shi pays in full and asks nothing more.',
@@ -140,13 +140,13 @@ export const SHI_CONTRACTS = [
     'A witness is being held at a safe location by Zwei. Shi’s client pays triple so they never appear before Öufi. It has to be done before the night preceding the hearing.',
     'Căn nhà kín chỉ có một cửa sổ không gắn song. Bạn vào, ra, và để lại một căn phòng không có dấu hiệu nào của sự vội vã.',
     'The safe house has one window without bars. You go in, you go out, and leave a room without a sign of haste.',
-    'Một người của Zwei ngồi ở bậc thềm, đúng chỗ bạn định đi qua. Bạn rút lui. Shi nói rằng Zwei sẽ biết có người đã đến.',
+    'Có người của Zwei ngồi ngay bậc thềm, đúng lối bạn định đi. Bạn rút lui. Shi nói rằng Zwei sẽ biết có người đã đến.',
     'A Zwei Fixer sits on the front step, exactly where you meant to pass. You withdraw. Shi says Zwei will know someone came.',
     'Zwei không bỏ người của mình. Người ngồi ở thềm là cái bẫy, và bạn bước vào nó bằng cả hai chân.',
     'Zwei does not leave its own. The one on the step is the trap, and you walk into it with both feet.'),
 
-  rq('shi_capo_head', 4, 'Một Capo ở nhà riêng', 'A Capo at home',
-    'Một Capo của Thumb ra lệnh giết một người của một khách Shi và ngồi yên nghĩ không ai làm gì được. Shi nhận việc đáp trả. Hồ sơ nói người ấy ngủ ít, ăn một mình và không tin cận vệ.',
+  rq('shi_capo_head', 4, 'Capo ở nhà riêng', 'A Capo at home',
+    'Tay Capo của Thumb ra lệnh giết người nhà của khách Shi, rồi ngồi yên đinh ninh chẳng ai làm gì được mình. Shi nhận việc đáp trả. Hồ sơ nói người ấy ngủ ít, ăn một mình và không tin cận vệ.',
     'A Thumb Capo ordered the killing of one of a Shi client’s people and sits assuming nobody can answer. Shi takes the reprisal. The file says they sleep little, eat alone, and trust no bodyguard.',
     'Bạn vào qua hệ thống thông gió. Capo ăn tối với đũa đặt ngay ngắn bên đĩa. Khi xong, bạn đặt lại đôi đũa đúng chỗ cũ.',
     'You enter through the ventilation. The Capo is eating dinner with chopsticks laid neatly beside the plate. When it is done, you set the chopsticks back where they were.',
@@ -167,7 +167,7 @@ export const SHI_CONTRACTS = [
 ];
 
 export const CINQ_CONTRACTS = [
-  rq('cinq_tavern_challenge', 0, 'Một lời thách đấu ở quán rượu', 'A challenge in a tavern',
+  rq('cinq_tavern_challenge', 0, 'Lời thách đấu trong quán rượu', 'A challenge in a tavern',
     'Hai chủ quán rượu bất đồng về ai được bán rượu ở dãy phố giữa. Cinq nhận phí để mỗi bên cử một người đấu thay, theo luật: đến khi một người không đứng dậy nổi.',
     'Two tavern owners disagree over who may sell liquor on the middle block. Cinq takes a fee for each to send a stand-in, under the rule: until one cannot stand.',
     'Trận đấu kéo dài bốn hiệp. Khi người đối diện không đứng dậy nữa, bạn đỡ họ ngồi lên ghế và mua cho họ ly nước. Chủ quán của bạn trả phí đúng hạn.',
@@ -180,7 +180,7 @@ export const CINQ_CONTRACTS = [
   rq('cinq_shopkeeper_duel', 1, 'Đấu thay một chủ tiệm', 'Duel on behalf of a shopkeeper',
     'Một chủ tiệm sửa giày bị một Office buộc tội ăn cắp mối. Hai bên đồng ý để Cinq phân xử: mỗi bên cử một người, thắng thì tiệm giữ. Chủ tiệm trả bằng tất cả số tiền tiết kiệm.',
     'A shoe-repair owner is accused by an Office of poaching clients. Both sides agree to Cinq’s judgment: each sends one fighter, the winner keeps the shop. The owner pays with their entire savings.',
-    'Bạn thắng bằng một đường kiếm gãy gọn ở hiệp hai. Chủ tiệm khóc, và đưa bạn đôi giày họ vừa đóng xong.',
+    'Sang hiệp hai, bạn thắng bằng đường kiếm gọn ghẽ. Chủ tiệm khóc, và đưa bạn đôi giày họ vừa đóng xong.',
     'You win with one clean stroke in the second round. The owner weeps, and hands you the pair of shoes they just finished.',
     'Đối thủ nhanh hơn bạn nghĩ. Bạn thua với dấu kiếm trên cổ tay, và chủ tiệm đóng cửa vào cuối tuần.',
     'The opponent is faster than you thought. You lose with a blade mark on the wrist, and the owner closes the shop by the weekend.',
@@ -188,7 +188,7 @@ export const CINQ_CONTRACTS = [
     'The rules say that when the bout ends the winner stands, but say nothing of the spectators. A stray knife comes from the crowd.'),
 
   rq('cinq_office_honor', 2, 'Đấu danh dự giữa hai Office', 'A point of honor between two Offices',
-    'Hai Office tranh nhau cái tên của một dãy nhà. Họ không muốn đánh nhau cả nhóm, nên Cinq xếp một trận đấu đơn và nhận phí của cả hai. Đối thủ của bạn là Fixer Grade 6.',
+    'Hai Office giành nhau quyền đặt tên dãy nhà. Họ không muốn đánh nhau cả nhóm, nên Cinq xếp một trận đấu đơn và nhận phí của cả hai. Đối thủ của bạn là Fixer Grade 6.',
     'Two Offices quarrel over the name of a row of buildings. They do not want a group brawl, so Cinq arranges a single bout and takes both fees. Your opponent is a Grade 6 Fixer.',
     'Bạn thắng sát nút. Hai Office bắt tay trước mặt Cinq, và chẳng ai nhìn về phía bạn. Cinq nhìn. Cinq luôn nhìn.',
     'You win by a hair. The two Offices shake hands before Cinq, and neither looks at you. Cinq looks. Cinq always does.',
@@ -198,7 +198,7 @@ export const CINQ_CONTRACTS = [
     'The opponent did not fight for honor. They fought to end it.'),
 
   rq('cinq_family_champion', 2, 'Đấu thay một gia tộc', 'Fight as a family’s champion',
-    'Một gia tộc nhỏ cần một người đấu thay để giữ một căn nhà đang bị đòi. Họ không có ai trong nhà đủ sức, và Cinq chọn bạn từ danh sách.',
+    'Gia tộc nhỏ cần người đấu thay để giữ căn nhà đang bị đòi. Họ không có ai trong nhà đủ sức, và Cinq chọn bạn từ danh sách.',
     'A small family needs a champion to keep a house that is being claimed. No one in the family can fight, and Cinq picks you from the list.',
     'Cả nhà đứng ngoài vòng đấu, nắm tay nhau. Khi bạn thắng, đứa nhỏ nhất chạy vào và ôm chân bạn mà không nói gì.',
     'The whole family stands outside the ring, holding hands. When you win, the youngest runs in and clings to your leg without a word.',
@@ -218,7 +218,7 @@ export const CINQ_CONTRACTS = [
     'The panel is silent, not from respect. They are waiting to see if you can stand.'),
 
   rq('cinq_noted_duelist', 3, 'Một kiếm sĩ có tên', 'A named swordsman',
-    'Một khách của Cinq muốn trả thù một kiếm sĩ có tên đã làm bẽ mặt gia đình. Họ không muốn giết, chỉ muốn thấy người ấy thua một cách công khai. Cinq chọn bạn.',
+    'Khách của Cinq muốn trả thù tay kiếm sĩ có tiếng từng làm gia đình họ bẽ mặt. Họ không cần giết, chỉ muốn thấy người ấy thua trước mặt thiên hạ. Cinq chọn bạn.',
     'A Cinq client wants revenge on a named swordsman who shamed their family. They do not want a kill, only to see the swordsman lose in public. Cinq picks you.',
     'Bạn thắng, và kiếm sĩ cúi đầu, không phải vì bị đánh bại, mà vì đã thấy một thế kiếm họ chưa từng thấy. Khách hàng hài lòng và hơi thất vọng.',
     'You win, and the swordsman bows, not out of defeat but because they saw a stance they had never seen. The client is pleased and a little disappointed.',
@@ -228,7 +228,7 @@ export const CINQ_CONTRACTS = [
     'The swordsman has a name not out of vanity. The name has a reason.'),
 
   rq('cinq_grade_one_bout', 4, 'Đấu với một Fixer Grade 1', 'A bout against a Grade 1 Fixer',
-    'Một khách giàu muốn thấy Cinq chứng minh rằng danh tiếng của một Fixer Grade 1 không phải là chuyện dựng lên. Họ trả cho cả hai bên. Bạn được chọn làm người đứng đối diện.',
+    'Vị khách giàu có muốn Cinq chứng minh danh tiếng của tay Fixer Grade 1 nọ không phải chuyện thổi phồng. Họ trả cho cả hai bên. Bạn được chọn làm người đứng đối diện.',
     'A wealthy client wants Cinq to prove that a Grade 1 Fixer’s reputation is not fabricated. They pay both sides. You are chosen as the one standing opposite.',
     'Bạn không thắng, nhưng bạn đứng được đến hiệp thứ năm. Người đối diện chào bạn trước khi rời sàn. Cinq ghi thù lao gấp đôi.',
     'You do not win, but you last to the fifth round. The one opposite salutes you before leaving the floor. Cinq records double pay.',
@@ -238,7 +238,7 @@ export const CINQ_CONTRACTS = [
     'A Grade 1 Fixer does not need to kill you to win, but sometimes they do not stop in time.'),
 
   rq('cinq_star_champion', 5, 'Người đấu thay cho một Star', 'Stand-in for a Star',
-    'Một vị Star không muốn tự bước vào một cuộc đấu danh dự với một thế lực nhỏ hơn mình nhiều bậc. Cinq nhận việc đứng vào đó thay người ấy. Bạn là lựa chọn của phòng điều phối, vì một lý do họ không giải thích.',
+    'Vị Star không muốn tự mình bước vào trận đấu danh dự với thế lực kém mình nhiều bậc. Cinq nhận đứng ra thay. Phòng điều phối chọn bạn, vì lý do gì thì họ không giải thích.',
     'A Star does not want to enter a point-of-honor bout with a power far below them. Cinq takes the task of standing in for them. You are dispatch’s choice, for a reason they do not explain.',
     'Bạn thắng, và không ai nhắc lại tên bạn, kể cả những người đứng xem. Vị Star gửi một lời cảm ơn qua người trung gian. Nó đến như một sự phán xét.',
     'You win, and nobody repeats your name, not even the spectators. The Star sends thanks through an intermediary. It arrives like a verdict.',

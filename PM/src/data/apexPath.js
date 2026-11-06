@@ -26,14 +26,14 @@ const finger = (id, name, ...rest) => apex(id, { jobs: ['Syndicate'], finger: na
 
 export const APEX_COLOR_MINORS = [
   color('m_apex_color_urban_nightmare',
-    '[Một Urban Nightmare ở rìa District] Một thứ vừa vượt qua phong tỏa ở khu cảng. Ba đội Grade 2 đã quay về, và Hana không gọi đội thứ tư. Họ gọi tên bạn, kèm một chiếc xe đã chờ sẵn dưới cửa.',
+    '[Urban Nightmare ở rìa District] Có thứ gì đó vừa vượt vòng phong tỏa ở khu cảng. Ba đội Grade 2 đã quay về, và Hana không gọi đội thứ tư. Họ gọi tên bạn, kèm một chiếc xe đã chờ sẵn dưới cửa.',
     '[An Urban Nightmare at the edge of a District] Something has crossed the cordon at the harbor ward. Three Grade 2 teams have come back, and Hana does not send a fourth. They call your name instead, with a car already waiting at the door.',
     ['Dựng tuyến chặn trước, đánh khi nó vào tầm', 'Set the line first and strike when it enters range',
       'Bạn giữ nó trong một con phố hẹp đủ lâu để các đội còn lại sơ tán xong. Hana ghi tên bạn ở dòng đầu của báo cáo.', 'You hold it in a narrow street long enough for the remaining teams to evacuate. Hana puts your name on the first line of the report.', { merit: 7, rep: 3, health: -8, sanity: -3 }],
     ['Vào thẳng và đánh gục nó ngay giữa phố', 'Walk in and put it down in the open street',
       'Bạn hạ nó trước khi trời tối. Người dân đứng sau cửa kính nhìn bạn đi qua mà không ai dám vỗ tay.', 'You put it down before dark. The residents behind their windows watch you pass, and none of them dares to clap.', { merit: 13, rep: 6, health: -14, sanity: -5 },
       'Nó học nhịp của bạn nhanh hơn dự đoán. Bạn rút ra được, nhưng khu cảng phải đóng thêm một tuần và Hana ghi sự việc vào mục chưa hoàn tất.', 'It learns your rhythm faster than expected. You withdraw, but the harbor ward stays closed another week and Hana files the matter as unfinished.', { health: -22, sanity: -8, rep: -2 }, 56],
-    ['Hana chuyển hồ sơ cho một Color khác ở Section lân cận.', 'Hana passes the file to another Color in a neighbouring Section.', { rep: -2 }]),
+    ['Hana chuyển hồ sơ sang Color khác bên Section lân cận.', 'Hana passes the file to another Color in a neighbouring Section.', { rep: -2 }]),
 
   color('m_apex_color_peer_bout',
     '[Trận đấu giữa hai cái tên] Một Fixer Grade 1 từ phía bên kia The City đề nghị một trận đấu có người chứng kiến, luật rõ, không giết người. Người ấy không muốn thắng bạn. Người ấy muốn đứng cạnh tên bạn trong một trang sử Hana.',
@@ -46,7 +46,7 @@ export const APEX_COLOR_MINORS = [
     ['Bạn từ chối khéo. Người ấy tìm một Color khác để đứng cạnh.', 'You decline politely. They look for another Color to stand beside.']),
 
   color('m_apex_color_fallen_fixer',
-    '[Một người đồng hạng đã thành Distortion] Một Fixer từng ngang tầm với bạn biến dạng trong một căn hộ ở tầng cao. Hana đã niêm phong tòa nhà. Họ muốn người kết thúc nó là người từng biết mặt nó, vì không ai khác ở cùng đẳng cấp.',
+    '[Người đồng hạng đã thành Distortion] Tay Fixer từng ngang tầm với bạn đã biến dạng trong căn hộ tầng cao. Hana đã niêm phong tòa nhà. Họ muốn người kết thúc nó là người từng biết mặt nó, vì không ai khác ở cùng đẳng cấp.',
     '[Someone of your rank, now a Distortion] A Fixer who once matched you has warped inside a high apartment. Hana has sealed the building. They want the one who ends it to be someone who knew the face, because no one else in the city stands at that level.',
     ['Vào một mình, nói chuyện trước khi ra tay', 'Go in alone and speak before you strike',
       'Nó nghe giọng bạn đủ lâu để ngừng cựa quậy. Kết thúc diễn ra ngắn và không có tiếng hét. Hana tặng bạn một lời cảm ơn viết tay.', 'It listens to your voice long enough to stop moving. The end is short and without a cry. Hana sends a handwritten thanks.', { merit: 7, rep: 3, sanity: -9 }],
@@ -76,7 +76,7 @@ export const APEX_COLOR_MINORS = [
     ['Hana mời một Grade 1 thay bạn. Buổi tập diễn ra nhạt hơn.', 'Hana invites a Grade 1 in your place. The session is flatter.', { rep: -1 }]),
 
   color('m_apex_color_singularity',
-    '[Một Singularity bên trong Wing] Một phòng nghiên cứu của Wing mất kiểm soát thứ họ đang giữ. Wing không muốn tiếng ồn, nên họ trả gấp ba để một Color vào mà không có chứng nhân. Bản hợp đồng có một dòng ở trang cuối, bằng mực nhạt, nói rằng không ai được nhắc tên bạn.',
+    '[Singularity bên trong Wing] Phòng nghiên cứu của Wing mất kiểm soát thứ họ đang giữ. Wing không muốn ồn ào, nên trả gấp ba để Color vào xử lý mà không có nhân chứng. Trang cuối hợp đồng có dòng mực nhạt nói rằng không ai được nhắc tên bạn.',
     '[A Singularity inside the Wing] A Wing research room has lost control of what it holds. The Wing wants no noise, so it pays triple for a Color to enter with no witnesses. The contract has one line on the last page, in pale ink, saying no one may mention your name.',
     ['Nhận hợp đồng và vào theo từng khu vực', 'Accept the contract and enter section by section',
       'Bạn thu hồi thứ đó trong ba lần vào. Tiền đến đúng hạn, và không ai nhắc tên bạn như đã hứa.', 'You recover it over three entries. The payment arrives on time and no one mentions your name, as promised.', { merit: 6, rep: 1, wealth: 10, sanity: -6 }],
@@ -96,7 +96,7 @@ export const APEX_COLOR_MINORS = [
     ['Bạn đóng cửa sớm vào các tối thứ sáu. Người ấy đứng thêm vài tuần rồi thôi.', 'You close early on Fridays. They stand there a few more weeks, then stop.', { rep: -2 }]),
 
   color('m_apex_color_hunt_party',
-    '[Đội săn của một Association] Một Association lớn tập hợp ba Grade 1 và một Grade 2 để săn một thứ ở ngoài tường. Họ cần người dẫn đầu mà cả bốn cùng chịu nghe. Chỉ có một cái tên trong The City đáp ứng điều đó.',
+    '[Đội săn của Association] Association lớn gom ba Grade 1 với một Grade 2 đi săn thứ gì đó ngoài tường thành. Họ cần người dẫn đầu cả bốn cùng chịu nghe. Cả The City chỉ có đúng một cái tên như thế.',
     '[An Association’s hunting party] A large Association gathers three Grade 1s and a Grade 2 to hunt something beyond the wall. They need a leader all four will listen to. Only one name in the City meets that need.',
     ['Dẫn đội, nhận phần thù lao nhỏ hơn để giữ hòa khí', 'Lead the party and accept a smaller share to keep the peace',
       'Cả đội quay về đủ người. Họ chia chiến lợi phẩm và kể cho nhau nghe bạn đã chọn đúng điểm đánh ở đâu.', 'The whole party returns. They split the spoils and tell each other where you chose the strike point.', { merit: 6, rep: 4, network: 3, health: -5 }],
@@ -106,13 +106,13 @@ export const APEX_COLOR_MINORS = [
     ['Họ chọn một Grade 1 làm trưởng đoàn, và ba người kia không vui.', 'They pick a Grade 1 as leader, and the other three are not pleased.', { rep: -1 }]),
 
   color('m_apex_color_old_debt',
-    '[Món nợ từ thời chưa có tên] Một người từng cứu bạn khi bạn còn là Grade 8 gửi đến một mảnh giấy trắng, chỉ ghi một địa chỉ. Họ không xin tiền. Họ chỉ nói rằng nếu bạn nhớ thì tới, còn nếu không thì họ hiểu.',
+    '[Món nợ từ thời chưa có tên] Người từng cứu bạn hồi bạn còn là Grade 8 gửi tới mảnh giấy trắng, chỉ ghi đúng một địa chỉ. Họ không xin tiền. Họ chỉ nói rằng nếu bạn nhớ thì tới, còn nếu không thì họ hiểu.',
     '[A debt from before the name] Someone who once saved you when you were a Grade 8 sends a blank slip with only an address on it. They ask for no money. They say that if you remember, come, and if you do not, they understand.',
     ['Đến địa chỉ ấy và nghe họ nói', 'Go to the address and hear them out',
       'Họ cần bạn đứng cạnh một người con trong buổi thử việc đầu tiên. Bạn đứng đó cả buổi, và người con nhìn bạn nhiều hơn nhìn người chấm.', 'They need you beside their child at a first trial. You stand there all session, and the child looks at you more than at the examiner.', { rep: 5, network: 3, sanity: 4, merit: 4 }],
     ['Mang cả đội của bạn tới và dẹp mối đe dọa đang đè lên họ', 'Bring your own crew and remove the threat bearing on them',
       'Bạn đứng ở cuối ngõ cho tới khi những kẻ đòi nợ hiểu ra. Người cũ không nói gì, chỉ đặt tay lên cánh tay bạn một lúc.', 'You stand at the end of the alley until the debt collectors understand. The old friend says nothing, and rests a hand on your arm for a moment.', { merit: 9, rep: 6, heat: 3, sanity: 3 },
-      'Những kẻ đòi nợ là người của một Syndicate lớn. Bạn dẹp được họ, nhưng phải trả giá bằng mối quan hệ ở một Finger.', 'The collectors belong to a large Syndicate. You clear them, but pay with a relationship at one Finger.', { rep: 1, heat: 7, network: -4 }, 62],
+      'Đám đòi nợ là người của Syndicate lớn. Bạn dẹp được chúng, nhưng phải trả giá bằng mối quan hệ với một Finger.', 'The collectors belong to a large Syndicate. You clear them, but pay with a relationship at one Finger.', { rep: 1, heat: 7, network: -4 }, 62],
     ['Bạn để tờ giấy trắng trong ngăn kéo. Nó vẫn nằm đó vào cuối năm.', 'You leave the blank slip in a drawer. It is still there at year’s end.', { sanity: -4 }])
 ];
 
@@ -122,14 +122,14 @@ const FINGER_APEX = {
       ['Chia chợ theo giờ và ghi vào sổ', 'Split the market by hours and enter it in the ledger', 'Hai Capo ký tên. Chợ chạy trơn tru qua mùa, và cả hai đều nhớ rằng bạn không chọn phe.', 'Both Capos sign. The market runs smoothly through the season, and both remember that you chose no side.', { merit: 6, rep: 4, network: 2 }],
       ['Xuống chợ, tự mình dẹp những kẻ gây chuyện', 'Go down to the market and clear the troublemakers yourself', 'Bạn đi qua giữa hai hàng quầy và những kẻ gây chuyện tự rút lui. Cả chợ biết ai là người đứng đầu.', 'You walk between two rows of stalls and the troublemakers withdraw on their own. The whole market knows who stands above.', { merit: 11, rep: 6, heat: 4 }, 'Một Capo coi việc bạn xuống tận chợ là mất lòng tin. Chợ yên, nhưng một người tốt rời đi.', 'One Capo takes your presence at the market as a loss of trust. The market stays quiet, but a good man leaves.', { rep: 1, network: -4, heat: 4 }, 60],
       ['Bạn để hai Capo tự giải quyết. Cuộc tranh cãi kéo dài đến mùa đông.', 'You leave the two Capos to settle it. The quarrel drags into winter.']],
-    ['m_apex_thumb_rival_boss', 'Thumb', '[Underboss của một phe khác] Underboss của một Thumb ở District lân cận ghé thăm với ba vệ sĩ và một lời đề nghị: một cuộc đấu danh dự trên sân thượng, hai người, không vũ khí lạ. Ông ta muốn biết ai là người mạnh hơn.', '[Underboss of another house] The Underboss of a neighbouring District’s Thumb visits with three bodyguards and an offer: a duel of honour on a rooftop, two of you, no unusual weapons. He wants to know who is stronger.',
+    ['m_apex_thumb_rival_boss', 'Thumb', '[Underboss phe khác] Underboss của nhánh Thumb bên District lân cận ghé thăm, kèm ba vệ sĩ và lời đề nghị: đấu danh dự trên sân thượng, hai người, không vũ khí lạ. Ông ta muốn biết ai là người mạnh hơn.', '[Underboss of another house] The Underboss of a neighbouring District’s Thumb visits with three bodyguards and an offer: a duel of honour on a rooftop, two of you, no unusual weapons. He wants to know who is stronger.',
       ['Nhận, nhưng đặt luật rõ trên giấy', 'Accept, but put the rules clearly on paper', 'Cả hai đánh theo luật đến khi trời tối. Ông ta cúi đầu trước khi bị thương nặng, và hai Thumb ngừng căng thẳng với nhau.', 'You fight by the rules until dusk. He bows before being badly hurt, and the two Thumbs stop straining against each other.', { merit: 6, rep: 4, health: -6 }],
       ['Nhận mà không đặt luật nào cả', 'Accept with no rules at all', 'Bạn thắng trong ba hiệp. Ông ta rời sân thượng mà không nói thêm gì, và tên bạn được nhắc ở bàn tiệc của cả hai phe.', 'You win in three rounds. He leaves the roof with nothing more to say, and your name is spoken at the banquets of both houses.', { merit: 12, rep: 7, health: -12 }, 'Ông ta chơi bẩn đúng lúc bạn mất cảnh giác. Bạn thắng, nhưng ở lại với vết thương và một mối thù.', 'He fights dirty the moment you lose focus. You win, but are left with a wound and a feud.', { health: -18, rep: 1, heat: 6 }, 56],
       ['Bạn từ chối khéo. Ông ta bảo sẽ quay lại vào mùa sau.', 'You decline politely. He says he will return next season.']]
   ],
   Index: [
     ['m_apex_index_unreadable_prescript', 'Index', '[Prescript không ai đọc được] Một tờ Prescript mới đến tay bạn nhưng các Proxy dưới quyền không ai giải được. Chữ không sai, chỉ là ý nghĩa như đã bị cắt khỏi nguồn. Weaver chưa bình luận gì.', '[A Prescript no one can read] A new Prescript reaches your hands, but none of the Proxies under you can decipher it. The writing is not wrong, only its meaning seems cut from its source. The Weaver has said nothing.',
-      ['Ngồi đọc từng dòng và hỏi các Proxy ý kiến', 'Read it line by line and ask the Proxies for their views', 'Sau nhiều đêm, các Proxy đồng thuận một cách hiểu. Bạn viết lại dưới tên mình và được chấp nhận.', 'After several nights the Proxies agree on one reading. You write it down under your name and it is accepted.', { merit: 5, rep: 3, sanity: -5 }],
+      ['Ngồi đọc từng dòng và hỏi các Proxy ý kiến', 'Read it line by line and ask the Proxies for their views', 'Sau nhiều đêm, các Proxy thống nhất được một cách hiểu. Bạn viết lại dưới tên mình và được chấp nhận.', 'After several nights the Proxies agree on one reading. You write it down under your name and it is accepted.', { merit: 5, rep: 3, sanity: -5 }],
       ['Làm theo cách hiểu của riêng bạn, không hỏi ai', 'Act on your own reading and ask no one', 'Kết quả khớp với ý định thật của Prescript. Index ghi nhận rằng bạn đọc được thứ người khác không đọc được.', 'The outcome matches the Prescript’s real aim. The Index records that you read what others could not.', { merit: 11, rep: 6, sanity: -8 }, 'Cách hiểu của bạn sai một chữ nhỏ. Hậu quả không lớn, nhưng một Proxy bị thương vì sự nhầm lẫn đó.', 'Your reading is off by one small word. The consequence is minor, but a Proxy is hurt by the mistake.', { sanity: -11, rep: -3, health: -6 }, 56],
       ['Bạn trả tờ Prescript lên cấp trên mà không bình luận.', 'You return the Prescript upward with no comment.']],
     ['m_apex_index_proxy_dispute', 'Index', '[Hai Proxy cùng cầm một Prescript] Hai Proxy đều tin Prescript của mình áp dụng cho cùng một người, và hai kết cục đó loại trừ nhau. Cả hai đều giữ vũ khí và không ai chịu lùi trước tin chắc của người kia.', '[Two Proxies, one Prescript] Two Proxies each believe their Prescript applies to the same person, and the two outcomes exclude one another. Both keep their weapons, and neither will back down before the other’s certainty.',
@@ -148,11 +148,11 @@ const FINGER_APEX = {
       ['Bạn vắng mặt. Hội đồng bỏ phiếu thay và ghi tên bạn trong cột vắng.', 'You are absent. The council votes without you and logs your name in the absent column.', { rep: -2 }]]
   ],
   Ring: [
-    ['m_apex_ring_masterpiece', 'Ring', '[Kiệt tác cuối của một Maestro] Một Maestro già qua đời để lại tác phẩm dang dở. Phòng trưng bày muốn một Grand Curator hoàn thành nó, vì ai cũng biết chỉ một người đủ hiểu ông ấy. Cả bản phác họa lẫn bản nháp đều đang đặt trên bàn của bạn.', '[A Maestro’s last piece] An aged Maestro dies leaving a work unfinished. The gallery wants a Grand Curator to complete it, because everyone knows only one person understood him well enough. The sketch and the drafts lie together on your desk.',
+    ['m_apex_ring_masterpiece', 'Ring', '[Kiệt tác cuối của Maestro] Vị Maestro già qua đời, để lại tác phẩm dang dở. Phòng trưng bày muốn Grand Curator làm nốt, vì ai cũng biết chỉ một người đủ hiểu ông ấy. Cả bản phác họa lẫn bản nháp đều đang đặt trên bàn của bạn.', '[A Maestro’s last piece] An aged Maestro dies leaving a work unfinished. The gallery wants a Grand Curator to complete it, because everyone knows only one person understood him well enough. The sketch and the drafts lie together on your desk.',
       ['Hoàn thiện theo đúng phác họa gốc', 'Complete it exactly as the original sketch', 'Tác phẩm được trưng bày dưới tên cả hai người. Phòng trưng bày ghi rằng không ai thấy chỗ nối.', 'The work is displayed under both names. The gallery notes that no one can see the join.', { merit: 5, rep: 4, sanity: -4 }],
       ['Thay đổi một chi tiết lớn theo ý bạn', 'Change one major detail by your own judgment', 'Khán giả đứng rất lâu trước tác phẩm. Một nhà phê bình viết rằng đây là lần đầu họ thấy bạn khác thầy mình, và họ thích điều đó.', 'The viewers stand a long while before the piece. A critic writes it is the first time you differ from your teacher, and they like it.', { merit: 11, rep: 7, sanity: -7 }, 'Thay đổi đó khiến vài người gọi tác phẩm là sự phản bội. Bạn bảo vệ nó, nhưng buổi triển lãm lạnh hơn dự kiến.', 'The change leads a few to call the work a betrayal. You defend it, but the exhibition is colder than planned.', { rep: -2, sanity: -8 }, 58],
       ['Bạn từ chối. Phòng trưng bày để dở dang tác phẩm trong kho.', 'You decline. The gallery leaves the work unfinished in storage.', { sanity: -2 }]],
-    ['m_apex_ring_forgery_ring', 'Ring', '[Tay làm giả ngang tầm] Một bản sao của một tác phẩm nổi tiếng được bán ở chợ ngầm. Bản sao tốt đến mức bạn mất một đêm mới phân biệt được. Người làm ra nó cùng tầm kỹ năng với bạn, và đang đợi bạn tìm thấy.', '[A forger of equal skill] A copy of a famous work is sold at an underground market. It is so good that it takes you a night to tell them apart. Whoever made it matches your skill, and is waiting for you to find them.',
+    ['m_apex_ring_forgery_ring', 'Ring', '[Tay làm giả ngang tầm] Chợ ngầm đang bán bản sao của tác phẩm nổi tiếng. Bản sao khéo tới mức bạn mất trọn một đêm mới phân biệt được. Người làm ra nó cùng tầm kỹ năng với bạn, và đang đợi bạn tìm thấy.', '[A forger of equal skill] A copy of a famous work is sold at an underground market. It is so good that it takes you a night to tell them apart. Whoever made it matches your skill, and is waiting for you to find them.',
       ['Lần theo nguồn vật liệu và báo cho phòng trưng bày', 'Trace the materials to their source and report to the gallery', 'Bạn xác định được xưởng. Phòng trưng bày xử lý phần còn lại, và ghi nhận mắt nhìn của bạn.', 'You identify the workshop. The gallery handles the rest, and records your eye.', { merit: 5, rep: 3, sanity: -4 }],
       ['Đến xưởng và gặp người đó mặt đối mặt', 'Go to the workshop and meet the forger face to face', 'Người đó mời bạn ngồi, và hai người nói về ánh sáng suốt đêm. Sáng ra họ đồng ý ngừng bán các bản sao.', 'The forger invites you to sit, and you speak of light until dawn. By morning they agree to stop selling copies.', { merit: 10, rep: 6, network: 3, sanity: -3 }, 'Người đó từ chối nói gì. Xưởng bị đốt trước khi bạn kịp đưa người bảo vệ tới, và bằng chứng mất hết.', 'The forger refuses to speak. The workshop is burned before you can bring guards, and the evidence is lost.', { rep: -2, sanity: -8, heat: 3 }, 56],
       ['Bạn để việc cho phòng điều tra. Bản sao vẫn được bán thêm hai tháng.', 'You leave it to the investigators. The copies keep selling for two more months.']]
@@ -194,7 +194,7 @@ export const APEX_COLOR_EVENTS = [
         ] },
       { labelVi: 'Nhận trận, nhưng ở một nơi kín', labelEn: 'Accept the bout, in a private place',
         effects: { rep: 3, sanity: 2 }, meritAdd: 10, flagsAdd: ['color_challenger_done'],
-        resultVi: 'Bạn chọn một sân trống ở cuối khu Hana. Hai người đánh trong im lặng, và không ai chép lại kết quả. Khi ra khỏi sân, người trẻ nói họ sẽ giữ bí mật.',
+        resultVi: 'Bạn chọn khoảng sân trống cuối khu Hana. Hai người đánh trong im lặng, và không ai chép lại kết quả. Khi ra khỏi sân, người trẻ nói họ sẽ giữ bí mật.',
         resultEn: 'You choose an empty yard at the far end of Hana’s grounds. The two of you fight in silence and nobody records the result. As you leave, the young one says they will keep the secret.' },
       { labelVi: 'Từ chối, giới thiệu họ cho một Color khác', labelEn: 'Decline and refer them to another Color',
         effects: { rep: -4, sanity: 3 }, flagsAdd: ['color_challenger_done'],
@@ -205,7 +205,7 @@ export const APEX_COLOR_EVENTS = [
   {
     id: 'color_nightmare_hunt', age: [34, 95], jobs: ['Fixer'], major: true, weight: 8,
     requires: ['ColorFixer'], forbids: ['color_hunt_done', 'color_nightmare_hunt_done'],
-    vi: '[Cuộc săn của các Color] Một Urban Star đang thành hình ở phía bắc, chưa tên, chưa được ghi vào sổ. Hana tập hợp mọi Color còn đủ sức. Các Section nói rõ rằng nếu thứ đó chạm tới khu dân cư, họ sẽ không có thời gian chọn người khác.',
+    vi: '[Cuộc săn của các Color] Phía bắc có Urban Star đang thành hình, chưa tên, chưa được ghi vào sổ. Hana tập hợp mọi Color còn đủ sức. Các Section nói rõ rằng nếu thứ đó chạm tới khu dân cư, họ sẽ không có thời gian chọn người khác.',
     en: '[The Colors’ hunt] An Urban Star is forming in the north, unnamed and unregistered. Hana gathers every Color still fit to fight. The Sections state plainly that if the thing reaches a residential ward, there will be no time to choose anyone else.',
     choices: [
       { labelVi: 'Đứng ở tuyến đầu cùng các Color khác', labelEn: 'Stand at the front line with the other Colors',
@@ -214,7 +214,7 @@ export const APEX_COLOR_EVENTS = [
           { w: 62, effects: { health: -22, sanity: -12, wealth: 30, rep: 14, resonance: 8 }, meritAdd: 70, flagsAdd: ['color_hunt_done', 'color_nightmare_hunt_done'],
             resultVi: 'Bốn Color cùng đứng trên một con đường hẹp, và nhịp của cả bốn trùng nhau lần đầu trong nhiều năm. Thứ đó ngã khi mặt trời lên. Hana ghi cả bốn tên vào một dòng duy nhất.',
             resultEn: 'Four Colors stand on one narrow street, and their rhythms match for the first time in years. The thing falls as the sun rises. Hana enters all four names on a single line.' },
-          { w: 38, effects: { health: -38, sanity: -22, wealth: 16, rep: 6, resonance: 12 }, meritAdd: 30, flagsAdd: ['color_hunt_done', 'color_nightmare_hunt_done'], scarsAdd: ['Vết cắt của một ngôi sao chưa tên'],
+          { w: 38, effects: { health: -38, sanity: -22, wealth: 16, rep: 6, resonance: 12 }, meritAdd: 30, flagsAdd: ['color_hunt_done', 'color_nightmare_hunt_done'], scarsAdd: ['Vết cắt của vì sao chưa tên'],
             resultVi: 'Thứ đó ngã cuối cùng, nhưng một Color trong nhóm không đứng lại được. Bạn mang cái tên đó về Hana, và cái cúi đầu bạn dành cho nó kéo dài hơn lệ thường.',
             resultEn: 'The thing falls at last, but one Color in the group does not get up. You carry that name back to Hana, and the bow you give it lasts longer than custom.' }
         ] },
@@ -231,7 +231,7 @@ export const APEX_COLOR_EVENTS = [
   {
     id: 'color_section_ruling', age: [36, 95], jobs: ['Fixer'], major: true, weight: 7,
     requires: ['ColorFixer'], forbids: ['color_ruling_done'],
-    vi: '[Phiếu của một Color] Các Section của Hana bất đồng về việc nới quyền cho Office nhỏ nhận Request cấp cao. Mỗi bên nghĩ phiếu của một Color sẽ khép tranh luận. Không bên nào hỏi bạn nghĩ gì, chỉ hỏi bạn sẽ bỏ phiếu thế nào.',
+    vi: '[Phiếu của một Color] Các Section của Hana bất đồng về việc nới quyền cho Office nhỏ nhận Request cấp cao. Bên nào cũng nghĩ phiếu của Color sẽ khép lại cuộc tranh luận. Không bên nào hỏi bạn nghĩ gì, chỉ hỏi bạn sẽ bỏ phiếu thế nào.',
     en: '[A Color’s vote] Hana’s Sections disagree on loosening the rule that lets small Offices take high-grade Requests. Each side thinks a Color’s vote will close the debate. Neither asks what you think, only how you will vote.',
     choices: [
       { labelVi: 'Bỏ phiếu mở rộng cho Office nhỏ', labelEn: 'Vote to open it to the small Offices',
@@ -251,7 +251,7 @@ export const APEX_COLOR_EVENTS = [
   {
     id: 'color_long_shadow', age: [55, 110], jobs: ['Fixer'], major: true, weight: 7,
     requires: ['ColorFixer'], forbids: ['color_shadow_done'],
-    vi: '[Cái bóng dài của một cái tên] Tên bạn đã được nhắc ở các quán ăn lâu hơn nhiều thế hệ Fixer. Hana gửi một người đến hỏi bạn muốn tên mình được ghi vào lịch sử như thế nào, và nói rằng việc đó vẫn còn quyết định được trong vài năm nữa.',
+    vi: '[Cái bóng dài của cái tên] Tên bạn được nhắc trong các quán ăn lâu hơn nhiều thế hệ Fixer. Hana cử người tới hỏi bạn muốn tên mình được ghi vào lịch sử ra sao, và nói rằng việc đó vẫn còn quyết định được trong vài năm nữa.',
     en: '[The long shadow of a name] Your name has been spoken in diners longer than several generations of Fixers have worked. Hana sends someone to ask how you want it recorded in history, and says that you still have a few years to decide.',
     choices: [
       { labelVi: 'Cho phép viết tiểu sử và tuyển dụng người kế nhiệm', labelEn: 'Allow a biography and name your successors',

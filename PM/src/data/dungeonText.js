@@ -37,8 +37,8 @@ export const FAIL_TEXT = {
       en: 'Your blade meets velvet and nothing behind it. Its teeth meet you.'
     },
     nerve: {
-      vi: 'Bạn mở mắt giữa mê cung gương đúng lúc một bóng phản chiếu bật cười bằng giọng người bạn đã chôn.',
-      en: 'You open your eyes in the hall of mirrors just as a reflection laughs with the voice of someone you buried.'
+      vi: 'Trong mê cung gương, một bóng phản chiếu bật cười bằng giọng người bạn từng biết. Bạn quay lại quá chậm.',
+      en: 'In the hall of mirrors, a reflection laughs in the voice of someone you knew. You turn too slowly.'
     },
     luck: {
       vi: 'Quầy trò chơi bạn lục có người trông. Con rối ấy không cần ngủ.',
@@ -103,15 +103,15 @@ export const BREAK_TEXT = {
   strain: {
     title: { vi: 'Gục Trước Khi Ra Tới Cửa', en: 'Broken Short of the Door' },
     body: {
-      vi: 'Bạn không còn nhớ mình đã bước qua chặng nào. Đồng đội kéo bạn ra bằng cổ áo, và một nửa số hàng thu được ở lại trong bóng tối.',
-      en: 'You cannot remember which stage you were crossing. Your team drags you out by the collar, and half the haul stays behind in the dark.'
+      vi: 'Bạn không còn đứng vững. Khi ra được khỏi khu nguy hiểm, bạn chỉ giữ lại một nửa số hàng đã gom.',
+      en: 'You can no longer stay on your feet. By the time you leave the danger zone, you have kept only half the haul.'
     }
   },
   mind: {
     title: { vi: 'Tâm Trí Vỡ Giữa Đường', en: 'Mind Gone Mid-Run' },
     body: {
-      vi: 'Có một lúc bạn nói chuyện với thứ không ở đó, và nó trả lời. Người ta đưa bạn lên mặt đất, nhưng không phải cả bạn đi lên.',
-      en: 'For a while you talk with something that is not there, and it answers. They carry you to the surface, but not all of you comes up.'
+      vi: 'Bạn trả lời một giọng nói không ai khác nghe thấy. Đến lúc rời khu nguy hiểm, bạn phải đọc lại tên mình trong hồ sơ.',
+      en: 'You answer a voice no one else can hear. When you leave the danger zone, you have to read your name from your own file.'
     }
   }
 };
@@ -122,16 +122,16 @@ export const SUPPLY_TEXT = {
     en: 'You stop to read how this stage works before you step further.'
   },
   breather: {
-    vi: 'Bạn tiêm liều thuốc kích thích rẻ tiền và ngồi thở đều trong một phút.',
-    en: 'You take a cheap stimulant and sit breathing evenly for a minute.'
+    vi: 'Bạn dùng một phần vật tư để băng vết thương, rồi ngồi thở cho đến khi tay hết run.',
+    en: 'You use part of your supplies to dress the wound, then sit until your hands stop shaking.'
   },
   ego: {
-    vi: 'Bạn để E.G.O thức dậy trong tay. Hơi lạnh chạy dọc cánh tay, và thứ trong hầm thôi nhìn bạn như một con mồi.',
-    en: 'You let the E.G.O wake in your hand. A cold runs up the arm, and whatever lives in the dungeon stops looking at you like prey.'
+    vi: 'Bạn gọi E.G.O lên và giữ nó đủ lâu để nhìn rõ đường qua chặng tới. Khi nó lắng xuống, đầu bạn nặng hơn trước.',
+    en: 'You call up your E.G.O and hold it long enough to see a way through the next stage. When it settles, your head feels heavier.'
   },
   egoColor: {
-    vi: 'Bạn không rút gì ra. Chỉ cần đứng đó với cái tên của mình, và hầm ngục tự lùi lại nửa bước.',
-    en: 'You draw nothing. You stand there with your name, and the dungeon gives back half a step on its own.'
+    vi: 'Bạn gọi E.G.O lên trong một nhịp thở và chọn đường qua chặng tới. Áp lực của nó vẫn đè lên tâm trí khi bạn bước tiếp.',
+    en: 'You call up your E.G.O in one breath and choose a route through the next stage. Its strain stays with you as you move.'
   },
   broke: {
     vi: 'Túi bạn không còn đủ Ahn để mua thêm khẩu phần.',
@@ -143,22 +143,22 @@ export const ENDING_TEXT = {
   fled: {
     title: (name) => ({ vi: `Rút Lui Khỏi ${name.vi}`, en: `Retreated from ${name.en}` }),
     body: {
-      vi: 'Bạn quay lưng với phần còn lại của hầm ngục và mang theo những gì đã gom được. Có người sẽ gọi đó là khôn ngoan. Bạn chỉ biết chân mình còn đi được.',
-      en: 'You turn your back on the rest of the dungeon and keep what you have gathered. Some will call it wise. You only know your legs still work.'
+      vi: 'Bạn rời khu nguy hiểm với phần hàng giữ được. Chặng còn lại khép sau lưng; bạn ghi số người đã ra được trước khi đi tiếp.',
+      en: 'You leave the danger zone with what you managed to keep. The remaining route closes behind you; you count who made it out before moving on.'
     }
   },
   conquered: {
     title: (name) => ({ vi: `Đi Hết ${name.vi}`, en: `Through ${name.en}` }),
     body: {
-      vi: 'Chặng cuối khép lại sau lưng bạn. Không ai vỗ tay. Bạn ngồi xuống bậc thang đầu tiên của mặt đất và để tay yên cho tới khi hết run.',
-      en: 'The last stage closes behind you. Nobody applauds. You sit on the first step of the surface and let your hands go still.'
+      vi: 'Chặng cuối khép lại. Bạn dừng ở lối ra, đếm lại đồ mang theo và đợi tay hết run.',
+      en: 'The last stage ends. At the exit, you count what you brought back and wait for your hands to stop shaking.'
     }
   },
   dead: {
     title: (name) => ({ vi: `Bỏ Mạng Trong ${name.vi}`, en: `Fell in ${name.en}` }),
     body: (stage) => ({
-      vi: `Vết thương nhận ở ${stage.vi} là vết thương cuối cùng. Hầm ngục giữ lại phần còn lại của bạn.`,
-      en: `The wound taken in ${stage.en} is the last one. The dungeon keeps what remains of you.`
+      vi: `Bạn gục ở ${stage.vi}. Hồ sơ chỉ ghi tên chặng nơi cuộc tìm kiếm dừng lại.`,
+      en: `You fall in ${stage.en}. The file records only the stage where the search stopped.`
     })
   }
 };

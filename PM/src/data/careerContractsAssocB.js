@@ -33,7 +33,7 @@ export const LIU_CONTRACTS = [
     'Liu’s rival does not only pay. They also send people, and those people do not throw stones.'),
 
   rq('liu_den_storm', 2, 'Đánh vào một ổ', 'Storm a den',
-    'Một nhóm cho vay nặng lãi trong nhà bỏ hoang ở rìa District đã bắt người nhà của một thành viên Liu làm con nợ. Liu không bao giờ để chuyện đó qua. Cả nhóm đi cùng nhau, bạn đi cánh trái.',
+    'Đám cho vay nặng lãi núp trong nhà bỏ hoang rìa District đã bắt người nhà của thành viên Liu làm con nợ. Liu không bao giờ để chuyện đó qua. Cả nhóm đi cùng nhau, bạn đi cánh trái.',
     'A loan-shark crew in an abandoned house on a District’s edge has seized a Liu member’s kin as debtors. Liu never lets that pass. The whole group goes together, and you take the left flank.',
     'Cánh trái của bạn xuống hầm trước và mở cửa cho phần còn lại. Người nhà được dẫn ra, nắm tay nhau, và không ai nhắc đến khoản nợ nữa.',
     'Your flank goes down to the cellar first and opens the door for the rest. The kin are led out holding hands, and no one mentions the debt again.',
@@ -53,13 +53,13 @@ export const LIU_CONTRACTS = [
     'The rule against aiming at civilians holds until the last minute. After that, nobody is left to recall it.'),
 
   rq('liu_family_vengeance', 3, 'Trả lại một món nợ máu', 'Settle a blood debt',
-    'Một người nhà Liu bị giết trong một vụ ở hộp đêm. Người đứng đầu nhà không ra lệnh trả thù, nhưng không ngăn ai đi. Cả nhóm im lặng chờ xem bạn có đi không.',
+    'Người nhà Liu bị giết trong vụ ẩu đả ở hộp đêm. Người đứng đầu nhà không ra lệnh trả thù, nhưng không ngăn ai đi. Cả nhóm im lặng chờ xem bạn có đi không.',
     'A Liu family member was killed in a nightclub incident. The head of the house does not order revenge, but does not stop anyone going. The whole group silently waits to see if you will.',
     'Bạn đi cùng ba người. Khi xong, không ai nói gì trên đường về. Bữa tối hôm đó, người đứng đầu đặt thêm một bát cơm cho bạn.',
     'You go with three others. When it is done, no one speaks on the way back. At dinner that night the head of the house sets an extra bowl of rice before you.',
     'Bạn đến muộn hơn phần còn lại. Việc xong, nhưng bạn không có mặt, và bữa ăn hôm đó có một chỗ không ai ngồi cạnh bạn.',
     'You arrive later than the rest. It gets done, but you are not there for it, and at that meal no one sits beside you.',
-    'Kẻ giết người đã có cận vệ của một Office lớn. Bạn là người đầu tiên chạm vào cánh cửa.',
+    'Kẻ giết người giờ đã có cận vệ của Office lớn che chắn. Bạn là người đầu tiên chạm vào cánh cửa.',
     'The killer already has bodyguards from a big Office. You are the first to touch the door.'),
 
   rq('liu_three_house_war', 4, 'Cuộc chiến giữa ba nhà', 'A war between three houses',
@@ -127,7 +127,7 @@ export const SEVEN_CONTRACTS = [
   rq('seven_internal_file', 3, 'Hồ sơ nội bộ một Association', 'An Association’s internal file',
     'Một người trong Association khác bị nghi bán lộ trình của Fixer cho kẻ thù. Seven muốn bằng chứng trước khi gửi cảnh báo. Việc của bạn là ngồi trong cùng quán với người ấy sáu buổi tối.',
     'Someone in another Association is suspected of selling Fixer routes to enemies. Seven wants proof before sending a warning. Your job is to sit in the same restaurant as them for six evenings.',
-    'Buổi tối thứ năm, người ấy gặp một người lạ ở cuối quán và trao một phong bì. Bạn có thời gian, địa điểm và khuôn mặt. Seven hài lòng và gửi cảnh báo.',
+    'Tối thứ năm, người ấy gặp kẻ lạ cuối quán và trao phong bì. Bạn có thời gian, địa điểm và khuôn mặt. Seven hài lòng và gửi cảnh báo.',
     'On the fifth evening they meet a stranger at the back and pass an envelope. You have time, place, and face. Seven is satisfied and sends the warning.',
     'Người ấy không bao giờ gặp ai trong sáu buổi. Seven kết luận họ vô tội hoặc đã biết có người nhìn, và bạn không thể phân biệt.',
     'They meet no one in six evenings. Seven concludes they are innocent or aware they are watched, and you cannot tell which.',
@@ -145,7 +145,7 @@ export const SEVEN_CONTRACTS = [
     'The Fixer has more friends than Seven thought. You leave the house without the verdict.'),
 
   rq('seven_star_file', 5, 'Hồ sơ liên quan đến một Star', 'A file touching a Star',
-    'Một hồ sơ cũ của Seven chỉ ra rằng một Star từng có mặt trong một vụ mà sổ sách ghi không có ai. Seven không muốn xóa, không muốn công bố, chỉ muốn biết ai khác đã đọc nó. Bạn được giao hỏi.',
+    'Hồ sơ cũ của Seven cho thấy từng có Star có mặt trong vụ việc mà sổ sách ghi là không có ai. Seven không muốn xóa, không muốn công bố, chỉ muốn biết ai khác đã đọc nó. Bạn được giao hỏi.',
     'An old Seven file shows a Star was present at an incident the records say nobody attended. Seven does not want to erase or publish it, only to learn who else has read it. You are assigned to ask.',
     'Bạn hỏi mười một người, và chỉ ba người trả lời thật. Báo cáo của bạn ngắn, và Seven đóng nó lại ngay khi đọc xong. Không ai nhắc lại việc ấy.',
     'You ask eleven people and only three answer honestly. Your report is short, and Seven closes it the moment it is read. No one mentions the matter again.',
@@ -176,7 +176,7 @@ export const TRES_CONTRACTS = [
     'Khẩu súng không chỉ chưa đăng ký. Nó được dùng để đóng khung, và người ngồi đối diện bạn cầm cái bẫy.',
     'The pistol is not merely unregistered. It was used to frame someone, and the person across from you holds the trap.'),
 
-  rq('tres_office_tax', 2, 'Thu thuế vũ khí của một Office', 'Collect weapon tax from an Office',
+  rq('tres_office_tax', 2, 'Thu thuế vũ khí của Office', 'Collect weapon tax from an Office',
     'Một Office nợ thuế vũ khí cho Head ba kỳ liên tiếp. Tres cử bạn đến thu và kiểm kho cùng lúc. Bạn đi một mình, nhưng có tờ lệnh có dấu của Tres.',
     'An Office has owed the Head weapon tax three terms running. Tres sends you to collect and inspect the stockroom at once. You go alone, but with an order bearing Tres’s seal.',
     'Bạn kiểm kho từ sáng đến chiều. Số đúng khớp sổ, trừ một chút chênh. Office trả thuế đủ, kèm lời xin lỗi lễ phép và một hộp bánh.',
@@ -197,9 +197,9 @@ export const TRES_CONTRACTS = [
     'The faulty piece goes off on the testing table. Tres’s specialist steps back in time. You do not.'),
 
   rq('tres_smuggler_trace', 3, 'Truy một đường buôn lậu vũ khí', 'Trace an arms smuggling route',
-    'Một lô vũ khí không đăng ký đến District, mang số hiệu của một Workshop đã đóng cửa. Tres muốn biết ai bán lại số hiệu. Bạn theo đường vận chuyển từ cảng đến ba kho.',
+    'Lô vũ khí không đăng ký lọt vào District, mang số hiệu của Workshop đã đóng cửa. Tres muốn biết ai bán lại số hiệu. Bạn theo đường vận chuyển từ cảng đến ba kho.',
     'A shipment of unregistered weapons has reached the District, bearing serials from a Workshop that closed. Tres wants to know who resold the serials. You follow the shipping route from the port through three depots.',
-    'Ở kho thứ ba, bạn tìm ra kẻ đóng dấu giả. Bạn không bắt người đó. Bạn ghi lại đủ để Tres đến sau, và Tres đến sau một cách chính xác.',
+    'Ở kho thứ ba, bạn tìm ra kẻ đóng dấu giả. Bạn không bắt người đó. Bạn ghi lại đủ để Tres tới sau, và Tres tới đúng hẹn.',
     'At the third depot you find the one who stamps the fakes. You do not arrest them. You note enough for Tres to arrive afterward, and Tres arrives with precision.',
     'Bạn mất dấu ở kho thứ hai. Tres nói đường dây sẽ nối lại, và nhìn bạn như thể mọi việc nằm trong dự tính.',
     'You lose the trail at the second depot. Tres says the line will connect again, and looks at you as if everything is as planned.',
@@ -217,7 +217,7 @@ export const TRES_CONTRACTS = [
     'The hardware is not what the Wing wants to keep. It is what they want to test on whoever comes to take it.'),
 
   rq('tres_star_relic', 5, 'Thu hồi món cấp Star', 'Recover a Star-grade piece',
-    'Một món vũ khí mang dấu hiệu của một Workshop đã biến mất khỏi sổ cách đây nhiều năm xuất hiện ở chợ đồ cũ. Tres muốn nó về kho, không ai biết vì sao. Bạn được giao hỏi giá.',
+    'Món vũ khí mang dấu của Workshop đã biến khỏi sổ sách từ nhiều năm trước bỗng xuất hiện ở chợ đồ cũ. Tres muốn nó về kho, không ai biết vì sao. Bạn được giao hỏi giá.',
     'A weapon bearing the mark of a Workshop struck from the books years ago turns up in a second-hand market. Tres wants it in the vault, and no one knows why. You are sent to ask the price.',
     'Bạn trả một khoản bạn không thể giải thích trên giấy. Món hàng vào kho của Tres. Không ai trong Tres nhắc đến nó nữa, kể cả bạn.',
     'You pay a sum you cannot explain on paper. The piece goes into Tres’s vault. Nobody in Tres mentions it again, you included.',

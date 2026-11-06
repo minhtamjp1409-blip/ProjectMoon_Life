@@ -557,8 +557,8 @@ export const LIFE_DAILIES = [
     'c_out_stories',
     CHILD,
     { out: true },
-    '[Truyền thuyết 26 District] Ngồi quây quần bên đống lửa sưởi đêm, một ông lão lưu vong kể về cuộc sống xa hoa bên trong 26 District của The City. Ông trầm giọng bảo rằng ở nơi đó người ta không phải lo chết đói, nhưng từng giây từng phút đều phải sống trong nỗi sợ hãi tột cùng.',
-    '[Tales of 26 Districts] Huddled around the night fire, an exiled elder recounted life inside the City’s 26 Districts. He sighed that folks in the City rarely starve to death, yet every breath is spent in ceaseless, suffocating dread.',
+    '[Chuyện kể về 26 District] Bên đống lửa, một người lưu vong kể về lần cuối ông đi qua cổng The City. “Trong đó có người ngủ trên giường,” ông nói. “Cũng có người không dám nhắm mắt.” Rồi ông thôi kể.',
+    '[A Tale of 26 Districts] By the fire, an exile recalls the last time he passed through the City gates. “Some people sleep in beds there,” he says. “Some are afraid to close their eyes.” Then he stops.',
     { sanity: 1 }
   ),
   D(
@@ -591,8 +591,8 @@ export const LIFE_DAILIES = [
     't_nest_party',
     TEEN,
     { nest: true },
-    '[Dạ tiệc trưởng phòng Nest] Bạn được tham dự buổi tiệc sinh nhật xa hoa tổ chức cho con của một vị trưởng phòng quyền lực trong Nest. Bạn học được bài học đắt giá rằng ở nơi thượng lưu này, mọi người đều mỉm cười lịch thiệp nhất khi thốt ra những lời độc địa và tàn nhẫn nhất.',
-    '[Nest Executive Reception] You attended an extravagant birthday reception held for a department director’s heir. You learned that here in high society, everyone flashes their most dazzling smile while whispering the cruelest betrayals.',
+    '[Tiệc sinh nhật trong Nest] Ở buổi tiệc của một giám đốc Wing, người lớn nâng ly và hỏi han con cái nhau. Mỗi lời chúc đều nhắc khéo đến chức vụ, điểm số hoặc hợp đồng. Bạn học cách mỉm cười mà không hứa gì.',
+    '[A Nest Birthday Party] At a Wing director’s party, adults raise their glasses and ask after one another’s children. Each toast hints at rank, grades, or contracts. You learn to smile without promising anything.',
     { network: 3, sanity: -1 }
   ),
   D(
@@ -714,8 +714,8 @@ export const LIFE_DAILIES = [
     'a_any_warp',
     GROWN,
     {},
-    '[Chuyến tàu WARP mười giây] Bạn gom góp tiền mua vé trải nghiệm chuyến tàu WARP Train đi công tác sang District khác lần đầu tiên. Chuyến đi chỉ kéo dài đúng mười giây thực tại; người hành khách ngồi cạnh bạn cứ trừng trừng nhìn vào hư vô suốt hành trình rồi lặng lẽ bước xuống tàu.',
-    '[Ten-Second WARP Ride] You spent a hefty fare to ride the WARP Train across the megacity for the very first time. The journey took a mere ten seconds of perceived reality; the passenger beside you stared blankly into the void, disembarking without a sound.',
+    '[Chuyến tàu WARP mười giây] Bạn trả 2 Ahn để sang District khác. Đồng hồ chỉ nhích mười giây; khi tàu dừng, hành khách cạnh bạn phủi áo rồi bước xuống như vừa đi một quãng đường thường.',
+    '[The Ten-Second WARP Train] You pay 2 Ahn to travel to another District. The clock advances ten seconds; when the train stops, the passenger beside you brushes off their coat and steps out as if from an ordinary commute.',
     { wealth: -2, sanity: -1 }
   ),
   D(
@@ -902,8 +902,8 @@ export const LIFE_DAILIES = [
     'r_u_lake',
     [6, 140],
     { regions: ['U'] },
-    '[Mặt hồ Đại Hồ phẳng lặng] Vùng biển hồ The Great Lake ở District U hôm nay phẳng lặng như một tấm gương soi khổng lồ không một gợn sóng. Những ngư dân dạn dày kinh nghiệm thì thào với nhau rằng những ngày hồ yên ả đến rợn người như thế này chính là lúc Cá Voi đang lắng nghe.',
-    '[The Still Great Lake] The Great Lake of District U was eerie and glass-smooth today without a solitary ripple. Seasoned mariners whispered among themselves that such absolute stillness signaled that the Great Whale was listening.',
+    '[Mặt hồ Đại Hồ lặng sóng] Mặt nước gần bến U Corp phẳng lì. Một thủy thủ kéo neo lên, thấy dây neo đã bị cắn đứt. Không ai trên bến hỏi chuyện gì ở dưới nước.',
+    '[Still Water on the Great Lake] The water near the U Corp pier lies flat. A sailor hauls up an anchor and finds its line bitten through. No one on the dock asks what is below.',
     { sanity: 1, resonance: 2 }
   ),
   D(

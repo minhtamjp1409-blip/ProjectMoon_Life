@@ -52,6 +52,19 @@ export const FINGERS_GAMBLE_EVENTS = [
             flagsAdd: ['thumb_etiquette_gamble_done']
           }
         ]
+      },
+      {
+        labelVi: "Chấp nhận nhận lỗi nghi thức cấp thấp, nộp phạt danh dự nhẹ",
+        labelEn: "Plead an etiquette oversight and accept a minor dishonor penalty",
+        outcomes: [
+          {
+            w: 100,
+            resultVi: "Bạn cúi gập người tạ lỗi theo đúng bộ luật tiền lệ thứ mười tám. Phân khu đối địch cười khẩy bỏ qua; bạn và đồng đội giữ được mạng sống nhưng chịu giảm sút vị thế.",
+            resultEn: "You bow in formal apology under Precedent Clause Eighteen. The rival branch scoffs and lets it drop; you and your comrade survive, at the cost of standing.",
+            effects: { standing: -6, rep: -4 },
+            flagsAdd: ['thumb_etiquette_gamble_done']
+          }
+        ]
       }
     ]
   },
@@ -152,6 +165,19 @@ export const FINGERS_GAMBLE_EVENTS = [
             flagsAdd: ['middle_vendetta_gamble_done']
           }
         ]
+      },
+      {
+        labelVi: "Tạm hoãn cuộc đột kích, tiếp tục theo dõi sòng bạc chờ thời cơ",
+        labelEn: "Delay the raid to trail the casino and await a cleaner opening",
+        outcomes: [
+          {
+            w: 100,
+            resultVi: "Bạn nhận định phòng tuyến của kẻ thù quá dày đặc. Việc rút lui tạm thời bị huynh đệ cằn nhằn, nhưng mạng sống toàn đội được bảo toàn nguyên vẹn.",
+            resultEn: "You assess their defenses as too fortified. Your retreat draws grumbling from sworn siblings, but the crew survives intact.",
+            effects: { sanity: -4, standing: -3 },
+            flagsAdd: ['middle_vendetta_gamble_done']
+          }
+        ]
       }
     ]
   },
@@ -200,6 +226,19 @@ export const FINGERS_GAMBLE_EVENTS = [
             resultVi: "Tác phẩm con người sống động sau lồng kính khúc xạ nhận được tràng pháo tay nồng nhiệt từ hội đồng chấm thi. Bạn vượt qua khảo thí an toàn với phần thưởng kếch xù.",
             resultEn: "The living operative suspended in refracting glass draws rapturous praise from the jury. You pass safely with hefty prize drafts.",
             effects: { rep: +25, wealth: +35, merit: +20, sanity: +5 },
+            flagsAdd: ['ring_flesh_gallery_gamble_done']
+          }
+        ]
+      },
+      {
+        labelVi: "Rút lui khỏi buổi đấu giá, chấp nhận bị hộ vệ trục xuất ra ngoài",
+        labelEn: "Withdraw from the exhibition and accept ejection by gallery guards",
+        outcomes: [
+          {
+            w: 100,
+            resultVi: "Nhận thấy tác phẩm của mình chưa đủ độ điên rồ, bạn lùi về sau rèm và bỏ đi. Hội đồng chấm thi chế giễu bạn là kẻ hèn nhát, nhưng làn da của bạn vẫn còn nguyên vẹn.",
+            resultEn: "Deeming your art insufficiently radical, you slip behind the drapes and depart. The jury derides your cowardice, but your skin remains intact.",
+            effects: { rep: -8, standing: -5 },
             flagsAdd: ['ring_flesh_gallery_gamble_done']
           }
         ]

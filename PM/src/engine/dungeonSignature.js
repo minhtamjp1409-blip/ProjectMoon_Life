@@ -1,7 +1,7 @@
 // ============================================================================
 // DUNGEON SIGNATURES (Đợt 128): one rule of its own for each dungeon, on top of the shared fight.
 //   Outskirts      lamp oil: every stage burns oil; in the dark, checks are harder and the way out costs blood
-//   Backstreets    the clock from 3:13 to 4:34: every move costs minutes; past 4:34 the Sweepers are out
+//   Backstreets    the clock from 3:13 to 4:34: the last sweep presses harder before it retreats
 //   Great Lake     the Lake Laws: an omen asks for one answer; a wrong one teaches the law, twice wakes what is below
 //   Bloodfiend     the blood market: stalls at the lulls sell an edge for HP; buy twice and the ringmaster notices
 //   WARP           passengers: lead survivors out; each one makes the blows land harder and each one counts at the end
@@ -23,7 +23,7 @@ const fnv = (text) => {
 
 export const SIGNATURE_BALANCE = {
   oil: { start: 4, native: 1, checked: 2, plain: 1, darkCheck: -0.3, darkFleeHp: 12 },
-  clock: { deadline: 81, turn: 4, rest: 14, push: 2, side: 4, shortcut: -6, sweptDamage: 1.35, sweptStrain: 5 },
+  clock: { deadline: 81, dangerAt: 60, turn: 4, rest: 14, push: 2, side: 4, shortcut: -6, sweptDamage: 1.35, sweptStrain: 5 },
   // A right answer calms the water and opens the enemy two notches; tuned so the Lake stays rung 2 (test_dungeon_difficulty)
   law: { wrong: 0.9, woken: 2.6, wokenStrain: 16, right: 0, rightBreaks: 2 },
   market: { wineHp: 10, goldHp: 8, goldLoot: 15, notice: 2 },
@@ -90,8 +90,10 @@ export function signatureMeter(session) {
   const T = SIGNATURE_TEXT.meter[kind];
   if (kind === 'oil') return { kind, labelVi: T.labelVi, labelEn: T.labelEn, value: session.oil, max: session.oilMax, tone: session.oil <= 0 ? 'bad' : session.oil <= 2 ? 'warn' : 'ok', noteVi: session.oil <= 0 ? T.darkVi : T.noteVi, noteEn: session.oil <= 0 ? T.darkEn : T.noteEn };
   if (kind === 'clock') {
-    const swept = session.clockMin > SIGNATURE_BALANCE.clock.deadline;
-    return { kind, labelVi: T.labelVi, labelEn: T.labelEn, text: `${clockText(session.clockMin)} / 4:34`, tone: swept ? 'bad' : session.clockMin > 60 ? 'warn' : 'ok', noteVi: swept ? T.sweptVi : T.noteVi, noteEn: swept ? T.sweptEn : T.noteEn };
+    const C = SIGNATURE_BALANCE.clock;
+    const late = session.clockMin >= C.deadline;
+    const danger = session.clockMin >= C.dangerAt && !late;
+    return { kind, labelVi: T.labelVi, labelEn: T.labelEn, text: `${clockText(session.clockMin)} / 4:34`, tone: danger ? 'bad' : 'ok', noteVi: late ? T.sweptVi : danger ? T.dangerVi : T.noteVi, noteEn: late ? T.sweptEn : danger ? T.dangerEn : T.noteEn };
   }
   if (kind === 'law') {
     const known = (session.lore || []).filter((id) => id.startsWith(`${LORE}lake_law_`)).length;
@@ -278,10 +280,10 @@ export function previewSignatureCombat(session, choice, intent) {
   return null;
 }
 
-/** Multiplies every blow in a fight: the Sweepers past 4:34, the passengers you shield. */
+/** Multiplies blows during the last sweep and while shielding passengers. */
 export function signatureDamageMult(session) {
   const kind = signatureOf(session);
-  if (kind === 'clock' && session.clockMin > SIGNATURE_BALANCE.clock.deadline) return SIGNATURE_BALANCE.clock.sweptDamage;
+  if (kind === 'clock' && session.clockMin >= SIGNATURE_BALANCE.clock.dangerAt && session.clockMin < SIGNATURE_BALANCE.clock.deadline) return SIGNATURE_BALANCE.clock.sweptDamage;
   if (kind === 'passenger') return 1 + SIGNATURE_BALANCE.passenger.damage * (session.passengers || 0);
   return 1;
 }
@@ -292,8 +294,9 @@ export function afterFightTurn(session) {
   const C = SIGNATURE_BALANCE.clock;
   const before = session.clockMin;
   session.clockMin += C.turn;
-  const notes = before <= C.deadline && session.clockMin > C.deadline ? [SIGNATURE_TEXT.clock.swept] : [];
-  return { notes, strain: session.clockMin > C.deadline ? C.sweptStrain : 0 };
+  const notes = before < C.deadline && session.clockMin >= C.deadline ? [SIGNATURE_TEXT.clock.swept]
+    : before < C.dangerAt && session.clockMin >= C.dangerAt ? [SIGNATURE_TEXT.clock.pressure] : [];
+  return { notes, strain: session.clockMin >= C.dangerAt && session.clockMin < C.deadline ? C.sweptStrain : 0 };
 }
 
 // ---- lulls between fights ---------------------------------------------------
@@ -322,7 +325,8 @@ export function resolveSignatureRest(char, session, choice, COMBAT_REST) {
     const add = { rest: C.rest, push: C.push, side: C.side }[choice.restAction] || 0;
     const before = session.clockMin;
     session.clockMin = Math.max(0, session.clockMin + add);
-    if (before <= C.deadline && session.clockMin > C.deadline) notes.push(SIGNATURE_TEXT.clock.swept);
+    if (before < C.deadline && session.clockMin >= C.deadline) notes.push(SIGNATURE_TEXT.clock.swept);
+    else if (before < C.dangerAt && session.clockMin >= C.dangerAt) notes.push(SIGNATURE_TEXT.clock.pressure);
   }
   if (kind === 'market' && (choice.restAction === 'blood_wine' || choice.restAction === 'blood_gold')) {
     const M = SIGNATURE_BALANCE.market;

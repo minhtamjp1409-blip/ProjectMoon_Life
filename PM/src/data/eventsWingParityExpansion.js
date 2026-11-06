@@ -293,51 +293,59 @@ export const WING_PARITY_MAJORS = [
     weight: 35,
     need: { jobs: ['Wing Employee'], wingRankAtLeast: 1 },
     forbids: ['wing_patent_warfare_done', 'Distorted'],
-    vi: "[Chiến Tranh Bằng Sáng Chế Giữa Hai Wing] Wing đối thủ gửi tối hậu thư đòi chuyển giao một sáng chế Singularity phụ trợ, đe dọa tung tài liệu mật về tội ác thử nghiệm của tập đoàn bạn lên Hana Association. Hội đồng cử bạn làm đặc sứ đàm phán cuộc chiến sống còn này.",
-    en: "[Inter-Wing Patent Warfare] A rival Wing delivers an ultimatum demanding transfer of an auxiliary Singularity patent, threatening to leak human experimentation records to Hana. The Board dispatches you as plenipotentiary envoy for this existential clash.",
+    vi: "[Tranh chấp sáng chế giữa hai Wing] Một Wing đối thủ đòi quyền sử dụng sáng chế Singularity của công ty bạn. Họ dọa công bố hồ sơ thử nghiệm nếu bị từ chối. Board cử bạn mang hồ sơ sang thương lượng.",
+    en: "[Inter-Wing Patent Dispute] A rival Wing demands access to your company's Singularity patent. They threaten to release trial records if refused. The Board sends you to negotiate.",
     choices: [
       {
-        labelVi: "Dùng các hồ sơ Leverage mật phản công, ép đối thủ phải ký hiệp ước hòa hoãn",
-        labelEn: "Counterattack with classified leverage dossiers, forcing an armistice",
-        need: { stat: { wealth: [20, 100] } },
+        labelVi: "Dùng hồ sơ mật để buộc họ rút yêu sách",
+        labelEn: "Use the confidential files to make them withdraw the demand",
+        need: { stat: { leverage: [30, 100] } },
         outcomes: [
           {
             w: 65,
-            resultVi: "Bạn đặt lên bàn đàm phán bằng chứng về việc đối thủ vi phạm Điều Cấm Kỵ The Head. Phái đoàn đối phương tái mét mặt và chấp nhận ký hiệp ước đình chiến, nhượng lại 20% thị phần Nest.",
-            resultEn: "You lay evidence of their Head Taboo violations on the table. Their delegation blanches and signs an unconditional armistice, surrendering 20% Nest market share.",
+            resultVi: "Bạn đưa hồ sơ ra. Đối thủ rút yêu sách và chấp nhận dàn xếp riêng để tránh bị công khai tên. Board ghi nhận công việc của bạn; cả hai Wing đều giữ lại bản sao hồ sơ.",
+            resultEn: "You present the files. The rival withdraws its demand and accepts a private settlement to avoid public exposure. The Board records your work; both Wings keep copies of the dossier.",
             effects: { standing: +30, merit: +35, rep: +25, wealth: +45 },
             flagsAdd: ['wing_patent_warfare_done', 'NestDiplomatStar']
           },
           {
             w: 35,
-            resultVi: "Đối phương tung sát thủ Shi Association phục kích phái đoàn của bạn ngay tại sảnh khách sạn. Bạn thoát chết nhưng cuộc đàm phán đổ vỡ, kéo theo cuộc chiến tiêu hao khốc liệt.",
-            resultEn: "They ambush your delegation with Shi Association assassins in the hotel foyer. You survive, but talks collapse into a protracted war of attrition.",
+            resultVi: "Đối thủ bác bỏ hồ sơ và cho người theo dõi đoàn bạn rời khỏi địa điểm họp. Bạn thoát được, nhưng Board phải tiếp tục xử lý tranh chấp mà không có thỏa thuận.",
+            resultEn: "The rival rejects the files and has your delegation followed from the meeting. You get away, but the Board must handle the dispute without an agreement.",
             effects: { health: -25, sanity: -15, standing: -10 },
             flagsAdd: ['wing_patent_warfare_done']
           }
         ]
       },
       {
-        labelVi: "Bán đứng bản sao sáng chế cho đối phương để lấy kim phiếu và sự bảo hộ ngầm",
-        labelEn: "Sell a copy to the rival Wing in exchange for bearer drafts and covert protection",
+        labelVi: "Bán bản sao cho đối thủ, trả 10 Ahn phí môi giới",
+        labelEn: "Sell them a copy and pay a 10 Ahn broker's fee",
         costAhn: 10,
         outcomes: [
           {
             w: 65,
-            resultVi: "Giao dịch bí mật hoàn tất trong đêm. Bạn nhận một vali kim phiếu và đường dây bảo hộ ngầm của Wing đối thủ, nhưng bộ phận phản gián của tập đoàn bắt đầu rà soát danh sách đặc sứ.",
-            resultEn: "The secret exchange concludes by midnight. You secure a briefcase of bearer drafts and rival covert backing, though corporate counter-intelligence begins auditing the envoy roster.",
+            resultVi: "Bản sao được giao, kim phiếu được chuyển đến. Bộ phận phản gián phát hiện có người sao chép hồ sơ và bắt đầu rà soát đoàn đàm phán.",
+            resultEn: "You hand over the copy, and the bearer drafts arrive. Corporate counter-intelligence finds that someone duplicated the files and starts reviewing the negotiating team.",
             effects: { wealth: +45, leverage: +16, sanity: -10, heat: +18, taboo: +1 },
             flagsAdd: ['wing_patent_warfare_done', 'DoubleAgentFeather']
           },
           {
             w: 35,
-            resultVi: "Đặc vụ phản gián cài bẫy ngay tại điểm giao dịch. Bạn phải hủy bản sao và chi đậm để xóa dấu vết, trở về trụ sở với hai bàn tay trắng cùng vết sẹo đạn sượt qua sườn.",
-            resultEn: "Counter-intelligence agents spring a trap at the dead-drop. You destroy the copy and burn your reserves to scrub your trail, limping back to headquarters with a graze across your ribs.",
+            resultVi: "Đội phản gián chặn cuộc trao đổi. Bạn hủy bản sao, mất khoản phí môi giới và bị thương khi rời điểm hẹn. Wing đối thủ không nhận được gì.",
+            resultEn: "Counter-intelligence stops the exchange. You destroy the copy, lose the broker's fee, and are injured getting away. The rival Wing receives nothing.",
             effects: { health: -20, wealth: -25, sanity: -14, standing: -15, heat: +16 },
             flagsAdd: ['wing_patent_warfare_done'],
             scarsAdd: ['Vết đạn phản gián giữa hai Wing']
           }
         ]
+      },
+      {
+        labelVi: "Dừng thương lượng, giao tranh chấp lại cho Board",
+        labelEn: "End the talks and return the dispute to the Board",
+        resultVi: "Bạn thu hồ sơ và báo Board rằng không thể tiếp tục thương lượng. Cuộc tranh chấp vẫn còn; cấp trên ghi nhận việc bạn rút lui khỏi nhiệm vụ.",
+        resultEn: "You collect the files and tell the Board the talks cannot continue. The dispute remains; your superiors record that you withdrew from the assignment.",
+        effects: { standing: -6, leverage: -2 },
+        flagsAdd: ['wing_patent_warfare_done']
       }
     ]
   }

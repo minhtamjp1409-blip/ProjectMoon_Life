@@ -17,6 +17,7 @@ To update antislop later: `npx antislop-ai --update`, or run `npx antislop-ai` a
 Read the relevant installed `SKILL.md` under `.agents/skills/` before applying it. Select by the task; a skill's availability does not require changing unrelated systems.
 
 - Game HUD, menus, controls: `game-ui-ux`, `input-systems`.
+- Any Vietnamese narration (events, minors, results, birth lines, dungeon stages, cutscenes): `vi-prose` (`.agents/skills/vi-prose/SKILL.md`), checked by `tools/lint/vi_prose_scan.mjs`.
 - Narrative branches, NPC decisions, event scoring and seeded generation: `dialogue-systems`, `game-ai`, `ai-behavior-trees-utility-ai`, `procedural-gen`.
 - Save/load, migrations and measured performance: `save-systems`, `performance-optimization`.
 - Feedback and sound: `game-feel`, `audio-design`.

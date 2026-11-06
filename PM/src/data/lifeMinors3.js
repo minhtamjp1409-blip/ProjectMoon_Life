@@ -222,8 +222,8 @@ export const LIFE_MINORS_3 = [
     'm3_e_blackout',
     [10, 80],
     E,
-    '[Mười một phút bầu trời vụt tắt] Nguồn năng lượng cực quang trên bầu trời District 5 đột ngột sập hoàn toàn trong mười một phút. Lần đầu tiên trong đời bạn được nhìn thấy bóng tối bao trùm khắp phố xá ngoài trời; trong khoảnh khắc ấy, cả khu dân cư rơi vào trạng thái điên loạn.',
-    '[Eleven Minutes of Total Blackout] The radiant sky grid of District 5 collapsed entirely for eleven chaotic minutes. For the first time in memory you beheld real darkness upon the open street; in those eleven minutes, the neighborhood went utterly mad.',
+    '[Mười một phút mất điện] Hệ thống chiếu sáng của District 5 tắt trong mười một phút. Đường phố chìm vào bóng tối; người ta đập vỡ cửa kính, gọi nhau từ ban công và tranh phần đường còn nhìn thấy.',
+    '[Eleven-Minute Blackout] District 5’s lighting fails for eleven minutes. The streets go dark. Glass breaks; people call from balconies and fight over the few visible paths.',
     [
       C(
         'Đứng sững lại và ngước nhìn lên',
@@ -233,23 +233,23 @@ export const LIFE_MINORS_3 = [
         {},
         {
           out: [
-            O(60, 'Bạn nhìn thấy những đốm sáng li ti huyền ảo trên nền trời đen thẳm mà chưa từng được thấy trong đời. Bạn đứng ngây người ngắm nhìn cho tới khi ánh sáng nhân tạo bật lại làm mắt bạn cay xè.', 'You beheld countless tiny glittering points of ancient starlight upon the velvet void. You stared transfixed until the blinding sky snapped back on, scorching your retinas.', { sanity: 4, resonance: 4 }),
-            O(40, 'Ai đó đã lao tới giật phăng túi xách của bạn trong bóng tối rồi đạp bạn ngã dúi dụi. Khi ánh sáng rực rỡ trở lại, bạn chỉ thấy vết máu tươi loang lổ trên hai bàn tay mình.', 'A predator ripped your satchel away in the pitch dark and struck you down. When harsh neon flared back to life, all you saw was fresh blood coating your trembling hands.', { wealth: -4, health: -4 })
+            O(60, 'Bạn ngẩng lên. Trên mái nhà là những ô cửa tối om. Khi đèn bật lại, tiếng còi báo động vẫn chưa dứt.', 'You look up. The windows above are dark. When the lights return, the alarm is still sounding.', { sanity: 4, resonance: 4 }),
+            O(40, 'Một người giật túi rồi xô bạn ngã. Đèn bật lại; bạn mất Ahn và rách một bên tay áo.', 'Someone takes your bag and shoves you down. The lights return; your Ahn is gone and one sleeve is torn.', { wealth: -4, health: -4 })
           ]
         }
       ),
       C(
         'Chạy thục mạng về nhà khóa cửa',
         'Run home and lock the door',
-        'Bạn lao như bay về phòng trọ và kéo chặt then cài, ngồi co ro nghe tiếng kính vỡ và tiếng cướp phá ngoài ngõ. Mười một phút ấy dài đằng đẵng tựa như cả một kiếp người.',
-        'You sprinted home and jammed the heavy iron bolts, listening to breaking glass and riots along the street. Those eleven minutes stretched longer than an eternity.',
+        'Bạn chạy về phòng trọ, cài then cửa. Ngoài ngõ, kính vỡ liên hồi. Đèn bật lại trước khi có ai thử cửa.',
+        'You run home and bolt the door. Glass keeps breaking outside. The lights return before anyone tries the handle.',
         { sanity: -2 }
       ),
       C(
         'Hùa theo đám đông đập phá cửa hàng',
         'Join the crowd breaking into shops',
-        'Bạn lao vào đám đông hôi của và mang về được một túi đồ hộp giá trị cùng một vết chém dài ở cổ tay. Đúng một tuần sau, các camera giám sát của E Corp bắt đầu gõ cửa từng nhà để truy thu.',
-        'You joined the rampaging looters, securing a bag of rations and a nasty laceration on your forearm. A week later, E Corp facial-recognition enforcers began pounding doors.',
+        'Bạn lấy được một túi đồ hộp trước khi đám đông tan. Một tuần sau, E Corp gửi thông báo truy tìm những người xuất hiện trong camera.',
+        'You leave with a bag of canned food before the crowd breaks apart. A week later, E Corp sends notices seeking those caught on camera.',
         { wealth: 6, health: -2, heat: 6, rep: -2 },
         { mem: 'blackout_loot', motif: { greed: 1 } }
       )
@@ -362,8 +362,8 @@ export const LIFE_MINORS_3 = [
     'm3_o_fine_print',
     [16, 70],
     O15,
-    '[Dòng chữ nhỏ ở trang 30] Một tập đoàn Wing đăng tin tuyển dụng với mức lương gấp đôi thị trường, hợp đồng được ký kết bằng mực sinh học O Corp. Ở tận trang thứ 30 xuất hiện một dòng chữ in li ti đến mức mắt thường không thể đọc nổi.',
-    '[Microscopic Clause on Page 30] A corporate firm offered double wages under an employment contract bound with O Corp fluid. Buried deep on page thirty lay a line of text so microscopic that bare eyes could not resolve it.',
+    '[Dòng chữ nhỏ ở trang 30] Một Wing tuyển người với mức lương gấp đôi. Bạn lật đến trang cuối: điều khoản bổ sung bị in nhỏ hơn phần còn lại, ngay sát mép giấy.',
+    '[Fine Print on Page 30] A Wing offers double pay. On the last page, an added clause is printed smaller than the rest, close to the paper’s edge.',
     [
       C(
         'Nhắm mắt ký luôn',
@@ -373,8 +373,8 @@ export const LIFE_MINORS_3 = [
         { wealth: 6 },
         {
           out: [
-            O(60, 'May mắn không có điều gì tồi tệ xảy ra. Bạn hoàn thành trọn vẹn một năm làm việc và nhận đủ tiền lương hậu hĩnh, dù vẫn không rõ dòng chữ ấy viết gì.', 'Fortune smiled upon you. You completed the contract year and received full compensation, forever ignorant of what that tiny line stipulated.', { wealth: 4 }),
-            O(40, 'Dòng chữ ma quái ấy quy định: "bên lao động tự nguyện nhượng lại một năm ký ức". Hết năm bạn tỉnh dậy và bàng hoàng nhận ra toàn bộ ký ức một năm qua là một khoảng trắng.', 'The insidious clause read: “the laborer surrenders one continuous year of personal memory.” You awoke at year’s end with twelve months erased into a void.', { sanity: -8, resonance: 3 }, { mem: 'lost_year' })
+            O(60, 'Điều khoản không được nhắc lại trong năm đó. Bạn nhận đủ lương; dòng chữ nhỏ vẫn còn trong hợp đồng.', 'The clause never comes up that year. You receive your full pay; the fine print stays in the contract.', { wealth: 4 }),
+            O(40, 'Điều khoản cho phép Wing thu một năm ký ức thay tiền phạt. Cuối kỳ, bạn không nhớ phần lớn những gì đã làm; khoản lương vẫn được chuyển đủ.', 'The clause lets the Wing collect a year of memories in place of a penalty. By the end of the term, most of your work is gone from memory. Your pay arrives in full.', { sanity: -8, resonance: 3 }, { mem: 'lost_year' })
           ]
         }
       ),
@@ -533,14 +533,14 @@ export const LIFE_MINORS_3 = [
     'm3_dist_fixers',
     ANY,
     DIST,
-    '[Hai Fixer Grade 4 săn tiền thưởng] Hai tay Fixer Grade 4 thiện chiến vừa tiếp nhận ủy thác thanh trừng Distortion về bạn. Nấp trong con hẻm tối, bạn nghe rõ mồn một từng câu họ bàn tính kế hoạch tác chiến, và nhận ra giọng của một người đang run lên vì sợ hãi.',
-    '[Two Grade 4 Fixers on the Hunt] Two veteran Grade 4 Fixers accepted a suppression bounty placed upon your Distortion. From your dark alcove you overheard their tactical debate, noticing that one man’s voice trembled with fear.',
+    '[Hai Fixer Grade 4 săn tiền thưởng] Hai Fixer Grade 4 nhận ủy thác săn bạn. Qua khe cửa, bạn nghe họ bàn kế hoạch. Một người liên tục hỏi xem lối thoát phía sau đã bị chặn chưa.',
+    '[Two Grade 4 Fixers on the Hunt] Two Grade 4 Fixers take a contract on you. Through a gap in the door, you hear them plan. One keeps asking whether the rear exit is covered.',
     [
       C(
         'Lặng lẽ dời chỗ ẩn nấp trước khi họ ập vào',
         'Relocate before they breach',
-        'Bạn vội vã từ bỏ sào huyệt ẩn nấp thứ ba của mình trong năm nay. Cứ mỗi lần dời đi, bạn lại cay đắng bỏ lại phía sau thêm một món đồ thuộc về con người cũ của mình.',
-        'You abandoned your third safehouse of the season. With every forced flight, you left behind another precious relic of your former human self.',
+        'Bạn rời chỗ ẩn nấp trước khi họ vào. Một túi đồ bị bỏ lại; lần này, bạn không quay lại lấy.',
+        'You leave before they enter. A bag stays behind; this time, you do not go back for it.',
         { heat: -8, network: -3, sanity: -2 }
       ),
       C(
@@ -551,8 +551,8 @@ export const LIFE_MINORS_3 = [
         {},
         {
           out: [
-            O(55, 'Chúng không trụ nổi trước sức mạnh dị thường của bạn. Một kẻ may mắn trốn thoát được, kẻ còn lại vĩnh viễn nằm xuống; tiền thưởng truy nã về bạn sau đó tăng lên gấp đôi.', 'They could not withstand your eldritch fury. One escaped into the rain; the other perished on the pavement. Your bounty doubled.', { heat: 12, rep: 3, sanity: -4 }, { motif: { violence: 1 } }),
-            O(45, 'Đám thợ săn đã chuẩn bị vũ khí chuyên dụng kỹ càng hơn bạn tưởng. Bạn trầy trật phá vòng vây tẩu thoát với một nửa cơ thể bị thiêu cháy nham nhở bởi vũ khí nhiệt.', 'The hunters were far better prepared than you anticipated. You barely broke through their cordon with half your flesh scorched by thermal weapons.', { health: -25, heat: -6 })
+            O(55, 'Bạn đánh gục một Fixer. Người còn lại thoát được và báo cáo vị trí của bạn; tiền thưởng tăng lên.', 'You bring one Fixer down. The other escapes and reports your location; the bounty rises.', { heat: 12, rep: 3, sanity: -4 }, { motif: { violence: 1 } }),
+            O(45, 'Họ chặn lối ra bằng vũ khí chống Distortion. Bạn thoát qua một khe hẹp, bỏ lại đường rút cũ và mang theo vết bỏng sâu.', 'They block the exit with anti-Distortion weapons. You squeeze through a narrow gap, lose your old escape route, and leave with a deep burn.', { health: -25, heat: -6 })
           ]
         }
       ),
@@ -578,8 +578,8 @@ export const LIFE_MINORS_3 = [
     'm3_dist_old_home',
     ANY,
     DIST,
-    '[Đèn bếp căn nhà cũ] Giữa đêm khuya thanh vắng, bạn lén lút đứng trước cửa căn nhà cũ nơi gia đình mình từng sinh sống. Ánh đèn phòng bếp vẫn sáng le lói hắt qua khe cửa sổ; người thân yêu dường như vẫn luôn chừa một ngọn đèn chờ bạn quay về.',
-    '[The Kitchen Lamp of Home] At midnight, you crept outside the humble tenement your family once called home. The faint amber glow of the kitchen lantern shone through the window curtains; someone was still waiting for you.',
+    '[Đèn bếp căn nhà cũ] Nửa đêm, bạn dừng trước căn phòng cũ. Ánh đèn lọt qua khe cửa sổ. Bạn không biết ai đang ở bên trong, hay còn ai nhớ người từng sống ở đây.',
+    '[The Kitchen Lamp at the Old Home] At midnight, you stop outside your old room. Light slips through the window. You do not know who lives inside now, or whether anyone remembers who once did.',
     [
       C(
         'Rón rén gõ cửa',
@@ -589,8 +589,8 @@ export const LIFE_MINORS_3 = [
         {},
         {
           out: [
-            O(50, 'Một người thân ra mở cửa, lặng người nhìn vào hình dạng quái dị của bạn rất lâu, rồi lặng lẽ đặt một bát canh nóng hổi xuống bậc thềm và khép cửa lại. Bát canh vẫn còn ấm nồng tình thương.', 'An aged relative opened the latch, gazing at your abnormal form for an eternity before setting a steaming bowl of soup upon the step and gently closing the door.', { sanity: 6 }),
-            O(50, 'Người ra mở cửa hoảng loạn thét lên kinh hãi khi nhìn thấy hình dạng của bạn. Ngay lập tức, đèn của cả dãy phố lần lượt bật sáng, báo động một cuộc vây bắt.', 'Whoever opened the door shrieked in mortal dread. In moments, lights flared along the entire avenue, sounding the alarm.', { sanity: -6, heat: 10 })
+            O(50, 'Một người lạ hé cửa. Họ đặt bát canh xuống bậc thềm, không hỏi tên bạn, rồi khép cửa lại.', 'A stranger opens the door a crack. They set a bowl of soup on the step, ask no name, and close it again.', { sanity: 6 }),
+            O(50, 'Người bên trong nhìn thấy hình dạng của bạn rồi hét lên. Đèn quanh dãy nhà bật sáng; tiếng chân chạy về phía con hẻm.', 'The person inside sees your shape and screams. Lights come on along the block; footsteps run toward the alley.', { sanity: -6, heat: 10 })
           ]
         }
       ),
@@ -602,7 +602,7 @@ export const LIFE_MINORS_3 = [
         { sanity: -2, resonance: 2 }
       )
     ],
-    I('Bạn không dám tiến lại gần ngưỡng cửa thân quen ấy.', 'You lacked the courage to approach that sacred threshold.'),
+    I('Bạn rời đi trước khi ánh đèn tắt.', 'You leave before the light goes out.'),
     { once: true }
   ),
 

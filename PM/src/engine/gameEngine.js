@@ -371,16 +371,18 @@ export function rollBirthFamily(region, rng, parentLegacy = null, preferredFamil
   if (region.id === 'OUTSKIRTS') {
     return FAMILIES.find((f) => f.id === 'outskirts_nomad');
   }
+  const hasLivingParentAtBirth = parentLegacy?.successorRelation === 'child' && parentLegacy.age >= 18;
+  const excludedForChild = new Set(['orphan', 'dieci_orphan']);
   if (preferredFamilyId && preferredFamilyId !== 'RANDOM') {
     const selected = FAMILIES.find((f) => f.id === preferredFamilyId);
-    if (selected && selected.id !== 'outskirts_nomad') return selected;
+    if (selected && selected.id !== 'outskirts_nomad' && !(hasLivingParentAtBirth && excludedForChild.has(selected.id))) return selected;
   }
   if (region.tags?.includes('head')) {
     const headFamilies = FAMILIES.filter((f) => ['nest_feather', 'wing_executive'].includes(f.id));
     return headFamilies[Math.floor(rng() * headFamilies.length)] || FAMILIES[0];
   }
   if (region.tags?.includes('fallen_wing')) {
-    const fallenFamilies = FAMILIES.filter((f) => ['smoke_war_veteran', 'orphan', 'backstreet_worker', 'fixer_lineage', 'workshop_apprentice'].includes(f.id));
+    const fallenFamilies = FAMILIES.filter((f) => ['smoke_war_veteran', 'orphan', 'backstreet_worker', 'fixer_lineage', 'workshop_apprentice'].includes(f.id) && !(hasLivingParentAtBirth && excludedForChild.has(f.id)));
     return fallenFamilies[Math.floor(rng() * fallenFamilies.length)] || FAMILIES[0];
   }
   if (parentLegacy) {
@@ -409,7 +411,7 @@ export function rollBirthFamily(region, rng, parentLegacy = null, preferredFamil
     prosthetic_tinkerer: region.id === 'T' || region.id === 'V' || region.id === 'G' ? 18 : 10
   };
 
-  const pool = FAMILIES.filter((f) => f.id !== 'outskirts_nomad');
+  const pool = FAMILIES.filter((f) => f.id !== 'outskirts_nomad' && !(hasLivingParentAtBirth && excludedForChild.has(f.id)));
   const total = pool.reduce((sum, f) => sum + (weights[f.id] || 10), 0);
   let pick = rng() * total;
   for (const f of pool) {

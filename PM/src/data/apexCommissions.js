@@ -184,16 +184,16 @@ function build(branch, need, extra, hook, ci) {
 // [key, kind, place vi, place en, foe vi, foe en, scene vi, scene en]
 const COLOR_HOOKS = [
   ['tower', 'raid', 'tòa tháp cũ', 'the old tower', 'đội gác cũ của Syndicate', 'the old Syndicate garrison',
-    '[Tòa tháp có cờ riêng] Một tòa tháp ở ngoại ô đã bị một nhóm treo cờ riêng từ đầu mùa. Hana không muốn gửi quân, và người ta nói nhóm đó chỉ mở cửa cho người có tên đủ nặng.',
+    '[Tòa tháp có cờ riêng] Từ đầu mùa, tòa tháp ngoại ô đã bị một nhóm chiếm, treo cờ riêng. Hana không muốn gửi quân, và người ta nói nhóm đó chỉ mở cửa cho người có tên đủ nặng.',
     '[A tower with its own flag] A tower on the outskirts has flown a private flag since the season began. Hana does not want to send troops, and it is said the group will open only for someone whose name carries weight.'],
   ['rail', 'guard', 'tuyến đường ray cũ', 'the old rail line', 'băng chặn đường', 'the blockers',
-    '[Người kiểm toán đi qua đường ray] Một người kiểm toán của Hana phải đi qua một đoạn đường ray bị một băng nhóm chiếm giữ. Họ chỉ chịu đi nếu có một Color đứng cạnh.',
+    '[Người kiểm toán đi qua đường ray] Người kiểm toán của Hana cần băng qua đoạn đường ray đang bị băng nhóm chiếm giữ. Họ chỉ chịu đi nếu có Color đứng cạnh.',
     '[An auditor on the rail line] A Hana auditor must cross a stretch of rail held by a gang. They will go only with a Color at their side.'],
   ['lab_leak', 'hunt', 'dãy ngõ sau phòng thí nghiệm', 'the alley behind the lab', 'thứ thoát khỏi phòng thí nghiệm', 'the thing that left the lab',
     '[Thứ thoát ra từ một phòng thí nghiệm nhỏ] Một phòng thí nghiệm không giấy phép ở ngõ sau mất kiểm soát thứ nó nuôi. Đội Grade 2 đến trước đã không trở lại đủ người.',
     '[Something out of a small laboratory] An unlicensed laboratory in the back alleys has lost control of what it kept. The Grade 2 team that went first did not return at full strength.'],
   ['rank_bout', 'duel', 'sân Hana', 'the Hana yard', 'Fixer ở Section khác', 'the Fixer from the other Section',
-    '[Trận tập giữa hai Section] Một Fixer Grade 1 ở Section khác xin một trận có người chứng kiến để hai nơi đo nhau. Họ nói họ không cần thắng, họ cần biết nhát chém của mình nằm ở đâu.',
+    '[Trận tập giữa hai Section] Tay Fixer Grade 1 bên Section khác xin đấu một trận có người chứng, để hai nơi đo sức nhau. Họ nói họ không cần thắng, họ cần biết nhát chém của mình nằm ở đâu.',
     '[A bout between two Sections] A Grade 1 Fixer from another Section asks for a witnessed bout so the two houses can measure each other. They say they do not need to win, only to know where their cut stands.'],
   ['honors', 'show', 'hội trường Hana', 'the Hana hall', 'người dẫn chương trình', 'the presenter',
     '[Lễ ghi công cuối năm] Hana tổ chức lễ ghi công cuối năm và yêu cầu một Color bước dọc hàng người được trao thưởng. Người ta nói vị trí này chỉ để cho thấy ai vẫn là người đứng đầu.',
@@ -202,16 +202,16 @@ const COLOR_HOOKS = [
     '[Hai Office một Request] Hai Office nhỏ cùng nhận là đã hoàn thành một Request cấp cao, và cả hai giữ bằng chứng tốt như nhau. Họ muốn một Color đọc cả hai hồ sơ và nói ai đúng.',
     '[Two Offices, one Request] Two small Offices both claim a high-grade Request as completed, and both hold equally good proof. They want a Color to read both files and say who is right.'],
   ['sewer_nest', 'raid', 'cống ngầm dưới Backstreets', 'the sewers under the Backstreets', 'đám tín đồ dưới cống', 'the cultists below',
-    '[Tổ dưới cống] Một nhóm tín đồ của một thứ vô danh dựng tổ dưới cống ngầm và đã bắt đầu kéo người sống vào. Hana đã mất liên lạc với hai đội thăm dò.',
+    '[Tổ dưới cống] Đám tín đồ thờ thứ không tên dựng tổ dưới cống ngầm, đã bắt đầu lôi người sống xuống. Hana đã mất liên lạc với hai đội thăm dò.',
     '[A nest in the sewers] A group of worshippers of something nameless has built a nest in the sewers and has begun to draw living people into it. Hana has lost contact with two scouting teams.'],
   ['refuge', 'guard', 'nhà trú ẩn ở phố thợ', 'the refuge in the workers’ street', 'người đòi bảo kê', 'the protection collectors',
     '[Nhà trú ẩn bị đòi tiền] Một nhà trú ẩn cho người già và trẻ mồ côi bị một Syndicate đòi tiền bảo kê. Chủ nhà không xin giúp, chỉ treo một mảnh giấy ngoài cửa với tên bạn.',
     '[A refuge asked for money] A refuge for the old and for orphans is being pressed by a Syndicate for protection fees. The keeper does not ask for help, only pins a slip with your name outside the door.'],
   ['hall_lesson', 'show', 'phòng tập Hana', 'the Hana training hall', 'lớp Fixer trẻ', 'the young Fixers',
-    '[Một buổi dạy ở phòng tập] Hana mời một Color dạy một buổi cho lớp Fixer sắp lên Grade 5. Không ai hứa họ sẽ nhớ bài học, nhưng ai cũng nhớ người đứng trước lớp.',
+    '[Buổi dạy ở phòng tập] Hana mời Color tới dạy một buổi cho lớp Fixer sắp lên Grade 5. Không ai hứa họ sẽ nhớ bài học, nhưng ai cũng nhớ người đứng trước lớp.',
     '[A lesson in the hall] Hana invites a Color to teach one session to the class about to reach Grade 5. No one promises they will remember the lesson, but everyone remembers who stood before the class.'],
-  ['disciple', 'duel', 'sân sau của một quán trọ', 'the back yard of an inn', 'đệ tử của người cũ', 'the old rival’s disciple',
-    '[Đệ tử của một người đã mất] Học trò của một kiếm khách từng đấu với bạn nhiều năm trước tìm đến sân sau một quán trọ. Họ không mang thù, chỉ muốn thử xem thầy mình thua điều gì.',
+  ['disciple', 'duel', 'sân sau quán trọ', 'the back yard of an inn', 'đệ tử của người cũ', 'the old rival’s disciple',
+    '[Đệ tử của người đã khuất] Học trò của tay kiếm khách từng đấu với bạn nhiều năm trước tìm tới sân sau quán trọ. Họ không mang thù, chỉ muốn thử xem thầy mình thua điều gì.',
     '[The disciple of one who died] The student of a swordsman who once fought you years ago finds you in the back yard of an inn. They carry no grudge, only a wish to test what their teacher lost to.']
 ];
 
@@ -224,7 +224,7 @@ const FINGER_HOOKS = {
       '[Đoàn xe chuyển đạn] Một đoàn xe chuyển đạn của Thumb phải đi qua một đoạn đường đang có tin phục kích. Người cầm đầu đoàn nói họ chỉ đi nếu bạn đi cùng.',
       '[An ammunition convoy] A Thumb convoy carrying ammunition must pass a stretch where an ambush is rumoured. The convoy leader says they will go only if you ride with them.'],
     ['sottocapo_bout', 'duel', 'sân thượng', 'the rooftop', 'Underboss của phe lân cận', 'the neighbouring Underboss',
-      '[Đấu danh dự trên sân thượng] Underboss của một District lân cận gửi lời mời đấu danh dự trên sân thượng, hai người, không vũ khí lạ. Ông muốn các Capo hai bên biết ai là người mạnh hơn.',
+      '[Đấu danh dự trên sân thượng] Underboss bên District lân cận gửi lời mời đấu danh dự trên sân thượng, hai người, không vũ khí lạ. Ông muốn các Capo hai bên biết ai là người mạnh hơn.',
       '[A duel of honour on the roof] The Underboss of a neighbouring District sends an invitation to a duel of honour on a rooftop, two of you, no unusual weapons. They want the Capos of both houses to know who is stronger.'],
     ['oath_rite', 'show', 'sảnh tuyên thệ', 'the oath hall', 'các Soldato mới', 'the new Soldati',
       '[Lễ tuyên thệ của Soldato mới] Một nhóm Soldato mới sắp tuyên thệ, và họ muốn người đứng đầu đọc lời thề cùng họ. Đây là việc ít người làm, và những ai làm đều được nhớ.',
@@ -233,7 +233,7 @@ const FINGER_HOOKS = {
       '[Hai Capo tranh một cuốn sổ] Hai Capo cùng giữ một cuốn sổ ghi nợ và mỗi người cho rằng nó thuộc về mình. Cả hai đều trung thành, và cả hai đều không chịu lùi.',
       '[Two Capos, one ledger] Two Capos both hold a debt ledger and each claims it is theirs. Both are loyal, and neither will give ground.'],
     ['armory', 'hunt', 'kho vũ khí cũ', 'the old armory', 'kẻ trộm đã lấy đạn', 'the thief who took the ammunition',
-      '[Kẻ lấy đạn trong kho cũ] Một kẻ đã lấy đạn từ kho cũ của Thumb và để lại đúng một dấu: một mảnh giấy ghi tên bạn. Người đó muốn bạn tìm ra.',
+      '[Kẻ lấy đạn trong kho cũ] Có kẻ lấy đạn trong kho cũ của Thumb, để lại đúng một dấu vết: mảnh giấy ghi tên bạn. Người đó muốn bạn tìm ra.',
       '[The one who took ammunition from the old armory] Someone has taken ammunition from the Thumb’s old armory and left exactly one mark: a slip with your name on it. They want you to find them.']
   ],
   Index: [
@@ -243,7 +243,7 @@ const FINGER_HOOKS = {
     ['proxy_dispute', 'judge', 'phòng đọc', 'the reading room', 'hai Proxy', 'the two Proxies',
       '[Hai Proxy, hai cách đọc] Hai Proxy đọc cùng một Prescript theo hai cách và mỗi bên đều có bằng chứng. Việc chọn cách đọc nào quyết định ai là người được nghe trong năm tới.',
       '[Two Proxies, two readings] Two Proxies read the same Prescript in two ways and each has proof. Choosing a reading decides who is heard in the coming year.'],
-    ['weaver_test', 'duel', 'sảnh thử', 'the testing hall', 'người của một Weaver khác', 'the other Weaver’s person',
+    ['weaver_test', 'duel', 'sảnh thử', 'the testing hall', 'người của Weaver khác', 'the other Weaver’s person',
       '[Thử sức giữa hai dòng Weaver] Hai dòng Index muốn so tay trước khi quyết định bên nào đi đầu trong một Prescript lớn. Họ chọn bạn là người đại diện, và họ chọn người của họ đối diện.',
       '[A test between two Weaver lines] Two lines of the Index want to compare skill before deciding which leads a large Prescript. They choose you as their representative and place their own opposite.'],
     ['proselyte_rite', 'show', 'sảnh đọc lệnh', 'the hall of readings', 'các Proselyte mới', 'the new Proselytes',
@@ -252,7 +252,7 @@ const FINGER_HOOKS = {
     ['unmarked_door', 'raid', 'ngôi nhà không số', 'the house with no number', 'đám người giữ cửa', 'the door keepers',
       '[Ngôi nhà không số] Prescript chỉ ghi: đi vào căn nhà không có số ở cuối một con phố và lấy thứ nằm trên bàn. Những người giữ cửa không biết họ giữ gì.',
       '[The house with no number] The Prescript says only: go into the house with no number at the end of a street and take what lies on the table. The ones keeping the door do not know what they keep.'],
-    ['stray_ink', 'hunt', 'dãy kho cũ', 'the old warehouses', 'bóng của một Prescript hỏng', 'the shadow of a spoiled Prescript',
+    ['stray_ink', 'hunt', 'dãy kho cũ', 'the old warehouses', 'bóng ma của Prescript hỏng', 'the shadow of a spoiled Prescript',
       '[Prescript hỏng ở dãy kho cũ] Một Prescript bị đọc sai ba lần đã để lại thứ gì đó trong dãy kho cũ. Các Proxy trẻ không dám vào, và Weaver không gửi lời nào.',
       '[A spoiled Prescript in the old warehouses] A Prescript misread three times has left something in the old warehouses. The young Proxies will not enter, and the Weaver has sent no word.']
   ],
@@ -267,7 +267,7 @@ const FINGER_HOOKS = {
       '[Con nợ ẩn sau người bảo vệ] Một con nợ lớn của Middle đã thuê người bảo vệ và ở trong một căn nhà có nhiều cửa. Tên của họ đã nằm ở dòng đầu trang sổ suốt mười năm.',
       '[A debtor behind hired guards] A large debtor of the Middle has hired protectors and sits in a house with many doors. Their name has been on the first line of a page for ten years.'],
     ['sibling_bout', 'duel', 'sân nhà Middle', 'the Middle house yard', 'Great Elder trẻ', 'the young Great Elder',
-      '[Một Great Elder trẻ muốn thử] Một Great Elder trẻ tuổi xin một trận đấu với người đứng đầu để cả gia đình thấy họ xứng với vị trí. Lời xin lịch sự, và nó có người nghe lén.',
+      '[Great Elder trẻ muốn thử] Vị Great Elder trẻ tuổi xin đấu với người đứng đầu, để cả gia đình thấy mình xứng với vị trí. Lời xin lịch sự, và nó có người nghe lén.',
       '[A young Great Elder wants a trial] A young Great Elder asks for a bout with the head of the Middle so the whole family sees they deserve the seat. The request is polite, and someone is listening in.'],
     ['rescued_sibling', 'guard', 'khu phố bị bao vây', 'the besieged street', 'những kẻ vây nhà', 'those surrounding the house',
       '[Người nhà bị bao vây] Một Big Sibling bị một Syndicate khác vây trong nhà cùng gia đình. Họ gọi cho cả nhà, và chỉ có bạn đủ gần để đến trước đêm.',
@@ -278,7 +278,7 @@ const FINGER_HOOKS = {
   ],
   Ring: [
     ['last_piece', 'show', 'phòng trưng bày', 'the gallery', 'khách đến xem', 'the visitors',
-      '[Tác phẩm cuối của một Maestro] Một Maestro vừa mất để lại một tác phẩm dang dở. Phòng trưng bày muốn Grand Curator hoàn thiện nó trước công chúng và nói vì sao.',
+      '[Tác phẩm cuối của Maestro] Vị Maestro vừa qua đời để lại tác phẩm dang dở. Phòng trưng bày muốn Grand Curator hoàn thiện nó trước công chúng và nói vì sao.',
       '[A Maestro’s last piece] A Maestro who has just died leaves a work unfinished. The gallery wants the Grand Curator to complete it before the public and say why.'],
     ['forger', 'hunt', 'xưởng giả', 'the forger’s workshop', 'tay làm giả', 'the forger',
       '[Tay làm giả ngang tầm] Một bản sao tốt đến mức bạn mất một đêm mới phân biệt được đang được bán ở chợ ngầm. Người làm nó cùng tầm kỹ năng và đang chờ bạn tìm thấy.',
@@ -301,7 +301,7 @@ const FINGER_HOOKS = {
       '[Thanh kiếm gãy làm lời thách] Một kiếm khách không thuộc Finger nào gửi một thanh kiếm gãy làm lời thách. Họ không đòi tiền thưởng, chỉ muốn một trận với người được gọi là Sovereign.',
       '[A broken blade as challenge] A swordsman belonging to no Finger sends a broken blade as challenge. They ask for no prize, only one bout with the one called Sovereign.'],
     ['oath_debt', 'judge', 'sảnh lời thề', 'the hall of oaths', 'người thừa kế lời thề', 'the heir of the oath',
-      '[Lời thề không ai trả] Một Star of the Sky mất đi để lại một lời thề chưa trả cho một đứa trẻ. Hội đồng muốn Sovereign quyết ai trả thay, và trả bằng gì.',
+      '[Lời thề không ai trả] Star of the Sky qua đời, để lại lời thề còn nợ với đứa trẻ. Hội đồng muốn Sovereign quyết ai trả thay, và trả bằng gì.',
       '[An unpaid oath] A Star of the Sky dies leaving an oath unpaid to a child. The council wants the Sovereign to decide who pays in their place, and with what.'],
     ['sword_show', 'show', 'sân kiếm', 'the sword yard', 'các Initiate', 'the Initiates',
       '[Lễ chọn kiếm cho Initiate] Các Initiate mới đến chọn kiếm đầu tiên, và họ muốn Sovereign đứng ở cuối hàng để thấy từng người cầm lên. Không ai hứa nói với họ điều gì.',
@@ -313,7 +313,7 @@ const FINGER_HOOKS = {
       '[Kẻ thất hứa đã có đồng bọn] Một kẻ thất hứa đã bỏ trốn lâu năm và gom được một nhóm đi theo. Họ trú trên một dãy mái nhà liền nhau và không nghĩ ai dám đến.',
       '[An oathbreaker with followers] An oathbreaker who ran long ago has gathered a band to follow them. They shelter on a row of joined rooftops and think no one would dare come.'],
     ['sworn_guard', 'guard', 'đường qua nghĩa địa', 'the road through the cemetery', 'nhóm đòi lời thề', 'those demanding the oath',
-      '[Đưa một Sworn Blade đi trả thề] Một Sworn Blade trẻ phải đi trả một lời thề ở nơi có người đang chờ để chặn. Họ không xin giúp, nhưng cả Pinky đều muốn bạn đi theo.',
+      '[Đưa Sworn Blade đi trả thề] Sworn Blade trẻ phải đi trả lời thề ở nơi có kẻ đang rình chặn. Họ không xin giúp, nhưng cả Pinky đều muốn bạn đi theo.',
       '[Seeing a Sworn Blade to the oath] A young Sworn Blade must go to pay an oath at a place where people wait to stop them. They do not ask for help, but the whole Pinky wishes you to go along.']
   ]
 };

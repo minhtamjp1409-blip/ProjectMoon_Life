@@ -1,10 +1,20 @@
 import assert from 'node:assert/strict';
-import { createNewCharacter, ALL_STORY_EVENTS, resolveEventChoice } from '../src/engine/gameEngine.js';
+import { createNewCharacter, rollBirthFamily, ALL_STORY_EVENTS, resolveEventChoice } from '../src/engine/gameEngine.js';
 import { LINEAGE_LEGACY_EVENTS } from '../src/data/eventsLineageLegacy.js';
 import { matchesEventContext } from '../src/engine/eventConditions.js';
 import { audioEngine } from '../src/engine/audioEngine.js';
 
 console.log('--- Testing Generational Lineage & Legacy Narrative System ---');
+
+const livingParent = { successorRelation: 'child', age: 42 };
+const fallenDistrict = { id: 'L', tags: ['fallen_wing'] };
+const ordinaryDistrict = { id: 'G', tags: [] };
+for (const district of [fallenDistrict, ordinaryDistrict]) {
+  for (const preference of ['RANDOM', 'orphan', 'dieci_orphan']) {
+    const family = rollBirthFamily(district, () => 0, livingParent, preference);
+    assert.ok(!['orphan', 'dieci_orphan'].includes(family.id), 'A biological child with a living parent cannot be introduced as an orphan');
+  }
+}
 
 // 1. Structure & Registration
 assert.ok(LINEAGE_LEGACY_EVENTS.length >= 7, 'Expected at least 7 adult lineage legacy events');

@@ -78,7 +78,7 @@ export const LIFE_MINORS = [
     'm_k_coin',
     KID,
     {},
-    '[Đồng Ahn dưới gầm ghế] Bạn nhặt được một đồng Ahn dưới ghế ở khu chợ. Người bán bánh mì đang dọn hàng.',
+    '[Đồng Ahn dưới gầm ghế] Bạn nhặt được đồng Ahn dưới gầm ghế ngoài chợ. Người bán bánh mì đang dọn hàng.',
     '[An Ahn under the bench] You find an Ahn coin under a market bench. The bread seller is packing up.',
     [
       C(
@@ -139,7 +139,7 @@ export const LIFE_MINORS = [
     'm_c_shoplift',
     CHILD,
     { notNest: true, npc: 'friend' },
-    '[Vụ trộm ở tiệm tạp hóa] {friend} rủ rê bạn cùng lẻn vào đánh cắp mấy hộp đồ ăn trong tiệm tạp hóa nhỏ của một ông lão mù lòa neo đơn.',
+    '[Vụ trộm ở tiệm tạp hóa] {friend} rủ rê bạn cùng lẻn vào đánh cắp mấy hộp đồ ăn trong tiệm tạp hóa nhỏ của ông lão mù sống neo đơn.',
     '[Shoplifting the Blind Grocer] {friend} urged you to help steal canned goods from the modest corner pantry run by a blind elder.',
     [
       C(
@@ -434,7 +434,7 @@ export const LIFE_MINORS = [
     'm_t_rival',
     TEEN,
     { noNpc: 'rival' },
-    '[Kẻ đối đầu trong khu] Một đứa trẻ bằng tuổi trong khu phố luôn tìm mọi cách để hơn thua và chèn ép bạn: từ điểm số học nghề, chỗ làm thêm cho đến người mà bạn thầm thương trộm nhớ.',
+    '[Kẻ đối đầu trong khu] Đứa bạn cùng tuổi trong xóm lúc nào cũng tìm cách hơn thua, chèn ép bạn: từ điểm học nghề, chỗ làm thêm cho tới người bạn thầm thương trộm nhớ.',
     '[The Block Contender] A peer on your street constantly sought to outdo you in everything: vocational drills, odd jobs, and even the eyes of the person you fancied.',
     [
       C(
@@ -473,7 +473,7 @@ export const LIFE_MINORS = [
     'm_t_crush',
     TEEN,
     { noNpc: 'lover' },
-    '[Chiếc ghế cạnh cửa sổ tiệm giặt] Có một người trạc tuổi làm việc ở xưởng giặt là đầu phố luôn chu đáo chừa sẵn cho bạn một chỗ ngồi bên cạnh khung cửa sổ thoáng đãng mỗi khi bạn ghé qua.',
+    '[Chiếc ghế cạnh cửa sổ tiệm giặt] Người trạc tuổi bạn làm ở xưởng giặt là đầu phố lần nào cũng chu đáo chừa sẵn cho bạn chỗ ngồi cạnh khung cửa sổ thoáng mát.',
     '[The Window Seat at the Laundry] Someone working the steaming machines at the corner laundry always reserved the airy window seat specifically for you.',
     [
       C(
@@ -642,7 +642,7 @@ export const LIFE_MINORS = [
     'm_a_ampoule_deal',
     GROWN,
     {},
-    '[Huyết thanh K Corp giá rẻ] Một gã bán rong ở chợ đen chào mời bạn mua những ống tiêm huyết thanh "chuẩn K Corp" với mức giá chỉ bằng một phần ba giá niêm yết chính thống.',
+    '[Huyết thanh K Corp giá rẻ] Gã bán rong ngoài chợ đen chào bạn mua ống tiêm huyết thanh "chuẩn K Corp", giá chỉ bằng một phần ba giá chính hãng.',
     '[Black-Market HP Ampoules] A hawker offered vials branded as “authentic K Corp restorative serum” at a third of certified clinic rates.',
     [
       C(
@@ -956,7 +956,7 @@ export const LIFE_MINORS = [
         {
           out: [
             O(55, 'Đúng một năm sau {friend} mang trả đủ số tiền kèm theo chiếc đồng hồ quả quýt kỷ vật của cha: "Mày đã cứu vớt mạng sống của tao."', 'A year later, {friend} repaid the debt alongside their father’s heirloom watch: “You pulled me back from the grave.”', { wealth: 6, sanity: 4 }, { bond: { friend: 20 } }),
-            O(45, '{friend} không bao giờ trả nợ và hoàn toàn bặt vô âm tín. Một người thợ săn Fixer bảo đã từng nhìn thấy bạn mình dạt sang District 12.', '{friend} never repaid the loan and vanished completely. Rumors circulated that they drifted into District 12.', { sanity: -3 }, { npcFate: { friend: 'missing' } })
+            O(45, '{friend} không bao giờ trả nợ và hoàn toàn bặt vô âm tín. Có tay Fixer săn tiền thưởng bảo từng thấy bạn mình trôi dạt sang District 12.', '{friend} never repaid the loan and vanished completely. Rumors circulated that they drifted into District 12.', { sanity: -3 }, { npcFate: { friend: 'missing' } })
           ],
           motif: { loyalty: 1 }
         }
@@ -997,7 +997,7 @@ export const LIFE_MINORS = [
         {},
         {
           out: [
-            O(40, 'Bạn tìm thấy {friend} trong một nhà kho hoang ở District 12, đang nói chuyện với một bóng đen vô diện. Nhìn thấy bạn, bạn mình òa khóc nức nở; hai người cùng nhau trốn khỏi The City suốt một tháng.', 'You located {friend} in a derelict District 12 warehouse, communing with a faceless shadow. Recognizing you, they wept; you fled the City together for a month.', { sanity: -6, wealth: -6 }, { bond: { friend: 25 }, motif: { loyalty: 1 } }),
+            O(40, 'Bạn tìm thấy {friend} trong nhà kho hoang ở District 12, đang thì thầm với cái bóng đen không mặt. Nhìn thấy bạn, bạn mình òa khóc nức nở; hai người cùng nhau trốn khỏi The City suốt một tháng.', 'You located {friend} in a derelict District 12 warehouse, communing with a faceless shadow. Recognizing you, they wept; you fled the City together for a month.', { sanity: -6, wealth: -6 }, { bond: { friend: 25 }, motif: { loyalty: 1 } }),
             O(60, 'Bạn đến chậm mất một ngày. Đội thanh trừng của Hana đã quét sạch nhà kho; thứ duy nhất còn sót lại là chiếc khăn quàng cổ rách nát mà {friend} đã đeo từ thuở mười tuổi.', 'You arrived one day too late. Hana enforcers sanitized the sector; only the tattered scarf your friend wore since age ten remained upon the tiles.', { sanity: -16 }, { npcFate: { friend: 'dead' }, scar: 'Chiếc khăn quàng của {friend}' })
           ]
         }
@@ -1019,7 +1019,7 @@ export const LIFE_MINORS = [
     'm_a_mentor_meet',
     [16, 40],
     { noNpc: 'mentor' },
-    '[Vị Fixer một tay trong quán rượu] Một Fixer lão thành cụt tay ngồi ở quầy bar quan sát bạn hạ gục hai gã say rượu. Ông cất giọng khàn đục: "Mày ra đòn như một con chó dại. Muốn học kiếm pháp thực thụ không?"',
+    '[Vị Fixer một tay trong quán rượu] Lão Fixer cụt tay ngồi bên quầy bar nhìn bạn hạ gục hai gã say. Ông cất giọng khàn đục: "Mày ra đòn như một con chó dại. Muốn học kiếm pháp thực thụ không?"',
     '[The One-Armed Veteran Fixer] A one-armed veteran Fixer at the tavern counter watched you brawl with two drunks. He rasped: “You strike like a rabid street cur. Want to learn real steel?”',
     [
       C(
@@ -1112,7 +1112,7 @@ export const LIFE_MINORS = [
     'm_sheltered_return',
     [20, 80],
     { mem: 'sheltered_stranger' },
-    '[Sự đền ơn của người được cứu] Cô gái trẻ mà bạn từng mở cửa cứu sống trong đêm 3:13 kinh hoàng năm xưa giờ đây đã trở thành thư ký quyền lực của một Hiệp hội Fixer. Cô tìm đến tận nhà để tri ân ân nhân.',
+    '[Sự đền ơn của người được cứu] Cô gái trẻ mà bạn từng mở cửa cứu sống trong đêm 3:13 kinh hoàng năm xưa giờ đã thành thư ký quyền thế trong một Association. Cô tìm đến tận nhà để tri ân ân nhân.',
     '[The Sheltered Stranger’s Gratitude] The young woman you harbored that horrific 3:13 night had ascended as a senior registrar at an Association. She arrived at your doorstep in gratitude.',
     [
       C(
@@ -1164,7 +1164,7 @@ export const LIFE_MINORS = [
     'm_a_ring_gallery',
     [18, 60],
     { notFinger: 'Ring' },
-    '[Phòng trưng bày nghệ thuật Ring] Một kẻ lập dị lạ mặt đưa cho bạn một tấm vé mời miễn phí đến tham quan một "triển lãm nghệ thuật đương đại" do Syndicate The Ring bí mật tổ chức.',
+    '[Phòng trưng bày nghệ thuật Ring] Kẻ lập dị lạ mặt dúi cho bạn tấm vé mời miễn phí tới xem "triển lãm nghệ thuật đương đại" do Syndicate The Ring tổ chức lén lút.',
     '[The Ring’s Exhibition Gallery] An eccentric stranger slipped you a complimentary pass to a private “artistic salon” hosted by the Ring syndicate.',
     [
       C(
@@ -1321,7 +1321,7 @@ export const LIFE_MINORS = [
     'm_syn_order',
     GROWN,
     { jobs: ['Syndicate'], fingerRankAtMost: 2 },
-    '[Mệnh lệnh thanh trừng đứa trẻ] Thủ lĩnh băng đảng giao cho bạn một nhiệm vụ tàn nhẫn: "xử lý sạch sẽ" một đứa trẻ vô tình nhìn thấy mặt mũi của nhóm các bạn trong một vụ thanh trừng.',
+    '[Mệnh lệnh thanh trừng đứa trẻ] Thủ lĩnh băng đảng giao cho bạn một nhiệm vụ tàn nhẫn: "xử lý sạch sẽ" đứa trẻ lỡ nhìn thấy mặt cả nhóm trong vụ thanh trừng.',
     '[The Syndicate Execution Order] The captain handed down a grim decree: “silence” an innocent child who caught sight of your crew’s faces during a hit.',
     [
       C(
@@ -1431,7 +1431,7 @@ export const LIFE_MINORS = [
     'm_med_backstreet_clinic',
     GROWN,
     { back: true, stat: { health: [0, 71] } },
-    '[Phòng khám chui Backstreets] Vết thương chém xé và cơn sốt sau chuỗi ngày lăn lộn khiến bước chân bạn nặng trĩu. Trước mặt bạn là ánh đèn neon nhấp nháy của một phòng khám ngầm do một cựu y sĩ Nest đào thoát mở.',
+    '[Phòng khám chui Backstreets] Vết thương chém xé và cơn sốt sau chuỗi ngày lăn lộn khiến bước chân bạn nặng trĩu. Trước mặt bạn là ánh neon chập chờn của phòng khám ngầm do tay y sĩ Nest bỏ trốn mở ra.',
     '[Backstreet Backroom Clinic] Lacerations and infection fever weigh heavily on your steps. Ahead flickers the neon sign of an illicit subterranean clinic run by an exiled Nest surgeon.',
     [
       C(
@@ -1488,7 +1488,7 @@ export const LIFE_MINORS = [
       C(
         'Kích hoạt buồng sinh học hồi phục tiêu chuẩn (-8 Ahn)',
         'Activate standard biostasis rejuvenation chamber (-8 Ahn)',
-        'Buồng điều trị xử lý phần mô rách và cho bạn một đêm ngủ không bị đánh thức bởi báo động.',
+        'Buồng điều trị khâu lại chỗ mô rách, cho bạn một đêm ngủ không bị còi báo động đánh thức.',
         'The chamber treated torn tissue and gave you a night without alarms.',
         { health: 19, sanity: 4, wealth: -8 },
         { costAhn: 8 }
@@ -1545,7 +1545,7 @@ export const LIFE_MINORS = [
     'm_med_blackstreet_doctor_organ',
     GROWN,
     { back: true, stat: { health: [0, 64] } },
-    '[Chợ Đen Y Tế · Phẫu Thuật Thay Tạng] Phổi và nội tạng của bạn bị tổn thương nặng nề bởi khói độc Backstreets và những trận giao tranh đẫm máu. Một bác sĩ ngầm đề xuất can thiệp phẫu thuật để cứu vãn tuổi thọ.',
+    '[Chợ Đen Y Tế · Phẫu Thuật Thay Tạng] Khói độc Backstreets và những trận giao tranh đẫm máu đã tàn phá phổi cùng nội tạng của bạn. Tay bác sĩ chui gợi ý mổ để níu kéo tuổi thọ.',
     '[Black Market Clinic · Organ Reconstruction] Acidic smog and deep kinetic trauma take a heavy toll on your lungs and viscera. An underground surgeon offers surgical intervention.',
     [
       C(

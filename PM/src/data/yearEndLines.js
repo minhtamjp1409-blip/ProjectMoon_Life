@@ -12,7 +12,7 @@ export const YEAR_END_LINES = {
     baby: [
       ['Cả năm bạn ốm vặt mấy lần, lần nào cũng tự khỏi.', 'You fell ill a few times this year and got over it each time.'],
       ['Bạn ăn được nhiều hơn và ngủ say hơn. Người lớn bảo bạn đã cứng cáp.', 'You ate more and slept deeper. The adults said you were getting sturdy.'],
-      ['Mẹ bạn thức nhiều đêm bên bạn. Đến cuối năm, bạn không còn hay khóc giữa đêm nữa.', 'Your mother sat up with you many nights. By year’s end you no longer woke crying.']
+      ['Bạn qua mấy cơn sốt ngắn. Đến cuối năm, bạn ngủ yên hơn.', 'You got through several brief fevers. By year’s end you slept more soundly.']
     ],
     kid: [
       ['Những vết trầy ở đầu gối lành dần, chỉ còn vệt sẹo nhạt.', 'The scrapes on your knees healed, leaving only faint marks.'],
@@ -27,16 +27,24 @@ export const YEAR_END_LINES = {
   },
   heal_distortion_tissue: {
     adult: [
-      ['Các thớ thịt dị thường tự co bóp và đan kết lại dưới tần số cộng hưởng của Vực thẳm.', 'Anomalous tissues pulsate and knit together under abyssal resonance frequencies.'],
-      ['Vết thương thịt nát xương tan tự bù đắp bằng các tế bào biến dị sau những đêm vắng lặng.', 'Flesh and bone wounds knit together with anomalous cellular growth beneath the quiet dark.'],
-      ['Tần số của Carmen nâng đỡ bản ngã dị dạng của bạn, bù đắp mọi thương tổn thể xác.', 'Carmen’s frequency cradles your deformed self, repairing physical wounds without human clinics.']
+      ['Mép vết thương kéo lại khi bạn ngủ. Sáng ra, trên da chỉ còn đường chỉ gồ ghề.', 'The wound edges draw together while you sleep. By morning, a raised seam remains.'],
+      ['Phần cơ thể bị thương tự liền lại. Bạn vẫn nhớ rõ chỗ đã đau.', 'The injured part of your body knits itself back together. You still remember where it hurt.'],
+      ['Bạn không đến phòng khám. Vết thương tự khép lại, chậm hơn lần trước.', 'You do not visit a clinic. The wound closes on its own, more slowly than last time.']
     ]
   },
   heal_nest: {
+    baby: [
+      ['Người của phòng khám Nest đến kiểm tra và để lại thuốc theo liều trẻ nhỏ.', 'A Nest clinic worker checks on you and leaves medicine measured for an infant.'],
+      ['Bạn được đưa đi khám trước khi cơn sốt nặng thêm.', 'You are taken to the clinic before the fever worsens.']
+    ],
+    kid: [
+      ['Phòng khám Nest xử lý vết thương và hẹn bạn đến kiểm tra lại.', 'The Nest clinic treats your injury and schedules a follow-up.'],
+      ['Bác sĩ ghi triệu chứng vào hồ sơ rồi cho bạn về nghỉ.', 'The doctor records your symptoms and sends you home to rest.']
+    ],
     adult: [
-      ['Bác sĩ của Nest khám định kỳ và kê đủ thuốc.', 'The Nest doctor came for check-ups and prescribed what you needed.'],
-      ['Bảo hiểm của Nest trả tiền chữa trị. Không ai phải hỏi giá.', 'Nest insurance paid for the treatment. No one had to ask the price.'],
-      ['Phòng khám trong Nest sạch đến mức có mùi kim loại. Bạn lành bệnh nhanh.', 'The Nest clinic was so clean it smelled of metal. You recovered quickly.']
+      ['Bạn tới phòng khám Nest, nhận thuốc và lịch tái khám.', 'You visit a Nest clinic and leave with medicine and a follow-up date.'],
+      ['Bác sĩ xử lý vết thương, rồi ghi chi phí vào hồ sơ cư trú.', 'The doctor treats your wound and adds the cost to your residency record.'],
+      ['Bạn được điều trị trước khi vết thương nhiễm trùng.', 'You receive treatment before the wound becomes infected.']
     ]
   },
   heal_clinic: {
@@ -53,9 +61,13 @@ export const YEAR_END_LINES = {
     ]
   },
   calm_bond: {
+    baby: [
+      ['Có người ở lại bên nôi khi bạn thức giấc. Bạn ngủ lại trước khi trời sáng.', 'Someone stays beside your cot when you wake. You fall asleep again before dawn.'],
+      ['Một bàn tay quen vỗ nhẹ lưng bạn qua cơn khóc đêm.', 'A familiar hand pats your back until the night crying passes.']
+    ],
     kid: [
       ['Có người ngồi nghe bạn kể chuyện mỗi tối. Ác mộng thưa dần.', 'Someone listened to your stories every evening. The nightmares thinned out.'],
-      ['Bạn ngủ cạnh người thân mỗi khi sợ. Đến cuối năm bạn bớt giật mình hơn.', 'You slept beside family whenever you were scared. By year’s end you startled less.']
+      ['Bạn kể chuyện mình sợ cho người bạn tin. Đến cuối năm, bạn bớt giật mình hơn.', 'You told someone you trusted what frightened you. By year’s end, you startled less.']
     ],
     adult: [
       ['Có người ở bên giúp bạn trụ vững.', 'Someone at your side kept you steady.'],
@@ -87,6 +99,10 @@ export const YEAR_END_LINES = {
     ]
   },
   drift_resonance: {
+    baby: [
+      ['Bạn bớt thức giấc giữa đêm. Những lần người trông bạn phải bật đèn cũng thưa dần.', 'You wake less often at night. Your caretaker needs the light less often, too.'],
+      ['Người trông bạn thôi phải ngồi bên nôi đến sáng.', 'Your caretaker no longer has to sit beside the cot until dawn.']
+    ],
     kid: [
       ['Những giấc mơ lạ thưa dần.', 'The strange dreams came less often.'],
       ['Bạn không còn hay giật mình nhìn vào góc phòng tối nữa.', 'You stopped startling at the dark corner of the room.'],
@@ -99,6 +115,14 @@ export const YEAR_END_LINES = {
     ]
   },
   drift_network: {
+    baby: [
+      ['Người từng ghé thăm sau ngày bạn sinh không còn đến đều. Tên họ vẫn nằm trong sổ liên lạc.', 'The visitors who came after your birth stop coming regularly. Their names remain in the contact book.'],
+      ['Vài người quen của gia đình chuyển đi. Số lần có khách tới thưa dần.', 'A few family contacts move away. Visitors become less frequent.']
+    ],
+    kid: [
+      ['Bạn ít gặp lại những người từng giúp mình. Có người đã chuyển sang khu khác.', 'You see the people who once helped you less often. Some have moved to another block.'],
+      ['Một địa chỉ trong cuốn sổ liên lạc không còn ai ở.', 'One address in the contact book no longer has anyone living there.']
+    ],
     adult: [
       ['Những người quen lâu không gặp bớt sẵn lòng giúp bạn.', 'Contacts you had not seen in a while were less willing to help.'],
       ['Vài người quen chuyển đi, vài người không còn nhớ tên bạn.', 'A few acquaintances moved away; a few no longer remembered your name.']
@@ -111,6 +135,14 @@ export const YEAR_END_LINES = {
     ]
   },
   drift_rep: {
+    baby: [
+      ['Những người từng hỏi thăm nhà bạn sau ngày sinh giờ không còn nhắc tới chuyện đó.', 'The people who asked after your family at your birth no longer mention it.'],
+      ['Tin về đứa trẻ mới sinh nhường chỗ cho chuyện của tuần này.', 'News of a newborn gives way to this week’s other stories.']
+    ],
+    kid: [
+      ['Chuyện bạn làm năm trước dần bị thay bằng chuyện của bọn trẻ khác.', 'What you did last year gives way to stories about other children.'],
+      ['Người ở khu nhà ít nhắc tới tên bạn hơn.', 'People in the building mention your name less often.']
+    ],
     adult: [
       ['Thành tích cũ dần chìm dưới những cái tên mới.', 'New names pushed your old accomplishments out of notice.'],
       ['Người ta nhắc đến bạn ít hơn năm ngoái.', 'People mentioned you less than last year.']
@@ -138,16 +170,31 @@ export const YEAR_END_LINES = {
     ]
   },
   child_friction: {
+    baby: [
+      ['Tiền dành cho bạn được dùng mua thức ăn và chỗ ngủ qua mùa lạnh.', 'Money set aside for you went on food and a place to sleep through the cold season.'],
+      ['Một khoản Ahn nhỏ đổi lấy sữa và nước sạch. Số còn lại được cất đi.', 'A small sum of Ahn bought milk and clean water. What remained was put away.']
+    ],
+    kid: [
+      ['Bạn dùng tiền dành dụm để có thêm bữa ăn trong tuần.', 'You spent your savings on a few more meals that week.'],
+      ['Tiền cất trong túi áo vơi đi sau một đợt rét và vài ngày thiếu thức ăn.', 'The money in your coat thinned during a cold spell and several hungry days.']
+    ],
     adult: [
-      ['Cả nhà phải dè sẻn từng đồng Ahn cho bữa cháo loãng và khoản tiền nộp cho lũ côn đồ đầu ngõ.', 'The family pinched every Ahn for thin porridge and the tribute demanded by alley thugs.'],
-      ['Cha mẹ vét sạch số Ahn bạn dành dụm để đổi lấy ít than sưởi mùa đông.', 'Your parents spent your saved Ahn on charcoal to endure the winter.'],
-      ['Người lớn mượn sạch số Ahn bạn chắt chiu kèm lời hứa sẽ trả, dù ai cũng biết ngày đó không bao giờ đến.', 'The adults borrowed all your saved Ahn promising to repay it, though both knew that day would never come.']
+      ['Bạn bớt tiền dành dụm để trả chỗ ngủ và bữa ăn tháng này.', 'You took from your savings to cover this month’s bed and meals.'],
+      ['Khoản Ahn bạn giữ lại được dùng mua than sưởi và đồ ăn.', 'The Ahn you had kept aside went on fuel and food.']
     ]
   },
   nest_tuition: {
+    baby: [
+      ['Phí giữ chỗ trong Nest được trừ khỏi khoản tiền dành cho bạn.', 'The Nest residency fee came out of the money set aside for you.'],
+      ['Hóa đơn chăm sóc trẻ và phí cư trú đến cùng một ngày.', 'The childcare bill and residency fee arrived on the same day.']
+    ],
+    kid: [
+      ['Học phí và phí giữ thẻ cư dân Nest lấy bớt tiền dành dụm.', 'School fees and the cost of keeping a Nest pass took from your savings.'],
+      ['Một lớp học mới bắt đầu; số Ahn cất trong nhà vơi đi.', 'A new class began, and the Ahn kept at home dwindled.']
+    ],
     adult: [
-      ['Học phí trường tư và phí giữ hạn ngạch cư dân Nest ngốn một phần tiền nhà.', 'Private tutoring and the Nest residency quota fee ate into the household money.'],
-      ['Gia đình đóng thêm một khóa học nữa để bạn không tụt lại sau lũ con nhà bên.', 'The family paid for one more course so you wouldn’t fall behind the neighbors’ children.']
+      ['Học phí và phí cư trú Nest đến hạn cùng tháng.', 'Tuition and Nest residency fees came due in the same month.'],
+      ['Bạn trả tiền cho một khóa học nữa để giữ chỗ trong chương trình.', 'You paid for another course to keep your place in the program.']
     ]
   },
   job_wear: {
@@ -158,6 +205,10 @@ export const YEAR_END_LINES = {
     ]
   },
   smog: {
+    kid: [
+      ['Khói từ xưởng gần nhà khiến bạn ho suốt đường về.', 'Smoke from a nearby workshop makes you cough on the way home.'],
+      ['Bạn phải đứng chờ ngoài cửa cho bớt khói mới vào phòng.', 'You wait outside for the smoke to thin before going indoors.']
+    ],
     adult: [
       ['Khói bụi của khu này ngấm vào phổi, để lại những cơn ho khan.', 'The district’s smog settled in your lungs, leaving a dry cough.'],
       ['Mùa này khói nhà máy dày đến mức ban trưa cũng phải bật đèn.', 'Factory smoke was so thick this season the lights stayed on at noon.']
