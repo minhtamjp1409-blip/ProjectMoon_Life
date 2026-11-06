@@ -135,7 +135,7 @@ export const ASSOCIATIONS = {
     specVi: 'kiểm định vũ khí Workshop và thu thuế', specEn: 'Workshop gear review and tax collection',
     fit: (c) => stat(c, 'wealth') >= 38 || Boolean(c.craftWeapon) || (c.inventory || []).some((i) => String(i.id || '').startsWith('wpn_')),
     promoIds: ['fixer_promo_g7_tres'],
-    inviteVi: 'Tres Association đặt lên bàn bạn một cuốn sổ đăng ký, một cây thước đo và một bản hợp đồng dài ba trang. Người đưa nói công việc ở đây chủ yếu là đọc số hiệu.',
+    inviteVi: 'Tres Association đặt lên bàn bạn cuốn sổ đăng ký, cây thước đo và bản hợp đồng dài ba trang. Người đưa nói công việc ở đây chủ yếu là đọc số hiệu.',
     inviteEn: 'Tres Association sets a register, a measuring rod and a three-page contract on your table. The one who brought them says the work here is mostly reading serial numbers.',
     expelVi: 'Tres thu hồi giấy phép kiểm định của bạn và gạch tên khỏi sổ đăng ký, từng dòng một. Một cán bộ nói rằng họ không cần người làm sai số hiệu nhiều lần. Họ nói thật nhẹ nhàng.',
     expelEn: 'Tres revokes your inspection license and strikes your name from the register, line by line. An officer says they do not need someone who gets serial numbers wrong repeatedly. They say it very gently.',

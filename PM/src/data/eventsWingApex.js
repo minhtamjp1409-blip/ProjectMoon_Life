@@ -35,7 +35,7 @@ export const WING_APEX_EVENTS = [
         resultEn: 'The three markets close at month’s end. You do not walk past them again, and that is the only way you know what you did.' },
       { labelVi: 'Giữ lại một khu chợ và nhận hậu quả về hồ sơ', labelEn: 'Keep one market open and take the consequences on your record',
         effects: { standing: -6, rep: 8, sanity: 3, network: 6 }, meritAdd: 8,
-        resultVi: 'Một khu chợ mở thêm một năm, và người bán hàng ở đó gọi bạn bằng một cái tên mà bạn chưa bao giờ đặt cho mình. Hội đồng ghi một dấu nhỏ vào tên bạn.',
+        resultVi: 'Một khu chợ mở thêm một năm, và dân buôn ở đó gọi bạn bằng cái tên bạn chưa bao giờ tự đặt. Hội đồng đánh thêm dấu nhỏ cạnh tên bạn.',
         resultEn: 'One market stays open another year, and the sellers there call you by a name you never gave yourself. The Council enters a small mark against your own.' },
       { labelVi: 'Dùng bí mật bạn nắm để Hội đồng tự rút lệnh', labelEn: 'Use what you hold to make the Council withdraw the decree',
         need: { stat: { leverage: [40, 100] } },
@@ -72,7 +72,7 @@ export const WING_APEX_EVENTS = [
         resultEn: 'The result is a figure you are not allowed to see. The measurer nods for a very long time, and you cannot tell whether it is good news or only a habit.' },
       { labelVi: 'Cử người kế nhiệm đi thay', labelEn: 'Send your successor in your place',
         effects: { standing: -3, sanity: 2, network: 4 },
-        resultVi: 'Họ đi, và trở lại với một vẻ mặt mà bạn nhận ra, vì bạn đã từng mang nó. Hội đồng ghi nhận rằng bạn không đi, và không nói gì thêm.',
+        resultVi: 'Họ đi, rồi trở về với vẻ mặt bạn nhận ra ngay, vì chính bạn từng mang nó. Hội đồng ghi nhận rằng bạn không đi, và không nói gì thêm.',
         resultEn: 'They go, and come back with an expression you recognize, having worn it yourself. The Council notes that you did not attend, and says nothing more.' }
     ]
   },
@@ -80,7 +80,7 @@ export const WING_APEX_EVENTS = [
   {
     id: 'wing_apex_council_seat', age: [80, 125], major: true, weight: 8, ...wing3,
     requires: ['ApexLongevity'], forbids: ['Distorted'],
-    vi: '[Chiếc ghế không có biển tên] Hội đồng mời bạn ngồi vào một chiếc ghế ở cuối bàn dài. Không có biển tên, không có hạn nhiệm kỳ, và tấm thảm dưới chân ghế đã lõm theo hình hai bàn chân từ rất lâu trước khi có bạn. Họ không hỏi bạn có muốn không.',
+    vi: '[Chiếc ghế không có biển tên] Hội đồng mời bạn ngồi vào chiếc ghế cuối bàn dài. Không có biển tên, không có hạn nhiệm kỳ, và tấm thảm dưới chân ghế đã lõm theo hình hai bàn chân từ rất lâu trước khi có bạn. Họ không hỏi bạn có muốn không.',
     en: '[The Chair With No Nameplate] The Council invites you to take a chair at the end of the long table. No nameplate, no term limit, and the carpet beneath it is worn in the shape of two feet from long before you. They do not ask if you want it.',
     choices: [
       { labelVi: 'Ngồi xuống chiếc ghế', labelEn: 'Take the chair',
@@ -119,7 +119,7 @@ export const WING_APEX_EVENTS = [
     en: '[The Side Gate at Dusk] You stand at the Nest’s side gate on a fine afternoon, the kind of light those who work inside seldom see. In your coat pocket is a small box, just enough for someone on foot. The guard does not look at you, and that is the invitation.',
     choices: [
       { labelVi: 'Bước qua cổng với chiếc hộp', labelEn: 'Step through the gate with the box',
-        ...endsLife('walked_out', 'Cánh cổng đóng sau lưng bạn mà không có tiếng động. Bạn đi bộ qua ba khu phố, thuê một căn phòng ở Backstreets dưới tên mới, và nấu ăn cho chính mình lần đầu tiên sau nhiều thập kỷ.',
+        ...endsLife('walked_out', 'Cánh cổng đóng sau lưng bạn mà không có tiếng động. Bạn đi bộ qua ba khu phố, thuê căn phòng ở Backstreets dưới tên mới, và nấu ăn cho chính mình lần đầu tiên sau nhiều thập kỷ.',
           'The gate closes behind you without a sound. You walk through three neighborhoods, rent a room in the Backstreets under a new name, and cook for yourself for the first time in decades.', { sanity: 8, standing: -12, wealth: -20 }),
         deathCauseVi: 'Rời Nest bằng cổng phụ và biến mất khỏi hồ sơ', deathCauseEn: 'Left the Nest by the side gate and vanished from the record' },
       { labelVi: 'Quay lại tòa nhà và để chiếc hộp trong túi', labelEn: 'Go back into the building and keep the box in your pocket',

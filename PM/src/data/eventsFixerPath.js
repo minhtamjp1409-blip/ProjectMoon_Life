@@ -318,7 +318,7 @@ export const FIXER_PATH_EVENTS = [
     weight: 55,
     need: { jobs: ['Fixer'], grade: [2, 2] },
     forbids: ['Distorted', 'promo_g1_done'],
-    vi: "[Khảo hạch Fixer Grade 1] Hội đồng Trung ương Hana ở District 1 triệu tập bạn. Đề bài là một bản án cấp Star of the City: một tổ chức Syndicate hoặc một cơ sở Singularity đã sụp đổ phải bị xóa sổ hoàn toàn.",
+    vi: "[Khảo hạch Fixer Grade 1] Hội đồng Trung ương Hana ở District 1 triệu tập bạn. Đề bài là bản án cấp Star of the City: xóa sổ hoàn toàn một Syndicate hoặc một cơ sở Singularity đã sụp đổ.",
     en: "[Fixer Grade 1 Evaluation] Hana’s Central Council in District 1 summons you. The assignment is a Star of the City verdict: a Syndicate or a collapsed Singularity facility must be erased entirely.",
     choices: [
       {
@@ -363,13 +363,13 @@ export const FIXER_PATH_EVENTS = [
     weight: 65,
     need: { jobs: ['Fixer'], grade: [8, 8] },
     forbids: ['Distorted', 'fixer_g8_investigation_done'],
-    vi: '[Vụ án Mất tích Khu phố Grade 8] Một dãy nhà trọ ở Backstreets bỗng nhiên trống rỗng sau một đêm mưa. Không có vết máu, nhưng trên cửa sổ dán những dải ruy băng màu xanh lam kỳ lạ. Người quản lý khu phố thuê bạn vào điều tra bên trong.',
+    vi: '[Vụ án Mất tích Khu phố Grade 8] Sau một đêm mưa, cả dãy nhà trọ ở Backstreets bỗng trống trơn. Không có vết máu, nhưng trên cửa sổ dán những dải ruy băng màu xanh lam kỳ lạ. Người quản lý khu phố thuê bạn vào điều tra bên trong.',
     en: '[Tenement Vanishing Case · Grade 8] An entire Backstreet rowhouse sat vacant overnight after rain. No gore, but strange indigo ribbons fluttered on the sills. The landlord hires you to inspect the silent corridors.',
     choices: [
       {
         labelVi: 'Dùng kinh nghiệm lần theo dấu vết bột huỳnh quang',
         labelEn: 'Track luminescent powder trails across floorboards',
-        resultVi: 'Bạn phát hiện đường hầm bí mật dẫn xuống một phòng thí nghiệm cấy ghép lậu của một Workshop vô danh. Bạn giải cứu được 4 người còn sống và giao bằng chứng cho Seven Association. Tên tuổi bạn được ngợi khen.',
+        resultVi: 'Bạn phát hiện đường hầm bí mật dẫn xuống phòng thí nghiệm cấy ghép lậu của Workshop vô danh. Bạn giải cứu được 4 người còn sống và giao bằng chứng cho Seven Association. Tên tuổi bạn được ngợi khen.',
         resultEn: 'You uncovered a hidden bulkhead leading to an illicit Workshop grafting den. Rescuing four living captives, you passed the files to Seven Association, earning acclaim.',
         meritAdd: 16,
         effects: { rep: +14, network: +12, wealth: +25 },
@@ -453,7 +453,7 @@ export const FIXER_PATH_EVENTS = [
     weight: 55,
     need: { jobs: ['Fixer'], grade: [4, 4] },
     forbids: ['Distorted', 'fixer_g4_crossroad_done'],
-    vi: '[Lệnh Ám Sát Tranh Cãi của Hiệp hội Shi] Phân hội Shi trao cho bạn một cuộn giấy đỏ: Mục tiêu là một bác sĩ phòng khám từ thiện ở Backstreets, người bị một Wing tố cáo là ăn cắp công thức thuốc chống độc để phát miễn phí cho người nghèo. Phần thưởng cực lớn.',
+    vi: '[Lệnh Ám Sát Tranh Cãi của Hiệp hội Shi] Phân hội Shi trao cho bạn một cuộn giấy đỏ: Mục tiêu là vị bác sĩ phòng khám từ thiện ở Backstreets, bị Wing tố ăn cắp công thức thuốc giải độc đem phát không cho người nghèo. Phần thưởng cực lớn.',
     en: '[Controversial Shi Execution Writ] Shi Association tenders a crimson writ: The target is a philanthropic alley medic accused by a Wing of leaking antitoxin formulas to the poor. The bounty is immense.',
     choices: [
       {
@@ -469,7 +469,7 @@ export const FIXER_PATH_EVENTS = [
       {
         labelVi: 'Cảnh báo cho bác sĩ trốn sang Outskirts, ngụy tạo một cái xác giả giao nộp',
         labelEn: 'Warn the medic to flee to the Outskirts, faking a corpse for Shi',
-        resultVi: 'Bạn dùng thi thể của một tên cướp chết trôi làm giả hiện trường và đưa vị bác sĩ vượt tường an toàn. Shi chấp nhận hồ sơ, còn lòng bạn giữ lại được một chút ánh sáng nhân tính hiếm hoi.',
+        resultVi: 'Bạn lấy xác tên cướp chết trôi dựng hiện trường giả và đưa vị bác sĩ vượt tường an toàn. Shi chấp nhận hồ sơ, còn lòng bạn giữ lại được một chút ánh sáng nhân tính hiếm hoi.',
         resultEn: 'Using a drowned bandit’s corpse, you staged the kill and guided the doctor beyond the walls. Shi closed the file; you preserved a fragile ember of humanity.',
         meritAdd: 30,
         effects: { sanity: +15, resonance: +18, network: +20, wealth: +40 },
@@ -881,7 +881,7 @@ export const FIXER_PATH_EVENTS = [
     weight: 70,
     need: { jobs: ['Fixer'], grade: [5, 5] },
     forbids: ['Distorted', 'promo_g4_done'],
-    vi: '[Chiến Dịch Đột Phá Công Sự R Corp Rhino Team · Grade 4] Biệt đội Tê Giác (Rhino Team) thuộc Đại Đội 4 của R Corp ký hợp đồng liên minh với Fixer ưu tú để san phẳng công sự kiên cố của một Syndicate ngón tay. Bạn bước vào hàng ngũ Fixer Grade 4 nếu sống sót hoàn thành.',
+    vi: '[Chiến Dịch Đột Phá Công Sự R Corp Rhino Team · Grade 4] Biệt đội Tê Giác (Rhino Team) thuộc Đại Đội 4 của R Corp ký hợp đồng liên minh với Fixer ưu tú để san phẳng công sự kiên cố của nhánh Syndicate thuộc Fingers. Bạn bước vào hàng ngũ Fixer Grade 4 nếu sống sót hoàn thành.',
     en: '[R Corp Rhino Team Fortification Assault · Grade 4] R Corp 4th Pack Rhino Team contracts an elite Fixer to breach an underground syndicate fortress. Surviving guarantees Grade 4 status.',
     choices: [
       {
@@ -1018,7 +1018,7 @@ export const FIXER_PATH_EVENTS = [
       {
         labelVi: 'Khai thác tài liệu tình báo thu giữ được từ hiện trường giao cho Hana',
         labelEn: 'Extract classified dossiers from the ruined vault for Hana Grand Council',
-        resultVi: 'Tập hồ sơ mật bạn giao nộp hé lộ âm mưu nguy hiểm của một tập đoàn ngầm. Đóng góp to lớn này đưa bạn thẳng lên hàng ngũ Fixer Grade 2 tối cao.',
+        resultVi: 'Tập hồ sơ mật bạn giao nộp hé lộ âm mưu nguy hiểm của tập đoàn ngầm nọ. Đóng góp to lớn này đưa bạn thẳng lên hàng ngũ Fixer Grade 2 tối cao.',
         resultEn: 'Your intelligence dossier exposed a vast conspiracy. This colossal contribution propelled you directly into Grade 2 Fixer ranks.',
         setFixerGrade: 2,
         flagsAdd: ['promo_g2_done'],
@@ -1192,7 +1192,7 @@ export const FIXER_PATH_EVENTS = [
     weight: 46,
     need: { jobs: ['Fixer'] },
     forbids: ['Distorted'],
-    vi: '[Hiệp Hội Oufi · Hòa Giải Khế Ước Máu Backstreets] Hiệp hội Oufi, tổ chức chuyên giám sát hợp đồng và công chứng các hiệp ước sinh tử tại District 19, cử bạn đi thẩm định một bản khế ước giữa một xưởng rèn lớn và một băng đảng Syndicate. Bất kỳ bên nào vi phạm sẽ phải trả giá bằng cả mạng sống.',
+    vi: '[Hiệp Hội Oufi · Hòa Giải Khế Ước Máu Backstreets] Hiệp hội Oufi, tổ chức chuyên giám sát hợp đồng và công chứng các hiệp ước sinh tử tại District 19, cử bạn đi thẩm định khế ước giữa xưởng rèn lớn và băng Syndicate. Bất kỳ bên nào vi phạm sẽ phải trả giá bằng cả mạng sống.',
     en: '[Oufi Association · Backstreet Blood Oath Inquest] The Oufi Association, custodians of binding treaties and lethal contracts in District 19, dispatches you to verify a pact between a major workshop and a syndicate family. Any breach triggers absolute execution.',
     choices: [
       {
@@ -1248,7 +1248,7 @@ export const FIXER_PATH_EVENTS = [
     weight: 44,
     need: { jobs: ['Fixer'] },
     forbids: ['Distorted'],
-    vi: '[Molar Boatworks · Trục Vớt Phế Liệu Kênh Độc District 21] Xưởng tàu Molar Boatworks nhận hợp đồng nạo vét một xà lan chở hàng chìm tại kênh rạch ô nhiễm của District 21. Bùn lầy axit đặc quánh và lũ cá đột biến rình rập dưới mặt nước tối đen.',
+    vi: '[Molar Boatworks · Trục Vớt Phế Liệu Kênh Độc District 21] Xưởng tàu Molar Boatworks nhận hợp đồng trục vớt chiếc xà lan chở hàng chìm dưới kênh ô nhiễm District 21. Bùn lầy axit đặc quánh và lũ cá đột biến rình rập dưới mặt nước tối đen.',
     en: '[Molar Boatworks · Toxic Canal Salvage] Molar Boatworks takes on a salvage contract for a sunken barge in District 21’s foul industrial canal. Caustic sludge and mutant aquatic fauna lurk beneath the opaque surface.',
     choices: [
       {
@@ -1319,7 +1319,7 @@ export const FIXER_PATH_EVENTS = [
         effects: { wealth: -35, rep: +40, network: +25, sanity: +15 }
       },
       {
-        labelVi: 'Tiếp tục làm Fixer tự do cơ động, không bị ràng buộc bởi văn phòng và giấy phép',
+        labelVi: 'Tiếp tục làm Fixer tự do, không văn phòng hay giấy phép nào trói buộc',
         labelEn: 'Remain a nomadic freelance Fixer, unbound by paperwork and leasehold taxes',
         resultVi: 'Bạn giữ lại số tiền dành dụm. Tự do tung hoành giữa các quận mà không sợ bị đối thủ đánh bom trụ sở cũng là một lựa chọn sáng suốt.',
         resultEn: 'You retained your Ahn. Unfettered mobility across districts without fear of office bombings was its own tactical wisdom.',

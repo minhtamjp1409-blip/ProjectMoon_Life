@@ -48,7 +48,7 @@ export const EGO_COLOR_EVENTS = [
   {
     id: 'ego_unregistered_buyer', age: [22, 75], jobs: ['Fixer'], major: true, weight: 0, causalOnly: true,
     requires: ['EGOUnregistered'], forbids: ['Distorted', 'ego_buyer_done'],
-    vi: '[Người mua hàng hiếm] Một người đàn ông mặc áo mưa trong nhà đặt một cặp kẹp giấy lên bàn bạn: giá cho một lần quan sát vũ khí E.G.O của bạn, không đăng ký, không ghi chép. Ông nói ông không làm cho Hana. Ông cũng không nói ông làm cho ai.',
+    vi: '[Người mua hàng hiếm] Người đàn ông mặc áo mưa ngay trong nhà đặt cặp kẹp giấy lên bàn bạn: giá cho một lần quan sát vũ khí E.G.O của bạn, không đăng ký, không ghi chép. Ông nói ông không làm cho Hana. Ông cũng không nói ông làm cho ai.',
     en: '[A buyer of rare things] A man in a raincoat, indoors, sets a paper clip on your desk: the price for one look at your unregistered E.G.O, with no records. He says he does not work for Hana. He does not say who he does work for.',
     choices: [
       { labelVi: 'Cho ông ta xem', labelEn: 'Let him look',
@@ -130,7 +130,7 @@ export const EGO_COLOR_EVENTS = [
         ] },
       { labelVi: 'Gửi trả phong bì chưa mở', labelEn: 'Send the envelope back unopened',
         effects: { sanity: 4, rep: -3, heat: 6 }, flagsAdd: ['color_sealed_done'],
-        resultVi: 'Phong bì quay lại bàn của Claw bằng đường bưu điện thường. Không có hồi âm. Trong tuần đó, bạn thấy cùng một người ở ba quán khác nhau, mỗi lần đứng gần cửa sổ.',
+        resultVi: 'Phong bì quay lại bàn của Claw bằng đường bưu điện thường. Không có hồi âm. Tuần ấy, bạn gặp cùng một người ở ba quán khác nhau, lần nào cũng đứng gần cửa sổ.',
         resultEn: 'The envelope returns to the Claw by ordinary post. No reply comes. That week you see the same person in three different cafes, each time standing near a window.' }
     ]
   },

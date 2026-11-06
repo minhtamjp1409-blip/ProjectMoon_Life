@@ -17,7 +17,7 @@ export const THUMB_DEPTH = [
         'Bạn tìm được họ ở một quán rượu, đang ngồi trước một ly chưa động đến. Họ không nói vì sao. Bạn cũng không hỏi, và dắt họ về trước khi Capo kịp ghi tên.', 'You find them in a bar, sitting before an untouched glass. They do not say why. You do not ask, and walk them back before the Capo can write the name.', { network: 6, sanity: -3, rep: 2 }),
       fg('Nói thẳng chỗ bạn đoán người ấy đang ở', 'Say outright where you guess the Soldato is', [
         [55, 'Bạn đoán đúng. Capo cử người đến đón và không ai bị phạt. Ông ghi nhận rằng bạn biết đồng đội mình ở đâu.', 'You guess right. The Capo sends someone to fetch them and no one is punished. He notes that you know where your comrades are.', { rep: 6, network: 4 }],
-        [45, 'Bạn đoán sai, và chỗ bạn nói là nhà của một người không muốn bị nhắc tên. Capo cắt nhẹ phần của bạn tháng này.', 'You guess wrong, and the place you named belongs to someone who does not want to be mentioned. The Capo trims your share lightly this month.', { rep: -3, wealth: -6 }]
+        [45, 'Bạn đoán sai, và chỗ bạn chỉ lại là nhà của người không muốn bị nhắc tên. Capo cắt nhẹ phần của bạn tháng này.', 'You guess wrong, and the place you named belongs to someone who does not want to be mentioned. The Capo trims your share lightly this month.', { rep: -3, wealth: -6 }]
       ])
     ]),
 
@@ -54,7 +54,7 @@ export const THUMB_DEPTH = [
       fc('Kể đúng sự thật, kể cả phần không đẹp', 'Tell the truth, including the unflattering parts',
         'Sottocapo nghe hết và không ngắt lời. Khi bạn dừng, ông nói: "Ta thích người không biết nói dối khéo." Người của đối thủ cúi đầu rút lui.', 'The Sottocapo listens through and does not interrupt. When you stop he says: “I like those who lie badly.” The rival’s man bows and withdraws.', { rep: 6, network: 6, sanity: -3 }, { meritAdd: 4 }),
       fc('Kể một câu chuyện đẹp hơn thực tế', 'Tell a story better than the facts',
-        'Sottocapo gật đầu và rót thêm rượu. Cả hai đều biết đó là chuyện bịa. Chuyện bịa đúng lễ nghi cũng là một cách trả lời.', 'The Sottocapo nods and pours more wine. Both know it is invented. An invention told with proper form is also a way of answering.', { rep: 3, network: 4, wealth: 6 }),
+        'Sottocapo gật đầu và rót thêm rượu. Cả hai đều biết đó là chuyện bịa. Bịa cho đúng lễ nghi cũng là một kiểu trả lời.', 'The Sottocapo nods and pours more wine. Both know it is invented. An invention told with proper form is also a way of answering.', { rep: 3, network: 4, wealth: 6 }),
       fc('Từ chối điếu xì gà và nói bạn không hút', 'Decline the cigar and say you do not smoke',
         'Căn phòng im đi một nhịp. Rồi Sottocapo cười khẽ và cất điếu xì gà vào túi áo. Người của đối thủ ghi nhận rằng bạn không nhận quà ngay cả từ ông.', 'The room goes quiet a beat. Then the Sottocapo chuckles and puts the cigar in his pocket. The rival’s man notes that you do not take gifts even from him.', { rep: 4, network: -3, sanity: 3 })
     ], 8),
@@ -64,7 +64,7 @@ export const THUMB_DEPTH = [
     '[The year-end inventory] The whole crew’s armory ledger must be signed by a Sottocapo or higher. You find thirty guns recorded as melted down whose serial numbers still appear on the black market.',
     [
       fc('Ký và để vụ ấy chìm đi', 'Sign and let the matter sink',
-        'Bạn ký vào trang cuối. Tuần sau ba khẩu súng ấy xuất hiện trong một vụ ở bến. Không ai hỏi bạn đã ký gì, và đó là điều tệ nhất.', 'You sign the last page. A week later three of those guns turn up in a shooting at the dock. No one asks what you signed, and that is the worst part.', { wealth: 10, rep: -4, sanity: -8 }),
+        'Bạn ký vào trang cuối. Tuần sau, ba khẩu súng ấy xuất hiện trong vụ nổ súng ngoài bến. Không ai hỏi bạn đã ký gì, và đó là điều tệ nhất.', 'You sign the last page. A week later three of those guns turn up in a shooting at the dock. No one asks what you signed, and that is the worst part.', { wealth: 10, rep: -4, sanity: -8 }),
       fc('Đối chiếu từng số seri và báo cho Underboss', 'Cross-check each serial number and report to the Underboss',
         'Underboss đọc báo cáo của bạn suốt buổi tối. Sáng hôm sau ba người giữ kho biến mất. Ông gật đầu với bạn trên hành lang và không nói gì.', 'The Underboss reads your report through the evening. The next morning three storekeepers vanish. He nods to you in the corridor and says nothing.', { rep: 9, network: 6, sanity: -6 }, { meritAdd: 5 }),
       fg('Tự đi gặp người mua và chuộc lại những khẩu súng', 'Meet the buyers yourself and buy the guns back', [

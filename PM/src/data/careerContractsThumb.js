@@ -36,7 +36,7 @@ export const THUMB_CONTRACTS = [
 
   // ------------------------------------------------------------ tier 1: street crew
   rq('thumb_crew_ammo_debt', 1, 'Băng nhóm nợ tiền đạn', 'A crew owes for ammunition',
-    'Một băng thanh niên ở khu nhà cũ mua đạn chịu từ Thumb nửa năm nay và dùng nó vào việc không ai cho phép. Chúng cần được nhắc ai là người cho chúng cầm súng.',
+    'Đám thanh niên khu nhà cũ mua chịu đạn của Thumb suốt nửa năm nay và dùng nó vào việc không ai cho phép. Chúng cần được nhắc ai là người cho chúng cầm súng.',
     'A crew of youths in the old blocks has been buying ammunition on credit from the Thumb for half a year and spending it on things nobody approved. They need reminding who lets them hold guns.',
     'Bạn thu lại số đạn còn nguyên và tiền cho số đã bắn. Đứa đứng đầu cúi đầu suốt buổi. Đến cuối, nó hỏi bạn có cần người không.',
     'You take back the unspent rounds and the money for the spent ones. The one who leads them keeps their head down all through it. At the end they ask whether you need people.',
@@ -60,7 +60,7 @@ export const THUMB_CONTRACTS = [
     'The game behind the noodle shop welcomes players who know what they are wagering. Tonight a stranger wants in and will not check their coat.',
     'Bạn chặn người lạ ở cửa cho đến khi chủ sòng ra. Chiếc áo khoác bị lục, và trong lớp lót có hai thanh thuốc nổ nhỏ. Cả sòng im lặng một lúc lâu.',
     'You hold the stranger at the door until the owner comes out. The coat is searched, and the lining holds two small sticks of explosive. The whole room is quiet for a long moment.',
-    'Người lạ chỉ là một con nợ ở nơi khác. Bạn cản nhầm, và chủ sòng ghi khoản thiệt hại vào phần của bạn.',
+    'Người lạ chỉ là con nợ từ nơi khác tới. Bạn cản nhầm, và chủ sòng ghi khoản thiệt hại vào phần của bạn.',
     'The stranger is only a debtor from somewhere else. You stopped the wrong person, and the owner writes the loss against your share.',
     'Chiếc áo khoác không có thuốc nổ. Nó có một con dao ngắn, và người lạ biết dùng nó.',
     'The coat holds no explosive. It holds a short knife, and the stranger knows how to use it.'),
@@ -77,7 +77,7 @@ export const THUMB_CONTRACTS = [
     'The sword of the Fixer behind the door does not wait for negotiation.'),
 
   rq('thumb_stolen_ledger', 2, 'Lấy lại sổ của Capo từ một Office', 'Retrieve a Capo’s ledger from an Office',
-    'Một Capo của Thumb gửi nhờ cuốn sổ riêng ở két của một Office, rồi Office đổi chủ. Chủ mới muốn biết vì sao có tên của nửa Section 4 trong một cuốn sổ không phải của họ.',
+    'Tay Capo của Thumb gửi cuốn sổ riêng trong két của Office nọ, rồi Office đổi chủ. Chủ mới muốn biết vì sao cuốn sổ chẳng phải của mình lại ghi tên nửa Section 4.',
     'A Thumb Capo left a private ledger in an Office safe, then the Office changed hands. The new owner wants to know why half of Section 4’s names are in a book that is not theirs.',
     'Bạn đổi cuốn sổ lấy một lời hứa im lặng và một món nợ nhỏ. Capo nhận lại nó không nói một chữ, và đọc nó ngay trước mặt bạn.',
     'You trade for the ledger with a promise of silence and a small debt. Your Capo takes it back without a word and reads it right in front of you.',
@@ -129,7 +129,7 @@ export const THUMB_CONTRACTS = [
 
   // ------------------------------------------------------------ tier 4: Association grade
   rq('thumb_seven_file', 4, 'Rút một hồ sơ khỏi Seven', 'Pull a file from Seven Association',
-    'Seven Association đang điều tra cái chết của một Capo, và hồ sơ của họ có tên ba người trong Thumb. Hồ sơ nằm trong phòng lưu trữ mà không ai vào được nếu không có chữ ký.',
+    'Seven Association đang điều tra cái chết của tay Capo nọ, và hồ sơ của họ có tên ba người trong Thumb. Hồ sơ nằm trong phòng lưu trữ mà không ai vào được nếu không có chữ ký.',
     'Seven Association is investigating a Capo’s death, and its file carries three names from the Thumb. The file sits in a records room no one enters without a signature.',
     'Bạn lấy được bản gốc và đặt một bản sao vào chỗ cũ. Ba cái tên biến mất khỏi cuộc điều tra, và không ai ở Seven biết tại sao.',
     'You take the original and leave a copy in its place. Three names vanish from the investigation and no one at Seven knows why.',
@@ -139,7 +139,7 @@ export const THUMB_CONTRACTS = [
     'The records room slams shut behind you. Seven announces nothing the next day.'),
 
   rq('thumb_grade3_trail', 4, 'Chặn một Fixer Grade 3 đang lần theo sổ', 'Stop a Grade 3 Fixer working through the books',
-    'Một Fixer Grade 3 nhận Request truy dấu tiền của một Underboss. Người đó đã đi qua bốn kế toán và chưa bị cản.',
+    'Tay Fixer Grade 3 nhận Request lần theo dòng tiền của Underboss. Người đó đã đi qua bốn kế toán và chưa bị cản.',
     'A Grade 3 Fixer took a Request tracing an Underboss’s money. They have worked through four accountants and no one has stopped them.',
     'Bạn gặp họ ở một quán trà và đặt lên bàn thứ họ cần, nhưng chỉ một nửa. Họ nhìn bạn rất lâu rồi chấp nhận. Request đóng lại.',
     'You meet them at a tea house and set on the table what they need, but only half of it. They look at you for a long time and accept. The Request closes.',
@@ -180,7 +180,7 @@ export const THUMB_CONTRACTS = [
     'Hana biết lộ trình. Bạn không còn ở đó để nghe vì sao.',
     'Hana knew the route. You are not around to hear why.'),
 
-  rq('thumb_color_vault', 5, 'Thu hồi thứ nằm trong kho của một Color', 'Retrieve what sits in a Color’s vault',
+  rq('thumb_color_vault', 5, 'Thu hồi thứ nằm trong kho của Color', 'Retrieve what sits in a Color’s vault',
     'Thứ Thumb cần nằm trong một căn hầm do một Color Fixer canh. Họ không canh bằng người. Họ canh bằng việc ai cũng biết họ sống ở đó.',
     'What the Thumb needs lies in a cellar guarded by a Color Fixer. They do not guard it with people. They guard it by everyone knowing they live there.',
     'Bạn đi vào ban ngày, bằng cửa chính, với một phong thư có dấu Hana giả hoàn hảo. Cánh cửa mở. Bạn không biết đó là may hay là phép lịch sự.',

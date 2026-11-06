@@ -271,7 +271,7 @@ export const LIFE_DAILIES = [
     'i_any_blanket',
     INF,
     {},
-    '[Tấm chăn vá manh] Tấm chăn thô ráp chắp vá từ hàng chục mảnh vải bạt thừa được quấn chặt quanh người bạn khi cơn gió lạnh tràn về. Dù không gian sinh hoạt chật chội và thiếu thốn, bạn vẫn cảm nhận được cảm giác an toàn trọn vẹn trong vòng tay gia đình.',
+    '[Tấm chăn vá manh] Tấm chăn thô ráp chắp vá từ hàng chục mảnh vải bạt thừa được quấn chặt quanh người bạn khi cơn gió lạnh tràn về. Dù không gian sinh hoạt chật chội và thiếu thốn, bạn vẫn thấy mình an toàn trọn vẹn trong vòng tay gia đình.',
     '[Patchwork Quilt] A rough quilt sewn from scraps of heavy canvas swaddled you against the biting drafts. Narrow and humble as the room was, you felt sheltered from the hostile world outside.',
     { sanity: 1 }
   ),
@@ -483,7 +483,7 @@ export const LIFE_DAILIES = [
     'c_nest_school',
     CHILD,
     { nest: true },
-    '[Thứ hạng ghế ngồi Nest] Ngôi trường tiểu học cơ sở bên trong Nest phân chia chỗ ngồi trong lớp học nghiêm ngặt dựa theo cấp bậc chức vụ của phụ huynh trong tập đoàn. Bạn được phân vào hàng ghế thứ ba, luôn bị giám sát bởi các camera chấm điểm tác phong.',
+    '[Thứ hạng ghế ngồi Nest] Ngôi trường tiểu học cơ sở bên trong Nest phân chia chỗ ngồi trong lớp học nghiêm ngặt dựa theo cấp bậc chức vụ của phụ huynh trong tập đoàn. Bạn được xếp vào hàng ghế thứ ba, camera chấm điểm tác phong lúc nào cũng chĩa vào.',
     '[Nest Tiered Desks] The prestigious Nest academy strictly assigned classroom seating according to parental corporate grade within the Wing. You sat in the third row, continuously evaluated by biometric demeanor scanners.',
     { network: 2 }
   ),
@@ -491,7 +491,7 @@ export const LIFE_DAILIES = [
     'c_nest_fencing',
     CHILD,
     { nest: true },
-    '[Lớp đấu kiếm Cinq] Bạn được cho theo học lớp kiếm thuật cơ bản tại câu lạc bộ thiếu niên trực thuộc Cinq Association. Vị huấn luyện viên nhận xét rằng bạn sở hữu cổ tay cực kỳ linh hoạt và chuẩn xác, nhưng cái đầu thì lại quá nóng nảy khi giao chiến.',
+    '[Lớp đấu kiếm Cinq] Bạn được cho theo học lớp kiếm thuật cơ bản tại câu lạc bộ thiếu niên trực thuộc Cinq Association. Huấn luyện viên nhận xét bạn có cổ tay cực kỳ linh hoạt và chuẩn xác, nhưng cái đầu thì lại quá nóng nảy khi giao chiến.',
     '[Cinq Junior Fencing] You attended junior rapier drills at the Cinq Association training pavilion. The instructor noted your wrists were remarkably swift and precise, though your temper burned far too fiercely in the duel.',
     { health: 2, rep: 1 }
   ),
@@ -591,7 +591,7 @@ export const LIFE_DAILIES = [
     't_nest_party',
     TEEN,
     { nest: true },
-    '[Tiệc sinh nhật trong Nest] Ở buổi tiệc của một giám đốc Wing, người lớn nâng ly và hỏi han con cái nhau. Mỗi lời chúc đều nhắc khéo đến chức vụ, điểm số hoặc hợp đồng. Bạn học cách mỉm cười mà không hứa gì.',
+    '[Tiệc sinh nhật trong Nest] Trong buổi tiệc của vị giám đốc Wing, người lớn nâng ly và hỏi han con cái nhau. Mỗi lời chúc đều nhắc khéo đến chức vụ, điểm số hoặc hợp đồng. Bạn học cách mỉm cười mà không hứa gì.',
     '[A Nest Birthday Party] At a Wing director’s party, adults raise their glasses and ask after one another’s children. Each toast hints at rank, grades, or contracts. You learn to smile without promising anything.',
     { network: 3, sanity: -1 }
   ),
@@ -722,7 +722,7 @@ export const LIFE_DAILIES = [
     'a_any_market',
     GROWN,
     { notNest: true },
-    '[Thịt tổng hợp hẻm tối] Khu chợ đen họp đêm sau con ngõ hẹp bày bán những tảng thịt "tổng hợp" với giá rẻ mạt một cách bất thường. Bạn cắn răng mua một tảng về nấu nướng, và tự dặn lòng tốt nhất là đừng bao giờ suy nghĩ xem nguồn gốc thực sự của miếng thịt ấy là gì.',
+    '[Thịt tổng hợp hẻm tối] Khu chợ đen họp đêm sau con ngõ hẹp bày bán những tảng thịt "tổng hợp" rẻ đến bất thường. Bạn cắn răng mua một tảng về nấu nướng, và tự dặn lòng tốt nhất là đừng bao giờ suy nghĩ xem nguồn gốc thực sự của miếng thịt ấy là gì.',
     '[Suspicious Alley Meat] The midnight bazaar in the rear alleys offered slabs of “synthetic meat” at absurdly discounted rates. You purchased a portion to fill your belly, deliberately resolving never to contemplate what species it was harvested from.',
     { health: 2, wealth: 1, sanity: -1 }
   ),
@@ -738,7 +738,7 @@ export const LIFE_DAILIES = [
     'a_any_library_rumor',
     ADULT,
     {},
-    '[Lời đồn về Thư Viện] Dân cư kháo nhau về một tòa Thư Viện bí ẩn mọc lên sừng sững chỉ sau một đêm tại District 23. Người ta rỉ tai nhau rằng bất kỳ kẻ nào nhận được bức thư mời màu đen của Thư Viện ấy đều sẽ một đi không bao giờ trở lại.',
+    '[Lời đồn về Thư Viện] Dân tình kháo nhau về tòa Thư Viện bí ẩn sừng sững mọc lên chỉ sau một đêm ở District 23. Người ta rỉ tai nhau rằng bất kỳ kẻ nào nhận được bức thư mời màu đen của Thư Viện ấy đều sẽ một đi không bao giờ trở lại.',
     '[Rumors of the Library] Whispers spread like wildfire regarding a monolithic Library that materialized overnight in District 23. Word was that anyone who received its black invitation letter walked through its doors and never returned to the living.',
     { resonance: 2, sanity: -1 }
   ),
@@ -772,7 +772,7 @@ export const LIFE_DAILIES = [
     'j_fx_cat',
     GROWN,
     { jobs: ['Fixer'], grade: [9, 7] },
-    '[Ủy thác tìm mèo] Một thân chủ ở District 11 nhờ tìm mèo. Bạn thấy nó chết bên hàm một con chó hoang, rồi về báo rằng chưa tìm được. Bà vẫn trả tiền công buổi tìm kiếm.',
+    '[Ủy thác tìm mèo] Bà khách ở District 11 nhờ bạn tìm mèo. Bạn thấy nó nằm chết trong hàm con chó hoang, rồi về báo rằng chưa tìm được. Bà vẫn trả tiền công buổi tìm kiếm.',
     '[Lost cat Request] A client in District 11 asks you to find her cat. You find it dead beside a stray dog, then report that you could not locate it. She still pays for the search.',
     { wealth: 2, merit: 2, sanity: -1 }
   ),
@@ -878,7 +878,7 @@ export const LIFE_DAILIES = [
     'r_t_clock',
     GROWN,
     { regions: ['T'] },
-    '[Thuế Thời Gian T Corp] Tập đoàn T Corp bất ngờ tiến hành thu đợt Thuế Thời Gian sớm hơn lịch trình thường lệ. Một ngày của bạn bị tước đoạt mất ba giờ đồng hồ sinh hoạt; bạn tỉnh dậy với cảm giác hụt hẫng mơ hồ như vừa đánh mất một phần quan trọng trong ký ức.',
+    '[Thuế Thời Gian T Corp] T Corp bất ngờ thu đợt Thuế Thời Gian sớm hơn mọi năm. Một ngày của bạn bị tước đoạt mất ba giờ đồng hồ sinh hoạt; bạn tỉnh dậy với cảm giác hụt hẫng mơ hồ như vừa đánh mất một phần quan trọng trong ký ức.',
     '[T Corp Time Tax Siphon] T Corp levied its mandatory Time Tax ahead of schedule without prior notice. Three full hours were siphoned clean out of your daily existence; you awoke with the unsettling conviction that vital memories had slipped away.',
     { health: -2, wealth: 2 }
   ),
@@ -942,7 +942,7 @@ export const LIFE_DAILIES = [
     'r_j_casino',
     GROWN,
     { regions: ['J'] },
-    '[Sòng bạc District 10] Bạn ghé vào đặt cược 5 đồng Ahn tại một sòng bạc ngầm ở District 10 và thua sạch. Bạn cay cú rút thêm 5 Ahn nữa đặt tiếp nhưng lại trắng tay; bạn ngậm ngùi rời khỏi sòng bạc khi trong túi chỉ vừa vặn đủ tiền mua chiếc vé tàu trở về nhà.',
+    '[Sòng bạc District 10] Bạn ghé sòng bạc ngầm ở District 10 đặt cược 5 Ahn, thua sạch. Bạn cay cú rút thêm 5 Ahn nữa đặt tiếp nhưng lại trắng tay; bạn ngậm ngùi rời khỏi sòng bạc khi trong túi chỉ vừa vặn đủ tiền mua chiếc vé tàu trở về nhà.',
     '[District 10 Gambling Den] You wagered five Ahn at a back-alley gambling house in District 10 and lost it in seconds. Frustrated, you doubled down with another five and lost again; you walked out into the rain with just enough coin for the return train fare.',
     { wealth: -4, sanity: -1 }
   ),

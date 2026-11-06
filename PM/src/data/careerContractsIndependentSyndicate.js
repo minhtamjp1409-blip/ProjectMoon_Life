@@ -18,7 +18,7 @@ export const INDEPENDENT_SYNDICATE_CONTRACTS = [
 
   rq(
     'indie_syn_debt_collection', 0, 'Đòi nợ mướn cho lò mổ ngầm', 'Collect debt for an underground slaughterhouse',
-    'Một gã đồ tể ở xưởng mổ thịt Backstreets bị con nợ quỵt 6 Ahn tiền sỉ. Gã hứa chia cho băng bạn một phần nếu thu hồi được trước giờ Sweeper đi tuần.',
+    'Gã đồ tể xưởng mổ Backstreets bị con nợ quỵt 6 Ahn tiền hàng sỉ. Gã hứa chia cho băng bạn một phần nếu thu hồi được trước giờ Sweeper đi tuần.',
     'A butcher in a Backstreets abattoir was stiffed 6 Ahn on wholesale meat. He promises your crew a cut if you bring it in before Sweeper patrol hours.',
     'Bạn gõ cửa đúng lúc con nợ chuẩn bị trốn. Sau vài câu đe dọa gãy gọn, gã run rẩy móc bọc tiền giấu trong ống khói ra trả.',
     'You knock just as the debtor packs his bags. After a few clipped threats, he trembles and digs out the pouch hidden up the chimney.',
@@ -74,7 +74,7 @@ export const INDEPENDENT_SYNDICATE_CONTRACTS = [
     'With firm composure and street sense, you secure an unspoken pact: the Office overlooks your protected dens in exchange for street intel.',
     'Cuộc nói chuyện biến thành màn đọ nắm đấm. Fixer đuổi bạn ra khỏi văn phòng với một vết bầm tím trên mặt.',
     'Talks deteriorate into flying fists. The Fixers throw you out onto the street with fresh bruises across your jaw.',
-    'Văn phòng Fixer kia chỉ là vỏ bọc của một toán sát thủ săn tiền thưởng. Họ rút kiếm ngay khi bạn vừa bước qua cửa.',
+    'Văn phòng Fixer kia chỉ là vỏ bọc cho toán sát thủ săn tiền thưởng. Họ rút kiếm ngay khi bạn vừa bước qua cửa.',
     'The Office was a front for contract assassins. They drew steel the instant you stepped past the threshold.'
   ),
 
@@ -106,7 +106,7 @@ export const INDEPENDENT_SYNDICATE_CONTRACTS = [
   // ------------------------------------------------------------ tier 4: Finger tax resistance & underground summit
   rq(
     'indie_syn_finger_tax_resistance', 4, 'Đánh bật toán thu thuế Finger', 'Repel a Finger tax collection cadre',
-    'Sứ giả của một Finger dẫn theo toán tay sai có vũ trang đến tận sào huyệt đòi thu 40% lợi tức Backstreets. Lùi một bước là mất sạch tự do.',
+    'Sứ giả của Finger dẫn theo toán tay sai có vũ trang đến tận sào huyệt đòi thu 40% lợi tức Backstreets. Lùi một bước là mất sạch tự do.',
     'A Finger envoy leads an armed cadre to your headquarters demanding forty percent of all Backstreets proceeds. Yielding means total subjugation.',
     'Bạn bày binh bố trận mai phục ngay các khúc cua hẹp, đánh tan tác toán thu thuế và đuổi sứ giả về với lời cảnh cáo đanh thép.',
     'You stage tight alley ambushes, shattering the collection squad and sending the envoy back with an unyielding warning.',
@@ -149,7 +149,7 @@ export const INDEPENDENT_SYNDICATE_CONTRACTS = [
     'Forged through decades of Backstreets survival, you break every assault wave, forcing the City’s great powers to recognize your sovereign domain.',
     'Bạn sống sót nhưng chịu thương tật vĩnh viễn, buộc phải trao lại quyền chỉ huy thực tế cho cấp phó.',
     'You survive with permanent scars, forced to delegate direct field commands to your lieutenants.',
-    'Đội thanh trừng kích hoạt công nghệ bẻ cong không gian, kết liễu huyền thoại của một bá chủ ngõ tối.',
+    'Đội thanh trừng kích hoạt công nghệ bẻ cong không gian, chấm dứt huyền thoại kẻ bá chủ ngõ tối.',
     'The execution cell deploys spatial distortion tech, ending the legend of the alley kingpin.'
   )
 ];

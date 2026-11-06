@@ -15,8 +15,8 @@ export const DAILIES_2 = [
     ['card', 'Tấm thẻ Fixer trong túi áo đã mòn góc, và người soát cổng nhìn nó lâu hơn nhìn mặt bạn. Ông trả lại và chúc bạn một ngày ít việc.', 'The Fixer card in your pocket has worn corners, and the gate guard studies it longer than your face. He hands it back and wishes you a day with few jobs.', { rep: 1 }],
     ['ink', 'Bản Request hôm nay còn ướt mực. Bạn ký vào mà không đọc dòng cuối, rồi cả buổi chiều nghĩ về dòng ấy.', 'Today’s Request is still wet with ink. You sign without reading the last line, then spend the afternoon thinking about it.', { sanity: -1 }],
     ['lounge', 'Ở quán nghỉ sau Office, ai cũng ngồi quay lưng ra cửa, trừ người đến sớm nhất. Hôm nay bạn đến sớm nhất và ngồi hướng ra cửa.', 'In the lounge behind the Office everyone sits with their back to the door, except whoever arrives first. Today you arrive first and face the door.', { sanity: 1 }],
-    ['stain', 'Tấm bản đồ khu vực trong Office có một vết nâu ở góc mà mọi Fixer đều biết nguồn gốc và không ai chịu lau.', 'The district map in the Office has a brown stain in one corner that every Fixer knows the origin of and no one will wipe.', { network: 1 }],
-    ['wet_shoes', 'Bạn đi cả ngày với đôi giày ướt sau một Request ở cống thoát nước. Tối đó bạn lau chúng bằng chiếc khăn mà bạn vẫn nghĩ là khăn sạch.', 'You walk all day in wet shoes after a Request in the drains. That evening you wipe them with a cloth you have always assumed was clean.', { health: -1 }],
+    ['stain', 'Góc tấm bản đồ khu vực trong Office có vết nâu mà mọi Fixer đều biết nguồn gốc và không ai chịu lau.', 'The district map in the Office has a brown stain in one corner that every Fixer knows the origin of and no one will wipe.', { network: 1 }],
+    ['wet_shoes', 'Sau Request dưới cống thoát nước, bạn lội cả ngày trong đôi giày ướt. Tối đó bạn lau chúng bằng chiếc khăn mà bạn vẫn nghĩ là khăn sạch.', 'You walk all day in wet shoes after a Request in the drains. That evening you wipe them with a cloth you have always assumed was clean.', { health: -1 }],
     ['late_pay', 'Thân chủ đến trả nốt tiền công sau ba tháng, không nói lý do và không xin lỗi. Bạn đếm tiền hai lần, rồi lần thứ ba chỉ để xem họ có đứng chờ không.', 'A client comes to pay the rest of the fee after three months, with no reason and no apology. You count the money twice, then a third time only to see if they will wait.', { wealth: 2 }]
   ]),
 
@@ -62,7 +62,7 @@ export const DAILIES_2 = [
     ['drill_rhythm', 'Tiếng dậm chân rập rờn của đội tuần tra dưới sân vọng vào căn hộ mỗi buổi trưa. Đến ngày thứ ba, bạn vô thức nhai cơm theo đúng nhịp bước ấy.', 'The measured tread of a patrol drifts in from the practice ground every noon. By the third day you are eating to its exact rhythm.', { sanity: -1 }]
   ]),
   ...rows('region', ANY, { regions: ['G'] }, [
-    ['dried_wings', 'Một người bán hàng rong ở phố chợ quận G bày những cánh côn trùng khô lên tấm khăn trải, giá theo cân. Không ai dám hỏi chúng từ đâu ra.', 'A peddler in the District 7 market lays dried insect wings on a cloth, priced by weight. No one dares ask where they came from.', {}]
+    ['dried_wings', 'Người bán rong ở phố chợ quận G bày cánh côn trùng phơi khô lên tấm khăn trải, giá theo cân. Không ai dám hỏi chúng từ đâu ra.', 'A peddler in the District 7 market lays dried insect wings on a cloth, priced by weight. No one dares ask where they came from.', {}]
   ]),
   ...rows('region', ANY, { regions: ['F'] }, [
     ['giant_key', 'Tiệm khóa đầu phố treo một chiếc chìa khổng lồ làm biển hiệu, và nó không bao giờ khớp với ổ khóa nào quanh đó. Trẻ con vẫn thử.', 'The locksmith at the head of the street hangs a giant key as a sign, and it never fits any lock nearby. Children try it anyway.', { sanity: 1 }]
@@ -78,7 +78,7 @@ export const DAILIES_2 = [
   ]),
   ...rows('region', ANY, { regions: ['D'] }, [
     ['smell_of_home', 'Ở tầng hầm quận D, mùi gỗ ẩm và mùi dầu cũ pha vào nhau thành thứ mùi người ở đây gọi là mùi nhà. Bạn đã bắt đầu nhớ nó mỗi lần đi xa.', 'In the cellars of District 4, the smell of damp timber and old oil blends into what people there call the smell of home. You have begun to miss it whenever you travel.', { sanity: 1 }],
-    ['retold_battle', 'Một cựu binh trong khu kể lại cùng một trận đánh lần thứ ba trong tuần, và lần nào số người sống sót cũng khác đi một ít.', 'A veteran in the block tells the same battle for the third time this week, and each time the number of survivors shifts slightly.', { sanity: -1 }]
+    ['retold_battle', 'Người cựu binh trong khu kể lại cùng trận đánh ấy lần thứ ba trong tuần, mà lần nào số người sống sót cũng xê dịch đôi chút.', 'A veteran in the block tells the same battle for the third time this week, and each time the number of survivors shifts slightly.', { sanity: -1 }]
   ]),
   ...rows('region', ANY, { regions: ['I'] }, [
     ['stringless', 'Các cửa hàng nhạc cụ trong khu phố nhạc treo những chiếc đàn đã tháo dây. Khách vẫn đến xem, và không ai hỏi vì sao.', 'The instrument shops in the music quarter hang guitars with their strings removed. Customers still come to look, and no one asks why.', { sanity: -1 }],

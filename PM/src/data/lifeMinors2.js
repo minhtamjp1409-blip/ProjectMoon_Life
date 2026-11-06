@@ -71,7 +71,7 @@ export const LIFE_MINORS_2 = [
     'm2_w_bistro_job',
     [16, 60],
     { regions: ['W'], notNest: true },
-    '[Chiếc tủ lạnh thứ hai ở District 23] Một quán ăn nức tiếng ở phố ẩm thực District 23 cần tuyển người rửa bát với mức lương cao gấp ba lần chỗ khác. Ông chủ quán nghiêm nghị dặn: "Tuyệt đối không được mở chiếc tủ lạnh thứ hai."',
+    '[Chiếc tủ lạnh thứ hai ở District 23] Quán ăn nức tiếng trên phố ẩm thực District 23 tuyển người rửa bát, lương gấp ba chỗ khác. Ông chủ quán nghiêm nghị dặn: "Tuyệt đối không được mở chiếc tủ lạnh thứ hai."',
     '[The Second Fridge of District 23] A bustling eatery in District 23’s gourmet street offered dishwashing work at triple the standard wage. The head chef warned: “Never lay a finger upon the second refrigerator.”',
     [
       C(
@@ -134,7 +134,7 @@ export const LIFE_MINORS_2 = [
     'm2_h_restructure',
     [8, 80],
     { regions: ['H'] },
-    '[Tách trà gia tộc Hongyuan] Đợt tái cấu trúc Restructuring Day đêm qua đã dịch chuyển căn nhà trọ của bạn sang sát vách trang viên của một đại gia tộc Hongyuan quyền quý. Sáng sớm, một quản gia đến gõ cửa mời bạn sang dùng trà đàm đạo.',
+    '[Tách trà gia tộc Hongyuan] Đợt tái cấu trúc Restructuring Day đêm qua đã dịch chuyển căn nhà trọ của bạn sang sát vách trang viên của dòng họ Hongyuan quyền quý. Sáng sớm, một quản gia đến gõ cửa mời bạn sang dùng trà đàm đạo.',
     '[Hongyuan Family Tea Invitation] Last night’s Restructuring Day shifted your tenement directly adjacent to the manor of a prestigious Hongyuan clan. At dawn, a refined retainer knocked to invite you for morning tea.',
     [
       C(
@@ -176,7 +176,7 @@ export const LIFE_MINORS_2 = [
         {},
         {
           out: [
-            O(50, 'Bạn nhặt về được một tấm thẻ nhân viên cũ kỹ mang tên của một người tên là "Ayin". Người thu mua run rẩy hai tay và lập tức trả cho bạn số tiền gấp đôi.', 'You retrieved a battered security badge bearing the name “Ayin.” The buyer’s hands shook uncontrollably as he paid you double the promised sum.', { wealth: 10, resonance: 6 }),
+            O(50, 'Bạn nhặt về tấm thẻ nhân viên cũ kỹ mang tên "Ayin". Người thu mua run rẩy hai tay và lập tức trả cho bạn số tiền gấp đôi.', 'You retrieved a battered security badge bearing the name “Ayin.” The buyer’s hands shook uncontrollably as he paid you double the promised sum.', { wealth: 10, resonance: 6 }),
             O(50, 'Bên trong màn sương mù có một thực thể quái dị lẳng lặng bám theo bạn suốt ba tầng lầu. Bạn trốn thoát được ra ngoài với hai bàn tay trắng, và hình bóng nó ám ảnh bạn trong từng giấc ngủ.', 'An incomprehensible anomaly stalked your steps down three ruined stairwells. You barely escaped empty-handed, and its shadow haunts your nightmares forever.', { sanity: -10, resonance: 8 })
           ]
         }
@@ -225,7 +225,7 @@ export const LIFE_MINORS_2 = [
     'm2_j_casino',
     [18, 80],
     { regions: ['J'], stat: { wealth: [10, 100] } },
-    '[Bàn cược vận may J Corp] Một bàn cược kỳ lạ tại sòng bạc ngầm của J Corp cho phép người chơi đặt cược bằng chính "vận may" vô hình của mình thay cho tiền Ahn. Những tay chia bài mỉm cười bảo rằng vận may rồi sẽ tự sinh sôi trở lại.',
+    '[Bàn cược vận may J Corp] Sòng bạc ngầm của J Corp có bàn cược kỳ lạ, cho người chơi đặt bằng chính "vận may" vô hình của mình thay vì tiền Ahn. Những tay chia bài mỉm cười bảo rằng vận may rồi sẽ tự sinh sôi trở lại.',
     '[J Corp Luck Wagering Table] A clandestine table at the J Corp casino permitted patrons to gamble with intangible “luck” rather than hard Ahn coins. The croupier smiled, claiming luck naturally regenerates over time.',
     [
       C(
@@ -341,7 +341,7 @@ export const LIFE_MINORS_2 = [
     'm2_fx_cheap_job',
     GROWN,
     { jobs: ['Fixer'], grade: [9, 6] },
-    '[Bốn đồng Ahn cứu con] Một người mẹ nghèo ở Backstreets run rẩy đặt lên bàn làm việc của bạn 4 đồng Ahn mỏng manh. Con trai bà vừa bị một toán Rat bắt cóc vào đêm qua; mức phí tối thiểu theo bảng giá của Văn phòng là 20 Ahn.',
+    '[Bốn đồng Ahn cứu con] Người mẹ nghèo ở Backstreets run run đặt lên bàn làm việc của bạn 4 đồng Ahn mỏng dính. Con trai bà vừa bị một toán Rat bắt cóc vào đêm qua; mức phí tối thiểu theo bảng giá của Văn phòng là 20 Ahn.',
     '[Four Ahn to Save a Son] A destitute Backstreet mother laid four worn Ahn coins upon your desk with trembling hands. Her son was abducted by Rats last night; your Office’s standard minimum fee was twenty.',
     [
       C(
@@ -386,7 +386,7 @@ export const LIFE_MINORS_2 = [
         {
           costAhn: 10,
           out: [
-            O(60, 'Thông tin mua được hoàn toàn chính xác. Bạn vượt qua các bài thi thực chiến một cách vô cùng dễ dàng và thuận lợi.', 'The intel was flawless. You sailed through the grueling combat evaluations with effortless precision.', { merit: 10, rep: 2 }),
+            O(60, 'Thông tin mua được hoàn toàn chính xác. Bạn qua các bài thi thực chiến dễ như trở bàn tay.', 'The intel was flawless. You sailed through the grueling combat evaluations with effortless precision.', { merit: 10, rep: 2 }),
             O(40, 'Đó thực chất là một cái bẫy giăng sẵn của Hana để thanh lọc những kẻ gian lận. Bạn bị lập biên bản kỷ luật và ghi vết nhơ vào hồ sơ hành nghề.', 'It was an internal sting operation orchestrated by Hana inspectors. You were caught red-handed and blacklisted with a disciplinary citation.', { rep: -8, merit: -4 })
           ]
         }
@@ -750,7 +750,7 @@ export const LIFE_MINORS_2 = [
     'm2_lover_leave_city',
     [20, 50],
     { npc: 'lover', noFlags: ['Married'] },
-    '[Tấm vé thường trú duy nhất] {lover} có một người họ hàng quyền lực trong Nest có thể sắp xếp bảo lãnh cho một người vào sinh sống hợp pháp. Nhưng suất bảo lãnh ấy chỉ dành cho duy nhất một người mà thôi.',
+    '[Tấm vé thường trú duy nhất] {lover} có người họ hàng quyền thế trong Nest, lo được giấy bảo lãnh cho một người vào sống hợp pháp. Nhưng suất ấy chỉ có đúng một.',
     '[The Single Nest Permit] {lover} possessed a high-ranking relative within a Nest who could arrange residency papers for one individual. For just one single soul.',
     [
       C(

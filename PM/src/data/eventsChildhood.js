@@ -19,7 +19,7 @@ export const CHILDHOOD_EVENTS = [
       {
         labelVi: "Cứa tay, nhỏ máu lên lưỡi và thề tìm ra kẻ đã giết họ",
         labelEn: "Cut your palm, bleed on the edge and swear to find whoever killed them",
-        resultVi: "Máu bạn chảy dọc rãnh lưỡi, hòa vào vệt cũ. Bạn mười tuổi. Từ hôm đó bạn thôi chơi với lũ trẻ trong dãy trọ, và học cách nhìn người lạ để dò xét xem họ giấu vũ khí ở đâu. 「{relic}」 vẫn nằm trong hộp, đã quen thêm một bàn tay.",
+        resultVi: "Máu bạn chảy dọc rãnh lưỡi, hòa vào vệt cũ. Bạn mười tuổi. Từ hôm đó bạn thôi chơi với lũ trẻ trong dãy trọ, tập nhìn người lạ để đoán họ giấu vũ khí chỗ nào. 「{relic}」 vẫn nằm trong hộp, đã quen thêm một bàn tay.",
         resultEn: "Your blood ran along the groove and joined the old stain. You were ten. From that day you stopped playing with the other children in the boarding house, and learned to look at strangers and guess where they kept their knives. 「{relic}」 stayed in its box, used to one more hand.",
         effects: { health: -6, sanity: -8, rep: +10, resonance: +14 },
         flagsAdd: ['유물', '해결사동경'],
@@ -36,7 +36,7 @@ export const CHILDHOOD_EVENTS = [
       {
         labelVi: "Mang ra chợ đen bán lấy tiền ăn",
         labelEn: "Sell it on the black market for food money",
-        resultVi: "Gã cầm đồ nhìn vệt máu trên 「{relic}」, rồi đặt một xấp Ahn xuống quầy. \"Cầm lấy mà sống. Đừng quay lại tìm nó.\" Tối ấy bạn ăn bánh mì nóng, và không ngủ được.",
+        resultVi: "Gã cầm đồ nhìn vệt máu trên 「{relic}」, rồi đặt một xấp Ahn xuống quầy. \"Cầm lấy mà sống. Đừng quay lại tìm nó.\" Tối ấy bạn được ăn bánh mì nóng, mà không sao ngủ được.",
         resultEn: "The pawnbroker looked at the blood on 「{relic}」, then at you. He counted the Ahn onto the counter. “Live on it. Do not come back for it.” You ate hot bread that night and could not sleep.",
         effects: { wealth: +12, sanity: -8, rep: -4 },
         scarsAdd: ['Món di vật đã bán']
@@ -87,7 +87,7 @@ export const CHILDHOOD_EVENTS = [
     major: true,
     weight: 9,
     requires: ['Nest'],
-    vi: "[Buổi kiểm tra của Wing] Trong phòng khám của Nest, bác sĩ đặt trước mặt bạn một ống thuốc sáng màu. Nó có thể đưa điểm tương thích Singularity của bạn vào nhóm đầu, và cũng có thể làm hỏng khả năng vận động. Điểm thấp thì gia đình mất suất ở Nest. Cha mẹ chờ bạn gật đầu.",
+    vi: "[Buổi kiểm tra của Wing] Trong phòng khám của Nest, bác sĩ đặt trước mặt bạn một ống thuốc sáng màu. Nó có thể đưa điểm tương thích Singularity của bạn vào nhóm đầu, mà cũng có thể làm hỏng khả năng vận động. Điểm thấp thì gia đình mất suất ở Nest. Cha mẹ chờ bạn gật đầu.",
     en: "[The Wing’s screening] In the Nest clinic, a doctor sets a bright vial in front of you. It may lift your Singularity compatibility into the top group. It may also damage your motor control. A low score costs your family its place in the Nest. Your parents wait for you to nod.",
     choices: [
       {
@@ -209,7 +209,7 @@ export const CHILDHOOD_EVENTS = [
           {
             eventId: 'csq_bread_victim_revenge',
             delayYears: 6,
-            reasonVi: "Có một đứa trẻ sống sót đêm ấy, và nó biết ai đã chỉ chỗ",
+            reasonVi: "Đêm ấy có một đứa trẻ sống sót, mà nó biết ai đã chỉ chỗ",
             reasonEn: "One child survived that night, and knows who told"
           }
         ]
@@ -228,7 +228,7 @@ export const CHILDHOOD_EVENTS = [
       {
         labelVi: "Uống thuốc",
         labelEn: "Take the vial",
-        resultVi: "Máu mũi rỏ xuống bài thi, nhưng tay bạn không dừng. Bạn đứng nhất. Người ngồi cạnh xếp cuối, và tháng sau chỗ đó trống.",
+        resultVi: "Máu mũi rỏ xuống bài thi, nhưng tay bạn không dừng. Bạn đứng nhất. Người ngồi cạnh xếp chót. Tháng sau, chỗ ấy bỏ trống.",
         resultEn: "Blood dripped from your nose onto the paper, but your hand did not stop. You came first. The student beside you came last, and the next month their seat was empty.",
         effects: { health: -18, sanity: -16, wealth: +15, network: +16, rep: +10, resonance: +12 },
         flagsAdd: ['ThượngLưu'],
@@ -257,13 +257,13 @@ export const CHILDHOOD_EVENTS = [
         labelVi: "Trét bùn lên người cho mất mùi, bò vào lấy chiếc hộp",
         labelEn: "Smear yourself with mud to hide your scent and crawl in for the case",
         startDungeon: 'dungeon_outskirts_ruins',
-        resultVi: "Bạn trét bùn khắp người, nín thở, bò sát mặt đá. Đường hầm hẹp dần, và mùi của thứ đang ăn chuyển từ tanh sang ngọt.",
+        resultVi: "Bạn trét bùn khắp người, nín thở, bò sát mặt đá. Đường hầm hẹp dần, mùi của thứ đang ăn trong đó chuyển từ tanh sang ngọt.",
         resultEn: "You smeared mud over yourself, held your breath and crawled along the stone. The tunnel narrowed, and the smell of whatever was feeding turned from rank to sweet."
       },
       {
         labelVi: "Bán chỗ cái hầm cho một nhóm săn tiền thưởng",
         labelEn: "Sell the tunnel’s location to a bounty crew",
-        resultVi: "Họ trả mười bốn Ahn và cho bạn đi theo. Bạn học cách đặt bẫy, nghe đất rung, và không bao giờ quay lưng về phía chỗ tối.",
+        resultVi: "Họ trả mười bốn Ahn và cho bạn đi theo. Bạn học đặt bẫy, nghe đất rung và không bao giờ quay lưng về phía chỗ tối.",
         resultEn: "They paid fourteen Ahn and let you tag along. You learned to set traps, to hear the ground shake, and never to turn your back on the dark.",
         effects: { wealth: +14, network: +12, health: +4 }
       }
@@ -277,7 +277,7 @@ export const CHILDHOOD_EVENTS = [
     major: true,
     weight: 9.5,
     requires: ['Nest'],
-    vi: "[Suất thực tập duy nhất] Gia tộc chỉ được đề cử một người vào Wing. Anh họ vu cho bạn tội bán bí mật phòng thí nghiệm, và các trưởng bối tin anh ta. Bạn có đoạn ghi âm cho thấy anh ta thuê người của Shi Association dọa giám khảo tuần trước. Cả nhà chờ bạn giải thích.",
+    vi: "[Suất thực tập duy nhất] Gia tộc chỉ được đề cử một người vào Wing. Anh họ vu cho bạn tội bán bí mật phòng thí nghiệm, các trưởng bối lại tin anh ta. Bạn có đoạn ghi âm cho thấy anh ta thuê người của Shi Association dọa giám khảo tuần trước. Cả nhà chờ bạn giải thích.",
     en: "[The one nomination] The family may nominate only one person to the Wing this year. Your cousin has accused you of leaking lab documents, and the elders believe him. You hold a recording of him hiring someone from Shi Association to threaten an examiner last week. The whole house waits for your explanation.",
     choices: [
       {
@@ -292,7 +292,7 @@ export const CHILDHOOD_EVENTS = [
       {
         labelVi: "Giữ đoạn ghi âm và bắt anh ta làm việc cho bạn",
         labelEn: "Keep the recording and make him work for you",
-        resultVi: "Anh ta rút đơn, đưa bạn quỹ riêng, và từ đó nói chuyện với bạn bằng một giọng lễ phép đến lạ.",
+        resultVi: "Anh ta rút đơn, đưa bạn quỹ riêng, từ đó nói chuyện với bạn lễ phép đến lạ.",
         resultEn: "He withdrew, handed you his private savings, and from then on spoke to you with strange politeness.",
         effects: { wealth: +28, network: +15, sanity: -6 }
       }
@@ -336,7 +336,7 @@ export const CHILDHOOD_EVENTS = [
       {
         labelVi: "Đốt tờ Prescript và lẩn vào đám đông Backstreets",
         labelEn: "Burn the Prescript and slip into the Backstreets crowd",
-        resultVi: "Tờ giấy thành tro trên ngọn đèn dầu. Mấy ngày liền bạn không dám qua con phố cũ, và mỗi lần thấy dải vải trắng là tim bạn đập mạnh.",
+        resultVi: "Tờ giấy thành tro trên ngọn đèn dầu. Mấy ngày liền bạn không dám qua con phố cũ, thấy dải vải trắng là tim đập thình thịch.",
         resultEn: "The paper turned to ash over an oil flame. For days you avoided the old street, and your heart jumped at every strip of white cloth.",
         effects: { sanity: -8, heat: +8 },
         flagsAdd: ['PrescriptDefied']
@@ -350,13 +350,13 @@ export const CHILDHOOD_EVENTS = [
     weight: 9,
     requires: ['Backstreets'],
     forbids: ['Nest'],
-    vi: "[Bài thử của Salvador] Salvador, cựu Fixer Grade 4 với nửa khuôn mặt hỏng vì axit, dẫn bạn xuống hầm của một Office cũ. Trong lồng là một con chó chiến bị bỏ đói năm ngày. Ông ném cho bạn đoạn ống thép gỉ. \"Vào đi. Ra được thì ta dạy tiếp.\"",
+    vi: "[Bài thử của Salvador] Salvador, cựu Fixer Grade 4 với nửa khuôn mặt hỏng vì axit, dẫn bạn xuống hầm Office cũ. Trong lồng là một con chó chiến bị bỏ đói năm ngày. Ông ném cho bạn đoạn ống thép gỉ. \"Vào đi. Ra được thì ta dạy tiếp.\"",
     en: "[Salvador’s test] Salvador, a retired Grade 4 Fixer with half his face ruined by acid, leads you down to the cellar of an old Office. In the cage is a fighting dog starved for five days. He tosses you a length of rusted steel pipe. “Get in. If you come out, I keep teaching you.”",
     choices: [
       {
         labelVi: "Đưa tay trái cho nó cắn, dùng tay phải đâm",
         labelEn: "Give it your left arm to bite and strike with your right",
-        resultVi: "Răng nó cắm tới xương. Đoạn ống của bạn tìm thấy mắt nó. Salvador mở lồng, ném cho bạn cuộn băng, và lần đầu gọi bạn bằng tên.",
+        resultVi: "Răng nó cắm tới xương. Đoạn ống của bạn tìm thấy mắt nó. Salvador mở lồng, ném cho bạn cuộn băng, rồi lần đầu tiên gọi bạn bằng tên.",
         resultEn: "Its teeth went to the bone. Your pipe found its eye. Salvador opened the cage, tossed you a roll of bandage, and for the first time called you by name.",
         effects: { health: -14, sanity: -6, rep: +14, network: +12, resonance: +12 },
         flagsAdd: ['FixerTrained'],
@@ -394,13 +394,13 @@ export const CHILDHOOD_EVENTS = [
     regions: ['OUTSKIRTS'],
     major: true,
     weight: 999,
-    vi: "[Bên kia bức tường] Đến tuổi phải tự lo thân, bạn theo đoàn phế liệu tới cổng kiểm hàng. Ánh đèn The City đã gần, nhưng bạn vẫn đứng ngoài tường. Người dẫn đường chỉ ba người đang cần thêm tay chân. Mỗi người có một lối đưa bạn vào Backstreets, và không ai hứa lối quay về.",
+    vi: "[Bên kia bức tường] Đến tuổi phải tự lo thân, bạn theo đoàn phế liệu tới cổng kiểm hàng. Ánh đèn The City đã gần, nhưng bạn vẫn đứng ngoài tường. Người dẫn đường chỉ ba người đang cần thêm tay chân. Người nào cũng có lối đưa bạn vào Backstreets, nhưng chẳng ai hứa đường về.",
     en: "[Across the wall] Old enough to carry your own weight, you leave camp with a scrap caravan and reach the cargo checkpoint. The City lights are near, but you still stand outside the wall. Your guide points out three people who need workers. Each has a way into the Backstreets. None promises a way back.",
     choices: [
       {
         labelVi: "Theo người chở hàng vào xưởng",
         labelEn: "Follow the freight crew to a workshop",
-        resultVi: "Bạn đẩy xe phế liệu qua cổng. Bên trong, một thợ ở District T giữ bạn lại vì đôi tay còn lành và trả công theo ngày, không ghi tên vào sổ nào. Đêm đầu trong Backstreets, bạn ngủ cạnh một lò rèn đã nguội.",
+        resultVi: "Bạn đẩy xe phế liệu qua cổng. Bên trong, người thợ District T giữ bạn lại vì đôi tay còn lành lặn, trả công theo ngày, chẳng ghi tên vào sổ nào. Đêm đầu ở Backstreets, bạn ngủ cạnh lò rèn đã nguội.",
         resultEn: "You pushed the scrap cart through the gate. Inside, a District T smith kept you for your sound hands and paid by the day, entering your name in no ledger. Your first night in the Backstreets was spent beside a cold forge.",
         setRegion: 'T',
         setJob: 'Outcast',
@@ -408,7 +408,7 @@ export const CHILDHOOD_EVENTS = [
         flagsAdd: ['EnteredCity']
       },
       {
-        labelVi: "Nhận lời người tuyển việc của một Office",
+        labelVi: "Nhận lời người tuyển việc của Office",
         labelEn: "Take an offer from an Office recruiter",
         setRegion: 'J',
         outcomes: [
@@ -561,7 +561,7 @@ export const CHILDHOOD_EVENTS = [
     age: [15, 99],
     major: true,
     weight: 999,
-    vi: '[Đến tuổi phải chọn đường] Thời gian được nuôi ăn trong Nest đã hết. Bạn có tên một người bảo lãnh ở quầy Hana, lời nhắn từ cổng tuyển dụng Wing và địa chỉ một quầy rượu ngoài Backstreets. Mỗi nơi chỉ nhận bạn theo điều kiện của họ.',
+    vi: '[Đến tuổi phải chọn đường] Thời gian được nuôi ăn trong Nest đã hết. Trong tay bạn có tên người bảo lãnh ở quầy Hana, lời nhắn từ cổng tuyển dụng Wing và địa chỉ quầy rượu ngoài Backstreets. Mỗi nơi chỉ nhận bạn theo điều kiện của họ.',
     en: '[Working age] Your time living on Nest support is over. You have the name of a sponsor at the Hana desk, a message from a Wing recruiter, and the address of a Backstreets bar. Each place will take you on its own terms.',
     choices: [
       {
@@ -719,7 +719,7 @@ export const CHILDHOOD_EVENTS = [
         flagsAdd: ['child_blade_found', 'EarlySwordAptitude']
       },
       {
-        labelVi: "Bán cho một lò rèn Workshop ở đầu hẻm lấy mười Ahn",
+        labelVi: "Bán cho lò rèn Workshop đầu hẻm lấy mười Ahn",
         labelEn: "Sell it to the alley forge for ten Ahn",
         resultVi: "Người thợ rèn khen mắt bạn tinh, trả mười Ahn và cho một đĩa bánh bao nóng. Cả nhà bạn đủ ăn suốt một tuần.",
         resultEn: "The smith praised your eye, paid ten Ahn and gave you hot dumplings. The household ate for a week.",
@@ -772,7 +772,7 @@ export const CONSEQUENCE_EVENTS = [
     id: 'csq_saved_neighbor_gift',
     major: true,
     isCausalCallback: true,
-    vi: "[Ông Kang trở lại] Bảy năm sau đêm 3:13, ông Kang gõ cửa nhà bạn. Cánh tay vẫn thiếu, cơn ho nặng hơn trước. Ông đặt lên bàn lưỡi đao răng cưa và cuốn sổ liên lạc của một Fixer cũ. \"Năm đó cháu cho chú thêm thời gian. Giờ chú trả lại thứ còn dùng được.\"",
+    vi: "[Ông Kang trở lại] Bảy năm sau đêm 3:13, ông Kang gõ cửa nhà bạn. Cánh tay vẫn thiếu, cơn ho nặng hơn trước. Ông đặt lên bàn lưỡi đao răng cưa và cuốn sổ liên lạc của người Fixer cũ. \"Năm đó cháu cho chú thêm thời gian. Giờ chú trả lại thứ còn dùng được.\"",
     en: "[Old Kang returns] Seven years after the 3:13 night, Old Kang knocks at your door. The arm is still missing and the cough is worse. He sets a serrated blade and a Fixer’s old contact book on the table. “That year you bought me time. Now I give back what still works.”",
     choices: [
       {
@@ -893,7 +893,7 @@ export const CONSEQUENCE_EVENTS = [
       {
         labelVi: "Gài bẫy chờ chúng đến",
         labelEn: "Set a trap and wait for them",
-        resultVi: "Ba ngày sau, hai Proselyte bước qua cửa và không bước ra nữa. Mảnh kim loại găm đầy lưng bạn. Bạn rời khu phố qua đường cống, và từ đó The Index tìm bạn.",
+        resultVi: "Ba ngày sau, hai Proselyte bước qua cửa và không bước ra nữa. Mảnh kim loại găm đầy lưng bạn. Bạn rời khu phố theo đường cống, từ đó The Index lùng tìm bạn.",
         resultEn: "Three days later two Proselytes walked through your door and did not walk out. Shrapnel filled your back. You left the neighborhood through the sewers, and the Index has looked for you since.",
         effects: { health: -14, sanity: -8, rep: +15, heat: +20, resonance: +12 },
         scarsAdd: ['Mảnh kim loại trong lưng']
@@ -999,7 +999,7 @@ export const CONSEQUENCE_EVENTS = [
       {
         labelVi: "Rút vũ khí, phá vòng vây, chạy vào đường ngầm",
         labelEn: "Draw your weapon, break the cordon and run into the tunnels",
-        resultVi: "Lưỡi cưa của một W Corp Cleaner xé vai bạn trước khi bạn rơi qua nắp cống. Bạn sống sót trong bóng tối Backstreets, với một vết thương đau mỗi khi trời lạnh.",
+        resultVi: "Lưỡi cưa của W Corp Cleaner xé toạc vai bạn ngay trước khi bạn lọt xuống nắp cống. Bạn sống sót trong bóng tối Backstreets, với một vết thương đau mỗi khi trời lạnh.",
         resultEn: "A W Corp Cleaner’s rip-saw tore your shoulder before you dropped through the sewer grate. You survived in the dark of the Backstreets with a wound that ached whenever the cold came.",
         effects: { health: -38, rep: +20, heat: +35, resonance: +20 },
         scarsAdd: ['Vết cưa của W Corp Cleaner'],
@@ -1017,7 +1017,7 @@ export const CONSEQUENCE_EVENTS = [
       {
         labelVi: "Kề vai chiến đấu, cùng đập tan toán Inquisitor",
         labelEn: "Fight shoulder to shoulder and break the Inquisitor squad",
-        resultVi: "Hai lưỡi vũ khí khớp nhịp. Ba Inquisitor ngã. Người ấy lau máu trên lưỡi cưa, cười, và đưa bạn một khẩu súng ngắn Workshop đặc chế. \"Giờ mình là người một nhà.\"",
+        resultVi: "Hai lưỡi vũ khí khớp nhịp. Ba Inquisitor ngã. Người ấy lau máu trên lưỡi cưa, bật cười rồi đưa bạn khẩu súng ngắn Workshop đặc chế. \"Giờ mình là người một nhà.\"",
         resultEn: "Your weapons moved in one rhythm. The three Inquisitors fell. They wiped the blood off the saw, laughed, and handed you a custom Workshop sidearm. “We are family now.”",
         effects: { health: -14, sanity: +18, rep: +28, network: +24, resonance: +15 },
         flagsAdd: ['고급장비'],
@@ -1030,7 +1030,7 @@ export const CONSEQUENCE_EVENTS = [
     id: 'csq_bloodfiend_banquet_call',
     major: true,
     isCausalCallback: true,
-    vi: "[Lời mời Bloodfiend] Lá thư sáp đỏ của Elder Bloodfiend nằm trên gối bạn. Đêm nay, bà ta đòi bạn mang một người sống tới hầm rượu ở District 23. Nếu không, chiếc ly trên bàn tiệc sẽ nhận máu bạn.",
+    vi: "[Lời mời Bloodfiend] Lá thư sáp đỏ của Elder Bloodfiend nằm trên gối bạn. Đêm nay, bà ta đòi bạn dẫn một người sống tới hầm rượu ở District 23. Nếu không, chiếc ly trên bàn tiệc sẽ nhận máu bạn.",
     en: "[The Bloodfiend’s invitation] A red wax letter from the Elder Bloodfiend lies on your pillow. Tonight she demands a living person at the cellar in District 23. If not, the chalice on the banquet table will take your blood.",
     choices: [
       {
@@ -1094,7 +1094,7 @@ export const CONSEQUENCE_EVENTS = [
       {
         labelVi: 'Nộp 40 Ahn và khai bạn chỉ là người trung gian',
         labelEn: 'Pay 40 Ahn and say you were only the go-between',
-        resultVi: 'Người của Tres ghi tên bạn vào dòng "bên trung gian" và đóng dấu "Đã giải quyết". Bạn mất hết tiền, giữ lại được mạng, và người thợ rèn quen từ nay không nhận đơn của bạn nữa.',
+        resultVi: 'Người của Tres ghi tên bạn vào dòng "bên trung gian" và đóng dấu "Đã giải quyết". Bạn mất hết tiền, giữ được cái mạng, còn người thợ rèn quen từ nay không nhận đơn của bạn nữa.',
         resultEn: 'Tres writes your name on the "intermediary" line and stamps it Resolved. You lose your money, keep your life, and your regular smith stops taking your orders.',
         costAhn: 40,
         effects: { wealth: -40, sanity: -12, taboo: -2, network: -6 }
@@ -1102,7 +1102,7 @@ export const CONSEQUENCE_EVENTS = [
       {
         labelVi: 'Bỏ chạy qua cống ngầm, để người thợ rèn lại',
         labelEn: 'Run through the drains and leave the smith behind',
-        resultVi: 'Bạn thoát qua cống với vài vết bỏng nhẹ. Hôm sau nghe tin xưởng bị niêm phong, và người thợ rèn quen không có mặt khi họ vào. Hana ghi tên bạn vào danh sách theo dõi.',
+        resultVi: 'Bạn thoát qua cống với vài vết bỏng nhẹ. Hôm sau nghe tin xưởng bị niêm phong; lúc họ ập vào, người thợ rèn quen không có mặt. Hana ghi tên bạn vào danh sách theo dõi.',
         resultEn: 'You escape through the drains with minor burns. The next day you hear the shop has been sealed, and the smith was not there when they entered. Hana adds your name to a watch list.',
         effects: { health: -18, heat: 32, rep: -10, resonance: 12 },
         scarsAdd: ['Kẻ đặt khẩu súng phạm Taboo']
@@ -1164,7 +1164,7 @@ export const CONSEQUENCE_EVENTS = [
       {
         labelVi: "Tiến thẳng vào tâm chấn: Dùng sức mạnh áp đảo nghiền nát thảm họa",
         labelEn: "Charge into the epicenter: Crush the catastrophe with sovereign force",
-        resultVi: "Trận chiến xé toạc bầu trời đêm. Bạn đập tan hiện tượng dị thường trước khi nó lan rộng, chứng minh bản lĩnh của một Color thực thụ. Danh tiếng và chiến công vang dội khắp 25 District.",
+        resultVi: "Trận chiến xé toạc bầu trời đêm. Bạn đập tan hiện tượng dị thường trước khi nó kịp lan ra, đúng bản lĩnh Color thực thụ. Danh tiếng và chiến công vang dội khắp 25 District.",
         resultEn: "The clash tears through the night sky. You obliterate the anomaly before it spreads, proving the supreme mettle of a true Color. Your renown thunders across all twenty-five Districts.",
         effects: { health: -20, sanity: -12, rep: +30, wealth: +50 },
         meritAdd: 35,
@@ -1192,7 +1192,7 @@ export const CONSEQUENCE_EVENTS = [
       {
         labelVi: "Thi hành nghĩa vụ: Đứng ra bảo trợ pháp lý và răn đe đối thủ của Seven",
         labelEn: "Honor the obligation: Provide legal sponsorship and deter Seven's rivals",
-        resultVi: "Sự hiện diện của một Color Fixer khiến mọi phe phái đối lập lập tức rút lui trong trật tự. Bản hợp đồng thế chấp được đốt thành tro trước mặt bạn. Mối liên minh giữa bạn và Seven Association càng thêm bền chặt.",
+        resultVi: "Color Fixer vừa có mặt, mọi phe đối lập liền lặng lẽ rút lui. Bản hợp đồng thế chấp được đốt thành tro trước mặt bạn. Mối liên minh giữa bạn và Seven Association càng thêm bền chặt.",
         resultEn: "The presence of a Color Fixer forces all opposing syndicates to withdraw in orderly silence. The promissory note is burnt to ashes before your eyes, cementing your alliance with Seven.",
         effects: { rep: +20, network: +25, sanity: +10 },
         flagsRemove: ['AssociationDebtObligation'],

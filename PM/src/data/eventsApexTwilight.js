@@ -83,7 +83,7 @@ const COLOR_ENDINGS = [
   {
     id: 'color_long_road', age: [84, 125], jobs: ['Fixer'], major: true, weight: 8,
     requires: ['ColorFixer', 'ApexLongevity'], forbids: ['Distorted'],
-    vi: '[Cánh cổng phụ] Một buổi sáng bạn thấy mình đã đứng trước cánh cổng phụ của khu Hana lâu hơn cần thiết. Người gác không hỏi. Bên ngoài có một con đường bạn chưa đi hết, và bạn nhớ rằng đã từng nghĩ sẽ đi nó khi còn trẻ.',
+    vi: '[Cánh cổng phụ] Sáng nọ bạn nhận ra mình đã đứng trước cổng phụ khu Hana lâu hơn cần thiết. Người gác không hỏi. Bên ngoài là con đường bạn chưa đi hết, và bạn nhớ hồi trẻ từng định sẽ đi.',
     en: '[A side gate] One morning you find you have stood at the side gate of the Hana grounds longer than needed. The guard does not ask. Beyond lies a road you never walked to its end, and you remember once planning to take it when young.',
     choices: [
       { labelVi: 'Bước qua cổng và không quay đầu', labelEn: 'Step through the gate and do not look back',
@@ -105,7 +105,7 @@ const COLOR_ENDINGS = [
         deathCauseVi: 'Nhường chỗ ngồi tại Hana và về sống ở phố cũ', deathCauseEn: 'Handed the Hana seat to a successor and retired to an old street' },
       { labelVi: 'Ngồi lại và nói rằng chưa phải lúc', labelEn: 'Stay seated and say it is not yet time',
         effects: { rep: 2, sanity: -3, network: 2 },
-        resultVi: 'Phòng im lặng. Người kế nhiệm gật đầu quá nhanh. Bạn nhớ rằng đã từng làm đúng điều đó trước khi nhận chiếc ghế này.', resultEn: 'The room is silent. The successor nods too quickly. You recall doing exactly this before you took the chair.' }
+        resultVi: 'Phòng im lặng. Người kế nhiệm gật đầu quá nhanh. Bạn nhớ mình cũng từng làm y như vậy trước khi ngồi vào chiếc ghế này.', resultEn: 'The room is silent. The successor nods too quickly. You recall doing exactly this before you took the chair.' }
     ]
   },
   {
@@ -137,7 +137,7 @@ const COLOR_ENDINGS = [
         outcomes: [
           { w: 58, effects: { health: -26, sanity: -8, rep: 10, network: -6 }, meritAdd: 30, flagsAdd: ['color_purge_done'],
             resultVi: 'Ba người đứng trong căn phòng chờ bạn. Họ không ngờ bạn còn có thể đánh như vậy. Bạn bước ra khi trời sáng, và Hana không bao giờ gửi bạn một lá thư nào nữa.', resultEn: 'Three people wait in the room. They did not expect you could still fight like that. You walk out at dawn, and Hana never sends you another letter.' },
-          { w: 42, ...endsLife('purged', 'Phòng đó có nhiều cửa hơn bạn nhớ. Bạn ngã ở cánh cuối cùng, và người cuối cùng bạn nhìn thấy là một người bạn đã từng uống trà cùng.', 'The room has more doors than you remember. You fall at the last one, and the last face you see belongs to someone you once drank tea with.', { health: -40 }),
+          { w: 42, ...endsLife('purged', 'Phòng đó có nhiều cửa hơn bạn nhớ. Bạn ngã ở cánh cuối cùng, và gương mặt cuối cùng bạn thấy là người từng ngồi uống trà cùng bạn.', 'The room has more doors than you remember. You fall at the last one, and the last face you see belongs to someone you once drank tea with.', { health: -40 }),
             deathCauseVi: 'Bị Section của Hana xử lý bằng một Request niêm phong', deathCauseEn: 'Dealt with by a Hana Section through a sealed Request' }
         ] },
       { labelVi: 'Viết thư xin từ bỏ tên Color, rút lui', labelEn: 'Write to resign the Color name and withdraw',
@@ -209,7 +209,7 @@ const FINGER_ENDINGS = [
         deathCauseVi: 'Rời địa bàn của Finger và chu du, không ai biết tung tích', deathCauseEn: 'Left the Finger’s territory and wandered, whereabouts unknown' },
       { labelVi: 'Từ chối, còn việc chưa xong', labelEn: 'Decline, there is unfinished business',
         effects: { sanity: -2, rep: 1 },
-        resultVi: 'Người đi đường gật đầu và đánh xe đi mà không hỏi lại. Bạn đứng thêm một lúc ở cổng, rồi vào trong.', resultEn: 'The traveler nods and drives away without asking again. You stand a while longer at the gate, then go inside.' }
+        resultVi: 'Người đi đường gật đầu và đánh xe đi mà không hỏi lại. Bạn đứng thêm lúc nữa ngoài cổng rồi mới vào.', resultEn: 'The traveler nods and drives away without asking again. You stand a while longer at the gate, then go inside.' }
     ]
   },
   {
@@ -218,7 +218,7 @@ const FINGER_ENDINGS = [
     vi: '[Người chờ chiếc ghế] Người bạn chọn làm người kế vị đã chờ nhiều năm mà không một lần nhắc đến chiếc ghế. Hôm nay họ mang đến một bình trà và ngồi xuống phía đối diện. Họ không nói gì cả buổi sáng, và bạn hiểu đó là cách họ hỏi.',
     en: '[The one waiting for the seat] The one you chose as heir has waited years without once mentioning the seat. Today they bring a pot of tea and sit opposite. They say nothing all morning, and you understand it is their way of asking.',
     choices: [
-      { labelVi: 'Trao lại ghế một cách đàng hoàng', labelEn: 'Hand over the seat with proper ceremony',
+      { labelVi: 'Trao lại ghế cho đàng hoàng', labelEn: 'Hand over the seat with proper ceremony',
         ...endsLife('retired', 'Buổi lễ nhỏ và diễn ra trong phòng không có khách. Bạn đặt tay người ấy lên tay vịn của chiếc ghế rồi bước ra ngoài. Cả khu phố biết trước khi tin được đọc.', 'The ceremony is small and held in a room without guests. You place their hand on the arm of the chair and step outside. The whole street knows before the news is read.', { sanity: 5, rep: 4 }),
         deathCauseVi: 'Trao lại ghế cho người kế vị và về sống lặng lẽ', deathCauseEn: 'Passed the seat to the heir and retired quietly' },
       { labelVi: 'Giữ ghế thêm vài năm, nói rằng người ấy chưa sẵn sàng', labelEn: 'Keep the seat a few more years, saying they are not ready',

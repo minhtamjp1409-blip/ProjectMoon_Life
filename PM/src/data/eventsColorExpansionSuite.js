@@ -43,7 +43,7 @@ export const COLOR_EXPANSION_MINORS = [
         { rep: 5, merit: 10, standing: 3 }),
       C('Yêu cầu Seven Association trả trước 25 Ahn phí bảo chứng danh nghĩa',
         'Demand a 25 Ahn retainer fee from Seven Association for endorsement',
-        'Người liên lạc viên chi trả không do dự. Danh tiếng của một Color luôn có cái giá tương xứng.',
+        'Người liên lạc viên chi trả không do dự. Danh tiếng Color bao giờ cũng có giá của nó.',
         'The courier signs the draft without hesitation. A Color’s signature commands its rightful price.',
         { wealth: 25, rep: 2, merit: 4 })
     ],
@@ -103,7 +103,7 @@ export const COLOR_EXPANSION_DAILIES = [
     { sanity: 1, health: 1 }),
 
   D('d_color_blade_maintenance_dawn', [24, 99], { jobs: ['Color Fixer'] },
-    'Lúc 5:00 AM, bạn mài thanh vũ khí bản mệnh mang sắc Màu của mình. Ánh thép phản chiếu đôi mắt của một người đã chứng kiến quá nhiều sinh tử.',
+    'Lúc 5:00 AM, bạn mài thanh vũ khí bản mệnh mang sắc Màu của mình. Ánh thép soi lại đôi mắt người đã thấy quá nhiều sinh tử.',
     'At 5:00 AM, you hone your signature weapon. The steel reflects the eyes of one who has witnessed too many deaths.',
     { sanity: 1 }),
 
@@ -113,7 +113,7 @@ export const COLOR_EXPANSION_DAILIES = [
     { rep: 1, merit: 1 }),
 
   D('d_color_anonymous_assassin_envelope', [24, 99], { jobs: ['Color Fixer'] },
-    'Một phong bì không người gửi rơi trước cửa phòng bạn: bên trong là một bông hoa héo và lời nhắn cảnh báo từ một kẻ thù giấu mặt.',
+    'Phong bì không đề người gửi rơi trước cửa phòng bạn: bên trong là bông hoa héo kèm lời cảnh báo của kẻ thù giấu mặt.',
     'An unmarked envelope slides under your door: inside lies a withered bloom and a cryptic warning from a veiled foe.',
     { sanity: -1, heat: 1 }),
 
@@ -128,7 +128,7 @@ export const COLOR_EXPANSION_DAILIES = [
     { rep: 1 }),
 
   D('d_color_sweeper_avoidance', [24, 99], { jobs: ['Color Fixer'] },
-    'Lúc 3:13 AM, một toán Sweeper trườn qua ngã tư. Cảm nhận được sát khí từ áo choàng Color của bạn, chúng rít lên rồi lùi lại vào bóng tối.',
+    'Lúc 3:13 AM, một toán Sweeper trườn qua ngã tư. Đánh hơi thấy sát khí từ áo choàng Color của bạn, chúng rít lên rồi lùi lại vào bóng tối.',
     'At 3:13 AM, Sweepers crawl across the intersection. Sensing the lethal aura of your Color mantle, they hiss and retreat.',
     { rep: 1 })
 ];

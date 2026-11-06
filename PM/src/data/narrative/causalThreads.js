@@ -85,7 +85,7 @@ const arcs = [
     ['[Tín hiệu ở ga cũ] Đèn báo dừng tàu ở ga ít người dùng nhấp nháy sai nhịp. Một người đi làm ca sớm nhờ bạn báo trạm điều khiển.', '[The Old Stop Signal] A little-used station lamp flashes out of rhythm. An early worker asks you to report it to control.'],
     ['Ghi giờ và báo đúng số đèn', 'Note the time and report the lamp number', 'Nhân viên nhận tin đọc lại số đèn một lần. Chuyến tàu sau chạy chậm qua ga.', 'The operator reads the number back once. The next train passes the station slowly.', { rep: 1 }],
     ['Bảo người ở ga tự xử lý', 'Leave it to station staff', 'Người đi làm muộn chuyến khi đứng giải thích cho bảo vệ. Bạn lên tàu trước.', 'The worker misses a train while explaining it to security. You board ahead of them.', { sanity: -1 }],
-    ['[Tờ báo lỗi tín hiệu] Trạm điều khiển hỏi bạn có giữ số hồ sơ báo đèn cũ không. Một tai nạn ở ga khác làm họ rà soát cùng loại đèn.', '[The Signal Report] Control asks if you kept your earlier report number. An accident elsewhere has prompted a review of the same lamp model.'],
+    ['[Tờ báo lỗi tín hiệu] Trạm điều khiển hỏi bạn có giữ số hồ sơ báo đèn cũ không. Ga khác vừa xảy ra tai nạn, nên họ rà lại cùng loại đèn.', '[The Signal Report] Control asks if you kept your earlier report number. An accident elsewhere has prompted a review of the same lamp model.'],
     ['Đưa số hồ sơ và kể lại nhịp đèn', 'Give the report number and describe the pattern', 'Kỹ thuật viên đối chiếu đúng một lỗi tiếp điểm. Họ khóa đèn trong ca sửa chữa và gửi bạn thư xác nhận.', 'A technician matches the pattern to a contact fault. They disable the lamp for repair and send you an acknowledgement.', { rep: 3 }],
     ['Nói mình đã quên chi tiết', 'Say you no longer recall the details', 'Họ ghi nhận lời bạn rồi tiếp tục tìm trong hồ sơ. Bạn đi ngang ga ấy chậm hơn bình thường.', 'They note your answer and continue searching the files. You walk past that stop more slowly than usual.', { sanity: -2 }]),
   pair('ego_witness', [18, 80], { noFlags: ['Distorted'] },
@@ -142,7 +142,7 @@ const arcs = [
 export const THREAD_MINORS = [
   ...arcs.map((arc) => arc.minor),
   M('m6_distortion_pursuit_note', [18, 140], { flags: ['Distorted'] },
-    '[Lệnh truy săn ướt mưa] Tờ lệnh truy săn bạn dán lệch trên cột điện, mực đã nhòe ở dòng tả hình dạng. Phía sau tờ giấy là số liên lạc của một đội Fixer.',
+    '[Lệnh truy săn ướt mưa] Tờ lệnh truy săn bạn dán lệch trên cột điện, mực đã nhòe ở dòng tả hình dạng. Mặt sau tờ giấy ghi số liên lạc của đội Fixer nọ.',
     '[Rain-Soaked Hunt Notice] Your pursuit notice hangs crooked on a lamp post, its description smeared by rain. The back lists a Fixer team’s contact number.', [
       C('Gỡ tờ lệnh để xem đội nào đang săn mình', 'Take it down to read who is hunting you',
         'Bạn nhận ra tên Văn phòng ở cuối giấy. Một lần trước, bạn từng trả tiền cho họ sửa cửa.',

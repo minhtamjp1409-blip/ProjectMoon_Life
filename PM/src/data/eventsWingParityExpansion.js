@@ -83,7 +83,7 @@ export const WING_PARITY_MINORS = [
     [
       C('Bấm nút xóa sạch bộ nhớ theo quy chuẩn thao tác',
         'Depress the purge button according to standard manual',
-        'Dòng điện xanh lóe lên. Ánh mắt tuyệt vọng trở lại vẻ trống rỗng vô hồn của một người lính hoàn hảo.',
+        'Dòng điện xanh lóe lên. Ánh mắt tuyệt vọng lại trống rỗng, vô hồn như người lính hoàn hảo.',
         'Blue currents flash. Desperation fades into the hollow, unblinking stare of a flawless soldier.',
         { standing: 3, merit: 5, sanity: -6 }),
       C('Ghi chú sai lệch thông số để trì hoãn quy trình thanh trừng',
@@ -133,7 +133,7 @@ export const WING_PARITY_MINORS = [
 
   // Rank 2-3: Management & Senior Executive Dilemmas
   W('m_wing_board_leak_trade', 2, 3,
-    '[Thương vụ rò rỉ trước phiên họp] Một công ty môi giới bí mật gửi đề nghị mua trước số liệu kết quả tài chính quý của Wing với giá 30 Ahn. Số tiền này bằng cả năm lương của một nhân viên quầy.',
+    '[Thương vụ rò rỉ trước phiên họp] Một công ty môi giới bí mật gửi đề nghị mua trước số liệu kết quả tài chính quý của Wing với giá 30 Ahn. Số tiền ấy bằng cả năm lương nhân viên quầy.',
     '[Pre-Board Leak Offer] A shadow brokerage offers 30 Ahn for early access to the quarterly earnings report. It equals a full year’s clerical wage.',
     [
       C('Bán tài liệu qua kênh mã hóa nặc danh',
@@ -237,7 +237,7 @@ export const WING_PARITY_MAJORS = [
     weight: 40,
     need: { jobs: ['Wing Employee'], wingRankAtLeast: 1 },
     forbids: ['wing_singularity_meltdown_done', 'Distorted'],
-    vi: "[Khủng Hoảng Lò Phản Ứng Singularity] Đêm trực của bạn bị gián đoạn bởi hồi còi đỏ chói tai. Lõi Singularity của Wing đang vượt ngưỡng kiểm soát nhiệt độ; chất lỏng kỳ dị sôi sùng sục và bắt đầu nuốt chửng cấu trúc sàn thí nghiệm. Ban điều hành chuẩn bị ấn nút kích hoạt khí độc tiêu diệt toàn bộ khu vực để giữ bí mật.",
+    vi: "[Khủng Hoảng Lò Phản Ứng Singularity] Hồi còi đỏ chói tai cắt ngang ca trực đêm của bạn. Lõi Singularity của Wing đang vượt ngưỡng kiểm soát nhiệt độ; chất lỏng kỳ dị sôi sùng sục và bắt đầu nuốt chửng cấu trúc sàn thí nghiệm. Ban điều hành chuẩn bị ấn nút kích hoạt khí độc tiêu diệt toàn bộ khu vực để giữ bí mật.",
     en: "[Singularity Core Meltdown] Your night shift is shattered by deafening scarlet sirens. The Wing’s Singularity core is breaching thermal containment; aberrant fluids boil and dissolve laboratory decks. Executive control prepares to deploy lethal nerve gas across the sector to safeguard corporate secrets.",
     choices: [
       {
@@ -269,7 +269,7 @@ export const WING_PARITY_MAJORS = [
         outcomes: [
           {
             w: 65,
-            resultVi: "Bạn thoát ra ngoài an toàn với lọ mẫu phẩm quý giá. Khu vực bị phong tỏa; một tổ chức tài chính ngầm trả bạn 42 Ahn để sở hữu dữ liệu giải phẫu của Singularity này, dù đội thanh trừng nội bộ đã bắt đầu truy dấu.",
+            resultVi: "Bạn thoát ra ngoài an toàn với lọ mẫu phẩm quý giá. Khu vực bị phong tỏa; đường dây tài chính ngầm trả bạn 42 Ahn để có dữ liệu giải phẫu của Singularity này, dù đội thanh trừng nội bộ đã bắt đầu truy dấu.",
             resultEn: "You escape safely with the precious vial. The sector is purged; a shadow syndicate pays you 42 Ahn for the unredacted Singularity blueprints, though internal purgers have begun tracking the leak.",
             effects: { wealth: +42, leverage: +15, sanity: -10, heat: +20, taboo: +1 },
             flagsAdd: ['wing_singularity_meltdown_done', 'SingularitySmuggler']

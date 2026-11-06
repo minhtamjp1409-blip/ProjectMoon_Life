@@ -597,7 +597,7 @@ export const EXPANSION_EVENTS = [
     major: true,
     weight: 9,
     need: { npc: 'spouse' },
-    vi: '[Cơn sốt tuần thứ ba] Cơn sốt của {spouse} kéo sang tuần thứ ba. Thuốc ở phòng khám đầu phố không còn tác dụng, và bác sĩ nói chỉ còn đúng một cách chữa, đắt hơn tất cả những gì bạn có.',
+    vi: '[Cơn sốt tuần thứ ba] Cơn sốt của {spouse} kéo sang tuần thứ ba. Thuốc ở phòng khám đầu phố không còn tác dụng, và bác sĩ nói chỉ còn đúng một phương thuốc, đắt hơn tất cả những gì bạn có.',
     en: '[The Third Week of Fever] {spouse}’s fever runs into its third week. The medicine from the clinic at the head of the street no longer works, and the doctor says only one option remains, dearer than anything you have.',
     choices: [
       {

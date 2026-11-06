@@ -60,7 +60,7 @@ export const DISTORTION_PATH_EVENTS = [
     weight: 80,
     requires: ['Distorted', 'DistortionNightmare'],
     forbids: ['domain_manifested'],
-    vi: "[Lãnh địa] Sự hiện diện của bạn đã đổi cả một góc Backstreets. Những tòa nhà dựng lên như phím đàn khổng lồ hoặc rối vào nhau thành mê cung gai thép. Ai lạc vào đây cũng nghe thấy tiếng bạn khóc trong đầu mình.",
+    vi: "[Lãnh địa] Từ khi bạn trú lại, cả một góc Backstreets đã đổi khác. Những tòa nhà dựng lên như phím đàn khổng lồ hoặc rối vào nhau thành mê cung gai thép. Ai lạc vào đây cũng nghe thấy tiếng bạn khóc trong đầu mình.",
     en: "[A Domain] Your presence has remade a corner of the Backstreets. Buildings rise like the keys of a giant instrument or knot together into a maze of barbed steel. Anyone who wanders in hears you weeping inside their own head.",
     choices: [
       {
@@ -109,7 +109,7 @@ export const DISTORTION_PATH_EVENTS = [
     weight: 65,
     requires: ['Distorted', 'DistortionStage2'],
     forbids: ['distort_flock_done'],
-    vi: "[Tín đồ của nỗi đau] Quanh lãnh địa, hàng trăm người tuyệt vọng của Backstreets, bị Wing bỏ rơi, bị Syndicate siết nợ, quỳ dưới chân bạn. Họ coi cơ thể biến dị và tiếng gào của bạn là thánh ca của một vị thần mới.",
+    vi: "[Tín đồ của nỗi đau] Quanh lãnh địa, hàng trăm người tuyệt vọng của Backstreets, bị Wing bỏ rơi, bị Syndicate siết nợ, quỳ dưới chân bạn. Họ coi thân xác biến dị và tiếng gào của bạn là thánh ca của vị thần mới.",
     en: "[Followers of the pain] Around your domain hundreds of desperate people from the Backstreets, abandoned by the Wing and squeezed by Syndicates, kneel at your feet. They take your warped body and your cries for the hymn of a new god.",
     choices: [
       {
@@ -339,13 +339,13 @@ export const DISTORTION_PATH_EVENTS = [
     weight: 42,
     allowDistorted: true,
     need: { jobs: ['Distortion'] },
-    vi: "[Beholder quan sát] Ánh mắt của một Beholder quét qua hang bạn. Dạng biến dị này đã lọt vào hồ sơ của The Head, và một lệnh xử lý có thể theo sau. Tia sáng dừng đúng trên người bạn.",
+    vi: "[Beholder quan sát] Ánh mắt Beholder quét qua hang bạn. Dạng biến dị này đã lọt vào hồ sơ của The Head, và một lệnh xử lý có thể theo sau. Tia sáng dừng đúng trên người bạn.",
     en: "[The Beholder watches] The gaze of a Beholder of B Corp sweeps over your den. This distortion has reached The Head’s files, and a disposal order may follow. The beam stops right on you.",
     choices: [
       {
         labelVi: "Ngẩng lên nhìn thẳng con mắt, khẳng định phần người sâu nhất của mình",
         labelEn: "Look up into the eye and assert the deepest human part of yourself",
-        resultVi: "Con mắt khổng lồ chớp chậm. Dù thân hình quái dị, khát vọng và nỗi đau của bạn rõ ràng là của một con người. Con mắt khép lại rồi tan. The Head chấp nhận bạn tồn tại trong The City.",
+        resultVi: "Con mắt khổng lồ chớp chậm. Dù thân hình quái dị, khát vọng và nỗi đau của bạn rõ ràng vẫn là của con người. Con mắt khép lại rồi tan. The Head chấp nhận bạn tồn tại trong The City.",
         resultEn: "The huge eye blinked slowly. Monster though you were, your longing and pain were plainly human. The eye closed and dissolved. The Head tolerated your existence in the City.",
         meritAdd: 35,
         effects: { rep: +60, sanity: +25, resonance: +30, heat: -20 }
@@ -373,7 +373,7 @@ export const DISTORTION_PATH_EVENTS = [
       {
         labelVi: "Mỉm cười chấp nhận và trở thành một huyền thoại của The City",
         labelEn: "Smile, accept, and become a legend of The City",
-        resultVi: "Cơn đau biến mất, nhường chỗ cho một sự yên lặng mà bạn không nhớ đã từng có. Bạn không còn là con quái vật đau khổ nữa, mà là một sinh linh sống đúng với phần sâu nhất của mình.",
+        resultVi: "Cơn đau biến mất, nhường chỗ cho sự yên lặng bạn không nhớ mình từng có. Bạn không còn là con quái vật đau khổ nữa, mà là một sinh linh sống đúng với phần sâu nhất của mình.",
         resultEn: "The pain disappears and leaves a quiet you do not remember ever having. You are no longer a suffering monster but a being who lives by the deepest part of itself.",
         meritAdd: 40,
         effects: { sanity: +45, resonance: +40, health: +30, rep: +50 }

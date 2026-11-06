@@ -45,7 +45,7 @@ export const GAUNTLETS = {
     floors: [
       { kind: 'fight', tier: 1, enemies: [
         foe('Khối thịt ở khoang đệm', 'The mass in the airlock', 'Cửa khoang đệm mở ra. Thứ đầu tiên chào bạn từng là ba hành khách ngồi cạnh nhau.', 'The airlock opens. The first thing to greet you was once three passengers sitting side by side.', 3, ['lunge', 'crush', 'lunge', 'spread']),
-        foe('Người soát vé hai nghìn năm', 'The two-thousand-year conductor', 'Một người soát vé vẫn đứng ở cửa toa, chiếc kìm bấm vé đã mọc vào bàn tay.', 'A conductor still stands at the car door, the ticket punch grown into their hand.', 3, ['lunge', 'clutch', 'crush'])
+        foe('Người soát vé hai nghìn năm', 'The two-thousand-year conductor', 'Người soát vé vẫn đứng ở cửa toa, chiếc kìm bấm vé đã mọc vào bàn tay.', 'A conductor still stands at the car door, the ticket punch grown into their hand.', 3, ['lunge', 'clutch', 'crush'])
       ] },
       { kind: 'fight', tier: 2, enemies: [
         foe('Dãy ghế biết thở', 'The breathing row of seats', 'Cả dãy ghế phập phồng. Những người ngồi trên đó đã thành một phần của chúng.', 'The whole row of seats rises and falls. Those sitting on them have become part of them.', 3, ['spread', 'whisper', 'lunge', 'crush'])
@@ -55,7 +55,7 @@ export const GAUNTLETS = {
         foe('Nhân viên dọn tàu đã hóa', 'The cleaner who turned', 'Một nhân viên dọn tàu W Corp quay lại nhìn bạn. Mặt nạ khí vẫn trên mặt, nhưng phía sau nó đã không còn khuôn mặt.', 'A W Corp cleaner turns to look at you. The rebreather is still on, but behind it there is no face left.', 4, ['lunge', 'crush', 'clutch', 'lunge'])
       ] },
       { kind: 'fight', tier: 3, enemies: [
-        foe('Bức tường hành khách', 'The wall of passengers', 'Lối đi bị chặn bởi một bức tường người, tay đan vào tay. Họ không muốn bạn đi qua. Họ muốn bạn ở lại.', 'The aisle is blocked by a wall of people, hands woven into hands. They do not want you to pass. They want you to stay.', 4, ['spread', 'clutch', 'whisper', 'crush'])
+        foe('Bức tường hành khách', 'The wall of passengers', 'Bức tường người tay đan vào tay chắn ngang lối đi. Họ không muốn bạn đi qua. Họ muốn bạn ở lại.', 'The aisle is blocked by a wall of people, hands woven into hands. They do not want you to pass. They want you to stay.', 4, ['spread', 'clutch', 'whisper', 'crush'])
       ] },
       { kind: 'rest' },
       { kind: 'boss', tier: 4, enemies: [
@@ -87,7 +87,7 @@ export const GAUNTLETS = {
         foe('Noon of Green', 'Noon of Green', 'Những cỗ máy xanh lục bước đều từ hành lang, như được lập trình để nghi ngờ mọi thứ còn sống.', 'Green machines march in step from the corridor, as if programmed to doubt everything alive.', 4, ['slam', 'claw', 'slam', 'burst'])
       ] },
       { kind: 'fight', tier: 3, enemies: [
-        foe('Đội trưởng đội khống chế cũ', 'The old suppression captain', 'Người đội trưởng vẫn mặc bộ E.G.O mượn của một Abnormality. Thứ ấy giờ mặc ngược lại người.', 'The captain still wears E.G.O borrowed from an Abnormality. Now it wears the captain.', 4, ['claw', 'root', 'hymn', 'slam'])
+        foe('Đội trưởng đội khống chế cũ', 'The old suppression captain', 'Người đội trưởng vẫn khoác bộ E.G.O mượn từ Abnormality. Thứ ấy giờ mặc ngược lại người.', 'The captain still wears E.G.O borrowed from an Abnormality. Now it wears the captain.', 4, ['claw', 'root', 'hymn', 'slam'])
       ] },
       { kind: 'rest' },
       { kind: 'boss', tier: 4, enemies: [
@@ -222,7 +222,7 @@ GAUNTLETS.dungeon_claw_judgment = {
   },
   floors: [
     { kind: 'fight', tier: 4, enemies: [
-      foe('Beholder of the Eye', 'Beholder of the Eye', 'Mọi tiếng động trong phòng ngừng lại. Một Beholder của B Corp đứng ở góc phòng, nơi bạn chắc chắn không có ai một giây trước. Nó chỉ nhìn.', 'Every sound in the room stops. A B Corp Beholder stands in the corner where you are sure no one stood a second ago. It only watches.', 4, ['gaze', 'mark', 'report', 'gaze'])
+      foe('Beholder of the Eye', 'Beholder of the Eye', 'Mọi tiếng động trong phòng ngừng lại. Beholder của B Corp đứng trong góc phòng, nơi bạn chắc chắn không có ai một giây trước. Nó chỉ nhìn.', 'Every sound in the room stops. A B Corp Beholder stands in the corner where you are sure no one stood a second ago. It only watches.', 4, ['gaze', 'mark', 'report', 'gaze'])
     ] },
     { kind: 'rest' },
     { kind: 'fight', tier: 5, enemies: [

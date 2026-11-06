@@ -564,7 +564,7 @@ export const NPC_CHOICE_CALLBACKS = [
     'cb_npc_partner_roof_window',
     [20, 140],
     { npc: 'partner', mem: 'npc_partner_roof_window', memMinYears: 2 },
-    '[Chén trà để lại bên bậu cửa] Sau giờ làm, {partner} đặt một chén trà nóng ở bậu cửa sổ hành lang chỗ bạn hay đứng, thay vì rủ bạn lên mái nhà như buổi chiều năm trước.',
+    '[Chén trà để lại bên bậu cửa] Sau giờ làm, {partner} để chén trà nóng nơi bậu cửa sổ hành lang chỗ bạn hay đứng, thay vì rủ bạn lên mái nhà như buổi chiều năm trước.',
     '[A Cup Left on the Sill] After hours, {partner} sets a warm cup of tea on the hallway windowsill where you usually stand instead of calling you up to the roof.',
     { sanity: 1 },
     CB('partner')

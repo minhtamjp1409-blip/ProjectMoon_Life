@@ -128,7 +128,7 @@ export function rollPerinatalFate({ region, familyId, omenId, flags = [], wealth
 const ANY = [0, 140];
 
 // dmg = [min,max] health lost; san = sanity lost; ahn = wealth lost; lethal = base chance this one kills outright.
-const MISHAPS = [
+export const MISHAPS = [
   // ---- the young
   { id: 'mi_fever_night', age: [0, 11], w: (c) => 1 + (10 - c.region.medical) * 0.25, dmg: [6, 14], san: 0, ahn: 0, lethal: 0.028,
     vi: 'Cơn sốt đến vào đêm mưa. Người lớn trong nhà thay nhau thay khăn ướt, và không ai nói họ đang đếm tiền thuốc trong đầu.',
@@ -139,7 +139,7 @@ const MISHAPS = [
     en: 'The District’s smoke did not lift for three weeks. You learned to breathe shallow, and to not look at the cloth after each cough.',
     deathVi: 'Phổi bỏ cuộc sau nhiều mùa khói bụi', deathEn: 'Lungs that gave up after too many seasons of smoke' },
   { id: 'mi_fall_scaffold', age: [5, 15], w: (c) => (c.nest ? 0.2 : 1), dmg: [8, 18], san: 0, ahn: 0, lethal: 0.018,
-    vi: 'Bạn trèo lên giàn giáo tòa nhà bỏ dở để nhìn thấy đèn của Nest. Thanh sắt thứ tư không chịu nổi sức nặng của một đứa trẻ đang ngước lên.',
+    vi: 'Bạn trèo lên giàn giáo tòa nhà bỏ dở để nhìn thấy đèn của Nest. Thanh sắt thứ tư không chịu nổi sức nặng đứa trẻ đang ngước nhìn.',
     en: 'You climbed the scaffolding of an abandoned tower to see the lights of the Nest. The fourth bar could not take the weight of a child looking up.',
     deathVi: 'Ngã từ giàn giáo, trong lúc ngước nhìn ánh đèn của Nest', deathEn: 'Fell from scaffolding while looking up at the Nest lights' },
   { id: 'mi_tainted_water', age: [0, 140], human: true, w: (c) => (c.region.medical <= 5 ? 1.2 : 0.2), dmg: [5, 12], san: 2, ahn: 0, lethal: 0.012,
@@ -162,7 +162,7 @@ const MISHAPS = [
   { id: 'mi_tenement_fire', age: ANY, human: true, w: (c) => (c.nest ? 0.1 : 1), dmg: [10, 24], san: 4, ahn: 6, lethal: 0.03,
     vi: 'Lửa bắt đầu từ bếp dầu của nhà bên và đi theo hành lang nhanh hơn người. Bạn cứu được chiếc túi, và hiểu sau đó rằng mình đã chọn sai thứ để cứu.',
     en: 'The fire started at a neighbor’s oil stove and ran down the corridor faster than people could. You saved the bag, and understood afterward that you had chosen the wrong thing to save.',
-    deathVi: 'Mắc kẹt trong đám cháy của một dãy nhà trọ', deathEn: 'Trapped in a tenement fire' },
+    deathVi: 'Mắc kẹt trong đám cháy dãy nhà trọ', deathEn: 'Trapped in a tenement fire' },
   { id: 'mi_contaminated_ration', age: [4, 140], human: true, w: (c) => (c.wealth <= 8 ? 1.2 : 0.3), dmg: [4, 10], san: 0, ahn: 1, lethal: 0.008,
     vi: 'Hộp khẩu phần rẻ nhất ở quầy có hạn dùng bị in đè bằng mực khác. Bạn ăn nó vì cái giá, và nằm trong nhà vệ sinh chung suốt hai ngày vì cái giá ấy.',
     en: 'The cheapest ration tin on the counter had its date stamped over in a different ink. You ate it for the price, and spent two days in the shared washroom for the same reason.',
@@ -208,19 +208,32 @@ const MISHAPS = [
     vi: 'Một tiếng nhạc không có nguồn phát ra từ tầng dưới trong nửa đêm. Sáng hôm sau cả khu nói rằng họ không nghe thấy gì, và không ai nhìn vào mắt nhau.',
     en: 'A music with no source came from the floor below in the middle of the night. By morning the whole block said they had heard nothing, and no one looked anyone in the eye.',
     deathVi: 'Đi theo một tiếng nhạc không có nguồn xuống tầng hầm', deathEn: 'Followed a music with no source down to the cellar' },
-  { id: 'mi_cold_snap', age: [0, 140], w: (c) => (c.outside ? 1.8 : c.wealth <= 5 ? 1 : 0.15), dmg: [6, 14], san: 2, ahn: 1, lethal: 0.016,
+  { id: 'mi_cold_snap', age: [0, 140], human: true, w: (c) => (c.outside ? 1.8 : c.wealth <= 5 ? 1 : 0.15), dmg: [6, 14], san: 2, ahn: 1, lethal: 0.016,
     vi: 'Đợt rét về sớm mười ngày. Bạn ngủ với tất cả quần áo mình có, và vẫn nghe răng mình va vào nhau như một bộ đếm.',
     en: 'The cold came ten days early. You slept in every piece of clothing you owned and still heard your teeth knocking like a counter.',
     deathVi: 'Đợt rét đến sớm hơn mười ngày', deathEn: 'A cold snap ten days early' },
   // ---- old age
-  { id: 'mi_heart', age: [52, 140], w: () => 1.4, dmg: [14, 32], san: 4, ahn: 3, lethal: 0.07,
+  { id: 'mi_heart', age: [52, 140], human: true, w: () => 1.4, dmg: [14, 32], san: 4, ahn: 3, lethal: 0.07,
     vi: 'Bậc cầu thang thứ mười một trở nên dài hơn mọi lần. Bạn ngồi xuống giữa chừng và nghe tim mình như tiếng ai gõ cửa từ bên trong.',
     en: 'The eleventh step of the stairs was longer than ever. You sat down halfway and heard your heart like someone knocking at a door from the inside.',
     deathVi: 'Trái tim ngừng giữa chừng cầu thang', deathEn: 'The heart stopped halfway up the stairs' },
-  { id: 'mi_quiet_stroke', age: [62, 140], w: () => 1.2, dmg: [12, 30], san: 6, ahn: 4, lethal: 0.09,
+  { id: 'mi_quiet_stroke', age: [62, 140], human: true, w: () => 1.2, dmg: [12, 30], san: 6, ahn: 4, lethal: 0.09,
     vi: 'Buổi sáng bạn tìm cái tách, và bàn tay trái không nghe lời. Căn phòng yên đến mức bạn nghe thấy rõ từng giây lúc bạn nhận ra điều đó.',
     en: 'In the morning you reached for the cup, and the left hand would not listen. The room was so quiet you heard each second as you understood.',
-    deathVi: 'Một cơn đột quỵ lặng lẽ vào buổi sáng', deathEn: 'A quiet stroke in the morning' }
+    deathVi: 'Một cơn đột quỵ lặng lẽ vào buổi sáng', deathEn: 'A quiet stroke in the morning' },
+  // ---- distortion
+  { id: 'mi_distort_calcification', age: [20, 140], distortionOnly: true, w: () => 1.5, dmg: [15, 30], san: 4, ahn: 0, lethal: 0.05,
+    vi: 'Lớp vỏ dị thường quanh ngực bạn cứng lại và nứt ra từng mảng. Bạn nghe thấy tiếng xương thịt mình tự kết tinh dưới bóng tối của khu phế tích.',
+    en: 'The anomalous carapace over your chest hardens and cracks in slabs. You hear your own flesh crystallizing in the dark of the ruins.',
+    deathVi: 'Lớp vỏ dị thường kết tinh hoàn toàn và sụp đổ', deathEn: 'Complete calcification and collapse of the anomalous shell' },
+  { id: 'mi_distort_purification', age: [20, 140], distortionOnly: true, w: (c) => (c.heat >= 25 ? 2.0 : 1.0), dmg: [18, 35], san: 8, ahn: 0, lethal: 0.07,
+    vi: 'Một nhóm Fixer tuần tra lần theo vết cộng hưởng đến tận nơi ẩn náu. Họ để lại những vết chém sâu vào lõi biến dị trước khi bạn trốn thoát.',
+    en: 'A Fixer patrol traces your resonance to your sanctuary. They leave deep gouges in your distorted core before you break away.',
+    deathVi: 'Bị biệt đội Fixer thanh trừng tại nơi trú ẩn', deathEn: 'Purged in sanctuary by a Fixer strike team' },
+  { id: 'mi_distort_dissolution', age: [20, 140], distortionOnly: true, w: (c) => (c.resonance >= 40 ? 1.8 : 0.8), dmg: [16, 32], san: 12, ahn: 0, lethal: 0.06,
+    vi: 'Tiếng thì thầm từ biển ánh sáng dâng lên quá mạnh làm cấu trúc thân xác bạn tan rã thành tro bụi và ánh lân tinh.',
+    en: 'The whisper from the sea of light surges too violently, dissolving your physical form into ash and phosphorescence.',
+    deathVi: 'Cấu trúc dị thường tan rã trong tiếng thì thầm của Biển Ánh Sáng', deathEn: 'Anomalous form dissolved by the whisper from the Light' }
 ];
 
 /** How exposed this person is, relative to an ordinary Backstreets adult. */
@@ -257,10 +270,26 @@ export function rollSeasonMishap(char, rng) {
   const chance = clamp(0.045 * exposureIndex(char) * ageCurve * traits.drama * harshness, 0.01, 0.5);
   if (rng() >= chance) return null;
 
-  const ctx = { region, nest, outside, wealth: char.stats?.wealth ?? 5, job: char.job, oldInjury: hasScarTag(char, 'injury') };
+  const ctx = {
+    region,
+    nest,
+    outside,
+    wealth: char.stats?.wealth ?? 5,
+    heat: char.stats?.heat ?? char.heat ?? 0,
+    resonance: char.resonance ?? 0,
+    job: char.job,
+    oldInjury: hasScarTag(char, 'injury')
+  };
+  const isDistorted = Boolean(char.flags?.includes('Distorted') || char.job === 'Distortion');
   const recent = char.recentMishaps || [];
   const pool = MISHAPS
-    .filter((m) => ageNow >= m.age[0] && ageNow <= m.age[1] && !recent.includes(m.id))
+    .filter((m) => {
+      if (ageNow < m.age[0] || ageNow > m.age[1]) return false;
+      if (recent.includes(m.id)) return false;
+      if (isDistorted && m.human) return false;
+      if (!isDistorted && m.distortionOnly) return false;
+      return true;
+    })
     .map((m) => ({ m, w: m.w(ctx) }))
     .filter((x) => x.w > 0);
   if (!pool.length) return null;

@@ -55,7 +55,7 @@ export const LINEAGE_LEGACY_EVENTS = [
     weight: 14,
     requires: ['HuyếtThốngKếThừa'],
     forbids: ['NợMáuĐờiTrước'],
-    vi: "[Người mang ơn cũ] Một chủ Workshop cao cấp gửi người mang thư mời bạn tới tầng thượng một tòa tháp. Người đó từng được {parentName} cứu mạng trong một trận thanh trừng ở Backstreets nhiều năm trước. \"Gương mặt và cách cầm vũ khí của cháu không khác gì người đó năm xưa. Ta đã nợ một món ân tình, và hôm nay là lúc hoàn trả.\"",
+    vi: "[Người mang ơn cũ] Vị chủ Workshop hạng sang sai người mang thư mời bạn lên tầng thượng tòa tháp. Nhiều năm trước, {parentName} từng cứu mạng người ấy trong trận thanh trừng ở Backstreets. \"Gương mặt và cách cầm vũ khí của cháu không khác gì người đó năm xưa. Ta đã nợ một món ân tình, và hôm nay là lúc hoàn trả.\"",
     en: "[An Old Obligation] The master of a high-tier Workshop sends an escort inviting you to a tower rooftop. Long ago, {parentName} dragged them out of a slaughter in the Backstreets. “Your eyes and your stance are identical to theirs back then. I carried a debt of life, and today I begin paying it back.”",
     choices: [
       {
@@ -314,7 +314,7 @@ export const LINEAGE_LEGACY_EVENTS = [
     weight: 15,
     requires: ['AncestorWasWingExec'],
     forbids: ['Distorted'],
-    vi: "[Két Sắt Sinh Trắc Học Tại Nest] Một ngân hàng lưu ký tự động tại trung tâm Nest gửi thông báo bảo mật khi quét thấy chuỗi gen của bạn trùng khớp với cố quản lý cấp cao {parentName}. Cánh cửa hợp kim mở ra, để lộ một két an toàn chứa cổ phiếu ưu đãi của Tập đoàn cùng tập hồ sơ đen ghi chép các dự án Singularity chưa từng công bố.",
+    vi: "[Két Sắt Sinh Trắc Học Tại Nest] Ngân hàng lưu ký tự động giữa lòng Nest gửi thông báo bảo mật khi quét thấy chuỗi gen của bạn trùng khớp với cố quản lý cấp cao {parentName}. Cánh cửa hợp kim mở ra, để lộ một két an toàn chứa cổ phiếu ưu đãi của Tập đoàn cùng tập hồ sơ đen ghi chép các dự án Singularity chưa từng công bố.",
     en: "[Biometric Nest Vault] An automated depository in the Nest core issues a priority alert upon matching your genetic sequence to former executive {parentName}. The alloy vault parts, revealing preferred corporate shares alongside a black binder of undisclosed Singularity trials.",
     choices: [
       {

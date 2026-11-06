@@ -144,7 +144,7 @@ export const WING_THREAD_EVENTS = [
   {
     id: 'wing_thread_favor_called', age: [26, 74], jobs: ['Wing Employee'], major: true, weight: 0, causalOnly: true,
     requires: ['WingOwedFavor'], forbids: ['Distorted'],
-    vi: '[Món nợ không ghi sổ] Người gửi phong bì năm xưa cuối cùng cũng xuất hiện, trong một cuộc họp có tên bạn ở dưới cùng danh sách. Họ cần một chữ ký của bạn, trên một trang mà bạn chưa được đọc.',
+    vi: '[Món nợ không ghi sổ] Người gửi phong bì năm xưa rốt cuộc cũng lộ mặt, trong cuộc họp có tên bạn nằm cuối danh sách. Họ cần chữ ký của bạn, trên trang giấy bạn chưa được đọc.',
     en: '[The unwritten debt] The person who sent the envelope all those years ago finally appears, at a meeting where your name sits at the bottom of the list. They need your signature on a page you have not been allowed to read.',
     choices: [
       {
@@ -202,7 +202,7 @@ export const WING_THREAD_EVENTS = [
   {
     id: 'wing_thread_buyer_returns', age: [27, 76], jobs: ['Wing Employee'], major: true, weight: 0, causalOnly: true,
     requires: ['WingSoldCopy'], forbids: ['Distorted'],
-    vi: '[Người mua quay lại] Người từng mua bản chép của bạn quay lại, lần này trong bộ đồ của một Section Chief. Họ nhớ giá bạn đã nhận. Họ hỏi bạn có còn biết điều gì khác nằm ở những trang bên cạnh không.',
+    vi: '[Người mua quay lại] Người từng mua bản chép của bạn quay lại, lần này khoác bộ đồ Section Chief. Họ nhớ giá bạn đã nhận. Họ hỏi bạn có còn biết điều gì khác nằm ở những trang bên cạnh không.',
     en: '[The buyer returns] The person who bought your copy comes back, this time in a Section Chief’s clothes. They remember the price you took. They ask whether you know what else sits on the pages beside it.',
     choices: [
       {

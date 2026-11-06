@@ -490,7 +490,7 @@ export const SUPERNATURAL_EVENTS = [
         flagsAdd: ['WildHuntRider'],
         scarsAdd: ['Kỵ sĩ của The Wild Hunt'],
         meritAdd: 40,
-        resultVi: 'Bạn nhận lấy thanh đại đao và tấm áo choàng rách rưới. Erlking trao cho bạn dây cương của một con ngựa tử linh. Khi bạn giẫm chân, mặt đất T Corp rung chuyển theo tiếng gọi của cõi chết.',
+        resultVi: 'Bạn nhận lấy thanh đại đao và tấm áo choàng rách rưới. Erlking trao cho bạn dây cương con ngựa tử linh. Khi bạn giẫm chân, mặt đất T Corp rung chuyển theo tiếng gọi của cõi chết.',
         resultEn: 'Accepting the jagged blade and tattered mantle, Erlking handed you the reins of a spectral steed. With every step you take, T Corp’s stone quakes to the call of the fallen.'
       }
     ]
@@ -704,7 +704,7 @@ export const FIXER_REQUESTS = [
     tier: 1,
     typeVi: 'Hộ tống một nhân chứng',
     typeEn: 'Escort a witness',
-    vi: 'Một người nắm giữ sổ sách của một Syndicate cần đến được cổng Nest. Ba nhóm sát thủ đang tìm họ.',
+    vi: 'Người giữ sổ sách của Syndicate nọ cần tới được cổng Nest. Ba nhóm sát thủ đang tìm họ.',
     en: 'Someone holding a Syndicate’s ledgers needs to reach the Nest gate. Three teams of killers are looking for them.',
     okVi: 'Người cuối cùng chặn đường bạn ở cây cầu. Bạn đẩy thân chủ qua cổng đúng lúc cổng đóng lại.',
     okEn: 'The last of them stopped you at the bridge. You pushed the client through the gate just as it closed.',
@@ -716,9 +716,9 @@ export const FIXER_REQUESTS = [
   {
     id: 'req_pierre_bistro_rescue',
     tier: 2,
-    typeVi: 'Bếp sau của một Bistro ở District 23',
+    typeVi: 'Bếp sau quán Bistro ở District 23',
     typeEn: 'The back kitchen of a District 23 bistro',
-    vi: 'Con gái một thương nhân bị bắt vào bếp sau của một quán ăn ở District 23. Thời gian còn lại tính bằng giờ, trước khi thực đơn tối nay được in.',
+    vi: 'Con gái nhà thương nhân nọ bị bắt vào bếp sau quán ăn ở District 23. Thời gian còn lại tính bằng giờ, trước khi thực đơn tối nay được in.',
     en: 'A merchant’s daughter was taken into the back kitchen of a District 23 restaurant. There are hours left, before tonight’s menu is printed.',
     okVi: 'Bạn chặt cánh tay cầm dao của bếp trưởng, đá đổ lò, và gỡ cô gái khỏi móc. Cô ấy còn sống. Cô ấy không nói gì suốt đường về.',
     okEn: 'You took off the head chef’s knife arm, kicked over the oven, and lifted the girl off the hook. She was alive. She said nothing the whole way back.',
@@ -746,7 +746,7 @@ export const FIXER_REQUESTS = [
     tier: 4,
     typeVi: 'Giữ một khu dân cư qua Night in the Backstreets (Urban Nightmare)',
     typeEn: 'Hold a residential block through the Night in the Backstreets (Urban Nightmare)',
-    vi: 'Hệ thống bảo vệ của một khu nhà hỏng đúng 3 giờ 10. Nếu không ai giữ cửa, cả khu sẽ không còn ai vào sáng mai.',
+    vi: 'Hệ thống bảo vệ khu nhà hỏng đúng 3 giờ 10. Nếu không ai giữ cửa, cả khu sẽ không còn ai vào sáng mai.',
     en: 'A block’s protection system failed at exactly 3:10. If no one holds the door, there will be no one left in the block by morning.',
     okVi: 'Tám mươi mốt phút. Khi trời sáng, bạn vẫn đứng ở cửa, và sau lưng bạn vẫn còn tiếng trẻ con khóc.',
     okEn: 'Eighty-one minutes. When dawn came you were still standing in the doorway, and behind you children were still crying.',

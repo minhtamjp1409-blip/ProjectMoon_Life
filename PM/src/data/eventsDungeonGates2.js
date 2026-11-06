@@ -87,7 +87,7 @@ export const DUNGEON_GATE_EVENTS_2 = [
       enter('dungeon_great_lake', 'gate_wing_lake_contract_done', 'Lên tàu và kiểm tra thiết bị', 'Board the ship and inspect the device',
         'Thuyền trưởng đặt trước mặt bạn sổ Luật Đại Hồ và chờ bạn đọc xong mới nhổ neo.', 'The captain puts the Lake Law book before you and waits until you finish reading to cast off.'),
       prepare('dungeon_great_lake', 'gate_wing_lake_contract_done', 'Chi 12 Ahn mua áo phao và thuốc chống lạnh', 'Spend 12 Ahn on a life vest and cold-water medicine',
-        'Áo phao của tàu không vừa. Bạn mua một chiếc khác ngay tại bến.', 'The ship vest does not fit. You buy another at the dock.'),
+        'Áo phao của tàu không vừa. Bạn mua chiếc khác ngay ở bến.', 'The ship vest does not fit. You buy another at the dock.'),
       decline('gate_wing_lake_contract_done', 'Chỉ nhận kiểm định khi thiết bị được đưa lên bờ', 'Insist on inspecting the device ashore',
         'U Corp giao hợp đồng cho một nhân viên khác. Phòng pháp chế ghi lại lý do bạn từ chối.', 'U Corp gives the contract to another employee. Legal records why you declined.', { rep: -2 })
     ]
@@ -137,7 +137,7 @@ export const DUNGEON_GATE_EVENTS_2 = [
   gate({
     id: 'gate_outcast_lake_salvage', done: 'gate_outcast_lake_salvage_done', age: [18, 65], weight: 36,
     need: { jobs: ['Outcast'] },
-    vi: '[Chỗ trên tàu vớt hàng] Một tàu vớt hàng ở District 21 thiếu người kéo lưới. Họ không hỏi giấy cư trú; tiền công chia theo những thùng mang về từ Great Lake.',
+    vi: '[Chỗ trên tàu vớt hàng] Tàu vớt hàng ở District 21 đang thiếu người kéo lưới. Họ không hỏi giấy cư trú; tiền công chia theo những thùng mang về từ Great Lake.',
     en: '[A berth on the salvage boat] A District 21 salvage boat needs another pair of hands on the nets. They ask for no residence papers; pay is split by the crates brought back from the Great Lake.',
     choices: [
       enter('dungeon_great_lake', 'gate_outcast_lake_salvage_done', 'Nhận chỗ và lên tàu', 'Take the berth and board',
@@ -294,7 +294,7 @@ export const DUNGEON_GATE_EVENTS_2 = [
   gate({
     id: 'gate_assoc_devyat_warp', done: 'gate_assoc_devyat_done', age: [18, 75], weight: 44,
     need: { jobs: ['Fixer'], aff: 'devyat' },
-    vi: '[Devyat’: một chuyến hàng đi bằng WARP] Một kiện hàng của Devyat’ phải sang được bờ kia của The City trong một ngày, và chỉ có tàu WARP đủ nhanh. Hàng phải đi ở toa cuối. Không ai trong phòng phát hàng nói vì sao.',
+    vi: '[Devyat’: một chuyến hàng đi bằng WARP] Kiện hàng của Devyat’ phải sang được bên kia The City trong một ngày, và chỉ có tàu WARP đủ nhanh. Hàng phải đi ở toa cuối. Không ai trong phòng phát hàng nói vì sao.',
     en: '[Devyat’: a consignment by WARP] A Devyat’ consignment must cross the City within a day, and only the WARP train is fast enough. It has to ride in the last car. No one at dispatch says why.',
     choices: [
       enter('dungeon_warp_train', 'gate_assoc_devyat_done', 'Ôm kiện hàng vào toa cuối', 'Carry the consignment into the last car',
@@ -337,7 +337,7 @@ export const DUNGEON_GATE_EVENTS_2 = [
   // ---- what you carried out comes back ----
   {
     id: 'csq_dungeon_trophy_kept', age: [18, 99], major: true, weight: 0, causalOnly: true, requires: ['KeptDungeonTrophy'],
-    vi: '[Thứ mang lên từ bên dưới] Một người lạ chờ bạn ở quán quen. Họ biết bạn đã xuống đâu, và biết bạn đã mang thứ gì lên. Họ không đe dọa. Họ đặt lên bàn một phong bì dày, và một tấm ảnh chụp cửa nhà bạn.',
+    vi: '[Thứ mang lên từ bên dưới] Có người lạ ngồi chờ bạn ở quán quen. Họ biết bạn đã xuống đâu, và biết bạn đã mang thứ gì lên. Họ không đe dọa. Họ đặt lên bàn phong bì dày, kèm tấm ảnh chụp cửa nhà bạn.',
     en: '[What came up from below] A stranger waits for you at your usual bar. They know where you went down, and what you brought back up. They do not threaten. They set a thick envelope on the table, and a photograph of your front door.',
     choices: [
       { labelVi: 'Bán cho họ và nhận phong bì', labelEn: 'Sell it to them and take the envelope',
@@ -377,7 +377,7 @@ export const DUNGEON_GATE_EVENTS_2 = [
     en: '[What is left of L Corp] The Maestro has heard that in the ruins of L Corp one pane of glass remains unbroken, so clear it seems not to be there. They want it for the next work, and do not say who went for it before you.',
     choices: [
       enter('dungeon_lobotomy_ruin', 'gate_lobotomy_ring_relic_done', 'Nhận bản đồ cũ và vào tàn tích', 'Take the old map and enter the ruins',
-        'Bản đồ ghi các hành lang bằng nét chữ của một người đã chết. Có hành lang không còn ở đó nữa, và có hành lang khác chưa từng có.', 'The map marks the corridors in a dead person’s hand. Some corridors are no longer there, and some others never were.'),
+        'Tấm bản đồ ghi các hành lang bằng nét chữ của người đã chết. Có hành lang không còn ở đó nữa, và có hành lang khác chưa từng có.', 'The map marks the corridors in a dead person’s hand. Some corridors are no longer there, and some others never were.'),
       prepare('dungeon_lobotomy_ruin', 'gate_lobotomy_ring_relic_done', 'Chi 12 Ahn mua mặt nạ lọc và một cuộn băng đánh dấu đường', 'Spend 12 Ahn on a filter mask and a roll of marking tape',
         'Người bán băng dặn: dán mỗi ba bước, và nếu một dải biến mất thì quay lại ngay.', 'The tape seller tells you: stick a strip every three paces, and if one vanishes turn back at once.'),
       decline('gate_lobotomy_ring_relic_done', 'Nói với Maestro rằng tác phẩm không cần thứ trong suốt', 'Tell the Maestro the work needs nothing transparent',

@@ -67,7 +67,7 @@ export const INDEX_CONTRACTS = [
 
   // ------------------------------------------------------------ tier 2: a person under watch
   rq('index_shadow_stranger', 2, 'Theo dõi một người lạ', 'Shadow a stranger',
-    'Prescript đính kèm một tấm ảnh: một người đàn ông trung niên, đứng trước một tiệm bánh. "Đi theo suốt ba ngày. Không nói chuyện. Ghi lại nơi họ dừng chân."',
+    'Prescript đính kèm tấm ảnh: người đàn ông trung niên đứng trước tiệm bánh. "Đi theo suốt ba ngày. Không nói chuyện. Ghi lại nơi họ dừng chân."',
     'The Prescript has a photograph attached: a middle-aged man in front of a bakery. “Follow for three days. Do not speak. Record where they stop.”',
     'Ba ngày: tiệm bánh, một nghĩa trang, một phòng khám nhỏ. Bạn nộp báo cáo, và người trong ảnh hôm đó bước vào phòng khám lần thứ tư rồi không bao giờ ra.',
     'Three days: the bakery, a cemetery, a small clinic. You file the report, and that day the man in the photograph enters the clinic a fourth time and never comes out.',
@@ -79,7 +79,7 @@ export const INDEX_CONTRACTS = [
   rq('index_letter_for_dead', 2, 'Giao một lá thư cho người đã chết', 'Deliver a letter to the dead',
     'Prescript ghi: "Giao lá thư này cho Wong Ha-yan, số 7 phố Than." Bạn biết số 7 phố Than. Căn nhà đó cháy cách đây tám năm.',
     'The Prescript reads: “Deliver this letter to Wong Ha-yan, number 7 Coal Street.” You know number 7 Coal Street. The house burned down eight years ago.',
-    'Bạn đặt lá thư giữa đống gạch. Một cụ già đứng ở đầu phố nhìn bạn làm, rồi đến nhận lá thư và nói: "Cảm ơn." Bạn không hỏi gì.',
+    'Bạn đặt lá thư giữa đống gạch. Cụ già đứng đầu phố nhìn bạn làm, rồi bước tới nhận lá thư và nói: "Cảm ơn." Bạn không hỏi gì.',
     'You set the letter among the bricks. An old person at the end of the street watches, then comes forward to take it and says, “Thank you.” You ask nothing.',
     'Bạn mang thư về, nguyên phong bì. Index không hỏi, và hai tuần sau một Proselyte đến nhà bạn mà không báo trước.',
     'You bring the letter back, still sealed. Index asks nothing, and two weeks later a Proselyte comes to your home unannounced.',
@@ -112,7 +112,7 @@ export const INDEX_CONTRACTS = [
     'The Prescript reads: “Cross the white painted line on Old Street at midnight and stand there fifteen minutes.” Old Street is the boundary between two turfs at war.',
     'Hai bên đều thấy bạn. Cả hai đều chờ bên kia ra tay trước. Mười lăm phút kết thúc, bạn quay lại, và cuộc ẩu đả đêm đó không diễn ra.',
     'Both sides see you. Each waits for the other to move first. The fifteen minutes end, you walk back, and the brawl that night does not happen.',
-    'Một người nổ súng ở phút thứ chín. Bạn chạy, vết đạn sượt qua tai. Index ghi nhận Prescript đã thực hiện được một nửa.',
+    'Sang phút thứ chín có kẻ nổ súng. Bạn chạy, viên đạn sượt qua tai. Index ghi rằng Prescript mới làm được một nửa.',
     'Someone fires at the ninth minute. You run, a round grazing your ear. Index records the Prescript as half-completed.',
     'Mười lăm phút là đủ để cả hai bên quyết định rằng bạn là mục tiêu chung.',
     'Fifteen minutes is enough for both sides to decide you are a shared target.'),
@@ -128,7 +128,7 @@ export const INDEX_CONTRACTS = [
     'The room is not empty. Whatever lives in it has had plenty of time to wait for you.'),
 
   // ------------------------------------------------------------ tier 4: a Proxy directive
-  rq('index_proxy_target', 4, 'Chỉ thị của một Proxy', 'A Proxy’s directive',
+  rq('index_proxy_target', 4, 'Chỉ thị của Proxy', 'A Proxy’s directive',
     'Một Proxy đến tận nhà, ngồi xuống, và đọc to Prescript: "Người trong tấm ảnh không được sống qua mùa này. Cách do bạn chọn." Người trong ảnh bạn quen.',
     'A Proxy comes to your home, sits down, and reads the Prescript aloud: “The person in the photograph must not live through this season. The method is yours to choose.” You know the person in the photograph.',
     'Bạn làm trong im lặng, và giữ lại một điều: người đó không biết ai đã làm. Proxy đọc báo cáo, đóng dấu, và chưa bao giờ nhắc lại Prescript đó.',
@@ -137,7 +137,7 @@ export const INDEX_CONTRACTS = [
     'You arrive a day late. The person in the photograph has gone, and the Proxy looks at you a long time on hearing it.',
     'Người trong tấm ảnh đã nhận được Prescript trước bạn. Prescript của họ viết tên bạn.',
     'The person in the photograph received a Prescript before you did. Theirs names you.',
-    { mem: 'index_proxy_target', later: { id: 'mx_index_prescript_echo', years: 3, reasonVi: 'Một Prescript bạn đã thực hiện quay lại tìm bạn', reasonEn: 'A Prescript you carried out has come back looking for you' } }),
+    { mem: 'index_proxy_target', later: { id: 'mx_index_prescript_echo', years: 3, reasonVi: 'Tờ Prescript bạn từng làm theo quay lại tìm bạn', reasonEn: 'A Prescript you carried out has come back looking for you' } }),
 
   rq('index_burn_the_ledger', 4, 'Đốt một cuốn sổ', 'Burn a ledger',
     'Prescript ghi: "Cuốn sổ ở két của Office Hook. Đốt nó trước khi trời sáng. Giữ lại một trang." Bạn không được biết trang nào.',
@@ -171,7 +171,7 @@ export const INDEX_CONTRACTS = [
     'You choose one person, and it is the person the Weaver did not.'),
 
   rq('index_close_a_door', 5, 'Đóng một cánh cửa vĩnh viễn', 'Close a door permanently',
-    'Prescript từ Weaver ghi: "Có một cửa ở tầng hầm của một Nest ở District 12. Đóng nó. Không ai được mở lại." Nest vô chủ, sương dày, và không ai sống ở tầng hầm.',
+    'Prescript từ Weaver ghi: "Tầng hầm Nest ở District 12 có một cánh cửa. Đóng nó. Không ai được mở lại." Nest vô chủ, sương dày, và không ai sống ở tầng hầm.',
     'The Weaver’s Prescript reads: “There is a door in the basement of a Nest in District 12. Close it. No one is to open it again.” The Nest is ownerless, the fog heavy, and no one lives in the basement.',
     'Bạn tìm thấy cánh cửa. Bạn đóng nó và xây gạch quanh nó. Khi đi ra, sương dày hơn lúc bạn vào, và có một cái gì đó vừa thở ra phía sau bức tường.',
     'You find the door. You close it and brick it over. As you leave, the fog is thicker than when you went in, and something exhales behind the wall.',
@@ -180,8 +180,8 @@ export const INDEX_CONTRACTS = [
     'Cánh cửa mở khi bạn đến. Bên trong, thứ gì đó nói tên bạn.',
     'The door is open when you arrive. Inside, something says your name.'),
 
-  rq('index_last_prescript', 5, 'Prescript cuối cùng của một Proxy', 'A Proxy’s last Prescript',
-    'Một Proxy già sắp chết gọi bạn và đưa một tờ giấy: "Đây là Prescript cuối cùng của tôi. Bạn phải đọc nó, và thực hiện, và đừng hỏi Index." Tờ giấy trống.',
+  rq('index_last_prescript', 5, 'Prescript cuối cùng của Proxy', 'A Proxy’s last Prescript',
+    'Vị Proxy già hấp hối gọi bạn tới, dúi vào tay tờ giấy: "Đây là Prescript cuối cùng của tôi. Bạn phải đọc, phải làm theo, và đừng hỏi Index." Tờ giấy trống.',
     'A dying old Proxy calls you in and hands you a paper: “This is my last Prescript. You must read it, and carry it out, and do not ask Index.” The paper is blank.',
     'Bạn nhìn tờ giấy trống đến sáng. Lúc bình minh, bạn hiểu và làm điều đó. Proxy đã chết lúc trời sáng, và gương mặt của họ nhẹ nhõm.',
     'You stare at the blank paper until morning. At dawn you understand and do it. The Proxy died as it grew light, and their face was at ease.',

@@ -252,7 +252,7 @@ export const REGIONS = [
     orgPressure: 8,
     fantasm: 3,
     pollution: 5,
-    descVi: 'Cả District là một sòng bạc khổng lồ nơi con người rút cạn vận may cả đời vào Bùa Nguyện Lực. Backstreets bị xâu xé bởi các băng Tingtang, Tieqiu và Los Mariachis.',
+    descVi: 'Cả District là một sòng bạc khổng lồ nơi con người rút cạn vận may cả đời vào Bùa Nguyện Lực. Các băng Tingtang, Tieqiu và Los Mariachis xâu xé Backstreets.',
     descEn: 'An entire District operating as a neon casino where citizens wager their lifelong luck in Wishpower tins.',
     birthVi: 'District 10, J Corp. Ánh đèn neon sòng bạc hắt qua khe cửa sổ, tiếng xúc xắc và tiếng thở dài thắng thua vang suốt đêm.',
     birthEn: 'District 10, J Corp. Neon casino lights bled through the blinds while the rattle of dice and desperate sighs echoed all night.'
@@ -277,7 +277,7 @@ export const REGIONS = [
     orgPressure: 5,
     fantasm: 4,
     pollution: 2,
-    descVi: 'Thiên đường y tế với HP Ampoule có thể nối liền xương thịt tức thì. Nhưng ít ai biết thứ thuốc xanh lục ấy được chưng cất từ nước mắt của một thực thể khổng lồ phải xem cảnh chém giết mỗi ngày.',
+    descVi: 'Thiên đường y tế với HP Ampoule có thể nối liền xương thịt tức thì. Nhưng ít ai biết thứ thuốc xanh lục ấy được chưng cất từ nước mắt của thực thể khổng lồ ngày ngày bị bắt xem cảnh chém giết.',
     descEn: 'A medical paradise whose green HP Ampoules mend flesh instantly, distilled in secret from a weeping entity forced to watch Backstreet slaughter.',
     birthVi: 'District 11, K Corp. Trong bệnh viện ngập sắc xanh dịu mắt và mùi thuốc sát trùng, các y tá mặc đồ trắng đón bạn chào đời.',
     birthEn: 'District 11, K Corp. In a ward bathed in soothing green light and antiseptic mist, white-robed nurses welcomed you into the world.'
@@ -405,7 +405,7 @@ export const REGIONS = [
     pollution: 2,
     descVi: 'Tự hào là nơi có những tòa nhà không thể bị phá hủy nhờ vật chất co giãn không gian, nhưng cũng là nơi ẩn giấu những bí mật của các Bloodfiend (La Manchaland).',
     descEn: 'Boasts indestructible, spatially expanded architecture, yet shadows of ancient Bloodfiends lurk beneath its safe-boxes.',
-    birthVi: 'District 16, P Corp. Căn phòng trông nhỏ hẹp từ bên ngoài nhưng lại rộng mênh mông một cách kỳ lạ khi bước vào.',
+    birthVi: 'District 16, P Corp. Căn phòng nhìn ngoài chật hẹp, bước vào lại rộng mênh mông đến kỳ lạ.',
     birthEn: 'District 16, P Corp. Born inside a modular apartment that looked tiny from the street yet stretched impossibly wide within.'
   },
   {
@@ -760,7 +760,7 @@ export const FAMILIES = [
     nameVi: 'Hậu duệ Xưởng chế tác (Workshop)',
     nameEn: 'Workshop Artisan Lineage',
     tier: 'back',
-    descVi: 'Lớn lên giữa mùi dầu tôi kim loại, tia lửa hàn và bản vẽ chi tiết vũ khí được cấp phép bởi Tres Association.',
+    descVi: 'Lớn lên giữa mùi dầu tôi kim loại, tia lửa hàn và bản vẽ chi tiết vũ khí do Tres Association cấp phép.',
     descEn: 'Raised amid the scent of quench oil, welding sparks, and weapon schematics patented by Tres Association.',
     statMod: { health: +4, sanity: +2, wealth: +12, network: +6, rep: +4, heat: 0, taboo: 0, resonance: 4 },
     flags: ['Backstreets', 'WorkshopBlood', 'WorkshopApprentice', 'WorkshopTinkerer'],
@@ -896,7 +896,7 @@ export const FAMILIES = [
     nameVi: 'Gia đình Phòng khám Cơ khí',
     nameEn: 'Prosthetics Clinic Lineage',
     tier: 'back',
-    descVi: 'Sinh ra giữa tiếng cưa xương, van áp suất và dầu máy của một phòng khám lắp chân tay giả không giấy phép trong hẻm tối.',
+    descVi: 'Sinh ra giữa tiếng cưa xương, van áp suất và mùi dầu máy trong phòng khám lắp chân tay giả không giấy phép nơi hẻm tối.',
     descEn: 'Born amid bone-saws, pressure valves, and motor grease in an unlicensed Backstreets prosthetics workshop.',
     statMod: { health: +4, sanity: +2, wealth: +8, network: +6, rep: +4, heat: 2, taboo: 0, resonance: 4 },
     flags: ['Backstreets', 'ProstheticClinic', 'MechanicSavvy'],
@@ -995,7 +995,7 @@ export const CODEX_RECORDS = [
   { key: 'born_city', category: 'survival', tier: 'common', vi: 'Sinh ra ở The City', en: 'Born in the City', hintVi: 'Bắt đầu kiếp sống đầu tiên.', hintEn: 'Begin your first life in The City.' },
   { key: 'born_outskirts', category: 'survival', tier: 'common', vi: 'Sinh ra ngoài tường', en: 'Born beyond the wall', hintVi: 'Chào đời ở Outskirts, bên ngoài The City.', hintEn: 'Be born in the Outskirts, beyond the City wall.' },
   { key: 'survive_night', category: 'survival', tier: 'uncommon', vi: 'Qua được 3:13', en: 'Through the Night at 3:13', hintVi: 'Sống sót qua một đêm Night in the Backstreets.', hintEn: 'Survive an encounter during Night in the Backstreets.' },
-  { key: 'nest_migration', category: 'survival', tier: 'uncommon', vi: 'Tấm vé vào Nest', en: 'A Feather of the Nest', hintVi: 'Trở thành Feather, cư dân hợp pháp của một Nest.', hintEn: 'Become a legal Feather residing in a Nest.' },
+  { key: 'nest_migration', category: 'survival', tier: 'uncommon', vi: 'Tấm vé vào Nest', en: 'A Feather of the Nest', hintVi: 'Trở thành Feather, cư dân hợp pháp của Nest.', hintEn: 'Become a legal Feather residing in a Nest.' },
   { key: 'family_built', category: 'survival', tier: 'uncommon', vi: 'Mái nhà cho hai người', en: 'A Roof for Two', hintVi: 'Cưới, hoặc dọn về sống cùng người thương.', hintEn: 'Build a family with a partner.' },
   { key: 'savior_sacrifice', category: 'survival', tier: 'epic', vi: 'Người đã chết thay bạn', en: 'The One Who Took the Blow', hintVi: 'Một người thân thiết nhận đòn chí mạng thay cho bạn.', hintEn: 'Have a loyal Partner or Spouse sacrifice their life to save you from a fatal blow.' },
   { key: 'elder_survivor_70', category: 'survival', tier: 'rare', vi: 'Tóc bạc ở Backstreets', en: 'Grey Hair in the Backstreets', hintVi: 'Sống qua tuổi 70.', hintEn: 'Survive past age 70 in The City.' },

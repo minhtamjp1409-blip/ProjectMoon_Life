@@ -159,7 +159,7 @@ export const EXPANDED_FIXER_REQUESTS = [
     'Người chờ ở điểm hẹn biết trước mật khẩu thứ hai. Bạn không có thời gian hỏi hắn lấy nó từ đâu.',
     'The person at the rendezvous knows the second password. You have no time to ask where he got it.'),
   request('nightmare_quarantine', 5, 'Khép vòng cách ly Urban Nightmare', 'Close an Urban Nightmare cordon',
-    'Vòng cách ly quanh một Urban Nightmare hở ở cổng cấp hàng. Các Association cần giữ cổng đến khi đội phía trong rút đủ người.',
+    'Vòng cách ly quanh Urban Nightmare bị thủng ở cổng cấp hàng. Các Association cần giữ cổng đến khi đội phía trong rút đủ người.',
     'A cordon around an Urban Nightmare has a gap at the supply gate. The Associations need it held until their teams withdraw.',
     'Bạn đọc từng số hiệu đội khi họ qua cổng. Số cuối có mặt muộn, dìu theo người đã bỏ lại trước đó.',
     'You call out each team number as they pass. The last arrives late, supporting someone previously left behind.',

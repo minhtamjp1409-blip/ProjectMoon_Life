@@ -15,7 +15,7 @@ export const PINKY_CONTRACTS = [
     'He swore again, to someone else, that he would not be found.'),
 
   rq('pinky_deserted_escort', 0, 'Người bỏ vị trí hộ tống', 'A deserted escort post',
-    'Một Initiate được giao canh cửa phòng của một nhân chứng trong đêm. Sáng ra phòng trống và Initiate không còn ở đó. Pinky cần biết đó là sợ hãi hay là phản bội.',
+    'Người Initiate được giao canh cửa phòng nhân chứng suốt đêm. Sáng ra phòng trống và Initiate không còn ở đó. Pinky cần biết đó là sợ hãi hay là phản bội.',
     'An Initiate was posted at a witness’s door for the night. By morning the room was empty and the Initiate gone. The Pinky needs to know if it was fear or betrayal.',
     'Bạn tìm thấy Initiate trốn trong kho củi. Em ấy khóc và kể hết. Đó là sợ hãi. Bạn dẫn em ấy về và đứng bên cạnh khi em nhận hình phạt.',
     'You find the Initiate hiding in a woodshed. They weep and tell everything. It was fear. You walk them back and stand beside them as they take the punishment.',
@@ -67,7 +67,7 @@ export const PINKY_CONTRACTS = [
 
   // ------------------------------------------------------------ tier 2: a named duelist
   rq('pinky_eleven_wins', 2, 'Một kiếm khách mười một lần thắng', 'A duelist with eleven wins',
-    'Một kiếm khách có danh mười một lần thắng ở vòng đấu ngầm đã thách một Sworn Blade và từ chối rút lời khi Blade rút lui trước nghi lễ. Pinky không có ý định để hắn đếm đến mười hai.',
+    'Tay kiếm khách có tiếng, mười một lần thắng ở đấu trường ngầm, đã thách đấu một Sworn Blade và nhất quyết không rút lời dù Blade đã lui trước nghi lễ. Pinky không có ý định để hắn đếm đến mười hai.',
     'A named duelist with eleven wins in the underground ring challenged a Sworn Blade and refused to withdraw after the Blade stood down under ceremony. The Pinky has no intention of letting him count to twelve.',
     'Bạn bước vào vòng với vai trơ trọi, không áo giáp. Trận đấu kéo dài ba nhịp. Khi kết thúc, hắn nhìn thanh kiếm của bạn và không nói gì.',
     'You step into the ring bare-shouldered, in no armor. The fight lasts three beats. When it is over, he looks at your sword and says nothing.',
@@ -77,7 +77,7 @@ export const PINKY_CONTRACTS = [
     'He counts to twelve.'),
 
   rq('pinky_kurokumo_ronin', 2, 'Một ronin của Kurokumo', 'A Kurokumo ronin',
-    'Một ronin của Kurokumo Clan đã giết một người đưa tin của Pinky để đoạt một bức thư. Kurokumo không thừa nhận. Pinky biết hắn đang ở đâu và biết hắn đang chờ.',
+    'Tên ronin Kurokumo Clan đã giết người đưa tin của Pinky để cướp bức thư. Kurokumo không thừa nhận. Pinky biết hắn đang ở đâu và biết hắn đang chờ.',
     'A Kurokumo Clan ronin killed a Pinky messenger to take a letter. Kurokumo does not acknowledge it. The Pinky knows where he is and knows he is waiting.',
     'Bạn đến một mình, không giấu mình. Hắn đứng lên khi thấy bạn, và cả hai cúi chào trước khi rút kiếm. Khi xong, lá thư nằm trong tay bạn.',
     'You come alone, not hiding. He stands when he sees you, and the two of you bow before drawing. When it is over, the letter is in your hand.',
@@ -98,17 +98,17 @@ export const PINKY_CONTRACTS = [
 
   // ------------------------------------------------------------ tier 3: a sworn blade of a lineage
   rq('pinky_lineage_disciple', 3, 'Một đệ tử của Blade Lineage', 'A disciple of the Blade Lineage',
-    'Một đệ tử của Blade Lineage bước vào địa bàn Pinky và bẻ gãy thanh kiếm gia truyền của một Sworn Blade trước mặt người đó. Lời thách đã được đưa ra bằng một mảnh kiếm gãy.',
+    'Đệ tử Blade Lineage bước vào địa bàn Pinky, bẻ gãy thanh kiếm gia truyền của Sworn Blade nọ ngay trước mặt chủ nó. Lời thách được gửi bằng chính mảnh kiếm gãy.',
     'A disciple of the Blade Lineage walked into Pinky ground and snapped a Sworn Blade’s heirloom sword in front of its owner. The challenge came as a shard of broken steel.',
     'Trận đấu diễn ra trong sân đền lúc rạng sáng. Bạn thắng bằng một nhịp mà đối phương không nhận ra cho đến khi thanh kiếm của mình đã nằm dưới đất.',
     'The fight takes place in a temple courtyard at dawn. You win on a beat your opponent does not recognize until their sword is already on the ground.',
-    'Đệ tử Blade Lineage vượt quá những gì bạn biết. Bạn thua một cách sạch sẽ, và họ trả lại thanh kiếm gãy kèm lời chào.',
+    'Đệ tử Blade Lineage vượt quá những gì bạn biết. Bạn thua tâm phục khẩu phục, và họ trả lại thanh kiếm gãy kèm lời chào.',
     'The Blade Lineage disciple exceeds all you knew. You lose cleanly, and they return the broken sword with a bow.',
     'Một thanh kiếm gia truyền không cần phải gãy để giết người.',
     'An heirloom sword does not need to be broken to kill.'),
 
   rq('pinky_kurokumo_captain', 3, 'Một đội trưởng Kurokumo', 'A Kurokumo captain',
-    'Một đội trưởng Kurokumo xóa một làng nhỏ ngoài biên giới vì nghĩ rằng nó che giấu một Sworn Blade. Làng đó không che giấu ai cả. Một Sworn Blade còn sống sót đã gửi tên hắn lên Pinky.',
+    'Gã đội trưởng Kurokumo xóa sổ ngôi làng nhỏ ngoài biên giới vì ngờ nó chứa chấp Sworn Blade. Làng đó không che giấu ai cả. Một Sworn Blade còn sống sót đã gửi tên hắn lên Pinky.',
     'A Kurokumo captain wiped out a small border village believing it sheltered a Sworn Blade. It sheltered no one. A surviving Sworn Blade sent his name up to the Pinky.',
     'Bạn đến cùng hai người và để họ đứng sau. Khi đội trưởng ngã xuống, bạn mang thanh kiếm của hắn về làng và chôn nó ở cổng.',
     'You come with two others and let them stand behind. When the captain falls, you carry his sword back to the village and bury it at the gate.',
@@ -139,7 +139,7 @@ export const PINKY_CONTRACTS = [
     'He accepts the challenge. He says nothing about how he will arrive.'),
 
   rq('pinky_capo_oath', 4, 'Capo phản một lời thề máu', 'A Capo who betrayed a blood oath',
-    'Một Capo của một Syndicate đã thề máu với Pinky để đổi lấy bảo vệ, rồi bán tin về Pinky cho Hana. Lời thề phải được trả, nhưng ông ta có hai trăm người.',
+    'Tay Capo bên Syndicate nọ đã thề máu với Pinky để đổi lấy sự che chở, rồi bán tin về Pinky cho Hana. Lời thề phải được trả, nhưng ông ta có hai trăm người.',
     'A Syndicate Capo swore a blood oath to the Pinky in exchange for protection, then sold the Pinky to Hana. The oath must be paid, but he has two hundred men.',
     'Bạn đến vào lễ tang của chính con trai ông ta, và đứng ở cửa. Không ai ngăn bạn. Ông ta nhìn thấy bạn và tự đứng lên.',
     'You arrive at his own son’s funeral and stand in the doorway. No one stops you. He sees you and rises on his own.',

@@ -9,12 +9,12 @@ import { ASSOCIATIONS } from './associations.js';
 /** What the first day is like, and what it costs the body or the nerves. */
 const JOIN = {
   zwei: {
-    vi: 'Bạn được phát một cây gậy sắt, một tấm bảng ghi giờ và một chỗ ngủ ở tầng trệt của trụ sở Zwei. Người điều phối chỉ dặn một câu: khi mọi người chạy ra, bạn là người ở lại.',
+    vi: 'Bạn được phát cây gậy sắt, tấm bảng ghi giờ và chỗ ngủ dưới tầng trệt trụ sở Zwei. Người điều phối chỉ dặn một câu: khi mọi người chạy ra, bạn là người ở lại.',
     en: 'You are issued an iron bar, a duty board, and a bed on the ground floor of Zwei’s office. The coordinator gives one instruction: when everyone runs out, you are the one who stays.',
     fx: { health: 4, rep: 6, network: 4 }
   },
   shi: {
-    vi: 'Không ai chào bạn. Có một cái giường, một cây kim khắc dấu, và một danh sách tên mà bạn chưa được phép đọc. Shi dạy rằng bạn chỉ cần biết tên khi đến lúc cần.',
+    vi: 'Chẳng ai chào bạn. Chỉ có cái giường, cây kim khắc dấu, và bản danh sách tên bạn chưa được phép đọc. Shi dạy rằng bạn chỉ cần biết tên khi đến lúc cần.',
     en: 'No one greets you. There is a cot, a stamped needle, and a list of names you are not yet permitted to read. Shi teaches that you need only know a name when the time comes.',
     fx: { sanity: -4, rep: 6, wealth: 4, heat: 6 }
   },
@@ -29,7 +29,7 @@ const JOIN = {
     fx: { network: 8, sanity: 4, rep: 3 }
   },
   seven: {
-    vi: 'Bạn nhận một tấm thẻ, một bàn làm việc và một cuốn sổ trống. Người hướng dẫn nói Seven không xử phạt vì tin ai. Seven xử phạt vì đã biết trước.',
+    vi: 'Bạn nhận tấm thẻ, chiếc bàn làm việc và cuốn sổ trắng. Người hướng dẫn nói Seven không xử phạt vì tin ai. Seven xử phạt vì đã biết trước.',
     en: 'You receive a badge, a desk, and a blank notebook. The instructor says Seven does not punish on belief. Seven punishes because it knew beforehand.',
     fx: { network: 8, sanity: -2, rep: 4 }
   },
@@ -103,7 +103,7 @@ const officeInvite = {
     },
     {
       labelVi: 'Không nhận chỗ nào, tiếp tục tự do', labelEn: 'Take none of them and stay freelance',
-      resultVi: 'Bạn trả lại cả ba tấm danh thiếp. Không ai tỏ ra buồn. Một người ở Hook Office nói rằng ghế vẫn ở đó nếu bạn đổi ý, và hơi ấm của bếp chung cũng vậy.',
+      resultVi: 'Bạn trả lại cả ba tấm danh thiếp. Không ai tỏ ra buồn. Người bên Hook Office bảo ghế vẫn để đó nếu bạn đổi ý, và hơi ấm của bếp chung cũng vậy.',
       resultEn: 'You return all three cards. No one seems sorry. Someone at Hook Office says the seat will still be there if you change your mind, and so will the warmth of the shared stove.',
       affDecline: 'office', effects: { sanity: 2 }
     }
@@ -124,7 +124,7 @@ const CONFLICTS = {
     leave: ['Bỏ vị trí, đưa dân đi và rời Zwei', 'Leave the post, take the residents out, and leave Zwei', 'Bạn bỏ vòng canh trước mặt cả đội. Hai mươi hộ đi qua trước mắt người trả phí. Bạn để lại cây gậy sắt trên bậc thềm, và không ai đuổi theo.', 'You abandon the cordon in front of the whole team. Twenty households pass in front of the one who paid. You leave your iron bar on the step, and no one follows.']
   },
   shi: {
-    vi: '[Một cái tên vô tội] Shi giao bạn một hợp đồng với đủ ngày giờ, chỉ thiếu lý do. Khi theo dõi, bạn thấy người ấy là một giáo viên dạy trẻ em ở khu nhà nghèo. Người điều phối nói lý do không phải việc của bạn.',
+    vi: '[Cái tên vô tội] Shi giao bạn hợp đồng đủ cả ngày giờ, chỉ thiếu lý do. Bám theo mới biết người ấy là người giáo viên dạy trẻ trong khu nhà nghèo. Người điều phối nói lý do không phải việc của bạn.',
     en: '[An innocent name] Shi gives you a contract with date and time, missing only the reason. Watching, you find the target is a teacher of children in a poor tenement. The handler says the reason is not your business.',
     obey: ['Thi hành như được giao', 'Carry it out as assigned', 'Bạn làm xong trong một phút. Trên đường về, bạn nhớ ra mình chưa bao giờ ngừng nhìn vào cuốn vở của đứa trẻ đứng cạnh người ấy. Shi trả công đủ, và bạn không dùng nó trong nhiều ngày.', 'It takes a minute. On the way back you realize you never stopped looking at the notebook of the child standing beside them. Shi pays in full, and you do not spend it for days.'],
     quiet: ['Báo cáo rằng mục tiêu đã rời khu, và để người ấy đi', 'Report the target has left the district, and let them go', 'Người giáo viên chuyển sang một khu khác trong tuần. Shi nghi ngờ nhưng không có bằng chứng. Người điều phối nhìn bạn lâu hơn mức bình thường ở buổi họp sau.', 'The teacher moves to another district within the week. Shi suspects but has no proof. The handler looks at you longer than usual at the next meeting.'],
@@ -138,7 +138,7 @@ const CONFLICTS = {
     leave: ['Thắng thật và nói rõ trận đã bị mua', 'Win honestly and say aloud the bout was bought', 'Bạn thắng bằng hiệp hai và nói cho cả sàn đấu nghe. Cinq im lặng. Chiếc thẻ vào sàn được thu lại ngay trong chiều hôm đó.', 'You win in the second round and say it to the whole floor. Cinq stays silent. Your pass to the floor is collected that very afternoon.']
   },
   liu: {
-    vi: '[Bữa tối của nhà Liu] Một người nhà bị đánh ở chợ. Người đứng đầu chỉ ra một căn nhà, nói chủ nhà đã bán lịch đi lại của người nhà ấy. Bạn đã ngồi ăn cơm với con của chủ nhà đó, và biết họ bị ép.',
+    vi: '[Bữa tối của nhà Liu] Người nhà bị đánh ngoài chợ. Người đứng đầu chỉ tay vào căn nhà nọ, nói chủ nhà đã bán lịch đi lại của người nhà ấy. Bạn đã ngồi ăn cơm với con của chủ nhà đó, và biết họ bị ép.',
     en: '[The Liu house dinner] A family member was beaten at the market. The head points to a house and says its owner sold the family member’s routine. You have eaten rice with that owner’s child, and know they were coerced.',
     obey: ['Đi cùng cả nhà và trả đòn', 'Go with the house and answer the blow', 'Bạn đứng ở hàng giữa và nhìn chủ căn nhà ấy quỳ xuống. Đứa con nhìn bạn từ cửa sổ tầng hai. Bữa tối hôm sau, bạn ăn hết bát cơm và không nhớ vị.', 'You stand in the middle line and watch the owner kneel. The child looks at you from the second-floor window. At dinner the next night you finish the bowl and do not taste it.'],
     quiet: ['Xin được đứng ngoài và đưa người ấy đến xin lỗi', 'Ask to stay out and bring the owner to apologize', 'Người đứng đầu cân nhắc rất lâu. Chủ căn nhà quỳ trước bàn ăn, trả một khoản lớn. Chuyện qua, nhưng không ai gắp thêm đồ ăn cho bạn trong vài ngày.', 'The head thinks it over a long time. The owner kneels before the table and pays a large sum. It passes, but no one serves you extra food for several days.'],
@@ -166,14 +166,14 @@ const CONFLICTS = {
     leave: ['Mở thùng ngay giữa đường và bỏ Devyat’', 'Open it on the spot and quit Devyat’', 'Bạn mở nắp. Bên trong là điều bạn không muốn kể lại, và bạn làm điều đúng, theo cách mà Devyat’ sẽ không bao giờ tha thứ. Gói vải dầu cuối cùng bạn cầm là gói để đắp cho chính mình.', 'You open the lid. Inside is something you do not wish to recount, and you do the right thing, in a way Devyat’ will never forgive. The last oilcloth you hold is the one you wrap yourself in.']
   },
   dieci: {
-    vi: '[Đứa trẻ nghe thấy tiếng] Một đứa trẻ trong nhà Dieci có thể nghe thấy tiếng gọi từ một Relic, điều mà thiết bị không phát hiện được. Dieci muốn dùng nó để dò. Đứa trẻ vui vì được giao việc.',
+    vi: '[Đứa trẻ nghe thấy tiếng] Đứa trẻ trong nhà Dieci nghe được tiếng gọi từ Relic, thứ máy móc không dò ra. Dieci muốn dùng nó để dò. Đứa trẻ vui vì được giao việc.',
     en: '[The child who hears] A child in Dieci’s house can hear the call from a Relic, something instruments cannot detect. Dieci wants to use them as a detector. The child is glad to be given a job.',
     obey: ['Đưa đứa trẻ đi cùng đội dò', 'Take the child along with the survey team', 'Đứa trẻ chỉ đúng chỗ, ba lần liền. Đến lần thứ tư, nó không nói gì và nhìn bạn rất lâu. Dieci đặt cho nó một suất ăn lớn hơn.', 'The child points to the right spot, three times in a row. On the fourth, they say nothing and look at you for a long time. Dieci gives them a larger portion at dinner.'],
     quiet: ['Đưa đứa trẻ đi, nhưng chỉ đến cửa Ruin, không vào', 'Take the child, but only to the Ruin’s door, not in', 'Đứa trẻ chỉ hướng từ xa, và đội dò mất thêm ngày. Nhà nghiên cứu không vui, nhưng ghi nhận đứa trẻ vẫn còn nguyên vẹn.', 'The child points the direction from afar, and the survey team loses a day. The researcher is displeased, but notes the child is intact.'],
     leave: ['Dẫn đứa trẻ ra khỏi nhà Dieci và rời đi', 'Take the child out of Dieci’s house and leave', 'Bạn đưa đứa trẻ qua cổng lúc trời chưa sáng. Nó nắm tay bạn suốt đường. Nhà nghiên cứu đứng ở cửa và không gọi theo, vì đã hiểu.', 'You walk the child through the gate before dawn. They hold your hand the whole way. The researcher stands at the door and does not call after you, having understood.']
   },
   oufi: {
-    vi: '[Điều khoản không có lòng trắc ẩn] Öufi giao bạn thi hành một bản án tịch thu nhà của một gia đình có đứa trẻ đang sốt. Điều khoản rõ ràng và hợp pháp. Không có dòng nào về đứa trẻ.',
+    vi: '[Điều khoản không có lòng trắc ẩn] Öufi giao bạn thi hành án tịch thu nhà của gia đình có đứa con đang sốt. Điều khoản rõ ràng và hợp pháp. Không có dòng nào về đứa trẻ.',
     en: '[A clause with no mercy] Öufi assigns you a verdict to seize the home of a family with a feverish child. The clause is clear and lawful. There is no line about the child.',
     obey: ['Thi hành đúng điều khoản', 'Enforce the clause as written', 'Bạn đọc bản án to, từng chữ. Cả nhà ra đứng ở bậc thềm. Đứa trẻ được bế đi trong chăn. Öufi trả công, và đóng dấu rằng việc đã xong.', 'You read the verdict aloud, word by word. The family stands on the step. The child is carried out in a blanket. Öufi pays, and stamps the job complete.'],
     quiet: ['Xin hoãn một tuần theo điều khoản ngoại lệ', 'Request a week’s delay under the exceptions clause', 'Điều khoản ngoại lệ có thật, và bạn là người duy nhất đọc đến đó. Öufi chấp nhận, và ghi chú rằng bạn đọc kỹ hơn mức họ cần.', 'The exceptions clause is real, and you are the only one who read that far. Öufi accepts it, and notes you read more closely than they need.'],
@@ -260,7 +260,7 @@ const lifecycleEvents = [
     id: 'aff_mentee_assoc',
     age: [32, 99], major: true, weight: 0, causalOnly: true, jobs: ['Fixer', 'Color Fixer'], repeatable: true, forbids: ['Mentoring'],
     need: { aff: 'any', grade: [0, 5] },
-    vi: '[Một người trẻ được giao cho bạn] Association của bạn có một Fixer trẻ vừa nhận giấy phép và chưa nhận nổi một Request cho tử tế. Người điều phối chỉ vào bạn: "Cho bạn tập một năm, hai năm cũng được." Người trẻ đứng cạnh, tay nắm chặt dây đeo.',
+    vi: '[Người trẻ được giao cho bạn] Association của bạn có tay Fixer trẻ vừa nhận giấy phép, chưa làm nổi Request nào cho ra hồn. Người điều phối chỉ vào bạn: "Cho bạn tập một năm, hai năm cũng được." Người trẻ đứng cạnh, tay nắm chặt dây đeo.',
     en: '[A junior assigned to you] Your Association has a young Fixer who just got a license and cannot yet hold a Request properly. The coordinator points at you: “Let them train under you a year, two if needed.” The young one stands beside, gripping their strap.',
     choices: [
       {
@@ -281,7 +281,7 @@ const lifecycleEvents = [
     id: 'aff_mentee_free',
     age: [32, 99], major: true, weight: 0, causalOnly: true, jobs: ['Fixer', 'Color Fixer'], repeatable: true, forbids: ['Mentoring'],
     need: { aff: 'free', grade: [0, 5] },
-    vi: '[Một người trẻ tự tìm đến] Một Fixer trẻ không thuộc nơi nào đứng chờ bạn trước cửa với một bản danh sách các Request họ đã trượt. Họ không xin tiền. Họ xin bạn nói cho họ biết họ đã sai ở đâu.',
+    vi: '[Người trẻ tự tìm đến] Tay Fixer trẻ không thuộc nơi nào đứng chờ trước cửa nhà bạn, tay cầm danh sách những Request họ đã trượt. Họ không xin tiền. Họ xin bạn nói cho họ biết họ đã sai ở đâu.',
     en: '[A junior comes on their own] A young Fixer belonging nowhere waits at your door with a list of Requests they have failed. They do not ask for money. They ask you to tell them where they went wrong.',
     choices: [
       {

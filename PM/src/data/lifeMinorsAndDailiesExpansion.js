@@ -265,7 +265,7 @@ export const EXPANSION_LIFE_MINORS = [
       C(
         'Xoa đầu khen ngợi và treo bức vẽ lên bức tường phòng khách',
         'Ruffle their hair proudly and tack the drawing to the wall',
-        'Đứa trẻ cười tít mắt đầy tự hào. Bạn cảm nhận được ý nghĩa thực sự của việc vung vũ khí sinh tồn mỗi ngày.',
+        'Đứa trẻ cười tít mắt đầy tự hào. Bạn hiểu ra vì sao ngày ngày mình vẫn vung vũ khí để sống.',
         'The child beamed from ear to ear. The daily grind of brandishing steel felt rooted in clear purpose.',
         { sanity: 6 },
         { bond: { child: 10 } }
@@ -292,7 +292,7 @@ export const EXPANSION_LIFE_MINORS = [
       C(
         'Cầm dao cạo sạch vết sơn và tăng cường bẫy ngầm trước cửa',
         'Scrape the paint clear with a chisel and rig doorway snares',
-        'Bạn giữ sự bình tĩnh lạnh lùng của một tay thợ săn. Kẻ thù muốn khủng bố tinh thần bạn, nhưng chúng đã chọn nhầm đối tượng.',
+        'Bạn giữ bình tĩnh lạnh lùng như tay thợ săn. Kẻ thù muốn khủng bố tinh thần bạn, nhưng chúng đã chọn nhầm đối tượng.',
         'You held the icy composure of a trapper. The enemy sought psychological rot, but knocked on the wrong iron.',
         { sanity: 2, rep: 2 },
         {}
@@ -789,7 +789,7 @@ export const EXPANSION_LIFE_MINORS = [
       C(
         'Dùng chậu cây làm chỗ giấu chiếc USB dữ liệu mật',
         'Hollow the pot base to conceal a backup memory drive',
-        'Một nơi giấu an toàn và kín đáo ngay trước mắt mọi người mà không ai ngờ tới.',
+        'Chỗ giấu kín đáo ngay trước mắt thiên hạ, chẳng ai ngờ tới.',
         'A covert dead-drop sitting in plain daylight where no inspector looks twice.',
         { network: 2, sanity: 1 },
         {}
@@ -845,7 +845,7 @@ export const EXPANSION_LIFE_DAILIES = [
   // Teenagers in Backstreets
   ...rowList('teen', TEEN, {}, [
     ['siren_drill', 'Tiếng còi báo giờ giới nghiêm rú lên từ loa phường; bạn rảo bước thật nhanh để không bị kẹt ngoài cổng hẻm sau mười giờ.', 'The curfew horn wailed from street speakers; you picked up your pace to clear the lane before ten o’clock.', { sanity: -1 }],
-    ['graffiti_layers', 'Bức tường đầu ngõ có thêm lớp sơn xịt mới đè lên tên của một nhóm côn đồ đã bị quét sạch tuần trước.', 'The corner wall gained fresh stencil paint, blotting out the tag of a gang wiped clean last Tuesday.', { network: 1 }],
+    ['graffiti_layers', 'Bức tường đầu ngõ có thêm lớp sơn xịt mới đè lên tên đám côn đồ vừa bị quét sạch tuần trước.', 'The corner wall gained fresh stencil paint, blotting out the tag of a gang wiped clean last Tuesday.', { network: 1 }],
     ['sharpening_stone_sound', 'Tiếng mài dao rèn rẹt từ cửa sổ tầng hai của người hàng xóm ru bạn vào giấc ngủ chập chờn.', 'The raspy hiss of whetstones from a second-story sill lulled you into fitful sleep.', { sanity: 1 }],
     ['drain_steam', 'Làn sương mù trắng xóa bốc lên từ nắp cống thoát nước sưởi ấm vạt áo khoác mỏng của bạn.', 'White vapor billowing from storm grates offered brief warmth to your thin coat.', { health: 1 }],
     ['bread_crust_toast', 'Mẩu bánh mì khô nướng sơ trên bếp dầu trở nên giòn tan trong bữa ăn tối đạm bạc.', 'A dry heel of bread toasted over a kerosene stove crunched pleasantly in your frugal supper.', { sanity: 1 }]
@@ -859,7 +859,7 @@ export const EXPANSION_LIFE_DAILIES = [
     ['office_noticeboard', 'Bảng thông báo của văn phòng ghim đầy những tờ cáo phó của các đồng nghiệp tuần tra không quay về.', 'The office corkboard was thick with memorial notices for patrols that never checked back in.', { sanity: -1 }],
     ['blood_stain_scrub', 'Bạn mất một tiếng dùng giấm chua để tẩy sạch vết máu khô trên gấu quần sau ca trực đêm qua.', 'You spent an hour scrubbing dried arterial spray from your cuffs with sour vinegar.', { health: -1, rep: 1 }],
     ['fixer_oath_scroll', 'Tấm biểu ngữ khắc mười điều răn của Hana Association treo trên tường phòng nghỉ đã mờ nhạt theo năm tháng.', 'The framed Hana Association ten-creed banner hanging in the mess had faded with decades of soot.', { sanity: 1 }],
-    ['boot_heel_iron', 'Miếng đệm sắt dưới gót ủng nện xuống nền đá hoa cương phát ra âm thanh dứt khoát của một người hành nghề.', 'The iron tap nailed beneath your boot heel struck granite with the crisp click of a working operative.', { rep: 1 }]
+    ['boot_heel_iron', 'Miếng đệm sắt dưới gót ủng nện xuống nền đá hoa cương vang lên dứt khoát, đúng tiếng bước chân dân trong nghề.', 'The iron tap nailed beneath your boot heel struck granite with the crisp click of a working operative.', { rep: 1 }]
   ]),
 
   // Syndicate Daily Atmosphere
@@ -867,7 +867,7 @@ export const EXPANSION_LIFE_DAILIES = [
     ['brass_knuckle_sheen', 'Bạn dùng mỡ bò đánh bóng chiếc tay gấu bằng đồng thau trước khi bước ra phố thu tiền bảo kê.', 'You rubbed tallow across brass knuckles until they caught lamplight before heading out on collection.', { rep: 1 }],
     ['tattoo_itch', 'Mực xăm biểu tượng băng nhóm trên bả vai lên da non ngứa ran trong tiết trời ẩm ướt.', 'The gang crest inked across your shoulder blade itched fiercely in the humid smog.', { health: -1, sanity: 1 }],
     ['whiskey_dregs', 'Cặn rượu rẻ tiền đọng dưới đáy ly thủy tinh sứt mẻ mang lại vị chát đắng quen thuộc của những đêm gác.', 'Cheap whiskey dregs at the bottom of a chipped tumbler left the familiar bitter tang of night watch.', { sanity: 1 }],
-    ['alley_whisper_code', 'Một tiếng huýt sáo ba nhịp ở đầu ngõ báo hiệu có đội tuần tra vũ trang đang tiến vào khu vực.', 'A three-beat whistle down the lane alerted all sentries that an armored sweep was entering the block.', { network: 1 }],
+    ['alley_whisper_code', 'Tiếng huýt sáo ba nhịp ở đầu ngõ báo hiệu có đội tuần tra vũ trang đang tiến vào khu vực.', 'A three-beat whistle down the lane alerted all sentries that an armored sweep was entering the block.', { network: 1 }],
     ['iron_chain_rattle', 'Tiếng xích sắt quấn quanh cổ tay va vào nút áo khoác lách cách theo từng bước chân bạn đi.', 'The iron chain coiled around your wrist clinked rhythmically against your buttons as you walked.', { rep: 1 }],
     ['syndicate_chalk_mark', 'Một vòng tròn phấn trắng vẽ cạnh nắp cống báo hiệu đây là tuyến đường an toàn cho người của nhóm.', 'A white chalk glyph marked beside the culvert signalled safe passage for outfit couriers.', { network: 1 }]
   ]),

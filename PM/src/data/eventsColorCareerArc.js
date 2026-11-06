@@ -125,7 +125,7 @@ export const COLOR_CAREER_EVENTS = [
         ]
       },
       {
-        labelVi: "Từ chối cả hai bên, tuyên bố quyền trung lập của một Color độc lập",
+        labelVi: "Từ chối cả hai bên, tuyên bố đứng trung lập với tư cách Color độc lập",
         labelEn: "Refuse both sides, asserting the neutrality of an independent Color",
         effects: { rep: +18, sanity: +14, resonance: +10, heat: +8 },
         resultVi: "Bạn đóng cửa từ chối cả hai vali tiền. Cả hai tập đoàn đều không dám manh động vì sợ bạn nghiêng về phía đối phương, dù mật vụ của họ vẫn âm thầm canh chừng nhất cử nhất động của bạn.",
@@ -144,7 +144,7 @@ export const COLOR_CAREER_EVENTS = [
     jobs: ['Color Fixer'],
     requires: ['ColorFixer'],
     forbids: ['Distorted'],
-    vi: "[Ánh Mắt Kẻ Quan Sát] Trong một quán trà vắng vẻ ở Backstreets, một Beholder của B Corp xuất hiện ngay đối diện bàn bạn. Con mắt cơ khí toàn giác xoay tròn không một tiếng động, quét qua nhịp tim, vết sẹo và trường năng lượng của bạn: “Sức mạnh của một Color đã tiệm cận lằn ranh xáo trộn trật tự đô thị. The Head đang dõi theo ngươi.”",
+    vi: "[Ánh Mắt Kẻ Quan Sát] Trong quán trà vắng ở Backstreets, Beholder của B Corp bỗng hiện ra ngay bàn đối diện. Con mắt cơ khí toàn giác xoay tròn không một tiếng động, quét qua nhịp tim, vết sẹo và trường năng lượng của bạn: “Sức mạnh của ngươi đã chạm tới lằn ranh làm đảo lộn trật tự đô thị. The Head đang dõi theo ngươi.”",
     en: "[Gaze of the Beholder] In a deserted Backstreet teahouse, a Beholder from B Corp sits across from you. Its omniscient mechanical lens hums silently, scanning your pulse, scars, and energy field: “A Color’s strength borders on disrupting urban order. The Head is watching you.”",
     choices: [
       {
@@ -159,7 +159,7 @@ export const COLOR_CAREER_EVENTS = [
         labelVi: "Đặt tay lên chuôi kiếm, nhắc nhở rằng không ai được phép đe dọa bạn",
         labelEn: "Rest your hand on your hilt, reminding the watcher that no one threatens you",
         effects: { rep: +25, heat: +20, taboo: +1 },
-        resultVi: "Sát khí của một Color khiến không khí trong quán trà đông cứng lại. Beholder ghi nhận một dòng mã vào sổ lưu trữ tối cao rồi rút lui. Ánh mắt The Eye sẽ không bao giờ rời khỏi bạn.",
+        resultVi: "Sát khí của Color làm không khí trong quán trà đông cứng. Beholder ghi nhận một dòng mã vào sổ lưu trữ tối cao rồi rút lui. Ánh mắt The Eye sẽ không bao giờ rời khỏi bạn.",
         resultEn: "A Color’s bloodlust freezes the teahouse air. The Beholder logs a code into the supreme registry and retreats. The Eye will never look away from you."
       }
     ]
@@ -175,7 +175,7 @@ export const COLOR_CAREER_EVENTS = [
     jobs: ['Color Fixer'],
     requires: ['ColorFixer'],
     forbids: ['Distorted'],
-    vi: "[Truyền Thừa Môn Đệ] Một thiếu niên ở Backstreets từng chứng kiến nhát chém kinh thiên của bạn đã lẳng lặng quỳ suốt ba ngày ba đêm trước cổng văn phòng. Bất chấp mưa axit và những kẻ say xỉn đi qua, ánh mắt của nó kiên định như một phiến thép vừa tôi: “Xin ngài hãy dạy tôi cách cầm kiếm.”",
+    vi: "[Truyền Thừa Môn Đệ] Đứa thiếu niên Backstreets từng tận mắt thấy nhát chém kinh thiên của bạn lặng lẽ quỳ suốt ba ngày ba đêm trước cổng văn phòng. Bất chấp mưa axit và những kẻ say xỉn đi qua, ánh mắt của nó kiên định như một phiến thép vừa tôi: “Xin ngài hãy dạy tôi cách cầm kiếm.”",
     en: "[Mentoring a Disciple] A Backstreet youth who witnessed your legendary strike has knelt before your office gate for three days and nights through acid rain: “Please teach me how to hold steel.”",
     choices: [
       {
@@ -206,7 +206,7 @@ export const COLOR_CAREER_EVENTS = [
     jobs: ['Color Fixer'],
     requires: ['ColorFixer'],
     forbids: ['Distorted'],
-    vi: "[Hội Ngộ Đỉnh Cao: So Kiếm Giữa Hai Color] Một phong thư niêm phong sáp đỏ gửi đến bàn làm việc. Một Color Fixer lừng danh khác mời bạn đến đồi phế tích Outskirts vào lúc hoàng hôn: “Đã lâu lắm rồi ta mới thấy một lưỡi kiếm sắc bén đến vậy ở The City. Hãy uống một chén rượu rồi so tài một trăm hiệp.”",
+    vi: "[Hội Ngộ Đỉnh Cao: So Kiếm Giữa Hai Color] Phong thư niêm sáp đỏ đặt trên bàn làm việc. Vị Color Fixer lừng danh khác hẹn bạn ra đồi phế tích Outskirts lúc hoàng hôn: “Đã lâu lắm rồi ta mới thấy một lưỡi kiếm sắc bén đến vậy ở The City. Hãy uống một chén rượu rồi so tài một trăm hiệp.”",
     en: "[Clash of Colors: Duel of Legends] A red-waxed letter arrives. Another renowned Color invites you to an Outskirts ruin hill at dusk: “It has been too long since I saw a blade this sharp in the City. Let us share a drink and exchange a hundred strikes.”",
     choices: [
       {
@@ -250,7 +250,7 @@ export const COLOR_CAREER_EVENTS = [
     jobs: ['Color Fixer'],
     requires: ['ColorFixer'],
     forbids: ['Distorted', 'CraftedColorWeapon'],
-    vi: "[Lò Rèn Bản Mệnh Color] Trưởng xưởng rèn của một Workshop cổ xưa đích thân tìm đến văn phòng của bạn: “Danh hiệu Color của ngài đã vang dội, nhưng ngài vẫn chưa có một vũ khí mang chính sắc diện linh hồn mình. Hãy để xưởng rèn của chúng tôi khắc tên ngài vào lịch sử.”",
+    vi: "[Lò Rèn Bản Mệnh Color] Trưởng xưởng rèn của Workshop lâu đời đích thân tìm tới văn phòng bạn: “Danh hiệu Color của ngài đã vang dội, nhưng ngài vẫn chưa có một vũ khí mang chính sắc diện linh hồn mình. Hãy để xưởng rèn của chúng tôi khắc tên ngài vào lịch sử.”",
     en: "[Signature Color Forge] A master artisan from an ancient Workshop calls upon your office: “Your Color title echoes across districts, yet you lack a weapon forged in the likeness of your soul. Let our fires engrave your name into history.”",
     choices: [
       {
@@ -314,7 +314,7 @@ export const COLOR_CAREER_EVENTS = [
     jobs: ['Color Fixer'],
     requires: ['ColorFixer'],
     forbids: ['Distorted', 'TransmittedColorMantle'],
-    vi: "[Trao Lại Sắc Lệnh Màu] Nhìn lại những vết sẹo khắp cơ thể và mái tóc đã pha sương, bạn hiểu rằng ngọn lửa của một đời người không thể cháy mãi. Các đồ đệ và đồng nghiệp trẻ tuổi đứng quây quần trong văn phòng, chờ đợi quyết định truyền thừa của một huyền thoại.",
+    vi: "[Trao Lại Sắc Lệnh Màu] Nhìn lại những vết sẹo khắp cơ thể và mái tóc đã pha sương, bạn hiểu ngọn lửa đời người không thể cháy mãi. Các đồ đệ và đồng nghiệp trẻ tuổi đứng quây quần trong văn phòng, chờ huyền thoại trước mặt quyết định truyền lại cho ai.",
     en: "[Passing the Color Mantle] Looking upon your scars and graying hair, you understand that no mortal flame burns forever. Your disciples and young peers gather in the office, awaiting a legend’s succession decree.",
     choices: [
       {

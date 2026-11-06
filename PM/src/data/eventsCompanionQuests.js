@@ -145,7 +145,7 @@ export const COMPANION_QUEST_EVENTS = [
     weight: 22,
     need: { npcTag: ['friend', 'secretive'], noQuest: { role: 'friend', max: 3 } },
     forbids: ['Distorted'],
-    vi: "[Hồ sơ cũ] Thám tử Seven giơ chân dung {friend} cùng hồ sơ của một Wing đã sụp đổ. {friend} lùi sau lưng bạn, tay đặt lên dao găm. \"Nếu họ dẫn tao đi, đội thanh trừng sẽ tới trước khi trời sáng.\"",
+    vi: "[Hồ sơ cũ] Thám tử Seven giơ chân dung {friend} cùng hồ sơ của Wing đã sụp đổ. {friend} lùi sau lưng bạn, tay đặt lên dao găm. \"Nếu họ dẫn tao đi, đội thanh trừng sẽ tới trước khi trời sáng.\"",
     en: '[Shadow of Yesterday] Cold drizzle coats the alleyway. A trench-coated investigator from Seven Association Section 4 lingers under a flickering streetlamp, holding a charcoal sketch of {friend} and a sealed docket from a fallen Wing. {friend} turns porcelain-white, retreating behind the door with white-knuckled grip on a dagger: “They traced my scent... The Wing’s purge cells won’t leave me breathing if dragged back.”',
     choices: [
       {
@@ -160,7 +160,7 @@ export const COMPANION_QUEST_EVENTS = [
       {
         labelVi: 'Chi 18 Ahn đút lót để thám tử Seven khép lại hồ sơ',
         labelEn: 'Bribe the Seven investigator with eighteen Ahn to close the inquiry',
-        resultVi: 'Viên thám tử nhận bọc Ahn, gật đầu đóng con dấu đỏ "Mục tiêu đã tử vong trong tai nạn Singularity" vào hồ sơ rồi rời đi. {friend} thở phào như vừa trút được ngàn cân đá tảng trên ngực.',
+        resultVi: 'Viên thám tử nhận bọc Ahn, gật đầu đóng con dấu đỏ "Mục tiêu đã chết trong tai nạn Singularity" vào hồ sơ rồi rời đi. {friend} thở phào như vừa trút được ngàn cân đá tảng trên ngực.',
         resultEn: 'The detective accepted the heavy pouch, stamping “Subject deceased in Singularity incident” before pocketing the ledger. {friend} exhaled as though unburdened of a mountain.',
         costAhn: 18,
         effects: { rep: +10, network: +12 },
@@ -202,7 +202,7 @@ export const COMPANION_QUEST_EVENTS = [
       {
         labelVi: 'Trích 16 Ahn tiền túi giúp bạn mình đóng khoản tiền ký quỹ',
         labelEn: 'Provide the sixteen Ahn bond from your own purse',
-        resultVi: 'Khoản tiền giúp {friend} có được vị trí đáng mơ ước. Từ một đứa trẻ nghèo hèn ở Backstreets, bạn mình đã có chỗ đứng vững vàng và luôn tìm cách đền đáp sự hỗ trợ của bạn.',
+        resultVi: 'Khoản tiền giúp {friend} có được vị trí đáng mơ ước. Từ đứa trẻ nghèo khó ở Backstreets, bạn mình đã có chỗ đứng vững vàng và luôn tìm cách đền đáp sự hỗ trợ của bạn.',
         resultEn: 'The sum secured their coveted operative badge. From a ragged street youth, your companion became an established contractor, forever looking to return the favor.',
         costAhn: 16,
         effects: { rep: +10, network: +12 },
@@ -383,7 +383,7 @@ export const COMPANION_QUEST_EVENTS = [
       {
         labelVi: 'Quỳ xuống hai tay đón nhận thanh đao, thề kế tục ý chí của người thầy',
         labelEn: 'Kneel and receive the heirloom blade, swearing to uphold their path',
-        resultVi: 'Thanh đao đặt vào tay bạn nặng trịch và lạnh buốt, mang theo toàn bộ kinh nghiệm và vết sẹo của một đời chinh chiến. Vị tiền bối già mỉm cười mãn nguyện, vỗ mạnh vào vai bạn: "Đi đi, và đừng để con đao này phải hổ thẹn."',
+        resultVi: 'Thanh đao đặt vào tay bạn nặng trịch và lạnh buốt, mang theo trọn kinh nghiệm và sẹo của cả đời chinh chiến. Vị tiền bối già mỉm cười mãn nguyện, vỗ mạnh vào vai bạn: "Đi đi, và đừng để con đao này phải hổ thẹn."',
         resultEn: 'The blade in your hands felt heavy and cold, bearing the weight of a lifetime of scars and triumphs. The old master smiled in deep fulfillment, clapping your shoulder: “Now go. And never let this steel feel shame.”',
         effects: { rep: +20, resonance: +16, sanity: +12 },
         flagsAdd: ['MentorLegacyHeir'],

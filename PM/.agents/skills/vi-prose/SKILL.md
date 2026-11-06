@@ -47,6 +47,7 @@ with the place.
 - Pick the vivid verb: "cất tiếng khóc chào đời" over "được sinh ra"; "đổ ập" over "rơi xuống".
 - ", và" joining two full clauses is English ", and". Use a full stop, "rồi", "thì", "mà", or nothing:
   "Đêm ấy trời đổ mưa đen, và hạt mưa ở The City luôn mang theo…" → "Đêm xuống, trời đổ mưa đen, hạt mưa mang theo…".
+- No comma before the last "và" of a list (that is the English serial comma): "Bạn học đặt bẫy, nghe đất rung và không quay lưng về phía chỗ tối", not "…, nghe đất rung, và không…".
 - No "bị … bởi …" passive: "Bạn bị lính gác phát hiện", not "Bạn bị phát hiện bởi lính gác".
 - No "một cách + adjective": "thua công khai", not "thua một cách công khai".
 - No "điều mà / người mà / nơi mà" for "that/which": "người bạn từng cứu", not "người mà bạn từng cứu".

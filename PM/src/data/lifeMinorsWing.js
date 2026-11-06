@@ -18,7 +18,7 @@ export const LIFE_MINORS_WING = [
   W('m_wing_second_signature', 0, 1,
     '[Chữ ký thứ hai] Một biểu mẫu cần chữ ký thứ hai trước năm giờ. Người ký đang nghỉ phép, nhưng bạn biết nét chữ của họ rất rõ, vì bạn đã sao chép nó cả năm nay.',
     '[The Second Signature] A form needs a second signature before five. The signer is on leave, but you know their handwriting very well, having copied it all year.',
-    [C('Chờ họ về và nộp trễ', 'Wait for them to return and file late', 'Biểu mẫu trễ một ngày, và trưởng phòng ghi một dấu nhỏ ở lề. Dấu nhỏ ấy sẽ còn đó rất lâu.', 'The form is a day late, and the chief marks a small tick in the margin. That tick will stay for a long time.', { standing: 1, sanity: 1 }),
+    [C('Chờ họ về và nộp trễ', 'Wait for them to return and file late', 'Biểu mẫu nộp trễ một ngày, trưởng phòng đánh dấu nhỏ ngoài lề. Dấu nhỏ ấy sẽ còn đó rất lâu.', 'The form is a day late, and the chief marks a small tick in the margin. That tick will stay for a long time.', { standing: 1, sanity: 1 }),
      C('Ký thay bằng nét chữ của họ', 'Sign in their hand', 'Chữ ký trông hoàn hảo. Bạn nộp đúng giờ và cảm thấy bàn tay mình nặng hơn lúc nào hết.', 'The signature looks perfect. You file on time and feel your hand heavier than ever.', { standing: 2, leverage: 3, sanity: -3 })],
     I('Năm giờ đến và đi. Biểu mẫu nằm đó, cho đến sáng.', 'Five o’clock comes and goes. The form lies there until morning.', { standing: -2 })),
 
@@ -37,7 +37,7 @@ export const LIFE_MINORS_WING = [
     I('Cơn mưa qua đi. Chiếc ô vẫn ở bên bạn.', 'The rain passes. The umbrella remains with you.', {})),
 
   W('m_wing_lunch_table', 0, 1,
-    '[Bàn ăn trưa] Phòng ăn có ba cái bàn dài. Bạn chưa biết mình thuộc bàn nào. Một bàn đầy người nói to, một bàn đầy người im, và một bàn gần cửa sổ chỉ có hai người.',
+    '[Bàn ăn trưa] Phòng ăn có ba cái bàn dài. Bạn chưa biết mình thuộc bàn nào. Một bàn ồn ào, một bàn im phăng phắc, còn bàn cạnh cửa sổ chỉ có hai người.',
     '[The Lunch Table] The canteen has three long tables. You do not yet know which is yours. One is full of loud talk, one of silence, and one by the window holds only two people.',
     [C('Ngồi bàn ồn ào và học cách cười đúng chỗ', 'Sit at the loud table and learn to laugh at the right moments', 'Bạn học nhanh. Sau một tháng, bạn biết ai nợ ai và ai sắp rời đi.', 'You learn fast. After a month you know who owes whom and who is about to leave.', { network: 4, leverage: 2, sanity: -2 }),
      C('Ngồi bàn cạnh cửa sổ với hai người ít nói', 'Sit by the window with the two who say little', 'Hai người đó hóa ra là người duy nhất trong tòa nhà không nói xấu ai. Điều đó khiến bữa trưa yên tĩnh hơn và hơi cô đơn.', 'They turn out to be the only two in the building who speak ill of no one. It makes lunch quieter and a little lonelier.', { sanity: 3, standing: 1 })],
@@ -51,7 +51,7 @@ export const LIFE_MINORS_WING = [
     I('Người gác bước sang bên một chút. Bạn đi qua, không ai nhìn bạn nữa.', 'The guard steps slightly aside. You pass, and no one looks at you again.', {})),
 
   W('m_wing_night_shift_lamp', 0, 2,
-    '[Đèn ca đêm] Bạn ở lại làm đến khuya. Trên tầng chỉ còn một bóng đèn bàn sáng ở cuối hành lang, và ai đó cũng ở lại như bạn, không nói gì.',
+    '[Đèn ca đêm] Bạn ở lại làm đến khuya. Cả tầng chỉ còn ngọn đèn bàn sáng cuối hành lang, và ai đó cũng ở lại như bạn, không nói gì.',
     '[The Night-Shift Lamp] You stay late. On the floor only one desk lamp is lit at the end of the corridor, and someone else has stayed like you, saying nothing.',
     [C('Mang trà đến cho người kia', 'Bring tea to the other', 'Người đó không ngẩng đầu, chỉ đẩy một tập tài liệu sang. "Đọc cái này, nếu bạn muốn hiểu chỗ này hoạt động thế nào." Bạn đọc đến sáng.', 'They do not look up, only push a stack of papers over. “Read this, if you want to know how this place works.” You read until morning.', { network: 4, sanity: -2, leverage: 2 }),
      C('Làm xong phần mình và về', 'Finish your own part and go home', 'Bạn ngủ được bốn tiếng. Người kia vẫn còn ở đó khi bạn đi, và vẫn còn ở đó khi bạn trở lại.', 'You sleep four hours. The other is still there when you leave, and still there when you return.', { sanity: 2 })],
@@ -65,18 +65,18 @@ export const LIFE_MINORS_WING = [
     I('Giỏ quà vẫn nằm đó. Đến cuối tuần nó biến mất, và bạn không biết ai đã lấy.', 'The basket lies there. By the weekend it is gone and you do not know who took it.', {})),
 
   W('m_wing_wrong_door', 0, 2,
-    '[Cánh cửa nhầm] Bạn đi lạc vào một hành lang chưa từng thấy. Một cánh cửa hé mở, và bên trong là một căn phòng đầy người đang nhìn chằm chằm vào một bức tường trống.',
+    '[Cánh cửa nhầm] Bạn lạc vào dãy hành lang chưa thấy bao giờ. Cánh cửa hé mở, bên trong là căn phòng đầy người đang nhìn chằm chằm vào bức tường trống.',
     '[The Wrong Door] You wander into a corridor you have never seen. A door stands ajar, and inside is a room full of people staring at an empty wall.',
     [C('Đóng cửa lại nhẹ nhàng và quay đi', 'Close the door gently and turn away', 'Không ai ngoảnh lại. Bạn tìm đường về và không bao giờ tìm lại được hành lang đó, dù đã thử.', 'No one turns. You find your way back and never find that corridor again, though you try.', { sanity: -3, standing: 1 }),
      C('Đứng nhìn thêm một lúc', 'Stand and watch a while longer', 'Bức tường không có gì cả. Nhưng bạn bắt đầu nghe thấy một tiếng rất nhỏ, như thể có điều gì đó đang được đếm.', 'The wall holds nothing. But you begin to hear a very small sound, as if something were being counted.', { sanity: -6, leverage: 4, rep: 1 })],
     I('Cánh cửa tự đóng lại. Bạn đứng trong hành lang trống và không chắc mình đã thấy gì.', 'The door closes by itself. You stand in the empty corridor, unsure of what you saw.', { sanity: -2 })),
 
   W('m_wing_coat_check', 1, 2,
-    '[Áo khoác bỏ quên] Một chiếc áo khoác bị quên trên lưng ghế phòng họp có thẻ tên của một người trên tầng. Trong túi có một mảnh giấy gấp bốn.',
+    '[Áo khoác bỏ quên] Chiếc áo khoác ai bỏ quên trên lưng ghế phòng họp, đeo thẻ tên người cùng tầng. Trong túi có mảnh giấy gấp tư.',
     '[The Forgotten Coat] A coat left on the back of a meeting-room chair carries the name tag of someone from the upper floor. In the pocket is a sheet folded in four.',
     [C('Mang trả lại nguyên vẹn, chưa mở túi', 'Return it intact, pocket unopened', 'Người đó cảm ơn bạn bằng một cái nhìn dài, như đang đo xem bạn có nói dối không. Rồi họ nói tên bạn lần đầu tiên.', 'They thank you with a long look, as if measuring whether you lie. Then they say your name for the first time.', { standing: 3, network: 3 }),
      C('Đọc mảnh giấy trước rồi mới trả', 'Read the sheet first and then return it', 'Đó là một danh sách ngắn gồm năm cái tên, một trong số đó đã bị gạch. Bạn đặt nó lại đúng nếp gấp, và hy vọng không ai đo độ sâu của nếp.', 'It is a short list of five names, one of them struck through. You put it back along the same fold and hope no one measures the crease.', { leverage: 6, standing: -1, sanity: -2 })],
-    I('Chiếc áo vẫn ở đó vào hôm sau. Rồi nó biến mất cùng với người sở hữu nó.', 'The coat is still there the next day. Then it disappears along with its owner.', {})),
+    I('Chiếc áo vẫn ở đó vào hôm sau. Rồi nó biến mất, cùng với chủ của nó.', 'The coat is still there the next day. Then it disappears along with its owner.', {})),
 
   W('m_wing_chip_checkup', 1, 2,
     '[Kiểm tra chip định danh] Phòng y tế mời bạn đến kiểm tra con chip sau gáy. Nó mất năm phút, và nhân viên y tế nói chuyện về thời tiết suốt năm phút đó, đúng kiểu người đang không muốn bạn nghe thấy tiếng máy.',
@@ -136,7 +136,7 @@ export const LIFE_MINORS_WING = [
     I('Báo cáo không được viết. Có người khác viết nó, tệ hơn bạn.', 'The report is not written by you. Someone else writes it, worse than you would have.', { standing: -1 })),
 
   W('m_wing_family_visit', 1, 3,
-    '[Người nhà đến thăm] Phòng ăn của Wing có một tấm biển "Khách thăm": người nhà của một đồng nghiệp đến ăn trưa. Bạn thấy đồng nghiệp ấy cười theo một kiểu mà bạn chưa từng thấy trong phòng làm việc.',
+    '[Người nhà đến thăm] Phòng ăn của Wing có một tấm biển "Khách thăm": người nhà đồng nghiệp tới ăn trưa. Bạn thấy đồng nghiệp ấy cười theo một kiểu mà bạn chưa từng thấy trong phòng làm việc.',
     '[A Family Visit] The Wing canteen has a “Visitors” sign: a colleague’s family has come to lunch. You see that colleague smiling in a way you have never seen at their desk.',
     [C('Đến chào họ và nói vài lời tốt đẹp', 'Go greet them and say a few kind words', 'Người nhà của họ mời bạn ngồi. Bạn ở lại mười phút, và khi trở lại làm việc, đồng nghiệp ấy giao cho bạn một việc mà không cần giải thích.', 'The family invites you to sit. You stay ten minutes, and back at work the colleague hands you a task without needing to explain.', { network: 4, sanity: 3 }),
      C('Tránh bàn đó và ăn ở góc khác', 'Avoid that table and eat in another corner', 'Bạn ăn nhanh. Nhưng nhìn từ xa, bạn nhận ra mình chưa từng có ai để mời đến đây.', 'You eat quickly. But from afar you realize you have never had anyone to invite here.', { sanity: -3 })],
@@ -158,7 +158,7 @@ export const LIFE_MINORS_WING = [
     I('Bạn đi ngang qua bức ảnh và không dừng lại.', 'You pass the photograph and do not stop.', {})),
 
   W('m_wing_young_one_asks', 2, 3,
-    '[Câu hỏi của người trẻ] Một Feather trẻ chặn bạn ở cửa thang máy và hỏi: "Làm thế nào để được như chị hoặc anh?" Họ hỏi thật lòng, và đó là điều làm bạn khó trả lời.',
+    '[Câu hỏi của người trẻ] Người Feather trẻ chặn bạn trước cửa thang máy, hỏi: "Làm thế nào để được như chị hoặc anh?" Họ hỏi thật lòng, và đó là điều làm bạn khó trả lời.',
     '[The Young One Asks] A young Feather stops you at the lift and asks: “How do I get to be what you are?” They ask in earnest, which is what makes it hard to answer.',
     [C('Trả lời thật, kể cả những điều bạn không tự hào', 'Answer truthfully, including what you are not proud of', 'Họ nghe hết, im lặng một lúc, và nói: "Cảm ơn. Em sẽ không làm vậy." Không rõ họ nói thật hay chỉ lịch sự.', 'They hear it all, are silent a moment, and say: “Thank you. I will not do it that way.” It is unclear whether they mean it or are being polite.', { sanity: 3, standing: -1, network: 3, leverage: -3 }),
      C('Đưa ra một câu trả lời đẹp và ngắn', 'Give a pretty, short answer', 'Họ ghi lại, mắt sáng lên. Bạn nhìn họ bước đi và nhận ra mình vừa tạo ra một bản sao nhỏ của chính điều mình không nên là.', 'They note it down, eyes bright. You watch them go and realize you have just made a small copy of what you should not be.', { standing: 2, sanity: -3, network: 2 })],
@@ -186,7 +186,7 @@ export const LIFE_MINORS_WING = [
     I('Bạn từ chối lịch sự. Họ không hỏi lần thứ hai.', 'You decline politely. They do not ask a second time.', {})),
 
   W('m_wing_closed_elevator', 3, 3,
-    '[Thang máy không có nút xuống] Có một thang máy ở tầng của bạn chỉ có nút đi lên. Bạn đã đi qua nó hàng nghìn lần. Hôm nay cửa mở, và bên trong là một người mặc đồ bạn không nhận ra.',
+    '[Thang máy không có nút xuống] Tầng bạn làm có chiếc thang máy chỉ có nút đi lên. Bạn đã đi ngang nó cả nghìn lần. Hôm nay cửa mở, bên trong có người mặc bộ đồ bạn chưa thấy bao giờ.',
     '[The Lift With No Down Button] There is a lift on your floor with only an up button. You have passed it thousands of times. Today its doors open, and inside is a person in clothes you do not recognize.',
     [C('Bước vào và nhấn nút đi lên', 'Step in and press up', 'Cửa đóng, và bạn đi lên mà không có cảm giác chuyển động. Khi cửa mở lại, bạn đang đứng ở chính tầng cũ, và người kia đã biến mất.', 'The door closes and you rise without any sense of motion. When it opens again you stand on the same floor, and the other has vanished.', { sanity: -5, leverage: 4, rep: 1 }),
      C('Đứng ngoài và đợi cửa đóng lại', 'Stay outside and wait for the door to close', 'Người kia nhìn bạn thêm một lúc, như người ghi chép. Rồi cửa đóng. Bạn không chắc mình vừa tránh được gì.', 'The other looks at you a while longer, like a recorder. Then the door closes. You are not sure what you have just avoided.', { sanity: 2 })],

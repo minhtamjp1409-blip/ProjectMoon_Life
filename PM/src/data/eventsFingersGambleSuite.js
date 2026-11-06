@@ -126,7 +126,7 @@ export const FINGERS_GAMBLE_EVENTS = [
     weight: 35,
     need: { jobs: ['Syndicate'], finger: 'Middle', fingerRankAtLeast: 1 },
     forbids: ['middle_vendetta_gamble_done'],
-    vi: "[Đại Canh Bạc Sổ Huyết Hận] Cuốn Sổ Huyết Thù (Book of Vengeance) lật đến một cái tên then chốt: một cựu Capo của Thumb từng phản bội và sát hại mười ba người anh em Middle cách đây mười năm. Hắn hiện là chủ một sòng bạc ngầm kiên cố ở District 10. Đại Trưởng Lão trao xích vàng vào tay bạn: “Mang đầu nó về hoặc để xích lại nơi đó.”",
+    vi: "[Đại Canh Bạc Sổ Huyết Hận] Cuốn Sổ Huyết Thù (Book of Vengeance) lật đến một cái tên then chốt: tay cựu Capo của Thumb mười năm trước từng phản bội và giết mười ba người anh em Middle. Hắn hiện là chủ một sòng bạc ngầm kiên cố ở District 10. Đại Trưởng Lão trao xích vàng vào tay bạn: “Mang đầu nó về hoặc để xích lại nơi đó.”",
     en: "[The Blood Ledger Wager] The Book of Vengeance turns to a paramount name: a rogue Thumb Capo who slaughtered thirteen Middle siblings a decade ago. He now fortifies an underground casino in District 10. The Great Elder lays golden chains in your grasp: “Return with his head, or leave your chains there.”",
     choices: [
       {

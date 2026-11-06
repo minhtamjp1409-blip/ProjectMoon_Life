@@ -1901,7 +1901,7 @@ export const AMBIENT_YEAR_LINES = {
   ],
   outskirts: [
     { vi: 'Một năm lặng lẽ trôi qua giữa vùng hoang tàn của Outskirts.', en: 'A quiet year passes across the windswept Outskirts.' },
-    { vi: 'Gió cát và tro bụi trôi qua từng mùa một cách bình lặng ngoài Bức Tường.', en: 'Dust and wild winds blow through the seasons beyond the Wall.' },
+    { vi: 'Ngoài Bức Tường, gió cát và tro bụi lặng lẽ trôi qua từng mùa.', en: 'Dust and wild winds blow through the seasons beyond the Wall.' },
     { vi: 'Bạn trải qua một năm yên ắng bên ngoài bức tường The City.', en: 'You spend an undisturbed year outside the City walls.' },
     { vi: 'Thời gian chậm rãi trôi qua giữa những tàn tích đổ nát không bóng người.', en: 'Time drifts slowly past the desolate ruins without a living soul.' },
     { vi: 'Một năm sinh tồn bình thản dưới vòm trời u trầm của Outskirts.', en: 'A year of quiet survival beneath the overcast Outskirts sky.' },

@@ -37,7 +37,7 @@ export const NIGHT_DUNGEON = {
           failVi: 'Lưỡi dao mắc vào lớp vải dày. Cái móc quét qua vai bạn trước khi bạn rút được nó ra.', failEn: 'Your blade catches in the heavy fabric. A hook cuts across your shoulder before you pull free.',
           fx: { health: -7, sanity: -3, rep: 5, merit: 8 }, lootAhn: 18, strainDelta: 6 },
         { labelVi: 'Chạy theo mái nhà về phía chợ, nơi có nhiều chỗ nấp', labelEn: 'Run the rooftops toward the market, where there are more places to hide', checkTrait: 'luck',
-          resultVi: 'Ngói vỡ dưới chân, nhưng bạn không trượt. Trên đường chạy, bạn nhặt một túi Ahn mắc ở máng xối trước khi đợt quét đi qua.', resultEn: 'Tiles crack underfoot, but you keep your footing. Along the roofline, you pick up a pouch of Ahn caught in a gutter before the sweep passes.',
+          resultVi: 'Ngói vỡ dưới chân, nhưng bạn không trượt. Đang chạy, bạn kịp vớ túi Ahn mắc trên máng xối trước khi đợt quét tràn qua.', resultEn: 'Tiles crack underfoot, but you keep your footing. Along the roofline, you pick up a pouch of Ahn caught in a gutter before the sweep passes.',
           failVi: 'Một viên ngói rơi xuống phố. Bạn nằm ép trên mái khi bộ vest bên dưới ngẩng lên tìm tiếng động.', failEn: 'A tile falls into the street. You flatten yourself against the roof as a suit below looks up.',
           fx: { health: -4, sanity: -2, merit: 6 }, lootAhn: 8, strainDelta: 0 }
       ]
@@ -136,7 +136,7 @@ export const STAGE_VARIANTS = {
     2: {
       nameVi: 'Phòng Họp Đội Ngũ: Cuộc Họp Không Ai Rời Đi',
       nameEn: 'The Team Briefing Room: A Meeting No One Left',
-      descVi: 'Một phòng họp còn nguyên bàn ghế. Mười mấy nhân viên trong áo blouse vẫn ngồi đúng chỗ, mắt nhìn màn hình đã tắt. Một Abnormality nhỏ ngồi ở đầu bàn, giơ tay như đang chờ được gọi phát biểu.',
+      descVi: 'Phòng họp còn nguyên bàn ghế. Mười mấy nhân viên mặc áo blouse vẫn ngồi đúng chỗ, mắt dán vào màn hình đã tắt. Abnormality nhỏ ngồi đầu bàn, giơ tay như đang chờ được gọi phát biểu.',
       descEn: 'A meeting room with its furniture intact. A dozen employees in lab coats still sit in their places, eyes on a dead screen. A small Abnormality sits at the head of the table, hand raised as if waiting to be called on.',
       strainGain: 18,
       choices: [
@@ -260,7 +260,7 @@ export const SIDE_ROOMS = {
       strainGain: 14,
       choices: [
         { labelVi: 'Cạy chiếc rương sắt', labelEn: 'Pry open the iron trunk', checkTrait: 'vigor',
-          resultVi: 'Bên trong là đồ trang sức của một gia đình Nest, gói trong khăn lụa. Thứ dưới đống đồ không đuổi theo bạn.', resultEn: 'Inside is a Nest family’s jewelry, wrapped in silk. Whatever lies beneath the pile does not follow you.',
+          resultVi: 'Bên trong là đồ trang sức của gia đình Nest nào đó, gói trong khăn lụa. Thứ dưới đống đồ không đuổi theo bạn.', resultEn: 'Inside is a Nest family’s jewelry, wrapped in silk. Whatever lies beneath the pile does not follow you.',
           failVi: 'Nắp rương chỉ hé một khe. Đống hành lý sau lưng bạn bắt đầu chuyển động.', failEn: 'The lid opens a crack. The pile of luggage behind you begins to move.',
           fx: { health: -6, sanity: -3, wealth: 30, merit: 6 }, lootAhn: 30, strainDelta: 4 },
         { labelVi: 'Chỉ lấy những gì nằm sẵn trên mặt, rồi đi', labelEn: 'Take only what lies on top, then go',
@@ -346,7 +346,7 @@ export const SIDE_ROOMS = {
   },
   dungeon_backstreets_night: {
     fromStage: 0,
-    door: { labelVi: 'Chui qua cửa sau của một quán rượu đã đóng', labelEn: 'Squeeze through the back door of a closed tavern', checkTrait: 'luck',
+    door: { labelVi: 'Chui qua cửa sau quán rượu đã đóng', labelEn: 'Squeeze through the back door of a closed tavern', checkTrait: 'luck',
       resultVi: 'Quán đã đóng, nhưng không phải là nhà ở. Luật của Sweepers không che chở nơi này, và bạn biết điều đó khi bước vào.', resultEn: 'The tavern is closed, but it is not a home. The Sweepers’ rule does not shelter it, and you know it as you step inside.',
       failVi: 'Bản lề cửa kêu quá lớn. Bạn lách vào quán trước khi bộ vest ngoài phố quay đầu.', failEn: 'The hinge creaks too loudly. You slip inside before the suit in the street turns around.',
       fx: { sanity: -2 }, strainDelta: 2 },
@@ -375,7 +375,7 @@ export const SHORTCUTS = {
     resultVi: 'Dây cáp xé găng tay. Bạn chạm đáy cạnh cửa phòng lõi, nơi một túi tiền công còn treo trên móc.', resultEn: 'The cable tears your gloves. You land beside the core room door, where an old pay pouch hangs from a hook.',
     failVi: 'Cáp tuột khỏi tay. Bạn đáp xuống sàn tầng dưới trước khi tới lõi.', failEn: 'The cable slips from your hand. You hit the floor below before reaching the core.' },
   dungeon_bloodfiend_carnival: { labelVi: 'Trèo lên đu quay và nhảy qua mái bạt tới lối ra', labelEn: 'Climb the wheel and leap across the tent roof to the exit',
-    resultVi: 'Bạn trượt dọc mái bạt, rơi cạnh nắp cống. Một túi tiền của quầy vé mắc ở dây neo bên cạnh.', resultEn: 'You slide down the canvas beside the manhole. A ticket booth purse hangs from the nearby guy rope.',
+    resultVi: 'Bạn trượt dọc mái bạt, rơi cạnh nắp cống. Túi tiền của quầy vé mắc trên dây neo ngay cạnh.', resultEn: 'You slide down the canvas beside the manhole. A ticket booth purse hangs from the nearby guy rope.',
     failVi: 'Mái bạt rách dưới chân. Bạn rơi vào giữa khu trò chơi, sát lối ra.', failEn: 'The canvas tears beneath you. You fall into the midway, close to the exit.' },
   dungeon_outskirts_ruins: { labelVi: 'Đu dây xuống khe nứt thẳng tới điện thờ', labelEn: 'Rappel down the fissure straight to the shrine',
     resultVi: 'Khe nứt nóng dần. Bạn đáp sau bệ đá, cạnh túi tiền cũ của đoàn thám hiểm trước.', resultEn: 'The fissure grows hotter. You land behind the stone plinth beside an old expedition pay pouch.',
@@ -483,7 +483,7 @@ export const COMPANION_STAGE_BANTER = {
     { vi: '“Lại thêm một căn phòng tanh mùi máu... Hy vọng số Ahn nhặt được bõ công.”', en: '“Another room reeking of iron... Let us hope the Ahn haul is worth the trouble.”' }
   ],
   proud: [
-    { vi: '“Một nơi nhớp nhúa tồi tàn... Nhưng nếu đã bước vào, ta phải dọn sạch nó một cách hoàn hảo.”', en: '“A wretched, filthy pit... But since we entered, we shall purge it with absolute perfection.”' },
+    { vi: '“Một nơi nhớp nhúa tồi tàn... Nhưng nếu đã bước vào, ta phải dọn nó cho thật sạch sẽ.”', en: '“A wretched, filthy pit... But since we entered, we shall purge it with absolute perfection.”' },
     { vi: '“Lũ quái vật hạ đẳng này không xứng đáng làm đối thủ của chúng ta.”', en: '“These low-life beasts are unworthy to cross blades with us.”' },
     { vi: '“Đi thẳng về phía trước, đừng để vấy bẩn danh tiếng của chúng ta.”', en: '“March straight ahead, do not tarnish our reputation.”' }
   ],

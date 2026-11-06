@@ -70,7 +70,7 @@ export const DERIVATIVE_LORE_EVENTS = [
       {
         labelVi: 'Cảnh báo ông ta về quân tiếp viện của Kurokumo rồi rút lui',
         labelEn: 'Warn him of incoming Kurokumo reinforcements and withdraw',
-        resultVi: 'Kiếm sĩ nón tre gật đầu nhẹ, ném cho bạn một túi Ahn chiến lợi phẩm thu từ tay chân Kurokumo: "Khôn ngoan để sống sót cũng là một cách sinh tồn ở The City." Ông ta xoay người biến mất vào màn mưa.',
+        resultVi: 'Kiếm sĩ nón tre gật đầu nhẹ, ném cho bạn một túi Ahn chiến lợi phẩm thu từ tay chân Kurokumo: "Biết khôn mà sống cũng là cách sinh tồn ở The City." Ông ta xoay người biến mất vào màn mưa.',
         resultEn: 'The swordsman gave a slight nod, tossing you a pouch of Ahn stripped from Kurokumo ronin: "Prudence to live another dawn is its own survival in this City." He turned and dissolved into the rain.',
         effects: { wealth: +35, rep: +10, sanity: +5 },
         meritAdd: 2
@@ -158,7 +158,7 @@ export const DERIVATIVE_LORE_EVENTS = [
     major: true,
     weight: 10,
     forbids: ['Distorted', 'bloodfiend_met'],
-    vi: "[Công viên dưới lòng đất] Bạn lần theo người mất tích tới cổng một công viên ngầm ở District 16. Đu quay vẫn sáng dù các quầy đều vắng. Một con rối khâu bằng da người cúi chào và chìa ra tấm vé còn ấm: \"Khách mới. Vào chơi chứ?\"",
+    vi: "[Công viên dưới lòng đất] Bạn lần theo dấu người mất tích tới cổng công viên ngầm ở District 16. Đu quay vẫn sáng dù các quầy đều vắng. Một con rối khâu bằng da người cúi chào và chìa ra tấm vé còn ấm: \"Khách mới. Vào chơi chứ?\"",
     en: '[La Manchaland] Tracking a missing convoy, you reach the gate of an underground amusement park beneath District 16. The Ferris wheel is lit though every stall is empty. A marionette stitched from human hide bows and holds out a ticket that is still warm: “New guest. Coming in?”',
     choices: [
       {

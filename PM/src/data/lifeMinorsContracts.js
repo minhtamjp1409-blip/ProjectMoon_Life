@@ -12,7 +12,7 @@ export const LIFE_MINORS_CONTRACTS = [
     [
       C('Mở gói ra', 'Open the parcel', null, null, {}, { out: [
         O(65, 'Trong gói là toàn bộ số tiền bạn đã bỏ ra chuộc súng, từng tờ được vuốt phẳng. Người thuê nhà không nói gì, chỉ gật đầu một lần. Bạn tiễn họ xuống cầu thang và nhìn họ đi.', 'Inside is every coin you paid to redeem the pistol, each note smoothed flat. The tenant says nothing, only nods once. You see them down the stairs and watch them go.', { wealth: +8, sanity: +3 }, { motif: { mercy: 1 } }),
-        O(35, 'Trong gói là một khẩu súng khác, cũ hơn, và một mẩu giấy ghi tên một người. Người thuê nhà đã nghe được điều gì đó. Họ muốn bạn giữ nó, và không muốn hỏi ai.', 'Inside is another pistol, an older one, and a scrap of paper with a name on it. The tenant overheard something. They want you to keep it, and do not want to ask anyone else.', { sanity: -3, network: +3 }, { flags: ['TenantsWarning'] })
+        O(35, 'Trong gói là khẩu súng khác, cũ hơn, kèm mẩu giấy ghi tên người nọ. Người thuê nhà đã nghe được điều gì đó. Họ muốn bạn giữ nó, và không muốn hỏi ai.', 'Inside is another pistol, an older one, and a scrap of paper with a name on it. The tenant overheard something. They want you to keep it, and do not want to ask anyone else.', { sanity: -3, network: +3 }, { flags: ['TenantsWarning'] })
       ] }),
       C('Không nhận, bảo họ mang về', 'Refuse and tell them to take it home', 'Người thuê nhà đứng yên một lúc lâu trên cầu thang, rồi cúi đầu và đi xuống. Bạn không biết họ định nói gì.', 'The tenant stands motionless on the stairs for a long while, then bows and goes down. You never learn what they meant to say.', { sanity: -2 })
     ],
@@ -23,15 +23,15 @@ export const LIFE_MINORS_CONTRACTS = [
     '[A Color remembers your name] A letter with no postmark lies on your desk. Inside is a single line in an even hand: “I remember the one who came to collect. Come by when convenient.”',
     [
       C('Đến gặp', 'Go to see them', null, null, {}, { out: [
-        O(55, 'Họ mời bạn trà và hỏi bạn vài câu về Thumb, không câu nào nhạy cảm. Cuối buổi, họ nói bạn "có tính cách của một người sẽ sống lâu", rồi tiễn bạn ra tận cổng.', 'They offer you tea and ask a few questions about the Thumb, none of them sensitive. At the end they say you “have the temperament of someone who lives long,” and see you to the gate themselves.', { rep: +6, network: +4, sanity: +2 }),
-        O(45, 'Họ không có ở nhà. Một người hầu đưa bạn một phong thư khác. Nó chỉ ghi ngày giờ của một buổi hẹn mà bạn chưa từng sắp xếp.', 'They are not home. A servant hands you another letter. It gives only the date and hour of an appointment you never arranged.', { sanity: -4 }, { flags: ['ColorAttention'] })
+        O(55, 'Họ mời bạn trà và hỏi bạn vài câu về Thumb, không câu nào nhạy cảm. Cuối buổi, họ bảo bạn "có tướng người sống lâu", rồi tiễn bạn ra tận cổng.', 'They offer you tea and ask a few questions about the Thumb, none of them sensitive. At the end they say you “have the temperament of someone who lives long,” and see you to the gate themselves.', { rep: +6, network: +4, sanity: +2 }),
+        O(45, 'Họ đi vắng. Người hầu đưa bạn phong thư khác, chỉ ghi ngày giờ của cuộc hẹn bạn chưa từng đặt.', 'They are not home. A servant hands you another letter. It gives only the date and hour of an appointment you never arranged.', { sanity: -4 }, { flags: ['ColorAttention'] })
       ] }),
-      C('Bỏ lá thư vào lò sưởi', 'Put the letter in the fireplace', 'Lá thư cháy gọn. Ba ngày sau, bạn nhận ra mình bị theo dõi bởi người không giấu bóng của mình.', 'The letter burns cleanly. Three days later you realize you are being followed by someone who makes no effort to hide their shadow.', { sanity: -3, heat: +4 })
+      C('Bỏ lá thư vào lò sưởi', 'Put the letter in the fireplace', 'Lá thư cháy gọn. Ba ngày sau, bạn nhận ra có kẻ bám theo mình, chẳng buồn giấu cái bóng.', 'The letter burns cleanly. Three days later you realize you are being followed by someone who makes no effort to hide their shadow.', { sanity: -3, heat: +4 })
     ],
     I('Bạn để lá thư trên bàn. Nó vẫn ở đó sau một tháng, nguyên vẹn, không bám bụi.', 'You leave the letter on the desk. A month on it is still there, untouched, with no dust on it.', { sanity: -2 })),
 
   M('mx_middle_book_kin', ADULT, { mem: 'book_grade9_fixer' },
-    '[Người nhà của một cái tên] Một thanh niên đứng ở cửa nhà bạn trong mưa. Họ không mang vũ khí. Họ nói họ là em họ của người bạn từng đòi nợ thay Middle, và muốn biết cuốn sổ nói gì về người đó.',
+    '[Người nhà của cái tên] Có người trẻ đứng trước cửa nhà bạn giữa trời mưa. Họ không mang vũ khí. Họ nói họ là em họ của người bạn từng đòi nợ thay Middle, và muốn biết cuốn sổ nói gì về người đó.',
     '[Kin of a name] A young person stands at your door in the rain. They carry no weapon. They say they are the cousin of the one you once collected from for the Middle, and want to know what the book says about them.',
     [
       C('Cho họ xem trang sổ', 'Show them the page', 'Họ đọc rất lâu, ngón tay lướt dọc theo từng dòng. Rồi họ trả cuốn sổ và hỏi: "Nếu tôi trả phần còn lại, có xóa được tên không?" Bạn nói được. Họ gật đầu và ra đi.', 'They read for a long time, a finger tracing each line. Then they hand the book back and ask, “If I pay the rest, does the name come off?” You say it does. They nod and go.', { sanity: +2, network: +2 }, { motif: { mercy: 1 } }),
@@ -44,7 +44,7 @@ export const LIFE_MINORS_CONTRACTS = [
     I('Bạn nhìn họ đứng đó cho đến khi mưa tạnh. Họ không gõ cửa, và bạn không mở.', 'You watch them stand there until the rain stops. They do not knock, and you do not open.', { sanity: -2 })),
 
   M('mx_index_prescript_echo', ADULT, { mem: 'index_proxy_target' },
-    '[Tiếng vọng của một Prescript] Máy nhắn tin cũ của bạn, thứ bạn đã bỏ ngăn kéo nhiều năm, kêu lên một lần. Dòng chữ ngắn: "Bạn đã làm đúng. Giờ hãy làm đúng điều ngược lại."',
+    '[Tiếng vọng của Prescript] Chiếc máy nhắn tin cũ nằm trong ngăn kéo nhiều năm bỗng kêu lên một tiếng. Dòng chữ ngắn: "Bạn đã làm đúng. Giờ hãy làm đúng điều ngược lại."',
     '[An echo of a Prescript] Your old pager, left in a drawer for years, sounds once. The text is short: “You did it correctly. Now do the opposite, correctly.”',
     [
       C('Làm theo dòng chữ', 'Do as the text says', null, null, {}, { out: [
@@ -60,7 +60,7 @@ export const LIFE_MINORS_CONTRACTS = [
     '[The file returns] A stranger in a Wing uniform sets a sealed file in front of you. You know the seal: the very one you once delivered. “The recipient returned it,” they say.',
     [
       C('Mở niêm phong', 'Break the seal', null, null, {}, { out: [
-        O(40, 'Bên trong là bản sao hồ sơ nhân sự của chính bạn, với một dòng ghi chú bằng bút đỏ ở lề: "Đáng tin." Không ai giải thích vì sao nó được gửi đến. Chức vụ của bạn được xem xét lại vào tháng sau.', 'Inside is a copy of your own personnel file with a note in red pen in the margin: “Reliable.” No one explains why it was sent. Your position is reviewed the following month.', { rep: +5, network: +5 }),
+        O(40, 'Bên trong là bản sao hồ sơ nhân sự của chính bạn, lề giấy có dòng bút đỏ: "Đáng tin." Không ai giải thích vì sao nó được gửi đến. Chức vụ của bạn được xem xét lại vào tháng sau.', 'Inside is a copy of your own personnel file with a note in red pen in the margin: “Reliable.” No one explains why it was sent. Your position is reviewed the following month.', { rep: +5, network: +5 }),
         O(60, 'Bên trong là một lệnh điều chuyển đã được ký, chưa điền tên. Bạn nhìn nó rất lâu. Nó chỉ chờ một cái tên, và bạn không biết cái tên ấy là của ai.', 'Inside is a signed transfer order with the name left blank. You look at it for a very long time. It is only waiting for a name, and you do not know whose.', { sanity: -4, network: -2 })
       ] }),
       C('Trả lại không mở', 'Return it unopened', 'Người lạ nhận lại hồ sơ và gật đầu như thể đó là đáp án đúng. Họ để lại một tấm danh thiếp không có chữ.', 'The stranger takes the file back and nods as if that were the correct answer. They leave behind a blank business card.', { sanity: +2, network: +2 })
@@ -72,7 +72,7 @@ export const LIFE_MINORS_CONTRACTS = [
     '[The ash stirs] The lead box of ash from where the Distortion fell, still sitting in a corner of the studio, has gone warm. The lid trembles faintly, as if someone were knocking from inside.',
     [
       C('Mở hộp', 'Open the box', null, null, {}, { out: [
-        O(50, 'Trong hộp, lớp tro đã tụ lại thành một hình bàn tay nhỏ, rồi tan ra khi bạn nhìn. Bạn cảm thấy bình yên một cách lạ lùng, và không dám ở gần nó thêm.', 'In the box the ash has gathered into the shape of a small hand, then comes apart as you watch. You feel an odd peace, and do not dare stay near it longer.', { sanity: +4, resonance: +6 }),
+        O(50, 'Trong hộp, lớp tro đã tụ lại thành một hình bàn tay nhỏ, rồi tan ra khi bạn nhìn. Lòng bạn bình yên lạ thường, nhưng chẳng dám ở gần nó thêm.', 'In the box the ash has gathered into the shape of a small hand, then comes apart as you watch. You feel an odd peace, and do not dare stay near it longer.', { sanity: +4, resonance: +6 }),
         O(50, 'Tro bay ra khỏi hộp thành một làn khói và bám vào quần áo bạn. Nhiều tuần sau, mùi của nó vẫn không rửa sạch được.', 'The ash lifts out of the box as a thin smoke and clings to your clothes. For weeks after, its smell will not wash out.', { sanity: -5, resonance: +8 })
       ] }),
       C('Chôn hộp ở nghĩa địa phong tỏa', 'Bury the box in the sealed cemetery', 'Bạn mất hai đêm để chôn nó, một túi đồng xu đặt phía trên. Cái gõ cửa dừng lại, và trong xưởng chỉ còn mùi dầu thông.', 'It costs two nights to bury it, a sack of coins set on top. The knocking stops, and the studio smells only of turpentine.', { sanity: +3, wealth: -4 })
@@ -80,14 +80,14 @@ export const LIFE_MINORS_CONTRACTS = [
     I('Bạn lấy khăn phủ lên hộp và quay lưng đi. Tiếng gõ ngừng sau đó vài phút, nhưng không biết là vì ai.', 'You throw a cloth over the box and turn your back. The knocking stops a few minutes later, but you cannot say for whom.', { sanity: -2 })),
 
   M('mx_pinky_oath_kin', ADULT, { mem: 'pinky_capo_oath' },
-    '[Con của một lời thề] Một người trẻ đến nơi bạn ở và quỳ xuống trước mặt bạn. Họ là con của Capo mà bạn từng đòi lời thề máu. Họ không nói gì về thù hận, chỉ xin được học kiếm.',
+    '[Con của lời thề] Người trẻ tìm tới chỗ bạn ở, quỳ xuống trước mặt bạn. Họ là con của tay Capo năm xưa bạn bắt phải thề máu. Họ không nói gì về thù hận, chỉ xin được học kiếm.',
     '[The child of an oath] A young person comes to your place and kneels before you. They are the child of the Capo whose blood oath you once collected. They say nothing of hatred, only ask to learn the sword.',
     [
       C('Nhận làm học trò', 'Take them on as a student', null, null, {}, { out: [
         O(65, 'Họ học nhanh và chịu được những buổi tập khắc nghiệt nhất. Sau một năm, họ vẫn không nhắc đến cha mình, nhưng đêm nào cũng lau thanh kiếm tập hai lần.', 'They learn fast and endure the harshest sessions. After a year they still never mention their father, but each night they wipe the practice blade twice.', { sanity: +3, merit: +6 }, { motif: { loyalty: 1 } }),
         O(35, 'Họ học nhanh, và đến ngày thứ ba trăm, họ đứng đối diện bạn với thanh kiếm thật. "Con muốn biết cha con đã thấy gì," họ nói. Bạn buộc phải đáp.', 'They learn fast, and on the three hundredth day they stand across from you with a real blade. “I want to know what my father saw,” they say. You must answer.', { health: -6, sanity: -3, merit: +4 })
       ] }),
-      C('Từ chối', 'Refuse', 'Họ cúi đầu và đứng dậy mà không nói gì. Bạn thấy họ ngoái lại một lần ở cuối phố, và ánh mắt không phải là thù hận.', 'They bow and rise without a word. You see them look back once at the end of the street, and the look is not hatred.', { sanity: -3 })
+      C('Từ chối', 'Refuse', 'Họ cúi đầu và đứng dậy mà không nói gì. Tới cuối phố họ ngoái lại một lần, ánh mắt chẳng có chút thù hận nào.', 'They bow and rise without a word. You see them look back once at the end of the street, and the look is not hatred.', { sanity: -3 })
     ],
     I('Bạn để họ quỳ đó đến khi trời tối. Họ không động đậy, và bạn là người chớp mắt trước.', 'You let them kneel there until dark. They do not move, and you are the one who blinks first.', { sanity: -3 }))
 ];

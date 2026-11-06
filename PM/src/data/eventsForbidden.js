@@ -13,7 +13,7 @@ export const FORBIDDEN_MINORS = [
     FORBIDDEN_LEAD_ID,
     [25, 140],
     { noFlags: ['Distorted'] },
-    '[Hộp chì không nhãn] Người môi giới đặt một chiếc hộp chì lên bàn và không mở nắp. Bên trong là sổ tay của một phòng thí nghiệm Wing đã bị xóa khỏi bản đồ: cách dựng một cỗ máy biết tự nghĩ. Người ấy nói chỉ ai đủ mạnh mới giữ được nó qua một năm.',
+    '[Hộp chì không nhãn] Người môi giới đặt chiếc hộp chì lên bàn, không mở nắp. Bên trong là sổ tay của phòng thí nghiệm Wing đã bị xóa khỏi bản đồ: cách dựng một cỗ máy biết tự nghĩ. Người ấy nói chỉ ai đủ mạnh mới giữ được nó qua một năm.',
     '[The Unlabelled Lead Case] A broker sets a lead case on the table and does not open it. Inside are the notebooks of a Wing lab that was wiped off the map: how to build a machine that thinks for itself. The broker says only someone strong enough can keep it for a year.',
     [
       C(

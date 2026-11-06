@@ -32,7 +32,7 @@ export const PINKY_DEPTH = [
     ], 8),
 
   mission('pinky_the_oath_in_the_rain', [1, 2],
-    '[Lời thề dưới mưa] Một Sworn Blade phải trả một lời thề dưới trời mưa như trút, ở một nơi không có chỗ nấp. Người nhận lời thề là một đứa trẻ, và nó sẽ không hiểu vì sao người lớn lại đứng ngoài mưa.',
+    '[Lời thề dưới mưa] Sworn Blade phải trả lời thề giữa trời mưa như trút, ở nơi chẳng có chỗ nấp. Người nhận lời thề là đứa trẻ, và nó sẽ không hiểu vì sao người lớn lại đứng ngoài mưa.',
     '[An oath in the rain] A Sworn Blade must pay an oath in pouring rain at a place with no shelter. The one receiving the oath is a child, who will not understand why adults stand in the rain.',
     [
       fc('Che ô cho đứa trẻ và đọc lời thề thật nhỏ', 'Hold an umbrella over the child and read the oath softly',
@@ -46,7 +46,7 @@ export const PINKY_DEPTH = [
     ]),
 
   mission('pinky_the_wrong_scabbard', [1, 2],
-    '[Vỏ kiếm sai] Bạn phát hiện thanh kiếm của một Sworn Blade đã mất nằm trong vỏ của người khác. Một trong hai là kẻ cắp, và cả hai đều thề họ không biết gì. Pinky không có luật xử việc này.',
+    '[Vỏ kiếm sai] Bạn phát hiện thanh kiếm của Sworn Blade đã khuất nằm trong vỏ kiếm người khác. Một trong hai là kẻ cắp, và cả hai đều thề họ không biết gì. Pinky không có luật xử việc này.',
     '[The wrong scabbard] You find a dead Sworn Blade’s sword resting in another’s scabbard. One of the two is a thief, and both swear they know nothing. The Pinky has no law for this.',
     [
       fc('Để hai người rút kiếm và xem thanh nào vừa vỏ', 'Have both draw and see which fits the scabbard',
@@ -93,12 +93,12 @@ export const PINKY_DEPTH = [
         'Bạn trả cả mười trong ba tháng. Pinky ghi nhận bạn nhanh và gọn. Có người hỏi vì sao không chọn những lời khó, và bạn không có câu trả lời tốt.', 'You pay all ten in three months. The Pinky records you as quick and tidy. Someone asks why you did not choose the hard ones, and you have no good answer.', { rep: 5, wealth: 12, sanity: 3 }),
       fg('Để một đứa trẻ bốc thăm mười lời', 'Let a child draw ten oaths at random', [
         [55, 'Mười lời bốc được rất khác nhau, và trả xong cả mười, bạn nhận ra cuốn sổ không phải sổ nợ mà là sổ những người từng tin vào điều gì đó.', 'The ten drawn are very different, and when you pay all ten you realize the book is not a ledger of debts but of those who once believed in something.', { rep: 10, sanity: 8, network: 6 }],
-        [45, 'Một trong mười lời là của một người bạn quen. Bạn trả nó với một thanh kiếm run, và Pinky không chấp nhận cách bạn trả.', 'One of the ten belongs to someone you knew. You pay it with a shaking sword, and the Pinky does not accept how you paid.', { rep: -5, sanity: -8 }]
+        [45, 'Một trong mười lời thề là của người quen. Bạn trả nó với thanh kiếm run rẩy, và Pinky không chấp nhận cách bạn trả.', 'One of the ten belongs to someone you knew. You pay it with a shaking sword, and the Pinky does not accept how you paid.', { rep: -5, sanity: -8 }]
       ])
     ], 10),
 
   mission('pinky_the_student_who_won', [2, 3],
-    '[Học trò thắng] Một học trò bạn từng dạy thắng bạn trong một trận tập, trước cả sân, bằng một thế kiếm bạn không dạy. Họ đứng thở dốc và nhìn bạn, không biết nên vui hay sợ.',
+    '[Học trò thắng] Học trò bạn dạy ngày trước thắng bạn trong trận tập trước cả sân, bằng thế kiếm bạn chưa từng dạy. Họ đứng thở dốc và nhìn bạn, không biết nên vui hay sợ.',
     '[The student who won] A student you once taught beats you in a practice bout, before the whole yard, with a form you did not teach. They stand panting and look at you, not knowing whether to be glad or afraid.',
     [
       fc('Cúi đầu trước họ', 'Bow to them',
@@ -110,7 +110,7 @@ export const PINKY_DEPTH = [
     ], 8),
 
   mission('pinky_a_star_goes_dark', [3, 3],
-    '[Một Star tắt] Một Star of the Sky mà bạn kính trọng mất khả năng cầm kiếm sau một vết thương cũ. Họ không nói gì, nhưng mỗi sáng họ vẫn ra sân, đặt tay lên chuôi kiếm không rút, và đứng đó đến khi nắng lên.',
+    '[Một Star tắt] Vị Star of the Sky bạn kính trọng không còn cầm nổi kiếm vì vết thương cũ. Họ không nói gì, nhưng mỗi sáng họ vẫn ra sân, đặt tay lên chuôi kiếm không rút, và đứng đó đến khi nắng lên.',
     '[A Star goes dark] A Star of the Sky you respect loses the ability to hold a sword after an old wound. They say nothing, but each morning they still come to the yard, lay a hand on an undrawn hilt, and stand until the sun is up.',
     [
       fc('Ra sân mỗi sáng và đứng cạnh họ', 'Come to the yard each morning and stand beside them',
@@ -122,13 +122,13 @@ export const PINKY_DEPTH = [
     ], 10),
 
   mission('pinky_the_last_oath_of_a_sovereign', [3, 3],
-    '[Lời thề cuối của một Sovereign] Sovereign tiền nhiệm để lại một lời thề chưa được trả, và nó chỉ có thể được trả bởi người đang ngồi ở ghế Sovereign. Bạn đứng trước một bia mộ trống và một lời hứa không có tên người nhận.',
+    '[Lời thề cuối của Sovereign] Sovereign tiền nhiệm để lại lời thề còn nợ, mà chỉ người đang ngồi ghế Sovereign mới trả được. Bạn đứng trước tấm bia mộ trống và lời hứa không có tên người nhận.',
     '[A Sovereign’s last oath] The former Sovereign left an oath unpaid, and only the one seated as Sovereign can pay it. You stand before an empty grave and a promise with no name of the recipient.',
     [
       fc('Trả lời thề trước bia mộ trống', 'Pay the oath before the empty grave',
         'Bạn đọc lời thề và rút kiếm một nhát vào không khí. Không có tiếng đáp. Nhưng sáng hôm sau trên bia mộ có một bông hoa trắng mà không ai đặt.', 'You read the oath and draw one stroke through the air. No sound answers. But the next morning a white flower lies on the grave that no one placed.', { sanity: -4, rep: 12, resonance: 8 }, { meritAdd: 6 }),
       fc('Tìm người nhận lời thề trước khi trả', 'Find the recipient of the oath before paying',
-        'Bạn tìm suốt một mùa. Cuối cùng bạn tìm thấy: một bà lão ở thị trấn nhỏ, người chưa từng biết tên Sovereign. Bạn trả lời thề bằng cách ngồi uống trà với bà ấy.', 'You search a whole season. At last you find: an old woman in a small town who never knew the Sovereign’s name. You pay the oath by sitting with her over tea.', { sanity: 8, rep: 10, network: 8 }),
+        'Bạn tìm suốt một mùa. Rốt cuộc bạn tìm ra: bà lão sống ở thị trấn nhỏ, người chưa từng biết tên Sovereign. Bạn trả lời thề bằng cách ngồi uống trà với bà ấy.', 'You search a whole season. At last you find: an old woman in a small town who never knew the Sovereign’s name. You pay the oath by sitting with her over tea.', { sanity: 8, rep: 10, network: 8 }),
       fg('Đọc lời thề công khai và để Pinky tự hiểu', 'Read the oath publicly and let the Pinky understand', [
         [55, 'Cả sân đứng nghe, và không ai dám thở. Khi lời thề kết thúc, một người đứng dậy và nói đó là mẹ của họ. Bạn chưa bao giờ biết bà từng thề với ai.', 'The whole yard stands to hear and no one dares breathe. When the oath ends someone rises and says that was their mother. You never knew she had sworn to anyone.', { rep: 14, network: 10, sanity: 4 }],
         [45, 'Lời thề bị hiểu theo ba cách. Cả sân tranh luận đến khuya, và bạn nhận ra mình đã mở một cánh cửa không đóng lại được.', 'The oath is understood three ways. The whole yard argues into the night, and you realize you have opened a door that will not close.', { rep: -4, network: -4, sanity: -6 }]

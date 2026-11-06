@@ -344,7 +344,7 @@ export const WORKSHOP_ECONOMY_EVENTS = [
       {
         labelVi: 'Buồn nôn từ chối khi nhớ lại các tin đồn về District 23',
         labelEn: 'Refuse with revulsion, recalling District 23 urban legends',
-        resultVi: 'Bạn nuốt nước bọt bỏ đi. Dù đói lả, bạn thà giữ cho tâm trí mình không bị vấy bẩn bởi sự thật hắc ám.',
+        resultVi: 'Bạn nuốt nước bọt bỏ đi. Dù đói lả, bạn thà giữ đầu óc mình sạch khỏi sự thật hắc ám ấy.',
         resultEn: 'You swallowed hard and walked away. Famished as you were, some truths were better left uneaten.',
         effects: { sanity: +4 }
       }

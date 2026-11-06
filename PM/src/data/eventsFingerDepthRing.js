@@ -50,7 +50,7 @@ export const RING_DEPTH = [
     '[A student who wants to leave] A student of yours comes to the studio at dawn with a small bundle and says they cannot go on. They are not angry. They say only that whenever they look at a work they hear it breathe.',
     [
       fc('Để họ đi và chúc họ may mắn', 'Let them go and wish them well',
-        'Họ cúi đầu và đi trong im lặng. Bạn không biết họ đã nghe gì. Một năm sau bạn nhận một tấm thiệp từ một thị trấn xa, chỉ có một dòng chữ viết tay.', 'They bow and leave in silence. You never know what they heard. A year later a card arrives from a far town with one handwritten line.', { sanity: 3, rep: 3, network: 3 }),
+        'Họ cúi đầu và đi trong im lặng. Bạn không biết họ đã nghe gì. Một năm sau bạn nhận tấm thiệp gửi từ thị trấn xa, chỉ có đúng một dòng viết tay.', 'They bow and leave in silence. You never know what they heard. A year later a card arrives from a far town with one handwritten line.', { sanity: 3, rep: 3, network: 3 }),
       fc('Giữ họ lại một mùa và cho họ nghỉ vẽ', 'Keep them a season and let them rest from painting',
         'Họ ở lại, quét sàn, nấu ăn, không chạm đến bút. Cuối mùa họ cầm bút lên lại và vẽ một bức tranh về tiếng thở ấy.', 'They stay, sweep floors, cook, and do not touch a brush. At season’s end they pick it up again and paint a picture of that breathing.', { sanity: -2, rep: 7, network: 6 }, { meritAdd: 3 }),
       fc('Nói họ phải nghe thêm để học', 'Tell them to keep listening in order to learn',
@@ -58,7 +58,7 @@ export const RING_DEPTH = [
     ], 8),
 
   mission('ring_patron_wants_a_face', [2, 3],
-    '[Người bảo trợ muốn một khuôn mặt] Một người bảo trợ giàu có đặt Ring làm một bức chân dung của người hôn phối đã khuất. Họ chỉ có một bức ảnh nhòe và một lọn tóc. Họ muốn khuôn mặt giống đến mức họ không phân biệt được.',
+    '[Người bảo trợ muốn một khuôn mặt] Nhà bảo trợ giàu có đặt Ring vẽ chân dung người bạn đời đã khuất. Trong tay họ chỉ có tấm ảnh nhòe và lọn tóc. Họ muốn khuôn mặt giống đến mức họ không phân biệt được.',
     '[A patron wants a face] A wealthy patron commissions the Ring for a portrait of their late partner. They have only a blurred photograph and a lock of hair. They want a likeness so exact they cannot tell the difference.',
     [
       fc('Vẽ đúng như ảnh nhòe, để nó cũng nhòe', 'Paint exactly as the blurred photograph, so it is blurred too',
@@ -72,7 +72,7 @@ export const RING_DEPTH = [
     ], 10),
 
   mission('ring_forged_hand', [2, 3],
-    '[Bàn tay giả] Một tác phẩm của bạn xuất hiện ở một cuộc đấu giá với chữ ký của bạn, nhưng bạn chưa bao giờ làm nó. Nét bút giống đến mức chính bạn do dự. Người đấu giá nói nó đến từ một người bảo trợ cũ của bạn.',
+    '[Bàn tay giả] Buổi đấu giá nọ rao bán tác phẩm mang chữ ký của bạn, mà bạn chưa từng làm. Nét bút giống đến mức chính bạn do dự. Người điều hành đấu giá nói nó đến từ nhà bảo trợ cũ của bạn.',
     '[A forged hand] A work bearing your signature appears at an auction, but you never made it. The stroke is so like yours that you hesitate yourself. The auctioneer says it came from one of your old patrons.',
     [
       fc('Tố cáo công khai ngay tại buổi đấu giá', 'Denounce it openly at the auction',
@@ -110,7 +110,7 @@ export const RING_DEPTH = [
     ], 8),
 
   mission('ring_the_apprentice_at_the_door', [2, 3],
-    '[Người học việc đứng ở cửa] Một đứa trẻ đứng ở cửa xưởng ba ngày liền, không xin gì, chỉ nhìn qua khe cửa. Bạn nhận ra cách nó cầm than vẽ: nó chưa bao giờ học, và vẫn cầm đúng.',
+    '[Người học việc đứng ở cửa] Đứa trẻ đứng trước cửa xưởng ba ngày liền, không xin gì, chỉ nhìn qua khe cửa. Bạn nhận ra cách nó cầm than vẽ: nó chưa bao giờ học, và vẫn cầm đúng.',
     '[The apprentice at the door] A child stands at the studio door three days running, asking nothing, only looking through the gap. You see how it holds the charcoal: it has never been taught, and holds it right.',
     [
       fc('Mời vào và đưa nó một tờ giấy', 'Invite it in and give it a sheet of paper',
@@ -122,7 +122,7 @@ export const RING_DEPTH = [
     ], 9),
 
   mission('ring_the_museum_of_one', [3, 3],
-    '[Bảo tàng của một người] Một người sưu tầm tặng Ring cả bộ sưu tập của họ với một điều kiện: Grand Curator phải đích thân sống cạnh nó một năm. Căn nhà của họ nằm ở ngoại ô, và những người hàng xóm không nói chuyện với ai.',
+    '[Bảo tàng của một người] Nhà sưu tầm tặng Ring trọn bộ sưu tập, kèm một điều kiện: Grand Curator phải đích thân sống cạnh nó một năm. Căn nhà của họ nằm ở ngoại ô, và những người hàng xóm không nói chuyện với ai.',
     '[A museum of one] A collector bequeaths their entire collection to the Ring on one condition: the Grand Curator must live beside it for a year in person. The house is in the suburbs, and the neighbors speak to no one.',
     [
       fc('Chuyển đến sống một năm', 'Move in for a year',
@@ -154,7 +154,7 @@ export const RING_DEPTH = [
       fc('Đặt tác phẩm khó nhìn nhất', 'Place the hardest work to look at',
         'Một nửa đám đông bỏ đi trong im lặng. Nửa còn lại ở lại cả ngày. Họ là những người bạn muốn nói chuyện, và họ đến cả những năm sau.', 'Half the crowd leaves in silence. The other half stay all day. They are the ones you wanted to talk to, and they come in later years too.', { rep: 8, network: 14, sanity: -6, resonance: 6 }),
       fg('Để một đứa trẻ trong đám đông chọn', 'Let a child from the crowd choose', [
-        [55, 'Đứa trẻ chọn một tác phẩm nhỏ ở góc phòng mà không ai để ý. Cả hàng người ngạc nhiên rồi dần dần nhìn nó khác đi. Tác phẩm ấy được hỏi mua nhiều nhất năm đó.', 'The child picks a small work in a corner no one had noticed. The whole line is surprised then slowly begins to see it differently. It is the most inquired-after work that year.', { rep: 12, network: 12, wealth: 20 }],
+        [55, 'Đứa trẻ chọn tác phẩm nhỏ trong góc phòng chẳng ai để ý. Cả hàng người ngạc nhiên rồi dần dần nhìn nó khác đi. Tác phẩm ấy được hỏi mua nhiều nhất năm đó.', 'The child picks a small work in a corner no one had noticed. The whole line is surprised then slowly begins to see it differently. It is the most inquired-after work that year.', { rep: 12, network: 12, wealth: 20 }],
         [45, 'Đứa trẻ chọn tác phẩm mà bạn ít ưng nhất. Bạn đứng cạnh nó cả ngày và nghe những lời nhận xét. Không ai khen, và bạn học được điều gì đó.', 'The child picks the work you like least. You stand beside it all day and hear the remarks. No one praises it, and you learn something.', { rep: -3, sanity: -4, resonance: 4 }]
       ])
     ], 10),

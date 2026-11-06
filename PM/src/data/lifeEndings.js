@@ -71,7 +71,7 @@ export const LIFE_ENDINGS = {
     quoteVi: '“Người ta nói họ mang theo một chiếc hộp nhỏ. Không ai biết bên trong có gì, ngoài việc nó đủ nhẹ để đi bộ.”',
     quoteEn: '“It is said they carried one small box. No one knows what was inside, except that it was light enough to walk with.”',
     closing: (c) => ({
-      vi: `Ở tuổi ${c.age}, bạn rời Nest qua cổng phụ với chiếc hộp nhỏ. Bạn thuê một phòng ở Backstreets dưới tên mới; tiền đặt cọc lấy từ số Ahn mang theo. 「${c.relic}」 được cất trong tủ, còn thẻ Wing nằm úp trên bàn.`,
+      vi: `Ở tuổi ${c.age}, bạn rời Nest qua cổng phụ với chiếc hộp nhỏ. Bạn thuê căn phòng ở Backstreets dưới tên mới; tiền đặt cọc lấy từ số Ahn mang theo. 「${c.relic}」 được cất trong tủ, còn thẻ Wing nằm úp trên bàn.`,
       en: `At age ${c.age}, you leave the Nest by the side gate with a small box. You rent a Backstreets room under a new name, paying the deposit with the Ahn you carried. "${c.relic}" goes into the cupboard; the Wing badge lies face down on the table.`
     })
   },

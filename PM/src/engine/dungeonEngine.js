@@ -149,7 +149,7 @@ export const DUNGEON_DEFINITIONS = {
             strainDelta: +6
           },
           {
-            labelVi: "Tìm chiếc cặp tài liệu của một nhà nghiên cứu Wing bị kẹt lại",
+            labelVi: "Tìm chiếc cặp tài liệu của nhà nghiên cứu Wing bị kẹt lại",
             labelEn: "Look for the briefcase of a stranded Wing researcher",
             checkTrait: 'luck',
             resultVi: "Bạn đào qua lớp thịt còn ấm và giật ra chiếc cặp đã niêm phong. Bên trong có chứng từ giá trị và một bộ ổn định xung nhịp.",
@@ -719,7 +719,7 @@ export const DUNGEON_DEFINITIONS = {
           {
             labelVi: "Ra lệnh tăng hết tốc lực và đâm xuyên vành đai sương",
             labelEn: "Order full ahead and ram through the fog belt",
-            resultVi: "Mũi tàu bọc thép cày nát những tảng băng sáp, và hất lên một thùng hàng trôi dạt của một thương thuyền bị đắm.",
+            resultVi: "Mũi tàu bọc thép cày nát những tảng băng sáp, hất tung thùng hàng trôi dạt từ thương thuyền bị đắm.",
             resultEn: "The armored prow plows through the wax floes and flips up a drifting cargo pod from a sunken merchantman.",
             fx: { health: -5, wealth: 20, rep: 6, merit: 6 },
             lootAhn: 20,

@@ -8,7 +8,7 @@ const mission = (id, rank, vi, en, choices, weight = 9) => ({ ...fe(id, I, rank,
 
 export const INDEX_DEPTH = [
   mission('index_borrowed_umbrella', [0, 1],
-    '[Chiếc ô mượn] Prescript viết: trả chiếc ô này cho người đã cho bạn mượn trong cơn mưa tuần trước. Bạn không nhớ đã mượn ô của ai. Chiếc ô trong tay bạn có cán gỗ mòn và một mảnh vải trắng buộc ở đuôi.',
+    '[Chiếc ô mượn] Prescript viết: trả chiếc ô này cho người đã cho bạn mượn trong cơn mưa tuần trước. Bạn không nhớ đã mượn ô của ai. Chiếc ô trong tay bạn cán gỗ đã mòn, đuôi buộc mảnh vải trắng.',
     '[The borrowed umbrella] The Prescript says: return this umbrella to the one who lent it to you in last week’s rain. You do not remember borrowing one. The umbrella in your hand has a worn wooden handle and a strip of white cloth tied at the tail.',
     [
       fc('Đi từng nhà trong con phố hôm mưa, hỏi từng cánh cửa', 'Go house to house along the street of that rain and knock on each door',
@@ -42,11 +42,11 @@ export const INDEX_DEPTH = [
       fc('Đưa họ đến văn phòng đăng ký để tìm tên thật', 'Take them to the registry office to find the real name',
         'Cuốn sổ có ba người cùng hình dáng. Người lạ chọn một cái tên và không nhìn hai cái còn lại. Bạn nói to tên ấy ba lần, và quảng trường im lặng.', 'The register holds three people of the same description. The stranger picks one name and does not look at the other two. You say it aloud three times, and the square falls silent.', { rep: 5, sanity: -3, network: 3 }),
       fc('Nói với Messenger rằng Prescript không thể hoàn thành', 'Tell the Messenger the Prescript cannot be completed',
-        'Messenger đọc lại tờ giấy và cười một cách kỳ lạ. "Có thể đây là câu trả lời." Bạn không hiểu, và ông ta không giải thích.', 'The Messenger rereads the slip and smiles oddly. “Perhaps this is the answer.” You do not understand, and he does not explain.', { rep: 4, sanity: -4 })
+        'Messenger đọc lại tờ giấy, bật cười kỳ quặc. "Có thể đây là câu trả lời." Bạn không hiểu, và ông ta không giải thích.', 'The Messenger rereads the slip and smiles oddly. “Perhaps this is the answer.” You do not understand, and he does not explain.', { rep: 4, sanity: -4 })
     ]),
 
   mission('index_proxy_misread', [1, 2],
-    '[Đọc nhầm một chữ] Một Proxy đọc nhầm một chữ trong Prescript và ba người đã làm theo cách đọc sai. Chưa ai bị thương. Proxy ấy nhìn bạn và hỏi liệu bạn có thể im lặng.',
+    '[Đọc nhầm một chữ] Tay Proxy đọc nhầm một chữ trong Prescript, và ba người đã làm theo cách đọc sai ấy. Chưa ai bị thương. Proxy ấy nhìn bạn và hỏi liệu bạn có thể im lặng.',
     '[A misread word] A Proxy misread one word in a Prescript and three people followed the wrong reading. No one has been hurt yet. The Proxy looks at you and asks whether you could stay quiet.',
     [
       fc('Im lặng và để ba người ấy tự thoát ra', 'Stay quiet and let the three find their own way out',
@@ -81,12 +81,12 @@ export const INDEX_DEPTH = [
         'Đến gần sáng, ổ khóa phát ra một tiếng nhẹ như ai đó đang thử nó từ bên trong. Bạn không rời tay khỏi chuôi kiếm đến lúc trời sáng.', 'Near dawn the lock gives a soft sound as if someone tests it from within. You keep your hand on your hilt until daylight.', { sanity: -8, health: -4, rep: 6 }, { meritAdd: 5 }),
       fg('Mang cả hai tờ đến Weaver để hỏi', 'Carry both slips to the Weaver and ask', [
         [50, 'Weaver nhìn hai tờ giấy rất lâu và cười. "Ta chưa viết tờ nào trong hai tờ này." Ông ta thu cả hai về và tìm ra kẻ đã giả dấu.', 'The Weaver looks at the two slips a long time and smiles. “I wrote neither of these.” They take both away and find whoever forged the seal.', { rep: 10, network: 8 }],
-        [50, 'Weaver nhìn bạn một cách không rõ nghĩa và nói rằng một Proxy chưa bao giờ phải hỏi. Bạn rời phòng với cảm giác vừa mất thứ gì đó.', 'The Weaver looks at you with an unreadable face and says a Proxy has never had to ask. You leave the room feeling you have lost something.', { rep: -4, sanity: -5 }]
+        [50, 'Weaver nhìn bạn, ánh mắt khó đoán, nói rằng Proxy xưa nay chưa bao giờ phải hỏi. Bạn rời phòng với cảm giác vừa mất thứ gì đó.', 'The Weaver looks at you with an unreadable face and says a Proxy has never had to ask. You leave the room feeling you have lost something.', { rep: -4, sanity: -5 }]
       ])
     ], 10),
 
   mission('index_wrong_hands', [2, 3],
-    '[Sai tay người nhận] Một Prescript quan trọng đến tay một người không thuộc Index, do lỗi của một Messenger đã chết. Người ấy đã mở nó, đã đọc nó, và đã bắt đầu làm theo từng chữ.',
+    '[Sai tay người nhận] Tờ Prescript quan trọng lọt vào tay người ngoài Index, do lỗi của tay Messenger đã chết. Người ấy đã mở nó, đã đọc nó, và đã bắt đầu làm theo từng chữ.',
     '[Into the wrong hands] An important Prescript reaches someone outside the Index through the mistake of a Messenger now dead. They have opened it, read it, and begun to follow it word for word.',
     [
       fc('Để người ấy làm xong, rồi mới đến gặp', 'Let them finish, then go to meet them',
@@ -112,7 +112,7 @@ export const INDEX_DEPTH = [
     ], 9),
 
   mission('index_last_slip_of_a_weaver', [3, 3],
-    '[Tờ giấy cuối của một Weaver] Một Weaver tiền nhiệm để lại một Prescript chưa mở với dòng ghi ngoài bì: "Chỉ mở khi người kế vị nhận ra mình đã sai." Hôm nay bạn đứng nhìn phong bì ấy, không biết mình đã sai điều gì.',
+    '[Tờ giấy cuối của Weaver] Vị Weaver tiền nhiệm để lại tờ Prescript chưa bóc, ngoài bì ghi: "Chỉ mở khi người kế vị nhận ra mình đã sai." Hôm nay bạn đứng nhìn phong bì ấy, không biết mình đã sai điều gì.',
     '[A Weaver’s last slip] A former Weaver left an unopened Prescript with a line on the cover: “Open only when the successor has realized they were wrong.” Today you stand looking at the envelope, not knowing what you were wrong about.',
     [
       fc('Mở ra ngay, xem điều ông ấy nghĩ bạn đã sai', 'Open it now to see what they thought you were wrong about',

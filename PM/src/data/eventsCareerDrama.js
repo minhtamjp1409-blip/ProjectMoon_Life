@@ -25,7 +25,7 @@ export const CAREER_DRAMA_EVENTS = [
   {
     id: 'drama_middle_book_entry', age: [20, 62], major: true, weight: 36,
     need: { jobs: ['Syndicate'], finger: 'Middle', npc: 'friend' },
-    vi: '[Trang sổ thù] Trong Book of Vengeance của một Big Sibling, bạn thấy tên {friend}. Dòng bên cạnh ghi món nợ của một người khác; nét mực sửa tên còn chưa khô.',
+    vi: '[Trang sổ thù] Trong Book of Vengeance của vị Big Sibling nọ, bạn thấy tên {friend}. Dòng bên cạnh ghi món nợ của người khác; nét mực sửa tên còn chưa khô.',
     en: '[A page in the Book] A Big Sibling’s Book of Vengeance lists {friend}. The debt beside it belongs to someone else; the amended ink is still wet.',
     choices: [
       { labelVi: 'Báo cho {friend} rồi tìm người sửa sổ', labelEn: 'Warn {friend} and find who altered the entry', resultVi: '{friend} trốn ngay trong đêm. Người giữ sổ giao bạn hai ngày để đưa ra bằng chứng, không thêm một giờ.', resultEn: '{friend} flees that night. The keeper gives you two days to produce proof, not an hour more.', effects: { wealth: -7, heat: 10, network: -4 }, bond: { friend: 12 }, mem: 'middle_disputed_entry', scheduleConsequences: later('drama_middle_ink_witness', 1, 'The Middle đòi chứng cứ về dòng tên bị sửa', 'The Middle demands proof about the altered name') },
@@ -129,7 +129,7 @@ export const CAREER_DRAMA_EVENTS = [
     vi: '[Chỉ tiêu cuối quý] Bảng sản lượng của Wing đạt chỉ tiêu nhờ bỏ trống cột tai nạn. Người phụ trách nhờ bạn ký xác nhận trước khi đoàn kiểm tra đến.',
     en: '[Quarter-end quota] The Wing meets its target because the accident column is blank. Your supervisor asks for your signature before inspection.',
     choices: [
-      { labelVi: 'Ký vào bảng đã sửa', labelEn: 'Sign the altered sheet', resultVi: 'Đoàn kiểm tra đi qua trong mười phút. Tiền thưởng được chuyển; tủ đồ của một nhân viên không còn ai mở.', resultEn: 'The inspectors pass through in ten minutes. Your bonus arrives; one employee’s locker remains unopened.', effects: { wealth: 12, sanity: -12, rep: 4 }, meritAdd: 7, mem: 'wing_signed_quota' },
+      { labelVi: 'Ký vào bảng đã sửa', labelEn: 'Sign the altered sheet', resultVi: 'Đoàn kiểm tra đi qua trong mười phút. Tiền thưởng được chuyển; có cái tủ đồ của nhân viên nọ không còn ai mở.', resultEn: 'The inspectors pass through in ten minutes. Your bonus arrives; one employee’s locker remains unopened.', effects: { wealth: 12, sanity: -12, rep: 4 }, meritAdd: 7, mem: 'wing_signed_quota' },
       { labelVi: 'Điền số tai nạn còn thiếu', labelEn: 'Restore the missing accident count', resultVi: 'Chỉ tiêu không đạt. Bạn giữ bản sao trước khi phòng nhân sự thu lại hồ sơ gốc.', resultEn: 'The quota fails. You keep a copy before personnel retrieves the original.', effects: { wealth: -9, network: -8, heat: 7, sanity: 3 }, meritAdd: 5, mem: 'wing_kept_quota_copy', scheduleConsequences: later('drama_wing_copy_audit', 2, 'Bản sao bảng sản lượng bị phát hiện', 'The copied quota sheet is discovered') }
     ]
   },
@@ -150,7 +150,7 @@ export const CAREER_DRAMA_EVENTS = [
     en: '[The sealed room] One employee is missing at shift change. The test room is locked from within; management orders it sealed until morning.',
     choices: [
       { labelVi: 'Mở cửa, gọi đội cứu hộ', labelEn: 'Open the door and call rescue', resultVi: 'Người bên trong còn thở. Báo cáo ghi bạn tự ý phá niêm; người ấy ký tên làm chứng.', resultEn: 'The person inside is breathing. The report says you broke the seal; they sign as witness.', effects: { health: -12, network: -7, rep: 5 }, meritAdd: 6 },
-      { labelVi: 'Giữ niêm phong đến sáng', labelEn: 'Keep the seal until morning', resultVi: 'Bạn bàn giao chìa khóa đúng giờ. Khi cửa mở, đội y tế chỉ còn việc ghi thời điểm tử vong.', resultEn: 'You hand over the key on time. When the door opens, the medics only record the time of death.', effects: { sanity: -14, wealth: 5 }, meritAdd: 5 }
+      { labelVi: 'Giữ niêm phong đến sáng', labelEn: 'Keep the seal until morning', resultVi: 'Bạn bàn giao chìa khóa đúng giờ. Khi cửa mở, đội y tế chỉ còn việc ghi giờ chết.', resultEn: 'You hand over the key on time. When the door opens, the medics only record the time of death.', effects: { sanity: -14, wealth: 5 }, meritAdd: 5 }
     ]
   }
 ];

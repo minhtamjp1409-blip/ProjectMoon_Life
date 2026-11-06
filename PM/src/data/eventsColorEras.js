@@ -151,7 +151,7 @@ export const COLOR_ERA_EVENTS = [
             resultVi: 'Thứ đó bị chặn lại cách một con hẻm so với cửa sổ đầu tiên có đèn. Khi bạn quay về, các bóng đèn trong hẻm được bật lên cùng lúc, như một tiếng vỗ tay không ai dám phát ra.',
             resultEn: 'It is stopped one alley short of the first lit window. When you walk back, the lamps in the alley come on together, like applause nobody dares make.' },
           { w: 34, effects: { health: -34, sanity: -16, rep: 6, wealth: 10 }, meritAdd: 15, scarsAdd: ['Vết thương của chỉ thị niên độ'],
-            resultVi: 'Bạn giữ được con hẻm nhưng mất một nhịp ở lần đỡ cuối. Chỗ trống trong phong bì được điền tên người bạn không kịp chạy tới.',
+            resultVi: 'Bạn giữ được con hẻm, nhưng chậm mất một nhịp ở lần đỡ cuối. Chỗ trống trong phong bì được điền tên người bạn không kịp chạy tới.',
             resultEn: 'You hold the alley but lose a beat on the final parry. The space in the envelope is filled by the name of someone you were too late to reach.' }
         ] },
       { labelVi: 'Nói lý do không chọn: các vụ đều có người khác làm tốt hơn', labelEn: 'Give a reason for choosing none: others are better suited to all three',

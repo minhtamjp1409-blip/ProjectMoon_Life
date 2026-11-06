@@ -227,7 +227,7 @@ export function makeNpc(role, rng, extra = {}) {
 const FRIEND_LINE = [
   { vi: 'Nhà bên có một đứa trẻ sinh cùng tháng tên {friend}. Hai chiếc nôi thường được đặt gần nhau khi người lớn thay ca.', en: 'A child named {friend} is born next door that month. The adults often set your two cots together when shifts change.' },
   { vi: '{friend} sống cùng dãy nhà. Lúc này, hai đứa chỉ biết tên nhau qua lời người lớn gọi.', en: '{friend} lives on your block. For now, you know each other’s names only from the adults calling them.' },
-  { vi: 'Một gia đình ở cuối dãy nhà có đứa trẻ tên {friend}. Hai đứa được đưa ra hành lang cùng một buổi sáng.', en: 'A family at the end of the block has a child named {friend}. You are both carried into the corridor one morning.' }
+  { vi: 'Nhà cuối dãy có đứa trẻ tên {friend}. Hai đứa được bế ra hành lang cùng một buổi sáng.', en: 'A family at the end of the block has a child named {friend}. You are both carried into the corridor one morning.' }
 ];
 
 const OUTSKIRTS_NIGHT = [

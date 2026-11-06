@@ -19,7 +19,7 @@ const gated = (row, needs) => ({ row, need: needs });
 export const WING_DESK_EVENTS_A = [
   // ------------------------------------------------------------------ audit: a number that does not close
   desk('wing_desk_stock_gap', [19, 60], 60, need(0, 1),
-    '[Con số không khép được] Bảng kiểm kê quý này lệch đúng một khoản, nhỏ đến mức không ai muốn mất một buổi chiều vì nó. Bạn là người duy nhất đọc đến trang cuối, và khoản lệch dẫn về bàn của một trưởng phòng đang được chú ý.',
+    '[Con số không khép được] Bảng kiểm kê quý này lệch đúng một khoản, nhỏ tới mức chẳng ai muốn mất cả buổi chiều vì nó. Bạn là người duy nhất đọc đến trang cuối, và khoản lệch dẫn thẳng về bàn vị trưởng phòng đang được chú ý.',
     '[The Figure That Will Not Close] This quarter’s inventory sheet is off by a single entry, small enough that no one wants to lose an afternoon to it. You are the only one who reads to the last page, and the entry leads to the desk of a section chief who is being watched.',
     [
       ['Ghi nguyên văn vào báo cáo, không thêm không bớt', 'Write it into the report exactly as found, nothing added',
@@ -41,7 +41,7 @@ export const WING_DESK_EVENTS_A = [
         'Phòng kiểm soát ghi nhận, cảm ơn, và hủy cả hai trong tuần sau để "đối chiếu lại từ đầu". Bạn đã làm đúng và chẳng còn gì để chứng minh điều đó.',
         'Internal control logs it, thanks you, and pulps both the following week “to reconcile from the start.” You did the right thing and have nothing left to prove it.', { standing: 5, sanity: -2, rep: 1 }, 3],
       ['Chép lại cuốn mỏng trước khi nó vào máy hủy', 'Copy the thin one out before it reaches the pulper',
-        'Bạn chép đến khuya, bằng tay, vì máy in để lại dấu. Sáng hôm sau cuốn sổ biến mất, và trong ngăn kéo của bạn có một thứ chỉ còn tồn tại ở đó.',
+        'Bạn chép đến khuya, bằng tay, vì máy in để lại dấu. Sáng hôm sau cuốn sổ biến mất, chỉ còn ngăn kéo của bạn là giữ được bản chép.',
         'You copy until late, by hand, because the printer leaves traces. The next morning the ledger is gone, and in your drawer lies something that now exists only there.', { leverage: 12, standing: -3, sanity: -4 }],
       ['Để nguyên và coi như chưa mở hộp', 'Leave it as it is and treat the box as unopened',
         'Bạn đóng nắp hộp lại đúng góc cũ. Không ai biết bạn đã thấy gì, kể cả bạn khi nghĩ lại vào ban đêm.',
@@ -115,11 +115,11 @@ export const WING_DESK_EVENTS_A = [
     ]),
 
   desk('wing_desk_outside_witness', [24, 62], 50, need(1, 2),
-    '[Nhân chứng ngoài tường] Một vụ tai nạn ở xưởng của Wing có một người sống sót, và người đó ở Backstreets. Wing muốn lời khai của họ viết sao cho gọn. Bạn được cử đi nghe, vì bạn "dễ nói chuyện".',
+    '[Nhân chứng ngoài tường] Vụ tai nạn ở xưởng Wing còn đúng một người sống sót, và người đó sống ở Backstreets. Wing muốn lời khai của họ viết sao cho gọn. Bạn được cử đi nghe, vì bạn "dễ nói chuyện".',
     '[The Witness Beyond the Wall] An accident at a Wing workshop left one survivor, and that person lives in the Backstreets. The Wing wants their statement written so that it is tidy. You are sent to listen, because you are “easy to talk to.”',
     [
       ['Ghi đúng điều họ kể, kể cả phần không có lợi cho Wing', 'Write down exactly what they tell you, including what hurts the Wing',
-        'Lời khai của bạn dài hơn hai trang so với bản Wing mong đợi. Bạn nộp nó và biết rằng nó sẽ được "biên tập", nhưng ít nhất có một bản đúng tồn tại trong hồ sơ gốc.',
+        'Lời khai của bạn dài hơn hai trang so với bản Wing mong đợi. Bạn nộp nó và biết rằng nó sẽ được "biên tập", nhưng ít ra hồ sơ gốc vẫn còn một bản đúng.',
         'Your statement runs two pages longer than the Wing expected. You file it knowing it will be “edited,” but at least one true copy exists in the original record.', { standing: -3, sanity: 3, rep: 3, leverage: 4 }, 2],
       ['Viết gọn như Wing muốn và trả họ một khoản "hỗ trợ"', 'Write it tidy as the Wing wants and pay them a “support” sum',
         'Người sống sót nhận tiền và không hỏi lời khai nói gì. Trưởng phòng hài lòng và gọi bạn là người biết đường đi nước bước.',
@@ -131,14 +131,14 @@ export const WING_DESK_EVENTS_A = [
 
   // ------------------------------------------------------------------ interview: the next Feather
   desk('wing_desk_new_intern', [26, 62], 55, need(1, 3),
-    '[Thực tập sinh đầu tiên của bạn] Phòng nhận một người mới và đặt họ ngồi ngay cạnh bàn bạn. Họ chép lại mọi thao tác của bạn một cách chăm chú, kể cả những thao tác bạn không muốn ai học.',
+    '[Thực tập sinh đầu tiên của bạn] Phòng nhận một người mới và đặt họ ngồi ngay cạnh bàn bạn. Họ chăm chú chép lại mọi thao tác của bạn, kể cả những thao tác bạn không muốn ai học.',
     '[Your First Intern] The section takes on a newcomer and seats them right beside your desk. They copy every move you make with great care, including the ones you would rather no one learn.',
     [
       ['Dạy họ làm đúng từng bước, kể cả phần mất thời gian', 'Teach them each step properly, including the parts that take time',
         'Họ học nhanh hơn bạn đoán. Sau nửa năm, người ngoài khó phân biệt báo cáo nào của bạn và báo cáo nào của họ, và đó vừa là niềm tự hào vừa là một nỗi lo.',
         'They learn faster than you expected. Half a year on, outsiders can hardly tell which report is yours and which is theirs, which is both a pride and a worry.', { network: 6, standing: 3, sanity: 3 }, 2],
       ['Giao họ những việc ít người muốn làm', 'Hand them the jobs few people want',
-        'Họ nhận mà không phàn nàn, và đó là điều làm bạn thấy khó chịu. Bạn bắt đầu tự hỏi mình đã từng không phàn nàn đến mức nào.',
+        'Họ nhận mà không phàn nàn, và đó là điều làm bạn thấy khó chịu. Bạn bắt đầu tự hỏi ngày trước mình đã cam chịu tới mức nào.',
         'They accept without complaint, and that is what troubles you. You begin to ask yourself how long you once went without complaining.', { standing: 2, sanity: -3, leverage: 3 }, 1],
       ['Đưa họ một lời khuyên mà không ai từng đưa bạn', 'Give them the advice no one gave you',
         '"Đừng giữ bản sao của bất cứ thứ gì mà bạn không dám để người khác tìm thấy." Họ ghi lại câu đó, và bạn nhận ra mình vừa nói điều mình chưa làm được.',
@@ -153,7 +153,7 @@ export const WING_DESK_EVENTS_A = [
         'Người tài hơn nhận vị trí. Người còn lại nhìn bạn, không giận, và nói một câu mà bạn vẫn nhớ nhiều năm sau: "Cảm ơn vì đã không giả vờ."',
         'The more capable one takes the post. The other looks at you, not angry, and says a sentence you remember for years: “Thank you for not pretending.”', { standing: 4, rep: 3, network: -3, sanity: -2 }, 3],
       ['Chọn người có nhiều bạn và nhờ họ nhớ ơn', 'Pick the one with friends and let them remember the favor',
-        'Người ấy lên vị trí trong sự vui vẻ của gần cả phòng. Một năm sau họ trả ơn bằng một cách mà bạn không ngờ, và bạn không chắc đó là điều bạn muốn.',
+        'Người ấy lên vị trí trong sự vui vẻ của gần cả phòng. Một năm sau họ trả ơn theo cách bạn không ngờ, và bạn không chắc đó là điều bạn muốn.',
         'They rise into the post to the delight of nearly the whole section. A year later they repay you in a way you did not expect, and you are not sure it is what you wanted.', { network: 8, leverage: 4, standing: 1 }, 2],
       ['Đề nghị phòng nhân sự mở thêm một vị trí cho người còn lại', 'Ask personnel to open another post for the other applicant',
         'Phòng nhân sự trả lời bằng ba câu hỏi về ngân sách. Cuối cùng cả hai đều có chỗ, và bạn trở thành người làm tăng thêm một cái bàn trong tòa nhà vốn thiếu bàn.',

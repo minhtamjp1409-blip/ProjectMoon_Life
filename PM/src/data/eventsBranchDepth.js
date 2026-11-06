@@ -58,12 +58,12 @@ export const BRANCH_DEPTH_EVENTS = [
             resultVi: 'Lễ tiễn ngắn và có hoa. Bạn về căn hộ mới và chờ một người đến hỏi gì đó, nhưng suốt cả mùa không ai đến. Ngày thứ chín mươi, bạn bắt đầu nhẹ người.',
             resultEn: 'The farewell is short and has flowers. You go to the new flat and wait for someone to come ask something, but nobody does all season. On the ninetieth day you begin to breathe easier.' },
           { w: 45, effects: { wealth: 20, sanity: -14, health: -6 }, flagsAdd: ['wing_buyout_done'], scarsAdd: ['Điều khoản hỏi lại ký ức'],
-            resultVi: 'Một người đến vào mùa thu, lịch sự, mang theo ấm trà của chính mình. Họ hỏi ba câu về một năm bạn quên là đã từng làm ở tầng hầm. Bạn trả lời được cả ba, và không biết vì sao.',
+            resultVi: 'Mùa thu có người tới, lịch sự, mang theo ấm trà riêng. Họ hỏi ba câu về cái năm bạn đã quên là mình từng làm dưới tầng hầm. Bạn trả lời được cả ba, và không biết vì sao.',
             resultEn: 'Someone calls in autumn, polite, bringing their own teapot. They ask three questions about a year you had forgotten you worked in the basement. You answer all three and do not know why.' }
         ] },
       { labelVi: 'Từ chối, làm tiếp đến khi không làm được nữa', labelEn: 'Refuse and work until you cannot',
         effects: { rep: 6, wealth: -2, sanity: 3, heat: 3 }, flagsAdd: ['wing_buyout_done'],
-        resultVi: 'Phòng nhân sự cho bạn ba ngày suy nghĩ lại, rồi thôi. Hôm sau, cái bàn bạn ngồi được đổi sang một chiếc ghế tốt hơn, như một cách im lặng để nhắc rằng họ có thể làm ngược lại.',
+        resultVi: 'Phòng nhân sự cho bạn ba ngày suy nghĩ lại, rồi thôi. Hôm sau, cái bàn bạn ngồi được đổi sang một chiếc ghế tốt hơn, lặng lẽ nhắc rằng họ cũng có thể làm điều ngược lại.',
         resultEn: 'HR gives you three days to reconsider, then stops asking. The next day the chair at your desk is replaced with a better one, a quiet way of saying they could just as easily do the opposite.' }
     ]
   },

@@ -88,7 +88,7 @@ export const WING_CONTRACTS = [
     'The seller does not run. The seller waits for you in the car park.'),
 
   rq('wing_transfer_order', 2, 'Lệnh điều chuyển một đồng nghiệp', 'Transfer order for a colleague',
-    'Bạn được giao nhiệm vụ đưa lệnh điều chuyển cho một đồng nghiệp lâu năm sang một chi nhánh ở Outskirts. Lệnh không ghi lý do. Đồng nghiệp đã làm việc bên bạn mười một năm.',
+    'Bạn được giao trao lệnh điều chuyển người đồng nghiệp lâu năm sang chi nhánh ngoài Outskirts. Lệnh không ghi lý do. Đồng nghiệp đã làm việc bên bạn mười một năm.',
     'You are assigned to deliver a transfer order to a long-serving colleague, moving them to a branch in the Outskirts. The order gives no reason. The colleague has worked beside you eleven years.',
     'Bạn đưa lệnh và ở lại giúp họ đóng gói. Họ không trách bạn, chỉ hỏi bạn có biết ai đã ký không. Bạn nói thật là không.',
     'You hand over the order and stay to help them pack. They do not blame you, only ask if you know who signed it. You tell the truth: you do not.',
@@ -99,7 +99,7 @@ export const WING_CONTRACTS = [
 
   // ------------------------------------------------------------ tier 3: a Singularity incident
   rq('wing_singularity_drift', 3, 'Singularity lệch pha', 'The Singularity drifts out of phase',
-    'Singularity của Wing đang lệch pha. Các chỉ số tăng giảm không theo quy luật, và một số nhân viên ở tầng thấp bắt đầu mô tả cùng một giấc mơ. Bạn được cử xuống đo.',
+    'Singularity của Wing đang lệch pha. Các chỉ số tăng giảm không theo quy luật, và vài nhân viên tầng dưới bắt đầu kể về cùng một giấc mơ. Bạn được cử xuống đo.',
     'The Wing’s Singularity is drifting out of phase. Its readings rise and fall with no pattern, and several low-floor staff have begun describing the same dream. You are sent down to measure.',
     'Bạn đo suốt đêm và tìm ra nguyên nhân: một vòng đệm bị mòn. Bạn thay nó, và giấc mơ chung biến mất vào sáng hôm sau. Không ai dám nói là mừng.',
     'You measure through the night and find the cause: a worn gasket. You replace it, and the shared dream is gone by morning. No one dares to say they are relieved.',
@@ -150,7 +150,7 @@ export const WING_CONTRACTS = [
     'Trong danh sách có tên bạn. Họ để bạn đọc đến hết trước khi nói.',
     'Your own name is on the list. They let you read to the end before they say so.'),
 
-  rq('wing_black_box', 4, 'Hộp đen của một vụ tai nạn', 'The black box of an accident',
+  rq('wing_black_box', 4, 'Hộp đen của vụ tai nạn', 'The black box of an accident',
     'Một chuyến vận chuyển nội bộ gặp tai nạn, và hộp đen chứa những gì không nên xuất hiện trong báo cáo. Bạn được giao nghe nó trước ai khác.',
     'An internal transport suffered an accident, and its black box holds things that must not appear in a report. You are assigned to listen to it before anyone else.',
     'Bạn nghe toàn bộ, ghi lại những gì cần ghi, và xóa phần còn lại theo quy trình. Giám đốc hỏi bạn có nghe thấy gì không. Bạn nói: "Không."',
@@ -182,7 +182,7 @@ export const WING_CONTRACTS = [
     'The records room door is unlocked. The Claw stops there.'),
 
   rq('wing_taboo_memo', 5, 'Một bản ghi nhớ về Taboo', 'A memo about a Taboo',
-    'Một bản ghi nhớ nội bộ ghi rằng một dự án của phòng bạn có thể đã vi phạm một Taboo của The Head. Không ai biết điều khoản nào. Bạn phải quyết định có báo lên hay không.',
+    'Bản ghi nhớ nội bộ cho biết dự án của phòng bạn có thể đã phạm Taboo của The Head. Không ai biết điều khoản nào. Bạn phải quyết định có báo lên hay không.',
     'An internal memo says a project in your section may have violated one of The Head’s Taboos. No one knows which clause. You must decide whether to report it upward.',
     'Bạn báo cáo, và The Head không phản hồi. Ba tuần sau, dự án bị đóng, và không ai bị bắt. Đó là phản hồi duy nhất bạn nhận được.',
     'You report it, and The Head does not answer. Three weeks later the project is closed, and no one is arrested. That is the only response you get.',

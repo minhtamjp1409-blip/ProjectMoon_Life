@@ -213,7 +213,7 @@ export const LIFE_MINORS_5 = [
       C(
         'Hỏi chiếc giày ở đâu, nhẹ nhàng',
         'Ask where the shoe is, gently',
-        '{child} bảo nó cho ai đó mượn, rồi không nói thêm. Bạn nhận ra người đó là một người mà đứa trẻ không muốn bạn biết.',
+        '{child} bảo nó cho ai đó mượn, rồi không nói thêm. Bạn hiểu đó là người đứa trẻ không muốn bạn biết.',
         '{child} says they lent it to someone, then nothing more. You realise it was someone the child does not want you to know about.',
         { sanity: -1 },
         { bond: { child: 2 } }
@@ -258,7 +258,7 @@ export const LIFE_MINORS_5 = [
       C(
         'Hỏi ngược lại vì sao ông phải kiểm tra ba lần',
         'Ask in return why they check three times',
-        'Ông trả lời bằng một câu chuyện về một đêm ông chỉ kiểm tra một lần. Ông không kể đoạn kết, và bạn không hỏi.',
+        'Ông đáp bằng chuyện cái đêm ông chỉ kiểm tra có một lần. Ông không kể đoạn kết, và bạn không hỏi.',
         'They answer with a story about a night they checked only once. They do not tell the ending, and you do not ask.',
         { sanity: -2, resonance: 2 },
         { bond: { mentor: 5 }, mem: 'npc_mentor_three_locks' }
@@ -509,7 +509,7 @@ export const LIFE_MINORS_5 = [
       C(
         'Bù phần thiếu từ túi mình',
         'Cover the shortfall from your own pocket',
-        'Bà nhìn đồng tiền thêm vào, rồi nhìn bạn, và không nói gì. Lần sau bạn ghé qua, một bát canh nóng đã đợi sẵn ở cửa.',
+        'Bà nhìn đồng tiền thêm vào, rồi nhìn bạn, và không nói gì. Lần sau ghé qua, đã có bát canh nóng chờ sẵn trước cửa.',
         'She looks at the added coin, then at you, and says nothing. The next time you stop by, a bowl of hot soup is waiting at the door.',
         { wealth: -2, network: 3, sanity: 1 },
         { costAhn: 2 }
@@ -523,7 +523,7 @@ export const LIFE_MINORS_5 = [
     'm5_syn_fruit_basket',
     [18, 70],
     { jobs: ['Syndicate'] },
-    '[Giỏ trái cây thối] Có người để một giỏ trái cây thối trước cửa bạn, buộc bằng một dải ruy băng có màu của một Finger đối địch. Không có lời nhắn nào đi kèm.',
+    '[Giỏ trái cây thối] Có kẻ để giỏ trái cây thối trước cửa nhà bạn, buộc dải ruy băng mang màu Finger đối địch. Không có lời nhắn nào đi kèm.',
     '[The Rotten Fruit Basket] Someone leaves a basket of rotten fruit at your door, tied with a ribbon in the colour of a rival Finger. There is no note.',
     [
       C(
@@ -693,7 +693,7 @@ export const LIFE_MINORS_5 = [
     'm5_dist_child_bread',
     GROWN,
     { jobs: ['Distortion'] },
-    '[Đứa trẻ không bỏ chạy] Một đứa trẻ ở cuối hẻm nhìn bạn rất lâu mà không bỏ chạy, rồi đưa ra một mẩu bánh. Tay nó run, nhưng chìa ra thẳng.',
+    '[Đứa trẻ không bỏ chạy] Đứa trẻ cuối hẻm nhìn bạn rất lâu mà không bỏ chạy, rồi chìa ra mẩu bánh. Tay nó run, nhưng chìa ra thẳng.',
     '[The Child Who Does Not Run] A child at the end of the alley looks at you for a long time without running, then holds out a piece of bread. Its hand shakes but stays straight.',
     [
       C(
@@ -813,7 +813,7 @@ export const LIFE_MINORS_5 = [
         { rep: 1, sanity: 1 }
       ),
       C(
-        'Đặt đồng xu vào bát của một người ăn xin',
+        'Thả đồng xu vào bát người ăn xin',
         'Drop the coin in a beggar’s bowl',
         'Người ăn xin nhìn đồng tiền rồi nhìn bạn, thật lâu. Ông không cảm ơn, chỉ nhớ mặt bạn, và nhiều năm sau bạn vẫn gặp ông ở chợ.',
         'The beggar looks at the coin, then at you, for a long time. He does not thank you, only remembers your face, and years later you still meet him in the market.',
@@ -829,7 +829,7 @@ export const LIFE_MINORS_5 = [
     'm5_c_drain_den',
     CHILD,
     { back: true },
-    '[Ổ bí mật trong ống thoát nước] Bạn tìm thấy một đoạn ống thoát nước khô đủ rộng cho một đứa trẻ chui vào. Bên trong có mùi rỉ sét, và có một cái hộp thiếc nhỏ ai đó cất ở góc.',
+    '[Ổ bí mật trong ống thoát nước] Bạn tìm thấy đoạn ống thoát nước khô, đủ rộng cho đứa trẻ chui lọt. Bên trong nồng mùi gỉ sét, trong góc có hộp thiếc nhỏ ai đó cất giấu.',
     '[The Den in the Drain Pipe] You find a dry stretch of drain pipe wide enough for a child to crawl into. Inside smells of rust, and someone has stored a small tin box in the corner.',
     [
       C(
@@ -869,13 +869,13 @@ export const LIFE_MINORS_5 = [
     'm5_old_too_many_keys',
     OLD,
     {},
-    '[Chùm chìa khóa quá nhiều] Bạn cầm chùm chìa khóa của những căn nhà không còn ai ở: nhà của một người bạn thời trẻ, của người từng dạy bạn nghề, của chính bạn thuở trước. Chùm nặng đến mức tay bạn phải đổi bên.',
+    '[Chùm chìa khóa quá nhiều] Bạn cầm chùm chìa khóa của những căn nhà không còn ai ở: nhà người bạn thời trẻ, nhà người từng dạy bạn nghề, nhà của chính bạn thuở trước. Chùm nặng đến mức tay bạn phải đổi bên.',
     '[Too Many Keys] You hold a ring of keys to houses no one lives in any more: an old friend’s, a teacher’s, your own from long ago. The ring is so heavy your hand has to change sides.',
     [
       C(
         'Ném cả chùm xuống kênh',
         'Throw the whole ring into the canal',
-        'Chùm chìa chìm nhanh hơn bạn nghĩ. Bàn tay bạn nhẹ đến mức run, và cả tuần bạn cứ đưa tay xuống túi tìm một thứ không còn ở đó.',
+        'Chùm chìa chìm nhanh hơn bạn nghĩ. Bàn tay bạn nhẹ đến mức run, và cả tuần bạn cứ thò tay vào túi tìm thứ đã không còn.',
         'The ring sinks faster than you expected. Your hand is so light it trembles, and all week you keep reaching into your pocket for something that is no longer there.',
         { sanity: 2, resonance: -3 }
       ),
@@ -913,7 +913,7 @@ export const LIFE_MINORS_5 = [
         { sanity: 1, network: 1 }
       ),
       C(
-        'Dẫn họ đến chỗ đã từng là khu phố ấy',
+        'Dẫn họ tới chỗ khu phố ấy từng đứng',
         'Walk them to where the neighbourhood used to stand',
         'Đó chỉ còn là một bãi đất trống với vài tấm sắt. Bạn kể từng ngôi nhà đã ở đâu, và họ chép lại vào mép bản đồ bằng nét chữ nắn nót.',
         'It is only a stretch of empty ground with a few iron sheets. You tell where each house stood, and they copy it onto the map’s margin in careful handwriting.',

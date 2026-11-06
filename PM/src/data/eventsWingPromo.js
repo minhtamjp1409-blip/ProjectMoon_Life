@@ -20,7 +20,7 @@ const REST = { health: 12, sanity: 12, wealth: 4 };
 export const WING_PROMO_EXTRA = [
   // ------------------------------------------------------------------ Intern -> Feather
   promo('wing_promo_feather_vetting', 0, 'promo_wing_feather_done', [19, 56], 90,
-    '[Hồ sơ Feather: buổi thẩm vấn nền] Một người từ phòng nhân sự đặt trước bạn một tập hồ sơ dày bằng hai ngón tay. Trong đó có tên bạn bè cũ, địa chỉ cũ và một lần bạn trả lời sai ở ngày thứ ba của kỳ thử việc. "Chúng tôi chỉ muốn nghe bạn tự kể."',
+    '[Hồ sơ Feather: buổi thẩm vấn nền] Người bên phòng nhân sự đặt trước mặt bạn tập hồ sơ dày cỡ hai đốt ngón tay. Trong đó có tên bạn bè cũ, địa chỉ cũ và một lần bạn trả lời sai ở ngày thứ ba của kỳ thử việc. "Chúng tôi chỉ muốn nghe bạn tự kể."',
     '[Feather commission: the background interview] Someone from personnel sets before you a file two fingers thick. In it are old friends’ names, old addresses, and a time you answered wrongly on the third day of probation. “We only want to hear you tell it yourself.”',
     ['Kể hết, kể cả lần trả lời sai', 'Tell all of it, including the wrong answer',
       'Người nhân sự không ghi chép gì trong mười phút, rồi gấp hồ sơ lại. "Hầu hết người ta kể bản đẹp hơn." Họ ký, và bạn bước ra với tấm thẻ tạm thời đổi thành tấm thẻ thật.',
@@ -119,7 +119,7 @@ export const WING_PROMO_EXTRA = [
       'Căn phòng im lặng đến mức bạn nghe thấy cả tiếng tim mình. Người đối diện hỏi lại một lần, và bạn nhắc lại. Họ đứng dậy, bắt tay bạn, và nói đây là lần đầu tiên câu trả lời này không phải là một trò đùa.',
       'The room is so quiet you can hear your own heart. The other asks once more, and you repeat it. They stand, shake your hand, and say this is the first time that answer was not a joke.', { standing: 9, sanity: -6, rep: 6, wealth: 66 }, 72],
     ['Nói một cái tên và giải thích rõ lý do', 'Name a person and explain precisely why',
-      'Họ ghi lại cái tên và lý do, nghiêm túc như ghi một đơn đặt hàng. Bạn được thăng cấp và, từ hôm đó, một người ở tầng dưới bắt đầu bị điều chuyển từng chút một.',
+      'Họ ghi lại cái tên và lý do, nghiêm túc như ghi một đơn đặt hàng. Bạn được thăng cấp, và từ hôm đó, người nọ ở tầng dưới bắt đầu bị điều chuyển dần từng chút.',
       'They write down the name and the reason, as seriously as taking an order. You are promoted, and from that day someone on a lower floor begins to be transferred bit by bit.', { standing: 5, leverage: 10, sanity: -10, wealth: 72, network: 4 }, 70],
     ['Từ chối trả lời và xin hỏi lại một câu khác', 'Decline to answer and ask to be asked something else',
       'Họ không giận. "Đó cũng là một câu trả lời, nhưng không phải là câu trả lời mà tôi cần." Họ hẹn bạn vào tuần sau, ở đúng căn phòng này.',

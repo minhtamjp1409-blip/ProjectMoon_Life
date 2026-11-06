@@ -400,7 +400,7 @@ export function scoreEventUtility(event, char, weaver) {
   }
   if (event.requires && event.requires.length > 0) {
     causalScore += 8 * w.causal;
-    reasonsVi.push('Hệ quả của một lựa chọn cũ');
+    reasonsVi.push('Hệ quả của lựa chọn cũ');
     reasonsEn.push(`Matches causal flags [${event.requires.join(', ')}]`);
   }
 

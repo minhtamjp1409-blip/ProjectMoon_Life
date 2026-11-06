@@ -178,7 +178,7 @@ export const DUNGEON_GATE_EVENTS = [
     age: [22, 62],
     weight: 34,
     need: { jobs: ['Fixer', 'Syndicate', 'Outcast'] },
-    vi: '[Vỏ chứa Abnormality] Một người thu mua chặn bạn ở cửa xưởng quen lúc đóng cửa, vì người thợ rèn ở đó đã từ chối ông. Ông nói dưới chi nhánh L Corp sụp còn những vỏ chứa nguyên vẹn, thứ hợp kim mà xưởng nào ở The City cũng không đúc lại được. Ông không nói ai đã xuống đó trước.',
+    vi: '[Vỏ chứa Abnormality] Tay thu mua chặn bạn trước cửa xưởng quen lúc đóng cửa, vì người thợ rèn ở đó đã từ chối ông. Ông nói dưới chi nhánh L Corp sụp còn những vỏ chứa nguyên vẹn, thứ hợp kim mà xưởng nào ở The City cũng không đúc lại được. Ông không nói ai đã xuống đó trước.',
     en: '[Abnormality Casings] A buyer stops you at the door of your regular workshop at closing time, because the smith there turned him down. He says the collapsed L Corp branch still holds intact containment casings, an alloy no forge in The City can recast. He does not say who went down there first.',
     choices: [
       enter('dungeon_lobotomy_ruin', 'gate_lobotomy_workshop_done',
@@ -191,7 +191,7 @@ export const DUNGEON_GATE_EVENTS = [
         'You buy the dearest lamp at the stall, the one with the thick glass shade. The seller says the glass once covered something else and does not say more.'),
       decline('gate_lobotomy_workshop_done',
         'Chỉ nhận tiền môi giới để chỉ đường cho ông', 'Take only a finder’s fee for pointing him to the shaft',
-        'Ông trả bằng tiền lẻ và đi một mình. Ba tuần sau, bạn thấy một chiếc áo giống áo ông treo ở sạp đồ cũ.',
+        'Ông trả bằng tiền lẻ và đi một mình. Ba tuần sau, bạn thấy chiếc áo giống hệt áo ông treo ngoài sạp đồ cũ.',
         'He pays in small coins and goes alone. Three weeks later you see a coat like his hanging at a secondhand stall.',
         { wealth: +2, sanity: -2 })
     ]
@@ -204,7 +204,7 @@ export const DUNGEON_GATE_EVENTS = [
     age: [20, 60],
     weight: 36,
     need: { jobs: ['Fixer'] },
-    vi: '[Tiền thưởng của Zwei] Zwei Association treo giải cho bất kỳ Fixer nào mang được người mất tích ra khỏi một công viên ngầm ở District 16. Ba đội đã xuống và không đội nào gửi tin lên. Một người từng thoát ra nói rằng nhạc kèn chỉ ngừng khi bạn đã trả tiền vé.',
+    vi: '[Tiền thưởng của Zwei] Zwei Association treo thưởng cho Fixer nào đưa được người mất tích ra khỏi công viên ngầm ở District 16. Ba đội đã xuống và không đội nào gửi tin lên. Một người từng thoát ra nói rằng nhạc kèn chỉ ngừng khi bạn đã trả tiền vé.',
     en: '[Zwei Bounty] Zwei Association posts a bounty for any Fixer who brings a missing person out of an underground park in District 16. Three crews went down and none sent word back. One person who escaped says the organ music only stops once you have paid for your ticket.',
     choices: [
       enter('dungeon_bloodfiend_carnival', 'gate_bloodfiend_fixer_done',
@@ -237,7 +237,7 @@ export const DUNGEON_GATE_EVENTS = [
         'The Capo lays a crumpled paper ticket on the table and tells you to keep it in an inside pocket. He does not say why, and you do not ask.'),
       prepare('dungeon_bloodfiend_carnival', 'gate_bloodfiend_syndicate_done',
         'Chi 12 Ahn mua thêm băng gạc, thuốc cầm máu và đèn pin', 'Spend 12 Ahn on bandages, a coagulant and a hand lamp',
-        'Bạn mua đồ ở quầy thuốc của một người quen cũ và nghe ông ta nhắc lại chuyện nhà người ấy đã đi xuống đó một lần.',
+        'Bạn mua đồ ở quầy thuốc của người quen cũ và nghe ông ta nhắc lại chuyện nhà người ấy đã đi xuống đó một lần.',
         'You buy at the stall of an old acquaintance and hear him mention again that his family once went down there.'),
       decline('gate_bloodfiend_syndicate_done',
         'Nói với Capo rằng người của ông phải tự trả nợ', 'Tell the Capo his man has to pay his own debt',
@@ -328,7 +328,7 @@ export const DUNGEON_GATE_EVENTS = [
     age: [20, 60],
     weight: 30,
     need: { regions: ['U'] },
-    vi: '[Hàng trôi dạt] Một thương thuyền chìm ở rìa Great Lake, và các thùng hàng của nó trôi vào vùng sương. Ai ở bến District 21 cũng biết đường tới đó dài thế nào, và ai trong những người đã đi không còn về.',
+    vi: '[Hàng trôi dạt] Thương thuyền chìm ở rìa Great Lake, các thùng hàng trôi dạt vào vùng sương. Ai ở bến District 21 cũng biết đường tới đó dài thế nào, và ai trong những người đã đi không còn về.',
     en: '[Drifting Cargo] A merchant ship sank at the edge of the Great Lake, and its crates are drifting into the fog. Everyone on the District 21 docks knows how long the road there is, and which of those who went did not come back.',
     choices: [
       enter('dungeon_great_lake', 'gate_lake_salvage_done',
@@ -337,7 +337,7 @@ export const DUNGEON_GATE_EVENTS = [
         'The boat owner counts your fare and then recounts the people on deck. The number matches the one he remembers, and he seems relieved.'),
       prepare('dungeon_great_lake', 'gate_lake_salvage_done',
         'Chi 12 Ahn mua thêm thuốc chống lạnh và áo phao dày trước khi ra khơi', 'Spend 12 Ahn on a cold-water tonic and a thicker vest before sailing',
-        'Bạn trả tiền cho một bà bán thuốc ở cầu tàu. Bà gói thuốc vào lá và dặn bạn đừng hát nếu nghe thấy ai hát.',
+        'Bạn trả tiền cho bà bán thuốc ngoài cầu tàu. Bà gói thuốc vào lá và dặn bạn đừng hát nếu nghe thấy ai hát.',
         'You pay an old woman who sells remedies at the pier. She wraps the tonic in a leaf and tells you not to sing if you hear someone singing.'),
       decline('gate_lake_salvage_done',
         'Ở lại bến, nhận khiêng hàng từ những tàu về an toàn', 'Stay on the dock and carry cargo from the ships that come back safe',

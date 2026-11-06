@@ -701,11 +701,35 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeT
                 <span className="kv-val-wrap">{lang === 'en' ? char.npcs.mentee.nameEn : char.npcs.mentee.nameVi}</span>
               </div>
             )}
-            {char.job !== 'Child' && (
+            {char.job !== 'Child' && char.job !== 'Distortion' && (
               <div className="kv">
                 <span>Merit</span>
                 <span className="num">{char.merit}</span>
               </div>
+            )}
+            {char.job === 'Distortion' && (
+              <>
+                <div className="kv">
+                  <span>{t('Truy nã', 'Heat')}</span>
+                  <span className="num">{char.stats?.heat ?? char.heat ?? 0}</span>
+                </div>
+                <div className="kv">
+                  <span>{t('Cộng hưởng', 'Resonance')}</span>
+                  <span className="num">{char.resonance ?? 0}</span>
+                </div>
+                {char.flags?.includes('HumanVoice') && (
+                  <div className="kv">
+                    <span>{t('Tàn Tích Ý Thức', 'Vestige of Mind')}</span>
+                    <span className="kv-strong" style={{ color: 'var(--good)' }}>{t('Còn Giọng Người', 'Retains Human Voice')}</span>
+                  </div>
+                )}
+                {char.merit > 0 && (
+                  <div className="kv" style={{ opacity: 0.65 }}>
+                    <span>{t('Merit thời còn là người', 'Merit before the Distortion')}</span>
+                    <span className="num">{char.merit}</span>
+                  </div>
+                )}
+              </>
             )}
           </div>
           </div>

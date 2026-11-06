@@ -52,7 +52,7 @@ export const ROUTE_CONSEQUENCE_EVENTS = [
     id: 'wing_route_badge_audit',
     age: [19, 75], major: true, weight: 105,
     need: { jobs: ['Wing Employee'] },
-    vi: '[Kiểm thẻ cuối ca] Máy quét giữ lại thẻ của một đồng nghiệp. Hồ sơ ghi họ đã nghỉ việc từ sáng, dù bạn vừa cùng họ hoàn tất ca.',
+    vi: '[Kiểm thẻ cuối ca] Máy quét nuốt mất thẻ của người đồng nghiệp. Hồ sơ ghi họ đã nghỉ việc từ sáng, dù bạn vừa cùng họ hoàn tất ca.',
     en: '[End-of-shift badge check] The scanner keeps a coworker badge. Their file says they were dismissed this morning, though they worked beside you all day.',
     choices: [
       { labelVi: 'Ký xác nhận họ đã làm ca này', labelEn: 'Confirm their shift',

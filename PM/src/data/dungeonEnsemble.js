@@ -52,7 +52,7 @@ export const ENSEMBLE_DUNGEON = {
     {
       stageIndex: 0, canFlee: true,
       nameVi: 'Overture: chiếc ghế trống', nameEn: 'Overture: the empty seat',
-      descVi: 'Khán phòng không có ai. Tên bạn được khắc lên một chiếc ghế ở hàng đầu. Argalia đưa tay lên. Những sợi dây trên trần kéo căng, đủ để bạn thấy nhịp trước khi chúng quất xuống.',
+      descVi: 'Khán phòng không có ai. Tên bạn khắc trên chiếc ghế hàng đầu. Argalia đưa tay lên. Những sợi dây trên trần kéo căng, đủ để bạn thấy nhịp trước khi chúng quất xuống.',
       descEn: 'The auditorium is empty. Your name is cut into a seat in the front row. Argalia raises a hand. The strings above draw taut, showing you the beat before they fall.',
       strainGain: 9,
       choices: [
@@ -101,5 +101,5 @@ export const ENSEMBLE_ROUTE_SCENES = {
   color: { nameVi: 'Tanya: lối đi không còn an toàn', nameEn: 'Tanya: nowhere left to retreat', descVi: 'Tanya bước ra khỏi bóng cánh gà. Cô đã nghe đủ lời hứa chiến thắng từ các Fixer. Cô muốn biết khi không còn ai đứng xem, bạn vẫn sẽ đứng thẳng chứ.', descEn: 'Tanya emerges from the wings. She has heard enough promises of victory from Fixers. She wants to know whether you still stand when nobody watches.' },
   finger: { nameVi: 'Pluto: bản hợp đồng không chữ ký', nameEn: 'Pluto: a contract without a signature', descVi: 'Pluto đặt một bản hợp đồng lên ghế. Chỗ ký tên để trống. Ông đọc chính xác những món nợ con đường Finger đã để lại cho bạn.', descEn: 'Pluto lays a contract on the seat. The signature line is blank. He recites the debts your Finger path has left behind.' },
   wing: { nameVi: 'Jae-heon: bản ghi bị cắt bỏ', nameEn: 'Jae-heon: the deleted record', descVi: 'Jae-heon kéo một con rối qua lối giữa. Trên áo nó là số hồ sơ Wing từng xóa. Các sợi dây của nó chuyển động theo nhịp thở của bạn.', descEn: 'Jae-heon draws a puppet down the aisle. Its coat bears the number of a file your Wing erased. Its strings move with your breathing.' },
-  workshop: { nameVi: 'Eileen: cỗ máy giữ nhịp', nameEn: 'Eileen: the machine that keeps time', descVi: 'Eileen mở một hộp bánh răng trước mặt bạn. Mỗi răng được mài đúng cỡ của một bộ phận bạn từng chế tạo. Bà mời bạn để cỗ máy chạy thay mình.', descEn: 'Eileen opens a box of gears. Each tooth matches a part you once built. She invites you to let the machine move in your place.' }
+  workshop: { nameVi: 'Eileen: cỗ máy giữ nhịp', nameEn: 'Eileen: the machine that keeps time', descVi: 'Eileen mở hộp bánh răng trước mặt bạn. Mỗi răng được mài vừa khít một bộ phận bạn từng chế tạo. Bà mời bạn để cỗ máy chạy thay mình.', descEn: 'Eileen opens a box of gears. Each tooth matches a part you once built. She invites you to let the machine move in your place.' }
 };

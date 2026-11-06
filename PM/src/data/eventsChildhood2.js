@@ -136,14 +136,14 @@ export const CHILDHOOD_EVENTS_2 = [
         outcomes: [
           {
             w: 50,
-            resultVi: 'Bạn tìm thấy cha ngồi sau bãi xe, mặt sưng, túi lương trống trơn. Người thu nợ của một Syndicate đã đợi ở cổng nhà máy. Hai người đi về, không ai nói gì.',
+            resultVi: 'Bạn tìm thấy cha ngồi sau bãi xe, mặt sưng, túi lương trống trơn. Người thu nợ của Syndicate đã đón sẵn ở cổng nhà máy. Hai người đi về, không ai nói gì.',
             resultEn: 'You found your father sitting behind the lot, face swollen, pay envelope empty. A Syndicate collector had been waiting at the factory gate. The two of you walked home without a word.',
             effects: { sanity: -6, wealth: -3, resonance: +4 },
             mem: 'saw_collector'
           },
           {
             w: 30,
-            resultVi: 'Ca đêm bị giữ lại vì một vụ nổ ở xưởng. Cha về lúc trưa với hai bàn tay băng kín, và ôm bạn lâu hơn mọi khi.',
+            resultVi: 'Ca đêm bị giữ lại vì xưởng vừa nổ. Cha về lúc trưa với hai bàn tay băng kín, và ôm bạn lâu hơn mọi khi.',
             resultEn: 'The night shift had been held over after a blast in the plant. He came home at noon with both hands bandaged, and held you longer than usual.',
             effects: { sanity: +2, health: -2 }
           },
@@ -263,7 +263,7 @@ export const CHILDHOOD_EVENTS_2 = [
         resultVi: 'Nó được sắp đặt rất cẩn thận, và có một tấm thẻ nhỏ ghi tên tác phẩm. Bạn đọc được tên đó. Bạn còn nhớ nó đến tận bây giờ.',
         resultEn: 'It had been arranged very carefully, with a small card giving its title. You could read the title. You still remember it.',
         effects: { sanity: -12, resonance: +12 },
-        scarsAdd: ['Tên của một tác phẩm']
+        scarsAdd: ['Tên một tác phẩm']
       },
       {
         labelVi: 'Quay lưng và về nhà',
@@ -287,7 +287,7 @@ export const CHILDHOOD_EVENTS_2 = [
     major: true,
     weight: 6,
     ...CITY,
-    vi: '[Cháy dãy nhà] Lửa bắt từ một bếp than ở tầng dưới và lan lên cầu thang gỗ. Khói đã kín hành lang. Trong phòng bạn có cái hộp sắt đựng tiền dành dụm của cả nhà. Phòng bên cạnh có tiếng một đứa bé khóc.',
+    vi: '[Cháy dãy nhà] Lửa bén từ bếp than tầng dưới rồi lan lên cầu thang gỗ. Khói đã kín hành lang. Trong phòng bạn có cái hộp sắt đựng tiền dành dụm của cả nhà. Phòng bên vọng sang tiếng trẻ con khóc.',
     en: '[Fire in the block] A charcoal stove downstairs caught, and the fire climbed the wooden stairs. Smoke filled the corridor. In your room was the tin box with the family’s savings. In the next room, a baby was crying.',
     choices: [
       {
@@ -494,7 +494,7 @@ export const CHILDHOOD_EVENTS_2 = [
         outcomes: [
           {
             w: 40,
-            resultVi: 'Bạn qua được bức tường trong một thùng hàng. Bên trong, ông ta bán lại bạn cho một xưởng ở Backstreets với giá gấp mười túi muối. Ít ra ở đây có mái che.',
+            resultVi: 'Bạn qua được bức tường trong một thùng hàng. Bên trong, ông ta bán lại bạn cho xưởng ở Backstreets với giá gấp mười túi muối. Ít ra ở đây có mái che.',
             resultEn: 'You crossed the wall in a crate. Inside, he sold you on to a Backstreets workshop for ten times a sack of salt. At least there was a roof.',
             effects: { health: -6, sanity: -8, wealth: +2 },
             flagsAdd: ['Backstreets'],

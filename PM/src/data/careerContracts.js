@@ -75,7 +75,7 @@ export const CONTRACT_ROUTES = {
     declineVi: 'Maestro ghi chú rằng nguyên liệu sẽ đến từ tay người khác, và tên người đó sẽ nằm cạnh tác phẩm.', declineEn: 'The Maestro notes the material will come from someone else’s hands, and that name will sit beside the piece.',
     tiers: tiers(
       ['Chợ vật liệu', 'The material market'], ['Xưởng và bãi phế liệu', 'Workshops and scrapyards'], ['Bộ sưu tập tư nhân', 'A private collection'],
-      ['Ruins ngoài tường', 'Ruins past the wall'], ['Nơi từng có Distortion', 'Where a Distortion once stood'], ['Kiệt tác của một Star', 'A Star’s masterpiece']
+      ['Ruins ngoài tường', 'Ruins past the wall'], ['Nơi từng có Distortion', 'Where a Distortion once stood'], ['Kiệt tác của Star', 'A Star’s masterpiece']
     )
   },
   pinky: {
@@ -89,7 +89,7 @@ export const CONTRACT_ROUTES = {
     declineVi: 'Một lời thề không được đáp thì vẫn là lời thề. Pinky không bao giờ xóa nó khỏi sổ.', declineEn: 'An oath unanswered is still an oath. The Pinky never strikes it from the book.',
     tiers: tiers(
       ['Kẻ thất hứa vặt', 'A petty oathbreaker'], ['Một kiếm khách làng', 'A hedge swordsman'], ['Kiếm khách có danh', 'A named duelist'],
-      ['Người của một dòng kiếm', 'A sworn blade of a lineage'], ['Fixer cấp cao hoặc Capo', 'A high-grade Fixer or a Capo'], ['Một Star của thanh kiếm', 'A Star of the sword']
+      ['Người của dòng kiếm cũ', 'A sworn blade of a lineage'], ['Fixer cấp cao hoặc Capo', 'A high-grade Fixer or a Capo'], ['Một Star của thanh kiếm', 'A Star of the sword']
     )
   },
   wing: {

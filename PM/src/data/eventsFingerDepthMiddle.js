@@ -16,11 +16,11 @@ export const MIDDLE_DEPTH = [
       fc('Hỏi vì sao một năm, rồi mới đeo', 'Ask why a year, then put it on',
         'Big Sibling im lặng, rồi kể một chuyện về người từng tháo xích đêm đầu tiên. Bạn nghe hết, đeo lên, và không tháo ra nữa.', 'Your Big Sibling is silent, then tells of one who took the chain off the first night. You hear it through, put it on, and never take it off.', { sanity: -3, network: 4, rep: 4 }, { meritAdd: 2 }),
       fc('Đeo vào, nhưng giấu dưới tay áo', 'Wear it, but hide it under your sleeve',
-        'Một người ngồi cạnh nhìn thấy và không nói gì. Tối đó có người đặt thêm một cái bát trước mặt bạn, như một cách im lặng nhận bạn.', 'Someone beside you notices and says nothing. That evening a second bowl is set before you, a quiet way of accepting you.', { network: 5, rep: 1 })
+        'Người ngồi cạnh thấy hết mà chẳng nói gì. Tối ấy có ai đặt thêm cái bát trước mặt bạn, lặng lẽ nhận bạn vào nhà.', 'Someone beside you notices and says nothing. That evening a second bowl is set before you, a quiet way of accepting you.', { network: 5, rep: 1 })
     ], 8),
 
   mission('middle_kitchen_duty', [0, 1],
-    '[Phiên bếp của gia đình] Đến lượt bạn nấu cho cả nhà, mười hai người, và mỗi người nhớ món ăn của một người đã mất. Nồi canh sôi quá lâu đã cháy đáy, và Big Sibling bước vào bếp.',
+    '[Phiên bếp của gia đình] Tới lượt bạn nấu cho cả nhà mười hai người, mà ai cũng đang nhớ món ăn của người đã khuất. Nồi canh sôi quá lâu đã cháy đáy, và Big Sibling bước vào bếp.',
     '[The family’s kitchen shift] It is your turn to cook for the whole house, twelve people, each remembering the dish of someone gone. The soup has boiled too long and burned at the bottom, and your Big Sibling walks into the kitchen.',
     [
       fc('Nói thật là canh đã cháy và dọn đồ khác', 'Say plainly the soup burned and serve something else',
@@ -90,13 +90,13 @@ export const MIDDLE_DEPTH = [
       fc('Đối chiếu từng người họ hàng cho đến khi tìm ra kẽ hở', 'Cross-check every relative until you find the gap',
         'Bạn tìm ra: họ nói đúng một phần, và phần sai là một người đã mất. Bạn đến gặp người lạ và nói cho họ biết. Họ khóc, và không bỏ đi.', 'You find it: they are partly right, and the wrong part is someone dead. You go to the stranger and tell them. They weep and do not leave.', { rep: 6, network: 6, sanity: -4 }),
       fc('Cho họ ngồi vào bàn và quan sát cách họ ăn', 'Let them sit and watch how they eat',
-        'Cách họ cầm đũa giống một người nhà ở Middle đã mất hai mươi năm. Bạn không nói với ai. Một Great Elder nhìn bạn, và biết bạn đã thấy.', 'The way they hold their chopsticks matches a Middle member dead twenty years. You tell no one. A Great Elder looks at you and knows you have seen.', { sanity: -3, rep: 5, network: 3 }),
+        'Cách họ cầm đũa giống hệt người nhà Middle đã mất hai mươi năm. Bạn không nói với ai. Vị Great Elder nhìn bạn, biết bạn đã nhận ra.', 'The way they hold their chopsticks matches a Middle member dead twenty years. You tell no one. A Great Elder looks at you and knows you have seen.', { sanity: -3, rep: 5, network: 3 }),
       fc('Từ chối cho ở và đưa họ ra bến xe', 'Refuse them lodging and take them to the station',
-        'Họ đi mà không phản đối. Một tuần sau có người nói họ chết trong một cuộc xô xát ở chợ. Bạn nghĩ về chiếc bàn trống bên cạnh mình.', 'They leave without protest. A week later someone says they died in a scuffle at the market. You think of the empty seat beside you.', { sanity: -8, rep: -2 })
+        'Họ đi mà không phản đối. Một tuần sau nghe tin họ chết trong vụ xô xát ngoài chợ. Bạn nghĩ về chiếc bàn trống bên cạnh mình.', 'They leave without protest. A week later someone says they died in a scuffle at the market. You think of the empty seat beside you.', { sanity: -8, rep: -2 })
     ]),
 
   mission('middle_vigil_for_a_name', [1, 2],
-    '[Đêm thức cho một cái tên] Một cái tên sắp được gạch khỏi Book of Vengeance, và theo thông lệ, một người trong gia đình phải thức cùng họ cả đêm. Không ai tình nguyện. Big Sibling nhìn về phía bạn.',
+    '[Đêm thức cho cái tên] Có cái tên sắp bị gạch khỏi Book of Vengeance, và theo lệ, phải có người trong nhà thức cùng họ suốt đêm. Không ai tình nguyện. Big Sibling nhìn về phía bạn.',
     '[A vigil for a name] A name is about to be struck from the Book of Vengeance, and by custom a member of the family must keep vigil with them through the night. No one volunteers. Your Big Sibling looks toward you.',
     [
       fc('Nhận thức cùng và nói chuyện đến sáng', 'Accept the vigil and talk with them until morning',
@@ -116,13 +116,13 @@ export const MIDDLE_DEPTH = [
       fc('Đứng về phía Great Elder để giữ lễ nghi', 'Side with the Great Elder to keep custom',
         'Bàn của Great Elder đông thêm vài người. Bàn kia ít hơn, và có người rời gia đình. Bạn thắng trong một cuộc tranh luận mà không ai muốn thắng.', 'The Great Elder’s table gains a few. The other shrinks, and some leave the family. You win in an argument no one wished to win.', { rep: 6, network: -8, sanity: -6 }),
       fg('Đề nghị cả hai cùng nấu một bữa', 'Propose that both cook a meal together', [
-        [50, 'Họ nấu, cãi nhau về muối, và cười lần đầu. Bữa cơm ấy ngon một cách khó tin. Họ nhớ ai đã đề nghị.', 'They cook, argue about salt, and laugh for the first time. The meal is unbelievably good. They remember who suggested it.', { rep: 10, network: 14, sanity: 6 }],
+        [50, 'Họ nấu, cãi nhau chuyện muối mặn nhạt, rồi lần đầu bật cười. Bữa cơm ấy ngon khó tin. Họ nhớ ai đã đề nghị.', 'They cook, argue about salt, and laugh for the first time. The meal is unbelievably good. They remember who suggested it.', { rep: 10, network: 14, sanity: 6 }],
         [50, 'Họ nấu riêng ở hai bếp và mỗi bên đem món ra khoe. Bạn đứng giữa hai chiếc bàn đầy thức ăn, và không ai ăn.', 'They cook separately in two kitchens and each side brings out dishes to show. You stand between two tables full of food and no one eats.', { rep: -3, network: -4, sanity: -3 }]
       ])
     ], 10),
 
   mission('middle_debt_of_a_stranger', [2, 3],
-    '[Món nợ của một người lạ] Một người lạ đến cửa nhà bạn và xin trả một món nợ mà họ nói họ nợ gia đình từ thời cha họ. Không có dòng nào trong sổ ghi chuyện này. Họ đặt xuống bàn một phong bì dày.',
+    '[Món nợ của người lạ] Người lạ tìm tới cửa nhà bạn, xin trả món nợ họ bảo cha mình còn nợ gia đình từ thời trước. Không có dòng nào trong sổ ghi chuyện này. Họ đặt xuống bàn một phong bì dày.',
     '[A stranger’s debt] A stranger comes to your door and asks to pay a debt they say they owe the family from their father’s time. No line in the book records it. They set a thick envelope on the table.',
     [
       fc('Nhận phong bì và ghi vào sổ', 'Take the envelope and write it in the book',
@@ -130,13 +130,13 @@ export const MIDDLE_DEPTH = [
       fc('Từ chối, nói món nợ ấy không có trong sổ', 'Refuse, saying that debt is not in the book',
         'Họ không bỏ đi. Họ ngồi trước cửa suốt ba ngày, cho đến khi Big Sibling đích thân đến nhận. Người ấy nhìn bạn một thoáng.', 'They do not leave. They sit before your door three days, until a Big Sibling comes in person to accept. The Big Sibling gives you one brief look.', { rep: -2, network: -3, sanity: -3 }),
       fg('Hỏi họ tên cha và đi tìm trong sổ cũ', 'Ask for their father’s name and search the old books', [
-        [60, 'Bạn tìm ra dòng đã bị gạch từ lâu, bằng nét bút của một Great Elder. Món nợ có thật. Bạn trả lại phong bì và ghi tên họ là bạn của gia đình.', 'You find a line struck out long ago, in a Great Elder’s hand. The debt is real. You return the envelope and write their name as a friend of the family.', { rep: 8, network: 10 }],
+        [60, 'Bạn tìm ra dòng bị gạch từ lâu, nét bút của vị Great Elder năm nào. Món nợ có thật. Bạn trả lại phong bì và ghi tên họ là bạn của gia đình.', 'You find a line struck out long ago, in a Great Elder’s hand. The debt is real. You return the envelope and write their name as a friend of the family.', { rep: 8, network: 10 }],
         [40, 'Cả đêm bạn lật những cuốn sổ cũ và không tìm ra gì. Họ nhìn bạn bằng đôi mắt đỏ ngầu. "Cảm ơn vì đã tìm," họ nói, và đi.', 'All night you turn through old books and find nothing. They look at you with reddened eyes. “Thank you for searching,” they say, and go.', { sanity: -6, rep: 2 }]
       ])
     ]),
 
   mission('middle_exiled_sibling', [2, 3],
-    '[Người bị đuổi khỏi bàn] Một Great Sibling bị gia đình đuổi từ nhiều năm và nay gửi thư xin gặp bạn. Họ nói họ không xin quay lại. Họ chỉ muốn nói một điều mà họ nghĩ gia đình nên nghe.',
+    '[Người bị đuổi khỏi bàn] Người Great Sibling bị gia đình đuổi đi nhiều năm trước nay gửi thư xin gặp bạn. Họ bảo không xin quay về. Họ chỉ muốn nói một điều họ nghĩ cả nhà nên nghe.',
     '[One put out from the table] A Great Sibling banished from the family years ago now sends a letter asking to see you. They say they do not ask to return. They want only to say one thing they think the family should hear.',
     [
       fc('Gặp họ một mình, ở một nơi kín', 'Meet them alone in a private place',

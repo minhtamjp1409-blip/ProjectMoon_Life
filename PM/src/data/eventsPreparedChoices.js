@@ -31,7 +31,7 @@ export const PREPARED_CHOICE_EVENTS = [
   },
   {
     id: 'mid_ring_crate', age: [25, 40], jobs: ['Syndicate'], need: { finger: 'Ring' }, major: true, weight: 10,
-    vi: '[Kiện hàng chưa khô] Một tác phẩm của The Ring mắc ở trạm kiểm hàng. Bên trong kiện có tiếng gõ; người phụ trách triển lãm yêu cầu bạn mang về nguyên trạng, không để nhân viên mở nắp.',
+    vi: '[Kiện hàng chưa khô] Tác phẩm của The Ring bị giữ lại ở trạm kiểm hàng. Bên trong kiện có tiếng gõ; người phụ trách triển lãm yêu cầu bạn mang về nguyên trạng, không để nhân viên mở nắp.',
     en: '[A crate not yet dry] A Ring exhibit is held at inspection. Something knocks inside. The curator wants it returned intact, without the staff opening the lid.',
     choices: [
       { labelVi: 'Dùng măng-tô che nhãn, đưa kiện qua cửa kho', labelEn: 'Cover the label with your coat and use the warehouse exit', need: { item: 'arm_trenchcoat_padded' }, effects: { sanity: -8, heat: 4 }, meritAdd: 12,

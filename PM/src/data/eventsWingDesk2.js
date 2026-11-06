@@ -46,7 +46,7 @@ export const WING_DESK_EVENTS_B = [
     ]),
 
   desk('wing_desk_quiet_transfer', [28, 64], 50, need(1, 3),
-    '[Lệnh điều chuyển lặng lẽ] Một đồng nghiệp lâu năm sắp bị chuyển sang một phòng ở tầng hầm, và bạn là người phải trao lệnh. Họ chưa biết lý do, và bạn cũng chỉ biết một nửa.',
+    '[Lệnh điều chuyển lặng lẽ] Người đồng nghiệp lâu năm sắp bị đẩy xuống phòng dưới tầng hầm, và bạn là người phải trao lệnh. Họ chưa biết lý do, và bạn cũng chỉ biết một nửa.',
     '[The Quiet Transfer Order] A long-serving colleague is about to be moved to a department in the basement, and you are the one who must hand over the order. They do not know the reason yet, and you know only half of it.',
     [
       ['Trao lệnh đúng giờ, giữ khuôn mặt bình thản', 'Hand over the order on time with a calm face',
@@ -76,7 +76,7 @@ export const WING_DESK_EVENTS_B = [
     ]),
 
   desk('wing_desk_press_leak', [28, 62], 45, need(1, 3),
-    '[Tin rò ra ngoài] Một đoạn nội dung từ cuộc họp kín xuất hiện trong một bản tin lề đường ở Backstreets. Chỉ có mười một người dự họp, và bạn là một trong số đó. Người ta bắt đầu nhìn nhau lâu hơn bình thường.',
+    '[Tin rò ra ngoài] Nội dung cuộc họp kín bỗng xuất hiện trên tờ tin lề đường ở Backstreets. Chỉ có mười một người dự họp, và bạn là một trong số đó. Người ta bắt đầu nhìn nhau lâu hơn bình thường.',
     '[The Leak] A passage from a closed meeting appears in a roadside bulletin in the Backstreets. Only eleven people attended, and you are one of them. People begin to look at one another longer than usual.',
     [
       ['Tự nguyện trình biên bản cá nhân cho phòng điều tra', 'Volunteer your personal notes to the investigators',
@@ -101,12 +101,12 @@ export const WING_DESK_EVENTS_B = [
         'Sổ sách được trả lại sau hai tuần, kèm chứng từ, và còn có thêm một lời nhắn không ký tên: "Bạn là người đầu tiên hỏi trong mười năm." Bạn không biết đó là lời khen hay lời cảnh báo.',
         'The ledgers come back after two weeks with the vouchers and an unsigned note: “You are the first to ask in ten years.” You do not know whether it is praise or warning.', { standing: -3, rep: 4, leverage: 8, sanity: -3 }, 3],
       ['Chép một bản để dành rồi mới đóng dấu', 'Make a copy for yourself and then stamp it',
-        'Chiếc hộp bạn đặt bản chép vào không có tên và không có chìa khóa. Bạn vừa làm điều mà người bạn từng căm ghét ở người khác, và nó nhẹ hơn bạn tưởng, điều đó mới đáng lo.',
+        'Chiếc hộp bạn đặt bản chép vào không có tên và không có chìa khóa. Bạn vừa làm đúng điều bạn từng ghét cay ghét đắng ở kẻ khác, và nó nhẹ hơn bạn tưởng, điều đó mới đáng lo.',
         'The box in which you place the copy has no name and no key. You have just done what you once despised in others, and it is lighter than you thought, which is the worrying part.', { leverage: 18, standing: -4, sanity: -6 }]
     ]),
 
   desk('wing_desk_succession_whisper', [38, 66], 50, need(2, 3),
-    '[Lời thì thầm về người kế nhiệm] Một Senior Executive già bắt đầu hỏi bạn những câu có vẻ vô tình: bạn sẽ làm gì nếu ngồi ở vị trí của họ, bạn có tin vào một số người ở dưới không. Ai cũng hiểu những câu này nghĩa là gì.',
+    '[Lời thì thầm về người kế nhiệm] Vị Senior Executive già bắt đầu hỏi bạn mấy câu tưởng như vô tình: ngồi vào ghế của họ thì bạn sẽ làm gì, bạn có tin được ai ở dưới không. Ai cũng hiểu những câu này nghĩa là gì.',
     '[The Whisper of Succession] An aging Senior Executive begins to ask you questions that seem casual: what you would do if you sat in their place, whether you trust certain people below. Everyone understands what such questions mean.',
     [
       ['Trả lời thật lòng, kể cả những điều họ không muốn nghe', 'Answer truthfully, including what they do not want to hear',
@@ -115,7 +115,7 @@ export const WING_DESK_EVENTS_B = [
       ['Trả lời khéo, không hứa gì và không từ chối gì', 'Answer artfully, promising nothing and refusing nothing',
         'Họ mỉm cười, đúng loại nụ cười của người nhận ra mình đang nhìn một bản sao. Bạn được mời vào thêm hai cuộc họp, và mất một bữa trưa yên tĩnh.',
         'They smile, the smile of someone who recognizes they are looking at a copy of themselves. You are invited to two more meetings, and lose one quiet lunch.', { network: 5, standing: 2, leverage: 4, sanity: -2 }, 2],
-      ['Nhắc đến một người ở dưới mà bạn biết có điểm yếu', 'Name a person below whose weakness you happen to know',
+      ['Nhắc tên người cấp dưới bạn biết có điểm yếu', 'Name a person below whose weakness you happen to know',
         'Bạn nói ra, và nó đúng. Cái tên đó không bao giờ được nhắc lại, và người mang tên ấy sẽ không biết vì sao con đường của họ đóng lại.',
         'You say it, and it is true. That name is never raised again, and its owner will never know why their road closed.', { leverage: -8, standing: 3, sanity: -6, network: 2 }, 3]
     ]),
@@ -134,19 +134,19 @@ export const WING_DESK_EVENTS_B = [
         'Người ký nhìn tập hồ sơ rất lâu, rồi rút tên bạn ra khỏi danh sách bằng chính bút của ông. Bạn ra về mà không nói thêm gì, và biết từ hôm nay tên bạn trên mọi danh sách sẽ không còn là của bạn nữa.',
         'The signatory looks at the file a long time, then strikes your name from the list with his own pen. You leave without saying more, and know that from today your name on every list will no longer be yours alone.', { leverage: -20, standing: 12, sanity: -8, network: -5 }, 1], keep),
       ['Thu dọn bàn và rời Nest trước khi bị đuổi', 'Clear your desk and leave the Nest before being thrown out',
-        'Bạn đi trước giờ, mang theo một chiếc hộp nhỏ và không ai tiễn. Cánh cổng đóng lại phía sau mà không tiếng động. Ngoài kia, một đời khác bắt đầu, và nó không còn là đời của một Feather.',
+        'Bạn đi trước giờ, mang theo một chiếc hộp nhỏ và không ai tiễn. Cánh cổng đóng lại phía sau mà không tiếng động. Ngoài kia, một đời khác bắt đầu, chẳng còn là đời Feather nữa.',
         'You go before the hour, carrying one small box and with no one to see you off. The gate closes behind you without a sound. Out there another life begins, and it is no longer a Feather’s.', { standing: -10, sanity: 6, rep: -4, wealth: -10 }, 0, ['wing_left_nest']]
     ]),
 
   desk('wing_desk_extraction', [38, 66], 45, need(2, 3),
-    '[Đưa một người ra khỏi Nest] Một nhà khoa học của Wing xin bạn giúp đưa họ rời Nest trong đêm, mang theo thứ họ nói là "không nên bị giữ trong một cái hộp". Họ không nói đó là gì và bạn không dám hỏi.',
+    '[Đưa người ra khỏi Nest] Nhà khoa học của Wing xin bạn giúp họ trốn khỏi Nest trong đêm, mang theo thứ họ bảo là "không nên bị nhốt trong một cái hộp". Họ không nói đó là gì và bạn không dám hỏi.',
     '[Getting Someone Out of the Nest] A Wing scientist asks you to help them leave the Nest tonight, carrying what they call “something that should not be kept in a box.” They do not say what it is and you do not dare ask.',
     [
       ['Mở cổng phụ và ký giả một giờ ra vào', 'Open the side gate and forge a log entry for an hour',
         'Họ đi qua cổng mà không ngoảnh lại. Sáng hôm sau, ba người mặc đồ tối hỏi bạn ca trực đêm qua có gì bất thường không, và bạn trả lời với một khuôn mặt không có gì để giấu.',
         'They pass through the gate without looking back. The next morning three people in dark clothes ask if last night’s shift had anything unusual, and you answer with a face that has nothing to hide.', { standing: -6, sanity: -7, leverage: 6, rep: 3 }, 2],
       ['Báo trước cho phòng an ninh và nhận công', 'Warn security beforehand and take the credit',
-        'Họ bị chặn ở cổng. Người nhà khoa học nhìn bạn một lần, không giận, chỉ như một người đã hiểu thêm một điều. Bạn được thưởng và không ăn nổi bữa tối hôm đó.',
+        'Họ bị chặn ở cổng. Nhà khoa học nhìn bạn một lần, không giận, như vừa hiểu thêm điều gì. Bạn được thưởng và không ăn nổi bữa tối hôm đó.',
         'They are stopped at the gate. The scientist looks at you once, not angry, like someone who has learned one more thing. You are rewarded and cannot eat dinner that night.', { standing: 7, wealth: 18, sanity: -9, network: 3 }, 4],
       ['Từ chối và không nói với ai', 'Refuse and tell no one',
         'Họ gật đầu, cảm ơn bạn đã không báo, rồi biến mất. Một tuần sau, tên họ nằm trong danh sách báo cáo mất tích. Bạn không biết mình đã giúp họ hay đã bỏ mặc họ.',
@@ -158,7 +158,7 @@ export const WING_DESK_EVENTS_B = [
     '[The Protégé Turns the Page] The person who was once your intern now sits high enough to read your file. They do nothing wrong; they only read. You know they have read because your second drawer has been opened and closed very carefully.',
     [
       ['Mời họ ăn tối và nói thẳng bạn biết', 'Invite them to dinner and say plainly that you know',
-        'Họ không chối. Họ nói: "Em học điều đó từ anh chị." Bạn ăn hết bữa tối mà không cảm nhận được vị gì, và về nhà biết mình đã được tha thứ hoặc bị đánh giá, hoặc cả hai.',
+        'Họ không chối. Họ nói: "Em học điều đó từ anh chị." Bạn ăn hết bữa tối mà chẳng thấy mùi vị gì, và về nhà biết mình đã được tha thứ hoặc bị đánh giá, hoặc cả hai.',
         'They do not deny it. They say: “I learned that from you.” You finish the dinner without tasting it, and go home knowing you have been forgiven or judged, or both.', { network: 6, standing: 2, sanity: -4, leverage: -6 }, 2],
       ['Chuyển ngăn kéo thứ hai và thay những gì nằm trong đó', 'Move the second drawer and replace what lies in it',
         'Bạn dành một đêm xóa dấu vết của chính mình, và nhận ra việc đó mệt hơn việc tạo ra chúng. Người học trò vẫn chào bạn mỗi sáng, giọng đều như cũ.',
@@ -176,7 +176,7 @@ export const WING_DESK_EVENTS_B = [
         'Báo cáo đến lúc ba giờ sáng, dày gấp ba lần dự kiến. Đọc đến trang cuối bạn hiểu vì sao họ đã nói dối, và đó là lần đầu tiên bạn mong mình không ngồi ở chiếc ghế này.',
         'The report arrives at three in the morning, three times as thick as expected. By the last page you understand why they lied, and it is the first time you wish you did not sit in this chair.', { standing: 4, sanity: -8, rep: 3, leverage: 9 }, 4],
       ['Giữ im lặng trong ba ngày và theo dõi ai hành động khác thường', 'Stay silent for three days and watch who acts strangely',
-        'Hai người đổi giờ làm, một người xin nghỉ phép dài, và một người bắt đầu đến sớm hơn một giờ. Bạn có danh sách trong tay trước khi phòng điều tra biết có vấn đề.',
+        'Hai người đổi giờ làm, một người xin nghỉ phép dài, người còn lại bỗng đi làm sớm một tiếng. Bạn có danh sách trong tay trước khi phòng điều tra biết có vấn đề.',
         'Two people change their shifts, one requests extended leave, and one starts arriving an hour early. You have the list in hand before investigators know there is a problem.', { leverage: 16, sanity: -4, standing: 1 }, 2],
       ['Đóng cửa tầng và gửi một báo cáo ngắn lên Hội đồng', 'Seal the floor and send a short report to the Council',
         'Hội đồng trả lời trong mười phút và cảm ơn bạn đã không làm lớn chuyện. Ở đây, không làm lớn chuyện có nghĩa là bạn đã đúng, và có nghĩa là có thứ cần phải được giữ nhỏ.',

@@ -399,6 +399,8 @@ Công cụ quay đã có lệnh mở từng cảnh: `node tools/film/film_cutsce
 - **Viết thêm chuỗi hậu quả sau biến cố lớn.** Đã có các chuỗi `csq_` trong `narrativeArcEngine.js`. Nếu sau này muốn viết thêm, trước hết đo xem một đời thật gặp bao nhiêu chuỗi.
 
 ## Việc còn treo từ các đợt trước
+
+- Lời Việt: còn 2.288 chỗ ", và" (nhiều nhất ở bộ Fingers, Expansion, lifeMinors4/5). Làm theo file bằng `node tools/lint/vi_worklist.mjs <file> --va` rồi `apply_vi_rewrites.mjs`, mỗi lần hạ ngưỡng `vaClause` trong `package.json`.
 - `tools/qa/measure_birth_mobile.mjs` mục 4 không tìm thấy toast thành tựu trên mobile (có từ trước 06/11/2026, chưa rõ do test hay do giao diện).
 
 - Âm thanh của 7 cảnh: xem mục nghe thử phía trên.

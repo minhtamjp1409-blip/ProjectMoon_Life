@@ -79,7 +79,7 @@ export const LIFE_DAILIES_3 = [
     'r_o_lawyer_kid',
     CHILD,
     O15,
-    '[Con của luật sư hợp đồng] Đứa trẻ được cả lớp học nể sợ và kiêng dè nhất chính là con của một luật sư chuyên trách hợp đồng O Corp. Nó đã biết đọc vanh vách từng dòng chữ in siêu nhỏ từ năm lên sáu tuổi, và tuyệt đối không bao giờ cho bất cứ ai mượn bút mực của mình.',
+    '[Con của luật sư hợp đồng] Đứa trẻ được cả lớp học nể sợ và kiêng dè nhất chính là con nhà luật sư chuyên hợp đồng O Corp. Nó đã biết đọc vanh vách từng dòng chữ in siêu nhỏ từ năm lên sáu tuổi, và tuyệt đối không bao giờ cho bất cứ ai mượn bút mực của mình.',
     '[The Contract Lawyer’s Child] The most revered child in class was the offspring of an O Corp contract attorney. They could decipher microscopic legal fine print at six years old, and refused ever to lend their writing pen to anyone.',
     { network: 1 }
   ),
@@ -191,7 +191,7 @@ export const LIFE_MINORS_3 = [
     'm3_e_dark_inn',
     [16, 60],
     E,
-    '[Nhà trọ cách sáng tuyển người] Một nhà trọ cách sáng đặc biệt ở District 5 đang cần tuyển nhân viên trực ca đêm. Mức thù lao khá thấp, nhưng bù lại sau mỗi ca làm bạn sẽ được cấp quyền ngủ miễn phí bên trong một buồng tối cách ly ánh sáng hoàn hảo.',
+    '[Nhà trọ cách sáng tuyển người] Nhà trọ cách sáng đặc biệt ở District 5 đang tuyển người trực ca đêm. Mức thù lao khá thấp, nhưng bù lại sau mỗi ca làm bạn sẽ được cấp quyền ngủ miễn phí bên trong một buồng tối cách ly ánh sáng hoàn hảo.',
     '[Lightproof Inn Shift] A subterranean lightproof lodge in District 5 is recruiting night shift attendants. The monetary wages are modest, but each finished shift grants you free restorative sleep inside an absolute-dark capsule.',
     [
       C(
@@ -274,7 +274,7 @@ export const LIFE_MINORS_3 = [
         {
           out: [
             O(70, 'Món hàng phát huy tác dụng kỳ diệu. Năm phút chìm trong bóng tối ấy là khoảng thời gian bạn có được giấc ngủ sâu và bình yên nhất trong suốt cả năm.', 'It worked astonishingly well. Those five minutes of velvety void provided the deepest, most restorative rest you experienced all year.', { sanity: 4, health: 2 }),
-            O(30, 'Trong năm phút bóng tối bao trùm, bạn kinh hoàng nghe thấy tiếng thở dốc của một thứ gì đó ngay sát vành tai mình. Khi ánh sáng quay trở lại, chiếc lọ đã rỗng không và tự đóng chặt nắp.', 'Amidst the ink-black silence, you heard cold, wet breathing brushing your ear. When daylight returned, the phial sat empty with its wax seal firmly intact.', { sanity: -5, resonance: 6 })
+            O(30, 'Trong năm phút bóng tối bao trùm, bạn kinh hoàng nghe tiếng thở dốc của thứ gì đó ngay sát vành tai. Khi ánh sáng quay trở lại, chiếc lọ đã rỗng không và tự đóng chặt nắp.', 'Amidst the ink-black silence, you heard cold, wet breathing brushing your ear. When daylight returned, the phial sat empty with its wax seal firmly intact.', { sanity: -5, resonance: 6 })
           ]
         }
       ),
@@ -624,7 +624,7 @@ export const LIFE_MINORS_3 = [
       C(
         'Kéo hắn ra đầu ngõ để người khác cứu giúp',
         'Drag him to the main street for aid',
-        'Toàn thân bạn run rẩy bần bật suốt cả chặng đường kéo lê hắn ta. Sáng hôm sau tỉnh dậy, bạn nhìn thấy ai đó đã đặt một chiếc chăn ấm ở đầu hẻm, không rõ là dành cho ai.',
+        'Toàn thân bạn run rẩy bần bật suốt cả chặng đường kéo lê hắn ta. Sáng hôm sau tỉnh dậy, bạn thấy ai đó đã để chiếc chăn ấm ở đầu hẻm, không rõ là dành cho ai.',
         'Your limbs trembled violently as you dragged his body to the avenue. By dawn, someone had left a warm wool blanket at the alley mouth, unsure of who the benefactor was.',
         { health: -4, sanity: 3 },
         { motif: { mercy: 1 } }

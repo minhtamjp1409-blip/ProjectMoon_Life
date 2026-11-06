@@ -201,7 +201,7 @@ export const YEAR_END_LINES = {
     adult: [
       ['Ca làm dài rút bớt sức lực và sự tỉnh táo.', 'Long shifts cost strength and composure.'],
       ['Công việc lấy đi của bạn nhiều hơn số Ahn nó trả.', 'The work took more out of you than the Ahn it paid.'],
-      ['Nghỉ ngắn không xóa hết phần hao mòn của một năm làm việc.', 'Short breaks didn’t erase a year of wear.']
+      ['Nghỉ ngắn không xóa hết hao mòn của cả năm làm việc.', 'Short breaks didn’t erase a year of wear.']
     ]
   },
   smog: {
