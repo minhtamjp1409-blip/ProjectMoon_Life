@@ -30,7 +30,7 @@ console.error = (...args) => {
 };
 
 const server = await createServer({
-  server: { middlewareMode: true },
+  server: { middlewareMode: true, watch: null, hmr: false },
   appType: 'custom',
   logLevel: 'error',
   optimizeDeps: { noDiscovery: true },
@@ -118,3 +118,4 @@ if (failed) {
   process.exit(1);
 }
 console.log('Play screen smoke: PlayBar, LiveStageFeed and CharacterDossierCard render in 5 states, the home screen in 2');
+process.exit(0);

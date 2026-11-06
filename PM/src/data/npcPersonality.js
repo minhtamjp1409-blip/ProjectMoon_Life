@@ -383,90 +383,149 @@ export const NPC_DISTRICTS = [
   'District 2 · Vùng Giáp Ranh Nest'
 ];
 
-export function rollNpcCareer(archetype, role, rng = Math.random) {
-  if (role === 'mentor') {
-    return {
-      job: 'Fixer',
-      rank: 4,
-      rankLabelVi: 'Fixer Grade 4 (Kỳ cựu)',
-      rankLabelEn: 'Veteran Grade 4 Fixer',
-      district: NPC_DISTRICTS[Math.floor(rng() * NPC_DISTRICTS.length)]
-    };
+export function resolveNpcDistrict(regionOrDistrict, rng = Math.random) {
+  if (typeof regionOrDistrict === 'string' && regionOrDistrict.trim()) {
+    const raw = regionOrDistrict.trim();
+    if (raw.startsWith('District ') || raw.includes('Outskirts')) return raw;
+    if (raw.toUpperCase() === 'OUTSKIRTS') return 'The Outskirts · Ngoài Bức Tường';
+    if (/^[A-Z]$/i.test(raw)) {
+      const letter = raw.toUpperCase();
+      const ward = letter.charCodeAt(0) - 64;
+      const matched = NPC_DISTRICTS.find((d) => d.startsWith(`District ${ward} `));
+      return matched || `District ${ward} · ${letter} Corp`;
+    }
   }
-  if (role === 'mentee') {
-    return {
-      job: 'Fixer',
-      rank: 8,
-      rankLabelVi: 'Fixer trẻ (Đệ tử Grade 8)',
-      rankLabelEn: 'Junior Fixer (Grade 8 Protege)',
-      district: NPC_DISTRICTS[Math.floor(rng() * NPC_DISTRICTS.length)]
-    };
+  return NPC_DISTRICTS[Math.floor(rng() * NPC_DISTRICTS.length)];
+}
+
+export function appendNpcMemory(memories = [], entry, maxUnpinned = 6) {
+  const list = Array.isArray(memories) ? [...memories] : [];
+  if (entry) list.push(entry);
+  const pinned = list.filter((m) => m && m.pinned);
+  const unpinned = list.filter((m) => m && !m.pinned).slice(-maxUnpinned);
+  return [...pinned, ...unpinned];
+}
+
+export function getNpcAge(char, npc) {
+  if (!npc) return char?.age ?? 20;
+  if (typeof npc.age === 'number') return npc.age;
+  if (typeof npc.birthYearOffset === 'number') return (char?.age ?? 20) + npc.birthYearOffset;
+  if (typeof npc.ageAtMeet === 'number' || typeof npc.metAge === 'number') {
+    const metAge = npc.metAge ?? 0;
+    const ageAtMeet = npc.ageAtMeet ?? (npc.role === 'mentor' ? metAge + 20 : npc.role === 'child' ? 0 : metAge);
+    return ageAtMeet + Math.max(0, (char?.age ?? metAge) - metAge);
   }
-  if (role === 'child' || role === 'ward') {
+  return char?.age ?? 20;
+}
+
+export function rollNpcCareer(archetype, role, rng = Math.random, options = {}) {
+  const rollBase = () => {
+    if (role === 'mentor') {
+      return {
+        job: 'Fixer',
+        rank: 4,
+        rankLabelVi: 'Fixer Grade 4 (Kỳ cựu)',
+        rankLabelEn: 'Veteran Grade 4 Fixer',
+        district: NPC_DISTRICTS[Math.floor(rng() * NPC_DISTRICTS.length)]
+      };
+    }
+    if (role === 'mentee') {
+      return {
+        job: 'Fixer',
+        rank: 8,
+        rankLabelVi: 'Fixer trẻ (Đệ tử Grade 8)',
+        rankLabelEn: 'Junior Fixer (Grade 8 Protege)',
+        district: NPC_DISTRICTS[Math.floor(rng() * NPC_DISTRICTS.length)]
+      };
+    }
+    if (role === 'child' || role === 'ward') {
+      return {
+        job: 'Apprentice',
+        rank: 0,
+        rankLabelVi: 'Học nghề Backstreets',
+        rankLabelEn: 'Backstreets Apprentice',
+        district: NPC_DISTRICTS[0]
+      };
+    }
+    if (['veteran', 'hothead', 'fixerfan', 'proud'].includes(archetype)) {
+      const grades = [9, 8, 7, 6, 5];
+      const g = grades[Math.floor(rng() * grades.length)];
+      return {
+        job: 'Fixer',
+        rank: g,
+        rankLabelVi: `Fixer Grade ${g}`,
+        rankLabelEn: `Grade ${g} Fixer`,
+        district: NPC_DISTRICTS[Math.floor(rng() * NPC_DISTRICTS.length)]
+      };
+    }
+    if (['gambler', 'greedy', 'secretive', 'devout'].includes(archetype)) {
+      const fingers = ['Thumb', 'Index', 'Middle', 'Ring', 'Pinky'];
+      const f = fingers[Math.floor(rng() * fingers.length)];
+      return {
+        job: 'Syndicate',
+        finger: f,
+        rank: 1,
+        rankLabelVi: `Thành viên The ${f}`,
+        rankLabelEn: `The ${f} Member`,
+        district: NPC_DISTRICTS[Math.floor(rng() * NPC_DISTRICTS.length)]
+      };
+    }
+    if (['nestdreamer', 'ambitious', 'bookish'].includes(archetype)) {
+      const corps = ['W Corp', 'K Corp', 'T Corp'];
+      const corp = corps[Math.floor(rng() * corps.length)];
+      const corpId = corp.split(' ')[0];
+      return {
+        job: 'Wing Employee',
+        corpId,
+        rank: 1,
+        rankLabelVi: `Nhân viên ${corp}`,
+        rankLabelEn: `${corp} Feather`,
+        district: NPC_DISTRICTS[Math.floor(rng() * NPC_DISTRICTS.length)]
+      };
+    }
+    if (['tinkerer', 'artist'].includes(archetype)) {
+      return {
+        job: 'Workshop Artisan',
+        rank: 1,
+        rankLabelVi: 'Thợ chế tác Workshop',
+        rankLabelEn: 'Workshop Artisan',
+        district: NPC_DISTRICTS[Math.floor(rng() * NPC_DISTRICTS.length)]
+      };
+    }
+    const civJobs = [
+      { vi: 'Chủ quán rượu Backstreets', en: 'Backstreet Tavern Keeper' },
+      { vi: 'Môi giới thông tin ngầm', en: 'Underground Broker' },
+      { vi: 'Bác sĩ phòng khám chui', en: 'Backstreet Alley Medic' },
+      { vi: 'Người giao hàng ngõ ngách', en: 'Alley Courier' }
+    ];
+    const c = civJobs[Math.floor(rng() * civJobs.length)];
     return {
-      job: 'Apprentice',
+      job: 'Civilian',
       rank: 0,
-      rankLabelVi: 'Học nghề Backstreets',
-      rankLabelEn: 'Backstreets Apprentice',
-      district: NPC_DISTRICTS[0]
-    };
-  }
-  if (['veteran', 'hothead', 'fixerfan', 'proud'].includes(archetype)) {
-    const grades = [9, 8, 7, 6, 5];
-    const g = grades[Math.floor(rng() * grades.length)];
-    return {
-      job: 'Fixer',
-      rank: g,
-      rankLabelVi: `Fixer Grade ${g}`,
-      rankLabelEn: `Grade ${g} Fixer`,
+      rankLabelVi: c.vi,
+      rankLabelEn: c.en,
       district: NPC_DISTRICTS[Math.floor(rng() * NPC_DISTRICTS.length)]
     };
-  }
-  if (['gambler', 'greedy', 'secretive', 'devout'].includes(archetype)) {
-    const fingers = ['Thumb', 'Index', 'Middle', 'Ring', 'Pinky'];
-    const f = fingers[Math.floor(rng() * fingers.length)];
-    return {
-      job: 'Syndicate',
-      rank: 1,
-      rankLabelVi: `Thành viên The ${f}`,
-      rankLabelEn: `The ${f} Member`,
-      district: NPC_DISTRICTS[Math.floor(rng() * NPC_DISTRICTS.length)]
-    };
-  }
-  if (['nestdreamer', 'ambitious', 'bookish'].includes(archetype)) {
-    const corps = ['W Corp', 'K Corp', 'T Corp'];
-    const corp = corps[Math.floor(rng() * corps.length)];
-    return {
-      job: 'Wing Employee',
-      rank: 1,
-      rankLabelVi: `Nhân viên ${corp}`,
-      rankLabelEn: `${corp} Feather`,
-      district: NPC_DISTRICTS[Math.floor(rng() * NPC_DISTRICTS.length)]
-    };
-  }
-  if (['tinkerer', 'artist'].includes(archetype)) {
-    return {
-      job: 'Workshop Artisan',
-      rank: 1,
-      rankLabelVi: 'Thợ chế tác Workshop',
-      rankLabelEn: 'Workshop Artisan',
-      district: NPC_DISTRICTS[Math.floor(rng() * NPC_DISTRICTS.length)]
-    };
-  }
-  const civJobs = [
-    { vi: 'Chủ quán rượu Backstreets', en: 'Backstreet Tavern Keeper' },
-    { vi: 'Môi giới thông tin ngầm', en: 'Underground Broker' },
-    { vi: 'Bác sĩ phòng khám chui', en: 'Backstreet Alley Medic' },
-    { vi: 'Người giao hàng ngõ ngách', en: 'Alley Courier' }
-  ];
-  const c = civJobs[Math.floor(rng() * civJobs.length)];
-  return {
-    job: 'Civilian',
-    rank: 0,
-    rankLabelVi: c.vi,
-    rankLabelEn: c.en,
-    district: NPC_DISTRICTS[Math.floor(rng() * NPC_DISTRICTS.length)]
   };
+
+  const base = rollBase();
+  const resolvedDistrict = (options.district || options.regionId)
+    ? resolveNpcDistrict(options.district ?? options.regionId, rng)
+    : base.district;
+  base.district = resolvedDistrict;
+
+  const npcAge = options.age;
+  if (role === 'friend' && typeof npcAge === 'number' && npcAge < 18) {
+    return {
+      job: 'Child',
+      rank: 0,
+      rankLabelVi: options.nest ? 'Đứa trẻ Nest' : 'Học nghề Backstreets',
+      rankLabelEn: options.nest ? 'Nest Youth' : 'Backstreets Apprentice',
+      district: resolvedDistrict,
+      adultCareer: base
+    };
+  }
+  return base;
 }
 
 function seededRngFromStr(str) {
@@ -481,10 +540,13 @@ function seededRngFromStr(str) {
   };
 }
 
-export function ensureNpcAgency(npc, customRng = null) {
+export function ensureNpcAgency(npc, customRng = null, options = {}) {
   if (!npc) return npc;
   const rng = customRng || seededRngFromStr(`${npc.id || ''}:${npc.name || npc.nameVi || ''}:${npc.role || ''}`);
-  const copy = { ...npc };
+  const copy = {
+    ...npc,
+    memories: Array.isArray(npc.memories) ? [...npc.memories] : []
+  };
   if (!copy.archetype) {
     const arch = rollArchetype(rng);
     copy.archetype = arch.id;
@@ -494,13 +556,25 @@ export function ensureNpcAgency(npc, customRng = null) {
     copy.fearVi = copy.fearVi || arch.fearVi;
     copy.fearEn = copy.fearEn || arch.fearEn;
   }
+  const inferredAge = options.age ?? copy.age ?? copy.ageAtMeet ?? copy.metAge;
+  const districtHint = options.district ?? options.regionId ?? copy.district ?? copy.regionId;
   if (!copy.job || !copy.district) {
-    const career = rollNpcCareer(copy.archetype, copy.role, rng);
+    const career = rollNpcCareer(copy.archetype, copy.role, rng, {
+      age: inferredAge,
+      district: districtHint,
+      nest: copy.nest
+    });
     copy.job = copy.job || career.job;
     copy.rank = copy.rank ?? career.rank;
     copy.rankLabelVi = copy.rankLabelVi || career.rankLabelVi;
     copy.rankLabelEn = copy.rankLabelEn || career.rankLabelEn;
     copy.district = copy.district || career.district;
+    if (career.adultCareer && !copy.adultCareer) copy.adultCareer = career.adultCareer;
+    if (career.finger && !copy.finger) copy.finger = career.finger;
+  }
+  if (copy.job === 'Wing Employee' && !copy.corpId) {
+    const corpMatch = `${copy.rankLabelVi || ''} ${copy.rankLabelEn || ''}`.match(/\b([A-Z])\s+Corp\b/);
+    copy.corpId = corpMatch ? corpMatch[1] : 'K';
   }
   if (!copy.dungeonPerk) {
     copy.dungeonPerk = getNpcDungeonPerk(copy);
@@ -511,10 +585,6 @@ export function ensureNpcAgency(npc, customRng = null) {
   if (!copy.debts) {
     copy.debts = { toPlayer: 0, toOthers: 0, favorCount: 0 };
   }
-  if (!Array.isArray(copy.memories)) {
-    copy.memories = [];
-  }
-  Object.assign(npc, copy);
   return copy;
 }
 

@@ -1794,6 +1794,9 @@ export function endYear(charState, rng) {
   // Birthday
   char.bodyAge = Number((effectiveAge(char) + frailty(char)).toFixed(2));
   char.age += 1;
+  if (char.companionSynergy && (char.age - (char.companionSynergy.year ?? 0)) > 1) {
+    char.companionSynergy = null;
+  }
   char.bodyAgeRecordedAt = char.age;
   char.seasonIdx = 0;
   if (char.ambition && !char.ambition.complete && ambitionComplete(char)) char.ambition.complete = true;

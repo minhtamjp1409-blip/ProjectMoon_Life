@@ -12,22 +12,22 @@ export const DISTORTION_PATH_EVENTS = [
     weight: 95,
     requires: ['Distorted'],
     forbids: ['carmen_dialogue_done'],
-    vi: "[Carmen gọi] Mùi khói Backstreets biến mất. Bạn đứng giữa đồng hoa trắng, và Carmen nói bên tai: \"Đừng kìm cảm xúc nữa.\" Khi cúi nhìn, chân bạn vẫn đứng trên nền đường cũ.",
-    en: "[Carmen calls] The smell of Backstreets smoke is gone. You stand in a field of white flowers, and Carmen says at your ear: “Stop holding your feelings back.” When you look down, your feet are still on the old road.",
+    vi: "[Carmen gọi] Mùi khói Backstreets nhạt đi. Giữa đồng hoa trắng, Carmen hỏi: \"Bạn còn muốn nói gì?\" Dưới chân bạn vẫn là mặt đường cũ.",
+    en: "[Carmen calls] The Backstreets smoke fades. In a field of white flowers, Carmen asks, “What else do you want to say?” The old road is still beneath your feet.",
     choices: [
       {
-        labelVi: "Dang tay đón hình thái mới",
-        labelEn: "Open your arms to the new shape",
-        resultVi: "Xương bạn gãy răng rắc rồi mọc dài thành những thanh kim loại và pha lê. Cơ thể bạn thành một thứ người ta quay mặt đi khi nhìn.",
-        resultEn: "Your bones cracked and grew long into rods of metal and crystal. Your body became something people turned their faces from.",
+        labelVi: "Để hình dạng mới tiếp tục đổi",
+        labelEn: "Let the new shape keep changing",
+        resultVi: "Các khớp tay kéo dài. Lớp vỏ cứng phủ lên vai; người đi ngang hẻm thấy bạn thì đổi đường.",
+        resultEn: "Your arm joints lengthen. A hard shell covers your shoulders; a passerby sees you and takes another street.",
         flagsAdd: ['carmen_dialogue_done', 'DistortionStage2'],
         effects: { health: +50, sanity: -30, rep: +40, resonance: +40 }
       },
       {
-        labelVi: "Gào lên đòi lại những gì The City đã lấy của bạn",
-        labelEn: "Scream for back what the City took from you",
-        resultVi: "Tiếng gào của bạn làm vỡ kính của ba dãy nhà. Carmen mỉm cười, rồi tan vào ánh sáng.",
-        resultEn: "Your scream broke the windows of three blocks. Carmen smiled, then dissolved into the light.",
+        labelVi: "Nói thành tiếng điều bạn giận The City",
+        labelEn: "Say aloud what you resent about the City",
+        resultVi: "Tiếng bạn bật ra quá lớn. Kính cửa tiệm gần đó nứt; người bên trong kéo sập cửa cuốn.",
+        resultEn: "Your voice comes out too loud. A shop window cracks, and someone inside pulls down the shutter.",
         flagsAdd: ['carmen_dialogue_done', 'DistortionStage2'],
         effects: { health: +40, sanity: -20, heat: +50, resonance: +35 }
       }
@@ -60,14 +60,14 @@ export const DISTORTION_PATH_EVENTS = [
     weight: 80,
     requires: ['Distorted', 'DistortionNightmare'],
     forbids: ['domain_manifested'],
-    vi: "[Lãnh địa] Từ khi bạn trú lại, cả một góc Backstreets đã đổi khác. Những tòa nhà dựng lên như phím đàn khổng lồ hoặc rối vào nhau thành mê cung gai thép. Ai lạc vào đây cũng nghe thấy tiếng bạn khóc trong đầu mình.",
-    en: "[A Domain] Your presence has remade a corner of the Backstreets. Buildings rise like the keys of a giant instrument or knot together into a maze of barbed steel. Anyone who wanders in hears you weeping inside their own head.",
+    vi: "[Lãnh địa] Từ ngày bạn trú lại, lối hẻm thay đổi. Lan can cong vào trong, tường gạch nổi những vệt cứng như vỏ trên tay bạn. Người qua đường bắt đầu đi vòng.",
+    en: "[A domain] Since you settled here, the alley has changed. Railings bend inward and hard ridges rise from the brickwork, like the shell on your arm. Passersby take another route.",
     choices: [
       {
-        labelVi: "Hòa ý thức vào lãnh địa và để nó thành thân thể mới của bạn",
-        labelEn: "Let your mind sink into the domain and make it your new body",
-        resultVi: "Bạn không còn cần ăn hay thở. Bạn là một phần của The City, một vết thương không lành mà Carmen đã gieo.",
-        resultEn: "You no longer need to eat or breathe. You are part of The City, an unhealing wound that Carmen sowed.",
+        labelVi: "Để hình dạng của bạn lan sang những bức tường",
+        labelEn: "Let your shape spread into the walls",
+        resultVi: "Những vệt cứng nối liền các bức tường. Bạn đi trong hẻm mà không còn phân biệt rõ đâu là da mình, đâu là gạch. Đến tối, cả dãy nhà đã khóa cửa.",
+        resultEn: "Hard ridges join the walls. As you move through the alley, brick and skin become hard to tell apart. By evening, every door on the block is locked.",
         flagsAdd: ['domain_manifested', 'DistortionStar'],
         effects: { health: +60, sanity: -40, rep: +60, resonance: +45 }
       }
@@ -80,22 +80,22 @@ export const DISTORTION_PATH_EVENTS = [
     weight: 90,
     requires: ['Distorted', 'DistortionStar'],
     forbids: ['distort_color_clash_done'],
-    vi: "[Trận cuối với một Color] Một bóng người khoác áo choàng đi một mình qua màn sương của lãnh địa. Khí thế của họ lạnh và nặng đến mức không gian quanh đó đứng yên. Hana Association đã cử một Color Fixer đến kết thúc thảm họa mang tên bạn.",
-    en: "[The last duel with a Color] A cloaked figure walks alone through the mist of your domain. Their presence is so cold and heavy that the space around them stands still. Hana Association has sent a Color Fixer to end the disaster that carries your name.",
+    vi: "[Color đến] Một Fixer mang huy hiệu Color đi qua lối hẻm đã biến dạng. Người ấy nhìn những bức tường trước khi nhìn bạn. Trên tay họ là lệnh xử lý của Hana.",
+    en: "[The Color arrives] A Fixer wearing a Color insignia enters the altered alley. They study the walls before looking at you. A Hana suppression order is in their hand.",
     choices: [
       {
-        labelVi: "Dốc hết sức, chiến đấu tới hơi thở cuối cùng vì bản ngã của mình",
-        labelEn: "Give everything and fight to your last breath for your own self",
-        resultVi: "Trận chiến xé rách bầu trời đêm. Bạn làm gãy một phần vũ khí của Color trước khi lõi dị thể của bạn ngừng đập. Hồ sơ mật của Hana ghi tên bạn như một ngôi sao đã tắt.",
-        resultEn: "The fight tore the night sky open. You broke part of the Color’s weapon before your warped core stopped. Hana’s sealed file records your name as a star gone dark.",
+        labelVi: "Giữ lối hẻm và đánh đến cùng",
+        labelEn: "Hold the alley and fight to the end",
+        resultVi: "Bạn làm gãy một đoạn vũ khí của Color. Đòn kế tiếp đánh trúng ngực bạn. Khi Hana thu dọn hiện trường, đoạn vũ khí ấy vẫn nằm cạnh xác.",
+        resultEn: "You break a section of the Color’s weapon. The next blow strikes your chest. When Hana clears the scene, the broken section lies beside your body.",
         flagsAdd: ['distort_color_clash_done'],
         effects: { health: -100 } // Tragic heroic climax death
       },
       {
-        labelVi: "Dồn cộng hưởng ngược vào một đòn xé không gian rồi rút vào bóng tối",
-        labelEn: "Pour inverted resonance into one space-tearing blow and withdraw into the dark",
-        resultVi: "Sóng xung kích của bạn va vào tuyệt kỹ của Color, mở ra một hố đen nuốt cả quảng trường. Bạn bị thương nặng nhưng buộc được Color lùi lại, rồi biến vào giấc mơ của Carmen. Toàn The City từ đó gọi bạn là Apex Calamity.",
-        resultEn: "Your shockwave met the Color’s signature art and opened a pit that swallowed the plaza. Badly wounded, you forced the Color back and vanished into Carmen’s dream. The whole City has called you an Apex Calamity since.",
+        labelVi: "Dồn sức mở một lối thoát rồi rút lui",
+        labelEn: "Force an opening and retreat",
+        resultVi: "Cú va chạm đẩy cả hai lùi khỏi cửa hẻm. Bạn mất nhiều máu nhưng thoát qua mái nhà phía sau. Hồ sơ Hana giữ nguyên lệnh truy bắt và nâng mức đe dọa.",
+        resultEn: "The impact drives you both back from the alley mouth. Bleeding heavily, you escape across the rear rooftops. Hana keeps the order open and raises your threat rating.",
         flagsAdd: ['distort_color_clash_done', 'ApexDistortionSurvivor', 'StarOfTheCityEntity'],
         meritAdd: 60,
         effects: { health: -55, rep: +100, resonance: +50, heat: +80 }
@@ -109,23 +109,23 @@ export const DISTORTION_PATH_EVENTS = [
     weight: 65,
     requires: ['Distorted', 'DistortionStage2'],
     forbids: ['distort_flock_done'],
-    vi: "[Tín đồ của nỗi đau] Quanh lãnh địa, hàng trăm người tuyệt vọng của Backstreets, bị Wing bỏ rơi, bị Syndicate siết nợ, quỳ dưới chân bạn. Họ coi thân xác biến dị và tiếng gào của bạn là thánh ca của vị thần mới.",
-    en: "[Followers of the pain] Around your domain hundreds of desperate people from the Backstreets, abandoned by the Wing and squeezed by Syndicates, kneel at your feet. They take your warped body and your cries for the hymn of a new god.",
+    vi: "[Người tìm đến] Vài người mất chỗ ở kéo tới con hẻm của bạn. Họ nghĩ đám thu nợ sẽ không dám theo vào. Có người hỏi liệu họ được ở lại qua đêm không.",
+    en: "[People at the alley] A few people who lost their homes come to your alley. They think debt collectors will not follow them in. One asks whether they can stay the night.",
     choices: [
       {
-        labelVi: "Nhận họ vào, chia cho mỗi người một phần ngọn lửa của Carmen",
-        labelEn: "Take them in and give each a share of Carmen’s fire",
-        resultVi: "Cả đám đồng loạt mọc ra những biến dạng lạ trên da thịt. Họ thành tín đồ cuồng nhiệt, canh giữ lãnh địa trước mọi đợt thanh trừng của các Office Fixer.",
-        resultEn: "The whole crowd sprouted strange growths on their flesh. They became zealots guarding your domain against every purge by the Fixer Offices.",
+        labelVi: "Cho họ ở lại và giao nhau trông chừng lối vào",
+        labelEn: "Let them stay and take turns watching the entrance",
+        resultVi: "Họ dựng chỗ ngủ sau bức tường cong. Ngày càng nhiều người tìm đến, nghe bạn sắp xếp người canh lối vào. Khi Office tới, họ báo động trước.",
+        resultEn: "They make beds behind the bent wall. More people arrive and follow your orders for watching the entrance. When an Office comes, they sound the alarm first.",
         meritAdd: 30,
         flagsAdd: ['distort_flock_done', 'DistortionCultLeader'],
         effects: { rep: +45, resonance: +35, sanity: -15, network: +30 }
       },
       {
-        labelVi: "Gào lên đuổi họ đi: \"Giữ lấy nhân tính của các người, đừng đi con đường này.\"",
-        labelEn: "Shout them away: “Keep your humanity, do not walk this road.”",
-        resultVi: "Tiếng thét làm đám đông tản chạy. Bạn chọn cô độc để họ khỏi bị kéo theo. Trong ngực bạn vẫn còn một đóa hoa nhỏ của nhân tính.",
-        resultEn: "The shout scattered the crowd. You chose to be alone so they would not be dragged after you. In your chest one small flower of humanity remained.",
+        labelVi: "Bảo họ đi trước khi Office kéo tới",
+        labelEn: "Tell them to leave before an Office arrives",
+        resultVi: "Họ thu dọn ngay trong đêm. Bạn ở lại một mình; sáng hôm sau, không còn dấu chân nào trước cửa hẻm.",
+        resultEn: "They pack up that night. You stay alone; by morning, no footprints remain at the alley entrance.",
         meritAdd: 25,
         flagsAdd: ['distort_flock_done'],
         effects: { sanity: +20, resonance: +25, heat: -10 }
@@ -139,23 +139,23 @@ export const DISTORTION_PATH_EVENTS = [
     weight: 75,
     requires: ['Distorted', 'DistortionNightmare'],
     forbids: ['distort_claw_clash_done'],
-    vi: "[The Claw đến] Một Claw của C Corp đáp xuống gần bạn, ba ống Serum trên găng tay đã sáng. \"Distortion. Lệnh xử lý bắt đầu.\" Sau lưng bạn là đường trống, nhưng hắn đứng chắn lối về.",
-    en: "[The Claw arrives] A Claw of C Corp lands near you, the three Serum injectors on its gauntlet already lit. “Distortion. Disposal order begins.” The road behind you is empty, but it stands across the way back.",
+    vi: "[The Claw đến] Claw của C Corp đáp xuống đầu hẻm. Ba ống Serum trên găng tay sáng lên; nó đọc số hồ sơ của bạn rồi bước tới. Lối ra duy nhất nằm phía sau nó.",
+    en: "[The Claw arrives] A C Corp Claw lands at the alley entrance. Three Serum injectors light up on its gauntlet; it reads your file number and steps forward. The only exit is behind it.",
     choices: [
       {
-        labelVi: "Vung móng vuốt dị thể đối đầu Serum W trong một trận quyết đấu",
-        labelEn: "Swing your warped claws against Serum W in a duel",
-        resultVi: "Móng bạn xé giáp của Claw đúng lúc mũi tiêm Serum R đâm xuyên vai bạn. Cả hai lùi lại sau cú va chạm. Thấy bạn cứng đầu hơn dự đoán, Claw dịch chuyển rút lui để báo cáo với The Head.",
-        resultEn: "Your claws tore the Claw’s plating just as its Serum R injector went through your shoulder. Both fell back from the impact. Finding you tougher than expected, the Claw warped away to report to the Head.",
+        labelVi: "Đánh vào giáp tay trước khi nó dùng Serum",
+        labelEn: "Strike its gauntlet before it uses Serum",
+        resultVi: "Móng bạn cào rách giáp tay, nhưng mũi tiêm xuyên qua vai. Cả hai lùi lại. Claw nhận tín hiệu qua máy liên lạc rồi rút khỏi hẻm; lệnh xử lý vẫn còn hiệu lực.",
+        resultEn: "You tear the plating on its gauntlet, but the injector goes through your shoulder. You both step back. The Claw receives a radio signal and leaves the alley; the order remains open.",
         flagsAdd: ['distort_claw_clash_done', 'ClawSurvivor'],
         meritAdd: 55,
         effects: { health: -45, rep: +80, resonance: +45, heat: +50 }
       },
       {
-        labelVi: "Dụ Claw vào mê cung lãnh địa, kích nổ bẫy không gian để thoát",
-        labelEn: "Lure the Claw into the domain’s maze and set off the space traps to escape",
-        resultVi: "Mê cung sụp, chôn lối đi của Claw vài giây quý giá. Bạn tan vào dòng ngầm của The City, vẫn tính toán được dù trong thân xác quái vật.",
-        resultEn: "The maze collapsed and buried the Claw’s path for a few precious seconds. You slipped into the City’s underground currents, still able to calculate in a monster’s body.",
+        labelVi: "Dụ Claw qua lối tường đang nứt rồi rút xuống cống",
+        labelEn: "Draw the Claw past a cracked wall and retreat through the drain",
+        resultVi: "Bức tường đổ chắn lối vài giây. Bạn chui xuống đường cống trước khi Claw vòng qua; tiếng giày của nó còn theo bạn một đoạn.",
+        resultEn: "The wall falls across the passage for a few seconds. You enter the drain before the Claw circles around; its footsteps follow you for a while.",
         flagsAdd: ['distort_claw_clash_done'],
         meritAdd: 40,
         effects: { sanity: +15, rep: +50, heat: +30, resonance: +30 }
@@ -170,24 +170,24 @@ export const DISTORTION_PATH_EVENTS = [
     weight: 65,
     need: { jobs: ['Distortion'] },
     forbids: ['distort_companion_done'],
-    vi: "[Người quen cũ] Một người quen cũ từ cuộc đời trước chặn đầu con hẻm, tay cầm thanh kiếm cùn. Người ấy nhìn những chiếc gai và khối dị hình trên người bạn, run giọng hỏi: \"Có thật... là cậu không?\" Lưỡi kiếm run bần bật, nhưng chưa chịu hạ xuống.",
-    en: "[A face from the past] A former companion from your past life blocks the alley, wielding a trembling dull sword. Looking upon your crystalline thorns and twisted visage, they stammer: “Is that... truly you?” The blade shakes, yet refuses to lower.",
+    vi: "[Người quen cũ] Người từng đi cùng bạn đứng ở đầu hẻm, tay cầm kiếm. Họ nhìn lớp vỏ trên tay bạn rồi gọi tên cũ. Thanh kiếm vẫn chưa hạ xuống.",
+    en: "[Someone you knew] A former companion stands at the alley entrance with a sword in hand. They look at the shell on your arm and call your old name. The sword stays raised.",
     choices: [
       {
-        labelVi: "Nén cơn khát máu, quay lưng chạy vào bóng tối để bảo vệ bạn mình",
-        labelEn: "Hold down the hunger and run into the dark to protect your friend",
-        resultVi: "Bạn rít lên đau đớn, cào móng vào vách đá rồi lẩn sâu vào Backstreets. Một giọt nước mắt nóng lăn trên gương mặt méo mó. Bạn vẫn giữ lại một mảnh người.",
-        resultEn: "You hissed in pain, raked your claws down the wall and slipped deep into the Backstreets. One hot tear ran down your warped face. You kept a piece of the human.",
+        labelVi: "Lùi lại để họ rời khỏi hẻm",
+        labelEn: "Step back and let them leave the alley",
+        resultVi: "Bạn lùi sát tường. Người ấy đi ngang, vẫn giữ kiếm trong tay nhưng không quay đầu. Bạn đợi đến khi họ khuất mới rời đi.",
+        resultEn: "You step against the wall. They pass with the sword still in hand and do not look back. You wait until they are gone before leaving.",
         effects: { sanity: +12, resonance: +20, heat: +15 },
         meritAdd: 20,
         flagsAdd: ['distort_companion_done'],
         recordsAdd: ['distortion_spared_companion']
       },
       {
-        labelVi: "Buông cho bản năng săn mồi, nuốt luôn cả ký ức xưa",
-        labelEn: "Let the hunting instinct go and devour the ancient memory too",
-        resultVi: "Máu nhuộm đỏ tường ngõ. Khi cơn cuồng nộ qua đi, bạn đứng cô độc giữa con hẻm hoang tàn trên xác kẻ vừa gục xuống. Không còn ai sống sót nhớ bạn từng là ai. Sức mạnh của bạn tăng vọt.",
-        resultEn: "Blood stained the alley wall. When the frenzy passed, you stood alone over the fallen body. No one living remembered who you had been. Your power surged.",
+        labelVi: "Tấn công trước khi họ kịp nói thêm",
+        labelEn: "Attack before they can speak again",
+        resultVi: "Thanh kiếm rơi xuống nền đường. Khi bạn buông tay, người ấy không đứng dậy nữa. Bạn bỏ lại cái tên cũ trong con hẻm.",
+        resultEn: "The sword falls to the road. When you let go, they do not get up. You leave your old name in the alley.",
         effects: { health: +35, sanity: -35, rep: +50, heat: +40 },
         meritAdd: 30,
         flagsAdd: ['distort_companion_done'],
@@ -202,14 +202,14 @@ export const DISTORTION_PATH_EVENTS = [
     weight: 70,
     need: { jobs: ['Distortion'], meritAtLeast: 100, stat: { rep: [65, 100], heat: [60, 100] } },
     forbids: ['distort_star_rampage_done', 'distort_star_calamity_done', 'LivingStarOfCity'],
-    vi: "[Cơn thịnh nộ của Star of the City] Sự méo mó trong tâm trí bạn chạm đỉnh. Cả khu phố quanh bạn biến thành sân khấu riêng: đá đường uốn cong, bầu trời đỏ như mắt Carmen. Ba đội Fixer Grade 1 cùng dàn pháo của Hana bao vây toàn bộ khu vực.",
-    en: "[Wrath of a Star of the City] The warping in your mind peaks. The whole district around you becomes a stage of your own: the paving bends, the sky glows red like Carmen’s eye. Three Grade 1 Fixer teams and Hana’s artillery seal the entire area.",
+    vi: "[Vòng vây của Hana] Ba đội Fixer Grade 1 chặn các lối ra khỏi khu phố. Rào chắn mới dựng qua đêm; trên đó dán bản vẽ hình dạng của bạn. Họ đã biết bạn trú ở đâu.",
+    en: "[Hana's cordon] Three Grade 1 Fixer teams block the exits from the district. New barricades went up overnight, each carrying a sketch of your shape. They know where you live.",
     choices: [
       {
-        labelVi: "Gầm lên và đối đầu toàn bộ Fixer của Hana",
-        labelEn: "Roar and face every Fixer of Hana",
-        resultVi: "Trận chiến san phẳng năm dãy nhà. Bạn chém gãy hàng chục vũ khí Workshop và phá vòng vây của Hana. Tên bạn được khắc vào danh sách Star of the City.",
-        resultEn: "The fight levelled five blocks. You broke dozens of Workshop weapons and broke Hana’s cordon. Your name was carved into the list of the Stars of the City.",
+        labelVi: "Đánh vào chỗ rào chắn chưa khép kín",
+        labelEn: "Strike where the barricade is still open",
+        resultVi: "Bạn phá một đoạn rào và thoát ra qua đám bụi. Hana ghi lại số Fixer bị thương, rồi nâng hồ sơ của bạn lên Star of the City.",
+        resultEn: "You break a section of the barricade and escape through the dust. Hana records the injured Fixers, then raises your file to Star of the City.",
         effects: { health: -30, rep: +100, heat: +50, resonance: +40 },
         meritAdd: 50,
         flagsAdd: ['distort_star_rampage_done', 'StarOfTheCityEntity']
@@ -227,22 +227,22 @@ export const DISTORTION_PATH_EVENTS = [
     weight: 48,
     allowDistorted: true,
     need: { jobs: ['Distortion'] },
-    vi: "[Tiếng vọng dưới đường] Một Abnormality đang ngủ trong tàn tích Lobotomy Corporation bên dưới con hẻm. Cơ thể biến dạng của bạn rung theo nhịp đập của nó. Nắp cống dưới chân bắt đầu chuyển động.",
-    en: "[An echo under the street] An Abnormality sleeps in the ruins of Lobotomy Corporation beneath the alley. Your deformed body vibrates with its pulse. The manhole cover under your feet begins to move.",
+    vi: "[Tiếng vọng dưới đường] Nắp cống dưới chân rung lên. Dưới đó là lối vào tàn tích Lobotomy Corporation; từ sâu bên trong, bạn nghe tiếng gõ đều mà cơ thể mình vô thức đáp lại.",
+    en: "[An echo below] The manhole cover shakes. Beneath it lies a passage into an old Lobotomy Corporation site; a steady tapping comes from below, and your body answers before you mean it to.",
     choices: [
       {
-        labelVi: "Hòa ý thức vào tần số của nó và hấp thụ một phần khái niệm của nó",
-        labelEn: "Merge your mind into its frequency and take in part of its concept",
-        resultVi: "Một luồng năng lượng hoang dại tràn vào máu biến dị của bạn. Hình thái bạn mọc thêm một tầng gai, và không khí quanh bạn lạnh đi.",
-        resultEn: "A wild current poured into your warped blood. Your form grew another layer of spines, and the air around you went cold.",
+        labelVi: "Ở lại nghe nhịp gõ dưới nắp cống",
+        labelEn: "Stay and listen to the tapping below",
+        resultVi: "Nhịp gõ theo bạn tới tận sáng. Lớp vỏ trên tay mọc thêm gai nhỏ; người quét đường thấy chúng trước khi thấy mặt bạn.",
+        resultEn: "The tapping stays with you until morning. Small spines grow along the shell of your arm; the street cleaner sees them before seeing your face.",
         meritAdd: 28,
         effects: { rep: +35, resonance: +30, health: +20, sanity: -8 }
       },
       {
-        labelVi: "Gầm lên đẩy nguồn ô nhiễm ngoại lai ra, giữ bản ngã biến dị của riêng mình",
-        labelEn: "Roar and push the foreign contamination out, keeping your own distorted self",
-        resultVi: "Bạn đập tan sự xâm nhập từ phía dưới. Ý chí biến dị của riêng bạn trở nên cứng như kim cương.",
-        resultEn: "You smashed the intrusion from below. Your own distorted will went as hard as diamond.",
+        labelVi: "Đậy nắp cống và rời khỏi lối vào",
+        labelEn: "Close the cover and leave the entrance",
+        resultVi: "Bạn đẩy nắp cống về chỗ cũ. Tiếng gõ còn theo vài con phố rồi dứt; nhịp thở bạn trở lại đều hơn.",
+        resultEn: "You push the cover back into place. The tapping follows you for a few blocks, then stops; your breathing steadies.",
         meritAdd: 22,
         effects: { sanity: +20, resonance: +15, health: +10 }
       }
@@ -255,22 +255,22 @@ export const DISTORTION_PATH_EVENTS = [
     weight: 46,
     allowDistorted: true,
     need: { jobs: ['Distortion'] },
-    vi: "[Khúc hát ru của quái vật] Giữa đêm đông, một nhóm trẻ mồ côi Backstreets rón rén tụ lại quanh hang đổ nát của bạn. Chúng không sợ. Chúng bị mê bởi những nốt nhạc buồn phát ra từ các cơ quan biến dị của bạn, và coi bạn là thần hộ vệ của bóng đêm.",
-    en: "[The monster’s lullaby] On a winter night a group of Backstreets orphans creeps up around your ruined den. They are not afraid. They are drawn by the sad notes coming from your warped organs, and take you for a guardian of the night.",
+    vi: "[Trẻ ở đầu hẻm] Vài đứa trẻ Backstreets nấp dưới mái hiên gần chỗ bạn trú. Chúng đã nghe tiếng rền trong lớp vỏ của bạn và tưởng nơi này có máy sưởi. Đêm Quét Dọn sắp bắt đầu.",
+    en: "[Children by the alley] A few Backstreets children shelter beneath the awning near you. They heard the hum inside your shell and mistook it for a heater. The Night in the Backstreets is about to begin.",
     choices: [
       {
-        labelVi: "Ngân một giai điệu êm để che lũ trẻ khỏi đợt tuần tra Sweeper lúc 3 giờ sáng",
-        labelEn: "Hum a soft tune to shield the children from the 3 AM Sweeper patrol",
-        resultVi: "Khi còi Sweeper vang lên, bóng tối biến dị của bạn bọc lấy lũ trẻ. Lũ Sweeper không dám lại gần lãnh địa. Lũ trẻ ngủ say tựa vào bạn, và bạn có một thoáng ấm hiếm hoi.",
-        resultEn: "When the Sweeper sirens sounded, your warped darkness wrapped the children. The Sweepers did not dare come near the domain. The children slept leaning on you, and you had one rare moment of warmth.",
+        labelVi: "Dẫn lũ trẻ vào chỗ khuất và canh lối hẻm",
+        labelEn: "Lead the children into cover and watch the alley",
+        resultVi: "Bạn che lối vào bằng những mảng vỏ cứng. Sweepers đi ngang rồi khuất; khi trời sáng, lũ trẻ rời đi và để lại chiếc khăn trên bậc cửa.",
+        resultEn: "You block the entrance with plates of your shell. Sweepers pass without stopping; at daylight the children leave a scarf on the doorstep.",
         meritAdd: 30,
         effects: { sanity: +35, rep: +20, health: +15 }
       },
       {
-        labelVi: "Gầm lên cho chúng sợ mà chạy về nơi an toàn",
-        labelEn: "Roar so they run in fear to somewhere safe",
-        resultVi: "Lũ trẻ sợ hãi chạy thẳng vào trại tị nạn của Zwei Association trước giờ giới nghiêm. Bạn đứng lại một mình trong bóng tối, vừa làm xong một việc cứu người tàn nhẫn.",
-        resultEn: "Terrified, the children ran straight into a Zwei Association refugee camp before curfew. You stood alone in the dark, having done a cruel kind of rescue.",
+        labelVi: "Chỉ chúng tới chốt Zwei rồi đuổi đi",
+        labelEn: "Point them toward the Zwei post and send them away",
+        resultVi: "Bạn chỉ về phía đèn của Zwei. Lũ trẻ chạy theo hướng ấy; bạn đợi đến khi cửa chốt mở mới quay vào hẻm.",
+        resultEn: "You point toward the Zwei lights. The children run that way; you wait until the post door opens before returning to the alley.",
         meritAdd: 20,
         effects: { sanity: +15, resonance: +12 }
       }
@@ -283,22 +283,22 @@ export const DISTORTION_PATH_EVENTS = [
     weight: 48,
     allowDistorted: true,
     need: { jobs: ['Distortion'] },
-    vi: "[Biệt đội trấn áp của Hana Section 2] Ba Fixer tinh nhuệ của Hana Section 2 mang lồng phong tỏa cộng hưởng và xích triệt tiêu năng lượng bao quanh lãnh địa của bạn. Họ đọc án lệnh thanh trừng một hiểm họa cấp Đô Thị.",
-    en: "[Hana Section 2 suppression squad] Three elite Fixers of Hana Section 2 surround your domain with resonance containment cages and energy-damping chains. They read out the extermination order for a City-level hazard.",
+    vi: "[Toán trấn áp] Ba Fixer mang phù hiệu Hana Section 2 chặn hai đầu hẻm. Họ kéo xích khóa qua cửa sổ tầng một rồi đọc số hồ sơ của bạn.",
+    en: "[Suppression squad] Three Fixers wearing Hana Section 2 insignia block both ends of the alley. They run a restraint chain through the ground-floor window and read out your file number.",
     choices: [
       {
-        labelVi: "Bung toàn bộ sóng biến dị, phá lồng giam và đánh gục đội trưởng",
-        labelEn: "Release the full distortion wave, break the cage and drop their captain",
-        resultVi: "Sóng xung kích bẻ cong xích phong tỏa như cành khô. Đội trưởng văng vào tường đá, hộc máu, và cả toán rút lui. Tên bạn làm cả giới Fixer lạnh gáy.",
-        resultEn: "The shockwave bent the containment chains like dry twigs. The captain was thrown against the stone wall, coughing blood, and the whole squad withdrew. Your name chilled the entire Fixer world.",
+        labelVi: "Bẻ xích và đánh vào chỗ đội trưởng đứng",
+        labelEn: "Break the chain and strike toward their leader",
+        resultVi: "Xích bật khỏi cửa sổ. Đội trưởng ngã vào tường; hai Fixer còn lại kéo người ấy ra khỏi hẻm. Hana ghi thêm thương vong vào hồ sơ.",
+        resultEn: "The chain tears free of the window. Their leader hits the wall; the other two Fixers drag them out. Hana adds the injuries to your file.",
         meritAdd: 32,
         effects: { health: -18, rep: +45, heat: +25, resonance: +25 }
       },
       {
-        labelVi: "Tan vào sương mù Backstreets, đánh lừa máy dò sinh trắc của chúng rồi biến mất",
-        labelEn: "Dissolve into the Backstreets smog, fool their biometric scanners and vanish",
-        resultVi: "Máy định vị của Hana mất dấu bạn hoàn toàn. Bạn dời sang khu săn mồi khác mà không bị phát hiện.",
-        resultEn: "Hana’s trackers lost you completely. You moved to another hunting ground undetected.",
+        labelVi: "Đi qua ống thoát nước phía sau",
+        labelEn: "Leave through the drain behind you",
+        resultVi: "Bạn trườn qua đường ống và ra khỏi vòng vây. Sáng hôm sau, lệnh tìm kiếm của Hana vẫn dán ở đầu phố.",
+        resultEn: "You crawl through the drain and beyond the cordon. By morning, Hana’s search order is still posted at the street entrance.",
         meritAdd: 22,
         effects: { rep: +20, sanity: +12, heat: -15 }
       }
@@ -311,22 +311,22 @@ export const DISTORTION_PATH_EVENTS = [
     weight: 45,
     allowDistorted: true,
     need: { jobs: ['Distortion'] },
-    vi: "[Sân khấu ký ức] Nỗi đau tích tụ cả đời bạn tràn ra thực tại. Trong bán kính ba trăm mét quanh bạn, tường gạch hóa thành phím đàn piano khổng lồ, và mỗi phím vang lên một đoạn đời của bạn.",
-    en: "[The Theater of Memory] The pain you have stored up all your life spills into reality. In a three-hundred-meter radius around you, brick walls turn into giant piano keys, and each key sounds a piece of your life.",
+    vi: "[Âm thanh trong tường] Bạn chạm vào bức tường cạnh chỗ trú. Mỗi lần gõ, nó đáp lại bằng một tiếng đàn cũ. Những người ở tầng trên bắt đầu dọn đồ.",
+    en: "[Music in the wall] You touch the wall beside your shelter. Each knock answers with the note of an old piano. The tenants upstairs begin packing.",
     choices: [
       {
-        labelVi: "Chơi bản nhạc của cả cuộc đời bạn và biến nỗi đau thành vũ khí",
-        labelEn: "Play the song of your whole life and turn the pain into a weapon",
-        resultVi: "Mỗi nốt nhạc cắt qua không khí và đẩy lui bất cứ kẻ nào bước vào. Cả khu trở thành nơi không ai dám tới gần, và bạn là thứ nằm ở giữa nó.",
-        resultEn: "Every note cuts through the air and drives back whoever steps in. The whole area becomes a place nobody dares approach, and you are what sits at its center.",
+        labelVi: "Gõ tiếp để giữ người lạ ngoài hẻm",
+        labelEn: "Keep the notes sounding to hold strangers back",
+        resultVi: "Âm thanh dội qua các bức tường. Những người định vào hẻm lùi lại, rồi đường phố phía trước vắng dần. Bạn có thêm chỗ để nghỉ.",
+        resultEn: "The notes carry through the walls. Those approaching the alley turn back, and the street beyond empties. You have room to rest.",
         meritAdd: 35,
         effects: { rep: +50, resonance: +35, health: +25, sanity: +20 }
       },
       {
-        labelVi: "Thu lãnh địa vào trong ngực và giữ sân khấu ký ức cho riêng mình",
-        labelEn: "Fold the domain back into your chest and keep the theater of memory to yourself",
-        resultVi: "Mặt đường thẳng lại, nhưng cơ thể bạn đặc lại như áo giáp. Bạn giữ được cái bản ngã méo mó của mình mà không để nó giữ lại bạn.",
-        resultEn: "The pavement straightens, but your body thickens like armor. You keep your twisted self without letting it keep you.",
+        labelVi: "Ngừng gõ và kéo tay khỏi bức tường",
+        labelEn: "Stop knocking and pull your hand from the wall",
+        resultVi: "Tiếng đàn tắt. Phần vỏ trên cánh tay dày lên ở chỗ từng áp vào gạch; người tầng trên thôi dọn đồ.",
+        resultEn: "The notes stop. The shell thickens where your arm touched the brick; the upstairs tenants stop packing.",
         meritAdd: 28,
         effects: { sanity: +30, health: +20, resonance: +20 }
       }
@@ -339,22 +339,22 @@ export const DISTORTION_PATH_EVENTS = [
     weight: 42,
     allowDistorted: true,
     need: { jobs: ['Distortion'] },
-    vi: "[Beholder quan sát] Ánh mắt Beholder quét qua hang bạn. Dạng biến dị này đã lọt vào hồ sơ của The Head, và một lệnh xử lý có thể theo sau. Tia sáng dừng đúng trên người bạn.",
-    en: "[The Beholder watches] The gaze of a Beholder of B Corp sweeps over your den. This distortion has reached The Head’s files, and a disposal order may follow. The beam stops right on you.",
+    vi: "[B Corp quan sát] Thiết bị giám sát trên cột điện quay về phía chỗ trú của bạn. Đèn quét dừng ở cửa hẻm. Nếu B Corp đã ghi hình, hồ sơ của bạn sẽ được chuyển lên The Head.",
+    en: "[B Corp observes] The surveillance unit on the utility pole turns toward your shelter. Its beam stops at the alley entrance. If B Corp has a recording, your file will reach the Head.",
     choices: [
       {
-        labelVi: "Ngẩng lên nhìn thẳng con mắt, khẳng định phần người sâu nhất của mình",
-        labelEn: "Look up into the eye and assert the deepest human part of yourself",
-        resultVi: "Con mắt khổng lồ chớp chậm. Dù thân hình quái dị, khát vọng và nỗi đau của bạn rõ ràng vẫn là của con người. Con mắt khép lại rồi tan. The Head chấp nhận bạn tồn tại trong The City.",
-        resultEn: "The huge eye blinked slowly. Monster though you were, your longing and pain were plainly human. The eye closed and dissolved. The Head tolerated your existence in the City.",
+        labelVi: "Đứng yên cho thiết bị ghi rõ mặt bạn",
+        labelEn: "Stand still and let it record your face",
+        resultVi: "Đèn quét đi qua rồi tắt. Không có lệnh nào đến trong ngày ấy. Bạn dời chỗ trú trước khi trời tối.",
+        resultEn: "The beam passes over you and goes dark. No order arrives that day. You move your shelter before nightfall.",
         meritAdd: 35,
         effects: { rep: +60, sanity: +25, resonance: +30, heat: -20 }
       },
       {
-        labelVi: "Phun khói đen biến dị để che con mắt",
-        labelEn: "Erupt a black cloud of distortion to blind the eye",
-        resultVi: "Khói đen phủ kín bầu trời quận ba ngày ba đêm. Con mắt rút đi, nhưng mức chú ý của The Head với tên bạn tăng vọt.",
-        resultEn: "Black smoke blanketed the district sky for three days and nights. The eye withdrew, but the Head’s attention to your name rose sharply.",
+        labelVi: "Phủ khói lên thiết bị rồi rời khỏi hẻm",
+        labelEn: "Cover the device in smoke and leave the alley",
+        resultVi: "Khói che ống kính vài giây. Bạn đi khỏi hẻm trước khi đèn quét lại, nhưng sáng hôm sau một thiết bị khác đã được lắp trên cột điện.",
+        resultEn: "Smoke hides the lens for a few seconds. You leave before the beam returns, but another unit is fitted to the pole by morning.",
         meritAdd: 25,
         effects: { rep: +40, heat: +30, resonance: +25 }
       }
@@ -367,22 +367,22 @@ export const DISTORTION_PATH_EVENTS = [
     weight: 45,
     allowDistorted: true,
     need: { jobs: ['Distortion'] },
-    vi: "[Lời Carmen] Giữa cơn hỗn loạn, Carmen cất tiếng trong đầu bạn: \"Ngươi đã mệt vì phải giữ một hình hài vừa mắt The City. Buông tay đi.\" Giọng nói dịu xuống, chờ câu trả lời.",
-    en: "[Carmen’s Voice] In the middle of the chaos Carmen speaks inside your head: “You are tired of holding a shape that suits The City. Let go.” The voice softens and waits for an answer.",
+    vi: "[Lời Carmen] Khi bạn ngồi nghỉ, Carmen lại cất tiếng: \"Bạn còn đang cố giữ điều gì?\" Ngoài cửa, người ta kéo một chiếc xe qua chỗ tường nứt. Giọng nói chờ bạn trả lời.",
+    en: "[Carmen's voice] As you rest, Carmen speaks again: “What are you still trying to hold on to?” Outside, someone drags a cart past the cracked wall. The voice waits for your answer.",
     choices: [
       {
-        labelVi: "Mỉm cười chấp nhận và trở thành một huyền thoại của The City",
-        labelEn: "Smile, accept, and become a legend of The City",
-        resultVi: "Cơn đau biến mất, nhường chỗ cho sự yên lặng bạn không nhớ mình từng có. Bạn không còn là con quái vật đau khổ nữa, mà là một sinh linh sống đúng với phần sâu nhất của mình.",
-        resultEn: "The pain disappears and leaves a quiet you do not remember ever having. You are no longer a suffering monster but a being who lives by the deepest part of itself.",
+        labelVi: "Trả lời Carmen và ngừng chống lại hình dạng này",
+        labelEn: "Answer Carmen and stop fighting this shape",
+        resultVi: "Bạn nói ra điều mình muốn. Cơn co giật dưới lớp vỏ dịu xuống; bạn đứng dậy mà không cần vịn tường.",
+        resultEn: "You say what you want. The spasms beneath your shell ease, and you stand without leaning on the wall.",
         meritAdd: 40,
         effects: { sanity: +45, resonance: +40, health: +30, rep: +50 }
       },
       {
-        labelVi: "Rơi một giọt nước mắt cuối cùng và giữ lại ký ức về lúc ban đầu",
-        labelEn: "Shed one last tear and keep the memory of how you began",
-        resultVi: "Giọt nước mắt rơi xuống và vỡ như pha lê trên mặt đá. Bạn giữ lại mảnh ký ức quý nhất về những người từng yêu mình, và trở thành một con quái vật vẫn còn nhớ.",
-        resultEn: "The tear falls and shatters like crystal on the cobbles. You keep the most precious memory of the people who once loved you, and become a monster that still remembers.",
+        labelVi: "Nhắc lại một chuyện cũ mà bạn còn nhớ",
+        labelEn: "Recall one ordinary thing from before",
+        resultVi: "Bạn nhớ đường về một căn phòng cũ. Căn phòng ấy có thể đã đổi chủ; dù vậy, bạn vẫn nhớ được lối đi.",
+        resultEn: "You remember the way to an old room. It may have a new tenant now, but you still know the route.",
         meritAdd: 35,
         effects: { sanity: +35, resonance: +25, rep: +35 }
       }

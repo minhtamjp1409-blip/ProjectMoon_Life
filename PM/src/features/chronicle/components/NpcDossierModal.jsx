@@ -243,7 +243,7 @@ export const NpcDossierModal = ({ npcRole, onClose }) => {
           <footer className="npc-dossier-footer">
             <h4 className="action-dock-title">{t('Hành Động Tương Tác Tri Kỷ', 'Companion Actions')}</h4>
             <div className="npc-action-grid">
-              {NPC_INTERACTION_ACTIONS.map((action) => {
+              {NPC_INTERACTION_ACTIONS.filter((a) => !a.maxAge || (char?.age ?? 20) <= a.maxAge).map((action) => {
                 const check = canInteractWithNpc(char, npcRole, action.id);
                 return (
                   <button
@@ -257,6 +257,7 @@ export const NpcDossierModal = ({ npcRole, onClose }) => {
                     <span className="action-name">{lang === 'en' ? action.nameEn : action.nameVi}</span>
                     <span className="action-cost">
                       {check.cooldown && (lang === 'en' ? 'Done recently' : 'Vừa làm xong')}
+                      {!check.cooldown && action.id === 'child_play' && (lang === 'en' ? 'Youth' : 'Thiếu thời')}
                       {!check.cooldown && action.id === 'drink_confide' && '-4 Ahn'}
                       {!check.cooldown && action.id === 'spar_coordinate' && '-2 HP'}
                       {!check.cooldown && action.id === 'emergency_aid' && (lang === 'en' ? 'Aid Crisis' : 'Cứu viện')}

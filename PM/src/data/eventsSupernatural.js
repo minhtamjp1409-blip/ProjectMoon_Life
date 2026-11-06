@@ -154,8 +154,8 @@ export const SUPERNATURAL_EVENTS = [
     en: '[A voice in the Light] Your old scars ({scars}) begin to ache. The City fades, and a woman speaks from the Light: “You have endured enough. Stop wearing the shape others demand of you.” Your hand shakes. You can listen, or decide for yourself who you will be.',
     choices: [
       {
-        labelVi: '"Nỗi đau này là của tôi. Những vết sẹo này thuộc về tôi. Tôi sẽ không khuất phục trước sự an ủi dối trá của người!"',
-        labelEn: '“This pain is mine. I will not yield before your sun.”',
+        labelVi: 'Giữ lấy ký ức của mình, kể cả phần đau đớn',
+        labelEn: 'Hold on to your memories, including the painful ones',
         outcomes: [
           {
             w: 40,
@@ -193,13 +193,13 @@ export const SUPERNATURAL_EVENTS = [
             scarsAdd: ['Ý chí gãy đổ'],
             meritAdd: 20,
             resultVi: "Bạn nghe theo giọng nói và buông ý chí đang giữ mình lại. Cơ thể biến đổi theo nỗi đau bạn không còn kìm được. Khi Hana cập nhật hồ sơ, họ ghi một Distortion mới xuất hiện.",
-            resultEn: 'Carmen’s murmur from the radiant sun was too sweet. In that final hesitation, your resolve shattered. Your flesh morphed into the shape of your sorrow. Hana Association updated its file: Distorted.'
+            resultEn: 'You follow the voice and let go of what held you together. Your body changes with the pain you can no longer contain. Hana opens a new Distortion file.'
           }
         ]
       },
       {
-        labelVi: 'Đốt cháy những vết sẹo quá khứ làm mồi lửa bộc phát',
-        labelEn: 'Burn every past scar as living fuel for breakthrough',
+        labelVi: 'Dồn sức qua cơn đau ở những vết sẹo cũ',
+        labelEn: 'Push through the pain in your old scars',
         outcomes: [
           {
             w: 36,
@@ -209,8 +209,8 @@ export const SUPERNATURAL_EVENTS = [
             effects: { health: -32, sanity: +30, rep: +42, resonance: +35 },
             scarsAdd: ['Tro Tàn Tự Ngã'],
             meritAdd: 50,
-            resultVi: 'Bạn biến chính những vết sẹo rỉ máu thành mồi lửa, thiêu rụi sự cám dỗ dịu dàng của Carmen. Cơ thể bạn chằng chịt vết rách, nhưng từ trong biển lửa tro tàn, E.G.O hoàn chỉnh xuất hiện với uy lực chấn áp tất cả.',
-            resultEn: 'Turning your bleeding scars into kindling, you incinerated Carmen’s gentle whispers. Your body tore with wounds, but from the ashes, complete E.G.O emerged with overwhelming might.'
+            resultVi: 'Những vết sẹo cũ đau nhói. Bạn vẫn giữ được ý nghĩ đang theo đuổi; E.G.O thành hình quanh tay. Da rách ở chỗ giáp khép lại.',
+            resultEn: 'Your old scars ache. You hold to the thought that brought you here; E.G.O forms around your arm. The skin splits where the armor closes.'
           },
           {
             w: 28,
@@ -219,8 +219,8 @@ export const SUPERNATURAL_EVENTS = [
             effects: { health: +50, sanity: -65, rep: +35, heat: +50, resonance: +60 },
             scarsAdd: ['Ngọn Lửa Cuồng Loạn'],
             meritAdd: 30,
-            resultVi: 'Ngọn lửa cảm xúc bốc cháy vượt quá tầm kiểm soát của cơ thể bạn. Sức nóng thiêu rụi lý trí; thay vì E.G.O, bạn sụp đổ hoàn toàn vào nỗi ám ảnh tột cùng. Một con quái vật Distortion sinh ra từ tro tàn.',
-            resultEn: 'The emotional blaze flared beyond mortal endurance. The heat consumed your sanity; instead of E.G.O, you collapsed entirely into obsession. A ravenous Distortion arose from the ashes.'
+            resultVi: 'Cơn đau lấn át ý nghĩ bạn định giữ. E.G.O chưa kịp thành hình; bàn tay đổi dạng trước mắt bạn. Hana sẽ gọi trường hợp này là Distortion.',
+            resultEn: 'The pain drowns out the thought you tried to hold. E.G.O never takes shape; your hand changes before your eyes. Hana will classify this as a Distortion.'
           },
           {
             w: 36,
@@ -236,14 +236,14 @@ export const SUPERNATURAL_EVENTS = [
                 reasonEn: 'Smoldering incomplete E.G.O awaiting rekindling'
               }
             ],
-            resultVi: 'Ngọn lửa đốt cháy da thịt bạn nhưng lụi tàn giữa chừng. Bạn ngã quỵ trên vũng máu, một mảnh giáp E.G.O vỡ vụn dính chặt vào xương ngực: E.G.O Chưa Hoàn Chỉnh.',
-            resultEn: 'The inferno scorched your flesh but petered out midway. You collapsed bleeding, a shattered shard of E.G.O armor fused to your breastbone: Incomplete E.G.O.'
+            resultVi: 'E.G.O hiện ra rồi nứt ngay trên ngực. Bạn gỡ mảnh giáp khỏi áo; bên dưới là vết bỏng còn nóng. Lần này nó chưa ổn định.',
+            resultEn: 'E.G.O forms and cracks across your chest. You pull a fragment from your coat; the burn beneath is still warm. It has not stabilized.'
           }
         ]
       },
       {
-        labelVi: 'Nhắm mắt lại, buông xuôi ý chí và đắm chìm vào vầng thái dương ấm áp',
-        labelEn: 'Close your eyes, surrender your will and sink into the warm radiant sun',
+        labelVi: 'Nghe theo giọng nói và thôi giữ hình dạng cũ',
+        labelEn: 'Follow the voice and let go of your old shape',
         flagsAdd: ['Distorted'],
         recordsAdd: ['distortion_awaken'],
         effects: { health: -15, sanity: -70, rep: -25, heat: +60, resonance: +50 },
@@ -253,13 +253,13 @@ export const SUPERNATURAL_EVENTS = [
         resultEn: 'The pain stops. Your body changes shape around what you released into the Light. The next morning, Hana opens a new Distortion file; its rating is left blank.'
       },
       {
-        labelVi: 'Cắn chặt răng quay lưng, dùng ý chí sắt đá và lời thề níu lấy sự tỉnh táo phàm trần',
-        labelEn: 'Grit your teeth and turn away, clinging to iron will, creed and mortal sanity',
+        labelVi: 'Quay đi và tự nhắc tên mình',
+        labelEn: 'Turn away and say your name to yourself',
         effects: { sanity: +45, health: +10, rep: +25, resonance: -25 },
         scarsAdd: ['Kẻ từ chối tiếng gọi thái dương'],
         meritAdd: 25,
-        resultVi: 'Bạn nhắm mắt, bịt tai, dùng lời thề với các huynh đệ và tổ chức khước từ mọi cám dỗ từ vầng thái dương của Carmen. Biển ánh sáng tan biến; bạn trở về thực tại: một con người trần thế kiên cường tiếp tục bước đi trên mặt đất The City.',
-        resultEn: 'You shut your eyes and closed your ears, clinging to oaths and brotherhood to refuse every whisper from Carmen. The blinding sun dissolved; you remained yourself: an ordinary human walking the ground of The City.'
+        resultVi: 'Bạn đọc tên mình thành tiếng. Khi mở mắt, con hẻm vẫn ở đó. Giọng nói đã lùi đi; bạn tự bước về nhà.',
+        resultEn: 'You say your name aloud. When you open your eyes, the alley is still there. The voice recedes; you walk home on your own.'
       }
     ]
   },
@@ -271,14 +271,14 @@ export const SUPERNATURAL_EVENTS = [
     major: true,
     weight: 950,
     isCausalCallback: true,
-    causalReasonVi: 'Vết rạn E.G.O năm xưa đang tìm kiếm sự hoàn thiện',
-    causalReasonEn: 'The fissure in your past E.G.O seeks complete efflorescence',
-    vi: '[True Efflorescence · Khai Hoa Trọn Vẹn] Ngọn lửa E.G.O chưa hoàn chỉnh trong lồng ngực bạn lại cháy bùng khi một cơn nguy biến Backstreets ập đến. Lần này, bạn không còn bỡ ngỡ. Trước mắt bạn là con đường bạn đã đi qua và cái giá bạn đã trả.',
-    en: '[True Efflorescence · Complete Blooming] The incomplete E.G.O flame in your chest flared again as a Backstreets crisis struck. This time, you did not waver. Before your eyes lay every path you had walked and every price you had paid.',
+    causalReasonVi: 'E.G.O chưa ổn định lại hiện ra khi bạn gặp nguy',
+    causalReasonEn: 'Your unstable E.G.O appears again under pressure',
+    vi: '[E.G.O trở lại] Bạn bị dồn vào cuối hẻm Backstreets. Mảnh E.G.O chưa ổn định hiện ra trên tay, vết nứt cũ vẫn còn. Lần này bạn có thể giữ nó, hoặc rút lui.',
+    en: '[E.G.O returns] You are cornered in a Backstreets alley. The unstable E.G.O forms around your hand, its old crack still visible. This time you can hold it or withdraw.',
     choices: [
       {
-        labelVi: 'Hàn gắn vết rạn tâm thức: Đánh cược tôi luyện để Khai hoa E.G.O',
-        labelEn: 'Mend the soul fissure: Forge through trial to Effloresce True E.G.O',
+        labelVi: 'Giữ E.G.O thành hình dù vết nứt lan ra',
+        labelEn: 'Hold the E.G.O in shape as the crack spreads',
         outcomes: [
           {
             w: 52,
@@ -289,8 +289,8 @@ export const SUPERNATURAL_EVENTS = [
             effects: { health: +22, sanity: +30, rep: +35, resonance: +25 },
             scarsAdd: ['Bản Ngã Tái Sinh'],
             meritAdd: 50,
-            resultVi: 'Vết nứt trên linh hồn liền lại thành một lớp giáp hoàng kim. E.G.O hoàn chỉnh bao bọc lấy bạn, tĩnh lặng và uy nghiêm. Cả khu phố nín thở trước luồng ánh sáng thuần khiết.',
-            resultEn: 'The fracture in your soul welded into golden armor. Complete E.G.O enveloped you, serene and sovereign. The entire street held its breath before the pure light.'
+            resultVi: 'Vết nứt ngừng chạy. Lớp giáp khép lại quanh tay, và E.G.O giữ nguyên hình dạng khi bạn rời hẻm.',
+            resultEn: 'The crack stops spreading. Armor closes around your hand, and the E.G.O keeps its shape as you leave the alley.'
           },
           {
             w: 20,
@@ -300,25 +300,25 @@ export const SUPERNATURAL_EVENTS = [
             effects: { health: +35, sanity: -60, rep: +20, resonance: +40 },
             scarsAdd: ['Lửa Tràn Phá Vỡ'],
             meritAdd: 30,
-            resultVi: 'Sức ép từ mảnh E.G.O dang dở quá lớn so với giới hạn chịu đựng. Thay vì khai hoa, vết nứt vỡ toác thành một vụ nổ biến dạng tâm thần. Bạn sụp đổ thành một Distortion tàn bạo.',
-            resultEn: 'The strain of the incomplete E.G.O exceeded mortal limits. Instead of blooming, the fissure ruptured into a violent psychic collapse. You distorted into a monstrous entity.'
+            resultVi: 'Lớp giáp nứt trước khi bạn kịp giữ nó lại. Giọng nói kia lấn át suy nghĩ của bạn; cơ thể đổi hình ngay trong con hẻm.',
+            resultEn: 'The armor cracks before you can hold it together. The other voice drowns out your thoughts; your body changes in the alley.'
           },
           {
             w: 28,
             effects: { health: -20, sanity: -15, rep: +10 },
             scarsAdd: ['Vết Nứt Chưa Liền'],
             meritAdd: 15,
-            resultVi: 'Mảnh E.G.O rung chuyển dữ dội nhưng vẫn chưa thể nở rộ. Vết rạn vẫn ở đó, nhức nhối nhưng vẫn giữ bạn đứng vững ở lằn ranh phàm nhân.',
-            resultEn: 'The E.G.O shard trembled violently but refused to bloom. The fissure remained, aching yet keeping you anchored on the mortal shore.'
+            resultVi: 'E.G.O hiện ra rồi rút lại. Vết nứt vẫn còn; bạn chống tay lên tường, đợi cơn run qua đi.',
+            resultEn: 'The E.G.O appears and withdraws. The crack remains; you brace yourself against the wall until the shaking passes.'
           }
         ]
       },
       {
-        labelVi: 'Kìm nén ngọn lửa: Bảo toàn sức lực cho ngày sau',
-        labelEn: 'Contain the flame: Conserve strength for another day',
+        labelVi: 'Không ép E.G.O hiện ra lúc này',
+        labelEn: 'Do not force the E.G.O to appear now',
         effects: { sanity: +15, health: +10, rep: +10 },
-        resultVi: 'Bạn hít sâu và nén ngọn lửa vào tận đáy tim. E.G.O lắng xuống, chờ đợi một ngày khác xứng đáng hơn.',
-        resultEn: 'Drawing a deep breath, you compressed the flame to the depths of your heart. The E.G.O subsided, awaiting a more fitting crucible.'
+        resultVi: 'Bạn rút khỏi hẻm theo lối sau. Cảm giác nặng ở cánh tay dịu xuống trước khi bạn về tới nhà.',
+        resultEn: 'You leave through the rear passage. The weight in your arm eases before you reach home.'
       }
     ]
   },

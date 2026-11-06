@@ -350,3 +350,4 @@ console.log('--- TEST BATCH 123: Skim Speed Replays & Minor Timing ---');
 
 console.log('PASS: 123 skim speed & minor timer verification passed.');
 console.log('ALL BATCHES 122a, 122b, 123 TESTS PASSED 100%!');
+process.exit(0);

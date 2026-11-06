@@ -13,6 +13,7 @@
 // The law texts, the market stalls and which work each Abnormality wants are adaptations, labelled in game.
 // ============================================================================
 import { DUNGEON_LAWS, WORK_TYPES, SIGNATURE_TEXT } from '../data/dungeonSignatureText.js';
+import { appendNpcMemory } from '../data/npcPersonality.js';
 
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
 const fnv = (text) => {
@@ -245,8 +246,8 @@ export function resolveSignatureCombat(ctx, char, session, choice, intent, rng) 
     const dies = rng() < SIGNATURE_BALANCE.head.allyDeath;
     const npc = char.npcs?.[ally.role];
     if (npc) {
-      const memory = { age: char.age || 0, vi: `Năm ${char.age || 0} tuổi: đứng cùng bạn trước The Head.`, en: `Age ${char.age || 0}: stood with you before the Head.` };
-      char.npcs = { ...char.npcs, [ally.role]: { ...npc, ...(dies ? { status: 'dead', fateAge: char.age } : { injured: true, injurySeverity: 'severe', injuredAtAge: char.age || 0, healsAtAge: (char.age || 0) + 2 }), memories: [...(npc.memories || []), memory].slice(-6) } };
+      const memory = { age: char.age || 0, vi: `Năm ${char.age || 0} tuổi: đứng cùng bạn trước The Head.`, en: `Age ${char.age || 0}: stood with you before the Head.`, pinned: true };
+      char.npcs = { ...char.npcs, [ally.role]: { ...npc, ...(dies ? { status: 'dead', fateAge: char.age } : { injured: true, injurySeverity: 'severe', injuredAtAge: char.age || 0, healsAtAge: (char.age || 0) + 2 }), memories: appendNpcMemory(npc.memories, memory) } };
     }
     const T = SIGNATURE_TEXT.head;
     return { taken: 0, breaks: 1, quality: 'good', fx: 'ally', line: dies ? { vi: T.allyDiesVi(ally.nameVi), en: T.allyDiesEn(ally.nameEn) } : { vi: T.allyHurtVi(ally.nameVi), en: T.allyHurtEn(ally.nameEn) } };

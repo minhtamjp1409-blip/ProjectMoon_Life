@@ -10,8 +10,8 @@ export const DISTORTION_VOICE_EVENTS = [
   {
     id: 'distort_voice_old_name', age: [16, 99], jobs: ['Distortion'], major: true, weight: 55,
     requires: ['Distorted'], forbids: ['DistortVoiceThread', 'HumanVoice'],
-    vi: '[Tên cũ] Ở đầu hẻm có người gọi đúng tên bạn từ trước khi Carmen đến. Giọng ấy run, nhưng không bỏ chạy. Trong lồng ngực bạn, tiếng thì thầm của Carmen bỗng nhỏ đi một chút.',
-    en: '[The old name] At the mouth of the alley someone calls the name you had before Carmen came. The voice shakes, but does not run. In your chest, Carmen’s whisper grows a little quieter.',
+    vi: '[Tên cũ] Ở đầu hẻm, có người gọi tên bạn. Giọng họ run nhưng không bỏ chạy. Lần đầu sau nhiều ngày, bạn nghe rõ tiếng bước chân hơn tiếng Carmen.',
+    en: '[The old name] Someone calls your name from the alley mouth. Their voice shakes, but they do not run. For the first time in days, their footsteps sound clearer than Carmen’s voice.',
     choices: [
       {
         labelVi: 'Dừng lại và cố trả lời bằng tiếng người',
@@ -25,8 +25,8 @@ export const DISTORTION_VOICE_EVENTS = [
       {
         labelVi: 'Lẩn đi trước khi người đó nhìn rõ mặt bạn',
         labelEn: 'Slip away before they see your face',
-        resultVi: 'Bạn leo lên mái tôn và nằm im tới khi bước chân xa dần. Tên cũ còn vang trong đầu một lúc, rồi Carmen hát đè lên nó.',
-        resultEn: 'You climb onto the tin roof and lie still until the footsteps fade. The old name echoes a while, then Carmen sings over it.',
+        resultVi: 'Bạn leo lên mái tôn, nằm im tới khi bước chân xa dần. Tên cũ vẫn quanh quẩn trong đầu; bạn không đáp lại.',
+        resultEn: 'You climb onto the tin roof and lie still until the footsteps fade. Your old name stays with you; you do not answer.',
         effects: { resonance: 6, sanity: -2 },
         flagsAdd: ['DistortVoiceThread', 'DistortVoiceFled']
       }
@@ -45,8 +45,8 @@ export const DISTORTION_VOICE_EVENTS = [
           {
             w: 65, effects: { sanity: -4, resonance: -8 }, flagsAdd: ['DistortVoicePracticed'],
             scheduleConsequences: later('distort_voice_reclaimed', 2, 'Giọng nói của bạn đã gần thành tiếng người', 'Your voice is close to a human one'),
-            resultVi: 'Cổ họng rát như nuốt đinh, và Carmen cười mỗi khi bạn vấp. Nhưng đến cuối mùa, bạn đọc trọn được một câu mà không gầm lên.',
-            resultEn: 'Your throat burns as if you had swallowed nails, and Carmen laughs each time you stumble. By the end of the season you read a whole sentence without a growl.'
+            resultVi: 'Cổ họng rát sau vài chữ. Bạn tập lại mỗi đêm; cuối mùa, bạn đọc trọn một câu mà không gầm lên.',
+            resultEn: 'Your throat hurts after a few words. You try again each night; by season’s end, you read a full sentence without growling.'
           },
           {
             w: 35, effects: { sanity: -6, resonance: 8 }, flagsAdd: ['DistortVoiceLost'],
@@ -56,10 +56,10 @@ export const DISTORTION_VOICE_EVENTS = [
         ]
       },
       {
-        labelVi: 'Đốt hết những mẩu giấy cho Carmen yên lòng',
-        labelEn: 'Burn the notes so Carmen settles',
-        resultVi: 'Giấy cháy nhanh hơn bạn tưởng. Carmen dịu lại như một con thú được vuốt ve, còn bạn không nhớ nổi câu cuối cùng mình đã đọc.',
-        resultEn: 'The paper burns faster than you expected. Carmen calms like a stroked animal, and you cannot recall the last sentence you read.',
+        labelVi: 'Đốt những mẩu giấy để khỏi phải trả lời',
+        labelEn: 'Burn the notes so you need not answer',
+        resultVi: 'Giấy cháy hết trước khi bạn đổi ý. Sáng hôm sau, bạn không nhớ câu cuối cùng đã đọc.',
+        resultEn: 'The paper burns before you can change your mind. By morning, you cannot recall the last sentence you read.',
         effects: { resonance: 10, sanity: -3 },
         flagsAdd: ['DistortVoiceLost']
       }
@@ -80,10 +80,10 @@ export const DISTORTION_VOICE_EVENTS = [
         flagsAdd: ['HumanVoice']
       },
       {
-        labelVi: 'Im lặng, để Carmen trả lời thay bạn',
-        labelEn: 'Stay silent and let Carmen answer for you',
-        resultVi: 'Tiếng hát tràn khỏi cổ họng bạn trước khi bạn kịp nghĩ. Đèn vỡ, cả tổ tản ra, và trong tiếng rít của kim loại bạn không còn nghe thấy tên mình.',
-        resultEn: 'Song spills from your throat before you can think. The lights shatter, the squad scatters, and in the shriek of metal you no longer hear your own name.',
+        labelVi: 'Không nói tên mình; để tiếng nói kia lấn át',
+        labelEn: 'Keep your name to yourself and let the other voice take over',
+        resultVi: 'Bạn mở miệng nhưng chỉ có tiếng rít bật ra. Đèn vỡ, tổ Fixer tản khỏi đầu hẻm. Bạn không thử nói lần nữa.',
+        resultEn: 'You open your mouth, but only a hiss comes out. The lights break and the Fixers scatter from the alley. You do not try speaking again.',
         effects: { resonance: 12, heat: 6, sanity: -5 },
         flagsAdd: ['DistortVoiceLost']
       }

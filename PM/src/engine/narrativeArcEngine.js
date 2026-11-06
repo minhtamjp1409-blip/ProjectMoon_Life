@@ -7,8 +7,8 @@
  */
 
 import { normalize, ResponseCurves } from './utilityCurves.js';
-import { npcIsActive } from './eventConditions.js';
-import { ensureNpcAgency } from '../data/npcPersonality.js';
+import { npcIsActive, woundByShield } from './eventConditions.js';
+import { ensureNpcAgency, rollNpcCareer, appendNpcMemory, getNpcAge } from '../data/npcPersonality.js';
 
 /**
  * Canonical Multi-Stage Narrative Arcs:
@@ -228,10 +228,6 @@ export function computeEmotionalWaveConsideration(char, weaver, event) {
 }
 
 /**
- * Autonomous Micro-Drama for living companions:
- * Runs annually at year end to create living, breathing companion events
- */
-/**
  * What certain people do when the relationship has run long enough. These callbacks exist in the
  * data but no choice plants them, because nobody can know in advance who will stay close, so the
  * bond itself schedules them.
@@ -260,7 +256,7 @@ function scheduleNpcReturns(char, rng) {
   const added = [];
   for (const rule of NPC_RETURNS) {
     if (seen.includes(rule.id) || pending.some((th) => th.eventId === rule.id && !th.fulfilled)) continue;
-    if ((char.age || 0) < rule.minAge) continue;
+    if ((char.age ?? 0) < rule.minAge) continue;
     const npc = rule.roles.map((role) => char.npcs?.[role]).find((n) => npcIsActive(n) && (n.bond ?? 35) >= (rule.minBond ?? 0));
     if (!npc || rng() >= rule.chance) continue;
     added.push({
@@ -277,14 +273,142 @@ function scheduleNpcReturns(char, rng) {
   if (added.length) char.weaver = { ...char.weaver, pendingThreads: [...pending, ...added] };
 }
 
+export const FRIEND_NEWS_BY_JOB = {
+  Fixer: [
+    {
+      id: 'fixer_contract',
+      bondDelta: 3,
+      vi: (n) => `[Tin khu phố] ${n.nameVi} vừa ký hợp đồng dài hạn với một Văn phòng Fixer độc lập và gửi tặng bạn bao thuốc lá Backstreets ăn mừng.`,
+      en: (n) => `[Alley Dispatch] ${n.nameEn} signed an operative contract with an independent Fixer Office and sent a pack of Backstreet cigarettes in celebration.`
+    },
+    {
+      id: 'fixer_escort',
+      bondDelta: 2,
+      vi: (n) => `[Tin khu phố] ${n.nameVi} vừa hoàn tất chuyến hộ tống hàng qua District lân cận, tiện đường ghé để lại cho bạn phần lương khô dự trữ.`,
+      en: (n) => `[Alley Dispatch] ${n.nameEn} finished a cross-District caravan escort and dropped off spare field rations at your door.`
+    },
+    {
+      id: 'fixer_wound',
+      bondDelta: 1,
+      vi: (n) => `[Tin khu phố] ${n.nameVi} trở về sau vụ ủy thác vùng ven với vết chém sượt qua bả vai; bạn gửi sang cuộn băng gạc sạch kèm thuốc sát trùng.`,
+      en: (n) => `[Alley Dispatch] ${n.nameEn} returned from an outskirts commission with a grazed shoulder; you sent over clean bandages and antiseptic.`
+    }
+  ],
+  'Wing Employee': [
+    {
+      id: 'wing_audit',
+      bondDelta: 3,
+      vi: (n) => `[Tin khu phố] ${n.nameVi} vừa vượt qua đợt kiểm toán định kỳ trong Wing, gửi thư tay kèm hộp trà Nest mời bạn dùng thử.`,
+      en: (n) => `[Alley Dispatch] ${n.nameEn} cleared a quarterly Wing audit and sent a handwritten note with a tin of Nest tea.`
+    },
+    {
+      id: 'wing_overtime',
+      bondDelta: 2,
+      vi: (n) => `[Tin khu phố] ${n.nameVi} phải trực thông ba ca liền tại bộ phận của Wing; bạn gửi sang lọ thuốc bổ thần kinh giúp họ cầm cự qua tuần cao điểm.`,
+      en: (n) => `[Alley Dispatch] ${n.nameEn} worked three consecutive shifts in their Wing department; you sent nerve tonics to help them through the crunch.`
+    },
+    {
+      id: 'wing_voucher',
+      bondDelta: 2,
+      vi: (n) => `[Tin khu phố] ${n.nameVi} tận dụng hạn mức nhân viên Wing để chuyển cho bạn tấm phiếu mua nhu yếu phẩm miễn thuế.`,
+      en: (n) => `[Alley Dispatch] ${n.nameEn} used their Wing staff quota to pass along a tax-exempt supply voucher for you.`
+    }
+  ],
+  Syndicate: [
+    {
+      id: 'syn_turf',
+      bondDelta: 3,
+      vi: (n) => `[Tin khu phố] ${n.nameVi} vừa đứng ra thu xếp êm xuôi vụ tranh chấp địa bàn cho nhánh Syndicate, gửi biếu bạn chai rượu mạnh chiến lợi phẩm.`,
+      en: (n) => `[Alley Dispatch] ${n.nameEn} settled a turf dispute for their Syndicate branch and sent you a bottle of strong liquor from the spoils.`
+    },
+    {
+      id: 'syn_laylow',
+      bondDelta: 1,
+      vi: (n) => `[Tin khu phố] ${n.nameVi} đang tạm lánh mặt vài tuần ở nhà trọ ngoại vi sau đợt va chạm giữa các băng đảng ngõ hẻm.`,
+      en: (n) => `[Alley Dispatch] ${n.nameEn} is lying low at a perimeter boarding house for a few weeks after a clash between alley gangs.`
+    },
+    {
+      id: 'syn_tip',
+      bondDelta: 2,
+      vi: (n) => `[Tin khu phố] ${n.nameVi} nhắn bạn tránh xa khu chợ đêm cuối tuần này vì nhánh Syndicate của họ sắp mở đợt thu sổ nợ.`,
+      en: (n) => `[Alley Dispatch] ${n.nameEn} tipped you off to avoid the night market this weekend ahead of their Syndicate's ledger collection.`
+    }
+  ],
+  'Workshop Artisan': [
+    {
+      id: 'ws_blueprint',
+      bondDelta: 3,
+      vi: (n) => `[Tin khu phố] ${n.nameVi} vừa được Tres Association duyệt bản mẫu linh kiện mới tại Workshop, gửi tặng bạn con dao găm tự rèn để kỷ niệm.`,
+      en: (n) => `[Alley Dispatch] ${n.nameEn} had a new component prototype certified by Tres Association and gifted you a hand-forged dagger.`
+    },
+    {
+      id: 'ws_fumes',
+      bondDelta: 2,
+      vi: (n) => `[Tin khu phố] ${n.nameVi} bị ho khan vì hít khói hàn kim loại suốt nhiều đêm trong xưởng; bạn gửi sang lọ thuốc dịu phổi.`,
+      en: (n) => `[Alley Dispatch] ${n.nameEn} caught a dry cough from breathing welding fumes all week; you sent over a bottle of lung-soothing syrup.`
+    },
+    {
+      id: 'ws_scrap',
+      bondDelta: 2,
+      vi: (n) => `[Tin khu phố] ${n.nameVi} thu mua được lô thép tốt từ bãi phế liệu vùng ven và nhắn sẽ ưu tiên bảo dưỡng đồ nghề cho bạn.`,
+      en: (n) => `[Alley Dispatch] ${n.nameEn} acquired a batch of high-grade steel from the perimeter yards and offered to tune up your gear first.`
+    }
+  ],
+  Civilian: [
+    {
+      id: 'civ_rent',
+      bondDelta: 3,
+      vi: (n) => `[Tin khu phố] ${n.nameVi} vừa xoay xở trả xong tiền thuê mặt bằng quý này ở Backstreets, gửi biếu bạn suất ăn nóng mừng qua cơn túng thiếu.`,
+      en: (n) => `[Alley Dispatch] ${n.nameEn} paid off their quarterly Backstreets stall rent and sent you a hot meal to celebrate getting through the lean month.`
+    },
+    {
+      id: 'civ_casino',
+      bondDelta: 0,
+      vi: (n) => `[Tin khu phố] ${n.nameVi} lỡ thua sạch tiền tại sòng bạc J Corp, phải vay nóng Syndicate và đang tạm trốn tại một nhà trọ giá rẻ.`,
+      en: (n) => `[Alley Dispatch] ${n.nameEn} lost their purse at a J Corp casino, borrowing on high syndicate interest and lying low in a cheap tenement.`
+    },
+    {
+      id: 'civ_smog',
+      bondDelta: 1,
+      vi: (n) => `[Tin khu phố] ${n.nameVi} bị ho dữ dội do khói bụi công nghiệp nồng nặc; bạn gửi sang một lọ thuốc an thần để xoa dịu cơn đau.`,
+      en: (n) => `[Alley Dispatch] ${n.nameEn} suffers coughing fits from industrial smog; you sent over a bottle of sedatives to soothe the pain.`
+    }
+  ]
+};
+
 export function simulateNpcAutonomousLife(char, rng = Math.random) {
   const logs = [];
   if (!char.npcs) return logs;
 
   // 1. Childhood Friend Autonomous Life (Bond-aware: camaraderie vs. friction/clash)
-  const friend = char.npcs.friend;
-  if (npcIsActive(friend)) {
-    const friendAge = char.age || 0;
+  if (npcIsActive(char.npcs.friend)) {
+    const friend = ensureNpcAgency(char.npcs.friend, rng, {
+      age: getNpcAge(char, char.npcs.friend),
+      regionId: char.regionId
+    });
+    char.npcs.friend = friend;
+    const friendAge = getNpcAge(char, friend);
+
+    if (friendAge >= 18 && (friend.job === 'Child' || friend.job === 'Apprentice')) {
+      const adultCareer = friend.adultCareer || rollNpcCareer(friend.archetype || 'loyal', 'friend', rng, {
+        age: friendAge,
+        district: friend.district || char.regionId,
+        nest: friend.nest
+      });
+      friend.job = adultCareer.job;
+      friend.rank = adultCareer.rank;
+      friend.rankLabelVi = adultCareer.rankLabelVi;
+      friend.rankLabelEn = adultCareer.rankLabelEn;
+      if (adultCareer.corpId) friend.corpId = adultCareer.corpId;
+      if (adultCareer.finger) friend.finger = adultCareer.finger;
+      friend.memories = appendNpcMemory(friend.memories, {
+        age: char.age ?? 18,
+        vi: `Năm ${char.age ?? 18} tuổi: Trưởng thành và bắt đầu mưu sinh với nghề ${adultCareer.rankLabelVi}.`,
+        en: `Age ${char.age ?? 18}: Came of age and began working as ${adultCareer.rankLabelEn}.`,
+        pinned: true
+      });
+    }
+
     const fBond = friend.bond ?? 35;
     if (friendAge >= 18 && rng() < 0.14) {
       if (fBond < 24) {
@@ -294,32 +418,47 @@ export function simulateNpcAutonomousLife(char, rng = Math.random) {
             en: `[Alley Altercation] ${friend.nameEn} crossed paths with you in a Backstreet tavern. Cheap liquor ignited festering grievances; the argument escalated until blades were driven into the tabletop before patrons pulled you apart.`
           });
           friend.bond = Math.max(0, fBond - 4);
-          if (char.stats) char.stats.sanity = Math.max(0, (char.stats.sanity || 50) - 4);
+          if (char.stats) char.stats.sanity = Math.max(0, (char.stats.sanity ?? 50) - 4);
         } else {
           logs.push({
             vi: `[Tin đồn bất lợi] ${friend.nameVi} công khai phàn nàn với các môi giới trong vùng rằng bạn là kẻ tính toán chỉ biết giữ mạng mình, khiến uy tín của bạn sứt mẻ ít nhiều.`,
             en: `[Hostile Rumor] ${friend.nameEn} openly complained to local brokers that you only ever look out for your own skin, chipping away at your standing in the district.`
           });
-          if (char.stats) char.stats.rep = Math.max(0, (char.stats.rep || 0) - 3);
+          if (char.stats) char.stats.rep = Math.max(0, (char.stats.rep ?? 0) - 3);
         }
-      } else {
+      } else if (friend.lastNewsAge == null || (char.age ?? 0) - friend.lastNewsAge >= 3) {
         friend.lastSeen = char.age;
-        const roll = rng();
-        if (roll < 0.4) {
-          logs.push({
-            vi: `[Tin khu phố] ${friend.nameVi} vừa ký được hợp đồng dài hạn với một Văn phòng Fixer độc lập, gửi tặng bạn một bao thuốc lá Backstreets ăn mừng.`,
-            en: `[Alley Dispatch] ${friend.nameEn} signed an operative contract with an independent Fixer Office, sending a pack of Backstreet cigarettes in celebration.`
+        friend.lastNewsAge = char.age ?? 0;
+
+        if (friend.pendingCareerSwitch) {
+          const nextJob = friend.job === 'Fixer' ? 'Workshop Artisan' : 'Fixer';
+          friend.pendingCareerSwitch = false;
+          friend.job = nextJob;
+          friend.rank = nextJob === 'Fixer' ? 8 : 1;
+          friend.rankLabelVi = nextJob === 'Fixer' ? 'Fixer Grade 8' : 'Thợ chế tác Workshop';
+          friend.rankLabelEn = nextJob === 'Fixer' ? 'Grade 8 Fixer' : 'Workshop Artisan';
+          friend.lastNewsId = `switch_${nextJob}`;
+          friend.memories = appendNpcMemory(friend.memories, {
+            age: char.age ?? 0,
+            vi: `Năm ${char.age ?? 0} tuổi: Rẽ hướng sang nghề ${friend.rankLabelVi}.`,
+            en: `Age ${char.age ?? 0}: Switched career path to ${friend.rankLabelEn}.`
           });
-          friend.bond = Math.min(100, fBond + 3);
-        } else if (roll < 0.7) {
           logs.push({
-            vi: `[Tin khu phố] ${friend.nameVi} lỡ thua sạch tiền tại sòng bạc J Corp, phải vay nóng Syndicate và đang tạm trốn tại một nhà trọ giá rẻ.`,
-            en: `[Alley Dispatch] ${friend.nameEn} lost their purse at a J Corp casino, borrowing on high syndicate interest and lying low in a cheap tenement.`
+            vi: `[Ngã rẽ sự nghiệp] ${friend.nameVi} quyết định gác lại công việc cũ để chuyển sang làm ${friend.rankLabelVi}, nhắn bạn hôm nào rảnh ghé qua uống chén rượu mừng khởi đầu mới.`,
+            en: `[Career Turn] ${friend.nameEn} left their old line of work to become a ${friend.rankLabelEn}, inviting you for a drink to celebrate the fresh start.`
           });
         } else {
+          const jobKey = FRIEND_NEWS_BY_JOB[friend.job] ? friend.job : 'Civilian';
+          const pool = FRIEND_NEWS_BY_JOB[jobKey].filter((item) => item.id !== friend.lastNewsId);
+          const candidates = pool.length > 0 ? pool : FRIEND_NEWS_BY_JOB[jobKey];
+          const chosen = candidates[Math.floor(rng() * candidates.length) % candidates.length];
+          friend.lastNewsId = chosen.id;
+          if (chosen.bondDelta) {
+            friend.bond = Math.min(100, fBond + chosen.bondDelta);
+          }
           logs.push({
-            vi: `[Tin khu phố] ${friend.nameVi} bị ho dữ dội do khói bụi công nghiệp nồng nặc; bạn gửi sang một lọ thuốc an thần để xoa dịu cơn đau.`,
-            en: `[Alley Dispatch] ${friend.nameEn} suffers coughing fits from industrial smog; you sent over a bottle of sedatives to soothe the pain.`
+            vi: chosen.vi(friend),
+            en: chosen.en(friend)
           });
         }
       }
@@ -327,10 +466,14 @@ export function simulateNpcAutonomousLife(char, rng = Math.random) {
   }
 
   // 2. Combat Partner Autonomous Life (Synergy vs. Friction)
-  const partner = char.npcs.partner;
-  if (npcIsActive(partner)) {
+  if (npcIsActive(char.npcs.partner)) {
+    const partner = ensureNpcAgency(char.npcs.partner, rng, {
+      age: getNpcAge(char, char.npcs.partner),
+      regionId: char.regionId
+    });
+    char.npcs.partner = partner;
     const pBond = partner.bond ?? 35;
-    if ((char.age || 0) >= 19 && rng() < 0.15) {
+    if ((char.age ?? 0) >= 19 && rng() < 0.15) {
       if (pBond < 26) {
         logs.push({
           vi: `[Rạn nứt tác chiến] ${partner.nameVi} tự ý giữ lại một phần đạn dược và thông tin tình báo sau ca tuần tra chung, buông lời lạnh nhạt rằng ai cũng phải tự lo đường lui ở The City.`,
@@ -343,23 +486,44 @@ export function simulateNpcAutonomousLife(char, rng = Math.random) {
           en: `[Trusted Wingman] ${partner.nameEn} stayed up all night recalibrating your weapon balance and reinforcing your pauldron straps ahead of the new contract season.`
         });
         partner.lastSeen = char.age;
-        if (char.stats) char.stats.health = Math.min(100, (char.stats.health || 50) + 3);
+        if (char.stats) char.stats.health = Math.min(100, (char.stats.health ?? 50) + 3);
       }
     }
   }
 
   // 3. Living Mentor Autonomous Life
-  const mentor = char.npcs.mentor;
-  if (npcIsActive(mentor)) {
+  if (npcIsActive(char.npcs.mentor)) {
+    const mentor = ensureNpcAgency(char.npcs.mentor, rng, {
+      age: getNpcAge(char, char.npcs.mentor),
+      regionId: char.regionId
+    });
+    char.npcs.mentor = mentor;
     const mBond = mentor.bond ?? 35;
-    if (char.age >= 25 && rng() < 0.14) {
+    if ((char.age ?? 0) >= 25 && rng() < 0.14) {
       if (mBond < 24) {
-        logs.push({
-          vi: `[Lời trách của Sư Phụ] ${mentor.nameVi} nhìn cách bạn xuống tay trong các vụ việc gần đây rồi lắc đầu bỏ đi, nói rằng bạn đã quên mất giới hạn tối thiểu của nghề.`,
-          en: `[Mentor’s Rebuke] ${mentor.nameEn} watched how you handled recent affairs and walked away shaking their head, saying you have forgotten the craft's bare minimum restraint.`
-        });
-        if (char.stats) char.stats.sanity = Math.max(0, (char.stats.sanity || 50) - 3);
+        mentor.rebukeCount = (mentor.rebukeCount || 0) + 1;
+        if (mentor.rebukeCount >= 3) {
+          mentor.status = 'estranged';
+          mentor.statusChangedAge = char.age ?? 0;
+          mentor.memories = appendNpcMemory(mentor.memories, {
+            age: char.age ?? 0,
+            vi: `Năm ${char.age ?? 0} tuổi: Sư phụ chính thức cắt đứt quan hệ thầy trò sau nhiều năm thất vọng.`,
+            en: `Age ${char.age ?? 0}: Mentor severed ties after years of disappointment.`,
+            pinned: true
+          });
+          logs.push({
+            vi: `[Đoạn tuyệt thầy trò] ${mentor.nameVi} đặt lại kỷ vật cũ lên bàn rồi quay lưng bước đi dứt khoát. Sau nhiều lần cảnh cáo không thành, người thầy năm xưa chính thức cắt đứt quan hệ với bạn.`,
+            en: `[Severed Mentorship] ${mentor.nameEn} set their old keepsake on the table and walked away for good. After repeated unheeded warnings, your former mentor severed all ties with you.`
+          });
+        } else {
+          logs.push({
+            vi: `[Lời trách của Sư Phụ] ${mentor.nameVi} nhìn cách bạn xuống tay trong các vụ việc gần đây rồi lắc đầu bỏ đi, nói rằng bạn đã quên mất giới hạn tối thiểu của nghề.`,
+            en: `[Mentor’s Rebuke] ${mentor.nameEn} watched how you handled recent affairs and walked away shaking their head, saying you have forgotten the craft's bare minimum restraint.`
+          });
+        }
+        if (char.stats) char.stats.sanity = Math.max(0, (char.stats.sanity ?? 50) - 3);
       } else {
+        mentor.rebukeCount = 0;
         logs.push({
           vi: `[Chỉ dạy của Sư Phụ] ${mentor.nameVi} gọi bạn tới uống trà lúc hoàng hôn, ngắm nhìn vết chém cũ trên tay và truyền thụ kinh nghiệm đối đầu sát thủ Shi.`,
           en: `[Mentor’s Teachings] ${mentor.nameEn} summoned you for twilight tea, reflecting on old battle scars and sharing tactical poise against Shi assassins.`
@@ -371,8 +535,12 @@ export function simulateNpcAutonomousLife(char, rng = Math.random) {
   }
 
   // 4. Living Spouse Autonomous Life
-  const spouse = char.npcs.spouse;
-  if (npcIsActive(spouse) && char.flags.includes('Married')) {
+  if (npcIsActive(char.npcs.spouse) && char.flags?.includes('Married')) {
+    const spouse = ensureNpcAgency(char.npcs.spouse, rng, {
+      age: getNpcAge(char, char.npcs.spouse),
+      regionId: char.regionId
+    });
+    char.npcs.spouse = spouse;
     const sBond = spouse.bond ?? 45;
     if (rng() < 0.15) {
       if (sBond < 25) {
@@ -380,42 +548,76 @@ export function simulateNpcAutonomousLife(char, rng = Math.random) {
           vi: `[Căn hộ lạnh lẽo] Bạn trở về nhà lúc nửa đêm; ${spouse.nameVi} đã khóa cửa phòng ngủ từ sớm, trên bàn chỉ còn tờ hóa đơn tiền điện nước đặt cạnh phần cơm nguội ngắt.`,
           en: `[Cold Apartment] You returned home at midnight; ${spouse.nameEn} had locked the bedroom door hours ago, leaving only an unpaid utility bill beside a plate of cold rice.`
         });
-        if (char.stats) char.stats.sanity = Math.max(0, (char.stats.sanity || 50) - 4);
+        if (char.stats) char.stats.sanity = Math.max(0, (char.stats.sanity ?? 50) - 4);
       } else {
         logs.push({
           vi: `[Tổ ấm Backstreets] ${spouse.nameVi} thắp một ngọn nến thơm tự chế bên bàn ăn, chuẩn bị bữa tối nóng hổi xua tan giá lạnh sau một ca làm việc dài.`,
           en: `[Backstreet Hearth] ${spouse.nameEn} lit a fragrant homemade candle by the table, serving a hot meal that drove away the bone-chilling frost of your long shift.`
         });
-        if (char.stats) char.stats.sanity = Math.min(100, (char.stats.sanity || 50) + 4);
+        if (char.stats) char.stats.sanity = Math.min(100, (char.stats.sanity ?? 50) + 4);
       }
     }
   }
 
   // 5. Active Nemesis Shadow Harassment
-  const nemesis = char.npcs.nemesis;
-  if (npcIsActive(nemesis) && rng() < 0.14) {
-    logs.push({
-      vi: `[Bóng ma phản bội] Bạn phát hiện ký hiệu quen thuộc của ${nemesis.nameVi} vạch bằng mũi dao ngay trên hộp thư trước cửa. Kẻ từng đi bên cạnh bạn vẫn đang rình rập chờ thời cơ.`,
-      en: `[Shadow of Betrayal] You found ${nemesis.nameEn}'s familiar knife-mark scratched into your doorway postbox. Your former companion is still stalking your movements.`
+  if (npcIsActive(char.npcs.nemesis) && rng() < 0.14) {
+    const nemesis = ensureNpcAgency(char.npcs.nemesis, rng, {
+      age: getNpcAge(char, char.npcs.nemesis),
+      regionId: char.regionId
     });
-    if (char.stats) char.stats.sanity = Math.max(0, (char.stats.sanity || 50) - 3);
+    char.npcs.nemesis = nemesis;
+    nemesis.harassCount = (nemesis.harassCount || 0) + 1;
+    if (nemesis.harassCount >= 3 && !nemesis.reckoningPlanted) {
+      nemesis.reckoningPlanted = true;
+      const pending = char.weaver?.pendingThreads || [];
+      if (!pending.some((t) => !t.fulfilled && t.eventId === 'csq_npc_rival_reckoning')) {
+        char.weaver = {
+          ...char.weaver,
+          pendingThreads: [
+            ...pending,
+            {
+              id: `thr_nemesis_reckoning_${char.age ?? 0}`,
+              kind: 'major',
+              eventId: 'csq_npc_rival_reckoning',
+              plantedAtAge: char.age ?? 0,
+              triggerAge: (char.age ?? 0) + 1,
+              reasonVi: `Mối thù với ${nemesis.nameVi} đã lên tới đỉnh điểm`,
+              reasonEn: `Your blood feud with ${nemesis.nameEn} reached its boiling point`,
+              fulfilled: false
+            }
+          ]
+        };
+      }
+      logs.push({
+        vi: `[Thù hận chạm đỉnh] ${nemesis.nameVi} không còn dừng lại ở những vết dao cảnh cáo. Tin tức từ ngõ hẻm báo về rằng kẻ thù cũ đã gom đủ nhân thủ để chuẩn bị một cuộc thanh toán sòng phẳng với bạn.`,
+        en: `[Vendetta Boiling Point] ${nemesis.nameEn} is done leaving warning marks. Word from the alleys says your nemesis has gathered muscle to settle the score in blood.`
+      });
+    } else {
+      logs.push({
+        vi: `[Bóng ma phản bội] Bạn phát hiện ký hiệu quen thuộc của ${nemesis.nameVi} vạch bằng mũi dao ngay trên hộp thư trước cửa. Kẻ từng đi bên cạnh bạn vẫn đang rình rập chờ thời cơ.`,
+        en: `[Shadow of Betrayal] You found ${nemesis.nameEn}'s familiar knife-mark scratched into your doorway postbox. Your former companion is still stalking your movements.`
+      });
+    }
+    if (char.stats) char.stats.sanity = Math.max(0, (char.stats.sanity ?? 50) - 3);
   }
 
   // 6. Dynamic Career Progression & Crisis Tracking
   for (const [role, rawNpc] of Object.entries(char.npcs)) {
     if (!npcIsActive(rawNpc)) continue;
-    const npc = ensureNpcAgency(rawNpc, rng);
+    const npcAge = getNpcAge(char, rawNpc);
+    const npc = ensureNpcAgency(rawNpc, rng, { age: npcAge, regionId: char.regionId });
     char.npcs[role] = npc;
 
-    // Career Promotion roll
-    if (rng() < 0.10) {
-      if (npc.job === 'Fixer' && npc.rank > 4) {
+    // Career Promotion roll (adults only)
+    const promoRoll = rng();
+    if (promoRoll < 0.10 && npcAge >= 18) {
+      if (npc.job === 'Fixer' && (npc.rank > 4 || (npc.rank > 2 && (char.age ?? 20) >= 28 && promoRoll < 0.05))) {
         npc.rank -= 1;
         npc.rankLabelVi = `Fixer Grade ${npc.rank}`;
         npc.rankLabelEn = `Grade ${npc.rank} Fixer`;
-        const memVi = `Năm ${char.age || 0} tuổi: Thăng cấp lên Fixer Grade ${npc.rank} sau kỳ khảo thí của Hana.`;
-        const memEn = `Age ${char.age || 0}: Promoted to Grade ${npc.rank} Fixer through Hana Association exam.`;
-        npc.memories = [...(npc.memories || []), { age: char.age || 0, vi: memVi, en: memEn }].slice(-6);
+        const memVi = `Năm ${char.age ?? 0} tuổi: Thăng cấp lên Fixer Grade ${npc.rank} sau kỳ khảo thí của Hana.`;
+        const memEn = `Age ${char.age ?? 0}: Promoted to Grade ${npc.rank} Fixer through Hana Association exam.`;
+        npc.memories = appendNpcMemory(npc.memories, { age: char.age ?? 0, vi: memVi, en: memEn });
         logs.push({
           vi: `[Tin vui thăng cấp] ${npc.nameVi} vừa vượt qua kỳ sát hạch gắt gao của Hiệp hội Hana, chính thức thăng tiến lên Fixer Grade ${npc.rank}.`,
           en: `[Promotion Dispatch] ${npc.nameEn} passed the rigorous Hana Association exam, officially promoted to Grade ${npc.rank} Fixer.`
@@ -424,42 +626,144 @@ export function simulateNpcAutonomousLife(char, rng = Math.random) {
         npc.rank += 1;
         const rankTitlesVi = ['Thử việc', 'Chính thức', 'Trưởng phòng', 'Giám đốc bộ phận'];
         const rankTitlesEn = ['Probationary', 'Staff Member', 'Department Lead', 'Branch Director'];
-        const corpName = (npc.rankLabelVi || 'Wing').split(' ')[0] || 'Wing';
-        npc.rankLabelVi = `${corpName} ${rankTitlesVi[npc.rank] || 'Cán bộ'}`;
-        npc.rankLabelEn = `${corpName} ${rankTitlesEn[npc.rank] || 'Feather'}`;
-        const memVi = `Năm ${char.age || 0} tuổi: Được bổ nhiệm vị trí ${rankTitlesVi[npc.rank]} tại Wing.`;
-        const memEn = `Age ${char.age || 0}: Appointed to ${rankTitlesEn[npc.rank]} inside the Wing.`;
-        npc.memories = [...(npc.memories || []), { age: char.age || 0, vi: memVi, en: memEn }].slice(-6);
+        const corpMatch = `${npc.rankLabelVi || ''} ${npc.rankLabelEn || ''}`.match(/\b([A-Z])\s+Corp\b/);
+        const corpId = npc.corpId || (corpMatch ? corpMatch[1] : 'K');
+        npc.corpId = corpId;
+        npc.rankLabelVi = `${corpId} Corp ${rankTitlesVi[npc.rank] || 'Cán bộ'}`;
+        npc.rankLabelEn = `${corpId} Corp ${rankTitlesEn[npc.rank] || 'Feather'}`;
+        const memVi = `Năm ${char.age ?? 0} tuổi: Được bổ nhiệm vị trí ${rankTitlesVi[npc.rank]} tại ${corpId} Corp.`;
+        const memEn = `Age ${char.age ?? 0}: Appointed to ${rankTitlesEn[npc.rank]} inside ${corpId} Corp.`;
+        npc.memories = appendNpcMemory(npc.memories, { age: char.age ?? 0, vi: memVi, en: memEn });
         logs.push({
-          vi: `[Bổ nhiệm Tập đoàn] ${npc.nameVi} vừa được thăng chức lên ${rankTitlesVi[npc.rank]} trong Wing; họ gửi thư mời bạn uống một tách trà từ Nest.`,
-          en: `[Corporate Promotion] ${npc.nameEn} was promoted to ${rankTitlesEn[npc.rank]} within the Wing, inviting you to share tea from the Nest.`
+          vi: `[Bổ nhiệm Tập đoàn] ${npc.nameVi} vừa được thăng chức lên ${rankTitlesVi[npc.rank]} tại ${corpId} Corp; họ gửi thư mời bạn uống một tách trà từ Nest.`,
+          en: `[Corporate Promotion] ${npc.nameEn} was promoted to ${rankTitlesEn[npc.rank]} at ${corpId} Corp, inviting you to share tea from the Nest.`
+        });
+      } else if (npc.job === 'Syndicate' && (npc.rank ?? 1) < 3) {
+        npc.rank = (npc.rank ?? 1) + 1;
+        const fingerMatch = `${npc.rankLabelVi || ''} ${npc.rankLabelEn || ''}`.match(/The\s+(Thumb|Index|Middle|Ring|Pinky)/i);
+        const finger = npc.finger || (fingerMatch ? fingerMatch[1] : null);
+        const synTitlesVi = {
+          2: finger ? `Đội trưởng The ${finger}` : 'Đội trưởng Syndicate',
+          3: finger ? `Cán bộ cấp cao The ${finger}` : 'Thủ lĩnh nhánh Syndicate'
+        };
+        const synTitlesEn = {
+          2: finger ? `The ${finger} Enforcer Captain` : 'Syndicate Captain',
+          3: finger ? `The ${finger} Underboss` : 'Syndicate Lieutenant'
+        };
+        npc.rankLabelVi = synTitlesVi[npc.rank];
+        npc.rankLabelEn = synTitlesEn[npc.rank];
+        const memVi = `Năm ${char.age ?? 0} tuổi: Vươn lên vị trí ${npc.rankLabelVi} trong giới ngầm.`;
+        const memEn = `Age ${char.age ?? 0}: Rose to ${npc.rankLabelEn} in the underworld.`;
+        npc.memories = appendNpcMemory(npc.memories, { age: char.age ?? 0, vi: memVi, en: memEn });
+        logs.push({
+          vi: `[Thăng tiến ngầm] Sau nhiều cuộc tranh giành địa bàn đẫm máu, ${npc.nameVi} đã vươn lên làm ${npc.rankLabelVi} và gửi người mang quà biếu tới tận nhà bạn.`,
+          en: `[Underworld Rise] After bloody turf wars, ${npc.nameEn} rose to become ${npc.rankLabelEn} and sent a courier with a gift to your door.`
+        });
+      } else if ((npc.job === 'Workshop Artisan' || npc.job === 'Workshop Craftsman') && (npc.rank ?? 1) < 3) {
+        npc.rank = (npc.rank ?? 1) + 1;
+        const wsTitlesVi = { 2: 'Thợ chính Workshop', 3: 'Meister trưởng xưởng' };
+        const wsTitlesEn = { 2: 'Senior Workshop Artisan', 3: 'Workshop Meister' };
+        npc.rankLabelVi = wsTitlesVi[npc.rank];
+        npc.rankLabelEn = wsTitlesEn[npc.rank];
+        const memVi = `Năm ${char.age ?? 0} tuổi: Được Tres công nhận bậc ${npc.rankLabelVi}.`;
+        const memEn = `Age ${char.age ?? 0}: Certified by Tres as ${npc.rankLabelEn}.`;
+        npc.memories = appendNpcMemory(npc.memories, { age: char.age ?? 0, vi: memVi, en: memEn });
+        logs.push({
+          vi: `[Danh tiếng Workshop] Tay nghề của ${npc.nameVi} ngày càng vang xa; họ vừa được công nhận là ${npc.rankLabelVi}.`,
+          en: `[Workshop Renown] ${npc.nameEn}'s craftsmanship earned wide acclaim, elevating them to ${npc.rankLabelEn}.`
+        });
+      } else if ((npc.job === 'Civilian' || npc.job === 'Outcast') && (npc.rank ?? 0) < 2) {
+        npc.rank = (npc.rank ?? 0) + 1;
+        const civTitlesVi = { 1: 'Chủ cơ sở quen mặt khu phố', 2: 'Đầu mối giao dịch có tiếng vùng ven' };
+        const civTitlesEn = { 1: 'Established Ward Proprietor', 2: 'Respected District Broker' };
+        npc.rankLabelVi = civTitlesVi[npc.rank];
+        npc.rankLabelEn = civTitlesEn[npc.rank];
+        const memVi = `Năm ${char.age ?? 0} tuổi: Gây dựng chỗ đứng thành ${npc.rankLabelVi}.`;
+        const memEn = `Age ${char.age ?? 0}: Built up standing as ${npc.rankLabelEn}.`;
+        npc.memories = appendNpcMemory(npc.memories, { age: char.age ?? 0, vi: memVi, en: memEn });
+        logs.push({
+          vi: `[Làm ăn khấm khá] Nhờ tháo vát và biết giữ chữ tín ở Backstreets, ${npc.nameVi} nay đã trở thành ${npc.rankLabelVi}.`,
+          en: `[Steady Livelihood] Through grit and street credibility, ${npc.nameEn} has established themselves as ${npc.rankLabelEn}.`
         });
       }
+    } else if (role === 'friend' && npcAge >= 22 && promoRoll >= 0.96 && !npc.careerSwitchedOnce && !npc.pendingCareerSwitch) {
+      npc.pendingCareerSwitch = true;
+      npc.careerSwitchedOnce = true;
     }
 
-    // Crisis tick & alert
+    // Crisis tick, resolution at 100, and alert
     if (npc.crisis && npc.crisis.type !== 'none' && npc.crisis.severity > 0) {
-      npc.crisis.severity = Math.min(100, npc.crisis.severity + Math.floor(rng() * 10) + 6);
-      if (npc.crisis.severity >= 75 && rng() < 0.35) {
-        if (npc.crisis.type === 'debt') {
-          logs.push({
-            vi: `[Báo động nợ máu] Toán đòi nợ của Syndicate đã bao vây khu trọ của ${npc.nameVi}. Họ cần bạn can thiệp gấp trước khi bị cắt ngón tay!`,
-            en: `[Debt Crisis] Syndicate debt collectors surrounded ${npc.nameEn}’s lodgings. They desperately need your aid before fingers are severed!`
+      const nextSeverity = npc.crisis.severity + Math.floor(rng() * 10) + 6;
+      if (nextSeverity >= 100) {
+        const oldLabelVi = npc.crisis.labelVi || 'cơn khủng hoảng';
+        const oldLabelEn = npc.crisis.labelEn || 'their crisis';
+        npc.crisis = { type: 'none', severity: 0, labelVi: '', labelEn: '' };
+        if ((npc.bond ?? 35) >= 15) {
+          npc.bond = Math.max(6, (npc.bond ?? 35) - 5);
+          Object.assign(npc, woundByShield(npc, char.age ?? 20));
+          npc.memories = appendNpcMemory(npc.memories, {
+            age: char.age ?? 0,
+            vi: `Năm ${char.age ?? 0} tuổi: Tự mình trả giá đắt để vượt qua ${oldLabelVi} khi không có bạn ứng cứu.`,
+            en: `Age ${char.age ?? 0}: Paid a heavy price alone to survive ${oldLabelEn} without your aid.`,
+            pinned: true
           });
-        } else if (npc.crisis.type === 'distortion_risk') {
           logs.push({
-            vi: `[Ám ảnh tâm trí] Bạn thoáng thấy ${npc.nameVi} đứng dưới mưa, ánh mắt vô hồn thì thầm câu hát của Carmen. Tinh thần của họ đang trên bờ vực sụp đổ!`,
-            en: `[Mind Slip] You spotted ${npc.nameEn} standing in the rain, glassy-eyed and murmuring Carmen's verses. Their psyche is fracturing!`
+            vi: `[Hệ lụy khủng hoảng] Không nhận được cứu viện kịp thời, ${npc.nameVi} phải tự trả giá bằng máu và thương tích để thoát khỏi ${oldLabelVi}. Họ giữ được mạng sống, nhưng ánh mắt nhìn bạn đã thêm một phần lạnh nhạt.`,
+            en: `[Crisis Fallout] Without timely aid, ${npc.nameEn} paid in blood and wounds to survive ${oldLabelEn} alone. They lived, though a quiet chill now lingers between you.`
+          });
+        } else {
+          npc.status = 'missing';
+          npc.statusChangedAge = char.age ?? 0;
+          npc.memories = appendNpcMemory(npc.memories, {
+            age: char.age ?? 0,
+            vi: `Năm ${char.age ?? 0} tuổi: Mất tích giữa đêm tối vì không gánh nổi ${oldLabelVi}.`,
+            en: `Age ${char.age ?? 0}: Vanished into the night under the weight of ${oldLabelEn}.`,
+            pinned: true
+          });
+          logs.push({
+            vi: `[Đứt đoạn giữa đêm] Khủng hoảng từ ${oldLabelVi} vượt quá sức chịu đựng. Khi bạn ghé qua nơi ở của ${npc.nameVi}, căn phòng chỉ còn đống đồ đạc xáo trộn; họ đã biến mất không để lại lời nhắn nào.`,
+            en: `[Vanished in the Night] The crushing weight of ${oldLabelEn} proved too much. When you checked ${npc.nameEn}'s quarters, only overturned furniture remained.`
           });
         }
+      } else {
+        npc.crisis.severity = nextSeverity;
+        if (npc.crisis.severity >= 75 && rng() < 0.35) {
+          if (npc.crisis.type === 'debt') {
+            logs.push({
+              vi: `[Báo động nợ máu] Toán đòi nợ của Syndicate đã bao vây khu trọ của ${npc.nameVi}. Họ cần bạn can thiệp gấp trước khi bị cắt ngón tay.`,
+              en: `[Debt Crisis] Syndicate debt collectors surrounded ${npc.nameEn}’s lodgings. They urgently need your aid before fingers are severed.`
+            });
+          } else if (npc.crisis.type === 'distortion_risk') {
+            logs.push({
+              vi: `[Ám ảnh tâm trí] Bạn thoáng thấy ${npc.nameVi} đứng dưới mưa, ánh mắt vô hồn thì thầm câu hát của Carmen. Tinh thần của họ đang trên bờ vực sụp đổ.`,
+              en: `[Mind Slip] You spotted ${npc.nameEn} standing in the rain, glassy-eyed and murmuring Carmen's verses. Their psyche is fracturing.`
+            });
+          } else if (npc.crisis.type === 'prosthetic') {
+            logs.push({
+              vi: `[Đào thải cơ khí] Các khớp nối sinh học trên người ${npc.nameVi} đang rỉ dịch đen và chập mạch liên tục. Họ cần tiền thay lõi cấp tốc trước khi liệt hoàn toàn.`,
+              en: `[Prosthetic Failure] ${npc.nameEn}'s bionic joints are leaking black fluid and short-circuiting. They need an urgent core replacement before paralysis sets in.`
+            });
+          } else {
+            logs.push({
+              vi: `[Nguy biến cận kề] ${npc.nameVi} đang bị dồn vào chân tường vì ${npc.crisis.labelVi || 'hiểm họa ngầm'} và rất cần bạn đứng ra tiếp ứng.`,
+              en: `[Mounting Peril] ${npc.nameEn} is cornered by ${npc.crisis.labelEn || 'escalating danger'} and urgently needs your backing.`
+            });
+          }
+        }
       }
-    } else if (rng() < 0.05 && (!npc.crisis || npc.crisis.type === 'none')) {
+    } else if (rng() < 0.05 && npcAge >= 18 && (!npc.crisis || npc.crisis.type === 'none')) {
       if (['gambler', 'greedy'].includes(npc.archetype)) {
         npc.crisis = { type: 'debt', severity: 40, labelVi: 'Nợ nóng sòng bạc', labelEn: 'Gambling Debt' };
-      } else if (['tinkerer', 'sickly'].includes(npc.archetype)) {
+      } else if (['tinkerer', 'sickly', 'cook', 'caretaker'].includes(npc.archetype)) {
         npc.crisis = { type: 'prosthetic', severity: 40, labelVi: 'Hội chứng đào thải cơ khí', labelEn: 'Prosthetic Rejection' };
-      } else if (['idealist', 'proud'].includes(npc.archetype)) {
+      } else if (['idealist', 'proud', 'artist', 'fixerfan'].includes(npc.archetype)) {
         npc.crisis = { type: 'distortion_risk', severity: 45, labelVi: 'Tiếng thì thầm của Carmen', labelEn: 'Whispers of Carmen' };
+      } else if (['hothead', 'veteran', 'loyal'].includes(npc.archetype)) {
+        npc.crisis = { type: 'feud', severity: 40, labelVi: 'Truy sát từ băng đảng thù địch', labelEn: 'Hostile Gang Vendetta' };
+      } else if (['secretive', 'liar', 'devout'].includes(npc.archetype)) {
+        npc.crisis = { type: 'hunted', severity: 40, labelVi: 'Quá khứ cũ bị lần ra dấu vết', labelEn: 'Tracked by Old Shadows' };
+      } else if (['ambitious', 'nestdreamer', 'bookish'].includes(npc.archetype)) {
+        npc.crisis = { type: 'audit', severity: 40, labelVi: 'Thanh tra kỷ luật truy xét hồ sơ', labelEn: 'Disciplinary Audit Investigation' };
       }
     }
   }

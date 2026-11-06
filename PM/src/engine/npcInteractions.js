@@ -7,10 +7,12 @@
 // 4. Call In A Favor (Nhờ cậy đặc quyền)
 // ============================================================================
 
-import { npcIsActive, npcIsHurt } from './eventConditions.js';
-import { bondCapFor, ensureNpcAgency } from '../data/npcPersonality.js';
+import { npcIsActive, npcIsHurt, hasSynergyWith } from './eventConditions.js';
+import { bondCapFor, ensureNpcAgency, appendNpcMemory, getNpcAge } from '../data/npcPersonality.js';
 import { plantThread } from './affiliation.js';
 import { cloneChar, SEASONS } from './gameEngine.js';
+
+export { hasSynergyWith, getNpcAge };
 
 export function isFactionLeader(char) {
   if (!char) return false;
@@ -25,12 +27,23 @@ export function isFactionLeader(char) {
 
 export const NPC_INTERACTION_ACTIONS = [
   {
+    id: 'child_play',
+    nameVi: 'Rủ đi chơi ngõ hẻm',
+    nameEn: 'Backstreet Hangout',
+    descVi: 'Chia nhau chút đồ ăn vặt và ngồi trò chuyện trên bậc thềm khu phố, giữ ấm tình bạn tuổi thơ.',
+    descEn: 'Share a small snack and talk on the block steps, keeping childhood camaraderie warm.',
+    costAhn: 0,
+    maxAge: 15,
+    cooldownYears: 1
+  },
+  {
     id: 'drink_confide',
     nameVi: 'Uống rượu giãi bày',
     nameEn: 'Drink & Confide',
     descVi: 'Mời một chầu rượu rẻ ở quán ngõ hẻm, lắng nghe tâm tư và xoa dịu áp lực đè nặng trong lòng.',
     descEn: 'Share cheap drinks in an alley tavern, easing their hidden burdens and listening to their story.',
     costAhn: 4,
+    minAge: 18,
     cooldownYears: 1
   },
   {
@@ -40,6 +53,7 @@ export const NPC_INTERACTION_ACTIONS = [
     descVi: 'Giao đấu đối luyện thực chiến để thấu hiểu thói quen ra đòn, gia tăng độ ăn ý khi xuống hầm ngục.',
     descEn: 'Cross blades in practical sparring, honing battlefield synergy for dungeon expeditions.',
     costHp: 2,
+    minAge: 14,
     cooldownYears: 1
   },
   {
@@ -49,7 +63,8 @@ export const NPC_INTERACTION_ACTIONS = [
     descVi: 'Chi trả tiền bạc hoặc dùng uy tín can thiệp để giải quyết khủng hoảng sinh tử đang bóp nghẹt họ.',
     descEn: 'Pay Ahn or spend reputation to resolve the life-or-death crisis crushing them.',
     costAhn: 15,
-    costRep: 8
+    costRep: 8,
+    minAge: 16
   },
   {
     id: 'call_favor',
@@ -57,6 +72,7 @@ export const NPC_INTERACTION_ACTIONS = [
     nameEn: 'Call In A Favor',
     descVi: 'Nhờ vả ân nghĩa để họ tận dụng vị trí trong Wing, Syndicate hoặc mạng lưới Fixer giúp đỡ bạn.',
     descEn: 'Call in owed gratitude, leveraging their rank in a Wing, Syndicate, or Fixer network to aid you.',
+    minAge: 16,
     cooldownYears: 2
   },
   {
@@ -65,6 +81,7 @@ export const NPC_INTERACTION_ACTIONS = [
     nameEn: 'Delegate Faction Task',
     descVi: 'Giao phần việc gai góc của tổ chức cho cấp dưới/cộng sự gánh vác (+6 Merit, +6 Ahn, -10 Heat, nhưng giảm 6 Gắn kết và có 35% rủi ro họ gặp nguy biến).',
     descEn: 'Assign a hazardous organizational task to your subordinate or partner (+6 Merit, +6 Ahn, -10 Heat, costs 6 Bond with a 35% risk of acute crisis).',
+    minAge: 18,
     cooldownYears: 1
   }
 ];
@@ -84,16 +101,51 @@ export function canInteractWithNpc(char, role, actionId) {
   if (!rawNpc || !npcIsActive(rawNpc)) {
     return { ok: false, reasonVi: 'Người này không còn hiện diện trong đời bạn', reasonEn: 'This person is no longer in your life' };
   }
-  const npc = ensureNpcAgency(rawNpc);
+  const action = ACTION_BY_ID[actionId];
+  if (!action) {
+    return { ok: false, reasonVi: 'Hành động không xác định', reasonEn: 'Unknown action' };
+  }
+  const npc = ensureNpcAgency(rawNpc, null, { age: getNpcAge(char, rawNpc), regionId: char.regionId });
+  const playerAge = char.age ?? 20;
+  const npcAge = getNpcAge(char, npc);
   const wealth = char.stats?.wealth ?? char.wealth ?? 0;
   const rep = char.stats?.rep ?? char.rep ?? 0;
   const hp = char.stats?.health ?? char.health ?? 50;
 
-  if (actionId !== 'delegate_command' && onCooldown(npc, actionId, char.age || 0)) {
-    const years = ACTION_BY_ID[actionId].cooldownYears;
+  if (action.minAge != null && playerAge < action.minAge) {
+    return {
+      ok: false,
+      reasonVi: `Bạn chưa đủ tuổi làm việc này (cần từ ${action.minAge} tuổi)`,
+      reasonEn: `You are too young for this action (requires age ${action.minAge}+)`
+    };
+  }
+  if (action.minAge != null && npcAge < action.minAge) {
+    return {
+      ok: false,
+      reasonVi: `${npc.nameVi || 'Đối phương'} chưa đủ ${action.minAge} tuổi cho việc này`,
+      reasonEn: `${npc.nameEn || 'Companion'} must be at least ${action.minAge} years old`
+    };
+  }
+  if (action.maxAge != null && playerAge > action.maxAge) {
+    return {
+      ok: false,
+      reasonVi: `Chỉ dành cho tuổi thiếu thời (${action.maxAge} tuổi trở xuống)`,
+      reasonEn: `Only available in youth (age ${action.maxAge} or under)`
+    };
+  }
+
+  if (actionId !== 'delegate_command' && onCooldown(npc, actionId, char.age ?? 0)) {
+    const years = action.cooldownYears;
     return years > 1
       ? { ok: false, cooldown: true, reasonVi: `Việc này bạn vừa làm với họ. Đợi ${years} năm giữa hai lần.`, reasonEn: `You just did this with them. Wait ${years} years between times.` }
       : { ok: false, cooldown: true, reasonVi: 'Việc này bạn đã làm với họ trong năm nay. Đợi sang năm.', reasonEn: 'You already did this with them this year. Wait until next year.' };
+  }
+
+  if (actionId === 'child_play') {
+    if (!['friend', 'child', 'ward', 'parent'].includes(role)) {
+      return { ok: false, reasonVi: 'Không phù hợp với mối quan hệ này', reasonEn: 'Not suitable for this relationship' };
+    }
+    return { ok: true };
   }
 
   if (actionId === 'drink_confide') {
@@ -167,20 +219,32 @@ export function executeNpcInteraction(char, role, actionId, rng = Math.random) {
 
   const nextChar = cloneChar(char);
   nextChar.stats = nextChar.stats || {};
-  let npc = ensureNpcAgency(nextChar.npcs[role], rng);
+  let npc = ensureNpcAgency(nextChar.npcs[role], rng, { age: getNpcAge(nextChar, nextChar.npcs[role]), regionId: nextChar.regionId });
   const name = npc.nameVi || npc.nameEn;
   const cap = bondCapFor(npc);
-  const age = nextChar.age || 0;
+  const age = nextChar.age ?? 0;
   let log = null;
   const before = { health: nextChar.stats.health, sanity: nextChar.stats.sanity, wealth: nextChar.stats.wealth, network: nextChar.stats.network, rep: nextChar.stats.rep, merit: nextChar.merit, heat: nextChar.heat };
-  const bondBefore = npc.bond || 0;
-  const favourBefore = npc.debts?.toPlayer || 0;
+  const bondBefore = npc.bond ?? 0;
+  const favourBefore = npc.debts?.toPlayer ?? 0;
   if (ACTION_BY_ID[actionId]?.cooldownYears) npc.lastActionAge = { ...(npc.lastActionAge || {}), [actionId]: age };
 
-  if (actionId === 'drink_confide') {
-    nextChar.stats.wealth = Math.max(0, (nextChar.stats.wealth || 0) - 4);
-    nextChar.stats.sanity = Math.min(100, (nextChar.stats.sanity || 50) + 10);
-    const newBond = Math.min(cap, (npc.bond || 30) + 6);
+  if (actionId === 'child_play') {
+    nextChar.stats.sanity = Math.min(100, (nextChar.stats.sanity ?? 50) + 4);
+    npc.bond = Math.min(cap, (npc.bond ?? 25) + 3);
+
+    const memoryTextVi = `Năm ${age} tuổi: Cùng ngồi bậc thềm ngõ hẻm chia nhau chút quà vặt.`;
+    const memoryTextEn = `Age ${age}: Shared snacks and stories on the alley steps.`;
+    npc.memories = appendNpcMemory(npc.memories, { age, vi: memoryTextVi, en: memoryTextEn });
+
+    log = {
+      vi: `[Chiều ngõ hẻm] Bạn cùng ${name} ngồi trên bậc thềm bê tông đầu khu nhà, bẻ đôi chiếc bánh khô và ngắm dòng người qua lại trước giờ tan tầm. Giữa khói bụi Backstreets, buổi chiều trôi qua bình yên hiếm thấy.`,
+      en: `[Alley Afternoon] You sat with ${npc.nameEn} on the concrete steps at the corner of the block, splitting a dry biscuit and watching commuters pass before the shift horn. Amid the Backstreets haze, the afternoon felt unusually peaceful.`
+    };
+  } else if (actionId === 'drink_confide') {
+    nextChar.stats.wealth = Math.max(0, (nextChar.stats.wealth ?? 0) - 4);
+    nextChar.stats.sanity = Math.min(100, (nextChar.stats.sanity ?? 50) + 10);
+    const newBond = Math.min(cap, (npc.bond ?? 30) + 6);
     npc.bond = newBond;
 
     // Relieve crisis if any
@@ -191,15 +255,15 @@ export function executeNpcInteraction(char, role, actionId, rng = Math.random) {
 
     const memoryTextVi = `Năm ${age} tuổi: Cùng uống rượu giãi bày tại quán trọ Backstreets.`;
     const memoryTextEn = `Age ${age}: Shared deep drinks and confessions at a Backstreet tavern.`;
-    npc.memories = [...(npc.memories || []), { age, vi: memoryTextVi, en: memoryTextEn }].slice(-6);
+    npc.memories = appendNpcMemory(npc.memories, { age, vi: memoryTextVi, en: memoryTextEn });
 
     log = {
       vi: `[Tri kỷ giãi bày] Bạn cùng ${name} ngồi bên chiếc bàn gỗ ẩm mốc ở quán rượu Backstreets. Men rượu cay xua tan giá lạnh; ${name} kể cho bạn nghe về 「${npc.wantVi || 'ước vọng sống còn'}」 và nỗi sợ 「${npc.fearVi || 'tiếng còi nửa đêm'}」. Lòng bạn nhẹ nhõm hơn nhiều.`,
       en: `[Confiding in Drinks] You sat with ${npc.nameEn} over a damp wooden table in a Backstreet tavern. Cheap liquor thawed the frost; ${npc.nameEn} spoke of longing for "${npc.wantEn || 'survival'}" and fearing "${npc.fearEn || 'midnight sirens'}". Your mind feels far clearer.`
     };
   } else if (actionId === 'spar_coordinate') {
-    nextChar.stats.health = Math.max(1, (nextChar.stats.health || 50) - 2);
-    npc.bond = Math.min(cap, (npc.bond || 30) + 4);
+    nextChar.stats.health = Math.max(1, (nextChar.stats.health ?? 50) - 2);
+    npc.bond = Math.min(cap, (npc.bond ?? 30) + 4);
     nextChar.companionSynergy = {
       active: true,
       role,
@@ -211,39 +275,39 @@ export function executeNpcInteraction(char, role, actionId, rng = Math.random) {
 
     const memoryTextVi = `Năm ${age} tuổi: Đối luyện thực chiến ăn ý, thấu hiểu từng đường đao mũi kiếm.`;
     const memoryTextEn = `Age ${age}: Sharpened combat poise and mutual instincts in sparring.`;
-    npc.memories = [...(npc.memories || []), { age, vi: memoryTextVi, en: memoryTextEn }].slice(-6);
+    npc.memories = appendNpcMemory(npc.memories, { age, vi: memoryTextVi, en: memoryTextEn });
 
     log = {
       vi: `[Luyện kiếm hiệp lực] Lưỡi thép va vào nhau chan chát trong con hẻm cụt. ${name} đọc được nhịp thở và cách chuyển trọng tâm của bạn, cả hai ăn ý đến mức không cần nhìn cũng biết đối phương bọc lót ở đâu. Hiệp lực Hầm ngục có hiệu lực cho mùa săn này.`,
       en: `[Combat Poise] Steel clashed in the dead-end alley. ${npc.nameEn} read your footwork and breathing shifts; the two of you moved in fluid synchronization. Companion Dungeon Synergy holds for this season.`
     };
   } else if (actionId === 'emergency_aid') {
-    const costWealth = (nextChar.stats.wealth || 0) >= 15;
+    const costWealth = (nextChar.stats.wealth ?? 0) >= 15;
     if (costWealth) {
       nextChar.stats.wealth -= 15;
     } else {
-      nextChar.stats.rep = Math.max(0, (nextChar.stats.rep || 0) - 8);
+      nextChar.stats.rep = Math.max(0, (nextChar.stats.rep ?? 0) - 8);
     }
 
     const oldCrisisLabel = npc.crisis?.labelVi || 'cơn bĩ cực';
     npc.crisis = { type: 'none', severity: 0, labelVi: '', labelEn: '' };
     npc.debts = npc.debts || {};
-    npc.debts.toPlayer = (npc.debts.toPlayer || 0) + 1;
-    npc.bond = Math.min(100, (npc.bond || 30) + 20);
+    npc.debts.toPlayer = (npc.debts.toPlayer ?? 0) + 1;
+    npc.bond = Math.min(100, (npc.bond ?? 30) + 20);
 
     const memoryTextVi = `Năm ${age} tuổi: Bạn ra tay cứu mạng, giải quyết món nợ sinh tử bóp nghẹt họ.`;
     const memoryTextEn = `Age ${age}: You stepped in and saved their life from a crushing crisis.`;
-    npc.memories = [...(npc.memories || []), { age, vi: memoryTextVi, en: memoryTextEn }].slice(-6);
+    npc.memories = appendNpcMemory(npc.memories, { age, vi: memoryTextVi, en: memoryTextEn, pinned: true });
 
     log = {
       vi: `[Cứu viện sinh tử] Bạn đứng ra dàn xếp dứt điểm ${oldCrisisLabel} cho ${name}. Nhìn món nợ bị xé toạc trước mắt, ${name} nắm chặt tay bạn, ánh mắt trĩu nặng ơn nghĩa thề sẽ đền đáp bằng cả mạng sống nếu có ngày bạn cần.`,
       en: `[Mortal Salvation] You settled ${npc.nameEn}'s crisis once and for all. Watching the death warrant torn in half, ${npc.nameEn} gripped your hand tightly, swearing a debt of blood and honor whenever you call.`
     };
   } else if (actionId === 'call_favor') {
-    if ((npc.debts?.toPlayer || 0) > 0) {
+    if ((npc.debts?.toPlayer ?? 0) > 0) {
       npc.debts.toPlayer -= 1;
     } else {
-      npc.bond = Math.max(0, (npc.bond || 0) - 6);
+      npc.bond = Math.max(0, (npc.bond ?? 0) - 6);
     }
 
     let rewardVi = '';
@@ -251,29 +315,29 @@ export function executeNpcInteraction(char, role, actionId, rng = Math.random) {
     const job = npc.job || 'Civilian';
 
     if (job === 'Wing Employee') {
-      nextChar.stats.health = Math.min(100, (nextChar.stats.health || 50) + 35);
+      nextChar.stats.health = Math.min(100, (nextChar.stats.health ?? 50) + 35);
       rewardVi = `${name} bí mật tuồn cho bạn một ống tiêm tinh chất phục hồi sinh học K Corp, chữa lành các vết rách trên cơ thể.`;
       rewardEn = `${npc.nameEn} smuggled a classified K Corp regenerative ampule to you, sewing together deep tissue tears.`;
     } else if (job === 'Syndicate') {
-      nextChar.heat = Math.max(0, (nextChar.heat || 0) - 25);
+      nextChar.heat = Math.max(0, (nextChar.heat ?? 0) - 25);
       rewardVi = `${name} liên hệ các đầu nậu của Ngón tay để xóa tên bạn khỏi danh sách truy quét ngầm.`;
       rewardEn = `${npc.nameEn} leveraged Finger contacts to scratch your name off backstreet hit-lists.`;
     } else if (job === 'Fixer') {
-      nextChar.stats.network = Math.min(100, (nextChar.stats.network || 0) + 14);
-      nextChar.stats.rep = Math.min(100, (nextChar.stats.rep || 0) + 10);
-      nextChar.merit = (nextChar.merit || 0) + 4;
+      nextChar.stats.network = Math.min(100, (nextChar.stats.network ?? 0) + 14);
+      nextChar.stats.rep = Math.min(100, (nextChar.stats.rep ?? 0) + 10);
+      nextChar.merit = (nextChar.merit ?? 0) + 4;
       rewardVi = `${name} chia sẻ hồ sơ tình báo nội bộ của Hiệp hội, giúp bạn mở rộng tầm ảnh hưởng và uy tín.`;
       rewardEn = `${npc.nameEn} shared classified Association dossiers, broadening your reach and standing.`;
     } else {
-      nextChar.stats.sanity = Math.min(100, (nextChar.stats.sanity || 50) + 15);
-      nextChar.stats.health = Math.min(100, (nextChar.stats.health || 50) + 8);
+      nextChar.stats.sanity = Math.min(100, (nextChar.stats.sanity ?? 50) + 15);
+      nextChar.stats.health = Math.min(100, (nextChar.stats.health ?? 50) + 8);
       rewardVi = `${name} mở cửa căn hầm bí mật an toàn cho bạn trú ẩn qua đêm, tránh xa mọi cặp mắt dò xét.`;
       rewardEn = `${npc.nameEn} sheltered you in a secluded cellar sanctuary, safe from prying eyes.`;
     }
 
     const memoryTextVi = `Năm ${age} tuổi: Đền đáp ân nghĩa, tương trợ bạn trong cơn bĩ cực.`;
     const memoryTextEn = `Age ${age}: Repaid their debt of honor, aiding you in your hour of need.`;
-    npc.memories = [...(npc.memories || []), { age, vi: memoryTextVi, en: memoryTextEn }].slice(-6);
+    npc.memories = appendNpcMemory(npc.memories, { age, vi: memoryTextVi, en: memoryTextEn });
 
     log = {
       vi: `[Đền đáp ân nghĩa] Bạn liên lạc với ${name} yêu cầu sự trợ giúp. Không một lời từ chối, ${rewardVi}`,
@@ -281,18 +345,18 @@ export function executeNpcInteraction(char, role, actionId, rng = Math.random) {
     };
   } else if (actionId === 'delegate_command') {
     npc.lastDelegatedAge = age;
-    npc.bond = Math.max(0, (npc.bond || 40) - 6);
-    nextChar.merit = (nextChar.merit || 0) + 6;
-    nextChar.stats.wealth = Math.min(100, (nextChar.stats.wealth || 0) + 6);
-    nextChar.heat = Math.max(0, (nextChar.heat || 0) - 10);
+    npc.bond = Math.max(0, (npc.bond ?? 40) - 6);
+    nextChar.merit = (nextChar.merit ?? 0) + 6;
+    nextChar.stats.wealth = Math.min(100, (nextChar.stats.wealth ?? 0) + 6);
+    nextChar.heat = Math.max(0, (nextChar.heat ?? 0) - 10);
     if (nextChar.job === 'Wing Employee' && nextChar.standing != null) {
       nextChar.standing = Math.min(100, nextChar.standing + 5);
     }
     if (nextChar.affiliation) {
-      nextChar.affiliation.standing = Math.min(100, (nextChar.affiliation.standing || 50) + 4);
+      nextChar.affiliation.standing = Math.min(100, (nextChar.affiliation.standing ?? 50) + 4);
     }
     if (role === 'mentee' && nextChar.mentee) {
-      nextChar.mentee.progress = Math.min(99, (nextChar.mentee.progress || 0) + 12);
+      nextChar.mentee.progress = Math.min(99, (nextChar.mentee.progress ?? 0) + 12);
     }
 
     const sufferedFallout = rng() < 0.35;
@@ -322,7 +386,7 @@ export function executeNpcInteraction(char, role, actionId, rng = Math.random) {
       }
       const memoryTextVi = `Năm ${age} tuổi: Gánh phần việc nguy hiểm do bạn ủy thác và bị thương nặng.`;
       const memoryTextEn = `Age ${age}: Carried out a hazardous task you delegated and suffered heavy fallout.`;
-      npc.memories = [...(npc.memories || []), { age, vi: memoryTextVi, en: memoryTextEn }].slice(-6);
+      npc.memories = appendNpcMemory(npc.memories, { age, vi: memoryTextVi, en: memoryTextEn });
 
       log = {
         vi: `[Ủy thác trả giá đắt] Bạn giao phần việc gai góc của tổ chức cho ${name} xử lý. Nhiệm vụ hoàn tất trót lọt, hồ sơ của bạn sạch dấu vết, nhưng ${name} rơi vào ổ phục kích và đang lâm vào khủng hoảng cần cứu viện.`,
@@ -331,7 +395,7 @@ export function executeNpcInteraction(char, role, actionId, rng = Math.random) {
     } else {
       const memoryTextVi = `Năm ${age} tuổi: Thay mặt bạn giải quyết gọn gàng công việc của tổ chức.`;
       const memoryTextEn = `Age ${age}: Handled a sensitive organizational operation on your behalf.`;
-      npc.memories = [...(npc.memories || []), { age, vi: memoryTextVi, en: memoryTextEn }].slice(-6);
+      npc.memories = appendNpcMemory(npc.memories, { age, vi: memoryTextVi, en: memoryTextEn });
 
       log = {
         vi: `[Ủy thác việc tổ chức] ${name} thay mặt bạn đứng mũi chịu sào xử lý êm thấm phần việc nhạy cảm của tổ chức, mang về cả chiến công lẫn lợi tức mà không để lại dấu vết trên hồ sơ của bạn.`,
@@ -345,17 +409,17 @@ export function executeNpcInteraction(char, role, actionId, rng = Math.random) {
     // The numbers belong in the chips, not in the sentence
     const deltas = [];
     for (const key of ['health', 'sanity', 'wealth', 'network', 'rep']) {
-      const change = (nextChar.stats[key] || 0) - (before[key] || 0);
+      const change = (nextChar.stats[key] ?? 0) - (before[key] ?? 0);
       if (change) deltas.push({ k: key, v: change });
     }
     for (const key of ['merit', 'heat']) {
-      const change = (nextChar[key] || 0) - (before[key] || 0);
+      const change = (nextChar[key] ?? 0) - (before[key] ?? 0);
       if (change) deltas.push({ k: key, v: change });
     }
-    const bondChange = (npc.bond || 0) - bondBefore;
+    const bondChange = (npc.bond ?? 0) - bondBefore;
     if (bondChange) deltas.push({ k: 'bond', name: name, v: bondChange });
     // Every feed entry needs an id, an age and a season: the feed groups by year and keys by id
-    const favour = (npc.debts?.toPlayer || 0) - favourBefore;
+    const favour = (npc.debts?.toPlayer ?? 0) - favourBefore;
     if (favour) deltas.push({ k: 'favour', name, v: favour });
     nextChar.logs = [...(nextChar.logs || []), {
       id: `npc_${role}_${actionId}_${age}_${(nextChar.logs || []).length}`,

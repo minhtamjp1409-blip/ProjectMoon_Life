@@ -217,11 +217,13 @@ export function makeNpc(role, rng, extra = {}) {
     metAge: 0,
     lastSeen: rest.lastSeen ?? (rest.metAge || 0),
     ageAtMeet: role === 'mentor' ? (rest.metAge || 0) + 20 : role === 'child' ? 0 : (rest.metAge || 0),
+    regionId,
+    nest,
     memories: [],
     needsNaming: shouldPromptName,
     namedPrompted: Boolean(rest.namedPrompted),
     ...rest
-  }, rng);
+  }, rng, { regionId, nest });
 }
 
 const FRIEND_LINE = [

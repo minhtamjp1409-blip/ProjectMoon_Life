@@ -13,25 +13,25 @@ export const DISTORTION_OVERHAUL_EVENTS = [
     weight: 20,
     requires: ['Distorted'],
     forbids: ['carmen_communion_overhaul_done'],
-    vi: "[Tiếng Gọi Trong Đồng Hoa Trắng] Biển hoa trắng trải dài vô tận trong tâm trí bạn. Carmen bước ra từ hư vô, ngón tay lạnh buốt khẽ chạm vào gò má biến dị của bạn. \"Ngươi đã chịu đựng quá nhiều nhục nhã từ The City. Đừng kìm nén ngọn lửa trong lòng nữa. Ngươi có dám đánh cược toàn bộ sự tỉnh táo còn lại để bộc phát bản ngã hoàn mỹ không?\"",
-    en: "[The Call in the White Field] An endless sea of white flowers stretches through your mind. Carmen emerges from nothingness, cold fingers brushing against your warped cheek. “You have endured far too much misery from The City. Stop holding the fire back. Do you dare wager what little sanity remains to unleash your perfect self?”",
+    vi: "[Đồng hoa trắng] Con hẻm trước mắt nhòe đi. Giữa đồng hoa trắng, Carmen hỏi: \"Bạn vẫn đang cố giấu điều gì?\" Tiếng xe ngoài đường kéo bạn trở lại trong chốc lát.",
+    en: "[The white field] The alley blurs. In a field of white flowers, Carmen asks, “What are you still trying to hide?” A vehicle passing outside briefly draws you back.",
     choices: [
       {
-        labelVi: "Dốc toàn bộ tâm trí vào tiếng thì thầm của Carmen",
-        labelEn: "Pour your entire mind into Carmen's whisper",
+        labelVi: "Nói ra điều bạn vẫn giấu",
+        labelEn: "Say what you have been hiding",
         outcomes: [
           {
             w: 54,
-            resultVi: "Bạn hòa ý thức vào giai điệu đỏ thẫm. Cơn đau thể xác biến mất, nhường chỗ cho một cảm giác tự do tuyệt đối. Cơ thể biến dị của bạn kết tinh thành một cấu trúc hoàn chỉnh; tiếng gầm của bạn làm rung chuyển ba khu phố.",
-            resultEn: "You fused your consciousness with the crimson melody. Physical agony dissolved into absolute liberation. Your distorted form crystallized into a perfected shell; your roar rattled three districts.",
+            resultVi: "Bạn nói hết câu. Các khớp xương thôi giật, lớp vỏ quanh người khép lại. Ngoài hẻm, cửa sổ gần nhất rung lên.",
+            resultEn: "You finish the sentence. Your joints stop jerking and the shell around you closes. The nearest window rattles.",
             effects: { resonance: +35, rep: +45, sanity: -15 },
             flagsAdd: ['carmen_communion_overhaul_done', 'DịThểHoànMỹ', 'DistortionStar'],
             meritAdd: 32
           },
           {
             w: 46,
-            resultVi: "Dòng lũ cảm xúc quá cuồng bạo làm nứt toác khung xương dị thể. Máu đen trào ra từ các khe hở trên da thịt; Carmen mỉm cười thương hại trước khi bóng dáng người tan biến.",
-            resultEn: "The torrent of emotion proved too violent, fracturing your warped frame. Dark blood seeped from fissures across your flesh; Carmen gave a pitying smile before fading away.",
+            resultVi: "Bạn vừa mở miệng thì một vết nứt chạy dọc lớp vỏ trước ngực. Máu thấm qua áo; khi ngẩng lên, đồng hoa đã biến mất.",
+            resultEn: "You begin to speak, and a crack runs down the shell over your chest. Blood seeps through your clothes. When you look up, the field is gone.",
             effects: { health: -30, sanity: -25, heat: +35 },
             flagsAdd: ['carmen_communion_overhaul_done'],
             scarsAdd: ['Vết rạn linh hồn của Carmen']
@@ -39,51 +39,51 @@ export const DISTORTION_OVERHAUL_EVENTS = [
         ]
       },
       {
-        labelVi: "Cắn chặt răng giữ lại mảnh nhân tính cuối cùng",
-        labelEn: "Clench your teeth and hold onto the last shard of humanity",
-        resultVi: "Bạn khước từ lời mời gọi ngọt ngào, dùng nỗi đau thể xác làm chiếc neo giữ tâm trí không rơi vào vực thẳm. Biển hoa trắng tan rã, để lại bạn thở dốc giữa con hẻm lạnh ngắt.",
-        resultEn: "You rejected the sweet invitation, using physical agony as an anchor to keep your mind from falling into the abyss. The white field dissolved, leaving you gasping in the cold alley.",
+        labelVi: "Không trả lời; tập trung vào tiếng xe ngoài hẻm",
+        labelEn: "Say nothing and follow the sound of traffic",
+        resultVi: "Tiếng xe rõ dần. Bạn đứng lại trong con hẻm, tay bấu vào tường cho tới khi nhịp thở chậm xuống.",
+        resultEn: "The traffic grows louder. You remain in the alley, holding the wall until your breathing slows.",
         effects: { sanity: +18, resonance: +10, health: -8 },
         flagsAdd: ['carmen_communion_overhaul_done']
       }
     ]
   },
 
-  // 2. Midnight predator gamble: Hunting Sweepers during 3:13 AM
+  // 2. Sweeper encounter during the night sweep
   {
     id: 'distort_gamble_night_sweeper_raid',
     age: [18, 75],
     major: true,
     weight: 22,
     requires: ['Distorted'],
-    vi: "[Săn Ngược Trong Đêm Quét Dọn] Còi báo động 3:13 AM rền vang khắp Backstreets. Lũ Sweeper trong trang phục bảo hộ tràn ra đường thu gom mọi sinh vật sống để nghiền thành nhiên liệu sinh học. Nhưng đêm nay, chúng không biết một thực thể biến dị đang phục kích trên mái tôn.",
-    en: "[Hunting the Night Sweepers] The 3:13 AM siren rolls across the Backstreets. Sweepers in heavy suits pour into the streets to liquefy all living things for biofuel. But tonight, they do not realize a distorted entity is watching from the tin rooftops.",
+    vi: "[Đêm Quét Dọn] Sau 3 giờ 10, tiếng bình chứa va nhau vọng lên từ con hẻm. Toán Sweeper đi dưới mái tôn chỗ bạn đang nấp. Một tên dừng lại, ngẩng đầu.",
+    en: "[The Sweeping] After 3:10, tanks knock together in the alley below. A Sweeper squad passes beneath the tin roof where you are hiding. One of them stops and looks up.",
     choices: [
       {
-        labelVi: "Lao xuống phục kích toán Sweeper để cướp lõi nhiên liệu",
-        labelEn: "Pounce from above to shatter the Sweepers and seize their fuel cores",
+        labelVi: "Đánh toán Sweeper, lấy bình chứa của chúng",
+        labelEn: "Attack the Sweepers and take their tanks",
         outcomes: [
           {
             w: 58,
-            resultVi: "Móng vuốt của bạn xé toang bộ đồ bảo hộ của năm tên Sweeper. Bạn nghiền nát bình chứa, hấp thụ toàn bộ dòng chất lỏng sinh học đậm đặc. Vết thương cũ khép lại, lớp vỏ ngoài của bạn rắn chắc như thép nguội.",
-            resultEn: "Your claws tore through the suits of five Sweepers. You crushed their tanks, absorbing the dense biological fluids. Old scars sealed over; your outer carapace hardened like tempered steel.",
+            resultVi: "Bạn kéo tên đi đầu khỏi hàng rồi đập vỡ bình chứa. Chất lỏng ngấm qua lớp vỏ; vết thương ở vai khép lại. Những tên còn lại kéo đồng đội lùi khỏi hẻm.",
+            resultEn: "You pull the lead Sweeper out of line and break its tank. Fluid seeps through your shell; the wound in your shoulder closes. The others drag their companion out of the alley.",
             effects: { health: +35, sanity: +12, rep: +30 },
             flagsAdd: ['KẻSănĐêm313'],
             meritAdd: 26
           },
           {
             w: 42,
-            resultVi: "Toán Sweeper phản ứng nhanh hơn dự đoán. Móc câu của chúng cắm sâu vào vai bạn, kéo giật bạn xuống đường nhựa trước khi bạn kịp vùng vẫy tẩu thoát.",
-            resultEn: "The Sweeper squad reacted faster than expected. Their hook-irons sank deep into your shoulder, dragging you down onto the asphalt before you could tear yourself free.",
+            resultVi: "Móc câu ghim vào vai ngay khi bạn nhảy xuống. Bạn giật đứt dây, bỏ lại một mảng vỏ trên mặt đường. Toán Sweeper quay theo dấu máu.",
+            resultEn: "A hook catches your shoulder as you land. You tear the line free, leaving a piece of shell on the road. The Sweepers follow the blood.",
             effects: { health: -28, sanity: -10, heat: +25 }
           }
         ]
       },
       {
-        labelVi: "Ẩn mình trong ống khói quan sát kỹ thuật di chuyển của chúng",
-        labelEn: "Conceal yourself in a chimney to study their movement patterns",
-        resultVi: "Bạn kiềm chế cơn khát máu, ghi nhớ từng nhịp bước và hướng quét của bầy dọn dẹp. Đêm qua đi mà không để lại dấu vết.",
-        resultEn: "You held back your hunger, mapping every step and sweep route of the pack. The night passed leaving no trace behind.",
+        labelVi: "Nằm yên, ghi nhớ lối tuần của chúng",
+        labelEn: "Stay hidden and learn their patrol route",
+        resultVi: "Bạn đếm số bình chứa và ghi nhớ lối chúng rẽ. Đến khi tiếng bước chân khuất hẳn, bạn mới rời mái tôn.",
+        resultEn: "You count their tanks and note where they turn. You leave the roof only when their footsteps fade.",
         effects: { network: +14, rep: +10 }
       }
     ]
@@ -97,35 +97,35 @@ export const DISTORTION_OVERHAUL_EVENTS = [
     weight: 18,
     requires: ['Distorted', 'DistortionStage2'],
     forbids: ['distort_cordon_crushed'],
-    vi: "[Phá Vỡ Vòng Vây Hana] Hiệp Hội Hana nâng cấp độ thảm họa của bạn lên Urban Nightmare. Hai đội Fixer mang súng chống dị thể Workshop và rào chắn điện trường phong tỏa toàn bộ lối ra của khu phố. Bạn nghe thấy tiếng nạp đạn của chúng ngoài đầu ngõ.",
-    en: "[Breaking Hana's Cordon] Hana Association has escalated your disaster rating to Urban Nightmare. Two Fixer teams armed with anti-distortion Workshop weaponry and electric barriers seal every exit. You hear their weapons cycling outside.",
+    vi: "[Vòng vây của Hana] Hồ sơ Hana xếp bạn vào diện Urban Nightmare. Hai đội Fixer chặn các lối ra, đặt rào điện ở đầu ngõ. Một người gọi qua loa: \"Ra ngoài. Chúng tôi còn phải kiểm tra nhà dân.\"",
+    en: "[Hana's cordon] Hana's file lists you as an Urban Nightmare. Two Fixer teams block the exits and set an electric barrier at the alley mouth. Someone calls through a speaker: \"Come out. We still need to check the houses.\"",
     choices: [
       {
-        labelVi: "Mở rộng Lãnh địa biến cả khu phố thành cạm bẫy hủy diệt",
-        labelEn: "Expand your Domain to turn the entire street into a lethal snare",
+        labelVi: "Mở rộng Lãnh địa qua hàng rào điện",
+        labelEn: "Extend your Domain through the electric barrier",
         outcomes: [
           {
             w: 55,
-            resultVi: "Đá đường dựng đứng thành những mũi chông nhọn hoắt. Lưới điện trường của Hana bị xé nát trong tích tắc; cả hai đội Fixer bị nhấn chìm dưới sức mạnh dị thể. Hana buộc phải ghi tên bạn vào danh sách thảm họa Star of the City.",
-            resultEn: "Paving stones rose into jagged spikes. Hana's electric net snapped in an instant; both strike teams were overwhelmed by your anomaly force. Hana was forced to enter your name into the Stars of the City register.",
+            resultVi: "Mặt đường đội lên, đẩy đổ rào điện. Hai đội Fixer rút khỏi ngõ, bỏ lại bộ phát còn cháy. Sáng hôm sau, hồ sơ Hana ghi thêm tên bạn dưới mục Star of the City.",
+            resultEn: "The road buckles and overturns the barrier. Both Fixer teams withdraw, leaving a burning generator behind. The next morning, Hana's file adds your name under Star of the City.",
             effects: { rep: +50, resonance: +30, heat: +45 },
             flagsAdd: ['distort_cordon_crushed', 'StarOfTheCityEntity'],
             meritAdd: 36
           },
           {
             w: 45,
-            resultVi: "Đạn Workshop xuyên qua lớp vảy phòng ngự. Lưới điện kích hoạt làm tê liệt các dây thần kinh dị thể, thiêu cháy một mảng lớn cơ bắp trước khi bạn kịp trốn thoát qua đường cống ngầm.",
-            resultEn: "Workshop rounds penetrated your defensive plates. The electric snare flared, paralyzing your anomalous nerves and scorching muscle tissue before you scrambled through the drainage pipes.",
+            resultVi: "Đạn Workshop xuyên qua lớp vỏ. Điện giật khóa cứng chân bạn trong vài nhịp; bạn chui xuống cống, để lại vệt cháy trên miệng hầm.",
+            resultEn: "Workshop rounds pierce your shell. The current locks your legs for a few seconds; you crawl into the drain, leaving a burn mark at its mouth.",
             effects: { health: -34, sanity: -15 },
             scarsAdd: ['Vết bỏng điện trường Hana']
           }
         ]
       },
       {
-        labelVi: "Phóng độc mù và rút sâu vào lòng đất",
-        labelEn: "Discharge blinding mist and withdraw into the subterranean depths",
-        resultVi: "Màn sương đen che phủ tầm nhìn của các ống ngắm nhiệt. Bạn lướt qua kẽ hở giữa hai tòa nhà, để lại vòng vây trống rỗng phía sau.",
-        resultEn: "Black mist blinded their thermal scopes. You slipped between two cracked facades, leaving an empty perimeter behind.",
+        labelVi: "Dùng màn sương che lối rút qua cống",
+        labelEn: "Use the mist to cover your retreat through the drain",
+        resultVi: "Đội Fixer chờ màn sương tan mới vào ngõ. Khi họ mở nắp cống, bạn đã sang dãy nhà bên kia.",
+        resultEn: "The Fixers wait for the mist to clear before entering. By the time they lift the drain cover, you are across the next block.",
         effects: { heat: +15, rep: +15 }
       }
     ]
@@ -140,17 +140,17 @@ export const DISTORTION_OVERHAUL_EVENTS = [
     requires: ['Distorted'],
     need: { npc: 'partner' },
     forbids: ['distort_partner_confrontation_done'],
-    vi: "[Người Đứng Ở Ngã Rẽ] {partner} đứng chặn ở góc hẻm, vũ khí hạ thấp, đôi mắt mở to nhìn vào thân xác dị dạng của bạn. \"Tôi đã tìm bạn suốt ba tháng qua. Đừng để tiếng nói đó cướp mất bạn.\" Phía sau {partner}, tiếng ủng sắt của toán thợ săn tiền thưởng đang tiến đến rất gần.",
-    en: "[At the Crossroads] {partner} stands at the alley turn, weapon lowered, eyes wide as they take in your warped flesh. “I have looked for you for three months. Do not let that voice consume who you were.” Behind {partner}, the iron boots of bounty hunters draw near.",
+    vi: "[{partner} ở đầu hẻm] {partner} tìm thấy bạn ở góc hẻm, tay vẫn cầm vũ khí nhưng chưa rút. “Tôi đã tìm bạn ba tháng.” Phía sau người ấy, toán săn tiền thưởng đang đến gần.",
+    en: "[{partner} at the alley] {partner} finds you at the alley corner, hand on a weapon they have not drawn. “I have been looking for you for three months.” Behind them, bounty hunters are closing in.",
     choices: [
       {
-        labelVi: "Lao ra chắn đạn xé xác toán thợ săn để bảo vệ {partner}",
-        labelEn: "Lunge forward to shield {partner} and tear through the hunters",
+        labelVi: "Đứng chắn giữa {partner} và toán săn tiền thưởng",
+        labelEn: "Stand between {partner} and the bounty hunters",
         outcomes: [
           {
             w: 60,
-            resultVi: "Bạn chắn toàn bộ hỏa lực trước ngực, móng vuốt nghiền nát toán thợ săn trong chớp mắt. Bạn gầm lên xua {partner} chạy trốn. Giữa thân xác quái vật, ánh nhìn của {partner} trở thành chiếc neo giữ vững nhân tính của bạn.",
-            resultEn: "You took the full volley into your chest, claws crushing the bounty hunters in seconds. You let out a warning roar pushing {partner} to flee. Through the monster's shell, {partner}'s gaze became your anchor of humanity.",
+            resultVi: "Đạn ghim vào lớp vỏ trước ngực bạn. Bạn đẩy lùi toán săn, ra hiệu cho {partner} rời hẻm. Người ấy đi được vài bước rồi ngoái lại.",
+            resultEn: "Rounds strike the shell over your chest. You drive the hunters back and signal {partner} to leave. They take a few steps, then look back.",
             effects: { health: -22, sanity: +25, rep: +35, resonance: +20 },
             flagsAdd: ['distort_partner_confrontation_done'],
             scarsAdd: ['Tấm khiên quái vật bảo vệ tri kỷ'],
@@ -158,18 +158,18 @@ export const DISTORTION_OVERHAUL_EVENTS = [
           },
           {
             w: 40,
-            resultVi: "Đạn pháo phá giáp đâm xuyên ngực bạn. Bạn ngã gục, chỉ kịp thấy {partner} thét gào trong tuyệt vọng trước khi dòng nước cống cuốn bạn trôi đi.",
-            resultEn: "Armor-piercing shells tore through your chest. You collapsed, only catching {partner}'s desperate cry before the sewer current swept you under.",
+            resultVi: "Đạn xuyên qua lớp vỏ. Bạn ngã xuống gần miệng cống; {partner} kéo bạn khỏi tầm bắn nhưng phải bỏ lại vũ khí.",
+            resultEn: "A round passes through your shell. You fall beside the drain; {partner} drags you out of the firing line and leaves their weapon behind.",
             effects: { health: -40, sanity: -15, resonance: +25 },
             flagsAdd: ['distort_partner_confrontation_done']
           }
         ]
       },
       {
-        labelVi: "Lặng lẽ quay lưng biến mất vào màn đêm",
-        labelEn: "Silently turn away and vanish into the shadows",
-        resultVi: "Bạn không muốn làm tổn thương {partner}, nhưng bạn hiểu con quái vật này không còn chỗ trong cuộc đời của người ấy nữa. Bạn lặn vào bóng tối, để lại một đóa hoa pha lê trên bờ tường.",
-        resultEn: "You had no wish to harm {partner}, yet understood this monster had no place in their future. You faded into darkness, leaving a single crystal blossom upon the wall.",
+        labelVi: "Rời hẻm trước khi toán săn thấy {partner}",
+        labelEn: "Leave before the hunters see {partner}",
+        resultVi: "Bạn đi qua lối sau. {partner} gọi thêm một lần nhưng không đuổi theo; toán săn chạy vụt qua góc phố.",
+        resultEn: "You take the rear passage. {partner} calls once more but does not follow; the hunters run past the corner.",
         effects: { sanity: -10, resonance: +15 },
         flagsAdd: ['distort_partner_confrontation_done']
       }
@@ -185,35 +185,35 @@ export const DISTORTION_OVERHAUL_EVENTS = [
     requires: ['Distorted'],
     need: { npc: 'rival' },
     forbids: ['distort_rival_predation_done'],
-    vi: "[Kẻ Đi Săn Trở Thành Con Mồi] {rival}, kẻ từng dồn bạn vào chỗ chết năm xưa, đêm nay đang chỉ huy một đoàn xe Workshop săn lùng dấu vết của bạn. Tiếng cười ngạo mạn của hắn vang qua máy liên lạc, không hề biết bạn đang bám ngay dưới gầm xe chỉ huy.",
-    en: "[The Hunter Becomes Prey] {rival}, who drove you toward ruin years ago, leads a Workshop convoy tonight hunting your trail. Their arrogant laugh echoes through the radio, unaware you are clinging beneath their command vehicle.",
+    vi: "[Đoàn xe của {rival}] {rival} đi cùng đoàn xe Workshop đang tìm bạn. Qua máy liên lạc, người ấy đọc lại mô tả hình dạng bạn. Bạn bám dưới gầm chiếc xe đi đầu.",
+    en: "[{rival}'s convoy] {rival} rides with a Workshop convoy looking for you. Over the radio, they repeat the description of your altered body. You cling beneath the lead vehicle.",
     choices: [
       {
-        labelVi: "Xé toang sàn xe lôi {rival} ra quyết đấu sinh tử",
-        labelEn: "Tear through the vehicle floor to drag {rival} into a duel",
+        labelVi: "Phá sàn xe để chặn {rival}",
+        labelEn: "Break through the floor and stop {rival}",
         outcomes: [
           {
             w: 58,
-            resultVi: "Móng vuốt bạn xé toạc lớp hợp kim bọc thép. Bạn bẻ gãy thanh kiếm đắt tiền của {rival}, khắc sâu nỗi kinh hoàng tột cùng lên ánh mắt kẻ thù trước khi bồi một đòn đoạt mạng. Mối thù cũ chính thức được thanh toán.",
-            resultEn: "Your claws ripped through the armored floor. You snapped {rival}'s prized blade, carving terror into their eyes before delivering the finishing blow. The ancient grudge was settled in blood.",
+            resultVi: "Bạn bẻ gãy kiếm của {rival}. Khi xe dừng hẳn, người ấy không còn cử động. Bạn rời đi trước lúc những xe sau tới nơi.",
+            resultEn: "You break {rival}'s sword. By the time the vehicle stops, they no longer move. You leave before the other vehicles arrive.",
             effects: { health: -18, sanity: +25, rep: +40 },
             flagsAdd: ['distort_rival_predation_done', 'MốiThùĐượcRửa'],
             meritAdd: 32
           },
           {
             w: 42,
-            resultVi: "{rival} đã chuẩn bị sẵn lựu đạn lân tinh tầm gần. Vụ nổ thiêu rụi một bên sườn bạn, buộc bạn phải nhảy khỏi xe đang lao dốc trong biển lửa.",
-            resultEn: "{rival} had prepared point-blank phosphorus charges. The detonation scorched your flank, forcing you to leap from the burning vehicle as it skidded away.",
+            resultVi: "{rival} ném lựu đạn lân tinh xuống sàn xe. Bạn nhảy ra trước khi lửa tràn qua cửa, nhưng một bên sườn đã bỏng nặng.",
+            resultEn: "{rival} drops a phosphorus charge through the floor. You jump clear before fire reaches the door, but one side of your body is badly burned.",
             effects: { health: -32, sanity: -12, heat: +25 },
             flagsAdd: ['distort_rival_predation_done']
           }
         ]
       },
       {
-        labelVi: "Đánh sập cầu đường phá hủy toàn bộ đoàn xe hậu cần",
-        labelEn: "Collapse the bridge struts to destroy their logistics convoy",
-        resultVi: "Cột trụ cầu gãy gập dưới lực ép dị thể. Cả đoàn xe rơi xuống vực sâu, khiến chiến dịch săn lùng của {rival} phá sản hoàn toàn mà bạn không tốn một giọt máu.",
-        resultEn: "Bridge pillars yielded under your anomalous pressure. The entire convoy crashed into the ravine, ruining {rival}'s expedition without costing you a drop of blood.",
+        labelVi: "Phá trụ cầu để cắt đường của đoàn xe",
+        labelEn: "Break the bridge support to cut off the convoy",
+        resultVi: "Trụ cầu gãy; đoàn xe phải dừng ở đầu bên kia. Bạn nhặt được thùng hàng rơi khỏi xe cuối rồi rút khỏi đường chính. {rival} mất dấu bạn.",
+        resultEn: "The support breaks and the convoy stops on the far side. You take a crate that fell from the last vehicle and leave the main road. {rival} loses your trail.",
         effects: { rep: +25, wealth: +20 },
         meritAdd: 20,
         flagsAdd: ['distort_rival_predation_done']

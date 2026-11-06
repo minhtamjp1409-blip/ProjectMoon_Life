@@ -835,7 +835,7 @@ export function createNewCharacter({
             bond: 65,
             traitVi: `Cộng sự cũ của ${parentLegacy.name}, nay trở thành người dìu dắt bạn`,
             traitEn: `Former comrade of ${parentLegacy.name}, now guiding you`,
-            memories: [{ age: 0, vi: `Năm 0 tuổi: Nhận lời dìu dắt từ người bạn chiến đấu của ${parentLegacy.name}.`, en: `Age 0: Taken under the wing of ${parentLegacy.name}'s comrade.` }]
+            memories: [{ age: 0, vi: `Năm 0 tuổi: Nhận lời dìu dắt từ người bạn chiến đấu của ${parentLegacy.name}.`, en: `Age 0: Taken under the wing of ${parentLegacy.name}'s comrade.`, pinned: true }]
           }, rng)
         : null,
       partner: null,
@@ -848,7 +848,7 @@ export function createNewCharacter({
             metAge: 0,
             traitVi: `Kẻ thù truyền kiếp của ${parentLegacy.name}, nay chuyển tầm ngắm sang hậu bối`,
             traitEn: `Sworn nemesis of ${parentLegacy.name}, now hunting the heir`,
-            memories: [{ age: 0, vi: `Năm 0 tuổi: Thừa kế mối thù sâu nặng từ thời ${parentLegacy.name}.`, en: `Age 0: Inherited the blood feud from ${parentLegacy.name}.` }]
+            memories: [{ age: 0, vi: `Năm 0 tuổi: Thừa kế mối thù sâu nặng từ thời ${parentLegacy.name}.`, en: `Age 0: Inherited the blood feud from ${parentLegacy.name}.`, pinned: true }]
           }, rng)
         : null
     },

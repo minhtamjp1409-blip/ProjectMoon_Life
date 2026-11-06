@@ -13,7 +13,7 @@ import { clamp, interpolateText } from './gameEngine.js';
 import { addScar, activeScarSynergies } from './scarModel.js';
 import { dungeonWagerDamage, dungeonWagerLoot, dungeonWagerLevel } from './dungeonWager.js';
 import { traitsOf } from './variance.js';
-import { evaluateCompanionSupport, ensureNpcAgency, getNpcDungeonPerk } from '../data/npcPersonality.js';
+import { evaluateCompanionSupport, ensureNpcAgency, getNpcDungeonPerk, appendNpcMemory } from '../data/npcPersonality.js';
 import { FAIL_TEXT, GENERIC_FAIL, STRAIN_NOTES, BREAK_TEXT, SUPPLY_TEXT, ENDING_TEXT } from '../data/dungeonText.js';
 import { NIGHT_DUNGEON, STAGE_VARIANTS, SIDE_ROOMS, SHORTCUTS, COMPANION_TEXT, COMPANION_LEAD, FINAL_KEEPS, REPORT_FIT, DUNGEON_EXTRACTION_REWARDS } from '../data/dungeonExtras.js';
 import { ITEMS_CATALOG } from '../data/itemsData.js';
@@ -21,7 +21,7 @@ import { CLAW_DUNGEON, CLAW_DUNGEON_ID } from '../data/dungeonClaw.js';
 import { ENSEMBLE_DUNGEON, ENSEMBLE_ROUTE_SCENES, ENSEMBLE_SCORE_ITEM } from '../data/dungeonEnsemble.js';
 import { ENSEMBLE_DUNGEON_ID, ensembleRoute, ensembleWitness, recordEnsembleRetreat, finishEnsembleRun } from './ensemblePath.js';
 import { triggerDistortionTransformation } from './careerPipeline.js';
-import { npcIsActive, woundByShield } from './eventConditions.js';
+import { npcIsActive, woundByShield, hasSynergyWith } from './eventConditions.js';
 import { ensureAffiliation, getAffiliation } from './affiliation.js';
 import { applyNpcFate } from './director.js';
 import { dealCards, cardEffectOf, nextHand, dungeonUsesCards } from './dungeonCards.js';
@@ -898,7 +898,6 @@ export function pickDungeonCompanion(char) {
     // An injured companion stays home to heal, and an advisor works from headquarters
     if (npcIsActive(raw) && !raw.injured && !raw.advisor && (raw.bond ?? 0) >= 15) {
       const npc = ensureNpcAgency(raw);
-      if (char.npcs) char.npcs[role] = npc;
       return {
         role,
         nameVi: npc.nameVi,
@@ -929,6 +928,7 @@ function moveStanding(char, delta) {
 
 /** What a run did to the people and the badge around you, written once at its end. */
 export function settleRun(char, session, outcome) {
+  if (char.companionSynergy) char.companionSynergy = null;
   const notes = [...settleSignature(char, session, outcome)];
   const c = session.companion;
   if (c && npcIsActive(char.npcs?.[c.role])) {
@@ -1769,15 +1769,17 @@ export function resolveDungeonChoice(charState, choiceIndex, rng = Math.random) 
   // Companion Mortal Shield Intervention
   if (char.stats.health <= 0 && companion && npcIsActive(companionNpc) && !session.companionShieldUsed) {
     const perk = companion.perk || companionNpc.dungeonPerk;
-    const canShield = (perk?.type === 'shield' || char.companionSynergy?.active);
+    const synergyActive = hasSynergyWith(char, companion.role);
+    const canShield = (perk?.type === 'shield' || synergyActive);
     if (canShield) {
       session.companionShieldUsed = true;
+      if (synergyActive) char.companionSynergy = null;
       char.stats.health = 5;
       Object.assign(companionNpc, woundByShield(companionNpc, char.age || 0));
       companionNpc.bond = Math.min(100, (companionNpc.bond || 50) + 15);
       const shieldMemVi = `Năm ${char.age || 0} tuổi: Đỡ đòn chí mạng thay bạn trong ${def.titleVi}.`;
       const shieldMemEn = `Age ${char.age || 0}: Absorbed a mortal strike for you in ${def.titleEn}.`;
-      companionNpc.memories = [...(companionNpc.memories || []), { age: char.age || 0, vi: shieldMemVi, en: shieldMemEn }].slice(-6);
+      companionNpc.memories = appendNpcMemory(companionNpc.memories, { age: char.age || 0, vi: shieldMemVi, en: shieldMemEn, pinned: true });
       char.npcs[companion.role] = companionNpc;
       companionNotes.push({
         vi: `[Tấm khiên sinh tử] ${companion.nameVi} lao mình chắn ngang nhát chém kết liễu, máu nhuộm đỏ giáp vai: "Rút đi... đừng để cả hai cùng bỏ mạng ở đây!"`,

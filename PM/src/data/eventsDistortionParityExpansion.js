@@ -16,16 +16,16 @@ const DM = (id, vi, en, choices, ignore) =>
 
 export const DISTORTION_PARITY_MINORS = [
   DM('m_distort_carmen_white_petal_wager',
-    '[Cánh hoa trắng của Carmen] Một cánh hoa trắng muốt lơ lửng rơi xuống móng vuốt biến dị của bạn. Carmen khẽ cười khúc khích trong màng nhĩ: “Dâng hiến thêm một chút nhân tính, ta sẽ cho ngươi sức mạnh xé nát bức tường thép.”',
-    '[Carmen’s White Petal Wager] A pure white petal drifts onto your warped claw. Carmen chuckles softly in your ear: “Yield a little more humanity, and I shall grant you strength to rend steel ramparts.”',
+    '[Cánh hoa trắng] Một cánh hoa rơi lên bàn tay đã đổi dạng của bạn. Carmen hỏi: “Bạn còn định giấu cơn giận ấy bao lâu?” Cánh hoa không tan khi bạn chạm vào.',
+    '[A white petal] A petal lands on your altered hand. Carmen asks, “How much longer will you hide that anger?” The petal does not dissolve when you touch it.',
     [
-      C('Nuốt lấy cánh hoa và hòa tan thêm một phần lý trí',
-        'Swallow the petal and dissolve another shard of sanity',
-        'Một luồng nhiệt đỏ thẫm bùng nổ trong lồng ngực. Xương khớp bạn dày thêm gấp đôi, da thịt hóa thành hợp kim cứng như giáp Wing.',
-        'Crimson heat erupts within your chest. Your bones double in density; flesh hardens into alloy as tough as Wing armor.',
+      C('Giữ cánh hoa và nói ra cơn giận',
+        'Keep the petal and say what angers you',
+        'Bàn tay bạn nóng lên. Lớp vỏ quanh các khớp dày thêm; khi mở nắm tay, cánh hoa đã nát.',
+        'Your hand warms. The shell around your joints thickens; when you open your fist, the petal is crushed.',
         { resonance: 8, health: 12, sanity: -6, rep: 4 }),
-      C('Thổi bay cánh hoa và bám lấy ký ức về tên của chính mình',
-        'Blow the petal away and cling to the memory of your own name',
+      C('Thổi cánh hoa đi và nhắc lại tên mình',
+        'Blow the petal away and repeat your name',
         'Cánh hoa tan thành sương mù. Bạn lặp lại tên cũ ba lần; cơn đau đầu dịu đi đôi chút.',
         'The petal dissolves into mist. You repeat your old name three times; the migraine subsides slightly.',
         { sanity: 6, resonance: -2 })
@@ -34,90 +34,90 @@ export const DISTORTION_PARITY_MINORS = [
   ),
 
   DM('m_distort_shi_assassin_ambush',
-    '[Lưỡi đao phục kích của Shi Association] Hai sát thủ Shi Association rách rưới xuất hiện từ bóng tối của ống khói, rút hai thanh trường đao đâm thẳng vào mắt kép của bạn.',
-    '[Shi Association Ambush] Two ragged Shi assassins drop from chimney shadows, thrusting twin Odachis toward your compound eyes.',
+    '[Phục kích trên mái] Hai Fixer của Shi Association đợi trên mái tôn. Khi bạn đi qua, một người nhảy xuống chặn đầu hẻm, người kia rút đao phía sau.',
+    '[Rooftop ambush] Two Shi Association Fixers wait on a tin roof. As you pass, one drops into the alley ahead while the other draws a blade behind you.',
     [
-      C('Vung cánh tay biến dị đập nát vũ khí của chúng',
-        'Swing your mutated appendage to crush their blades',
-        'Thép gãy vụn dưới móng vuốt của bạn. Cú đập hất tung hai sát thủ qua mái ngói, để lại vệt máu đen.',
-        'Steel shatters beneath your talons. The blow hurls both assassins across roof tiles, leaving dark smears.',
+      C('Đánh vào lưỡi đao gần nhất để mở lối',
+        'Strike the nearest blade to clear a path',
+        'Lưỡi đao sứt một mảng. Bạn lách qua người chắn đầu hẻm trước khi đồng đội của họ kịp áp sát.',
+        'A chip breaks from the blade. You slip past the Fixer ahead before their partner can close in.',
         { health: -4, rep: 6, resonance: 4 }),
-      C('Hét lên một sóng âm cộng hưởng làm vỡ tung màng nhĩ đối phương',
-        'Unleash a resonant acoustic scream to burst their eardrums',
-        'Hai sát thủ ôm đầu ngã gục, máu ứa ra từ khóe mắt và tai. Bạn bước qua họ trong cơn hưng phấn cuồng loạn.',
-        'Both assassins collapse clutching their heads, bleeding from ears and eyes. You stalk past in euphoric frenzy.',
+      C('Dùng tiếng rít trong cổ họng làm họ khựng lại',
+        'Use the noise in your throat to make them hesitate',
+        'Cả hai bịt tai trong một nhịp. Bạn đi qua khoảng trống ấy; phía sau có tiếng họ báo vị trí của bạn qua máy liên lạc.',
+        'Both cover their ears for a moment. You pass through the gap; behind you, one reports your position over the radio.',
         { sanity: -3, rep: 8, heat: 5 })
     ],
-    I('Bạn lùi vào màn đêm để bóng tối nuốt chửng.', 'You slip into shadows, letting the night swallow you.', { sanity: 1 })
+    I('Bạn lùi qua con hẻm bên cạnh.', 'You retreat through the next alley.', { sanity: 1 })
   ),
 
   DM('m_distort_fear_harvest_market',
-    '[Vụ thu hoạch nỗi sợ ở khu chợ Backstreets] Bạn đi ngang qua một khu chợ ngầm Backstreets. Hàng chục cư dân bần hàn quỳ sụp xuống van xin, nỗi kinh hoàng bốc lên như hơi nước nóng.',
-    '[Fear Harvest in the Market] You stalk past a Backstreet market. Dozens of impoverished souls collapse pleading, terror rising like warm vapor.',
+    '[Chợ Backstreets] Bạn đi ngang khu chợ đang dọn hàng. Mấy người bán nhận ra bạn, kéo cửa sắt xuống và nấp sau quầy.',
+    '[Backstreets market] You pass a market as stalls are closing. Several sellers recognize you, pull down their shutters and hide behind the counters.',
     [
-      C('Hít sâu làn sóng kinh hãi để nuôi dưỡng lớp giáp dị thể',
-        'Inhale the waves of terror to nourish your carapace',
-        'Nỗi sợ hãi của con người là mật ngọt cho cơ thể mới. Lớp vỏ pha lê của bạn sáng rực rỡ và hồi phục vết nứt.',
-        'Human terror is nectar to your new form. Your crystalline shell glows vibrantly, mending fractures.',
+      C('Đứng lại giữa chợ, mặc họ bỏ chạy',
+        'Stay in the market and let them flee',
+        'Cơn căng trong người bạn dịu xuống khi khu chợ trống hẳn. Một vết nứt trên lớp vỏ khép lại; người bán sẽ kể chuyện này cho Office.',
+        'The tension in your body eases as the market empties. A crack in your shell closes; the sellers will tell an Office about this.',
         { health: 10, resonance: 6, sanity: -4, rep: 5 }),
-      C('Bước nhanh qua mà không làm hại bất kỳ ai',
-        'Stride past swiftly without harming anyone',
-        'Đám đông kinh ngạc khi thấy quái vật không tàn sát. Một tia lý trí le lói sưởi ấm tâm hồn bạn.',
-        'The crowd stares in awe as the monstrosity leaves them intact. A faint glimmer of humanity warms your soul.',
+      C('Đi qua mà không chạm vào quầy hàng',
+        'Pass without touching a stall',
+        'Bạn đi hết dãy quầy rồi nghe tiếng cửa sắt mở lại phía sau. Không ai đuổi theo.',
+        'You reach the end of the stalls and hear the shutters opening behind you. No one follows.',
         { sanity: 5, resonance: -2, rep: -2 })
     ],
     I('Bạn biến mất vào khúc quanh của con hẻm.', 'You vanish around the alley turn.', {})
   ),
 
   DM('m_distort_mirror_fragment_reflection',
-    '[Mảnh gương vỡ dưới vũng nước] Dưới vũng nước mưa lấp lánh dầu mỡ, bạn nhìn thấy hình ảnh phản chiếu của mình: không còn khuôn mặt con người, chỉ còn một khối tinh thể đỏ rực với sừng kim loại.',
-    '[Mirror Shard in the Puddle] In an oily puddle, you catch your reflection: no human features remain, only a pulsing crimson crystal mass crowned with metal horns.',
+    '[Mặt nước trước cửa tiệm] Nước mưa đọng cạnh thềm. Khi cúi xuống, bạn thấy lớp vỏ mới che mất phần lớn khuôn mặt cũ.',
+    '[Water by the shop] Rainwater gathers beside a doorstep. When you look down, the new shell hides most of the face you remember.',
     [
-      C('Chiêm ngưỡng và gầm lên kiêu hãnh vì vẻ đẹp hoàn mỹ',
-        'Admire and roar with pride at your perfected form',
-        'Bạn không còn là một con bọ nhỏ bị các Wing nghiền nát. Bạn là một kỳ quan mới của The City.',
-        'You are no longer a vermin to be crushed by Wings. You are a new wonder of The City.',
+      C('Nhìn kỹ hình dạng mới',
+        'Study your new shape',
+        'Bạn nhận ra vết nứt trên má đang khép lại. Người bán hàng phía trong kéo rèm xuống khi thấy bạn cúi gần cửa.',
+        'You notice a crack along your cheek closing. The shopkeeper inside draws the curtain when you lean near the door.',
         { sanity: -5, resonance: 8, rep: 4 }),
-      C('Dẫm nát vũng nước để xóa đi hình bóng quái vật',
-        'Stomp the puddle to shatter the monstrous visage',
-        'Nước bẩn bắn tung tóe. Trái tim bạn thắt lại trước sự thật rằng bạn không bao giờ có thể quay trở lại.',
-        'Muddy water splashes. Your heart wrenches at the undeniable truth that you can never return.',
+      C('Dẫm xuống vũng nước rồi bước tiếp',
+        'Step into the puddle and keep walking',
+        'Nước bắn lên ống quần. Bạn tránh nhìn cửa kính ở tiệm kế bên.',
+        'Water splashes your trousers. You avoid the next shop window.',
         { sanity: 4, health: -2 })
     ],
     I('Gió đêm thổi làm gợn sóng mặt nước.', 'The night wind ripples the water surface.', {})
   ),
 
   DM('m_distort_street_child_encounter',
-    '[Đứa trẻ không biết sợ hãi] Một đứa bé mồ côi gầy gò bới rác không hề bỏ chạy khi thấy bạn. Nó chìa ra nửa mẩu bánh mì mốc: "Ngươi đói không, sinh vật to lớn?"',
-    '[The Fearless Child] A scrawny orphan digging in garbage does not flee. He extends half a moldy loaf: “Are you hungry, giant creature?”',
+    '[Đứa trẻ bên thùng rác] Đứa trẻ nhặt ve chai đứng khựng lại khi thấy bạn. Nó chìa nửa mẩu bánh, vẫn giữ tay kia trên nắp thùng để có thể chạy.',
+    '[The child by the bin] A child collecting scrap freezes when they see you. They offer half a loaf, one hand still on the bin lid in case they need to run.',
     [
-      C('Dùng móng vuốt nhẹ nhàng nhận mẩu bánh và để lại một mảnh pha lê quý',
-        'Gently accept the bread with claws and leave a gem crystal',
-        'Đứa trẻ reo lên vui sướng khi nhặt viên ngọc rực sáng. Lần đầu tiên từ khi biến dị, tiếng gầm của bạn chuyển thành tiếng rừ rừ ấm áp.',
-        'The boy gasps in delight as he lifts the glowing gem. For the first time since mutating, your roar softens to a warm purr.',
+      C('Nhận bánh và đặt lại một mảnh vỏ bóng',
+        'Take the bread and leave a polished piece of shell',
+        'Đứa trẻ đợi bạn đi xa mới nhặt mảnh vỏ lên. Khi bạn quay lại, nó vẫn còn đứng đó.',
+        'The child waits until you have moved away before picking up the shell. When you look back, they are still there.',
         { sanity: 8, resonance: -3, network: 2 }),
-      C('Gầm lên dọa đứa trẻ chạy đi trước khi các Fixer săn dị thể ập đến',
-        'Roar fiercely to scare the child away before Fixers arrive',
-        'Đứa bé hoảng sợ bỏ chạy thục mạng vào hẻm sâu. Bạn quay lưng lại đối diện với ánh đèn pha của đội săn đuổi.',
-        'The boy scrambles away into the deep alley. You turn to face the approaching searchlights.',
+      C('Ra hiệu cho đứa trẻ đi trước khi toán Fixer tới',
+        'Signal the child to leave before the Fixers arrive',
+        'Đứa trẻ ôm bánh chạy đi. Đèn pha của toán Fixer quét qua bức tường nơi nó vừa đứng.',
+        'The child runs with the bread. A Fixer searchlight sweeps the wall where they had been standing.',
         { sanity: 2, rep: 4, heat: 4 })
     ],
     I('Bạn quay đi và để đứa trẻ ở lại với bãi rác.', 'You turn away, leaving the child to the refuse.', {})
   ),
 
   DM('m_distort_broken_workshop_weapon_feast',
-    '[Thịt vụn kim loại Workshop] Xác một cỗ máy chiến đấu của Workshop bị bỏ lại sau đợt giao tranh. Cơ thể bạn bỗng thèm khát nuốt chửng các vi mạch và hợp kim sắc bén của nó.',
-    '[Feast on Workshop Shrapnel] The carcass of a Workshop war machine lies abandoned. Your warped physiology craves devouring its sharp microchips and alloy.',
+    '[Máy hỏng của Workshop] Cỗ máy chiến đấu bị bỏ cạnh đống rác, lớp vỏ kim loại đã bung. Bạn thấy phần hợp kim bên trong có cùng màu với các khớp tay mình.',
+    '[Discarded Workshop machine] A damaged combat machine lies beside the rubbish, its casing open. The alloy inside is the same color as the joints in your hand.',
     [
-      C('Nghiền nát và nuốt trọn khối kim loại vào dạ dày',
-        'Crush and swallow the alloy mass into your gullet',
-        'Tiếng kim loại ma sát ken két trong thực quản. Vỏ ngoài của bạn mọc thêm hàng chục lưỡi dao sắc như dao mổ.',
-        'Metal grinds inside your esophagus. Your carapace sprouts dozens of scalpel-sharp blades.',
+      C('Bẻ lấy hợp kim và ghép vào lớp vỏ bị nứt',
+        'Take the alloy and fit it over a crack in your shell',
+        'Miếng hợp kim bám vào khớp tay. Vết nứt bên dưới thôi đau; mỗi lần cử động, phần mới ghép kêu ken két.',
+        'The alloy catches on your arm joint. The crack beneath stops hurting; the new piece creaks whenever you move.',
         { health: 12, resonance: 5, sanity: -3 }),
-      C('Dùng móng vuốt đập nát cỗ máy thành bình địa',
-        'Shatter the machine into flat scrap with heavy blows',
-        'Tiếng đập phá vang dội xua tan cơn bực bội trong huyết quản.',
-        'The shattering crash dispels the agitation simmering in your veins.',
+      C('Đập máy cho tới khi nó ngừng phát tiếng',
+        'Break the machine until it stops making noise',
+        'Tiếng lạch cạch cuối cùng tắt đi. Bạn bỏ đống linh kiện lại cho người thu mua phế liệu.',
+        'The last rattle stops. You leave the parts for a scrap collector.',
         { sanity: 3, rep: 3 })
     ],
     I('Bạn bỏ qua xác máy gỉ sét.', 'You leave the rusted chassis behind.', {})
@@ -130,43 +130,43 @@ export const DISTORTION_PARITY_MINORS = [
 
 export const DISTORTION_PARITY_DAILIES = [
   D('d_distort_carmen_lullaby', [18, 140], { jobs: ['Distortion'] },
-    'Tiếng hát của Carmen vang vọng trong tủy sống như một khúc hát ru ngọt ngào giữa cơn mưa a-xít của District 23.',
-    'Carmen’s melody echoes in your bone marrow like a sweet lullaby amidst District 23’s acid rain.',
+    'Giữa tiếng mưa District 23, bạn nghe Carmen gọi. Đến khi mưa ngớt, giọng ấy cũng im.',
+    'You hear Carmen calling through the rain in District 23. When the rain eases, the voice stops.',
     { sanity: -1, resonance: 1 }),
 
   D('d_distort_crystal_sprouts', [18, 140], { jobs: ['Distortion'] },
-    'Những cánh hoa pha lê đỏ thẫm mọc xuyên qua lớp da tay bạn rồi nở rộ trong đêm tối, phát ra ánh sáng lung linh.',
-    'Crimson crystal petals pierce your forearm, blooming in the dark with a hypnotic iridescence.',
+    'Vết nứt trên cơ thể khép dần trong đêm. Sáng ra, áo bạn vẫn rách ở chỗ ấy.',
+    'A crack in your body closes overnight. By morning, your coat is still torn where it had been.',
     { health: 1, resonance: 1 }),
 
   D('d_distort_sound_of_heartbeats', [18, 140], { jobs: ['Distortion'] },
-    'Bạn nghe thấy nhịp tim của mọi người trong bán kính ba dãy nhà. Từng tiếng đập đập đều vang lên như tiếng trống trận.',
-    'You hear every heartbeat within three city blocks. Each pulse throbs like a distant war drum.',
+    'Từ trong phòng trọ, bạn nghe tiếng người đi qua ngoài hẻm rõ hơn trước. Bạn đợi họ khuất rồi mới mở cửa.',
+    'From your room, footsteps in the alley sound clearer than they used to. You wait for them to pass before opening the door.',
     { resonance: 1 }),
 
   D('d_distort_sweepers_part_ways', [18, 140], { jobs: ['Distortion'] },
-    'Đúng 3:13 AM, đàn Sweeper tràn ra hẻm. Khi thấy cái bóng biến dị khổng lồ của bạn, chúng lặng lẽ đổi hướng dạt sang hai bên.',
-    'At exactly 3:13 AM, Sweepers swarm the alley. Sensing your towering silhouette, they silently divert around you.',
+    'Sau 3 giờ 10, Sweepers đi qua hẻm bên cạnh. Một chiếc dừng lại trước vệt cào trên tường nhà bạn rồi tiếp tục.',
+    'After 3:10, Sweepers pass through the next alley. One stops at the marks on your wall, then moves on.',
     { rep: 1 }),
 
   D('d_distort_tears_turn_to_glass', [18, 140], { jobs: ['Distortion'] },
-    'Một giọt nước mắt trào ra từ con mắt thứ ba, đông cứng thành hạt thủy tinh đỏ thẫm kêu lách cách trên nền gạch.',
-    'A tear spills from your tertiary eye, crystallizing into a scarlet glass bead that clatters across the cobbles.',
+    'Bạn tìm thấy vệt nước trên tay áo sau khi nghe lại tên cũ. Đến lúc lau đi, nó đã khô.',
+    'After hearing your old name, you find a damp mark on your sleeve. It has dried by the time you wipe it.',
     { sanity: 1 }),
 
   D('d_distort_hana_patrol_drones', [18, 140], { jobs: ['Distortion'] },
-    'Drone trinh sát của Hana quét tia laser xanh qua mái nhà bạn ẩn nấp rồi bay đi, phát ra cảnh báo: “Mối nguy cấp Urban Nightmare.”',
-    'A Hana recon drone sweeps green lasers across your roost, buzzing away with an alert: “Urban Nightmare entity confirmed.”',
+    'Thiết bị trinh sát lướt qua mái nhà, quét đèn lên chỗ bạn trú. Sáng sau, tờ thông báo của Hana xuất hiện ở đầu phố.',
+    'A surveillance unit passes over the roof and lights your shelter. By morning, a Hana notice is posted at the street entrance.',
     { rep: 1, heat: 1 }),
 
   D('d_distort_scent_of_melting_steel', [18, 140], { jobs: ['Distortion'] },
-    'Hơi thở của bạn phả ra làm chảy lỏng thanh lan can thép bên cạnh. The City dường như quá mỏng manh trước thể xác này.',
-    'Your exhalation softens a steel railing nearby. The City feels impossibly brittle before this body.',
+    'Bạn vịn lan can khi lên cầu thang. Thanh sắt cong đi một chút; bạn đổi sang tay còn lại.',
+    'You grip the stair railing. The metal bends slightly, so you switch to your other hand.',
     { health: 1 }),
 
   D('d_distort_old_song_echoes', [18, 140], { jobs: ['Distortion'] },
-    'Một điệu hát cổ bạn từng nghe mẹ hát thời thơ ấu chợt vọng lại trong đầu, xen lẫn tiếng cười trong trẻo của Carmen.',
-    'An old nursery tune once sung in childhood drifts through memory, interlaced with Carmen’s clear laughter.',
+    'Có người hát ở phòng bên cạnh. Bạn không nhận ra bài hát, nhưng Carmen cũng im để nghe.',
+    'Someone sings in the next room. You do not know the song, but Carmen falls silent to listen.',
     { sanity: 1 })
 ];
 
@@ -183,26 +183,26 @@ export const DISTORTION_PARITY_MAJORS = [
     need: { jobs: ['Distortion'], stat: { rep: [60, 100], heat: [50, 100] } },
     requires: ['Distorted'],
     forbids: ['distort_star_calamity_done', 'distort_star_rampage_done', 'StarOfTheCityEntity'],
-    vi: "[Khảo Thí Diệt Họa: Star of the City] Hana Association chính thức nâng cấp định danh của bạn lên hàng 'Star of the City', một Thảm Họa Cấp Tinh Tú. Một Giám đốc Section 1 của Liu Association cùng hai Fixer Grade 1 mang vũ khí rực lửa tiến vào phong tỏa toàn bộ khu phố nơi bạn cư ngụ.",
-    en: "[Calamity Ordination: Star of the City] Hana Association officially designates you a 'Star of the City'. A Liu Association Section 1 Director flanked by two Grade 1 Fixers bearing blazing polearms seals the district around your lair.",
+    vi: "[Lệnh trấn áp mới] Hana nâng hồ sơ của bạn lên Star of the City. Giám đốc Section 1 của Liu cùng hai Fixer Grade 1 đến chặn khu phố. Họ đánh dấu lối thoát trên bản đồ trước khi vào hẻm.",
+    en: "[A new suppression order] Hana raises your file to Star of the City. A Liu Section 1 Director and two Grade 1 Fixers block the district. They mark the exits on a map before entering the alley.",
     choices: [
       {
-        labelVi: "Dốc toàn bộ sức mạnh biến dị quyết chiến với Giám đốc Section 1",
-        labelEn: "Unleash your full mutated might to battle the Section 1 Director",
+        labelVi: "Đánh vào Giám đốc trước khi hai Fixer khép vòng",
+        labelEn: "Strike the Director before the other Fixers close in",
         need: { stat: { health: [40, 100] } },
         outcomes: [
           {
             w: 60,
-            resultVi: "Giao tranh rung chuyển cả khu phố. Lớp giáp lửa của viên Giám đốc bị móng vuốt bạn xé toạc; cả ba Fixer đỉnh cao phải rút lui trong máu và đổ nát. Hana ghi nhận một thảm họa không thể khuất phục.",
-            resultEn: "The clash shatters the neighborhood. You tear open the Director’s flame armor; all three apex Fixers retreat through blood and rubble. Hana logs an unsubduable calamity.",
+            resultVi: "Bạn xé rách giáp vai của Giám đốc. Hai Fixer còn lại kéo người ấy lùi khỏi hẻm; Hana ghi trận này vào hồ sơ mở của bạn.",
+            resultEn: "You tear through the Director’s shoulder armor. The other Fixers pull them out of the alley; Hana records the clash in your open file.",
             effects: { health: -25, resonance: +35, rep: +50, sanity: -15 },
             flagsAdd: ['distort_star_calamity_done', 'LivingStarOfCity', 'BấtKhảKhuấtPhục'],
             meritAdd: 50
           },
           {
             w: 40,
-            resultVi: "Hỏa diệm từ thương của Liu thiêu cháy một nửa lớp vỏ ngoài của bạn. Bạn phá được vòng vây để trốn xuống hầm mộ sâu nhưng mang theo những vết sẹo bỏng rát linh hồn.",
-            resultEn: "Liu’s polearm flames scorch half your carapace. You breach the cordon and retreat into deep catacombs, bearing scars that burn into your soul.",
+            resultVi: "Thương của Giám đốc đốt cháy lớp vỏ bên sườn. Bạn phá được vòng vây và xuống đường hầm, nhưng vết bỏng tiếp tục rỉ dịch.",
+            resultEn: "The Director’s polearm burns through the shell at your side. You break the cordon and reach the tunnel, but the burn keeps weeping.",
             effects: { health: -40, sanity: -25, heat: +35 },
             flagsAdd: ['distort_star_calamity_done'],
             scarsAdd: ['Sẹo hỏa kiếm Liu Section 1']
@@ -210,20 +210,20 @@ export const DISTORTION_PARITY_MAJORS = [
         ]
       },
       {
-        labelVi: "Hòa tan thân xác vào màn sương đỏ thẫm, làm biến dạng cả ba dãy nhà",
-        labelEn: "Dissolve into crimson mist, warping the surrounding three blocks",
+        labelVi: "Làm lệch các lối hẻm để cắt đội hình của họ",
+        labelEn: "Shift the alleys to split their formation",
         outcomes: [
           {
             w: 65,
-            resultVi: "Bạn biến môi trường xung quanh thành một mê cung dị thể sống. Các Fixer lạc hướng giữa những bức tường biết thở; bạn bình thản ngắm nhìn họ từ trên đỉnh tháp chuông đổ nát, dù tâm thức bạn ngày càng rời xa hình hài con người.",
-            resultEn: "You transform the terrain into a living distortion labyrinth. Fixers stumble through breathing masonry; you watch calmly from a ruined bell tower as your mind drifts further from humanity.",
+            resultVi: "Hai lối hẻm nối nhầm vào nhau. Các Fixer mất thời gian tìm lại đội hình; bạn thoát qua mái nhà trước khi Liu phát hiện đường vòng.",
+            resultEn: "Two alleys join in the wrong place. The Fixers lose time regrouping; you cross the rooftops before Liu finds another route.",
             effects: { resonance: +22, sanity: -14, rep: +28, heat: +16 },
             flagsAdd: ['distort_star_calamity_done', 'DistortionArchitect']
           },
           {
             w: 35,
-            resultVi: "Trận địa hỏa công của Liu Section 1 đốt bốc hơi gần một nửa màn sương máu của bạn. Bạn giữ được lãnh địa nhưng bản thể suy kiệt nặng nề sau đòn thiêu đốt diện rộng.",
-            resultEn: "Liu Section 1’s wide-area fire formation vaporizes nearly half your crimson mist. You hold your domain, yet your core essence suffers severe thermal depletion.",
+            resultVi: "Liu đốt đường nối giữa hai hẻm. Bạn giữ được chỗ trú nhưng phải lùi vào trong, lớp vỏ trước ngực nóng rát suốt đêm.",
+            resultEn: "Liu burns through the passage between the alleys. You keep your shelter but retreat inside; the shell over your chest aches with heat all night.",
             effects: { health: -32, sanity: -18, resonance: +10, heat: +20 },
             flagsAdd: ['distort_star_calamity_done']
           }
@@ -239,44 +239,44 @@ export const DISTORTION_PARITY_MAJORS = [
     weight: 35,
     requires: ['Distorted'],
     forbids: ['distort_ego_clash_done'],
-    vi: "[Va Chạm Bản Ngã: Ánh Sáng Đối Đầu Dị Dạng] Một Fixer mang E.G.O thức tỉnh rực rỡ xuất hiện trước mặt bạn. Ánh sáng từ vũ khí của người ấy đâm buốt vào da thịt bạn; người ấy hét lên: “Ngươi đã đầu hàng sự yếu đuối của mình! Hãy tỉnh lại hoặc tan biến!”",
-    en: "[Clash of Manifestation: Light vs Warped Desire] An Awakened E.G.O wielder Fixer steps before you. The light of their weapon sears your flesh; they cry out: “You surrendered to your weakness! Awaken or be erased!”",
+    vi: "[Fixer mang E.G.O] Fixer chặn bạn ở đầu ngõ. Vũ khí E.G.O của người ấy hiện ra khi họ rút tay khỏi áo. “Tôi có lệnh đưa bạn về.”",
+    en: "[A Fixer with E.G.O] A Fixer blocks the alley entrance. Their E.G.O weapon appears as they pull a hand from their coat. “I have orders to bring you in.”",
     choices: [
       {
-        labelVi: "Gầm lên đáp trả: “Đầu hàng? Đây là sự tự do tuyệt đối!” và tung đòn kết liễu",
-        labelEn: "Roar back: \"Surrender? This is absolute liberation!\" and deliver a mortal strike",
+        labelVi: "Đánh vào tay cầm vũ khí trước",
+        labelEn: "Strike the weapon hand first",
         outcomes: [
           {
             w: 65,
-            resultVi: "Hai ý chí va chạm tạo nên làn sóng chấn động thổi bay kính của toàn khu vực. Móng vuốt của bạn đánh gãy vũ khí E.G.O đối phương; người ấy ngã xuống với ánh mắt kinh hoàng trước vẻ đẹp bạo liệt của bạn.",
-            resultEn: "Two wills collide, generating shockwaves that shatter windows for miles. Your talons shatter their E.G.O weapon; they fall in terror before your violent majesty.",
+            resultVi: "Bạn đánh nứt vũ khí trên tay Fixer. Ánh sáng E.G.O tắt đi khi người ấy ngã xuống; bạn bị rạch vai lúc lách qua.",
+            resultEn: "You crack the weapon in the Fixer’s hand. Its E.G.O light goes out when they fall; your shoulder is cut as you slip past.",
             effects: { health: -20, resonance: +28, rep: +32, sanity: -12, heat: +14 },
             flagsAdd: ['distort_ego_clash_done', 'EGOBreaker']
           },
           {
             w: 35,
-            resultVi: "Ánh sáng E.G.O làm thanh tẩy một phần lớp vỏ ngoài của bạn, đánh thức ký ức đau đớn về kiếp người. Bạn đẩy lùi đối phương nhưng gục ngã vì cú sốc tâm lý.",
-            resultEn: "The E.G.O light purges part of your carapace, awakening agonizing human memories. You repel the wielder but collapse from psychic trauma.",
+            resultVi: "Bạn đẩy được Fixer lùi lại. Lưỡi vũ khí rạch lớp vỏ trước ngực; ký ức cũ bất ngờ kéo tới, khiến bạn phải vịn tường mới đứng vững.",
+            resultEn: "You force the Fixer back. Their blade cuts the shell over your chest; an old memory catches you off guard, and you brace yourself against the wall.",
             effects: { health: -30, sanity: -25, resonance: +15 },
             flagsAdd: ['distort_ego_clash_done']
           }
         ]
       },
       {
-        labelVi: "Dùng tiếng thì thầm của Carmen lung lạc tâm trí của người mang E.G.O",
-        labelEn: "Channel Carmen’s whisper to unravel the E.G.O wielder’s convictions",
+        labelVi: "Lặp lại lời Carmen vừa nói với bạn",
+        labelEn: "Repeat what Carmen just said to you",
         outcomes: [
           {
             w: 65,
-            resultVi: "Giọng nói của bạn hòa cùng Carmen rót thẳng vào tai người Fixer. Ánh sáng vũ khí của người ấy lịm dần; người ấy ôm đầu gào thét khi nhận ra sự giả dối của lòng kiên định The City, dù cổ họng tâm linh của bạn rướm máu.",
-            resultEn: "Your voice, laced with Carmen’s song, pours into the Fixer’s mind. Their light dims; they scream clutching their head as conviction crumbles, though your psychic vessel bleeds from the strain.",
+            resultVi: "Fixer khựng lại trước câu nói ấy. Vũ khí trong tay người ấy chập chờn đủ lâu để bạn thoát qua, còn cổ họng bạn rát đến mức không nói thêm được.",
+            resultEn: "The Fixer hesitates at those words. Their weapon flickers long enough for you to pass; your throat hurts too much to say anything else.",
             effects: { health: -12, sanity: -8, resonance: +22, rep: +26, heat: +12 },
             flagsAdd: ['distort_ego_clash_done', 'CorrupterOfConviction']
           },
           {
             w: 35,
-            resultVi: "Ý chí sắt đá của người mang E.G.O phản dội ngược âm thanh của bạn, đâm xuyên qua lớp màng bảo vệ tâm thức và chém một đường sâu lên ngực bạn trước khi rút lui.",
-            resultEn: "The E.G.O wielder’s iron conviction reflects your psychic chorus back at you, piercing your mental veil and carving a deep gash across your chest before withdrawing.",
+            resultVi: "Fixer nghe hết câu rồi vẫn tiến lên. Bạn né không kịp; lưỡi vũ khí rạch ngực trước khi người ấy lùi lại lấy đà.",
+            resultEn: "The Fixer hears you out and keeps coming. You move too late; the blade cuts your chest before they step back to reset their stance.",
             effects: { health: -28, sanity: -20, resonance: +8 },
             flagsAdd: ['distort_ego_clash_done'],
             scarsAdd: ['Vết chém phản chấn E.G.O']
@@ -294,32 +294,32 @@ export const DISTORTION_PARITY_MAJORS = [
     need: { jobs: ['Distortion'] },
     requires: ['Distorted'],
     forbids: ['distort_arc_century_calamity_done'],
-    vi: "[Bách Niên Dị Thể: Điểm tận cùng bản ngã] Bạn đã tồn tại hơn một thế kỷ trong hình hài dị thường. Thân thể không già đi theo năm tháng, nhưng sức ép cộng hưởng từ Biển Ánh Sáng đã chạm ngưỡng chịu đựng. Hana xếp bạn vào danh sách Thảm Họa Tinh Cầu vĩnh cửu. Đêm nay, The Head bắt đầu để mắt tới sự tồn tại phá vỡ quy luật này.",
-    en: "[Century Calamity: Culmination of Ego] You have survived over a century in distorted form. Your vessel does not age, but resonance pressure from the Light has reached bursting limits. Hana lists you as a perpetual Star of the City. Tonight, the Head turns its gaze upon this rule-defying existence.",
+    vi: "[Trăm năm] Bạn đã sống hơn một thế kỷ trong hình dạng này. Chỗ trú cũ bị xây đè lên hai lần; hồ sơ Hana vẫn được chuyển tiếp mỗi khi người phụ trách đổi ca. Hôm nay, có thêm dấu của The Head trên trang đầu.",
+    en: "[A century] You have lived in this form for over a hundred years. Your old shelter has been built over twice; Hana passes your file from one clerk to the next. Today, the Head’s seal appears on its first page.",
     choices: [
       {
-        labelVi: "Thu hồi cộng hưởng, hòa thân xác vào lòng đất thành Di Tích Ngủ Yên",
-        labelEn: "Retract resonance and merge into the earth as a Dormant Monument",
+        labelVi: "Rút xuống tầng hầm cũ và ngừng đáp lại bên ngoài",
+        labelEn: "Retreat to the old basement and stop answering the world outside",
         endsLife: true,
         lifeEnding: 'distort_monument',
         effects: { rep: +50, sanity: +30, resonance: -100 },
-        resultVi: "Bạn thu mình lại dưới lớp phế tích ngầm, cấu trúc pha lê hóa thạch tạo thành vùng đất cấm yên bình che chở người bần hàn Backstreets suốt nhiều đời sau. Bạn an nghỉ trong giấc ngủ bất tận.",
-        resultEn: "You fold deep into subterranean ruins, crystallizing into a sanctuary that shelters Backstreets wretched for generations. You rest in boundless peace."
+        resultVi: "Bạn nằm xuống dưới móng nhà cũ. Lớp vỏ cứng bít cửa tầng hầm; người đi ngang chỉ thấy mặt đường mới và vết nứt chưa ai trám.",
+        resultEn: "You lie beneath the old foundations. Your shell seals the basement entrance; passersby see only the new paving and a crack nobody has repaired."
       },
       {
-        labelVi: "Gầm lên khiêu chiến trật tự The City, đối đầu Móng Vuốt của The Head",
-        labelEn: "Roar in defiance against City Order, confronting the Claw of the Head",
+        labelVi: "Ở lại khi The Head cử Claw đến",
+        labelEn: "Stay when the Head sends a Claw",
         startDungeon: CLAW_DUNGEON_ID,
-        resultVi: "Tiếng gầm làm rung chuyển kết cấu không gian. Vết cắt xanh mảnh khảnh xé toạc bức tường phế tích: Claw của The Head bước vào với bản án tử trên tay.",
-        resultEn: "Your roar shatters the spatial continuum. A thin blue line tears the ruin wall: the Head's Claw steps through with an unsigned death sentence in hand."
+        resultVi: "Claw bước qua cửa hầm đã bật khóa. Ba ống Serum trên tay nó sáng lên; bạn không còn lối lùi.",
+        resultEn: "A Claw steps through the unlocked basement door. Three Serum injectors light up on its arm; there is nowhere left to retreat."
       },
       {
-        labelVi: "Tiếp tục lang thang trong bóng tối Backstreets như một huyền thoại sống",
-        labelEn: "Continue roaming the Backstreets shadows as a living legend",
+        labelVi: "Rời District trước khi lệnh mới đến",
+        labelEn: "Leave the District before the new order arrives",
         effects: { rep: +25, sanity: -10, heat: +15 },
         flagsAdd: ['distort_arc_century_calamity_done'],
-        resultVi: "Bạn biến mất vào những con hẻm quanh co của District 23. Các đội săn đuổi chỉ tìm thấy mảnh tinh thể vỡ vụn; huyền thoại về sinh vật trăm tuổi vẫn được kể trong những đêm đông.",
-        resultEn: "You melt into District 23's twisting alleys. Hunters find only shattered crystals; the legend of the century-old beast is whispered on cold nights."
+        resultVi: "Bạn qua trạm kiểm soát lúc đổi ca. Khi đội săn đến chỗ trú cũ, cửa đã mở và đồ đạc không còn; hồ sơ Hana lại phải sửa địa chỉ.",
+        resultEn: "You pass the checkpoint during shift change. When hunters reach your old shelter, the door is open and your things are gone; Hana must update your address again."
       }
     ]
   }

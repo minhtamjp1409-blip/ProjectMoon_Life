@@ -8,6 +8,14 @@ export const npcIsActive = (npc) => Boolean(npc) && npc.alive !== false && !npc.
 export const SHIELD_HEAL_YEARS = 2;
 export const npcIsHurt = (npc) => Boolean(npc?.injured) || npc?.status === 'wounded';
 export const woundByShield = (npc, age = 0) => ({ ...npc, injured: true, injurySeverity: 'severe', injuredAtAge: age, healsAtAge: age + SHIELD_HEAL_YEARS });
+export function hasSynergyWith(char, npcRole) {
+  const syn = char?.companionSynergy;
+  if (!syn || !syn.active) return false;
+  if (npcRole && syn.role && syn.role !== npcRole) return false;
+  const age = char?.age ?? 0;
+  const synYear = syn.year ?? age;
+  return age - synYear <= 1;
+}
 export const isNestResident =(char) => ['Nest', 'NestResident', 'Feather'].some((f) => char.flags?.includes(f));
 export const isOutsideCity = (char) => char.regionId === 'OUTSKIRTS' || char.flags?.includes('Outskirts');
 

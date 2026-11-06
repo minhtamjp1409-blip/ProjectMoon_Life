@@ -91,8 +91,8 @@ export const CUTSCENES = {
   ego: {
     ms: { full: 4600, lite: 1000, still: 1800, caption: 1200 },
     lines: [
-      { vi: 'Giọng nói trong tâm trí bạn vụn vỡ.', en: 'The voice in your mind shatters.' },
-      { vi: 'Một luồng sáng bùng lên từ nơi sâu thẳm nhất.', en: 'Light erupts from the deepest fracture.' },
+      { vi: 'Giọng nói kia dừng lại.', en: 'The other voice falls silent.' },
+      { vi: 'Trong tay bạn, ánh sáng bắt đầu có hình dạng.', en: 'Light takes shape in your hand.' },
       { vi: 'E.G.O đã thành hình.', en: 'E.G.O has taken shape.' }
     ],
     keyLine: 2
@@ -101,8 +101,8 @@ export const CUTSCENES = {
   distort: {
     ms: { full: 4600, lite: 1000, still: 1800, caption: 1200 },
     lines: [
-      { vi: 'Tâm trí bạn không còn gồng gánh nữa.', en: 'Your mind no longer struggles to hold on.' },
-      { vi: 'Mặt kính vỡ ra, và ánh dương của Carmen nuốt chửng bản ngã.', en: 'The glass shatters, and Carmen’s light swallows your self.' },
+      { vi: 'Bạn nghe rõ giọng nói kia hơn tiếng đường phố.', en: 'The other voice is louder than the street.' },
+      { vi: 'Vết nứt trên kính chạy dài theo bàn tay bạn.', en: 'A crack spreads across the glass beneath your hand.' },
       { vi: 'Biến dị đã thành hình.', en: 'Distortion has taken shape.' }
     ],
     keyLine: 2

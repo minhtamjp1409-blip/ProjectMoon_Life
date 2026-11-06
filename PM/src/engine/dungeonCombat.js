@@ -6,7 +6,8 @@
 // Shared dungeon helpers (damage scaling, endings, companions) come in through `ctx` from
 // dungeonEngine.js, so this module never imports it back.
 // ============================================================================
-import { woundByShield } from './eventConditions.js';
+import { woundByShield, hasSynergyWith } from './eventConditions.js';
+import { appendNpcMemory } from '../data/npcPersonality.js';
 import { cardEffectOf, dungeonUsesCards, nextHand } from './dungeonCards.js';
 import { GAUNTLETS, INTENT_KINDS, REST_TEXT } from '../data/dungeonGauntlets.js';
 import { activeScarSynergies } from './scarModel.js';
@@ -521,14 +522,16 @@ export function resolveGauntletChoice(char, session, choiceIndex, rng, ctx) {
     const compRole = session.companion.role;
     const companionNpc = char.npcs?.[compRole];
     const perk = session.companion.perk || companionNpc?.dungeonPerk;
-    if ((perk?.type === 'shield' || char.companionSynergy?.active) && companionNpc && companionNpc.status !== 'dead') {
+    const synergyActive = hasSynergyWith(char, compRole);
+    if ((perk?.type === 'shield' || synergyActive) && companionNpc && companionNpc.status !== 'dead') {
       session.companionShieldUsed = true;
+      if (synergyActive) char.companionSynergy = null;
       char.stats.health = 5;
       Object.assign(companionNpc, woundByShield(companionNpc, char.age || 0));
       companionNpc.bond = Math.min(100, (companionNpc.bond || 50) + 15);
       const shieldMemVi = `Năm ${char.age || 0} tuổi: Đỡ đòn chí mạng thay bạn trong ${def.titleVi}.`;
       const shieldMemEn = `Age ${char.age || 0}: Absorbed a mortal strike for you in ${def.titleEn}.`;
-      companionNpc.memories = [...(companionNpc.memories || []), { age: char.age || 0, vi: shieldMemVi, en: shieldMemEn }].slice(-6);
+      companionNpc.memories = appendNpcMemory(companionNpc.memories, { age: char.age || 0, vi: shieldMemVi, en: shieldMemEn, pinned: true });
       char.npcs[compRole] = companionNpc;
       notes.push({
         vi: `[Tấm khiên sinh tử] ${session.companion.nameVi} lao mình chắn ngang nhát chém kết liễu, máu nhuộm đỏ giáp vai: "Rút đi... đừng để cả hai cùng bỏ mạng ở đây!"`,

@@ -13,6 +13,8 @@
 // Every dungeon bends one rule, so a clash in the WARP train does not feel like one on the Great Lake.
 // ============================================================================
 
+import { appendNpcMemory } from '../data/npcPersonality.js';
+
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
 
 export const CLASH_KINDS = ['heavy', 'quick'];
@@ -197,8 +199,8 @@ export function settleStake(ctx, char, session, stake, outcome) {
       ctx.moveCompanionBond(char, comp, CLASH_BALANCE.npcWinBond);
       const npc = char.npcs?.[role];
       if (npc) {
-        const memory = { age: char.age || 0, vi: `Năm ${char.age || 0} tuổi: cùng bạn ra một nhát quyết định trong ${ctx.def(session).titleVi}.`, en: `Age ${char.age || 0}: struck the deciding blow at your side in ${ctx.def(session).titleEn}.` };
-        char.npcs = { ...char.npcs, [role]: { ...npc, memories: [...(npc.memories || []), memory].slice(-6) } };
+        const memory = { age: char.age || 0, vi: `Năm ${char.age || 0} tuổi: cùng bạn ra một nhát quyết định trong ${ctx.def(session).titleVi}.`, en: `Age ${char.age || 0}: struck the deciding blow at your side in ${ctx.def(session).titleEn}.`, pinned: true };
+        char.npcs = { ...char.npcs, [role]: { ...npc, memories: appendNpcMemory(npc.memories, memory) } };
       }
       return { vi: `${comp.nameVi} lao vào cùng lúc với bạn. Hai lưỡi đánh vào cùng một chỗ.`, en: `${comp.nameEn} goes in at the same moment you do. Two blades land in the same place.` };
     }
