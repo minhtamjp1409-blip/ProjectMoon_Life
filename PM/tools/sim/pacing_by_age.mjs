@@ -56,7 +56,13 @@ for (let i = 0; i < LIVES; i++) {
         } else if (char.pendingContract) {
           row.contract++; choices++;
           const ap = char.pendingContract.approaches.filter((a) => a.id !== 'decline').sort((a, b) => b.successPct - a.successPct);
+          const pendingBefore = char.pendingContract;
           char = resolveFixerContract(char, (ap[0] || char.pendingContract.approaches[0]).id, rng);
+          // An approach the character cannot afford leaves the contract open; a player would decline it
+          if (char.pendingContract && char.pendingContract.id === pendingBefore.id) {
+            const decline = char.pendingContract.approaches.find((a) => a.id === 'decline');
+            char = decline ? resolveFixerContract(char, 'decline', rng) : { ...char, pendingContract: null };
+          }
         } else char.pendingModal = null;
       }
     }

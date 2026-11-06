@@ -113,7 +113,25 @@ Những lỗi này làm người chơi mất hẳn một nội dung, không ch�
   | 71–90 | 436 |
   | 91 trở lên | 150 |
 
-  Kho không thưa đi sau 40 tuổi; nó thưa rõ sau 70. Số event người chơi thực sự gặp mỗi năm thì phải đo bằng `tools/sim/pacing_by_age.mjs`; kết quả sẽ được điền vào đây.
+  Kho không thưa đi sau 40 tuổi; nó thưa rõ sau 70.
+- **Số lựa chọn người chơi thực sự gặp mỗi năm**, đo bằng `node tools/sim/pacing_by_age.mjs 80 focused`:
+
+  | Tuổi | Major | Minor | Hợp đồng | Dungeon | Năm im lặng |
+  |---|---|---|---|---|---|
+  | 18–24 | 0,70 | 1,95 | 0,40 | 0,15 | 0% |
+  | 25–32 | 0,58 | 1,97 | 0,46 | 0,16 | 0% |
+  | 33–40 | 0,64 | 1,91 | 0,42 | 0,07 | 0% |
+  | 41–50 | 0,76 | 1,80 | 0,28 | 0,02 | 0% |
+  | 51–60 | 0,57 | 1,66 | 0,21 | 0,02 | 2% |
+  | 61–75 | 0,49 | 1,72 | 0,11 | 0,02 | 4% |
+  | 76+ | 0,21 | 1,79 | 0 | 0 | 1% |
+
+  Mẫu sau 33 tuổi còn nhỏ: bot của script này xuống hầm khá liều nên phần lớn chết trước 30, và mỗi lứa tuổi sau 33 chỉ còn 45–72 năm sống. Kết luận vì vậy chỉ ở mức định hướng:
+  - **Sau 40 tuổi, số event lớn không giảm** cho tới khoảng 60. Sau 60 nó giảm còn khoảng 0,5 mỗi năm, sau 75 còn 0,2.
+  - **Dungeon giảm mạnh.** Từ 0,15–0,16 lượt mỗi năm ở tuổi 18–32 xuống 0,02 sau 40 tuổi, gấp khoảng 8 lần. Tuổi trung vị lúc vào hầm là 21–24.
+  - **Hầu như không có năm nào im lặng.** Minor giữ đều khoảng 1,7–2 mỗi năm. Cảm giác "ít chuyện" sau 40 là do thiếu event lớn và Dungeon, không phải do không có gì xảy ra.
+  - **17 tuổi đã có thể vào WARP và Lobotomy** (2 lượt trong mẫu). Lý do: tuổi vào nghề dao động 15–20 (`careerAge.js`), khung tuổi event bị dịch xuống theo (`careerAge.js:57`), và cổng đầu tiên đến từ tuổi vào nghề cộng 2. Mô phỏng không có ai vào hầm ở tuổi 16.
+  - Có 4–5 trên 16 lượt vào Great Lake và Bloodfiend lúc HP dưới 40.
 - **Blackboard bị bỏ qua.** `evaluateEventConsiderations(event, char, blackboard)` (`utilityCurves.js:74`) nhận `createCityBlackboard(char)` nhưng không dùng tới.
 
 ### Việc cần làm
@@ -135,12 +153,13 @@ Những lỗi này làm người chơi mất hẳn một nội dung, không ch�
    - Giữ hạn mức tối thiểu của `GATE_PROFILES`, nhưng thời điểm do điểm số quyết định.
    - Tăng cơ hội khi năm đó yên, HP và SP ổn, hoặc có lý do cụ thể: nghề, nơi ở, hợp đồng, NPC hay vật phẩm.
    - Giảm cơ hội khi vừa xuống hầm, đang bị thương nặng (HP dưới 40), hoặc có mạch truyện khác đang cao trào.
-   - Giữ mức sàn 18 tuổi và tuổi vào nghề cộng 2.
-   - Mở rộng tuổi trần của cổng (hiện là 55–75) cho Color và các bậc cao, để cuối đời vẫn có lời mời.
+   - **Sàn tuổi tuyệt đối 18 cho các hầm nguy hiểm** (WARP, Lobotomy, Great Lake, Bloodfiend, The Head). Sàn này không bị dịch theo tuổi vào nghề, và cổng đầu tiên dùng `max(18, tuổi vào nghề + 2)`. Outskirts và Backstreets giữ nguyên luật hiện tại.
+   - **Không mở cổng khi HP dưới 40**, mà dời sang năm sau. Riêng lời mời bắt buộc theo cốt truyện thì vẫn hiện, kèm cảnh báo.
+   - **Dàn lời mời ra sau tuổi 40.** Một phần hạn mức `GATE_PROFILES` để dành cho khoảng 35–60 tuổi, và mở rộng tuổi trần của cổng (hiện là 55–75) cho Color và các bậc cao. Mục tiêu là sau 40 tuổi vẫn có khoảng 0,05–0,08 lượt Dungeon mỗi năm, thay vì 0,02.
 5. **Nhớ theo chủ đề, không chỉ theo ID.** Sau một cảnh NPC phản bội, tạm giảm các cảnh phản bội khác. Sau nhiều năm làm Fixer, ưu tiên một hậu quả liên quan tới Office còn dang dở hơn một cảnh nghề chung chung. Dùng cửa sổ vài năm với mức phạt giảm dần.
 6. **Độ khó tách khỏi nhịp kể.** Director chỉ được đổi *tần suất* hiểm họa và khoảng nghỉ. Nó không được ngầm hạ xác suất thất bại hay sát thương sau khi người chơi đã chọn, giống nguyên tắc của AI Director trong Left 4 Dead. Viết một test khóa nguyên tắc này: cùng seed và cùng lựa chọn thì kết quả không phụ thuộc `directorPolicy`.
 7. **Một ảnh chụp trạng thái đầu năm.** Dùng `createCityBlackboard` để làm ảnh chụp đầu năm, và để event thường, NPC và Dungeon cùng đọc nó. Sửa `evaluateEventConsiderations` cho dùng blackboard.
-8. **Năm cuối đời (sau 70).** Kho major thưa sau 70 tuổi. Thêm một nhóm event về di sản, người kế nghiệp, sức khỏe và lời mời cuối, gắn thẻ `relief`/`legacy`, để những đời sống thọ không trôi qua nhiều năm im lặng.
+8. **Năm cuối đời (sau 60).** Sau 60 tuổi, số event lớn mỗi năm giảm còn 0,5, sau 75 còn 0,2. Thêm một nhóm event về di sản, người kế nghiệp, sức khỏe và lời mời cuối, gắn thẻ `relief`/`legacy`, để những đời sống thọ không trôi qua nhiều năm im lặng.
 
 ### Thứ tự và cách bật
 
