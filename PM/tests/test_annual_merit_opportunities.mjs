@@ -9,8 +9,8 @@ const meritMinor = (id) => LIFE_MINORS.some((event) => event.id === id &&
     (choice.out || []).some((outcome) => (outcome.fx?.merit || 0) > 0)));
 
 const routes = [
-  ['Fixer'], ['Wing Employee'], ['Workshop Craftsman'], ['Outcast'], ['Distortion'],
-  ['Syndicate'], ['Distortion', 'Ring'],
+  ['Fixer'], ['Wing Employee'], ['Workshop Craftsman'], ['Outcast'],
+  ['Syndicate'],
   ...['Thumb', 'Index', 'Middle', 'Ring', 'Pinky'].map((finger) => ['Syndicate', finger])
 ];
 
@@ -50,6 +50,23 @@ for (const [job, finger] of routes) {
   }
   assert(annualCount > 0, `${job}/${finger || 'none'} never needed the annual fallback`);
 }
+
+// Distortion route: does not climb career merit; receives dedicated survival & resonance annual dilemmas with cooldown and no merit
+let distortAnnualCount = 0;
+for (let i = 0; i < 120; i++) {
+  const char = worker('Distortion', null, `annual-distort-${i}`);
+  planYear(char, createRNG(`annual-plan-distort-${i}`));
+  const annual = char.plan.find((item) => item.annualMerit);
+  if (!annual) continue;
+  distortAnnualCount++;
+  assert.equal(annual.kind, 'minor');
+  assert(!meritMinor(annual.id), `Distortion annual ${annual.id} must not grant Merit`);
+  runPlanItem(char, annual, () => 0.5);
+  assert.equal(char.pendingMinor?.id, annual.id);
+  const finished = resolveMinor(char, 0, () => 0.5);
+  assert.equal(finished.merit, 0, 'Distortion annual dilemma must not increase Merit');
+}
+assert(distortAnnualCount > 0, 'Distortion should occasionally roll annual dilemma within cooldown');
 
 globalThis.localStorage = { getItem: () => null, setItem: () => {}, removeItem: () => {} };
 const { useGameStore } = await import('../src/store/gameStore.js');

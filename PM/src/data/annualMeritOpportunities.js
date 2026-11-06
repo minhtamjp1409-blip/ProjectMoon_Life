@@ -26,6 +26,34 @@ const task = (id, need, vi, en, steady, gamble, declined) => ({
   ignore: { vi: 'Bỏ qua', en: 'Pass', rvi: declined[0], ren: declined[1], fx: {} }
 });
 
+function splitFlags(raw = {}) {
+  const { flagsAdd, ...fx } = raw;
+  return { fx, ...(flagsAdd ? { flagsAdd } : {}) };
+}
+
+const distortionTask = (id, vi, en, steady, gamble, declined) => {
+  const s = splitFlags(steady[4]);
+  const gWin = splitFlags(gamble[4]);
+  const gLoss = splitFlags(gamble[7]);
+  return {
+    id, age: [15, 140], need: { jobs: ['Distortion'] }, vi, en,
+    careerOpportunity: true,
+    allowDistorted: true,
+    tags: ['distortion', 'annual'],
+    choices: [
+      { vi: steady[0], en: steady[1], rvi: steady[2], ren: steady[3], fx: s.fx, ...(s.flagsAdd ? { flagsAdd: s.flagsAdd } : {}) },
+      {
+        vi: gamble[0], en: gamble[1], rvi: '', ren: '', fx: {},
+        out: [
+          { w: 60, rvi: gamble[2], ren: gamble[3], fx: gWin.fx, ...(gWin.flagsAdd ? { flagsAdd: gWin.flagsAdd } : {}) },
+          { w: 40, rvi: gamble[5], ren: gamble[6], fx: gLoss.fx, ...(gLoss.flagsAdd ? { flagsAdd: gLoss.flagsAdd } : {}) }
+        ]
+      }
+    ],
+    ignore: { vi: 'Bỏ qua', en: 'Pass', rvi: declined[0], ren: declined[1], fx: {} }
+  };
+};
+
 const CLIMBING_MERIT_OPPORTUNITIES = [
   task('m_annual_fixer_shelter', { jobs: ['Fixer'] },
     '[Yêu cầu hộ tống] Một văn phòng nhỏ nhận đơn đưa ba cư dân qua hai con hẻm đang tranh chấp. Tiền ứng trước chỉ đủ trả một người.',
@@ -105,18 +133,42 @@ const CLIMBING_MERIT_OPPORTUNITIES = [
     ['Dựng cọc chỉ đường tới nơi trú gần nhất', 'Mark a route to the nearest shelter', 'Đoàn người lần theo cọc và tới nơi trước bão. Bạn trở về mệt lả.', 'The group follows your markers to shelter before the storm. You return exhausted.', { merit: 4, health: -5 }],
     ['Đi vào bão để đưa họ ra tận nơi', 'Walk into the storm and bring them out', 'Bạn dẫn đủ người về. Những người sống sót kể tên bạn ở khu trại kế tiếp.', 'You bring everyone back. The survivors tell the next camp your name.', { merit: 8, rep: 2, health: -8, sanity: -3 }, 'Bạn tìm thấy dấu chân cũ nhưng không thấy người. Bão buộc bạn quay về trong bóng tối.', 'You find old tracks but no people. The storm drives you home in darkness.', { health: -10, sanity: -6 }],
     ['Những đốm lửa tắt khi trời tối.', 'The fires go out after dusk.']),
-  task('m_annual_distortion_passage', { jobs: ['Distortion'] },
-    '[Lối đi qua khu đổ nát] Một nhóm người bị kẹt giữa hai đội săn Distortion. Bạn biết đường qua những căn nhà bỏ trống.',
-    '[Passage through the ruins] A group is trapped between two Distortion-hunting teams. You know a path through empty houses.',
-    ['Dẫn họ đi vòng mà không lộ hình dạng', 'Guide them around without revealing yourself', 'Họ thoát được. Trong lời kể sau đó, một bóng hình vô danh đã chỉ đường.', 'They escape. Their later account remembers an unnamed figure that showed the way.', { merit: 4, sanity: -4 }],
-    ['Lôi một đội săn khỏi lối đi', 'Draw one hunting team away from the passage', 'Nhóm người vượt qua an toàn. Đội săn mang về một bản báo cáo về kẻ đã cản họ.', 'The group crosses safely. The hunters file a report on what stopped them.', { merit: 8, health: -8, heat: 6 }, 'Đội săn gọi thêm viện binh. Bạn thoát nhưng nhóm người phải trốn lại trong khu đổ nát.', 'The hunters call reinforcements. You escape, but the group remains hidden in the ruins.', { health: -11, heat: 8, sanity: -4 }],
-    ['Nhóm người phải tự tìm lối khác.', 'The group must find another way.']),
-  task('m_annual_distortion_territory', { jobs: ['Distortion'] },
-    '[Ranh giới bị xâm phạm] Một nhóm vũ trang dựng trạm gác ngay nơi bạn trú ẩn. Dấu chân của họ đã đi qua kho thức ăn.',
-    '[An encroaching boundary] An armed group builds a post beside your shelter. Their tracks run through your food stores.',
-    ['Dời kho và cắt dấu vết dẫn tới nơi trú', 'Move the stores and erase the trail', 'Nơi trú vẫn kín. Bạn học thêm một lối thoát qua mái nhà.', 'The shelter stays hidden. You learn another route over the roofs.', { merit: 4, health: -4, sanity: -3 }],
-    ['Phá trạm gác trong đêm để giữ địa bàn', 'Break the post at night to keep the territory', 'Trạm gác bị bỏ. Kẻ còn sống kể lại cuộc chạm trán, và khu vực trống trở lại.', 'The post is abandoned. Survivors describe the encounter, and the area clears.', { merit: 8, heat: 8, health: -7 }, 'Bạn bị phát hiện dưới đèn pha. Nơi trú phải bỏ lại cùng nửa kho lương.', 'Floodlights catch you. You abandon the shelter and half the stores.', { health: -11, wealth: -5, heat: 10 }],
-    ['Bạn rời nơi trú trước khi trạm gác hoàn thành.', 'You leave before the post is finished.'])
+  distortionTask('m_annual_distort_carmen_call',
+    '[Tiếng thì thầm nơi khe nứt ánh sáng] Vệt sáng từ khe nứt tàn tích rọi qua lớp vỏ dị thường. Tiếng người phụ nữ tóc nâu ngân nga trong đầu bạn, thúc giục giải phóng khát vọng thuần khiết nhất.',
+    '[Whisper at the fissure of light] A streak of light through ruined masonry touches your carapace. The brown-haired woman\'s voice hums in your skull, urging you to unleash purest desire.',
+    ['Thả trôi bản ngã theo tiếng thì thầm của Carmen', 'Yield to Carmen\'s whisper and unleash your desire', 'Nhiệt độ cơ thể tăng vọt. Móng vuốt dài thêm, tiếng thì thầm xoa dịu cơn cào xé trong lồng ngực.', 'Body heat surges. Claws lengthen; the whisper soothes the ache tearing inside your chest.', { resonance: 6, sanity: -4, heat: 4 }],
+    ['Cắn chặt răng bám lấy ký ức và tên gọi kiếp người', 'Grit your teeth and cling to human memories and your name', 'Bạn nhắc lại tên cũ từng chữ một. Cơn đau thắt qua đi; tàn tích ý thức con người vẫn còn nguyên vẹn.', 'You repeat your old name letter by letter. The seizing ache passes; your vestige of human mind stays intact.', { sanity: 8, resonance: -3, flagsAdd: ['HumanVoice'] }, 'Tiếng gọi gầm lên dữ dội trong hộp sọ. Cơn co giật khiến bạn quằn quại giữa phế tích đến rạng sáng.', 'The call roars through your skull. Convulsions leave you writhing among the ruins until dawn.', { health: -8, sanity: -6, resonance: 4 }],
+    ['Bạn lùi vào góc tối, bịt tai cho đến khi tiếng ngân tắt dần.', 'You pull into the darkness, covering your ears until the humming fades.']),
+  distortionTask('m_annual_distort_hunter_dossier',
+    '[Hơi thở thợ săn trong hẻm tối] Hai Fixer săn tiền thưởng lần theo vết cộng hưởng đến gần nơi bạn ẩn thân. Trên tay họ là hồ sơ nhận diện có vẽ hình dạng của bạn.',
+    '[A hunter\'s breath in the alley] Two bounty Fixers trace your resonance near your sanctuary, clutching an identification dossier with a sketch of your form.',
+    ['Phát sóng âm cộng hưởng làm nhiễu giác quan rồi rút êm', 'Emit a resonant frequency to scramble their senses and slip away', 'Sóng âm khiến hai Fixer choáng váng đánh rơi đèn pin. Bạn biến mất vào mạng lưới cống ngầm trước khi chúng kịp định thần.', 'The acoustic pulse staggers both Fixers, dropping their torches. You vanish down the culverts before they recover.', { heat: -5, sanity: -3, health: -2 }],
+    ['Bày trận phục kích xé nát hồ sơ truy nã', 'Spring an ambush to shred their bounty dossier', 'Đòn đánh bất ngờ đập gãy vũ khí đối phương. Bạn xé tan xấp giấy truy nã; hai kẻ đi săn hoảng loạn tháo chạy.', 'A sudden strike snaps their weapons. You shred the bounty file; both hunters flee in terror.', { rep: 6, heat: 5, health: -4, sanity: 2 }, 'Vũ khí bọc điện kích nổ trúng vai bạn. Bạn đẩy lùi được đối thủ nhưng nơi ẩn náu đã bị lộ.', 'An electrified blade strikes your shoulder. You drive them back, but your lair is compromised.', { health: -10, heat: 8, sanity: -4 }],
+    ['Bạn nín thở nép mình dưới sàn gạch mục, chờ bước chân họ xa dần.', 'You hold your breath under rotten floorboards until their steps recede.']),
+  distortionTask('m_annual_distort_sweeper_hour',
+    '[Đêm ba giờ mười ba] Còi giới nghiêm vừa dứt, đàn Sweeper mang bình nhiên liệu tràn qua ngõ hẹp. Lộ trình của chúng cắt ngang nguồn trữ vật chất của bạn.',
+    '[Night of 3:13] As the curfew siren dies, a pack of Sweepers carrying fuel canisters floods the lane, cutting across your cache.',
+    ['Lừa đàn Sweeper chuyển hướng sang trạm gác Syndicate gần đó', 'Mislead the Sweepers toward a nearby Syndicate outpost', 'Tiếng gõ kim loại kéo đàn Sweeper lao về phía trạm gác. Kho lương của bạn an toàn trong lúc góc phố náo loạn.', 'Metallic tapping draws the pack to the post. Your stores remain untouched while the corner erupts in chaos.', { rep: 4, sanity: -3, heat: 2 }],
+    ['Lao ra đánh cướp bình nhiên liệu lỏng từ tay Sweeper', 'Charge out to seize a liquid fuel tank from a Sweeper', 'Móng vuốt bạn hất văng một Sweeper, đoạt lấy bình nhiên liệu chiết từ xác người. Thứ dịch đặc sệt ấy lại bồi bổ thể xác dị thường của bạn.', 'Your claws bowl over a Sweeper, seizing a canister of fuel rendered from corpses. The thick fluid mends your mutated frame.', { health: 12, wealth: 15, heat: 4 }, 'Móc sắt cào rách lớp vỏ ngoài. Bạn giật được nửa bình nhiên liệu nhưng phải trả giá bằng vết thương sâu rỉ máu.', 'Iron hooks tear your outer shell. You wrench half a canister away, nursing deep, oozing gouges.', { health: -12, sanity: -4, wealth: 6 }],
+    ['Bạn nhường lối cho đàn Sweeper đi qua trong im lặng.', 'You yield the passage, letting the Sweepers shuffle past in silence.']),
+  distortionTask('m_annual_distort_fledgling_shelter',
+    '[Đứa trẻ dưới cửa hầm] Đứa trẻ lấm lem trốn dưới nắp hầm phế tích. Khi thấy bóng hình to lớn của bạn, nó run rẩy nhưng không gào khóc, chỉ lặng lẽ giơ nắm cỏ dại khô.',
+    '[The child beneath the hatch] A soot-stained child cowers under a cellar hatch. Seeing your giant silhouette, it trembles without screaming, holding up a clump of dried weeds.',
+    ['Đặt mẩu lương khô xuống rồi nhẹ nhàng đóng nắp hầm che chở', 'Place a dry ration down and pull the hatch shut to shelter them', 'Đứa trẻ ôm lấy phần ăn. Cử chỉ nhỏ nhoi làm ấm lại phần nhân tính tưởng chừng đã đóng băng trong lồng ngực bạn.', 'The child clutches the ration. The small gesture thaws a spark of humanity once thought frozen within you.', { sanity: 8, heat: -4, flagsAdd: ['HumanVoice'] }],
+    ['Dẫn đứa trẻ vượt qua hẻm nguy hiểm đến khu dân cư an toàn', 'Guide the child through dangerous alleys to safer quarters', 'Bóng lưng bạn chắn đạn cho đứa trẻ suốt chặng đường. Nó vào được nơi an toàn; lời đồn về thực thể dị dạng biết cứu người lan truyền.', 'Your broad back shields the child from stray fire. They reach shelter; whispers of a guardian monstrosity spread through alleys.', { sanity: 10, rep: 6, health: -4, heat: -4, flagsAdd: ['HumanVoice'] }, 'Đội tuần tra nổ súng. Bạn che được cho đứa trẻ chạy thoát nhưng trúng nhiều phát đạn sượt, buộc phải rút lui vội vã.', 'A patrol opens fire. You cover the child\'s flight but catch grazing bullets, forced into hasty retreat.', { health: -10, sanity: -4, heat: 5 }],
+    ['Bạn quay lưng rời đi, để đứa trẻ lại với bóng tối của nắp hầm.', 'You turn away, leaving the child to the dark beneath the hatch.']),
+  distortionTask('m_annual_distort_monolith_hunger',
+    '[Cơn đói của lõi biến dị] Lõi năng lượng trong lồng ngực rung lên từng cơn thèm khát. Cơ thể đòi hỏi kim loại hiếm từ xưởng Workshop hoặc tinh chất Singularity để không tự ăn mòn.',
+    '[Hunger of the anomalous core] The energy core in your chest throbs with raw craving. Your frame demands Workshop alloys or Singularity essence to halt self-cannibalization.',
+    ['Thu mình vào kén kết tinh để ngủ đông vượt qua cơn đói', 'Curl into a crystalline chrysalis to hibernate through the craving', 'Lớp vỏ tự khóa chặt. Bạn chìm vào giấc ngủ lạnh giá; cơn đói dịu đi dù tâm trí mệt mỏi vì giấc mơ kỳ quái.', 'Your shell locks tight. You sink into cold slumber; the craving subsides though fevered dreams leave you spent.', { health: 8, sanity: -5, heat: -3 }],
+    ['Đột kích kho phế liệu Wing trong đêm tuyết', 'Raid a Wing scrap depository through the snow', 'Móng vuốt xé toạc thùng chứa hợp kim Singularity. Bạn ngấu nghiến phế liệu quý, lớp vỏ ngoài mọc thêm gai thép cứng cáp.', 'Your claws tear open a Singularity alloy bin. You devour the precious scrap; your carapace bristles with hardened steel thorns.', { health: 14, wealth: 20, resonance: 4, heat: 6 }, 'Bẫy điện cao thế phát nổ. Bạn ngã bật ra ngoài tường rào, mang theo thương tích cháy xém và tiếng còi báo động rền vang.', 'High-voltage defenses detonate. You are hurled from the fence, carrying scorched wounds as alarms wail.', { health: -14, sanity: -6, heat: 8 }],
+    ['Bạn cố chịu đựng cơn cào xé trong ngực cho đến khi trời rạng.', 'You endure the gnawing in your chest until the sky pales.']),
+  distortionTask('m_annual_distort_past_monument',
+    '[Tấm biển tên của đời cũ] Bạn đi qua con hẻm quen thuộc và nhìn thấy tấm biển tên cũ kỹ của văn phòng hoặc cơ sở làm việc nơi bạn từng gắn bó thời còn là con người.',
+    '[Signboard from a former life] Passing a familiar lane, you see the weathered signboard of the Office or workshop where you once belonged as a human.',
+    ['Dùng móng vuốt khắc một vết cào bí mật lên chân cột rồi rời đi', 'Carve a secret mark into the pillar base and move on', 'Vết khắc để lại dấu ấn bí mật của riêng bạn. Kỷ niệm cũ lắng xuống như lớp tro nguội; bạn ngẩng cao đầu bước tiếp.', 'The gouge leaves your solitary seal. Old memories settle like cool ash; you hold your head high and stride on.', { rep: 6, sanity: 4, resonance: 2 }],
+    ['Để lại món quà vật chất trước cửa cũ để giúp người ở lại', 'Leave a valuable token at the doorstep to aid those who remain', 'Người bên trong mở cửa và nhặt món đồ quý với ánh mắt biết ơn. Bạn đứng nhìn thêm một lúc rồi lùi vào bóng tối.', 'The person inside opens the door and lifts the treasure in gratitude. You watch a moment longer, then step back into the dark.', { sanity: 10, wealth: -10, rep: 8, flagsAdd: ['HumanVoice'] }, 'Người quen cũ nhìn thấy bạn và thét lên kinh hoàng, vội vã đóng sập cửa. Nỗi đau chối bỏ xé toạc trái tim bạn.', 'An old acquaintance spots you and shrieks in horror, slamming the door. The sting of rejection tears your spirit.', { sanity: -10, resonance: 6, heat: 4 }],
+    ['Bạn quay lưng rảo bước, không để mắt nhìn lại quá khứ.', 'You turn on your heel, refusing to cast another glance backward.'])
 ];
 
 export const ANNUAL_MERIT_OPPORTUNITIES = [

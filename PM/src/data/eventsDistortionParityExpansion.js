@@ -5,13 +5,14 @@
  */
 
 import { M, C, I, D } from './storyKit.js';
+import { CLAW_DUNGEON_ID } from './dungeonClaw.js';
 
 // ============================================================================
 // 1. DISTORTION EXPANSION MINORS (15-second Rapid Dilemmas)
 // ============================================================================
 
 const DM = (id, vi, en, choices, ignore) =>
-  M(id, [18, 99], { jobs: ['Distortion'] }, vi, en, choices, ignore, { requires: ['Distorted'] });
+  M(id, [18, 140], { jobs: ['Distortion'] }, vi, en, choices, ignore, { requires: ['Distorted'] });
 
 export const DISTORTION_PARITY_MINORS = [
   DM('m_distort_carmen_white_petal_wager',
@@ -128,42 +129,42 @@ export const DISTORTION_PARITY_MINORS = [
 // ============================================================================
 
 export const DISTORTION_PARITY_DAILIES = [
-  D('d_distort_carmen_lullaby', [18, 99], { jobs: ['Distortion'] },
+  D('d_distort_carmen_lullaby', [18, 140], { jobs: ['Distortion'] },
     'Tiếng hát của Carmen vang vọng trong tủy sống như một khúc hát ru ngọt ngào giữa cơn mưa a-xít của District 23.',
     'Carmen’s melody echoes in your bone marrow like a sweet lullaby amidst District 23’s acid rain.',
     { sanity: -1, resonance: 1 }),
 
-  D('d_distort_crystal_sprouts', [18, 99], { jobs: ['Distortion'] },
+  D('d_distort_crystal_sprouts', [18, 140], { jobs: ['Distortion'] },
     'Những cánh hoa pha lê đỏ thẫm mọc xuyên qua lớp da tay bạn rồi nở rộ trong đêm tối, phát ra ánh sáng lung linh.',
     'Crimson crystal petals pierce your forearm, blooming in the dark with a hypnotic iridescence.',
     { health: 1, resonance: 1 }),
 
-  D('d_distort_sound_of_heartbeats', [18, 99], { jobs: ['Distortion'] },
+  D('d_distort_sound_of_heartbeats', [18, 140], { jobs: ['Distortion'] },
     'Bạn nghe thấy nhịp tim của mọi người trong bán kính ba dãy nhà. Từng tiếng đập đập đều vang lên như tiếng trống trận.',
     'You hear every heartbeat within three city blocks. Each pulse throbs like a distant war drum.',
     { resonance: 1 }),
 
-  D('d_distort_sweepers_part_ways', [18, 99], { jobs: ['Distortion'] },
+  D('d_distort_sweepers_part_ways', [18, 140], { jobs: ['Distortion'] },
     'Đúng 3:13 AM, đàn Sweeper tràn ra hẻm. Khi thấy cái bóng biến dị khổng lồ của bạn, chúng lặng lẽ đổi hướng dạt sang hai bên.',
     'At exactly 3:13 AM, Sweepers swarm the alley. Sensing your towering silhouette, they silently divert around you.',
     { rep: 1 }),
 
-  D('d_distort_tears_turn_to_glass', [18, 99], { jobs: ['Distortion'] },
+  D('d_distort_tears_turn_to_glass', [18, 140], { jobs: ['Distortion'] },
     'Một giọt nước mắt trào ra từ con mắt thứ ba, đông cứng thành hạt thủy tinh đỏ thẫm kêu lách cách trên nền gạch.',
     'A tear spills from your tertiary eye, crystallizing into a scarlet glass bead that clatters across the cobbles.',
     { sanity: 1 }),
 
-  D('d_distort_hana_patrol_drones', [18, 99], { jobs: ['Distortion'] },
+  D('d_distort_hana_patrol_drones', [18, 140], { jobs: ['Distortion'] },
     'Drone trinh sát của Hana quét tia laser xanh qua mái nhà bạn ẩn nấp rồi bay đi, phát ra cảnh báo: “Mối nguy cấp Urban Nightmare.”',
     'A Hana recon drone sweeps green lasers across your roost, buzzing away with an alert: “Urban Nightmare entity confirmed.”',
     { rep: 1, heat: 1 }),
 
-  D('d_distort_scent_of_melting_steel', [18, 99], { jobs: ['Distortion'] },
+  D('d_distort_scent_of_melting_steel', [18, 140], { jobs: ['Distortion'] },
     'Hơi thở của bạn phả ra làm chảy lỏng thanh lan can thép bên cạnh. The City dường như quá mỏng manh trước thể xác này.',
     'Your exhalation softens a steel railing nearby. The City feels impossibly brittle before this body.',
     { health: 1 }),
 
-  D('d_distort_old_song_echoes', [18, 99], { jobs: ['Distortion'] },
+  D('d_distort_old_song_echoes', [18, 140], { jobs: ['Distortion'] },
     'Một điệu hát cổ bạn từng nghe mẹ hát thời thơ ấu chợt vọng lại trong đầu, xen lẫn tiếng cười trong trẻo của Carmen.',
     'An old nursery tune once sung in childhood drifts through memory, interlaced with Carmen’s clear laughter.',
     { sanity: 1 })
@@ -176,10 +177,10 @@ export const DISTORTION_PARITY_DAILIES = [
 export const DISTORTION_PARITY_MAJORS = [
   {
     id: 'distort_arc_star_calamity_ascension',
-    age: [28, 99],
+    age: [28, 140],
     major: true,
     weight: 40,
-    need: { jobs: ['Distortion'], meritAtLeast: 100, stat: { rep: [65, 100], heat: [60, 100] } },
+    need: { jobs: ['Distortion'], stat: { rep: [60, 100], heat: [50, 100] } },
     requires: ['Distorted'],
     forbids: ['distort_star_calamity_done', 'distort_star_rampage_done', 'StarOfTheCityEntity'],
     vi: "[Khảo Thí Diệt Họa: Star of the City] Hana Association chính thức nâng cấp định danh của bạn lên hàng 'Star of the City', một Thảm Họa Cấp Tinh Tú. Một Giám đốc Section 1 của Liu Association cùng hai Fixer Grade 1 mang vũ khí rực lửa tiến vào phong tỏa toàn bộ khu phố nơi bạn cư ngụ.",
@@ -233,7 +234,7 @@ export const DISTORTION_PARITY_MAJORS = [
 
   {
     id: 'distort_arc_ego_clash_manifestation',
-    age: [25, 99],
+    age: [25, 140],
     major: true,
     weight: 35,
     requires: ['Distorted'],
@@ -281,6 +282,44 @@ export const DISTORTION_PARITY_MAJORS = [
             scarsAdd: ['Vết chém phản chấn E.G.O']
           }
         ]
+      }
+    ]
+  },
+
+  {
+    id: 'distort_arc_century_calamity_climax',
+    age: [100, 140],
+    major: true,
+    weight: 60,
+    need: { jobs: ['Distortion'] },
+    requires: ['Distorted'],
+    forbids: ['distort_arc_century_calamity_done'],
+    vi: "[Bách Niên Dị Thể: Điểm tận cùng bản ngã] Bạn đã tồn tại hơn một thế kỷ trong hình hài dị thường. Thân thể không già đi theo năm tháng, nhưng sức ép cộng hưởng từ Biển Ánh Sáng đã chạm ngưỡng chịu đựng. Hana xếp bạn vào danh sách Thảm Họa Tinh Cầu vĩnh cửu. Đêm nay, The Head bắt đầu để mắt tới sự tồn tại phá vỡ quy luật này.",
+    en: "[Century Calamity: Culmination of Ego] You have survived over a century in distorted form. Your vessel does not age, but resonance pressure from the Light has reached bursting limits. Hana lists you as a perpetual Star of the City. Tonight, the Head turns its gaze upon this rule-defying existence.",
+    choices: [
+      {
+        labelVi: "Thu hồi cộng hưởng, hòa thân xác vào lòng đất thành Di Tích Ngủ Yên",
+        labelEn: "Retract resonance and merge into the earth as a Dormant Monument",
+        endsLife: true,
+        lifeEnding: 'distort_monument',
+        effects: { rep: +50, sanity: +30, resonance: -100 },
+        resultVi: "Bạn thu mình lại dưới lớp phế tích ngầm, cấu trúc pha lê hóa thạch tạo thành vùng đất cấm yên bình che chở người bần hàn Backstreets suốt nhiều đời sau. Bạn an nghỉ trong giấc ngủ bất tận.",
+        resultEn: "You fold deep into subterranean ruins, crystallizing into a sanctuary that shelters Backstreets wretched for generations. You rest in boundless peace."
+      },
+      {
+        labelVi: "Gầm lên khiêu chiến trật tự The City, đối đầu Móng Vuốt của The Head",
+        labelEn: "Roar in defiance against City Order, confronting the Claw of the Head",
+        startDungeon: CLAW_DUNGEON_ID,
+        resultVi: "Tiếng gầm làm rung chuyển kết cấu không gian. Vết cắt xanh mảnh khảnh xé toạc bức tường phế tích: Claw của The Head bước vào với bản án tử trên tay.",
+        resultEn: "Your roar shatters the spatial continuum. A thin blue line tears the ruin wall: the Head's Claw steps through with an unsigned death sentence in hand."
+      },
+      {
+        labelVi: "Tiếp tục lang thang trong bóng tối Backstreets như một huyền thoại sống",
+        labelEn: "Continue roaming the Backstreets shadows as a living legend",
+        effects: { rep: +25, sanity: -10, heat: +15 },
+        flagsAdd: ['distort_arc_century_calamity_done'],
+        resultVi: "Bạn biến mất vào những con hẻm quanh co của District 23. Các đội săn đuổi chỉ tìm thấy mảnh tinh thể vỡ vụn; huyền thoại về sinh vật trăm tuổi vẫn được kể trong những đêm đông.",
+        resultEn: "You melt into District 23's twisting alleys. Hunters find only shattered crystals; the legend of the century-old beast is whispered on cold nights."
       }
     ]
   }

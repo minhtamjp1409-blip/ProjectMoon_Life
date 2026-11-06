@@ -400,6 +400,10 @@ const minorCanEarnMerit = (id) => LIFE_MINORS.some((entry) => entry.id === id &&
 function annualMeritMoment(char, moments, rng) {
   if (char.job === 'Child' || char.age < careerAgeOf(char) || !char.alive) return null;
   if (moments.some((item) => item?.kind === 'contract')) return null;
+  if (char.job === 'Distortion') {
+    if (char.lastDistortionAnnualAge && char.age - char.lastDistortionAnnualAge < 3) return null;
+    if (rng() >= 0.35) return null;
+  }
   const existing = moments.find((item) => item?.kind === 'minor' &&
     (item.id === 'm_fx_request_choice' ||
       LIFE_CAREER_OPPORTUNITIES.some((event) => event.id === item.id) ||
@@ -415,7 +419,12 @@ function annualMeritMoment(char, moments, rng) {
   const t = [0.235, 0.485, 0.735][Math.floor(rng() * 3)];
   const seasonIdx = seasonIdxAt(t);
   remember(char, event.id);
-  logDecision(char, event, { vi: 'Một việc làm có thể ghi vào hồ sơ công trạng', en: 'A commission that can enter the merit record', w: 1 }, 'minor');
+  if (char.job === 'Distortion') {
+    char.lastDistortionAnnualAge = char.age;
+    logDecision(char, event, { vi: 'Biến động bản ngã và sinh tồn trong bóng tối', en: 'A surge of ego and survival in the dark', w: 1 }, 'minor');
+  } else {
+    logDecision(char, event, { vi: 'Một việc làm có thể ghi vào hồ sơ công trạng', en: 'A commission that can enter the merit record', w: 1 }, 'minor');
+  }
   return { kind: 'minor', id: event.id, t, seasonIdx, season: SEASONS[seasonIdx], extra: true, annualMerit: true };
 }
 

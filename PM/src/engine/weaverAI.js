@@ -7,6 +7,7 @@ import { matchesEventContext, isIndependentSyndicateEligibleForRank, choiceIsAva
 import { evaluateEventConsiderations } from './utilityCurves.js';
 import { createCityBlackboard } from './cityBlackboard.js';
 import { activeScarCount } from './scarModel.js';
+import { directorScore, directorTags, drawDirectorCandidate, rememberDirectorEvent } from './eventDirector.js';
 import {
   getNextFixerPromotion,
   fixerPromotionOfferChance,
@@ -215,6 +216,8 @@ export function createInitialWeaverState(mode = 'index_equilibrium', inheritedEc
     edges,
     pendingThreads: [],
     decisionLog: [],
+    recentBeats: [],
+    directorPolicy: 'active',
     customWeights: {},
     customEvents: []
   };
@@ -325,6 +328,7 @@ export function recordChoiceInGraph(weaver, char, event, choice, outcomeTextVi, 
     nodes: nextNodes,
     edges: nextEdges.slice(-60),
     pendingThreads: nextThreads,
+    recentBeats: rememberDirectorEvent(weaver, event, char.age),
     yearsSinceLastMajor: event.major ? 0 : weaver.yearsSinceLastMajor + 1,
     yearsSinceLastCrisis: (event.isCausalCallback || (choice.effects?.sanity || 0) <= -15) ? 0 : weaver.yearsSinceLastCrisis + 1
   };
@@ -886,37 +890,41 @@ export function selectEventWithWeaverAI({
         item.score = { ...item.score, totalUtility: Math.round(item.score.totalUtility * 0.15 * 10) / 10 };
       }
       return item;
-    })
-    .sort((a, b) => b.score.totalUtility - a.score.totalUtility);
+    });
 
-  // Draw from a wide field so two lives with the same start still diverge;
-  // a forced milestone (utility far above the rest) still wins almost every time.
-  // The 0.85 power keeps the order but gives the lower half of the field a real chance.
-  const drawWeight = (item) => Math.pow(Math.max(1, item.score.totalUtility), 0.85);
-  const topCandidates = scored.slice(0, Math.min(24, scored.length));
-  const totalWeight = topCandidates.reduce((sum, item) => sum + drawWeight(item), 0);
-  let pickRoll = rng() * totalWeight;
-  let chosen = topCandidates[0];
-
-  for (const item of topCandidates) {
-    pickRoll -= drawWeight(item);
-    if (pickRoll <= 0) {
-      chosen = item;
-      break;
-    }
-  }
+  const legacyCandidates = [...scored]
+    .sort((a, b) => b.score.totalUtility - a.score.totalUtility)
+    .map((item) => ({ ...item, utility: item.score.totalUtility }));
+  const directedCandidates = scored
+    .map((item) => ({ ...item, director: directorScore(item.event, char, updatedWeaver, item.score.totalUtility) }))
+    .map((item) => ({ ...item, utility: item.director.utility }))
+    .sort((a, b) => b.utility - a.utility);
+  const draw = rng();
+  const legacyPick = drawDirectorCandidate(legacyCandidates, draw);
+  const directedPick = drawDirectorCandidate(directedCandidates, draw);
+  const policy = ['legacy', 'shadow', 'active'].includes(updatedWeaver.directorPolicy)
+    ? updatedWeaver.directorPolicy : 'active';
+  const chosen = policy === 'active' ? directedPick : legacyPick;
+  const topCandidates = policy === 'active' ? directedCandidates.slice(0, 24) : legacyCandidates.slice(0, 24);
 
   const logEntry = {
     age: char.age,
     phase: updatedWeaver.dramaPhase,
     selectedId: chosen.event.id,
-    utility: chosen.score.totalUtility,
+    utility: chosen.utility,
     breakdown: chosen.score.breakdown,
-    reasonVi: chosen.score.reasonsVi.join(' · '),
-    reasonEn: chosen.score.reasonsEn.join(' · '),
+    reasonVi: [...chosen.score.reasonsVi, ...(policy === 'active' ? chosen.director.reasons : [])].join(' · '),
+    reasonEn: [...chosen.score.reasonsEn, ...(policy === 'active' ? chosen.director.reasonsEn : [])].join(' · '),
+    director: {
+      policy,
+      legacyId: legacyPick.event.id,
+      directedId: directedPick.event.id,
+      tags: directorTags(chosen.event),
+      multiplier: chosen.director?.multiplier ?? 1
+    },
     candidates: topCandidates.map(c => ({
       eventId: c.event.id,
-      totalUtility: c.score.totalUtility
+      totalUtility: c.utility
     }))
   };
 

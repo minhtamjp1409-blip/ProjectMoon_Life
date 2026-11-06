@@ -80,6 +80,15 @@ export const LIFE_ENDINGS = {
     quoteVi: '“Người trực mới phải hỏi lại cách đánh vần tên họ. Cuốn sổ cũ hơn anh ta.”',
     quoteEn: '“The new clerk had to ask how to spell their name. The ledger was older than he was.”',
     closing: null
+  },
+  distort_monument: {
+    titleVi: 'Hóa thân thành Di tích', titleEn: 'The Living Monument',
+    quoteVi: '“Họ không chết. Họ chỉ chìm vào lòng đất phế tích, hóa thành một phần vĩnh cửu của The City.”',
+    quoteEn: '“They did not die. They merely sank into the ruined earth, becoming an eternal part of The City.”',
+    closing: (c) => ({
+      vi: `Ở tuổi ${c.age}, bạn thu hồi toàn bộ cộng hưởng và hòa thân xác vào lòng đất phế tích. Cấu trúc dị thể kết tinh thành một vùng đất cấm yên bình che chở cho người bần hàn Backstreets suốt nhiều đời sau. Lời đồn về một vị thần hộ mệnh vô danh còn mãi trong ký ức.`,
+      en: `At age ${c.age}, you retract your resonance and merge with the ruined earth. Your crystalline shell forms a sanctuary that shelters the Backstreets poor for generations. The rumor of a nameless guardian endures forever.`
+    })
   }
 };
 

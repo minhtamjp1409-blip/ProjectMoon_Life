@@ -118,7 +118,12 @@ test('Fingers Gamble suite provides fallback choices on all 3 major gamble event
   }
 });
 
-test('Distortion characters never suffer human medical/tenement mishaps and receive Distortion mishaps', () => {
+import { DISTORTION_PARITY_MAJORS } from '../src/data/eventsDistortionParityExpansion.js';
+import { ANNUAL_MERIT_OPPORTUNITIES } from '../src/data/annualMeritOpportunities.js';
+import { LIFE_ENDINGS } from '../src/data/lifeEndings.js';
+import { CLAW_DUNGEON_ID } from '../src/data/dungeonClaw.js';
+
+test('Distortion-specific mishaps and filtering work', () => {
   const distChar = {
     alive: true,
     age: 70,
@@ -159,4 +164,55 @@ test('Distortion characters never suffer human medical/tenement mishaps and rece
   assert.ok(distIds.includes('mi_distort_calcification'));
   assert.ok(distIds.includes('mi_distort_purification'));
   assert.ok(distIds.includes('mi_distort_dissolution'));
+});
+
+test('Distortion annual tasks: 6 diverse dilemmas with 0 merit reward', () => {
+  const distortTasks = ANNUAL_MERIT_OPPORTUNITIES.filter((t) => t.id.startsWith('m_annual_distort_'));
+  assert.equal(distortTasks.length, 6, 'Must have 6 distinct Distortion annual tasks');
+
+  for (const t of distortTasks) {
+    assert.deepEqual(t.need?.jobs, ['Distortion'], `${t.id} must require Distortion job`);
+    assert.equal(t.allowDistorted, true, `${t.id} must allow Distorted flag`);
+    // Verify none of the choices grant merit
+    for (const c of t.choices) {
+      assert.equal(c.fx?.merit, undefined, `${t.id} choice must not award merit`);
+      for (const o of c.out || []) {
+        assert.equal(o.fx?.merit, undefined, `${t.id} outcome must not award merit`);
+      }
+    }
+  }
+});
+
+test('Century Calamity event at age 100+ offers proactive peaceful ending and Head Claw judgment', () => {
+  const climax = DISTORTION_PARITY_MAJORS.find((e) => e.id === 'distort_arc_century_calamity_climax');
+  assert.ok(climax, 'distort_arc_century_calamity_climax must exist in DISTORTION_PARITY_MAJORS');
+  assert.deepEqual(climax.age, [100, 140], 'Century calamity age must span [100, 140]');
+
+  const centuryDistortChar = {
+    alive: true,
+    age: 105,
+    job: 'Distortion',
+    flags: ['Distorted'],
+    regionId: 'D23',
+    stats: { health: 60, sanity: 60, wealth: 20, rep: 80, heat: 70 },
+    resonance: 60,
+    seenEvents: [],
+    weaver: { pendingThreads: [] }
+  };
+
+  assert.equal(isEventEligible(climax, centuryDistortChar), true, 'Century calamity must be eligible at age 105 for Distorted character');
+
+  // Choice 1: Peaceful proactive monument ending
+  const choice1 = climax.choices[0];
+  assert.equal(choice1.endsLife, true, 'Choice 1 must end life');
+  assert.equal(choice1.lifeEnding, 'distort_monument', 'Choice 1 must use distort_monument');
+  assert.ok(LIFE_ENDINGS.distort_monument, 'LIFE_ENDINGS.distort_monument must be registered');
+
+  // Choice 2: Head Claw judgment combat
+  const choice2 = climax.choices[1];
+  assert.equal(choice2.startDungeon, CLAW_DUNGEON_ID, 'Choice 2 must initiate the Head Claw judgment dungeon');
+
+  // Choice 3: Endure as legend
+  const choice3 = climax.choices[2];
+  assert.ok(choice3.flagsAdd?.includes('distort_arc_century_calamity_done'), 'Choice 3 must flag completion');
 });

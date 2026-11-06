@@ -20,6 +20,7 @@ const LIVES = Number(process.argv[2]) || 1500;
 const POLICY = ['greedy', 'focused'].includes(process.argv[3]) ? process.argv[3] : 'random';
 const SHOW_REGIONS = process.argv.includes('--regions');
 const FORCE_FIXER = process.argv.includes('--fixers');
+const DIRECTOR_POLICY = (process.argv.find((arg) => arg.startsWith('--director-policy=')) || '').slice(18);
 const FUNNEL_JSON = (process.argv.find((arg) => arg.startsWith('--funnel-json=')) || '').slice(14);
 
 const KEYS = ['health', 'sanity', 'wealth', 'network', 'rep', 'heat', 'taboo', 'resonance', 'merit'];
@@ -57,6 +58,7 @@ const bucketOf = (age) => (age < 1 ? '0' : age < 5 ? '1-4' : age < 12 ? '5-11' :
 for (let i = 0; i < LIVES; i++) {
   const seed = `bal_fixed_${i}`;
   let char = createNewCharacter({ customName: `S${i}`, seed });
+  if (['legacy', 'shadow', 'active'].includes(DIRECTOR_POLICY)) char.weaver.directorPolicy = DIRECTOR_POLICY;
   const initialWealth = char.stats.wealth;
   const cohort = initialWealth >= 10 ? 'startingAhn>=10' : 'startingAhn<10';
   const funnel = { seed, cohort, initialWealth, colorReadyAge: null, colorOfferAge: null, colorAge: null,
