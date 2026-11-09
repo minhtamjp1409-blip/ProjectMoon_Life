@@ -2999,7 +2999,7 @@ export function buildLifeSummaryAndLegacy(char) {
     poeticQuoteVi = '“Giữa một thành phố nghiền nát mọi linh hồn thành tro bụi, họ đã tự rèn nỗi đau của mình thành một sắc màu không thể phai mờ.”';
     poeticQuoteEn = '“In a City that grinds every soul to ash, they forged their own agony into an indelible radiance.”';
   } else if (char.age >= 70 || /tuổi già|lão|nhắm mắt|old age/i.test(`${deathCauseVi} ${deathCauseEn}`)) {
-    poeticQuoteVi = '“Giữa một nơi mà tuổi già là thứ xa xỉ phẩm hiếm hoi nhất, họ đã lặng lẽ khép mắt sau khi chứng kiến biết bao mùa mưa máu đi qua.”';
+    poeticQuoteVi = '“Giữa chốn tuổi già là thứ xa xỉ phẩm hiếm hoi nhất, họ đã lặng lẽ khép mắt sau khi chứng kiến biết bao mùa mưa máu đi qua.”';
     poeticQuoteEn = '“In a place where old age is the rarest luxury of all, they quietly closed their eyes after outliving a hundred storms.”';
   } else if (char.age < 18) {
     poeticQuoteVi = '“Những con hẻm của The City chưa bao giờ đủ rộng cho những giấc mơ chưa kịp lớn.”';
@@ -3296,7 +3296,7 @@ export function buildLifeSummaryAndLegacy(char) {
     } else if (char.job === 'Workshop Craftsman') {
       const craftStandingVi = (char.merit || 0) >= 50 ? 'gây dựng tiếng tăm khắp các khu xưởng' : 'bền bỉ giữ đỏ lửa lò qua từng đơn đặt hàng';
       const craftStandingEn = (char.merit || 0) >= 50 ? 'earning renown across the district workshops' : 'keeping the forge lit through steady commissions';
-      careerArcVi = `Bạn gắn đời mình với búa sắt của một thợ rèn Workshop, ${craftStandingVi}${char.craftWeapon ? ` và tự tay rèn nên vũ khí 「${char.craftWeapon.name}」 được Tres Association đóng dấu đăng ký` : ''}.`;
+      careerArcVi = `Bạn gắn đời mình với búa sắt người thợ rèn Workshop, ${craftStandingVi}${char.craftWeapon ? ` và tự tay rèn nên vũ khí 「${char.craftWeapon.name}」 được Tres Association đóng dấu đăng ký` : ''}.`;
       careerArcEn = `You dedicated your adulthood to the furnace and anvil as a Workshop Craftsman, ${craftStandingEn}${char.craftWeapon ? ` and forging the registered weapon "${char.craftWeapon.name}"` : ''}.`;
     } else {
       careerArcVi = `Trong suốt những năm trưởng thành tại ${region.nameVi}, bạn xoay xở mưu sinh qua từng mùa biến động của The City.`;

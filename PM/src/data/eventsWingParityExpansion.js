@@ -241,7 +241,7 @@ export const WING_PARITY_MAJORS = [
     en: "[Singularity Core Meltdown] Your night shift is shattered by deafening scarlet sirens. The Wing’s Singularity core is breaching thermal containment; aberrant fluids boil and dissolve laboratory decks. Executive control prepares to deploy lethal nerve gas across the sector to safeguard corporate secrets.",
     choices: [
       {
-        labelVi: "Dẫn đầu đội kỹ sư xông vào hạ nhiệt thủ công trước khi khí độc xả",
+        labelVi: "Dẫn đội kỹ sư vào hạ nhiệt thủ công trước khi xả khí độc",
         labelEn: "Lead an engineering detail to manually depressurize before gas deployment",
         need: { stat: { health: [35, 100], sanity: [30, 100] } },
         outcomes: [
@@ -264,7 +264,7 @@ export const WING_PARITY_MAJORS = [
         ]
       },
       {
-        labelVi: "Sơ tán qua lối thoát hiểm dành riêng cho quản lý và mang theo mẫu phẩm",
+        labelVi: "Sơ tán qua lối quản lý và mang theo mẫu phẩm",
         labelEn: "Evacuate via the executive tunnel, smuggling out a raw Singularity sample",
         outcomes: [
           {

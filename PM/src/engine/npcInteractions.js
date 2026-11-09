@@ -40,7 +40,7 @@ export const NPC_INTERACTION_ACTIONS = [
     id: 'drink_confide',
     nameVi: 'Uống rượu giãi bày',
     nameEn: 'Drink & Confide',
-    descVi: 'Mời một chầu rượu rẻ ở quán ngõ hẻm, lắng nghe tâm tư và xoa dịu áp lực đè nặng trong lòng.',
+    descVi: 'Mời chầu rượu rẻ nơi quán ngõ hẻm, lắng nghe tâm tư và xoa dịu áp lực đè nặng trong lòng.',
     descEn: 'Share cheap drinks in an alley tavern, easing their hidden burdens and listening to their story.',
     costAhn: 4,
     minAge: 18,
@@ -108,7 +108,7 @@ export function canInteractWithNpc(char, role, actionId) {
   if (!char || !role) return { ok: false, reasonVi: 'Nhân vật không hợp lệ', reasonEn: 'Invalid character' };
   const rawNpc = char.npcs?.[role];
   if (!rawNpc || !npcIsActive(rawNpc)) {
-    return { ok: false, reasonVi: 'Người này không còn hiện diện trong đời bạn', reasonEn: 'This person is no longer in your life' };
+    return { ok: false, reasonVi: 'Người này không còn có mặt trong đời bạn', reasonEn: 'This person is no longer in your life' };
   }
   const action = ACTION_BY_ID[actionId];
   if (!action) {

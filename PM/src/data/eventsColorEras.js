@@ -48,7 +48,7 @@ export const COLOR_ERA_EVENTS = [
   {
     id: 'color_new_name_etiquette', age: [26, 90], jobs: ['Color Fixer'], major: true, weight: 75,
     requires: ['ColorFixer'], forbids: ['Distorted', 'color_etiquette_done'],
-    vi: '[Cách người ta gọi một Color] Người ở Văn phòng ngừng gọi bạn bằng tên và bắt đầu gọi bằng màu. Quầy tiếp tân đổi lời chào. Người môi giới ngồi thẳng lưng khi bạn bước vào. Cậu nhân viên trẻ hỏi thẳng bạn có thích vậy không, vì anh ta chưa biết nên gọi kiểu nào.',
+    vi: '[Cách người ta gọi Color] Người ở Văn phòng ngừng gọi bạn bằng tên rồi bắt đầu gọi bằng màu. Quầy tiếp tân đổi lời chào. Người môi giới ngồi thẳng lưng khi bạn bước vào. Cậu nhân viên trẻ hỏi thẳng bạn có thích vậy không, vì anh ta chưa biết nên gọi kiểu nào.',
     en: 'How people address a Color. Staff at the Office stop using your name and start using your color. The front desk changes its greeting. The broker sits upright when you enter. A young clerk asks outright whether you like it, since they have not decided which side to take.',
     choices: [
       { labelVi: 'Bảo mọi người cứ gọi tên như trước', labelEn: 'Tell everyone to keep using your name',
@@ -111,7 +111,7 @@ export const COLOR_ERA_EVENTS = [
     choices: [
       { labelVi: 'Nói màu là của bạn, thanh E.G.O chỉ là công cụ', labelEn: 'Say the color is yours and the E.G.O is a tool',
         effects: { sanity: -4, rep: 5 }, flagsAdd: ['color_whose_name_done', 'ColorOwnsEGO'],
-        resultVi: 'Chị ghi vào mục chủ sở hữu. Đêm ấy thanh E.G.O không hiện ra, kể cả khi bạn cần nó cho việc vặt trong bếp. Sáng hôm sau nó lại có mặt như chưa có chuyện gì.',
+        resultVi: 'Chị ghi vào mục người đứng tên. Đêm ấy thanh E.G.O không hiện ra, kể cả khi bạn cần nó cho việc vặt trong bếp. Sáng hôm sau nó lại có mặt như chưa có chuyện gì.',
         resultEn: 'She writes it under owner. That night the E.G.O does not appear, even when you need it for a small thing in the kitchen. The next morning it is there as if nothing happened.' },
       { labelVi: 'Nói bạn không chắc, và xin họ để trống mục đó', labelEn: 'Say you are not sure and ask them to leave the line empty',
         effects: { sanity: 3, resonance: 6 }, flagsAdd: ['color_whose_name_done', 'ColorSharesEGO'],
@@ -151,7 +151,7 @@ export const COLOR_ERA_EVENTS = [
             resultVi: 'Thứ đó bị chặn lại cách một con hẻm so với cửa sổ đầu tiên có đèn. Khi bạn quay về, các bóng đèn trong hẻm được bật lên cùng lúc, như một tiếng vỗ tay không ai dám phát ra.',
             resultEn: 'It is stopped one alley short of the first lit window. When you walk back, the lamps in the alley come on together, like applause nobody dares make.' },
           { w: 34, effects: { health: -34, sanity: -16, rep: 6, wealth: 10 }, meritAdd: 15, scarsAdd: ['Vết thương của chỉ thị niên độ'],
-            resultVi: 'Bạn giữ được con hẻm, nhưng chậm mất một nhịp ở lần đỡ cuối. Chỗ trống trong phong bì được điền tên người bạn không kịp chạy tới.',
+            resultVi: 'Bạn giữ được con hẻm, nhưng chậm mất nửa nhịp lúc đỡ đòn cuối. Chỗ trống trong phong bì được điền tên người bạn không kịp chạy tới.',
             resultEn: 'You hold the alley but lose a beat on the final parry. The space in the envelope is filled by the name of someone you were too late to reach.' }
         ] },
       { labelVi: 'Nói lý do không chọn: các vụ đều có người khác làm tốt hơn', labelEn: 'Give a reason for choosing none: others are better suited to all three',

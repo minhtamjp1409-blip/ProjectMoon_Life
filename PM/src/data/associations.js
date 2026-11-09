@@ -56,7 +56,7 @@ export const ASSOCIATIONS = {
       okFx: { heat: 2, sanity: -2 }, failFx: { heat: 5, sanity: -3 },
       declineVi: 'Shi không hỏi lý do. Hồ sơ sẽ đến tay người khác, và người điều phối sẽ nhớ bạn đã từ chối.',
       declineEn: 'Shi does not ask why. The file goes to someone else, and the handler will remember you refused.',
-      tiers: tiers(['Một kẻ phản bội vặt', 'A petty turncoat'], ['Người giữ sổ của một băng', 'A gang’s bookkeeper'], ['Fixer của một Office', 'An Office Fixer'],
+      tiers: tiers(['Một kẻ phản bội vặt', 'A petty turncoat'], ['Người giữ sổ cho băng nhóm', 'A gang’s bookkeeper'], ['Fixer thuộc một Office', 'An Office Fixer'],
         ['Mục tiêu có cận vệ', 'A guarded target'], ['Một người của Association khác', 'Someone from another Association'], ['Mục tiêu cấp Color', 'A Color-grade target'])
     },
     requests: SHI_CONTRACTS
@@ -86,7 +86,7 @@ export const ASSOCIATIONS = {
   },
   liu: {
     name: 'Liu Association', short: 'Liu',
-    specVi: 'giao chiến quy mô lớn, sống như một gia đình', specEn: 'large-scale open fighting, run like a family',
+    specVi: 'giao chiến lớn và bọc lót đồng đội', specEn: 'large-scale open fighting, run like a family',
     fit: (c) => stat(c, 'network') >= 38,
     promoIds: [],
     inviteVi: 'Một người của Liu Association ngồi cạnh bạn ở quán mì và gắp thêm thịt vào bát bạn mà không hỏi. Họ nói nhà Liu còn chỗ ở bàn ăn, và việc ở đó không nhẹ.',
@@ -109,7 +109,7 @@ export const ASSOCIATIONS = {
   },
   seven: {
     name: 'Seven Association', short: 'Seven',
-    specVi: 'điều tra, thu thập tin tức, xử phạt sau hợp đồng', specEn: 'investigation, intelligence, post-contract punishment',
+    specVi: 'điều tra, thu tin và xử phạt', specEn: 'investigation, intelligence, post-contract punishment',
     fit: (c) => stat(c, 'network') >= 33 && stat(c, 'sanity') >= 40,
     promoIds: ['fixer_promo_g8_seven'],
     inviteVi: 'Seven Association gửi cho bạn một bộ câu hỏi, không phải lời mời. Ba mươi câu về những nơi bạn từng đến, những người bạn từng gặp, và những điều bạn đã không báo cáo.',

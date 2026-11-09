@@ -70,6 +70,7 @@ import { forbiddenLeadOpen, FORBIDDEN_OFFER_CHANCE } from './forbiddenPath.js';
 import { SCAR_CALLBACKS } from '../data/lifeScarCallbacks.js';
 import { LIFE_CAREER_OPPORTUNITIES } from '../data/lifeCareerOpportunities.js';
 import { ANNUAL_MERIT_OPPORTUNITIES } from '../data/annualMeritOpportunities.js';
+import { apexNoveltyWeight } from '../data/apexCommissions.js';
 import { apexLongevityEventId } from '../data/eventsApexTwilight.js';
 import { EXPANDED_DAILIES } from '../data/narrative/dailies.js';
 import { DAILIES_2 } from '../data/narrative/dailies2.js';
@@ -414,7 +415,7 @@ function annualMeritMoment(char, moments, rng) {
     return null;
   }
   const pool = ANNUAL_MERIT_OPPORTUNITIES.filter((entry) => matchesEventContext(entry, char));
-  const event = pickWeighted(pool, (entry) => freshness(entry.id, char.recent, char.seenCount), rng);
+  const event = pickWeighted(pool, (entry) => freshness(entry.id, char.recent, char.seenCount) * apexNoveltyWeight(entry, char.recent), rng);
   if (!event) return null;
   const t = [0.235, 0.485, 0.735][Math.floor(rng() * 3)];
   const seasonIdx = seasonIdxAt(t);
@@ -430,7 +431,7 @@ function annualMeritMoment(char, moments, rng) {
 
 // Director weights reach x6; the 0.8 power keeps their order but lets weaker entries through
 const weightOf = (char) => (e) => {
-  let weight = Math.pow(directorWeight(e, char).w, 0.8) * freshness(e.id, char.recent, char.seenCount);
+  let weight = Math.pow(directorWeight(e, char).w, 0.8) * freshness(e.id, char.recent, char.seenCount) * apexNoveltyWeight(e, char.recent);
   if (char.job === 'Syndicate' && e.need?.finger === char.finger && e.id.startsWith('d_')) weight *= 5;
   if (e.id === 'm_fx_request_choice') {
     const next = getNextFixerPromotion(char);

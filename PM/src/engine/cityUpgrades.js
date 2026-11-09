@@ -762,12 +762,12 @@ export function canImbueEquipment(char, relicId) {
   const inv = Array.isArray(char.inventory) ? char.inventory : [];
   const relicIdx = inv.findIndex((it) => (it.id || it) === relicId);
   if (relicIdx === -1) {
-    return { ok: false, reasonVi: 'Bạn không sở hữu cổ vật này trong túi đồ', reasonEn: 'Relic not found in inventory' };
+    return { ok: false, reasonVi: 'Bạn chưa có cổ vật này trong túi đồ', reasonEn: 'Relic not found in inventory' };
   }
   if (!hasTargetEquipmentForImbuement(char)) {
     return {
       ok: false,
-      reasonVi: 'Cần sở hữu ít nhất một Vũ khí hoặc Giáp Workshop để khảm cổ vật',
+      reasonVi: 'Cần có ít nhất một Vũ khí hoặc Giáp Workshop để khảm cổ vật',
       reasonEn: 'Requires at least one Workshop Weapon or Armor to imbue'
     };
   }

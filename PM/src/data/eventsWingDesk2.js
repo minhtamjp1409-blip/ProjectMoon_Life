@@ -26,7 +26,7 @@ export const WING_DESK_EVENTS_B = [
         'Người ấy hiểu ngay bạn đang nói gì mà không cần ai nhắc. Họ ngừng nhận quà, và từ đó nợ bạn một thứ không bao giờ ghi vào sổ.',
         'They understand at once what you are saying without anyone spelling it out. They stop accepting gifts, and from then on owe you something that will never be entered in any ledger.', { leverage: 12, network: 5, standing: -1 }, 2],
       ['Nhận lời mời và nhận cả phần quà kèm theo', 'Accept the invitation and the gift that comes with it',
-        'Món quà không đắt, và đó chính là điểm đáng sợ nhất. Từ hôm nay bạn là một trong số những người mà nhà cung cấp gọi là "người đáng tin cậy".',
+        'Món quà không đắt, và đó chính là điểm đáng sợ nhất. Từ hôm nay nhà cung cấp xếp bạn vào nhóm "người đáng tin cậy".',
         'The gift is not expensive, and that is the most frightening part. From today you are one of those the vendor calls “a person one can rely on.”', { wealth: 14, standing: -5, leverage: -6, sanity: -5 }]
     ]),
 
@@ -130,7 +130,7 @@ export const WING_DESK_EVENTS_B = [
       ['Nhờ người từng mắc nợ bạn xóa cái tên', 'Ask someone who owes you to strike the name',
         'Cái tên biến mất đúng như đã hứa. Ba tháng sau bạn nhận ra mọi người ở tầng của mình đối xử với bạn lịch sự hơn, và biết rằng sự lịch sự ấy là một thứ tiền tệ có thể đổi.',
         'The name vanishes as promised. Three months later you notice everyone on your floor treats you more politely, and know that politeness is a currency that can be exchanged.', { leverage: -14, standing: 10, sanity: -4 }],
-      gated(['Đặt tập hồ sơ bạn giữ lên bàn người ký và nói bạn chưa đọc hết', 'Lay the file you have kept on the signatory’s desk and say you have not finished reading it',
+      gated(['Đặt tập hồ sơ lên bàn người ký và nói bạn chưa đọc hết', 'Lay the file you have kept on the signatory’s desk and say you have not finished reading it',
         'Người ký nhìn tập hồ sơ rất lâu, rồi rút tên bạn ra khỏi danh sách bằng chính bút của ông. Bạn ra về mà không nói thêm gì, và biết từ hôm nay tên bạn trên mọi danh sách sẽ không còn là của bạn nữa.',
         'The signatory looks at the file a long time, then strikes your name from the list with his own pen. You leave without saying more, and know that from today your name on every list will no longer be yours alone.', { leverage: -20, standing: 12, sanity: -8, network: -5 }, 1], keep),
       ['Thu dọn bàn và rời Nest trước khi bị đuổi', 'Clear your desk and leave the Nest before being thrown out',
@@ -193,7 +193,7 @@ export const WING_DESK_EVENTS_B = [
       ['Tự trả khoản chi và xóa khoản đó khỏi sổ', 'Cover the payment yourself and remove the line from the book',
         'Số tiền đi khỏi ví bạn lặng lẽ như nước thấm vào đất. Người bạn không bao giờ biết, và đó là kiểu ân huệ khiến bạn có thể ngủ, và không thể quên.',
         'The money leaves your purse as quietly as water into soil. Your friend never knows, which is the kind of favor that lets you sleep and never forget.', { wealth: -16, standing: -2, sanity: 2, leverage: 5 }],
-      gated(['Dùng bí mật bạn nắm về người ký khoản chi để khoản chi được "xử lý nội bộ"', 'Use what you hold on the person who signed it so the payment is “handled internally”',
+      gated(['Dùng bí mật về người ký để khoản chi được "xử lý nội bộ"', 'Use what you hold on the person who signed it so the payment is “handled internally”',
         'Mọi thứ khép lại trong một buổi chiều, êm đến mức đáng sợ. Người bạn được giữ lại và bạn mất đi một mảnh của thứ bạn đã giữ rất lâu. Bạn không chắc mình vừa cứu một người hay vừa bán đi một thứ khác.',
         'Everything closes in one afternoon, so smoothly it is frightening. Your friend stays and you lose a piece of what you held for a long time. You are not sure whether you have just saved a person or sold something else.', { leverage: -16, standing: -2, sanity: -3, network: 7 }, 1], keep)
     ])

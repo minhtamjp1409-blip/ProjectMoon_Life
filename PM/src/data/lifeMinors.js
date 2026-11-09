@@ -1321,32 +1321,32 @@ export const LIFE_MINORS = [
     'm_syn_order',
     GROWN,
     { jobs: ['Syndicate'], fingerRankAtMost: 2 },
-    '[Mệnh lệnh thanh trừng đứa trẻ] Thủ lĩnh băng đảng giao cho bạn một nhiệm vụ tàn nhẫn: "xử lý sạch sẽ" đứa trẻ lỡ nhìn thấy mặt cả nhóm trong vụ thanh trừng.',
-    '[The Syndicate Execution Order] The captain handed down a grim decree: “silence” an innocent child who caught sight of your crew’s faces during a hit.',
+    '[Đứa trẻ nhìn thấy mặt bạn] Sau vụ thanh trừng, thủ lĩnh đưa bạn địa chỉ đứa trẻ đã trông thấy cả nhóm. Ông ta muốn chuyện này kết thúc trước sáng.',
+    '[The child who saw your face] After the raid, the captain gives you the address of a child who saw the crew. He wants the matter settled by morning.',
     [
       C(
-        'Tuyệt đối phục tùng mệnh lệnh cấp trên',
-        'Execute the order swiftly',
-        'Bạn ra tay thật nhanh gọn để đứa trẻ không kịp cảm thấy đau đớn hay sợ hãi. Đó là chút lòng thương hại cuối cùng mà bạn có thể dành cho nó.',
-        'You struck with merciful swiftness so it knew neither terror nor agony. It was the sole scrap of kindness you could offer.',
+        'Làm theo lệnh',
+        'Carry out the order',
+        'Bạn trở về tay không. Thủ lĩnh gạch địa chỉ khỏi sổ, rồi giao cho bạn việc tiếp theo.',
+        'You return empty-handed. The captain strikes the address from his ledger and gives you the next job.',
         { sanity: -16, rep: 6, merit: 8 },
         { scar: 'Đứa trẻ đã thấy mặt bạn', motif: { violence: 2 } }
       ),
       C(
-        'Lén lút tha mạng cho đứa bé',
+        'Để đứa trẻ đi, báo đã xong việc',
         'Spare the child and report it slain',
         null,
         null,
         {},
         {
           out: [
-            O(55, 'Không một ai trong băng đảng phát hiện ra sự thật. Bạn chỉ thầm hy vọng đứa trẻ ấy sẽ bỏ trốn thật xa khỏi The City.', 'Nobody caught wind of your deceit. You prayed the youth would flee far beyond the city limits.', { sanity: 4 }, { motif: { mercy: 1 }, later: [{ id: 'm_syn_child_grown', years: 10, reasonVi: 'Đứa trẻ bạn tha mạng', reasonEn: 'The child you spared' }] }),
-            O(45, 'Đứa bé bị phát hiện khi đang lẩn trốn. Cấp trên tức giận chặt đứt một ngón tay của bạn để làm bài học cảnh cáo cho sự mềm lòng.', 'The runaway was uncovered. The furious captain hacked off your finger as punishment for weakness.', { health: -10, sanity: -6, rep: -6 }, { scar: 'Ngón tay trả cho sự mềm lòng' })
+            O(55, 'Bạn ghi địa chỉ ấy vào mục đã xử lý. Sáng hôm sau, căn phòng trống; không ai hỏi thêm.', 'You mark the address as settled. The room is empty by morning, and no one asks again.', { sanity: 4 }, { mem: 'spared_syn_child', motif: { mercy: 1 }, later: [{ id: 'm_syn_child_grown', years: 10, reasonVi: 'Đứa trẻ bạn tha mạng', reasonEn: 'The child you spared' }] }),
+            O(45, 'Người của thủ lĩnh bắt gặp đứa trẻ ở trạm xe. Họ đưa nó về; bạn mất một ngón tay vì khai man.', 'The captain’s crew finds the child at the station. They bring the child back; you lose a finger for the false report.', { health: -10, sanity: -6, rep: -6 }, { scar: 'Ngón tay trả cho lời khai man' })
           ]
         }
       )
     ],
-    I('Bạn do dự chần chừ. Một tên tay sai khác lập tức ra tay thay và báo cáo thái độ của bạn lên cấp trên.', 'You hesitated. Another enforcer did the deed and logged your wavering disloyalty.'),
+    I('Bạn không nhận việc. Người khác nhận địa chỉ; thủ lĩnh ghi tên bạn vào lề sổ.', 'You refuse the job. Someone else takes the address; the captain writes your name in the ledger margin.'),
     { rep: -4, sanity: -6, once: true, tags: ['danger'] }
   ),
 
@@ -1366,28 +1366,28 @@ export const LIFE_MINORS = [
 
   M(
     'm_syn_child_grown',
-    [25, 80],
-    {},
-    '[Đứa trẻ năm xưa trở lại] Một tay Fixer trẻ tuổi đĩnh đạc chặn đường bạn trong con ngõ: "Mười năm trước, chính bạn đã tha mạng cho tôi. Hôm nay tôi tìm đến là để trả ơn, hoặc để hiểu vì sao ngày ấy bạn lại làm vậy."',
-    '[The Spared Youth Returns] An accomplished young Fixer stepped across your path: “Ten years ago, you spared my life. Today I sought you out to repay the debt, or understand why you showed mercy.”',
+    [28, 140],
+    { mem: 'spared_syn_child', memMinYears: 10 },
+    '[Người từ căn phòng trống] Người trẻ chặn bạn ngoài ngõ, đọc đúng địa chỉ bạn ghi “đã xử lý” mười năm trước. “Vì sao?”',
+    '[The one from the empty room] A young person stops you in an alley and recites the address you marked “settled” ten years ago. “Why?”',
     [
       C(
-        'Kể hết toàn bộ sự thật năm xưa',
-        'Recount the honest truth',
-        'Người ấy chăm chú lắng nghe từng lời, rồi trân trọng trao cho bạn một thanh dao găm sắc bén có khắc tên mình: "Bất cứ khi nào bạn lâm nguy, hãy gọi cho tôi."',
-        'They listened with reverence, presenting a masterwork dagger engraved with their name: “Call upon me whenever danger looms.”',
+        'Nói vì sao bạn đã để họ đi',
+        'Tell them why you let them leave',
+        'Họ nghe hết, ghi số liên lạc lên mặt sau tờ biên nhận rồi đưa bạn. Không ai nhắc đến món nợ.',
+        'They listen, write a contact number on the back of a receipt, and hand it to you. Neither of you calls it a debt.',
         { sanity: 6, network: 6 },
-        { npc: { role: 'partner', bond: 70 } }
+        { mem: 'spared_syn_child_contact' }
       ),
       C(
-        'Lạnh lùng bảo người đó đã nhận nhầm người',
+        'Bảo họ đã nhận nhầm người',
         'Claim they have mistaken you',
-        'Người thợ săn trẻ nhìn bạn hồi lâu với ánh mắt thấu hiểu rồi khẽ gật đầu: "Vậy thì chắc chắn là tôi đã nhận nhầm người rồi."',
-        'The young hunter examined you with deep understanding before nodding: “Then I must truly be mistaken.”',
+        'Họ nhìn bạn thêm một lúc, rồi tránh sang bên. Tờ biên nhận vẫn nằm trong túi áo họ.',
+        'They look at you a moment longer, then step aside. The receipt stays in their pocket.',
         { sanity: 1 }
       )
     ],
-    I('Bạn lạnh lùng bước thẳng qua người họ như hai kẻ xa lạ.', 'You brushed past their shoulder as absolute strangers.'),
+    I('Bạn đi qua. Họ không đuổi theo.', 'You walk past. They do not follow.'),
     { once: true, tags: ['callback'] }
   ),
 
@@ -1395,32 +1395,32 @@ export const LIFE_MINORS = [
     'm_wing_report',
     GROWN,
     { jobs: ['Wing Employee'] },
-    '[Chỉnh sửa báo cáo tai nạn Wing] Cấp trên trực tiếp yêu cầu bạn sửa đổi một số liệu nhỏ trong bản báo cáo tai nạn lao động: đổi từ "ba người chết" thành "ba người bị thương nhẹ".',
-    '[Falsifying the Corporate Incident Report] Your superior instructed you to alter a statistic in an industrial accident audit: changing “three fatalities” to “three minor injuries.”',
+    '[Báo cáo tai nạn] Biên bản ghi ba công nhân chết. Cấp trên đặt bút trước mặt bạn, yêu cầu sửa dòng ấy thành “bị thương nhẹ” trước giờ nộp.',
+    '[The incident report] The record lists three dead workers. Your superior sets a pen before you and orders the line changed to “minor injuries” before filing.',
     [
       C(
-        'Chấp thuận sửa lại số liệu theo lệnh',
+        'Sửa biên bản theo lệnh',
         'Comply and falsify the numbers',
-        'Bản báo cáo được nộp lên sạch sẽ không tì vết. Nhưng đêm hôm đó trong giấc ngủ, những con số vô hồn ấy bỗng hiện lên thành những khuôn mặt người đầy oán hận.',
-        'The sanitized document passed audit. Yet that night, the altered digits took the shapes of screaming faces in your nightmares.',
+        'Biên bản được nhận. Ba hồ sơ tử tuất nằm lại trong ngăn kéo của bạn; tuần sau, bàn làm việc có thêm khoản thưởng.',
+        'The report is accepted. Three death notices remain in your drawer; a bonus appears on your desk the following week.',
         { wealth: 3, network: 3, sanity: -5 },
         { motif: { greed: 1 } }
       ),
       C(
-        'Kiên quyết giữ nguyên số liệu thương vong thật',
+        'Giữ nguyên số người chết',
         'Refuse and submit true fatalities',
         null,
         null,
         {},
         {
           out: [
-            O(40, 'Báo cáo trung thực được chuyển lên ban thanh tra. Nhà máy bị đình chỉ kiểm tra an toàn; những người công nhân bạn không hề quen biết đã được bảo vệ mạng sống.', 'The honest audit reached regulators. Factory lines were overhauled; laborers you will never meet were spared from death.', { rep: 5, sanity: 3, network: -3 }),
-            O(60, 'Báo cáo bị cấp trên ném trả về mặt. Bảng đánh giá năng lực quý sau của bạn bị ghi chú: "thiếu tinh thần hợp tác tập thể".', 'The report was rejected with fury. Your quarterly evaluation bore the black mark: “lacks organizational synergy.”', { wealth: -3, network: -4 })
+            O(40, 'Ban thanh tra nhận biên bản và niêm phong dây chuyền để kiểm tra. Cấp trên ngừng giao việc cho bạn.', 'Inspectors accept the report and seal the production line for review. Your superior stops assigning you work.', { rep: 5, sanity: 3, network: -3 }),
+            O(60, 'Biên bản bị trả lại. Cuối quý, hồ sơ của bạn có thêm dòng “không tuân lệnh cấp trên”.', 'The report is returned. Your quarterly file gains a line: “failed to follow a superior’s instruction.”', { wealth: -3, network: -4 })
           ]
         }
       )
     ],
-    I('Bạn khôn khéo đùn đẩy trách nhiệm xử lý hồ sơ sang cho một đồng nghiệp khác.', 'You cunningly passed the hot potato to an unsuspecting colleague.'),
+    I('Bạn chuyển biên bản sang bàn đồng nghiệp. Họ thấy ba hồ sơ tử tuất kẹp phía sau.', 'You pass the report to a colleague. They find three death notices clipped behind it.'),
     { network: -1 }
   ),
 

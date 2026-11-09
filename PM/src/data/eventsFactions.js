@@ -42,7 +42,7 @@ export const FACTION_EVENTS = [
       {
         labelVi: 'Öufi Association: thi hành điều khoản hợp đồng',
         labelEn: 'Öufi Association: enforcing contracts',
-        resultVi: 'Khoác lên mình chiếc áo choàng nặng nề của Öufi, bạn cầm cây kích chấp pháp bước vào những ngôi nhà nợ hợp đồng. Tiếng đọc bản án vang lên khô khốc trước mặt những gia đình đang quỳ gối van xin. Luật của The City không có điều khoản nào cho lòng trắc ẩn.',
+        resultVi: 'Mỗi khi có người phá hợp đồng đã qua Öufi công chứng, bạn là người vác kích đến gõ cửa nhà họ. Gia đình người nợ thường có mặt ở đó, còn các điều khoản trên giấy thì không nhắc gì đến chuyện ấy.',
         resultEn: 'When someone breaks a contract Öufi has notarized, you are the one who comes to their home with the halberd. Their family is usually there. The clauses say nothing about that.',
         setOrg: { type: 'assoc', name: 'Öufi Association' },
         flagsAdd: ['HasAffiliation'],
@@ -101,7 +101,7 @@ export const FACTION_EVENTS = [
     weight: 95,
     jobs: ['Syndicate'],
     forbids: ['SwornFinger'],
-    vi: "[Thư từ các Finger] Có người đã ghi lại những việc bạn làm. Người môi giới ngầm dẫn bạn tới một căn phòng kín. Trên bàn chỉ có vài lá thư, không đủ năm: Finger nào thấy bạn hữu dụng thì gửi lời, Finger nào chưa để mắt tới thì im lặng. Chọn một ngọn cờ, hoặc ở lại làm băng độc lập và chịu sức ép của cả năm.",
+    vi: "[Thư từ các Finger] Người môi giới ngầm dẫn bạn tới một căn phòng kín. Trên bàn chỉ có vài lá thư, không đủ năm: Finger nào thấy bạn hữu dụng thì gửi lời, Finger nào chưa để mắt tới thì im lặng. Chọn một ngọn cờ, hoặc giữ băng độc lập và chịu sức ép từ cả năm.",
     en: "[Letters from the Fingers] Someone has been keeping track of your work. An underworld broker leads you to a closed room. The table holds a few letters, not five: a Finger writes only if it finds you useful, and stays silent if it has not noticed you. Pick a banner, or stay independent and take the pressure of all five.",
     choices: [
       {
@@ -241,7 +241,7 @@ export const FACTION_EVENTS = [
         ]
       },
       {
-        labelVi: 'Từ chối mọi phe phái: Giữ băng nhóm độc lập, chấp nhận đối đầu các thế lực lớn',
+        labelVi: 'Từ chối cả năm lá thư, giữ băng nhóm độc lập',
         labelEn: 'Refuse all allegiance: Keep your crew independent and face pressure from all sides',
         resultVi: 'Bạn từ chối cả năm lời mời. Người môi giới cất những lá thư vào túi. Băng của bạn vẫn độc lập, nhưng không còn quyền dựa vào thế lực nào khi tranh chấp nổ ra.',
         resultEn: 'You refuse all five offers. The broker pockets the letters. Your crew remains independent, but has no larger power to call on when a dispute breaks out.',
@@ -699,7 +699,7 @@ export const FACTION_EVENTS = [
         meritAdd: 42
       },
       {
-        labelVi: 'Ôm lấy thi thể {spouse}, nén nỗi đau vào lòng và chôn cất trong tĩnh lặng',
+        labelVi: 'Ôm lấy thi thể {spouse}, nén đau thương và chôn cất lặng lẽ',
         labelEn: 'Cradle {spouse}’s body, bury them in quiet dignity and endure the grief',
         resultVi: "Bạn khép mắt {spouse}, đưa người ấy ra ngọn đồi vắng và dựng một tấm bia. Sau lễ chôn cất, bạn trở về căn nhà đã bị phá cửa. Bọc bánh vẫn nằm trên bàn.",
         resultEn: 'You knelt beside {spouse}’s resting form, gently closing their eyes. Instead of a blind rampage, you carried them to a quiet hilltop beyond the alley din, placing a simple gravestone. The sorrow remains an eternal scar, fueling your quiet will to survive.',
@@ -768,9 +768,9 @@ export const FACTION_EVENTS = [
         effects: { rep: +18, wealth: +22, sanity: -6 }
       },
       {
-        labelVi: 'Nhận thay 10 roi trừng phạt vì một cấp dưới lỡ lời, giữ uy tín thủ lĩnh',
+        labelVi: 'Nhận thay mười roi phạt cho cấp dưới lỡ lời để giữ uy thủ lĩnh',
         labelEn: 'Take ten lashes on behalf of a stammering subordinate to forge iron loyalty',
-        resultVi: 'Lưng bạn rách toạc dưới roi gai bọc da thép, nhưng bạn không rên lên một tiếng. Tinh thần thép và sự bao bọc nghiêm khắc của bạn khiến toàn bộ Soldato nguyện dâng trọn tính mạng. Vị Sottocapo tuyên bố: "Biết chịu đựng vì cấp dưới mới xứng đáng làm Capo."',
+        resultVi: 'Lưng bạn rách dưới roi sắt nhưng bạn không rên một tiếng. Cả đội Soldato đứng im phía sau; Sottocapo gật đầu: "Biết chịu đòn thay cấp dưới mới đáng làm Capo."',
         resultEn: 'Your back opened beneath the steel-tipped flogger, yet you uttered not a single whisper of pain. Your iron composure and stern protection forged unbreakable devotion among the recruits. The Sottocapo declared: "One who bleeds for their subordinates is worthy of the Capo mantle."',
         setFingerRank: 1,
         flagsAdd: ['promo_thumb_capo_done'],
@@ -800,9 +800,9 @@ export const FACTION_EVENTS = [
     en: '[Armored Munitions Convoy · Thumb Capo Crucible] An armored convoy hauling thirty tons of high-pressure Thumb artillery munitions is besieged by desperate alley gangs in District 8. The Sottocapo’s wire reads: "Defend the payload. Enforce etiquette through absolute suppression. Whoever brings the last shell intact wears the Capo crest."',
     choices: [
       {
-        labelVi: 'Thiết lập trận địa súng máy cao áp, dội bão lửa đúng theo nhịp trống lễ nghi',
+        labelVi: 'Bố trí hỏa lực súng máy bắn theo đúng nhịp trống lễ nghi',
         labelEn: 'Deploy high-pressure machine gun batteries, delivering synchronized suppression fire',
-        resultVi: 'Từng tràng đạn xé toạc màn sương Backstreets. Bạn chỉ huy các Soldato nạp đạn và khai hỏa, đều đặn lạnh lùng như chiếc đồng hồ quả lắc. Kẻ địch tan tác hoàn toàn. Vị Sottocapo trao huy hiệu Capo và giao cho bạn quyền cai quản tuyến quân nhu huyết mạch.',
+        resultVi: 'Loạt đạn dập theo nhịp trống đẩy lùi toán đột kích ra khỏi đầu ngõ. Sottocapo gắn huy hiệu Capo lên áo bạn và giao lại sổ quản lý tuyến tiếp tế đạn.',
         resultEn: 'Disciplined volleys tore the alley mist to shreds. Your firing line operated with clockwork ferocity, shattering the raiders. The Sottocapo pinned the Capo insignia to your chest, entrusting you with the vital supply route.',
         setFingerRank: 1,
         flagsAdd: ['promo_thumb_capo_done'],
@@ -810,9 +810,9 @@ export const FACTION_EVENTS = [
         effects: { rep: +22, wealth: +28, sanity: -6, health: -14 }
       },
       {
-        labelVi: 'Đích thân cầm đại kiếm gắn lưỡi lê đâm thủng xe chỉ huy đối phương',
+        labelVi: 'Cầm súng trường lưỡi lê dẫn đầu đội xung kích đánh vào xe chỉ huy',
         labelEn: 'Spearhead the melee counter-charge with a bayoneted greatsword into the enemy flagship',
-        resultVi: 'Bạn xông thẳng vào làn đạn, lưỡi lê bén ngọt chặt đứt chỉ huy đối phương ngay trên nóc xe bọc thép. Toàn bộ đám tàn quân quỳ rạp xin tha mạng. Lòng dũng cảm và phong thái thép của bạn được toàn bộ The Thumb ca tụng.',
+        resultVi: 'Bạn áp sát xe bọc thép và đâm gục tên chỉ huy đối phương ngay trên nóc thùng xe. Đám thuộc hạ còn lại hạ vũ khí đầu hàng; tên bạn được ghi vào danh sách Capo mới.',
         resultEn: 'You surged through the lead storm, your bayonet cleaving the enemy commander atop their rig. The remnants surrendered immediately. Your unflinching courage was hailed across the entire Thumb syndicate.',
         setFingerRank: 1,
         flagsAdd: ['promo_thumb_capo_done'],
@@ -820,7 +820,7 @@ export const FACTION_EVENTS = [
         effects: { health: -18, rep: +26, wealth: +32, sanity: +5 }
       },
       {
-        labelVi: 'Tạm hoãn sát hạch, củng cố đội hình và quân nhu trước',
+        labelVi: 'Xin hoãn khảo hạch để chỉnh đốn đội hình và đạn dược',
         labelEn: 'Request deferral to drill the squad and restock ammunition',
         resultVi: 'Bạn báo cáo xin hoãn kỳ khảo hạch để huấn luyện lại đội ngũ và tích lũy thêm đạn dược. Sottocapo hài lòng trước sự cẩn trọng thực tế của bạn.',
         resultEn: 'You requested a deferral to re-drill your squad and amass extra firepower. The Sottocapo respected your calculated prudence.',
@@ -842,9 +842,9 @@ export const FACTION_EVENTS = [
     en: '[Sottocapo Prove-Out · The Marble Banquet] Before you stretches the alabaster banquet table of the Underboss. A veteran Capo committed an unforgivable taboo: skimming tribute ammunition and barking disrespect at superiors. By immutable Thumb code, a formal bayonet duel will determine who lives to occupy the Sottocapo seat.',
     choices: [
       {
-        labelVi: 'Vung đại đao lưỡi lê kết liễu đối thủ trong ba nhịp súng nghi lễ',
+        labelVi: 'Hạ đối thủ bằng lưỡi lê trong ba nhịp súng nghi lễ',
         labelEn: 'Decapitate the rival with bayonet precision within three ceremonial discharges',
-        resultVi: 'Khói thuốc súng mịt mù sảnh tiệc. Nhát chém chuẩn mực của bạn cắt ngọt yết hầu đối phương đúng vào nốt nhạc cuối của bản sonata cổ điển. Underboss đích thân nâng ly rượu vang đỏ, phong bạn làm Sottocapo cai quản cả một phân khu Backstreets.',
+        resultVi: 'Khói thuốc súng còn lẩn quất quanh bàn tiệc khi lưỡi lê của bạn kết thúc trận đấu đúng vào nhịp súng thứ ba. Underboss nâng ly gật đầu, giao lại chiếc ghế Sottocapo phân khu cho bạn.',
         resultEn: 'Gunsmoke shrouded the hall. Your metered strike severed the traitor’s neck precisely as the final chord of the classical sonata faded. The Underboss raised a goblet of vintage red, confirming your ascension to Sottocapo over an entire Backstreet sector.',
         setFingerRank: 2,
         flagsAdd: ['promo_thumb_sottocapo_done'],
@@ -852,9 +852,9 @@ export const FACTION_EVENTS = [
         effects: { health: -14, rep: +28, wealth: +45, sanity: -6 }
       },
       {
-        labelVi: 'Triệt phá mạng lưới tuồn đạn lậu ngầm của đối phương, bắt hắn quỳ gối tự xử',
+        labelVi: 'Đặt sổ sách tuồn đạn lậu lên bàn, buộc hắn tự xử theo luật',
         labelEn: 'Expose their illegal munitions smuggling web, forcing them to self-execute',
-        resultVi: 'Bằng chứng rành rành được bạn ném lên mặt bàn cẩm thạch. Kẻ phản bội run rẩy không nói nên lời, cúi đầu tạ tội và tự bóp cò súng kết liễu sinh mệnh theo đúng lễ nghi. Bạn nhận trọn vẹn kho vũ khí lậu và nghiễm nhiên trở thành Sottocapo.',
+        resultVi: 'Cuốn sổ kho đạn bị gạch xóa được đặt lên mặt bàn đá. Kẻ ăn bớt không nói thêm được chữ nào, cúi đầu tự xử theo đúng lệ của The Thumb; bạn tiếp quản cả kho đạn lẫn chức Sottocapo.',
         resultEn: 'Irrefutable ledgers hit the marble tabletop. The traitor, paralyzed with terror, bowed deeply and pulled his own trigger in absolute compliance with etiquette. You confiscated the vast arms cache and assumed the Sottocapo seat unchallenged.',
         setFingerRank: 2,
         flagsAdd: ['promo_thumb_sottocapo_done'],
@@ -884,9 +884,9 @@ export const FACTION_EVENTS = [
     en: '[Subterranean Munitions Foundry · Sottocapo Crucible] Deep beneath District 4, thousands of laborers cast high-pressure shells for the Thumb. A sabotage insurrection triggered by Nest infiltrators threatens the entire armory. The Underboss grants you full authority to enforce order with an iron fist.',
     choices: [
       {
-        labelVi: 'Xử trảm kẻ cầm đầu gián điệp trước mặt toàn xưởng, khôi phục sản xuất đúng tiến độ',
+        labelVi: 'Bắn hạ kẻ cầm đầu ngay trước xưởng, cho dây chuyền chạy lại đúng giờ',
         labelEn: 'Publicly execute the ringleader saboteur and restore production lines immediately',
-        resultVi: 'Bạn rút súng ngắn mạ vàng kết liễu tên đầu sỏ chỉ bằng một phát đạn duy nhất theo đúng lễ nghi. Dây chuyền đúc đạn rền vang trở lại mà không chậm trễ một phút. Underboss đích thân phong bạn làm Sottocapo tối cao của phân xưởng vũ khí.',
+        resultVi: 'Một phát đạn hạ gục tay gián điệp đứng trên bục sắt. Thợ đúc quay lại lò nấu ngay trong ca đó, và Underboss ký giấy bổ nhiệm bạn làm Sottocapo coi giữ phân xưởng vũ khí.',
         resultEn: 'A single gilded bullet ended the saboteur with immaculate etiquette. The forge fires roared back to life without losing a minute. The Underboss formally promoted you to Sottocapo of the munitions district.',
         setFingerRank: 2,
         flagsAdd: ['promo_thumb_sottocapo_done'],
@@ -894,9 +894,9 @@ export const FACTION_EVENTS = [
         effects: { rep: +30, wealth: +50, sanity: +6, health: -14 }
       },
       {
-        labelVi: 'Tái tổ chức hệ thống phòng thủ xưởng đúc bằng trận địa pháo liên hoàn tự động',
+        labelVi: 'Bố trí lại các ụ súng canh gác và kho thuốc nổ của xưởng đúc',
         labelEn: 'Overhaul foundry defenses with automated interlocking artillery batteries',
-        resultVi: 'Bạn bố trí mạng lưới hỏa lực hoàn hảo đến mức biến khu xưởng thành một pháo đài bất khả xâm phạm. Lợi nhuận và kho dự trữ đạn dược tăng vọt gấp ba lần. Toàn thể Capo cúi đầu kính phục tân Sottocapo.',
+        resultVi: 'Bạn chia lại ca gác và dựng các chốt súng chặn kín lối vào kho thuốc nổ. Sản lượng đạn tháng sau tăng gấp ba, đủ để các Capo trong quận cúi đầu chào tân Sottocapo.',
         resultEn: 'Your tactical overhaul converted the sprawling foundry into an impregnable citadel. Production output tripled. Every Capo in the District bowed to their formidable new Sottocapo.',
         setFingerRank: 2,
         flagsAdd: ['promo_thumb_sottocapo_done'],
@@ -926,7 +926,7 @@ export const FACTION_EVENTS = [
     en: '[Messenger’s blindfold] The loom releases a Prescript. To leave the Proselyte ranks, you must carry it blindfolded through contested streets. Proxies wait at the door; people have died on this route.',
     choices: [
       {
-        labelVi: 'Đeo dải lụa bịt mắt, cảm nhận Dòng Chảy để vượt qua làn đạn phục kích',
+        labelVi: 'Đeo dải lụa bịt mắt, lần theo Dòng Chảy vượt qua làn đạn',
         labelEn: 'Don the blindfold, navigating the crossfire purely through the Flow',
         resultVi: 'Bạn lần theo mép tường, dừng lại mỗi khi tiếng súng gần hơn. Tờ Prescript đến tay người nhận còn nguyên niêm. Proxy tháo dải lụa bịt mắt cho bạn và trao áo Messenger.',
         resultEn: 'You follow the wall and stop whenever the gunfire draws near. The recipient gets the Prescript with its seal intact. A Proxy removes your blindfold and hands you a Messenger’s coat.',
@@ -936,9 +936,9 @@ export const FACTION_EVENTS = [
         effects: { rep: +20, resonance: +18, sanity: -6 }
       },
       {
-        labelVi: 'Dùng lưỡi kiếm ngắn xẻ đôi đội phục kích, chứng minh quyền năng của Chỉ Lệnh',
+        labelVi: 'Dùng đoản kiếm mở đường máu qua toán phục kích để giao Chỉ Lệnh',
         labelEn: 'Sever the ambushers with short-blade fury, proving the absolute authority of the Prescript',
-        resultVi: 'Từng tên lính phục kích ngã rạp dưới lưỡi kiếm lạnh lùng. Cuộn Chỉ Lệnh không dính một giọt máu. Bạn hoàn thành sứ mệnh chuyển phát nguyên vẹn và được trao chiếc áo choàng Sứ Giả thêu chỉ vàng.',
+        resultVi: 'Toán phục kích ngã xuống dưới lưỡi đoản kiếm. Cuộn Chỉ Lệnh không dính một giọt máu; bạn giao giấy đúng hẹn và nhận áo choàng Messenger.',
         resultEn: 'Every ambusher collapsed under your clinical slashes. The Prescript remained immaculate without a single droplet of blood. You delivered it intact and were adorned with the gold-threaded Messenger mantle.',
         setFingerRank: 1,
         flagsAdd: ['promo_index_messenger_done'],
@@ -964,13 +964,13 @@ export const FACTION_EVENTS = [
     allowDistorted: true,
     need: { finger: 'Index', fingerRank: 0 },
     forbids: ['promo_index_messenger_done'],
-    vi: "[Ba cuộn tơ] Prescript giao bạn mang tơ vàng qua ba District trong một đêm: một cuộn lên cột đèn District 11, một xuống giếng District 12, một trao người ăn xin ở District 13. Không được đổi thứ tự.",
+    vi: "[Ba cuộn tơ] Prescript giao bạn mang tơ vàng qua ba District nội trong đêm nay: cuộn đầu treo lên cột đèn District 11, cuộn hai thả xuống giếng District 12, cuộn cuối trao tận tay người ăn xin nơi District 13. Không được đổi thứ tự.",
     en: '[Tri-District Conduit · Index Messenger Crucible] The Prescript commands you to carry three golden spools across three war-torn districts in a single night: affix one to a streetlamp in District 11, drop one into a well in District 12, and hand the last to an amputee beggar in District 13.',
     choices: [
       {
-        labelVi: 'Thi triển bộ pháp lướt trên mái nhà, hoàn tất lộ trình trước khi bình minh ló dạng',
+        labelVi: 'Chạy qua các mái nhà, hoàn tất cả ba điểm trước bình minh',
         labelEn: 'Leap across rooftops with breathless precision, completing the route before dawn',
-        resultVi: 'Dưới ánh đèn đường mờ, bóng áo choàng trắng của bạn lướt qua các mái nhà như một bóng ma. Cả ba sứ mạng hoàn tất chuẩn xác từng giây. Cuộn tơ vàng tự phát sáng kết thành dải thắt lưng Sứ Giả của The Index.',
+        resultVi: 'Bạn băng qua các mái nhà dưới ánh đèn đường mờ, đặt đủ ba cuộn tơ trước khi trời sáng. Khi về tới hầm dệt, bạn nhận dải thắt lưng Messenger của The Index.',
         resultEn: 'Your white mantle glided across moonlit rooftops like an apparition. All three tasks concluded with microsecond precision. The golden threads wove into your official Messenger sash.',
         setFingerRank: 1,
         flagsAdd: ['promo_index_messenger_done'],
@@ -980,7 +980,7 @@ export const FACTION_EVENTS = [
       {
         labelVi: 'Dùng kiếm thuật bảo vệ người ăn xin khỏi đám côn đồ truy sát',
         labelEn: 'Defend the beggar recipient from pursuing thugs using clinical swordsmanship',
-        resultVi: 'Bạn chém gục toán sát thủ trong ba chiêu, đặt cuộn tơ vàng vào tay người ăn xin. Người ăn xin mỉm cười gật đầu: đó chính là một Proxy đang cải trang thử thách bạn. Bạn được tấn phong Sứ Giả ngay tại chỗ.',
+        resultVi: 'Bạn hạ toán côn đồ trong ba nhát kiếm rồi đặt cuộn tơ vàng vào tay người ăn xin. Ông ta ngẩng lên gật đầu: đó là một Proxy cải trang đi giám sát bài thử.',
         resultEn: 'You neutralized the assassins in three flawless strokes, delivering the spool into the beggar’s grasp. The beggar smiled: a disguised Proxy testing your fidelity. You were ordained on the spot.',
         setFingerRank: 1,
         flagsAdd: ['promo_index_messenger_done'],
@@ -1052,9 +1052,9 @@ export const FACTION_EVENTS = [
     en: '[Needle and Thread Executioner · Proxy Investiture] A Grade 2 Fixer Office captured an Index Messenger, burning the sacred scroll. The subterranean loom rumbles, dispensing the gold-threaded Proxy Greatsword: "Sever every blade of the blasphemers. Present their master’s head before the bell strikes twelve."',
     choices: [
       {
-        labelVi: 'Đơn thương độc mã chém sập văn phòng đối phương, giải cứu Sứ Giả và thu hồi tro tàn Chỉ Lệnh',
+        labelVi: 'Đánh sập văn phòng đối phương, cứu Messenger và thu hồi tro Chỉ Lệnh',
         labelEn: 'Single-handedly level the enemy office, rescue the Messenger, and retrieve the sacred ashes',
-        resultVi: 'Đại kiếm Proxy vung lên như sấm rền chớp giật. Mười hai Fixer vũ trang gục ngã trước lưỡi kiếm hoàn hảo của bạn. Bạn cõng Sứ Giả trở về trong tiếng tụng ca của các môn đồ. Bạn chính thức là Proxy Đại Kiếm của The Index.',
+        resultVi: 'Thanh đại kiếm Proxy chém gãy rào chắn ngay cửa chính. Mười hai Fixer giữ sảnh ngã xuống trước khi kịp báo động; bạn cõng người Messenger về hầm khung cửi và nhận sắc phong Proxy.',
         resultEn: 'The colossal needle blade cleaved through barricades like lightning. Twelve armed Fixers fell before your flawless flow. You carried the Messenger back amidst hymns of praise, formally ordained as an Index Proxy.',
         setFingerRank: 2,
         flagsAdd: ['promo_index_proxy_done'],
@@ -1062,9 +1062,9 @@ export const FACTION_EVENTS = [
         effects: { health: -18, rep: +36, resonance: +28, wealth: +30, sanity: +6 }
       },
       {
-        labelVi: 'Thao túng Dòng Chảy khiến chính các khách hàng của văn phòng quay sang triệt hạ họ',
+        labelVi: 'Gửi tin cho các thân chủ của văn phòng đó để họ tự xử nhau',
         labelEn: 'Manipulate causality so the Office’s own wealthy patrons tear them apart from within',
-        resultVi: 'Không cần rút kiếm, bạn gửi ba bức thư ngắn đến các nhà tài phiệt Nest. Trong vòng mười hai giờ, văn phòng nổi loạn bị chính các thân chủ san phẳng. Các Weaver cúi đầu trước trí tuệ siêu phàm của tân Proxy.',
+        resultVi: 'Bạn không rút kiếm lần nào, chỉ gửi ba lá thư ngắn cho các khách hàng ở Nest. Chưa đầy mười hai tiếng sau, chính đám thân chủ đã thuê người xóa sổ văn phòng đó.',
         resultEn: 'Spilling no blood yourself, three terse notes sent to Nest oligarchs prompted clients to dismantle the rogue Office within hours. The Weavers bowed to your terrifying mastery of causality.',
         setFingerRank: 2,
         flagsAdd: ['promo_index_proxy_done'],
@@ -1104,7 +1104,7 @@ export const FACTION_EVENTS = [
         effects: { health: -14, rep: +24, heat: +20, sanity: +5 }
       },
       {
-        labelVi: 'Lấy thân mình che chắn làn mưa tên nỏ để toàn bộ đàn em an toàn',
+        labelVi: 'Lấy thân mình chắn làn tên nỏ để đàn em rút lui an toàn',
         labelEn: 'Shield your Little Siblings with your own body against a hail of crossbow bolts',
         resultVi: 'Bạn che đường rút cho Little Siblings và trúng hai mũi tên. Họ đưa bạn về, băng vết thương rồi gọi bạn là Big Sibling. Tên bạn được ghi vào sổ của gia tộc.',
         resultEn: 'You cover the Little Siblings’ retreat and take two bolts. They bring you home, dress the wounds, and call you Big Sibling. Your name enters the Family ledger.',
@@ -1114,7 +1114,7 @@ export const FACTION_EVENTS = [
         effects: { health: -18, rep: +28, network: +18, sanity: +8 }
       },
       {
-        labelVi: 'Uống rượu cùng các anh em trong quán bar ngầm để hồi phục thể lực trước',
+        labelVi: 'Uống rượu cùng anh em trong quán ngầm để lấy lại sức trước',
         labelEn: 'Drink ale with siblings in the subterranean pub to restore body and spirit',
         resultVi: 'Bạn dành đêm nay quây quần bên các anh em trong gia tộc, uống cạn thùng bia mạch nha cay nồng và băng bó lại các vết bầm tím.',
         resultEn: 'You spent the night gathered with your sworn family, sharing hearty ale and tending to bruises.',
@@ -1132,13 +1132,13 @@ export const FACTION_EVENTS = [
     allowDistorted: true,
     need: { finger: 'Middle', fingerRank: 0 },
     forbids: ['promo_middle_big_sibling_done'],
-    vi: '[Giải Cứu Đàn Em Vùng Biên Giới · Thăng Bậc Big Sibling The Middle] Ba Little Siblings vô tình lạc qua chốt gác Nest và bị lực lượng hành pháp vũ trang bao vây trong nhà kho bỏ hoang. Sách Phục Thù ghi rõ: "Không một ai trong Gia Đình bị bỏ lại phía sau." Bạn lao vào giữa tiếng còi báo động.',
+    vi: '[Giải cứu người em vùng biên] Ba Little Siblings đi lạc qua chốt gác Nest và bị đội tuần tra vũ trang vây trong nhà kho bỏ hoang. Book of Vengeance ghi rõ không bỏ lại ai trong gia đình; bạn tới nơi khi còi báo động vừa hú.',
     en: '[Border Rescue · Middle Big Sibling Crucible] Three Little Siblings crossed an unmarked Nest border checkpoint and are pinned down inside an abandoned warehouse by security squads. The Book of Vengeance commands: "None in the Family are left behind." You sprint into the wailing sirens.',
     choices: [
       {
-        labelVi: 'Phá toang cửa thép, dùng xích gai đập tan đội vũ trang giải vây cho đàn em',
+        labelVi: 'Phá cửa thép, dùng xích sắt mở đường đưa các em ra ngoài',
         labelEn: 'Shatter reinforced blast doors, smashing the security perimeter with barbed chains',
-        resultVi: 'Nắm đấm bọc xích của bạn như búa tạ nghiền nát khiên chống bạo động của quân Nest. Bạn cõng người em nhỏ nhất trên lưng, đưa cả ba thoát về an toàn. Các bô lão long trọng xăm mắt xích vàng Big Sibling lên ngực bạn.',
+        resultVi: 'Nắm đấm quấn xích của bạn đập vỡ khiên chắn của toán gác cổng. Bạn cõng người em bị thương trên lưng, đưa cả ba về khu phố an toàn và nhận hình xăm mắt xích Big Sibling.',
         resultEn: 'Your chain-wrapped fists shattered riot shields like dry clay. Bearing the youngest sibling on your back, you brought all three home intact. The elders etched the Big Sibling chain upon your chest.',
         setFingerRank: 1,
         flagsAdd: ['promo_middle_big_sibling_done'],
@@ -1146,9 +1146,9 @@ export const FACTION_EVENTS = [
         effects: { health: -16, rep: +26, heat: +25, sanity: +8 }
       },
       {
-        labelVi: 'Tung lựu đạn khói gây nhiễu, bí mật dẫn dắt các em thoát ra qua đường hầm cống',
+        labelVi: 'Tung khói mù, dẫn cả ba rút qua đường cống ngầm',
         labelEn: 'Deploy smoke screens, covertly exfiltrating your siblings through subterranean sewers',
-        resultVi: 'Bằng trực giác sắc bén, bạn đưa toàn đội luồn lách qua cống ngầm an toàn mà không để kẻ địch chạm vào một sợi tóc. Tinh thần bảo bọc cơ trí của bạn được cả gia đình tôn vinh.',
+        resultVi: 'Bạn ném ống khói che mắt chốt gác rồi dẫn cả ba lách xuống đường cống ngầm về lại Backstreets mà không mất thêm người nào.',
         resultEn: 'With keen situational awareness, you threaded your team through the drainage conduits undetected. Your protective brilliance was applauded by the entire Family.',
         setFingerRank: 1,
         flagsAdd: ['promo_middle_big_sibling_done'],
@@ -1156,7 +1156,7 @@ export const FACTION_EVENTS = [
         effects: { rep: +24, network: +22, sanity: +12, wealth: +15 }
       },
       {
-        labelVi: 'Uống rượu cùng các anh em trong quán bar ngầm để hồi phục thể lực trước',
+        labelVi: 'Uống rượu cùng anh em trong quán ngầm để lấy lại sức trước',
         labelEn: 'Drink ale with siblings in the subterranean pub to restore body and spirit',
         resultVi: 'Bạn dành đêm nay quây quần bên các anh em trong gia tộc, uống cạn thùng bia mạch nha cay nồng và băng bó lại các vết bầm tím.',
         resultEn: 'You spent the night gathered with your sworn family, sharing hearty ale and tending to bruises.',
@@ -1220,9 +1220,9 @@ export const FACTION_EVENTS = [
     en: '[Blood Feast Summit · Great Elder Investiture] In the torch-lit cavern of the Middle, thousands gather for the Family Grand Feast. Three external syndicates petition for vassalage while smuggling concealed explosives to assassinate leadership. The responsibility of presiding over the feast falls upon you.',
     choices: [
       {
-        labelVi: 'Đập vỡ bàn rượu, tự tay bẻ gãy cổ ba tên thích khách trước khi kíp nổ kịp châm',
+        labelVi: 'Lật bàn rượu, bẻ cổ ba tên thích khách trước khi kíp nổ bắt lửa',
         labelEn: 'Shatter the banquet table, snapping the assassins’ necks before the fuses ignite',
-        resultVi: 'Tốc độ ra đòn của bạn nhanh như sấm sét. Ba kẻ phản trắc gục ngã trong nháy mắt; thuốc nổ bị vô hiệu hóa an toàn. Cả khán phòng đồng thanh hô vang danh xưng của bạn. Các bô lão trao vương trượng xích vàng Great Elder.',
+        resultVi: 'Bạn quăng xích giữ chặt ba kẻ mang thuốc nổ ngay khi chúng vừa rút kíp. Khói chưa kịp bốc lên thì cả ba đã gục dưới chân bàn; các bô lão trao cho bạn ấn Great Elder ngay trong bữa tiệc.',
         resultEn: 'Lightning-fast chain strikes subdued the traitors in a heartbeat, neutralizing the payload. The entire banquet erupted in unison cheers. The Elders crowned you with the Great Elder golden chain regalia.',
         setFingerRank: 2,
         flagsAdd: ['promo_middle_great_elder_done'],
@@ -1230,9 +1230,9 @@ export const FACTION_EVENTS = [
         effects: { health: -14, rep: +42, wealth: +50, sanity: +10 }
       },
       {
-        labelVi: 'Thu phục lòng quân, biến toàn bộ tay chân của kẻ phản bội thành môn đệ trung thành',
+        labelVi: 'Vạch mặt kẻ chủ mưu và thu nhận đám đàn em vào gia đình',
         labelEn: 'Turn the enemy rank-and-file into devoted Family disciples through overwhelming charisma',
-        resultVi: 'Bạn vạch trần âm mưu hèn hạ của những kẻ cầm đầu và giang rộng vòng tay đón nhận đám đàn em lầm đường lạc lối. Sức mạnh quân số của gia tộc tăng gấp đôi. Bạn được tôn làm Đại Trưởng Lão đầy uy vọng.',
+        resultVi: 'Bạn chỉ đích danh kẻ cài thuốc nổ trước mặt cả sảnh rồi cho đám đàn em đi theo được chọn ở lại. Quân số trong khu phố tăng gấp đôi sau đêm đó, và bạn nhận ghế Great Elder.',
         resultEn: 'Exposing the betrayal of their greedy leaders, you welcomed their rank-and-file into the Family brotherhood. The clan’s muscle doubled overnight. You rose as a revered Great Elder.',
         setFingerRank: 2,
         flagsAdd: ['promo_middle_great_elder_done'],
@@ -1262,9 +1262,9 @@ export const FACTION_EVENTS = [
     en: '[Atelier Graduation Exhibition: Docent Commission · The Ring] Inside District 9’s marble gallery, antiseptic mingles with drying oil paint and warm blood. As a Student, you must unveil your graduation masterpiece to prove mastery over the aesthetics of anatomical dissolution before the stern Maestros.',
     choices: [
       {
-        labelVi: 'Dệt nên bức tranh giải phẫu học tinh xảo từ sợi thần kinh và thủy tinh màu',
+        labelVi: 'Dệt bức tranh giải phẫu từ sợi thần kinh và thủy tinh màu',
         labelEn: 'Weave an intricate anatomical tapestry from nerve fibers and stained glass',
-        resultVi: 'Tác phẩm của bạn tỏa sáng rực rỡ dưới ánh đèn pha lê, từng nhịp xung điện sinh học phát ra âm thanh du dương như tiếng phong cầm. Hội đồng Maestro đứng dậy vỗ tay trong xúc động cuồng nhiệt: Bạn chính thức là Docent (Giảng viên Nghệ thuật) của The Ring.',
+        resultVi: 'Bức tranh căng dưới đèn phòng trưng bày, các sợi thần kinh vẫn giật nhẹ theo xung điện. Hội đồng Maestro gật đầu chấm qua và cấp danh hiệu Docent của The Ring cho bạn.',
         resultEn: 'Your installation radiated under crystal chandeliers, organic bioelectric pulses emitting ethereal organ chords. The Maestro salon rose in ecstatic applause: You are officially ordained as a Ring Docent.',
         setFingerRank: 1,
         flagsAdd: ['promo_ring_docent_done'],
@@ -1272,9 +1272,9 @@ export const FACTION_EVENTS = [
         effects: { sanity: -8, resonance: +20, rep: +24, wealth: +25 }
       },
       {
-        labelVi: 'Chế tác cỗ máy điêu khắc động học trừu tượng từ vũ khí của Fixer bại trận',
+        labelVi: 'Dựng khối điêu khắc chuyển động từ vũ khí của Fixer bại trận',
         labelEn: 'Construct an abstract kinetic sculpture from the shattered weapons of fallen Fixers',
-        resultVi: 'Không cần chạm tới máu thịt, cỗ máy kim loại chuyển động với những nhịp điệu lạnh lùng làm say đắm các nhà phê bình bảo thủ. Bạn được phong Docent với tư cách người tiên phong của trường phái cấu trúc trừu tượng.',
+        resultVi: 'Khối kim loại ghép từ kiếm gãy chuyển động theo nhịp đồng hồ giữa phòng tranh. Bạn được phong Docent của nhánh cấu trúc trừu tượng.',
         resultEn: 'Spilling no flesh, your kinetic metal automaton operated with cold, mesmerizing geometry, captivating the conservative critics. You were crowned Docent as a pioneer of the abstract structural school.',
         setFingerRank: 1,
         flagsAdd: ['promo_ring_docent_done'],
@@ -1304,9 +1304,9 @@ export const FACTION_EVENTS = [
     en: '[Prism and Mirror Pavilion · Ring Docent Crucible] The Maestro council challenges you to transform a pitch-black subterranean vault into a multifaceted optical gallery using prism refraction and multi-angled mirrors.',
     choices: [
       {
-        labelVi: 'Sắp đặt trận địa gương lăng kính, tạo ảo ảnh mê cung vô cực làm mê hoặc người xem',
+        labelVi: 'Sắp đặt gương lăng kính tạo ảo ảnh mê cung trong phòng tối',
         labelEn: 'Assemble an infinity mirror labyrinth, enchanting observers with kaleidoscopic illusion',
-        resultVi: 'Ánh sáng phản chiếu liên hồi qua hàng ngàn mảnh gương vỡ, biến gian phòng thành một vũ trụ sao rơi lộng lẫy. Vẻ đẹp siêu thực ấy thôi miên trọn cả khán phòng. Bạn được nhất trí trao chứng chỉ Docent xuất sắc.',
+        resultVi: 'Ánh sáng dội qua hàng trăm mảnh gương cắt góc khiến người xem mất phương hướng ngay khi bước vào. Hội đồng Maestro nhất trí trao chứng chỉ Docent cho bạn.',
         resultEn: 'Refracted beams bounced across ten thousand mirror facets, transforming the chamber into a dazzling galaxy. Spectators wept in optical wonder. You were unanimously crowned an exceptional Ring Docent.',
         setFingerRank: 1,
         flagsAdd: ['promo_ring_docent_done'],
@@ -1314,9 +1314,9 @@ export const FACTION_EVENTS = [
         effects: { rep: +26, resonance: +22, sanity: +8, wealth: +32 }
       },
       {
-        labelVi: 'Kết hợp âm thanh cộng hưởng tần số thấp vào các khối điêu khắc chuyển động',
+        labelVi: 'Đưa âm thanh tần số thấp vào các khối điêu khắc chuyển động',
         labelEn: 'Fuse infrasound frequency acoustic waves into dynamic kinetic sculptures',
-        resultVi: 'Từng nốt nhạc trầm rung chuyển lồng ngực khán giả đồng nhịp với chuyển động cơ học của tác phẩm. Các Maestro kinh ngạc tán thưởng tư duy âm học đột phá của bạn.',
+        resultVi: 'Tiếng trầm dội vào lồng ngực người xem đúng nhịp xoay của các khớp sắt. Các Maestro ghi nhận lối sắp đặt âm học của bạn và trao hàm Docent.',
         resultEn: 'Deep acoustic pulses resonated in harmony with kinetic joints, captivating the conservative salon. The Maestros applauded your boundary-pushing acoustic installation.',
         setFingerRank: 1,
         flagsAdd: ['promo_ring_docent_done'],
@@ -1430,7 +1430,7 @@ export const FACTION_EVENTS = [
     en: "[The Grand Curator’s Chair] The Ring’s curator seat is empty. As you prepare to take it, men from The Head arrive to inspect the works in the District 9 gallery. They will be at the door before opening.",
     choices: [
       {
-        labelVi: "Mở Triển Lãm Vĩnh Cửu và để các tác phẩm tự nói với người kiểm tra",
+        labelVi: "Mở Triển Lãm Vĩnh Cửu và để tác phẩm đón đoàn kiểm tra",
         labelEn: "Open the Eternal Exhibition and let the works speak to the inspectors",
         resultVi: "Mọi tác phẩm sáng lên cùng lúc theo nhịp bạn dàn dựng. Phái đoàn của The Head đi hết một vòng mà không tìm ra điểm nào vi phạm Taboo. Hội đồng gọi bạn là Grand Curator của The Ring.",
         resultEn: "Every piece lights up on the cue you set. The Head’s delegation walks the full circuit without finding a single Taboo violation. The council names you Grand Curator of The Ring.",
@@ -1514,9 +1514,9 @@ export const FACTION_EVENTS = [
     en: '[The Pinky Vow: Sworn Blade Investiture · The Pinky] In a pitch-black subterranean vault, a velvet-gloved operative interlocks pinky fingers with you. A traitor broke a sacred Pinky oath, embezzling guild funds and hiding within a fortified Nest manor. To cast off Initiate status and claim the Sworn Blade mantle, you must execute the sentence in complete silence.',
     choices: [
       {
-        labelVi: 'Đột nhập trong bóng tối, cắt ngọt yết hầu kẻ bội ước mà không kích hoạt chuông báo',
+        labelVi: 'Đột nhập trong đêm, hạ kẻ bội ước mà không chạm chuông báo',
         labelEn: 'Infiltrate the manor, slitting the traitor’s throat without triggering a single alarm',
-        resultVi: 'Lưỡi đoản kiếm của bạn trượt qua bóng đêm êm ái như gió thoảng. Kẻ phản bội gục xuống bàn làm việc cùng cuốn sổ tài chính được thu hồi nguyên vẹn. Bạn nhận chiếc nhẫn bạc ngón út và trở thành Sworn Blade chính thức.',
+        resultVi: 'Bạn vào phòng làm việc trong đêm, thu hồi cuốn sổ tài chính và kết liễu kẻ bội ước trước khi lính gác kịp đổi ca. Chiếc nhẫn bạc ngón út của Sworn Blade được trao cho bạn.',
         resultEn: 'Your slender stiletto glided through the gloom like a whisper. The oath-breaker slumped over the ledger, secured intact. The silver pinky ring was slipped onto your finger: You are an ordained Sworn Blade.',
         setFingerRank: 1,
         flagsAdd: ['promo_pinky_blade_done'],
@@ -1524,9 +1524,9 @@ export const FACTION_EVENTS = [
         effects: { rep: +20, wealth: +28, heat: +5, sanity: +5 }
       },
       {
-        labelVi: 'Cài độc dược thần kinh vô hình vào ly trà, ép hắn tự giao nộp lại tài sản',
+        labelVi: 'Pha độc thần kinh vào ấm trà, buộc hắn ký trả lại ngân quỹ',
         labelEn: 'Spike their evening tea with invisible neurotoxin, compelling full restitution',
-        resultVi: 'Trước khi chất độc phát tác, tên đào tẩu run rẩy ký lệnh chuyển toàn bộ tài sản về kho ngầm của The Pinky. Ban chấp hành đánh giá cao sự khôn ngoan và chuẩn xác của bạn, phong bạn làm Sworn Blade.',
+        resultVi: 'Trước khi chất độc làm tê cứng tay, kẻ đào tẩu ký chuyển toàn bộ ngân quỹ về kho của The Pinky để đổi thuốc giải. Bạn được phong làm Sworn Blade.',
         resultEn: 'Before the toxin took hold, the trembling fugitive signed over every stolen coin back to the Pinky vaults. The Directorate commended your subtle intellect, confirming your promotion to Sworn Blade.',
         setFingerRank: 1,
         flagsAdd: ['promo_pinky_blade_done'],
@@ -1566,7 +1566,7 @@ export const FACTION_EVENTS = [
         effects: { rep: +24, wealth: +40, network: +18, sanity: +10 }
       },
       {
-        labelVi: "Hạ toán vệ sĩ thuê mà thương nhân giấu sẵn để phục kích sứ giả của The Pinky",
+        labelVi: "Hạ toán vệ sĩ mà thương nhân giấu sẵn để phục kích sứ giả",
         labelEn: "Take out the hired guards the merchant hid to ambush The Pinky’s envoys",
         resultVi: "Toán vệ sĩ ngã xuống không một tiếng động. Vị thương nhân run lẩy bẩy, xin tha mạng và hứa trả đủ nợ. Bạn nhận nhẫn Sworn Blade.",
         resultEn: "The guards go down without a sound. The merchant shakes, begs for mercy and promises to pay in full. You receive the Sworn Blade ring.",
@@ -1640,9 +1640,9 @@ export const FACTION_EVENTS = [
     en: '[Throne of Obsidian · Supreme Pinky Monarch] Shadows across the City seem to bend to your stride. Five thousand Sworn Blades raise their stilettos in absolute fealty. A covert war among Nest titans rages; how will you steer the City’s destiny?',
     choices: [
       {
-        labelVi: 'Thống nhất toàn bộ mạng lưới hợp đồng ngầm, trở thành kẻ giật dây vô hình của The City',
+        labelVi: 'Gom toàn bộ hợp đồng ngầm về một mối điều phối',
         labelEn: 'Consolidate the global pact network, becoming the invisible puppeteer of the City',
-        resultVi: 'Không một thế lực nào có thể ký kết hiệp ước hay khai chiến mà không qua bàn tay của bạn. The Pinky đạt tới đỉnh cao quyền lực chưa từng có trong lịch sử. Bạn là Sovereign Monarch huyền thoại.',
+        resultVi: 'Mọi khế ước ngầm qua lại giữa các quận đều phải có dấu xác nhận từ bàn bạn. Không ai thấy mặt bạn ngoài phố, nhưng các nhánh The Pinky đều làm theo lệnh từ tháp chuông.',
         resultEn: 'No faction could wage war or seal treaties without your silent consent. The Pinky attained unprecedented dominion. You rule as the immortal Sovereign Monarch.',
         setFingerRank: 3,
         flagsAdd: ['promo_pinky_sovereign_done'],
@@ -1650,9 +1650,9 @@ export const FACTION_EVENTS = [
         effects: { rep: +55, wealth: +100, network: +55, sanity: +20 }
       },
       {
-        labelVi: 'Xóa sạch mọi món nợ máu cho những phận đời cùng khổ trong thế giới ngầm',
+        labelVi: 'Đốt các khế ước nợ máu của dân nghèo trong ngõ',
         labelEn: 'Erase all blood debts for the destitute underclass across the Backstreets',
-        resultVi: 'Bạn hủy bỏ hàng triệu bản khế ước nô dịch, trả lại tự do cho vô số con người. Toàn bộ Backstreets tôn bạn làm Đấng Cứu Thế Bóng Đêm.',
+        resultVi: 'Bạn cho hủy hàng loạt giấy nợ cũ trong kho lưu trữ. Dân nghèo ở các ngõ Backstreets không biết tên thật của bạn, nhưng họ luôn báo tin mỗi khi có người lạ tìm đến tháp chuông.',
         resultEn: 'You dissolved millions of predatory bond contracts, liberating countless souls. The Backstreets hail you as the Shadow Redeemer.',
         setFingerRank: 3,
         flagsAdd: ['promo_pinky_sovereign_done'],
@@ -1660,7 +1660,7 @@ export const FACTION_EVENTS = [
         effects: { rep: +60, network: +50, sanity: +25, wealth: +30 }
       },
       {
-        labelVi: 'Tĩnh tâm dưỡng sức trong mật thất trước khi nhận lãnh vương miện bóng đêm',
+        labelVi: 'Nghỉ trong mật thất trước khi nhận ấn Sovereign',
         labelEn: 'Rest in the subterranean sanctum before accepting the crown of shadows',
         resultVi: 'Bạn dành thêm thời gian điều hòa hơi thở và kiểm tra lại các mạng lưới mật báo.',
         resultEn: 'You took time to center your breathing and review the intelligence threads.',
@@ -1685,9 +1685,9 @@ export const FACTION_EVENTS = [
     en: '[Official Feather Commission · Nest Clearance Audit] Your grueling corporate probation concludes. Human Resources issues an urgent summons. To become an official Feather entitled to Nest residency and corporate shield, you must pass ideological loyalty screening and undergo biometric spinal chip integration.',
     choices: [
       {
-        labelVi: 'Ký hiệp ước bảo mật Singularity bằng máu và hoàn thành cấy ghép sinh trắc học',
+        labelVi: 'Ký cam kết bảo mật Singularity và làm phẫu thuật cấy chip',
         labelEn: 'Sign the blood-bound Singularity NDA and undergo spinal chip implantation',
-        resultVi: 'Mũi khoan y tế rít lên sau gáy bạn, cố định con chip vàng sáng chói. Tấm thẻ nhân viên Feather hạng A sáng lên trên ngực áo của bạn. Từ hôm nay, bạn được tự do ra vào Nest mà không bị lính gác chặn lại.',
+        resultVi: 'Mũi khoan y tế cố định con chip định danh vào đốt sống cổ của bạn. Thẻ nhân viên Feather hạng A bật sáng trên ngực áo; từ hôm nay bạn qua cổng kiểm soát Nest mà không cần giấy thông hành tạm.',
         resultEn: 'The surgical drill hummed against your cervical vertebra, locking the gleaming chip in place. Your Grade-A Feather ID pulsed to life. From today, you walk freely through the Nest gates with full citizen rights.',
         setWingRank: 1,
         flagsAdd: ['promo_wing_feather_done', 'Feather', 'Nest'],
@@ -1695,9 +1695,9 @@ export const FACTION_EVENTS = [
         effects: { health: -10, wealth: +25, rep: +18, network: +15 }
       },
       {
-        labelVi: 'Vạch trần một âm mưu tuồn dữ liệu Singularity của đối thủ trong phòng ban',
+        labelVi: 'Nộp hồ sơ tố giác đồng nghiệp đang tuồn dữ liệu Singularity ra ngoài',
         labelEn: 'Expose a corporate espionage ring within your department during clearance audit',
-        resultVi: 'Bằng chứng sắc bén của bạn khiến đặc vụ gián điệp bị Cục An ninh khống chế ngay tại chỗ. Ban Giám Đốc lập tức phê duyệt đặc cách thăng cấp bạn lên Feather chính thức kèm một khoản tiền thưởng kếch xù.',
+        resultVi: 'Tập tài liệu bạn nộp giúp đội an ninh bắt tại trận kẻ sao chép dữ liệu trong phòng. Ban giám đốc ký duyệt thẳng hồ sơ Feather chính thức cho bạn kèm tiền thưởng kiểm soát nội bộ.',
         resultEn: 'Your damning audit dossiers caught the corporate mole red-handed before security enforcers. The Board fast-tracked your Feather commission with executive honors and a generous cash bonus.',
         setWingRank: 1,
         flagsAdd: ['promo_wing_feather_done', 'Feather', 'Nest'],
@@ -1719,9 +1719,9 @@ export const FACTION_EVENTS = [
     en: '[Singularity Core Breach: Section Chief Promotion · Wing R&D] Disaster sirens wail through the deepest subterranean research vault. A Singularity containment cell ruptured, spewing aberrant radiation that disabled automated bulkheads and trapped senior staff. The director fled, leaving the sector’s fate in your hands.',
     choices: [
       {
-        labelVi: 'Mặc bộ đồ bảo hộ chống dị thể, tự tay lao vào tâm chấn vặn van an toàn',
+        labelVi: 'Mặc đồ bảo hộ, tự vào buồng chứa khóa van chính',
         labelEn: 'Don the hazmat armature, plunging into the epicenter to manually seal the primary valve',
-        resultVi: 'Nhiệt lượng và bức xạ Singularity làm bỏng rát da thịt qua lớp giáp, nhưng bàn tay kiên định của bạn đã khóa chặt van trước khi lõi phát nổ. Ban Điều Hành công nhận bạn là người hùng và trao quyết định bổ nhiệm Trưởng Bộ Phận (Section Chief).',
+        resultVi: 'Hơi nóng trong buồng chứa làm phồng rộp hai bàn tay qua lớp găng bảo hộ, nhưng bạn vẫn vặn chặt được van chính trước khi áp suất vượt ngưỡng. Ban điều hành ký quyết định bổ nhiệm bạn làm Section Chief.',
         resultEn: 'Singularity heat seared your flesh through the seals, yet your steady hands torqued the valve shut seconds before critical detonation. The Executive Board hailed your valor, confirming your appointment as Section Chief.',
         setWingRank: 2,
         flagsAdd: ['promo_wing_specialist_done'],
@@ -1729,9 +1729,9 @@ export const FACTION_EVENTS = [
         effects: { health: -20, sanity: -12, rep: +35, wealth: +60 }
       },
       {
-        labelVi: 'Tái lập trình thuật toán điều hướng dòng năng lượng, giải tỏa áp suất từ phòng điều khiển',
+        labelVi: 'Chuyển hướng dòng xả năng lượng sang bể phụ từ phòng điều khiển',
         labelEn: 'Recalibrate the energy dispersal algorithms, venting the overpressure from the control room',
-        resultVi: 'Mười ngón tay lướt thoăn thoắt trên bảng điều khiển lượng tử. Dòng năng lượng Singularity hung hãn được bạn uốn nắn trở lại các bể chứa an toàn. Bạn được phong danh hiệu Chuyên Viên Cao Cấp Điểm Dị Thường (Singularity Specialist).',
+        resultVi: 'Bạn mở thông các van dẫn sang bể chứa dự phòng, hạ áp suất trong buồng chính về mức an toàn. Tuần sau đó, bạn nhận quyết định thăng cấp lên Singularity Specialist.',
         resultEn: 'Your fingers danced across the quantum terminal. The raging Singularity discharge was steered smoothly into secondary reserve reservoirs. You were decorated as a Senior Singularity Specialist.',
         setWingRank: 2,
         flagsAdd: ['promo_wing_specialist_done'],
@@ -1813,7 +1813,7 @@ export const FACTION_EVENTS = [
         effects: { health: -18, rep: +55, wealth: +80, sanity: +12 }
       },
       {
-        labelVi: "Mời các thủ lĩnh đối phương đến một bữa tiệc và buộc họ ký văn tự thần phục",
+        labelVi: "Mời các thủ lĩnh đối phương dự tiệc và buộc họ ký giấy quy thuận",
         labelEn: "Invite the rival bosses to a banquet and make them sign oaths of submission",
         resultVi: "Bạn không nâng giọng lần nào. Từng thủ lĩnh quỳ xuống, tự cắt một ngón tay làm lời thề, và The Thumb mở rộng địa bàn mà không tốn một viên đạn. Bạn là Underboss mà người ta sẽ kể lại nhiều năm.",
         resultEn: "You never raise your voice. One by one the bosses kneel and cut off a finger as their oath, and The Thumb grows without spending a round. You are the Underboss they will talk about for years.",
@@ -1886,13 +1886,13 @@ export const FACTION_EVENTS = [
     allowDistorted: true,
     need: { finger: 'Index', fingerRank: 2 },
     forbids: ['promo_index_weaver_done'],
-    vi: '[Đại Sứ Giả Tối Cao Của Khung Cửi · Phong Hàm Index Weaver] Cỗ máy dệt cơ khí ngầm phát ra hàng ngàn cuộn tơ vàng óng ánh hội tụ dưới chân bạn. Là người hiểu sâu sắc nhất về Dòng Chảy, bạn được triệu hồi để viết tiếp những chỉ lệnh định hình sự cân bằng nhân quả của toàn bộ The City.',
+    vi: '[Khung cửi ngầm · Phong hàm Weaver] Hàng ngàn sợi chỉ vàng từ cỗ máy dệt cơ khí dưới hầm sâu gom lại trước mặt bạn. Các Proxy trong vùng đã tập hợp để chờ bạn đọc bản Prescript đầu tiên do chính tay mình dệt.',
     en: '[Grand Proxy of the Subterranean Loom · Index Weaver Investiture] The subterranean mechanical loom weaves ten thousand golden threads converging at your feet. As the master interpreter of the Flow, you are summoned to author the Prescripts governing City equilibrium.',
     choices: [
       {
-        labelVi: 'Dệt nên bản Chỉ Lệnh Đại Cục, cứu vãn một quận khỏi thảm họa tuyệt diệt',
+        labelVi: 'Dệt bản Chỉ Lệnh điều chuyển nhân lực để giữ yên cả quận',
         labelEn: 'Weave the Grand Prescript, averting catastrophic annihilation across an entire District',
-        resultVi: 'Ngón tay bạn lướt trên khung cửi vàng, sắp đặt hàng ngàn sự kiện ngẫu nhiên kỳ diệu giúp cả quận thoát khỏi thảm họa. Bạn được các Proxy và Weaver suy tôn làm Đại Sứ Giả Tối Cao.',
+        resultVi: 'Các cuộn giấy rời khung cửi và được Messenger mang đi ngay trong đêm. Hàng loạt cuộc đụng độ ngoài phố tự triệt tiêu lẫn nhau trước khi kịp bùng lên; bạn nhận áo choàng Weaver.',
         resultEn: 'Your fingers danced across the gilded loom, weaving miraculous synchronicity that spared the District from doom. The Proxies and Weavers bowed to the Supreme Grand Proxy.',
         setFingerRank: 3,
         recordsAdd: ['index_proxy'],
@@ -1901,9 +1901,9 @@ export const FACTION_EVENTS = [
         effects: { rep: +52, resonance: +35, wealth: +60, sanity: +15 }
       },
       {
-        labelVi: 'Cầm Đại Kiếm Proxy trấn thủ cửa hang khung cửi, đẩy lùi đội quân xâm nhập',
+        labelVi: 'Cầm đại kiếm đứng gác ngay cửa hầm khung cửi trước toán đột kích',
         labelEn: 'Stand guard at the loom sanctuary, repelling an invading army with the Proxy blade',
-        resultVi: 'Đại kiếm xé tan màn đêm, không một kẻ thù nào dám tiến thêm nửa bước. Khung cửi dệt xong chiếc áo choàng Thần Dệt phủ lên vai bạn. Bạn chính thức bước lên đỉnh cao The Index.',
+        resultVi: 'Bạn chặn đứng toán đột kích ngay bậc thang dẫn xuống hầm dệt. Khi tiếng bước chân ngoài hành lang im hẳn, chiếc áo choàng Weaver được khoác lên vai bạn.',
         resultEn: 'Your blade parted the dark, repelling all invaders. The loom completed the Weaver mantle, draping it over your shoulders. You ascended to the pinnacle of the Index.',
         setFingerRank: 3,
         recordsAdd: ['index_proxy'],
@@ -1912,7 +1912,7 @@ export const FACTION_EVENTS = [
         effects: { health: -18, rep: +50, wealth: +55, sanity: +12 }
       },
       {
-        labelVi: 'Tạm lùi lại phân tích sâu hơn các tầng nghĩa ẩn của bản Chỉ Lệnh',
+        labelVi: 'Lùi lại đọc kỹ hơn các tầng nghĩa của bản Chỉ Lệnh',
         labelEn: 'Defer execution to parse the deeper metaphysical layers of the Prescript',
         resultVi: 'Bạn dành thêm thời gian giải mã các câu từ phức tạp của bản Chỉ Lệnh, ổn định tâm trạng và tĩnh dưỡng cơ thể.',
         resultEn: 'You withdrew into deep grammatical study of the Prescript, stabilizing your sanity and resting your body.',
@@ -2031,7 +2031,7 @@ export const FACTION_EVENTS = [
         effects: { health: -16, sanity: +20, rep: +42, resonance: +35 },
         scarsAdd: ['Lời thề Thiên Tinh The Pinky'],
         meritAdd: 50,
-        resultVi: 'Máu bạn ngấm vào thanh kiếm cổ xưa. Lưỡi kiếm phát ra ánh sáng lam ngọc rực rỡ như một ngôi sao rực cháy trên bầu trời đêm. Bạn trở thành Thiên Tinh (Star of the Sky) của The Pinky, người bảo vệ biên cương The City.',
+        resultVi: 'Máu bạn nhỏ xuống rãnh trên thân kiếm cổ. Lưỡi thép ánh lên màu lam nhạt dưới bóng tháp chuông; bạn nhận danh hiệu Star of the Sky và trấn giữ tuyến biên giới của The Pinky.',
         resultEn: 'Your blood sank into the ancestral blade. It ignited in brilliant sapphire light like a burning star against the night sky. You became a Star of the Sky of The Pinky, sentinel of the City’s border.'
       },
       {
@@ -2060,13 +2060,13 @@ export const FACTION_EVENTS = [
     allowDistorted: true,
     need: { finger: 'Pinky', fingerRank: 1 },
     forbids: ['promo_pinky_star_done'],
-    vi: '[Phán Quan Bóng Đêm · Khảo Thí Thiên Tinh The Pinky] Bản hợp đồng máu cổ xưa bị đường dây buôn lậu công nghệ Singularity đánh cắp. The Pinky giao cho Sworn Blade có tài truy vết và thu hồi bản hợp đồng mà không để rò rỉ bất kỳ thông tin nào ra bên ngoài.',
+    vi: '[Thu hồi khế ước · Khảo thí Star of the Sky] Một bản khế ước cũ bị đường dây buôn lậu công nghệ lấy mất. The Pinky giao bạn lần theo dấu vết và lấy lại cuộn giấy trước khi nội dung bên trong lọt ra ngoài.',
     en: '[Shadow Arbiter · Pinky Star of the Sky Crucible] An ancient blood pact was stolen by singularity smugglers. The Pinky commissions an elite Sworn Blade to track and recover the dossier without a whisper leaking to the outside world.',
     choices: [
       {
-        labelVi: 'Thâm nhập hầm ngầm của băng buôn lậu, thu hồi tài liệu và thiêu rụi toàn bộ chứng cứ',
+        labelVi: 'Đột nhập hầm băng buôn lậu, lấy lại khế ước và đốt bản sao',
         labelEn: 'Infiltrate the smuggling vault, secure the pact, and incinerate all remaining traces',
-        resultVi: 'Lưỡi dao của bạn lướt đi trong bóng tối không một tiếng động. Bản hợp đồng nguyên vẹn được đặt lên bàn Hội Đồng. Ánh sáng lam ngọc bừng nở trên cổ tay bạn: Bạn chính thức là Thiên Tinh (Star of the Sky).',
+        resultVi: 'Bạn vào hầm kho trong đêm, thu hồi bản gốc và đốt hết các bản chép tay. Cuộn giấy nguyên niêm được đặt lại lên bàn hội đồng; bạn nhận danh hiệu Star of the Sky.',
         resultEn: 'Your stilettos danced in absolute silence. The intact pact was placed before the Directorate. Sapphire luminescence blossomed on your wrist: You are ordained as a Star of the Sky.',
         setFingerRank: 2,
         recordsAdd: ['pinky_star'],
@@ -2075,9 +2075,9 @@ export const FACTION_EVENTS = [
         effects: { health: -14, rep: +45, wealth: +45, sanity: +15 }
       },
       {
-        labelVi: 'Thao túng thị trường chợ đen, ép kẻ trộm tự đem nạp lại tài liệu nguyên vẹn',
+        labelVi: 'Khóa các đầu mối chợ đen, ép kẻ trộm tự đem trả tài liệu',
         labelEn: 'Corner black-market brokers, forcing the thief to surrender the document unconditionally',
-        resultVi: 'Bằng mạng lưới tống tiền ngầm tinh vi, bạn bóp nghẹt mọi đường thoát của kẻ trộm. Hắn tự quỳ trước cửa The Pinky nạp lại tài liệu. Ban lãnh đạo trao danh hiệu Thiên Tinh cho bạn.',
+        resultVi: 'Không tìm được người mua và bị cắt hết đường trốn, kẻ trộm phải đem cuộn giấy đến đặt trước cửa điểm hẹn của The Pinky. Ban lãnh đạo trao danh hiệu Star of the Sky cho bạn.',
         resultEn: 'Through surgical intelligence leverage, you choked every avenue of escape. The thief knelt before the Pinky gates in unconditional surrender. You were crowned a Star of the Sky.',
         setFingerRank: 2,
         recordsAdd: ['pinky_star'],
@@ -2106,14 +2106,14 @@ export const FACTION_EVENTS = [
     en: '[The Wing vault] The board shows you the secret behind its Singularity. A seat among the executives requires you to witness it and remain composed. If you cannot, the Wing will erase your memory of today.',
     choices: [
       {
-        labelVi: 'Nhìn thẳng vào vực thẳm Singularity: Đứng vững và bước vào ban điều hành',
+        labelVi: 'Nhìn thẳng vào buồng Singularity và ký biên bản nhận ghế điều hành',
         labelEn: 'Gaze into the Singularity abyss: Stand firm and claim Senior Executive seat',
         setWingRank: 3,
         recordsAdd: ['nest_migration'],
         effects: { health: -15, sanity: -32, wealth: +85, rep: +42 },
         scarsAdd: ['Bí mật đen tối của Wing'],
         meritAdd: 55,
-        resultVi: 'Bạn nhìn thẳng vào cỗ máy kinh hoàng của Singularity. Mắt bạn rỉ máu, nhưng nụ cười vẫn điềm tĩnh như kẻ lọc lõi. Ban giám đốc vỗ tay chào đón: "Chào mừng Giám đốc cấp cao mới của Wing."',
+        resultVi: 'Bạn đứng xem hết một chu kỳ vận hành của lõi Singularity dưới tầng đáy rồi ký tên vào sổ trực ban điều hành. Thư ký hội đồng trao cho bạn thẻ từ của tầng cao nhất.',
         resultEn: 'You stared into the monstrosity of the Singularity. Your eyes bled, yet your expression retained the cold composure of an apex corporate survivor. The Board applauded: “Welcome, our newest Senior Executive.”'
       },
       {
@@ -2140,18 +2140,18 @@ export const FACTION_EVENTS = [
     en: '[The Thumb’s Iron Etiquette] During a Thumb banquet, an initiate speaks out of turn before a Capo. Total silence engulfs the room. The Capo turns to you, handing you an ivory pistol loaded with a single round: "Teach him our etiquette."',
     choices: [
       {
-        labelVi: 'Bắn thẳng vào trán kẻ bất kính, tuân thủ tuyệt đối trật tự của Bố Già',
+        labelVi: 'Bắn thẳng vào trán kẻ bất kính theo đúng luật của The Thumb',
         labelEn: 'Shoot the offender cleanly, upholding the Godfather’s absolute code',
-        resultVi: 'Tiếng nổ đanh thép vang lên. Khói súng bốc lên từ nòng súng của bạn. Viên Capo gật đầu hài lòng, nâng bạn lên hàng cận vệ thân tín: "Tốt lắm. Kẻ không biết lễ nghi không có quyền hít thở không khí của The City."',
+        resultVi: 'Một tiếng súng nổ trong phòng tiệc. Viên Capo gật đầu, thu lại khẩu súng và xếp bạn vào đội cận vệ riêng.',
         resultEn: 'A sharp crack echoed. Smoke curled from your barrel. The Capo gave a nod of approval, elevating you to his personal retinue: "A man without manners has no right to draw breath in The City."',
         effects: { sanity: -15, rep: +30, wealth: +45, heat: +10 },
         meritAdd: 25,
         flagsAdd: ['thumb_etiquette_done', 'ThumbLoyalist']
       },
       {
-        labelVi: 'Bắn sượt qua vành tai kẻ phạm lỗi, xin Capo tha mạng để hắn chuộc tội',
+        labelVi: 'Bắn sượt vành tai hắn rồi xin Capo cho đi công tác chuộc lỗi',
         labelEn: 'Graze his ear, petitioning the Capo for a trial by combat to atone',
-        resultVi: 'Viên đạn xé rách vành tai người đàn em. Bạn quỳ một gối xuống, dẫn lời điều lệ số 42 của Thumb xin lãnh nhận một nhiệm vụ tử trận để chuộc lỗi cho thuộc cấp. Capo chấp thuận lời thỉnh cầu.',
+        resultVi: 'Viên đạn xé rách vành tai người đàn em. Bạn cúi đầu dẫn điều lệ số bốn mươi hai của Thumb, xin nhận một chuyến đi khó để tính sổ thay cho cấp dưới. Capo gật đầu.',
         resultEn: 'Lead tore through cartilage. Dropping to one knee, you cited Thumb Rule 42 to request an ordeal of blood to atone for him. The Capo granted your plea.',
         effects: { sanity: +10, resonance: +12, rep: +18, health: -15 },
         meritAdd: 20,
@@ -2198,22 +2198,22 @@ export const FACTION_EVENTS = [
     weight: 60,
     need: { jobs: ['Syndicate'], flags: ['FingerMiddle'] },
     forbids: ['Distorted', 'middle_vengeance_done'],
-    vi: '[Book of Vengeance của The Middle] Gã Big Brother bắp tay cuồn cuộn hình xăm xích sắt bước vào sào huyệt, giở cuốn sách da dày cộp (Book of Vengeance): "Thằng Fixer Grade 4 vừa chém đứt ngón tay đứa em út trong xóm. Tên hắn đã viết bằng mực đỏ trên trang này. Ai sẽ đi đòi nợ máu?"',
+    vi: '[Book of Vengeance của The Middle] Một Big Brother mang cuốn sổ da dày vào phòng họp: "Tên Fixer Grade 4 vừa chém đứt ngón tay đứa em út trong xóm. Tên hắn đã ghi bằng mực đỏ ở trang này. Ai đi đòi nợ?"',
     en: '[The Middle’s Book of Vengeance] A Big Brother with iron-chain tattoos slaps down the heavy leather tome: "A Grade 4 Fixer just severed the finger of an initiate in our ward. His name is inked in red. Who will collect the blood debt?"',
     choices: [
       {
-        labelVi: 'Xung phong cầm đầu đội truy sát, săn lùng kẻ thù đến tận chân trời',
+        labelVi: 'Nhận dẫn đội truy sát đi tìm tên Fixer đó',
         labelEn: 'Step up to lead the vengeance cell, hunting him to the horizon',
-        resultVi: 'Bạn cùng các anh em Middle vây ráp gã Fixer trong một xưởng thuộc da. Trận đòn tàn khốc kết thúc bằng việc chặt đứt cả hai bàn tay hắn để gạch tên khỏi Book of Vengeance. Cả băng đảng reo hò tên bạn.',
+        resultVi: 'Bạn cùng các anh em Middle chặn được gã Fixer trong một xưởng thuộc da. Khi hai bàn tay hắn đã trả đủ cho ngón tay của đứa em, dòng tên trong Book of Vengeance được gạch đỏ.',
         resultEn: 'You and your Middle brothers cornered the Fixer in a tannery. A merciless beating severed both his hands, striking his name from the Book. The gang roared your name in triumph.',
         effects: { sanity: -14, rep: +35, wealth: +50, heat: +25 },
         meritAdd: 30,
         flagsAdd: ['middle_vengeance_done', 'MiddleEnforcer']
       },
       {
-        labelVi: 'Đề xuất bắt thân chủ của gã Fixer bồi thường một khoản Ahn kếch xù',
+        labelVi: 'Đề xuất bắt thân chủ của gã Fixer nộp tiền đền bù',
         labelEn: 'Propose forcing the Fixer’s client to pay a crushing blood indemnity',
-        resultVi: 'Đoàn Middle kéo đến đập nát văn phòng của thân chủ. Người thương nhân run rẩy nộp phạt gấp mười lần tiền công. Đứa em út được trang bị cánh tay kim loại mới toanh, bạn nhận được sự kính trọng.',
+        resultVi: 'Đoàn Middle kéo đến văn phòng của thân chủ và ngồi chờ đến khi ông ta nộp gấp mười lần tiền công hợp đồng. Đứa em út có tiền lắp ngón tay giả mới.',
         resultEn: 'The Middle cell trashed the client’s manor. The merchant paid tenfold the bounty in terror. The initiate received a gilded cybernetic arm; you won deep respect.',
         effects: { wealth: +70, rep: +25, network: +20 },
         meritAdd: 26,
@@ -2241,7 +2241,7 @@ export const FACTION_EVENTS = [
         flagsAdd: ['ring_exhibition_done', 'RingDocent']
       },
       {
-        labelVi: 'Dùng màu vẽ thực vật và kim loại phế thải để tạo ra tác phẩm trừu tượng',
+        labelVi: 'Dùng màu thực vật và kim loại phế thải dựng tác phẩm trừu tượng',
         labelEn: 'Use mineral pigments and scrap kinetic plating for abstract sculpture',
         resultVi: 'Không làm tổn hại cơ thể con người, tác phẩm trừu tượng lạnh lẽo của bạn làm Maestro thích thú vì "góc nhìn dị biệt". Bạn vượt qua kỳ sát hạch mà không đánh mất lý trí.',
         resultEn: 'Spill no mortal blood, your cold, abstract kinetic construct intrigued the Maestro for its "alien geometric detachment." You passed without psychic corrosion.',
@@ -2266,9 +2266,9 @@ export const FACTION_EVENTS = [
     en: '[Wing Singularity Rupture Alert] Red klaxons scream through the subterranean R&D lab. A Singularity conduit fractured, spewing mutagenic vapor that converts researchers into feral cannibals. Blast doors seal in 60 seconds.',
     choices: [
       {
-        labelVi: 'Bấm nút xả khí tẩy uế toàn diện thiêu hủy cả quái vật lẫn người bị kẹt',
+        labelVi: 'Bấm nút xả khí tẩy trùng, thiêu hủy cả buồng chứa lẫn người kẹt',
         labelEn: 'Depress the sterilization purge, incinerating sector and trapped staff',
-        resultVi: 'Lửa trắng bùng cháy thiêu rụi toàn bộ gian phòng sau lớp kính chống đạn. Thảm họa được ngăn chặn trước khi lan ra Nest. Ban quản trị Wing thăng cấp bạn lên Phó Trưởng Phòng vì "sự dứt khoát cứu vãn tập đoàn."',
+        resultVi: 'Lửa trắng tràn ngập gian phòng bên kia lớp kính chịu lực. Sự cố được dập tắt trước khi lan ra khu Nest; ban quản trị thăng bạn lên Phó phòng vì giữ được kho mẫu.',
         resultEn: 'White-hot incineration engulfed the chamber behind blast-glass. The outbreak was contained. The Board promoted you to Deputy Chief for "ruthless corporate preservation."',
         meritAdd: 32,
         effects: { sanity: -20, rep: +35, wealth: +70 },
@@ -2296,7 +2296,7 @@ export const FACTION_EVENTS = [
     en: '[Bribe from a Rival Wing] An operative from a rival Megacorp corners you inside an upscale Nest café, sliding a certified ledger bearing 200 Ahn: "Simply mirror your division’s quarterly balance sheet. The gold is yours."',
     choices: [
       {
-        labelVi: 'Báo cáo ngay cho Ban An ninh Nội bộ, phối hợp bắt sống tên gián điệp',
+        labelVi: 'Báo ngay cho Ban An ninh Nội bộ để giăng bẫy bắt sống hắn',
         labelEn: 'Notify Internal Security immediately, springing a sting operation',
         resultVi: 'Đội thanh tra C Corp ập vào khống chế tên đặc vụ. Ban Giám đốc trao tặng bạn huân chương cống hiến trung thành và một khoản tiền thưởng hợp pháp kếch xù.',
         resultEn: 'Security enforcers breached the café, subduing the operative. The Board commended your incorruptible loyalty with a merit medal and lawful bonus.',
@@ -2326,18 +2326,18 @@ export const FACTION_EVENTS = [
     en: '[Time Tax Enforcement · T Corp District 20] Ash-grey skies hang over District 20. You lead a T Corp temporal collection unit into the Backstreet tenements. Brass time-extractors whir with terrifying hunger, ready to drain the lifespan of destitute citizens who lack Ahn for the Nest’s perpetual daylight.',
     choices: [
       {
-        labelVi: 'Vận hành máy hút thời gian theo đúng chỉ tiêu, thu về hàng trăm giờ tinh khiết',
+        labelVi: 'Chạy máy hút thời gian đúng chỉ tiêu, thu đủ số giờ quy định',
         labelEn: 'Operate the time-extractors strictly to corporate quota, harvesting pure temporal hours',
-        resultVi: 'Tiếng kêu khóc vang lên xé lòng khi những cư dân già đi trông thấy trong vài phút. Những khối hộp thời gian phát sáng màu hổ phách được niêm phong cẩn thận. T Corp khen thưởng hiệu suất làm việc gương mẫu của bạn.',
+        resultVi: 'Những người nợ thuế già đi ngay trước vòi hút. Các hộp thời gian màu hổ phách được niêm chì xếp lên xe; T Corp ghi nhận bạn hoàn thành vượt mức thu của ca.',
         resultEn: 'Heartbreaking shrieks echoed as residents aged decades in minutes. Amber temporal cubes were sealed with corporate lead. T Corp commended your exemplary quota efficiency.',
         meritAdd: 25,
         effects: { sanity: -18, wealth: +60, rep: +20 },
         flagsAdd: ['tcorp_tax_done']
       },
       {
-        labelVi: 'Khai khống hao hụt thời gian do rò rỉ cơ học, miễn giảm thuế cho các gia đình có trẻ nhỏ',
+        labelVi: 'Ghi hao hụt rò rỉ máy để giảm giờ thu cho nhà có trẻ nhỏ',
         labelEn: 'Falsify mechanical leakage logs, sparing destitute households with young children',
-        resultVi: 'Các gia đình quỳ gối tạ ơn người cán bộ nhân từ. Bạn khéo léo dùng kiến thức máy móc để che mắt thanh tra, bảo toàn được chút nhân tính giữa lòng tập đoàn lạnh lùng.',
+        resultVi: 'Bạn chỉnh lại van đo trên máy và ghi phần thiếu vào mục rò rỉ đường ống. Mấy hộ cuối hẻm giữ lại được số giờ làm việc trong tuần.',
         resultEn: 'Families fell to their knees in tearful gratitude. Leveraging your mechanical expertise to deceive the audit, you preserved a fragment of human soul amidst corporate frost.',
         meritAdd: 20,
         effects: { sanity: +15, network: +25, rep: +15, wealth: -10 },
@@ -2386,9 +2386,9 @@ export const FACTION_EVENTS = [
     en: '[Biogel Extraction Chamber · K Corp Tears District 11] You are assigned to K Corp’s central containment sanctum. Suspended before you looms The Tearful Thing, the living fountain of all K Corp regenerative ampoules. To stimulate its tears, projectors loop the most heartbreaking mortal tragedies upon its retinas.',
     choices: [
       {
-        labelVi: 'Vận hành hệ thống kích thích nỗi đau cực đại, thu hoạch dịch hồi phục cấp thượng phẩm',
+        labelVi: 'Tăng mức chiếu kích thích để thu tối đa lượng dịch hồi phục',
         labelEn: 'Amplify the emotional agony feeds, harvesting high-purity emerald biogel',
-        resultVi: 'Nước mắt lục bảo tuôn chảy như suối đổ đầy các bể chứa chân không. Bạn được thưởng nóng ba ống tiêm K Corp siêu cấp và được Giám đốc nghiên cứu tuyên dương xuất sắc.',
+        resultVi: 'Dịch lục bảo chảy đầy các bể chứa chân không. Bạn được thưởng ba ống HP Ampoule nguyên niêm và nhận giấy khen vượt sản lượng từ phòng nghiên cứu.',
         resultEn: 'Emerald tears poured like waterfalls into vacuum reservoirs. You were awarded three experimental Grade-A K Corp ampoules and a directorate commendation for flawless throughput.',
         meritAdd: 26,
         effects: { sanity: -20, wealth: +70, rep: +22 },
@@ -2456,7 +2456,7 @@ export const FACTION_EVENTS = [
         effects: { rep: +22, wealth: +35, network: +15, sanity: +5 }
       },
       {
-        labelVi: "Nhận mất ba vỏ đạn và tự chịu hai mươi roi gậy sắt theo lễ của The Thumb",
+        labelVi: "Nhận làm mất ba vỏ đạn và chịu hai mươi gậy sắt theo lệ",
         labelEn: "Admit to three lost casings and take twenty strikes with the iron rod, as The Thumb’s etiquette requires",
         resultVi: "Bạn đứng thẳng chịu phạt và không kêu nửa lời. Các Soldato trong kho nhìn bạn khác đi, và có người đưa bạn cốc nước mà không nói gì.",
         resultEn: "You take the punishment standing straight without a sound. The Soldatos in the depot look at you differently, and one hands you a cup of water without a word.",
@@ -2475,15 +2475,15 @@ export const FACTION_EVENTS = [
     en: '[Thumb Heavy Brawler Sparring · Forge of Obedience] In the subterranean sparring grounds, towering Thumb enforcers clash with brass knuckles. Boris commands you into the ring to test your shock tolerance and kinetic reflex before the next deployment.',
     choices: [
       {
-        labelVi: 'Tung cú đấm bộc phá trực diện, so găng ngang ngửa với đại hán hộ vệ',
+        labelVi: 'Đấu tay đôi trực diện, ăn miếng trả miếng với tay hộ vệ',
         labelEn: 'Deliver a concussive counter-blow, matching the heavy brawler blow for blow',
-        resultVi: 'Tiếng xương thịt va chạm như tiếng búa nện thép. Dù người đầy bầm tím, bạn trụ vững đến tiếng chuông cuối cùng. Các huynh đệ The Thumb gật đầu công nhận bản lĩnh thép của bạn.',
+        resultVi: 'Hai bên nện từng cú đấm nặng chịch giữa vòng vây. Dù bầm tím khắp người, bạn vẫn đứng vững đến tiếng chuông hết hiệp và được Boris gật đầu ghi nhận.',
         resultEn: 'Impacts boomed like hydraulic hammers. Bruised but unyielding, you stood tall until the final bell. Thumb brethren roared in respect for your iron spine.',
         meritAdd: 22,
         effects: { health: -15, rep: +24, wealth: +30, resonance: +12 }
       },
       {
-        labelVi: 'Sử dụng bộ pháp di chuyển khéo léo, luồn lách né tránh và quật ngã đối thủ',
+        labelVi: 'Giữ khoảng cách, né đòn nặng rồi quật ngã đối thủ',
         labelEn: 'Employ elusive footwork, slipping heavy blows and leveraging a clean takedown',
         resultVi: 'Đòn quật ngã bất ngờ khiến gã khổng lồ ngã uỳnh xuống sàn đấu. Boris vỗ tay tán thưởng: "Nhanh nhẹn và chuẩn xác. The Thumb cần những cái đầu lạnh như ngươi."',
         resultEn: 'A fluid sweep slammed the giant to the canvas. Boris nodded in approval: "Agile and precise. The Thumb values calculating minds like yours."',
@@ -2528,7 +2528,7 @@ export const FACTION_EVENTS = [
     en: '[Purge of the Counterfeit Weavers · The Index] Proxy Yan identifies a cabal of counterfeiters forging bogus Prescripts for illicit profit in District 20. You are dispatched to trace the synthetic crimson threads and sever their destiny.',
     choices: [
       {
-        labelVi: 'Dùng kiếm tơ chém đứt máy in giả và xử tử toàn bộ toán gian thương',
+        labelVi: 'Chém hỏng máy in giả và xử tử toán làm giả Chỉ Lệnh',
         labelEn: 'Use thread-blades to dismantle the counterfeit press and execute the forgers',
         resultVi: 'Những đường kiếm tơ mảnh như sợi tóc cắt đứt gân tay và máy móc của kẻ phạm tội trong im lặng. Proxy mỉm cười tán thưởng, trao thưởng cho bạn một cuộn tơ kiếm Index cao cấp.',
         resultEn: 'Microscopic razor threads sheared through joints and counterfeit presses in utter silence. The Proxy nodded in quiet approval, gifting you a spool of refined Index thread.',
@@ -2536,7 +2536,7 @@ export const FACTION_EVENTS = [
         effects: { rep: +28, wealth: +48, resonance: +18, health: -8 }
       },
       {
-        labelVi: 'Thu giữ toàn bộ kho Ahn và tang vật giao nộp về trụ sở The Index',
+        labelVi: 'Thu giữ toàn bộ kho Ahn và tang vật nộp về The Index',
         labelEn: 'Confiscate the hoarded Ahn and illicit ledgers, surrendering all to Index custody',
         resultVi: 'Bạn giao nộp toàn bộ tài sản bất chính về kho gia tộc. Lòng trung thành của bạn được ghi nhận và bạn được nhận một phần hoa hồng xứng đáng.',
         resultEn: 'You surrendered every seized coin to the family vaults. Your integrity earned recognition and a legitimate commission cut.',
@@ -2555,7 +2555,7 @@ export const FACTION_EVENTS = [
     en: '[Blood for Blood · Middle Book of Vengeance] A Little Sister was struck and stripped of her coat by a drunken workshop foreman. His name was instantly inscribed in the Book of Vengeance. The entire family looks to you for retribution.',
     choices: [
       {
-        labelVi: 'Dẫn mười anh em đập nát xưởng rèn, bẻ gãy tay kẻ xúc phạm và lấy lại áo khoác',
+        labelVi: 'Dẫn mười anh em đập xưởng rèn, bẻ tay kẻ đánh và lấy lại áo',
         labelEn: 'Lead ten siblings to smash the forge, breaking the culprit’s arm and reclaiming the coat',
         resultVi: 'Tiếng xích sắt quất rầm rập. Tên quản đốc quỳ rạp cầu xin tha mạng. Bạn khoác lại chiếc áo cho người em gái trong tiếng reo hò của cả gia tộc. Tên của hắn được gạch bỏ trong Sách Phục Thù.',
         resultEn: 'Purple chains roared through the forge. The foreman groveled in terror. You draped the coat back over your Little Sister’s shoulders as siblings cheered. His name was struck from the Book.',
@@ -2563,7 +2563,7 @@ export const FACTION_EVENTS = [
         effects: { rep: +30, wealth: +40, sanity: +12, health: -8 }
       },
       {
-        labelVi: 'Bắt xưởng rèn bồi thường 50 Ahn viện trợ cho người em và ký cam kết tôn trọng',
+        labelVi: 'Bắt xưởng rèn bồi thường năm mươi Ahn và ký giấy xin lỗi',
         labelEn: 'Force the workshop to pay 50 Ahn in restitution and sign a respectful non-aggression oath',
         resultVi: 'Trước uy lực của bạn, xưởng rèn lập tức nộp phạt toàn bộ số tiền. Người em gái cảm động rơi nước mắt, và gia tộc The Middle ca tụng sự khôn ngoan của bạn.',
         resultEn: 'Bowing before your intimidation, the forge liquidated the indemnity on the spot. The Little Sister wept in gratitude; the Middle praised your calculated strength.',
@@ -2609,7 +2609,7 @@ export const FACTION_EVENTS = [
     en: '[Living Statue Gala · The Ring] A Ring Maestro hosts an avant-garde biological art gala. You are instructed to don marble-lacquered armor and pose as a silent living statue amidst the ballroom, poised to execute any patron who dares critique the art.',
     choices: [
       {
-        labelVi: 'Đứng bất động 6 tiếng liền, chém đôi kẻ phản động dám buông lời chê bai tranh',
+        labelVi: 'Đứng bất động sáu tiếng, chém hạ kẻ buông lời chê bai tranh',
         labelEn: 'Stand motionless for six hours, cleaving a critic who dared insult the canvas',
         resultVi: 'Nhát chém bất ngờ từ bức tượng khiến máu bắn thành vệt trừu tượng lên tường. Vị Maestro reo lên thích thú: "Một kiệt tác trình diễn hoàn hảo!" Bạn được thăng hàm trong The Ring.',
         resultEn: 'A sudden strike from the marble statue sprayed scarlet ribbons across the gallery wall. The Maestro gasped in ecstasy: “A sublime performance piece!” You advanced in the Ring.',
@@ -2636,7 +2636,7 @@ export const FACTION_EVENTS = [
     en: '[Subterranean Whisper Network · The Pinky] In the dank sewers of District 25, an owl-masked Pinky envoy passes you an embroidered ribbon cipher. Your directive: deliver it to a rogue Wing spy without alerting Seven Association surveillants.',
     choices: [
       {
-        labelVi: 'Luồn lách qua các đường ống thông khí tối tăm, hoàn tất giao liên an toàn',
+        labelVi: 'Luồn qua đường ống thông khí tối, giao dải lụa tận tay điệp viên',
         labelEn: 'Slip through ventilation shafts in darkness, completing covert delivery',
         resultVi: 'Bản mật mã được trao tận tay điệp viên. Một túi tiền Ahn bóng loáng được nhét vào tay bạn kèm theo cái gật đầu của hội đồng bóng tối The Pinky.',
         resultEn: 'The cipher reached the operative’s hands unseen. A velvet pouch of Ahn was pressed into your palm with the silent nod of the Pinky sovereign council.',
@@ -2668,7 +2668,7 @@ export const FACTION_EVENTS = [
     en: '[T Corp Time Tax Foreclosure · District 4] Adjusting your brass time-measuring monocle, you lead a T Corp audit squad to seize 1,200 hours of stolen subjective time from a rogue forge that exploited overtime workers.',
     choices: [
       {
-        labelVi: 'Kích hoạt hộp hấp thụ thời gian, tịch thu toàn bộ thời gian đánh cắp về kho T Corp',
+        labelVi: 'Bật hộp thu hồi, tịch thu toàn bộ giờ đánh cắp về kho T Corp',
         labelEn: 'Activate the chronometer condenser, confiscating all stolen hours for the Wing',
         resultVi: 'Chiếc hộp phát ra ánh sáng vàng hổ phách hút cạn các bình chứa thời gian. Giám đốc T Corp khen ngợi báo cáo chuẩn xác của bạn và thưởng lớn bằng cổ phiếu thời gian.',
         resultEn: 'The condenser flared sepia, vacuuming the illicit time vials clean. The T Corp Board praised your audit, rewarding you with certified Time dividends.',
@@ -2676,7 +2676,7 @@ export const FACTION_EVENTS = [
         effects: { rep: +24, wealth: +48, sanity: +6 }
       },
       {
-        labelVi: 'Trả lại một nửa số giờ thời gian bị đánh cắp cho các công nhân kiệt sức',
+        labelVi: 'Trả lại một nửa số giờ bị đánh cắp cho đám công nhân',
         labelEn: 'Quietly return half the reclaimed hours to the haggard factory laborers',
         resultVi: 'Những công nhân già nua trẻ lại trông thấy trong ánh mắt biết ơn vô bờ. Bạn báo cáo là bình chứa bị rò rỉ, giữ trọn vẹn sự thanh thản trong tâm hồn.',
         resultEn: 'Haggard laborers regained lost years, weeping in profound gratitude. You logged a minor gasket leakage, preserving moral solace in a ruthless City.',
@@ -2696,7 +2696,7 @@ export const FACTION_EVENTS = [
     en: '[W Corp WARP Train Containment Breach] A WARP train docks in District 23, but the First-Class memory erasure manifold short-circuits. Mutated passenger horrors are battering the compartment bulkhead minutes before the public station doors open.',
     choices: [
       {
-        labelVi: 'Cầm vũ khí W Corp xông vào toa xe, tiêu diệt dị thể và kích hoạt khôi phục hình thể',
+        labelVi: 'Cầm vũ khí W Corp vào toa, dọn khối thịt và bật máy phục hồi',
         labelEn: 'Breach the carriage with W Corp cleavers, executing mutates and forcing cellular reset',
         resultVi: 'Máu thịt văng tung tóe trong khoang tàu. Bạn kích hoạt công tắc khôi phục thời gian Singularity đúng 3 giây trước giờ mở cửa. Hành khách bước ra tươi cười như vừa ngủ một giấc 10 giây. Ban điều hành thưởng nóng cho bạn.',
         resultEn: 'Gore painted the bulkheads. You slapped the Singularity reset relay three seconds before public boarding. Passengers stepped onto the platform smiling after a "ten-second trip". You received a massive hazard bonus.',
@@ -2724,7 +2724,7 @@ export const FACTION_EVENTS = [
     en: '[K Corp Ampoule Quality Audit · Singularity Tears] A flagship crate of K Corp HP Ampoules exhibits erratic froth. You are dispatched into the subterranean tear-well chamber to diagnose the Singularity contamination.',
     choices: [
       {
-        labelVi: 'Hiệu chỉnh lại màng lọc sinh học và thay thế bộ lọc nano đúng quy trình',
+        labelVi: 'Chỉnh lại màng lọc sinh học và thay bộ lọc nano đúng quy trình',
         labelEn: 'Recalibrate the biological filtration baffles and swap the nano-filters',
         resultVi: 'Dòng dịch ngọc bích trở lại trạng thái trong vắt hoàn mỹ. Lô hàng được xuất xưởng đúng hạn, và bạn được thưởng một ống tiêm hồi phục K Corp nguyên bản phòng thân.',
         resultEn: 'The emerald tears returned to pristine clarity. The batch cleared customs on schedule; the Board gifted you a genuine sealed K Corp ampoule.',
@@ -2734,7 +2734,7 @@ export const FACTION_EVENTS = [
         later: [{ id: 'csq_wing_patent_inquisition', years: 3, reasonVi: "Bạn là người cuối cùng chạm vào buồng chứa Singularity Nước Mắt", reasonEn: "You were the last person to touch the Singularity tear-well chamber" }]
       },
       {
-        labelVi: 'Phát hiện một nhóm nhân viên đang lén bòn rút dịch Singularity để bán chợ đen',
+        labelVi: 'Bắt quả tang nhóm nhân viên đang rút trộm dịch Singularity bán chợ đen',
         labelEn: 'Uncover rogue technicians embezzling raw Singularity serum for the black market',
         resultVi: 'Bạn bắt quả tang và bàn giao toàn bộ đường dây cho an ninh K Corp. Bạn được thăng chức quản đốc kiểm định với mức lương hậu hĩnh.',
         resultEn: 'You caught the embezzlement ring red-handed and delivered them to security. The Wing elevated you to Chief Auditor with a salary spike.',
@@ -2755,7 +2755,7 @@ export const FACTION_EVENTS = [
     en: '[R Corp 4th Pack Hatchery · Clone Survival Protocol] Dispatched to an R Corp facility, you supervise the lethal battle arena between five identical genetic clones. By R Corp charter, only the single surviving apex clone may deploy into active service.',
     choices: [
       {
-        labelVi: 'Ghi nhận và ký giấy chứng nhận cho cá thể bản sao chiến thắng xuất sắc nhất',
+        labelVi: 'Ký giấy chứng nhận cho bản sao chiến thắng cuối cùng trong buồng',
         labelEn: 'Certify the victorious apex clone and process survival credentials cleanly',
         resultVi: 'Cá thể sống sót bước ra từ vũng máu với ánh mắt lạnh như băng. Bạn đóng dấu phê chuẩn điều động. R Corp thanh toán khoản thù lao giám sát nguy hiểm hậu hĩnh.',
         resultEn: 'The lone victor stepped from the bloodied arena with eyes of cold obsidian. You stamped the authorization; R Corp wired an opulent hazard appraisal bounty.',
@@ -2763,7 +2763,7 @@ export const FACTION_EVENTS = [
         effects: { rep: +24, wealth: +52, sanity: -6 }
       },
       {
-        labelVi: 'Bí mật lưu trữ mẫu DNA ưu tú để bán cho xưởng rèn công nghệ sinh học',
+        labelVi: 'Sao chép lén dữ liệu thần kinh của bản sao để bán ra ngoài',
         labelEn: 'Secretly duplicate elite genetic telemetry to broker with biotech ateliers',
         resultVi: 'Một xưởng rèn cơ thể ngầm trả giá cao chót vót cho dữ liệu thần kinh phản xạ của R Corp, đem lại tài sản lớn cho bạn.',
         resultEn: 'An underground cybernetics forge paid a fortune for R Corp reflex telemetry, vastly enriching your bank account.',
@@ -2783,7 +2783,7 @@ export const FACTION_EVENTS = [
     en: '[N Corp Inquisition Tribunal · Prosthetic Purge] Hammer Inquisitors and Nailsmiths of N Corp inspect your administrative sector for bodily purity. Anyone bearing biomechanical augmentations is branded a heretic.',
     choices: [
       {
-        labelVi: 'Tuyên bố lòng trung thành với thể xác thuần khiết, giúp đồng nghiệp cất giấu đồ giả',
+        labelVi: 'Ký giấy cam kết cơ thể thuần khiết và giấu đồ giả cho đồng nghiệp',
         labelEn: 'Proclaim devotion to unmarred flesh while secretly hiding colleagues’ implants',
         resultVi: 'Sự khéo léo của bạn giúp phân khu vượt qua cuộc thanh tra mà không ai bị đóng đinh. Các đồng nghiệp mang ơn cứu mạng của bạn suốt đời.',
         resultEn: 'Your quick-witted composure guided the entire division past the Inquisition unscathed. Colleagues pledged lifelong loyalty to you.',
@@ -2862,7 +2862,7 @@ export const FACTION_EVENTS = [
         effects: { wealth: +38, rep: +18, network: +10 }
       },
       {
-        labelVi: "Chi 25 Ahn trang bị đạn áp suất cao cho cả đội Capo dưới quyền",
+        labelVi: 'Trang bị đạn áp suất cao cho đội Capo dưới quyền',
         labelEn: "Spend 25 Ahn to arm the Capos under you with high-pressure rounds",
         costAhn: 25,
         resultVi: "Tiếng lên đạn đồng loạt vang khắp sảnh. Từ hôm đó, hỏa lực của nhánh The Thumb dưới quyền bạn khiến các ngõ hẹp khó vào hơn nhiều.",
@@ -2871,7 +2871,7 @@ export const FACTION_EVENTS = [
         effects: { rep: +28, network: +18, health: +15, sanity: +10, heat: -10 }
       },
       {
-        labelVi: "Chi 15 Ahn mở tiệc rượu Nest và thưởng đạn vàng cho các Sottocapo trung thành",
+        labelVi: "Mở tiệc rượu Nest và thưởng đạn vàng cho các Sottocapo",
         labelEn: "Spend 15 Ahn on a Nest wine banquet and gold bullets for the loyal Sottocapos",
         costAhn: 15,
         resultVi: "Sự hào phóng vừa đủ khiến thuộc hạ nhớ ơn bạn lâu hơn nhớ sợ bạn. Những mối bất mãn cũ nguội đi.",
@@ -2893,7 +2893,7 @@ export const FACTION_EVENTS = [
     en: '[Clandestine Wing Arms Treaty · Underboss Decree] A neighboring Wing logistics director visits your manor by night, proposing a secret pact: The Thumb will guard Singularity freight convoys through the Backstreets in exchange for massive commissions or military tech.',
     choices: [
       {
-        labelVi: 'Ký khế ước bảo kê tuyến vận chuyển ngầm, thu tiền mặt trực tiếp bằng Ahn',
+        labelVi: 'Ký khế ước bảo kê tuyến vận chuyển ngầm, nhận tiền mặt bằng Ahn',
         labelEn: 'Sign the convoy protection pact and collect direct Ahn payouts',
         resultVi: 'Mỗi chuyến tàu đi qua lãnh địa của bạn đều để lại những vali tiền mặt nguyên niêm phong. Kho bạc của bạn ngày càng đầy ắp.',
         resultEn: 'Every freight train crossing your turf left behind sealed briefcases of Ahn.',
@@ -2901,7 +2901,7 @@ export const FACTION_EVENTS = [
         effects: { wealth: +42, network: +15, rep: +14 }
       },
       {
-        labelVi: 'Chi 22 Ahn mua đứt lô lõi năng lượng Singularity để nâng cấp kho vũ khí The Thumb',
+        labelVi: 'Mua lõi năng lượng Singularity để nâng cấp kho súng The Thumb',
         labelEn: 'Spend 22 Ahn to acquire Singularity energy cores for The Thumb armory',
         costAhn: 22,
         resultVi: 'Những khẩu súng lưỡi lê của nhánh bạn được tích hợp lõi năng lượng mới. Uy thế của bạn vượt xa các Underboss cùng thời.',
@@ -2919,11 +2919,11 @@ export const FACTION_EVENTS = [
     allowDistorted: true,
     weight: 88,
     need: { jobs: ['Syndicate'], finger: 'Index', fingerRank: 3 },
-    vi: '[Thánh Điện Khung Cửi · Ý Chỉ Của Weaver] Dưới căn hầm sâu nhất nơi hàng vạn sợi chỉ vàng rung lên theo chấn động của The City, các Proxy và Messenger đồng loạt quỳ xuống chờ bạn trao những cuộn Prescript vừa dệt xong. Quyền phân phối định mệnh và tài sản của cả vùng nằm trong tay bạn.',
+    vi: '[Hầm khung cửi · Ý chỉ của Weaver] Dưới tầng hầm sâu nơi hàng vạn sợi chỉ vàng rung theo chấn động của The City, các Proxy và Messenger đứng chờ bạn trao những cuộn Prescript vừa dệt xong.',
     en: '[Sanctum of the Loom · Will of the Weaver] In the deepest subterranean chamber where ten thousand golden threads hum with the City’s vibrations, Proxies and Messengers kneel awaiting the newly woven Prescripts from your hand.',
     choices: [
       {
-        labelVi: 'Ban hành Prescript thu nạp hiến lễ tài chính từ các thương hội ngầm trong ba District',
+        labelVi: 'Giao Prescript thu phí bảo trợ từ các thương hội ngầm trong ba District',
         labelEn: 'Issue Prescripts levying financial offerings from underground merchant guilds across three Districts',
         resultVi: 'Không một thương hội nào dám trái lời Chỉ thị. Những đoàn xe chở đầy vàng và Ahn lặng lẽ xếp hàng trước cửa thánh điện của bạn.',
         resultEn: 'No guild dared defy the Prescript. Caravans laden with Ahn queued silently before your sanctum.',
@@ -2931,7 +2931,7 @@ export const FACTION_EVENTS = [
         effects: { wealth: +36, rep: +16, resonance: +14, network: +10 }
       },
       {
-        labelVi: 'Chi 25 Ahn trùng tu đại sảnh con lắc cộng hưởng và ban giáp lụa trắng mới cho các Proxy',
+        labelVi: 'Trùng tu sảnh con lắc và cấp áo choàng trắng mới cho các Proxy',
         labelEn: 'Spend 25 Ahn to consecrate the resonance pendulums and robe your Proxies in new white silk armor',
         costAhn: 25,
         resultVi: 'Âm thanh của Khung Cửi vang ngân trong trẻo chưa từng thấy. Tâm trí bạn hòa làm một với dòng chảy nhân quả của thành phố.',
@@ -2940,10 +2940,10 @@ export const FACTION_EVENTS = [
         effects: { rep: +26, sanity: +18, resonance: +18, network: +14 }
       },
       {
-        labelVi: 'Chi 16 Ahn mở kho lương thực cứu tế cư dân Backstreets theo lời dệt của Khung Cửi',
+        labelVi: 'Mở kho lương thực phát cho dân Backstreets theo lời khung cửi',
         labelEn: 'Spend 16 Ahn to open granaries for Backstreets residents as woven by the Loom',
         costAhn: 16,
-        resultVi: 'Cả khu phố tôn sùng The Index như vị cứu tinh giữa đêm đen. Mọi cuộc điều tra của Hana nhắm vào nhánh của bạn đều bị người dân che giấu.',
+        resultVi: 'Cả khu phố giữ im lặng mỗi khi người của The Index đi qua. Mọi cuộc điều tra của Hana nhắm vào nhánh của bạn đều không hỏi được nhân chứng nào.',
         resultEn: 'The streets revered The Index as saviors in the dark. Citizens shielded your branch from every Hana inquiry.',
         meritAdd: 18,
         effects: { sanity: +20, network: +16, rep: +12, heat: -20 }
@@ -2962,7 +2962,7 @@ export const FACTION_EVENTS = [
     en: '[Arbitration of the Causal Tide · Weaver Sovereignty] Two rival arms cartels stand on the brink of mutual annihilation. Both secretly send envoys bearing treasure chests to beg a reading from your Loom.',
     choices: [
       {
-        labelVi: 'Thu phí giải mã định mệnh từ cả hai phía và trao đúng mảnh Prescript phần thắng',
+        labelVi: 'Thu phí giải mã từ cả hai bên rồi trao mảnh Prescript phần thắng',
         labelEn: 'Collect divination tribute from both sides and deliver the true Prescript of victory',
         resultVi: 'Lời tiên tri của Khung Cửi ứng nghiệm tuyệt đối chỉ sau một đêm. Bạn thu về khoản tiền khổng lồ và củng cố mạng lưới quyền lực ngầm.',
         resultEn: 'The Loom’s prophecy came to pass overnight. You reaped a massive fortune and expanded your shadow network.',
@@ -2970,7 +2970,7 @@ export const FACTION_EVENTS = [
         effects: { wealth: +44, network: +18, rep: +14 }
       },
       {
-        labelVi: 'Đích thân dẫn các Messenger xóa sổ cả hai phe để thu hồi tuyến đường buôn về tay The Index',
+        labelVi: 'Dẫn các Messenger xóa sổ cả hai phe để thu tuyến đường buôn',
         labelEn: 'Lead your Messengers to purge both cartels and claim their trade routes for The Index',
         resultVi: 'Những lưỡi kiếm trắng lướt qua trong đêm. Toàn bộ kho hàng và tuyến đường giao thương thuộc về The Index.',
         resultEn: 'White blades flashed through the night. Every warehouse and trade route fell under The Index.',
@@ -2987,11 +2987,11 @@ export const FACTION_EVENTS = [
     allowDistorted: true,
     weight: 88,
     need: { jobs: ['Syndicate'], finger: 'Middle', fingerRank: 3 },
-    vi: '[Đại Sảnh Book of Vengeance · Phán Quyết Của Great Sibling] Bạn ngồi trên chiếc ghế bành chạm khắc xích vàng, trước mặt là cuốn Book of Vengeance dày cộm. Hàng loạt ông chủ sòng bạc, chủ xưởng và hội trưởng thương đoàn đang run rẩy đặt những bao tải Ahn lên bàn để xin xóa tên khỏi danh sách trả thù của đại gia đình.',
+    vi: '[Sảnh Book of Vengeance · Phán quyết của Great Sibling] Bạn ngồi trước cuốn Book of Vengeance mở sẵn. Chủ sòng bạc, chủ xưởng và hội trưởng thương đoàn lần lượt đặt các bao Ahn lên bàn để xin gạch tên khỏi sổ nợ của gia đình.',
     en: '[Grand Hall of the Book of Vengeance · Great Sibling Judgment] Seated upon a throne carved with golden chains, the heavy Book of Vengeance open before you, casino owners and guild masters tremble as they pile sacks of Ahn to beg erasure from the family’s grudge ledger.',
     choices: [
       {
-        labelVi: 'Chấp thuận tiền bồi thường danh dự gia tộc và thu tô bảo hộ gấp đôi',
+        labelVi: 'Nhận tiền đền bù và tăng gấp đôi phí bảo hộ hàng quý',
         labelEn: 'Accept the blood-indemnity fortune and double their protection tribute',
         resultVi: 'Bạn gạch một đường mực tím xác nhận món nợ đã trả bằng vàng. Kho quỹ của đại gia đình ngập tràn Ahn.',
         resultEn: 'A stroke of violet ink marked the debt settled in gold. The family treasury overflowed with Ahn.',
@@ -2999,7 +2999,7 @@ export const FACTION_EVENTS = [
         effects: { wealth: +40, rep: +20, network: +12 }
       },
       {
-        labelVi: 'Chi 25 Ahn mở Đại Tiệc Huynh Đệ suốt ba ngày đêm và rèn xiềng xích vàng mới cho các Big Sibling',
+        labelVi: 'Mở tiệc gia đình ba ngày và rèn xích mới cho các Big Sibling',
         labelEn: 'Spend 25 Ahn on a three-day Family Feast and forge golden chains for your Big Siblings',
         costAhn: 25,
         resultVi: 'Tiếng cụng ly và tiếng cười vang vọng khắp cả quận. Tình nghĩa huynh đệ gắn kết như sắt thép, hình xăm cường hóa trên cơ thể bạn rực sáng.',
@@ -3008,7 +3008,7 @@ export const FACTION_EVENTS = [
         effects: { health: +22, sanity: +20, rep: +25, network: +18 }
       },
       {
-        labelVi: 'Hất đổ đống tiền: Đích thân dẫn đại quân nghiền nát kẻ dám xúc phạm Little Sibling của bạn',
+        labelVi: 'Gạt đống tiền sang bên, dẫn anh em đi xử kẻ đụng vào Little Sibling',
         labelEn: 'Kick aside the money: Personally lead the family to crush those who insulted your Little Sibling',
         resultVi: 'Bạn tịch thu toàn bộ gia sản của kẻ thù sau khi san phẳng trụ sở của chúng. Cả The City thêm một lần khiếp sợ câu nói: "The Middle không bao giờ quên".',
         resultEn: 'You seized their entire estate after flattening their headquarters. The City remembered once more: The Middle never forgets.',
@@ -3029,7 +3029,7 @@ export const FACTION_EVENTS = [
     en: "[The Great Sibling’s Rounds] The newly opened docks and night markets on the District edge need someone to lean on. As Great Sibling, one wave of your hand decides where the protection money flows this season.",
     choices: [
       {
-        labelVi: "Thu tiền bảo kê toàn bộ cảng và chợ đêm, chia phần cho các nhánh gia tộc",
+        labelVi: "Thu tiền bảo kê cảng và chợ đêm, chia cho các nhánh gia tộc",
         labelEn: "Collect protection from all the docks and night markets and share it with the Family branches",
         resultVi: "Cờ hiệu của The Middle tung bay trên mọi nóc kho cảng. Mỗi tuần, tiền đổ về đều như nước từ vòi.",
         resultEn: "The Middle’s banner flies on every dock warehouse roof. Every week the money arrives as steadily as water from a tap.",
@@ -3037,7 +3037,7 @@ export const FACTION_EVENTS = [
         effects: { wealth: +38, rep: +16, network: +14 }
       },
       {
-        labelVi: "Chi 20 Ahn khắc hình xăm cường hóa cho thế hệ mới và lập quỹ thưởng cho các Little Sibling",
+        labelVi: "Khắc hình xăm cường hóa cho lớp trẻ và lập quỹ thưởng Little Sibling",
         labelEn: "Spend 20 Ahn on enhancement tattoos for the new generation and a reward fund for the Little Siblings",
         costAhn: 20,
         resultVi: "Mỗi người em trong nhà đều mạnh hơn, và nhớ rõ ai đã trả tiền. Tên Great Sibling của bạn được nhắc tới trong cả The Five Fingers.",
@@ -3067,7 +3067,7 @@ export const FACTION_EVENTS = [
         effects: { wealth: +48, rep: +22, network: +16 }
       },
       {
-        labelVi: "Chi 25 Ahn tài trợ Năm Trường Phái dựng một triển lãm điêu khắc ánh sáng",
+        labelVi: "Tài trợ Năm Trường Phái dựng triển lãm điêu khắc ánh sáng",
         labelEn: "Spend 25 Ahn to sponsor the Five Corridors in a light-sculpture exhibition",
         costAhn: 25,
         resultVi: "Triển lãm mở cửa ba đêm, và hàng người xếp dài tới tận ga tàu. Các Maestro và Docent không nói gì với bạn, chỉ lần lượt cúi đầu khi đi ngang qua.",
@@ -3076,7 +3076,7 @@ export const FACTION_EVENTS = [
         effects: { rep: +30, sanity: +20, resonance: +20, network: +16 }
       },
       {
-        labelVi: "Chi 18 Ahn mua cổ vật lạ từ The Ruins cho phòng trưng bày riêng",
+        labelVi: "Mua cổ vật lạ từ The Ruins cho phòng trưng bày riêng",
         labelEn: "Spend 18 Ahn on strange relics from The Ruins for your private gallery",
         costAhn: 18,
         resultVi: "Những cổ vật ngân lên một âm rất khẽ mỗi khi bạn đứng gần. Bạn bắt đầu hiểu cái đẹp theo cách khó nói thành lời, và ngủ ngon hơn trong những đêm sau.",
@@ -3098,7 +3098,7 @@ export const FACTION_EVENTS = [
     en: '[Supreme Appraisal Tribunal · Throne of the Grand Curator] Galleries across Nests and Backstreets petition for The Ring’s Inviolable Sanctuary seal. For your signature alone, they offer fortunes.',
     choices: [
       {
-        labelVi: 'Cấp ấn bảo chứng cho các phòng tranh thượng lưu để thu phí thẩm định hàng năm',
+        labelVi: 'Cấp ấn bảo chứng cho các phòng tranh để thu phí hàng năm',
         labelEn: 'Grant sanctuary seals to elite galleries in exchange for annual appraisal fees',
         resultVi: 'Các phòng tranh thượng lưu nườm nượp đổ Ahn vào két sắt của bạn để đổi lấy dấu ấn quyền lực.',
         resultEn: 'Art patronage royalties flowed ceaselessly into your vault.',
@@ -3127,7 +3127,7 @@ export const FACTION_EVENTS = [
     en: '[The Shadow Pact Bourse · Sovereign Authority] Atop the ancient bell tower overlooking the mist-shrouded City, Pinky envoys lay ebony boxes before you containing black-market dividends, hush-money tributes from Wing officials, and pinky-swear ledgers.',
     choices: [
       {
-        labelVi: 'Thu toàn bộ cổ tức chợ đen và tiền cống nạp giữ bí mật từ các tài phiệt Nest',
+        labelVi: 'Thu cổ tức chợ đen và tiền bịt miệng từ các tài phiệt Nest',
         labelEn: 'Collect all black-market dividends and secrecy tributes from Nest oligarchs',
         resultVi: 'Bạn nắm giữ sinh mạng chính trị của hàng chục nhân vật lớn. Vàng bạc và Ahn được chuyển thẳng vào tài khoản vô danh của Sovereign.',
         resultEn: 'Holding the political lifelines of dozens of elites, vast sums of Ahn flowed into your untraceable Sovereign accounts.',
@@ -3135,7 +3135,7 @@ export const FACTION_EVENTS = [
         effects: { wealth: +44, network: +20, rep: +18 }
       },
       {
-        labelVi: 'Chi 25 Ahn nuôi dưỡng mạng lưới sát thủ Thập Đao và xóa sạch mọi hồ sơ truy nã tại Hana',
+        labelVi: 'Nuôi mạng lưới Thập Đao và xóa hồ sơ truy nã tại Hana',
         labelEn: 'Spend 25 Ahn to fund the Ten Blades assassin network and erase all Hana wanted files',
         costAhn: 25,
         resultVi: 'Mọi dấu vết của bạn và các huynh đệ biến mất hoàn toàn khỏi sổ sách Hiệp hội. Tên tuổi Sovereign trở thành bóng ma tối thượng của thế giới ngầm.',
@@ -3144,7 +3144,7 @@ export const FACTION_EVENTS = [
         effects: { heat: -35, rep: +26, network: +22, sanity: +14 }
       },
       {
-        labelVi: 'Chi 16 Ahn lập quỹ tín thác ngầm và trạm y tế bí mật cho các huynh đệ The Pinky',
+        labelVi: 'Lập quỹ ngầm và trạm y tế kín cho anh em The Pinky',
         labelEn: 'Spend 16 Ahn to establish covert safe houses and medical stations for Pinky brethren',
         costAhn: 16,
         resultVi: 'Bất cứ nơi nào trong 26 District cũng có trạm nghỉ ngơi và bác sĩ riêng chờ đón bạn.',
@@ -3174,7 +3174,7 @@ export const FACTION_EVENTS = [
         effects: { wealth: +42, rep: +18, network: +16 }
       },
       {
-        labelVi: "Triệu tập các Ngôi Sao của The Pinky và giữ cả tuyến thương mại biên giới",
+        labelVi: "Triệu tập các Ngôi Sao của Pinky, giữ cả tuyến buôn biên giới",
         labelEn: "Summon the Stars of The Pinky and take the whole border trade route",
         resultVi: "Đến tối, cả tuyến biên giới đã đổi chủ mà không ai nổ một phát súng. Các Fixer cấp cao nhìn bạn lâu hơn một nhịp trước khi chào.",
         resultEn: "By nightfall the whole border route has changed hands without a shot. High-grade Fixers look at you a beat longer before they greet you.",
@@ -3195,7 +3195,7 @@ export const FACTION_EVENTS = [
     en: '[Underground Casino & Turf Tribute · Syndicate Boss] Managers of underground casinos, night markets, and smuggling depots across your territory present their seasonal ledgers. As a high-ranking Finger leader, the flow of Ahn is yours to command.',
     choices: [
       {
-        labelVi: 'Thu toàn bộ lợi nhuận ròng và tiền bảo kê mùa này vào két sắt cá nhân',
+        labelVi: 'Thu toàn bộ tiền lời và phí bảo kê mùa này vào két riêng',
         labelEn: 'Sweep all net profits and seasonal protection tribute into your personal vault',
         resultVi: 'Những vali tiền mặt được xếp kín căn phòng làm việc của bạn. Quyền lực ở thế giới ngầm luôn đi kèm với khối tài sản kếch xù.',
         resultEn: 'Briefcases of Ahn lined your office walls. Underworld authority brings immense wealth.',
@@ -3203,7 +3203,7 @@ export const FACTION_EVENTS = [
         effects: { wealth: +36, rep: +15, network: +8 }
       },
       {
-        labelVi: 'Chi 20 Ahn đầu tư mở rộng thêm hai sòng bạc và bến hàng ngầm ở khu phố kế bên',
+        labelVi: 'Mở thêm hai sòng bạc và bến hàng ngầm ở khu phố kế bên',
         labelEn: 'Spend 20 Ahn to expand two new casinos and smuggling docks in the adjacent ward',
         costAhn: 20,
         outcomes: [
@@ -3237,7 +3237,7 @@ export const FACTION_EVENTS = [
     en: "[A Boss’s Money] At the top of the Syndicate, money is no longer for fun. It buys safety, and you know exactly which kind you can afford.",
     choices: [
       {
-        labelVi: "Chi 25 Ahn thuê khoang hồi phục K Corp và một biệt thự kín",
+        labelVi: "Thuê khoang hồi phục K Corp và biệt thự kín canh gác cả ngày",
         labelEn: "Spend 25 Ahn on a private K Corp regeneration pod and a secluded villa",
         costAhn: 25,
         resultVi: "Vết thương cũ khép lại. Bạn ngủ sáu ngày trong căn phòng có người canh cửa suốt hai mươi bốn giờ, và lần đầu sau nhiều năm bạn thức dậy mà không nghe tiếng bước chân ngoài hành lang.",
@@ -3246,7 +3246,7 @@ export const FACTION_EVENTS = [
         effects: { health: +32, sanity: +28, heat: -15, rep: +10 }
       },
       {
-        labelVi: "Chi 20 Ahn mua chuộc thanh tra Hiệp hội và quan chức Wing để xóa án tích",
+        labelVi: "Mua chuộc thanh tra Hiệp hội và quan chức Wing để xóa hồ sơ",
         labelEn: "Spend 20 Ahn to bribe Association inspectors and Wing officials and wipe your record",
         costAhn: 20,
         resultVi: "Những phong bì dày đi qua bốn bàn làm việc. Đến cuối tuần, hồ sơ truy nã mang tên bạn nằm trong một kho lưu trữ không ai mở.",

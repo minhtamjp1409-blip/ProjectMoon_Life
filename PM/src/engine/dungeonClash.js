@@ -56,7 +56,7 @@ export const TWIST_TEXT = {
   feed: ['Thua một nhịp, nó uống máu bạn và khép lại một nấc thế thủ.', 'Lose a beat and it drinks your blood and closes a notch of guard.'],
   undertow: ['Trên mặt Hồ, hòa nghĩa là bị kéo đi: hòa tính là thua, đòn đau bằng nửa.', 'On the Lake a tie means being dragged: a tie counts as a loss, at half the blow.'],
   streets: ['Ở Backstreets tiền nói nhiều hơn: cược Ahn rẻ hơn và đáng hơn.', 'In the Backstreets money talks louder: staking Ahn costs less and buys more.'],
-  judgment: ['Head không nhận tiền. Thắng một nhịp ở đây đánh vỡ thêm một nấc.', 'The Head takes no money. A beat won here breaks one notch more.']
+  judgment: ['Head không nhận tiền. Thắng mỗi nhịp nơi đây đánh vỡ thêm một nấc.', 'The Head takes no money. A beat won here breaks one notch more.']
 };
 
 export const profileOf = (dungeonId) => CLASH_PROFILES[dungeonId] || null;

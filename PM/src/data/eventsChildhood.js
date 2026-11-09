@@ -199,7 +199,7 @@ export const CHILDHOOD_EVENTS = [
         ]
       },
       {
-        labelVi: "Nói \"Tôi biết chỗ lũ trẻ khác ngủ\", đổi chỗ trốn của chúng lấy mạng mình",
+        labelVi: "Chỉ chỗ lũ trẻ khác ngủ để đổi lấy mạng mình",
         labelEn: "Say “I know where the other kids sleep” and trade their hiding place for your life",
         resultVi: "Hai tên Rat cười, ném cho bạn tám Ahn rồi đi về phía đường cống. Đêm đó có tiếng gào vọng lên từ nắp cống đầu ngõ. Trong số những đứa bị lôi đi có đứa từng bẻ đôi mẩu bánh mì chia cho bạn.",
         resultEn: "The Rats laughed, threw you eight Ahn and walked toward the drain tunnels. That night screaming came up through the grate at the end of the alley. One of the children dragged away had once split a loaf with you.",
@@ -305,7 +305,7 @@ export const CHILDHOOD_EVENTS = [
     weight: 8,
     requires: ['Backstreets'],
     forbids: ['Nest', 'Outskirts'],
-    vi: "[Prescript của The Index] Một Messenger, mắt bịt vải trắng, đặt cuộn giấy vào tay bạn. Prescript viết: trước nửa đêm, cắt ngón áp út tay trái của người đầu tiên đã mỉm cười với bạn sáng nay, ngâm trong rượu ấm, đặt trên bậu cửa sổ tầng ba của khu nhà đổ nát. Người đó là bà Hwa, người từng băng vết thương cho bạn mà không lấy tiền.",
+    vi: "[Prescript của The Index] Một Messenger mắt bịt vải trắng đặt cuộn giấy vào tay bạn. Prescript viết: trước nửa đêm, cắt ngón áp út trái của người đầu tiên mỉm cười với bạn sáng nay, ngâm rượu ấm rồi đặt lên bậu cửa tầng ba khu nhà đổ. Người đó là bà Hwa, người từng băng vết thương cho bạn không lấy tiền.",
     en: "[A Prescript of the Index] An Index Messenger with eyes bound in white presses a slip into your hand: 「Before midnight, cut off the left ring finger of the first person who smiled at you today. Steep it in warm liquor. Leave it on a third-floor windowsill of the ruined block.」 The first person who smiled at you this morning was Mrs. Hwa, who once bandaged your wounds for free.",
     choices: [
       {
@@ -1030,7 +1030,7 @@ export const CONSEQUENCE_EVENTS = [
     id: 'csq_bloodfiend_banquet_call',
     major: true,
     isCausalCallback: true,
-    vi: "[Lời mời Bloodfiend] Lá thư sáp đỏ của Elder Bloodfiend nằm trên gối bạn. Đêm nay, bà ta đòi bạn dẫn một người sống tới hầm rượu ở District 23. Nếu không, chiếc ly trên bàn tiệc sẽ nhận máu bạn.",
+    vi: "[Lời mời Bloodfiend] Lá thư sáp đỏ của Elder Bloodfiend nằm trên gối bạn. Đêm nay, bà ta đòi bạn dẫn một người sống tới hầm rượu District 23. Nếu không, chiếc ly trên bàn tiệc sẽ nhận máu bạn.",
     en: "[The Bloodfiend’s invitation] A red wax letter from the Elder Bloodfiend lies on your pillow. Tonight she demands a living person at the cellar in District 23. If not, the chalice on the banquet table will take your blood.",
     choices: [
       {

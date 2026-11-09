@@ -464,7 +464,7 @@ export const EXPANSION_EVENTS = [
     major: true,
     weight: 14,
     jobs: ['Distortion'],
-    vi: '[Lá thư không đề tên] Ai đó luồn lá thư không đề tên qua khe cửa chỗ bạn trú. Người viết là Fixer của Hana, mời bạn tới gặp, chỉ một mình và ở nơi bạn chọn, và viết rằng họ sẽ không mang vũ khí. Bạn không biết lời ấy đáng tin đến đâu.',
+    vi: '[Lá thư không đề tên] Ai đó luồn lá thư không đề tên qua khe cửa chỗ bạn trú. Người viết là Fixer của Hana, mời bạn tới gặp riêng tại địa điểm do bạn chọn, cam kết không mang vũ khí. Bạn chưa rõ lời ấy đáng tin đến đâu.',
     en: '[The Unsigned Letter] An unsigned letter is slipped under the door of your hiding place. A Hana Fixer invites you to meet alone, at a place of your choosing, and writes that they will not carry a weapon. You do not know how far to trust that.',
     choices: [
       {
@@ -804,7 +804,7 @@ export const EXPANSION_EVENTS = [
     age: [62, 95],
     major: true,
     weight: 9,
-    vi: '[Bó thư chưa gửi] Dọn ngăn tủ cũ, bạn thấy bó thư viết cho nhiều người mà chưa lá nào được gửi. Giấy đã ngả vàng, nét chữ ấy thuộc về người trẻ hơn bạn bây giờ rất nhiều.',
+    vi: '[Bó thư chưa gửi] Dọn ngăn tủ cũ, bạn thấy bó thư viết cho nhiều người nhưng chưa lá nào được gửi đi. Giấy đã ngả vàng, nét chữ ấy thuộc về người trẻ hơn bạn bây giờ rất nhiều.',
     en: '[The Bundle of Unsent Letters] Clearing out an old cabinet, you find a bundle of letters written to many people and never sent. The paper has yellowed, and the handwriting belongs to someone much younger than you.',
     choices: [
       {

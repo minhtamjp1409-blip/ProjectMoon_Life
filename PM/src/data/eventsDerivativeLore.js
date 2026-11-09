@@ -56,9 +56,9 @@ export const DERIVATIVE_LORE_EVENTS = [
     en: '[Kim’s lesson] Bamboo-hatted Kim wipes blood from his blade beside a fallen Kurokumo fighter. “To claim an opponent’s bones, you must first risk their blade.” He hands you a practice sword.',
     choices: [
       {
-        labelVi: 'Quỳ xuống xin lĩnh hội tuyệt kỹ "To Claim Their Bones"',
+        labelVi: 'Nhận thanh đao tập và học lối chém của Blade Lineage',
         labelEn: 'Kneel and swear fealty to master "To Claim Their Bones"',
-        resultVi: 'Lưỡi đao của vị đại kiếm sư vung lên như tia chớp, rạch một vết sâu trên ngực bạn làm minh chứng nhập môn. Cơn đau thấu xương đánh thức ngọn lửa kiếm đạo kiên định. Bạn trở thành môn đồ Blade Lineage, nhận kiếm bản mệnh.',
+        resultVi: 'Kim vung đao rạch một đường trên ngực bạn để thử bước chân trụ, rồi trao thanh đao của phái cho bạn.',
         resultEn: 'The swordsman’s blade flashed like lightning, carving a deep initiation furrow across your chest. The searing agony ignited an unyielding martial clarity. You became an initiate of the Blade Lineage, receiving their ceremonial blade.',
         effects: { health: -18, sanity: +20, rep: +22, resonance: +18 },
         flagsAdd: ['blade_lineage_sworn', 'SwordMastery'],
@@ -92,9 +92,9 @@ export const DERIVATIVE_LORE_EVENTS = [
     en: '[Kurokumo Clan Blood Ink] A tatami den reeking of sumi ink and antiseptic. Vice-Captain Sayo, ink-black storm clouds sprawling across bare shoulders, pins you with a predator’s stare: "A Kurokumo blade does not merely sever muscle. It carves wounds that bleed until the victim is hollow. Inscribe our dark clouds upon your flesh, and hunt under our banner."',
     choices: [
       {
-        labelVi: 'Chấp nhận nghi thức xăm mực Hắc Vân đầy đau đớn',
+        labelVi: 'Chấp nhận xăm mực Hắc Vân của Kurokumo Clan',
         labelEn: 'Endure the agonizing Kurokumo ink tattooing ritual',
-        resultVi: 'Kim xăm đâm sâu suốt mười hai canh giờ, đưa độc dược và mực đen thấm vào kinh mạch. Bạn mở mắt với làn da mang hình rồng mây đen, lưỡi đao vung ra mang theo hiệu ứng rỉ máu tàn khốc.',
+        resultVi: 'Kim xăm đâm suốt một đêm, đưa mực đen và chất chống đông máu vào dưới da. Bạn bước ra với hình xăm mây đen trên vai cùng đoản đao của Kurokumo.',
         resultEn: 'For twelve relentless hours, bone needles pounded venom and sumi ink into your veins. You arose with dark storm dragons undulating across your skin, your blade strikes weeping arterial venom.',
         effects: { health: -15, sanity: -10, rep: +20, heat: +22 },
         flagsAdd: ['kurokumo_tattooed', 'BleedMastery'],
@@ -104,7 +104,7 @@ export const DERIVATIVE_LORE_EVENTS = [
         scheduleConsequences: [{ eventId: 'csq_blade_lineage_retribution', delayYears: 3, reasonVi: 'Blade Lineage nhận ra hình xăm Hắc Vân', reasonEn: 'Blade Lineage recognized the dark-cloud tattoo' }]
       },
       {
-        labelVi: 'Từ chối dính líu đến tranh chấp giang hồ của các gia tộc',
+        labelVi: 'Từ chối dính vào cuộc chiến giữa hai phái',
         labelEn: 'Refuse entanglements in syndicate clan feuds',
         resultVi: 'Sayo hạ mi mắt lạnh lùng: "Một con chuột Backstreets nhát gan. Hãy cầu nguyện đừng bao giờ chạm trán đao thủ Kurokumo trong hẻm tối." Bạn rời khỏi trà quán an toàn nhưng mang theo sự dè chừng.',
         resultEn: 'Sayo’s gaze turned icy: "A craven Backstreet rat. Pray you never cross our blade paths in the dark." You stepped into the rain unscathed, yet watched by shadowed eyes.',
@@ -229,9 +229,9 @@ export const DERIVATIVE_LORE_EVENTS = [
     en: '[The Stolen Colors of T Corp] You enter a covert black-market cellar in District 20 (T Corp), where the entire world has been drained of hue into dreary sepia-gray. A contrabandist cracks a lead coffer, revealing a glass flask swirling with vibrant, incandescent iridescent pigment, natural color forbidden under T Corp time-patents. "One drop, and you will see the world in divine brilliance. Interested?"',
     choices: [
       {
-        labelVi: 'Chi 20 Ahn mua lọ sắc màu và uống trọn để giải thoát tâm thức',
+        labelVi: 'Mua lọ sắc màu và uống để lấy lại màu sắc cho mắt',
         labelEn: 'Spend 20 Ahn to purchase and ingest the forbidden iridescent pigment',
-        resultVi: 'Thế giới bùng nổ trong sắc đỏ rực rỡ, sắc xanh biếc và ánh vàng chói lọi. Tâm trí bạn như được tái sinh khỏi sự ngột ngạt ngàn cân của The City, giải phóng toàn bộ áp lực tinh thần.',
+        resultVi: 'Màu đỏ, xanh và vàng hiện lại trên tường gạch trước mặt bạn. Cơn bức bối kéo dài nhiều tháng dịu xuống ngay lập tức.',
         resultEn: 'The sepia veil detonated into vivid scarlet, sapphire, and radiant emerald. Your senses rejuvenated from decades of dreary monochromatic oppression, purging mental rot instantly.',
         costAhn: 20,
         effects: { sanity: +40, resonance: +25, heat: +15, taboo: +1 },
@@ -297,9 +297,9 @@ export const DERIVATIVE_LORE_EVENTS = [
     en: '[WonderLab · The Aberrant Specimen] A researcher in a torn white lab coat bursts into your sanctuary, clutching a containment capsule. Inside writhes an Aberration, a glass blossom weeping crimson nectar, harmonizing a siren lullaby: "It breached the entire WonderLab branch... please, help me seal it, or smuggle it past the City walls!"',
     choices: [
       {
-        labelVi: 'Sử dụng sóng tâm thức và ý chí kiên định để áp chế phong ấn Dị thể',
+        labelVi: 'Đóng van áp suất, phong ấn mẫu vật vào lại lồng chứa',
         labelEn: 'Exert iron mental focus and resonance to force-contain the Aberration',
-        resultVi: 'Giai điệu ru ngủ cào xé màng nhĩ của bạn. Bằng ý chí sắt đá, bạn kích hoạt van áp suất của lồng chứa, khóa chặt thực thể. Bạn nhận được vũ khí E.G.O sơ khai từ tinh chất của nó.',
+        resultVi: 'Tiếng hát của nó vọng qua lớp kính. Bạn vặn chặt van áp suất, khóa thực thể lại và nhận món vũ khí mẫu rút từ lõi của nó.',
         resultEn: 'The siren melody scraped your sanity like broken glass. Gritting your teeth, you slammed the hydraulic pressure locks shut. The researcher rewarded you with a nascent E.G.O prototype weapon harvested from its core.',
         effects: { sanity: -18, resonance: +25, rep: +15 },
         flagsAdd: ['aberration_encountered', 'EGOSeedAcquired'],

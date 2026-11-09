@@ -76,7 +76,7 @@ const KINDS = {
       en: ['You pass the outer line as if it did not exist. {Foe} drops their weapons before the second order.', 'The place falls in a single night. The people of {place} say your name like the name of a storm.']
     },
     boldFail: {
-      vi: ['Bên trong có thêm người mà báo cáo không ghi. Bạn thoát được, nhưng chỗ ấy vẫn chưa đổi chủ.', 'Cái bẫy ở cửa sau đã được chuẩn bị. Bạn đi ra bằng mái nhà và mang vết thương đi cùng.'],
+      vi: ['Bên trong có thêm người ngoài danh sách báo cáo. Bạn thoát được, nhưng chỗ ấy vẫn chưa đổi chủ.', 'Cái bẫy ở cửa sau đã được chuẩn bị. Bạn đi ra bằng mái nhà và mang vết thương đi cùng.'],
       en: ['There are more people inside than the report said. You get out, but the place has not changed hands.', 'The trap at the back door was prepared in advance. You leave over the roof and carry a wound with you.']
     }
   },
@@ -121,11 +121,11 @@ const COMPLICATIONS = [
   { key: 'press', vi: 'Một nhóm người chép sử đã đến trước bạn và ghi từng bước đi.', en: 'A group of chroniclers arrived before you and are noting every step.', fx: { rep: 2 }, risk: { rep: -1 } },
   { key: 'dusk', vi: 'Hạn chót là lúc chuông tối, và không ai còn nhớ ai đặt ra nó.', en: 'The deadline is the evening bell, and no one recalls who set it.', fx: { merit: 2 }, risk: { health: -3 } },
   { key: 'rain', vi: 'Mưa đã xuống từ sáng, và mặt đất ở đó trơn hơn bạn nhớ.', en: 'It has rained since morning, and the ground there is slicker than you remember.', fx: {}, risk: { health: -4 } },
-  { key: 'rival', vi: 'Một người từng ngang tầm bạn đứng ở cuối hàng, chờ xem bạn còn giữ được tên hay không.', en: 'Someone who once matched your standing stands at the back of the line, waiting to see whether you still hold your name.', fx: { merit: 2, network: 1 }, risk: { rep: -2 } },
-  { key: 'protege', vi: 'Một người trẻ bạn từng chỉ dạy đi cùng, và bắt chước cách bạn đứng.', en: 'A young person you once taught comes along, copying the way you stand.', fx: { network: 2, sanity: 1 }, risk: { sanity: -3 } },
+  { key: 'rival', vi: 'Người phụ trách phía bên kia đứng cuối hàng. Họ ghi tên bạn vào sổ trước khi việc bắt đầu.', en: 'The other side’s steward waits at the back. They enter your name in a ledger before work begins.', fx: { merit: 2, network: 1 }, risk: { rep: -2 } },
+  { key: 'protege', vi: 'Người trẻ được cử đi theo mang theo sổ ghi chép và liên tục nhìn tay bạn.', en: 'The young observer assigned to you carries a notebook and keeps watching your hands.', fx: { network: 2, sanity: 1 }, risk: { sanity: -3 } },
   { key: 'fee', vi: 'Bên đặt việc trả gấp đôi và yêu cầu bạn không nhắc đến việc đó sau này.', en: 'The client pays double and asks that you never mention the matter afterward.', fx: { wealth: 7 }, risk: { wealth: -3 } },
   { key: 'tail', vi: 'Một người trong đội của bạn nói họ bị ai đó theo từ đêm qua, và không ai tìm ra người đó.', en: 'Someone in your crew says they were followed since last night, and no one can find who it was.', fx: { merit: 1, network: 1 }, risk: { heat: 3, sanity: -2 } },
-  { key: 'old_wound', vi: 'Vết thương cũ ở vai lại nhức từ sáng, đúng vào ngày hẹn.', en: 'The old wound in your shoulder has ached since morning, on the very day appointed.', fx: { sanity: 1 }, risk: { health: -5 } },
+  { key: 'old_wound', vi: 'Bạn ngủ không đủ giấc trước ngày hẹn. Bàn tay cầm bút lẫn vũ khí đều chậm hơn thường lệ.', en: 'You slept badly before the appointment. The hand that holds a pen or a weapon is slower than usual.', fx: { sanity: 1 }, risk: { health: -5 } },
   { key: 'junior', vi: 'Người đi cùng bạn là một người trẻ chưa từng thấy bạn ra tay, và đang cố giữ vẻ bình thản.', en: 'The one who goes with you is young, has never seen you act, and is trying to look calm.', fx: { rep: 1, network: 1 }, risk: { sanity: -2 } }
 ];
 
@@ -139,6 +139,60 @@ const FX = {
   talk: { steady: { merit: 5, rep: 4, network: 3 }, ok: { merit: 10, rep: 7, network: 4 }, fail: { rep: -3, network: -3, sanity: -4 } }
 };
 
+const SIGNATURE_JUDGMENTS = {
+  'color:two_offices': {
+    steady: ['Niêm phong chứng cứ, cho hai Office đối chiếu', 'Seal the evidence and let both Offices compare records'],
+    steadyOk: ['Hai Office ký vào biên bản sai biệt. Hana nhận hồ sơ, còn phần công trạng chờ xác minh.', 'Both Offices sign the discrepancy report. Hana takes the file; credit waits for verification.'],
+    bold: ['Tự nhận trách nhiệm và ra phán quyết ngay', 'Take responsibility and rule now'],
+    boldOk: ['Bạn chỉ ra dấu thời gian bị sửa. Office đến sau rút đơn; hồ sơ ghi tên người thực sự làm việc.', 'You identify the altered timestamp. The later Office withdraws its claim; the record names the one that did the work.'],
+    boldFail: ['Dấu thời gian không đủ chứng minh. Một Office kháng nghị, buộc Hana mở lại hồ sơ dưới tên bạn.', 'The timestamp proves too little. One Office appeals, and Hana reopens the file under your name.']
+  },
+  'thumb:rival_ledger': {
+    steady: ['Đối chiếu từng khoản nợ với lệnh cấp trên', 'Check each debt against the superior’s orders'],
+    steadyOk: ['Sổ về đúng người được giao giữ. Hai Capo ký nhận trước mặt bạn, rồi đem người của mình đi.', 'The ledger returns to its appointed keeper. Both Capos sign in your presence and take their crews away.'],
+    bold: ['Triệu hai Capo đến và buộc họ nhận phán quyết', 'Summon both Capos and make them accept your ruling'],
+    boldOk: ['Bạn đọc lệnh phân quyền trước cả phòng. Một Capo giao sổ; người kia nhận trách nhiệm thu nợ.', 'You read the order of authority aloud. One Capo hands over the book; the other takes charge of collection.'],
+    boldFail: ['Một Capo chỉ ra lệnh đã hết hiệu lực. Bạn giữ được sổ, nhưng việc phân quyền phải trình lại cấp trên.', 'One Capo shows that the order has expired. You keep the ledger, but authority must be settled above you.']
+  },
+  'index:proxy_dispute': {
+    steady: ['Tìm bản Prescript gốc và so nét mực', 'Find the original Prescript and compare the ink'],
+    steadyOk: ['Bản gốc còn dấu gấp dưới dòng cuối. Hai Proxy chép lại câu lệnh rồi rời phòng theo hai ngả.', 'The original bears a fold under its last line. Both Proxies copy the instruction again and leave by separate doors.'],
+    bold: ['Chọn cách đọc từ bản sao đang lưu hành', 'Choose a reading from the circulating copy'],
+    boldOk: ['Bạn chỉ ra chỗ bản sao bỏ sót một chữ. Proxy còn lại nhận bản gốc và thi hành đúng dòng lệnh.', 'You find a word missing from the copy. The other Proxy takes the original and follows its line.'],
+    boldFail: ['Bản sao thiếu góc giấy chứa chữ cuối. Cách đọc của bạn bị rút lại; các Proxy phải đợi bản gốc.', 'The copy lacks the corner bearing the final word. Your reading is withdrawn; the Proxies must wait for the original.']
+  },
+  'middle:book_name': {
+    steady: ['Đọc lại khoản nợ trước khi trả lời gia đình', 'Review the debt before answering the family'],
+    steadyOk: ['Bạn tìm được lời khai cũ kẹp trong Book of Vengeance. Gia đình nhận bản sao; cái tên chưa bị gạch.', 'You find an old statement tucked into the Book of Vengeance. The family gets a copy; the name stays for now.'],
+    bold: ['Đưa chuyện ra trước cả nhà và nhận phán quyết', 'Bring the matter before the family and own the ruling'],
+    boldOk: ['Bạn đọc đủ phần còn thiếu của lời khai. Cả nhà ghi cách xử mới vào sổ, bên cạnh cái tên cũ.', 'You read the missing part of the statement. The family records a new settlement beside the old name.'],
+    boldFail: ['Một Great Sibling đưa ra trang sổ khác. Buổi họp tan mà khoản nợ vẫn còn; người xin gạch tên đứng lại ngoài cửa.', 'A Great Sibling produces another page. The meeting ends with the debt intact; the petitioner waits outside.']
+  },
+  'ring:curatorial_dispute': {
+    steady: ['Ghi cả hai tên, kèm phần việc của từng người', 'Record both names and each person’s contribution'],
+    steadyOk: ['Tấm nhãn mới có hai dòng. Hai Docent đọc xong rồi tự mang nó vào phòng trưng bày.', 'The new label has two lines. Both Docents read it and carry it into the gallery themselves.'],
+    bold: ['Chọn một tên duy nhất cho tấm nhãn', 'Choose a single name for the label'],
+    boldOk: ['Bạn đặt tên người làm phần quyết định cạnh tác phẩm. Người còn lại ký vào hồ sơ chế tác, không ký lên nhãn.', 'You put the decisive maker’s name beside the piece. The other signs the production record, not the label.'],
+    boldFail: ['Bản vẽ gốc mang hai nét bút. Tấm nhãn phải tháo xuống ngay tối ấy; hội đồng yêu cầu xét lại.', 'The original sketch bears two hands. The label comes down that evening; the council orders a review.']
+  },
+  'pinky:oath_debt': {
+    steady: ['Tra lời thề gốc và hỏi đứa trẻ muốn gì', 'Read the original oath and ask the child what it seeks'],
+    steadyOk: ['Hội đồng chép lại lời thề. Đứa trẻ giữ bản sao, còn tên người đã mất vẫn nằm trên trang nợ.', 'The council copies the oath. The child keeps one copy; the dead member’s name remains on the debt page.'],
+    bold: ['Nhận phần nợ ấy dưới tên mình', 'Take the unpaid oath under your own name'],
+    boldOk: ['Bạn ký tên dưới lời thề còn dang dở. Hội đồng niêm sổ; đứa trẻ được đưa về trước khi trời tối.', 'You sign beneath the unfinished oath. The council seals the ledger; the child is taken home before dark.'],
+    boldFail: ['Một điều khoản cũ chặn chữ ký của bạn. Hội đồng giữ sổ mở và giao bạn tìm người có quyền nhận nợ.', 'An old clause bars your signature. The council leaves the ledger open and orders you to find a lawful successor.']
+  }
+};
+
+const judgment = (kind, signature) => signature ? {
+  ...kind,
+  steady: { vi: [signature.steady[0]], en: [signature.steady[1]] },
+  steadyOk: { vi: [signature.steadyOk[0]], en: [signature.steadyOk[1]] },
+  bold: { vi: [signature.bold[0]], en: [signature.bold[1]] },
+  boldOk: { vi: [signature.boldOk[0]], en: [signature.boldOk[1]] },
+  boldFail: { vi: [signature.boldFail[0]], en: [signature.boldFail[1]] }
+} : kind;
+
 const add = (a, b) => {
   const out = { ...a };
   for (const [k, v] of Object.entries(b || {})) out[k] = (out[k] || 0) + v;
@@ -147,7 +201,7 @@ const add = (a, b) => {
 
 function build(branch, need, extra, hook, ci) {
   const [key, kindId, placeVi, placeEn, foeVi, foeEn, sceneVi, sceneEn] = hook;
-  const kind = KINDS[kindId];
+  const kind = judgment(KINDS[kindId], SIGNATURE_JUDGMENTS[`${branch}:${key}`]);
   const comp = COMPLICATIONS[ci];
   const pick = (list, i) => list[i % list.length];
   const sets = FX[kind.fight ? 'fight' : 'talk'];
@@ -158,6 +212,7 @@ function build(branch, need, extra, hook, ci) {
 
   return {
     id: `m_apex_${branch}_${key}_${comp.key}`, age: [20, 140], need, ...extra,
+    apexBranch: branch, apexScene: key, apexKind: kindId, apexComplication: comp.key,
     careerOpportunity: true,
     allowDistorted: Boolean(need.finger),
     tags: ['career', 'merit', 'apex'],
@@ -210,9 +265,9 @@ const COLOR_HOOKS = [
   ['hall_lesson', 'show', 'phòng tập Hana', 'the Hana training hall', 'lớp Fixer trẻ', 'the young Fixers',
     '[Buổi dạy ở phòng tập] Hana mời Color tới dạy một buổi cho lớp Fixer sắp lên Grade 5. Không ai hứa họ sẽ nhớ bài học, nhưng ai cũng nhớ người đứng trước lớp.',
     '[A lesson in the hall] Hana invites a Color to teach one session to the class about to reach Grade 5. No one promises they will remember the lesson, but everyone remembers who stood before the class.'],
-  ['disciple', 'duel', 'sân sau quán trọ', 'the back yard of an inn', 'đệ tử của người cũ', 'the old rival’s disciple',
-    '[Đệ tử của người đã khuất] Học trò của tay kiếm khách từng đấu với bạn nhiều năm trước tìm tới sân sau quán trọ. Họ không mang thù, chỉ muốn thử xem thầy mình thua điều gì.',
-    '[The disciple of one who died] The student of a swordsman who once fought you years ago finds you in the back yard of an inn. They carry no grudge, only a wish to test what their teacher lost to.']
+  ['disciple', 'duel', 'sân sau quán trọ', 'the back yard of an inn', 'học trò tay kiếm khách', 'the swordsman’s student',
+    '[Trang cuối sổ đấu] Học trò của tay kiếm khách đã chết mang sổ đấu đến quán trọ. Trên trang cuối có tên bạn, nhưng không ghi kết quả. Họ xin đấu để điền dòng ấy.',
+    '[The last page of the bout ledger] A dead swordsman’s student brings a bout ledger to an inn. Your name stands on its last page without a result. They ask for a bout to fill the line.']
 ];
 
 const FINGER_HOOKS = {
@@ -252,9 +307,9 @@ const FINGER_HOOKS = {
     ['unmarked_door', 'raid', 'ngôi nhà không số', 'the house with no number', 'đám người giữ cửa', 'the door keepers',
       '[Ngôi nhà không số] Prescript chỉ ghi: đi vào căn nhà không có số ở cuối một con phố và lấy thứ nằm trên bàn. Những người giữ cửa không biết họ giữ gì.',
       '[The house with no number] The Prescript says only: go into the house with no number at the end of a street and take what lies on the table. The ones keeping the door do not know what they keep.'],
-    ['stray_ink', 'hunt', 'dãy kho cũ', 'the old warehouses', 'bóng ma của Prescript hỏng', 'the shadow of a spoiled Prescript',
-      '[Prescript hỏng ở dãy kho cũ] Một Prescript bị đọc sai ba lần đã để lại thứ gì đó trong dãy kho cũ. Các Proxy trẻ không dám vào, và Weaver không gửi lời nào.',
-      '[A spoiled Prescript in the old warehouses] A Prescript misread three times has left something in the old warehouses. The young Proxies will not enter, and the Weaver has sent no word.']
+    ['stray_ink', 'hunt', 'dãy kho cũ', 'the old warehouses', 'kẻ giữ những bản sao', 'the keeper of the copies',
+      '[Prescript thất lạc] Ba bản sao của cùng Prescript dẫn người nhận đến dãy kho cũ. Không ai trở ra. Proxy trẻ đứng ngoài cửa chờ bạn kiểm tra.',
+      '[A lost Prescript] Three copies of the same Prescript led their recipients to the old warehouses. None returned. Young Proxies wait outside for you to inspect the place.']
   ],
   Middle: [
     ['book_name', 'judge', 'phòng Book of Vengeance', 'the Book of Vengeance room', 'con của người bị ghi', 'the listed one’s child',
@@ -324,3 +379,17 @@ export const APEX_COLOR_GENERATED = COLOR_HOOKS.flatMap((hook) =>
 export const APEX_FINGER_GENERATED = Object.entries(FINGER_HOOKS).flatMap(([name, hooks]) =>
   hooks.flatMap((hook) => COMPLICATIONS.map((_, ci) =>
     build(name.toLowerCase(), { jobs: ['Syndicate'], finger: name, fingerRankAtLeast: 3 }, {}, hook, ci))));
+
+const APEX_BY_ID = new Map([...APEX_COLOR_GENERATED, ...APEX_FINGER_GENERATED].map((entry) => [entry.id, entry]));
+
+export function apexNoveltyWeight(entry, recent = []) {
+  if (!entry.apexScene) return 1;
+  const previous = recent.slice(-24).map((id) => APEX_BY_ID.get(id))
+    .filter((item) => item?.apexBranch === entry.apexBranch).slice(-3);
+  if (!previous.length) return 1;
+  let weight = 1;
+  if (previous.some((item) => item.apexScene === entry.apexScene)) weight *= 0.2;
+  if (previous.some((item) => item.apexComplication === entry.apexComplication)) weight *= 0.45;
+  if (previous.some((item) => item.apexKind === entry.apexKind)) weight *= 0.7;
+  return weight;
+}

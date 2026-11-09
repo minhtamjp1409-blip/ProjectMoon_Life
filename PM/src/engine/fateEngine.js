@@ -178,7 +178,7 @@ export const MISHAPS = [
   { id: 'mi_clinic_error', age: [14, 140], human: true, w: (c) => (c.wealth <= 12 && !c.nest ? 1 : 0.3), dmg: [8, 18], san: 3, ahn: 4, lethal: 0.028,
     vi: 'Phòng khám chui không có biển, chỉ có một cái chuông cửa và một cái giá rất hợp lý. Người ta khâu bạn lại bằng tay không vững lắm.',
     en: 'The unlicensed clinic had no sign, only a doorbell and a very reasonable price. They sewed you up with a hand that was not quite steady.',
-    deathVi: 'Một ca khâu hỏng tại phòng khám không biển', deathEn: 'A botched stitch at a clinic with no sign' },
+    deathVi: 'Ca khâu hỏng nơi phòng khám không biển', deathEn: 'A botched stitch at a clinic with no sign' },
   { id: 'mi_sweeper_stray', age: [12, 140], w: (c) => (c.nest ? 0.1 : 0.9 + (10 - c.region.safety) * 0.12), dmg: [14, 30], san: 8, ahn: 0, lethal: 0.05, theme: '313',
     vi: 'Bạn về muộn hơn giờ giới nghiêm có mười phút. Hẻm tắt đèn trước bạn, và bạn nghe thấy thứ gì đó đi chậm hơn nhịp tim của mình.',
     en: 'You were ten minutes past curfew. The alley turned its lights off ahead of you, and you heard something walking slower than your own heartbeat.',

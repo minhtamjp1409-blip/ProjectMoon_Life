@@ -31,7 +31,7 @@ export const ARCHETYPES = [
   { id: 'secretive', tags: ['secretive', 'runaway'],
     vi: 'ít nói, luôn mang một con dao gấp, không bao giờ kể quê', en: 'quiet, always carries a folding knife, never mentions home',
     wantVi: 'không ai biết mình từng là ai', wantEn: 'for no one to know who they used to be',
-    fearVi: 'một gương mặt cũ ở cuối hẻm', fearEn: 'an old face at the end of the alley' },
+    fearVi: 'gương mặt cũ nơi cuối hẻm', fearEn: 'an old face at the end of the alley' },
   { id: 'loyal', tags: ['loyal'],
     vi: 'trung thành đến mức ngu ngốc', en: 'loyal to the point of foolishness',
     wantVi: 'một người đáng để trung thành', wantEn: 'someone worth being loyal to',

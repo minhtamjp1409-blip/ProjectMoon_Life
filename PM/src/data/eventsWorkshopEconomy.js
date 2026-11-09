@@ -15,7 +15,7 @@ export const WORKSHOP_ECONOMY_EVENTS = [
     en: '[Stigma Atelier Arms Dealer] An itinerant arms merchant from Stigma Atelier unlocks a thermal alloy vault in a fortified Backstreet alley. Glowing incandescent blades hum with lethal heat.',
     choices: [
       {
-        labelVi: 'Mua Lưỡi Hỏa Kiếm Stigma Atelier (Tốn 65 Ahn)',
+        labelVi: 'Mua Lưỡi Hỏa Kiếm Stigma Atelier',
         labelEn: 'Purchase Stigma Atelier Heat Blade (Cost 65 Ahn)',
         resultVi: 'Bạn đếm từng đồng tiền Ahn đặt lên bàn cân. Cầm lấy thanh kiếm rực lửa, bạn cảm nhận sức nóng truyền thẳng vào mạch máu. Sức mạnh chiến đấu tăng vượt trội.',
         resultEn: 'You stacked the Ahn onto the scales. Grasping the searing hilt, raw thermal energy surged through your veins. Combat prowess vastly augmented.',
@@ -24,7 +24,7 @@ export const WORKSHOP_ECONOMY_EVENTS = [
         effects: { wealth: -65, rep: +15, heat: +5 }
       },
       {
-        labelVi: 'Mua Ống tiêm hồi sinh K Corp phòng thân (Tốn 45 Ahn)',
+        labelVi: 'Mua Ống tiêm hồi sinh K Corp phòng thân',
         labelEn: 'Buy K Corp HP Ampoule for emergency survival (Cost 45 Ahn)',
         resultVi: 'Người bán cẩn thận trao cho bạn ống tiêm chứa dịch xanh lục bảo được bọc đệm sốc. "Giữ lấy mạng sống của bạn giữa nơi này, Fixer."',
         resultEn: 'The dealer handed you the emerald vial encased in shockproof foam. "Keep your life intact in this graveyard, Fixer."',
@@ -52,7 +52,7 @@ export const WORKSHOP_ECONOMY_EVENTS = [
     en: '[Once in a Lifetime: Nest Migration Visa] A corrupt Wing official quietly approaches you. He holds a legitimate Nest Migration Visa that can permanently liberate you from the Sweeper-haunted Backstreets.',
     choices: [
       {
-        labelVi: 'Dốc cạn tiền bạc mua Thị thực Nest (Tốn 85 Ahn)',
+        labelVi: 'Dốc tiền tiết kiệm mua Thị thực Nest',
         labelEn: 'Liquidate savings for the Nest Visa (Cost 85 Ahn)',
         resultVi: 'Toàn bộ tài sản tích cóp cả đời đổi lấy tấm thẻ cư dân bằng kim loại bóng bẩy. Cánh cổng Nest District mở ra, để lại Backstreets mịt mù phía sau lưng bạn.',
         resultEn: 'A lifetime of blood money traded for a polished citizen badge. The fortified Nest gates swung open, leaving the grim Backstreets behind forever.',
@@ -81,7 +81,7 @@ export const WORKSHOP_ECONOMY_EVENTS = [
     en: '[Backstreet Cybernetic Clinic] The stench of cheap disinfectant and shrieking bone drills. An underground ripperdoc presents a catalog of biomimetic grafts and kinetic frames.',
     choices: [
       {
-        labelVi: 'Cấy ghép cánh tay cơ khí Old G Corp (Tốn 70 Ahn)',
+        labelVi: 'Cấy ghép cánh tay cơ khí Old G Corp',
         labelEn: 'Install Old G Corp biomimetic arm (Cost 70 Ahn)',
         resultVi: 'Cơn đau xé ruột khi xương thịt được kết nối với mạch điện sinh học. Khi vết khâu lành lặn, bạn có thể dễ dàng bóp nát một thanh sắt đặc.',
         resultEn: 'Agonizing fire as nerves fused with bio-circuits. Once healed, your new arm crushed solid rebar like chalk.',
@@ -90,7 +90,7 @@ export const WORKSHOP_ECONOMY_EVENTS = [
         effects: { wealth: -70, health: +25, sanity: -6, rep: +10 }
       },
       {
-        labelVi: 'Mua 2 Ống tiêm Enkephalin an thần (Tốn 35 Ahn)',
+        labelVi: 'Mua 2 Ống tiêm Enkephalin an thần',
         labelEn: 'Purchase 2 Enkephalin Inhalers (Cost 35 Ahn)',
         resultVi: 'Bạn cất kỹ hai lọ thuốc vào túi áo trong. Bất cứ khi nào tâm trí chao đảo, bạn đã có liều thuốc cứu cánh.',
         resultEn: 'You tucked the vials securely into your inner coat. Whenever your mind wavers, salvation is at hand.',
@@ -121,16 +121,16 @@ export const WORKSHOP_ECONOMY_EVENTS = [
     en: '[K Corp Bio-Regeneration Pavilion · Singularity Tears] At the border boulevard gleaming under crystal lamps, a licensed K Corp emergency station caters to Fixers and citizens with deep pockets. Within cylindrical stasis vats, swirling emerald Singularity fluid promises instantaneous flesh and nerve reconstitution.',
     choices: [
       {
-        labelVi: 'Ngâm mình trọn vẹn trong Buồng Tái Tạo K-Tier (Tốn 48 Ahn)',
+        labelVi: 'Ngâm mình trong Buồng Tái Tạo K-Tier',
         labelEn: 'Full immersion in K-Tier Singularity Restoration Pod (Cost 48 Ahn)',
-        resultVi: 'Dòng dịch ngọc bích ùa vào phổi và bao phủ toàn thân mà không hề gây ngạt. Từng vết rách cơ, mô hoại tử và sẹo chém sâu lành lại như một phép màu. Bạn bước ra khỏi kén trong trạng thái sinh lực tràn trề nhất cuộc đời.',
+        resultVi: 'Dòng dịch xanh tràn qua mặt nạ thở rồi phủ kín cơ thể. Các vết rách cơ và mô dập khép miệng dần trong hai mươi phút ngâm buồng.',
         resultEn: 'The emerald Singularity tears engulfed your form without suffocating. Torn viscera and agonizing combat scars fused seamlessly as if by magic. You stepped from the vat at the pinnacle of physical perfection.',
         costAhn: 48,
         itemAdd: 'con_kcorp_ampoule',
         effects: { wealth: -48, health: +60, sanity: +18, heat: -5 }
       },
       {
-        labelVi: 'Tiêm trực tiếp Ống Tiêm Cấp Cứu K Corp cao cấp (Tốn 26 Ahn)',
+        labelVi: 'Tiêm Ống Tiêm Cấp Cứu K Corp cao cấp',
         labelEn: 'Direct injection of high-grade K Corp HP Ampoule (Cost 26 Ahn)',
         resultVi: 'Y sĩ cắm chiếc kim tiêm áp lực vào cơ ngực bạn. Làn sóng hồi phục mãnh liệt quét qua các cơ quan nội tạng, xoa dịu triệt để những cơn đau kinh niên.',
         resultEn: 'The surgeon drove the pneumatic syringe into your pectoral muscles. A surge of regenerative energy flushed through your organs, extinguishing chronic agony.',
@@ -156,15 +156,15 @@ export const WORKSHOP_ECONOMY_EVENTS = [
     en: '[T Corp Chrono-Restorative Pod · District 4 Tech] You pause before a licensed temporal restoration outpost harnessing T Corp’s Time Singularity. Forgoing scalpels and stitches, the Chrono-Pod rewinds your biological clock by two subjective weeks, restoring tissues to their state before catastrophic trauma.',
     choices: [
       {
-        labelVi: 'Kích hoạt Liệu Trình Tua Ngược Thời Gian Sinh Học (Tốn 52 Ahn)',
+        labelVi: 'Kích hoạt liệu trình tua ngược thời gian sinh học',
         labelEn: 'Initiate Temporal Biological Reversal Treatment (Cost 52 Ahn)',
-        resultVi: 'Các bánh răng đồng thau và tinh thể thời gian phát ra tiếng tích tắc nghẹt thở. Trong tích tắc ánh sáng vàng óng bừng lên, toàn bộ tế bào rách nát và độc tố trong máu tự động biến mất về trạng thái nguyên vẹn thuở ban đầu.',
+        resultVi: 'Các bánh răng đồng thau quay ngược trong buồng kính. Khi đồng hồ dừng lại, các vết thương hở và chất độc trong máu đều đã lui về trước lúc bạn gặp nạn.',
         resultEn: 'Brass chronometer gears ticked in breathless rhythm. A flash of sepia light engulfed the pod; ruptured cells and metabolic toxins rewound cleanly into flawless prior health.',
         costAhn: 52,
         effects: { wealth: -52, health: +45, sanity: +30, resonance: -10 }
       },
       {
-        labelVi: 'Mua Thiết Bị Chrono-Stabilizer Cầm Tay phòng thân (Tốn 28 Ahn)',
+        labelVi: 'Mua Thiết Bị Chrono-Stabilizer Cầm Tay phòng thân',
         labelEn: 'Purchase portable Chrono-Stabilizer capsule (Cost 28 Ahn)',
         resultVi: 'Thiết bị phát ra tiếng tíc tắc êm dịu, bảo toàn nhịp tim và làm chậm lại phản ứng căng thẳng tâm lý khi bạn chịu áp lực cực hạn.',
         resultEn: 'The compact brass canister pulsed with rhythmic ticking, steadying cardiac cadence and halting acute panic under duress.',
@@ -190,15 +190,15 @@ export const WORKSHOP_ECONOMY_EVENTS = [
     en: '[HamHamPangPang Grand Tasting Feast] The aroma of golden butter toast, charcoal-smoked tender pork, and velvety house mayonnaise leads you straight into the legendary HamHamPangPang bistro. A fabled sanctuary where even world-weary Color Fixers found solace amidst the City’s merciless grind.',
     choices: [
       {
-        labelVi: 'Gọi Đại Tiệc Master Set Kèm Trà Thảo Mộc Thượng Hạng (Tốn 24 Ahn)',
+        labelVi: 'Gọi Master Set kèm trà thảo mộc tại HamHamPangPang',
         labelEn: 'Feast on the Grand Master Sandwich Set & Herbal Vintage (Cost 24 Ahn)',
-        resultVi: 'Cắn miếng bánh mì giòn rụm với lớp phô mai béo ngậy và thịt mềm tan trong miệng, ngụm trà thảo mộc ấm áp chảy tràn lồng ngực. Mọi đau khổ, sang chấn tinh thần và tiếng thì thầm méo mó tan biến hoàn toàn thành sự bình yên thuần khiết.',
+        resultVi: 'Bạn ăn hết phần bánh mì kẹp thịt hun khói mới ra lò rồi uống cạn cốc trà nóng. Ngồi trong góc quán yên tĩnh một giờ giúp đầu óc bạn nhẹ hẳn đi.',
         resultEn: 'Savoring the golden crust overflowing with savory cutlets and molten cheese, washed down by warm herbal brew. Existential dread and lingering distortions dissolved into sheer, unadulterated contentment.',
         costAhn: 24,
         effects: { wealth: -24, sanity: +45, health: +20, resonance: -20, rep: +5 }
       },
       {
-        labelVi: 'Mua Hộp Sandwich Thập Cẩm & Xúc Xích Đặc Biệt Mang Đi (Tốn 10 Ahn)',
+        labelVi: 'Mua hộp sandwich thập cẩm và xúc xích mang đi',
         labelEn: 'Takeaway signature Sandwich Box & spiced sausages (Cost 10 Ahn)',
         resultVi: 'Bữa ăn thịnh soạn trên ghế đá công viên sưởi ấm tâm hồn bạn. Bạn cảm thấy như được tái sinh để tiếp tục chiến đấu vì mục tiêu của mình.',
         resultEn: 'A warm, decadent meal on a park bench breathed warmth into your spirit. You felt rejuvenated, ready to brave the City’s trials once more.',
@@ -224,7 +224,7 @@ export const WORKSHOP_ECONOMY_EVENTS = [
     en: '[J Corp Luxury Jazz & Thermal Spa Lounge · District 10] Silky saxophone melodies blend with bubbling sulfur mineral baths inside J Corp’s opulent relaxation haven. A sanctuary designed to melt away City trauma, suppress Distortion resonance, and cool down faction Heat.',
     choices: [
       {
-        labelVi: 'Bao trọn Gói Nghỉ Dưỡng VIP Thượng Hạng & Trị Liệu Trầm Hương (Tốn 42 Ahn)',
+        labelVi: 'Đặt gói nghỉ dưỡng VIP và trị liệu trầm hương',
         labelEn: 'Reserve Presidential VIP Suite & Aromatic Thermal Soak (Cost 42 Ahn)',
         resultVi: 'Ngâm mình trong dòng nước ấm thơm nồng tinh dầu thảo mộc và thưởng thức rượu vang, toàn bộ căng thẳng thần kinh tan rã. Lực lượng truy đuổi cũng mất dấu bạn giữa khu phức hợp sòng bạc bảo mật cao.',
         resultEn: 'Submerged in thermal minerals laced with aromatic oils while sipping fine vintage, every ounce of nervous tension melted away. Pursuers completely lost your trail in the high-security district.',
@@ -232,7 +232,7 @@ export const WORKSHOP_ECONOMY_EVENTS = [
         effects: { wealth: -42, sanity: +50, heat: -25, resonance: -18, rep: +5 }
       },
       {
-        labelVi: 'Vào Phòng Tắm Khoáng Lưu Huỳnh Tiêu Chuẩn (Tốn 18 Ahn)',
+        labelVi: 'Vào phòng tắm khoáng lưu huỳnh tiêu chuẩn',
         labelEn: 'Standard sulfur bath admission & sauna (Cost 18 Ahn)',
         resultVi: 'Hơi nước nóng bốc lên mịt mù cuốn trôi mồ hôi và bụi bặm Backstreets. Tâm trí bạn sáng suốt và thanh thản trở lại.',
         resultEn: 'Billowing thermal steam washed away grime and bloodstains. Your mind recovered clarity and measured peace.',
@@ -258,7 +258,7 @@ export const WORKSHOP_ECONOMY_EVENTS = [
     en: '[Atelier Master Armor & Kinematics Overhaul] You enter a prestigious Tres-certified Atelier (such as Zelkova or Wheels Industry). Master armorsmiths offer comprehensive exo-frame reinforcement, kinetic ballistic nano-coatings, and razor-edge metallurgy.',
     choices: [
       {
-        labelVi: 'Đặt Trọn Gói Đại Tu Giáp Nano & Hiệu Chỉnh Khớp Động Lực (Tốn 45 Ahn)',
+        labelVi: 'Đặt gói đại tu giáp nano và hiệu chỉnh khớp động lực',
         labelEn: 'Commission Complete Nano-Plate Armor & Joint Calibration (Cost 45 Ahn)',
         resultVi: 'Bộ áo khoác và giáp bảo hộ được đan xen sợi siêu chịu lực chống cắt xé. Cơ thể bạn như được bao bọc trong một pháo đài thép di động, tự tin đương đầu với mọi đòn hiểm hóc.',
         resultEn: 'Your coat was woven with hyper-tensile ballistic weave and carbon plating. Moving like a walking armored citadel, your resilience against fatal blows skyrocketed.',
@@ -267,7 +267,7 @@ export const WORKSHOP_ECONOMY_EVENTS = [
         effects: { wealth: -45, health: +40, rep: +15, sanity: +8 }
       },
       {
-        labelVi: 'Thay thế đệm chống sốc và mài bén vũ khí cơ bản (Tốn 18 Ahn)',
+        labelVi: 'Thay đệm chống sốc và mài bén vũ khí cơ bản',
         labelEn: 'Replace shock dampeners and hone primary blade (Cost 18 Ahn)',
         resultVi: 'Lưỡi đao sắc ngọt trở lại và áo giáp được khâu vá chắc chắn, mang lại sự bảo vệ đáng tin cậy trong các hợp đồng mới.',
         resultEn: 'The blade gleamed razor-sharp and shock pads were renewed, offering dependable protection in upcoming contracts.',
@@ -293,7 +293,7 @@ export const WORKSHOP_ECONOMY_EVENTS = [
     en: '[Sanctuary at Seven Association Safehouse] Hunted by adversaries or exhausted from syndicate turf wars, you signal the coded door of Seven Association, The City’s apex information brokers. Behind reinforced blast doors lies diplomatic immunity, confidential surgery, and record laundering.',
     choices: [
       {
-        labelVi: 'Mua Trọn Gói Tẩy Rửa Hồ Sơ & Điều Trị Y Tế Bí Mật (Tốn 55 Ahn)',
+        labelVi: 'Mua gói xóa hồ sơ truy nã và điều trị y tế kín',
         labelEn: 'Purchase Complete Identity Laundering & Covert Trauma Care (Cost 55 Ahn)',
         resultVi: 'Các thám tử Seven lập tức can thiệp xóa sạch camera và tài liệu lưu trữ của các phe phái, trong khi bác sĩ ngoại giao vá lành từng vết đạn trên người bạn. Bạn bước ra hoàn toàn tự do và khỏe mạnh.',
         resultEn: 'Seven intelligence officers purged security feeds and faction bounties while surgeons sealed every ballistic tear under diplomatic privilege. You stepped out entirely cleared and restored.',
@@ -301,7 +301,7 @@ export const WORKSHOP_ECONOMY_EVENTS = [
         effects: { wealth: -55, health: +35, sanity: +30, heat: -40, rep: +12 }
       },
       {
-        labelVi: 'Thuê Quyền Trú Ẩn Khẩn Cấp 3 Ngày Trong Phòng An Toàn (Tốn 22 Ahn)',
+        labelVi: 'Thuê chỗ trú ẩn khẩn cấp 3 ngày trong phòng an toàn',
         labelEn: 'Rent 3-day emergency safehouse bunk & medical triage (Cost 22 Ahn)',
         resultVi: 'Bạn có được ba ngày ngủ sâu dưới sự canh gác của các Fixer Seven trang bị đao nhọn. Cơn sốt hạ dần và kẻ thù tạm thời mất dấu bạn.',
         resultEn: 'Three nights of unbroken sleep guarded by Seven rapiers. Your fever broke and pursuing syndicates lost your scent.',
@@ -326,7 +326,7 @@ export const WORKSHOP_ECONOMY_EVENTS = [
     en: '[District 23 Underground Gastronomy · Pierre’s Savory Pie] In an alley bordering District 23, an illicit bistro radiates the intoxicating scent of spiced pastry and rich caramelized broth. The artisan meat pie here boasts legendary regenerative potency, rekindling near-fatal exhaustion within minutes.',
     choices: [
       {
-        labelVi: 'Thưởng thức Chiếc Bánh Thịt Thượng Hạng Của Nghệ Nhân (Tốn 25 Ahn)',
+        labelVi: 'Thưởng thức chiếc bánh thịt đặc biệt của quán Pierre',
         labelEn: 'Savor the Artisan Meat Pie Special (Cost 25 Ahn)',
         resultVi: 'Vị giác của bạn bùng nổ trước sự hòa quyện hoàn hảo của thịt và thảo mộc. Dù có một thoáng rùng mình ớn lạnh về nguồn gốc nguyên liệu của Quận 23, cơ thể bạn phục hồi mãnh liệt như chưa từng bị thương.',
         resultEn: 'Flavors exploded across your palate in exquisite harmony. Though an uncanny shiver gripped your spine regarding District 23’s ingredient sourcing, miraculous vitality flooded your muscles and bones.',
@@ -334,7 +334,7 @@ export const WORKSHOP_ECONOMY_EVENTS = [
         effects: { wealth: -25, health: +55, sanity: -6, rep: +10 }
       },
       {
-        labelVi: 'Chỉ gọi một Bát Súp Hầm Bổ Dưỡng thanh đạm (Tốn 12 Ahn)',
+        labelVi: 'Chỉ gọi một bát súp hầm bổ dưỡng thanh đạm',
         labelEn: 'Order a warm bowl of simmered broth (Cost 12 Ahn)',
         resultVi: 'Nước dùng nóng hổi làm ấm cơ thể và xoa dịu những vết bầm tím sau ca làm việc nhọc nhằn.',
         resultEn: 'The scalding savory broth warmed your core, soothing deep bruises from brutal shifts.',

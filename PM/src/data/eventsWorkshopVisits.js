@@ -22,7 +22,7 @@ export const WORKSHOP_VISIT_EVENTS = [
         effects: { wealth: 20, sanity: 3 }, flagsAdd: ['wsv_core_done'],
         resultVi: 'Ông cân lõi rất lâu trước khi đưa giá. Bạn nhận tiền, và đến cửa còn nghe ông tự nói rằng ông sẽ không dám đụng vào nó trước ngày mai.',
         resultEn: 'He weighs the core for a long time before naming a price. You take the money, and at the door you still hear him tell himself he will not dare touch it before tomorrow.' },
-      { labelVi: 'Nhờ ông làm thêm một khẩu súng xuyên tường cho người trả cao hơn (vi phạm Taboo)', labelEn: 'Have him build a wall-piercing gun for a higher bidder (a Taboo violation)',
+      { labelVi: 'Nhờ ông chế thêm khẩu súng xuyên tường cho người trả cao hơn', labelEn: 'Have him build a wall-piercing gun for a higher bidder (a Taboo violation)',
         effects: { wealth: 26, taboo: 1, sanity: -8, resonance: 8 }, flagsAdd: ['wsv_core_done'], scarsAdd: ['Khẩu súng phạm Taboo'],
         scheduleConsequences: [{ eventId: 'csq_taboo_workshop_raid', delayYears: 4, reasonVi: 'Khẩu súng xuyên tường lộ ra', reasonEn: 'The wall-piercing gun surfaces' }],
         resultVi: 'Viên đạn thử xé qua bốn bức tường bê tông. Người mua trả gấp đôi và không hỏi gì. Ba ngày sau, một người mặc áo B Corp đứng đối diện xưởng, chỉ nhìn.',
@@ -32,7 +32,7 @@ export const WORKSHOP_VISIT_EVENTS = [
   {
     id: 'wsv_color_commission', age: [30, 95], jobs: ['Fixer'], major: true, weight: 10, requires: ['ColorFixer'],
     forbids: ['wsv_color_done'],
-    vi: '[Thanh kiếm cho một cái tên] Ông thợ rèn già ở Backstreets đóng cửa tiệm giữa ban ngày để gặp bạn. Ông không cần tiền. Ông chỉ muốn rèn một thanh kiếm cho người mang tên Color, một lần trong đời, và ông nói thanh kiếm ấy cần bảy ngày bạn không rời xưởng.',
+    vi: '[Thanh kiếm cho cái tên] Ông thợ rèn già nơi Backstreets đóng cửa tiệm giữa ban ngày để gặp bạn. Ông không cần tiền. Ông chỉ muốn rèn một thanh kiếm cho người mang tên Color, đúng một lần trong đời, với điều kiện bạn ở lại xưởng suốt bảy ngày.',
     en: '[A sword for a name] An old Backstreets smith shuts his shop in broad daylight to meet you. He does not want money. He wants to forge one sword for a named Color, once in his life, and says it needs seven days with you in the shop.',
     choices: [
       { labelVi: 'Ở lại bảy ngày', labelEn: 'Stay the seven days',
@@ -51,7 +51,7 @@ export const WORKSHOP_VISIT_EVENTS = [
     vi: '[Mẫu thử của Mook] Một người của Mook Workshop chặn bạn ngoài cửa hàng vũ khí và mời xem một lưỡi katana chưa đăng ký. Họ nói nó cắt không khí thành hai lớp, và chỉ cần một người đủ liều thử trước khi Tres kịp đến kiểm tra.',
     en: '[The Mook prototype] A Mook Workshop rep stops you outside a weapon shop and offers to show you an unregistered katana. They say it cuts the air into two layers, and all they need is someone reckless enough to try it before Tres inspects.',
     choices: [
-      { labelVi: 'Thử lưỡi kiếm trên bãi phế liệu (Tốn 40 Ahn)', labelEn: 'Test the blade at the scrapyard (cost 40 Ahn)', costAhn: 40,
+      { labelVi: 'Thử lưỡi kiếm trên bãi phế liệu', labelEn: 'Test the blade at the scrapyard (cost 40 Ahn)', costAhn: 40,
         outcomes: [
           { w: 60, effects: { wealth: -40, rep: 12, resonance: 6, sanity: 3 }, flagsAdd: ['wsv_mook_done'], meritAdd: 8,
             resultVi: 'Lưỡi kiếm đi qua một thanh thép dày như qua cái chăn, và không để lại tiếng. Người của Mook ghi vào sổ rằng bạn thử không run tay. Bạn được giữ tên trong danh sách khách trước của xưởng.',
@@ -71,7 +71,7 @@ export const WORKSHOP_VISIT_EVENTS = [
     vi: '[Dấu của Tres] Hai thanh tra áo xám của Tres Association chặn bạn trên phố và hỏi thanh đao bên hông có số đăng ký nào không. Thanh đao ấy bạn mua từ một người thợ đã đóng cửa xưởng, và con dấu ở sống đao đã bị mài đi từ lâu.',
     en: '[The Tres stamp] Two gray-coated Tres Association inspectors stop you on the street and ask whether the sword at your hip has a registration number. You bought it from a smith who has since closed shop, and the stamp on the spine was ground off long ago.',
     choices: [
-      { labelVi: 'Nộp phí đăng ký lại ở Tres (Tốn 25 Ahn)', labelEn: 'Pay Tres to register it again (cost 25 Ahn)', costAhn: 25,
+      { labelVi: 'Nộp phí đăng ký lại ở Tres', labelEn: 'Pay Tres to register it again (cost 25 Ahn)', costAhn: 25,
         effects: { wealth: -25, rep: 5, sanity: 3 }, flagsAdd: ['wsv_tres_done'],
         resultVi: 'Thanh tra mất mười phút đo thanh đao và hai phút đóng dấu. Họ không nhìn bạn lần nào trong suốt thời gian đó. Lúc trả lại, con dấu mới nằm sát chuôi, lạnh hơn phần còn lại của lưỡi.',
         resultEn: 'The inspector spends ten minutes measuring the sword and two stamping it. They never look at you. When they hand it back, the new stamp sits near the hilt, colder than the rest of the blade.' },
@@ -91,7 +91,7 @@ export const WORKSHOP_VISIT_EVENTS = [
     vi: '[Quặng từ tàn tích] Một toán thợ săn tàn tích Outskirts bí mật ghé quán bạn hay ngồi. Họ mở bọc vải, bên trong là một khối kim loại cổ chưa ai gọi tên. Họ muốn bán trước khi The Head nghe tin, và hỏi bạn có biết thợ nào đủ gan nhận.',
     en: '[Ore from the ruins] A crew of Outskirts ruin hunters quietly joins you at your usual table. They open a cloth bundle: a lump of ancient metal nobody has named. They want to sell before The Head hears, and ask whether you know a smith with the nerve.',
     choices: [
-      { labelVi: 'Mua khối quặng và mang tới một thợ rèn quen (Tốn 60 Ahn)', labelEn: 'Buy the ore and take it to a smith you know (cost 60 Ahn)', costAhn: 60,
+      { labelVi: 'Mua khối quặng và mang tới thợ rèn quen', labelEn: 'Buy the ore and take it to a smith you know (cost 60 Ahn)', costAhn: 60,
         effects: { wealth: -60, resonance: 20, rep: 14, heat: 14 }, meritAdd: 14, flagsAdd: ['wsv_ruins_done'],
         resultVi: 'Người thợ rèn quen nhìn khối quặng bằng ánh mắt của người nhìn một đứa trẻ bị bỏ ngoài cửa. Ông nhận làm, và đặt nó xuống đe bằng cả hai tay.',
         resultEn: 'The smith you know looks at the ore the way one looks at a child left outside a door. He takes the job and sets it on the anvil with both hands.' },
@@ -154,7 +154,7 @@ export const WORKSHOP_VISIT_EVENTS = [
   },
   {
     id: 'wsv_elder_blade_judge', age: [62, 140], jobs: VISITORS, major: true, weight: 8, forbids: ['wsv_elder_blade_done'],
-    vi: '[Lưỡi kiếm của người trẻ] Người thợ rèn trẻ mang thanh kiếm vừa ra lò tới nhờ bạn xem, vì bạn đã dùng vũ khí hơn bốn mươi năm. Lưỡi đẹp và cân. Nhưng bạn nhận ra một vết lấp ở phần gốc, chỗ chỉ một người từng đánh nhau thật mới thấy.',
+    vi: '[Lưỡi kiếm của người trẻ] Người thợ rèn trẻ mang thanh kiếm vừa ra lò tới nhờ bạn xem, vì bạn đã dùng vũ khí hơn bốn mươi năm. Lưỡi đẹp và cân. Nhưng bạn nhìn ra vết lấp nơi phần gốc, chỗ chỉ người từng đánh nhau thật mới thấy.',
     en: '[The young smith’s blade] A young smith brings a freshly finished sword for you to judge, since you have carried weapons for over forty years. The edge is clean and balanced. But you spot a seam near the root, a place only someone who has really fought would notice.',
     choices: [
       { labelVi: 'Nói thẳng về vết lấp', labelEn: 'Tell him about the seam plainly',
@@ -192,7 +192,7 @@ export const WORKSHOP_VISIT_MINORS = [
     '[Xe phế liệu titan] Tay phu xe đẩy qua trước mặt bạn chiếc xe cút kít chất đầy titan thừa từ công trường Wing, hét giá rẻ bèo. Hàng không có nguồn gốc rõ, và người thợ rèn ở cuối phố đã nhắn nhờ bạn để ý loại này.',
     '[The titanium scrap cart] A cart puller shoves a barrow of titanium offcuts from a Wing site past you and shouts a cheap price. The load has no clear origin, and the smith down the street left word asking you to watch for exactly this.',
     [
-      C('Mua cả xe và mang tới xưởng (Tốn 10 Ahn)', 'Buy the whole cart and bring it to the shop (cost 10 Ahn)',
+      C('Mua cả xe và mang tới xưởng', 'Buy the whole cart and bring it to the shop (cost 10 Ahn)',
         'Người thợ rèn cân từng mảnh và trả lại bạn gấp rưỡi. Ông không hỏi nguồn gốc, bạn cũng không nói.',
         'The smith weighs every piece and pays you back half again. He asks no questions about the source, and you offer no answers.',
         { wealth: 4, heat: 3 }, { costAhn: 10 }),
@@ -259,7 +259,7 @@ export const WORKSHOP_VISIT_MINORS = [
 
 export const WORKSHOP_VISIT_DAILIES = [
   D('d_wsv_quench_smell', AGE.GROWN, { jobs: VISITORS },
-    'Áo khoác bạn mang mùi dầu tôi sau một buổi chiều ngồi chờ ở xưởng. Cả tối người ta nhìn bạn như thể bạn vừa trở về từ chốn nóng hơn.',
+    'Áo khoác bạn ám mùi dầu tôi sau cả buổi chiều ngồi chờ trong xưởng. Suốt tối người ta nhìn bạn như vừa trở về từ chốn nóng hơn.',
     'Your coat smells of quenching oil after an afternoon waiting in the shop. All evening people look at you as if you had just come back from somewhere hotter.', {}),
   D('d_wsv_hammer_rhythm', AGE.GROWN, { jobs: VISITORS },
     'Tiếng búa ở xưởng đầu hẻm đổi nhịp. Đi qua hai con phố, bạn vẫn đang đếm theo.',

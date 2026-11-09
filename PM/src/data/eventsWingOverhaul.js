@@ -62,7 +62,7 @@ export const WING_OVERHAUL_EVENTS = [
     en: "[The Section Coup] The Section Chief chair for personnel sits vacant. Both you and {rival} stand as the leading candidates. {rival} leaves an after-hours note proposing a temporary truce to topple the aging Director before the shareholders convene.",
     choices: [
       {
-        labelVi: "Đâm sau lưng {rival} bằng cách nộp chứng cứ gian lận của cả hai lên hội đồng",
+        labelVi: "Đâm sau lưng {rival}, nộp chứng cứ gian lận lên hội đồng",
         labelEn: "Backstab {rival} by exposing their fraudulent ledgers directly to the board",
         outcomes: [
           {

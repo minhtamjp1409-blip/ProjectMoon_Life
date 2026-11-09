@@ -46,7 +46,7 @@ export const LIFE_MINORS_KIDS = [
     C('Đi chân trần chạy theo mẹ', 'Run after your mother barefoot', 'Bạn về nhà với bàn chân rướm máu. Suốt mùa đông đó bạn đi một chiếc giày và một chiếc dép.', 'You got home with a bleeding foot. All that winter you wore one shoe and one sandal.', { health: -3, wealth: -1 })
   ], I('Bạn đứng khóc giữa chợ cho đến khi mẹ quay lại tìm.', 'You stood crying in the market until your mother came back for you.', { sanity: -2 })),
 
-  M('mk_any_charcoal_wall', KID, {}, '[Bức vẽ trên tường] Bạn lấy than vẽ kín một mảng tường: một ngôi nhà, một mặt trời, và cả nhà mình đứng trước cửa. Cha sắp về.', '[The drawing on the wall] You covered a patch of wall in charcoal: a house, a sun, and your whole family standing at the door. Your father is about to come home.', [
+  M('mk_any_charcoal_wall', KID, {}, '[Bức vẽ trên tường] Bạn lấy than vẽ kín mảng tường: căn nhà nhỏ, vầng mặt trời cùng cả nhà mình đứng trước cửa. Cha sắp về.', '[The drawing on the wall] You covered a patch of wall in charcoal: a house, a sun, and your whole family standing at the door. Your father is about to come home.', [
     C('Đứng chờ để khoe', 'Wait to show him', null, null, {}, { out: [
       O(60, 'Cha đứng nhìn rất lâu. Ông không bắt bạn lau đi. Bức vẽ còn trên tường đến tận ngày cả nhà chuyển đi.', 'Your father looked at it a long time. He didn’t make you wash it off. The drawing stayed on the wall until the day the family moved.', { sanity: +5 }),
       O(40, 'Cha mệt sau ca làm. Ông bắt bạn lau sạch rồi đánh vào tay bạn hai cái vì tội tốn nước.', 'Your father was tired from his shift. He made you scrub it off and smacked your hand twice for wasting water.', { sanity: -3 })
@@ -115,7 +115,7 @@ export const LIFE_MINORS_KIDS = [
     C('Từ chối', 'Say no', 'Chúng cười và gọi bạn là "con nhà ngoan". Tuần sau một đứa trong số đó giật mất cái túi của bạn.', 'They laughed and called you "good kid." The next week one of them snatched your bag.', { wealth: -1, sanity: -1 })
   ], I('Bạn nói để nghĩ thêm, rồi từ đó đi đường khác.', 'You said you’d think about it, and took another way home after that.')),
 
-  M('mc_back_fixer_bar', CHILD, { back: true }, '[Fixer ở quán rượu] Tay Fixer Grade 3 ngồi uống một mình ở quán đầu phố, vũ khí dựng cạnh ghế. Lũ trẻ thách nhau lại gần.', '[The Fixer at the bar] A Grade 3 Fixer is drinking alone at the bar on the corner, weapon leaning against the chair. The kids are daring each other to go near.', [
+  M('mc_back_fixer_bar', CHILD, { back: true }, '[Fixer ở quán rượu] Tay Fixer Grade 3 ngồi uống rượu lẻ loi trong quán đầu phố, vũ khí dựng cạnh ghế. Lũ trẻ thách nhau lại gần.', '[The Fixer at the bar] A Grade 3 Fixer is drinking alone at the bar on the corner, weapon leaning against the chair. The kids are daring each other to go near.', [
     C('Đến hỏi xin xem vũ khí', 'Go and ask to see the weapon', null, null, {}, { out: [
       O(55, 'Chị ta cười, đưa cho bạn cầm thử. Nó nặng gấp đôi bạn tưởng. "Muốn làm Fixer thì ăn nhiều vào," chị nói.', 'She laughed and let you hold it. It was twice as heavy as you thought. "Want to be a Fixer? Eat more," she said.', { sanity: +3, resonance: +2 }, { flags: ['해결사동경'] }),
       O(45, 'Chị ta không quay lại, chỉ nói: "Đi chỗ khác." Giọng chị làm bạn lạnh sống lưng, bạn đi ngay.', 'She didn’t turn round, just said, "Go away." Her voice sent a chill down your back, and you went.', { sanity: -2 })

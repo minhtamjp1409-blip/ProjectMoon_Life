@@ -70,7 +70,7 @@ export const SUPERNATURAL_EVENTS = [
         resultEn: 'You cut off the whitened arm before it spreads to their shoulder, then push them into the lifeboat. The ship turns its bow into the fog, and the Lake Law bells ring wildly around you.'
       },
       {
-        labelVi: 'Chặt đứt dây neo boong phụ và hạ xuồng cứu sinh bọc âm thoa U Corp',
+        labelVi: 'Chặt dây neo boong phụ và hạ xuồng cứu sinh bọc âm thoa U Corp',
         labelEn: 'Cut the aft deck anchor lines and launch the U Corp tuning-fork lifeboat',
         resultVi: 'Bạn kéo những thủy thủ chưa nhiễm dịch nhảy xuống xuồng ngay trước khi hàm răng khổng lồ khép lại. Tiếng sóng Đại Hồ gầm rú sau lưng.',
         resultEn: 'You haul the uninfected sailors into the boat just before the colossal jaws close. The Great Lake roars behind you.',

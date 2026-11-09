@@ -67,7 +67,7 @@ export const PINKY_CONTRACTS = [
 
   // ------------------------------------------------------------ tier 2: a named duelist
   rq('pinky_eleven_wins', 2, 'Một kiếm khách mười một lần thắng', 'A duelist with eleven wins',
-    'Tay kiếm khách có tiếng, mười một lần thắng ở đấu trường ngầm, đã thách đấu một Sworn Blade và nhất quyết không rút lời dù Blade đã lui trước nghi lễ. Pinky không có ý định để hắn đếm đến mười hai.',
+    'Tay kiếm khách có tiếng với mười một trận thắng dưới đấu trường ngầm đã thách đấu một Sworn Blade, nhất quyết không rút lời dù Blade đã lui trước nghi lễ. Pinky không định để hắn đếm đến mười hai.',
     'A named duelist with eleven wins in the underground ring challenged a Sworn Blade and refused to withdraw after the Blade stood down under ceremony. The Pinky has no intention of letting him count to twelve.',
     'Bạn bước vào vòng với vai trơ trọi, không áo giáp. Trận đấu kéo dài ba nhịp. Khi kết thúc, hắn nhìn thanh kiếm của bạn và không nói gì.',
     'You step into the ring bare-shouldered, in no armor. The fight lasts three beats. When it is over, he looks at your sword and says nothing.',

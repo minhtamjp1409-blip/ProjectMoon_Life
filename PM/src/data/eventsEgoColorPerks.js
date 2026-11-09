@@ -130,7 +130,7 @@ export const EGO_COLOR_EVENTS = [
         ] },
       { labelVi: 'Gửi trả phong bì chưa mở', labelEn: 'Send the envelope back unopened',
         effects: { sanity: 4, rep: -3, heat: 6 }, flagsAdd: ['color_sealed_done'],
-        resultVi: 'Phong bì quay lại bàn của Claw bằng đường bưu điện thường. Không có hồi âm. Tuần ấy, bạn gặp cùng một người ở ba quán khác nhau, lần nào cũng đứng gần cửa sổ.',
+        resultVi: 'Phong bì quay lại bàn của Claw bằng đường bưu điện thường. Không có hồi âm. Tuần ấy, đi qua ba quán khác nhau bạn đều bắt gặp cùng gương mặt ấy đứng gần cửa sổ.',
         resultEn: 'The envelope returns to the Claw by ordinary post. No reply comes. That week you see the same person in three different cafes, each time standing near a window.' }
     ]
   },

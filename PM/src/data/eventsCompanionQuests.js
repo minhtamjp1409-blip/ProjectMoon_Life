@@ -20,7 +20,7 @@ export const COMPANION_QUEST_EVENTS = [
     en: '[Casino debt] The protection crew pins {friend} against a dumpster behind the casino. Their leader raises a ledger: “The wager is gone. Pay by midnight, or we take both hands.” {friend} cannot meet your eyes.',
     choices: [
       {
-        labelVi: 'Đặt 15 Ahn lên mặt thùng phi, chuộc người bạn ra',
+        labelVi: 'Đặt tiền lên mặt thùng phi, chuộc người bạn ra',
         labelEn: 'Slap fifteen Ahn onto the drum to settle the debt',
         resultVi: "Bạn trả tiền. Bọn bảo kê gạch nợ rồi đẩy {friend} về phía bạn. Hai bàn tay người ấy vẫn còn nguyên. {friend} nói sẽ không quay lại sòng bạc.",
         resultEn: 'You pay. The enforcers cross out the debt and push {friend} toward you. Both hands remain intact. {friend} says they will not return to the casino.',
@@ -30,7 +30,7 @@ export const COMPANION_QUEST_EVENTS = [
         meritAdd: 8
       },
       {
-        labelVi: 'Tuốt vũ khí rạch gió, dùng sát khí đè bẹp đám chủ nợ',
+        labelVi: 'Rút vũ khí uy hiếp đám chủ nợ lùi lại',
         labelEn: 'Draw steel and break their perimeter through lethal intent',
         resultVi: "Bạn chém gãy xà beng của tên cầm đầu. Đám bảo kê lùi khỏi {friend}, nhưng cuốn sổ nợ vẫn nằm trong tay chúng. {friend} theo bạn ra khỏi ngõ, im lặng suốt đường về.",
         resultEn: 'You break the leader’s crowbar with your blade. The enforcers back away from {friend}, but keep the ledger. {friend} follows you out of the alley without a word.',
@@ -63,7 +63,7 @@ export const COMPANION_QUEST_EVENTS = [
     en: '[Medicine in winter] {friend} coughs blood in the cold attic. An unlicensed clinic has a K Corp serum that could keep them alive tonight, but demands payment first. You hear another cough behind the door.',
     choices: [
       {
-        labelVi: 'Chi 12 Ahn mua lọ huyết thanh cứu mạng bạn mình',
+        labelVi: 'Mua lọ huyết thanh K Corp cứu {friend}',
         labelEn: 'Spend twelve Ahn on the regenerative serum vial',
         resultVi: 'Cơn co giật của {friend} dịu xuống sau khi tiêm thuốc. Người ấy mở mắt, nắm lấy tay bạn rồi ngủ tiếp. Y tá bảo đêm nay đã qua cơn nguy.',
         resultEn: 'The spasms ease after the injection. {friend} opens their eyes, grips your hand, and falls asleep again. The nurse says they will make it through tonight.',
@@ -73,7 +73,7 @@ export const COMPANION_QUEST_EVENTS = [
         meritAdd: 10
       },
       {
-        labelVi: 'Thức trắng bốn đêm chườm nước ấm và tận tụy chăm sóc',
+        labelVi: 'Thức bốn đêm chườm nước ấm và chăm sóc tại nhà',
         labelEn: 'Vigil through four sleepless nights with herbal compresses',
         resultVi: 'Bạn thay khăn và đun nước suốt bốn đêm. Đến rạng sáng ngày thứ năm, cơn sốt hạ. {friend} xin nước uống rồi hỏi bạn đã ngủ lúc nào.',
         resultEn: 'You change cloths and boil water through four nights. At dawn on the fifth day, the fever breaks. {friend} asks for a drink, then asks when you last slept.',
@@ -82,9 +82,9 @@ export const COMPANION_QUEST_EVENTS = [
         meritAdd: 8
       },
       {
-        labelVi: 'Để số phận của người bạn tự định đoạt theo lẽ sinh tồn',
+        labelVi: 'Quay đi, để {friend} tự chống chọi qua đêm',
         labelEn: 'Leave their survival to the City’s merciless natural order',
-        resultVi: '{friend} vượt qua cơn bạo bệnh nhờ may mắn và sức sống dai dẳng như cỏ dại, nhưng ánh mắt nhìn bạn đã trở nên lạnh lẽo. Người đó hiểu rằng trong phép tính của bạn, mạng sống của họ không đáng giá mười mấy đồng Ahn.',
+        resultVi: '{friend} qua khỏi sau mấy ngày sốt nặng nhưng từ đó tránh mặt bạn mỗi khi gặp ngoài ngõ.',
         resultEn: '{friend} survived by pure bitter grit, yet the warmth in their eyes died. They understood that in your ledgers, their breath was not worth twelve Ahn.',
         effects: { sanity: -4 },
         bond: { friend: -18 }
@@ -115,9 +115,9 @@ export const COMPANION_QUEST_EVENTS = [
         meritAdd: 12
       },
       {
-        labelVi: 'Nhanh trí bước vào giữa nói đỡ và tặng gã vò rượu mạnh',
+        labelVi: 'Bước vào giữa nói đỡ và mời gã vò rượu mạnh',
         labelEn: 'Tactfully intercede, offering the bouncer a jug of high-proof liquor',
-        resultVi: 'Bạn trích 8 Ahn mua vò rượu ngon nhất khu chợ, bước tới cười đùa vỗ vai tên côn đồ để hóa giải xung đột. Gã hài lòng ôm vò rượu bỏ đi. Danh dự của {friend} được bảo toàn mà không cần đổ máu vô ích.',
+        resultVi: 'Bạn mua vò rượu ở quầy bên cạnh đưa cho tên côn đồ. Gã cầm vò rượu rồi dẫn đàn em đi tiếp; {friend} lau vết canh trên áo.',
         resultEn: 'Expending eight Ahn on the market’s strongest spirit, you stepped between them with easy charm, defusing the brawl. The brute walked away satisfied. Bloodshed was averted without trampling your companion’s pride.',
         costAhn: 8,
         effects: { rep: +8, network: +10 },
@@ -125,9 +125,9 @@ export const COMPANION_QUEST_EVENTS = [
         meritAdd: 8
       },
       {
-        labelVi: 'Khoanh tay đứng nhìn bạn mình bị đánh bầm dập',
+        labelVi: 'Đứng ngoài nhìn {friend} chịu đòn',
         labelEn: 'Stand aside as they take a brutal beating in the dirt',
-        resultVi: '{friend} gục ngã trên vũng bùn dưới những cú đá tàn bạo. Nỗi nhục nhã thiêu đốt tâm can họ hơn cả những chiếc xương sườn gãy, và tình bạn giữa hai người vỡ vụn thành trăm mảnh.',
+        resultVi: '{friend} bị đánh ngã xuống đất giữa chợ. Khi đám côn đồ đi khỏi, họ tự đứng dậy và không nhìn về phía bạn.',
         resultEn: '{friend} collapsed in the dirt beneath steel-toed boots. The bitter humiliation burned deeper than broken ribs, shattering the trust between you forever.',
         effects: { sanity: -6, rep: -8 },
         bond: { friend: -25 }
@@ -149,18 +149,18 @@ export const COMPANION_QUEST_EVENTS = [
     en: '[Shadow of Yesterday] Cold drizzle coats the alleyway. A trench-coated investigator from Seven Association Section 4 lingers under a flickering streetlamp, holding a charcoal sketch of {friend} and a sealed docket from a fallen Wing. {friend} turns porcelain-white, retreating behind the door with white-knuckled grip on a dagger: “They traced my scent... The Wing’s purge cells won’t leave me breathing if dragged back.”',
     choices: [
       {
-        labelVi: 'Đánh lạc hướng thám tử, trộm hồ sơ và thiêu rụi thành tro',
+        labelVi: 'Đánh lạc hướng thám tử, lấy trộm hồ sơ rồi đốt đi',
         labelEn: 'Mislead the investigator, pickpocket the file and burn it to ash',
-        resultVi: 'Bạn cung cấp chứng cứ ngoại phạm giả, khéo léo móc túi tập tài liệu rồi ném thẳng vào lò than đang đỏ rực. Mối đe dọa biến mất theo làn khói. Lần đầu tiên, {friend} rơi nước mắt và thì thầm kể cho bạn nghe tên thật cùng thảm kịch năm xưa.',
+        resultVi: 'Bạn chỉ hướng giả cho thám tử, rút tập tài liệu khỏi túi áo hắn rồi ném vào lò than. Khi con hẻm vắng lại, {friend} kể tên thật và lý do rời Wing năm xưa.',
         resultEn: 'You fed the detective an airtight false trail, expertly lifted the dossier, and hurled it into glowing furnace coals. The threat dissolved in smoke. For the first time, {friend} wept softly, whispering their true name and the nightmare they fled.',
         effects: { network: +10, heat: +8, sanity: +8 },
         npcQuest: ['friend'],
         meritAdd: 12
       },
       {
-        labelVi: 'Chi 18 Ahn đút lót để thám tử Seven khép lại hồ sơ',
+        labelVi: 'Đút lót để thám tử Seven khép lại hồ sơ',
         labelEn: 'Bribe the Seven investigator with eighteen Ahn to close the inquiry',
-        resultVi: 'Viên thám tử nhận bọc Ahn, gật đầu đóng con dấu đỏ "Mục tiêu đã chết trong tai nạn Singularity" vào hồ sơ rồi rời đi. {friend} thở phào như vừa trút được ngàn cân đá tảng trên ngực.',
+        resultVi: 'Viên thám tử nhận bọc tiền, đóng dấu "Mục tiêu đã chết trong tai nạn Singularity" vào hồ sơ rồi rời đi.',
         resultEn: 'The detective accepted the heavy pouch, stamping “Subject deceased in Singularity incident” before pocketing the ledger. {friend} exhaled as though unburdened of a mountain.',
         costAhn: 18,
         effects: { rep: +10, network: +12 },
@@ -200,9 +200,9 @@ export const COMPANION_QUEST_EVENTS = [
         meritAdd: 14
       },
       {
-        labelVi: 'Trích 16 Ahn tiền túi giúp bạn mình đóng khoản tiền ký quỹ',
+        labelVi: 'Đóng khoản tiền ký quỹ giúp {friend}',
         labelEn: 'Provide the sixteen Ahn bond from your own purse',
-        resultVi: 'Khoản tiền giúp {friend} có được vị trí đáng mơ ước. Từ đứa trẻ nghèo khó ở Backstreets, bạn mình đã có chỗ đứng vững vàng và luôn tìm cách đền đáp sự hỗ trợ của bạn.',
+        resultVi: 'Khoản tiền ký quỹ giúp {friend} được nhận vào Office. Chiều hôm đó họ mang hợp đồng về khoe với bạn.',
         resultEn: 'The sum secured their coveted operative badge. From a ragged street youth, your companion became an established contractor, forever looking to return the favor.',
         costAhn: 16,
         effects: { rep: +10, network: +12 },
@@ -243,9 +243,9 @@ export const COMPANION_QUEST_EVENTS = [
         meritAdd: 16
       },
       {
-        labelVi: 'Ném bom khói và lựu đạn chớp để cùng {partner} tẩu thoát qua cống',
+        labelVi: 'Ném bom khói và lựu đạn chớp để cùng {partner} rút qua cống',
         labelEn: 'Deploy smoke canisters and flash charges to extract through culverts',
-        resultVi: 'Làn khói mù mịt che mắt toán sát thủ. Bạn ôm lấy eo {partner}, cùng nhau nhảy xuống nắp cống ngầm thoát hiểm. Giữa bóng tối dưới lòng đất, hai bàn tay đan chặt vào nhau, nhịp tim hòa cùng một nhịp đập kiên định.',
+        resultVi: 'Khói mù che khuất tầm nhìn của toán sát thủ, đủ cho bạn kéo {partner} xuống đường cống ngầm thoát ra ngoài.',
         resultEn: 'Blinding smoke engulfed the kill squad. Wrapping an arm around {partner}’s waist, you plunged together into the drainage conduits. In the subterranean gloom, your fingers intertwined, pulses beating in unbreakable rhythm.',
         effects: { sanity: +10, rep: +10 },
         npcQuest: ['partner'],
@@ -268,7 +268,7 @@ export const COMPANION_QUEST_EVENTS = [
     en: "[A Roof in the Ash Storm] A gale of ash tears the tin roof off your rented room. Black rain falls on the bed, and {spouse} is trying to light the stove with coal dust. You have to find shelter before the room floods.",
     choices: [
       {
-        labelVi: "Chi 15 Ahn mua tôn cách nhiệt và một bếp lò than để gia cố căn phòng",
+        labelVi: "Mua tôn cách nhiệt và bếp lò than để sửa lại phòng",
         labelEn: "Spend 15 Ahn on insulated sheets and a coal stove to repair the room",
         resultVi: "Than đỏ lên và cái lạnh lùi ra khỏi góc phòng. Mái nhà được lợp lại chắc tay. {spouse} tựa đầu vào vai bạn và nghe gió rít ngoài khung cửa, lần đầu trong tuần không phải đếm giờ.",
         resultEn: "The coals glow red and the cold backs out of the corner. The roof is patched firmly. {spouse} rests their head on your shoulder and listens to the wind outside the frame, for the first time this week not counting the hours.",
@@ -312,9 +312,9 @@ export const COMPANION_QUEST_EVENTS = [
         meritAdd: 14
       },
       {
-        labelVi: 'Dùng 20 Ahn đút lót cho tên đội trưởng Middle để mua lại mạng người',
+        labelVi: 'Đút lót tên đội trưởng Middle để mua lại mạng người',
         labelEn: 'Bribe the Middle commander with twenty Ahn to clear the bounty',
-        resultVi: 'Gã chỉ huy nhận bọc tiền và gạch tên {friend} khỏi cuốn sổ thù hận tạm thời. {friend} thoát chết trong gang tấc, gật đầu thừa nhận: "Tao đã nghĩ trên đời này chỉ có tiền mới cứu được mạng người... Cảm ơn mày."',
+        resultVi: 'Gã chỉ huy nhận bọc tiền và gạch tên {friend} khỏi sổ thù hận. {friend} bước ra khỏi bốt điện thoại, gật đầu cảm ơn bạn.',
         resultEn: 'The commander pocketed the purse, striking {friend}’s name from the ledger for now. Breathing free, they conceded softly: “I always thought coin was the only thing that bought life... Thank you.”',
         costAhn: 20,
         effects: { network: +12, rep: +8 },
@@ -346,9 +346,9 @@ export const COMPANION_QUEST_EVENTS = [
     en: '[The Living Shield’s Wound] During an ambush by alley Scavengers, {friend} hurled their body forward to smother a shrapnel grenade meant for you. Jagged steel embedded deep into their shoulder and ribs. {friend} bites through the agony, trying to bind it secretly with rags so as not to burden your purse.',
     choices: [
       {
-        labelVi: 'Chi 14 Ahn đưa bạn đến phòng khám uy tín và túc trực phẫu thuật gắp mảnh đạn',
+        labelVi: 'Đưa {friend} đến phòng khám mổ gắp mảnh đạn',
         labelEn: 'Spend fourteen Ahn at a certified clinic, overseeing shrapnel extraction',
-        resultVi: 'Bác sĩ phẫu thuật gắp ra sáu mảnh sắt gỉ khỏi lồng ngực {friend}. Suốt ca mổ, bạn nắm chặt tay người bạn trung thành. Khi tỉnh dậy, {friend} nhìn thấy bạn vẫn ngồi đó, ánh mắt ngập tràn lòng trung trinh bất diệt.',
+        resultVi: 'Bác sĩ gắp ra sáu mảnh sắt gỉ khỏi vai {friend}. Bạn ngồi cạnh giường bệnh đến khi người ấy tỉnh thuốc mê.',
         resultEn: 'The surgeon extracted six rusted shards from their torso. Throughout the operation, you held their hand tight. Awakening to see you still at their bedside, {friend}’s loyalty hardened into diamond.',
         costAhn: 14,
         effects: { rep: +12, sanity: +10 },
@@ -356,9 +356,9 @@ export const COMPANION_QUEST_EVENTS = [
         meritAdd: 12
       },
       {
-        labelVi: 'Tự tay dùng kìm Workshop và cồn sát trùng gắp mảnh đạn cho bạn mình',
+        labelVi: 'Tự dùng kìm Workshop và cồn sát trùng gắp mảnh đạn',
         labelEn: 'Personally extract the shrapnel with Workshop forceps and alcohol',
-        resultVi: 'Giữa ánh đèn dầu bập bùng, bạn dùng bàn tay vững vàng gắp từng mảnh đạn ra khỏi thớ thịt của {friend}. Cơn đau xé ruột nhưng người bạn không kêu một tiếng. Tình nghĩa huynh đệ được tôi luyện qua máu và lửa.',
+        resultVi: 'Dưới ánh đèn dầu, bạn dùng kìm gắp từng mảnh đạn khỏi bả vai {friend} rồi khâu lại. Người ấy cắn răng chịu đau không kêu nửa lời.',
         resultEn: 'Beneath the lantern light, your steady hands extracted every splinter from torn muscle. The searing agony was met with silent endurance. Brotherhood was forged anew through blood and fire.',
         effects: { health: -4, rep: +10, sanity: +8 },
         npcQuest: ['friend'],
@@ -381,9 +381,9 @@ export const COMPANION_QUEST_EVENTS = [
     en: '[The mentor’s last lesson] The veteran Fixer sits in the workshop, prosthetic joints creaking. He opens a case and lifts out a worn Workshop blade. “Soon I won’t be able to hold it. If you want it, show me how you would use it.”',
     choices: [
       {
-        labelVi: 'Quỳ xuống hai tay đón nhận thanh đao, thề kế tục ý chí của người thầy',
+        labelVi: 'Nhận thanh đao cũ và hứa giữ nghề của người thầy',
         labelEn: 'Kneel and receive the heirloom blade, swearing to uphold their path',
-        resultVi: 'Thanh đao đặt vào tay bạn nặng trịch và lạnh buốt, mang theo trọn kinh nghiệm và sẹo của cả đời chinh chiến. Vị tiền bối già mỉm cười mãn nguyện, vỗ mạnh vào vai bạn: "Đi đi, và đừng để con đao này phải hổ thẹn."',
+        resultVi: 'Thanh đao đặt vào tay bạn nặng và lạnh. Người thầy nhìn bạn tra đao vào vỏ rồi vỗ vai: "Đi đi, giữ cho lưỡi đao đừng gỉ."',
         resultEn: 'The blade in your hands felt heavy and cold, bearing the weight of a lifetime of scars and triumphs. The old master smiled in deep fulfillment, clapping your shoulder: “Now go. And never let this steel feel shame.”',
         effects: { rep: +20, resonance: +16, sanity: +12 },
         flagsAdd: ['MentorLegacyHeir'],
@@ -392,9 +392,9 @@ export const COMPANION_QUEST_EVENTS = [
         meritAdd: 18
       },
       {
-        labelVi: 'Chi 18 Ahn mua dầu thủy lực cao cấp và linh kiện mới đại tu tay giả cho ông',
+        labelVi: 'Mua dầu thủy lực và linh kiện mới đại tu tay giả cho ông',
         labelEn: 'Spend eighteen Ahn on high-grade fluid and parts to overhaul their limbs',
-        resultVi: 'Bạn dành cả đêm thay van và bơm dầu máy mới cho các khớp cơ khí của người thầy. Đôi tay kim loại của ông cử động trơn tru trở lại. Ông cười lớn, rót hai chén rượu mừng: "Thằng nhóc này... vẫn luôn biết cách làm ta bất ngờ."',
+        resultVi: 'Bạn dành cả đêm thay van và bơm dầu máy mới cho các khớp cơ khí của người thầy. Tay kim loại cử động trơn tru trở lại; ông rót hai chén rượu mời bạn.',
         resultEn: 'You spent the night flushing valves and lubricating the old mentor’s prosthetics. His pneumatic joints moved smooth as silk once more. Laughing heartily, he poured two cups of liquor: “You stubborn pup... still finding ways to surprise me.”',
         costAhn: 18,
         effects: { rep: +14, network: +15, sanity: +14 },

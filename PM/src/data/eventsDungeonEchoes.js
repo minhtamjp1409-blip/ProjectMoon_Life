@@ -5,16 +5,16 @@ const echo = (id, tags, vi, en, choices) => ({ id, major: true, isCausalCallback
 
 export const DUNGEON_ECHO_EVENTS = [
   echo('echo_dungeon_warp_witness', ['dungeon', 'npc'],
-    '[Người từ toa cuối] Ở ga WARP, có người lạ chặn bạn lại. Họ nhớ mặt bạn từ chuyến tàu năm ngoái, lúc bạn kéo họ ra khỏi toa cuối. Từ hôm đó họ đi làm bằng đường bộ, và họ muốn trả ơn.',
-    '[The one from the last car] A stranger stops you at the WARP station. They remember your face from last year, when you pulled them out of the last car. They have walked to work ever since, and they want to repay you.',
+    '[Người trên chuyến WARP] Có người chặn bạn ngoài ga. Họ đi cùng chuyến tàu năm ngoái và nhớ bạn đã dẫn nhóm hành khách ra cửa. Giờ họ muốn trả lại món nợ ấy.',
+    '[The WARP passenger] Someone stops you outside the station. They were on last year’s train and remember you leading passengers to the exit. Now they want to return the favor.',
     [
       { labelVi: 'Nhận lời giới thiệu tới chỗ họ làm', labelEn: 'Take an introduction to where they work',
         resultVi: 'Họ dẫn bạn tới văn phòng của mình và kể chuyện con tàu cho cả phòng nghe. Mấy người ở đó xin số liên lạc của bạn.',
         resultEn: 'They take you to their office and tell the whole floor about the train. A few people there ask how to reach you.',
         effects: { network: 8, rep: 4 } },
       { labelVi: 'Bảo họ quên chuyện đó đi', labelEn: 'Tell them to forget it',
-        resultVi: 'Họ gật đầu nhưng vẫn dúi vào tay bạn một phong bì. Trong đó là tiền vé tàu của cả một năm.',
-        resultEn: 'They nod, but still press an envelope into your hand. Inside is a year of train fare.',
+        resultVi: 'Họ gật đầu rồi đặt phong bì lên ghế cạnh bạn. Đến khi bạn mở ra, người ấy đã đi khỏi sân ga.',
+        resultEn: 'They nod and leave an envelope on the seat beside you. By the time you open it, they have left the platform.',
         effects: { wealth: 12, sanity: 4 } }
     ]),
 
@@ -65,8 +65,8 @@ export const DUNGEON_ECHO_EVENTS = [
     '[Someone asking the way] An Office hears that you went all the way through a dungeon and came back. They send someone to buy whatever notes on the route you still remember.',
     [
       { labelVi: 'Bán bản ghi với giá tốt', labelEn: 'Sell the notes for a good price',
-        resultVi: 'Họ trả tiền rồi mang bản ghi đi. Vài tháng sau bạn nghe nói một đội của họ đã đi theo đúng lối ấy và trở về đủ người.',
-        resultEn: 'They pay and take the notes. A few months later you hear one of their teams followed that route and came back whole.',
+        resultVi: 'Họ trả tiền rồi mang bản ghi đi. Vài tháng sau, Office gửi lại trang đầu với nét bút đỏ đánh dấu một lối rẽ bạn đã bỏ sót.',
+        resultEn: 'They pay and take the notes. Months later the Office returns the first page, with a red mark beside a turn you missed.',
         effects: { wealth: 14, rep: 3 } },
       { labelVi: 'Giữ lại, lối đó chỉ mình bạn biết', labelEn: 'Keep them, that route is yours alone',
         resultVi: 'Người của Office ra về tay không. Ở quầy Hana bắt đầu có lời đồn về một lối đi mà chỉ bạn biết.',

@@ -96,7 +96,7 @@ export const FINGER_DEPTH_MARGIN = [
     ], 8),
 
   mission('pinky_the_bell_that_rang_once', 'Pinky', [2, 3],
-    '[Chuông vang một lần] Chuông của sân kiếm vang lên một lần giữa đêm, không có ai chạm vào. Theo truyền thống, tiếng chuông ấy nghĩa là một lời thề đã được trả ở đâu đó, và Pinky phải tìm ra lời thề nào. Chưa có Sworn Blade nào báo.',
+    '[Chuông vang một lần] Chuông của sân kiếm vang lên một tiếng giữa đêm, không ai chạm vào. Theo truyền thống, tiếng chuông ấy báo hiệu có lời thề vừa được trả xong nơi xa, và Pinky phải tìm ra lời thề nào. Chưa có Sworn Blade nào báo về.',
     '[The bell that rang once] The yard’s bell rings once in the dead of night with no one touching it. By tradition that sound means an oath has been paid somewhere, and the Pinky must learn which. No Sworn Blade has reported.',
     [
       fc('Hỏi từng Sworn Blade trong đêm', 'Ask each Sworn Blade through the night',

@@ -62,7 +62,7 @@ const inviteEvents = Object.entries(ASSOCIATIONS).map(([id, def]) => ({
   en: `[An offer from ${def.short}] ${def.inviteEn}`,
   choices: [
     {
-      labelVi: `Nhận lời: vào ${def.name}, chuyên ${def.specVi}`,
+      labelVi: `Nhận lời vào ${def.name}, chuyên ${def.specVi}`,
       labelEn: `Accept: join ${def.name}, which handles ${def.specEn}`,
       resultVi: JOIN[id].vi, resultEn: JOIN[id].en,
       affJoin: id, recordsAdd: ['assoc_joined'], effects: JOIN[id].fx, meritAdd: 6

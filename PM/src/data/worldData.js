@@ -378,7 +378,7 @@ export const REGIONS = [
     orgPressure: 8,
     fantasm: 4,
     pollution: 3,
-    descVi: 'Lore chính thức chưa có gì về O Corp; phần này là phóng tác. Ở District 15, một hợp đồng ký bằng mực của O Corp sẽ tự thi hành: trễ hạn trả nợ thì điều khoản phạt xảy ra ngay trên người ký, dù là một ngón tay, giọng nói hay một năm trí nhớ. Luật sư ở đây được trọng hơn bác sĩ.',
+    descVi: 'Lore chính thức chưa có gì về O Corp; phần này là phóng tác. Ở District 15, bản hợp đồng ký bằng mực của O Corp sẽ tự thi hành: trễ hạn trả nợ thì điều khoản phạt xảy ra ngay trên người ký, dù là ngón tay, giọng nói hay cả năm trí nhớ. Luật sư ở đây được trọng hơn bác sĩ.',
     descEn: 'Official lore has nothing on O Corp; this is an adaptation. In District 15 a contract signed in O Corp ink enforces itself: miss a payment and the penalty clause happens to the signer on the spot, whether a finger, a voice, or a year of memory. Lawyers here are trusted more than doctors.',
     birthVi: 'District 15, O Corp. Trước khi bạn kịp mở mắt, cha bạn đã ký tên vào giấy khai sinh bằng mực của O Corp. Ông đọc kỹ từng điều khoản, hai lần.',
     birthEn: 'District 15, O Corp. Before you opened your eyes, your father signed your birth record in O Corp ink. He read every clause carefully, twice.'

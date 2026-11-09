@@ -49,7 +49,7 @@ const FIXER_DEFER = [
 
 export const FIXER_EGO_LEAPS = [
   fixer(9,
-    '[Tái định hạng đặc biệt] Người của Hana đọc lại báo cáo Request của bạn và dừng ở dòng ghi một vũ khí không có số đăng ký. Hạng Grade 9 không có chỗ cho thứ đó. Hana gửi một Request thử: Zwei cần ai đứng chắn trước một thân chủ qua ba chốt trong đêm, và một kiểm toán viên sẽ đi sau bạn mười bước.',
+    '[Tái định hạng đặc biệt] Người của Hana đọc lại báo cáo Request của bạn và dừng ở dòng ghi thứ vũ khí không có số đăng ký. Hạng Grade 9 không có chỗ cho thứ đó. Hana gửi một Request thử: Zwei cần người đứng chắn trước thân chủ qua ba chốt trong đêm, có kiểm toán viên đi sau bạn mười bước.',
     '[Special re-rating] A Hana clerk rereads your Request reports and stops on a line recording a weapon with no registration number. Grade 9 has no place for that. Hana sends a trial Request: Zwei needs someone to stand between a client and three checkpoints in one night, and an auditor will walk ten paces behind you.',
     ['Để vũ khí hiện ra ngay ở chốt đầu tiên', 'Let the weapon appear at the first checkpoint',
       'Lính gác chốt thứ nhất nhìn vũ khí trong tay bạn và tự mở cổng, không hỏi giấy. Tới chốt thứ ba, thân chủ hỏi bạn có thật là Fixer Grade 9 không. Kiểm toán viên ghi tên bạn lên đầu tờ khác: Grade 7.',
@@ -79,7 +79,7 @@ export const FIXER_EGO_LEAPS = [
       'You lose the alley once and take it back in two cuts. By the end of the night the street still has its shopfronts. The auditor writes Grade 5 after asking whether you need water.'],
     FIXER_DEFER),
   fixer(6,
-    '[Tái định hạng đặc biệt] Cinq nhận những cuộc quyết đấu thay thân chủ, và có một người cần được thay: một thương nhân sẽ đấu với kiếm sĩ từng thắng mười một trận. Luật của Cinq cho phép mọi vũ khí hợp pháp. Hana muốn biết vũ khí của bạn có được tính là hợp pháp trước một trọng tài.',
+    '[Tái định hạng đặc biệt] Cinq nhận những cuộc quyết đấu thay thân chủ, hiện có người cần thế chỗ: vị thương nhân sắp đấu với kiếm sĩ từng thắng mười một trận. Luật của Cinq cho phép mọi vũ khí hợp pháp. Hana muốn biết vũ khí của bạn có được tính là hợp pháp trước mặt trọng tài không.',
     '[Special re-rating] Cinq takes duels in the client’s place, and someone needs standing in for: a merchant due to face a swordsman with eleven wins. Cinq’s rules allow any lawful weapon. Hana wants to know whether yours counts as lawful before a referee.',
     ['Khai báo vũ khí với trọng tài rồi đấu công khai', 'Declare the weapon to the referee and fight openly',
       'Trọng tài đọc điều luật hai lần rồi phán vũ khí hợp lệ. Trận đấu kéo dài bốn nhịp. Kiếm sĩ cúi chào bạn trước khi quay đi, và Cinq gửi Hana một bản ghi nhận có chữ ký của cả hai bên.',

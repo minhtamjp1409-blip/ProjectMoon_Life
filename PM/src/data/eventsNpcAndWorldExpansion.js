@@ -19,18 +19,18 @@ export const EXPANSION_STORY_EVENTS = [
     en: '[Friction in the Crossfire] During an ambush at an abandoned warehouse, {partner} did not cover your flank as agreed, stepping back to hold a safe distance. You had to fend off three gunmen alone before driving them off. When the smoke cleared, {partner} sheathed their weapon with a cold, unreadable face.',
     choices: [
       {
-        labelVi: 'Chĩa thẳng mũi vũ khí vào mặt {partner}, yêu cầu giải thích rõ ràng',
+        labelVi: 'Chĩa vũ khí vào {partner}, hỏi thẳng lý do lùi lại',
         labelEn: 'Level your weapon straight at {partner}, demanding a blunt explanation',
-        resultVi: '{partner} nhếch mép gạt mũi vũ khí của bạn ra: "Ở The City, kẻ không tự lo được cho mình thì sớm muộn cũng thành xác chết. Đừng mong tôi chết thay bạn." Rạn nứt giữa hai người đã chạm đến đáy.',
+        resultVi: '{partner} gạt mũi vũ khí của bạn sang một bên: "Ở The City, kẻ không tự giữ được mạng thì sớm muộn cũng nằm lại. Đừng trông chờ tôi đỡ đạn thay." Hai người đi song song về văn phòng mà không ai nói thêm câu nào.',
         resultEn: '{partner} smirked and brushed your weapon aside: "In The City, whoever cannot save their own skin ends up a corpse. Do not expect me to die in your place." The rift between you reached bedrock.',
         effects: { sanity: -8, rep: +5 },
         bond: { partner: -15 },
         flagsAdd: ['partner_ambush_fallout_done', 'PartnerTensionHigh']
       },
       {
-        labelVi: 'Nuốt giận, lặng lẽ băng bó vết thương và ghi nhớ mối nguy này',
+        labelVi: 'Im lặng băng vết thương, ghi nhớ chuyện hôm nay',
         labelEn: 'Swallow your anger, bind your wounds in silence, and remember the threat',
-        resultVi: 'Bạn không nói một lời, xé dải vải quấn chặt vết đạn ở bắp tay. Sự im lặng giữa hai người kéo dài suốt chặng đường về. Niềm tin đã chết, chỉ còn lại sự đề phòng cẩn mật.',
+        resultVi: 'Bạn không nói gì, xé dải vải buộc chặt vết đạn ở bắp tay. Cả quãng đường về không ai mở miệng; từ hôm đó bạn luôn đi lệch nửa bước phía sau {partner}.',
         resultEn: 'You uttered not a word, tearing a cloth strip to bind the bullet wound on your arm. The silence between you lingered the entire trek back. Trust died, replaced by vigilant wariness.',
         effects: { health: -10, sanity: -5 },
         bond: { partner: -8 },
@@ -47,16 +47,16 @@ export const EXPANSION_STORY_EVENTS = [
     requires: ['PartnerTensionHigh'],
     forbids: ['partner_treachery_resolved'],
     tags: ['betrayal', 'combat', 'npc'],
-    vi: '[Nhát dao trong ngõ tối] Nhận tiền thù lao từ thân chủ xong, {partner} bất ngờ rút vũ khí tấn công bạn ngay trong hẻm tối nhằm chiếm trọn phần thưởng và bán thông tin lộ trình của bạn cho đối thủ.',
+    vi: '[Nhát dao trong ngõ tối] Vừa nhận phong bì thù lao từ thân chủ, {partner} rút vũ khí chặn đầu ngõ. Kẻ đối địch đã ra giá gấp đôi để mua lại lộ trình của bạn, và {partner} chọn lấy cả hai phần tiền để trả nợ riêng.',
     en: '[Blade in the Alleyway] Right after collecting the contract payout, {partner} drew their weapon against you in a shadowed alley, aiming to pocket the entire sum and sell your patrol route to rivals.',
     choices: [
       {
-        labelVi: 'Ra tay tàn nhẫn, đánh gục {partner} và tước vũ khí của họ',
+        labelVi: 'Ra đòn trước, khóa tay và tước vũ khí của {partner}',
         labelEn: 'Strike mercilessly, subduing {partner} and stripping their weapon',
         outcomes: [
           {
             w: 60,
-            resultVi: 'Kinh nghiệm chiến đấu vượt trội giúp bạn áp đảo {partner}, găm lưỡi dao xuyên qua mu bàn tay họ xuống nền gạch. {partner} ôm vết thương tháo chạy, thề sẽ quay lại đoạt mạng bạn.',
+            resultVi: 'Bạn gạt phăng đòn đánh lén rồi ghim lưỡi dao xuyên qua mu bàn tay {partner} xuống tường gạch. {partner} giật tay thoát chạy vào hẻm tối, vừa ôm máu vừa ngoái lại nhìn bạn.',
             resultEn: 'Superior combat experience let you overpower {partner}, pinning their hand to the cobblestone with steel. {partner} fled clutching the wound, swearing bloody vengeance.',
             effects: { health: -12, sanity: -10, wealth: +25, rep: +12, heat: +10 },
             npcFate: { partner: 'betrayer' },
@@ -72,7 +72,7 @@ export const EXPANSION_STORY_EVENTS = [
           },
           {
             w: 40,
-            resultVi: 'Hai bên giằng co dữ dội; một vết chém sâu xé toạc mạn sườn bạn trước khi {partner} cướp lấy túi Ahn rồi biến mất vào mê cung Backstreets.',
+            resultVi: 'Hai bên giằng co trong ngõ hẹp; một nhát chém rạch ngang mạn sườn bạn trước khi {partner} giật lấy túi Ahn rồi lẩn vào khu chợ đêm.',
             resultEn: 'A brutal grapple ensued; a deep slash tore across your ribs before {partner} snatched the Ahn pouch and vanished into the Backstreet labyrinth.',
             effects: { health: -28, sanity: -18, wealth: -20, rep: -5 },
             scarsAdd: ['Vết sẹo phản bội từ đồng đội'],
@@ -90,9 +90,9 @@ export const EXPANSION_STORY_EVENTS = [
         ]
       },
       {
-        labelVi: 'Ném túi tiền công lại để thoát thân khỏi vòng vây',
+        labelVi: 'Quẳng túi tiền công xuống đất để mở đường rút',
         labelEn: 'Toss the coin purse back to break out of the encirclement',
-        resultVi: 'Bạn quẳng túi Ahn xuống đất; {partner} khựng lại một nhịp để chụp lấy túi tiền, đủ cho bạn phóng mình qua tường rào trốn thoát. Người bạn từng tin tưởng nay đã chính thức trở thành kẻ thù truyền kiếp.',
+        resultVi: 'Bạn ném túi Ahn về phía cuối ngõ; {partner} khựng lại nửa nhịp để nhặt tiền, vừa đủ cho bạn bật qua bờ tường thoát ra phố lớn.',
         resultEn: 'You flung the Ahn purse to the cobbles; {partner} hesitated a beat to grab it, giving you time to vault the wall and escape. The comrade you once trusted is now a sworn nemesis.',
         effects: { wealth: -30, sanity: -12, rep: -8 },
         npcFate: { partner: 'betrayer' },
@@ -112,13 +112,13 @@ export const EXPANSION_STORY_EVENTS = [
     en: '[Blood Oath in the Backstreet] After surviving twelve lethal contracts side by side, {partner} brought a flask of harsh spirit brewed from Outskirts herbs. "In this place, lives are bought cheap as dirt. But if we walk together, at least our backs are covered."',
     choices: [
       {
-        labelVi: 'Cắt máu ăn thề, kết nghĩa huynh đệ vào sinh ra tử cùng {partner}',
+        labelVi: 'Rạch tay ăn thề, kết nghĩa cùng {partner}',
         labelEn: 'Cut palms and swear a blood oath of brotherhood with {partner}',
         lasting: {
           vi: 'Kết nghĩa sinh tử với {partner}; giữ Bond bền vững và đồng hành qua các hợp đồng tới cuối đời',
           en: 'Swears a life-and-death pact with {partner}; anchors Bond and stands together across contracts'
         },
-        resultVi: 'Hai bàn tay nắm chặt rỉ máu; sự tin tưởng tuyệt đối giữa The City lạnh giá là thứ tài sản quý giá hơn vạn lượng Ahn. Từ nay, hiểm nguy nào cũng có hai người cùng gánh.',
+        resultVi: 'Hai bàn tay rỉ máu nắm chặt lấy nhau bên bàn rượu. Từ hôm đó, mỗi khi có hợp đồng khó, người kia luôn đến trước giờ hẹn mười lăm phút.',
         resultEn: 'Clasping bleeding palms, absolute trust in this frozen City proved more precious than ten thousand Ahn. From now on, every danger is met together.',
         effects: { sanity: +18, rep: +15 },
         bond: { partner: 25 },
@@ -126,9 +126,9 @@ export const EXPANSION_STORY_EVENTS = [
         scarsAdd: ['Vết rạch thề sinh tử']
       },
       {
-        labelVi: 'Nâng chén uống cạn nhưng giữ sự chừng mực chuyên nghiệp',
+        labelVi: 'Uống cạn chén rượu nhưng giữ ranh giới đồng nghiệp',
         labelEn: 'Drain the cup in respect while keeping professional distance',
-        resultVi: 'Bạn cạn chén rượu cay nồng nhưng từ chối nghi thức cắt máu. {partner} hiểu sự cẩn trọng của bạn và gật đầu tôn trọng: một mối quan hệ đối tác vững chắc không cần lời thề hoa mỹ.',
+        resultVi: 'Bạn uống cạn chén rượu cay nhưng khất chuyện cắt máu. {partner} gật đầu, cất con dao nhỏ vào túi áo và rót thêm lượt nữa.',
         resultEn: 'You drank the searing liquor but politely declined the blood oath. {partner} understood your caution and nodded respectfully: a sturdy partnership needs no ornate vows.',
         effects: { sanity: +8, rep: +8 },
         bond: { partner: 10 },
@@ -220,16 +220,16 @@ export const EXPANSION_STORY_EVENTS = [
     need: { npc: 'mentor', bondAtLeast: ['mentor', 70] },
     forbids: ['mentor_final_duel_done'],
     tags: ['combat', 'loyalty', 'npc'],
-    vi: '[Bài học cuối cùng trên mái nhà] Dưới ánh đèn mờ đục của Backstreets, {mentor} rút vũ khí ra khỏi bao và chỉ thẳng vào ngực bạn: "Mọi kỹ thuật ta biết, con đều đã thuần thục. Nhưng kiếm thuật thực sự chỉ nở rộ khi con vượt qua cái bóng của người dạy dỗ mình. Đêm nay, đừng nương tay."',
+    vi: '[Bài học cuối trên mái nhà] Dưới ánh đèn mờ của Backstreets, {mentor} rút vũ khí ra khỏi bao và chỉ vào ngực bạn: "Những gì ta biết, con đều đã học xong. Đêm nay đánh thật tay, đừng nhường."',
     en: '[Final Lesson upon the Rooftop] Under the dull lamplight of the Backstreets, {mentor} drew their weapon and leveled it at your chest: "Every technique I possess, you have mastered. But true craft only blooms when you surpass the shadow of your teacher. Tonight, do not hold back."',
     choices: [
       {
-        labelVi: 'Vung toàn lực quyết đấu, khắc ghi từng chiêu thức của {mentor}',
+        labelVi: 'Đánh hết sức, nhớ từng nhịp ra đòn của {mentor}',
         labelEn: 'Engage with all your might, etching every clash with {mentor} into memory',
         outcomes: [
           {
             w: 55,
-            resultVi: 'Hai lưỡi thép chạm nhau nảy lửa. Một đường phản đòn sắc bén của bạn hất văng vũ khí của {mentor}. Người thầy mỉm cười gật đầu, tự hào trao lại cho bạn tín vật truyền thừa.',
+            resultVi: 'Hai lưỡi thép va vào nhau chát chúa. Đòn phản công của bạn hất văng vũ khí khỏi tay {mentor}. Người thầy xoa cổ tay, gật đầu rồi tháo con dấu riêng trao cho bạn.',
             resultEn: 'Steel clattered with sparks. A razor-sharp counter parried {mentor}’s weapon into the night air. The mentor smiled proudly, passing down their master seal.',
             effects: { health: -15, sanity: +25, rep: +30, resonance: +15 },
             meritAdd: 35,
@@ -239,7 +239,7 @@ export const EXPANSION_STORY_EVENTS = [
           },
           {
             w: 45,
-            resultVi: '{mentor} vẫn nhỉnh hơn bạn nửa nhịp kiếm, để lại một vết rạch nông trên vai bạn. Dẫu thua, bạn đã chạm tới cảnh giới cao nhất của đường kiếm.',
+            resultVi: '{mentor} vẫn nhanh hơn bạn nửa nhịp, để lại vết cắt nông trên vai bạn. Thua một hiệp nhưng tay cầm vũ khí của bạn đã vững hơn hẳn.',
             resultEn: '{mentor} still held a half-beat edge, leaving a shallow line across your shoulder. Though bested, you touched the highest horizon of the blade.',
             effects: { health: -22, sanity: +15, rep: +18, resonance: +12 },
             meritAdd: 20,
@@ -249,9 +249,9 @@ export const EXPANSION_STORY_EVENTS = [
         ]
       },
       {
-        labelVi: 'Thu kiếm cúi đầu, bày tỏ lòng biết ơn thay vì giao đấu',
+        labelVi: 'Tra vũ khí vào vỏ và cúi đầu cảm ơn',
         labelEn: 'Sheathe your blade and bow low, expressing gratitude over bloodshed',
-        resultVi: '{mentor} thở dài thu vũ khí, vỗ vai bạn với ánh mắt bao dung: "Giữ được lòng nhân từ trong thành phố tàn bạo này là một lựa chọn dũng cảm, dù nó sẽ khiến con phải trả giá đắt."',
+        resultVi: '{mentor} thở dài tra vũ khí lại, vỗ vai bạn: "Không muốn rút kiếm với người quen cũng tốt, miễn là ra ngõ đừng mềm lòng như vậy."',
         resultEn: '{mentor} sighed and sheathed their weapon, patting your shoulder with a gentle gaze: "Preserving mercy in this brutal City is a brave choice, though it will extract a heavy price."',
         effects: { sanity: +20, rep: +10 },
         bond: { mentor: 10 },
@@ -267,17 +267,17 @@ export const EXPANSION_STORY_EVENTS = [
     need: { npc: 'mentor', bondAtMost: ['mentor', 25] },
     forbids: ['mentor_rupture_done'],
     tags: ['friction', 'npc'],
-    vi: '[Sự đoạn tuyệt của Sư Phụ] {mentor} chứng kiến cách bạn hoàn thành hợp đồng gần đây: tàn nhẫn, không chừa đường sống cho cả những kẻ vô can. Trong căn phòng tập cũ, họ lạnh lùng ném danh thiếp của bạn xuống đất: "Ta dạy con cầm vũ khí để sống sót, không phải để làm một con thú khát máu."',
+    vi: '[Sự đoạn tuyệt của Sư Phụ] {mentor} biết chuyện bạn giải quyết hợp đồng vừa rồi không chừa cả người ngoài cuộc. Trong phòng tập cũ, họ ném danh thiếp của bạn xuống sàn: "Ta dạy con cầm vũ khí để giữ mạng, không phải để giết bừa."',
     en: '[The Mentor’s Severance] {mentor} witnessed how you concluded recent contracts: ruthless, leaving no quarter even for bystanders. In the old dojo, they hurled your card onto the floor: "I taught you steel to survive, not to turn into a bloodthirsty hound."',
     choices: [
       {
-        labelVi: 'Lạnh lùng đáp trả rằng thời thế đã đổi và đạo lý của họ đã lỗi thời',
+        labelVi: 'Đáp lại rằng thời thế đã khác, luật cũ không còn dùng được',
         labelEn: 'Coldly reply that times have changed and their ethics are obsolete',
         lasting: {
           vi: 'Đoạn tuyệt vĩnh viễn với {mentor}, khép lại chuỗi chỉ dẫn của sư phụ',
           en: 'Severs ties permanently with {mentor}, ending all future mentor guidance'
         },
-        resultVi: '{mentor} nhìn bạn bằng ánh mắt cay đắng tột cùng rồi quay lưng bước đi: "Từ nay, đừng bao giờ nhận là đệ tử của ta." Mối quan hệ thầy trò chính thức tan vỡ.',
+        resultVi: '{mentor} nhìn bạn một lúc rồi quay lưng bước vào trong: "Từ hôm nay đi đâu đừng nhắc tên ta nữa."',
         resultEn: '{mentor} stared with bitter sorrow, then turned their back: "From this hour, never claim to be my student." The bond between master and disciple shattered.',
         effects: { sanity: -15, rep: +10 },
         bond: { mentor: -35 },
@@ -285,9 +285,9 @@ export const EXPANSION_STORY_EVENTS = [
         flagsAdd: ['mentor_rupture_done']
       },
       {
-        labelVi: 'Quỳ xuống xin lỗi và chấp nhận chịu phạt theo môn quy',
+        labelVi: 'Quỳ xuống nhận lỗi và chịu phạt theo lệ cũ',
         labelEn: 'Kneel and apologize, accepting disciplinary penance',
-        resultVi: 'Bạn nhận mười roi sắt trên lưng mà không kêu một tiếng. {mentor} ném lại lọ thuốc bôi rồi bước ra ngoài. Vết thương ngoài da sẽ lành, nhưng vết nứt niềm tin thì chưa.',
+        resultVi: 'Bạn chịu mười gậy sắt lên lưng mà không rên tiếng nào. {mentor} để lại lọ thuốc bôi trên ghế rồi đóng cửa bước ra ngoài.',
         resultEn: 'You took ten iron lashes across the back without a cry. {mentor} tossed an ointment jar and walked out. The skin wounds will heal; the rift in trust will linger.',
         effects: { health: -20, sanity: +5 },
         bond: { mentor: -5 },
@@ -303,16 +303,16 @@ export const EXPANSION_STORY_EVENTS = [
     need: { npc: 'nemesis' },
     forbids: ['nemesis_midnight_resolved'],
     tags: ['combat', 'danger', 'nemesis'],
-    vi: '[Ân oán lúc nửa đêm] Cửa sổ phòng bạn vỡ vụn; {nemesis} cùng hai sát thủ thuê xông vào giữa đêm giông bão. Ánh chớp xé rách bóng tối, rọi sáng ánh mắt điên cuồng muốn thanh toán mọi nợ nần của kẻ thù.',
+    vi: '[Ân oán lúc nửa đêm] Cửa sổ phòng trọ vỡ tung; {nemesis} dẫn hai tay đâm thuê nhảy vào giữa đêm mưa. Hắn khóa trái cửa chính lại, định giải quyết dứt điểm nợ cũ ngay trong phòng.',
     en: '[Midnight Reckoning] Your window shattered inward; {nemesis} broke through during a stormy midnight flanked by two hired cutthroats. Lightning lit the darkness, illuminating eyes frantic for a final settlement.',
     choices: [
       {
-        labelVi: 'Dồn hết sát khí vào đòn sinh tử, quyết chấm dứt mối thù tại đây',
+        labelVi: 'Đánh dứt điểm để khép lại món nợ ngay tại đây',
         labelEn: 'Pour all lethal intent into a decisive strike to end the feud',
         outcomes: [
           {
             w: 65,
-            resultVi: 'Lưỡi kiếm của bạn nhanh hơn ánh chớp. {nemesis} gục ngã trên vũng máu trong khi hai tên sát thủ hoảng sợ nhảy qua cửa sổ tháo chạy. Mối hiểm họa đe dọa cuộc sống của bạn đã vĩnh viễn được gỡ bỏ.',
+            resultVi: 'Bạn đâm gục {nemesis} ngay cạnh bàn làm việc khiến hai tên đi thuê vội nhảy ngược qua cửa sổ thoát thân. Sáng hôm sau bạn chỉ việc thay lại khung kính mới.',
             resultEn: 'Your blade was swifter than lightning. {nemesis} crumpled into a pool of blood while the hired killers scrambled out the window in panic. The threat over your life is permanently severed.',
             effects: { health: -22, sanity: +15, rep: +25, heat: -10 },
             meritAdd: 25,
@@ -322,7 +322,7 @@ export const EXPANSION_STORY_EVENTS = [
           },
           {
             w: 35,
-            resultVi: '{nemesis} điên cuồng chống trả, đâm trúng bụng bạn trước khi trúng đòn chí mạng. Cả hai cùng ngã xuống sàn; hàng xóm kịp tri hô cứu bạn qua cơn thập tử nhất sinh.',
+            resultVi: '{nemesis} liều mạng đâm sượt bụng bạn trước khi gục hẳn. Cả hai nằm sóng soài trên sàn gỗ cho tới khi hàng xóm phá cửa vào băng bó.',
             resultEn: '{nemesis} fought with frantic fury, piercing your gut before taking your mortal blow. Both crashed to the floor; neighbors intervened just in time to drag you back from the threshold of death.',
             effects: { health: -45, sanity: -15, rep: +15 },
             scarsAdd: ['Vết đâm xuyên bụng'],
@@ -332,9 +332,9 @@ export const EXPANSION_STORY_EVENTS = [
         ]
       },
       {
-        labelVi: 'Kích hoạt bẫy khói và tháo chạy sang nóc nhà đối diện',
+        labelVi: 'Giật chốt khói mù, nhảy sang mái nhà đối diện',
         labelEn: 'Trigger a smoke decoy and scramble onto the opposite roof',
-        resultVi: 'Khói mù mịt phủ kín căn phòng giúp bạn nhảy qua khoảng không sang mái nhà đối diện. Căn hộ của bạn bị phá nát nhưng bạn vẫn giữ được mạng sống để tính kế lâu dài.',
+        resultVi: 'Khói đặc phủ kín căn phòng, che cho bạn nhảy vọt sang mái tôn bên kia đường. Đồ đạc trong phòng bị đập nát, nhưng bạn không mất giọt máu nào.',
         resultEn: 'Choking smoke masked your escape across the rooftop gap. Your tenement room was ransacked, but you kept your breath to fight another day.',
         effects: { wealth: -25, sanity: -10, health: -8 },
         flagsAdd: ['nemesis_midnight_resolved']
@@ -354,7 +354,7 @@ export const EXPANSION_STORY_EVENTS = [
     en: '[Backstreet Ague] {spouse} suffered violent fever convulsions from contaminated district water. An unlicensed clinic doctor demanded 35 Ahn for a diluted dose of K Corp purifying serum.',
     choices: [
       {
-        labelVi: 'Trả đủ 35 Ahn mua mũi huyết thanh tốt nhất để cứu {spouse}',
+        labelVi: 'Trả 35 Ahn mua mũi huyết thanh tốt nhất cứu {spouse}',
         labelEn: 'Pay the full 35 Ahn for the best serum to save {spouse}',
         resultVi: 'Sau mũi tiêm, cơn sốt của {spouse} hạ dần. Bạn ngồi bên giường đến khi nhịp thở đều lại; sáng ra, họ đủ sức gọi tên bạn.',
         resultEn: 'After the injection, {spouse}’s fever begins to fall. You sit beside the bed until their breathing steadies; by morning, they can call your name.',
@@ -364,7 +364,7 @@ export const EXPANSION_STORY_EVENTS = [
         flagsAdd: ['spouse_illness_resolved']
       },
       {
-        labelVi: 'Mua thuốc an thần giá rẻ 10 Ahn và thức trắng đêm lau người hạ nhiệt',
+        labelVi: 'Mua thuốc hạ sốt rẻ tiền và thức trắng đêm chườm lạnh',
         labelEn: 'Buy cheap 10 Ahn sedatives and spend the night cooling their brow',
         costAhn: 10,
         outcomes: [
@@ -419,7 +419,7 @@ export const EXPANSION_STORY_EVENTS = [
     en: '[The suitcase by the door] You come home after days away. A packed suitcase stands by the door. {spouse} sits at the table: “We cannot go on like this. You only come here to sleep.”',
     choices: [
       {
-        labelVi: 'Bỏ vũ khí xuống, ôm chặt lấy {spouse} và hứa sẽ dành nhiều thời gian hơn',
+        labelVi: 'Bỏ vũ khí xuống, ôm {spouse} và hứa sẽ dành nhiều thời gian hơn',
         labelEn: 'Set weapons down, hold {spouse} close, and promise more presence',
         lasting: {
           vi: 'Giữ lại mái ấm với {spouse}, tiếp tục đồng hành và hồi phục SP mỗi năm',
@@ -487,16 +487,16 @@ export const EXPANSION_STORY_EVENTS = [
     requires: ['HasChild'],
     forbids: ['child_ransom_resolved'],
     tags: ['danger', 'family', 'npc'],
-    vi: '[Bức thư đẫm máu gửi phụ huynh] Trở về nhà, bạn nhận được một lọn tóc của đứa con kèm mảnh giấy đe dọa từ một băng đảng địa phương: "Mang 40 Ahn đến tầng hầm nhà máy xay xát trước nửa đêm, nếu muốn con mày còn nguyên vẹn."',
+    vi: '[Mảnh giấy gửi phụ huynh] Về đến nhà, bạn thấy một lọn tóc của con mình đặt kèm tờ giấy nhắn từ toán côn đồ khu chợ: "Mang 40 Ahn đến hầm nhà máy xay trước nửa đêm, nếu muốn đón nó về lành lặn."',
     en: '[A Blood-Stained Note to the Parent] Returning home, you found a lock of your child’s hair beside an extortion note from local toughs: "Bring 40 Ahn to the grain mill cellar before midnight, if you want your whelp in one piece."',
     choices: [
       {
-        labelVi: 'Rút vũ khí xông thẳng vào sào huyệt tiêu diệt toàn bộ băng nhóm',
+        labelVi: 'Cầm vũ khí xông thẳng vào hầm nhà máy xay',
         labelEn: 'Storm the hideout blade drawn to purge the entire gang',
         outcomes: [
           {
             w: 65,
-            resultVi: 'Cơn thịnh nộ biến bạn thành cỗ máy đồ tể. Không một tên bắt cóc nào sống sót qua mười phút; bạn bế đứa con còn nguyên vẹn bước ra trong ánh lửa bập bùng.',
+            resultVi: 'Bạn phá cửa hầm và hạ từng tên canh gác trước khi chúng kịp tắt đèn. Chưa đầy mười phút sau, bạn bế đứa trẻ còn lành lặn bước ra ngoài ngõ.',
             resultEn: 'Paternal fury forged you into an unyielding butcher. No kidnapper survived ten minutes; you carried your unharmed child out into firelight.',
             effects: { health: -18, sanity: -10, rep: +30, heat: +20 },
             meritAdd: 20,
@@ -516,7 +516,7 @@ export const EXPANSION_STORY_EVENTS = [
         ]
       },
       {
-        labelVi: 'Giao 40 Ahn để đón con về',
+        labelVi: 'Đem tiền chuộc đến đón con về',
         labelEn: 'Pay 40 Ahn to bring your child home',
         costAhn: 40,
         resultVi: 'Toán côn đồ đếm đủ tiền rồi đẩy đứa trẻ qua cửa. Bạn ôm con, kiểm tra vết thương trước khi rời nhà máy.',
@@ -734,7 +734,7 @@ export const EXPANSION_STORY_EVENTS = [
     en: '[Wanderer from Beyond the Great Wall] A ragged drifter with a rucksack coated in ash-gray sand stopped at a cheap boardinghouse. He spoke of colossal monoliths buried in the Outskirts where pre-Calamity Wing relics sleep.',
     choices: [
       {
-        labelVi: 'Đem cho ông ta một bát cháo nóng để nghe kỹ về bản đồ phế tích',
+        labelVi: 'Mời ông ta bát cháo nóng để nghe kỹ về bản đồ phế tích',
         labelEn: 'Offer him hot porridge to hear details of the ruin maps',
         resultVi: 'Người lữ hành vẽ cho bạn vài ký hiệu nhận diện các vùng đất cấm ngoài tường thành. Trí tò mò và khao khát thám hiểm nhen nhóm trong bạn.',
         resultEn: 'The drifter sketched hazard markings used beyond the wall. Wonder and hunger for exploration stirred in your chest.',
@@ -939,7 +939,7 @@ export const EXPANSION_STORY_EVENTS = [
         ]
       },
       {
-        labelVi: 'Lịch sự khước từ vì Fixer chỉ rút vũ khí khi có hợp đồng trả tiền',
+        labelVi: 'Từ chối vì Fixer chỉ rút vũ khí khi có hợp đồng trả tiền',
         labelEn: 'Politely refuse, stating a Fixer draws steel only on the clock',
         resultVi: 'Người kiếm sĩ cười lớn tán thưởng tính thực tế của bạn, mời bạn một chầu rượu hảo hạng thay cho trận giao đấu.',
         resultEn: 'The duelist laughed admiringly at your pragmatism, buying a round of top-shelf spirit in lieu of the duel.',
@@ -1034,7 +1034,7 @@ export const EXPANSION_STORY_EVENTS = [
     en: '[Öufi Judicature Sanction] Öufi Association Section 3 summoned you to enforce summary execution against a rogue Fixer Office that breached contractual confidentiality with a Nest patron.',
     choices: [
       {
-        labelVi: 'Dựng kích hành quyết, thực thi bản án nghiêm minh theo điều khoản luật',
+        labelVi: 'Dựng kích hành quyết, thực thi bản án theo điều khoản luật',
         labelEn: 'Plant the execution halberd, carrying out the exact letter of the bond',
         resultVi: 'Văn phòng phản bội bị xóa sổ hoàn toàn. Trưởng chi nhánh Öufi đóng dấu mộc vàng xác nhận tư cách hành đạo liêm chính của bạn.',
         resultEn: 'The rogue firm was excised root and branch. The Öufi adjudicator affixed a golden seal validating your legal execution credentials.',
@@ -1043,7 +1043,7 @@ export const EXPANSION_STORY_EVENTS = [
         flagsAdd: ['oufi_contract_done', 'CertifiedExecutioner']
       },
       {
-        labelVi: 'Thu giữ sổ sách tài chính giao nộp, tha mạng cho các tập sự vô can',
+        labelVi: 'Thu giữ sổ sách nộp lên trên, tha mạng cho đám tập sự vô can',
         labelEn: 'Seize financial ledgers while sparing the innocent apprentice clerks',
         resultVi: 'Öufi chấp thuận hồ sơ nhưng ghi chú về sự khoan dung của bạn. Bạn giữ được sự thanh thản trong tâm trí.',
         resultEn: 'Öufi accepted the evidence while filing a note on your restraint. Your conscience remained clean.',
@@ -1396,7 +1396,7 @@ export const EXPANSION_STORY_EVENTS = [
     en: '[Internal Affairs Inquest] Internal Security summoned you for interrogation after uncovering that your cubicle peer secretly copied patent schematics for a rival Wing.',
     choices: [
       {
-        labelVi: 'Cung cấp toàn bộ nhật ký ra vào và bằng chứng vạch trần kẻ gián điệp',
+        labelVi: 'Nộp nhật ký ra vào và bằng chứng vạch trần kẻ gián điệp',
         labelEn: 'Turn over badge logs and files unmasking the corporate spy',
         resultVi: 'Kẻ phản bội bị giải đi ngay lập tức. Ban điều hành đánh giá cao tính trung thực và ban thưởng cho bạn một khoản tiền lớn.',
         resultEn: 'The traitor was escorted off-site in zip-ties. Directorate lauded your integrity, depositing a substantial bonus into your account.',
@@ -1483,7 +1483,7 @@ export const EXPANSION_STORY_EVENTS = [
     en: '[District 23 Gastronomic Soiree Ticket] You received a gilt-edged invitation to an elite midnight dining salon in District 23. The opening course was rumored to be prepared from the liver of a renowned martial artist.',
     choices: [
       {
-        labelVi: 'Dũng cảm tham dự và nếm thử món ăn kỳ dị để mở rộng quan hệ',
+        labelVi: 'Tham dự tiệc, nếm thử món ăn kỳ dị để mở rộng quan hệ',
         labelEn: 'Attend and taste the arcane delicacy to expand connections',
         resultVi: 'Hương vị bùng nổ kỳ dị làm đảo lộn vị giác nhưng giúp bạn làm quen với các quý tộc quyền lực và những tay buôn sành sỏi.',
         resultEn: 'The bizarre burst of flavor warped your palate but ingratiated you with wealthy patrons and gourmet syndicates.',
@@ -1491,7 +1491,7 @@ export const EXPANSION_STORY_EVENTS = [
         flagsAdd: ['d23_banquet_attended', 'GourmetInitiate']
       },
       {
-        labelVi: 'Bán tấm vé lấy 30 Ahn cho tay nhà giàu sành ăn ở Backstreets',
+        labelVi: 'Bán tấm vé lấy 30 Ahn cho tay nhà giàu ở Backstreets',
         labelEn: 'Sell the golden ticket to a wealthy Backstreet foodie for 30 Ahn',
         resultVi: 'Gã nhà giàu mừng rỡ trả đủ 30 Ahn tiền tươi. Bạn dùng số tiền đó mua một bữa ăn ấm cúng bình dị và an toàn.',
         resultEn: 'The buyer paid 30 Ahn in fresh banknotes. You spent the proceeds on a warm, safe, ordinary stew dinner.',
@@ -1537,7 +1537,7 @@ export const EXPANSION_STORY_EVENTS = [
     en: '[District 9 Harmonic Frenzy] In a District 9 square, an itinerant violinist played an eerie resonant cadenza, driving the listening crowd into manic waltzes until boots tore and soles bled.',
     choices: [
       {
-        labelVi: 'Dùng vải nhét chặt tai, xông vào đập vỡ cây vĩ cầm để cứu đám đông',
+        labelVi: 'Nhét vải bịt tai, xông vào đập vỡ cây vĩ cầm cứu đám đông',
         labelEn: 'Plug ears with cloth and rush forward to shatter the fiddle',
         resultVi: 'Cây đàn vỡ đôi, bản nhạc dứt bặt. Đám đông ngã quỵ thở dốc; nhiều người cảm kích trao tặng bạn đồ vật có giá trị.',
         resultEn: 'The instrument splintered and silence returned. The crowd collapsed gasping; several gifted you valuables in tearful relief.',
@@ -1636,16 +1636,16 @@ export const EXPANSION_STORY_EVENTS = [
     need: { jobs: ['Distortion'] },
     forbids: ['dist_hunt_encirclement_done'],
     tags: ['combat', 'distortion'],
-    vi: '[Vòng Vây Của Các Fixer Săn Lùng] Ba đội Fixer hạng cao bao vây con hẻm cụt nơi bạn đang ẩn náu. Những sợi xích phong tỏa và đạn chống méo mó không gian chĩa thẳng vào cơ thể bạn.',
+    vi: '[Vòng vây của đội săn lùng] Ba đội Fixer hạng cao chặn kín con hẻm cụt nơi bạn đang trú. Xích khóa không gian và đạn khắc chế Distortion đã lên nòng.',
     en: '[Hunters’ Cordone Encirclement] Three senior Fixer strike teams sealed the dead end where you nested. Suppression chains and anti-distortion munitions leveled at your flesh.',
     choices: [
       {
-        labelVi: 'Bùng nổ toàn bộ sức mạnh quái dị, xé toạc vòng vây trong biển máu',
+        labelVi: 'Phá tung vòng vây bằng toàn bộ sức mạnh dị dạng',
         labelEn: 'Unleash full monstrous fury, tearing through the cordon in gore',
         outcomes: [
           {
             w: 60,
-            resultVi: 'Móng vuốt và gai xương của bạn biến những kẻ săn mồi thành con mồi. Đội Fixer tan vỡ hoàn toàn; bạn ngạo nghễ bước đi trên đống đổ nát.',
+            resultVi: 'Móng vuốt và gai xương giật đứt xích khóa ngay loạt đạn đầu. Đội săn lùng vỡ đội hình tháo chạy, để lại con hẻm ngổn ngang vũ khí gãy.',
             resultEn: 'Claws and bone spikes turned predators into shredded quarry. The teams scattered; you strode aloft over the ruin.',
             effects: { health: -20, sanity: -15, resonance: +35, rep: +30, heat: +40 },
             meritAdd: 35,
@@ -1662,9 +1662,9 @@ export const EXPANSION_STORY_EVENTS = [
         ]
       },
       {
-        labelVi: 'Biến đổi hình dạng lẩn vào bóng tối cống ngầm thoát thân êm thắm',
+        labelVi: 'Hóa lỏng cơ thể, trườn qua khe cống ngầm thoát đi',
         labelEn: 'Liquefy form into sewer murk to dissolve away undetected',
-        resultVi: 'Cơ thể bạn tan chảy thành chất lỏng đen trượt qua các khe nắp cống. Đội Fixer chỉ tìm thấy một lớp da lột trống rỗng.',
+        resultVi: 'Cơ thể bạn rã thành dịch đen chảy lọt qua song chắn cống. Đội Fixer chỉ thu được một mảng vỏ xác khô.',
         resultEn: 'Your mass dissolved into black ichor, sliding through drain grates. The hunters uncovered only a hollow molted husk.',
         effects: { health: -10, sanity: +5, heat: -10 },
         flagsAdd: ['dist_hunt_encirclement_done']
@@ -1682,16 +1682,16 @@ export const EXPANSION_CONSEQUENCE_EVENTS = [
     major: true,
     isCausalCallback: true,
     tags: ['combat', 'nemesis'],
-    vi: '[Phục Kích Của Kẻ Phản Bội] Trong đêm tối, {nemesis} dẫn toán sát thủ bịt mặt chặn đứng đường về của bạn. Ánh mắt kẻ từng kề vai tác chiến rực lên tia hận thù điên dại: "Hôm nay, một trong hai ta phải nằm lại ở con ngõ này."',
+    vi: '[Phục kích của kẻ phản bội] Đêm xuống, {nemesis} dẫn toán đâm thuê bịt mặt chặn đường về của bạn. Kẻ từng đi cùng đội nhìn bạn: "Đêm nay chỉ một trong hai đứa mình bước ra khỏi ngõ này."',
     en: '[The Betrayer’s Ambush] In pitch darkness, {nemesis} and masked cutthroats barred your way home. Eyes that once watched your flank flared with frantic hatred: "Tonight, only one of us leaves this alley breathing."',
     choices: [
       {
-        labelVi: 'Vung vũ khí quyết chiến sinh tử, kết liễu kẻ phản bội một lần và mãi mãi',
+        labelVi: 'Rút vũ khí đánh dứt điểm kẻ phản bội',
         labelEn: 'Draw steel for decisive reckoning, putting down the traitor once and for all',
         outcomes: [
           {
             w: 65,
-            resultVi: 'Chiêu thức của bạn áp đảo hoàn toàn toán sát thủ. Lưỡi kiếm đâm xuyên tim {nemesis}; mối thù phản bội đã chính thức được khép lại bằng máu.',
+            resultVi: 'Bạn vượt qua toán đánh thuê và đâm gục {nemesis} ngay dưới chân cột đèn. Chuyện cũ giữa hai người khép lại tại đó.',
             resultEn: 'Your technique decisively outmatched the ambuscade. Steel ran through {nemesis}’s heart; the treason was settled in blood.',
             effects: { health: -20, sanity: +20, rep: +25 },
             meritAdd: 30,
@@ -1700,7 +1700,7 @@ export const EXPANSION_CONSEQUENCE_EVENTS = [
           },
           {
             w: 35,
-            resultVi: '{nemesis} điên cuồng chống trả, để lại một vết chém sâu vào vai bạn trước khi bị bạn đánh ngã xuống cống ngầm.',
+            resultVi: '{nemesis} liều mạng chém rách bả vai bạn trước khi bị bạn đạp ngã xuống rãnh cống ngầm.',
             resultEn: '{nemesis} flailed with frantic spite, carving a deep gash into your shoulder before tumbling into the drain.',
             effects: { health: -38, sanity: -10, rep: +15 },
             scarsAdd: ['Vết chém từ kẻ phản bội'],
@@ -1709,9 +1709,9 @@ export const EXPANSION_CONSEQUENCE_EVENTS = [
         ]
       },
       {
-        labelVi: 'Kích hoạt mìn khói lựu đạn, rút lui an toàn qua đường cống',
+        labelVi: 'Ném lựu đạn khói, rút qua đường cống',
         labelEn: 'Deploy smoke charges and extract through sewer bypasses',
-        resultVi: 'Màn khói mù mịt giúp bạn thoát khỏi vòng vây của bầy sát thủ. Bạn bảo toàn được mạng sống nhưng mối nguy hiểm vẫn còn lẩn khuất.',
+        resultVi: 'Khói mù che khuất tầm nhìn của toán sát thủ, đủ cho bạn lách xuống đường cống thoát hiểm.',
         resultEn: 'Dense smoke broke the kill box. You preserved life and limb, though the shadow of treason still stalks the quarter.',
         effects: { health: -10, sanity: -8, wealth: -15 }
       }
@@ -1722,21 +1722,21 @@ export const EXPANSION_CONSEQUENCE_EVENTS = [
     major: true,
     isCausalCallback: true,
     tags: ['combat'],
-    vi: '[Cuộc Tái Ngộ Đẫm Máu] Đối thủ truyền kiếp năm xưa tìm đến bạn với vũ khí Workshop được tôi luyện sắc lẹm. "Món nợ năm đó, đã đến lúc chúng ta tính cả vốn lẫn lãi."',
+    vi: '[Cuộc tái ngộ với đối thủ cũ] Đối thủ năm xưa tìm gặp bạn với thanh vũ khí Workshop vừa rèn lại. "Món nợ lần trước, hôm nay tính cho xong."',
     en: '[The Rival’s Reckoning] Your longtime rival found you with newly tempered Workshop steel. "That old debt. Time to collect with interest."',
     choices: [
       {
-        labelVi: 'Nghênh chiến sòng phẳng, chứng minh sự trưởng thành của bạn',
+        labelVi: 'Nhận lời đấu tay đôi sòng phẳng',
         labelEn: 'Engage squarely, proving how far your craft has grown',
-        resultVi: 'Sau mười hiệp giằng co, bạn đánh gãy vũ khí đối thủ. Họ cúi đầu thừa nhận thất bại và thề sẽ không bao giờ quấy rầy bạn nữa.',
+        resultVi: 'Sau mười hiệp giằng co, bạn đánh gãy lưỡi vũ khí của đối phương. Họ thu tay, cúi đầu nhận thua rồi rời khỏi quận.',
         resultEn: 'After ten blistering exchanges, you snapped their blade. They bowed in concession, swearing never to cross your path again.',
         effects: { health: -16, sanity: +18, rep: +25 },
         meritAdd: 25
       },
       {
-        labelVi: 'Dùng mưu bẫy đối thủ vào ngõ cụt rồi tước vũ khí',
+        labelVi: 'Dụ đối thủ vào ngõ cụt có căng sẵn lưới thép',
         labelEn: 'Lure them into a cul-de-sac trap to disarm them cold',
-        resultVi: 'Bẫy lưới thép giam chặt đối thủ. Bạn tước vũ khí của họ và lấy đi một khoản tiền chuộc danh dự.',
+        resultVi: 'Lưới thép sập xuống giữ chặt hai tay đối thủ. Bạn lấy vũ khí cùng túi tiền chuộc của họ rồi bỏ đi.',
         resultEn: 'A wire snare pinioned your rival. You stripped their arms and claimed an honorable ransom pouch.',
         effects: { wealth: +25, rep: +15, sanity: +8 }
       }
@@ -1747,13 +1747,13 @@ export const EXPANSION_CONSEQUENCE_EVENTS = [
     major: true,
     isCausalCallback: true,
     tags: ['loyalty', 'camaraderie'],
-    vi: '[Sự Chi Viện Của Người Huynh Đệ] Khi bạn bị một toán cướp dồn vào chân tường, người huynh đệ kết nghĩa năm xưa bất ngờ xuất hiện với vũ khí rực lửa, kề vai tác chiến cùng bạn mở đường máu.',
+    vi: '[Người kết nghĩa tiếp ứng] Khi bạn bị toán cướp dồn vào cuối hẻm, người anh em kết nghĩa năm xưa bất ngờ xuất hiện từ đầu ngõ, cùng bạn đánh mở đường ra.',
     en: '[Sworn Comrade’s Relief] Cornered by a roving kill team, your sworn comrade broke through the cordon blade ablaze, locking shields to carve a path out.',
     choices: [
       {
-        labelVi: 'Cùng người anh em quét sạch toán cướp trong ngõ hẹp',
+        labelVi: 'Phối hợp quét sạch toán cướp trong ngõ hẹp',
         labelEn: 'Sweep the alley clear alongside your blood brother',
-        resultVi: 'Hai lưỡi kiếm phối hợp nhịp nhàng như một cỗ máy hoàn hảo. Toán cướp tan tác; tình huynh đệ giữa The City càng thêm sâu sắc.',
+        resultVi: 'Hai người giữ sườn cho nhau như hồi còn đi chung đội. Toán cướp bỏ chạy sau vài phút giao chiến.',
         resultEn: 'Two blades moved like clockwork machinery. The raiders broke; brotherhood in this cruel City grew unshakeable.',
         effects: { health: -8, sanity: +20, rep: +22, wealth: +15 },
         meritAdd: 20
@@ -1766,13 +1766,13 @@ export const EXPANSION_CONSEQUENCE_EVENTS = [
     isCausalCallback: true,
     need: { npc: 'mentor' },
     tags: ['combat'],
-    vi: '[Lời Thách Đấu Cuối Cùng Của Sư Phụ] Người thầy năm xưa gửi thư hẹn bạn tại đỉnh tháp bỏ hoang: "Cây đại thụ muốn vươn cao phải đón gió lớn. Hãy cho ta thấy con đã đi xa đến đâu."',
+    vi: '[Lời hẹn đấu của Sư Phụ] Người thầy cũ gửi thư hẹn bạn lên sân thượng tòa tháp bỏ hoang: "Cho ta xem mấy năm qua con giữ được bao nhiêu phần nghề."',
     en: '[The Mentor’s Final Summons] Your old teacher summoned you to an abandoned spire: "A tall tree must weather gale winds. Show me how far your footing reaches."',
     choices: [
       {
-        labelVi: 'Dốc hết sở học giao đấu một trận long trời lở đất',
+        labelVi: 'Đánh hết những gì đã học',
         labelEn: 'Unleash every discipline in a duel that shakes the rafters',
-        resultVi: 'Đường kiếm của bạn chạm vào cổ áo sư phụ. Ông mỉm cười mãn nguyện trao lại toàn bộ ấn tín môn phái cho bạn.',
+        resultVi: 'Mũi vũ khí của bạn dừng sát cổ áo sư phụ. Ông gật đầu, tháo ấn tín cũ của văn phòng đặt vào tay bạn.',
         resultEn: 'Your edge rested against their collar. With a satisfied nod, they bequeathed their lineage seal to you.',
         effects: { health: -18, sanity: +25, rep: +30 },
         meritAdd: 35,

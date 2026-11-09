@@ -966,7 +966,7 @@ export function determineSuccessorType(char) {
     type: 'scavenger',
     titleVi: 'Kẻ nhặt tàn dư Backstreets',
     titleEn: 'Backstreet Scavenger Inheritor',
-    introVi: `Bạn là một kẻ sống sót vô danh ở Backstreets, tình cờ đào bới được chiếc ba lô cũ và di vật vấy máu của ${char.name} từ đống gạch vụn trước giờ Sweeper dọn sạch.`,
+    introVi: `Bạn là kẻ sống sót vô danh nơi Backstreets, tình cờ đào bới được chiếc ba lô cũ và di vật vấy máu của ${char.name} từ đống gạch vụn trước giờ Sweeper dọn sạch.`,
     introEn: `You are an unnamed Backstreet survivor who scavenged the battered pack and bloodstained relic of ${char.name} from the rubble before the Sweepers arrived.`
   };
 }

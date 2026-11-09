@@ -397,7 +397,7 @@ export const FIXER_PATH_EVENTS = [
     en: '[Zwei Section 5 Convoy Escort] Zwei Section 5 contracts you to reinforce an armed convoy hauling K Corp regenerative ampoules through contested syndicate turf. Gunpowder stings the air.',
     choices: [
       {
-        labelVi: 'Cầm khiên phòng hộ đứng ở vị trí mũi xe, hứng trọn đợt tập kích đầu tiên',
+        labelVi: 'Cầm khiên đứng mũi xe, hứng trọn đợt tập kích đầu',
         labelEn: 'Stand vanguard with kinetic shield, taking the initial volley',
         resultVi: 'Đạn bắn xối xả vào khiên của bạn tóe lửa. Bạn đứng vững như bàn thạch cho đến khi pháo Zwei phản kích quét sạch kẻ phục kích. Bạn được Zwei tặng một huy hiệu danh dự.',
         resultEn: 'Rounds sparked furiously against your ward. Unshaken, you anchored the line until Zwei artillery neutralized the attackers. Zwei awarded you an honorary cross.',
@@ -467,7 +467,7 @@ export const FIXER_PATH_EVENTS = [
         scarsAdd: ['Ánh mắt vị bác sĩ đêm mưa']
       },
       {
-        labelVi: 'Cảnh báo cho bác sĩ trốn sang Outskirts, ngụy tạo một cái xác giả giao nộp',
+        labelVi: 'Báo cho bác sĩ trốn sang Outskirts, dựng xác giả giao nộp',
         labelEn: 'Warn the medic to flee to the Outskirts, faking a corpse for Shi',
         resultVi: 'Bạn lấy xác tên cướp chết trôi dựng hiện trường giả và đưa vị bác sĩ vượt tường an toàn. Shi chấp nhận hồ sơ, còn lòng bạn giữ lại được một chút ánh sáng nhân tính hiếm hoi.',
         resultEn: 'Using a drowned bandit’s corpse, you staged the kill and guided the doctor beyond the walls. Shi closed the file; you preserved a fragile ember of humanity.',
@@ -497,7 +497,7 @@ export const FIXER_PATH_EVENTS = [
         flagsAdd: ['fixer_g2_conspiracy_done', 'WhistleblowerHero']
       },
       {
-        labelVi: 'Chấp nhận nhận một thỏi vàng thời gian của T Corp để chôn vùi hồ sơ',
+        labelVi: 'Nhận thỏi vàng thời gian của T Corp để chôn vùi hồ sơ',
         labelEn: 'Accept a dense temporal bullion bar from T Corp to burn the records',
         resultVi: 'Bạn châm lửa đốt tập tài liệu trước mặt viên giám đốc. Đổi lại, tài khoản của bạn nhận một số Ahn khổng lồ và quyền tiếp cận phòng thí nghiệm thời gian cao cấp của T Corp.',
         resultEn: 'You burned the dossier before the executive. In exchange, an astronomical sum of Ahn and classified T Corp chronotank privileges were wired to your name.',
@@ -526,7 +526,7 @@ export const FIXER_PATH_EVENTS = [
     en: '[Seven Section 6 Investigative Trial · Grade 8] Seven Association Section 6 summons you: An illicit workshop is circulating counterfeit Fixer licenses. Seven requires an unfamiliar rookie to infiltrate the den and extract evidence for Grade 8 certification.',
     choices: [
       {
-        labelVi: 'Phân tích sơ đồ dấu vân tay và sổ sách kế toán để bắt trọn ổ',
+        labelVi: 'Phân tích dấu vân tay và sổ kế toán để bắt trọn ổ',
         labelEn: 'Analyze ledger fingerprints and accounting anomalies to bust the ring',
         resultVi: 'Khả năng quan sát sắc bén của bạn giúp Seven tóm gọn cả đường dây làm bằng giả mà không tốn một viên đạn. Viên điều tra viên Seven đóng dấu phê chuẩn: "Fixer Grade 8 xuất sắc."',
         resultEn: 'Your keen deduction allowed Seven to dismantle the counterfeit syndicate without a single shot fired. The proctor stamped: "Exemplary Grade 8 Fixer."',
@@ -776,7 +776,7 @@ export const FIXER_PATH_EVENTS = [
         effects: { health: -8, rep: +26, wealth: +65 }
       },
       {
-        labelVi: 'Tiếp thu tri thức từ các cuộn sách cổ để củng cố sức mạnh tâm thức',
+        labelVi: 'Đọc các cuộn sách cổ để giữ vững tâm trí cho cả đoàn',
         labelEn: 'Absorb ancient philosophies from the scrolls, bolstering psychic fortitude',
         resultVi: 'Ánh sáng tri thức giúp tâm trí bạn được khai mở và soi sáng. Bạn hộ tống đoàn Dieci trở về an toàn tuyệt đối và nhận bằng Grade 5.',
         resultEn: 'Ancient wisdom illuminated your psyche. You guided the scholars back unharmed, receiving your Grade 5 license.',
@@ -926,7 +926,7 @@ export const FIXER_PATH_EVENTS = [
     en: '[W Corp WARP Train Containment Protocol · Grade 3] A WARP Train arrived early with a fractured First-Class carriage. W Corp recruits elite Grade 3 candidates to purge immortal flesh amalgams before the platform doors unlock.',
     choices: [
       {
-        labelVi: 'Vung vũ khí phân giải cắt đứt các mối nối không gian của khối hợp thể',
+        labelVi: 'Dùng vũ khí phân giải cắt đứt các khối thịt hợp thể',
         labelEn: 'Sever the spatial flesh joints of the amalgams with dimensional cleavers',
         resultVi: 'Thịt nát và không gian méo mó được dọn sạch không còn một dấu vết. W Corp trả khoản thù lao kếch xù và Hana chứng nhận bạn là Fixer Grade 3 danh giá.',
         resultEn: 'Twisted flesh and warped spacetime were sanitized without trace. W Corp paid a king’s ransom and Hana certified you as Grade 3.',
@@ -936,7 +936,7 @@ export const FIXER_PATH_EVENTS = [
         effects: { health: -12, sanity: -6, rep: +38, wealth: +125 }
       },
       {
-        labelVi: 'Kích hoạt thiết bị tua lại ký ức T Corp để ổn định ý thức nạn nhân',
+        labelVi: 'Chạy thiết bị tua ký ức T Corp để ổn định hành khách',
         labelEn: 'Deploy T Corp mnemonic rewinding rigs to stabilize passenger psyches',
         resultVi: 'Cơn ác mộng 2.000 năm bị xóa sạch khỏi tâm trí những hành khách sống sót. Bạn hoàn thành hợp đồng hoàn hảo và được phong Fixer Grade 3.',
         resultEn: 'The 2,000-year nightmare was wiped clean from passenger minds. You fulfilled the contract flawlessly, promoted to Grade 3.',
@@ -1176,7 +1176,7 @@ export const FIXER_PATH_EVENTS = [
         effects: { rep: +24, wealth: +45, sanity: +8, resonance: +12 }
       },
       {
-        labelVi: 'Đảm nhiệm vai trò Trọng tài Giám định, đảm bảo trận đấu tuân thủ nghiêm ngặt quy tắc',
+        labelVi: 'Nhận vai trọng tài giám định, giữ trận đấu đúng luật',
         labelEn: 'Act as the Adjudicating Second, enforcing strict dueling treaties',
         resultVi: 'Sự am hiểu luật lệ và con mắt quan sát sắc bén của bạn giúp hóa giải một âm mưu dùng độc gian lận. Cả hai gia tộc đều kính nể và tặng bạn huy hiệu danh dự.',
         resultEn: 'Your sharp gaze unmasked a covert poisoning attempt before blood was drawn. Both factions commended your impartiality and presented an honorary crest.',
@@ -1196,7 +1196,7 @@ export const FIXER_PATH_EVENTS = [
     en: '[Oufi Association · Backstreet Blood Oath Inquest] The Oufi Association, custodians of binding treaties and lethal contracts in District 19, dispatches you to verify a pact between a major workshop and a syndicate family. Any breach triggers absolute execution.',
     choices: [
       {
-        labelVi: 'Dùng uy tín và đao pháp răn đe, buộc cả hai bên ký cam kết hòa bình vĩnh viễn',
+        labelVi: 'Dùng uy tín và vũ lực buộc hai bên ký cam kết hòa bình',
         labelEn: 'Use martial leverage to force both parties into a binding non-aggression seal',
         resultVi: 'Trước khí thế áp đảo của bạn, cả ông chủ xưởng rèn lẫn đại diện syndicate đều đặt tay lên dấu mộc Oufi. Khế ước hoàn tất êm thấm, đem lại phần thưởng hoa hồng hậu hĩnh.',
         resultEn: 'Intimidated by your composure, both smith master and syndicate captain pressed blood upon the Oufi seal. Peace held, netting you an opulent commission.',
@@ -1204,7 +1204,7 @@ export const FIXER_PATH_EVENTS = [
         effects: { rep: +22, wealth: +40, network: +18 }
       },
       {
-        labelVi: 'Vạch trần điều khoản ngầm mờ ám có hại cho xưởng rèn, bảo vệ người lao động',
+        labelVi: 'Chỉ ra điều khoản ngầm bất lợi cho xưởng rèn',
         labelEn: 'Expose the syndicate’s predatory loophole, shielding the craftsmen',
         resultVi: 'Bạn xé toạc mưu đồ lừa đảo của đám côn đồ ngay tại chỗ. Xưởng rèn biết ơn bạn vô cùng, tặng bạn những bộ phận giáp chống đạn tốt nhất.',
         resultEn: 'You ripped their fraudulent clauses to shreds on the spot. Indebted, the forge fitted your gear with their finest kinetic composite plates.',
@@ -1224,7 +1224,7 @@ export const FIXER_PATH_EVENTS = [
     en: '[Dieci Association · Sunken Archive Excavation] Heavy-tome scholars from Dieci Association Section 4 hire you to delve into a pre-Smoke War subterranean vault in District 4. The dense knowledge buried here exerts staggering mental and physical gravity.',
     choices: [
       {
-        labelVi: 'Hộ tống các học sĩ Dieci qua bãi sụp đổ, cùng lĩnh hội tri thức cổ xưa',
+        labelVi: 'Hộ tống học giả Dieci qua khu sập đổ, cùng đọc tài liệu cổ',
         labelEn: 'Escort Dieci scholars across subterranean cave-ins, assimilating ancient lore',
         resultVi: 'Đỡ những khối đá đổ và giải mã các cuộn giấy da cổ, bạn mở rộng tầm hiểu biết về các hiện tượng dị thường của The City. Dieci trao thưởng cho bạn một văn bằng nghiên cứu cùng số Ahn hậu hĩnh.',
         resultEn: 'Holding off debris and deciphering parchment, your comprehension of City singularities broadened immensely. Dieci rewarded you with certified scholar honors and generous coin.',
@@ -1232,7 +1232,7 @@ export const FIXER_PATH_EVENTS = [
         effects: { sanity: +22, rep: +20, wealth: +38, resonance: +16 }
       },
       {
-        labelVi: 'Thu thập riêng các cuộn bản đồ hầm ngục quý giá để bán cho Seven Association',
+        labelVi: 'Thu riêng các cuộn bản đồ hầm ngầm để bán cho Seven Association',
         labelEn: 'Pocket rare subterranean survey maps to broker with Seven Association',
         resultVi: 'Các thám tử Seven trả một số tiền lớn cho các sơ đồ bí mật này, giúp túi tiền của bạn dày lên trông thấy.',
         resultEn: 'Seven intelligence brokers paid handsomely for the classified blueprints, substantially padding your coffers.',
@@ -1252,7 +1252,7 @@ export const FIXER_PATH_EVENTS = [
     en: '[Molar Boatworks · Toxic Canal Salvage] Molar Boatworks takes on a salvage contract for a sunken barge in District 21’s foul industrial canal. Caustic sludge and mutant aquatic fauna lurk beneath the opaque surface.',
     choices: [
       {
-        labelVi: 'Mặc đồ lặn áp lực, cầm móc sắt nhảy xuống đáy kênh chiến đấu mở đường',
+        labelVi: 'Mặc đồ lặn áp lực, cầm móc sắt xuống đáy kênh mở đường',
         labelEn: 'Don pressurized diving gear and leap into the sludge, cleaving mutants',
         resultVi: 'Lưỡi đao của bạn chém tan tác bầy thủy quái đột biến trong làn nước đục ngầu, đưa dây cáp tời vào vị trí an toàn. Thợ thuyền Molar vỗ vai bạn khen ngợi hết lời và chia phần chiến lợi phẩm trục vớt.',
         resultEn: 'Your blade carved through toxic beasts in pitch darkness, securing the winch cables. Molar shipwrights cheered your grit and split a rich cut of the salvaged cargo.',
@@ -1280,7 +1280,7 @@ export const FIXER_PATH_EVENTS = [
     en: '[Devzat Association · Armored Rail Escort] The Devzat Association, masters of heavy arbalests and kinetic firearms, hires you to escort an armored locomotive hauling hyper-refined fuel across syndicate-besieged Backstreets.',
     choices: [
       {
-        labelVi: 'Leo lên nóc toa tàu, dùng hỏa lực và vũ khí cận chiến đẩy lùi từng đợt tập kích',
+        labelVi: 'Leo lên nóc toa tàu, đánh bật từng đợt tập kích',
         labelEn: 'Climb atop the railcars, repelling boarding skirmishers hand-to-hand',
         resultVi: 'Tiếng súng nổ rền trời hòa cùng tia lửa cơ khí. Bạn quét sạch toán cướp nhảy tàu, giữ đoàn tàu lao vút an toàn về ga đích. Devzat tặng bạn một khẩu súng hỏa mai gia cố thượng hạng.',
         resultEn: 'Deafening gunfire met sparking blades. You threw every raider off the rushing carriages, pulling into the terminal in triumph. Devzat rewarded you with an arbalest sidearm.',
@@ -1288,7 +1288,7 @@ export const FIXER_PATH_EVENTS = [
         effects: { health: -15, rep: +28, wealth: +55, resonance: +14 }
       },
       {
-        labelVi: 'Cố thủ trong toa máy điều phối, sửa chữa kịp thời các đoạn phanh bị bắn hỏng',
+        labelVi: 'Giữ toa máy, sửa ngay các đoạn phanh bị bắn hỏng',
         labelEn: 'Hold the engine cabin, emergency-patching sabotaged brake conduits',
         resultVi: 'Sự nhanh trí cơ học của bạn ngăn chặn một vụ trật bánh thảm khốc. Đoàn tàu cập bến an toàn và công ty đường sắt trả thêm tiền thưởng cho bạn.',
         resultEn: 'Your rapid kinematic repairs averted a catastrophic derailment. The rail authority awarded a substantial safety bonus.',
@@ -1308,7 +1308,7 @@ export const FIXER_PATH_EVENTS = [
     en: '[Chartering an Independent Fixer Office] Amassing hard-won reputation and Ahn, you stand ready to hang your own brass office plaque upon a bustling district boulevard. An independent Office unlocks lucrative direct contracts and apprentices, but answers directly to Hana scrutiny.',
     choices: [
       {
-        labelVi: 'Chi 35 Ahn thuê mặt bằng và xin giấy phép Hana thành lập Văn Phòng Độc Lập',
+        labelVi: 'Thuê mặt bằng và xin giấy phép Hana mở Văn Phòng Độc Lập',
         labelEn: 'Spend 35 Ahn to lease premises and charter your independent Office from Hana',
         resultVi: 'Tấm biển đồng khắc tên bạn sáng lấp lánh dưới ánh đèn neon. Các thân chủ nườm nượp tìm đến đặt hợp đồng, danh tiếng nghề nghiệp của bạn bước lên một tầm cao mới.',
         resultEn: 'The polished brass plaque bearing your name gleamed under neon lights. High-paying clients flooded your parlor; your career prestige reached unprecedented heights.',
@@ -1338,7 +1338,7 @@ export const FIXER_PATH_EVENTS = [
     en: '[The Client’s Venomous Ambush] Having retrieved a classified lockbox, your affluent client refuses payment, dispatching a hit squad of masked mercenaries to silence you in an abandoned warehouse.',
     choices: [
       {
-        labelVi: 'Tung toàn lực hạ gục toàn bộ toán sát thủ, truy lùng kẻ phản bội bắt bồi thường gấp ba',
+        labelVi: 'Hạ toàn bộ toán sát thủ, buộc thân chủ phản bội đền gấp ba',
         labelEn: 'Decimate the hit squad and hunt down the traitorous client for triple recompense',
         resultVi: 'Không một tên sát thủ nào còn đứng vững. Bạn đạp tung cửa biệt thự của tên thân chủ gian ác, kề đao vào cổ buộc hắn giao nộp toàn bộ két sắt Ahn và van xin tha mạng.',
         resultEn: 'Not a single assassin remained upright. Kicking open the client’s manor doors, your blade at his throat extracted the entire vault in triple damages.',
@@ -1347,7 +1347,7 @@ export const FIXER_PATH_EVENTS = [
         later: [{ id: 'csq_fixer_false_bounty', years: 3, reasonVi: "Thân chủ bị bạn bắt trả gấp ba vẫn còn tiền và còn nhớ tên bạn", reasonEn: "The client you made pay triple still has money and still remembers your name" }]
       },
       {
-        labelVi: 'Nộp vali cho Hiệp hội Seven, công khai bằng chứng phạm tội của hắn lên báo chí',
+        labelVi: 'Nộp vali cho Seven Association, công khai bằng chứng lên báo',
         labelEn: 'Turn the lockbox to Seven Association, broadcasting his crimes across public presses',
         resultVi: 'Tên thân chủ bị cảnh sát Zwei và thanh tra thuế gông cổ ngay trong đêm. Bạn nhận tiền thưởng truy nã hợp pháp và được người dân ca tụng vì sự liêm chính.',
         resultEn: 'Zwei enforcers arrested the patron before dawn. You collected a certified bounty and public acclaim for righteous integrity.',

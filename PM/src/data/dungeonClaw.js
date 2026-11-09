@@ -77,7 +77,7 @@ export const CLAW_DUNGEON = {
     },
     {
       stageIndex: 2,
-      nameVi: 'Ống R: cái giá của một nhịp chậm',
+      nameVi: 'Ống R: cái giá cho nhịp chậm',
       nameEn: 'R serum: the cost of one slow beat',
       descVi: 'Ống R vỡ niêm. Claw tăng tốc; ba dấu chân xuất hiện trước khi bạn nghe một bước. Bạn không thể thắng cuộc đua này. Bạn chỉ có thể buộc hắn dừng.',
       descEn: 'The R vial breaks its seal. The Claw accelerates; three footprints appear before you hear one step. You cannot win this race. You can only force him to stop.',

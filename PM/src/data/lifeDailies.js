@@ -738,7 +738,7 @@ export const LIFE_DAILIES = [
     'a_any_library_rumor',
     ADULT,
     {},
-    '[Lời đồn về Thư Viện] Dân tình kháo nhau về tòa Thư Viện bí ẩn sừng sững mọc lên chỉ sau một đêm ở District 23. Người ta rỉ tai nhau rằng bất kỳ kẻ nào nhận được bức thư mời màu đen của Thư Viện ấy đều sẽ một đi không bao giờ trở lại.',
+    '[Lời đồn về Thư Viện] Dân tình kháo nhau về tòa Thư Viện bí ẩn sừng sững mọc lên sau đúng một đêm ngay giữa District 23. Người ta rỉ tai nhau rằng bất kỳ kẻ nào nhận được bức thư mời màu đen của Thư Viện ấy đều sẽ đi mãi không về.',
     '[Rumors of the Library] Whispers spread like wildfire regarding a monolithic Library that materialized overnight in District 23. Word was that anyone who received its black invitation letter walked through its doors and never returned to the living.',
     { resonance: 2, sanity: -1 }
   ),

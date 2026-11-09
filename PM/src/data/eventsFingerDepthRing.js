@@ -122,7 +122,7 @@ export const RING_DEPTH = [
     ], 9),
 
   mission('ring_the_museum_of_one', [3, 3],
-    '[Bảo tàng của một người] Nhà sưu tầm tặng Ring trọn bộ sưu tập, kèm một điều kiện: Grand Curator phải đích thân sống cạnh nó một năm. Căn nhà của họ nằm ở ngoại ô, và những người hàng xóm không nói chuyện với ai.',
+    '[Bảo tàng riêng một người] Nhà sưu tầm tặng Ring trọn bộ sưu tập kèm điều kiện duy nhất: Grand Curator phải đích thân sống cạnh nó suốt cả năm. Căn nhà của họ nằm ngoài ngoại ô, những người hàng xóm chẳng nói chuyện với ai.',
     '[A museum of one] A collector bequeaths their entire collection to the Ring on one condition: the Grand Curator must live beside it for a year in person. The house is in the suburbs, and the neighbors speak to no one.',
     [
       fc('Chuyển đến sống một năm', 'Move in for a year',

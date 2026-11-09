@@ -9,7 +9,7 @@ export const ENSEMBLE_SCORE_ITEM = {
 export const ENSEMBLE_EVENTS = [
   {
     id: ENSEMBLE_INVITE_ID, age: [30, 140], major: true, weight: 0, repeatable: true,
-    vi: '[Ghế mang tên bạn] Vé không đề người gửi, mặt sau vẽ nhà hát đã đóng cửa. Một ghế mang tên bạn. Dưới sơ đồ: “Argalia chờ câu trả lời.”\n\nBốn hồi, đi một mình, một lượt tiếp tế. Hết HP hoặc trượt kiểm định cuối: chết. Hết SP: theo Carmen thành Distortion hoặc chống lại với nguy cơ mất mạng. Hồi đầu có thể rút, mất 8 Danh tiếng. Từ chối hai lần; còn một năm trước buổi diễn bắt buộc.',
+    vi: '[Ghế mang tên bạn] Vé không đề người gửi, mặt sau vẽ nhà hát đã đóng cửa và một ghế mang tên bạn: “Argalia chờ câu trả lời.”\n\nBốn hồi, đi một mình, một lượt tiếp tế. Hết HP hoặc trượt kiểm định cuối: chết. Hết SP: thành Distortion hoặc chống cự. Hồi đầu rút mất 8 Danh tiếng; từ chối hai lần sẽ phải diễn sau một năm.',
     en: '[A seat with your name] An unsigned ticket bears the plan of a closed theatre. One seat has your name. Beneath the plan: “Argalia awaits your answer.”\n\nFour acts, alone, with one supply use. Zero HP or a failed final check means death. At zero SP, follow Carmen into Distortion or resist at risk of death. You may leave in the first act for 8 Reputation. You may refuse twice; after the second refusal, you have one year before the performance begins by force.',
     choices: [
       { labelVi: 'Đến nhà hát', labelEn: 'Go to the theatre', startDungeon: ENSEMBLE_DUNGEON_ID,
@@ -22,7 +22,7 @@ export const ENSEMBLE_EVENTS = [
   },
   {
     id: ENSEMBLE_LAST_CALL_ID, age: [30, 140], major: true, weight: 0, repeatable: true,
-    vi: '[Buổi diễn bắt đầu] Bạn đã trả vé hai lần. Suốt một năm, người quen nghe tiếng ghế kéo trong phòng trống. Giờ cửa nhà hát mở ở cuối hành lang; Argalia không chờ nữa.\n\nKhông còn đường rút. Bốn hồi, đi một mình, một lượt tiếp tế. Hết HP hoặc trượt kiểm định cuối: chết. Hết SP: theo Carmen thành Distortion, hoặc chống lại bằng một kiểm định có thể chết.',
+    vi: '[Buổi diễn bắt đầu] Bạn đã trả vé hai lần. Suốt một năm, người quen nghe tiếng ghế kéo trong phòng trống. Giờ cửa nhà hát mở ở cuối hành lang; Argalia không chờ nữa.\n\nKhông còn đường rút. Bốn hồi, đi một mình, một lượt tiếp tế. Hết HP hoặc trượt kiểm định cuối: chết. Hết SP: thành Distortion hoặc chống cự với nguy cơ mất mạng.',
     en: '[The performance begins] You returned the ticket twice. For a year, people close to you heard chairs scraping across empty rooms. Now the theatre door opens at the end of your hall; Argalia will not wait.\n\nNo retreat. Four acts, alone, with one supply use. Zero HP or a failed final check means death. At zero SP, follow Carmen into Distortion or resist in a check that can kill you.',
     choices: [
       { labelVi: 'Bước vào dưới ánh đèn trống', labelEn: 'Enter beneath the empty lights', startDungeon: ENSEMBLE_DUNGEON_ID,
@@ -67,8 +67,8 @@ export const ENSEMBLE_DUNGEON = {
       descEn: 'A member of the Ensemble occupies the opposite seat. They do not ask who you are. A record of your path lies open across their knees.',
       strainGain: 14,
       choices: [
-        beat('Nhận lời đề nghị và đi qua lối họ chỉ', 'Take the offered passage', 'Bạn đi qua sân khấu mà không phải giao chiến. Từ phía sau, ai đó bắt đầu hát đúng nhịp chân bạn.', 'You cross the stage without a clash. Behind you, someone begins to sing to the pace of your steps.', 'Lối đi gập lại. Một vết cắt nằm ở nơi bạn vừa đứng.', 'The passage folds shut. A cut lands where you stood.', 'luck', -0.1, { health: -8, sanity: 8 }, -7, 1),
-        beat('Từ chối và giữ chỗ đứng của mình', 'Refuse and hold your ground', 'Họ khép hồ sơ. Ghế đối diện trống đi, còn đường của bạn vẫn là của bạn.', 'They close the record. The opposite seat empties; your path remains yours.', 'Bìa hồ sơ bật mở giữa đòn đánh. Bạn mất một nhịp để nhớ tại sao mình có mặt ở đây.', 'The record opens mid-strike. You lose a beat remembering why you came.', 'vigor', 0.1, { health: -10, sanity: -6 }, 2)
+        beat('Nhận lời đề nghị và đi qua lối họ chỉ', 'Take the offered passage', 'Bạn đi qua sân khấu mà không phải giao chiến. Từ phía sau, ai đó bắt đầu hát đúng nhịp chân bạn.', 'You cross the stage without a clash. Behind you, someone begins to sing to the pace of your steps.', 'Lối đi gập lại. Vết cắt hằn ngay chỗ bạn vừa đứng.', 'The passage folds shut. A cut lands where you stood.', 'luck', -0.1, { health: -8, sanity: 8 }, -7, 1),
+        beat('Từ chối và giữ chỗ đứng của mình', 'Refuse and hold your ground', 'Họ khép hồ sơ. Ghế đối diện trống đi, còn đường của bạn vẫn là của bạn.', 'They close the record. The opposite seat empties; your path remains yours.', 'Bìa hồ sơ bật mở giữa đòn đánh. Bạn khựng lại nửa nhịp, quên mất sao mình lại đứng đây.', 'The record opens mid-strike. You lose a beat remembering why you came.', 'vigor', 0.1, { health: -10, sanity: -6 }, 2)
       ]
     },
     {

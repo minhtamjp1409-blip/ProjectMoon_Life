@@ -117,7 +117,7 @@ export const GLOSSARY_TERMS = [
     term: 'Color Fixer',
     kr: '특색 해결사 (Teuksaek Haegyeolsa)',
     lorVn: 'Color Fixer (Sắc Hiệu)',
-    vi: 'Đỉnh cao tuyệt đối của giới Fixer. Những Grade 1 sở hữu sức mạnh và triết lý độc nhất được Hana Association ban tặng một danh hiệu gắn với Màu Sắc (như Red Mist, Black Silence, Red Gaze).',
+    vi: 'Đỉnh cao của giới Fixer. Những Grade 1 có sức mạnh và triết lý riêng biệt được Hana Association ban tặng danh hiệu gắn với Màu Sắc (như Red Mist, Black Silence, Red Gaze).',
     en: 'The absolute pinnacle of Fixers. Grade 1s of unmatched power and identity granted a unique Color title by Hana Association (e.g., Red Mist, Black Silence, Red Gaze).'
   },
   {
@@ -162,7 +162,7 @@ export const GLOSSARY_TERMS = [
     term: 'Shi Association (4)',
     kr: '시 협회 (Si Hyeophoe)',
     lorVn: 'Hiệp Hội Shi (Ám Sát)',
-    vi: 'Hiệp hội số 4 chuyên ám sát hợp đồng. Các Fixer của Shi luôn làm việc quá tải trong trạng thái thương tích đầy mình nhưng sở hữu nhát chém tất sát Boundary of Death.',
+    vi: 'Hiệp hội số 4 chuyên ám sát hợp đồng. Các Fixer của Shi luôn làm việc quá tải trong trạng thái thương tích đầy mình nhưng nắm giữ nhát chém tất sát Boundary of Death.',
     en: 'The 4th Association specializing in covert assassination. Chronically overworked and wounded, their Fixers unleash lethal strikes at the brink of death.'
   },
   {
@@ -209,7 +209,7 @@ export const GLOSSARY_TERMS = [
     term: 'The Index & Prescript (Proselyte → Proxy → Messenger)',
     kr: '검지 · 지령 (Geomji · Jiryeong)',
     lorVn: 'Ngón Trỏ & Chỉ Lệnh (Tu Hành Giả → Đại Hành Giả → Sứ Giả)',
-    vi: 'Thực thi mù quáng mọi mảnh giấy Prescript (Chỉ Lệnh) được dệt từ tiếng vọng của The City. Thực hiện đúng Prescript giúp mở khóa sức mạnh lưỡi kiếm (Blade Unlock).',
+    vi: 'Thực thi mù quáng mọi mảnh giấy Prescript (Chỉ Lệnh) được dệt từ tiếng vọng của The City. Làm đúng Prescript giúp mở khóa sức mạnh lưỡi kiếm (Blade Unlock).',
     en: 'Blindly executes cryptic Prescripts woven from the vibrations of the City. Fulfilling Prescripts unlocks the sealed power of their blades.'
   },
   {
