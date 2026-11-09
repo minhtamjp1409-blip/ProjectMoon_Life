@@ -16,22 +16,22 @@ Ký hiệu: **Đúng** là đã tái hiện trong code. **Đã xong** là đã s
 | # | Phát hiện | Kết luận | Bằng chứng |
 |---|---|---|---|
 | 1.1 | Event bắt buộc không cập nhật `recentBeats` | **Sai** | `recordChoiceInGraph` (gồm `rememberDirectorEvent`) chạy ở mọi lần giải quyết major (`gameEngine.js:2838`, 2318, 2363, 2402). Các nhánh trả sớm chỉ là lúc *chọn* event; nhịp vẫn được ghi lúc *giải quyết*. Riêng việc minor và daily không đọc `recentBeats` là đúng, nhưng minor đã có `directorWeight` riêng, nên không ưu tiên. |
-| 1.2 | `.find()` chặn hàng đợi thread | **Đúng** | `weaverAI.js:845`: chỉ lấy thread đầu tiên đến hạn. Nếu thread đó không đủ điều kiện, các thread major hợp lệ phía sau phải chờ. |
+| 1.2 | `.find()` chặn hàng đợi thread | **Đã xong (Đợt 135)** | `weaverAI.js:847`: lọc qua `t.kind !== 'minor'` và `isEventEligible(…, { scripted: true })` ngay trong `.find(...)`. |
 | 1.3 | `ring_patron_wants_a_face` cần điều kiện có bạn đời | **Đã xong, và hướng sửa sai** | Người đã khuất là của nhà bảo trợ, không phải của người chơi. Thêm điều kiện có bạn đời sẽ khóa nhầm mission. Đã đổi câu chữ ở `349d745`; lint còn 0 cảnh báo. |
-| 2.1 | Ahn và Danh tiếng chạm trần, cuối đời không có chỗ tiêu | **Đúng** | `driftOf` không có nhánh cho `wealth`; phí giữ tài sản giới hạn ở `Math.min(4, …)` (`yearPlanner.js:1424`). Khớp với số đo Dungeon ở mục 2.36. |
-| 2.2 | Điểm `scheme` luôn cộng Leverage | **Đúng** | `annualPlan.js:53` cộng `leverage` cho mọi nghề, nhưng chỉ Wing dùng chỉ số này. |
-| 2.3 | Biến động thành phố dừng sau 40 tuổi | **Đúng** | `cityConditions.js:22`: `char.age < 25 \|\| char.age > 40`. |
-| 3.1 | Phần lớn perk đồng đội không có tác dụng | **Đúng** | Engine không đọc 9 loại `loot`, `salvage`, `merit`, `clash`, `flee`, `trap_mitigation`, `sanity_shield`, `check_bonus`, `strain_reduction` (lưu ý: chữ `'clash'` trong `dungeonCombat.js` là tên hành động, không phải perk). `parry` và `calm` chỉ chạy ở chế độ chặng. |
-| 3.2 | Thẻ `ego` thiếu né, Great Lake không có thẻ riêng | **Một phần** | Thẻ `ego` đã có cộng né, vì `evadeChance` đọc `cardEffectOf(session).check`. Great Lake đúng là chưa có thẻ riêng: `themeOf` (`dungeonCards.js:42`) chỉ có `warp`, `lcorp`, `blood`, `alley`. |
-| 3.3 | Gauntlet bỏ qua chặng 0–2 và `STAGE_VARIANTS` | **Đúng** | `dungeonCombat.js:565` nhảy thẳng tới chặng cuối. Các lựa chọn dùng vật phẩm ở chặng đầu (như `con_kcorp_ampoule`) không bao giờ hiện. |
-| 4.1 | Chỉ số do NPC tự sống không có chip delta | **Đúng** | `yearPlanner.js:1694` ghi log `npc_autonomy` mà không kèm `deltas`. |
-| 4.2 | `child`/`ward` không có hành động lúc nhỏ, không đổi nghề lúc 18 | **Đúng** | `child_play` xét tuổi người chơi; đổi nghề lúc 18 chỉ áp dụng cho `friend`. |
+| 2.1 | Ahn và Danh tiếng chạm trần, cuối đời không có chỗ tiêu | **Chờ chủ dự án (Đợt 138 mục 3)** | `driftOf` không có nhánh cho `wealth`; phí giữ tài sản giới hạn ở `Math.min(4, …)` (`yearPlanner.js:1424`). Khớp với số đo Dungeon ở mục 2.36. |
+| 2.2 | Điểm `scheme` luôn cộng Leverage | **Đã xong (Đợt 138)** | `annualPlan.js`: Wing nhận `+2 Leverage`, Fixer/Syndicate giảm Heat và tiến độ hợp đồng, Distortion tăng Resonance. |
+| 2.3 | Biến động thành phố dừng sau 40 tuổi | **Đã xong (Đợt 138)** | `cityConditions.js:22`: mở rộng lên `22–90` tuổi. |
+| 3.1 | Phần lớn perk đồng đội không có tác dụng | **Đã xong (Đợt 136)** | `companionPerk(char, session)` trong `dungeonEngine.js` đọc đủ 14 loại perk cho cả chế độ chặng, Gauntlet, Clash và preview trên dock. |
+| 3.2 | Thẻ `ego` thiếu né, Great Lake không có thẻ riêng | **Đã xong (Đợt 136)** | Thẻ `ego` đã có cộng né; `dungeon_great_lake` đã bật `cards: true` kèm 2 thẻ riêng `lake_harpoon` và `lake_chart`. |
+| 3.3 | Gauntlet bỏ qua chặng 0–2 và `STAGE_VARIANTS` | **Đã xong (Đợt 136)** | Tầng 0 lượt 0 của `gauntletStage` gộp các lựa chọn vật phẩm mở màn (`reqItem`, như `con_kcorp_ampoule`) mà không tốn lượt đánh. |
+| 4.1 | Chỉ số do NPC tự sống không có chip delta | **Đã xong (Đợt 137)** | `simulateNpcAutonomousLife` trả kèm `deltas` và `yearPlanner.js` truyền vào `pushLog`. |
+| 4.2 | `child`/`ward` không có hành động lúc nhỏ, không đổi nghề lúc 18 | **Đã xong (Đợt 137)** | `child_play` xét tuổi của `child`/`ward` (`<= 15`, nhãn `"Dẫn đi dạo khu phố"`); đủ 18 tuổi chuyển sang nghề người lớn, kèm phản ứng bước ngoặt `reactNpcsToMajorTurn`. |
 | 5.1 | Ngưỡng Syndicate độc lập bậc 2 lệch nhau | **Đã xong** | `eventsFactions.js:3305` đã là `rep: [45, 100], heat: [30, 100]`, khớp `eventConditions.js:422`. |
-| 5.1b | Lương và `hasEstablishedStanding` bỏ qua `syndicateRank` | **Đúng** | `economyModel.js:121` và `:160` chỉ đọc `fingerRank`. |
-| 5.2 | Minor của Workshop Craftsman không bao giờ hiện | **Đúng** | Không còn event nào gán `setJob: 'Workshop Craftsman'`, nhưng `m_annual_workshop_calibration`, `m_annual_workshop_tres` và `m_wellness_workshop_tuneup` vẫn lọc theo nghề này. |
-| 6.1 | Chặng 2 và 3 của `arc_middle_vengeance_saga` cùng là kỳ thi Rank 1 | **Đúng** | `careerPipeline.js:300` liệt kê cả hai trong `eventIds` của rank 1. Thắng ở chặng 2 thì chặng 3 khóa vĩnh viễn. |
-| 6.1b | Thread chặng 3 hết hạn sau 8 năm, trước khi đủ tuổi hoặc bậc | **Đúng** | `yearPlanner.js:547–548`. |
-| 6.2 | Kết thúc `ripe_age` không hiện đoạn kết | **Đúng** | `gameEngine.js:2975–2979` chỉ gán `poeticQuote`, không gán `char.lifeEnding`. `topOfCareer` không tính Wing rank 3 hay `syndicateRank` 3. |
+| 5.1b | Lương và `hasEstablishedStanding` bỏ qua `syndicateRank` | **Đã xong (Đợt 135)** | `economyModel.js`, `yearPlanner.js` và `gameEngine.js` đọc `Math.max(fingerRank, syndicateRank)` và gán `Star of the City` ở rank 3. |
+| 5.2 | Minor của Workshop Craftsman không bao giờ hiện | **Đã xong (Đợt 135)** | `charHasWorkshopAccess` (`workshopAccess` / `workshopOrCombatGear`) mở các minor/cơ hội Workshop cho nhân vật theo nhánh Workshop. |
+| 6.1 | Chặng 2 và 3 của `arc_middle_vengeance_saga` cùng là kỳ thi Rank 1 | **Đã xong (Đợt 135)** | Chặng 2 đổi sang `syn_middle_cousin_retaliation`, chặng 3 giữ `syn_middle_promo_big_sibling`. |
+| 6.1b | Thread chặng 3 hết hạn sau 8 năm, trước khi đủ tuổi hoặc bậc | **Đã xong (Đợt 135)** | Thread chặng 3 / kỳ thi gắn `waitsForGate: true`, không hết hạn 8 năm khi còn giữ nghề/Finger và được ưu tiên khi rút kỳ thi. |
+| 6.2 | Kết thúc `ripe_age` không hiện đoạn kết | **Đã xong (Đợt 135)** | `gameEngine.js` gán `char.lifeEnding = 'ripe_age'`, `topOfCareer` tính thêm Wing rank ≥ 3 và `syndicateRank` ≥ 3, `lifeEndings.js` có `closing`. |
 
 ---
 

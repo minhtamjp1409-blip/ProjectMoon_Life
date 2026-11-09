@@ -88,6 +88,15 @@ export const NPC_INTERACTION_ACTIONS = [
 
 const ACTION_BY_ID = Object.fromEntries(NPC_INTERACTION_ACTIONS.map((action) => [action.id, action]));
 
+export function getNpcActionLabel(actionOrId, role) {
+  const action = typeof actionOrId === 'string' ? ACTION_BY_ID[actionOrId] : actionOrId;
+  if (!action) return { nameVi: '', nameEn: '' };
+  if (action.id === 'child_play' && (role === 'child' || role === 'ward')) {
+    return { nameVi: 'Dẫn đi dạo khu phố', nameEn: 'Neighborhood Stroll' };
+  }
+  return { nameVi: action.nameVi, nameEn: action.nameEn };
+}
+
 // cooldownYears was declared on the actions but only delegation ever checked it, so a cheap action could be repeated all year
 function onCooldown(npc, actionId, age) {
   const years = ACTION_BY_ID[actionId]?.cooldownYears;
@@ -126,12 +135,20 @@ export function canInteractWithNpc(char, role, actionId) {
       reasonEn: `${npc.nameEn || 'Companion'} must be at least ${action.minAge} years old`
     };
   }
-  if (action.maxAge != null && playerAge > action.maxAge) {
-    return {
-      ok: false,
-      reasonVi: `Chỉ dành cho tuổi thiếu thời (${action.maxAge} tuổi trở xuống)`,
-      reasonEn: `Only available in youth (age ${action.maxAge} or under)`
-    };
+  if (action.maxAge != null) {
+    const isChildRole = role === 'child' || role === 'ward';
+    const checkAge = isChildRole ? npcAge : playerAge;
+    if (checkAge > action.maxAge) {
+      return {
+        ok: false,
+        reasonVi: isChildRole
+          ? `${npc.nameVi || 'Đứa trẻ'} đã lớn (chỉ dành cho ${action.maxAge} tuổi trở xuống)`
+          : `Chỉ dành cho tuổi thiếu thời (${action.maxAge} tuổi trở xuống)`,
+        reasonEn: isChildRole
+          ? `${npc.nameEn || 'Child'} has grown up (only for age ${action.maxAge} or under)`
+          : `Only available in youth (age ${action.maxAge} or under)`
+      };
+    }
   }
 
   if (actionId !== 'delegate_command' && onCooldown(npc, actionId, char.age ?? 0)) {
@@ -145,7 +162,8 @@ export function canInteractWithNpc(char, role, actionId) {
     if (!['friend', 'child', 'ward', 'parent'].includes(role)) {
       return { ok: false, reasonVi: 'Không phù hợp với mối quan hệ này', reasonEn: 'Not suitable for this relationship' };
     }
-    return { ok: true };
+    const lbl = getNpcActionLabel(actionId, role);
+    return { ok: true, labelVi: lbl.nameVi, labelEn: lbl.nameEn };
   }
 
   if (actionId === 'drink_confide') {
@@ -427,8 +445,8 @@ export function executeNpcInteraction(char, role, actionId, rng = Math.random) {
       season: SEASONS[nextChar.seasonIdx || 0],
       type: 'choice',
       // The player chose this, so it reads and folds like any other answered choice
-      choiceVi: `${ACTION_BY_ID[actionId]?.nameVi || actionId} · ${name}`,
-      choiceEn: `${ACTION_BY_ID[actionId]?.nameEn || actionId} · ${npc.nameEn || name}`,
+      choiceVi: `${getNpcActionLabel(actionId, role).nameVi || actionId} · ${name}`,
+      choiceEn: `${getNpcActionLabel(actionId, role).nameEn || actionId} · ${npc.nameEn || name}`,
       ...log,
       deltas
     }];

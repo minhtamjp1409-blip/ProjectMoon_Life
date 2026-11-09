@@ -50,7 +50,18 @@ export function applyAnnualPlan(char, points, ambitionId, directiveId = null) {
   stats.network = Math.min(100, (stats.network || 0) + p.bond * 2);
   stats.sanity = Math.min(100, (stats.sanity || 0) + p.rest * 3);
   char.heat = Math.max(0, (char.heat || 0) - p.scheme * 2);
-  char.leverage = Math.min(100, (char.leverage || 0) + p.scheme * 2);
+  const isDistorted = char.job === 'Distortion' || char.flags?.includes('Distorted');
+  if (isDistorted) {
+    char.resonance = Math.min(100, (char.resonance || 0) + p.scheme * 2);
+  } else if (char.job === 'Wing Employee') {
+    char.leverage = Math.min(100, (char.leverage || 0) + p.scheme * 2);
+  } else if (char.job === 'Fixer' || char.job === 'Color Fixer' || char.job === 'Syndicate') {
+    char.merit = Math.max(0, (char.merit || 0) + p.scheme * 2);
+    char.schemeContractProgress = (char.schemeContractProgress || 0) + p.scheme;
+    if (char.activeContract && typeof char.activeContract.progress === 'number') {
+      char.activeContract.progress += p.scheme;
+    }
+  }
 
   // Tangible trade-offs for heavy point allocation (2+ points)
   if (p.train === 2) stats.health = Math.max(1, (stats.health || 0) - 2);
@@ -114,12 +125,17 @@ export function previewAnnualPlanDeltas(char, points, directiveId = null) {
   h = Math.max(0, h - (p.scheme || 0) * 2);
   if ((p.scheme || 0) >= 3) h = Math.min(100, h + 2);
 
-  let lev = initialLeverage + (p.scheme || 0) * 2;
+  const isDistorted = char?.job === 'Distortion' || char?.flags?.includes('Distorted');
+  const isWing = !isDistorted && char?.job === 'Wing Employee';
+  const isContractJob = !isDistorted && (char?.job === 'Fixer' || char?.job === 'Color Fixer' || char?.job === 'Syndicate');
+
+  let lev = initialLeverage + (isWing ? (p.scheme || 0) * 2 : 0);
   lev = Math.min(100, Math.max(0, lev));
 
   let rep = initialRep;
-  let merit = initialMerit;
-  let res = initialResonance;
+  let merit = initialMerit + (isContractJob ? (p.scheme || 0) * 2 : 0);
+  let res = initialResonance + (isDistorted ? (p.scheme || 0) * 2 : 0);
+  res = Math.min(100, Math.max(0, res));
   let standing = initialStanding;
 
   let apexBondBoost = 0;
@@ -199,6 +215,7 @@ export function previewAnnualPlanDeltas(char, points, directiveId = null) {
     merit: merit - initialMerit,
     resonance: res - initialResonance,
     standing: standing - initialStanding,
+    contractProgress: isContractJob ? (p.scheme || 0) : 0,
     trainingCheckBonus: Math.round(((p.train || 0) * 0.02) * 100),
     companionBond: bondDelta,
     companionDetails

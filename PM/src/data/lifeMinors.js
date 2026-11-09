@@ -1580,7 +1580,7 @@ export const LIFE_MINORS = [
   M(
     'm_wellness_workshop_tuneup',
     GROWN,
-    { notOut: true, jobs: ['Fixer', 'Syndicate', 'Workshop Craftsman'], hasGear: true },
+    { notOut: true, workshopOrCombatGear: true },
     '[Bảo Trì Trang Bị Tại Workshop] Áo khoác chống đạn rách tơi tả, các khớp trợ lực kêu cọt kẹt và lưỡi kiếm mẻ cạnh sau chuỗi giao tranh khốc liệt. Một xưởng rèn uy tín chào mời gói bảo trì toàn diện.',
     '[Workshop Gear Overhaul & Maintenance] Shredded ballistic fabric, creaking pneumatic joints, and notched weapon edges. A reputable workshop offers complete tuning.',
     [

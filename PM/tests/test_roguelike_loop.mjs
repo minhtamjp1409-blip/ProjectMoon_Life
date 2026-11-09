@@ -109,7 +109,7 @@ console.log('Roguelike loop: seeded annual offers, single commitment, saved draf
   const session = createDungeonSession('dungeon_outskirts_ruins', card);
   assert.equal(session.cardHand.length, 3, 'a card dungeon deals three cards');
   assert.equal(session.cardPile.length + session.cardHand.length, 10, 'the deck holds ten');
-  assert.ok(!createDungeonSession('dungeon_great_lake', card).cardHand, 'only dungeons that opt in deal cards');
+  assert.ok(!createDungeonSession('dungeon_claw_judgment', card).cardHand, 'only dungeons that opt in deal cards');
   card.pendingDungeon = session;
   const id = session.cardHand[0];
   const played = playDungeonCard(card, id);

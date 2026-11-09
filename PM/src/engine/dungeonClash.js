@@ -103,6 +103,7 @@ export function playerDie(ctx, char, session, stake = null) {
   const P = CLASH_BALANCE.player;
   let lo = P.lo;
   let hi = P.hi + Math.min(P.masteryCap, Math.round(ctx.mastery(char, session).checkBonus * 10));
+  if (ctx.companionPerk) hi += ctx.companionPerk(char, session).clashDieBonus || 0;
   const sp = char.stats?.sanity ?? 50;
   const mindTwice = profile?.twist === 'mind' ? 2 : 1;
   if (sp >= 70) lo += mindTwice;

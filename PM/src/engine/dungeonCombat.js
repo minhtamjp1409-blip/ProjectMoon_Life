@@ -73,6 +73,7 @@ function enterFloor(session, char, index) {
   c.clashOpen = false;
   // A card played before a rest has done its work; it must not follow the player into the next fight
   session.cardActive = null;
+  session.companionParried = false;
   const floor = c.plan[index];
   if (!floor || floor.kind === 'rest') {
     c.enemy = null;
@@ -122,11 +123,17 @@ function damageOf(ctx, def, char, session, intent, taken, kind) {
   const scale = (1 + (tier - 1) * COMBAT_BALANCE.tierScale) * (def.hazard === 'ALEPH' ? COMBAT_BALANCE.aleph : 1);
   // The same multiplier stage choices use: mastery, stance, traits, scan, E.G.O and strain
   const mult = ctx.damageMult(def, char, session, kind === 'sanity' ? 'sanity' : 'health') / (ctx.hazardOf(def) || 1);
-  return Math.max(1, Math.ceil(base * taken * scale * mult * COMBAT_BALANCE.damageScale * dungeonWagerDamage(session.delveStake) * difficultyOf(session.id).damage * signatureDamageMult(session)));
+  const raw = Math.max(1, Math.ceil(base * taken * scale * mult * COMBAT_BALANCE.damageScale * dungeonWagerDamage(session.delveStake) * difficultyOf(session.id).damage * signatureDamageMult(session)));
+  if (kind === 'sanity' && ctx.companionPerk) {
+    const restore = ctx.companionPerk(char, session).sanityRestore || 0;
+    if (restore > 0) return Math.max(0, raw - restore);
+  }
+  return raw;
 }
 
 export function evadeChance(ctx, char, session) {
   let chance = COMBAT_BALANCE.evadeBase * ctx.traitFactor(char, 'luck') + ctx.mastery(char, session).checkBonus;
+  if (ctx.companionPerk) chance += ctx.companionPerk(char, session).evadeBonus || 0;
   if (session.stageScanned) chance += 0.15;
   if (session.egoActive) chance += 0.3;
   chance += (cardEffectOf(session).evade || 0) + (cardEffectOf(session).check || 0);
@@ -147,6 +154,17 @@ export function previewCombatAction(ctx, choice, char, session) {
   const intent = intentAt(session);
   if (!intent) return null;
   const action = choice.combatAction;
+  if (action === 'prep') {
+    const avail = !choice.reqItem || (char?.inventory || []).some((it) => (it.id || it) === choice.reqItem);
+    if (!avail) return { hasCheck: false, successPct: 100, estHp: 0, estSp: 0, estWealth: 0, estLoot: 0, estRep: 0, estMerit: 0, estResonance: 0 };
+    const fx = choice.fx || {};
+    return {
+      hasCheck: false, successPct: 100,
+      estHp: fx.health || 0, estSp: fx.sanity || 0,
+      estWealth: fx.wealth || 0, estLoot: choice.lootAhn || 0,
+      estRep: fx.rep || 0, estMerit: fx.merit || 0, estResonance: fx.resonance || 0
+    };
+  }
   if (action === 'ally') {
     const odds = ctx.companionLeadChance(char, session);
     return { hasCheck: true, trait: 'bond', successPct: Math.round(odds * 100), estHp: 0, estSp: 0, estWealth: 0, estLoot: 0, estRep: 0, estMerit: 0, estResonance: 0 };
@@ -248,6 +266,10 @@ export function gauntletStage(ctx, session) {
   let descVi = `${c.turn === 0 && c.phase === 1 ? `${enemy.introVi} ` : ''}${intent.tellVi}`;
   let descEn = `${c.turn === 0 && c.phase === 1 ? `${enemy.introEn} ` : ''}${intent.tellEn}`;
   signatureChoices(session, intent, choices);
+  if (c.floor === 0 && c.turn === 0 && !c.prepUsed && !c.clashOpen && !c.workOpen) {
+    const prepItems = (ctx.def(session)?.stages?.[0]?.choices || []).filter((ch) => ch.reqItem);
+    for (const ch of prepItems) choices.push({ ...ch, combatAction: 'prep' });
+  }
   let stageChoices = c.workOpen ? workChoices(session) : choices;
   if (offered && c.clashOpen) {
     // The stake step: the same turn and the same intent, with the stakes listed when the clash was called
@@ -331,8 +353,9 @@ export function resolveGauntletChoice(char, session, choiceIndex, rng, ctx) {
     let skip = 0;
     if (choice.restAction === 'rest') {
       const r = COMBAT_BALANCE.rest;
-      char.stats.health = clamp(char.stats.health + r.health, 0, 100);
-      char.stats.sanity = clamp(char.stats.sanity + r.sanity, 0, 100);
+      const cp = ctx.companionPerk ? ctx.companionPerk(char, session) : null;
+      char.stats.health = clamp(char.stats.health + r.health + (cp?.breatherHealBonus || 0), 0, 100);
+      char.stats.sanity = clamp(char.stats.sanity + r.sanity + (cp?.breatherSanityBonus || 0), 0, 100);
       session.sanityStrain = clamp((session.sanityStrain || 0) + r.strain, 0, 100);
       fx = 'rest';
     } else if (choice.restAction === 'push' && !def.noRewards) {
@@ -374,6 +397,28 @@ export function resolveGauntletChoice(char, session, choiceIndex, rng, ctx) {
 
   const intent = intentAt(session);
   const action = choice.combatAction;
+  if (action === 'prep') {
+    if (choice.consumeItem && choice.reqItem) {
+      char.inventory = (char.inventory || []).filter((it) => (it.id || it) !== choice.reqItem);
+    }
+    const pfx = choice.fx || {};
+    const hpGain = pfx.health || 0;
+    const spGain = pfx.sanity || 0;
+    char.stats.health = clamp((char.stats.health || 0) + hpGain, 0, 100);
+    char.stats.sanity = clamp((char.stats.sanity || 0) + spGain, 0, 100);
+    if (pfx.wealth) char.stats.wealth = clamp((char.stats.wealth || 0) + pfx.wealth, 0, 100);
+    if (pfx.rep) char.stats.rep = clamp((char.stats.rep || 0) + pfx.rep, 0, 100);
+    if (pfx.merit) char.merit = Math.max(0, (char.merit || 0) + pfx.merit);
+    if (choice.lootAhn) session.accumulatedLootAhn = (session.accumulatedLootAhn || 0) + choice.lootAhn;
+    if (choice.strainDelta) session.sanityStrain = clamp((session.sanityStrain || 0) + choice.strainDelta, 0, 100);
+    c.prepUsed = true;
+    session.lastStageResult = {
+      type: 'stage_clear', stageNum: c.floor + 1, stageNameVi: stage.nameVi, stageNameEn: stage.nameEn,
+      vi: choice.resultVi, en: choice.resultEn, hpDelta: hpGain, spDelta: spGain, fx: 'rest', nonce: session.fxNonce
+    };
+    ctx.log(char, session, def, stage, session.lastStageResult);
+    return { char, session, isFinished: false, resolution: null };
+  }
   // Calling a clash or stepping back from one spends no turn: the same intent is still in the air
   if (action === 'workOpen' || action === 'workBack') {
     c.workOpen = action === 'workOpen';
@@ -453,8 +498,23 @@ export function resolveGauntletChoice(char, session, choiceIndex, rng, ctx) {
     fx = action === 'guard' ? (quality === 'poor' ? 'hit' : 'block') : action === 'strike' ? (quality === 'good' ? 'counter' : 'clash') : (quality === 'good' ? 'evade' : 'hit');
   }
 
-  const hp = damageOf(ctx, def, char, session, intent, taken, 'health');
+  const cp = ctx.companionPerk ? ctx.companionPerk(char, session) : null;
+  let hp = damageOf(ctx, def, char, session, intent, taken, 'health');
   const sp = damageOf(ctx, def, char, session, intent, taken, 'sanity');
+  if (cp?.parryAvailable && hp > 0 && quality === 'poor' && session.companion) {
+    session.companionParried = true;
+    hp = 0;
+    notes.push({
+      vi: `[Gạt đòn thực chiến] ${session.companion.nameVi} vung đao gạt phăng mũi kích hiểm hóc trước khi nó kịp chạm vào bạn.`,
+      en: `[Combat Parry] ${session.companion.nameEn} deflected the lethal strike just before it touched you.`
+    });
+  }
+  if (cp?.sanityRestore > 0 && intent.mind > 0 && taken > 0 && session.companion) {
+    notes.push({
+      vi: `[Ngọn hải đăng] Ánh mắt kiên định của ${session.companion.nameVi} xua tan cơn hoảng loạn, neo giữ tâm trí bạn.`,
+      en: `[Moral Beacon] ${session.companion.nameEn} anchored your mind against creeping madness.`
+    });
+  }
   char.stats.health = clamp(char.stats.health - hp, 0, 100);
   char.stats.sanity = clamp(char.stats.sanity - sp, 0, 100);
   if (intent.kind === 'mind' && sp > 0) fx = 'mind';
@@ -495,8 +555,8 @@ export function resolveGauntletChoice(char, session, choiceIndex, rng, ctx) {
     const meritBase = COMBAT_BALANCE.clearMerit;
     const extraLoot = floor.kind === 'boss' ? lootBase.boss : floor.elite ? lootBase.elite : 0;
     const extraMerit = floor.kind === 'boss' ? meritBase.boss : floor.elite ? meritBase.elite : 0;
-    const loot = Math.round((lootBase.base + floor.tier * lootBase.perTier + extraLoot) * ctx.lootMult(session) * dungeonWagerLoot(session.delveStake) * (playedCard.loot ?? 1) * (playedCard.reward ?? 1) * (1 + CLASH_BALANCE.winLoot * (c.clashWins || 0)));
-    const merit = meritBase.base + floor.tier * meritBase.perTier + extraMerit;
+    const loot = Math.round((lootBase.base + floor.tier * lootBase.perTier + extraLoot) * ctx.lootMult(session) * dungeonWagerLoot(session.delveStake) * (playedCard.loot ?? 1) * (playedCard.reward ?? 1) * (1 + CLASH_BALANCE.winLoot * (c.clashWins || 0)) * (cp?.lootMult ?? 1));
+    const merit = Math.round((meritBase.base + floor.tier * meritBase.perTier + extraMerit) * (cp?.meritMult ?? 1));
     session.accumulatedLootAhn = (session.accumulatedLootAhn || 0) + (def.noRewards ? 0 : loot);
     if (!def.noRewards) {
       char.merit = (char.merit || 0) + merit;

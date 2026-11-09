@@ -2,8 +2,8 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { AlertTriangle, X } from 'lucide-react';
 import { useGameStore } from '../../../store/gameStore.js';
-import { NPC_INTERACTION_ACTIONS, canInteractWithNpc } from '../../../engine/npcInteractions.js';
-import { ensureNpcAgency, getNpcBondState } from '../../../data/npcPersonality.js';
+import { NPC_INTERACTION_ACTIONS, canInteractWithNpc, getNpcActionLabel } from '../../../engine/npcInteractions.js';
+import { ensureNpcAgency, getNpcBondState, getNpcAge } from '../../../data/npcPersonality.js';
 import { npcIsHurt } from '../../../engine/eventConditions.js';
 import { useT } from '../../../i18n';
 
@@ -62,6 +62,7 @@ export const NpcDossierModal = ({ npcRole, onClose }) => {
   const isGone = (npc.alive === false) || npc.deceased || ['dead', 'missing', 'estranged', 'betrayer'].includes(npc.status);
   const bondState = getNpcBondState(npc);
   const perk = npc.dungeonPerk;
+  const npcAge = getNpcAge(char, npc);
 
   const handleAction = async (actionId) => {
     setLoadingAction(actionId);
@@ -243,8 +244,9 @@ export const NpcDossierModal = ({ npcRole, onClose }) => {
           <footer className="npc-dossier-footer">
             <h4 className="action-dock-title">{t('Hành Động Tương Tác Tri Kỷ', 'Companion Actions')}</h4>
             <div className="npc-action-grid">
-              {NPC_INTERACTION_ACTIONS.filter((a) => !a.maxAge || (char?.age ?? 20) <= a.maxAge).map((action) => {
+              {NPC_INTERACTION_ACTIONS.filter((a) => !a.maxAge || ((npcRole === 'child' || npcRole === 'ward') ? npcAge <= a.maxAge : (char?.age ?? 20) <= a.maxAge)).map((action) => {
                 const check = canInteractWithNpc(char, npcRole, action.id);
+                const actionLabel = getNpcActionLabel(action, npcRole);
                 return (
                   <button
                     key={action.id}
@@ -254,7 +256,7 @@ export const NpcDossierModal = ({ npcRole, onClose }) => {
                     onClick={() => handleAction(action.id)}
                     title={!check.ok ? (lang === 'en' ? check.reasonEn : check.reasonVi) : ''}
                   >
-                    <span className="action-name">{lang === 'en' ? action.nameEn : action.nameVi}</span>
+                    <span className="action-name">{lang === 'en' ? actionLabel.nameEn : actionLabel.nameVi}</span>
                     <span className="action-cost">
                       {check.cooldown && (lang === 'en' ? 'Done recently' : 'Vừa làm xong')}
                       {!check.cooldown && action.id === 'child_play' && (lang === 'en' ? 'Youth' : 'Thiếu thời')}

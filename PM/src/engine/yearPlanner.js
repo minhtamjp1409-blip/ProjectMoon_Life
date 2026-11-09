@@ -6,7 +6,7 @@ import { planFirstGate } from './dungeonPacing.js';
 import { careerAgeOf, reachedCareerAge, effectiveMinAge, careerCrossroadIdFor } from './careerAge.js';
 import { rememberResonance, hasEgoOpportunity, colorTrialAvailable, rollEgoEncounter } from './awakeningProgress.js';
 import { simulateNpcAutonomousLife } from './narrativeArcEngine.js';
-import { matchesNeed, matchesEventContext, choiceIsAvailable, mergeEffects, isNestResident, isOutsideCity, npcIsActive, colorTrialCompanionAlive, isIndependentSyndicateEligibleForRank } from './eventConditions.js';
+import { matchesNeed, matchesEventContext, choiceIsAvailable, mergeEffects, isNestResident, isOutsideCity, npcIsActive, colorTrialCompanionAlive, isIndependentSyndicateEligibleForRank, charHasWorkshopAccess, jobMatchesWithInheritance } from './eventConditions.js';
 import {
   getNextFixerPromotion,
   contractOfferChance,
@@ -543,6 +543,20 @@ export function planYear(charState, rng) {
       }
     }
 
+    if (th.waitsForGate) {
+      const trial = careerTrialForEvent(targetEventId);
+      const reqJobs = storyDef?.need?.jobs || storyDef?.jobs;
+      const reqFinger = trial?.finger || storyDef?.need?.finger || storyDef?.finger;
+      const leftFinger = Boolean(reqFinger && (char.finger !== reqFinger || (char.job !== 'Syndicate' && !char.flags?.includes('Distorted'))));
+      const leftWing = Boolean(trial?.route === 'wing' && char.job !== 'Wing Employee');
+      const leftFixer = Boolean((targetEventId === 'hana_color_ascension_trial' || targetEventId.startsWith('fixer_promo_')) && char.job !== 'Fixer' && char.job !== 'Color Fixer');
+      const leftJobs = Boolean(Array.isArray(reqJobs) && reqJobs.length > 0 && !jobMatchesWithInheritance(reqJobs, char, storyDef));
+      if (leftFinger || leftWing || leftFixer || leftJobs || !char.alive) {
+        closeThreads(char, th.eventId, { threadId: th.id });
+      }
+      continue;
+    }
+
     // Drop if far overdue and cannot be resolved
     const graceYears = th.eventId === 'distort_star_of_city_rampage' ? 20 : 8;
     if (age > th.triggerAge + graceYears) {
@@ -661,7 +675,7 @@ export function planYear(charState, rng) {
       if (careDue(medId, 0.75)) scheduleCare(medId);
     } else if (char.stats.sanity < 70 && age >= 16 && !isOutskirts(char)) {
       if (careDue('m_wellness_hamham_lunch', 0.65)) scheduleCare('m_wellness_hamham_lunch');
-    } else if (char.stats.wealth >= 35 && age >= 18 && !isOutskirts(char) && ['Fixer', 'Color Fixer', 'Syndicate', 'Workshop Craftsman'].includes(char.job)) {
+    } else if (char.stats.wealth >= 35 && age >= 18 && !isOutskirts(char) && (['Fixer', 'Color Fixer', 'Syndicate'].includes(char.job) || charHasWorkshopAccess(char))) {
       if (careDue('m_wellness_workshop_tuneup', 0.25)) scheduleCare('m_wellness_workshop_tuneup');
     }
   }
@@ -1334,9 +1348,10 @@ export const JOB_INCOME = (char) => {
   switch (char.job) {
     case 'Fixer':
       return 2 + Math.round((9 - Math.min(9, char.fixerGrade)) * 0.7);
-    case 'Syndicate':
-      if (!char.finger && char.flags?.includes('IndependentSyndicate')) return 3 + Math.min(3, Math.max(0, char.syndicateRank || 0)) * 2;
-      return 3 + (char.fingerRank || 0) * 2 + ((char.fingerRank || 0) >= 3 ? 3 : 0);
+    case 'Syndicate': {
+      const synRank = Math.max(char.fingerRank || 0, (!char.finger && char.flags?.includes('IndependentSyndicate')) ? Math.min(3, Math.max(0, char.syndicateRank || 0)) : 0);
+      return 3 + synRank * 2 + (synRank >= 3 ? 3 : 0);
+    }
     case 'Wing Employee':
       return 4 + (char.wingRank || 0);
     case 'Workshop Craftsman':
@@ -1699,7 +1714,8 @@ export function endYear(charState, rng) {
         key: 'npc_autonomy',
         type: 'story',
         vi: nlog.vi,
-        en: nlog.en
+        en: nlog.en,
+        ...(nlog.deltas ? { deltas: nlog.deltas } : {})
       },
       0.98
     );

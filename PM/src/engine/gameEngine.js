@@ -2913,15 +2913,21 @@ export function buildLifeSummaryAndLegacy(char) {
     occupationEn = `${char.org?.name || 'Freelance Fixer'} · Grade ${char.fixerGrade}`;
     rankTier = char.fixerGrade <= 2 ? 'Urban Nightmare' : (char.fixerGrade <= 5 ? 'Urban Plague' : 'Urban Legend');
   } else if (char.job === 'Syndicate') {
+    const indRank = Math.min(3, Math.max(0, char.syndicateRank || 0));
     const rankName =
       char.finger && FINGER_RANKS[char.finger]
         ? FINGER_RANKS[char.finger][char.fingerRank || 0]
-        : 'Người của Syndicate';
+        : (INDEPENDENT_SYNDICATE_RANKS[indRank]?.vi || 'Người của Syndicate');
+    const rankNameEn =
+      char.finger && FINGER_RANKS[char.finger]
+        ? FINGER_RANKS[char.finger][char.fingerRank || 0]
+        : (INDEPENDENT_SYNDICATE_RANKS[indRank]?.en || 'Syndicate Member');
+    const topSynRank = Math.max(char.fingerRank || 0, char.syndicateRank || 0);
     epitaphTitleVi = `${rankName} · ${char.finger ? `The ${char.finger}` : (char.org?.name || 'Backstreets')}`;
-    epitaphTitleEn = `${rankName} · ${char.finger ? `The ${char.finger}` : (char.org?.name || 'Backstreets')}`;
+    epitaphTitleEn = `${rankNameEn} · ${char.finger ? `The ${char.finger}` : (char.org?.name || 'Backstreets')}`;
     occupationVi = `${char.finger ? `The ${char.finger}` : 'Syndicate'} · ${rankName}`;
-    occupationEn = `${char.finger ? `The ${char.finger}` : 'Syndicate'} · ${rankName}`;
-    rankTier = (char.fingerRank || 0) >= 2 ? 'Urban Nightmare' : 'Urban Plague';
+    occupationEn = `${char.finger ? `The ${char.finger}` : 'Syndicate'} · ${rankNameEn}`;
+    rankTier = topSynRank >= 3 ? 'Star of the City' : topSynRank >= 2 ? 'Urban Nightmare' : 'Urban Plague';
   } else if (char.job === 'Wing Employee') {
     const wRank = Math.min(WING_RANKS.length - 1, char.wingRank || 0);
     const wingTitleVi = WING_RANKS[wRank]?.titleVi || 'Feather của Wing';
@@ -2969,14 +2975,17 @@ export function buildLifeSummaryAndLegacy(char) {
   let poeticQuoteVi = '“Họ trút hơi thở cuối cùng vào một buổi chiều mà không một ai trong thành phố này dừng bước.”';
   let poeticQuoteEn = '“They breathed their last on an afternoon when no one in the City was in a hurry.”';
 
+  const topOfCareer =
+    flags.includes('ColorFixer') ||
+    (char.job === 'Syndicate' && Math.max(char.fingerRank || 0, char.syndicateRank || 0) >= 3) ||
+    (char.job === 'Wing Employee' && (char.wingRank || 0) >= 3);
+  if (!char.lifeEnding && topOfCareer && char.age >= 100) {
+    char.lifeEnding = 'ripe_age';
+  }
   const closedBy = lifeEndingOf(char);
-  const topOfCareer = flags.includes('ColorFixer') || (char.job === 'Syndicate' && (char.fingerRank || 0) >= 3);
   if (closedBy) {
     poeticQuoteVi = closedBy.quoteVi;
     poeticQuoteEn = closedBy.quoteEn;
-  } else if (topOfCareer && char.age >= 100) {
-    poeticQuoteVi = LIFE_ENDINGS.ripe_age.quoteVi;
-    poeticQuoteEn = LIFE_ENDINGS.ripe_age.quoteEn;
   } else if (char.endingId === 'library_threshold') {
     poeticQuoteVi = '“B Corp không ghi lại những gì ở phía sau cánh cửa.”';
     poeticQuoteEn = '“B Corp did not record what lay beyond the door.”';
@@ -3261,7 +3270,13 @@ export function buildLifeSummaryAndLegacy(char) {
       careerArcVi = `Đến tuổi tự kiếm sống, bạn bước vào nghề Fixer${char.org?.name ? ` thuộc ${char.org.name}` : ''}, từng bước leo lên bậc Fixer Grade ${char.fixerGrade}${flags.includes('ColorFixer') ? ` và được Hana Association trao danh hiệu Color 「${char.customTitle}」` : ''}.`;
       careerArcEn = `Old enough to work for your keep, you took up a Fixer license${char.org?.name ? ` with ${char.org.name}` : ''}, carving your way up to Grade ${char.fixerGrade}${flags.includes('ColorFixer') ? ` and claiming the Color title "${char.customTitle}" from Hana Association` : ''}.`;
     } else if (char.job === 'Syndicate') {
-      const fRankName = char.finger && FINGER_RANKS[char.finger] ? FINGER_RANKS[char.finger][char.fingerRank || 0] : 'thành viên Syndicate';
+      const indRank = Math.min(3, Math.max(0, char.syndicateRank || 0));
+      const fRankName = char.finger && FINGER_RANKS[char.finger]
+        ? FINGER_RANKS[char.finger][char.fingerRank || 0]
+        : (INDEPENDENT_SYNDICATE_RANKS[indRank]?.vi || 'thành viên Syndicate');
+      const fRankNameEn = char.finger && FINGER_RANKS[char.finger]
+        ? FINGER_RANKS[char.finger][char.fingerRank || 0]
+        : (INDEPENDENT_SYNDICATE_RANKS[indRank]?.en || 'Syndicate member');
       const syndicateStandingVi = (char.merit || 0) >= 60
         ? 'với bảng chiến tích khiến các hẻm đều dè chừng'
         : (char.merit || 0) >= 25
@@ -3273,7 +3288,7 @@ export function buildLifeSummaryAndLegacy(char) {
           ? 'earning a feared name across syndicate turf'
           : 'through night watches and collections';
       careerArcVi = `Ở tuổi trưởng thành, bạn bước vào thế giới ngầm của ${char.finger ? `The ${char.finger}` : 'Syndicate'}, dùng máu và kỷ luật để vươn lên vị trí ${fRankName} ${syndicateStandingVi}.`;
-      careerArcEn = `In adulthood, you swore yourself to ${char.finger ? `The ${char.finger}` : 'the Backstreets Syndicates'}, rising through iron discipline to the rank of ${fRankName}, ${syndicateStandingEn}.`;
+      careerArcEn = `In adulthood, you swore yourself to ${char.finger ? `The ${char.finger}` : 'the Backstreets Syndicates'}, rising through iron discipline to the rank of ${fRankNameEn}, ${syndicateStandingEn}.`;
     } else if (char.job === 'Wing Employee') {
       const wRank = Math.min(WING_RANKS.length - 1, char.wingRank || 0);
       careerArcVi = `Từ tuổi trưởng thành, bạn khoác tấm áo Feather tại ${region.nameVi}, đi qua các đợt thanh lọc nội bộ để giữ chức ${WING_RANKS[wRank]?.titleVi || 'Nhân viên Wing'}.`;

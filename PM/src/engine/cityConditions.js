@@ -19,7 +19,7 @@ export function cityEventMultiplier(event, char) {
 export function advanceCityCondition(char, rng) {
   if (char.cityConditionRollAge === char.age) return;
   char.cityConditionRollAge = char.age;
-  if (char.age < 25 || char.age > 40 || char.regionId === 'OUTSKIRTS' ||
+  if (char.age < 22 || char.age > 90 || char.regionId === 'OUTSKIRTS' ||
       char.flags?.includes('Outskirts') || char.age <= (char.cityCondition?.endAge ?? -10) + 3) return;
   if (rng() >= 0.16) return;
   const duration = rng() < 0.5 ? 2 : 3;

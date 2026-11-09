@@ -98,7 +98,7 @@ const indie = createNewCharacter({ seed: 'route-indie', startAge: 25 });
 indie.job = 'Syndicate';
 indie.finger = null;
 indie.flags.push('IndependentSyndicate');
-for (const [rank, income] of [[0, 3], [1, 5], [2, 7], [3, 9]]) {
+for (const [rank, income] of [[0, 3], [1, 5], [2, 7], [3, 12]]) { // rank 3 earns the same apex bonus as a Finger head
   indie.syndicateRank = rank;
   assert.equal(JOB_INCOME(indie), income, `Independent rank ${rank} did not affect pay`);
 }

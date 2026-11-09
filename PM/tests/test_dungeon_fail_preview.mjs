@@ -38,6 +38,25 @@ const anyId = Object.keys(DUNGEON_DEFINITIONS).find((id) => (getDungeonCurrentSt
 const s = createDungeonSession(anyId, weak);
 const lethal = getDungeonCurrentStage(s).choices.map((c) => evaluateDungeonChoiceOdds(c, weak, s)).some((o) => o?.failLethal);
 assert(lethal, 'At 3 HP a damaging check must warn that a miss can drop you');
+// Companion perk preview parity: with a companion who reduces trap/hazard damage or boosts checks, preview matches resolved damage
+for (const id of ['dungeon_outskirts_ruins', 'dungeon_warp_train']) {
+  const cComp = createNewCharacter({ seed: `fail-comp-${id}`, startAge: 30 });
+  cComp.job = 'Fixer'; cComp.fixerGrade = 6;
+  cComp.stats.health = 100; cComp.stats.sanity = 100;
+  cComp.npcs = { partner: { nameVi: 'Hana', nameEn: 'Hana', status: 'alive', bond: 45, archetype: 'secretive' } };
+  const sComp = createDungeonSession(id, cComp);
+  const stComp = getDungeonCurrentStage(sComp);
+  const liveComp = { ...cComp, pendingDungeon: sComp };
+  (stComp?.choices || []).forEach((choice, idx) => {
+    const odds = evaluateDungeonChoiceOdds(choice, liveComp, sComp);
+    if (!odds?.hasCheck || odds.failHp == null || choice.companionLead || choice.combatAction === 'ally') return;
+    const before = liveComp.stats.health;
+    const lost = Math.min(...[0.999, 0.001].map((r) => (resolveDungeonChoice(structuredClone(liveComp), idx, () => r).char?.stats?.health ?? before) - before));
+    if (lost === 0) return;
+    assert(Math.abs(lost - odds.failHp) <= Math.max(2, Math.abs(odds.failHp) * 0.2), `companion ${id}#${idx}: preview ${odds.failHp}, real ${lost}`);
+    checked++;
+  });
+}
 assert(checked > 0, 'At least one miss compared against the resolver');
 assert(kinds.has('stage') && (kinds.has('evade') || kinds.has('clash')), `both stage checks and fights compared: ${[...kinds]}`);
 console.log(`Dungeon miss preview: ${checked} choices (${[...kinds].join(', ')}) match the resolver, door forecast reads the heaviest floor, lethal warning passed.`);

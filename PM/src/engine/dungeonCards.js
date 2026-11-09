@@ -26,6 +26,8 @@ export const DUNGEON_CARDS = {
   blood_mask: { vi: 'Đeo mặt nạ dạ hội', en: 'Wear the Masquerade Mask', textVi: 'Né dễ hơn 10 điểm, thương tổn giảm một phần năm. Mất 3 SP vì không còn nhìn thấy mặt mình.', textEn: 'Evading is 10 points easier, damage down a fifth. Lose 3 SP at not seeing your own face.', evade: 0.10, damage: 0.8, now: { sanity: -3 }, theme: 'blood', combatOnly: true },
   alley_run: { vi: 'Đường tắt của Backstreets', en: 'The Backstreets Shortcut', textVi: 'Né dễ hơn 20 điểm, loot thêm một phần năm.', textEn: 'Evading is 20 points easier, loot a fifth larger.', evade: 0.20, loot: 1.2, theme: 'alley', combatOnly: true },
   alley_knife: { vi: 'Con dao giấu trong ủng', en: 'The Knife in the Boot', textVi: 'Phản công phá thêm một nhịp thế, nhưng mọi đòn nhận vào nặng hơn 7%. Loot thêm 7%.', textEn: 'A strike breaks one more beat of its stance, but every blow you take is 7% heavier. Loot 7% larger.', breaks: 1, damage: 1.07, loot: 1.07, theme: 'alley', combatOnly: true },
+  lake_harpoon: { vi: 'Lao móc nhiệt U Corp', en: 'U Corp Thermal Harpoon', textVi: 'Phản công phá thêm một nhịp thế, loot thêm 15%, nhưng đòn nhận vào nặng hơn 10%.', textEn: 'A strike breaks one more beat of its stance and loot is 15% larger, but blows taken are 10% heavier.', breaks: 1, damage: 1.1, loot: 1.15, theme: 'lake', combatOnly: true },
+  lake_chart: { vi: 'Hải đồ âm thoa', en: 'Tuning-Fork Chart', textVi: 'Né dễ hơn 15 điểm, thương tổn giảm 15%.', textEn: 'Evading is 15 points easier, damage down 15%.', evade: 0.15, damage: 0.85, theme: 'lake', combatOnly: true },
   bluff: { vi: 'Giả điềm tĩnh', en: 'Feigned Calm', textVi: 'Dò đường dễ hơn 8 điểm, thương tổn giảm một phần mười.', textEn: 'Checks 8 points easier, damage down a tenth.', check: 0.08, damage: 0.9 }
 };
 
@@ -35,11 +37,12 @@ const THEMED = {
   warp: ['time_stop', 'steady'],
   lcorp: ['lcorp_log', 'lcorp_lockdown'],
   blood: ['blood_toast', 'blood_mask'],
-  alley: ['alley_run', 'alley_knife']
+  alley: ['alley_run', 'alley_knife'],
+  lake: ['lake_harpoon', 'lake_chart']
 };
 // Slots 5 and 6 of the fighting deck (the second Catch the Beat and Keep Steady) are the ones given up
 const THEME_SLOTS = [5, 6];
-const themeOf = (session) => ({ dungeon_warp_train: 'warp', dungeon_lobotomy_ruin: 'lcorp', dungeon_bloodfiend_carnival: 'blood', dungeon_backstreets_night: 'alley' })[session.id];
+const themeOf = (session) => ({ dungeon_warp_train: 'warp', dungeon_lobotomy_ruin: 'lcorp', dungeon_bloodfiend_carnival: 'blood', dungeon_backstreets_night: 'alley', dungeon_great_lake: 'lake' })[session.id];
 const STARTER = ['read_blow', 'read_blow', 'steady', 'blood', 'greed', 'ego', 'second', 'cold', 'bluff', 'bluff'];
 const deckFor = (char, combat, theme) => {
   const base = combat ? [...COMBAT_STARTER] : [...STARTER];

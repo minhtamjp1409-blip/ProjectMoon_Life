@@ -27,6 +27,13 @@ export const charHasCombatGear = (char) => Boolean(
   (char?.flags || []).some((f) => ['유물', 'CraftedColorWeapon', 'SingularityImbued'].includes(f))
 );
 
+export const charHasWorkshopAccess = (char) => Boolean(
+  char?.job === 'Workshop Craftsman' ||
+  char?.craftWeapon ||
+  (char?.flags || []).some((f) => ['WorkshopTinkerer', 'CraftedColorWeapon'].includes(f)) ||
+  (char?.inventory || []).some((item) => item?.type === 'weapon' || String(item?.id || item).startsWith('wpn_'))
+);
+
 export function getFieldCompanion(char) {
   if (!char?.npcs) return null;
   for (const role of FIELD_COMPANION_ROLES) {
@@ -105,6 +112,8 @@ export function matchesNeed(need, char, contextEntry = null) {
   const flags = char.flags || [];
   if (need.item && !(char.inventory || []).some(i => (i.id || i) === need.item)) return false;
   if (need.hasGear && !charHasCombatGear(char)) return false;
+  if (need.workshopAccess && !charHasWorkshopAccess(char)) return false;
+  if (need.workshopOrCombatGear && !((['Fixer', 'Color Fixer', 'Syndicate'].includes(char.job) && charHasCombatGear(char)) || charHasWorkshopAccess(char))) return false;
   if (need.nest && !isNestResident(char)) return false;
   if (need.notNest && isNestResident(char)) return false;
   if (need.back && (isNestResident(char) || isOutsideCity(char))) return false;

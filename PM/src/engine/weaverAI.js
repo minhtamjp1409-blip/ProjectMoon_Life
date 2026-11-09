@@ -674,7 +674,8 @@ export function selectEventWithWeaverAI({
       });
       if (availableIds.length > 0) {
         // Shuffle candidates with rng() for true promotion diversity
-        const chosenId = availableIds[Math.floor(rng() * availableIds.length)];
+        const threadedId = availableIds.find((id) => updatedWeaver.pendingThreads.some((t) => !t.fulfilled && t.eventId === id));
+        const chosenId = threadedId || availableIds[Math.floor(rng() * availableIds.length)];
         const promoEv = allPools.find((e) => e.id === chosenId);
         if (promoEv && isEventEligible(promoEv, char)) {
           const logEntry = {
@@ -706,7 +707,8 @@ export function selectEventWithWeaverAI({
         const event = allPools.find((entry) => entry.id === id);
         return event && isEventEligible(event, char);
       });
-      const promoEv = wingIds.length ? allPools.find((e) => e.id === wingIds[Math.floor(rng() * wingIds.length)]) : null;
+      const threadedWingId = wingIds.find((id) => updatedWeaver.pendingThreads.some((t) => !t.fulfilled && t.eventId === id));
+      const promoEv = wingIds.length ? allPools.find((e) => e.id === (threadedWingId || wingIds[Math.floor(rng() * wingIds.length)])) : null;
       if (promoEv && isEventEligible(promoEv, char)) {
         const logEntry = {
           age: char.age,
@@ -843,7 +845,7 @@ export function selectEventWithWeaverAI({
   }
 
   const dueThread = updatedWeaver.pendingThreads.find(
-    t => !t.fulfilled && char.age >= t.triggerAge && !char.seenEvents.includes(t.eventId)
+    t => !t.fulfilled && t.kind !== 'minor' && char.age >= t.triggerAge && !char.seenEvents.includes(t.eventId) && Boolean((() => { const ev = consequencePool.find(e => e.id === t.eventId) || allPools.find(e => e.id === t.eventId); return ev && isEventEligible(ev, char, { scripted: true }); })())
   );
   if (dueThread) {
     const csqEvent =

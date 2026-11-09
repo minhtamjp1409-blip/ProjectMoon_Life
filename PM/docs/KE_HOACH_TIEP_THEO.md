@@ -35,7 +35,8 @@ Mỗi đợt dưới đây được commit riêng, ghi vào `PROGRESS_LOG.md`, p
 | 132 | Dungeon báo giá khi trượt, chặng nặng nhất trước cửa, đo lại theo bot và mức cược | vừa | đã xong |
 | 133 | Event hồi âm sau Dungeon; đo Ahn trước trần 100 | vừa | đã xong |
 | 134 | Dùng phần Ahn vượt trần khi cược cao (chờ chủ dự án chọn cách) | nhỏ | chờ chủ dự án |
-| 135–140 | Sửa logic theo bản rà soát 06/11, nâng cấp đạo diễn và event sau 60 tuổi: mạch truyện kẹt, perk đồng đội, NPC, kinh tế sau 40, lịch chung và lời mời Dungeon theo cơ hội (xem `docs/KE_HOACH_DOT_135.md`) | lớn | chưa làm |
+| 135–138 | Sửa logic theo bản rà soát 06/11: mạch truyện kẹt (`arc_middle_vengeance_saga`, `waitsForGate`, hàng đợi thread, `ripe_age`, Syndicate độc lập, Workshop), perk đồng đội & Gauntlet/Great Lake, NPC tự sống/con cái/phản ứng bước ngoặt, biến động thành phố & `scheme` theo nghề (xem `docs/KE_HOACH_DOT_135.md`) | lớn | đã xong (còn mục 3 Đợt 138 chờ chủ dự án) |
+| 139–140 | Nâng cấp đạo diễn (lịch chung, lời mời Dungeon theo cơ hội, chủ đề, trạng thái thread, biến số câu chuyện) và event sau 60 tuổi (xem `docs/KE_HOACH_DOT_135.md`) | lớn | chưa làm |
 | (chủ dự án) | Nghe thử âm thanh trên điện thoại và tai nghe | nhỏ | chờ chủ dự án |
 
 Đợt 114b có thêm dải bản đồ thu nhỏ trên điện thoại, theo bản góp ý thứ ba (ngày 02/11/2026). Đợt 118 và buổi nghe thử âm thanh cũng đến từ bản góp ý đó.

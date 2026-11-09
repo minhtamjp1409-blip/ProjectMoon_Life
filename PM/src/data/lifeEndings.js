@@ -79,7 +79,10 @@ export const LIFE_ENDINGS = {
     titleVi: 'Sống qua nhiều thế hệ', titleEn: 'Outliving Generations',
     quoteVi: '“Người trực mới phải hỏi lại cách đánh vần tên họ. Cuốn sổ cũ hơn anh ta.”',
     quoteEn: '“The new clerk had to ask how to spell their name. The ledger was older than he was.”',
-    closing: null
+    closing: (c) => ({
+      vi: `Ở tuổi ${c.age}, bạn khép mắt sau khi đi qua nhiều thế hệ đồng nghiệp. Thư ký mới lật lại cuốn sổ cũ để đóng hồ sơ và ghi mục 「${c.relic}」 vào di vật để lại.`,
+      en: `At age ${c.age}, you close your eyes after outliving generations of peers. A new clerk opens the old ledger to close your file and records "${c.relic}" among what you left behind.`
+    })
   },
   distort_monument: {
     titleVi: 'Hóa thân thành Di tích', titleEn: 'The Living Monument',

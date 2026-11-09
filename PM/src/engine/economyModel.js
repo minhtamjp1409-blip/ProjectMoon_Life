@@ -118,7 +118,7 @@ export function calmAmount(char, kind) {
 export function hasEstablishedStanding(char) {
   if ((char.flags || []).includes('ColorFixer')) return true;
   if (char.job === 'Fixer') return (char.fixerGrade || 9) <= 3;
-  if (char.job === 'Syndicate') return (char.fingerRank || 0) >= 3;
+  if (char.job === 'Syndicate') return Math.max(char.fingerRank || 0, char.syndicateRank || 0) >= 3;
   if (char.job === 'Wing Employee') return (char.wingRank || 0) >= 2;
   if (char.job === 'Workshop Craftsman') return Boolean(char.craftWeapon) || (char.merit || 0) >= 80;
   return false;
@@ -157,7 +157,7 @@ export function driftOf(char, bonded = 0, protectedThresholds = {}) {
   let repAnchor = d.rep.anchor;
   if (flags.includes('ColorFixer')) repAnchor = d.rep.colorAnchor;
   else if (char.job === 'Fixer') repAnchor += char.fixerGrade <= 3 ? d.rep.seniorBonus : char.fixerGrade <= 5 ? d.rep.fixerBonus : 0;
-  else if (char.job === 'Syndicate' && (char.fingerRank || 0) >= 2) repAnchor += d.rep.syndicateBonus;
+  else if (char.job === 'Syndicate' && Math.max(char.fingerRank || 0, char.syndicateRank || 0) >= 2) repAnchor += d.rep.syndicateBonus;
   const repExcess = char.stats.rep - repAnchor;
   if (char.age < 60 && !hasEstablishedStanding(char) && repExcess > 0) {
     const available = char.stats.rep - (protectedThresholds.rep ?? 0);

@@ -678,6 +678,7 @@ export const DUNGEON_DEFINITIONS = {
 
   dungeon_great_lake: {
     id: 'dungeon_great_lake',
+    cards: true,
     fall: { vi: "Sóng đen khép lại trên đầu bạn. Ở Đại Hồ không có nghĩa trang, chỉ có Luật, và bạn đã chạm vào điều đầu tiên: thứ gì xuống nước thì thuộc về nước.", en: "The black waves close over you. The Great Lake has no cemetery, only its Law, and you have met the first of it: what goes into the water belongs to the water.", causeVi: "Chìm ở Đại Hồ", causeEn: "Sank in the Great Lake" },
     theme: 'greatlake',
     titleVi: 'Đại Hồ District 21: Hải Trình Săn Cá Voi Trắng',
@@ -908,6 +909,44 @@ export function pickDungeonCompanion(char) {
     }
   }
   return null;
+}
+
+/** Single source of truth for the active companion's dungeon perk and its numeric modifiers. */
+export function companionPerk(char, session) {
+  const comp = session?.companion;
+  const npc = comp?.role ? char?.npcs?.[comp.role] : null;
+  if (!comp || (npc && !npcIsActive(npc))) {
+    return {
+      active: false, type: null, perk: null,
+      lootMult: 1, meritMult: 1, clashBonus: 0, clashDieBonus: 0,
+      evadeBonus: 0, checkBonus: 0, hpDamageMult: 1, spDamageMult: 1,
+      strainMult: 1, sanityRestore: 0, parryAvailable: false, shieldAvailable: false,
+      breatherCostMult: 1, breatherHealBonus: 0, breatherSanityBonus: 0
+    };
+  }
+  const p = comp.perk || npc?.dungeonPerk || (npc ? getNpcDungeonPerk(npc) : null);
+  const t = p?.type || null;
+  const synergy = comp.role ? hasSynergyWith(char, comp.role) : false;
+  return {
+    active: Boolean(t),
+    type: t,
+    perk: p,
+    lootMult: (t === 'loot' || t === 'salvage') ? 1 + (p.lootBonus || 0.2) : 1,
+    meritMult: t === 'merit' ? 1 + (p.meritBonus || 0.15) : 1,
+    clashBonus: t === 'clash' ? (p.clashBonus || 0.1) : 0,
+    clashDieBonus: t === 'clash' ? Math.max(1, Math.round((p.clashBonus || 0.1) * 10)) : 0,
+    evadeBonus: t === 'flee' ? (p.fleeBonus || 0.2) : t === 'check_bonus' ? (p.checkBonus || 0.08) : 0,
+    checkBonus: t === 'check_bonus' ? (p.checkBonus || 0.08) : t === 'flee' ? (p.fleeBonus || 0.2) * 0.5 : 0,
+    hpDamageMult: t === 'trap_mitigation' ? Math.max(0.4, 1 - (p.damageReduction || 0.3)) : 1,
+    spDamageMult: t === 'sanity_shield' ? Math.max(0.4, 1 - (p.sanityReduction || 0.25)) : 1,
+    strainMult: t === 'strain_reduction' ? Math.max(0.4, 1 - (p.strainReduction || 0.2)) : 1,
+    sanityRestore: t === 'calm' ? (p.sanityRestore || 8) : 0,
+    parryAvailable: t === 'parry' && !session?.companionParried,
+    shieldAvailable: (t === 'shield' || synergy) && !session?.companionShieldUsed,
+    breatherCostMult: t === 'breather_discount' ? Math.max(0.4, 1 - (p.costReduction || 0.3)) : 1,
+    breatherHealBonus: t === 'breather_bonus' ? (p.healBonus || 10) : 0,
+    breatherSanityBonus: t === 'breather_bonus' ? (p.sanityBonus || 6) : 0
+  };
 }
 
 const named = (text, companion, lang) => text.replace('{name}', lang === 'en' ? companion.nameEn : companion.nameVi);
@@ -1146,8 +1185,10 @@ function checkChanceOf(choice, char, session, mastery) {
   const stance = session?.stance || 'balanced';
   const def = session ? DUNGEON_DEFINITIONS[session.id] : null;
   const tier = getStrainTier(session?.sanityStrain || 0);
+  const cp = companionPerk(char, session);
   let chance = DUNGEON_BALANCE.baseCheck * traitFactor(char, choice.checkTrait) + mastery.checkBonus;
   chance += (evaluateCompanionSupport(char).dungeonOddsMod || 0) / 100;
+  chance += choice.isFlee ? cp.evadeBonus : cp.checkBonus;
   chance += STANCE[stance].check;
   if (def?.noRewards) chance += stance === 'guarded' ? -0.1 : stance === 'balanced' ? 0.04 : 0.12;
   if (stance === 'reckless' && choice.checkTrait === 'vigor') chance += 0.1;
@@ -1168,11 +1209,13 @@ function damageMultOf(def, char, session, mastery, kind) {
   const traits = traitsOf(char);
   const trait = kind === 'sanity' ? traits.nerve ?? 1 : traits.vigor ?? 1;
   const tier = getStrainTier(session?.sanityStrain || 0);
+  const cp = companionPerk(char, session);
   let mult = hazard * mastery.dmgMult * STANCE[stance].damage * (2 - trait);
   if (session?.stageScanned) mult *= 0.65;
   if (session?.resolveAwakened) mult *= 0.75;
   if (session?.egoActive) mult *= DUNGEON_BALANCE.ego.damageMult;
   if (kind === 'sanity') mult *= tier.sanityMult;
+  mult *= kind === 'sanity' ? cp.spDamageMult : cp.hpDamageMult;
   mult *= cardEffectOf(session).damage ?? 1;
   if (!session?.combat) mult *= dungeonWagerDamage(session?.delveStake) * difficultyOf(session?.id).damage;
   return mult;
@@ -1181,22 +1224,29 @@ function damageMultOf(def, char, session, mastery, kind) {
 const healOf = (value) => (value > 0 ? Math.max(1, Math.round(value * DUNGEON_BALANCE.healScale)) : value || 0);
 const scaleGain = (value, mult) => (value > 0 ? Math.max(1, Math.round(value * mult)) : value);
 
-function stageRewards(choice, session, success) {
+function applyCalmToSpDelta(spDelta, char, session) {
+  if (spDelta == null || spDelta >= 0) return spDelta;
+  const restore = companionPerk(char, session).sanityRestore;
+  return restore > 0 ? Math.min(0, spDelta + restore) : spDelta;
+}
+
+function stageRewards(choice, session, success, char = null) {
   const fx = choice.fx || {};
   const stance = STANCE[session.stance || 'balanced'];
   const reckless = session.stance === 'reckless' && !choice.isFlee;
   const keep = success ? 1 : DUNGEON_BALANCE.failLootKept;
   const r = DUNGEON_BALANCE.reward;
   const card = cardEffectOf(session);
+  const cp = companionPerk(char, session);
   const pay = (card.reward ?? 1) * dungeonWagerLoot(session?.delveStake);
-  const loot = choice.lootAhn ? Math.round(choice.lootAhn * r.loot * stance.loot * keep * pay * (card.loot ?? 1)) : 0;
+  const loot = choice.lootAhn ? Math.round(choice.lootAhn * r.loot * stance.loot * keep * pay * (card.loot ?? 1) * cp.lootMult) : 0;
   const scanLoot = session.stageScanned && !choice.isFlee ? 10 : 0;
   return {
     wealth: Math.round(scaleGain(fx.wealth || 0, r.wealth) * (fx.wealth > 0 ? keep * pay : 1)),
     loot: loot + (loot > 0 ? scanLoot : 0),
     rep: Math.round(scaleGain(fx.rep || 0, r.rep) * (fx.rep > 0 ? keep : 1)),
     network: Math.round(scaleGain(fx.network || 0, r.network) * (fx.network > 0 ? keep : 1)),
-    merit: fx.merit > 0 ? Math.round(fx.merit * r.merit * (reckless ? 1.3 : 1) * keep * pay) : 0,
+    merit: fx.merit > 0 ? Math.round(fx.merit * r.merit * (reckless ? 1.3 : 1) * keep * pay * cp.meritMult) : 0,
     resonance: Math.round(scaleGain(fx.resonance || 0, r.resonance) * (fx.resonance > 0 ? keep : 1)) + (reckless && success ? 3 : 0)
   };
 }
@@ -1216,17 +1266,18 @@ export function evaluateDungeonChoiceOdds(choice, char, session) {
   };
   if (choice.combatAction && session?.combat) return previewCombatAction(COMBAT_CTX, choice, char, session);
   if (choice.restAction) {
+    const cp = companionPerk(char, session);
     const pct = choice.checkTrait ? Math.round(clamp(0.58 * traitFactor(char, 'luck') + mastery.checkBonus, 0.25, 0.9) * 100) : 100;
     const rest = choice.restAction === 'rest';
     const push = choice.restAction === 'push';
     // The signature lulls: a blood stall is paid in HP, a passenger led along still lets you rest a little
     const passenger = choice.restAction === 'passenger';
-    const estHp = rest ? 12 : passenger ? 6 : choice.costHp ? -choice.costHp : 0;
+    const estHp = rest ? 12 + cp.breatherHealBonus : passenger ? 6 : choice.costHp ? -choice.costHp : 0;
     const estLoot = push ? 8 : choice.restAction === 'blood_gold' ? 15 : 0;
-    return { hasCheck: Boolean(choice.checkTrait), trait: choice.checkTrait || null, successPct: pct, estHp, estSp: rest || passenger ? 10 : 0, estWealth: 0, estLoot, estRep: 0, estMerit: push ? 2 : 0, estResonance: 0 };
+    return { hasCheck: Boolean(choice.checkTrait), trait: choice.checkTrait || null, successPct: pct, estHp, estSp: rest ? 10 + cp.breatherSanityBonus : passenger ? 10 : 0, estWealth: 0, estLoot, estRep: 0, estMerit: push ? 2 : 0, estResonance: 0 };
   }
   if (choice.companionLead) {
-    const r = stageRewards(choice, session || {}, true);
+    const r = stageRewards(choice, session || {}, true, char);
     return {
       hasCheck: true, trait: 'bond', successPct: Math.round(companionLeadChance(char, session) * 100),
       estHp: 0, estSp: choice.fx?.sanity || 0, estWealth: r.wealth, estLoot: r.loot, estRep: r.rep, estMerit: r.merit, estResonance: r.resonance
@@ -1236,11 +1287,12 @@ export function evaluateDungeonChoiceOdds(choice, char, session) {
   const fx = choice.fx || {};
   const hpMult = damageMultOf(def, char, session, mastery, 'health') * DUNGEON_BALANCE.successDamage;
   const spMult = damageMultOf(def, char, session, mastery, 'sanity') * DUNGEON_BALANCE.successDamage;
-  const rewards = stageRewards(choice, session || {}, true);
+  const rewards = stageRewards(choice, session || {}, true, char);
   // A failed check hits harder (failDamage instead of successDamage); show that price too
   const failScale = DUNGEON_BALANCE.failDamage / DUNGEON_BALANCE.successDamage;
   const failHp = choice.checkTrait && fx.health < 0 ? Math.min(-1, Math.ceil(fx.health * hpMult * failScale)) : null;
-  const failSp = choice.checkTrait && fx.sanity < 0 ? Math.min(-1, Math.ceil(fx.sanity * spMult * failScale)) : null;
+  const rawFailSp = choice.checkTrait && fx.sanity < 0 ? Math.min(-1, Math.ceil(fx.sanity * spMult * failScale)) : null;
+  const failSp = applyCalmToSpDelta(rawFailSp, char, session);
   const hpNow = char.stats?.health ?? 0;
   const spNow = char.stats?.sanity ?? 0;
   return {
@@ -1251,7 +1303,7 @@ export function evaluateDungeonChoiceOdds(choice, char, session) {
     failSp,
     failLethal: Boolean(choice.checkTrait && successPct < 100 && ((failHp != null && hpNow + failHp <= 0) || (failSp != null && spNow + failSp <= 0))),
     estHp: fx.health < 0 ? Math.min(-1, Math.ceil(fx.health * hpMult)) : healOf(fx.health),
-    estSp: fx.sanity < 0 ? Math.min(-1, Math.ceil(fx.sanity * spMult)) : healOf(fx.sanity),
+    estSp: fx.sanity < 0 ? applyCalmToSpDelta(Math.min(-1, Math.ceil(fx.sanity * spMult)), char, session) : healOf(fx.sanity),
     estWealth: rewards.wealth,
     estLoot: rewards.loot,
     estRep: rewards.rep,
@@ -1431,7 +1483,8 @@ export function dungeonSupplyState(char, session, supplyType) {
   if (!session || (session.supplyCharges || 0) <= 0) return { ok: false, reason: 'empty' };
   if (supplyType === 'scan') return session.stageScanned ? { ok: false, reason: 'scanned' } : { ok: true };
   const wealth = char?.stats?.wealth ?? 0;
-  return wealth < DUNGEON_BALANCE.breather.cost ? { ok: false, reason: 'broke' } : { ok: true };
+  const cost = Math.round(DUNGEON_BALANCE.breather.cost * companionPerk(char, session).breatherCostMult);
+  return wealth < cost ? { ok: false, reason: 'broke' } : { ok: true };
 }
 
 /**
@@ -1450,10 +1503,10 @@ export function useDungeonSupply(charState, supplyType = 'breather') {
     session.lastStageResult = { type: 'scan', vi: SUPPLY_TEXT.scan.vi, en: SUPPLY_TEXT.scan.en };
   } else {
     const b = DUNGEON_BALANCE.breather;
-    const perk = session.companion?.perk;
-    const cost = perk?.type === 'breather_discount' ? Math.round(b.cost * 0.7) : b.cost;
-    const healBonus = perk?.type === 'breather_bonus' ? (perk.healBonus || 10) : 0;
-    const sanityBonus = perk?.type === 'breather_bonus' ? (perk.sanityBonus || 6) : 0;
+    const cp = companionPerk(char, session);
+    const cost = Math.round(b.cost * cp.breatherCostMult);
+    const healBonus = cp.breatherHealBonus;
+    const sanityBonus = cp.breatherSanityBonus;
     char.stats.wealth = Math.max(0, (char.stats.wealth || 0) - cost);
     char.stats.health = clamp((char.stats.health || 0) + b.health + healBonus, 0, 100);
     char.stats.sanity = clamp((char.stats.sanity || 0) + b.sanity + sanityBonus, 0, 100);
@@ -1748,8 +1801,9 @@ export function resolveDungeonChoice(charState, choiceIndex, rng = Math.random) 
   let spDelta = fx.sanity < 0
     ? Math.min(-1, Math.ceil(fx.sanity * damageMultOf(def, char, session, mastery, 'sanity') * resultMult))
     : healOf(fx.sanity);
-  const rewards = def.noRewards ? { wealth: 0, loot: 0, rep: 0, network: 0, merit: 0, resonance: 0 } : stageRewards(choice, session, success);
+  const rewards = def.noRewards ? { wealth: 0, loot: 0, rep: 0, network: 0, merit: 0, resonance: 0 } : stageRewards(choice, session, success, char);
   let companionStrain = 0;
+  const cp = companionPerk(char, session);
 
   if (lead && companion) {
     // The one sent ahead takes the danger: you lose no health, they may
@@ -1769,12 +1823,11 @@ export function resolveDungeonChoice(charState, choiceIndex, rng = Math.random) 
         leadText = companionLine('leadHurt', companion);
       }
     }
-  } else if (companion && npcIsActive(companionNpc)) {
-    const bond = companionNpc.bond ?? 30;
-    const perk = companion.perk || companionNpc.dungeonPerk;
+  } else if (companion && (!companionNpc || npcIsActive(companionNpc))) {
+    const bond = companionNpc?.bond ?? 30;
 
     // Perk: Combat Parry
-    if (!success && perk?.type === 'parry' && !session.companionParried && hpDelta < 0) {
+    if (!success && cp.parryAvailable && hpDelta < 0) {
       session.companionParried = true;
       hpDelta = 0;
       companionNotes.push({
@@ -1784,8 +1837,8 @@ export function resolveDungeonChoice(charState, choiceIndex, rng = Math.random) 
     }
 
     // Perk: Moral Beacon (Calm)
-    if (perk?.type === 'calm' && spDelta < 0) {
-      spDelta = Math.min(0, spDelta + (perk.sanityRestore || 8));
+    if (cp.sanityRestore > 0 && spDelta < 0) {
+      spDelta = Math.min(0, spDelta + cp.sanityRestore);
       companionNotes.push({
         vi: `[Ngọn hải đăng] Ánh mắt kiên định của ${companion.nameVi} xua tan cơn hoảng loạn, neo giữ tâm trí bạn.`,
         en: `[Moral Beacon] ${companion.nameEn} anchored your mind against creeping madness.`
@@ -1807,25 +1860,20 @@ export function resolveDungeonChoice(charState, choiceIndex, rng = Math.random) 
   char.stats.sanity = clamp((char.stats.sanity || 0) + spDelta, 0, 100);
 
   // Companion Mortal Shield Intervention
-  if (char.stats.health <= 0 && companion && npcIsActive(companionNpc) && !session.companionShieldUsed) {
-    const perk = companion.perk || companionNpc.dungeonPerk;
-    const synergyActive = hasSynergyWith(char, companion.role);
-    const canShield = (perk?.type === 'shield' || synergyActive);
-    if (canShield) {
-      session.companionShieldUsed = true;
-      if (synergyActive) char.companionSynergy = null;
-      char.stats.health = 5;
-      Object.assign(companionNpc, woundByShield(companionNpc, char.age || 0));
-      companionNpc.bond = Math.min(100, (companionNpc.bond || 50) + 15);
-      const shieldMemVi = `Năm ${char.age || 0} tuổi: Đỡ đòn chí mạng thay bạn trong ${def.titleVi}.`;
-      const shieldMemEn = `Age ${char.age || 0}: Absorbed a mortal strike for you in ${def.titleEn}.`;
-      companionNpc.memories = appendNpcMemory(companionNpc.memories, { age: char.age || 0, vi: shieldMemVi, en: shieldMemEn, pinned: true });
-      char.npcs[companion.role] = companionNpc;
-      companionNotes.push({
-        vi: `[Tấm khiên sinh tử] ${companion.nameVi} lao mình chắn ngang nhát chém kết liễu, máu nhuộm đỏ giáp vai: "Rút đi... đừng để cả hai cùng bỏ mạng ở đây!"`,
-        en: `[Mortal Shield] ${companion.nameEn} threw themselves in front of the killing stroke, armor drenched in crimson: "Retreat... do not let both of us die here!"`
-      });
-    }
+  if (char.stats.health <= 0 && companion && companionNpc && npcIsActive(companionNpc) && cp.shieldAvailable) {
+    session.companionShieldUsed = true;
+    if (hasSynergyWith(char, companion.role)) char.companionSynergy = null;
+    char.stats.health = 5;
+    Object.assign(companionNpc, woundByShield(companionNpc, char.age || 0));
+    companionNpc.bond = Math.min(100, (companionNpc.bond || 50) + 15);
+    const shieldMemVi = `Năm ${char.age || 0} tuổi: Đỡ đòn chí mạng thay bạn trong ${def.titleVi}.`;
+    const shieldMemEn = `Age ${char.age || 0}: Absorbed a mortal strike for you in ${def.titleEn}.`;
+    companionNpc.memories = appendNpcMemory(companionNpc.memories, { age: char.age || 0, vi: shieldMemVi, en: shieldMemEn, pinned: true });
+    char.npcs[companion.role] = companionNpc;
+    companionNotes.push({
+      vi: `[Tấm khiên sinh tử] ${companion.nameVi} lao mình chắn ngang nhát chém kết liễu, máu nhuộm đỏ giáp vai: "Rút đi... đừng để cả hai cùng bỏ mạng ở đây!"`,
+      en: `[Mortal Shield] ${companion.nameEn} threw themselves in front of the killing stroke, armor drenched in crimson: "Retreat... do not let both of us die here!"`
+    });
   }
   if (rewards.wealth) char.stats.wealth = clamp((char.stats.wealth || 0) + rewards.wealth, 0, 100);
   if (rewards.rep) char.stats.rep = clamp((char.stats.rep || 0) + rewards.rep, 0, 100);
@@ -1841,7 +1889,7 @@ export function resolveDungeonChoice(charState, choiceIndex, rng = Math.random) 
 
   const stance = STANCE[session.stance || 'balanced'];
   const colorCalm = isColorRank(char) ? DUNGEON_BALANCE.ego.color.strainMult : 1;
-  const rawStrain = ((stage.strainGain || 15) + (choice.strainDelta || 0)) * stance.strain * (session.stageScanned ? 0.5 : 1) * colorCalm;
+  const rawStrain = ((stage.strainGain || 15) + (choice.strainDelta || 0)) * stance.strain * (session.stageScanned ? 0.5 : 1) * colorCalm * cp.strainMult;
   session.sanityStrain = clamp((session.sanityStrain || 0) + Math.round(rawStrain) + (success ? 0 : DUNGEON_BALANCE.failStrain) + companionStrain, 0, 100);
   if (session.id === ENSEMBLE_DUNGEON_ID) session.ensembleHarmony = Math.min(3, (session.ensembleHarmony || 0) + (choice.ensembleHarmony || 0));
 
@@ -2100,8 +2148,9 @@ const COMBAT_CTX = {
   traitFactor,
   mastery: (char, session) => getDungeonMastery(DUNGEON_DEFINITIONS[session.id], char),
   strainCheck: (session) => getStrainTier(session.sanityStrain || 0).check,
-  strainMult: (char, session) => STANCE[session.stance || 'balanced'].strain * (isColorRank(char) ? DUNGEON_BALANCE.ego.color.strainMult : 1),
+  strainMult: (char, session) => STANCE[session.stance || 'balanced'].strain * (isColorRank(char) ? DUNGEON_BALANCE.ego.color.strainMult : 1) * companionPerk(char, session).strainMult,
   lootMult: (session) => STANCE[session.stance || 'balanced'].loot,
+  companionPerk,
   companionLeadChance,
   companionActive: (session) => Boolean(session.companion),
   companionBond: (char, session) => char.npcs?.[session.companion?.role]?.bond ?? 30,
