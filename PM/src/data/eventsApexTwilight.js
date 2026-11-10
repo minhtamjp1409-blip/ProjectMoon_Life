@@ -228,4 +228,137 @@ const FINGER_ENDINGS = [
   }
 ];
 
+const NON_APEX_ENDINGS = [
+  {
+    id: 'elder_fixer_last_ledger', age: [90, 125], jobs: ['Fixer'], major: true, weight: 8,
+    forbids: ['Distorted', 'ColorFixer', 'elder_fixer_ending_done'],
+    vi: '[Cuốn sổ Request cuối cùng] Thư ký mới của Office đặt trước mặt bạn cuốn sổ ghi những việc bạn nhận suốt mấy mươi năm. Anh ta chưa sinh ra lúc bạn ký trang đầu, chỉ rụt rè hỏi hôm nay bạn muốn khóa sổ hay nhận thêm một việc.',
+    en: '[The last Request ledger] The new Office clerk sets down the ledger of jobs you took across the decades. He was not yet born when you signed the first page, and asks quietly whether you want to close the book today or take one more job.',
+    choices: [
+      { labelVi: 'Nộp lại thẻ Fixer và khóa sổ', labelEn: 'Turn in your Fixer license and close the ledger',
+        ...endsLife('retired', 'Bạn đặt tấm thẻ kim loại đã mòn góc lên trang cuối. Thư ký đóng dấu kết thúc hồ sơ rồi tiễn bạn ra tận cửa.', 'You set your worn metal license on the last page. The clerk stamps the file closed and sees you to the door.', { sanity: 6, rep: 3 }),
+        deathCauseVi: 'Khóa sổ Request sau nhiều thập kỷ và về nghỉ ở phố cũ', deathCauseEn: 'Closed the Request ledger after decades and retired to an old street', flagsAdd: ['elder_fixer_ending_done'] },
+      { labelVi: 'Nhận tờ Request niêm phong cuối bảng', labelEn: 'Take the sealed Request at the bottom of the board',
+        outcomes: [
+          { w: 50, effects: { health: -16, wealth: 18, rep: 6, sanity: 2 }, meritAdd: 16, flagsAdd: ['elder_fixer_ending_done'],
+            resultVi: 'Đầu gối đã chậm nhưng tay bạn vẫn nhớ chỗ cần chém. Bạn mang biên bản về lúc rạng sáng trước con mắt sững sờ của đám Fixer trẻ.',
+            resultEn: 'Your knees are slow, yet your hand remembers where to cut. You bring the signed slip back at dawn before the stunned eyes of the young Fixers.' },
+          { w: 50, ...endsLife('last_bout', 'Kẻ bên kia con hẻm nhanh hơn bạn nửa nhịp. Bạn tựa lưng vào tường gạch quen thuộc, nghe tiếng mưa rơi trên mái tôn và biết chuyến đi đã trọn.',
+            'The opponent across the alley is half a beat faster. You lean against the familiar brick wall, listening to rain on the tin roof, knowing the run is complete.', { health: -35 }),
+            deathCauseVi: 'Ngã xuống trong Request cuối cùng ở tuổi già', deathCauseEn: 'Fell on one last Request in old age', flagsAdd: ['elder_fixer_ending_done'] }
+        ] },
+      { labelVi: 'Giữ thẻ lại, chỉ ngồi uống trà và chỉ đường cho lớp trẻ', labelEn: 'Keep the license, drink tea and advise the young ones',
+        effects: { sanity: 3, network: 3 }, flagsAdd: ['elder_fixer_ending_done'],
+        resultVi: 'Bạn gấp sổ lại nhưng không trả thẻ. Mỗi chiều bạn vẫn ghé bàn góc quán nhìn đám trẻ chia việc.',
+        resultEn: 'You close the book without surrendering the badge. Each afternoon you still sit at the corner table watching the young ones divide the work.' }
+    ]
+  },
+  {
+    id: 'elder_workshop_last_forge', age: [90, 125], major: true, weight: 8,
+    need: { workshopAccess: true }, forbids: ['Distorted', 'elder_workshop_ending_done'],
+    vi: '[Lò rèn cuối ngày] Lửa trong lò của xưởng đã cháy qua hai đời thợ. Tay bạn không còn giữ nổi búa nặng cả buổi, còn người học việc thì đứng cạnh bàn nguội chờ xem bạn định xử lý phôi thép cuối cùng ra sao.',
+    en: '[The forge at day’s end] The furnace in the workshop has burned through two generations of smiths. Your hand can no longer hold the heavy hammer all afternoon, and the apprentice waits by the cooling bench to see what you will do with the last steel billet.',
+    choices: [
+      { labelVi: 'Trao chìa khóa xưởng và dập lò', labelEn: 'Hand over the workshop keys and bank the furnace',
+        ...endsLife('retired', 'Bạn treo chiếc tạp dề da lên móc tường rồi đặt chùm chìa khóa vào tay người học việc. Lần đầu tiên sau hàng chục năm, bạn ngủ mà không nghe tiếng búa.',
+          'You hang the leather apron on its hook and set the keys in the apprentice’s palm. For the first time in decades, you sleep without the sound of hammers.', { sanity: 6, rep: 4 }),
+        deathCauseVi: 'Giao lại xưởng rèn cho học trò và nghỉ ngơi', deathCauseEn: 'Handed the workshop to an apprentice and rested', flagsAdd: ['elder_workshop_ending_done'] },
+      { labelVi: 'Đổ hết nhiệt lượng rèn mẻ vũ khí cuối cùng', labelEn: 'Pour full heat into forging one final weapon',
+        outcomes: [
+          { w: 55, effects: { health: -14, wealth: 20, rep: 8 }, meritAdd: 15, flagsAdd: ['elder_workshop_ending_done'],
+            resultVi: 'Bạn gõ nhát búa cuối lúc bình minh. Lưỡi thép nguội đi trong máng dầu với đường vân sáng mà cả khu xưởng chưa từng thấy.',
+            resultEn: 'You strike the final blow at dawn. The blade cools in the oil trough with a bright grain the workshop has never seen.' },
+          { w: 45, ...endsLife('ripe_age', 'Nhát búa cuối vừa dứt thì hơi nóng làm tim bạn khựng lại. Người học việc đỡ lấy bạn bên cạnh lưỡi thép vừa thành hình.',
+            'As the final hammer blow lands, the furnace heat stops your heart. Your apprentice catches you beside the newly finished blade.', { health: -35 }),
+            deathCauseVi: 'Trút hơi thở cuối bên lò rèn khi hoàn tất tuyệt tác', deathCauseEn: 'Breathed their last beside the forge upon completing a masterwork', flagsAdd: ['elder_workshop_ending_done'] }
+        ] },
+      { labelVi: 'Giữ lại bàn khắc nhỏ ở góc xưởng, tiếp tục sống', labelEn: 'Keep a small engraving bench in the corner and live on',
+        effects: { sanity: 4, wealth: 4 }, flagsAdd: ['elder_workshop_ending_done'],
+        resultVi: 'Bạn nhường lò lớn cho người trẻ, chỉ giữ lại bộ dũa nhỏ để chỉnh từng khớp khóa mỗi sáng.',
+        resultEn: 'You leave the main furnace to the young smiths, keeping only a set of fine files to tune lock joints each morning.' }
+    ]
+  },
+  {
+    id: 'elder_outcast_last_alley', age: [90, 125], jobs: ['Outcast'], major: true, weight: 8,
+    forbids: ['Distorted', 'elder_outcast_ending_done'],
+    vi: '[Góc phố đã đổi tên ba lần] Con hẻm nơi bạn sống đã thay bảng tên ba lần và chẳng còn ai nhớ tên đầu tiên của nó ngoài bạn. Sáng nay có đoàn xe chở hàng ra rìa District dừng ngay đầu ngõ.',
+    en: '[The street renamed three times] The alley where you live has changed its sign three times, and no one remembers its first name but you. This morning a supply wagon bound for the District edge stops at the corner.',
+    choices: [
+      { labelVi: 'Leo lên thùng xe, rời khỏi con hẻm mãi mãi', labelEn: 'Climb onto the wagon and leave the alley for good',
+        ...endsLife('wander', 'Người đánh xe dịch thùng gỗ nhường chỗ cho bạn mà không hỏi tiền. Bạn ngoái nhìn mái hiên cũ một lần rồi để chiếc xe đưa đi.',
+          'The driver shifts a crate to make room for you without asking for coin. You look back once at the old eaves and let the wagon carry you off.', { sanity: 5 }),
+        deathCauseVi: 'Lên xe rời khỏi khu phố cũ ở tuổi cửu tuần', deathCauseEn: 'Rode away from the old street in their nineties', flagsAdd: ['elder_outcast_ending_done'] },
+      { labelVi: 'Đòi lại món nợ cũ từ tay chủ sạp đầu phố', labelEn: 'Collect an old debt from the corner stall boss',
+        outcomes: [
+          { w: 50, effects: { health: -12, wealth: 14, rep: 5 }, flagsAdd: ['elder_outcast_ending_done'],
+            resultVi: 'Gã chủ sạp nhìn vết sẹo trên tay bạn rồi lẳng lặng đếm đủ tiền đặt lên bàn.',
+            resultEn: 'The stall boss looks at the scars on your hand and quietly counts the full sum onto the table.' },
+          { w: 50, ...endsLife('last_bout', 'Đám bảo vệ của sạp ùa ra trước khi bạn kịp lùi lại. Bạn ngã xuống trên nền đá lát mà mình đã đi qua suốt cả đời.',
+            'The stall guards rush out before you can step back. You fall upon the paving stones you walked your whole life.', { health: -35 }),
+            deathCauseVi: 'Ngã xuống trên con hẻm cũ trong lần đòi nợ cuối', deathCauseEn: 'Fell on the old alley stones collecting one last debt', flagsAdd: ['elder_outcast_ending_done'] }
+        ] },
+      { labelVi: 'Ở lại căn gác nhỏ và nghe tiếng phố thêm vài năm', labelEn: 'Stay in the small room and listen to the street a few more years',
+        effects: { sanity: 4, health: 2 }, flagsAdd: ['elder_outcast_ending_done'],
+        resultVi: 'Đoàn xe lăn bánh đi xa. Bạn pha ấm nước nóng và ngồi nhìn nắng chiều chiếu qua khe cửa.',
+        resultEn: 'The wagon rolls away. You boil a pot of water and watch the afternoon light slant through the window gap.' }
+    ]
+  }
+];
+
+const ELDER_CHAPTER_EVENTS = [
+  {
+    id: 'elder_chapter_chronicle_offer', age: [68, 125], major: true, weight: 9,
+    forbids: ['Distorted', 'elder_chronicle_done'],
+    vi: '[Người chép sử tìm đến] Một biên tập viên mang cặp tài liệu của Dieci đến gõ cửa nhà bạn. Anh ta nói những người còn nhớ chuyện bốn mươi năm trước ở khu này chỉ đếm trên đầu ngón tay, muốn ghi lại lời kể của bạn.',
+    en: '[A chronicler at the door] A compiler carrying a Dieci briefcase knocks at your door. He says those who still remember this district forty years ago can be counted on one hand, and asks to record your account.',
+    choices: [
+      { labelVi: 'Kể lại đúng những gì đã xảy ra, không thêm bớt', labelEn: 'Tell exactly what happened, adding and hiding nothing',
+        effects: { sanity: 4, rep: 5, heat: 3 }, flagsAdd: ['elder_chronicle_done'],
+        resultVi: 'Anh ta viết kín hai cuốn sổ tay rồi cúi đầu cảm ơn trước khi cất vào cặp khóa số.',
+        resultEn: 'He fills two notebooks, bows in thanks, and locks them inside his case.' },
+      { labelVi: 'Lược bỏ những cái tên nhạy cảm để giữ yên thân', labelEn: 'Leave out sensitive names to keep the peace',
+        effects: { sanity: 2, wealth: 8, network: 3 }, flagsAdd: ['elder_chronicle_done'],
+        resultVi: 'Anh ta nhận ra những khoảng trống trong câu chuyện nhưng vẫn trả đủ nhuận bút như đã hẹn.',
+        resultEn: 'He notices the gaps in your account but pays the agreed fee in full.' },
+      { labelVi: 'Đuổi khéo, chuyện cũ không phải thứ để đóng quyển', labelEn: 'Send him away; old matters are not meant to be bound in books',
+        effects: { sanity: 3, heat: -3 }, flagsAdd: ['elder_chronicle_done'],
+        resultVi: 'Người biên tập viên khép sổ lại, để danh thiếp trên bàn rồi lặng lẽ cáo từ.',
+        resultEn: 'The compiler closes his notebook, leaves a card on the table, and quietly takes his leave.' }
+    ]
+  },
+  {
+    id: 'elder_chapter_longevity_price', age: [72, 125], major: true, weight: 9,
+    requires: ['ApexLongevity'], forbids: ['Distorted', 'elder_longevity_price_done'],
+    vi: '[Cái giá của năm tháng mượn thêm] Bác sĩ phụ trách hồ sơ tuổi thọ của bạn đặt bảng kết quả xét nghiệm lên bàn. Thuốc vẫn giữ tim đập đều, nhưng liều năm nay phải tăng gấp rưỡi nếu không muốn các khớp cứng lại vào mùa lạnh.',
+    en: '[The cost of borrowed decades] The physician managing your longevity file sets the test sheet on the desk. The regimen still keeps your pulse steady, yet this year’s dose must increase by half to keep your joints from stiffening in the cold.',
+    choices: [
+      { labelVi: 'Trả thêm phí và nhận liều thuốc đậm đặc', labelEn: 'Pay the surcharge and take the concentrated dose',
+        costAhn: 14, effects: { health: 8, sanity: -4 }, flagsAdd: ['elder_longevity_price_done'],
+        resultVi: 'Thuốc chạy qua tĩnh mạch lạnh buốt như nước đá, đổi lại sáng hôm sau bạn bước xuống cầu thang không cần vịn.',
+        resultEn: 'The medicine runs ice-cold through your veins, but the next morning you walk down the stairs without holding the rail.' },
+      { labelVi: 'Giữ nguyên liều cũ, chấp nhận cơ thể chậm đi', labelEn: 'Keep the old dose and accept a slower body',
+        effects: { health: -4, sanity: 4 }, flagsAdd: ['elder_longevity_price_done'],
+        resultVi: 'Bác sĩ ghi chú vào bìa hồ sơ. Cổ tay bạn hơi nhức lúc trời trở gió nhưng đầu óc nhẹ nhõm hơn.',
+        resultEn: 'The doctor makes a note on the folder cover. Your wrist aches when the wind turns, yet your mind feels lighter.' }
+    ]
+  },
+  {
+    id: 'elder_chapter_third_generation', age: [74, 125], major: true, weight: 9,
+    forbids: ['Distorted', 'elder_third_gen_done'],
+    vi: '[Hậu duệ của người quen cũ] Một người trẻ tuổi mang theo kỷ vật quen mắt tìm tới gõ cửa. Đó là cháu của người từng đi cùng bạn thời mới vào nghề, nay muốn xin bạn một lời chỉ dẫn trước kỳ sát hạch.',
+    en: '[Grandchild of an old acquaintance] A young person carrying a familiar keepsake knocks at your door. They are the grandchild of someone who walked beside you in your early years, asking for guidance before their exam.',
+    choices: [
+      { labelVi: 'Dành một tuần chỉ lại những thế phòng thân căn bản', labelEn: 'Spend a week teaching fundamental defensive stances',
+        effects: { sanity: 5, rep: 4, health: -3, network: 4 }, flagsAdd: ['elder_third_gen_done'],
+        resultVi: 'Đứa nhỏ tiếp thu nhanh hệt như người xưa. Ngày cuối tuần nó để lại giỏ quà trước hiên rồi lên đường đi thi.',
+        resultEn: 'The youth learns quickly, just like their grandparent. At week’s end they leave a gift basket on the porch and set off for the exam.' },
+      { labelVi: 'Tặng một khoản lộ phí và khuyên nó chọn nghề khác an toàn hơn', labelEn: 'Give travel money and advise choosing a safer trade',
+        costAhn: 8, effects: { sanity: 4, network: 2 }, flagsAdd: ['elder_third_gen_done'],
+        resultVi: 'Đứa nhỏ cầm túi tiền cúi đầu thật sâu. Bạn không biết nó có nghe lời khuyên ấy hay không.',
+        resultEn: 'The youth takes the pouch with a deep bow. You cannot tell whether they will heed the warning.' }
+    ]
+  }
+];
+
+export const ELDER_TWILIGHT_EVENTS = [...NON_APEX_ENDINGS, ...ELDER_CHAPTER_EVENTS];
 export const APEX_TWILIGHT_EVENTS = [...LONGEVITY, ...COLOR_ENDINGS, ...FINGER_ENDINGS];

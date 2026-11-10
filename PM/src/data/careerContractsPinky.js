@@ -181,7 +181,7 @@ export const PINKY_CONTRACTS = [
     'You sit the full three days. He opens the door, and is no longer retired.'),
 
   rq('pinky_undefeated', 5, 'Kẻ chưa ai thắng', 'The one no one has beaten',
-    'Có một tay kiếm mà Pinky chưa bao giờ thắng được. Không ai biết tên thật, chỉ biết nơi ông xuất hiện mỗi mùa. Lời thề của bạn đòi bạn phải thử.',
+    'Có một tay kiếm Pinky chưa bao giờ thắng được. Không ai biết tên thật, chỉ biết nơi ông xuất hiện mỗi mùa. Lời thề của bạn đòi bạn phải thử.',
     'There is a swordsman the Pinky has never beaten. No one knows the real name, only where he appears each season. Your own oath requires you to try.',
     'Bạn không thắng. Nhưng ông đứng yên một nhịp dài hơn bình thường để nhìn thanh kiếm của bạn, và cả Pinky đồn rằng ông đã gật đầu.',
     'You do not win. But he stands still a beat longer than usual to look at your sword, and the Pinky says he nodded.',

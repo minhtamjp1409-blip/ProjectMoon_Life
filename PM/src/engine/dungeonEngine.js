@@ -1361,7 +1361,8 @@ export function useDungeonEgo(charState) {
   const char = { ...charState, stats: { ...charState.stats } };
   session.egoCharges -= 1;
   session.egoActive = true;
-  session.sanityStrain = clamp((session.sanityStrain || 0) + price.strain, 0, 99);
+  const egoStrain = Math.round(price.strain * companionPerk(charState, session).strainMult);
+  session.sanityStrain = clamp((session.sanityStrain || 0) + egoStrain, 0, 99);
   char.stats.sanity = clamp((char.stats.sanity || 0) + price.sanity, 1, 100);
   char.resonance = clamp((char.resonance || 0) + price.resonance, 0, 100);
   rememberResonance(char, price.resonance);
@@ -1847,7 +1848,7 @@ export function resolveDungeonChoice(charState, choiceIndex, rng = Math.random) 
 
     // Perk: Moral Beacon (Calm)
     if (cp.sanityRestore > 0 && spDelta < 0) {
-      spDelta = Math.min(0, spDelta + cp.sanityRestore);
+      spDelta = applyCalmToSpDelta(spDelta, char, session);
       companionNotes.push({
         vi: `[Ngọn hải đăng] Ánh mắt kiên định của ${companion.nameVi} xua tan cơn hoảng loạn, neo giữ tâm trí bạn.`,
         en: `[Moral Beacon] ${companion.nameEn} anchored your mind against creeping madness.`
@@ -1899,7 +1900,8 @@ export function resolveDungeonChoice(charState, choiceIndex, rng = Math.random) 
   const stance = STANCE[session.stance || 'balanced'];
   const colorCalm = isColorRank(char) ? DUNGEON_BALANCE.ego.color.strainMult : 1;
   const rawStrain = ((stage.strainGain || 15) + (choice.strainDelta || 0)) * stance.strain * (session.stageScanned ? 0.5 : 1) * colorCalm * cp.strainMult;
-  session.sanityStrain = clamp((session.sanityStrain || 0) + Math.round(rawStrain) + (success ? 0 : DUNGEON_BALANCE.failStrain) + companionStrain, 0, 100);
+  const failStrain = success ? 0 : Math.round(DUNGEON_BALANCE.failStrain * cp.strainMult);
+  session.sanityStrain = clamp((session.sanityStrain || 0) + Math.round(rawStrain) + failStrain + Math.round(companionStrain * cp.strainMult), 0, 100);
   if (session.id === ENSEMBLE_DUNGEON_ID) session.ensembleHarmony = Math.min(3, (session.ensembleHarmony || 0) + (choice.ensembleHarmony || 0));
 
   const notes = [...afterOilStage(char, session, choice)];

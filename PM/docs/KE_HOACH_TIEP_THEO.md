@@ -37,7 +37,7 @@ Mỗi đợt dưới đây được commit riêng, ghi vào `PROGRESS_LOG.md`, p
 | 134 | Dùng phần Ahn vượt trần khi cược cao (chờ chủ dự án chọn cách) | nhỏ | chờ chủ dự án |
 | 135–138 | Sửa logic theo bản rà soát 06/11: mạch truyện kẹt (`arc_middle_vengeance_saga`, `waitsForGate`, hàng đợi thread, `ripe_age`, Syndicate độc lập, Workshop), perk đồng đội & Gauntlet/Great Lake, NPC tự sống/con cái/phản ứng bước ngoặt, biến động thành phố & `scheme` theo nghề (xem `docs/KE_HOACH_DOT_135.md`) | lớn | đã xong (còn mục 3 Đợt 138 chờ chủ dự án) |
 | 141 | Đo perk đồng đội bằng `dungeon_sim --companion`, tách cột hồi sinh W Corp, đưa WARP về 1,6, sửa `parry`/`flee`/`trap_mitigation` cho khớp mô tả (xem `docs/KE_HOACH_DOT_135.md`) | nhỏ | đã xong |
-| 139–140 | Nâng cấp đạo diễn (lịch chung, lời mời Dungeon theo cơ hội, chủ đề, trạng thái thread, biến số câu chuyện) và event sau 60 tuổi (xem `docs/KE_HOACH_DOT_135.md`) | lớn | chưa làm |
+| 139–140 | Nâng cấp đạo diễn (sàn tuổi 18 cho hầm nguy hiểm, dời cổng khi HP < 40, dàn cổng sau tuổi 40, nối `createCityBlackboard` vào `utilityCurves`, luật đạo diễn người già) và event sau 60 tuổi (`effectiveMaxAge` +30 năm cho người sống thọ, kết thúc chủ động 90+ cho Fixer thường/Workshop/Outcast, chương cuối đời) (xem `docs/KE_HOACH_DOT_135.md`) | lớn | đã xong phần cốt lõi |
 | (chủ dự án) | Nghe thử âm thanh trên điện thoại và tai nghe | nhỏ | chờ chủ dự án |
 
 Đợt 114b có thêm dải bản đồ thu nhỏ trên điện thoại, theo bản góp ý thứ ba (ngày 02/11/2026). Đợt 118 và buổi nghe thử âm thanh cũng đến từ bản góp ý đó.

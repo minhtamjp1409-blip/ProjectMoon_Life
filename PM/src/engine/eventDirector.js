@@ -41,6 +41,9 @@ export function directorTags(event) {
   const pressure = eventPressure(event);
   if (pressure.danger || DANGER_PREFIX.has(prefix)) tags.add('danger');
   if (pressure.relief || RELIEF_PREFIX.has(prefix)) tags.add('relief');
+  if (event.legacy || (event.age?.[0] ?? 0) >= 55 || /^(?:elder_|twilight_|color_long_|color_quiet_|color_last_|finger_long_|finger_seat_|wing_apex_)/.test(event.id || '') || /kế nhiệm|kế vị|di sản|trao lại|hồ sơ đời/.test(event.vi || '')) {
+    tags.add('legacy');
+  }
   return [...tags];
 }
 
@@ -91,6 +94,29 @@ export function directorScore(event, char, weaver, baseUtility) {
   if (pending) {
     mult *= 1.25;
     reasons.push('Mạch cũ đang mở'); reasonsEn.push('An old thread is open');
+  }
+
+  // Elder pacing rule (Đợt 140.5): after 60, soften back-to-back danger and favor legacy/relief beats,
+  // while keeping occasional legacy-threatening danger if the last 5 years had none
+  if ((char.age || 0) >= 60) {
+    const dangerInFive = recent.filter((beat) => beat.tags?.includes('danger')).length;
+    if (tags.includes('legacy')) {
+      mult *= 1.28;
+      reasons.push('Chuyện di sản tuổi xế chiều'); reasonsEn.push('Late-life legacy beat');
+    }
+    if (tags.includes('relief')) {
+      mult *= 1.16;
+      reasons.push('Nhịp sống chậm lại ở tuổi già'); reasonsEn.push('Slower cadence in old age');
+    }
+    if (tags.includes('danger')) {
+      if (dangerInFive >= 1) {
+        mult *= 0.76;
+        reasons.push('Giảm bớt hiểm họa dồn dập tuổi già'); reasonsEn.push('Fewer back-to-back hazards in old age');
+      } else if (tags.includes('legacy')) {
+        mult *= 1.15;
+        reasons.push('Thử thách nhắm vào di sản'); reasonsEn.push('A threat to what you built');
+      }
+    }
   }
 
   return {

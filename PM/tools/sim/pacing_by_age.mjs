@@ -10,6 +10,7 @@ import { makePicker } from './lib/choicePolicy.mjs';
 
 const LIVES = Number(process.argv[2]) || 300;
 const POLICY = process.argv[3] === 'random' ? 'random' : 'focused';
+const ELDER_START = process.argv.includes('--elder');
 const pick = makePicker(POLICY);
 const BANDS = [[0, 12], [13, 17], [18, 24], [25, 32], [33, 40], [41, 50], [51, 60], [61, 75], [76, 120]];
 const band = (age) => BANDS.findIndex(([a, b]) => age >= a && age <= b);
@@ -19,6 +20,22 @@ const entries = [];
 for (let i = 0; i < LIVES; i++) {
   const rng = createRNG(`pace_${i}`);
   let char = createNewCharacter({ customName: `P${i}`, seed: `pace_${i}` });
+  if (ELDER_START) {
+    const routes = [
+      { job: 'Fixer', fixerGrade: 0, isColorFixer: true, flags: ['ColorFixer', 'ApexLongevity', 'apex_longevity_done'] },
+      { job: 'Syndicate', finger: 'Thumb', fingerRank: 3, flags: ['ApexLongevity', 'apex_longevity_done'] },
+      { job: 'Wing Employee', wingRank: 3, flags: ['ApexLongevity', 'apex_longevity_done'] }
+    ];
+    const r = routes[i % routes.length];
+    char = {
+      ...char,
+      age: 60,
+      ...r,
+      flags: [...new Set([...(char.flags || []), ...r.flags])],
+      merit: 220,
+      stats: { ...char.stats, health: 80, sanity: 80, wealth: 65, rep: 80, network: 60 }
+    };
+  }
   let guard = 0;
   while (char.alive && char.age < 120 && guard++ < 200) {
     const row = rows[band(char.age)];

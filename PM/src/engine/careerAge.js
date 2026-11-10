@@ -54,7 +54,15 @@ export function effectiveMinAge(entry, char) {
   if (lo == null) return null;
   // Childhood stories keep their age; only adult-career stories shift, and only once a career exists
   if (lo < CAREER_AGE_CLASSIC || !char || char.job === 'Child') return lo;
-  return Math.max(careerAgeOf(char), lo - careerAgeShift(char));
+  const opensDangerous = Array.isArray(entry?.choices) && entry.choices.some((c) => [
+    'dungeon_warp_train',
+    'dungeon_lobotomy_ruin',
+    'dungeon_great_lake',
+    'dungeon_bloodfiend_carnival',
+    'dungeon_claw_judgment'
+  ].includes(c?.startDungeon));
+  const floor = opensDangerous ? Math.max(CAREER_AGE_CLASSIC, careerAgeOf(char)) : careerAgeOf(char);
+  return Math.max(floor, lo - careerAgeShift(char));
 }
 
 export const reachedCareerAge = (char) => (char?.age ?? 0) >= careerAgeOf(char);

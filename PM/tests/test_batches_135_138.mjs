@@ -11,7 +11,12 @@ const selectWeaverEvent = (c, rng) => selectEventWithWeaverAI({
   consequencePool: CONSEQUENCE_EVENTS,
   rng
 });
-import { charHasWorkshopAccess, matchesNeed } from '../src/engine/eventConditions.js';
+import { charHasWorkshopAccess, matchesNeed, matchesEventContext } from '../src/engine/eventConditions.js';
+import { effectiveMinAge } from '../src/engine/careerAge.js';
+import { planFirstGate, firstGateAge, gateDeferredForHealth } from '../src/engine/dungeonPacing.js';
+import { directorScore } from '../src/engine/eventDirector.js';
+import { evaluateEventConsiderations } from '../src/engine/utilityCurves.js';
+import { createCityBlackboard } from '../src/engine/cityBlackboard.js';
 import { hasEstablishedStanding } from '../src/engine/economyModel.js';
 import { ANNUAL_MERIT_OPPORTUNITIES } from '../src/data/annualMeritOpportunities.js';
 import { LIFE_MINORS, endYear } from '../src/engine/yearPlanner.js';
@@ -305,4 +310,85 @@ assert.equal(calmShare(4, 8), 2, 'a small sanity hit still lands');
 assert.equal(calmShare(20, 8), 8, 'a large hit loses the full restore');
 assert.equal(calmShare(1, 8), 0);
 
-console.log('=== ALL BATCHES 135–138 TESTS PASSED ===');
+// Stage-mode resolveDungeonChoice also respects calmShare (matching evaluateDungeonChoiceOdds)
+{
+  const calmChar = createNewCharacter({ seed: 'calm-stage-141', startAge: 28 });
+  calmChar.job = 'Fixer';
+  calmChar.fixerGrade = 5;
+  calmChar.stats.health = 80;
+  calmChar.stats.sanity = 80;
+  calmChar.npcs = { partner: { nameVi: 'Linh', nameEn: 'Linh', status: 'alive', bond: 60, archetype: 'idealist' } };
+  calmChar.pendingDungeon = createDungeonSession('dungeon_outskirts_ruins', calmChar);
+  const st0 = getDungeonCurrentStage(calmChar.pendingDungeon);
+  const spIdx = st0.choices.findIndex((c) => (c.failFx?.sanity || 0) < 0);
+  if (spIdx >= 0) {
+    const preview = evaluateDungeonChoiceOdds(st0.choices[spIdx], calmChar, calmChar.pendingDungeon);
+    const res = resolveDungeonChoice(calmChar, spIdx, () => 0.999);
+    assert.equal(res.char.stats.sanity - 80, preview.failSp, 'Stage-mode resolveDungeonChoice SP loss with calm companion must match preview failSp');
+  }
+}
+
+// ----------------------------------------------------------------------------
+// ĐỢT 139 & 140 — FLOOR 18 DUNGEON, DEFER < 40 HP, BLACKBOARD, LONGEVITY +30, ELDER ENDINGS
+// ----------------------------------------------------------------------------
+console.log('5. Testing Đợt 139 & 140: Dungeon Floor 18, Low-HP Deferral, Blackboard, Longevity Ceiling +30, Elder Endings...');
+{
+  const earlyChar = createNewCharacter({ seed: 'early-139', startAge: 16 });
+  earlyChar.age = 16;
+  earlyChar.careerAge = 15;
+  earlyChar.job = 'Fixer';
+  earlyChar.fixerGrade = 9;
+  const warpGate = ALL_STORY_EVENTS.find((e) => e.id === 'gate_warp_fixer_request');
+  assert.ok(effectiveMinAge(warpGate, earlyChar) >= 18, 'Dangerous dungeon gate must have effectiveMinAge >= 18 even when careerAge is 15');
+  assert.ok(firstGateAge(earlyChar) >= 18, 'firstGateAge must never be below 18');
+
+  // Gate deferral when HP < 40
+  const hurtChar = createNewCharacter({ seed: 'hurt-139', startAge: 24 });
+  hurtChar.age = 24;
+  hurtChar.job = 'Fixer';
+  hurtChar.fixerGrade = 7;
+  hurtChar.stats.health = 35;
+  assert.equal(gateDeferredForHealth(hurtChar), true);
+  assert.equal(planFirstGate(hurtChar), false, 'planFirstGate must defer when HP < 40');
+  assert.equal(isEventEligible(warpGate, hurtChar), false, 'Gate event must not be eligible when HP < 40');
+
+  // Blackboard wired in evaluateEventConsiderations
+  const bbChar = createNewCharacter({ seed: 'bb-139', startAge: 30 });
+  bbChar.taboo = 2;
+  bbChar.heat = 50;
+  bbChar.motifs = { violence: 4 };
+  const bb = createCityBlackboard(bbChar);
+  const synAmbush = { id: 'syn_turf_ambush', major: true, vi: 'Phục kích tại ngõ hẹp.' };
+  const evalWithBb = evaluateEventConsiderations(synAmbush, bbChar, bb);
+  assert.ok(evalWithBb.scoreMultiplier > 1.5, 'Blackboard headScrutiny and activeSyndicateWar must boost ambush event consideration');
+
+  // Longevity extends maxAge >= 85 by +30 years
+  const sample90 = ALL_STORY_EVENTS.find((e) => e.age && e.age[1] === 90 && !e.requires?.length && !e.need);
+  if (sample90) {
+    const elder105 = createNewCharacter({ seed: 'elder-140', startAge: 105 });
+    elder105.age = 105;
+    elder105.job = sample90.jobs?.[0] || 'Fixer';
+    assert.equal(matchesEventContext(sample90, elder105), false, 'Without longevity flag, age 105 exceeds maxAge 90');
+    elder105.flags = ['ApexLongevity'];
+    assert.equal(matchesEventContext(sample90, elder105), true, 'With ApexLongevity, maxAge 90 extends to 120');
+  }
+
+  // Active elder endings for non-Color Fixer, Workshop, and Outcast at age 92
+  for (const id of ['elder_fixer_last_ledger', 'elder_workshop_last_forge', 'elder_outcast_last_alley']) {
+    const ev = ALL_STORY_EVENTS.find((e) => e.id === id);
+    assert.ok(ev, `Elder ending event ${id} must exist in ALL_STORY_EVENTS`);
+    assert.equal(ev.choices.length, 3, `${id} must offer 3 choices`);
+  }
+
+  // Elder director pacing rule (age >= 60 boosts legacy/relief and softens repeat danger)
+  const elder65 = createNewCharacter({ seed: 'dir-elder-140', startAge: 65 });
+  elder65.age = 65;
+  elder65.weaver.recentBeats = [{ id: 'prev_danger', age: 64, tags: ['danger'] }];
+  const legacyEv = ALL_STORY_EVENTS.find((e) => e.id === 'elder_chapter_chronicle_offer');
+  const dLegacy = directorScore(legacyEv, elder65, elder65.weaver, 100);
+  assert.ok(dLegacy.tags.includes('legacy'), 'elder_chapter_chronicle_offer must carry legacy tag');
+  assert.ok(dLegacy.multiplier > 1.15, 'Elder director rule must boost legacy events at age 65');
+  console.log('  ✓ Đợt 139 & 140 verified.');
+}
+
+console.log('=== ALL BATCHES 135–141 TESTS PASSED ===');

@@ -130,9 +130,9 @@ Những lỗi này làm người chơi mất hẳn một nội dung, không ch�
   - **Sau 40 tuổi, số event lớn không giảm** cho tới khoảng 60. Sau 60 nó giảm còn khoảng 0,5 mỗi năm, sau 75 còn 0,2.
   - **Dungeon giảm mạnh.** Từ 0,15–0,16 lượt mỗi năm ở tuổi 18–32 xuống 0,02 sau 40 tuổi, gấp khoảng 8 lần. Tuổi trung vị lúc vào hầm là 21–24.
   - **Hầu như không có năm nào im lặng.** Minor giữ đều khoảng 1,7–2 mỗi năm. Cảm giác "ít chuyện" sau 40 là do thiếu event lớn và Dungeon, không phải do không có gì xảy ra.
-  - **17 tuổi đã có thể vào WARP và Lobotomy** (2 lượt trong mẫu). Lý do: tuổi vào nghề dao động 15–20 (`careerAge.js`), khung tuổi event bị dịch xuống theo (`careerAge.js:57`), và cổng đầu tiên đến từ tuổi vào nghề cộng 2. Mô phỏng không có ai vào hầm ở tuổi 16.
-  - Có 4–5 trên 16 lượt vào Great Lake và Bloodfiend lúc HP dưới 40.
-- **Blackboard bị bỏ qua.** `evaluateEventConsiderations(event, char, blackboard)` (`utilityCurves.js:74`) nhận `createCityBlackboard(char)` nhưng không dùng tới.
+  - **17 tuổi đã có thể vào WARP và Lobotomy** (2 lượt trong mẫu). Lý do: tuổi vào nghề dao động 15–20 (`careerAge.js`), khung tuổi event bị dịch xuống theo (`careerAge.js:57`), và cổng đầu tiên đến từ tuổi vào nghề cộng 2. Mô phỏng không có ai vào hầm ở tuổi 16. (**Đã sửa:** sàn tuổi tuyệt đối 18 cho các hầm nguy hiểm và `firstGateAge >= 18`; đo lại `under18 = 0` ở mọi hầm).
+  - Có 4–5 trên 16 lượt vào Great Lake và Bloodfiend lúc HP dưới 40. (**Đã sửa:** dời cổng khi HP < 40 qua `gateDeferredForHealth`; đo lại `enteredBelow40Hp = 0` ở mọi cổng thường).
+- **Blackboard bị bỏ qua.** `evaluateEventConsiderations(event, char, blackboard)` (`utilityCurves.js:74`) nhận `createCityBlackboard(char)` nhưng không dùng tới. (**Đã sửa:** nối `carmenWhispers`, `headScrutiny`, `activeSyndicateWar` và `causalKarmaDebt` vào `evaluateEventConsiderations`).
 
 ### Việc cần làm
 
@@ -226,6 +226,12 @@ Sau 60 tuổi, nhân vật thường đang ở bậc cao nhất. Các event kéo
 - Hiện trạng: 0,49 mỗi năm ở tuổi 61–75, 0,21 sau 75, và sau 90 thì chưa đo được vì mẫu quá nhỏ.
 
 **Thứ tự đề xuất:** làm mục 1 trước, vì mục này chỉ cần một luật và đo được ngay. Tiếp theo là mục 4, rồi mục 2. Mục 3 làm sau cùng, khi Đợt 139 đã có thẻ chủ đề.
+
+- **Đã xong (mục 1, 2, 4, 5 & `--elder`):**
+  - Mục 1: `effectiveMaxAge` trong `src/engine/eventConditions.js` cộng thêm `+30` năm cho event có `maxAge >= 85` (trừ khi `elderOk === false`) khi nhân vật có `ApexLongevity`, `FullBodyProsthetic`, `Bloodfiend` hoặc `Distorted`.
+  - Mục 4 & 2: Thêm 3 kết thúc chủ động tuổi 90+ cho Fixer chưa lên Color (`elder_fixer_last_ledger`), nhánh Workshop (`elder_workshop_last_forge`) và Outcast (`elder_outcast_last_alley`), cùng 3 event chương cuối đời dùng chung (`elder_chapter_chronicle_offer`, `elder_chapter_longevity_price`, `elder_chapter_third_generation`) trong `src/data/eventsApexTwilight.js`.
+  - Mục 5: `directorTags` và `directorScore` trong `src/engine/eventDirector.js` gắn thẻ `legacy`, tăng trọng số `legacy`/`relief` và giảm `danger` dồn dập sau 60 tuổi.
+  - Đo bằng `node tools/sim/pacing_by_age.mjs 60 focused --elder`: tuổi 61–75 đạt `0,74` major/năm (năm im lặng `2%`), tuổi 76–120 đạt `0,38` major/năm (tăng từ `0,21`, năm im lặng `4% < 5%`).
 
 ---
 

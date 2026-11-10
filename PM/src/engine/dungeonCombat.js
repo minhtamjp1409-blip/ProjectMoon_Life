@@ -370,15 +370,16 @@ export function resolveGauntletChoice(char, session, choiceIndex, rng, ctx) {
       c.plan.splice(c.floor + 1, 0, { kind: 'fight', tier: 3, elite: true });
       fx = 'door';
     } else if (choice.restAction === 'shortcut') {
+      const restStrainMult = ctx.companionPerk ? ctx.companionPerk(char, session).strainMult : 1;
       c.sideUsed = true;
       if (rng() < evadeChance(ctx, char, session)) {
         skip = 1;
         onShortcut(session, true);
-        session.sanityStrain = clamp((session.sanityStrain || 0) + 18, 0, 100);
+        session.sanityStrain = clamp((session.sanityStrain || 0) + Math.round(18 * restStrainMult), 0, 100);
         fx = 'shortcut';
       } else {
         char.stats.health = clamp(char.stats.health - 10, 0, 100);
-        session.sanityStrain = clamp((session.sanityStrain || 0) + 12, 0, 100);
+        session.sanityStrain = clamp((session.sanityStrain || 0) + Math.round(12 * restStrainMult), 0, 100);
         text = { vi: choice.failVi, en: choice.failEn };
         fx = 'hit';
       }
@@ -441,7 +442,10 @@ export function resolveGauntletChoice(char, session, choiceIndex, rng, ctx) {
   if (sig) {
     ({ taken, breaks, quality, line, fx } = sig);
     if (sig.sanity) char.stats.sanity = clamp(char.stats.sanity - sig.sanity, 0, 100);
-    if (sig.strain) session.sanityStrain = clamp((session.sanityStrain || 0) + sig.strain, 0, 100);
+    if (sig.strain) {
+      const sigStrainMult = sig.strain > 0 && ctx.companionPerk ? ctx.companionPerk(char, session).strainMult : 1;
+      session.sanityStrain = clamp((session.sanityStrain || 0) + Math.round(sig.strain * sigStrainMult), 0, 100);
+    }
   } else if (action === 'clashStake') {
     const stake = c.stakeList?.some((s) => s.id === choice.stakeId) ? stakeById(ctx, char, session, choice.stakeId) : null;
     clash = rollClash(ctx, char, session, stake, rng);
@@ -523,7 +527,8 @@ export function resolveGauntletChoice(char, session, choiceIndex, rng, ctx) {
   const strain = (COMBAT_BALANCE.strainBase + floor.tier * COMBAT_BALANCE.strainPerTier + (intent.kind === 'mind' ? COMBAT_BALANCE.strainMind : 0) - (action === 'guard' ? 2 : 0))
     * (session.stageScanned ? 0.5 : 1) * ctx.strainMult(char, session);
   const tick = afterFightTurn(session);
-  session.sanityStrain = clamp((session.sanityStrain || 0) + Math.round(strain) + tick.strain, 0, 100);
+  const tickStrain = tick.strain > 0 ? Math.round(tick.strain * (cp?.strainMult ?? 1)) : tick.strain;
+  session.sanityStrain = clamp((session.sanityStrain || 0) + Math.round(strain) + tickStrain, 0, 100);
   notes.push(line, ...tick.notes);
 
   c.guard = Math.min(c.guardMax, Math.max(0, c.guard - breaks));

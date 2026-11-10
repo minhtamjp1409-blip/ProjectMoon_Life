@@ -3197,5 +3197,20 @@ Chạy kiểm định mô phỏng 500 vòng đời với chiến lược ngườ
 * **Giọng văn.** "kiếm khách" ở cảnh Pinky, apex và hợp đồng đổi thành "tay kiếm"; "quán trọ" đổi thành "quán rượu" hoặc "nhà trọ". "kiếm khách" được giữ ở các đoạn về Blade Lineage và Kurokumo, vì hai nhóm này vốn mang phong cách đó.
 * **Kiểm định.** Mở rộng `tests/test_batches_135_138.mjs`: `scheme` không còn trả Merit, sức mạnh hợp đồng tăng đúng 4 trong năm và về 0 năm sau, `calmShare` giữ tối thiểu nửa đòn. `npm test` và `npm run build` đạt 100%.
 
+##### 2.42. Đồng bộ `calmShare` và `strainMult`, sàn tuổi & HP mở cổng Dungeon, Blackboard và đời sống thọ sau 60 tuổi — Đợt 139–141 bổ sung (10/11/2026)
+* **Khép kín Đợt 141 (`dungeonEngine.js`, `dungeonCombat.js`, `careerContractsPinky.js`).**
+  * Chế độ chặng (`resolveDungeonChoice` tại `dungeonEngine.js`) chuyển sang gọi `applyCalmToSpDelta(spDelta, char, session)` thay vì cộng thẳng `cp.sanityRestore`, khớp 100% với preview `evaluateDungeonChoiceOdds`.
+  * Áp hệ số `strainMult` của đồng đội `secretive` vào các nguồn tăng Strain trước đây bị bỏ sót: lối tắt (`shortcut`), luật riêng hầm ngục (`sig.strain > 0`), nhịp đồng hồ cuối lượt (`tick.strain > 0`), kích hoạt E.G.O (`useDungeonEgo`) và phạt trượt kiểm định ở chế độ chặng (`failStrain`).
+  * Bỏ chữ `mà` thừa trong `careerContractsPinky.js:184`.
+* **Đợt 139 — Nhịp cổng Dungeon an toàn và City Blackboard (`careerAge.js`, `dungeonPacing.js`, `weaverAI.js`, `utilityCurves.js`).**
+  * *Sàn tuổi tuyệt đối 18 cho hầm nguy hiểm:* `effectiveMinAge` giữ sàn tuổi tối thiểu `18` cho mọi sự kiện mở `dungeon_warp_train`, `dungeon_lobotomy_ruin`, `dungeon_great_lake`, `dungeon_bloodfiend_carnival` và `dungeon_claw_judgment` bất kể nhân vật vào nghề sớm từ 15–17 tuổi; `firstGateAge` dùng `Math.max(18, careerAgeOf(char) + 2)`.
+  * *Hoãn cổng khi HP < 40 và dàn cổng sau tuổi 40:* Thêm `gateDeferredForHealth(char)` (`HP < 40`) trong `dungeonPacing.js` và `weaverAI.js` để dời các cổng thường sang năm sau khi nhân vật đang trọng thương; mở rộng hạn mức `GATE_PROFILES` và giữ cổng cuối cho giai đoạn từ 38 tuổi trở đi. Đo lại bằng `pacing_by_age.mjs 80 focused`: `under18 = 0` và `enteredBelow40Hp = 0` ở mọi cổng hầm ngục thường; tần suất Dungeon tuổi 41–60 tăng gấp đôi (`0,02 -> 0,03–0,04`).
+  * *Nối `createCityBlackboard`:* `evaluateEventConsiderations` trong `src/engine/utilityCurves.js` đọc trực tiếp `carmenWhispers`, `headScrutiny`, `activeSyndicateWar` và `causalKarmaDebt` từ `blackboard`.
+* **Đợt 140 — Mở rộng tuổi trần cho người sống thọ, kết thúc chủ động tuổi 90+ và nhịp đạo diễn tuổi già (`eventConditions.js`, `eventsApexTwilight.js`, `eventDirector.js`).**
+  * *Tuổi trần sống thọ (`effectiveMaxAge`):* Khi nhân vật có `ApexLongevity`, `FullBodyProsthetic`, `Bloodfiend` hoặc `Distorted`, các sự kiện có `age[1] >= 85` (trừ khi `elderOk === false`) được cộng thêm `30` năm tuổi trần.
+  * *Kết thúc chủ động và chương cuối đời:* Thêm 3 sự kiện kết thúc chủ động từ 90 tuổi (3 lựa chọn: khép lại êm đềm, liều một vố cuối hoặc tiếp tục sống) cho Fixer chưa lên Color (`elder_fixer_last_ledger`), nhánh Workshop (`elder_workshop_last_forge`) và Outcast (`elder_outcast_last_alley`), cùng 3 sự kiện chương tuổi già (`elder_chapter_chronicle_offer`, `elder_chapter_longevity_price`, `elder_chapter_third_generation`).
+  * *Luật đạo diễn tuổi già (`eventDirector.js`):* Gắn thẻ `legacy` và sau 60 tuổi tăng trọng số `legacy`/`relief`, giảm bớt `danger` dồn dập liền nhau. Thêm cờ `--elder` vào `tools/sim/pacing_by_age.mjs`: ở tuổi 61–75 đạt `0,74` major/năm (năm im lặng `2%`), tuổi 76–120 đạt `0,38` major/năm (tăng từ `0,21`, năm im lặng `4%`).
+* **Kiểm định.** Mở rộng `tests/test_batches_135_138.mjs`; chạy `vi_prose_scan.mjs`, `voice_lint.mjs --fail`, `check_sentence_length.mjs --fail`, `npm test` và `npm run build` đạt 100%.
+
 #### 3. KIỂM ĐỊNH & BẢO ĐẢM TOÀN VẸN (VERIFICATION & INTEGRITY)
 * Tất cả các bộ kiểm thử tự động (`npm test`) bao gồm lint văn phong (`voice_lint.mjs`), chuẩn canon Project Moon (`lint_story.mjs`), và mô phỏng 500 khoảnh khắc đời người (`run_million_audit.mjs`) phải vượt qua 100% với 0 lỗi, 0 cảnh báo.

@@ -26,6 +26,7 @@ export const GATE_PROFILES = {
 };
 const DEFAULT_PROFILE = { guaranteed: 1, spacing: [8, 12], cooldown: 5, weight: 1 };
 export const GATE_COOLDOWN_YEARS = DEFAULT_PROFILE.cooldown;
+export const GATE_MIN_HP = 40;
 
 export const gateProfileOf = (char) => GATE_PROFILES[char?.job] || (char?.flags?.includes('ColorFixer') ? GATE_PROFILES['Color Fixer'] : DEFAULT_PROFILE);
 export const gateWeightMult = (char) => gateProfileOf(char).weight;
@@ -36,9 +37,9 @@ const fnv = (text) => {
   return h >>> 0;
 };
 
-/** The age by which this life will have been offered a gate: two to seven years into working life. */
+/** The age by which this life will have been offered a gate: two to seven years into working life (never below 18). */
 export function firstGateAge(char) {
-  return careerAgeOf(char) + 2 + (fnv(`${char.seed ?? char.name ?? ''}|gate`) % 6);
+  return Math.max(18, careerAgeOf(char) + 2) + (fnv(`${char.seed ?? char.name ?? ''}|gate`) % 6);
 }
 
 export const gatesSeen = (char) => (char.seenEvents || []).filter(isGateEvent).length;
@@ -63,12 +64,23 @@ export function nextGateDueAge(char) {
   if (seen === 0) return firstGateAge(char);
   const [lo, hi] = profile.spacing;
   const gap = lo + (fnv(`${char.seed ?? ''}|gate-gap|${seen}`) % (hi - lo + 1));
-  return (Number.isFinite(char.lastGateAge) ? char.lastGateAge : char.age) + gap;
+  const nextAge = (Number.isFinite(char.lastGateAge) ? char.lastGateAge : char.age) + gap;
+  // Reserve the final guaranteed gate for mid/late career (age 35+) so post-40 lives still see dungeon offers
+  if (seen === profile.guaranteed - 1 && profile.guaranteed >= 3) {
+    return Math.max(35, nextAge);
+  }
+  return nextAge;
 }
 
 /** True while the last gate is too recent for another one to be offered. */
 export function gateOnCooldown(char) {
   return Number.isFinite(char.lastGateAge) && char.age - char.lastGateAge < gateProfileOf(char).cooldown;
+}
+
+/** True when the character is too wounded for a non-mandatory dungeon gate offer this year. */
+export function gateDeferredForHealth(char) {
+  const hp = char?.stats?.health ?? char?.health ?? 50;
+  return hp < GATE_MIN_HP;
 }
 
 /**
@@ -78,6 +90,7 @@ export function gateOnCooldown(char) {
  */
 export function planFirstGate(char) {
   if (!char.alive || char.flags?.includes('Distorted')) return false;
+  if (gateDeferredForHealth(char)) return false;
   const due = nextGateDueAge(char);
   if (due == null || char.age + 1 < due) return false;
   const pending = char.weaver?.pendingThreads || [];

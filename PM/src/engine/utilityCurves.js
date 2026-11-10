@@ -75,9 +75,10 @@ export function evaluateEventConsiderations(event, char, blackboard = {}) {
   let multiplier = 1.0;
   const considerationLogs = [];
 
-  // 1. Sanity Crisis Consideration (Exponential urgency as sanity approaches 0)
+  // 1. Sanity Crisis Consideration (Exponential urgency as sanity approaches 0, wired to blackboard.carmenWhispers)
   const sanityNorm = normalize(char.stats?.sanity ?? 50, 0, 100);
-  const sanityDistress = 1 - sanityNorm;
+  const whisperNorm = blackboard.carmenWhispers != null ? normalize(blackboard.carmenWhispers, 0, 100) : (1 - sanityNorm);
+  const sanityDistress = Math.max(1 - sanityNorm, whisperNorm);
   if (sanityDistress >= 0.6) {
     const distressWeight = ResponseCurves.exponential(sanityDistress, 2.5);
     if (event.id.includes('carmen') || event.id.includes('distort') || event.id.includes('panic')) {
@@ -89,10 +90,11 @@ export function evaluateEventConsiderations(event, char, blackboard = {}) {
     }
   }
 
-  // 2. City Heat & Taboo Scrutiny Consideration
+  // 2. City Heat & Taboo Scrutiny Consideration (wired to blackboard.headScrutiny & districtChaos)
   const heatNorm = normalize(char.heat || 0, 0, 100);
   const tabooNorm = normalize(char.taboo || 0, 0, 3);
-  const combinedScrutiny = Math.max(heatNorm, tabooNorm);
+  const bbScrutiny = blackboard.headScrutiny != null ? normalize(blackboard.headScrutiny, 0, 100) : 0;
+  const combinedScrutiny = Math.max(heatNorm, tabooNorm, bbScrutiny);
   if (combinedScrutiny >= 0.5) {
     const scrutinyWeight = ResponseCurves.sigmoid(combinedScrutiny, 0.6, 8);
     if (event.id.includes('claw') || event.id.includes('ambush') || event.id.includes('sweeper') || event.id.includes('raid')) {
@@ -100,6 +102,15 @@ export function evaluateEventConsiderations(event, char, blackboard = {}) {
       multiplier *= boost;
       considerationLogs.push(`Tầm ngắm của The Head / Hiệp hội dâng cao (x${boost.toFixed(2)})`);
     }
+  }
+  if (blackboard.activeSyndicateWar && (event.id.startsWith('syn_') || event.id.includes('turf') || event.id.includes('ambush'))) {
+    multiplier *= 1.18;
+    considerationLogs.push('Chiến sự Syndicate leo thang (x1.18)');
+  }
+  if ((blackboard.causalKarmaDebt || 0) >= 25 && (event.isCausalCallback || event.id.startsWith('csq_'))) {
+    const karmaBoost = 1 + normalize(blackboard.causalKarmaDebt, 0, 100) * 0.4;
+    multiplier *= karmaBoost;
+    considerationLogs.push(`Nợ nhân quả tích tụ (x${karmaBoost.toFixed(2)})`);
   }
 
   // 3. E.G.O Resonance Consideration (Sigmoid awakening curve)

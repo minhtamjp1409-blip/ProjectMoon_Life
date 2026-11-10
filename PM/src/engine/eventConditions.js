@@ -219,9 +219,22 @@ export function hasNarrativeContext(entry, char) {
   return true;
 }
 
+export const LONGEVITY_FLAGS = ['ApexLongevity', 'FullBodyProsthetic', 'Bloodfiend', 'Distorted'];
+export const hasExtendedLongevity = (char) =>
+  Array.isArray(char?.flags) && LONGEVITY_FLAGS.some((f) => char.flags.includes(f));
+
+export function effectiveMaxAge(entry, char) {
+  const hi = entry?.age?.[1];
+  if (hi == null) return null;
+  if (hi >= 85 && entry.elderOk !== false && hasExtendedLongevity(char)) {
+    return hi + 30;
+  }
+  return hi;
+}
+
 export function matchesEventContext(entry, char) {
   if (!entry || !char.alive) return false;
-  if (entry.age && (char.age < effectiveMinAge(entry, char) || char.age > entry.age[1])) return false;
+  if (entry.age && (char.age < effectiveMinAge(entry, char) || char.age > effectiveMaxAge(entry, char))) return false;
   if (entry.regions && !regionMatchesList(entry.regions, char.regionId)) return false;
   if (entry.jobs && !jobMatchesWithInheritance(entry.jobs, char, entry)) return false;
   if (entry.finger && entry.finger !== char.finger) return false;
