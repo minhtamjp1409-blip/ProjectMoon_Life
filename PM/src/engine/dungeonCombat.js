@@ -73,7 +73,7 @@ function enterFloor(session, char, index) {
   c.clashOpen = false;
   // A card played before a rest has done its work; it must not follow the player into the next fight
   session.cardActive = null;
-  session.companionParried = false;
+  // A companion's parry is one per run in every dungeon mode (Đợt 141); once per floor carried WARP from 56% to 89%
   const floor = c.plan[index];
   if (!floor || floor.kind === 'rest') {
     c.enemy = null;

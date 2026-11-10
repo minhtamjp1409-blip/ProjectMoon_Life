@@ -2,10 +2,15 @@
  * Dungeon balance: sends many characters through each dungeon with a few play styles and reports
  * how often they die, how much they earn, and what it does to the resources the rest of the game balances.
  * Usage: node tools/sim/dungeon_sim.mjs [runs=600] [--stake=0,1,2] [--policies=random,measured,informed]
+ *   [--ids=warp_train,great_lake] [--companion=none,veteran,idealist,...|all]
+ * --companion runs each entry as its own rows: 'none' sends everyone alone, an archetype sends a bonded partner
+ * of that archetype (and so its dungeon perk), 'all' runs none and every archetype, and leaving it out keeps
+ * whoever the birth gave, about a third of lives with someone.
  */
 import { createNewCharacter, createRNG, DUNGEON_DEFINITIONS, createDungeonSession, getDungeonCurrentStage, isDungeonChoiceAvailable, evaluateDungeonChoiceOdds, setDungeonStance, useDungeonSupply, resolveDungeonChoice } from '../../src/engine/gameEngine.js';
 import { pathToFileURL } from 'node:url';
 import { DUNGEON_BALANCE } from '../../src/engine/dungeonEngine.js';
+import { ARCHETYPE_DUNGEON_PERKS } from '../../src/data/npcPersonality.js';
 
 const RUNS = Number(process.argv[2] || 600);
 const mean = (a) => (a.length ? a.reduce((x, y) => x + y, 0) / a.length : 0);
@@ -22,6 +27,19 @@ function startChar(seed, rng) {
   c.merit = Math.floor(rng() * 120);
   c.resonance = Math.floor(rng() * 60);
   c.inventory = rng() < 0.3 ? [{ id: 'con_kcorp_ampoule' }] : [];
+  return c;
+}
+
+const COMPANION_ROLES = ['partner', 'mentee', 'friend', 'mentor'];
+export const SIM_COMPANIONS = Object.keys(ARCHETYPE_DUNGEON_PERKS);
+
+// A bond under 15 keeps someone home, so 'none' cools every candidate and an archetype puts a bonded partner first
+function setCompanion(c, companion) {
+  if (companion === 'mixed') return c;
+  const npcs = { ...c.npcs };
+  for (const role of COMPANION_ROLES) if (npcs[role]) npcs[role] = { ...npcs[role], bond: 0 };
+  if (companion !== 'none') npcs.partner = { role: 'partner', nameVi: 'Bạn đồng hành', nameEn: 'Companion', archetype: companion, tags: [companion], bond: 60, status: 'alive', deceased: false, memories: [] };
+  c.npcs = npcs;
   return c;
 }
 
@@ -139,15 +157,15 @@ POLICIES.informed = (stage, char, sess, rng) => {
 };
 
 /** Runs every dungeon with every play style; returns one row per dungeon and style. `only` limits the dungeons and styles. */
-export function runDungeonSim(RUNS, { ids = Object.keys(DUNGEON_DEFINITIONS), policies = Object.keys(POLICIES), stakes = [0] } = {}) {
+export function runDungeonSim(RUNS, { ids = Object.keys(DUNGEON_DEFINITIONS), policies = Object.keys(POLICIES), stakes = [0], companions = ['mixed'] } = {}) {
   const rows = [];
   for (const id of ids) {
-    for (const stake of stakes) for (const [pname, pol] of Object.entries(POLICIES).filter(([p]) => policies.includes(p))) {
-      const acc = { broken: 0, dead: 0, full: 0, fled: 0, wealth: [], merit: [], res: [], rep: [], hp: [], sp: [], stages: [], capHit: 0, strainMax: [], haul: [], clipped: [] };
+    for (const companion of companions) for (const stake of stakes) for (const [pname, pol] of Object.entries(POLICIES).filter(([p]) => policies.includes(p))) {
+      const acc = { broken: 0, dead: 0, restored: 0, full: 0, fled: 0, wealth: [], merit: [], res: [], rep: [], hp: [], sp: [], stages: [], capHit: 0, strainMax: [], haul: [], clipped: [] };
       for (let i = 0; i < RUNS; i++) {
         const seed = `dun_${id}_${pname}_${i}`; // same seeds across stakes, so a stake row differs only by the stake
         const rng = createRNG(seed);
-        let char = startChar(seed, rng);
+        let char = setCompanion(startChar(seed, rng), companion);
         const before = { w: char.stats.wealth, m: char.merit, r: char.resonance, rep: char.stats.rep, hp: char.stats.health, sp: char.stats.sanity };
         char.pendingDungeon = createDungeonSession(id, char, rng);
         const def = DUNGEON_DEFINITIONS[id];
@@ -180,7 +198,9 @@ export function runDungeonSim(RUNS, { ids = Object.keys(DUNGEON_DEFINITIONS), po
         if (resolution?.isEnding && !resolution?.isDead) acc.full++;
         else if (!char.alive) acc.dead++;
         else if (resolution?.outcome === 'conquered') acc.full++;
-  else if (resolution?.outcome === 'broken') acc.broken++;
+        // WARP's cleaners put a dead body back on the platform: a death the life survives, not a retreat
+        else if (resolution?.outcome === 'restored') acc.restored++;
+        else if (resolution?.outcome === 'broken') acc.broken++;
         else acc.fled++;
         acc.wealth.push(char.stats.wealth - before.w); acc.merit.push(char.merit - before.m); acc.res.push(char.resonance - before.r);
         acc.rep.push(char.stats.rep - before.rep); acc.hp.push(char.stats.health - before.hp); acc.sp.push(char.stats.sanity - before.sp);
@@ -191,7 +211,7 @@ export function runDungeonSim(RUNS, { ids = Object.keys(DUNGEON_DEFINITIONS), po
         acc.haul.push(haul);
         acc.clipped.push(Math.max(0, before.w + haul - 100));
       }
-      rows.push({ id: id.replace('dungeon_', ''), pol: pname, stake, dead: (acc.dead / RUNS * 100).toFixed(1) + '%', full: (acc.full / RUNS * 100).toFixed(1) + '%', broke: (acc.broken / RUNS * 100).toFixed(1) + '%', fled: (acc.fled / RUNS * 100).toFixed(1) + '%', stages: mean(acc.stages).toFixed(1), Ahn: mean(acc.wealth).toFixed(0), merit: mean(acc.merit).toFixed(0), reson: mean(acc.res).toFixed(0), rep: mean(acc.rep).toFixed(0), hp: mean(acc.hp).toFixed(0), sp: mean(acc.sp).toFixed(0), wCap: (acc.capHit / RUNS * 100).toFixed(0) + '%', haul: mean(acc.haul).toFixed(0), clip: mean(acc.clipped).toFixed(0), strain: mean(acc.strainMax).toFixed(0) });
+      rows.push({ id: id.replace('dungeon_', ''), pol: pname, ...(companion !== 'mixed' ? { comp: companion } : {}), stake, dead: (acc.dead / RUNS * 100).toFixed(1) + '%', restored: (acc.restored / RUNS * 100).toFixed(1) + '%', full: (acc.full / RUNS * 100).toFixed(1) + '%', broke: (acc.broken / RUNS * 100).toFixed(1) + '%', fled: (acc.fled / RUNS * 100).toFixed(1) + '%', stages: mean(acc.stages).toFixed(1), Ahn: mean(acc.wealth).toFixed(0), merit: mean(acc.merit).toFixed(0), reson: mean(acc.res).toFixed(0), rep: mean(acc.rep).toFixed(0), hp: mean(acc.hp).toFixed(0), sp: mean(acc.sp).toFixed(0), wCap: (acc.capHit / RUNS * 100).toFixed(0) + '%', haul: mean(acc.haul).toFixed(0), clip: mean(acc.clipped).toFixed(0), strain: mean(acc.strainMax).toFixed(0) });
     }
   }
   return rows;
@@ -199,5 +219,8 @@ export function runDungeonSim(RUNS, { ids = Object.keys(DUNGEON_DEFINITIONS), po
 
 const argList = (name) => (process.argv.find((a) => a.startsWith(`--${name}=`)) || '').split('=')[1]?.split(',').filter(Boolean);
 if (import.meta.url === pathToFileURL(process.argv[1] || '').href) {
-  console.table(runDungeonSim(RUNS, { stakes: (argList('stake') || ['0']).map(Number), ...(argList('policies') ? { policies: argList('policies') } : {}) }));
+  const comps = argList('companion');
+  const companions = comps?.includes('all') ? ['none', ...SIM_COMPANIONS] : comps;
+  const ids = argList('ids')?.map((x) => (x.startsWith('dungeon_') ? x : `dungeon_${x}`));
+  console.table(runDungeonSim(RUNS, { stakes: (argList('stake') || ['0']).map(Number), ...(argList('policies') ? { policies: argList('policies') } : {}), ...(companions ? { companions } : {}), ...(ids ? { ids } : {}) }));
 }

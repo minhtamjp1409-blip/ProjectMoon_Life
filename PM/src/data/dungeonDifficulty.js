@@ -8,11 +8,14 @@
 // in are pinned by tests/test_dungeon_difficulty.mjs against tools/sim/dungeon_sim.mjs.
 // Đợt 128: the Head lost its second lull and the Lake gained its omens, so both were retuned to stay on their rungs.
 // The Reverberation Ensemble is a story stage, not a rung, and keeps its own balance.
+// Đợt 141: WARP has no way out, so a run it does not clear ends with W Corp's cleaners restoring a stopped heart.
+// The simulator once counted those as retreats; at damage 1.9 they were 57% of measured runs and 89% of careful
+// readers, harder than the Lake. 1.6 puts it back level with the middle rung.
 
 export const DUNGEON_DIFFICULTY = {
   dungeon_claw_judgment: { rung: 1, damage: 1.45, guard: 1, check: 0 },
   dungeon_great_lake: { rung: 2, damage: 1.0, guard: 0, check: 0 },
-  dungeon_warp_train: { rung: 3, damage: 1.9, guard: 0, check: 0 },
+  dungeon_warp_train: { rung: 3, damage: 1.6, guard: 0, check: 0 },
   dungeon_lobotomy_ruin: { rung: 3, damage: 1.1, guard: 0, check: 0 },
   dungeon_bloodfiend_carnival: { rung: 3, damage: 0.7, guard: 0, check: 0 },
   dungeon_backstreets_night: { rung: 3, damage: 0.95, guard: 0, check: 0 },

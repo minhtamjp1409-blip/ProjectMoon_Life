@@ -229,6 +229,21 @@ Sau 60 tuổi, nhân vật thường đang ở bậc cao nhất. Các event kéo
 
 ---
 
+## Đợt 141 — Đo perk đồng đội và WARP (đã xong 10/11)
+
+Đo bằng `node tools/sim/dungeon_sim.mjs 200 --policies=measured --companion=all`. Số dưới đây là tỷ lệ chết (cả hồi sinh W Corp) trên tỷ lệ hoàn thành.
+
+| Đồng đội | Great Lake | WARP | Lobotomy | Outskirts |
+|---|---|---|---|---|
+| Không ai | 12/26 | 43,5/56,5 | 3,5/51 | 1/77 |
+| `veteran` (parry), trước khi sửa | 7,5/48 | 11/89 | 0,5/59 | 0/100 |
+| `veteran`, sau khi sửa | 9,5/30 | 27/73 | 2/57 | 0/100 |
+| `tinkerer` (trap), trước khi sửa | 4/42 | 15/85 | 0,5/65,5 | 0/99,5 |
+| `tinkerer`, sau khi sửa | 5,5/33,5 | 35,5/64,5 | 2/58 | 0/99,5 |
+
+- Đã sửa: `parry` một lần mỗi chuyến; perk `flee` chỉ khi HP ≤ 40; `trap_mitigation` giảm một nửa trong giao tranh; WARP về sát thương 1,6; mô phỏng tách cột `restored`.
+- Còn lại: đo các perk Clash và Sanity bằng bot `clasher`/`reader`. Outskirts có đồng đội nào cũng lên trên 92%; hầm dễ nhất nên chấp nhận được, nhưng cần xem lại nếu muốn Outskirts vẫn là một thử thách khi đi theo nhóm.
+
 ## Không làm
 
 - **1.1, gọi `rememberDirectorEvent` cho mọi event bắt buộc.** Việc này đã diễn ra lúc giải quyết event.

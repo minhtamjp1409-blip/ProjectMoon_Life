@@ -3176,5 +3176,16 @@ Chạy kiểm định mô phỏng 500 vòng đời với chiến lược ngườ
   * Rút gọn toàn bộ 146 nhãn lựa chọn (`labelVi`) vượt 15 từ xuống `<= 15` từ (`0` nhãn vượt ngưỡng trên toàn bộ kho sự kiện) và gỡ bỏ mọi chữ ghi giá tiền trùng lặp (`Chi X Ahn`, `(Tốn X Ahn)`) ở các lựa chọn đã có trường `costAhn` để UI không hiển thị hai lần.
 * **Kiểm định.** `vi_prose_scan.mjs`, `voice_lint.mjs --fail` (0 lỗi trên 34.008 chuỗi), `rhythm_scan.mjs --fail`, `check_sentence_length.mjs --fail`, `lint_story.mjs` (0 lỗi, 0 cảnh báo), `npm test` và `npm run build` đạt 100%.
 
+##### 2.40. Đo perk đồng đội, sửa số đếm WARP — Đợt 141 (10/11/2026)
+* **Mô phỏng có đồng đội.** `tools/sim/dungeon_sim.mjs` nhận thêm `--companion=none,veteran,...|all` và `--ids=...`. `none` cho mọi nhân vật đi một mình; một archetype gửi theo một bạn đồng hành gắn bó (bond 60) mang perk của archetype đó; bỏ cờ thì giữ người mà lúc sinh có sẵn, khoảng một phần ba số đời.
+* **WARP chết mà không ai thấy.** WARP không có lối ra, nên mọi chuyến không đi hết đều kết thúc bằng việc tim ngừng đập rồi được đội dọn W Corp hồi lại (`outcome: 'restored'`). Trước đây mô phỏng đếm trường hợp này là "bỏ chạy". Ở mức sát thương 1,9, 57% chuyến của bot `measured` và 89% của bot `informed` thực ra là chết rồi được hồi. Mô phỏng nay có cột `restored` riêng. `DUNGEON_DIFFICULTY.dungeon_warp_train.damage` trở lại 1,6 (giá trị của Đợt 126). `tests/test_dungeon_difficulty.mjs` chặn mức hồi sinh ở bậc 3 không vượt 50%.
+* **Perk đồng đội.** Đo 200 lượt mỗi ô với bot `measured` trên 7 hầm và sửa 3 chỗ lệch:
+  * `parry` reset mỗi tầng trong giao tranh, nên WARP lên 89% hoàn thành và Outskirts 100%. Nay `parry` chỉ dùng một lần mỗi chuyến, như chế độ chặng; WARP còn 73%.
+  * Perk `flee` mô tả "khi cạn sinh lực" nhưng cộng né đòn mọi lúc và cộng cả check thường. Nay chỉ cộng khi HP ≤ `FLEE_PERK_HP` (40).
+  * `trap_mitigation` mô tả giảm sát thương bẫy nhưng giảm cả mọi đòn giao tranh, nên WARP lên 85%. Nay trong giao tranh chỉ giảm một nửa; WARP còn 64%.
+  * Sau khi sửa, perk mạnh nhất cộng khoảng 5–17 điểm hoàn thành, và hầm khó vẫn có người chết.
+* **Còn để ngỏ.** Bảy loại perk `clash`, `calm`, `sanity_shield`, `strain_reduction`, `loot`, `salvage` và `merit` không đổi số chết hay hoàn thành với bot `measured`, vì bot không đọ Clash và không cạn Sanity. Chúng cần một bot đọ Clash (`clasher`/`reader`) để đo.
+* **Kiểm định.** `node tests/test_dungeon_difficulty.mjs` (claw 9,3%, Lake 23,3%, WARP 52,7%, Lobotomy 44%, Bloodfiend 42%, Backstreets 45%, Outskirts 80,3% hoàn thành) và `npm test` đạt 100%.
+
 #### 3. KIỂM ĐỊNH & BẢO ĐẢM TOÀN VẸN (VERIFICATION & INTEGRITY)
 * Tất cả các bộ kiểm thử tự động (`npm test`) bao gồm lint văn phong (`voice_lint.mjs`), chuẩn canon Project Moon (`lint_story.mjs`), và mô phỏng 500 khoảnh khắc đời người (`run_million_audit.mjs`) phải vượt qua 100% với 0 lỗi, 0 cảnh báo.

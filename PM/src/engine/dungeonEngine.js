@@ -911,6 +911,9 @@ export function pickDungeonCompanion(char) {
   return null;
 }
 
+/** Health at or under which a companion with the flee perk starts helping you get away. */
+export const FLEE_PERK_HP = 40;
+
 /** Single source of truth for the active companion's dungeon perk and its numeric modifiers. */
 export function companionPerk(char, session) {
   const comp = session?.companion;
@@ -935,8 +938,9 @@ export function companionPerk(char, session) {
     meritMult: t === 'merit' ? 1 + (p.meritBonus || 0.15) : 1,
     clashBonus: t === 'clash' ? (p.clashBonus || 0.1) : 0,
     clashDieBonus: t === 'clash' ? Math.max(1, Math.round((p.clashBonus || 0.1) * 10)) : 0,
-    evadeBonus: t === 'flee' ? (p.fleeBonus || 0.2) : t === 'check_bonus' ? (p.checkBonus || 0.08) : 0,
-    checkBonus: t === 'check_bonus' ? (p.checkBonus || 0.08) : t === 'flee' ? (p.fleeBonus || 0.2) * 0.5 : 0,
+    // The flee perk reads "when low on HP": it helps a hurt character get out, not a healthy one dodge everything
+    evadeBonus: t === 'flee' ? ((char?.stats?.health ?? 100) <= FLEE_PERK_HP ? (p.fleeBonus || 0.2) : 0) : t === 'check_bonus' ? (p.checkBonus || 0.08) : 0,
+    checkBonus: t === 'check_bonus' ? (p.checkBonus || 0.08) : 0,
     hpDamageMult: t === 'trap_mitigation' ? Math.max(0.4, 1 - (p.damageReduction || 0.3)) : 1,
     spDamageMult: t === 'sanity_shield' ? Math.max(0.4, 1 - (p.sanityReduction || 0.25)) : 1,
     strainMult: t === 'strain_reduction' ? Math.max(0.4, 1 - (p.strainReduction || 0.2)) : 1,
@@ -1215,7 +1219,9 @@ function damageMultOf(def, char, session, mastery, kind) {
   if (session?.resolveAwakened) mult *= 0.75;
   if (session?.egoActive) mult *= DUNGEON_BALANCE.ego.damageMult;
   if (kind === 'sanity') mult *= tier.sanityMult;
-  mult *= kind === 'sanity' ? cp.spDamageMult : cp.hpDamageMult;
+  // Trap mitigation is written for traps and hazards: in a fight it softens blows at half strength
+  const hpMult = session?.combat ? 1 - (1 - cp.hpDamageMult) / 2 : cp.hpDamageMult;
+  mult *= kind === 'sanity' ? cp.spDamageMult : hpMult;
   mult *= cardEffectOf(session).damage ?? 1;
   if (!session?.combat) mult *= dungeonWagerDamage(session?.delveStake) * difficultyOf(session?.id).damage;
   return mult;

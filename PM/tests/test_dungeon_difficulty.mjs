@@ -8,7 +8,7 @@ import { DUNGEON_DIFFICULTY } from '../src/data/dungeonDifficulty.js';
 const RUNS = 300;
 const pct = (s) => Number(String(s).replace('%', ''));
 const rows = runDungeonSim(RUNS, { ids: Object.keys(DUNGEON_DIFFICULTY), policies: ['measured'] });
-const by = Object.fromEntries(rows.map((r) => [`dungeon_${r.id}`, { dead: pct(r.dead), full: pct(r.full) }]));
+const by = Object.fromEntries(rows.map((r) => [`dungeon_${r.id}`, { dead: pct(r.dead), full: pct(r.full), restored: pct(r.restored) }]));
 const ofRung = (n) => Object.entries(DUNGEON_DIFFICULTY).filter(([, d]) => d.rung === n).map(([id]) => id);
 const line = Object.entries(by).map(([id, r]) => `${id.replace('dungeon_', '')} ${r.dead}/${r.full}`).join(', ');
 
@@ -23,6 +23,8 @@ assert.ok(by[lake].full >= 18 && by[lake].full <= 30 && by[lake].dead >= 7 && by
 // Rung 3: level with each other
 const middle = ofRung(3);
 for (const id of middle) assert.ok(by[id].full >= 35 && by[id].full <= 60 && by[id].dead <= 8, `${id}: 35 to 60% clear, at most 8% die (${line})`);
+// WARP has no exit: a run it does not clear is a stopped heart W Corp puts back, which costs more than a retreat
+for (const id of middle) assert.ok(by[id].restored <= 50, `${id}: at most 50% of runs end restored by W Corp (${by[id].restored}%)`);
 const fulls = middle.map((id) => by[id].full);
 assert.ok(Math.max(...fulls) - Math.min(...fulls) <= 15, `the middle rung stays within 15 points of itself (${line})`);
 
