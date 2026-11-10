@@ -9,7 +9,7 @@ export const YEAR_ACTIVITIES = [
   { id: 'work', vi: 'Lao động mưu sinh', en: 'Scrape a living', effectVi: 'Đổi mồ hôi lấy tiền trọ và sinh hoạt: +2 Ahn/điểm (dồn 2 điểm: -3 SP; dồn 3 điểm: -6 SP kiệt sức)', effectEn: 'Sweat for rent and sustenance: +2 Ahn per point (2 pts: -3 SP; 3 pts: -6 SP burnout)' },
   { id: 'bond', vi: 'Móc nối quan hệ', en: 'Build ties', effectVi: 'Tạo dựng chỗ đứng và lòng tin với người xung quanh: +2 Quan hệ mỗi điểm', effectEn: 'Build standing and trust with those around you: +2 Network per point' },
   { id: 'rest', vi: 'Nghỉ ngơi dưỡng thần', en: 'Rest & recuperate', effectVi: 'Đóng chặt cửa sau giờ giới nghiêm, hàn gắn tâm trí: +3 SP mỗi điểm', effectEn: 'Bar the door after curfew, mend your mind: +3 SP per point' },
-  { id: 'scheme', vi: 'Mưu tính luồn lách', en: 'Underground schemes', effectVi: 'Xóa dấu vết, tìm kiếm đòn bẩy quyền lực từ bóng tối: -2 Heat, +2 Đòn bẩy/điểm (dồn 2 điểm: -2 Gắn kết; dồn 3 điểm: -4 Gắn kết, +2 Heat)', effectEn: 'Cover tracks, seek leverage in the shadows: -2 Heat, +2 Leverage per point (2 pts: -2 Bond; 3 pts: -4 Bond, +2 Heat)' }
+  { id: 'scheme', vi: 'Mưu tính luồn lách', en: 'Underground schemes', effectVi: 'Xóa dấu vết và chuẩn bị trước: -2 Heat mỗi điểm. Wing: +2 Leverage; Fixer và Syndicate: hợp đồng năm nay dễ hơn khoảng 4%; Distortion: +2 Resonance (dồn 2 điểm: -2 Gắn kết; dồn 3 điểm: -4 Gắn kết, +2 Heat)', effectEn: 'Cover your tracks and prepare: -2 Heat per point. Wing: +2 Leverage; Fixer and Syndicate: this year’s contracts about 4% easier; Distortion: +2 Resonance (2 pts: -2 Bond; 3 pts: -4 Bond, +2 Heat)' }
 ];
 
 export const AMBITIONS = [
@@ -25,6 +25,17 @@ const LADDER_JOBS = new Set(['Fixer', 'Color Fixer', 'Syndicate', 'Wing Employee
 /** The ambitions that still mean something for this life: no ladder to climb, no Outskirts to reach if already there. */
 export function ambitionsFor(char) {
   return AMBITIONS.filter((goal) => (goal.id !== 'rank' || LADDER_JOBS.has(char?.job)) && (goal.id !== 'outskirts' || !inOutskirts(char)));
+}
+
+const CONTRACT_JOBS = new Set(['Fixer', 'Color Fixer', 'Syndicate']);
+/** Contract power each scheme point adds this year: the target's routine read, a door left unlocked. */
+export const SCHEME_CONTRACT_POWER = 4;
+
+/** Power this year's scheme points add to every contract a Fixer or Syndicate member takes before the year ends. */
+export function annualSchemeContractPower(char) {
+  if (char?.annualPlan?.age !== char?.age || !CONTRACT_JOBS.has(char?.job)) return 0;
+  if (char.job === 'Distortion' || char.flags?.includes('Distorted')) return 0;
+  return (char.annualPlan.points?.scheme || 0) * SCHEME_CONTRACT_POWER;
 }
 
 export const defaultYearPoints = () => ({ train: 1, work: 1, bond: 0, rest: 1, scheme: 0 });
@@ -55,13 +66,8 @@ export function applyAnnualPlan(char, points, ambitionId, directiveId = null) {
     char.resonance = Math.min(100, (char.resonance || 0) + p.scheme * 2);
   } else if (char.job === 'Wing Employee') {
     char.leverage = Math.min(100, (char.leverage || 0) + p.scheme * 2);
-  } else if (char.job === 'Fixer' || char.job === 'Color Fixer' || char.job === 'Syndicate') {
-    char.merit = Math.max(0, (char.merit || 0) + p.scheme * 2);
-    char.schemeContractProgress = (char.schemeContractProgress || 0) + p.scheme;
-    if (char.activeContract && typeof char.activeContract.progress === 'number') {
-      char.activeContract.progress += p.scheme;
-    }
   }
+  // Fixer and Syndicate scheme points are read by every contract this year through annualSchemeContractPower
 
   // Tangible trade-offs for heavy point allocation (2+ points)
   if (p.train === 2) stats.health = Math.max(1, (stats.health || 0) - 2);
@@ -133,7 +139,7 @@ export function previewAnnualPlanDeltas(char, points, directiveId = null) {
   lev = Math.min(100, Math.max(0, lev));
 
   let rep = initialRep;
-  let merit = initialMerit + (isContractJob ? (p.scheme || 0) * 2 : 0);
+  let merit = initialMerit;
   let res = initialResonance + (isDistorted ? (p.scheme || 0) * 2 : 0);
   res = Math.min(100, Math.max(0, res));
   let standing = initialStanding;
@@ -215,7 +221,8 @@ export function previewAnnualPlanDeltas(char, points, directiveId = null) {
     merit: merit - initialMerit,
     resonance: res - initialResonance,
     standing: standing - initialStanding,
-    contractProgress: isContractJob ? (p.scheme || 0) : 0,
+    // Contract success moves about 1.1 points per point of power, before the 18–94 clamp
+    contractEdge: isContractJob ? Math.round((p.scheme || 0) * SCHEME_CONTRACT_POWER * 1.1) : 0,
     trainingCheckBonus: Math.round(((p.train || 0) * 0.02) * 100),
     companionBond: bondDelta,
     companionDetails

@@ -72,15 +72,15 @@ export const PINKY_DEPTH = [
     ], 10),
 
   mission('pinky_the_ghost_duelist', [2, 3],
-    '[Kiếm khách ma] Một kiếm khách đã chết mười năm được nhiều người thấy xuất hiện ở sân đấu cũ, đứng một mình, tay đặt trên chuôi kiếm. Họ không tấn công. Họ chỉ chờ một người đứng đối diện.',
+    '[Tay kiếm ma] Một tay kiếm đã chết mười năm được nhiều người thấy xuất hiện ở sân đấu cũ, đứng một mình, tay đặt trên chuôi kiếm. Họ không tấn công. Họ chỉ chờ một người đứng đối diện.',
     '[The ghost duelist] A duelist dead ten years is seen by many at the old yard, standing alone, hand on the hilt. They do not attack. They only wait for someone to stand opposite.',
     [
       fc('Đứng đối diện và cúi đầu', 'Stand opposite and bow',
         'Bóng người cúi đầu lại. Hai người đứng như thế đến khi mặt trời lên, và khi ánh sáng chạm sân, bóng người không còn ở đó. Chuôi kiếm đặt lại chỗ cũ.', 'The figure bows in return. The two stand thus until sunrise, and when light touches the yard the figure is gone. The sword rests again in its place.', { sanity: -6, rep: 7, resonance: 8 }, { meritAdd: 5 }),
       fc('Rút kiếm và đấu', 'Draw and duel',
         'Cuộc đấu kéo dài đến lúc kiệt sức. Bóng người không tấn công nhưng mỗi nhát của bạn đều bị chặn bằng đúng cách bạn sắp dùng. Bạn thua và vẫn sống.', 'The duel lasts until exhaustion. The figure does not attack but each stroke of yours is blocked in exactly the way you were about to use. You lose and live.', { health: -12, sanity: -8, rep: 4, resonance: 6 }),
-      fc('Hỏi một người già trong Pinky về kiếm khách ấy', 'Ask an old Pinky member about the duelist',
-        'Người già ngồi lặng, rồi kể: kiếm khách ấy thua một trận trước mặt cả sân và chưa bao giờ được tha thứ. Bạn mang lời ấy ra sân, và nói to.', 'The old member sits silent, then tells: that duelist lost one bout before the whole yard and was never forgiven. You carry those words to the yard and say them aloud.', { sanity: 5, rep: 8, network: 5 })
+      fc('Hỏi một người già trong Pinky về tay kiếm ấy', 'Ask an old Pinky member about the duelist',
+        'Người già ngồi lặng, rồi kể: tay kiếm ấy thua một trận trước mặt cả sân và chưa bao giờ được tha thứ. Bạn mang lời ấy ra sân, và nói to.', 'The old member sits silent, then tells: that duelist lost one bout before the whole yard and was never forgiven. You carry those words to the yard and say them aloud.', { sanity: 5, rep: 8, network: 5 })
     ], 9),
 
   mission('pinky_the_ledger_of_oaths', [2, 3],

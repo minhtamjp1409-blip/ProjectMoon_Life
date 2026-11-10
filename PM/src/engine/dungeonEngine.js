@@ -1230,10 +1230,13 @@ function damageMultOf(def, char, session, mastery, kind) {
 const healOf = (value) => (value > 0 ? Math.max(1, Math.round(value * DUNGEON_BALANCE.healScale)) : value || 0);
 const scaleGain = (value, mult) => (value > 0 ? Math.max(1, Math.round(value * mult)) : value);
 
+/** How much of a sanity loss a calm companion takes off: up to their restore, never more than half the loss. */
+export const calmShare = (loss, restore) => Math.min(restore, Math.floor(loss / 2));
+
 function applyCalmToSpDelta(spDelta, char, session) {
   if (spDelta == null || spDelta >= 0) return spDelta;
   const restore = companionPerk(char, session).sanityRestore;
-  return restore > 0 ? Math.min(0, spDelta + restore) : spDelta;
+  return restore > 0 ? spDelta + calmShare(-spDelta, restore) : spDelta;
 }
 
 function stageRewards(choice, session, success, char = null) {

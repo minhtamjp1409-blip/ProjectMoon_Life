@@ -88,7 +88,7 @@ export const CONTRACT_ROUTES = {
     okFx: { heat: 1 }, failFx: { heat: 3, rep: -1 },
     declineVi: 'Một lời thề không được đáp thì vẫn là lời thề. Pinky không bao giờ xóa nó khỏi sổ.', declineEn: 'An oath unanswered is still an oath. The Pinky never strikes it from the book.',
     tiers: tiers(
-      ['Kẻ thất hứa vặt', 'A petty oathbreaker'], ['Một kiếm khách làng', 'A hedge swordsman'], ['Kiếm khách có danh', 'A named duelist'],
+      ['Kẻ thất hứa vặt', 'A petty oathbreaker'], ['Một tay kiếm trong làng', 'A hedge swordsman'], ['Tay kiếm có danh', 'A named duelist'],
       ['Người của dòng kiếm cũ', 'A sworn blade of a lineage'], ['Fixer cấp cao hoặc Capo', 'A high-grade Fixer or a Capo'], ['Một Star của thanh kiếm', 'A Star of the sword']
     )
   },

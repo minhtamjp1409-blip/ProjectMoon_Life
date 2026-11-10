@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { createNewCharacter, buildLifeSummaryAndLegacy, ALL_STORY_EVENTS } from '../src/engine/gameEngine.js';
+import { createNewCharacter, buildLifeSummaryAndLegacy, ALL_STORY_EVENTS, generateFixerContract, createRNG } from '../src/engine/gameEngine.js';
 import { CONSEQUENCE_EVENTS } from '../src/data/eventsChildhood.js';
 import { advanceActiveNarrativeArcs, simulateNpcAutonomousLife, reactNpcsToMajorTurn } from '../src/engine/narrativeArcEngine.js';
 import { selectEventWithWeaverAI, isEventEligible } from '../src/engine/weaverAI.js';
@@ -19,9 +19,10 @@ import {
   createDungeonSession, getDungeonCurrentStage, resolveDungeonChoice,
   evaluateDungeonChoiceOdds, isDungeonChoiceAvailable, useDungeonSupply, companionPerk
 } from '../src/engine/dungeonEngine.js';
+import { calmShare } from '../src/engine/dungeonEngine.js';
 import { canInteractWithNpc, getNpcActionLabel } from '../src/engine/npcInteractions.js';
 import { advanceCityCondition } from '../src/engine/cityConditions.js';
-import { applyAnnualPlan, previewAnnualPlanDeltas } from '../src/engine/annualPlan.js';
+import { applyAnnualPlan, previewAnnualPlanDeltas, annualSchemeContractPower } from '../src/engine/annualPlan.js';
 
 console.log('=== TESTING BATCHES 135–138 ===');
 
@@ -278,11 +279,16 @@ console.log('4. Testing Đợt 138: City Condition Age Range (22–90) & Job-spe
   fixerC.pendingYearPlan = { age: 28 };
   const fixerPreview = previewAnnualPlanDeltas(fixerC, { train: 1, work: 1, bond: 0, rest: 0, scheme: 1 });
   assert.equal(fixerPreview.leverage, 0, 'Fixer does not gain Leverage from scheme');
-  assert.equal(fixerPreview.contractProgress, 1, 'Fixer previews +1 contract progress from scheme');
+  assert.equal(fixerPreview.contractEdge, 4, 'Fixer previews about +4% contract success per scheme point');
+  assert.equal(fixerPreview.merit, 0, 'scheme no longer pays Merit directly');
+  const powerBefore = generateFixerContract(fixerC, createRNG('scheme-contract')).combatPower;
   applyAnnualPlan(fixerC, { train: 1, work: 1, bond: 0, rest: 0, scheme: 1 }, 'rank');
   assert.equal(fixerC.leverage, 0);
-  assert.equal(fixerC.schemeContractProgress, 1);
-  assert.equal(fixerC.merit, 12);
+  assert.equal(fixerC.merit, 10, 'scheme no longer pays Merit directly');
+  assert.equal(annualSchemeContractPower(fixerC), 4);
+  assert.equal(generateFixerContract(fixerC, createRNG('scheme-contract')).combatPower - powerBefore, 4, 'contracts this year carry the scheme groundwork');
+  fixerC.age += 1;
+  assert.equal(annualSchemeContractPower(fixerC), 0, 'the groundwork lasts one year');
 
   const distC = createNewCharacter({ seed: 'scheme-dist', startAge: 28 });
   distC.job = 'Distortion';
@@ -293,5 +299,10 @@ console.log('4. Testing Đợt 138: City Condition Age Range (22–90) & Job-spe
   assert.equal(distC.resonance, 22, 'Distortion gains +2 Resonance per scheme point');
   console.log('  ✓ Đợt 138 (Items 1 & 2) verified.');
 }
+
+// Đợt 141: a calm companion takes off up to 8 of a sanity loss, never more than half of it
+assert.equal(calmShare(4, 8), 2, 'a small sanity hit still lands');
+assert.equal(calmShare(20, 8), 8, 'a large hit loses the full restore');
+assert.equal(calmShare(1, 8), 0);
 
 console.log('=== ALL BATCHES 135–138 TESTS PASSED ===');

@@ -271,7 +271,7 @@ export function executeNpcInteraction(char, role, actionId, rng = Math.random) {
       if (npc.crisis.severity === 0) npc.crisis.type = 'none';
     }
 
-    const memoryTextVi = `Năm ${age} tuổi: Cùng uống rượu giãi bày tại quán trọ Backstreets.`;
+    const memoryTextVi = `Năm ${age} tuổi: Cùng uống rượu giãi bày tại quán rượu Backstreets.`;
     const memoryTextEn = `Age ${age}: Shared deep drinks and confessions at a Backstreet tavern.`;
     npc.memories = appendNpcMemory(npc.memories, { age, vi: memoryTextVi, en: memoryTextEn });
 

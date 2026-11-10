@@ -3187,5 +3187,15 @@ Chạy kiểm định mô phỏng 500 vòng đời với chiến lược ngườ
 * **Còn để ngỏ.** Bảy loại perk `clash`, `calm`, `sanity_shield`, `strain_reduction`, `loot`, `salvage` và `merit` không đổi số chết hay hoàn thành với bot `measured`, vì bot không đọ Clash và không cạn Sanity. Chúng cần một bot đọ Clash (`clasher`/`reader`) để đo.
 * **Kiểm định.** `node tests/test_dungeon_difficulty.mjs` (claw 9,3%, Lake 23,3%, WARP 52,7%, Lobotomy 44%, Bloodfiend 42%, Backstreets 45%, Outskirts 80,3% hoàn thành) và `npm test` đạt 100%.
 
+##### 2.41. Đóng các điểm còn treo của Đợt 141 (10/11/2026)
+* **`scheme` của Fixer và Syndicate.** Trước đây mỗi điểm cho thẳng +2 Merit, và `schemeContractProgress` / `activeContract.progress` được ghi nhưng không chỗ nào đọc. Nay `annualSchemeContractPower` (`annualPlan.js`) cộng 4 sức mạnh hợp đồng mỗi điểm, chỉ trong năm đã chia điểm; `generateFixerContract` đọc giá trị này. Mức này tương đương khoảng +4% thành công mỗi điểm. Dock kế hoạch năm hiện chip "Hợp đồng +X%", và mô tả hoạt động ghi rõ hiệu ứng theo từng nghề.
+* **Perk `calm`.** Trước đây trừ thẳng 8 SP mỗi lần mất Sanity nên xóa sạch đòn nhỏ. Nay `calmShare` giảm tối đa 8 điểm nhưng không quá một nửa lượng mất, ở cả chế độ chặng lẫn giao tranh. Mô tả perk được sửa theo.
+* **Đo perk Clash và Sanity** bằng bot `clasher`/`reader`, 200 lượt mỗi ô:
+  * `calm` +5–8 SP mỗi chuyến, `sanity_shield` +3–4 SP, `loot` +4 Ahn, `merit` +3–4 Merit.
+  * Perk `clash` cộng một mặt xúc xắc, khoảng +8% thắng mỗi lần đọ, khớp mô tả. Kết quả chuyến đi gần như không đổi vì mỗi trận chỉ có 1–3 lần đọ.
+  * `strain_reduction` chưa thấy tác dụng đo được.
+* **Giọng văn.** "kiếm khách" ở cảnh Pinky, apex và hợp đồng đổi thành "tay kiếm"; "quán trọ" đổi thành "quán rượu" hoặc "nhà trọ". "kiếm khách" được giữ ở các đoạn về Blade Lineage và Kurokumo, vì hai nhóm này vốn mang phong cách đó.
+* **Kiểm định.** Mở rộng `tests/test_batches_135_138.mjs`: `scheme` không còn trả Merit, sức mạnh hợp đồng tăng đúng 4 trong năm và về 0 năm sau, `calmShare` giữ tối thiểu nửa đòn. `npm test` và `npm run build` đạt 100%.
+
 #### 3. KIỂM ĐỊNH & BẢO ĐẢM TOÀN VẸN (VERIFICATION & INTEGRITY)
 * Tất cả các bộ kiểm thử tự động (`npm test`) bao gồm lint văn phong (`voice_lint.mjs`), chuẩn canon Project Moon (`lint_story.mjs`), và mô phỏng 500 khoảnh khắc đời người (`run_million_audit.mjs`) phải vượt qua 100% với 0 lỗi, 0 cảnh báo.

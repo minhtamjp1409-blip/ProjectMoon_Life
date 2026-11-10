@@ -42,7 +42,7 @@ import { SUPERNATURAL_EVENTS, FIXER_REQUESTS } from '../data/eventsSupernatural.
 import { FIXER_PATH_EVENTS } from '../data/eventsFixerPath.js';
 import { CONTRACT_ROUTES, contractRouteOf, equivalentGrade } from '../data/careerContracts.js';
 import { rollCareerAge, careerAgeOf, CAREER_CROSSROAD_IDS } from './careerAge.js';
-import { AMBITIONS, ambitionComplete } from './annualPlan.js';
+import { AMBITIONS, ambitionComplete, annualSchemeContractPower } from './annualPlan.js';
 import { CAREER_REQUESTS } from '../data/careerContractTemplates.js';
 import { DISTORTION_PATH_EVENTS } from '../data/eventsDistortionPath.js';
 import { DISTORTION_OVERHAUL_EVENTS } from '../data/eventsDistortionOverhaul.js';
@@ -1717,6 +1717,7 @@ export function generateFixerContract(char, rng, overrideTemplate = null) {
   if (char.flags.includes('AbyssalDistortionApex')) power += 14;
   const compSupport = evaluateCompanionSupport(char);
   power += compSupport.contractPower;
+  power += annualSchemeContractPower(char);
 
   const difficulty = 32 + template.tier * 16;
   const baseSuccess = clamp(Math.round(55 + (power - difficulty) * 1.1 + egoEdge(char) * 100 + mods.successDelta), 18, 94);

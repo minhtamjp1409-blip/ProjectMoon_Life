@@ -265,8 +265,8 @@ const COLOR_HOOKS = [
   ['hall_lesson', 'show', 'phòng tập Hana', 'the Hana training hall', 'lớp Fixer trẻ', 'the young Fixers',
     '[Buổi dạy ở phòng tập] Hana mời Color tới dạy một buổi cho lớp Fixer sắp lên Grade 5. Không ai hứa họ sẽ nhớ bài học, nhưng ai cũng nhớ người đứng trước lớp.',
     '[A lesson in the hall] Hana invites a Color to teach one session to the class about to reach Grade 5. No one promises they will remember the lesson, but everyone remembers who stood before the class.'],
-  ['disciple', 'duel', 'sân sau quán trọ', 'the back yard of an inn', 'học trò tay kiếm khách', 'the swordsman’s student',
-    '[Trang cuối sổ đấu] Học trò của tay kiếm khách đã chết mang sổ đấu đến quán trọ. Trên trang cuối có tên bạn, nhưng không ghi kết quả. Họ xin đấu để điền dòng ấy.',
+  ['disciple', 'duel', 'sân sau quán rượu', 'the back yard of an inn', 'học trò của tay kiếm', 'the swordsman’s student',
+    '[Trang cuối sổ đấu] Học trò của tay kiếm đã chết mang sổ đấu đến quán rượu. Trên trang cuối có tên bạn, nhưng không ghi kết quả. Họ xin đấu để điền dòng ấy.',
     '[The last page of the bout ledger] A dead swordsman’s student brings a bout ledger to an inn. Your name stands on its last page without a result. They ask for a bout to fill the line.']
 ];
 
@@ -352,8 +352,8 @@ const FINGER_HOOKS = {
       '[A collection crosses the streets] A valuable collection must cross half the City to reach its place of display. There is word that a group of thieves already knows the route.']
   ],
   Pinky: [
-    ['broken_blade', 'duel', 'bãi đất ngoài thành', 'the field beyond the district', 'kiếm khách vô danh', 'the nameless swordsman',
-      '[Thanh kiếm gãy làm lời thách] Một kiếm khách không thuộc Finger nào gửi một thanh kiếm gãy làm lời thách. Họ không đòi tiền thưởng, chỉ muốn một trận với người được gọi là Sovereign.',
+    ['broken_blade', 'duel', 'bãi đất ngoài thành', 'the field beyond the district', 'tay kiếm vô danh', 'the nameless swordsman',
+      '[Thanh kiếm gãy làm lời thách] Một tay kiếm không thuộc Finger nào gửi một thanh kiếm gãy làm lời thách. Họ không đòi tiền thưởng, chỉ muốn một trận với người được gọi là Sovereign.',
       '[A broken blade as challenge] A swordsman belonging to no Finger sends a broken blade as challenge. They ask for no prize, only one bout with the one called Sovereign.'],
     ['oath_debt', 'judge', 'sảnh lời thề', 'the hall of oaths', 'người thừa kế lời thề', 'the heir of the oath',
       '[Lời thề không ai trả] Star of the Sky qua đời, để lại lời thề còn nợ với đứa trẻ. Hội đồng muốn Sovereign quyết ai trả thay, và trả bằng gì.',

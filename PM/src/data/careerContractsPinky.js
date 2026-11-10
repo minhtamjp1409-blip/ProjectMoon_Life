@@ -35,8 +35,8 @@ export const PINKY_CONTRACTS = [
     'The courier does not travel alone. Whoever is waiting at the rear door read that line before you did.'),
 
   // ------------------------------------------------------------ tier 1: a hedge swordsman
-  rq('pinky_loaded_sleeve', 1, 'Một kiếm khách giấu lưỡi trong tay áo', 'A swordsman with a blade in his sleeve',
-    'Một kiếm khách giữa đường thách đấu một Sworn Blade trẻ, hứa "công bằng", và giết anh ta bằng lưỡi giấu trong tay áo. Pinky không công nhận đó là đấu tay đôi.',
+  rq('pinky_loaded_sleeve', 1, 'Một tay kiếm giấu lưỡi trong tay áo', 'A swordsman with a blade in his sleeve',
+    'Một tay kiếm giữa đường thách đấu một Sworn Blade trẻ, hứa "công bằng", và giết anh ta bằng lưỡi giấu trong tay áo. Pinky không công nhận đó là đấu tay đôi.',
     'A roadside swordsman challenged a young Sworn Blade, promised “a fair fight,” and killed him with a blade hidden in his sleeve. The Pinky does not recognize it as a duel.',
     'Bạn thách hắn đúng nghi thức, ở chính chỗ đó. Hắn rút lưỡi giấu ra theo thói quen, và đám đông xung quanh thấy rõ. Hắn không còn đường lui.',
     'You challenge him by the proper form, in the same place. He draws the hidden blade from habit, and the crowd sees it clearly. He has nowhere left to go.',
@@ -66,8 +66,8 @@ export const PINKY_CONTRACTS = [
     'The student is not at the bakery. Their new master is.'),
 
   // ------------------------------------------------------------ tier 2: a named duelist
-  rq('pinky_eleven_wins', 2, 'Một kiếm khách mười một lần thắng', 'A duelist with eleven wins',
-    'Tay kiếm khách có tiếng với mười một trận thắng dưới đấu trường ngầm đã thách đấu một Sworn Blade, nhất quyết không rút lời dù Blade đã lui trước nghi lễ. Pinky không định để hắn đếm đến mười hai.',
+  rq('pinky_eleven_wins', 2, 'Một tay kiếm mười một lần thắng', 'A duelist with eleven wins',
+    'Tay kiếm có tiếng với mười một trận thắng dưới đấu trường ngầm đã thách đấu một Sworn Blade, nhất quyết không rút lời dù Blade đã lui trước nghi lễ. Pinky không định để hắn đếm đến mười hai.',
     'A named duelist with eleven wins in the underground ring challenged a Sworn Blade and refused to withdraw after the Blade stood down under ceremony. The Pinky has no intention of letting him count to twelve.',
     'Bạn bước vào vòng với vai trơ trọi, không áo giáp. Trận đấu kéo dài ba nhịp. Khi kết thúc, hắn nhìn thanh kiếm của bạn và không nói gì.',
     'You step into the ring bare-shouldered, in no armor. The fight lasts three beats. When it is over, he looks at your sword and says nothing.',
@@ -181,7 +181,7 @@ export const PINKY_CONTRACTS = [
     'You sit the full three days. He opens the door, and is no longer retired.'),
 
   rq('pinky_undefeated', 5, 'Kẻ chưa ai thắng', 'The one no one has beaten',
-    'Có một kiếm khách Pinky chưa bao giờ thắng được. Không ai biết tên thật, chỉ biết nơi ông xuất hiện mỗi mùa. Lời thề của bạn đòi bạn phải thử.',
+    'Có một tay kiếm mà Pinky chưa bao giờ thắng được. Không ai biết tên thật, chỉ biết nơi ông xuất hiện mỗi mùa. Lời thề của bạn đòi bạn phải thử.',
     'There is a swordsman the Pinky has never beaten. No one knows the real name, only where he appears each season. Your own oath requires you to try.',
     'Bạn không thắng. Nhưng ông đứng yên một nhịp dài hơn bình thường để nhìn thanh kiếm của bạn, và cả Pinky đồn rằng ông đã gật đầu.',
     'You do not win. But he stands still a beat longer than usual to look at your sword, and the Pinky says he nodded.',

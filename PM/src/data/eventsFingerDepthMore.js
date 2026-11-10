@@ -84,15 +84,15 @@ export const FINGER_DEPTH_MARGIN = [
 
   // ------------------------------------------------------------------ Pinky
   mission('pinky_the_blind_swordsman', 'Pinky', [1, 2],
-    '[Kiếm khách mù] Kiếm khách mù từ phương xa tới, xin đấu một trận với bất kỳ Sworn Blade nào. Họ mang theo dải vải bịt mắt và bảo người đối diện cũng phải bịt mắt. "Kiếm không cần mắt," họ nói.',
+    '[Tay kiếm mù] Một tay kiếm mù từ District khác tới, xin đấu một trận với bất kỳ Sworn Blade nào. Họ mang theo dải vải bịt mắt và bảo người đối diện cũng phải bịt mắt. "Kiếm không cần mắt," họ nói.',
     '[The blind swordsman] A blind swordsman from far off asks for a bout with any Sworn Blade. They bring a cloth for the eyes and say the opponent must be blindfolded too. “A sword needs no eyes,” they say.',
     [
       fc('Bịt mắt và nhận trận', 'Bind your eyes and take the bout',
-        'Bạn nghe hơi thở và bước chân, và lần đầu hiểu vì sao người ta nói kiếm khách mù là bậc thầy. Bạn thua, nhưng thua theo cách bạn muốn nhớ.', 'You hear breath and footsteps, and for the first time understand why they call the blind swordsman a master. You lose, but in a way you want to remember.', { health: -6, rep: 6, sanity: 5, resonance: 4 }),
+        'Bạn nghe hơi thở và bước chân, và lần đầu hiểu vì sao người ta nói tay kiếm mù là bậc thầy. Bạn thua, nhưng thua theo cách bạn muốn nhớ.', 'You hear breath and footsteps, and for the first time understand why they call the blind swordsman a master. You lose, but in a way you want to remember.', { health: -6, rep: 6, sanity: 5, resonance: 4 }),
       fc('Từ chối bịt mắt nhưng mời họ ngồi cùng bạn', 'Refuse the blindfold but invite them to sit with you',
         'Họ nghe bạn nói suốt buổi tối về những trận bạn đã đấu. Cuối cùng họ nói: "Bạn chưa từng nghe kiếm của chính mình." Bạn không hiểu, nhưng nhớ.', 'They hear you talk all evening about the bouts you have fought. At last they say: “You have never heard your own sword.” You do not understand, but you remember.', { sanity: 4, rep: 4, network: 5 }),
       fc('Cử một đệ tử của bạn đấu thay', 'Send a student of yours to fight in your place',
-        'Đệ tử thua trong ba nhịp và bật khóc. Kiếm khách mù tháo dải vải và hỏi tên người dạy cậu. Bạn đứng ở cửa, và họ quay mặt đúng về phía bạn.', 'The student loses in three beats and weeps. The blind swordsman removes the cloth and asks the name of the teacher. You stand at the door, and they turn their face exactly toward you.', { rep: 2, sanity: -3, network: -2 })
+        'Đệ tử thua trong ba nhịp và bật khóc. Tay kiếm mù tháo dải vải và hỏi tên người dạy cậu. Bạn đứng ở cửa, và họ quay mặt đúng về phía bạn.', 'The student loses in three beats and weeps. The blind swordsman removes the cloth and asks the name of the teacher. You stand at the door, and they turn their face exactly toward you.', { rep: 2, sanity: -3, network: -2 })
     ], 8),
 
   mission('pinky_the_bell_that_rang_once', 'Pinky', [2, 3],

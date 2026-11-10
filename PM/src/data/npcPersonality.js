@@ -217,8 +217,8 @@ export const ARCHETYPE_DUNGEON_PERKS = {
     id: 'beacon',
     nameVi: 'Ngọn Hải Đăng',
     nameEn: 'Moral Beacon',
-    descVi: 'Hồi 8 Sanity khi người chơi đối mặt với dị thể hoặc cảnh hãi hùng',
-    descEn: 'Restores 8 Sanity when encountering horrors',
+    descVi: 'Mỗi lần bạn mất Sanity trong Dungeon, giảm tới 8 điểm, nhưng không quá một nửa lượng mất',
+    descEn: 'Each Sanity loss in a Dungeon is cut by up to 8, never more than half of it',
     type: 'calm',
     sanityRestore: 8
   },

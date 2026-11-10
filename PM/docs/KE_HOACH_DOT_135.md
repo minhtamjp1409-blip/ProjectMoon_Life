@@ -19,7 +19,7 @@ Ký hiệu: **Đúng** là đã tái hiện trong code. **Đã xong** là đã s
 | 1.2 | `.find()` chặn hàng đợi thread | **Đã xong (Đợt 135)** | `weaverAI.js:847`: lọc qua `t.kind !== 'minor'` và `isEventEligible(…, { scripted: true })` ngay trong `.find(...)`. |
 | 1.3 | `ring_patron_wants_a_face` cần điều kiện có bạn đời | **Đã xong, và hướng sửa sai** | Người đã khuất là của nhà bảo trợ, không phải của người chơi. Thêm điều kiện có bạn đời sẽ khóa nhầm mission. Đã đổi câu chữ ở `349d745`; lint còn 0 cảnh báo. |
 | 2.1 | Ahn và Danh tiếng chạm trần, cuối đời không có chỗ tiêu | **Chờ chủ dự án (Đợt 138 mục 3)** | `driftOf` không có nhánh cho `wealth`; phí giữ tài sản giới hạn ở `Math.min(4, …)` (`yearPlanner.js:1424`). Khớp với số đo Dungeon ở mục 2.36. |
-| 2.2 | Điểm `scheme` luôn cộng Leverage | **Đã xong (Đợt 138)** | `annualPlan.js`: Wing nhận `+2 Leverage`, Fixer/Syndicate giảm Heat và tiến độ hợp đồng, Distortion tăng Resonance. |
+| 2.2 | Điểm `scheme` luôn cộng Leverage | **Đã xong (Đợt 138, sửa lại ở Đợt 141)** | `annualPlan.js`: Wing nhận `+2 Leverage`, Distortion tăng Resonance. Fixer/Syndicate giảm Heat và nhận `annualSchemeContractPower` (+4 sức mạnh hợp đồng mỗi điểm trong năm), thay cho +2 Merit và biến tiến độ không ai đọc. |
 | 2.3 | Biến động thành phố dừng sau 40 tuổi | **Đã xong (Đợt 138)** | `cityConditions.js:22`: mở rộng lên `22–90` tuổi. |
 | 3.1 | Phần lớn perk đồng đội không có tác dụng | **Đã xong (Đợt 136)** | `companionPerk(char, session)` trong `dungeonEngine.js` đọc đủ 14 loại perk cho cả chế độ chặng, Gauntlet, Clash và preview trên dock. |
 | 3.2 | Thẻ `ego` thiếu né, Great Lake không có thẻ riêng | **Đã xong (Đợt 136)** | Thẻ `ego` đã có cộng né; `dungeon_great_lake` đã bật `cards: true` kèm 2 thẻ riêng `lake_harpoon` và `lake_chart`. |
@@ -242,7 +242,8 @@ Sau 60 tuổi, nhân vật thường đang ở bậc cao nhất. Các event kéo
 | `tinkerer`, sau khi sửa | 5,5/33,5 | 35,5/64,5 | 2/58 | 0/99,5 |
 
 - Đã sửa: `parry` một lần mỗi chuyến; perk `flee` chỉ khi HP ≤ 40; `trap_mitigation` giảm một nửa trong giao tranh; WARP về sát thương 1,6; mô phỏng tách cột `restored`.
-- Còn lại: đo các perk Clash và Sanity bằng bot `clasher`/`reader`. Outskirts có đồng đội nào cũng lên trên 92%; hầm dễ nhất nên chấp nhận được, nhưng cần xem lại nếu muốn Outskirts vẫn là một thử thách khi đi theo nhóm.
+- Đã xong thêm: `scheme` của Fixer/Syndicate thành sức mạnh hợp đồng trong năm; `calm` giảm tối đa một nửa mỗi lần mất Sanity; đo perk Clash/Sanity bằng `clasher`/`reader` (perk `clash` đúng mô tả nhưng ít ảnh hưởng vì mỗi trận chỉ 1–3 lần đọ; `strain_reduction` chưa đo được tác dụng); đổi "kiếm khách" và "quán trọ" ngoài các đoạn Blade Lineage/Kurokumo.
+- Còn lại: Outskirts có đồng đội nào cũng lên trên 92%; hầm dễ nhất nên chấp nhận được, nhưng cần xem lại nếu muốn Outskirts vẫn là một thử thách khi đi theo nhóm.
 
 ## Không làm
 

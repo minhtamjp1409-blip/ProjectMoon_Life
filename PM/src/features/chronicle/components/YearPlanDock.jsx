@@ -277,6 +277,11 @@ export function YearPlanDock({ char, onConfirm, onPeek }) {
                   {t('Luyện tập', 'Train')} +{netDeltas.trainingCheckBonus}%
                 </span>
               )}
+              {netDeltas.contractEdge > 0 && (
+                <span className="delta is-rare is-static">
+                  {t('Hợp đồng', 'Contracts')} +{netDeltas.contractEdge}%
+                </span>
+              )}
               {netDeltas.network !== 0 && (
                 <span className={`delta is-${netDeltas.network > 0 ? 'up' : 'down'} is-static`}>
                   {t('Quan hệ', 'Network')} {netDeltas.network > 0 ? `+${netDeltas.network}` : netDeltas.network}

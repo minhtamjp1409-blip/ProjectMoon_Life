@@ -126,7 +126,8 @@ function damageOf(ctx, def, char, session, intent, taken, kind) {
   const raw = Math.max(1, Math.ceil(base * taken * scale * mult * COMBAT_BALANCE.damageScale * dungeonWagerDamage(session.delveStake) * difficultyOf(session.id).damage * signatureDamageMult(session)));
   if (kind === 'sanity' && ctx.companionPerk) {
     const restore = ctx.companionPerk(char, session).sanityRestore || 0;
-    if (restore > 0) return Math.max(0, raw - restore);
+    // Up to the restore, never more than half the blow, so small hits still land (calmShare in dungeonEngine.js)
+    if (restore > 0) return raw - Math.min(restore, Math.floor(raw / 2));
   }
   return raw;
 }

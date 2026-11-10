@@ -730,7 +730,7 @@ export const EXPANSION_STORY_EVENTS = [
     major: true,
     weight: 25,
     forbids: ['drifter_tale_heard'],
-    vi: '[Kẻ Lữ Hành Từ Phía Bên Kia Tường Thành] Một kẻ tha hương rách rưới mang theo chiếc ba lô phủ đầy cát xám ghé quán trọ rẻ tiền. Ông ta kể về những phế tích khổng lồ nằm sâu trong Outskirts, nơi công nghệ của các Wing tiền nhiệm đang bị chôn vùi.',
+    vi: '[Kẻ Lữ Hành Từ Phía Bên Kia Tường Thành] Một kẻ tha hương rách rưới mang theo chiếc ba lô phủ đầy cát xám ghé nhà trọ rẻ tiền. Ông ta kể về những phế tích khổng lồ nằm sâu trong Outskirts, nơi công nghệ của các Wing tiền nhiệm đang bị chôn vùi.',
     en: '[Wanderer from Beyond the Great Wall] A ragged drifter with a rucksack coated in ash-gray sand stopped at a cheap boardinghouse. He spoke of colossal monoliths buried in the Outskirts where pre-Calamity Wing relics sleep.',
     choices: [
       {
