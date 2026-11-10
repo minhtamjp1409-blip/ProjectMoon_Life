@@ -1,8 +1,9 @@
 import assert from 'node:assert/strict';
-import { createNewCharacter, buildLifeSummaryAndLegacy, ALL_STORY_EVENTS, generateFixerContract, createRNG } from '../src/engine/gameEngine.js';
+import { createNewCharacter, buildLifeSummaryAndLegacy, ALL_STORY_EVENTS, generateFixerContract, resolveEventChoice, resolveFixerContract, createRNG } from '../src/engine/gameEngine.js';
 import { CONSEQUENCE_EVENTS } from '../src/data/eventsChildhood.js';
 import { advanceActiveNarrativeArcs, simulateNpcAutonomousLife, reactNpcsToMajorTurn } from '../src/engine/narrativeArcEngine.js';
-import { selectEventWithWeaverAI, isEventEligible } from '../src/engine/weaverAI.js';
+import { selectEventWithWeaverAI, isEventEligible, scoreEventUtility } from '../src/engine/weaverAI.js';
+import { ageNpcCompanions } from '../src/engine/director.js';
 
 const selectWeaverEvent = (c, rng) => selectEventWithWeaverAI({
   weaver: c.weaver,
@@ -391,4 +392,79 @@ console.log('5. Testing Đợt 139 & 140: Dungeon Floor 18, Low-HP Deferral, Bla
   console.log('  ✓ Đợt 139 & 140 verified.');
 }
 
-console.log('=== ALL BATCHES 135–141 TESTS PASSED ===');
+// ----------------------------------------------------------------------------
+// ĐỢT 142–144 — RESERVE AHN, 3 ĐẦU TƯ CUỐI ĐỜI, BLOODLINE SEEN EVENTS, TIỄN BIỆT TUỔI GIÀ
+// ----------------------------------------------------------------------------
+console.log('6. Testing Đợt 142–144: Reserve Ahn Vault, 3 Endgame Investments, Bloodline Discovery Boost, Elder Bereavement...');
+{
+  // 6.1 Reserve Ahn overflow on contract and LineageEndowmentFund inheritance
+  const richChar = createNewCharacter({ seed: 'rich-142', startAge: 45 });
+  richChar.age = 45;
+  richChar.job = 'Fixer';
+  richChar.fixerGrade = 2;
+  richChar.stats.wealth = 96;
+  if (richChar.npcs?.friend) richChar.npcs.friend.bond = 60;
+  richChar.pendingContract = generateFixerContract(richChar, createRNG('rich-contract'));
+  const paidChar = resolveFixerContract(richChar, 'bold', () => 0.01);
+  assert.equal(paidChar.stats.wealth, 100, 'Wealth caps at 100');
+  assert.ok((paidChar.reserveAhn || 0) > 0, 'Ahn exceeding 100 must overflow into char.reserveAhn');
+
+  // LineageEndowmentFund event adds to reserveAhn and passes bonus starting wealth to next generation
+  const fundEv = ALL_STORY_EVENTS.find((e) => e.id === 'elder_invest_lineage_fund');
+  assert.ok(fundEv, 'elder_invest_lineage_fund must exist');
+  paidChar.pendingEvent = fundEv;
+  const afterFund = resolveEventChoice(paidChar, 0, () => 0.5);
+  assert.ok(afterFund.flags.includes('LineageEndowmentFund'), 'Choice 0 grants LineageEndowmentFund');
+  assert.ok(afterFund.reserveAhn >= 40, 'Choice 0 adds +40 to reserveAhn');
+  afterFund.alive = false;
+  const legacySummary = buildLifeSummaryAndLegacy(afterFund);
+  assert.equal(legacySummary.hasLineageEndowment, true);
+  assert.ok(legacySummary.reserveAhn >= 40);
+
+  const heirChar = createNewCharacter({ seed: 'heir-142', parentLegacy: legacySummary });
+  const plainChar = createNewCharacter({ seed: 'heir-142' });
+  assert.ok(heirChar.stats.wealth >= plainChar.stats.wealth + 18, 'Heir with LineageEndowmentFund and reserveAhn starts with substantially higher wealth');
+
+  // 6.2 EndgameOfficePatron (+6 contract power & +4 Ahn/yr dividend) and CompanionMasterworkGear
+  const patronChar = createNewCharacter({ seed: 'patron-142', startAge: 45 });
+  patronChar.job = 'Fixer';
+  patronChar.fixerGrade = 4;
+  const baseContractPower = generateFixerContract(patronChar, createRNG('patron-c')).combatPower;
+  patronChar.flags.push('EndgameOfficePatron');
+  const patronContractPower = generateFixerContract(patronChar, createRNG('patron-c')).combatPower;
+  assert.equal(patronContractPower - baseContractPower, 6, 'EndgameOfficePatron adds +6 contract combatPower');
+
+  const compGearChar = createNewCharacter({ seed: 'compgear-142', startAge: 44 });
+  compGearChar.npcs = { partner: { role: 'partner', nameVi: 'Hải', nameEn: 'Hai', status: 'alive', bond: 65, archetype: 'tactician' } };
+  const sessionBefore = createDungeonSession('dungeon_outskirts_ruins', compGearChar);
+  const perkBefore = companionPerk(compGearChar, sessionBefore);
+  compGearChar.flags.push('CompanionMasterworkGear');
+  const perkAfter = companionPerk(compGearChar, sessionBefore);
+  assert.ok(perkAfter.checkBonus > perkBefore.checkBonus, 'CompanionMasterworkGear increases companion checkBonus');
+  assert.ok(perkAfter.hpDamageMult < perkBefore.hpDamageMult, 'CompanionMasterworkGear reduces HP damage multiplier');
+
+  // 6.3 Bloodline unseen event discovery multiplier (x1.35)
+  const sampleEv = ALL_STORY_EVENTS.find((e) => e.id === 'elder_callback_echo_of_youth');
+  assert.ok(sampleEv, 'elder_callback_echo_of_youth must exist');
+  const genChar = createNewCharacter({ seed: 'gen-143', startAge: 60 });
+  genChar.age = 60;
+  genChar.bloodlineSeenEvents = ['some_other_event'];
+  const scoreUnseen = scoreEventUtility(sampleEv, genChar, genChar.weaver).totalUtility;
+  genChar.bloodlineSeenEvents = ['elder_callback_echo_of_youth'];
+  const scoreSeen = scoreEventUtility(sampleEv, genChar, genChar.weaver).totalUtility;
+  assert.ok(scoreUnseen > scoreSeen * 1.25, 'Events unseen in bloodlineSeenEvents receive discovery utility boost');
+
+  // 6.4 Elder bereavement when close companion dies of old age
+  const oldFriendChar = createNewCharacter({ seed: 'bereave-144', startAge: 65 });
+  oldFriendChar.age = 65;
+  oldFriendChar.npcs = {
+    mentor: { role: 'mentor', nameVi: 'Lão Sư', nameEn: 'Old Master', status: 'alive', bond: 75, metAge: 20, ageAtMeet: 45 }
+  };
+  ageNpcCompanions(oldFriendChar, () => 0.001);
+  assert.ok(oldFriendChar.flags.includes('RecentElderBereavement'), 'Close mentor dying of old age sets RecentElderBereavement flag');
+  const mournEv = ALL_STORY_EVENTS.find((e) => e.id === 'bereavement_elder_old_friend_passing');
+  assert.ok(mournEv && matchesEventContext(mournEv, oldFriendChar), 'bereavement_elder_old_friend_passing becomes eligible after RecentElderBereavement');
+  console.log('  ✓ Đợt 142–144 verified.');
+}
+
+console.log('=== ALL BATCHES 135–147 TESTS PASSED ===');

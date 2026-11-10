@@ -932,12 +932,35 @@ const Epitaph = ({ summary, onInherit, onRestart, onViewRecord, onGoHome }) => {
 
   const handleCopySummary = () => {
     const header = lang === 'en'
-      ? `${summary.name}, born in ${summary.birthRegionNameEn || summary.regionNameEn} · ${summary.age} yrs (${summary.deathCauseEn})`
-      : `${summary.name}, sinh ra tại ${summary.birthRegionNameVi || summary.regionNameVi} · ${summary.age} tuổi (${summary.deathCauseVi})`;
-    const quote = lang === 'en' ? summary.poeticQuoteEn : summary.poeticQuoteVi;
+      ? `=== HANA ARCHIVE EPITAPH // GEN #${summary.generation || 1} ===\n${summary.name}, born in ${summary.birthRegionNameEn || summary.regionNameEn} · ${summary.age} yrs (${summary.deathCauseEn})`
+      : `=== DI CẢO LƯU TRỮ HANA // THẾ HỆ #${summary.generation || 1} ===\n${summary.name}, sinh ra tại ${summary.birthRegionNameVi || summary.regionNameVi} · ${summary.age} tuổi (${summary.deathCauseVi})`;
+    const titleLine = lang === 'en'
+      ? `Title / Standing: ${summary.occupationEn || summary.epitaphTitleEn || summary.job} · Threat: ${summary.rankTier}`
+      : `Danh vị: ${summary.occupationVi || summary.epitaphTitleVi || summary.job} · Cấp độ: ${summary.rankTier}`;
+    const relicLine = lang === 'en'
+      ? `Relic: ${localizeEnsembleName(summary.relic, 'en')}`
+      : `Di vật: ${summary.relic}`;
+    const quote = lang === 'en' ? `"${summary.poeticQuoteEn}"` : `"${summary.poeticQuoteVi}"`;
     const story = paragraphs.join('\n\n');
-    const statsLine = `HP ${summary.health ?? 0} | SP ${summary.sanity ?? 0} | Ahn ${summary.wealth ?? 0} | Net ${summary.network ?? 0} | Rep ${summary.rep ?? 0} | Resonance ${summary.resonance ?? 0}%`;
-    const fullText = `${header}\n${quote}\n\n${story}\n\n[${statsLine}]\nSeed: ${summary.seed}`;
+    const milestoneLines = turningPoints.slice(0, 5).map((tp) =>
+      lang === 'en'
+        ? `- Age ${tp.age}: ${tp.titleEn ? `${tp.titleEn} — ` : ''}${tp.summaryEn}`
+        : `- Tuổi ${tp.age}: ${tp.titleVi ? `${tp.titleVi} — ` : ''}${tp.summaryVi}`
+    ).join('\n');
+    const reserveNote = (summary.reserveAhn || 0) > 0 ? ` (+${summary.reserveAhn} Reserve)` : '';
+    const statsLine = `HP ${summary.health ?? 0} | SP ${summary.sanity ?? 0} | Ahn ${summary.wealth ?? 0}${reserveNote} | Net ${summary.network ?? 0} | Rep ${summary.rep ?? 0} | Merit ${summary.merit ?? 0} | Resonance ${summary.resonance ?? 0}%`;
+    const fullText = [
+      header,
+      titleLine,
+      relicLine,
+      quote,
+      '',
+      story,
+      ...(milestoneLines ? ['', lang === 'en' ? 'Pivotal Milestones:' : 'Cột mốc cuộc đời:', milestoneLines] : []),
+      '',
+      `[${statsLine}]`,
+      `Seed: ${summary.seed}`
+    ].join('\n');
     if (navigator?.clipboard?.writeText) {
       navigator.clipboard.writeText(fullText).then(() => {
         setCopied(true);
@@ -1220,7 +1243,7 @@ const Epitaph = ({ summary, onInherit, onRestart, onViewRecord, onGoHome }) => {
           <div className="epitaph-utility-row">
             <button type="button" className="btn" onClick={handleCopySummary}>
               {copied ? <Check size={16} /> : <Copy size={16} />}
-              {copied ? t('Đã sao chép', 'Copied') : t('Sao chép tóm tắt', 'Copy summary')}
+              {copied ? t('Đã chép Di cảo', 'Copied Epitaph') : t('Sao chép Di cảo', 'Copy Epitaph')}
             </button>
             <button type="button" className="btn" onClick={() => exportDossierCardPNG(summary)}>
               <Download size={16} />

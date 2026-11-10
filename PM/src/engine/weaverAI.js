@@ -480,7 +480,13 @@ export function scoreEventUtility(event, char, weaver) {
   const customMult = weaver.customWeights?.[event.id] ?? 1;
   // Branches with less content of their own meet dungeon gates more often
   const gateMult = isGateEvent(event.id) ? gateWeightMult(char) : 1;
-  const rawTotal = (baseWeight + causalScore + loreScore + npcScore + pacingScore + arcBonus) * considerationMult * waveMultiplier * customMult * cityEventMultiplier(event, char) * gateMult;
+  const unseenInBloodline = Array.isArray(char.bloodlineSeenEvents) && char.bloodlineSeenEvents.length > 0 && !char.bloodlineSeenEvents.includes(event.id);
+  const discoveryMult = unseenInBloodline ? 1.35 : 1;
+  if (unseenInBloodline) {
+    reasonsVi.push('Chưa từng gặp ở các đời trước');
+    reasonsEn.push('Unseen across previous bloodline lives');
+  }
+  const rawTotal = (baseWeight + causalScore + loreScore + npcScore + pacingScore + arcBonus) * considerationMult * waveMultiplier * customMult * cityEventMultiplier(event, char) * gateMult * discoveryMult;
   const totalUtility = Math.round(rawTotal * 10) / 10;
 
   return {

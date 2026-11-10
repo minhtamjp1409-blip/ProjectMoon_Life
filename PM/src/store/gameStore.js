@@ -904,6 +904,7 @@ export const useGameStore = create((set, get) => ({
     });
     // What earlier lives learned in the dungeons (Lake Laws, duty logs) comes with the next one
     nextChar.dungeonLore = (state.globalSeenEvents || []).filter((id) => String(id).startsWith('lore:'));
+    nextChar.bloodlineSeenEvents = Array.from(new Set([...(nextChar.bloodlineSeenEvents || []), ...(state.globalSeenEvents || [])]));
     lifeRng = createRNG(`${nextChar.seed}:life:${nextChar.age}`);
     lifeActiveMs = 0;
     planYear(nextChar, lifeRng);

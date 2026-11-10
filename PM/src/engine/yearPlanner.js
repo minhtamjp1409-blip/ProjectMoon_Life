@@ -164,6 +164,9 @@ export function applyFx(char, fx = {}, { exactRep = false } = {}) {
     if (!fx[k]) continue;
     const before = char.stats[k];
     const amount = k === 'rep' && fx[k] > 0 && !exactRep ? reputationGain(before, fx[k]) : fx[k];
+    if (k === 'wealth' && amount > 0 && before + amount > 100) {
+      char.reserveAhn = (char.reserveAhn || 0) + (before + amount - 100);
+    }
     char.stats[k] = clamp(before + amount, 0, 100);
     const d = char.stats[k] - before;
     if (d) deltas.push({ k, v: d });
@@ -1444,8 +1447,12 @@ export function endYear(charState, rng) {
     }
 
     const careerIncome = JOB_INCOME(char);
+    const patronDividend = char.flags?.includes('EndgameOfficePatron') ? 4 : 0;
     if (careerIncome > 0) {
       breakdown.push({ cat: 'economy', labelVi: 'Thu nhập nghề nghiệp', labelEn: 'Career income', k: 'wealth', v: careerIncome, unit: 'Ahn' });
+    }
+    if (patronDividend > 0) {
+      breakdown.push({ cat: 'economy', labelVi: 'Cổ tức tài trợ Office & Địa bàn', labelEn: 'Office & territory patronage dividend', k: 'wealth', v: patronDividend, unit: 'Ahn' });
     }
     if (livingCost > 0) {
       breakdown.push({ cat: 'economy', labelVi: 'Sinh hoạt, thuế & bảo dưỡng', labelEn: 'Living, taxes & maintenance', k: 'wealth', v: -livingCost, unit: 'Ahn' });
@@ -1454,7 +1461,7 @@ export function endYear(charState, rng) {
     if (marketJitter !== 0) {
       breakdown.push({ cat: 'economy', labelVi: 'Biến động thị trường & chi tiêu phát sinh', labelEn: 'Market fluctuations & miscellaneous expenses', k: 'wealth', v: marketJitter, unit: 'Ahn' });
     }
-    const net = careerIncome - livingCost + marketJitter;
+    const net = careerIncome + patronDividend - livingCost + marketJitter;
     add('wealth', net);
     if (net > 0) {
       line('income_up');

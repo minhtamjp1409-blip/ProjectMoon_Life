@@ -11,12 +11,14 @@ const chunkFor = (id) => {
     return 'vendor';
   }
   // Event text, everyday scenes and world data change separately, so each keeps its own cache entry.
-  // The five Finger stories are the largest single block of text, so they get a chunk of their own.
-  if (/[/]src[/]data[/]eventsFinger/.test(id)) return 'story-fingers';
-  if (/[/]src[/]data[/]events(Fixer|Color|Ego|Apex|Affiliation|Workshop)/.test(id)) return 'story-career';
-  if (/[/]src[/]data[/]events(Wing|Faction|Distortion|Supernatural|Dungeon)/.test(id)) return 'story-factions';
+  // The five Finger stories are the largest single block of text, so they get balanced sub-chunks.
+  if (/[\/]src[\/]data[\/]eventsFinger(Thumb|Index|Middle)/.test(id)) return 'story-fingers-a';
+  if (/[\/]src[\/]data[\/]eventsFinger/.test(id)) return 'story-fingers-b';
+  if (/[\/]src[\/]data[\/]events(Fixer|Color|Ego|Apex|Affiliation|Workshop)/.test(id)) return 'story-career';
+  if (/[\/]src[\/]data[\/]events(Wing|Faction|Distortion|Supernatural|Dungeon)/.test(id)) return 'story-factions';
   if (/[\/]src[\/]data[\/]events/.test(id)) return 'story-events';
-  if (/[\/]src[\/]data[\/](lifeMinors|lifeDailies|narrative)/.test(id)) return 'story-life';
+  if (/[\/]src[\/]data[\/](lifeMinors|lifeDailies|lifeNpc|lifeScar|lifeCareer|annualMerit|narrative)/.test(id)) return 'story-life';
+  if (/[\/]src[\/]data[\/](careerContracts|associations)/.test(id)) return 'story-contracts';
   if (/[\/]src[\/]data[\/]/.test(id)) return 'story';
   return undefined;
 };

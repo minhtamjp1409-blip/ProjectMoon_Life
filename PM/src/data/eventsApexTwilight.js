@@ -357,6 +357,94 @@ const ELDER_CHAPTER_EVENTS = [
         resultVi: 'Đứa nhỏ cầm túi tiền cúi đầu thật sâu. Bạn không biết nó có nghe lời khuyên ấy hay không.',
         resultEn: 'The youth takes the pouch with a deep bow. You cannot tell whether they will heed the warning.' }
     ]
+  },
+  {
+    id: 'elder_invest_office_patron', age: [40, 120], major: true, weight: 9,
+    need: { stat: { wealth: [45, 100] } }, forbids: ['Distorted', 'EndgameOfficePatron'],
+    vi: '[Mua cổ phần địa bàn] Chưởng quỹ quản lý khu phố mang tới hợp đồng chuyển nhượng ba dãy kho vận cùng phòng trực điều phối. Ông ta nói chỉ người có sẵn tiền mặt mới gánh nổi khoản đặt cọc ngay tuần này.',
+    en: '[Acquiring district shares] The quarter steward brings a deed for three depot rows and a dispatch room. He says only someone with liquid Ahn can cover the deposit this week.',
+    choices: [
+      { labelVi: 'Chi tiền thâu tóm kho vận, thu cổ tức dài hạn', labelEn: 'Buy the depot shares for long-term dividends',
+        costAhn: 35, effects: { rep: 6, network: 5, sanity: 2 }, meritAdd: 12, flagsAdd: ['EndgameOfficePatron'],
+        resultVi: 'Bạn ký tên và đóng con dấu cá nhân lên văn tự. Từ năm sau, tiền thuê kho cùng mạng lưới thông tin khu vực đều chảy qua sổ của bạn.',
+        resultEn: 'You sign and stamp the deed with your personal seal. Starting next year, depot rents and local dispatch intel flow through your ledger.' },
+      { labelVi: 'Chỉ góp vốn nhỏ để giữ chỗ gửi hàng', labelEn: 'Contribute a small stake just to keep storage access',
+        costAhn: 12, effects: { rep: 2, network: 2 }, flagsAdd: ['EndgameOfficePatron_minor'],
+        resultVi: 'Bạn đặt cọc gian kho nhỏ ở cuối dãy để tiện cất đồ nghề khi cần.',
+        resultEn: 'You lease a small bay at the end of the row to store gear when needed.' },
+      { labelVi: 'Khước từ hợp đồng, giữ tiền mặt cho việc khẩn cấp', labelEn: 'Decline the deed and keep liquid cash for emergencies',
+        effects: { sanity: 1 }, flagsAdd: ['EndgameOfficePatron_skipped'],
+        resultVi: 'Chưởng quỹ thu lại bản thảo hợp đồng, hẹn sẽ hỏi lại nếu sang năm dãy kho còn trống.',
+        resultEn: 'The steward gathers the draft contract, promising to ask again next year if the bays remain open.' }
+    ]
+  },
+  {
+    id: 'elder_invest_companion_gear', age: [40, 120], major: true, weight: 9,
+    need: { companionActive: true, stat: { wealth: [40, 100] } }, forbids: ['Distorted', 'CompanionMasterworkGear'],
+    vi: '[Đặt giáp riêng cho người đi cùng] Thợ cả của xưởng quen trải bản vẽ bộ giáp lót sợi giảm chấn lên bàn. Ông ta bảo nếu đo vừa khít cho người vẫn sát cánh cạnh bạn thì phải trả trước tiền phôi hiếm.',
+    en: '[Custom armor for your companion] The master smith spreads blueprints for shock-weaving liner armor on the bench. Fitting it to the one who walks beside you requires paying upfront for rare alloy stock.',
+    choices: [
+      { labelVi: 'Đặt làm nguyên bộ giáp và vũ khí đồng bộ', labelEn: 'Commission the full matched armor and weapon set',
+        costAhn: 30, effects: { sanity: 4, rep: 3 }, flagsAdd: ['CompanionMasterworkGear'],
+        resultVi: 'Khi mặc thử bộ giáp mới, bước chân người đồng hành nhẹ hẳn đi mà các khớp che chắn vẫn kín kẽ.',
+        resultEn: 'Trying on the new rig, your companion moves with lighter steps while every joint stays guarded.' },
+      { labelVi: 'Chỉ gia cố lại tấm hộ tâm và bao vũ khí đang dùng', labelEn: 'Only reinforce the current chestplate and scabbard',
+        costAhn: 10, effects: { sanity: 2, rep: 1 }, flagsAdd: ['CompanionGearTuned'],
+        resultVi: 'Thợ rèn thay lại các đinh tán đã mòn và mài sắc lại mép thép trước khi trời tối.',
+        resultEn: 'The smith replaces worn rivets and sharpens the steel edge before nightfall.' },
+      { labelVi: 'Tự tay bảo dưỡng bộ đồ cũ tại bàn nguội', labelEn: 'Maintain the existing kit yourself at the workbench',
+        effects: { sanity: 1 }, flagsAdd: ['CompanionGearTuned'],
+        resultVi: 'Bạn mượn đá mài và dầu máy của xưởng để lau lại từng khớp giáp cho người đồng hành.',
+        resultEn: 'You borrow the workshop whetstone and oil to service each armor joint for your companion.' }
+    ]
+  },
+  {
+    id: 'elder_invest_lineage_fund', age: [42, 125], major: true, weight: 9,
+    need: { stat: { wealth: [50, 100] } }, forbids: ['Distorted', 'LineageEndowmentFund'],
+    vi: '[Lập két sắt di sản] Luật sư lưu trữ của Hiệp hội đề nghị lập một quỹ tín thác niêm phong bằng mã huyết thống. Số tiền gửi vào đây sẽ không bị tịch thu khi bạn ngã xuống mà chuyển thẳng cho người nối bước.',
+    en: '[Establishing a lineage vault] An Association archive notary proposes a sealed bloodline trust. Funds placed inside cannot be seized when you fall and pass directly to your successor.',
+    choices: [
+      { labelVi: 'Niêm phong khoản tiền lớn vào Quỹ Di Sản Huyết Thống', labelEn: 'Seal a major sum into the Lineage Endowment Fund',
+        costAhn: 40, reserveAdd: 40, effects: { sanity: 5, rep: 4 }, flagsAdd: ['LineageEndowmentFund'],
+        resultVi: 'Hộp khóa đồng đóng sập lại dưới lớp sáp đỏ. Dù ngày mai có ra sao, người đi sau bạn cũng không phải bắt đầu với hai bàn tay trắng.',
+        resultEn: 'The brass lock snaps shut beneath red wax. Whatever happens tomorrow, the one who follows will not start empty-handed.' },
+      { labelVi: 'Giữ tiền mặt bên người để xoay xở lúc cần', labelEn: 'Keep cash on hand for immediate contingencies',
+        effects: { sanity: 1 }, flagsAdd: ['LineageEndowment_skipped'],
+        resultVi: 'Bạn cảm ơn vị luật sư rồi cất lại túi tiền vào áo trong.',
+        resultEn: 'You thank the notary and tuck the pouch back inside your coat.' }
+    ]
+  },
+  {
+    id: 'bereavement_elder_old_friend_passing', age: [45, 125], major: true, weight: 12,
+    requires: ['RecentElderBereavement'], forbids: ['Distorted', 'elder_bereavement_mourned'],
+    vi: '[Buổi tiễn đưa chiều muộn] Người quen cũ đã đi hết tuổi trời mà không phải ngã xuống vì đao kiếm. Trước căn phòng nhỏ, vài người hàng xóm đứng đợi bạn tới đặt kỷ vật cuối cùng lên bàn gỗ.',
+    en: '[Late afternoon farewell] An old companion has reached the end of their natural years without falling to a blade. Before the small room, a few neighbors wait for you to set a final keepsake on the wooden table.',
+    choices: [
+      { labelVi: 'Đứng lại tới lúc đèn đường bật sáng và nhận giữ hộp kỷ vật', labelEn: 'Stay until the streetlamps light up and keep the keepsake box',
+        effects: { sanity: 6, resonance: 4, rep: 2 }, flagsAdd: ['elder_bereavement_mourned'],
+        resultVi: 'Trong hộp gỗ nhỏ là tấm ảnh chụp chung đã phai màu và chiếc huy hiệu cũ được lau sáng bóng.',
+        resultEn: 'Inside the small wooden box lies a faded photograph of you both and an old badge polished bright.' },
+      { labelVi: 'Gửi tiền lo hậu sự chu đáo rồi lặng lẽ quay về trước khi mưa', labelEn: 'Cover the funeral expenses in full and leave quietly before the rain',
+        costAhn: 8, effects: { sanity: 4, network: 3 }, flagsAdd: ['elder_bereavement_mourned'],
+        resultVi: 'Gia quyến cúi đầu cảm tạ. Bạn mở ô bước đi trên con phố ướt mà lòng nhẹ đi một nửa.',
+        resultEn: 'The family bows in gratitude. You open your umbrella and walk down the wet street with a lighter heart.' }
+    ]
+  },
+  {
+    id: 'elder_callback_echo_of_youth', age: [55, 125], major: true, weight: 9,
+    forbids: ['Distorted', 'elder_echo_of_youth_done'],
+    vi: '[Vết khắc từ thời trẻ] Khi dọn lại ngăn kéo dưới đáy tủ, bạn chạm phải mảnh biên nhận có đóng dấu từ hơn ba mươi năm trước. Cái tên ghi ở mặt sau từng là ngã rẽ đầu tiên định hình cả cuộc đời bạn.',
+    en: '[An etching from youth] Clearing the bottom drawer, your fingers brush a stamped receipt from over thirty years ago. The name written on the back was the first crossroad that shaped your life.',
+    choices: [
+      { labelVi: 'Ghi chú lại câu chuyện phía sau tờ biên nhận cho người đời sau đọc', labelEn: 'Write down the story behind the receipt for your successor to read',
+        effects: { sanity: 5, resonance: 3, rep: 3 }, flagsAdd: ['elder_echo_of_youth_done'],
+        resultVi: 'Nét mực mới nằm cạnh con dấu cũ đã ngả màu vàng, nối liền hai đầu một đời người.',
+        resultEn: 'Fresh ink rests beside the yellowed stamp, joining both ends of a single life.' },
+      { labelVi: 'Đốt tờ giấy trên ngọn nến để khép lại chuyện xưa', labelEn: 'Burn the slip over a candle to close the old chapter',
+        effects: { sanity: 4, heat: -4 }, flagsAdd: ['elder_echo_of_youth_done'],
+        resultVi: 'Tàn tro rơi xuống đĩa sứ. Bạn thổi tắt nến và thấy đêm nay dễ ngủ hơn mọi ngày.',
+        resultEn: 'Ash settles on the porcelain saucer. You blow out the candle and find sleep comes easier tonight.' }
+    ]
   }
 ];
 

@@ -927,30 +927,31 @@ export function companionPerk(char, session) {
       breatherCostMult: 1, breatherHealBonus: 0, breatherSanityBonus: 0
     };
   }
-  const p = comp.perk || npc?.dungeonPerk || (npc ? getNpcDungeonPerk(npc) : null);
-  const t = p?.type || null;
-  const synergy = comp.role ? hasSynergyWith(char, comp.role) : false;
-  return {
-    active: Boolean(t),
-    type: t,
-    perk: p,
-    lootMult: (t === 'loot' || t === 'salvage') ? 1 + (p.lootBonus || 0.2) : 1,
-    meritMult: t === 'merit' ? 1 + (p.meritBonus || 0.15) : 1,
-    clashBonus: t === 'clash' ? (p.clashBonus || 0.1) : 0,
-    clashDieBonus: t === 'clash' ? Math.max(1, Math.round((p.clashBonus || 0.1) * 10)) : 0,
-    // The flee perk reads "when low on HP": it helps a hurt character get out, not a healthy one dodge everything
-    evadeBonus: t === 'flee' ? ((char?.stats?.health ?? 100) <= FLEE_PERK_HP ? (p.fleeBonus || 0.2) : 0) : t === 'check_bonus' ? (p.checkBonus || 0.08) : 0,
-    checkBonus: t === 'check_bonus' ? (p.checkBonus || 0.08) : 0,
-    hpDamageMult: t === 'trap_mitigation' ? Math.max(0.4, 1 - (p.damageReduction || 0.3)) : 1,
-    spDamageMult: t === 'sanity_shield' ? Math.max(0.4, 1 - (p.sanityReduction || 0.25)) : 1,
-    strainMult: t === 'strain_reduction' ? Math.max(0.4, 1 - (p.strainReduction || 0.2)) : 1,
-    sanityRestore: t === 'calm' ? (p.sanityRestore || 8) : 0,
-    parryAvailable: t === 'parry' && !session?.companionParried,
-    shieldAvailable: (t === 'shield' || synergy) && !session?.companionShieldUsed,
-    breatherCostMult: t === 'breather_discount' ? Math.max(0.4, 1 - (p.costReduction || 0.3)) : 1,
-    breatherHealBonus: t === 'breather_bonus' ? (p.healBonus || 10) : 0,
-    breatherSanityBonus: t === 'breather_bonus' ? (p.sanityBonus || 6) : 0
-  };
+    const p = comp.perk || npc?.dungeonPerk || (npc ? getNpcDungeonPerk(npc) : null);
+    const t = p?.type || null;
+    const synergy = comp.role ? hasSynergyWith(char, comp.role) : false;
+    const masterGear = Boolean(char?.flags?.includes('CompanionMasterworkGear'));
+    return {
+      active: Boolean(t) || masterGear,
+      type: t,
+      perk: p,
+      lootMult: (t === 'loot' || t === 'salvage') ? 1 + (p.lootBonus || 0.2) : 1,
+      meritMult: t === 'merit' ? 1 + (p.meritBonus || 0.15) : 1,
+      clashBonus: (t === 'clash' ? (p.clashBonus || 0.1) : 0) + (masterGear ? 0.05 : 0),
+      clashDieBonus: (t === 'clash' ? Math.max(1, Math.round((p.clashBonus || 0.1) * 10)) : 0) + (masterGear ? 1 : 0),
+      // The flee perk reads "when low on HP": it helps a hurt character get out, not a healthy one dodge everything
+      evadeBonus: (t === 'flee' ? ((char?.stats?.health ?? 100) <= FLEE_PERK_HP ? (p.fleeBonus || 0.2) : 0) : t === 'check_bonus' ? (p.checkBonus || 0.08) : 0) + (masterGear ? 0.05 : 0),
+      checkBonus: (t === 'check_bonus' ? (p.checkBonus || 0.08) : 0) + (masterGear ? 0.05 : 0),
+      hpDamageMult: (t === 'trap_mitigation' ? Math.max(0.4, 1 - (p.damageReduction || 0.3)) : 1) * (masterGear ? 0.9 : 1),
+      spDamageMult: t === 'sanity_shield' ? Math.max(0.4, 1 - (p.sanityReduction || 0.25)) : 1,
+      strainMult: t === 'strain_reduction' ? Math.max(0.4, 1 - (p.strainReduction || 0.2)) : 1,
+      sanityRestore: t === 'calm' ? (p.sanityRestore || 8) : 0,
+      parryAvailable: t === 'parry' && !session?.companionParried,
+      shieldAvailable: (t === 'shield' || synergy) && !session?.companionShieldUsed,
+      breatherCostMult: t === 'breather_discount' ? Math.max(0.4, 1 - (p.costReduction || 0.3)) : 1,
+      breatherHealBonus: t === 'breather_bonus' ? (p.healBonus || 10) : 0,
+      breatherSanityBonus: t === 'breather_bonus' ? (p.sanityBonus || 6) : 0
+    };
 }
 
 const named = (text, companion, lang) => text.replace('{name}', lang === 'en' ? companion.nameEn : companion.nameVi);
@@ -1885,7 +1886,13 @@ export function resolveDungeonChoice(charState, choiceIndex, rng = Math.random) 
       en: `[Mortal Shield] ${companion.nameEn} threw themselves in front of the killing stroke, armor drenched in crimson: "Retreat... do not let both of us die here!"`
     });
   }
-  if (rewards.wealth) char.stats.wealth = clamp((char.stats.wealth || 0) + rewards.wealth, 0, 100);
+  if (rewards.wealth) {
+    const beforeW = char.stats.wealth || 0;
+    if (rewards.wealth > 0 && beforeW + rewards.wealth > 100) {
+      char.reserveAhn = (char.reserveAhn || 0) + (beforeW + rewards.wealth - 100);
+    }
+    char.stats.wealth = clamp(beforeW + rewards.wealth, 0, 100);
+  }
   if (rewards.rep) char.stats.rep = clamp((char.stats.rep || 0) + rewards.rep, 0, 100);
   if (rewards.network) char.stats.network = clamp((char.stats.network || 0) + rewards.network, 0, 100);
   if (rewards.resonance) char.resonance = clamp((char.resonance || 0) + rewards.resonance, 0, 100);
@@ -2064,7 +2071,13 @@ export function resolveDungeonChoice(charState, choiceIndex, rng = Math.random) 
       session.lastStageResult = { ...session.lastStageResult, vi: `${session.lastStageResult.vi} ${tailVi}`, en: `${session.lastStageResult.en} ${tailEn}` };
     }
     const totalLoot = (session.accumulatedLootAhn || 0) + (conquered ? c.ahn : 0);
-    if (totalLoot > 0) char.stats.wealth = clamp((char.stats.wealth || 0) + totalLoot, 0, 100);
+    if (totalLoot > 0) {
+      const beforeW = char.stats.wealth || 0;
+      if (beforeW + totalLoot > 100) {
+        char.reserveAhn = (char.reserveAhn || 0) + (beforeW + totalLoot - 100);
+      }
+      char.stats.wealth = clamp(beforeW + totalLoot, 0, 100);
+    }
     if (conquered) {
       char.stats.health = clamp((char.stats.health || 0) + c.health, 0, 100);
       char.stats.sanity = clamp((char.stats.sanity || 0) + c.sanity, 0, 100);
@@ -2126,7 +2139,13 @@ export function fleeDungeon(charState) {
   const dark = darkWayOut(char, session);
   if (dark && char.stats.health <= 0) return COMBAT_CTX.finishDead(char, session, def, getDungeonCurrentStage(session));
   const haul = session.accumulatedLootAhn || 0;
-  if (haul > 0) char.stats.wealth = clamp((char.stats.wealth || 0) + haul, 0, 100);
+  if (haul > 0) {
+    const beforeW = char.stats.wealth || 0;
+    if (beforeW + haul > 100) {
+      char.reserveAhn = (char.reserveAhn || 0) + (beforeW + haul - 100);
+    }
+    char.stats.wealth = clamp(beforeW + haul, 0, 100);
+  }
   settleRun(char, session, 'fled');
   char.pendingDungeon = null;
 
@@ -2218,7 +2237,13 @@ const COMBAT_CTX = {
   finishFled(char, session, text) {
     const def = DUNGEON_DEFINITIONS[session.id];
     const haul = session.accumulatedLootAhn || 0;
-    if (haul > 0) char.stats.wealth = clamp((char.stats.wealth || 0) + haul, 0, 100);
+    if (haul > 0) {
+      const beforeW = char.stats.wealth || 0;
+      if (beforeW + haul > 100) {
+        char.reserveAhn = (char.reserveAhn || 0) + (beforeW + haul - 100);
+      }
+      char.stats.wealth = clamp(beforeW + haul, 0, 100);
+    }
     const notes = settleRun(char, session, 'fled');
     char.pendingDungeon = null;
     const title = ENDING_TEXT.fled.title({ vi: def.titleVi, en: def.titleEn });

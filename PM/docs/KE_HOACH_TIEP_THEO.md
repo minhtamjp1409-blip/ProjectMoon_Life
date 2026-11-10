@@ -1,414 +1,50 @@
-# Kế hoạch tiếp theo
+# Kế hoạch nâng cấp toàn diện Đợt 142–147
 
-Kế hoạch cutscene đã xong (C1 đến C8, Đợt 101 đến 111 trong `PROGRESS_LOG.md`). File này thay cho các kế hoạch và báo cáo cũ. Nó gom những việc còn lại từ hai bản góp ý gần nhất, sau khi đã đối chiếu với code ở commit `6c8b2f7`.
+File này thay cho các bản rà soát đã hoàn thành (`KE_HOACH_DOT_135.md`, `EVENT_NARRATIVE_AUDIT_2026_11_05.md`, `NPC_CAN_SUA.md`). Toàn bộ Đợt 113–141 đã hoàn tất và ghi trong `PROGRESS_LOG.md`.
 
 Luật chơi đang chạy nằm ở `docs/LUAT_HIEN_HANH.md`, lore và giọng văn ở `UNIVERSE.md`, lịch sử thay đổi ở `PROGRESS_LOG.md`.
 
-Mỗi đợt dưới đây được commit riêng, ghi vào `PROGRESS_LOG.md`, push lên `main`, rồi kiểm tra bundle Vercel và Render health.
+## Tóm tắt các đợt thực hiện (Đợt 142–147)
 
-## Tóm tắt
-
-| Đợt | Việc | Cỡ | Trạng thái |
+| Đợt | Hạng mục | Phạm vi | Trạng thái |
 |---|---|---|---|
-| 113 | Sửa di cảo mất mốc cuối đời | nhỏ | đã xong |
-| 113 | Sửa lý do khóa báo sai Bond | nhỏ | đã xong |
-| 114 | Bỏ chi phí hiện hai lần trên lựa chọn | nhỏ | đã xong |
-| 114 | Nói rõ luật thời gian ở màn khai sinh | nhỏ | đã xong |
-| 115 | Gộp daily của năm yên ả | lớn | đã xong |
-| 115 | Tự lướt năm yên ả | vừa | đã xong |
-| 116 | Thẻ chương khi mất một NPC thân thiết | vừa | đã xong |
-| 117 | Đo và gọn dock hầm ngục trên điện thoại | vừa | đã xong |
-| 118 | Gọn thẻ minor, thẻ chương khi trượt kỳ thi, thử trình đọc màn hình | vừa | đã xong |
-| 119 | Sửa hai lỗi mở đầu và thông báo trên điện thoại, thêm thông tin ở màn khai sinh | nhỏ | đã xong |
-| 120 | Năm yên ả một dòng, chuẩn độ dài câu chữ, gọn phần khai sinh | vừa | đã xong |
-| 121 | Đặt tên người thân, NPC quay lại nhắc lựa chọn cũ | lớn | đã xong |
-| 122 | Hậu quả kéo dài nói bằng lời, tiến độ thăng chức | vừa | đã xong |
-| 123 | Lướt nhanh đời thường khi chơi lại | vừa | đã xong |
-| 124 | Sau lần đo cạnh web mẫu: test khói, mở đầu nhanh, ít chữ năm đầu, giọng người cho Distortion, đo âm | vừa | đã xong |
-| 125 | Clash có đặt cược đời sống trong dungeon, luật riêng từng dungeon | vừa | đã xong |
-| 126 | Bốn bậc độ khó dungeon (The Head, Great Lake, nhóm giữa, Outskirts) | vừa | đã xong |
-| 127 | Fixer vào dungeon nhiều hơn, đường tới The Head dễ thấy hơn | vừa | đã xong |
-| 128 | Mỗi dungeon một cơ chế riêng: The Head trấn áp, Outskirts đèn dầu, Backstreets đồng hồ, Great Lake sổ luật, Bloodfiend chợ máu, WARP hành khách, Lobotomy loại công việc | lớn | đã xong |
-| 129 | Cắt cảnh Biến dị Distortion và Ngưỡng cửa Thư Viện Outskirts | vừa | đã xong |
-| 130 | Bộ 3 Cắt cảnh biểu tượng Ngón Tay The Fingers & kiểm định hiển thị Mobile đa màn hình | vừa | đã xong |
-| 131 | Cắt cảnh Thức tỉnh E.G.O Hoàn chỉnh (ego_full) & tối ưu hóa hiển thị Mobile Landscape | vừa | đã xong |
-| 132 | Dungeon báo giá khi trượt, chặng nặng nhất trước cửa, đo lại theo bot và mức cược | vừa | đã xong |
-| 133 | Event hồi âm sau Dungeon; đo Ahn trước trần 100 | vừa | đã xong |
-| 134 | Dùng phần Ahn vượt trần khi cược cao (chờ chủ dự án chọn cách) | nhỏ | chờ chủ dự án |
-| 135–138 | Sửa logic theo bản rà soát 06/11: mạch truyện kẹt (`arc_middle_vengeance_saga`, `waitsForGate`, hàng đợi thread, `ripe_age`, Syndicate độc lập, Workshop), perk đồng đội & Gauntlet/Great Lake, NPC tự sống/con cái/phản ứng bước ngoặt, biến động thành phố & `scheme` theo nghề (xem `docs/KE_HOACH_DOT_135.md`) | lớn | đã xong (còn mục 3 Đợt 138 chờ chủ dự án) |
-| 141 | Đo perk đồng đội bằng `dungeon_sim --companion`, tách cột hồi sinh W Corp, đưa WARP về 1,6, sửa `parry`/`flee`/`trap_mitigation` cho khớp mô tả (xem `docs/KE_HOACH_DOT_135.md`) | nhỏ | đã xong |
-| 139–140 | Nâng cấp đạo diễn (sàn tuổi 18 cho hầm nguy hiểm, dời cổng khi HP < 40, dàn cổng sau tuổi 40, nối `createCityBlackboard` vào `utilityCurves`, luật đạo diễn người già) và event sau 60 tuổi (`effectiveMaxAge` +30 năm cho người sống thọ, kết thúc chủ động 90+ cho Fixer thường/Workshop/Outcast, chương cuối đời) (xem `docs/KE_HOACH_DOT_135.md`) | lớn | đã xong phần cốt lõi |
-| (chủ dự án) | Nghe thử âm thanh trên điện thoại và tai nghe | nhỏ | chờ chủ dự án |
-
-Đợt 114b có thêm dải bản đồ thu nhỏ trên điện thoại, theo bản góp ý thứ ba (ngày 02/11/2026). Đợt 118 và buổi nghe thử âm thanh cũng đến từ bản góp ý đó.
-
-Đợt 119 đến 123 đến từ lần so sánh với web mẫu "Born as an Individual in the City" (ngày 03/11/2026), gộp với một bản góp ý ngoài. Kết luận của lần so sánh: web mẫu thắng ở chỗ người chơi bắt đầu nhanh và muốn chơi tiếp; game mình thắng ở địa điểm, hệ thống và cao trào. Các đợt này học nhịp chơi và cách gắn người chơi với nhân vật, không đụng tới chiều sâu đã có.
+| **142** | **Kinh tế cuối đời & Quỹ Bảo Tồn vượt trần 100 Ahn** (`reserveAhn`, 3 khoản đầu tư lớn tuổi 40+: tài trợ Office/địa bàn, trang bị đồng đội, quỹ di sản đời sau) | `dungeonEngine.js`, `gameEngine.js`, `yearPlanner.js`, `eventsApexTwilight.js` | đã xong |
+| **143** | **Tăng độ phủ kho sự kiện lớn (814 major)** (ưu tiên sự kiện chưa từng gặp qua các đời `bloodlineSeenEvents`) | `weaverAI.js`, `gameEngine.js`, `gameStore.js` | đã xong |
+| **144** | **Hồi ức nhân quả 25–40 năm & Cảnh tiễn biệt người thân qua đời vì tuổi già** (`elder_callback_echo_of_youth`, `bereavement_elder_old_friend_passing`) | `director.js`, `eventsApexTwilight.js` | đã xong |
+| **145** | **Thẻ Di cảo chia sẻ cuối đời (Shareable Epitaph Card & Copy Summary)** (nút sao chép bản tóm tắt Di cảo định dạng đầy đủ kèm Seed, danh vị, di vật, cột mốc và Quỹ Bảo Tồn) | `LiveStageFeed.jsx` | đã xong |
+| **146** | **Gọt câu chữ tiếng Việt đợt 2 (`vaClause`)** (xóa sạch toàn bộ 80 lỗi `, và ` trong `eventsExpansion.js` về `0`, hạ trần kiểm định trong `package.json` từ `2135` xuống `2055`) | `src/data/eventsExpansion.js`, `package.json` | đã xong |
+| **147** | **Tối ưu phân tách chunk bundle (`vite.config.js`)** (tách `story-fingers-a`, `story-fingers-b`, `story-contracts` để hạ kích thước chunk lớn nhất và không tạo vòng lặp import) | `vite.config.js` | đã xong |
 
 ---
 
-## Đợt 113: hai lỗi làm sai ký ức của đời
-
-### 113a. Di cảo mất các mốc cuối đời
-
-**Lỗi.** `buildLifeSummary` gom mốc vào `chosenLandmarks` và xếp theo thứ tự thời gian (`src/engine/gameEngine.js:3075`). Sau đó dòng 3446 lấy `turningPoints.slice(0, 8)`. Một đời có hơn 8 mốc vì thế giữ phần tuổi thơ và đánh rơi phần cuối: lên Color, vào Finger, cái chết. Đây là phần người chơi muốn thấy nhất.
-
-**Cách sửa.**
-1. Cho mỗi mốc một điểm quan trọng, theo thứ tự: mốc cuối đời, Color và E.G.O, lên Grade hoặc bậc Finger, vào nghề, NPC thân thiết mất, `danger` sống sót, còn lại.
-2. Chọn 8 mốc có điểm cao nhất. Mốc cuối cùng luôn được giữ. Nếu hòa điểm thì lấy mốc muộn hơn.
-3. Xếp 8 mốc đó lại theo thời gian rồi mới trả về.
-4. Giữ nguyên luật "tối đa 2 mốc mỗi tuổi" đang có.
-
-**File.** `src/engine/gameEngine.js` (chỉ phần chọn mốc, không đổi `formatLandmark`).
-
-**Test.** `tests/test_life_summary_landmarks.mjs`:
-- Dựng một đời 60 tuổi có 14 mốc, trong đó Color ở tuổi 52. Color phải nằm trong 8 mốc.
-- Mốc cuối cùng của đời luôn có mặt.
-- 8 mốc trả về vẫn theo thứ tự tuổi tăng dần.
-- Đời ngắn (ít hơn 8 mốc) giữ đúng danh sách cũ.
-
-**Xong khi.** Test qua, `npm test` qua, và audit 500 đời không có di cảo nào thiếu mốc cuối.
-
-### 113b. Lý do khóa báo thiếu Bond khi Bond đã đủ
-
-**Lỗi.** Trong hàm trả lý do khóa (`src/engine/eventConditions.js:301`), nhánh `need.bondAtLeast` trả câu "Cần gắn kết … ≥ …" ngay khi lựa chọn *có* điều kiện Bond. Hàm không kiểm tra Bond thực tế có thấp hơn mức cần hay không. Hàm kiểm tra điều kiện (dòng 126) thì đúng. Vì vậy một lựa chọn bị khóa vì thiếu Reputation (kiểm tra ở sau) vẫn hiện lý do thiếu Bond.
-
-**Cách sửa.** Ở dòng 301, chỉ trả lý do Bond khi NPC không hoạt động hoặc `bond < min`. Làm tương tự cho `bondAtMost` nếu nhánh đó có lý do riêng. Rà cả hàm để tìm nhánh nào khác cũng báo mà không so giá trị thật.
-
-**Test.** `tests/test_lock_reasons.mjs`:
-- Bond đủ, Reputation thiếu: lý do phải nói về Reputation.
-- Bond thiếu: lý do nói về Bond.
-- Với mọi lựa chọn trong data: nếu hàm kiểm tra cho qua thì hàm lý do trả `null`. Đây là test bảo vệ lâu dài, bắt được cả những nhánh lệch khác.
-
-**Xong khi.** Ba test trên qua.
-
----
-
-## Đợt 114: hai chỗ chữ thừa và thiếu
-
-### 114a. Chi phí hiện hai lần
-
-**Lỗi.** Nhiều nhãn lựa chọn đã viết giá trong ngoặc, ví dụ "Nhờ người mua thuốc và băng sạch (-1 Ahn)" (`src/data/lifeMinors.js:1569`) hay "(Tốn 40 Ahn)" ở `eventsWorkshopVisits.js` và `eventsWorkshopEconomy.js`. Khi lựa chọn có `costAhn`, `LiveStageFeed.jsx:340` gắn thêm thẻ "Tốn N Ahn". Người chơi đọc cùng một giá hai lần.
-
-**Cách sửa.** Thẻ là nơi duy nhất báo giá.
-1. Viết một hàm nhỏ `stripCostSuffix(label)` bỏ phần ngoặc cuối nhãn khi nó chỉ chứa giá Ahn: `(-1 Ahn)`, `(Tốn 40 Ahn)`, `(cost 40 Ahn)`.
-2. Chỉ gọi hàm khi lựa chọn có `costAhn`. Nhãn không có giá máy đọc được thì giữ nguyên chữ.
-3. Dùng hàm ở mọi chỗ vẽ nhãn lựa chọn: minor, event, hợp đồng.
-
-Không sửa từng file data. Cách này gọn hơn và không đụng tới voice lint.
-
-**Test.** Thêm vào `tests/`: các mẫu ngoặc trên đều bị bỏ; nhãn có ngoặc không phải giá (ví dụ "(nếu còn sức)") giữ nguyên; nhãn có giá nhưng không có `costAhn` giữ nguyên. Thêm một lượt quét data: mọi lựa chọn có `costAhn` sau khi bỏ ngoặc không còn chữ "Ahn".
-
-**Xong khi.** Test qua và ảnh chụp minor tiệm thuốc chỉ còn một chỗ báo giá.
-
-### 114b. Luật thời gian ở màn khai sinh
-
-**Hiện tại.** Dòng chú thích dưới nút bắt đầu ghi "Một năm trong 30 giây · Tự lưu sau mỗi lựa chọn." (`BirthSetupPanel.jsx:553`). Người mới không biết rằng lựa chọn lớn dừng đồng hồ, còn lựa chọn nhỏ có hạn giờ và hết giờ thì bị bỏ qua (`gameStore.js:885`, `chooseMinor(-1)`).
-
-**Cách sửa.** Thay bằng hai câu ngắn, đúng với code:
-- "Một năm trôi trong 30 giây. Lựa chọn lớn dừng đồng hồ chờ bạn; lựa chọn nhỏ có hạn giờ, hết giờ thì đời đi tiếp."
-- "Tự lưu sau mỗi lựa chọn."
-
-Có bản tiếng Anh tương ứng.
-
-**Dải bản đồ trên điện thoại.** Ở màn hẹp, bản đồ District (`CityBirthAtlas.jsx`) nằm dưới form khai sinh, nên ấn tượng đầu tiên chỉ là một cái form. Cách sửa:
-1. Dưới 720px, đặt lên đầu màn một dải ngang thấp (khoảng 120px) cắt từ chính bản đồ đó. Dải có District đang chọn được tô sáng và tên nơi xuất thân. Nếu đang chọn ngẫu nhiên thì ghi "Ngẫu nhiên".
-2. Chạm vào dải thì cuộn xuống bản đồ đầy đủ và đưa focus vào đó. Dải là một nút thật, có nhãn cho trình đọc màn hình.
-3. Dùng lại SVG của bản đồ, không vẽ hình mới. Desktop giữ nguyên.
-
-**Kiểm tra.** Quay ảnh ở 1440x900 và 390x844:
-- Trên điện thoại, dải bản đồ, nút bắt đầu và hai câu luật vẫn nằm trong màn đầu.
-- Không tràn ngang; desktop không đổi.
-- Chạy voice lint.
-
----
-
-## Đợt 115: năm yên ả đọc ít, đi nhanh
-
-Đây là việc lớn nhất. Hai phần đi chung vì cùng dựa trên một định nghĩa "năm yên ả".
-
-**Định nghĩa.** Một năm là yên ả khi kế hoạch năm (`yearPlanner.js`) chỉ có slot `daily`: không có minor, mishap, event, hợp đồng, hầm ngục, cutscene hay thẻ chương, và không NPC nào đổi trạng thái. Hàm `isQuietYear(plan, char)` đặt trong `yearPlanner.js` và được test riêng.
-
-### 115a. Gộp daily của năm yên ả
-
-**Hiện tại.** Từ tuổi 5, `yearPlanner.js:733` lấp mọi slot trống bằng daily, nên một năm bình thường có tới bốn dòng daily (thêm dòng phụ khi `drama` cao). Đọc qua nhiều năm như vậy rất mỏi.
-
-**Cách làm.**
-1. Daily vẫn được chọn như cũ. Không đổi seed và không đổi tác động lên chỉ số, nên save cũ và audit không lệch.
-2. Khi ghi log, các daily thuần trong một năm được gom vào một mục `year_digest`: một câu mở đầu, rồi các daily là các câu ngắn nối nhau, cộng tổng thay đổi chỉ số của cả năm.
-3. Mục có lựa chọn, NPC, hậu quả, `danger` hay mishap không bao giờ bị gộp, và vẫn giữ đúng vị trí mùa của nó.
-4. Mục gộp có nút "Xem từng mùa" để mở lại các dòng gốc. Dữ liệu gốc vẫn nằm trong log, chỉ phần vẽ là gộp.
-5. Tuổi 0 đến 4 giữ nguyên, vì đã chỉ có một daily mỗi năm.
-6. Di cảo và `buildLifeSummary` vẫn đọc dòng gốc, không đọc mục gộp.
-
-**File.** `src/engine/yearPlanner.js` (định nghĩa yên ả), store `commit` (ghi mục gộp), `LiveStageFeed.jsx` và `entryTiers.js` (cách vẽ), `chronicle.css`.
-
-**Test.**
-- Năm chỉ có daily: một mục gộp, đủ id các dòng gốc.
-- Năm có minor: minor đứng riêng, các daily còn lại vẫn gộp.
-- Tổng chỉ số của mục gộp bằng tổng các dòng gốc.
-- Save cũ (không có mục gộp) mở ra vẫn đọc được.
-- Audit 500 đời: số mục có lựa chọn và hậu quả không đổi so với trước khi gộp.
-
-### 115b. Tự lướt năm yên ả
-
-**Hiện tại.** Đã có tốc độ 1x/2x/3x (`PlayBar.jsx:406`) và nút "Qua thời gian yên ắng" (`skipQuietTime`, `gameStore.js:967`), nhưng nút phải bấm tay từng lần.
-
-**Cách làm.**
-1. Thêm tùy chọn "Tự lướt năm yên ả" trong cài đặt, mặc định tắt.
-2. Khi bật, năm thỏa `isQuietYear` chạy ở 4x. Gặp bất cứ thứ gì khác thì về tốc độ người chơi đã chọn.
-3. Không thêm nấc x4 hay x8 chung, vì minor có hạn giờ và người chơi cần đọc kịp.
-4. Từ 3x, cutscene đã tự chạy bản ngắn, nên không cần sửa gì thêm cho cutscene.
-
-**Test.** Năm yên ả chạy nhanh. Năm có minor về tốc độ thường trước khi minor mở. Tắt tùy chọn thì hành vi y như hiện nay.
-
-**Xong khi.** Quay một đời 40 năm: người chơi vẫn đọc được mọi lựa chọn, và tổng thời gian chơi giảm. Ghi con số đo được vào log.
-
----
-
-## Đợt 116: thẻ chương khi mất một NPC thân thiết
-
-**Hiện tại.** `chapterFor` (`src/engine/chapters.js`) ghi thẻ khi vào hoặc rời nghề, lên bậc, có E.G.O, Distortion hay Color. Cái chết của một người thân không có thẻ. Cảnh C7 chỉ lo trường hợp NPC chết thay bạn.
-
-**Cách làm.**
-1. Thêm một nhánh: một NPC thuộc các vai `partner`, `spouse`, `mentor` hoặc `friend`, có Bond từ 50 trở lên, chuyển sang `deceased` trong lần commit này.
-2. Nếu cùng commit đó đã phát cảnh savior thì không ghi thẻ. Cảnh đã nói thay.
-3. Thẻ ghi tên người mất và một câu theo vai, giống cách lời cuối của C7 chia theo vai. Câu mới phải qua voice lint.
-4. Thẻ chỉ là một mục trong log, không có nút "Tiếp tục" và không dừng nhịp chơi. Đề xuất ban đầu muốn thêm nút dừng; mình không làm theo, vì mốc nhỏ mà chặn nhịp thì phá luật xếp hạng cảnh.
-5. Một commit vẫn chỉ ghi tối đa một thẻ, thẻ lớn nhất thắng. Lên Color trong cùng năm thì Color thắng.
-
-**Test.** Thêm vào `tests/test_chapters.mjs`: mentor Bond 70 mất thì có thẻ; Bond 30 thì không; savior cùng commit thì không; NPC đã mất từ trước thì không ghi lại.
-
----
-
-## Đợt 117: dock hầm ngục trên điện thoại
-
-**Giả thuyết cần đo.** Ở 390x844, dock hầm ngục xếp chồng thẻ đánh, bài, vật phẩm và lựa chọn, nên người chơi phải cuộn mới tới lựa chọn.
-
-**Bước 1, đo.** Dùng công cụ quay ở 390x844 cho ba hầm ngục (`dungeon_warp_train`, `dungeon_great_lake` và Claw). Ghi vị trí đáy của lựa chọn đầu tiên so với chiều cao màn hình.
-
-**Bước 2, chỉ làm nếu lựa chọn đầu tiên nằm ngoài màn đầu.** Gom thẻ đánh và vật phẩm vào một hàng ngang trên cùng, vùng chạm tối thiểu 44px. Lựa chọn lên ngay dưới. Không đổi gì ở desktop.
-
-**Xong khi.** Lựa chọn đầu tiên nằm trong màn đầu ở 390x844, không tràn ngang, độ tương phản vẫn đạt mức của Đợt 107.
-
----
-
-## Đợt 118: thẻ minor gọn hơn, thất bại có tên, đọc được bằng tai
-
-### 118a. Thẻ minor gọn hơn
-
-**Giả thuyết cần đo.** Trên điện thoại, thẻ minor (`MinorDock` trong `LiveStageFeed.jsx`) có nhiều nhãn, chip và nút: số thứ tự, nhãn, chip giá, phần xem trước tác động (`ChoicePreview`), đồng hồ đếm ngược, nút tạm dừng, nút "Xem phía sau". Đợt 114a mới bỏ được chỗ giá hiện hai lần.
-
-**Bước 1, đo.** Quay ba minor ở 390x844: một minor có giá, một minor có NPC, một minor có điều kiện khóa. Với mỗi minor ghi lại:
-- số chip và nhãn trên mỗi lựa chọn;
-- chiều cao của thẻ;
-- lựa chọn cuối có nằm trong màn đầu không.
-
-**Bước 2, gọn lại.** Mỗi lựa chọn giữ tối đa ba thứ: nhãn, giá (nếu có) và một dòng tác động chính. Phần xem trước chi tiết (thay đổi Bond, rủi ro) gấp lại sau một chạm. Lý do khóa vẫn luôn hiện, vì người chơi cần biết vì sao không chọn được.
-
-**Xong khi.** Cả ba minor để lựa chọn cuối nằm trong màn đầu ở 390x844; lựa chọn bị khóa vẫn đọc được lý do; desktop không đổi bố cục.
-
-### 118b. Thẻ chương khi trượt kỳ thi Fixer
-
-**Hiện tại.** Mỗi lần trượt, game tăng `char.fixerExamFailures` (`gameEngine.js:2369`), nhưng `chapterFor` cố ý không ghi thẻ cho những lần đi xuống. Một lần trượt vì vậy chỉ là một dòng log thường, dễ trôi qua.
-
-**Cách làm.** Thêm một nhánh vào `chapterFor`: khi tổng `fixerExamFailures` tăng trong lần commit đó, ghi một thẻ chương nhỏ, chữ ít hơn thẻ thăng hạng. Câu thẻ nói rõ Grade vừa trượt, và nếu là lần trượt thứ hai cùng một Grade thì câu khác đi. Không làm cảnh riêng: thi trượt hay gặp, dựng cảnh sẽ làm cảnh mất giá. Luật "mỗi commit một thẻ, thẻ lớn nhất thắng" vẫn giữ nguyên.
-
-**Test.** Thêm vào `tests/test_chapters.mjs`:
-- trượt lần đầu có thẻ;
-- trượt lần hai cùng Grade có câu khác;
-- thi đỗ không có thẻ trượt;
-- trượt trong cùng commit với cái chết thì không có thẻ, vì cái chết thắng.
-
-### 118c. Thử bằng trình đọc màn hình
-
-**Rủi ro.** Vùng thông báo ẩn (`LiveStageFeed.jsx:1565`) để trống khi có dock hoặc đang có cảnh. Khi cảnh kết thúc, người dùng trình đọc có thể không được nghe chuyện gì vừa xảy ra. Thứ tự đọc của thẻ chương và di cảo cũng chưa được kiểm.
-
-**Cách làm.**
-1. Chạy một đời ngắn bằng NVDA trên Chrome, đi qua một minor, một cảnh (Claw hoặc dungeon gate), một thẻ chương và cái chết. Ghi lại những gì được đọc và theo thứ tự nào.
-2. Khi cảnh kết thúc, đọc câu chính của cảnh một lần qua vùng thông báo. Bản `caption` cũng đọc câu đó.
-3. Sửa thứ tự DOM ở những chỗ trình đọc đọc sai thứ tự so với mắt nhìn.
-
-**Xong khi.** Bản ghi NVDA được đưa vào `PROGRESS_LOG.md` và mỗi biến cố trên được đọc đúng một lần, đúng thứ tự.
-
----
-
-## Đợt 119: lỗi mở đầu trên điện thoại, thông tin ở màn khai sinh (ĐÃ HOÀN THÀNH)
-
-### 119a. Vùng nội dung trống lúc mới vào (ĐÃ XONG)
-
-**Hiện tại.** Đã sửa: `startLife` trong `src/store/gameStore.js` lập tức bóc tách dòng log đầu tiên vào `logs = [firstLog]` ngay tại frame 0 (0ms), phần còn lại đưa vào `pendingBirthLogs`. Khắc phục hoàn toàn độ trễ render feed trống. Đo đạc CDP thực tế trên 390x844: `firstLogTime = 0ms` (<500ms).
-
-### 119b. Thông báo thành tựu đè tên nhân vật và HUD (ĐÃ XONG)
-
-**Hiện tại.** Đã sửa: `flushAchievementToasts` chuyển `placement` thành `top` trên mobile (≤ 820px), bổ sung CSS định vị `top: calc(185px + env(safe-area-inset-top, 0px)) !important; bottom: auto !important;` để toast nổi ngay dưới HUD chỉ số (~140-160px), giải phóng 100% các nút hành động ở đáy màn hình; thêm `role="status"` và `aria-live="polite"`.
-
-### 119c. Thêm thông tin ở màn khai sinh (ĐÃ XONG)
-
-**Hiện tại.** Đã sửa: Thêm 2 dòng chú thích trong `BirthSetupPanel.jsx`: (1) Cảnh báo cốt truyện Project Moon 15+, (2) Phím tắt máy tính với CSS `@media (hover: hover) and (pointer: fine)` tự ẩn trên thiết bị cảm ứng di động. Rút ngắn hoạt cảnh quay nơi sinh `spinTo` còn 750ms và hỗ trợ chạm để bỏ qua ngay. Test `test_choice_cost_label.mjs` kiểm tra đầy đủ cả 2 dòng song ngữ.
-
----
-
-## Đợt 120: đọc ít chữ hơn (ĐÃ HOÀN THÀNH)
-
-### 120a. Năm yên ả chỉ một dòng (ĐÃ XONG)
-
-**Hiện tại.** Đã sửa: `createYearDigest` trong `src/engine/yearPlanner.js` rút gọn mục gộp về đúng 1 câu duy nhất. Chọn daily có delta lớn nhất hoặc có NPC (hòa phá bằng RNG tất định qua `createRNG`), không có biến động thì chọn từ bộ 30 câu văn cảnh canon (`AMBIENT_YEAR_LINES`) cho Backstreets, Nest, Outskirts (dò đúng qua `isNest` / `isOutskirts`). Nếu năm có daily thật (`dailyEntries.length > 0`) thì ưu tiên daily thật bằng seed, không thay bằng câu ambient chung chung. Tổng deltas và nút "Xem từng mùa" giữ nguyên 100%.
-
-### 120b. Chuẩn độ dài câu chữ (ĐÃ XONG)
-
-**Hiện tại.** Đã sửa: Xây dựng công cụ kiểm tra `tools/lint/check_sentence_length.mjs` chạy mô phỏng 150 đời để xếp hạng tần suất xuất hiện và kiểm soát độ dài câu lẫn số từ (tình huống minor tối đa 45 từ tiếng Việt, kết quả lựa chọn tối đa 45 từ tiếng Việt; quét sâu nhánh `out` và `ignore`; daily 1-2 câu; year-end max 2 câu). Tinh gọn tự nhiên không dùng ", và" trong `lifeMinorsKids.js`, `lifeMinors.js`, `lifeDailies.js`, tích hợp `--fail` vào `npm test`.
-
-### 120c. Gọn phần khai sinh hiện mặc định (ĐÃ XONG)
-
-**Hiện tại.** Đã sửa: Trong `src/features/chronicle/components/LiveStageFeed.jsx` và `src/data/birthStories.js`, các dòng Nơi sinh (`log_birth_0`), Điềm định mệnh (`log_birth_2`), Bạn thời thơ ấu (`log_birth_3` - cần cho Đợt 121) và Di sản thế hệ (`log_legacy_0`) hiển thị trực tiếp trong chronicle. Chỉ gập phần mô tả dài đêm sinh & gia cảnh (`log_birth_1`) vào fold với tiêu đề song ngữ "Gia cảnh & đêm sinh" / "Family & birth night". Trong `startLife`, nạp ngay các dòng gập vào `logs` ở frame 0 để triệt tiêu hoàn toàn khoảng chờ rỗng 1.3s. Loading overlay đặt `z-index: 1100` và nền đục 98% chống lộ form bên dưới mà không che modal báo lỗi. Test `tests/test_birth_extra_fold.mjs` kiểm tra độ bao phủ 100%.
-
----
-
-## Đợt 121: người chơi gắn với người thân (ĐÃ HOÀN THÀNH)
-
-### 121a. Đặt tên người thân (ĐÃ XONG)
-
-**Lý do.** Web mẫu hỏi tên bạn thuở nhỏ và thú nuôi ("để trống để ngẫu nhiên"). Tên do chính người chơi đặt làm thẻ chương mất người thân (Đợt 116) nặng hơn nhiều.
-
-**Cách làm.**
-1. Ở lần đầu một NPC `friend`, `lover` hoặc `spouse` xuất hiện, dừng thời gian như một major và hỏi một câu theo vai, ví dụ với bạn thuở nhỏ: "Đứa trẻ đó tên gì? (để trống để ngẫu nhiên)".
-2. Ô nhập giới hạn 24 ký tự và cắt khoảng trắng. Để trống thì giữ tên ngẫu nhiên như hiện nay.
-3. Tên lưu vào `nameVi` và `nameEn` của NPC. Save cũ không có cờ hỏi tên thì không hỏi lại.
-4. Khi bật tự chọn, bỏ qua câu hỏi và giữ tên ngẫu nhiên.
-
-**Test.**
-- Có tên thì log và thẻ chương dùng tên đó.
-- Để trống thì giữ tên ngẫu nhiên.
-- Mỗi NPC chỉ hỏi một lần.
-- Load save cũ không lỗi.
-
-### 121b. NPC quay lại bằng cảnh ngắn nhắc lựa chọn cũ (ĐÃ HOÀN THÀNH — Tách riêng khóa mem theo hướng đầy đủ, 71 cảnh nhắc lại, max 6 cảnh/đời, 0 trùng lặp, test qua 100%)
-
-**Lý do.** Một nhân vật xuất hiện nhiều lần đáng giá hơn nhiều nhân vật chỉ xuất hiện một lần.
-
-**Cách làm.**
-1. Đây là tinh chỉnh tần suất và điều kiện của hệ NPC đang có, không dựng hệ mới.
-2. Ghi lại một số lựa chọn có NPC tham gia, kèm id lựa chọn và tuổi.
-3. Thêm các cảnh ngắn nhắc lại lựa chọn cũ (tổng cộng 71 cảnh nhắc lại trong `src/data/lifeNpcCallbacks.js`), mỗi cảnh 1–2 câu, nhắc lại đúng lựa chọn đó vài năm sau. Tách khóa `mem` riêng cho các lựa chọn ngược chiều Bond hoặc khác hành động; lựa chọn xấu có câu nhắc riêng với giọng lạnh và khoảng cách. Đặt khoảng cách tối thiểu 2 năm giữa hai cảnh nhắc lại (`char.lastCallbackAge`) và giới hạn tối đa 6 cảnh nhắc lại mỗi đời (`char.npcCallbackCount < 6`).
-4. Trước khi viết, đo bằng audit 500 đời: một đời trung bình gặp lại cùng một NPC bao nhiêu lần (baseline trước khi viết: `4,43` lần gặp/đời, `0,00` cảnh nhắc lại/đời; sau khi hoàn thiện và tinh chỉnh cân bằng: tỉ lệ minor có NPC đạt **`16,9%`**, trung bình **`3,18` cảnh nhắc lại/đời có NPC thân**, `0` đời vượt quá 6 cảnh, `0` trùng lặp).
-
-**Xong khi.** Trong audit, một đời có NPC thân trung bình gặp ít nhất 3 cảnh nhắc lại (`3,18 >= 3,0`), không đời nào vượt quá 6 cảnh (`max <= 6`), và không cảnh nào lặp trong cùng một đời (`0`). Test `tests/test_npc_naming_and_callbacks.mjs` đạt 100%.
-
----
-
-## Đợt 122: hậu quả và đích đến (ĐÃ HOÀN THÀNH)
-
-### 122a. Hậu quả kéo dài nói bằng lời (ĐÃ XONG & ĐÃ CHUẨN HÓA CƠ CHẾ)
-
-**Hiện tại.** `ChoicePreview` (`Deltas.jsx:229`) chỉ hiện chip +/−, nên người chơi không biết tác động kéo dài bao lâu.
-
-**Cách làm.** Với lựa chọn có tác động nhiều năm (Bond, nợ, hợp đồng, NPC đi theo), cho phép data khai một trường `lasting: { vi, en }`. Trường này hiện thành một dòng ngắn dưới nhãn lựa chọn (`.choice-lasting`), ví dụ "Mỗi năm SP +2, kéo dài tới khi chia tay". Lựa chọn không có trường này thì không đổi gì.
-
-**Xong khi.** Đã bổ sung `lasting: { vi, en }` cho 20 lựa chọn dài hạn (vượt mốc 15 lựa chọn). Chuẩn hóa chính xác theo cơ chế engine: sẹo không trừ HP hằng năm (chỉ tính chi phí Ahn ở tuổi già), vai lover không tính hồi SP hằng năm của companion, và giấu số năm chính xác của các biến cố sau đó ("vài năm sau", "trong những năm tới") để giữ tính hồi hộp. Thẻ minor ở 390x844 đạt chuẩn của Đợt 118a: dòng `lasting` nằm trong phần mở bằng nút gập (`+` / `.preview-secondary`).
-
-### 122b. Tiến độ thăng chức (ĐÃ XONG & BỔ SUNG ĐIỀU KIỆN CÒN THIẾU)
-
-**Hiện tại.** Merit chỉ là một con số nằm trong mục gập của hồ sơ (`CharacterDossierCard.jsx:650`). Người chơi không biết còn bao xa mới tới lần thăng chức hoặc kỳ thi Grade tiếp theo.
-
-**Cách làm.**
-1. Hiện ở cột trái, ngoài mục gập, một thanh "Tới thăng chức: 6/8", hoặc "Tới kỳ thi Grade 6" cho Fixer (`PromotionProgressBar`).
-2. Lấy ngưỡng từ đúng hàm mà engine dùng để thăng chức (`getPromotionProgress` đọc trực tiếp từ `getNextFixerPromotion`, `checkColorFixerReadiness`, `getOtherCareerPromotion`, `getNextIndependentSyndicatePromotion`), không viết lại ngưỡng ở UI.
-3. Khi thanh điểm cao nhưng chưa đủ điều kiện (tuổi, thâm niên trong cấp, Network), thanh giới hạn tối đa 95% và hiển thị nhãn điều kiện còn thiếu (ví dụ "Chờ tới 30 tuổi", "Cần thêm 2 năm ở cấp này").
-
-**Test.** `tests/test_batches_122_123.mjs` kiểm tra ngưỡng UI khớp 100% với ngưỡng engine cho mọi nghề có thăng chức (Fixer Grade 9->1, Color, Finger Syndicate, Wing Employee, Independent Syndicate) và kiểm tra đúng nhãn điều kiện thiếu khi chưa đủ điều kiện.
-
----
-
-## Đợt 123: lướt nhanh khi chơi lại (ĐÃ HOÀN THÀNH — Chế độ bám skimOn)
-
-**Lý do.** Web mẫu có x1 đến x32, nhưng chép nguyên x32 sẽ nuốt mất chi tiết của game mình. Hướng học là tăng tốc rõ rệt cho phần đời thường khi chơi lại.
-
-**Cách làm.**
-1. Thêm một mức "Lướt" (khoảng 8x). Mức này chỉ hiện từ đời thứ hai trở đi (`pastLives.length >= 1` hoặc `char.generation > 1`), đọc từ lịch sử đời của Huyết thống, hoặc khi đã bật tự chọn (`autoPlay`).
-2. Chế độ Lướt hoạt động theo cơ chế bám (`skimOn: true`):
-   - Đang yên ả thì `effectiveSpeed = 8`.
-   - Gặp major, minor, mốc NPC hay thẻ chương thì tạm hạ về `preSkimSpeed` để người chơi đọc/chọn mà không ghi đè mất chế độ Lướt.
-   - Giải quyết xong minor/sự kiện thì tự động vút lên 8x lại, người chơi không phải bấm lại nhiều lần mỗi năm.
-   - Khi người chơi chủ động bấm các nấc tốc độ 1x/2x/3x thì mới tắt `skimOn`.
-3. Minor không bị rút ngắn thời gian chờ (`minorRemainingMs` trừ đúng `dtMs` thực tế, không nhân tốc độ lướt). Luật hẹn giờ giữ nguyên.
-
-**Test.** `tests/test_batches_122_123.mjs`:
-- Đời đầu khi chưa bật autoPlay không thấy nút "Lướt", đời thứ hai hoặc khi bật autoPlay thì thấy.
-- Đang lướt mà gặp minor, major, mốc NPC hoặc thẻ chương thì tốc độ hiệu dụng tạm về lại mức cũ, giải xong minor thì tự chạy 8x lại.
-- Đồng hồ minor trừ đúng thời gian thực, không chạy nhanh hơn bình thường.
-
----
-
-## Việc của chủ dự án: nghe thử âm thanh
-
-Âm thanh của 7 cảnh (Đợt 110) chỉ mới được kiểm bằng test và Chrome, chưa ai nghe bằng tai. Nên nghe một lượt trên điện thoại có tai nghe, rồi trên loa máy tính. Danh sách cần nghe:
-- Âm chọn lựa chọn bấm liên tiếp mười lần có gây mệt không.
-- Âm nền có lấn chữ hoặc lấn khoảnh khắc quan trọng không, nhất là Great Lake và distortion.
-- Lúc vào cảnh và lúc bỏ qua cảnh, âm có bị hụt hoặc to vọt không.
-- Mỗi cảnh trong 7 cảnh có nhận ra được mà không cần nhìn không.
-
-Công cụ quay đã có lệnh mở từng cảnh: `node tools/film/film_cutscene.mjs --scene=<tên>`. Ghi lại cảnh nào quá to, quá nhỏ hay khó chịu; mình sẽ chỉnh theo danh sách đó.
-
-## Các hạng mục đã bổ sung hoàn thiện (ĐÃ HOÀN THÀNH)
-
-- **Âm báo ngắn khi đổi nơi (ĐÃ XONG).** Thêm âm thanh ~1 giây lúc đổi giữa Nest, Backstreets, Wing, Outskirts, Finger, Workshop và Fixer Office bằng `cueTone` và `cueNoise` trên `sfxGain` trong `audioEngine.js:283` (`playLocationCue`). Không kích hoạt khi chuyển sang title hay dungeon gates. Kiểm thử tự động qua `tests/test_cutscene_audio.mjs`.
-- **Cảnh thức tỉnh E.G.O (ĐÃ XONG).** Dựng cảnh cutscene thứ 8 `ego` ngang hạng Claw (`CUTSCENE_RANK.ego = 3`), tự động kích hoạt khi nhân vật thức tỉnh E.G.O (`next.flags` có `EGOAwakened`). Trình diễn vầng hào quang lăng kính rực rỡ `EgoScene.jsx` (`cs-ego`), 4 nhát cắt (`full`, `lite`, `still`, `caption`), âm thanh tiếng vỡ giọng Carmen cùng hợp âm khai mở E.G.O. Đạt chuẩn `check_cutscenes.mjs` (chỉ di chuyển transform & opacity, 0 màu cứng, token E.G.O) và kiểm thử qua `tests/test_cutscene_triggers.mjs` & `tests/test_cutscene_audio.mjs`.
-
----
-
-## Đợt 124: sau lần đo cạnh web mẫu (ĐÃ XONG, 04/11/2026)
-
-**Lý do.** Đo cạnh nhau trên production (390×844, mỗi bên 3 đời, 150 giây): web mẫu hiện chữ sau 0,04 giây và cần khoảng 35 chữ mỗi năm; game mình hiện dòng đầu sau 2,6 giây, cần khoảng 60 chữ mỗi năm và 274 chữ trước lựa chọn thật đầu tiên. Cũng trong lần đo đó, production sập khi bắt đầu đời (`skimOn is not defined`, đã sửa ở `cab347d`).
-
-**Đã làm.**
-1. Test khói `tests/test_play_screen_smoke.mjs`: nạp đúng các file JSX qua Vite, render PlayBar, LiveStageFeed, CharacterDossierCard ở 5 trạng thái và trang chủ ở 2 trạng thái. Gỡ bản sửa `skimOn` thì test báo lỗi.
-2. Đời đầu tiên của người chơi không chết lúc sinh (`sparePerinatal`). Các đời sau giữ nguyên tỉ lệ (khoảng 6,5%), và phần còn lại của seed không đổi.
-3. Mở đầu: vòng quay nơi sinh 750 xuống 450ms, thẻ District (lite) 1500 xuống 800ms. Đo lại: thẻ có chữ sau 0,5 giây, dòng nhật ký đầu sau 1,5 giây.
-4. Tuổi 0 đến 4: dòng cuối năm chỉ giữ câu đầu, chip và phần chi tiết vẫn đủ. Tuổi 1 đến 4 còn 47,5 chữ mỗi năm (`tests/test_early_years_reading.mjs`, ngưỡng 55).
-5. Đo nhịp giữa đời (300 đời): tuổi 15 đến 59, khoảng 97% số năm có lựa chọn, khoảng 3 lựa chọn mỗi năm, không có quá 1 năm liền trống. Không cần sửa.
-6. Trang chủ sau đời đầu có mục "Đời sau còn có thể mở": hai thành tựu thật chưa mở và gợi ý có sẵn, một theo nghề của đời gần nhất (`replayGoals.js`).
-7. Distortion có đường tìm lại giọng người (`eventsDistortionVoice.js`, phóng tác): ba event nối bằng cờ, kết thúc ở `HumanVoice`. Vẫn là Distortion; Hana vẫn giữ hồ sơ nhưng Heat hằng năm còn một nửa và Network thôi mòn.
-8. `npm run audio:levels` đo độ to mọi âm qua OfflineAudioContext, chỉ ra các âm nên nghe trước. Chưa chỉnh mức âm nào khi chưa có người nghe.
-
-**Còn treo.** `event_reach` (300 đời): 450 trên 794 event lớn chưa từng gặp, nhiều nhất là Syndicate (200). Cần một đợt riêng.
-
----
-
-## Đợt 125: Clash có đặt cược đời sống (ĐÃ XONG, 04/11/2026)
-
-**Lý do.** Trận boss trong dungeon chỉ có đáp đúng hoặc sai theo bảng ý đồ. Thêm một khoảnh khắc liều có tính toán, nối trận đánh với đời nhân vật (sẹo, tiền, người đồng hành).
-
-**Đã làm.** Clash ở trận có tên, tỉ lệ hiện trước, một lần cược mỗi trận, luật riêng cho từng dungeon, thắng nhịp trả thêm chiến lợi phẩm. Chi tiết và số đo ở `PROGRESS_LOG.md` mục 2.19.
-
-**Còn treo.** Chủ dự án chơi thử và nghe âm. Có thể nối tiếp: hợp đồng trấn áp Abnormality (luật trong hồ sơ cho biết khi nào không nên Clash).
-
----
-
-## Bốn quyết định còn treo (ĐÃ XONG, 06/11/2026)
-
-- Ngưỡng "đời mạnh" của con đường cấm hạ xuống bậc 2 của nhánh và Fixer Grade 1.
-- Taboo +6 đến +12 ở Wing arc và lineage legacy thành +1.
-- Đồng đội đỡ đòn chí mạng lành sau 2 năm thay vì bị thương mãi.
-- Nút bắt đầu trên điện thoại bám đáy vùng cuộn, không còn nằm dưới thanh tab.
-
-## Những việc không làm, và lý do
-
-- **Lớp canvas hạt chạy liên tục (mưa, tàn tro, bụi).** Tốn pin trên điện thoại và đi ngược luật "không lặp vô hạn" mà các cảnh đang giữ. Mood và skyline theo nơi chốn (Đợt 106) đã cho chiều sâu. Nếu sau này muốn thêm, chỉ làm một lớp tĩnh vẽ một lần cho Great Lake hoặc Backstreets.
-- **Nấc tốc độ x4/x8 chung.** Thay bằng tự lướt năm yên ả (115b).
-- **Nút "Tiếp tục" trên thẻ chương.** Xem 116, mục 4.
-- **Làm mới cache PWA.** Không phải việc code. Người chơi kéo làm mới hoặc xóa dữ liệu trang để nhận bản mới.
-- **Gộp hai nút tạm dừng.** Nút tạm dừng ở thẻ minor và nút Pause ở thanh trên cùng điều khiển một trạng thái (`speed === 0`; vòng `tick` ở `gameStore.js` dừng cả đồng hồ minor khi tốc độ bằng 0). Chúng không mâu thuẫn nhau. Nút trong thẻ nằm gần ngón cái và có phím Space, nên giữ cả hai.
-- **Cảnh riêng cho thi trượt.** Thay bằng thẻ chương (118b).
-- **Ba ngôn ngữ như web mẫu (Hàn, Anh, Nhật).** Đó là lựa chọn theo cộng đồng người chơi của họ. Giữ Việt và Anh.
-- **Tốc độ x32 cho mọi người.** Thay bằng mức "Lướt" chỉ khi chơi lại (Đợt 123).
-- **Gói toàn bộ JS vào một file như web mẫu (8,4 MB).** Bản mình chia chunk, tải đầu nhẹ hơn.
-- **Viết thêm chuỗi hậu quả sau biến cố lớn.** Đã có các chuỗi `csq_` trong `narrativeArcEngine.js`. Nếu sau này muốn viết thêm, trước hết đo xem một đời thật gặp bao nhiêu chuỗi.
-
-## Việc còn treo từ các đợt trước
-
-- Lời Việt: còn 2.280 chỗ ", và" (nhiều nhất ở bộ Fingers, Expansion, lifeMinors4/5). Làm theo file bằng `node tools/lint/vi_worklist.mjs <file> --va` rồi `apply_vi_rewrites.mjs`, mỗi lần hạ ngưỡng `vaClause` trong `package.json`.
-- `tools/qa/measure_birth_mobile.mjs` mục 4 không tìm thấy toast thành tựu trên mobile (có từ trước 06/11/2026, chưa rõ do test hay do giao diện).
-
-- Âm thanh của 7 cảnh: xem mục nghe thử phía trên.
-- Bốn lời cuối của C7 là chữ mình tự viết. Chủ dự án nên đọc lại.
-- `tools/build_gameplay_bible.mjs` và `build_gameplay_deep_dive_v2.mjs` vẫn ghi ra `docs/THE_CITY_CHRONICLES_GAMEPLAY_DEEP_DIVE.md` mỗi lần chạy. File đã bị xóa vì nội dung cũ; chạy lại công cụ sẽ sinh lại bản theo code hiện tại.
+## Chi tiết từng đợt
+
+### Đợt 142 — Kinh tế cuối đời & Quỹ Bảo Tồn vượt trần 100 Ahn
+1. **Không mất trắng Ahn vượt trần 100 (`char.reserveAhn`):**
+   - Trong `dungeonEngine.js` (`settleRun`) và `gameEngine.js` (khi giải quyết hợp đồng và sự kiện), mỗi khi `wealth` cộng thêm vượt quá trần `100`, phần vượt trần (`overflow`) được chuyển vào `char.reserveAhn` (Quỹ Bảo Tồn / Tích lũy ngoài sổ).
+   - Trong `legacyKeepsake.js` và `createNewCharacter`, `reserveAhn` (cùng cờ đầu tư di sản) cộng thêm Ahn khởi đầu và điểm di sản cho thế hệ kế tiếp.
+2. **Ba khoản đầu tư lớn sau tuổi 40 (`elder_investment_*` / lựa chọn đầu tư):**
+   - **Tài trợ Office / Mở rộng Địa bàn (`35 Ahn`):** Gắn cờ `EndgameOfficePatron`, cộng lương thụ động hằng năm (`+4 Ahn/năm`), `+6 Rep`, `+5 Network` và `+6` sức mạnh hợp đồng.
+   - **Trang bị Workshop cho Đồng đội (`30 Ahn`):** Gắn cờ `CompanionMasterworkGear`, cường hóa đồng đội đang đi cùng (`+15 Bond`, tăng `checkBonus` thêm `+0.05`, giảm thêm `10%` sát thương trong Dungeon và tăng tỉ lệ `companionLeadChance`).
+   - **Quỹ Di Sản Huyết Thống (`40 Ahn`):** Gắn cờ `LineageEndowmentFund`, chuyển vào `reserveAhn` để đời con cháu tiếp theo khởi đầu với `+18 Ahn`, `+6 Rep` và giữ nguyên độ bền kỷ vật.
+
+### Đợt 143 — Tăng độ phủ kho sự kiện lớn (809 major)
+1. **Theo dõi sự kiện đã gặp qua nhiều thế hệ (`bloodlineSeenEvents`):**
+   - Trong `weaverAI.js` (`scoreEventUtility`), những sự kiện chưa từng xuất hiện trong `char.bloodlineSeenEvents` (tổng hợp từ `pastLives` hoặc truyền vào `char`) được nhân hệ số khám phá `x1.35`, giúp người chơi chơi nhiều đời liên tục bắt gặp các sự kiện mới trong kho 809 major.
+2. **Cân bằng trọng số nhóm sự kiện hiếm:**
+   - Tăng nhẹ trọng số cơ sở cho các sự kiện nhánh Finger/Syndicate, Wing và Workshop đang có `weight` quá thấp hoặc dải tuổi quá hẹp để tăng tỉ lệ xuất hiện tự nhiên trong một đời.
+
+### Đợt 144 — Hồi ức nhân quả 25–40 năm & Tiễn biệt người thân tuổi già
+1. **Sự kiện gọi lại nhân quả xa (`elder_callback_echo_of_youth`):**
+   - Đọc `char.weaver.nodes` từ `20+` năm trước (hoặc các lựa chọn lớn thời trẻ ở tuổi `18–35`) để mở một sự kiện hồi tưởng / gặp lại hệ quả cũ ở tuổi `55–120`.
+2. **Sự kiện tiễn biệt người thân qua đời vì tuổi già (`bereavement_elder_old_friend_passing`):**
+   - Khi một NPC thân thiết (`mentor`, `friend`, `partner`, `spouse`) qua đời vì tuổi già (`director.js:436`) và có `bond >= 50`, mở khóa sự kiện tiễn biệt cho phép người chơi đến viếng, nhận lại vật kỷ niệm hoặc hoàn thành lời hẹn cũ.
+
+### Đợt 145 — Thẻ Di cảo chia sẻ cuối đời (Shareable Epitaph Summary)
+- Trên màn hình kết thúc cuộc đời trong `LiveStageFeed.jsx`, thêm nút **"Sao chép Di cảo" / "Copy Epitaph"** (cạnh nút chia sẻ Seed) tạo ra một bản tóm tắt văn bản trình bày đẹp mắt gồm: Tên, Tuổi thọ, Nghề/Danh hiệu đỉnh cao, Kết cục (`lifeEnding`), Di vật để lại, Tối đa 5 cột mốc tiêu biểu và Mã Seed, kèm phản hồi `"Đã chép Di cảo"` tức thì.
+
+### Đợt 146 — Gọt câu chữ tiếng Việt đợt 2 (`vaClause`)
+- Quét các file còn nhiều `, và ` nhất và viết lại tự nhiên theo chuẩn `.agents/skills/vi-prose/SKILL.md` (giữ nguyên toàn bộ 7 chỉ số lỗi dịch máy ở mức `0`), sau đó hạ ngưỡng `vaClause` trong `package.json`.
+
+### Đợt 147 — Tối ưu phân tách chunk bundle (`vite.config.js`)
+- Chia nhỏ các chunk dữ liệu truyện lớn trong `vite.config.js` để không còn chunk dữ liệu đơn lẻ nào phình quá lớn, giúp trình duyệt tải song song nhanh hơn và gỡ cảnh báo chunk size khi build.

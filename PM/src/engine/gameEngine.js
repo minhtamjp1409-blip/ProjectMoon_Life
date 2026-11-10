@@ -607,6 +607,26 @@ export function createNewCharacter({
     resonance = echoState.resonance;
     heat = echoState.heat;
     sanity = echoState.sanity;
+
+    const reserveAhn = parentLegacy.reserveAhn || 0;
+    const hasEndowment = Boolean(parentLegacy.hasLineageEndowment || parentLegacy.flags?.includes('LineageEndowmentFund'));
+    if (reserveAhn > 0 || hasEndowment) {
+      const bonusWealth = Math.min(35, Math.floor(reserveAhn * 0.35) + (hasEndowment ? 18 : 0));
+      if (bonusWealth > 0) {
+        wealth = clamp(wealth + bonusWealth, 1, 95);
+        rep = clamp(rep + (hasEndowment ? 6 : 2), 0, 65);
+        inheritedEchoes.push({
+          labelVi: hasEndowment
+            ? `Quỹ Di Sản Huyết Thống của ${parentLegacy.name}`
+            : `Quỹ Bảo Tồn của ${parentLegacy.name} (${reserveAhn} Ahn tích lũy)`,
+          labelEn: hasEndowment
+            ? `${parentLegacy.name}'s Lineage Endowment Fund`
+            : `${parentLegacy.name}'s Reserve Vault (${reserveAhn} Ahn saved)`,
+          impactVi: `+${bonusWealth} Ahn khởi đầu${hasEndowment ? ', +6 Danh tiếng' : ', +2 Danh tiếng'}`,
+          impactEn: `+${bonusWealth} starting Ahn${hasEndowment ? ', +6 Rep' : ', +2 Rep'}`
+        });
+      }
+    }
   }
 
   let deathAtChildAge = 0;
@@ -856,6 +876,10 @@ export function createNewCharacter({
         : null
     },
     lineage: lineageInfo,
+    reserveAhn: 0,
+    bloodlineSeenEvents: parentLegacy
+      ? [...new Set([...(parentLegacy.bloodlineSeenEvents || []), ...(parentLegacy.seenEvents || [])])]
+      : [],
     seenEvents: [],
     recent: [],
     plan: [],
@@ -919,6 +943,8 @@ export function cloneChar(char) {
     imbuedRelics: structuredClone(char.imbuedRelics || []),
     themes: { ...(char.themes || {}) },
     plan: structuredClone(char.plan || []),
+    reserveAhn: char.reserveAhn || 0,
+    bloodlineSeenEvents: [...(char.bloodlineSeenEvents || [])],
     seenEvents: [...char.seenEvents],
     recent: [...(char.recent || [])],
     recentMishaps: [...(char.recentMishaps || [])],
@@ -1719,6 +1745,7 @@ export function generateFixerContract(char, rng, overrideTemplate = null) {
   const compSupport = evaluateCompanionSupport(char);
   power += compSupport.contractPower;
   power += annualSchemeContractPower(char);
+  if (char.flags?.includes('EndgameOfficePatron')) power += 6;
 
   const difficulty = 32 + template.tier * 16;
   const baseSuccess = clamp(Math.round(55 + (power - difficulty) * 1.1 + egoEdge(char) * 100 + mods.successDelta), 18, 94);
@@ -1958,7 +1985,11 @@ export function resolveFixerContract(charState, approachId, rng = Math.random) {
     // Near the top the Requests that matter are few; a Grade 1 or 2 Fixer is paid in Merit like it
     const topGradeMult = fixerRoute && (char.fixerGrade ?? 9) <= 2 ? 1.25 : 1;
     const gainedMerit = Math.round(approach.meritGain * meritMult * topGradeMult);
-    char.stats.wealth = clamp(char.stats.wealth + approach.payAhn, 0, 100);
+    const beforeContractW = char.stats.wealth || 0;
+    if (approach.payAhn > 0 && beforeContractW + approach.payAhn > 100) {
+      char.reserveAhn = (char.reserveAhn || 0) + (beforeContractW + approach.payAhn - 100);
+    }
+    char.stats.wealth = clamp(beforeContractW + approach.payAhn, 0, 100);
     char.stats.rep = clamp(char.stats.rep + reputationGain(char.stats.rep, Math.max(2, template.tier + 2)), 0, 100);
     char.merit += gainedMerit;
     if (compSupport.active && compSupport.state.id === 'sworn' && rng() < 0.45) {
@@ -2461,7 +2492,15 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random, dung
   if (purchasedItem) char.inventory.push({ ...purchasedItem });
   if (effects.health) char.stats.health = clamp(char.stats.health + effects.health, 0, 100);
   if (effects.sanity) char.stats.sanity = clamp(char.stats.sanity + effects.sanity, 0, 100);
-  if (effects.wealth) char.stats.wealth = clamp(char.stats.wealth + effects.wealth, 0, 100);
+  if (effects.wealth) {
+    const beforeEventW = char.stats.wealth || 0;
+    if (effects.wealth > 0 && beforeEventW + effects.wealth > 100) {
+      char.reserveAhn = (char.reserveAhn || 0) + (beforeEventW + effects.wealth - 100);
+    }
+    char.stats.wealth = clamp(beforeEventW + effects.wealth, 0, 100);
+  }
+  const reserveAdd = (choice.reserveAdd || 0) + (outcome === choice ? 0 : outcome.reserveAdd || 0);
+  if (reserveAdd) char.reserveAhn = Math.max(0, (char.reserveAhn || 0) + reserveAdd);
   if (effects.network) char.stats.network = clamp(char.stats.network + effects.network, 0, 100);
   if (effects.rep) char.stats.rep = clamp(char.stats.rep + (printsNumbers ? effects.rep : reputationGain(char.stats.rep, effects.rep)), 0, 100);
   if (effects.heat) char.heat = clamp((char.heat || 0) + effects.heat, 0, 100);
@@ -3568,6 +3607,10 @@ export function buildLifeSummaryAndLegacy(char) {
     health: Math.max(0, char.stats?.health ?? 0),
     sanity: Math.max(0, char.stats?.sanity ?? 0),
     wealth: char.stats?.wealth ?? 0,
+    reserveAhn: char.reserveAhn || 0,
+    hasLineageEndowment: Boolean(flags.includes('LineageEndowmentFund')),
+    seenEvents: [...new Set([...(char.bloodlineSeenEvents || []), ...(char.seenEvents || [])])],
+    bloodlineSeenEvents: [...new Set([...(char.bloodlineSeenEvents || []), ...(char.seenEvents || [])])],
     rep: char.stats?.rep ?? 0,
     network: char.stats?.network ?? 0,
     resonance: char.resonance || 0,

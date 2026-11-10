@@ -435,6 +435,11 @@ export function ageNpcCompanions(char, rng = Math.random) {
     if (currentAge < 75) continue;
     const deathChance = Math.min(1, (currentAge - 74) * 0.025);
     if (rng() >= deathChance || !applyNpcFate(char, role, 'dead')) continue;
+    if ((npc.bond || 0) >= 50 && ['mentor', 'friend', 'partner', 'spouse'].includes(role)) {
+      if (!char.flags.includes('RecentElderBereavement')) char.flags.push('RecentElderBereavement');
+      char.recentBereavementNameVi = npc.nameVi;
+      char.recentBereavementNameEn = npc.nameEn || npc.nameVi;
+    }
     logs.push({
       vi: `[Tin từ người thân] ${npc.nameVi} qua đời ở tuổi ${currentAge}. Tên của họ vẫn ở lại trong hồ sơ đời bạn.`,
       en: `[News from home] ${npc.nameEn || npc.nameVi} died at ${currentAge}. Their name remains in your life's record.`
