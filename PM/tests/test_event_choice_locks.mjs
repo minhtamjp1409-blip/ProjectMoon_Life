@@ -166,9 +166,9 @@ test('Distortion-specific mishaps and filtering work', () => {
   assert.ok(distIds.includes('mi_distort_dissolution'));
 });
 
-test('Distortion annual tasks: 6 diverse dilemmas with 0 merit reward', () => {
+test('Distortion annual tasks: 10 diverse dilemmas with 0 merit reward', () => {
   const distortTasks = ANNUAL_MERIT_OPPORTUNITIES.filter((t) => t.id.startsWith('m_annual_distort_'));
-  assert.equal(distortTasks.length, 6, 'Must have 6 distinct Distortion annual tasks');
+  assert.equal(distortTasks.length, 10, 'Must have 10 distinct Distortion annual tasks');
 
   for (const t of distortTasks) {
     assert.deepEqual(t.need?.jobs, ['Distortion'], `${t.id} must require Distortion job`);

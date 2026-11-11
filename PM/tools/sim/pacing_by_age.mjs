@@ -7,6 +7,8 @@ import { createNewCharacter, resolveEventChoice, resolveDungeonChoice, getDungeo
 import { planYear, chooseDirectorPacedLead, runDueItems, resolveMinor, endYear, LIFE_MINORS } from '../../src/engine/yearPlanner.js';
 import { choiceIsAvailable } from '../../src/engine/eventConditions.js';
 import { makePicker } from './lib/choicePolicy.mjs';
+import { POLICIES as DUNGEON_POLICIES } from './dungeon_sim.mjs';
+import { setDungeonStance, useDungeonSupply } from '../../src/engine/gameEngine.js';
 
 const LIVES = Number(process.argv[2]) || 300;
 const POLICY = process.argv[3] === 'random' ? 'random' : 'focused';
@@ -14,7 +16,7 @@ const ELDER_START = process.argv.includes('--elder');
 const pick = makePicker(POLICY);
 const BANDS = [[0, 12], [13, 17], [18, 24], [25, 32], [33, 40], [41, 50], [51, 60], [61, 75], [76, 120]];
 const band = (age) => BANDS.findIndex(([a, b]) => age >= a && age <= b);
-const rows = BANDS.map(() => ({ years: 0, major: 0, minor: 0, contract: 0, dungeon: 0, quiet: 0, causal: 0 }));
+const rows = BANDS.map(() => ({ years: 0, major: 0, minor: 0, contract: 0, dungeon: 0, quiet: 0, causal: 0, gate: 0, hurt: 0 }));
 const entries = [];
 
 for (let i = 0; i < LIVES; i++) {
@@ -40,6 +42,7 @@ for (let i = 0; i < LIVES; i++) {
   while (char.alive && char.age < 120 && guard++ < 200) {
     const row = rows[band(char.age)];
     row.years++;
+    if (char.stats.health < 40) row.hurt++;
     let choices = 0;
     if (!char.plan?.length) planYear(char, rng);
     if (char.pendingLead) char = chooseDirectorPacedLead(char, rng);
@@ -49,6 +52,7 @@ for (let i = 0; i < LIVES; i++) {
       while (char.alive && (char.pendingEvent || char.pendingMinor || char.pendingContract || char.pendingDungeon || char.pendingModal) && spin++ < 40) {
         if (char.pendingEvent) {
           row.major++; choices++;
+          if (String(char.pendingEvent.id).startsWith('gate_')) row.gate++;
           if (char.pendingEvent.isCausalCallback || char.pendingEvent.id?.startsWith('csq_')) row.causal++;
           char = resolveEventChoice(char, Math.max(0, pick(char.pendingEvent.choices, rng, char, char.pendingEvent.id)), rng);
         } else if (char.pendingDungeon) {
@@ -57,11 +61,13 @@ for (let i = 0; i < LIVES; i++) {
             sess._seen = true; row.dungeon++; choices++;
             entries.push({ id: sess.id.replace('dungeon_', ''), age: char.age, job: char.job, hp: char.stats.health });
           }
-          const stage = getDungeonCurrentStage(sess);
-          const usable = stage.choices.map((c, k) => k).filter((k) => isDungeonChoiceAvailable(stage.choices[k], char));
-          const hurt = char.stats.health < 45;
-          const flee = usable.find((k) => stage.choices[k].isFlee);
-          const k = hurt && flee !== undefined ? flee : usable.find((x) => !stage.choices[x].isFlee) ?? usable[0];
+          // The same player as dungeon_sim's "measured": a first-option bot died in two of three dungeons
+          // and left almost no one alive past 50 to measure
+          if (char.stats.health < 50 && sess.supplyCharges > 0) char = useDungeonSupply(char, 'breather');
+          const want = char.stats.health >= 70 && char.stats.sanity >= 55 ? 'reckless' : 'guarded';
+          if (char.pendingDungeon.stance !== want) char = setDungeonStance(char, want);
+          const stage = getDungeonCurrentStage(char.pendingDungeon);
+          const k = DUNGEON_POLICIES.measured(stage, char, char.pendingDungeon, rng);
           const r = resolveDungeonChoice(char, k, rng);
           char = r.char;
           if (char.pendingDungeon && !r.isFinished) char.pendingDungeon._seen = true;
@@ -90,7 +96,7 @@ for (let i = 0; i < LIVES; i++) {
 
 const f = (n, d) => (d ? (n / d).toFixed(2) : '-');
 console.log(`\n${LIVES} lives, policy ${POLICY}: choices per lived year by age band`);
-console.table(BANDS.map(([a, b], k) => { const r = rows[k]; return { ages: `${a}-${b}`, lifeYears: r.years, major: f(r.major, r.years), minor: f(r.minor, r.years), contract: f(r.contract, r.years), dungeon: f(r.dungeon, r.years), causal: f(r.causal, r.years), quietYears: r.years ? `${Math.round(r.quiet / r.years * 100)}%` : '-' }; }));
+console.table(BANDS.map(([a, b], k) => { const r = rows[k]; return { ages: `${a}-${b}`, lifeYears: r.years, major: f(r.major, r.years), minor: f(r.minor, r.years), contract: f(r.contract, r.years), gateOffer: f(r.gate, r.years), dungeon: f(r.dungeon, r.years), under40Hp: r.years ? `${Math.round(r.hurt / r.years * 100)}%` : '-', causal: f(r.causal, r.years), quietYears: r.years ? `${Math.round(r.quiet / r.years * 100)}%` : '-' }; }));
 const byId = {};
 for (const e of entries) (byId[e.id] ||= []).push(e);
 console.log('Dungeon entries: age at entry, HP at entry');

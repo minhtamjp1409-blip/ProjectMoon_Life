@@ -127,7 +127,7 @@ export function fixerPromotionOfferChance(char, step = getNextFixerPromotion(cha
 }
 
 export function fixerContractOfferChance(char) {
-  if (char.job !== 'Fixer' || char.flags?.includes('Distorted')) return 0;
+  if ((char.job !== 'Fixer' && char.job !== 'Color Fixer' && !char.flags?.includes('ColorFixer')) || char.flags?.includes('Distorted')) return 0;
   const step = getNextFixerPromotion(char) || (char.fixerGrade === 1 && !char.flags?.includes('ColorFixer')
     ? { repReq: colorRequirementFor(char).rep, meritReq: colorRequirementFor(char).merit }
     : null);
@@ -814,6 +814,7 @@ export function syndicateApexOpportunity(char) {
  */
 export function triggerDistortionTransformation(char) {
   if (char.job === 'Distortion') return [];
+  char.formerJob ||= char.job;
   if (char.flags.includes('ColorFixer') || char.isColorFixer || char.job === 'Color Fixer') {
     char.unlockedRecords ||= [];
     if (!char.unlockedRecords.includes('color_fixer')) char.unlockedRecords.push('color_fixer');

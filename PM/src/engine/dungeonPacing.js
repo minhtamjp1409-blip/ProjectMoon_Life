@@ -27,6 +27,10 @@ export const GATE_PROFILES = {
 const DEFAULT_PROFILE = { guaranteed: 1, spacing: [8, 12], cooldown: 5, weight: 1 };
 export const GATE_COOLDOWN_YEARS = DEFAULT_PROFILE.cooldown;
 export const GATE_MIN_HP = 40;
+// Once the quota is met, a life past 45 still hears of a gate after this many years without one (Đợt 151:
+// measured over 700 lives, dungeons fell to 0.01 a year at 51 to 60 and none after)
+export const LATE_GATE_AGE = 45;
+export const LATE_GATE_GAP = 12;
 
 export const gateProfileOf = (char) => GATE_PROFILES[char?.job] || (char?.flags?.includes('ColorFixer') ? GATE_PROFILES['Color Fixer'] : DEFAULT_PROFILE);
 export const gateWeightMult = (char) => gateProfileOf(char).weight;
@@ -45,7 +49,7 @@ export function firstGateAge(char) {
 export const gatesSeen = (char) => (char.seenEvents || []).filter(isGateEvent).length;
 export const hasSeenGate = (char) => gatesSeen(char) > 0;
 
-/** When the next guaranteed gate is due, or null when this branch's quota is met. */
+/** When the next guaranteed gate is due: the branch's quota first, then one every LATE_GATE_GAP years from LATE_GATE_AGE. */
 export function nextGateDueAge(char) {
   const profile = gateProfileOf(char);
   const seen = gatesSeen(char);
@@ -60,7 +64,10 @@ export function nextGateDueAge(char) {
     }
   }
 
-  if (seen >= profile.guaranteed) return null;
+  if (seen >= profile.guaranteed) {
+    if (!Number.isFinite(char.lastGateAge)) return null;
+    return Math.max(LATE_GATE_AGE, char.lastGateAge + LATE_GATE_GAP);
+  }
   if (seen === 0) return firstGateAge(char);
   const [lo, hi] = profile.spacing;
   const gap = lo + (fnv(`${char.seed ?? ''}|gate-gap|${seen}`) % (hi - lo + 1));

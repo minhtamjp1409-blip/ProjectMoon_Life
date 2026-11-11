@@ -655,6 +655,7 @@ export const EXPANSION_EVENTS = [
   {
     id: 'ev4_child_wants_to_leave',
     age: [30, 75],
+    elderOk: false,
     major: true,
     weight: 8,
     need: { npc: 'child' },

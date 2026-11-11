@@ -405,8 +405,8 @@ function annualMeritMoment(char, moments, rng) {
   if (char.job === 'Child' || char.age < careerAgeOf(char) || !char.alive) return null;
   if (moments.some((item) => item?.kind === 'contract')) return null;
   if (char.job === 'Distortion') {
-    if (char.lastDistortionAnnualAge && char.age - char.lastDistortionAnnualAge < 3) return null;
-    if (rng() >= 0.35) return null;
+    if (char.lastDistortionAnnualAge && char.age - char.lastDistortionAnnualAge < 2) return null;
+    if (rng() >= 0.60) return null;
   }
   const existing = moments.find((item) => item?.kind === 'minor' &&
     (item.id === 'm_fx_request_choice' ||
@@ -503,6 +503,7 @@ function majorIsDue(char, rng) {
   if (gap >= 5) return true;
   if ((char.job === 'Syndicate' || (char.flags?.includes('Distorted') && char.finger)) && (char.fingerRank || 0) >= 3 && gap >= 2 && rng() < 0.65) return true;
   if ((char.job === 'Fixer' || char.job === 'Color Fixer') && char.flags?.includes('ColorFixer') && gap >= 2 && rng() < 0.55) return true;
+  if (char.flags?.includes('Distorted') && gap >= 2 && rng() < 0.55) return true;
   return gap >= 2 && rng() < 0.32;
 }
 

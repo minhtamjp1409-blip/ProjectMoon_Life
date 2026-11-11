@@ -12,7 +12,10 @@ const selectWeaverEvent = (c, rng) => selectEventWithWeaverAI({
   consequencePool: CONSEQUENCE_EVENTS,
   rng
 });
-import { charHasWorkshopAccess, matchesNeed, matchesEventContext } from '../src/engine/eventConditions.js';
+import { charHasWorkshopAccess, matchesNeed, matchesEventContext, effectiveMaxAge } from '../src/engine/eventConditions.js';
+import { fixerContractOfferChance, contractOfferChance } from '../src/engine/careerPipeline.js';
+import { apexLongevityEventId } from '../src/data/eventsApexTwilight.js';
+import { getAffiliationInvite } from '../src/engine/affiliation.js';
 import { effectiveMinAge } from '../src/engine/careerAge.js';
 import { planFirstGate, firstGateAge, gateDeferredForHealth } from '../src/engine/dungeonPacing.js';
 import { directorScore } from '../src/engine/eventDirector.js';
@@ -467,4 +470,97 @@ console.log('6. Testing Đợt 142–144: Reserve Ahn Vault, 3 Endgame Investmen
   console.log('  ✓ Đợt 142–144 verified.');
 }
 
-console.log('=== ALL BATCHES 135–147 TESTS PASSED ===');
+// ----------------------------------------------------------------------------
+// ĐỢT 148–150 — TUỔI GIÀ MỌI ROUTE, SỬA LỖI COLOR FIXER & ĐẠI TU ROUTE DISTORTION
+// ----------------------------------------------------------------------------
+console.log('7. Testing Đợt 148–150: Color Fixer Elder Contracts, Longevity 65+ Ceiling, All-Route 90+ Endings, Distortion 3 Archetypes & Chrysalis Ending...');
+{
+  // 7.1 Color Fixer (char.job === 'Color Fixer') retains contract offers, gets apex_longevity_color, and skips low-rank affiliation invites
+  const colorChar = createNewCharacter({ seed: 'color-elder-148', startAge: 70 });
+  colorChar.age = 70;
+  colorChar.job = 'Color Fixer';
+  colorChar.fixerGrade = 0;
+  colorChar.isColorFixer = true;
+  colorChar.flags = ['ColorFixer', 'ApexLongevity'];
+  assert.ok(fixerContractOfferChance(colorChar) >= 0.4, 'Color Fixer with job="Color Fixer" must retain contract offer chance');
+  assert.ok(contractOfferChance(colorChar) >= 0.4, 'contractOfferChance must work for Color Fixer at old age');
+  assert.equal(apexLongevityEventId(colorChar), 'apex_longevity_color', 'apexLongevityEventId must recognize job="Color Fixer"');
+
+  const colorAsFixerJob = createNewCharacter({ seed: 'color-aff-148', startAge: 50 });
+  colorAsFixerJob.age = 50;
+  colorAsFixerJob.job = 'Fixer';
+  colorAsFixerJob.fixerGrade = 1;
+  colorAsFixerJob.flags = ['ColorFixer'];
+  assert.equal(getAffiliationInvite(colorAsFixerJob), null, 'Color Fixer must not receive regular Section affiliation invites');
+
+  // 7.2 effectiveMaxAge extends events with age[1] >= 65 by +30 for extended-longevity characters
+  const ev70 = { id: 'sample_career_70', age: [25, 70], jobs: ['Fixer'] };
+  const normal85 = createNewCharacter({ seed: 'norm-85', startAge: 85 });
+  normal85.age = 85;
+  assert.equal(effectiveMaxAge(ev70, normal85), 70, 'Without longevity flag, maxAge 70 stays 70');
+  normal85.flags = ['ApexLongevity'];
+  assert.equal(effectiveMaxAge(ev70, normal85), 100, 'With ApexLongevity, maxAge 70 extends to 100');
+
+  // 7.3 New 90+ active endings & 60+ elder chapter events across Wing, Indie Syndicate, Workshop, Outcast
+  for (const id of [
+    'elder_wing_last_boardroom',
+    'elder_indie_syndicate_last_turf',
+    'elder_wing_archive_declassification',
+    'elder_indie_old_code_dispute',
+    'elder_workshop_blueprint_inheritance',
+    'elder_outcast_wall_watchfire'
+  ]) {
+    const ev = ALL_STORY_EVENTS.find((e) => e.id === id);
+    assert.ok(ev, `Elder event ${id} must exist in ALL_STORY_EVENTS`);
+  }
+
+  // 7.4 Distortion 3-Archetype Divergence, Past-Life/LCD Majors, Elder Hibernation & Chrysalis Ending
+  for (const id of [
+    'distort_arc_archetype_divergence',
+    'distort_arc_labyrinth_trap_feast',
+    'distort_arc_lucid_underground_broker',
+    'distort_arc_lcd_moses_inspection',
+    'distort_arc_past_life_fixer_badge',
+    'distort_arc_past_life_wing_containment',
+    'distort_arc_elder_hibernation_monolith',
+    'distort_arc_elder_abnormality_chrysalis_ending'
+  ]) {
+    const ev = ALL_STORY_EVENTS.find((e) => e.id === id);
+    assert.ok(ev, `Distortion major ${id} must exist in ALL_STORY_EVENTS`);
+  }
+
+  const distElder = createNewCharacter({ seed: 'dist-elder-150', startAge: 82 });
+  distElder.age = 82;
+  distElder.job = 'Distortion';
+  distElder.flags = ['Distorted'];
+  const chrysalisEv = ALL_STORY_EVENTS.find((e) => e.id === 'distort_arc_elder_abnormality_chrysalis_ending');
+  assert.equal(matchesEventContext(chrysalisEv, distElder), true, 'Distortion character at age 82 is eligible for Chrysalis active ending');
+  assert.equal(chrysalisEv.choices.length, 3, 'Chrysalis ending offers 3 distinct choices');
+  console.log('  ✓ Đợt 148–150 verified.');
+}
+
+console.log('=== ALL BATCHES 135–150 TESTS PASSED ===');
+
+// Đợt 151: child events keep their age cap for long-lived parents, the bereavement names who died,
+// and a legacy carries the bloodline's seen events once
+{
+  const { matchesEventContext: ctxOk } = await import('../src/engine/eventConditions.js');
+  const { interpolateText: fill } = await import('../src/engine/gameEngine.js');
+  const elder = createNewCharacter({ seed: 'elder-child', startAge: 28 });
+  elder.age = 90;
+  elder.flags = [...(elder.flags || []), 'FullBodyProsthetic', 'HasChild'];
+  for (const id of ['npc_child_first_weapon_choice', 'npc_child_kidnapping_ransom', 'ev4_child_wants_to_leave']) {
+    const ev = ALL_STORY_EVENTS.find((e) => e.id === id);
+    assert.equal(ev.elderOk, false, `${id} keeps its own age cap`);
+    assert.equal(ctxOk(ev, elder), false, `${id} does not reach a 90-year-old`);
+  }
+  elder.recentBereavementNameVi = 'Yuri';
+  const farewell = ALL_STORY_EVENTS.find((e) => e.id === 'bereavement_elder_old_friend_passing');
+  assert.ok(fill(farewell.vi, elder).includes('Yuri'), 'the farewell names the one who died');
+  elder.seenEvents = ['a', 'b'];
+  elder.bloodlineSeenEvents = ['b', 'c'];
+  const legacyText = JSON.stringify(buildLifeSummaryAndLegacy(elder));
+  assert.equal(legacyText.split('"seenEvents"').length - 1, 0, 'a legacy stores the seen list once, as bloodlineSeenEvents');
+  assert.ok(legacyText.includes('"bloodlineSeenEvents":["b","c","a"]'));
+  console.log('  ✓ Đợt 151 verified.');
+}

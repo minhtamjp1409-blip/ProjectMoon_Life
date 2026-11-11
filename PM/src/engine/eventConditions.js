@@ -226,7 +226,7 @@ export const hasExtendedLongevity = (char) =>
 export function effectiveMaxAge(entry, char) {
   const hi = entry?.age?.[1];
   if (hi == null) return null;
-  if (hi >= 85 && entry.elderOk !== false && hasExtendedLongevity(char)) {
+  if (hi >= 65 && entry.elderOk !== false && hasExtendedLongevity(char)) {
     return hi + 30;
   }
   return hi;

@@ -449,6 +449,7 @@ export const EXPANSION_STORY_EVENTS = [
   {
     id: 'npc_child_first_weapon_choice',
     age: [32, 65],
+    elderOk: false,
     major: true,
     weight: 22,
     need: { npc: 'child' },
@@ -481,6 +482,7 @@ export const EXPANSION_STORY_EVENTS = [
   {
     id: 'npc_child_kidnapping_ransom',
     age: [34, 70],
+    elderOk: false,
     major: true,
     weight: 20,
     need: { npc: 'child' },

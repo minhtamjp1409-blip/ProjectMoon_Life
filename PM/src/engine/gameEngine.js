@@ -330,6 +330,7 @@ export function interpolateText(text, char, values = {}) {
     .replace(/\{rival\}/g, npcName('rival', 'kẻ kia'))
     .replace(/\{lover\}/g, npcName('lover', npcName('spouse', 'người ấy')))
     .replace(/\{nemesis\}/g, npcName('nemesis', 'kẻ thù'))
+    .replace(/\{departed\}/g, char.recentBereavementNameVi || 'Người ấy')
     .replace(/\{parentName\}/g, parentName)
     .replace(/\{parentDeath\}/g, parentDeath)
     .replace(/\{parent\}/g, parentName)
@@ -878,7 +879,7 @@ export function createNewCharacter({
     lineage: lineageInfo,
     reserveAhn: 0,
     bloodlineSeenEvents: parentLegacy
-      ? [...new Set([...(parentLegacy.bloodlineSeenEvents || []), ...(parentLegacy.seenEvents || [])])]
+      ? [...new Set([...(parentLegacy.bloodlineSeenEvents || []), ...(parentLegacy.seenEvents || [])])] // seenEvents: legacies saved before Đợt 151
       : [],
     seenEvents: [],
     recent: [],
@@ -3609,7 +3610,7 @@ export function buildLifeSummaryAndLegacy(char) {
     wealth: char.stats?.wealth ?? 0,
     reserveAhn: char.reserveAhn || 0,
     hasLineageEndowment: Boolean(flags.includes('LineageEndowmentFund')),
-    seenEvents: [...new Set([...(char.bloodlineSeenEvents || []), ...(char.seenEvents || [])])],
+    // One list for the whole bloodline; a second copy under seenEvents doubled the size of every legacy
     bloodlineSeenEvents: [...new Set([...(char.bloodlineSeenEvents || []), ...(char.seenEvents || [])])],
     rep: char.stats?.rep ?? 0,
     network: char.stats?.network ?? 0,

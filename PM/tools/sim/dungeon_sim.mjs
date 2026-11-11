@@ -43,7 +43,7 @@ function setCompanion(c, companion) {
   return c;
 }
 
-const POLICIES = {
+export const POLICIES = {
   random: (stage, char, sess, rng) => {
     const ok = stage.choices.map((c, i) => [c, i]).filter(([c]) => isDungeonChoiceAvailable(c, char, sess));
     return ok[Math.floor(rng() * ok.length)][1];

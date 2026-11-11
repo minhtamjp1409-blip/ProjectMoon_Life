@@ -8,7 +8,7 @@ const fingerOnly = (name) => ({ jobs: ['Syndicate'], finger: name, need: { finge
 
 export const apexLongevityEventId = (char) => {
   if (!char || !char.alive || char.flags?.includes('Distorted')) return null;
-  if (char.job === 'Fixer' && char.flags?.includes('ColorFixer')) return 'apex_longevity_color';
+  if ((char.job === 'Fixer' || char.job === 'Color Fixer') && char.flags?.includes('ColorFixer')) return 'apex_longevity_color';
   if (char.job === 'Syndicate' && char.finger && (char.fingerRank || 0) >= 3) return `apex_longevity_${char.finger.toLowerCase()}`;
   if (char.job === 'Wing Employee' && (char.wingRank || 0) >= 3) return 'apex_longevity_wing';
   return null;
@@ -302,6 +302,56 @@ const NON_APEX_ENDINGS = [
         resultVi: 'Đoàn xe lăn bánh đi xa. Bạn pha ấm nước nóng và ngồi nhìn nắng chiều chiếu qua khe cửa.',
         resultEn: 'The wagon rolls away. You boil a pot of water and watch the afternoon light slant through the window gap.' }
     ]
+  },
+  {
+    id: 'elder_wing_last_boardroom', age: [90, 125], jobs: ['Wing Employee'], major: true, weight: 8,
+    forbids: ['Distorted', 'elder_wing_ending_done'],
+    vi: '[Phòng họp cuối hành lang] Chiếc thẻ từ của bạn đã mở cánh cửa kính này suốt mấy thập kỷ. Trợ lý trẻ đặt biên bản bàn giao quyền truy cập Singularity lên bàn họp trống rồi lùi lại chờ chữ ký.',
+    en: '[The boardroom at corridor’s end] Your keycard has opened this glass door for decades. A junior aide places the Singularity access handover form on the empty conference table and steps back for your signature.',
+    choices: [
+      { labelVi: 'Ký biên bản bàn giao và nhận biệt thự hưu trí tại Nest', labelEn: 'Sign the handover and retire to a Nest residence',
+        ...endsLife('retired', 'Bạn tháo dây đeo thẻ nhân viên đặt cạnh bút máy. Lần đầu tiên sau hơn nửa thế kỷ, bạn bước qua sảnh tháp mà không ngoái nhìn bảng chỉ tiêu.',
+          'You unclip your staff lanyard and set it beside the pen. For the first time in over half a century, you cross the tower lobby without checking the quota board.', { sanity: 6, wealth: 12, rep: 4 }),
+        deathCauseVi: 'Bàn giao ghế tại Wing và an dưỡng tuổi già trong Nest', deathCauseEn: 'Handed over their Wing office and retired within the Nest', flagsAdd: ['elder_wing_ending_done'] },
+      { labelVi: 'Tự mình xuống buồng lõi đóng hồ sơ mật cuối cùng', labelEn: 'Descend to the core chamber yourself to seal one last classified file',
+        outcomes: [
+          { w: 55, effects: { health: -14, wealth: 18, rep: 8, network: 4 }, meritAdd: 18, flagsAdd: ['elder_wing_ending_done'],
+            resultVi: 'Áp suất buồng lõi làm tai bạn ù đi nhưng các thông số vẫn nằm gọn trong đầu. Bạn khóa van chính trước khi ban giám đốc kịp cử đội dự phòng.',
+            resultEn: 'Core pressure rings in your ears, yet every reading stays clear in your head. You lock the main valve before the board can dispatch a backup team.' },
+          { w: 45, ...endsLife('ripe_age', 'Cửa chắn an toàn đóng sập đúng lúc nhịp tim bạn chùng xuống vì bức xạ Singularity. Trợ lý ghi nhận chỉ số ổn định từ bên ngoài tấm kính dày.',
+            'The blast shutter seals just as Singularity radiation slows your pulse. Outside the thick glass, your aide logs a stabilized core.', { health: -35 }),
+            deathCauseVi: 'Ngã xuống trong buồng lõi Singularity khi khóa hồ sơ cuối', deathCauseEn: 'Collapsed inside the Singularity chamber sealing a final record', flagsAdd: ['elder_wing_ending_done'] }
+        ] },
+      { labelVi: 'Giữ lại thẻ cố vấn danh dự, chỉ duyệt hồ sơ buổi sáng', labelEn: 'Keep an honorary advisor badge and review files only in the morning',
+        effects: { sanity: 4, network: 3, wealth: 6 }, flagsAdd: ['elder_wing_ending_done'],
+        resultVi: 'Bạn gạch bỏ lịch trực đêm trên tờ giấy. Mỗi sáng bạn chỉ ghé phòng lưu trữ uống một tách cà phê rồi về trước giờ cao điểm.',
+        resultEn: 'You cross the night shifts off the sheet. Each morning you stop by the archive for a cup of coffee and leave before rush hour.' }
+    ]
+  },
+  {
+    id: 'elder_indie_syndicate_last_turf', age: [90, 125], jobs: ['Syndicate'], need: { noFinger: true }, major: true, weight: 8,
+    forbids: ['Distorted', 'elder_indie_ending_done'],
+    vi: '[Bàn chia phần cuối năm] Đám đàn em trong băng đều thuộc thế hệ con cháu của những kẻ đi cùng bạn buổi đầu. Đứa giữ sổ đặt túi tiền bảo kê tháng cuối lên bàn gỗ đầy vết dao.',
+    en: '[The year-end division table] Every crew member in the room belongs to the grandchildren’s generation of those who walked with you at the start. The bookkeeper sets the month’s protection pouch on the knife-scarred table.',
+    choices: [
+      { labelVi: 'Chia lại địa bàn cho đàn em rồi rửa tay gác kiếm', labelEn: 'Divide the turf among the crew and wash your hands of the trade',
+        ...endsLife('retired', 'Bạn đẩy chùm chìa khóa kho hàng về phía người phó. Đêm đó không còn tiếng gõ cửa báo tin đòi nợ lúc nửa đêm.',
+          'You push the warehouse keys toward your second-in-command. That night, no knuckles rap on your door with midnight debt news.', { sanity: 6, rep: 4 }),
+        deathCauseVi: 'Trao lại địa bàn độc lập cho đàn em và lui về ở ẩn', deathCauseEn: 'Handed over the independent turf to the crew and lived in seclusion', flagsAdd: ['elder_indie_ending_done'] },
+      { labelVi: 'Đích thân cầm vũ khí đi dẹp toán cướp mới nổi ở bến hàng', labelEn: 'Take up arms yourself to clear the upstart raiders at the dock',
+        outcomes: [
+          { w: 50, effects: { health: -16, wealth: 16, rep: 8, heat: 4 }, meritAdd: 16, flagsAdd: ['elder_indie_ending_done'],
+            resultVi: 'Chỉ cần hai nhát chém chuẩn xác để đám trẻ bên kia buông vũ khí. Cả khu bến biết tên bạn chưa thể xóa khỏi sổ.',
+            resultEn: 'Two clean strikes are enough to make the young raiders drop their weapons. The whole dock learns your name is not yet struck from the ledger.' },
+          { w: 50, ...endsLife('last_bout', 'Mũi dao của gã cầm đầu trẻ tuổi sượt qua sườn khi chân bạn vấp bậc đá ướt. Đàn em tràn lên giữ trọn bến hàng ngay chỗ bạn ngã xuống.',
+            'The young ringleader’s blade slips past your ribs as your foot catches on wet stone. Your crew surges forward, holding the dock where you fall.', { health: -35 }),
+            deathCauseVi: 'Ngã xuống trong trận giữ bến hàng cuối cùng của băng', deathCauseEn: 'Fell defending the crew’s dock in one final clash', flagsAdd: ['elder_indie_ending_done'] }
+        ] },
+      { labelVi: 'Lui về giữ quán rượu nhỏ làm chỗ hộp mặt cho anh em', labelEn: 'Step back to run the small tavern where the crew gathers',
+        effects: { sanity: 4, wealth: 5, network: 3 }, flagsAdd: ['elder_indie_ending_done'],
+        resultVi: 'Bạn không còn ra đầu ngõ mỗi đêm. Bất cứ ai muốn mượn đường qua khu phố vẫn phải ghé quầy của bạn chào một tiếng.',
+        resultEn: 'You no longer stand at the alley mouth each night. Anyone seeking passage through the quarter still stops by your counter to pay respects.' }
+    ]
   }
 ];
 
@@ -417,8 +467,8 @@ const ELDER_CHAPTER_EVENTS = [
   {
     id: 'bereavement_elder_old_friend_passing', age: [45, 125], major: true, weight: 12,
     requires: ['RecentElderBereavement'], forbids: ['Distorted', 'elder_bereavement_mourned'],
-    vi: '[Buổi tiễn đưa chiều muộn] Người quen cũ đã đi hết tuổi trời mà không phải ngã xuống vì đao kiếm. Trước căn phòng nhỏ, vài người hàng xóm đứng đợi bạn tới đặt kỷ vật cuối cùng lên bàn gỗ.',
-    en: '[Late afternoon farewell] An old companion has reached the end of their natural years without falling to a blade. Before the small room, a few neighbors wait for you to set a final keepsake on the wooden table.',
+    vi: '[Buổi tiễn đưa chiều muộn] {departed} đã sống hết tuổi trời, không ngã xuống vì lưỡi dao nào. Trước căn phòng nhỏ, vài người hàng xóm đứng đợi bạn tới đặt kỷ vật cuối cùng lên bàn gỗ.',
+    en: '[Late afternoon farewell] {departed} reached the end of their natural years without falling to a blade. Before the small room, a few neighbors wait for you to set a final keepsake on the wooden table.',
     choices: [
       { labelVi: 'Đứng lại tới lúc đèn đường bật sáng và nhận giữ hộp kỷ vật', labelEn: 'Stay until the streetlamps light up and keep the keepsake box',
         effects: { sanity: 6, resonance: 4, rep: 2 }, flagsAdd: ['elder_bereavement_mourned'],
@@ -444,6 +494,70 @@ const ELDER_CHAPTER_EVENTS = [
         effects: { sanity: 4, heat: -4 }, flagsAdd: ['elder_echo_of_youth_done'],
         resultVi: 'Tàn tro rơi xuống đĩa sứ. Bạn thổi tắt nến và thấy đêm nay dễ ngủ hơn mọi ngày.',
         resultEn: 'Ash settles on the porcelain saucer. You blow out the candle and find sleep comes easier tonight.' }
+    ]
+  },
+  {
+    id: 'elder_wing_archive_declassification', age: [62, 120], jobs: ['Wing Employee'], major: true, weight: 9,
+    forbids: ['Distorted', 'elder_wing_archive_done'],
+    vi: '[Hồ sơ chờ hủy niên hạn] Kho lưu trữ tầng ngầm gửi lên ba thùng tài liệu từ thời kỳ bạn mới vào tháp. Chữ ký phê duyệt của bạn nằm rải rác trên những biên bản thí nghiệm sắp hết hạn bảo mật.',
+    en: '[Files due for declassification] The subterranean archive sends up three crates of documents from your first years in the tower. Your approval signature is scattered across experiment logs nearing the end of their seal.',
+    choices: [
+      { labelVi: 'Gia hạn dấu mật thêm năm mươi năm để khóa kín chuyện cũ', labelEn: 'Extend the secrecy seal another fifty years to lock away the past',
+        effects: { sanity: 3, network: 4, heat: -4 }, meritAdd: 8, flagsAdd: ['elder_wing_archive_done'],
+        resultVi: 'Bạn đóng con dấu đỏ lên từng tập bìa cứng. Những cái tên trong thùng sắt sẽ nằm yên dưới tầng hầm thêm nửa thế kỷ.',
+        resultEn: 'You press the red seal onto each hardbound folder. The names inside the iron crates will rest in the basement another half century.' },
+      { labelVi: 'Rút riêng những trang ghi sai phạm của cấp trên cũ làm bảo hiểm', labelEn: 'Extract pages detailing former superiors’ violations as insurance',
+        effects: { wealth: 12, network: 5, sanity: -3, heat: 3 }, flagsAdd: ['elder_wing_archive_done'],
+        resultVi: 'Vài tờ giấy mỏng nằm gọn trong két riêng của bạn. Đám giám đốc trẻ sẽ phải cân nhắc kỹ trước khi động tới chế độ đãi ngộ của bạn.',
+        resultEn: 'Several thin sheets now rest in your private safe. The young directors will think twice before touching your pension terms.' }
+    ]
+  },
+  {
+    id: 'elder_indie_old_code_dispute', age: [60, 120], jobs: ['Syndicate'], need: { noFinger: true }, major: true, weight: 9,
+    forbids: ['Distorted', 'elder_indie_code_done'],
+    vi: '[Luật cũ của hẻm sâu] Hai băng nhóm trẻ kéo tới đầu phố tranh giành tuyến chợ đêm mà không bên nào chịu lùi. Chúng cử người gõ cửa nhà bạn vì chỉ còn bạn nhớ ranh giới phấn vạch từ bốn mươi năm trước.',
+    en: '[The old alley code] Two young crews gather at the street mouth over the night-market line, neither willing to yield. They knock at your door because only you remember the chalk boundary drawn forty years ago.',
+    choices: [
+      { labelVi: 'Ra tận nơi phân xử công bằng theo đúng lệ cũ', labelEn: 'Walk out and arbitrate fairly by the old custom',
+        effects: { rep: 6, network: 4, sanity: 3, heat: -3 }, meritAdd: 10, flagsAdd: ['elder_indie_code_done'],
+        resultVi: 'Bạn chỉ đầu gậy xuống rãnh thoát nước làm mốc. Cả hai bên thu dao vào vỏ và gửi phần lễ tạ tới bàn trà của bạn.',
+        resultEn: 'You tap your cane against the drainage gutter as the marker. Both sides sheathe their knives and send tribute to your tea table.' },
+      { labelVi: 'Thu phí bảo lãnh của cả hai bên rồi mặc chúng tự phân thắng bại', labelEn: 'Collect arbitration fees from both sides and let them settle it in blood',
+        effects: { wealth: 14, rep: 3, sanity: -2, heat: 4 }, flagsAdd: ['elder_indie_code_done'],
+        resultVi: 'Túi tiền nặng thêm ngay trước khi tiếng va chạm vang lên ngoài ngõ. Sáng hôm sau bên thắng cuộc vẫn phải tới cúi đầu trước cửa nhà bạn.',
+        resultEn: 'Your purse grows heavier just before steel rings in the lane. Next morning the victor still comes to bow at your threshold.' }
+    ]
+  },
+  {
+    id: 'elder_workshop_blueprint_inheritance', age: [60, 120], need: { workshopAccess: true }, major: true, weight: 9,
+    forbids: ['Distorted', 'elder_workshop_blueprint_done'],
+    vi: '[Bản vẽ trong ống đồng] Khi kiểm lại giá để khuôn đúc, bạn rút ra ống đồng đựng bản thiết kế cơ khí mà mình phác thảo suốt nửa đời người. Hiệp hội Tres ngỏ ý mua đứt bản quyền, còn thợ phụ trong xưởng thì nhìn bạn ngập ngừng.',
+    en: '[Blueprints in the brass tube] Sorting the mold racks, you pull out a brass tube holding the mechanical schematics drafted across half your life. The Tres Association offers to buy the patent outright, while your junior smith watches hesitantly.',
+    choices: [
+      { labelVi: 'Bán bản quyền cho Tres để đổi lấy khoản dưỡng già hậu hĩnh', labelEn: 'Sell the patent to Tres for a generous retirement sum',
+        effects: { wealth: 22, rep: 5, sanity: 2 }, meritAdd: 8, flagsAdd: ['elder_workshop_blueprint_done'],
+        resultVi: 'Kiểm định viên của Tres niêm phong ống đồng và chuyển khoản ngay tại bàn. Tên bạn được khắc vào danh mục sáng chế năm nay.',
+        resultEn: 'The Tres appraiser seals the brass tube and transfers the funds at the bench. Your name enters this year’s patent registry.' },
+      { labelVi: 'Truyền lại toàn bộ thông số bí mật cho thợ kế cận của xưởng', labelEn: 'Pass every secret tolerance down to the workshop’s successor smith',
+        effects: { sanity: 6, network: 5, rep: 6 }, meritAdd: 10, flagsAdd: ['elder_workshop_blueprint_done'],
+        resultVi: 'Người thợ trẻ trải giấy can dưới đèn dầu, cẩn thận chép lại từng chú thích viết tay của bạn.',
+        resultEn: 'The young smith spreads tracing paper beneath the oil lamp, carefully copying each of your handwritten notes.' }
+    ]
+  },
+  {
+    id: 'elder_outcast_wall_watchfire', age: [62, 120], jobs: ['Outcast'], major: true, weight: 9,
+    forbids: ['Distorted', 'elder_outcast_watchfire_done'],
+    vi: '[Đống lửa canh dưới chân tường] Đám người mới dạt ra vùng ven không biết nhìn màu mây để đoán giờ bão cát và giờ đàn Sweeper tràn qua. Tối nay chúng gom củi khô quanh chỗ bạn ngồi để nghe bạn chỉ dấu hiệu.',
+    en: '[Watchfire beneath the wall] Newcomers drifted to the fringe cannot read the clouds for sandstorms or the hour Sweepers spill through. Tonight they gather dry wood around your seat to learn the signs.',
+    choices: [
+      { labelVi: 'Chỉ cho họ cách nghe gió trên đường ống và chỗ ẩn nấp an toàn', labelEn: 'Teach them how to read pipe wind and find safe shelter',
+        effects: { sanity: 6, rep: 5, network: 5 }, meritAdd: 8, flagsAdd: ['elder_outcast_watchfire_done'],
+        resultVi: 'Họ lấy than vạch lại sơ đồ đường hầm lên mảnh ván. Từ hôm đó trước cửa lều của bạn luôn có sẵn phần nước sạch.',
+        resultEn: 'They sketch the tunnel map on a plank with charcoal. From that day on, a share of clean water always waits outside your tent.' },
+      { labelVi: 'Đổi chỉ dẫn đường đi lấy lương khô và thuốc men dự trữ', labelEn: 'Trade route guidance for dry rations and spare medicine',
+        effects: { health: 6, wealth: 10, sanity: 2 }, flagsAdd: ['elder_outcast_watchfire_done'],
+        resultVi: 'Bạn chỉ tay về phía nắp cống cũ sau khi đã cất gói thuốc vào túi áo. Đêm vùng ven không cho phép ai làm không công.',
+        resultEn: 'You point toward the old culvert hatch after tucking the medicine packet into your coat. Fringe nights allow no charity.' }
     ]
   }
 ];

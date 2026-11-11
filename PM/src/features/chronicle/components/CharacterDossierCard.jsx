@@ -461,6 +461,11 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeT
           <Stat label="HP" value={health} color="var(--s-health)" flag={health <= 25 ? t('Nguy kịch', 'Critical') : null} tooltip={t('Sinh lực. Về 0 có thể chết vì thương tích; được hồi bằng điều trị và nghỉ cuối năm.', 'Vitality. Reaching 0 can be fatal; treatment and year-end rest restore it.')} />
           <Stat label="SP" value={sanity} color="var(--s-sanity)" flag={sanity <= 22 ? t('Tiếng gọi Carmen', 'Carmen calls') : null} tooltip={t('Tinh thần. Về 0 dẫn tới khủng hoảng; chỗ dựa và nghỉ ngơi giúp hồi phục.', 'Sanity. Reaching 0 triggers a crisis; support and rest help restore it.')} />
           <Stat label={t('Tiền mặt', 'Wealth')} value={wealth} unit="Ahn" color="var(--s-wealth)" flag={wealth <= 5 ? t('Cạn tiền', 'Near ruin') : null} tooltip={t('Ahn dùng cho sinh hoạt, mua tin và điều trị.', 'Ahn pays for living costs, intelligence, and treatment.')} />
+          {(char.reserveAhn || 0) > 0 && (
+            <small className="npc-inspect-hint">
+              {t(`Quỹ Bảo Tồn: ${char.reserveAhn} Ahn. Phần vượt trần 100 được cất ở đây, đời sau nhận lại một phần.`, `Reserve Vault: ${char.reserveAhn} Ahn. Earnings above the 100 cap are kept here, and part passes to your successor.`)}
+            </small>
+          )}
           <details className="dossier-fold is-inline">
             <summary>
               <span>{t('Quan hệ & danh tiếng', 'Network & reputation')}</span>
@@ -915,7 +920,7 @@ export const CharacterDossierCard = () => {
             <b className="hud2-v num">{sanity}</b>
             <i className="hud2-bar"><i style={{ transform: `scaleX(${Math.max(0, Math.min(100, sanity)) / 100})` }} /></i>
           </div>
-          <div className="hud2-stat is-ahn" title={t('Tiền mặt Ahn', 'Ahn Wealth')}>
+          <div className="hud2-stat is-ahn" title={(char.reserveAhn || 0) > 0 ? t(`Tiền mặt Ahn. Quỹ Bảo Tồn: ${char.reserveAhn} Ahn`, `Ahn on hand. Reserve Vault: ${char.reserveAhn} Ahn`) : t('Tiền mặt Ahn', 'Ahn Wealth')}>
             <span className="hud2-k"><Coins size={13} aria-hidden="true" />Ahn</span>
             <b className="hud2-v num">{wealth}</b>
           </div>

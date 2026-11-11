@@ -5,7 +5,7 @@ import {
   isDungeonChoiceAvailable, evaluateDungeonChoiceOdds, fleeDungeon
 } from '../src/engine/dungeonEngine.js';
 import { joinAffiliation } from '../src/engine/affiliation.js';
-import { gateProfileOf, nextGateDueAge, planFirstGate } from '../src/engine/dungeonPacing.js';
+import { gateProfileOf, LATE_GATE_AGE, LATE_GATE_GAP, nextGateDueAge, planFirstGate } from '../src/engine/dungeonPacing.js';
 import { matchesEventContext } from '../src/engine/eventConditions.js';
 import { NIGHT_DUNGEON, STAGE_VARIANTS, SIDE_ROOMS, SHORTCUTS } from '../src/data/dungeonExtras.js';
 
@@ -191,7 +191,9 @@ assert.ok(due >= member.age + 5 && due <= member.age + 8, 'a second gate is due 
 member.age = due - 1;
 assert.equal(planFirstGate(member), true);
 member.seenEvents = [...member.seenEvents, 'gate_bloodfiend_syndicate_hostage', 'gate_outskirts_salvage_crew'];
-assert.equal(nextGateDueAge(member), null, 'three gates fill the quota');
+// With the quota met, the next gate waits for late life: 12 years after the last one, never before 45
+assert.equal(nextGateDueAge(member), Math.max(LATE_GATE_AGE, member.lastGateAge + LATE_GATE_GAP), 'three gates fill the quota; the next is a late-life gate');
+assert.equal(nextGateDueAge({ ...member, lastGateAge: undefined }), null, 'a life with no gate on record gets no late gate');
 const fixerDone = delver('dg-fixer-quota');
 fixerDone.seenEvents = ['gate_warp_fixer_request'];
 assert.notEqual(nextGateDueAge(fixerDone), null, 'after one gate a Fixer still has more to come');

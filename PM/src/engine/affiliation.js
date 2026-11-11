@@ -102,6 +102,9 @@ export function laneContractMods(char, effGrade = 9) {
     return { lane, payMult: 1.2, successDelta: -2, tierCap: 0, offerMult: 0.95 + staff * 0.04, offerDelta: 0 };
   }
   if (lane === 'free') {
+    if (has(char, 'ColorFixer') || char?.isColorFixer || char?.job === 'Color Fixer') {
+      return { lane, payMult: 1.35, successDelta: 2, tierCap: 0, offerMult: 1, offerDelta: 0.05 };
+    }
     // Nobody hands a lone Fixer the big jobs unless someone vouches for them
     const vouched = (char.stats?.network ?? 0) >= 60;
     return { lane, payMult: 1.3, successDelta: -4, tierCap: effGrade <= 7 && !vouched ? 1 : 0, offerMult: effGrade <= 8 ? 0.88 : 1, offerDelta: 0 };
@@ -140,7 +143,7 @@ const fnv = (text) => {
  * event selector and the eligibility check agree on which one it is without storing anything.
  */
 export function getAffiliationInvite(char) {
-  if (char?.job !== 'Fixer' || has(char, 'Distorted') || getAffiliation(char) || has(char, 'OwnFixerOffice')) return null;
+  if (char?.job !== 'Fixer' || has(char, 'Distorted') || has(char, 'ColorFixer') || char?.isColorFixer || getAffiliation(char) || has(char, 'OwnFixerOffice')) return null;
   if (char.fixerGrade == null || char.fixerGrade > 8) return null;
   if (char.lastAffiliationAge != null && char.age - char.lastAffiliationAge < 3) return null;
   const options = [];
