@@ -564,3 +564,35 @@ console.log('=== ALL BATCHES 135–150 TESTS PASSED ===');
   assert.ok(legacyText.includes('"bloodlineSeenEvents":["b","c","a"]'));
   console.log('  ✓ Đợt 151 verified.');
 }
+
+// Đợt 152: the elder echo quotes a decision this life really made, and the Ensemble waits for the wounded
+{
+  const { youthEchoOf } = await import('../src/engine/yearPlanner.js');
+  const { prepareEnsembleYear, ENSEMBLE_INVITE_ID, ENSEMBLE_LAST_CALL_ID } = await import('../src/engine/ensemblePath.js');
+  const old = createNewCharacter({ seed: 'echo-elder', startAge: 28 });
+  old.age = 60;
+  old.logs = [
+    { id: 'log_10_x', age: 10, type: 'choice', choiceVi: 'Quá sớm.', review: { vi: '[Chuyện lúc nhỏ] ...', en: '[Childhood] ...' } },
+    { id: 'log_ev_17_ad_career_crossroad_18', age: 17, type: 'major', turning: true, choiceVi: 'Ký giấy ở Wing.', choiceEn: 'Sign at the Wing.', review: { vi: 'thân bài không có tiêu đề', en: 'body without a heading' } },
+    { id: 'log_ev_50_late', age: 50, type: 'major', choiceVi: 'Quá gần.', review: { vi: '[Gần đây] ...', en: '[Recent] ...' } }
+  ];
+  const echo = youthEchoOf(old);
+  assert.equal(echo.age, 17, 'the echo is the turning point of youth');
+  assert.equal(echo.choiceVi, 'Ký giấy ở Wing', 'the choice is quoted whole, without its final period');
+  assert.ok(echo.titleVi && echo.titleEn, 'the heading comes from the event the log names');
+  old.logs = old.logs.slice(2);
+  assert.equal(youthEchoOf(old), null, 'a life with no youth on record gets the plain text');
+  assert.equal(ALL_STORY_EVENTS.find((e) => e.id === 'elder_callback_echo_of_youth').youthEcho, true);
+
+  const apex = createNewCharacter({ seed: 'ens-wounded', startAge: 28 });
+  apex.age = 40; apex.job = 'Wing Employee'; apex.wingRank = 3; apex.taboo = 0; apex.pendingDungeon = null;
+  apex.ensemble = { apexSinceAge: 30, declines: 0, offers: 0, nextAge: null, completed: false };
+  apex.stats.health = 30;
+  assert.equal(prepareEnsembleYear(apex), null, 'an invitation waits while the guest is wounded');
+  apex.stats.health = 70;
+  assert.equal(prepareEnsembleYear(apex), ENSEMBLE_INVITE_ID);
+  apex.ensemble.declines = 2; apex.stats.health = 30;
+  assert.equal(prepareEnsembleYear(apex), null, 'the last call waits one year for wounds');
+  assert.equal(prepareEnsembleYear(apex), ENSEMBLE_LAST_CALL_ID, 'and then comes regardless');
+  console.log('  ✓ Đợt 152 verified.');
+}

@@ -215,6 +215,30 @@ function remember(char, id) {
 }
 
 // Split a "[Title] body" event text into its title and body.
+/**
+ * A decision this life really made between 12 and 25, at least 25 years ago: a turning point if there was one,
+ * otherwise the earliest on record. Events marked youthEcho quote it, so each life remembers its own youth.
+ */
+export function youthEchoOf(char) {
+  const past = (char?.logs || []).filter((l) => l.choiceVi && l.age >= 12 && l.age <= 25 && (char.age || 0) - l.age >= 25);
+  // A major's log keeps the scene without its heading, so the heading is read back from the event itself
+  const titled = (log) => {
+    const event = ALL_STORY_EVENTS.find((e) => log.id === `log_ev_${log.age}_${e.id}`);
+    const titleVi = splitTitle(event ? interpolateText(event.vi, char) : log.review?.vi).title;
+    const titleEn = splitTitle(event ? interpolateText(event.en, char) : log.review?.en).title;
+    return titleVi ? { log, titleVi, titleEn: titleEn || titleVi } : null;
+  };
+  const big = past.filter((l) => l.type === 'major' || l.type === 'causal');
+  let found = null;
+  for (const log of [...big.filter((l) => l.turning), ...big, ...past]) {
+    found = titled(log);
+    if (found) break;
+  }
+  if (!found) return null;
+  const bare = (text) => String(text || '').replace(/\.\s*$/, '');
+  return { age: found.log.age, titleVi: found.titleVi, titleEn: found.titleEn, choiceVi: bare(found.log.choiceVi), choiceEn: bare(found.log.choiceEn || found.log.choiceVi) };
+}
+
 export function splitTitle(text) {
   const m = /^\s*\[([^\]]{2,80})\]\s*/.exec(text || '');
   return m ? { title: m[1], body: text.slice(m[0].length) } : { title: null, body: text || '' };
@@ -1222,6 +1246,9 @@ export function runPlanItem(charState, item, rng) {
       const examNoteEn = examChance != null
         ? ` Current pass chance: ${examChance}%. On failure: ${examLoss.health} HP, ${examLoss.wealth} Ahn, ${examLoss.sanity} SP. You may retry next year if still eligible.`
         : otherChance != null ? ` Recognition chance: ${otherChance}%. On failure: ${lossText}. You may return next year if still eligible.` : '';
+      const echo = event.youthEcho ? youthEchoOf(char) : null;
+      const echoNoteVi = echo ? ` Mặt sau là nét chữ của chính bạn năm ${echo.age} tuổi: "${echo.titleVi}". Dòng dưới ghi điều bạn đã quyết hồi đó: ${echo.choiceVi}.` : '';
+      const echoNoteEn = echo ? ` On the back, in your own hand at ${echo.age}: "${echo.titleEn}". The line beneath records what you decided then: ${echo.choiceEn}.` : '';
       const threadObj = item.thread ? char.weaver?.pendingThreads?.find((t) => t.id === item.thread) : null;
       char.pendingEvent = {
         ...event,
@@ -1229,8 +1256,8 @@ export function runPlanItem(charState, item, rng) {
         choices: (event.choices || []).map((c) => ({ ...c, labelVi: interpolateText(c.labelVi, char), labelEn: interpolateText(c.labelEn, char), ...(c.lasting ? { lasting: { vi: interpolateText(c.lasting.vi, char), en: interpolateText(c.lasting.en, char) } } : {}) })),
         titleVi: vi.title,
         titleEn: en.title,
-        displayVi: vi.body + examNoteVi,
-        displayEn: en.body + examNoteEn,
+        displayVi: vi.body + examNoteVi + echoNoteVi,
+        displayEn: en.body + examNoteEn + echoNoteEn,
         t: item.t,
         isCausalCallback: Boolean(item.isCausal || event.isCausalCallback),
         causalReasonVi: threadObj?.reasonVi || null,

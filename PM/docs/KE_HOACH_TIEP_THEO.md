@@ -18,6 +18,9 @@ Luật chơi đang chạy nằm ở `docs/LUAT_HIEN_HANH.md`, lore và giọng v
 | **149** | **Bổ sung Kết thúc chủ động `90+` & Chương tuổi già `60+` cho toàn bộ các nhánh** (`Wing Employee`, `Independent Syndicate`, `Workshop`, `Outcast`) | `src/data/eventsApexTwilight.js` | đã xong |
 | **150** | **Đại tu Route `Distortion` (Cơ chế nhịp năm + 3 Hình thái Tiến hóa + Sự kiện Tiền kiếp/LCD + Kết thúc Hóa Kén Dị Thể)** | `yearPlanner.js`, `annualMeritOpportunities.js`, `eventsDistortionParityExpansion.js` | đã xong |
 | **151** | **Rà soát Đợt 139–150** (`elderOk: false` cho 3 event con nhỏ, Quỹ Bảo Tồn trên hồ sơ và HUD, token `{departed}`, legacy bỏ danh sách trùng, cổng Dungeon cuối đời mỗi 12 năm từ tuổi 45, bot đo nhịp dùng chung `measured`) | `dungeonPacing.js`, `gameEngine.js`, `CharacterDossierCard.jsx`, `tools/sim/pacing_by_age.mjs` | đã xong |
+| **152** | **Ensemble chờ người bị thương, hồi ức tuổi già đọc ký ức thật, đo nhịp theo nghề** (`ENSEMBLE_MIN_HP`, `youthEchoOf` và cờ `youthEcho`, `pacing_by_age --job`) | `ensemblePath.js`, `yearPlanner.js`, `eventsApexTwilight.js`, `tools/sim/pacing_by_age.mjs` | đã xong |
+| **153** | **Sống sót của Fixer và Syndicate sau 40 tuổi** (đo 400 đời: Syndicate còn 1 năm sống sau tuổi 40, Fixer 25 năm ở tuổi 51–60 với HP dưới 40 gần nửa số năm; tìm nguyên nhân chết theo nghề trước khi viết thêm event tuổi già) | `tools/sim`, cân bằng | chưa làm |
+| **154** | **Ý tưởng chờ chọn**: tiêu Quỹ Bảo Tồn (rút khẩn cấp, chuộc đồng đội), Dungeon ngược vai cho Distortion, Outskirts khó hơn khi có đồng đội, làm `strain_reduction` và `clash` có tác dụng rõ, hiện "lần đầu trong dòng họ" cho người chơi | nhiều file | chờ chủ dự án |
 
 ---
 

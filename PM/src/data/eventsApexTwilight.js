@@ -481,10 +481,10 @@ const ELDER_CHAPTER_EVENTS = [
     ]
   },
   {
-    id: 'elder_callback_echo_of_youth', age: [55, 125], major: true, weight: 9,
+    id: 'elder_callback_echo_of_youth', age: [55, 125], major: true, youthEcho: true, weight: 9,
     forbids: ['Distorted', 'elder_echo_of_youth_done'],
-    vi: '[Vết khắc từ thời trẻ] Khi dọn lại ngăn kéo dưới đáy tủ, bạn chạm phải mảnh biên nhận có đóng dấu từ hơn ba mươi năm trước. Cái tên ghi ở mặt sau từng là ngã rẽ đầu tiên định hình cả cuộc đời bạn.',
-    en: '[An etching from youth] Clearing the bottom drawer, your fingers brush a stamped receipt from over thirty years ago. The name written on the back was the first crossroad that shaped your life.',
+    vi: '[Vết khắc từ thời trẻ] Khi dọn lại ngăn kéo dưới đáy tủ, bạn chạm phải một tờ biên nhận đã ngả vàng. Con dấu trên đó có từ thời bạn còn trẻ.',
+    en: '[An etching from youth] Clearing the bottom drawer, your fingers brush a yellowed receipt. Its stamp dates from your youth.',
     choices: [
       { labelVi: 'Ghi chú lại câu chuyện phía sau tờ biên nhận cho người đời sau đọc', labelEn: 'Write down the story behind the receipt for your successor to read',
         effects: { sanity: 5, resonance: 3, rep: 3 }, flagsAdd: ['elder_echo_of_youth_done'],

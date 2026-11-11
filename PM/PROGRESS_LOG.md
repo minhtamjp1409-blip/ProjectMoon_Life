@@ -3246,5 +3246,12 @@ Chạy kiểm định mô phỏng 500 vòng đời với chiến lược ngườ
 * **Số đo, 700 đời.** Dungeon mỗi năm sống: 0,11 (18–24), 0,10 (25–32), 0,06 (33–40), 0,09 (41–50), 0,04 (51–60), 0,02 (61–75), 0,01 (76+). Event lớn sau 60 tuổi 0,44–0,51 mỗi năm, năm trống 2%. Không lượt nào vào hầm nguy hiểm trước 18 tuổi hay khi HP dưới 40, trừ Ensemble: 26 trên 148 lượt vào khi HP dưới 40 vì hầm này bắt buộc.
 * **Kiểm định.** Thêm khối Đợt 151 vào `tests/test_batches_135_138.mjs`, sửa `tests/test_dungeon_variety.mjs` theo luật cổng cuối đời. `npm test` và `npm run build` đạt 100%.
 
+##### 2.46. Ensemble chờ người bị thương, hồi ức tuổi già đọc ký ức thật, đo nhịp theo nghề — Đợt 152 (11/11/2026)
+* **Ensemble.** `prepareEnsembleYear` hoãn lời mời khi HP dưới `ENSEMBLE_MIN_HP` (40). Lời gọi cuối, vốn không từ chối được, hoãn đúng một năm rồi vẫn đến. Số lượt vào Ensemble khi HP dưới 40 giảm từ 26/148 xuống 10/141 (700 đời).
+* **Hồi ức tuổi già.** `youthEchoOf` (`yearPlanner.js`) tìm một quyết định thật của nhân vật năm 12–25 tuổi, cách hiện tại ít nhất 25 năm, ưu tiên bước ngoặt. Event mang `youthEcho: true` được ghép thêm tên cảnh và lựa chọn năm đó; `elder_callback_echo_of_youth` là event đầu tiên dùng. Đời không còn ghi chép thời trẻ thì giữ lời văn gốc. Nhật ký event lớn lưu thân bài đã cắt tiêu đề, nên tiêu đề được đọc lại từ định nghĩa event theo ID.
+* **Đo theo nghề.** `tools/sim/pacing_by_age.mjs --job="Wing Employee"` chỉ đếm những năm sống trong nghề đó (`Distortion` cho người đã biến dạng).
+* **Số đo theo nghề, 400 đời, bot `focused`.** Wing sau 50 tuổi: event lớn 0,50–0,83 mỗi năm, hợp đồng 0,45–0,49, Dungeon 0,04–0,11. Distortion: event lớn 0,43–0,54, không hợp đồng, không Dungeon. Fixer: chỉ 25 năm sống ở tuổi 51–60 và 9 năm ở 61–75, HP dưới 40 trong 48–67% số năm. Syndicate: 1 năm sống sau tuổi 40. Hai nhánh cuối cần xem lại tỉ lệ sống sót trước khi viết thêm event tuổi già cho chúng.
+* **Kiểm định.** Thêm khối Đợt 152 vào `tests/test_batches_135_138.mjs`. `npm test` và `npm run build` đạt 100%.
+
 #### 3. KIỂM ĐỊNH & BẢO ĐẢM TOÀN VẸN (VERIFICATION & INTEGRITY)
 * Tất cả các bộ kiểm thử tự động (`npm test`) bao gồm lint văn phong (`voice_lint.mjs`), chuẩn canon Project Moon (`lint_story.mjs`), và mô phỏng 500 khoảnh khắc đời người (`run_million_audit.mjs`) phải vượt qua 100% với 0 lỗi, 0 cảnh báo.

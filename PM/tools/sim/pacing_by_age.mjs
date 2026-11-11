@@ -1,7 +1,8 @@
 /**
  * Pacing by age: how many choices of each kind a life meets per year of age, how many years pass
  * with no choice at all, and when and in what state each dungeon is entered.
- * Usage: node tools/sim/pacing_by_age.mjs [lives=300] [policy=focused|random]
+ * Usage: node tools/sim/pacing_by_age.mjs [lives=300] [policy=focused|random] [--job="Wing Employee"]
+ * --job counts only the years lived in that job ("Distortion" for the distorted), so a thin branch is not hidden in the average.
  */
 import { createNewCharacter, resolveEventChoice, resolveDungeonChoice, getDungeonCurrentStage, isDungeonChoiceAvailable, createRNG, resolveFixerContract } from '../../src/engine/gameEngine.js';
 import { planYear, chooseDirectorPacedLead, runDueItems, resolveMinor, endYear, LIFE_MINORS } from '../../src/engine/yearPlanner.js';
@@ -18,6 +19,9 @@ const BANDS = [[0, 12], [13, 17], [18, 24], [25, 32], [33, 40], [41, 50], [51, 6
 const band = (age) => BANDS.findIndex(([a, b]) => age >= a && age <= b);
 const rows = BANDS.map(() => ({ years: 0, major: 0, minor: 0, contract: 0, dungeon: 0, quiet: 0, causal: 0, gate: 0, hurt: 0 }));
 const entries = [];
+const JOB = (process.argv.find((a) => a.startsWith('--job=')) || '').slice(6);
+const jobOf = (char) => (char.flags?.includes('Distorted') ? 'Distortion' : char.job);
+const offRecord = { years: 0, major: 0, minor: 0, contract: 0, dungeon: 0, quiet: 0, causal: 0, gate: 0, hurt: 0 };
 
 for (let i = 0; i < LIVES; i++) {
   const rng = createRNG(`pace_${i}`);
@@ -40,7 +44,7 @@ for (let i = 0; i < LIVES; i++) {
   }
   let guard = 0;
   while (char.alive && char.age < 120 && guard++ < 200) {
-    const row = rows[band(char.age)];
+    const row = JOB && jobOf(char) !== JOB ? offRecord : rows[band(char.age)];
     row.years++;
     if (char.stats.health < 40) row.hurt++;
     let choices = 0;
@@ -95,7 +99,7 @@ for (let i = 0; i < LIVES; i++) {
 }
 
 const f = (n, d) => (d ? (n / d).toFixed(2) : '-');
-console.log(`\n${LIVES} lives, policy ${POLICY}: choices per lived year by age band`);
+console.log(`\n${LIVES} lives, policy ${POLICY}${JOB ? `, years as ${JOB}` : ''}: choices per lived year by age band`);
 console.table(BANDS.map(([a, b], k) => { const r = rows[k]; return { ages: `${a}-${b}`, lifeYears: r.years, major: f(r.major, r.years), minor: f(r.minor, r.years), contract: f(r.contract, r.years), gateOffer: f(r.gate, r.years), dungeon: f(r.dungeon, r.years), under40Hp: r.years ? `${Math.round(r.hurt / r.years * 100)}%` : '-', causal: f(r.causal, r.years), quietYears: r.years ? `${Math.round(r.quiet / r.years * 100)}%` : '-' }; }));
 const byId = {};
 for (const e of entries) (byId[e.id] ||= []).push(e);

@@ -3,6 +3,9 @@ import { npcIsActive } from './eventConditions.js';
 export const ENSEMBLE_DUNGEON_ID = 'dungeon_reverberation_ensemble';
 export const ENSEMBLE_INVITE_ID = 'ensemble_first_invitation';
 export const ENSEMBLE_LAST_CALL_ID = 'ensemble_last_call';
+// The Ensemble wants its guest able to stand: an invitation waits while health is under this, and the last
+// call, which cannot be refused, waits one year (Đợt 152: 26 of 148 measured entries began under 40 HP)
+export const ENSEMBLE_MIN_HP = 40;
 
 export function ensembleRoute(char) {
   if ((char?.job === 'Fixer' || char?.job === 'Color Fixer') && (char.flags?.includes('ColorFixer') || char.isColorFixer || char.fixerGrade === 0)) return 'color';
@@ -26,7 +29,15 @@ export function prepareEnsembleYear(char) {
   if (state.apexSinceAge == null) state.apexSinceAge = char.age;
   char.ensemble = state;
   if (!ensembleEligible(char) || state.started || char.age < state.apexSinceAge + 2 || char.age < (state.nextAge ?? 0)) return null;
-  return state.declines >= 2 ? ENSEMBLE_LAST_CALL_ID : ENSEMBLE_INVITE_ID;
+  const lastCall = state.declines >= 2;
+  if ((char.stats?.health ?? 50) < ENSEMBLE_MIN_HP) {
+    if (!lastCall) return null;
+    if (state.heldForWoundsAge == null) {
+      state.heldForWoundsAge = char.age;
+      return null;
+    }
+  }
+  return lastCall ? ENSEMBLE_LAST_CALL_ID : ENSEMBLE_INVITE_ID;
 }
 
 export function recordEnsembleInvitation(char, accepted) {
