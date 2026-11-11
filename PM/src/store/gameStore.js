@@ -904,7 +904,9 @@ export const useGameStore = create((set, get) => ({
     });
     // What earlier lives learned in the dungeons (Lake Laws, duty logs) comes with the next one
     nextChar.dungeonLore = (state.globalSeenEvents || []).filter((id) => String(id).startsWith('lore:'));
-    nextChar.bloodlineSeenEvents = Array.from(new Set([...(nextChar.bloodlineSeenEvents || []), ...(state.globalSeenEvents || [])]));
+    // Everything any life on this device has met, for the Weaver's discovery boost. bloodlineSeenEvents stays
+    // this lineage's own record (built from the parent's legacy), so "First in bloodline" can be told apart
+    nextChar.discoverySeen = Array.from(new Set(state.globalSeenEvents || []));
     lifeRng = createRNG(`${nextChar.seed}:life:${nextChar.age}`);
     lifeActiveMs = 0;
     planYear(nextChar, lifeRng);

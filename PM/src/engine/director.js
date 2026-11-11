@@ -128,6 +128,9 @@ export function directorWeight(entry, char) {
       w *= 2.8;
       reason = reason || { vi: `Đã lâu không gặp ${npc?.nameVi || ''}`.trim(), en: `You haven't seen ${npc?.nameEn || 'them'} in a while` };
     } else if (since <= 0) w *= 0.5;
+    if ((char.npcCallbackCount || 0) < 4 && entry.choices?.some((c) => typeof c.mem === 'string' && c.mem.startsWith('npc_'))) {
+      w *= 1.45;
+    }
     if (tags.includes('npc_callback')) {
       w *= 2.5;
       reason = { vi: `${npc?.nameVi || 'Người thân'} nhắc lại một lựa chọn cũ`, en: `${npc?.nameEn || 'Someone close'} recalls an old choice` };

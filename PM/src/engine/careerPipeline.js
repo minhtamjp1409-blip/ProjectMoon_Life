@@ -146,16 +146,17 @@ export function fixerContractOfferChance(char) {
 export function contractOfferChance(char) {
   const route = contractRouteOf(char);
   if (!route) return 0;
+  const woundThrottle = (char.stats?.health ?? 50) < 38 ? 0.55 : 1;
   if (route === 'fixer') {
     // Work comes through a badge: an Association or Office hands it out, a lone Fixer finds it
     const mods = laneContractMods(char, char.fixerGrade ?? 9);
-    return Math.min(0.85, Math.max(0, fixerContractOfferChance(char) * mods.offerMult + mods.offerDelta));
+    return Math.min(0.85, Math.max(0, fixerContractOfferChance(char) * mods.offerMult + mods.offerDelta)) * woundThrottle;
   }
   const step = getOtherCareerPromotion(char);
-  if (!step) return 0.5;
+  if (!step) return 0.5 * woundThrottle;
   const meritGap = Math.max(0, step.meritReq - step.currentMerit);
-  if (meritGap <= 0) return 0.5;
-  return 0.5 + 0.12 * Math.min(1, meritGap / Math.max(15, step.meritReq * 0.25));
+  if (meritGap <= 0) return 0.5 * woundThrottle;
+  return (0.5 + 0.12 * Math.min(1, meritGap / Math.max(15, step.meritReq * 0.25))) * woundThrottle;
 }
 
 export function fixerPromotionSuccessChance(char, targetGrade) {
@@ -698,6 +699,12 @@ export function getOtherCareerPromotion(char) {
   }
   return null;
 }
+
+/**
+ * Health a promotion exam waits for. Under it no exam is offered by any path, so a wounded life is not sent
+ * into a trial it cannot survive (Đợt 158: 24 Fixer deaths in exams over 500 lives, at 9 to 36 HP).
+ */
+export const TRIAL_MIN_HP = 42;
 
 export function careerTrialForEvent(id) {
   for (const [finger, ladder] of Object.entries(FINGER_LADDERS)) {

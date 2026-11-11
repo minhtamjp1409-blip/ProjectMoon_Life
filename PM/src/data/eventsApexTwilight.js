@@ -83,7 +83,7 @@ const COLOR_ENDINGS = [
   {
     id: 'color_long_road', age: [84, 125], jobs: ['Fixer'], major: true, weight: 8,
     requires: ['ColorFixer', 'ApexLongevity'], forbids: ['Distorted'],
-    vi: '[Cánh cổng phụ] Sáng nọ bạn nhận ra mình đã đứng trước cổng phụ khu Hana lâu hơn cần thiết. Người gác không hỏi. Bên ngoài là con đường bạn chưa đi hết, và bạn nhớ hồi trẻ từng định sẽ đi.',
+    vi: '[Cánh cổng phụ] Sáng nọ bạn nhận ra mình đã đứng trước cổng phụ khu Hana lâu hơn cần thiết. Người gác không hỏi. Bên ngoài là con đường bạn chưa đi hết. Bạn nhớ hồi trẻ từng định sẽ đi.',
     en: '[A side gate] One morning you find you have stood at the side gate of the Hana grounds longer than needed. The guard does not ask. Beyond lies a road you never walked to its end, and you remember once planning to take it when young.',
     choices: [
       { labelVi: 'Bước qua cổng và không quay đầu', labelEn: 'Step through the gate and do not look back',
@@ -136,8 +136,8 @@ const COLOR_ENDINGS = [
         need: { stat: { health: [45, 100] } },
         outcomes: [
           { w: 58, effects: { health: -26, sanity: -8, rep: 10, network: -6 }, meritAdd: 30, flagsAdd: ['color_purge_done'],
-            resultVi: 'Ba người đứng trong căn phòng chờ bạn. Họ không ngờ bạn còn có thể đánh như vậy. Bạn bước ra khi trời sáng, và Hana không bao giờ gửi bạn một lá thư nào nữa.', resultEn: 'Three people wait in the room. They did not expect you could still fight like that. You walk out at dawn, and Hana never sends you another letter.' },
-          { w: 42, ...endsLife('purged', 'Phòng đó có nhiều cửa hơn bạn nhớ. Bạn ngã ở cánh cuối cùng, và gương mặt cuối cùng bạn thấy là người từng ngồi uống trà cùng bạn.', 'The room has more doors than you remember. You fall at the last one, and the last face you see belongs to someone you once drank tea with.', { health: -40 }),
+            resultVi: 'Ba người đứng trong căn phòng chờ bạn. Họ không ngờ bạn còn có thể đánh như vậy. Bạn bước ra khi trời sáng. Hana không bao giờ gửi bạn một lá thư nào nữa.', resultEn: 'Three people wait in the room. They did not expect you could still fight like that. You walk out at dawn, and Hana never sends you another letter.' },
+          { w: 42, ...endsLife('purged', 'Phòng đó có nhiều cửa hơn bạn nhớ. Bạn ngã ở cánh cuối cùng. Gương mặt cuối cùng bạn thấy là người từng ngồi uống trà cùng bạn.', 'The room has more doors than you remember. You fall at the last one, and the last face you see belongs to someone you once drank tea with.', { health: -40 }),
             deathCauseVi: 'Bị Section của Hana xử lý bằng một Request niêm phong', deathCauseEn: 'Dealt with by a Hana Section through a sealed Request' }
         ] },
       { labelVi: 'Viết thư xin từ bỏ tên Color, rút lui', labelEn: 'Write to resign the Color name and withdraw',
@@ -186,7 +186,7 @@ const FINGER_ENDINGS = [
   usurp('Middle', 'Great Sibling đợi quá lâu', 'A Great Sibling who waited too long',
     'Một Great Sibling từng được bạn nâng đỡ mở Book of Vengeance trước gia đình. Tên bạn nằm trên trang mới, bên cạnh một lời buộc tội họ không cho bạn đọc. Hai người của họ chặn cửa.',
     'A Great Sibling you once supported opens the Book of Vengeance before the family. Your name is on a new page beside an accusation they will not let you read. Two of their people block the door.',
-    ['Bạn đọc được lời buộc tội trước các Great Elder. Người chứng kiến đòi mở cuộc xét lại, và họ nhường lối.', 'Bạn thoát qua cửa sau. Lời buộc tội vẫn ở trong sổ; gia đình chưa chấp nhận lời giải thích của bạn.', 'Họ khép sổ khi bạn ngã. Tên bạn vẫn nằm trên trang ấy.'],
+    ['Bạn đọc được lời buộc tội trước các Great Elder. Người chứng kiến đòi mở cuộc xét lại. Họ phải nhường lối.', 'Bạn thoát qua cửa sau. Lời buộc tội vẫn ở trong sổ; gia đình chưa chấp nhận lời giải thích của bạn.', 'Họ khép sổ khi bạn ngã. Tên bạn vẫn nằm trên trang ấy.'],
     ['You read the accusation before the Great Elders. The witnesses demand a review, and the guards make way.', 'You escape through the back door. The accusation remains in the Book; the family has not accepted your account.', 'They close the Book when you fall. Your name remains on the page.']),
   usurp('Ring', 'Maestro muốn bức tranh của chính họ', 'A Maestro who wants their own piece',
     'Một Maestro bạn từng bảo trợ chuẩn bị buổi triển lãm công bố người giữ ghế Grand Curator tiếp theo. Bạn thấy tên mình ở mục vật liệu của tác phẩm chính. Người gác khóa cửa phòng sau lưng bạn.',
@@ -194,7 +194,7 @@ const FINGER_ENDINGS = [
     ['Bạn mở khóa cửa trước khi buổi triển lãm bắt đầu. Maestro phải giải thích danh mục vật liệu với các Docent.', 'Bạn thoát ra hành lang với một vết thương. Danh mục triển lãm vẫn giữ tên bạn ở mục vật liệu.', 'Buổi triển lãm mở cửa đúng giờ. Ghế Grand Curator có người mới.'],
     ['You unlock the door before the exhibition begins. The Maestro must explain the materials list to the Docents.', 'You reach the corridor wounded. The exhibition list still names you under materials.', 'The exhibition opens on time. A new Grand Curator takes the seat.']),
   usurp('Pinky', 'Sworn Blade chờ nhát cuối', 'A Sworn Blade awaiting the last stroke',
-    'Một Sworn Blade bạn từng nhận làm học trò hạ giọng trước mặt cả Pinky: thanh kiếm đứng đầu không nên già. Họ chờ bạn trả lời bằng nhát chém, và không ai trong phòng định ngăn họ.',
+    'Một Sworn Blade bạn từng nhận làm học trò hạ giọng trước mặt cả Pinky: thanh kiếm đứng đầu không nên già. Họ chờ bạn trả lời bằng nhát chém. Không ai trong phòng định ngăn họ.',
     'A Sworn Blade you took as a student lowers their voice before the whole Pinky: the foremost blade should not grow old. They wait for you to answer with a stroke, and no one in the room means to stop them.',
     ['Bạn đỡ nhát đầu và làm rơi kiếm của họ. Cuộc thử thách dừng tại đó.', 'Bạn giữ được mạng và rời sảnh để băng bó. Người thách đấu vẫn đợi bạn trả lời.', 'Họ cắm thanh kiếm xuống đất và Pinky đọc tên người giữ chức mới.']
     , ['You turn aside the first stroke and knock their blade down. The challenge stops there.', 'You survive and leave the hall for bandages. Your challenger still awaits an answer.', 'They plant the blade in the ground, and the Pinky names the new holder of the rank.']),
@@ -215,7 +215,7 @@ const FINGER_ENDINGS = [
   {
     id: 'finger_seat_handed_on', age: [84, 125], major: true, weight: 7, jobs: ['Syndicate'], need: { fingerRankAtLeast: 3 },
     requires: ['ApexLongevity'], forbids: ['Distorted'],
-    vi: '[Người chờ chiếc ghế] Người bạn chọn làm người kế vị đã chờ nhiều năm mà không một lần nhắc đến chiếc ghế. Hôm nay họ mang đến một bình trà và ngồi xuống phía đối diện. Họ không nói gì cả buổi sáng, và bạn hiểu đó là cách họ hỏi.',
+    vi: '[Người chờ chiếc ghế] Người bạn chọn làm người kế vị đã chờ nhiều năm mà không một lần nhắc đến chiếc ghế. Hôm nay họ mang đến một bình trà và ngồi xuống phía đối diện. Họ không nói gì cả buổi sáng. Bạn hiểu đó là cách họ hỏi.',
     en: '[The one waiting for the seat] The one you chose as heir has waited years without once mentioning the seat. Today they bring a pot of tea and sit opposite. They say nothing all morning, and you understand it is their way of asking.',
     choices: [
       { labelVi: 'Trao lại ghế cho đàng hoàng', labelEn: 'Hand over the seat with proper ceremony',

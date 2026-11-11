@@ -22,7 +22,8 @@ import {
   careerTrialForEvent,
   careerPromotionSuccessChance,
   careerPromotionFailureEffects,
-  hasColorRelic
+  hasColorRelic,
+  TRIAL_MIN_HP
 } from './careerPipeline.js';
 import { rollSeasonMishap } from './fateEngine.js';
 // ============================================================================
@@ -487,17 +488,18 @@ const weightOf = (char) => (e) => {
 function majorIsDue(char, rng) {
   const w = char.weaver || {};
   if (char.age <= 4) return false;
+  const fitForTrial = (char.stats?.health ?? 50) >= TRIAL_MIN_HP;
   // If Fixer is eligible for next grade exam, schedule major
-  if (char.job === 'Fixer' && !char.flags.includes('Distorted')) {
+  if (fitForTrial && char.job === 'Fixer' && !char.flags.includes('Distorted')) {
     const nextPromo = getNextFixerPromotion(char);
     if (nextPromo && nextPromo.isEligible) return true;
   }
   // If Syndicate is eligible for next finger promotion, schedule major (Unblocked for Distorted)
-  if ((char.job === 'Syndicate' || (char.flags.includes('Distorted') && char.finger)) && char.finger) {
+  if (fitForTrial && (char.job === 'Syndicate' || (char.flags.includes('Distorted') && char.finger)) && char.finger) {
     const nextPromo = getNextFingerPromotion(char);
     if (nextPromo && nextPromo.isEligible) return true;
   }
-  if (char.job === 'Syndicate' && !char.finger) {
+  if (fitForTrial && char.job === 'Syndicate' && !char.finger) {
     const rank = char.syndicateRank || 0;
     const targetMerit = [0, 20, 50, 90][rank + 1];
     const targetRep = [0, 20, 45, 75][rank + 1];
@@ -1601,7 +1603,20 @@ export function endYear(charState, rng) {
 
   const maintenanceCost = midlifeMaintenanceLoss(char);
   if (maintenanceCost > 0) {
-    if ((char.stats?.wealth || 0) >= maintenanceCost) {
+    if ((char.stats?.wealth || 0) + (fx.wealth || 0) < maintenanceCost && (char.reserveAhn || 0) > 0) {
+      const drawn = Math.min(char.reserveAhn, Math.max(maintenanceCost, 15));
+      char.reserveAhn -= drawn;
+      add('wealth', drawn);
+      breakdown.push({
+        cat: 'income',
+        labelVi: 'Rút dự trữ từ Quỹ Bảo Tồn',
+        labelEn: 'Withdrawal from Reserve Vault',
+        k: 'wealth',
+        v: drawn,
+        unit: 'Ahn'
+      });
+    }
+    if ((char.stats?.wealth || 0) + (fx.wealth || 0) >= maintenanceCost) {
       add('wealth', -maintenanceCost);
       breakdown.push({
         cat: 'wear',
@@ -1663,12 +1678,31 @@ export function endYear(charState, rng) {
   // One who found a human voice again (eventsDistortionVoice.js) is still on the books, but recognized.
   if (char.flags.includes('Distorted')) {
     const humanVoice = char.flags.includes('HumanVoice');
+    const isSovereign = char.flags.includes('DistortionLabyrinthSovereign');
+    const isWanderer = char.flags.includes('DistortionLucidWanderer');
+    const isCalamity = char.flags.includes('DistortionPrimordialCalamity');
     const watch = humanVoice ? 3 : 6;
     add('heat', watch);
     breakdown.push({ cat: 'drift', labelVi: 'Truy vết Distortion từ Hiệp hội Hana', labelEn: 'Hana Distortion surveillance', k: 'heat', v: watch });
-    if (!humanVoice) {
+    if (!humanVoice && !isWanderer) {
       add('network', -2);
       breakdown.push({ cat: 'drift', labelVi: 'Cô lập xã hội do Biến dị', labelEn: 'Social isolation from Distortion', k: 'network', v: -2 });
+    }
+    if (isSovereign) {
+      add('heat', -3);
+      add('wealth', 3);
+      breakdown.push({ cat: 'drift', labelVi: 'Lãnh địa sương mù che khuất truy vết (Lãnh Chúa Mê Cung)', labelEn: 'Labyrinth mist conceals surveillance (Labyrinth Sovereign)', k: 'heat', v: -3 });
+      breakdown.push({ cat: 'income', labelVi: 'Chiến lợi phẩm từ kẻ xâm nhập lãnh địa', labelEn: 'Spoils from domain intruders', k: 'wealth', v: 3, unit: 'Ahn' });
+    } else if (isWanderer) {
+      add('sanity', 3);
+      add('wealth', 3);
+      breakdown.push({ cat: 'drift', labelVi: 'Neo giữ lý trí (Dị Thể Tỉnh Thức)', labelEn: 'Anchored lucidity (Lucid Wanderer)', k: 'sanity', v: 3, unit: 'SP' });
+      breakdown.push({ cat: 'income', labelVi: 'Khế ước ngầm của Dị Thể Tỉnh Thức', labelEn: 'Underground pacts of the Lucid Wanderer', k: 'wealth', v: 3, unit: 'Ahn' });
+    } else if (isCalamity) {
+      add('health', 4);
+      add('resonance', 3);
+      breakdown.push({ cat: 'drift', labelVi: 'Tái tạo sinh học dị thể (Tai Ương Nguyên Thủy)', labelEn: 'Anomalous regeneration (Primordial Calamity)', k: 'health', v: 4, unit: 'HP' });
+      breakdown.push({ cat: 'drift', labelVi: 'Cộng hưởng vực thẳm (Tai Ương Nguyên Thủy)', labelEn: 'Abyssal resonance surge (Primordial Calamity)', k: 'resonance', v: 3, unit: 'Res' });
     }
     vi.push(humanVoice
       ? 'Hana vẫn giữ hồ sơ của bạn, nhưng trong đó giờ ghi tên bạn bằng chữ.'
@@ -1794,6 +1828,22 @@ export function endYear(charState, rng) {
   }
 
   // Hard knocks the City deals on its own
+  if ((char.stats?.wealth || 0) <= 5 && (char.reserveAhn || 0) > 0) {
+    const drawn = Math.min(char.reserveAhn, 20);
+    char.reserveAhn -= drawn;
+    const d = applyFx(char, { wealth: drawn });
+    pushLog(
+      char,
+      {
+        key: 'reserve_ahn_draw',
+        type: 'story',
+        vi: `[Quỹ Bảo Tồn] Tiền mặt cạn dần. Bạn rút ${drawn} Ahn từ Quỹ Bảo Tồn dự trữ để giữ cho cuộc sống không rơi vào tay đám đòi nợ.`,
+        en: `[Reserve Vault] Cash ran low. You withdrew ${drawn} Ahn from your Reserve Vault to keep collectors away from your door.`,
+        deltas: d
+      },
+      0.99
+    );
+  }
   if (reachedCareerAge(char) && char.stats.wealth <= 0 && !nest && !char.flags.includes('Distorted')) {
     const d = applyFx(char, { health: -20, sanity: -12, wealth: 14, resonance: 10 });
     addScar(char, 'Vết mổ trả nợ');

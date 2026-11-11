@@ -17,7 +17,8 @@ const chunkFor = (id) => {
   if (/[\/]src[\/]data[\/]events(Fixer|Color|Ego|Apex|Affiliation|Workshop)/.test(id)) return 'story-career';
   if (/[\/]src[\/]data[\/]events(Wing|Faction|Distortion|Supernatural|Dungeon)/.test(id)) return 'story-factions';
   if (/[\/]src[\/]data[\/]events/.test(id)) return 'story-events';
-  if (/[\/]src[\/]data[\/](lifeMinors|lifeDailies|lifeNpc|lifeScar|lifeCareer|annualMerit|narrative)/.test(id)) return 'story-life';
+  if (/[\/]src[\/]data[\/](lifeMinors|lifeScar|lifeCareer|annualMerit)/.test(id)) return 'story-minors';
+  if (/[\/]src[\/]data[\/](lifeDailies|lifeNpc|narrative)/.test(id)) return 'story-dailies';
   if (/[\/]src[\/]data[\/](careerContracts|associations)/.test(id)) return 'story-contracts';
   if (/[\/]src[\/]data[\/]/.test(id)) return 'story';
   return undefined;

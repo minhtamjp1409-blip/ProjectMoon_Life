@@ -1,10 +1,10 @@
-# Kế hoạch nâng cấp toàn diện Đợt 142–147
+# Kế hoạch nâng cấp toàn diện Đợt 142–157
 
-File này thay cho các bản rà soát đã hoàn thành (`KE_HOACH_DOT_135.md`, `EVENT_NARRATIVE_AUDIT_2026_11_05.md`, `NPC_CAN_SUA.md`). Toàn bộ Đợt 113–141 đã hoàn tất và ghi trong `PROGRESS_LOG.md`.
+File này thay cho các bản rà soát đã hoàn thành (`KE_HOACH_DOT_135.md`, `EVENT_NARRATIVE_AUDIT_2026_11_05.md`, `NPC_CAN_SUA.md`). Toàn bộ Đợt 113–157 đã hoàn tất và ghi trong `PROGRESS_LOG.md`.
 
 Luật chơi đang chạy nằm ở `docs/LUAT_HIEN_HANH.md`, lore và giọng văn ở `UNIVERSE.md`, lịch sử thay đổi ở `PROGRESS_LOG.md`.
 
-## Tóm tắt các đợt thực hiện (Đợt 142–147)
+## Tóm tắt các đợt thực hiện (Đợt 142–157)
 
 | Đợt | Hạng mục | Phạm vi | Trạng thái |
 |---|---|---|---|
@@ -19,8 +19,13 @@ Luật chơi đang chạy nằm ở `docs/LUAT_HIEN_HANH.md`, lore và giọng v
 | **150** | **Đại tu Route `Distortion` (Cơ chế nhịp năm + 3 Hình thái Tiến hóa + Sự kiện Tiền kiếp/LCD + Kết thúc Hóa Kén Dị Thể)** | `yearPlanner.js`, `annualMeritOpportunities.js`, `eventsDistortionParityExpansion.js` | đã xong |
 | **151** | **Rà soát Đợt 139–150** (`elderOk: false` cho 3 event con nhỏ, Quỹ Bảo Tồn trên hồ sơ và HUD, token `{departed}`, legacy bỏ danh sách trùng, cổng Dungeon cuối đời mỗi 12 năm từ tuổi 45, bot đo nhịp dùng chung `measured`) | `dungeonPacing.js`, `gameEngine.js`, `CharacterDossierCard.jsx`, `tools/sim/pacing_by_age.mjs` | đã xong |
 | **152** | **Ensemble chờ người bị thương, hồi ức tuổi già đọc ký ức thật, đo nhịp theo nghề** (`ENSEMBLE_MIN_HP`, `youthEchoOf` và cờ `youthEcho`, `pacing_by_age --job`) | `ensemblePath.js`, `yearPlanner.js`, `eventsApexTwilight.js`, `tools/sim/pacing_by_age.mjs` | đã xong |
-| **153** | **Sống sót của Fixer và Syndicate sau 40 tuổi** (đo 400 đời: Syndicate còn 1 năm sống sau tuổi 40, Fixer 25 năm ở tuổi 51–60 với HP dưới 40 gần nửa số năm; tìm nguyên nhân chết theo nghề trước khi viết thêm event tuổi già) | `tools/sim`, cân bằng | chưa làm |
-| **154** | **Ý tưởng chờ chọn**: tiêu Quỹ Bảo Tồn (rút khẩn cấp, chuộc đồng đội), Dungeon ngược vai cho Distortion, Outskirts khó hơn khi có đồng đội, làm `strain_reduction` và `clash` có tác dụng rõ, hiện "lần đầu trong dòng họ" cho người chơi | nhiều file | chờ chủ dự án |
+| **153** | **Cân bằng sinh tồn sau tuổi 40 cho `Fixer` & `Syndicate`** (dùng `effectiveAge` trong `rollSeasonMishap`, hạ `exposureIndex`, đệm `fatal` khi `hp - dmg <= 18`, hoãn khảo thí thăng bậc khi `HP < 42`, giảm hợp đồng khi `HP < 38`, giữ lại `1 HP` khi trượt khảo thí thăng cấp lúc khỏe mạnh `beforeHealth >= 45`) | `fateEngine.js`, `yearPlanner.js`, `careerPipeline.js`, `gameEngine.js` | đã xong |
+| **154** | **Nội tại năm cho 3 Hình thái `Distortion` & Rút khẩn cấp Quỹ Bảo Tồn (`reserveAhn`)** (3 nội tại cuối năm của *Lãnh Chúa Mê Cung*, *Dị Thể Tỉnh Thức*, *Tai Ương Nguyên Thủy* và tự động rút tối đa `20 Ahn` từ `reserveAhn` khi cạn tiền mặt để tránh bán thận trả nợ) | `src/engine/yearPlanner.js` | đã xong |
+| **155** | **Nâng cấp Perk đồng đội `strain_reduction` & `clash` trong Dungeon** (`strainMult < 1` xóa thêm `-4 Strain` mỗi khi qua tầng; `clashBonus > 0` hồi `+3 HP` & `+2 SP` khi thắng đọ chiêu/kiểm định sức mạnh) | `dungeonEngine.js`, `dungeonCombat.js` | đã xong |
+| **156** | **Hiển thị Hình thái Distortion, Tiền kiếp & Huy hiệu "Mới trong dòng họ" trên UI** (`CharacterDossierCard.jsx`, `LiveStageFeed.jsx`) | `CharacterDossierCard.jsx`, `LiveStageFeed.jsx` | đã xong |
+| **157** | **Tách chunk `story-minors`/`story-dailies` & Gọt câu chữ tiếng Việt đợt 3 (`vaClause: 2015`)** (`vite.config.js`, `apexCommissions.js`, `eventsApexTwilight.js`, `package.json`) | `vite.config.js`, `apexCommissions.js`, `eventsApexTwilight.js`, `package.json` | đã xong |
+| **158** | **Rà soát Đợt 153–157** (`discoverySeen` tách khỏi `bloodlineSeenEvents` để nhãn "Mới trong dòng họ" hiện được, `VIGOR_MOMENTUM` cho số xem trước, `TRIAL_MIN_HP` chặn kỳ thi khi HP dưới 42, tách 27 câu nối "; ", công cụ `hp_sources.mjs`) | `gameStore.js`, `weaverAI.js`, `dungeonEngine.js`, `careerPipeline.js` | đã xong |
+| **159** | **Fixer bị thương kéo dài** (đo `hp_sources.mjs`: HP dưới 40 trong 35–43% số năm ở tuổi 25–50; hồi máu từ event lớn 2,0/năm so với Wing 3,0; xem lại mức hồi cuối năm và cách minor tính phí HP khi đã kiệt sức) | cân bằng | chưa làm |
 
 ---
 

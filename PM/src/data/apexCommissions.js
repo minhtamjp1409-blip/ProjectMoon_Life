@@ -16,16 +16,16 @@ const KINDS = {
     fight: true,
     steady: { vi: ['Đánh đúng luật và giữ nhịp đều', 'Trao đổi từng nhát, không dồn ép'], en: ['Fight by the rules at an even pace', 'Trade each stroke without forcing it'] },
     steadyOk: {
-      vi: ['Hai bên kết thúc bằng một cái cúi đầu. Người chứng kiến ghi rằng không ai thắng rõ ràng, và tên bạn không bị kéo xuống.', 'Bạn giữ nhịp tới hồi cuối. {Foe} dừng trước khi bị thương nặng và hai bên cùng ký tờ ghi nhận.'],
+      vi: ['Hai bên kết thúc bằng một cái cúi đầu. Người chứng kiến ghi rằng không ai thắng rõ ràng. Tên bạn cũng không bị kéo xuống.', 'Bạn giữ nhịp tới hồi cuối. {Foe} dừng trước khi bị thương nặng và hai bên cùng ký tờ ghi nhận.'],
       en: ['Both sides end with a bow. The witnesses record no clear winner, and your name is not pulled down.', 'You hold the pace to the last round. {Foe} stops before being badly hurt and both sides sign the record.']
     },
     bold: { vi: ['Dồn toàn lực để kết thúc trong vài nhịp', 'Nhận đòn đầu và đánh trả bằng cú quyết định'], en: ['Commit fully to end it in a few beats', 'Take the first blow and answer with the deciding cut'] },
     boldOk: {
-      vi: ['{Foe} ngã ở nhịp thứ ba. {Place} im lặng một lúc, rồi mới có người đứng dậy, và tên bạn được đọc to hơn.', 'Bạn thắng bằng một nhát. {Foe} cúi đầu từ dưới sàn, và người xem nhắc lại nhát đó đến hết mùa.'],
+      vi: ['{Foe} ngã ở nhịp thứ ba. {Place} im lặng một lúc rồi mới có người đứng dậy. Tên bạn được đọc to hơn.', 'Bạn thắng bằng một nhát. {Foe} cúi đầu từ dưới sàn. Người xem nhắc lại nhát đó đến hết mùa.'],
       en: ['{Foe} goes down on the third beat. {Place} stays quiet a while before anyone rises, and your name is read louder.', 'You win with one stroke. {Foe} bows from the floor, and onlookers repeat that stroke until the season ends.']
     },
     boldFail: {
-      vi: ['{Foe} chịu được nhát đầu và đáp lại. Bạn vẫn đứng, nhưng bản ghi mô tả đây là trận hòa sát nút.', '{Foe} nhanh hơn dự đoán. Bạn thắng, nhưng chỉ vừa đủ, và vết thương ở tay làm bạn mất ngủ.'],
+      vi: ['{Foe} chịu được nhát đầu và đáp lại. Bạn vẫn đứng, nhưng bản ghi mô tả đây là trận hòa sát nút.', '{Foe} nhanh hơn dự đoán. Bạn thắng nhưng chỉ vừa đủ. Vết thương ở tay làm bạn mất ngủ.'],
       en: ['{Foe} takes the first stroke and answers. You stay on your feet, but the record calls it a narrow draw.', '{Foe} is quicker than expected. You win, but only just, and the wound in your arm costs you sleep.']
     }
   },
@@ -33,7 +33,7 @@ const KINDS = {
     fight: true,
     steady: { vi: ['Dựng tuyến chặn rồi mới đánh', 'Dồn nó vào chỗ hẹp trước khi ra tay'], en: ['Set a line first, then strike', 'Drive it into a narrow place before you move'] },
     steadyOk: {
-      vi: ['Bạn giữ {foe} trong một khoảng hẹp đủ lâu để người ngoài sơ tán. Báo cáo ghi tên bạn ở dòng đầu.', 'Đội phía sau không bị chạm tới. Bạn kết thúc việc muộn nhưng gọn, và Hana ghi lại tuyến chặn của bạn.'],
+      vi: ['Bạn giữ {foe} trong một khoảng hẹp đủ lâu để người ngoài sơ tán. Báo cáo ghi tên bạn ở dòng đầu.', 'Đội phía sau không bị chạm tới. Bạn kết thúc việc muộn nhưng gọn. Hana ghi lại tuyến chặn của bạn.'],
       en: ['You hold {foe} in a narrow space long enough for outsiders to leave. The report lists your name on its first line.', 'The team behind you is never touched. You finish late but clean, and Hana records your line.']
     },
     bold: { vi: ['Vào thẳng và hạ nó giữa chỗ trống', 'Đón nó ở chính giữa, không lùi bước nào'], en: ['Walk straight in and put it down in the open', 'Meet it at the center without giving a step'] },
@@ -55,7 +55,7 @@ const KINDS = {
     },
     bold: { vi: ['Đi thẳng qua chỗ có người chặn và phá nó', 'Chặn đường truy đuổi và giữ nó đứng yên'], en: ['Go straight through the blockers and break them', 'Block the pursuit and hold it still'] },
     boldOk: {
-      vi: ['Bạn phá chốt trong vài phút. {Foe} lùi lại, và người bạn bảo vệ nhìn bạn lâu hơn lệ thường.', 'Bạn đứng ở cuối ngõ đến khi {foe} hiểu ra. Cả nhóm đi qua phía sau lưng bạn.'],
+      vi: ['Bạn phá chốt trong vài phút. {Foe} lùi lại. Người bạn bảo vệ nhìn bạn lâu hơn lệ thường.', 'Bạn đứng ở cuối ngõ đến khi {foe} hiểu ra. Cả nhóm đi qua phía sau lưng bạn.'],
       en: ['You break the post in a few minutes. {Foe} falls back, and the one you protect looks at you longer than custom.', 'You stand at the end of the alley until {foe} understands. The whole group passes behind you.']
     },
     boldFail: {
@@ -84,16 +84,16 @@ const KINDS = {
     fight: false,
     steady: { vi: ['Nghe từng bên và phán theo thông lệ', 'Ghi lại cả hai lời kể rồi mới quyết'], en: ['Hear each side and rule by custom', 'Write down both accounts before deciding'] },
     steadyOk: {
-      vi: ['Hai bên cúi đầu trước phán quyết của bạn, người này nhanh hơn người kia. {Foe} ký trước.', 'Bạn nói ngắn và rõ. Phán quyết được ghi vào sổ, và không ai xin xem lại.'],
+      vi: ['Hai bên cúi đầu trước phán quyết của bạn, người này nhanh hơn người kia. {Foe} ký trước.', 'Bạn nói ngắn và rõ. Phán quyết được ghi vào sổ. Không ai xin xem lại.'],
       en: ['Both sides bow to your ruling, one faster than the other. {Foe} signs first.', 'You speak briefly and clearly. The ruling is entered in the book and no one asks for a review.']
     },
     bold: { vi: ['Đặt vũ khí lên bàn và nêu rõ giá của việc từ chối', 'Đứng dậy nói thẳng trước cả phòng'], en: ['Lay your weapon on the table and name the price of refusal', 'Rise and speak plainly before the whole room'] },
     boldOk: {
-      vi: ['Cả {place} im lặng. Rồi hai bên cùng đứng lên, và không ai dám nhìn vào vũ khí của bạn.', 'Bạn nói xong và {foe} là người đầu tiên đồng ý. Tiếng đồng ý lan sang phần còn lại của phòng.'],
+      vi: ['Cả {place} im lặng. Rồi hai bên cùng đứng lên. Không ai dám nhìn vào vũ khí của bạn.', 'Bạn nói xong và {foe} là người đầu tiên đồng ý. Tiếng đồng ý lan sang phần còn lại của phòng.'],
       en: ['All of {place} falls silent. Then both sides rise, and no one dares to look at your weapon.', 'You finish speaking and {foe} is the first to agree. The agreement spreads through the rest of the room.']
     },
     boldFail: {
-      vi: ['Một bên coi lời bạn là lời đe dọa. Bạn rời bàn trước khi có ai rút vũ khí, và danh tiếng của bạn mất một chút.', '{Foe} không chấp nhận phán quyết. Việc phải đưa lên cấp khác, và tên bạn không còn nằm ở dòng đầu.'],
+      vi: ['Một bên coi lời bạn là lời đe dọa. Bạn rời bàn trước khi có ai rút vũ khí. Danh tiếng của bạn mất một chút.', '{Foe} không chấp nhận phán quyết. Việc phải đưa lên cấp khác. Tên bạn không còn nằm ở dòng đầu.'],
       en: ['One side takes your words as a threat. You leave the table before anyone draws, and your name loses a little ground.', '{Foe} does not accept the ruling. The matter goes up a level, and your name no longer sits on the first line.']
     }
   },
@@ -101,16 +101,16 @@ const KINDS = {
     fight: false,
     steady: { vi: ['Nhận lời mời và làm đúng phần được giao', 'Tới dự, đứng đúng chỗ và nói ít'], en: ['Accept the invitation and do what is asked', 'Attend, stand where placed and say little'] },
     steadyOk: {
-      vi: ['{Place} ghi nhận sự có mặt của bạn. Nhiều người nhìn bạn lâu hơn nhìn những người đứng cạnh.', 'Bạn đứng suốt buổi mà không làm gì khác thường, và chính điều đó khiến người ta nhớ.'],
+      vi: ['{Place} ghi nhận sự có mặt của bạn. Nhiều người nhìn bạn lâu hơn nhìn những người đứng cạnh.', 'Bạn đứng suốt buổi mà không làm gì khác thường. Chính điều đó khiến người ta nhớ.'],
       en: ['{Place} records your presence. Many look at you longer than at those beside you.', 'You stand through the whole event without doing anything unusual, and that is what people remember.']
     },
     bold: { vi: ['Tự bước ra giữa và cho thấy một nhát chém đúng nghĩa', 'Nhận lấy phần khó nhất và làm trước đám đông'], en: ['Step to the center and show what a true cut looks like', 'Take the hardest part and do it before the crowd'] },
     boldOk: {
-      vi: ['Người xem chỉ nhớ một đường kiếm cuối, và nhắc tới nó tới cuối năm. {Foe} đứng dậy trước tiên để vỗ tay.', 'Bạn làm việc đó trong im lặng. Tiếng vỗ tay đến muộn, nhưng không dứt.'],
+      vi: ['Người xem chỉ nhớ một đường kiếm cuối rồi nhắc tới nó đến hết năm. {Foe} đứng dậy trước tiên để vỗ tay.', 'Bạn làm việc đó trong im lặng. Tiếng vỗ tay đến muộn, nhưng không dứt.'],
       en: ['Onlookers remember only the last line of the blade and speak of it through the year. {Foe} is first to rise and applaud.', 'You do it in silence. The applause comes late, but it does not stop.']
     },
     boldFail: {
-      vi: ['Một chi tiết nhỏ đi sai trước hàng trăm người. Bạn sửa kịp, nhưng cả {place} đã thấy.', '{Foe} làm hỏng một phần của buổi, và bạn phải gánh phần lỗi trước khán giả.'],
+      vi: ['Một chi tiết nhỏ đi sai trước hàng trăm người. Bạn sửa kịp, nhưng cả {place} đã thấy.', '{Foe} làm hỏng một phần của buổi. Bạn phải gánh phần lỗi trước khán giả.'],
       en: ['A small detail goes wrong before a hundred people. You correct it in time, but all of {place} saw.', '{Foe} spoils part of the event and you have to carry the fault before the audience.']
     }
   }
@@ -119,18 +119,18 @@ const KINDS = {
 // What else is true that day. `fx` is added to the safe outcome and the good bold outcome; `risk` to the bad one.
 const COMPLICATIONS = [
   { key: 'press', vi: 'Một nhóm người chép sử đã đến trước bạn và ghi từng bước đi.', en: 'A group of chroniclers arrived before you and are noting every step.', fx: { rep: 2 }, risk: { rep: -1 } },
-  { key: 'dusk', vi: 'Hạn chót là lúc chuông tối, và không ai còn nhớ ai đặt ra nó.', en: 'The deadline is the evening bell, and no one recalls who set it.', fx: { merit: 2 }, risk: { health: -3 } },
-  { key: 'rain', vi: 'Mưa đã xuống từ sáng, và mặt đất ở đó trơn hơn bạn nhớ.', en: 'It has rained since morning, and the ground there is slicker than you remember.', fx: {}, risk: { health: -4 } },
+  { key: 'dusk', vi: 'Hạn chót là lúc chuông tối. Không ai còn nhớ ai đặt ra nó.', en: 'The deadline is the evening bell, and no one recalls who set it.', fx: { merit: 2 }, risk: { health: -3 } },
+  { key: 'rain', vi: 'Mưa đã xuống từ sáng. Mặt đất ở đó trơn hơn bạn nhớ.', en: 'It has rained since morning, and the ground there is slicker than you remember.', fx: {}, risk: { health: -4 } },
   { key: 'rival', vi: 'Người phụ trách phía bên kia đứng cuối hàng. Họ ghi tên bạn vào sổ trước khi việc bắt đầu.', en: 'The other side’s steward waits at the back. They enter your name in a ledger before work begins.', fx: { merit: 2, network: 1 }, risk: { rep: -2 } },
   { key: 'protege', vi: 'Người trẻ được cử đi theo mang theo sổ ghi chép và liên tục nhìn tay bạn.', en: 'The young observer assigned to you carries a notebook and keeps watching your hands.', fx: { network: 2, sanity: 1 }, risk: { sanity: -3 } },
   { key: 'fee', vi: 'Bên đặt việc trả gấp đôi và yêu cầu bạn không nhắc đến việc đó sau này.', en: 'The client pays double and asks that you never mention the matter afterward.', fx: { wealth: 7 }, risk: { wealth: -3 } },
-  { key: 'tail', vi: 'Một người trong đội của bạn nói họ bị ai đó theo từ đêm qua, và không ai tìm ra người đó.', en: 'Someone in your crew says they were followed since last night, and no one can find who it was.', fx: { merit: 1, network: 1 }, risk: { heat: 3, sanity: -2 } },
+  { key: 'tail', vi: 'Một người trong đội của bạn nói họ bị ai đó theo từ đêm qua. Không ai tìm ra người đó.', en: 'Someone in your crew says they were followed since last night, and no one can find who it was.', fx: { merit: 1, network: 1 }, risk: { heat: 3, sanity: -2 } },
   { key: 'old_wound', vi: 'Bạn ngủ không đủ giấc trước ngày hẹn. Bàn tay cầm bút lẫn vũ khí đều chậm hơn thường lệ.', en: 'You slept badly before the appointment. The hand that holds a pen or a weapon is slower than usual.', fx: { sanity: 1 }, risk: { health: -5 } },
-  { key: 'junior', vi: 'Người đi cùng bạn là một người trẻ chưa từng thấy bạn ra tay, và đang cố giữ vẻ bình thản.', en: 'The one who goes with you is young, has never seen you act, and is trying to look calm.', fx: { rep: 1, network: 1 }, risk: { sanity: -2 } }
+  { key: 'junior', vi: 'Người đi cùng bạn là một người trẻ chưa từng thấy bạn ra tay, đang cố giữ vẻ bình thản.', en: 'The one who goes with you is young, has never seen you act, and is trying to look calm.', fx: { rep: 1, network: 1 }, risk: { sanity: -2 } }
 ];
 
 const PASS = {
-  vi: ['Bạn để việc cho người khác. Chỗ của bạn trong danh sách vẫn còn, và không ai nhắc lại.', 'Một cái tên thấp hơn nhận việc. Năm đó hồ sơ của bạn có thêm một trang trắng.'],
+  vi: ['Bạn để việc cho người khác. Chỗ của bạn trong danh sách vẫn còn. Không ai nhắc lại.', 'Một cái tên thấp hơn nhận việc. Năm đó hồ sơ của bạn có thêm một trang trắng.'],
   en: ['You leave the job to someone else. Your place on the list remains, and no one mentions it again.', 'A lower name takes the work. That year your file gains a blank page.']
 };
 
@@ -239,7 +239,7 @@ function build(branch, need, extra, hook, ci) {
 // [key, kind, place vi, place en, foe vi, foe en, scene vi, scene en]
 const COLOR_HOOKS = [
   ['tower', 'raid', 'tòa tháp cũ', 'the old tower', 'đội gác cũ của Syndicate', 'the old Syndicate garrison',
-    '[Tòa tháp có cờ riêng] Từ đầu mùa, tòa tháp ngoại ô đã bị một nhóm chiếm, treo cờ riêng. Hana không muốn gửi quân, và người ta nói nhóm đó chỉ mở cửa cho người có tên đủ nặng.',
+    '[Tòa tháp có cờ riêng] Từ đầu mùa, tòa tháp ngoại ô đã bị một nhóm chiếm, treo cờ riêng. Hana không muốn gửi quân. Người ta nói nhóm đó chỉ mở cửa cho người có tên đủ nặng.',
     '[A tower with its own flag] A tower on the outskirts has flown a private flag since the season began. Hana does not want to send troops, and it is said the group will open only for someone whose name carries weight.'],
   ['rail', 'guard', 'tuyến đường ray cũ', 'the old rail line', 'băng chặn đường', 'the blockers',
     '[Người kiểm toán đi qua đường ray] Người kiểm toán của Hana cần băng qua đoạn đường ray đang bị băng nhóm chiếm giữ. Họ chỉ chịu đi nếu có Color đứng cạnh.',
@@ -254,7 +254,7 @@ const COLOR_HOOKS = [
     '[Lễ ghi công cuối năm] Hana tổ chức lễ ghi công cuối năm và yêu cầu một Color bước dọc hàng người được trao thưởng. Người ta nói vị trí này chỉ để cho thấy ai vẫn là người đứng đầu.',
     '[The year-end honors] Hana holds its year-end honors and asks a Color to walk the line of those receiving awards. It is said the place exists to show who is still on top.'],
   ['two_offices', 'judge', 'văn phòng Hana', 'the Hana office', 'Office đến sau', 'the later Office',
-    '[Hai Office một Request] Hai Office nhỏ cùng nhận là đã hoàn thành một Request cấp cao, và cả hai giữ bằng chứng tốt như nhau. Họ muốn một Color đọc cả hai hồ sơ và nói ai đúng.',
+    '[Hai Office một Request] Hai Office nhỏ cùng nhận là đã hoàn thành một Request cấp cao. Cả hai giữ bằng chứng tốt như nhau. Họ muốn một Color đọc cả hai hồ sơ và nói ai đúng.',
     '[Two Offices, one Request] Two small Offices both claim a high-grade Request as completed, and both hold equally good proof. They want a Color to read both files and say who is right.'],
   ['sewer_nest', 'raid', 'cống ngầm dưới Backstreets', 'the sewers under the Backstreets', 'đám tín đồ dưới cống', 'the cultists below',
     '[Tổ dưới cống] Đám tín đồ thờ thứ không tên dựng tổ dưới cống ngầm, đã bắt đầu lôi người sống xuống. Hana đã mất liên lạc với hai đội thăm dò.',
@@ -273,7 +273,7 @@ const COLOR_HOOKS = [
 const FINGER_HOOKS = {
   Thumb: [
     ['night_market', 'raid', 'chợ đêm', 'the night market', 'đám người của phe khác', 'the other house’s people',
-      '[Chợ đêm bị chiếm] Một nhóm ngoài Thumb đã dựng quầy trong địa bàn của bạn và thu tiền từ người bán. Họ biết rõ đây là đất của ai, và vẫn làm.',
+      '[Chợ đêm bị chiếm] Một nhóm ngoài Thumb đã dựng quầy trong địa bàn của bạn và thu tiền từ người bán. Họ biết rõ đây là đất của ai mà vẫn làm.',
       '[The night market taken] A group outside the Thumb has set up stalls in your territory and taken fees from the sellers. They know whose ground this is and do it anyway.'],
     ['convoy', 'guard', 'đường chuyển hàng', 'the supply road', 'toán phục kích', 'the ambush team',
       '[Đoàn xe chuyển đạn] Một đoàn xe chuyển đạn của Thumb phải đi qua một đoạn đường đang có tin phục kích. Người cầm đầu đoàn nói họ chỉ đi nếu bạn đi cùng.',
@@ -282,10 +282,10 @@ const FINGER_HOOKS = {
       '[Đấu danh dự trên sân thượng] Underboss bên District lân cận gửi lời mời đấu danh dự trên sân thượng, hai người, không vũ khí lạ. Ông muốn các Capo hai bên biết ai là người mạnh hơn.',
       '[A duel of honour on the roof] The Underboss of a neighbouring District sends an invitation to a duel of honour on a rooftop, two of you, no unusual weapons. They want the Capos of both houses to know who is stronger.'],
     ['oath_rite', 'show', 'sảnh tuyên thệ', 'the oath hall', 'các Soldato mới', 'the new Soldati',
-      '[Lễ tuyên thệ của Soldato mới] Một nhóm Soldato mới sắp tuyên thệ, và họ muốn người đứng đầu đọc lời thề cùng họ. Đây là việc ít người làm, và những ai làm đều được nhớ.',
+      '[Lễ tuyên thệ của Soldato mới] Một nhóm Soldato mới sắp tuyên thệ. Họ muốn người đứng đầu đọc lời thề cùng họ. Đây là việc ít người làm. Những ai làm đều được nhớ.',
       '[The oath of the new Soldati] A group of new Soldati are about to swear, and they want the head of the Thumb to say the oath beside them. Few do this, and those who do are remembered.'],
     ['rival_ledger', 'judge', 'phòng sổ sách', 'the ledger room', 'hai Capo tranh sổ', 'the two Capos disputing the ledger',
-      '[Hai Capo tranh một cuốn sổ] Hai Capo cùng giữ một cuốn sổ ghi nợ và mỗi người cho rằng nó thuộc về mình. Cả hai đều trung thành, và cả hai đều không chịu lùi.',
+      '[Hai Capo tranh một cuốn sổ] Hai Capo cùng giữ một cuốn sổ ghi nợ và mỗi người cho rằng nó thuộc về mình. Cả hai đều trung thành nhưng đều không chịu lùi.',
       '[Two Capos, one ledger] Two Capos both hold a debt ledger and each claims it is theirs. Both are loyal, and neither will give ground.'],
     ['armory', 'hunt', 'kho vũ khí cũ', 'the old armory', 'kẻ trộm đã lấy đạn', 'the thief who took the ammunition',
       '[Kẻ lấy đạn trong kho cũ] Có kẻ lấy đạn trong kho cũ của Thumb, để lại đúng một dấu vết: mảnh giấy ghi tên bạn. Người đó muốn bạn tìm ra.',
@@ -293,13 +293,13 @@ const FINGER_HOOKS = {
   ],
   Index: [
     ['courier_lost', 'guard', 'tuyến Prescript', 'the Prescript route', 'toán chặn Prescript', 'the interceptors',
-      '[Người đưa tin bị chặn] Người đưa Prescript quan trọng nhất trong năm bị chặn trên đường. Cả tuyến đang chờ, và không ai muốn nói rằng việc này đã bị biết trước.',
+      '[Người đưa tin bị chặn] Người đưa Prescript quan trọng nhất trong năm bị chặn trên đường. Cả tuyến đang chờ. Không ai muốn nói rằng việc này đã bị biết trước.',
       '[A courier stopped] The courier carrying the year’s most important Prescript has been stopped on the road. The whole route is waiting, and no one wants to say the matter was known in advance.'],
     ['proxy_dispute', 'judge', 'phòng đọc', 'the reading room', 'hai Proxy', 'the two Proxies',
       '[Hai Proxy, hai cách đọc] Hai Proxy đọc cùng một Prescript theo hai cách và mỗi bên đều có bằng chứng. Việc chọn cách đọc nào quyết định ai là người được nghe trong năm tới.',
       '[Two Proxies, two readings] Two Proxies read the same Prescript in two ways and each has proof. Choosing a reading decides who is heard in the coming year.'],
     ['weaver_test', 'duel', 'sảnh thử', 'the testing hall', 'người của Weaver khác', 'the other Weaver’s person',
-      '[Thử sức giữa hai dòng Weaver] Hai dòng Index muốn so tay trước khi quyết định bên nào đi đầu trong một Prescript lớn. Họ chọn bạn là người đại diện, và họ chọn người của họ đối diện.',
+      '[Thử sức giữa hai dòng Weaver] Hai dòng Index muốn so tay trước khi quyết định bên nào đi đầu trong một Prescript lớn. Họ chọn bạn làm người đại diện rồi đặt người của họ ở phía đối diện.',
       '[A test between two Weaver lines] Two lines of the Index want to compare skill before deciding which leads a large Prescript. They choose you as their representative and place their own opposite.'],
     ['proselyte_rite', 'show', 'sảnh đọc lệnh', 'the hall of readings', 'các Proselyte mới', 'the new Proselytes',
       '[Buổi đọc lệnh đầu tiên] Một nhóm Proselyte mới nghe lần đầu cách một Prescript được đọc. Họ muốn người đứng đầu đọc, vì họ tin cách đọc quyết định cả đời họ.',
@@ -316,16 +316,16 @@ const FINGER_HOOKS = {
       '[Cái tên xin gạch] Một người xin gạch tên cha mẹ mình khỏi Book of Vengeance sau hai mươi năm. Gạch hay giữ là việc chỉ người đứng đầu mới được quyết.',
       '[A name asked to be struck] Someone asks that their parent’s name be struck from the Book of Vengeance after twenty years. Whether to strike or keep it is for the head of the Middle alone.'],
     ['gathering', 'show', 'buổi họp Great Sibling', 'the Great Siblings’ gathering', 'các Great Sibling của vùng khác', 'the Great Siblings of other regions',
-      '[Buổi họp các Great Sibling] Great Sibling từ nhiều District tụ họp để thống nhất quy ước, và họ mời người đứng đầu nói mở đầu. Mọi người biết lời mở đầu sẽ chi phối cả buổi.',
+      '[Buổi họp các Great Sibling] Great Sibling từ nhiều District tụ họp để thống nhất quy ước. Họ mời người đứng đầu nói mở đầu. Mọi người biết lời mở đầu sẽ chi phối cả buổi.',
       '[A gathering of the Great Siblings] Great Siblings from many Districts meet to settle their conventions, and they invite the head of the Middle to open. Everyone knows the opening will shape the whole day.'],
     ['debtor_house', 'raid', 'nhà của con nợ', 'the debtor’s house', 'người bảo vệ con nợ', 'the debtor’s protectors',
       '[Con nợ ẩn sau người bảo vệ] Một con nợ lớn của Middle đã thuê người bảo vệ và ở trong một căn nhà có nhiều cửa. Tên của họ đã nằm ở dòng đầu trang sổ suốt mười năm.',
       '[A debtor behind hired guards] A large debtor of the Middle has hired protectors and sits in a house with many doors. Their name has been on the first line of a page for ten years.'],
     ['sibling_bout', 'duel', 'sân nhà Middle', 'the Middle house yard', 'Great Elder trẻ', 'the young Great Elder',
-      '[Great Elder trẻ muốn thử] Vị Great Elder trẻ tuổi xin đấu với người đứng đầu, để cả gia đình thấy mình xứng với vị trí. Lời xin lịch sự, và nó có người nghe lén.',
+      '[Great Elder trẻ muốn thử] Vị Great Elder trẻ tuổi xin đấu với người đứng đầu, để cả gia đình thấy mình xứng với vị trí. Lời xin lịch sự. Có người đang nghe lén.',
       '[A young Great Elder wants a trial] A young Great Elder asks for a bout with the head of the Middle so the whole family sees they deserve the seat. The request is polite, and someone is listening in.'],
     ['rescued_sibling', 'guard', 'khu phố bị bao vây', 'the besieged street', 'những kẻ vây nhà', 'those surrounding the house',
-      '[Người nhà bị bao vây] Một Big Sibling bị một Syndicate khác vây trong nhà cùng gia đình. Họ gọi cho cả nhà, và chỉ có bạn đủ gần để đến trước đêm.',
+      '[Người nhà bị bao vây] Một Big Sibling bị một Syndicate khác vây trong nhà cùng gia đình. Họ gọi cho cả nhà. Chỉ có bạn đủ gần để đến trước đêm.',
       '[A sibling surrounded] A Big Sibling is surrounded in their house with their family by another Syndicate. They call the whole family, and only you are near enough to arrive before night.'],
     ['old_grudge', 'hunt', 'quán ăn cũ', 'the old diner', 'kẻ trốn sổ', 'the one who escaped the book',
       '[Kẻ trốn khỏi sổ] Một người từng nằm trong Book of Vengeance đã biến mất mười lăm năm và vừa xuất hiện ở một quán ăn cũ. Chủ quán nhận ra người đó và gọi cho bạn.',
@@ -356,10 +356,10 @@ const FINGER_HOOKS = {
       '[Thanh kiếm gãy làm lời thách] Một tay kiếm không thuộc Finger nào gửi một thanh kiếm gãy làm lời thách. Họ không đòi tiền thưởng, chỉ muốn một trận với người được gọi là Sovereign.',
       '[A broken blade as challenge] A swordsman belonging to no Finger sends a broken blade as challenge. They ask for no prize, only one bout with the one called Sovereign.'],
     ['oath_debt', 'judge', 'sảnh lời thề', 'the hall of oaths', 'người thừa kế lời thề', 'the heir of the oath',
-      '[Lời thề không ai trả] Star of the Sky qua đời, để lại lời thề còn nợ với đứa trẻ. Hội đồng muốn Sovereign quyết ai trả thay, và trả bằng gì.',
+      '[Lời thề không ai trả] Star of the Sky qua đời, để lại lời thề còn nợ với đứa trẻ. Hội đồng muốn Sovereign quyết ai trả thay và trả bằng gì.',
       '[An unpaid oath] A Star of the Sky dies leaving an oath unpaid to a child. The council wants the Sovereign to decide who pays in their place, and with what.'],
     ['sword_show', 'show', 'sân kiếm', 'the sword yard', 'các Initiate', 'the Initiates',
-      '[Lễ chọn kiếm cho Initiate] Các Initiate mới đến chọn kiếm đầu tiên, và họ muốn Sovereign đứng ở cuối hàng để thấy từng người cầm lên. Không ai hứa nói với họ điều gì.',
+      '[Lễ chọn kiếm cho Initiate] Các Initiate mới đến chọn kiếm đầu tiên. Họ muốn Sovereign đứng ở cuối hàng để thấy từng người cầm lên. Không ai hứa nói với họ điều gì.',
       '[The first sword of the Initiates] New Initiates come to choose their first blades, and they want the Sovereign at the end of the line to watch each take one up. No one promises to say anything to them.'],
     ['blade_hunt', 'hunt', 'rừng bia mộ', 'the forest of gravestones', 'thanh kiếm sống dậy', 'the blade that woke',
       '[Thanh kiếm sống dậy] Một thanh kiếm lâu đời của Pinky bắt đầu tự cử động trong phòng cất giữ. Nhiều Sworn Blade đã thử giữ nó và không giữ được.',

@@ -911,6 +911,9 @@ export function pickDungeonCompanion(char) {
   return null;
 }
 
+/** What a clash-perk companion gives back when a vigor check succeeds in a stage dungeon (Fierce Vanguard). */
+export const VIGOR_MOMENTUM = { hp: 3, sp: 2 };
+
 /** Health at or under which a companion with the flee perk starts helping you get away. */
 export const FLEE_PERK_HP = 40;
 
@@ -1305,6 +1308,8 @@ export function evaluateDungeonChoiceOdds(choice, char, session) {
   const failSp = applyCalmToSpDelta(rawFailSp, char, session);
   const hpNow = char.stats?.health ?? 0;
   const spNow = char.stats?.sanity ?? 0;
+  // The dock shows the same Fierce Vanguard return that resolveDungeonChoice adds on a won vigor check
+  const momentum = choice.checkTrait === 'vigor' && companionPerk(char, session).clashBonus > 0 ? VIGOR_MOMENTUM : { hp: 0, sp: 0 };
   return {
     hasCheck: Boolean(choice.checkTrait),
     trait: choice.checkTrait || null,
@@ -1312,8 +1317,8 @@ export function evaluateDungeonChoiceOdds(choice, char, session) {
     failHp,
     failSp,
     failLethal: Boolean(choice.checkTrait && successPct < 100 && ((failHp != null && hpNow + failHp <= 0) || (failSp != null && spNow + failSp <= 0))),
-    estHp: fx.health < 0 ? Math.min(-1, Math.ceil(fx.health * hpMult)) : healOf(fx.health),
-    estSp: fx.sanity < 0 ? applyCalmToSpDelta(Math.min(-1, Math.ceil(fx.sanity * spMult)), char, session) : healOf(fx.sanity),
+    estHp: (fx.health < 0 ? Math.min(-1, Math.ceil(fx.health * hpMult)) : healOf(fx.health)) + momentum.hp,
+    estSp: (fx.sanity < 0 ? applyCalmToSpDelta(Math.min(-1, Math.ceil(fx.sanity * spMult)), char, session) : healOf(fx.sanity)) + momentum.sp,
     estWealth: rewards.wealth,
     estLoot: rewards.loot,
     estRep: rewards.rep,
@@ -1856,6 +1861,12 @@ export function resolveDungeonChoice(charState, choiceIndex, rng = Math.random) 
       });
     }
 
+    // Perk: Fierce Vanguard (Clash / Vigor momentum)
+    if (success && choice.checkTrait === 'vigor' && cp.clashBonus > 0) {
+      hpDelta += VIGOR_MOMENTUM.hp;
+      spDelta += VIGOR_MOMENTUM.sp;
+    }
+
     if (!success && choice.checkTrait && bond >= 60 && !session.companionSaved && rng() < 0.5) {
       hpDelta = Math.min(-1, Math.ceil(hpDelta / 2));
       session.companionSaved = true;
@@ -2114,6 +2125,9 @@ export function resolveDungeonChoice(charState, choiceIndex, rng = Math.random) 
     session.currentStageIndex = choice.goto;
   } else {
     session.currentStageIndex += 1;
+  }
+  if (cp.strainMult < 1) {
+    session.sanityStrain = Math.max(0, (session.sanityStrain || 0) - 4);
   }
   char.pendingDungeon = session;
 

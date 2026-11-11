@@ -3,7 +3,7 @@ import { D } from './storyKit.js';
 const CB = (role, extraNeed = {}) => ({
   once: true,
   tone: 'story',
-  w: 3.5,
+  w: 3.8,
   keepRole: role,
   tags: ['callback', 'npc_callback'],
   bond: { [role]: 3 },

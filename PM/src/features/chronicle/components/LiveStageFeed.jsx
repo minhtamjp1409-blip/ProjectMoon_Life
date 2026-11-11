@@ -489,7 +489,7 @@ const MinorDock = ({ prompt, char, npcs, wealth = 0, remainingMs, paused = false
   );
 };
 
-const EventDock = ({ event, char, onPick, dungeonStake, onDungeonStake, onPeek, isUnseen = false }) => {
+const EventDock = ({ event, char, onPick, dungeonStake, onDungeonStake, onPeek, isUnseen = false, isFirstInBloodline = false }) => {
   const { t, lang, bilingual } = useT();
   const causal = event.isCausalCallback;
   const title = lang === 'en' ? event.titleEn || event.titleVi : event.titleVi;
@@ -512,11 +512,15 @@ const EventDock = ({ event, char, onPick, dungeonStake, onDungeonStake, onPeek, 
                     ? t('Tiếng vọng nhân quả · Thời gian dừng lại', 'Causal echo · Time stops')
                     : t(`Tuổi ${char.age} · Thời gian dừng lại`, `Age ${char.age} · Time stops`)}
                 </span>
-                {isUnseen && (
+                {isUnseen ? (
                   <span className="dock-unseen-note">
                     {t('· Chưa từng gặp', '· First encounter')}
                   </span>
-                )}
+                ) : isFirstInBloodline ? (
+                  <span className="dock-unseen-note">
+                    {t('· Mới trong dòng họ', '· First in bloodline')}
+                  </span>
+                ) : null}
               </p>
               <div className="dock-kicker-actions">
                 <span className="dock-hotkey-hint">{t('Phím 1-9 · V: biên niên', 'Keys 1-9 · V: chronicle')}</span>
@@ -1751,6 +1755,14 @@ export const LiveStageFeed = () => {
     !(char.seenEvents || []).includes(char.pendingEvent.id) &&
     !(globalSeenEvents || []).includes(char.pendingEvent.id)
   );
+  const isFirstInBloodlineEvent = Boolean(
+    !isUnseenEvent &&
+    (char.generation || 1) > 1 &&
+    char.pendingEvent?.id &&
+    !(char.seenEvents || []).includes(char.pendingEvent.id) &&
+    Array.isArray(char.bloodlineSeenEvents) &&
+    !char.bloodlineSeenEvents.includes(char.pendingEvent.id)
+  );
   const latestLog = char.logs?.[char.logs.length - 1];
   const latestAnnouncement = latestLog
     ? `${t(`Tuổi ${latestLog.age}`, `Age ${latestLog.age}`)}. ${splitTitle(lang === 'en' ? latestLog.en || latestLog.vi : latestLog.vi).body}`
@@ -1893,6 +1905,7 @@ export const LiveStageFeed = () => {
                   onDungeonStake={setDungeonStake}
                   onPeek={openPeek}
                   isUnseen={isUnseenEvent}
+                  isFirstInBloodline={isFirstInBloodlineEvent}
                 />
               )}
               {!char.pendingYearPlan && !char.pendingLead && !char.pendingDungeon && !char.pendingEvent && char.pendingContract && (

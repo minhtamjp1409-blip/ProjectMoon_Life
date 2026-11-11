@@ -450,7 +450,13 @@ export function resolveGauntletChoice(char, session, choiceIndex, rng, ctx) {
     const stake = c.stakeList?.some((s) => s.id === choice.stakeId) ? stakeById(ctx, char, session, choice.stakeId) : null;
     clash = rollClash(ctx, char, session, stake, rng);
     c.clashes = (c.clashes || 0) + 1;
-    if (clash.outcome === 'win') c.clashWins = (c.clashWins || 0) + 1;
+    if (clash.outcome === 'win') {
+      c.clashWins = (c.clashWins || 0) + 1;
+      if (ctx.companionPerk && ctx.companionPerk(char, session).clashBonus > 0) {
+        char.stats.health = clamp((char.stats.health || 0) + 3, 0, 100);
+        char.stats.sanity = clamp((char.stats.sanity || 0) + 2, 0, 100);
+      }
+    }
     c.clashOpen = false;
     c.stakeList = [];
     if (stake) c.stakeUsed = true;
@@ -573,7 +579,8 @@ export function resolveGauntletChoice(char, session, choiceIndex, rng, ctx) {
       : { vi: `${enemy.nameVi} gục xuống. Lối đi phía trước mở ra.`, en: `${enemy.nameEn} goes down. The way ahead opens.` });
     fx = floor.kind === 'boss' ? 'boss-down' : 'break';
     // Getting through a floor lets the breath out a little
-    session.sanityStrain = clamp((session.sanityStrain || 0) + COMBAT_BALANCE.clearRelief, 0, 100);
+    const extraRelief = cp?.strainMult < 1 ? -4 : 0;
+    session.sanityStrain = clamp((session.sanityStrain || 0) + COMBAT_BALANCE.clearRelief + extraRelief, 0, 100);
   } else if (floor.kind === 'boss' && c.phase === 1 && enemy.phase2 && c.guard <= Math.floor(c.guardMax / 2)) {
     c.phase = 2;
     c.turn = 0;

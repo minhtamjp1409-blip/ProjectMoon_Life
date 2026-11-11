@@ -596,3 +596,103 @@ console.log('=== ALL BATCHES 135–150 TESTS PASSED ===');
   assert.equal(prepareEnsembleYear(apex), ENSEMBLE_LAST_CALL_ID, 'and then comes regardless');
   console.log('  ✓ Đợt 152 verified.');
 }
+
+// ----------------------------------------------------------------------------
+// ĐỢT 153–157 — SURVIVAL BALANCE, DISTORTION ARCHETYPE PASSIVES, RESERVE AHN DRAW, COMPANION PERKS
+// ----------------------------------------------------------------------------
+console.log('8. Testing Đợt 153–157: Survival Buffer, Distortion Passives, Reserve Vault Emergency Draw & Companion Perks...');
+{
+  const { rollSeasonMishap, exposureIndex } = await import('../src/engine/fateEngine.js');
+  const { endYear } = await import('../src/engine/yearPlanner.js');
+
+  // 8.1 High-HP character is buffered against instant fatal mishap
+  const strongFixer = createNewCharacter({ seed: 'strong-fixer-153', startAge: 42 });
+  strongFixer.age = 42;
+  strongFixer.job = 'Fixer';
+  strongFixer.stats.health = 85;
+  strongFixer.stats.wealth = 20;
+  assert.ok(exposureIndex(strongFixer) < 2.6, 'Fixer exposure index is balanced');
+  for (let i = 0; i < 40; i++) {
+    const mishap = rollSeasonMishap(strongFixer, () => 0.001);
+    if (mishap) {
+      assert.equal(mishap.fatal, false, 'A healthy character (85 HP) must not suffer instant fatal mishap when hp - dmg > 18');
+    }
+  }
+
+  // 8.2 Healthy Fixer failing a high-grade promotion trial survives at 1 HP instead of dying outright
+  const promoFixer = createNewCharacter({ seed: 'promo-survive-153', startAge: 34 });
+  promoFixer.age = 34;
+  promoFixer.job = 'Fixer';
+  promoFixer.fixerGrade = 2;
+  promoFixer.merit = 420;
+  promoFixer.stats.rep = 96;
+  promoFixer.stats.health = 46;
+  const g1PromoEv = ALL_STORY_EVENTS.find((e) => e.id === 'fixer_promo_g1_exam');
+  assert.ok(g1PromoEv);
+  promoFixer.pendingEvent = g1PromoEv;
+  const afterFail = resolveEventChoice(promoFixer, 0, () => 0.999);
+  assert.equal(afterFail.alive, true, 'Healthy Fixer (46 HP) failing Grade 1 exam survives critically wounded');
+  assert.equal(afterFail.stats.health, 1, 'Post-failure health clamps to 1 HP');
+
+  // 8.3 Distortion Archetype passives & Emergency Reserve Vault draw in endYear
+  const distSov = createNewCharacter({ seed: 'dist-sov-154', startAge: 36 });
+  distSov.age = 36;
+  distSov.job = 'Distortion';
+  distSov.flags = ['Distorted', 'DistortionLabyrinthSovereign'];
+  distSov.heat = 30;
+  distSov.stats.wealth = 20;
+  const distAfterYear = endYear(distSov, () => 0.99);
+  const yearLog = distAfterYear.logs.findLast((l) => Array.isArray(l.breakdown));
+  assert.ok(yearLog?.breakdown?.some((b) => b.labelVi.includes('Lãnh Chúa Mê Cung')), 'Labyrinth Sovereign passive appears in year-end breakdown');
+
+  const brokeReserveChar = createNewCharacter({ seed: 'reserve-draw-154', startAge: 35 });
+  brokeReserveChar.age = 35;
+  brokeReserveChar.job = 'Fixer';
+  brokeReserveChar.stats.wealth = 2;
+  brokeReserveChar.reserveAhn = 35;
+  const reserveAfterYear = endYear(brokeReserveChar, () => 0.99);
+  assert.ok(reserveAfterYear.stats.wealth > 5, 'Emergency Reserve Vault withdrawal prevents bankruptcy and organ debt');
+  assert.ok(reserveAfterYear.reserveAhn < 35, 'Reserve Vault balance decreases after emergency withdrawal');
+  assert.ok(!reserveAfterYear.logs.some((l) => l.vi?.includes('một quả thận')), 'Character with Reserve Vault avoids organ_debt');
+
+  // 8.4 Nestdreamer companion (strain_reduction) reduces strain by 4 when advancing a stage
+  const secChar = createNewCharacter({ seed: 'sec-comp-155', startAge: 30 });
+  secChar.job = 'Fixer';
+  secChar.npcs = { partner: { role: 'partner', nameVi: 'Mộng Đẹp', nameEn: 'Dreamer', status: 'alive', bond: 70, archetype: 'nestdreamer' } };
+  secChar.pendingDungeon = createDungeonSession('dungeon_outskirts_ruins', secChar);
+  secChar.pendingDungeon.sanityStrain = 30;
+  const stRes = resolveDungeonChoice(secChar, 0, () => 0.01);
+
+  const soloChar = createNewCharacter({ seed: 'sec-comp-155', startAge: 30 });
+  soloChar.job = 'Fixer';
+  soloChar.npcs = {};
+  soloChar.pendingDungeon = createDungeonSession('dungeon_outskirts_ruins', soloChar);
+  soloChar.pendingDungeon.sanityStrain = 30;
+  const soloRes = resolveDungeonChoice(soloChar, 0, () => 0.01);
+  assert.ok(stRes.session.sanityStrain <= soloRes.session.sanityStrain - 4, 'Nestdreamer companion strainMult and stage-advance relief reduce strain vs solo');
+  console.log('  ✓ Đợt 153–157 verified.');
+}
+
+// Đợt 158: the device-wide discovery list and the lineage's own list are kept apart, and no exam meets a wounded life
+{
+  const { scoreEventUtility } = await import('../src/engine/weaverAI.js');
+  const { TRIAL_MIN_HP } = await import('../src/engine/careerPipeline.js');
+  const heir = createNewCharacter({ seed: 'discovery-split', startAge: 28 });
+  const target = ALL_STORY_EVENTS.find((e) => e.id === 'elder_callback_echo_of_youth');
+  heir.bloodlineSeenEvents = ['some_other_event'];
+  heir.discoverySeen = ['elder_callback_echo_of_youth'];
+  const seenOnDevice = scoreEventUtility(target, heir, heir.weaver || {}).totalUtility;
+  heir.discoverySeen = ['some_other_event'];
+  const freshOnDevice = scoreEventUtility(target, heir, heir.weaver || {}).totalUtility;
+  assert.ok(freshOnDevice > seenOnDevice * 1.25, 'the discovery boost reads the device-wide list when the save has one');
+
+  const fixer = createNewCharacter({ seed: 'exam-wounded', startAge: 28 });
+  fixer.job = 'Fixer'; fixer.fixerGrade = 9; fixer.merit = 500; fixer.stats.rep = 90; fixer.stats.network = 80; fixer.stats.sanity = 80;
+  const exams = ALL_STORY_EVENTS.filter((e) => e.id.startsWith('fixer_promo_g8_'));
+  fixer.stats.health = 90;
+  const openWhenWell = exams.filter((e) => isEventEligible(e, fixer, { scripted: true }));
+  assert.ok(openWhenWell.length > 0, 'a healthy eligible Fixer can be offered a Grade 8 exam');
+  fixer.stats.health = TRIAL_MIN_HP - 1;
+  assert.equal(exams.filter((e) => isEventEligible(e, fixer, { scripted: true })).length, 0, 'no exam is offered under TRIAL_MIN_HP');
+  console.log('  ✓ Đợt 158 verified.');
+}

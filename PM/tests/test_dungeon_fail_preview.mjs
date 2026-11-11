@@ -57,6 +57,33 @@ for (const id of ['dungeon_outskirts_ruins', 'dungeon_warp_train']) {
     checked++;
   });
 }
+// Fierce Vanguard (Đợt 158): a won vigor check with a clash-perk companion returns HP and SP, and the dock shows it
+{
+  let vigorChecked = 0;
+  for (const id of Object.keys(DUNGEON_DEFINITIONS)) {
+    const c = createNewCharacter({ seed: `vigor-${id}`, startAge: 30 });
+    c.job = 'Fixer'; c.fixerGrade = 6; c.stats.health = 60; c.stats.sanity = 60;
+    c.npcs = { partner: { nameVi: 'Hana', nameEn: 'Hana', status: 'alive', bond: 45, archetype: 'proud' } };
+    const first = createDungeonSession(id, c);
+    if (!first?.companion || first.combat) continue;
+    // Vigor checks sit in later stages, so every stage is read in turn
+    for (let stageIndex = 0; stageIndex < (DUNGEON_DEFINITIONS[id].stages || []).length; stageIndex++) {
+    const sess = { ...structuredClone(first), currentStageIndex: stageIndex };
+    const st = getDungeonCurrentStage(sess);
+    const live = { ...c, pendingDungeon: sess };
+    (st?.choices || []).forEach((choice, idx) => {
+      if (choice.checkTrait !== 'vigor' || choice.companionLead) return;
+      const odds = evaluateDungeonChoiceOdds(choice, live, sess);
+      const won = resolveDungeonChoice(structuredClone(live), idx, () => 0.001).char;
+      if (!won?.alive) return;
+      const realHp = won.stats.health - live.stats.health;
+      assert(Math.abs(realHp - odds.estHp) <= 2, `vigor ${id}#${idx}: preview ${odds.estHp}, real ${realHp}`);
+      vigorChecked++;
+    });
+    }
+  }
+  assert(vigorChecked > 0, 'at least one vigor check with a clash-perk companion compared');
+}
 assert(checked > 0, 'At least one miss compared against the resolver');
 assert(kinds.has('stage') && (kinds.has('evade') || kinds.has('clash')), `both stage checks and fights compared: ${[...kinds]}`);
 console.log(`Dungeon miss preview: ${checked} choices (${[...kinds].join(', ')}) match the resolver, door forecast reads the heaviest floor, lethal warning passed.`);

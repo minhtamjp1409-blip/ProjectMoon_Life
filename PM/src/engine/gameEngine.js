@@ -2370,12 +2370,14 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random, dung
     char[retryKey] = otherTrial.rank;
     const promotionChoice = choice[`set${prefix}Rank`] === otherTrial.rank;
     if (promotionChoice && rng() >= careerPromotionSuccessChance(char, otherTrial)) {
+      const beforeHealth = char.stats?.health ?? 50;
       const loss = careerPromotionFailureEffects(otherTrial);
       const deltas = [];
       for (const [key, amount] of Object.entries(loss)) {
         const statsKey = ['health', 'sanity', 'wealth', 'network', 'rep'].includes(key);
         const before = statsKey ? char.stats[key] : char[key] || 0;
-        const after = clamp(before + amount, 0, key === 'merit' ? 9999 : 100);
+        const floor = key === 'health' && beforeHealth >= 45 ? 1 : 0;
+        const after = clamp(before + amount, floor, key === 'merit' ? 9999 : 100);
         if (statsKey) char.stats[key] = after;
         else char[key] = after;
         if (after !== before) deltas.push({ k: key, v: after - before });
@@ -2416,7 +2418,8 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random, dung
       const noted = Math.max(2, 9 - choice.setFixerGrade);
       char.merit = (char.merit || 0) + noted;
       char.fixerExamFailures = { ...(char.fixerExamFailures || {}), [choice.setFixerGrade]: (char.fixerExamFailures?.[choice.setFixerGrade] || 0) + 1 };
-      char.stats.health = clamp(char.stats.health + loss.health, 0, 100);
+      const healthFloor = (before.health ?? 50) >= 45 ? 1 : 0;
+      char.stats.health = clamp(char.stats.health + loss.health, healthFloor, 100);
       char.stats.wealth = clamp(char.stats.wealth + loss.wealth, 0, 100);
       char.stats.sanity = clamp(char.stats.sanity + loss.sanity, 0, 100);
       const vi = `Hana không công nhận kết quả sát hạch Grade ${choice.setFixerGrade}. Bạn trở về với thương tích, phí điều trị và bồi hoàn; có thể xin thi lại từ năm sau nếu vẫn đủ điều kiện.`;

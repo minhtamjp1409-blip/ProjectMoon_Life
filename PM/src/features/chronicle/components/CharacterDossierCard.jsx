@@ -36,6 +36,12 @@ export function describeJob(char, t) {
     const rank = WING_RANKS[Math.min(WING_RANKS.length - 1, char.wingRank || 0)];
     return `Wing · ${t(rank.titleVi.split(' (')[0], rank.titleEn)}`;
   }
+  if (char.job === 'Distortion') {
+    if (char.flags?.includes('DistortionLabyrinthSovereign')) return `Distortion · ${t('Lãnh Chúa Mê Cung', 'Labyrinth Sovereign')}`;
+    if (char.flags?.includes('DistortionLucidWanderer')) return `Distortion · ${t('Dị Thể Tỉnh Thức', 'Lucid Wanderer')}`;
+    if (char.flags?.includes('DistortionPrimordialCalamity')) return `Distortion · ${t('Tai Ương Nguyên Thủy', 'Primordial Calamity')}`;
+    return 'Distortion';
+  }
   const local = JOB_LABELS[char.job];
   return local ? t(local.vi, local.en) : char.job || t('Chưa có nghề', 'No trade yet');
 }
@@ -714,6 +720,24 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeT
             )}
             {char.job === 'Distortion' && (
               <>
+                {(char.flags?.includes('DistortionLabyrinthSovereign') || char.flags?.includes('DistortionLucidWanderer') || char.flags?.includes('DistortionPrimordialCalamity')) && (
+                  <div className="kv">
+                    <span>{t('Hình thái tiến hóa', 'Metamorphosis')}</span>
+                    <span className="kv-strong text-accent">
+                      {char.flags?.includes('DistortionLabyrinthSovereign')
+                        ? t('Lãnh Chúa Mê Cung', 'Labyrinth Sovereign')
+                        : char.flags?.includes('DistortionLucidWanderer')
+                          ? t('Dị Thể Tỉnh Thức', 'Lucid Wanderer')
+                          : t('Tai Ương Nguyên Thủy', 'Primordial Calamity')}
+                    </span>
+                  </div>
+                )}
+                {char.formerJob && char.formerJob !== 'Child' && (
+                  <div className="kv">
+                    <span>{t('Tiền kiếp', 'Former life')}</span>
+                    <span className="kv-val-wrap">{char.formerJob}</span>
+                  </div>
+                )}
                 <div className="kv">
                   <span>{t('Truy nã', 'Heat')}</span>
                   <span className="num">{char.stats?.heat ?? char.heat ?? 0}</span>

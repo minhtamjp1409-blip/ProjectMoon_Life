@@ -15,7 +15,7 @@
 
 import { REGIONS } from '../data/worldData.js';
 import { traitsOf } from './variance.js';
-import { frailty } from './economyModel.js';
+import { frailty, effectiveAge } from './economyModel.js';
 import { hasScarTag } from './scarModel.js';
 
 const regionOf = (char) => REGIONS.find((r) => r.id === char.regionId) || REGIONS[0];
@@ -240,7 +240,7 @@ export const MISHAPS = [
 export function exposureIndex(char) {
   const region = regionOf(char);
   let idx = 1 + (10 - region.safety) * 0.09 + (10 - region.medical) * 0.055 + region.pollution * 0.04 + region.fantasm * 0.02;
-  const job = { Fixer: 1.6, Syndicate: 1.5, 'Workshop Craftsman': 1.15, 'Wing Employee': 0.8 }[char.job] ?? 1;
+  const job = { Fixer: 1.3, 'Color Fixer': 1.1, Syndicate: 1.25, 'Workshop Craftsman': 1.1, 'Wing Employee': 0.8 }[char.job] ?? 1;
   idx *= job;
   if (char.flags?.includes('Distorted')) idx *= 1.8;
   const hp = char.stats?.health ?? 50;
@@ -262,8 +262,9 @@ export function rollSeasonMishap(char, rng) {
   const nest = isNestFlags(char.flags);
   const outside = isOutsideFlags(char.flags, char.regionId);
   const ageNow = char.age;
+  const effAge = effectiveAge(char);
   // Gentle middle of life: baseline 4.5 percent per season, scaled by exposure.
-  const ageCurve = ageNow < 5 ? 1.5 : ageNow < 18 ? 2.0 : ageNow < 45 ? 1.45 : ageNow < 60 ? 1.3 : 1.3 + (ageNow - 60) * 0.06;
+  const ageCurve = ageNow < 5 ? 1.5 : ageNow < 18 ? 2.0 : effAge < 45 ? 1.45 : effAge < 60 ? 1.3 : 1.3 + (effAge - 60) * 0.06;
   const traits = traitsOf(char);
   // A District that cuts lives short (low avgLife in worldData) is more dangerous in every season
   const harshness = Math.pow(frailty(char), 1.4);
@@ -284,7 +285,8 @@ export function rollSeasonMishap(char, rng) {
   const recent = char.recentMishaps || [];
   const pool = MISHAPS
     .filter((m) => {
-      if (ageNow < m.age[0] || ageNow > m.age[1]) return false;
+      const checkAge = m.age[0] >= 50 ? effAge : ageNow;
+      if (checkAge < m.age[0] || checkAge > m.age[1]) return false;
       if (recent.includes(m.id)) return false;
       if (isDistorted && m.human) return false;
       if (!isDistorted && m.distortionOnly) return false;
@@ -304,11 +306,11 @@ export function rollSeasonMishap(char, rng) {
   const dmg = Math.round(m.dmg[0] + rng() * (m.dmg[1] - m.dmg[0]));
   const hp = char.stats?.health ?? 50;
   const shield = hp < 25 ? 2.5 : hp < 50 ? 1.4 : hp > 75 ? 0.5 : 1;
-  const agePenalty = ageNow >= 75 ? 3 : ageNow >= 60 ? 1.8 : 1;
+  const agePenalty = effAge >= 75 ? 3 : effAge >= 60 ? 1.8 : 1;
   const fatalChance = clamp(m.lethal * shield * agePenalty * (2 - traits.vigor), 0, 0.6);
   return {
     id: m.id, vi: m.vi, en: m.en, dmg, san: m.san, ahn: m.ahn,
-    fatal: m.lethal > 0 && rng() < fatalChance,
+    fatal: m.lethal > 0 && (hp - dmg <= 18) && rng() < fatalChance,
     deathVi: m.deathVi, deathEn: m.deathEn, theme: m.theme || null
   };
 }

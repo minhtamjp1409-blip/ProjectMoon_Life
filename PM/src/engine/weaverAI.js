@@ -16,6 +16,7 @@ import {
   getNextWingPromotion,
   getOtherCareerPromotion,
   careerTrialForEvent,
+  TRIAL_MIN_HP,
   careerPromotionOfferChance,
   getEgoLeap,
   isEgoLeapEvent,
@@ -351,6 +352,7 @@ export function isEventEligible(event, char, { scripted = false } = {}) {
   if (!matchesEventContext(contextEvent, char)) return false;
   const fixerExam = event.id.startsWith('fixer_promo_');
   if (char.seenEvents?.includes(event.id) && !event.repeatable && !fixerExam && !otherTrial) return false;
+  if ((fixerExam || otherTrial) && (char.stats?.health ?? 50) < TRIAL_MIN_HP) return false;
   if (event.causalOnly && !char.weaver?.pendingThreads?.some(t => t.eventId === event.id && !t.fulfilled && t.triggerAge <= char.age)) return false;
   if (fixerExam) {
     const next = getNextFixerPromotion(char);
@@ -480,7 +482,9 @@ export function scoreEventUtility(event, char, weaver) {
   const customMult = weaver.customWeights?.[event.id] ?? 1;
   // Branches with less content of their own meet dungeon gates more often
   const gateMult = isGateEvent(event.id) ? gateWeightMult(char) : 1;
-  const unseenInBloodline = Array.isArray(char.bloodlineSeenEvents) && char.bloodlineSeenEvents.length > 0 && !char.bloodlineSeenEvents.includes(event.id);
+  // Prefer what no life on this device has met; a save without that record falls back to the lineage's own
+  const known = char.discoverySeen?.length ? char.discoverySeen : char.bloodlineSeenEvents;
+  const unseenInBloodline = Array.isArray(known) && known.length > 0 && !known.includes(event.id);
   const discoveryMult = unseenInBloodline ? 1.35 : 1;
   if (unseenInBloodline) {
     reasonsVi.push('Chưa từng gặp ở các đời trước');
