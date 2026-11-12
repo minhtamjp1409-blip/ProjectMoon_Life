@@ -879,8 +879,6 @@
 }
 
 /* The scene behind the page is a tint of the room, never a picture competing with the words */
-.career-obj-tag { text-transform: lowercase; }
-.career-obj-tag::first-letter { text-transform: uppercase; }
 
 /* The end of a life: the colophon of the book. Age as the large figure, the cause under it, then the record */
 .epitaph { margin-top: 56px; padding-top: 28px; border-top: 3px double var(--page-edge); }

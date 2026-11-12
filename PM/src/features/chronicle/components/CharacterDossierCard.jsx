@@ -47,6 +47,13 @@ export function describeJob(char, t) {
   return local ? t(local.vi, local.en) : char.job || t('Chưa có nghề', 'No trade yet');
 }
 
+// A category with no label of its own arrives in capitals ("WORKSHOP"); only those are lowered, so the names
+// inside the written labels (Hana, Color, Wing) keep their capitals
+const sentenceCase = (text) => {
+  const s = String(text || '');
+  return s === s.toUpperCase() ? s.charAt(0) + s.slice(1).toLowerCase() : s;
+};
+
 const MILESTONE_LABELS = {
   'CHILDHOOD SURVIVAL': ['Sinh tồn thơ ấu', 'Childhood survival'],
   'STREET APPRENTICESHIP': ['Học việc đường phố', 'Street apprenticeship'],
@@ -570,7 +577,7 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeT
       {showCareer && milestone && (
         <section className="career-objective-card">
           <div className="career-obj-header">
-            <span className="career-obj-tag">{t(...(MILESTONE_LABELS[milestone.category] || [milestone.category, milestone.category]))}</span>
+            <span className="career-obj-tag">{t(...(MILESTONE_LABELS[milestone.category] || [sentenceCase(milestone.category), sentenceCase(milestone.category)]))}</span>
             {milestone.category !== 'WORKSHOP' && <span className="career-obj-pct num">{milestone.progressPct}%</span>}
           </div>
           <h4 className="career-obj-title">{lang === 'en' ? milestone.titleEn : milestone.titleVi}</h4>
@@ -996,8 +1003,7 @@ export const CharacterDossierCard = () => {
               <div className="sheet-drag-handle" />
               <div className="sheet-title-row">
                 <div className="sheet-title-info">
-                  <b>{char.name}</b>
-                  <span>{t('Thế hệ', 'Gen')} #{char.generation} · {jobDesc}</span>
+                  <b>{t('Hồ sơ', 'Dossier')}</b>
                 </div>
                 <button
                   type="button"

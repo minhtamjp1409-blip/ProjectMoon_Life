@@ -80,8 +80,10 @@ export function YearPlanDock({ char, onConfirm, onPeek }) {
   const confirmButtonRef = useRef(null);
   const selectedAmbitionRef = useRef(null);
   useEffect(() => {
-    if (choosingAmbition) selectedAmbitionRef.current?.focus();
-    else confirmButtonRef.current?.focus();
+    // Focus for the keyboard without scrolling: the card is taller than a laptop screen, and a scrolled focus
+    // opened every year at the bottom, past the heading and the first activities
+    if (choosingAmbition) selectedAmbitionRef.current?.focus({ preventScroll: true });
+    else confirmButtonRef.current?.focus({ preventScroll: true });
   }, [char.pendingYearPlan?.age, choosingAmbition]);
   const used = YEAR_ACTIVITIES.reduce((sum, activity) => sum + (points[activity.id] || 0), 0);
   const canConfirm = used === YEAR_PLAN_POINTS && Boolean(char.ambition || ambition);

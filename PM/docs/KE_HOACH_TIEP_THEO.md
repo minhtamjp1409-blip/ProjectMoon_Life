@@ -32,6 +32,7 @@ Luật chơi đang chạy nằm ở `docs/LUAT_HIEN_HANH.md`, lore và giọng v
 | **163** | **Fixer bị thương kéo dài** (đo `hp_sources.mjs`: HP dưới 40 trong 35–43% số năm ở tuổi 25–50; hồi máu từ event lớn 2,0/năm so với Wing 3,0; xem lại mức hồi cuối năm và cách minor tính phí HP khi đã kiệt sức) | cân bằng | chưa làm |
 | **164** | **Rà soát Đợt 159–162** (`idNames` cho biểu tượng và âm thanh event, bỏ `char.finger` khỏi `playEventCue`, lời phó tướng không khẳng định ký ức, `resolveAccent` chỉ nhận hex 6 chữ số) | `sceneContext.js`, `audioEngine.js`, `eventsApexTwilight.js`, `exportDossierCard.js` | đã xong |
 | **165** | **Thang chữ năm vai trò và chữ đọc trên điện thoại** (`--t-meta`…`--t-lede` bằng rem thay 12 cỡ nửa pixel; nhật ký điện thoại giữ sàn 16px; thẻ sự kiện nhỏ có đếm giờ từ 13px lên theo cỡ chữ truyện; tiêu đề thẻ tính từ `--story-size`) | `tokens.css`, `chronicle.css`, 11 file CSS, 5 file JSX, `DESIGN.md` | đã xong |
+| **166** | **Đánh bóng màn chơi** (chip giá cho lựa chọn tốn Ahn trong Request, thẻ kế hoạch năm mở ở đầu, nhãn "Sát hạch của Hana" đúng chữ hoa, tiêu đề mục cột hồ sơ cùng cấp, bảng hồ sơ điện thoại không lặp tên, bỏ viền dày một bên ở thẻ hầm và khung Syndicate) | `LiveStageFeed.jsx`, `YearPlanDock.jsx`, `CharacterDossierCard.jsx`, `play.css`, `chronicle.css`, `dungeon-chrome.css` | đã xong |
 
 ---
 

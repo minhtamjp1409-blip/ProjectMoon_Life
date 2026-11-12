@@ -741,6 +741,12 @@ const ContractDock = ({ contract, wealth, onPick, onPeek }) => {
                   <span className="contract-choice-top">
                     <span className="choice-label">
                       {app.costAhn > 0 ? stripCostSuffix(lang === 'en' ? app.labelEn : app.labelVi) : (lang === 'en' ? app.labelEn : app.labelVi)}
+                      {/* The label loses its "(8 Ahn)" to stripCostSuffix, so the price returns here, as in the event dock */}
+                      {app.costAhn > 0 && !short && (
+                        <span className="delta is-static choice-cost-chip">
+                          {t(`Tốn ${app.costAhn} Ahn`, `Cost: ${app.costAhn} Ahn`)}
+                        </span>
+                      )}
                       {short && (
                         <span className="choice-need">
                           {t(`Thiếu Ahn (Cần ${app.costAhn})`, `Short Ahn (Needs ${app.costAhn})`)}

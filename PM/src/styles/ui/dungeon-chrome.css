@@ -51,10 +51,10 @@
 
 /* What the last stage did */
 /* The dungeon's own rule (dungeonSignature.js): a label, where it stands, and one line on how it works */
-.dg-signature { padding: 8px 12px; border: 1px solid var(--border); border-left-width: 3px; border-radius: var(--radius-sm); background: var(--surface); }
-.dg-signature.is-ok { border-left-color: color-mix(in srgb, var(--dg) 70%, var(--border)); }
-.dg-signature.is-warn { border-left-color: var(--warn); }
-.dg-signature.is-bad { border-left-color: var(--bad); }
+.dg-signature { padding: 8px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); }
+.dg-signature.is-ok { border-color: color-mix(in srgb, var(--dg) 45%, var(--border)); }
+.dg-signature.is-warn { border-color: color-mix(in srgb, var(--warn) 60%, var(--border)); }
+.dg-signature.is-bad { border-color: color-mix(in srgb, var(--bad) 65%, var(--border)); }
 .dg-signature-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
 .dg-signature-label { font-size: var(--t-label); font-weight: 600; color: var(--text); }
 .dg-signature-value { font-size: var(--t-control); font-weight: 700; font-variant-numeric: tabular-nums; color: var(--text); }
