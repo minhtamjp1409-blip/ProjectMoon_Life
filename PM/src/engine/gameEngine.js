@@ -3596,6 +3596,8 @@ export function buildLifeSummaryAndLegacy(char) {
     familyNameVi: family.nameVi || 'Gia đình bình thường',
     familyNameEn: family.nameEn || 'Ordinary family',
     job: char.job,
+    finger: char.finger || null,
+    colorHex: char.colorData?.color || null,
     signatureRecordKey: char.job === 'Distortion' || flags.includes('Distorted') ? 'distortion_awaken' : null,
     occupationVi,
     occupationEn,

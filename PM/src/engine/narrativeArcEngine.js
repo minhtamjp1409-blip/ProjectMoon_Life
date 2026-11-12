@@ -91,6 +91,32 @@ export const NARRATIVE_ARCS = [
       { stage: 2, eventId: 'fixer_promo_g1_exam', titleVi: 'Leo thang: Đại khảo hạch Grade 1' },
       { stage: 3, eventId: 'hana_color_ascension_trial', titleVi: 'Đỉnh điểm: Đại khảo thí phong Color Huyền Thoại' }
     ]
+  },
+
+  // --- ARC 7: ELDER SYNDICATE TWILIGHT SUCCESSION ---
+  {
+    id: 'arc_syndicate_twilight_succession',
+    nameVi: 'Hoàng Hôn Ngầm · Chuyển Giao Quyền Bính',
+    nameEn: 'Underworld Twilight · The Succession Ledger',
+    triggerNeed: { jobs: ['Syndicate'] },
+    stages: [
+      { stage: 1, eventId: 'elder_syndicate_old_lieutenant_return', titleVi: 'Khởi điểm: Phó tướng năm xưa quay về' },
+      { stage: 2, eventId: 'elder_syndicate_blood_ledger_reckoning', titleVi: 'Leo thang: Thanh toán cuốn sổ nợ máu' },
+      { stage: 3, eventId: 'elder_syndicate_dynasty_seal', titleVi: 'Đỉnh điểm: Dấu ấn truyền ngôi đêm sương', waitsForGate: true }
+    ]
+  },
+
+  // --- ARC 8: DISTORTION METAMORPHOSIS & ABYSSAL DOMAIN ---
+  {
+    id: 'arc_distortion_metamorphosis_domain',
+    nameVi: 'Hóa Thân Dị Thể · Lãnh Địa Vực Sâu',
+    nameEn: 'Metamorphosis of the Distortion · Abyssal Domain',
+    triggerNeed: { flags: ['Distorted'] },
+    stages: [
+      { stage: 1, eventId: 'distort_arc_archetype_divergence', titleVi: 'Khởi điểm: Ba hình thái của tiếng vọng' },
+      { stage: 2, eventId: 'distort_arc_lcd_moses_inspection', titleVi: 'Leo thang: Làn khói tẩu của Moses' },
+      { stage: 3, eventId: 'distort_arc_elder_hibernation_monolith', titleVi: 'Đỉnh điểm: Tượng đài ngủ đông giữa sương mù', waitsForGate: true }
+    ]
   }
 ];
 

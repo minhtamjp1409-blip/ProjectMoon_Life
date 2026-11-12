@@ -1,10 +1,10 @@
-# Kế hoạch nâng cấp toàn diện Đợt 142–157
+# Kế hoạch nâng cấp toàn diện Đợt 142–162
 
-File này thay cho các bản rà soát đã hoàn thành (`KE_HOACH_DOT_135.md`, `EVENT_NARRATIVE_AUDIT_2026_11_05.md`, `NPC_CAN_SUA.md`). Toàn bộ Đợt 113–157 đã hoàn tất và ghi trong `PROGRESS_LOG.md`.
+File này thay cho các bản rà soát đã hoàn thành (`KE_HOACH_DOT_135.md`, `EVENT_NARRATIVE_AUDIT_2026_11_05.md`, `NPC_CAN_SUA.md`). Toàn bộ Đợt 113–162 đã hoàn tất và ghi trong `PROGRESS_LOG.md`.
 
 Luật chơi đang chạy nằm ở `docs/LUAT_HIEN_HANH.md`, lore và giọng văn ở `UNIVERSE.md`, lịch sử thay đổi ở `PROGRESS_LOG.md`.
 
-## Tóm tắt các đợt thực hiện (Đợt 142–157)
+## Tóm tắt các đợt thực hiện (Đợt 142–163)
 
 | Đợt | Hạng mục | Phạm vi | Trạng thái |
 |---|---|---|---|
@@ -25,7 +25,12 @@ Luật chơi đang chạy nằm ở `docs/LUAT_HIEN_HANH.md`, lore và giọng v
 | **156** | **Hiển thị Hình thái Distortion, Tiền kiếp & Huy hiệu "Mới trong dòng họ" trên UI** (`CharacterDossierCard.jsx`, `LiveStageFeed.jsx`) | `CharacterDossierCard.jsx`, `LiveStageFeed.jsx` | đã xong |
 | **157** | **Tách chunk `story-minors`/`story-dailies` & Gọt câu chữ tiếng Việt đợt 3 (`vaClause: 2015`)** (`vite.config.js`, `apexCommissions.js`, `eventsApexTwilight.js`, `package.json`) | `vite.config.js`, `apexCommissions.js`, `eventsApexTwilight.js`, `package.json` | đã xong |
 | **158** | **Rà soát Đợt 153–157** (`discoverySeen` tách khỏi `bloodlineSeenEvents` để nhãn "Mới trong dòng họ" hiện được, `VIGOR_MOMENTUM` cho số xem trước, `TRIAL_MIN_HP` chặn kỳ thi khi HP dưới 42, tách 27 câu nối "; ", công cụ `hp_sources.mjs`) | `gameStore.js`, `weaverAI.js`, `dungeonEngine.js`, `careerPipeline.js` | đã xong |
-| **159** | **Fixer bị thương kéo dài** (đo `hp_sources.mjs`: HP dưới 40 trong 35–43% số năm ở tuổi 25–50; hồi máu từ event lớn 2,0/năm so với Wing 3,0; xem lại mức hồi cuối năm và cách minor tính phí HP khi đã kiệt sức) | cân bằng | chưa làm |
+| **159** | **Âm thanh theo ngữ cảnh sự kiện, kết đời & nhịp tim nguy kịch** (`playEventCue`, `playLifeFinale`, `lifeFinaleKindFor`, `playHeartbeat` khi HP/SP nguy kịch, giữ nguyên gate `sceneOwnsSound()` cho cutscene) | `audioEngine.js`, `sceneContext.js`, `LiveStageFeed.jsx`, `CharacterDossierCard.jsx` | đã xong |
+| **160** | **Biểu tượng SVG các phe, bảng danh vị mọi route, hào quang Carmen & thẻ Di cảo 1200x760** (`FactionCrest.jsx`, `crestKindFor`, `rankPlateOf` mở rộng cho Distortion/Syndicate/Workshop, `.world-carmen` + `prefers-reduced-motion`, `buildLifeSummaryAndLegacy` thêm `finger`/`colorHex` cho `exportDossierCardPNG`) | `FactionCrest.jsx`, `sceneContext.js`, `WorldBackdrop.jsx`, `world.css`, `play.css`, `gameEngine.js`, `exportDossierCard.js` | đã xong |
+| **161** | **Tách chunk mã nguồn `engine` khỏi `index`** (tách `src/engine/`, `src/services/`, `entryTiers.js`, `dungeonEnsemble.js` sang chunk `engine`, giữ các helper UI nghe nhìn ở `index`, 0 vòng lặp phụ thuộc) | `vite.config.js` | đã xong |
+| **162** | **Mạch truyện nhiều hồi tuổi già & gọt câu chữ tiếng Việt đợt 4 (`vaClause`)** (thêm `distort_arc_primordial_blood_tide`, 3 major `elder_syndicate_*`, nâng `NARRATIVE_ARCS` lên 8 mạch; giảm `vaClause` trong `eventsFingerRing.js` & `eventsFingerExtra.js` từ 2015 xuống 1800, giữ `relativeMa: 0` và hạ trần `package.json` xuống 1805) | `eventsDistortionParityExpansion.js`, `eventsApexTwilight.js`, `narrativeArcEngine.js`, `eventsFingerRing.js`, `eventsFingerExtra.js`, `package.json` | đã xong |
+| **163** | **Fixer bị thương kéo dài** (đo `hp_sources.mjs`: HP dưới 40 trong 35–43% số năm ở tuổi 25–50; hồi máu từ event lớn 2,0/năm so với Wing 3,0; xem lại mức hồi cuối năm và cách minor tính phí HP khi đã kiệt sức) | cân bằng | chưa làm |
+| **164** | **Rà soát Đợt 159–162** (`idNames` cho biểu tượng và âm thanh event, bỏ `char.finger` khỏi `playEventCue`, lời phó tướng không khẳng định ký ức, `resolveAccent` chỉ nhận hex 6 chữ số) | `sceneContext.js`, `audioEngine.js`, `eventsApexTwilight.js`, `exportDossierCard.js` | đã xong |
 
 ---
 
@@ -74,3 +79,24 @@ Luật chơi đang chạy nằm ở `docs/LUAT_HIEN_HANH.md`, lore và giọng v
 - Giảm thời gian chờ nhiệm vụ hàng năm của `Distortion` trong `annualMeritMoment` (`yearPlanner.js`) từ `3` năm xuống `2` năm (xác suất tăng từ `35%` lên `60%`) và bổ sung nhịp Major `gap >= 2` (`55%`) trong `majorIsDue` ngang với Color Fixer.
 - Thêm 4 nhiệm vụ hàng năm mới (`distortionTask`) trong `annualMeritOpportunities.js` (`m_annual_distort_labyrinth_lure`, `m_annual_distort_lucid_blackmarket`, `m_annual_distort_lcd_recon_smoke`, `m_annual_distort_elder_calcification`).
 - Mở rộng `eventsDistortionParityExpansion.js` với **8 Major mới** (phân nhánh 3 Hình thái Tiến hóa `distort_arc_archetype_divergence`, Mê Cung `distort_arc_labyrinth_trap_feast`, Tỉnh Thức `distort_arc_lucid_underground_broker`, đội điều tra khói tẩu LCD `distort_arc_lcd_moses_inspection`, di vật tiền kiếp `distort_arc_past_life_fixer_badge`, lồng thu hồi Singularity của Wing `distort_arc_past_life_wing_containment`, cột trụ ngủ đông tuổi già `distort_arc_elder_hibernation_monolith`, và kết thúc chủ động hóa Quả Trứng Dị Thể `distort_arc_elder_abnormality_chrysalis_ending`), cùng **6 Minor mới** và **6 Daily mới**.
+
+*(Chi tiết Đợt 151–158 xem tại mục 2.45–2.48 trong `PROGRESS_LOG.md`.)*
+
+### Đợt 159 — Âm thanh theo ngữ cảnh sự kiện, kết đời & nhịp tim nguy kịch
+- `audioEngine.playEventCue(ev, char)` phát âm sắc theo nhánh/chủ đề (Index `playPrescriptTick`, Thumb `playThumbSnap`, Library `playPageFlip`, Warp `playWarpSurge`, E.G.O/Distortion `playEgo`, tiền tài `playCoinChime`, nguy hiểm `playDanger`) kèm `playHeartbeat` khi còn sống và `HP <= 25` hoặc `SP <= 20`.
+- `audioEngine.playLifeFinale(endingType)` và hàm phân loại `lifeFinaleKindFor(char)` (`sceneContext.js`) xử lý âm thanh kết đời cho `'library'`, `'chrysalis'`, `'retire_90'`, giữ nguyên cổng `if (!sceneOwnsSound()) audioEngine.playDeath()` ở `LiveStageFeed.jsx`.
+- `CharacterDossierCard.jsx` bổ sung `playHeartbeat` mỗi khi chỉ số HP/SP tụt xuống ngưỡng nguy kịch (`<= 20`).
+
+### Đợt 160 — Biểu tượng SVG các phe, bảng danh vị mọi route, hào quang Carmen & thẻ Di cảo 1200x760
+- Tạo `src/components/world/FactionCrest.jsx` với 16 biểu tượng SVG đơn sắc theo phe, cùng `crestKindFor(char, ev)` trong `sceneContext.js`, hiển thị ở `Nameplate` và `EventDock`.
+- Mở rộng `rankPlateOf(char)` và CSS trong `play.css` cho `Distortion` (3 Hình thái tiến hóa & `distortStage >= 2`), `Independent Syndicate` (`syndicateRank >= 2`), `Workshop Craftsman` (`CraftedColorWeapon`, `TresCertified`), bổ sung lớp `.nameplate-sub` cho dòng Tiền kiếp và quy tắc `prefers-reduced-motion: reduce`.
+- Bổ sung lớp phủ `.world-carmen` (`data-carmen='on'`) trong `WorldBackdrop.jsx` và `world.css` (đổi tên `@keyframes worldCarmenWhisper` tránh trùng với `play.css`).
+- Bổ sung `finger` và `colorHex` vào `buildLifeSummaryAndLegacy` (`gameEngine.js`) để `exportDossierCardPNG` (`exportDossierCard.js`) vẽ thẻ Di cảo `1200x760` đúng sắc độ phe/Color kèm Quỹ Bảo Tồn, bước ngoặt và vết sẹo.
+
+### Đợt 161 — Tách chunk mã nguồn `engine` khỏi `index`
+- Trong `vite.config.js`, gom `src/engine/`, `src/services/`, `entryTiers.js` và `dungeonEnsemble.js` sang chunk `engine`, giữ riêng nhóm UI nghe nhìn (`audioEngine`, `ambienceScapes`, `gameFeel`, `sceneContext`) ở chunk `index` để hạ dung lượng gói khởi tạo `index` xuống ~350 kB với 0 vòng lặp import.
+
+### Đợt 162 — Mạch truyện nhiều hồi tuổi già & gọt câu chữ tiếng Việt đợt 4 (`vaClause`)
+- Thêm `distort_arc_primordial_blood_tide` (`eventsDistortionParityExpansion.js`) và 3 major nối tiếp `elder_syndicate_old_lieutenant_return`, `elder_syndicate_blood_ledger_reckoning`, `elder_syndicate_dynasty_seal` (`eventsApexTwilight.js`).
+- Đăng ký thêm 2 mạch truyện `arc_syndicate_twilight_succession` và `arc_distortion_metamorphosis_domain` trong `NARRATIVE_ARCS` (`narrativeArcEngine.js`, tổng cộng 8 mạch).
+- Gọt câu chữ giảm chỉ số `vaClause` trong `eventsFingerRing.js` và `eventsFingerExtra.js` từ `2015` xuống `1800` (giữ `relativeMa: 0` và mọi lỗi dịch máy ở mức `0`), hạ trần kiểm định `package.json` xuống `1805`.

@@ -95,7 +95,7 @@
 .world-scene .dungeon-backdrop { position: absolute; inset: 0; opacity: .9; }
 
 /* ---------- overlays ---------- */
-.world-color, .world-ego, .world-danger { position: absolute; inset: 0; opacity: 0; transition: opacity 1.4s ease; }
+.world-color, .world-ego, .world-carmen, .world-danger { position: absolute; inset: 0; opacity: 0; transition: opacity 1.4s ease; }
 /* A Hana Color: rays of the conferred colour turning slowly over the City */
 .world[data-color='on'] .world-color { opacity: 1; background: radial-gradient(70% 50% at 50% 0%, color-mix(in srgb, var(--w-color) 30%, transparent), transparent 70%); overflow: hidden; }
 .world[data-color='on'] .world-color::before {
@@ -118,9 +118,33 @@
 @keyframes egoDrift { 50% { background-position: 60px 0, -40px 0, 0 0; } }
 .world[data-ego='active'] .world-ego { opacity: 1; animation: egoBreath 3.2s ease-in-out infinite; box-shadow: inset 0 0 120px rgba(173, 156, 245, .35); }
 @keyframes egoBreath { 50% { opacity: .65; } }
+/* Carmen: warm golden-amber sunlight & whisper halo when sanity is frayed or Carmen speaks */
+.world[data-carmen='on'] .world-carmen {
+  opacity: 1;
+  background:
+    radial-gradient(75% 45% at 50% 0%, rgba(255, 204, 112, .22), transparent 70%),
+    radial-gradient(115% 85% at 50% 50%, transparent 58%, rgba(226, 72, 122, .18) 100%);
+  box-shadow: inset 0 0 80px rgba(255, 196, 100, .14);
+  animation: worldCarmenWhisper 4.8s ease-in-out infinite;
+}
+@keyframes worldCarmenWhisper { 50% { opacity: .65; } }
 /* Danger: the edges of the screen beat with the heart */
 .world[data-danger='on'] .world-danger { opacity: 1; background: radial-gradient(110% 80% at 50% 50%, transparent 55%, rgba(200, 30, 40, .32) 100%); animation: heartEdge 1.1s ease-in-out infinite; }
 @keyframes heartEdge { 0%, 40%, 100% { opacity: .55; } 12% { opacity: 1; } 26% { opacity: .8; } }
+
+.faction-crest {
+  display: inline-block;
+  vertical-align: -2px;
+  flex-shrink: 0;
+  opacity: .9;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .world[data-carmen='on'] .world-carmen,
+  .world[data-danger='on'] .world-danger {
+    animation: none;
+  }
+}
 
 @media (max-width: 860px) {
   .world-silhouette { height: 42vh; }

@@ -16,6 +16,7 @@ import { getScarProfile, activeScarSynergies, MAX_ACTIVE_SCARS } from '../../../
 import { getAffiliation, affiliationLabel, standingLabel } from '../../../engine/affiliation';
 import { rankPlateOf } from '../../../engine/sceneContext';
 import { localizeEnsembleName } from '../../../data/ensembleNames.js';
+import { FactionCrest } from '../../../components/world/FactionCrest.jsx';
 
 const JOB_LABELS = {
   Child: { vi: 'Trẻ em', en: 'Child' },
@@ -131,6 +132,9 @@ const Stat = ({ label, value, unit = '/100', color, flag, riseIsBad = false, too
   React.useEffect(() => {
     if (isCritical && change && !good) {
       audioEngine.playDanger();
+      if (typeof audioEngine.playHeartbeat === 'function') {
+        audioEngine.playHeartbeat(value <= 12 ? 1.35 : 1.1);
+      }
     }
   }, [isCritical, change?.at]);
 
@@ -427,7 +431,10 @@ const Nameplate = ({ char, region, omen, t, lang }) => {
       </span>
       <div className="dossier-id">
         <h2>{char.name}{char.flags?.includes('EnsembleSurvivor') && <span className="ensemble-mark" title={t('Ngôi sao không tắt · sống sót qua Ensemble', 'The star that would not go out · Ensemble survivor')}><Star size={16} aria-label={t('Sống sót qua Ensemble', 'Ensemble survivor')} /></span>}</h2>
-        <p className="nameplate-post">{describeJob(char, t)}</p>
+        <p className="nameplate-post"><FactionCrest char={char} size={15} /> {describeJob(char, t)}</p>
+        {char.job === 'Distortion' && char.formerJob && (
+          <p className="nameplate-sub">{t('Tiền kiếp', 'Former life')}: {char.formerJob}</p>
+        )}
       </div>
       <div className="nameplate-facts">
         <div className="kv">

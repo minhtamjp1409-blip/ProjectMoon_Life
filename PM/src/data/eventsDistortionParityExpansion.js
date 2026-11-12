@@ -573,6 +573,48 @@ export const DISTORTION_PARITY_MAJORS = [
   },
 
   {
+    id: 'distort_arc_primordial_blood_tide',
+    age: [21, 130],
+    major: true,
+    weight: 38,
+    need: { jobs: ['Distortion'] },
+    requires: ['Distorted'],
+    forbids: ['distort_primordial_tide_done'],
+    vi: "[Cơn khát của lõi nguyên thủy] Nhiệt lượng từ lồng ngực bạn làm chảy nhựa đường suốt cả con hẻm. Hai đội săn tiền thưởng trang bị giáo điện vừa dựng rào chắn ở ngã tư đã thấy mặt đất dưới chân rung lên theo từng nhịp thở của bạn.",
+    en: "[Thirst of the primordial core] Heat from your chest melts the asphalt down the entire lane. Two bounty squads armed with shock-lances barely finish their barricade at the crossroads before the ground shudders with your breath.",
+    choices: [
+      {
+        labelVi: "Phá tung rào chắn và nghiền nát đội hình giáo điện",
+        labelEn: "Smash the barricade and crush the shock-lance formation",
+        outcomes: [
+          {
+            w: 65,
+            effects: { health: 14, resonance: 22, rep: 24, sanity: -8, heat: 14 },
+            flagsAdd: ['distort_primordial_tide_done', 'DistortionPrimordialCalamity'],
+            resultVi: "Những mũi giáo điện gãy vụn trước lớp sừng nóng đỏ của bạn. Đám thợ săn sống sót bỏ chạy khỏi khu phố trước khi bạn kịp truy kích.",
+            resultEn: "Shock-lances snap against your glowing horn plates. Surviving hunters flee the quarter before you can give chase."
+          },
+          {
+            w: 35,
+            effects: { health: -20, resonance: 14, rep: 14, heat: 16 },
+            flagsAdd: ['distort_primordial_tide_done'],
+            resultVi: "Luồng điện cao thế làm nứt một mảng vỏ ngực nhưng bạn vẫn hất tung cả chốt chặn xuống mương thoát nước.",
+            resultEn: "High-voltage current cracks a chest plate, yet you hurl the entire roadblock into the drainage ditch."
+          }
+        ]
+      },
+      {
+        labelVi: "Hấp thụ dòng điện từ hàng rào để tôi luyện lại lớp giáp sừng",
+        labelEn: "Draw the current from their barrier to temper your horn carapace",
+        effects: { health: 18, resonance: 16, sanity: 4, heat: -4 },
+        flagsAdd: ['distort_primordial_tide_done', 'DistortionPrimordialCalamity'],
+        resultVi: "Bạn nắm thẳng vào lõi dây cáp, rút cạn bình ắc quy công nghiệp của họ trong sự kinh hãi của cả đội săn.",
+        resultEn: "You grip the live cable core and drain their industrial battery bank before the horrified squad."
+      }
+    ]
+  },
+
+  {
     id: 'distort_arc_lcd_moses_inspection',
     age: [23, 130],
     major: true,

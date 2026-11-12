@@ -26,6 +26,8 @@ import { bestowHanaColorTitle } from '../../../engine/colorRegistry';
 import { dungeonEntryForecast } from '../../../engine/dungeonEngine';
 import { getCutsceneKeyAnnouncement } from '../../cutscene/registry';
 import { isExtraBirthEntry } from '../../../data/birthStories.js';
+import { FactionCrest } from '../../../components/world/FactionCrest.jsx';
+import { lifeFinaleKindFor } from '../../../engine/sceneContext.js';
 
 const ENTRY_KIND = {
   causal: { cls: 'k-causal', vi: 'Tiếng vọng nhân quả', en: 'Causal echo' },
@@ -506,7 +508,7 @@ const EventDock = ({ event, char, onPick, dungeonStake, onDungeonStake, onPeek, 
           <div className="dock-banner-text">
             <div className="dock-kicker-row">
               <p className={`dock-kicker ${causal ? 'is-causal' : ''}`}>
-                <span className="dock-kicker-icon" aria-hidden="true">{causal ? <History size={14} /> : <Hourglass size={14} />}</span>
+                <span className="dock-kicker-icon" aria-hidden="true">{causal ? <History size={14} /> : <FactionCrest char={char} ev={event} size={14} />}</span>
                 <span>
                   {causal
                     ? t('Tiếng vọng nhân quả · Thời gian dừng lại', 'Causal echo · Time stops')
@@ -1435,12 +1437,19 @@ export const LiveStageFeed = () => {
     });
   }, []);
 
-  // Death audio & traumatic hit-stop
+  // Death / Life finale audio & traumatic hit-stop
   useEffect(() => {
     if (prevAliveRef.current && !char.alive) {
-      if (char.endingId === 'library_threshold') {
-        audioEngine.playPageFlip();
+      const finale = lifeFinaleKindFor(char);
+      if (finale === 'library') {
+        if (!sceneOwnsSound()) audioEngine.playLifeFinale('library');
         gameFeel.haptic(30);
+      } else if (finale === 'chrysalis') {
+        if (!sceneOwnsSound()) audioEngine.playLifeFinale('chrysalis');
+        gameFeel.haptic([40, 30, 60]);
+      } else if (finale === 'retire_90') {
+        if (!sceneOwnsSound()) audioEngine.playLifeFinale('retire_90');
+        gameFeel.haptic(25);
       } else {
         // The death scene plays its own slowing heart and toll; the plain toll is for scenes off
         if (!sceneOwnsSound()) audioEngine.playDeath();
@@ -1699,24 +1708,15 @@ export const LiveStageFeed = () => {
     if (sceneOwnsSound()) return;
     if (char.pendingDungeon) {
       audioEngine.playDanger();
+      if ((char.stats?.health ?? 100) <= 25 || (char.stats?.sanity ?? 100) <= 20) {
+        audioEngine.playHeartbeat(1.2);
+      }
       gameFeel.addTrauma(0.32);
     } else if (char.pendingEvent) {
-      const ev = char.pendingEvent;
-      if (ev.isCausalCallback) {
-        audioEngine.playDanger();
-      } else if (ev.finger === 'index' || ev.id?.includes('finger_index') || ev.titleVi?.includes('Chỉ Thị')) {
-        audioEngine.playPrescriptTick();
-      } else if (ev.finger === 'middle' || ev.id?.includes('finger_middle') || ev.titleVi?.includes('Sổ Thù Hận')) {
-        audioEngine.playPageFlip();
-      } else if (ev.finger === 'thumb' || ev.id?.includes('finger_thumb') || ev.titleVi?.includes('Kỷ Luật')) {
-        audioEngine.playThumbSnap();
-      } else if (ev.isDistortion || ev.distortionPoints > 0) {
-        audioEngine.playDanger();
-      } else if (typeof audioEngine.playDecision === 'function') {
-        audioEngine.playDecision();
-      }
+      audioEngine.playEventCue(char.pendingEvent, char);
     } else if (char.pendingContract) {
       if (typeof audioEngine.playDecision === 'function') audioEngine.playDecision();
+      if ((char.stats?.health ?? 100) <= 25) audioEngine.playHeartbeat(1.1);
     }
   }, [char.pendingDungeon?.id, char.pendingDungeon?.currentStageIndex, char.pendingEvent?.id, char.pendingContract?.id]);
 

@@ -22,4 +22,4 @@ for (const def of NARRATIVE_ARCS) {
   assert.equal(char.activeArcs[0].status, 'completed');
   assert.equal(char.weaver.pendingThreads.filter((thread) => !thread.fulfilled).length, 0);
 }
-console.log('Narrative arcs: all six use the causal thread queue, advance once and complete.');
+console.log(`Narrative arcs: all ${NARRATIVE_ARCS.length} use the causal thread queue, advance once and complete.`);

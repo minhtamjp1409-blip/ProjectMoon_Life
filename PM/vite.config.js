@@ -20,7 +20,10 @@ const chunkFor = (id) => {
   if (/[\/]src[\/]data[\/](lifeMinors|lifeScar|lifeCareer|annualMerit)/.test(id)) return 'story-minors';
   if (/[\/]src[\/]data[\/](lifeDailies|lifeNpc|narrative)/.test(id)) return 'story-dailies';
   if (/[\/]src[\/]data[\/](careerContracts|associations)/.test(id)) return 'story-contracts';
+  if (/[\/]src[\/]data[\/]dungeonEnsemble\.js/.test(id)) return 'engine';
   if (/[\/]src[\/]data[\/]/.test(id)) return 'story';
+  if (/[\/]src[\/]engine[\/](audioEngine|ambienceScapes|gameFeel|sceneContext)\.js/.test(id)) return undefined;
+  if (/[\/]src[\/](engine|services)[\/]/.test(id) || /[\/]src[\/]features[\/]chronicle[\/]entryTiers\.js/.test(id)) return 'engine';
   return undefined;
 };
 

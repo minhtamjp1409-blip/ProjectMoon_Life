@@ -137,6 +137,25 @@ export function sceneContextOf({ inRun = false, path = '/', char = null } = {}) 
 // One step below the top gets a quieter frame in the same hue.
 export function rankPlateOf(char) {
   if (!char) return { tier: 'plain' };
+  const flags = char.flags || [];
+  if (isDistorted(char)) {
+    const color = WORLDS.distortion.accent;
+    if (flags.includes('DistortionLabyrinthSovereign')) {
+      return { tier: 'apex', route: 'distortion', color, vi: 'Lãnh Chúa Mê Cung', en: 'Labyrinth Sovereign' };
+    }
+    if (flags.includes('DistortionLucidWanderer')) {
+      return { tier: 'apex', route: 'distortion', color, vi: 'Dị Thể Tỉnh Thức', en: 'Lucid Distortion' };
+    }
+    if (flags.includes('DistortionPrimordialCalamity')) {
+      return { tier: 'apex', route: 'distortion', color, vi: 'Tai Ương Nguyên Thủy', en: 'Primordial Calamity' };
+    }
+    if ((char.distortStage || 0) >= 3) {
+      return { tier: 'apex', route: 'distortion', color, vi: 'Thực Thể Biến Dị Cấp Star', en: 'Star-Class Distortion' };
+    }
+    if ((char.distortStage || 0) === 2) {
+      return { tier: 'high', route: 'distortion', color, vi: 'Thực Thể Đô Thị Ác Mộng', en: 'Urban Nightmare Distortion' };
+    }
+  }
   if (isColorFixer(char)) {
     return { tier: 'color', route: 'color', color: char.colorData?.color || '#e1341e', vi: 'Color của Hana', en: 'Hana Color' };
   }
@@ -147,13 +166,82 @@ export function rankPlateOf(char) {
     if (rank >= 3) return { tier: 'apex', route, color, vi: `Đỉnh của The ${char.finger}`, en: `The top of The ${char.finger}` };
     if (rank === 2) return { tier: 'high', route, color, vi: `Cấp cao The ${char.finger}`, en: `Senior in The ${char.finger}` };
   }
+  if (char.job === 'Syndicate' && !char.finger) {
+    const rank = char.syndicateRank || 0;
+    if (rank >= 3) return { tier: 'apex', route: 'syndicate', color: WORLDS.syndicate.accent, vi: 'Trùm Băng Đảng Độc Lập', en: 'Independent Syndicate Apex' };
+    if (rank === 2) return { tier: 'high', route: 'syndicate', color: WORLDS.syndicate.accent, vi: 'Thủ Lĩnh Khu Phố', en: 'Backstreet Warlord' };
+  }
   if (char.job === 'Wing Employee') {
     const rank = char.wingRank || 0;
     if (rank >= 3) return { tier: 'apex', route: 'wing', color: WORLDS.wing.accent, vi: 'Hội đồng của Wing', en: 'The Wing board' };
     if (rank === 2) return { tier: 'high', route: 'wing', color: WORLDS.wing.accent, vi: 'Cấp quản lý Wing', en: 'Wing management' };
   }
+  if (char.job === 'Workshop Craftsman') {
+    if (flags.includes('CraftedColorWeapon')) return { tier: 'apex', route: 'workshop', color: WORLDS.workshop.accent, vi: 'Nghệ Nhân Danh Kiếm', en: 'Masterwork Forger' };
+    if (flags.includes('TresCertified')) return { tier: 'high', route: 'workshop', color: WORLDS.workshop.accent, vi: 'Thợ Rèn Chứng Nhận Tres', en: 'Tres-Certified Artisan' };
+  }
   if (char.job === 'Fixer' && (char.fixerGrade ?? 9) <= 2) {
     return { tier: 'high', route: 'fixer', color: WORLDS.fixer.accent, vi: `Fixer Grade ${char.fixerGrade}`, en: `Fixer Grade ${char.fixerGrade}` };
   }
   return { tier: 'plain' };
+}
+
+/**
+ * Resolves the SVG emblem key for a character or pending event.
+ */
+/** True when an event id names this word as a whole segment (ring in syn_ring_x, not in whispering). */
+export const idNames = (id, word) => new RegExp(`(^|_)${word}(_|$)`).test(String(id || '').toLowerCase());
+
+export function crestKindFor(char, ev = null) {
+  if (ev) {
+    const id = String(ev.id || '').toLowerCase();
+    const finger = String(ev.finger || ev.need?.finger || '').toLowerCase();
+    if (id.startsWith('distort_') || ev.isDistortion) return 'distortion';
+    for (const word of ['thumb', 'index', 'middle', 'ring', 'pinky']) {
+      if (finger === word || idNames(id, word)) return word;
+    }
+    if (idNames(id, 'workshop') || ev.tags?.includes('workshop')) return 'workshop';
+    if (idNames(id, 'wing') || ev.need?.jobs?.includes('Wing Employee')) return 'wing';
+    if (idNames(id, 'color') || ev.need?.flags?.includes('ColorFixer')) return 'color';
+  }
+  if (!char) return 'city';
+  const flags = char.flags || [];
+  if (flags.includes('Distorted') || char.job === 'Distortion') {
+    if (flags.includes('DistortionLabyrinthSovereign')) return 'distortion-labyrinth';
+    if (flags.includes('DistortionLucidWanderer')) return 'distortion-lucid';
+    if (flags.includes('DistortionPrimordialCalamity')) return 'distortion-primordial';
+    return 'distortion';
+  }
+  if (char.isColorFixer || flags.includes('ColorFixer') || char.job === 'Color Fixer') return 'color';
+  if (char.job === 'Syndicate' && char.finger) return String(char.finger).toLowerCase();
+  if (char.job === 'Syndicate') return 'syndicate';
+  if (char.job === 'Wing Employee') return 'wing';
+  if (char.job === 'Workshop Craftsman') return 'workshop';
+  if (char.job === 'Fixer') return 'fixer';
+  if (char.job === 'Outcast') return 'outcast';
+  return 'city';
+}
+
+/**
+ * Classifies how a finished chronicle closed for finale audio and feedback selection.
+ * @returns {'library'|'chrysalis'|'retire_90'|'death'}
+ */
+export function lifeFinaleKindFor(char) {
+  if (!char) return 'death';
+  if (char.endingId === 'library_threshold') return 'library';
+  const lifeEnding = typeof char.lifeEnding === 'string' ? char.lifeEnding : (char.lifeEnding?.id || '');
+  const flags = char.flags || [];
+  if (
+    lifeEnding === 'distort_monument' ||
+    (lifeEnding === 'wander' && flags.includes('distort_elder_chrysalis_done'))
+  ) {
+    return 'chrysalis';
+  }
+  if (
+    (lifeEnding === 'retired' || lifeEnding === 'wander' || lifeEnding === 'ripe_age') &&
+    ((char.age || 0) >= 80 || flags.some((f) => f.endsWith('_ending_done')))
+  ) {
+    return 'retire_90';
+  }
+  return 'death';
 }

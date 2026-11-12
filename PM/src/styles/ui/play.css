@@ -538,7 +538,8 @@
 }
 
 /* Nameplate: plain for most lives; the top of a branch gets a frame in its own colour, one step below a rule */
-.nameplate-post { color: var(--muted); font-size: 14.5px; }
+.nameplate-post { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 14.5px; }
+.nameplate-sub { margin: 2px 0 0; font-size: 12.5px; color: var(--muted); font-weight: 500; }
 .nameplate-rank {
   display: inline-flex; align-self: flex-start; align-items: center; gap: 6px;
   padding: 3px 10px; border-radius: 999px; font-size: 12.5px; font-weight: 700;
@@ -650,11 +651,51 @@
 }
 .nameplate.route-wing h2 { font-family: var(--font); font-weight: 700; letter-spacing: -.01em; }
 
+/* Distortion: fractured crimson-violet halo with hairline fracture marks */
+.nameplate.route-distortion {
+  border-color: color-mix(in srgb, var(--plate) 72%, #8e3cf5);
+  box-shadow: 0 0 42px color-mix(in srgb, var(--plate) 28%, rgba(142, 60, 245, .18)), inset 0 0 0 1px rgba(255, 196, 100, .06);
+}
+.nameplate.route-distortion::before {
+  background:
+    linear-gradient(128deg, transparent 46%, color-mix(in srgb, var(--plate) 34%, transparent) 47%, transparent 48.5%),
+    linear-gradient(-34deg, transparent 62%, rgba(173, 156, 245, .24) 63%, transparent 64.5%),
+    radial-gradient(60% 45% at 88% 14%, rgba(255, 204, 112, .16), transparent 70%);
+}
+.nameplate.route-distortion h2 { letter-spacing: .01em; }
+
+/* Independent Syndicate: Backstreets blade border and dark ledger slash */
+.nameplate.route-syndicate { border-radius: 3px; border-left: 4px solid var(--plate); padding-left: 16px; }
+.nameplate.route-syndicate::before {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--plate) 16%, transparent) 0, transparent 36%);
+}
+
+/* Workshop Craftsman: forged chamfer frame with subtle anvil warmth */
+.nameplate.route-workshop {
+  border-radius: 4px;
+  border-color: color-mix(in srgb, var(--plate) 65%, #e6b87a);
+}
+.nameplate.route-workshop::before {
+  background: radial-gradient(75% 55% at 12% 0%, color-mix(in srgb, var(--plate) 20%, transparent), transparent 72%);
+}
+
 .hud2-name.is-apex, .hud2-name.is-color { color: color-mix(in srgb, var(--plate) 62%, #fff8ec); text-shadow: 0 0 12px color-mix(in srgb, var(--plate) 70%, transparent); }
 .hud2-name.is-high { color: var(--plate); }
 .hud2-name.route-ring { font-style: italic; }
+.hud2-name.route-distortion { letter-spacing: .01em; }
 .hud2-name.route-thumb { font-family: var(--font); font-stretch: 70%; text-transform: uppercase; }
 .hud2-name.route-middle, .hud2-name.route-wing { font-family: var(--font); font-weight: 700; }
+
+@media (prefers-reduced-motion: reduce) {
+  .stat.is-carmen-calls,
+  .nameplate.is-apex,
+  .nameplate.is-color,
+  .nameplate.is-apex::after,
+  .nameplate.is-color::after,
+  .nameplate.route-color::before {
+    animation: none;
+  }
+}
 
 /* Reference blocks fold away; closed by default so the vitals sit right under the name */
 .dossier-fold { border-top: 1px solid var(--rule); }

@@ -559,6 +559,54 @@ const ELDER_CHAPTER_EVENTS = [
         resultVi: 'Bạn chỉ tay về phía nắp cống cũ sau khi đã cất gói thuốc vào túi áo. Đêm vùng ven không cho phép ai làm không công.',
         resultEn: 'You point toward the old culvert hatch after tucking the medicine packet into your coat. Fringe nights allow no charity.' }
     ]
+  },
+  {
+    id: 'elder_syndicate_old_lieutenant_return', age: [50, 120], jobs: ['Syndicate'], major: true, weight: 9,
+    forbids: ['Distorted', 'elder_syn_lieutenant_done'],
+    vi: '[Phó tướng năm xưa quay về] Một người tóc đã bạc nửa đầu xin gặp bạn, tự nhận là đàn em theo bạn từ những năm đầu. Hắn đặt túi tiền cống nạp lên bàn trà rồi xin đưa lứa người trẻ của mình vào tiếp quản bến bãi.',
+    en: '[Return of the old lieutenant] A man with half-silver hair asks to see you, saying he has served under you since your first years. Setting a tribute pouch on the tea table, he asks to bring his younger crew in to run the docks.',
+    choices: [
+      { labelVi: 'Giao thử một kho bãi ngoại vi để xem thực lực lứa trẻ', labelEn: 'Entrust a perimeter warehouse to test the younger crew',
+        effects: { rep: 6, network: 6, sanity: 4, wealth: 8 }, meritAdd: 8, flagsAdd: ['elder_syn_lieutenant_done'],
+        resultVi: 'Lứa người mới giữ kho bãi êm xuôi suốt ba tháng liền. Tên tuổi của bạn vẫn được xướng lên đầu tiên trong mỗi bữa tiệc mừng công.',
+        resultEn: 'The new crew run the warehouse smoothly for three straight months. Your name is still toasted first at every celebration banquet.' },
+      { labelVi: 'Giữ chặt con dấu kho bãi và chỉ chia phần hoa hồng', labelEn: 'Keep tight hold of the dock seal and only share a commission cut',
+        effects: { wealth: 16, rep: 4, sanity: -2 }, meritAdd: 6, flagsAdd: ['elder_syn_lieutenant_done'],
+        resultVi: 'Người đàn em cúi đầu nhận cọc tiền rồi lặng lẽ lui ra. Bến bãi vẫn nằm gọn trong tay bạn nhưng ánh mắt dưới trướng đã bớt phần thân tình.',
+        resultEn: 'Your old lieutenant bows over the stack of bills and quietly withdraws. The docks remain firmly yours, though the eyes beneath your banner grow cooler.' }
+    ]
+  },
+  {
+    id: 'elder_syndicate_blood_ledger_reckoning', age: [51, 120], jobs: ['Syndicate'], major: true, weight: 9,
+    forbids: ['Distorted', 'elder_syn_ledger_done'],
+    vi: '[Cuốn sổ nợ máu còn dang dở] Một nhánh băng đảng đối địch tưởng bạn đã yếu sức liền cho người chặn xe chở hàng ở ngõ cụt. Đám đàn em mang cuốn sổ bìa da cũ tới hỏi ý xem nên giảng hòa hay lấy máu lập uy.',
+    en: '[The unfinished blood ledger] Thinking age has dulled your fangs, a rival syndicate branch ambushes your cargo wagon in a blind alley. Your lieutenants bring the old leather ledger to ask whether to parley or answer in blood.',
+    choices: [
+      { labelVi: 'Đích thân dẫn đội tinh nhuệ đi thu hồi đủ cả vốn lẫn lãi', labelEn: 'Personally lead an elite squad to collect both principal and interest',
+        effects: { standing: 6, rep: 8, heat: 5, health: -4 }, meritAdd: 10, flagsAdd: ['elder_syn_ledger_done'],
+        resultVi: 'Chỉ một đêm mưa gió đã đủ nhắc cả khu phố nhớ vì sao bạn sống sót tới tuổi này. Hàng hóa được trả về nguyên vẹn trước bình minh.',
+        resultEn: 'A single stormy night reminds the entire ward why you survived to this age. Every crate is returned intact before dawn.' },
+      { labelVi: 'Mở tiệc trà trung gian để thu phục luôn đám cầm đầu bên kia', labelEn: 'Host a mediation tea to absorb their ringleaders into your fold',
+        effects: { network: 8, wealth: 12, rep: 6, sanity: 3 }, meritAdd: 10, flagsAdd: ['elder_syn_ledger_done'],
+        resultVi: 'Kẻ cầm đầu bên kia toát mồ hôi lạnh khi nghe bạn đọc vanh vách từng khoản nợ cũ của hắn. Ngay trong đêm đó hắn xin sáp nhập tuyến đường vào dưới trướng bạn.',
+        resultEn: 'The rival boss breaks into a cold sweat as you recite every old debt on his head. That very night he petitions to merge his route beneath your banner.' }
+    ]
+  },
+  {
+    id: 'elder_syndicate_dynasty_seal', age: [53, 120], jobs: ['Syndicate'], major: true, weight: 10,
+    forbids: ['Distorted', 'elder_syn_dynasty_done'],
+    vi: '[Dấu ấn truyền ngôi đêm sương] Khi sương mù phủ kín mái tôn Backstreets, các đầu lĩnh dưới quyền tụ họp đông đủ quanh chiếc bàn gỗ lim. Ai cũng chờ xem bạn sẽ trao chiếc nhẫn con dấu cho người kế vị hay giữ quyền sinh sát tới hơi thở cuối.',
+    en: '[The dynasty seal in the mist] As fog blankets the tin roofs of the Backstreets, every captain under your command gathers around the ironwood table. All eyes wait to see whether you pass the signet ring to an heir or hold absolute rule to your last breath.',
+    choices: [
+      { labelVi: 'Trao nhẫn con dấu cho người kế vị và lui về hậu trường', labelEn: 'Pass the signet ring to your chosen heir and step behind the curtain',
+        effects: { sanity: 10, rep: 8, network: 7, heat: -6 }, meritAdd: 14, flagsAdd: ['elder_syn_dynasty_done'],
+        resultVi: 'Người kế vị quỳ một gối đón nhận chiếc nhẫn bằng hai tay. Từ đêm đó mọi biến động ngõ hẻm đều dừng lại bên ngoài bức rèm phòng trà của bạn.',
+        resultEn: 'Your successor drops to one knee to receive the ring with both hands. From that night on, the turbulence of the alleys stops outside your tea-room curtain.' },
+      { labelVi: 'Đập chiếc nhẫn xuống bàn để khẳng định không ai được thay thế mình', labelEn: 'Slam the signet ring onto the table to declare no one replaces you',
+        effects: { standing: 8, rep: 9, wealth: 14, sanity: -4 }, meritAdd: 14, flagsAdd: ['elder_syn_dynasty_done'],
+        resultVi: 'Cả căn phòng cúi rạp đầu không một tiếng động. Quyền lực tối thượng vẫn nằm trong tay bạn cùng nỗi cô độc lạnh buốt trên đỉnh tháp ngầm.',
+        resultEn: 'The entire room bows low in dead silence. Supreme authority remains in your grip alongside the freezing solitude atop the underworld spire.' }
+    ]
   }
 ];
 

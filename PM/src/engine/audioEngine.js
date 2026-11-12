@@ -1046,6 +1046,84 @@ class AudioEngine {
     });
   }
 
+  /**
+   * Contextual event audio cue: dispatches faction/theme SFX from event metadata,
+   * and layers a tense heartbeat if the character is critically wounded or frayed.
+   */
+  playEventCue(ev, char = null) {
+    if (this.isMuted || !ev) return;
+    const id = String(ev.id || '').toLowerCase();
+    // The event's own Finger, never the character's: a member of the Index still hears plain life as plain
+    const finger = String(ev.finger || ev.need?.finger || '').toLowerCase();
+    const named = (word) => new RegExp(`(^|_)${word}(_|$)`).test(id);
+    const text = `${ev.vi || ''} ${ev.titleVi || ''}`;
+    const tags = Array.isArray(ev.tags) ? ev.tags : [];
+
+    if (ev.isCausalCallback || ev.isDistortion || (ev.distortionPoints || 0) > 0 || id.startsWith('distort_') || tags.includes('distortion_call')) {
+      this.playDanger();
+    } else if (id.includes('ego_') || id.includes('efflorescence') || text.includes('E.G.O')) {
+      this.playEgo();
+    } else if (finger === 'index' || named('index') || text.includes('Prescript') || text.includes('Chỉ Lệnh')) {
+      this.playPrescriptTick();
+    } else if (finger === 'thumb' || named('thumb') || text.includes('Sottocapo') || text.includes('Kỷ Luật')) {
+      this.playThumbSnap();
+    } else if (finger === 'middle' || named('middle') || text.includes('Book of Vengeance') || text.includes('Sổ Báo Thù')) {
+      this.playPageFlip();
+    } else if (id.includes('warp') || text.includes('WARP') || tags.includes('warp')) {
+      this.playWarpSurge();
+    } else if (id.includes('workshop') || id.includes('forge') || tags.includes('workshop') || text.includes('Tres')) {
+      this.playCoinChime();
+    } else {
+      this.playDecision();
+    }
+
+    if (char?.alive) {
+      const hp = char.stats?.health ?? 100;
+      const sp = char.stats?.sanity ?? 100;
+      if (hp <= 25 || sp <= 20) {
+        this.playHeartbeat(hp <= 15 || sp <= 12 ? 1.35 : 1.0);
+      }
+    }
+  }
+
+  /**
+   * Finale resolution cue when a life concludes:
+   * - 'retire_90': warm, solemn twilight triad for voluntary 90+ elder endings
+   * - 'chrysalis': crystalline harmonic swell for Abnormality Chrysalis metamorphosis
+   * - 'library': page flip + resonant threshold bell
+   * - 'death': somber low bell toll
+   */
+  playLifeFinale(endingType = 'death') {
+    if (this.isMuted) return;
+    this.init();
+    if (!this.ctx) return;
+
+    if (endingType === 'library') {
+      this.playPageFlip();
+      const t = this.ctx.currentTime + 0.12;
+      this.cueBell(this.sfxGain, t, { root: 196.0, peak: 0.16, decay: 2.0 });
+      return;
+    }
+    if (endingType === 'retire_90') {
+      const t = this.ctx.currentTime;
+      this.duckAmbience(0.15, 2400);
+      // Warm major-fifth twilight chord: D3 (146.83), A3 (220), F#4 (369.99)
+      [146.83, 220.0, 369.99].forEach((freq, i) => {
+        this.cueTone(this.sfxGain, t + i * 0.14, { freq, type: 'triangle', peak: 0.14 / (i * 0.4 + 1), attack: 0.04, decay: 2.2 });
+      });
+      return;
+    }
+    if (endingType === 'chrysalis') {
+      const t = this.ctx.currentTime;
+      this.duckAmbience(0.1, 2600);
+      [261.63, 392.0, 523.25, 659.25].forEach((freq, i) => {
+        this.cueTone(this.sfxGain, t + i * 0.12, { freq, to: freq * 1.01, type: 'sine', peak: 0.13 / (i * 0.35 + 1), attack: 0.05, decay: 2.3 });
+      });
+      return;
+    }
+    this.playDeath();
+  }
+
   /* ---------- Cutscene cues (src/features/cutscene) ---------- */
 
   // One tone on the scene's own bus: a pitch (optionally gliding), a quick rise and an exponential fall

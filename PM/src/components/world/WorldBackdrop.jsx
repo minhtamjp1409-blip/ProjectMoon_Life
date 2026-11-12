@@ -192,6 +192,7 @@ export function WorldBackdrop({ scene, session }) {
       className="world"
       data-ego={scene.ego}
       data-danger={scene.danger ? 'on' : undefined}
+      data-carmen={scene.carmen ? 'on' : undefined}
       data-color={scene.color ? 'on' : undefined}
       style={scene.color ? { '--w-color': scene.color } : undefined}
       aria-hidden="true"
@@ -203,6 +204,7 @@ export function WorldBackdrop({ scene, session }) {
       <div className="world-mood" data-mood={scene.mood || 'normal'} />
       <div className="world-color" />
       <div className="world-ego" />
+      <div className="world-carmen" />
       <div className="world-danger" />
       {burst && <div key={burst.at} className={"world-burst is-" + burst.kind} />}
       <div className="world-vignette" />

@@ -696,3 +696,152 @@ console.log('8. Testing Đợt 153–157: Survival Buffer, Distortion Passives, 
   assert.equal(exams.filter((e) => isEventEligible(e, fixer, { scripted: true })).length, 0, 'no exam is offered under TRIAL_MIN_HP');
   console.log('  ✓ Đợt 158 verified.');
 }
+
+// ----------------------------------------------------------------------------
+// ĐỢT 159–162 — AUDIO CUES, FACTION CRESTS, ALL-ROUTE NAMEPLATES & NEW ARCS
+// ----------------------------------------------------------------------------
+console.log('9. Testing Đợt 159–162: Contextual Event Audio, Finale Cues, Faction Crests, Nameplates & Elder/Distortion Arcs...');
+{
+  const { audioEngine } = await import('../src/engine/audioEngine.js');
+  const { rankPlateOf, crestKindFor, lifeFinaleKindFor } = await import('../src/engine/sceneContext.js');
+  const { evaluateNarrativeArcProgression } = await import('../src/engine/narrativeArcEngine.js');
+
+  // 9.1 Contextual event SFX dispatch & critical heartbeat
+  const origMuted = audioEngine.isMuted;
+  const origCtx = audioEngine.ctx;
+  const calls = [];
+  const methodsToSpy = [
+    'playPrescriptTick', 'playThumbSnap', 'playPageFlip', 'playDanger',
+    'playEgo', 'playWarpSurge', 'playCoinChime', 'playDecision',
+    'playHeartbeat', 'playDeath', 'duckAmbience', 'cueTone', 'cueBell'
+  ];
+  const origMethods = Object.fromEntries(methodsToSpy.map((m) => [m, audioEngine[m]]));
+  try {
+    audioEngine.isMuted = false;
+    for (const m of methodsToSpy) {
+      audioEngine[m] = (...args) => calls.push([m, ...args]);
+    }
+    audioEngine.ctx = { currentTime: 0 };
+
+    audioEngine.playEventCue({ id: 'syn_index_test', finger: 'Index', vi: '[Chỉ Lệnh] ...' }, null);
+    audioEngine.playEventCue({ id: 'syn_thumb_test', finger: 'Thumb', vi: '[Kỷ Luật] ...' }, null);
+    audioEngine.playEventCue({ id: 'syn_middle_test', finger: 'Middle', vi: '[Sổ Báo Thù] ...' }, null);
+    audioEngine.playEventCue({ id: 'distort_test', vi: '[Biến Dị] ...' }, null);
+    audioEngine.playEventCue({ id: 'workshop_test', tags: ['workshop'], vi: '[Xưởng Rèn] ...' }, null);
+    audioEngine.playEventCue({ id: 'ego_surge_test', vi: '[E.G.O] ...' }, null);
+    audioEngine.playEventCue({ id: 'warp_train_test', vi: '[WARP] ...' }, null);
+    audioEngine.playEventCue(
+      { id: 'ordinary_evt', vi: '[Tin thường] ...' },
+      { alive: true, stats: { health: 12, sanity: 60 } }
+    );
+
+    const firedNames = calls.map((c) => c[0]);
+    assert.ok(firedNames.includes('playPrescriptTick'), 'Index event fires playPrescriptTick');
+    assert.ok(firedNames.includes('playThumbSnap'), 'Thumb event fires playThumbSnap');
+    assert.ok(firedNames.includes('playPageFlip'), 'Middle event fires playPageFlip');
+    assert.ok(firedNames.includes('playDanger'), 'Distortion event fires playDanger');
+    assert.ok(firedNames.includes('playCoinChime'), 'Workshop event fires playCoinChime');
+    assert.ok(firedNames.includes('playEgo'), 'EGO event fires playEgo');
+    assert.ok(firedNames.includes('playWarpSurge'), 'WARP event fires playWarpSurge');
+    assert.ok(firedNames.includes('playDecision'), 'Generic event falls back to playDecision');
+    assert.ok(calls.some(([m, rate]) => m === 'playHeartbeat' && rate === 1.35), 'Critically wounded character (12 HP) layers fast heartbeat');
+
+    calls.length = 0;
+    audioEngine.playLifeFinale('retire_90');
+    assert.equal(calls.filter(([m]) => m === 'cueTone').length, 3, 'retire_90 plays 3-note warm twilight triad');
+    assert.ok(!calls.some(([m]) => m === 'playDeath'), 'retire_90 must NOT trigger abrupt playDeath');
+
+    calls.length = 0;
+    audioEngine.playLifeFinale('chrysalis');
+    assert.equal(calls.filter(([m]) => m === 'cueTone').length, 4, 'chrysalis plays 4-note harmonic swell');
+
+    calls.length = 0;
+    audioEngine.playLifeFinale('library');
+    assert.ok(calls.some(([m]) => m === 'playPageFlip') && calls.some(([m]) => m === 'cueBell'), 'library plays pageFlip + threshold bell');
+
+    calls.length = 0;
+    audioEngine.playLifeFinale('death');
+    assert.ok(calls.some(([m]) => m === 'playDeath'), 'death plays somber playDeath');
+
+    assert.equal(lifeFinaleKindFor({ endingId: 'library_threshold' }), 'library');
+    assert.equal(lifeFinaleKindFor({ lifeEnding: 'wander', flags: ['distort_elder_chrysalis_done'], age: 95 }), 'chrysalis');
+    assert.equal(lifeFinaleKindFor({ lifeEnding: 'retired', flags: ['elder_fixer_ending_done'], age: 92 }), 'retire_90');
+    assert.equal(lifeFinaleKindFor({ lifeEnding: 'last_bout', age: 92 }), 'death');
+  } finally {
+    audioEngine.isMuted = origMuted;
+    audioEngine.ctx = origCtx;
+    for (const m of methodsToSpy) audioEngine[m] = origMethods[m];
+  }
+
+  // 9.2 Faction crest mapping & extended rankPlateOf for Distortion, Indie Syndicate, Workshop
+  assert.equal(crestKindFor({ job: 'Syndicate', finger: 'Pinky' }), 'pinky');
+  assert.equal(crestKindFor({ job: 'Distortion', flags: ['Distorted', 'DistortionLabyrinthSovereign'] }), 'distortion-labyrinth');
+  assert.equal(crestKindFor({ job: 'Distortion', flags: ['Distorted', 'DistortionLucidWanderer'] }), 'distortion-lucid');
+  assert.equal(crestKindFor({ job: 'Distortion', flags: ['Distorted', 'DistortionPrimordialCalamity'] }), 'distortion-primordial');
+  assert.equal(crestKindFor({ job: 'Fixer' }, { id: 'syn_index_test', finger: 'Index' }), 'index', 'Event metadata overrides character crest');
+  assert.equal(crestKindFor({ job: 'Workshop Craftsman' }), 'workshop');
+
+  assert.equal(rankPlateOf({ job: 'Distortion', flags: ['Distorted', 'DistortionPrimordialCalamity'] }).tier, 'apex');
+  assert.equal(rankPlateOf({ job: 'Distortion', flags: ['Distorted'], distortStage: 2 }).tier, 'high');
+  assert.equal(rankPlateOf({ job: 'Syndicate', syndicateRank: 3 }).tier, 'apex');
+  assert.equal(rankPlateOf({ job: 'Syndicate', syndicateRank: 2 }).tier, 'high');
+  assert.equal(rankPlateOf({ job: 'Workshop Craftsman', flags: ['CraftedColorWeapon'] }).tier, 'apex');
+  assert.equal(rankPlateOf({ job: 'Workshop Craftsman', flags: ['TresCertified'] }).tier, 'high');
+
+  // 9.3 Primordial Calamity signature event + Elder Syndicate Succession & Distortion Domain Arcs
+  const primordialEv = ALL_STORY_EVENTS.find((e) => e.id === 'distort_arc_primordial_blood_tide');
+  assert.ok(primordialEv, 'distort_arc_primordial_blood_tide must exist in ALL_STORY_EVENTS');
+  const distPrimChar = createNewCharacter({ seed: 'prim-162', startAge: 42 });
+  distPrimChar.age = 42;
+  distPrimChar.job = 'Distortion';
+  distPrimChar.flags = ['Distorted', 'DistortionPrimordialCalamity'];
+  assert.equal(matchesEventContext(primordialEv, distPrimChar), true, 'DistortionPrimordialCalamity character is eligible for primordial blood tide');
+
+  for (const id of [
+    'elder_syndicate_old_lieutenant_return',
+    'elder_syndicate_blood_ledger_reckoning',
+    'elder_syndicate_dynasty_seal'
+  ]) {
+    assert.ok(ALL_STORY_EVENTS.find((e) => e.id === id), `Elder Syndicate Succession event ${id} must exist`);
+  }
+
+  const synChar = createNewCharacter({ seed: 'syn-arc-162', startAge: 52 });
+  synChar.age = 52;
+  synChar.job = 'Syndicate';
+  advanceActiveNarrativeArcs(synChar, 'elder_syndicate_old_lieutenant_return');
+  assert.ok(synChar.activeArcs.some((a) => a.id === 'arc_syndicate_twilight_succession' && a.currentStage === 2), 'Resolving stage 1 initiates arc_syndicate_twilight_succession');
+  const stage2Boost = evaluateNarrativeArcProgression(synChar, { id: 'elder_syndicate_blood_ledger_reckoning' });
+  assert.equal(stage2Boost.arcBonus, 85, 'Stage 2 of Elder Syndicate Succession receives +85 arc bonus');
+
+  const distArcChar = createNewCharacter({ seed: 'dist-arc-162', startAge: 45 });
+  distArcChar.age = 45;
+  distArcChar.job = 'Distortion';
+  distArcChar.flags = ['Distorted'];
+  advanceActiveNarrativeArcs(distArcChar, 'distort_arc_archetype_divergence');
+  assert.ok(distArcChar.activeArcs.some((a) => a.id === 'arc_distortion_metamorphosis_domain' && a.currentStage === 2), 'Resolving divergence initiates arc_distortion_metamorphosis_domain');
+  console.log('  ✓ Đợt 159–162 verified.');
+}
+
+// Đợt 164: crests and event sounds read whole id segments, the elder lieutenant claims his past instead of
+// the engine asserting it, and the dossier card only takes a six-digit hex accent
+{
+  const { crestKindFor } = await import('../src/engine/sceneContext.js');
+  const { resolveAccent } = await import('../src/utils/exportDossierCard.js');
+  const crestOf = (id) => crestKindFor(null, ALL_STORY_EVENTS.find((e) => e.id === id));
+  assert.equal(crestOf('syn_pinky_whispering_underground_broker'), 'pinky', '"whispering" is not the Ring');
+  assert.equal(crestOf('distort_gathering_twisted_flock'), 'distortion');
+  assert.equal(crestOf('ch_nest_elite_tutoring'), 'city');
+  for (const ev of ALL_STORY_EVENTS) {
+    const kind = crestKindFor(null, ev);
+    if (['thumb', 'index', 'middle', 'ring', 'pinky'].includes(kind) && !(ev.finger || ev.need?.finger)) {
+      assert.ok(new RegExp(`(^|_)${kind}(_|$)`).test(ev.id.toLowerCase()), `${ev.id} gets the ${kind} crest only by name`);
+    }
+  }
+  const lieutenant = ALL_STORY_EVENTS.find((e) => e.id === 'elder_syndicate_old_lieutenant_return');
+  assert.ok(!/ba mươi năm trước|thirty years ago/.test(`${lieutenant.vi} ${lieutenant.en}`), 'no thirty-year-old memory asserted');
+  assert.equal(resolveAccent({ colorHex: '#e1341e' }), '#e1341e');
+  assert.equal(resolveAccent({ colorHex: 'rgb(225, 52, 30)' }), '#c9a24b', 'a color addColorStop could not parse falls back');
+  assert.equal(resolveAccent({ colorHex: '#f00' }), '#c9a24b');
+  assert.equal(resolveAccent({ finger: 'Ring' }), '#ec4b55');
+  console.log('  ✓ Đợt 164 verified.');
+}
