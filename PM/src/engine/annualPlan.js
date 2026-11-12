@@ -36,7 +36,7 @@ export const SCHEME_CONTRACT_POWER = 4;
  * mends HP_PER_POINT HP per rest point when the plan is set. The price is the career's pace: a Fixer or Syndicate
  * member takes no Request that year (the scheduled one is dropped), and the points are not spent on training or work.
  */
-export const CONVALESCE = { below: 50, minRest: 2, hpPerPoint: 4 };
+export const CONVALESCE = { below: 50, minRest: 2, hpPerPoint: 3 };
 export function isConvalescence(char, points) {
   if (!char?.stats || (char.stats.health ?? 100) >= CONVALESCE.below) return false;
   if (char.job === 'Distortion' || char.flags?.includes('Distorted')) return false;
