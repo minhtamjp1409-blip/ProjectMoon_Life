@@ -136,13 +136,24 @@
   --glow-accent: rgba(216, 178, 101, 0.22);
   --ease-tactile: cubic-bezier(0.16, 1, 0.3, 1);
 
-  --story-size: 17px;
+  /* Story and choices follow the in-game text size setting. Sizes are in rem so a reader's own browser font
+     size also carries through; at the default 16px they are 17px and 15.5px */
+  --story-size: 1.0625rem;
   --story-lead: 1.72;
-  --choice-size: 15.5px;
+  --choice-size: 0.96875rem;
+
+  /* The instrument scale (Archivo): five roles, one step apart, instead of a value every half pixel.
+     meta: timestamps, hints, badges, counters · label: field names, tags, section titles, chips
+     ui: rows, values, secondary text · control: buttons, tabs, emphasised figures · lede: intros, inputs */
+  --t-meta: 0.75rem;
+  --t-label: 0.8125rem;
+  --t-ui: 0.875rem;
+  --t-control: 0.9375rem;
+  --t-lede: 1rem;
 }
 
-html[data-text='lg'] { --story-size: 18.5px; --story-lead: 1.74; --choice-size: 16.5px; }
-html[data-text='xl'] { --story-size: 20.5px; --story-lead: 1.72; --choice-size: 18px; }
+html[data-text='lg'] { --story-size: 1.15625rem; --story-lead: 1.74; --choice-size: 1.03125rem; }
+html[data-text='xl'] { --story-size: 1.28125rem; --story-lead: 1.72; --choice-size: 1.125rem; }
 
 @media (max-width: 860px) {
   :root {

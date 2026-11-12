@@ -31,6 +31,7 @@ Luật chơi đang chạy nằm ở `docs/LUAT_HIEN_HANH.md`, lore và giọng v
 | **162** | **Mạch truyện nhiều hồi tuổi già & gọt câu chữ tiếng Việt đợt 4 (`vaClause`)** (thêm `distort_arc_primordial_blood_tide`, 3 major `elder_syndicate_*`, nâng `NARRATIVE_ARCS` lên 8 mạch; giảm `vaClause` trong `eventsFingerRing.js` & `eventsFingerExtra.js` từ 2015 xuống 1800, giữ `relativeMa: 0` và hạ trần `package.json` xuống 1805) | `eventsDistortionParityExpansion.js`, `eventsApexTwilight.js`, `narrativeArcEngine.js`, `eventsFingerRing.js`, `eventsFingerExtra.js`, `package.json` | đã xong |
 | **163** | **Fixer bị thương kéo dài** (đo `hp_sources.mjs`: HP dưới 40 trong 35–43% số năm ở tuổi 25–50; hồi máu từ event lớn 2,0/năm so với Wing 3,0; xem lại mức hồi cuối năm và cách minor tính phí HP khi đã kiệt sức) | cân bằng | chưa làm |
 | **164** | **Rà soát Đợt 159–162** (`idNames` cho biểu tượng và âm thanh event, bỏ `char.finger` khỏi `playEventCue`, lời phó tướng không khẳng định ký ức, `resolveAccent` chỉ nhận hex 6 chữ số) | `sceneContext.js`, `audioEngine.js`, `eventsApexTwilight.js`, `exportDossierCard.js` | đã xong |
+| **165** | **Thang chữ năm vai trò và chữ đọc trên điện thoại** (`--t-meta`…`--t-lede` bằng rem thay 12 cỡ nửa pixel; nhật ký điện thoại giữ sàn 16px; thẻ sự kiện nhỏ có đếm giờ từ 13px lên theo cỡ chữ truyện; tiêu đề thẻ tính từ `--story-size`) | `tokens.css`, `chronicle.css`, 11 file CSS, 5 file JSX, `DESIGN.md` | đã xong |
 
 ---
 

@@ -81,7 +81,7 @@ export const ExternalDirectorModal = ({ open, onClose, onConfigSaved }) => {
       className="pm-modal"
     >
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16, marginTop: 12 }}>
-        <p className="muted" style={{ fontSize: 13, lineHeight: 1.6 }}>
+        <p className="muted" style={{ fontSize: 'var(--t-label)', lineHeight: 1.6 }}>
           {t(
             'Hệ thống hỗ trợ kết nối với các mô hình ngôn ngữ lớn (LLM) bên ngoài như Ollama Local (chạy máy cá nhân 100% riêng tư), LM Studio, OpenAI hoặc Custom API. Model ngoài sẽ phối hợp cùng Utility AI để sáng tác điếu văn bia mộ độc nhất, tạo lời bình luận tâm lý của Carmen/Weaver, và viết biến cố cá nhân hóa.',
             'Connect external LLMs like Ollama Local (100% private on your machine), LM Studio, or OpenAI. The external model coordinates with the Utility AI to generate unique epitaph eulogies, psychological Carmen/Weaver commentaries, and personalized encounters.'
@@ -92,7 +92,7 @@ export const ExternalDirectorModal = ({ open, onClose, onConfigSaved }) => {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', background: 'rgba(255, 255, 255, 0.03)', borderRadius: 6, border: '1px solid rgba(255, 255, 255, 0.08)' }}>
           <div>
             <div style={{ fontWeight: 600 }}>{t('Kích hoạt Điều Phối Viên AI Ngoài', 'Enable External AI Director')}</div>
-            <div className="muted" style={{ fontSize: 12 }}>{t('Nếu tắt hoặc mất kết nối, hệ thống tự động chạy Utility AI V2 nội bộ an toàn 100%.', 'If disabled or offline, game automatically falls back to internal Utility AI V2.')}</div>
+            <div className="muted" style={{ fontSize: 'var(--t-meta)' }}>{t('Nếu tắt hoặc mất kết nối, hệ thống tự động chạy Utility AI V2 nội bộ an toàn 100%.', 'If disabled or offline, game automatically falls back to internal Utility AI V2.')}</div>
           </div>
           <Switch
             checked={config.enabled}
@@ -102,7 +102,7 @@ export const ExternalDirectorModal = ({ open, onClose, onConfigSaved }) => {
 
         {/* Provider Select */}
         <div>
-          <label style={{ display: 'block', fontSize: 12, fontWeight: 600, marginBottom: 6, color: 'var(--text-secondary)' }}>
+          <label style={{ display: 'block', fontSize: 'var(--t-meta)', fontWeight: 600, marginBottom: 6, color: 'var(--text-secondary)' }}>
             {t('Nhà Cung Cấp / Nền Tảng (Provider)', 'Provider / Platform')}
           </label>
           <Select
@@ -120,7 +120,7 @@ export const ExternalDirectorModal = ({ open, onClose, onConfigSaved }) => {
 
         {/* Endpoint URL */}
         <div>
-          <label style={{ display: 'block', fontSize: 12, fontWeight: 600, marginBottom: 6, color: 'var(--text-secondary)' }}>
+          <label style={{ display: 'block', fontSize: 'var(--t-meta)', fontWeight: 600, marginBottom: 6, color: 'var(--text-secondary)' }}>
             {t('Địa Chỉ Endpoint URL', 'Endpoint URL')}
           </label>
           <Input
@@ -133,7 +133,7 @@ export const ExternalDirectorModal = ({ open, onClose, onConfigSaved }) => {
         {/* Model Name */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
           <div>
-            <label style={{ display: 'block', fontSize: 12, fontWeight: 600, marginBottom: 6, color: 'var(--text-secondary)' }}>
+            <label style={{ display: 'block', fontSize: 'var(--t-meta)', fontWeight: 600, marginBottom: 6, color: 'var(--text-secondary)' }}>
               {t('Tên Mô Hình (Model Name)', 'Model Name')}
             </label>
             <Input
@@ -143,7 +143,7 @@ export const ExternalDirectorModal = ({ open, onClose, onConfigSaved }) => {
             />
           </div>
           <div>
-            <label style={{ display: 'block', fontSize: 12, fontWeight: 600, marginBottom: 6, color: 'var(--text-secondary)' }}>
+            <label style={{ display: 'block', fontSize: 'var(--t-meta)', fontWeight: 600, marginBottom: 6, color: 'var(--text-secondary)' }}>
               {t('Khóa API Key (Nếu có)', 'API Key (Optional)')}
             </label>
             <Input.Password
@@ -156,7 +156,7 @@ export const ExternalDirectorModal = ({ open, onClose, onConfigSaved }) => {
 
         {/* Persona Style */}
         <div>
-          <label style={{ display: 'block', fontSize: 12, fontWeight: 600, marginBottom: 6, color: 'var(--text-secondary)' }}>
+          <label style={{ display: 'block', fontSize: 'var(--t-meta)', fontWeight: 600, marginBottom: 6, color: 'var(--text-secondary)' }}>
             {t('Giọng Điệu Chỉ Lệnh (Director Voice Style)', 'Director Persona Style')}
           </label>
           <Select
@@ -173,7 +173,7 @@ export const ExternalDirectorModal = ({ open, onClose, onConfigSaved }) => {
 
         {/* Temperature */}
         <div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, fontWeight: 600, marginBottom: 6 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 'var(--t-meta)', fontWeight: 600, marginBottom: 6 }}>
             <span>{t('Nhiệt Độ Sáng Tạo (Creativity Temperature)', 'Creativity Temperature')}</span>
             <span className="num">{config.temperature}</span>
           </div>
@@ -188,7 +188,7 @@ export const ExternalDirectorModal = ({ open, onClose, onConfigSaved }) => {
 
         {/* Test Connection Output */}
         {pingResult && (
-          <div style={{ padding: '8px 12px', background: pingResult.success ? 'rgba(78, 201, 176, 0.1)' : 'rgba(235, 87, 87, 0.1)', borderRadius: 6, border: `1px solid ${pingResult.success ? 'var(--state-success)' : 'var(--state-danger)'}`, fontSize: 13, display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div style={{ padding: '8px 12px', background: pingResult.success ? 'rgba(78, 201, 176, 0.1)' : 'rgba(235, 87, 87, 0.1)', borderRadius: 6, border: `1px solid ${pingResult.success ? 'var(--state-success)' : 'var(--state-danger)'}`, fontSize: 'var(--t-label)', display: 'flex', alignItems: 'center', gap: 8 }}>
             {pingResult.success ? <CheckCircle size={16} color="var(--state-success)" /> : <AlertTriangle size={16} color="var(--state-danger)" />}
             <span>{pingResult.message} {pingResult.latencyMs && `(${pingResult.latencyMs}ms)`}</span>
           </div>

@@ -61,7 +61,7 @@ export const CodexPage = () => {
         <div className="bar is-accent" style={{ height: 6 }} role="progressbar" aria-valuenow={unlockedCount} aria-valuemin={0} aria-valuemax={total}>
           <i style={{ transform: `scaleX(${Math.max(0, Math.min(100, pct)) / 100})` }} />
         </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 8, fontSize: 13 }} className="muted num">
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 8, fontSize: 'var(--t-label)' }} className="muted num">
           <span>
             {unlockedCount} {t('đã mở', 'unlocked')} · {pct}%
           </span>
@@ -88,7 +88,7 @@ export const CodexPage = () => {
 
       <section className="panel" style={{ marginTop: 16 }}>
         <div className="toolbar">
-          <span className="muted num" style={{ fontSize: 14 }}>
+          <span className="muted num" style={{ fontSize: 'var(--t-ui)' }}>
             {catUnlocked} / {inCategory.length} {t('đã mở trong nhóm này', 'unlocked in this group')}
           </span>
           <div className="seg" role="group" aria-label={t('Lọc', 'Filter')}>
@@ -131,7 +131,7 @@ export const CodexPage = () => {
                   </div>
                   <div className="record-status" style={{ display: 'grid', justifyItems: 'end', gap: 6 }}>
                     <span className="pill">{TIER_LABELS[rec.tier]?.[lang === 'en' ? 1 : 0] || rec.tier}</span>
-                    <span style={{ fontSize: 13, color: unlocked ? 'var(--good)' : 'var(--faint)' }}>
+                    <span style={{ fontSize: 'var(--t-label)', color: unlocked ? 'var(--good)' : 'var(--faint)' }}>
                       {unlocked ? t('Đã đạt', 'Unlocked') : t('Chưa mở', 'Locked')}
                     </span>
                   </div>

@@ -121,7 +121,7 @@ export const WeaverAiPage = () => {
           </div>
           <div className="panel-body">
             <p style={{ fontWeight: 500 }}>{lang === 'en' ? omen.nameEn : omen.nameVi}</p>
-            <p className="muted" style={{ fontSize: 14, marginTop: 4 }}>
+            <p className="muted" style={{ fontSize: 'var(--t-ui)', marginTop: 4 }}>
               {lang === 'en' ? omen.descEn : omen.descVi}
             </p>
           </div>
@@ -146,10 +146,10 @@ export const WeaverAiPage = () => {
                     {threads.map((th) => (
                       <div className="row" key={th.id}>
                         <div style={{ minWidth: 0 }}>
-                          <div className="num muted" style={{ fontSize: 13 }}>
+                          <div className="num muted" style={{ fontSize: 'var(--t-label)' }}>
                             {t(`Gieo tuổi ${th.plantedAtAge} → phát tác tuổi ${th.triggerAge}`, `Planted at ${th.plantedAtAge} → due at ${th.triggerAge}`)}
                           </div>
-                          <div style={{ fontSize: 14, marginTop: 2 }}>{th.reasonVi}</div>
+                          <div style={{ fontSize: 'var(--t-ui)', marginTop: 2 }}>{th.reasonVi}</div>
                         </div>
                         <span className={`pill ${th.fulfilled ? '' : 'pill-warn'}`}>
                           {th.fulfilled ? t('Đã trả quả', 'Resolved') : t('Đang ủ', 'Pending')}
@@ -177,11 +177,11 @@ export const WeaverAiPage = () => {
                   <div className="rows">
                     {(showAllNodes ? nodes : nodes.slice(0, LIST_CAP)).map((n) => (
                       <div className="row" key={n.id} style={{ alignItems: 'flex-start', justifyContent: 'flex-start' }}>
-                        <span className="num muted" style={{ width: 56, flex: 'none', fontSize: 13 }}>
+                        <span className="num muted" style={{ width: 56, flex: 'none', fontSize: 'var(--t-label)' }}>
                           {t('Tuổi', 'Age')} {n.age}
                         </span>
                         <div style={{ minWidth: 0 }}>
-                          <div style={{ fontSize: 14, fontWeight: 500 }}>{n.labelVi}</div>
+                          <div style={{ fontSize: 'var(--t-ui)', fontWeight: 500 }}>{n.labelVi}</div>
                           {n.outcomeVi && <div className="cell-sub">{n.outcomeVi}</div>}
                         </div>
                       </div>
@@ -206,7 +206,7 @@ export const WeaverAiPage = () => {
                 <div className="rows">
                   {decisions.map((log, i) => (
                     <div key={i} style={{ padding: '10px 0' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, fontSize: 13 }} className="muted num">
+                      <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, fontSize: 'var(--t-label)' }} className="muted num">
                         <span>
                           {t('Tuổi', 'Age')} {log.age} ·{' '}
                           {DRAMA_PHASES[log.phase] ? t(DRAMA_PHASES[log.phase].labelVi.split(' (')[0], DRAMA_PHASES[log.phase].labelEn) : log.phase}
@@ -215,8 +215,8 @@ export const WeaverAiPage = () => {
                           {t('Trọng số', 'Weight')} {log.utility}
                         </span>
                       </div>
-                      <div style={{ fontSize: 14, marginTop: 2 }}>
-                        <code style={{ fontSize: 13 }}>{log.selectedId}</code>
+                      <div style={{ fontSize: 'var(--t-ui)', marginTop: 2 }}>
+                        <code style={{ fontSize: 'var(--t-label)' }}>{log.selectedId}</code>
                       </div>
                       <div className="cell-sub">{log.reasonVi}</div>
                     </div>

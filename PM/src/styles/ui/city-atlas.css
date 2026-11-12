@@ -61,14 +61,14 @@
 .atlas-district polygon { fill: transparent; stroke: var(--atlas-line); stroke-width: 1.5; }
 .atlas-district text { font-family: var(--font); pointer-events: none; paint-order: stroke; }
 .atlas-district-letter { fill: var(--atlas-letter-fill); stroke: var(--atlas-label); stroke-width: 1.2; font-size: 40px; font-weight: 600; font-stretch: condensed; }
-.atlas-district-number { fill: var(--atlas-label); stroke: var(--atlas-land); stroke-width: 2; font-size: 14px; font-weight: 700; }
+.atlas-district-number { fill: var(--atlas-label); stroke: var(--atlas-land); stroke-width: 2; font-size: var(--t-ui); font-weight: 700; }
 .atlas-district.is-interactive { cursor: pointer; }
 .atlas-district.is-interactive:hover polygon, .atlas-district.is-interactive:focus-visible polygon { fill: var(--atlas-land-selected); stroke: var(--atlas-line-bright); stroke-width: 3; }
 .atlas-district:focus-visible { outline: none; }
 .atlas-district.is-interactive:focus-visible text { fill: var(--text); }
 .atlas-district.is-selected polygon { fill: var(--atlas-land-selected); fill-opacity: .45; stroke: var(--atlas-lens-edge); stroke-width: 3; }
 .atlas-district.is-selected text { fill: var(--text); }
-.atlas-outskirts-label { fill: var(--atlas-quiet); font-family: var(--font); font-size: 15px; }
+.atlas-outskirts-label { fill: var(--atlas-quiet); font-family: var(--font); font-size: var(--t-control); }
 .atlas-outskirts-hit { cursor: pointer; }
 .atlas-outskirts-hit circle { fill: var(--atlas-lens-fill); stroke: var(--atlas-line-bright); stroke-width: 2; }
 .atlas-outskirts-hit text { fill: var(--atlas-label); font-family: var(--font); font-size: 19px; font-weight: 700; pointer-events: none; }
@@ -78,10 +78,10 @@
 .atlas-lens > circle:last-of-type { fill: none; stroke: var(--atlas-lens-edge); stroke-width: var(--atlas-lens-line); }
 .atlas-lens-ground { fill: var(--atlas-surface); }
 .atlas-corner-label { position: absolute; left: 16px; bottom: 16px; display: flex; flex-direction: column; gap: 2px; min-width: 160px; max-width: min(50%, 276px); padding: 8px 12px; background: var(--atlas-note); pointer-events: none; }
-.atlas-corner-label strong { font-size: 16px; font-weight: 700; color: var(--text); }
-.atlas-corner-label span { font-size: 13px; color: var(--muted); overflow-wrap: break-word; }
+.atlas-corner-label strong { font-size: var(--t-lede); font-weight: 700; color: var(--text); }
+.atlas-corner-label span { font-size: var(--t-label); color: var(--muted); overflow-wrap: break-word; }
 .atlas-actions { display: flex; gap: 16px; align-items: center; min-height: 48px; }
-.atlas-actions button { min-height: 44px; color: var(--accent); font-size: 14px; font-weight: 600; text-decoration: underline; text-underline-offset: 4px; }
+.atlas-actions button { min-height: 44px; color: var(--accent); font-size: var(--t-ui); font-weight: 600; text-decoration: underline; text-underline-offset: 4px; }
 .atlas-actions button:hover { color: var(--accent-hover); }
 .atlas-actions button:active { transform: translateY(1px); }
 .atlas-actions button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
@@ -144,14 +144,14 @@
     min-width: 0;
   }
   .birth-atlas-strip-tag {
-    font-size: 11px;
+    font-size: var(--t-meta);
     font-weight: 700;
     letter-spacing: 0.06em;
     color: var(--accent);
     text-transform: uppercase;
   }
   .birth-atlas-strip-title {
-    font-size: 16px;
+    font-size: var(--t-lede);
     font-weight: 700;
     color: var(--text);
     line-height: 1.2;
@@ -160,7 +160,7 @@
     text-overflow: ellipsis;
   }
   .birth-atlas-strip-sub {
-    font-size: 12px;
+    font-size: var(--t-meta);
     color: var(--muted);
     line-height: 1.2;
     white-space: nowrap;
@@ -171,7 +171,7 @@
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    font-size: 12px;
+    font-size: var(--t-meta);
     font-weight: 600;
     color: var(--accent);
     background: color-mix(in srgb, var(--atlas-surface) 88%, transparent);
@@ -197,8 +197,8 @@
   .atlas-actions .atlas-start-action:hover { color: var(--accent-ink); background: var(--accent-hover); }
   .opening-story h1 { margin-bottom: 0; }
   .atlas-corner-label { position: relative; left: auto; bottom: auto; max-width: none; padding: 8px 12px 12px; }
-  .atlas-corner-label strong { font-size: 14px; }
-  .atlas-corner-label span { font-size: 12px; }
+  .atlas-corner-label strong { font-size: var(--t-ui); }
+  .atlas-corner-label span { font-size: var(--t-meta); }
   .atlas-district-letter { font-size: 40px; }
   .atlas-district-number { display: none; }
 }
@@ -210,9 +210,9 @@
     background: rgba(14, 13, 18, 0.7); border: 1px solid var(--border);
     border-radius: var(--radius-sm);
   }
-  .opening-atlas .atlas-note strong { font-size: 15px; margin-bottom: 2px; }
-  .opening-atlas .atlas-note p { font-size: 12.5px; line-height: 1.4; margin-bottom: 6px; }
-  .opening-atlas .atlas-note button { font-size: 12px; }
+  .opening-atlas .atlas-note strong { font-size: var(--t-control); margin-bottom: 2px; }
+  .opening-atlas .atlas-note p { font-size: var(--t-label); line-height: 1.4; margin-bottom: 6px; }
+  .opening-atlas .atlas-note button { font-size: var(--t-meta); }
   .atlas-corner-label { max-width: 68%; padding: 6px 10px 10px; }
   .atlas-district-letter { font-size: 32px; }
   .world-scene[data-world='title'] .world-sky::after { top: 6%; left: auto; right: 4%; width: 58px; height: 58px; box-shadow: inset -21px -3px 0 6px var(--atlas-eclipse-dark); }

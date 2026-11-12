@@ -48,7 +48,7 @@
 }
 .docket-district-tag {
   font-family: var(--font);
-  font-size: 12.5px;
+  font-size: var(--t-label);
   font-weight: 700;
   letter-spacing: 0.04em;
   color: var(--page-ink);
@@ -56,7 +56,7 @@
 }
 .docket-serial-code {
   font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace;
-  font-size: 12px;
+  font-size: var(--t-meta);
   letter-spacing: 0.04em;
   color: var(--page-muted);
 }
@@ -69,11 +69,11 @@
 /* A new year opens like a new chapter */
 .yearline { display: flex; align-items: baseline; gap: 12px; margin: 44px 0 14px; padding-top: 14px; border-top: 1px solid var(--page-edge); }
 .yearline:first-child { margin-top: 0; }
-.yearline span { font-family: var(--serif); font-size: 15px; color: var(--page-muted); }
+.yearline span { font-family: var(--serif); font-size: var(--t-control); color: var(--page-muted); }
 .yearline b { font-family: var(--serif); font-size: 24px; font-weight: 600; color: var(--accent); margin-right: 2px; transition: color 1.2s ease; }
 .season-divider { display: flex; align-items: center; gap: 12px; margin: 28px 0 12px; }
 .season-divider-line { flex: 1; height: 1px; background: var(--page-rule); }
-.season-divider-badge { font-family: var(--serif); font-style: italic; font-size: 14.5px; color: var(--page-muted); }
+.season-divider-badge { font-family: var(--serif); font-style: italic; font-size: var(--t-control); color: var(--page-muted); }
 
 /* A chapter card: the life has turned (a trade, a rank, E.G.O, Distortion, a Color). The new title set large between
    two rules, one italic line under it; no box, no shadow. This year's card draws itself in about 1.8 s. */
@@ -104,12 +104,12 @@
 @keyframes entryIn { from { opacity: 0; transform: translateY(10px); filter: blur(2px); } }
 .yearline, .season-divider { animation: entryIn .7s ease both; }
 .entry-header-row { display: flex; align-items: baseline; gap: 10px; margin-bottom: 4px; }
-.entry-tag { font-family: var(--font); font-size: 13px; font-weight: 600; color: var(--page-muted); }
+.entry-tag { font-family: var(--font); font-size: var(--t-label); font-weight: 600; color: var(--page-muted); }
 .entry-text { font-family: var(--serif); font-size: var(--story-size); line-height: var(--story-lead); color: var(--page-ink); text-wrap: pretty; }
 .entry-text + .entry-text { margin-top: 10px; }
 .entry-text.is-result { margin-top: 8px; }
 .entry-alt { margin-top: 6px; font-family: var(--serif); font-style: italic; font-size: calc(var(--story-size) - 2px); line-height: 1.65; color: var(--page-muted); }
-.entry-choice { margin: 2px 0 8px; padding-left: 12px; border-left: 2px solid var(--accent); font-size: 14.5px; font-weight: 600; color: var(--page-ink); }
+.entry-choice { margin: 2px 0 8px; padding-left: 12px; border-left: 2px solid var(--accent); font-size: var(--t-control); font-weight: 600; color: var(--page-ink); }
 .entry-choice.is-muted { border-left-color: var(--page-rule); color: var(--page-muted); font-weight: 500; }
 /* Turning points and dangers stand apart from daily life by their tag and a mark in the margin */
 .entry.k-bad, .entry.k-death, .entry.k-good, .entry.k-causal, .entry.k-contract, .entry.k-choice { position: relative; }
@@ -133,14 +133,14 @@
   font-family: var(--serif); font-size: calc(var(--story-size) - 1.5px); line-height: calc(var(--story-lead) - 0.06); color: var(--page-ink);
 }
 .entry-fold > summary::-webkit-details-marker { display: none; }
-.entry-fold > summary::after { content: attr(data-more); margin-left: 8px; white-space: nowrap; color: var(--page-muted); font-family: var(--font); font-size: 13px; text-decoration: underline; text-underline-offset: 3px; }
+.entry-fold > summary::after { content: attr(data-more); margin-left: 8px; white-space: nowrap; color: var(--page-muted); font-family: var(--font); font-size: var(--t-label); text-decoration: underline; text-underline-offset: 3px; }
 .entry-fold[open] > summary::after { content: none; }
 .entry-fold > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
 .entry-fold > .entry-text { margin-top: 4px; }
 .entry-fold-extra { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--page-rule); }
 .entry.is-compact-folded { margin-bottom: 10px; }
 @media (pointer: coarse), (max-width: 860px) { .entry-fold > summary { min-height: 44px; } }
-.settings-note { margin: -4px 0 12px; font-size: 13px; line-height: 1.5; color: var(--page-muted); }
+.settings-note { margin: -4px 0 12px; font-size: var(--t-label); line-height: 1.5; color: var(--page-muted); }
 
 /* Inscribed Major Turning Points & Milestones */
 .entry.is-major {
@@ -155,7 +155,7 @@
 .entry.is-major .entry-tag {
   color: var(--accent);
   font-weight: 700;
-  font-size: 14px;
+  font-size: var(--t-ui);
 }
 .entry.is-major .entry-text:first-of-type::first-letter {
   float: left;
@@ -169,7 +169,7 @@
 }
 .entry.k-summary { padding: 12px 14px; background: var(--surface); }
 .entry.k-summary .entry-text { font-size: calc(var(--story-size) - 1px); }
-.entry-review { margin-top: 10px; font-size: 14px; }
+.entry-review { margin-top: 10px; font-size: var(--t-ui); }
 .entry-review summary { display: inline-flex; min-height: 32px; align-items: center; font-weight: 600; color: var(--page-muted); text-decoration: underline; text-underline-offset: 4px; }
 .entry-review > p { margin: 6px 0; font-family: var(--serif); color: var(--page-muted); line-height: 1.6; }
 .entry-review ol { list-style: decimal; padding-left: 22px; display: flex; flex-direction: column; gap: 4px; color: var(--page-muted); }
@@ -184,7 +184,7 @@
 }
 .year-end-breakdown summary {
   cursor: pointer;
-  font-size: 13px;
+  font-size: var(--t-label);
   min-height: 24px;
   color: var(--muted);
   text-decoration: none;
@@ -205,7 +205,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 12.5px;
+  font-size: var(--t-label);
   padding: 2px 0;
 }
 
@@ -215,20 +215,20 @@
 }
 .entry.is-year-digest .entry-tag {
   color: var(--page-muted);
-  font-size: 12px;
+  font-size: var(--t-meta);
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
 .year-digest-fold {
   margin-top: 8px;
-  font-size: 13px;
+  font-size: var(--t-label);
   border-top: 1px dashed var(--page-rule);
   padding-top: 6px;
 }
 .year-digest-fold summary {
   cursor: pointer;
   color: var(--page-muted);
-  font-size: 12.5px;
+  font-size: var(--t-label);
   min-height: 28px;
   text-decoration: underline;
   text-underline-offset: 3px;
@@ -260,7 +260,7 @@
   gap: 8px;
 }
 .season-badge {
-  font-size: 11px;
+  font-size: var(--t-meta);
   font-weight: 600;
   color: var(--page-muted);
   background: color-mix(in srgb, var(--page-edge) 80%, transparent);
@@ -268,7 +268,7 @@
   border-radius: 3px;
 }
 .season-row-text {
-  font-size: 13px;
+  font-size: var(--t-label);
   color: var(--page-muted);
   line-height: 1.5;
   margin: 0;
@@ -280,14 +280,14 @@
 }
 .birth-extra-fold {
   margin-top: 4px;
-  font-size: 13px;
+  font-size: var(--t-label);
   border-top: 1px dashed var(--page-rule);
   padding-top: 6px;
 }
 .birth-extra-fold summary {
   cursor: pointer;
   color: var(--page-muted);
-  font-size: 12.5px;
+  font-size: var(--t-label);
   min-height: 28px;
   text-decoration: underline;
   text-underline-offset: 3px;
@@ -318,20 +318,20 @@
   padding-bottom: 0;
 }
 .birth-extra-tag {
-  font-size: 11px;
+  font-size: var(--t-meta);
   font-weight: 600;
   color: var(--page-muted);
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
 .birth-extra-text {
-  font-size: 13px;
+  font-size: var(--t-label);
   line-height: 1.5;
   color: var(--page-ink);
   margin: 0;
 }
 .birth-extra-alt {
-  font-size: 12px;
+  font-size: var(--t-meta);
   line-height: 1.4;
   color: var(--page-muted);
   margin: 0;
@@ -346,7 +346,7 @@
 .delta {
   display: inline-flex; align-items: center; gap: 5px; min-height: 24px; padding: 0 8px;
   border: 1px solid var(--border); border-radius: var(--radius-sm);
-  font-family: var(--font); font-size: 12.5px; font-weight: 500; color: var(--muted); white-space: nowrap;
+  font-family: var(--font); font-size: var(--t-label); font-weight: 500; color: var(--muted); white-space: nowrap;
   animation: deltaIn .35s ease backwards;
 }
 .delta b { font-weight: 700; font-variant-numeric: tabular-nums; }
@@ -357,7 +357,7 @@
 .delta.is-rare { color: var(--rare); border-color: color-mix(in srgb, var(--rare) 40%, transparent); }
 .delta.is-static { animation: none; }
 .delta-stat-dot { width: 6px; height: 6px; border-radius: 50%; flex: none; }
-.deltas-empty { font-size: 13.5px; color: var(--faint); }
+.deltas-empty { font-size: var(--t-ui); color: var(--faint); }
 @keyframes deltaIn { from { opacity: 0; transform: translateY(3px); } }
 
 .prologue-dock { display: flex; justify-content: flex-end; margin-top: 8px; }
@@ -399,7 +399,7 @@
 .dock-inner { display: flex; flex-direction: column; gap: 16px; }
 .dock-banner { display: flex; flex-direction: column; gap: 8px; }
 .dock-kicker-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-.dock-kicker { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 8px; font-size: 13.5px; font-weight: 600; color: var(--muted); min-width: 0; }
+.dock-kicker { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 8px; font-size: var(--t-ui); font-weight: 600; color: var(--muted); min-width: 0; }
 .dock-kicker-actions { display: inline-flex; align-items: center; gap: 8px; flex: none; }
 .dock-unseen-note { color: var(--gold); font-weight: 600; }
 .dock-peek-btn {
@@ -407,7 +407,7 @@
   min-height: 32px; min-width: 32px; padding: 0 10px;
   border: 1px solid var(--border); border-radius: var(--radius-sm);
   background: var(--surface); color: var(--muted);
-  font-size: 12.5px; font-weight: 600; white-space: nowrap; cursor: pointer;
+  font-size: var(--t-label); font-weight: 600; white-space: nowrap; cursor: pointer;
   transition: color .15s ease, border-color .15s ease, background-color .15s ease;
 }
 .dock-peek-btn:hover, .dock-peek-btn:focus-visible { color: var(--text); border-color: var(--accent); background: var(--raised); }
@@ -416,34 +416,34 @@
 .dock-kicker.is-causal .dock-kicker-icon { color: var(--rare); }
 .dock-kicker.is-outcome .dock-kicker-icon { color: var(--good); }
 .dock-kicker.is-dead, .dock-kicker.is-dead .dock-kicker-icon { color: var(--bad); }
-.dock-hotkey-hint { font-size: 12.5px; color: var(--page-muted, #c4baa9); white-space: nowrap; }
+.dock-hotkey-hint { font-size: var(--t-label); color: var(--page-muted, #c4baa9); white-space: nowrap; }
 .dock-title { font-family: var(--serif); font-size: 26px; font-weight: 600; line-height: 1.2; text-wrap: balance; margin: 0; }
 .dock-text { font-family: var(--serif); font-size: var(--story-size); line-height: var(--story-lead); color: var(--story); text-wrap: pretty; white-space: pre-line; }
 .dock .entry-alt { color: var(--muted); }
-.year-leads-intro { font-family: var(--serif); font-size: 16px; line-height: 1.6; color: var(--story); }
+.year-leads-intro { font-family: var(--serif); font-size: var(--t-lede); line-height: 1.6; color: var(--story); }
 
 .countdown-wrap { display: flex; align-items: center; gap: 10px; }
 .countdown { flex: 1; height: 2px; background: var(--raised); overflow: hidden; }
 .countdown i { display: block; height: 100%; background: var(--accent); transform-origin: left; transition: transform .2s linear; }
-.countdown-badge { font-size: 12.5px; font-variant-numeric: tabular-nums; color: var(--muted); white-space: nowrap; }
+.countdown-badge { font-size: var(--t-label); font-variant-numeric: tabular-nums; color: var(--muted); white-space: nowrap; }
 .countdown-pause-btn {
   display: inline-flex; align-items: center; gap: 5px;
   min-height: 28px; padding: 0 9px;
   border: 1px solid var(--border); border-radius: var(--radius-sm);
   background: var(--surface); color: var(--text);
-  font-size: 12px; font-weight: 600; white-space: nowrap; cursor: pointer;
+  font-size: var(--t-meta); font-weight: 600; white-space: nowrap; cursor: pointer;
 }
 .countdown-pause-btn:hover, .countdown-pause-btn:focus-visible { border-color: var(--accent); background: var(--raised); }
 .countdown-pause-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .choice-cost-chip { margin-left: 6px; }
 
-.causal-echo-badge { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border: 1px solid rgba(156, 192, 240, 0.35); border-radius: var(--radius-sm); background: color-mix(in srgb, var(--rare) 7%, var(--surface)); font-size: 14px; line-height: 1.5; color: var(--muted); }
+.causal-echo-badge { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border: 1px solid rgba(156, 192, 240, 0.35); border-radius: var(--radius-sm); background: color-mix(in srgb, var(--rare) 7%, var(--surface)); font-size: var(--t-ui); line-height: 1.5; color: var(--muted); }
 .causal-icon { color: var(--rare); margin-top: 2px; }
 .companion-contract-banner {
   display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline;
   width: 100%; padding: 10px 12px;
   border: 1px solid var(--border); border-radius: var(--radius-sm);
-  text-align: left; font-size: 13px; line-height: 1.5;
+  text-align: left; font-size: var(--t-label); line-height: 1.5;
   color: var(--text); background: var(--surface);
 }
 .companion-contract-banner.is-friction {
@@ -457,20 +457,20 @@
 }
 .companion-contract-banner.is-synergy strong { color: var(--good); }
 .contract-choice-top { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: baseline; }
-.contract-choice-pay { font-size: 13.5px; white-space: nowrap; }
+.contract-choice-pay { font-size: var(--t-ui); white-space: nowrap; }
 
 /* Inner voices (the Disco Elysium move): set as a margin note */
 .disco-psyche-card { border: 1px solid rgba(156, 192, 240, 0.35); border-radius: var(--radius-sm); background: color-mix(in srgb, var(--rare) 5%, transparent); padding: 8px 12px; }
-.disco-psyche-header { display: flex; align-items: center; gap: 8px; min-height: 32px; font-size: 13.5px; font-weight: 600; color: var(--muted); }
+.disco-psyche-header { display: flex; align-items: center; gap: 8px; min-height: 32px; font-size: var(--t-ui); font-weight: 600; color: var(--muted); }
 .disco-psyche-faculty { color: var(--rare); }
-.disco-psyche-voice { font-family: var(--serif); font-style: italic; font-size: 16px; line-height: 1.6; color: var(--story); margin-top: 4px; }
+.disco-psyche-voice { font-family: var(--serif); font-style: italic; font-size: var(--t-lede); line-height: 1.6; color: var(--story); margin-top: 4px; }
 
 /* Choices: an index in the margin, the words, and what it will cost */
 .choices { display: flex; flex-direction: column; gap: 8px; counter-reset: none; }
 .dungeon-entry-wager { border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px; margin: 0 0 16px; color: var(--story); }
 .dungeon-entry-wager legend { padding: 0 5px; color: var(--text); font-weight: 600; }
 .dungeon-entry-wager p { margin: 3px 0 10px; line-height: 1.45; }
-.dungeon-entry-wager small { display: block; margin-top: 9px; font-size: 12.5px; color: var(--muted); line-height: 1.4; }
+.dungeon-entry-wager small { display: block; margin-top: 9px; font-size: var(--t-label); color: var(--muted); line-height: 1.4; }
 .dungeon-entry-options { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
 .dungeon-entry-options button { min-height: 44px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); color: var(--text); cursor: pointer; }
 .dungeon-entry-options button.is-selected { border-color: var(--accent); background: var(--raised); }
@@ -503,7 +503,7 @@
 .choice-badge {
   display: grid; place-items: center; width: 28px; height: 28px; margin-top: -2px;
   border: 1px solid var(--border); border-radius: 50%;
-  font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--muted);
+  font-size: var(--t-label); font-weight: 700; font-variant-numeric: tabular-nums; color: var(--muted);
   background: rgba(0, 0, 0, 0.2);
   transition: border-color .15s ease, color .15s ease, background-color .15s ease;
 }
@@ -517,12 +517,12 @@
 .choice-content { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
 .choice-content > div:first-child { display: flex; justify-content: space-between; gap: 10px; }
 .choice-label { font-size: var(--choice-size); font-weight: 500; line-height: 1.45; }
-.choice-alt { font-size: 13.5px; color: var(--muted); font-style: italic; }
+.choice-alt { font-size: var(--t-ui); color: var(--muted); font-style: italic; }
 .choice.is-disabled, .choice:disabled { opacity: .72; cursor: not-allowed; border-color: var(--page-edge); background: rgba(0, 0, 0, 0.18); box-shadow: none; }
 .choice.is-disabled .choice-label, .choice:disabled .choice-label { color: var(--page-muted); }
 .choice-need {
   display: inline-block;
-  font-size: 12px;
+  font-size: var(--t-meta);
   font-weight: 600;
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.02em;
@@ -543,7 +543,7 @@
 }
 .contract-stakes-tag {
   display: inline-block;
-  font-size: 12px;
+  font-size: var(--t-meta);
   font-weight: 600;
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.02em;
@@ -571,8 +571,8 @@
   border: 1px solid var(--border); border-radius: var(--radius-sm);
   font-family: var(--font); white-space: nowrap;
 }
-.preview-odds-label { font-size: 12.5px; font-weight: 500; color: var(--muted); }
-.preview-odds b { font-size: 14px; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1; }
+.preview-odds-label { font-size: var(--t-label); font-weight: 500; color: var(--muted); }
+.preview-odds b { font-size: var(--t-ui); font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1; }
 .preview-odds.is-high b { color: var(--good); }
 .preview-odds.is-mid b { color: var(--warn); }
 .preview-odds.is-low b { color: var(--bad); }
@@ -581,12 +581,12 @@
 .preview-odds.is-low { border-color: color-mix(in srgb, var(--bad) 35%, var(--border)); }
 .choice-lasting {
   flex-basis: 100%;
-  font-size: 12.5px;
+  font-size: var(--t-label);
   line-height: 1.4;
   color: color-mix(in srgb, var(--gold) 85%, var(--text));
   margin-top: 2px;
 }
-.disco-check-pill { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 12.5px; }
+.disco-check-pill { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: var(--t-label); }
 .check-tag { padding: 2px 8px; border: 1px solid var(--text); border-radius: var(--radius-sm); font-weight: 600; }
 .check-tag b { font-variant-numeric: tabular-nums; }
 .disco-check-pill.is-red .check-tag { border-color: var(--bad); color: var(--bad); }
@@ -597,26 +597,26 @@
 /* Contract odds: one stacked rule, the death share in red */
 .odds { display: flex; flex-direction: column; gap: 6px; }
 .odds .stack-bar { height: 4px; }
-.odds-legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12.5px; color: var(--muted); }
+.odds-legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: var(--t-label); color: var(--muted); }
 .odds-legend > span { display: inline-flex; align-items: center; gap: 5px; }
 
 /* Year leads */
 .year-leads-list { display: flex; flex-direction: column; gap: 8px; }
 .year-lead { display: flex; flex-direction: column; gap: 6px; width: 100%; padding: 14px 16px; text-align: left; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); }
 .year-lead:hover { border-color: var(--text); background: var(--raised); }
-.year-lead-meta { display: flex; justify-content: space-between; gap: 12px; font-size: 12.5px; font-weight: 600; color: var(--muted); }
+.year-lead-meta { display: flex; justify-content: space-between; gap: 12px; font-size: var(--t-label); font-weight: 600; color: var(--muted); }
 .year-lead-meta span:first-child { font-variant-numeric: tabular-nums; }
 .year-lead.is-danger { border-color: rgba(255, 111, 102, 0.45); background: color-mix(in srgb, var(--bad) 6%, var(--surface)); }
 .year-lead.is-danger .year-lead-meta span:last-child { color: var(--bad); }
 .year-lead.is-forbidden { border: 1px solid color-mix(in srgb, var(--bad) 55%, var(--border)); background: color-mix(in srgb, var(--bad) 8%, var(--surface)); }
 .year-lead.is-forbidden .year-lead-meta span:last-child { color: var(--bad); }
-.year-lead-warning { font-size: 13px; line-height: 1.45; color: var(--text); padding-top: 6px; border-top: 1px solid var(--rule); }
+.year-lead-warning { font-size: var(--t-label); line-height: 1.45; color: var(--text); padding-top: 6px; border-top: 1px solid var(--rule); }
 .year-lead strong { font-family: var(--serif); font-size: 18px; font-weight: 600; line-height: 1.3; }
-.year-lead-copy { color: var(--muted); font-size: 14.5px; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-.year-lead-outlook { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 13px; }
+.year-lead-copy { color: var(--muted); font-size: var(--t-control); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.year-lead-outlook { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: var(--t-label); }
 .year-lead-outlook .is-gain { color: var(--good); }
 .year-lead-outlook .is-cost { color: var(--bad); }
-.year-leads-note { font-size: 13px; color: var(--faint); }
+.year-leads-note { font-size: var(--t-label); color: var(--faint); }
 .year-lead:disabled { opacity: .45; cursor: not-allowed; }
 .year-lead:disabled:hover { border-color: var(--border); background: var(--surface); }
 .year-plan-leads { display: flex; flex-direction: column; gap: 10px; margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--rule); }
@@ -624,12 +624,12 @@
 
 /* Outcome */
 .resolution-choice-pill { display: flex; flex-direction: column; gap: 2px; padding-left: 12px; border-left: 2px solid var(--accent); }
-.choice-pill-label { font-size: 12.5px; color: var(--muted); }
-.choice-pill-text { font-size: 15px; font-weight: 600; }
+.choice-pill-label { font-size: var(--t-label); color: var(--muted); }
+.choice-pill-text { font-size: var(--t-control); font-weight: 600; }
 .resolution-deltas-section { display: flex; flex-direction: column; gap: 6px; padding-top: 12px; border-top: 1px solid var(--rule); }
-.deltas-title { font-size: 13px; font-weight: 600; color: var(--muted); }
+.deltas-title { font-size: var(--t-label); font-weight: 600; color: var(--muted); }
 .resolution-deltas-section .deltas { margin-top: 0; }
-.resolution-death-banner { display: flex; gap: 10px; align-items: center; padding: 12px 14px; border: 1px solid var(--bad); color: var(--bad); font-size: 14.5px; line-height: 1.5; }
+.resolution-death-banner { display: flex; gap: 10px; align-items: center; padding: 12px 14px; border: 1px solid var(--bad); color: var(--bad); font-size: var(--t-control); line-height: 1.5; }
 .dock.is-dead .dock-title { color: var(--bad); }
 .dock.is-dead { border: 1px solid var(--bad); }
 .resolution-actions { margin-top: 4px; }
@@ -640,7 +640,7 @@
   position: fixed; z-index: 46; right: 20px; top: calc(var(--top) + 76px);
   display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px;
   border: 1px solid var(--border); border-radius: 999px; background: var(--surface-solid); color: var(--text);
-  font-size: 13.5px; font-weight: 600; box-shadow: var(--shadow-pop);
+  font-size: var(--t-ui); font-weight: 600; box-shadow: var(--shadow-pop);
 }
 
 @media (max-width: 860px) {
@@ -673,7 +673,7 @@
     color: #121316;
     border: 1px solid #e6c57e;
     border-radius: 999px;
-    font-size: 14.5px;
+    font-size: var(--t-control);
     font-weight: 700;
     letter-spacing: 0.02em;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.35);
@@ -714,7 +714,7 @@
   .event-peek-toggle { top: auto; right: 50%; transform: translateX(50%); bottom: calc(var(--bottom) + 12px); z-index: 50; min-height: 44px; padding: 0 18px; }
   .dock { padding: 18px 16px 22px; }
   .dock .choices { padding-bottom: 12px; }
-  .dock-title { font-size: 22px; }
+  .dock-title { font-size: calc(var(--story-size) + 5px); }
   .dock-hotkey-hint { display: none; }
   .dock-peek-btn { min-height: 44px; min-width: 44px; padding: 0 12px; }
   .countdown-pause-btn { min-height: 44px; padding: 0 12px; }
@@ -732,9 +732,9 @@
     transform: scale(0.985);
     background: var(--raised);
   }
-  .choice-badge { width: 28px; height: 28px; font-size: 13px; font-weight: 700; border-radius: 4px; }
+  .choice-badge { width: 28px; height: 28px; font-size: var(--t-label); font-weight: 700; border-radius: 4px; }
   .choice-label { font-size: calc(var(--choice-size) - 1px); font-weight: 600; line-height: 1.45; }
-  .resolution-actions .resolution-btn { min-height: 50px; font-size: 15.5px; font-weight: 700; }
+  .resolution-actions .resolution-btn { min-height: 50px; font-size: var(--t-control); font-weight: 700; }
 
   /* Đợt 118a: Thẻ minor gọn hơn trên mobile (390x844) */
   .dock.is-minor {
@@ -750,13 +750,13 @@
     margin-bottom: 2px;
   }
   .dock.is-minor .dock-title {
-    font-size: 18px;
+    font-size: calc(var(--story-size) + 1px);
     line-height: 1.25;
     margin-bottom: 3px;
   }
   .dock.is-minor .dock-text {
-    font-size: 13.5px;
-    line-height: 1.45;
+    font-size: calc(var(--story-size) - 2px);
+    line-height: 1.5;
     margin: 3px 0 8px;
   }
   .dock.is-minor .choices {
@@ -771,10 +771,10 @@
   .dock.is-minor .choice-badge {
     width: 24px;
     height: 24px;
-    font-size: 12px;
+    font-size: var(--t-meta);
   }
   .dock.is-minor .choice-label {
-    font-size: 13.5px;
+    font-size: calc(var(--choice-size) - 1.5px);
     line-height: 1.35;
   }
   .preview.is-minor-preview {
@@ -822,7 +822,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 13px;
+    font-size: var(--t-label);
     font-weight: 700;
     color: var(--gold);
     border: 1px solid color-mix(in srgb, var(--gold) 40%, transparent);
@@ -843,24 +843,26 @@
 
 @media (max-width: 480px) {
   .log-col { padding: 16px 12px 88px; }
-  .entry-text { font-size: calc(var(--story-size) - 1.5px); line-height: 1.62; }
+  /* Reading is the main activity on a phone too: the story keeps the 16px floor at the default size and
+     follows the text-size setting; a routine entry sits one step quieter, not two */
+  .entry-text { font-size: calc(var(--story-size) - 1px); line-height: 1.64; }
   .entry.t-quiet .entry-text,
-  .entry-fold > summary { font-size: calc(var(--story-size) - 2.5px); }
+  .entry-fold > summary { font-size: calc(var(--story-size) - 1.5px); line-height: 1.6; }
   .entry-title { font-size: calc(var(--story-size) + 1px); }
   .dock { padding: 14px 12px 18px; }
-  .dock-title { font-size: 20px; }
-  .dock-text { font-size: calc(var(--story-size) - 2px); line-height: 1.58; }
+  .dock-title { font-size: calc(var(--story-size) + 3px); }
+  .dock-text { font-size: calc(var(--story-size) - 1px); line-height: 1.62; }
   .dock-peek-btn { padding: 0 10px; }
   .dock-peek-btn span { display: none; }
   .choice { padding: 10px 10px 10px 8px; gap: 8px; }
-  .choice-label { font-size: calc(var(--choice-size) - 1.5px); }
+  .choice-label { font-size: calc(var(--choice-size) - 1px); }
 
   .dock.is-minor { padding: 10px 8px 12px; }
-  .dock.is-minor .dock-title { font-size: 17px; line-height: 1.2; }
-  .dock.is-minor .dock-text { font-size: 13px; line-height: 1.4; margin: 2px 0 6px; }
+  .dock.is-minor .dock-title { font-size: calc(var(--story-size) + 0.5px); line-height: 1.2; }
+  .dock.is-minor .dock-text { font-size: calc(var(--story-size) - 2px); line-height: 1.48; margin: 2px 0 6px; }
   .dock.is-minor .choices { gap: 5px; }
   .dock.is-minor .choice { padding: 6px 48px 6px 8px; min-height: 44px; }
-  .dock.is-minor .choice-label { font-size: 13px; }
+  .dock.is-minor .choice-label { font-size: calc(var(--choice-size) - 1.5px); line-height: 1.35; }
 }
 
 @media (min-width: 861px) {
@@ -888,18 +890,18 @@
 .life-end-actions { display: grid; justify-items: center; gap: 10px; width: min(100%, 360px); }
 .life-end-actions .btn { width: 100%; justify-content: center; }
 .life-end-record { outline: none; }
-.epitaph-kicker-origin { text-align: center; font-family: var(--serif); font-style: italic; font-size: 16px; color: var(--page-muted); }
+.epitaph-kicker-origin { text-align: center; font-family: var(--serif); font-style: italic; font-size: var(--t-lede); color: var(--page-muted); }
 .epitaph-age { display: flex; justify-content: center; align-items: baseline; gap: 10px; font-family: var(--serif); font-size: clamp(58px, 7vw, 76px); font-weight: 600; line-height: .9; color: var(--page-ink); font-variant-numeric: lining-nums; }
 .epitaph-age span { font-size: 22px; font-weight: 400; color: var(--page-muted); }
-.epitaph-cause { text-align: center; font-size: 15.5px; font-weight: 600; color: var(--bad); }
+.epitaph-cause { text-align: center; font-size: var(--t-control); font-weight: 600; color: var(--bad); }
 .epitaph-poetic-quote { margin: 0 auto; max-width: 34em; text-align: center; font-family: var(--serif); font-style: italic; font-size: calc(var(--story-size) + 1px); line-height: 1.6; color: var(--page-ink); }
 .epitaph-signature { position: relative; display: grid; justify-items: center; gap: 7px; padding: 24px 18px 20px; border-block: 1px solid var(--gold); text-align: center; background: var(--gold-soft); }
 .epitaph-signature::before { content: ''; position: absolute; inset: 5px 0; border-block: 1px solid var(--page-edge); pointer-events: none; }
-.epitaph-signature-label, .epitaph-signature-tier { font-size: 12px; color: var(--gold); }
+.epitaph-signature-label, .epitaph-signature-tier { font-size: var(--t-meta); color: var(--gold); }
 .epitaph-signature strong { max-width: 22ch; font-family: var(--serif); font-size: clamp(24px, 4vw, 38px); font-weight: 600; line-height: 1.15; overflow-wrap: break-word; }
-.epitaph-signature p { max-width: 48ch; margin: 0; font-size: 14px; line-height: 1.5; color: var(--page-muted); }
+.epitaph-signature p { max-width: 48ch; margin: 0; font-size: var(--t-ui); line-height: 1.5; color: var(--page-muted); }
 .epitaph-records-disclosure { border-top: 1px solid var(--page-rule); }
-.epitaph-records-disclosure > summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; color: var(--gold); font-size: 14px; font-weight: 600; list-style: none; }
+.epitaph-records-disclosure > summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; color: var(--gold); font-size: var(--t-ui); font-weight: 600; list-style: none; }
 .epitaph-records-disclosure > summary::-webkit-details-marker { display: none; }
 .epitaph-records-disclosure > summary::before { content: '+'; display: inline-block; width: 22px; font-size: 20px; font-weight: 400; }
 .epitaph-records-disclosure[open] > summary::before { content: '−'; }
@@ -908,24 +910,24 @@
 .epitaph-facts + .epitaph-facts { border-top: 0; margin-top: -22px; }
 .epitaph-fact-card { display: flex; flex-direction: column; gap: 4px; padding: 12px 14px 12px 0; }
 .epitaph-fact-card + .epitaph-fact-card { padding-left: 14px; border-left: 1px solid var(--page-rule); }
-.epitaph-fact-card > span { font-size: 12.5px; color: var(--page-muted); }
-.epitaph-fact-card > b { font-family: var(--serif); font-size: 16px; font-weight: 600; line-height: 1.3; }
+.epitaph-fact-card > span { font-size: var(--t-label); color: var(--page-muted); }
+.epitaph-fact-card > b { font-family: var(--serif); font-size: var(--t-lede); font-weight: 600; line-height: 1.3; }
 .epitaph-fact-card .is-pos-life { color: var(--good); }
 .epitaph-fact-card .is-neg-life { color: var(--bad); }
 .epitaph-panel { display: flex; flex-direction: column; gap: 12px; }
 .epitaph-panel-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--page-edge); }
 .epitaph-panel-head h2, .epitaph-panel-head h3 { display: flex; align-items: baseline; gap: 8px; font-size: 20px; color: var(--page-ink); margin: 0; }
-.epitaph-panel-sub { font-size: 13px; color: var(--page-muted); }
-.epitaph-subtoggle { font-size: 13.5px; font-weight: 600; color: var(--page-muted); text-decoration: underline; text-underline-offset: 4px; min-height: 32px; }
+.epitaph-panel-sub { font-size: var(--t-label); color: var(--page-muted); }
+.epitaph-subtoggle { font-size: var(--t-ui); font-weight: 600; color: var(--page-muted); text-decoration: underline; text-underline-offset: 4px; min-height: 32px; }
 .epitaph-story-paragraphs { display: flex; flex-direction: column; gap: 12px; }
 .epitaph-story-p { font-family: var(--serif); font-size: var(--story-size); line-height: var(--story-lead); color: var(--page-ink); }
 .epitaph-story-p.is-alt { font-style: italic; color: var(--page-muted); font-size: calc(var(--story-size) - 2px); }
 .epitaph-turning-points { margin-top: 6px; }
-.turning-points-heading { font-size: 13.5px; font-weight: 600; color: var(--page-muted); margin-bottom: 8px; }
+.turning-points-heading { font-size: var(--t-ui); font-weight: 600; color: var(--page-muted); margin-bottom: 8px; }
 .turning-points-list { display: flex; flex-direction: column; }
 .tp-item { display: grid; grid-template-columns: 70px minmax(0, 1fr); gap: 12px; padding: 10px 0; border-top: 1px solid var(--page-rule); }
-.tp-age { font-size: 13px; font-weight: 600; color: var(--page-muted); font-variant-numeric: tabular-nums; padding-top: 1px; }
-.tp-content { display: flex; flex-direction: column; gap: 3px; font-size: 14.5px; line-height: 1.5; }
+.tp-age { font-size: var(--t-label); font-weight: 600; color: var(--page-muted); font-variant-numeric: tabular-nums; padding-top: 1px; }
+.tp-content { display: flex; flex-direction: column; gap: 3px; font-size: var(--t-control); line-height: 1.5; }
 .tp-title { color: var(--page-ink); font-weight: 600; }
 .tp-summary { color: var(--page-ink); }
 .tp-title + .tp-summary { color: var(--page-muted); }
@@ -937,7 +939,7 @@
   border-bottom: 1px solid var(--page-rule);
 }
 .spotlight-section-kicker {
-  font-size: 12px;
+  font-size: var(--t-meta);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   font-weight: 700;
@@ -978,7 +980,7 @@
   align-items: center;
 }
 .spotlight-rarity-pill {
-  font-size: 12px;
+  font-size: var(--t-meta);
   font-weight: 700;
   text-transform: uppercase;
   padding: 2px 7px;
@@ -1000,33 +1002,33 @@
   background: rgba(216, 178, 101, 0.15);
 }
 .spotlight-record-title {
-  font-size: 15px;
+  font-size: var(--t-control);
   font-weight: 700;
   color: var(--page-ink);
   margin: 0;
   line-height: 1.35;
 }
 .spotlight-record-hint {
-  font-size: 12.5px;
+  font-size: var(--t-label);
   color: var(--page-muted);
   margin: 0;
   line-height: 1.45;
 }
 .standard-records-kicker {
-  font-size: 12px;
+  font-size: var(--t-meta);
   font-weight: 600;
   color: var(--muted);
   margin: 4px 0 8px 0;
 }
-.records-new-count { font-family: var(--font); font-size: 12.5px; font-weight: 700; color: var(--accent); }
+.records-new-count { font-family: var(--font); font-size: var(--t-label); font-weight: 700; color: var(--accent); }
 .epitaph-records-list { display: flex; flex-direction: column; }
 .epitaph-record-row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--page-rule); }
 .record-row-left { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
 .record-row-text { display: grid; gap: 3px; min-width: 0; }
-.record-row-title { font-size: 14.5px; font-weight: 600; }
-.record-row-hint { font-size: 12.5px; line-height: 1.4; color: var(--page-muted); }
-.record-new-badge { font-size: 12px; font-weight: 700; color: var(--accent); }
-.record-row-rarity { font-size: 12.5px; color: var(--page-muted); white-space: nowrap; }
+.record-row-title { font-size: var(--t-control); font-weight: 600; }
+.record-row-hint { font-size: var(--t-label); line-height: 1.4; color: var(--page-muted); }
+.record-new-badge { font-size: var(--t-meta); font-weight: 700; color: var(--accent); }
+.record-row-rarity { font-size: var(--t-label); color: var(--page-muted); white-space: nowrap; }
 .epitaph-record-row.tier-rare .record-row-rarity, .epitaph-record-row.tier-epic .record-row-rarity { color: var(--rare); }
 .epitaph-record-row.tier-legendary .record-row-rarity, .epitaph-record-row.tier-legend .record-row-rarity { color: var(--gold); }
 .epitaph-record-row.tier-myth .record-row-rarity, .epitaph-record-row.tier-miracle .record-row-rarity { color: #e5a4ff; text-shadow: 0 0 6px rgba(229,164,255,0.4); }
@@ -1035,12 +1037,12 @@
 .epitaph-record-row.is-new-record { background: rgba(216, 178, 101, 0.08); }
 .epitaph-stat-bars { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 24px; }
 .epitaph-stat-row { display: flex; flex-direction: column; gap: 5px; }
-.epitaph-stat-head { display: flex; justify-content: space-between; font-size: 13.5px; color: var(--page-muted); }
+.epitaph-stat-head { display: flex; justify-content: space-between; font-size: var(--t-ui); color: var(--page-muted); }
 .epitaph-stat-head b { color: var(--page-ink); }
 .epitaph-stat-track { height: 3px; background: var(--page-rule); }
 .epitaph-stat-fill { display: block; height: 100%; background: var(--accent); }
 .epitaph-life-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-.epitaph-tag-pill { padding: 2px 9px; border: 1px solid var(--page-edge); border-radius: 999px; font-size: 12.5px; font-weight: 600; color: var(--page-muted); }
+.epitaph-tag-pill { padding: 2px 9px; border: 1px solid var(--page-edge); border-radius: 999px; font-size: var(--t-label); font-weight: 600; color: var(--page-muted); }
 
 /* Successor of Fate Archetype Display */
 .epitaph-successor-card {
@@ -1060,7 +1062,7 @@
   flex-wrap: wrap;
 }
 .successor-label {
-  font-size: 13px;
+  font-size: var(--t-label);
   font-weight: 600;
   color: var(--page-muted);
   text-transform: uppercase;
@@ -1068,7 +1070,7 @@
 }
 .successor-badge {
   display: inline-block;
-  font-size: 12px;
+  font-size: var(--t-meta);
   font-weight: 700;
   padding: 2px 9px;
   background: var(--accent-soft, rgba(210, 59, 59, 0.16));
@@ -1078,7 +1080,7 @@
 }
 .successor-intro {
   font-family: var(--serif);
-  font-size: 14.5px;
+  font-size: var(--t-control);
   line-height: 1.5;
   color: var(--page-ink);
   font-style: italic;
@@ -1099,14 +1101,14 @@
 }
 .birth-legacy-intro {
   font-family: var(--serif);
-  font-size: 14px;
+  font-size: var(--t-ui);
   line-height: 1.5;
   color: var(--muted);
   font-style: italic;
   margin: 0;
 }
 .birth-legacy-relic {
-  font-size: 13.5px;
+  font-size: var(--t-ui);
   color: var(--text);
   margin: 0;
 }
@@ -1116,7 +1118,7 @@
 .epitaph-utility-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; width: 100%; }
 .epitaph-utility-row .btn { min-height: 44px; justify-content: center; }
 .epitaph-secondary-actions { display: flex; flex-wrap: wrap; gap: 6px 10px; justify-content: center; }
-.epitaph-seed-footer { text-align: center; font-size: 12.5px; color: var(--page-muted); }
+.epitaph-seed-footer { text-align: center; font-size: var(--t-label); color: var(--page-muted); }
 .epitaph.is-special-ending { border-top-color: var(--gold); }
 @media (max-width: 860px) {
   .epitaph-subtoggle { min-height: 44px; }
@@ -1135,7 +1137,7 @@
     justify-content: space-between;
   }
   .record-row-rarity {
-    font-size: 12px;
+    font-size: var(--t-meta);
     align-self: flex-start;
   }
   .epitaph-secondary-actions .btn { min-height: 44px; }
@@ -1148,25 +1150,25 @@
 .year-plan-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; margin: 0 0 .75rem; }
 .year-plan-remaining { color: var(--accent); font-weight: 700; margin: 0; }
 .year-plan-quick-btns { display: inline-flex; flex-wrap: wrap; gap: 6px; }
-.year-plan-reuse { min-height: 36px; margin: 0; padding: .4rem .75rem; color: var(--text); background: var(--surface-solid); border: 1px solid var(--control); border-radius: var(--radius); font: inherit; font-size: 13px; cursor: pointer; }
+.year-plan-reuse { min-height: 36px; margin: 0; padding: .4rem .75rem; color: var(--text); background: var(--surface-solid); border: 1px solid var(--control); border-radius: var(--radius); font: inherit; font-size: var(--t-label); cursor: pointer; }
 .year-plan-reuse.is-quiet { background: transparent; color: var(--muted); border-color: var(--border); }
 .year-plan-reuse:hover { border-color: var(--accent); color: var(--accent); }
 .year-plan-reuse:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .year-plan-activities { display: grid; gap: .5rem; }
 .year-plan-activity { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: .7rem .8rem; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); }
 .year-plan-slot-idx { color: var(--muted); font-variant-numeric: tabular-nums; margin-right: 2px; }
-.year-plan-net-summary { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: .75rem; padding: 8px 12px; background: var(--surface-subtle, rgba(255, 255, 255, 0.03)); border: 1px dashed var(--border); border-radius: 8px; font-size: 13px; }
+.year-plan-net-summary { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: .75rem; padding: 8px 12px; background: var(--surface-subtle, rgba(255, 255, 255, 0.03)); border: 1px dashed var(--border); border-radius: 8px; font-size: var(--t-label); }
 .net-summary-title { font-weight: 600; color: var(--muted); margin-right: 4px; }
 .net-summary-chips { display: inline-flex; flex-wrap: wrap; gap: 6px; }
-.delta-companion-sub { margin-left: 4px; font-size: 12px; opacity: 0.88; }
+.delta-companion-sub { margin-left: 4px; font-size: var(--t-meta); opacity: 0.88; }
 .year-plan-activity strong, .year-plan-activity small, .year-plan-ambitions strong, .year-plan-ambitions small { display: block; }
-.year-plan-activity small, .year-plan-ambitions small { font-size: 12.5px; color: var(--muted); line-height: 1.4; margin-top: .2rem; }
+.year-plan-activity small, .year-plan-ambitions small { font-size: var(--t-label); color: var(--muted); line-height: 1.4; margin-top: .2rem; }
 .year-plan-activity > div:first-child { min-width: 0; }
-.year-plan-more { margin-top: .35rem; font-size: 12.5px; color: var(--muted); }
+.year-plan-more { margin-top: .35rem; font-size: var(--t-label); color: var(--muted); }
 .year-plan-more summary { display: inline-flex; align-items: center; min-height: 28px; color: var(--accent); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
 .year-plan-more p { margin: .25rem 0 0; line-height: 1.45; }
 .year-plan-more summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.minor-first-hint { margin: .5rem 0 .8rem; color: var(--muted); font-size: 13px; line-height: 1.45; }
+.minor-first-hint { margin: .5rem 0 .8rem; color: var(--muted); font-size: var(--t-label); line-height: 1.45; }
 .year-plan-stepper { display: flex; align-items: center; gap: .25rem; flex: none; }
 .year-plan-stepper button { min-width: 44px; min-height: 44px; border: 1px solid var(--border); border-radius: 6px; color: var(--text); background: var(--surface); cursor: pointer; }
 .year-plan-stepper button:hover:not(:disabled), .year-plan-stepper button:focus-visible { border-color: var(--accent); }

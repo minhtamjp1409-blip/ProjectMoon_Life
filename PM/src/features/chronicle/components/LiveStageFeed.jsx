@@ -2012,7 +2012,7 @@ export const LiveStageFeed = () => {
             {lang === 'en' ? char.pendingNpcNaming?.questionEn : char.pendingNpcNaming?.questionVi}
           </p>
           {(char.pendingNpcNaming?.traitVi || char.pendingNpcNaming?.traitEn) && (
-            <p className="muted" style={{ fontSize: 13 }}>
+            <p className="muted" style={{ fontSize: 'var(--t-label)' }}>
               {lang === 'en' ? char.pendingNpcNaming?.traitEn : char.pendingNpcNaming?.traitVi}
             </p>
           )}
@@ -2086,7 +2086,7 @@ export const LiveStageFeed = () => {
       <Modal open={char.pendingModal === 'craft_weapon'} footer={null} closable={false} centered title={t('Lò rèn Workshop', 'Workshop forge')}>
         <div className="stack" style={{ paddingTop: 4 }}>
           <div className="panel" style={{ padding: 14 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14 }} className="muted num">
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 'var(--t-ui)' }} className="muted num">
               <span>
                 {t('Nhiệt độ', 'Heat')} {Math.round(cursorPos * 14)}°C
               </span>
@@ -2104,7 +2104,7 @@ export const LiveStageFeed = () => {
                 {t('Giáng búa khi vạch trắng ở giữa dải vàng', 'Strike when the white line is inside the gold band')}
               </button>
             ) : (
-              <p className="num" style={{ marginTop: 12, fontSize: 15 }}>
+              <p className="num" style={{ marginTop: 12, fontSize: 'var(--t-control)' }}>
                 {t('Chất lượng rèn', 'Forge quality')}: {forgeQuality} / 100
               </p>
             )}

@@ -85,7 +85,7 @@ const TermsView = () => {
           </tbody>
         </table>
       </div>
-      <p className="muted num" style={{ padding: '12px 20px', fontSize: 13, borderTop: '1px solid var(--rule)' }}>
+      <p className="muted num" style={{ padding: '12px 20px', fontSize: 'var(--t-label)', borderTop: '1px solid var(--rule)' }}>
         {filtered.length} / {GLOSSARY_TERMS.length} {t('thuật ngữ', 'terms')}
       </p>
     </section>

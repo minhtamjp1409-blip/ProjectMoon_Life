@@ -3309,5 +3309,12 @@ Chạy kiểm định mô phỏng 500 vòng đời với chiến lược ngườ
 * **Màu thẻ Di cảo.** `resolveAccent` chỉ nhận mã hex 6 chữ số, còn lại dùng màu mặc định, vì thẻ ghép thêm hai chữ số độ trong suốt vào màu và `addColorStop` ném lỗi với màu không đọc được.
 * **Kiểm định.** Thêm khối Đợt 164 vào `tests/test_batches_135_138.mjs`, gồm phép duyệt mọi event để không biểu tượng Finger nào được gán chỉ nhờ một chuỗi con. `npm test` và `npm run build` đạt 100%.
 
+##### 2.51. Thang chữ công cụ năm vai trò và chữ đọc trên điện thoại — Đợt 165 (12/11/2026)
+* **Thang chữ.** CSS có 12 cỡ chữ giữa 11 và 16,5px, cách nhau nửa pixel; trên màn chơi 1440px cùng lúc hiện 15 cỡ, và ba vai trò nhãn trong cột hồ sơ chỉ chênh nhau 1px. Nay có năm token vai trò trong `tokens.css` (`--t-meta` 12, `--t-label` 13, `--t-ui` 14, `--t-control` 15, `--t-lede` 16px, viết bằng rem). 388 khai báo trong 11 file CSS và 24 cỡ chữ inline trong 5 file JSX được gộp vào đó; các cỡ từ 17px trở lên là tiêu đề và chữ trưng bày, giữ nguyên.
+* **rem.** `--story-size`, `--choice-size` và năm token mới viết bằng rem, nên cỡ chữ mặc định người dùng đặt trong trình duyệt cũng có tác dụng. Ở 16px mặc định mọi cỡ giữ nguyên.
+* **Chữ đọc trên điện thoại (≤480px).** Nhật ký: từ `story − 1,5px` (15,5px) lên `story − 1px` (16px); mục thường ngày từ 14,5px lên 15,5px. Thẻ quyết định: lời kể 16px, lựa chọn 14,5px. Thẻ sự kiện nhỏ có đếm giờ trước đây dùng 13px cố định cho cả lời kể và lựa chọn, không theo cài đặt cỡ chữ; nay lời kể là `story − 2px` (15px, chữ Literata) và lựa chọn `choice − 1,5px` (14px).
+* **Tiêu đề thẻ theo cỡ chữ truyện.** Ở cỡ `xl` trên điện thoại, lời kể (18,5px) từng to hơn tiêu đề thẻ (17px cố định). Tiêu đề thẻ ở máy tính bảng và điện thoại nay tính từ `--story-size`; ở cỡ mặc định giữ đúng cỡ cũ.
+* **Kiểm định.** Chụp màn chơi ở 1440 và 390px bằng Chrome không giao diện: nhật ký máy tính 65–72 ký tự mỗi dòng, điện thoại 41–43; ở cỡ `xl` không phần tử nào tràn khung; tiêu đề lớn hơn lời kể lớn hơn lựa chọn ở cả cỡ mặc định lẫn `xl`; với cỡ gốc 20px, chữ truyện và nhãn HUD tăng theo (20,25px, 16,25px). `impeccable detect --scope type` không báo lỗi; `npm test` và `npm run build` đạt 100%.
+
 #### 3. KIỂM ĐỊNH & BẢO ĐẢM TOÀN VẸN (VERIFICATION & INTEGRITY)
 * Tất cả các bộ kiểm thử tự động (`npm test`) bao gồm lint văn phong (`voice_lint.mjs`), chuẩn canon Project Moon (`lint_story.mjs`), và mô phỏng 500 khoảnh khắc đời người (`run_million_audit.mjs`) phải vượt qua 100% với 0 lỗi, 0 cảnh báo.

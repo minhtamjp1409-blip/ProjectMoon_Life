@@ -10,10 +10,10 @@
   padding-bottom: 14px;
   border-bottom: 1px solid var(--rule);
 }
-.dg-hazard { padding: 1px 7px; border: 1px solid var(--dg); border-radius: var(--radius-sm); color: var(--text); font-size: 12px; font-weight: 700; }
-.dg-ambient { font-family: var(--serif); font-style: italic; font-size: 15px; line-height: 1.55; color: var(--muted); }
-.dg-judgment-warning { padding: 8px 12px; border: 1px solid rgba(255, 111, 102, 0.4); border-radius: var(--radius-sm); background: rgba(255, 111, 102, 0.08); color: var(--bad); font-size: 14px; line-height: 1.5; }
-.dg-harmony { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 12px; border: 1px solid var(--dg); color: var(--text); font-size: 13px; }
+.dg-hazard { padding: 1px 7px; border: 1px solid var(--dg); border-radius: var(--radius-sm); color: var(--text); font-size: var(--t-meta); font-weight: 700; }
+.dg-ambient { font-family: var(--serif); font-style: italic; font-size: var(--t-control); line-height: 1.55; color: var(--muted); }
+.dg-judgment-warning { padding: 8px 12px; border: 1px solid rgba(255, 111, 102, 0.4); border-radius: var(--radius-sm); background: rgba(255, 111, 102, 0.08); color: var(--bad); font-size: var(--t-ui); line-height: 1.5; }
+.dg-harmony { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 12px; border: 1px solid var(--dg); color: var(--text); font-size: var(--t-label); }
 .dg-harmony-marks { display: inline-flex; gap: 5px; }
 .dg-harmony-marks i { width: 12px; height: 12px; border: 1px solid var(--dg); transform: rotate(45deg); }
 .dg-harmony-marks i.is-filled { background: var(--dg); }
@@ -25,17 +25,17 @@
 .dg-route-bar { height: 3px; background: var(--raised); }
 .dg-route li.is-done .dg-route-bar { background: var(--muted); }
 .dg-route li.is-now .dg-route-bar { background: var(--dg); }
-.dg-route-num { font-size: 12px; font-weight: 600; color: var(--faint); font-variant-numeric: tabular-nums; }
+.dg-route-num { font-size: var(--t-meta); font-weight: 600; color: var(--faint); font-variant-numeric: tabular-nums; }
 .dg-route li.is-now .dg-route-num { color: var(--text); }
 .dg-route.is-gauntlet li.is-boss .dg-route-num { color: var(--bad); }
 
 .dg-status { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; align-items: start; }
-.dg-label { display: block; font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 4px; }
-.dg-haul-val { font-size: 15px; color: var(--muted); }
+.dg-label { display: block; font-size: var(--t-label); font-weight: 600; color: var(--muted); margin-bottom: 4px; }
+.dg-haul-val { font-size: var(--t-control); color: var(--muted); }
 .dg-haul-val b { font-size: 22px; font-weight: 600; color: var(--gold); font-stretch: 85%; }
 .dg-strain-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
 .dg-strain-head .dg-label { margin-bottom: 6px; }
-.dg-strain-tier { font-size: 13px; font-weight: 600; }
+.dg-strain-tier { font-size: var(--t-label); font-weight: 600; }
 .dg-strain.is-calm .dg-strain-tier { color: var(--good); }
 .dg-strain.is-shaken .dg-strain-tier, .dg-strain.is-panic .dg-strain-tier { color: var(--warn); }
 .dg-strain.is-breaking .dg-strain-tier { color: var(--bad); }
@@ -44,7 +44,7 @@
 .dg-strain.is-calm .dg-meter-fill { background: var(--good); }
 .dg-strain.is-breaking .dg-meter-fill, .dg-strain.is-panic .dg-meter-fill { background: var(--bad); }
 .dg-meter-tick { position: absolute; top: -2px; bottom: -2px; width: 1px; background: var(--ground); }
-.dg-need { display: inline-flex; align-items: center; gap: 4px; min-height: 22px; padding: 0 7px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 12.5px; color: var(--muted); }
+.dg-need { display: inline-flex; align-items: center; gap: 4px; min-height: 22px; padding: 0 7px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: var(--t-label); color: var(--muted); }
 .dg-need.is-met { color: var(--good); border-color: color-mix(in srgb, var(--good) 40%, transparent); }
 .dg-need.is-unmet { color: var(--bad); border-color: color-mix(in srgb, var(--bad) 40%, transparent); }
 .dg-haul .dg-need { margin-top: 6px; }
@@ -56,15 +56,15 @@
 .dg-signature.is-warn { border-left-color: var(--warn); }
 .dg-signature.is-bad { border-left-color: var(--bad); }
 .dg-signature-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
-.dg-signature-label { font-size: 13px; font-weight: 600; color: var(--text); }
-.dg-signature-value { font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--text); }
+.dg-signature-label { font-size: var(--t-label); font-weight: 600; color: var(--text); }
+.dg-signature-value { font-size: var(--t-control); font-weight: 700; font-variant-numeric: tabular-nums; color: var(--text); }
 .dg-signature.is-warn .dg-signature-value { color: var(--warn); }
 .dg-signature.is-bad .dg-signature-value { color: var(--bad); }
-.dg-signature-note { margin-top: 2px; font-size: 13px; line-height: 1.45; color: var(--muted); }
-.dg-result { padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); font-size: 14.5px; line-height: 1.55; animation: dgRise .3s ease; }
+.dg-signature-note { margin-top: 2px; font-size: var(--t-label); line-height: 1.45; color: var(--muted); }
+.dg-result { padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); font-size: var(--t-control); line-height: 1.55; animation: dgRise .3s ease; }
 .dg-result p { font-family: var(--serif); font-size: calc(var(--story-size) - 1.5px); line-height: 1.6; }
 /* A clash result: both rolls side by side, the verdict between them */
-.dg-clash { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; font-size: 13px; font-weight: 700; color: var(--muted); }
+.dg-clash { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; font-size: var(--t-label); font-weight: 700; color: var(--muted); }
 .dg-clash-die { display: inline-grid; place-items: center; min-width: 34px; height: 34px; padding: 0 6px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--raised); font-size: 18px; font-variant-numeric: tabular-nums; color: var(--text); animation: dgDieLand .28s ease-out; }
 .dg-clash-die.is-foe { border-color: color-mix(in srgb, var(--dg) 55%, var(--border)); }
 .dg-clash.is-win .dg-clash-verdict { color: var(--good); }
@@ -79,25 +79,25 @@
 
 .dg-scene { display: flex; flex-direction: column; gap: 12px; }
 .dg-scene-title { display: flex; flex-direction: column; gap: 2px; font-family: var(--serif); font-size: 21px; font-weight: 600; line-height: 1.25; margin: 0; }
-.dg-scene-title > span { font-family: var(--font); font-size: 13px; font-weight: 600; color: var(--muted); }
+.dg-scene-title > span { font-family: var(--font); font-size: var(--t-label); font-weight: 600; color: var(--muted); }
 
 /* The foe: its guard as pips, what it is about to do in large type */
 .dg-foe { display: flex; flex-direction: column; gap: 8px; padding: 12px 14px; border: 1px solid color-mix(in srgb, var(--dg) 50%, var(--border)); border-radius: var(--radius-sm); background: color-mix(in srgb, var(--dg) 5%, transparent); }
 .dg-foe-guard { display: flex; align-items: center; gap: 4px; }
 .dg-foe-pip { width: 14px; height: 6px; background: var(--raised); }
 .dg-foe-pip.is-up { background: var(--text); }
-.dg-foe-phase { margin-left: auto; font-size: 12.5px; font-weight: 700; color: var(--bad); }
+.dg-foe-phase { margin-left: auto; font-size: var(--t-label); font-weight: 700; color: var(--bad); }
 .dg-intent { display: flex; flex-direction: column; gap: 1px; }
-.dg-intent-kind { font-size: 13px; font-weight: 600; color: var(--muted); }
+.dg-intent-kind { font-size: var(--t-label); font-weight: 600; color: var(--muted); }
 .dg-intent-name { font-family: var(--serif); font-size: 19px; font-weight: 600; }
 .dg-intent.is-heavy .dg-intent-kind, .dg-intent.is-mind .dg-intent-kind { color: var(--bad); }
-.dg-intent-next { font-size: 13.5px; color: var(--faint); }
-.dg-foe-help summary { min-height: 30px; display: flex; align-items: center; font-size: 13.5px; font-weight: 600; color: var(--muted); text-decoration: underline; text-underline-offset: 4px; }
-.dg-foe-help p { font-size: 14px; color: var(--muted); line-height: 1.55; }
+.dg-intent-next { font-size: var(--t-ui); color: var(--faint); }
+.dg-foe-help summary { min-height: 30px; display: flex; align-items: center; font-size: var(--t-ui); font-weight: 600; color: var(--muted); text-decoration: underline; text-underline-offset: 4px; }
+.dg-foe-help p { font-size: var(--t-ui); color: var(--muted); line-height: 1.55; }
 
 .dg-choices { list-style: none; }
 .dg-choice.is-leave { border-style: dashed; }
-.dg-odds { font-size: 12.5px; font-weight: 700; font-variant-numeric: tabular-nums; padding: 1px 7px; border: 1px solid currentColor; border-radius: var(--radius-sm); }
+.dg-odds { font-size: var(--t-label); font-weight: 700; font-variant-numeric: tabular-nums; padding: 1px 7px; border: 1px solid currentColor; border-radius: var(--radius-sm); }
 .dg-odds.is-high { color: var(--good); }
 .dg-odds.is-mid { color: var(--warn); }
 .dg-odds.is-low { color: var(--bad); }
@@ -116,21 +116,21 @@
 }
 .dg-tactics-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .dg-stances { flex: 1 1 240px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2px; padding: 3px; border: 1px solid var(--border); border-radius: var(--radius-sm); }
-.dg-stance { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 36px; border-radius: var(--radius-sm); color: var(--muted); font-size: 13.5px; font-weight: 600; }
+.dg-stance { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 36px; border-radius: var(--radius-sm); color: var(--muted); font-size: var(--t-ui); font-weight: 600; }
 .dg-stance:hover { color: var(--text); background: var(--raised); }
 .dg-stance.is-on { background: var(--dg); color: #06080c; }
 .dg-supplies { flex: 1 1 280px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
-.dg-supply { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 11px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 13.5px; font-weight: 600; color: var(--text); }
+.dg-supply { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 11px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: var(--t-ui); font-weight: 600; color: var(--text); }
 .dg-supply:hover:not(:disabled) { background: var(--raised); border-color: var(--control); }
 .dg-supply:disabled { opacity: .45; cursor: not-allowed; }
-.dg-supply small { font-weight: 500; color: var(--gold); font-size: 12.5px; }
-.dg-supply kbd, .dg-leave-btn kbd { font-family: var(--font); font-size: 12px; color: var(--muted); padding: 0 5px; border: 1px solid var(--border); border-radius: var(--radius-sm); }
+.dg-supply small { font-weight: 500; color: var(--gold); font-size: var(--t-label); }
+.dg-supply kbd, .dg-leave-btn kbd { font-family: var(--font); font-size: var(--t-meta); color: var(--muted); padding: 0 5px; border: 1px solid var(--border); border-radius: var(--radius-sm); }
 .dg-supply.is-used { color: var(--muted); }
 .dg-supply--ego { border-color: var(--s-reso); }
-.dg-supply-count { margin-left: auto; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
-.dg-tools-note { font-size: 13px; color: var(--muted); line-height: 1.5; margin: 0; }
+.dg-supply-count { margin-left: auto; font-size: var(--t-label); color: var(--muted); font-variant-numeric: tabular-nums; }
+.dg-tools-note { font-size: var(--t-label); color: var(--muted); line-height: 1.5; margin: 0; }
 .dg-mastery { display: inline-flex; align-items: center; gap: 4px; margin-left: 8px; color: var(--gold); font-weight: 600; }
-.dg-hand-spent { font-size: 13px; color: var(--faint); margin: 0; }
+.dg-hand-spent { font-size: var(--t-label); color: var(--faint); margin: 0; }
 
 /* Collapsible card hand */
 .dg-hand-fold { border-top: 1px dashed var(--rule); padding-top: 6px; }
@@ -142,13 +142,13 @@
   min-height: 36px;
   cursor: pointer;
   list-style: none;
-  font-size: 13.5px;
+  font-size: var(--t-ui);
   font-weight: 600;
   color: var(--text);
 }
 .dg-hand-summary::-webkit-details-marker { display: none; }
 .dg-hand-summary > span { flex: 1; }
-.dg-hand-summary > small { font-size: 12.5px; font-weight: 500; color: var(--muted); }
+.dg-hand-summary > small { font-size: var(--t-label); font-weight: 500; color: var(--muted); }
 .dg-hand-summary::after {
   content: '';
   flex: none;
@@ -164,7 +164,7 @@
 
 /* The hand: real cards, portrait, a type and its colour at the top, the price at the foot */
 .dg-hand { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
-.dg-hand-label { font-size: 13px; font-weight: 600; color: var(--muted); }
+.dg-hand-label { font-size: var(--t-label); font-weight: 600; color: var(--muted); }
 .dg-hand-cards { display: flex; gap: 10px; overflow-x: auto; padding: 10px 2px 12px; margin: -10px -2px 0; scroll-snap-type: x proximity; overscroll-behavior-x: contain; }
 .dg-card {
   --kc: var(--text);
@@ -186,17 +186,17 @@
 .dg-card--check { --kc: #e0c15f; }
 .dg-card--loot { --kc: #d6a550; }
 .dg-card--ego { --kc: #e05660; }
-.dg-card-kind { margin-top: 4px; font-size: 12px; font-weight: 700; color: var(--kc); }
+.dg-card-kind { margin-top: 4px; font-size: var(--t-meta); font-weight: 700; color: var(--kc); }
 .dg-card-emblem { width: 32px; height: 32px; flex: none; fill: var(--kc); }
-.dg-card-name { font-family: var(--serif); font-size: 16px; font-weight: 600; line-height: 1.25; }
-.dg-card-text { font-size: 12.5px; line-height: 1.45; color: var(--muted); }
+.dg-card-name { font-family: var(--serif); font-size: var(--t-lede); font-weight: 600; line-height: 1.25; }
+.dg-card-text { font-size: var(--t-label); line-height: 1.45; color: var(--muted); }
 .dg-card-price { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; margin-top: auto; padding-top: 4px; }
-.dg-card-price i { font-style: normal; font-size: 12px; font-weight: 700; padding: 1px 7px; border-radius: 999px; border: 1px solid currentColor; }
+.dg-card-price i { font-style: normal; font-size: var(--t-meta); font-weight: 700; padding: 1px 7px; border-radius: 999px; border: 1px solid currentColor; }
 .dg-card-price .is-cost { color: var(--bad); }
 .dg-card-price .is-gain { color: var(--good); }
 .dg-card:focus-visible { outline: 2px solid var(--kc); outline-offset: 3px; }
 .dg-card:disabled { opacity: .45; cursor: not-allowed; box-shadow: none; }
-.dg-card-active { font-size: 12.5px; font-weight: 600; color: var(--gold); }
+.dg-card-active { font-size: var(--t-label); font-weight: 600; color: var(--gold); }
 @media (hover: hover) {
   .dg-card:hover:not(:disabled) { transform: translateY(-6px); border-color: var(--kc); box-shadow: 0 3px 0 var(--kc), 0 12px 22px rgba(0, 0, 0, .3); }
 }
@@ -209,7 +209,7 @@
     padding-bottom: 10px;
   }
   .dg-hazard {
-    font-size: 12px;
+    font-size: var(--t-meta);
     padding: 1px 6px;
   }
   /* Đợt 117: Giữ strain và haul trên cùng 1 hàng ngang để tiết kiệm ~50px chiều cao */
@@ -224,11 +224,11 @@
   .dg-status > .dg-haul .dg-label { margin-bottom: 2px; }
   .dg-status > .dg-haul-val b { font-size: 18px; }
   .dg-judgment-note { text-align: right; }
-  .dg-judgment-warning { padding: 5px 8px; font-size: 12.5px; line-height: 1.4; }
+  .dg-judgment-warning { padding: 5px 8px; font-size: var(--t-label); line-height: 1.4; }
 
   .dg-supply kbd, .dg-leave-btn kbd { display: none; }
   .dg-stance, .dg-supply, .dg-hand-summary, .dg-leave-btn, .dg-foe-help summary { min-height: 44px; }
-  .dg-stance { font-size: 13px; gap: 4px; padding: 0 4px; }
+  .dg-stance { font-size: var(--t-label); gap: 4px; padding: 0 4px; }
   .dg-card { flex-basis: 144px; min-height: 210px; }
   .dg-hand-cards { -webkit-overflow-scrolling: touch; }
 
@@ -276,14 +276,14 @@
     padding-bottom: 6px;
   }
   .dg-head .dock-title { font-size: 18px; line-height: 1.2; }
-  .dg-ambient { font-size: 13px; line-height: 1.4; }
+  .dg-ambient { font-size: var(--t-label); line-height: 1.4; }
   .dg-status { gap: 8px; }
   .dg-scene { gap: 6px; }
   .dg-scene-title { font-size: 17px; }
-  .dg-scene .dock-text { font-size: 13.5px; line-height: 1.45; margin: 0; }
+  .dg-scene .dock-text { font-size: var(--t-ui); line-height: 1.45; margin: 0; }
   .dg-foe { padding: 8px 10px; gap: 4px; }
   .dg-foe-guard { gap: 3px; }
-  .dg-intent-name { font-size: 16px; }
+  .dg-intent-name { font-size: var(--t-lede); }
   .dg-choices { gap: 6px; margin-top: 4px; }
   .dg-choice { min-height: 44px; padding: 8px 10px; }
   .dg-card { flex-basis: 136px; min-height: 200px; padding: 10px; }
