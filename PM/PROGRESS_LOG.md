@@ -3325,5 +3325,9 @@ Chạy kiểm định mô phỏng 500 vòng đời với chiến lược ngườ
 * **Viền dày một bên.** Thẻ luật riêng của hầm (`.dg-signature`) và khung tên Syndicate độc lập dùng viền trái 3–4px. Nay là viền mảnh cả bốn cạnh nhuộm màu trạng thái hoặc màu route; trạng thái của thẻ hầm vẫn đọc được qua màu con số.
 * **Kiểm định.** Chụp lại ở 1440 và 390px; `impeccable detect` trên `src` không còn phát hiện nào (trước đó 1); `npm test` và `npm run build` đạt 100%.
 
+##### 2.53. Dọn tài liệu và skill không dùng (12/11/2026)
+* Bỏ Spec Kit: `specs/001-core-gameplay-baseline` (spec nền ở trạng thái Draft), `.specify/` và 9 skill `speckit-*`. Kế hoạch sống ở `docs/KE_HOACH_TIEP_THEO.md`, luật ở `docs/LUAT_HIEN_HANH.md`.
+* Bỏ các skill ngoài routing: `hallmark` (hai bản giống hệt nhau ở `.agents` và `.claude`, xóa luôn khỏi `skills-lock.json`), `brand`, `slides`, `banner-design`. Slides và banner đã có sẵn trong skill `design`; dòng routing trong `AGENTS.md` được gộp lại.
+
 #### 3. KIỂM ĐỊNH & BẢO ĐẢM TOÀN VẸN (VERIFICATION & INTEGRITY)
 * Tất cả các bộ kiểm thử tự động (`npm test`) bao gồm lint văn phong (`voice_lint.mjs`), chuẩn canon Project Moon (`lint_story.mjs`), và mô phỏng 500 khoảnh khắc đời người (`run_million_audit.mjs`) phải vượt qua 100% với 0 lỗi, 0 cảnh báo.

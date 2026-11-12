@@ -23,8 +23,7 @@ Read the relevant installed `SKILL.md` under `.agents/skills/` before applying i
 - Feedback and sound: `game-feel`, `audio-design`.
 - Interface composition, responsive styling and tokens: `design-taste-frontend`, `ui-ux-pro-max`, `ui-styling`, `design-system`, `impeccable`.
 - Frontend design craft, anti-pattern audit & refinement: `impeccable` (`.agents/skills/impeccable/SKILL.md`, CLI: `npx impeccable detect src/`).
-- Visual identity and assets: `brand`, `design`, `create-game-assets`.
-- Banners and presentations: `banner-design`, `slides`.
+- Visual identity, assets, banners and presentations: `design`, `create-game-assets`.
 - Spatial gameplay when needed: `camera-systems`, `physics-tuning`, `level-design`, `shader-programming`.
 
 Keep the existing React/Vite/Zustand/Ant Design stack and the Project Moon terminology described in `UNIVERSE.md`. Adapt engine-neutral guidance to this web game. A skill example is not a request to migrate frameworks or add packages.
