@@ -667,6 +667,7 @@ export const EXPANSION_EVENTS = [
         labelEn: 'Let {child} go and help pack',
         effects: { wealth: -4, sanity: -2, network: 2 },
         bond: { child: 6 },
+        npcAway: { child: 6 },
         resultVi: 'Bạn xếp từng món quần áo vào túi, sau cùng đặt thêm chiếc khăn {child} không nhớ là của ai. Họ đi từ sáng sớm, tới đầu phố còn ngoái lại một lần.',
         resultEn: 'You fold clothes into the bag one by one and lay last a scarf that {child} does not remember belonging to anyone. They leave in the morning, and look back once at the head of the street.'
       },
@@ -695,6 +696,7 @@ export const EXPANSION_EVENTS = [
         labelEn: 'Go with {child} to the new workplace',
         effects: { wealth: -3, health: -2, network: 3, sanity: 2 },
         bond: { child: 9 },
+        npcAway: { child: 6 },
         resultVi: 'Chuyến đi mất ba ngày. Ở cổng Wing, người gác nhìn bạn rồi nhìn {child}, để cả hai đi qua mà không hỏi thêm. Bạn ngồi một buổi chiều trong phòng chờ rồi về một mình.',
         resultEn: 'The trip takes three days. At the Wing gate the guard looks at you, then at {child}, and lets you both through without asking. You sit an afternoon in the waiting room, then go home alone.'
       }
@@ -765,6 +767,8 @@ export const EXPANSION_EVENTS = [
         costAhn: 10,
         effects: { wealth: -10, sanity: 2 },
         bond: { friend: 8 },
+        // the money is the ticket out: they are gone for years, then come back on their own
+        npcAway: { friend: 7 },
         resultVi: '{friend} nhận tiền bằng cả hai tay, nhìn nó thật lâu trước khi cất. Họ không hứa trả, bạn cũng không hỏi.',
         resultEn: '{friend} takes the money with both hands, and looks at it a long time before putting it away. They do not promise to repay, and you do not ask.'
       },
@@ -793,6 +797,7 @@ export const EXPANSION_EVENTS = [
         labelEn: 'Tell {friend} to stay because outside is no better',
         effects: { sanity: -2 },
         bond: { friend: -7 },
+        npcFate: { friend: 'estranged' },
         resultVi: '{friend} nghe bạn nói hết, khẽ gật rồi hôm sau không đến chỗ hẹn. Bạn nghe nói họ vẫn ở đó, nhưng không bao giờ đi cùng đường với bạn nữa.',
         resultEn: '{friend} hears you out, nods, and does not show up at the next meeting. They are still there, you hear, but never again take your road.'
       }

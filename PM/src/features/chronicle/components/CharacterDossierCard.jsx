@@ -17,6 +17,8 @@ import { getAffiliation, affiliationLabel, standingLabel } from '../../../engine
 import { rankPlateOf } from '../../../engine/sceneContext';
 import { localizeEnsembleName } from '../../../data/ensembleNames.js';
 import { FactionCrest } from '../../../components/world/FactionCrest.jsx';
+import { NPC_GONE_STATUSES } from '../../../data/npcStatus.js';
+import { SANDBOX_FLAG } from '../../../engine/weaverAI.js';
 
 const JOB_LABELS = {
   Child: { vi: 'Trẻ em', en: 'Child' },
@@ -319,7 +321,8 @@ const STATUS_LABELS = {
   dead: ['Đã chết', 'Dead'],
   missing: ['Mất tích', 'Missing'],
   estranged: ['Đã rời bỏ bạn', 'Gone from your life'],
-  betrayer: ['Đã phản bội bạn', 'Betrayed you']
+  betrayer: ['Đã phản bội bạn', 'Betrayed you'],
+  away: ['Đang ở xa', 'Away']
 };
 
 function bondTierInfo(bond = 0, role = '') {
@@ -344,7 +347,7 @@ const People = ({ npcs, age, t, lang, onSelectRole }) => {
       </section>
     );
   }
-  const gone = (n) => (n.alive === false) || n.deceased || ['dead', 'missing', 'estranged', 'betrayer'].includes(n.status);
+  const gone = (n) => (n.alive === false) || n.deceased || NPC_GONE_STATUSES.includes(n.status);
   const present = list.filter(([, n]) => !gone(n));
   const absent = list.filter(([, n]) => gone(n));
   const row = ([role, n]) => {
@@ -377,7 +380,11 @@ const People = ({ npcs, age, t, lang, onSelectRole }) => {
             </div>
             {(n.traitVi || n.traitEn) && <p className="npc-trait">{lang === 'en' ? n.traitEn : n.traitVi}</p>}
             {isGone ? (
-              <span className="npc-status">{t(...(STATUS_LABELS[status] || STATUS_LABELS.dead))}</span>
+              <span className="npc-status">
+                {status === 'away' && n.returnAge != null
+                  ? t(`Đang ở xa, về khi bạn ${n.returnAge} tuổi`, `Away until you are ${n.returnAge}`)
+                  : t(...(STATUS_LABELS[status] || STATUS_LABELS.dead))}
+              </span>
             ) : (
               <>
                 <div className="stat-head is-bond">
@@ -439,6 +446,9 @@ const Nameplate = ({ char, region, omen, t, lang }) => {
       <div className="dossier-id">
         <h2>{char.name}{char.flags?.includes('EnsembleSurvivor') && <span className="ensemble-mark" title={t('Ngôi sao không tắt · sống sót qua Ensemble', 'The star that would not go out · Ensemble survivor')}><Star size={16} aria-label={t('Sống sót qua Ensemble', 'Ensemble survivor')} /></span>}</h2>
         <p className="nameplate-post"><FactionCrest char={char} size={15} /> {describeJob(char, t)}</p>
+        {char.flags?.includes(SANDBOX_FLAG) && (
+          <p className="nameplate-sub sandbox-note">{t('Đời thử nghiệm: có event tự viết', 'Sandbox life: hand-written events')}</p>
+        )}
         {char.job === 'Distortion' && char.formerJob && (
           <p className="nameplate-sub">{t('Tiền kiếp', 'Former life')}: {char.formerJob}</p>
         )}

@@ -28,6 +28,7 @@ import { getCutsceneKeyAnnouncement } from '../../cutscene/registry';
 import { isExtraBirthEntry } from '../../../data/birthStories.js';
 import { FactionCrest } from '../../../components/world/FactionCrest.jsx';
 import { lifeFinaleKindFor } from '../../../engine/sceneContext.js';
+import { useFocusTrap } from '../../../utils/useFocusTrap.js';
 
 const ENTRY_KIND = {
   causal: { cls: 'k-causal', vi: 'Tiếng vọng nhân quả', en: 'Causal echo' },
@@ -997,6 +998,9 @@ const Epitaph = ({ summary, onInherit, onRestart, onViewRecord, onGoHome }) => {
         </p>
 
         <p className="epitaph-cause">{lang === 'en' ? summary.deathCauseEn : summary.deathCauseVi}</p>
+        {summary.sandbox && (
+          <p className="sandbox-note">{t('Đời thử nghiệm: có event tự viết trên trang Khung cửi.', 'A sandbox life: it played events written on the Loom page.')}</p>
+        )}
 
         <blockquote className="epitaph-poetic-quote">
           {lang === 'en' ? summary.poeticQuoteEn : summary.poeticQuoteVi}
@@ -1737,6 +1741,8 @@ export const LiveStageFeed = () => {
   const currentRegion = REGIONS.find((r) => r.id === char.regionId) || REGIONS[0];
   const hasDock = !cutsceneKey && Boolean((char.pendingYearPlan && !isPrologueActive) || char.pendingDungeon || char.pendingEvent || char.pendingContract || char.pendingMinor || activeResolution);
   const canPeek = Boolean((char.pendingYearPlan && !isPrologueActive) || char.pendingDungeon || char.pendingEvent || char.pendingContract || char.pendingMinor || activeResolution);
+  // The dock is a dialog: Tab cycles its own controls instead of walking into the log and the bars behind it
+  useFocusTrap(dockRef, hasDock && !peekBehind);
   useEffect(() => setPeekBehind(false), [char.pendingYearPlan?.age, char.pendingDungeon?.id, char.pendingEvent?.id, char.pendingContract?.id, char.pendingMinor?.id, activeResolution?.titleVi]);
 
   const prevCutsceneKeyRef = useRef(null);

@@ -733,7 +733,7 @@
     background: var(--raised);
   }
   .choice-badge { width: 28px; height: 28px; font-size: var(--t-label); font-weight: 700; border-radius: 4px; }
-  .choice-label { font-size: calc(var(--choice-size) - 1px); font-weight: 600; line-height: 1.45; }
+  .choice-label { font-size: var(--choice-size); font-weight: 600; line-height: 1.45; }
   .resolution-actions .resolution-btn { min-height: 50px; font-size: var(--t-control); font-weight: 700; }
 
   /* Đợt 118a: Thẻ minor gọn hơn trên mobile (390x844) */
@@ -755,7 +755,7 @@
     margin-bottom: 3px;
   }
   .dock.is-minor .dock-text {
-    font-size: calc(var(--story-size) - 2px);
+    font-size: calc(var(--story-size) - 1px);
     line-height: 1.5;
     margin: 3px 0 8px;
   }
@@ -774,7 +774,7 @@
     font-size: var(--t-meta);
   }
   .dock.is-minor .choice-label {
-    font-size: calc(var(--choice-size) - 1.5px);
+    font-size: var(--choice-size);
     line-height: 1.35;
   }
   .preview.is-minor-preview {
@@ -855,14 +855,14 @@
   .dock-peek-btn { padding: 0 10px; }
   .dock-peek-btn span { display: none; }
   .choice { padding: 10px 10px 10px 8px; gap: 8px; }
-  .choice-label { font-size: calc(var(--choice-size) - 1px); }
+  /* A timed choice is read in a hurry: the minor card keeps the same 16px story and 15.5px labels as the event card */
 
   .dock.is-minor { padding: 10px 8px 12px; }
   .dock.is-minor .dock-title { font-size: calc(var(--story-size) + 0.5px); line-height: 1.2; }
-  .dock.is-minor .dock-text { font-size: calc(var(--story-size) - 2px); line-height: 1.48; margin: 2px 0 6px; }
+  .dock.is-minor .dock-text { line-height: 1.5; margin: 2px 0 6px; }
   .dock.is-minor .choices { gap: 5px; }
   .dock.is-minor .choice { padding: 6px 48px 6px 8px; min-height: 44px; }
-  .dock.is-minor .choice-label { font-size: calc(var(--choice-size) - 1.5px); line-height: 1.35; }
+  .dock.is-minor .choice-label { line-height: 1.35; }
 }
 
 @media (min-width: 861px) {
@@ -891,6 +891,8 @@
 .epitaph-kicker-origin { text-align: center; font-family: var(--serif); font-style: italic; font-size: var(--t-lede); color: var(--page-muted); }
 .epitaph-age { display: flex; justify-content: center; align-items: baseline; gap: 10px; font-family: var(--serif); font-size: clamp(58px, 7vw, 76px); font-weight: 600; line-height: .9; color: var(--page-ink); font-variant-numeric: lining-nums; }
 .epitaph-age span { font-size: 22px; font-weight: 400; color: var(--page-muted); }
+/* A sandbox life says so once, plainly, under the cause of death and on the nameplate */
+.sandbox-note { margin: 6px 0 0; font-size: var(--t-label); color: var(--warn); text-align: inherit; }
 .epitaph-cause { text-align: center; font-size: var(--t-control); font-weight: 600; color: var(--bad); }
 .epitaph-poetic-quote { margin: 0 auto; max-width: 34em; text-align: center; font-family: var(--serif); font-style: italic; font-size: calc(var(--story-size) + 1px); line-height: 1.6; color: var(--page-ink); }
 .epitaph-signature { position: relative; display: grid; justify-items: center; gap: 7px; padding: 24px 18px 20px; border-block: 1px solid var(--gold); text-align: center; background: var(--gold-soft); }
@@ -1152,6 +1154,15 @@
 .year-plan-reuse.is-quiet { background: transparent; color: var(--muted); border-color: var(--border); }
 .year-plan-reuse:hover { border-color: var(--accent); color: var(--accent); }
 .year-plan-reuse:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+/* Ready-made rhythms: one row of toggles above the steppers; the one that matches the slots reads as pressed */
+.year-plan-presets { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 .75rem; }
+.year-plan-preset { min-height: 36px; padding: .35rem .75rem; color: var(--muted); background: transparent; border: 1px solid var(--border); border-radius: var(--radius); font: inherit; font-size: var(--t-label); cursor: pointer; transition: color .12s ease, border-color .12s ease, background-color .12s ease; }
+.year-plan-preset:hover { color: var(--text); border-color: var(--control); }
+.year-plan-preset.is-on { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
+.year-plan-preset:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+/* The wounded year's offer: plain text in a quiet box, tinted good once the slots make it real */
+.year-plan-mend { margin: 0 0 .75rem; padding: .55rem .75rem; color: var(--text); background: var(--raised); border: 1px solid var(--border); border-radius: var(--radius); font-size: var(--t-ui); line-height: 1.5; }
+.year-plan-mend.is-on { border-color: color-mix(in srgb, var(--good) 45%, var(--border)); background: color-mix(in srgb, var(--good) 8%, transparent); }
 .year-plan-activities { display: grid; gap: .5rem; }
 .year-plan-activity { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: .7rem .8rem; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); }
 .year-plan-slot-idx { color: var(--muted); font-variant-numeric: tabular-nums; margin-right: 2px; }
@@ -1181,5 +1192,5 @@
 .directive-deltas { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
 .year-plan-current-goal { color: var(--muted); margin: 1rem 0 0; }
 .year-plan-confirm { width: 100%; min-height: 44px; margin-top: 1rem; }
-@media (max-width: 860px) { .year-plan-reuse, .year-plan-more summary { min-height: 44px; } }
+@media (max-width: 860px) { .year-plan-reuse, .year-plan-preset, .year-plan-more summary { min-height: 44px; } }
 @media (max-width: 600px) { .year-plan-activity { gap: .5rem; } .year-plan-ambitions { grid-template-columns: 1fr; } }

@@ -30,6 +30,7 @@ import { executeNpcInteraction, canInteractWithNpc } from '../engine/npcInteract
 import { CLAW_DUNGEON_ID } from '../data/dungeonClaw.js';
 import { enforceTabooJudgment } from '../engine/tabooJudgment.js';
 import { applyAnnualPlan, ambitionsFor, defaultYearPoints } from '../engine/annualPlan.js';
+import { SANDBOX_FLAG } from '../engine/weaverAI.js';
 import { autoLeadIndex, tabooGainOf } from '../engine/forbiddenPath.js';
 import { relocateCharacterDistrict, imbueCharacterEquipment } from '../engine/cityUpgrades.js';
 import { cutsceneFor, outranks } from '../engine/cutsceneTriggers.js';
@@ -336,7 +337,8 @@ const requestPlanSync = (get) => get().char?.pendingYearPlan
   ? Promise.resolve(false)
   : synchronizePlan(get, (before, synced) => get().commit(before, synced)).catch(() => false);
 const reportGameplaySample = (char, abandoned = false) => {
-  if (!char?.seed || !useThemeStore.getState().gameplayMetricsEnabled) return;
+  // A sandbox life plays events someone wrote with fixed rewards: it says nothing about the real game
+  if (!char?.seed || !useThemeStore.getState().gameplayMetricsEnabled || char.flags?.includes(SANDBOX_FLAG)) return;
   cityArchiveAPI.recordGameplaySample({
     runKey: char.seed,
     age: Math.max(0, Math.min(200, char.age || 0)),
@@ -1301,6 +1303,8 @@ export const useGameStore = create((set, get) => ({
     const state = get();
     const next = cloneChar(state.char);
     next.weaver = { ...next.weaver, customEvents: [customEv, ...(next.weaver.customEvents || [])] };
+    // A hand-written event turns this life into a sandbox: only sandboxes draw custom events, and the mark stays
+    if (!next.flags.includes(SANDBOX_FLAG)) next.flags = [...next.flags, SANDBOX_FLAG];
     cityArchiveAPI.saveCustomEvent(customEv).catch(() => {});
     set({ char: next });
   }

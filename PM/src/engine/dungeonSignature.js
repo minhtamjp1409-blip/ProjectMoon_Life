@@ -14,6 +14,7 @@
 // ============================================================================
 import { DUNGEON_LAWS, WORK_TYPES, SIGNATURE_TEXT } from '../data/dungeonSignatureText.js';
 import { appendNpcMemory } from '../data/npcPersonality.js';
+import { NPC_GONE_STATUSES } from '../data/npcStatus.js';
 
 const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
 const fnv = (text) => {
@@ -71,7 +72,8 @@ export function initSignature(session, char) {
   if (kind === 'head') {
     const B = SIGNATURE_BALANCE.head;
     session.headAllies = Object.entries(char?.npcs || {})
-      .filter(([, npc]) => npc && npc.status !== 'dead' && !npc.injured && (npc.bond || 0) >= B.allyBond && (npc.nameVi || npc.name))
+      // someone who left you, went missing or is away cannot stand beside you in the hole
+      .filter(([, npc]) => npc && !npc.deceased && !NPC_GONE_STATUSES.includes(npc.status) && !npc.injured && (npc.bond || 0) >= B.allyBond && (npc.nameVi || npc.name))
       .slice(0, 3)
       .map(([role, npc]) => ({ role, nameVi: npc.nameVi || npc.name, nameEn: npc.nameEn || npc.nameVi || npc.name, used: false }));
     session.headRecord = Math.min(B.recordMax, Math.floor((char?.heat || 0) / B.recordPerHeat));

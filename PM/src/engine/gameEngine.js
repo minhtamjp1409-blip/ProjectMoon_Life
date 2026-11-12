@@ -49,6 +49,7 @@ import { DISTORTION_OVERHAUL_EVENTS } from '../data/eventsDistortionOverhaul.js'
 import { WORKSHOP_ECONOMY_EVENTS } from '../data/eventsWorkshopEconomy.js';
 import { BEREAVEMENT_EVENTS } from '../data/eventsBereavementMemories.js';
 import { DERIVATIVE_LORE_EVENTS } from '../data/eventsDerivativeLore.js';
+import { DUNGEON_OBJECTIVE_EVENTS } from '../data/dungeonObjectives.js';
 import { COMPANION_QUEST_EVENTS } from '../data/eventsCompanionQuests.js';
 import { CAREER_DRAMA_EVENTS } from '../data/eventsCareerDrama.js';
 import { EXPANSION_STORY_EVENTS } from '../data/eventsNpcAndWorldExpansion.js';
@@ -106,6 +107,7 @@ import {
 } from './careerPipeline.js';
 import {
   FATE_OMENS,
+  SANDBOX_FLAG,
   rollRandomFateOmen,
   createInitialWeaverState,
   selectEventWithWeaverAI,
@@ -155,6 +157,8 @@ export const ALL_STORY_EVENTS = [
   ...WORKSHOP_ECONOMY_EVENTS,
   ...BEREAVEMENT_EVENTS,
   ...DERIVATIVE_LORE_EVENTS,
+  // only ever opened by a dungeon's last stage (causalOnly keeps them out of ordinary draws)
+  ...DUNGEON_OBJECTIVE_EVENTS,
   ...COMPANION_QUEST_EVENTS,
   ...CAREER_DRAMA_EVENTS,
   ...EXPANSION_EVENTS,
@@ -3580,6 +3584,8 @@ export function buildLifeSummaryAndLegacy(char) {
 
   return {
     endingId: char.endingId || null,
+    // a life with hand-written events (the Weaver page): the epitaph and the archive say so
+    sandbox: flags.includes(SANDBOX_FLAG),
     ambitionId: ambition?.id || '',
     ambitionAchieved,
     ensembleScore: Boolean(char.ensembleScore),

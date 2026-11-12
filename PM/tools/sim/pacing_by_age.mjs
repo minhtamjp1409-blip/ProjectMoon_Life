@@ -1,18 +1,19 @@
 /**
  * Pacing by age: how many choices of each kind a life meets per year of age, how many years pass
  * with no choice at all, and when and in what state each dungeon is entered.
- * Usage: node tools/sim/pacing_by_age.mjs [lives=300] [policy=focused|random] [--job="Wing Employee"]
+ * Usage: node tools/sim/pacing_by_age.mjs [lives=300] [policy=focused|random|greedy|cautious] [--job="Wing Employee"]
+ * Each policy also sets the year plan the way that player would (choicePolicy.planTheYear).
  * --job counts only the years lived in that job ("Distortion" for the distorted), so a thin branch is not hidden in the average.
  */
 import { createNewCharacter, resolveEventChoice, resolveDungeonChoice, getDungeonCurrentStage, isDungeonChoiceAvailable, createRNG, resolveFixerContract } from '../../src/engine/gameEngine.js';
 import { planYear, chooseDirectorPacedLead, runDueItems, resolveMinor, endYear, LIFE_MINORS } from '../../src/engine/yearPlanner.js';
 import { choiceIsAvailable } from '../../src/engine/eventConditions.js';
-import { makePicker } from './lib/choicePolicy.mjs';
+import { makePicker, planTheYear, POLICIES } from './lib/choicePolicy.mjs';
 import { POLICIES as DUNGEON_POLICIES } from './dungeon_sim.mjs';
 import { setDungeonStance, useDungeonSupply } from '../../src/engine/gameEngine.js';
 
 const LIVES = Number(process.argv[2]) || 300;
-const POLICY = process.argv[3] === 'random' ? 'random' : 'focused';
+const POLICY = POLICIES.includes(process.argv[3]) ? process.argv[3] : 'focused';
 const ELDER_START = process.argv.includes('--elder');
 const pick = makePicker(POLICY);
 const BANDS = [[0, 12], [13, 17], [18, 24], [25, 32], [33, 40], [41, 50], [51, 60], [61, 75], [76, 120]];
@@ -49,6 +50,7 @@ for (let i = 0; i < LIVES; i++) {
     if (char.stats.health < 40) row.hurt++;
     let choices = 0;
     if (!char.plan?.length) planYear(char, rng);
+    char = planTheYear(char, POLICY, rng);
     if (char.pendingLead) char = chooseDirectorPacedLead(char, rng);
     for (let t = 0; t <= 100 && char.alive; t += 2) {
       char = runDueItems(char, t, rng).char;

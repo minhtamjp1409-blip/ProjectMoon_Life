@@ -87,7 +87,8 @@ export const COMPANION_QUEST_EVENTS = [
         resultVi: '{friend} qua khỏi sau mấy ngày sốt nặng nhưng từ đó tránh mặt bạn mỗi khi gặp ngoài ngõ.',
         resultEn: '{friend} survived by pure bitter grit, yet the warmth in their eyes died. They understood that in your ledgers, their breath was not worth twelve Ahn.',
         effects: { sanity: -4 },
-        bond: { friend: -18 }
+        bond: { friend: -18 },
+        npcFate: { friend: 'estranged' }
       }
     ]
   },
@@ -215,7 +216,8 @@ export const COMPANION_QUEST_EVENTS = [
         resultVi: '{friend} cắn chặt môi quay đi trong cay đắng. Khát vọng bị dập tắt để lại một vết nứt sâu hoắm không thể hàn gắn giữa hai người.',
         resultEn: '{friend} bit their lip in bitter silence. The crushed ambition left a permanent fissure across your bond.',
         effects: { sanity: -4 },
-        bond: { friend: -18 }
+        bond: { friend: -18 },
+        npcFate: { friend: 'estranged' }
       }
     ]
   },
@@ -327,7 +329,8 @@ export const COMPANION_QUEST_EVENTS = [
         resultVi: 'Tiếng súng nổ giòn trong bốt điện thoại. Chiếc ổ cứng bị thu hồi, và {friend} vĩnh viễn không còn xuất hiện ở khu chợ tin tức nữa.',
         resultEn: 'Gunfire rattled inside the booth. The drive was retrieved, and {friend} never walked the information stalls again.',
         effects: { sanity: -6 },
-        bond: { friend: -30 }
+        bond: { friend: -30 },
+        npcFate: { friend: 'missing' }
       }
     ]
   },

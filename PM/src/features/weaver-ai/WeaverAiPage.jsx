@@ -4,7 +4,7 @@ import { Plus, Cpu, Sparkles, Settings } from 'lucide-react';
 import ExternalDirectorModal from './components/ExternalDirectorModal';
 import { loadAIConfig } from '../../services/ai/externalModelDirector';
 import { useGameStore } from '../../store/gameStore';
-import { FATE_OMENS, DRAMA_PHASES } from '../../engine/weaverAI';
+import { FATE_OMENS, DRAMA_PHASES, SANDBOX_FLAG } from '../../engine/weaverAI';
 import { useT } from '../../i18n';
 import PageBanner from '../../components/PageBanner';
 
@@ -239,6 +239,11 @@ export const WeaverAiPage = () => {
         title={t('Khắc chỉ lệnh tình huống mới', 'Write a new prescript')}
       >
         <div className="stack" style={{ paddingTop: 8 }}>
+          <p className="sandbox-note" style={{ marginTop: 0 }}>
+            {char.flags?.includes(SANDBOX_FLAG)
+              ? t('Đời này đã là đời thử nghiệm. Event bạn viết sẽ chạy trong đời này.', 'This life is already a sandbox. The events you write play in it.')
+              : t('Event tự viết chỉ chạy trong đời thử nghiệm. Khắc event này sẽ đánh dấu đời hiện tại là đời thử nghiệm: hồ sơ và di cảo ghi rõ điều đó, và đời này không gửi số liệu chơi.', 'Hand-written events play only in a sandbox life. Adding this one marks the current life as a sandbox: its dossier and epitaph say so, and it sends no play data.')}
+          </p>
           <div className="field">
             <label htmlFor="ev-text">{t('Tình huống', 'Situation')}</label>
             <textarea

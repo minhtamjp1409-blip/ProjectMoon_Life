@@ -1,3 +1,4 @@
+import { NPC_GONE_STATUSES } from './npcStatus.js';
 // ============================================================================
 // NPC PERSONALITY
 // A trait line used to be the whole person. Now each NPC is an archetype with a
@@ -171,7 +172,7 @@ export function getNpcBondState(npc) {
 
 export function evaluateCompanionSupport(char) {
   const npcs = char?.npcs || {};
-  const isActive = (n) => Boolean(n) && n.alive !== false && !n.deceased && !['dead', 'missing', 'estranged', 'betrayer'].includes(n.status);
+  const isActive = (n) => Boolean(n) && n.alive !== false && !n.deceased && !NPC_GONE_STATUSES.includes(n.status);
   // A wounded companion cannot fight, and an advisor helps from headquarters rather than on the field
   const fit = (n) => isActive(n) && !n.injured && !n.advisor;
   const role = fit(npcs.partner) ? 'partner' : fit(npcs.friend) ? 'friend' : fit(npcs.mentor) ? 'mentor' : null;

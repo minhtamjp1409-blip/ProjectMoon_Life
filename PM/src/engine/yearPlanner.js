@@ -1420,8 +1420,16 @@ export function endYear(charState, rng) {
   const char = cloneChar(charState);
   if (!char.alive) return char;
   // A companion hurt in a dungeon clash sits out a year, then can walk with you again
+  const returned = [];
   for (const [role, raw] of Object.entries(char.npcs || {})) {
     let npc = raw;
+    // Someone who left for a while (npcAway) comes back on their own once the years are up
+    if (npc?.status === 'away' && npc.returnAge != null && (char.age || 0) >= npc.returnAge) {
+      const { status, returnAge, ...rest } = npc;
+      npc = { ...rest, lastSeen: char.age || 0 };
+      char.npcs = { ...char.npcs, [role]: npc };
+      returned.push(npc);
+    }
     // Older saves marked a shielding companion `status: 'wounded'` with no way back; give them a year to heal
     if (npc?.status === 'wounded') {
       const { status, ...rest } = npc;
@@ -1446,6 +1454,11 @@ export function endYear(charState, rng) {
     vi.push(lv);
     en.push(le);
   };
+  for (const npc of returned) {
+    const years = Math.max(1, (char.age || 0) - (npc.awayAge ?? char.age ?? 0));
+    vi.push(`${npc.nameVi} trở về sau ${years} năm đi xa và gõ cửa nhà bạn trước tiên.`);
+    en.push(`${npc.nameEn || npc.nameVi} comes back after ${years} years away and knocks on your door first.`);
+  }
 
   if (reachedCareerAge(char) && !char.flags.includes('Distorted')) {
     let livingCost = nest ? 5 : isOutskirts(char) ? 2 : 3;

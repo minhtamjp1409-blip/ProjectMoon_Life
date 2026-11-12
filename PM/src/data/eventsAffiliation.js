@@ -414,14 +414,14 @@ const lifecycleEvents = [
         labelEn: 'Take full responsibility and spend 8 Ahn on {partner}’s treatment',
         resultVi: 'Bạn tự tay ký nhận trách nhiệm và chi trả tiền thuốc men cho {partner}. Họ khẽ thở phào, vỗ nhẹ lên vai bạn trước khi lui về nghỉ dưỡng. Danh tiếng của bạn hao hụt ít nhiều, nhưng tình nghĩa sống chết giữa hai người càng thêm bền chặt.',
         resultEn: 'You sign the liability line yourself and cover {partner}’s medical bill. They let out a quiet breath and clap your shoulder before retiring to recover. Your reputation takes a hit, yet the bond between you grows stronger.',
-        costAhn: 8, clearNpcCrisis: 'partner', bonds: { partner: 15 }, effects: { rep: -4, sanity: 3, standing: -4 }, meritAdd: 4
+        costAhn: 8, clearNpcCrisis: 'partner', bond: { partner: 15 }, effects: { rep: -4, sanity: 3, standing: -4 }, meritAdd: 4
       },
       {
         labelVi: 'Xử lý theo quy chế: chia phần thưởng nhưng giữ biên bản khiển trách',
         labelEn: 'Go by the book: split the bonus but keep the formal reprimand',
         resultVi: 'Bạn chia đủ phần thưởng cho {partner} nhưng vẫn nộp biên bản ghi nhận sai sót lên cấp trên. {partner} cất phong bì vào áo, không trách cứ câu nào, chỉ có khoảng cách giữa hai chiếc ghế là xa hơn trước.',
         resultEn: 'You hand {partner} their full share while filing the formal reprimand upstairs. {partner} pockets the envelope without a word of complaint, though the space between your chairs feels wider than before.',
-        bonds: { partner: -10 }, effects: { rep: 4, sanity: -4, standing: 5 }, meritAdd: 8
+        bond: { partner: -10 }, effects: { rep: 4, sanity: -4, standing: 5 }, meritAdd: 8
       },
       {
         labelVi: 'Đổ toàn bộ trách nhiệm lên đầu {partner} để giữ sạch hồ sơ',

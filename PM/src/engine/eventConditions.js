@@ -2,8 +2,10 @@ import { effectiveMinAge } from './careerAge.js';
 import { hasScarTag } from './scarModel.js';
 import { getAffiliation, laneOf } from './affiliation.js';
 import { fingersReachingOut } from './fingerPull.js';
+import { NPC_GONE_STATUSES } from '../data/npcStatus.js';
 
-export const npcIsActive = (npc) => Boolean(npc) && npc.alive !== false && !npc.deceased && !['dead', 'missing', 'estranged', 'betrayer'].includes(npc.status);
+export { NPC_GONE_STATUSES };
+export const npcIsActive = (npc) => Boolean(npc) && npc.alive !== false && !npc.deceased && !NPC_GONE_STATUSES.includes(npc.status);
 // A companion who took a mortal strike for you heals like any other injury; `status: 'wounded'` is how older saves recorded it
 export const SHIELD_HEAL_YEARS = 2;
 export const npcIsHurt = (npc) => Boolean(npc?.injured) || npc?.status === 'wounded';

@@ -20,6 +20,7 @@ import {
 import { gauntletRoute } from '../../../engine/dungeonCombat.js';
 import { signatureMeter } from '../../../engine/dungeonSignature.js';
 import { getCompanionStageBanter } from '../../../data/dungeonExtras.js';
+import { DUNGEON_OBJECTIVES } from '../../../data/dungeonObjectives.js';
 
 const STANCES = [
   {
@@ -188,6 +189,7 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
   const route = session.mode === 'gauntlet' ? gauntletRoute(session) : null;
   const fight = stage.combat || null;
   const meter = signatureMeter(session);
+  const objective = session.objective ? DUNGEON_OBJECTIVES.find((o) => o.id === session.objective) : null;
 
   return (
     <div className={`dock is-dungeon theme-${def.theme}${fight?.isBoss ? ' is-boss' : ''}${fight?.phase === 2 ? ' is-phase-2' : ''}${strain >= 70 ? ' is-panic-high' : ''}`} style={{ '--dg': def.accentColor }} role="document">
@@ -218,6 +220,11 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
           </div>
           <h2 className="dock-title" id="active-dock-title">{pick(def.titleVi, def.titleEn)}</h2>
           {!session.ensembleCoda && <p className="dg-ambient">{t(ambient[0], ambient[1])}</p>}
+          {objective && (
+            <p className="dg-objective">
+              <b>{t(objective.nameVi, objective.nameEn)}.</b> {t(objective.briefVi, objective.briefEn)}
+            </p>
+          )}
           {def.noRetreat && <p className="dg-judgment-warning">{t('Không có lối rút. HP hoặc SP cạn sẽ chết. Trượt kiểm định cuối cũng chết.', 'No retreat. Reaching zero HP or SP kills you. Failing the final check also kills you.')}</p>}
           {def.theme === 'ensemble' && <p className="dg-judgment-warning">{session.ensembleCoda
             ? t('Theo Carmen: thành Distortion. Chống lại: mất 8 HP nếu thành công; trượt hoặc HP cạn sẽ chết.', 'Follow Carmen: become a Distortion. Resist: lose 8 HP on success; a failed check or zero HP means death.')

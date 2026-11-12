@@ -120,8 +120,13 @@ export default function CutsceneLayer() {
     }
     const done = setTimeout(() => endCutscene('done', key), cutscene.durationMs);
     const onKey = (e) => {
-      if (e.key === 'Tab') return;
       e.stopPropagation();
+      // The scene is the only thing on screen; its one control keeps the focus
+      if (e.key === 'Tab') {
+        e.preventDefault();
+        skipRef.current?.focus({ preventScroll: true });
+        return;
+      }
       if (!SKIP_KEYS.has(e.key)) return;
       e.preventDefault();
       if (!e.repeat) endCutscene('skip', key);
@@ -162,6 +167,9 @@ export default function CutsceneLayer() {
         ...(color ? { '--cs-color': color } : {})
       }}
       onClick={skip}
+      role="dialog"
+      aria-modal="true"
+      aria-label={t('Cảnh chuyển', 'Cutscene')}
     >
       <div className="cs-scrim" aria-hidden="true" />
       {Art && cutscene.cut !== 'caption' && <Art cut={cutscene.cut} variant={dynamic?.variant} />}

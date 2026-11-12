@@ -6,6 +6,7 @@
 // This module only reads and writes the character; it never imports the engine, so any
 // layer can call it without a cycle.
 // ============================================================================
+import { NPC_GONE_STATUSES } from '../data/npcStatus.js';
 import { ASSOCIATIONS, OFFICES, OFFICE_CFG, OFFICE_REQUESTS, SECTION_TABLE, STANDING_WORDS } from '../data/associations.js';
 
 // Flags this module grants through helper calls, declared where the story lint can see them
@@ -247,7 +248,7 @@ function menteeYear(char, logs) {
   const m = char.mentee;
   if (!m) return;
   const npc = char.npcs?.mentee;
-  const active = npc && npc.alive !== false && !npc.deceased && !['dead', 'missing', 'estranged', 'betrayer'].includes(npc.status);
+  const active = npc && npc.alive !== false && !npc.deceased && !NPC_GONE_STATUSES.includes(npc.status);
   if (!active) {
     char.mentee = null;
     dropFlag(char, 'Mentoring');

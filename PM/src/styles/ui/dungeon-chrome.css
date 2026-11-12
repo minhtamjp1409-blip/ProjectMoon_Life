@@ -12,6 +12,9 @@
 }
 .dg-hazard { padding: 1px 7px; border: 1px solid var(--dg); border-radius: var(--radius-sm); color: var(--text); font-size: var(--t-meta); font-weight: 700; }
 .dg-ambient { font-family: var(--serif); font-style: italic; font-size: var(--t-control); line-height: 1.55; color: var(--muted); }
+/* The Request's goal for this run: one plain line under the mood line, its name in the ink colour */
+.dg-objective { margin: 6px 0 0; font-size: var(--t-ui); line-height: 1.5; color: var(--muted); }
+.dg-objective b { color: var(--text); font-weight: 600; }
 .dg-judgment-warning { padding: 8px 12px; border: 1px solid rgba(255, 111, 102, 0.4); border-radius: var(--radius-sm); background: rgba(255, 111, 102, 0.08); color: var(--bad); font-size: var(--t-ui); line-height: 1.5; }
 .dg-harmony { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 12px; border: 1px solid var(--dg); color: var(--text); font-size: var(--t-label); }
 .dg-harmony-marks { display: inline-flex; gap: 5px; }

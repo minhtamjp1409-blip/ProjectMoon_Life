@@ -51,6 +51,9 @@ export function LifeEndStep({ summary, held = false, onInherit, children }) {
         <span>{t('tuổi', 'yrs')}</span>
       </p>
       <p className="epitaph-cause">{lang === 'en' ? summary.deathCauseEn : summary.deathCauseVi}</p>
+      {summary.sandbox && (
+        <p className="sandbox-note">{t('Đời thử nghiệm: có event tự viết trên trang Khung cửi.', 'A sandbox life: it played events written on the Loom page.')}</p>
+      )}
       <blockquote className="epitaph-poetic-quote">{lang === 'en' ? summary.poeticQuoteEn : summary.poeticQuoteVi}</blockquote>
       <div className="life-end-actions">
         <button type="button" className="btn btn-primary btn-lg" ref={lookRef} onClick={() => setLooked(true)}>

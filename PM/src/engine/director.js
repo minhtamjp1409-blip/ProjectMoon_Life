@@ -334,6 +334,17 @@ export function applyChoiceExtras(char, sources, deltas, rng, meta = {}) {
     }
   }
 
+  // Someone leaves for a while: out of scenes and the party, back on their own at returnAge (endYear)
+  for (const away of pickField('npcAway')) {
+    for (const [role, years] of Object.entries(away)) {
+      const key = char.npcs?.[role] ? role : null;
+      const target = key && char.npcs[key];
+      if (!target || !npcActive(target)) continue;
+      char.npcs = { ...char.npcs, [key]: { ...target, status: 'away', awayAge: char.age, returnAge: (char.age || 0) + years } };
+      deltas.push({ k: 'fate', role: key, name: target.nameVi, v: 'away' });
+    }
+  }
+
   // Memories, consequences, nature
   const involvedRole = meta.role || Object.keys(all.find((s) => s?.bond)?.bond || {})[0] || null;
   if (involvedRole && char.npcs?.[involvedRole]) {

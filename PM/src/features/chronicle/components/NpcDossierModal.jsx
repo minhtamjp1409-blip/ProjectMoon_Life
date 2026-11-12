@@ -4,7 +4,7 @@ import { AlertTriangle, X } from 'lucide-react';
 import { useGameStore } from '../../../store/gameStore.js';
 import { NPC_INTERACTION_ACTIONS, canInteractWithNpc, getNpcActionLabel } from '../../../engine/npcInteractions.js';
 import { ensureNpcAgency, getNpcBondState, getNpcAge } from '../../../data/npcPersonality.js';
-import { npcIsHurt } from '../../../engine/eventConditions.js';
+import { npcIsHurt, NPC_GONE_STATUSES } from '../../../engine/eventConditions.js';
 import { useT } from '../../../i18n';
 
 export const NpcDossierModal = ({ npcRole, onClose }) => {
@@ -59,7 +59,7 @@ export const NpcDossierModal = ({ npcRole, onClose }) => {
   const npc = useMemo(() => ensureNpcAgency(rawNpc), [rawNpc]);
   if (!char || !npcRole || !rawNpc) return null;
   const name = lang === 'en' ? npc.nameEn || npc.nameVi : npc.nameVi;
-  const isGone = (npc.alive === false) || npc.deceased || ['dead', 'missing', 'estranged', 'betrayer'].includes(npc.status);
+  const isGone = (npc.alive === false) || npc.deceased || NPC_GONE_STATUSES.includes(npc.status);
   const bondState = getNpcBondState(npc);
   const perk = npc.dungeonPerk;
   const npcAge = getNpcAge(char, npc);

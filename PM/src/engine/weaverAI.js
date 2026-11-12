@@ -29,6 +29,13 @@ import { isGateEvent, gateOnCooldown, gateDeferredForHealth, gateWeightMult } fr
 // Pure In-Universe Project Moon Causal Engine (Zero Meta/AI Text)
 // ============================================================================
 
+/** A life someone has written events into: it plays them, and it says so on its dossier and epitaph. */
+export const SANDBOX_FLAG = 'WeaverSandbox';
+/** Measurement hook for the director's draw; null in play. tools/sim/director_reach.mjs sets onDraw. */
+export const directorProbe = { onDraw: null };
+/** Share of ordinary draws that look past the top 24 for an eligible event this life has not met. */
+export const DIRECTOR_EXPLORE_SHARE = 0.06;
+
 export const FATE_OMENS = [
   {
     id: 'index_equilibrium',
@@ -882,7 +889,9 @@ export function selectEventWithWeaverAI({
     }
   }
 
-  const combinedPool = [...(updatedWeaver.customEvents || []), ...allPools];
+  // A custom event only plays in a life marked as a sandbox (see the Weaver page); an ordinary life never draws one
+  const sandboxed = char.flags?.includes(SANDBOX_FLAG) ? updatedWeaver.customEvents || [] : [];
+  const combinedPool = [...sandboxed, ...allPools];
   const eligible = combinedPool.filter(ev => !ev.id.startsWith('fixer_promo_') && !careerTrialForEvent(ev.id) && isEventEligible(ev, char));
 
   if (eligible.length === 0) {
@@ -916,8 +925,19 @@ export function selectEventWithWeaverAI({
   const directedPick = drawDirectorCandidate(directedCandidates, draw);
   const policy = ['legacy', 'shadow', 'active'].includes(updatedWeaver.directorPolicy)
     ? updatedWeaver.directorPolicy : 'active';
-  const chosen = policy === 'active' ? directedPick : legacyPick;
-  const topCandidates = policy === 'active' ? directedCandidates.slice(0, 24) : legacyCandidates.slice(0, 24);
+  const ranked = policy === 'active' ? directedCandidates : legacyCandidates;
+  // A small share of draws goes past the top 24, to eligible events this life has not met: written content the
+  // scoring would otherwise never show (tools/sim/director_reach.mjs). The same roll decides it, so no extra draw
+  // shifts the rest of the year.
+  const unmet = draw < DIRECTOR_EXPLORE_SHARE ? ranked.slice(24).filter((c) => !(char.seenEvents || []).includes(c.event.id)) : [];
+  // evenly among them: a weighted pick would only ever reach the next few ranks
+  const explored = unmet.length ? unmet[Math.min(unmet.length - 1, Math.floor((draw / DIRECTOR_EXPLORE_SHARE) * unmet.length))] : null;
+  const chosen = explored || (policy === 'active' ? directedPick : legacyPick);
+  const topCandidates = ranked.slice(0, 24);
+  // Measurement only (tools/sim/director_reach.mjs): who was eligible, who made the top 24, who was drawn
+  if (directorProbe.onDraw) {
+    directorProbe.onDraw({ age: char.age, eligible: ranked.map((c) => c.event.id), top: topCandidates.map((c) => c.event.id), chosen: chosen.event.id, explored: Boolean(explored) });
+  }
 
   const logEntry = {
     age: char.age,
@@ -925,12 +945,13 @@ export function selectEventWithWeaverAI({
     selectedId: chosen.event.id,
     utility: chosen.utility,
     breakdown: chosen.score.breakdown,
-    reasonVi: [...chosen.score.reasonsVi, ...(policy === 'active' ? chosen.director.reasons : [])].join(' · '),
-    reasonEn: [...chosen.score.reasonsEn, ...(policy === 'active' ? chosen.director.reasonsEn : [])].join(' · '),
+    reasonVi: [...(explored ? ['Một trang chưa mở của The City'] : []), ...chosen.score.reasonsVi, ...(policy === 'active' ? chosen.director.reasons : [])].join(' · '),
+    reasonEn: [...(explored ? ['A page of the City not yet opened'] : []), ...chosen.score.reasonsEn, ...(policy === 'active' ? chosen.director.reasonsEn : [])].join(' · '),
     director: {
       policy,
       legacyId: legacyPick.event.id,
       directedId: directedPick.event.id,
+      explored: Boolean(explored),
       tags: directorTags(chosen.event),
       multiplier: chosen.director?.multiplier ?? 1
     },

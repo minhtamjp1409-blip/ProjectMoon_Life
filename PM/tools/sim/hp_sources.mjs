@@ -1,14 +1,16 @@
 /**
  * Where each job loses and regains HP at ages 25 to 50, and what kills it, per source (season, minor, exam, dungeon,
- * contract, major event, year end). Usage: node tools/sim/hp_sources.mjs
+ * contract, major event, year end). Usage: node tools/sim/hp_sources.mjs [policy=focused|random|greedy|cautious]
+ * The policy picks choices and sets the year plan (choicePolicy.planTheYear).
  */
 import { createNewCharacter, resolveEventChoice, resolveDungeonChoice, getDungeonCurrentStage, createRNG, resolveFixerContract, setDungeonStance, useDungeonSupply } from '../../src/engine/gameEngine.js';
 import { planYear, chooseDirectorPacedLead, runDueItems, resolveMinor, endYear, LIFE_MINORS } from '../../src/engine/yearPlanner.js';
 import { choiceIsAvailable } from '../../src/engine/eventConditions.js';
-import { makePicker } from './lib/choicePolicy.mjs';
+import { makePicker, planTheYear, POLICIES as PLAYERS } from './lib/choicePolicy.mjs';
 import { POLICIES } from './dungeon_sim.mjs';
 const JOBS = ['Fixer', 'Wing Employee', 'Syndicate'];
-const pick = makePicker('focused');
+const PLAYER = PLAYERS.includes(process.argv[2]) ? process.argv[2] : 'focused';
+const pick = makePicker(PLAYER);
 const acc = Object.fromEntries(JOBS.map((j) => [j, { years: 0, loss: {}, gain: {}, deaths: {}, n: {} }]));
 const jobOf = (c) => (c.flags?.includes('Distorted') ? 'Distortion' : c.job);
 for (let i = 0; i < 500; i++) {
@@ -18,6 +20,7 @@ for (let i = 0; i < 500; i++) {
     if (a) a.years++;
     const step = (src, fn) => { const hp = char.stats.health; const alive = char.alive; char = fn(); if (!a) return; const d = (char.stats?.health ?? 0) - hp; if (d < 0) a.loss[src] = (a.loss[src] || 0) - d; if (d > 0) a.gain[src] = (a.gain[src] || 0) + d; if (alive && !char.alive) a.deaths[src] = (a.deaths[src] || 0) + 1; };
     if (!char.plan?.length) planYear(char, rng);
+    char = planTheYear(char, PLAYER, rng);
     if (char.pendingLead) char = chooseDirectorPacedLead(char, rng);
     for (let t = 0; t <= 100 && char.alive; t += 2) {
       step('season (mishap, daily)', () => runDueItems(char, t, rng).char); let spin = 0;

@@ -5,6 +5,11 @@ import {
   APEX_DIRECTIVES,
   YEAR_ACTIVITIES,
   YEAR_PLAN_POINTS,
+  YEAR_PLAN_PRESETS,
+  CONVALESCE,
+  isConvalescence,
+  convalescenceDropsRequest,
+  samePoints,
   ambitionsFor,
   defaultYearPoints,
   isApexCommander,
@@ -89,6 +94,10 @@ export function YearPlanDock({ char, onConfirm, onPeek }) {
   const canConfirm = used === YEAR_PLAN_POINTS && Boolean(char.ambition || ambition);
   const current = AMBITIONS.find((goal) => goal.id === char.ambition?.id);
   const netDeltas = previewAnnualPlanDeltas(char, points, apexEligible ? directive : null);
+  const hp = char.stats?.health ?? 100;
+  const wounded = hp < CONVALESCE.below && char.job !== 'Distortion' && !char.flags?.includes('Distorted');
+  const convalescing = isConvalescence(char, points);
+  const dropsRequest = convalescenceDropsRequest(char);
 
   function changePoint(id, amount) {
     setPoints((previous) => {
@@ -218,6 +227,35 @@ export function YearPlanDock({ char, onConfirm, onPeek }) {
             )}
           </div>
         </div>
+        <div className="year-plan-presets" role="group" aria-label={t('Nhịp năm có sẵn', 'Ready-made rhythms')}>
+          {YEAR_PLAN_PRESETS.map((preset) => {
+            const on = samePoints(points, preset.points);
+            return (
+              <button
+                key={preset.id}
+                type="button"
+                className={`year-plan-preset${on ? ' is-on' : ''}`}
+                aria-pressed={on}
+                onClick={() => setPoints({ ...preset.points })}
+              >
+                {t(preset.vi, preset.en)}
+              </button>
+            );
+          })}
+        </div>
+        {wounded && (
+          <p className={`year-plan-mend${convalescing ? ' is-on' : ''}`} aria-live="polite">
+            {convalescing
+              ? t(
+                `Năm dưỡng thương: hồi ${points.rest * CONVALESCE.hpPerPoint} HP ngay khi bắt đầu năm${dropsRequest ? ', và năm nay bạn không nhận Request' : ''}.`,
+                `A year to mend: ${points.rest * CONVALESCE.hpPerPoint} HP back as the year begins${dropsRequest ? ', and no Request this year' : ''}.`
+              )
+              : t(
+                `Bạn đang bị thương. Dồn từ ${CONVALESCE.minRest} ô Nghỉ ngơi trở lên thì năm nay thành năm dưỡng thương: ${CONVALESCE.hpPerPoint} HP mỗi ô${dropsRequest ? ', đổi lại không nhận Request cả năm' : ''}.`,
+                `You are hurt. Put ${CONVALESCE.minRest} or more slots into rest and this becomes a year to mend: ${CONVALESCE.hpPerPoint} HP a slot${dropsRequest ? ', at the cost of every Request this year' : ''}.`
+              )}
+          </p>
+        )}
         <div className="year-plan-activities">
           {YEAR_ACTIVITIES.map((activity, index) => (
             <div className="year-plan-activity" key={activity.id}>

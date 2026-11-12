@@ -31,6 +31,19 @@ const CONTRACT_JOBS = new Set(['Fixer', 'Color Fixer', 'Syndicate']);
 /** Contract power each scheme point adds this year: the target's routine read, a door left unlocked. */
 export const SCHEME_CONTRACT_POWER = 4;
 
+/**
+ * A convalescence year: someone hurt (HP below CONVALESCE.below) who puts CONVALESCE.minRest or more points into rest
+ * mends HP_PER_POINT HP per rest point when the plan is set. The price is the career's pace: a Fixer or Syndicate
+ * member takes no Request that year (the scheduled one is dropped), and the points are not spent on training or work.
+ */
+export const CONVALESCE = { below: 50, minRest: 2, hpPerPoint: 4 };
+export function isConvalescence(char, points) {
+  if (!char?.stats || (char.stats.health ?? 100) >= CONVALESCE.below) return false;
+  if (char.job === 'Distortion' || char.flags?.includes('Distorted')) return false;
+  return (points?.rest || 0) >= CONVALESCE.minRest;
+}
+export const convalescenceDropsRequest = (char) => CONTRACT_JOBS.has(char?.job);
+
 /** Power this year's scheme points add to every contract a Fixer or Syndicate member takes before the year ends. */
 export function annualSchemeContractPower(char) {
   if (char?.annualPlan?.age !== char?.age || !CONTRACT_JOBS.has(char?.job)) return 0;
@@ -39,6 +52,15 @@ export function annualSchemeContractPower(char) {
 }
 
 export const defaultYearPoints = () => ({ train: 1, work: 1, bond: 0, rest: 1, scheme: 0 });
+
+/** Ready-made rhythms for a year. They set this year's pace only; none of them picks a route or an ambition. */
+export const YEAR_PLAN_PRESETS = [
+  { id: 'steady', vi: 'Giữ sức', en: 'Keep your strength', points: { train: 0, work: 1, bond: 0, rest: 2, scheme: 0 } },
+  { id: 'earn', vi: 'Kiếm sống', en: 'Make a living', points: { train: 0, work: 2, bond: 0, rest: 1, scheme: 0 } },
+  { id: 'kin', vi: 'Người thân', en: 'Your people', points: { train: 0, work: 0, bond: 2, rest: 1, scheme: 0 } },
+  { id: 'drill', vi: 'Rèn giũa', en: 'Drill', points: { train: 2, work: 1, bond: 0, rest: 0, scheme: 0 } }
+];
+export const samePoints = (a, b) => Boolean(a && b) && YEAR_ACTIVITIES.every(({ id }) => (a[id] || 0) === (b[id] || 0));
 
 export function validYearPoints(points) {
   return points && YEAR_ACTIVITIES.every(({ id }) => Number.isInteger(points[id]) && points[id] >= 0 && points[id] <= YEAR_PLAN_POINTS) &&
@@ -60,6 +82,11 @@ export function applyAnnualPlan(char, points, ambitionId, directiveId = null) {
   stats.wealth = Math.min(100, (stats.wealth || 0) + p.work * 2);
   stats.network = Math.min(100, (stats.network || 0) + p.bond * 2);
   stats.sanity = Math.min(100, (stats.sanity || 0) + p.rest * 3);
+  if (isConvalescence(char, p)) {
+    stats.health = Math.min(100, (stats.health || 0) + p.rest * CONVALESCE.hpPerPoint);
+    char.annualPlan.convalescence = true;
+    if (convalescenceDropsRequest(char)) char.plan = (char.plan || []).filter((item) => item.kind !== 'contract');
+  }
   char.heat = Math.max(0, (char.heat || 0) - p.scheme * 2);
   const isDistorted = char.job === 'Distortion' || char.flags?.includes('Distorted');
   if (isDistorted) {
@@ -123,6 +150,7 @@ export function previewAnnualPlanDeltas(char, points, directiveId = null) {
   san = Math.min(100, Math.max(1, san));
 
   let hp = initialHealth;
+  if (isConvalescence(char, p)) hp += (p.rest || 0) * CONVALESCE.hpPerPoint;
   if ((p.train || 0) === 2) hp -= 2;
   else if ((p.train || 0) >= 3) hp -= 4;
   hp = Math.min(100, Math.max(1, hp));

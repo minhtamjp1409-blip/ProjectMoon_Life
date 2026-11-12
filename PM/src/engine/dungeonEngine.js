@@ -18,6 +18,7 @@ import { FAIL_TEXT, GENERIC_FAIL, STRAIN_NOTES, BREAK_TEXT, SUPPLY_TEXT, ENDING_
 import { NIGHT_DUNGEON, STAGE_VARIANTS, SIDE_ROOMS, SHORTCUTS, COMPANION_TEXT, COMPANION_LEAD, FINAL_KEEPS, REPORT_FIT, DUNGEON_EXTRACTION_REWARDS } from '../data/dungeonExtras.js';
 import { ITEMS_CATALOG } from '../data/itemsData.js';
 import { CLAW_DUNGEON, CLAW_DUNGEON_ID } from '../data/dungeonClaw.js';
+import { DUNGEON_OBJECTIVES, dungeonObjectiveFor, objectiveEventFor } from '../data/dungeonObjectives.js';
 import { ENSEMBLE_DUNGEON, ENSEMBLE_ROUTE_SCENES, ENSEMBLE_SCORE_ITEM } from '../data/dungeonEnsemble.js';
 import { ENSEMBLE_DUNGEON_ID, ensembleRoute, ensembleWitness, recordEnsembleRetreat, finishEnsembleRun } from './ensemblePath.js';
 import { triggerDistortionTransformation } from './careerPipeline.js';
@@ -1441,6 +1442,8 @@ export function createDungeonSession(dungeonId, char) {
   // Each dungeon keeps one rule of its own (dungeonSignature.js); set up before the first floor opens
   session.seed = char?.seed ?? '';
   initSignature(session, char);
+  // The Request's own goal for this run, decided at the last stage (dungeonObjectives.js); judgments carry none
+  if (def.id !== CLAW_DUNGEON_ID && def.id !== ENSEMBLE_DUNGEON_ID) session.objective = dungeonObjectiveFor(def.id, char).id;
   // Five of the dungeons are a chain of fights floor by floor; the rest keep their exploration stages
   const ready = isGauntlet(def.id) ? initGauntlet(session, char) : session;
   return dungeonUsesCards(def) ? dealCards(ready, char) : ready;
@@ -2096,6 +2099,10 @@ export function resolveDungeonChoice(charState, choiceIndex, rng = Math.random) 
       session.accumulatedMerit = (session.accumulatedMerit || 0) + c.merit;
     }
     char.pendingDungeon = null;
+    // Reaching the end opens the objective's choice; leaving early leaves it undone
+    const objectiveEvent = conquered && session.objective && char.alive ? objectiveEventFor(session.objective) : null;
+    if (objectiveEvent && !char.pendingEvent) char.pendingEvent = objectiveEvent;
+    const { vi: undoneVi, en: undoneEn } = conquered ? { vi: '', en: '' } : objectiveUndone(session);
     const name = { vi: def.titleVi, en: def.titleEn };
     const ending = conquered ? ENDING_TEXT.conquered : ENDING_TEXT.fled;
     const title = ending.title(name);
@@ -2107,8 +2114,8 @@ export function resolveDungeonChoice(charState, choiceIndex, rng = Math.random) 
         outcome: conquered ? 'conquered' : 'fled',
         titleVi: title.vi,
         titleEn: title.en,
-        resultVi: `${session.lastStageResult.vi}\n\n${ending.body.vi}`,
-        resultEn: `${session.lastStageResult.en}\n\n${ending.body.en}`,
+        resultVi: `${session.lastStageResult.vi}\n\n${ending.body.vi}${undoneVi}`,
+        resultEn: `${session.lastStageResult.en}\n\n${ending.body.en}${undoneEn}`,
         haul: { ahn: totalLoot + Math.max(0, rewards.wealth), merit: session.accumulatedMerit || 0 },
         isDead: false
       }
@@ -2137,6 +2144,16 @@ export function resolveDungeonChoice(charState, choiceIndex, rng = Math.random) 
 /**
  * Direct retreat action from dungeon
  */
+/** The line a run left early adds about the Request's task it did not finish. */
+function objectiveUndone(session) {
+  const objective = session?.objective ? DUNGEON_OBJECTIVES.find((o) => o.id === session.objective) : null;
+  if (!objective) return { vi: '', en: '' };
+  return {
+    vi: `\n\nViệc Request giao còn bỏ dở: ${objective.nameVi.toLowerCase()}.`,
+    en: `\n\nThe Request's task is left undone: ${objective.nameEn.toLowerCase()}.`
+  };
+}
+
 export function fleeDungeon(charState) {
   const char = { ...charState, stats: { ...charState.stats }, logs: [...(charState.logs || [])] };
   const session = char.pendingDungeon;
@@ -2164,6 +2181,7 @@ export function fleeDungeon(charState) {
   char.pendingDungeon = null;
 
   const title = ENDING_TEXT.fled.title({ vi: def?.titleVi || 'Hầm Ngục', en: def?.titleEn || 'Dungeon' });
+  const undone = objectiveUndone(session);
   return {
     char,
     session: null,
@@ -2172,12 +2190,8 @@ export function fleeDungeon(charState) {
       outcome: 'fled',
       titleVi: title.vi,
       titleEn: title.en,
-      resultVi: dark ? `${dark.vi}
-
-${ENDING_TEXT.fled.body.vi}` : ENDING_TEXT.fled.body.vi,
-      resultEn: dark ? `${dark.en}
-
-${ENDING_TEXT.fled.body.en}` : ENDING_TEXT.fled.body.en,
+      resultVi: (dark ? `${dark.vi}\n\n${ENDING_TEXT.fled.body.vi}` : ENDING_TEXT.fled.body.vi) + undone.vi,
+      resultEn: (dark ? `${dark.en}\n\n${ENDING_TEXT.fled.body.en}` : ENDING_TEXT.fled.body.en) + undone.en,
       haul: { ahn: haul, merit: session.accumulatedMerit || 0 },
       isDead: false
     }
@@ -2267,8 +2281,8 @@ const COMBAT_CTX = {
       char, session: null, isFinished: true,
       resolution: {
         outcome: 'fled', titleVi: title.vi, titleEn: title.en,
-        resultVi: `${text.vi}${tailVi ? ` ${tailVi}` : ''}\n\n${ENDING_TEXT.fled.body.vi}`,
-        resultEn: `${text.en}${tailEn ? ` ${tailEn}` : ''}\n\n${ENDING_TEXT.fled.body.en}`,
+        resultVi: `${text.vi}${tailVi ? ` ${tailVi}` : ''}\n\n${ENDING_TEXT.fled.body.vi}${objectiveUndone(session).vi}`,
+        resultEn: `${text.en}${tailEn ? ` ${tailEn}` : ''}\n\n${ENDING_TEXT.fled.body.en}${objectiveUndone(session).en}`,
         haul: { ahn: haul, merit: session.accumulatedMerit || 0 },
         isDead: false
       }

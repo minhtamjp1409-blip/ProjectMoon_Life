@@ -87,7 +87,7 @@ export function DeltaChip({ d, i = 0 }) {
     );
   }
   if (d.k === 'fate') {
-    const text = { dead: t('đã chết', 'is dead'), missing: t('mất tích', 'is missing'), estranged: t('rời bỏ bạn', 'left you') }[d.v] || d.v;
+    const text = { dead: t('đã chết', 'is dead'), missing: t('mất tích', 'is missing'), estranged: t('rời bỏ bạn', 'left you'), away: t('đi xa một thời gian', 'is away for a while') }[d.v] || d.v;
     return (
       <span className="delta is-down is-heavy" style={style}>
         {d.name} {text}
