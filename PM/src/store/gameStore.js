@@ -97,16 +97,17 @@ function loadSavedMeta() {
     return {
       pastLives: Array.isArray(raw.pastLives) ? raw.pastLives.map(normalizeLegacyRecord) : [],
       globalCodex: Array.isArray(raw.globalCodex) ? raw.globalCodex : [],
-      globalSeenEvents: Array.isArray(raw.globalSeenEvents) ? raw.globalSeenEvents : []
+      globalSeenEvents: Array.isArray(raw.globalSeenEvents) ? raw.globalSeenEvents : [],
+      openedDoors: Array.isArray(raw.openedDoors) ? raw.openedDoors : []
     };
   } catch {
-    return { pastLives: [], globalCodex: [], globalSeenEvents: [] };
+    return { pastLives: [], globalCodex: [], globalSeenEvents: [], openedDoors: [] };
   }
 }
 
-function saveMeta(pastLives, globalCodex, globalSeenEvents = []) {
+function saveMeta(pastLives, globalCodex, globalSeenEvents = [], openedDoors = []) {
   try {
-    localStorage.setItem(META_KEY, JSON.stringify({ pastLives: pastLives.map(normalizeLegacyRecord), globalCodex, globalSeenEvents }));
+    localStorage.setItem(META_KEY, JSON.stringify({ pastLives: pastLives.map(normalizeLegacyRecord), globalCodex, globalSeenEvents, openedDoors }));
   } catch {
     // storage full or blocked: the run continues in memory
   }
@@ -454,11 +455,13 @@ export const useGameStore = create((set, get) => ({
   customSeed: '',
   selectedRegion: 'RANDOM',
   selectedFamily: 'RANDOM',
+  fastForwardChildhood: false,
 
   // Meta progression
   pastLives: savedMeta.pastLives,
   globalCodex: savedMeta.globalCodex,
   globalSeenEvents: savedMeta.globalSeenEvents,
+  openedDoors: savedMeta.openedDoors,
   pendingLegacy: savedMeta.pastLives.find((life) => !life.endingId) || null,
 
   setConfigField: (field, value) => set({ [field]: value }),
@@ -518,7 +521,7 @@ export const useGameStore = create((set, get) => ({
       nextPastLives = state.pastLives.filter((l) => !(l.seed === legacy.seed && l.age === legacy.age));
       cityArchiveAPI.deleteMemorial(legacy.seed, legacy.age).catch(() => {});
     }
-    saveMeta(nextPastLives, state.globalCodex, state.globalSeenEvents);
+    saveMeta(nextPastLives, state.globalCodex, state.globalSeenEvents, state.openedDoors);
     set({ pendingLegacy: null, pastLives: nextPastLives });
   },
 
@@ -527,14 +530,14 @@ export const useGameStore = create((set, get) => ({
     const nextPastLives = state.pastLives.filter((l) => !(l.seed === seed && l.age === age));
     const isCurrentLegacy = state.pendingLegacy?.seed === seed && state.pendingLegacy?.age === age;
     const nextLegacy = isCurrentLegacy ? (nextPastLives[0] || null) : state.pendingLegacy;
-    saveMeta(nextPastLives, state.globalCodex, state.globalSeenEvents);
+    saveMeta(nextPastLives, state.globalCodex, state.globalSeenEvents, state.openedDoors);
     set({ pastLives: nextPastLives, pendingLegacy: nextLegacy });
     cityArchiveAPI.deleteMemorial(seed, age).catch(() => {});
   },
 
   clearBloodline: () => {
     const state = get();
-    saveMeta([], state.globalCodex, state.globalSeenEvents);
+    saveMeta([], state.globalCodex, state.globalSeenEvents, state.openedDoors);
     set({ pastLives: [], pendingLegacy: null });
     cityArchiveAPI.clearMemorials().catch(() => {});
   },
@@ -701,7 +704,7 @@ export const useGameStore = create((set, get) => ({
       const state = get();
       const mergedCodex = Array.from(new Set([...state.globalCodex, ...(snapshot.globalCodex || [])]));
       const mergedLives = (snapshot.pastLives && snapshot.pastLives.length > 0 ? snapshot.pastLives : state.pastLives).map(normalizeLegacyRecord);
-      saveMeta(mergedLives, mergedCodex, state.globalSeenEvents);
+      saveMeta(mergedLives, mergedCodex, state.globalSeenEvents, state.openedDoors);
 
       const nextChar = cloneChar(state.char);
       if (Array.isArray(snapshot.customEvents) && snapshot.customEvents.length > 0) {
@@ -769,10 +772,12 @@ export const useGameStore = create((set, get) => ({
     }
 
     const mergedSeenEvents = Array.from(new Set([...(state.globalSeenEvents || []), ...(nextChar.seenEvents || [])]));
-    saveMeta(nextPastLives, mergedCodex, mergedSeenEvents);
+    const mergedOpenedDoors = Array.from(new Set([...(state.openedDoors || []), ...(nextChar.openedDoors || [])]));
+    saveMeta(nextPastLives, mergedCodex, mergedSeenEvents, mergedOpenedDoors);
     return {
       globalCodex: mergedCodex,
       globalSeenEvents: mergedSeenEvents,
+      openedDoors: mergedOpenedDoors,
       pastLives: nextPastLives,
       pendingLegacy: nextPendingLegacy,
       ...(nextChar.alive ? {} : { savedRun: null })
@@ -894,6 +899,7 @@ export const useGameStore = create((set, get) => ({
     pendingAchievementToasts.length = 0;
     const state = get();
     const legacyPkg = useLegacy ? state.pendingLegacy : null;
+    const allowFastForward = Boolean(state.fastForwardChildhood && (state.pastLives?.length || 0) >= 1 && startAge === 0);
     const nextChar = createNewCharacter({
       customName: state.customName,
       gender: state.gender === 'female' ? 'female' : 'male',
@@ -901,7 +907,10 @@ export const useGameStore = create((set, get) => ({
       preferredRegionId: regionId || state.selectedRegion,
       preferredFamilyId: state.selectedFamily || 'RANDOM',
       parentLegacy: legacyPkg,
+      pastLives: state.pastLives || [],
+      openedDoors: state.openedDoors || [],
       startAge,
+      fastForwardChildhood: allowFastForward,
       sparePerinatal: !legacyPkg && (state.pastLives?.length || 0) === 0
     });
     // What earlier lives learned in the dungeons (Lake Laws, duty logs) comes with the next one
@@ -911,9 +920,11 @@ export const useGameStore = create((set, get) => ({
     nextChar.discoverySeen = Array.from(new Set(state.globalSeenEvents || []));
     lifeRng = createRNG(`${nextChar.seed}:life:${nextChar.age}`);
     lifeActiveMs = 0;
-    planYear(nextChar, lifeRng);
-    if (nextChar.job !== 'Child') nextChar.pendingYearPlan = { age: nextChar.age };
-    else if (nextChar.pendingLead) Object.assign(nextChar, chooseDirectorPacedLead(nextChar, lifeRng));
+    if (!nextChar.childhoodMontage?.active) {
+      planYear(nextChar, lifeRng);
+      if (nextChar.job !== 'Child') nextChar.pendingYearPlan = { age: nextChar.age };
+      else if (nextChar.pendingLead) Object.assign(nextChar, chooseDirectorPacedLead(nextChar, lifeRng));
+    }
     const metaUpdates = get().syncMetaFromChar(nextChar);
     let hasBirthLogs = Boolean(nextChar.pendingBirthLogs && nextChar.pendingBirthLogs.length > 0);
     // Đợt 119a & 120c: Hiển thị ngay dòng khai sinh đầu tiên tại frame 0, nạp các dòng gập ngay để tránh nhịp chờ rỗng
@@ -1130,16 +1141,31 @@ export const useGameStore = create((set, get) => ({
     get().commit(prev, nextChar, { activeResolution: null, postChoicePauseMs: readingPause });
   },
 
-  selectEventChoice: (choiceIdx, dungeonStake = 0) => {
+  selectEventChoice: (choiceIdx, dungeonStake = 0, montageFriendName = '') => {
     const prev = get().char;
     if (!prev.pendingEvent) return;
-    const event = prev.pendingEvent;
-    const choice = event.choices?.[choiceIdx];
-    const nextChar = resolveEventChoice(prev, choiceIdx, lifeRng, dungeonStake);
+    let sourceChar = prev;
+    if (prev.pendingEvent?._montage?.allowFriendNaming && prev.npcs?.friend) {
+      sourceChar = cloneChar(prev);
+      if (montageFriendName && montageFriendName.trim()) {
+        applyNpcName(sourceChar, montageFriendName, 'friend');
+      } else {
+        sourceChar.npcs = {
+          ...sourceChar.npcs,
+          friend: { ...sourceChar.npcs.friend, needsNaming: false, namedPrompted: true }
+        };
+      }
+    }
+    const nextChar = resolveEventChoice(sourceChar, choiceIdx, lifeRng, dungeonStake);
     if (prev.job === 'Child' && nextChar.job !== 'Child' && nextChar.alive && !nextChar.pendingDungeon) nextChar.pendingYearPlan = { age: nextChar.age };
-    const readingPause = get().speed > 0 && !nextChar.pendingModal ? 3000 : 0;
+    if (prev.childhoodMontage?.active && !nextChar.childhoodMontage?.active && nextChar.alive && !nextChar.pendingEvent && !nextChar.plan?.length) {
+      lifeRng = createRNG(`${nextChar.seed}:life:${nextChar.age}`);
+      planYear(nextChar, lifeRng);
+    }
+    const inMontageTransition = Boolean(prev.childhoodMontage?.active);
+    const readingPause = !inMontageTransition && get().speed > 0 && !nextChar.pendingModal ? 3000 : 0;
 
-    get().commit(prev, nextChar, { activeResolution: null, postChoicePauseMs: readingPause });
+    get().commit(prev, nextChar, { activeResolution: null, postChoicePauseMs: readingPause, ...(inMontageTransition && !nextChar.childhoodMontage?.active ? { yearProgress: 0 } : {}) });
   },
 
   interactNpc: (role, actionId) => {

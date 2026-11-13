@@ -1,4 +1,5 @@
-import { hasScarTag } from './scarModel.js';
+import { normalizeScars, getScarProfile } from './scarModel.js';
+import { REGIONS } from '../data/worldData.js';
 import { weightedOutcomes } from './outcomeOdds.js';
 
 // ============================================================================
@@ -55,70 +56,192 @@ export const PSYCHE_FACULTIES = {
   }
 };
 
+function hashSeed(input) {
+  let hash = 2166136261;
+  const text = String(input || '');
+  for (let i = 0; i < text.length; i++) {
+    hash ^= text.charCodeAt(i);
+    hash = Math.imul(hash, 16777619);
+  }
+  return hash >>> 0;
+}
+
+function resolveRegionNames(char) {
+  const regionId = char?.regionId || char?.birthRegionId || '';
+  if (!regionId) return { vi: 'khu vực này', en: 'this district', shortVi: 'khu này', shortEn: 'this ward' };
+  const found = REGIONS.find((r) => r.id === regionId);
+  if (!found) {
+    return regionId === 'OUTSKIRTS'
+      ? { vi: 'vùng Outskirts', en: 'the Outskirts', shortVi: 'Outskirts', shortEn: 'the Outskirts' }
+      : { vi: `District ${regionId}`, en: `District ${regionId}`, shortVi: `District ${regionId}`, shortEn: `District ${regionId}` };
+  }
+  const baseName = found.nameEn || found.nameVi || `District ${found.ward || regionId}`;
+  return {
+    vi: baseName,
+    en: baseName,
+    shortVi: found.ward ? `District ${found.ward}` : baseName,
+    shortEn: found.ward ? `District ${found.ward}` : baseName
+  };
+}
+
+function pickNpcAnchor(char) {
+  const entries = Object.entries(char?.npcs || {}).filter(([, npc]) => npc && (npc.nameVi || npc.nameEn));
+  if (!entries.length) return null;
+  const departed = entries.find(([, npc]) => npc.deceased || npc.status === 'dead');
+  if (departed) return { role: departed[0], npc: departed[1], departed: true };
+  const priority = ['rival', 'mentor', 'spouse', 'lover', 'friend', 'child'];
+  for (const role of priority) {
+    const match = entries.find(([r, npc]) => r === role && !npc.deceased && npc.status !== 'dead');
+    if (match) return { role: match[0], npc: match[1], departed: false };
+  }
+  return { role: entries[0][0], npc: entries[0][1], departed: false };
+}
+
+function matchScarForEvent(char, eventText) {
+  const { scars } = normalizeScars(char || {});
+  if (!scars.length) return null;
+  const isWingOrDeal = /\bwing\b|\bcorp\b|hợp đồng|giao kèo|người đại diện|chiêu mộ/i.test(eventText);
+  const isCombatOrThreat = /sweeper|3:13|phục kích|ám sát|huyết|đấu tay đôi|súng|nhân chứng|trục xuất|bệnh xá|cấp cứu/i.test(eventText);
+  const isCraftOrWork = /xưởng rèn|sửa giáp|sửa vũ khí|ủy thác|commission|đơn hàng rèn/i.test(eventText);
+
+  for (const scar of scars) {
+    const profile = getScarProfile(scar);
+    const tag = profile?.tag || 'injury';
+    const isBurnOrWingScar = /bỏng|cháy|wing|tập đoàn|corp|lao công/i.test(scar);
+    if ((tag === 'witness' || tag === 'faction') && isWingOrDeal) return { scar, profile, tag, strong: true };
+    if (isBurnOrWingScar && isWingOrDeal) return { scar, profile, tag, strong: true };
+    if ((tag === 'injury' || tag === 'survivor' || tag === 'trauma') && (isCombatOrThreat || isWingOrDeal)) return { scar, profile, tag, strong: false };
+    if ((tag === 'weapon' || tag === 'craft') && isCraftOrWork) return { scar, profile, tag, strong: true };
+  }
+  return null;
+}
+
 /**
- * Determines which inner faculty voice chimes in for this moment
+ * Determines whether a concrete inner-voice link matches the current moment.
+ * Returns null unless anchored in an actual scar, District, NPC, or high Resonance.
  */
-export function getPsycheInterjection(char, event, lang = 'vi') {
+export function getPsycheInterjection(char, event, _lang = 'vi') {
   if (!char || !event) return null;
 
-  const eventText = `${event.vi || ''} ${event.en || ''}`.toLowerCase();
-  const flags = char.flags || [];
-  const sanity = char.stats?.sanity ?? 50;
-  const health = char.stats?.health ?? 50;
-  const resonance = char.resonance || 0;
-  const taboo = char.taboo || 0;
+  const eventText = [
+    event.titleVi, event.titleEn,
+    event.displayVi, event.displayEn,
+    event.vi, event.en
+  ].filter(Boolean).join(' ').toLowerCase();
 
-  // 1. Carmen's Sun (Inland Empire / E.G.O & Distortion)
-  if (event.id.includes('carmen') || resonance >= 50 || sanity <= 18) {
-    return {
-      faculty: PSYCHE_FACULTIES.CARMEN,
-      textVi: 'Hơi ấm từ vầng thái dương của The Light phả vào sau gáy bạn, vừa dịu dàng vừa ngột ngạt: "Này. Sao phải gượng gạo chịu đau đến thế? Ở The City này, ai cũng tự cứu lấy mình cả thôi. Bạn không cần làm một con người tử tế cho ai xem nữa. Cứ buông tay ra. Hãy trở thành điều bạn muốn."',
-      textEn: 'A suffocating warmth from The Light’s sun breaths on your neck, soft and intimate: “Hey. Why strain so hard to endure? In this City, everyone only saves themselves. You don’t need to play the decent human for anyone. Just let go. Become what you want.”'
-    };
-  }
+  const age = Number(char.age || 0);
+  if (age < 6 && !(event.major)) return null;
 
-  // 2. Ayin's Stoic Volition (Holding onto humanity)
-  if (event.id.includes('crossroad_18') || sanity >= 55 && (event.major || hasScarTag(char, 'injury') || hasScarTag(char, 'trauma'))) {
+  const resonance = Number(char.resonance || 0);
+  const sanity = Number(char.stats?.sanity ?? 50);
+  const heat = Number(char.heat || 0);
+  const taboo = Number(char.taboo || 0);
+  const roll = hashSeed(`${char.id || ''}|${event.id || ''}|${age}`) % 100;
+  const district = resolveRegionNames(char);
+  const npcAnchor = pickNpcAnchor(char);
+
+  const isContractOrSecret = /hợp đồng|giao kèo|điều khoản|bí mật|chữ ký|arbiter|prescript|contract|fine print/i.test(eventText);
+  const isRelationshipOrDebt = /phản bội|món nợ|đồng đội|cộng sự|tri kỷ|hôn ước|office|bỏ rơi/i.test(eventText);
+  const isDistrictPressure = /syndicate|taboo|thuế thời gian|giờ giới nghiêm|the head|cưỡng chế|outskirts/i.test(eventText);
+
+  // 1. Concrete Scar anchor
+  const scarMatch = matchScarForEvent(char, eventText);
+  if (scarMatch && (scarMatch.strong ? (event.major || roll < 50) : roll < 14)) {
+    const scarEn = scarMatch.profile?.labelEn?.toLowerCase() || 'old scar';
+    if (scarMatch.tag === 'witness' || scarMatch.tag === 'faction') {
+      return {
+        faculty: PSYCHE_FACULTIES.SURVIVAL,
+        textVi: `Vết "${scarMatch.scar}" nhói lên dưới lớp áo, nhắc bạn những lời hứa từ đám tay to ở ${district.shortVi} luôn giấu cái giá viết bằng máu.`,
+        textEn: `The ${scarEn} stirs under your coat, reminding you that offers in ${district.shortEn} always carry a hidden cost written in blood.`
+      };
+    }
+    if (scarMatch.tag === 'weapon' || scarMatch.tag === 'craft') {
+      return {
+        faculty: PSYCHE_FACULTIES.LOGIC,
+        textVi: `Cảm giác quen tay gắn với "${scarMatch.scar}" giữ nhịp thở bạn đều lại để cân đo thiệt hơn trước khi nhận kèo ở ${district.shortVi}.`,
+        textEn: `Muscle memory from that ${scarEn} steadies your breathing so you measure every cut and risk on ${district.shortEn} turf.`
+      };
+    }
     return {
       faculty: PSYCHE_FACULTIES.VOLITION,
-      textVi: 'Một giọng nói lạnh và trầm vang lên từ lồng ngực: "Đứng vững. Đau thì nghiến răng lại. Máu chảy hay sẹo rạch đều là chứng tích bạn vẫn là một con người. Một khi buông tay, bạn sẽ không bao giờ tìm lại được hình dáng của chính mình."',
-      textEn: 'A cold, steady murmur echoes in your ribs: “Stand firm. When it hurts, grit your teeth. Bleeding flesh and jagged scars are proof you are still human. Once you let go, you will never reclaim your own shape.”'
+      textVi: `Vết "${scarMatch.scar}" bỗng giật nhẹ, buộc bạn đặt sẵn tay lên chỗ thoát hiểm quen thuộc của ${district.shortVi} rồi mới mở lời.`,
+      textEn: `Your ${scarEn} throbs without warning, nudging your stance toward the nearest exit in ${district.shortEn} before you speak.`
     };
   }
 
-  // 3. Backstreets Primal Instinct (Half-Light / Sweepers / Combat)
-  if (eventText.includes('sweeper') || eventText.includes('máu') || eventText.includes('giết') || health <= 35 || event.id.includes('req_')) {
-    return {
-      faculty: PSYCHE_FACULTIES.SURVIVAL,
-      textVi: 'Cơn co giật quen thuộc dưới khớp ngón tay: "Tay trong túi áo. Rút dao ra trước khi gã kia kịp chớp mắt. Ở cái hẻm này, đứa nào mở miệng phân bua trước thường là đứa nằm xuống trước khi đồng hồ điểm 3 giờ 13."',
-      textEn: 'A familiar twitch tightens your knuckles: “Hand inside the coat. Draw your steel before they blink. In these alleys, the first one to start explaining is the one on the pavement before 3:13.”'
-    };
-  }
-
-  // 4. Poetic Passion / Drama (Bloodfiends, La Mancha, The Ring, Hongyuan)
-  if (eventText.includes('lamancha') || eventText.includes('bloodfiend') || eventText.includes('ring') || flags.includes('WildHuntRider')) {
+  // 1b. Wild Hunt rider oath anchored in Wuthering Hills fallout
+  if ((char.flags || []).includes('WildHuntRider') && roll < (event.major ? 16 : 5)) {
     return {
       faculty: PSYCHE_FACULTIES.DRAMA,
-      textVi: 'Cơn rùng mình chạy dọc sống lưng: "Một nụ cười méo mó sau tấm mặt nạ rỉ sét. Một đường kiếm sắc lẹm không thừa một giọt máu. Nếu phải gục ngã ở cái xó này, ít nhất hãy để lũ người đứng xem phía dưới phải nín thở."',
-      textEn: 'A shudder ripples down your spine: “A twisted grin behind a rusted visor. A stroke of steel that spills not an idle drop. If fall you must in this gutter, at least leave the spectators breathless.”'
+      textVi: `Tiếng gió rít ở ${district.shortVi} vẫn kéo theo vó ngựa Wild Hunt cũ, nhắc bạn đừng tin bất kỳ lời thề trung thành nào tối nay.`,
+      textEn: `The wind over ${district.shortEn} still carries old Wild Hunt hooves, warning against tonight's sworn vows.`
     };
   }
 
-  // 5. City Logic & Taboo (Ahn, Contracts, Hana, Arbiters)
-  if (taboo >= 1 || char.job === 'Fixer' || char.job === 'Wing Employee' || (char.stats?.wealth || 0) >= 45) {
+  // 2. High Resonance spotting contract loopholes or departed echoes
+  if (resonance >= 42 && isContractOrSecret && (event.major || roll < 60)) {
+    if (npcAnchor?.departed) {
+      const npcVi = npcAnchor.npc.nameVi || npcAnchor.npc.nameEn;
+      const npcEn = npcAnchor.npc.nameEn || npcVi;
+      return {
+        faculty: PSYCHE_FACULTIES.CARMEN,
+        textVi: `Cộng hưởng lên cao kéo theo giọng ${npcVi} lướt qua kẽ hở tờ giao kèo ở ${district.shortVi}, chỉ đúng dòng chữ ký dễ mất mạng.`,
+        textEn: `High Resonance carries ${npcEn}'s voice across the ${district.shortEn} contract, pointing straight at the clause that costs your neck.`
+      };
+    }
+    return {
+      faculty: PSYCHE_FACULTIES.CARMEN,
+      textVi: `Cộng hưởng lên cao làm dòng chữ nhỏ ở cuối kèo ${district.shortVi} hiện rõ từng điều khoản gài bẫy người ký vội.`,
+      textEn: `High Resonance sharpens the fine print on the ${district.shortEn} deal until every buried penalty clause stands out.`
+    };
+  }
+
+  // 3. Low sanity or high resonance hearing a concrete departed NPC
+  if ((sanity <= 16 || resonance >= 60) && npcAnchor?.departed && roll < 14) {
+    const npcVi = npcAnchor.npc.nameVi || npcAnchor.npc.nameEn;
+    const npcEn = npcAnchor.npc.nameEn || npcVi;
+    return {
+      faculty: PSYCHE_FACULTIES.CARMEN,
+      textVi: `Đầu óc căng đến mức tiếng bước chân ngoài hành lang ${district.shortVi} nghe hệt như giọng ${npcVi} gọi bạn quay lại.`,
+      textEn: `Your nerves fray so thin that footsteps down the ${district.shortEn} hall sound exactly like ${npcEn} calling you back.`
+    };
+  }
+
+  // 4. Concrete NPC anchor on social/debt/alliance moments
+  if (npcAnchor && isRelationshipOrDebt && roll < (event.major ? 14 : 6)) {
+    const npcVi = npcAnchor.npc.nameVi || npcAnchor.npc.nameEn;
+    const npcEn = npcAnchor.npc.nameEn || npcVi;
+    if (npcAnchor.role === 'rival' || npcAnchor.role === 'mentor') {
+      return {
+        faculty: PSYCHE_FACULTIES.DRAMA,
+        textVi: `Lời ${npcVi} dặn hồi còn chạm mặt nhau ở ${district.shortVi} vang lại đúng lúc bạn chuẩn bị đặt cược bằng thể diện của mình.`,
+        textEn: `What ${npcEn} told you back in ${district.shortEn} returns just as you are about to wager your own name.`
+      };
+    }
+    return {
+      faculty: PSYCHE_FACULTIES.VOLITION,
+      textVi: `Bạn chợt nghĩ tới ${npcVi} đang chờ ở ${district.shortVi} trước khi quyết định xem ván này có đáng mang thêm nợ về nhà hay không.`,
+      textEn: `You picture ${npcEn} waiting in ${district.shortEn} before deciding whether tonight's gamble is worth bringing home.`
+    };
+  }
+
+  // 5. Concrete District pressure (high heat, taboo, or explicit jurisdiction stakes)
+  if ((heat >= 55 || taboo >= 1 || (isDistrictPressure && char.regionId)) && roll < (event.major ? 10 : 4)) {
+    if (heat >= 55) {
+      return {
+        faculty: PSYCHE_FACULTIES.SURVIVAL,
+        textVi: `Mức Heat đang rát sau gáy khiến đầu óc bạn tự rà lại từng ngõ thoát khỏi ${district.shortVi} trước khi gật đầu.`,
+        textEn: `With Heat pressing at your collar, your eyes count every alley leading out of ${district.shortEn} before you nod.`
+      };
+    }
     return {
       faculty: PSYCHE_FACULTIES.LOGIC,
-      textVi: 'Đầu óc bạn tự động nhảy số: "Tính lại tiền trong túi đi. Một băng đạn xưởng rèn có giá ba ngày lương. Còn nếu vi phạm luật của The Head, đến tiền làm đám ma cũng chẳng còn ai đứng ra mà thu."',
-      textEn: 'Your mind tallies the ledger without blinking: “Count the coins in your pocket. A box of workshop ammo costs three days of labor. Step over the Taboo, and there won’t even be anyone left to collect your burial fee.”'
+      textVi: `Luật ngầm ở ${district.vi} chưa bao giờ bỏ sót người đọc lướt điều khoản phụ sau giờ giới nghiêm.`,
+      textEn: `Unwritten rules in ${district.en} never spare anyone who skims the side clauses after curfew.`
     };
   }
 
-  // Default Stoic Insight
-  return {
-    faculty: PSYCHE_FACULTIES.VOLITION,
-    textVi: 'Bạn chững lại nửa nhịp: "Ở The City, bước chân sau luôn phải trả tiền cho vết máu của bước chân trước."',
-    textEn: 'You pause half a beat: “In The City, your next step always pays for the blood of the last.”'
-  };
+  return null;
 }
 
 /**

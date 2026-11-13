@@ -504,6 +504,11 @@ const MinorDock = ({ prompt, char, npcs, wealth = 0, remainingMs, paused = false
 
 const EventDock = ({ event, char, onPick, dungeonStake, onDungeonStake, onPeek, isUnseen = false, isFirstInBloodline = false }) => {
   const { t, lang, bilingual } = useT();
+  const [friendNameDraft, setFriendNameDraft] = useState('');
+  useEffect(() => {
+    setFriendNameDraft('');
+  }, [event?.id]);
+  const montage = event?._montage || null;
   const causal = event.isCausalCallback;
   const title = lang === 'en' ? event.titleEn || event.titleVi : event.titleVi;
   const psyche = getPsycheInterjection(char, event, lang);
@@ -521,9 +526,11 @@ const EventDock = ({ event, char, onPick, dungeonStake, onDungeonStake, onPeek, 
               <p className={`dock-kicker ${causal ? 'is-causal' : ''}`}>
                 <span className="dock-kicker-icon" aria-hidden="true">{causal ? <History size={14} /> : <FactionCrest char={char} ev={event} size={14} />}</span>
                 <span>
-                  {causal
-                    ? t('Tiếng vọng nhân quả · Thời gian dừng lại', 'Causal echo · Time stops')
-                    : t(`Tuổi ${char.age} · Thời gian dừng lại`, `Age ${char.age} · Time stops`)}
+                  {montage
+                    ? t(`Tua thơ ấu (${montage.step}/${montage.total}) · Tuổi ${char.age}`, `Childhood fast-forward (${montage.step}/${montage.total}) · Age ${char.age}`)
+                    : causal
+                      ? t('Tiếng vọng nhân quả · Thời gian dừng lại', 'Causal echo · Time stops')
+                      : t(`Tuổi ${char.age} · Thời gian dừng lại`, `Age ${char.age} · Time stops`)}
                 </span>
                 {isUnseen ? (
                   <span className="dock-unseen-note">
@@ -602,6 +609,24 @@ const EventDock = ({ event, char, onPick, dungeonStake, onDungeonStake, onPeek, 
           </details>
         )}
 
+        {montage?.allowFriendNaming && char.npcs?.friend && (
+          <div className="field" style={{ marginBottom: '12px' }}>
+            <label htmlFor="montage-friend-name-input">
+              {t('Đặt tên bạn thuở nhỏ (tùy chọn)', 'Name your childhood friend (optional)')}
+            </label>
+            <input
+              id="montage-friend-name-input"
+              className="input"
+              maxLength={24}
+              value={friendNameDraft}
+              onChange={(e) => setFriendNameDraft(e.target.value.slice(0, 24))}
+              placeholder={lang === 'en'
+                ? `Leave blank to keep ${char.npcs.friend.nameEn || char.npcs.friend.nameVi}`
+                : `Để trống để giữ tên ${char.npcs.friend.nameVi}`}
+            />
+          </div>
+        )}
+
         <div className="choices">
           {(event.choices || []).map((ch, idx) => {
             const rawBody = splitTitle(lang === 'en' ? ch.labelEn || ch.labelVi : ch.labelVi).body;
@@ -654,7 +679,7 @@ const EventDock = ({ event, char, onPick, dungeonStake, onDungeonStake, onPeek, 
                 key={idx}
                 className={`choice ${blocked ? 'is-disabled' : ''}`}
                 disabled={blocked}
-                onClick={() => !blocked && onPick(idx)}
+                onClick={() => !blocked && onPick(idx, friendNameDraft)}
               >
                 <span className="choice-badge">{idx + 1}</span>
                 <span>
@@ -1495,10 +1520,10 @@ export const LiveStageFeed = () => {
     chooseMinor(idx);
   };
 
-  const handleSelectEvent = (idx) => {
+  const handleSelectEvent = (idx, montageFriendName = '') => {
     if (!choiceIsAvailable(char.pendingEvent?.choices?.[idx], char)) return;
     audioEngine.playClick();
-    selectEventChoice(idx, dungeonStake);
+    selectEventChoice(idx, dungeonStake, montageFriendName);
   };
 
   const handleSelectContract = (id) => {

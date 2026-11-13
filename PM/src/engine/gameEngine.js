@@ -9,9 +9,12 @@ import { rollTraits, traitsOf, varyEffects, PRINTED_NUMBERS } from './variance.j
 import GATES from '../data/careerGates.json' with { type: 'json' };
 import {
   extractAncestorEchoProfile,
+  ancestorLandmarksFromLives,
   applyAncestorEchoInheritance,
   getImbuedCombatBonus
 } from './cityUpgrades.js';
+import { syncVisibleDoorsForChar, markOpenedDoor } from './lockedDoors.js';
+import { initChildhoodMontage, advanceChildhoodMontage } from './childhoodFastForward.js';
 // ============================================================================
 // CORE LIFE-SIMULATION & GENERATIONAL BLOODLINE ENGINE
 // Connects World Data, Event Pools, Persistent NPCs, Tension Clocks & Weaver AI
@@ -436,7 +439,10 @@ export function createNewCharacter({
   preferredRegionId = 'RANDOM',
   preferredFamilyId = 'RANDOM',
   parentLegacy = null,
+  pastLives = [],
+  openedDoors = [],
   startAge = 0,
+  fastForwardChildhood = false,
   // A player's very first life is never lost in the womb: they have not made a single choice yet
   sparePerinatal = false
 } = {}) {
@@ -785,7 +791,7 @@ export function createNewCharacter({
     });
   }
 
-  return {
+  const createdChar = {
     seed: actualSeed,
     generation,
     name: defaultName,
@@ -881,12 +887,17 @@ export function createNewCharacter({
         : null
     },
     lineage: lineageInfo,
+    ancestorLandmarks: ancestorLandmarksFromLives([...(pastLives || []), ...(parentLegacy ? [parentLegacy] : [])]),
+    ancestorBulletinsShown: 0,
     reserveAhn: 0,
     bloodlineSeenEvents: parentLegacy
       ? [...new Set([...(parentLegacy.bloodlineSeenEvents || []), ...(parentLegacy.seenEvents || [])])] // seenEvents: legacies saved before Đợt 151
       : [],
     seenEvents: [],
     seenBulletins: [],
+    openedDoors: [...(openedDoors || [])],
+    visibleDoors: [],
+    doorsDecade: null,
     recent: [],
     plan: [],
     planCursor: 0,
@@ -903,8 +914,19 @@ export function createNewCharacter({
     pendingContract: null,
     pendingDungeon: null,
     pendingNpcNaming: null,
-    pendingModal: null
+    pendingModal: null,
+    childhoodMontage: null
   };
+  syncVisibleDoorsForChar(createdChar, { events: ALL_STORY_EVENTS, openedDoors, rng });
+  if (fastForwardChildhood && actualAge === 0 && Array.isArray(pastLives) && pastLives.length >= 1) {
+    initChildhoodMontage(createdChar, {
+      events: ALL_STORY_EVENTS,
+      interpolateText,
+      openedDoors,
+      rng
+    });
+  }
+  return createdChar;
 }
 
 /**
@@ -952,6 +974,12 @@ export function cloneChar(char) {
     reserveAhn: char.reserveAhn || 0,
     bloodlineSeenEvents: [...(char.bloodlineSeenEvents || [])],
     seenEvents: [...char.seenEvents],
+    openedDoors: [...(char.openedDoors || [])],
+    visibleDoors: structuredClone(char.visibleDoors || []),
+    doorsDecade: char.doorsDecade ?? null,
+    childhoodMontage: char.childhoodMontage ? structuredClone(char.childhoodMontage) : null,
+    ancestorLandmarks: structuredClone(char.ancestorLandmarks || []),
+    ancestorBulletinsShown: char.ancestorBulletinsShown || 0,
     recent: [...(char.recent || [])],
     recentMishaps: [...(char.recentMishaps || [])],
     memory: [...(char.memory || [])],
@@ -2368,6 +2396,7 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random, dung
   if (!char.seenEvents.includes(event.id)) {
     char.seenEvents.push(event.id);
   }
+  markOpenedDoor(char, event.id);
   if (otherTrial) {
     const prefix = otherTrial.route === 'finger' ? 'Finger' : 'Wing';
     const retryKey = `${prefix.toLowerCase()}TrialRetryRank`;
@@ -2904,6 +2933,15 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random, dung
   const promoLogs = checkPromotions(char);
   char.logs.push(...promoLogs);
   char.weaver = updateDramaTension(char.weaver, char);
+
+  if (char.childhoodMontage?.active && !char.pendingDungeon && !char.pendingModal) {
+    advanceChildhoodMontage(char, {
+      events: ALL_STORY_EVENTS,
+      interpolateText,
+      openedDoors: char.openedDoors || [],
+      rng
+    });
+  }
 
   return char;
 }

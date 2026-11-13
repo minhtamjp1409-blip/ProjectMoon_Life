@@ -1,6 +1,6 @@
 # Kế hoạch phát triển tiếp theo
 
-File này chỉ giữ những việc chưa làm. Việc đã xong được ghi trong `PROGRESS_LOG.md`, gần nhất là mục 2.55 (Đợt 173) và 2.56 (việc rút ra khi so với "Born as an Individual in the City").
+File này chỉ giữ những việc chưa làm. Việc đã xong được ghi trong `PROGRESS_LOG.md`, gần nhất là mục 2.57 (Đợt 174: hoàn tất Bước `0a–0d` và Bước `0+` Tua thời thơ ấu).
 
 Luật chơi đang chạy nằm ở `docs/LUAT_HIEN_HANH.md`, lore và giọng văn ở `UNIVERSE.md`. Số đợt do người làm tự đặt khi bắt đầu.
 
@@ -24,8 +24,8 @@ Lộ trình gộp ba bản đánh giá ngày 13/11/2026:
 
 | Bước | Việc | Điều cần chứng minh |
 |---|---|---|
-| 0 | Sửa bản tin, cửa đóng nhìn thấy được, giọng nội tâm cụ thể, bản tin nhắc đời trước | Số sự kiện lớn được gặp tăng rõ, đời sau thấy tên đời trước |
-| 0+ | Tua thời thơ ấu, tùy chọn từ đời thứ 2 | Đời thứ 2 vào tuổi trưởng thành nhanh mà vẫn có cá tính |
+| ~~0~~ | ~~Sửa bản tin, cửa đóng nhìn thấy được, giọng nội tâm cụ thể, bản tin nhắc đời trước~~ | Đã xong ở Đợt 174 (`PROGRESS_LOG.md` mục 2.57) |
+| ~~0+~~ | ~~Tua thời thơ ấu, tùy chọn từ đời thứ 2~~ | Đã xong ở Đợt 174 (`PROGRESS_LOG.md` mục 2.57) |
 | 1 | Một khu phố sống qua nhiều năm | Một quyết định để lại dấu vết thấy được qua nhiều năm |
 | 2 | Đồng hồ cho những chuyện đang diễn ra | Người chơi lập kế hoạch năm theo rủi ro đang lớn dần |
 | 3 | NPC có mục tiêu, nghĩa vụ và ký ức, bắt đầu từ đối thủ cùng lứa | Có quyết định khó mà không phải chuyện tăng Bond |
@@ -33,55 +33,6 @@ Lộ trình gộp ba bản đánh giá ngày 13/11/2026:
 | 5 | Một dungeon, hai mục tiêu từ lúc chuẩn bị | Người chơi chuẩn bị và đọ chiêu khác đi |
 | 6 | Dấu vết khu phố truyền sang đời sau | Người chơi muốn chơi tiếp để xem đời trước để lại gì |
 | Bất kỳ lúc nào | City theo ngày | Có người quay lại vào ngày hôm sau |
-
-## Bước 0. Việc rẻ, làm ngay
-
-### 0a. Phân bố bản tin
-- **Vấn đề:** mô phỏng 200 đời sau commit `9000cf8` cho thấy bản tin gắn vào 100% số năm từ 5 tới 19 tuổi. Từ 30 tới 39 tuổi chỉ còn 21%, và từ 40 tuổi còn 5–10%. Có 59/92 tin mang dải tuổi `[5,99]`, nên đứa trẻ 5 tuổi năm nào cũng đọc tin về bảng ủy thác Fixer hay giờ giới nghiêm.
-- **Hướng xử lý:**
-  - Chỉ gắn bản tin làm dòng phụ theo xác suất, khoảng 1/3, hoặc chỉ gắn vào năm yên ả.
-  - Nâng tuổi tối thiểu của các tin về Fixer, Wing và giới nghiêm lên 12–14.
-  - Năm yên ả lấy một sự việc thật trước, chỉ dùng `AMBIENT_YEAR_LINES` khi không còn sự việc nào. Đây là quy tắc của Đợt 120a. Cần bỏ điều kiện `!quiet &&` ở `createYearDigest` (`yearPlanner.js`) và sửa ca kiểm tra tương ứng trong `test_city_bulletins.mjs`.
-  - Câu "Tự lưu sau mỗi lựa chọn" luôn hiện trên trang chủ. Hiện câu này bị ẩn cùng dòng chú thích khi khung hướng dẫn đời đầu đang mở.
-  - Gom điều kiện hiện khung hướng dẫn thành một biến `showFirstLifeGuide` trong `BirthSetupPanel.jsx`.
-- **Kiểm chứng:** mô phỏng 200 đời, đếm số năm có bản tin theo từng thập kỷ tuổi. Không thập kỷ nào vượt 50%. Từ 30 tới 49 tuổi vẫn còn tin.
-
-### 0b. Cửa đóng nhìn thấy được
-*Tham khảo: cửa khóa trong Hades, mục tiêu trong Reigns.*
-- **Vấn đề:** phần lớn sự kiện lớn bị khóa sau các nhánh mà người chơi bình thường không đi tới. Người chơi không biết những cánh cửa ấy tồn tại.
-- **Hướng xử lý:**
-  - Lúc sinh ra và mỗi khi bước sang thập kỷ mới, hiện 2–3 cửa đang khóa kèm gợi ý. Ví dụ: "Có người ở Wing L từng biết tên mẹ bạn. Cần Network từ 40 và sống ở District 12."
-  - Điều kiện đọc từ dữ liệu có sẵn trong `careerGates.json` và `eventConditions.js`. Không viết điều kiện riêng cho cửa.
-  - Chọn cửa mà nhân vật có thể tới được trong đời này, không chọn cửa đã mở ở đời trước.
-  - Codex ghi lại những cửa đã mở qua mọi đời.
-- **Kiểm chứng:** thêm vào `tools/sim/lib/choicePolicy.mjs` một kiểu người chơi đi theo cửa. Chạy `director_reach.mjs` cho cả kiểu cũ và kiểu mới. Số sự kiện được rút ít nhất một lần phải tăng rõ so với mức 127/839.
-
-### 0c. Giọng nội tâm nói về chính vết sẹo và con người
-*Tham khảo: các kỹ năng chen lời trong Disco Elysium.*
-- **Vấn đề:** `getPsycheInterjection` (`discoPsyche.js`) đã hiện trên thẻ event. Nhưng nó chỉ chọn 1 trong 5 đoạn văn cố định, dựa trên từ khóa trong event và vài chỉ số. Lời chen không nhắc tới điều gì riêng của nhân vật.
-- **Hướng xử lý:**
-  - Lời chen ngắn, một câu, nhắc tới vết sẹo, District hoặc NPC cụ thể có liên quan tới event. Ví dụ: vết sẹo bỏng ở District 12 nhắc bạn đừng tin lời mời của Wing. Resonance cao chỉ ra kẽ hở trong một hợp đồng.
-  - Đọc từ `scarModel.js`, ký ức NPC và nơi ở. Chỉ chen khi có điểm nối thật, không chen ở mọi event.
-  - Viết theo `vi-prose`, qua `vi_prose_scan` và `voice_lint`.
-- **Kiểm chứng:** test cho thấy lời chen nhắc đúng tên sẹo hoặc NPC của nhân vật. Mô phỏng đếm tỷ lệ event có lời chen, giữ dưới khoảng 1/4 để không thành tiếng ồn.
-
-### 0d. Bản tin nhắc tên đời trước
-*Tham khảo: Dwarf Fortress (Legends), Rogue Legacy 2.*
-- **Vấn đề:** `summarizeDynastyHallOfLegends` (`cityUpgrades.js`) mới chỉ hiện ở trang Bloodline. Thành phố ở đời sau không nhắc gì tới đời trước.
-- **Hướng xử lý:**
-  - Khi đời trước để lại dấu lớn (lập Office, thành Color Fixer, đứng đầu một nhánh Syndicate, hóa Distortion), lưu một dòng "dấu ấn" gọn vào `pastLives`, gồm loại dấu ấn và District.
-  - Đời sau sống ở hoặc đi qua District đó thì có thể gặp bản tin nhắc tới đời trước, dưới dạng chuyện kể hay lời cảnh báo. Ví dụ: tượng đồng của một Color ở quảng trường vừa được lau bụi, hay khu phố từng bị phong tỏa vì một vụ Distortion năm nào.
-  - Dùng mẫu câu điền tên. Mỗi đời gặp tối đa 1–2 tin như vậy.
-- **Kiểm chứng:** test tạo một đời trước có dấu ấn, đời sau cùng District gặp đúng tin nhắc tên.
-
-## Bước 0+. Tua thời thơ ấu, tùy chọn từ đời thứ 2
-*Tham khảo: phần mở đầu theo nguồn gốc trong Dragon Age: Origins.*
-- **Vấn đề:** từ đời thứ 2, tuổi 0–14 trôi chậm với những đoạn người chơi đã quen.
-- **Hướng xử lý:**
-  - Từ đời thứ 2, trang chủ có tùy chọn gom thời thơ ấu thành 3–4 nút định hình đời: gia cảnh, một biến cố ở khu phố, mối dây với bạn thuở nhỏ, rồi bước vào ngã rẽ tuổi trưởng thành.
-  - Dùng event thơ ấu có sẵn. Không viết lại.
-  - Đời đầu luôn chơi đủ. Bạn thuở nhỏ vẫn được gặp và đặt tên.
-- **Kiểm chứng:** test cho thấy đời tua nhanh vẫn có bạn thuở nhỏ, gia cảnh và cờ thơ ấu như đời chơi đủ. Đo thời gian thật từ lúc sinh tới 15 tuổi.
 
 ## Bước 1. Một khu phố sống qua nhiều năm
 *Tham khảo: RimWorld tạo chuyện từ con người, nơi chốn và những biến cố tác động vào cả hai. Fallen London cho mỗi nơi chốn những việc riêng có thể làm.*

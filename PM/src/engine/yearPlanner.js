@@ -1,5 +1,6 @@
 import { advanceCityCondition } from './cityConditions.js';
 import { applyRegionalSingularityPassive } from './cityUpgrades.js';
+import { syncVisibleDoorsForChar } from './lockedDoors.js';
 import { contractRouteOf } from '../data/careerContracts.js';
 import { affiliationYearTick } from './affiliation.js';
 import { planFirstGate } from './dungeonPacing.js';
@@ -1926,6 +1927,7 @@ export function endYear(charState, rng) {
   settle(char, 0, rng);
   char.weaver = updateDramaTension(char.weaver, char);
   if (char.alive) {
+    syncVisibleDoorsForChar(char, { events: ALL_STORY_EVENTS, openedDoors: char.openedDoors || [], rng });
     planYear(char, rng);
     // A working life plans its year on the same screen as the year's leads
     if (reachedCareerAge(char) && char.job !== 'Child') char.pendingYearPlan = { age: char.age };
@@ -2041,6 +2043,51 @@ export const AMBIENT_YEAR_LINES = {
   ]
 };
 
+function formatDistrictLabel(regionId) {
+  const found = REGIONS.find((r) => r.id === regionId);
+  if (found?.ward) return `District ${found.ward}`;
+  return regionId === 'OUTSKIRTS' ? 'Outskirts' : `District ${regionId || ''}`.trim();
+}
+
+function buildAncestorBulletin(lm) {
+  const distLabel = formatDistrictLabel(lm.districtId);
+  const id = lm.key || `ancestor_${lm.kind}_${lm.districtId}_${lm.name}`;
+  if (lm.kind === 'color') {
+    const titlePart = lm.title ? ` (${lm.title})` : '';
+    return {
+      id,
+      isAncestorBulletin: true,
+      vi: `Tượng đồng của Color Fixer ${lm.name}${titlePart} dựng giữa quảng trường ${distLabel}. Đám Fixer trẻ đi ngang vẫn dừng lại đọc bia tên.`,
+      en: `A bronze statue of Color Fixer ${lm.name}${titlePart} stands on the ${distLabel} plaza. Young Fixers still pause to read its plaque.`
+    };
+  }
+  if (lm.kind === 'distortion') {
+    return {
+      id,
+      isAncestorBulletin: true,
+      vi: `Dãy phố cũ ở ${distLabel} vẫn căng dây rào trắng từ vụ Distortion ${lm.name}. Lính tuần bảo dấu cộng hưởng còn hằn trên vách tường.`,
+      en: `The old block in ${distLabel} still sits behind white cordon tape from ${lm.name}'s Distortion. Patrols say resonance clings to the brickwork.`
+    };
+  }
+  if (lm.kind === 'office') {
+    const officeVi = lm.officeName || `Office cũ của ${lm.name}`;
+    const officeEn = lm.officeName || `${lm.name}'s old Office`;
+    return {
+      id,
+      isAncestorBulletin: true,
+      vi: `Biển hiệu ${officeVi} vẫn treo trên phố chính ${distLabel}. Khách đặt kèo mới vẫn quen gọi tên người mở đầu là ${lm.name}.`,
+      en: `The signboard of ${officeEn} still hangs over ${distLabel}'s main lane. Clients still know ${lm.name} as its founder.`
+    };
+  }
+  const synLabel = lm.finger ? `The ${lm.finger}` : 'Syndicate';
+  return {
+    id,
+    isAncestorBulletin: true,
+    vi: `Đám đàn em vùng ${distLabel} vẫn giữ quy tắc cũ từ thời ${lm.name} cầm nhánh ${synLabel}. Bàn cuối quán trà hẻm tư chưa ai dám ngồi.`,
+    en: `Crews in ${distLabel} still keep the house rules from when ${lm.name} ran the ${synLabel} branch. Nobody takes the back table at the alley teahouse.`
+  };
+}
+
 export function pickCityBulletin(char, age, rng = Math.random) {
   if (!char) return null;
   const out = isOutskirts(char);
@@ -2048,6 +2095,24 @@ export function pickCityBulletin(char, age, rng = Math.random) {
   const regionKey = out ? 'outskirts' : (nest ? 'nest' : 'backstreets');
   const seen = new Set(char.seenBulletins || []);
   const regionId = char.regionId || char.birthRegion || null;
+
+  const ancestorShown = Number(char.ancestorBulletinsShown || 0);
+  if (age >= 8 && regionId && ancestorShown < 2) {
+    const landmarks = Array.isArray(char.ancestorLandmarks) ? char.ancestorLandmarks : [];
+    const matchingAncestor = landmarks.filter((lm) => {
+      if (!lm || lm.districtId !== regionId) return false;
+      const key = lm.key || `ancestor_${lm.kind}_${lm.districtId}_${lm.name}`;
+      return !seen.has(key);
+    });
+    if (matchingAncestor.length > 0 && rng() < 0.45) {
+      const picked = matchingAncestor[Math.floor(rng() * matchingAncestor.length)];
+      const built = buildAncestorBulletin(picked);
+      if (!Array.isArray(char.seenBulletins)) char.seenBulletins = [];
+      char.seenBulletins.push(built.id);
+      char.ancestorBulletinsShown = ancestorShown + 1;
+      return built;
+    }
+  }
 
   const eligible = CITY_BULLETINS.filter((b) => {
     if (seen.has(b.id)) return false;

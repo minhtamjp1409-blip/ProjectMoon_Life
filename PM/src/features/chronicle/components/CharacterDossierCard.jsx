@@ -630,6 +630,34 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeT
         </section>
       )}
 
+      {showCareer && Array.isArray(char.visibleDoors) && char.visibleDoors.length > 0 && (
+        <details className="dossier-fold locked-doors-fold" open>
+          <summary>
+            <span>{t('Cửa chưa mở', 'Locked doors ahead')}</span>
+            <small className="num">
+              {char.visibleDoors.filter((d) => d.opened).length}/{char.visibleDoors.length}
+            </small>
+          </summary>
+          <div className="dossier-fold-body">
+            <div className="career-obj-reqs">
+              {char.visibleDoors.map((door) => (
+                <div key={door.id} className={`career-req-item ${door.opened ? 'is-met' : ''}`}>
+                  <div className="career-req-row">
+                    <span className="req-status" aria-hidden="true">{door.opened ? '✓' : '◇'}</span>
+                    <span className="req-label">{lang === 'en' ? door.hookEn : door.hookVi}</span>
+                  </div>
+                  <p className="career-obj-tip" style={{ margin: '2px 0 0' }}>
+                    {door.opened
+                      ? t('Đã mở trong đời này.', 'Opened in this life.')
+                      : (lang === 'en' ? door.reqEn : door.reqVi)}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </details>
+      )}
+
       {/* The E.G.O horizon is a second goal; folded, with its state in the summary, so two goal cards do not compete */}
       {showCareer && egoReadiness && (
         <details className={`dossier-fold ego-horizon-fold status-${egoReadiness.status}`}>

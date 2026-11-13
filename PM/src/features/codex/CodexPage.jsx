@@ -33,7 +33,7 @@ const stripCount = (label) => label.replace(/\s*\(\d+\)\s*$/, '');
 
 export const CodexPage = () => {
   const { t, lang, bilingual } = useT();
-  const { globalCodex, char, inRun } = useGameStore();
+  const { globalCodex, openedDoors = [], char, inRun } = useGameStore();
   const [filter, setFilter] = useState('all');
   const [category, setCategory] = useState('all');
 
@@ -64,6 +64,7 @@ export const CodexPage = () => {
         <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 8, fontSize: 'var(--t-label)' }} className="muted num">
           <span>
             {unlockedCount} {t('đã mở', 'unlocked')} · {pct}%
+            {openedDoors.length > 0 ? ` · ${openedDoors.length} ${t('cửa đã mở', openedDoors.length === 1 ? 'door opened' : 'doors opened')}` : ''}
           </span>
           <span>
             {total} {t('cột mốc', 'milestones')}

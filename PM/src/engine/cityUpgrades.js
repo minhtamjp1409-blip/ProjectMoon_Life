@@ -36,11 +36,51 @@ export function extractAncestorEchoProfile(char) {
   );
   const isDistortedAncestor = Boolean(flags.includes('Distorted') || char.job === 'Distortion');
   const isEgoAncestor = Boolean(flags.includes('EGOAwakened') || char.egoName);
-  const isApexSyndicateAncestor = Boolean(char.job === 'Syndicate' && (char.fingerRank || 0) >= 2);
+  const isApexSyndicateAncestor = Boolean(
+    char.job === 'Syndicate' && ((char.fingerRank || 0) >= 2 || (char.syndicateRank || 0) >= 2 || flags.includes('IndependentSyndicateBoss'))
+  );
+  const isOfficeFounder = Boolean(flags.includes('OwnFixerOffice'));
   const isApexWingAncestor = Boolean(char.job === 'Wing Employee' && (char.wingRank || 0) >= 2);
   const isApexWorkshopAncestor = Boolean(
     char.job === 'Workshop Craftsman' && ((char.workshopRank || 0) >= 2 || Boolean(char.craftWeapon))
   );
+
+  let cityLandmark = null;
+  const districtId = char.regionId || char.birthRegionId || null;
+  if (char.name && districtId) {
+    if (isColorAncestor) {
+      cityLandmark = {
+        kind: 'color',
+        name: char.name,
+        districtId,
+        title: char.colorTitleAtAward || char.customTitle || null,
+        year: char.age || 0
+      };
+    } else if (isDistortedAncestor) {
+      cityLandmark = {
+        kind: 'distortion',
+        name: char.name,
+        districtId,
+        year: char.age || 0
+      };
+    } else if (isOfficeFounder) {
+      cityLandmark = {
+        kind: 'office',
+        name: char.name,
+        districtId,
+        officeName: char.org?.name || null,
+        year: char.age || 0
+      };
+    } else if (isApexSyndicateAncestor) {
+      cityLandmark = {
+        kind: 'syndicate',
+        name: char.name,
+        districtId,
+        finger: char.finger || null,
+        year: char.age || 0
+      };
+    }
+  }
 
   return {
     isColorAncestor,
@@ -49,14 +89,50 @@ export function extractAncestorEchoProfile(char) {
     isEgoAncestor,
     egoName: char.egoName || null,
     isApexSyndicateAncestor,
+    isOfficeFounder,
     isApexWingAncestor,
     isApexWorkshopAncestor,
     finger: char.finger || null,
     fingerRank: char.fingerRank || 0,
     wingRank: char.wingRank || 0,
     workshopRank: char.workshopRank || 0,
-    fixerGrade: char.fixerGrade ?? 9
+    fixerGrade: char.fixerGrade ?? 9,
+    cityLandmark
   };
+}
+
+export function ancestorLandmarksFromLives(pastLives = []) {
+  const list = Array.isArray(pastLives) ? pastLives : [];
+  const landmarks = [];
+  const seenKeys = new Set();
+
+  for (const life of list) {
+    if (!life || !life.name) continue;
+    let lm = life.cityLandmark && life.cityLandmark.districtId ? { ...life.cityLandmark } : null;
+    if (!lm && life.regionId) {
+      const isColor = Boolean(life.isColorAncestor || life.job === 'Color Fixer');
+      const isDist = Boolean(life.isDistortedAncestor || life.job === 'Distortion');
+      const isSyn = Boolean(life.isApexSyndicateAncestor || (life.job === 'Syndicate' && ((life.fingerRank || 0) >= 2 || (life.syndicateRank || 0) >= 2)));
+      const isOffice = Boolean(life.isOfficeFounder);
+      if (isColor) {
+        lm = { kind: 'color', name: life.name, districtId: life.regionId, title: life.colorTitle || null, year: life.age || 0 };
+      } else if (isDist) {
+        lm = { kind: 'distortion', name: life.name, districtId: life.regionId, year: life.age || 0 };
+      } else if (isOffice) {
+        lm = { kind: 'office', name: life.name, districtId: life.regionId, officeName: null, year: life.age || 0 };
+      } else if (isSyn) {
+        lm = { kind: 'syndicate', name: life.name, districtId: life.regionId, finger: life.finger || null, year: life.age || 0 };
+      }
+    }
+    if (!lm || !lm.districtId) continue;
+    const key = `ancestor_${lm.kind}_${lm.districtId}_${lm.name}`;
+    if (seenKeys.has(key)) continue;
+    seenKeys.add(key);
+    landmarks.push({ ...lm, key });
+    if (landmarks.length >= 16) break;
+  }
+
+  return landmarks;
 }
 
 export function applyAncestorEchoInheritance(parentLegacy, state) {
