@@ -333,9 +333,10 @@
 }
 
 .birth-footnote { font-size: var(--t-label); color: var(--page-muted); text-align: center; margin: 0; line-height: 1.5; }
-.birth-shortcut-hint { display: none; }
+.birth-shortcut-hint, .first-life-guide-kbd { display: none; }
 @media (hover: hover) and (pointer: fine) {
   .birth-shortcut-hint { display: block; }
+  .first-life-guide-kbd { display: list-item; }
 }
 .birth-text-action {
   align-self: center; display: inline-flex; align-items: center; gap: 4px;
@@ -478,7 +479,7 @@
 @media (max-width: 480px) {
   .home-opening { padding-top: 4px; gap: 8px; }
   .opening-context { margin-bottom: -4px; font-size: var(--t-label); }
-  .opening-story h1 { font-size: 24px; }
+  .opening-story h1 { font-size: 27px; }
   .opening-story h1 .the-city-title { display: inline; }
   .birth-panel { padding: 10px 12px 10px; border-radius: 4px; gap: 7px; }
   .birth-heading { padding-bottom: 6px; gap: 10px; }

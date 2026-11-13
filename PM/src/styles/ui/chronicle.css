@@ -219,6 +219,17 @@
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
+.entry.is-year-digest .entry-bulletin {
+  margin: 8px 0 0;
+  padding-left: 10px;
+  border-left: 2px solid var(--page-rule);
+  color: var(--muted);
+  font-size: var(--t-ui);
+  line-height: 1.45;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
 .year-digest-fold {
   margin-top: 8px;
   font-size: var(--t-label);

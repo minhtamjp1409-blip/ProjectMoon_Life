@@ -2113,13 +2113,29 @@ export function createYearDigest(dailyEntries, age, { quiet = true, char = null,
 
   const bestScore = Math.max(...scored.map((s) => s.score));
   const candidates = scored.filter((s) => s.score === bestScore && s.score > 0);
-  const hasNpcScore = candidates.some((s) => s.score >= 100);
 
   let vi = '';
   let en = '';
+  let bulletinVi = '';
+  let bulletinEn = '';
 
-  if (quiet && char && !hasNpcScore) {
-    const bulletin = pickCityBulletin(char, age, r);
+  if (candidates.length > 0) {
+    // Keep the stat-changing or NPC daily as headline so chips always match the story
+    const chosen = candidates[Math.floor(r() * candidates.length)].entry;
+    const bVi = splitTitle(chosen.vi || '').body.trim();
+    const bEn = splitTitle(chosen.en || '').body.trim();
+    vi = /[.!?]$/.test(bVi) ? bVi : `${bVi}.`;
+    en = /[.!?]$/.test(bEn) ? bEn : `${bEn}.`;
+    if (char) {
+      const bulletin = pickCityBulletin(char, age, r);
+      if (bulletin) {
+        bulletinVi = bulletin.vi;
+        bulletinEn = bulletin.en;
+      }
+    }
+  } else {
+    // No daily shifted stats or featured an NPC: let a concrete City bulletin lead
+    const bulletin = char ? pickCityBulletin(char, age, r) : null;
     if (bulletin) {
       vi = bulletin.vi;
       en = bulletin.en;
@@ -2140,38 +2156,21 @@ export function createYearDigest(dailyEntries, age, { quiet = true, char = null,
           }
         }
       }
+    } else if (!quiet && dailyEntries.length > 0) {
+      const chosen = dailyEntries[Math.floor(r() * dailyEntries.length)];
+      const bVi = splitTitle(chosen.vi || '').body.trim();
+      const bEn = splitTitle(chosen.en || '').body.trim();
+      vi = /[.!?]$/.test(bVi) ? bVi : `${bVi}.`;
+      en = /[.!?]$/.test(bEn) ? bEn : `${bEn}.`;
+    } else {
+      const out = char ? isOutskirts(char) : false;
+      const nest = char ? isNest(char) : false;
+      const regionKey = out ? 'outskirts' : (nest ? 'nest' : 'backstreets');
+      const pool = AMBIENT_YEAR_LINES[regionKey] || AMBIENT_YEAR_LINES.backstreets;
+      const chosen = pool[Math.floor(r() * pool.length)];
+      vi = chosen.vi;
+      en = chosen.en;
     }
-  }
-
-  if (!vi && quiet && char && !hasNpcScore) {
-    // Sau khi hết bản tin chưa thấy của đời này mới fallback sang AMBIENT_YEAR_LINES
-    const out = isOutskirts(char);
-    const nest = isNest(char);
-    const regionKey = out ? 'outskirts' : (nest ? 'nest' : 'backstreets');
-    const pool = AMBIENT_YEAR_LINES[regionKey] || AMBIENT_YEAR_LINES.backstreets;
-    const chosen = pool[Math.floor(r() * pool.length)];
-    vi = chosen.vi;
-    en = chosen.en;
-  } else if (!vi && candidates.length > 0) {
-    const chosen = candidates[Math.floor(r() * candidates.length)].entry;
-    const bVi = splitTitle(chosen.vi || '').body.trim();
-    const bEn = splitTitle(chosen.en || '').body.trim();
-    vi = /[.!?]$/.test(bVi) ? bVi : `${bVi}.`;
-    en = /[.!?]$/.test(bEn) ? bEn : `${bEn}.`;
-  } else if (!vi && dailyEntries.length > 0) {
-    const chosen = dailyEntries[Math.floor(r() * dailyEntries.length)];
-    const bVi = splitTitle(chosen.vi || '').body.trim();
-    const bEn = splitTitle(chosen.en || '').body.trim();
-    vi = /[.!?]$/.test(bVi) ? bVi : `${bVi}.`;
-    en = /[.!?]$/.test(bEn) ? bEn : `${bEn}.`;
-  } else if (!vi) {
-    const out = isOutskirts(char);
-    const nest = isNest(char);
-    const regionKey = out ? 'outskirts' : (nest ? 'nest' : 'backstreets');
-    const pool = AMBIENT_YEAR_LINES[regionKey] || AMBIENT_YEAR_LINES.backstreets;
-    const chosen = pool[Math.floor(r() * pool.length)];
-    vi = chosen.vi;
-    en = chosen.en;
   }
 
   return {
@@ -2183,6 +2182,7 @@ export function createYearDigest(dailyEntries, age, { quiet = true, char = null,
     season: { vi: 'Cả năm', en: 'All year' },
     vi,
     en,
+    ...(bulletinVi ? { bulletinVi, bulletinEn } : {}),
     deltas,
     ids,
     items: dailyEntries

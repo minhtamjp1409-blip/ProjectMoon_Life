@@ -158,7 +158,7 @@ html[data-text='xl'] { --story-size: 1.28125rem; --story-lead: 1.72; --choice-si
 @media (max-width: 860px) {
   :root {
     --top: calc(52px + env(safe-area-inset-top, 0px));
-    --bottom: calc(60px + env(safe-area-inset-bottom, 0px));
+    --bottom: calc(54px + env(safe-area-inset-bottom, 0px));
     --glass-blur: blur(10px);
     --page-alpha: 0.64;
   }

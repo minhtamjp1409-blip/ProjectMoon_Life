@@ -597,8 +597,8 @@ export const BirthSetupPanel = () => {
                   <ol className="first-life-guide-list">
                     <li>{t('1. Thời gian tự trôi, đổi tốc độ ở thanh trên.', '1. Time moves on its own; change speed in the top bar.')}</li>
                     <li>{t('2. Sự kiện lớn dừng thời gian.', '2. Major events pause the clock.')}</li>
-                    <li>{t('3. Lựa chọn nhỏ chờ 15 giây rồi tự trôi qua.', '3. Minor choices wait 15 seconds, then slip by.')}</li>
-                    <li>{t('4. Phím 0 để bỏ qua, Space để tạm dừng.', '4. Press 0 to dismiss, Space to pause.')}</li>
+                    <li>{t('3. Lựa chọn nhỏ có hạn giờ rồi tự trôi qua.', '3. Minor choices have a timer, then slip by.')}</li>
+                    <li className="first-life-guide-kbd">{t('4. Phím 0 để bỏ qua, Space để tạm dừng.', '4. Press 0 to dismiss, Space to pause.')}</li>
                   </ol>
                 </aside>
               )}
@@ -617,20 +617,22 @@ export const BirthSetupPanel = () => {
                       : t('Bắt đầu đời ngẫu nhiên', 'Begin a random life')}
                 </span>
               </button>
-              <p className="birth-footnote">
-                <span>
-                  {t(
-                    'Một năm trôi trong 30 giây. Lựa chọn lớn dừng đồng hồ chờ bạn; lựa chọn nhỏ có hạn giờ, hết giờ thì đời đi tiếp.',
-                    'A year passes in 30 seconds. Major choices pause the clock to wait for you; minor choices have a timer, and when time runs out life moves on.'
-                  )}
-                </span>{' '}
-                <span>
-                  {t(
-                    'Tự lưu sau mỗi lựa chọn.',
-                    'Saved after every choice.'
-                  )}
-                </span>
-              </p>
+              {!(pastLives.length === 0 && !firstLifeGuideDismissed) && (
+                <p className="birth-footnote">
+                  <span>
+                    {t(
+                      'Một năm trôi trong 30 giây. Lựa chọn lớn dừng đồng hồ chờ bạn; lựa chọn nhỏ có hạn giờ, hết giờ thì đời đi tiếp.',
+                      'A year passes in 30 seconds. Major choices pause the clock to wait for you; minor choices have a timer, and when time runs out life moves on.'
+                    )}
+                  </span>{' '}
+                  <span>
+                    {t(
+                      'Tự lưu sau mỗi lựa chọn.',
+                      'Saved after every choice.'
+                    )}
+                  </span>
+                </p>
+              )}
               <p className="birth-footnote">
                 <span>
                   {t(
@@ -639,14 +641,16 @@ export const BirthSetupPanel = () => {
                   )}
                 </span>
               </p>
-              <p className="birth-footnote birth-shortcut-hint">
-                <span>
-                  {t(
-                    'Phím tắt máy tính: Space dừng, [ ] đổi tốc độ, 1-4 chọn.',
-                    'Keyboard shortcuts: Space to pause, [ ] to change speed, 1-4 to choose.'
-                  )}
-                </span>
-              </p>
+              {!(pastLives.length === 0 && !firstLifeGuideDismissed) && (
+                <p className="birth-footnote birth-shortcut-hint">
+                  <span>
+                    {t(
+                      'Phím tắt máy tính: Space dừng, [ ] đổi tốc độ, 1-4 chọn.',
+                      'Keyboard shortcuts: Space to pause, [ ] to change speed, 1-4 to choose.'
+                    )}
+                  </span>
+                </p>
+              )}
               {pendingLegacy && (
                 <div className="legacy-switch-hint">
                   <span>{t(`Có di sản thế hệ #${pendingLegacy.generation + 1} đang chờ chuyển giao.`, `Gen #${pendingLegacy.generation + 1} legacy is waiting to transfer.`)}</span>

@@ -41,10 +41,15 @@ for (const rid of districtIds) {
   assert.ok(wingRegionsCovered.has(rid), `District ${rid} must have at least 1 Wing bulletin`);
 }
 
-// 3. No repeats inside a life; falls back to AMBIENT_YEAR_LINES only after exhausting eligible bulletins
-const makeDailies = (age) => [
-  { id: `d_${age}_1`, age, type: 'daily', vi: '[Xuân] Gió thổi nhẹ.', en: '[Spring] Light breeze.', deltas: [{ k: 'health', v: 1 }] },
-  { id: `d_${age}_2`, age, type: 'daily', vi: '[Hạ] Trời ấm dần.', en: '[Summer] Warm air.', deltas: [{ k: 'wealth', v: 1 }] }
+// 3. No repeats inside a life; falls back to AMBIENT_YEAR_LINES only after exhausting eligible bulletins;
+// stat-changing dailies stay as headline and attach bulletin as secondary line without masking chips
+const makeQuietDailies = (age) => [
+  { id: `d_${age}_1`, age, type: 'daily', vi: '[Xuân] Gió thổi nhẹ.', en: '[Spring] Light breeze.', deltas: [] },
+  { id: `d_${age}_2`, age, type: 'daily', vi: '[Hạ] Trời ấm dần.', en: '[Summer] Warm air.', deltas: [] }
+];
+const makeDeltaDailies = (age) => [
+  { id: `dd_${age}_1`, age, type: 'daily', vi: '[Xuân] Chợ sớm bớt hàng.', en: '[Spring] Morning stall ran short.', deltas: [{ k: 'health', v: -2 }] },
+  { id: `dd_${age}_2`, age, type: 'daily', vi: '[Hạ] Nhặt được vài đồng lẻ.', en: '[Summer] Found a few loose Ahn.', deltas: [{ k: 'wealth', v: 1 }] }
 ];
 
 const char = createNewCharacter({ seed: 'bulletin_test_life' });
@@ -59,7 +64,7 @@ const eligibleCount = CITY_BULLETINS.filter(
 const seenTexts = new Set();
 for (let i = 0; i < eligibleCount; i++) {
   const age = 20 + i;
-  const d = createYearDigest(makeDailies(age), age, { quiet: true, char });
+  const d = createYearDigest(makeQuietDailies(age), age, { quiet: true, char });
   assert.ok(!seenTexts.has(d.vi), `Quiet year bulletin repeated before exhaustion at step ${i}: ${d.vi}`);
   seenTexts.add(d.vi);
   assert.equal(d.vi.startsWith('Một năm trôi qua'), false, 'Concrete bulletin should not start with "Một năm trôi qua"');
@@ -67,23 +72,34 @@ for (let i = 0; i < eligibleCount; i++) {
 assert.equal(char.seenBulletins.length, eligibleCount, 'All eligible unseen bulletins should be exhausted');
 
 // Next quiet year after exhaustion falls back to AMBIENT_YEAR_LINES
-const fallbackDigest = createYearDigest(makeDailies(50), 50, { quiet: true, char });
+const fallbackDigest = createYearDigest(makeQuietDailies(50), 50, { quiet: true, char });
 const ambientBackstreets = new Set(AMBIENT_YEAR_LINES.backstreets.map((x) => x.vi));
 assert.ok(ambientBackstreets.has(fallbackDigest.vi), `Expected AMBIENT_YEAR_LINES fallback after exhaustion, got: ${fallbackDigest.vi}`);
+
+// Stat-changing dailies MUST keep daily headline intact and place bulletin into bulletinVi
+const deltaChar = createNewCharacter({ seed: 'bulletin_delta_test' });
+deltaChar.regionId = 'K';
+deltaChar.flags = (deltaChar.flags || []).filter((f) => !['Nest', 'NestResident', 'Feather'].includes(f));
+deltaChar.seenBulletins = [];
+const deltaDigest = createYearDigest(makeDeltaDailies(22), 22, { quiet: true, char: deltaChar });
+assert.equal(deltaDigest.vi, 'Chợ sớm bớt hàng.', 'Stat-changing daily headline must not be overwritten by bulletin');
+assert.ok(deltaDigest.bulletinVi && deltaDigest.bulletinVi.length > 10, 'Bulletin moves to secondary bulletinVi when dailies have stat deltas');
 
 // 4. Outskirts scope & Nest scope isolation
 const outChar = createNewCharacter({ seed: 'out_test' });
 outChar.regionId = 'OUTSKIRTS';
 outChar.flags = ['Outskirts'];
 outChar.seenBulletins = [];
-const outDigest = createYearDigest(makeDailies(15), 15, { quiet: true, char: outChar });
+const outDigest = createYearDigest(makeQuietDailies(15), 15, { quiet: true, char: outChar });
 const outPoolTexts = new Set(CITY_BULLETINS.filter((b) => b.scope === 'outskirts').map((b) => b.vi));
 assert.ok(outPoolTexts.has(outDigest.vi), 'Outskirts quiet year must pick outskirts bulletin');
 
-// 5. 200-life simulation measuring quiet-year repetition rate within each life & across lives
-let quietYearsTotal = 0;
+// 5. 200-life simulation measuring bulletin appearances, zero chip masking, and zero within-life repeats
+let consolidatedYearsTotal = 0;
+let bulletinYearsTotal = 0;
 let withinLifeRepeats = 0;
-const quietLineCounts = new Map();
+const seenLineCounts = new Map();
+const allBulletinTexts = new Set(CITY_BULLETINS.map((b) => b.vi));
 
 for (let i = 0; i < 200; i++) {
   const seed = `sim_bulletin_${i}`;
@@ -91,7 +107,7 @@ for (let i = 0; i < 200; i++) {
   let sim = createNewCharacter({ seed });
   sim.alive = true;
   sim.pendingBirthLogs = [];
-  const lifeQuietLines = new Set();
+  const lifeBulletinLines = new Set();
 
   for (let age = 0; age < 60 && sim.alive; age++) {
     if (age > 0) sim = endYear(sim, rng);
@@ -121,20 +137,28 @@ for (let i = 0; i < 200; i++) {
 
     if (age >= 5) {
       consolidateYearDailies(sim, age);
-      const q = sim.logs.find((e) => e.age === age && e.type === 'year_digest' && e.quiet);
+      const q = sim.logs.find((e) => e.age === age && e.type === 'year_digest');
       if (q) {
-        quietYearsTotal++;
-        if (lifeQuietLines.has(q.vi)) withinLifeRepeats++;
-        lifeQuietLines.add(q.vi);
-        quietLineCounts.set(q.vi, (quietLineCounts.get(q.vi) || 0) + 1);
+        consolidatedYearsTotal++;
+        const nonSanityDeltas = (q.deltas || []).filter((d) => d.k !== 'sanity');
+        if (allBulletinTexts.has(q.vi)) {
+          assert.equal(nonSanityDeltas.length, 0, `Bulletin headline "${q.vi}" must never mask non-sanity daily chips (${JSON.stringify(q.deltas)})`);
+        }
+        const bulletinText = q.bulletinVi || (allBulletinTexts.has(q.vi) ? q.vi : '');
+        if (bulletinText) {
+          bulletinYearsTotal++;
+          if (lifeBulletinLines.has(bulletinText)) withinLifeRepeats++;
+          lifeBulletinLines.add(bulletinText);
+          seenLineCounts.set(bulletinText, (seenLineCounts.get(bulletinText) || 0) + 1);
+        }
       }
     }
   }
 }
 
-const withinLifeRepeatPct = quietYearsTotal > 0 ? ((withinLifeRepeats / quietYearsTotal) * 100).toFixed(2) : '0.00';
-const uniqueLinesSeen = quietLineCounts.size;
+const withinLifeRepeatPct = bulletinYearsTotal > 0 ? ((withinLifeRepeats / bulletinYearsTotal) * 100).toFixed(2) : '0.00';
+const uniqueLinesSeen = seenLineCounts.size;
 console.log(
   `test_city_bulletins: OK (${CITY_BULLETINS.length} bulletins: backstreets=${byScope.backstreets}, nest=${byScope.nest}, outskirts=${byScope.outskirts}, wing=${byScope.wing}; ` +
-  `200 lives -> ${quietYearsTotal} quiet years, ${uniqueLinesSeen} unique lines, within-life repeats=${withinLifeRepeats} [${withinLifeRepeatPct}%])`
+  `200 lives -> ${bulletinYearsTotal}/${consolidatedYearsTotal} consolidated years w/ bulletins, ${uniqueLinesSeen} unique lines, within-life repeats=${withinLifeRepeats} [${withinLifeRepeatPct}%])`
 );

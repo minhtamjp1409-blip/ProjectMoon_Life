@@ -173,6 +173,10 @@ const LogEntries = React.memo(function LogEntries({ logs, currentAge }) {
     if (entry.type === 'year_digest') {
       const digestText = lang === 'en' ? entry.en || entry.vi : entry.vi;
       const alt = bilingual && entry.en && entry.en !== entry.vi ? entry.en : '';
+      const bulletinText = entry.bulletinVi
+        ? (lang === 'en' ? entry.bulletinEn || entry.bulletinVi : entry.bulletinVi)
+        : '';
+      const bulletinAlt = bilingual && entry.bulletinEn && entry.bulletinEn !== entry.bulletinVi ? entry.bulletinEn : '';
       const tagText = entry.quiet !== false
         ? t('Năm yên ả', 'Quiet year')
         : t('Đời thường trong năm', 'Everyday life this year');
@@ -184,6 +188,12 @@ const LogEntries = React.memo(function LogEntries({ logs, currentAge }) {
           <p className="entry-text">{digestText}</p>
           {alt && <p className="entry-alt">{alt}</p>}
           <Deltas deltas={entry.deltas} />
+          {bulletinText && (
+            <p className="entry-bulletin">
+              <span>{bulletinText}</span>
+              {bulletinAlt && <span className="entry-alt">{bulletinAlt}</span>}
+            </p>
+          )}
           {Array.isArray(entry.items) && entry.items.length > 0 && (
             <details className="entry-review year-digest-fold">
               <summary>{t('Xem từng mùa', 'View each season')}</summary>

@@ -268,98 +268,95 @@ export const PlayBar = () => {
     handleSetSpeed(next);
   };
 
+  const sharedAudioLangSettings = [
+    {
+      key: 'mute_all',
+      icon: audioState.isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />,
+      label: audioState.isMuted ? t('Bật âm thanh', 'Sound on') : t('Tắt âm thanh', 'Sound off'),
+      onClick: handleToggleAudio
+    },
+    {
+      key: 'lang_group',
+      icon: <Languages size={16} />,
+      label: `${t('Ngôn ngữ', 'Language')}: ${activeLang.short}`,
+      children: LANG_OPTIONS.map((o) => ({
+        key: `lang_${o.key}`,
+        label: o.label,
+        onClick: () => setLang(o.key)
+      }))
+    },
+    {
+      key: 'settings',
+      icon: <Settings2 size={16} />,
+      label: t('Cài đặt hiển thị & âm thanh', 'Display & audio settings'),
+      onClick: () => setSettingsOpen(true)
+    }
+  ];
+
   const menuItems = [
-    ...(alive ? [
-      {
-        key: 'phase-readout',
-        icon: <Sparkles size={16} />,
-        label: (
-          <span className="playbar-menu-phase">
-            <strong>{t('Nhịp truyện', 'Story phase')}: {phaseLabel}</strong>
-            <small>{phaseDesc}</small>
-          </span>
-        ),
-        onClick: () => audioEngine.playClick()
-      },
-      { type: 'divider' },
-      {
-        key: 'quiet-skip',
-        icon: <SkipForward size={16} />,
-        label: t('Qua thời gian yên ắng', 'Skip quiet time'),
-        disabled: waiting,
-        onClick: () => { audioEngine.playYearTick(); skipQuietTime(); }
-      },
-      {
-        key: 'autoplay',
-        icon: <Bot size={16} />,
-        label: (
-          <span className="playbar-menu-row">
-            <span>{autoPlay ? t('Tắt tự động chọn', 'Disable auto-pick') : t('Bật tự động chọn', 'Enable auto-pick')}</span>
-            <b className={autoPlay ? 'is-on' : 'is-off'}>{autoPlay ? t('Bật', 'On') : t('Tắt', 'Off')}</b>
-          </span>
-        ),
-        onClick: handleToggleAutoPlay
-      },
-      {
-        key: 'mute_all',
-        icon: audioState.isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />,
-        label: audioState.isMuted ? t('Bật âm thanh', 'Sound on') : t('Tắt âm thanh', 'Sound off'),
-        onClick: handleToggleAudio
-      },
-      {
-        key: 'ambience',
-        icon: audioState.isAmbienceMuted ? <VolumeX size={16} /> : <Volume2 size={16} />,
-        label: audioState.isAmbienceMuted ? t('Bật tiếng nền thế giới', 'Enable world ambience') : t('Tắt tiếng nền thế giới', 'Mute world ambience'),
-        disabled: audioState.isMuted,
-        onClick: handleToggleAmbience
-      },
-      {
-        key: 'lang_group',
-        icon: <Languages size={16} />,
-        label: `${t('Ngôn ngữ', 'Language')}: ${activeLang.short}`,
-        children: LANG_OPTIONS.map((o) => ({
-          key: `lang_${o.key}`,
-          label: o.label,
-          onClick: () => setLang(o.key)
-        }))
-      },
-      {
-        key: 'settings',
-        icon: <Settings2 size={16} />,
-        label: t('Cài đặt hiển thị & âm thanh', 'Display & audio settings'),
-        onClick: () => setSettingsOpen(true)
-      },
-      {
-        key: 'save',
-        icon: saveError ? <AlertTriangle size={16} /> : justSaved ? <Check size={16} /> : <Save size={16} />,
-        label: saveError ? t('Chưa lưu được · thử lại', 'Save failed · retry') : justSaved ? t('Đã lưu tiến trình', 'Saved') : t('Lưu tiến trình', 'Save game'),
-        onClick: () => saveRun(true)
-      },
-      { type: 'divider' }
-    ] : [
-      {
-        key: 'lang_group',
-        icon: <Languages size={16} />,
-        label: `${t('Ngôn ngữ', 'Language')}: ${activeLang.short}`,
-        children: LANG_OPTIONS.map((o) => ({
-          key: `lang_${o.key}`,
-          label: o.label,
-          onClick: () => setLang(o.key)
-        }))
-      },
-      {
-        key: 'settings',
-        icon: <Settings2 size={16} />,
-        label: t('Cài đặt hiển thị & âm thanh', 'Display & audio settings'),
-        onClick: () => setSettingsOpen(true)
-      },
-      { type: 'divider' }
-    ]),
+    {
+      key: 'phase-readout',
+      icon: <Sparkles size={16} />,
+      label: (
+        <span className="playbar-menu-phase">
+          <strong>{t('Nhịp truyện', 'Story phase')}: {phaseLabel}</strong>
+          <small>{phaseDesc}</small>
+        </span>
+      ),
+      onClick: () => audioEngine.playClick()
+    },
+    { type: 'divider' },
+    {
+      key: 'quiet-skip',
+      icon: <SkipForward size={16} />,
+      label: t('Qua thời gian yên ắng', 'Skip quiet time'),
+      disabled: waiting,
+      onClick: () => { audioEngine.playYearTick(); skipQuietTime(); }
+    },
+    {
+      key: 'autoplay',
+      icon: <Bot size={16} />,
+      label: (
+        <span className="playbar-menu-row">
+          <span>{autoPlay ? t('Tắt tự động chọn', 'Disable auto-pick') : t('Bật tự động chọn', 'Enable auto-pick')}</span>
+          <b className={autoPlay ? 'is-on' : 'is-off'}>{autoPlay ? t('Bật', 'On') : t('Tắt', 'Off')}</b>
+        </span>
+      ),
+      onClick: handleToggleAutoPlay
+    },
+    sharedAudioLangSettings[0],
+    {
+      key: 'ambience',
+      icon: audioState.isAmbienceMuted ? <VolumeX size={16} /> : <Volume2 size={16} />,
+      label: audioState.isAmbienceMuted ? t('Bật tiếng nền thế giới', 'Enable world ambience') : t('Tắt tiếng nền thế giới', 'Mute world ambience'),
+      disabled: audioState.isMuted,
+      onClick: handleToggleAmbience
+    },
+    sharedAudioLangSettings[1],
+    sharedAudioLangSettings[2],
+    {
+      key: 'save',
+      icon: saveError ? <AlertTriangle size={16} /> : justSaved ? <Check size={16} /> : <Save size={16} />,
+      label: saveError ? t('Chưa lưu được · thử lại', 'Save failed · retry') : justSaved ? t('Đã lưu tiến trình', 'Saved') : t('Lưu tiến trình', 'Save game'),
+      onClick: () => saveRun(true)
+    },
+    { type: 'divider' },
     {
       key: 'restart',
-      danger: alive,
+      danger: true,
       icon: <RotateCcw size={16} />,
-      label: alive ? t('Bỏ kiếp này', 'Abandon life') : t('Kiếp sống mới', 'New life'),
+      label: t('Bỏ kiếp này', 'Abandon life'),
+      onClick: newLife
+    }
+  ];
+
+  const deadMenuItems = [
+    ...sharedAudioLangSettings,
+    { type: 'divider' },
+    {
+      key: 'restart',
+      icon: <RotateCcw size={16} />,
+      label: t('Kiếp sống mới', 'New life'),
       onClick: newLife
     }
   ];
@@ -585,7 +582,7 @@ export const PlayBar = () => {
               <span>{t('Kiếp mới', 'New life')}</span>
             </button>
             <div className="playbar-mobile-more">
-              <Dropdown menu={{ items: menuItems }} placement="bottomRight" trigger={['click']} classNames={{ root: 'playbar-more-menu' }}>
+              <Dropdown menu={{ items: deadMenuItems }} placement="bottomRight" trigger={['click']} classNames={{ root: 'playbar-more-menu' }}>
                 <button type="button" className="icon-btn" aria-label={t('Thao tác khác', 'More options')}>
                   <MoreHorizontal size={18} />
                 </button>
