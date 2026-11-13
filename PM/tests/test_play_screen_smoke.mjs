@@ -109,6 +109,21 @@ try {
       console.error(`FAIL BirthSetupPanel (${stateName}): ${error.message}`);
     }
   }
+  const { useThemeStore } = await load('/src/store/themeStore.js');
+  const { Header } = await load('/src/layouts/Header.jsx');
+  const expectedLangCodes = { vi: 'VI', en: 'EN', bi: 'VI+EN' };
+  for (const [code, short] of Object.entries(expectedLangCodes)) {
+    useThemeStore.setState({ lang: code });
+    try {
+      const html = renderToString(React.createElement(MemoryRouter, null, React.createElement(Header)));
+      assert(html.includes('app-tool-lang'), `Header (${code}) missing language toggle button`);
+      assert(html.includes(short), `Header (${code}) missing language code ${short}`);
+    } catch (error) {
+      failed++;
+      console.error(`FAIL Header (${code}): ${error.message}`);
+    }
+  }
+  useThemeStore.setState({ lang: 'vi' });
 } finally {
   await server.close();
 }

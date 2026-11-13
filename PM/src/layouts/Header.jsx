@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { Volume2, VolumeX, Settings2 } from 'lucide-react';
+import { Volume2, VolumeX, Settings2, Languages } from 'lucide-react';
 import { Tooltip } from 'antd';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useThemeStore } from '../store/themeStore';
 import { useGameStore } from '../store/gameStore';
 import { pick } from '../i18n';
 import { audioEngine } from '../engine/audioEngine';
-import { NAV_ITEMS, BrandMark } from './Sidebar';
+import { NAV_ITEMS, BrandMark, LANG_OPTIONS, LangMenu } from './Sidebar';
 import { SettingsModal } from '../components/SettingsModal';
 
 // One bar for every width: the archive tabs sit in it on a desktop and move to the bottom bar on a phone.
@@ -61,6 +61,27 @@ export const Header = ({ languageOverride, isPlay }) => {
             </strong>
           </button>
         )}
+        <LangMenu placement="bottomRight">
+          <button
+            type="button"
+            className="app-tool app-tool-lang"
+            aria-label={pick(
+              lang,
+              `Ngôn ngữ: ${(LANG_OPTIONS.find((o) => o.key === lang) || LANG_OPTIONS[0]).label}. Đổi Tiếng Việt / Anh`,
+              `Language: ${(LANG_OPTIONS.find((o) => o.key === lang) || LANG_OPTIONS[0]).label}. Switch EN / VI`
+            )}
+            title={pick(
+              lang,
+              `Ngôn ngữ: ${(LANG_OPTIONS.find((o) => o.key === lang) || LANG_OPTIONS[0]).label}`,
+              `Language: ${(LANG_OPTIONS.find((o) => o.key === lang) || LANG_OPTIONS[0]).label}`
+            )}
+          >
+            <Languages size={17} aria-hidden="true" />
+            <span className="app-tool-lang-code">
+              {(LANG_OPTIONS.find((o) => o.key === lang) || LANG_OPTIONS[0]).short}
+            </span>
+          </button>
+        </LangMenu>
         <button
           type="button"
           className="app-tool"
