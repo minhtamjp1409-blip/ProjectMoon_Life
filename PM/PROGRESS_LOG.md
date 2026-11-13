@@ -3344,5 +3344,14 @@ Chạy kiểm định mô phỏng 500 vòng đời với chiến lược ngườ
 * **Gọt câu chữ đợt 5 (`vaClause`).** Hạ `vaClause` toàn cục từ `1800` xuống `955` (10 chỉ số còn lại và `voice_lint.mjs --fail` đều `0`) qua 12 tệp dữ liệu lớn (`eventsFinger*`, `eventsAffiliation.js`, `eventsEgoLeap.js`, `careerContracts*`, `lifeMinors4.js`, `lifeMinors5.js`), hạ trần `package.json` xuống `vaClause:955,chang:114,semicolon:557` (bổ sung luật `chang` và `semicolon` trong `vi_prose_scan.mjs`, tách bằng dấu chấm ngắn gọn thay vì `;` hay `nên`/`khiến`/`trong khi`/`để` làm lệch nghĩa).
 * **Cache headers trên Vercel (`vercel.json`).** Thêm rule `no-cache` cho `/((?!assets/).*)` và `immutable` 1 năm cho `/assets/(.*)`.
 
+##### 2.56. Việc rút ra khi so với "Born as an Individual in the City" (13/11/2026)
+Làm ở commit `208ef40` và sửa theo review ở `9000cf8`. Chỉ học cơ chế và cách trình bày, không chép câu chữ hay event của game kia.
+* **Hoãn hộp đặt tên bạn thuở nhỏ.** `syncNpcNamingPrompt` (`npcNaming.js`) chỉ hỏi tên khi người bạn xuất hiện lần đầu. Khi đổi tên, `replacePendingNpcName` sửa cả event, minor và hợp đồng đang mở.
+* **Khung hướng dẫn đời đầu** trong `BirthSetupPanel.jsx`, có nút đóng và nhớ trạng thái trong `themeStore`. Dòng phím tắt chỉ hiện trên máy có chuột. Dòng chú thích trùng ý được ẩn khi khung đang mở.
+* **92 bản tin City** (`cityBulletins.js`): 20 tin cho mỗi vùng Backstreets, Nest, Outskirts, cộng tin riêng cho từng Wing. Bản tin làm dòng chính khi không có sự việc nào đổi chỉ số, nếu có thì xuống thành dòng phụ (`bulletinVi`), nên chip luôn khớp với lời kể.
+* **Màn chơi `390px` bớt khung.** Ẩn header khi đang chơi, logo vào thanh tốc độ, ẩn thanh điều hướng dưới khi có dock lựa chọn, `--bottom` còn 54px. Nhật ký chiếm khoảng 75% chiều cao. Menu `⋯` lúc nhân vật đã chết có danh sách riêng.
+* **Gọt văn.** Dấu chấm phẩy ở `eventsExpansion.js` giảm 58 xuống 7, ở `eventsNpcAndWorldExpansion.js` giảm 83 xuống 44. Trần `semicolon` hạ từ 557 xuống 467. Sửa câu vấp ở `eventsFingerThumb.js:450`.
+* **Còn treo, chuyển vào Bước 0 của `docs/KE_HOACH_TIEP_THEO.md`:** bản tin dồn vào tuổi 5–29, năm yên ả có thể rơi về câu ambient sau khi hết bản tin, câu "Tự lưu sau mỗi lựa chọn" bị ẩn ở đời đầu.
+
 #### 3. KIỂM ĐỊNH & BẢO ĐẢM TOÀN VẸN (VERIFICATION & INTEGRITY)
 * Tất cả các bộ kiểm thử tự động (`npm test`) bao gồm lint văn phong (`voice_lint.mjs`), chuẩn canon Project Moon (`lint_story.mjs`), và mô phỏng 500 khoảnh khắc đời người (`run_million_audit.mjs`) phải vượt qua 100% với 0 lỗi, 0 cảnh báo.
