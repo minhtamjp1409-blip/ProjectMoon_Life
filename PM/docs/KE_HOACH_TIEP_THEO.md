@@ -114,3 +114,72 @@ Luật chơi đang chạy nằm ở `docs/LUAT_HIEN_HANH.md`, lore và giọng v
 - **Mạch truyện nhiều hồi (`NARRATIVE_ARCS`):** Thêm 3 mạch cho Ring (`arc_ring_gallery_obsession`), Pinky (`arc_pinky_oath_reckoning`) và Outcast (`arc_outcast_fringe_survival` kèm 3 major mới `outcast_arc_rusted_turnstile`, `outcast_arc_sweeper_alley_toll`, `outcast_arc_unlisted_clinic_pact` trong `eventsApexTwilight.js`), nâng tổng số lên 11 mạch (trường `triggerNeed` mang tính mô tả; mạch khởi phát khi giải quyết event hồi 1).
 - **Gọt câu chữ tiếng Việt đợt 5 (`vaClause`):** Loại bỏ `, và` nối mệnh đề và cấu trúc dịch máy ở nhóm Finger (`Middle`, `Index`, `Pinky`, `Thumb`, `Canon`), hợp đồng Wing (`careerContractsWing.js`, `careerContractsWingMore.js`, `careerContractsAssocC.js`), `eventsAffiliation.js`, `eventsEgoLeap.js`, `lifeMinors4.js` và `lifeMinors5.js`, giảm `vaClause` toàn cục từ `1800` xuống `955` (với tất cả 10 chỉ số còn lại và `voice_lint.mjs --fail` bằng `0`), hạ trần kiểm định `package.json` xuống `vaClause:955,chang:114,semicolon:557` (và bổ sung luật `chang`, `semicolon` trong `vi_prose_scan.mjs`, tách câu bằng dấu chấm ngắn gọn thay cho `;` và các từ nối lệch nghĩa).
 - **Cấu hình cache Vercel (`vercel.json`):** Khai báo `Cache-Control: no-cache` cho `/((?!assets/).*)` và `public, max-age=31536000, immutable` cho `/assets/(.*)`.
+
+## Việc làm dần sau khi so với "Born as an Individual in the City" (13/11/2026)
+
+Bản so sánh dựa trên một đời chơi thử từ 0 đến 20 tuổi ở game của @_ryo_man (project-moon-life.cityborn.workers.dev) và bản đang chạy của mình, đo ở `390px` và `1440px`. Chỉ học cơ chế và cách trình bày, không chép câu chữ hay event của họ. Số đợt do người làm tự đặt khi bắt đầu; thứ tự dưới đây là thứ tự nên làm.
+
+### Đã có, không cần làm lại
+Những thứ của họ mà mình đã có:
+- Minor chờ có hạn (`MINOR_WINDOW_MS` 15 giây, đời đầu 30 giây), kèm "Để nó trôi qua".
+- Tự động chọn (`autoPlay`).
+- Phím tắt `0`/`Esc`, `Space`, `[` `]`, `1–9`.
+- Gộp năm yên ả (Đợt 115).
+- Lý do khóa hiện ngay trên lựa chọn.
+- Chip "Bạn đã chọn" trong nhật ký (`entry.choiceVi`).
+- Kế hoạch năm buộc chọn một hướng.
+
+Tốc độ của họ lên tới `x32`. Mình giữ `1×–3×` và chế độ lướt `8×`, vì nhịp năm của mình có kế hoạch năm và dungeon.
+
+### 1. Sửa câu vấp còn lại (nhỏ)
+- **Vấn đề:** `eventsFingerThumb.js:450` có câu "…trong ba ngày, rồi đã bắt đầu đổ mồ hôi lạnh từ lúc nào không rõ". "rồi" chỉ việc xảy ra sau, còn "đã… từ lúc nào không rõ" là việc có từ trước.
+- **Hướng xử lý:** tách câu: "…trong ba ngày. Mồ hôi lạnh đã rịn trên trán hắn từ lúc nào không rõ."
+- **Kiểm chứng:** `npm test`.
+
+### 2. Không chặn năm 0 bằng hộp đặt tên bạn thuở nhỏ
+- **Vấn đề:** ở `390px`, khoảng 10 giây sau khi sinh, hộp "Bạn thuở nhỏ / Đứa trẻ đó tên gì?" phủ gần hết màn hình. Lúc đó người chơi mới đọc được ba đoạn khai sinh. Game của họ để người chơi đọc vài năm rồi mới hỏi.
+- **Hướng xử lý:** trong `syncNpcNamingPrompt` (`src/engine/npcNaming.js`), lùi lời hỏi tên tới lần đầu người bạn đó xuất hiện trong một event, thường từ tuổi 5. Trước đó, nhật ký dùng tên ngẫu nhiên. Khi `autoPlay` bật, giữ tên ngẫu nhiên như hiện nay.
+- **Kiểm chứng:** thêm vào `tests/test_npc_naming_and_callbacks.mjs` một ca "năm 0 không có `pendingNpcNaming`". Chụp màn hình `390px` ở giây thứ 10 sau khi sinh.
+
+### 3. Hướng dẫn ngắn cho đời đầu tiên
+- **Vấn đề:** trang chủ của họ có khung "If this is your first time" gồm 5 dòng, mỗi dòng in đậm một ý: một năm là một phút; major dừng thời gian, minor không chờ; nơi sinh ngẫu nhiên; năm yên ả chỉ là một dòng. Trang chủ của mình không nói gì về nhịp thời gian, nên người mới chỉ biết khi gặp minor đầu tiên.
+- **Hướng xử lý:** trong `BirthSetupPanel.jsx`, chỉ khi dòng họ chưa có đời nào, hiện một khung 4 dòng:
+  1. Thời gian tự trôi, đổi tốc độ ở thanh trên.
+  2. Sự kiện lớn dừng thời gian.
+  3. Lựa chọn nhỏ chờ 15 giây rồi tự trôi qua.
+  4. Phím `0` để bỏ qua, `Space` để tạm dừng.
+
+  Yêu cầu cho khung:
+  - Viết theo `vi-prose`, không dùng chữ in hoa giãn chữ.
+  - Có nút đóng và nhớ trạng thái trong `themeStore`.
+  - Trên điện thoại, khung không được đẩy nút "Bắt đầu đời ngẫu nhiên" ra khỏi màn đầu. Hiện nút đang ở `726–774px` trên tổng `844px`.
+- **Kiểm chứng:** `test_play_screen_smoke.mjs` render cả hai trạng thái, chưa có đời và đã có đời. Chụp màn hình `390px`: nút bắt đầu vẫn nằm trên màn đầu.
+
+### 4. Tin tức The City cho năm yên ả
+- **Vấn đề:** `AMBIENT_YEAR_LINES` (`yearPlanner.js`) có 30 câu cho 3 vùng, trong đó 14 câu mở bằng "Một năm trôi qua…". Đó là câu không khí chung chung, không có việc gì xảy ra. Câu của họ là việc nhỏ có thật trong thành phố, ví dụ pháo hoa ngày thành lập Wing, hay cảnh báo Abnormality trên bảng quảng cáo được gỡ sau 30 phút. Không có lựa chọn, nhưng thành phố trông như đang sống.
+- **Hướng xử lý:**
+  - Tạo `src/data/cityBulletins.js`. File nằm trong `data/` và không import gì từ `engine/`.
+  - Mỗi tin có `vi`, `en`, `scope` (`backstreets`, `nest`, `outskirts` hoặc một Wing cụ thể) và dải tuổi (`age`), để lúc nhỏ chỉ nghe lỏm. Có thể thêm `era`.
+  - Mỗi tin là một việc cụ thể, có số, giờ hoặc tên chỗ, và không mở bằng "Một năm trôi qua". Tin không đổi chỉ số, hoặc đổi tối đa ±1 SP.
+  - Năm yên ả lấy một tin chưa gặp trong đời này trước, hết tin mới dùng tới `AMBIENT_YEAR_LINES`.
+  - Đợt đầu viết khoảng 60 tin: 20 cho mỗi vùng, cộng 1–2 tin riêng cho mỗi Wing có District trong dữ liệu.
+- **Kiểm chứng:**
+  - Test mới `tests/test_city_bulletins.mjs`: không trùng trong một đời, đúng vùng, không có tin nào mở bằng "Một năm trôi qua".
+  - `vi_prose_scan` và `voice_lint` qua.
+  - Mô phỏng 200 đời để đo tỷ lệ năm yên ả bị lặp câu.
+
+### 5. Màn chơi trên điện thoại: bớt khung, thêm chỗ đọc
+- **Vấn đề:** ở `390px` khi đang chơi, phần khung (header "Biên niên", thanh tốc độ, hàng HP/SP/Ahn, thanh điều hướng dưới) chiếm khoảng 240 trên `844px`, gần 30% màn hình. Họ chỉ có một thanh trên và một hàng chỉ số. Nhưng hàng chỉ số của họ dính chữ ("Reputation20"), nên đừng nén quá tay như họ.
+- **Hướng xử lý:**
+  - Khi `inRun`, gộp header vào thanh tốc độ: giữ logo nhỏ, đưa nút ngôn ngữ và âm thanh vào menu `⋯`.
+  - Ẩn thanh điều hướng dưới khi đang có dock lựa chọn, hiện lại khi đọc.
+  - Hàng chỉ số giữ khoảng cách tối thiểu `8px` giữa nhãn và số.
+- **Kiểm chứng:** chụp màn hình `390px` khi đang đọc và khi có minor mở. Nhật ký chiếm ít nhất 60% chiều cao, không cuộn ngang, nút vẫn ≥ `44px`.
+
+### 6. Gọt văn tiếp, theo từng file
+- **Vấn đề:** trần `semicolon` đang là 557 trên toàn bộ dữ liệu. Câu của họ ngắn và cụ thể. Văn của mình đã gần như vậy, chỉ còn dấu chấm phẩy tồn ở các file cũ.
+- **Hướng xử lý:**
+  - Mỗi đợt gọt 1–2 file có nhiều dấu chấm phẩy nhất: tách thành câu ngắn bằng dấu chấm, rồi hạ trần `semicolon` trong `package.json`.
+  - Chỉ dùng "nên", "để", "khiến", "trong khi" khi bản gốc thật sự có quan hệ đó.
+  - Để ý "rồi" lặp ở nhiều câu liền nhau, nhất là trong `careerContracts*`.
+- **Kiểm chứng:** `npm test`. So số "rồi", "nên" và "; " theo từng file, trước và sau.
