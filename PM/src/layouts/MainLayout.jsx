@@ -25,12 +25,13 @@ const CutsceneLayer = lazy(() => loadCutsceneLayer().catch(() => ({ default: Cut
 export const MainLayout = ({ children }) => {
   const location = useLocation();
   // Only the fields the loop needs; yearProgress is left out so the layout doesn't re-render each tick
-  const { inRun, alive, pendingEvent, pendingContract, pendingMinor, pendingModal, pendingNpcNaming, activeResolution, speed, autoPlay, tick, selectEventChoice, selectContractApproach, dismissResolution, hydrateFromBackend, dungeonId, dungeonFx, dungeonNonce, cutsceneKey } =
+  const { inRun, alive, pendingYearPlan, pendingEvent, pendingContract, pendingMinor, pendingModal, pendingNpcNaming, activeResolution, speed, autoPlay, tick, selectEventChoice, selectContractApproach, dismissResolution, hydrateFromBackend, dungeonId, dungeonFx, dungeonNonce, cutsceneKey } =
     useGameStore(
       useShallow((s) => ({
         inRun: s.inRun,
         cutsceneKey: s.cutscene?.key || null,
         alive: s.char.alive,
+        pendingYearPlan: s.char.pendingYearPlan,
         pendingEvent: s.char.pendingEvent,
         pendingContract: s.char.pendingContract,
         pendingMinor: s.char.pendingMinor,
@@ -101,7 +102,7 @@ export const MainLayout = ({ children }) => {
   useEffect(() => {
     if (!isPlay && cutsceneKey) endCutscene('hidden');
   }, [isPlay, cutsceneKey, endCutscene]);
-  const hasDock = isPlay && !cutsceneKey && Boolean(pendingEvent || pendingContract || pendingMinor || activeResolution);
+  const hasDock = isPlay && !cutsceneKey && Boolean(pendingEvent || pendingContract || pendingMinor || activeResolution || pendingYearPlan || dungeonId || pendingNpcNaming || pendingModal);
   const dungeon = isPlay && dungeonId ? DUNGEON_DEFINITIONS[dungeonId] : null;
 
   // The world this life is in right now: one string, so the layout re-renders only when it changes

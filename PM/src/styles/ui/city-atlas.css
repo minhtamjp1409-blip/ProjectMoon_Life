@@ -183,6 +183,12 @@
   }
 }
 
+@media (max-width: 480px) {
+  .birth-atlas-strip { height: 74px; margin-top: 2px; }
+  .birth-atlas-strip-content { padding: 8px 12px; align-items: center; }
+  .birth-atlas-strip-title { font-size: var(--t-control); }
+}
+
 @media (max-width: 1100px) {
   .home-opening { grid-template-columns: minmax(0, 1fr); }
   .opening-atlas { max-width: 780px; }

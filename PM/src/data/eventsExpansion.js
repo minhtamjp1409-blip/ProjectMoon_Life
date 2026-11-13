@@ -11,7 +11,7 @@ export const EXPANSION_EVENTS = [
     major: true,
     weight: 9,
     regions: ['D'],
-    vi: '[Tầng hầm thứ chín] Đội trưởng khu quận D triệu tập những người đủ sức khỏe xuống tầng hầm thứ chín của chi nhánh L Corp cũ. Dây leo phát sáng ở đó đã mọc xuyên qua cả những cánh cửa hàn kín; cần người cắt chúng trước khi chúng chạm đến móng nhà.',
+    vi: '[Tầng hầm thứ chín] Đội trưởng khu quận D triệu tập những người đủ sức khỏe xuống tầng hầm thứ chín của chi nhánh L Corp cũ. Dây leo phát sáng ở đó đã mọc xuyên qua cả những cánh cửa hàn kín. Cần người cắt chúng trước khi chúng chạm đến móng nhà.',
     en: '[The Ninth Cellar] The captain of District 4 summons everyone fit enough to go down to the ninth cellar of the old L Corp branch. The glowing vines there have grown through doors that were welded shut, and someone must cut them back before they reach the foundations.',
     choices: [
       {
@@ -67,7 +67,7 @@ export const EXPANSION_EVENTS = [
           {
             w: 55,
             effects: { wealth: 14, heat: 4, rep: 1 },
-            resultVi: 'Bên trong là một xấp giấy nợ cũ và một cuộn tiền nhỏ. Ông chủ tiệm đếm phần của bạn rất chậm như để bạn thấy ông không gian lận; chính vì thế bạn biết ông đã ăn bớt.',
+            resultVi: 'Bên trong là một xấp giấy nợ cũ và một cuộn tiền nhỏ. Ông chủ tiệm đếm phần của bạn rất chậm như để bạn thấy ông không gian lận. Chính vì thế bạn biết ông đã ăn bớt.',
             resultEn: 'Inside are a stack of old IOUs and a small roll of cash. The pawnbroker counts out your share very slowly, so you can see he is not cheating, and you realise that is exactly how you know he is.'
           },
           {
@@ -90,7 +90,7 @@ export const EXPANSION_EVENTS = [
         labelVi: 'Từ chối và bảo ông ta để két yên',
         labelEn: 'Refuse and tell him to leave the safe alone',
         effects: { sanity: 1, network: -1 },
-        resultVi: 'Ông ta tìm người khác; bạn nghe tin người đó mở xong một tuần sau. Không ai nói trong két có gì, còn người thợ không làm nghề này nữa.',
+        resultVi: 'Ông ta tìm người khác. Bạn nghe tin người đó mở xong một tuần sau. Không ai nói trong két có gì, còn người thợ không làm nghề này nữa.',
         resultEn: 'He finds someone else, and a week later you hear it was opened. No one says what was inside, and the locksmith no longer works the trade.'
       }
     ]
@@ -103,7 +103,7 @@ export const EXPANSION_EVENTS = [
     major: true,
     weight: 8,
     regions: ['I'],
-    vi: '[Buổi hòa nhạc không nhạc cụ] Hội đồng khu phố nhạc tổ chức một buổi hòa nhạc không nhạc cụ nhân ngày giỗ của bản nhạc kia. Mỗi người đến ngồi im đếm nhịp bằng hơi thở; người ta bảo bạn nên có mặt.',
+    vi: '[Buổi hòa nhạc không nhạc cụ] Hội đồng khu phố nhạc tổ chức một buổi hòa nhạc không nhạc cụ nhân ngày giỗ của bản nhạc kia. Mỗi người đến ngồi im đếm nhịp bằng hơi thở. Người ta bảo bạn nên có mặt.',
     en: '[The Concert Without Instruments] The District 9 council holds a concert without instruments on the anniversary of that song. Everyone attending sits still and counts the beat with their breath, and you are told you should be there.',
     choices: [
       {
@@ -113,13 +113,13 @@ export const EXPANSION_EVENTS = [
           {
             w: 75,
             effects: { sanity: 4, rep: 2, resonance: -3, network: 2 },
-            resultVi: 'Ba trăm người thở cùng một nhịp suốt một giờ. Khi nhịp cuối cùng tắt, không ai vỗ tay; bạn thấy người bên cạnh lau mắt bằng mu bàn tay.',
+            resultVi: 'Ba trăm người thở cùng một nhịp suốt một giờ. Khi nhịp cuối cùng tắt, không ai vỗ tay. Bạn thấy người bên cạnh lau mắt bằng mu bàn tay.',
             resultEn: 'Three hundred people breathe to the same beat for an hour. When the last beat fades no one applauds, and you see the person beside you wipe their eyes with the back of a hand.'
           },
           {
             w: 25,
             effects: { sanity: -8, resonance: 9 },
-            resultVi: 'Ở nhịp thứ bốn trăm bạn nghe thấy một nốt thừa, rất nhỏ, không phải do hơi thở của ai. Bạn là người duy nhất quay đầu lại; nốt ấy dừng ngay khi bạn làm vậy.',
+            resultVi: 'Ở nhịp thứ bốn trăm bạn nghe thấy một nốt thừa, rất nhỏ, không phải do hơi thở của ai. Bạn là người duy nhất quay đầu lại. Nốt ấy dừng ngay khi bạn làm vậy.',
             resultEn: 'At the four hundredth beat you hear an extra note, very small, made by no one’s breath. You are the only one to turn your head, and the note stops the moment you do.'
           }
         ]
@@ -160,7 +160,7 @@ export const EXPANSION_EVENTS = [
     major: true,
     weight: 8,
     regions: ['Q'],
-    vi: '[Lá bùa trên cánh tay người chết] Người ta tìm thấy một lá bùa nguyền dán trên cánh tay người hàng xóm đã mất. Người của Q Corp mời bạn đứng làm chứng rằng lá bùa không phải do bạn dán; họ hỏi rất nhẹ nhàng.',
+    vi: '[Lá bùa trên cánh tay người chết] Người ta tìm thấy một lá bùa nguyền dán trên cánh tay người hàng xóm đã mất. Người của Q Corp mời bạn đứng làm chứng rằng lá bùa không phải do bạn dán. Họ hỏi rất nhẹ nhàng.',
     en: '[A Talisman on a Dead Arm] A curse talisman is found stuck to the arm of a dead neighbour. Q Corp’s people invite you to testify that you did not place it, and they ask very gently.',
     choices: [
       {
@@ -170,7 +170,7 @@ export const EXPANSION_EVENTS = [
           {
             w: 70,
             effects: { rep: 3, sanity: -1, network: 1 },
-            resultVi: 'Họ ghi lời khai và đặt một lá bùa nhỏ vào lòng bàn tay bạn "để chứng minh". Lá bùa nóng lên một lúc rồi nguội; họ cảm ơn bạn bằng giọng người vừa kiểm tra xong một cỗ máy.',
+            resultVi: 'Họ ghi lời khai và đặt một lá bùa nhỏ vào lòng bàn tay bạn "để chứng minh". Lá bùa nóng lên một lúc rồi nguội. Họ cảm ơn bạn bằng giọng người vừa kiểm tra xong một cỗ máy.',
             resultEn: 'They record your statement and place a small talisman in your palm "as proof". It warms for a moment then cools, and they thank you in the voice of someone who has finished testing a machine.'
           },
           {
@@ -185,14 +185,14 @@ export const EXPANSION_EVENTS = [
         labelVi: 'Từ chối làm chứng vì không biết gì',
         labelEn: 'Refuse to testify since you know nothing',
         effects: { sanity: -2, rep: -2, heat: 2 },
-        resultVi: 'Họ đóng sổ rất nhẹ. Hai ngày sau, một lá bùa dán lên cánh cửa nhà bạn, mực còn chưa khô; không ai ở phố nhớ đã thấy ai dán.',
+        resultVi: 'Họ đóng sổ rất nhẹ. Hai ngày sau, một lá bùa dán lên cánh cửa nhà bạn, mực còn chưa khô. Không ai ở phố nhớ đã thấy ai dán.',
         resultEn: 'They close the ledger very softly. Two days later a talisman is stuck on your door, the ink still wet, and no one on the street remembers seeing who put it there.'
       },
       {
         labelVi: 'Khai đêm trước có thấy người lạ lảng vảng gần đó',
         labelEn: 'Say you saw a stranger nearby the night before',
         effects: { network: -3, rep: 1, sanity: -2 },
-        resultVi: 'Bạn tả một người chưa từng có trên đời; họ chép lại từng chi tiết. Từ đó bạn thấy mình vô thức nhìn mặt những người lạ trên phố, tự hỏi ai là người bạn vừa bịa ra.',
+        resultVi: 'Bạn tả một người chưa từng có trên đời. Họ chép lại từng chi tiết. Từ đó bạn thấy mình vô thức nhìn mặt những người lạ trên phố, tự hỏi ai là người bạn vừa bịa ra.',
         resultEn: 'You describe someone who never existed, and they note every detail. From then on you catch yourself studying strangers’ faces on the street, wondering which one you just invented.'
       }
     ]
@@ -206,7 +206,7 @@ export const EXPANSION_EVENTS = [
     weight: 9,
     regions: ['V'],
     jobs: ['Fixer'],
-    vi: '[Hai Office một bức tường] Hai Office đối diện nhau ở quận V sắp sáp nhập; tên bạn nằm trong danh sách những người được giữ lại. Người bên này gửi bạn lời mời, người bên kia gửi lời nhắc rằng bạn còn nợ họ một việc.',
+    vi: '[Hai Office một bức tường] Hai Office đối diện nhau ở quận V sắp sáp nhập. Tên bạn nằm trong danh sách những người được giữ lại. Người bên này gửi bạn lời mời, người bên kia gửi lời nhắc rằng bạn còn nợ họ một việc.',
     en: '[Two Offices, One Wall] Two rival Offices in District 22 are about to merge, and your name is on the list of those they will keep. One side sends you an invitation, the other a reminder that you once owed them a favour.',
     choices: [
       {
@@ -214,7 +214,7 @@ export const EXPANSION_EVENTS = [
         labelEn: 'Accept the invitation and join the new Office',
         effects: { wealth: 6, rep: 2, network: 3, sanity: -2 },
         meritAdd: 6,
-        resultVi: 'Biển hiệu mới được treo cao hơn cả hai biển cũ; người đầu tiên bạn gặp ở cửa là người bạn không muốn gặp. Ông ta cười như đã chờ bạn từ lâu.',
+        resultVi: 'Biển hiệu mới được treo cao hơn cả hai biển cũ. Người đầu tiên bạn gặp ở cửa là người bạn không muốn gặp. Ông ta cười như đã chờ bạn từ lâu.',
         resultEn: 'The new sign is hung higher than both old ones, and the first person you meet at the door is someone you did not want to meet. He smiles as if he has been waiting for you a long time.'
       },
       {
@@ -222,7 +222,7 @@ export const EXPANSION_EVENTS = [
         labelEn: 'Settle the old favour and stay with the other Office',
         effects: { rep: 4, network: -2, wealth: -3 },
         meritAdd: 3,
-        resultVi: 'Bạn làm việc bên đó cả mùa; họ nói thẳng rằng bạn trả nợ ít hơn họ cần nhưng nhiều hơn họ mong. Bạn nhận ra đó là lời khen.',
+        resultVi: 'Bạn làm việc bên đó cả mùa. Họ nói thẳng rằng bạn trả nợ ít hơn họ cần nhưng nhiều hơn họ mong. Bạn nhận ra đó là lời khen.',
         resultEn: 'You work for them a whole season, and they tell you plainly that you paid back less than they needed but more than they expected. You realise this is praise.'
       },
       {
@@ -263,7 +263,7 @@ export const EXPANSION_EVENTS = [
           {
             w: 70,
             effects: { wealth: 12, health: -6, sanity: -4, network: 2 },
-            resultVi: 'Bạn đi bằng đèn của người khác và dựa vào tiếng gõ để biết phía trước. Khi lên mặt đất, không ai hỏi bạn thấy gì; bạn nhận ra họ đã không muốn nghe.',
+            resultVi: 'Bạn đi bằng đèn của người khác và dựa vào tiếng gõ để biết phía trước. Khi lên mặt đất, không ai hỏi bạn thấy gì. Bạn nhận ra họ đã không muốn nghe.',
             resultEn: 'You walk by someone else’s lamp and rely on tapping to know what lies ahead. At the surface no one asks what you saw, and you realise they did not want to hear.'
           },
           {
@@ -294,7 +294,7 @@ export const EXPANSION_EVENTS = [
         labelVi: 'Từ chối vì thấy tầng mới không nên mở',
         labelEn: 'Refuse, believing the new level should not be opened',
         effects: { rep: -2, sanity: 2, network: -2 },
-        resultVi: 'Đội trưởng nhìn bạn rất lâu rồi gật. "Có người sẽ đi thay anh," ông nói; bạn nghe ra ông không nói bằng giọng trách.',
+        resultVi: 'Đội trưởng nhìn bạn rất lâu rồi gật. "Có người sẽ đi thay anh," ông nói. Bạn nghe ra ông không nói bằng giọng trách.',
         resultEn: 'The crew chief looks at you a long time and nods. "Someone will go in your place," he says, and you hear that he does not say it in blame.'
       }
     ]
@@ -362,13 +362,13 @@ export const EXPANSION_EVENTS = [
           {
             w: 55,
             effects: { sanity: -5, resonance: 5, rep: 1 },
-            resultVi: 'Hành lang tầng thêm giống hệt hành lang của bạn, đến cả vết nứt trên tường. Cửa căn hộ cuối hành lang mang số nhà của bạn; bên dưới khe cửa hắt ra một dải ánh đèn ấm.',
+            resultVi: 'Hành lang tầng thêm giống hệt hành lang của bạn, đến cả vết nứt trên tường. Cửa căn hộ cuối hành lang mang số nhà của bạn. Bên dưới khe cửa hắt ra một dải ánh đèn ấm.',
             resultEn: 'The extra floor’s corridor is identical to yours, down to the crack in the wall. The last door bears your own flat number, and beneath it is a strip of warm light.'
           },
           {
             w: 45,
             effects: { sanity: -2, health: -3 },
-            resultVi: 'Thang máy dừng giữa hai tầng và đứng im một lúc lâu. Khi cửa mở, bạn đã ở tầng của mình; nút tầng thêm không còn sáng nữa.',
+            resultVi: 'Thang máy dừng giữa hai tầng và đứng im một lúc lâu. Khi cửa mở, bạn đã ở tầng của mình. Nút tầng thêm không còn sáng nữa.',
             resultEn: 'The lift halts between two floors and stands still for a long while. When the door opens you are on your own floor, and the extra button no longer glows.'
           }
         ]
@@ -377,7 +377,7 @@ export const EXPANSION_EVENTS = [
         labelVi: 'Hỏi chủ nhà về tầng thêm',
         labelEn: 'Ask the landlord about the extra floor',
         effects: { sanity: -2, network: 1 },
-        resultVi: 'Chủ nhà đáp rằng tầng ấy luôn ở đó và bạn chỉ vừa nhận ra. Ông đưa bạn tờ hợp đồng mới có thêm một dòng về tiền thuê; ở cuối trang đã có chữ ký của chính bạn.',
+        resultVi: 'Chủ nhà đáp rằng tầng ấy luôn ở đó và bạn chỉ vừa nhận ra. Ông đưa bạn tờ hợp đồng mới có thêm một dòng về tiền thuê. Ở cuối trang đã có chữ ký của chính bạn.',
         resultEn: 'The landlord says the floor has always been there and you have only just noticed. He hands you a new lease with an extra rent line, and at the bottom you see your own signature.'
       },
       {
@@ -407,7 +407,7 @@ export const EXPANSION_EVENTS = [
           {
             w: 60,
             effects: { wealth: 5, rep: 1, health: -4, network: 2 },
-            resultVi: 'Ở chợ ven tường, bạn bán số phế liệu đủ để trả chỗ trên một xe hàng. Người đánh xe khai thêm tên bạn vào sổ phụ rồi đưa cả xe qua cổng kiểm. Bạn xuống xe ở Backstreets của District T; đêm ấy, bức tường đã ở sau lưng.',
+            resultVi: 'Ở chợ ven tường, bạn bán số phế liệu đủ để trả chỗ trên một xe hàng. Người đánh xe khai thêm tên bạn vào sổ phụ rồi đưa cả xe qua cổng kiểm. Bạn xuống xe ở Backstreets của District T. Đêm ấy, bức tường đã ở sau lưng.',
             resultEn: 'At the wall market you sell enough scrap to pay for a place on a freight cart. The driver adds your name to his manifest and takes the cart through inspection. You climb down in District T’s Backstreets. That night, the wall is behind you.',
             setRegion: 'T',
             flagsAdd: ['EnteredCity']
@@ -434,7 +434,7 @@ export const EXPANSION_EVENTS = [
             w: 38,
             effects: { health: -16, sanity: -6, resonance: 5 },
             scarsAdd: ['Đêm ở giếng không đáy'],
-            resultVi: 'Đêm ở giếng, ai đó gọi tên từng người trong nhóm theo thứ tự họ nằm. Đến sáng, hai chiếc võng trống không; chẳng ai nhắc đến người đã nằm trong đó.',
+            resultVi: 'Đêm ở giếng, ai đó gọi tên từng người trong nhóm theo thứ tự họ nằm. Đến sáng, hai chiếc võng trống không. Chẳng ai nhắc đến người đã nằm trong đó.',
             resultEn: 'At night by the well someone calls each person’s name, in the order they lie. By morning two hammocks are empty, and no one mentions who lay in them.'
           },
           {
@@ -522,7 +522,7 @@ export const EXPANSION_EVENTS = [
         labelVi: 'Đi ngang qua mà không nói gì',
         labelEn: 'Walk past without speaking',
         effects: { heat: 2, network: -1 },
-        resultVi: 'Bạn bước qua hết con phố. Phía sau không ai thì thầm; sự im lặng ấy còn nặng hơn tiếng la hét.',
+        resultVi: 'Bạn bước qua hết con phố. Phía sau không ai thì thầm. Sự im lặng ấy còn nặng hơn tiếng la hét.',
         resultEn: 'You walk the whole length of the street. Behind you no one whispers, and you find that silence heavier than screaming.'
       },
       {
@@ -538,7 +538,7 @@ export const EXPANSION_EVENTS = [
           {
             w: 40,
             effects: { heat: 10, health: -8 },
-            resultVi: 'Ai đó trong nhà gọi người đến; tiếng giày xuất hiện ở cuối phố trước khi bạn kịp quay đi. Bạn chạy, con phố im lặng tách ra nhường lối.',
+            resultVi: 'Ai đó trong nhà gọi người đến. Tiếng giày xuất hiện ở cuối phố trước khi bạn kịp quay đi. Bạn chạy, con phố im lặng tách ra nhường lối.',
             resultEn: 'Someone in the house calls for help, and boots appear at the end of the street before you can turn away. You run, and the street parts to let you pass, in silence.'
           }
         ]
@@ -552,7 +552,7 @@ export const EXPANSION_EVENTS = [
     major: true,
     weight: 10,
     jobs: ['Distortion'],
-    vi: '[Giọng nói nhỏ dần] Giọng nói trong đầu bạn đã nhỏ đi qua nhiều tháng; hôm nay bạn nhận ra mình đang nói thay nó, to tiếng giữa con hẻm vắng. Bạn không chắc đó là tự do hay là bị bỏ rơi.',
+    vi: '[Giọng nói nhỏ dần] Giọng nói trong đầu bạn đã nhỏ đi qua nhiều tháng. Hôm nay bạn nhận ra mình đang nói thay nó, to tiếng giữa con hẻm vắng. Bạn không chắc đó là tự do hay là bị bỏ rơi.',
     en: '[The Fading Voice] The voice in your head has been growing quieter for months, and today you realise you are speaking in its place, aloud, in an empty alley. You cannot tell whether this is freedom or abandonment.',
     choices: [
       {
@@ -577,7 +577,7 @@ export const EXPANSION_EVENTS = [
         labelVi: 'Nói to một điều bạn chưa bao giờ dám nói',
         labelEn: 'Say aloud something you never dared say',
         effects: { resonance: -3, network: 1, health: -2 },
-        resultVi: 'Con hẻm không đáp lại, nhưng một con chim đậu trên mái nhà lệch đầu nhìn bạn. Khi bạn dứt lời, nó bay đi; lòng bạn nhẹ hơn một chút.',
+        resultVi: 'Con hẻm không đáp lại, nhưng một con chim đậu trên mái nhà lệch đầu nhìn bạn. Khi bạn dứt lời, nó bay đi. Lòng bạn nhẹ hơn một chút.',
         resultEn: 'The alley does not answer, but a bird on the roof tilts its head at you. When you finish it flies off, and you feel a little lighter.'
       },
       {
@@ -597,7 +597,7 @@ export const EXPANSION_EVENTS = [
     major: true,
     weight: 9,
     need: { npc: 'spouse' },
-    vi: '[Cơn sốt tuần thứ ba] Cơn sốt của {spouse} kéo sang tuần thứ ba. Thuốc ở phòng khám đầu phố không còn tác dụng; bác sĩ nói chỉ còn đúng một phương thuốc đắt hơn tất cả những gì bạn có.',
+    vi: '[Cơn sốt tuần thứ ba] Cơn sốt của {spouse} kéo sang tuần thứ ba. Thuốc ở phòng khám đầu phố không còn tác dụng. Bác sĩ nói chỉ còn đúng một phương thuốc đắt hơn tất cả những gì bạn có.',
     en: '[The Third Week of Fever] {spouse}’s fever runs into its third week. The medicine from the clinic at the head of the street no longer works, and the doctor says only one option remains, dearer than anything you have.',
     choices: [
       {
@@ -629,14 +629,14 @@ export const EXPANSION_EVENTS = [
             w: 55,
             effects: { health: -6, sanity: 2 },
             bond: { spouse: 10 },
-            resultVi: 'Bạn thức mười một đêm; đến đêm thứ mười hai {spouse} mở mắt hỏi bạn đã ăn chưa. Bạn bật cười lần đầu tiên sau nhiều ngày.',
+            resultVi: 'Bạn thức mười một đêm. Đến đêm thứ mười hai {spouse} mở mắt hỏi bạn đã ăn chưa. Bạn bật cười lần đầu tiên sau nhiều ngày.',
             resultEn: 'You stay awake eleven nights, and on the twelfth {spouse} opens their eyes and asks if you have eaten. You laugh for the first time in days.'
           },
           {
             w: 45,
             effects: { health: -8, sanity: -9 },
             npcFate: { spouse: 'dead' },
-            resultVi: '{spouse} mất vào buổi sáng ngày thứ mười lăm trong lúc bạn thay khăn. Khăn còn ướt; bạn không biết nên vắt nó đi hay giữ nguyên như vậy.',
+            resultVi: '{spouse} mất vào buổi sáng ngày thứ mười lăm trong lúc bạn thay khăn. Khăn còn ướt. Bạn không biết nên vắt nó đi hay giữ nguyên như vậy.',
             resultEn: '{spouse} dies on the morning of the fifteenth day, while you are changing the cloth. The cloth is still wet, and you do not know whether to wring it out or keep it as it is.'
           }
         ]
@@ -659,7 +659,7 @@ export const EXPANSION_EVENTS = [
     major: true,
     weight: 8,
     need: { npc: 'child' },
-    vi: '[{child} muốn đi xa] {child} kể với bạn rằng có Wing ở khu xa nhận họ vào làm. Chỗ làm tốt hơn bất cứ thứ gì bạn có thể cho họ ở đây; họ nói điều đó rất nhỏ, như đang xin lỗi.',
+    vi: '[{child} muốn đi xa] {child} kể với bạn rằng có Wing ở khu xa nhận họ vào làm. Chỗ làm tốt hơn bất cứ thứ gì bạn có thể cho họ ở đây. Họ nói điều đó rất nhỏ, như đang xin lỗi.',
     en: '[{child} Wants to Go Far] {child} tells you that a Wing in a distant District has accepted them for work. The post is better than anything you could give them here, and they say it very quietly, like an apology.',
     choices: [
       {
@@ -679,14 +679,14 @@ export const EXPANSION_EVENTS = [
             w: 50,
             effects: { sanity: -2, wealth: 2 },
             bond: { child: -6 },
-            resultVi: '{child} ở lại và làm đúng phần việc của mình, mỗi ngày, đúng giờ. Họ thôi nhắc đến Wing ấy; bạn cũng thôi nghe tiếng cười của họ trong nhà.',
+            resultVi: '{child} ở lại và làm đúng phần việc của mình, mỗi ngày, đúng giờ. Họ thôi nhắc đến Wing ấy. Bạn cũng thôi nghe tiếng cười của họ trong nhà.',
             resultEn: '{child} stays and does their share, every day, on time. They stop mentioning that Wing, and you stop hearing their laughter in the house.'
           },
           {
             w: 50,
             effects: { sanity: -6, rep: -2 },
             npcFate: { child: 'estranged' },
-            resultVi: '{child} im lặng một đêm; sáng ra chiếc giường đã được dọn gọn gàng, không còn gì trong túi vải cũ. Họ để lại một mảnh giấy mà bạn không dám đọc.',
+            resultVi: '{child} im lặng một đêm. Sáng ra chiếc giường đã được dọn gọn gàng, không còn gì trong túi vải cũ. Họ để lại một mảnh giấy mà bạn không dám đọc.',
             resultEn: '{child} is silent for one night, and in the morning the bed is neatly made, the old cloth bag gone. They leave a note, and you do not dare read it.'
           }
         ]
@@ -718,7 +718,7 @@ export const EXPANSION_EVENTS = [
         effects: { wealth: -4, network: 4, rep: 2, sanity: -1 },
         bond: { mentor: 8 },
         meritAdd: 4,
-        resultVi: 'Chiếc chìa mở một ngăn tủ chưa ai biết; cuốn sổ ghi tên những người ông đã dạy theo thứ tự. Tên bạn ở trang cuối, được viết bằng nét chữ tròn hơn mọi tên khác.',
+        resultVi: 'Chiếc chìa mở một ngăn tủ chưa ai biết. Cuốn sổ ghi tên những người ông đã dạy theo thứ tự. Tên bạn ở trang cuối, được viết bằng nét chữ tròn hơn mọi tên khác.',
         resultEn: 'The key opens a cabinet no one knew of, and the ledger lists the names of everyone they have taught, in order. Your name is on the last page, written in a rounder hand than any other.'
       },
       {
@@ -737,14 +737,14 @@ export const EXPANSION_EVENTS = [
             w: 55,
             effects: { sanity: 3, resonance: -3 },
             bond: { mentor: 10 },
-            resultVi: 'Câu hỏi chỉ có một dòng: ông đã dạy đúng chưa. Bạn trả lời lâu hơn mức cần; ông nghe đến hết, đôi mắt không rời khỏi tay mình.',
+            resultVi: 'Câu hỏi chỉ có một dòng: ông đã dạy đúng chưa. Bạn trả lời lâu hơn mức cần. Ông nghe đến hết, đôi mắt không rời khỏi tay mình.',
             resultEn: 'The question is only one line: did they teach it right. You answer longer than needed, and they listen to the end, eyes never leaving their own hands.'
           },
           {
             w: 45,
             effects: { sanity: -4, resonance: 3 },
             bond: { mentor: 4 },
-            resultVi: 'Bạn trả lời thành thật; ông gật nhiều lần, quá nhiều lần. "Cậu nói đúng," ông bảo, giọng không có một tí nhẹ nhõm nào.',
+            resultVi: 'Bạn trả lời thành thật. Ông gật nhiều lần, quá nhiều lần. "Cậu nói đúng," ông bảo, giọng không có một tí nhẹ nhõm nào.',
             resultEn: 'You answer honestly, and they nod many times, too many times. "You are right," they say, in a voice without a trace of relief.'
           }
         ]
@@ -780,14 +780,14 @@ export const EXPANSION_EVENTS = [
             w: 55,
             effects: { wealth: -5, sanity: 3, network: -3 },
             bond: { friend: 10 },
-            resultVi: 'Hai người đi trên chuyến tàu đầu tiên ra khỏi khu. Ở ga cuối, một người lạ chờ sẵn với tấm biển ghi tên bạn; bạn không biết ai đã gửi.',
+            resultVi: 'Hai người đi trên chuyến tàu đầu tiên ra khỏi khu. Ở ga cuối, một người lạ chờ sẵn với tấm biển ghi tên bạn. Bạn không biết ai đã gửi.',
             resultEn: 'You both take the first tram out of the district. At the terminus a stranger is waiting with a sign bearing your name, and you do not know who sent them.'
           },
           {
             w: 45,
             effects: { wealth: -8, health: -5, sanity: -3 },
             bond: { friend: -5 },
-            resultVi: 'Chuyến đi mất nhiều hơn dự tính; hai người cãi nhau về điều gì đó nhỏ. Bạn quay lại sau ba tuần, một mình, nhìn con phố cũ như nhìn một thứ vừa trả lại.',
+            resultVi: 'Chuyến đi mất nhiều hơn dự tính. Hai người cãi nhau về điều gì đó nhỏ. Bạn quay lại sau ba tuần, một mình, nhìn con phố cũ như nhìn một thứ vừa trả lại.',
             resultEn: 'The trip costs more than planned, and the two of you quarrel over something small. You return after three weeks, alone, and look at the old street as at something just handed back.'
           }
         ]
@@ -817,7 +817,7 @@ export const EXPANSION_EVENTS = [
         labelVi: 'Đọc hết từng lá thư',
         labelEn: 'Read every letter in turn',
         effects: { sanity: -3, resonance: -4, health: -1 },
-        resultVi: 'Bạn đọc đến chiều tối. Hầu hết người nhận đã mất; bạn nhớ ra những điều họ từng làm, bao gồm cả vài điều không đẹp. Cả đêm bạn không ngủ, đến sáng thì thấy lòng nhẹ đi.',
+        resultVi: 'Bạn đọc đến chiều tối. Hầu hết người nhận đã mất. Bạn nhớ ra những điều họ từng làm, bao gồm cả vài điều không đẹp. Cả đêm bạn không ngủ, đến sáng thì thấy lòng nhẹ đi.',
         resultEn: 'You read until evening. Most of the recipients have died, and you find yourself remembering what they did, including a few unkind things. You do not sleep all night, and in the morning feel lighter.'
       },
       {
@@ -827,7 +827,7 @@ export const EXPANSION_EVENTS = [
           {
             w: 55,
             effects: { network: 4, sanity: 3, health: -3, rep: 2 },
-            resultVi: 'Vài địa chỉ đã không còn, nhưng có hai nơi có người nhận thư thay người đã khuất. Họ đọc ngay trước mặt bạn; một người nói rất khẽ rằng họ đã đợi.',
+            resultVi: 'Vài địa chỉ đã không còn, nhưng có hai nơi có người nhận thư thay người đã khuất. Họ đọc ngay trước mặt bạn. Một người nói rất khẽ rằng họ đã đợi.',
             resultEn: 'Several of the addresses no longer exist, but at two there are people to receive the letter in place of the dead. They read it right before you, and one says, very softly, that they had been waiting.'
           },
           {
@@ -842,7 +842,7 @@ export const EXPANSION_EVENTS = [
         labelVi: 'Đốt cả bó thư',
         labelEn: 'Burn the whole bundle',
         effects: { sanity: 1, resonance: -3 },
-        resultVi: 'Giấy cháy nhanh hơn bạn nghĩ. Tro bay lên theo luồng khói; bạn đứng xem cho đến khi nó rơi xuống, đủ xa để không còn là của ai.',
+        resultVi: 'Giấy cháy nhanh hơn bạn nghĩ. Tro bay lên theo luồng khói. Bạn đứng xem cho đến khi nó rơi xuống, đủ xa để không còn là của ai.',
         resultEn: 'The paper burns faster than you thought. The ash rises with the smoke, and you watch until it falls, far enough to belong to no one.'
       }
     ]
@@ -855,14 +855,14 @@ export const EXPANSION_EVENTS = [
     weight: 9,
     jobs: ['Fixer'],
     need: { grade: [9, 4] },
-    vi: '[Request cuối cùng] Office cũ của bạn gửi đến một Request đơn giản: dẫn một người mới đi qua ba con phố và giới thiệu họ với chủ quán ở góc ngoài. Công thấp; ai cũng biết nó có nghĩa gì.',
+    vi: '[Request cuối cùng] Office cũ của bạn gửi đến một Request đơn giản: dẫn một người mới đi qua ba con phố và giới thiệu họ với chủ quán ở góc ngoài. Công thấp. Ai cũng biết nó có nghĩa gì.',
     en: '[The Last Request] Your old Office sends a simple Request: walk a newcomer through three streets and introduce them to the owner of the corner stall. The pay is low, and everyone knows what it means.',
     choices: [
       {
         labelVi: 'Nhận và dẫn họ đi chậm, kể từng chuyện cũ',
         labelEn: 'Accept and walk them slowly, telling the old stories',
         effects: { network: 4, rep: 4, sanity: 3, health: -2, wealth: 2 },
-        resultVi: 'Người mới nghe hết, đôi khi hỏi một câu rất đúng chỗ. Ở góc phố cuối, họ gọi bạn là tiền bối lần đầu; bạn không sửa.',
+        resultVi: 'Người mới nghe hết, đôi khi hỏi một câu rất đúng chỗ. Ở góc phố cuối, họ gọi bạn là tiền bối lần đầu. Bạn không sửa.',
         resultEn: 'The newcomer listens to everything, sometimes asking a question that lands exactly right. At the last corner they call you senior for the first time, and you do not correct them.'
       },
       {
@@ -876,7 +876,7 @@ export const EXPANSION_EVENTS = [
         labelVi: 'Từ chối và bảo Office tìm người khác',
         labelEn: 'Refuse and tell the Office to find someone else',
         effects: { sanity: -2, network: -2 },
-        resultVi: 'Văn phòng ghi nhận mà không phản đối. Tuần sau không có Request nào gửi đến nữa; bạn nhận ra mình vừa nghe tiếng một cánh cửa khép lại.',
+        resultVi: 'Văn phòng ghi nhận mà không phản đối. Tuần sau không có Request nào gửi đến nữa. Bạn nhận ra mình vừa nghe tiếng một cánh cửa khép lại.',
         resultEn: 'The Office notes it without objection. The following week no Request arrives, and you realise you have just heard a door close.'
       }
     ]
@@ -889,21 +889,21 @@ export const EXPANSION_EVENTS = [
     weight: 12,
     jobs: ['Fixer'],
     need: { grade: [3, 1] },
-    vi: '[Người ký Request thay bạn] Một Office trẻ xin bạn bảo chứng cho người sẽ phụ trách tuyến đường mà bạn từng giữ. Hana Association không xét tuổi của bạn; họ cần biết ai sẽ chịu trách nhiệm khi một Request hỏng. Tên bạn vẫn trên hồ sơ, còn quyết định giao việc là của bạn.',
+    vi: '[Người ký Request thay bạn] Một Office trẻ xin bạn bảo chứng cho người sẽ phụ trách tuyến đường mà bạn từng giữ. Hana Association không xét tuổi của bạn. Họ cần biết ai sẽ chịu trách nhiệm khi một Request hỏng. Tên bạn vẫn trên hồ sơ, còn quyết định giao việc là của bạn.',
     en: '[The Name on the Request] A young Office asks you to endorse the person taking over a route you once held. Hana Association is not questioning your age; it needs someone accountable when a Request fails. Your name remains on the record, and the handover is yours to decide.',
     choices: [
       {
         labelVi: 'Huấn luyện người kế nhiệm và ký bảo chứng',
         labelEn: 'Train the successor and endorse them',
         effects: { wealth: -4, health: -2, network: 4, merit: 3 },
-        resultVi: 'Bạn dành nhiều tuần đối chiếu từng tuyến thoát và từng thân chủ. Người mới ký Request đầu tiên dưới tên mình; bạn trả phí huấn luyện, nhưng từ nay có người đủ sức nhận cuộc gọi lúc đêm.',
+        resultVi: 'Bạn dành nhiều tuần đối chiếu từng tuyến thoát và từng thân chủ. Người mới ký Request đầu tiên dưới tên mình. Bạn trả phí huấn luyện, nhưng từ nay có người đủ sức nhận cuộc gọi lúc đêm.',
         resultEn: 'You spent weeks checking escape routes and clients. The newcomer signed their first Request under their own name. Training cost you, but someone else can now answer the midnight calls.'
       },
       {
         labelVi: 'Giữ quyền ký, giao việc hiện trường cho Office',
         labelEn: 'Keep the signature and delegate fieldwork',
         effects: { wealth: 2, network: -3, sanity: -2 },
-        resultVi: 'Bạn vẫn duyệt từng hồ sơ. Công việc chạy đúng hạn, nhưng vài người liên lạc trực tiếp với Office trẻ thay vì gọi cho bạn. Quyền ký còn nguyên; mạng lưới riêng mỏng đi.',
+        resultVi: 'Bạn vẫn duyệt từng hồ sơ. Công việc chạy đúng hạn, nhưng vài người liên lạc trực tiếp với Office trẻ thay vì gọi cho bạn. Quyền ký còn nguyên. Mạng lưới riêng mỏng đi.',
         resultEn: 'You still approved every file. Work arrived on time, but a few contacts began calling the younger Office directly. Your authority remained; your personal network thinned.'
       },
       {
@@ -923,7 +923,7 @@ export const EXPANSION_EVENTS = [
     weight: 12,
     jobs: ['Syndicate'],
     need: { fingerRankAtLeast: 3 },
-    vi: '[Sổ thu của đời sau] Hai đội dưới quyền mang đến hai bản sổ thu khác nhau cho cùng một dãy phố. Họ chờ bạn xác nhận bản nào có hiệu lực trước khi người thu tiền đi. Chức vị của bạn không bị chất vấn; nếu bỏ qua, tranh chấp sẽ rơi xuống dân khu phố.',
+    vi: '[Sổ thu của đời sau] Hai đội dưới quyền mang đến hai bản sổ thu khác nhau cho cùng một dãy phố. Họ chờ bạn xác nhận bản nào có hiệu lực trước khi người thu tiền đi. Chức vị của bạn không bị chất vấn. Nếu bỏ qua, tranh chấp sẽ rơi xuống dân khu phố.',
     en: '[The Next Crew’s Ledger] Two crews under your command bring different collection ledgers for the same block. They wait for you to decide which one stands before anyone is sent to collect. Your position is not in question; if you leave it unresolved, the dispute falls on the residents.',
     choices: [
       {
@@ -957,21 +957,21 @@ export const EXPANSION_EVENTS = [
     weight: 12,
     jobs: ['Wing Employee'],
     need: { stat: { wingRank: [2, 9] } },
-    vi: '[Quyền duyệt ca đêm] Wing gửi lên hai lịch trực cho cùng một dây chuyền. Cả hai đều có chữ ký của bạn; một bản thiếu kỹ thuật viên an toàn. Nhân viên chờ quyết định trước khi máy khởi động, chứ không phải chờ bạn chứng minh mình còn giữ chức.',
+    vi: '[Quyền duyệt ca đêm] Wing gửi lên hai lịch trực cho cùng một dây chuyền. Cả hai đều có chữ ký của bạn. Một bản thiếu kỹ thuật viên an toàn. Nhân viên chờ quyết định trước khi máy khởi động, chứ không phải chờ bạn chứng minh mình còn giữ chức.',
     en: '[Night Shift Approval] The Wing sends up two rosters for the same production line. Both bear your signature; one omits the safety technician. Staff wait for your decision before starting the machines, not for proof that you still hold office.',
     choices: [
       {
         labelVi: 'Dừng dây chuyền để đối chiếu bản gốc',
         labelEn: 'Stop the line and check the original',
         effects: { wealth: -4, network: 3, sanity: -2 },
-        resultVi: 'Ca đêm chậm một giờ và phòng tài chính gửi giấy hỏi. Kỹ thuật viên được gọi đến; bản lịch thiếu tên bị thu hồi trước khi ai bước vào vùng máy.',
+        resultVi: 'Ca đêm chậm một giờ và phòng tài chính gửi giấy hỏi. Kỹ thuật viên được gọi đến. Bản lịch thiếu tên bị thu hồi trước khi ai bước vào vùng máy.',
         resultEn: 'The night shift started an hour late, and finance sent a query. The technician arrived; the incomplete roster was withdrawn before anyone entered the machine zone.'
       },
       {
         labelVi: 'Giao trưởng ca xác minh rồi ký lại',
         labelEn: 'Have the shift lead verify and countersign',
         effects: { network: -2, sanity: 2 },
-        resultVi: 'Trưởng ca tìm ra lỗi nhập liệu và sửa ngay. Anh ta được mọi người tìm đến trước bạn trong các ca sau; quyền duyệt của bạn vẫn nguyên.',
+        resultVi: 'Trưởng ca tìm ra lỗi nhập liệu và sửa ngay. Anh ta được mọi người tìm đến trước bạn trong các ca sau. Quyền duyệt của bạn vẫn nguyên.',
         resultEn: 'The shift lead found and corrected the entry error. Workers went to him first on later shifts; your approval authority stayed intact.'
       },
       {
@@ -1002,7 +1002,7 @@ export const EXPANSION_EVENTS = [
             w: 65,
             effects: { rep: 3, heat: 3, sanity: -3 },
             meritAdd: 6,
-            resultVi: 'Căn hộ trống không, chiếc hộp nằm giữa bàn như được đặt sẵn. Khi bạn giao nó, cấp trên mở ra liếc một lần rồi đóng lại; bạn nhận ra ông đã biết trong hộp có gì từ đầu.',
+            resultVi: 'Căn hộ trống không, chiếc hộp nằm giữa bàn như được đặt sẵn. Khi bạn giao nó, cấp trên mở ra liếc một lần rồi đóng lại. Bạn nhận ra ông đã biết trong hộp có gì từ đầu.',
             resultEn: 'The flat is empty, and the box sits in the middle of the table as if placed for you. When you deliver it, your superior opens it, glances once, and closes it, and you realise he knew what was inside from the start.'
           },
           {
@@ -1038,7 +1038,7 @@ export const EXPANSION_EVENTS = [
     major: true,
     weight: 10,
     jobs: ['Wing Employee'],
-    vi: '[Tệp kiểm toán không dành cho bạn] Bạn vô tình mở một tệp kiểm toán không dành cho mình trên máy chung. Trong đó, tên một người cùng bộ phận được ghi cạnh con số không ai nên biết; ngày cập nhật cuối cùng là hôm qua.',
+    vi: '[Tệp kiểm toán không dành cho bạn] Bạn vô tình mở một tệp kiểm toán không dành cho mình trên máy chung. Trong đó, tên một người cùng bộ phận được ghi cạnh con số không ai nên biết. Ngày cập nhật cuối cùng là hôm qua.',
     en: '[An Audit File Not Meant for You] You accidentally open an audit file not meant for you on a shared terminal. In it a colleague’s name is written beside a figure no one should know, and the last update is yesterday.',
     choices: [
       {
@@ -1062,7 +1062,7 @@ export const EXPANSION_EVENTS = [
           {
             w: 50,
             effects: { network: -3, heat: 7, sanity: -5, rep: -2 },
-            resultVi: 'Họ gọi bạn vào phòng nhỏ và hỏi bạn đã mở tệp bằng cách nào. Cuộc nói chuyện kéo dài hai giờ; không ai nhắc đến người trong tệp thêm lần nào.',
+            resultVi: 'Họ gọi bạn vào phòng nhỏ và hỏi bạn đã mở tệp bằng cách nào. Cuộc nói chuyện kéo dài hai giờ. Không ai nhắc đến người trong tệp thêm lần nào.',
             resultEn: 'They call you into a small room and ask how you opened the file. The conversation lasts two hours, and no one mentions the person in the file again.'
           }
         ]

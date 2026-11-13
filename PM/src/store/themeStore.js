@@ -11,6 +11,7 @@ export const useThemeStore = create((set) => {
   const initialGameplayMetrics = readSetting('pm-gameplay-metrics') === 'on';
   const initialPerfMode = readSetting('pm-perf-mode') === 'on';
   const initialAutoSkipQuietYears = readSetting('pm-auto-skip-quiet') === 'on';
+  const initialFirstLifeGuideDismissed = readSetting('pm-first-life-guide-dismissed') === 'on';
   const initialCutscene = ['full', 'short', 'off'].includes(readSetting('pm-cutscene')) ? readSetting('pm-cutscene') : 'short';
 
   if (typeof document !== 'undefined') {
@@ -83,6 +84,12 @@ export const useThemeStore = create((set) => {
       set({ textSize: next });
     },
     lang: initialLang, // 'vi' | 'bi' | 'en'
+    firstLifeGuideDismissed: initialFirstLifeGuideDismissed,
+    dismissFirstLifeGuide: () =>
+      set(() => {
+        localStorage.setItem('pm-first-life-guide-dismissed', 'on');
+        return { firstLifeGuideDismissed: true };
+      }),
     sidebarCollapsed: null, // null = auto (collapses during active chronicle play), true/false = user override
     mobileDossierOpen: false,
     setMobileDossierOpen: (open) => set({ mobileDossierOpen: open }),

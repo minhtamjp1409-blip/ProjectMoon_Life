@@ -26,6 +26,7 @@ import {
   TRIAL_MIN_HP
 } from './careerPipeline.js';
 import { rollSeasonMishap } from './fateEngine.js';
+import { CITY_BULLETINS } from '../data/cityBulletins.js';
 // ============================================================================
 // YEAR PLANNER: each year is a plan of 1–4 moments spread across the seasons.
 // The bar sweeps the year; when it passes a moment's time `t` (0–1) that moment
@@ -2040,9 +2041,33 @@ export const AMBIENT_YEAR_LINES = {
   ]
 };
 
+export function pickCityBulletin(char, age, rng = Math.random) {
+  if (!char) return null;
+  const out = isOutskirts(char);
+  const nest = isNest(char);
+  const regionKey = out ? 'outskirts' : (nest ? 'nest' : 'backstreets');
+  const seen = new Set(char.seenBulletins || []);
+  const regionId = char.regionId || char.birthRegion || null;
+
+  const eligible = CITY_BULLETINS.filter((b) => {
+    if (seen.has(b.id)) return false;
+    if (Array.isArray(b.age) && (age < b.age[0] || age > b.age[1])) return false;
+    if (b.era && b.era !== char.era) return false;
+    if (b.scope === regionKey) return true;
+    if (b.scope === 'wing' && !out && regionId && b.regionId === regionId) return true;
+    return false;
+  });
+  if (eligible.length === 0) return null;
+
+  const chosen = eligible[Math.floor(rng() * eligible.length)];
+  if (!Array.isArray(char.seenBulletins)) char.seenBulletins = [];
+  char.seenBulletins.push(chosen.id);
+  return chosen;
+}
+
 /**
  * Creates a year_digest log entry from a list of routine daily log entries.
- * Đợt 120a: Năm yên ả chỉ đúng 1 dòng (daily đáng nhớ nhất hoặc câu ambient theo nơi chốn).
+ * Đợt 120a: Năm yên ả chỉ đúng 1 dòng (daily đáng nhớ nhất, bản tin City hoặc câu ambient theo nơi chốn).
  */
 export function createYearDigest(dailyEntries, age, { quiet = true, char = null, rng = null } = {}) {
   if (!dailyEntries || dailyEntries.length === 0) return null;
@@ -2068,7 +2093,7 @@ export function createYearDigest(dailyEntries, age, { quiet = true, char = null,
     if (v && !STAT_ORDER.includes(k)) deltas.push({ k, v });
   }
 
-  // Đợt 120a: Chọn một câu duy nhất cho năm yên ả (tình huống đáng nhớ nhất hoặc câu ambient theo nơi chốn)
+  // Đợt 120a: Chọn một câu duy nhất cho năm yên ả (tình huống đáng nhớ nhất, bản tin City hoặc câu ambient theo nơi chốn)
   const r = typeof rng === 'function' ? rng : createRNG(`${char?.seed || 'digest'}:${age}:${ids.join(':')}`);
 
   // Tìm daily đáng nhớ nhất: có tên NPC hoặc có tổng delta (độ lớn) lớn nhất
@@ -2088,25 +2113,58 @@ export function createYearDigest(dailyEntries, age, { quiet = true, char = null,
 
   const bestScore = Math.max(...scored.map((s) => s.score));
   const candidates = scored.filter((s) => s.score === bestScore && s.score > 0);
+  const hasNpcScore = candidates.some((s) => s.score >= 100);
 
   let vi = '';
   let en = '';
 
-  if (candidates.length > 0) {
+  if (quiet && char && !hasNpcScore) {
+    const bulletin = pickCityBulletin(char, age, r);
+    if (bulletin) {
+      vi = bulletin.vi;
+      en = bulletin.en;
+      if (bulletin.spDelta && char.stats) {
+        const prevSp = char.stats.sanity ?? 0;
+        const nextSp = Math.max(0, Math.min(100, prevSp + bulletin.spDelta));
+        const actualSp = nextSp - prevSp;
+        if (actualSp !== 0) {
+          char.stats.sanity = nextSp;
+          deltaMap.sanity = (deltaMap.sanity || 0) + actualSp;
+          const idx = deltas.findIndex((d) => d.k === 'sanity');
+          if (deltaMap.sanity === 0) {
+            if (idx >= 0) deltas.splice(idx, 1);
+          } else if (idx >= 0) {
+            deltas[idx] = { k: 'sanity', v: deltaMap.sanity };
+          } else {
+            deltas.push({ k: 'sanity', v: deltaMap.sanity });
+          }
+        }
+      }
+    }
+  }
+
+  if (!vi && quiet && char && !hasNpcScore) {
+    // Sau khi hết bản tin chưa thấy của đời này mới fallback sang AMBIENT_YEAR_LINES
+    const out = isOutskirts(char);
+    const nest = isNest(char);
+    const regionKey = out ? 'outskirts' : (nest ? 'nest' : 'backstreets');
+    const pool = AMBIENT_YEAR_LINES[regionKey] || AMBIENT_YEAR_LINES.backstreets;
+    const chosen = pool[Math.floor(r() * pool.length)];
+    vi = chosen.vi;
+    en = chosen.en;
+  } else if (!vi && candidates.length > 0) {
     const chosen = candidates[Math.floor(r() * candidates.length)].entry;
     const bVi = splitTitle(chosen.vi || '').body.trim();
     const bEn = splitTitle(chosen.en || '').body.trim();
     vi = /[.!?]$/.test(bVi) ? bVi : `${bVi}.`;
     en = /[.!?]$/.test(bEn) ? bEn : `${bEn}.`;
-  } else if (dailyEntries.length > 0) {
-    // Có daily thật: luôn lấy một daily thật bằng seed, không thay bằng câu ambient chung chung
+  } else if (!vi && dailyEntries.length > 0) {
     const chosen = dailyEntries[Math.floor(r() * dailyEntries.length)];
     const bVi = splitTitle(chosen.vi || '').body.trim();
     const bEn = splitTitle(chosen.en || '').body.trim();
     vi = /[.!?]$/.test(bVi) ? bVi : `${bVi}.`;
     en = /[.!?]$/.test(bEn) ? bEn : `${bEn}.`;
-  } else {
-    // Chỉ dùng câu ambient khi hoàn toàn không có daily nào (dùng hàm canon isNest & isOutskirts)
+  } else if (!vi) {
     const out = isOutskirts(char);
     const nest = isNest(char);
     const regionKey = out ? 'outskirts' : (nest ? 'nest' : 'backstreets');

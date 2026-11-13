@@ -39,7 +39,7 @@ import { chapterFor } from '../src/engine/chapters.js';
   const spousePrompt = getNpcNamingPrompt('spouse', { age: 24 });
   assert.match(spousePrompt.questionVi, /Người bạn đời của bạn tên gì/);
 
-  // 3. Birth friend waits for pendingBirthLogs, then prompts and updates log_birth_3 + both nameVi/nameEn
+  // 3. Birth friend waits past age 0 until first post-birth event, then prompts and updates log_birth_3 + logs + nameVi/nameEn
   let char = null;
   for (let i = 0; i < 40; i++) {
     const c = createNewCharacter({ customName: 'Test', seed: `naming_${i}` });
@@ -56,21 +56,34 @@ import { chapterFor } from '../src/engine/chapters.js';
   syncNpcNamingPrompt(char, { autoPlay: false, waitForBirthPrologue: true });
   assert.equal(char.pendingNpcNaming, null, 'Should wait until birth logs finish revealing');
 
-  // Once birth logs finish revealing -> opens prompt
+  // Even after birth logs finish revealing at age 0 -> năm 0 không có pendingNpcNaming
   const oldRandomName = char.npcs.friend.nameVi;
   char.logs.push(...char.pendingBirthLogs);
   char.pendingBirthLogs = [];
   syncNpcNamingPrompt(char, { autoPlay: false, waitForBirthPrologue: true });
-  assert.ok(char.pendingNpcNaming, 'Should open pendingNpcNaming after birth logs finish');
+  assert.equal(char.pendingNpcNaming, null, 'năm 0 không có pendingNpcNaming');
+  assert.ok(char.logs.find((l) => l.id === 'log_birth_3').vi.includes(oldRandomName), 'Before first event, chronicle keeps random name');
+
+  // First event featuring the childhood friend arrives at age 5 -> now opens naming prompt
+  char.age = 5;
+  char.pendingMinor = {
+    id: 'm_test_childhood_friend',
+    vi: `Bạn và ${oldRandomName} chia nhau mẩu bánh mì nguội.`,
+    en: `You and ${char.npcs.friend.nameEn} split a cold piece of bread.`,
+    choices: [{ vi: `Cười với ${oldRandomName}`, en: `Smile at ${char.npcs.friend.nameEn}` }]
+  };
+  syncNpcNamingPrompt(char, { autoPlay: false, waitForBirthPrologue: true });
+  assert.ok(char.pendingNpcNaming, 'Should open pendingNpcNaming when childhood friend first appears in a post-birth event');
   assert.equal(char.pendingNpcNaming.role, 'friend');
 
-  // Apply custom name -> updates nameVi, nameEn, log_birth_3, and chapter loss card (116)
+  // Apply custom name -> updates nameVi, nameEn, log_birth_3, pendingMinor, and chapter loss card (116)
   char = applyNpcName(char, '  Hải Đăng  ');
   assert.equal(char.pendingNpcNaming, null);
   assert.equal(char.npcs.friend.nameVi, 'Hải Đăng');
   assert.equal(char.npcs.friend.nameEn, 'Hải Đăng');
   assert.equal(char.npcs.friend.needsNaming, false);
   assert.equal(char.npcs.friend.namedPrompted, true);
+  assert.ok(char.pendingMinor.vi.includes('Hải Đăng') && !char.pendingMinor.vi.includes(oldRandomName), 'Active pendingMinor should reflect custom name');
   const birthFriendLog = char.logs.find((l) => l.id === 'log_birth_3');
   assert.ok(birthFriendLog.vi.includes('Hải Đăng') && !birthFriendLog.vi.includes(oldRandomName), 'log_birth_3 should use custom name');
   assert.ok(birthFriendLog.en.includes('Hải Đăng'), 'log_birth_3 English should use custom name');

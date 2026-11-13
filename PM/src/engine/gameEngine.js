@@ -886,6 +886,7 @@ export function createNewCharacter({
       ? [...new Set([...(parentLegacy.bloodlineSeenEvents || []), ...(parentLegacy.seenEvents || [])])] // seenEvents: legacies saved before Đợt 151
       : [],
     seenEvents: [],
+    seenBulletins: [],
     recent: [],
     plan: [],
     planCursor: 0,

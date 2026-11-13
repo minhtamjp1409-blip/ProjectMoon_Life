@@ -1,9 +1,10 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { localizeEnsembleName } from '../../../data/ensembleNames.js';
-import { Dices, GitBranch, Play, ChevronDown, ArrowUpRight, Search, BookOpen, MapPin, Stamp, RotateCcw } from 'lucide-react';
+import { Dices, GitBranch, Play, ChevronDown, ArrowUpRight, Search, BookOpen, MapPin, Stamp, RotateCcw, X } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Modal } from 'antd';
 import { useGameStore } from '../../../store/gameStore';
+import { useThemeStore } from '../../../store/themeStore';
 import { freshSeed, createRNG, rollBirthRegion } from '../../../engine/gameEngine';
 import { REGIONS, CODEX_RECORDS } from '../../../data/worldData';
 import { FATE_OMENS } from '../../../engine/weaverAI';
@@ -37,6 +38,8 @@ const CAREERS = [
 export const BirthSetupPanel = () => {
   const { t, lang } = useT();
   const navigate = useNavigate();
+  const firstLifeGuideDismissed = useThemeStore((s) => s.firstLifeGuideDismissed);
+  const dismissFirstLifeGuide = useThemeStore((s) => s.dismissFirstLifeGuide);
   const customName = useGameStore((s) => s.customName);
   const gender = useGameStore((s) => s.gender === 'female' ? 'female' : 'male');
   const customSeed = useGameStore((s) => s.customSeed);
@@ -578,6 +581,27 @@ export const BirthSetupPanel = () => {
                 </details>
                 </details>
               </div>
+              {pastLives.length === 0 && !firstLifeGuideDismissed && (
+                <aside className="first-life-guide" aria-label={t('Hướng dẫn đời đầu', 'First-life guide')}>
+                  <div className="first-life-guide-head">
+                    <strong>{t('Cách chơi nhanh', 'How it plays')}</strong>
+                    <button
+                      type="button"
+                      className="first-life-guide-close"
+                      onClick={dismissFirstLifeGuide}
+                      aria-label={t('Đóng hướng dẫn', 'Close guide')}
+                    >
+                      <X size={16} aria-hidden="true" />
+                    </button>
+                  </div>
+                  <ol className="first-life-guide-list">
+                    <li>{t('1. Thời gian tự trôi, đổi tốc độ ở thanh trên.', '1. Time moves on its own; change speed in the top bar.')}</li>
+                    <li>{t('2. Sự kiện lớn dừng thời gian.', '2. Major events pause the clock.')}</li>
+                    <li>{t('3. Lựa chọn nhỏ chờ 15 giây rồi tự trôi qua.', '3. Minor choices wait 15 seconds, then slip by.')}</li>
+                    <li>{t('4. Phím 0 để bỏ qua, Space để tạm dừng.', '4. Press 0 to dismiss, Space to pause.')}</li>
+                  </ol>
+                </aside>
+              )}
               <button
                 className="btn btn-primary btn-lg btn-block hero-start-btn"
                 disabled={spinning}

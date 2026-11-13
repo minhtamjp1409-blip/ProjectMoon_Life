@@ -687,20 +687,29 @@
     filter: brightness(0.95);
   }
 
-  /* On a phone the card sits between the play bar and the bottom tabs; bottom padding reserves dedicated space for the peek toggle */
+  /* On a phone the topbar is merged into the play bar and bottom nav hides during active docks */
   .event-modal-backdrop {
     place-items: end center;
-    padding: calc(var(--top) + 20px) 10px calc(var(--bottom) + 12px);
+    padding: calc(env(safe-area-inset-top, 0px) + 58px) 10px calc(var(--bottom) + 12px);
   }
   .event-modal-backdrop > .dock {
     width: 100%;
-    max-height: calc(100dvh - var(--top) - 40px - var(--bottom));
+    max-height: calc(100dvh - env(safe-area-inset-top, 0px) - 72px - var(--bottom));
     border-radius: 14px 14px 4px 4px;
     border: 1px solid var(--dialog-border);
     border-top: 1px solid var(--accent);
     box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.75);
     overflow-y: auto;
     overscroll-behavior: contain;
+  }
+  .shell.has-dock .event-modal-backdrop {
+    padding-bottom: max(12px, env(safe-area-inset-bottom, 12px));
+  }
+  .shell.has-dock .event-modal-backdrop > .dock {
+    max-height: calc(100dvh - env(safe-area-inset-top, 0px) - 74px - env(safe-area-inset-bottom, 0px));
+  }
+  .shell.has-dock .event-peek-toggle {
+    bottom: max(12px, env(safe-area-inset-bottom, 12px));
   }
   .event-modal-backdrop > .dock::before {
     content: '';

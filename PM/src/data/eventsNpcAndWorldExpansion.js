@@ -30,7 +30,7 @@ export const EXPANSION_STORY_EVENTS = [
       {
         labelVi: 'Im lặng băng vết thương, ghi nhớ chuyện hôm nay',
         labelEn: 'Swallow your anger, bind your wounds in silence, and remember the threat',
-        resultVi: 'Bạn không nói gì, xé dải vải buộc chặt vết đạn ở bắp tay. Cả quãng đường về không ai mở miệng; từ hôm đó bạn luôn đi lệch nửa bước phía sau {partner}.',
+        resultVi: 'Bạn không nói gì, xé dải vải buộc chặt vết đạn ở bắp tay. Cả quãng đường về không ai mở miệng. Từ hôm đó bạn luôn đi lệch nửa bước phía sau {partner}.',
         resultEn: 'You uttered not a word, tearing a cloth strip to bind the bullet wound on your arm. The silence between you lingered the entire trek back. Trust died, replaced by vigilant wariness.',
         effects: { health: -10, sanity: -5 },
         bond: { partner: -8 },
@@ -72,7 +72,7 @@ export const EXPANSION_STORY_EVENTS = [
           },
           {
             w: 40,
-            resultVi: 'Hai bên giằng co trong ngõ hẹp; một nhát chém rạch ngang mạn sườn bạn trước khi {partner} giật lấy túi Ahn rồi lẩn vào khu chợ đêm.',
+            resultVi: 'Hai bên giằng co trong ngõ hẹp. Một nhát chém rạch ngang mạn sườn bạn trước khi {partner} giật lấy túi Ahn rồi lẩn vào khu chợ đêm.',
             resultEn: 'A brutal grapple ensued; a deep slash tore across your ribs before {partner} snatched the Ahn pouch and vanished into the Backstreet labyrinth.',
             effects: { health: -28, sanity: -18, wealth: -20, rep: -5 },
             scarsAdd: ['Vết sẹo phản bội từ đồng đội'],
@@ -92,7 +92,7 @@ export const EXPANSION_STORY_EVENTS = [
       {
         labelVi: 'Quẳng túi tiền công xuống đất để mở đường rút',
         labelEn: 'Toss the coin purse back to break out of the encirclement',
-        resultVi: 'Bạn ném túi Ahn về phía cuối ngõ; {partner} khựng lại nửa nhịp để nhặt tiền, vừa đủ cho bạn bật qua bờ tường thoát ra phố lớn.',
+        resultVi: 'Bạn ném túi Ahn về phía cuối ngõ. {partner} khựng lại nửa nhịp để nhặt tiền, vừa đủ cho bạn bật qua bờ tường thoát ra phố lớn.',
         resultEn: 'You flung the Ahn purse to the cobbles; {partner} hesitated a beat to grab it, giving you time to vault the wall and escape. The comrade you once trusted is now a sworn nemesis.',
         effects: { wealth: -30, sanity: -12, rep: -8 },
         npcFate: { partner: 'betrayer' },
@@ -115,7 +115,7 @@ export const EXPANSION_STORY_EVENTS = [
         labelVi: 'Rạch tay ăn thề, kết nghĩa cùng {partner}',
         labelEn: 'Cut palms and swear a blood oath of brotherhood with {partner}',
         lasting: {
-          vi: 'Kết nghĩa sinh tử với {partner}; giữ Bond bền vững và đồng hành qua các hợp đồng tới cuối đời',
+          vi: 'Kết nghĩa sinh tử với {partner}, giữ Bond bền vững và đồng hành qua các hợp đồng tới cuối đời',
           en: 'Swears a life-and-death pact with {partner}; anchors Bond and stands together across contracts'
         },
         resultVi: 'Hai bàn tay rỉ máu nắm chặt lấy nhau bên bàn rượu. Từ hôm đó, mỗi khi có hợp đồng khó, người kia luôn đến trước giờ hẹn mười lăm phút.',
@@ -303,7 +303,7 @@ export const EXPANSION_STORY_EVENTS = [
     need: { npc: 'nemesis' },
     forbids: ['nemesis_midnight_resolved'],
     tags: ['combat', 'danger', 'nemesis'],
-    vi: '[Ân oán lúc nửa đêm] Cửa sổ phòng trọ vỡ tung; {nemesis} dẫn hai tay đâm thuê nhảy vào giữa đêm mưa. Hắn khóa trái cửa chính lại, định giải quyết dứt điểm nợ cũ ngay trong phòng.',
+    vi: '[Ân oán lúc nửa đêm] Cửa sổ phòng trọ vỡ tung. {nemesis} dẫn hai tay đâm thuê nhảy vào giữa đêm mưa. Hắn khóa trái cửa chính lại, định giải quyết dứt điểm nợ cũ ngay trong phòng.',
     en: '[Midnight Reckoning] Your window shattered inward; {nemesis} broke through during a stormy midnight flanked by two hired cutthroats. Lightning lit the darkness, illuminating eyes frantic for a final settlement.',
     choices: [
       {
@@ -356,7 +356,7 @@ export const EXPANSION_STORY_EVENTS = [
       {
         labelVi: 'Trả 35 Ahn mua mũi huyết thanh tốt nhất cứu {spouse}',
         labelEn: 'Pay the full 35 Ahn for the best serum to save {spouse}',
-        resultVi: 'Sau mũi tiêm, cơn sốt của {spouse} hạ dần. Bạn ngồi bên giường đến khi nhịp thở đều lại; sáng ra, họ đủ sức gọi tên bạn.',
+        resultVi: 'Sau mũi tiêm, cơn sốt của {spouse} hạ dần. Bạn ngồi bên giường đến khi nhịp thở đều lại. Sáng ra, họ đủ sức gọi tên bạn.',
         resultEn: 'After the injection, {spouse}’s fever begins to fall. You sit beside the bed until their breathing steadies; by morning, they can call your name.',
         costAhn: 35,
         effects: { wealth: -35, sanity: +15 },
@@ -392,13 +392,13 @@ export const EXPANSION_STORY_EVENTS = [
         outcomes: [
           {
             w: 55,
-            resultVi: 'Bạn làm theo từng lời dặn, thay khăn và cho {spouse} uống nước suốt đêm. Đến sáng, cơn sốt bắt đầu hạ; người ấy nắm tay bạn trước khi ngủ tiếp.',
+            resultVi: 'Bạn làm theo từng lời dặn, thay khăn và cho {spouse} uống nước suốt đêm. Đến sáng, cơn sốt bắt đầu hạ. Người ấy nắm tay bạn trước khi ngủ tiếp.',
             resultEn: 'You follow the instructions, changing cloths and giving {spouse} water through the night. By morning the fever begins to fall; they hold your hand before sleeping again.',
             effects: { health: -6, sanity: -4 }, bond: { spouse: 8 }, flagsAdd: ['spouse_illness_resolved']
           },
           {
             w: 45,
-            resultVi: 'Cơn sốt kéo dài thêm hai ngày. {spouse} qua cơn nguy nhưng kiệt sức; bạn phải bỏ việc để ở lại chăm người ấy.',
+            resultVi: 'Cơn sốt kéo dài thêm hai ngày. {spouse} qua cơn nguy nhưng kiệt sức. Bạn phải bỏ việc để ở lại chăm người ấy.',
             resultEn: 'The fever lasts two more days. {spouse} survives but is exhausted; you miss work to stay and care for them.',
             effects: { health: -10, sanity: -10, wealth: -3 }, bond: { spouse: 3 }, flagsAdd: ['spouse_illness_resolved']
           }
@@ -572,7 +572,7 @@ export const EXPANSION_STORY_EVENTS = [
       {
         labelVi: 'Lao vào đánh gục tên đầu sỏ để khẳng định lãnh địa',
         labelEn: 'Tackle the ringleader to assert your alley territory',
-        resultVi: 'Bạn quật ngã tên cầm đầu xuống mái tôn rỉ, mặc cho hai bên sườn dính vài cú đập gậy. Đám nhóc hoảng sợ tháo lui; từ nay không đứa nào dám cản đường bạn.',
+        resultVi: 'Bạn quật ngã tên cầm đầu xuống mái tôn rỉ, mặc cho hai bên sườn dính vài cú đập gậy. Đám nhóc hoảng sợ tháo lui. Từ nay không đứa nào dám cản đường bạn.',
         resultEn: 'You slammed the ringleader hard against the iron sheets despite taking pipe bruises. The pack fled; none challenged your passage again.',
         effects: { health: -8, rep: +10, sanity: +5 },
         meritAdd: 5,
@@ -805,7 +805,7 @@ export const EXPANSION_STORY_EVENTS = [
         outcomes: [
           {
             w: 60,
-            resultVi: 'Đường kiếm trong cơn hấp hối đạt đến độ hoàn mỹ chết người. Mục tiêu bị hạ gục ngay tức khắc; bạn đổ gục xuống sàn nhưng nhiệm vụ bất khả thi đã hoàn thành.',
+            resultVi: 'Đường kiếm trong cơn hấp hối đạt đến độ hoàn mỹ chết người. Mục tiêu bị hạ gục ngay tức khắc. Bạn đổ gục xuống sàn nhưng nhiệm vụ bất khả thi đã hoàn thành.',
             resultEn: 'The desperate cut reached fatal perfection. The target fell in one breath; you collapsed onto the boards, impossible contract fulfilled.',
             effects: { health: -30, sanity: -10, rep: +35 },
             meritAdd: 35,
@@ -814,7 +814,7 @@ export const EXPANSION_STORY_EVENTS = [
           },
           {
             w: 40,
-            resultVi: 'Cơ thể quá mệt mỏi khiến đòn đánh chệch vài ly; bạn hạ được mục tiêu nhưng trúng đạn trả đũa vào đùi.',
+            resultVi: 'Cơ thể quá mệt mỏi khiến đòn đánh chệch vài ly. Bạn hạ được mục tiêu nhưng trúng đạn trả đũa vào đùi.',
             resultEn: 'Overwhelming fatigue drifted the slash by millimeters; you took down the target but caught return fire through the thigh.',
             effects: { health: -42, sanity: -18, rep: +20 },
             meritAdd: 20,
@@ -932,7 +932,7 @@ export const EXPANSION_STORY_EVENTS = [
           },
           {
             w: 40,
-            resultVi: 'Đường kiếm đối phương quá biến ảo; bạn bị đâm trúng bắp tay nhưng kịp đánh văng kiếm của họ, trận đấu kết thúc hòa trong danh dự.',
+            resultVi: 'Đường kiếm đối phương quá biến ảo. Bạn bị đâm trúng bắp tay nhưng kịp đánh văng kiếm của họ, trận đấu kết thúc hòa trong danh dự.',
             resultEn: 'Their thrust was blindingly deceptive; your arm caught a puncture but disarmed them in response, drawing a duel of honor.',
             effects: { health: -14, sanity: +5, rep: +15 },
             meritAdd: 18,
@@ -973,7 +973,7 @@ export const EXPANSION_STORY_EVENTS = [
       {
         labelVi: 'Dùng mưu gài chất nổ phong tỏa lối thoát của giáo phái',
         labelEn: 'Rig charges across exits to trap the sect within the vaults',
-        resultVi: 'Vụ nổ chôn vùi giáo phái; bạn thu lại cuốn sách từ đống đổ nát và nhận đủ tiền công thưởng nóng từ Dieci.',
+        resultVi: 'Vụ nổ chôn vùi giáo phái. Bạn thu lại cuốn sách từ đống đổ nát và nhận đủ tiền công thưởng nóng từ Dieci.',
         resultEn: 'The blast sealed the cult; you retrieved the text from the rubble and collected the full Dieci commission bonus.',
         effects: { wealth: +30, rep: +18 },
         meritAdd: 22,
@@ -1135,7 +1135,7 @@ export const EXPANSION_STORY_EVENTS = [
       {
         labelVi: 'Dẫn đầu huynh đệ đập nát sào huyệt lũ cướp bằng xích sắt',
         labelEn: 'Lead brothers to pulverize the hideout with iron chains',
-        resultVi: "Xích sắt gầm trong ngõ hẹp; không tên nào ra khỏi đó lành lặn. Tên chúng bị gạch bằng mực đỏ trong sổ.",
+        resultVi: "Xích sắt gầm trong ngõ hẹp. Không tên nào ra khỏi đó lành lặn. Tên chúng bị gạch bằng mực đỏ trong sổ.",
         resultEn: "Chains roar through the narrow alley; none leave it whole. Their names are struck out in red ink in the book.",
         effects: { health: -14, sanity: +12, rep: +25 },
         meritAdd: 28,
@@ -1239,7 +1239,7 @@ export const EXPANSION_STORY_EVENTS = [
           },
           {
             w: 35,
-            resultVi: 'Bạn hạ được mục tiêu nhưng trúng đạn vào bả vai; huynh đệ kịp lao vào yểm trợ đưa bạn về trạm xá.',
+            resultVi: 'Bạn hạ được mục tiêu nhưng trúng đạn vào bả vai. Huynh đệ kịp lao vào yểm trợ đưa bạn về trạm xá.',
             resultEn: 'You felled the target but took a round to the shoulder; comrades swarmed in to drag you to the field medic.',
             effects: { health: -30, rep: +18, wealth: +15 },
             meritAdd: 18,
@@ -1278,7 +1278,7 @@ export const EXPANSION_STORY_EVENTS = [
         outcomes: [
           {
             w: 60,
-            resultVi: 'Vụ nổ hoàn hảo; bạn khống chế đội bảo vệ và mang về thùng hàng nguyên vẹn. Cấp trên thưởng nóng cho bạn một khoản tiền kếch xù.',
+            resultVi: 'Vụ nổ hoàn hảo. Bạn khống chế đội bảo vệ và mang về thùng hàng nguyên vẹn. Cấp trên thưởng nóng cho bạn một khoản tiền kếch xù.',
             resultEn: 'A textbook ambush; you subdued the guards and hauled the intact crate away. Superiors rewarded you with an immense cut.',
             effects: { wealth: +50, rep: +25, heat: +30 },
             meritAdd: 35,
@@ -1358,7 +1358,7 @@ export const EXPANSION_STORY_EVENTS = [
         outcomes: [
           {
             w: 60,
-            resultVi: 'Không gian méo mó như bóp nghẹt lồng ngực bạn, nhưng bạn đã vặn chặt van khóa. Thảm họa được ngăn chặn; Wing thăng chức đặc cách cho bạn.',
+            resultVi: 'Không gian méo mó như bóp nghẹt lồng ngực bạn, nhưng bạn đã vặn chặt van khóa. Thảm họa được ngăn chặn. Wing thăng chức đặc cách cho bạn.',
             resultEn: 'Warped space crushed your chest like a vice, but you seated the valve. Disaster was averted; the Wing granted an expedited promotion credit.',
             effects: { health: -18, sanity: -10, rep: +30 },
             meritAdd: 35,
@@ -1366,7 +1366,7 @@ export const EXPANSION_STORY_EVENTS = [
           },
           {
             w: 40,
-            resultVi: 'Một luồng năng lượng rò rỉ làm biến dạng bàn tay trái của bạn trước khi van đóng; bạn được đưa vào phòng hồi sức khẩn cấp.',
+            resultVi: 'Một luồng năng lượng rò rỉ làm biến dạng bàn tay trái của bạn trước khi van đóng. Bạn được đưa vào phòng hồi sức khẩn cấp.',
             resultEn: 'A stray energy pulse altered your left hand before the valve locked; you were rushed to emergency trauma stasis.',
             effects: { health: -35, sanity: -20, rep: +20 },
             meritAdd: 22,
@@ -1378,7 +1378,7 @@ export const EXPANSION_STORY_EVENTS = [
       {
         labelVi: 'Kích hoạt tường chắn cách ly tầng, cô lập khu vực gặp sự cố',
         labelEn: 'Engage blast bulkhead seals, isolating the ruptured floor',
-        resultVi: 'Khu vực bị phong tỏa; vài nhân viên bên trong bị mắc kẹt nhưng cơ sở nghiên cứu chính được bảo vệ trọn vẹn.',
+        resultVi: 'Khu vực bị phong tỏa. Vài nhân viên bên trong bị mắc kẹt nhưng cơ sở nghiên cứu chính được bảo vệ trọn vẹn.',
         resultEn: 'The wing sealed shut; several workers remained trapped within, but the main research complex held completely intact.',
         effects: { sanity: -12, rep: +15 },
         meritAdd: 18,
@@ -1440,7 +1440,7 @@ export const EXPANSION_STORY_EVENTS = [
       {
         labelVi: 'Đề xuất cải thiện điều kiện làm việc để nâng cao năng suất tự nhiên',
         labelEn: 'Advocate improving workstation ergonomics for organic output',
-        resultVi: 'Hội đồng im lặng một thoáng; kế hoạch được duyệt phần nhiều nhờ làm được thật, còn đám nhân viên cấp dưới tôn bạn như vị cứu tinh.',
+        resultVi: 'Hội đồng im lặng một thoáng. Kế hoạch được duyệt phần nhiều nhờ làm được thật, còn đám nhân viên cấp dưới tôn bạn như vị cứu tinh.',
         resultEn: 'The board fell silent; the initiative passed in part for practical yield, winning you deep loyalty from frontline staff.',
         effects: { sanity: +15, rep: +18, network: +20 },
         meritAdd: 22,
@@ -1541,7 +1541,7 @@ export const EXPANSION_STORY_EVENTS = [
       {
         labelVi: 'Nhét vải bịt tai, xông vào đập vỡ cây vĩ cầm cứu đám đông',
         labelEn: 'Plug ears with cloth and rush forward to shatter the fiddle',
-        resultVi: 'Cây đàn vỡ đôi, bản nhạc dứt bặt. Đám đông ngã quỵ thở dốc; nhiều người cảm kích trao tặng bạn đồ vật có giá trị.',
+        resultVi: 'Cây đàn vỡ đôi, bản nhạc dứt bặt. Đám đông ngã quỵ thở dốc. Nhiều người cảm kích trao tặng bạn đồ vật có giá trị.',
         resultEn: 'The instrument splintered and silence returned. The crowd collapsed gasping; several gifted you valuables in tearful relief.',
         effects: { health: -8, sanity: -4, rep: +20, wealth: +15 },
         flagsAdd: ['d9_frenzy_witnessed']
@@ -1578,7 +1578,7 @@ export const EXPANSION_STORY_EVENTS = [
           },
           {
             w: 35,
-            resultVi: 'Một thanh xà văng trúng đùi bạn trong khi kéo người bị nạn ra; bạn cứu được người nhưng phải chống gậy một tháng.',
+            resultVi: 'Một thanh xà văng trúng đùi bạn trong khi kéo người bị nạn ra. Bạn cứu được người nhưng phải chống gậy một tháng.',
             resultEn: 'A shifting girder struck your thigh while hauling a victim; you saved lives but leaned on a crutch for a month.',
             effects: { health: -28, rep: +18 },
             scarsAdd: ['Chấn thương ụ tàu'],
@@ -1655,7 +1655,7 @@ export const EXPANSION_STORY_EVENTS = [
           },
           {
             w: 40,
-            resultVi: 'Bạn phá được vòng vây nhưng bị bắn trúng nhiều phát đạn kim loại nặng; bạn phải lặn sâu xuống lòng đất để tự chữa lành.',
+            resultVi: 'Bạn phá được vòng vây nhưng bị bắn trúng nhiều phát đạn kim loại nặng. Bạn phải lặn sâu xuống lòng đất để tự chữa lành.',
             resultEn: 'You breached the perimeter but took heavy ordnance slugs; you burrowed deep beneath bedrock to regenerate.',
             effects: { health: -40, sanity: -20, resonance: +20 },
             scarsAdd: ['Vết đạn săn đuổi Distortion'],
@@ -1849,7 +1849,7 @@ export const EXPANSION_FIXER_REQUESTS = [
     typeEn: 'Cull mutant hound packs in District 12 scrap yards',
     vi: 'Bầy chó hoang ăn phải chất thải sinh học của Wing đã biến đổi hung dữ, cắn chết ba phu nhặt rác.',
     en: 'Feral hounds fed on Wing bio-slurry mutated into violent predators, killing three scavengers.',
-    okVi: 'Bạn hạ gục con đầu đàn; bầy chó hoảng sợ chạy tán loạn vào đường cống.',
+    okVi: 'Bạn hạ gục con đầu đàn. Bầy chó hoảng sợ chạy tán loạn vào đường cống.',
     okEn: 'You dropped the pack alpha; the remaining hounds scattered into the culverts.',
     failVi: 'Một con chó cắn rách bắp chân bạn trước khi bạn kịp dùng gậy sắt đánh lui nó.',
     failEn: 'A hound tore open your calf before you drove it back with an iron bar.',
@@ -1861,11 +1861,11 @@ export const EXPANSION_FIXER_REQUESTS = [
     tier: 1,
     typeVi: 'Cứu hộ tài liệu trong khu nhà trọ cháy ở District 8',
     typeEn: 'Extract records from a blazing tenement in District 8',
-    vi: 'Căn nhà trọ bốn tầng bốc cháy dữ dội do chập điện; một kế toán thuê bạn vào lấy chiếc hòm sắt.',
+    vi: 'Căn nhà trọ bốn tầng bốc cháy dữ dội do chập điện. Một kế toán thuê bạn vào lấy chiếc hòm sắt.',
     en: 'A four-story tenement blazed from faulty wiring; an accountant hired you to retrieve an iron lockbox.',
     okVi: 'Bạn bịt khăn ướt xông vào biển lửa, mang chiếc hòm ra an toàn trước khi trần nhà sập.',
     okEn: 'With wet rags across your mouth you braved the flames, hauling the lockbox out before ceilings collapsed.',
-    failVi: 'Khói độc làm bạn ngạt thở ngất xỉu; lính cứu hỏa phải lôi bạn ra ngoài.',
+    failVi: 'Khói độc làm bạn ngạt thở ngất xỉu. Lính cứu hỏa phải lôi bạn ra ngoài.',
     failEn: 'Toxic smoke choked your lungs unconscious; firefighters dragged you out.',
     deathVi: 'Dầm nhà rực lửa sập xuống chặn lối thoát duy nhất.',
     deathEn: 'Flaming rafters collapsed across the sole fire escape.'
@@ -1879,7 +1879,7 @@ export const EXPANSION_FIXER_REQUESTS = [
     en: 'A gambler owing tens of thousands in Ahn needed safe escort past checkpoints before collectors circled.',
     okVi: 'Bạn luồn lách qua các ngõ tối, đưa thân chủ lên xe lửa an toàn và nhận đủ tiền công.',
     okEn: 'You slipped through dark alleys, seating the client aboard the outbound train and pocketing clean fees.',
-    failVi: 'Toán đòi nợ chặn đầu xe; bạn phải bỏ rơi thân chủ để giữ lại mạng mình.',
+    failVi: 'Toán đòi nợ chặn đầu xe. Bạn phải bỏ rơi thân chủ để giữ lại mạng mình.',
     failEn: 'Enforcers blocked the alley; you had to abandon the client to preserve your own neck.',
     deathVi: 'Lưỡi dao của tay đòi nợ găm sâu vào ngực bạn từ phía sau.',
     deathEn: 'A collector’s stiletto caught your spine from behind.'
@@ -1893,7 +1893,7 @@ export const EXPANSION_FIXER_REQUESTS = [
     en: 'Toxic runoff threatened to poison residential water mains across the lower district.',
     okVi: 'Chống chọi với hơi độc nồng nặc, bạn xoay chặt van khóa bằng cờ lê nặng mười cân.',
     okEn: 'Braving searing fumes, you torqued the rusted valve shut with a ten-kilo iron wrench.',
-    failVi: 'Hơi axit ăn mòn mặt nạ phòng độc; bạn phải bò lên mặt đất với hai lá phổi bỏng rát.',
+    failVi: 'Hơi axit ăn mòn mặt nạ phòng độc. Bạn phải bò lên mặt đất với hai lá phổi bỏng rát.',
     failEn: 'Acid fumes melted your respirator seal; you crawled to the surface coughing blood.',
     deathVi: 'Bạn ngã vào bể chứa chất thải không đáy.',
     deathEn: 'You slipped into the bottomless chemical vat.'
@@ -1903,11 +1903,11 @@ export const EXPANSION_FIXER_REQUESTS = [
     tier: 3,
     typeVi: 'Bảo vệ cửa hàng đồ cổ trước sự tống tiền của Kurokumo Clan',
     typeEn: 'Defend an antiquities shop from Kurokumo extortion',
-    vi: 'Kurokumo Clan yêu cầu nộp nửa doanh thu tháng; chủ tiệm thuê bạn rút vũ khí giữ cửa.',
+    vi: 'Kurokumo Clan yêu cầu nộp nửa doanh thu tháng. Chủ tiệm thuê bạn rút vũ khí giữ cửa.',
     en: 'The Kurokumo Clan demanded half the month’s takings; the shopkeeper hired steel to hold the threshold.',
-    okVi: 'Lưỡi kiếm của bạn chém gãy đoản đao của kẻ dẫn đầu; toán Kurokumo thu quân trong im lặng.',
+    okVi: 'Lưỡi kiếm của bạn chém gãy đoản đao của kẻ dẫn đầu. Toán Kurokumo thu quân trong im lặng.',
     okEn: 'Your blade snapped the point-man’s wakizashi; the Kurokumo squad withdrew in silence.',
-    failVi: 'Một đường chém hình chữ thập mở toạc ngực áo bạn; bạn gục xuống nhìn cửa tiệm bị cướp phá.',
+    failVi: 'Một đường chém hình chữ thập mở toạc ngực áo bạn. Bạn gục xuống nhìn cửa tiệm bị cướp phá.',
     failEn: 'A cross-slash opened your coat and chest; you slumped watching the parlor ransacked.',
     deathVi: 'Mũi kiếm đen của Kurokumo đâm xuyên qua cuống họng.',
     deathEn: 'A black Kurokumo katana drove straight through your throat.'
@@ -1935,7 +1935,7 @@ export const EXPANSION_FIXER_REQUESTS = [
     en: 'A bizarre entity resembling a colossal bronze bell radiated psychic waves that pulverized brain tissue.',
     okVi: 'Bạn dùng búa tạ Workshop đập nứt vành chuông, phong ấn thực thể vào buồng chứa di động.',
     okEn: 'You shattered the bell lip with a heavy Workshop maul, locking the entity into stasis.',
-    failVi: 'Sóng âm làm vỡ màng nhĩ bạn; bạn ngã quỵ thổ huyết và được đồng đội kéo đi.',
+    failVi: 'Sóng âm làm vỡ màng nhĩ bạn. Bạn ngã quỵ thổ huyết và được đồng đội kéo đi.',
     failEn: 'Resonant waves ruptured your eardrums; you collapsed vomiting blood as teammates pulled you out.',
     deathVi: 'Tiếng chuêng ngân vang biến tâm trí bạn thành đống bùn nhão.',
     deathEn: 'The bell’s tolling melted your thoughts into liquid gray matter.'
@@ -1947,9 +1947,9 @@ export const EXPANSION_FIXER_REQUESTS = [
     typeEn: 'Defend a tenement through the Night in the Backstreets (Urban Nightmare)',
     vi: 'Cửa thép kiên cố của khu chung cư 500 hộ bị hỏng chốt khóa đúng vào lúc 3 giờ 13 sáng.',
     en: 'The reinforced blast gates of a 500-tenant block jammed open at exactly 3:13 A.M.',
-    okVi: 'Tám mươi phút đẫm máu với bầy Sweeper; khi còi báo sáng vang lên, bạn vẫn đứng vững trên bậc thềm.',
+    okVi: 'Tám mươi phút đẫm máu với bầy Sweeper. Khi còi báo sáng vang lên, bạn vẫn đứng vững trên bậc thềm.',
     okEn: 'Eighty bloody minutes against Sweeper packs; when dawn sirens blew, you still held the steps.',
-    failVi: 'Hàng rào sụp đổ ở phút 65; bạn phải rút lên tầng áp mái cùng vài người sống sót.',
+    failVi: 'Hàng rào sụp đổ ở phút 65. Bạn phải rút lên tầng áp mái cùng vài người sống sót.',
     failEn: 'Barricades gave way at minute sixty-five; you fell back to attics with a handful of survivors.',
     deathVi: 'Dịch lỏng phân hủy của bầy Sweeper nuốt chửng bạn.',
     deathEn: 'Sweeper dissolved sludge consumed you entirely.'
@@ -1963,7 +1963,7 @@ export const EXPANSION_FIXER_REQUESTS = [
     en: 'A former opera diva distorted into a sonic monstrosity turning audiences into bleeding wax statues.',
     okVi: 'Bạn đâm lưỡi kiếm E.G.O xuyên qua thanh quản của nó, kết thúc khúc ca kinh hoàng của thành phố.',
     okEn: 'You drove an E.G.O blade through its larynx, ending the City’s ghastly aria forever.',
-    failVi: 'Âm thanh xé toạc các mạch máu dưới da bạn; bạn sống sót nhưng mất vĩnh viễn giọng nói.',
+    failVi: 'Âm thanh xé toạc các mạch máu dưới da bạn. Bạn sống sót nhưng mất vĩnh viễn giọng nói.',
     failEn: 'The aria ruptured blood vessels beneath your skin; you lived, but your voice was lost forever.',
     deathVi: 'Nó biến bạn thành bức tượng sáp thứ một trăm lẻ một.',
     deathEn: 'It molded your bones into its hundred-and-first wax statue.'
@@ -1977,7 +1977,7 @@ export const EXPANSION_FIXER_REQUESTS = [
     en: 'A Color Fixer required vanguard operatives to silence defense batteries before the decisive duel.',
     okVi: 'Bạn phá tan ba khẩu pháo hạng nặng, mở toang lối vào cho Color Fixer kết liễu trận chiến.',
     okEn: 'You dismantled three fortress cannons, clearing the breach for the Color Fixer to end the battle.',
-    failVi: 'Một luồng đạn pháo hất văng bạn vào tường đá; xương sườn gãy đâm thấu phổi.',
+    failVi: 'Một luồng đạn pháo hất văng bạn vào tường đá. Xương sườn gãy đâm thấu phổi.',
     failEn: 'Artillery back-blast slammed you into stone walls, broken ribs puncturing a lung.',
     deathVi: 'Bạn bốc hơi trong phát bắn trực diện của đại pháo.',
     deathEn: 'You vaporized under a direct fortress cannon blast.'
@@ -1991,7 +1991,7 @@ export const EXPANSION_FIXER_REQUESTS = [
     en: 'A detached rail car displaced in dimensional space needed recovery divers before inspectors arrived.',
     okVi: 'Bạn giữ vững lý trí giữa hàng ngàn xác thịt biến dạng, mang chiếc hộp đen ra ngoài nguyên vẹn.',
     okEn: 'You held sanity intact amid a sea of writhing flesh, extracting the black box undamaged.',
-    failVi: 'Cảnh tượng bên trong toa tàu làm vỡ vụn tâm trí bạn; bạn gào thét mất trí suốt ba ngày.',
+    failVi: 'Cảnh tượng bên trong toa tàu làm vỡ vụn tâm trí bạn. Bạn gào thét mất trí suốt ba ngày.',
     failEn: 'The sight within fractured your sanity; you screamed in delirium for three days straight.',
     deathVi: 'Khối thịt trên toa tàu vươn tay kéo bạn vào cơ thể vô tận của nó.',
     deathEn: 'The undulating mass within reached out and pulled you into its flesh.'
@@ -2001,11 +2001,11 @@ export const EXPANSION_FIXER_REQUESTS = [
     tier: 5,
     typeVi: 'Săn bắt Thủy Quái trên Đại Hồ District 21',
     typeEn: 'Subjugate a Great Lake Leviathan in District 21',
-    vi: 'Một con quái vật biển sâu trồi lên nuốt chửng ba tàu buôn bọc thép; U Corp treo thưởng kỷ lục.',
+    vi: 'Một con quái vật biển sâu trồi lên nuốt chửng ba tàu buôn bọc thép. U Corp treo thưởng kỷ lục.',
     en: 'A deep-sea abomination surfaced, swallowing three ironclads; U Corp posted a historic bounty.',
     okVi: 'Bạn phóng lao xuyên qua mắt quái vật, cùng hạm đội kéo xác nó về cảng trong tiếng reo hò rền trời.',
     okEn: 'You drove a harpoon through its central eye, hauling the carcass port-side to roaring cheers.',
-    failVi: 'Cơn sóng thần do quái vật quẫy đuôi nhấn chìm tàu bạn; bạn bám vào mảnh gỗ trôi dạt ba ngày.',
+    failVi: 'Cơn sóng thần do quái vật quẫy đuôi nhấn chìm tàu bạn. Bạn bám vào mảnh gỗ trôi dạt ba ngày.',
     failEn: 'A tail-whipped tsunami capsized your boat; you drifted three days clinging to timber.',
     deathVi: 'Hàm răng khổng lồ của nó nghiền nát bạn cùng chiếc thuyền.',
     deathEn: 'Colossal jaws crushed you and your vessel into kindling.'

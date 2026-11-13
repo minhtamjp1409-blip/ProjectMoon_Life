@@ -31,6 +31,83 @@ export function replaceWholeName(text, oldName, newName) {
   return text.replace(pattern, newName);
 }
 
+function containsWholeName(text, name) {
+  if (typeof text !== 'string' || !text || !name) return false;
+  if (!text.includes(name)) return false;
+  const pattern = new RegExp(`(?<![\\p{L}\\p{N}_])${escapeRegExp(name)}(?![\\p{L}\\p{N}_])`, 'u');
+  return pattern.test(text);
+}
+
+function pendingItemMentionsNpc(item, role, nameVi, nameEn) {
+  if (!item) return false;
+  if (item.need?.npc === role || item.keepRole === role || item.role === role) return true;
+  const texts = [
+    item.titleVi, item.titleEn, item.displayVi, item.displayEn,
+    item.vi, item.en,
+    ...(Array.isArray(item.choices)
+      ? item.choices.flatMap((c) => [c?.labelVi, c?.labelEn, c?.vi, c?.en])
+      : [])
+  ];
+  return texts.some((text) => containsWholeName(text, nameVi) || containsWholeName(text, nameEn));
+}
+
+function childhoodFriendHasAppeared(char, npc) {
+  if (!char || !npc || (char.age ?? 0) <= 0) return false;
+  const nameVi = npc.nameVi || '';
+  const nameEn = npc.nameEn || nameVi;
+  if (
+    pendingItemMentionsNpc(char.pendingEvent, 'friend', nameVi, nameEn) ||
+    pendingItemMentionsNpc(char.pendingMinor, 'friend', nameVi, nameEn) ||
+    pendingItemMentionsNpc(char.pendingContract, 'friend', nameVi, nameEn)
+  ) {
+    return true;
+  }
+  const minAge = Math.max(1, (npc.metAge ?? 0) + 1);
+  return (char.logs || []).some((entry) => {
+    if (!entry) return false;
+    if (String(entry.id || '').startsWith('log_birth')) return false;
+    if ((entry.age ?? 0) < minAge) return false;
+    return (
+      containsWholeName(entry.vi, nameVi) ||
+      containsWholeName(entry.en, nameEn) ||
+      (Array.isArray(entry.deltas) && entry.deltas.some((d) => d?.role === 'friend'))
+    );
+  });
+}
+
+function replacePendingNpcName(item, oldVi, oldEn, newVi, newEn) {
+  if (!item) return item;
+  const next = { ...item };
+  for (const field of ['titleVi', 'displayVi', 'vi']) {
+    if (oldVi && typeof next[field] === 'string' && next[field].includes(oldVi)) {
+      next[field] = replaceWholeName(next[field], oldVi, newVi);
+    }
+  }
+  for (const field of ['titleEn', 'displayEn', 'en']) {
+    if (oldEn && typeof next[field] === 'string' && next[field].includes(oldEn)) {
+      next[field] = replaceWholeName(next[field], oldEn, newEn);
+    }
+  }
+  if (Array.isArray(next.choices)) {
+    next.choices = next.choices.map((c) => {
+      if (!c) return c;
+      const updated = { ...c };
+      for (const f of ['labelVi', 'vi']) {
+        if (oldVi && typeof updated[f] === 'string' && updated[f].includes(oldVi)) {
+          updated[f] = replaceWholeName(updated[f], oldVi, newVi);
+        }
+      }
+      for (const f of ['labelEn', 'en']) {
+        if (oldEn && typeof updated[f] === 'string' && updated[f].includes(oldEn)) {
+          updated[f] = replaceWholeName(updated[f], oldEn, newEn);
+        }
+      }
+      return updated;
+    });
+  }
+  return next;
+}
+
 export function getNpcNamingPrompt(role, char) {
   if (role === 'friend') {
     const isChildhood = (char?.age ?? 0) < 15 && (char?.npcs?.friend?.metAge ?? 0) < 15;
@@ -88,7 +165,8 @@ export function syncNpcNamingPrompt(char, { autoPlay = false, waitForBirthProlog
   if (char.pendingNpcNaming) {
     const currentRole = char.pendingNpcNaming.role;
     const currentNpc = char.npcs?.[currentRole];
-    if (currentNpc && npcIsActive(currentNpc) && currentNpc.needsNaming && !currentNpc.namedPrompted) {
+    const ready = currentRole !== 'friend' || (currentNpc?.metAge ?? 0) > 0 || childhoodFriendHasAppeared(char, currentNpc);
+    if (currentNpc && npcIsActive(currentNpc) && currentNpc.needsNaming && !currentNpc.namedPrompted && ready) {
       return char;
     }
     char.pendingNpcNaming = null;
@@ -103,6 +181,10 @@ export function syncNpcNamingPrompt(char, { autoPlay = false, waitForBirthProlog
     if (!npc || !npcIsActive(npc)) continue;
     // Old saves do not carry `needsNaming: true`, so they are never prompted again
     if (!npc.needsNaming || npc.namedPrompted) continue;
+    // Childhood friend met at birth waits until first post-birth event/log featuring them
+    if (role === 'friend' && (npc.metAge ?? 0) === 0 && !childhoodFriendHasAppeared(char, npc)) {
+      continue;
+    }
     const prompt = getNpcNamingPrompt(role, char);
     char.pendingNpcNaming = {
       role,
@@ -213,6 +295,9 @@ export function applyNpcName(char, rawInput = '', roleOverride = null) {
         nameEn: finalEn
       };
     }
+    if (char.pendingEvent) char.pendingEvent = replacePendingNpcName(char.pendingEvent, oldVi, oldEn, finalVi, finalEn);
+    if (char.pendingMinor) char.pendingMinor = replacePendingNpcName(char.pendingMinor, oldVi, oldEn, finalVi, finalEn);
+    if (char.pendingContract) char.pendingContract = replacePendingNpcName(char.pendingContract, oldVi, oldEn, finalVi, finalEn);
   }
 
   char.pendingNpcNaming = null;

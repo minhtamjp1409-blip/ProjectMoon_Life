@@ -1,11 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Tooltip, Modal, Dropdown } from 'antd';
-import { Play, Pause, SkipForward, Bot, RotateCcw, Save, Check, AlertTriangle, Volume2, VolumeX, MoreHorizontal, ShoppingBag, Sparkles } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Play, Pause, SkipForward, Bot, RotateCcw, Save, Check, AlertTriangle, Volume2, VolumeX, MoreHorizontal, ShoppingBag, Sparkles, Languages, Settings2 } from 'lucide-react';
 import { useShallow } from 'zustand/react/shallow';
 import { useGameStore, canSkimSpeed, getEffectiveSpeed } from '../../../store/gameStore';
+import { useThemeStore } from '../../../store/themeStore';
 import { SEASONS, DUNGEON_DEFINITIONS } from '../../../engine/gameEngine';
 import { gauntletRoute } from '../../../engine/dungeonCombat';
 import { WorkshopDepotModal } from './WorkshopDepotModal';
+import { BrandMark, LANG_OPTIONS } from '../../../layouts/Sidebar';
+import { SettingsModal } from '../../../components/SettingsModal';
 import { nextPlanItem } from '../../../engine/yearPlanner';
 import { DRAMA_PHASES } from '../../../engine/weaverAI';
 import { audioEngine } from '../../../engine/audioEngine';
@@ -130,10 +134,14 @@ const YearStatus = () => {
 };
 
 export const PlayBar = () => {
+  const navigate = useNavigate();
   const [shopOpen, setShopOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const { t, lang } = useT();
+  const setLang = useThemeStore((s) => s.setLang);
+  const activeLang = LANG_OPTIONS.find((o) => o.key === lang) || LANG_OPTIONS[0];
   const char = useGameStore((s) => s.char);
-  const { age, seasonIdx, yearProgress, dramaPhase, alive, waiting, speed, preSkimSpeed, skimOn, autoPlay, setSpeed, toggleAutoPlay, stepYear, skipQuietTime, abandonRun, saveRun, lastSavedAt, saveError } =
+  const { age, seasonIdx, yearProgress, dramaPhase, alive, waiting, speed, preSkimSpeed, skimOn, autoPlay, setSpeed, toggleAutoPlay, stepYear, skipQuietTime, exitToSetup, abandonRun, saveRun, lastSavedAt, saveError } =
     useGameStore(
       useShallow((s) => ({
         age: s.char.age,
@@ -150,6 +158,7 @@ export const PlayBar = () => {
         toggleAutoPlay: s.toggleAutoPlay,
         stepYear: s.stepYear,
         skipQuietTime: s.skipQuietTime,
+        exitToSetup: s.exitToSetup,
         abandonRun: s.abandonRun,
         saveRun: s.saveRun,
         lastSavedAt: s.lastSavedAt,
@@ -292,11 +301,33 @@ export const PlayBar = () => {
         onClick: handleToggleAutoPlay
       },
       {
+        key: 'mute_all',
+        icon: audioState.isMuted ? <VolumeX size={16} /> : <Volume2 size={16} />,
+        label: audioState.isMuted ? t('Bật âm thanh', 'Sound on') : t('Tắt âm thanh', 'Sound off'),
+        onClick: handleToggleAudio
+      },
+      {
         key: 'ambience',
         icon: audioState.isAmbienceMuted ? <VolumeX size={16} /> : <Volume2 size={16} />,
         label: audioState.isAmbienceMuted ? t('Bật tiếng nền thế giới', 'Enable world ambience') : t('Tắt tiếng nền thế giới', 'Mute world ambience'),
         disabled: audioState.isMuted,
         onClick: handleToggleAmbience
+      },
+      {
+        key: 'lang_group',
+        icon: <Languages size={16} />,
+        label: `${t('Ngôn ngữ', 'Language')}: ${activeLang.short}`,
+        children: LANG_OPTIONS.map((o) => ({
+          key: `lang_${o.key}`,
+          label: o.label,
+          onClick: () => setLang(o.key)
+        }))
+      },
+      {
+        key: 'settings',
+        icon: <Settings2 size={16} />,
+        label: t('Cài đặt hiển thị & âm thanh', 'Display & audio settings'),
+        onClick: () => setSettingsOpen(true)
       },
       {
         key: 'save',
@@ -305,7 +336,25 @@ export const PlayBar = () => {
         onClick: () => saveRun(true)
       },
       { type: 'divider' }
-    ] : []),
+    ] : [
+      {
+        key: 'lang_group',
+        icon: <Languages size={16} />,
+        label: `${t('Ngôn ngữ', 'Language')}: ${activeLang.short}`,
+        children: LANG_OPTIONS.map((o) => ({
+          key: `lang_${o.key}`,
+          label: o.label,
+          onClick: () => setLang(o.key)
+        }))
+      },
+      {
+        key: 'settings',
+        icon: <Settings2 size={16} />,
+        label: t('Cài đặt hiển thị & âm thanh', 'Display & audio settings'),
+        onClick: () => setSettingsOpen(true)
+      },
+      { type: 'divider' }
+    ]),
     {
       key: 'restart',
       danger: alive,
@@ -353,9 +402,22 @@ export const PlayBar = () => {
 
   return (
     <div className={`playbar ${!alive ? 'is-ended' : ''}`}>
-      <div className="playbar-age">
-        <b>{age}</b>
-        <span>{`${t('tuổi', 'yrs')} · ${t(season?.vi, season?.en)}`}</span>
+      <div className="playbar-head-id">
+        <button
+          type="button"
+          className="playbar-brand-mobile"
+          onClick={() => {
+            exitToSetup();
+            navigate('/');
+          }}
+          aria-label={t('Về màn hình chính (đã lưu)', 'Back to the title screen (saved)')}
+        >
+          <BrandMark size={24} />
+        </button>
+        <div className="playbar-age">
+          <b>{age}</b>
+          <span>{`${t('tuổi', 'yrs')} · ${t(season?.vi, season?.en)}`}</span>
+        </div>
       </div>
 
       <div className="yearbar" aria-label={t('Tiến độ năm', 'Year progress')}>
@@ -494,7 +556,7 @@ export const PlayBar = () => {
             </button>
 
             <div className="playbar-mobile-more">
-              <Dropdown menu={{ items: menuItems }} placement="bottomRight" trigger={['click']} overlayClassName="playbar-more-menu">
+              <Dropdown menu={{ items: menuItems }} placement="bottomRight" trigger={['click']} classNames={{ root: 'playbar-more-menu' }}>
                 <button
                   type="button"
                   className={`icon-btn ${saveError ? 'is-bad' : ''}`}
@@ -522,10 +584,18 @@ export const PlayBar = () => {
               <RotateCcw size={15} />
               <span>{t('Kiếp mới', 'New life')}</span>
             </button>
+            <div className="playbar-mobile-more">
+              <Dropdown menu={{ items: menuItems }} placement="bottomRight" trigger={['click']} classNames={{ root: 'playbar-more-menu' }}>
+                <button type="button" className="icon-btn" aria-label={t('Thao tác khác', 'More options')}>
+                  <MoreHorizontal size={18} />
+                </button>
+              </Dropdown>
+            </div>
           </div>
         )}
       </div>
       <WorkshopDepotModal open={shopOpen} onClose={() => setShopOpen(false)} />
+      <SettingsModal open={settingsOpen} onClose={() => setSettingsOpen(false)} />
     </div>
   );
 };

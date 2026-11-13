@@ -98,18 +98,25 @@ try {
     'trang chủ lần đầu': { pastLives: [], globalCodex: [] },
     'trang chủ sau một đời': { pastLives: [{ name: 'Smoke', job: 'Fixer', age: 33, generation: 1, seed: 'smoke-home' }], globalCodex: ['born_city'] }
   };
+  const { useThemeStore } = await load('/src/store/themeStore.js');
   for (const [stateName, patch] of Object.entries(homes)) {
+    useThemeStore.setState({ firstLifeGuideDismissed: false });
     useGameStore.setState({ inRun: false, savedRun: null, pendingLegacy: null, ...patch });
     try {
       const html = renderToString(React.createElement(MemoryRouter, null, React.createElement(BirthSetupPanel)));
-      if (patch.pastLives.length) assert(html.includes('replay-goals'), 'the home screen shows what the next life could open');
-      else assert(!html.includes('replay-goals'), 'no replay goals before the first life');
+      if (patch.pastLives.length) {
+        assert(html.includes('replay-goals'), 'the home screen shows what the next life could open');
+        assert(!html.includes('first-life-guide'), 'returning players do not see the first-life guide');
+      } else {
+        assert(!html.includes('replay-goals'), 'no replay goals before the first life');
+        assert(html.includes('first-life-guide'), 'first-time players see the compact 4-line guide');
+        assert(html.includes('Thời gian tự trôi'), 'first-life guide contains line 1');
+      }
     } catch (error) {
       failed++;
       console.error(`FAIL BirthSetupPanel (${stateName}): ${error.message}`);
     }
   }
-  const { useThemeStore } = await load('/src/store/themeStore.js');
   const { Header } = await load('/src/layouts/Header.jsx');
   const expectedLangCodes = { vi: 'VI', en: 'EN', bi: 'VI+EN' };
   for (const [code, short] of Object.entries(expectedLangCodes)) {
