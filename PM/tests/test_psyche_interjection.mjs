@@ -75,6 +75,88 @@ const countSentences = (text) => {
   assert.equal(getPsycheInterjection(char, event, 'vi'), null);
 }
 
+// 3b. Active NPC branch never treats dead/missing/estranged/away NPCs as "waiting", and scars resolve cleanly without double "Vết" or raw placeholders
+{
+  const char = createNewCharacter({ customName: 'Watcher', seed: 'psyche_gone_npc' });
+  char.age = 25;
+  char.regionId = 'K';
+  char.resonance = 0;
+  char.heat = 0;
+  char.scars = [];
+  char.npcs = {
+    mother: { nameVi: 'Mẹ', nameEn: 'Mother', alive: false },
+    friend: { nameVi: 'Seojun', nameEn: 'Seojun', status: 'missing' },
+    spouse: { nameVi: 'Minji', nameEn: 'Minji', status: 'away' }
+  };
+  for (let i = 0; i < 40; i++) {
+    const ev = {
+      id: `rel_check_${i}`,
+      titleVi: 'Món nợ cũ',
+      displayVi: 'Một người nhắc tới món nợ và chuyện phản bội năm xưa tại office.',
+      major: true,
+      choices: []
+    };
+    const res = getPsycheInterjection(char, ev, 'vi');
+    if (res) {
+      assert.ok(!/đang chờ/.test(res.textVi), `gone NPC must never trigger waiting line: ${res.textVi}`);
+    }
+  }
+
+  const scarChar = createNewCharacter({ customName: 'Scarred', seed: 'psyche_scar_phrase' });
+  scarChar.age = 24;
+  scarChar.regionId = 'K';
+  scarChar.scars = ['Vết mổ trả nợ'];
+  let woundLine = null;
+  for (let k = 0; k < 40 && !woundLine; k++) {
+    const woundEv = {
+      id: `test_clinic_threat_${k}`,
+      titleVi: 'Bệnh xá đêm',
+      displayVi: 'Đám thu nợ chặn cửa phòng khám cấp cứu.',
+      major: true,
+      choices: []
+    };
+    woundLine = getPsycheInterjection(scarChar, woundEv, 'vi');
+  }
+  assert.ok(woundLine, 'expected wound scar psyche line within 40 rolls');
+  assert.ok(!/Vết\s+"Vết/.test(woundLine.textVi), `no double Vết prefix: ${woundLine.textVi}`);
+  assert.ok(woundLine.textVi.includes('Vết mổ trả nợ'), `keeps scar name: ${woundLine.textVi}`);
+
+  const objChar = createNewCharacter({ customName: 'ObjectScar', seed: 'psyche_scar_object' });
+  objChar.age = 24;
+  objChar.regionId = 'K';
+  objChar.npcs = { friend: { nameVi: 'Minh Anh', nameEn: 'Minh Anh', deceased: true, status: 'dead' } };
+  objChar.scars = ['Người bạn đã bỏ lại {friend}'];
+  let objLine = null;
+  for (let k = 0; k < 40 && !objLine; k++) {
+    const objEv = {
+      id: `test_trauma_threat_${k}`,
+      titleVi: 'Ám ảnh hẻm tối',
+      displayVi: 'Tiếng còi cấp cứu và phục kích vang đầu ngõ.',
+      major: true,
+      choices: []
+    };
+    objLine = getPsycheInterjection(objChar, objEv, 'vi');
+  }
+  assert.ok(objLine, 'expected memory scar psyche line within 40 rolls');
+  assert.ok(!/\{friend\}/.test(objLine.textVi), `placeholder resolved cleanly: ${objLine.textVi}`);
+  assert.ok(objLine.textVi.includes('Minh Anh'), `interpolated friend name present: ${objLine.textVi}`);
+  assert.ok(!/Vết\s+"Người bạn/.test(objLine.textVi), `non-wound scar avoids "Vết ..." prefix: ${objLine.textVi}`);
+
+  // Different char.seed values must produce distinct hashSeed outcomes across shared event/age
+  const sameEv = { id: 'seed_diff_ev', titleVi: 'Ám ảnh hẻm tối', displayVi: 'Phục kích hẻm tối.', major: true, choices: [] };
+  const cA = { seed: 'seed_alpha_1', age: 24, regionId: 'K', scars: ['Vết mổ trả nợ'], stats: { sanity: 50 } };
+  const cB = { seed: 'seed_beta_2', age: 24, regionId: 'K', scars: ['Vết mổ trả nợ'], stats: { sanity: 50 } };
+  let differed = false;
+  for (let age = 20; age < 60 && !differed; age++) {
+    cA.age = age;
+    cB.age = age;
+    const rA = Boolean(getPsycheInterjection(cA, sameEv, 'vi'));
+    const rB = Boolean(getPsycheInterjection(cB, sameEv, 'vi'));
+    if (rA !== rB) differed = true;
+  }
+  assert.equal(differed, true, 'different char.seed values must diversify hashSeed roll');
+}
+
 // 4. Simulation rate check over 60 lives: must stay < 25% and every line must be 1 sentence
 {
   let totalEvents = 0;

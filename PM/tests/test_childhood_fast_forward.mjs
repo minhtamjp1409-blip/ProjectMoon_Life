@@ -132,4 +132,54 @@ const samplePastLives = [{ name: 'Forebear', age: 45, job: 'Fixer', endingId: 'r
   console.log(`Childhood 0->15 benchmark (10 lives): full=${fullInteractiveActions} prompts (${fullMs}ms), fastForward=${ffInteractiveActions} beats (${ffMs}ms)`);
 }
 
+// 4. Outskirts/dungeon safety, non-regressing age guard, and annual recovery balance across 30 runs
+{
+  const regions = ['OUTSKIRTS', 'K', 'T', 'N', 'W'];
+  let hpSum = 0;
+  let spSum = 0;
+  let count = 0;
+  for (let i = 0; i < 30; i++) {
+    const region = regions[i % regions.length];
+    const seed = `ff_safe_${region}_${i}`;
+    const rng = createRNG(seed);
+    let c = createNewCharacter({
+      customName: `Safe${i}`,
+      seed,
+      preferredRegionId: region,
+      pastLives: samplePastLives,
+      fastForwardChildhood: true
+    });
+    let guard = 0;
+    while (c.childhoodMontage?.active && c.pendingEvent && guard++ < 8) {
+      for (const ch of c.pendingEvent.choices || []) {
+        assert.ok(!ch.startDungeon, `montage must not include startDungeon (${c.pendingEvent.id})`);
+        assert.ok(!ch.openEgoModal && !ch.openColorModal && !ch.openModal, `montage must not open modal (${c.pendingEvent.id})`);
+      }
+      const idx = Math.max(0, c.pendingEvent.choices.findIndex((ch) => choiceIsAvailable(ch, c)));
+      const prevAge = c.age;
+      c = resolveEventChoice(c, idx, rng);
+      assert.ok(!c.pendingDungeon, `montage beat must not start dungeon (${seed})`);
+      assert.ok(c.age >= prevAge, `age must never regress (${prevAge} -> ${c.age})`);
+    }
+    assert.equal(c.childhoodMontage?.active, false, `montage finishes cleanly (${seed})`);
+    assert.equal(c.age, 15, `montage lands at age 15 (${seed})`);
+    if (c.alive) {
+      hpSum += c.stats.health;
+      spSum += c.stats.sanity;
+      count += 1;
+    }
+  }
+  const avgHp = hpSum / Math.max(1, count);
+  const avgSp = spSum / Math.max(1, count);
+  assert.ok(avgHp >= 65, `expected average age-15 HP >= 65 with annual endYear recovery, got ${avgHp.toFixed(1)}`);
+  assert.ok(avgSp >= 60, `expected average age-15 SP >= 60 with annual endYear recovery, got ${avgSp.toFixed(1)}`);
+
+  // Simulate legacy interrupted montage where character already aged to 30
+  const stale = createNewCharacter({ customName: 'Stale', seed: 'ff_stale_30', pastLives: samplePastLives, fastForwardChildhood: true });
+  stale.age = 30;
+  const afterStale = resolveEventChoice(stale, 0, createRNG('ff_stale_resolve'));
+  assert.ok(afterStale.age >= 30, `stale adult character age must never regress (got ${afterStale.age})`);
+  assert.equal(afterStale.childhoodMontage?.active, false, 'stale active montage closes cleanly at age >= 15');
+}
+
 console.log('Childhood fast-forward test passed.');

@@ -209,22 +209,28 @@ export function pickVisibleLockedDoors(char, { events = [], openedDoors = [], co
   const age = Number(char.age || 0);
   const decade = Math.floor(age / 10) * 10;
   const localRng = makeLocalRng(`${char.seed || char.name || 'door'}:doors:${decade}:${openedDoors?.length || 0}`);
-  const openedSet = new Set([
-    ...(openedDoors || []),
+  // Career gates only skip tiers unlocked in this current life; cross-life Codex history never skips promotion rungs
+  const currentLifeOpened = new Set([
     ...(char.openedDoors || []),
-    ...(char.seenEvents || []),
+    ...(char.seenEvents || [])
+  ]);
+  const metaOpenedSet = new Set([
+    ...currentLifeOpened,
+    ...(openedDoors || []),
     ...(char.unlockedRecords || []).map((k) => String(k).replace(/^door:/, ''))
   ]);
 
-  const rawGates = buildGateDoors(char, openedSet)
+  const rawGates = buildGateDoors(char, currentLifeOpened)
     .filter((gate) => !matchesNeed(gate.need, char, gate));
 
-  const rawEvents = (events || []).filter((ev) => {
-    if (!ev?.major || !ev.id || openedSet.has(ev.id)) return false;
+  const eligibleEventDoors = (events || []).filter((ev) => {
+    if (!ev?.major || !ev.id || currentLifeOpened.has(ev.id)) return false;
     if (!isReachableThisLife(ev, char, age)) return false;
     if (matchesNeed(ev.need, char, ev)) return false;
     return true;
   });
+  const unseenInCodex = eligibleEventDoors.filter((ev) => !metaOpenedSet.has(ev.id));
+  const rawEvents = unseenInCodex.length >= count ? unseenInCodex : eligibleEventDoors;
 
   // Prioritize doors that have explicit quantitative or District conditions players can actively pursue
   const scoreDoor = (ev) => {
@@ -298,14 +304,14 @@ export function pickVisibleLockedDoors(char, { events = [], openedDoors = [], co
   return selected.slice(0, count);
 }
 
-/** Records that a locked door (event or career gate) has been opened on the current run. */
+/** Records that a currently visible locked door (event or career gate) has been opened on the current run. */
 export function markOpenedDoor(char, doorId) {
   if (!char || !doorId) return char;
+  const isVisible = Array.isArray(char.visibleDoors) && char.visibleDoors.some((d) => d.id === doorId);
+  if (!isVisible) return char;
   if (!Array.isArray(char.openedDoors)) char.openedDoors = [];
   if (!char.openedDoors.includes(doorId)) char.openedDoors.push(doorId);
-  if (Array.isArray(char.visibleDoors)) {
-    char.visibleDoors = char.visibleDoors.map((d) => (d.id === doorId ? { ...d, opened: true } : d));
-  }
+  char.visibleDoors = char.visibleDoors.map((d) => (d.id === doorId ? { ...d, opened: true } : d));
   return char;
 }
 

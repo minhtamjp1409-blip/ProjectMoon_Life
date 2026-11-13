@@ -3,6 +3,7 @@ import { create } from 'zustand';
 import { notification } from 'antd';
 import {
   SEASONS,
+  ALL_STORY_EVENTS,
   createRNG,
   createNewCharacter,
   resolveEventChoice,
@@ -38,6 +39,7 @@ import { bestowHanaColorTitle } from '../engine/colorRegistry.js';
 import { chapterFor } from '../engine/chapters.js';
 import { isExtraBirthEntry } from '../data/birthStories.js';
 import { syncNpcNamingPrompt, applyNpcName } from '../engine/npcNaming.js';
+import { advanceChildhoodMontage } from '../engine/childhoodFastForward.js';
 import { CUTSCENES, resolveCutsceneCut, hasSeenCutscene, markCutsceneSeen, prefersReducedMotion, isLowPowerDevice } from '../features/cutscene/registry.js';
 
 const META_KEY = 'pm_city_chronicles_save_v3';
@@ -425,6 +427,20 @@ export const getEffectiveSpeed = (state) => {
     return Math.max(4, state.speed);
   }
   return state.speed;
+};
+
+const resumeMontageIfOverlayClosed = (prev, nextChar, rng) => {
+  if (!nextChar?.childhoodMontage?.active || !nextChar.alive) return;
+  if (nextChar.pendingDungeon || nextChar.pendingModal || nextChar.pendingEvent) return;
+  advanceChildhoodMontage(nextChar, {
+    events: ALL_STORY_EVENTS,
+    interpolateText,
+    openedDoors: nextChar.openedDoors || [],
+    rng
+  });
+  if (prev?.childhoodMontage?.active && !nextChar.childhoodMontage?.active && nextChar.alive && !nextChar.pendingEvent && !nextChar.plan?.length) {
+    planYear(nextChar, rng);
+  }
 };
 
 export const useGameStore = create((set, get) => ({
@@ -1230,6 +1246,7 @@ export const useGameStore = create((set, get) => ({
     const prev = get().char;
     if (!prev.pendingDungeon) return;
     const { char: nextChar, isFinished, resolution } = resolveDungeonChoice(prev, choiceIdx, lifeRng);
+    if (isFinished) resumeMontageIfOverlayClosed(prev, nextChar, lifeRng);
     get().commit(prev, nextChar, {
       activeResolution: resolution ? dungeonResolution(prev, nextChar, resolution) : null,
       postChoicePauseMs: isFinished && get().speed > 0 ? 3000 : 0
@@ -1240,6 +1257,7 @@ export const useGameStore = create((set, get) => ({
     const prev = get().char;
     if (!prev.pendingDungeon) return;
     const { char: nextChar, resolution } = fleeDungeon(prev);
+    resumeMontageIfOverlayClosed(prev, nextChar, lifeRng);
     get().commit(prev, nextChar, {
       activeResolution: resolution ? dungeonResolution(prev, nextChar, resolution) : null,
       postChoicePauseMs: get().speed > 0 ? 3000 : 0
@@ -1273,6 +1291,7 @@ export const useGameStore = create((set, get) => ({
       vi: `Hiệp Hội Hana Phân Khu 1 long trọng ban sắc chỉ phong Color. Kể từ hôm nay, cả 26 Quận đều tôn kính gọi bạn là 「${next.customTitle}」.`,
       en: `Hana Association Section 1 decrees your Color Title. From this day forward, all 26 Districts call you 「${next.customTitle}」.`
     });
+    resumeMontageIfOverlayClosed(prev, next, lifeRng);
     get().commit(prev, next);
   },
 
@@ -1290,6 +1309,7 @@ export const useGameStore = create((set, get) => ({
       vi: `Nỗi đau của bạn kết tinh thành E.G.O. Bạn gọi nó là 「${next.egoName}」.`,
       en: `Your pain crystallized into E.G.O. You named it 「${next.egoName}」.`
     });
+    resumeMontageIfOverlayClosed(prev, next, lifeRng);
     get().commit(prev, next);
   },
 
@@ -1307,6 +1327,7 @@ export const useGameStore = create((set, get) => ({
       vi: `Bạn rèn xong 「${weaponObj.name}」 (${weaponObj.gradeLabel}). Tres Association đóng dấu đăng ký.`,
       en: `You finished forging 「${weaponObj.name}」 (${weaponObj.gradeLabel}). Tres Association stamped its registration.`
     });
+    resumeMontageIfOverlayClosed(prev, next, lifeRng);
     get().commit(prev, next);
   },
 

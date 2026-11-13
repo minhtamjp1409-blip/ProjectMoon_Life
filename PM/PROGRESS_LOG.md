@@ -3354,7 +3354,7 @@ Làm ở commit `208ef40` và sửa theo review ở `9000cf8`. Chỉ học cơ c
 * **Còn treo, chuyển vào Bước 0 của `docs/KE_HOACH_TIEP_THEO.md`:** bản tin dồn vào tuổi 5–29, năm yên ả có thể rơi về câu ambient sau khi hết bản tin, câu "Tự lưu sau mỗi lựa chọn" bị ẩn ở đời đầu.
 
 ##### 2.57. Hoàn tất Bước 0 (`0a–0d`) và Bước `0+` Tua thơ ấu — Đợt 174 (13/11/2026)
-* **`0a` Phân bố bản tin & trang chủ (`974fae0`).** Điều chỉnh tỉ lệ gắn bản tin theo tuổi (không thập kỷ nào quá 50%, tuổi 30–49 vẫn gặp tin đều), bỏ điều kiện `!quiet &&` ở `createYearDigest`, giữ câu "Tự lưu sau mỗi lựa chọn" và `showFirstLifeGuide` rõ ràng trên trang chủ.
+* **`0a` Phân bố bản tin & trang chủ (`50f1231`, tổng hợp trong `974fae0`).** Điều chỉnh tỉ lệ gắn bản tin theo tuổi (không thập kỷ nào quá 50%, tuổi 30–49 vẫn gặp tin đều), bỏ điều kiện `!quiet &&` ở `createYearDigest`, giữ câu "Tự lưu sau mỗi lựa chọn" và `showFirstLifeGuide` rõ ràng trên trang chủ.
 * **`0b` Cửa đóng nhìn thấy được (`lockedDoors.js`, `eventConditions.js`, `CharacterDossierCard.jsx`, `CodexPage.jsx`, `gameStore.js`, `choicePolicy.mjs`).**
   * Tách `describeNeedGaps` trong `eventConditions.js` dùng chung với `describeChoiceBlock`; đọc điều kiện trực tiếp từ `careerGates.json` và `eventConditions.js`, lọc các cửa còn vươn tới được ở tuổi hiện tại (bỏ qua `openedDoors` đã mở ở các kiếp trước), dùng PRNG cục bộ tách khỏi RNG gameplay và xoay vòng theo 4 nhóm tuyến (`general`, `fixer`, `wing`, `syndicate`).
   * Hiển thị 2–3 cửa khóa kèm gợi ý điều kiện tại mốc sinh và mỗi thập kỷ mới (`10, 20, 30...`), lưu bền các cửa đã mở trong meta Codex (`META_KEY`) và liệt kê tại `CodexPage.jsx`.

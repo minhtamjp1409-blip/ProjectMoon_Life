@@ -298,6 +298,9 @@ export function applyNpcName(char, rawInput = '', roleOverride = null) {
     if (char.pendingEvent) char.pendingEvent = replacePendingNpcName(char.pendingEvent, oldVi, oldEn, finalVi, finalEn);
     if (char.pendingMinor) char.pendingMinor = replacePendingNpcName(char.pendingMinor, oldVi, oldEn, finalVi, finalEn);
     if (char.pendingContract) char.pendingContract = replacePendingNpcName(char.pendingContract, oldVi, oldEn, finalVi, finalEn);
+    const renameScar = (s) => replaceWholeName(s, oldVi, finalVi).replace(/\{friend\}/g, role === 'friend' ? finalVi : '{friend}');
+    if (Array.isArray(char.scars)) char.scars = char.scars.map(renameScar);
+    if (Array.isArray(char.scarHistory)) char.scarHistory = char.scarHistory.map(renameScar);
   }
 
   char.pendingNpcNaming = null;

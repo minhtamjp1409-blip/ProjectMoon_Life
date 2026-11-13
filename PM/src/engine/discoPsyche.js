@@ -1,4 +1,5 @@
 import { normalizeScars, getScarProfile } from './scarModel.js';
+import { npcIsActive } from './eventConditions.js';
 import { REGIONS } from '../data/worldData.js';
 import { weightedOutcomes } from './outcomeOdds.js';
 
@@ -84,17 +85,47 @@ function resolveRegionNames(char) {
   };
 }
 
-function pickNpcAnchor(char) {
+const isNpcDead = (npc) => Boolean(npc && (npc.alive === false || npc.deceased || npc.status === 'dead'));
+
+function resolveScarLabel(rawScar, char) {
+  const parentName = char?.lineage?.parentName || 'Tiền Nhân';
+  const partner = char?.npcs?.partner?.nameVi || 'Cộng sự';
+  const spouse = char?.npcs?.spouse?.nameVi || 'Người thương';
+  const child = char?.npcs?.child?.nameVi || 'Đứa con nhỏ';
+  const mentor = char?.npcs?.mentor?.nameVi || 'Sư phụ';
+  const friend = char?.npcs?.friend?.nameVi || 'đứa bạn cùng hẻm';
+  return String(rawScar || '')
+    .replace(/\{friend\}/g, friend)
+    .replace(/\{parentName\}/g, parentName)
+    .replace(/\{parent\}/g, parentName)
+    .replace(/\{partner\}/g, partner)
+    .replace(/\{spouse\}/g, spouse)
+    .replace(/\{child\}/g, child)
+    .replace(/\{mentor\}/g, mentor);
+}
+
+function pickNpcAnchors(char) {
   const entries = Object.entries(char?.npcs || {}).filter(([, npc]) => npc && (npc.nameVi || npc.nameEn));
-  if (!entries.length) return null;
-  const departed = entries.find(([, npc]) => npc.deceased || npc.status === 'dead');
-  if (departed) return { role: departed[0], npc: departed[1], departed: true };
-  const priority = ['rival', 'mentor', 'spouse', 'lover', 'friend', 'child'];
-  for (const role of priority) {
-    const match = entries.find(([r, npc]) => r === role && !npc.deceased && npc.status !== 'dead');
-    if (match) return { role: match[0], npc: match[1], departed: false };
+  if (!entries.length) return { departed: null, active: null };
+
+  const departedPriority = ['spouse', 'lover', 'friend', 'mentor', 'child', 'rival', 'partner', 'father', 'mother'];
+  let departed = null;
+  for (const role of departedPriority) {
+    const match = entries.find(([r, npc]) => r === role && isNpcDead(npc));
+    if (match) { departed = { role: match[0], npc: match[1] }; break; }
   }
-  return { role: entries[0][0], npc: entries[0][1], departed: false };
+  if (!departed) {
+    const anyDead = entries.find(([, npc]) => isNpcDead(npc));
+    if (anyDead) departed = { role: anyDead[0], npc: anyDead[1] };
+  }
+
+  const activePriority = ['rival', 'mentor', 'spouse', 'lover', 'friend', 'child', 'partner', 'ward', 'mentee'];
+  let active = null;
+  for (const role of activePriority) {
+    const match = entries.find(([r, npc]) => r === role && npcIsActive(npc));
+    if (match) { active = { role: match[0], npc: match[1] }; break; }
+  }
+  return { departed, active };
 }
 
 function matchScarForEvent(char, eventText) {
@@ -136,9 +167,9 @@ export function getPsycheInterjection(char, event, _lang = 'vi') {
   const sanity = Number(char.stats?.sanity ?? 50);
   const heat = Number(char.heat || 0);
   const taboo = Number(char.taboo || 0);
-  const roll = hashSeed(`${char.id || ''}|${event.id || ''}|${age}`) % 100;
+  const roll = hashSeed(`${char.seed || char.name || ''}|${event.id || ''}|${age}`) % 100;
   const district = resolveRegionNames(char);
-  const npcAnchor = pickNpcAnchor(char);
+  const { departed: departedNpc, active: activeNpc } = pickNpcAnchors(char);
 
   const isContractOrSecret = /hợp đồng|giao kèo|điều khoản|bí mật|chữ ký|arbiter|prescript|contract|fine print/i.test(eventText);
   const isRelationshipOrDebt = /phản bội|món nợ|đồng đội|cộng sự|tri kỷ|hôn ước|office|bỏ rơi/i.test(eventText);
@@ -147,24 +178,30 @@ export function getPsycheInterjection(char, event, _lang = 'vi') {
   // 1. Concrete Scar anchor
   const scarMatch = matchScarForEvent(char, eventText);
   if (scarMatch && (scarMatch.strong ? (event.major || roll < 50) : roll < 14)) {
+    const scarText = resolveScarLabel(scarMatch.scar, char);
     const scarEn = scarMatch.profile?.labelEn?.toLowerCase() || 'old scar';
+    const isWoundOrBody = /^(vết|nhát|thương tật|cơn hoảng|bỏng|lưng bỏng|cánh tay bỏng|bả vai|cổ tay|con mắt|đôi mắt|nửa mạn sườn|khối u)/i.test(scarText);
     if (scarMatch.tag === 'witness' || scarMatch.tag === 'faction') {
       return {
         faculty: PSYCHE_FACULTIES.SURVIVAL,
-        textVi: `Vết "${scarMatch.scar}" nhói lên dưới lớp áo, nhắc bạn những lời hứa từ đám tay to ở ${district.shortVi} luôn giấu cái giá viết bằng máu.`,
+        textVi: isWoundOrBody
+          ? `${scarText} nhói lên dưới lớp áo, nhắc bạn những lời hứa của đám tay to ở ${district.shortVi} luôn giấu cái giá viết bằng máu.`
+          : `Chuyện cũ "${scarText}" nhắc bạn những lời hứa của đám tay to ở ${district.shortVi} luôn giấu cái giá viết bằng máu.`,
         textEn: `The ${scarEn} stirs under your coat, reminding you that offers in ${district.shortEn} always carry a hidden cost written in blood.`
       };
     }
     if (scarMatch.tag === 'weapon' || scarMatch.tag === 'craft') {
       return {
         faculty: PSYCHE_FACULTIES.LOGIC,
-        textVi: `Cảm giác quen tay gắn với "${scarMatch.scar}" giữ nhịp thở bạn đều lại để cân đo thiệt hơn trước khi nhận kèo ở ${district.shortVi}.`,
+        textVi: `Thói quen gắn với "${scarText}" giữ nhịp thở bạn đều lại để cân đo thiệt hơn trước khi nhận kèo ở ${district.shortVi}.`,
         textEn: `Muscle memory from that ${scarEn} steadies your breathing so you measure every cut and risk on ${district.shortEn} turf.`
       };
     }
     return {
       faculty: PSYCHE_FACULTIES.VOLITION,
-      textVi: `Vết "${scarMatch.scar}" bỗng giật nhẹ, buộc bạn đặt sẵn tay lên chỗ thoát hiểm quen thuộc của ${district.shortVi} rồi mới mở lời.`,
+      textVi: isWoundOrBody
+        ? `${scarText} bỗng giật nhẹ, buộc bạn đặt sẵn tay lên chỗ thoát hiểm quen thuộc của ${district.shortVi} rồi mới mở lời.`
+        : `Nhớ tới "${scarText}", bạn đặt sẵn tay lên chỗ thoát hiểm quen thuộc của ${district.shortVi} rồi mới mở lời.`,
       textEn: `Your ${scarEn} throbs without warning, nudging your stance toward the nearest exit in ${district.shortEn} before you speak.`
     };
   }
@@ -180,9 +217,9 @@ export function getPsycheInterjection(char, event, _lang = 'vi') {
 
   // 2. High Resonance spotting contract loopholes or departed echoes
   if (resonance >= 42 && isContractOrSecret && (event.major || roll < 60)) {
-    if (npcAnchor?.departed) {
-      const npcVi = npcAnchor.npc.nameVi || npcAnchor.npc.nameEn;
-      const npcEn = npcAnchor.npc.nameEn || npcVi;
+    if (departedNpc) {
+      const npcVi = departedNpc.npc.nameVi || departedNpc.npc.nameEn;
+      const npcEn = departedNpc.npc.nameEn || npcVi;
       return {
         faculty: PSYCHE_FACULTIES.CARMEN,
         textVi: `Cộng hưởng lên cao kéo theo giọng ${npcVi} lướt qua kẽ hở tờ giao kèo ở ${district.shortVi}, chỉ đúng dòng chữ ký dễ mất mạng.`,
@@ -197,9 +234,9 @@ export function getPsycheInterjection(char, event, _lang = 'vi') {
   }
 
   // 3. Low sanity or high resonance hearing a concrete departed NPC
-  if ((sanity <= 16 || resonance >= 60) && npcAnchor?.departed && roll < 14) {
-    const npcVi = npcAnchor.npc.nameVi || npcAnchor.npc.nameEn;
-    const npcEn = npcAnchor.npc.nameEn || npcVi;
+  if ((sanity <= 16 || resonance >= 60) && departedNpc && roll < 14) {
+    const npcVi = departedNpc.npc.nameVi || departedNpc.npc.nameEn;
+    const npcEn = departedNpc.npc.nameEn || npcVi;
     return {
       faculty: PSYCHE_FACULTIES.CARMEN,
       textVi: `Đầu óc căng đến mức tiếng bước chân ngoài hành lang ${district.shortVi} nghe hệt như giọng ${npcVi} gọi bạn quay lại.`,
@@ -207,11 +244,11 @@ export function getPsycheInterjection(char, event, _lang = 'vi') {
     };
   }
 
-  // 4. Concrete NPC anchor on social/debt/alliance moments
-  if (npcAnchor && isRelationshipOrDebt && roll < (event.major ? 14 : 6)) {
-    const npcVi = npcAnchor.npc.nameVi || npcAnchor.npc.nameEn;
-    const npcEn = npcAnchor.npc.nameEn || npcVi;
-    if (npcAnchor.role === 'rival' || npcAnchor.role === 'mentor') {
+  // 4. Concrete active NPC anchor on social/debt/alliance moments (never dead/missing/estranged)
+  if (activeNpc && isRelationshipOrDebt && roll < (event.major ? 14 : 6)) {
+    const npcVi = activeNpc.npc.nameVi || activeNpc.npc.nameEn;
+    const npcEn = activeNpc.npc.nameEn || npcVi;
+    if (activeNpc.role === 'rival' || activeNpc.role === 'mentor') {
       return {
         faculty: PSYCHE_FACULTIES.DRAMA,
         textVi: `Lời ${npcVi} dặn hồi còn chạm mặt nhau ở ${district.shortVi} vang lại đúng lúc bạn chuẩn bị đặt cược bằng thể diện của mình.`,

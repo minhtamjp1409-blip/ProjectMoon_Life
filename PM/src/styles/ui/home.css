@@ -358,6 +358,28 @@
 }
 .legacy-switch-hint button:hover { color: var(--accent-hover); }
 
+.birth-fastforward-toggle {
+  display: flex; align-items: flex-start; gap: 10px;
+  min-height: 44px; padding: 10px 12px; margin-bottom: 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--ambient-rim);
+  background: rgba(18, 19, 25, 0.72);
+  cursor: pointer;
+}
+.birth-fastforward-toggle input {
+  flex: none; width: 18px; height: 18px; margin-top: 2px;
+  accent-color: var(--accent);
+}
+.birth-fastforward-copy {
+  display: flex; flex-direction: column; gap: 2px; min-width: 0;
+}
+.birth-fastforward-copy strong {
+  font-size: var(--t-ui); font-weight: 600; color: var(--text); line-height: 1.3;
+}
+.birth-fastforward-copy span {
+  font-size: var(--t-meta); color: var(--muted); line-height: 1.4;
+}
+
 .birth-resume { display: flex; flex-direction: column; gap: 10px; padding: 14px 16px; border: 1px solid color-mix(in srgb, var(--accent) 26%, var(--border)); border-radius: var(--radius-sm); background: color-mix(in srgb, var(--gold) 4%, var(--surface)); }
 .birth-resume > div > span { display: block; font-size: var(--t-label); color: var(--page-muted); }
 .birth-resume strong { font-family: var(--serif); font-size: 19px; }

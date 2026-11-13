@@ -895,7 +895,7 @@ export function createNewCharacter({
       : [],
     seenEvents: [],
     seenBulletins: [],
-    openedDoors: [...(openedDoors || [])],
+    openedDoors: [],
     visibleDoors: [],
     doorsDecade: null,
     recent: [],
@@ -2396,7 +2396,6 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random, dung
   if (!char.seenEvents.includes(event.id)) {
     char.seenEvents.push(event.id);
   }
-  markOpenedDoor(char, event.id);
   if (otherTrial) {
     const prefix = otherTrial.route === 'finger' ? 'Finger' : 'Wing';
     const retryKey = `${prefix.toLowerCase()}TrialRetryRank`;
@@ -2483,6 +2482,7 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random, dung
     }
     if (choice.setFixerGrade != null) char.fixerTrialRetryGrade = null;
   }
+  markOpenedDoor(char, event.id);
   advanceActiveNarrativeArcs(char, event.id);
   if (event.id === 'distort_arc_star_calamity_ascension' &&
       char.activeArcs?.some((arc) => arc.id === 'arc_carmen_distortion_abyss' && arc.status === 'active' && arc.currentStage === 3)) {

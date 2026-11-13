@@ -605,32 +605,17 @@ export const BirthSetupPanel = () => {
                 </aside>
               )}
               {pastLives.length >= 1 && (
-                <label
-                  className="birth-fastforward-toggle"
-                  style={{
-                    display: 'flex',
-                    alignItems: 'flex-start',
-                    gap: '10px',
-                    minHeight: '44px',
-                    padding: '10px 12px',
-                    marginBottom: '12px',
-                    borderRadius: '8px',
-                    border: '1px solid var(--ambient-rim, rgba(216, 178, 101, 0.22))',
-                    background: 'rgba(20, 18, 16, 0.45)',
-                    cursor: 'pointer'
-                  }}
-                >
+                <label className="birth-fastforward-toggle">
                   <input
                     type="checkbox"
                     checked={Boolean(fastForwardChildhood)}
                     onChange={(e) => setConfigField('fastForwardChildhood', e.target.checked)}
-                    style={{ width: '18px', height: '18px', marginTop: '2px', accentColor: 'var(--accent, #d8b265)' }}
                   />
-                  <span style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                    <span style={{ fontWeight: 600, fontSize: 'var(--t-body, 14px)', color: 'var(--text-primary, #ece6da)' }}>
+                  <span className="birth-fastforward-copy">
+                    <strong>
                       {t('Tua nhanh thời thơ ấu (0-14)', 'Fast-forward childhood (ages 0-14)')}
-                    </span>
-                    <span style={{ fontSize: 'var(--t-meta, 12px)', color: 'var(--text-muted, #b4ac9f)' }}>
+                    </strong>
+                    <span>
                       {t('Gom tuổi 0-14 thành 3-4 nhịp chính, giữ bạn thuở nhỏ và phẩm chất đầu đời.', 'Compress ages 0-14 into 3-4 beats while keeping your friend and starting traits.')}
                     </span>
                   </span>

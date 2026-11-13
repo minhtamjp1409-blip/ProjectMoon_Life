@@ -55,16 +55,52 @@ import { directorReach } from '../tools/sim/director_reach.mjs';
   }
 }
 
-// 3. Resolving an event that matches one of visibleDoors marks it opened
+// 3. Resolving an event that matches one of visibleDoors marks it opened; normal events must NOT pollute openedDoors
 {
   const char = createNewCharacter({ customName: 'Opener', seed: 'door_open_seed' });
-  const ev = ALL_STORY_EVENTS.find((e) => e.major && e.choices?.length);
+  const visibleIds = new Set((char.visibleDoors || []).map((d) => d.id));
+  const ev = ALL_STORY_EVENTS.find((e) => e.major && e.choices?.length && !visibleIds.has(e.id));
+  const nonDoorEv = ALL_STORY_EVENTS.find((e) => e.major && e.choices?.length && e.id !== ev.id && !visibleIds.has(e.id));
   char.visibleDoors = [{ id: ev.id, hookVi: 'Cửa thử', hookEn: 'Test door', reqVi: 'Cần thử', reqEn: 'Needs test', hintVi: 'Cửa thử', hintEn: 'Test door', opened: false }];
-  char.pendingEvent = { ...ev, choices: ev.choices };
-  const after = resolveEventChoice(char, 0, createRNG('door_open_rng'));
+  char.pendingEvent = { ...nonDoorEv, choices: nonDoorEv.choices };
+  const afterNormal = resolveEventChoice(char, 0, createRNG('door_open_normal'));
+  assert.ok(!afterNormal.openedDoors.includes(nonDoorEv.id), 'non-door event must not be added to openedDoors');
+
+  afterNormal.pendingEvent = { ...ev, choices: ev.choices };
+  const after = resolveEventChoice(afterNormal, 0, createRNG('door_open_rng'));
   assert.ok(after.openedDoors.includes(ev.id), 'resolved visible door recorded in openedDoors');
   const card = after.visibleDoors.find((d) => d.id === ev.id);
   assert.equal(card?.opened, true);
+}
+
+// 3b. Cross-life meta openedDoors (e.g. gate:fixer:8, gate:fixer:7) must NOT cause Life #2 to skip career rungs
+{
+  const metaOpened = ['gate:fixer:8', 'gate:fixer:7', 'gate:finger:1', 'gate:wing:1'];
+  const fixer8 = createNewCharacter({ customName: 'Life2Fixer', seed: 'gate_rung_check', openedDoors: metaOpened });
+  assert.equal(fixer8.openedDoors.length, 0, 'new life starts with empty openedDoors for current run');
+  fixer8.age = 22;
+  fixer8.job = 'Fixer';
+  fixer8.fixerGrade = 8;
+  fixer8.merit = 0;
+  fixer8.stats.rep = 5;
+  const fixerDoors = pickVisibleLockedDoors(fixer8, { events: ALL_STORY_EVENTS, openedDoors: metaOpened, count: 3 });
+  const gateIds = fixerDoors.filter((d) => d.source === 'gate').map((d) => d.id);
+  assert.ok(!gateIds.includes('gate:fixer:6'), `Grade 8 Fixer must not skip Grade 7 to see Grade 6 (${gateIds.join(', ')})`);
+
+  const syn1 = createNewCharacter({ customName: 'Life2Syn', seed: 'gate_syn_check', openedDoors: metaOpened });
+  syn1.age = 22;
+  syn1.job = 'Syndicate';
+  syn1.finger = 'Thumb';
+  syn1.fingerRank = 0;
+  const synDoors = pickVisibleLockedDoors(syn1, { events: ALL_STORY_EVENTS, openedDoors: metaOpened, count: 3 });
+  assert.ok(!synDoors.some((d) => d.id === 'gate:finger:2'), 'Syndicate Rank 0 must not skip Rank 1 due to past-life meta');
+
+  const wing1 = createNewCharacter({ customName: 'Life2Wing', seed: 'gate_wing_check', openedDoors: metaOpened });
+  wing1.age = 22;
+  wing1.job = 'Wing Employee';
+  wing1.wingRank = 0;
+  const wingDoors = pickVisibleLockedDoors(wing1, { events: ALL_STORY_EVENTS, openedDoors: metaOpened, count: 3 });
+  assert.ok(!wingDoors.some((d) => d.id === 'gate:wing:2'), 'Wing Rank 0 must not skip Rank 1 due to past-life meta');
 }
 
 // 4. Simulation verification: 'door' policy unlocks more events and reaches more unique drawn events than default
