@@ -48,6 +48,8 @@ export const VI_RULES = {
   daTung: { re: V(/\bđã từng\b/), why: '"đã từng" (one is enough)' },
   // "chẳng" overuse as a mechanical replacement for "không" or connectors
   chang: { re: V(/\bchẳng\b/), why: '"chẳng" overuse: prefer natural "không" unless tone calls for it' },
+  // semicolon in Vietnamese narration reads translated; prefer two short sentences
+  semicolon: { re: /;/, why: 'semicolon in Vietnamese narration: split into two short sentences with a period' },
 };
 
 function walkFiles(dir, out = []) {

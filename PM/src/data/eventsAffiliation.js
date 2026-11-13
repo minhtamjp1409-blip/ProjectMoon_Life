@@ -103,7 +103,7 @@ const officeInvite = {
     },
     {
       labelVi: 'Không nhận chỗ nào, tiếp tục tự do', labelEn: 'Take none of them and stay freelance',
-      resultVi: 'Bạn trả lại cả ba tấm danh thiếp. Không ai tỏ ra buồn. Người bên Hook Office bảo ghế vẫn để đó nếu bạn đổi ý; hơi ấm của bếp chung cũng vậy.',
+      resultVi: 'Bạn trả lại cả ba tấm danh thiếp. Không ai tỏ ra buồn. Người bên Hook Office bảo ghế vẫn để đó nếu bạn đổi ý. Hơi ấm của bếp chung cũng vậy.',
       resultEn: 'You return all three cards. No one seems sorry. Someone at Hook Office says the seat will still be there if you change your mind, and so will the warmth of the shared stove.',
       affDecline: 'office', effects: { sanity: 2 }
     }
@@ -117,11 +117,11 @@ const officeInvite = {
  */
 const CONFLICTS = {
   zwei: {
-    vi: '[Con phố phải giữ] Zwei ra lệnh bạn giữ một con phố để bảo vệ một nhân vật quan trọng. Khu nhà sau lưng còn hai mươi hộ chưa kịp sơ tán trong khi người trả phí không muốn ai biết có bao nhiêu hộ nằm sau chỗ bạn đứng.',
+    vi: '[Con phố phải giữ] Zwei ra lệnh bạn giữ một con phố để bảo vệ một nhân vật quan trọng. Khu nhà sau lưng còn hai mươi hộ chưa kịp sơ tán. Người trả phí không muốn ai biết có bao nhiêu hộ nằm sau chỗ bạn đứng.',
     en: '[The street to hold] Zwei orders you to hold a street to protect a VIP. Behind you are twenty households not yet evacuated, and the one paying the fee does not want anyone to learn how many stand behind your post.',
     obey: ['Giữ vị trí đúng lệnh', 'Hold position as ordered', 'Bạn đứng đến sáng. Nhân vật quan trọng bình an. Khu nhà sau lưng thì không. Bạn nghe được điều đó từ người đưa tin chứ không từ ai trong Zwei.', 'You hold until morning. The VIP is safe. The houses behind you are not, and you hear it from a messenger rather than anyone in Zwei.'],
     quiet: ['Báo cáo giữ vị trí nhưng đưa dân đi qua lối sau', 'Report holding your post, while moving residents out the back way', 'Bạn dẫn từng hộ qua lối sau, từng nhóm nhỏ. Không ai trong Zwei hỏi vì sao con phố vắng hơn dự kiến, nhưng sổ của bạn ghi một lần trái lệnh.', 'You lead households out the back, a few at a time. No one in Zwei asks why the street is emptier than planned, but your record gains a note of disobedience.'],
-    leave: ['Bỏ vị trí, đưa dân đi rồi rời Zwei', 'Leave the post, take the residents out, and leave Zwei', 'Bạn bỏ vòng canh trước mặt cả đội. Hai mươi hộ đi qua trước mắt người trả phí. Bạn để lại cây gậy sắt trên bậc thềm; không ai đuổi theo.', 'You abandon the cordon in front of the whole team. Twenty households pass in front of the one who paid. You leave your iron bar on the step, and no one follows.']
+    leave: ['Bỏ vị trí, đưa dân đi rồi rời Zwei', 'Leave the post, take the residents out, and leave Zwei', 'Bạn bỏ vòng canh trước mặt cả đội. Hai mươi hộ đi qua trước mắt người trả phí. Bạn để lại cây gậy sắt trên bậc thềm. Không ai đuổi theo.', 'You abandon the cordon in front of the whole team. Twenty households pass in front of the one who paid. You leave your iron bar on the step, and no one follows.']
   },
   shi: {
     vi: '[Cái tên vô tội] Shi giao bạn hợp đồng đủ cả ngày giờ, chỉ thiếu lý do. Bám theo mới biết người ấy là người giáo viên dạy trẻ trong khu nhà nghèo. Người điều phối nói lý do không phải việc của bạn.',
@@ -134,25 +134,25 @@ const CONFLICTS = {
     vi: '[Trận đã định trước] Cinq xếp bạn vào một trận mà trọng tài thì thầm rằng kết quả đã được trả tiền. Bạn phải thua đúng hiệp ba. Đối thủ là một người trẻ chưa biết điều đó, đang cần chiến thắng này hơn bạn.',
     en: '[A fixed bout] Cinq slots you into a bout where the referee whispers the result has been paid for. You must lose in the third round. Your opponent is young, unaware, and needs this win more than you do.',
     obey: ['Thua đúng hiệp ba', 'Lose in the third round', 'Bạn ngã xuống với cái nhìn ngạc nhiên mà bạn đã tập. Người trẻ giơ tay lên, tin vào chiến thắng. Cinq trả công và nhận xét bạn diễn đạt hơn mức cần.', 'You fall with the surprised look you rehearsed. The young one raises their hand, believing in the win. Cinq pays and remarks that you acted better than needed.'],
-    quiet: ['Đấu thật nhưng thua sát nút', 'Fight honestly, and lose by a hair', 'Bạn đánh đúng sức mình khiến người trẻ thắng trong một thế khó tin. Cinq không trả đủ, nhưng cũng không biết bạn đã làm gì.', 'You fight at your true level, and the young one wins in a hard-to-believe exchange. Cinq does not pay in full, but does not know what you did.'],
+    quiet: ['Đấu thật nhưng thua sát nút', 'Fight honestly, and lose by a hair', 'Bạn đánh đúng sức mình. Người trẻ thắng trong một thế khó tin. Cinq không trả đủ, nhưng cũng không biết bạn đã làm gì.', 'You fight at your true level, and the young one wins in a hard-to-believe exchange. Cinq does not pay in full, but does not know what you did.'],
     leave: ['Thắng thật và nói rõ trận đã bị mua', 'Win honestly and say aloud the bout was bought', 'Bạn thắng bằng hiệp hai và nói cho cả sàn đấu nghe. Cinq im lặng. Chiếc thẻ vào sàn được thu lại ngay trong chiều hôm đó.', 'You win in the second round and say it to the whole floor. Cinq stays silent. Your pass to the floor is collected that very afternoon.']
   },
   liu: {
-    vi: '[Bữa tối của nhà Liu] Người nhà bị đánh ngoài chợ. Người đứng đầu chỉ tay vào căn nhà nọ, nói chủ nhà đã bán lịch đi lại của người nhà ấy. Bạn đã ngồi ăn cơm với con của chủ nhà đó nên biết họ bị ép.',
+    vi: '[Bữa tối của nhà Liu] Người nhà bị đánh ngoài chợ. Người đứng đầu chỉ tay vào căn nhà nọ, nói chủ nhà đã bán lịch đi lại của người nhà ấy. Bạn đã ngồi ăn cơm với con của chủ nhà đó và biết họ bị ép.',
     en: '[The Liu house dinner] A family member was beaten at the market. The head points to a house and says its owner sold the family member’s routine. You have eaten rice with that owner’s child, and know they were coerced.',
     obey: ['Đi cùng cả nhà và trả đòn', 'Go with the house and answer the blow', 'Bạn đứng ở hàng giữa và nhìn chủ căn nhà ấy quỳ xuống. Đứa con nhìn bạn từ cửa sổ tầng hai. Bữa tối hôm sau, bạn ăn hết bát cơm mà không nhớ vị.', 'You stand in the middle line and watch the owner kneel. The child looks at you from the second-floor window. At dinner the next night you finish the bowl and do not taste it.'],
     quiet: ['Xin được đứng ngoài và đưa người ấy đến xin lỗi', 'Ask to stay out and bring the owner to apologize', 'Người đứng đầu cân nhắc rất lâu. Chủ căn nhà quỳ trước bàn ăn, trả một khoản lớn. Chuyện qua, nhưng không ai gắp thêm đồ ăn cho bạn trong vài ngày.', 'The head thinks it over a long time. The owner kneels before the table and pays a large sum. It passes, but no one serves you extra food for several days.'],
-    leave: ['Dẫn gia đình ấy đi trước khi cả nhà đến', 'Take that family away before the house arrives', 'Bạn gõ cửa họ lúc rạng sáng và dẫn họ ra khỏi khu. Khi trở về, cái bàn ăn đã dọn xong; không còn bát nào đặt cho bạn.', 'You knock on their door at dawn and lead them out of the district. When you return, the dining table is cleared, and no bowl is set for you.']
+    leave: ['Dẫn gia đình ấy đi trước khi cả nhà đến', 'Take that family away before the house arrives', 'Bạn gõ cửa họ lúc rạng sáng và dẫn họ ra khỏi khu. Khi trở về, cái bàn ăn đã dọn xong. Không còn bát nào đặt cho bạn.', 'You knock on their door at dawn and lead them out of the district. When you return, the dining table is cleared, and no bowl is set for you.']
   },
   seven: {
     vi: '[Người cung cấp tin] Seven ra lệnh bạn giao nộp một người đã nhiều năm cung cấp tin cho bạn để bị xử phạt sau hợp đồng. Người ấy không biết. Họ vẫn mang đến cho bạn một túi bánh mỗi lần gặp.',
     en: '[The informant] Seven orders you to hand over someone who has fed you information for years, for post-contract punishment. They do not know. They still bring you a bag of pastries each time you meet.',
     obey: ['Giao nộp theo lệnh', 'Hand them over as ordered', 'Bạn báo địa điểm và giờ gặp. Họ đến với túi bánh như mọi lần. Seven ghi nhận bạn đã làm đúng, còn bạn không còn nguồn tin nào trong khu ấy.', 'You file the place and time. They arrive with the pastries as always. Seven notes you did right, and you have no sources left in that district.'],
-    quiet: ['Báo cáo thiếu chứng cứ rồi giữ người ấy ngoài tầm mắt', 'Report insufficient evidence, and keep them out of sight', 'Seven chấp nhận một lần. Người cung cấp tin vẫn đến khiến bạn không dám nói họ nghe điều gì đã suýt xảy ra.', 'Seven accepts it, once. The informant keeps coming, and you do not dare tell them what almost happened.'],
+    quiet: ['Báo cáo thiếu chứng cứ rồi giữ người ấy ngoài tầm mắt', 'Report insufficient evidence, and keep them out of sight', 'Seven chấp nhận một lần. Người cung cấp tin vẫn đến. Bạn không dám nói họ nghe điều gì đã suýt xảy ra.', 'Seven accepts it, once. The informant keeps coming, and you do not dare tell them what almost happened.'],
     leave: ['Báo trước cho người ấy và rời Seven', 'Warn them and leave Seven', 'Bạn đặt thẻ Seven lên bàn và nói thật với họ. Họ nhìn bạn rất lâu rồi đưa túi bánh còn lại. Seven sẽ biết, nhưng không phải tối nay.', 'You set the Seven badge on the table and tell them honestly. They look at you a long while and hand over the remaining pastries. Seven will know, but not tonight.']
   },
   tres: {
-    vi: '[Xưởng của người thợ già] Tres ra lệnh bạn niêm phong một xưởng một người vì không đăng ký công cụ. Cả khu phố mang đồ đến xưởng ấy để sửa; người thợ già không tính tiền những ai không có.',
+    vi: '[Xưởng của người thợ già] Tres ra lệnh bạn niêm phong một xưởng một người vì không đăng ký công cụ. Cả khu phố mang đồ đến xưởng ấy để sửa. Người thợ già không tính tiền những ai không có.',
     en: '[The old craftsperson’s shop] Tres orders you to seal a one-person workshop for unregistered tools. The whole neighborhood brings its things to be mended there, and the old craftsperson charges nothing to those who have nothing.',
     obey: ['Niêm phong theo lệnh', 'Seal it as ordered', 'Bạn dán từng tờ niêm phong lên dụng cụ. Người thợ già nhìn, không nói. Hôm sau trước cửa xưởng có hàng người đứng im còn bạn đi qua không nhìn họ.', 'You paste each seal onto the tools. The old craftsperson watches and says nothing. The next day a line of people stands silent outside the shop, and you walk past without looking.'],
     quiet: ['Đăng ký giúp những dụng cụ còn đăng ký được', 'Register what can still be registered', 'Bạn ngồi với người thợ cả đêm rồi điền từng dòng. Tres chấp nhận phần lớn và gạch phần còn lại. Xưởng ở lại, thiếu vài thứ.', 'You sit with them through the night filling every line. Tres accepts most and strikes the rest. The shop stays, missing a few things.'],
@@ -161,22 +161,22 @@ const CONFLICTS = {
   devyat: {
     vi: '[Rương đang thở] Devyat’ giao bạn một thùng hàng, quy tắc duy nhất là không mở. Giữa đường, bạn nghe thấy hơi thở bên trong. Người phát hàng nói đó là chuyện thường. Người nhận ở cuối chuyến cũng nói thế.',
     en: '[The breathing crate] Devyat’ hands you a crate, the only rule being not to open it. Midway, you hear breathing inside. The dispatcher says this is normal. The recipient at the end says the same.',
-    obey: ['Giao đến nơi, không mở', 'Deliver it unopened', 'Bạn đặt thùng xuống bậc thềm. Người nhận mang nó vào, nhẹ nhàng như mang một đứa nhỏ. Devyat’ trả công khiến bạn đi nhiều tháng mà không nhớ nổi âm thanh ấy hay quên được nó.', 'You set the crate on the step. The recipient carries it in as gently as one carries a small child. Devyat’ pays, and for months you can neither recall nor forget the sound.'],
-    quiet: ['Hé nắp một khe rồi giao đi', 'Crack the lid a sliver, then deliver', 'Bạn nhìn thấy mảnh vải cùng bàn tay nhỏ. Bạn đóng lại, giao đi để Devyat’ không bao giờ biết. Chỉ riêng bạn biết.', 'You glimpse a scrap of cloth and a small hand. You close it, deliver, and Devyat’ never knows. You do.'],
-    leave: ['Mở thùng ngay giữa đường rồi bỏ Devyat’', 'Open it on the spot and quit Devyat’', 'Bạn mở nắp. Bên trong là điều bạn không muốn kể lại. Bạn làm điều đúng theo cách khiến Devyat’ không bao giờ tha thứ. Gói vải dầu cuối cùng bạn cầm là gói để đắp cho chính mình.', 'You open the lid. Inside is something you do not wish to recount, and you do the right thing, in a way Devyat’ will never forgive. The last oilcloth you hold is the one you wrap yourself in.']
+    obey: ['Giao đến nơi, không mở', 'Deliver it unopened', 'Bạn đặt thùng xuống bậc thềm. Người nhận mang nó vào, nhẹ nhàng như mang một đứa nhỏ. Devyat’ trả công. Bạn đi nhiều tháng mà không nhớ nổi âm thanh ấy hay quên được nó.', 'You set the crate on the step. The recipient carries it in as gently as one carries a small child. Devyat’ pays, and for months you can neither recall nor forget the sound.'],
+    quiet: ['Hé nắp một khe rồi giao đi', 'Crack the lid a sliver, then deliver', 'Bạn nhìn thấy mảnh vải cùng bàn tay nhỏ. Bạn đóng lại rồi giao đi. Devyat’ không bao giờ biết. Chỉ riêng bạn biết.', 'You glimpse a scrap of cloth and a small hand. You close it, deliver, and Devyat’ never knows. You do.'],
+    leave: ['Mở thùng ngay giữa đường rồi bỏ Devyat’', 'Open it on the spot and quit Devyat’', 'Bạn mở nắp. Bên trong là điều bạn không muốn kể lại. Bạn làm điều đúng theo cách Devyat’ sẽ không bao giờ tha thứ. Gói vải dầu cuối cùng bạn cầm là gói để đắp cho chính mình.', 'You open the lid. Inside is something you do not wish to recount, and you do the right thing, in a way Devyat’ will never forgive. The last oilcloth you hold is the one you wrap yourself in.']
   },
   dieci: {
     vi: '[Đứa trẻ nghe thấy tiếng] Đứa trẻ trong nhà Dieci nghe được tiếng gọi từ Relic, thứ máy móc không dò ra. Dieci muốn dùng nó để dò. Đứa trẻ vui vì được giao việc.',
     en: '[The child who hears] A child in Dieci’s house can hear the call from a Relic, something instruments cannot detect. Dieci wants to use them as a detector. The child is glad to be given a job.',
     obey: ['Đưa đứa trẻ đi cùng đội dò', 'Take the child along with the survey team', 'Đứa trẻ chỉ đúng chỗ ba lần liền. Đến lần thứ tư, nó không nói gì rồi nhìn bạn rất lâu. Dieci đặt cho nó một suất ăn lớn hơn.', 'The child points to the right spot, three times in a row. On the fourth, they say nothing and look at you for a long time. Dieci gives them a larger portion at dinner.'],
-    quiet: ['Đưa đứa trẻ đi nhưng chỉ đến cửa Ruin, không vào', 'Take the child, but only to the Ruin’s door, not in', 'Đứa trẻ chỉ hướng từ xa khiến đội dò mất thêm ngày. Nhà nghiên cứu không vui nhưng ghi nhận đứa trẻ vẫn còn nguyên vẹn.', 'The child points the direction from afar, and the survey team loses a day. The researcher is displeased, but notes the child is intact.'],
+    quiet: ['Đưa đứa trẻ đi nhưng chỉ đến cửa Ruin, không vào', 'Take the child, but only to the Ruin’s door, not in', 'Đứa trẻ chỉ hướng từ xa. Đội dò mất thêm ngày. Nhà nghiên cứu không vui nhưng ghi nhận đứa trẻ vẫn còn nguyên vẹn.', 'The child points the direction from afar, and the survey team loses a day. The researcher is displeased, but notes the child is intact.'],
     leave: ['Dẫn đứa trẻ ra khỏi nhà Dieci và rời đi', 'Take the child out of Dieci’s house and leave', 'Bạn đưa đứa trẻ qua cổng lúc trời chưa sáng. Nó nắm tay bạn suốt đường. Nhà nghiên cứu đứng ở cửa mà không gọi theo vì đã hiểu.', 'You walk the child through the gate before dawn. They hold your hand the whole way. The researcher stands at the door and does not call after you, having understood.']
   },
   oufi: {
     vi: '[Điều khoản không có lòng trắc ẩn] Öufi giao bạn thi hành án tịch thu nhà của gia đình có đứa con đang sốt. Điều khoản rõ ràng và hợp pháp. Không có dòng nào về đứa trẻ.',
     en: '[A clause with no mercy] Öufi assigns you a verdict to seize the home of a family with a feverish child. The clause is clear and lawful. There is no line about the child.',
     obey: ['Thi hành đúng điều khoản', 'Enforce the clause as written', 'Bạn đọc bản án to, từng chữ. Cả nhà ra đứng ở bậc thềm. Đứa trẻ được bế đi trong chăn. Öufi trả công rồi đóng dấu rằng việc đã xong.', 'You read the verdict aloud, word by word. The family stands on the step. The child is carried out in a blanket. Öufi pays, and stamps the job complete.'],
-    quiet: ['Xin hoãn một tuần theo điều khoản ngoại lệ', 'Request a week’s delay under the exceptions clause', 'Điều khoản ngoại lệ có thật nên bạn là người duy nhất đọc đến đó. Öufi chấp nhận nhưng ghi chú rằng bạn đọc kỹ hơn mức họ cần.', 'The exceptions clause is real, and you are the only one who read that far. Öufi accepts it, and notes you read more closely than they need.'],
+    quiet: ['Xin hoãn một tuần theo điều khoản ngoại lệ', 'Request a week’s delay under the exceptions clause', 'Điều khoản ngoại lệ có thật. Bạn là người duy nhất đọc đến đó. Öufi chấp nhận nhưng ghi chú rằng bạn đọc kỹ hơn mức họ cần.', 'The exceptions clause is real, and you are the only one who read that far. Öufi accepts it, and notes you read more closely than they need.'],
     leave: ['Xé bản án rồi rời Öufi', 'Tear up the verdict and leave Öufi', 'Bạn xé bản án trước mặt cả nhà. Öufi không tha thứ cho điều đó nhưng cũng không cần đuổi theo ngay: họ biết bạn mang chiếc áo choàng của họ.', 'You tear up the verdict before the family. Öufi does not forgive that, and does not need to chase at once: they know you wear their coat.']
   },
   office: {
@@ -220,7 +220,7 @@ const lifecycleEvents = [
       {
         labelVi: 'Trả lại thứ bạn mang đi, nói rõ lý do bạn rời',
         labelEn: 'Return what you took and say plainly why you left',
-        resultVi: 'Bạn đặt thứ ấy lên bàn. Người kia cầm lên, nhìn bạn rất lâu, rồi nói rằng họ sẽ báo cáo bạn đã nói gì. Họ không nói báo cho ai; bạn cũng không hỏi.',
+        resultVi: 'Bạn đặt thứ ấy lên bàn. Người kia cầm lên, nhìn bạn rất lâu, rồi nói rằng họ sẽ báo cáo bạn đã nói gì. Họ không nói báo cho ai. Bạn cũng không hỏi.',
         resultEn: 'You set it on the table. The other picks it up, looks at you a long while, then says they will report what you said. They do not say to whom, and you do not ask.',
         effects: { rep: 3, sanity: 3, heat: -10 }, flagsRemove: ['Defector'], meritAdd: 4
       },
@@ -237,7 +237,7 @@ const lifecycleEvents = [
     id: 'aff_director_offer',
     age: [36, 99], major: true, weight: 0, causalOnly: true, jobs: ['Fixer', 'Color Fixer'], forbids: ['AssocDirector'],
     need: { aff: 'assoc', affSection: [1, 1], grade: [0, 3] },
-    vi: '[Chiếc ghế Director] Section 1 của Association không còn ai đủ tư cách ngồi cùng bạn. Director cũ muốn rời; danh sách tên người thay thế chỉ có một dòng. Người điều phối đặt chìa khóa phòng họp lên bàn, không nói gì.',
+    vi: '[Chiếc ghế Director] Section 1 của Association không còn ai đủ tư cách ngồi cùng bạn. Director cũ muốn rời. Danh sách tên người thay thế chỉ có một dòng. Người điều phối đặt chìa khóa phòng họp lên bàn, không nói gì.',
     en: '[The Director’s chair] Your Association’s Section 1 has no one left worthy of sitting beside you. The old Director wants to step down, and the list of replacements has one line. The coordinator sets the meeting-room key on the table and says nothing.',
     choices: [
       {
@@ -350,8 +350,8 @@ const lifecycleEvents = [
       {
         labelVi: 'Đi cùng, nhận phần nguy hiểm nhất', labelEn: 'Go along and take the most dangerous part',
         outcomes: [
-          { w: 70, resultVi: 'Bạn đứng chắn khi mọi thứ vỡ ra. Họ hoàn thành Request nhờ bạn kéo kịp nhưng không nói gì về điều đó; chiều hôm sau họ mang đến một ấm trà.', resultEn: 'You stand in the way when everything breaks. They finish the Request because you pulled them clear in time, and say nothing of it, but the next afternoon bring a pot of tea.', menteeBond: 12, menteeProgress: 20, effects: { health: -14, sanity: 2 }, meritAdd: 4 },
-          { w: 30, resultVi: 'Bạn bị thương nặng và họ nhìn thấy điều đó. Request thất bại, nhưng họ ở lại bên giường bạn cả ba ngày; họ học ở đó nhiều hơn cả một năm đi theo.', resultEn: 'You are badly hurt and they see it. The Request fails, but they stay by your bedside three days, and learn there more than a year of following.', menteeBond: 15, menteeProgress: 25, effects: { health: -26, sanity: -4, wealth: -4 } }
+          { w: 70, resultVi: 'Bạn đứng chắn khi mọi thứ vỡ ra. Họ hoàn thành Request nhờ bạn kéo kịp nhưng không nói gì về điều đó. Chiều hôm sau họ mang đến một ấm trà.', resultEn: 'You stand in the way when everything breaks. They finish the Request because you pulled them clear in time, and say nothing of it, but the next afternoon bring a pot of tea.', menteeBond: 12, menteeProgress: 20, effects: { health: -14, sanity: 2 }, meritAdd: 4 },
+          { w: 30, resultVi: 'Bạn bị thương nặng và họ nhìn thấy điều đó. Request thất bại, nhưng họ ở lại bên giường bạn cả ba ngày. Họ học ở đó nhiều hơn cả một năm đi theo.', resultEn: 'You are badly hurt and they see it. The Request fails, but they stay by your bedside three days, and learn there more than a year of following.', menteeBond: 15, menteeProgress: 25, effects: { health: -26, sanity: -4, wealth: -4 } }
         ]
       },
       {
