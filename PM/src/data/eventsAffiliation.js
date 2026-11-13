@@ -70,7 +70,7 @@ const inviteEvents = Object.entries(ASSOCIATIONS).map(([id, def]) => ({
     {
       labelVi: 'Từ chối, giữ thân phận Fixer tự do',
       labelEn: 'Decline and keep working as a freelance Fixer',
-      resultVi: 'Người của Association cúi chào, để lại cho bạn một tấm danh thiếp mà không giục. Bạn vẫn nhận Request từ những ai tìm đến để giữ nguyên thù lao cho mình, với cái giá là không ai đứng sau lưng.',
+      resultVi: 'Người của Association cúi chào, để lại cho bạn một tấm danh thiếp và không giục. Bạn vẫn nhận Request từ những ai tìm đến, giữ nguyên thù lao cho mình, với cái giá là không ai đứng sau lưng.',
       resultEn: 'The Association’s messenger bows, leaves you a card, and does not press. You still take Requests from whoever comes, and keep the fees for yourself, at the price of no one standing behind you.',
       affDecline: id, effects: { sanity: 2 }
     }
@@ -184,7 +184,7 @@ const CONFLICTS = {
     en: '[An uneven split] Your Office takes a large job and the coordinator decides to split by seniority, not by who bore the risk. You held the back door all night, and your share equals that of someone who slept.',
     obey: ['Nhận phần được chia', 'Accept the share given', 'Bạn nhận phong bì và đi ra. Người điều phối gật đầu, hài lòng vì một sự im lặng đã mua được rẻ. Bếp chung tối đó có thêm thịt.', 'You take the envelope and leave. The coordinator nods, pleased that silence was bought cheaply. The shared stove has extra meat that night.'],
     quiet: ['Nói thẳng với người điều phối ngay tại bàn', 'Speak plainly to the coordinator, at the table', 'Cả bàn im lặng. Người điều phối đếm lại rồi chia lại. Sau đó có vài người nhìn bạn khác đi, ít nhất một nửa trong đó là biết ơn.', 'The table falls silent. The coordinator recounts and redivides. After that a few people look at you differently, at least half of them gratefully.'],
-    leave: ['Lấy phần của mình và rời Office', 'Take your own share and leave the Office', 'Bạn đặt phù hiệu lên bàn. Người điều phối không giữ bạn, cũng chẳng nói lời tạm biệt. Bếp chung vẫn ấm nhưng không còn chỗ ngồi cho bạn.', 'You set the badge on the table. The coordinator neither holds you back nor says goodbye. The shared stove stays warm, but there is no seat for you.']
+    leave: ['Lấy phần của mình và rời Office', 'Take your own share and leave the Office', 'Bạn đặt phù hiệu lên bàn. Người điều phối không giữ bạn, cũng không nói lời tạm biệt. Bếp chung vẫn ấm, nhưng không còn chỗ ngồi cho bạn.', 'You set the badge on the table. The coordinator neither holds you back nor says goodbye. The shared stove stays warm, but there is no seat for you.']
   }
 };
 
@@ -237,7 +237,7 @@ const lifecycleEvents = [
     id: 'aff_director_offer',
     age: [36, 99], major: true, weight: 0, causalOnly: true, jobs: ['Fixer', 'Color Fixer'], forbids: ['AssocDirector'],
     need: { aff: 'assoc', affSection: [1, 1], grade: [0, 3] },
-    vi: '[Chiếc ghế Director] Section 1 của Association không còn ai đủ tư cách ngồi cùng bạn. Director cũ muốn rời; danh sách tên người thay thế chỉ có một dòng. Người điều phối đặt chìa khóa phòng họp lên bàn rồi im lặng rời đi.',
+    vi: '[Chiếc ghế Director] Section 1 của Association không còn ai đủ tư cách ngồi cùng bạn. Director cũ muốn rời; danh sách tên người thay thế chỉ có một dòng. Người điều phối đặt chìa khóa phòng họp lên bàn, không nói gì.',
     en: '[The Director’s chair] Your Association’s Section 1 has no one left worthy of sitting beside you. The old Director wants to step down, and the list of replacements has one line. The coordinator sets the meeting-room key on the table and says nothing.',
     choices: [
       {
@@ -351,7 +351,7 @@ const lifecycleEvents = [
         labelVi: 'Đi cùng, nhận phần nguy hiểm nhất', labelEn: 'Go along and take the most dangerous part',
         outcomes: [
           { w: 70, resultVi: 'Bạn đứng chắn khi mọi thứ vỡ ra. Họ hoàn thành Request nhờ bạn kéo kịp nhưng không nói gì về điều đó; chiều hôm sau họ mang đến một ấm trà.', resultEn: 'You stand in the way when everything breaks. They finish the Request because you pulled them clear in time, and say nothing of it, but the next afternoon bring a pot of tea.', menteeBond: 12, menteeProgress: 20, effects: { health: -14, sanity: 2 }, meritAdd: 4 },
-          { w: 30, resultVi: 'Bạn bị thương nặng và họ nhìn thấy điều đó. Request thất bại nhưng họ ở lại bên giường bạn cả ba ngày để học được ở đó nhiều hơn cả năm đi theo.', resultEn: 'You are badly hurt and they see it. The Request fails, but they stay by your bedside three days, and learn there more than a year of following.', menteeBond: 15, menteeProgress: 25, effects: { health: -26, sanity: -4, wealth: -4 } }
+          { w: 30, resultVi: 'Bạn bị thương nặng và họ nhìn thấy điều đó. Request thất bại, nhưng họ ở lại bên giường bạn cả ba ngày; họ học ở đó nhiều hơn cả một năm đi theo.', resultEn: 'You are badly hurt and they see it. The Request fails, but they stay by your bedside three days, and learn there more than a year of following.', menteeBond: 15, menteeProgress: 25, effects: { health: -26, sanity: -4, wealth: -4 } }
         ]
       },
       {
@@ -473,7 +473,7 @@ const lifecycleEvents = [
       {
         labelVi: 'Từ chối, giữ Office của mình', labelEn: 'Refuse and keep the Office your own',
         outcomes: [
-          { w: 55, resultVi: 'Họ không nói gì thêm rồi vắng mặt suốt một năm. Có thể họ nhẩm lại quyết định. Có thể họ đang chờ.', resultEn: 'They say nothing more and do not return for a year. Perhaps they are reconsidering. Perhaps they are waiting.', effects: { rep: 4, sanity: 1, heat: 6 } },
+          { w: 55, resultVi: 'Họ không nói gì thêm, cũng không quay lại trong một năm. Có thể họ nhẩm lại quyết định. Có thể họ đang chờ.', resultEn: 'They say nothing more and do not return for a year. Perhaps they are reconsidering. Perhaps they are waiting.', effects: { rep: 4, sanity: 1, heat: 6 } },
           { w: 45, resultVi: 'Hai tuần sau, ba hợp đồng của Office bị hủy cùng lúc. Không ai giải thích. Người điều phối cũ của bạn gửi một tờ giấy ngắn: "Đã nói rồi."', resultEn: 'Two weeks later, three of the Office’s contracts are cancelled at once. No one explains. Your old coordinator sends a short note: “I told you.”', effects: { wealth: -10, rep: 1, heat: 10, sanity: -3 } }
         ]
       },

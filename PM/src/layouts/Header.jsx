@@ -19,6 +19,7 @@ export const Header = ({ languageOverride, isPlay }) => {
   const [settingsOpen, setSettingsOpen] = useState(false);
   React.useEffect(() => audioEngine.subscribe((st) => setMuted(st.isMuted)), []);
   const lang = languageOverride || preferredLang;
+  const activeLang = LANG_OPTIONS.find((o) => o.key === lang) || LANG_OPTIONS[0];
   const inRun = useGameStore((s) => s.inRun);
   const exitToSetup = useGameStore((s) => s.exitToSetup);
   const name = useGameStore((s) => s.char.name);
@@ -67,19 +68,13 @@ export const Header = ({ languageOverride, isPlay }) => {
             className="app-tool app-tool-lang"
             aria-label={pick(
               lang,
-              `Ngôn ngữ: ${(LANG_OPTIONS.find((o) => o.key === lang) || LANG_OPTIONS[0]).label}. Đổi Tiếng Việt / Anh`,
-              `Language: ${(LANG_OPTIONS.find((o) => o.key === lang) || LANG_OPTIONS[0]).label}. Switch EN / VI`
+              `Ngôn ngữ: ${activeLang.label}. Đổi Tiếng Việt / Anh`,
+              `Language: ${activeLang.label}. Switch EN / VI`
             )}
-            title={pick(
-              lang,
-              `Ngôn ngữ: ${(LANG_OPTIONS.find((o) => o.key === lang) || LANG_OPTIONS[0]).label}`,
-              `Language: ${(LANG_OPTIONS.find((o) => o.key === lang) || LANG_OPTIONS[0]).label}`
-            )}
+            title={pick(lang, `Ngôn ngữ: ${activeLang.label}`, `Language: ${activeLang.label}`)}
           >
             <Languages size={17} aria-hidden="true" />
-            <span className="app-tool-lang-code">
-              {(LANG_OPTIONS.find((o) => o.key === lang) || LANG_OPTIONS[0]).short}
-            </span>
+            <span className="app-tool-lang-code">{activeLang.short}</span>
           </button>
         </LangMenu>
         <button

@@ -196,11 +196,12 @@ details > summary::-webkit-details-marker { display: none; }
 .ant-modal-confirm-title { font-family: var(--serif); }
 .ant-notification-notice { background: var(--surface-solid) !important; color: var(--text) !important; border: 1px solid var(--border) !important; border-radius: var(--radius) !important; }
 .ant-notification-notice-message, .ant-notification-notice-description, .ant-notification-notice-close { color: var(--text) !important; }
-.ant-dropdown-menu { border: 1px solid var(--dialog-border) !important; border-radius: var(--radius) !important; background: var(--dialog-surface) !important; padding: 6px !important; box-shadow: 0 0 0 1px rgba(216, 178, 101, 0.16), var(--shadow-pop) !important; }
-.ant-dropdown-menu-item { color: var(--text) !important; border-radius: var(--radius-sm) !important; min-height: 36px; font-size: var(--t-ui) !important; }
-.ant-dropdown-menu-item:hover { background: var(--raised) !important; color: var(--text) !important; }
-.ant-dropdown-menu-item-selected { background: var(--accent-soft) !important; color: var(--text) !important; font-weight: 600; }
-.app-tool-lang-code { font-size: 11px; letter-spacing: 0.04em; line-height: 1; }
+.ant-dropdown-menu { border: 1px solid var(--border) !important; border-radius: var(--radius) !important; }
+.lang-menu-dropdown .ant-dropdown-menu { border: 1px solid var(--dialog-border) !important; background: var(--dialog-surface) !important; padding: 6px !important; box-shadow: 0 0 0 1px var(--ambient-rim), var(--shadow-pop) !important; }
+.lang-menu-dropdown .ant-dropdown-menu-item { color: var(--text) !important; border-radius: var(--radius-sm) !important; min-height: 44px; font-size: var(--t-ui) !important; }
+.lang-menu-dropdown .ant-dropdown-menu-item:hover { background: var(--raised) !important; color: var(--text) !important; }
+.lang-menu-dropdown .ant-dropdown-menu-item-selected { background: var(--accent-soft) !important; color: var(--text) !important; font-weight: 600; }
+.app-tool-lang-code { font-size: var(--t-meta); line-height: 1; }
 .ant-tooltip-inner { font-size: var(--t-label) !important; line-height: 1.5 !important; }
 
 /* Errors and the lazy-page placeholder */

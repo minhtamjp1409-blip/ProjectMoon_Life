@@ -419,7 +419,7 @@ export const LIFE_MINORS_4 = [
         { health: -3, sanity: -2, heat: 4 }
       )
     ],
-    I('Bạn gấp tờ giấy cất vào túi. Cổ tay ngứa suốt đêm để rồi sáng ra tờ giấy đã ấm.', 'You fold the paper into your pocket. Your wrist itches all night, and by morning the paper is warm.', { sanity: -1 }),
+    I('Bạn gấp tờ giấy cất vào túi. Cổ tay ngứa suốt đêm; sáng ra tờ giấy đã ấm.', 'You fold the paper into your pocket. Your wrist itches all night, and by morning the paper is warm.', { sanity: -1 }),
     { once: true }
   ),
 
@@ -863,7 +863,7 @@ export const LIFE_MINORS_4 = [
       C(
         'Đến văn phòng hỏi trực tiếp',
         'Go to the office and ask in person',
-        'Hàng chờ dài hơn hạn nộp. Một nhân viên ghi tên bạn vào danh sách gia hạn để rồi bạn nhận ra mình vừa đồng ý với điều gì đó chưa đọc.',
+        'Hàng chờ dài hơn hạn nộp. Một nhân viên ghi tên bạn vào danh sách gia hạn; bạn nhận ra mình vừa đồng ý với điều gì đó chưa đọc.',
         'The line is longer than the deadline. A clerk adds your name to an extension list, and you realise you have agreed to something you have not read.',
         { sanity: -2, network: 1, wealth: -2 }
       ),

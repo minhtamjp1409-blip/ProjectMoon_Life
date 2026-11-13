@@ -60,7 +60,7 @@ export const LIFE_MINORS_5 = [
       C(
         'Hỏi {spouse} về lá thư',
         'Ask {spouse} about the letter',
-        '{spouse} nhìn phong bì một lúc lâu. "Của người tôi từng làm cùng," họ nói, chỉ từng ấy thôi. Nhưng tối đó họ mở thư ngay trước mặt bạn.',
+        '{spouse} nhìn phong bì một lúc lâu. "Của người tôi từng làm cùng," họ nói; đó là tất cả. Nhưng tối đó họ mở thư ngay trước mặt bạn.',
         '{spouse} looks at the envelope a long while. "Someone I used to work with," they say, and that is all. But that evening they open it right in front of you.',
         { sanity: 1 },
         { bond: { spouse: 4 }, mem: 'npc_spouse_unopened_letter' }
@@ -149,7 +149,7 @@ export const LIFE_MINORS_5 = [
       C(
         'Phạt {child} vì nói dối',
         'Punish {child} for lying',
-        '{child} nhận hình phạt mà không kêu. Sau này đứa trẻ nói dối khéo hơn chính vì bạn là người dạy điều đó.',
+        '{child} nhận hình phạt mà không kêu. Sau này đứa trẻ nói dối khéo hơn; bạn là người dạy điều đó.',
         '{child} takes the punishment without crying out. Afterward the child lies more skilfully, and you are the one who taught them.',
         { sanity: -2 },
         { bond: { child: -6 } }
@@ -388,7 +388,7 @@ export const LIFE_MINORS_5 = [
       C(
         'Gọi {rival} lại và trả mảnh giấy',
         'Call {rival} back and return it',
-        '{rival} cầm lấy mảnh giấy, nhìn bạn một nhịp, rồi nói: "Anh không đọc chứ?" Bạn nói không để họ gật chậm, như đang đo xem đó có phải sự thật.',
+        '{rival} cầm lấy mảnh giấy, nhìn bạn một nhịp, rồi nói: "Anh không đọc chứ?" Bạn nói không; họ gật chậm, như đang đo xem đó có phải sự thật.',
         '{rival} takes the note, looks at you for a beat, then asks, "You did not read it?" You say no, and they nod slowly, as if measuring whether that is true.',
         { rep: 2, sanity: 1 },
         { bond: { rival: 4 } }
@@ -410,7 +410,7 @@ export const LIFE_MINORS_5 = [
         { bond: { rival: -1 } }
       )
     ],
-    I('Bạn đứng nhìn mảnh giấy. Một cơn gió thổi nó vào rãnh nước để rồi nó mất tăm trước khi bạn kịp quyết định.', 'You stand looking at the scrap. A gust blows it into a gutter, and it is gone before you can decide.'),
+    I('Bạn đứng nhìn mảnh giấy. Một cơn gió thổi nó vào một rãnh nước; nó mất tăm trước khi bạn kịp quyết định.', 'You stand looking at the scrap. A gust blows it into a gutter, and it is gone before you can decide.'),
     { tags: ['npc'], once: true }
   ),
 
@@ -419,7 +419,7 @@ export const LIFE_MINORS_5 = [
     'm5_friend_old_nickname',
     [12, 70],
     { npc: 'friend' },
-    '[Biệt danh cũ] {friend} gọi bạn bằng biệt danh hồi nhỏ ngay trước mặt những người lạ. Cả nhóm quay lại nhìn cái tên bạn đã nghĩ mình quên từ lâu.',
+    '[Biệt danh cũ] {friend} gọi bạn bằng biệt danh hồi nhỏ ngay trước mặt những người lạ. Cả nhóm quay lại nhìn; bạn đã nghĩ mình quên cái tên ấy từ lâu.',
     '[The Old Nickname] {friend} calls you by your childhood nickname in front of strangers. The whole group turns to look, and you had thought you had long forgotten that name.',
     [
       C(
@@ -894,7 +894,7 @@ export const LIFE_MINORS_5 = [
         { sanity: -1, resonance: 2 }
       )
     ],
-    I('Bạn đặt chùm chìa lên bàn. Ánh chiều chiếu qua nó để rồi bóng của chúng trên tường đông hơn số chìa thật.', 'You lay the ring on the table. The afternoon light passes through it, and its shadow on the wall holds more keys than there are.'),
+    I('Bạn đặt chùm chìa lên bàn. Ánh chiều chiếu qua nó; bóng của chúng trên tường đông hơn số chìa thật.', 'You lay the ring on the table. The afternoon light passes through it, and its shadow on the wall holds more keys than there are.'),
     { once: true }
   ),
 
@@ -915,7 +915,7 @@ export const LIFE_MINORS_5 = [
       C(
         'Dẫn họ tới chỗ khu phố ấy từng đứng',
         'Walk them to where the neighbourhood used to stand',
-        'Đó chỉ còn là một bãi đất trống với vài tấm sắt. Bạn kể từng ngôi nhà đã ở đâu để họ chép lại vào mép bản đồ bằng nét chữ nắn nót.',
+        'Đó chỉ còn là một bãi đất trống với vài tấm sắt. Bạn kể từng ngôi nhà đã ở đâu; họ chép lại vào mép bản đồ bằng nét chữ nắn nót.',
         'It is only a stretch of empty ground with a few iron sheets. You tell where each house stood, and they copy it onto the map’s margin in careful handwriting.',
         { health: -1, sanity: 2, rep: 1, network: 2 }
       ),

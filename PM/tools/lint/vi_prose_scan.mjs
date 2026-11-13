@@ -46,6 +46,8 @@ export const VI_RULES = {
   hanViet: { re: V(/\b(?:hiện diện|tiến hành|thực hiện|sở hữu|tử vong|nhận thức được|cảm nhận được)\b/), why: 'stiff Sino-Vietnamese word, prefer the native one' },
   // "đã từng": one of the two is enough
   daTung: { re: V(/\bđã từng\b/), why: '"đã từng" (one is enough)' },
+  // "chẳng" overuse as a mechanical replacement for "không" or connectors
+  chang: { re: V(/\bchẳng\b/), why: '"chẳng" overuse: prefer natural "không" unless tone calls for it' },
 };
 
 function walkFiles(dir, out = []) {

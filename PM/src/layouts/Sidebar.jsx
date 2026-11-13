@@ -64,6 +64,7 @@ export const LangMenu = ({ children, placement = 'topLeft' }) => {
     <Dropdown
       trigger={['click']}
       placement={placement}
+      classNames={{ root: 'lang-menu-dropdown' }}
       menu={{
         selectable: true,
         selectedKeys: [lang],
