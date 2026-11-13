@@ -561,6 +561,54 @@ const ELDER_CHAPTER_EVENTS = [
     ]
   },
   {
+    id: 'outcast_arc_rusted_turnstile', age: [20, 58], jobs: ['Outcast'], major: true, weight: 9,
+    forbids: ['Distorted', 'outcast_turnstile_done'],
+    vi: '[Cổng gỉ ở rìa Khu 12] Cánh cửa sắt dẫn vào khu ống thoát nước cũ bị nhóm bảo kê mới đóng khóa dây xích. Giấy tờ tạm trú của bạn đã hết hạn từ mùa trước, còn phía sau lưng là tiếng xe tuần tra của Wing đang tới gần.',
+    en: '[Rusted turnstile on District 12 edge] A new protection crew chains shut the iron gate to the old drainage culvert. Your temporary transit paper expired last season while a Wing patrol van rattles up the street behind you.',
+    choices: [
+      { labelVi: 'Bẻ khóa khe phụ dưới gầm cống để lách sang bên kia', labelEn: 'Pry open the lower culvert grate to slip across unnoticed',
+        effects: { network: 4, rep: 3, sanity: -2 }, meritAdd: 6, flagsAdd: ['outcast_turnstile_done'],
+        resultVi: 'Thanh sắt bật ra dưới mũi xà beng ngắn. Bạn trườn qua khe tối ngay trước khi đèn pha quét ngang mặt tường gạch.',
+        resultEn: 'The iron bar yields to your short crowbar. You slide into the dark channel a heartbeat before headlights sweep the brick wall.' },
+      { labelVi: 'Nộp nốt số đồng lẻ để mua lượt qua cửa của toán gác', labelEn: 'Pay off the gate crew with your last loose coins to pass',
+        effects: { wealth: -8, network: 6, sanity: 3 }, meritAdd: 6, flagsAdd: ['outcast_turnstile_done'],
+        resultVi: 'Tên gác cổng ném đồng xu vào túi áo rồi gạt xích sắt sang bên. Hắn nhớ mặt bạn đủ để lần sau không rút dao trước.',
+        resultEn: 'The gatekeeper drops the coins into his coat and unhooks the chain. He remembers your face well enough not to draw steel first next time.' }
+    ]
+  },
+  {
+    id: 'outcast_arc_sweeper_alley_toll', age: [24, 72], jobs: ['Outcast'], major: true, weight: 9,
+    forbids: ['Distorted', 'outcast_alley_toll_done'],
+    vi: '[Giờ giới nghiêm Đêm Hẻm] Chuông báo hiệu sắp sang ba giờ sáng vang khắp dãy nhà tôn. Một tốp người không có hộ khẩu kẹt lại ngoài ngã tư vì khóa cửa sắt bị kẹt trục. Ở đầu ngõ đã có mùi kim loại tanh đặc trưng của Sweeper.',
+    en: '[Night in the Backstreets curfew] The curfew bell tolls toward three in the morning across the tin roofs. Several unregistered dwellers stall at the alley fork beside a jammed shutter while the sharp rust scent of Sweepers drifts down the lane.',
+    choices: [
+      { labelVi: 'Kéo chốt cửa kho bỏ hoang giúp cả đám chui vào ẩn náu', labelEn: 'Lift the jammed shutter of an abandoned depot to shelter the group',
+        effects: { health: -4, rep: 7, network: 6 }, meritAdd: 8, flagsAdd: ['outcast_alley_toll_done'],
+        resultVi: 'Cánh cửa rít lên rồi sập xuống đúng lúc tiếng móc kéo lê qua mặt đường nhựa. Trong bóng tối chật chội có người nhét vào tay bạn mẩu bánh khô.',
+        resultEn: 'The iron door drops shut just as heavy hooks scrape across the asphalt outside. In the cramped dark someone presses a crust of dry bread into your palm.' },
+      { labelVi: 'Leo lên máng xối mái tôn để giữ đường thoát riêng mình', labelEn: 'Climb the tin guttering to secure your own rooftop escape',
+        effects: { health: 2, wealth: 6, sanity: -4 }, meritAdd: 6, flagsAdd: ['outcast_alley_toll_done'],
+        resultVi: 'Bạn nín thở nằm sát ống khói nguội cho tới lúc tiếng còi dứt hẳn. Khi nắng hửng lên, mặt đường dưới chân chỉ còn vệt nước rửa trôi.',
+        resultEn: 'You hold your breath beside a cold chimney until the sirens die away. At sunrise the pavement below gleams wet and empty.' }
+    ]
+  },
+  {
+    id: 'outcast_arc_unlisted_clinic_pact', age: [28, 90], jobs: ['Outcast'], major: true, weight: 9,
+    forbids: ['Distorted', 'outcast_clinic_pact_done'],
+    vi: '[Phòng khám không biển hiệu] Trong tầng hầm dưới tiệm giặt là cũ, bác sĩ chui chuyên chữa cho dân không thẻ căn cước sắp hết thuốc gây tê. Bà đưa cho bạn mẩu giấy viết tay nhờ đi lấy thùng hàng cứu trợ rớt lại bên rìa Outskirts.',
+    en: '[The unlisted cellar clinic] Beneath an old laundromat, an underground surgeon treating unregistered locals is running out of anesthetic. She hands you a scribbled slip to recover a dropped relief crate near the Outskirts fence.',
+    choices: [
+      { labelVi: 'Mang thùng thuốc về nguyên vẹn cho tầng hầm dưới tiệm giặt', labelEn: 'Deliver the intact medical crate to the cellar beneath the laundromat',
+        effects: { health: 6, rep: 8, network: 8, sanity: 5 }, meritAdd: 10, flagsAdd: ['outcast_clinic_pact_done'],
+        resultVi: 'Người bác sĩ mở nắp thùng rồi ghi tên bạn vào mặt trong cánh tủ gỗ. Từ nay những ai sống ngoài sổ sách đều biết cửa nhà nào mở cho bạn.',
+        resultEn: 'The surgeon unseals the crate and carves your mark inside her cabinet door. From this night on, everyone living off the ledgers knows whose lantern stays lit for you.' },
+      { labelVi: 'Giữ lại nửa số ống thuốc phòng thân rồi bán số còn lại', labelEn: 'Pocket half the vials for yourself and fence the remaining stock',
+        effects: { health: 8, wealth: 18, rep: -4, sanity: -3 }, meritAdd: 8, flagsAdd: ['outcast_clinic_pact_done'],
+        resultVi: 'Túi áo ấm lên nhờ mấy lọ thủy tinh bọc vải, còn ngăn ví dày thêm bằng tiền mặt nhàu nát. Ở vùng rìa thành phố, không ai trách kẻ tự lo thân trước.',
+        resultEn: 'Glass vials wrapped in cloth warm your coat pocket beside a thick wad of creased bills. Out along the border walls no one blames you for guarding your own skin first.' }
+    ]
+  },
+  {
     id: 'elder_syndicate_old_lieutenant_return', age: [50, 120], jobs: ['Syndicate'], major: true, weight: 9,
     forbids: ['Distorted', 'elder_syn_lieutenant_done'],
     vi: '[Phó tướng năm xưa quay về] Một người tóc đã bạc nửa đầu xin gặp bạn, tự nhận là đàn em theo bạn từ những năm đầu. Hắn đặt túi tiền cống nạp lên bàn trà rồi xin đưa lứa người trẻ của mình vào tiếp quản bến bãi.',

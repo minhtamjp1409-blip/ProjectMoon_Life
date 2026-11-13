@@ -3338,5 +3338,11 @@ Chạy kiểm định mô phỏng 500 vòng đời với chiến lược ngườ
 * **Đợt 172, mục tiêu dungeon.** Mỗi lượt hầm (trừ Claw và Ensemble) nhận một mục tiêu cố định theo đời, tuổi và hầm: đưa người bị thương ra ngoài, lấy bằng chứng, thu hồi món hàng, giữ đường rút. Thẻ hầm ghi mục tiêu dưới dòng không khí. Đi hết hầm thì một thẻ quyết định mở ra; mỗi bên để lại dấu vết lâu dài (một người bạn mới, sẹo "người bạn đã bỏ lại", sẹo người biết chuyện, ống thuốc K Corp, Heat, Merit). Rút sớm thì kết quả ghi việc Request còn bỏ dở.
 * **Kiểm định.** `tests/test_batches_167_172.mjs` mới; `npm test` và `npm run build` đạt (sửa một vòng chunk do `npcStatus.js` nằm ở `engine/`, nay ở `data/`); chụp ở 1440 và 390px kế hoạch năm khi bị thương, minor thật, thẻ hầm có mục tiêu, thẻ mục tiêu; `impeccable detect` trên `src` không có phát hiện nào.
 
+##### 2.55. Thẻ Dungeon di động, 11 mạch truyện dài, gọt văn đợt 5 & cấu hình cache Vercel (Đợt 173, 13/11/2026)
+* **Thẻ Dungeon trên di động (`390px`).** Đưa tên người đồng hành vào `.dg-status` (`DungeonDock.jsx`); xếp gọn `.dg-stances` thành 3 cột đều nhau và `.dg-supplies` tự xuống dòng với vùng chạm tối thiểu `44px` ở `@media (max-width: 860px)` và `480px` (`dungeon-chrome.css`).
+* **11 mạch truyện nhiều hồi (`NARRATIVE_ARCS`).** Bổ sung 3 mạch mới cho Ring (`arc_ring_exhibition`), Pinky (`arc_pinky_oath_vigil`) và Outcast (`arc_outcast_gutter_compact` kèm 3 major mới `outcast_arc_rusted_turnstile`, `outcast_arc_sweeper_alley_toll`, `outcast_arc_unlisted_clinic_pact` trong `eventsApexTwilight.js`).
+* **Gọt câu chữ đợt 5 (`vaClause`).** Hạ `vaClause` toàn cục từ `1800` xuống `955` (10 chỉ số còn lại và `voice_lint.mjs --fail` đều `0`) qua 12 tệp dữ liệu lớn (`eventsFinger*`, `eventsAffiliation.js`, `eventsEgoLeap.js`, `careerContracts*`, `lifeMinors4.js`, `lifeMinors5.js`), hạ trần `package.json` xuống `960`.
+* **Cache headers trên Vercel (`vercel.json`).** Thêm rule `no-cache, no-store, must-revalidate` cho `/index.html` và `immutable` 1 năm cho `/assets/(.*)`.
+
 #### 3. KIỂM ĐỊNH & BẢO ĐẢM TOÀN VẸN (VERIFICATION & INTEGRITY)
 * Tất cả các bộ kiểm thử tự động (`npm test`) bao gồm lint văn phong (`voice_lint.mjs`), chuẩn canon Project Moon (`lint_story.mjs`), và mô phỏng 500 khoảnh khắc đời người (`run_million_audit.mjs`) phải vượt qua 100% với 0 lỗi, 0 cảnh báo.

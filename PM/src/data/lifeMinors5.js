@@ -12,13 +12,13 @@ export const LIFE_MINORS_5 = [
     'm5_spouse_cold_dinner',
     [21, 80],
     { npc: 'spouse' },
-    '[Bữa tối đã nguội] {spouse} về muộn, và bữa tối đã nguội từ lâu. Hai người ngồi đối diện nhau, và không ai nhắc đến giờ giấc.',
+    '[Bữa tối đã nguội] {spouse} về muộn trong khi bữa tối đã nguội từ lâu. Hai người ngồi đối diện nhau, không ai nhắc đến giờ giấc.',
     '[Dinner Gone Cold] {spouse} comes home late, and dinner went cold long ago. You sit across from each other, and neither of you mentions the hour.',
     [
       C(
         'Hâm lại thức ăn và ngồi ăn cùng',
         'Reheat the food and eat together',
-        'Nồi canh hâm hai lần có vị cháy ở đáy, và {spouse} ăn hết mà không phàn nàn. Khi rửa bát, hai người đứng sát nhau hơn mức cần.',
+        'Nồi canh hâm hai lần có vị cháy ở đáy nhưng {spouse} ăn hết mà không phàn nàn. Khi rửa bát, hai người đứng sát nhau hơn mức cần.',
         'The twice-reheated soup tastes scorched at the bottom, and {spouse} finishes it without complaint. Washing up, you stand closer than you need to.',
         { sanity: 3, wealth: -1 },
         { bond: { spouse: 6 }, mem: 'npc_spouse_cold_dinner' }
@@ -60,7 +60,7 @@ export const LIFE_MINORS_5 = [
       C(
         'Hỏi {spouse} về lá thư',
         'Ask {spouse} about the letter',
-        '{spouse} nhìn phong bì một lúc lâu. "Của người tôi từng làm cùng," họ nói, và đó là tất cả. Nhưng tối đó họ mở thư ngay trước mặt bạn.',
+        '{spouse} nhìn phong bì một lúc lâu. "Của người tôi từng làm cùng," họ nói, chỉ từng ấy thôi. Nhưng tối đó họ mở thư ngay trước mặt bạn.',
         '{spouse} looks at the envelope a long while. "Someone I used to work with," they say, and that is all. But that evening they open it right in front of you.',
         { sanity: 1 },
         { bond: { spouse: 4 }, mem: 'npc_spouse_unopened_letter' }
@@ -68,7 +68,7 @@ export const LIFE_MINORS_5 = [
       C(
         'Đưa lá thư cho {spouse} và đi ra ngoài',
         'Hand the letter to {spouse} and step outside',
-        'Bạn đứng ngoài hành lang gần mười phút. Khi vào lại, lá thư đã mở, và {spouse} đang nhìn ra cửa sổ.',
+        'Bạn đứng ngoài hành lang gần mười phút. Khi vào lại, lá thư đã mở còn {spouse} đang nhìn ra cửa sổ.',
         'You stand in the corridor nearly ten minutes. When you go back in the letter is open, and {spouse} is looking out of the window.',
         { sanity: -1 },
         { bond: { spouse: 2 }, mem: 'npc_spouse_unopened_letter' }
@@ -82,7 +82,7 @@ export const LIFE_MINORS_5 = [
         { bond: { spouse: -4 }, mem: 'npc_spouse_unopened_letter_cold' }
       )
     ],
-    I('Bạn để nguyên lá thư. Hôm sau nó vẫn ở đó, và hôm sau nữa, như một người khách chưa được mời ngồi.', 'You leave the letter alone. The next day it is still there, and the day after, like a guest who has not been invited to sit.'),
+    I('Bạn để nguyên lá thư. Hôm sau nó vẫn ở đó rồi hôm sau nữa, như một người khách chưa được mời ngồi.', 'You leave the letter alone. The next day it is still there, and the day after, like a guest who has not been invited to sit.'),
     { tags: ['npc'], once: true }
   ),
 
@@ -96,7 +96,7 @@ export const LIFE_MINORS_5 = [
       C(
         'Kể thật, từ đầu đến cuối',
         'Tell the truth, start to finish',
-        'Bạn kể mất gần cả đêm, và {spouse} không ngắt lời một lần nào. Sáng ra bạn thấy nhẹ, như vừa đặt xuống một thứ đã mang quá lâu.',
+        'Bạn kể mất gần cả đêm nhưng {spouse} không ngắt lời một lần nào. Sáng ra bạn thấy nhẹ, như vừa đặt xuống một thứ đã mang quá lâu.',
         'It takes most of the night, and {spouse} does not interrupt once. By morning you feel lighter, as if you have set down something carried too long.',
         { sanity: 4, resonance: -3 },
         { bond: { spouse: 7 }, mem: 'npc_spouse_old_scar' }
@@ -104,7 +104,7 @@ export const LIFE_MINORS_5 = [
       C(
         'Kể một nửa, bỏ đoạn khó nhất',
         'Tell half of it and skip the worst part',
-        '{spouse} gật, và bạn biết họ nhận ra chỗ bị bỏ. Họ không hỏi tiếp, và sự im lặng đó nặng hơn mọi câu hỏi.',
+        '{spouse} gật khiến bạn biết họ nhận ra chỗ bị bỏ. Họ không hỏi tiếp; sự im lặng đó nặng hơn mọi câu hỏi.',
         '{spouse} nods, and you know they have noticed the gap. They do not ask further, and that silence weighs more than any question.',
         { sanity: -1 },
         { bond: { spouse: 1 }, mem: 'npc_spouse_old_scar_cold' }
@@ -112,7 +112,7 @@ export const LIFE_MINORS_5 = [
       C(
         'Nói đó là chuyện cũ, không đáng kể',
         'Say it is old business, not worth telling',
-        '{spouse} rút tay về chậm rãi. Vết sẹo vẫn ở đó, và bạn thấy nó rõ hơn trước.',
+        '{spouse} rút tay về chậm rãi. Vết sẹo vẫn ở đó nhưng bạn thấy nó rõ hơn trước.',
         '{spouse} withdraws their hand slowly. The scar is still there, and you see it more clearly than before.',
         { sanity: -2 },
         { bond: { spouse: -3 }, mem: 'npc_spouse_old_scar_cold' }
@@ -127,7 +127,7 @@ export const LIFE_MINORS_5 = [
     'm5_child_first_lie',
     [22, 70],
     { npc: 'child' },
-    '[Lời nói dối đầu tiên của {child}] {child} nói dối bạn lần đầu, một lời nhỏ về chiếc cốc bị vỡ. Cả hai đều biết đó là lời nói dối, và {child} biết bạn biết.',
+    '[Lời nói dối đầu tiên của {child}] {child} nói dối bạn lần đầu, một lời nhỏ về chiếc cốc bị vỡ. Cả hai đều biết đó là lời nói dối; {child} biết bạn biết.',
     '[{child}’s First Lie] {child} lies to you for the first time, a small one about a broken cup. Both of you know it is a lie, and {child} knows you know.',
     [
       C(
@@ -141,7 +141,7 @@ export const LIFE_MINORS_5 = [
       C(
         'Hỏi nhẹ nhàng chuyện thật đã xảy ra thế nào',
         'Gently ask what really happened',
-        'Câu chuyện thật hóa ra dài hơn cái cốc nhiều. {child} khóc, và bạn ngồi cạnh cho đến khi nó thôi.',
+        'Câu chuyện thật hóa ra dài hơn cái cốc nhiều. {child} khóc còn bạn ngồi cạnh cho đến khi nó thôi.',
         'The real story turns out to be much longer than the cup. {child} cries, and you sit beside them until it stops.',
         { sanity: -1 },
         { bond: { child: 7 } }
@@ -149,7 +149,7 @@ export const LIFE_MINORS_5 = [
       C(
         'Phạt {child} vì nói dối',
         'Punish {child} for lying',
-        '{child} nhận hình phạt mà không kêu. Sau này đứa trẻ nói dối khéo hơn, và bạn là người dạy điều đó.',
+        '{child} nhận hình phạt mà không kêu. Sau này đứa trẻ nói dối khéo hơn chính vì bạn là người dạy điều đó.',
         '{child} takes the punishment without crying out. Afterward the child lies more skilfully, and you are the one who taught them.',
         { sanity: -2 },
         { bond: { child: -6 } }
@@ -163,7 +163,7 @@ export const LIFE_MINORS_5 = [
     'm5_child_asks_work',
     [24, 70],
     { npc: 'child' },
-    '[{child} hỏi về công việc của bạn] {child} hỏi bạn làm gì mỗi ngày mà về nhà với mùi ấy. Câu hỏi rất đơn giản, và bạn có ba mươi giây để quyết định trả lời thế nào.',
+    '[{child} hỏi về công việc của bạn] {child} hỏi bạn làm gì mỗi ngày mà về nhà với mùi ấy. Câu hỏi rất đơn giản, chỉ cho bạn ba mươi giây để quyết định trả lời thế nào.',
     '[{child} Asks About Your Work] {child} asks what you do all day that you come home smelling like that. It is a simple question, and you have thirty seconds to decide how to answer.',
     [
       C(
@@ -205,7 +205,7 @@ export const LIFE_MINORS_5 = [
       C(
         'Mua đôi giày mới mà không hỏi',
         'Buy new shoes without asking',
-        'Đôi giày mới được đặt cạnh cửa mà không ai nhắc đến. {child} đi nó ba ngày liền, và không bao giờ nói chiếc cũ ở đâu.',
+        'Đôi giày mới được đặt cạnh cửa mà không ai nhắc đến. {child} đi nó ba ngày liền mà không bao giờ nói chiếc cũ ở đâu.',
         'The new pair is set by the door and no one mentions it. {child} wears them three days running, and never says where the old one went.',
         { wealth: -3, sanity: 1 },
         { bond: { child: 3 }, costAhn: 3 }
@@ -221,7 +221,7 @@ export const LIFE_MINORS_5 = [
       C(
         'Lần theo dấu chân đến tìm chiếc giày',
         'Follow the footprints to find the shoe',
-        'Dấu chân dẫn đến một hẻm cụt, nơi chiếc giày đặt ngay ngắn bên một chiếc chăn cũ. Có ai đang ngủ ở đó, và bạn lùi ra không đánh thức họ.',
+        'Dấu chân dẫn đến một hẻm cụt, nơi chiếc giày đặt ngay ngắn bên một chiếc chăn cũ. Có ai đang ngủ ở đó nên bạn lùi ra không đánh thức họ.',
         'The prints lead to a dead-end alley where the shoe sits neatly beside an old blanket. Someone is sleeping there, and you back away without waking them.',
         { sanity: -2, network: 1 },
         { bond: { child: 1 }, motif: { mercy: 1 } }
@@ -236,7 +236,7 @@ export const LIFE_MINORS_5 = [
     'm5_mentor_three_locks',
     [20, 80],
     { npc: 'mentor' },
-    '[Ba lần kiểm tra khóa] {mentor} vẫn kiểm tra khóa cửa ba lần trước khi ngủ, và tối nay hỏi bạn có ai đang theo dõi bạn không.',
+    '[Ba lần kiểm tra khóa] {mentor} vẫn kiểm tra khóa cửa ba lần trước khi ngủ; tối nay ông hỏi bạn có ai đang theo dõi bạn không.',
     '[Three Checks of the Lock] {mentor} still checks the door lock three times before sleeping, and tonight asks whether anyone has been following you.',
     [
       C(
@@ -258,13 +258,13 @@ export const LIFE_MINORS_5 = [
       C(
         'Hỏi ngược lại vì sao ông phải kiểm tra ba lần',
         'Ask in return why they check three times',
-        'Ông đáp bằng chuyện cái đêm ông chỉ kiểm tra có một lần. Ông không kể đoạn kết, và bạn không hỏi.',
+        'Ông đáp bằng chuyện cái đêm ông chỉ kiểm tra có một lần. Ông không kể đoạn kết còn bạn không hỏi.',
         'They answer with a story about a night they checked only once. They do not tell the ending, and you do not ask.',
         { sanity: -2, resonance: 2 },
         { bond: { mentor: 5 }, mem: 'npc_mentor_three_locks' }
       )
     ],
-    I('Bạn ngồi nghe tiếng chốt khóa lần thứ ba. Ông nói chúc ngủ ngon, và cả hai đều thức khuya hơn dự định.', 'You sit listening to the third turn of the lock. They wish you good night, and both of you stay up later than planned.'),
+    I('Bạn ngồi nghe tiếng chốt khóa lần thứ ba. Ông nói chúc ngủ ngon rồi cả hai đều thức khuya hơn dự định.', 'You sit listening to the third turn of the lock. They wish you good night, and both of you stay up later than planned.'),
     { tags: ['npc'], once: true }
   ),
 
@@ -278,7 +278,7 @@ export const LIFE_MINORS_5 = [
       C(
         'Trả giúp và giữ kín',
         'Pay it and keep quiet',
-        'Người bán tạp hóa đếm tiền và chỉ nói rằng nợ này đã hai mươi năm rồi. Bạn không hỏi thêm, và hôm sau {mentor} đưa bạn một thứ gì đó nhỏ, gói trong khăn.',
+        'Người bán tạp hóa đếm tiền và chỉ nói rằng nợ này đã hai mươi năm rồi. Bạn không hỏi thêm; hôm sau {mentor} đưa bạn một thứ gì đó nhỏ, gói trong khăn.',
         'The grocer counts the coins and says only that the debt is twenty years old. You do not ask more, and the next day {mentor} hands you something small wrapped in cloth.',
         { wealth: -3, network: 2 },
         { bond: { mentor: 6 }, costAhn: 3, mem: 'npc_mentor_small_debt' }
@@ -294,7 +294,7 @@ export const LIFE_MINORS_5 = [
       C(
         'Từ chối vì không muốn dính vào',
         'Refuse, not wanting to get involved',
-        '{mentor} gật, không giận. Nhưng hôm sau ông tự đi, chân đau hơn mọi ngày, và bạn nhìn ông qua cửa sổ cho đến khi khuất.',
+        '{mentor} gật, không giận. Nhưng hôm sau ông tự đi, chân đau hơn mọi ngày khiến bạn nhìn ông qua cửa sổ cho đến khi khuất.',
         '{mentor} nods, not angry. But the next day they go themselves, leg hurting more than usual, and you watch from the window until they are out of sight.',
         { sanity: -2 },
         { bond: { mentor: -4 }, mem: 'npc_mentor_small_debt_cold' }
@@ -309,13 +309,13 @@ export const LIFE_MINORS_5 = [
     'm5_lover_under_awning',
     [16, 60],
     { npc: 'lover' },
-    '[Dưới mái hiên đầu hẻm] {lover} hẹn bạn dưới mái hiên đầu hẻm và đã đứng đó từ rất lâu trước giờ hẹn. Mưa vừa tạnh, và vai áo họ vẫn còn ướt.',
+    '[Dưới mái hiên đầu hẻm] {lover} hẹn bạn dưới mái hiên đầu hẻm và đã đứng đó từ rất lâu trước giờ hẹn. Mưa vừa tạnh nhưng vai áo họ vẫn còn ướt.',
     '[Under the Awning] {lover} asks to meet you under the awning at the end of the alley and has been standing there since long before the hour. The rain has just stopped, and their shoulders are still wet.',
     [
       C(
         'Khoác áo của bạn lên vai {lover}',
         'Put your coat over {lover}’s shoulders',
-        'Họ để yên cho bạn khoác, và áo bạn có mùi họ suốt một tuần. Hai người đi bộ về mà không cần nói gì.',
+        'Họ để yên cho bạn khoác khiến áo bạn có mùi họ suốt một tuần. Hai người đi bộ về mà không cần nói gì.',
         'They let you, and your coat smells of them for a week. You walk back together without needing to say anything.',
         { sanity: 3 },
         { bond: { lover: 7 }, mem: 'npc_lover_awning_coat' }
@@ -323,7 +323,7 @@ export const LIFE_MINORS_5 = [
       C(
         'Trêu {lover} vì đến sớm quá',
         'Tease {lover} for arriving so early',
-        'Họ cười, nhưng nụ cười đến muộn nửa nhịp. Bạn nhận ra họ đã đợi vì sợ bạn không đến, và câu đùa của mình rơi xuống chỗ ấy.',
+        'Họ cười, nhưng nụ cười đến muộn nửa nhịp. Bạn nhận ra họ đã đợi vì sợ bạn không đến; câu đùa của mình rơi xuống chỗ ấy.',
         'They laugh, but the laugh comes half a beat late. You realise they waited out of fear you would not come, and your joke has landed on that.',
         { sanity: 1 },
         { bond: { lover: -2 }, mem: 'npc_lover_awning_tease' }
@@ -382,13 +382,13 @@ export const LIFE_MINORS_5 = [
     'm5_rival_dropped_note',
     [16, 70],
     { npc: 'rival' },
-    '[Mảnh giấy rơi khỏi túi] Một mảnh giấy gấp tư rơi khỏi túi {rival} khi họ đi ngang qua bạn trên phố. Họ không nhận ra, và bạn là người duy nhất nhìn thấy.',
+    '[Mảnh giấy rơi khỏi túi] Một mảnh giấy gấp tư rơi khỏi túi {rival} khi họ đi ngang qua bạn trên phố. Họ không nhận ra nên bạn là người duy nhất nhìn thấy.',
     '[A Note from a Pocket] A scrap of paper folded in four falls from {rival}’s pocket as they walk past you in the street. They do not notice, and you are the only one who sees.',
     [
       C(
         'Gọi {rival} lại và trả mảnh giấy',
         'Call {rival} back and return it',
-        '{rival} cầm lấy mảnh giấy, nhìn bạn một nhịp, rồi nói: "Anh không đọc chứ?" Bạn nói không, và họ gật chậm, như đang đo xem đó có phải sự thật.',
+        '{rival} cầm lấy mảnh giấy, nhìn bạn một nhịp, rồi nói: "Anh không đọc chứ?" Bạn nói không để họ gật chậm, như đang đo xem đó có phải sự thật.',
         '{rival} takes the note, looks at you for a beat, then asks, "You did not read it?" You say no, and they nod slowly, as if measuring whether that is true.',
         { rep: 2, sanity: 1 },
         { bond: { rival: 4 } }
@@ -396,7 +396,7 @@ export const LIFE_MINORS_5 = [
       C(
         'Giữ lại và đọc',
         'Keep it and read it',
-        'Trên giấy là một danh sách ngắn các địa chỉ, và một trong số đó là nhà bạn. Bạn gấp lại và không còn thấy đói.',
+        'Trên giấy là một danh sách ngắn các địa chỉ, trong đó có nhà bạn. Bạn gấp lại và không còn thấy đói.',
         'On the paper is a short list of addresses, and one of them is your own. You fold it up and no longer feel hungry.',
         { sanity: -3, heat: 3 },
         { bond: { rival: -3 }, mem: 'read_rival_list' }
@@ -410,7 +410,7 @@ export const LIFE_MINORS_5 = [
         { bond: { rival: -1 } }
       )
     ],
-    I('Bạn đứng nhìn mảnh giấy. Một cơn gió thổi nó vào một rãnh nước, và nó mất tăm trước khi bạn kịp quyết định.', 'You stand looking at the scrap. A gust blows it into a gutter, and it is gone before you can decide.'),
+    I('Bạn đứng nhìn mảnh giấy. Một cơn gió thổi nó vào rãnh nước để rồi nó mất tăm trước khi bạn kịp quyết định.', 'You stand looking at the scrap. A gust blows it into a gutter, and it is gone before you can decide.'),
     { tags: ['npc'], once: true }
   ),
 
@@ -419,13 +419,13 @@ export const LIFE_MINORS_5 = [
     'm5_friend_old_nickname',
     [12, 70],
     { npc: 'friend' },
-    '[Biệt danh cũ] {friend} gọi bạn bằng biệt danh hồi nhỏ ngay trước mặt những người lạ. Cả nhóm quay lại nhìn, và bạn đã nghĩ mình quên cái tên ấy từ lâu.',
+    '[Biệt danh cũ] {friend} gọi bạn bằng biệt danh hồi nhỏ ngay trước mặt những người lạ. Cả nhóm quay lại nhìn cái tên bạn đã nghĩ mình quên từ lâu.',
     '[The Old Nickname] {friend} calls you by your childhood nickname in front of strangers. The whole group turns to look, and you had thought you had long forgotten that name.',
     [
       C(
         'Cười và đáp lại bằng biệt danh của {friend}',
         'Laugh and answer with {friend}’s nickname',
-        'Cả hai cười đến chảy nước mắt, và nhóm người lạ nhìn như xem một trò lạ. Đêm đó bạn ngủ ngon hơn cả tháng nay.',
+        'Cả hai cười đến chảy nước mắt còn nhóm người lạ nhìn như xem một trò lạ. Đêm đó bạn ngủ ngon hơn cả tháng nay.',
         'You both laugh until you cry, and the strangers watch as if at an odd show. That night you sleep better than you have in a month.',
         { sanity: 4 },
         { bond: { friend: 6 }, mem: 'npc_nickname_laugh' }
@@ -433,7 +433,7 @@ export const LIFE_MINORS_5 = [
       C(
         'Bảo {friend} đừng dùng cái tên đó ở đây',
         'Tell {friend} not to use that name here',
-        '{friend} im một lúc, rồi xin lỗi bằng giọng đã quen với việc xin lỗi. Biệt danh không bao giờ được dùng lại, và hai người cũng ít gặp nhau hơn.',
+        '{friend} im một lúc, rồi xin lỗi bằng giọng đã quen với việc xin lỗi. Biệt danh không bao giờ được dùng lại; hai người cũng ít gặp nhau hơn.',
         '{friend} is quiet a moment, then apologises in the voice of someone used to apologising. The nickname is never used again, and the two of you meet less often.',
         { rep: 1, sanity: -2 },
         { bond: { friend: -5 }, mem: 'npc_nickname_drop' }
@@ -441,7 +441,7 @@ export const LIFE_MINORS_5 = [
       C(
         'Giả vờ không nghe thấy',
         'Pretend not to hear',
-        '{friend} gọi lại lần nữa, to hơn, và lần này bạn nghe thấy. Cả nhóm đã nghe, và không ai nói gì.',
+        '{friend} gọi lại lần nữa, to hơn, lần này bạn nghe thấy. Cả nhóm đã nghe nhưng không ai nói gì.',
         '{friend} calls again, louder, and this time you hear it. The whole group has heard, and no one says anything.',
         { sanity: -2 },
         { bond: { friend: -2 }, mem: 'npc_nickname_drop' }
@@ -462,26 +462,26 @@ export const LIFE_MINORS_5 = [
       C(
         'Nhận phần lỗi về mình',
         'Take the blame yourself',
-        'Người phụ trách ghi tên bạn thay vì tên tân binh. Cậu ta nhìn bạn suốt buổi, và từ hôm đó đứng gần bạn hơn mọi người.',
+        'Người phụ trách ghi tên bạn thay vì tên tân binh. Cậu ta nhìn bạn suốt buổi rồi từ hôm đó đứng gần bạn hơn mọi người.',
         'The man in charge writes your name instead of the recruit’s. The recruit watches you the whole session and from that day stands closer to you than to anyone.',
         { rep: -1, network: 3, merit: 1 }
       ),
       C(
         'Báo cáo việc đến muộn đúng như thực tế',
         'Report the lateness as it happened',
-        'Người phụ trách gật và ghi lại. Tân binh bị phạt, và nhìn bạn một lần rồi không bao giờ nhìn thẳng bạn nữa.',
+        'Người phụ trách gật và ghi lại. Tân binh bị phạt, nhìn bạn một lần rồi không bao giờ nhìn thẳng bạn nữa.',
         'The man in charge nods and records it. The recruit is penalised, looks at you once, and never looks at you directly again.',
         { merit: 3, rep: 1, network: -2 }
       ),
       C(
         'Dạy cậu ta buộc dây giày cho chặt',
         'Show them how to tie shoes tightly',
-        'Cả phòng im lặng nhìn bạn quỳ xuống trước một tân binh. Người phụ trách bật cười trước, và không khí trong phòng nhẹ đi.',
+        'Cả phòng im lặng nhìn bạn quỳ xuống trước một tân binh. Người phụ trách bật cười trước khiến không khí trong phòng nhẹ đi.',
         'The whole room watches in silence as you kneel before a recruit. The man in charge laughs first, and the air in the room lightens.',
         { network: 2, sanity: 1, merit: 1 }
       )
     ],
-    I('Bạn nhún vai. Người phụ trách ghi gì đó vào sổ, và bạn không biết dòng ấy nói về ai.', 'You shrug. The man in charge writes something in his book, and you cannot tell whom the line is about.'),
+    I('Bạn nhún vai. Người phụ trách ghi gì đó vào sổ; bạn không biết dòng ấy nói về ai.', 'You shrug. The man in charge writes something in his book, and you cannot tell whom the line is about.'),
     { once: true }
   ),
 
@@ -495,27 +495,27 @@ export const LIFE_MINORS_5 = [
       C(
         'Nhận phong bì và coi như đủ',
         'Take the envelope and count it as enough',
-        'Bà gật mà không cảm ơn. Khi báo cáo, con số của bạn thiếu đúng bằng chừng ấy, và người phụ trách chỉ nhìn bạn lâu hơn bình thường.',
+        'Bà gật mà không cảm ơn. Khi báo cáo, con số của bạn thiếu đúng bằng chừng ấy khiến người phụ trách chỉ nhìn bạn lâu hơn bình thường.',
         'She nods without thanks. When you report, your figure is short by exactly that amount, and the man in charge only looks at you longer than usual.',
         { network: 2, merit: -1, heat: 2 }
       ),
       C(
         'Đòi đủ số còn thiếu',
         'Demand the missing amount',
-        'Bà đưa thêm, tay run, và cả dãy nhà nhìn bạn đi ra như nhìn một con vật đã được thả vào chuồng. Merit của bạn tăng, mà bạn thấy bụng nôn nao.',
+        'Bà đưa thêm, tay run, cả dãy nhà nhìn bạn đi ra như nhìn một con vật đã được thả vào chuồng. Merit của bạn tăng nhưng bạn thấy bụng nôn nao.',
         'She hands over the rest, hand shaking, and the whole row watches you leave as if watching an animal released into a pen. Your standing rises, and your stomach turns.',
         { merit: 3, rep: 1, sanity: -2, network: -2 }
       ),
       C(
         'Bù phần thiếu từ túi mình',
         'Cover the shortfall from your own pocket',
-        'Bà nhìn đồng tiền thêm vào, rồi nhìn bạn, và không nói gì. Lần sau ghé qua, đã có bát canh nóng chờ sẵn trước cửa.',
+        'Bà nhìn đồng tiền thêm vào, nhìn bạn rồi không nói gì. Lần sau ghé qua, đã có bát canh nóng chờ sẵn trước cửa.',
         'She looks at the added coin, then at you, and says nothing. The next time you stop by, a bowl of hot soup is waiting at the door.',
         { wealth: -2, network: 3, sanity: 1 },
         { costAhn: 2 }
       )
     ],
-    I('Bạn đứng đó một lúc lâu, và bà chủ quán cũng vậy. Cuối cùng cả hai cùng quay đi, như hai người vừa thỏa thuận một điều không nói ra.', 'You stand there a long while, and so does the stall owner. At last you both turn away, like two people who have agreed on something unspoken.'),
+    I('Bạn đứng đó một lúc lâu còn bà chủ quán cũng vậy. Cuối cùng cả hai cùng quay đi, như hai người vừa thỏa thuận một điều không nói ra.', 'You stand there a long while, and so does the stall owner. At last you both turn away, like two people who have agreed on something unspoken.'),
     { once: true }
   ),
 
@@ -536,7 +536,7 @@ export const LIFE_MINORS_5 = [
       C(
         'Gửi trả giỏ cho đúng địa chỉ của Finger kia',
         'Send the basket back to the rival Finger’s address',
-        'Bạn không đính kèm lời nào. Hai ngày sau một chiếc giỏ khác đến, lần này đầy trái chín, và dải ruy băng đã bị cắt làm đôi.',
+        'Bạn không đính kèm lời nào. Hai ngày sau một chiếc giỏ khác đến, lần này đầy trái chín với dải ruy băng đã bị cắt làm đôi.',
         'You attach no note. Two days later another basket arrives, this time full of ripe fruit, the ribbon cut in half.',
         { heat: 5, rep: 2, sanity: -1 },
         { motif: { violence: 1 } }
@@ -544,12 +544,12 @@ export const LIFE_MINORS_5 = [
       C(
         'Ném cả giỏ xuống cống và quên chuyện này',
         'Throw the whole basket down the drain and forget it',
-        'Sáng hôm sau cống nước nổi mùi trái cây thối khắp hẻm, và hàng xóm bắt đầu hỏi chuyện gì đã xảy ra.',
+        'Sáng hôm sau cống nước nổi mùi trái cây thối khắp hẻm khiến hàng xóm bắt đầu hỏi chuyện gì đã xảy ra.',
         'The next morning the drain sends the smell of rotten fruit through the whole alley, and the neighbours start asking what happened.',
         { network: -2, sanity: -1 }
       )
     ],
-    I('Bạn bước qua giỏ trái cây. Khi quay về chiều tối, giỏ đã biến mất, và dải ruy băng được buộc vào tay nắm cửa nhà bạn.', 'You step over the basket. When you come back that evening it is gone, and the ribbon is tied around your door handle.', { sanity: -2, heat: 2 }),
+    I('Bạn bước qua giỏ trái cây. Khi quay về chiều tối, giỏ đã biến mất còn dải ruy băng được buộc vào tay nắm cửa nhà bạn.', 'You step over the basket. When you come back that evening it is gone, and the ribbon is tied around your door handle.', { sanity: -2, heat: 2 }),
     { once: true }
   ),
 
@@ -558,13 +558,13 @@ export const LIFE_MINORS_5 = [
     'm5_wing_added_quota',
     [18, 70],
     { jobs: ['Wing Employee'] },
-    '[Chỉ tiêu thêm một dòng] Bảng chỉ tiêu tuần này được dán thêm một dòng sau khi bạn rời ca. Không ai nhận là người đã thêm, và con số cuối dòng cao hơn mọi con số khác.',
+    '[Chỉ tiêu thêm một dòng] Bảng chỉ tiêu tuần này được dán thêm một dòng sau khi bạn rời ca. Không ai nhận là người đã thêm trong khi con số cuối dòng cao hơn mọi con số khác.',
     '[A Line Added to the Quota] This week’s quota board has an extra line pasted on after you left your shift. No one admits to adding it, and the figure at the end is higher than any other.',
     [
       C(
         'Làm thêm giờ để đạt chỉ tiêu mới',
         'Work overtime to meet the new target',
-        'Bạn đạt chỉ tiêu vào đêm thứ năm, mắt đỏ và tay run. Sáng thứ sáu bảng chỉ tiêu đã được dán lại, và dòng thêm biến mất như chưa từng có.',
+        'Bạn đạt chỉ tiêu vào đêm thứ năm, mắt đỏ và tay run. Sáng thứ sáu bảng chỉ tiêu đã được dán lại khiến dòng thêm biến mất như chưa từng có.',
         'You meet the target on Thursday night, eyes red and hands shaking. On Friday morning the board has been repasted, and the added line is gone as if it never existed.',
         { health: -3, sanity: -2, merit: 4, wealth: 2 }
       ),
@@ -578,7 +578,7 @@ export const LIFE_MINORS_5 = [
       C(
         'Bỏ qua dòng thêm và làm như cũ',
         'Ignore the added line and work as usual',
-        'Cuối tuần, tên bạn đứng cuối bảng với một dấu chấm nhỏ bên cạnh. Không ai giải thích dấu chấm ấy, nhưng đồng nghiệp bắt đầu ngồi xa bạn hơn ở căng tin.',
+        'Cuối tuần, tên bạn đứng cuối bảng với một dấu chấm nhỏ bên cạnh. Không ai giải thích dấu chấm ấy nhưng đồng nghiệp bắt đầu ngồi xa bạn hơn ở căng tin.',
         'At the end of the week your name sits at the bottom of the board with a small dot beside it. No one explains the dot, but colleagues begin sitting farther from you in the canteen.',
         { network: -3, sanity: 1 }
       )
@@ -597,7 +597,7 @@ export const LIFE_MINORS_5 = [
       C(
         'Hỏi thẳng họ đã nói chuyện gì',
         'Ask them directly what they were discussing',
-        'Họ nhìn nhau, rồi một người nói đó là chuyện thăng chức, và tên bạn có trong danh sách. Người ấy không nói là danh sách nào.',
+        'Họ nhìn nhau rồi một người nói đó là chuyện thăng chức, nhắc tên bạn có trong danh sách. Người ấy không nói là danh sách nào.',
         'They look at each other, then one says it was about promotions, and that your name is on the list. They do not say which list.',
         { network: 2, sanity: -1 }
       ),
@@ -611,7 +611,7 @@ export const LIFE_MINORS_5 = [
       C(
         'Đi tiếp như không có gì',
         'Walk on as if nothing happened',
-        'Bạn đi thẳng về bàn, và không ai nhìn bạn quá lâu. Điều đó khiến bạn nghi ngờ hơn bất cứ cái nhìn nào.',
+        'Bạn đi thẳng về bàn; không ai nhìn bạn quá lâu. Điều đó khiến bạn nghi ngờ hơn bất cứ cái nhìn nào.',
         'You walk straight to your desk, and no one looks at you for too long. That makes you more suspicious than any stare could.',
         { sanity: -1 }
       )
@@ -624,7 +624,7 @@ export const LIFE_MINORS_5 = [
     'm5_wing_wrong_badge',
     [18, 70],
     { jobs: ['Wing Employee'] },
-    '[Hộp quà ghi tên người khác] Phòng nhân sự gửi nhầm hộp quà ghi tên một đồng nghiệp cùng bộ phận. Bên trong là một chiếc huy hiệu Feather bóng hơn của bạn một chút, và nặng hơn.',
+    '[Hộp quà ghi tên người khác] Phòng nhân sự gửi nhầm hộp quà ghi tên một đồng nghiệp cùng bộ phận. Bên trong là chiếc huy hiệu Feather bóng hơn của bạn một chút, nặng hơn.',
     '[A Gift Box with Another Name] Human resources deliver a gift box addressed to a colleague in your section by mistake. Inside is a Feather badge a shade shinier than yours, and heavier.',
     [
       C(
@@ -637,7 +637,7 @@ export const LIFE_MINORS_5 = [
       C(
         'Giữ lại một ngày rồi mới trả',
         'Keep it a day before returning it',
-        'Cả ngày hôm đó huy hiệu nằm trong ngăn kéo và lạnh hơn chiếc của bạn. Khi trả, bạn thấy một vết xước nhỏ mới trên mặt nó, và không nhớ mình đã làm.',
+        'Cả ngày hôm đó huy hiệu nằm trong ngăn kéo và lạnh hơn chiếc của bạn. Khi trả, bạn thấy vết xước nhỏ mới trên mặt nó mà không nhớ mình đã làm.',
         'All day the badge lies in your drawer, colder than your own. When you return it you notice a new small scratch on its face and cannot recall making it.',
         { sanity: -2, resonance: 2 }
       ),
@@ -660,13 +660,13 @@ export const LIFE_MINORS_5 = [
     'm5_dist_puddle',
     GROWN,
     { jobs: ['Distortion'] },
-    '[Vũng nước sau mưa] Bạn đi qua một vũng nước sau cơn mưa và không nhận ra hình dạng phản chiếu trong đó, dù nó di chuyển cùng bạn. Nó dừng khi bạn dừng, và không chớp mắt khi bạn chớp.',
+    '[Vũng nước sau mưa] Bạn đi qua một vũng nước sau cơn mưa và không nhận ra hình dạng phản chiếu trong đó, dù nó di chuyển cùng bạn. Nó dừng khi bạn dừng rồi không chớp mắt khi bạn chớp.',
     '[A Puddle After Rain] You walk past a puddle after the rain and do not recognise the shape reflected in it, though it moves as you do. It stops when you stop, and does not blink when you blink.',
     [
       C(
         'Cúi xuống nhìn thật lâu',
         'Crouch and look for a long time',
-        'Hình dạng trong nước dần quen thuộc hơn, và bạn nhận ra mình đã thôi sợ nó. Đó là điều làm bạn sợ nhất.',
+        'Hình dạng trong nước dần quen thuộc hơn khiến bạn nhận ra mình đã thôi sợ nó. Đó là điều làm bạn sợ nhất.',
         'The shape in the water slowly grows familiar, and you realise you have stopped being afraid of it. That is what frightens you most.',
         { resonance: 4, health: -1 }
       ),
@@ -685,7 +685,7 @@ export const LIFE_MINORS_5 = [
         { network: -1 }
       )
     ],
-    I('Bạn nhìn một giây rồi bước tiếp. Hình trong nước nhìn theo, và khi bạn ngoảnh lại, nó đã quay mặt đi.', 'You look for a second and walk on. The figure in the water watches you go, and when you turn back it has looked away.'),
+    I('Bạn nhìn một giây rồi bước tiếp. Hình trong nước nhìn theo; khi bạn ngoảnh lại, nó đã quay mặt đi.', 'You look for a second and walk on. The figure in the water watches you go, and when you turn back it has looked away.'),
     { once: true }
   ),
 
@@ -693,13 +693,13 @@ export const LIFE_MINORS_5 = [
     'm5_dist_child_bread',
     GROWN,
     { jobs: ['Distortion'] },
-    '[Đứa trẻ không bỏ chạy] Đứa trẻ cuối hẻm nhìn bạn rất lâu mà không bỏ chạy, rồi chìa ra mẩu bánh. Tay nó run, nhưng chìa ra thẳng.',
+    '[Đứa trẻ không bỏ chạy] Đứa trẻ cuối hẻm nhìn bạn rất lâu mà không bỏ chạy, rồi chìa ra mẩu bánh. Tay nó run nhưng chìa ra thẳng.',
     '[The Child Who Does Not Run] A child at the end of the alley looks at you for a long time without running, then holds out a piece of bread. Its hand shakes but stays straight.',
     [
       C(
         'Nhận mẩu bánh',
         'Take the bread',
-        'Mẩu bánh nhỏ và đã cứng. Bạn ăn nó chậm, và đứa trẻ ngồi xuống cạnh bạn, không nói gì, cho đến khi trời tối.',
+        'Mẩu bánh nhỏ và đã cứng. Bạn ăn nó chậm; đứa trẻ ngồi xuống cạnh bạn, không nói gì, cho đến khi trời tối.',
         'The bread is small and stale. You eat it slowly, and the child sits down beside you, saying nothing, until dark.',
         { network: 2, health: 1, heat: -1 },
         { motif: { mercy: 1 } }
@@ -707,14 +707,14 @@ export const LIFE_MINORS_5 = [
       C(
         'Lắc đầu và bảo nó cất đi',
         'Shake your head and tell it to put it away',
-        'Đứa trẻ rụt tay lại và gật, như đã hiểu điều gì đó. Nó đi không ngoảnh lại, và mẩu bánh vẫn nằm trong lòng bàn tay nó.',
+        'Đứa trẻ rụt tay lại và gật, như đã hiểu điều gì đó. Nó đi không ngoảnh lại còn mẩu bánh vẫn nằm trong lòng bàn tay nó.',
         'The child draws its hand back and nods, as if understanding something. It leaves without looking back, the bread still in its palm.',
         { sanity: 0, network: -1 }
       ),
       C(
         'Gầm lên để dọa nó chạy',
         'Roar to scare it into running',
-        'Đứa trẻ chạy, nhưng nó chạy chậm, và vừa chạy vừa ngoảnh lại như thể muốn chắc rằng bạn vẫn ở đó. Ngày hôm sau có người đến hỏi về bạn.',
+        'Đứa trẻ chạy nhưng chạy chậm, vừa chạy vừa ngoảnh lại như thể muốn chắc rằng bạn vẫn ở đó. Ngày hôm sau có người đến hỏi về bạn.',
         'The child runs, but slowly, glancing back as if to be sure you are still there. The next day someone comes asking about you.',
         { heat: 5, resonance: 3, network: -2 },
         { motif: { violence: 1 } }
@@ -728,27 +728,27 @@ export const LIFE_MINORS_5 = [
     'm5_dist_old_name',
     GROWN,
     { jobs: ['Distortion'] },
-    '[Tên cũ trên hộp thư] Bạn đi ngang căn nhà cũ. Tên bạn vẫn còn trên hộp thư, nét chữ đã phai, và có ai đó đã đặt một chậu cây nhỏ bên cạnh.',
+    '[Tên cũ trên hộp thư] Bạn đi ngang căn nhà cũ. Tên bạn vẫn còn trên hộp thư, nét chữ đã phai với chậu cây nhỏ ai đó đã đặt bên cạnh.',
     '[The Old Name on the Letterbox] You walk past your old house. Your name is still on the letterbox, the lettering faded, and someone has placed a small potted plant beside it.',
     [
       C(
         'Cạo tên khỏi hộp thư',
         'Scrape the name off the letterbox',
-        'Lớp sơn bong ra dễ hơn bạn nghĩ. Bạn đứng nhìn hộp thư trống một lúc, rồi nhận ra bạn đang tìm một thứ để cảm thấy, và không tìm ra.',
+        'Lớp sơn bong ra dễ hơn bạn nghĩ. Bạn đứng nhìn hộp thư trống một lúc rồi nhận ra bạn đang tìm một thứ để cảm thấy nhưng không tìm ra.',
         'The paint flakes off more easily than you expected. You stand looking at the blank letterbox a while, then realise you are searching for something to feel and cannot find it.',
         { resonance: -2, sanity: 0 }
       ),
       C(
         'Đưa tay chạm vào chậu cây',
         'Reach out and touch the plant pot',
-        'Đất trong chậu ẩm, vừa được tưới. Ai đó vẫn ở đây mỗi ngày, và bạn rút tay lại trước khi nghe tiếng bước chân.',
+        'Đất trong chậu ẩm, vừa được tưới. Ai đó vẫn ở đây mỗi ngày nên bạn rút tay lại trước khi nghe tiếng bước chân.',
         'The soil in the pot is damp, freshly watered. Someone still comes here every day, and you pull your hand back before you hear footsteps.',
         { network: 1, resonance: 2 }
       ),
       C(
         'Đi tiếp mà không nhìn lại',
         'Walk on without looking back',
-        'Bạn đi hết con phố mà không ngoảnh lại. Ở cuối phố, một cánh cửa sổ tầng hai hé mở, và có tiếng ai đó gọi một cái tên.',
+        'Bạn đi hết con phố mà không ngoảnh lại. Ở cuối phố, một cánh cửa sổ tầng hai hé mở cùng tiếng ai đó gọi một cái tên.',
         'You walk the whole street without looking back. At its end a second-floor window opens a crack, and someone calls out a name.',
         { heat: 1 }
       )
@@ -762,13 +762,13 @@ export const LIFE_MINORS_5 = [
     'm5_k_counting_steps',
     KID,
     {},
-    '[Đếm bậc thang] Bạn đếm bậc thang lên căn hộ và mỗi lần đếm ra một số khác nhau. Hôm nay là mười bốn, hôm qua là mười ba, và bạn chắc chắn không ai thêm bậc nào.',
+    '[Đếm bậc thang] Bạn đếm bậc thang lên căn hộ và mỗi lần đếm ra một số khác nhau. Hôm nay là mười bốn, hôm qua là mười ba dù bạn chắc chắn không ai thêm bậc nào.',
     '[Counting Stairs] You count the stairs up to the flat and each time arrive at a different number. Today it is fourteen, yesterday it was thirteen, and you are certain no one added a step.',
     [
       C(
         'Đếm lại từ đầu thật chậm',
         'Count again from the start, very slowly',
-        'Lần này bạn đếm ra mười bốn, và thấy bậc thứ mười bốn dài hơn những bậc khác. Bạn quyết định không đếm nữa.',
+        'Lần này bạn đếm ra mười bốn rồi thấy bậc thứ mười bốn dài hơn những bậc khác. Bạn quyết định không đếm nữa.',
         'This time you reach fourteen, and notice the fourteenth step is longer than the rest. You decide not to count any more.',
         { sanity: -1, resonance: 1 }
       ),
@@ -795,33 +795,33 @@ export const LIFE_MINORS_5 = [
     'm5_c_found_coin',
     CHILD,
     {},
-    '[Đồng Ahn giữa chợ] Bạn nhặt được một đồng Ahn rơi giữa chợ. Không ai quanh đó nhìn xuống, nhưng một người bán hàng đang nhìn bạn.',
+    '[Đồng Ahn giữa chợ] Bạn nhặt được một đồng Ahn rơi giữa chợ. Không ai quanh đó nhìn xuống nhưng một người bán hàng đang nhìn bạn.',
     '[A Coin in the Market] You find an Ahn coin dropped in the middle of the market. No one around looks down, but a vendor is looking at you.',
     [
       C(
         'Bỏ vào túi và bước đi',
         'Pocket it and walk on',
-        'Đồng tiền nặng trong túi bạn suốt buổi chiều. Mua được một cái bánh, và bạn ăn nó một mình sau lưng nhà, không thấy ngon như đã nghĩ.',
+        'Đồng tiền nặng trong túi bạn suốt buổi chiều. Mua được cái bánh nhưng bạn ăn nó một mình sau lưng nhà, không thấy ngon như đã nghĩ.',
         'The coin weighs in your pocket all afternoon. It buys one bun, and you eat it alone behind the house, not tasting as good as you had expected.',
         { wealth: 1, sanity: -1 }
       ),
       C(
         'Hỏi người bán hàng đó có phải của họ không',
         'Ask the vendor whether it is theirs',
-        'Người bán hàng lắc đầu, rồi cười. "Giữ đi, nhóc," ông nói, và đưa thêm một miếng kẹo mà bạn không dám nhận.',
+        'Người bán hàng lắc đầu, rồi cười. "Giữ đi, nhóc," ông nói, rồi đưa thêm một miếng kẹo mà bạn không dám nhận.',
         'The vendor shakes his head, then smiles. "Keep it, kid," he says, and offers a sweet you are too shy to take.',
         { rep: 1, sanity: 1 }
       ),
       C(
         'Thả đồng xu vào bát người ăn xin',
         'Drop the coin in a beggar’s bowl',
-        'Người ăn xin nhìn đồng tiền rồi nhìn bạn, thật lâu. Ông không cảm ơn, chỉ nhớ mặt bạn, và nhiều năm sau bạn vẫn gặp ông ở chợ.',
+        'Người ăn xin nhìn đồng tiền rồi nhìn bạn, thật lâu. Ông không cảm ơn, chỉ nhớ mặt bạn; nhiều năm sau bạn vẫn gặp ông ở chợ.',
         'The beggar looks at the coin, then at you, for a long time. He does not thank you, only remembers your face, and years later you still meet him in the market.',
         { sanity: 2, network: 1 },
         { motif: { mercy: 1 } }
       )
     ],
-    I('Bạn để đồng xu nằm đó. Một đứa lớn hơn nhặt nó lên trước mặt bạn, và nhìn bạn như đã thắng một ván cờ.', 'You leave the coin where it lies. A bigger kid picks it up in front of you and looks at you as if having won a game.', { sanity: -1 }),
+    I('Bạn để đồng xu nằm đó. Một đứa lớn hơn nhặt nó lên trước mặt bạn rồi nhìn bạn như đã thắng một ván cờ.', 'You leave the coin where it lies. A bigger kid picks it up in front of you and looks at you as if having won a game.', { sanity: -1 }),
     { once: true }
   ),
 
@@ -840,22 +840,22 @@ export const LIFE_MINORS_5 = [
         {},
         {
           out: [
-            O(60, 'Trong hộp là ba chiếc cúc áo, một tấm hình rách và một mẩu kẹo đã chảy. Bạn cất mọi thứ lại đúng chỗ, và quyết định coi chỗ này là của bạn.', 'In the box are three buttons, a torn photo and a melted sweet. You put everything back exactly, and decide to treat this place as yours.', { sanity: 2 }),
-            O(40, 'Trong hộp là một con dao nhỏ và một tờ giấy có địa chỉ. Tối đó bạn không ngủ được, và ngày hôm sau ống thoát nước đã bị bít bằng tấm ván.', 'In the box are a small knife and a slip of paper with an address. You cannot sleep that night, and the next day the drain pipe has been boarded shut.', { sanity: -3, heat: 2 })
+            O(60, 'Trong hộp là ba chiếc cúc áo, một tấm hình rách và một mẩu kẹo đã chảy. Bạn cất mọi thứ lại đúng chỗ rồi quyết định coi chỗ này là của bạn.', 'In the box are three buttons, a torn photo and a melted sweet. You put everything back exactly, and decide to treat this place as yours.', { sanity: 2 }),
+            O(40, 'Trong hộp là một con dao nhỏ và một tờ giấy có địa chỉ. Tối đó bạn không ngủ được còn ngày hôm sau ống thoát nước đã bị bít bằng tấm ván.', 'In the box are a small knife and a slip of paper with an address. You cannot sleep that night, and the next day the drain pipe has been boarded shut.', { sanity: -3, heat: 2 })
           ]
         }
       ),
       C(
         'Chui vào và ngồi đó một lúc',
         'Crawl in and sit there a while',
-        'Tiếng thành phố nghe mơ hồ như từ rất xa. Bạn ngồi đến khi tối, và lần đầu tiên thấy mình không thuộc về ai.',
+        'Tiếng thành phố nghe mơ hồ như từ rất xa. Bạn ngồi đến khi tối rồi lần đầu tiên thấy mình không thuộc về ai.',
         'The sounds of the City come through muffled, as from very far away. You sit until dark and for the first time feel you belong to no one.',
         { sanity: 3 }
       ),
       C(
         'Về kể với một người lớn',
         'Go and tell a grown-up',
-        'Người lớn bảo bạn không được chui vào đó, rồi tự mình ra xem. Khi trở về, họ không nhìn bạn, và hôm sau miệng ống bị bịt kín.',
+        'Người lớn bảo bạn không được chui vào đó, rồi tự mình ra xem. Khi trở về, họ không nhìn bạn; hôm sau miệng ống bị bịt kín.',
         'The grown-up says you must not go in there, then goes to look. They come back not looking at you, and the next day the pipe mouth is sealed.',
         { sanity: -1 }
       )
@@ -875,14 +875,14 @@ export const LIFE_MINORS_5 = [
       C(
         'Ném cả chùm xuống kênh',
         'Throw the whole ring into the canal',
-        'Chùm chìa chìm nhanh hơn bạn nghĩ. Bàn tay bạn nhẹ đến mức run, và cả tuần bạn cứ thò tay vào túi tìm thứ đã không còn.',
+        'Chùm chìa chìm nhanh hơn bạn nghĩ. Bàn tay bạn nhẹ đến mức run khiến cả tuần bạn cứ thò tay vào túi tìm thứ đã không còn.',
         'The ring sinks faster than you expected. Your hand is so light it trembles, and all week you keep reaching into your pocket for something that is no longer there.',
         { sanity: 2, resonance: -3 }
       ),
       C(
         'Tách từng chìa ra và tặng người trẻ',
         'Separate them and give them to younger people',
-        'Có người hỏi vì sao bạn cho họ chìa khóa của nhà mà họ không biết. Bạn nói đó là nhà của những người rất tốt, và là sự thật.',
+        'Có người hỏi vì sao bạn cho họ chìa khóa của nhà mà họ không biết. Bạn nói đó là nhà của những người rất tốt, điều đó là sự thật.',
         'Someone asks why you give them keys to houses they do not know. You say they belonged to very good people, which is true.',
         { network: 2, rep: 1, sanity: 1 }
       ),
@@ -894,7 +894,7 @@ export const LIFE_MINORS_5 = [
         { sanity: -1, resonance: 2 }
       )
     ],
-    I('Bạn đặt chùm chìa lên bàn. Ánh chiều chiếu qua nó, và bóng của chúng trên tường đông hơn số chìa thật.', 'You lay the ring on the table. The afternoon light passes through it, and its shadow on the wall holds more keys than there are.'),
+    I('Bạn đặt chùm chìa lên bàn. Ánh chiều chiếu qua nó để rồi bóng của chúng trên tường đông hơn số chìa thật.', 'You lay the ring on the table. The afternoon light passes through it, and its shadow on the wall holds more keys than there are.'),
     { once: true }
   ),
 
@@ -902,32 +902,32 @@ export const LIFE_MINORS_5 = [
     'm5_old_stranger_directions',
     OLD,
     {},
-    '[Người trẻ hỏi đường] Một người trẻ hỏi bạn đường đến một khu phố đã bị phá từ hai mươi năm trước. Họ cầm một tấm bản đồ cũ, và tin vào nó hơn tin vào bạn.',
+    '[Người trẻ hỏi đường] Một người trẻ hỏi bạn đường đến một khu phố đã bị phá từ hai mươi năm trước. Họ cầm tấm bản đồ cũ rồi tin vào nó hơn tin vào bạn.',
     '[A Young Person Asks the Way] A young stranger asks you the way to a neighbourhood torn down twenty years ago. They hold an old map, and trust it more than they trust you.',
     [
       C(
         'Nói thật rằng khu phố ấy không còn',
         'Tell them the neighbourhood no longer exists',
-        'Họ nhìn bản đồ, rồi nhìn bạn, và có vẻ nhẹ nhõm và thất vọng cùng một lúc. Họ cảm ơn bạn rất lâu, như vì một điều lớn hơn lời chỉ đường.',
+        'Họ nhìn bản đồ rồi nhìn bạn, có vẻ nhẹ nhõm lẫn thất vọng cùng một lúc. Họ cảm ơn bạn rất lâu, như vì một điều lớn hơn lời chỉ đường.',
         'They look at the map, then at you, and seem relieved and disappointed at once. They thank you for a very long time, as for something larger than directions.',
         { sanity: 1, network: 1 }
       ),
       C(
         'Dẫn họ tới chỗ khu phố ấy từng đứng',
         'Walk them to where the neighbourhood used to stand',
-        'Đó chỉ còn là một bãi đất trống với vài tấm sắt. Bạn kể từng ngôi nhà đã ở đâu, và họ chép lại vào mép bản đồ bằng nét chữ nắn nót.',
+        'Đó chỉ còn là một bãi đất trống với vài tấm sắt. Bạn kể từng ngôi nhà đã ở đâu để họ chép lại vào mép bản đồ bằng nét chữ nắn nót.',
         'It is only a stretch of empty ground with a few iron sheets. You tell where each house stood, and they copy it onto the map’s margin in careful handwriting.',
         { health: -1, sanity: 2, rep: 1, network: 2 }
       ),
       C(
         'Chỉ đại một hướng cho xong chuyện',
         'Point in some direction to be rid of it',
-        'Họ cảm ơn và đi theo hướng bạn chỉ. Bạn nhìn theo, và nhận ra hướng bạn chỉ dẫn đến đúng con kênh.',
+        'Họ cảm ơn và đi theo hướng bạn chỉ. Bạn nhìn theo rồi nhận ra hướng bạn chỉ dẫn đến đúng con kênh.',
         'They thank you and set off the way you pointed. You watch them go, and realise the way you pointed leads straight to the canal.',
         { sanity: -2, rep: -1 }
       )
     ],
-    I('Bạn lắc đầu. Họ gấp bản đồ lại, cẩn thận, và đi tiếp. Bạn đứng nhìn theo đến khi họ khuất sau góc đường đã không còn tên.', 'You shake your head. They fold the map carefully and walk on. You watch until they vanish around a corner that no longer has a name.'),
+    I('Bạn lắc đầu. Họ gấp bản đồ lại, cẩn thận rồi đi tiếp. Bạn đứng nhìn theo đến khi họ khuất sau góc đường đã không còn tên.', 'You shake your head. They fold the map carefully and walk on. You watch until they vanish around a corner that no longer has a name.'),
     { once: true }
   )
 ];

@@ -281,11 +281,10 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
               {(session.delveStake || 0) > 0 && <span className="dg-need is-unmet">{t(`Cược sâu ${session.delveStake}/2: hàng ở các trận tới +${session.delveStake * 35}%, sát thương nhận +${session.delveStake === 2 ? 35 : 15}%`, `Deep wager ${session.delveStake}/2: future fight loot +${session.delveStake * 35}%, damage taken +${session.delveStake === 2 ? 35 : 15}%`)}</span>}
             </div>
           )}
+          {session.companion && (
+            <p className="dg-companion">{t(`Đi cùng: ${session.companion.nameVi}`, `With you: ${session.companion.nameEn}`)}</p>
+          )}
         </section>
-
-        {session.companion && (
-          <p className="dg-ambient">{t(`Đi cùng: ${session.companion.nameVi}`, `With you: ${session.companion.nameEn}`)}</p>
-        )}
 
         {meter && (
           <section className={`dg-signature is-${meter.tone}`} aria-label={pick(meter.labelVi, meter.labelEn)}>

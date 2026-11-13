@@ -117,6 +117,45 @@ export const NARRATIVE_ARCS = [
       { stage: 2, eventId: 'distort_arc_lcd_moses_inspection', titleVi: 'Leo thang: Làn khói tẩu của Moses' },
       { stage: 3, eventId: 'distort_arc_elder_hibernation_monolith', titleVi: 'Đỉnh điểm: Tượng đài ngủ đông giữa sương mù', waitsForGate: true }
     ]
+  },
+
+  // --- ARC 9: THE RING'S EXHIBITION & CURATOR TRIAL ---
+  {
+    id: 'arc_ring_gallery_obsession',
+    nameVi: 'Hội Họa Máu · The Ring',
+    nameEn: 'The Ring’s Exhibition & Trial',
+    triggerNeed: { jobs: ['Syndicate'], flags: ['FingerRing'] },
+    stages: [
+      { stage: 1, eventId: 'ring_atelier_critique', titleVi: 'Khởi điểm: Buổi phê bình ở Atelier' },
+      { stage: 2, eventId: 'ring_stolen_masterpiece', titleVi: 'Leo thang: Tác phẩm biến mất giữa sảnh chính' },
+      { stage: 3, eventId: 'syn_ring_curator_monument', titleVi: 'Đỉnh điểm: Ghế Grand Curator trước thanh tra The Head', waitsForGate: true }
+    ]
+  },
+
+  // --- ARC 10: THE PINKY'S SWORN LEDGER ---
+  {
+    id: 'arc_pinky_oath_reckoning',
+    nameVi: 'Kiếm Thề Trong Mưa · The Pinky',
+    nameEn: 'The Pinky’s Sworn Ledger',
+    triggerNeed: { jobs: ['Syndicate'], flags: ['FingerPinky'] },
+    stages: [
+      { stage: 1, eventId: 'pinky_witness_oath', titleVi: 'Khởi điểm: Người chứng lời thề' },
+      { stage: 2, eventId: 'pinky_oath_museum', titleVi: 'Leo thang: Căn phòng của những lời thề đã phá' },
+      { stage: 3, eventId: 'syn_pinky_promo_sovereign', titleVi: 'Đỉnh điểm: Mạng chỉ đen ghế Sovereign', waitsForGate: true }
+    ]
+  },
+
+  // --- ARC 11: OUTCAST FRINGE SURVIVAL ---
+  {
+    id: 'arc_outcast_fringe_survival',
+    nameVi: 'Kẻ Bên Lề · Sổ Ngoài Thành Phố',
+    nameEn: 'Fringe Survival · Off the Registers',
+    triggerNeed: { jobs: ['Outcast'] },
+    stages: [
+      { stage: 1, eventId: 'outcast_arc_rusted_turnstile', titleVi: 'Khởi điểm: Cổng gỉ ở rìa Khu 12' },
+      { stage: 2, eventId: 'outcast_arc_sweeper_alley_toll', titleVi: 'Leo thang: Giờ giới nghiêm Đêm Hẻm' },
+      { stage: 3, eventId: 'outcast_arc_unlisted_clinic_pact', titleVi: 'Đỉnh điểm: Phòng khám không biển hiệu' }
+    ]
   }
 ];
 
