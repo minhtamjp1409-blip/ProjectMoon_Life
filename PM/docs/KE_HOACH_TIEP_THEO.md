@@ -115,71 +115,154 @@ Luật chơi đang chạy nằm ở `docs/LUAT_HIEN_HANH.md`, lore và giọng v
 - **Gọt câu chữ tiếng Việt đợt 5 (`vaClause`):** Loại bỏ `, và` nối mệnh đề và cấu trúc dịch máy ở nhóm Finger (`Middle`, `Index`, `Pinky`, `Thumb`, `Canon`), hợp đồng Wing (`careerContractsWing.js`, `careerContractsWingMore.js`, `careerContractsAssocC.js`), `eventsAffiliation.js`, `eventsEgoLeap.js`, `lifeMinors4.js` và `lifeMinors5.js`, giảm `vaClause` toàn cục từ `1800` xuống `955` (với tất cả 10 chỉ số còn lại và `voice_lint.mjs --fail` bằng `0`), hạ trần kiểm định `package.json` xuống `vaClause:955,chang:114,semicolon:557` (và bổ sung luật `chang`, `semicolon` trong `vi_prose_scan.mjs`, tách câu bằng dấu chấm ngắn gọn thay cho `;` và các từ nối lệch nghĩa).
 - **Cấu hình cache Vercel (`vercel.json`):** Khai báo `Cache-Control: no-cache` cho `/((?!assets/).*)` và `public, max-age=31536000, immutable` cho `/assets/(.*)`.
 
-## Việc làm dần sau khi so với "Born as an Individual in the City" (13/11/2026)
+## Việc đã làm sau khi so với "Born as an Individual in the City" (13/11/2026)
 
-Bản so sánh dựa trên một đời chơi thử từ 0 đến 20 tuổi ở game của @_ryo_man (project-moon-life.cityborn.workers.dev) và bản đang chạy của mình, đo ở `390px` và `1440px`. Chỉ học cơ chế và cách trình bày, không chép câu chữ hay event của họ. Số đợt do người làm tự đặt khi bắt đầu; thứ tự dưới đây là thứ tự nên làm.
+Sáu việc rút ra từ lần so sánh đã làm xong ở commit `208ef40` và `9000cf8`:
+- Sửa câu vấp ở `eventsFingerThumb.js`.
+- Hoãn hộp đặt tên bạn thuở nhỏ tới lần đầu người bạn xuất hiện.
+- Khung hướng dẫn cho đời đầu tiên.
+- 92 bản tin City trong `cityBulletins.js`.
+- Màn chơi `390px` bớt khung: nhật ký chiếm khoảng 75% chiều cao.
+- Gọt dấu chấm phẩy: trần `semicolon` hạ từ 557 xuống 467.
 
-### Đã có, không cần làm lại
-Những thứ của họ mà mình đã có:
-- Minor chờ có hạn (`MINOR_WINDOW_MS` 15 giây, đời đầu 30 giây), kèm "Để nó trôi qua".
-- Tự động chọn (`autoPlay`).
-- Phím tắt `0`/`Esc`, `Space`, `[` `]`, `1–9`.
-- Gộp năm yên ả (Đợt 115).
-- Lý do khóa hiện ngay trên lựa chọn.
-- Chip "Bạn đã chọn" trong nhật ký (`entry.choiceVi`).
-- Kế hoạch năm buộc chọn một hướng.
+Ba chỗ còn treo được chuyển vào Bước 0 bên dưới.
 
-Tốc độ của họ lên tới `x32`. Mình giữ `1×–3×` và chế độ lướt `8×`, vì nhịp năm của mình có kế hoạch năm và dungeon.
+## Lộ trình phát triển gộp (13/11/2026)
 
-### 1. Sửa câu vấp còn lại (nhỏ)
-- **Vấn đề:** `eventsFingerThumb.js:450` có câu "…trong ba ngày, rồi đã bắt đầu đổ mồ hôi lạnh từ lúc nào không rõ". "rồi" chỉ việc xảy ra sau, còn "đã… từ lúc nào không rõ" là việc có từ trước.
-- **Hướng xử lý:** tách câu: "…trong ba ngày. Mồ hôi lạnh đã rịn trên trán hắn từ lúc nào không rõ."
-- **Kiểm chứng:** `npm test`.
+Lộ trình này gộp hai bản đánh giá ngày 13/11/2026:
+- **Bản thứ nhất** chỉ ra rằng các hệ thống ít nối với nhau. Thế giới không giữ hệ quả qua nhiều năm và nhiều đời. Mạch truyện chạy thẳng. NPC không có việc riêng. Mục tiêu Dungeon chỉ nằm ở chặng cuối.
+- **Bản thứ hai** chỉ ra rằng người chơi không thấy phần lớn nội dung đã viết. Đo bằng `director_reach.mjs` trên 80 đời: 502/839 sự kiện lớn chưa lần nào đủ điều kiện. Chỉ 127 sự kiện được rút ít nhất một lần. 10 sự kiện hay ra nhất chiếm 33% số lần rút thường.
 
-### 2. Không chặn năm 0 bằng hộp đặt tên bạn thuở nhỏ
-- **Vấn đề:** ở `390px`, khoảng 10 giây sau khi sinh, hộp "Bạn thuở nhỏ / Đứa trẻ đó tên gì?" phủ gần hết màn hình. Lúc đó người chơi mới đọc được ba đoạn khai sinh. Game của họ để người chơi đọc vài năm rồi mới hỏi.
-- **Hướng xử lý:** trong `syncNpcNamingPrompt` (`src/engine/npcNaming.js`), lùi lời hỏi tên tới lần đầu người bạn đó xuất hiện trong một event, thường từ tuổi 5. Trước đó, nhật ký dùng tên ngẫu nhiên. Khi `autoPlay` bật, giữ tên ngẫu nhiên như hiện nay.
-- **Kiểm chứng:** thêm vào `tests/test_npc_naming_and_callbacks.mjs` một ca "năm 0 không có `pendingNpcNaming`". Chụp màn hình `390px` ở giây thứ 10 sau khi sinh.
+Hai chẩn đoán bổ sung cho nhau. Đời sau cần sống giữa những hệ quả do đời trước để lại. Người chơi cũng cần nhìn thấy những cánh cửa mình chưa mở.
 
-### 3. Hướng dẫn ngắn cho đời đầu tiên
-- **Vấn đề:** trang chủ của họ có khung "If this is your first time" gồm 5 dòng, mỗi dòng in đậm một ý: một năm là một phút; major dừng thời gian, minor không chờ; nơi sinh ngẫu nhiên; năm yên ả chỉ là một dòng. Trang chủ của mình không nói gì về nhịp thời gian, nên người mới chỉ biết khi gặp minor đầu tiên.
-- **Hướng xử lý:** trong `BirthSetupPanel.jsx`, chỉ khi dòng họ chưa có đời nào, hiện một khung 4 dòng:
-  1. Thời gian tự trôi, đổi tốc độ ở thanh trên.
-  2. Sự kiện lớn dừng thời gian.
-  3. Lựa chọn nhỏ chờ 15 giây rồi tự trôi qua.
-  4. Phím `0` để bỏ qua, `Space` để tạm dừng.
+### Nguyên tắc chung
+- **Dùng lại event có sẵn.** Hệ mới chủ yếu đổi ai đứng trong cảnh và vì sao. Không viết thêm hàng trăm sự kiện lớn.
+- **Thử ở phạm vi nhỏ trước:** một khu phố, một mạch truyện, một dungeon. Mở rộng khi đã đo được kết quả.
+- **Đo bằng công cụ trong `tools/sim`.** Mỗi bước có một con số trước và sau.
+- **Không thêm tiền tệ, bảng kỹ năng hay tầng chiến đấu mới.** Không làm xúc xắc hành động và vuốt thẻ ở giai đoạn này.
+- **Giữ ranh giới lore:** E.G.O cá nhân thuộc về người đã thức tỉnh. Đời sau chỉ nhận những gì người ấy để lại trong thế giới.
 
-  Yêu cầu cho khung:
-  - Viết theo `vi-prose`, không dùng chữ in hoa giãn chữ.
-  - Có nút đóng và nhớ trạng thái trong `themeStore`.
-  - Trên điện thoại, khung không được đẩy nút "Bắt đầu đời ngẫu nhiên" ra khỏi màn đầu. Hiện nút đang ở `726–774px` trên tổng `844px`.
-- **Kiểm chứng:** `test_play_screen_smoke.mjs` render cả hai trạng thái, chưa có đời và đã có đời. Chụp màn hình `390px`: nút bắt đầu vẫn nằm trên màn đầu.
+### Thứ tự
 
-### 4. Tin tức The City cho năm yên ả
-- **Vấn đề:** `AMBIENT_YEAR_LINES` (`yearPlanner.js`) có 30 câu cho 3 vùng, trong đó 14 câu mở bằng "Một năm trôi qua…". Đó là câu không khí chung chung, không có việc gì xảy ra. Câu của họ là việc nhỏ có thật trong thành phố, ví dụ pháo hoa ngày thành lập Wing, hay cảnh báo Abnormality trên bảng quảng cáo được gỡ sau 30 phút. Không có lựa chọn, nhưng thành phố trông như đang sống.
+| Bước | Việc | Điều cần chứng minh |
+|---|---|---|
+| 0 | Sửa phân bố bản tin, thêm cửa đóng nhìn thấy được | Số sự kiện lớn được gặp tăng rõ |
+| 1 | Một khu phố sống qua nhiều năm | Một quyết định để lại dấu vết thấy được qua nhiều năm |
+| 2 | Đồng hồ cho những chuyện đang diễn ra | Người chơi thấy rủi ro đang lớn dần và chọn có can thiệp hay không |
+| 3 | NPC có mục tiêu, nghĩa vụ và ký ức | Có quyết định khó mà không phải chuyện tăng Bond |
+| 4 | Một mạch truyện phân hướng theo sự thật | Hai lần chơi gặp cùng biến cố nhưng phát triển khác nhau |
+| 5 | Một dungeon, hai mục tiêu từ lúc chuẩn bị | Người chơi chuẩn bị khác đi |
+| 6 | Dấu vết khu phố truyền sang đời sau | Người chơi muốn chơi tiếp để xem đời trước để lại gì |
+| Bất kỳ lúc nào | City theo ngày | Có người quay lại vào ngày hôm sau |
+
+### Bước 0. Sửa phân bố bản tin và thêm cửa đóng nhìn thấy được
+
+**0a. Bản tin**
+- **Vấn đề:** mô phỏng 200 đời sau commit `9000cf8` cho thấy bản tin gắn vào 100% số năm từ 5 tới 19 tuổi. Từ 30 tới 39 tuổi chỉ còn 21%, và từ 40 tuổi còn 5–10%. Có 59/92 tin mang dải tuổi `[5,99]`, nên đứa trẻ 5 tuổi năm nào cũng đọc tin về bảng ủy thác Fixer hay giờ giới nghiêm.
 - **Hướng xử lý:**
-  - Tạo `src/data/cityBulletins.js`. File nằm trong `data/` và không import gì từ `engine/`.
-  - Mỗi tin có `vi`, `en`, `scope` (`backstreets`, `nest`, `outskirts` hoặc một Wing cụ thể) và dải tuổi (`age`), để lúc nhỏ chỉ nghe lỏm. Có thể thêm `era`.
-  - Mỗi tin là một việc cụ thể, có số, giờ hoặc tên chỗ, và không mở bằng "Một năm trôi qua". Tin không đổi chỉ số, hoặc đổi tối đa ±1 SP.
-  - Năm yên ả lấy một tin chưa gặp trong đời này trước, hết tin mới dùng tới `AMBIENT_YEAR_LINES`.
-  - Đợt đầu viết khoảng 60 tin: 20 cho mỗi vùng, cộng 1–2 tin riêng cho mỗi Wing có District trong dữ liệu.
-- **Kiểm chứng:**
-  - Test mới `tests/test_city_bulletins.mjs`: không trùng trong một đời, đúng vùng, không có tin nào mở bằng "Một năm trôi qua".
-  - `vi_prose_scan` và `voice_lint` qua.
-  - Mô phỏng 200 đời để đo tỷ lệ năm yên ả bị lặp câu.
+  - Chỉ gắn bản tin làm dòng phụ theo xác suất, khoảng 1/3, hoặc chỉ gắn vào năm yên ả.
+  - Nâng tuổi tối thiểu của các tin về Fixer, Wing và giới nghiêm lên 12–14.
+  - Năm yên ả lấy một sự việc thật trước, chỉ dùng `AMBIENT_YEAR_LINES` khi không còn sự việc nào. Đây là quy tắc của Đợt 120a. Cần bỏ điều kiện `!quiet &&` ở `createYearDigest` (`yearPlanner.js`) và sửa ca kiểm tra tương ứng trong `test_city_bulletins.mjs`.
+  - Câu "Tự lưu sau mỗi lựa chọn" luôn hiện trên trang chủ. Hiện câu này bị ẩn cùng dòng chú thích khi khung hướng dẫn đời đầu đang mở.
+  - Gom điều kiện hiện khung hướng dẫn thành một biến `showFirstLifeGuide` trong `BirthSetupPanel.jsx`.
+- **Kiểm chứng:** mô phỏng 200 đời, đếm số năm có bản tin theo từng thập kỷ tuổi. Không thập kỷ nào vượt 50%. Từ 30 tới 49 tuổi vẫn còn tin.
 
-### 5. Màn chơi trên điện thoại: bớt khung, thêm chỗ đọc
-- **Vấn đề:** ở `390px` khi đang chơi, phần khung (header "Biên niên", thanh tốc độ, hàng HP/SP/Ahn, thanh điều hướng dưới) chiếm khoảng 240 trên `844px`, gần 30% màn hình. Họ chỉ có một thanh trên và một hàng chỉ số. Nhưng hàng chỉ số của họ dính chữ ("Reputation20"), nên đừng nén quá tay như họ.
+**0b. Cửa đóng nhìn thấy được**
+- **Vấn đề:** phần lớn sự kiện lớn bị khóa sau các nhánh mà người chơi bình thường không đi tới. Người chơi không biết những cánh cửa ấy tồn tại.
 - **Hướng xử lý:**
-  - Khi `inRun`, gộp header vào thanh tốc độ: giữ logo nhỏ, đưa nút ngôn ngữ và âm thanh vào menu `⋯`.
-  - Ẩn thanh điều hướng dưới khi đang có dock lựa chọn, hiện lại khi đọc.
-  - Hàng chỉ số giữ khoảng cách tối thiểu `8px` giữa nhãn và số.
-- **Kiểm chứng:** chụp màn hình `390px` khi đang đọc và khi có minor mở. Nhật ký chiếm ít nhất 60% chiều cao, không cuộn ngang, nút vẫn ≥ `44px`.
+  - Lúc sinh ra và mỗi khi bước sang thập kỷ mới, hiện 2–3 cửa đang khóa kèm gợi ý. Ví dụ: "Có người ở Wing L từng biết tên mẹ bạn. Cần Network từ 40 và sống ở District 12."
+  - Điều kiện đọc từ dữ liệu có sẵn trong `careerGates.json` và `eventConditions.js`. Không viết điều kiện riêng cho cửa.
+  - Chọn cửa mà nhân vật có thể tới được trong đời này, không chọn cửa đã mở ở đời trước.
+  - Codex ghi lại những cửa đã mở qua mọi đời.
+- **Kiểm chứng:** thêm vào `tools/sim/lib/choicePolicy.mjs` một kiểu người chơi đi theo cửa. Chạy `director_reach.mjs` cho cả kiểu cũ và kiểu mới. Số sự kiện được rút ít nhất một lần phải tăng rõ so với mức 127/839.
 
-### 6. Gọt văn tiếp, theo từng file
-- **Vấn đề:** trần `semicolon` đang là 557 trên toàn bộ dữ liệu. Câu của họ ngắn và cụ thể. Văn của mình đã gần như vậy, chỉ còn dấu chấm phẩy tồn ở các file cũ.
+### Bước 1. Một khu phố sống qua nhiều năm
+*Tham khảo: RimWorld tạo chuyện từ con người, nơi chốn và những biến cố tác động vào cả hai.*
+- **Vấn đề:** thay đổi của thành phố hiện nay ít khi kéo theo hệ quả liên quan. Nơi chốn chưa nhớ người chơi đã làm gì.
 - **Hướng xử lý:**
-  - Mỗi đợt gọt 1–2 file có nhiều dấu chấm phẩy nhất: tách thành câu ngắn bằng dấu chấm, rồi hạ trần `semicolon` trong `package.json`.
-  - Chỉ dùng "nên", "để", "khiến", "trong khi" khi bản gốc thật sự có quan hệ đó.
-  - Để ý "rồi" lặp ở nhiều câu liền nhau, nhất là trong `careerContracts*`.
-- **Kiểm chứng:** `npm test`. So số "rồi", "nên" và "; " theo từng file, trước và sau.
+  - Mỗi đời gắn với một khu phố ở Backstreets nơi nhân vật sinh ra. Khu phố có 3 địa điểm: nhà trọ, quán ăn, phòng khám. Mỗi địa điểm có người phụ trách, tình trạng hoạt động và một sổ lịch sử ngắn.
+  - Khoảng 5 NPC thường gặp sống quanh 3 địa điểm này.
+  - **Thành phố vẫn sống khi người chơi đứng ngoài.** Mỗi năm, địa điểm có thể đóng cửa, đổi chủ hoặc nhận tài trợ từ một Syndicate. Người chơi chỉ ảnh hưởng được một phần.
+  - Event có sẵn được gắn vào địa điểm. Một cuộc gặp ở quán ăn mang nghĩa khác khi người đối diện là chủ nợ hay người từng được cứu.
+  - Một phần bản tin chuyển thành tin của chính khu phố.
+  - Ví dụ chuỗi: nhân vật giúp phòng khám giữ lại nguồn thuốc. Vài năm sau, người từng được chữa ở đó thành đầu mối giới thiệu việc. Khi nguồn hàng bị chặn, phòng khám tìm đến nhân vật. Đời sau gặp con của chủ phòng khám, cùng cuốn sổ còn ghi tên người đã giúp họ.
+  - Trạng thái khu phố đi qua `saveSchema.js` và có migration cho save cũ.
+- **Phạm vi thử đầu tiên:** một khu phố, ba địa điểm, khoảng năm NPC. Chưa làm cả 26 District.
+- **Kiểm chứng:** test mới cho vòng đời địa điểm. Mô phỏng 200 đời: đếm số đời có ít nhất một quyết định của người chơi đổi tình trạng địa điểm, và số năm sau đó địa điểm còn nhắc lại quyết định ấy.
+
+### Bước 2. Đồng hồ cho những chuyện đang diễn ra
+*Tham khảo: clock trong Citizen Sleeper theo dõi những việc tiến triển cả khi người chơi bận việc khác.*
+- **Vấn đề:** rủi ro hiện tới đột ngột qua RNG. Người chơi không thấy sự việc đang xấu dần để quyết định có dính vào hay không.
+- **Hướng xử lý:**
+  - Mỗi đồng hồ có vài nấc, dấu hiệu người chơi nhìn thấy và cách can thiệp. Ví dụ:
+
+    | Chuyện đang diễn ra | Dấu hiệu | Cách can thiệp |
+    |---|---|---|
+    | Office sắp giải thể | Chậm trả tiền, người bỏ việc | Nhận Request khó, tìm khách, chuyển việc |
+    | Người thân bị điều tra | Bị gọi lên làm việc, mất giấy phép | Tìm hồ sơ, nhờ người quen, đưa họ rời khu |
+    | Khu phố thiếu thuốc | Giá tăng, phòng khám giảm giờ mở cửa | Hộ tống hàng, mua sớm, chia thuốc |
+    | Khoản thù đang lớn dần | Có người dò hỏi, người quen bị gây sức ép | Thương lượng, tìm người bảo lãnh, chuẩn bị đối đầu |
+
+  - **Bọc các hệ có sẵn**, không tạo tài nguyên mới: vòng đời nợ Fixer, Heat, `cityConditions.js`.
+  - **Tối đa hai chuyện cá nhân đang mở cùng một biến động địa phương.** Những lời hứa người chơi tự nhận phải hiện rõ trên hồ sơ. Các chuyện khác có thể tự kết thúc và hiện ra dưới dạng tin tức.
+- **Kiểm chứng:** mô phỏng đếm số đồng hồ mở cùng lúc, không bao giờ vượt giới hạn. Đếm tỷ lệ đồng hồ được người chơi can thiệp so với tự kết thúc.
+
+### Bước 3. NPC có mục tiêu, nghĩa vụ và ký ức
+*Tham khảo: Wildermyth chọn nhân vật cho câu chuyện dựa trên lịch sử, tính cách, quan hệ và các "hook".*
+- **Vấn đề:** NPC đã có nghề, tính cách, ký ức và trạng thái, nhưng chưa có việc riêng đang theo đuổi. Quan hệ xoay quanh người chơi, nên cuộc đời các NPC ít va vào nhau.
+- **Hướng xử lý:**
+  - Mỗi NPC có **một mục tiêu đang theo đuổi** (trả nợ, đưa gia đình vào Nest, tìm người mất tích, giữ chức vụ), **một nghĩa vụ** và vài ký ức quan trọng. Không thêm các thanh tin tưởng, sợ hãi hay kính trọng.
+  - Mục tiêu có thể xung đột với lợi ích của người chơi. Ví dụ: người bạn thân muốn vào Wing, trong khi bằng chứng người chơi tìm được có thể làm hỏng đợt tuyển dụng.
+  - **Bond cao cho cơ hội giải thích, thương lượng hoặc sửa chữa.** Nó không tự động khiến NPC đồng ý mọi việc.
+  - Thêm quan hệ giữa các NPC: đồng nghiệp, họ hàng, chủ nợ, người cứu mạng. Như vậy cùng một vụ việc có thể đặt người chơi giữa hai người mình quen.
+- **Phạm vi thử đầu tiên:** hai NPC trong khu phố ở Bước 1, có mục tiêu xung đột nhau.
+- **Kiểm chứng:** test cho việc chọn NPC vào cảnh theo mục tiêu. Mô phỏng đếm số lần người chơi phải chọn giữa hai NPC mình quen.
+
+### Bước 4. Mạch truyện phân hướng theo sự thật
+- **Vấn đề:** `advanceActiveNarrativeArcs` trong `narrativeArcEngine.js` chỉ nhận `eventId` rồi chuyển sang hồi kế tiếp. Người chơi xử lý thế nào thì mạch vẫn đi cùng một đường.
+- **Hướng xử lý:**
+  - Mỗi hồi ghi lại những sự thật quan trọng: ai còn sống, ai biết chuyện, có bằng chứng không, người chơi nhận trách nhiệm hay đẩy cho người khác, lời hứa nào chưa hoàn thành.
+  - Hồi tiếp theo được chọn từ các sự thật ấy. Ví dụ: một vụ vận chuyển thất bại có thể mở thành cuộc truy tìm hàng, tranh chấp tiền công, hoặc chuyện người bị bỏ lại.
+  - Dùng lại event cũ với người đứng trong cảnh khác nhau.
+- **Phạm vi thử đầu tiên:** chuyển một mạch trong 11 mạch hiện có.
+- **Kiểm chứng:** test hai lần chơi cùng seed, chọn khác nhau ở hồi 1, phải đi tới hai hồi 2 khác nhau.
+
+### Bước 5. Một dungeon, hai mục tiêu từ lúc chuẩn bị
+*Tham khảo: Roadwarden, nơi vật phẩm, thông tin và giới hạn thời gian mở ra những lời giải khác nhau.*
+- **Vấn đề:** mục tiêu được gán lúc vào hầm (`dungeonEngine.js`) nhưng chỉ dùng tới ở chặng cuối. Lời kể trong `dungeonObjectives.js` là hầm và xà gỗ chung chung, không đổi theo WARP hay Great Lake.
+- **Hướng xử lý:**
+
+  | Mục tiêu | Thay đổi trong chuyến đi |
+  |---|---|
+  | Cứu người | Mang thêm thuốc, tìm người trước, cân nhắc bỏ hành lý khi rút |
+  | Lấy bằng chứng | Giữ thiết bị ghi nhận, chọn giữa đường an toàn và nơi có thông tin |
+  | Thu hồi hàng | Trọng lượng hoặc tình trạng món hàng ảnh hưởng lựa chọn |
+  | Giữ đường rút | Dành tiếp tế cho hậu tuyến, chấp nhận bỏ một phần phần thưởng |
+
+  - Viết biến thể lời kể theo cảnh của từng dungeon.
+- **Phạm vi thử đầu tiên:** một dungeon với hai mục tiêu, cứu người và lấy bằng chứng.
+- **Kiểm chứng:** `dungeon_sim.mjs` cho thấy cách chuẩn bị khác nhau giữa hai mục tiêu.
+
+### Bước 6. Dấu vết khu phố truyền sang đời sau
+*Tham khảo: I Was a Teenage Exocolonist biến trải nghiệm và quan hệ thành tài nguyên qua nhiều lượt chơi. Library of Ruina biến người đã khuất thành Sách.*
+- **Vấn đề:** huyết thống đã có kỷ vật, thành tựu và dấu ấn tổ tiên. Nhưng đời sau ít khi thừa hưởng một hoàn cảnh cụ thể do đời trước tạo ra.
+- **Hướng xử lý:**
+  - Đời sau thừa hưởng thư từ, hồ sơ, người làm chứng, bí quyết nghề và những mối quan hệ còn tồn tại ở khu phố. Ví dụ:
+    - Cha mẹ từng làm ở Wing để lại ghi chú giúp nhận ra một quy trình nguy hiểm.
+    - Gia đình từng cứu chủ nhà trọ được cho ở nhờ, nhưng lời giúp đỡ ấy kéo theo một yêu cầu.
+    - Danh tiếng mà người chơi chưa chắc muốn tiếp tục mang.
+  - Một nhân viên, người chữa bệnh hay Fixer hạng thấp vẫn để lại được chuyện đáng kể cho thế hệ sau.
+  - Đóng mỗi đời đã kết thúc thành một Sách trong dòng họ, dùng làm nguồn cho các dấu vết trên.
+- **Kiểm chứng:** thêm thước đo vào `tools/sim`: tỷ lệ đời gặp lại ít nhất một hệ quả do đời trước để lại.
+
+### Bất kỳ lúc nào. City theo ngày
+*Tham khảo: Spelunky Daily và Wordle.*
+- Mỗi ngày có một seed chung: cùng nơi sinh, cùng gia cảnh, cùng các biến cố của City.
+- Cuối đời chia sẻ thẻ di cảo (Đợt 145) kèm seed của ngày, để so với người khác.
+- Làm bản chia sẻ bằng link trước. Chưa cần bảng xếp hạng trên server.
+- **Kiểm chứng:** test cùng seed ngày cho ra cùng một khai sinh.
+
+### Để sau
+- **Khủng hoảng E.G.O theo niềm tin.** Những lựa chọn quan trọng qua nhiều năm định hình câu hỏi mà nhân vật phải đối diện. Người luôn giữ lời và người luôn tìm đường thoát gặp hai khủng hoảng khác nhau. Tránh biến cơ chế này thành thang thiện–ác hay công thức chắc chắn để lấy E.G.O.
+- **Thư viện giữa người chơi.** Sách của người chơi khác thỉnh thoảng hiện ra thành một Fixer lạ hoặc một cái tên trên bảng ủy thác. Server chỉ lưu dữ liệu đã kiểm duyệt (số liệu, tên chọn từ bộ sinh tên, không có văn tự do). Chỉ làm khi Bước 6 đã cho thấy dấu vết trong dòng họ hấp dẫn người chơi.
+- **Chân dung thay đổi theo đời.** Bóng người SVG ghép lớp theo sẹo, tay giả, E.G.O, Distortion và màu Color, hiện trên hồ sơ và thẻ di cảo.
