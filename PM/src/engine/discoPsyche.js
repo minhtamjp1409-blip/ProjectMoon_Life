@@ -187,7 +187,9 @@ export function getPsycheInterjection(char, event, _lang = 'vi') {
         textVi: isWoundOrBody
           ? `${scarText} nhói lên dưới lớp áo, nhắc bạn những lời hứa của đám tay to ở ${district.shortVi} luôn giấu cái giá viết bằng máu.`
           : `Chuyện cũ "${scarText}" nhắc bạn những lời hứa của đám tay to ở ${district.shortVi} luôn giấu cái giá viết bằng máu.`,
-        textEn: `The ${scarEn} stirs under your coat, reminding you that offers in ${district.shortEn} always carry a hidden cost written in blood.`
+        textEn: isWoundOrBody
+          ? `The ${scarEn} stirs under your coat, reminding you that offers in ${district.shortEn} always carry a hidden cost written in blood.`
+          : `An old memory reminds you that promises from the big players in ${district.shortEn} always hide a price written in blood.`
       };
     }
     if (scarMatch.tag === 'weapon' || scarMatch.tag === 'craft') {
@@ -202,7 +204,9 @@ export function getPsycheInterjection(char, event, _lang = 'vi') {
       textVi: isWoundOrBody
         ? `${scarText} bỗng giật nhẹ, buộc bạn đặt sẵn tay lên chỗ thoát hiểm quen thuộc của ${district.shortVi} rồi mới mở lời.`
         : `Nhớ tới "${scarText}", bạn đặt sẵn tay lên chỗ thoát hiểm quen thuộc của ${district.shortVi} rồi mới mở lời.`,
-      textEn: `Your ${scarEn} throbs without warning, nudging your stance toward the nearest exit in ${district.shortEn} before you speak.`
+      textEn: isWoundOrBody
+        ? `Your ${scarEn} throbs without warning, nudging your stance toward the nearest exit in ${district.shortEn} before you speak.`
+        : `Remembering what you carry, you keep a hand near your usual way out of ${district.shortEn} before you speak.`
     };
   }
 

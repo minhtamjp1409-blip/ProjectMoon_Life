@@ -11,9 +11,9 @@ const splitEventTitle = (text = '') => {
 };
 
 const hasAsyncInterrupt = (ev) => (ev?.choices || []).some((ch) => {
-  if (ch?.startDungeon || ch?.openEgoModal || ch?.openColorModal || ch?.openModal || ch?.endsLife) return true;
+  if (ch?.startDungeon || ch?.openEgoModal || ch?.openColorModal || ch?.openCraftModal || ch?.openModal || ch?.endsLife) return true;
   const outs = ch?.outcomes || ch?.out || [];
-  return Array.isArray(outs) && outs.some((o) => o?.startDungeon || o?.openEgoModal || o?.openColorModal || o?.openModal || o?.endsLife);
+  return Array.isArray(outs) && outs.some((o) => o?.startDungeon || o?.openEgoModal || o?.openColorModal || o?.openCraftModal || o?.openModal || o?.endsLife);
 });
 
 const eventCompatibleAtAge = (ev, char, age, usedIds) => {
@@ -116,6 +116,9 @@ function simulateChildhoodGapYears(char, fromAge, toAge, rng = Math.random) {
       (k) => npcIsActive(char.npcs?.[k]) && (char.npcs[k].bond || 0) >= 50
     );
     for (const [k, v] of Object.entries(driftOf(char, hasBond ? 2 : 0))) add(k, v);
+
+    // Skipped years have no minors or NPC visits, which is where a played childhood earns most of its Network
+    if (y >= 5 && rng() < (npcIsActive(char.npcs?.friend) ? 0.65 : 0.4)) add('network', 1);
 
     applyChildhoodGapFx(char, yearFx);
     char.bodyAge = Number((effectiveAge(char) + frailty(char)).toFixed(2));

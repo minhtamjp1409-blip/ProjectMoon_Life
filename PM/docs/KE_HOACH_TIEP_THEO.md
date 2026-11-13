@@ -1,6 +1,6 @@
 # Kế hoạch phát triển tiếp theo
 
-File này chỉ giữ những việc chưa làm. Việc đã xong được ghi trong `PROGRESS_LOG.md`, gần nhất là mục 2.57 (Đợt 174: hoàn tất Bước `0a–0d` và Bước `0+` Tua thời thơ ấu).
+File này chỉ giữ những việc chưa làm. Việc đã xong được ghi trong `PROGRESS_LOG.md`, gần nhất là mục 2.57 (Đợt 174: hoàn tất Bước `0a–0d` và Bước `0+` Tua thời thơ ấu) và 2.58 (sửa sót sau review, ghi lộ trình AI).
 
 Luật chơi đang chạy nằm ở `docs/LUAT_HIEN_HANH.md`, lore và giọng văn ở `UNIVERSE.md`. Số đợt do người làm tự đặt khi bắt đầu.
 
@@ -33,6 +33,85 @@ Lộ trình gộp ba bản đánh giá ngày 13/11/2026:
 | 5 | Một dungeon, hai mục tiêu từ lúc chuẩn bị | Người chơi chuẩn bị và đọ chiêu khác đi |
 | 6 | Dấu vết khu phố truyền sang đời sau | Người chơi muốn chơi tiếp để xem đời trước để lại gì |
 | Bất kỳ lúc nào | City theo ngày | Có người quay lại vào ngày hôm sau |
+| AI-1 | Kẻ địch đọc cách người chơi đánh, làm trước hoặc cùng bước 5 | Bot lặp một kiểu đánh thua nhiều hơn bot chọn theo ý định |
+| AI-2 | NPC tự hành động mỗi năm theo mục tiêu, là phần lõi của bước 3 | NPC tự tìm đến người chơi, không chỉ chờ được gọi |
+| AI-3 | Director nhìn trước theo đường cong cường độ | Top 10 event chiếm dưới 25% số lần rút |
+| AI-4 | Phe phái trong District tự vận hành, là phần lõi của bước 2 | Bản tin và đồng hồ đến từ cùng một trạng thái |
+| AI-5 | Director thử thách thói quen của người chơi | Mỗi đời có 1–2 lựa chọn đi ngược xu hướng của chính mình |
+| AI-6 | Bot kiểm thử tìm chiến thuật áp đảo | Mỗi đợt có báo cáo cân bằng theo từng kiểu người chơi |
+
+## Nâng cấp AI trong game
+
+AI ở đây là phần quyết định của Director, NPC, kẻ địch và thành phố. Game không gọi mô hình ngôn ngữ lúc chạy. Các mục dưới đây nâng cấp những hệ đã có, không thay chúng.
+
+**Hiện trạng:**
+- **Director** (`eventDirector.js`, `director.js`) nhân điểm event theo 3 nhịp gần nhất: dồn hiểm họa thì giảm, yên quá lâu thì tăng. Nó cũng đọc ký ức, mạch truyện đang mở và "Nature" của nhân vật. Phần khám phá cố định ở `DIRECTOR_EXPLORE_SHARE = 0.06` (`weaverAI.js`).
+- **Sau Đợt 174**, đo bằng `director_reach.mjs` trên 80 đời với kiểu người chơi đi theo cửa: 404/839 sự kiện lớn chưa lần nào đủ điều kiện, 138 sự kiện được rút ít nhất một lần, 10 sự kiện hay ra nhất chiếm 28% số lần rút.
+- **Kẻ địch trong dungeon kiểu gauntlet** (`dungeonCombat.js`) đã hiện ý định trước mỗi lượt. Nhưng ý định chạy vòng theo một danh sách cố định, điểm bắt đầu lấy từ seed (`c.offset`, `intentAt`). Kẻ địch không phản ứng với cách người chơi trả lời.
+- **`utilityCurves.js`** đã có các đường cong phản hồi. **`cityBlackboard.js`** mới có 48 dòng, chủ yếu là nơi chứa trạng thái.
+- **Bot mô phỏng** (`tools/sim/lib/choicePolicy.mjs`) có 5 kiểu: `random`, `cautious`, `focused`, `greedy` và kiểu đi theo cửa.
+
+### AI-1. Kẻ địch đọc cách người chơi đánh
+*Tham khảo: ý định của kẻ địch trong Slay the Spire và Into the Breach.*
+- **Vấn đề:** người chơi thuộc vòng ý định là thắng. Lựa chọn đỡ, chém hay né thành thao tác lặp.
+- **Hướng xử lý:**
+  - Phiên đấu nhớ 2–3 câu trả lời gần nhất của người chơi.
+  - Mỗi kẻ địch có đúng một luật phản ứng, ghi trong dữ liệu `dungeonGauntlets.js`. Ví dụ: bị đỡ hai lần liền thì lượt sau chuyển sang đòn phá thế. Bị né liên tục thì tung đòn diện rộng.
+  - Ý định mới vẫn hiện trước khi người chơi chọn. Kẻ địch không giấu bài.
+  - Kết quả vẫn lặp lại được theo seed: luật phản ứng chỉ đọc lịch sử lượt, không gọi RNG mới.
+  - Elite và trùm có luật riêng. Kẻ địch thường có thể không có luật, để tầng đầu còn dễ.
+- **Liên quan:** khớp với mục "hiện ý định của đối phương trước khi đọ chiêu" ở bước 5. Nên làm cùng nhau để một dungeon có cả hai.
+- **Kiểm chứng:** thêm vào `dungeon_sim.mjs` hai kiểu bot, một kiểu luôn lặp một câu trả lời và một kiểu chọn theo ý định. Bot lặp phải thua nhiều hơn rõ rệt. Bot chọn theo ý định không được thua nhiều hơn mức hiện tại.
+
+### AI-2. NPC tự hành động mỗi năm
+*Tham khảo: tham vọng nhân vật trong Crusader Kings III, Nemesis System trong Shadow of Mordor.*
+- **Vấn đề:** NPC chỉ xuất hiện khi event gọi tới. Họ không tự quyết định làm gì.
+- **Hướng xử lý:**
+  - Đây là phần máy chạy của bước 3. Bước 3 cho NPC mục tiêu, nghĩa vụ và ký ức. Mục này cho NPC cách chọn hành động.
+  - Mỗi năm, NPC quan trọng chọn một trong khoảng 5 hành động: giúp, nhờ vả, cạnh tranh, phản bội, rời đi.
+  - Điểm của từng hành động tính bằng `utilityCurves.js`, từ mục tiêu của NPC, Bond, ký ức về người chơi và tình trạng của người chơi. Ví dụ: đối thủ cùng lứa thấy người chơi đang bị thương trước kỳ thi Grade thì điểm "cạnh tranh" tăng.
+  - Hành động được chọn đẩy một event có sẵn mang `need.npc` của vai đó lên đầu hàng. Không viết event riêng cho từng hành động.
+  - Mỗi lựa chọn ghi lý do vào nhật ký quyết định, giống cách Director đang ghi.
+- **Kiểm chứng:** mô phỏng 200 đời, đếm số lần NPC tự tìm đến người chơi và phân bố 5 loại hành động. Không loại nào chiếm quá nửa.
+
+### AI-3. Director nhìn trước theo đường cong cường độ
+*Tham khảo: AI Director trong Left 4 Dead, cách Façade chọn nhịp kịch.*
+- **Vấn đề:** Director chỉ nhìn 3 nhịp vừa qua. Nó không biết đời này đang ở đoạn nào. Một nhóm nhỏ event vẫn ra quá thường xuyên.
+- **Hướng xử lý:**
+  - Mỗi đời có một đường cong cường độ mục tiêu theo giai đoạn: thơ ấu, vào nghề, đỉnh cao, tuổi già. Director cộng điểm cho event giúp kéo cường độ thật về gần đường cong.
+  - Cộng điểm mới lạ theo dòng máu: event cả dòng họ chưa gặp (`bloodlineSeenEvents`) được ưu tiên hơn. Event đã bị rút quá nhiều trong đời này bị hạ.
+  - Giữ các hệ số nhân hiện có. Phần mới chỉ là một hệ số thêm, có giới hạn trên và dưới như `clamp(mult, 0.55, 1.45)`.
+- **Kiểm chứng:** chạy lại `director_reach.mjs` với cùng số đời. Top 10 event chiếm dưới 25% số lần rút, và số event được rút ít nhất một lần cao hơn 138.
+
+### AI-4. Phe phái trong District tự vận hành
+*Tham khảo: thế giới tự chạy trong Dwarf Fortress, faction turn trong Blades in the Dark.*
+- **Vấn đề:** thành phố chỉ đổi khi người chơi chạm vào. Bản tin và các điều kiện thành phố không chung một nguồn.
+- **Hướng xử lý:**
+  - Đây là phần máy chạy của bước 2. Mỗi phe trong District của người chơi có một đồng hồ áp lực, ví dụ Syndicate lấn địa bàn, Wing cắt giảm nhân sự, Thợ Quét ra quân.
+  - Mỗi năm đồng hồ nhích theo vài luật đơn giản, đọc từ `cityConditions.js` và hành động của người chơi.
+  - Khi đầy, đồng hồ đẩy event và bản tin tương ứng, rồi trở về mức thấp.
+  - `cityBlackboard.js` giữ trạng thái này để Director và NPC ở mục AI-2 cùng đọc.
+- **Kiểm chứng:** test cùng seed cho cùng chuỗi biến động. Mô phỏng đếm tỷ lệ bản tin sinh ra từ đồng hồ so với bản tin ngẫu nhiên.
+
+### AI-5. Director thử thách thói quen của người chơi
+*Tham khảo: Reigns, các kỹ năng chen lời trong Disco Elysium.*
+- **Vấn đề:** "Nature" (bạo lực, nhân từ, tham, trung thành) chỉ tô màu cho event sắp tới. Thói quen của người chơi chưa bao giờ bị đặt vào thế khó.
+- **Hướng xử lý:**
+  - Khi một xu hướng đã rõ, Director thỉnh thoảng chọn event mà chính xu hướng ấy phải trả giá. Ví dụ: người luôn nhân từ gặp lúc tha người sẽ làm hại người thân.
+  - Mỗi đời tối đa 1–2 lần. Dùng event có sẵn, chỉ thêm thẻ để Director nhận ra.
+- **Kiểm chứng:** mô phỏng với bot luôn chọn một xu hướng. Đếm số đời gặp event thử thách, phải nằm trong khoảng 1–2 lần mỗi đời.
+
+### AI-6. Bot kiểm thử tìm chiến thuật áp đảo
+- **Vấn đề:** 5 kiểu bot hiện có chọn theo luật cố định. Chúng không tìm ra cách chơi mạnh bất thường hay những nhánh bị kẹt.
+- **Hướng xử lý:**
+  - Thêm bot tìm kiếm nông: với mỗi lựa chọn lớn, chạy thử 1–2 năm trên bản sao rồi chọn nhánh có kết quả tốt nhất.
+  - Thêm kiểu người chơi liều lĩnh, luôn nhận dungeon và Request khó nhất.
+  - Mỗi đợt xuất một báo cáo cân bằng theo từng kiểu bot: tuổi thọ, Grade cao nhất, tỷ lệ chết trong dungeon, số event gặp.
+- **Kiểm chứng:** báo cáo chạy được từ một lệnh trong `tools/sim`. Nếu bot tìm kiếm vượt xa các bot khác ở một chỉ số, ghi lại thành việc cần cân bằng.
+
+### Về mô hình ngôn ngữ
+- **Không dùng lúc chạy game:** tốn phí gọi qua server Render, không lặp lại theo seed, và lời văn dễ lệch khỏi `vi-prose` và `UNIVERSE.md`.
+- **Có thể dùng làm công cụ soạn nội dung** trong `tools/`: viết nháp biến thể event. Mọi bản nháp phải qua `vi_prose_scan`, `voice_lint` và người duyệt trước khi vào dữ liệu.
 
 ## Bước 1. Một khu phố sống qua nhiều năm
 *Tham khảo: RimWorld tạo chuyện từ con người, nơi chốn và những biến cố tác động vào cả hai. Fallen London cho mỗi nơi chốn những việc riêng có thể làm.*

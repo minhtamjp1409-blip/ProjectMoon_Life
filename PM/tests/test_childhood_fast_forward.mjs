@@ -7,6 +7,7 @@ import {
 } from '../src/engine/gameEngine.js';
 import { choiceIsAvailable } from '../src/engine/eventConditions.js';
 import { playYear } from '../tools/sim/lib/playYear.mjs';
+import { pickChildhoodBeats } from '../src/engine/childhoodFastForward.js';
 
 const samplePastLives = [{ name: 'Forebear', age: 45, job: 'Fixer', endingId: 'retired' }];
 
@@ -182,4 +183,38 @@ const samplePastLives = [{ name: 'Forebear', age: 45, job: 'Fixer', endingId: 'r
   assert.equal(afterStale.childhoodMontage?.active, false, 'stale active montage closes cleanly at age >= 15');
 }
 
+
+
+// 6. Skipped years still earn Network, so a fast-forwarded life is not cut off from the street at 15
+{
+  let netSum = 0;
+  let count = 0;
+  for (let i = 0; i < 40; i++) {
+    let c = createNewCharacter({ customName: `Net${i}`, seed: `ff_net_${i}`, pastLives: samplePastLives, fastForwardChildhood: true });
+    const rng = createRNG(`ff_net_rng_${i}`);
+    let guard = 0;
+    while (c.childhoodMontage?.active && c.pendingEvent && guard++ < 10) {
+      const idx = Math.max(0, (c.pendingEvent.choices || []).findIndex((ch) => choiceIsAvailable(ch, c)));
+      c = resolveEventChoice(c, idx, rng);
+    }
+    if (!c.alive) continue;
+    netSum += c.stats.network;
+    count += 1;
+  }
+  const avgNet = netSum / Math.max(1, count);
+  console.log(`Fast-forward average Network at 15: ${avgNet.toFixed(1)} over ${count} lives`);
+  assert.ok(avgNet >= 14, `expected average age-15 Network >= 14 after skipped years, got ${avgNet.toFixed(1)}`);
+}
+
+// 7. Craft-modal events never become montage beats
+{
+  const craftEvent = {
+    id: 'ff_probe_craft', major: true, age: [8, 14],
+    vi: 'Thử', en: 'Probe',
+    choices: [{ labelVi: 'Rèn', labelEn: 'Forge', openCraftModal: true }]
+  };
+  const c = createNewCharacter({ customName: 'Craft', seed: 'ff_craft', pastLives: samplePastLives });
+  const beats = pickChildhoodBeats(c, [craftEvent], createRNG('ff_craft_rng'));
+  assert.equal(beats.length, 0, 'an event that opens the craft modal must not be picked as a beat');
+}
 console.log('Childhood fast-forward test passed.');

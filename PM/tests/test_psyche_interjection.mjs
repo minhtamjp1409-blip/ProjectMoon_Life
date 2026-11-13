@@ -34,6 +34,29 @@ const countSentences = (text) => {
   assert.equal(countSentences(vi.textEn), 1, `EN should be 1 sentence: ${vi.textEn}`);
 }
 
+// 1b. A scar that is a memory, not a wound, reads as a memory in both languages
+{
+  const char = createNewCharacter({ customName: 'Test', seed: 'psyche_memory_scar' });
+  char.age = 24;
+  char.regionId = 'L';
+  char.scars = ['Con số sau tai'];
+  const event = {
+    id: 'test_wing_offer_memory',
+    titleVi: 'Đề nghị từ Wing',
+    titleEn: 'Wing offer',
+    displayVi: 'Một người đại diện của L Corp gõ cửa đưa ra bản hợp đồng mới.',
+    displayEn: 'A representative from L Corp knocks with a new contract offer.',
+    major: true,
+    choices: []
+  };
+  const line = getPsycheInterjection(char, event, 'vi');
+  assert.ok(line, 'expected a memory-scar interjection');
+  assert.ok(line.textVi.includes('Con số sau tai'), `VI should quote the memory, got: ${line.textVi}`);
+  assert.ok(!/nhói lên/.test(line.textVi), `VI must not make a memory ache like a wound: ${line.textVi}`);
+  assert.ok(!/under your coat/.test(line.textEn), `EN must not make a memory ache like a wound: ${line.textEn}`);
+  assert.equal(countSentences(line.textEn), 1, `EN should be 1 sentence: ${line.textEn}`);
+}
+
 // 2. High resonance + contract/secret event spots loophole or departed NPC
 {
   const char = createNewCharacter({ customName: 'Test', seed: 'psyche_res' });
