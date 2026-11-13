@@ -203,6 +203,7 @@ export const BirthSetupPanel = () => {
           : 'heir');
   const heirAge =
     pendingLegacy?.childAgeWhenParentDied || Math.max(1, Math.min(18, (pendingLegacy?.age || 22) - 22));
+  const showFirstLifeGuide = pastLives.length === 0 && !firstLifeGuideDismissed;
   const confirmDiscard = () =>
     Modal.confirm({
       title: t('Bắt đầu một huyết thống mới?', 'Start a new bloodline?'),
@@ -581,7 +582,7 @@ export const BirthSetupPanel = () => {
                 </details>
                 </details>
               </div>
-              {pastLives.length === 0 && !firstLifeGuideDismissed && (
+              {showFirstLifeGuide && (
                 <aside className="first-life-guide" aria-label={t('Hướng dẫn đời đầu', 'First-life guide')}>
                   <div className="first-life-guide-head">
                     <strong>{t('Cách chơi nhanh', 'How it plays')}</strong>
@@ -617,18 +618,12 @@ export const BirthSetupPanel = () => {
                       : t('Bắt đầu đời ngẫu nhiên', 'Begin a random life')}
                 </span>
               </button>
-              {!(pastLives.length === 0 && !firstLifeGuideDismissed) && (
+              {!showFirstLifeGuide && (
                 <p className="birth-footnote">
                   <span>
                     {t(
                       'Một năm trôi trong 30 giây. Lựa chọn lớn dừng đồng hồ chờ bạn; lựa chọn nhỏ có hạn giờ, hết giờ thì đời đi tiếp.',
                       'A year passes in 30 seconds. Major choices pause the clock to wait for you; minor choices have a timer, and when time runs out life moves on.'
-                    )}
-                  </span>{' '}
-                  <span>
-                    {t(
-                      'Tự lưu sau mỗi lựa chọn.',
-                      'Saved after every choice.'
                     )}
                   </span>
                 </p>
@@ -636,12 +631,18 @@ export const BirthSetupPanel = () => {
               <p className="birth-footnote">
                 <span>
                   {t(
+                    'Tự lưu sau mỗi lựa chọn.',
+                    'Saved after every choice.'
+                  )}
+                </span>{' '}
+                <span>
+                  {t(
                     'Trò chơi có tiết lộ nội dung cốt truyện Project Moon, khuyến nghị độ tuổi 15+.',
                     'Contains Project Moon story spoilers, recommended for ages 15+.'
                   )}
                 </span>
               </p>
-              {!(pastLives.length === 0 && !firstLifeGuideDismissed) && (
+              {!showFirstLifeGuide && (
                 <p className="birth-footnote birth-shortcut-hint">
                   <span>
                     {t(

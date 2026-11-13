@@ -2126,7 +2126,8 @@ export function createYearDigest(dailyEntries, age, { quiet = true, char = null,
     const bEn = splitTitle(chosen.en || '').body.trim();
     vi = /[.!?]$/.test(bVi) ? bVi : `${bVi}.`;
     en = /[.!?]$/.test(bEn) ? bEn : `${bEn}.`;
-    if (char) {
+    // Spread City bulletins evenly across the whole life (~1/4-1/2 of consolidated years)
+    if (char && r() < (quiet ? 0.45 : 0.25)) {
       const bulletin = pickCityBulletin(char, age, r);
       if (bulletin) {
         bulletinVi = bulletin.vi;
@@ -2156,7 +2157,7 @@ export function createYearDigest(dailyEntries, age, { quiet = true, char = null,
           }
         }
       }
-    } else if (!quiet && dailyEntries.length > 0) {
+    } else if (dailyEntries.length > 0) {
       const chosen = dailyEntries[Math.floor(r() * dailyEntries.length)];
       const bVi = splitTitle(chosen.vi || '').body.trim();
       const bEn = splitTitle(chosen.en || '').body.trim();

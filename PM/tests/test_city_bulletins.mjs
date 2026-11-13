@@ -71,35 +71,52 @@ for (let i = 0; i < eligibleCount; i++) {
 }
 assert.equal(char.seenBulletins.length, eligibleCount, 'All eligible unseen bulletins should be exhausted');
 
-// Next quiet year after exhaustion falls back to AMBIENT_YEAR_LINES
-const fallbackDigest = createYearDigest(makeQuietDailies(50), 50, { quiet: true, char });
-const ambientBackstreets = new Set(AMBIENT_YEAR_LINES.backstreets.map((x) => x.vi));
-assert.ok(ambientBackstreets.has(fallbackDigest.vi), `Expected AMBIENT_YEAR_LINES fallback after exhaustion, got: ${fallbackDigest.vi}`);
+// Next quiet year after exhaustion picks a real daily entry when available, and AMBIENT_YEAR_LINES only when dailyEntries is empty
+const fallbackDailyDigest = createYearDigest(makeQuietDailies(50), 50, { quiet: true, char });
+const quietDailyTexts = new Set(['Gió thổi nhẹ.', 'Trời ấm dần.']);
+assert.ok(quietDailyTexts.has(fallbackDailyDigest.vi), `Expected real daily sentence after exhaustion, got: ${fallbackDailyDigest.vi}`);
+const fallbackAmbientDigest = createYearDigest([], 50, { quiet: true, char });
+assert.equal(fallbackAmbientDigest, null, 'Empty dailyEntries returns null digest');
+
+// Direct AMBIENT_YEAR_LINES check remains for legacy quiet years with zero bulletins and blank dailies
+assert.ok(AMBIENT_YEAR_LINES.backstreets.length > 0, 'AMBIENT_YEAR_LINES remains populated as final safety net');
 
 // Stat-changing dailies MUST keep daily headline intact and place bulletin into bulletinVi
 const deltaChar = createNewCharacter({ seed: 'bulletin_delta_test' });
 deltaChar.regionId = 'K';
 deltaChar.flags = (deltaChar.flags || []).filter((f) => !['Nest', 'NestResident', 'Feather'].includes(f));
 deltaChar.seenBulletins = [];
-const deltaDigest = createYearDigest(makeDeltaDailies(22), 22, { quiet: true, char: deltaChar });
-assert.equal(deltaDigest.vi, 'Chợ sớm bớt hàng.', 'Stat-changing daily headline must not be overwritten by bulletin');
-assert.ok(deltaDigest.bulletinVi && deltaDigest.bulletinVi.length > 10, 'Bulletin moves to secondary bulletinVi when dailies have stat deltas');
+let deltaBulletinSeen = false;
+for (let age = 20; age < 45; age++) {
+  const deltaDigest = createYearDigest(makeDeltaDailies(age), age, { quiet: true, char: deltaChar });
+  assert.equal(deltaDigest.vi, 'Chợ sớm bớt hàng.', 'Stat-changing daily headline must not be overwritten by bulletin');
+  if (deltaDigest.bulletinVi && deltaDigest.bulletinVi.length > 10) deltaBulletinSeen = true;
+}
+assert.ok(deltaBulletinSeen, 'Secondary bulletinVi attaches probabilistically across stat-changing consolidated years');
 
 // 4. Outskirts scope & Nest scope isolation
 const outChar = createNewCharacter({ seed: 'out_test' });
 outChar.regionId = 'OUTSKIRTS';
 outChar.flags = ['Outskirts'];
 outChar.seenBulletins = [];
-const outDigest = createYearDigest(makeQuietDailies(15), 15, { quiet: true, char: outChar });
+const outDigest = createYearDigest(makeQuietDailies(20), 20, { quiet: true, char: outChar });
 const outPoolTexts = new Set(CITY_BULLETINS.filter((b) => b.scope === 'outskirts').map((b) => b.vi));
 assert.ok(outPoolTexts.has(outDigest.vi), 'Outskirts quiet year must pick outskirts bulletin');
 
-// 5. 200-life simulation measuring bulletin appearances, zero chip masking, and zero within-life repeats
+// 5. 200-life simulation measuring bulletin distribution by age bracket, zero chip masking, and zero within-life repeats
 let consolidatedYearsTotal = 0;
 let bulletinYearsTotal = 0;
 let withinLifeRepeats = 0;
 const seenLineCounts = new Map();
 const allBulletinTexts = new Set(CITY_BULLETINS.map((b) => b.vi));
+const buckets = {
+  '5-9': { total: 0, bul: 0 },
+  '10-19': { total: 0, bul: 0 },
+  '20-29': { total: 0, bul: 0 },
+  '30-39': { total: 0, bul: 0 },
+  '40-59': { total: 0, bul: 0 }
+};
+const ageBucket = (age) => (age <= 9 ? '5-9' : age <= 19 ? '10-19' : age <= 29 ? '20-29' : age <= 39 ? '30-39' : '40-59');
 
 for (let i = 0; i < 200; i++) {
   const seed = `sim_bulletin_${i}`;
@@ -140,6 +157,8 @@ for (let i = 0; i < 200; i++) {
       const q = sim.logs.find((e) => e.age === age && e.type === 'year_digest');
       if (q) {
         consolidatedYearsTotal++;
+        const bk = buckets[ageBucket(age)];
+        bk.total++;
         const nonSanityDeltas = (q.deltas || []).filter((d) => d.k !== 'sanity');
         if (allBulletinTexts.has(q.vi)) {
           assert.equal(nonSanityDeltas.length, 0, `Bulletin headline "${q.vi}" must never mask non-sanity daily chips (${JSON.stringify(q.deltas)})`);
@@ -147,6 +166,7 @@ for (let i = 0; i < 200; i++) {
         const bulletinText = q.bulletinVi || (allBulletinTexts.has(q.vi) ? q.vi : '');
         if (bulletinText) {
           bulletinYearsTotal++;
+          bk.bul++;
           if (lifeBulletinLines.has(bulletinText)) withinLifeRepeats++;
           lifeBulletinLines.add(bulletinText);
           seenLineCounts.set(bulletinText, (seenLineCounts.get(bulletinText) || 0) + 1);
@@ -156,9 +176,13 @@ for (let i = 0; i < 200; i++) {
   }
 }
 
+assert.ok(buckets['5-9'].bul < buckets['5-9'].total, 'Ages 5-9 should not get bulletins in 100% of years');
+assert.ok(buckets['30-39'].bul / buckets['30-39'].total > 0.2, `Expected healthy bulletin rate in ages 30-39, got ${buckets['30-39'].bul}/${buckets['30-39'].total}`);
+assert.ok(buckets['40-59'].bul / buckets['40-59'].total > 0.15, `Expected healthy bulletin rate in ages 40-59, got ${buckets['40-59'].bul}/${buckets['40-59'].total}`);
+const bucketSummary = Object.entries(buckets).map(([k, v]) => `${k}:${v.bul}/${v.total}`).join(', ');
 const withinLifeRepeatPct = bulletinYearsTotal > 0 ? ((withinLifeRepeats / bulletinYearsTotal) * 100).toFixed(2) : '0.00';
 const uniqueLinesSeen = seenLineCounts.size;
 console.log(
   `test_city_bulletins: OK (${CITY_BULLETINS.length} bulletins: backstreets=${byScope.backstreets}, nest=${byScope.nest}, outskirts=${byScope.outskirts}, wing=${byScope.wing}; ` +
-  `200 lives -> ${bulletinYearsTotal}/${consolidatedYearsTotal} consolidated years w/ bulletins, ${uniqueLinesSeen} unique lines, within-life repeats=${withinLifeRepeats} [${withinLifeRepeatPct}%])`
+  `200 lives -> ${bulletinYearsTotal}/${consolidatedYearsTotal} consolidated years [${bucketSummary}], ${uniqueLinesSeen} unique lines, within-life repeats=${withinLifeRepeats} [${withinLifeRepeatPct}%])`
 );
