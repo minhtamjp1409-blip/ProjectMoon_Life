@@ -1,6 +1,6 @@
 # Kế hoạch phát triển tiếp theo
 
-File này chỉ giữ những việc chưa làm. Việc đã xong được ghi trong `PROGRESS_LOG.md`, gần nhất là mục 2.57 (Đợt 174: hoàn tất Bước `0a–0d` và Bước `0+` Tua thời thơ ấu) và 2.58 (sửa sót sau review, ghi lộ trình AI).
+File này chỉ giữ những việc chưa làm. Việc đã xong được ghi trong `PROGRESS_LOG.md`, gần nhất là mục 2.57 (Đợt 174: hoàn tất Bước `0a–0d` và Bước `0+` Tua thời thơ ấu), 2.58 (sửa sót sau review, ghi lộ trình AI) và 2.59 (Đợt 175: hoàn tất cụm AI độc lập `AI-3`, `AI-5`, `AI-6`).
 
 Luật chơi đang chạy nằm ở `docs/LUAT_HIEN_HANH.md`, lore và giọng văn ở `UNIVERSE.md`. Số đợt do người làm tự đặt khi bắt đầu.
 
@@ -35,21 +35,20 @@ Lộ trình gộp ba bản đánh giá ngày 13/11/2026:
 | Bất kỳ lúc nào | City theo ngày | Có người quay lại vào ngày hôm sau |
 | AI-1 | Kẻ địch đọc cách người chơi đánh, làm trước hoặc cùng bước 5 | Bot lặp một kiểu đánh thua nhiều hơn bot chọn theo ý định |
 | AI-2 | NPC tự hành động mỗi năm theo mục tiêu, là phần lõi của bước 3 | NPC tự tìm đến người chơi, không chỉ chờ được gọi |
-| AI-3 | Director nhìn trước theo đường cong cường độ | Top 10 event chiếm dưới 25% số lần rút |
+| ~~AI-3~~ | ~~Director nhìn trước theo đường cong cường độ~~ | Đã xong ở Đợt 175 (`PROGRESS_LOG.md` mục 2.59): 200 đời, top 10 `23%`, `192` event được rút |
 | AI-4 | Phe phái trong District tự vận hành, là phần lõi của bước 2 | Bản tin và đồng hồ đến từ cùng một trạng thái |
-| AI-5 | Director thử thách thói quen của người chơi | Mỗi đời có 1–2 lựa chọn đi ngược xu hướng của chính mình |
-| AI-6 | Bot kiểm thử tìm chiến thuật áp đảo | Mỗi đợt có báo cáo cân bằng theo từng kiểu người chơi |
+| ~~AI-5~~ | ~~Director thử thách thói quen của người chơi~~ | Đã xong ở Đợt 175 (`PROGRESS_LOG.md` mục 2.59): trần `2` lần mỗi đời, `58%` nhắm đúng thói quen của bot |
+| ~~AI-6~~ | ~~Bot kiểm thử tìm chiến thuật áp đảo~~ | Đã xong ở Đợt 175 (`PROGRESS_LOG.md` mục 2.59): báo cáo 8 kiểu bot, có bot đối chứng `tactical` |
 
 ## Nâng cấp AI trong game
 
 AI ở đây là phần quyết định của Director, NPC, kẻ địch và thành phố. Game không gọi mô hình ngôn ngữ lúc chạy. Các mục dưới đây nâng cấp những hệ đã có, không thay chúng.
 
 **Hiện trạng:**
-- **Director** (`eventDirector.js`, `director.js`) nhân điểm event theo 3 nhịp gần nhất: dồn hiểm họa thì giảm, yên quá lâu thì tăng. Nó cũng đọc ký ức, mạch truyện đang mở và "Nature" của nhân vật. Phần khám phá cố định ở `DIRECTOR_EXPLORE_SHARE = 0.06` (`weaverAI.js`).
-- **Sau Đợt 174**, đo bằng `director_reach.mjs` trên 80 đời với kiểu người chơi đi theo cửa: 404/839 sự kiện lớn chưa lần nào đủ điều kiện, 138 sự kiện được rút ít nhất một lần, 10 sự kiện hay ra nhất chiếm 28% số lần rút.
-- **Kẻ địch trong dungeon kiểu gauntlet** (`dungeonCombat.js`) đã hiện ý định trước mỗi lượt. Nhưng ý định chạy vòng theo một danh sách cố định, điểm bắt đầu lấy từ seed (`c.offset`, `intentAt`). Kẻ địch không phản ứng với cách người chơi trả lời.
+- **Director** (`eventDirector.js`, `director.js`, `weaverAI.js`) đã có đường cong cường độ theo giai đoạn, ưu tiên dòng họ chưa gặp (`bloodlineSeenEvents`), `DIRECTOR_EXPLORE_SHARE = 0.06` và cơ chế thử thách thói quen theo 4 xu hướng `violence`, `mercy`, `greed`, `loyalty` (tối đa 2 lần/đời). Phần chưa làm nằm ở đồng hồ phe phái (`AI-4`) và hành động chủ động của NPC (`AI-2`).
+- **Kẻ địch trong dungeon kiểu gauntlet** (`dungeonCombat.js`) đã hiện ý định trước mỗi lượt. Nhưng ý định chạy vòng theo một danh sách cố định, điểm bắt đầu lấy từ seed (`c.offset`, `intentAt`). Kẻ địch không phản ứng với cách người chơi trả lời (`AI-1`).
 - **`utilityCurves.js`** đã có các đường cong phản hồi. **`cityBlackboard.js`** mới có 48 dòng, chủ yếu là nơi chứa trạng thái.
-- **Bot mô phỏng** (`tools/sim/lib/choicePolicy.mjs`) có 5 kiểu: `random`, `cautious`, `focused`, `greedy` và kiểu đi theo cửa.
+- **Bot mô phỏng** (`tools/sim/lib/choicePolicy.mjs`, `lookaheadPolicy.mjs`, `policy_balance_report.mjs`) hiện đủ 7 kiểu (`random`, `greedy`, `focused`, `cautious`, `door`, `reckless`, `lookahead`). Chạy `npm run report:bots` (25 đời/kiểu) phát hiện 4 đầu việc cần cân bằng lại (ghi ở mục Cân bằng bên dưới).
 
 ### AI-1. Kẻ địch đọc cách người chơi đánh
 *Tham khảo: ý định của kẻ địch trong Slay the Spire và Into the Breach.*
@@ -74,15 +73,6 @@ AI ở đây là phần quyết định của Director, NPC, kẻ địch và th
   - Mỗi lựa chọn ghi lý do vào nhật ký quyết định, giống cách Director đang ghi.
 - **Kiểm chứng:** mô phỏng 200 đời, đếm số lần NPC tự tìm đến người chơi và phân bố 5 loại hành động. Không loại nào chiếm quá nửa.
 
-### AI-3. Director nhìn trước theo đường cong cường độ
-*Tham khảo: AI Director trong Left 4 Dead, cách Façade chọn nhịp kịch.*
-- **Vấn đề:** Director chỉ nhìn 3 nhịp vừa qua. Nó không biết đời này đang ở đoạn nào. Một nhóm nhỏ event vẫn ra quá thường xuyên.
-- **Hướng xử lý:**
-  - Mỗi đời có một đường cong cường độ mục tiêu theo giai đoạn: thơ ấu, vào nghề, đỉnh cao, tuổi già. Director cộng điểm cho event giúp kéo cường độ thật về gần đường cong.
-  - Cộng điểm mới lạ theo dòng máu: event cả dòng họ chưa gặp (`bloodlineSeenEvents`) được ưu tiên hơn. Event đã bị rút quá nhiều trong đời này bị hạ.
-  - Giữ các hệ số nhân hiện có. Phần mới chỉ là một hệ số thêm, có giới hạn trên và dưới như `clamp(mult, 0.55, 1.45)`.
-- **Kiểm chứng:** chạy lại `director_reach.mjs` với cùng số đời. Top 10 event chiếm dưới 25% số lần rút, và số event được rút ít nhất một lần cao hơn 138.
-
 ### AI-4. Phe phái trong District tự vận hành
 *Tham khảo: thế giới tự chạy trong Dwarf Fortress, faction turn trong Blades in the Dark.*
 - **Vấn đề:** thành phố chỉ đổi khi người chơi chạm vào. Bản tin và các điều kiện thành phố không chung một nguồn.
@@ -92,22 +82,6 @@ AI ở đây là phần quyết định của Director, NPC, kẻ địch và th
   - Khi đầy, đồng hồ đẩy event và bản tin tương ứng, rồi trở về mức thấp.
   - `cityBlackboard.js` giữ trạng thái này để Director và NPC ở mục AI-2 cùng đọc.
 - **Kiểm chứng:** test cùng seed cho cùng chuỗi biến động. Mô phỏng đếm tỷ lệ bản tin sinh ra từ đồng hồ so với bản tin ngẫu nhiên.
-
-### AI-5. Director thử thách thói quen của người chơi
-*Tham khảo: Reigns, các kỹ năng chen lời trong Disco Elysium.*
-- **Vấn đề:** "Nature" (bạo lực, nhân từ, tham, trung thành) chỉ tô màu cho event sắp tới. Thói quen của người chơi chưa bao giờ bị đặt vào thế khó.
-- **Hướng xử lý:**
-  - Khi một xu hướng đã rõ, Director thỉnh thoảng chọn event mà chính xu hướng ấy phải trả giá. Ví dụ: người luôn nhân từ gặp lúc tha người sẽ làm hại người thân.
-  - Mỗi đời tối đa 1–2 lần. Dùng event có sẵn, chỉ thêm thẻ để Director nhận ra.
-- **Kiểm chứng:** mô phỏng với bot luôn chọn một xu hướng. Đếm số đời gặp event thử thách, phải nằm trong khoảng 1–2 lần mỗi đời.
-
-### AI-6. Bot kiểm thử tìm chiến thuật áp đảo
-- **Vấn đề:** 5 kiểu bot hiện có chọn theo luật cố định. Chúng không tìm ra cách chơi mạnh bất thường hay những nhánh bị kẹt.
-- **Hướng xử lý:**
-  - Thêm bot tìm kiếm nông: với mỗi lựa chọn lớn, chạy thử 1–2 năm trên bản sao rồi chọn nhánh có kết quả tốt nhất.
-  - Thêm kiểu người chơi liều lĩnh, luôn nhận dungeon và Request khó nhất.
-  - Mỗi đợt xuất một báo cáo cân bằng theo từng kiểu bot: tuổi thọ, Grade cao nhất, tỷ lệ chết trong dungeon, số event gặp.
-- **Kiểm chứng:** báo cáo chạy được từ một lệnh trong `tools/sim`. Nếu bot tìm kiếm vượt xa các bot khác ở một chỉ số, ghi lại thành việc cần cân bằng.
 
 ### Về mô hình ngôn ngữ
 - **Không dùng lúc chạy game:** tốn phí gọi qua server Render, không lặp lại theo seed, và lời văn dễ lệch khỏi `vi-prose` và `UNIVERSE.md`.
@@ -207,6 +181,21 @@ AI ở đây là phần quyết định của Director, NPC, kẻ địch và th
 - Cuối đời chia sẻ thẻ di cảo kèm seed của ngày, để so với người khác.
 - Làm bản chia sẻ bằng link trước. Chưa cần bảng xếp hạng trên server.
 - **Kiểm chứng:** test cùng seed ngày cho ra cùng một khai sinh.
+
+## Cân bằng cần xem lại (từ báo cáo `AI-6`, `npm run report:bots`)
+Báo cáo so `lookahead` với bot đối chứng `tactical`. Hai bot dùng cùng luật chọn manh mối, hợp đồng, hành động trong dungeon và kế hoạch năm. Chỉ khác ở chỗ `lookahead` thử trước 1–2 năm cho mỗi lựa chọn lớn. Các bot luật cố định trả lời trong dungeon một cách ngẫu nhiên, nên không dùng để đo giá trị của việc nhìn trước.
+
+Kết quả 25 đời mỗi kiểu, ngày 14/11/2026:
+
+| Bot | Tuổi thọ trung bình | Grade tốt nhất trung bình | Đạt G5+ | Đời chết trong dungeon | Event mỗi đời |
+|---|---|---|---|---|---|
+| `door` | 30,6 | 6,6 | 12% | 72% | 57,7 |
+| `tactical` | 73,9 | 6,88 | 4% | 24% | 57,4 |
+| `lookahead` | 84,5 | 3 | 48% | 16% | 113,6 |
+
+Hai việc cần xem lại:
+- **Cách chơi dungeon quyết định tuổi thọ nhiều hơn mọi thứ khác.** Từ `door` sang `tactical`, tuổi thọ tăng 43 năm chỉ nhờ đọc tỷ lệ trong dungeon, biết rút khi HP thấp và chọn hợp đồng theo giá trị kỳ vọng. Người chơi thật có thấy những con số này không? Nếu thấy, cần làm cho việc đọc chúng dễ hơn. Nếu không, các bot đang đánh giá quá thấp người chơi.
+- **Nhìn trước giúp leo Grade quá nhanh.** `lookahead` đạt G5+ ở 48% số đời, `tactical` chỉ 4%. Lợi thế tới từ việc biết trước lựa chọn nào mở kỳ thăng hạng trong 1–2 năm tới. Cần xem các mốc thăng hạng có quá khó đoán với người chơi bình thường không, và cửa khóa ở Đợt 174 đã đủ để chỉ đường chưa.
 
 ## Để sau
 - **Khủng hoảng E.G.O theo niềm tin.** Những lựa chọn quan trọng qua nhiều năm định hình câu hỏi mà nhân vật phải đối diện. Người luôn giữ lời và người luôn tìm đường thoát gặp hai khủng hoảng khác nhau. Tránh biến cơ chế này thành thang thiện–ác hay công thức chắc chắn để lấy E.G.O.

@@ -149,14 +149,14 @@ export function evaluateEventConsiderations(event, char, blackboard = {}) {
   if (isEconOrClinic) {
     if (wealthNorm >= 0.35) {
       const wealthAffluence = ResponseCurves.exponential(wealthNorm, 1.8);
-      const boost = 1 + wealthAffluence * 2.2;
+      const boost = 1 + wealthAffluence * 0.50;
       multiplier *= boost;
       considerationLogs.push(`Tích lũy Ahn dồi dào thu hút dịch vụ cao cấp (x${boost.toFixed(2)})`);
     }
     if (healthNorm <= 0.65 || sanityDistress >= 0.35) {
       const needHeal = Math.max(1 - healthNorm, sanityDistress);
       const healUrgency = ResponseCurves.sigmoid(needHeal, 0.5, 6);
-      const boost = 1 + healUrgency * 1.9;
+      const boost = 1 + healUrgency * 1.45;
       multiplier *= boost;
       considerationLogs.push(`Nhu cầu điều trị sinh mệnh cấp thiết (x${boost.toFixed(2)})`);
     }

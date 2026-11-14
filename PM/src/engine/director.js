@@ -14,6 +14,7 @@ import { npcIsActive } from './eventConditions.js';
 // ============================================================================
 
 import { clamp, interpolateText, getNextCareerMilestone } from './gameEngine.js';
+import { canTriggerHabitChallenge, habitChallengeForEvent, recordChoiceMotif } from './eventDirector.js';
 import { makeNpc } from '../data/birthStories.js';
 import { bondCapFor } from '../data/npcPersonality.js';
 import { getScarProfile, normalizeScars } from './scarModel.js';
@@ -202,6 +203,13 @@ export function directorWeight(entry, char) {
     }
   }
 
+  const challengeReadyHabit = canTriggerHabitChallenge(char);
+  if (challengeReadyHabit && habitChallengeForEvent(entry) === challengeReadyHabit &&
+      !(char.habitChallenges || []).some((hc) => hc.eventId === entry.id)) {
+    w *= 28;
+    reason = { vi: 'Thói quen lâu nay đang bị thử thách', en: 'Your settled habit is put to the test' };
+  }
+
   return { w, reason: reason || { vi: 'Ngẫu nhiên', en: 'Chance' } };
 }
 
@@ -384,11 +392,7 @@ export function applyChoiceExtras(char, sources, deltas, rng, meta = {}) {
     char.weaver = { ...char.weaver, pendingThreads: [...(char.weaver?.pendingThreads || []), ...threads] };
     deltas.push({ k: 'seed', v: threads.length });
   }
-  for (const motif of pickField('motif')) {
-    const next = { ...(char.motifs || {}) };
-    for (const [k, v] of Object.entries(motif)) next[k] = (next[k] || 0) + v;
-    char.motifs = next;
-  }
+  recordChoiceMotif(char, sources, sources[0], meta.event || { id: meta.eventId });
 }
 
 /**

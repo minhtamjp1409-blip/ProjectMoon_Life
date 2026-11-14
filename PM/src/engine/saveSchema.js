@@ -43,6 +43,8 @@ export function migrateRun(raw) {
   if (run.char.ancestorBulletinsShown == null) run.char.ancestorBulletinsShown = 0;
   if (!Array.isArray(run.char.openedDoors)) run.char.openedDoors = [];
   if (!Array.isArray(run.char.visibleDoors)) run.char.visibleDoors = [];
+  if (!Array.isArray(run.char.habitChallenges)) run.char.habitChallenges = [];
+  if (!run.char.habits || typeof run.char.habits !== 'object') run.char.habits = {};
   if (run.char.childhoodMontage === undefined) run.char.childhoodMontage = null;
   if (run.char.flags?.includes('FixerLicenseDebt') && !run.char.debts.some((d) => d.id === 'fixer_license_debt')) {
     run.char.debts.push({

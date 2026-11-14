@@ -51,6 +51,7 @@ import {
   createRNG
 } from './gameEngine.js';
 import { selectEventWithWeaverAI, updateDramaTension, FATE_OMENS, isEventEligible } from './weaverAI.js';
+import { markHabitChallengeTriggered } from './eventDirector.js';
 import { CONSEQUENCE_EVENTS } from '../data/eventsChildhood.js';
 import { REGIONS } from '../data/worldData.js';
 import { LIFE_DAILIES as DAILIES_FIRST } from '../data/lifeDailies.js';
@@ -1342,9 +1343,11 @@ export function resolveMinor(charState, idx, rng) {
   if (addScar(char, scar)) {
     deltas.push({ k: 'scar', name: scar });
   }
+  markHabitChallengeTriggered(char, def);
   applyChoiceExtras(char, outcome === choice ? [choice] : [choice, outcome], deltas, rng, {
     eventId: prompt.id,
     choiceId: idx >= 0 ? `${prompt.id}_c${idx}` : `${prompt.id}_ignore`,
+    event: def,
     role: currentDef?.need?.npc || null
   });
   if (outcome.setJob || choice.setJob) {

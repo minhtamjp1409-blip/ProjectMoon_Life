@@ -7,7 +7,7 @@ import { matchesEventContext, isIndependentSyndicateEligibleForRank, choiceIsAva
 import { evaluateEventConsiderations } from './utilityCurves.js';
 import { createCityBlackboard } from './cityBlackboard.js';
 import { activeScarCount } from './scarModel.js';
-import { directorScore, directorTags, drawDirectorCandidate, rememberDirectorEvent } from './eventDirector.js';
+import { canTriggerHabitChallenge, directorScore, directorTags, drawDirectorCandidate, eventFamily, habitChallengeForEvent, rememberDirectorEvent } from './eventDirector.js';
 import {
   getNextFixerPromotion,
   fixerPromotionOfferChance,
@@ -34,7 +34,7 @@ export const SANDBOX_FLAG = 'WeaverSandbox';
 /** Measurement hook for the director's draw; null in play. tools/sim/director_reach.mjs sets onDraw. */
 export const directorProbe = { onDraw: null };
 /** Share of ordinary draws that look past the top 24 for an eligible event this life has not met. */
-export const DIRECTOR_EXPLORE_SHARE = 0.06;
+export const DIRECTOR_EXPLORE_SHARE = 0.09;
 
 export const FATE_OMENS = [
   {
@@ -225,6 +225,8 @@ export function createInitialWeaverState(mode = 'index_equilibrium', inheritedEc
     pendingThreads: [],
     decisionLog: [],
     recentBeats: [],
+    drawCounts: {},
+    familyCounts: {},
     directorPolicy: 'active',
     customWeights: {},
     customEvents: []
@@ -331,12 +333,18 @@ export function recordChoiceInGraph(weaver, char, event, choice, outcomeTextVi, 
     });
   }
 
+  const fam = eventFamily(event);
+  const drawCounts = { ...(weaver.drawCounts || {}), [event.id]: ((weaver.drawCounts || {})[event.id] || 0) + 1 };
+  const familyCounts = { ...(weaver.familyCounts || {}), [fam]: ((weaver.familyCounts || {})[fam] || 0) + 1 };
+
   return {
     ...weaver,
     nodes: nextNodes,
     edges: nextEdges.slice(-60),
     pendingThreads: nextThreads,
     recentBeats: rememberDirectorEvent(weaver, event, char.age),
+    drawCounts,
+    familyCounts,
     yearsSinceLastMajor: event.major ? 0 : weaver.yearsSinceLastMajor + 1,
     yearsSinceLastCrisis: (event.isCausalCallback || (choice.effects?.sanity || 0) <= -15) ? 0 : weaver.yearsSinceLastCrisis + 1
   };
@@ -398,7 +406,9 @@ export function scoreEventUtility(event, char, weaver) {
   const modeObj = FATE_OMENS.find(m => m.id === weaver.mode) || FATE_OMENS[0];
   const w = modeObj.weights;
 
-  const baseWeight = Number(event.weight || 5);
+  // Compress wide authored weight scales (3..65) smoothly so lower-weight events can enter Top 24 while remaining monotone
+  const rawWeight = Number(event.weight || 5);
+  const baseWeight = Math.round((3.0 + Math.cbrt(Math.max(1, rawWeight)) * 1.5) * 10) / 10;
   let causalScore = 0;
   let loreScore = 0;
   let npcScore = 0;
@@ -422,7 +432,8 @@ export function scoreEventUtility(event, char, weaver) {
     reasonsVi.push('Chuyện riêng của District này');
     reasonsEn.push(`District-specific lore for ${char.regionId} (+Lore)`);
   }
-  if (Array.isArray(event.jobs) && event.jobs.includes(char.job)) {
+  const eventJobs = Array.isArray(event.jobs) ? event.jobs : event.need?.jobs;
+  if (Array.isArray(eventJobs) && eventJobs.includes(char.job)) {
     loreScore += 9 * w.lore;
     reasonsVi.push('Chuyện của nghề bạn đang làm');
     reasonsEn.push(`Advances ${char.job} career arc`);
@@ -916,13 +927,28 @@ export function selectEventWithWeaverAI({
   const legacyCandidates = [...scored]
     .sort((a, b) => b.score.totalUtility - a.score.totalUtility)
     .map((item) => ({ ...item, utility: item.score.totalUtility }));
-  const directedCandidates = scored
+  const activeChallengeHabit = canTriggerHabitChallenge(char);
+  const doneChallengeIds = new Set((char.habitChallenges || []).map((entry) => entry.eventId));
+  let directedCandidates = scored
     .map((item) => ({ ...item, director: directorScore(item.event, char, updatedWeaver, item.score.totalUtility) }))
-    .map((item) => ({ ...item, utility: item.director.utility }))
-    .sort((a, b) => b.utility - a.utility);
+    .map((item) => ({ ...item, utility: item.director.utility }));
+  if (activeChallengeHabit && directedCandidates.length > 0) {
+    const peakUtility = Math.max(...directedCandidates.map((item) => item.utility));
+    directedCandidates = directedCandidates.map((item) => {
+      if (habitChallengeForEvent(item.event) !== activeChallengeHabit || doneChallengeIds.has(item.event.id)) {
+        return item;
+      }
+      return { ...item, utility: Math.max(item.utility, Math.round(peakUtility * 6.0 * 10) / 10) };
+    });
+  }
+  directedCandidates.sort((a, b) => b.utility - a.utility);
   const draw = rng();
-  const legacyPick = drawDirectorCandidate(legacyCandidates, draw);
-  const directedPick = drawDirectorCandidate(directedCandidates, draw);
+  // Explore borrows [0, DIRECTOR_EXPLORE_SHARE); rescale non-explore rolls so Rank 0 is never starved when Top 24 weights are tight
+  const topRoll = draw >= DIRECTOR_EXPLORE_SHARE
+    ? (draw - DIRECTOR_EXPLORE_SHARE) / (1 - DIRECTOR_EXPLORE_SHARE)
+    : draw / DIRECTOR_EXPLORE_SHARE;
+  const legacyPick = drawDirectorCandidate(legacyCandidates, topRoll);
+  const directedPick = drawDirectorCandidate(directedCandidates, topRoll);
   const policy = ['legacy', 'shadow', 'active'].includes(updatedWeaver.directorPolicy)
     ? updatedWeaver.directorPolicy : 'active';
   const ranked = policy === 'active' ? directedCandidates : legacyCandidates;
@@ -952,6 +978,7 @@ export function selectEventWithWeaverAI({
       legacyId: legacyPick.event.id,
       directedId: directedPick.event.id,
       explored: Boolean(explored),
+      challengeHabit: habitChallengeForEvent(chosen.event) || null,
       tags: directorTags(chosen.event),
       multiplier: chosen.director?.multiplier ?? 1
     },

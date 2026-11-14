@@ -118,6 +118,7 @@ import {
   updateDramaTension
 } from './weaverAI.js';
 import { hasMemory, closeThreads, applyNpcFate, namesInUse, applyBonds } from './director.js';
+import { markHabitChallengeTriggered, recordChoiceMotif } from './eventDirector.js';
 import { BALANCE, frailty, isFixerCareerEvent, reputationGain } from './economyModel.js';
 import { activeScarCount, addScar, normalizeScars, scarContractPower } from './scarModel.js';
 import { weightedOutcomes } from './outcomeOdds.js';
@@ -904,6 +905,8 @@ export function createNewCharacter({
     pendingMinor: null,
     memory: [],
     motifs: {},
+    habits: {},
+    habitChallenges: [],
     unlockedRecords,
     contractRecord: { fixer: 0, wing: 0, independent: 0, fingers: {}, highestFixerTier: 0 },
     dungeonRecord: { clears: [] },
@@ -984,6 +987,8 @@ export function cloneChar(char) {
     recentMishaps: [...(char.recentMishaps || [])],
     memory: [...(char.memory || [])],
     motifs: { ...(char.motifs || {}) },
+    habits: { ...(char.habits || {}) },
+    habitChallenges: structuredClone(char.habitChallenges || []),
     unlockedRecords: [...char.unlockedRecords],
     logs: [...char.logs],
     pendingBirthLogs: char.pendingBirthLogs ? [...char.pendingBirthLogs] : undefined
@@ -2724,6 +2729,8 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random, dung
   if (majorNpcRole && !hasMemory(char, `${event.id}_c${choiceIdx}`)) char.memory = [...(char.memory || []), { key: `${event.id}_c${choiceIdx}`, choiceId: `${event.id}_c${choiceIdx}`, eventId: event.id, role: majorNpcRole, age: char.age }];
 
   const allSources = outcome === choice ? [choice] : [choice, outcome];
+  markHabitChallengeTriggered(char, event);
+  recordChoiceMotif(char, allSources, choice, event);
 
   // Process companion personal quests (npcQuest) and relationship promotions
   for (const src of allSources) {

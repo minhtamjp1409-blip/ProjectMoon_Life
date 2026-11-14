@@ -8,10 +8,17 @@ import { choiceIsAvailable } from '../../../src/engine/eventConditions.js';
 import { CAREER_CROSSROAD_IDS } from '../../../src/engine/careerAge.js';
 import { applyAnnualPlan, ambitionsFor, defaultYearPoints, CONVALESCE, YEAR_ACTIVITIES, YEAR_PLAN_POINTS } from '../../../src/engine/annualPlan.js';
 import { canRelocateDistrict, relocateCharacterDistrict } from '../../../src/engine/cityUpgrades.js';
+import { fastTacticalPick, lookaheadAmbition, lookaheadYearPoints, makeLookaheadPicker } from './lookaheadPolicy.mjs';
 
 export const POLICIES = ['random', 'greedy', 'focused', 'cautious'];
 export const DOOR_POLICY = 'door';
+export const RECKLESS_POLICY = 'reckless';
+export const LOOKAHEAD_POLICY = 'lookahead';
+// Same lead, Request, dungeon and year-plan rules as lookahead, without the rollouts: the control that isolates what looking ahead is worth
+export const TACTICAL_POLICY = 'tactical';
+const usesTacticalRules = (policy) => policy === LOOKAHEAD_POLICY || policy === TACTICAL_POLICY;
 export const ALL_POLICIES = [...POLICIES, DOOR_POLICY];
+export const ALL_BOT_POLICIES = [...ALL_POLICIES, RECKLESS_POLICY, TACTICAL_POLICY, LOOKAHEAD_POLICY];
 
 const toRegionId = (code) => {
   const s = String(code || '').trim();
@@ -104,6 +111,8 @@ export function yearPointsFor(policy, char, rng = Math.random) {
   if (policy === 'cautious') return lowHp ? { train: 0, work: 1, bond: 0, rest: 2, scheme: 0 } : { train: 1, work: 1, bond: 0, rest: 1, scheme: 0 };
   if (policy === 'focused') return { train: 2, work: 1, bond: 0, rest: 0, scheme: 0 };
   if (policy === 'greedy') return { train: 0, work: 2, bond: 0, rest: 1, scheme: 0 };
+  if (policy === RECKLESS_POLICY) return { train: 2, work: 1, bond: 0, rest: 0, scheme: 0 };
+  if (usesTacticalRules(policy)) return lookaheadYearPoints(char);
   if (policy === 'random') {
     const p = Object.fromEntries(YEAR_ACTIVITIES.map((a) => [a.id, 0]));
     for (let k = 0; k < YEAR_PLAN_POINTS; k++) p[YEAR_ACTIVITIES[Math.floor(rng() * YEAR_ACTIVITIES.length)].id] += 1;
@@ -129,6 +138,7 @@ export function planTheYear(char, policy, rng = Math.random) {
     : null;
   const ambition = char.ambition?.id
     || (doorAmb && ambitionsFor(char).find((g) => g.id === doorAmb)?.id)
+    || (usesTacticalRules(policy) && lookaheadAmbition(char))
     || ambitionsFor(char).find((g) => g.id === (policy === 'cautious' ? 'survive' : 'rank'))?.id
     || ambitionsFor(char)[0]?.id;
   if (!applyAnnualPlan(char, yearPointsFor(policy, char, rng), ambition)) char.pendingYearPlan = null;
@@ -163,12 +173,36 @@ function doorChoiceBonus(ch, tgt, char) {
   return bonus;
 }
 
+const RECKLESS_WEIGHT = { ...WEIGHT, health: 0.1, sanity: 0.1, wealth: 1.3, merit: 1.2, rep: 1.1, heat: 0.4, resonance: 0.6 };
+const recklessChoiceScore = scoreWith(fxScoreWith(RECKLESS_WEIGHT));
+
 /** Returns pickIndex(choices, rng, char, eventId): the index a player of this policy takes, or -1 when nothing is offered. */
 export function makePicker(policy = 'random') {
-  return (choices, rng, char, eventId = '') => {
+  if (policy === LOOKAHEAD_POLICY) return makeLookaheadPicker();
+  if (policy === TACTICAL_POLICY) {
+    const tactical = (choices, rng, char, eventId = '') => fastTacticalPick(choices, rng, char, eventId);
+    tactical.policy = TACTICAL_POLICY;
+    return tactical;
+  }
+  const pick = (choices, rng, char, eventId = '') => {
     // A player can only pick what the screen offers
     const ok = (choices || []).map((c, i) => i).filter((i) => choiceIsAvailable(choices[i], char));
     if (!ok.length) return -1;
+    if (policy === RECKLESS_POLICY) {
+      const dungeonIdx = ok.find((i) => choices[i].startDungeon || (choices[i].out || choices[i].outcomes)?.some((o) => o.startDungeon));
+      if (dungeonIdx !== undefined) return dungeonIdx;
+      if (eventId === 'hana_color_ascension_trial') return ok.includes(1) ? 1 : ok[0];
+      if (eventId === 'ego_carmen_crossroad' || eventId === 'ego_second_efflorescence_trial') return ok[0];
+      if (CAREER_CROSSROAD_IDS.includes(eventId)) {
+        const fixer = ok.find((i) => choices[i].setJob === 'Fixer');
+        if (fixer !== undefined) return fixer;
+      }
+      if (eventId.startsWith('fixer_promo_')) {
+        const promotion = ok.find((i) => choices[i].setFixerGrade != null);
+        if (promotion !== undefined) return promotion;
+      }
+      return ok.reduce((b, i) => (recklessChoiceScore(choices[i]) > recklessChoiceScore(choices[b]) ? i : b), ok[0]);
+    }
     if (policy === 'random') return ok[Math.floor(rng() * ok.length)];
     if (policy === DOOR_POLICY) {
       const tgt = openDoorTargets(char);
@@ -221,4 +255,6 @@ export function makePicker(policy = 'random') {
     const score = policy === 'cautious' ? cautiousChoiceScore : choiceScore;
     return ok.reduce((b, i) => (score(choices[i]) > score(choices[b]) ? i : b), ok[0]);
   };
+  pick.policy = policy;
+  return pick;
 }
