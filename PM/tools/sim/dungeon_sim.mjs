@@ -7,7 +7,7 @@
  * of that archetype (and so its dungeon perk), 'all' runs none and every archetype, and leaving it out keeps
  * whoever the birth gave, about a third of lives with someone.
  */
-import { createNewCharacter, createRNG, DUNGEON_DEFINITIONS, createDungeonSession, getDungeonCurrentStage, isDungeonChoiceAvailable, evaluateDungeonChoiceOdds, setDungeonStance, useDungeonSupply, resolveDungeonChoice } from '../../src/engine/gameEngine.js';
+import { createNewCharacter, createRNG, DUNGEON_DEFINITIONS, createDungeonSession, getDungeonCurrentStage, isDungeonChoiceAvailable, evaluateDungeonChoiceOdds, setDungeonStance, useDungeonSupply, resolveDungeonChoice, fleeDungeon, dungeonChoiceCanKill } from '../../src/engine/gameEngine.js';
 import { pathToFileURL } from 'node:url';
 import { DUNGEON_BALANCE } from '../../src/engine/dungeonEngine.js';
 import { ARCHETYPE_DUNGEON_PERKS } from '../../src/data/npcPersonality.js';
@@ -156,6 +156,33 @@ POLICIES.informed = (stage, char, sess, rng) => {
   return [...pool].sort((a, b) => score(b) - score(a))[0][1];
 };
 
+// Follows only the dock's visible lethal badges and low-HP retreat banner; otherwise picks at random
+POLICIES.alert = (stage, char, sess, rng) => {
+  const def = DUNGEON_DEFINITIONS[sess.id];
+  const ok = stage.choices.map((c, i) => [c, i]).filter(([c]) => isDungeonChoiceAvailable(c, char, sess) && c.combatAction !== 'clashBack' && c.combatAction !== 'workBack');
+  const canKill = (c) => dungeonChoiceCanKill(c, char, sess);
+  const onward = ok.filter(([c]) => !c.isFlee);
+  const safe = onward.filter(([c]) => !canKill(c));
+  const lowHpThreshold = stage.isRest ? 45 : 40;
+  const canRetreatNow = (stage.canFlee || ok.some(([c]) => c.isFlee)) && !def?.noRetreat && !(def?.theme === 'ensemble' && sess.ensembleForced);
+  if (canRetreatNow && (char.stats.health < lowHpThreshold || char.stats.sanity < 30 || !safe.length)) {
+    const f = ok.find(([c]) => c.isFlee);
+    if (f) return f[1];
+    if (stage.canFlee) return 'flee';
+  }
+  if (stage.isRest && char.stats.health < 75) {
+    const rest = safe.find(([c]) => c.restAction === 'rest');
+    if (rest) return rest[1];
+  }
+  const notLowOdds = safe.filter(([c]) => {
+    if (c.combatAction === 'clash' && char.stats.health < 60) return false;
+    const o = evaluateDungeonChoiceOdds(c, char, sess);
+    return !(o?.hasCheck && o.successPct < 60);
+  });
+  const pool = notLowOdds.length ? notLowOdds : safe.length ? safe : onward.length ? onward : ok;
+  return pool[Math.floor(rng() * pool.length)][1];
+};
+
 /** Runs every dungeon with every play style; returns one row per dungeon and style. `only` limits the dungeons and styles. */
 export function runDungeonSim(RUNS, { ids = Object.keys(DUNGEON_DEFINITIONS), policies = Object.keys(POLICIES), stakes = [0], companions = ['mixed'] } = {}) {
   const rows = [];
@@ -179,6 +206,7 @@ export function runDungeonSim(RUNS, { ids = Object.keys(DUNGEON_DEFINITIONS), po
             if (char.stats.health < 50 && sess.supplyCharges > 0) char = useDungeonSupply(char, 'breather');
             if (char.pendingDungeon.supplyCharges > 0 && stage.choices.some((c) => c.checkTrait) && pname === 'careful') char = useDungeonSupply(char, 'scan');
             if (pname === 'careful' && char.pendingDungeon.stance !== 'guarded') char = setDungeonStance(char, 'guarded');
+            if (pname === 'alert' && char.stats.health < 60 && char.pendingDungeon.stance !== 'guarded') char = setDungeonStance(char, 'guarded');
             if (pname === 'push' && char.pendingDungeon.stance !== 'reckless') char = setDungeonStance(char, 'reckless');
             if (pname === 'measured') {
               const want = char.stats.health >= 70 && char.stats.sanity >= 55 ? 'reckless' : 'guarded';
@@ -187,7 +215,7 @@ export function runDungeonSim(RUNS, { ids = Object.keys(DUNGEON_DEFINITIONS), po
             }
           }
           const idx = pol(stage, char, char.pendingDungeon, rng);
-          const r = resolveDungeonChoice(char, idx, rng);
+          const r = idx === 'flee' ? fleeDungeon(char) : resolveDungeonChoice(char, idx, rng);
           char = r.char; maxStrain = Math.max(maxStrain, r.session?.sanityStrain ?? 0);
           lastLoot = Math.max(lastLoot, r.session?.accumulatedLootAhn ?? char.pendingDungeon?.accumulatedLootAhn ?? 0);
           if (r.isFinished) { finished = true; resolution = r.resolution; break; }

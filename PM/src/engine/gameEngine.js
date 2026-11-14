@@ -51,7 +51,7 @@ import { activeScarCount } from './scarModel.js';
 export { rollBirthRegion, rollBirthFamily, createNewCharacter, cloneChar } from './characterCreation.js';
 export { INDEPENDENT_SYNDICATE_RANKS, WING_RANKS, getNextCareerMilestone, getEgoReadiness, checkPromotions } from './careerMilestones.js';
 export { generateFixerContract, resolveFixerContract } from './fixerContracts.js';
-export { woundDeath, applyFatalOrCompanionSave, closeLifeByChoice, handleSanityBreakdown, applyColorTrialCompanionState } from './lifeEnding.js';
+export { DEATH_SAVE_BOND, woundDeath, applyFatalOrCompanionSave, closeLifeByChoice, handleSanityBreakdown, applyColorTrialCompanionState } from './lifeEnding.js';
 export { resolveEventChoice } from './eventResolution.js';
 export { buildLifeSummaryAndLegacy } from './lifeSummary.js';
 
@@ -360,6 +360,7 @@ export {
   getDungeonMastery,
   isDungeonChoiceAvailable,
   evaluateDungeonChoiceOdds,
+  dungeonChoiceCanKill,
   DUNGEON_BALANCE,
   getStrainTier,
   dungeonSupplyState,

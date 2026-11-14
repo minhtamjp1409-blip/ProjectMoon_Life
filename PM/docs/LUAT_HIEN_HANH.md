@@ -32,6 +32,8 @@ Cổng Color có bốn đường, tất cả trong `color` của file nguồn: c
 - `type: 'major'` chỉ là hạng trọng lượng của event (hàng trăm event mang nó). Một lựa chọn event chỉ là bước ngoặt khi làm đổi đời: nghề, Grade, Finger rank, Wing rank, E.G.O, Distortion hay Color; `resolveEventChoice` ghi `turning: true` vào log. Log `major` do engine tự ghi (kết thúc hầm ngục, phong tỏa) không có `review` nên vẫn là bước ngoặt.
 - Mọi mục nhật ký phải có `id`, `age`, `season`, `type`: feed nhóm theo năm bằng `age` và đặt key bằng `id`.
 - Hành động với NPC (`npcInteractions.js`) có cooldown theo năm cho mỗi NPC và mỗi hành động. Số liệu của một hành động đi vào `deltas`, không viết trong câu.
+- Trần gắn kết (`bondCapFor` và `yearsTogetherOf` trong `npcPersonality.js`): nền cơ bản là `spouse: 75`, `child: 70`, `partner: 65`, `mentor: 65`, `parent: 60`, `friend: 60`; cộng thêm tối đa `+25` theo số năm quen biết (`Math.floor(yearsTogether / 3) * 5`), `+15` cho mỗi nhiệm vụ đồng hành (`questsDone`) và `+10` (tối đa `+20`) cho mỗi lần cùng sống sót qua hầm ngục. Giữ liên lạc hằng năm (`keepInTouch` trong `director.js`) cộng `+1` bond, hoặc `+2` khi đã chạm/vượt trần cũ để bạn/thầy gắn bó lâu năm có thể vươn tới mốc đỡ đòn.
+- Đỡ đòn chết (`applyFatalOrCompanionSave` trong `lifeEnding.js`, `DEATH_SAVE_BOND`): tối đa một lần mỗi đời (`usedDeathSave`), kích hoạt khi `spouse` hoặc `partner` có `bond >= 80`, hoặc `friend` / `mentor` có `bond >= 85`.
 
 ## Kiểm tra
 

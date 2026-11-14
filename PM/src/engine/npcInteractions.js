@@ -8,7 +8,7 @@
 // ============================================================================
 
 import { npcIsActive, npcIsHurt, hasSynergyWith } from './eventConditions.js';
-import { bondCapFor, ensureNpcAgency, appendNpcMemory, getNpcAge } from '../data/npcPersonality.js';
+import { bondCapFor, ensureNpcAgency, appendNpcMemory, getNpcAge, yearsTogetherOf } from '../data/npcPersonality.js';
 import { plantThread } from './affiliation.js';
 import { cloneChar, SEASONS } from './gameEngine.js';
 
@@ -239,7 +239,7 @@ export function executeNpcInteraction(char, role, actionId, rng = Math.random) {
   nextChar.stats = nextChar.stats || {};
   let npc = ensureNpcAgency(nextChar.npcs[role], rng, { age: getNpcAge(nextChar, nextChar.npcs[role]), regionId: nextChar.regionId });
   const name = npc.nameVi || npc.nameEn;
-  const cap = bondCapFor(npc);
+  const cap = bondCapFor({ ...npc, yearsTogether: yearsTogetherOf(nextChar, npc) });
   const age = nextChar.age ?? 0;
   let log = null;
   const before = { health: nextChar.stats.health, sanity: nextChar.stats.sanity, wealth: nextChar.stats.wealth, network: nextChar.stats.network, rep: nextChar.stats.rep, merit: nextChar.merit, heat: nextChar.heat };

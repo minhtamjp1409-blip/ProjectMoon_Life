@@ -24,10 +24,10 @@ Phần đã ổn: không có vi phạm logic nào, và không tràn ngang ở c�
 
 | Mã | Việc | Nhóm | Rủi ro | Đợt đề xuất |
 |---|---|---|---|---|
-| A1 | Báo cáo bot đếm sai số đời lên Color | Công cụ đo | Thấp | 178 |
-| A2 | Script QA trên Vercel kẹt vì chọn lựa chọn đang khóa | Công cụ đo | Thấp | 178 |
-| B1 | Cơ chế người thân đỡ đòn chết gần như không bao giờ xảy ra | Cân bằng | Thấp | 178 |
-| B2 | Người chơi mới chết trong dungeon vì thiếu thông tin | Cân bằng, giao diện | Trung bình | 178 |
+| ~~A1~~ | ~~Báo cáo bot đếm sai số đời lên Color~~ | Công cụ đo | Thấp | Đã xong (178) |
+| ~~A2~~ | ~~Script QA trên Vercel kẹt vì chọn lựa chọn đang khóa~~ | Công cụ đo | Thấp | Đã xong (178) |
+| ~~B1~~ | ~~Cơ chế người thân đỡ đòn chết gần như không bao giờ xảy ra~~ | Cân bằng | Thấp | Đã xong (178) |
+| ~~B2~~ | ~~Người chơi mới chết trong dungeon vì thiếu thông tin~~ | Cân bằng, giao diện | Trung bình | Đã xong (178) |
 | B3 | Không ai đi qua hồi đầu của Reverberation Ensemble | Cân bằng dungeon | Trung bình | 179 |
 | B4 | Fixer chơi an toàn ở Grade 9 suốt đời | Cân bằng nghề | Trung bình | 179 |
 | B5 | Lên Color rồi đều thành Distortion (4/4 đời) | Cân bằng nghề | Cần xác minh | 179 |
@@ -38,94 +38,9 @@ Phần đã ổn: không có vi phạm logic nào, và không tràn ngang ở c�
 | C3 | Người tính trước gặp gấp đôi số event | Thiết kế | Trung bình | 180 |
 | D1 | Tốc độ x8 và x16 dùng được mọi lúc | Học từ trang mẫu | Trung bình | 178 hoặc 179 |
 | D2 | 2–3 slot lưu | Học từ trang mẫu | Cao | Đợt riêng |
-| D3 | Thẻ District và Singularity trên màn chơi | Học từ trang mẫu | Thấp | 178 |
-
-## Nhóm A. Công cụ đo
-
-### A1. Báo cáo bot đếm sai số đời lên Color
-
-**Số đo.** `policy_balance_report.mjs` báo `color% = 0%` cho cả 8 kiểu bot. Thế nhưng bot `lookahead` có "Grade tốt nhất G0", tức là đã lên Color.
-
-**Nguyên nhân (đã xác minh).** Mình chạy lại 30 đời `lookahead` và ghi trạng thái sau mỗi năm:
-
-| Đời có `fixerGrade === 0` | Đời từng có cờ `ColorFixer` | Đời còn cờ lúc chết | Đời lên Color rồi thành Distortion |
-|---|---|---|---|
-| 4 | 4 | 0 | 4 |
-
-Báo cáo chỉ đọc cờ `ColorFixer` sau khi đời đã kết thúc ([policy_balance_report.mjs:95](../tools/sim/policy_balance_report.mjs#L95)). Khi Color hóa Distortion, `triggerDistortionTransformation` gỡ cờ này ([careerPipeline.js:831](../src/engine/careerPipeline.js#L831)) và ghi `color_fixer` vào `unlockedRecords`. Vì thế báo cáo luôn ra 0.
-
-**Cách sửa.**
-1. Trong vòng lặp năm của `simulatePolicyCohort` ([policy_balance_report.mjs:55](../tools/sim/policy_balance_report.mjs#L55)), thêm biến `everColor` cho mỗi đời. Sau mỗi năm, gán `everColor = true` nếu `char.flags.includes('ColorFixer') || char.isColorFixer || char.job === 'Color Fixer'`.
-2. Ở cuối đời, đếm theo `everColor || char.unlockedRecords?.includes('color_fixer')`, thay cho dòng 95.
-3. Thêm cột `colorThenDistorted%` để thấy riêng số Color sa vào Distortion. B5 cần cột này.
-4. Kiểm các báo cáo khác có đọc `ColorFixer` lúc cuối đời không: `grep -rn "ColorFixer" tools/sim`. Báo cáo nào đọc thì sửa theo cùng cách.
-
-**Đo lại.** `node tools/sim/policy_balance_report.mjs 30` phải cho `color%` của `lookahead` khoảng 10–15% (4/30 trong lần đo này). Thêm một khẳng định vào `tests/test_ai_director_and_bots.mjs`: với một seed đã biết sẽ lên Color, báo cáo đếm đời đó là Color.
-
-### A2. Script QA trên Vercel kẹt vì chọn lựa chọn đang khóa
-
-**Số đo.** Lượt chơi trên khổ 390px dừng ở tuổi 31 khi nhân vật vẫn sống. Log lặp hàng chục lần cùng một dòng: `[Age 31] ... Event: "Thư từ các Finger"`.
-
-**Nguyên nhân (đã xác minh).** Event `syn_choose_finger_allegiance` ([eventsFactions.js:104](../src/data/eventsFactions.js#L104)) có những lựa chọn cần `need: { fingerInvited: 'Thumb' }` (và tương tự cho các Finger khác). Script chấm điểm mọi lựa chọn, kể cả lựa chọn đang khóa ([test_live_website_runs.mjs:278](../tools/qa/test_live_website_runs.mjs#L278)), rồi gọi thẳng `s.selectEventChoice(bestIdx)`. Engine từ chối đúng cách ([eventResolution.js:47](../src/engine/eventResolution.js#L47), `if (!choiceIsAvailable(choice, char)) return char;`), nên trạng thái không đổi và script chọn lại đúng lựa chọn đó mãi.
-
-Người chơi thật không gặp lỗi này vì nút đã bị khóa trên giao diện. Lỗi chỉ nằm trong script.
-
-**Cách sửa.**
-1. Script chạy bên trong trang, nên không import được `choiceIsAvailable`. Có hai cách:
-   - **Cách nên dùng:** trong [main.jsx:9](../src/main.jsx#L9), cạnh `window.__gameStore`, gắn thêm `window.__choiceIsAvailable = choiceIsAvailable`. Chỉ gắn khi `import.meta.env.DEV` hoặc khi URL có `?qa=1`, để bản phát hành không lộ thêm hàm.
-   - Cách dự phòng: đọc DOM, bỏ qua những nút `.choice` có `disabled` hoặc `aria-disabled="true"`.
-2. Trong vòng chấm điểm event (dòng 278) và minor (khoảng dòng 293), bỏ qua lựa chọn chưa mở trước khi gọi `evaluateSurvival`.
-3. Thêm chốt chống kẹt: lưu `age`, `seasonIdx` và id event đang chờ. Nếu cả ba không đổi sau 20 vòng, ghi `STALL` cùng id event vào báo cáo, chọn lựa chọn đầu tiên còn mở, và nếu vẫn kẹt thì dừng lượt đó với lỗi rõ ràng.
-
-Bot mô phỏng trong `tools/sim/lib` không mắc lỗi này: `choicePolicy.mjs:189` và `lookaheadPolicy.mjs:44` đã lọc bằng `choiceIsAvailable`.
-
-**Đo lại.** Chạy lại `node tools/qa/test_live_website_runs.mjs` với cùng seed. Lượt trên điện thoại phải đi qua tuổi 31, và báo cáo không có dòng `STALL`.
+| ~~D3~~ | ~~Thẻ District và Singularity trên màn chơi~~ | Học từ trang mẫu | Thấp | Đã xong (178) |
 
 ## Nhóm B. Cân bằng
-
-### B1. Người thân đỡ đòn chết gần như không bao giờ xảy ra
-
-**Số đo.** `Death-save used 0.0%` trong 300 đời. Bond tốt nhất ở tuổi 30 có p25/trung vị/p75/p90 = 31/50/60/69.
-
-**Nguyên nhân (đã xác minh).** [lifeEnding.js:36-42](../src/engine/lifeEnding.js#L36-L42) cần bond ≥ 90 với vợ/chồng hoặc người yêu, và ≥ 95 với bạn hoặc thầy. Ngay cả 10% người chơi gắn bó nhất cũng chỉ đạt 69. Cơ chế này đã viết xong, có cả cảnh `savior` ([cutsceneTriggers.js:16](../src/engine/cutsceneTriggers.js#L16)) và thẻ chương ([chapters.js:120](../src/engine/chapters.js#L120)), nhưng người chơi gần như không bao giờ thấy.
-
-**Cách sửa.**
-1. Đưa ngưỡng ra hằng số đầu file `lifeEnding.js`: `DEATH_SAVE_BOND = { spouse: 80, partner: 80, friend: 85, mentor: 85 }`. Thay hai số `90` và `95` ở dòng 41 bằng tra bảng này.
-2. Chạy `balance_report` với ngưỡng mới. Mục tiêu: 3–8% số đời dùng tới. Nếu vượt 10% thì nâng thêm 5 điểm. Cơ chế này phải hiếm để còn nặng ký.
-3. Cho người chơi biết cơ chế này có tồn tại. Trong [NpcDossierModal.jsx:157](../src/features/chronicle/components/NpcDossierModal.jsx#L157), khối `bond-box`, thêm một dòng khi bond đạt ngưỡng và `!char.usedDeathSave`:
-   - Tiếng Việt: "Người này sẽ lao vào đỡ đòn thay bạn, một lần duy nhất."
-   - Tiếng Anh: "They would take a killing blow for you, once."
-
-   Khi bond còn thiếu dưới 10 điểm, hiện câu nhẹ hơn: "Thêm chút nữa, người này sẽ liều mạng vì bạn." Chạy `node tools/lint/vi_prose_scan.mjs` sau khi thêm chữ.
-4. Cập nhật `tests/test_chapters.mjs` và `tests/test_cutscene_triggers.mjs` nếu chúng dựng nhân vật với bond 90/95. Thêm một test: bond 80 với vợ/chồng thì cứu được, bond 79 thì không.
-5. Cập nhật mục đỡ đòn chết trong `docs/LUAT_HIEN_HANH.md`.
-
-**Đo lại.** `node tools/sim/balance_report.mjs 300`, dòng `Death-save used` nằm trong 3–8%.
-
-### B2. Người chơi mới chết trong dungeon vì thiếu thông tin
-
-**Số đo** (`dungeon_sim.mjs`, stake 0):
-
-| Dungeon | Chọn ngẫu nhiên chết | Cẩn thận chết | Có thông tin (`informed`) chết |
-|---|---|---|---|
-| Lobotomy Ruin | 88,7% | 0,3% | 0,7% |
-| Bloodfiend Carnival | 86,3% | 0% | 0% |
-| Great Lake | 88,3% | 2,0% | 6,0% |
-| Backstreets Night | 85,0% | 0,7% | 0,7% |
-
-Bot ngẫu nhiên chỉ rút lui 10–14% số lần. Trong báo cáo 8 bot, 50–77% số đời của bot luật cố định có chết trong dungeon, so với 20–27% ở bot biết đọc tỷ lệ.
-
-**Nguyên nhân (cần xác minh một phần).** Khoảng cách gần 90 điểm cho thấy dungeon không quá khó. Người chơi không đọc tỷ lệ thì chết, người đọc thì sống. Cần kiểm xem tỷ lệ và nút rút lui có đủ nổi bật trong `DungeonDock.jsx` không, nhất là trên 390px.
-
-**Cách sửa.**
-1. **Cảnh báo HP thấp.** Trong [DungeonDock.jsx](../src/features/chronicle/components/DungeonDock.jsx), khi `char.stats.health < 40` và dungeon còn cho rút (`!def.noRetreat`, và với Ensemble là còn ở hồi đầu):
-   - Đưa nút rút lui (lựa chọn có `ch.isFlee`, quanh dòng 501) lên đầu danh sách, hoặc thêm viền cảnh báo.
-   - Hiện một dòng ngay trên các lựa chọn, ví dụ "HP còn {n}. Chặng tiếp theo có thể giết bạn." Lấy số rủi ro từ `evaluateDungeonChoiceOdds` để câu nói đúng với tình hình.
-2. **Tỷ lệ chết hiện trên từng lựa chọn.** Nếu `evaluateDungeonChoiceOdds` có trả về khả năng mất HP lớn hơn HP hiện có, gắn nhãn "Có thể chết" lên lựa chọn đó. Dùng màu cảnh báo đã có trong token, không thêm màu mới.
-3. **Không tự động chọn thay người chơi.** Chỉ làm nổi bật, vì rút lui là quyết định của người chơi.
-4. Đo bố cục ở 390px bằng `tools/qa/measure_dungeon_mobile.mjs`: dòng cảnh báo không được đẩy lựa chọn đầu tiên ra khỏi màn hình.
-
-**Đo lại.** Thêm kiểu bot `alert` vào `dungeon_sim.mjs`: chọn ngẫu nhiên, nhưng luôn rút khi giao diện hiện cảnh báo. Mục tiêu: tỷ lệ chết của `alert` dưới 30% ở bốn dungeon trên. Nếu đạt, cảnh báo đã đủ thông tin cho người chơi mới.
 
 ### B3. Không ai đi qua hồi đầu của Reverberation Ensemble
 
@@ -305,25 +220,11 @@ Trang tham khảo: `https://project-moon-life.cityborn.workers.dev/`. Chỉ họ
 - Test `pendingLegacy`: kết thúc đời ở slot 2 không làm đổi đời đang chơi ở slot 1.
 - Chạy cả `npm test` và một lượt CDP tải lại trang giữa chừng.
 
-### D3. Thẻ District và Singularity trên màn chơi
-
-**Hiện trạng (đã xác minh).** Dữ liệu có đủ trong `REGIONS` ([worldData.js](../src/data/worldData.js)): tên, `singularityVi/En`, `safety`, `medical`. Hồ sơ nhân vật đã có thẻ District ([CharacterDossierCard.jsx:686-712](../src/features/chronicle/components/CharacterDossierCard.jsx#L686-L712)), nhưng nằm trong khối `<details>` gập sẵn, nên người chơi phải tự mở mới thấy.
-
-**Cách sửa.**
-1. Tách phần đầu thẻ (tên District và Singularity) thành thành phần nhỏ `DistrictStrip.jsx`. Lấy `region` giống [CharacterDossierCard.jsx:913](../src/features/chronicle/components/CharacterDossierCard.jsx#L913).
-2. Đặt dải này ở đầu khung chơi, cạnh tuổi và mùa trong `PlayBar`. Nội dung có hai phần: tên District đậm, rồi Singularity ở cỡ nhỏ hơn. Tách hai phần bằng xuống dòng hoặc khoảng cách, không dùng dấu chấm giữa.
-3. Bấm vào dải thì mở hồ sơ ở đúng khối "Khu vực & xuất thân", bằng cách đặt `open` cho `<details>` đó.
-4. Trên 390px, chỉ hiện tên District. Singularity rút gọn thành một dòng có dấu ba chấm, đầy đủ khi bấm vào.
-5. Dùng class và token sẵn có (`dossier-context-card`, `context-card-tag`). Không thêm màu mới.
-6. Nếu nhân vật đổi nơi sống trong đời, dải phải theo `char.regionId` hiện tại. Cần xác minh trường nào lưu nơi ở hiện tại.
-
-**Đo lại.** Chụp CDP ở 1440px và 390px: dải hiện đủ, không tràn ngang, không đẩy lựa chọn của event lớn xuống dưới mép màn hình. Chạy `tests/test_play_screen_smoke.mjs`.
-
 ## Đề xuất chia đợt
 
 | Đợt | Gồm | Lý do |
 |---|---|---|
-| 178 | A1, A2, B1, B2, D3 | Rủi ro thấp, người chơi thấy ngay, và sửa công cụ đo trước khi cân bằng tiếp |
+| ~~178~~ | ~~A1, A2, B1, B2, D3~~ | Đã xong (xem `PROGRESS_LOG.md` mục 2.63) |
 | 179 | B3, B4, B5, C1, D1 | Cần số đo đúng từ A1 và bot mới từ B2, B4 |
 | 180 | B6, B7, C3 | Cần đo thu chi và reach theo nhánh trước khi viết thêm |
 | Đợt riêng | D2 | Đụng tới lưu trữ và di cư dữ liệu, cần test riêng |

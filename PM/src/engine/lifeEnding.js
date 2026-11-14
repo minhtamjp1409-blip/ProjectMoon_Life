@@ -6,6 +6,8 @@ import { colorTrialCompanionOf, npcIsActive, recordColorTrialCompanion } from '.
 import { rememberResonance } from './awakeningProgress.js';
 import { tryItemAutoRevive } from './careerPipeline.js';
 
+export const DEATH_SAVE_BOND = { spouse: 80, partner: 80, friend: 85, mentor: 85 };
+
 /**
  * Checks if a high-bond Partner or Spouse intercepts a fatal blow (Death Save Mechanic)
  */
@@ -32,13 +34,13 @@ export function applyFatalOrCompanionSave(char, deathCauseVi, deathCauseEn) {
     return;
   }
 
-  // Companion Sacrifice (Death Save): Strictly ONCE per lifetime, requires supreme Bond (>= 90)
+  // Companion Sacrifice (Death Save): Strictly ONCE per lifetime, requires DEATH_SAVE_BOND threshold
   const saviorKey = !char.usedDeathSave
     ? ['spouse', 'partner', 'friend', 'mentor'].find(
         k => char.npcs?.[k] &&
              !char.npcs[k].deceased &&
              char.npcs[k].status === 'alive' &&
-             (char.npcs[k].bond || 0) >= (['spouse', 'partner'].includes(k) ? 90 : 95)
+             (char.npcs[k].bond || 0) >= DEATH_SAVE_BOND[k]
       )
     : null;
 

@@ -102,9 +102,14 @@ export const hasTag = (npc, tag) => Boolean(npc && Array.isArray(npc.tags) && np
  * - Battle partners and mentors start with steady professional trust (base 65/60).
  * - Friends start at base 50.
  * - Each companion quest done adds +15.
- * - Shared survival years in adulthood add up to +20.
+ * - Shared survival years add up to +25.
  * - Dungeon battles survived together add up to +20.
  */
+export function yearsTogetherOf(char, npc) {
+  if (!char || !npc) return 0;
+  return Math.max(0, (char.age || 0) - (npc.metAge ?? char.age ?? 0));
+}
+
 export function bondCapFor(npc) {
   if (!npc) return 40;
   const isSpouse = npc.role === 'spouse';
@@ -113,12 +118,14 @@ export function bondCapFor(npc) {
   const isMentor = npc.role === 'mentor';
   const isParent = npc.role === 'parent';
 
-  let cap = isSpouse ? 75 : isChild ? 70 : isPartner ? 65 : isMentor ? 60 : isParent ? 60 : 50;
+  const friendBase = npc.legacyBase ? 50 : 60;
+  const mentorBase = npc.legacyBase ? 60 : 65;
+  let cap = isSpouse ? 75 : isChild ? 70 : isPartner ? 65 : isMentor ? mentorBase : isParent ? 60 : friendBase;
 
   cap += 15 * (npc.questsDone || 0);
 
   if (npc.yearsTogether != null) {
-    cap += Math.min(20, Math.floor(npc.yearsTogether / 3) * 5);
+    cap += Math.min(npc.legacyBase ? 20 : 25, Math.floor(npc.yearsTogether / 3) * 5);
   }
 
   if (npc.dungeonsCleared || npc.dungeonsSurvived) {

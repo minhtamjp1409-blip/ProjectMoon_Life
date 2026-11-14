@@ -1,7 +1,7 @@
 // The miss price on the choice must be what a miss really costs, and the door forecast must read the heaviest floor
 import assert from 'node:assert/strict';
 import { createNewCharacter } from '../src/engine/gameEngine.js';
-import { DUNGEON_DEFINITIONS, createDungeonSession, getDungeonCurrentStage, evaluateDungeonChoiceOdds, resolveDungeonChoice, dungeonEntryForecast } from '../src/engine/dungeonEngine.js';
+import { DUNGEON_DEFINITIONS, createDungeonSession, getDungeonCurrentStage, evaluateDungeonChoiceOdds, resolveDungeonChoice, dungeonEntryForecast, dungeonChoiceCanKill } from '../src/engine/dungeonEngine.js';
 
 let checked = 0;
 const report = [];
@@ -86,5 +86,23 @@ for (const id of ['dungeon_outskirts_ruins', 'dungeon_warp_train']) {
 }
 assert(checked > 0, 'At least one miss compared against the resolver');
 assert(kinds.has('stage') && (kinds.has('evade') || kinds.has('clash')), `both stage checks and fights compared: ${[...kinds]}`);
+// One lethal rule for the dock badge and the alert bot: a flee never kills, an emptied HP pool does, and an Ensemble resist that can miss does
+{
+  const char = createNewCharacter({ seed: 'can-kill', startAge: 30 });
+  char.stats.health = 100; char.stats.sanity = 100;
+  const sess = createDungeonSession('dungeon_lobotomy_ruin', char);
+  const stage = getDungeonCurrentStage(sess);
+  const hurt = stage.choices.find((c) => !c.isFlee && (evaluateDungeonChoiceOdds(c, char, sess)?.estHp ?? 0) < 0);
+  assert(hurt, 'the first Lobotomy floor has a choice that costs HP');
+  assert.equal(dungeonChoiceCanKill({ isFlee: true }, char, sess), false, 'a flee choice never counts as lethal');
+  assert.equal(dungeonChoiceCanKill(hurt, char, sess), false, 'a blow that leaves HP above 0 is not lethal');
+  char.stats.health = 1;
+  assert.equal(dungeonChoiceCanKill(hurt, char, sess), true, 'a blow that empties HP is lethal');
+  char.stats.health = 100;
+  const ens = createDungeonSession('dungeon_reverberation_ensemble', char);
+  const resist = { labelVi: 'x', labelEn: 'x', ensembleResist: true, checkTrait: 'nerve', checkPenalty: 0.55, fx: { health: -8 } };
+  assert.equal(dungeonChoiceCanKill(resist, char, ens), true, 'an Ensemble resist that can miss is lethal');
+}
+
 console.log(`Dungeon miss preview: ${checked} choices (${[...kinds].join(', ')}) match the resolver, door forecast reads the heaviest floor, lethal warning passed.`);
 process.exit(0);

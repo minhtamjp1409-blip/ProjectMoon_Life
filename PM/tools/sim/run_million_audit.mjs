@@ -77,6 +77,7 @@ while (STATS.totalScenariosExecuted < TARGET_SCENARIOS) {
 
   let previousGrade = 9;
   let leapSeen = false;
+  let everColor = false;
 
   // Check 3 runs after every step that can change the grade, so two exams passed in one
   // year count as two single steps, not as one skip
@@ -90,6 +91,7 @@ while (STATS.totalScenariosExecuted < TARGET_SCENARIOS) {
       if (gap === 2 && char.flags.includes('ego_leap_done')) leapSeen = true;
       previousGrade = char.fixerGrade;
     }
+    if (char.flags.includes('ColorFixer') || char.isColorFixer || char.job === 'Color Fixer') everColor = true;
   };
 
   while (char.alive && char.age < 120 && STATS.totalScenariosExecuted < TARGET_SCENARIOS) {
@@ -217,9 +219,11 @@ while (STATS.totalScenariosExecuted < TARGET_SCENARIOS) {
   if (char.flags.includes('Distorted')) STATS.distortionsCount++;
   if (char.flags.includes('EGOAwakened')) STATS.egoAwakenedCount++;
 
-  if (char.job === 'Fixer' || char.job === 'Color Fixer') {
-    if (char.flags.includes('ColorFixer')) STATS.fixerGradesReached.color++;
-    else if (char.fixerGrade >= 1 && char.fixerGrade <= 9) {
+  const reachedColor = everColor || Boolean(char.unlockedRecords?.includes('color_fixer')) || char.flags.includes('ColorFixer');
+  if (reachedColor) {
+    STATS.fixerGradesReached.color++;
+  } else if (char.job === 'Fixer' || char.job === 'Color Fixer') {
+    if (char.fixerGrade >= 1 && char.fixerGrade <= 9) {
       STATS.fixerGradesReached[`g${char.fixerGrade}`]++;
     }
   }

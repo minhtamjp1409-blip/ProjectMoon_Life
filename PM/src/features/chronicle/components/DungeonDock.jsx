@@ -15,7 +15,8 @@ import {
   dungeonSupplyState,
   dungeonEgoState,
   isDungeonChoiceAvailable,
-  evaluateDungeonChoiceOdds
+  evaluateDungeonChoiceOdds,
+  dungeonChoiceCanKill
 } from '../../../engine/gameEngine.js';
 import { gauntletRoute } from '../../../engine/dungeonCombat.js';
 import { signatureMeter } from '../../../engine/dungeonSignature.js';
@@ -190,6 +191,35 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
   const fight = stage.combat || null;
   const meter = signatureMeter(session);
   const objective = session.objective ? DUNGEON_OBJECTIVES.find((o) => o.id === session.objective) : null;
+  const hpNow = char.stats?.health ?? 0;
+  const spNow = char.stats?.sanity ?? 0;
+  const canRetreatNow = (stage.canFlee || stage.choices.some((c) => c.isFlee)) && !def.noRetreat && !(def.theme === 'ensemble' && session.ensembleForced);
+  const choiceEntries = stage.choices.map((ch, idx) => {
+    const avail = isDungeonChoiceAvailable(ch, char, session);
+    const odds = evaluateDungeonChoiceOdds(ch, char, session);
+    const canKill = dungeonChoiceCanKill(ch, char, session, odds);
+    return { ch, idx, avail, odds, canKill };
+  });
+  const onwardAvail = choiceEntries.filter((e) => !e.ch.isFlee && e.avail);
+  const allOnwardCanKill = onwardAvail.length > 0 && onwardAvail.every((e) => e.canKill);
+  const lowHpThreshold = stage.isRest ? 45 : 40;
+  const lowHp = hpNow < lowHpThreshold;
+  const lowSp = spNow < 30;
+  const retreatUrgent = canRetreatNow && (lowHp || lowSp || allOnwardCanKill);
+  const hasStageLeaveBtn = Boolean(stage.canFlee && !def.noRetreat && !stage.choices.some((c) => c.isFlee));
+  const leaveBtnLabel = def.theme === 'ensemble'
+    ? t('Rời nhà hát · mất danh tiếng', 'Leave the theatre · lose reputation')
+    : t(`Rút lui và giữ ${session.accumulatedLootAhn || 0} Ahn đã gom`, `Leave and keep the ${session.accumulatedLootAhn || 0} Ahn you hold`);
+  const retreatReasonText = allOnwardCanKill
+    ? t('Mọi hướng đi tiếp đều có thể giết bạn. Nên rút lui.', 'Every path ahead can kill you. Consider retreating.')
+    : lowHp && lowSp
+      ? t(`HP còn ${hpNow}, SP còn ${spNow}. Chặng tiếp theo có thể giết bạn. Nên rút lui.`, `HP at ${hpNow}, SP at ${spNow}. The next step can kill you. Consider retreating.`)
+      : lowHp
+        ? t(`HP còn ${hpNow}. Chặng tiếp theo có thể giết bạn. Nên rút lui.`, `HP at ${hpNow}. The next step can kill you. Consider retreating.`)
+        : t(`SP còn ${spNow}. Đi tiếp dễ sụp đổ tâm thần. Nên rút lui.`, `SP at ${spNow}. Pressing on risks a mental collapse. Consider retreating.`);
+  const orderedChoices = retreatUrgent
+    ? [...choiceEntries.filter((e) => e.ch.isFlee), ...choiceEntries.filter((e) => !e.ch.isFlee)]
+    : choiceEntries;
 
   return (
     <div className={`dock is-dungeon theme-${def.theme}${fight?.isBoss ? ' is-boss' : ''}${fight?.phase === 2 ? ' is-phase-2' : ''}${strain >= 70 ? ' is-panic-high' : ''}`} style={{ '--dg': def.accentColor }} role="document">
@@ -485,10 +515,28 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
           </p>
         </section>
 
+        {retreatUrgent && (
+          <div className="dg-retreat-alert" role="status">
+            <span>{retreatReasonText}</span>
+            {hasStageLeaveBtn && (
+              <button
+                type="button"
+                className="btn btn-ghost btn-sm dg-leave-btn is-urgent"
+                onClick={() => {
+                  audioEngine.playClick();
+                  onFlee?.();
+                }}
+              >
+                <LogOut size={13} aria-hidden="true" />
+                <span>{leaveBtnLabel}</span>
+                <kbd>F</kbd>
+              </button>
+            )}
+          </div>
+        )}
+
         <ul className="choices dg-choices">
-          {stage.choices.map((ch, idx) => {
-            const avail = isDungeonChoiceAvailable(ch, char, session);
-            const odds = evaluateDungeonChoiceOdds(ch, char, session);
+          {orderedChoices.map(({ ch, idx, avail, odds, canKill }, displayIdx) => {
             const label = pick(ch.labelVi, ch.labelEn);
             const alt = pick(ch.labelEn, ch.labelVi);
             const trait = ch.companionLead ? TRAIT_NAMES.bond : ch.checkTrait ? TRAIT_NAMES[ch.checkTrait] : null;
@@ -498,7 +546,8 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
               <li key={idx}>
                 <button
                   type="button"
-                  className={`choice dg-choice ${ch.isFlee ? 'is-leave' : ''}`}
+                  data-choice-idx={idx}
+                  className={`choice dg-choice ${ch.isFlee ? 'is-leave' : ''}${ch.isFlee && retreatUrgent ? ' is-urgent' : ''}`}
                   disabled={!avail}
                   onClick={() => {
                     if (!avail) return;
@@ -516,7 +565,7 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
                     onPick(idx);
                   }}
                 >
-                  <span className="choice-badge">{idx + 1}</span>
+                  <span className="choice-badge">{displayIdx + 1}</span>
                   <span className="choice-content">
                     <span className="choice-label">{label}</span>
                     {bilingual && alt && alt !== label && <span className="choice-alt">{alt}</span>}
@@ -559,10 +608,7 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
                           {t('Trượt', 'Miss')}{odds.failHp < 0 && ` · HP ${t(...SEVERITY[severityOf(-odds.failHp)])}`}{odds.failSp < 0 && ` · SP ${t(...SEVERITY[severityOf(-odds.failSp)])}`}
                         </span>
                       )}
-                      {odds?.failLethal && <span className="dg-need is-unmet">{t('Trượt lần này có thể gục', 'A miss here can drop you')}</span>}
-                      {!ch.isFlee && ((odds?.estHp < 0 && (char.stats?.health ?? 0) + odds.estHp <= 0) || (odds?.estSp < 0 && (char.stats?.sanity ?? 0) + odds.estSp <= 0)) && (
-                        <span className="dg-need is-unmet">{t('Đòn này đủ để gục', 'This blow can drop you')}</span>
-                      )}
+                      {canKill && <span className="dg-need is-unmet dg-lethal-tag">{t('Có thể chết', 'Can kill you')}</span>}
                       {ahn > 0 && <Chip stat="wealth" tone="up">Ahn</Chip>}
                       {odds?.estMerit > 0 && <Chip stat="merit" tone="up">{t('Công trạng', 'Merit')}</Chip>}
                       {odds?.estResonance > 0 && <Chip stat="resonance" tone="up">{t('Cộng hưởng', 'Resonance')}</Chip>}
@@ -574,7 +620,7 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
           })}
         </ul>
 
-        {stage.canFlee && !def.noRetreat && (
+        {stage.canFlee && !def.noRetreat && !retreatUrgent && (
           <div className="dg-leave">
             <button
               type="button"
@@ -585,7 +631,7 @@ export const DungeonDock = ({ session, char, onPick, onFlee, onSetStance, onUseS
               }}
             >
               <LogOut size={14} aria-hidden="true" />
-              <span>{def.theme === 'ensemble' ? t('Rời nhà hát · mất danh tiếng', 'Leave the theatre · lose reputation') : t(`Rút lui và giữ ${session.accumulatedLootAhn || 0} Ahn đã gom`, `Leave and keep the ${session.accumulatedLootAhn || 0} Ahn you hold`)}</span>
+              <span>{leaveBtnLabel}</span>
               <kbd>F</kbd>
             </button>
           </div>

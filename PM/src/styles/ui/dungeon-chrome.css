@@ -101,6 +101,26 @@
 
 .dg-choices { list-style: none; }
 .dg-choice.is-leave { border-style: dashed; }
+.dg-choice.is-leave.is-urgent,
+.dg-leave-btn.is-urgent {
+  border-color: var(--warn);
+  color: var(--warn);
+}
+.dg-retreat-alert {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 10px;
+  border: 1px solid color-mix(in srgb, var(--bad) 55%, var(--border));
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--bad) 10%, var(--surface));
+  color: var(--bad);
+  font-size: var(--t-label);
+  font-weight: 600;
+  line-height: 1.4;
+}
 .dg-odds { font-size: var(--t-label); font-weight: 700; font-variant-numeric: tabular-nums; padding: 1px 7px; border: 1px solid currentColor; border-radius: var(--radius-sm); }
 .dg-odds.is-high { color: var(--good); }
 .dg-odds.is-mid { color: var(--warn); }
@@ -273,24 +293,44 @@
 }
 
 @media (max-width: 480px) {
-  .dg { gap: 8px; }
+  .dg { gap: 6px; }
   .dg-head {
-    gap: 4px;
-    padding-top: 2px;
-    padding-bottom: 6px;
+    gap: 3px;
+    padding-top: 0;
+    padding-bottom: 4px;
   }
-  .dg-head .dock-title { font-size: 18px; line-height: 1.2; }
-  .dg-ambient, .dg-objective { font-size: var(--t-label); line-height: 1.38; margin: 0; }
-  .dg-status { gap: 4px 10px; }
-  .dg-signature { padding: 6px 10px; }
-  .dg-result { padding: 8px 10px; }
-  .dg-scene { gap: 5px; }
-  .dg-scene-title { font-size: 17px; }
-  .dg-scene .dock-text { font-size: var(--t-ui); line-height: 1.45; margin: 0; }
-  .dg-foe { padding: 8px 10px; gap: 4px; }
+  .dg-head .dock-title { font-size: 17px; line-height: 1.18; }
+  .dg-ambient { display: none; }
+  .dg-objective { font-size: var(--t-meta); line-height: 1.3; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .dg-judgment-warning { padding: 3px 7px; font-size: var(--t-meta); line-height: 1.3; }
+  .dg-status { gap: 3px 8px; }
+  .dg-signature { padding: 4px 8px; }
+  .dg-signature-note { display: none; }
+  .dg-result { padding: 6px 8px; }
+  .dg-scene { gap: 4px; }
+  .dg-scene-title { font-size: 16px; }
+  .dg-scene .dock-text {
+    font-size: var(--t-label);
+    line-height: 1.35;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .dg-foe { padding: 6px 8px; gap: 3px; }
   .dg-foe-guard { gap: 3px; }
-  .dg-intent-name { font-size: var(--t-lede); }
-  .dg-choices { gap: 6px; margin-top: 4px; }
-  .dg-choice { min-height: 44px; padding: 8px 10px; }
+  .dg-intent-name { font-size: var(--t-ui); }
+  .dg-intent-next, .dg-foe-help { display: none; }
+  .dg-tools { padding: 4px 0; gap: 4px; }
+  .dg-tactics-bar { gap: 4px; }
+  .dg-stance, .dg-supply, .dg-hand-summary { min-height: 34px; }
+  .dg-supplies { gap: 4px; flex-wrap: nowrap; }
+  .dg-supply { padding: 0 7px; font-size: var(--t-meta); gap: 4px; }
+  .dg-supply small { display: none; }
+  .dg-hand-fold { padding-top: 3px; }
+  .dg-retreat-alert { padding: 4px 8px; font-size: var(--t-meta); gap: 6px; }
+  .dg-choices { gap: 5px; margin-top: 2px; }
+  .dg-choice { min-height: 44px; padding: 6px 8px; }
   .dg-card { flex-basis: 136px; min-height: 200px; padding: 10px; }
 }

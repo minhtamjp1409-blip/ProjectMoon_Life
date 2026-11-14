@@ -201,7 +201,7 @@ for (let i = 0; i < LIVES; i++) {
   }
   if (char.flags.includes('Distorted')) outcomes.distorted++;
   if (char.flags.includes('EGOAwakened')) outcomes.ego++;
-  if (char.flags.includes('ColorFixer')) outcomes.color++;
+  if (firstColorAge !== null || seenG.has(0) || char.flags.includes('ColorFixer') || char.isColorFixer || char.job === 'Color Fixer' || char.unlockedRecords?.includes('color_fixer')) outcomes.color++;
   if (char.job === 'Fixer' && char.fixerGrade === 1) outcomes.grade1++;
   if ((char.seenEvents || []).includes('ego_carmen_crossroad')) outcomes.carmen++;
   if (char.npcs?.spouse) outcomes.married++;

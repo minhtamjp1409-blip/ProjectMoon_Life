@@ -1,6 +1,6 @@
 # Kế hoạch phát triển tiếp theo
 
-File này chỉ giữ những việc chưa làm. Việc đã xong được ghi trong `PROGRESS_LOG.md`, gần nhất là mục 2.57 (Đợt 174: hoàn tất Bước `0a–0d` và Bước `0+` Tua thời thơ ấu), 2.58 (sửa sót sau review, ghi lộ trình AI), 2.59 (Đợt 175: hoàn tất cụm AI độc lập `AI-3`, `AI-5`, `AI-6`), 2.60 (Đợt 176: một planner duy nhất, backend chỉ còn lưu trữ) và 2.61 (Đợt 177: tách hai file engine lớn).
+File này chỉ giữ những việc chưa làm. Việc đã xong được ghi trong `PROGRESS_LOG.md`, gần nhất là mục 2.57 (Đợt 174: hoàn tất Bước `0a–0d` và Bước `0+` Tua thời thơ ấu), 2.58 (sửa sót sau review, ghi lộ trình AI), 2.59 (Đợt 175: hoàn tất cụm AI độc lập `AI-3`, `AI-5`, `AI-6`), 2.60 (Đợt 176: một planner duy nhất, backend chỉ còn lưu trữ), 2.61 (Đợt 177: tách hai file engine lớn), 2.62 (đợt test 14/11) và 2.63 (Đợt 178: hoàn tất `A1`, `A2`, `B1`, `B2`, `D3`).
 
 Luật chơi đang chạy nằm ở `docs/LUAT_HIEN_HANH.md`, lore và giọng văn ở `UNIVERSE.md`. Số đợt do người làm tự đặt khi bắt đầu.
 
@@ -189,7 +189,12 @@ Danh sách chi tiết nằm ở `docs/SUA_SAU_TEST_14_11.md`. File này có 15 m
 - Ba việc nội dung.
 - Ba cơ chế học từ trang mẫu: tốc độ x8/x16, nhiều slot lưu, thẻ District.
 
-Đề xuất: Đợt 178 làm A1, A2, B1, B2, D3.
+Đợt 178 (`A1`, `A2`, `B1`, `B2`, `D3`) đã hoàn tất (xem `PROGRESS_LOG.md` mục 2.63). Đề xuất tiếp theo: Đợt 179 làm `B3`, `B4`, `B5`, `C1`, `D1`.
+
+Hai việc mới từ số đo Đợt 178, gộp vào Đợt 179:
+- Thanh cảnh báo rút lui bật cả khi chưa thật nguy: ở `warp_train` bot `alert` rút lui `54.7%` dù bot `random` chết `0%`. Xem lại ngưỡng HP `< 40` và SP `< 30` theo độ khó từng dungeon.
+- `reverberation_ensemble`: cả `alert` lẫn `informed` rút lui `100%`, làm cùng `B3`.
+- Ở `390px`, dải District làm chữ trạng thái năm bị cắt (`Tạm d…`). Cân nhắc rút gọn chữ trạng thái hoặc ẩn nó khi màn hẹp.
 
 ## Cân bằng cần xem lại (từ báo cáo `AI-6`, `npm run report:bots`)
 Báo cáo so `lookahead` với bot đối chứng `tactical`. Hai bot dùng cùng luật chọn manh mối, hợp đồng, hành động trong dungeon và kế hoạch năm. Chỉ khác ở chỗ `lookahead` thử trước 1–2 năm cho mỗi lựa chọn lớn. Các bot luật cố định trả lời trong dungeon một cách ngẫu nhiên, nên không dùng để đo giá trị của việc nhìn trước.

@@ -7,6 +7,7 @@ import {
   resolveEventChoice
 } from '../src/engine/gameEngine.js';
 import { choiceIsAvailable, matchesEventContext } from '../src/engine/eventConditions.js';
+import { triggerDistortionTransformation } from '../src/engine/careerPipeline.js';
 import {
   canTriggerHabitChallenge,
   directorScore,
@@ -29,7 +30,7 @@ import {
   yearPointsFor
 } from '../tools/sim/lib/choicePolicy.mjs';
 import { playYear } from '../tools/sim/lib/playYear.mjs';
-import { runPolicyBalanceReport } from '../tools/sim/policy_balance_report.mjs';
+import { runPolicyBalanceReport, simulatePolicyCohort } from '../tools/sim/policy_balance_report.mjs';
 
 const EV_BY_ID = new Map(ALL_STORY_EVENTS.map((e) => [e.id, e]));
 const MIN_BY_ID = new Map(LIFE_MINORS.map((m) => [m.id, m]));
@@ -289,7 +290,23 @@ const MIN_BY_ID = new Map(LIFE_MINORS.map((m) => [m.id, m]));
     assert(typeof row.avgLifespan === 'number' && row.avgLifespan > 0);
     assert(typeof row.dungeonDeathRate === 'number');
     assert(typeof row.avgDistinctEvents === 'number' && row.avgDistinctEvents > 0);
+    assert(typeof row.colorRate === 'number' && typeof row.colorThenDistortedRate === 'number', 'Summary must track colorRate and colorThenDistortedRate');
+    assert(row.colorRate >= row.colorThenDistortedRate, 'colorRate must include lives that reached Color and later Distorted');
   }
+  const colorDistortedCase = simulatePolicyCohort(LOOKAHEAD_POLICY, 1, {
+    makeChar: () => {
+      const c = createNewCharacter({ seed: 'synthetic-color-distorted', startAge: 42 });
+      c.job = 'Color Fixer';
+      c.fixerGrade = 0;
+      c.isColorFixer = true;
+      c.flags.push('ColorFixer');
+      triggerDistortionTransformation(c);
+      c.alive = false;
+      return c;
+    }
+  });
+  assert.equal(colorDistortedCase.colorRate, 1, 'Cohort must count a Color Fixer even when they later become a Distortion');
+  assert.equal(colorDistortedCase.colorThenDistortedRate, 1, 'Cohort must record colorThenDistortedRate when a Color Fixer Distorts');
   assert(Array.isArray(miniReport.flags), 'Balance report must include lookahead comparison flags array');
   console.log('✓ AI-6 verified: reckless policy, non-mutating 1-2yr lookahead search, and 8-policy balance report with a tactical control.');
 }

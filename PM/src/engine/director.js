@@ -16,7 +16,7 @@ import { npcIsActive } from './eventConditions.js';
 import { clamp, interpolateText, getNextCareerMilestone } from './gameEngine.js';
 import { canTriggerHabitChallenge, habitChallengeForEvent, recordChoiceMotif } from './eventDirector.js';
 import { makeNpc } from '../data/birthStories.js';
-import { bondCapFor } from '../data/npcPersonality.js';
+import { bondCapFor, yearsTogetherOf } from '../data/npcPersonality.js';
 import { getScarProfile, normalizeScars } from './scarModel.js';
 
 const THEME_REST_YEARS = 4;
@@ -268,7 +268,7 @@ export function applyBonds(char, sources, deltas = []) {
       const key = char.npcs?.[role] ? role : role === 'lover' && char.npcs?.spouse ? 'spouse' : null;
       if (!key || !npcActive(target)) continue;
       const before = target.bond || 0;
-      const yearsTogether = Math.max(0, (char.age || 0) - Math.max(15, target.metAge || char.age || 0));
+      const yearsTogether = yearsTogetherOf(char, target);
       const cap = bondCapFor({ ...target, yearsTogether });
       const gain = v > 0 ? Math.max(1, Math.round(v * 0.7)) : v;
       const after = v > 0 ? Math.max(before, Math.min(cap, clamp(before + gain, 0, 100))) : clamp(before + gain, 0, 100);
@@ -322,8 +322,9 @@ export function applyChoiceExtras(char, sources, deltas, rng, meta = {}) {
     const target = key && char.npcs[key];
     if (!target || !npcActive(target)) continue;
     const questsDone = (target.questsDone || 0) + 1;
+    const yearsTogether = yearsTogetherOf(char, target);
     const lifted = { ...target, questsDone, lastSeen: char.age };
-    const bondNow = Math.min(bondCapFor(lifted), (lifted.bond || 0) + 8);
+    const bondNow = Math.min(bondCapFor({ ...lifted, yearsTogether }), (lifted.bond || 0) + 8);
     char.npcs = { ...char.npcs, [key]: { ...lifted, bond: Math.max(lifted.bond || 0, bondNow) } };
     deltas.push({ k: 'bond', role: key, name: target.nameVi, v: Math.max(0, bondNow - (target.bond || 0)) });
     char.memory = [...(char.memory || []), { key: `quest_${key}_${questsDone}`, age: char.age }];
@@ -502,11 +503,15 @@ export function keepInTouch(char, rng = Math.random) {
     const npc = char.npcs?.[role];
     if (!npcActive(npc) || (npc.bond || 0) < 12 || rng() >= chance) continue;
     const before = npc.bond || 0;
-    const yearsTogether = Math.max(0, (char.age || 0) - Math.max(15, npc.metAge || char.age || 0));
+    const legacyYears = Math.max(0, (char.age || 0) - Math.max(15, npc.metAge || char.age || 0));
+    const legacyCap = bondCapFor({ ...npc, yearsTogether: legacyYears, legacyBase: true });
+    const yearsTogether = yearsTogetherOf(char, npc);
     const cap = bondCapFor({ ...npc, yearsTogether });
-    const after = Math.max(before, Math.min(cap, before + 1));
+    const after = Math.max(before, Math.min(cap, before + (before >= legacyCap ? 2 : 1)));
     char.npcs = { ...char.npcs, [role]: { ...npc, bond: after, lastSeen: char.age } };
-    if (after !== before && rng() < 0.2) {
+    // Avoid extra rng() calls once above legacyCap so raising the bond ceiling does not shift seeded runs.
+    const logRoll = before < legacyCap ? rng() < 0.2 : ((char.age + before) % 5 === 0);
+    if (after !== before && logRoll) {
       logs.push({
         vi: `[Gặp lại] Bạn và ${npc.nameVi} dành một buổi chiều chẳng có việc gì lớn, chỉ ngồi cạnh nhau.`,
         en: `[Seen again] You and ${npc.nameEn || npc.nameVi} spend an afternoon with nothing much to do, only sitting side by side.`

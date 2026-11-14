@@ -3443,5 +3443,31 @@ Làm ở commit `208ef40` và sửa theo review ở `9000cf8`. Chỉ học cơ c
   * 13/44 event hệ quả chưa từng xuất hiện.
 * **Không sửa code ở mục này.** Cách sửa từng việc, kèm file, dòng và cách đo lại, ghi ở `docs/SUA_SAU_TEST_14_11.md`.
 
+##### 2.63. Đợt 178: Sửa công cụ đo, đỡ đòn chết, cảnh báo Dungeon và dải District (14/11/2026)
+* **`A1`: Báo cáo bot đếm đúng đời lên Color (`policy_balance_report.mjs`, `balance_sim.mjs`, `run_million_audit.mjs`, `test_ai_director_and_bots.mjs`):**
+  * Ghi nhận `everColor` trong từng năm và đọc `char.unlockedRecords?.includes('color_fixer')` lúc kết thúc đời qua `tallyColorOutcome(char, everColor)` để không mất dấu Color Fixer khi nhân vật hóa Distortion về sau; thêm cột `colorThenDistorted%` và kiểm thử bằng nhân vật giả lập (`ColorFixer` → `triggerDistortionTransformation`).
+  * **Trước → Sau (`node tools/sim/policy_balance_report.mjs 30`):** `lookahead` `color%` từ `0%` → `13%` (`4/30`, trong đó `colorThenDistorted%: 10%`), `door` `color%` từ `0%` → `3%` (`1/30`).
+* **`A2`: Chống kẹt lựa chọn khóa trong script QA (`src/main.jsx`, `tools/qa/test_live_website_runs.mjs`):**
+  * Gắn `window.__choiceIsAvailable = choiceIsAvailable` khi `import.meta.env.DEV` hoặc URL có `?qa=1`; lọc các lựa chọn khóa (kèm fallback đọc `.choice[disabled]` / `aria-disabled="true"` trên DOM) trước khi chấm điểm `evaluateSurvival` ở cả event lớn và minor; thêm bộ phát hiện `STALL` sau 20 vòng lặp.
+* **`B1`: Ngưỡng đỡ đòn chết (`DEATH_SAVE_BOND`), trần bond và dòng báo trong hồ sơ NPC (`lifeEnding.js`, `gameEngine.js`, `director.js`, `eventResolution.js`, `npcInteractions.js`, `npcPersonality.js`, `NpcDossierModal.jsx`, `LUAT_HIEN_HANH.md`, `test_chapters.mjs`):**
+  * Hạ ngưỡng từ `90/95` về `DEATH_SAVE_BOND = { spouse: 80, partner: 80, friend: 85, mentor: 85 }`; gom công thức số năm quen nhau về `yearsTogetherOf(char, npc)` (`npcPersonality.js`); nâng nền `bondCapFor` (`friend` `50 → 60`, `mentor` `60 → 65`, thưởng theo `yearsTogether` tối đa `20 → 25`) và cho `keepInTouch` (`director.js`) cộng `+2` bond/năm khi đã chạm/vượt trần cũ để bạn/thầy gắn bó lâu năm có thể chạm mốc `85`.
+  * Hiện dòng báo trong `NpcDossierModal.jsx` khi đạt ngưỡng (`"Người này sẽ lao vào đỡ đòn thay bạn, một lần duy nhất."`) và khi còn cách ngưỡng dưới 10 điểm (`"Thêm chút nữa, người này sẽ liều mạng vì bạn."`).
+  * **Trước → Sau (`node tools/sim/balance_report.mjs 300`):** `Death-save used` từ `0.0%` → `6.0%` (nằm gọn trong mục tiêu `3–8%`); `Best bond at 30` (p25/med/p75/p90) từ `31/50/60/69` → `26/58/70/78`.
+* **`B2`: Cảnh báo nguy cơ tử vong và rút lui trong Dungeon (`DungeonDock.jsx`, `LiveStageFeed.jsx`, `dungeon-chrome.css`, `dungeon_sim.mjs`):**
+  * Gắn nhãn `"Có thể chết"` (`"Can kill you"`) lên mọi lựa chọn có thể làm cạn HP/SP hoặc gây chết khi trượt kiểm định; khi HP thấp (`< 40`, hoặc `< 45` ở trạm nghỉ), SP thấp (`< 30`) hoặc mọi hướng đi tiếp đều có thể gây chết mà hầm ngục còn cho rút lui, hiện thanh cảnh báo `.dg-retreat-alert` đúng theo lý do kích hoạt ngay phía trên danh sách lựa chọn, ẩn khối `.dg-leave` ở đáy để không lặp nút rút lui, và đưa lựa chọn rút lui lên đầu với số thứ tự/phím tắt `1, 2, 3` đồng bộ.
+  * Luật "có thể chết" nằm ở một hàm engine `dungeonChoiceCanKill(choice, char, session, odds)` (`dungeonEngine.js`, có test trong `test_dungeon_fail_preview.mjs`). Nhãn trên dock và bot `alert` cùng đọc hàm này, nên bot thấy đúng ba trường hợp dock có thêm: chặng cuối `fatalOnFinalFailure`, chặng cuối Ensemble chưa có coda, và `ensembleResist`.
+  * Thêm bot `alert` vào `tools/sim/dungeon_sim.mjs` (chỉ dựa vào cảnh báo trên dock để tránh lựa chọn chí mạng và rút lui khi thanh cảnh báo bật).
+  * **So sánh tỷ lệ chết trên 300 lượt (`stake=0`, `random` → `alert` so với `informed` / `careful`):**
+    * `lobotomy_ruin`: `random 88.7%` → `alert 28.3%` (`informed 0.7%`, `careful 0.3%`)
+    * `bloodfiend_carnival`: `random 86.3%` → `alert 12.7%` (`informed 0.0%`, `careful 0.0%`)
+    * `great_lake`: `random 88.3%` → `alert 28.7%` (`informed 6.0%`, `careful 2.0%`)
+    * `backstreets_night`: `random 85.0%` → `alert 15.0%` (`informed 0.7%`, `careful 0.7%`)
+    * Riêng phần cảnh báo giúp giảm tỷ lệ chết từ `85–88.7%` về `12.7–28.7%` (`< 30%` ở cả 4 dungeon) mà chưa cần luật chọn tối ưu của `informed`/`careful`.
+    * Đo lại sau khi dùng chung hàm (`node tools/sim/dungeon_sim.mjs 300 --policies=random,informed,alert`): 4 số trên giữ nguyên. Hai điểm cần xem ở Đợt 179: `warp_train` có `alert` rút lui `54.7%` dù `random` chết `0%`, tức thanh cảnh báo bật cả khi không thật nguy; `reverberation_ensemble` có cả `alert` lẫn `informed` rút lui `100%` (gắn với mục `B3`, giá SP màn 1).
+* **`D3`: Dải District & Singularity trên thanh chạy (`DistrictStrip.jsx`, `PlayBar.jsx`, `CharacterDossierCard.jsx`, `play.css`, `test_play_screen_smoke.mjs`):**
+  * Tách `DistrictStrip.jsx` đặt cạnh tuổi và mùa trong `PlayBar.jsx` (trên màn rộng hiện tên District đầy đủ và Singularity nhỏ hơn; trên màn hẹp `<= 860px` ẩn Singularity và hiển thị nhãn gọn `D23 · W` / `Outskirts` để không mất số District). Bấm vào sẽ mở đúng khối `<details class="dossier-fold is-district-fold">` (`"Khu vực & xuất thân"`) trong hồ sơ (và mở ngăn hồ sơ khi `window.innerWidth <= 860`).
+  * Chụp màn hình dev server ở `390px` và `1440px`: dải hiện `D23 · W` / tên đủ kèm Singularity, không tràn ngang (`0px`); thanh cảnh báo dungeon hiện đúng lý do, lựa chọn rút lui lên số `1`, chỉ một nút rút lui. Đánh đổi ở `390px`: chữ trạng thái năm bên cạnh bị cắt ngắn hơn (`Tạm d…`).
+* Câu chữ mới không dùng dấu gạch dài (luật antislop R-02).
+
 #### 3. KIỂM ĐỊNH & BẢO ĐẢM TOÀN VẸN (VERIFICATION & INTEGRITY)
 * Tất cả các bộ kiểm thử tự động (`npm test`) bao gồm lint văn phong (`voice_lint.mjs`), chuẩn canon Project Moon (`lint_story.mjs`), và mô phỏng 500 khoảnh khắc đời người (`run_million_audit.mjs`) phải vượt qua 100% với 0 lỗi, 0 cảnh báo.

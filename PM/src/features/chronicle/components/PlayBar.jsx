@@ -8,6 +8,7 @@ import { useThemeStore } from '../../../store/themeStore';
 import { SEASONS, DUNGEON_DEFINITIONS } from '../../../engine/gameEngine';
 import { gauntletRoute } from '../../../engine/dungeonCombat';
 import { WorkshopDepotModal } from './WorkshopDepotModal';
+import { DistrictStrip } from './DistrictStrip';
 import { BrandMark, LANG_OPTIONS } from '../../../layouts/Sidebar';
 import { SettingsModal } from '../../../components/SettingsModal';
 import { nextPlanItem } from '../../../engine/yearPlanner';
@@ -415,6 +416,7 @@ export const PlayBar = () => {
           <b>{age}</b>
           <span>{`${t('tuổi', 'yrs')} · ${t(season?.vi, season?.en)}`}</span>
         </div>
+        <DistrictStrip />
       </div>
 
       <div className="yearbar" aria-label={t('Tiến độ năm', 'Year progress')}>

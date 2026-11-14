@@ -4,9 +4,13 @@ import App from './App';
 import './styles/ui/index.css';
 import { useGameStore } from './store/gameStore';
 import { audioEngine } from './engine/audioEngine';
+import { choiceIsAvailable } from './engine/eventConditions';
 
 if (typeof window !== 'undefined') {
   window.__gameStore = useGameStore;
+  if (import.meta.env.DEV || new URLSearchParams(window.location.search).get('qa') === '1') {
+    window.__choiceIsAvailable = choiceIsAvailable;
+  }
   const unlockAudio = () => {
     try {
       audioEngine.init();

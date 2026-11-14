@@ -1266,6 +1266,30 @@ function stageRewards(choice, session, success, char = null) {
 }
 
 /**
+ * True when picking this choice can end the life: a lethal miss, a cost or a miss that empties
+ * HP or SP, a failed check on a final stage that kills, or an Ensemble resist that can fail.
+ * The dock's "Can kill you" badge and the dungeon_sim `alert` bot both read this one rule.
+ */
+export function dungeonChoiceCanKill(choice, char, session, odds = evaluateDungeonChoiceOdds(choice, char, session)) {
+  if (!choice || choice.isFlee || !char || !session) return false;
+  const def = DUNGEON_DEFINITIONS[session.id];
+  const hp = char.stats?.health ?? 0;
+  const sp = char.stats?.sanity ?? 0;
+  const lastStage = Boolean(def) && (session.currentStageIndex || 0) === def.stages.length - 1;
+  const canMiss = (odds?.successPct ?? 100) < 100;
+  return Boolean(
+    odds?.failLethal ||
+    (odds?.estHp < 0 && hp + odds.estHp <= 0) ||
+    (odds?.failHp < 0 && hp + odds.failHp <= 0) ||
+    (odds?.estSp < 0 && sp + odds.estSp <= 0) ||
+    (odds?.failSp < 0 && sp + odds.failSp <= 0) ||
+    (def?.fatalOnFinalFailure && lastStage && odds?.hasCheck && canMiss) ||
+    (def?.theme === 'ensemble' && lastStage && choice.checkTrait && !session.ensembleCoda && canMiss) ||
+    (choice.ensembleResist && canMiss)
+  );
+}
+
+/**
  * Displayed odds and expected shifts for a dungeon choice. The numbers come from the same
  * helpers the resolver uses, so the screen cannot promise what the engine will not deliver.
  */

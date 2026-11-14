@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { createNewCharacter, cloneChar, buildLifeSummaryAndLegacy, INDEPENDENT_SYNDICATE_RANKS } from '../src/engine/gameEngine.js';
+import { createNewCharacter, cloneChar, buildLifeSummaryAndLegacy, INDEPENDENT_SYNDICATE_RANKS, applyFatalOrCompanionSave } from '../src/engine/gameEngine.js';
 import { chapterFor } from '../src/engine/chapters.js';
 import { entryTier, foldsInCompact, framesAsMajor } from '../src/features/chronicle/entryTiers.js';
 
@@ -225,5 +225,25 @@ assert.match(passCard?.subVi, /Hana ghi Grade mới vào hồ sơ/);
 // d. Trượt trong cùng commit với cái chết thì không có thẻ, vì cái chết thắng
 const failAndDead = step(cExam1, { fixerExamFailures: { 6: 1 }, alive: false });
 assert.equal(chapterFor(cExam1, failAndDead), null, 'death outranks exam failure');
+
+// 12. Đợt 178 (B1): Ngưỡng đỡ đòn chết (DEATH_SAVE_BOND): spouse bond 80 cứu được, bond 79 không cứu được
+const cSave80 = adult('death-save-80');
+cSave80.usedDeathSave = false;
+cSave80.npcs = {
+  spouse: { id: 'npc_spouse', nameVi: 'Hye-jin', nameEn: 'Hye-jin', bond: 80, deceased: false, status: 'alive' }
+};
+applyFatalOrCompanionSave(cSave80, 'Chết trong hẻm', 'Died in the alley');
+assert.equal(cSave80.alive, true, 'spouse with bond 80 intercepts fatal blow');
+assert.equal(cSave80.usedDeathSave, true);
+assert.equal(cSave80.npcs.spouse.deceased, true);
+
+const cSave79 = adult('death-save-79');
+cSave79.usedDeathSave = false;
+cSave79.npcs = {
+  spouse: { id: 'npc_spouse', nameVi: 'Hye-jin', nameEn: 'Hye-jin', bond: 79, deceased: false, status: 'alive' }
+};
+applyFatalOrCompanionSave(cSave79, 'Chết trong hẻm', 'Died in the alley');
+assert.equal(cSave79.alive, false, 'spouse with bond 79 does not intercept fatal blow');
+assert.equal(Boolean(cSave79.usedDeathSave), false);
 
 console.log('Chapters: trades taken up and left, Grades, Finger, Wing, independent Syndicate, E.G.O, Distortion, Color, companion loss, exam failure, store, tiers and epitaph passed.');

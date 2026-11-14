@@ -18,7 +18,8 @@ import { Browser, sleep } from '../../.agents/skills/design-taste-frontend/scrip
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-const LIVE_URL = 'https://project-moon-life-five.vercel.app/';
+const BASE_URL = process.env.QA_URL || 'https://project-moon-life-five.vercel.app/';
+const LIVE_URL = BASE_URL.includes('?') ? `${BASE_URL}&qa=1` : `${BASE_URL}?qa=1`;
 const OUT_DIR = 'output/live_runs';
 mkdirSync(OUT_DIR, { recursive: true });
 
@@ -69,9 +70,12 @@ async function playLiveRun(page, runConfig) {
   console.log(`Character Created: ${initChar.name} in Region ${initChar.regionId}, Age: ${initChar.age}, HP: ${initChar.health}, SP: ${initChar.sanity}, Wealth: ${initChar.wealth} Ahn`);
 
   const cutscenesTriggered = [];
+  const stalls = [];
   let isAlive = true;
   let currentAge = initChar.age;
   let stepCount = 0;
+  let lastStallSig = '';
+  let stallCount = 0;
   const maxSteps = 1500; // ample steps to live through decades up to natural old age
 
   // 3. Step through the life with survival-maximizing AI
@@ -83,6 +87,41 @@ async function playLiveRun(page, runConfig) {
       const s = window.__gameStore.getState();
       const c = s.char;
       if (!c) return { alive: false, inRun: false };
+
+      function isChoiceOpen(choice, char, idx) {
+        if (!choice) return false;
+        if (typeof window.__choiceIsAvailable === 'function') {
+          return Boolean(window.__choiceIsAvailable(choice, char));
+        }
+        const domBtns = document.querySelectorAll('.choices .choice');
+        if (domBtns.length > idx && domBtns[idx]) {
+          if (domBtns[idx].disabled || domBtns[idx].getAttribute('aria-disabled') === 'true') {
+            return false;
+          }
+        }
+        const wealth = char.stats?.wealth ?? char.wealth ?? 0;
+        if (choice.costAhn && choice.costAhn > wealth) return false;
+        if (choice.useItem && !(char.inventory || []).some(i => (i.id || i) === choice.useItem)) return false;
+        if (choice.favorCost) {
+          const comp = char.npcs?.[choice.favorCost.role];
+          if (!comp || comp.alive === false || comp.deceased || (comp.bond || 0) < choice.favorCost.amount) return false;
+        }
+        const need = choice.need;
+        if (need) {
+          if (need.fingerInvited && !(char.fingerInvitations || []).includes(need.fingerInvited)) return false;
+          if (need.jobs && !need.jobs.includes(char.job)) return false;
+          if (need.flags && !need.flags.every(f => (char.flags || []).includes(f))) return false;
+          if (need.notFlags && need.notFlags.some(f => (char.flags || []).includes(f))) return false;
+          if (need.anyFlags && !need.anyFlags.some(f => (char.flags || []).includes(f))) return false;
+          if (need.stat) {
+            for (const [statKey, range] of Object.entries(need.stat)) {
+              const val = char.stats?.[statKey] ?? char[statKey] ?? 0;
+              if (Array.isArray(range) && (val < range[0] || val > range[1])) return false;
+            }
+          }
+        }
+        return true;
+      }
 
       // Survival Scoring Function
       function evaluateSurvival(choice, char) {
@@ -249,33 +288,40 @@ async function playLiveRun(page, runConfig) {
       }
       // 3. Event choices: Pick choice with the highest survival score (excluding any startDungeon)
       else if (c.pendingEvent && Array.isArray(c.pendingEvent.choices) && c.pendingEvent.choices.length > 0) {
-        let bestIdx = 0;
+        const openIndices = c.pendingEvent.choices
+          .map((ch, idx) => (isChoiceOpen(ch, c, idx) ? idx : -1))
+          .filter((idx) => idx >= 0);
+        let bestIdx = openIndices[0] ?? 0;
         let bestScore = -99999999;
 
-        // If career crossroads, select preferred route
-        if (c.pendingEvent.id?.includes('crossroad')) {
+        if (cfg.forceFirstOpenChoice && openIndices.length > 0) {
+          bestIdx = openIndices[0];
+        } else if (c.pendingEvent.id?.includes('crossroad')) {
           if (cfg.preferredCareer === 'wing') {
-            const wIdx = c.pendingEvent.choices.findIndex(ch => {
+            const wIdx = openIndices.find(idx => {
+              const ch = c.pendingEvent.choices[idx];
               const text = ((ch.labelVi || '') + (ch.labelEn || '')).toLowerCase();
               return text.includes('wing') && evaluateSurvival(ch, c) > -100000;
             });
-            if (wIdx >= 0) bestIdx = wIdx;
+            if (wIdx != null) bestIdx = wIdx;
           } else if (cfg.preferredCareer === 'fixer') {
-            const fIdx = c.pendingEvent.choices.findIndex(ch => {
+            const fIdx = openIndices.find(idx => {
+              const ch = c.pendingEvent.choices[idx];
               const text = ((ch.labelVi || '') + (ch.labelEn || '')).toLowerCase();
               return (text.includes('fixer') || text.includes('hana')) && evaluateSurvival(ch, c) > -100000;
             });
-            if (fIdx >= 0) bestIdx = fIdx;
+            if (fIdx != null) bestIdx = fIdx;
           } else if (cfg.preferredCareer === 'syndicate') {
-            const sIdx = c.pendingEvent.choices.findIndex(ch => {
+            const sIdx = openIndices.find(idx => {
+              const ch = c.pendingEvent.choices[idx];
               const text = ((ch.labelVi || '') + (ch.labelEn || '')).toLowerCase();
               return (text.includes('syndicate') || text.includes('băng')) && evaluateSurvival(ch, c) > -100000;
             });
-            if (sIdx >= 0) bestIdx = sIdx;
+            if (sIdx != null) bestIdx = sIdx;
           }
         } else {
           // General event survival optimization
-          for (let i = 0; i < c.pendingEvent.choices.length; i++) {
+          for (const i of openIndices) {
             const sc = evaluateSurvival(c.pendingEvent.choices[i], c);
             if (sc > bestScore) {
               bestScore = sc;
@@ -289,13 +335,18 @@ async function playLiveRun(page, runConfig) {
       }
       // 4. Minor choices: Evaluate survival
       else if (c.pendingMinor && Array.isArray(c.pendingMinor.choices) && c.pendingMinor.choices.length > 0) {
-        let bestIdx = 0;
+        const openIndices = c.pendingMinor.choices
+          .map((ch, idx) => (isChoiceOpen(ch, c, idx) ? idx : -1))
+          .filter((idx) => idx >= 0);
+        let bestIdx = openIndices[0] ?? 0;
         let bestScore = -99999999;
-        for (let i = 0; i < c.pendingMinor.choices.length; i++) {
-          const sc = evaluateSurvival(c.pendingMinor.choices[i], c);
-          if (sc > bestScore) {
-            bestScore = sc;
-            bestIdx = i;
+        if (!cfg.forceFirstOpenChoice) {
+          for (const i of openIndices) {
+            const sc = evaluateSurvival(c.pendingMinor.choices[i], c);
+            if (sc > bestScore) {
+              bestScore = sc;
+              bestIdx = i;
+            }
           }
         }
         choiceMade = { id: c.pendingMinor.id, title: c.pendingMinor.titleVi || c.pendingMinor.titleEn || c.pendingMinor.id };
@@ -344,6 +395,8 @@ async function playLiveRun(page, runConfig) {
       return {
         alive: c.alive,
         age: c.age,
+        seasonIdx: c.seasonIdx || 0,
+        pendingId: s.char?.pendingEvent?.id || s.char?.pendingMinor?.id || null,
         job: c.job,
         fixerGrade: c.fixerGrade,
         wingRank: c.wingRank,
@@ -361,7 +414,21 @@ async function playLiveRun(page, runConfig) {
         endingId: c.endingId || null,
         deathCause: c.deathCauseVi || c.deathCauseEn || null
       };
-    }, { preferredCareer });
+    }, { preferredCareer, forceFirstOpenChoice: stallCount >= 20 });
+
+    const stallSig = state.pendingId ? `${state.age}:${state.seasonIdx}:${state.pendingId}` : '';
+    if (stallSig && stallSig === lastStallSig) {
+      stallCount++;
+      if (stallCount === 20) {
+        console.error(`  STALL at age ${state.age} season ${state.seasonIdx} on event "${state.pendingId}"; falling back to first available choice.`);
+        stalls.push({ age: state.age, seasonIdx: state.seasonIdx, eventId: state.pendingId });
+      } else if (stallCount >= 25) {
+        throw new Error(`STALL unresolved after 25 iterations at age ${state.age} on event "${state.pendingId}"`);
+      }
+    } else {
+      lastStallSig = stallSig;
+      stallCount = 0;
+    }
 
     if (state.cutsceneTriggered) {
       console.log(`  🎬 [CUTSCENE DETECTED]: ${state.cutsceneTriggered.id} (cut: ${state.cutsceneTriggered.cut}) at Age ${state.age}`);
@@ -436,6 +503,7 @@ async function playLiveRun(page, runConfig) {
     wingRank: summary.wingRank,
     fixerGrade: summary.fixerGrade,
     cutscenes: cutscenesTriggered,
+    stalls,
     overflow: summary.overflow,
     deathCause: summary.deathCause,
     screenshot: ssPath

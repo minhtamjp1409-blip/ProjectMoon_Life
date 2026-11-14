@@ -684,7 +684,7 @@ const DossierContent = ({ char, milestone, region, omen, items, t, lang, activeT
 
       {/* Tab: Overview & Stats */}
       {showOverview && (
-        <details className="dossier-fold">
+        <details className="dossier-fold is-district-fold">
           <summary>
             <span>{t('Khu vực & xuất thân', 'District & background')}</span>
             <small>{lang === 'en' ? region.nameEn : region.nameVi}</small>
@@ -890,6 +890,13 @@ export const CharacterDossierCard = () => {
       window.removeEventListener('resize', updateHudBottom);
       document.documentElement.style.removeProperty('--hud-bottom');
     };
+  }, []);
+  React.useEffect(() => {
+    const onOpenDistrict = () => {
+      if (window.innerWidth <= 860) setDrawerOpen(true);
+    };
+    window.addEventListener('open-district-dossier', onOpenDistrict);
+    return () => window.removeEventListener('open-district-dossier', onOpenDistrict);
   }, []);
   React.useEffect(() => {
     if (!drawerOpen) return;

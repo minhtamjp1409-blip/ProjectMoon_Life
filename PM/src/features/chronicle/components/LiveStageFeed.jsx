@@ -1695,11 +1695,13 @@ export const LiveStageFeed = () => {
       if (Number.isNaN(idx) || idx < 0) return;
       if (char.pendingDungeon) {
         const stage = getDungeonCurrentStage(char.pendingDungeon);
-        if (stage && idx < (stage.choices?.length || 0)) {
-          const ch = stage.choices[idx];
+        const domBtns = typeof document !== 'undefined' ? document.querySelectorAll('.dg-choices .dg-choice') : null;
+        const mappedIdx = domBtns?.[idx]?.dataset?.choiceIdx != null ? Number(domBtns[idx].dataset.choiceIdx) : idx;
+        if (stage && mappedIdx < (stage.choices?.length || 0)) {
+          const ch = stage.choices[mappedIdx];
           if (isDungeonChoiceAvailable(ch, char)) {
             e.preventDefault();
-            handleSelectDungeon(idx);
+            handleSelectDungeon(mappedIdx);
           }
         }
       } else if (char.pendingEvent && idx < (char.pendingEvent.choices?.length || 0)) {

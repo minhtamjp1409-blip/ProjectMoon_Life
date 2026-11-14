@@ -13,7 +13,7 @@ import { advanceChildhoodMontage } from './childhoodFastForward.js';
 import { applyAffiliationChoice, ensureAffiliation, getAffiliation } from './affiliation.js';
 import { applyBonds, applyNpcFate, closeThreads, hasMemory, namesInUse } from './director.js';
 import { applyColorTrialCompanionState, applyFatalOrCompanionSave, closeLifeByChoice, handleSanityBreakdown, woundDeath } from './lifeEnding.js';
-import { bondCapFor } from '../data/npcPersonality.js';
+import { bondCapFor, yearsTogetherOf } from '../data/npcPersonality.js';
 import { checkPromotions } from './careerMilestones.js';
 import { choiceIsAvailable, getChoiceAhnCost, matchesEventContext, mergeEffects, npcIsActive } from './eventConditions.js';
 import { cloneChar } from './characterCreation.js';
@@ -491,7 +491,7 @@ export function resolveEventChoice(charState, choiceIdx, rng = Math.random, dung
         const target = key && char.npcs[key];
         if (!target || !npcIsActive(target)) continue;
         const questsDone = (target.questsDone || 0) + 1;
-        const yearsTogether = Math.max(0, (char.age || 0) - Math.max(15, target.metAge || char.age || 0));
+        const yearsTogether = yearsTogetherOf(char, target);
         const lifted = { ...target, questsDone, lastSeen: char.age };
         const cap = bondCapFor({ ...lifted, yearsTogether });
         const bondNow = Math.min(cap, (lifted.bond || 0) + 14);

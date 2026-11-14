@@ -84,12 +84,37 @@ try {
       try {
         const html = renderToString(React.createElement(MemoryRouter, null, React.createElement(Component)));
         assert(html.length > 0, `${name} rendered nothing`);
+        if (name === 'PlayBar') {
+          assert(html.includes('district-strip'), 'PlayBar renders DistrictStrip');
+          assert(html.includes('district-strip-full') && html.includes('district-strip-short'), 'DistrictStrip renders full and short labels');
+        }
         if (name === 'LiveStageFeed' && patch.char.pendingMinor) assert(html.includes('choice-label'), 'the minor dock shows its choices');
       } catch (error) {
         failed++;
         console.error(`FAIL ${name} (${stateName}): ${error.message}`);
       }
     }
+  }
+
+  // DungeonDock retreat alert reasons & single leave button
+  const { DungeonDock } = await load('/src/features/chronicle/components/DungeonDock.jsx');
+  const { createDungeonSession } = await load('/src/engine/dungeonEngine.js');
+  {
+    const dgChar = { ...base(), stats: { ...base().stats, health: 80, sanity: 25 } };
+    const session = createDungeonSession('dungeon_reverberation_ensemble', dgChar);
+    const html = renderToString(React.createElement(DungeonDock, { session, char: dgChar, onPick: () => {}, onFlee: () => {} }));
+    assert(html.includes('SP còn 25'), 'DungeonDock retreat alert states low SP when HP is 80 and SP is 25');
+    assert(!html.includes('HP còn 80'), 'DungeonDock retreat alert does not blame HP 80 when SP is the trigger');
+    assert(html.includes('Rời nhà hát · mất danh tiếng'), 'Ensemble retreat button keeps full reputation warning');
+    const leaveBtnCount = (html.match(/dg-leave-btn/g) || []).length;
+    assert(leaveBtnCount === 1, `DungeonDock must render only one dg-leave-btn when alert is active (got ${leaveBtnCount})`);
+
+    const s2 = createDungeonSession('dungeon_lobotomy_ruin', dgChar);
+    s2.combat.done = true;
+    s2.currentStageIndex = 1;
+    const html2 = renderToString(React.createElement(DungeonDock, { session: s2, char: dgChar, onPick: () => {}, onFlee: () => {} }));
+    assert(html2.includes('data-choice-idx="4"'), 'Reordered flee choice keeps original data-choice-idx');
+    assert(html2.includes('<span class="choice-badge">1</span>'), 'First displayed choice has badge 1');
   }
 
   // The home screen, before any life and after one has ended (the replay goals appear then)

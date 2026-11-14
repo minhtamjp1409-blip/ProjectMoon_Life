@@ -27,7 +27,21 @@ function mean(values) {
   return values.length ? values.reduce((s, v) => s + v, 0) / values.length : 0;
 }
 
-export function simulatePolicyCohort(policy, lives = 25, { seedPrefix = 'botsim' } = {}) {
+export function tallyColorOutcome(char, everColor = false) {
+  const reachedColor = Boolean(
+    everColor ||
+    char?.flags?.includes('ColorFixer') ||
+    char?.isColorFixer ||
+    char?.job === 'Color Fixer' ||
+    char?.unlockedRecords?.includes('color_fixer')
+  );
+  const colorThenDistorted = Boolean(
+    reachedColor && (char?.flags?.includes('Distorted') || char?.job === 'Distortion')
+  );
+  return { reachedColor, colorThenDistorted };
+}
+
+export function simulatePolicyCohort(policy, lives = 25, { seedPrefix = 'botsim', seedOffset = 0, makeChar = null } = {}) {
   const lifespans = [];
   const distinctCountsPerLife = [];
   const pooledEvents = new Set();
@@ -36,20 +50,24 @@ export function simulatePolicyCohort(policy, lives = 25, { seedPrefix = 'botsim'
   let dungeonDeaths = 0;
   let dungeonDeadLives = 0;
   let colorFixers = 0;
+  let colorThenDistorted = 0;
   let grade5OrBetter = 0;
   const codexDoors = new Set();
 
   for (let i = 0; i < lives; i++) {
-    const seed = `${seedPrefix}_${i}`;
+    const seed = `${seedPrefix}_${seedOffset + i}`;
     const rng = createRNG(`${seed}:${policy}`);
-    let char = createNewCharacter({
-      seed,
-      meta: policy === DOOR_POLICY ? { openedDoors: [...codexDoors] } : undefined
-    });
+    let char = makeChar
+      ? makeChar(i, seed)
+      : createNewCharacter({
+          seed,
+          meta: policy === DOOR_POLICY ? { openedDoors: [...codexDoors] } : undefined
+        });
     const pick = makePicker(policy);
     const seenThisLife = new Set();
     let bestGrade = null;
     let diedInDungeon = false;
+    let everColor = false;
     let guard = 0;
 
     while (char.alive && char.age < 120 && guard++ < 160) {
@@ -80,6 +98,9 @@ export function simulatePolicyCohort(policy, lives = 25, { seedPrefix = 'botsim'
       if ((char.job === 'Fixer' || char.job === 'Color Fixer') && typeof char.fixerGrade === 'number') {
         bestGrade = bestGrade === null ? char.fixerGrade : Math.min(bestGrade, char.fixerGrade);
       }
+      if (char.flags?.includes('ColorFixer') || char.isColorFixer || char.job === 'Color Fixer') {
+        everColor = true;
+      }
       if (policy === DOOR_POLICY) {
         for (const id of char.openedDoors || []) codexDoors.add(id);
       }
@@ -92,7 +113,9 @@ export function simulatePolicyCohort(policy, lives = 25, { seedPrefix = 'botsim'
     if (diedInDungeon) dungeonDeadLives++;
     lifespans.push(char.age);
     distinctCountsPerLife.push(seenThisLife.size);
-    if (char.flags?.includes('ColorFixer')) colorFixers++;
+    const colorOutcome = tallyColorOutcome(char, everColor);
+    if (colorOutcome.reachedColor) colorFixers++;
+    if (colorOutcome.colorThenDistorted) colorThenDistorted++;
     if (bestGrade !== null) {
       bestGrades.push(bestGrade);
       if (bestGrade <= 5) grade5OrBetter++;
@@ -109,6 +132,7 @@ export function simulatePolicyCohort(policy, lives = 25, { seedPrefix = 'botsim'
     highestGrade: bestGrades.length ? Math.min(...bestGrades) : null,
     grade5OrBetterRate: Number((grade5OrBetter / Math.max(1, lives)).toFixed(2)),
     colorRate: Number((colorFixers / Math.max(1, lives)).toFixed(2)),
+    colorThenDistortedRate: Number((colorThenDistorted / Math.max(1, lives)).toFixed(2)),
     dungeonRuns,
     dungeonDeaths,
     dungeonDeathRate: Number((dungeonDeadLives / Math.max(1, lives)).toFixed(2)),
@@ -191,6 +215,7 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
     bestGrade: s.highestGrade !== null ? `G${s.highestGrade} (avg ${s.avgBestGrade})` : 'n/a',
     'G5+%': `${Math.round(s.grade5OrBetterRate * 100)}%`,
     'color%': `${Math.round(s.colorRate * 100)}%`,
+    'colorThenDistorted%': `${Math.round((s.colorThenDistortedRate || 0) * 100)}%`,
     dunDeadLife: `${Math.round(s.dungeonDeathRate * 100)}% (${s.dungeonDeaths}/${s.dungeonRuns} runs)`,
     eventsPerLife: s.avgDistinctEvents,
     eventsPooled: s.pooledDistinctEvents

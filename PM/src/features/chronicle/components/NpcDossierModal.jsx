@@ -5,6 +5,7 @@ import { useGameStore } from '../../../store/gameStore.js';
 import { NPC_INTERACTION_ACTIONS, canInteractWithNpc, getNpcActionLabel } from '../../../engine/npcInteractions.js';
 import { ensureNpcAgency, getNpcBondState, getNpcAge } from '../../../data/npcPersonality.js';
 import { npcIsHurt, NPC_GONE_STATUSES } from '../../../engine/eventConditions.js';
+import { DEATH_SAVE_BOND } from '../../../engine/lifeEnding.js';
 import { useT } from '../../../i18n';
 
 export const NpcDossierModal = ({ npcRole, onClose }) => {
@@ -63,6 +64,8 @@ export const NpcDossierModal = ({ npcRole, onClose }) => {
   const bondState = getNpcBondState(npc);
   const perk = npc.dungeonPerk;
   const npcAge = getNpcAge(char, npc);
+  const deathSaveThreshold = DEATH_SAVE_BOND[npcRole] ?? null;
+  const bondVal = npc.bond ?? 0;
 
   const handleAction = async (actionId) => {
     setLoadingAction(actionId);
@@ -178,6 +181,13 @@ export const NpcDossierModal = ({ npcRole, onClose }) => {
                 {t('Hỗ trợ hợp đồng:', 'Contract Aid:')} <b>{bondState.contractMod > 0 ? `+${bondState.contractMod}` : bondState.contractMod}</b>
               </span>
             </div>
+            {deathSaveThreshold != null && !isGone && !char.usedDeathSave && bondVal > deathSaveThreshold - 10 && (
+              <p className="bond-death-save-note">
+                {bondVal >= deathSaveThreshold
+                  ? t('Người này sẽ lao vào đỡ đòn thay bạn, một lần duy nhất.', 'They would take a killing blow for you, once.')
+                  : t('Thêm chút nữa, người này sẽ liều mạng vì bạn.', 'A little closer, and they would risk their life for you.')}
+              </p>
+            )}
           </section>
 
           {/* Active Crisis Alert Banner */}
