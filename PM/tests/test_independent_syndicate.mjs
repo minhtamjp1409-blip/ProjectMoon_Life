@@ -11,8 +11,7 @@ import { isEventEligible } from '../src/engine/weaverAI.js';
 import { CODEX_RECORDS } from '../src/data/worldData.js';
 import { contractRouteOf, equivalentGrade, CONTRACT_ROUTES } from '../src/data/careerContracts.js';
 import { CAREER_REQUESTS } from '../src/data/careerContractTemplates.js';
-import { endYear, planYear, syncPlanWithBackend } from '../src/engine/yearPlanner.js';
-import { cityArchiveAPI } from '../src/services/api/cityArchiveAPI.js';
+import { endYear, planYear } from '../src/engine/yearPlanner.js';
 
 console.log('=== TEST SUITE: INDEPENDENT SYNDICATE PROGRESSION & CONTRACTS ===');
 
@@ -284,48 +283,8 @@ console.log('7. Testing P0: isEventEligible rejects recruits with Merit 0, Heat 
   console.log('  ✓ isEventEligible prevents unqualified characters from rolling promotions in random pool.');
 }
 
-// 8. Audit P1: Backend sync & hydration preserves independent syndicate promotions
-console.log('8. Testing P1: Backend sync preserves syn_indie_promo_rank* across hydration...');
-async function testBackendHydrationIndiePromo() {
-  const char = createNewCharacter({ seed: 'sync-parity-indie', startAge: 20 });
-  char.job = 'Syndicate';
-  char.flags.push('IndependentSyndicate');
-  char.finger = null;
-  char.syndicateRank = 0;
-  char.merit = 25;
-  char.stats.rep = 25;
-  char.heat = 20;
-  planYear(char, () => 0.5);
-  assert.ok(char.plan.some((p) => p.forcedEventId === 'syn_indie_promo_rank1'), 'Local plan must schedule indie promo rank 1');
-
-  // Mock cityArchiveAPI.planYear returning generic server moments without indie promo
-  const origPlanYear = cityArchiveAPI.planYear;
-  cityArchiveAPI.planYear = async ({ char: snap }) => {
-    assert.equal(snap.syndicateRank, 0, 'Snap must contain syndicateRank');
-    assert.equal(snap.finger, null, 'Independent Syndicate must not be serialized as Thumb');
-    return {
-      moments: [
-        { kind: 'daily', id: 'daily_city_dawn', t: 0.1, season: 'Spring', seasonIdx: 0 },
-        { kind: 'minor', id: 'minor_alley_crossroad', t: 0.4, season: 'Summer', seasonIdx: 1 },
-        { kind: 'daily', id: 'daily_city_dawn', t: 0.7, season: 'Autumn', seasonIdx: 2 },
-        { kind: 'daily', id: 'daily_city_dawn', t: 0.9, season: 'Winter', seasonIdx: 3 }
-      ]
-    };
-  };
-
-  try {
-    const synced = await syncPlanWithBackend(char, () => 0.5);
-    const hasPromoInHydrated = synced.plan.some((p) => p.forcedEventId === 'syn_indie_promo_rank1');
-    assert.ok(hasPromoInHydrated, 'Hydrated plan must preserve local syn_indie_promo_rank1');
-    console.log('  ✓ syncPlanWithBackend preserves local indie promotion in hydrated plan.');
-  } finally {
-    cityArchiveAPI.planYear = origPlanYear;
-  }
-}
-await testBackendHydrationIndiePromo();
-
-// 9. Audit P2: Codex record independent_syndicate_apex exists
-console.log('9. Testing P2: CODEX_RECORDS contains independent_syndicate_apex...');
+// 8. Audit P2: Codex record independent_syndicate_apex exists
+console.log('8. Testing P2: CODEX_RECORDS contains independent_syndicate_apex...');
 {
   const record = CODEX_RECORDS.find((r) => r.key === 'independent_syndicate_apex');
   assert.ok(record, 'independent_syndicate_apex must be defined in CODEX_RECORDS');

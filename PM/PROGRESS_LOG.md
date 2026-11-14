@@ -3391,5 +3391,22 @@ Làm ở commit `208ef40` và sửa theo review ở `9000cf8`. Chỉ học cơ c
   * Lệnh `npm run report:bots` chạy 8 kiểu bot. Kết quả 25 đời mỗi kiểu: tuổi thọ trung bình `door` `30.6`, `tactical` `73.9`, `lookahead` `84.5`. Grade tốt nhất trung bình `6.88` ở `tactical` và `3` ở `lookahead`, tỷ lệ đạt G5+ `4%` so với `48%`. Phần lớn khoảng cách tuổi thọ đến từ cách chơi dungeon và hợp đồng. Phần do nhìn trước là leo Grade nhanh và gặp gấp đôi số event. Hai việc cần xem lại được ghi trong `docs/KE_HOACH_TIEP_THEO.md`.
 * **Kiểm định.** Thêm `tests/test_ai_director_and_bots.mjs` vào `npm test`, gồm các ca: thói quen suy luận không lọt vào `char.motifs`, báo cáo có bot `tactical`, và phần lớn thử thách nhắm đúng thói quen của bot. Xử lý dấu ngoặc kép và ngoặc cong trong 3 regex ở `eventDirector.js` bằng escape `\x22`/`\u201c`/`\u201d` để giữ trần `semicolon: 467` của `vi_prose_scan.mjs`. `npm test` và `npm run build` đều qua.
 
+##### 2.60. Một planner duy nhất, backend chỉ còn lưu trữ (Đợt 176, 14/11/2026)
+* **Vấn đề.** Game có hai planner năm. Khi chơi thật, `syncPlanWithBackend` gửi nhân vật lên `/api/director/plan-year`, planner C# (`DirectorEngineService.cs`, 851 dòng) quyết định năm đó có event lớn hay không, có bao nhiêu event thường và event nhỏ, rồi JS điền nội dung và vá lại những mục chỉ JS biết (sát hạch, nợ Fixer, Ensemble, ngã rẽ nghề, Merit năm, tai nạn) trong khoảng 250 dòng. Test và bot mô phỏng lại dùng `planYear` bản JS, nên số đo của Đợt 174–175 không đo đúng nhịp của game thật. Mỗi năm game còn phải chờ một lần gọi mạng tới Render.
+* **Đo trước khi bỏ.** Chạy backend ở máy, 20 đời kiểu đi theo cửa, so `planYear` với kế hoạch đã vá từ planner C# trên cùng nhân vật và cùng năm (trung bình mỗi năm):
+
+  | Tuổi | Event lớn, JS | Event lớn, game thật | Event nhỏ, JS | Event nhỏ, game thật |
+  |---|---|---|---|---|
+  | 0–14 | 0,19 | 0,20 | 0,79 | 0,99 |
+  | 15–29 | 0,74 | 0,66 | 1,55 | 1,69 |
+  | 30–49 | 0,87 | 0,88 | 1,75 | 1,81 |
+
+  Hai bên gần khớp. Chuyển sang planner JS thêm khoảng 0,08 event lớn mỗi năm ở tuổi 15–29 và bớt một ít event nhỏ.
+* **Frontend.** Bỏ `syncPlanWithBackend` (`yearPlanner.js`), `planSync.js` và 4 lời gọi đồng bộ trong `gameStore.js`. Game thật giờ dùng đúng `planYear` mà test và bot đang đo. Bỏ các hàm `planYear`, `getCareerMilestone`, `resolveCrucible`, `evaluateWeaver` trong `cityArchiveAPI.js`. Ba hàm sau không còn nơi nào gọi từ trước.
+* **Backend.** Xóa `DirectorEngineService.cs`, `WeaverAiEngineService.cs`, `CareerGates.cs`, `ColorTrialGate.cs`, các endpoint `/api/director/*` và `/api/weaver/evaluate` cùng 11 DTO của chúng, và `Config/career_gates.json` (không còn nhúng trong `.csproj`). Backend còn lại: lưu ván theo slot, bia tưởng niệm, Codex, Hall of Fame, sự kiện tự viết, telemetry và `/api/health`. Bản FE cũ còn trong bộ nhớ đệm nếu gọi `/api/director/plan-year` sẽ nhận 404 và tự dùng kế hoạch JS như khi mất mạng.
+* **Mốc thăng hạng.** `src/data/careerGates.json` là nguồn duy nhất. `tools/lint/check_be_parity.mjs` thay bằng `tools/lint/check_career_gates.mjs`, chỉ kiểm engine theo đúng file. Xóa `tools/sync_career_gates.mjs` và `tools/sim/color_gate_parity.mjs`. Cập nhật `docs/LUAT_HIEN_HANH.md`, `PRODUCT.md` và chú thích trong `careerPipeline.js`.
+* **Test.** Bỏ các đoạn kiểm việc vá kế hoạch từ server trong `test_annual_merit_opportunities`, `test_ensemble_path`, `test_fixer_debt_lifecycle`, `test_fixer_promotion_retry`, `test_independent_syndicate`, `test_other_career_promotion` và `test_run_state_integrity`. Giữ lại phần kiểm planner JS, ví dụ người làm Wing chưa đủ mốc vẫn có cơ hội nghề trong kế hoạch năm.
+* **Kiểm định.** `npm test`, `npm run build`, `dotnet build` và `npm run test:backend-isolation` đều qua.
+
 #### 3. KIỂM ĐỊNH & BẢO ĐẢM TOÀN VẸN (VERIFICATION & INTEGRITY)
 * Tất cả các bộ kiểm thử tự động (`npm test`) bao gồm lint văn phong (`voice_lint.mjs`), chuẩn canon Project Moon (`lint_story.mjs`), và mô phỏng 500 khoảnh khắc đời người (`run_million_audit.mjs`) phải vượt qua 100% với 0 lỗi, 0 cảnh báo.

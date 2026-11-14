@@ -27,14 +27,14 @@ Mỗi đời được ghép từ nhân quả chứ không từ menu: cơ hội, 
 - Vòng chơi: kế hoạch năm, sự kiện và lựa chọn trong dock, sự kiện nhỏ có đồng hồ, hầm ngục nhiều chặng có đặt cược, kỳ sát hạch Grade, cái chết, trang di cảo, đời kế thừa.
 - Đọc là hoạt động chính: nhật ký đời (Biên niên) dài dần theo tuổi, có chế độ Đọc gọn và Đọc đầy đủ.
 - Các trang phụ: Khung cửi (mạch truyện), Từ điển thế giới, Huyết thống, Thành tựu.
-- Lưu ván trên trình duyệt; backend lưu bia tưởng niệm, codex và số liệu chơi ẩn danh (chỉ khi người chơi bật).
+- Toàn bộ luật chơi chạy trên trình duyệt. Backend chỉ lưu ván để chơi tiếp trên máy khác, bia tưởng niệm, codex và số liệu chơi ẩn danh (chỉ khi người chơi bật).
 
 ## Capabilities and Constraints
 
 - Song ngữ Việt và Anh, có chế độ hiển thị cả hai.
 - Cài đặt hiện có: ngôn ngữ, cỡ chữ truyện, chế độ đọc nhật ký, chuyển động (Hệ thống, Đầy đủ, Giảm), cảnh chuyển (Đầy đủ, Rút gọn, Tắt), tiết kiệm pin, âm lượng, gửi số liệu ẩn danh.
 - Luật chơi hiện hành nằm ở `docs/LUAT_HIEN_HANH.md`; thế giới và giọng văn ở `UNIVERSE.md`; hướng giao diện ở `DESIGN.md`.
-- Cổng thăng tiến dùng chung giữa frontend và backend (`career_gates.json`) và phải khớp nhau.
+- Cổng thăng tiến nằm ở `src/data/careerGates.json`. Engine phải theo đúng file này.
 - Thuật ngữ: giữ nguyên tiếng Anh của Project Moon (Fixer, Office, Association, Grade, Color, Nest, Backstreets, Wing, Feather, Singularity, Syndicate, The Five Fingers, Distortion, E.G.O, Taboo, The Head...). Không dịch Hán-Việt.
 - Chưa quyết: có giảm hình phạt kỳ sát hạch Hana cho Grade 8 đến 6 hay không.
 

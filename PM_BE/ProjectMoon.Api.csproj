@@ -9,8 +9,4 @@
     <InvariantGlobalization>true</InvariantGlobalization>
   </PropertyGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Include="Config/career_gates.json" LogicalName="career_gates.json" />
-  </ItemGroup>
-
 </Project>

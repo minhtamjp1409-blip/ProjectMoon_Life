@@ -1,6 +1,6 @@
 # Kế hoạch phát triển tiếp theo
 
-File này chỉ giữ những việc chưa làm. Việc đã xong được ghi trong `PROGRESS_LOG.md`, gần nhất là mục 2.57 (Đợt 174: hoàn tất Bước `0a–0d` và Bước `0+` Tua thời thơ ấu), 2.58 (sửa sót sau review, ghi lộ trình AI) và 2.59 (Đợt 175: hoàn tất cụm AI độc lập `AI-3`, `AI-5`, `AI-6`).
+File này chỉ giữ những việc chưa làm. Việc đã xong được ghi trong `PROGRESS_LOG.md`, gần nhất là mục 2.57 (Đợt 174: hoàn tất Bước `0a–0d` và Bước `0+` Tua thời thơ ấu), 2.58 (sửa sót sau review, ghi lộ trình AI), 2.59 (Đợt 175: hoàn tất cụm AI độc lập `AI-3`, `AI-5`, `AI-6`) và 2.60 (Đợt 176: một planner duy nhất, backend chỉ còn lưu trữ).
 
 Luật chơi đang chạy nằm ở `docs/LUAT_HIEN_HANH.md`, lore và giọng văn ở `UNIVERSE.md`. Số đợt do người làm tự đặt khi bắt đầu.
 

@@ -11,15 +11,12 @@ Trang này ghi những gì đang đúng ở code hôm nay, để người viết
 
 ## Ngưỡng thăng cấp
 
-Một nguồn duy nhất: `PM_BE/Config/career_gates.json` (Fixer Grade 8 đến 1, cổng Color, Finger rank 1 đến 3, tên bậc Finger, Wing rank 1 đến 3).
+Một nguồn duy nhất: `src/data/careerGates.json` (Fixer Grade 8 đến 1, cổng Color, Finger rank 1 đến 3, tên bậc Finger, Wing rank 1 đến 3). Từ Đợt 176, backend không còn lập kế hoạch năm nên không đọc file này nữa.
 
-1. Sửa file nguồn ở `PM_BE/Config`.
-2. Chạy `node tools/sync_career_gates.mjs` để chép sang `PM/src/data/careerGates.json` (Vercel chỉ build thư mục `PM`).
-3. `npm test` chạy `tools/lint/check_be_parity.mjs`: báo lỗi nếu bản sao lệch, engine không theo file, csproj không nhúng file, file nguồn bị gitignore, hoặc BE ghi cứng lại con số.
+1. Sửa `src/data/careerGates.json`.
+2. `npm test` chạy `tools/lint/check_career_gates.mjs`: báo lỗi nếu bảng trong engine không theo file.
 
-Không đặt file nguồn trong `PM_BE/Data/`: thư mục đó bị `.gitignore` và không tới được bản build Docker.
-
-Cổng Color có bốn đường, tất cả trong `color` của file nguồn: chuẩn (Grade 1, 260 Merit, 90 Rep, từ 30 tuổi), E.G.O (`ego`), thần đồng (`prodigy`, gồm nhánh `egoTrack`) và E.G.O road (`egoRoad`, Grade 4 trở lên). FE đọc qua `COLOR_FIXER_REQ_*` và `isColorEgoRoadEligible`/`isColorProdigyEligible` trong `careerPipeline.js`; BE đọc qua `ColorTrialGate.cs`. FE gửi thêm `hasRelic` trong snapshot vì BE không thấy túi đồ. `node tools/sim/color_gate_parity.mjs [base] [vectors]` so hai bên bằng BE đang chạy (không nằm trong `npm test`).
+Cổng Color có bốn đường, tất cả trong `color` của file nguồn: chuẩn (Grade 1, 260 Merit, 90 Rep, từ 30 tuổi), E.G.O (`ego`), thần đồng (`prodigy`, gồm nhánh `egoTrack`) và E.G.O road (`egoRoad`, Grade 4 trở lên). Engine đọc qua `COLOR_FIXER_REQ_*` và `isColorEgoRoadEligible`/`isColorProdigyEligible` trong `careerPipeline.js`.
 
 ## Viết event
 

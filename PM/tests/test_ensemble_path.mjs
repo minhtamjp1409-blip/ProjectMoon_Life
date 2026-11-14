@@ -2,8 +2,7 @@ import assert from 'node:assert/strict';
 import { buildLifeSummaryAndLegacy, createNewCharacter, createRNG, resolveEventChoice } from '../src/engine/gameEngine.js';
 import { DUNGEON_BALANCE, DUNGEON_DEFINITIONS, createDungeonSession, evaluateDungeonChoiceOdds, fleeDungeon, getDungeonCurrentStage, getDungeonMastery, resolveDungeonChoice } from '../src/engine/dungeonEngine.js';
 import { ENSEMBLE_DUNGEON_ID, ENSEMBLE_INVITE_ID, ENSEMBLE_LAST_CALL_ID, ensembleEligible, ensembleRoute, prepareEnsembleYear, recordEnsembleInvitation } from '../src/engine/ensemblePath.js';
-import { planYear, runPlanItem, syncPlanWithBackend } from '../src/engine/yearPlanner.js';
-import { cityArchiveAPI } from '../src/services/api/cityArchiveAPI.js';
+import { planYear, runPlanItem } from '../src/engine/yearPlanner.js';
 import { migrateRun, SAVE_VERSION } from '../src/engine/saveSchema.js';
 import { sceneContextOf } from '../src/engine/sceneContext.js';
 import { localizeEnsembleName } from '../src/data/ensembleNames.js';
@@ -137,12 +136,6 @@ planYear(scheduled, createRNG('ensemble-year'));
 const invite = scheduled.plan.find((item) => item.forcedEventId === ENSEMBLE_INVITE_ID);
 assert(invite, 'an invitation survives a busy apex year');
 assert(!scheduled.pendingLead?.offers.some((offer) => offer.tier === 'forbidden'), 'Ensemble and a new Taboo chain never share a year');
-const originalPlanYear = cityArchiveAPI.planYear;
-try {
-  cityArchiveAPI.planYear = async () => ({ moments: ['Spring', 'Summer', 'Autumn', 'Winter'].map((season, seasonIdx) => ({ kind: 'daily', t: 0.1 + seasonIdx * 0.25, season, seasonIdx })) });
-  await syncPlanWithBackend(scheduled, createRNG('ensemble-backend'));
-  assert(scheduled.plan.some((item) => item.forcedEventId === ENSEMBLE_INVITE_ID));
-} finally { cityArchiveAPI.planYear = originalPlanYear; }
 runPlanItem(scheduled, invite, () => 0.5);
 assert.equal(scheduled.pendingEvent?.id, ENSEMBLE_INVITE_ID);
 const declined = resolveEventChoice(scheduled, 1, () => 0);

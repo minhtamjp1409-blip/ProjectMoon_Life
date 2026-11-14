@@ -7,8 +7,7 @@ import {
 } from '../src/engine/gameEngine.js';
 import { isEventEligible } from '../src/engine/weaverAI.js';
 import { choiceIsAvailable } from '../src/engine/eventConditions.js';
-import { endYear, planYear, syncPlanWithBackend } from '../src/engine/yearPlanner.js';
-import { cityArchiveAPI } from '../src/services/api/cityArchiveAPI.js';
+import { endYear, planYear } from '../src/engine/yearPlanner.js';
 import { migrateRun, SAVE_VERSION } from '../src/engine/saveSchema.js';
 
 console.log('=== TEST SUITE: FIXER LICENSE DEBT LIFECYCLE & RESOLUTION ===');
@@ -335,41 +334,5 @@ console.log('8. Testing P0: Dynamic debt balance repayment and label interpolati
   assert.equal(afterP2.flags.includes('FixerLicenseDebt'), false);
   console.log('  ✓ Dynamic costs, interpolation, and automatic settlement on balance 0 verified.');
 }
-
-// 9. Audit P1: Backend sync & plan hydration parity
-console.log('9. Testing P1: Backend sync preserves local debt due event across hydration...');
-async function testBackendHydrationParity() {
-  const char = createNewCharacter({ seed: 'sync-parity-debt', startAge: 19 });
-  char.job = 'Fixer';
-  char.flags.push('FixerLicenseDebt');
-  char.debts = [{ id: 'fixer_license_debt', status: 'active', balanceAhn: 8, nextDueAge: 19 }];
-  planYear(char, () => 0.5);
-  assert.ok(char.plan.some((p) => p.forcedEventId === 'csq_fixer_license_debt_due'), 'Local plan must schedule debt due');
-
-  // Mock cityArchiveAPI.planYear returning generic server moments without debt
-  const origPlanYear = cityArchiveAPI.planYear;
-  cityArchiveAPI.planYear = async ({ char: snap }) => {
-    assert.ok(Array.isArray(snap.debts), 'Snap must include debts');
-    assert.equal(snap.debts.length, 1);
-    return {
-      moments: [
-        { kind: 'daily', id: 'daily_city_dawn', t: 0.1, season: 'Spring', seasonIdx: 0 },
-        { kind: 'minor', id: 'minor_alley_crossroad', t: 0.4, season: 'Summer', seasonIdx: 1 },
-        { kind: 'daily', id: 'daily_city_dawn', t: 0.7, season: 'Autumn', seasonIdx: 2 },
-        { kind: 'daily', id: 'daily_city_dawn', t: 0.9, season: 'Winter', seasonIdx: 3 }
-      ]
-    };
-  };
-
-  try {
-    const synced = await syncPlanWithBackend(char, () => 0.5);
-    const hasDebtInHydrated = synced.plan.some((p) => p.forcedEventId === 'csq_fixer_license_debt_due');
-    assert.ok(hasDebtInHydrated, 'Hydrated plan must preserve local csq_fixer_license_debt_due');
-    console.log('  ✓ syncPlanWithBackend preserves local debt collection in hydrated plan.');
-  } finally {
-    cityArchiveAPI.planYear = origPlanYear;
-  }
-}
-await testBackendHydrationParity();
 
 console.log('\n=== ALL FIXER LICENSE DEBT TESTS PASSED SUCCESSFULLY ===');

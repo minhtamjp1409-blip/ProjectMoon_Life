@@ -1,8 +1,7 @@
 import assert from 'node:assert/strict';
 import { createNewCharacter, createRNG } from '../src/engine/gameEngine.js';
 import { FINGER_LADDERS, FIXER_LADDER, WING_LADDER_PROMOTIONS } from '../src/engine/careerPipeline.js';
-import { LIFE_MINORS, planYear, resolveMinor, runPlanItem, syncPlanWithBackend } from '../src/engine/yearPlanner.js';
-import { cityArchiveAPI } from '../src/services/api/cityArchiveAPI.js';
+import { LIFE_MINORS, planYear, resolveMinor, runPlanItem } from '../src/engine/yearPlanner.js';
 
 const meritMinor = (id) => LIFE_MINORS.some((event) => event.id === id &&
   event.choices?.some((choice) => (choice.fx?.merit || 0) > 0 ||
@@ -80,50 +79,8 @@ useGameStore.getState().tick(16000);
 assert.equal(useGameStore.getState().char.pendingMinor?.id, waitingItem.id, 'manual commission waits for a choice');
 assert.equal(useGameStore.getState().minorRemainingMs, 15000);
 
-let backendWorker;
-for (let i = 0; i < 120; i++) {
-  const candidate = worker('Distortion', null, `annual-backend-${i}`);
-  planYear(candidate, createRNG(`annual-backend-local-${i}`));
-  if (candidate.plan.some((item) => item.annualMerit)) {
-    backendWorker = candidate;
-    break;
-  }
-}
-assert(backendWorker);
-const annualBefore = backendWorker.plan.find((item) => item.annualMerit);
-assert(annualBefore);
-const originalPlanYear = cityArchiveAPI.planYear;
-try {
-  cityArchiveAPI.planYear = async () => ({ moments: ['Spring', 'Summer', 'Autumn', 'Winter'].map((season, seasonIdx) => ({
-    kind: 'daily', t: 0.1 + seasonIdx * 0.25, season, seasonIdx
-  })) });
-  await syncPlanWithBackend(backendWorker, createRNG('annual-backend-hydrate'));
-  assert(backendWorker.plan.some((item) => item.id === annualBefore.id && item.annualMerit),
-    'backend hydration must preserve the guaranteed Merit opportunity');
-
-  let naturalWorker;
-  for (let i = 0; i < 120; i++) {
-    const candidate = worker('Wing Employee', null, `annual-natural-${i}`);
-    planYear(candidate, createRNG(`annual-natural-plan-${i}`));
-    if (candidate.plan.some((item) => item.annualMerit && !item.extra)) {
-      naturalWorker = candidate;
-      break;
-    }
-  }
-  assert(naturalWorker);
-  const naturalId = naturalWorker.plan.find((item) => item.annualMerit).id;
-  cityArchiveAPI.planYear = async () => ({ moments: ['Spring', 'Summer', 'Autumn', 'Winter'].map((season, seasonIdx) => ({
-    kind: 'major', t: 0.1 + seasonIdx * 0.25, season, seasonIdx
-  })) });
-  await syncPlanWithBackend(naturalWorker, createRNG('annual-natural-hydrate'));
-  assert(naturalWorker.plan.some((item) => item.id === naturalId && item.annualMerit),
-    'backend major moments must not displace a protected career commission');
-} finally {
-  cityArchiveAPI.planYear = originalPlanYear;
-}
-
 assert.deepEqual(FIXER_LADDER.map((step) => step.meritReq), [10, 22, 38, 56, 78, 96, 135, 180]);
 for (const ladder of Object.values(FINGER_LADDERS)) assert.deepEqual(ladder.map((step) => step.meritReq), [28, 68, 155]);
 assert.deepEqual(WING_LADDER_PROMOTIONS.map((step) => step.meritReq), [25, 65, 125]);
 
-console.log('Annual Merit: 1,440 seeded career years, protected choices, backend preservation and higher promotion gates passed.');
+console.log('Annual Merit: 1,440 seeded career years, protected choices and higher promotion gates passed.');

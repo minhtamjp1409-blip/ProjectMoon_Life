@@ -18,13 +18,12 @@ import {
   cloneChar,
   interpolateText
 } from '../engine/gameEngine.js';
-import { planYear, chooseDirectorPacedLead, syncPlanWithBackend, runDueItems, resolveMinor, endYear, nextPlanItem, diffStats, MINOR_WINDOW_MS, splitTitle, LIFE_MINORS, isQuietYear, consolidateYearDailies } from '../engine/yearPlanner.js';
+import { planYear, chooseDirectorPacedLead, runDueItems, resolveMinor, endYear, nextPlanItem, diffStats, MINOR_WINDOW_MS, splitTitle, LIFE_MINORS, isQuietYear, consolidateYearDailies } from '../engine/yearPlanner.js';
 import { CODEX_RECORDS } from '../data/worldData.js';
 import { getItemById } from '../data/itemsData.js';
 import { cityArchiveAPI } from '../services/api/cityArchiveAPI.js';
 import { migrateRun, SAVE_VERSION } from '../engine/saveSchema.js';
 import { normalizeLegacyRecord } from '../engine/legacyKeepsake.js';
-import { createPlanSynchronizer } from '../engine/planSync.js';
 import { useThemeStore } from './themeStore.js';
 import { choiceIsAvailable } from '../engine/eventConditions.js';
 import { executeNpcInteraction, canInteractWithNpc } from '../engine/npcInteractions.js';
@@ -335,10 +334,6 @@ let lifeActiveMs = 0;
 let saveTimer = null;
 let saveRequestId = 0;
 const pendingRunWrites = new Set();
-const synchronizePlan = createPlanSynchronizer({ plan: syncPlanWithBackend, clone: cloneChar, createRng: createRNG });
-const requestPlanSync = (get) => get().char?.pendingYearPlan
-  ? Promise.resolve(false)
-  : synchronizePlan(get, (before, synced) => get().commit(before, synced)).catch(() => false);
 const reportGameplaySample = (char, abandoned = false) => {
   // A sandbox life plays events someone wrote with fixed rewards: it says nothing about the real game
   if (!char?.seed || !useThemeStore.getState().gameplayMetricsEnabled || char.flags?.includes(SANDBOX_FLAG)) return;
@@ -979,8 +974,6 @@ export const useGameStore = create((set, get) => ({
     if (!hasBirthLogs) {
       get().saveRun(true);
     }
-
-    requestPlanSync(get);
   },
 
   /** Advances the year by real elapsed time. Called by the layout's loop. */
@@ -1059,7 +1052,6 @@ export const useGameStore = create((set, get) => ({
     if (progress >= 100 && cur.alive && !nextPlanItem(cur)) {
       const nextChar = endYear(cur, lifeRng);
       get().commit(cur, nextChar, { yearProgress: 0 });
-      requestPlanSync(get);
     } else if (!changed) {
       const liveSeason = Math.min(3, Math.floor(progress / 25));
       if (cur.seasonIdx !== liveSeason) {
@@ -1104,7 +1096,6 @@ export const useGameStore = create((set, get) => ({
       const base = changed ? char : c;
       const nextChar = endYear(base, lifeRng);
       get().commit(c, nextChar, { yearProgress: 0, postChoicePauseMs: 0 });
-      requestPlanSync(get);
       return;
     }
 
@@ -1140,7 +1131,6 @@ export const useGameStore = create((set, get) => ({
     if (!next.plan?.length) planYear(next, lifeRng);
     if (next.pendingLead) next = chooseDirectorPacedLead(next, lifeRng);
     get().commit(prev, next, { postChoicePauseMs: 0 });
-    requestPlanSync(get);
     return true;
   },
 

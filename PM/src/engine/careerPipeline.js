@@ -16,7 +16,7 @@ import { egoEdge, hasAwakenedEgo } from './egoEdge.js';
 import { annualTrainingBonus } from './annualPlan.js';
 import GATES from '../data/careerGates.json' with { type: 'json' };
 
-// Promotion gates come from careerGates.json, the same file the backend embeds
+// Promotion gates come from careerGates.json, the one source tools/lint/check_career_gates.mjs checks the engine against
 const fixerGate = (grade) => GATES.fixer.find((row) => row.grade === grade);
 const fingerGate = (rank) => GATES.finger.find((row) => row.rank === rank);
 const wingGate = (rank) => GATES.wing.find((row) => row.rank === rank);
@@ -212,8 +212,7 @@ export const COLOR_FIXER_REQ_PRODIGY = { merit: GATES.color.prodigy.merit, rep: 
 // scale: Grade 4 or better, an Awakened E.G.O that has settled (Resonance 55+), and a record Hana can defend.
 export const COLOR_FIXER_REQ_EGO_ROAD = { merit: GATES.color.egoRoad.merit, rep: GATES.color.egoRoad.rep, age: GATES.color.egoRoad.age };
 
-// Every number above comes from career_gates.json, which the backend reads too. The backend cannot see the
-// inventory, so the client sends this one fact (a relic or a forged weapon in the pack) with the plan request.
+// A relic or a forged weapon in the pack opens the prodigy road to the Color trial
 export const hasColorRelic = (char) => (char?.inventory || []).some((it) => String(it?.id || it).startsWith('rel_') || String(it?.id || it).startsWith('wpn_'));
 
 export const isColorEgoRoadEligible = (char) => {

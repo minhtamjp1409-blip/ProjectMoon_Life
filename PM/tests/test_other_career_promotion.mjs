@@ -6,8 +6,7 @@ import {
 } from '../src/engine/careerPipeline.js';
 import { isEventEligible, selectEventWithWeaverAI } from '../src/engine/weaverAI.js';
 import { CONSEQUENCE_EVENTS } from '../src/data/eventsChildhood.js';
-import { LIFE_MINORS, planYear, runPlanItem, syncPlanWithBackend } from '../src/engine/yearPlanner.js';
-import { cityArchiveAPI } from '../src/services/api/cityArchiveAPI.js';
+import { LIFE_MINORS, planYear } from '../src/engine/yearPlanner.js';
 import { choiceIsAvailable } from '../src/engine/eventConditions.js';
 
 const cases = [
@@ -150,37 +149,19 @@ for (const [route] of cases) {
   }
 }
 
-const originalPlanYear = cityArchiveAPI.planYear;
-try {
-  let wing;
-  let found = false;
-  for (let i = 0; i < 80; i += 1) {
-    const copy = candidate('Wing Employee', `backend-wing-${i}`);
-    copy.merit = 0;
-    copy.stats.network = 0;
-    copy.stats.wealth = 0;
-    planYear(copy, createRNG(`backend-wing-${i}`));
-    if (copy.plan.some((item) => careerOpportunity(copy).ids.includes(item.id))) {
-      wing = copy;
-      found = true;
-      break;
-    }
+// A Wing worker short of every gate still gets a career opportunity in the year plan
+let foundWingOpportunity = false;
+for (let i = 0; i < 80; i += 1) {
+  const copy = candidate('Wing Employee', `plan-wing-${i}`);
+  copy.merit = 0;
+  copy.stats.network = 0;
+  copy.stats.wealth = 0;
+  planYear(copy, createRNG(`plan-wing-${i}`));
+  if (copy.plan.some((item) => careerOpportunity(copy).ids.includes(item.id))) {
+    foundWingOpportunity = true;
+    break;
   }
-  assert.ok(found);
-  cityArchiveAPI.planYear = async () => ({ moments: ['Spring', 'Summer', 'Autumn', 'Winter'].map((season, seasonIdx) => ({ kind: 'daily', t: 0.1 + seasonIdx * 0.25, season, seasonIdx })) });
-  await syncPlanWithBackend(wing, createRNG('career-wing-sync'));
-  assert.ok(wing.plan.some((item) => careerOpportunity(wing).ids.includes(item.id)));
-
-  const readyWing = candidate('Wing Employee', 'backend-trial');
-  planYear(readyWing, createRNG('backend-trial-local'));
-  cityArchiveAPI.planYear = async () => ({ moments: [{ kind: 'major', id: 'wing_promo_feather_r1', forcedEventId: 'wing_promo_feather_r1', t: 0.8, season: 'Winter', seasonIdx: 3 }] });
-  await syncPlanWithBackend(readyWing, createRNG('backend-trial-hydrate'));
-  const hydratedTrial = readyWing.plan.find((item) => item.kind === 'major');
-  assert.equal(hydratedTrial.forcedEventId, '');
-  const withheld = runPlanItem(readyWing, hydratedTrial, () => 0.99);
-  assert.ok(!careerTrialForEvent(withheld.pendingEvent?.id));
-} finally {
-  cityArchiveAPI.planYear = originalPlanYear;
 }
+assert.ok(foundWingOpportunity);
 
-console.log('Other career routes: distinct opportunities, offers, failed trials, retry, rank progression and backend hydration passed.');
+console.log('Other career routes: distinct opportunities, offers, failed trials, retry and rank progression passed.');

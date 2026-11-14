@@ -1,7 +1,6 @@
 import assert from 'node:assert/strict';
 import { createRNG, createNewCharacter, cloneChar, resolveEventChoice, ALL_STORY_EVENTS } from '../src/engine/gameEngine.js';
 import { migrateRun, SAVE_VERSION } from '../src/engine/saveSchema.js';
-import { createPlanSynchronizer } from '../src/engine/planSync.js';
 import { promotionRiskOf } from '../src/engine/careerRisk.js';
 import { runDueItems } from '../src/engine/yearPlanner.js';
 
@@ -25,33 +24,4 @@ assert(promotionRiskOf(char.pendingEvent.choices[0], { ...char, stats: { ...char
 assert.equal(promotionRiskOf(char.pendingEvent.choices[2], char), null, 'deferring has no exam failure risk');
 const inDungeon = { ...char, pendingEvent: null, pendingDungeon: { id: 'dungeon_warp_train' }, plan: [{ kind: 'daily', t: 0.1 }], planCursor: 0 };
 assert.deepEqual(runDueItems(inDungeon, 100, createRNG('no-background-time')), { char: inDungeon, changed: false }, 'annual events cannot advance behind an open dungeon');
-
-const waiting = [];
-const synchronize = createPlanSynchronizer({
-  clone: structuredClone, createRng: createRNG,
-  plan: (snapshot, planningRng) => {
-    snapshot.stats.health = 1;
-    planningRng();
-    return new Promise((resolve) => waiting.push(() => resolve(snapshot)));
-  }
-});
-let state = { char: { seed: 'same-seed', age: 30, alive: true, stats: { health: 90 } }, inRun: true, yearProgress: 0 };
-let applied = 0;
-const read = () => state;
-const apply = (_prev, synced) => { applied++; state = { ...state, char: synced }; };
-const lateChoice = synchronize(read, apply);
-assert.equal(state.char.stats.health, 90, 'the backend plans on a detached snapshot');
-state = { ...state, char: { ...state.char, planCursor: 1 } };
-waiting.shift()();
-assert.equal(await lateChoice, false, 'same-year decisions invalidate a pending response');
-const lateTick = synchronize(read, apply);
-state = { ...state, yearProgress: 1 };
-waiting.shift()();
-assert.equal(await lateTick, false, 'time cannot rewind to an older plan');
-const first = synchronize(read, apply);
-const last = synchronize(read, apply);
-waiting.shift()(); waiting.shift()();
-assert.equal(await first, false);
-assert.equal(await last, true);
-assert.equal(applied, 1, 'only the newest response for the untouched state is accepted');
-console.log('Run integrity: saved RNG, exam replay, penalty previews and delayed plan responses passed.');
+console.log('Run integrity: saved RNG, exam replay and penalty previews passed.');

@@ -44,32 +44,7 @@ export const cityArchiveAPI = {
 
   clearRunState: (slot = 'main') => apiRequest(`/state/${slot}`, { method: 'DELETE', allow404: true }),
 
-  recordGameplaySample: (sample) => apiRequest('/telemetry/gameplay', { method: 'POST', body: JSON.stringify(sample) }),
-
-  // Director Engine: Offloaded server-side computation
-  planYear: (payload) =>
-    apiRequest('/director/plan-year', {
-      method: 'POST',
-      body: JSON.stringify(payload)
-    }),
-
-  getCareerMilestone: (charSnapshot) =>
-    apiRequest('/director/milestone', {
-      method: 'POST',
-      body: JSON.stringify(charSnapshot)
-    }),
-
-  resolveCrucible: (payload) =>
-    apiRequest('/director/resolve-crucible', {
-      method: 'POST',
-      body: JSON.stringify(payload)
-    }),
-
-  evaluateWeaver: (payload) =>
-    apiRequest('/weaver/evaluate', {
-      method: 'POST',
-      body: JSON.stringify(payload)
-    })
+  recordGameplaySample: (sample) => apiRequest('/telemetry/gameplay', { method: 'POST', body: JSON.stringify(sample) })
 };
 
 export default cityArchiveAPI;

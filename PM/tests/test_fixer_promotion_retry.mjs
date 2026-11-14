@@ -4,8 +4,7 @@ import { FIXER_LADDER, fixerContractOfferChance, fixerPromotionOfferChance, fixe
 import { driftOf } from '../src/engine/economyModel.js';
 import { isEventEligible, selectEventWithWeaverAI } from '../src/engine/weaverAI.js';
 import { CONSEQUENCE_EVENTS } from '../src/data/eventsChildhood.js';
-import { endYear, planYear, runPlanItem, syncPlanWithBackend } from '../src/engine/yearPlanner.js';
-import { cityArchiveAPI } from '../src/services/api/cityArchiveAPI.js';
+import { endYear, planYear, runPlanItem } from '../src/engine/yearPlanner.js';
 
 const fixer = createNewCharacter({ seed: 'fixer-exam-retry', startAge: 45 });
 fixer.job = 'Fixer';
@@ -117,46 +116,5 @@ assert.ok(offers.ready.contract > 140 && offers.ready.contract < 210);
 assert.ok(offers.short.contract > offers.ready.contract + 75);
 assert.ok(offers.short.office > offers.ready.office * 2);
 
-const serverMoments = ['Spring', 'Summer', 'Autumn', 'Winter'].map((season, seasonIdx) => ({
-  kind: 'daily', t: 0.12 + seasonIdx * 0.24, season, seasonIdx
-}));
-const originalPlanYear = cityArchiveAPI.planYear;
-cityArchiveAPI.planYear = async () => ({ moments: serverMoments });
-try {
-  for (const expected of [true, false]) {
-    let candidate;
-    for (let i = 0; i < 100; i++) {
-      candidate = createNewCharacter({ seed: `fixer-sync-${i}`, startAge: 35 });
-      candidate.job = 'Fixer';
-      candidate.fixerGrade = 5;
-      candidate.merit = 92;
-      candidate.stats.rep = 40;
-      planYear(candidate, createRNG(`sync-plan-${i}`));
-      if (candidate.plan.some((item) => item.kind === 'contract') === expected) break;
-    }
-    assert.equal(candidate.plan.some((item) => item.kind === 'contract'), expected);
-    cityArchiveAPI.planYear = async () => ({ moments: expected ? serverMoments : [
-      { ...serverMoments[0], kind: 'contract' }, ...serverMoments.slice(1)
-    ] });
-    await syncPlanWithBackend(candidate, createRNG(`sync-hydrate-${expected}`));
-    assert.equal(candidate.plan.some((item) => item.kind === 'contract'), expected);
-  }
-  let officeCandidate;
-  for (let i = 0; i < 100; i++) {
-    officeCandidate = createNewCharacter({ seed: `office-sync-${i}`, startAge: 35 });
-    officeCandidate.job = 'Fixer';
-    officeCandidate.fixerGrade = 5;
-    officeCandidate.merit = 92;
-    officeCandidate.stats.rep = 40;
-    planYear(officeCandidate, createRNG(`office-plan-${i}`));
-    if (officeCandidate.plan.some((item) => item.id === 'm_fx_request_choice')) break;
-  }
-  assert.ok(officeCandidate.plan.some((item) => item.id === 'm_fx_request_choice'));
-  cityArchiveAPI.planYear = async () => ({ moments: serverMoments });
-  await syncPlanWithBackend(officeCandidate, createRNG('office-hydrate'));
-  assert.ok(officeCandidate.plan.some((item) => item.id === 'm_fx_request_choice'));
-} finally {
-  cityArchiveAPI.planYear = originalPlanYear;
-}
 
 console.log('Fixer promotion regressions: score-weighted offers, safe threshold drift, failed/deferred retries, rank-scaled penalties, cooldown and age gates passed.');
