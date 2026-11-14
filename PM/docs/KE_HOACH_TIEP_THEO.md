@@ -182,6 +182,15 @@ AI ở đây là phần quyết định của Director, NPC, kẻ địch và th
 - Làm bản chia sẻ bằng link trước. Chưa cần bảng xếp hạng trên server.
 - **Kiểm chứng:** test cùng seed ngày cho ra cùng một khai sinh.
 
+## Việc sửa sau đợt test 14/11/2026
+Danh sách chi tiết nằm ở `docs/SUA_SAU_TEST_14_11.md`. File này có 15 mục, mỗi mục ghi số đo, nguyên nhân, cách sửa và cách đo lại:
+- Hai lỗi công cụ đo: `color%` luôn ra 0, và script QA kẹt ở lựa chọn đang khóa.
+- Bảy việc cân bằng: đỡ đòn chết, cảnh báo trong dungeon, Reverberation Ensemble, Fixer chơi an toàn, Color hóa Distortion, tiền giảm theo tuổi, và nhánh Wing.
+- Ba việc nội dung.
+- Ba cơ chế học từ trang mẫu: tốc độ x8/x16, nhiều slot lưu, thẻ District.
+
+Đề xuất: Đợt 178 làm A1, A2, B1, B2, D3.
+
 ## Cân bằng cần xem lại (từ báo cáo `AI-6`, `npm run report:bots`)
 Báo cáo so `lookahead` với bot đối chứng `tactical`. Hai bot dùng cùng luật chọn manh mối, hợp đồng, hành động trong dungeon và kế hoạch năm. Chỉ khác ở chỗ `lookahead` thử trước 1–2 năm cho mỗi lựa chọn lớn. Các bot luật cố định trả lời trong dungeon một cách ngẫu nhiên, nên không dùng để đo giá trị của việc nhìn trước.
 

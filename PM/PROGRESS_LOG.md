@@ -3425,5 +3425,23 @@ Làm ở commit `208ef40` và sửa theo review ở `9000cf8`. Chỉ học cơ c
 * **Không đổi bundle.** Chunk `engine` vẫn khoảng 636 KB (229 KB sau gzip), vì cùng code chỉ đổi chỗ. Chưa làm việc tải event theo độ tuổi hoặc nghề.
 * **Kiểm định.** `npm test` và `npm run build` đều qua. Chạy bản build thật trong trình duyệt với seed cố định `smoke177`: bản trước và sau khi tách cho ra cùng một đời (chết lúc 20 tuổi, 100 dòng nhật ký, 38 event, chỉ số trùng khớp), không có lỗi console.
 
+##### 2.62. Đợt test sau Đợt 177 và danh sách việc cần sửa (14/11/2026)
+* **Đã chạy** trên commit `2a54e20`:
+  * 300 đời cân bằng và 300 đời kiểm logic;
+  * 8 kiểu bot, mỗi kiểu 30 đời;
+  * dungeon, 300 lượt cho mỗi tổ hợp;
+  * nhịp theo tuổi và theo nghề;
+  * 2 lượt chơi thật trên bản Vercel ở 1440px và 390px.
+* **Kết quả tốt.** Không có vi phạm logic nào. Không tràn ngang ở cả hai khổ.
+* **Tìm ra:**
+  * `color%` trong báo cáo bot luôn ra 0. Nguyên nhân: 4/4 đời `lookahead` lên Color sau đó đều thành Distortion, và báo cáo chỉ đọc cờ lúc chết.
+  * Script QA trên Vercel kẹt ở event "Thư từ các Finger" vì chọn lựa chọn đang khóa.
+  * Đỡ đòn chết chưa xảy ra lần nào trong 300 đời, vì ngưỡng bond 90/95 quá cao.
+  * Bot chọn ngẫu nhiên chết 85–88% ở bốn dungeon, còn bot cẩn thận chết 0–2%.
+  * Mọi bot có tính toán đều rời Reverberation Ensemble ngay ở hồi đầu.
+  * Fixer chơi an toàn ở Grade 9 suốt 114 năm.
+  * 13/44 event hệ quả chưa từng xuất hiện.
+* **Không sửa code ở mục này.** Cách sửa từng việc, kèm file, dòng và cách đo lại, ghi ở `docs/SUA_SAU_TEST_14_11.md`.
+
 #### 3. KIỂM ĐỊNH & BẢO ĐẢM TOÀN VẸN (VERIFICATION & INTEGRITY)
 * Tất cả các bộ kiểm thử tự động (`npm test`) bao gồm lint văn phong (`voice_lint.mjs`), chuẩn canon Project Moon (`lint_story.mjs`), và mô phỏng 500 khoảnh khắc đời người (`run_million_audit.mjs`) phải vượt qua 100% với 0 lỗi, 0 cảnh báo.
