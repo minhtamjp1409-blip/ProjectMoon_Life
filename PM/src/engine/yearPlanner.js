@@ -1,13 +1,8 @@
 import { advanceCityCondition } from './cityConditions.js';
-import { applyRegionalSingularityPassive } from './cityUpgrades.js';
-import { syncVisibleDoorsForChar } from './lockedDoors.js';
 import { contractRouteOf } from '../data/careerContracts.js';
-import { affiliationYearTick } from './affiliation.js';
-import { planFirstGate } from './dungeonPacing.js';
 import { careerAgeOf, reachedCareerAge, effectiveMinAge, careerCrossroadIdFor } from './careerAge.js';
-import { rememberResonance, hasEgoOpportunity, colorTrialAvailable, rollEgoEncounter } from './awakeningProgress.js';
-import { simulateNpcAutonomousLife } from './narrativeArcEngine.js';
-import { matchesNeed, matchesEventContext, choiceIsAvailable, mergeEffects, isNestResident, isOutsideCity, npcIsActive, colorTrialCompanionAlive, isIndependentSyndicateEligibleForRank, charHasWorkshopAccess, jobMatchesWithInheritance } from './eventConditions.js';
+import { rememberResonance, colorTrialAvailable, rollEgoEncounter } from './awakeningProgress.js';
+import { matchesNeed, matchesEventContext, choiceIsAvailable, mergeEffects, isNestResident, isOutsideCity, colorTrialCompanionAlive, isIndependentSyndicateEligibleForRank, charHasWorkshopAccess, jobMatchesWithInheritance } from './eventConditions.js';
 import {
   getNextFixerPromotion,
   contractOfferChance,
@@ -26,7 +21,6 @@ import {
   TRIAL_MIN_HP
 } from './careerPipeline.js';
 import { rollSeasonMishap } from './fateEngine.js';
-import { CITY_BULLETINS } from '../data/cityBulletins.js';
 // ============================================================================
 // YEAR PLANNER: each year is a plan of 1–4 moments spread across the seasons.
 // The bar sweeps the year; when it passes a moment's time `t` (0–1) that moment
@@ -35,30 +29,15 @@ import { CITY_BULLETINS } from '../data/cityBulletins.js';
 // contract that stops time. Every stat change is recorded as a visible delta.
 // ============================================================================
 
-import {
-  SEASONS,
-  ALL_STORY_EVENTS,
-  clamp,
-  cloneChar,
-  interpolateText,
-  checkPromotions,
-  evaluateCharacterAchievements,
-  applyFatalOrCompanionSave,
-  handleSanityBreakdown,
-  woundDeath,
-  generateFixerContract,
-  createRNG
-} from './gameEngine.js';
+import { SEASONS, ALL_STORY_EVENTS, clamp, cloneChar, interpolateText, checkPromotions, evaluateCharacterAchievements, applyFatalOrCompanionSave, handleSanityBreakdown, generateFixerContract } from './gameEngine.js';
 import { selectEventWithWeaverAI, updateDramaTension, FATE_OMENS, isEventEligible } from './weaverAI.js';
 import { markHabitChallengeTriggered } from './eventDirector.js';
 import { CONSEQUENCE_EVENTS } from '../data/eventsChildhood.js';
-import { REGIONS } from '../data/worldData.js';
 import { LIFE_DAILIES as DAILIES_FIRST } from '../data/lifeDailies.js';
 import { LIFE_MINORS as MINORS_FIRST } from '../data/lifeMinors.js';
 import { LIFE_MINORS_BONDS } from '../data/lifeMinorsBonds.js';
 import { LIFE_MINORS_2 } from '../data/lifeMinors2.js';
 import { LIFE_DAILIES_3, LIFE_MINORS_3 } from '../data/lifeMinors3.js';
-import { YEAR_END_LINES } from '../data/yearEndLines.js';
 import { LIFE_MINORS_4 } from '../data/lifeMinors4.js';
 import { LIFE_MINORS_5 } from '../data/lifeMinors5.js';
 import { LIFE_MINORS_WING } from '../data/lifeMinorsWing.js';
@@ -68,8 +47,7 @@ import { FINGER_MINORS, FINGER_DAILIES, FINGER_MISSIONS } from '../data/eventsFi
 import { LIFE_MINORS_KIDS } from '../data/lifeMinorsKids.js';
 import { LIFE_MINORS_CONTRACTS } from '../data/lifeMinorsContracts.js';
 import { THREAD_MINORS } from '../data/narrative/causalThreads.js';
-import { FORBIDDEN_MINORS, FORBIDDEN_LEAD_ID } from '../data/eventsForbidden.js';
-import { forbiddenLeadOpen, FORBIDDEN_OFFER_CHANCE } from './forbiddenPath.js';
+import { FORBIDDEN_MINORS } from '../data/eventsForbidden.js';
 import { SCAR_CALLBACKS } from '../data/lifeScarCallbacks.js';
 import { LIFE_CAREER_OPPORTUNITIES } from '../data/lifeCareerOpportunities.js';
 import { ANNUAL_MERIT_OPPORTUNITIES } from '../data/annualMeritOpportunities.js';
@@ -87,25 +65,17 @@ const FINGER_MISSION_CHANCE = 0.4;
 
 export const LIFE_MINORS = [...MINORS_FIRST, ...LIFE_MINORS_2, ...LIFE_MINORS_3, ...LIFE_MINORS_4, ...LIFE_MINORS_5, ...LIFE_MINORS_WING, ...LIFE_MINORS_SEEDS, ...WORKSHOP_VISIT_MINORS, ...FINGER_MINORS, ...LIFE_MINORS_KIDS, ...LIFE_MINORS_CONTRACTS, ...LIFE_MINORS_BONDS, ...THREAD_MINORS, ...FORBIDDEN_MINORS, ...SCAR_CALLBACKS, ...LIFE_CAREER_OPPORTUNITIES, ...ANNUAL_MERIT_OPPORTUNITIES, ...EXPANSION_LIFE_MINORS, ...WING_PARITY_MINORS, ...DISTORTION_PARITY_MINORS, ...COLOR_EXPANSION_MINORS];
 export const LIFE_DAILIES = [...DAILIES_FIRST, ...LIFE_DAILIES_3, ...EXPANDED_DAILIES, ...DAILIES_2, ...EXPANSION_LIFE_DAILIES, ...WORKSHOP_VISIT_DAILIES, ...FINGER_DAILIES, ...WING_PARITY_DAILIES, ...DISTORTION_PARITY_DAILIES, ...COLOR_EXPANSION_DAILIES, ...NPC_CHOICE_CALLBACKS];
-import {
-  directorWeight,
-  markTheme,
-  logDecision,
-  dueMinorThreads,
-  closeThreads,
-  applyChoiceExtras,
-  driftBonds,
-  keepInTouch,
-  ageNpcCompanions,
-  npcActive,
-  hasMemory
-} from './director.js';
+import { directorWeight, markTheme, logDecision, closeThreads, applyChoiceExtras, npcActive } from './director.js';
 import { freshness, varyEffects, traitsOf, PRINTED_NUMBERS } from './variance.js';
-import { BALANCE, healAmount, calmAmount, agingLoss, midlifeMaintenanceLoss, effectiveAge, frailty, driftOf, hasEstablishedStanding, reputationGain } from './economyModel.js';
-import { activeScarCount, addScar, scarAnnualEffects } from './scarModel.js';
-import { ambitionComplete, ambitionWeight } from './annualPlan.js';
-import { ENSEMBLE_INVITE_ID, ENSEMBLE_LAST_CALL_ID, prepareEnsembleYear } from './ensemblePath.js';
+import { reputationGain } from './economyModel.js';
+import { addScar } from './scarModel.js';
+import { ambitionWeight } from './annualPlan.js';
+import { prepareEnsembleYear } from './ensemblePath.js';
 import { weightedOutcomes } from './outcomeOdds.js';
+import { offerYearLeads, scheduleForbiddenEncounter } from './yearLeads.js';
+export { isYearLeadUsable, chooseYearLead, chooseDirectorPacedLead } from './yearLeads.js';
+export { JOB_INCOME, endYear } from './yearEnd.js';
+export { isQuietYear, AMBIENT_YEAR_LINES, pickCityBulletin, createYearDigest, consolidateYearDailies } from './yearDigest.js';
 
 export const MINOR_WINDOW_MS = 15000;
 export const FIRST_MINOR_WINDOW_MS = 30000;
@@ -123,9 +93,9 @@ const extraBase = (char, k) => char[k] ?? (k === 'standing' ? 50 : 0);
 /* ---------- small helpers ---------- */
 
 const seasonAt = (t) => SEASONS[Math.min(3, Math.floor((t || 0) * 4))];
-const seasonIdxAt = (t) => Math.min(3, Math.floor((t || 0) * 4));
+export const seasonIdxAt = (t) => Math.min(3, Math.floor((t || 0) * 4));
 
-function pickWeighted(list, weightOf, rng) {
+export function pickWeighted(list, weightOf, rng) {
   list = list.filter(x => weightOf(x) > 0);
   const total = list.reduce((s, x) => s + Math.max(0, weightOf(x)), 0);
   if (total <= 0) return null;
@@ -200,7 +170,7 @@ export function diffStats(prev, next) {
   return out;
 }
 
-function pushLog(char, entry, t) {
+export function pushLog(char, entry, t) {
   const idx = seasonIdxAt(t);
   char.logSerial = (char.logSerial ?? char.logs.length) + 1;
   char.logs.push({
@@ -211,7 +181,7 @@ function pushLog(char, entry, t) {
   });
 }
 
-function remember(char, id) {
+export function remember(char, id) {
   char.recent = [...(char.recent || []), id].slice(-RECENT_LIMIT);
   char.seenCount = { ...(char.seenCount || {}), [id]: ((char.seenCount || {})[id] || 0) + 1 };
 }
@@ -257,170 +227,13 @@ function eligibleDailies(char) {
   });
 }
 
-function eligibleMinors(char) {
+export function eligibleMinors(char) {
   return LIFE_MINORS.filter((m) => {
     // A lead-only scene arrives only as one of the year's leads, never in the ordinary draw
     if (m.leadOnly || !matchesEventContext(m, char)) return false;
     if (m.once && (char.seenEvents || []).includes(m.id)) return false;
     return true;
   });
-}
-
-const leadEffects = (choice) => [choice?.fx || choice?.effects || {}, ...(choice?.out || choice?.outcomes || []).map((outcome) => outcome.fx || outcome.effects || {})];
-
-function leadRisk(event) {
-  const effects = (event.choices || []).flatMap(leadEffects);
-  const worst = Math.min(0, ...effects.map((fx) => (fx.health || 0) + (fx.sanity || 0) + Math.min(0, fx.wealth || 0) * 0.4));
-  if (worst <= -12 || event.tags?.includes('danger')) return 'danger';
-  if (event.choices?.some((choice) => (choice.out || choice.outcomes || []).length) || worst <= -5) return 'uncertain';
-  return 'steady';
-}
-
-function offerYearLeads(char, rng) {
-  if (!char.alive || char.age < 15 || (char.plan || []).some((item) => item.id === FORBIDDEN_LEAD_ID)) {
-    char.pendingLead = null;
-    return;
-  }
-  const plannedMinors = (char.plan || []).filter((item) => item.kind === 'minor').length;
-  const busyYear = (char.plan || []).some((item) => item.kind === 'major' || item.kind === 'contract' || item.kind === 'dungeon');
-  const chance = plannedMinors >= 2 ? 0.18 : busyYear ? 0.35 : 0.65;
-  if (rng() >= chance) {
-    char.pendingLead = null;
-    return;
-  }
-  const reserved = new Set((char.plan || []).map((item) => item.id).filter(Boolean));
-  const pool = eligibleMinors(char).filter((entry) => !entry.careerOpportunity && !reserved.has(entry.id) && entry.choices?.some((choice) => choiceIsAvailable(choice, char)));
-  const selected = [];
-  for (const tier of ['steady', 'uncertain', 'danger']) {
-    const available = pool.filter((entry) => !selected.some((item) => item.id === entry.id));
-    const matched = available.filter((entry) => leadRisk(entry) === tier);
-    const pick = pickWeighted(matched.length ? matched : available, weightOf(char), rng);
-    // The label is the event's real risk, not the slot it was drawn for, so a fallback pick is never sold as something it is not
-    if (pick) selected.push({ id: pick.id, tier: leadRisk(pick) });
-  }
-  char.pendingLead = selected.length === 3 ? { age: char.age, offers: selected } : null;
-}
-
-function scheduleForbiddenEncounter(char, rng) {
-  const hasEnsemble = (char.plan || []).some((item) => item.forcedEventId === ENSEMBLE_INVITE_ID || item.forcedEventId === ENSEMBLE_LAST_CALL_ID);
-  if (hasEnsemble || !forbiddenLeadOpen(char) || rng() >= FORBIDDEN_OFFER_CHANCE) return;
-  const event = LIFE_MINORS.find((entry) => entry.id === FORBIDDEN_LEAD_ID);
-  if (!event || !matchesEventContext(event, char)) return;
-  const t = 0.275;
-  const seasonIdx = seasonIdxAt(t);
-  char.plan.push({ kind: 'minor', id: event.id, t, seasonIdx, season: SEASONS[seasonIdx], extra: true, forbiddenEncounter: true });
-  char.plan.sort((a, b) => a.t - b.t);
-  char.forbiddenOfferAge = char.age;
-  remember(char, event.id);
-}
-
-export function isYearLeadUsable(offer, char) {
-  return LIFE_MINORS.some((entry) => entry.id === offer?.id && matchesEventContext(entry, char) && entry.choices?.some((choice) => choiceIsAvailable(choice, char)));
-}
-
-export function chooseYearLead(charState, index) {
-  const char = cloneChar(charState);
-  const draft = char.pendingLead;
-  if (!draft) return charState;
-  // A draft from another year (old save) or with no offer left can never be answered, so drop it instead of stalling the run
-  if (draft.age !== char.age) { char.pendingLead = null; return char; }
-  const offers = draft.offers || [];
-  const chosen = offers[index];
-  if (!isYearLeadUsable(chosen, char)) {
-    if (offers.some((offer) => isYearLeadUsable(offer, char))) return charState;
-    char.pendingLead = null;
-    return char;
-  }
-  const event = LIFE_MINORS.find((entry) => entry.id === chosen.id);
-  const t = 0.265;
-  char.plan = [...(char.plan || []), { kind: 'minor', id: chosen.id, t, seasonIdx: 1, season: SEASONS[1], extra: true, lead: true }].sort((a, b) => a.t - b.t);
-  char.pendingLead = null;
-  char.leadChoice = { age: char.age, id: chosen.id, tier: chosen.tier };
-  remember(char, chosen.id);
-  logDecision(char, event, { vi: 'Bạn chọn theo manh mối này', en: 'You followed this lead', w: 1 }, 'minor');
-  return char;
-}
-
-/** Select an optional extra encounter while protecting a wounded life from another dangerous lead. */
-export function chooseDirectorPacedLead(charState, rng = Math.random) {
-  const char = cloneChar(charState);
-  const draft = char.pendingLead;
-  if (!draft || !Array.isArray(draft.offers) || draft.offers.length === 0) return charState;
-  if (draft.age !== char.age) {
-    char.pendingLead = null;
-    return char;
-  }
-
-  const usableIndices = draft.offers
-    .map((offer, idx) => ({ offer, idx }))
-    .filter(({ offer }) => isYearLeadUsable(offer, char));
-
-  if (usableIndices.length === 0) {
-    char.pendingLead = null;
-    return char;
-  }
-
-  const safeIndices = usableIndices.filter(({ offer }) => offer.id !== FORBIDDEN_LEAD_ID);
-  if (safeIndices.length === 0) {
-    char.pendingLead = null;
-    return char;
-  }
-  if (safeIndices.length === 1) return chooseYearLead(char, safeIndices[0].idx);
-
-  const hp = char.stats?.health ?? char.health ?? 50;
-  const sp = char.stats?.sanity ?? char.sanity ?? 50;
-  const tension = char.weaver?.tensionScore ?? 25;
-  const recentTiers = char.recentLeadTiers || [];
-
-  const recentDangerCount = recentTiers.slice(-3).filter((t) => t === 'danger' || t === 'forbidden').length;
-  const recentSteadyCount = recentTiers.slice(-3).filter((t) => t === 'steady').length;
-
-  const scoredOffers = safeIndices.map(({ offer, idx }) => {
-    let weight = 30;
-    const tier = offer.tier || 'uncertain';
-
-    if (tier === 'steady') {
-      weight = 35;
-      if (hp < 45) weight += 45;
-      if (sp < 40) weight += 40;
-      if (tension >= 65) weight += 35;
-      if (recentDangerCount >= 2) weight += 60;
-      if (recentSteadyCount >= 2) weight = Math.max(20, weight - 10);
-    } else if (tier === 'uncertain') {
-      weight = 40;
-      if (recentSteadyCount >= 1 && recentDangerCount >= 1) weight += 20;
-    } else if (tier === 'danger') {
-      weight = 25;
-      if (recentSteadyCount >= 2) weight += 15;
-      if (hp < 40 || sp < 30 || recentDangerCount >= 2) weight = 0;
-      else if (tension >= 70 || recentDangerCount >= 1) weight = Math.max(5, weight - 15);
-    }
-
-    return { idx, tier, weight: Math.max(0, weight) };
-  });
-
-  const totalWeight = scoredOffers.reduce((sum, item) => sum + item.weight, 0);
-  if (totalWeight <= 0) {
-    const fallback = scoredOffers.find((o) => o.tier === 'steady') || scoredOffers[0];
-    char.recentLeadTiers = [...recentTiers, fallback.tier].slice(-5);
-    return chooseYearLead(char, fallback.idx);
-  }
-
-  let roll = rng() * totalWeight;
-  let chosenIdx = scoredOffers[0].idx;
-  let chosenTier = scoredOffers[0].tier;
-
-  for (const item of scoredOffers) {
-    if (roll < item.weight) {
-      chosenIdx = item.idx;
-      chosenTier = item.tier;
-      break;
-    }
-    roll -= item.weight;
-  }
-
-  char.recentLeadTiers = [...recentTiers, chosenTier].slice(-5);
-  return chooseYearLead(char, chosenIdx);
 }
 
 const minorCanEarnMerit = (id) => LIFE_MINORS.some((entry) => entry.id === id &&
@@ -459,7 +272,7 @@ function annualMeritMoment(char, moments, rng) {
 }
 
 // Director weights reach x6; the 0.8 power keeps their order but lets weaker entries through
-const weightOf = (char) => (e) => {
+export const weightOf = (char) => (e) => {
   let weight = Math.pow(directorWeight(e, char).w, 0.8) * freshness(e.id, char.recent, char.seenCount) * apexNoveltyWeight(e, char.recent);
   if (char.job === 'Syndicate' && e.need?.finger === char.finger && e.id.startsWith('d_')) weight *= 5;
   if (e.id === 'm_fx_request_choice') {
@@ -1024,7 +837,7 @@ export function runPlanItem(charState, item, rng) {
 }
 
 /** Checks death and promotions after anything changed the character. */
-function settle(char, t, rng = Math.random) {
+export function settle(char, t, rng = Math.random) {
   if (char.alive && char.stats.health <= 0) {
     applyFatalOrCompanionSave(
       char,
@@ -1125,564 +938,6 @@ export function resolveMinor(charState, idx, rng) {
   return settle(char, prompt.t, rng);
 }
 
-/* ---------- the turn of the year ---------- */
-
-export const JOB_INCOME = (char) => {
-  if (char.flags?.includes('ColorFixer') || char.job === 'Color Fixer') return 12;
-  switch (char.job) {
-    case 'Fixer':
-      return 2 + Math.round((9 - Math.min(9, char.fixerGrade)) * 0.7);
-    case 'Syndicate': {
-      const synRank = Math.max(char.fingerRank || 0, (!char.finger && char.flags?.includes('IndependentSyndicate')) ? Math.min(3, Math.max(0, char.syndicateRank || 0)) : 0);
-      return 3 + synRank * 2 + (synRank >= 3 ? 3 : 0);
-    }
-    case 'Wing Employee':
-      return 4 + (char.wingRank || 0);
-    case 'Workshop Craftsman':
-      return 3;
-    default:
-      return 1;
-  }
-};
-
-/**
- * Closes the year: income against living costs, slow healing, the Backstreets'
- * wear, ageing (each written into one plain line with its deltas), then the
- * birthday and the next year's plan.
- */
-/**
- * One sentence for a year-end reason, fitted to the life stage, and never the
- * variant this character got last time for the same reason.
- */
-function yearLine(char, rng, key, n) {
-  const set = YEAR_END_LINES[key];
-  const stage = char.age < 4 ? 'baby' : char.age < 13 ? 'kid' : 'adult';
-  const pool = set[stage] || set.kid || set.adult;
-  const last = char.yearEndLast?.[key];
-  let idx = Math.floor(rng() * pool.length);
-  if (pool.length > 1 && idx === last) idx = (idx + 1) % pool.length;
-  char.yearEndLast = { ...(char.yearEndLast || {}), [key]: idx };
-  const fill = (s) => (n == null ? s : s.replace('{n}', n));
-  return [fill(pool[idx][0]), fill(pool[idx][1])];
-}
-
-export function endYear(charState, rng) {
-  const char = cloneChar(charState);
-  if (!char.alive) return char;
-  // A companion hurt in a dungeon clash sits out a year, then can walk with you again
-  const returned = [];
-  for (const [role, raw] of Object.entries(char.npcs || {})) {
-    let npc = raw;
-    // Someone who left for a while (npcAway) comes back on their own once the years are up
-    if (npc?.status === 'away' && npc.returnAge != null && (char.age || 0) >= npc.returnAge) {
-      const { status, returnAge, ...rest } = npc;
-      npc = { ...rest, lastSeen: char.age || 0 };
-      char.npcs = { ...char.npcs, [role]: npc };
-      returned.push(npc);
-    }
-    // Older saves marked a shielding companion `status: 'wounded'` with no way back; give them a year to heal
-    if (npc?.status === 'wounded') {
-      const { status, ...rest } = npc;
-      npc = { ...rest, injured: true, injurySeverity: 'severe', injuredAtAge: char.age || 0, healsAtAge: (char.age || 0) + 1 };
-      char.npcs = { ...char.npcs, [role]: npc };
-    }
-    if (npc?.injured && npc.healsAtAge != null && (char.age || 0) >= npc.healsAtAge) {
-      char.npcs = { ...char.npcs, [role]: { ...npc, injured: false, injurySeverity: null, healsAtAge: null } };
-    }
-  }
-  const region = REGIONS.find((r) => r.id === char.regionId) || REGIONS[0];
-  const nest = isNest(char);
-  const fx = {};
-  const breakdown = [];
-  const vi = [];
-  const en = [];
-  const add = (k, v) => {
-    if (v) fx[k] = (fx[k] || 0) + v;
-  };
-  const line = (key, n) => {
-    const [lv, le] = yearLine(char, rng, key, n);
-    vi.push(lv);
-    en.push(le);
-  };
-  for (const npc of returned) {
-    const years = Math.max(1, (char.age || 0) - (npc.awayAge ?? char.age ?? 0));
-    vi.push(`${npc.nameVi} trở về sau ${years} năm đi xa và gõ cửa nhà bạn trước tiên.`);
-    en.push(`${npc.nameEn || npc.nameVi} comes back after ${years} years away and knocks on your door first.`);
-  }
-
-  if (reachedCareerAge(char) && !char.flags.includes('Distorted')) {
-    let livingCost = nest ? 5 : isOutskirts(char) ? 2 : 3;
-
-    // Head Weapons & Firearms Tax: Strictly enforced by The Head & Tres Association
-    const hasFirearms = (char.inventory || []).some(i => i.id?.includes('revolver') || i.id?.includes('logic')) || char.flags.includes('Firearms');
-    if (hasFirearms) {
-      livingCost += 3;
-      line('firearms_tax');
-    }
-
-    // Workshop Master Weapon Maintenance
-    const hasWorkshopGear = (char.inventory || []).some(i => i.id?.startsWith('wpn_') || i.id?.startsWith('arm_')) || char.craftWeapon;
-    if (hasWorkshopGear && rng() < 0.6) {
-      livingCost += 2;
-      line('gear_upkeep');
-    }
-
-    // Full-Body Cybernetic Maintenance
-    if (char.flags.includes('FullBodyProsthetic')) {
-      livingCost += 3;
-      line('prosthetic_upkeep');
-    }
-
-    const assetCost = Math.min(4, Math.max(0, Math.floor((char.stats.wealth - 45) / 15) + 1));
-    if (assetCost > 0) {
-      livingCost += assetCost;
-      line('asset_cost', assetCost);
-    }
-
-    const careerIncome = JOB_INCOME(char);
-    const patronDividend = char.flags?.includes('EndgameOfficePatron') ? 4 : 0;
-    if (careerIncome > 0) {
-      breakdown.push({ cat: 'economy', labelVi: 'Thu nhập nghề nghiệp', labelEn: 'Career income', k: 'wealth', v: careerIncome, unit: 'Ahn' });
-    }
-    if (patronDividend > 0) {
-      breakdown.push({ cat: 'economy', labelVi: 'Cổ tức tài trợ Office & Địa bàn', labelEn: 'Office & territory patronage dividend', k: 'wealth', v: patronDividend, unit: 'Ahn' });
-    }
-    if (livingCost > 0) {
-      breakdown.push({ cat: 'economy', labelVi: 'Sinh hoạt, thuế & bảo dưỡng', labelEn: 'Living, taxes & maintenance', k: 'wealth', v: -livingCost, unit: 'Ahn' });
-    }
-    const marketJitter = Math.round(rng() * 2 - 1);
-    if (marketJitter !== 0) {
-      breakdown.push({ cat: 'economy', labelVi: 'Biến động thị trường & chi tiêu phát sinh', labelEn: 'Market fluctuations & miscellaneous expenses', k: 'wealth', v: marketJitter, unit: 'Ahn' });
-    }
-    const net = careerIncome + patronDividend - livingCost + marketJitter;
-    add('wealth', net);
-    if (net > 0) {
-      line('income_up');
-    } else if (net < 0) {
-      line('income_down');
-    }
-  } else {
-    // Childhood living friction: survival is harsh, money gets spent on family necessities
-    if (!nest) {
-      if (char.stats.wealth > 4 && rng() < 0.4) {
-        const drain = Math.min(2, Math.max(1, Math.floor(char.stats.wealth * 0.15)));
-        add('wealth', -drain);
-        line('child_friction');
-        breakdown.push({ cat: 'economy', labelVi: 'Chi tiêu sinh hoạt gia đình', labelEn: 'Family necessities', k: 'wealth', v: -drain, unit: 'Ahn' });
-      }
-    } else {
-      if (char.stats.wealth > 14 && rng() < 0.35) {
-        const drain = Math.min(3, Math.max(1, Math.floor(char.stats.wealth * 0.12)));
-        add('wealth', -drain);
-        line('nest_tuition');
-        breakdown.push({ cat: 'economy', labelVi: 'Học phí & sinh hoạt Nest', labelEn: 'Nest tuition & living', k: 'wealth', v: -drain, unit: 'Ahn' });
-      }
-    }
-  }
-
-  // Healthcare & Wounds recovery vs Street clinic expenses vs Distortion anomaly tissue regeneration
-  if (char.flags.includes('Distorted')) {
-    if (char.stats.health < BALANCE.heal.below || char.flags.includes('AbyssalDistortionApex')) {
-      const bonus = char.flags.includes('AbyssalDistortionApex') ? 4 : 0;
-      const anomalyRegen = Math.max(8, Math.round(((char.resonance || 50) * 0.16))) + bonus;
-      add('health', anomalyRegen);
-      line('heal_distortion_tissue');
-      breakdown.push({ cat: 'recovery', labelVi: 'Tái tạo mô dị thường', labelEn: 'Anomalous regeneration', k: 'health', v: anomalyRegen, unit: 'HP' });
-    }
-  } else if (char.stats.health < BALANCE.heal.below) {
-    if (char.flags.includes('KCorpAmpoule')) {
-      const amt = healAmount(char, 'ampoule');
-      add('health', amt);
-      line('heal_ampoule');
-      breakdown.push({ cat: 'recovery', labelVi: 'Phục hồi huyết thanh K Corp', labelEn: 'K Corp Ampoule recovery', k: 'health', v: amt, unit: 'HP' });
-    } else if (nest) {
-      const amt = healAmount(char, 'nest');
-      add('health', amt);
-      line('heal_nest');
-      breakdown.push({ cat: 'recovery', labelVi: 'Điều dưỡng y tế Nest', labelEn: 'Nest medical recovery', k: 'health', v: amt, unit: 'HP' });
-    } else if (char.stats.wealth >= 3 && reachedCareerAge(char)) {
-      add('wealth', -2);
-      const amt = healAmount(char, 'clinic');
-      add('health', amt);
-      line('heal_clinic');
-      breakdown.push({ cat: 'economy', labelVi: 'Phí phòng khám hẻm', labelEn: 'Backstreet clinic fee', k: 'wealth', v: -2, unit: 'Ahn' });
-      breakdown.push({ cat: 'recovery', labelVi: 'Điều trị vết thương', labelEn: 'Wound treatment', k: 'health', v: amt, unit: 'HP' });
-    } else {
-      const amt = healAmount(char, 'natural');
-      add('health', amt);
-      line('heal_natural');
-      breakdown.push({ cat: 'recovery', labelVi: 'Tự phục hồi thể trạng', labelEn: 'Natural health recovery', k: 'health', v: amt, unit: 'HP' });
-    }
-  }
-
-  // Mental Sanity recovery vs Tavern comfort
-  const bond = ['spouse', 'partner', 'friend', 'mentor', 'child'].some((k) => npcIsActive(char.npcs?.[k]) && (char.npcs[k].bond || 0) >= 50);
-  if (char.stats.sanity < BALANCE.calm.below && !char.flags.includes('Distorted')) {
-    if (bond) {
-      const amt = calmAmount(char, 'bond');
-      add('sanity', amt);
-      line('calm_bond');
-      breakdown.push({ cat: 'recovery', labelVi: 'Sự an ủi từ người thân', labelEn: 'Companion comfort', k: 'sanity', v: amt, unit: 'SP' });
-    } else if (char.stats.wealth >= 2 && reachedCareerAge(char)) {
-      add('wealth', -1);
-      const amt = calmAmount(char, 'tavern');
-      add('sanity', amt);
-      line('calm_tavern');
-      breakdown.push({ cat: 'economy', labelVi: 'Chi tiêu quán rượu', labelEn: 'Tavern comfort expense', k: 'wealth', v: -1, unit: 'Ahn' });
-      breakdown.push({ cat: 'recovery', labelVi: 'Xoa dịu tinh thần', labelEn: 'Sanity soothing', k: 'sanity', v: amt, unit: 'SP' });
-    } else {
-      const amt = calmAmount(char, 'natural');
-      add('sanity', amt);
-      line('calm_natural');
-      breakdown.push({ cat: 'recovery', labelVi: 'Thời gian xoa dịu', labelEn: 'Natural sanity recovery', k: 'sanity', v: amt, unit: 'SP' });
-    }
-  }
-
-  const scarEffects = scarAnnualEffects(char);
-  if (Object.keys(scarEffects).length) {
-    for (const [key, value] of Object.entries(scarEffects)) {
-      add(key, value);
-      breakdown.push({ cat: 'wear', labelVi: 'Ảnh hưởng từ vết sẹo', labelEn: 'Toll from permanent scars', k: key, v: value });
-    }
-    vi.push('Những dấu tích còn mang đã đòi phần của chúng.');
-    en.push('The marks you carry took their toll.');
-  }
-  if ((char.resonance || 0) >= 90 && !char.flags.includes('Distorted') && !char.flags.includes('EGOAwakened')) {
-    add('sanity', -2);
-    breakdown.push({ cat: 'wear', labelVi: 'Tiếng gọi Carmen từ cộng hưởng cực hạn', labelEn: "Carmen's call from peak resonance", k: 'sanity', v: -2, unit: 'SP' });
-    vi.push('Cộng hưởng quá cao khiến tiếng nói của Carmen khó lắng xuống.');
-    en.push('High resonance made Carmen’s voice harder to quiet.');
-  }
-
-  if (reachedCareerAge(char) && ['Fixer', 'Color Fixer', 'Syndicate', 'Wing Employee', 'Workshop Craftsman'].includes(char.job) && !char.flags.includes('Distorted')) {
-    const wear = char.job === 'Fixer' || char.job === 'Color Fixer' || char.job === 'Syndicate' ? 2 : 1;
-    const spStrain = char.job === 'Wing Employee' || char.job === 'Syndicate' ? 3 : 2;
-    add('health', -wear);
-    add('sanity', -spStrain);
-    line('job_wear');
-    breakdown.push({ cat: 'wear', labelVi: 'Hao mòn nghề nghiệp', labelEn: 'Career wear', k: 'health', v: -wear, unit: 'HP' });
-    breakdown.push({ cat: 'wear', labelVi: 'Căng thẳng công việc', labelEn: 'Career mental strain', k: 'sanity', v: -spStrain, unit: 'SP' });
-  }
-
-  const maintenanceCost = midlifeMaintenanceLoss(char);
-  if (maintenanceCost > 0) {
-    if ((char.stats?.wealth || 0) + (fx.wealth || 0) < maintenanceCost && (char.reserveAhn || 0) > 0) {
-      const drawn = Math.min(char.reserveAhn, Math.max(maintenanceCost, 15));
-      char.reserveAhn -= drawn;
-      add('wealth', drawn);
-      breakdown.push({
-        cat: 'income',
-        labelVi: 'Rút dự trữ từ Quỹ Bảo Tồn',
-        labelEn: 'Withdrawal from Reserve Vault',
-        k: 'wealth',
-        v: drawn,
-        unit: 'Ahn'
-      });
-    }
-    if ((char.stats?.wealth || 0) + (fx.wealth || 0) >= maintenanceCost) {
-      add('wealth', -maintenanceCost);
-      breakdown.push({
-        cat: 'wear',
-        labelVi: 'Bảo trì thể trạng & thuốc ức chế đau',
-        labelEn: 'Body maintenance & pain suppression',
-        k: 'wealth',
-        v: -maintenanceCost,
-        unit: 'Ahn'
-      });
-      if (char.flags?.includes('PainSuppressantDeficit')) {
-        char.flags = char.flags.filter((f) => f !== 'PainSuppressantDeficit');
-      }
-    } else {
-      if (!char.flags?.includes('PainSuppressantDeficit')) {
-        char.flags = [...(char.flags || []), 'PainSuppressantDeficit'];
-        add('sanity', -1);
-        breakdown.push({
-          cat: 'wear',
-          labelVi: 'Thiếu thuốc ức chế đau & khớp sẹo nhức nhối',
-          labelEn: 'Pain suppressant deficit & aching scar tissue',
-          k: 'sanity',
-          v: -1,
-          unit: 'SP'
-        });
-      }
-    }
-  }
-
-  // City environmental hazards (Smog in polluted districts, Crime in dangerous districts)
-  if (!nest && char.age >= 4) {
-    if (region.pollution >= 5 && rng() < 0.35) {
-      add('health', -2);
-      line('smog');
-      breakdown.push({ cat: 'wear', labelVi: 'Khói độc công nghiệp', labelEn: 'Industrial smog', k: 'health', v: -2, unit: 'HP' });
-    }
-    if (region.safety <= 4 && rng() < 0.35) {
-      add('sanity', -2);
-      line('gunfire');
-      breakdown.push({ cat: 'wear', labelVi: 'Bạo lực đường phố', labelEn: 'Street violence', k: 'sanity', v: -2, unit: 'SP' });
-    }
-  }
-
-  if ((char.heat || 0) > 0) {
-    add('heat', -1);
-    breakdown.push({ cat: 'drift', labelVi: 'Dịu nhiệt truy vết', labelEn: 'Heat dissipation', k: 'heat', v: -1 });
-  }
-  // Secrets go stale and a record that has been leaned on too long gets noticed
-  if (char.job === 'Wing Employee') {
-    if ((char.leverage || 0) > 0 && char.age % 2 === 0) {
-      add('leverage', -1);
-      breakdown.push({ cat: 'drift', labelVi: 'Tài liệu mật lỗi thời', labelEn: 'Leverage depreciation', k: 'leverage', v: -1 });
-    }
-    if ((char.leverage || 0) >= 60) {
-      add('standing', -1);
-      breakdown.push({ cat: 'wear', labelVi: 'Nghi ngờ nội bộ vì nắm quá nhiều bí mật', labelEn: 'Internal suspicion from excessive leverage', k: 'standing', v: -1 });
-    }
-  }
-  // A Distortion is never off Hana's books, and people stop recognizing you.
-  // One who found a human voice again (eventsDistortionVoice.js) is still on the books, but recognized.
-  if (char.flags.includes('Distorted')) {
-    const humanVoice = char.flags.includes('HumanVoice');
-    const isSovereign = char.flags.includes('DistortionLabyrinthSovereign');
-    const isWanderer = char.flags.includes('DistortionLucidWanderer');
-    const isCalamity = char.flags.includes('DistortionPrimordialCalamity');
-    const watch = humanVoice ? 3 : 6;
-    add('heat', watch);
-    breakdown.push({ cat: 'drift', labelVi: 'Truy vết Distortion từ Hiệp hội Hana', labelEn: 'Hana Distortion surveillance', k: 'heat', v: watch });
-    if (!humanVoice && !isWanderer) {
-      add('network', -2);
-      breakdown.push({ cat: 'drift', labelVi: 'Cô lập xã hội do Biến dị', labelEn: 'Social isolation from Distortion', k: 'network', v: -2 });
-    }
-    if (isSovereign) {
-      add('heat', -3);
-      add('wealth', 3);
-      breakdown.push({ cat: 'drift', labelVi: 'Lãnh địa sương mù che khuất truy vết (Lãnh Chúa Mê Cung)', labelEn: 'Labyrinth mist conceals surveillance (Labyrinth Sovereign)', k: 'heat', v: -3 });
-      breakdown.push({ cat: 'income', labelVi: 'Chiến lợi phẩm từ kẻ xâm nhập lãnh địa', labelEn: 'Spoils from domain intruders', k: 'wealth', v: 3, unit: 'Ahn' });
-    } else if (isWanderer) {
-      add('sanity', 3);
-      add('wealth', 3);
-      breakdown.push({ cat: 'drift', labelVi: 'Neo giữ lý trí (Dị Thể Tỉnh Thức)', labelEn: 'Anchored lucidity (Lucid Wanderer)', k: 'sanity', v: 3, unit: 'SP' });
-      breakdown.push({ cat: 'income', labelVi: 'Khế ước ngầm của Dị Thể Tỉnh Thức', labelEn: 'Underground pacts of the Lucid Wanderer', k: 'wealth', v: 3, unit: 'Ahn' });
-    } else if (isCalamity) {
-      add('health', 4);
-      add('resonance', 3);
-      breakdown.push({ cat: 'drift', labelVi: 'Tái tạo sinh học dị thể (Tai Ương Nguyên Thủy)', labelEn: 'Anomalous regeneration (Primordial Calamity)', k: 'health', v: 4, unit: 'HP' });
-      breakdown.push({ cat: 'drift', labelVi: 'Cộng hưởng vực thẳm (Tai Ương Nguyên Thủy)', labelEn: 'Abyssal resonance surge (Primordial Calamity)', k: 'resonance', v: 3, unit: 'Res' });
-    }
-    vi.push(humanVoice
-      ? 'Hana vẫn giữ hồ sơ của bạn, nhưng trong đó giờ ghi tên bạn bằng chữ.'
-      : 'Hồ sơ theo dõi cá thể Distortion của bạn tại trụ sở Hana Association vẫn giữ nguyên trạng thái truy vết.');
-    en.push(humanVoice
-      ? 'Hana still keeps your file, but it now carries your name in writing.'
-      : 'Your active Distortion dossier at Hana Association remained open under high-priority watch.');
-  }
-  for (const meet of keepInTouch(char, rng)) pushLog(char, { key: 'keep_in_touch', type: 'story', ...meet }, 0.97);
-  driftBonds(char);
-
-  // What events keep raising also wears off: resonance, fame and connections need feeding
-  const nextFixerExam = getNextFixerPromotion(char);
-  const nextOtherExam = getOtherCareerPromotion(char);
-  const protectedThresholds = nextFixerExam?.isEligible
-    ? { rep: nextFixerExam.repReq, merit: nextFixerExam.meritReq }
-    : nextOtherExam?.isEligible
-      ? { merit: nextOtherExam.meritReq, rep: nextOtherExam.repReq, network: nextOtherExam.networkReq }
-      : {};
-  const drift = driftOf(char, bond ? 2 : 0, protectedThresholds);
-  for (const [k, v] of Object.entries(drift)) add(k, v);
-  if (drift.network) {
-    line(hasEstablishedStanding(char) || (char.age >= 60 && char.stats.rep >= 70) ? 'drift_network_established' : 'drift_network');
-    breakdown.push({ cat: 'drift', labelVi: 'Quan hệ phai nhạt theo thời gian', labelEn: 'Network drift over time', k: 'network', v: drift.network });
-  }
-  if (drift.rep) {
-    line('drift_rep');
-    breakdown.push({ cat: 'drift', labelVi: 'Danh tiếng lắng xuống', labelEn: 'Reputation drift', k: 'rep', v: drift.rep });
-  }
-  if (drift.resonance) {
-    line('drift_resonance');
-    breakdown.push({ cat: 'drift', labelVi: 'Cộng hưởng suy giảm', labelEn: 'Resonance fading', k: 'resonance', v: drift.resonance });
-  }
-
-  const wear = agingLoss(char);
-  const oldAge = wear > 0;
-  if (wear > 0) {
-    add('health', -wear);
-    line(char.flags.includes('FullBodyProsthetic') ? 'aging_prosthetic' : effectiveAge(char) >= 65 ? 'aging_late' : 'aging_early', wear);
-    breakdown.push({ cat: 'wear', labelVi: 'Hao mòn tuổi tác', labelEn: 'Aging physical loss', k: 'health', v: -wear, unit: 'HP' });
-  }
-
-  const deltas = applyFx(char, fx);
-
-  const statUnits = {
-    health: 'HP',
-    sanity: 'SP',
-    wealth: 'Ahn',
-    heat: 'Heat',
-    leverage: 'Lev',
-    rep: 'Rep',
-    merit: 'Merit',
-    resonance: 'Res',
-    standing: 'Stand',
-    network: 'Net'
-  };
-  const trackedKeys = new Set([...breakdown.map((b) => b.k), ...deltas.map((d) => d.k)]);
-  for (const k of trackedKeys) {
-    const bSum = breakdown.filter((b) => b.k === k).reduce((acc, b) => acc + (b.v || 0), 0);
-    const dVal = deltas.find((d) => d.k === k)?.v ?? 0;
-    const diff = dVal - bSum;
-    if (diff !== 0) {
-      breakdown.push({
-        cat: 'limit',
-        labelVi: diff > 0 ? 'Chặn giới hạn tối thiểu' : 'Chặn giới hạn tối đa',
-        labelEn: diff > 0 ? 'Clamped at lower bound' : 'Clamped at upper bound',
-        k,
-        v: diff,
-        unit: statUnits[k] || ''
-      });
-    }
-  }
-
-  const npcAutonomyLogs = [...ageNpcCompanions(char, rng), ...simulateNpcAutonomousLife(char, rng)];
-  for (const nlog of npcAutonomyLogs) {
-    pushLog(
-      char,
-      {
-        key: 'npc_autonomy',
-        type: 'story',
-        vi: nlog.vi,
-        en: nlog.en,
-        ...(nlog.deltas ? { deltas: nlog.deltas } : {})
-      },
-      0.98
-    );
-  }
-
-  for (const affLog of affiliationYearTick(char, rng)) pushLog(char, affLog, 0.985);
-  planFirstGate(char);
-
-  // Distortion Apex Metamorphosis payoff (T22)
-  if (char.flags.includes('Distorted') && (char.resonance || 0) >= 100 && (char.stats?.health || 0) >= 80 && !char.flags.includes('AbyssalDistortionApex')) {
-    char.flags.push('AbyssalDistortionApex');
-    if (!(char.unlockedRecords || []).includes('distortion_metamorphosis_apex')) {
-      char.unlockedRecords = [...(char.unlockedRecords || []), 'distortion_metamorphosis_apex'];
-    }
-    pushLog(char, {
-      key: 'distortion_apex_achieved',
-      type: 'miracle',
-      vi: '[Biến Dị Vực Thẳm Hoàn Tất] Thể xác và dục vọng của bạn vượt qua ngưỡng giới hạn. Các mô thịt dị thường kết tinh thành hình thái tối thượng, giải phóng uy lực áp đảo (+4 HP/năm và +14 Sức chiến đấu).',
-      en: '[Abyssal Apex Metamorphosis Complete] Your flesh and desire breached the mortal threshold. Anomalous tissues crystallized into supreme form (+4 HP/year and +14 Combat Power).'
-    }, 0.99);
-  }
-
-  if (deltas.length > 0 || breakdown.length > 0) {
-    // Up to age 4 a year closes on its first line only; the chips and the breakdown still list every reason
-    const keep = char.age <= 4 ? 1 : vi.length;
-    const textVi = vi.length ? vi.slice(0, keep).join(' ') : 'Một năm nữa lặng lẽ trôi qua dưới màn đêm không bao giờ tắt của The City.';
-    const textEn = en.length ? en.slice(0, keep).join(' ') : 'Another year quietly drifted by beneath the never-dimming lights of the City.';
-    pushLog(
-      char,
-      {
-        key: 'year_end',
-        type: 'summary',
-        vi: `[Cuối năm] ${textVi}`,
-        en: `[Year's end] ${textEn}`,
-        deltas,
-        breakdown
-      },
-      0.99
-    );
-  }
-
-  // Hard knocks the City deals on its own
-  if ((char.stats?.wealth || 0) <= 5 && (char.reserveAhn || 0) > 0) {
-    const drawn = Math.min(char.reserveAhn, 20);
-    char.reserveAhn -= drawn;
-    const d = applyFx(char, { wealth: drawn });
-    pushLog(
-      char,
-      {
-        key: 'reserve_ahn_draw',
-        type: 'story',
-        vi: `[Quỹ Bảo Tồn] Tiền mặt cạn dần. Bạn rút ${drawn} Ahn từ Quỹ Bảo Tồn dự trữ để giữ cho cuộc sống không rơi vào tay đám đòi nợ.`,
-        en: `[Reserve Vault] Cash ran low. You withdrew ${drawn} Ahn from your Reserve Vault to keep collectors away from your door.`,
-        deltas: d
-      },
-      0.99
-    );
-  }
-  if (reachedCareerAge(char) && char.stats.wealth <= 0 && !nest && !char.flags.includes('Distorted')) {
-    const d = applyFx(char, { health: -20, sanity: -12, wealth: 14, resonance: 10 });
-    addScar(char, 'Vết mổ trả nợ');
-    pushLog(
-      char,
-      {
-        key: 'organ_debt',
-        type: 'danger',
-        vi: 'Không còn đồng Ahn nào để trả tiền trọ. Đám đòi nợ đưa bạn tới một phòng khám không biển hiệu và lấy đi thứ đáng giá nhất bạn còn: một quả thận.',
-        en: 'You had no Ahn left for rent. The collectors took you to an unmarked clinic and took the most valuable thing you still had: a kidney.',
-        deltas: d
-      },
-      0.99
-    );
-  }
-  if (char.age >= 16 && (char.heat || 0) >= 65 && rng() < 0.35) {
-    const distorted = char.flags.includes('Distorted');
-    const d = applyFx(char, distorted ? { health: -14, sanity: -6, heat: -14 } : { health: -18, sanity: -8, heat: -18 });
-    pushLog(
-      char,
-      {
-        key: 'heat_ambush',
-        type: 'danger',
-        vi: distorted
-          ? 'Một đội Fixer của Hana chặn cả hai đầu hẻm, mang theo lưới thép và đèn pha. Bạn phá được một bức tường để thoát, và để lại một phần cơ thể dưới lưới.'
-          : 'Ba kẻ đeo mặt nạ chờ sẵn ở đầu hẻm. Bạn thoát được, nhưng mang về một vết dao dài trên sườn.',
-        en: distorted
-          ? 'A Hana-sent Fixer team sealed both ends of the alley with steel nets and floodlights. You broke through a wall to escape, and left part of your body under the net.'
-          : 'Three masked figures were waiting at the mouth of the alley. You got away, with a long knife wound along your ribs.',
-        deltas: d
-      },
-      0.99
-    );
-  }
-
-  if (char.stats.health <= 0) {
-    const [woundVi, woundEn] = woundDeath(char, 'Gục xuống vì vết thương và kiệt sức', 'Collapsed from wounds and exhaustion');
-    applyFatalOrCompanionSave(
-      char,
-      oldAge ? 'Ra đi vì tuổi già, dưới ánh đèn không bao giờ tắt của The City' : woundVi,
-      oldAge ? 'Passed of old age beneath the City’s never-dimming lights' : woundEn
-    );
-    return char;
-  }
-  if (char.stats.sanity <= 0) {
-    handleSanityBreakdown(char, rng);
-    if (!char.alive) return char;
-  }
-
-  // Birthday
-  char.bodyAge = Number((effectiveAge(char) + frailty(char)).toFixed(2));
-  char.age += 1;
-  if (char.companionSynergy && (char.age - (char.companionSynergy.year ?? 0)) > 1) {
-    char.companionSynergy = null;
-  }
-  char.bodyAgeRecordedAt = char.age;
-  char.seasonIdx = 0;
-  if (char.ambition && !char.ambition.complete && ambitionComplete(char)) char.ambition.complete = true;
-  char.weaver = {
-    ...char.weaver,
-    yearsSinceLastMajor: (char.weaver?.yearsSinceLastMajor || 0) + 1,
-    yearsSinceLastCrisis: (char.weaver?.yearsSinceLastCrisis || 0) + 1
-  };
-  if (reachedCareerAge(char) && (char.job === 'Fixer' || char.job === 'Color Fixer' || char.job === 'Syndicate')) applyFx(char, { merit: 2 });
-  if (char.lastRelocatedAge !== undefined) applyRegionalSingularityPassive(char);
-  settle(char, 0, rng);
-  char.weaver = updateDramaTension(char.weaver, char);
-  if (char.alive) {
-    syncVisibleDoorsForChar(char, { events: ALL_STORY_EVENTS, openedDoors: char.openedDoors || [], rng });
-    planYear(char, rng);
-    // A working life plans its year on the same screen as the year's leads
-    if (reachedCareerAge(char) && char.job !== 'Child') char.pendingYearPlan = { age: char.age };
-  }
-  return char;
-}
-
 /** The moment the bar is waiting for next, or null when the year is done. */
 export const nextPlanItem = (char) => (char.plan || [])[char.planCursor || 0] || null;
 
@@ -1708,361 +963,3 @@ export function runDueItems(charState, progress, rng) {
   return { char, changed };
 }
 
-/**
- * A year is quiet when its plan contains only routine daily slots:
- * no minor choices, mishaps, major events, contracts, dungeons, cutscenes, or chapter turns,
- * and no NPC changes state (death / historic passing).
- * Early childhood (ages 0-4) is excluded since it already has only one daily per year.
- */
-export function isQuietYear(plan, char) {
-  if (!plan || !Array.isArray(plan) || plan.length === 0) return false;
-  if (!char || (char.age ?? 0) < 5) return false;
-
-  // Plan must contain only 'daily' moments with no forced events or causal hooks
-  const onlyDailies = plan.every((it) => it && it.kind === 'daily' && !it.forcedEventId && !it.isCausal && !it.thread);
-  if (!onlyDailies) return false;
-
-  // No pending interactions
-  if (
-    char.pendingMinor ||
-    char.pendingEvent ||
-    char.pendingContract ||
-    char.pendingDungeon ||
-    char.pendingModal ||
-    char.pendingLead ||
-    char.pendingYearPlan
-  ) {
-    return false;
-  }
-
-  // No close NPC passed away or changed state at this age
-  if (char.npcs) {
-    for (const npc of Object.values(char.npcs)) {
-      if (!npc) continue;
-      if ((npc.deceased || npc.status === 'dead') && npc.fateAge === char.age) return false;
-      if (npc.statusChangedAge === char.age) return false;
-    }
-  }
-
-  // Parent historic passing milestone
-  if (char.npcs?.parent?.alive && char.age >= char.npcs.parent.deathAgeInChildLife) {
-    return false;
-  }
-
-  return true;
-}
-
-export const AMBIENT_YEAR_LINES = {
-  backstreets: [
-    { vi: 'Một năm trôi qua giữa tiếng mưa axit rơi đều đều trên mái tôn Backstreets.', en: 'A year passes beneath the steady drone of acid rain upon Backstreets roofs.' },
-    { vi: 'Khói xả công nghiệp và tiếng còi ca kíp lấp đầy một năm không biến cố lớn.', en: 'Industrial exhaust and shift whistles fill a year free of major turmoil.' },
-    { vi: 'Sau 3:13 AM, cửa phòng trọ đóng chặt, nhịp sống ngõ hẻm vẫn lặp lại từng ngày.', en: 'Past 3:13 AM, tenement doors stay bolted as the alley rhythm repeats day by day.' },
-    { vi: 'Ánh đèn neon nhấp nháy trên mặt đường ướt đánh dấu những ngày tháng thường nhật.', en: 'Flickering neon over wet asphalt marks the passage of routine days.' },
-    { vi: 'Tiếng búa đập từ các xưởng cơ khí nhỏ vang vọng qua bốn mùa bình lặng.', en: 'Hammer strikes from small machine workshops echo through four quiet seasons.' },
-    { vi: 'Bạn quen dần với nhịp bước trên hè phố cũ và mùi dầu máy Backstreets.', en: 'You walk the familiar pavements amid the customary scent of Backstreets machine oil.' },
-    { vi: 'Một năm trôi qua không xáo trộn, chỉ có những bữa ăn đạm bạc sau giờ làm.', en: 'An undisturbed year drifts by, marked only by frugal meals after work.' },
-    { vi: 'Những mùa mưa nắng Backstreets lặng lẽ đi qua khung cửa sổ gỉ sét.', en: 'Seasons of rain and haze slip quietly past your rusted window.' },
-    { vi: 'Cuộc sống ngõ ngách trôi đi đều đặn, không có hợp đồng rắc rối nào gõ cửa.', en: 'Alley life rolls on steadily, with no troubled contracts at your door.' },
-    { vi: 'Một năm trôi qua bình ổn giữa nhịp thở không ngừng của The City.', en: 'A steady year passes within the ceaseless pulse of The City.' }
-  ],
-  nest: [
-    { vi: 'Một năm trôi qua êm ả dưới trật tự kỷ luật nghiêm ngặt của Nest.', en: 'A tranquil year passes beneath the strict disciplinary order of the Nest.' },
-    { vi: 'Những tiếng chuông đổi ca và dòng người đều đặn đánh dấu một năm bình yên.', en: 'Shift bells and punctual crowds mark a peaceful year.' },
-    { vi: 'Cuộc sống trong Nest diễn ra chuẩn mực, không một gợn sóng bất thường.', en: 'Life in the Nest moves orderly, without a ripple of unrest.' },
-    { vi: 'Thời gian trôi đi ngăn nắp sau những tòa cao ốc kính phản quang của Wing.', en: 'Time glides smoothly behind the reflective glass towers of the Wing.' },
-    { vi: 'Một năm bình ổn trôi qua theo đúng biểu đồ điều phối công việc định sẵn.', en: 'A stable year unfolds precisely according to corporate scheduling.' },
-    { vi: 'Bạn trải qua những ngày tháng trật tự giữa khuôn viên sạch sẽ của Nest.', en: 'You spend orderly days along the pristine avenues of the Nest.' },
-    { vi: 'Mọi thủ tục sinh hoạt đều tuân thủ quy chuẩn của Wing trong suốt một năm qua.', en: 'Every daily routine complied with Wing regulations over the past year.' },
-    { vi: 'Mùa tiếp mùa trôi qua yên ắng dưới sự bảo hộ của Wing.', en: 'Season follows season in quiet safety under the protection of the Wing.' },
-    { vi: 'Tiếng máy điều hòa trung tâm rì rầm lấp đầy một năm làm việc chuẩn mực.', en: 'The hum of central climate control fills a year of standard shifts.' },
-    { vi: 'Không có sự cố an ninh nào làm xáo trộn cuộc sống ngăn nắp nơi đây.', en: 'No security alarms disturbed the neat routine of this quarter.' }
-  ],
-  outskirts: [
-    { vi: 'Một năm lặng lẽ trôi qua giữa vùng hoang tàn của Outskirts.', en: 'A quiet year passes across the windswept Outskirts.' },
-    { vi: 'Ngoài Bức Tường, gió cát và tro bụi lặng lẽ trôi qua từng mùa.', en: 'Dust and wild winds blow through the seasons beyond the Wall.' },
-    { vi: 'Bạn trải qua một năm yên ắng bên ngoài bức tường The City.', en: 'You spend an undisturbed year outside the City walls.' },
-    { vi: 'Thời gian chậm rãi trôi qua giữa những tàn tích đổ nát không bóng người.', en: 'Time drifts slowly past the desolate ruins without a living soul.' },
-    { vi: 'Một năm sinh tồn bình thản dưới vòm trời u trầm của Outskirts.', en: 'A year of quiet survival beneath the overcast Outskirts sky.' },
-    { vi: 'Không có quái vật hay bão tro bụi nào ập đến nơi dựng lều trong năm nay.', en: 'Neither monsters nor ash storms swept over your shelter this year.' },
-    { vi: 'Những ngày tháng nơi Outskirts trôi qua chậm chạp bên ánh lửa trại.', en: 'Days in the Outskirts slip by slow and silent beside the campfire.' },
-    { vi: 'Bạn gom góp thêm một năm bình yên giữa bãi đất hoang ngoài vòng rào.', en: 'You gather another peaceful year amid the rough expanse outside the perimeter.' },
-    { vi: 'Một năm êm ả trôi qua mà không có toán cướp hay dị thể nào quấy phá.', en: 'A calm year passes with no marauders or entities disturbing your path.' },
-    { vi: 'Cuộc sống tự do nhưng đơn độc lặng lẽ đi qua thêm một vòng tuổi.', en: 'A solitary, untroubled life marks another year lived in the wastes.' }
-  ]
-};
-
-function formatDistrictLabel(regionId) {
-  const found = REGIONS.find((r) => r.id === regionId);
-  if (found?.ward) return `District ${found.ward}`;
-  return regionId === 'OUTSKIRTS' ? 'Outskirts' : `District ${regionId || ''}`.trim();
-}
-
-function buildAncestorBulletin(lm) {
-  const distLabel = formatDistrictLabel(lm.districtId);
-  const id = lm.key || `ancestor_${lm.kind}_${lm.districtId}_${lm.name}`;
-  if (lm.kind === 'color') {
-    const titlePart = lm.title ? ` (${lm.title})` : '';
-    return {
-      id,
-      isAncestorBulletin: true,
-      vi: `Tượng đồng của Color Fixer ${lm.name}${titlePart} dựng giữa quảng trường ${distLabel}. Đám Fixer trẻ đi ngang vẫn dừng lại đọc bia tên.`,
-      en: `A bronze statue of Color Fixer ${lm.name}${titlePart} stands on the ${distLabel} plaza. Young Fixers still pause to read its plaque.`
-    };
-  }
-  if (lm.kind === 'distortion') {
-    return {
-      id,
-      isAncestorBulletin: true,
-      vi: `Dãy phố cũ ở ${distLabel} vẫn căng dây rào trắng từ vụ Distortion ${lm.name}. Lính tuần bảo dấu cộng hưởng còn hằn trên vách tường.`,
-      en: `The old block in ${distLabel} still sits behind white cordon tape from ${lm.name}'s Distortion. Patrols say resonance clings to the brickwork.`
-    };
-  }
-  if (lm.kind === 'office') {
-    const officeVi = lm.officeName || `Office cũ của ${lm.name}`;
-    const officeEn = lm.officeName || `${lm.name}'s old Office`;
-    return {
-      id,
-      isAncestorBulletin: true,
-      vi: `Biển hiệu ${officeVi} vẫn treo trên phố chính ${distLabel}. Khách đặt kèo mới vẫn quen gọi tên người mở đầu là ${lm.name}.`,
-      en: `The signboard of ${officeEn} still hangs over ${distLabel}'s main lane. Clients still know ${lm.name} as its founder.`
-    };
-  }
-  const synLabel = lm.finger ? `The ${lm.finger}` : 'Syndicate';
-  return {
-    id,
-    isAncestorBulletin: true,
-    vi: `Đám đàn em vùng ${distLabel} vẫn giữ quy tắc cũ từ thời ${lm.name} cầm nhánh ${synLabel}. Bàn cuối quán trà hẻm tư chưa ai dám ngồi.`,
-    en: `Crews in ${distLabel} still keep the house rules from when ${lm.name} ran the ${synLabel} branch. Nobody takes the back table at the alley teahouse.`
-  };
-}
-
-export function pickCityBulletin(char, age, rng = Math.random) {
-  if (!char) return null;
-  const out = isOutskirts(char);
-  const nest = isNest(char);
-  const regionKey = out ? 'outskirts' : (nest ? 'nest' : 'backstreets');
-  const seen = new Set(char.seenBulletins || []);
-  const regionId = char.regionId || char.birthRegion || null;
-
-  const ancestorShown = Number(char.ancestorBulletinsShown || 0);
-  if (age >= 8 && regionId && ancestorShown < 2) {
-    const landmarks = Array.isArray(char.ancestorLandmarks) ? char.ancestorLandmarks : [];
-    const matchingAncestor = landmarks.filter((lm) => {
-      if (!lm || lm.districtId !== regionId) return false;
-      const key = lm.key || `ancestor_${lm.kind}_${lm.districtId}_${lm.name}`;
-      return !seen.has(key);
-    });
-    if (matchingAncestor.length > 0 && rng() < 0.45) {
-      const picked = matchingAncestor[Math.floor(rng() * matchingAncestor.length)];
-      const built = buildAncestorBulletin(picked);
-      if (!Array.isArray(char.seenBulletins)) char.seenBulletins = [];
-      char.seenBulletins.push(built.id);
-      char.ancestorBulletinsShown = ancestorShown + 1;
-      return built;
-    }
-  }
-
-  const eligible = CITY_BULLETINS.filter((b) => {
-    if (seen.has(b.id)) return false;
-    if (Array.isArray(b.age) && (age < b.age[0] || age > b.age[1])) return false;
-    if (b.era && b.era !== char.era) return false;
-    if (b.scope === regionKey) return true;
-    if (b.scope === 'wing' && !out && regionId && b.regionId === regionId) return true;
-    return false;
-  });
-  if (eligible.length === 0) return null;
-
-  const chosen = eligible[Math.floor(rng() * eligible.length)];
-  if (!Array.isArray(char.seenBulletins)) char.seenBulletins = [];
-  char.seenBulletins.push(chosen.id);
-  return chosen;
-}
-
-/**
- * Creates a year_digest log entry from a list of routine daily log entries.
- * Đợt 120a: Năm yên ả chỉ đúng 1 dòng (daily đáng nhớ nhất, bản tin City hoặc câu ambient theo nơi chốn).
- */
-export function createYearDigest(dailyEntries, age, { quiet = true, char = null, rng = null } = {}) {
-  if (!dailyEntries || dailyEntries.length === 0) return null;
-  const ids = dailyEntries.map((e) => e.id);
-
-  // Sum deltas across all merged dailies
-  const deltaMap = {};
-  for (const e of dailyEntries) {
-    if (Array.isArray(e.deltas)) {
-      for (const d of e.deltas) {
-        if (d && d.k && typeof d.v === 'number') {
-          deltaMap[d.k] = (deltaMap[d.k] || 0) + d.v;
-        }
-      }
-    }
-  }
-  const STAT_ORDER = ['health', 'sanity', 'wealth', 'network', 'rep', 'merit', 'heat', 'taboo', 'resonance'];
-  const deltas = [];
-  for (const k of STAT_ORDER) {
-    if (deltaMap[k]) deltas.push({ k, v: deltaMap[k] });
-  }
-  for (const [k, v] of Object.entries(deltaMap)) {
-    if (v && !STAT_ORDER.includes(k)) deltas.push({ k, v });
-  }
-
-  // Đợt 120a: Chọn một câu duy nhất cho năm yên ả (tình huống đáng nhớ nhất, bản tin City hoặc câu ambient theo nơi chốn)
-  const r = typeof rng === 'function' ? rng : createRNG(`${char?.seed || 'digest'}:${age}:${ids.join(':')}`);
-
-  // Tìm daily đáng nhớ nhất: có tên NPC hoặc có tổng delta (độ lớn) lớn nhất
-  const scored = dailyEntries.map((e) => {
-    const mag = (e.deltas || []).reduce((acc, d) => acc + Math.abs(d.v || 0), 0);
-    let hasNpc = Boolean(e.npc || e.npcId || e.npcRole || e.hasNpc);
-    if (!hasNpc && char?.npcs) {
-      for (const role of Object.keys(char.npcs)) {
-        const npc = char.npcs[role];
-        if (npc?.nameVi && (e.vi || '').includes(npc.nameVi)) { hasNpc = true; break; }
-        if (npc?.nameEn && (e.en || '').includes(npc.nameEn)) { hasNpc = true; break; }
-      }
-    }
-    const score = (hasNpc ? 100 : 0) + mag;
-    return { entry: e, score, mag };
-  });
-
-  const bestScore = Math.max(...scored.map((s) => s.score));
-  const candidates = scored.filter((s) => s.score === bestScore && s.score > 0);
-
-  let vi = '';
-  let en = '';
-  let bulletinVi = '';
-  let bulletinEn = '';
-
-  if (candidates.length > 0) {
-    // Keep the stat-changing or NPC daily as headline so chips always match the story
-    const chosen = candidates[Math.floor(r() * candidates.length)].entry;
-    const bVi = splitTitle(chosen.vi || '').body.trim();
-    const bEn = splitTitle(chosen.en || '').body.trim();
-    vi = /[.!?]$/.test(bVi) ? bVi : `${bVi}.`;
-    en = /[.!?]$/.test(bEn) ? bEn : `${bEn}.`;
-    // Spread City bulletins evenly across the whole life (~1/4-1/2 of consolidated years)
-    if (char && r() < (quiet ? 0.45 : 0.25)) {
-      const bulletin = pickCityBulletin(char, age, r);
-      if (bulletin) {
-        bulletinVi = bulletin.vi;
-        bulletinEn = bulletin.en;
-      }
-    }
-  } else {
-    // No daily shifted stats or featured an NPC: let a concrete City bulletin lead
-    const bulletin = char ? pickCityBulletin(char, age, r) : null;
-    if (bulletin) {
-      vi = bulletin.vi;
-      en = bulletin.en;
-      if (bulletin.spDelta && char.stats) {
-        const prevSp = char.stats.sanity ?? 0;
-        const nextSp = Math.max(0, Math.min(100, prevSp + bulletin.spDelta));
-        const actualSp = nextSp - prevSp;
-        if (actualSp !== 0) {
-          char.stats.sanity = nextSp;
-          deltaMap.sanity = (deltaMap.sanity || 0) + actualSp;
-          const idx = deltas.findIndex((d) => d.k === 'sanity');
-          if (deltaMap.sanity === 0) {
-            if (idx >= 0) deltas.splice(idx, 1);
-          } else if (idx >= 0) {
-            deltas[idx] = { k: 'sanity', v: deltaMap.sanity };
-          } else {
-            deltas.push({ k: 'sanity', v: deltaMap.sanity });
-          }
-        }
-      }
-    } else if (dailyEntries.length > 0) {
-      const chosen = dailyEntries[Math.floor(r() * dailyEntries.length)];
-      const bVi = splitTitle(chosen.vi || '').body.trim();
-      const bEn = splitTitle(chosen.en || '').body.trim();
-      vi = /[.!?]$/.test(bVi) ? bVi : `${bVi}.`;
-      en = /[.!?]$/.test(bEn) ? bEn : `${bEn}.`;
-    } else {
-      const out = char ? isOutskirts(char) : false;
-      const nest = char ? isNest(char) : false;
-      const regionKey = out ? 'outskirts' : (nest ? 'nest' : 'backstreets');
-      const pool = AMBIENT_YEAR_LINES[regionKey] || AMBIENT_YEAR_LINES.backstreets;
-      const chosen = pool[Math.floor(r() * pool.length)];
-      vi = chosen.vi;
-      en = chosen.en;
-    }
-  }
-
-  return {
-    id: `log_${age}_digest`,
-    key: 'year_digest',
-    type: 'year_digest',
-    age,
-    quiet: Boolean(quiet),
-    season: { vi: 'Cả năm', en: 'All year' },
-    vi,
-    en,
-    ...(bulletinVi ? { bulletinVi, bulletinEn } : {}),
-    deltas,
-    ids,
-    items: dailyEntries
-  };
-}
-
-/**
- * Consolidates routine daily logs of a given age (>= 5) into a single year_digest entry.
- * Routine entries: type === 'daily' || type === 'lore', no choices, no danger/mishap/story.
- * Items with choices, consequences, danger, or mishaps are NEVER consolidated and keep their season positions.
- */
-export function consolidateYearDailies(charOrLogs, targetAge) {
-  const isChar = charOrLogs && Array.isArray(charOrLogs.logs);
-  const char = isChar ? charOrLogs : null;
-  const logs = isChar ? charOrLogs.logs : (Array.isArray(charOrLogs) ? charOrLogs : []);
-  if (targetAge < 5) return charOrLogs;
-
-  const isPureDaily = (e) =>
-    e &&
-    e.age === targetAge &&
-    (e.type === 'daily' || e.type === 'lore') &&
-    !e.choiceVi &&
-    !e.choices &&
-    !e.passed &&
-    e.key !== 'year_digest' &&
-    e.type !== 'danger' &&
-    e.type !== 'mishap' &&
-    e.type !== 'summary' &&
-    e.type !== 'year_end' &&
-    e.type !== 'chapter' &&
-    e.key !== 'npc_autonomy';
-
-  const dailyIndices = [];
-  const dailyEntries = [];
-  logs.forEach((e, idx) => {
-    if (isPureDaily(e)) {
-      dailyIndices.push(idx);
-      dailyEntries.push(e);
-    }
-  });
-
-  // Only consolidate if there are at least 2 routine dailies
-  if (dailyEntries.length < 2) return charOrLogs;
-
-  const hasOthers = logs.some(
-    (e) => e && e.age === targetAge && !isPureDaily(e) && !['summary', 'year_end'].includes(e.type)
-  );
-
-  const digest = createYearDigest(dailyEntries, targetAge, { quiet: !hasOthers, char });
-  if (!digest) return charOrLogs;
-
-  const firstIdx = dailyIndices[0];
-  const removeSet = new Set(dailyIndices.slice(1));
-  const newLogs = [];
-
-  for (let i = 0; i < logs.length; i++) {
-    if (i === firstIdx) {
-      newLogs.push(digest);
-    } else if (!removeSet.has(i)) {
-      newLogs.push(logs[i]);
-    }
-  }
-
-  if (isChar) {
-    charOrLogs.logs = newLogs;
-    return charOrLogs;
-  }
-  return newLogs;
-}

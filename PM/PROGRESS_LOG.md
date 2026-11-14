@@ -3408,5 +3408,22 @@ Làm ở commit `208ef40` và sửa theo review ở `9000cf8`. Chỉ học cơ c
 * **Test.** Bỏ các đoạn kiểm việc vá kế hoạch từ server trong `test_annual_merit_opportunities`, `test_ensemble_path`, `test_fixer_debt_lifecycle`, `test_fixer_promotion_retry`, `test_independent_syndicate`, `test_other_career_promotion` và `test_run_state_integrity`. Giữ lại phần kiểm planner JS, ví dụ người làm Wing chưa đủ mốc vẫn có cơ hội nghề trong kế hoạch năm.
 * **Kiểm định.** `npm test`, `npm run build`, `dotnet build` và `npm run test:backend-isolation` đều qua.
 
+##### 2.61. Tách hai file engine lớn theo từng mảng (Đợt 177, 14/11/2026)
+* **Vấn đề.** `gameEngine.js` dài 3.725 dòng và `yearPlanner.js` dài 2.068 dòng. Bốn hàm lớn nhất (`createNewCharacter`, `getNextCareerMilestone`, `resolveEventChoice`, `buildLifeSummaryAndLegacy`) chiếm khoảng 2.300 dòng nằm chung một file, nên mỗi lần sửa phải mở cả file và dễ đụng phần không liên quan.
+* **`gameEngine.js` (còn 477 dòng)** giữ phần lõi: danh sách event, mùa, đặt tên, RNG, `clamp`, `interpolateText` và thành tựu. Phần còn lại chuyển sang:
+  * `characterCreation.js` (655 dòng): nơi sinh, gia cảnh, `createNewCharacter`, `cloneChar`.
+  * `careerMilestones.js` (645 dòng): mốc nghề kế tiếp, độ sẵn sàng E.G.O, thăng hạng.
+  * `fixerContracts.js` (394 dòng): tạo và giải quyết hợp đồng Fixer.
+  * `lifeEnding.js` (190 dòng): cái chết, đồng đội cứu, suy sụp tinh thần.
+  * `eventResolution.js` (705 dòng): `resolveEventChoice`.
+  * `lifeSummary.js` (756 dòng): di cảo và hồ sơ di sản.
+* **`yearPlanner.js` (còn 965 dòng)** giữ phần lập kế hoạch năm, chạy từng nhịp và event nhỏ. Phần còn lại chuyển sang:
+  * `yearLeads.js` (165 dòng): manh mối năm.
+  * `yearEnd.js` (576 dòng): `endYear`.
+  * `yearDigest.js` (364 dòng): năm yên ả, bản tin thành phố, gộp sự việc trong năm.
+* **Không đổi chỗ import.** `gameEngine.js` và `yearPlanner.js` export lại mọi tên đã chuyển đi, nên các file và test khác không phải sửa. Code được chuyển nguyên văn bằng một script phân tích cú pháp (`@babel/parser`, `@babel/traverse`). Script tự tính mỗi file mới cần import gì, thêm `export` cho các hàm phụ mà file khác cần (`endSentence`, `markColorInvestiture`, `settle`, `pickWeighted`, `weightOf` và vài hàm khác), bỏ các import không còn dùng, và báo nếu có khai báo top-level nào đọc tên từ module khác ngay lúc nạp. Không có trường hợp nào như vậy.
+* **Không đổi bundle.** Chunk `engine` vẫn khoảng 636 KB (229 KB sau gzip), vì cùng code chỉ đổi chỗ. Chưa làm việc tải event theo độ tuổi hoặc nghề.
+* **Kiểm định.** `npm test` và `npm run build` đều qua. Chạy bản build thật trong trình duyệt với seed cố định `smoke177`: bản trước và sau khi tách cho ra cùng một đời (chết lúc 20 tuổi, 100 dòng nhật ký, 38 event, chỉ số trùng khớp), không có lỗi console.
+
 #### 3. KIỂM ĐỊNH & BẢO ĐẢM TOÀN VẸN (VERIFICATION & INTEGRITY)
 * Tất cả các bộ kiểm thử tự động (`npm test`) bao gồm lint văn phong (`voice_lint.mjs`), chuẩn canon Project Moon (`lint_story.mjs`), và mô phỏng 500 khoảnh khắc đời người (`run_million_audit.mjs`) phải vượt qua 100% với 0 lỗi, 0 cảnh báo.
